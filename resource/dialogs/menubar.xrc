@@ -3583,11 +3583,42 @@ structure as the actual one</label>
                     <bitmapsize>32,32</bitmapsize>
                     <dontattachtoframe>1</dontattachtoframe>
                     <object class="tool" name="ID_TOOL1">
-                        <bitmap>image0007.png</bitmap>
+                        <bitmap>tool1.xpm</bitmap>
                         <label>Select</label>
                     </object>
                     <object class="tool" name="ID_TOOL2">
-                        <bitmap>image0009.png</bitmap>
+                        <bitmap>tool1v2.xpm</bitmap>
+                    </object>
+                    <object class="tool" name="ID_TOOL3">
+                        <bitmap>tool1v2.xpm</bitmap>
+                    </object>
+                    <object class="tool" name="ID_TOOL4">
+                        <bitmap>tool1v2.xpm</bitmap>
+                    </object>
+                    <object class="wxComboBox" name="ID_COMBOBOX2">
+                        <style>wxCB_DROPDOWN</style>
+                    </object>
+                    <object class="tool" name="ID_TOOL5">
+                        <bitmap>tool1.xpm</bitmap>
+                    </object>
+                    <object class="tool" name="ID_TOOL6">
+                        <bitmap>tool1.xpm</bitmap>
+                    </object>
+                    <object class="tool" name="ID_TOOL7">
+                        <bitmap>tool1.xpm</bitmap>
+                    </object>
+                    <object class="separator">
+                    </object>
+                    <object class="tool" name="ID_TOOL8">
+                        <bitmap>tool1.xpm</bitmap>
+                    </object>
+                    <object class="tool" name="ID_TOOL9">
+                        <bitmap>tool1.xpm</bitmap>
+                    </object>
+                    <object class="separator">
+                    </object>
+                    <object class="tool" name="ID_TOOL10">
+                        <bitmap>tool1.xpm</bitmap>
                     </object>
                 </object>
             </object>
