@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anthemion-project version="1.0.0.0" xmlns="http://www.anthemion.co.uk">
   <header>
-    <long name="name_counter">9</long>
+    <long name="name_counter">11</long>
     <string name="html_path">""</string>
     <string name="title">""</string>
     <string name="author">""</string>
@@ -21639,6 +21639,14 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -27972,7 +27980,7 @@ structure as the actual one"</string>
                 <string name="proxy-type">"wbToolBarButtonProxy"</string>
                 <string name="proxy-Id name">"ID_TOOL1"</string>
                 <long name="proxy-Id value">10071</long>
-                <string name="proxy-Bitmap">"image0007.png"</string>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
                 <string name="proxy-Bitmap (disabled)">""</string>
                 <string name="proxy-Label">"Select"</string>
                 <string name="proxy-Kind">"Normal"</string>
@@ -27994,7 +28002,7 @@ structure as the actual one"</string>
                 <string name="proxy-type">"wbToolBarButtonProxy"</string>
                 <string name="proxy-Id name">"ID_TOOL2"</string>
                 <long name="proxy-Id value">10073</long>
-                <string name="proxy-Bitmap">"image0009.png"</string>
+                <string name="proxy-Bitmap">"tool1v2.xpm"</string>
                 <string name="proxy-Bitmap (disabled)">""</string>
                 <string name="proxy-Label">""</string>
                 <string name="proxy-Kind">"Normal"</string>
@@ -28051,28 +28059,28 @@ structure as the actual one"</string>
           <long name="zoom-level">100</long>
         </document>
         <document>
-          <string name="title">"image0007.png"</string>
+          <string name="title">"tool1.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"image0007.png"</string>
+          <string name="filename">"tool1.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">1</long>
           <long name="title-mode">0</long>
           <long name="locked">0</long>
-          <string name="created">"27/11/2007"</string>
+          <string name="created">"28/11/2007"</string>
           <long name="zoom-level">100</long>
         </document>
         <document>
-          <string name="title">"image0009.png"</string>
+          <string name="title">"tool2.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"image0009.png"</string>
+          <string name="filename">"tool1v2.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">1</long>
           <long name="title-mode">0</long>
           <long name="locked">0</long>
-          <string name="created">"27/11/2007"</string>
-          <long name="zoom-level">100</long>
+          <string name="created">"28/11/2007"</string>
+          <long name="zoom-level">200</long>
         </document>
       </document>
     </document>

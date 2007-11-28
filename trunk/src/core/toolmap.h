@@ -29,6 +29,7 @@
     #include <wx/wx.h>
 #endif
 
+#include <wx/mstream.h>
 
 #define ID_MENU4 10147
 #define ID_MENUITEM 10019
@@ -94,6 +95,21 @@
 #define ID_MENUITEM46 10182
 #define ID_MENUITEM18 10078
 
+#define ID_TOOLBAR1 10038
+#define ID_TOOL1 10071
+#define ID_TOOL2 10073
+#define ID_TOOL3 10074
+#define ID_TOOL4 10193
+#define ID_COMBOBOX2 10252
+#define ID_TOOL5 10253
+#define ID_TOOL6 10254
+#define ID_TOOL7 10255
+#define ID_TOOL8 10256
+#define ID_TOOL9 10257
+#define ID_TOOL10 10258
+
+#define wxGetBitmapFromMemory(name) _wxGetBitmapFromMemory(name ## _png, sizeof(name ## _png))
+
 
 class ToolMapApp : public wxApp
 {
@@ -112,9 +128,11 @@ public:
 	~ToolMapFrame();
 	
 	static wxMenuBar* CreateToolMapMenu();
+	static wxToolBar * CreateToolMapToolBar(wxWindow * parent);
 	
 	
 private:
+	// inline wxBitmap GetBitmapFromMemory(const unsigned char *data, int length);
 	//void OnQuit(wxCommandEvent& event);
 	//void OnAbout(wxCommandEvent& event);
 	//DECLARE_EVENT_TABLE();
