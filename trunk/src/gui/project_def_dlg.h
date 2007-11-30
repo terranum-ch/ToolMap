@@ -40,7 +40,7 @@
  */
 
 ////@begin forward declarations
-class ProjectDefDLG;
+class ProjectDefList;
 class wxToggleButton;
 ////@end forward declarations
 
@@ -99,7 +99,7 @@ public:
     wxTextCtrl* m_DlgPd_Proj_Name;
     wxChoice* m_DlgPd_Proj_Unit;
     wxChoice* m_DlgPd_Proj_Projection;
-    ProjectDefDLG * m_DlgPd_Stat_Model_List;
+    ProjectDefList * m_DlgPd_Stat_Model_List;
     wxToggleButton* m_DlgPd_Spat_Mdl_Add;
     wxToggleButton* m_DljPd_Spat_Mdl_Del;
 ////@end ProjectDefDLG member variables
@@ -119,7 +119,7 @@ class ProjectDefList : public ListGenReport
 	public:
 		static const int ID_PARAMLIST;
 
-		ProjectDefList(wxWindow * parent, wxWindowID id);
+		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size);
 
 		~ProjectDefList(); 
 

@@ -168,7 +168,7 @@ void ProjectDefDLG::CreateControls()
     wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
     itemBoxSizer2->Add(itemStaticBoxSizer16, 1, wxGROW|wxALL, 5);
 
-    m_DlgPd_Stat_Model_List = new ProjectDefDLG( itemDialog1, ID_DLGPD_SPAT_MODEL_LIST);
+    m_DlgPd_Stat_Model_List = new ProjectDefList( itemDialog1, ID_DLGPD_SPAT_MODEL_LIST, wxSize(-1,150));
     itemStaticBoxSizer16->Add(m_DlgPd_Stat_Model_List, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
@@ -197,19 +197,17 @@ void ProjectDefDLG::CreateControls()
 }
 
 
-ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id) 
-	: ListGenReport(parent,id)
+ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size) 
+	: ListGenReport(parent,id,size)
 {
 	// Create columns
 	wxArrayString myColNames;
 	wxArrayInt myColsWidths;
 	
-	myColNames.Add(_("Value"));
-	myColNames.Add(_("Comment"));
+	myColNames.Add(_("Name"));
 	myColNames.Add(_("Type"));
 	
-	myColsWidths.Add(100);
-	myColsWidths.Add(300);	
+	myColsWidths.Add(250);
 	myColsWidths.Add(80);
 	
 	CreateColumns(&myColNames, &myColsWidths);

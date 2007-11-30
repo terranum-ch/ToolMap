@@ -80,7 +80,7 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		ListGenReport(wxWindow * parent, wxWindowID id);
+		ListGenReport(wxWindow * parent, wxWindowID id, wxSize size=wxDefaultSize);
 		/*********************************************//**
 		 @brief Constructor
 		 @details This constructor invoke the
@@ -102,7 +102,7 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL);
+		ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL, wxSize size=wxDefaultSize);
 		/*********************************************//**
 		 @brief Desctructor
 		 @details Do nothing for the moment
