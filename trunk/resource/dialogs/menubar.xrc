@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
-    <object class="wxDialog" name="ID_WXDIALOG">
+    <object class="wxDialog" name="ID_DLGPD" subclass="ProjectDefDLG">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
@@ -33,14 +33,14 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL1">
+                                <object class="wxTextCtrl" name="ID_DLGPD_PROJ_PATH">
                                     <size>200,-1</size>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxButton" name="ID_BUTTON1">
+                                <object class="wxButton" name="ID_DLJPD_PROJ_PATH_BTN">
                                     <size>50,-1</size>
                                     <label>...</label>
                                 </object>
@@ -55,7 +55,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL2">
+                                <object class="wxTextCtrl" name="ID_DLGPD_PROJ_NAME">
                                 </object>
                             </object>
                             <object class="spacer">
@@ -73,7 +73,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxChoice" name="ID_CHOICE10">
+                                <object class="wxChoice" name="ID_DLGPD_PROJ_UNIT">
                                     <content>
                                         <item>Meters</item>
                                         <item>Kilometers</item>
@@ -97,7 +97,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxChoice" name="ID_CHOICE8">
+                                <object class="wxChoice" name="ID_DLGPD_PROJ_PROJECTION">
                                     <content>
                                         <item>No projection</item>
                                         <item>Swiss projection</item>
@@ -120,9 +120,8 @@
                         <flag>wxGROW|wxALL</flag>
                         <border>5</border>
                         <option>1</option>
-                        <object class="wxListCtrl" name="ID_LISTCTRL1">
+                        <object class="ListParam" name="ID_DLGPD_SPAT_MODEL_LIST">
                             <size>100,200</size>
-                            <tooltip>define spatial model </tooltip>
                             <style>wxLC_REPORT</style>
                         </object>
                     </object>
@@ -134,7 +133,7 @@
                             <object class="sizeritem">
                                 <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                 <border>5</border>
-                                <object class="wxToggleButton" name="ID_TOGGLEBUTTON5">
+                                <object class="wxToggleButton" name="ID_DLGPD_SPAT_MDL_ADD">
                                     <size>40,-1</size>
                                     <label>+</label>
                                     <checked>0</checked>
@@ -143,7 +142,7 @@
                             <object class="sizeritem">
                                 <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                 <border>5</border>
-                                <object class="wxToggleButton" name="ID_TOGGLEBUTTON6">
+                                <object class="wxToggleButton" name="ID_DLJPD_SPAT_MDL_DEL">
                                     <size>40,-1</size>
                                     <label>-</label>
                                     <checked>0</checked>

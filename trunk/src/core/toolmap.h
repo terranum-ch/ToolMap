@@ -29,6 +29,8 @@
     #include <wx/wx.h>
 #endif
 
+#include "../gui/project_def_dlg.h"
+
 #include <wx/mstream.h>
 
 #define ID_MENU4 10147
@@ -131,11 +133,13 @@ public:
 	static wxToolBar * CreateToolMapToolBar(wxWindow * parent);
 	
 	
+	
 private:
-	// inline wxBitmap GetBitmapFromMemory(const unsigned char *data, int length);
 	//void OnQuit(wxCommandEvent& event);
 	//void OnAbout(wxCommandEvent& event);
-	//DECLARE_EVENT_TABLE();
+	void OnNewProject(wxCommandEvent & event);
+	
+	DECLARE_EVENT_TABLE();
 };
 
 
