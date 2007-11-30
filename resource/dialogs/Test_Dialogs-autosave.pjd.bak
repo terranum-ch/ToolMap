@@ -322,9 +322,9 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="proxy-Id name">"ID_WXDIALOG"</string>
+          <string name="proxy-Id name">"ID_DLGPD"</string>
           <long name="proxy-Id value">10000</long>
-          <string name="proxy-Class">"wxDialog"</string>
+          <string name="proxy-Class">"ProjectDefDLG"</string>
           <string name="proxy-Base class">"wxDialog"</string>
           <string name="proxy-Window kind">"wxDialog"</string>
           <string name="proxy-Implementation filename">"newproject.cpp"</string>
@@ -396,14 +396,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -542,7 +534,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxTextCtrl: ID_TEXTCTRL1"</string>
+                  <string name="title">"wxTextCtrl: ID_DLGPD_PROJ_PATH"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"textctrl"</string>
@@ -552,7 +544,7 @@
                   <long name="locked">0</long>
                   <string name="created">"6/8/2007"</string>
                   <string name="proxy-type">"wbTextCtrlProxy"</string>
-                  <string name="proxy-Id name">"ID_TEXTCTRL1"</string>
+                  <string name="proxy-Id name">"ID_DLGPD_PROJ_PATH"</string>
                   <long name="proxy-Id value">10001</long>
                   <string name="proxy-Class">"wxTextCtrl"</string>
                   <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -560,7 +552,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPD_Proj_Path"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -623,7 +615,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxButton: ID_BUTTON1"</string>
+                  <string name="title">"wxButton: ID_DLJPD_PROJ_PATH_BTN"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"dialogcontrol"</string>
@@ -633,7 +625,7 @@
                   <long name="locked">0</long>
                   <string name="created">"6/8/2007"</string>
                   <string name="proxy-type">"wbButtonProxy"</string>
-                  <string name="proxy-Id name">"ID_BUTTON1"</string>
+                  <string name="proxy-Id name">"ID_DLJPD_PROJ_PATH_BTN"</string>
                   <long name="proxy-Id value">10002</long>
                   <string name="proxy-Class">"wxButton"</string>
                   <string name="proxy-Base class">"wxButton"</string>
@@ -641,7 +633,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPd_Proj_Path_Btn"</string>
                   <string name="proxy-Label">"..."</string>
                   <bool name="proxy-Default">0</bool>
                   <string name="proxy-Help text">""</string>
@@ -757,7 +749,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxTextCtrl: ID_TEXTCTRL2"</string>
+                  <string name="title">"wxTextCtrl: ID_DLGPD_PROJ_NAME"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"textctrl"</string>
@@ -767,7 +759,7 @@
                   <long name="locked">0</long>
                   <string name="created">"6/8/2007"</string>
                   <string name="proxy-type">"wbTextCtrlProxy"</string>
-                  <string name="proxy-Id name">"ID_TEXTCTRL2"</string>
+                  <string name="proxy-Id name">"ID_DLGPD_PROJ_NAME"</string>
                   <long name="proxy-Id value">10003</long>
                   <string name="proxy-Class">"wxTextCtrl"</string>
                   <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -775,7 +767,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPd_Proj_Name"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -933,7 +925,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxChoice: ID_CHOICE10"</string>
+                  <string name="title">"wxChoice: ID_DLGPD_PROJ_UNIT"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"choice"</string>
@@ -943,7 +935,7 @@
                   <long name="locked">0</long>
                   <string name="created">"30/8/2007"</string>
                   <string name="proxy-type">"wbChoiceProxy"</string>
-                  <string name="proxy-Id name">"ID_CHOICE10"</string>
+                  <string name="proxy-Id name">"ID_DLGPD_PROJ_UNIT"</string>
                   <long name="proxy-Id value">10156</long>
                   <string name="proxy-Class">"wxChoice"</string>
                   <string name="proxy-Base class">"wxChoice"</string>
@@ -951,7 +943,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPd_Proj_Unit"</string>
                   <string name="proxy-Strings">"Meters|Kilometers|Lat / Long"</string>
                   <string name="proxy-Initial value">"Meters"</string>
                   <string name="proxy-Help text">""</string>
@@ -1087,7 +1079,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxChoice: ID_CHOICE8"</string>
+                  <string name="title">"wxChoice: ID_DLGPD_PROJ_PROJECTION"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"choice"</string>
@@ -1097,7 +1089,7 @@
                   <long name="locked">0</long>
                   <string name="created">"27/8/2007"</string>
                   <string name="proxy-type">"wbChoiceProxy"</string>
-                  <string name="proxy-Id name">"ID_CHOICE8"</string>
+                  <string name="proxy-Id name">"ID_DLGPD_PROJ_PROJECTION"</string>
                   <long name="proxy-Id value">10119</long>
                   <string name="proxy-Class">"wxChoice"</string>
                   <string name="proxy-Base class">"wxChoice"</string>
@@ -1105,7 +1097,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPd_Proj_Projection"</string>
                   <string name="proxy-Strings">"No projection|Swiss projection"</string>
                   <string name="proxy-Initial value">"No projection"</string>
                   <string name="proxy-Help text">""</string>
@@ -1182,7 +1174,7 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               <document>
-                <string name="title">"wxListCtrl: ID_LISTCTRL1"</string>
+                <string name="title">"ListParam: ID_LISTPARAM1"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"listctrl"</string>
@@ -1190,27 +1182,17 @@
                 <long name="owns-file">1</long>
                 <long name="title-mode">0</long>
                 <long name="locked">0</long>
-                <string name="created">"6/8/2007"</string>
-                <string name="proxy-type">"wbListCtrlProxy"</string>
-                <string name="proxy-Id name">"ID_LISTCTRL1"</string>
+                <string name="created">"30/11/2007"</string>
+                <string name="proxy-type">"wbCustomCtrlProxy:ListParam"</string>
+                <string name="proxy-Id name">"ID_DLGPD_SPAT_MODEL_LIST"</string>
                 <long name="proxy-Id value">10004</long>
-                <string name="proxy-Class">"wxListCtrl"</string>
-                <string name="proxy-Base class">"wxListCtrl"</string>
+                <string name="proxy-Class">"ListParam"</string>
+                <string name="proxy-Base class">"ListParam"</string>
                 <bool name="proxy-External implementation">1</bool>
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
-                <string name="proxy-Help text">""</string>
-                <string name="proxy-Tooltip text">"define spatial model "</string>
-                <string name="proxy-Background colour">""</string>
-                <string name="proxy-Foreground colour">""</string>
-                <string name="proxy-Font">""</string>
-                <bool name="proxy-Hidden">0</bool>
-                <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                <string name="proxy-Data variable">""</string>
-                <string name="proxy-Data validator">""</string>
+                <string name="proxy-Member variable name">"m_DlgPd_Stat_Model_List"</string>
                 <string name="proxy-Data source">""</string>
                 <string name="proxy-Data class name">""</string>
                 <string name="proxy-Data class implementation filename">""</string>
@@ -1232,6 +1214,16 @@
                 <bool name="proxy-wxLC_SORT_DESCENDING">0</bool>
                 <bool name="proxy-wxLC_HRULES">0</bool>
                 <bool name="proxy-wxLC_VRULES">0</bool>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Tooltip text">""</string>
+                <string name="proxy-Background colour">""</string>
+                <string name="proxy-Foreground colour">""</string>
+                <string name="proxy-Font">""</string>
+                <bool name="proxy-Hidden">0</bool>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Data variable">""</string>
+                <string name="proxy-Data validator">""</string>
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
@@ -1258,7 +1250,7 @@
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                <string name="proxy-Custom arguments">""</string>
+                <string name="proxy-Custom arguments">"%PARENT%, %IDENTIFIER%, %POSITION%, %SIZE%, %STYLE%"</string>
                 <string name="proxy-Custom ctor arguments">""</string>
               </document>
               <document>
@@ -1270,7 +1262,7 @@
                 <long name="owns-file">1</long>
                 <long name="title-mode">0</long>
                 <long name="locked">0</long>
-                <string name="created">"18/10/2007"</string>
+                <string name="created">"30/11/2007"</string>
                 <string name="proxy-type">"wbBoxSizerProxy"</string>
                 <string name="proxy-Orientation">"Horizontal"</string>
                 <string name="proxy-Member variable name">""</string>
@@ -1287,7 +1279,7 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <document>
-                  <string name="title">"wxToggleButton: ID_TOGGLEBUTTON5"</string>
+                  <string name="title">"wxToggleButton: ID_DLGPD_SPAT_MDL_ADD"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"togglebutton"</string>
@@ -1295,9 +1287,9 @@
                   <long name="owns-file">1</long>
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
-                  <string name="created">"18/10/2007"</string>
+                  <string name="created">"30/11/2007"</string>
                   <string name="proxy-type">"wbToggleButtonProxy"</string>
-                  <string name="proxy-Id name">"ID_TOGGLEBUTTON5"</string>
+                  <string name="proxy-Id name">"ID_DLGPD_SPAT_MDL_ADD"</string>
                   <long name="proxy-Id value">10219</long>
                   <string name="proxy-Class">"wxToggleButton"</string>
                   <string name="proxy-Base class">"wxToggleButton"</string>
@@ -1305,7 +1297,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPd_Spat_Mdl_Add"</string>
                   <string name="proxy-Label">"+"</string>
                   <bool name="proxy-Initial value">0</bool>
                   <string name="proxy-Help text">""</string>
@@ -1346,7 +1338,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxToggleButton: ID_TOGGLEBUTTON6"</string>
+                  <string name="title">"wxToggleButton: ID_DLJPD_SPAT_MDL_DEL"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"togglebutton"</string>
@@ -1354,17 +1346,17 @@
                   <long name="owns-file">1</long>
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
-                  <string name="created">"18/10/2007"</string>
+                  <string name="created">"30/11/2007"</string>
                   <string name="proxy-type">"wbToggleButtonProxy"</string>
-                  <string name="proxy-Id name">"ID_TOGGLEBUTTON6"</string>
-                  <long name="proxy-Id value">10220</long>
+                  <string name="proxy-Id name">"ID_DLJPD_SPAT_MDL_DEL"</string>
+                  <long name="proxy-Id value">10006</long>
                   <string name="proxy-Class">"wxToggleButton"</string>
                   <string name="proxy-Base class">"wxToggleButton"</string>
                   <bool name="proxy-External implementation">1</bool>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DljPd_Spat_Mdl_Del"</string>
                   <string name="proxy-Label">"-"</string>
                   <bool name="proxy-Initial value">0</bool>
                   <string name="proxy-Help text">""</string>
@@ -27885,6 +27877,14 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -28002,7 +28002,272 @@ structure as the actual one"</string>
                 <string name="proxy-type">"wbToolBarButtonProxy"</string>
                 <string name="proxy-Id name">"ID_TOOL2"</string>
                 <long name="proxy-Id value">10073</long>
-                <string name="proxy-Bitmap">"tool2.xpm"</string>
+                <string name="proxy-Bitmap">"tool1v2.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL3"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL3"</string>
+                <long name="proxy-Id value">10074</long>
+                <string name="proxy-Bitmap">"tool1v2.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL4"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL4"</string>
+                <long name="proxy-Id value">10193</long>
+                <string name="proxy-Bitmap">"tool1v2.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"wxComboBox: ID_COMBOBOX2"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"combobox"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbComboBoxProxy"</string>
+                <string name="proxy-Id name">"ID_COMBOBOX2"</string>
+                <long name="proxy-Id value">10252</long>
+                <string name="proxy-Class">"wxComboBox"</string>
+                <string name="proxy-Base class">"wxComboBox"</string>
+                <bool name="proxy-External implementation">1</bool>
+                <bool name="proxy-Separate files">0</bool>
+                <string name="proxy-Implementation filename">""</string>
+                <string name="proxy-Header filename">""</string>
+                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Strings">""</string>
+                <string name="proxy-Initial value">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Tooltip text">""</string>
+                <string name="proxy-Background colour">""</string>
+                <string name="proxy-Foreground colour">""</string>
+                <string name="proxy-Font">""</string>
+                <bool name="proxy-Hidden">0</bool>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Data variable">""</string>
+                <string name="proxy-Data validator">""</string>
+                <string name="proxy-Data source">""</string>
+                <string name="proxy-Data class name">""</string>
+                <string name="proxy-Data class implementation filename">""</string>
+                <string name="proxy-Data class header filename">""</string>
+                <string name="proxy-Data class manager window">""</string>
+                <bool name="proxy-wxCB_SIMPLE">0</bool>
+                <bool name="proxy-wxCB_DROPDOWN">1</bool>
+                <bool name="proxy-wxCB_READONLY">0</bool>
+                <bool name="proxy-wxCB_SORT">0</bool>
+                <bool name="proxy-wxWANTS_CHARS">0</bool>
+                <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+                <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+                <string name="proxy-Custom styles">""</string>
+                <long name="proxy-X">-1</long>
+                <long name="proxy-Y">-1</long>
+                <long name="proxy-Width">-1</long>
+                <long name="proxy-Height">-1</long>
+                <string name="proxy-AlignH">"Centre"</string>
+                <string name="proxy-AlignV">"Centre"</string>
+                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Border">5</long>
+                <bool name="proxy-wxLEFT">1</bool>
+                <bool name="proxy-wxRIGHT">1</bool>
+                <bool name="proxy-wxTOP">1</bool>
+                <bool name="proxy-wxBOTTOM">1</bool>
+                <bool name="proxy-wxSHAPED">0</bool>
+                <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                <string name="proxy-Custom arguments">""</string>
+                <string name="proxy-Custom ctor arguments">""</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL5"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL5"</string>
+                <long name="proxy-Id value">10253</long>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL6"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL6"</string>
+                <long name="proxy-Id value">10254</long>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL7"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL7"</string>
+                <long name="proxy-Id value">10255</long>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"----------"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarSeparatorProxy"</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL8"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL8"</string>
+                <long name="proxy-Id value">10256</long>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL9"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL9"</string>
+                <long name="proxy-Id value">10257</long>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
+                <string name="proxy-Bitmap (disabled)">""</string>
+                <string name="proxy-Label">""</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Tooltip">""</string>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"----------"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarSeparatorProxy"</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Tool: ID_TOOL10"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"28/11/2007"</string>
+                <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                <string name="proxy-Id name">"ID_TOOL10"</string>
+                <long name="proxy-Id value">10258</long>
+                <string name="proxy-Bitmap">"tool1.xpm"</string>
                 <string name="proxy-Bitmap (disabled)">""</string>
                 <string name="proxy-Label">""</string>
                 <string name="proxy-Kind">"Normal"</string>
@@ -28073,7 +28338,7 @@ structure as the actual one"</string>
         <document>
           <string name="title">"tool2.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"tool2_low.xpm"</string>
+          <string name="filename">"tool1v2.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">1</long>

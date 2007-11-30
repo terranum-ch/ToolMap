@@ -54,9 +54,9 @@ bool ToolMapApp::OnInit()
 
 
 
-//BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
-//EVT_MENU (ID_RUN, ToolMapFrame::OnAbout)
-//END_EVENT_TABLE()
+BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
+	EVT_MENU (ID_MENUITEM, ToolMapFrame::OnNewProject)
+END_EVENT_TABLE()
 
 
 /* Frame initialisation */
@@ -240,8 +240,9 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 	return itemToolBar3;
 }
 
-//wxBitmap ToolMapFrame::GetBitmapFromMemory(const unsigned char *data, int length)
-//{
-//   wxMemoryInputStream is(data, length);
-//   return wxBitmap(wxImage(is, wxBITMAP_TYPE_ANY, -1), -1);
-//}
+
+void ToolMapFrame::OnNewProject(wxCommandEvent & event)
+{
+	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this, wxID_ANY);
+	myNewProjDlg->ShowModal();
+}
