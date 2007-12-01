@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "toolmap.h"
+#include "svn_version.h" // version number definition
 
 // toolbar images
 #include "../img/img_tool1.cpp"
@@ -42,9 +43,9 @@ bool ToolMapApp::OnInit()
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
 	
-	
-	ToolMapFrame* frame = new ToolMapFrame(0L, _("ToolMap 2"),wxDefaultPosition, wxSize(620,480));
-	
+	wxString myFrameName = _T("ToolMap 2.");
+	 myFrameName.Append(SVN_VERSION);
+	ToolMapFrame* frame = new ToolMapFrame(0L, myFrameName,wxDefaultPosition, wxSize(620,480));
 	
 	
 	frame->Show();
