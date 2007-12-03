@@ -22,7 +22,7 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 IF (WIN32)
 
 	SOURCE_GROUP (resource FILES ../src/resource.rc)
- 	ADD_EXECUTABLE (ToolMap2 WIN32 ${SRC_FILES} ${HEAD_FILES} ../src/resource.rc)
+ 	ADD_EXECUTABLE (ToolMap2 WIN32 ${SRC_FILES} ${HEAD_FILES} ../src/gui/resource.rc)
  	TARGET_LINK_LIBRARIES (ToolMap2 ${WXWINDOWS_LIBS})
 
 ELSE (WIN32)
