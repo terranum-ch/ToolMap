@@ -33,13 +33,12 @@
  */
 
 ////@begin control identifiers
-#define ID_IMPORTLOG 10157
-#define ID_TEXTCTRL18 10158
-#define ID_BUTTON24 10159
+#define ID_DLGLOG 10157
+#define ID_DLGLOG_TXT 10158
 #define SYMBOL_IMPORTLOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_IMPORTLOG_TITLE _("Log window")
-#define SYMBOL_IMPORTLOG_IDNAME ID_IMPORTLOG
-#define SYMBOL_IMPORTLOG_SIZE wxSize(400, 300)
+#define SYMBOL_IMPORTLOG_IDNAME ID_DLGLOG
+#define SYMBOL_IMPORTLOG_SIZE wxDefaultSize
 #define SYMBOL_IMPORTLOG_POSITION wxDefaultPosition
 ////@end control identifiers
 

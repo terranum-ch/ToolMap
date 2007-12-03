@@ -5398,7 +5398,7 @@
           </document>
         </document>
         <document>
-          <string name="title">"wxMenuBar: ID_MENUBAR"</string>
+          <string name="title">"wxMenuBar: ID_MENU_MAIN"</string>
           <string name="type">"dialog-document"</string>
           <string name="filename">""</string>
           <string name="icon-name">"menubar"</string>
@@ -5414,7 +5414,7 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="proxy-Id name">"ID_MENUBAR"</string>
+          <string name="proxy-Id name">"ID_MENU_MAIN"</string>
           <string name="proxy-Resource function">"CreateMenuMenubar"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <document>
@@ -5433,7 +5433,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"New Project: ID_MENU4"</string>
+              <string name="title">"New Project: wxID_ANY"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menu"</string>
@@ -5443,8 +5443,8 @@
               <long name="locked">0</long>
               <string name="created">"29/8/2007"</string>
               <string name="proxy-type">"wbSubmenuProxy"</string>
-              <string name="proxy-Id name">"ID_MENU4"</string>
-              <long name="proxy-Id value">10147</long>
+              <string name="proxy-Id name">"wxID_ANY"</string>
+              <long name="proxy-Id value">-1</long>
               <string name="proxy-Label">"New Project"</string>
               <string name="proxy-Help text">""</string>
               <bool name="proxy-Enabled">1</bool>
@@ -17595,7 +17595,7 @@ structure as the actual one"</string>
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="proxy-Id name">"ID_IMPORTLOG"</string>
+          <string name="proxy-Id name">"ID_DLGLOG"</string>
           <long name="proxy-Id value">10157</long>
           <string name="proxy-Class">"ImportLog"</string>
           <string name="proxy-Base class">"wxDialog"</string>
@@ -17652,8 +17652,8 @@ structure as the actual one"</string>
           <bool name="proxy-Fit to content">1</bool>
           <long name="proxy-X">-1</long>
           <long name="proxy-Y">-1</long>
-          <long name="proxy-Width">400</long>
-          <long name="proxy-Height">300</long>
+          <long name="proxy-Width">-1</long>
+          <long name="proxy-Height">-1</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
           <document>
@@ -17669,14 +17669,6 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -17716,7 +17708,7 @@ structure as the actual one"</string>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               <document>
-                <string name="title">"wxTextCtrl: ID_TEXTCTRL18"</string>
+                <string name="title">"wxTextCtrl: ID_DLGLOG_TXT"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"textctrl"</string>
@@ -17726,7 +17718,7 @@ structure as the actual one"</string>
                 <long name="locked">0</long>
                 <string name="created">"30/8/2007"</string>
                 <string name="proxy-type">"wbTextCtrlProxy"</string>
-                <string name="proxy-Id name">"ID_TEXTCTRL18"</string>
+                <string name="proxy-Id name">"ID_DLGLOG_TXT"</string>
                 <long name="proxy-Id value">10158</long>
                 <string name="proxy-Class">"wxTextCtrl"</string>
                 <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -17780,8 +17772,8 @@ structure as the actual one"</string>
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">-1</long>
-                <long name="proxy-Height">-1</long>
+                <long name="proxy-Width">400</long>
+                <long name="proxy-Height">200</long>
                 <string name="proxy-AlignH">"Expand"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">1</long>
@@ -17798,7 +17790,7 @@ structure as the actual one"</string>
               </document>
             </document>
             <document>
-              <string name="title">"wxButton: ID_BUTTON24"</string>
+              <string name="title">"wxButton: wxID_CLOSE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"dialogcontrol"</string>
@@ -17808,8 +17800,8 @@ structure as the actual one"</string>
               <long name="locked">0</long>
               <string name="created">"30/8/2007"</string>
               <string name="proxy-type">"wbButtonProxy"</string>
-              <string name="proxy-Id name">"ID_BUTTON24"</string>
-              <long name="proxy-Id value">10159</long>
+              <string name="proxy-Id name">"wxID_CLOSE"</string>
+              <long name="proxy-Id value">5001</long>
               <string name="proxy-Class">"wxButton"</string>
               <string name="proxy-Base class">"wxButton"</string>
               <bool name="proxy-External implementation">1</bool>
@@ -17817,7 +17809,7 @@ structure as the actual one"</string>
               <string name="proxy-Implementation filename">""</string>
               <string name="proxy-Header filename">""</string>
               <string name="proxy-Member variable name">""</string>
-              <string name="proxy-Label">"OK"</string>
+              <string name="proxy-Label">"&amp;Close"</string>
               <bool name="proxy-Default">1</bool>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Tooltip text">""</string>

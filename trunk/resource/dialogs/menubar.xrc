@@ -656,19 +656,19 @@
             </object>
         </object>
     </object>
-    <object class="wxMenuBar" name="ID_MENUBAR">
+    <object class="wxMenuBar" name="ID_MENU_MAIN">
         <object class="wxMenu">
             <label>&amp;Project</label>
-            <object class="wxMenu" name="ID_MENU4">
+            <object class="wxMenu" name="wxID_ANY">
                 <label>New Project</label>
-                <object class="wxMenuItem" name="ID_MENUITEM">
+                <object class="wxMenuItem" name="ID_MENU_NEW_PRJ_EMPTY">
                     <label>&amp;Empty project...\tCtrl-N</label>
                 </object>
-                <object class="wxMenuItem" name="ID_MENUITEM30">
+                <object class="wxMenuItem" name="ID_MENU_NEW_PRJ_EXISTING">
                     <label>From existing...</label>
                 </object>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM1">
+            <object class="wxMenuItem" name="ID_MENU_OPEN_PRJ">
                 <label>&amp;Open project...\tCtrl-O</label>
             </object>
             <object class="wxMenu" name="ID_MENU3">
@@ -676,40 +676,40 @@
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM2">
+            <object class="wxMenuItem" name="ID_MENU_BACKUP_PRJ">
                 <label>Bac&amp;kup project</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM19">
+            <object class="wxMenuItem" name="ID_MENU_RESTORE_PRJ">
                 <label>Restore project...</label>
             </object>
-            <object class="wxMenu" name="ID_MENU1">
+            <object class="wxMenu" name="wxID_ANY">
                 <label>Export project</label>
-                <object class="wxMenuItem" name="ID_MENUITEM6">
+                <object class="wxMenuItem" name="ID_MENU_EXPORT_LAYER">
                     <label>Export layer...</label>
                 </object>
                 <object class="separator">
                 </object>
-                <object class="wxMenuItem" name="ID_MENUITEM7">
+                <object class="wxMenuItem" name="ID_MENU_EXPORT_FULL">
                     <label>Export full project</label>
                 </object>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenu" name="ID_MENU8">
+            <object class="wxMenu" name="wxID_ANY">
                 <label>Edit project</label>
-                <object class="wxMenuItem" name="ID_MENUITEM55">
+                <object class="wxMenuItem" name="ID_MENU_PRJ_DEF">
                     <label>Project definition...</label>
                 </object>
-                <object class="wxMenuItem" name="ID_MENUITEM56">
+                <object class="wxMenuItem" name="ID_MENU_OBJ_DEF">
                     <label>Object definition...</label>
                 </object>
-                <object class="wxMenuItem" name="ID_MENUITEM39">
+                <object class="wxMenuItem" name="ID_MENU_PRJ_SETTINGS">
                     <label>Settings...</label>
                 </object>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM28">
+            <object class="wxMenuItem" name="wxID_PRINT">
                 <label>Print view...\tCtrl+P</label>
             </object>
             <object class="separator">
@@ -720,146 +720,148 @@
         </object>
         <object class="wxMenu">
             <label>Data</label>
-            <object class="wxMenuItem" name="ID_MENUITEM3">
+            <object class="wxMenuItem" name="ID_MENU_ADD_SPATIAL_DATA">
                 <label>Add spatial data...</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM21">
+            <object class="wxMenuItem" name="ID_MENU_IMPORT_GIS_DATA">
                 <label>Import GIS data to project...</label>
             </object>
         </object>
         <object class="wxMenu">
             <label>View</label>
-            <object class="wxMenuItem" name="ID_MENUITEM4">
+            <object class="wxMenuItem" name="ID_MENU_ZOOM_PREVIOUS_EXTEND">
                 <label>Zoom to previous extend</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM35">
+            <object class="wxMenuItem" name="ID_MENU_ZOOM">
                 <label>Zoom by rectangle\tZ</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM36">
+            <object class="wxMenuItem" name="ID_MENU_PAN">
                 <label>Pan\tP</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM22">
+            <object class="wxMenuItem" name="ID_MENU_ZOOM_FIT">
                 <label>Zoom to full extend</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM23">
+            <object class="wxMenuItem" name="ID_MENU_ZOOM_GIVEN_SCALE">
                 <label>Zoom to a given scale...</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM52">
+            <object class="wxMenuItem" name="ID_MENU_ZOOM_COORDINATE">
                 <label>Zoom to coordinates...</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM48">
+            <object class="wxMenuItem" name="ID_MENU_ZOOM_NEXT_SCALE">
                 <label>Zoom to next defined scale\t+</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM49">
+            <object class="wxMenuItem" name="ID_MENU_PREVIOUS_SCALE">
                 <label>Zoom to previous defined scale\t-</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM8">
+            <object class="wxMenuItem" name="ID_MENU_SELECTION">
                 <label>Zoom to selection</label>
                 <enabled>0</enabled>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM51">
+            <object class="wxMenuItem" name="ID_MENU_SELECTED_LAYER">
                 <label>Zoom to selected layer</label>
             </object>
         </object>
         <object class="wxMenu">
             <label>Edition</label>
-            <object class="wxMenuItem" name="ID_MENUITEM43">
+            <object class="wxMenuItem" name="ID_MENU_UNDO">
                 <label>Undo\tCtrl+Z</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM44">
+            <object class="wxMenuItem" name="ID_MENU_REDO">
                 <label>Redo\tCtrl+R</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM40">
+            <object class="wxMenuItem" name="ID_MENU_DRAW">
                 <label>Draw\tD</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM41">
+            <object class="wxMenuItem" name="ID_MENU_MODIFY">
                 <label>Modify\tM</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM42">
+            <object class="wxMenuItem" name="ID_MENU_CUT_LINES">
                 <label>Cut lines\tCtrl+X</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM53">
+            <object class="wxMenuItem" name="ID_MENU_EDIT_VERTEX_POS">
                 <label>Edit vertex position\tCtrl+V</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM14">
+            <object class="wxMenuItem" name="ID_MENU_MERGE_LINES">
                 <label>Merge selected lines\tCtrl+M</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM26">
+            <object class="wxMenuItem" name="ID_MENU_CREATE_INTERSECTIONS">
                 <label>Create intersections\tCtrl+I</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM15">
+            <object class="wxMenuItem" name="ID_MENU_FLIP_LINE">
                 <label>Flip line\tCtrl+F</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM24">
+            <object class="wxMenuItem" name="ID_MENU_DELETE_OBJ">
                 <label>Delete selected objects</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM5">
+            <object class="wxMenuItem" name="ID_MENU_ADJUST_SNAPPING">
                 <label>Adjust snapping...\tCtrl+S</label>
             </object>
         </object>
         <object class="wxMenu">
             <label>Attribution</label>
-            <object class="wxMenuItem" name="ID_MENUITEM37">
+            <object class="wxMenuItem" name="ID_MENU_ATTRIB_TYPES">
                 <label>Object types...</label>
                 <checkable>1</checkable>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM39">
+            <object class="wxMenuItem" name="ID_MENU_ATTRIB_ATTRIBUTES">
                 <label>Object attributes...\tCtrl+A</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM38">
+            <object class="wxMenuItem" name="ID_MENU_ATTRIB_BATCH">
                 <label>Object attribute (batch)...</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM54">
+            <object class="wxMenuItem" name="ID_MENU_COPY_PASTE_ATTRIB">
                 <label>Copy-Paste Attribution\tCtrl+B</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM47">
+            <object class="wxMenuItem" name="ID_MENU_SHORTCUTS">
                 <label>Shortcuts...</label>
             </object>
         </object>
         <object class="wxMenu">
             <label>Tools</label>
-            <object class="wxMenuItem" name="ID_MENUITEM25">
+            <object class="wxMenuItem" name="ID_MENU_CHECK_GEOM">
                 <label>Check Geometry...</label>
+                <checkable>1</checkable>
+                <checked>1</checked>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM13">
+            <object class="wxMenuItem" name="ID_MENU_CHECK_DANGLING">
                 <label>Check dangling nodes</label>
             </object>
         </object>
-        <object class="wxMenu" name="ID_MENU">
+        <object class="wxMenu" name="wxID_ANY">
             <label>Selection</label>
-            <object class="wxMenuItem" name="ID_MENUITEM34">
+            <object class="wxMenuItem" name="ID_MENU_SELECT">
                 <label>Select\tS</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM33">
+            <object class="wxMenuItem" name="ID_MENU_SELECT_ALL">
                 <label>Select all</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM31">
+            <object class="wxMenuItem" name="ID_MENU_SELECT_NONE">
                 <label>Select none</label>
             </object>
             <object class="separator">
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM32">
+            <object class="wxMenuItem" name="ID_MENU_SELECT_INVERSE">
                 <label>Invert selection</label>
                 <enabled>0</enabled>
             </object>
         </object>
         <object class="wxMenu">
             <label>Queries</label>
-            <object class="wxMenuItem" name="ID_MENUITEM">
+            <object class="wxMenuItem" name="ID_MENU_QUERIES">
                 <label>Queries editor...</label>
             </object>
             <object class="separator">
@@ -873,26 +875,26 @@
         </object>
         <object class="wxMenu">
             <label>Window</label>
-            <object class="wxMenuItem" name="ID_MENUITEM9">
+            <object class="wxMenuItem" name="ID_MENU_TOC_WINDOW">
                 <label>Table of content</label>
                 <checkable>1</checkable>
                 <checked>1</checked>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM29">
+            <object class="wxMenuItem" name="ID_MENU_INFO_WINDOW">
                 <label>Information window</label>
                 <checkable>1</checkable>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM50">
+            <object class="wxMenuItem" name="ID_MENU_LOG_WINDOW">
                 <label>Log window</label>
                 <checkable>1</checkable>
             </object>
         </object>
         <object class="wxMenu">
-            <label>Help</label>
+            <label>&amp;Help</label>
             <object class="wxMenuItem" name="wxID_ABOUT">
                 <label>About...</label>
             </object>
-            <object class="wxMenuItem" name="ID_MENUITEM27">
+            <object class="wxMenuItem" name="ID_MENU_CHECK_UPDATE">
                 <label>Check for updates...</label>
             </object>
         </object>
@@ -2224,10 +2226,9 @@ structure as the actual one</label>
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_IMPORTLOG" subclass="ImportLog">
+    <object class="wxDialog" name="ID_DLGLOG" subclass="ImportLog">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
-        <size>400,300</size>
         <title>Log window</title>
         <centered>1</centered>
         <object class="wxBoxSizer">
@@ -2243,7 +2244,8 @@ structure as the actual one</label>
                         <flag>wxGROW|wxALL</flag>
                         <border>5</border>
                         <option>1</option>
-                        <object class="wxTextCtrl" name="ID_TEXTCTRL18">
+                        <object class="wxTextCtrl" name="ID_DLGLOG_TXT">
+                            <size>400,200</size>
                             <style>wxTE_MULTILINE</style>
                         </object>
                     </object>
@@ -2252,8 +2254,8 @@ structure as the actual one</label>
             <object class="sizeritem">
                 <flag>wxALIGN_RIGHT|wxALL</flag>
                 <border>5</border>
-                <object class="wxButton" name="ID_BUTTON24">
-                    <label>OK</label>
+                <object class="wxButton" name="wxID_CLOSE">
+                    <label>&amp;Close</label>
                     <default>1</default>
                 </object>
             </object>
