@@ -1,0 +1,6 @@
+//#define wxUSE_NO_MANIFEST 1     // and add this one
+
+#include "wx/msw/wx.rc"
+aaaa ICON "../../art/toolmap2.ico"
+
+
