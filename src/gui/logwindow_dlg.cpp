@@ -19,7 +19,7 @@
 #include "logwindow_dlg.h"
 
 
-IMPLEMENT_DYNAMIC_CLASS( ImportLog, wxDialog )
+IMPLEMENT_DYNAMIC_CLASS( ImportLogDLG, wxDialog )
 
 
 ///*!
@@ -37,12 +37,12 @@ IMPLEMENT_DYNAMIC_CLASS( ImportLog, wxDialog )
 /*!
  * ImportLog constructors
  */
-ImportLog::ImportLog()
+ImportLogDLG::ImportLogDLG()
 {
     Init();
 }
 
-ImportLog::ImportLog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+ImportLogDLG::ImportLogDLG( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
     Init();
     Create(parent, id, caption, pos, size, style);
@@ -50,9 +50,9 @@ ImportLog::ImportLog( wxWindow* parent, wxWindowID id, const wxString& caption, 
 
 
 /*!
- * ImportLog creator
+ * ImportLogDLG creator
  */
-bool ImportLog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool ImportLogDLG::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     wxDialog::Create( parent, id, caption, pos, size, style );
@@ -69,9 +69,9 @@ bool ImportLog::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
 
 /*!
- * ImportLog destructor
+ * ImportLogDLG destructor
  */
-ImportLog::~ImportLog()
+ImportLogDLG::~ImportLogDLG()
 {
 
 }
@@ -80,19 +80,19 @@ ImportLog::~ImportLog()
 /*!
  * Member initialisation
  */
-void ImportLog::Init()
+void ImportLogDLG::Init()
 {
 
 }
 
 
 /*!
- * Control creation for ImportLog
+ * Control creation for ImportLogDLG
  */
-void ImportLog::CreateControls()
+void ImportLogDLG::CreateControls()
 {    
 
-    ImportLog* itemDialog1 = this;
+    ImportLogDLG* itemDialog1 = this;
 
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     itemDialog1->SetSizer(itemBoxSizer2);

@@ -15,7 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/***************************************************************************//**
+ @file project_def_dlg.h
+ @brief Definition of the Project definition dialog
+ @details This file provides the class needed for dealing with project
+ definition (layers, object and optional field). This dialog is called either
+ for a new project or changing the parameters of an existing one. The two class
+ implemented are : ProjectDefDLG for the dialog and ProjectDefList for the list
+ inside the dialog.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
+
 
 
 #ifndef PROJECT_DEF_DLG_H
@@ -66,10 +77,15 @@ class wxToggleButton;
 ////@end control identifiers
 
 
-/*!
- * ProjectDefDLG class declaration
- */
-
+/***************************************************************************//**
+ @brief Definition of the Project definition dialog
+ @details This provides the class needed for dealing with project definition
+ (layers, object and optional field). This dialog is called either for a new
+ project or changing the parameters of an existing one. This dialog implement a
+ ProjectDefList List. for displaying the spatial themes of the project
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
 class ProjectDefDLG: public wxDialog
 {    
     DECLARE_DYNAMIC_CLASS( ProjectDefDLG )
@@ -108,6 +124,14 @@ public:
 
 
 
+
+/***************************************************************************//**
+ @brief List of the Project Definition Dialog
+ @details The list managed here deals with project's spatial layers and is part
+ of the ProjectDefDLG.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
 class ProjectDefList : public ListGenReport
 	{
 	private:
