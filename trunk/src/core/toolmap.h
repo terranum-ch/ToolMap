@@ -29,6 +29,8 @@
     #include <wx/wx.h>
 #endif
 
+#include <wx/sysopt.h>
+#include <wx/toolbar.h>
 #include "../gui/project_def_dlg.h"
 #include "../gui/logwindow_dlg.h"
 #include "../gui/tocwindow_dlg.h"
