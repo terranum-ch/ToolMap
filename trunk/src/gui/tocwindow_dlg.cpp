@@ -51,7 +51,8 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer2->Add(itemBoxSizer4, 0, wxALIGN_LEFT|wxALL, 5);
 
-    wxToggleButton* itemToggleButton5 = new wxToggleButton( parent, ID_DLGTOC_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    //wxButton * itemToggleButton5 = new wxButton(parent, ID_DLGTOC_ADD, _T("+"), wxDefaultPosition, wxSize(40, -1),);
+	wxToggleButton* itemToggleButton5 = new wxToggleButton( parent, ID_DLGTOC_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
     itemToggleButton5->SetValue(false);
     itemBoxSizer4->Add(itemToggleButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 

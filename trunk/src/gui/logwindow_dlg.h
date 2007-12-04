@@ -15,7 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/***************************************************************************//**
+ @file logwindow_dlg.h
+ @brief Definition of the Log window dialog
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
 
 
 #ifndef LOGWINDOW_DLG_H
@@ -38,24 +43,28 @@
 #define SYMBOL_IMPORTLOG_POSITION wxDefaultPosition
 
 
-/*!
- * ImportLog class declaration
- */
-class ImportLog: public wxDialog
+/***************************************************************************//**
+ @brief Definition of the Log window dialog
+ @details Derived from wxDialog, this class implement the Log Window.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
+class ImportLogDLG: public wxDialog
 {    
     DECLARE_DYNAMIC_CLASS( ImportLog )
     //DECLARE_EVENT_TABLE()
 
 public:
-    /// Constructors
-    ImportLog();
-    ImportLog( wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME, const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION, const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE );
+    /// Default Constructors
+    ImportLogDLG();
+	/// Use this constructor for creating the dialog
+    ImportLogDLG( wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME, const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION, const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE );
 
-    /// Creation
+    /// Window creation
     bool Create( wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME, const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION, const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE );
 
     /// Destructor
-    ~ImportLog();
+    ~ImportLogDLG();
 
     /// Initialises member variables
     void Init();

@@ -15,7 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/*! \mainpage ToolMap 
+ 
+ \section intro_sec Introduction
+ 
+ This program is intended to be a full featured multi-layers GIS editor, implementing the
+ SION Method. More informations on the method could be found here : http://www.crealp.ch
+ 
+ This program was the result of a partnership between Swisstopo and the CREALP. For licence
+ informations please refer to the corresponding section.
+ 
+ \image html toolmap.jpg 
+ 
+ \section Licence 
+ 
+ This program is free software; you can redistribute it and/or modify 
+ it under the terms of the GNU General Public License as published by  
+ the Free Software Foundation; either version 2 of the License, or 
+ (at your option) any later version.
+ 
+ \author Lucien Schreiber (c) CREALP 2007
+ 
+ \date  Since november 2007
+ 
+ */
 
 
 #ifndef TOOLMAP_H
@@ -29,11 +52,11 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/sysopt.h>
+#include <wx/sysopt.h>					// for dealing with systemoptions
 #include <wx/toolbar.h>
-#include "../gui/project_def_dlg.h"
-#include "../gui/logwindow_dlg.h"
-#include "../gui/tocwindow_dlg.h"
+#include "../gui/project_def_dlg.h"		// project definition dialog
+#include "../gui/logwindow_dlg.h"		// log window definition
+#include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
 
 #include <wx/mstream.h>
 
@@ -114,6 +137,11 @@
 #define wxGetBitmapFromMemory(name) _wxGetBitmapFromMemory(name ## _png, sizeof(name ## _png))
 
 
+/***************************************************************************//**
+ @brief Implement the Application
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
 class ToolMapApp : public wxApp
 {
 public:
@@ -123,6 +151,15 @@ public:
 IMPLEMENT_APP(ToolMapApp);
 
 
+
+
+/***************************************************************************//**
+ @brief All frame's related stuff
+ @details This implement the wxFrame class. This is where all stuff related to
+ the graphical aspect of the main programme's frame is defined
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 04 December 2007
+ *******************************************************************************/
 class ToolMapFrame: public wxFrame
 {
 public:
@@ -143,7 +180,7 @@ private:
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
 	
-	ImportLog * m_LogWindow;
+	ImportLogDLG * m_LogWindow;
 #if (__WXMAC__)
 	TocWindowDlgMac * m_TocWindow;
 #else

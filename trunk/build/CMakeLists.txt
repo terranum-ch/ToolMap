@@ -17,6 +17,18 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 # DEFINE ALL INCLUDES AND SO ON
  INCLUDE ("cmake/Use_wxWindows.cmake")
 
+# Getting the subversion number and
+# generating a file called svn_version.h
+
+IF (WIN32)
+
+ELSE (WIN32)
+ADD_CUSTOM_COMMAND(
+	OUTPUT ../src/core/svn_version.h
+	COMMAND sh
+	ARGS version_svn_unix.sh
+	)
+ENDIF(WIN32)
  
 # conditionnal compilation if windows needs ressource
 IF (WIN32)

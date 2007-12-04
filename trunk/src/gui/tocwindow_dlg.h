@@ -69,7 +69,7 @@ class TocWindowContent : public wxEvtHandler
 #if (__WXMAC__)
 #include <wx/mac/carbon/drawer.h>
 
-class TocWindowDlgMac : TocWindowContent
+class TocWindowDlgMac : public TocWindowContent
 	{
 	private:
 		DECLARE_DYNAMIC_CLASS( TocWindowDlgMac )

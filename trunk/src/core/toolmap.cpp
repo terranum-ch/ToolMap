@@ -93,7 +93,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 
 void ToolMapFrame::PostInit()
 {
-	m_LogWindow = new ImportLog (this);
+	m_LogWindow = new ImportLogDLG (this);
 #if (__WXMAC__)
 	m_TocWindow = new TocWindowDlgMac (this);
 #else
