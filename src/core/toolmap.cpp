@@ -44,6 +44,7 @@ bool ToolMapApp::OnInit()
 {
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
+
 	
 	wxString myFrameName = _T("ToolMap 2.0.");
 	 myFrameName.Append(SVN_VERSION);
@@ -78,6 +79,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	// adding menubar
 	SetMenuBar(CreateToolMapMenu());
+	
 	
 	// adding toolbar
 	SetToolBar(CreateToolMapToolBar(this));
@@ -214,13 +216,19 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
 
 wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 {
-		
-	wxToolBar* itemToolBar3 = new wxToolBar( parent, ID_TOOLBAR1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_TEXT );
+	long style = wxTB_FLAT | wxTB_HORIZONTAL;
+
+	// conditionnal compilation for better look under win32
+#ifndef __WXMSW__
+	style += wxTB_TEXT;
+#endif
+
+	wxToolBar* itemToolBar3 = new wxToolBar( parent, ID_TOOLBAR1, wxDefaultPosition, wxDefaultSize, style );
     itemToolBar3->SetToolBitmapSize(wxSize(32, 32));
     wxBitmap itemtool4Bitmap (wxGetBitmapFromMemory(tool1));
     wxBitmap itemtool4BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL1, _("Select"), itemtool4Bitmap, itemtool4BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
-    wxBitmap itemtool5Bitmap(wxGetBitmapFromMemory(tool2));
+    itemToolBar3->AddTool(ID_TOOL1, _("Select"), itemtool4Bitmap, wxNullBitmap, wxITEM_NORMAL, _T(""), wxEmptyString);
+	wxBitmap itemtool5Bitmap(wxGetBitmapFromMemory(tool2));
     wxBitmap itemtool5BitmapDisabled;
     itemToolBar3->AddTool(ID_TOOL2, _T("Fit"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool6Bitmap(wxGetBitmapFromMemory(tool3));
@@ -241,7 +249,7 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
     wxBitmap itemtool11BitmapDisabled;
     itemToolBar3->AddTool(ID_TOOL7, _T("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
-    itemToolBar3->AddSeparator();
+	itemToolBar3->AddSeparator();
     wxBitmap itemtool13Bitmap(wxGetBitmapFromMemory(tool8));
     wxBitmap itemtool13BitmapDisabled;
     itemToolBar3->AddTool(ID_TOOL8, _T("Object type"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
