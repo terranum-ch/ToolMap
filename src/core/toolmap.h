@@ -31,6 +31,7 @@
 
 #include "../gui/project_def_dlg.h"
 #include "../gui/logwindow_dlg.h"
+#include "../gui/tocwindow_dlg.h"
 
 #include <wx/mstream.h>
 
@@ -138,8 +139,10 @@ private:
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
+	void OnTocWindow (wxCommandEvent & event);
 	
 	ImportLog * m_LogWindow;
+	TocWindowDlg * m_TocWindow;
 	
 	DECLARE_EVENT_TABLE();
 };

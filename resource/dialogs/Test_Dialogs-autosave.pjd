@@ -396,6 +396,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -5838,7 +5846,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Add spatial data...: ID_MENUITEM3"</string>
+              <string name="title">"Add spatial data...: ID_MENU_ADD_SPATIAL_DATA"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -5848,7 +5856,7 @@
               <long name="locked">0</long>
               <string name="created">"6/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM3"</string>
+              <string name="proxy-Id name">"ID_MENU_ADD_SPATIAL_DATA"</string>
               <long name="proxy-Id value">10022</long>
               <string name="proxy-Label">"Add spatial data..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -5872,7 +5880,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Import GIS data to project...: ID_MENUITEM21"</string>
+              <string name="title">"Import GIS data to project...: ID_MENU_IMPORT_GIS_DATA"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -5882,7 +5890,7 @@
               <long name="locked">0</long>
               <string name="created">"24/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM21"</string>
+              <string name="proxy-Id name">"ID_MENU_IMPORT_GIS_DATA"</string>
               <long name="proxy-Id value">10112</long>
               <string name="proxy-Label">"Import GIS data to project..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -5909,7 +5917,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Zoom to previous extend: ID_MENUITEM4"</string>
+              <string name="title">"Zoom to previous extend: ID_MENU_ZOOM_PREVIOUS_EXTEND"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -5919,7 +5927,7 @@
               <long name="locked">0</long>
               <string name="created">"6/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM4"</string>
+              <string name="proxy-Id name">"ID_MENU_ZOOM_PREVIOUS_EXTEND"</string>
               <long name="proxy-Id value">10023</long>
               <string name="proxy-Label">"Zoom to previous extend"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -5943,7 +5951,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom by rectangle\tZ: ID_MENUITEM35"</string>
+              <string name="title">"Zoom by rectangle\tZ: ID_MENU_ZOOM"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -5953,7 +5961,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM35"</string>
+              <string name="proxy-Id name">"ID_MENU_ZOOM"</string>
               <long name="proxy-Id value">10164</long>
               <string name="proxy-Label">"Zoom by rectangle\tZ"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -5964,7 +5972,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Pan\tP: ID_MENUITEM36"</string>
+              <string name="title">"Pan\tP: ID_MENU_PAN"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -5974,7 +5982,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM36"</string>
+              <string name="proxy-Id name">"ID_MENU_PAN"</string>
               <long name="proxy-Id value">10165</long>
               <string name="proxy-Label">"Pan\tP"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -5985,7 +5993,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to full extend: ID_MENUITEM22"</string>
+              <string name="title">"Zoom to full extend: ID_MENU_ZOOM_FIT"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -5995,7 +6003,7 @@
               <long name="locked">0</long>
               <string name="created">"24/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM22"</string>
+              <string name="proxy-Id name">"ID_MENU_ZOOM_FIT"</string>
               <long name="proxy-Id value">10113</long>
               <string name="proxy-Label">"Zoom to full extend"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6006,7 +6014,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to a given scale...: ID_MENUITEM23"</string>
+              <string name="title">"Zoom to a given scale...: ID_MENU_ZOOM_GIVEN_SCALE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6016,7 +6024,7 @@
               <long name="locked">0</long>
               <string name="created">"27/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM23"</string>
+              <string name="proxy-Id name">"ID_MENU_ZOOM_GIVEN_SCALE"</string>
               <long name="proxy-Id value">10120</long>
               <string name="proxy-Label">"Zoom to a given scale..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6027,7 +6035,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to coordinates...: ID_MENUITEM52"</string>
+              <string name="title">"Zoom to coordinates...: ID_MENU_ZOOM_COORDINATE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6037,7 +6045,7 @@
               <long name="locked">0</long>
               <string name="created">"8/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM52"</string>
+              <string name="proxy-Id name">"ID_MENU_ZOOM_COORDINATE"</string>
               <long name="proxy-Id value">10210</long>
               <string name="proxy-Label">"Zoom to coordinates..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6048,7 +6056,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to next defined scale\t+: ID_MENUITEM48"</string>
+              <string name="title">"Zoom to next defined scale\t+: ID_MENU_ZOOM_NEXT_SCALE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6058,7 +6066,7 @@
               <long name="locked">0</long>
               <string name="created">"28/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM48"</string>
+              <string name="proxy-Id name">"ID_MENU_ZOOM_NEXT_SCALE"</string>
               <long name="proxy-Id value">10184</long>
               <string name="proxy-Label">"Zoom to next defined scale\t+"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6069,7 +6077,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to previous defined scale\t-: ID_MENUITEM49"</string>
+              <string name="title">"Zoom to previous defined scale\t-: ID_MENU_PREVIOUS_SCALE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6079,7 +6087,7 @@
               <long name="locked">0</long>
               <string name="created">"28/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM49"</string>
+              <string name="proxy-Id name">"ID_MENU_PREVIOUS_SCALE"</string>
               <long name="proxy-Id value">10185</long>
               <string name="proxy-Label">"Zoom to previous defined scale\t-"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6103,7 +6111,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to selection: ID_MENUITEM8"</string>
+              <string name="title">"Zoom to selection: ID_MENU_SELECTION"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6113,7 +6121,7 @@
               <long name="locked">0</long>
               <string name="created">"8/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM8"</string>
+              <string name="proxy-Id name">"ID_MENU_SELECTION"</string>
               <long name="proxy-Id value">10131</long>
               <string name="proxy-Label">"Zoom to selection"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6124,7 +6132,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Zoom to selected layer: ID_MENUITEM51"</string>
+              <string name="title">"Zoom to selected layer: ID_MENU_SELECTED_LAYER"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6134,7 +6142,7 @@
               <long name="locked">0</long>
               <string name="created">"8/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM51"</string>
+              <string name="proxy-Id name">"ID_MENU_SELECTED_LAYER"</string>
               <long name="proxy-Id value">10208</long>
               <string name="proxy-Label">"Zoom to selected layer"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6161,7 +6169,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Undo\tCtrl+Z: ID_MENUITEM43"</string>
+              <string name="title">"Undo\tCtrl+Z: ID_MENU_UNDO"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6171,7 +6179,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM43"</string>
+              <string name="proxy-Id name">"ID_MENU_UNDO"</string>
               <long name="proxy-Id value">10179</long>
               <string name="proxy-Label">"Undo\tCtrl+Z"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6182,7 +6190,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Redo\tCtrl+R: ID_MENUITEM44"</string>
+              <string name="title">"Redo\tCtrl+R: ID_MENU_REDO"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6192,7 +6200,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM44"</string>
+              <string name="proxy-Id name">"ID_MENU_REDO"</string>
               <long name="proxy-Id value">10180</long>
               <string name="proxy-Label">"Redo\tCtrl+R"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6216,7 +6224,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Draw\tD: ID_MENUITEM40"</string>
+              <string name="title">"Draw\tD: ID_MENU_DRAW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6226,7 +6234,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM40"</string>
+              <string name="proxy-Id name">"ID_MENU_DRAW"</string>
               <long name="proxy-Id value">10176</long>
               <string name="proxy-Label">"Draw\tD"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6237,7 +6245,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Modify\tM: ID_MENUITEM41"</string>
+              <string name="title">"Modify\tM: ID_MENU_MODIFY"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6247,7 +6255,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM41"</string>
+              <string name="proxy-Id name">"ID_MENU_MODIFY"</string>
               <long name="proxy-Id value">10177</long>
               <string name="proxy-Label">"Modify\tM"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6258,7 +6266,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Cut lines\tCtrl+X: ID_MENUITEM42"</string>
+              <string name="title">"Cut lines\tCtrl+X: ID_MENU_CUT_LINES"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6268,7 +6276,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM42"</string>
+              <string name="proxy-Id name">"ID_MENU_CUT_LINES"</string>
               <long name="proxy-Id value">10178</long>
               <string name="proxy-Label">"Cut lines\tCtrl+X"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6279,7 +6287,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Edit vertex position\tCtrl+V: ID_MENUITEM53"</string>
+              <string name="title">"Edit vertex position\tCtrl+V: ID_MENU_EDIT_VERTEX_POS"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6289,7 +6297,7 @@
               <long name="locked">0</long>
               <string name="created">"8/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM53"</string>
+              <string name="proxy-Id name">"ID_MENU_EDIT_VERTEX_POS"</string>
               <long name="proxy-Id value">10211</long>
               <string name="proxy-Label">"Edit vertex position\tCtrl+V"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6313,7 +6321,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Merge selected lines\tCtrl+M: ID_MENUITEM14"</string>
+              <string name="title">"Merge selected lines\tCtrl+M: ID_MENU_MERGE_LINES"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6323,7 +6331,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM14"</string>
+              <string name="proxy-Id name">"ID_MENU_MERGE_LINES"</string>
               <long name="proxy-Id value">10003</long>
               <string name="proxy-Label">"Merge selected lines\tCtrl+M"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6334,7 +6342,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Create intersections\tCtrl+I: ID_MENUITEM26"</string>
+              <string name="title">"Create intersections\tCtrl+I: ID_MENU_CREATE_INTERSECTIONS"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6344,7 +6352,7 @@
               <long name="locked">0</long>
               <string name="created">"28/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM26"</string>
+              <string name="proxy-Id name">"ID_MENU_CREATE_INTERSECTIONS"</string>
               <long name="proxy-Id value">10174</long>
               <string name="proxy-Label">"Create intersections\tCtrl+I"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6355,7 +6363,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Flip line\tCtrl+F: ID_MENUITEM15"</string>
+              <string name="title">"Flip line\tCtrl+F: ID_MENU_FLIP_LINE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6365,7 +6373,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM15"</string>
+              <string name="proxy-Id name">"ID_MENU_FLIP_LINE"</string>
               <long name="proxy-Id value">10004</long>
               <string name="proxy-Label">"Flip line\tCtrl+F"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6376,7 +6384,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Delete selected objects: ID_MENUITEM24"</string>
+              <string name="title">"Delete selected objects: ID_MENU_DELETE_OBJ"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6386,7 +6394,7 @@
               <long name="locked">0</long>
               <string name="created">"27/9/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM24"</string>
+              <string name="proxy-Id name">"ID_MENU_DELETE_OBJ"</string>
               <long name="proxy-Id value">10122</long>
               <string name="proxy-Label">"Delete selected objects"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6397,7 +6405,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Adjust snapping...\tCtrl+S: ID_MENUITEM5"</string>
+              <string name="title">"Adjust snapping...\tCtrl+S: ID_MENU_ADJUST_SNAPPING"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6407,7 +6415,7 @@
               <long name="locked">0</long>
               <string name="created">"12/11/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM5"</string>
+              <string name="proxy-Id name">"ID_MENU_ADJUST_SNAPPING"</string>
               <long name="proxy-Id value">10001</long>
               <string name="proxy-Label">"Adjust snapping...\tCtrl+S"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6434,7 +6442,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Object types...: ID_MENUITEM37"</string>
+              <string name="title">"Object types...: ID_MENU_ATTRIB_TYPES"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6444,7 +6452,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM37"</string>
+              <string name="proxy-Id name">"ID_MENU_ATTRIB_TYPES"</string>
               <long name="proxy-Id value">10166</long>
               <string name="proxy-Label">"Object types..."</string>
               <string name="proxy-Kind">"Check"</string>
@@ -6455,7 +6463,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Object attributes...\tCtrl+A: ID_MENUITEM39"</string>
+              <string name="title">"Object attributes...\tCtrl+A: ID_MENU_ATTRIB_ATTRIBUTES"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6465,7 +6473,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM39"</string>
+              <string name="proxy-Id name">"ID_MENU_ATTRIB_ATTRIBUTES"</string>
               <long name="proxy-Id value">10175</long>
               <string name="proxy-Label">"Object attributes...\tCtrl+A"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6476,7 +6484,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Object attribute (batch)...: ID_MENUITEM38"</string>
+              <string name="title">"Object attribute (batch)...: ID_MENU_ATTRIB_BATCH"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6486,7 +6494,7 @@
               <long name="locked">0</long>
               <string name="created">"12/11/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM38"</string>
+              <string name="proxy-Id name">"ID_MENU_ATTRIB_BATCH"</string>
               <long name="proxy-Id value">10167</long>
               <string name="proxy-Label">"Object attribute (batch)..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6510,7 +6518,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Copy-Paste Attribution\tCtrl+B: ID_MENUITEM54"</string>
+              <string name="title">"Copy-Paste Attribution\tCtrl+B: ID_MENU_COPY_PASTE_ATTRIB"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6520,7 +6528,7 @@
               <long name="locked">0</long>
               <string name="created">"22/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM54"</string>
+              <string name="proxy-Id name">"ID_MENU_COPY_PASTE_ATTRIB"</string>
               <long name="proxy-Id value">10231</long>
               <string name="proxy-Label">"Copy-Paste Attribution\tCtrl+B"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6544,7 +6552,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Shortcuts...: ID_MENUITEM47"</string>
+              <string name="title">"Shortcuts...: ID_MENU_SHORTCUTS"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6554,7 +6562,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM47"</string>
+              <string name="proxy-Id name">"ID_MENU_SHORTCUTS"</string>
               <long name="proxy-Id value">10183</long>
               <string name="proxy-Label">"Shortcuts..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6581,7 +6589,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Check Geometry...: ID_MENUITEM25"</string>
+              <string name="title">"Check Geometry...: ID_MENU_CHECK_GEOM"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6591,18 +6599,18 @@
               <long name="locked">0</long>
               <string name="created">"27/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM25"</string>
+              <string name="proxy-Id name">"ID_MENU_CHECK_GEOM"</string>
               <long name="proxy-Id value">10123</long>
               <string name="proxy-Label">"Check Geometry..."</string>
-              <string name="proxy-Kind">"Normal"</string>
-              <bool name="proxy-Checked">0</bool>
+              <string name="proxy-Kind">"Check"</string>
+              <bool name="proxy-Checked">1</bool>
               <bool name="proxy-Enabled">1</bool>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Bitmap">""</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Check dangling nodes: ID_MENUITEM13"</string>
+              <string name="title">"Check dangling nodes: ID_MENU_CHECK_DANGLING"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6612,7 +6620,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM13"</string>
+              <string name="proxy-Id name">"ID_MENU_CHECK_DANGLING"</string>
               <long name="proxy-Id value">10048</long>
               <string name="proxy-Label">"Check dangling nodes"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6624,7 +6632,7 @@
             </document>
           </document>
           <document>
-            <string name="title">"Selection: ID_MENU"</string>
+            <string name="title">"Selection: wxID_ANY"</string>
             <string name="type">"dialog-control-document"</string>
             <string name="filename">""</string>
             <string name="icon-name">"menu"</string>
@@ -6634,14 +6642,14 @@
             <long name="locked">0</long>
             <string name="created">"30/8/2007"</string>
             <string name="proxy-type">"wbSubmenuProxy"</string>
-            <string name="proxy-Id name">"ID_MENU"</string>
-            <long name="proxy-Id value">10000</long>
+            <string name="proxy-Id name">"wxID_ANY"</string>
+            <long name="proxy-Id value">-1</long>
             <string name="proxy-Label">"Selection"</string>
             <string name="proxy-Help text">""</string>
             <bool name="proxy-Enabled">1</bool>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Select\tS: ID_MENUITEM34"</string>
+              <string name="title">"Select\tS: ID_MENU_SELECT"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6651,7 +6659,7 @@
               <long name="locked">0</long>
               <string name="created">"18/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM34"</string>
+              <string name="proxy-Id name">"ID_MENU_SELECT"</string>
               <long name="proxy-Id value">10163</long>
               <string name="proxy-Label">"Select\tS"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6662,7 +6670,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Select all: ID_MENUITEM33"</string>
+              <string name="title">"Select all: ID_MENU_SELECT_ALL"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6672,7 +6680,7 @@
               <long name="locked">0</long>
               <string name="created">"30/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM33"</string>
+              <string name="proxy-Id name">"ID_MENU_SELECT_ALL"</string>
               <long name="proxy-Id value">10162</long>
               <string name="proxy-Label">"Select all"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6683,7 +6691,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Select none: ID_MENUITEM31"</string>
+              <string name="title">"Select none: ID_MENU_SELECT_NONE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6693,7 +6701,7 @@
               <long name="locked">0</long>
               <string name="created">"30/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM31"</string>
+              <string name="proxy-Id name">"ID_MENU_SELECT_NONE"</string>
               <long name="proxy-Id value">10160</long>
               <string name="proxy-Label">"Select none"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6717,7 +6725,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Invert selection: ID_MENUITEM32"</string>
+              <string name="title">"Invert selection: ID_MENU_SELECT_INVERSE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6727,7 +6735,7 @@
               <long name="locked">0</long>
               <string name="created">"30/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM32"</string>
+              <string name="proxy-Id name">"ID_MENU_SELECT_INVERSE"</string>
               <long name="proxy-Id value">10161</long>
               <string name="proxy-Label">"Invert selection"</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6754,7 +6762,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Queries editor...: ID_MENUITEM"</string>
+              <string name="title">"Queries editor...: ID_MENU_QUERIES"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6764,7 +6772,7 @@
               <long name="locked">0</long>
               <string name="created">"20/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM"</string>
+              <string name="proxy-Id name">"ID_MENU_QUERIES"</string>
               <long name="proxy-Id value">10019</long>
               <string name="proxy-Label">"Queries editor..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -6846,7 +6854,7 @@
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <document>
-              <string name="title">"Table of content: ID_MENUITEM9"</string>
+              <string name="title">"Table of content: ID_MENU_TOC_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6856,7 +6864,7 @@
               <long name="locked">0</long>
               <string name="created">"7/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM9"</string>
+              <string name="proxy-Id name">"ID_MENU_TOC_WINDOW"</string>
               <long name="proxy-Id value">10037</long>
               <string name="proxy-Label">"Table of content"</string>
               <string name="proxy-Kind">"Check"</string>
@@ -6867,7 +6875,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Information window: ID_MENUITEM29"</string>
+              <string name="title">"Information window: ID_MENU_INFO_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6877,7 +6885,7 @@
               <long name="locked">0</long>
               <string name="created">"28/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM29"</string>
+              <string name="proxy-Id name">"ID_MENU_INFO_WINDOW"</string>
               <long name="proxy-Id value">10140</long>
               <string name="proxy-Label">"Information window"</string>
               <string name="proxy-Kind">"Check"</string>
@@ -6888,7 +6896,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Log window: ID_MENUITEM50"</string>
+              <string name="title">"Log window: ID_MENU_LOG_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6898,7 +6906,7 @@
               <long name="locked">0</long>
               <string name="created">"2/10/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM50"</string>
+              <string name="proxy-Id name">"ID_MENU_LOG_WINDOW"</string>
               <long name="proxy-Id value">10207</long>
               <string name="proxy-Label">"Log window"</string>
               <string name="proxy-Kind">"Check"</string>
@@ -6920,7 +6928,7 @@
             <long name="locked">0</long>
             <string name="created">"6/8/2007"</string>
             <string name="proxy-type">"wbMenuProxy"</string>
-            <string name="proxy-Label">"Help"</string>
+            <string name="proxy-Label">"&amp;Help"</string>
             <bool name="proxy-Enabled">1</bool>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
@@ -6946,7 +6954,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Check for updates...: ID_MENUITEM27"</string>
+              <string name="title">"Check for updates...: ID_MENU_CHECK_UPDATE"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -6956,7 +6964,7 @@
               <long name="locked">0</long>
               <string name="created">"27/8/2007"</string>
               <string name="proxy-type">"wbMenuItemProxy"</string>
-              <string name="proxy-Id name">"ID_MENUITEM27"</string>
+              <string name="proxy-Id name">"ID_MENU_CHECK_UPDATE"</string>
               <long name="proxy-Id value">10125</long>
               <string name="proxy-Label">"Check for updates..."</string>
               <string name="proxy-Kind">"Normal"</string>
@@ -17669,6 +17677,14 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -28267,6 +28283,324 @@ structure as the actual one"</string>
                 <string name="proxy-Tooltip">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+            </document>
+          </document>
+        </document>
+        <document>
+          <string name="title">"tocwindow_dlg"</string>
+          <string name="type">"dialog-document"</string>
+          <string name="filename">""</string>
+          <string name="icon-name">"dialog"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">1</long>
+          <long name="title-mode">0</long>
+          <long name="locked">0</long>
+          <string name="created">"3/12/2007"</string>
+          <string name="proxy-type">"wbDialogProxy"</string>
+          <long name="base-id">10000</long>
+          <bool name="use-id-prefix">0</bool>
+          <string name="id-prefix">""</string>
+          <bool name="use-id-suffix">0</bool>
+          <string name="id-suffix">""</string>
+          <long name="use-xrc">0</long>
+          <long name="working-mode">0</long>
+          <string name="proxy-Id name">"ID_TOCWINDOW_DLG"</string>
+          <long name="proxy-Id value">10035</long>
+          <string name="proxy-Class">"tocwindow_dlg"</string>
+          <string name="proxy-Base class">"wxDialog"</string>
+          <string name="proxy-Window kind">"wxDialog"</string>
+          <string name="proxy-Implementation filename">"tocwindow_dlg.cpp"</string>
+          <string name="proxy-Header filename">"tocwindow_dlg.h"</string>
+          <string name="proxy-XRC filename">""</string>
+          <string name="proxy-Title">"Table of content"</string>
+          <bool name="proxy-Centre">1</bool>
+          <string name="proxy-Icon">""</string>
+          <bool name="proxy-Dialog units">0</bool>
+          <string name="proxy-Help text">""</string>
+          <string name="proxy-Tooltip text">""</string>
+          <string name="proxy-Background colour">""</string>
+          <string name="proxy-Foreground colour">""</string>
+          <string name="proxy-Font">""</string>
+          <bool name="proxy-Hidden">0</bool>
+          <bool name="proxy-Enabled">1</bool>
+          <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+          <string name="proxy-Data source">""</string>
+          <string name="proxy-Data class name">""</string>
+          <string name="proxy-Data class implementation filename">""</string>
+          <string name="proxy-Data class header filename">""</string>
+          <string name="proxy-Data class manager window">""</string>
+          <string name="proxy-Texture">""</string>
+          <string name="proxy-Texture style">"Tiled"</string>
+          <bool name="proxy-wxDEFAULT_DIALOG_STYLE">0</bool>
+          <bool name="proxy-wxCAPTION">1</bool>
+          <bool name="proxy-wxRESIZE_BORDER">1</bool>
+          <bool name="proxy-wxTHICK_FRAME">0</bool>
+          <bool name="proxy-wxSYSTEM_MENU">1</bool>
+          <bool name="proxy-wxSTAY_ON_TOP">0</bool>
+          <bool name="proxy-wxDIALOG_NO_PARENT">0</bool>
+          <bool name="proxy-wxCLOSE_BOX">1</bool>
+          <bool name="proxy-wxMAXIMIZE_BOX">0</bool>
+          <bool name="proxy-wxMINIMIZE_BOX">0</bool>
+          <bool name="proxy-wxDIALOG_MODAL">1</bool>
+          <bool name="proxy-wxNO_BORDER">0</bool>
+          <bool name="proxy-wxSIMPLE_BORDER">0</bool>
+          <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxSUNKEN_BORDER">0</bool>
+          <bool name="proxy-wxRAISED_BORDER">0</bool>
+          <bool name="proxy-wxSTATIC_BORDER">0</bool>
+          <bool name="proxy-wxWANTS_CHARS">0</bool>
+          <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+          <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+          <bool name="proxy-wxCLIP_CHILDREN">0</bool>
+          <bool name="proxy-wxTAB_TRAVERSAL">0</bool>
+          <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
+          <bool name="proxy-wxWS_EX_BLOCK_EVENTS">1</bool>
+          <bool name="proxy-wxWS_EX_TRANSIENT">0</bool>
+          <string name="proxy-Custom styles">""</string>
+          <bool name="proxy-wxDIALOG_EX_CONTEXTHELP">0</bool>
+          <bool name="proxy-Fit to content">1</bool>
+          <long name="proxy-X">-1</long>
+          <long name="proxy-Y">-1</long>
+          <long name="proxy-Width">400</long>
+          <long name="proxy-Height">300</long>
+          <bool name="proxy-AUI manager">0</bool>
+          <string name="proxy-Event sources">""</string>
+          <document>
+            <string name="title">"wxBoxSizer V"</string>
+            <string name="type">"dialog-control-document"</string>
+            <string name="filename">""</string>
+            <string name="icon-name">"sizer"</string>
+            <long name="is-transient">0</long>
+            <long name="owns-file">1</long>
+            <long name="title-mode">0</long>
+            <long name="locked">0</long>
+            <string name="proxy-type">"wbBoxSizerProxy"</string>
+            <string name="proxy-Orientation">"Vertical"</string>
+            <string name="proxy-Member variable name">""</string>
+            <bool name="proxy-wxSHAPED">0</bool>
+            <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+            <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+            <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            <document>
+              <string name="title">"wxTreeCtrl: ID_TREECTRL1"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"treectrl"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"3/12/2007"</string>
+              <string name="proxy-type">"wbTreeCtrlProxy"</string>
+              <string name="proxy-Id name">"ID_TREECTRL1"</string>
+              <long name="proxy-Id value">10127</long>
+              <string name="proxy-Class">"wxTreeCtrl"</string>
+              <string name="proxy-Base class">"wxTreeCtrl"</string>
+              <bool name="proxy-External implementation">1</bool>
+              <bool name="proxy-Separate files">0</bool>
+              <string name="proxy-Implementation filename">""</string>
+              <string name="proxy-Header filename">""</string>
+              <string name="proxy-Member variable name">""</string>
+              <string name="proxy-Help text">""</string>
+              <string name="proxy-Tooltip text">""</string>
+              <string name="proxy-Background colour">""</string>
+              <string name="proxy-Foreground colour">""</string>
+              <string name="proxy-Font">""</string>
+              <bool name="proxy-Hidden">0</bool>
+              <bool name="proxy-Enabled">1</bool>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <string name="proxy-Data variable">""</string>
+              <string name="proxy-Data validator">""</string>
+              <string name="proxy-Data source">""</string>
+              <string name="proxy-Data class name">""</string>
+              <string name="proxy-Data class implementation filename">""</string>
+              <string name="proxy-Data class header filename">""</string>
+              <string name="proxy-Data class manager window">""</string>
+              <bool name="proxy-wxTR_EDIT_LABELS">0</bool>
+              <bool name="proxy-wxTR_NO_BUTTONS">0</bool>
+              <bool name="proxy-wxTR_HAS_BUTTONS ">0</bool>
+              <bool name="proxy-wxTR_TWIST_BUTTONS">0</bool>
+              <bool name="proxy-wxTR_NO_LINES">0</bool>
+              <bool name="proxy-wxTR_FULL_ROW_HIGHLIGHT">0</bool>
+              <bool name="proxy-wxTR_LINES_AT_ROOT">0</bool>
+              <bool name="proxy-wxTR_HIDE_ROOT">0</bool>
+              <bool name="proxy-wxTR_ROW_LINES">0</bool>
+              <bool name="proxy-wxTR_HAS_VARIABLE_ROW_HEIGHT">0</bool>
+              <bool name="proxy-wxTR_SINGLE">1</bool>
+              <bool name="proxy-wxTR_MULTIPLE">0</bool>
+              <bool name="proxy-wxTR_EXTENDED">0</bool>
+              <bool name="proxy-wxNO_BORDER">0</bool>
+              <bool name="proxy-wxSIMPLE_BORDER">0</bool>
+              <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxSUNKEN_BORDER">0</bool>
+              <bool name="proxy-wxRAISED_BORDER">0</bool>
+              <bool name="proxy-wxSTATIC_BORDER">0</bool>
+              <bool name="proxy-wxWANTS_CHARS">0</bool>
+              <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+              <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+              <bool name="proxy-wxCLIP_CHILDREN">0</bool>
+              <string name="proxy-Custom styles">""</string>
+              <long name="proxy-X">-1</long>
+              <long name="proxy-Y">-1</long>
+              <long name="proxy-Width">100</long>
+              <long name="proxy-Height">300</long>
+              <string name="proxy-AlignH">"Expand"</string>
+              <string name="proxy-AlignV">"Centre"</string>
+              <long name="proxy-Stretch factor">1</long>
+              <long name="proxy-Border">5</long>
+              <bool name="proxy-wxLEFT">1</bool>
+              <bool name="proxy-wxRIGHT">1</bool>
+              <bool name="proxy-wxTOP">1</bool>
+              <bool name="proxy-wxBOTTOM">1</bool>
+              <bool name="proxy-wxSHAPED">0</bool>
+              <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+              <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+              <string name="proxy-Custom arguments">""</string>
+              <string name="proxy-Custom ctor arguments">""</string>
+            </document>
+            <document>
+              <string name="title">"wxBoxSizer H"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"sizer"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"3/12/2007"</string>
+              <string name="proxy-type">"wbBoxSizerProxy"</string>
+              <string name="proxy-Orientation">"Horizontal"</string>
+              <string name="proxy-Member variable name">""</string>
+              <string name="proxy-AlignH">"Left"</string>
+              <string name="proxy-AlignV">"Centre"</string>
+              <long name="proxy-Stretch factor">0</long>
+              <long name="proxy-Border">5</long>
+              <bool name="proxy-wxLEFT">1</bool>
+              <bool name="proxy-wxRIGHT">1</bool>
+              <bool name="proxy-wxTOP">1</bool>
+              <bool name="proxy-wxBOTTOM">1</bool>
+              <bool name="proxy-wxSHAPED">0</bool>
+              <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+              <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <document>
+                <string name="title">"wxToggleButton: ID_DLGTOC_ADD"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"togglebutton"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"3/12/2007"</string>
+                <string name="proxy-type">"wbToggleButtonProxy"</string>
+                <string name="proxy-Id name">"ID_DLGTOC_ADD"</string>
+                <long name="proxy-Id value">10147</long>
+                <string name="proxy-Class">"wxToggleButton"</string>
+                <string name="proxy-Base class">"wxToggleButton"</string>
+                <bool name="proxy-External implementation">1</bool>
+                <bool name="proxy-Separate files">0</bool>
+                <string name="proxy-Implementation filename">""</string>
+                <string name="proxy-Header filename">""</string>
+                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Label">"+"</string>
+                <bool name="proxy-Initial value">0</bool>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Tooltip text">""</string>
+                <string name="proxy-Data variable">""</string>
+                <string name="proxy-Data validator">""</string>
+                <string name="proxy-Data source">""</string>
+                <string name="proxy-Data class name">""</string>
+                <string name="proxy-Data class implementation filename">""</string>
+                <string name="proxy-Data class header filename">""</string>
+                <string name="proxy-Data class manager window">""</string>
+                <string name="proxy-Background colour">""</string>
+                <string name="proxy-Foreground colour">""</string>
+                <string name="proxy-Font">""</string>
+                <bool name="proxy-Hidden">0</bool>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <bool name="proxy-wxWANTS_CHARS">0</bool>
+                <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+                <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+                <string name="proxy-Custom styles">""</string>
+                <long name="proxy-X">-1</long>
+                <long name="proxy-Y">-1</long>
+                <long name="proxy-Width">40</long>
+                <long name="proxy-Height">-1</long>
+                <string name="proxy-AlignH">"Centre"</string>
+                <string name="proxy-AlignV">"Centre"</string>
+                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Border">5</long>
+                <bool name="proxy-wxLEFT">1</bool>
+                <bool name="proxy-wxRIGHT">1</bool>
+                <bool name="proxy-wxTOP">1</bool>
+                <bool name="proxy-wxBOTTOM">1</bool>
+                <bool name="proxy-wxSHAPED">0</bool>
+                <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                <string name="proxy-Custom arguments">""</string>
+                <string name="proxy-Custom ctor arguments">""</string>
+              </document>
+              <document>
+                <string name="title">"wxToggleButton: ID_DLGTOC_REMOVE"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"togglebutton"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"3/12/2007"</string>
+                <string name="proxy-type">"wbToggleButtonProxy"</string>
+                <string name="proxy-Id name">"ID_DLGTOC_REMOVE"</string>
+                <long name="proxy-Id value">10145</long>
+                <string name="proxy-Class">"wxToggleButton"</string>
+                <string name="proxy-Base class">"wxToggleButton"</string>
+                <bool name="proxy-External implementation">1</bool>
+                <bool name="proxy-Separate files">0</bool>
+                <string name="proxy-Implementation filename">""</string>
+                <string name="proxy-Header filename">""</string>
+                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Label">"-"</string>
+                <bool name="proxy-Initial value">0</bool>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Tooltip text">""</string>
+                <string name="proxy-Data variable">""</string>
+                <string name="proxy-Data validator">""</string>
+                <string name="proxy-Data source">""</string>
+                <string name="proxy-Data class name">""</string>
+                <string name="proxy-Data class implementation filename">""</string>
+                <string name="proxy-Data class header filename">""</string>
+                <string name="proxy-Data class manager window">""</string>
+                <string name="proxy-Background colour">""</string>
+                <string name="proxy-Foreground colour">""</string>
+                <string name="proxy-Font">""</string>
+                <bool name="proxy-Hidden">0</bool>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <bool name="proxy-wxWANTS_CHARS">0</bool>
+                <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+                <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+                <string name="proxy-Custom styles">""</string>
+                <long name="proxy-X">-1</long>
+                <long name="proxy-Y">-1</long>
+                <long name="proxy-Width">40</long>
+                <long name="proxy-Height">-1</long>
+                <string name="proxy-AlignH">"Centre"</string>
+                <string name="proxy-AlignV">"Centre"</string>
+                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Border">5</long>
+                <bool name="proxy-wxLEFT">1</bool>
+                <bool name="proxy-wxRIGHT">1</bool>
+                <bool name="proxy-wxTOP">1</bool>
+                <bool name="proxy-wxBOTTOM">1</bool>
+                <bool name="proxy-wxSHAPED">0</bool>
+                <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                <string name="proxy-Custom arguments">""</string>
+                <string name="proxy-Custom ctor arguments">""</string>
               </document>
             </document>
           </document>
