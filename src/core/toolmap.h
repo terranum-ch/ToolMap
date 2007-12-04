@@ -142,7 +142,11 @@ private:
 	void OnTocWindow (wxCommandEvent & event);
 	
 	ImportLog * m_LogWindow;
-	TocWindowDlg * m_TocWindow;
+#if (__WXMAC__)
+	TocWindowDlgMac * m_TocWindow;
+#else
+	TocWindowDlgGen * m_TocWindow;
+#endif
 	
 	DECLARE_EVENT_TABLE();
 };

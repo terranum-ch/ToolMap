@@ -92,7 +92,11 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 void ToolMapFrame::PostInit()
 {
 	m_LogWindow = new ImportLog (this);
-	m_TocWindow = new TocWindowDlg(this);
+#if (__WXMAC__)
+	m_TocWindow = new TocWindowDlgMac (this);
+#else
+	m_TocWindow = new TocWindowDlgGen(this);
+#endif
 }
 
 
@@ -279,14 +283,14 @@ void ToolMapFrame::OnLogWindow(wxCommandEvent & event)
 
 void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 {
-	if (m_TocWindow->IsOpen())
+	if (m_TocWindow->IsShown())
 	{
-		m_TocWindow->Close();
+		m_TocWindow->Hide();
 		GetMenuBar()->Check(ID_MENU_TOC_WINDOW, FALSE);
 	}
 	else 
 	{
-		m_TocWindow->Open();
+		m_TocWindow->Show();
 		GetMenuBar()->Check(ID_MENU_TOC_WINDOW, TRUE);
 
 	}

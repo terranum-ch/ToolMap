@@ -17,69 +17,161 @@
 
 #include "tocwindow_dlg.h"
 
-TocWindowDlg::TocWindowDlg(wxWindow * parent, wxWindowID id, const wxString & title) 
-	: wxDrawerWindow(parent,id,title,SYMBOL_TOCWINDOW_DLG_SIZE)
-{
-	CreateControls();
-}
 
-TocWindowDlg::TocWindowDlg()
-{
 
-}
 
-TocWindowDlg::~TocWindowDlg()
+
+/**************** TOC WINDOW CONTENT (BASE CLASS) ****************************/
+TocWindowContent::TocWindowContent()
 {
 
 }
 
-IMPLEMENT_DYNAMIC_CLASS( TocWindowDlg, wxDialog )
-
-
-/*!
- * TocWindowDlg event table definition
- */
-
-
-
-
-
-
-/*!
- * Member initialisation
- */
-
-void TocWindowDlg::Init()
+TocWindowContent::~TocWindowContent()
 {
 
 }
+
+IMPLEMENT_DYNAMIC_CLASS( TocWindowContent, wxEvtHandler)
+
+
+
 
 
 /*!
  * Control creation for TocWindowDlg
  */
-void TocWindowDlg::CreateControls()
+wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, bool set_sizer)
 {    
-
-
-	TocWindowDlg* itemDialog1 = this;
-
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-    itemDialog1->SetSizer(itemBoxSizer2);
 
-    wxTreeCtrl* itemTreeCtrl3 = new wxTreeCtrl( itemDialog1, ID_TREECTRL1, wxDefaultPosition, wxSize(100, 300), wxTR_SINGLE );
+    wxTreeCtrl* itemTreeCtrl3 = new wxTreeCtrl( parent, ID_TREECTRL1, wxDefaultPosition, wxSize(200, -1), wxTR_SINGLE );
     itemBoxSizer2->Add(itemTreeCtrl3, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer2->Add(itemBoxSizer4, 0, wxALIGN_LEFT|wxALL, 5);
 
-    wxToggleButton* itemToggleButton5 = new wxToggleButton( itemDialog1, ID_DLGTOC_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    wxToggleButton* itemToggleButton5 = new wxToggleButton( parent, ID_DLGTOC_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
     itemToggleButton5->SetValue(false);
     itemBoxSizer4->Add(itemToggleButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxToggleButton* itemToggleButton6 = new wxToggleButton( itemDialog1, ID_DLGTOC_REMOVE, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
+    wxToggleButton* itemToggleButton6 = new wxToggleButton( parent, ID_DLGTOC_REMOVE, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
     itemToggleButton6->SetValue(false);
     itemBoxSizer4->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+	if (set_sizer)
+    {
+        parent->SetSizer( itemBoxSizer2 );
+        if (call_fit)
+            itemBoxSizer2->SetSizeHints( parent );
+    }
+    
+    return itemBoxSizer2;
+}
 
+
+
+
+
+
+
+
+
+/*************************** TOC WINDOW DLG MAC *********************************/
+
+#if ( __WXMAC__ )
+TocWindowDlgMac::TocWindowDlgMac(wxWindow * parent, wxWindowID id, const wxString & title) 
+	//: wxDrawerWindow(parent,id,title,SYMBOL_TOCWINDOW_DLG_SIZE)
+{
+	Init();
+	m_DrawerWindow = new wxDrawerWindow(parent,id,title,SYMBOL_TOCWINDOW_DLG_SIZE);
+	CreateControls(m_DrawerWindow);
+}
+
+TocWindowDlgMac::TocWindowDlgMac()
+{
+	Init();
+}
+
+TocWindowDlgMac::~TocWindowDlgMac()
+{
+	delete m_DrawerWindow;
+}
+
+IMPLEMENT_DYNAMIC_CLASS( TocWindowDlgMac, TocWindowContent)
+
+/*!
+ * Member initialisation
+ */
+
+void TocWindowDlgMac::Init()
+{
+	m_DrawerWindow = NULL;
+}
+
+void TocWindowDlgMac::Show()
+{
+	m_DrawerWindow->Open();
+}
+
+void TocWindowDlgMac::Hide()
+{
+	m_DrawerWindow->Close();
+}
+
+bool TocWindowDlgMac::IsShown()
+{
+	return m_DrawerWindow->IsOpen();
+}
+#endif
+
+
+/*************************** TOC WINDOW DLG GEN *********************************/
+TocWindowDlgGen::TocWindowDlgGen()
+{
+	Init();
+}
+
+TocWindowDlgGen::TocWindowDlgGen(wxWindow * parent, wxWindowID id,const wxString & title)
+{
+	Init();
+	m_TocAui = new wxAuiManager(parent);
+	m_ContentFrame = new wxPanel(parent, wxID_ANY);
+	CreateControls(m_ContentFrame);
+	m_TocAui->AddPane(m_ContentFrame, wxAuiPaneInfo().Name(SYMBOL_TOCWINDOW_DLG_TITLE).
+    	Caption(SYMBOL_TOCWINDOW_DLG_TITLE).
+    	Left().Layer(1).Position(1).MinSize(SYMBOL_TOCWINDOW_DLG_SIZE));
+	m_TocAui->Update();
+}
+
+TocWindowDlgGen::~TocWindowDlgGen()
+{
+	delete m_TocAui;
+	delete m_ContentFrame;
+	m_TocAui->UnInit();
+}
+
+void TocWindowDlgGen::Init()
+{
+	m_TocAui = NULL;
+	m_ContentFrame = NULL;
+}
+
+IMPLEMENT_DYNAMIC_CLASS( TocWindowDlgGen, TocWindowContent)
+
+void TocWindowDlgGen::Show()
+{
+	m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).Show();
+	m_TocAui->Update();
+}
+
+void TocWindowDlgGen::Hide()
+{
+	m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).Hide();
+	m_TocAui->Update();
+}
+
+bool TocWindowDlgGen::IsShown()
+{
+	return m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).IsShown();
 }
