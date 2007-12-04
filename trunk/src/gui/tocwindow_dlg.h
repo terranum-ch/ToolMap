@@ -29,7 +29,10 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/mac/carbon/drawer.h>
+
+
+
+#include <wx/aui/aui.h>
 #include "wx/treectrl.h"
 #include "wx/tglbtn.h"
 
@@ -40,27 +43,75 @@
 #define SYMBOL_TOCWINDOW_DLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_TOCWINDOW_DLG_TITLE _("Table of content")
 #define SYMBOL_TOCWINDOW_DLG_IDNAME ID_TOCWINDOW_DLG
-#define SYMBOL_TOCWINDOW_DLG_SIZE wxSize(200, -1)
+#define SYMBOL_TOCWINDOW_DLG_SIZE wxSize(150, 200)
 #define SYMBOL_TOCWINDOW_DLG_POSITION wxDefaultPosition
 
 
-class TocWindowDlg : public wxDrawerWindow
-{
+class TocWindowContent : public wxEvtHandler
+	{
 	private:
-		DECLARE_DYNAMIC_CLASS( TocWindowDlg )
-	
+		DECLARE_DYNAMIC_CLASS(TocWindowContent)
+		
+		public :
+		TocWindowContent();
+		~TocWindowContent();
+		
+		/// Creates the controls and sizers
+		wxSizer * CreateControls(wxWindow * parent, bool call_fit = TRUE, bool set_sizer = TRUE);
+		
+		virtual void Show() {;}
+		virtual void Hide() {;}
+		virtual bool IsShown() {return FALSE;}
+		
+	};
+
+
+#if (__WXMAC__)
+#include <wx/mac/carbon/drawer.h>
+
+class TocWindowDlgMac : TocWindowContent
+	{
+	private:
+		DECLARE_DYNAMIC_CLASS( TocWindowDlgMac )
+		wxDrawerWindow * m_DrawerWindow;
+		
 	public:
-		TocWindowDlg();
-		TocWindowDlg(wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
-			const wxString & title=SYMBOL_TOCWINDOW_DLG_TITLE);
-		~TocWindowDlg(); 
+		TocWindowDlgMac();
+		TocWindowDlgMac(wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
+						const wxString & title=SYMBOL_TOCWINDOW_DLG_TITLE);
+		~TocWindowDlgMac(); 
+		
+		virtual void Show();
+		virtual void Hide();
+		virtual bool IsShown();
 		
 	private:
-		/// Creates the controls and sizers
-		void CreateControls();
 		void Init();
-};
+	};
+#endif
 
+class TocWindowDlgGen : public TocWindowContent 
+	{
+	private:
+		DECLARE_DYNAMIC_CLASS(TocWindowDlgGen)
+		void Init();
+		
+		wxAuiManager * m_TocAui;
+		wxPanel * m_ContentFrame;
+		
+	public:	
+		TocWindowDlgGen();
+		TocWindowDlgGen(wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
+						const wxString & title=SYMBOL_TOCWINDOW_DLG_TITLE);
+		~TocWindowDlgGen();
+		
+		virtual void Show();
+		virtual void Hide();
+		virtual bool IsShown();
+
+		
+		
+	};
 
 
 #endif
