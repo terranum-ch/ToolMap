@@ -31,6 +31,8 @@
 #include "../img/img_tool8.cpp"
 #include "../img/img_tool9.cpp"
 #include "../img/img_tool10.cpp"
+// icon image
+#include "../img/img_icon32.cpp"
 
  inline wxBitmap _wxGetBitmapFromMemory(const unsigned char *data, int length) {
    wxMemoryInputStream is(data, length);
@@ -58,6 +60,7 @@ bool ToolMapApp::OnInit()
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
 	EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
+	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
 END_EVENT_TABLE()
 
 
@@ -66,8 +69,9 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 			: wxFrame(frame, -1, title,pos,size)
 {
     // Loading icon
-	// wxIcon icon(sirs_xpm);
-    //SetIcon(icon);
+	wxIcon icon;
+	icon.CopyFromBitmap(wxGetBitmapFromMemory(toolmap32));
+	SetIcon(icon);
 	
     // adding status bar
 	CreateStatusBar(2,0,wxID_ANY);
@@ -88,6 +92,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 void ToolMapFrame::PostInit()
 {
 	m_LogWindow = new ImportLog (this);
+	m_TocWindow = new TocWindowDlg(this);
 }
 
 
@@ -270,4 +275,20 @@ void ToolMapFrame::OnLogWindow(wxCommandEvent & event)
 		m_LogWindow->Show();
 		GetMenuBar()->Check(ID_MENU_LOG_WINDOW, TRUE);
 	}
+}
+
+void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
+{
+	if (m_TocWindow->IsOpen())
+	{
+		m_TocWindow->Close();
+		GetMenuBar()->Check(ID_MENU_TOC_WINDOW, FALSE);
+	}
+	else 
+	{
+		m_TocWindow->Open();
+		GetMenuBar()->Check(ID_MENU_TOC_WINDOW, TRUE);
+
+	}
+
 }
