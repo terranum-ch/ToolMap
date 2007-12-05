@@ -19,14 +19,15 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 
 # Getting the subversion number and
 # generating a file called svn_version.h
-
 IF (WIN32)
-
+	EXECUTE_PROCESS(
+		COMMAND version_svn_win.bat
+		WORKING_DIRECTORY ../../trunk/build/
+	)
 ELSE (WIN32)
-ADD_CUSTOM_COMMAND(
-	OUTPUT ../src/core/svn_version.h
-	COMMAND sh
-	ARGS version_svn_unix.sh
+	EXECUTE_PROCESS(
+		COMMAND sh version_svn_unix.sh
+		WORKING_DIRECTORY ../../trunk/build/
 	)
 ENDIF(WIN32)
  
