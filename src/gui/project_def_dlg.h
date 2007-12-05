@@ -44,6 +44,8 @@
 #include "wx/listctrl.h"
 #include "wx/tglbtn.h"
 #include "listgenreport.h"
+
+#include "wxflatbutton.h"
 ////@end includes
 
 /*!
