@@ -174,9 +174,12 @@ void ProjectDefDLG::CreateControls()
     wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
     itemStaticBoxSizer16->Add(itemBoxSizer18, 0, wxALIGN_LEFT|wxALL, 5);
 
-    m_DlgPd_Spat_Mdl_Add = new wxToggleButton( itemDialog1, ID_DLGPD_SPAT_MDL_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
-    m_DlgPd_Spat_Mdl_Add->SetValue(false);
-    itemBoxSizer18->Add(m_DlgPd_Spat_Mdl_Add, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+    wxFlatButton * myFlatButton = new wxFlatButton(itemDialog1, ID_DLGPD_SPAT_MDL_ADD, wxFLATBUTTON_TEXT_ADD);
+	
+	itemBoxSizer18->Add(myFlatButton, 0,wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	//m_DlgPd_Spat_Mdl_Add = new wxToggleButton( itemDialog1, ID_DLGPD_SPAT_MDL_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    //m_DlgPd_Spat_Mdl_Add->SetValue(false);
+    //itemBoxSizer18->Add(m_DlgPd_Spat_Mdl_Add, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
     m_DljPd_Spat_Mdl_Del = new wxToggleButton( itemDialog1, ID_DLJPD_SPAT_MDL_DEL, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
     m_DljPd_Spat_Mdl_Del->SetValue(false);
