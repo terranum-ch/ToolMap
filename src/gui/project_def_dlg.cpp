@@ -27,12 +27,12 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefDLG, wxDialog )
  * ProjectDefDLG event table definition
  */
 
-BEGIN_EVENT_TABLE( ProjectDefDLG, wxDialog )
+//BEGIN_EVENT_TABLE( ProjectDefDLG, wxDialog )
 
 ////@begin ProjectDefDLG event table entries
 ////@end ProjectDefDLG event table entries
 
-END_EVENT_TABLE()
+//END_EVENT_TABLE()
 
 
 /*!
