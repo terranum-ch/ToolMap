@@ -12,9 +12,11 @@ SOURCE_GROUP (source FILES ${SRC_FILES})
 FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
 SOURCE_GROUP (header FILES ${HEAD_FILES})
 
+SET(TRUNK_PATH ${PROJECT_SOURCE_DIR}/.. CACHE PATH "Path to the trunk" )
 
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON
+ SET(WXWINDOWS_USE_GL 0)
  INCLUDE ("cmake/Use_wxWindows.cmake")
 
 # Getting the subversion number and
@@ -22,12 +24,12 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 IF (WIN32)
 	EXECUTE_PROCESS(
 		COMMAND version_svn_win.bat
-		WORKING_DIRECTORY ../../trunk/build/
+		WORKING_DIRECTORY ${TRUNK_PATH}/build/
 	)
 ELSE (WIN32)
 	EXECUTE_PROCESS(
 		COMMAND sh version_svn_unix.sh
-		WORKING_DIRECTORY ../../trunk/build/
+		WORKING_DIRECTORY ${TRUNK_PATH}/build/
 	)
 ENDIF(WIN32)
  
