@@ -22,9 +22,8 @@
 
 
 /******************************  wxFlatButton (for mac) *************************/
-
-
 #if (__WXMAC__)
+
 wxFlatButton::wxFlatButton()
 {
 	InitwxFlatButton();
@@ -34,8 +33,9 @@ wxFlatButton::wxFlatButton()
 wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label)
 : wxToggleButton(parent,id,label,wxDefaultPosition, wxFLATBUTTON_SIZE)
 {
-	InitwxFlatButton();
-	
+	InitwxFlatButton(id);
+	Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, 
+			(wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);
 }
 
 
@@ -46,12 +46,28 @@ wxFlatButton::~wxFlatButton()
 
 IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxToggleButton)
 
-void wxFlatButton::InitwxFlatButton()
+void wxFlatButton::InitwxFlatButton(wxWindowID id)
 {
 	
+
 }
 
 
+void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
+{
+	// if the toggle button is checked we uncheck it
+	if (GetValue() == TRUE)
+	{
+		SetValue(FALSE);
+		event.Skip(TRUE);
+		wxLogDebug(_T("Event FlatButton skipped..."));
+	}
+	else
+	{
+		event.Skip(FALSE);
+		wxLogDebug(_T("Event FlatButton not skipped..."));
+	}
+}
 
 
 /******************************  wxFlatButton (win and linux)**********************/

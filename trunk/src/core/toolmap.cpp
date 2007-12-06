@@ -94,6 +94,10 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 void ToolMapFrame::PostInit()
 {
 	m_LogWindow = new ImportLogDLG (this);
+	wxTextCtrl * myLogTextCtrl = (wxTextCtrl *) m_LogWindow->FindWindow(ID_DLGLOG_TXT);
+	wxLog::SetActiveTarget (new wxLogTextCtrl (myLogTextCtrl));
+	wxLogMessage(_("Program started"));
+	wxLogDebug(_("Debug mode enabled"));
 #if (__WXMAC__)
 	m_TocWindow = new TocWindowDlgMac (this);
 #else

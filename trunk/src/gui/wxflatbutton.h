@@ -38,30 +38,39 @@
 #define wxFLATBUTTON_TEXT_ADD _T("+")
 #define wxFLATBUTTON_TEXT_REMOVE _T("-")
 
+//#define ID_WXFLATBUTTON 10219
 
 #if (__WXMAC__)
+#define EVT_FLATBUTTON EVT_TOGGLEBUTTON
+
 class wxFlatButton : public wxToggleButton
-	{
-		private:
+	{		
+		
+	public:
+		
+		wxFlatButton();
+		wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label = wxEmptyString);
+		~wxFlatButton();
+		
+	private:
+		void OnClickToggleButton(wxCommandEvent & event);
+		void InitwxFlatButton(wxWindowID id= wxID_ANY);
 		DECLARE_DYNAMIC_CLASS(wxFlatButton)
-		void InitwxFlatButton();
-	
-		public:
-			wxFlatButton();
-			wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label = wxEmptyString);
-			~wxFlatButton();
+		
+		
 	};
 #else
+#define EVT_FLATBUTTON EVT_BUTTON
 class wxFlatButton : public wxButton
 	{
-		private:
+	private:
 		DECLARE_DYNAMIC_CLASS(wxFlatButton)
 		void InitwxFlatButton();
-	
-		public:
-			wxFlatButton();
-			wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label = wxEmptyString);
-			~wxFlatButton();
+		
+	public:
+		wxFlatButton();
+		wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label = wxEmptyString);
+		~wxFlatButton();
 	};
 #endif
 

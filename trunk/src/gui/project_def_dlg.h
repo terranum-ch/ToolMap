@@ -91,7 +91,7 @@ class wxToggleButton;
 class ProjectDefDLG: public wxDialog
 {    
     DECLARE_DYNAMIC_CLASS( ProjectDefDLG )
-    DECLARE_EVENT_TABLE()
+   // DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
