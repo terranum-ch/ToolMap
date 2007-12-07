@@ -42,11 +42,14 @@
 
 ////@begin includes
 #include "wx/listctrl.h"
-#include "wx/tglbtn.h"
 #include "listgenreport.h"
-
 #include "wxflatbutton.h"
+#include "project_def_layers_dlg.h"
 ////@end includes
+
+
+
+
 
 /*!
  * Forward declarations
@@ -70,7 +73,7 @@ class wxToggleButton;
 #define ID_DLGPD_PROJ_PROJECTION 10119
 #define ID_DLGPD_SPAT_MODEL_LIST 10004
 #define ID_DLGPD_SPAT_MDL_ADD 10219
-#define ID_DLJPD_SPAT_MDL_DEL 10006
+#define ID_DLGPD_SPAT_MDL_DEL 10006
 #define SYMBOL_PROJECTDEFDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFDLG_TITLE _("Project Definition")
 #define SYMBOL_PROJECTDEFDLG_IDNAME ID_DLGPD
@@ -89,39 +92,49 @@ class wxToggleButton;
  @date 04 December 2007
  *******************************************************************************/
 class ProjectDefDLG: public wxDialog
-{    
-    DECLARE_DYNAMIC_CLASS( ProjectDefDLG )
-   // DECLARE_EVENT_TABLE()
-
-public:
-    /// Constructors
-    ProjectDefDLG();
-    ProjectDefDLG( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFDLG_SIZE, long style = SYMBOL_PROJECTDEFDLG_STYLE );
-
-    /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFDLG_SIZE, long style = SYMBOL_PROJECTDEFDLG_STYLE );
-
-    /// Destructor
-    ~ProjectDefDLG();
-
-    /// Initialises member variables
-    void Init();
-
-    /// Creates the controls and sizers
-    void CreateControls();
-
-
-////@begin ProjectDefDLG member variables
-    wxTextCtrl* m_DlgPD_Proj_Path;
-    wxButton* m_DlgPd_Proj_Path_Btn;
-    wxTextCtrl* m_DlgPd_Proj_Name;
-    wxChoice* m_DlgPd_Proj_Unit;
-    wxChoice* m_DlgPd_Proj_Projection;
-    ProjectDefList * m_DlgPd_Stat_Model_List;
-    wxToggleButton* m_DlgPd_Spat_Mdl_Add;
-    wxToggleButton* m_DljPd_Spat_Mdl_Del;
-////@end ProjectDefDLG member variables
-};
+	{    
+	private:
+		void OnAddLayer(wxCommandEvent & event);
+		
+		DECLARE_DYNAMIC_CLASS( ProjectDefDLG )
+		DECLARE_EVENT_TABLE()
+		
+		
+		
+	public:
+		/// Constructors
+		ProjectDefDLG();
+		ProjectDefDLG( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFDLG_IDNAME, 
+					  const wxString& caption = SYMBOL_PROJECTDEFDLG_TITLE, 
+					  const wxPoint& pos = SYMBOL_PROJECTDEFDLG_POSITION, 
+					  const wxSize& size = SYMBOL_PROJECTDEFDLG_SIZE, 
+					  long style = SYMBOL_PROJECTDEFDLG_STYLE );
+		
+		/// Creation
+		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFDLG_IDNAME,
+					const wxString& caption = SYMBOL_PROJECTDEFDLG_TITLE,
+					const wxPoint& pos = SYMBOL_PROJECTDEFDLG_POSITION, 
+					const wxSize& size = SYMBOL_PROJECTDEFDLG_SIZE, 
+					long style = SYMBOL_PROJECTDEFDLG_STYLE );
+		
+		/// Destructor
+		~ProjectDefDLG();
+		
+		/// Initialises member variables
+		void Init();
+		
+		/// Creates the controls and sizers
+		void CreateControls();
+		
+		
+		////@begin ProjectDefDLG member variables
+		wxTextCtrl* m_DlgPD_Proj_Path;
+		wxTextCtrl* m_DlgPd_Proj_Name;
+		wxChoice* m_DlgPd_Proj_Unit;
+		wxChoice* m_DlgPd_Proj_Projection;
+		ProjectDefList * m_DlgPd_Stat_Model_List;
+		////@end ProjectDefDLG member variables
+	};
 
 
 
@@ -138,25 +151,25 @@ class ProjectDefList : public ListGenReport
 	{
 	private:
 		//virtual void OnDoubleClickItem(wxListEvent & event);
-//		void OnMySelectionChange (wxListEvent & event);
+		//		void OnMySelectionChange (wxListEvent & event);
 		
 		wxChoice * m_ChoiceToChange;
 		
 	public:
 		static const int ID_PARAMLIST;
-
+		
 		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size);
-
+		
 		~ProjectDefList(); 
-
-	//	int GetParamType (wxString myTextParam);
-//		
-//		wxString GetParamType (int imyType);
-//
-//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-//		void SetChoiceList (wxChoice * myChoiceList);
-//		DECLARE_EVENT_TABLE();
-};
+		
+		//	int GetParamType (wxString myTextParam);
+		//		
+		//		wxString GetParamType (int imyType);
+		//
+		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+		//		void SetChoiceList (wxChoice * myChoiceList);
+		//		DECLARE_EVENT_TABLE();
+	};
 
 
 

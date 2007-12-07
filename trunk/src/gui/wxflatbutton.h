@@ -49,7 +49,9 @@ class wxFlatButton : public wxToggleButton
 	public:
 		
 		wxFlatButton();
-		wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label = wxEmptyString);
+		wxFlatButton(wxWindow * parent, wxWindowID id, 
+					 const wxString & label = wxEmptyString, 
+					 wxSize size = wxFLATBUTTON_SIZE);
 		~wxFlatButton();
 		
 	private:
@@ -69,7 +71,9 @@ class wxFlatButton : public wxButton
 		
 	public:
 		wxFlatButton();
-		wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label = wxEmptyString);
+		wxFlatButton(wxWindow * parent, wxWindowID id,
+					 const wxString & label = wxEmptyString,
+					 wxSize size = wxFLATBUTTON_SIZE);
 		~wxFlatButton();
 	};
 #endif

@@ -30,8 +30,8 @@ wxFlatButton::wxFlatButton()
 }
 
 
-wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label)
-: wxToggleButton(parent,id,label,wxDefaultPosition, wxFLATBUTTON_SIZE)
+wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
+: wxToggleButton(parent,id,label,wxDefaultPosition, size)
 {
 	InitwxFlatButton(id);
 	Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, 
@@ -78,8 +78,8 @@ wxFlatButton::wxFlatButton()
 }
 
 
-wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label)
-: wxButton(parent,id,label,wxDefaultPosition, wxFLATBUTTON_SIZE, wxFLATBUTTON_STYLE )
+wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
+: wxButton(parent,id,label,wxDefaultPosition, size, wxFLATBUTTON_STYLE )
 {
 	InitwxFlatButton();
 	

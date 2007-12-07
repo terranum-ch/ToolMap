@@ -57,6 +57,7 @@
 #include "../gui/project_def_dlg.h"		// project definition dialog
 #include "../gui/logwindow_dlg.h"		// log window definition
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
+#include <wx/sysopt.h>
 
 #include <wx/mstream.h>
 

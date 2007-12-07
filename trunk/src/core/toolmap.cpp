@@ -69,7 +69,12 @@ END_EVENT_TABLE()
 ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wxSize size)
 			: wxFrame(frame, -1, title,pos,size)
 {
-    // Loading icon
+    // Generic list settings for using generic list under Mac
+	// otherwise some problem may occur with dnd and inserting
+	// item
+	wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
+	
+	// Loading icon
 	wxIcon icon;
 	icon.CopyFromBitmap(wxGetBitmapFromMemory(toolmap32));
 	SetIcon(icon);
@@ -272,8 +277,8 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 
 void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 {
-	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this);
-	myNewProjDlg->Show();
+	ProjectDefDLG  myNewProjDlg (this);
+	myNewProjDlg.ShowModal();
 	
 }
 

@@ -29,6 +29,8 @@
  */
 
 ////@begin forward declarations
+class ProjectDefLayersObjectList;
+class ProjectDefLayersFieldsList;
 ////@end forward declarations
 
 /*!
@@ -36,46 +38,46 @@
  */
 
 ////@begin control identifiers
-#define ID_WXDIALOG 10007
-#define ID_CHOICE 10000
-#define ID_TEXTCTRL 10001
+#define ID_DLGPDL 10007
+#define ID_DLGPDL_LAYER_TYPE 10000
+#define ID_DLGPDL_LAYER_NAME 10001
 #define ID_NOTEBOOK 10002
-#define ID_PANEL 10003
-#define ID_LISTCTRL2 10009
-#define ID_TOGGLEBUTTON7 10010
-#define ID_TOGGLEBUTTON8 10225
-#define ID_TOGGLEBUTTON28 10251
-#define ID_PANEL1 10008
-#define ID_LISTCTRL 10004
-#define ID_TOGGLEBUTTON 10005
-#define ID_TOGGLEBUTTON1 10006
-#define SYMBOL_WXDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_WXDIALOG_TITLE _("Thematic layer definition")
-#define SYMBOL_WXDIALOG_IDNAME ID_WXDIALOG
-#define SYMBOL_WXDIALOG_SIZE wxSize(400, 300)
-#define SYMBOL_WXDIALOG_POSITION wxDefaultPosition
+#define ID_DLGPDL_PANEL_OBJ 10003
+#define ID_DLGPDL_OBJ_LIST 10009
+#define ID_DLGPDL_OBJECT_ADD 10010
+#define ID_DLGPDL_OBJECT_REMOVE 10225
+#define ID_DLGPDL_OBJECT_IMPORT 10251
+#define ID_DLGPDL_PANEL_FIELDS 10008
+#define ID_DLGPDL_FIELDS_LIST 10220
+#define ID_DLGPDL_FIELD_ADD 10005
+#define ID_DLGPDL_FIELD_REMOVE 10006
+#define SYMBOL_PROJECTDEFLAYERSDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_PROJECTDEFLAYERSDLG_TITLE _("Thematic layer definition")
+#define SYMBOL_PROJECTDEFLAYERSDLG_IDNAME ID_DLGPDL
+#define SYMBOL_PROJECTDEFLAYERSDLG_SIZE wxSize(400, 300)
+#define SYMBOL_PROJECTDEFLAYERSDLG_POSITION wxDefaultPosition
 ////@end control identifiers
 
 
 /*!
- * wxDialog class declaration
+ * ProjectDefLayersDlg class declaration
  */
 
-class wxDialog: public wxDialog
+class ProjectDefLayersDlg: public wxDialog
 {    
-    DECLARE_DYNAMIC_CLASS( wxDialog )
+    DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
     DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
-    wxDialog();
-    wxDialog( wxWindow* parent, wxWindowID id = SYMBOL_WXDIALOG_IDNAME, const wxString& caption = SYMBOL_WXDIALOG_TITLE, const wxPoint& pos = SYMBOL_WXDIALOG_POSITION, const wxSize& size = SYMBOL_WXDIALOG_SIZE, long style = SYMBOL_WXDIALOG_STYLE );
+    ProjectDefLayersDlg();
+    ProjectDefLayersDlg( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFLAYERSDLG_SIZE, long style = SYMBOL_PROJECTDEFLAYERSDLG_STYLE );
 
     /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_WXDIALOG_IDNAME, const wxString& caption = SYMBOL_WXDIALOG_TITLE, const wxPoint& pos = SYMBOL_WXDIALOG_POSITION, const wxSize& size = SYMBOL_WXDIALOG_SIZE, long style = SYMBOL_WXDIALOG_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFLAYERSDLG_SIZE, long style = SYMBOL_PROJECTDEFLAYERSDLG_STYLE );
 
     /// Destructor
-    ~wxDialog();
+    ~ProjectDefLayersDlg();
 
     /// Initialises member variables
     void Init();
@@ -83,24 +85,30 @@ public:
     /// Creates the controls and sizers
     void CreateControls();
 
-////@begin wxDialog event handler declarations
+////@begin ProjectDefLayersDlg event handler declarations
 
-////@end wxDialog event handler declarations
+////@end ProjectDefLayersDlg event handler declarations
 
-////@begin wxDialog member function declarations
+////@begin ProjectDefLayersDlg member function declarations
 
     /// Retrieves bitmap resources
     wxBitmap GetBitmapResource( const wxString& name );
 
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
-////@end wxDialog member function declarations
+////@end ProjectDefLayersDlg member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
 
-////@begin wxDialog member variables
-////@end wxDialog member variables
+////@begin ProjectDefLayersDlg member variables
+    wxChoice* m_DlgPDL_Layer_Type;
+    wxTextCtrl* m_DlgPDL_Layer_Name;
+    wxPanel* m_DlgPDL_Panel_Obj;
+    ProjectDefLayersObjectList* m_DlgPDL_Object_List;
+    wxPanel* m_DlgPDL_Panel_Fields;
+    ProjectDefLayersFieldsList* m_DlgPDL_Fields_List;
+////@end ProjectDefLayersDlg member variables
 };
 
 #endif
