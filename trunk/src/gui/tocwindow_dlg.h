@@ -35,6 +35,7 @@
 #include <wx/aui/aui.h>
 #include "wx/treectrl.h"
 #include "wx/tglbtn.h"
+#include "wxflatbutton.h"
 
 #define ID_TOCWINDOW_DLG 10035
 #define ID_TREECTRL1 10127

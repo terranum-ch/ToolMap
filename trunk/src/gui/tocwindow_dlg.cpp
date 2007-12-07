@@ -50,14 +50,10 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
 
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer2->Add(itemBoxSizer4, 0, wxALIGN_LEFT|wxALL, 5);
+   wxFlatButton * itemToggleButton5 = new wxFlatButton (parent, ID_DLGTOC_ADD, wxFLATBUTTON_TEXT_ADD);
+   itemBoxSizer4->Add(itemToggleButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    //wxButton * itemToggleButton5 = new wxButton(parent, ID_DLGTOC_ADD, _T("+"), wxDefaultPosition, wxSize(40, -1),);
-	wxToggleButton* itemToggleButton5 = new wxToggleButton( parent, ID_DLGTOC_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
-    itemToggleButton5->SetValue(false);
-    itemBoxSizer4->Add(itemToggleButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxToggleButton* itemToggleButton6 = new wxToggleButton( parent, ID_DLGTOC_REMOVE, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
-    itemToggleButton6->SetValue(false);
+    wxFlatButton * itemToggleButton6 = new wxFlatButton( parent, ID_DLGTOC_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
     itemBoxSizer4->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 	if (set_sizer)
@@ -145,7 +141,7 @@ TocWindowDlgGen::TocWindowDlgGen(wxWindow * parent, wxWindowID id,const wxString
 	m_TocAui->AddPane(m_ContentFrame, wxAuiPaneInfo().Name(SYMBOL_TOCWINDOW_DLG_TITLE).
     	Caption(SYMBOL_TOCWINDOW_DLG_TITLE).
     	Left().Layer(1).Position(1).MinSize(SYMBOL_TOCWINDOW_DLG_SIZE));
-	m_TocAui->GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE, wxAUI_GRADIENT_NONE);
+	//m_TocAui->GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE, wxAUI_GRADIENT_NONE);
 
 
 	m_TocAui->Update();
