@@ -1589,9 +1589,9 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="proxy-Id name">"ID_WXDIALOG"</string>
+          <string name="proxy-Id name">"ID_DLGPDL"</string>
           <long name="proxy-Id value">10007</long>
-          <string name="proxy-Class">"wxDialog"</string>
+          <string name="proxy-Class">"ProjectDefLayersDlg"</string>
           <string name="proxy-Base class">"wxDialog"</string>
           <string name="proxy-Window kind">"wxDialog"</string>
           <string name="proxy-Implementation filename">"addspatiallayer.cpp"</string>
@@ -1662,14 +1662,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1808,7 +1800,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxChoice: ID_CHOICE"</string>
+                  <string name="title">"wxChoice: ID_DLGPDL_LAYER_TYPE"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"choice"</string>
@@ -1818,7 +1810,7 @@
                   <long name="locked">0</long>
                   <string name="created">"30/10/2007"</string>
                   <string name="proxy-type">"wbChoiceProxy"</string>
-                  <string name="proxy-Id name">"ID_CHOICE"</string>
+                  <string name="proxy-Id name">"ID_DLGPDL_LAYER_TYPE"</string>
                   <long name="proxy-Id value">10000</long>
                   <string name="proxy-Class">"wxChoice"</string>
                   <string name="proxy-Base class">"wxChoice"</string>
@@ -1826,7 +1818,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPDL_Layer_Type"</string>
                   <string name="proxy-Strings">"Point|Line|Polygon"</string>
                   <string name="proxy-Initial value">"Point"</string>
                   <string name="proxy-Help text">""</string>
@@ -1936,7 +1928,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxTextCtrl: ID_TEXTCTRL"</string>
+                  <string name="title">"wxTextCtrl: ID_DLGPDL_LAYER_NAME"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"textctrl"</string>
@@ -1946,7 +1938,7 @@
                   <long name="locked">0</long>
                   <string name="created">"30/10/2007"</string>
                   <string name="proxy-type">"wbTextCtrlProxy"</string>
-                  <string name="proxy-Id name">"ID_TEXTCTRL"</string>
+                  <string name="proxy-Id name">"ID_DLGPDL_LAYER_NAME"</string>
                   <long name="proxy-Id value">10001</long>
                   <string name="proxy-Class">"wxTextCtrl"</string>
                   <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -1954,7 +1946,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPDL_Layer_Name"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -2093,7 +2085,7 @@
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
               <document>
-                <string name="title">"wxPanel: ID_PANEL"</string>
+                <string name="title">"wxPanel: ID_DLGPDL_PANEL_OBJ"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"panel"</string>
@@ -2103,7 +2095,7 @@
                 <long name="locked">0</long>
                 <string name="created">"30/10/2007"</string>
                 <string name="proxy-type">"wbPanelProxy"</string>
-                <string name="proxy-Id name">"ID_PANEL"</string>
+                <string name="proxy-Id name">"ID_DLGPDL_PANEL_OBJ"</string>
                 <long name="proxy-Id value">10003</long>
                 <string name="proxy-Class">"wxPanel"</string>
                 <string name="proxy-Base class">"wxPanel"</string>
@@ -2112,6 +2104,8 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Tab label">"Objects"</string>
+                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Background colour">""</string>
@@ -2164,8 +2158,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <bool name="proxy-AUI manager">0</bool>
                 <string name="proxy-Event sources">""</string>
-                <string name="proxy-Tab label">"Objects"</string>
-                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxStaticBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -2201,7 +2193,7 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   <document>
-                    <string name="title">"wxListCtrl: ID_LISTCTRL2"</string>
+                    <string name="title">"ProjectDefLayerList: ID_PROJECTDEFLAYERLIST"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
                     <string name="icon-name">"listctrl"</string>
@@ -2209,27 +2201,17 @@
                     <long name="owns-file">1</long>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
-                    <string name="created">"30/10/2007"</string>
-                    <string name="proxy-type">"wbListCtrlProxy"</string>
-                    <string name="proxy-Id name">"ID_LISTCTRL2"</string>
+                    <string name="created">"7/12/2007"</string>
+                    <string name="proxy-type">"wbCustomCtrlProxy:ProjectDefLayerList"</string>
+                    <string name="proxy-Id name">"ID_DLGPDL_OBJ_LIST"</string>
                     <long name="proxy-Id value">10009</long>
-                    <string name="proxy-Class">"wxListCtrl"</string>
-                    <string name="proxy-Base class">"wxListCtrl"</string>
+                    <string name="proxy-Class">"ProjectDefLayerList"</string>
+                    <string name="proxy-Base class">"ProjectDefLayerList"</string>
                     <bool name="proxy-External implementation">1</bool>
                     <bool name="proxy-Separate files">0</bool>
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">""</string>
-                    <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">""</string>
-                    <string name="proxy-Background colour">""</string>
-                    <string name="proxy-Foreground colour">""</string>
-                    <string name="proxy-Font">""</string>
-                    <bool name="proxy-Hidden">0</bool>
-                    <bool name="proxy-Enabled">1</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    <string name="proxy-Data variable">""</string>
-                    <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
                     <string name="proxy-Data class name">""</string>
                     <string name="proxy-Data class implementation filename">""</string>
@@ -2251,6 +2233,16 @@
                     <bool name="proxy-wxLC_SORT_DESCENDING">0</bool>
                     <bool name="proxy-wxLC_HRULES">0</bool>
                     <bool name="proxy-wxLC_VRULES">0</bool>
+                    <string name="proxy-Help text">""</string>
+                    <string name="proxy-Tooltip text">""</string>
+                    <string name="proxy-Background colour">""</string>
+                    <string name="proxy-Foreground colour">""</string>
+                    <string name="proxy-Font">""</string>
+                    <bool name="proxy-Hidden">0</bool>
+                    <bool name="proxy-Enabled">1</bool>
+                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                    <string name="proxy-Data variable">""</string>
+                    <string name="proxy-Data validator">""</string>
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
@@ -2265,7 +2257,7 @@
                     <long name="proxy-X">-1</long>
                     <long name="proxy-Y">-1</long>
                     <long name="proxy-Width">100</long>
-                    <long name="proxy-Height">100</long>
+                    <long name="proxy-Height">200</long>
                     <string name="proxy-AlignH">"Expand"</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <long name="proxy-Stretch factor">1</long>
@@ -2277,7 +2269,7 @@
                     <bool name="proxy-wxSHAPED">0</bool>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Custom arguments">""</string>
+                    <string name="proxy-Custom arguments">"%PARENT%, %IDENTIFIER%, %SIZE%"</string>
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
@@ -2306,7 +2298,7 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     <document>
-                      <string name="title">"wxToggleButton: ID_TOGGLEBUTTON7"</string>
+                      <string name="title">"wxToggleButton: ID_DLGPDL_OBJECT_ADD"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
                       <string name="icon-name">"togglebutton"</string>
@@ -2316,7 +2308,7 @@
                       <long name="locked">0</long>
                       <string name="created">"30/10/2007"</string>
                       <string name="proxy-type">"wbToggleButtonProxy"</string>
-                      <string name="proxy-Id name">"ID_TOGGLEBUTTON7"</string>
+                      <string name="proxy-Id name">"ID_DLGPDL_OBJECT_ADD"</string>
                       <long name="proxy-Id value">10010</long>
                       <string name="proxy-Class">"wxToggleButton"</string>
                       <string name="proxy-Base class">"wxToggleButton"</string>
@@ -2365,7 +2357,7 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"wxToggleButton: ID_TOGGLEBUTTON8"</string>
+                      <string name="title">"wxToggleButton: ID_DLGPDL_OBJECT_REMOVE"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
                       <string name="icon-name">"togglebutton"</string>
@@ -2375,7 +2367,7 @@
                       <long name="locked">0</long>
                       <string name="created">"30/10/2007"</string>
                       <string name="proxy-type">"wbToggleButtonProxy"</string>
-                      <string name="proxy-Id name">"ID_TOGGLEBUTTON8"</string>
+                      <string name="proxy-Id name">"ID_DLGPDL_OBJECT_REMOVE"</string>
                       <long name="proxy-Id value">10225</long>
                       <string name="proxy-Class">"wxToggleButton"</string>
                       <string name="proxy-Base class">"wxToggleButton"</string>
@@ -2424,7 +2416,7 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"wxToggleButton: ID_TOGGLEBUTTON28"</string>
+                      <string name="title">"wxToggleButton: ID_DLGPDL_OBJECT_IMPORT"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
                       <string name="icon-name">"togglebutton"</string>
@@ -2434,7 +2426,7 @@
                       <long name="locked">0</long>
                       <string name="created">"12/11/2007"</string>
                       <string name="proxy-type">"wbToggleButtonProxy"</string>
-                      <string name="proxy-Id name">"ID_TOGGLEBUTTON28"</string>
+                      <string name="proxy-Id name">"ID_DLGPDL_OBJECT_IMPORT"</string>
                       <long name="proxy-Id value">10251</long>
                       <string name="proxy-Class">"wxToggleButton"</string>
                       <string name="proxy-Base class">"wxToggleButton"</string>
@@ -2486,7 +2478,7 @@
                 </document>
               </document>
               <document>
-                <string name="title">"wxPanel: ID_PANEL1"</string>
+                <string name="title">"wxPanel: ID_DLGPDL_PANEL_FIELDS"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"panel"</string>
@@ -2496,7 +2488,7 @@
                 <long name="locked">0</long>
                 <string name="created">"30/10/2007"</string>
                 <string name="proxy-type">"wbPanelProxy"</string>
-                <string name="proxy-Id name">"ID_PANEL1"</string>
+                <string name="proxy-Id name">"ID_DLGPDL_PANEL_FIELDS"</string>
                 <long name="proxy-Id value">10008</long>
                 <string name="proxy-Class">"wxPanel"</string>
                 <string name="proxy-Base class">"wxPanel"</string>
@@ -2505,6 +2497,8 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Tab label">"Fields"</string>
+                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Background colour">""</string>
@@ -2557,8 +2551,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <bool name="proxy-AUI manager">0</bool>
                 <string name="proxy-Event sources">""</string>
-                <string name="proxy-Tab label">"Fields"</string>
-                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxStaticBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -2594,7 +2586,7 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   <document>
-                    <string name="title">"wxListCtrl: ID_LISTCTRL"</string>
+                    <string name="title">"ProjectDefLayerList: ID_PROJECTDEFLAYERLIST1"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
                     <string name="icon-name">"listctrl"</string>
@@ -2602,27 +2594,17 @@
                     <long name="owns-file">1</long>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
-                    <string name="created">"30/10/2007"</string>
-                    <string name="proxy-type">"wbListCtrlProxy"</string>
-                    <string name="proxy-Id name">"ID_LISTCTRL"</string>
-                    <long name="proxy-Id value">10004</long>
-                    <string name="proxy-Class">"wxListCtrl"</string>
-                    <string name="proxy-Base class">"wxListCtrl"</string>
+                    <string name="created">"7/12/2007"</string>
+                    <string name="proxy-type">"wbCustomCtrlProxy:ProjectDefLayerList"</string>
+                    <string name="proxy-Id name">"ID_DLGPDL_FIELDS_LIST"</string>
+                    <long name="proxy-Id value">10220</long>
+                    <string name="proxy-Class">"ProjectDefLayerList"</string>
+                    <string name="proxy-Base class">"ProjectDefLayerList"</string>
                     <bool name="proxy-External implementation">1</bool>
                     <bool name="proxy-Separate files">0</bool>
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">""</string>
-                    <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">""</string>
-                    <string name="proxy-Background colour">""</string>
-                    <string name="proxy-Foreground colour">""</string>
-                    <string name="proxy-Font">""</string>
-                    <bool name="proxy-Hidden">0</bool>
-                    <bool name="proxy-Enabled">1</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    <string name="proxy-Data variable">""</string>
-                    <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
                     <string name="proxy-Data class name">""</string>
                     <string name="proxy-Data class implementation filename">""</string>
@@ -2644,6 +2626,16 @@
                     <bool name="proxy-wxLC_SORT_DESCENDING">0</bool>
                     <bool name="proxy-wxLC_HRULES">0</bool>
                     <bool name="proxy-wxLC_VRULES">0</bool>
+                    <string name="proxy-Help text">""</string>
+                    <string name="proxy-Tooltip text">""</string>
+                    <string name="proxy-Background colour">""</string>
+                    <string name="proxy-Foreground colour">""</string>
+                    <string name="proxy-Font">""</string>
+                    <bool name="proxy-Hidden">0</bool>
+                    <bool name="proxy-Enabled">1</bool>
+                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                    <string name="proxy-Data variable">""</string>
+                    <string name="proxy-Data validator">""</string>
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
@@ -2658,7 +2650,7 @@
                     <long name="proxy-X">-1</long>
                     <long name="proxy-Y">-1</long>
                     <long name="proxy-Width">100</long>
-                    <long name="proxy-Height">200</long>
+                    <long name="proxy-Height">100</long>
                     <string name="proxy-AlignH">"Expand"</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <long name="proxy-Stretch factor">1</long>
@@ -2670,7 +2662,7 @@
                     <bool name="proxy-wxSHAPED">0</bool>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Custom arguments">""</string>
+                    <string name="proxy-Custom arguments">"%PARENT%, %IDENTIFIER%, %SIZE%"</string>
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
@@ -2699,7 +2691,7 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     <document>
-                      <string name="title">"wxToggleButton: ID_TOGGLEBUTTON"</string>
+                      <string name="title">"wxToggleButton: ID_DLGPDL_FIELD_ADD"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
                       <string name="icon-name">"togglebutton"</string>
@@ -2709,7 +2701,7 @@
                       <long name="locked">0</long>
                       <string name="created">"30/10/2007"</string>
                       <string name="proxy-type">"wbToggleButtonProxy"</string>
-                      <string name="proxy-Id name">"ID_TOGGLEBUTTON"</string>
+                      <string name="proxy-Id name">"ID_DLGPDL_FIELD_ADD"</string>
                       <long name="proxy-Id value">10005</long>
                       <string name="proxy-Class">"wxToggleButton"</string>
                       <string name="proxy-Base class">"wxToggleButton"</string>
@@ -2758,7 +2750,7 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"wxToggleButton: ID_TOGGLEBUTTON1"</string>
+                      <string name="title">"wxToggleButton: ID_DLGPDL_FIELD_REMOVE"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
                       <string name="icon-name">"togglebutton"</string>
@@ -2768,7 +2760,7 @@
                       <long name="locked">0</long>
                       <string name="created">"30/10/2007"</string>
                       <string name="proxy-type">"wbToggleButtonProxy"</string>
-                      <string name="proxy-Id name">"ID_TOGGLEBUTTON1"</string>
+                      <string name="proxy-Id name">"ID_DLGPDL_FIELD_REMOVE"</string>
                       <long name="proxy-Id value">10006</long>
                       <string name="proxy-Class">"wxToggleButton"</string>
                       <string name="proxy-Base class">"wxToggleButton"</string>
@@ -28378,6 +28370,14 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

@@ -13,6 +13,8 @@ all parameters and return values
 
 #include "listgenreport.h"
 
+ 
+
 
 const int ListGenReport::ID_LIST = wxID_ANY;
 

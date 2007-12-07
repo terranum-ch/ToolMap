@@ -174,7 +174,7 @@
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_WXDIALOG">
+    <object class="wxDialog" name="ID_DLGPDL" subclass="ProjectDefLayersDlg">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
@@ -207,7 +207,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxChoice" name="ID_CHOICE">
+                                <object class="wxChoice" name="ID_DLGPDL_LAYER_TYPE">
                                     <content>
                                         <item>Point</item>
                                         <item>Line</item>
@@ -226,7 +226,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL">
+                                <object class="wxTextCtrl" name="ID_DLGPDL_LAYER_NAME">
                                     <size>200,-1</size>
                                 </object>
                             </object>
@@ -242,7 +242,7 @@
                     <style>wxBK_DEFAULT</style>
                     <object class="notebookpage">
                         <label>Objects</label>
-                        <object class="wxPanel" name="ID_PANEL">
+                        <object class="wxPanel" name="ID_DLGPDL_PANEL_OBJ">
                             <style>wxTAB_TRAVERSAL</style>
                             <object class="wxStaticBoxSizer" name="wxID_ANY">
                                 <orient>wxVERTICAL</orient>
@@ -251,59 +251,7 @@
                                     <flag>wxGROW|wxALL</flag>
                                     <border>5</border>
                                     <option>1</option>
-                                    <object class="wxListCtrl" name="ID_LISTCTRL2">
-                                        <size>100,100</size>
-                                        <style>wxLC_REPORT</style>
-                                    </object>
-                                </object>
-                                <object class="sizeritem">
-                                    <flag>wxALIGN_LEFT|wxALL</flag>
-                                    <border>5</border>
-                                    <object class="wxBoxSizer">
-                                        <orient>wxHORIZONTAL</orient>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
-                                            <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON7">
-                                                <size>40,-1</size>
-                                                <label>+</label>
-                                                <checked>0</checked>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
-                                            <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON8">
-                                                <size>40,-1</size>
-                                                <label>-</label>
-                                                <checked>0</checked>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
-                                            <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON28">
-                                                <label>Import</label>
-                                                <checked>0</checked>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="notebookpage">
-                        <label>Fields</label>
-                        <object class="wxPanel" name="ID_PANEL1">
-                            <style>wxTAB_TRAVERSAL</style>
-                            <object class="wxStaticBoxSizer" name="wxID_ANY">
-                                <orient>wxVERTICAL</orient>
-                                <label>Optional layer fileds</label>
-                                <object class="sizeritem">
-                                    <flag>wxGROW|wxALL</flag>
-                                    <border>5</border>
-                                    <option>1</option>
-                                    <object class="wxListCtrl" name="ID_LISTCTRL">
+                                    <object class="ProjectDefLayersObjectList" name="ID_DLGPDL_OBJ_LIST">
                                         <size>100,200</size>
                                         <style>wxLC_REPORT</style>
                                     </object>
@@ -316,7 +264,7 @@
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON">
+                                            <object class="wxToggleButton" name="ID_DLGPDL_OBJECT_ADD" subclass="wxFlatButton">
                                                 <size>40,-1</size>
                                                 <label>+</label>
                                                 <checked>0</checked>
@@ -325,7 +273,59 @@
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON1">
+                                            <object class="wxToggleButton" name="ID_DLGPDL_OBJECT_REMOVE" subclass="wxFlatButton">
+                                                <size>40,-1</size>
+                                                <label>-</label>
+                                                <checked>0</checked>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxToggleButton" name="ID_DLGPDL_OBJECT_IMPORT" subclass="wxFlatButton">
+                                                <label>Import</label>
+                                                <checked>0</checked>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Fields</label>
+                        <object class="wxPanel" name="ID_DLGPDL_PANEL_FIELDS">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                <orient>wxVERTICAL</orient>
+                                <label>Optional layer fileds</label>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="ProjectDefLayersFieldsList" name="ID_DLGPDL_FIELDS_LIST">
+                                        <size>100,100</size>
+                                        <style>wxLC_REPORT</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxToggleButton" name="ID_DLGPDL_FIELD_ADD" subclass="wxFlatButton">
+                                                <size>40,-1</size>
+                                                <label>+</label>
+                                                <checked>0</checked>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxToggleButton" name="ID_DLGPDL_FIELD_REMOVE" subclass="wxFlatButton">
                                                 <size>40,-1</size>
                                                 <label>-</label>
                                                 <checked>0</checked>
