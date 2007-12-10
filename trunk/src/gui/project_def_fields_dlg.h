@@ -92,6 +92,8 @@ class ProjectDefFieldList : public ListGenReport
 
 class ProjectDefFieldDlg: public wxDialog
 	{    
+		void OnShowConstrainValues(wxCommandEvent & event);
+		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg )
 		DECLARE_EVENT_TABLE()
 		

@@ -77,6 +77,10 @@ bool ProjectDefFieldDlg::Create( wxWindow* parent, wxWindowID id, const wxString
     wxDialog::Create( parent, id, caption, pos, size, style );
 
     CreateControls();
+    if (GetSizer())
+    {
+        GetSizer()->SetSizeHints(this);
+    }
     Centre();
 ////@end ProjectDefFieldDlg creation
     return true;
@@ -261,8 +265,6 @@ void ProjectDefFieldDlg::CreateControls()
     itemStdDialogButtonSizer38->AddButton(itemButton40);
 
     itemStdDialogButtonSizer38->Realize();
-
-    ListParam* itemListParam41 = new ListParam( itemDialog1, ID_LISTPARAM2, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT );
 
 ////@end ProjectDefFieldDlg content construction
 }
