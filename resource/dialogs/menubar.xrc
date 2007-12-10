@@ -656,10 +656,6 @@
                 </object>
             </object>
         </object>
-        <object class="ListParam" name="ID_LISTPARAM2">
-            <size>100,100</size>
-            <style>wxLC_REPORT</style>
-        </object>
     </object>
     <object class="wxMenuBar" name="ID_MENU_MAIN">
         <object class="wxMenu">
