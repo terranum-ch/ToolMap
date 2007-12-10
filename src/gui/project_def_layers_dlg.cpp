@@ -80,10 +80,15 @@ ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersDlg, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
-
-
+	EVT_FLATBUTTON (ID_DLGPDL_FIELD_ADD,  ProjectDefLayersDlg::OnAddField)
 END_EVENT_TABLE()
 
+void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
+{
+	ProjectDefFieldDlg myFieldDialog (this);
+	myFieldDialog.ShowModal();
+
+}
 
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()

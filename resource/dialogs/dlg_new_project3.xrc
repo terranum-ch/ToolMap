@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
-    <object class="wxDialog" name="ID_WXDIALOG">
+    <object class="wxDialog" name="ID_DLGAFD" subclass="ProjectDefFieldDlg">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
@@ -24,7 +24,7 @@
                         <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                         <border>5</border>
                         <option>1</option>
-                        <object class="wxTextCtrl" name="ID_TEXTCTRL4">
+                        <object class="wxTextCtrl" name="ID_DLGAFD_FIELD_DEF">
                             <size>200,-1</size>
                         </object>
                     </object>
@@ -55,7 +55,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxChoice" name="ID_CHOICE2">
+                                <object class="wxChoice" name="ID_DLGAFD_DATA_TYPE">
                                     <content>
                                         <item>Integer</item>
                                         <item>Float</item>
@@ -75,7 +75,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxSpinCtrl" name="ID_SPINCTRL1">
+                                <object class="wxSpinCtrl" name="ID_DLGAFD_FIELD_PRECISION">
                                     <style>wxSP_ARROW_KEYS</style>
                                     <value>0</value>
                                     <min>0</min>
@@ -92,7 +92,7 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxSpinCtrl" name="ID_SPINCTRL2">
+                                <object class="wxSpinCtrl" name="ID_DLGAFD_FIELD_SCALE">
                                     <style>wxSP_ARROW_KEYS</style>
                                     <value>0</value>
                                     <min>0</min>
@@ -109,14 +109,14 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL5">
+                                <object class="wxTextCtrl" name="ID_DLGAFD_RESULT">
                                     <style>wxTE_CENTRE</style>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP</flag>
                                 <border>5</border>
-                                <object class="wxCheckBox" name="ID_CHECKBOX4">
+                                <object class="wxCheckBox" name="ID_DLGAFD_ORIENTATION_FIELD">
                                     <label>Orientation field</label>
                                     <checked>0</checked>
                                 </object>
@@ -128,7 +128,7 @@
             <object class="sizeritem">
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
-                <object class="wxCheckBox" name="ID_CHECKBOX2">
+                <object class="wxCheckBox" name="ID_DLGAFD_CONSTRAIN_VALUES">
                     <label>Constrain allowed values</label>
                     <checked>0</checked>
                 </object>
@@ -137,22 +137,23 @@
                 <flag>wxGROW|wxLEFT|wxRIGHT</flag>
                 <border>5</border>
                 <option>1</option>
-                <object class="wxNotebook" name="ID_NOTEBOOK">
+                <object class="wxNotebook" name="ID_DLGAFD_NOTEBOOK">
                     <style>wxBK_DEFAULT</style>
+                    <hidden>1</hidden>
                     <object class="notebookpage">
                         <label>Coded values</label>
-                        <object class="wxPanel" name="ID_PANEL16">
+                        <object class="wxPanel" name="ID_DLGAFD_PANEL_CODED_VALUES">
                             <style>wxTAB_TRAVERSAL</style>
                             <object class="wxStaticBoxSizer" name="wxID_ANY">
                                 <orient>wxVERTICAL</orient>
                                 <label>Allowed values</label>
                                 <object class="sizeritem">
-                                    <flag>wxGROW|wxALL</flag>
+                                    <flag>wxGROW|wxLEFT|wxRIGHT</flag>
                                     <border>5</border>
                                     <option>1</option>
-                                    <object class="wxGrid" name="ID_GRID2">
-                                        <size>200,150</size>
-                                        <style>wxHSCROLL|wxVSCROLL</style>
+                                    <object class="ProjectDefFieldList" name="ID_DLGAFD_CODED_VAL_LIST">
+                                        <size>100,200</size>
+                                        <style>wxLC_REPORT</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -171,7 +172,7 @@
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                             <border>5</border>
                                             <option>1</option>
-                                            <object class="wxChoice" name="ID_CHOICE15">
+                                            <object class="wxChoice" name="ID_DLGAFD_DEFAULT_VAL">
                                             </object>
                                         </object>
                                     </object>
@@ -184,7 +185,7 @@
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON1">
+                                            <object class="wxToggleButton" name="ID_DLGAFD_VAL_ADD" subclass="wxFlatButton">
                                                 <size>40,-1</size>
                                                 <label>+</label>
                                                 <checked>0</checked>
@@ -193,7 +194,7 @@
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON2">
+                                            <object class="wxToggleButton" name="ID_DLGAFD_VAL_REMOVE" subclass="wxFlatButton">
                                                 <size>40,-1</size>
                                                 <label>-</label>
                                                 <checked>0</checked>
@@ -202,7 +203,7 @@
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON3">
+                                            <object class="wxToggleButton" name="ID_DLGAFD_VAL_IMPORT" subclass="wxFlatButton">
                                                 <label>Import...</label>
                                                 <checked>0</checked>
                                             </object>
@@ -210,7 +211,7 @@
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON4">
+                                            <object class="wxToggleButton" name="ID_DLGAFD_VAL_EXPORT" subclass="wxFlatButton">
                                                 <label>Export...</label>
                                                 <checked>0</checked>
                                             </object>
@@ -222,7 +223,7 @@
                     </object>
                     <object class="notebookpage">
                         <label>Range</label>
-                        <object class="wxPanel" name="ID_PANEL17">
+                        <object class="wxPanel" name="ID_DLGAFD_PANEL_RANGE">
                             <style>wxTAB_TRAVERSAL</style>
                             <object class="wxFlexGridSizer">
                                 <cols>2</cols>
@@ -240,7 +241,7 @@
                                 <object class="sizeritem">
                                     <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                     <border>5</border>
-                                    <object class="wxTextCtrl" name="ID_TEXTCTRL12">
+                                    <object class="wxTextCtrl" name="ID_DLGAFD_RANGE_DEFAULT">
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -253,7 +254,7 @@
                                 <object class="sizeritem">
                                     <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                     <border>5</border>
-                                    <object class="wxTextCtrl" name="ID_TEXTCTRL13">
+                                    <object class="wxTextCtrl" name="ID_DLGAFD_RANGE_MIN">
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -266,7 +267,7 @@
                                 <object class="sizeritem">
                                     <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                     <border>5</border>
-                                    <object class="wxTextCtrl" name="ID_TEXTCTRL14">
+                                    <object class="wxTextCtrl" name="ID_DLGAFD_RANGE_MAX">
                                     </object>
                                 </object>
                             </object>
@@ -294,6 +295,10 @@
                     </object>
                 </object>
             </object>
+        </object>
+        <object class="ListParam" name="ID_LISTPARAM2">
+            <size>100,100</size>
+            <style>wxLC_REPORT</style>
         </object>
     </object>
 </resource>

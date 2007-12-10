@@ -21,7 +21,7 @@
 ////@begin includes
 #include "wx/spinctrl.h"
 #include "wx/notebook.h"
-#include "wx/grid.h"
+#include "wx/listctrl.h"
 #include "wx/tglbtn.h"
 ////@end includes
 
@@ -30,6 +30,9 @@
  */
 
 ////@begin forward declarations
+class wxSpinCtrl;
+class wxNotebook;
+class ProjectDefFieldList;
 ////@end forward declarations
 
 /*!
@@ -37,53 +40,54 @@
  */
 
 ////@begin control identifiers
-#define ID_WXDIALOG 10011
-#define ID_TEXTCTRL4 10012
-#define ID_CHOICE2 10013
-#define ID_SPINCTRL1 10015
-#define ID_SPINCTRL2 10014
-#define ID_TEXTCTRL5 10016
-#define ID_CHECKBOX4 10118
-#define ID_CHECKBOX2 10050
-#define ID_NOTEBOOK 10000
-#define ID_PANEL16 10114
-#define ID_GRID2 10117
-#define ID_CHOICE15 10228
-#define ID_TOGGLEBUTTON1 10217
-#define ID_TOGGLEBUTTON2 10215
-#define ID_TOGGLEBUTTON3 10216
-#define ID_TOGGLEBUTTON4 10218
-#define ID_PANEL17 10017
-#define ID_TEXTCTRL12 10018
-#define ID_TEXTCTRL13 10115
-#define ID_TEXTCTRL14 10116
-#define SYMBOL_WXDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_WXDIALOG_TITLE _("Attribute field definition")
-#define SYMBOL_WXDIALOG_IDNAME ID_WXDIALOG
-#define SYMBOL_WXDIALOG_SIZE wxSize(400, 300)
-#define SYMBOL_WXDIALOG_POSITION wxDefaultPosition
+#define ID_DLGAFD 10011
+#define ID_DLGAFD_FIELD_DEF 10012
+#define ID_DLGAFD_DATA_TYPE 10013
+#define ID_DLGAFD_FIELD_PRECISION 10015
+#define ID_DLGAFD_FIELD_SCALE 10014
+#define ID_DLGAFD_RESULT 10016
+#define ID_DLGAFD_ORIENTATION_FIELD 10118
+#define ID_DLGAFD_CONSTRAIN_VALUES 10050
+#define ID_DLGAFD_NOTEBOOK 10000
+#define ID_DLGAFD_PANEL_CODED_VALUES 10114
+#define ID_DLGAFD_CODED_VAL_LIST 10159
+#define ID_DLGAFD_DEFAULT_VAL 10228
+#define ID_DLGAFD_VAL_ADD 10217
+#define ID_DLGAFD_VAL_REMOVE 10215
+#define ID_DLGAFD_VAL_IMPORT 10216
+#define ID_DLGAFD_VAL_EXPORT 10218
+#define ID_DLGAFD_PANEL_RANGE 10017
+#define ID_DLGAFD_RANGE_DEFAULT 10018
+#define ID_DLGAFD_RANGE_MIN 10115
+#define ID_DLGAFD_RANGE_MAX 10116
+#define ID_LISTPARAM2 10259
+#define SYMBOL_PROJECTDEFFIELDDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_PROJECTDEFFIELDDLG_TITLE _("Attribute field definition")
+#define SYMBOL_PROJECTDEFFIELDDLG_IDNAME ID_DLGAFD
+#define SYMBOL_PROJECTDEFFIELDDLG_SIZE wxSize(400, 300)
+#define SYMBOL_PROJECTDEFFIELDDLG_POSITION wxDefaultPosition
 ////@end control identifiers
 
 
 /*!
- * wxDialog class declaration
+ * ProjectDefFieldDlg class declaration
  */
 
-class wxDialog: public wxDialog
+class ProjectDefFieldDlg: public wxDialog
 {    
-    DECLARE_DYNAMIC_CLASS( wxDialog )
+    DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg )
     DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
-    wxDialog();
-    wxDialog( wxWindow* parent, wxWindowID id = SYMBOL_WXDIALOG_IDNAME, const wxString& caption = SYMBOL_WXDIALOG_TITLE, const wxPoint& pos = SYMBOL_WXDIALOG_POSITION, const wxSize& size = SYMBOL_WXDIALOG_SIZE, long style = SYMBOL_WXDIALOG_STYLE );
+    ProjectDefFieldDlg();
+    ProjectDefFieldDlg( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFFIELDDLG_SIZE, long style = SYMBOL_PROJECTDEFFIELDDLG_STYLE );
 
     /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_WXDIALOG_IDNAME, const wxString& caption = SYMBOL_WXDIALOG_TITLE, const wxPoint& pos = SYMBOL_WXDIALOG_POSITION, const wxSize& size = SYMBOL_WXDIALOG_SIZE, long style = SYMBOL_WXDIALOG_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFFIELDDLG_SIZE, long style = SYMBOL_PROJECTDEFFIELDDLG_STYLE );
 
     /// Destructor
-    ~wxDialog();
+    ~ProjectDefFieldDlg();
 
     /// Initialises member variables
     void Init();
@@ -91,24 +95,36 @@ public:
     /// Creates the controls and sizers
     void CreateControls();
 
-////@begin wxDialog event handler declarations
+////@begin ProjectDefFieldDlg event handler declarations
 
-////@end wxDialog event handler declarations
+////@end ProjectDefFieldDlg event handler declarations
 
-////@begin wxDialog member function declarations
+////@begin ProjectDefFieldDlg member function declarations
 
     /// Retrieves bitmap resources
     wxBitmap GetBitmapResource( const wxString& name );
 
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
-////@end wxDialog member function declarations
+////@end ProjectDefFieldDlg member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
 
-////@begin wxDialog member variables
-////@end wxDialog member variables
+////@begin ProjectDefFieldDlg member variables
+    wxTextCtrl* m_DlgAFD_Field_Def;
+    wxSpinCtrl* m_DlgAFD_Field_Precision;
+    wxSpinCtrl* m_DlgAFD_Field_Scale;
+    wxTextCtrl* m_DlgAFD_Result;
+    wxNotebook* m_DlgAFD_Notebook;
+    wxPanel* m_DlgAFD_Panel_Coded_Values;
+    ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
+    wxChoice* m_DlgAFD_Default_Val;
+    wxPanel* m_DlgAFD_Panel_Range;
+    wxTextCtrl* m_DlgAFD_Range_Default;
+    wxTextCtrl* m_DlgAFD_Range_Min;
+    wxTextCtrl* m_DlgAFD_Range_Max;
+////@end ProjectDefFieldDlg member variables
 };
 
 #endif
