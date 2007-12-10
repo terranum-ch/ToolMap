@@ -34,6 +34,7 @@
 #include "wx/notebook.h"
 #include "wxflatbutton.h"
 #include "project_def_fields_dlg.h"
+#include "wx/statline.h" // for static line in ProjectDefLayersEditObjectDlg
 
 
 #define ID_DLGPDL 10007
@@ -104,9 +105,57 @@ class ProjectDefLayersFieldsList : public ListGenReport
 };
 
 
+////@begin control identifiers
+#define ID_PROJECTDEFLAYERSEDITOBJECTDLG 10117
+#define ID_DLGEO_CODE 10259
+#define ID_DLGEO_VALUE 10260
+#define ID_STATICLINE2 10261
+#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE _("Edit Object")
+#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME ID_PROJECTDEFLAYERSEDITOBJECTDLG
+#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE wxSize(400, 300)
+#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION wxDefaultPosition
+////@end control identifiers
+
+
+
+class ProjectDefLayersEditObjectDlg: public wxDialog
+	{    
+		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg )
+		//DECLARE_EVENT_TABLE()
+		
+	public:
+		/// Constructors
+		ProjectDefLayersEditObjectDlg();
+		ProjectDefLayersEditObjectDlg( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE, long style = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE );
+		
+		/// Creation
+		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION, const wxSize& size = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE, long style = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE );
+		
+		/// Destructor
+		~ProjectDefLayersEditObjectDlg();
+		
+		/// Initialises member variables
+		void Init();
+		
+		/// Creates the controls and sizers
+		void CreateControls();
+		
+		////@begin ProjectDefLayersEditObjectDlg member variables
+		wxTextCtrl* m_DlgEO_Code;
+		wxTextCtrl* m_DlgEO_Value;
+		////@end ProjectDefLayersEditObjectDlg member variables
+	};
+
+
+
+
+
 class ProjectDefLayersDlg: public wxDialog
 	{    
 		void OnAddField (wxCommandEvent & event);
+		void OnAddObject (wxCommandEvent & event);
+		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
 		DECLARE_EVENT_TABLE()
 		

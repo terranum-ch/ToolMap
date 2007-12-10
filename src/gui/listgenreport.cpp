@@ -211,6 +211,24 @@ void ListGenReport::MoveItem (int iItem, int iNewPos)
 }
 
 
+bool ListGenReport::DataToList(wxDialog * pdialog, wxArrayString & myValues)
+{
+	if (pdialog)
+	{
+		if(pdialog->ShowModal() == wxID_OK)
+		{
+			
+		}
+	}
+	else 
+	{
+		wxLogDebug(_T("Pointer to the dialog is null"));
+	}
+	
+}
+
+
+
 /************************ LISTGENMNEU **********************************/
 
 ListGenMenu::ListGenMenu() : wxMenu()
