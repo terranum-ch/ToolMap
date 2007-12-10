@@ -24,12 +24,23 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefDLG, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectDefDLG, wxDialog )
 	EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_ADD, ProjectDefDLG::OnAddLayer)
+	EVT_BUTTON(ID_DLGPD_PROJ_PATH_BTN, ProjectDefDLG::OnSelectProjectPath)
 END_EVENT_TABLE()
+
 
 void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
 	ProjectDefLayersDlg  myLayerDialog (this);
 	myLayerDialog.ShowModal();
+}
+
+void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
+{
+	wxDirDialog myDirDialog (this);
+	if( myDirDialog.ShowModal() == wxID_OK)
+	{
+		m_DlgPD_Proj_Path->SetValue(myDirDialog.GetPath());
+	}
 }
 
 
@@ -103,7 +114,7 @@ void ProjectDefDLG::CreateControls()
     m_DlgPD_Proj_Path = new wxTextCtrl( itemDialog1, ID_DLGPD_PROJ_PATH, _T(""), wxDefaultPosition, wxSize(200, -1), 0 );
     itemFlexGridSizer4->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxButton * myDlgPd_Proj_Path_Btn = new wxButton( itemDialog1, ID_DLJPD_PROJ_PATH_BTN, _("..."), wxDefaultPosition, wxSize(50, -1), 0 );
+    wxButton * myDlgPd_Proj_Path_Btn = new wxButton( itemDialog1, ID_DLGPD_PROJ_PATH_BTN, _("..."), wxDefaultPosition, wxSize(50, -1), 0 );
     itemFlexGridSizer4->Add(myDlgPd_Proj_Path_Btn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );

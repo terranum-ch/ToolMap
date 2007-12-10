@@ -75,12 +75,97 @@ ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 
 
 
+/******************************  Add object Dialog Class *************************/
+IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg, wxDialog )
+
+ProjectDefLayersEditObjectDlg::ProjectDefLayersEditObjectDlg()
+{
+    Init();
+}
+
+ProjectDefLayersEditObjectDlg::ProjectDefLayersEditObjectDlg( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+{
+    Init();
+    Create(parent, id, caption, pos, size, style);
+}
+
+bool ProjectDefLayersEditObjectDlg::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+{
+    SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
+    wxDialog::Create( parent, id, caption, pos, size, style );
+	
+    CreateControls();
+    if (GetSizer())
+    {
+        GetSizer()->SetSizeHints(this);
+    }
+    Centre();
+    return true;
+}
+
+
+ProjectDefLayersEditObjectDlg::~ProjectDefLayersEditObjectDlg()
+{
+	
+}
+
+
+void ProjectDefLayersEditObjectDlg::Init()
+{
+
+    m_DlgEO_Code = NULL;
+    m_DlgEO_Value = NULL;
+}
+
+
+void ProjectDefLayersEditObjectDlg::CreateControls()
+{    
+	////@begin ProjectDefLayersEditObjectDlg content construction
+    ProjectDefLayersEditObjectDlg* itemDialog1 = this;
+	
+    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+    itemDialog1->SetSizer(itemBoxSizer2);
+	
+    wxFlexGridSizer* itemFlexGridSizer3 = new wxFlexGridSizer(2, 2, 0, 0);
+    itemBoxSizer2->Add(itemFlexGridSizer3, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_STATIC, _("Code :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(itemStaticText4, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Description :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(itemStaticText5, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_DlgEO_Code = new wxTextCtrl( itemDialog1, ID_DLGEO_CODE, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(m_DlgEO_Code, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_DlgEO_Value = new wxTextCtrl( itemDialog1, ID_DLGEO_VALUE, _T(""), wxDefaultPosition, wxSize(300, -1), 0 );
+    itemFlexGridSizer3->Add(m_DlgEO_Value, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticLine* itemStaticLine8 = new wxStaticLine( itemDialog1, ID_STATICLINE2, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+    itemBoxSizer2->Add(itemStaticLine8, 0, wxGROW|wxALL, 5);
+	
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer9 = new wxStdDialogButtonSizer;
+	
+    itemBoxSizer2->Add(itemStdDialogButtonSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
+    wxButton* itemButton10 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer9->AddButton(itemButton10);
+	
+    wxButton* itemButton11 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer9->AddButton(itemButton11);
+	
+    itemStdDialogButtonSizer9->Realize();
+	
+	////@end ProjectDefLayersEditObjectDlg content construction
+}
+
+
 
 /******************************  Dialog Class *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersDlg, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_ADD,  ProjectDefLayersDlg::OnAddField)
+	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_ADD, ProjectDefLayersDlg::OnAddObject )
 END_EVENT_TABLE()
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
@@ -89,6 +174,14 @@ void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
 	myFieldDialog.ShowModal();
 
 }
+
+void ProjectDefLayersDlg::OnAddObject (wxCommandEvent & event)
+{
+	wxArrayString myDlgValues;
+	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
+	m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues);
+}
+
 
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()

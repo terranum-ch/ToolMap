@@ -45,6 +45,7 @@
 #include "listgenreport.h"
 #include "wxflatbutton.h"
 #include "project_def_layers_dlg.h"
+#include <wx/dirdlg.h>				// for directory selection dialog
 ////@end includes
 
 
@@ -67,7 +68,7 @@ class wxToggleButton;
 ////@begin control identifiers
 #define ID_DLGPD 10000
 #define ID_DLGPD_PROJ_PATH 10001
-#define ID_DLJPD_PROJ_PATH_BTN 10002
+#define ID_DLGPD_PROJ_PATH_BTN 10002
 #define ID_DLGPD_PROJ_NAME 10003
 #define ID_DLGPD_PROJ_UNIT 10156
 #define ID_DLGPD_PROJ_PROJECTION 10119
@@ -95,6 +96,7 @@ class ProjectDefDLG: public wxDialog
 	{    
 	private:
 		void OnAddLayer(wxCommandEvent & event);
+		void OnSelectProjectPath (wxCommandEvent & event);
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefDLG )
 		DECLARE_EVENT_TABLE()

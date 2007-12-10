@@ -171,6 +171,8 @@ class ListGenReport : public wxListCtrl
 		 *********************************************************************/
 		void MoveItem (int iItem, int iNewPos=0);
 		
+		bool DataToList(wxDialog * pdialog, wxArrayString & myValues);
+		
 		DECLARE_EVENT_TABLE();
 	};
 
