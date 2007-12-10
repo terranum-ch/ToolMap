@@ -33,6 +33,7 @@
 #include "listgenreport.h"
 #include "wx/notebook.h"
 #include "wxflatbutton.h"
+#include "project_def_fields_dlg.h"
 
 
 #define ID_DLGPDL 10007
@@ -105,6 +106,7 @@ class ProjectDefLayersFieldsList : public ListGenReport
 
 class ProjectDefLayersDlg: public wxDialog
 	{    
+		void OnAddField (wxCommandEvent & event);
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
 		DECLARE_EVENT_TABLE()
 		
