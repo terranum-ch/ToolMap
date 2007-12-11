@@ -59,10 +59,11 @@
 class ProjectDefLayersObjectList : public ListGenReport
 	{
 	private:
-		//virtual void OnDoubleClickItem(wxListEvent & event);
-//		void OnMySelectionChange (wxListEvent & event);
-		
+		virtual void OnDoubleClickItem(wxListEvent & event);
+//		void OnMySelectionChange (wxListEvent & event);		
 		wxChoice * m_ChoiceToChange;
+		
+		//DECLARE_EVENT_TABLE();
 		
 	public:
 		static const int ID_PARAMLIST;
@@ -77,7 +78,7 @@ class ProjectDefLayersObjectList : public ListGenReport
 //
 //		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
 //		void SetChoiceList (wxChoice * myChoiceList);
-//		DECLARE_EVENT_TABLE();
+//		
 };
 
 class ProjectDefLayersFieldsList : public ListGenReport
@@ -119,10 +120,12 @@ class ProjectDefLayersFieldsList : public ListGenReport
 
 
 
-class ProjectDefLayersEditObjectDlg: public wxDialog
+class ProjectDefLayersEditObjectDlg: public ListGenDialog
 	{    
+		void OnTextChange(wxCommandEvent & event);
+		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg )
-		//DECLARE_EVENT_TABLE()
+		DECLARE_EVENT_TABLE()
 		
 	public:
 		/// Constructors
@@ -139,11 +142,15 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 		void Init();
 		
 		/// Creates the controls and sizers
-		void CreateControls();
+		void CreateDlgControls();
+		
+		virtual  void GetDlgData( wxArrayString & myStringArray);
+		virtual void SetDlgData(wxArrayString & myStringArray);
 		
 		////@begin ProjectDefLayersEditObjectDlg member variables
 		wxTextCtrl* m_DlgEO_Code;
 		wxTextCtrl* m_DlgEO_Value;
+		wxButton* m_DlgEO_OK_Btn;
 		////@end ProjectDefLayersEditObjectDlg member variables
 	};
 
@@ -155,6 +162,7 @@ class ProjectDefLayersDlg: public wxDialog
 	{    
 		void OnAddField (wxCommandEvent & event);
 		void OnAddObject (wxCommandEvent & event);
+		void OnRemoveObject (wxCommandEvent & event);
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
 		DECLARE_EVENT_TABLE()

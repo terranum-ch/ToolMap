@@ -89,6 +89,7 @@ public:
 ////@begin ProjectDefLayersEditObjectDlg member variables
     wxTextCtrl* m_DlgEO_Code;
     wxTextCtrl* m_DlgEO_Value;
+    wxButton* m_DlgEO_OK_Btn;
 ////@end ProjectDefLayersEditObjectDlg member variables
 };
 

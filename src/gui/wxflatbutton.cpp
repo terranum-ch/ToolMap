@@ -60,7 +60,6 @@ void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 	{
 		SetValue(FALSE);
 		event.Skip(TRUE);
-		wxLogDebug(_T("Event FlatButton skipped..."));
 	}
 	else
 	{

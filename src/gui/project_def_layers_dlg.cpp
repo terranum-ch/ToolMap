@@ -20,6 +20,28 @@
 #include "project_def_layers_dlg.h"
 
 /******************************  Object List *************************/
+//BEGIN_EVENT_TABLE (ProjectDefLayersObjectList, ListGenReport)
+//	EVT_
+//END_EVENT_TABLE()
+
+void ProjectDefLayersObjectList::OnDoubleClickItem(wxListEvent & event)
+{
+	wxArrayString myRowData;
+	long myIndex = GetSelectedItem();
+	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
+
+	// get the data from the list for selected line
+	GetAllDataAsStringArray(myRowData, myIndex);
+	
+	// put the data in the dialog
+	if (DataToList(myModifiyDialog,myRowData))
+	{
+		SetItemText(myIndex, 0, myRowData.Item(0));
+		SetItemText(myIndex, 1, myRowData.Item(1));
+	}
+	delete myModifiyDialog;
+}
+
 ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWindowID  id, wxSize size) 
 	: ListGenReport(parent,id,size)
 {
@@ -78,6 +100,22 @@ ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 /******************************  Add object Dialog Class *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg, wxDialog )
 
+BEGIN_EVENT_TABLE (ProjectDefLayersEditObjectDlg, ListGenDialog)
+	EVT_TEXT (ID_DLGEO_CODE, ProjectDefLayersEditObjectDlg::OnTextChange)
+	EVT_TEXT (ID_DLGEO_VALUE, ProjectDefLayersEditObjectDlg::OnTextChange)
+END_EVENT_TABLE ()
+
+
+void ProjectDefLayersEditObjectDlg::OnTextChange(wxCommandEvent & event)
+{
+	if (m_DlgEO_Code->GetValue().IsEmpty() && m_DlgEO_Value->GetValue().IsEmpty())
+	{
+		m_DlgEO_OK_Btn->Enable(FALSE);
+	}
+	else
+		m_DlgEO_OK_Btn->Enable(TRUE);
+}
+
 ProjectDefLayersEditObjectDlg::ProjectDefLayersEditObjectDlg()
 {
     Init();
@@ -94,7 +132,7 @@ bool ProjectDefLayersEditObjectDlg::Create( wxWindow* parent, wxWindowID id, con
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     wxDialog::Create( parent, id, caption, pos, size, style );
 	
-    CreateControls();
+    CreateDlgControls();
     if (GetSizer())
     {
         GetSizer()->SetSizeHints(this);
@@ -113,12 +151,25 @@ ProjectDefLayersEditObjectDlg::~ProjectDefLayersEditObjectDlg()
 void ProjectDefLayersEditObjectDlg::Init()
 {
 
-    m_DlgEO_Code = NULL;
+	m_DlgEO_Code = NULL;
     m_DlgEO_Value = NULL;
+    m_DlgEO_OK_Btn = NULL;
 }
 
 
-void ProjectDefLayersEditObjectDlg::CreateControls()
+void ProjectDefLayersEditObjectDlg::GetDlgData( wxArrayString & myStringArray)
+{
+	myStringArray.Add(m_DlgEO_Code->GetValue());
+	myStringArray.Add(m_DlgEO_Value->GetValue());
+}
+
+void ProjectDefLayersEditObjectDlg::SetDlgData(wxArrayString & myStringArray)
+{
+	m_DlgEO_Code->SetValue(myStringArray.Item(0));
+	m_DlgEO_Value->SetValue(myStringArray.Item(1));
+}
+
+void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 {    
 	////@begin ProjectDefLayersEditObjectDlg content construction
     ProjectDefLayersEditObjectDlg* itemDialog1 = this;
@@ -147,8 +198,9 @@ void ProjectDefLayersEditObjectDlg::CreateControls()
     wxStdDialogButtonSizer* itemStdDialogButtonSizer9 = new wxStdDialogButtonSizer;
 	
     itemBoxSizer2->Add(itemStdDialogButtonSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
-    wxButton* itemButton10 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer9->AddButton(itemButton10);
+    m_DlgEO_OK_Btn = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgEO_OK_Btn->Enable(false);
+    itemStdDialogButtonSizer9->AddButton(m_DlgEO_OK_Btn);
 	
     wxButton* itemButton11 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer9->AddButton(itemButton11);
@@ -166,6 +218,7 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersDlg, wxDialog )
 BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_ADD,  ProjectDefLayersDlg::OnAddField)
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_ADD, ProjectDefLayersDlg::OnAddObject )
+	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_REMOVE, ProjectDefLayersDlg::OnRemoveObject)
 END_EVENT_TABLE()
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
@@ -175,13 +228,31 @@ void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
 
 }
 
+
+
 void ProjectDefLayersDlg::OnAddObject (wxCommandEvent & event)
 {
 	wxArrayString myDlgValues;
 	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-	m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues);
+	int iLastItemNumber = m_DlgPDL_Object_List->GetItemCount();
+	
+	// check if data transfert was OK
+	if (m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues))
+	{
+		// put data to the list
+		m_DlgPDL_Object_List->AddItemToList(myDlgValues.Item(0),iLastItemNumber);
+		m_DlgPDL_Object_List->SetItemText(iLastItemNumber, 1, myDlgValues.Item(1));	
+	}
+	
+	delete myEditObjDlg;
 }
 
+
+void ProjectDefLayersDlg::OnRemoveObject (wxCommandEvent & event)
+{
+	
+	m_DlgPDL_Object_List->DeleteSelectedItem();
+}
 
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()

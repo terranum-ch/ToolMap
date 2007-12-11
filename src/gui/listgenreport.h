@@ -41,6 +41,7 @@ wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
 ////@end control identifiers
 
 class ListGenMenu; // forward declaration
+class ListGenDialog; // forward declaration
 
 /*******************************************************//**
  @brief Manage a report list
@@ -171,7 +172,13 @@ class ListGenReport : public wxListCtrl
 		 *********************************************************************/
 		void MoveItem (int iItem, int iNewPos=0);
 		
-		bool DataToList(wxDialog * pdialog, wxArrayString & myValues);
+		bool DataToList(ListGenDialog * pdialog,  wxArrayString & myValues);
+		
+		bool DeleteSelectedItem();
+		
+		int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
+		
+		bool ItemExist(long index);
 		
 		DECLARE_EVENT_TABLE();
 	};
@@ -202,6 +209,29 @@ class ListGenMenu : public wxMenu
 		
 		wxMenu * GetTheMenu() {return m_ContextMenu;}
 		
+	};
+
+
+class ListGenDialog : public wxDialog 
+	{
+	protected:
+		//virtual void Init(){;}
+		//virtual void CreateDlgControls() {;}
+	public:
+		ListGenDialog(){;}
+		//ListGenDialog( wxWindow* parent, 
+		//			 wxWindowID id ,
+		//			 const wxString& caption,
+		//			 const wxPoint& pos,
+		//			 const wxSize& size,
+		//			 long style);
+
+		~ListGenDialog() {;}
+		
+		
+		
+		virtual  void GetDlgData( wxArrayString & myStringArray) = 0;
+		virtual void SetDlgData(wxArrayString & myStringArray)=0;
 	};
 
 #endif

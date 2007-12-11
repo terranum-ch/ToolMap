@@ -54,6 +54,9 @@ void ListGenReport::OnInit ()
 {
 	m_ListContextMenu = NULL;
 	m_ListContextMenu = new ListGenMenu();
+	
+	// test for connection event
+	//Connect(ID_LIST,wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxCommandEventHandler());
 }
 
 
@@ -97,11 +100,12 @@ void ListGenReport::OnPressBackSpace (wxListEvent & event)
 {
 	if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_DELETE)
 	{
-		long iSelectedItem = GetSelectedItem();
-		if (iSelectedItem != -1)
-		{
-			DeleteItem(iSelectedItem);
-		} 
+		//long iSelectedItem = GetSelectedItem();
+//		if (iSelectedItem != -1)
+//		{
+//			DeleteItem(iSelectedItem);
+//		} 
+		DeleteSelectedItem();
 		
 	}
 	event.Skip();
@@ -211,22 +215,79 @@ void ListGenReport::MoveItem (int iItem, int iNewPos)
 }
 
 
-bool ListGenReport::DataToList(wxDialog * pdialog, wxArrayString & myValues)
+bool ListGenReport::DataToList(ListGenDialog * pdialog,  wxArrayString & myValues)
 {
-	if (pdialog)
+	if (pdialog) // check for null pointer
 	{
+		// if array not empty, we send data to the dialog
+		if(myValues.GetCount() > 0)
+		{
+			pdialog->SetDlgData(myValues);	
+		}
+		
 		if(pdialog->ShowModal() == wxID_OK)
 		{
+			// clear the array
+			myValues.Clear();
 			
+			// get data from the dialog
+			pdialog->GetDlgData(myValues);
+			return TRUE;
 		}
 	}
 	else 
 	{
-		wxLogDebug(_T("Pointer to the dialog is null"));
+		wxLogDebug(_T("Pointer to the dialog is null"));	
 	}
-	
+	return FALSE;
 }
 
+bool ListGenReport::DeleteSelectedItem()
+{
+	long iSelectedItem = GetSelectedItem();
+	if (iSelectedItem != -1)
+	{
+		DeleteItem(iSelectedItem);
+		wxLogDebug(_T("Item Deleted succesfully"));
+		return TRUE;
+	} 
+	wxLogDebug(_T("No item deleted, select an item"));
+	return FALSE;
+}
+
+
+int ListGenReport::GetAllDataAsStringArray(wxArrayString & myStringArray, long index)
+{
+	int iColNumber = GetColumnCount();
+	
+	// check that some columns exists
+	// and check also that item exist at
+	// specified index
+	if (iColNumber == 0 || !ItemExist(index))
+	{
+		wxFAIL;
+		return -1;
+	}
+	
+	// get data from all colums at the specified index
+	for (int i=0; i< iColNumber; i++)
+	{
+		myStringArray.Add(GetItemColText(index, i));
+	}
+	return iColNumber;
+}
+
+bool ListGenReport::ItemExist(long index)
+{
+	wxListItem info;
+	info.SetId(index);
+	if (!GetItem(info))
+	{
+		wxFAIL;
+		return FALSE;
+	}
+	return TRUE;
+}
 
 
 /************************ LISTGENMNEU **********************************/
@@ -259,4 +320,27 @@ wxMenu * ListGenMenu::CreateContextMenu()
     return itemMenu1;
 }
 
+
+
+
+
+/************************ LISTGENDIALOG **********************************/
+//ListGenDialog::ListGenDialog()
+//{
+//	Init();
+//}
+
+//ListGenDialog::ListGenDialog( wxWindow* parent,wxWindowID id , const wxString& caption,
+//							 const wxPoint& pos,const wxSize& size,long style)
+//{
+//	Init();
+//	SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
+//    wxDialog::Create( parent, id, caption, pos, size, style );
+//    CreateDlgControls();
+//    if (GetSizer())
+//    {
+//        GetSizer()->SetSizeHints(this);
+//    }
+//    Centre();
+//}
 

@@ -3730,6 +3730,7 @@ structure as the actual one</label>
                         <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                         <border>5</border>
                         <object class="wxButton" name="wxID_OK">
+                            <enabled>0</enabled>
                             <label>&amp;OK</label>
                         </object>
                     </object>

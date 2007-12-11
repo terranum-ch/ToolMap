@@ -105,6 +105,7 @@ void ProjectDefLayersEditObjectDlg::Init()
 ////@begin ProjectDefLayersEditObjectDlg member initialisation
     m_DlgEO_Code = NULL;
     m_DlgEO_Value = NULL;
+    m_DlgEO_OK_Btn = NULL;
 ////@end ProjectDefLayersEditObjectDlg member initialisation
 }
 
@@ -142,8 +143,9 @@ void ProjectDefLayersEditObjectDlg::CreateControls()
     wxStdDialogButtonSizer* itemStdDialogButtonSizer9 = new wxStdDialogButtonSizer;
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
-    wxButton* itemButton10 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer9->AddButton(itemButton10);
+    m_DlgEO_OK_Btn = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgEO_OK_Btn->Enable(false);
+    itemStdDialogButtonSizer9->AddButton(m_DlgEO_OK_Btn);
 
     wxButton* itemButton11 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer9->AddButton(itemButton11);

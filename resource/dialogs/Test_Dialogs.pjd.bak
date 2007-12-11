@@ -28882,7 +28882,7 @@ structure as the actual one"</string>
                 <string name="proxy-Custom ctor arguments">""</string>
               </document>
               <document>
-                <string name="title">"wxTextCtrl: ID_TEXTCTRL2"</string>
+                <string name="title">"wxTextCtrl: ID_DLGEO_CODE"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"textctrl"</string>
@@ -28892,7 +28892,7 @@ structure as the actual one"</string>
                 <long name="locked">0</long>
                 <string name="created">"10/12/2007"</string>
                 <string name="proxy-type">"wbTextCtrlProxy"</string>
-                <string name="proxy-Id name">"ID_TEXTCTRL2"</string>
+                <string name="proxy-Id name">"ID_DLGEO_CODE"</string>
                 <long name="proxy-Id value">10259</long>
                 <string name="proxy-Class">"wxTextCtrl"</string>
                 <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -28900,7 +28900,7 @@ structure as the actual one"</string>
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"m_DlgEO_Code"</string>
                 <string name="proxy-Initial value">""</string>
                 <long name="proxy-Max length">0</long>
                 <string name="proxy-Help text">""</string>
@@ -28963,7 +28963,7 @@ structure as the actual one"</string>
                 <string name="proxy-Custom ctor arguments">""</string>
               </document>
               <document>
-                <string name="title">"wxTextCtrl: ID_TEXTCTRL3"</string>
+                <string name="title">"wxTextCtrl: ID_DLGEO_VALUE"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"textctrl"</string>
@@ -28973,7 +28973,7 @@ structure as the actual one"</string>
                 <long name="locked">0</long>
                 <string name="created">"10/12/2007"</string>
                 <string name="proxy-type">"wbTextCtrlProxy"</string>
-                <string name="proxy-Id name">"ID_TEXTCTRL3"</string>
+                <string name="proxy-Id name">"ID_DLGEO_VALUE"</string>
                 <long name="proxy-Id value">10260</long>
                 <string name="proxy-Class">"wxTextCtrl"</string>
                 <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -28981,7 +28981,7 @@ structure as the actual one"</string>
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"m_DlgEO_Value"</string>
                 <string name="proxy-Initial value">""</string>
                 <long name="proxy-Max length">0</long>
                 <string name="proxy-Help text">""</string>
