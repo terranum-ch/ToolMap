@@ -277,8 +277,8 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 
 void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 {
-	ProjectDefDLG  myNewProjDlg (this);
-	myNewProjDlg.ShowModal();
+	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this);
+	myNewProjDlg->ShowModal();
 	
 }
 

@@ -3732,6 +3732,7 @@ structure as the actual one</label>
                         <object class="wxButton" name="wxID_OK">
                             <enabled>0</enabled>
                             <label>&amp;OK</label>
+                            <default>1</default>
                         </object>
                     </object>
                     <object class="button">

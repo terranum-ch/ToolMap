@@ -144,6 +144,7 @@ void ProjectDefLayersEditObjectDlg::CreateControls()
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
     m_DlgEO_OK_Btn = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgEO_OK_Btn->SetDefault();
     m_DlgEO_OK_Btn->Enable(false);
     itemStdDialogButtonSizer9->AddButton(m_DlgEO_OK_Btn);
 

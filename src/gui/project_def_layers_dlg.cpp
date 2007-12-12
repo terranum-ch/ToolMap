@@ -197,10 +197,12 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 	
     wxStdDialogButtonSizer* itemStdDialogButtonSizer9 = new wxStdDialogButtonSizer;
 	
-    itemBoxSizer2->Add(itemStdDialogButtonSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
+	itemBoxSizer2->Add(itemStdDialogButtonSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
     m_DlgEO_OK_Btn = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgEO_OK_Btn->SetDefault();
     m_DlgEO_OK_Btn->Enable(false);
     itemStdDialogButtonSizer9->AddButton(m_DlgEO_OK_Btn);
+	
 	
     wxButton* itemButton11 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer9->AddButton(itemButton11);
@@ -219,6 +221,7 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_ADD,  ProjectDefLayersDlg::OnAddField)
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_ADD, ProjectDefLayersDlg::OnAddObject )
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_REMOVE, ProjectDefLayersDlg::OnRemoveObject)
+	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_IMPORT, ProjectDefLayersDlg::OnImportObject)
 END_EVENT_TABLE()
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
@@ -252,6 +255,27 @@ void ProjectDefLayersDlg::OnRemoveObject (wxCommandEvent & event)
 {
 	
 	m_DlgPDL_Object_List->DeleteSelectedItem();
+}
+
+
+void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
+{
+	TextParserTxtFileComma myParser(_T("/Users/Lucien/Desktop/testparse.txt"));
+	
+	TextParser * myTempParser = &myParser;
+	
+	
+	wxLogDebug( myTempParser->GetParserType());
+	
+	bool myResult = myTempParser->OpenParseFile();
+	if (myResult)
+		wxLogDebug(_T("Opening file OK"));
+	wxArrayString myArrValues;
+	int myComptedchar = myTempParser->ParseNextLine(myArrValues);
+	wxLogDebug(_T("%d char parsed from file"), myComptedchar);
+	
+	myTempParser->CloseParseFile();
+	
 }
 
 
