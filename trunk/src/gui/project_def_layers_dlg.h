@@ -35,6 +35,7 @@
 #include "wxflatbutton.h"
 #include "project_def_fields_dlg.h"
 #include "wx/statline.h" // for static line in ProjectDefLayersEditObjectDlg
+#include "../core/textparser.h" // for text parsing during importation
 
 
 #define ID_DLGPDL 10007
@@ -163,6 +164,7 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnAddField (wxCommandEvent & event);
 		void OnAddObject (wxCommandEvent & event);
 		void OnRemoveObject (wxCommandEvent & event);
+		void OnImportObject (wxCommandEvent & event);
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
 		DECLARE_EVENT_TABLE()
