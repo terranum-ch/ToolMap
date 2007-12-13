@@ -18,11 +18,15 @@
 
 #include "textparser.h"
 
+
+// initialisation of static members
+int TextParser::m_iActualLine = 0;
+
 TextParser::TextParser()
 {
 	m_ParseFileType = wxEmptyString;
 	m_ParseFileName = wxFileName(wxEmptyString);
-	//iAcutalLine = 0;
+	m_LineCount = 0;
 }
 
 
@@ -71,7 +75,7 @@ int TextParser::ParseNextLine (wxArrayString & myValues)
 
 void TextParser::IncrementActualLineNumber (int iIncrement)
 {
-	m_iAcutalLine = m_iAcutalLine + iIncrement;
+	m_iActualLine = m_iActualLine + iIncrement;
 }
 
 
@@ -111,7 +115,7 @@ void TextParserTxtFile::InitParserValue()
 bool TextParserTxtFile::OpenParseFile ()
 {
 	// set line number to zero
-	//m_iAcutalLine = 0;
+	InitActualLineNumber();
 	
 	// check the file
 	if (!CheckParseFileExist())
@@ -122,6 +126,7 @@ bool TextParserTxtFile::OpenParseFile ()
 	m_File->Open();
 	if (m_File->IsOpened())
 	{
+		m_LineCount = m_File->GetLineCount();
 		return TRUE;
 	}
 	return FALSE;
@@ -153,8 +158,10 @@ int TextParserTxtFile::ParseNextLine (wxArrayString & myValues)
 		wxString myValueToParse = _T("");
 		
 		// get the line based on the static int m_iActualLine
-		myValueToParse =	m_File->GetLine(0);
+		myValueToParse =	m_File->GetLine(GetActualLineNumber());
 		wxLogDebug(myValueToParse);
+		
+		IncrementActualLineNumber();
 		
 		wxStringTokenizer tkz(myValueToParse, m_TextSeparator);
 		while ( tkz.HasMoreTokens() ) 

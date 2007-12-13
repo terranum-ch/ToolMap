@@ -36,8 +36,7 @@ void ProjectDefLayersObjectList::OnDoubleClickItem(wxListEvent & event)
 	// put the data in the dialog
 	if (DataToList(myModifiyDialog,myRowData))
 	{
-		SetItemText(myIndex, 0, myRowData.Item(0));
-		SetItemText(myIndex, 1, myRowData.Item(1));
+		EditDataToList(myRowData, myIndex);
 	}
 	delete myModifiyDialog;
 }
@@ -64,6 +63,40 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
 {
 
+}
+
+
+bool ProjectDefLayersObjectList::EditDataToList (const wxArrayString & myValue, int index)
+{
+	// check that data are stored in the array to fill the list.
+	// if the array contain more data than the list could afford, 
+	// only first data will be used. If the array is too small for
+	// filling totally the list the only the n first col will be 
+	// used.
+	int iArrayItemCount = myValue.GetCount();
+	int iRunNb = 0;
+	iArrayItemCount > GetColumnCount() ? iRunNb = GetColumnCount() : iRunNb = iArrayItemCount;
+	
+	if (iArrayItemCount > 0)
+	{
+		// add the first line in the list if index is = -1
+		if (index == -1)
+		{
+			AddItemToList(myValue.Item(0));
+			index = GetItemCount()-1;
+		}
+		else
+			SetItemText(index, 0, myValue.Item(0));
+		
+		for (int i=1; i<iRunNb; i++)
+		{
+			SetItemText(index,i, myValue.Item(i));
+		}
+		
+		return TRUE;
+	}
+	return FALSE;
+	
 }
 
 
@@ -243,8 +276,7 @@ void ProjectDefLayersDlg::OnAddObject (wxCommandEvent & event)
 	if (m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues))
 	{
 		// put data to the list
-		m_DlgPDL_Object_List->AddItemToList(myDlgValues.Item(0),iLastItemNumber);
-		m_DlgPDL_Object_List->SetItemText(iLastItemNumber, 1, myDlgValues.Item(1));	
+		m_DlgPDL_Object_List->EditDataToList(myDlgValues);
 	}
 	
 	delete myEditObjDlg;
@@ -260,21 +292,48 @@ void ProjectDefLayersDlg::OnRemoveObject (wxCommandEvent & event)
 
 void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 {
-	TextParserTxtFileComma myParser(_T("/Users/Lucien/Desktop/testparse.txt"));
-	
-	TextParser * myTempParser = &myParser;
-	
-	
-	wxLogDebug( myTempParser->GetParserType());
-	
-	bool myResult = myTempParser->OpenParseFile();
-	if (myResult)
-		wxLogDebug(_T("Opening file OK"));
+	TextParser * myImportParser;
 	wxArrayString myArrValues;
-	int myComptedchar = myTempParser->ParseNextLine(myArrValues);
-	wxLogDebug(_T("%d char parsed from file"), myComptedchar);
 	
-	myTempParser->CloseParseFile();
+	// create a new file selector dialog
+	wxFileDialog myImportSelector (this, _("Import a file"), _T(""), _T(""),
+								   TEXTPARSER_ALL_WILDCARDS, 
+								   wxFD_CHANGE_DIR | wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if(myImportSelector.ShowModal() == wxID_OK)
+	{
+		
+		// create parser depending on the selected format
+		if (myImportSelector.GetWildcard() == TEXTPARSER_TYPE_TXTFILE_COMMA_WILDCARD)
+		{
+			myImportParser = new TextParserTxtFileComma(myImportSelector.GetPath());
+		}
+		// add other parser here...
+	
+		// check that the parser is not null or may crash
+		wxASSERT(myImportParser != NULL);
+		
+		// try to open the file for parsing
+		if(myImportParser->OpenParseFile())
+		{
+			wxLogDebug(_T("Opening file for import : OK, parser is : %s"), 
+					   myImportParser->GetParserType().c_str());
+			
+			// loop for parsing all line
+			for (int i=0; i < myImportParser->GetLineCount(); i++)
+			{
+				myImportParser->ParseNextLine(myArrValues);
+				
+				// add values to the list
+				m_DlgPDL_Object_List->EditDataToList(myArrValues);
+				
+				// clear the array
+				myArrValues.Clear();
+			}
+			
+			myImportParser->CloseParseFile();
+			delete myImportParser;
+		}
+	}
 	
 }
 
