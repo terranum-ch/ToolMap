@@ -1,9 +1,9 @@
 /***************************************************************************
-							project_def_layers_dlg.h
-	Display Project Definition layers dialog (step 2 of a project definition)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+						project_def_layers_dlg.h
+ Display Project Definition layers dialog (step 2 of a project definition)
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -34,8 +34,9 @@
 #include "wx/notebook.h"
 #include "wxflatbutton.h"
 #include "project_def_fields_dlg.h"
-#include "wx/statline.h" // for static line in ProjectDefLayersEditObjectDlg
+#include "wx/statline.h"		// for static line in ProjectDefLayersEditObjectDlg
 #include "../core/textparser.h" // for text parsing during importation
+#include <wx/filedlg.h>			// file selector dialog
 
 
 #define ID_DLGPDL 10007
@@ -61,50 +62,53 @@ class ProjectDefLayersObjectList : public ListGenReport
 	{
 	private:
 		virtual void OnDoubleClickItem(wxListEvent & event);
-//		void OnMySelectionChange (wxListEvent & event);		
+		//		void OnMySelectionChange (wxListEvent & event);		
 		wxChoice * m_ChoiceToChange;
 		
 		//DECLARE_EVENT_TABLE();
 		
 	public:
 		static const int ID_PARAMLIST;
-
+		
 		ProjectDefLayersObjectList(wxWindow * parent, wxWindowID id, wxSize size);
-
 		~ProjectDefLayersObjectList(); 
+		
+		bool EditDataToList (const wxArrayString & myValue, int index =-1); 
+		
+		//	int GetParamType (wxString myTextParam);
+		//		
+		//		wxString GetParamType (int imyType);
+		//
+		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+		//		void SetChoiceList (wxChoice * myChoiceList);
+		//		
+	};
 
-	//	int GetParamType (wxString myTextParam);
-//		
-//		wxString GetParamType (int imyType);
-//
-//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-//		void SetChoiceList (wxChoice * myChoiceList);
-//		
-};
+
 
 class ProjectDefLayersFieldsList : public ListGenReport
 	{
 	private:
 		//virtual void OnDoubleClickItem(wxListEvent & event);
-//		void OnMySelectionChange (wxListEvent & event);
+		//		void OnMySelectionChange (wxListEvent & event);
 		
 		wxChoice * m_ChoiceToChange;
 		
 	public:
 		static const int ID_PARAMLIST;
-
+		
 		ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID id, wxSize size);
-
+		
 		~ProjectDefLayersFieldsList(); 
-
-	//	int GetParamType (wxString myTextParam);
-//		
-//		wxString GetParamType (int imyType);
-//
-//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-//		void SetChoiceList (wxChoice * myChoiceList);
-//		DECLARE_EVENT_TABLE();
-};
+		
+		//	int GetParamType (wxString myTextParam);
+		//		
+		//		wxString GetParamType (int imyType);
+		//
+		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+		//		void SetChoiceList (wxChoice * myChoiceList);
+		//		DECLARE_EVENT_TABLE();
+	};
 
 
 ////@begin control identifiers
