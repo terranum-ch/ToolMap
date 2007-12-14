@@ -43,12 +43,21 @@
 
 
 #define TEXTPARSER_TYPE_TXTFILE _("Text file parser")
-#define TEXTPARSER_TYPE_TXTFILE_COMMA _("Comma separated text file")
-#define TEXTPARSER_TYPE_TXTFILE_COMMA_WILDCARD _T("Comma separated text files (*.csv)|*.csv")
 
-// define all possible wildcards
-#define TEXTPARSER_ALL_WILDCARDS TEXTPARSER_TYPE_TXTFILE_COMMA_WILDCARD
+enum TEXTPARSER_TYPE
+{
+	TXTFILE_COMMA = 0,
+	TXTFILE_TAB = 1
+};
 
+static wxString TEXTPARSER_WILDCARDS[] = 
+		{_("Comma delimited text files (*.csv)|*.csv"),
+		_("Tab delimited text files (*.txt)|*.txt")};
+
+
+static wxString TEXTPARSER_NAME[] = 
+		{_("Comma delimited text files"),
+		_("Tab delimited text files")};
 
 /***************************************************************************//**
  @brief Super-class for parsing different file
@@ -62,12 +71,16 @@
 class TextParser
 	{
 	protected:
+		
+		
 		wxString m_ParseFileType;
 		wxFileName m_ParseFileName;
 		static int m_iActualLine;
 		int m_LineCount;
 		
 		bool CheckParseFileExist();
+		
+		
 		
 	public:
 		
@@ -86,6 +99,7 @@ class TextParser
 		void InitActualLineNumber () {m_iActualLine = 0;}
 		inline void IncrementActualLineNumber (int iIncrement = 1);
 		int GetLineCount () {return m_LineCount;}
+		static wxString GetAllSupportedParserWildCards();
 
 	};
 
@@ -129,6 +143,19 @@ class TextParserTxtFileComma : public TextParserTxtFile
 		TextParserTxtFileComma(const wxString & filename);
 		~TextParserTxtFileComma(){;}
 	
+	};
+
+
+
+class TextParserTxtFileTab : public TextParserTxtFile
+	{
+	protected:
+		virtual void InitParserValue();
+	public:
+		TextParserTxtFileTab();
+		TextParserTxtFileTab(const wxString & filename);
+		~TextParserTxtFileTab(){;}
+		
 	};
 
 

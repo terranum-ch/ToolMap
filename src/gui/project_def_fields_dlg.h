@@ -33,6 +33,7 @@
 #include "wx/notebook.h"
 #include "wxflatbutton.h"
 #include "wx/spinctrl.h"
+#include "project_def_layers_dlg.h" // for using the dialog defined there
 
 
 #define ID_DLGAFD 10011
@@ -65,7 +66,7 @@
 class ProjectDefFieldList : public ListGenReport
 	{
 	private:
-		//virtual void OnDoubleClickItem(wxListEvent & event);
+		virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
 		
 		wxChoice * m_ChoiceToChange;
@@ -91,7 +92,10 @@ class ProjectDefFieldList : public ListGenReport
 
 class ProjectDefFieldDlg: public wxDialog
 	{    
+		
 		void OnShowConstrainValues(wxCommandEvent & event);
+		void OnAddAllowedValue (wxCommandEvent & event);
+		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg )
 		DECLARE_EVENT_TABLE()

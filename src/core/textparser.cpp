@@ -79,6 +79,21 @@ void TextParser::IncrementActualLineNumber (int iIncrement)
 }
 
 
+wxString TextParser::GetAllSupportedParserWildCards()
+{
+	wxString myReturnedWildcard = _T("");
+	
+	for (unsigned int i=0;i< (sizeof(TEXTPARSER_WILDCARDS) / sizeof (wxString)); i++)
+	{
+		myReturnedWildcard.Append(TEXTPARSER_WILDCARDS[i]);
+		
+		// append a separator if not the last turn
+		if (i+1 < (sizeof(TEXTPARSER_WILDCARDS) / sizeof (wxString)))
+			myReturnedWildcard.Append(_T("|"));
+	}
+	return myReturnedWildcard;
+}
+
 
 
 /*************************TEXT PARSER FOR TEXT FILES ************************/
@@ -190,8 +205,32 @@ TextParserTxtFileComma::TextParserTxtFileComma(const wxString & filename)
 
 void TextParserTxtFileComma::InitParserValue()
 {
-	m_ParseFileType = TEXTPARSER_TYPE_TXTFILE_COMMA;
+	m_ParseFileType = TEXTPARSER_NAME[TXTFILE_COMMA];
 	m_TextSeparator = _T(",");
+}
+
+
+
+
+
+
+/*************************TEXT PARSER FOR TAB SEPARATED TXT FILES ************************/
+TextParserTxtFileTab::TextParserTxtFileTab()
+{
+	InitParserValue();
+}
+
+
+TextParserTxtFileTab::TextParserTxtFileTab(const wxString & filename) 
+: TextParserTxtFile(filename)
+{
+	InitParserValue();
+}
+
+void TextParserTxtFileTab::InitParserValue()
+{
+	m_ParseFileType = TEXTPARSER_NAME[TXTFILE_TAB];
+	m_TextSeparator = _T("\t");
 }
 
 
