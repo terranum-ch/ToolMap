@@ -28,6 +28,7 @@ wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
 #include <wx/arrstr.h>
 #include <wx/dnd.h>
 #include <wx/menu.h>
+#include "../core/textparser.h"
 
 /*!
  * Control identifiers for menu
@@ -56,6 +57,9 @@ class ListGenReport : public wxListCtrl
 	{		
 	protected:
 		ListGenMenu  * m_ListContextMenu;
+		TextParser * m_ImportParser;
+		
+		
 			
 		void CreateColumns(wxArrayString * pColsName, wxArrayInt * pColsSize=NULL);
 		 
@@ -182,6 +186,24 @@ class ListGenReport : public wxListCtrl
 		bool ItemExist(long index);
 		
 		bool EditDataToList (const wxArrayString & myValue, int index =-1);
+		
+		
+		
+		/***************************************************************************//**
+		 @brief Import and parse file to a list
+		 @details Uses the TextParser class for importing and parsing file into a list.
+		 @param filename string containing the filename (with path and extension)
+		 @param myFilterIndex Zero index based value of the filter selected in the Open
+		 file dialog. This value could be for exemple : TXTFILE_COMMA or TXTFILE_TAB.
+		 See description of TextParser for more details.
+		 @return  number of line parsed
+		 @author Lucien Schreiber (c) CREALP 2007
+		 @date 14 December 2007
+		 *******************************************************************************/		
+		int ImportParsedFileToListCtrl(const wxString & filename, 
+									   const int & FilterIndex);
+		int ExportListParsedToFile (const wxString & filename,
+									const int & FilterIndex);
 		
 		DECLARE_EVENT_TABLE();
 	};

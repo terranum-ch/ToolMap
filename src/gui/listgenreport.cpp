@@ -51,6 +51,9 @@ void ListGenReport::CreateColumns(wxArrayString * pColsName, wxArrayInt * pColsS
 }
 
 
+//TextParser * ListGenReport::CreateParserBasedOnType (const TEXTPARSER_TYPE & myParserType)
+
+
 bool ListGenReport::EditDataToList (const wxArrayString & myValue, int index)
 {
 	// check that data are stored in the array to fill the list.
@@ -85,12 +88,95 @@ bool ListGenReport::EditDataToList (const wxArrayString & myValue, int index)
 }
 
 
+int ListGenReport::ImportParsedFileToListCtrl(const wxString & filename, 
+											  const int & FilterIndex)
+{
+	wxArrayString myArrValues;
+	int iLineCount = 0;
+	
+	// create parser depending on the selected format and set a file
+	// for that parser
+	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+	m_ImportParser->SetParseFileName(filename);
+		
+	// check that the parser is not null or may crash
+	wxASSERT(m_ImportParser != NULL);
+	
+	// try to open the file for parsing
+	if(m_ImportParser->OpenParseFile())
+	{
+		wxLogDebug(_T("Opening OK, parser is : %s"), 
+				   m_ImportParser->GetParserType().c_str());
+		
+		// loop for parsing all line
+		iLineCount = m_ImportParser->GetLineCount();
+		for (int i=0; i < iLineCount; i++)
+		{
+			m_ImportParser->ParseNextLine(myArrValues);
+			
+			// add values to the list
+			EditDataToList(myArrValues);
+			
+			// clear the array
+			myArrValues.Clear();
+		}
+		m_ImportParser->CloseParseFile();
+		
+	}
+	if (m_ImportParser != NULL)
+		delete m_ImportParser;
+	return iLineCount;
+	
+}
+
+
+int ListGenReport::ExportListParsedToFile (const wxString & filename,
+										   const int & FilterIndex)
+{
+	wxArrayString myArrValues;
+	int iLineCount = 0;
+	int iArrayItemCount = 0;
+	
+	// create parser depending on the selected format and set a file
+	// for that parser
+	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+	m_ImportParser->SetParseFileName(filename);
+	
+	wxLogDebug(filename);
+	
+	// check that the parser is not null or may crash
+	wxASSERT(m_ImportParser != NULL);
+	
+	// try to open the file for parsing in create mode
+	if(m_ImportParser->OpenParseFile(TRUE))
+	{
+		// loop for parsing all item in list
+		iLineCount = GetItemCount();
+		for (int i=0; i < iLineCount; i++)
+		{
+			// get values from the list
+			iArrayItemCount = GetAllDataAsStringArray(myArrValues, i);
+			
+			// send those data to the file
+			m_ImportParser->WriteNextLine(myArrValues);
+			
+			// clear the array
+			myArrValues.Clear();
+		}
+	
+		m_ImportParser->CloseParseFile();
+	}
+	if (m_ImportParser != NULL)
+		delete m_ImportParser;
+	return iLineCount;
+}
 
 
 void ListGenReport::OnInit ()
 {
 	m_ListContextMenu = NULL;
 	m_ListContextMenu = new ListGenMenu();
+	m_ImportParser = NULL;
 	
 	// test for connection event
 	//Connect(ID_LIST,wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxCommandEventHandler());
