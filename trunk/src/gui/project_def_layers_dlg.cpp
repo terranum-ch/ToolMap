@@ -66,39 +66,6 @@ ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
 }
 
 
-bool ProjectDefLayersObjectList::EditDataToList (const wxArrayString & myValue, int index)
-{
-	// check that data are stored in the array to fill the list.
-	// if the array contain more data than the list could afford, 
-	// only first data will be used. If the array is too small for
-	// filling totally the list the only the n first col will be 
-	// used.
-	int iArrayItemCount = myValue.GetCount();
-	int iRunNb = 0;
-	iArrayItemCount > GetColumnCount() ? iRunNb = GetColumnCount() : iRunNb = iArrayItemCount;
-	
-	if (iArrayItemCount > 0)
-	{
-		// add the first line in the list if index is = -1
-		if (index == -1)
-		{
-			AddItemToList(myValue.Item(0));
-			index = GetItemCount()-1;
-		}
-		else
-			SetItemText(index, 0, myValue.Item(0));
-		
-		for (int i=1; i<iRunNb; i++)
-		{
-			SetItemText(index,i, myValue.Item(i));
-		}
-		
-		return TRUE;
-	}
-	return FALSE;
-	
-}
-
 
 
 
@@ -297,18 +264,24 @@ void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 	
 	// create a new file selector dialog
 	wxFileDialog myImportSelector (this, _("Import a file"), _T(""), _T(""),
-								   TEXTPARSER_ALL_WILDCARDS, 
+								   TextParser::GetAllSupportedParserWildCards(), 
 								   wxFD_CHANGE_DIR | wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if(myImportSelector.ShowModal() == wxID_OK)
 	{
-		
 		// create parser depending on the selected format
-		if (myImportSelector.GetWildcard() == TEXTPARSER_TYPE_TXTFILE_COMMA_WILDCARD)
+		if (myImportSelector.GetFilterIndex() == TXTFILE_COMMA)
 		{
 			myImportParser = new TextParserTxtFileComma(myImportSelector.GetPath());
 		}
+		if (myImportSelector.GetFilterIndex() == TXTFILE_TAB)
+		{
+			myImportParser = new TextParserTxtFileTab(myImportSelector.GetPath());
+		}
 		// add other parser here...
-	
+		
+		wxLogDebug(_T("Number of parser detected : %d"), sizeof(TEXTPARSER_WILDCARDS) / sizeof (wxString));
+		
+		wxLogDebug(TextParser::GetAllSupportedParserWildCards());
 		// check that the parser is not null or may crash
 		wxASSERT(myImportParser != NULL);
 		

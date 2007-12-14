@@ -39,7 +39,7 @@ void ListGenReport::CreateColumns(wxArrayString * pColsName, wxArrayInt * pColsS
 	
 	if (pColsName != NULL)
 	{
-		for (int i=0; i<pColsName->GetCount(); i++)
+		for (unsigned int i=0; i<pColsName->GetCount(); i++)
 		{
 			if (pColsSize != NULL)
 			{
@@ -49,6 +49,43 @@ void ListGenReport::CreateColumns(wxArrayString * pColsName, wxArrayInt * pColsS
 		}
 	}
 }
+
+
+bool ListGenReport::EditDataToList (const wxArrayString & myValue, int index)
+{
+	// check that data are stored in the array to fill the list.
+	// if the array contain more data than the list could afford, 
+	// only first data will be used. If the array is too small for
+	// filling totally the list the only the n first col will be 
+	// used.
+	int iArrayItemCount = myValue.GetCount();
+	int iRunNb = 0;
+	iArrayItemCount > GetColumnCount() ? iRunNb = GetColumnCount() : iRunNb = iArrayItemCount;
+	
+	if (iArrayItemCount > 0)
+	{
+		// add the first line in the list if index is = -1
+		if (index == -1)
+		{
+			AddItemToList(myValue.Item(0));
+			index = GetItemCount()-1;
+		}
+		else
+			SetItemText(index, 0, myValue.Item(0));
+		
+		for (int i=1; i<iRunNb; i++)
+		{
+			SetItemText(index,i, myValue.Item(i));
+		}
+		
+		return TRUE;
+	}
+	return FALSE;
+	
+}
+
+
+
 
 void ListGenReport::OnInit ()
 {
@@ -184,6 +221,7 @@ void ListGenReport::MoveItem (int iItem, int iNewPos)
 {	
 	wxArrayString myItemAllText;
 	int i=0;
+	unsigned int j=0;
 	
 	// get item
 	if (iItem != -1 && iNewPos < GetItemCount()+1)
@@ -197,9 +235,9 @@ void ListGenReport::MoveItem (int iItem, int iNewPos)
 	AddItemToList(myItemAllText.Item(0),iNewPos);
 	
 	// add text to new item
-	for (i=1; i< myItemAllText.GetCount(); i++)
+	for (j=1; j< myItemAllText.GetCount(); j++)
 	{
-		SetItemText(iNewPos, i, myItemAllText.Item(i));
+		SetItemText(iNewPos, j, myItemAllText.Item(j));
 	}
 	myItemAllText.Clear();
 	

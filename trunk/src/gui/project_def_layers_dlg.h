@@ -73,8 +73,7 @@ class ProjectDefLayersObjectList : public ListGenReport
 		ProjectDefLayersObjectList(wxWindow * parent, wxWindowID id, wxSize size);
 		~ProjectDefLayersObjectList(); 
 		
-		bool EditDataToList (const wxArrayString & myValue, int index =-1); 
-		
+			
 		//	int GetParamType (wxString myTextParam);
 		//		
 		//		wxString GetParamType (int imyType);

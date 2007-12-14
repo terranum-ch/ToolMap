@@ -58,6 +58,7 @@ class ListGenReport : public wxListCtrl
 		ListGenMenu  * m_ListContextMenu;
 			
 		void CreateColumns(wxArrayString * pColsName, wxArrayInt * pColsSize=NULL);
+		 
 		
 		// events
 		virtual void OnDoubleClickItem (wxListEvent & event);
@@ -179,6 +180,8 @@ class ListGenReport : public wxListCtrl
 		int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
 		
 		bool ItemExist(long index);
+		
+		bool EditDataToList (const wxArrayString & myValue, int index =-1);
 		
 		DECLARE_EVENT_TABLE();
 	};

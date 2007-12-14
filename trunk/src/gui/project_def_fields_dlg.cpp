@@ -45,6 +45,30 @@ ProjectDefFieldList::~ProjectDefFieldList()
 }
 
 
+void ProjectDefFieldList::OnDoubleClickItem(wxListEvent & event)
+{
+	wxArrayString myRowData;
+	long myIndex = GetSelectedItem();
+	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
+	
+	// get the data from the list for selected line
+	GetAllDataAsStringArray(myRowData, myIndex);
+	
+	// put the data in the dialog
+	if (DataToList(myModifiyDialog,myRowData))
+	{
+		EditDataToList(myRowData, myIndex);
+	}
+	delete myModifiyDialog;	
+}
+
+
+
+
+
+
+
+
 
 /******************************  Dialog Field definition *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefFieldDlg, wxDialog )
@@ -53,6 +77,7 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefFieldDlg, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectDefFieldDlg, wxDialog )
 	EVT_CHECKBOX(ID_DLGAFD_CONSTRAIN_VALUES, ProjectDefFieldDlg::OnShowConstrainValues)
+	EVT_FLATBUTTON (ID_DLGAFD_VAL_ADD,ProjectDefFieldDlg::OnAddAllowedValue)
 END_EVENT_TABLE()
 
 
@@ -75,6 +100,27 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 		GetSizer()->Fit(this);
 		GetSizer()->Layout();
    }
+	
+}
+
+
+void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
+{
+	wxArrayString myDlgValues;
+	
+	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
+	myEditObjDlg->SetName(_("Edit allowed value"));
+	
+	int iLastItemNumber = m_DlgAFD_Coded_Val_List->GetItemCount();
+	
+	// check if data transfert was OK
+	if (m_DlgAFD_Coded_Val_List->DataToList(myEditObjDlg, myDlgValues))
+	{
+		// put data to the list
+		m_DlgAFD_Coded_Val_List->EditDataToList(myDlgValues);
+	}
+	
+	delete myEditObjDlg;
 	
 }
 
