@@ -24,8 +24,8 @@ int TextParser::m_iActualLine = 0;
 
 TextParser::TextParser()
 {
-	m_ParseFileType = wxEmptyString;
-	m_ParseFileName = wxFileName(wxEmptyString);
+	m_ParseFileType = _T("") ; //wxEmptyString;
+	m_ParseFileName = wxFileName(_T("")); //wxEmptyString);
 	m_LineCount = 0;
 }
 
@@ -53,7 +53,7 @@ bool TextParser::CheckParseFileExist()
 	return FALSE;
 }
 
-bool TextParser::OpenParseFile ()
+bool TextParser::OpenParseFile (bool bCreate)
 {	
 	//m_iAcutalLine = 0;
 	return FALSE;
@@ -95,6 +95,29 @@ wxString TextParser::GetAllSupportedParserWildCards()
 }
 
 
+// static function that one can use to create the good parser based on
+// the filetype selected
+TextParser * TextParser::CreateParserBasedOnType (const int & textparser_index)
+{
+	wxLogDebug(_T("Number of parser detected : %d"), sizeof(TEXTPARSER_WILDCARDS) / sizeof (wxString));
+	
+	// create parser depending on the selected format
+	if (textparser_index == TXTFILE_COMMA)
+	{
+		return  new TextParserTxtFileComma();
+	}
+	if (textparser_index == TXTFILE_TAB)
+	{
+		return new TextParserTxtFileTab();
+	}
+	
+	// add other parser here...
+
+	
+	return NULL;
+}
+
+
 
 /*************************TEXT PARSER FOR TEXT FILES ************************/
 TextParserTxtFile::TextParserTxtFile()
@@ -125,20 +148,30 @@ void TextParserTxtFile::InitParserValue()
 	m_ParseFileType = TEXTPARSER_TYPE_TXTFILE;
 	m_File = NULL;
 	m_TextSeparator = wxEmptyString;
+	m_WriteMode = FALSE;
 }
 
-bool TextParserTxtFile::OpenParseFile ()
+bool TextParserTxtFile::OpenParseFile (bool bCreate)
 {
+	// set the mode 
+	m_WriteMode = bCreate;
+	
 	// set line number to zero
 	InitActualLineNumber();
 	
-	// check the file
-	if (!CheckParseFileExist())
-		return FALSE;
+	// check the file only if write mode is false
+	if (m_WriteMode == FALSE)
+		if (!CheckParseFileExist())
+			return FALSE;
 	
 	// code for opening file
 	m_File = new wxTextFile(m_ParseFileName.GetFullPath());
-	m_File->Open();
+	
+	// try to open the file if it fails and bCreate (or m_WriteMode) is
+	// set to TRUE the we create the file.
+	if(!m_File->Open() && m_WriteMode)
+		m_File->Create();
+	
 	if (m_File->IsOpened())
 	{
 		m_LineCount = m_File->GetLineCount();
@@ -151,6 +184,11 @@ bool TextParserTxtFile::CloseParseFile ()
 {
 	if (m_File != NULL)
 	{
+		if (m_WriteMode == TRUE)
+		{
+			m_File->Write();
+			wxLogDebug(_T("File data written on disk, now closing"));
+		}
 		m_File->Close();
 		return TRUE;
 	}
@@ -188,6 +226,52 @@ int TextParserTxtFile::ParseNextLine (wxArrayString & myValues)
 		return myValues.GetCount();
 	}
 	return -1;
+}
+
+bool TextParserTxtFile::WriteNextLine (const wxArrayString & myValues)
+{
+	wxString myLine = _T("");
+	int iSizeOfArray = myValues.GetCount();
+	
+	
+	wxASSERT(!m_TextSeparator.IsEmpty());
+	wxASSERT(m_File != NULL);
+	
+	
+	if (m_File->IsOpened())
+	{
+		
+		// clear the file if we are writting the first line
+		// into the file. People don't expect to have data
+		// added into an existing file
+		if (m_iActualLine == 0)
+		{
+			m_File->Clear();
+			wxLogDebug(_T("First loop, clearing the file"));
+		}
+		
+		// preparing the line from the string array
+		for (int i=0; i< iSizeOfArray; i++)
+		{
+			myLine.Append(myValues.Item(i));
+			
+			// if we run the last turn, we dont add the ending
+			// separator (stored in m_TextSeparator)
+			if (i+1 < iSizeOfArray)
+			{
+				myLine.Append(m_TextSeparator);
+			}
+		}
+		
+		
+		// write the line to the file. Data will be only written when closing
+		// the file.
+		m_File->AddLine(myLine);
+		
+		IncrementActualLineNumber();
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /*************************TEXT PARSER FOR COMMA SEPARATED TXT FILES ************************/

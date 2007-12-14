@@ -78,7 +78,49 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefFieldDlg, wxDialog )
 BEGIN_EVENT_TABLE( ProjectDefFieldDlg, wxDialog )
 	EVT_CHECKBOX(ID_DLGAFD_CONSTRAIN_VALUES, ProjectDefFieldDlg::OnShowConstrainValues)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_ADD,ProjectDefFieldDlg::OnAddAllowedValue)
+	EVT_FLATBUTTON (ID_DLGAFD_VAL_IMPORT, ProjectDefFieldDlg::OnImportAllowedValue)
+	EVT_FLATBUTTON (ID_DLGAFD_VAL_REMOVE, ProjectDefFieldDlg::OnRemoveAllowedValue)
+	EVT_FLATBUTTON (ID_DLGAFD_VAL_EXPORT, ProjectDefFieldDlg::OnExportAllowedValue)
 END_EVENT_TABLE()
+
+
+void ProjectDefFieldDlg::OnImportAllowedValue (wxCommandEvent & event)
+{
+		
+	// create a new file selector dialog for getting the filename and filterindex
+	// of the value file to import in the list.
+	wxFileDialog myImportSelector (this, _("Import a file"), _T(""), _T(""),
+								   TextParser::GetAllSupportedParserWildCards(), 
+								   wxFD_CHANGE_DIR | wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if(myImportSelector.ShowModal() == wxID_OK)
+	{
+		m_DlgAFD_Coded_Val_List->ImportParsedFileToListCtrl(myImportSelector.GetPath(),
+														 myImportSelector.GetFilterIndex());		
+	}	
+}
+
+
+void ProjectDefFieldDlg::OnExportAllowedValue (wxCommandEvent & event)
+{
+	// create a new file selector dialog for setting the filename and filterindex
+	// of the file that will be used for exporting the list into
+	wxFileDialog myImportSelector (this, _("Export allowed value to file"), _T(""), _T(""),
+								   TextParser::GetAllSupportedParserWildCards(), 
+								   wxFD_CHANGE_DIR | wxFD_SAVE);
+	if(myImportSelector.ShowModal() == wxID_OK)
+	{
+		m_DlgAFD_Coded_Val_List->ExportListParsedToFile(myImportSelector.GetPath(),
+															myImportSelector.GetFilterIndex());		
+	}	
+	
+}
+
+
+void ProjectDefFieldDlg::OnRemoveAllowedValue (wxCommandEvent & event)
+{
+	m_DlgAFD_Coded_Val_List->DeleteSelectedItem();
+}
+
 
 
 void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
@@ -92,14 +134,14 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 	{
 		m_DlgAFD_Notebook->Show(FALSE);
 	}
-
+	
 	// fit the window to the minimal size 
 	// responding to the check box state
 	if (GetSizer())
 	{
 		GetSizer()->Fit(this);
 		GetSizer()->Layout();
-   }
+	}
 	
 }
 
@@ -140,9 +182,9 @@ bool ProjectDefFieldDlg::Create( wxWindow* parent, wxWindowID id, const wxString
 {
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     wxDialog::Create( parent, id, caption, pos, size, style );
-
+	
     CreateControls();
-	  if (GetSizer())
+	if (GetSizer())
     {
         GetSizer()->SetSizeHints(this);
     }
@@ -153,7 +195,7 @@ bool ProjectDefFieldDlg::Create( wxWindow* parent, wxWindowID id, const wxString
 
 ProjectDefFieldDlg::~ProjectDefFieldDlg()
 {
-
+	
 }
 
 

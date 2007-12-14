@@ -92,15 +92,16 @@ class TextParser
 		 wxString GetParserType() {return m_ParseFileType;}
 		void SetParseFileName (const wxString & myFileName);
 		void SetParseFileName(const wxFileName & myFileName);
-		virtual bool OpenParseFile ();
+		virtual bool OpenParseFile (bool bCreate = FALSE);
 		virtual int ParseNextLine (wxArrayString & myValues);
+		virtual bool WriteNextLine (const wxArrayString & myValues){return -1;}
 		virtual bool CloseParseFile ();
 		int GetActualLineNumber () {return m_iActualLine;}
 		void InitActualLineNumber () {m_iActualLine = 0;}
 		inline void IncrementActualLineNumber (int iIncrement = 1);
 		int GetLineCount () {return m_LineCount;}
 		static wxString GetAllSupportedParserWildCards();
-
+		static TextParser * CreateParserBasedOnType (const int & textparser_index);
 	};
 
 
@@ -118,6 +119,7 @@ class TextParserTxtFile : public TextParser
 		wxTextFile  * m_File;
 		wxString m_TextSeparator;
 		virtual void InitParserValue();
+		bool m_WriteMode;
 		
 		
 	public:
@@ -126,9 +128,10 @@ class TextParserTxtFile : public TextParser
 		TextParserTxtFile(const wxFileName & filename);
 		~TextParserTxtFile();
 		
-		virtual bool OpenParseFile();
+		virtual bool OpenParseFile(bool bCreate = FALSE);
 		virtual bool CloseParseFile ();
 		virtual int ParseNextLine (wxArrayString & myValues);
+		virtual bool WriteNextLine (const wxArrayString & myValues);
 		
 	};
 

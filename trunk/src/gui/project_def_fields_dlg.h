@@ -34,6 +34,7 @@
 #include "wxflatbutton.h"
 #include "wx/spinctrl.h"
 #include "project_def_layers_dlg.h" // for using the dialog defined there
+#include "../core/textparser.h" // for text parsing during importation
 
 
 #define ID_DLGAFD 10011
@@ -95,6 +96,9 @@ class ProjectDefFieldDlg: public wxDialog
 		
 		void OnShowConstrainValues(wxCommandEvent & event);
 		void OnAddAllowedValue (wxCommandEvent & event);
+		void OnImportAllowedValue (wxCommandEvent & event);
+		void OnRemoveAllowedValue (wxCommandEvent & event);
+		void OnExportAllowedValue (wxCommandEvent & event);
 		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg )

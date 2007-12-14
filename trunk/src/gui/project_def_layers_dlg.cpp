@@ -259,8 +259,7 @@ void ProjectDefLayersDlg::OnRemoveObject (wxCommandEvent & event)
 
 void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 {
-	TextParser * myImportParser;
-	wxArrayString myArrValues;
+	
 	
 	// create a new file selector dialog
 	wxFileDialog myImportSelector (this, _("Import a file"), _T(""), _T(""),
@@ -268,44 +267,8 @@ void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 								   wxFD_CHANGE_DIR | wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if(myImportSelector.ShowModal() == wxID_OK)
 	{
-		// create parser depending on the selected format
-		if (myImportSelector.GetFilterIndex() == TXTFILE_COMMA)
-		{
-			myImportParser = new TextParserTxtFileComma(myImportSelector.GetPath());
-		}
-		if (myImportSelector.GetFilterIndex() == TXTFILE_TAB)
-		{
-			myImportParser = new TextParserTxtFileTab(myImportSelector.GetPath());
-		}
-		// add other parser here...
-		
-		wxLogDebug(_T("Number of parser detected : %d"), sizeof(TEXTPARSER_WILDCARDS) / sizeof (wxString));
-		
-		wxLogDebug(TextParser::GetAllSupportedParserWildCards());
-		// check that the parser is not null or may crash
-		wxASSERT(myImportParser != NULL);
-		
-		// try to open the file for parsing
-		if(myImportParser->OpenParseFile())
-		{
-			wxLogDebug(_T("Opening file for import : OK, parser is : %s"), 
-					   myImportParser->GetParserType().c_str());
-			
-			// loop for parsing all line
-			for (int i=0; i < myImportParser->GetLineCount(); i++)
-			{
-				myImportParser->ParseNextLine(myArrValues);
-				
-				// add values to the list
-				m_DlgPDL_Object_List->EditDataToList(myArrValues);
-				
-				// clear the array
-				myArrValues.Clear();
-			}
-			
-			myImportParser->CloseParseFile();
-			delete myImportParser;
-		}
+		m_DlgPDL_Object_List->ImportParsedFileToListCtrl(myImportSelector.GetPath(),
+														 myImportSelector.GetFilterIndex());		
 	}
 	
 }
