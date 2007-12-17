@@ -221,7 +221,6 @@ int TextParserTxtFile::ParseNextLine (wxArrayString & myValues)
 		
 		// get the line based on the static int m_iActualLine
 		myValueToParse =	m_File->GetLine(GetActualLineNumber());
-		wxLogDebug(myValueToParse);
 		
 		IncrementActualLineNumber();
 		
@@ -256,7 +255,6 @@ bool TextParserTxtFile::WriteNextLine (const wxArrayString & myValues)
 		if (m_iActualLine == 0)
 		{
 			m_File->Clear();
-			wxLogDebug(_T("First loop, clearing the file"));
 		}
 		
 		// preparing the line from the string array

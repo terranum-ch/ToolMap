@@ -30,8 +30,9 @@ END_EVENT_TABLE()
 
 void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
-	ProjectDefLayersDlg  myLayerDialog (this);
-	myLayerDialog.ShowModal();
+	m_LayerDialog = new ProjectDefLayersDlg (this);
+	m_LayerDialog->ShowModal();
+	delete m_LayerDialog;
 }
 
 void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
@@ -89,6 +90,7 @@ void ProjectDefDLG::Init()
     m_DlgPd_Proj_Unit = NULL;
     m_DlgPd_Proj_Projection = NULL;
     m_DlgPd_Stat_Model_List = NULL;
+	m_LayerDialog = NULL;
 }
 
 

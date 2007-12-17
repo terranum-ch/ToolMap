@@ -127,7 +127,6 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 {
 	if (event.IsChecked())
 	{
-		wxLogDebug(_T("Constrain values is checked"));
 		m_DlgAFD_Notebook->Show(TRUE);
 	}
 	else 
@@ -250,13 +249,10 @@ void ProjectDefFieldDlg::CreateControls()
     wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Data Type :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxArrayString itemChoice9Strings;
-    itemChoice9Strings.Add(_("Integer"));
-    itemChoice9Strings.Add(_("Float"));
-    itemChoice9Strings.Add(_("Text"));
-    itemChoice9Strings.Add(_("Date"));
-    wxChoice* itemChoice9 = new wxChoice( itemDialog1, ID_DLGAFD_DATA_TYPE, wxDefaultPosition, wxDefaultSize, itemChoice9Strings, 0 );
-    itemChoice9->SetStringSelection(_("Text"));
+    wxChoice* itemChoice9 = new wxChoice( itemDialog1, ID_DLGAFD_DATA_TYPE, wxDefaultPosition, 
+										 wxDefaultSize, PRJDEF_FIELD_TYPE_NUMBER,
+										 PRJDEF_FIELD_TYPE_STRING, 0 );
+    itemChoice9->SetSelection(FIELD_TEXT);
     itemFlexGridSizer7->Add(itemChoice9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Field precision :"), wxDefaultPosition, wxDefaultSize, 0 );

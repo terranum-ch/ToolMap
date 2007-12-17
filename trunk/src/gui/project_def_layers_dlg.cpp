@@ -154,6 +154,7 @@ void ProjectDefLayersEditObjectDlg::Init()
 	m_DlgEO_Code = NULL;
     m_DlgEO_Value = NULL;
     m_DlgEO_OK_Btn = NULL;
+	
 }
 
 
@@ -226,9 +227,10 @@ END_EVENT_TABLE()
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
 {
-	ProjectDefFieldDlg myFieldDialog (this);
-	myFieldDialog.ShowModal();
-
+	m_FieldDialog = new ProjectDefFieldDlg (this);
+	m_FieldDialog->ShowModal();
+	delete m_FieldDialog;
+	
 }
 
 
@@ -313,7 +315,7 @@ ProjectDefLayersDlg::~ProjectDefLayersDlg()
 
 void ProjectDefLayersDlg::Init()
 {
-
+	m_FieldDialog = NULL;
 }
 
 
