@@ -383,6 +383,7 @@ bool ListGenReport::DeleteSelectedItem()
 int ListGenReport::GetAllDataAsStringArray(wxArrayString & myStringArray, long index)
 {
 	int iColNumber = GetColumnCount();
+	wxString myTempString = _T("");
 	
 	// check that some columns exists
 	// and check also that item exist at
@@ -396,7 +397,8 @@ int ListGenReport::GetAllDataAsStringArray(wxArrayString & myStringArray, long i
 	// get data from all colums at the specified index
 	for (int i=0; i< iColNumber; i++)
 	{
-		myStringArray.Add(GetItemColText(index, i));
+		myTempString = GetItemColText(index, i);
+		myStringArray.Add(myTempString);
 	}
 	return iColNumber;
 }
