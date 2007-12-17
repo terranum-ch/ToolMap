@@ -48,7 +48,9 @@ void TextParser::SetParseFileName (const wxFileName & myFileName)
 
 bool TextParser::CheckParseFileExist()
 {
-	if (m_ParseFileName.IsFileReadable())
+	//m_ParseFileName.IsFileReadable()
+	
+	if (wxFile::Exists(m_ParseFileName.GetFullPath()))
 		return TRUE;
 	return FALSE;
 }
@@ -159,23 +161,30 @@ bool TextParserTxtFile::OpenParseFile (bool bCreate)
 	// set line number to zero
 	InitActualLineNumber();
 	
-	// check the file only if write mode is false
-	if (m_WriteMode == FALSE)
-		if (!CheckParseFileExist())
-			return FALSE;
+	// check that the file exist.
+	// if the file exist, we open it 
+	// otherwise if in edition mode we create
+	// the new file.
 	
-	// code for opening file
 	m_File = new wxTextFile(m_ParseFileName.GetFullPath());
 	
-	// try to open the file if it fails and bCreate (or m_WriteMode) is
-	// set to TRUE the we create the file.
-	if(!m_File->Open() && m_WriteMode)
-		m_File->Create();
-	
-	if (m_File->IsOpened())
+	if (CheckParseFileExist())
 	{
-		m_LineCount = m_File->GetLineCount();
-		return TRUE;
+		m_File->Open();
+		if (m_File->IsOpened())
+		{
+			m_LineCount = m_File->GetLineCount();
+			return TRUE;
+		}
+	}
+	else 
+	{
+		if (m_WriteMode == TRUE)
+		{
+			m_File->Create();
+			m_File->Open();
+			return TRUE;
+		}
 	}
 	return FALSE;
 }
