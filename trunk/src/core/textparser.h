@@ -94,7 +94,7 @@ class TextParser
 		void SetParseFileName(const wxFileName & myFileName);
 		virtual bool OpenParseFile (bool bCreate = FALSE);
 		virtual int ParseNextLine (wxArrayString & myValues);
-		virtual bool WriteNextLine (const wxArrayString & myValues){return -1;}
+		virtual bool WriteNextLine (const wxArrayString & myValues){return TRUE;}
 		virtual bool CloseParseFile ();
 		int GetActualLineNumber () {return m_iActualLine;}
 		void InitActualLineNumber () {m_iActualLine = 0;}
