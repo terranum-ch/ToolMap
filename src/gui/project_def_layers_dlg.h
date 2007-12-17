@@ -38,6 +38,7 @@
 #include "../core/textparser.h" // for text parsing during importation
 #include <wx/filedlg.h>			// file selector dialog
 
+class ProjectDefFieldDlg;
 
 #define ID_DLGPDL 10007
 #define ID_DLGPDL_LAYER_TYPE 10000
@@ -64,7 +65,6 @@ class ProjectDefLayersObjectList : public ListGenReport
 		virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);		
 		wxChoice * m_ChoiceToChange;
-		
 		//DECLARE_EVENT_TABLE();
 		
 	public:
@@ -163,7 +163,10 @@ class ProjectDefLayersEditObjectDlg: public ListGenDialog
 
 
 class ProjectDefLayersDlg: public wxDialog
-	{    
+	{  
+	private:
+		ProjectDefFieldDlg * m_FieldDialog;
+		
 		void OnAddField (wxCommandEvent & event);
 		void OnAddObject (wxCommandEvent & event);
 		void OnRemoveObject (wxCommandEvent & event);

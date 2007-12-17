@@ -141,8 +141,7 @@ int ListGenReport::ExportListParsedToFile (const wxString & filename,
 	// for that parser
 	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
 	m_ImportParser->SetParseFileName(filename);
-	
-	wxLogDebug(filename);
+
 	
 	// check that the parser is not null or may crash
 	wxASSERT(m_ImportParser != NULL);
@@ -372,7 +371,6 @@ bool ListGenReport::DeleteSelectedItem()
 	if (iSelectedItem != -1)
 	{
 		DeleteItem(iSelectedItem);
-		wxLogDebug(_T("Item Deleted succesfully"));
 		return TRUE;
 	} 
 	wxLogDebug(_T("No item deleted, select an item"));

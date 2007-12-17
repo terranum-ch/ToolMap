@@ -35,7 +35,7 @@
 #include "wx/spinctrl.h"
 #include "project_def_layers_dlg.h" // for using the dialog defined there
 #include "../core/textparser.h" // for text parsing during importation
-
+#include "../core/projectdefmemory.h" // for different project specification.
 
 #define ID_DLGAFD 10011
 #define ID_DLGAFD_FIELD_DEF 10012
@@ -87,8 +87,6 @@ class ProjectDefFieldList : public ListGenReport
 		//		void SetChoiceList (wxChoice * myChoiceList);
 		//		DECLARE_EVENT_TABLE();
 	};
-
-
 
 
 class ProjectDefFieldDlg: public wxDialog
