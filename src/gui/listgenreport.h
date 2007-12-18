@@ -66,7 +66,7 @@ class ListGenReport : public wxListCtrl
 		
 		// events
 		virtual void OnDoubleClickItem (wxListEvent & event);
-		void OnPressBackSpace (wxListEvent & event);
+		virtual void OnPressBackSpace (wxListEvent & event);
 		void OnContextMenu (wxListEvent & event);
 		void OnMoveItemInList (wxCommandEvent & event);
 		

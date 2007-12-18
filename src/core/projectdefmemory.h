@@ -16,7 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/***************************************************************************//**
+ @file projectdefmemory.h
+ @brief Storing project properties in memory
+ @details During the process of creating a new project or editing an existing
+ one, we have to keep all layers, objects, fields, in memory to allow an undo
+ process.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 18 December 2007
+ *******************************************************************************/
 
 
 #ifndef PROJECTDEFMEMORY_H
@@ -29,6 +37,9 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+
+#include "listgenreport.h"
+
 
 
 // Definitions for the field type, we define the text and  the id of 
@@ -58,7 +69,31 @@ enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
 };
 
 
+// Definitions for the layers type, we define the text and  the id of 
+// each string. The number of items in the list is also defined here.
+static wxString PRJDEF_LAYERS_TYPE_STRING[] = 
+{
+	_("Point"),
+	_("Line"),
+	_("Polygon")
+};
+enum PRJDEF_LAYERS_TYPE
+{
+	LAYER_POINT = 0,
+	LAYER_LINE,
+	LAYER_POLYGON
+};
+static const int PRJDEF_LAYERS_TYPE_NUMBER = 3;
 
+
+
+/***************************************************************************//**
+ @brief Storing Fields property in memory
+ @details This class is used in PrjMemFieldArray, a wxArray type class for
+ storing all fields related to a layer.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 18 December 2007
+ *******************************************************************************/
 class ProjectDefMemoryFields
 	{
 	private:
@@ -79,8 +114,38 @@ class ProjectDefMemoryFields
 	
 	};
 
+// Creating a list of MemoryFields
+WX_DECLARE_OBJARRAY(ProjectDefMemoryFields, PrjMemFieldArray);
+
+// find function in array
+int FindObjInFieldArray(ListGenReport * myList, const PrjMemFieldArray & myArray);
 
 
 
+
+
+/***************************************************************************//**
+ @brief Storing layers properties in memory
+ @details This class represent a layer. Objects of this class will be stored in
+ a wxArray : PrjMemLayersArray.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 18 December 2007
+ *******************************************************************************/
+class ProjectDefMemoryLayers
+	{
+	private:
+		void InitMemberValues();
+		
+	public:
+		int m_LayerID;
+		PRJDEF_LAYERS_TYPE m_LayerType;
+		wxString m_LayerName;
+		
+		/// list of fields related to a layer
+		PrjMemFieldArray * m_pLayerFieldArray;
+		
+		ProjectDefMemoryLayers();
+		~ProjectDefMemoryLayers();
+	};
 
 #endif
