@@ -226,9 +226,31 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 END_EVENT_TABLE()
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
-{
+{	
+	// create a new object for storing fields value
+	ProjectDefMemoryFields myMemFieldValue;
+	wxArrayString myListValues;
+
 	m_FieldDialog = new ProjectDefFieldDlg (this);
-	m_FieldDialog->ShowModal();
+	
+	// transfert the data obj to the dialog, data will be 
+	// filled during DataTransfer...
+	m_FieldDialog->SetMemoryFieldObject(&myMemFieldValue);
+	
+	if (m_FieldDialog->ShowModal() == wxID_OK)
+	{
+		
+		// retrive data from the dialog and then strore
+		// this object to the list.
+		
+		
+		// prepare data for list representation
+		myListValues.Add(myMemFieldValue.m_Fieldname);
+		myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue.m_FieldType]);
+		m_DlgPDL_Fields_List->EditDataToList(myListValues);
+		
+	}
+	wxLogDebug(myMemFieldValue.m_Fieldname);
 	delete m_FieldDialog;
 	
 }
