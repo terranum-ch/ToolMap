@@ -40,6 +40,7 @@
 #include "../core/projectdefmemory.h"
 
 class ProjectDefFieldDlg;
+class ProjectDefLayersDlg;
 
 #define ID_DLGPDL 10007
 #define ID_DLGPDL_LAYER_TYPE 10000
@@ -91,13 +92,17 @@ class ProjectDefLayersFieldsList : public ListGenReport
 	private:
 		//virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
+		virtual void OnPressBackSpace (wxListEvent & event);
+		
+		// pointer to the parent dialog
+		ProjectDefLayersDlg * m_DlgParent;
 		
 		wxChoice * m_ChoiceToChange;
 		
 	public:
 		static const int ID_PARAMLIST;
 		
-		ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID id, wxSize size);
+		ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID id, wxSize size, ProjectDefLayersDlg * myDlg);
 		
 		~ProjectDefLayersFieldsList(); 
 		
@@ -167,11 +172,18 @@ class ProjectDefLayersDlg: public wxDialog
 	{  
 	private:
 		ProjectDefFieldDlg * m_FieldDialog;
+		ProjectDefMemoryLayers * m_LayersObj;
+		
+		// contain the list of fields
+		PrjMemFieldArray m_FieldArray;
 		
 		void OnAddField (wxCommandEvent & event);
+		void OnRemoveField (wxCommandEvent & event);
 		void OnAddObject (wxCommandEvent & event);
 		void OnRemoveObject (wxCommandEvent & event);
 		void OnImportObject (wxCommandEvent & event);
+		
+	
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
 		DECLARE_EVENT_TABLE()
@@ -201,6 +213,10 @@ class ProjectDefLayersDlg: public wxDialog
 		
 		/// Creates the controls and sizers
 		void CreateControls();
+		
+		void RemoveObjFromArray();
+		
+		void SetMemoryLayersObject (ProjectDefMemoryLayers * myLayersObj) {m_LayersObj = myLayersObj;}
 		
 		/// controls variables
 		wxChoice* m_DlgPDL_Layer_Type;

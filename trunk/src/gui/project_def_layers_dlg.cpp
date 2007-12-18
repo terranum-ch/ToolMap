@@ -71,9 +71,11 @@ ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
 
 
 /******************************  Layers List *************************/
-ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID  id, wxSize size) 
+ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID  id, wxSize size, ProjectDefLayersDlg * myDlg) 
 	: ListGenReport(parent,id,size)
 {
+	m_DlgParent = myDlg;
+	
 	// Create columns
 	wxArrayString myColNames;
 	wxArrayInt myColsWidths;
@@ -92,9 +94,16 @@ ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWind
 
 ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 {
-
+	m_DlgParent = NULL;
 }
 
+
+void ProjectDefLayersFieldsList::OnPressBackSpace (wxListEvent & event)
+{
+	// delete selected item but also in the array
+	m_DlgParent->RemoveObjFromArray();
+	DeleteSelectedItem();
+}
 
 
 /******************************  Add object Dialog Class *************************/
@@ -223,37 +232,58 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_ADD, ProjectDefLayersDlg::OnAddObject )
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_REMOVE, ProjectDefLayersDlg::OnRemoveObject)
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_IMPORT, ProjectDefLayersDlg::OnImportObject)
+	EVT_FLATBUTTON (ID_DLGPDL_FIELD_REMOVE, ProjectDefLayersDlg::OnRemoveField)
 END_EVENT_TABLE()
+
+
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
 {	
 	// create a new object for storing fields value
-	ProjectDefMemoryFields myMemFieldValue;
+	ProjectDefMemoryFields * myMemFieldValue = new ProjectDefMemoryFields();
 	wxArrayString myListValues;
 
 	m_FieldDialog = new ProjectDefFieldDlg (this);
 	
 	// transfert the data obj to the dialog, data will be 
 	// filled during DataTransfer...
-	m_FieldDialog->SetMemoryFieldObject(&myMemFieldValue);
+	m_FieldDialog->SetMemoryFieldObject(myMemFieldValue);
 	
 	if (m_FieldDialog->ShowModal() == wxID_OK)
 	{
 		
 		// retrive data from the dialog and then strore
 		// this object to the list.
-		
+		m_FieldArray.Add(myMemFieldValue);
 		
 		// prepare data for list representation
-		myListValues.Add(myMemFieldValue.m_Fieldname);
-		myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue.m_FieldType]);
+		myListValues.Add(myMemFieldValue->m_Fieldname);
+		myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue->m_FieldType]);
 		m_DlgPDL_Fields_List->EditDataToList(myListValues);
 		
 	}
-	wxLogDebug(myMemFieldValue.m_Fieldname);
+	else 
+	{
+		delete myMemFieldValue;
+		wxLogDebug(_T("Deleting object not used"));
+	}
+
+	wxLogDebug(_T("Size of array %d"), m_FieldArray.GetCount());
 	delete m_FieldDialog;
 	
 }
+
+
+
+
+void ProjectDefLayersDlg::OnRemoveField (wxCommandEvent & event)
+{
+	// remove the object from the field array
+	// if found and then remove the object from the list
+	RemoveObjFromArray();
+	m_DlgPDL_Fields_List->DeleteSelectedItem();
+}
+
 
 
 
@@ -276,7 +306,7 @@ void ProjectDefLayersDlg::OnAddObject (wxCommandEvent & event)
 
 void ProjectDefLayersDlg::OnRemoveObject (wxCommandEvent & event)
 {
-	
+	// delete selected item in the list
 	m_DlgPDL_Object_List->DeleteSelectedItem();
 }
 
@@ -297,6 +327,20 @@ void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 	
 }
 
+
+
+
+void ProjectDefLayersDlg::RemoveObjFromArray()
+{
+	// if a corresponding item was found, remove it from the array
+	int iItemIndex = FindObjInFieldArray(m_DlgPDL_Fields_List, m_FieldArray);
+	if ( iItemIndex != -1)
+	{
+		m_FieldArray.RemoveAt(iItemIndex);
+	}
+}
+
+			
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()
 {
@@ -330,7 +374,10 @@ bool ProjectDefLayersDlg::Create( wxWindow* parent, wxWindowID id, const wxStrin
 
 ProjectDefLayersDlg::~ProjectDefLayersDlg()
 {
-
+	// clear the array
+	/// @todo remove this code if the array dosen't need to be deleted
+	if (!m_FieldArray.IsEmpty())
+		m_FieldArray.Clear();
 }
 
 
@@ -359,12 +406,9 @@ void ProjectDefLayersDlg::CreateControls()
     wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Layer type :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxArrayString m_DlgPDL_Layer_TypeStrings;
-    m_DlgPDL_Layer_TypeStrings.Add(_("Point"));
-    m_DlgPDL_Layer_TypeStrings.Add(_("Line"));
-    m_DlgPDL_Layer_TypeStrings.Add(_("Polygon"));
-    m_DlgPDL_Layer_Type = new wxChoice( itemDialog1, ID_DLGPDL_LAYER_TYPE, wxDefaultPosition, wxDefaultSize, m_DlgPDL_Layer_TypeStrings, 0 );
-    m_DlgPDL_Layer_Type->SetStringSelection(_("Point"));
+
+    m_DlgPDL_Layer_Type = new wxChoice( itemDialog1, ID_DLGPDL_LAYER_TYPE, wxDefaultPosition, wxDefaultSize,PRJDEF_LAYERS_TYPE_NUMBER, PRJDEF_LAYERS_TYPE_STRING, 0 );
+    m_DlgPDL_Layer_Type->SetStringSelection(PRJDEF_LAYERS_TYPE_STRING[LAYER_POINT]);
     itemFlexGridSizer4->Add(m_DlgPDL_Layer_Type, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -401,7 +445,7 @@ void ProjectDefLayersDlg::CreateControls()
     wxStaticBoxSizer* itemStaticBoxSizer18 = new wxStaticBoxSizer(itemStaticBoxSizer18Static, wxVERTICAL);
     m_DlgPDL_Panel_Fields->SetSizer(itemStaticBoxSizer18);
 
-    m_DlgPDL_Fields_List = new ProjectDefLayersFieldsList( m_DlgPDL_Panel_Fields, ID_DLGPDL_FIELDS_LIST, wxSize(100, 100) );
+    m_DlgPDL_Fields_List = new ProjectDefLayersFieldsList( m_DlgPDL_Panel_Fields, ID_DLGPDL_FIELDS_LIST, wxSize(100, 100), this);
     itemStaticBoxSizer18->Add(m_DlgPDL_Fields_List, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);

@@ -30,9 +30,24 @@ END_EVENT_TABLE()
 
 void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
+	// create a new object for storing fields value
+	ProjectDefMemoryLayers * myMemLayersValue = new ProjectDefMemoryLayers();
+	
 	m_LayerDialog = new ProjectDefLayersDlg (this);
-	m_LayerDialog->ShowModal();
-	delete m_LayerDialog;
+	// transfert the data obj to the dialog, data will be 
+	// filled during DataTransfer...
+	m_LayerDialog->SetMemoryLayersObject(myMemLayersValue); 
+	
+	
+	if (m_LayerDialog->ShowModal()==wxID_OK)
+	{
+		;
+	}
+	else
+	{
+		delete m_LayerDialog;
+		wxLogDebug(_T("Deleting object not used"));
+	}
 }
 
 void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
