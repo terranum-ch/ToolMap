@@ -213,9 +213,39 @@ void ProjectDefFieldDlg::Init()
     m_DlgAFD_Range_Default = NULL;
     m_DlgAFD_Range_Min = NULL;
     m_DlgAFD_Range_Max = NULL;
+	m_DlgAFD_Field_Type = NULL;
+	m_DlgAFD_Field_Orientation = NULL;
+	m_DlgAFD_Constrain_Values = NULL;
+	
+	m_MemoryField = NULL;
 	////@end ProjectDefFieldDlg member initialisation
 }
 
+
+bool ProjectDefFieldDlg::TransferDataFromWindow()
+{
+	// some checks, have we called
+	// SetMemoryFieldObject function
+	// before ?
+	wxASSERT (m_MemoryField != NULL);
+	
+	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
+	m_MemoryField->m_FieldType = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
+	m_MemoryField->m_FieldPrecision = m_DlgAFD_Field_Precision->GetValue();
+	m_MemoryField->m_FieldScale = m_DlgAFD_Field_Scale->GetValue();
+	m_MemoryField->m_FieldOrientation = m_DlgAFD_Field_Orientation->IsChecked();
+	if (!m_DlgAFD_Constrain_Values->IsChecked())
+	{
+		m_MemoryField->m_FieldConstrain = FIELD_NOT_CONSTRAIN;
+	}
+	else
+	{
+		m_MemoryField->m_FieldConstrain = (PRJDEF_FIELD_CONSTAIN_VALUE_TYPE) m_DlgAFD_Notebook->GetSelection();
+	}
+	
+	
+	return TRUE;
+}
 
 /*!
  * Control creation for wxDialog
@@ -249,11 +279,11 @@ void ProjectDefFieldDlg::CreateControls()
     wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Data Type :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxChoice* itemChoice9 = new wxChoice( itemDialog1, ID_DLGAFD_DATA_TYPE, wxDefaultPosition, 
+    m_DlgAFD_Field_Type = new wxChoice( itemDialog1, ID_DLGAFD_DATA_TYPE, wxDefaultPosition, 
 										 wxDefaultSize, PRJDEF_FIELD_TYPE_NUMBER,
 										 PRJDEF_FIELD_TYPE_STRING, 0 );
-    itemChoice9->SetSelection(FIELD_TEXT);
-    itemFlexGridSizer7->Add(itemChoice9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_DlgAFD_Field_Type->SetSelection(FIELD_TEXT);
+    itemFlexGridSizer7->Add(m_DlgAFD_Field_Type, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Field precision :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer7->Add(itemStaticText10, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -273,13 +303,13 @@ void ProjectDefFieldDlg::CreateControls()
     m_DlgAFD_Result = new wxTextCtrl( itemDialog1, ID_DLGAFD_RESULT, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
     itemFlexGridSizer7->Add(m_DlgAFD_Result, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxCheckBox* itemCheckBox16 = new wxCheckBox( itemDialog1, ID_DLGAFD_ORIENTATION_FIELD, _("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemCheckBox16->SetValue(false);
-    itemFlexGridSizer7->Add(itemCheckBox16, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+    m_DlgAFD_Field_Orientation = new wxCheckBox( itemDialog1, ID_DLGAFD_ORIENTATION_FIELD, _("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgAFD_Field_Orientation->SetValue(false);
+    itemFlexGridSizer7->Add(m_DlgAFD_Field_Orientation, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 	
-    wxCheckBox* itemCheckBox17 = new wxCheckBox( itemDialog1, ID_DLGAFD_CONSTRAIN_VALUES, _("Constrain allowed values"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemCheckBox17->SetValue(false);
-    itemBoxSizer2->Add(itemCheckBox17, 0, wxGROW|wxALL, 5);
+    m_DlgAFD_Constrain_Values = new wxCheckBox( itemDialog1, ID_DLGAFD_CONSTRAIN_VALUES, _("Constrain allowed values"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgAFD_Constrain_Values->SetValue(false);
+    itemBoxSizer2->Add(m_DlgAFD_Constrain_Values, 0, wxGROW|wxALL, 5);
 	
     m_DlgAFD_Notebook = new wxNotebook( itemDialog1, ID_DLGAFD_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
     m_DlgAFD_Notebook->Show(false);

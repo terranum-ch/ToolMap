@@ -91,6 +91,7 @@ class ProjectDefFieldList : public ListGenReport
 
 class ProjectDefFieldDlg: public wxDialog
 	{    
+		ProjectDefMemoryFields * m_MemoryField;
 		
 		void OnShowConstrainValues(wxCommandEvent & event);
 		void OnAddAllowedValue (wxCommandEvent & event);
@@ -129,6 +130,11 @@ class ProjectDefFieldDlg: public wxDialog
 		/// Creates the controls and sizers
 		void CreateControls();
 		
+		void SetMemoryFieldObject (ProjectDefMemoryFields * myMemField) {m_MemoryField = myMemField;}
+		ProjectDefMemoryFields * GetMemoryFieldObject (){return m_MemoryField;}
+		/// Transfer data, is called automaticaly
+		/// when the dialog is disabled
+		virtual bool TransferDataFromWindow();
 		
 		////@begin ProjectDefFieldDlg member variables
 		wxTextCtrl* m_DlgAFD_Field_Def;
@@ -143,6 +149,10 @@ class ProjectDefFieldDlg: public wxDialog
 		wxTextCtrl* m_DlgAFD_Range_Default;
 		wxTextCtrl* m_DlgAFD_Range_Min;
 		wxTextCtrl* m_DlgAFD_Range_Max;
+		wxChoice * m_DlgAFD_Field_Type;
+		wxCheckBox* m_DlgAFD_Field_Orientation;
+		wxCheckBox* m_DlgAFD_Constrain_Values;
+		
 		
 	};
 

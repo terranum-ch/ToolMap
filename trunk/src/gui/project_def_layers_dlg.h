@@ -37,6 +37,7 @@
 #include "wx/statline.h"		// for static line in ProjectDefLayersEditObjectDlg
 #include "../core/textparser.h" // for text parsing during importation
 #include <wx/filedlg.h>			// file selector dialog
+#include "../core/projectdefmemory.h"
 
 class ProjectDefFieldDlg;
 
