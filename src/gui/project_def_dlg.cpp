@@ -32,6 +32,8 @@ void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
 	// create a new object for storing fields value
 	ProjectDefMemoryLayers * myMemLayersValue = new ProjectDefMemoryLayers();
+	wxArrayString myListValues;
+
 	
 	m_LayerDialog = new ProjectDefLayersDlg (this);
 	// transfert the data obj to the dialog, data will be 
@@ -41,7 +43,12 @@ void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 	
 	if (m_LayerDialog->ShowModal()==wxID_OK)
 	{
-		;
+		
+		
+		// prepare data for list representation
+		myListValues.Add(myMemLayersValue->m_LayerName);
+		myListValues.Add(PRJDEF_LAYERS_TYPE_STRING[myMemLayersValue->m_LayerType]);
+		m_DlgPd_Stat_Model_List->EditDataToList(myListValues);
 	}
 	else
 	{
@@ -186,7 +193,7 @@ void ProjectDefDLG::CreateControls()
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer21, 0, wxALIGN_RIGHT|wxALL, 5);
     wxButton* itemButton22 = new wxButton( itemDialog1, wxID_OK, _("&Create new project"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer21->AddButton(itemButton22);
+ 	itemStdDialogButtonSizer21->AddButton(itemButton22);
 
     wxButton* itemButton23 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer21->AddButton(itemButton23);

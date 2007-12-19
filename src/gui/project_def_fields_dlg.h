@@ -101,8 +101,8 @@ class ProjectDefFieldDlg: public wxDialog
 		void OnExportAllowedValue (wxCommandEvent & event);
 		
 		
-		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg )
-		DECLARE_EVENT_TABLE()
+		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );
+		DECLARE_EVENT_TABLE();
 		
 	public:
 		/// Constructors

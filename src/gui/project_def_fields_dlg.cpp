@@ -381,7 +381,8 @@ void ProjectDefFieldDlg::CreateControls()
     itemStdDialogButtonSizer38->AddButton(itemButton39);
 	
     wxButton* itemButton40 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer38->AddButton(itemButton40);
+    itemButton40->SetDefault();
+	itemStdDialogButtonSizer38->AddButton(itemButton40);
 	
     itemStdDialogButtonSizer38->Realize();
 }

@@ -27,6 +27,14 @@
  
  \image html toolmap.jpg 
  
+ \section doc Documentation topics
+ To find our way in all the documentated class of the programm, We have sorted our
+ documentation based on topics or part of the program. Some topics are presented here :
+ 
+  
+ - \subpage intro 
+ - \subpage Prj_def "Project definition"
+
  \section Licence 
  
  This program is free software; you can redistribute it and/or modify 
@@ -35,9 +43,24 @@
  (at your option) any later version.
  
  \author Lucien Schreiber (c) CREALP 2007
- 
  \date  Since november 2007
+
  
+ \page intro Introduction 
+ During ToolMap 2 startup, the followed process is described hereafter :
+ - ToolMapApp::OnInit() function is called and create the program frame (see class ToolMapFrame)
+ - ToolMapFrame object is then initialised and create both the menu bar and the toolbar.
+		- ToolMapFrame::CreateToolMapMenu
+		- ToolMapFrame::CreateToolMapToolBar
+ 
+ Those two last function were copy-pasted from DialogBlocks (http://www.anthemion.co.uk/dialogblocks/)
+ a graphical UI designer.
+ 
+ The program is then started and mainly waiting for event.
+ 
+ 
+ \page Prj_def Project definition
+ This page explain the process of ToolMap 2 project definition.
  */
 
 
