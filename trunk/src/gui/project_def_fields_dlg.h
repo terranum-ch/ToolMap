@@ -136,6 +136,7 @@ class ProjectDefFieldDlg: public wxDialog
 		/// Transfer data, is called automaticaly
 		/// when the dialog is disabled
 		virtual bool TransferDataFromWindow();
+		virtual bool TransferDataToWindow();
 		
 		////@begin ProjectDefFieldDlg member variables
 		wxTextCtrl* m_DlgAFD_Field_Def;

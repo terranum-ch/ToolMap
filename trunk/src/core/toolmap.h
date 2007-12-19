@@ -57,10 +57,6 @@
  a graphical UI designer.
  
  The program is then started and mainly waiting for event.
- 
- 
- \page Prj_def Project definition
- This page explain the process of ToolMap 2 project definition.
  */
 
 

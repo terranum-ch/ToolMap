@@ -90,7 +90,8 @@ class ProjectDefLayersObjectList : public ListGenReport
 class ProjectDefLayersFieldsList : public ListGenReport
 	{
 	private:
-		//virtual void OnDoubleClickItem(wxListEvent & event);
+		
+		virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
 		virtual void OnPressBackSpace (wxListEvent & event);
 		
@@ -174,8 +175,7 @@ class ProjectDefLayersDlg: public wxDialog
 		ProjectDefFieldDlg * m_FieldDialog;
 		ProjectDefMemoryLayers * m_LayersObj;
 		
-		// contain the list of fields
-		PrjMemFieldArray m_FieldArray;
+		
 		
 		void OnAddField (wxCommandEvent & event);
 		void OnRemoveField (wxCommandEvent & event);
@@ -208,9 +208,12 @@ class ProjectDefLayersDlg: public wxDialog
 		/// Destructor
 		~ProjectDefLayersDlg();
 		
+		// contain the list of fields
+		PrjMemFieldArray m_FieldArray;
+		
 		/// Initialises member variables
 		void Init();
-		
+				
 		/// Creates the controls and sizers
 		void CreateControls();
 		
@@ -218,7 +221,10 @@ class ProjectDefLayersDlg: public wxDialog
 		
 		void SetMemoryLayersObject (ProjectDefMemoryLayers * myLayersObj) {m_LayersObj = myLayersObj;}
 		
+		/// Transfer data, is called automaticaly
+		/// when the dialog is disabled
 		virtual bool TransferDataFromWindow();
+		
 		/// controls variables
 		wxChoice* m_DlgPDL_Layer_Type;
 		wxTextCtrl* m_DlgPDL_Layer_Name;

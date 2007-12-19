@@ -247,6 +247,37 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	return TRUE;
 }
 
+
+bool ProjectDefFieldDlg::TransferDataToWindow()
+{
+	// some checks, have we called
+	// SetMemoryFieldObject function
+	// before ?
+	wxASSERT (m_MemoryField != NULL);
+	
+	m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
+	m_DlgAFD_Field_Type->SetSelection((int) m_MemoryField->m_FieldType);
+	m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
+	m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
+	m_DlgAFD_Field_Orientation->SetValue(m_MemoryField->m_FieldOrientation);
+	if (m_MemoryField->m_FieldConstrain != FIELD_NOT_CONSTRAIN)
+	{
+		m_DlgAFD_Constrain_Values->SetValue(TRUE);
+		m_DlgAFD_Notebook->Show(TRUE);
+		m_DlgAFD_Notebook->SetSelection(m_MemoryField->m_FieldConstrain);
+	}
+	
+	// for setting the good size to the dialog
+	if (GetSizer())
+	{
+		GetSizer()->Fit(this);
+		GetSizer()->Layout();
+	}
+	
+	return TRUE;
+}
+
+
 /*!
  * Control creation for wxDialog
  */
