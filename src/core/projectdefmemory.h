@@ -25,6 +25,22 @@
  @author Lucien Schreiber (c) CREALP 2007
  @date 18 December 2007
  *******************************************************************************/
+/*!
+ \page Prj_def Project definition
+ 
+ \section Introduction
+ The project definition is stored in the embedded database but during the process
+ of creating a new project or edition of an existing one, all will be temporally
+ stored into the ProjectDefMemory class for allowing user to cancel any dialogs
+ operation.
+ 
+ \section ProjectDefMemory
+ 
+ Hello
+ 
+ 
+ 
+*/
 
 
 #ifndef PROJECTDEFMEMORY_H
@@ -117,7 +133,7 @@ class ProjectDefMemoryFields
 // Creating a list of MemoryFields
 WX_DECLARE_OBJARRAY(ProjectDefMemoryFields, PrjMemFieldArray);
 
-// find function in array
+/// find function in field array
 int FindObjInFieldArray(ListGenReport * myList, const PrjMemFieldArray & myArray);
 
 
@@ -147,5 +163,11 @@ class ProjectDefMemoryLayers
 		ProjectDefMemoryLayers();
 		~ProjectDefMemoryLayers();
 	};
+
+// Creating a list of MemoryLayers
+WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers, PrjMemLayersArray);
+
+/// find function in layer array
+int FindObjInLayersArray(ListGenReport * myList, const PrjMemLayersArray & myArray);
 
 #endif

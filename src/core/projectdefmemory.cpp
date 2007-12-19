@@ -31,13 +31,31 @@ int FindObjInFieldArray(ListGenReport * myList, const PrjMemFieldArray & myArray
 	{
 		if (myArray.Item(i).m_Fieldname == myList->GetItemColText(mySelectedListItem, 0))
 		{
-			wxLogDebug(_T("Object found in array in position : %d"), i);
+			wxLogDebug(_T("Object found in Field array in position : %d"), i);
 			return i;
 		}
 	}
 	return -1;
 }
 
+
+int FindObjInLayersArray(ListGenReport * myList, const PrjMemLayersArray & myArray)
+{
+	// get selected item from the list
+	long mySelectedListItem = myList->GetSelectedItem();
+	
+	// search this item in the list
+	for (unsigned int i=0; i < myArray.GetCount(); i++)
+	{
+		if (myArray.Item(i).m_LayerName == myList->GetItemColText(mySelectedListItem, 0))
+		{
+			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
+			return i;
+		}
+	}
+	return -1;
+	
+}
 
 
 /*************************         FIELDS          *************************/
@@ -95,3 +113,6 @@ void ProjectDefMemoryLayers::InitMemberValues()
 	m_pLayerFieldArray = NULL;
 	m_LayerName = _T("");
 }
+
+WX_DEFINE_OBJARRAY (PrjMemLayersArray);
+

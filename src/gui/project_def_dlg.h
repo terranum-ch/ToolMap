@@ -96,8 +96,10 @@ class ProjectDefDLG: public wxDialog
 	{    
 	private:
 		ProjectDefLayersDlg * m_LayerDialog;
+		PrjMemLayersArray  m_LayersArray;
 		
 		void OnAddLayer(wxCommandEvent & event);
+		void OnRemoveLayer (wxCommandEvent & event);
 		void OnSelectProjectPath (wxCommandEvent & event);
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefDLG );
@@ -130,6 +132,8 @@ class ProjectDefDLG: public wxDialog
 		/// Creates the controls and sizers
 		void CreateControls();
 		
+		void RemoveObjFromArray();
+		
 		
 		////@begin ProjectDefDLG member variables
 		wxTextCtrl* m_DlgPD_Proj_Path;
@@ -154,15 +158,21 @@ class ProjectDefDLG: public wxDialog
 class ProjectDefList : public ListGenReport
 	{
 	private:
+		
+		virtual void OnPressBackSpace (wxListEvent & event); 
+		
 		//virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
+		
+		/// pointer to the parent dialog
+		ProjectDefDLG * m_ParentDlg;
 		
 		wxChoice * m_ChoiceToChange;
 		
 	public:
 		static const int ID_PARAMLIST;
 		
-		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size);
+		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size,  ProjectDefDLG * myParentDlg);
 		
 		~ProjectDefList(); 
 		

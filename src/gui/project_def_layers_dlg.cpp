@@ -106,6 +106,39 @@ void ProjectDefLayersFieldsList::OnPressBackSpace (wxListEvent & event)
 }
 
 
+void ProjectDefLayersFieldsList::OnDoubleClickItem(wxListEvent & event)
+{
+	wxArrayString myListValues;
+	
+	// find item selected and then call a new ProjectDefFieldDlg
+	// for editing the existing Field
+	int iItemIndex = FindObjInFieldArray(this, m_DlgParent->m_FieldArray);
+	if (iItemIndex != -1)
+	{
+		ProjectDefFieldDlg * myTempFieldDialog = new ProjectDefFieldDlg (this);
+		
+		// transfert the data obj to the dialog, data will be 
+		// filled during DataTransfer...
+		ProjectDefMemoryFields * myMemFieldValue = &(m_DlgParent->m_FieldArray.Item(iItemIndex));
+		myTempFieldDialog->SetMemoryFieldObject(myMemFieldValue);
+		
+		if (myTempFieldDialog->ShowModal() == wxID_OK)
+		{
+			
+			// prepare data for list representation
+			myListValues.Add(myMemFieldValue->m_Fieldname);
+			myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue->m_FieldType]);
+			EditDataToList(myListValues, GetSelectedItem());
+			
+		}
+		
+		
+		wxLogDebug(_T("Size of Field array %d"), m_DlgParent->m_FieldArray.GetCount());
+		delete myTempFieldDialog;
+	}	
+	
+}
+
 /******************************  Add object Dialog Class *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg, wxDialog )
 
@@ -265,10 +298,10 @@ void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
 	else 
 	{
 		delete myMemFieldValue;
-		wxLogDebug(_T("Deleting object not used"));
+		wxLogDebug(_T("Deleting Field Memory object not used"));
 	}
 
-	wxLogDebug(_T("Size of array %d"), m_FieldArray.GetCount());
+	wxLogDebug(_T("Size of Field array %d"), m_FieldArray.GetCount());
 	delete m_FieldDialog;
 	
 }

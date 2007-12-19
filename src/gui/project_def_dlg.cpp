@@ -25,6 +25,7 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefDLG, wxDialog )
 BEGIN_EVENT_TABLE( ProjectDefDLG, wxDialog )
 	EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_ADD, ProjectDefDLG::OnAddLayer)
 	EVT_BUTTON(ID_DLGPD_PROJ_PATH_BTN, ProjectDefDLG::OnSelectProjectPath)
+    EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_DEL,  ProjectDefDLG::OnRemoveLayer)
 END_EVENT_TABLE()
 
 
@@ -44,6 +45,7 @@ void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 	if (m_LayerDialog->ShowModal()==wxID_OK)
 	{
 		
+		m_LayersArray.Add(myMemLayersValue);
 		
 		// prepare data for list representation
 		myListValues.Add(myMemLayersValue->m_LayerName);
@@ -52,9 +54,33 @@ void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 	}
 	else
 	{
-		delete m_LayerDialog;
-		wxLogDebug(_T("Deleting object not used"));
+		// we cancel so we don't need to keep
+		// this Layers Object in memory
+		delete myMemLayersValue;
+		wxLogDebug(_T("Deleting Memory layers object not used"));
 	}
+	wxLogDebug(_T("Size of Layers array %d"), m_LayersArray.GetCount());
+	delete m_LayerDialog;
+	
+
+}
+
+void ProjectDefDLG::OnRemoveLayer (wxCommandEvent & event)
+{
+	// remove the object from the field array
+	// if found and then remove the object from the list
+	RemoveObjFromArray();
+	m_DlgPd_Stat_Model_List->DeleteSelectedItem();
+}
+
+void ProjectDefDLG::RemoveObjFromArray()
+{
+	// if a corresponding item was found, remove it from the array
+	int iItemIndex = FindObjInLayersArray(m_DlgPd_Stat_Model_List, m_LayersArray);
+	if ( iItemIndex != -1)
+	{
+		m_LayersArray.RemoveAt(iItemIndex);
+	}	
 }
 
 void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
@@ -176,7 +202,7 @@ void ProjectDefDLG::CreateControls()
     wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
     itemBoxSizer2->Add(itemStaticBoxSizer16, 1, wxGROW|wxALL, 5);
 
-    m_DlgPd_Stat_Model_List = new ProjectDefList( itemDialog1, ID_DLGPD_SPAT_MODEL_LIST, wxSize(-1,150));
+    m_DlgPd_Stat_Model_List = new ProjectDefList( itemDialog1, ID_DLGPD_SPAT_MODEL_LIST, wxSize(-1,150),this);
     itemStaticBoxSizer16->Add(m_DlgPd_Stat_Model_List, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
@@ -202,9 +228,11 @@ void ProjectDefDLG::CreateControls()
 }
 
 
-ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size) 
+ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, ProjectDefDLG * myParentDlg) 
 	: ListGenReport(parent,id,size)
 {
+	m_ParentDlg = myParentDlg;
+	
 	// Create columns
 	wxArrayString myColNames;
 	wxArrayInt myColsWidths;
@@ -225,4 +253,13 @@ ProjectDefList::~ProjectDefList()
 {
 
 }
+
+void ProjectDefList::OnPressBackSpace (wxListEvent & event)
+{
+	// delete selected item but also in the array
+	m_ParentDlg->RemoveObjFromArray();
+	DeleteSelectedItem();
+}
+
+
 
