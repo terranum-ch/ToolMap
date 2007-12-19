@@ -20,7 +20,7 @@ const int ListGenReport::ID_LIST = wxID_ANY;
 
 ListGenReport::ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize, wxSize size)
 	: wxListCtrl(parent,id,wxDefaultPosition,
-	wxDefaultSize,wxLC_REPORT | wxLC_SINGLE_SEL)
+	size,wxLC_REPORT | wxLC_SINGLE_SEL)
 {
 	CreateColumns(pColsName,pColsSize);
 	OnInit();

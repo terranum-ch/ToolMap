@@ -340,6 +340,17 @@ void ProjectDefLayersDlg::RemoveObjFromArray()
 	}
 }
 
+
+bool ProjectDefLayersDlg::TransferDataFromWindow()
+{
+	// function automaticaly called when the dialog
+	// is closed using the wxID_OK button
+	
+	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
+	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
+	return TRUE;
+	
+}
 			
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()
@@ -464,7 +475,8 @@ void ProjectDefLayersDlg::CreateControls()
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer23, 0, wxALIGN_RIGHT|wxALL, 5);
     wxButton* itemButton24 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer23->AddButton(itemButton24);
+    itemButton24->SetDefault();
+	itemStdDialogButtonSizer23->AddButton(itemButton24);
 
     wxButton* itemButton25 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer23->AddButton(itemButton25);

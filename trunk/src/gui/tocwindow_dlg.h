@@ -51,7 +51,7 @@
 class TocWindowContent : public wxEvtHandler
 	{
 	private:
-		DECLARE_DYNAMIC_CLASS(TocWindowContent)
+		DECLARE_DYNAMIC_CLASS(TocWindowContent);
 		
 		public :
 		TocWindowContent();
@@ -73,7 +73,7 @@ class TocWindowContent : public wxEvtHandler
 class TocWindowDlgMac : public TocWindowContent
 	{
 	private:
-		DECLARE_DYNAMIC_CLASS( TocWindowDlgMac )
+		DECLARE_DYNAMIC_CLASS( TocWindowDlgMac );
 		wxDrawerWindow * m_DrawerWindow;
 		
 	public:
@@ -94,7 +94,7 @@ class TocWindowDlgMac : public TocWindowContent
 class TocWindowDlgGen : public TocWindowContent 
 	{
 	private:
-		DECLARE_DYNAMIC_CLASS(TocWindowDlgGen)
+		DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
 		void Init();
 		
 		wxAuiManager * m_TocAui;

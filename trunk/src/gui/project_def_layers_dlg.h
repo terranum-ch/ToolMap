@@ -134,8 +134,8 @@ class ProjectDefLayersEditObjectDlg: public ListGenDialog
 	{    
 		void OnTextChange(wxCommandEvent & event);
 		
-		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg )
-		DECLARE_EVENT_TABLE()
+		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg );
+		DECLARE_EVENT_TABLE();
 		
 	public:
 		/// Constructors
@@ -185,8 +185,8 @@ class ProjectDefLayersDlg: public wxDialog
 		
 	
 		
-		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg )
-		DECLARE_EVENT_TABLE()
+		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg );
+		DECLARE_EVENT_TABLE();
 		
 	public:
 		/// Constructors
@@ -218,6 +218,7 @@ class ProjectDefLayersDlg: public wxDialog
 		
 		void SetMemoryLayersObject (ProjectDefMemoryLayers * myLayersObj) {m_LayersObj = myLayersObj;}
 		
+		virtual bool TransferDataFromWindow();
 		/// controls variables
 		wxChoice* m_DlgPDL_Layer_Type;
 		wxTextCtrl* m_DlgPDL_Layer_Name;

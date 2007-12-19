@@ -100,8 +100,8 @@ class ProjectDefDLG: public wxDialog
 		void OnAddLayer(wxCommandEvent & event);
 		void OnSelectProjectPath (wxCommandEvent & event);
 		
-		DECLARE_DYNAMIC_CLASS( ProjectDefDLG )
-		DECLARE_EVENT_TABLE()
+		DECLARE_DYNAMIC_CLASS( ProjectDefDLG );
+		DECLARE_EVENT_TABLE();
 		
 		
 		
