@@ -115,7 +115,6 @@ void ToolMapFrame::PostInit()
 ToolMapFrame::~ToolMapFrame()
 {
 	delete m_LogWindow;
-	delete m_TocWindow;
 }
 
 wxMenuBar* ToolMapFrame::CreateToolMapMenu()
