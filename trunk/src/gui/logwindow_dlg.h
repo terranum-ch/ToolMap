@@ -51,8 +51,12 @@
  *******************************************************************************/
 class ImportLogDLG: public wxDialog
 {    
-    DECLARE_DYNAMIC_CLASS( ImportLog );
-    //DECLARE_EVENT_TABLE()
+private:
+	
+	void OnCloseLogWindow(wxCommandEvent & event);
+	
+	DECLARE_DYNAMIC_CLASS( ImportLog );
+    DECLARE_EVENT_TABLE();
 
 public:
     /// Default Constructors

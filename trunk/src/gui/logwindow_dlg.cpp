@@ -22,18 +22,15 @@
 IMPLEMENT_DYNAMIC_CLASS( ImportLogDLG, wxDialog )
 
 
-///*!
-// * ImportLog event table definition
-// */
-//
-//BEGIN_EVENT_TABLE( ImportLog, wxDialog )
-//
-//////@begin ImportLog event table entries
-//////@end ImportLog event table entries
-//
-//END_EVENT_TABLE()
 
+BEGIN_EVENT_TABLE( ImportLogDLG, wxDialog )
+	EVT_BUTTON(wxID_CLOSE,ImportLogDLG::OnCloseLogWindow)
+END_EVENT_TABLE()
 
+void ImportLogDLG::OnCloseLogWindow(wxCommandEvent & event)
+{
+	this->Hide();
+}
 /*!
  * ImportLog constructors
  */

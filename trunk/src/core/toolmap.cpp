@@ -114,6 +114,8 @@ void ToolMapFrame::PostInit()
 /* Frame destruction */
 ToolMapFrame::~ToolMapFrame()
 {
+	delete m_LogWindow;
+	delete m_TocWindow;
 }
 
 wxMenuBar* ToolMapFrame::CreateToolMapMenu()
@@ -213,7 +215,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu77->Append(ID_MENU_TOC_WINDOW, _("Table of content"), _T(""), wxITEM_CHECK);
     itemMenu77->Check(ID_MENU_TOC_WINDOW, true);
     itemMenu77->Append(ID_MENU_INFO_WINDOW, _("Information window"), _T(""), wxITEM_CHECK);
-    itemMenu77->Append(ID_MENU_LOG_WINDOW, _("Log window"), _T(""), wxITEM_CHECK);
+    itemMenu77->Append(ID_MENU_LOG_WINDOW, _("Log window\tCtrl+L"), _T(""), wxITEM_CHECK);
     menuBar->Append(itemMenu77, _("Window"));
     wxMenu* itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), _T(""), wxITEM_NORMAL);
