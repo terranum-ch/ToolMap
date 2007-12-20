@@ -94,6 +94,7 @@ class ProjectDefFieldDlg: public wxDialog
 	{    
 		ProjectDefMemoryFields * m_MemoryField;
 		
+		void OnShowLiveResults (wxCommandEvent & event);
 		void OnShowConstrainValues(wxCommandEvent & event);
 		void OnAddAllowedValue (wxCommandEvent & event);
 		void OnImportAllowedValue (wxCommandEvent & event);

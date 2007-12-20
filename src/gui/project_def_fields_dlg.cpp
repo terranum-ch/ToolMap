@@ -81,6 +81,8 @@ BEGIN_EVENT_TABLE( ProjectDefFieldDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_IMPORT, ProjectDefFieldDlg::OnImportAllowedValue)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_REMOVE, ProjectDefFieldDlg::OnRemoveAllowedValue)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_EXPORT, ProjectDefFieldDlg::OnExportAllowedValue)
+	EVT_TEXT(ID_DLGAFD_FIELD_SCALE, ProjectDefFieldDlg::OnShowLiveResults)
+	EVT_TEXT(ID_DLGAFD_FIELD_PRECISION, ProjectDefFieldDlg::OnShowLiveResults)
 END_EVENT_TABLE()
 
 
@@ -121,7 +123,36 @@ void ProjectDefFieldDlg::OnRemoveAllowedValue (wxCommandEvent & event)
 	m_DlgAFD_Coded_Val_List->DeleteSelectedItem();
 }
 
+void ProjectDefFieldDlg::OnShowLiveResults (wxCommandEvent & event)
+{
+	/// called when scale or precision controls changes
+	wxString myTempResultString = _T(""); 
+	int iPrecision = m_DlgAFD_Field_Precision->GetValue();
+	int iScale = m_DlgAFD_Field_Scale->GetValue();
+	int iLeft = 0;
+	int i = 0;
+	
+	// check that precision is greather than 0 otherwise do
+	// nothing
+	if (iPrecision > 0 && iPrecision -iScale > 0)
+	{
+		iLeft = iPrecision - iScale;
 
+		for (i =0;i<iLeft;i++)
+			myTempResultString = myTempResultString + _T("0");
+		myTempResultString.Append(_T("."));
+		for (i =0;i<iScale;i++)
+			myTempResultString = myTempResultString + _T("0");
+		
+		// update the result ctrl
+		m_DlgAFD_Result->SetValue(myTempResultString);
+	}
+	// if precision is null we clean the result ctrl
+	else
+	{
+		m_DlgAFD_Result->Clear();
+	}
+}
 
 void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 {
@@ -143,6 +174,7 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 	}
 	
 }
+
 
 
 void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
@@ -331,7 +363,7 @@ void ProjectDefFieldDlg::CreateControls()
     wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Result sample :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer7->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_TOP|wxALL, 5);
 	
-    m_DlgAFD_Result = new wxTextCtrl( itemDialog1, ID_DLGAFD_RESULT, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_CENTRE );
+    m_DlgAFD_Result = new wxTextCtrl( itemDialog1, ID_DLGAFD_RESULT, _T(""), wxDefaultPosition, wxDefaultSize);//, // wxTE_CENTRE );
     itemFlexGridSizer7->Add(m_DlgAFD_Result, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     m_DlgAFD_Field_Orientation = new wxCheckBox( itemDialog1, ID_DLGAFD_ORIENTATION_FIELD, _("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
