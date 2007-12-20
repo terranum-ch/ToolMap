@@ -54,7 +54,7 @@
     #include <wx/wx.h>
 #endif
 
-#include "listgenreport.h"
+#include "../gui/listgenreport.h"
 
 
 
