@@ -31,11 +31,16 @@ END_EVENT_TABLE()
 
 void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
-
-	//m_LayerDialog = new ProjectDefLayersDlg (this);
+	// create a dialog
+	m_LayerDialog = new ProjectDefLayersDlg (this);
+	wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	
 	m_DlgPd_Stat_Model_List->SetDialog(m_LayerDialog);
 	m_DlgPd_Stat_Model_List->AddItem();
+
+	// delete dialog
+    wxLogDebug(_T("Destroying Thematic Layer Dialog"));
+	delete m_LayerDialog;
 
 }
 
@@ -89,8 +94,6 @@ bool ProjectDefDLG::Create( wxWindow* parent, wxWindowID id, const wxString& cap
 
 ProjectDefDLG::~ProjectDefDLG()
 {
-	wxLogDebug(_T("Destroying Thematic Layer Dialog"));
-	delete m_LayerDialog;
 }
 
 
@@ -103,9 +106,6 @@ void ProjectDefDLG::Init()
     m_DlgPd_Proj_Projection = NULL;
     m_DlgPd_Stat_Model_List = NULL;
 	m_LayerDialog = NULL;
-	
-	m_LayerDialog = new ProjectDefLayersDlg (this);
-	wxLogDebug(_T("Creating Thematic Layer Dialog"));
 
 }
 
@@ -220,6 +220,8 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 	// create an array for storing spatial thems
 	m_LayersArray = new PrjMemLayersArray();
 
+	m_LayersDialog = NULL;
+
 }
 
 
@@ -273,9 +275,13 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 
 void ProjectDefList::BeforeEditing ()
 {
+	// create the dialog
+	m_LayersDialog = new ProjectDefLayersDlg (this);
+	wxLogDebug(_T("Creating Thematic Layer Dialog"));
+	SetDialog(m_LayersDialog);
+
 	// find item selected and then call a new Dialog
 	// for editing the existing Field
-	
 	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
 	if (iItemIndex != -1)
 	{
@@ -305,6 +311,10 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 		EditDataToList(myListValues, GetSelectedItem());
 		
 	}
+
+	// delete dialog
+    wxLogDebug(_T("Destroying Thematic Layer Dialog"));
+	delete m_LayersDialog;
 	
 }
 

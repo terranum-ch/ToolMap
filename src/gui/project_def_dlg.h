@@ -166,6 +166,8 @@ class ProjectDefList : public ListGenReportWithDialog
 		PrjMemLayersArray *  m_LayersArray;
 		// create object for storing layers data
 		ProjectDefMemoryLayers * m_LayersObj;
+		ProjectDefLayersDlg * m_LayersDialog;
+	
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
