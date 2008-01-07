@@ -168,6 +168,6 @@ class ProjectDefMemoryLayers
 WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers, PrjMemLayersArray);
 
 /// find function in layer array
-int FindObjInLayersArray(ListGenReport * myList, const PrjMemLayersArray & myArray);
+int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray);
 
 #endif

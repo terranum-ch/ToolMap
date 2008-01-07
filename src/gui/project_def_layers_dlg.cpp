@@ -378,13 +378,24 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 {
 	// function automaticaly called when the dialog
 	// is closed using the wxID_OK button
-	
+	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
 	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
 	return TRUE;
 	
 }
-			
+
+
+bool ProjectDefLayersDlg::TransferDataToWindow()
+{
+	// function automaticaly called when the dialog
+	// is showed 
+	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
+	m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName); 
+	m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE) m_LayersObj->m_LayerType);
+	return TRUE;
+}
+
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()
 {

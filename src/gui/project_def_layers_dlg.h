@@ -224,6 +224,7 @@ class ProjectDefLayersDlg: public wxDialog
 		/// Transfer data, is called automaticaly
 		/// when the dialog is disabled
 		virtual bool TransferDataFromWindow();
+		virtual bool TransferDataToWindow();
 		
 		/// controls variables
 		wxChoice* m_DlgPDL_Layer_Type;

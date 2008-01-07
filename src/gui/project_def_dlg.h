@@ -132,7 +132,7 @@ class ProjectDefDLG: public wxDialog
 		/// Creates the controls and sizers
 		void CreateControls();
 		
-		void RemoveObjFromArray();
+		//void RemoveObjFromArray();
 		
 		
 		////@begin ProjectDefDLG member variables
@@ -155,19 +155,23 @@ class ProjectDefDLG: public wxDialog
  @author Lucien Schreiber (c) CREALP 2007
  @date 04 December 2007
  *******************************************************************************/
-class ProjectDefList : public ListGenReport
+class ProjectDefList : public ListGenReportWithDialog
 	{
 	private:
 		
 		virtual void OnPressBackSpace (wxListEvent & event); 
-		
-		//virtual void OnDoubleClickItem(wxListEvent & event);
-		//		void OnMySelectionChange (wxListEvent & event);
-		
-		/// pointer to the parent dialog
-		ProjectDefDLG * m_ParentDlg;
-		
+//		void OnMySelectionChange (wxListEvent & event);
+				
 		wxChoice * m_ChoiceToChange;
+		PrjMemLayersArray *  m_LayersArray;
+		// create object for storing layers data
+		ProjectDefMemoryLayers * m_LayersObj;
+		
+		virtual void BeforeAdding();
+		virtual void AfterAdding (bool bRealyAddItem);
+		virtual void BeforeDeleting ();
+		virtual void BeforeEditing ();
+		virtual void AfterEditing (bool bRealyEdited);
 		
 	public:
 		static const int ID_PARAMLIST;

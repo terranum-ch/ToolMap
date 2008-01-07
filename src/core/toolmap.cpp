@@ -280,6 +280,7 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 {
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this);
 	myNewProjDlg->ShowModal();
+	delete myNewProjDlg;
 	
 }
 

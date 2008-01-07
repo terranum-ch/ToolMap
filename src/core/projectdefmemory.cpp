@@ -39,15 +39,15 @@ int FindObjInFieldArray(ListGenReport * myList, const PrjMemFieldArray & myArray
 }
 
 
-int FindObjInLayersArray(ListGenReport * myList, const PrjMemLayersArray & myArray)
+int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray)
 {
 	// get selected item from the list
 	long mySelectedListItem = myList->GetSelectedItem();
 	
 	// search this item in the list
-	for (unsigned int i=0; i < myArray.GetCount(); i++)
+	for (unsigned int i=0; i < myArray->GetCount(); i++)
 	{
-		if (myArray.Item(i).m_LayerName == myList->GetItemColText(mySelectedListItem, 0))
+		if (myArray->Item(i).m_LayerName == myList->GetItemColText(mySelectedListItem, 0))
 		{
 			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
 			return i;
