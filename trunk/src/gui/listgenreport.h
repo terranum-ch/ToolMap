@@ -67,6 +67,7 @@ class ListGenReport : public wxListCtrl
 		void OnContextMenu (wxListEvent & event);
 		void OnMoveItemInList (wxCommandEvent & event);
 		
+			
 		void OnStartDrag (wxListEvent & event);
 		void OnInit();
 		
@@ -281,6 +282,46 @@ class ListGenReport : public wxListCtrl
 		
 		DECLARE_EVENT_TABLE();
 	};
+
+
+
+class ListGenReportWithDialog : public ListGenReport
+{
+protected:
+	wxDialog * m_pDialog;
+	
+	void InitMembers();
+	void InitConnectEvent();
+	
+	virtual void BeforeAdding(){;}
+	virtual void BeforeDeleting() {;}
+	virtual void AfterAdding(bool bRealyAddItem){;}
+	virtual void BeforeEditing() {;}
+	virtual void AfterEditing (bool bRealyEdited) {;}
+	virtual void OnDoubleClickItem (wxListEvent & event);
+	
+	
+public:
+	ListGenReportWithDialog(wxWindow * parent, 
+							wxWindowID id, 
+							wxSize size = wxDefaultSize);
+	ListGenReportWithDialog (wxWindow * parent, wxWindowID id, 
+							 wxArrayString * pColsName, 
+							 wxArrayInt * pColsSize=NULL, 
+							 wxSize size=wxDefaultSize);
+	
+	~ListGenReportWithDialog();
+	
+	
+	void SetDialog (wxDialog * pDialog) {m_pDialog = pDialog;}
+	
+	void AddItem ();
+	void DeleteItem();
+	void EditItem();
+	
+};
+
+
 
 /*****************************************************************//**
  @brief contextual menu for ListGenReport

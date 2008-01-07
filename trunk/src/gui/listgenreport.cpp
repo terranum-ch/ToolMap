@@ -445,7 +445,104 @@ wxMenu * ListGenMenu::CreateContextMenu()
 }
 
 
+/************************ LISTGENREPORTWITHDIALOG**********************************/
+ListGenReportWithDialog::ListGenReportWithDialog (wxWindow * parent, wxWindowID id, 
+												  wxArrayString * pColsName, 
+												  wxArrayInt * pColsSize, 
+												  wxSize size) : 
+ListGenReport (parent, id,pColsName, pColsSize, size)
+{
+	InitMembers();	
+}
 
+
+ListGenReportWithDialog::ListGenReportWithDialog(wxWindow * parent, 
+												 wxWindowID id, 
+												 wxSize size) :
+ListGenReport(parent, id, size)
+{
+	InitMembers();
+}
+
+
+ListGenReportWithDialog::~ListGenReportWithDialog()
+{
+	
+}
+
+
+void ListGenReportWithDialog::InitMembers()
+{
+	m_pDialog = NULL;
+}
+
+
+void ListGenReportWithDialog::InitConnectEvent()
+{
+	// connect event to the listctrl
+	
+	
+	
+}
+
+void ListGenReportWithDialog::AddItem()
+{
+	// check that the dialog pointer is not null
+	// otherwise no operations are allowed
+	wxASSERT_MSG (m_pDialog, wxT("Pointer to the dialog not initialised, init this pointer first"));
+	
+	BeforeAdding();
+	
+	// show the dialog for edition,
+	// the dialog must implement the TransfertDataToWindow
+	// for beeing usable
+	if (m_pDialog->ShowModal()==wxID_OK)
+	{
+		AfterAdding(TRUE);
+	}
+	else
+		AfterAdding(FALSE);
+	
+	
+}
+
+
+void ListGenReportWithDialog::EditItem()
+{
+	// check that the dialog pointer is not null
+	// otherwise no operations are allowed
+	wxASSERT_MSG (m_pDialog, wxT("Pointer to the dialog not initialised, init this pointer first"));
+	
+	BeforeEditing();
+	
+	// show the dialog for edition,
+	// the dialog must implement the TransfertDataToWindow
+	// for beeing usable
+	if (m_pDialog->ShowModal()==wxID_OK)
+	{
+		AfterEditing(TRUE);
+	}
+	else
+		AfterEditing(FALSE);
+	
+	
+	
+}
+
+
+void ListGenReportWithDialog::DeleteItem()
+{
+	BeforeDeleting();
+	DeleteSelectedItem();
+}
+
+
+void ListGenReportWithDialog::OnDoubleClickItem (wxListEvent & event)
+{
+	// default actions : call edititem, you may want to derive
+	// this action
+	EditItem();
+}
 
 
 /************************ LISTGENDIALOG **********************************/

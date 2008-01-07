@@ -31,57 +31,20 @@ END_EVENT_TABLE()
 
 void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
-	// create a new object for storing fields value
-	ProjectDefMemoryLayers * myMemLayersValue = new ProjectDefMemoryLayers();
-	wxArrayString myListValues;
 
+	//m_LayerDialog = new ProjectDefLayersDlg (this);
 	
-	m_LayerDialog = new ProjectDefLayersDlg (this);
-	// transfert the data obj to the dialog, data will be 
-	// filled during DataTransfer...
-	m_LayerDialog->SetMemoryLayersObject(myMemLayersValue); 
-	
-	
-	if (m_LayerDialog->ShowModal()==wxID_OK)
-	{
-		
-		m_LayersArray.Add(myMemLayersValue);
-		
-		// prepare data for list representation
-		myListValues.Add(myMemLayersValue->m_LayerName);
-		myListValues.Add(PRJDEF_LAYERS_TYPE_STRING[myMemLayersValue->m_LayerType]);
-		m_DlgPd_Stat_Model_List->EditDataToList(myListValues);
-	}
-	else
-	{
-		// we cancel so we don't need to keep
-		// this Layers Object in memory
-		delete myMemLayersValue;
-		wxLogDebug(_T("Deleting Memory layers object not used"));
-	}
-	wxLogDebug(_T("Size of Layers array %d"), m_LayersArray.GetCount());
-	delete m_LayerDialog;
-	
+	m_DlgPd_Stat_Model_List->SetDialog(m_LayerDialog);
+	m_DlgPd_Stat_Model_List->AddItem();
 
 }
 
 void ProjectDefDLG::OnRemoveLayer (wxCommandEvent & event)
 {
-	// remove the object from the field array
-	// if found and then remove the object from the list
-	RemoveObjFromArray();
-	m_DlgPd_Stat_Model_List->DeleteSelectedItem();
+	// remove the object from the array
+	m_DlgPd_Stat_Model_List->DeleteItem();
 }
 
-void ProjectDefDLG::RemoveObjFromArray()
-{
-	// if a corresponding item was found, remove it from the array
-	int iItemIndex = FindObjInLayersArray(m_DlgPd_Stat_Model_List, m_LayersArray);
-	if ( iItemIndex != -1)
-	{
-		m_LayersArray.RemoveAt(iItemIndex);
-	}	
-}
 
 void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
 {
@@ -126,7 +89,8 @@ bool ProjectDefDLG::Create( wxWindow* parent, wxWindowID id, const wxString& cap
 
 ProjectDefDLG::~ProjectDefDLG()
 {
-
+	wxLogDebug(_T("Destroying Thematic Layer Dialog"));
+	delete m_LayerDialog;
 }
 
 
@@ -139,6 +103,10 @@ void ProjectDefDLG::Init()
     m_DlgPd_Proj_Projection = NULL;
     m_DlgPd_Stat_Model_List = NULL;
 	m_LayerDialog = NULL;
+	
+	m_LayerDialog = new ProjectDefLayersDlg (this);
+	wxLogDebug(_T("Creating Thematic Layer Dialog"));
+
 }
 
 
@@ -228,10 +196,12 @@ void ProjectDefDLG::CreateControls()
 }
 
 
+
+
+/************************ PROJECT DEF LIST **********************************/
 ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, ProjectDefDLG * myParentDlg) 
-	: ListGenReport(parent,id,size)
+	: ListGenReportWithDialog(parent,id,size)
 {
-	m_ParentDlg = myParentDlg;
 	
 	// Create columns
 	wxArrayString myColNames;
@@ -247,18 +217,109 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 	
 	m_ChoiceToChange = NULL;
 	
+	// create an array for storing spatial thems
+	m_LayersArray = new PrjMemLayersArray();
+
 }
+
 
 ProjectDefList::~ProjectDefList()
 {
-
+	if (!m_LayersArray->IsEmpty())
+		m_LayersArray->Clear();
+	delete m_LayersArray;
 }
+
 
 void ProjectDefList::OnPressBackSpace (wxListEvent & event)
 {
-	// delete selected item but also in the array
-	m_ParentDlg->RemoveObjFromArray();
-	DeleteSelectedItem();
+	// delete selected item but also in the array	
+	DeleteItem();
+}
+
+
+void ProjectDefList::BeforeAdding()
+{
+	 m_LayersObj = new ProjectDefMemoryLayers;
+	// pass container to the dialog for using Transfert data to and from
+	// dialog.
+	((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);
+	
+}
+
+
+void ProjectDefList::AfterAdding(bool bRealyAddItem)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyAddItem)
+	{
+		// add data to the array
+		m_LayersArray->Add(m_LayersObj);
+		wxLogDebug(_T("Size of the Spatial array : %d"), m_LayersArray->GetCount());
+		
+		
+		// add data to the list
+		// prepare data for list representation
+		myListValues.Add(m_LayersObj->m_LayerName);
+		myListValues.Add(PRJDEF_LAYERS_TYPE_STRING[m_LayersObj->m_LayerType]);
+		EditDataToList(myListValues);
+		
+	}
+	else
+		delete m_LayersObj;	
+}
+
+
+void ProjectDefList::BeforeEditing ()
+{
+	// find item selected and then call a new Dialog
+	// for editing the existing Field
+	
+	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+	if (iItemIndex != -1)
+	{
+		// get the object from the array
+		m_LayersObj = &(m_LayersArray->Item(iItemIndex));
+
+		// transfert the data obj to the dialog, data will be 
+		// filled during DataTransfer...
+		((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);	
+	}
+	
+}
+
+void ProjectDefList::AfterEditing (bool bRealyEdited)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyEdited)
+	{
+		// modify data to the array is automatically done using DataTransfert
+		wxLogDebug(_T("Size of the Spatial array : %d"), m_LayersArray->GetCount());
+		
+		// modify data to the list
+		// prepare data for list representation
+		myListValues.Add(m_LayersObj->m_LayerName);
+		myListValues.Add(PRJDEF_LAYERS_TYPE_STRING[m_LayersObj->m_LayerType]);
+		EditDataToList(myListValues, GetSelectedItem());
+		
+	}
+	
+}
+
+
+
+void ProjectDefList::BeforeDeleting()
+{
+	// remove item from array before removing it from the list
+	// because of the unknown position of item (may have been moved)
+	// if a corresponding item was found, remove it from the array
+	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+	if ( iItemIndex != -1)
+	{
+		m_LayersArray->RemoveAt(iItemIndex);
+	}	
 }
 
 
