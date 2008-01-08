@@ -102,6 +102,22 @@ enum PRJDEF_LAYERS_TYPE
 static const int PRJDEF_LAYERS_TYPE_NUMBER = 3;
 
 
+// Definitions for the objects type, we define the text and  the id of 
+// each string. The number of items in the list is also defined here.
+static wxString PRJDEF_OBJECTS_FREQ_STRING[] = 
+{
+	_("Frequent"),
+	_("Less Frequent")
+};
+enum PRJDEF_OBJECTS_FREQ
+{
+	OBJECT_FREQUENT = 0,
+	OBJECT_LESS_FREQUENT
+};
+static const int PRJDEF_OBJECTSS_FREQ_NUMBER = 2;
+
+static const long NULL_LONG_VALUE = -9999;
+
 
 /***************************************************************************//**
  @brief Storing Fields property in memory
@@ -169,5 +185,38 @@ WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers, PrjMemLayersArray);
 
 /// find function in layer array
 int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray);
+
+
+
+
+
+/***************************************************************************//**
+ @brief Storing object properties in memory
+ @details This class is used for storing in memory the objects (in a
+ PrjMemLayersArray)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 January 2008
+ *******************************************************************************/
+class ProjectDefMemoryObjects
+	{
+	private:
+		void InitMemberValues();
+		
+	public:
+		long m_ObjectID;
+		long m_ObjectCode;
+		wxString m_ObjectName;
+		PRJDEF_OBJECTS_FREQ m_ObjectFreq;
+	
+		ProjectDefMemoryObjects();
+		~ProjectDefMemoryObjects();
+		
+	};
+
+// Creating a list of MemoryObjects
+WX_DECLARE_OBJARRAY(ProjectDefMemoryObjects, PrjMemObjectsArray);
+
+/// find function in objects array
+int FindObjInObjectArray(ListGenReport * myList, PrjMemObjectsArray * myArray);
 
 #endif

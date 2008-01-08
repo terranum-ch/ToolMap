@@ -58,6 +58,27 @@ int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray)
 }
 
 
+int FindObjInObjectArray(ListGenReport * myList, PrjMemObjectsArray * myArray)
+{
+	// get selected item from the list
+	long mySelectedListItem = myList->GetSelectedItem();
+	
+	// search this item in the list
+	for (unsigned int i=0; i < myArray->GetCount(); i++)
+	{
+		
+				
+		if (myArray->Item(i).m_ObjectName == myList->GetItemColText(mySelectedListItem, 1))
+		{
+			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
+			return i;
+		}
+	}
+	return -1;
+	
+}
+
+
 /*************************         FIELDS          *************************/
 ProjectDefMemoryFields::ProjectDefMemoryFields()
 {
@@ -115,4 +136,28 @@ void ProjectDefMemoryLayers::InitMemberValues()
 }
 
 WX_DEFINE_OBJARRAY (PrjMemLayersArray);
+
+
+
+
+/*************************         OBJECTS          *************************/
+ProjectDefMemoryObjects::ProjectDefMemoryObjects()
+{
+	InitMemberValues();
+}
+
+ProjectDefMemoryObjects::~ProjectDefMemoryObjects()
+{
+	
+}
+
+void ProjectDefMemoryObjects::InitMemberValues()
+{
+	m_ObjectID = 0;
+	m_ObjectCode = NULL_LONG_VALUE;
+	m_ObjectName = _T("");
+	m_ObjectFreq = OBJECT_FREQUENT;
+}
+
+WX_DEFINE_OBJARRAY (PrjMemObjectsArray);
 

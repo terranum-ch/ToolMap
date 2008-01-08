@@ -47,19 +47,19 @@ ProjectDefFieldList::~ProjectDefFieldList()
 
 void ProjectDefFieldList::OnDoubleClickItem(wxListEvent & event)
 {
-	wxArrayString myRowData;
-	long myIndex = GetSelectedItem();
-	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
-	
-	// get the data from the list for selected line
-	GetAllDataAsStringArray(myRowData, myIndex);
-	
-	// put the data in the dialog
-	if (DataToList(myModifiyDialog,myRowData))
-	{
-		EditDataToList(myRowData, myIndex);
-	}
-	delete myModifiyDialog;	
+	//wxArrayString myRowData;
+//	long myIndex = GetSelectedItem();
+//	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
+//	
+//	// get the data from the list for selected line
+//	GetAllDataAsStringArray(myRowData, myIndex);
+//	
+//	// put the data in the dialog
+//	if (DataToList(myModifiyDialog,myRowData))
+//	{
+//		EditDataToList(myRowData, myIndex);
+//	}
+//	delete myModifiyDialog;	
 }
 
 
@@ -179,21 +179,21 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 
 void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
 {
-	wxArrayString myDlgValues;
-	
-	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-	myEditObjDlg->SetName(_("Edit allowed value"));
-	
-	int iLastItemNumber = m_DlgAFD_Coded_Val_List->GetItemCount();
-	
-	// check if data transfert was OK
-	if (m_DlgAFD_Coded_Val_List->DataToList(myEditObjDlg, myDlgValues))
-	{
-		// put data to the list
-		m_DlgAFD_Coded_Val_List->EditDataToList(myDlgValues);
-	}
-	
-	delete myEditObjDlg;
+//	wxArrayString myDlgValues;
+//	
+//	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
+//	myEditObjDlg->SetName(_("Edit allowed value"));
+//	
+//	int iLastItemNumber = m_DlgAFD_Coded_Val_List->GetItemCount();
+//	
+//	// check if data transfert was OK
+//	if (m_DlgAFD_Coded_Val_List->DataToList(myEditObjDlg, myDlgValues))
+//	{
+//		// put data to the list
+//		m_DlgAFD_Coded_Val_List->EditDataToList(myDlgValues);
+//	}
+//	
+//	delete myEditObjDlg;
 	
 }
 

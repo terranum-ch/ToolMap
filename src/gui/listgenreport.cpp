@@ -545,6 +545,16 @@ void ListGenReportWithDialog::OnDoubleClickItem (wxListEvent & event)
 }
 
 
+void ListGenReportWithDialog::OnPressBackSpace (wxListEvent & event)
+{
+	if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_DELETE)
+	{
+		DeleteItem();
+	}
+	event.Skip();
+}
+
+
 /************************ LISTGENDIALOG **********************************/
 //ListGenDialog::ListGenDialog()
 //{
