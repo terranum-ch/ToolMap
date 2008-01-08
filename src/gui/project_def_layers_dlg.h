@@ -70,7 +70,7 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 		wxChoice * m_ChoiceToChange;
 		//DECLARE_EVENT_TABLE();
 		
-		PrjMemObjectsArray * m_ObjectsArray;
+		
 		ProjectDefMemoryObjects * m_ObjectObj;
 		
 		virtual void	AfterAdding (bool bRealyAddItem);
@@ -78,13 +78,14 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 		virtual void 	BeforeAdding ();
 		virtual void 	BeforeDeleting ();
 		virtual void 	BeforeEditing ();
+		virtual void AddingValueToArray (wxArrayString & myImportedValues);
 		
 	public:
 		static const int ID_PARAMLIST;
 		
 		ProjectDefLayersObjectList(wxWindow * parent, wxWindowID id, wxSize size);
 		~ProjectDefLayersObjectList(); 
-		
+		PrjMemObjectsArray * m_ObjectsArray;
 			
 		//	int GetParamType (wxString myTextParam);
 		//		

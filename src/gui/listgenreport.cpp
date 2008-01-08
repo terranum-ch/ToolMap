@@ -486,13 +486,13 @@ void ListGenReportWithDialog::InitConnectEvent()
 }
 
 void ListGenReportWithDialog::AddItem()
-{
+{	
+	BeforeAdding();
+	
 	// check that the dialog pointer is not null
 	// otherwise no operations are allowed
 	wxASSERT_MSG (m_pDialog, wxT("Pointer to the dialog not initialised, init this pointer first"));
-	
-	BeforeAdding();
-	
+
 	// show the dialog for edition,
 	// the dialog must implement the TransfertDataToWindow
 	// for beeing usable
@@ -509,12 +509,14 @@ void ListGenReportWithDialog::AddItem()
 
 void ListGenReportWithDialog::EditItem()
 {
+		
+	BeforeEditing();
+	
+	
 	// check that the dialog pointer is not null
 	// otherwise no operations are allowed
 	wxASSERT_MSG (m_pDialog, wxT("Pointer to the dialog not initialised, init this pointer first"));
-	
-	BeforeEditing();
-	
+
 	// show the dialog for edition,
 	// the dialog must implement the TransfertDataToWindow
 	// for beeing usable
@@ -552,6 +554,51 @@ void ListGenReportWithDialog::OnPressBackSpace (wxListEvent & event)
 		DeleteItem();
 	}
 	event.Skip();
+}
+
+
+int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filename, 
+											  const int & FilterIndex)
+{
+	wxArrayString myArrValues;
+	int iLineCount = 0;
+	
+	// create parser depending on the selected format and set a file
+	// for that parser
+	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+	m_ImportParser->SetParseFileName(filename);
+	
+	// check that the parser is not null or may crash
+	wxASSERT(m_ImportParser != NULL);
+	
+	// try to open the file for parsing
+	if(m_ImportParser->OpenParseFile())
+	{
+		wxLogDebug(_T("Opening OK, my nice parser is : %s"), 
+				   m_ImportParser->GetParserType().c_str());
+		
+		// loop for parsing all line
+		iLineCount = m_ImportParser->GetLineCount();
+		for (int i=0; i < iLineCount; i++)
+		{
+			m_ImportParser->ParseNextLine(myArrValues);
+			
+			// add values to the array
+			AddingValueToArray(myArrValues);
+			
+			// add values to the list
+			EditDataToList(myArrValues);
+			
+			// clear the array
+			myArrValues.Clear();
+		}
+		m_ImportParser->CloseParseFile();
+		
+	}
+	if (m_ImportParser != NULL)
+		delete m_ImportParser;
+	return iLineCount;
+	
 }
 
 

@@ -95,7 +95,6 @@ class wxToggleButton;
 class ProjectDefDLG: public wxDialog
 	{    
 	private:
-		ProjectDefLayersDlg * m_LayerDialog;
 		PrjMemLayersArray  m_LayersArray;
 		
 		void OnAddLayer(wxCommandEvent & event);

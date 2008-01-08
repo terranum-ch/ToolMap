@@ -132,6 +132,7 @@ void ProjectDefMemoryLayers::InitMemberValues()
 	m_LayerID = 0;
 	m_LayerType = LAYER_POINT;
 	m_pLayerFieldArray = NULL;
+	m_pLayerObjectArray = NULL;
 	m_LayerName = _T("");
 }
 

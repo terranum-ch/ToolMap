@@ -118,6 +118,34 @@ static const int PRJDEF_OBJECTSS_FREQ_NUMBER = 2;
 
 static const long NULL_LONG_VALUE = -9999;
 
+/***************************************************************************//**
+ @brief Storing object properties in memory
+ @details This class is used for storing in memory the objects (in a
+ PrjMemLayersArray)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 January 2008
+ *******************************************************************************/
+class ProjectDefMemoryObjects
+	{
+	private:
+		void InitMemberValues();
+		
+	public:
+		long m_ObjectID;
+		long m_ObjectCode;
+		wxString m_ObjectName;
+		PRJDEF_OBJECTS_FREQ m_ObjectFreq;
+		
+		ProjectDefMemoryObjects();
+		~ProjectDefMemoryObjects();
+		
+	};
+
+// Creating a list of MemoryObjects
+WX_DECLARE_OBJARRAY(ProjectDefMemoryObjects, PrjMemObjectsArray);
+
+/// find function in objects array
+int FindObjInObjectArray(ListGenReport * myList, PrjMemObjectsArray * myArray);
 
 /***************************************************************************//**
  @brief Storing Fields property in memory
@@ -175,6 +203,8 @@ class ProjectDefMemoryLayers
 		
 		/// list of fields related to a layer
 		PrjMemFieldArray * m_pLayerFieldArray;
+		/// list of objects related to a layer
+		PrjMemObjectsArray * m_pLayerObjectArray;
 		
 		ProjectDefMemoryLayers();
 		~ProjectDefMemoryLayers();
@@ -190,33 +220,6 @@ int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray);
 
 
 
-/***************************************************************************//**
- @brief Storing object properties in memory
- @details This class is used for storing in memory the objects (in a
- PrjMemLayersArray)
- @author Lucien Schreiber (c) CREALP 2007
- @date 07 January 2008
- *******************************************************************************/
-class ProjectDefMemoryObjects
-	{
-	private:
-		void InitMemberValues();
-		
-	public:
-		long m_ObjectID;
-		long m_ObjectCode;
-		wxString m_ObjectName;
-		PRJDEF_OBJECTS_FREQ m_ObjectFreq;
-	
-		ProjectDefMemoryObjects();
-		~ProjectDefMemoryObjects();
-		
-	};
 
-// Creating a list of MemoryObjects
-WX_DECLARE_OBJARRAY(ProjectDefMemoryObjects, PrjMemObjectsArray);
-
-/// find function in objects array
-int FindObjInObjectArray(ListGenReport * myList, PrjMemObjectsArray * myArray);
 
 #endif
