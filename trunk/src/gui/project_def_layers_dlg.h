@@ -41,6 +41,7 @@
 
 class ProjectDefFieldDlg;
 class ProjectDefLayersDlg;
+class ProjectDefLayersEditObjectDlg;
 
 #define ID_DLGPDL 10007
 #define ID_DLGPDL_LAYER_TYPE 10000
@@ -61,13 +62,22 @@ class ProjectDefLayersDlg;
 #define SYMBOL_PROJECTDEFLAYERSDLG_SIZE wxSize(400, 300)
 #define SYMBOL_PROJECTDEFLAYERSDLG_POSITION wxDefaultPosition
 
-class ProjectDefLayersObjectList : public ListGenReport
+class ProjectDefLayersObjectList : public ListGenReportWithDialog
 	{
 	private:
 		virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);		
 		wxChoice * m_ChoiceToChange;
 		//DECLARE_EVENT_TABLE();
+		
+		PrjMemObjectsArray * m_ObjectsArray;
+		ProjectDefMemoryObjects * m_ObjectObj;
+		
+		virtual void	AfterAdding (bool bRealyAddItem);
+		virtual void 	AfterEditing (bool bRealyEdited);
+		virtual void 	BeforeAdding ();
+		virtual void 	BeforeDeleting ();
+		virtual void 	BeforeEditing ();
 		
 	public:
 		static const int ID_PARAMLIST;
@@ -131,12 +141,16 @@ class ProjectDefLayersFieldsList : public ListGenReport
 
 
 
-class ProjectDefLayersEditObjectDlg: public ListGenDialog
+class ProjectDefLayersEditObjectDlg: public wxDialog
 	{    
 		void OnTextChange(wxCommandEvent & event);
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg );
 		DECLARE_EVENT_TABLE();
+		
+		/// pointer to an "object" object, use
+		/// the SetMemoryObjectObject() function to fill it
+		ProjectDefMemoryObjects * m_ObjectObj;
 		
 	public:
 		/// Constructors
@@ -155,14 +169,16 @@ class ProjectDefLayersEditObjectDlg: public ListGenDialog
 		/// Creates the controls and sizers
 		void CreateDlgControls();
 		
-		virtual  void GetDlgData( wxArrayString & myStringArray);
-		virtual void SetDlgData(wxArrayString & myStringArray);
+		/// Data transfert process, function called automatically
+		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
 		
-		////@begin ProjectDefLayersEditObjectDlg member variables
+		void SetMemoryObjectObject(ProjectDefMemoryObjects * myObjectObj){m_ObjectObj = myObjectObj;}
+		
+		
 		wxTextCtrl* m_DlgEO_Code;
 		wxTextCtrl* m_DlgEO_Value;
 		wxButton* m_DlgEO_OK_Btn;
-		////@end ProjectDefLayersEditObjectDlg member variables
 	};
 
 

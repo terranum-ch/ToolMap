@@ -233,12 +233,6 @@ ProjectDefList::~ProjectDefList()
 }
 
 
-void ProjectDefList::OnPressBackSpace (wxListEvent & event)
-{
-	// delete selected item but also in the array	
-	DeleteItem();
-}
-
 
 void ProjectDefList::BeforeAdding()
 {

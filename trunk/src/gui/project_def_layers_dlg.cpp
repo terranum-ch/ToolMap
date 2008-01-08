@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
 #include "project_def_layers_dlg.h"
 
 /******************************  Object List *************************/
@@ -26,23 +24,24 @@
 
 void ProjectDefLayersObjectList::OnDoubleClickItem(wxListEvent & event)
 {
-	wxArrayString myRowData;
-	long myIndex = GetSelectedItem();
-	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
-
-	// get the data from the list for selected line
-	GetAllDataAsStringArray(myRowData, myIndex);
-	
-	// put the data in the dialog
-	if (DataToList(myModifiyDialog,myRowData))
-	{
-		EditDataToList(myRowData, myIndex);
-	}
-	delete myModifiyDialog;
+//	wxArrayString myRowData;
+//	long myIndex = GetSelectedItem();
+//	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
+//
+//	// get the data from the list for selected line
+//	GetAllDataAsStringArray(myRowData, myIndex);
+//	
+//	// put the data in the dialog
+//	if (DataToList(myModifiyDialog,myRowData))
+//	{
+//		EditDataToList(myRowData, myIndex);
+//	}
+//	delete myModifiyDialog;
+	EditItem();
 }
 
 ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWindowID  id, wxSize size) 
-	: ListGenReport(parent,id,size)
+	: ListGenReportWithDialog(parent,id,size)
 {
 	// Create columns
 	wxArrayString myColNames;
@@ -58,15 +57,110 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 	
 	m_ChoiceToChange = NULL;
 	
+	// create an array for storing theme objects
+	m_ObjectsArray = new PrjMemObjectsArray();
 }
 
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
 {
-
+	if (!m_ObjectsArray->IsEmpty())
+		m_ObjectsArray->Clear();
+	delete m_ObjectsArray;
 }
 
 
+void ProjectDefLayersObjectList::BeforeAdding()
+{
+	// create a new item for the array if we cancel the dialog
+	// this item will be destroyed, otherwise it will be attached
+	// to the array
+	m_ObjectObj = new ProjectDefMemoryObjects();
+	
+	// now uses Transfert data process
+	((ProjectDefLayersEditObjectDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
+	
+}
 
+
+void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyAddItem)
+	{
+		// add item to the array
+		m_ObjectsArray->Add(m_ObjectObj);
+		wxLogDebug(_T("Size of the Object array : %d"), m_ObjectsArray->GetCount());
+		
+		// add item to the list
+		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+		myListValues.Add(m_ObjectObj->m_ObjectName);
+		EditDataToList(myListValues);
+		
+	}
+	else
+		delete m_ObjectObj; // not used
+}
+
+
+void ProjectDefLayersObjectList::BeforeDeleting ()
+{
+	// remove item from array before removing it from the list
+	// because of the unknown position of item (may have been moved)
+	// if a corresponding item was found, remove it from the array
+	int iItemIndex = FindObjInObjectArray(this, m_ObjectsArray);
+	if ( iItemIndex != -1)
+	{
+		m_ObjectsArray->RemoveAt(iItemIndex);
+	}	
+}
+
+
+void ProjectDefLayersObjectList::BeforeEditing ()
+{
+	// create the dialog, will be deleted in AfterEditing.
+	ProjectDefLayersEditObjectDlg * myObjectDlg = new ProjectDefLayersEditObjectDlg(this);
+	wxLogDebug(_T("Creating Object object Dialog"));
+	SetDialog(myObjectDlg);
+	
+	// find item selected and then call a new Dialog
+	// for editing the existing Field
+	int iItemIndex = FindObjInObjectArray(this, m_ObjectsArray);
+	if (iItemIndex != -1)
+	{
+		// get the object from the array
+		m_ObjectObj = &(m_ObjectsArray->Item(iItemIndex));
+		
+		// transfert the data obj to the dialog, data will be 
+		// filled during DataTransfer...
+		((ProjectDefLayersEditObjectDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);	
+	}
+	
+}
+
+
+void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyEdited)
+	{
+		// modify data to the array is automatically done using DataTransfert
+		wxLogDebug(_T("Size of the object array : %d"), m_ObjectsArray->GetCount());
+		
+		// modify data to the list
+		// prepare data for list representation
+		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+		myListValues.Add(m_ObjectObj->m_ObjectName);
+		EditDataToList(myListValues, GetSelectedItem());
+		
+	}
+	
+	// delete dialog
+    wxLogDebug(_T("Destroying Object Object Dialog"));
+	delete m_pDialog;
+
+}
 
 
 
@@ -150,7 +244,7 @@ END_EVENT_TABLE ()
 
 void ProjectDefLayersEditObjectDlg::OnTextChange(wxCommandEvent & event)
 {
-	if (m_DlgEO_Code->GetValue().IsEmpty() && m_DlgEO_Value->GetValue().IsEmpty())
+	if (m_DlgEO_Code->GetValue().IsEmpty() || m_DlgEO_Value->GetValue().IsEmpty())
 	{
 		m_DlgEO_OK_Btn->Enable(FALSE);
 	}
@@ -197,20 +291,10 @@ void ProjectDefLayersEditObjectDlg::Init()
     m_DlgEO_Value = NULL;
     m_DlgEO_OK_Btn = NULL;
 	
+	//m_ObjectObj = NULL;
+	
 }
 
-
-void ProjectDefLayersEditObjectDlg::GetDlgData( wxArrayString & myStringArray)
-{
-	myStringArray.Add(m_DlgEO_Code->GetValue());
-	myStringArray.Add(m_DlgEO_Value->GetValue());
-}
-
-void ProjectDefLayersEditObjectDlg::SetDlgData(wxArrayString & myStringArray)
-{
-	m_DlgEO_Code->SetValue(myStringArray.Item(0));
-	m_DlgEO_Value->SetValue(myStringArray.Item(1));
-}
 
 void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 {    
@@ -256,6 +340,23 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 }
 
 
+bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow()
+{
+	m_DlgEO_Code->GetValue().ToLong(&(m_ObjectObj->m_ObjectCode));
+	m_ObjectObj->m_ObjectName = m_DlgEO_Value->GetValue();
+	return TRUE;
+}
+
+bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
+{
+	// check that the numeric value is not null (-9999)
+	if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
+	{
+		m_DlgEO_Code->SetValue(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+	}
+	m_DlgEO_Value->SetValue(m_ObjectObj->m_ObjectName);
+	return TRUE;
+}
 
 /******************************  Dialog Class *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersDlg, wxDialog )
@@ -322,25 +423,38 @@ void ProjectDefLayersDlg::OnRemoveField (wxCommandEvent & event)
 
 void ProjectDefLayersDlg::OnAddObject (wxCommandEvent & event)
 {
-	wxArrayString myDlgValues;
+	// create the dialog
 	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-	int iLastItemNumber = m_DlgPDL_Object_List->GetItemCount();
+	wxLogDebug(_T("Creating Field definition Dialog"));
 	
-	// check if data transfert was OK
-	if (m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues))
-	{
-		// put data to the list
-		m_DlgPDL_Object_List->EditDataToList(myDlgValues);
-	}
 	
+	// this function will call BeforeAdding and if the dialog is
+	// successfull displayed the AfterAdding method.
+	m_DlgPDL_Object_List->SetDialog(myEditObjDlg);
+	m_DlgPDL_Object_List->AddItem();
+	
+	wxLogDebug(_T("Deleting Field definition Dialog"));
 	delete myEditObjDlg;
+	
+//	wxArrayString myDlgValues;
+//	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
+//	int iLastItemNumber = m_DlgPDL_Object_List->GetItemCount();
+//	
+//	// check if data transfert was OK
+//	if (m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues))
+//	{
+//		// put data to the list
+//		m_DlgPDL_Object_List->EditDataToList(myDlgValues);
+//	}
+//	
+//	delete myEditObjDlg;
 }
 
 
 void ProjectDefLayersDlg::OnRemoveObject (wxCommandEvent & event)
 {
-	// delete selected item in the list
-	m_DlgPDL_Object_List->DeleteSelectedItem();
+	// call deletion process from the listclass
+	m_DlgPDL_Object_List->DeleteItem();
 }
 
 

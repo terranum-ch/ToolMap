@@ -299,6 +299,7 @@ protected:
 	virtual void BeforeEditing() {;}
 	virtual void AfterEditing (bool bRealyEdited) {;}
 	virtual void OnDoubleClickItem (wxListEvent & event);
+	virtual void OnPressBackSpace (wxListEvent & event);
 	
 	
 public:

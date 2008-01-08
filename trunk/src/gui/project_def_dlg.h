@@ -159,7 +159,6 @@ class ProjectDefList : public ListGenReportWithDialog
 	{
 	private:
 		
-		virtual void OnPressBackSpace (wxListEvent & event); 
 //		void OnMySelectionChange (wxListEvent & event);
 				
 		wxChoice * m_ChoiceToChange;
