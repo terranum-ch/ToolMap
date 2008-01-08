@@ -63,14 +63,19 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
 {
-	if (!m_ObjectsArray->IsEmpty())
-		m_ObjectsArray->Clear();
-	delete m_ObjectsArray;
+	//if (!m_ObjectsArray->IsEmpty())
+	//	m_ObjectsArray->Clear();
+	//delete m_ObjectsArray;
 }
 
 
 void ProjectDefLayersObjectList::BeforeAdding()
 {
+	// create the dialog, will be destroyed in AfterAdding
+	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
+	wxLogDebug(_T("Creating Object description Dialog"));
+	SetDialog(myEditObjDlg);
+	
 	// create a new item for the array if we cancel the dialog
 	// this item will be destroyed, otherwise it will be attached
 	// to the array
@@ -100,6 +105,11 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 	}
 	else
 		delete m_ObjectObj; // not used
+	
+	// delete the dialog
+	wxLogDebug(_T("Deleting Object description Dialog"));
+	delete m_pDialog;
+	
 }
 
 
@@ -120,7 +130,7 @@ void ProjectDefLayersObjectList::BeforeEditing ()
 {
 	// create the dialog, will be deleted in AfterEditing.
 	ProjectDefLayersEditObjectDlg * myObjectDlg = new ProjectDefLayersEditObjectDlg(this);
-	wxLogDebug(_T("Creating Object object Dialog"));
+	wxLogDebug(_T("Creating Object description Dialog"));
 	SetDialog(myObjectDlg);
 	
 	// find item selected and then call a new Dialog
@@ -157,11 +167,28 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 	}
 	
 	// delete dialog
-    wxLogDebug(_T("Destroying Object Object Dialog"));
+    wxLogDebug(_T("Deleting Object description Dialog"));
 	delete m_pDialog;
 
 }
 
+
+void ProjectDefLayersObjectList::AddingValueToArray (wxArrayString & myImportedValues)
+{
+	// called during import process after each import
+	// myImportedValues is modified and return a pointer
+	// to a string array containing the stuff to put in
+	// our array
+	ProjectDefMemoryObjects * myObjectObj = new ProjectDefMemoryObjects();
+	myImportedValues.Item(0).ToLong(&(myObjectObj->m_ObjectCode));
+	myObjectObj->m_ObjectName = myImportedValues.Item(1);
+	
+	// add to array
+	m_ObjectsArray->Add(myObjectObj);
+	wxLogDebug(_T("%s, added to array size is : %d"), 
+			   myObjectObj->m_ObjectName.c_str(), m_ObjectsArray->GetCount());
+	
+}
 
 
 /******************************  Layers List *************************/
@@ -423,31 +450,7 @@ void ProjectDefLayersDlg::OnRemoveField (wxCommandEvent & event)
 
 void ProjectDefLayersDlg::OnAddObject (wxCommandEvent & event)
 {
-	// create the dialog
-	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-	wxLogDebug(_T("Creating Field definition Dialog"));
-	
-	
-	// this function will call BeforeAdding and if the dialog is
-	// successfull displayed the AfterAdding method.
-	m_DlgPDL_Object_List->SetDialog(myEditObjDlg);
 	m_DlgPDL_Object_List->AddItem();
-	
-	wxLogDebug(_T("Deleting Field definition Dialog"));
-	delete myEditObjDlg;
-	
-//	wxArrayString myDlgValues;
-//	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-//	int iLastItemNumber = m_DlgPDL_Object_List->GetItemCount();
-//	
-//	// check if data transfert was OK
-//	if (m_DlgPDL_Object_List->DataToList(myEditObjDlg, myDlgValues))
-//	{
-//		// put data to the list
-//		m_DlgPDL_Object_List->EditDataToList(myDlgValues);
-//	}
-//	
-//	delete myEditObjDlg;
 }
 
 
@@ -495,6 +498,7 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
 	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
+	m_LayersObj->m_pLayerObjectArray = m_DlgPDL_Object_List->m_ObjectsArray;
 	return TRUE;
 	
 }
@@ -507,6 +511,13 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName); 
 	m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE) m_LayersObj->m_LayerType);
+	
+	// if object array isn't null then we fill the list
+	if (m_LayersObj->m_pLayerObjectArray)
+	{
+		wxLogDebug(_T("number of item passed : %d"), m_LayersObj->m_pLayerObjectArray->GetCount());
+	}
+	
 	return TRUE;
 }
 

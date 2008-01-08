@@ -66,8 +66,7 @@ class ListGenReport : public wxListCtrl
 		virtual void OnPressBackSpace (wxListEvent & event);
 		void OnContextMenu (wxListEvent & event);
 		void OnMoveItemInList (wxCommandEvent & event);
-		
-			
+					
 		void OnStartDrag (wxListEvent & event);
 		void OnInit();
 		
@@ -263,7 +262,7 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 14 December 2007
 		 *******************************************************************************/		
-		int ImportParsedFileToListCtrl(const wxString & filename, 
+		virtual int ImportParsedFileToListCtrl(const wxString & filename, 
 									   const int & FilterIndex);
 		/***************************************************************************//**
 		 @brief Export values of a list to a parsed file
@@ -298,6 +297,7 @@ protected:
 	virtual void AfterAdding(bool bRealyAddItem){;}
 	virtual void BeforeEditing() {;}
 	virtual void AfterEditing (bool bRealyEdited) {;}
+	virtual void AddingValueToArray (wxArrayString & myImportedValues) {;}
 	virtual void OnDoubleClickItem (wxListEvent & event);
 	virtual void OnPressBackSpace (wxListEvent & event);
 	
@@ -312,6 +312,9 @@ public:
 							 wxSize size=wxDefaultSize);
 	
 	~ListGenReportWithDialog();
+	
+	virtual int ImportParsedFileToListCtrl(const wxString & filename, 
+										   const int & FilterIndex);
 	
 	
 	void SetDialog (wxDialog * pDialog) {m_pDialog = pDialog;}

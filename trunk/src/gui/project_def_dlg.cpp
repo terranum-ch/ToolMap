@@ -31,17 +31,7 @@ END_EVENT_TABLE()
 
 void ProjectDefDLG::OnAddLayer(wxCommandEvent & event)
 {
-	// create a dialog
-	m_LayerDialog = new ProjectDefLayersDlg (this);
-	wxLogDebug(_T("Creating Thematic Layer Dialog"));
-	
-	m_DlgPd_Stat_Model_List->SetDialog(m_LayerDialog);
 	m_DlgPd_Stat_Model_List->AddItem();
-
-	// delete dialog
-    wxLogDebug(_T("Destroying Thematic Layer Dialog"));
-	delete m_LayerDialog;
-
 }
 
 void ProjectDefDLG::OnRemoveLayer (wxCommandEvent & event)
@@ -105,7 +95,6 @@ void ProjectDefDLG::Init()
     m_DlgPd_Proj_Unit = NULL;
     m_DlgPd_Proj_Projection = NULL;
     m_DlgPd_Stat_Model_List = NULL;
-	m_LayerDialog = NULL;
 
 }
 
@@ -236,7 +225,12 @@ ProjectDefList::~ProjectDefList()
 
 void ProjectDefList::BeforeAdding()
 {
-	 m_LayersObj = new ProjectDefMemoryLayers;
+	// create and set the dialog here
+	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this);
+	wxLogDebug(_T("Creating Thematic Layer Dialog"));
+	SetDialog(myLayerDialog);
+	
+	m_LayersObj = new ProjectDefMemoryLayers;
 	// pass container to the dialog for using Transfert data to and from
 	// dialog.
 	((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);
@@ -264,6 +258,11 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 	}
 	else
 		delete m_LayersObj;	
+	
+	// delete the dialog here
+    wxLogDebug(_T("Destroying Thematic Layer Dialog"));
+	delete m_pDialog;
+	
 }
 
 
