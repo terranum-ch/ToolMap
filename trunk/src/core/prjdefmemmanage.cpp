@@ -49,7 +49,7 @@ void PrjDefMemManage::InitDefaultValues()
 
 
 /*********************** LAYER FUNCTIONS **************************/
-int PrjDefMemManage::AddLayer()
+ProjectDefMemoryLayers * PrjDefMemManage::AddLayer()
 {
 	// create an empty layer object and attach it to the
 	// project layer array
@@ -60,7 +60,7 @@ int PrjDefMemManage::AddLayer()
 	m_PrjLayerArray->Add(myNewLayerObj);
 	wxLogDebug(_T("Array Size : Layer = %d"),m_PrjLayerArray->GetCount());
 	
-	return m_PrjLayerArray->GetCount(); // number of layers
+	return myNewLayerObj; // number of layers
 }
 
 
@@ -70,7 +70,7 @@ int PrjDefMemManage::RemoveLayer(int iIndex)
 		iIndex = m_PrjLayerArray->GetCount() - 1;
 	
 	// be sure that iIndex isn't smaller than 0
-	wxASSERT_MSG (iIndex < 0, _T("Array index smaller than 0"));
+	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
 	//ProjectDefMemoryLayers * item = m_PrjLayerArray[iIndex];
 	//delete item;
@@ -80,8 +80,37 @@ int PrjDefMemManage::RemoveLayer(int iIndex)
 }
 
 
-ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(int iIndex)
+
+bool PrjDefMemManage::RemoveLayer(const wxString & layerName)
 {
-	return NULL; // pointer to a ProjectDefMemoryLayers
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < m_PrjLayerArray->GetCount(); i++)
+	{
+		if (m_PrjLayerArray->Item(i).m_LayerName == layerName)
+		{
+			//item found, delete item;
+			m_PrjLayerArray->RemoveAt(i);
+			return TRUE;
+		}
+	}
+	return FALSE; // item not deleted
 }
+
+
+
+ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(const wxString  & layerName)
+{
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < m_PrjLayerArray->GetCount(); i++)
+	{
+		if (m_PrjLayerArray->Item(i).m_LayerName == layerName)
+		{
+			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
+			return &(m_PrjLayerArray->Item(i));
+		}
+	}
+	
+	return NULL; // nothing found... check for null pointer
+}
+
 

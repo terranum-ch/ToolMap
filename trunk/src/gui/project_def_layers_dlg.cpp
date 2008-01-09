@@ -498,7 +498,7 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
 	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
-	m_LayersObj->m_pLayerObjectArray = m_DlgPDL_Object_List->m_ObjectsArray;
+	//m_LayersObj->m_pLayerObjectArray = m_DlgPDL_Object_List->m_ObjectsArray;
 	return TRUE;
 	
 }
