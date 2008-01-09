@@ -72,8 +72,8 @@ int PrjDefMemManage::RemoveLayer(int iIndex)
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex < 0, _T("Array index smaller than 0"));
 	
-	ProjectDefMemoryLayers * item = m_PrjLayerArray->Item(iIndex);
-	delete item;
+	//ProjectDefMemoryLayers * item = m_PrjLayerArray[iIndex];
+	//delete item;
 	m_PrjLayerArray->RemoveAt(iIndex);
 	
 	return m_PrjLayerArray->GetCount(); // number of layers
