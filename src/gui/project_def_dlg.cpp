@@ -60,6 +60,9 @@ ProjectDefDLG::ProjectDefDLG( wxWindow* parent, wxWindowID id, const wxString& c
 {
     Init();
     Create(parent, id, caption, pos, size, style);
+	
+	// Pass Address of Project Definition to the list
+	m_DlgPd_Stat_Model_List->PassPrjDefToList(&m_PrjDefinition);
 }
 
 
@@ -200,7 +203,8 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 	m_ChoiceToChange = NULL;
 	
 	// create an array for storing spatial thems
-	m_LayersArray = new PrjMemLayersArray();
+	//m_LayersArray = new PrjMemLayersArray();
+	m_LayersArray = NULL;
 
 	m_LayersDialog = NULL;
 
@@ -209,21 +213,25 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 
 ProjectDefList::~ProjectDefList()
 {
-	if (!m_LayersArray->IsEmpty())
-		m_LayersArray->Clear();
-	delete m_LayersArray;
+	//if (!m_LayersArray->IsEmpty())
+//		m_LayersArray->Clear();
+//	delete m_LayersArray;
 }
 
 
 
 void ProjectDefList::BeforeAdding()
 {
+	
 	// create and set the dialog here
 	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this);
 	wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(myLayerDialog);
-	
-	m_LayersObj = new ProjectDefMemoryLayers;
+
+	// creating a new layer, if not used, delete it during
+	// After adding.
+	m_LayersObj = m_pPrjDefinition->AddLayer();
+
 	// pass container to the dialog for using Transfert data to and from
 	// dialog.
 	((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);
@@ -237,11 +245,8 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 	
 	if (bRealyAddItem)
 	{
-		// add data to the array
-		m_LayersArray->Add(m_LayersObj);
-		wxLogDebug(_T("Size of the Spatial array : %d"), m_LayersArray->GetCount());
-		
-		
+		// data allready added to the array
+
 		// add data to the list
 		// prepare data for list representation
 		myListValues.Add(m_LayersObj->m_LayerName);
@@ -250,7 +255,7 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 		
 	}
 	else
-		delete m_LayersObj;	
+		m_pPrjDefinition->RemoveLayer(); // remove last unused layer object
 	
 	// delete the dialog here
     wxLogDebug(_T("Destroying Thematic Layer Dialog"));
@@ -266,14 +271,18 @@ void ProjectDefList::BeforeEditing ()
 	wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(m_LayersDialog);
 
-	// find item selected and then call a new Dialog
-	// for editing the existing Field
-	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
-	if (iItemIndex != -1)
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myLayerName = GetItemColText(mySelectedListItem, 0);
+	
+	
+	m_LayersObj = m_pPrjDefinition->FindLayer(myLayerName);
+	
+//	// find item selected and then call a new Dialog
+//	// for editing the existing Field
+//	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+	if (m_LayersObj != NULL)
 	{
-		// get the object from the array
-		m_LayersObj = &(m_LayersArray->Item(iItemIndex));
-
 		// transfert the data obj to the dialog, data will be 
 		// filled during DataTransfer...
 		((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);	
@@ -287,10 +296,8 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 	
 	if (bRealyEdited)
 	{
-		// modify data to the array is automatically done using DataTransfert
-		wxLogDebug(_T("Size of the Spatial array : %d"), m_LayersArray->GetCount());
+		// data modified is allready stored in the project definition
 		
-		// modify data to the list
 		// prepare data for list representation
 		myListValues.Add(m_LayersObj->m_LayerName);
 		myListValues.Add(PRJDEF_LAYERS_TYPE_STRING[m_LayersObj->m_LayerType]);
@@ -300,8 +307,7 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 
 	// delete dialog
     wxLogDebug(_T("Destroying Thematic Layer Dialog"));
-	delete m_LayersDialog;
-	
+	delete m_LayersDialog;	
 }
 
 
@@ -311,11 +317,21 @@ void ProjectDefList::BeforeDeleting()
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
-	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
-	if ( iItemIndex != -1)
-	{
-		m_LayersArray->RemoveAt(iItemIndex);
-	}	
+	
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myLayerName = GetItemColText(mySelectedListItem, 0);
+
+	m_pPrjDefinition->RemoveLayer(myLayerName);
+//	int iItemIndex = m_pPrjDefinition->FindLayer(myLayerName);
+//	
+//	
+//	
+//	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+//	if ( iItemIndex != -1)
+//	{
+//		m_LayersArray->RemoveAt(iItemIndex);
+//	}	
 }
 
 

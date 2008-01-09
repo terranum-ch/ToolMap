@@ -95,7 +95,11 @@ class wxToggleButton;
 class ProjectDefDLG: public wxDialog
 	{    
 	private:
+		// may be deleted ??
 		PrjMemLayersArray  m_LayersArray;
+		
+		// Project memory class
+		PrjDefMemManage m_PrjDefinition;
 		
 		void OnAddLayer(wxCommandEvent & event);
 		void OnRemoveLayer (wxCommandEvent & event);
@@ -163,9 +167,11 @@ class ProjectDefList : public ListGenReportWithDialog
 		wxChoice * m_ChoiceToChange;
 		PrjMemLayersArray *  m_LayersArray;
 		// create object for storing layers data
-		ProjectDefMemoryLayers * m_LayersObj;
+		
 		ProjectDefLayersDlg * m_LayersDialog;
-	
+		
+		PrjDefMemManage * m_pPrjDefinition;
+		ProjectDefMemoryLayers * m_LayersObj;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
@@ -179,6 +185,8 @@ class ProjectDefList : public ListGenReportWithDialog
 		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size,  ProjectDefDLG * myParentDlg);
 		
 		~ProjectDefList(); 
+		
+		void PassPrjDefToList (PrjDefMemManage *  myPrjMemManage) {m_pPrjDefinition = myPrjMemManage;}
 		
 		//	int GetParamType (wxString myTextParam);
 		//		

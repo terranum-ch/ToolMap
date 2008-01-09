@@ -55,11 +55,13 @@ class PrjDefMemManage
 		PrjDefMemManage();
 		~PrjDefMemManage();
 		
-		// members functions
-		int AddLayer();
+		// layer members functions
+		ProjectDefMemoryLayers * AddLayer();
 			// remove last item by default...
 		int RemoveLayer(int iIndex = -1);
-		ProjectDefMemoryLayers * FindLayer(int iIndex);
+		bool RemoveLayer(const wxString & layerName);
+		ProjectDefMemoryLayers * FindLayer(const wxString & layerName);
+	
 		
 		
 	};
