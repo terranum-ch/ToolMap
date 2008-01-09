@@ -135,12 +135,8 @@ void ProjectDefDLG::CreateControls()
     wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Units"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxArrayString m_DlgPd_Proj_UnitStrings;
-    m_DlgPd_Proj_UnitStrings.Add(_("Meters"));
-    m_DlgPd_Proj_UnitStrings.Add(_("Kilometers"));
-    m_DlgPd_Proj_UnitStrings.Add(_("Lat / Long"));
-    m_DlgPd_Proj_Unit = new wxChoice( itemDialog1, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize, m_DlgPd_Proj_UnitStrings, 0 );
-    m_DlgPd_Proj_Unit->SetStringSelection(_("Meters"));
+    m_DlgPd_Proj_Unit = new wxChoice( itemDialog1, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
+    m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
     itemFlexGridSizer4->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     itemFlexGridSizer4->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -148,11 +144,8 @@ void ProjectDefDLG::CreateControls()
     wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Projection :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxArrayString m_DlgPd_Proj_ProjectionStrings;
-    m_DlgPd_Proj_ProjectionStrings.Add(_("No projection"));
-    m_DlgPd_Proj_ProjectionStrings.Add(_("Swiss projection"));
-    m_DlgPd_Proj_Projection = new wxChoice( itemDialog1, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize, m_DlgPd_Proj_ProjectionStrings, 0 );
-    m_DlgPd_Proj_Projection->SetStringSelection(_("No projection"));
+    m_DlgPd_Proj_Projection = new wxChoice( itemDialog1, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize,PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
+	m_DlgPd_Proj_Projection->SetSelection(PROJ_NOPROJ);
     itemFlexGridSizer4->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Define your spatial model"));

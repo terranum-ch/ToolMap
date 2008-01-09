@@ -57,6 +57,37 @@
 #include "../gui/listgenreport.h"
 
 
+// Definitions for the project unit type, we define the text and  the id of 
+// each string. The number of items in the list is also defined here.
+static wxString PRJDEF_UNIT_TYPE_STRING[] = 
+{
+	_("Meters"),
+	_("Kilometers"),
+	_("Lat / Long")
+};
+enum PRJDEF_UNIT_TYPE
+{
+	UNIT_METERS = 0,
+	UNIT_KILOMETERS,
+	UNIT_LATLONG
+};
+static const int PRJDEF_UNIT_TYPE_NUMBER = 3;
+
+
+// Definitions for the Projection  type, we define the text and  the id of 
+// each string. The number of items in the list is also defined here.
+static wxString PRJDEF_PROJ_TYPE_STRING[] = 
+{
+	_("No projection"),
+	_("Swiss projection")
+};
+enum PRJDEF_PROJ_TYPE
+{
+	PROJ_NOPROJ = 0,
+	PROJ_SWISSPROJ
+};
+static const int PRJDEF_PROJ_TYPE_NUMBER = 3;
+
 
 // Definitions for the field type, we define the text and  the id of 
 // each string. The number of items in the list is also defined here.
