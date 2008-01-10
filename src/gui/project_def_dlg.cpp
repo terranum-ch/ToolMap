@@ -224,7 +224,7 @@ void ProjectDefList::BeforeAdding()
 {
 	
 	// create and set the dialog here
-	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this);
+	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition);
 	wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(myLayerDialog);
 
@@ -267,7 +267,7 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 void ProjectDefList::BeforeEditing ()
 {
 	// create the dialog
-	m_LayersDialog = new ProjectDefLayersDlg (this);
+	m_LayersDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition);
 	wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(m_LayersDialog);
 
@@ -285,7 +285,7 @@ void ProjectDefList::BeforeEditing ()
 	{
 		// transfert the data obj to the dialog, data will be 
 		// filled during DataTransfer...
-		((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);	
+		((ProjectDefLayersDlg*)m_pDialog)->SetMemoryLayersObject(m_LayersObj);
 	}
 	
 }
@@ -323,15 +323,7 @@ void ProjectDefList::BeforeDeleting()
 	wxString myLayerName = GetItemColText(mySelectedListItem, 0);
 
 	m_pPrjDefinition->RemoveLayer(myLayerName);
-//	int iItemIndex = m_pPrjDefinition->FindLayer(myLayerName);
-//	
-//	
-//	
-//	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
-//	if ( iItemIndex != -1)
-//	{
-//		m_LayersArray->RemoveAt(iItemIndex);
-//	}	
+
 }
 
 

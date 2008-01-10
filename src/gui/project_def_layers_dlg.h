@@ -72,6 +72,7 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 		
 		
 		ProjectDefMemoryObjects * m_ObjectObj;
+		PrjDefMemManage *  m_pPrjDefinition;
 		
 		virtual void	AfterAdding (bool bRealyAddItem);
 		virtual void 	AfterEditing (bool bRealyEdited);
@@ -93,7 +94,9 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 		//
 		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
 		//		void SetChoiceList (wxChoice * myChoiceList);
-		//		
+		//	
+		void PassPrjDefToList (PrjDefMemManage *  myPrjMemManage) {m_pPrjDefinition = myPrjMemManage;}
+
 	};
 
 
@@ -208,7 +211,8 @@ class ProjectDefLayersDlg: public wxDialog
 	public:
 		/// Constructors
 		ProjectDefLayersDlg();
-		ProjectDefLayersDlg( wxWindow* parent, 
+		ProjectDefLayersDlg( wxWindow* parent,
+							PrjDefMemManage *pPrjDef,
 							wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
 							const wxString& caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
 							const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION, 
@@ -250,6 +254,7 @@ class ProjectDefLayersDlg: public wxDialog
 		ProjectDefLayersObjectList* m_DlgPDL_Object_List;
 		wxPanel* m_DlgPDL_Panel_Fields;
 		ProjectDefLayersFieldsList* m_DlgPDL_Fields_List;
+		
 		
 	};
 

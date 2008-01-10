@@ -290,7 +290,6 @@ protected:
 	wxDialog * m_pDialog;
 	
 	void InitMembers();
-	void InitConnectEvent();
 	
 	virtual void BeforeAdding(){;}
 	virtual void BeforeDeleting() {;}
@@ -322,6 +321,8 @@ public:
 	void AddItem ();
 	void DeleteItem();
 	void EditItem();
+	
+
 	
 };
 
