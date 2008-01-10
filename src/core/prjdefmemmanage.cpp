@@ -46,6 +46,7 @@ void PrjDefMemManage::InitDefaultValues()
 	m_PrjLayerArray = new PrjMemLayersArray();
 	
 	m_pActiveLayer = NULL;
+	m_iActualObj = 0;
 }
 
 
@@ -204,3 +205,31 @@ ProjectDefMemoryObjects *	PrjDefMemManage::FindObject(const wxString & ObjectNam
 	return NULL; // nothing found... check for null pointer
 }
 
+
+ProjectDefMemoryObjects * PrjDefMemManage::GetNextObjects()
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	// deal with the increment of the retruned item
+	if (m_iActualObj >= GetCountObject())
+	{
+		m_iActualObj = 0;
+	}
+	
+	ProjectDefMemoryObjects * object = &(layer->m_pLayerObjectArray->Item(m_iActualObj));
+	
+	// increment the object returned
+	m_iActualObj ++;
+	
+	return object;
+}
+
+
+int	PrjDefMemManage::GetCountObject()
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	return layer->m_pLayerObjectArray->GetCount();
+}
