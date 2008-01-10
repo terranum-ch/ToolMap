@@ -38,6 +38,7 @@ class PrjDefMemManage
 	{
 	private:
 		// variables
+		ProjectDefMemoryLayers * m_pActiveLayer;
 		
 		// member functions
 		void InitDefaultValues();
@@ -49,19 +50,28 @@ class PrjDefMemManage
 		PRJDEF_UNIT_TYPE m_PrjUnitType;
 		PRJDEF_PROJ_TYPE m_PrjProjType;
 		PrjMemLayersArray * m_PrjLayerArray;
-			
+	
 		
 		// ctor - dtor
 		PrjDefMemManage();
 		~PrjDefMemManage();
 		
+		
 		// layer members functions
-		ProjectDefMemoryLayers * AddLayer();
-			// remove last item by default...
-		int RemoveLayer(int iIndex = -1);
-		bool RemoveLayer(const wxString & layerName);
-		ProjectDefMemoryLayers * FindLayer(const wxString & layerName);
+		ProjectDefMemoryLayers *	AddLayer();
+		int							RemoveLayer(int iIndex = -1);// remove last item by default...
+		bool						RemoveLayer(const wxString & layerName);
+		ProjectDefMemoryLayers *	FindLayer(const wxString & layerName);
+		void						SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
+													{m_pActiveLayer = ActiveLayer;}
+		ProjectDefMemoryLayers *	GetActiveLayer(){return m_pActiveLayer;}
 	
+		// object members functions
+		ProjectDefMemoryObjects *	AddObject ();
+		int							RemoveObject (int iIndex = -1); // remove last
+		bool						RemoveObject(const wxString & ObjectName);
+		ProjectDefMemoryObjects *	FindObject(const wxString & ObjectName);
+		
 		
 		
 	};

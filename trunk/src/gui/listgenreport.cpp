@@ -474,16 +474,11 @@ ListGenReportWithDialog::~ListGenReportWithDialog()
 void ListGenReportWithDialog::InitMembers()
 {
 	m_pDialog = NULL;
+	
 }
 
 
-void ListGenReportWithDialog::InitConnectEvent()
-{
-	// connect event to the listctrl
-	
-	
-	
-}
+
 
 void ListGenReportWithDialog::AddItem()
 {	

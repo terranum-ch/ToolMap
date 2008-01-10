@@ -58,7 +58,8 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 	m_ChoiceToChange = NULL;
 	
 	// create an array for storing theme objects
-	m_ObjectsArray = new PrjMemObjectsArray();
+	//m_ObjectsArray = new PrjMemObjectsArray();
+	m_pPrjDefinition = NULL;
 }
 
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
@@ -76,11 +77,8 @@ void ProjectDefLayersObjectList::BeforeAdding()
 	wxLogDebug(_T("Creating Object description Dialog"));
 	SetDialog(myEditObjDlg);
 	
-	// create a new item for the array if we cancel the dialog
-	// this item will be destroyed, otherwise it will be attached
-	// to the array
-	m_ObjectObj = new ProjectDefMemoryObjects();
-	
+	m_ObjectObj = m_pPrjDefinition->AddObject();
+		
 	// now uses Transfert data process
 	((ProjectDefLayersEditObjectDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
 	
@@ -93,9 +91,7 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 	
 	if (bRealyAddItem)
 	{
-		// add item to the array
-		m_ObjectsArray->Add(m_ObjectObj);
-		wxLogDebug(_T("Size of the Object array : %d"), m_ObjectsArray->GetCount());
+		// data allready added to the array
 		
 		// add item to the list
 		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
@@ -104,7 +100,7 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 		
 	}
 	else
-		delete m_ObjectObj; // not used
+		m_pPrjDefinition->RemoveObject(); // remove last object not used
 	
 	// delete the dialog
 	wxLogDebug(_T("Deleting Object description Dialog"));
@@ -118,11 +114,13 @@ void ProjectDefLayersObjectList::BeforeDeleting ()
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
-	int iItemIndex = FindObjInObjectArray(this, m_ObjectsArray);
-	if ( iItemIndex != -1)
-	{
-		m_ObjectsArray->RemoveAt(iItemIndex);
-	}	
+		
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myObjectName = GetItemColText(mySelectedListItem, 1);
+	
+	m_pPrjDefinition->RemoveObject(myObjectName);
+	
 }
 
 
@@ -133,19 +131,22 @@ void ProjectDefLayersObjectList::BeforeEditing ()
 	wxLogDebug(_T("Creating Object description Dialog"));
 	SetDialog(myObjectDlg);
 	
-	// find item selected and then call a new Dialog
-	// for editing the existing Field
-	int iItemIndex = FindObjInObjectArray(this, m_ObjectsArray);
-	if (iItemIndex != -1)
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myObjectName = GetItemColText(mySelectedListItem, 1);
+	
+	m_ObjectObj = m_pPrjDefinition->FindObject(myObjectName);
+	
+	//	// find item selected and then call a new Dialog
+	//	// for editing the existing Field
+	//	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+	if (m_ObjectObj != NULL)
 	{
-		// get the object from the array
-		m_ObjectObj = &(m_ObjectsArray->Item(iItemIndex));
-		
 		// transfert the data obj to the dialog, data will be 
 		// filled during DataTransfer...
 		((ProjectDefLayersEditObjectDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);	
 	}
-	
+	 	
 }
 
 
@@ -155,17 +156,16 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 	
 	if (bRealyEdited)
 	{
-		// modify data to the array is automatically done using DataTransfert
-		wxLogDebug(_T("Size of the object array : %d"), m_ObjectsArray->GetCount());
+		// data modified is allready stored in the project definition
 		
-		// modify data to the list
 		// prepare data for list representation
 		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
 		myListValues.Add(m_ObjectObj->m_ObjectName);
 		EditDataToList(myListValues, GetSelectedItem());
 		
+		
 	}
-	
+		
 	// delete dialog
     wxLogDebug(_T("Deleting Object description Dialog"));
 	delete m_pDialog;
@@ -175,19 +175,12 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 
 void ProjectDefLayersObjectList::AddingValueToArray (wxArrayString & myImportedValues)
 {
-	// called during import process after each import
-	// myImportedValues is modified and return a pointer
-	// to a string array containing the stuff to put in
-	// our array
-	ProjectDefMemoryObjects * myObjectObj = new ProjectDefMemoryObjects();
-	myImportedValues.Item(0).ToLong(&(myObjectObj->m_ObjectCode));
-	myObjectObj->m_ObjectName = myImportedValues.Item(1);
+	// create new Object obj in the array.
+	m_ObjectObj = m_pPrjDefinition->AddObject();
 	
-	// add to array
-	m_ObjectsArray->Add(myObjectObj);
-	wxLogDebug(_T("%s, added to array size is : %d"), 
-			   myObjectObj->m_ObjectName.c_str(), m_ObjectsArray->GetCount());
-	
+	// pass value to this object
+	myImportedValues.Item(0).ToLong(&(m_ObjectObj->m_ObjectCode));
+	m_ObjectObj->m_ObjectName = myImportedValues.Item(1);
 }
 
 
@@ -318,7 +311,7 @@ void ProjectDefLayersEditObjectDlg::Init()
     m_DlgEO_Value = NULL;
     m_DlgEO_OK_Btn = NULL;
 	
-	//m_ObjectObj = NULL;
+	m_ObjectObj = NULL;
 	
 }
 
@@ -506,6 +499,7 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 
 bool ProjectDefLayersDlg::TransferDataToWindow()
 {
+	
 	// function automaticaly called when the dialog
 	// is showed 
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
@@ -527,10 +521,17 @@ ProjectDefLayersDlg::ProjectDefLayersDlg()
     Init();
 }
 
-ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPrjDef,
+										 wxWindowID id, const wxString& caption, 
+										 const wxPoint& pos, const wxSize& size,
+										 long style )
 {
     Init();
     Create(parent, id, caption, pos, size, style);
+	
+	// pass project definition to the list
+	m_DlgPDL_Object_List->PassPrjDefToList(pPrjDef);
+	wxLogDebug(_T("Prj def adress = %p"), pPrjDef);
 }
 
 
