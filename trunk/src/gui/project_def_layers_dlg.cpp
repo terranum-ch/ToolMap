@@ -17,6 +17,9 @@
 
 #include "project_def_layers_dlg.h"
 
+
+
+
 /******************************  Object List *************************/
 //BEGIN_EVENT_TABLE (ProjectDefLayersObjectList, ListGenReport)
 //	EVT_
@@ -57,8 +60,6 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 	
 	m_ChoiceToChange = NULL;
 	
-	// create an array for storing theme objects
-	//m_ObjectsArray = new PrjMemObjectsArray();
 	m_pPrjDefinition = NULL;
 }
 
@@ -184,9 +185,12 @@ void ProjectDefLayersObjectList::AddingValueToArray (wxArrayString & myImportedV
 }
 
 
-/******************************  Layers List *************************/
+
+
+
+/******************************  Field List *************************/
 ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID  id, wxSize size, ProjectDefLayersDlg * myDlg) 
-	: ListGenReport(parent,id,size)
+	: ListGenReportWithDialog(parent,id,size)
 {
 	m_DlgParent = myDlg;
 	
@@ -203,6 +207,9 @@ ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWind
 	CreateColumns(&myColNames, &myColsWidths);
 	
 	m_ChoiceToChange = NULL;
+	
+	m_pPrjDefinition = NULL;
+	m_FieldsObj = NULL;
 	
 }
 
@@ -252,6 +259,50 @@ void ProjectDefLayersFieldsList::OnDoubleClickItem(wxListEvent & event)
 	}	
 	
 }
+
+
+
+void ProjectDefLayersFieldsList::BeforeAdding ()
+{
+	// create the dialog, will be destroyed in AfterAdding
+	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this);
+	wxLogDebug(_T("Creating Field Dialog"));
+	SetDialog(myFieldDlg);
+	
+	m_FieldsObj =  m_pPrjDefinition->AddField();
+	
+	// now uses Transfert data process
+	((ProjectDefFieldDlg*)m_pDialog)->SetMemoryFieldObject(m_FieldsObj);
+}
+
+void ProjectDefLayersFieldsList::AfterAdding (bool bRealyAddItem)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyAddItem)
+	{
+		// data allready added to the array
+//		
+//		// add item to the list
+//		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+//		myListValues.Add(m_ObjectObj->m_ObjectName);
+//		EditDataToList(myListValues);
+//		
+	}
+	else
+		m_pPrjDefinition->RemoveField(); // remove last field not used
+	
+	// delete the dialog
+	wxLogDebug(_T("Deleting Field Dialog"));
+	delete m_pDialog;
+	
+}
+
+
+
+
+
+
 
 /******************************  Add object Dialog Class *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg, wxDialog )
@@ -393,38 +444,39 @@ END_EVENT_TABLE()
 
 void ProjectDefLayersDlg::OnAddField (wxCommandEvent & event)
 {	
-	// create a new object for storing fields value
-	ProjectDefMemoryFields * myMemFieldValue = new ProjectDefMemoryFields();
-	wxArrayString myListValues;
+//	// create a new object for storing fields value
+//	ProjectDefMemoryFields * myMemFieldValue = new ProjectDefMemoryFields();
+//	wxArrayString myListValues;
+//
+//	m_FieldDialog = new ProjectDefFieldDlg (this);
+//	
+//	// transfert the data obj to the dialog, data will be 
+//	// filled during DataTransfer...
+//	m_FieldDialog->SetMemoryFieldObject(myMemFieldValue);
+//	
+//	if (m_FieldDialog->ShowModal() == wxID_OK)
+//	{
+//		
+//		// retrive data from the dialog and then strore
+//		// this object to the list.
+//		m_FieldArray.Add(myMemFieldValue);
+//		
+//		// prepare data for list representation
+//		myListValues.Add(myMemFieldValue->m_Fieldname);
+//		myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue->m_FieldType]);
+//		m_DlgPDL_Fields_List->EditDataToList(myListValues);
+//		
+//	}
+//	else 
+//	{
+//		delete myMemFieldValue;
+//		wxLogDebug(_T("Deleting Field Memory object not used"));
+//	}
+//
+//	wxLogDebug(_T("Size of Field array %d"), m_FieldArray.GetCount());
+//	delete m_FieldDialog;
 
-	m_FieldDialog = new ProjectDefFieldDlg (this);
-	
-	// transfert the data obj to the dialog, data will be 
-	// filled during DataTransfer...
-	m_FieldDialog->SetMemoryFieldObject(myMemFieldValue);
-	
-	if (m_FieldDialog->ShowModal() == wxID_OK)
-	{
-		
-		// retrive data from the dialog and then strore
-		// this object to the list.
-		m_FieldArray.Add(myMemFieldValue);
-		
-		// prepare data for list representation
-		myListValues.Add(myMemFieldValue->m_Fieldname);
-		myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue->m_FieldType]);
-		m_DlgPDL_Fields_List->EditDataToList(myListValues);
-		
-	}
-	else 
-	{
-		delete myMemFieldValue;
-		wxLogDebug(_T("Deleting Field Memory object not used"));
-	}
-
-	wxLogDebug(_T("Size of Field array %d"), m_FieldArray.GetCount());
-	delete m_FieldDialog;
-	
+	m_DlgPDL_Fields_List->AddItem();
 }
 
 
@@ -545,6 +597,7 @@ ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPr
 	// init prj definition and pass it to the list
 	m_pPrjDefinition = pPrjDef;
 	m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
+	m_DlgPDL_Fields_List->PassPrjDefToList(m_pPrjDefinition);
 	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 }
 

@@ -233,3 +233,44 @@ int	PrjDefMemManage::GetCountObject()
 	
 	return layer->m_pLayerObjectArray->GetCount();
 }
+
+
+
+
+/*********************** FIELDS FUNCTIONS **************************/
+ProjectDefMemoryFields * PrjDefMemManage::AddField ()
+{
+	// create an empty object and attach it
+	ProjectDefMemoryFields * myNewFieldObj = new ProjectDefMemoryFields();
+	
+	ProjectDefMemoryLayers * layer;
+	layer = GetActiveLayer();
+	if (layer != NULL)
+	{
+		
+		layer->m_pLayerFieldArray->Add(myNewFieldObj);
+		wxLogDebug(_T("Array Size : Field = %d"),layer->m_pLayerFieldArray->GetCount());
+		
+		return myNewFieldObj; // pointer to the added field.
+	}
+	return NULL;
+	
+}
+
+
+int	PrjDefMemManage::RemoveField (int iIndex)
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	if (iIndex == -1)
+		iIndex = layer->m_pLayerFieldArray->GetCount() - 1;
+	
+	// be sure that iIndex isn't smaller than 0
+	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
+	
+	layer->m_pLayerFieldArray->RemoveAt(iIndex);
+		
+	return layer->m_pLayerFieldArray->GetCount(); // number of objects	
+}
+

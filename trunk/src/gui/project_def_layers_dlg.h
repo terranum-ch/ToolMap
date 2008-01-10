@@ -79,7 +79,7 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 		virtual void 	BeforeAdding ();
 		virtual void 	BeforeDeleting ();
 		virtual void 	BeforeEditing ();
-		virtual void AddingValueToArray (wxArrayString & myImportedValues);
+		virtual void	AddingValueToArray (wxArrayString & myImportedValues);
 		
 	public:
 		static const int ID_PARAMLIST;
@@ -101,13 +101,26 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 
 
 
-class ProjectDefLayersFieldsList : public ListGenReport
+
+class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 	{
 	private:
 		
 		virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
 		virtual void OnPressBackSpace (wxListEvent & event);
+		
+		PrjDefMemManage *  m_pPrjDefinition;
+		ProjectDefMemoryFields * m_FieldsObj;
+		
+		
+		virtual void	AfterAdding (bool bRealyAddItem);
+		virtual void 	AfterEditing (bool bRealyEdited){;}
+		virtual void 	BeforeAdding ();
+		virtual void 	BeforeDeleting (){;}
+		virtual void 	BeforeEditing (){;}
+		virtual void	AddingValueToArray (wxArrayString & myImportedValues){;}
+		
 		
 		// pointer to the parent dialog
 		ProjectDefLayersDlg * m_DlgParent;
@@ -120,6 +133,8 @@ class ProjectDefLayersFieldsList : public ListGenReport
 		ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID id, wxSize size, ProjectDefLayersDlg * myDlg);
 		
 		~ProjectDefLayersFieldsList(); 
+		
+		void PassPrjDefToList (PrjDefMemManage *  myPrjMemManage) {m_pPrjDefinition = myPrjMemManage;}
 		
 		//	int GetParamType (wxString myTextParam);
 		//		
