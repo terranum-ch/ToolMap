@@ -195,6 +195,7 @@ class ProjectDefLayersDlg: public wxDialog
 		ProjectDefFieldDlg * m_FieldDialog;
 		ProjectDefMemoryLayers * m_LayersObj;
 		
+		PrjDefMemManage * m_pPrjDefinition;
 		
 		
 		void OnAddField (wxCommandEvent & event);

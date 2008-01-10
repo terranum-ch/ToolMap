@@ -39,6 +39,7 @@ class PrjDefMemManage
 	private:
 		// variables
 		ProjectDefMemoryLayers * m_pActiveLayer;
+		int m_iActualObj;
 		
 		// member functions
 		void InitDefaultValues();
@@ -71,7 +72,8 @@ class PrjDefMemManage
 		int							RemoveObject (int iIndex = -1); // remove last
 		bool						RemoveObject(const wxString & ObjectName);
 		ProjectDefMemoryObjects *	FindObject(const wxString & ObjectName);
-		
+		ProjectDefMemoryObjects *	GetNextObjects();
+		int							GetCountObject();
 		
 		
 	};

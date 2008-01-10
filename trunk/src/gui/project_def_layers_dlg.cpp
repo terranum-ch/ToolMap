@@ -491,14 +491,16 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
 	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
-	//m_LayersObj->m_pLayerObjectArray = m_DlgPDL_Object_List->m_ObjectsArray;
 	return TRUE;
 	
 }
 
 
+
+
 bool ProjectDefLayersDlg::TransferDataToWindow()
 {
+	wxArrayString myObjListValues;
 	
 	// function automaticaly called when the dialog
 	// is showed 
@@ -506,14 +508,24 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 	m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName); 
 	m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE) m_LayersObj->m_LayerType);
 	
-	// if object array isn't null then we fill the list
-	if (m_LayersObj->m_pLayerObjectArray)
+	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
+	
+	// fill the object list
+	for (int i = 0; i<m_pPrjDefinition->GetCountObject(); i++)
 	{
-		wxLogDebug(_T("number of item passed : %d"), m_LayersObj->m_pLayerObjectArray->GetCount());
+		ProjectDefMemoryObjects * myObjectObj = m_pPrjDefinition->GetNextObjects();
+	
+		// fit things returned in the list
+		myObjListValues.Add(wxString::Format(_T("%d"), myObjectObj->m_ObjectCode));
+		myObjListValues.Add(myObjectObj->m_ObjectName);
+		m_DlgPDL_Object_List->EditDataToList(myObjListValues);
+		myObjListValues.Clear();
 	}
 	
 	return TRUE;
 }
+
+
 
 
 ProjectDefLayersDlg::ProjectDefLayersDlg()
@@ -529,9 +541,11 @@ ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPr
     Init();
     Create(parent, id, caption, pos, size, style);
 	
-	// pass project definition to the list
-	m_DlgPDL_Object_List->PassPrjDefToList(pPrjDef);
-	wxLogDebug(_T("Prj def adress = %p"), pPrjDef);
+	
+	// init prj definition and pass it to the list
+	m_pPrjDefinition = pPrjDef;
+	m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
+	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 }
 
 
