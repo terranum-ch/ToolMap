@@ -75,6 +75,9 @@ class PrjDefMemManage
 		ProjectDefMemoryObjects *	GetNextObjects();
 		int							GetCountObject();
 		
+		// field members functions
+		ProjectDefMemoryFields *	AddField ();
+		int							RemoveField (int iIndex = -1); // remove last
 		
 	};
 
