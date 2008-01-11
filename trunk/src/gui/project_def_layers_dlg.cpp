@@ -21,28 +21,6 @@
 
 
 /******************************  Object List *************************/
-//BEGIN_EVENT_TABLE (ProjectDefLayersObjectList, ListGenReport)
-//	EVT_
-//END_EVENT_TABLE()
-
-void ProjectDefLayersObjectList::OnDoubleClickItem(wxListEvent & event)
-{
-//	wxArrayString myRowData;
-//	long myIndex = GetSelectedItem();
-//	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
-//
-//	// get the data from the list for selected line
-//	GetAllDataAsStringArray(myRowData, myIndex);
-//	
-//	// put the data in the dialog
-//	if (DataToList(myModifiyDialog,myRowData))
-//	{
-//		EditDataToList(myRowData, myIndex);
-//	}
-//	delete myModifiyDialog;
-	EditItem();
-}
-
 ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWindowID  id, wxSize size) 
 	: ListGenReportWithDialog(parent,id,size)
 {
@@ -220,41 +198,6 @@ ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 
 
 
-//void ProjectDefLayersFieldsList::OnDoubleClickItem(wxListEvent & event)
-//{
-//	wxArrayString myListValues;
-//	
-//	// find item selected and then call a new ProjectDefFieldDlg
-//	// for editing the existing Field
-//	int iItemIndex = FindObjInFieldArray(this, m_DlgParent->m_FieldArray);
-//	if (iItemIndex != -1)
-//	{
-//		ProjectDefFieldDlg * myTempFieldDialog = new ProjectDefFieldDlg (this);
-//		
-//		// transfert the data obj to the dialog, data will be 
-//		// filled during DataTransfer...
-//		ProjectDefMemoryFields * myMemFieldValue = &(m_DlgParent->m_FieldArray.Item(iItemIndex));
-//		myTempFieldDialog->SetMemoryFieldObject(myMemFieldValue);
-//		
-//		if (myTempFieldDialog->ShowModal() == wxID_OK)
-//		{
-//			
-//			// prepare data for list representation
-//			myListValues.Add(myMemFieldValue->m_Fieldname);
-//			myListValues.Add(PRJDEF_FIELD_TYPE_STRING[myMemFieldValue->m_FieldType]);
-//			EditDataToList(myListValues, GetSelectedItem());
-//			
-//		}
-//		
-//		wxLogDebug(_T("Size of Field array %d"), m_DlgParent->m_FieldArray.GetCount());
-//		delete myTempFieldDialog;
-//	}	
-//	
-//}
-
-
-
-
 void ProjectDefLayersFieldsList::BeforeAdding ()
 {
 	// create the dialog, will be destroyed in AfterAdding
@@ -353,6 +296,7 @@ void ProjectDefLayersFieldsList::AfterEditing (bool bRealyEdited)
 	delete m_pDialog;
 	
 }
+
 
 
 
@@ -569,6 +513,7 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 bool ProjectDefLayersDlg::TransferDataToWindow()
 {
 	wxArrayString myObjListValues;
+	wxArrayString myFieldListValues;
 	
 	// function automaticaly called when the dialog
 	// is showed 
@@ -591,6 +536,19 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 			myObjListValues.Add(myObjectObj->m_ObjectName);
 			m_DlgPDL_Object_List->EditDataToList(myObjListValues);
 			myObjListValues.Clear();
+		}
+		
+		// fill the field list
+		for (int j=0; j < m_pPrjDefinition->GetCountFields(); j++)
+		{
+			ProjectDefMemoryFields * myFieldObj = m_pPrjDefinition->GetNextField();
+			
+			// fit things returned in the list
+			myFieldListValues.Add(myFieldObj->m_Fieldname);
+			myFieldListValues.Add(PRJDEF_FIELD_TYPE_STRING[myFieldObj->m_FieldType]);
+			m_DlgPDL_Fields_List->EditDataToList(myFieldListValues);
+			myFieldListValues.Clear();
+
 		}
 		
 	}

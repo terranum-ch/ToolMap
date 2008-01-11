@@ -47,6 +47,7 @@ void PrjDefMemManage::InitDefaultValues()
 	
 	m_pActiveLayer = NULL;
 	m_iActualObj = 0;
+	m_iActualField = 0;
 }
 
 
@@ -314,3 +315,35 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 	return NULL; // nothing found, return null pointer.
 
 }
+
+ProjectDefMemoryFields *PrjDefMemManage::GetNextField()
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	// deal with the increment of the retruned item
+	if (m_iActualField >= GetCountFields())
+	{
+		m_iActualField = 0;
+	}
+	
+	ProjectDefMemoryFields * field = &(layer->m_pLayerFieldArray->Item(m_iActualField));
+	
+	// increment the object returned
+	m_iActualField ++;
+	
+	return field;
+	
+}
+
+
+
+int	PrjDefMemManage::GetCountFields()
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	return layer->m_pLayerFieldArray->GetCount();
+}
+
+
