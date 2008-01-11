@@ -274,3 +274,43 @@ int	PrjDefMemManage::RemoveField (int iIndex)
 	return layer->m_pLayerFieldArray->GetCount(); // number of objects	
 }
 
+
+
+bool PrjDefMemManage::RemoveField(const wxString & FieldName)
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < layer->m_pLayerFieldArray->GetCount(); i++)
+	{
+		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
+		{
+			wxLogDebug(_T("Object found in Field array in position : %d"), i);
+			layer->m_pLayerFieldArray->RemoveAt(i);
+			return TRUE;
+		}
+	}
+	
+	return FALSE; // nothing deleted.
+}
+
+
+ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < layer->m_pLayerFieldArray->GetCount(); i++)
+	{
+		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
+		{
+			wxLogDebug(_T("Object found in Field array in position : %d"), i);
+			return &(layer->m_pLayerFieldArray->Item(i));
+		}
+	}
+	
+	return NULL; // nothing found, return null pointer.
+
+}
