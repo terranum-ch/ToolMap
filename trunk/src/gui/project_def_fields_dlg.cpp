@@ -256,56 +256,58 @@ void ProjectDefFieldDlg::Init()
 
 bool ProjectDefFieldDlg::TransferDataFromWindow()
 {
-//	// some checks, have we called
-//	// SetMemoryFieldObject function
-//	// before ?
-//	wxASSERT (m_MemoryField != NULL);
-//	
-//	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
-//	m_MemoryField->m_FieldType = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
-//	m_MemoryField->m_FieldPrecision = m_DlgAFD_Field_Precision->GetValue();
-//	m_MemoryField->m_FieldScale = m_DlgAFD_Field_Scale->GetValue();
-//	m_MemoryField->m_FieldOrientation = m_DlgAFD_Field_Orientation->IsChecked();
-//	if (!m_DlgAFD_Constrain_Values->IsChecked())
-//	{
-//		m_MemoryField->m_FieldConstrain = FIELD_NOT_CONSTRAIN;
-//	}
-//	else
-//	{
-//		m_MemoryField->m_FieldConstrain = (PRJDEF_FIELD_CONSTAIN_VALUE_TYPE) m_DlgAFD_Notebook->GetSelection();
-//	}
-//	
-//	
+	// some checks, have we called
+	// SetMemoryFieldObject function
+	// before ?
+	wxASSERT (m_MemoryField != NULL);
+	
+	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
+	m_MemoryField->m_FieldType = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
+	m_MemoryField->m_FieldPrecision = m_DlgAFD_Field_Precision->GetValue();
+	m_MemoryField->m_FieldScale = m_DlgAFD_Field_Scale->GetValue();
+	m_MemoryField->m_FieldOrientation = m_DlgAFD_Field_Orientation->IsChecked();
+	if (!m_DlgAFD_Constrain_Values->IsChecked())
+	{
+		m_MemoryField->m_FieldConstrain = FIELD_NOT_CONSTRAIN;
+	}
+	else
+	{
+		m_MemoryField->m_FieldConstrain = (PRJDEF_FIELD_CONSTAIN_VALUE_TYPE) m_DlgAFD_Notebook->GetSelection();
+	}
+	
+	
 	return TRUE;
 }
 
 
 bool ProjectDefFieldDlg::TransferDataToWindow()
 {
-//	// some checks, have we called
-//	// SetMemoryFieldObject function
-//	// before ?
-//	wxASSERT (m_MemoryField != NULL);
-//	
-//	m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
-//	m_DlgAFD_Field_Type->SetSelection((int) m_MemoryField->m_FieldType);
-//	m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
-//	m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
-//	m_DlgAFD_Field_Orientation->SetValue(m_MemoryField->m_FieldOrientation);
-//	if (m_MemoryField->m_FieldConstrain != FIELD_NOT_CONSTRAIN)
-//	{
-//		m_DlgAFD_Constrain_Values->SetValue(TRUE);
-//		m_DlgAFD_Notebook->Show(TRUE);
-//		m_DlgAFD_Notebook->SetSelection(m_MemoryField->m_FieldConstrain);
-//	}
-//	
-//	// for setting the good size to the dialog
-//	if (GetSizer())
-//	{
-//		GetSizer()->Fit(this);
-//		GetSizer()->Layout();
-//	}
-//	
+	// some checks, have we called
+	// SetMemoryFieldObject function
+	// before ?
+	wxASSERT (m_MemoryField != NULL);
+	
+	if (m_MemoryField != NULL)
+	{
+		m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
+		m_DlgAFD_Field_Type->SetSelection((int) m_MemoryField->m_FieldType);
+		m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
+		m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
+		m_DlgAFD_Field_Orientation->SetValue(m_MemoryField->m_FieldOrientation);
+		if (m_MemoryField->m_FieldConstrain != FIELD_NOT_CONSTRAIN)
+		{
+			m_DlgAFD_Constrain_Values->SetValue(TRUE);
+			m_DlgAFD_Notebook->Show(TRUE);
+			m_DlgAFD_Notebook->SetSelection(m_MemoryField->m_FieldConstrain);
+		}
+		
+		// for setting the good size to the dialog
+		if (GetSizer())
+		{
+			GetSizer()->Fit(this);
+			GetSizer()->Layout();
+		}
+	}
 	return TRUE;
 }
 

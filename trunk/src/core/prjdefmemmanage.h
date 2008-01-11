@@ -78,6 +78,8 @@ class PrjDefMemManage
 		// field members functions
 		ProjectDefMemoryFields *	AddField ();
 		int							RemoveField (int iIndex = -1); // remove last
+		bool						RemoveField (const wxString & FieldName); 
+		ProjectDefMemoryFields *	FindField(const wxString & FieldName);
 		
 	};
 

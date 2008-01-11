@@ -106,19 +106,19 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 	{
 	private:
 		
-		virtual void OnDoubleClickItem(wxListEvent & event);
+		/// todo remove this function, implement it in the parent class only...
+		//virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
-		virtual void OnPressBackSpace (wxListEvent & event);
 		
 		PrjDefMemManage *  m_pPrjDefinition;
 		ProjectDefMemoryFields * m_FieldsObj;
 		
 		
 		virtual void	AfterAdding (bool bRealyAddItem);
-		virtual void 	AfterEditing (bool bRealyEdited){;}
+		virtual void 	AfterEditing (bool bRealyEdited);
 		virtual void 	BeforeAdding ();
-		virtual void 	BeforeDeleting (){;}
-		virtual void 	BeforeEditing (){;}
+		virtual void 	BeforeDeleting ();
+		virtual void 	BeforeEditing ();
 		virtual void	AddingValueToArray (wxArrayString & myImportedValues){;}
 		
 		
