@@ -65,10 +65,8 @@ class ProjectDefLayersEditObjectDlg;
 class ProjectDefLayersObjectList : public ListGenReportWithDialog
 	{
 	private:
-		virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);		
 		wxChoice * m_ChoiceToChange;
-		//DECLARE_EVENT_TABLE();
 		
 		
 		ProjectDefMemoryObjects * m_ObjectObj;
@@ -106,8 +104,6 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 	{
 	private:
 		
-		/// todo remove this function, implement it in the parent class only...
-		//virtual void OnDoubleClickItem(wxListEvent & event);
 		//		void OnMySelectionChange (wxListEvent & event);
 		
 		PrjDefMemManage *  m_pPrjDefinition;
@@ -119,7 +115,7 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 		virtual void 	BeforeAdding ();
 		virtual void 	BeforeDeleting ();
 		virtual void 	BeforeEditing ();
-		virtual void	AddingValueToArray (wxArrayString & myImportedValues){;}
+		//virtual void	AddingValueToArray (wxArrayString & myImportedValues);
 		
 		
 		// pointer to the parent dialog

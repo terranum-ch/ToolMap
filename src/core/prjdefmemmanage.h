@@ -40,6 +40,7 @@ class PrjDefMemManage
 		// variables
 		ProjectDefMemoryLayers * m_pActiveLayer;
 		int m_iActualObj;
+		int m_iActualField;
 		
 		// member functions
 		void InitDefaultValues();
@@ -80,7 +81,8 @@ class PrjDefMemManage
 		int							RemoveField (int iIndex = -1); // remove last
 		bool						RemoveField (const wxString & FieldName); 
 		ProjectDefMemoryFields *	FindField(const wxString & FieldName);
-		
+		ProjectDefMemoryFields *	GetNextField();
+		int							GetCountFields();
 	};
 
 #endif

@@ -67,7 +67,6 @@
 class ProjectDefFieldList : public ListGenReport
 	{
 	private:
-		virtual void OnDoubleClickItem(wxListEvent & event);
 		
 		//		void OnMySelectionChange (wxListEvent & event);
 		

@@ -45,26 +45,6 @@ ProjectDefFieldList::~ProjectDefFieldList()
 }
 
 
-void ProjectDefFieldList::OnDoubleClickItem(wxListEvent & event)
-{
-	//wxArrayString myRowData;
-//	long myIndex = GetSelectedItem();
-//	ProjectDefLayersEditObjectDlg * myModifiyDialog = new ProjectDefLayersEditObjectDlg(this);
-//	
-//	// get the data from the list for selected line
-//	GetAllDataAsStringArray(myRowData, myIndex);
-//	
-//	// put the data in the dialog
-//	if (DataToList(myModifiyDialog,myRowData))
-//	{
-//		EditDataToList(myRowData, myIndex);
-//	}
-//	delete myModifiyDialog;	
-}
-
-
-
-
 
 
 
