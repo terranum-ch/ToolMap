@@ -39,6 +39,7 @@ class PrjDefMemManage
 	private:
 		// variables
 		ProjectDefMemoryLayers * m_pActiveLayer;
+		ProjectDefMemoryFields * m_pActiveField;
 		int m_iActualObj;
 		int m_iActualField;
 		
@@ -60,29 +61,38 @@ class PrjDefMemManage
 		
 		
 		// layer members functions
-		ProjectDefMemoryLayers *	AddLayer();
-		int							RemoveLayer(int iIndex = -1);// remove last item by default...
-		bool						RemoveLayer(const wxString & layerName);
-		ProjectDefMemoryLayers *	FindLayer(const wxString & layerName);
-		void						SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
+		ProjectDefMemoryLayers *		AddLayer();
+		int								RemoveLayer(int iIndex = -1);// remove last item by default...
+		bool							RemoveLayer(const wxString & layerName);
+		ProjectDefMemoryLayers *		FindLayer(const wxString & layerName);
+		void							SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
 													{m_pActiveLayer = ActiveLayer;}
-		ProjectDefMemoryLayers *	GetActiveLayer(){return m_pActiveLayer;}
+		ProjectDefMemoryLayers *		GetActiveLayer(){return m_pActiveLayer;}
 	
 		// object members functions
-		ProjectDefMemoryObjects *	AddObject ();
-		int							RemoveObject (int iIndex = -1); // remove last
-		bool						RemoveObject(const wxString & ObjectName);
-		ProjectDefMemoryObjects *	FindObject(const wxString & ObjectName);
-		ProjectDefMemoryObjects *	GetNextObjects();
-		int							GetCountObject();
+		ProjectDefMemoryObjects *		AddObject ();
+		int								RemoveObject (int iIndex = -1); // remove last
+		bool							RemoveObject(const wxString & ObjectName);
+		ProjectDefMemoryObjects *		FindObject(const wxString & ObjectName);
+		ProjectDefMemoryObjects *		GetNextObjects();
+		int								GetCountObject();
 		
 		// field members functions
-		ProjectDefMemoryFields *	AddField ();
-		int							RemoveField (int iIndex = -1); // remove last
-		bool						RemoveField (const wxString & FieldName); 
-		ProjectDefMemoryFields *	FindField(const wxString & FieldName);
-		ProjectDefMemoryFields *	GetNextField();
-		int							GetCountFields();
+		ProjectDefMemoryFields *		AddField ();
+		int								RemoveField (int iIndex = -1); // remove last
+		bool							RemoveField (const wxString & FieldName); 
+		ProjectDefMemoryFields *		FindField(const wxString & FieldName);
+		ProjectDefMemoryFields *		GetNextField();
+		int								GetCountFields();
+		void							SetActiveField(ProjectDefMemoryFields * ActiveField)
+													{m_pActiveField = ActiveField;}
+		ProjectDefMemoryFields *		GetActiveField(){return m_pActiveField;}
+		
+		// coded values belonging to fields
+		ProjectDefMemoryFieldsCodedVal *AddCodedValue();
+		int								RemoveCodedValue (int iIndex = -1); // remove last
+
+		
 	};
 
 #endif

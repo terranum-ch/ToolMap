@@ -165,7 +165,10 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 		
 		/// pointer to an "object" object, use
 		/// the SetMemoryObjectObject() function to fill it
+		/// one can also uses the m_CodedValObj and the
+		/// SetMemoryCodedValueObject() corresponding function
 		ProjectDefMemoryObjects * m_ObjectObj;
+		ProjectDefMemoryFieldsCodedVal * m_CodedValObj;
 		
 	public:
 		/// Constructors
@@ -189,7 +192,7 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 		virtual bool TransferDataFromWindow();
 		
 		void SetMemoryObjectObject(ProjectDefMemoryObjects * myObjectObj){m_ObjectObj = myObjectObj;}
-		
+		void SetMemoryCodedValObject (ProjectDefMemoryFieldsCodedVal * myCodedValObj) {m_CodedValObj = myCodedValObj;}
 		
 		wxTextCtrl* m_DlgEO_Code;
 		wxTextCtrl* m_DlgEO_Value;
@@ -250,7 +253,7 @@ class ProjectDefLayersDlg: public wxDialog
 		/// Creates the controls and sizers
 		void CreateControls();
 		
-		void RemoveObjFromArray();
+		//void RemoveObjFromArray();
 		
 		void SetMemoryLayersObject (ProjectDefMemoryLayers * myLayersObj) {m_LayersObj = myLayersObj;}
 		

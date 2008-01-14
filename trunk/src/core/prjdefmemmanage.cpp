@@ -252,6 +252,9 @@ ProjectDefMemoryFields * PrjDefMemManage::AddField ()
 		layer->m_pLayerFieldArray->Add(myNewFieldObj);
 		wxLogDebug(_T("Array Size : Field = %d"),layer->m_pLayerFieldArray->GetCount());
 		
+		// set the active field
+		SetActiveField(myNewFieldObj);
+		
 		return myNewFieldObj; // pointer to the added field.
 	}
 	return NULL;
@@ -271,6 +274,9 @@ int	PrjDefMemManage::RemoveField (int iIndex)
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
 	layer->m_pLayerFieldArray->RemoveAt(iIndex);
+	
+	// set null for active field
+	SetActiveField(NULL);
 		
 	return layer->m_pLayerFieldArray->GetCount(); // number of objects	
 }
@@ -289,6 +295,8 @@ bool PrjDefMemManage::RemoveField(const wxString & FieldName)
 		{
 			wxLogDebug(_T("Object found in Field array in position : %d"), i);
 			layer->m_pLayerFieldArray->RemoveAt(i);
+			// set null for active field
+			SetActiveField(NULL);
 			return TRUE;
 		}
 	}
@@ -308,6 +316,7 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
 		{
 			wxLogDebug(_T("Object found in Field array in position : %d"), i);
+			SetActiveField(&(layer->m_pLayerFieldArray->Item(i)));
 			return &(layer->m_pLayerFieldArray->Item(i));
 		}
 	}
@@ -345,5 +354,46 @@ int	PrjDefMemManage::GetCountFields()
 	
 	return layer->m_pLayerFieldArray->GetCount();
 }
+
+
+
+
+/*********************** FIELDS CODED VALUES FUNCTIONS **************************/
+ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::AddCodedValue()
+{
+	// create an empty object and attach it
+	ProjectDefMemoryFieldsCodedVal * myNewCodedValObj = new ProjectDefMemoryFieldsCodedVal();
+	
+	ProjectDefMemoryFields * field;
+	field = GetActiveField();
+	if (field != NULL)
+	{
+		field->m_pCodedValueArray->Add(myNewCodedValObj);	
+		wxLogDebug(_T("Array Size : Coded Value = %d"),field->m_pCodedValueArray->GetCount());
+		
+		return myNewCodedValObj; // pointer to the added field.
+	}
+	return NULL;
+}
+
+
+
+int	PrjDefMemManage::RemoveCodedValue (int iIndex)
+{
+	// get the active field
+	ProjectDefMemoryFields * field = GetActiveField();
+	
+	if (iIndex == -1)
+		iIndex = field->m_pCodedValueArray->GetCount() - 1;
+	
+	// be sure that iIndex isn't smaller than 0
+	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
+	
+	field->m_pCodedValueArray->RemoveAt(iIndex);
+		
+	return field->m_pCodedValueArray->GetCount(); // number of coded values
+}
+
+
 
 
