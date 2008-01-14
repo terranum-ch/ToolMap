@@ -201,7 +201,7 @@ ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 void ProjectDefLayersFieldsList::BeforeAdding ()
 {
 	// create the dialog, will be destroyed in AfterAdding
-	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this);
+	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this,m_pPrjDefinition);
 	wxLogDebug(_T("Creating Field Dialog"));
 	SetDialog(myFieldDlg);
 	
@@ -253,7 +253,7 @@ void ProjectDefLayersFieldsList::BeforeDeleting ()
 void ProjectDefLayersFieldsList::BeforeEditing ()
 {
 	// create the dialog, will be deleted in AfterEditing.
-	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this);
+	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this,m_pPrjDefinition);
 	wxLogDebug(_T("Creating Field Dialog"));
 	SetDialog(myFieldDlg);
 	
@@ -360,7 +360,7 @@ void ProjectDefLayersEditObjectDlg::Init()
     m_DlgEO_OK_Btn = NULL;
 	
 	m_ObjectObj = NULL;
-	
+	m_CodedValObj = NULL;
 }
 
 
@@ -410,19 +410,55 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 
 bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow()
 {
-	m_DlgEO_Code->GetValue().ToLong(&(m_ObjectObj->m_ObjectCode));
-	m_ObjectObj->m_ObjectName = m_DlgEO_Value->GetValue();
+	// getting values
+	long lCode = 0;
+	m_DlgEO_Code->GetValue().ToLong(&lCode);
+	wxString sValue = m_DlgEO_Value->GetValue();
+	
+	// passing values to the corresponding obj.
+	if (m_ObjectObj != NULL)
+	{
+		m_ObjectObj->m_ObjectCode = lCode;
+		m_ObjectObj->m_ObjectName = sValue;
+	}
+	
+	if (m_CodedValObj != NULL)
+	{
+		m_CodedValObj->m_ValueCode = lCode;
+		m_CodedValObj->m_ValueName = sValue;
+	}
+	
+	//m_DlgEO_Code->GetValue().ToLong(&(m_ObjectObj->m_ObjectCode));
+	//m_ObjectObj->m_ObjectName = m_DlgEO_Value->GetValue();
+	
+	
 	return TRUE;
 }
 
 bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 {
-	// check that the numeric value is not null (-9999)
-	if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
+	if (m_ObjectObj != NULL)
 	{
-		m_DlgEO_Code->SetValue(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+		// check that the numeric value is not null (-9999)
+		if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
+		{
+			m_DlgEO_Code->SetValue(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+		}
+		m_DlgEO_Value->SetValue(m_ObjectObj->m_ObjectName);
 	}
-	m_DlgEO_Value->SetValue(m_ObjectObj->m_ObjectName);
+	
+	
+	if (m_CodedValObj != NULL)
+	{
+		// check that the numeric value is not null (-9999)
+		if (m_CodedValObj->m_ValueCode != NULL_LONG_VALUE)
+		{
+			m_DlgEO_Code->SetValue(wxString::Format(_T("%d"), m_CodedValObj->m_ValueCode));
+		}
+		m_DlgEO_Value->SetValue(m_CodedValObj->m_ValueName);
+		
+	}
+	
 	return TRUE;
 }
 
@@ -485,15 +521,6 @@ void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 
 
 
-void ProjectDefLayersDlg::RemoveObjFromArray()
-{
-	// if a corresponding item was found, remove it from the array
-	int iItemIndex = FindObjInFieldArray(m_DlgPDL_Fields_List, m_FieldArray);
-	if ( iItemIndex != -1)
-	{
-		m_FieldArray.RemoveAt(iItemIndex);
-	}
-}
 
 
 bool ProjectDefLayersDlg::TransferDataFromWindow()

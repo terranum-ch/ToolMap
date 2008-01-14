@@ -36,7 +36,7 @@
  
  \section ProjectDefMemory
  
- Hello
+
  
  
  
@@ -149,6 +149,32 @@ static const int PRJDEF_OBJECTSS_FREQ_NUMBER = 2;
 
 static const long NULL_LONG_VALUE = -9999;
 
+
+/***************************************************************************//**
+ @brief Storing coded val linked to a field in memory
+ @details This class is used for storing coded values allowed in a field. It is
+ used inside a PrjMemFieldCodedValArray.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 11 January 2008
+ *******************************************************************************/
+class ProjectDefMemoryFieldsCodedVal
+	{
+	private:
+		void InitMemberValues();
+		
+	public:
+		long m_ValueID;
+		long m_ValueCode;
+		wxString m_ValueName;
+		
+		ProjectDefMemoryFieldsCodedVal();
+		~ProjectDefMemoryFieldsCodedVal();
+		
+	};
+
+// Creating a list of MemoryObjects
+WX_DECLARE_OBJARRAY(ProjectDefMemoryFieldsCodedVal, PrjMemFieldCodedValArray);
+
 /***************************************************************************//**
  @brief Storing object properties in memory
  @details This class is used for storing in memory the objects (in a
@@ -159,7 +185,7 @@ static const long NULL_LONG_VALUE = -9999;
 class ProjectDefMemoryObjects
 	{
 	private:
-		void InitMemberValues();
+		
 		
 	public:
 		long m_ObjectID;
@@ -170,13 +196,12 @@ class ProjectDefMemoryObjects
 		ProjectDefMemoryObjects();
 		~ProjectDefMemoryObjects();
 		
+		void InitMemberValues();
+		
 	};
 
 // Creating a list of MemoryObjects
 WX_DECLARE_OBJARRAY(ProjectDefMemoryObjects, PrjMemObjectsArray);
-
-/// find function in objects array
-int FindObjInObjectArray(ListGenReport * myList, PrjMemObjectsArray * myArray);
 
 /***************************************************************************//**
  @brief Storing Fields property in memory
@@ -199,6 +224,13 @@ class ProjectDefMemoryFields
 		bool m_FieldOrientation;
 		PRJDEF_FIELD_CONSTAIN_VALUE_TYPE m_FieldConstrain;
 		
+		int m_FieldRangeDefault;
+		int m_FieldRangeMin;
+		int m_FieldRangeMax;
+		
+		// for storing coded values
+		PrjMemFieldCodedValArray * m_pCodedValueArray; 
+		
 		ProjectDefMemoryFields();
 		~ProjectDefMemoryFields();
 		
@@ -207,12 +239,6 @@ class ProjectDefMemoryFields
 
 // Creating a list of MemoryFields
 WX_DECLARE_OBJARRAY(ProjectDefMemoryFields, PrjMemFieldArray);
-
-/// find function in field array
-int FindObjInFieldArray(ListGenReport * myList, const PrjMemFieldArray & myArray);
-
-
-
 
 
 /***************************************************************************//**
@@ -243,9 +269,6 @@ class ProjectDefMemoryLayers
 
 // Creating a list of MemoryLayers
 WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers, PrjMemLayersArray);
-
-/// find function in layer array
-int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray);
 
 
 

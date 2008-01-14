@@ -20,64 +20,27 @@
 
 #include "projectdefmemory.h"
 
-/*************************         FIND FUNCTION IN ARRAY     *************************/
-int FindObjInFieldArray(ListGenReport * myList, const PrjMemFieldArray & myArray)
+
+/*************************   FIELDS CODED VALUES   *************************/
+ProjectDefMemoryFieldsCodedVal::ProjectDefMemoryFieldsCodedVal()
 {
-	// get selected item from the list
-	long mySelectedListItem = myList->GetSelectedItem();
-	
-	// search this item in the list
-	for (unsigned int i=0; i < myArray.GetCount(); i++)
-	{
-		if (myArray.Item(i).m_Fieldname == myList->GetItemColText(mySelectedListItem, 0))
-		{
-			wxLogDebug(_T("Object found in Field array in position : %d"), i);
-			return i;
-		}
-	}
-	return -1;
+	InitMemberValues();
 }
 
-
-int FindObjInLayersArray(ListGenReport * myList, PrjMemLayersArray * myArray)
+ProjectDefMemoryFieldsCodedVal::~ProjectDefMemoryFieldsCodedVal()
 {
-	// get selected item from the list
-	long mySelectedListItem = myList->GetSelectedItem();
-	
-	// search this item in the list
-	for (unsigned int i=0; i < myArray->GetCount(); i++)
-	{
-		if (myArray->Item(i).m_LayerName == myList->GetItemColText(mySelectedListItem, 0))
-		{
-			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
-			return i;
-		}
-	}
-	return -1;
 	
 }
 
-
-int FindObjInObjectArray(ListGenReport * myList, PrjMemObjectsArray * myArray)
+void ProjectDefMemoryFieldsCodedVal::InitMemberValues()
 {
-	// get selected item from the list
-	long mySelectedListItem = myList->GetSelectedItem();
-	
-	// search this item in the list
-	for (unsigned int i=0; i < myArray->GetCount(); i++)
-	{
-		
-				
-		if (myArray->Item(i).m_ObjectName == myList->GetItemColText(mySelectedListItem, 1))
-		{
-			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
-			return i;
-		}
-	}
-	return -1;
-	
+	m_ValueID = 0;
+	m_ValueCode = NULL_LONG_VALUE;
+	m_ValueName = _T("");	
 }
 
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY (PrjMemFieldCodedValArray);
 
 /*************************         FIELDS          *************************/
 ProjectDefMemoryFields::ProjectDefMemoryFields()
@@ -90,7 +53,7 @@ ProjectDefMemoryFields::ProjectDefMemoryFields()
 
 ProjectDefMemoryFields::~ProjectDefMemoryFields()
 {
-	
+	/// todo implement way of clearing the array contained inside
 }
 
 
@@ -105,9 +68,15 @@ void ProjectDefMemoryFields::InitMemberValues()
 	m_FieldScale = 0;
 	m_FieldOrientation = FALSE;
 	m_FieldConstrain = FIELD_NOT_CONSTRAIN;
+	
+	m_FieldRangeDefault = 0;
+	m_FieldRangeMin = 0;
+	m_FieldRangeMax = 0;
+	
+	m_pCodedValueArray = new PrjMemFieldCodedValArray();
 }
 
-#include <wx/arrimpl.cpp>
+
 WX_DEFINE_OBJARRAY (PrjMemFieldArray);
 
 
@@ -123,7 +92,7 @@ ProjectDefMemoryLayers::ProjectDefMemoryLayers()
 
 ProjectDefMemoryLayers::~ProjectDefMemoryLayers()
 {
-	
+	/// todo implement way of clearing the array contained inside
 }
 
 

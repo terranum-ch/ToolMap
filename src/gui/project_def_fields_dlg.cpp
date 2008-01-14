@@ -21,7 +21,7 @@
 
 /******************************  Field List *************************/
 ProjectDefFieldList::ProjectDefFieldList(wxWindow * parent, wxWindowID  id, wxSize size) 
-	: ListGenReport(parent,id,size)
+	: ListGenReportWithDialog(parent,id,size)
 {
 	// Create columns
 	wxArrayString myColNames;
@@ -37,7 +37,11 @@ ProjectDefFieldList::ProjectDefFieldList(wxWindow * parent, wxWindowID  id, wxSi
 	
 	m_ChoiceToChange = NULL;
 	
+	m_pPrjDefinition = NULL;
+	m_CodedValueObj = NULL;
+	
 }
+
 
 ProjectDefFieldList::~ProjectDefFieldList()
 {
@@ -45,6 +49,45 @@ ProjectDefFieldList::~ProjectDefFieldList()
 }
 
 
+
+void ProjectDefFieldList::BeforeAdding ()
+{
+	// create the object dialog, will be destroyed in AfterAdding
+	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
+	wxLogDebug(_T("Creating Coded Value Dialog"));
+	SetDialog(myEditObjDlg);
+	
+	// add object to array 
+	m_CodedValueObj = m_pPrjDefinition->AddCodedValue();
+	
+	// now uses Transfert data process
+	((ProjectDefLayersEditObjectDlg*)m_pDialog)->SetMemoryCodedValObject(m_CodedValueObj);
+}
+
+
+
+void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyAddItem)
+	{
+    //data allready in the array
+	
+		
+		// add item to the list
+		myListValues.Add(wxString::Format(_T("%d"), m_CodedValueObj->m_ValueCode));
+		myListValues.Add( m_CodedValueObj->m_ValueName);
+		EditDataToList(myListValues);
+		
+	}
+	else
+		m_pPrjDefinition->RemoveCodedValue(); // remove last object not used
+	
+	// delete the dialog
+	wxLogDebug(_T("Deleting Coded Value Dialog"));
+	delete m_pDialog;
+}
 
 
 
@@ -159,6 +202,7 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 
 void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
 {
+	m_DlgAFD_Coded_Val_List->AddItem();
 //	wxArrayString myDlgValues;
 //	
 //	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
@@ -182,10 +226,18 @@ ProjectDefFieldDlg::ProjectDefFieldDlg()
     Init();
 }
 
-ProjectDefFieldDlg::ProjectDefFieldDlg( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+ProjectDefFieldDlg::ProjectDefFieldDlg( wxWindow* parent,
+									    PrjDefMemManage * myPrjMemManage,
+									   wxWindowID id, const wxString& caption, 
+									   const wxPoint& pos, const wxSize& size, long style )
 {
     Init();
     Create(parent, id, caption, pos, size, style);
+	
+	// init prj definition and pass it to the list
+	m_pPrjDefinition = myPrjMemManage;
+	m_DlgAFD_Coded_Val_List->PassPrjDefToList(m_pPrjDefinition);
+	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 }
 
 
@@ -249,6 +301,7 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	if (!m_DlgAFD_Constrain_Values->IsChecked())
 	{
 		m_MemoryField->m_FieldConstrain = FIELD_NOT_CONSTRAIN;
+		
 	}
 	else
 	{

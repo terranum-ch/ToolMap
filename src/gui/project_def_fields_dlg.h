@@ -35,7 +35,7 @@
 #include "wx/spinctrl.h"
 #include "project_def_layers_dlg.h" // for using the dialog defined there
 #include "../core/textparser.h" // for text parsing during importation
-#include "../core/projectdefmemory.h" // for different project specification.
+#include "../core/prjdefmemmanage.h" // for different project specification.
 
 #define ID_DLGAFD 10011
 #define ID_DLGAFD_FIELD_DEF 10012
@@ -64,11 +64,19 @@
 #define SYMBOL_PROJECTDEFFIELDDLG_POSITION wxDefaultPosition
 
 
-class ProjectDefFieldList : public ListGenReport
+class ProjectDefFieldList : public ListGenReportWithDialog
 	{
 	private:
-		
+		ProjectDefMemoryFieldsCodedVal * m_CodedValueObj;
+		PrjDefMemManage *  m_pPrjDefinition;
+
 		//		void OnMySelectionChange (wxListEvent & event);
+		
+		virtual void	AfterAdding (bool bRealyAddItem);
+		virtual void 	AfterEditing (bool bRealyEdited){;}
+		virtual void 	BeforeAdding ();
+		virtual void 	BeforeDeleting (){;}
+		virtual void 	BeforeEditing (){;}
 		
 		wxChoice * m_ChoiceToChange;
 		
@@ -78,6 +86,8 @@ class ProjectDefFieldList : public ListGenReport
 		ProjectDefFieldList(wxWindow * parent, wxWindowID id, wxSize size);
 		
 		~ProjectDefFieldList(); 
+		
+		void PassPrjDefToList (PrjDefMemManage *  myPrjMemManage) {m_pPrjDefinition = myPrjMemManage;}
 		
 		//	int GetParamType (wxString myTextParam);
 		//		
@@ -92,6 +102,7 @@ class ProjectDefFieldList : public ListGenReport
 class ProjectDefFieldDlg: public wxDialog
 	{    
 		ProjectDefMemoryFields * m_MemoryField;
+		PrjDefMemManage * m_pPrjDefinition;
 		
 		void OnShowLiveResults (wxCommandEvent & event);
 		void OnShowConstrainValues(wxCommandEvent & event);
@@ -107,7 +118,8 @@ class ProjectDefFieldDlg: public wxDialog
 	public:
 		/// Constructors
 		ProjectDefFieldDlg();
-		ProjectDefFieldDlg( wxWindow* parent, 
+		ProjectDefFieldDlg( wxWindow* parent,
+						   PrjDefMemManage * myPrjMemManage,
 						   wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME, 
 						   const wxString& caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE, 
 						   const wxPoint& pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION, 
