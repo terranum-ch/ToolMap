@@ -90,6 +90,76 @@ void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
 }
 
 
+void ProjectDefFieldList::BeforeEditing ()
+{
+	// create the dialog, will be deleted in AfterEditing.
+	ProjectDefLayersEditObjectDlg * myCodedValueDlg = new ProjectDefLayersEditObjectDlg(this);
+	wxLogDebug(_T("Creating Coded Value Dialog"));
+	SetDialog(myCodedValueDlg);
+	
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myValueName = GetItemColText(mySelectedListItem, 1);
+	
+	m_CodedValueObj = m_pPrjDefinition->FindCodedValue(myValueName);
+	
+	// find item selected and then call a new Dialog
+	// for editing the existing Field
+	if (m_CodedValueObj != NULL)
+	{
+		// transfert the data obj to the dialog, data will be 
+		// filled during DataTransfer...
+		((ProjectDefLayersEditObjectDlg*)m_pDialog)->SetMemoryCodedValObject(m_CodedValueObj);	
+	}
+	
+}
+	
+
+void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
+{
+	wxArrayString myListValues;
+	
+	if (bRealyEdited)
+	{
+		// data modified is allready stored in the project definition
+		
+		// prepare data for list representation
+		myListValues.Add(wxString::Format(_T("%d"), m_CodedValueObj->m_ValueCode));
+		myListValues.Add( m_CodedValueObj->m_ValueName);
+		EditDataToList(myListValues, GetSelectedItem());
+	}
+	
+	// delete dialog
+    wxLogDebug(_T("Deleting Coded value Dialog"));
+	delete m_pDialog;
+}
+
+
+void ProjectDefFieldList::BeforeDeleting ()
+{
+	// remove item from array before removing it from the list
+	// because of the unknown position of item (may have been moved)
+	// if a corresponding item was found, remove it from the array
+	
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myValueName = GetItemColText(mySelectedListItem, 1);
+	
+	m_pPrjDefinition->RemoveCodedValue(myValueName);
+}
+
+
+void ProjectDefFieldList::AddingValueToArray (wxArrayString & myImportedValues)
+{
+	// create new Coded value obj in the array.
+	m_CodedValueObj = m_pPrjDefinition->AddCodedValue();
+	
+	// pass value to this object
+	myImportedValues.Item(0).ToLong(&(m_CodedValueObj->m_ValueCode));
+	m_CodedValueObj->m_ValueName = myImportedValues.Item(1);
+}
+
+
 
 
 
@@ -111,7 +181,6 @@ END_EVENT_TABLE()
 
 void ProjectDefFieldDlg::OnImportAllowedValue (wxCommandEvent & event)
 {
-		
 	// create a new file selector dialog for getting the filename and filterindex
 	// of the value file to import in the list.
 	wxFileDialog myImportSelector (this, _("Import a file"), _T(""), _T(""),
@@ -143,7 +212,7 @@ void ProjectDefFieldDlg::OnExportAllowedValue (wxCommandEvent & event)
 
 void ProjectDefFieldDlg::OnRemoveAllowedValue (wxCommandEvent & event)
 {
-	m_DlgAFD_Coded_Val_List->DeleteSelectedItem();
+	m_DlgAFD_Coded_Val_List->DeleteItem();
 }
 
 void ProjectDefFieldDlg::OnShowLiveResults (wxCommandEvent & event)
@@ -203,22 +272,6 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
 {
 	m_DlgAFD_Coded_Val_List->AddItem();
-//	wxArrayString myDlgValues;
-//	
-//	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-//	myEditObjDlg->SetName(_("Edit allowed value"));
-//	
-//	int iLastItemNumber = m_DlgAFD_Coded_Val_List->GetItemCount();
-//	
-//	// check if data transfert was OK
-//	if (m_DlgAFD_Coded_Val_List->DataToList(myEditObjDlg, myDlgValues))
-//	{
-//		// put data to the list
-//		m_DlgAFD_Coded_Val_List->EditDataToList(myDlgValues);
-//	}
-//	
-//	delete myEditObjDlg;
-	
 }
 
 ProjectDefFieldDlg::ProjectDefFieldDlg()
@@ -293,6 +346,8 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	// before ?
 	wxASSERT (m_MemoryField != NULL);
 	
+	long lTempValue = 0;
+	
 	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
 	m_MemoryField->m_FieldType = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
 	m_MemoryField->m_FieldPrecision = m_DlgAFD_Field_Precision->GetValue();
@@ -306,6 +361,17 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	else
 	{
 		m_MemoryField->m_FieldConstrain = (PRJDEF_FIELD_CONSTAIN_VALUE_TYPE) m_DlgAFD_Notebook->GetSelection();
+		if (m_MemoryField->m_FieldConstrain == FIELD_CONSTRAIN_RANGE)
+		{
+			m_DlgAFD_Range_Min->GetValue().ToLong(&lTempValue);
+			m_MemoryField->m_FieldRangeMin = (int) lTempValue;
+			
+			m_DlgAFD_Range_Max->GetValue().ToLong(&lTempValue);
+			m_MemoryField->m_FieldRangeMax = (int) lTempValue;
+			
+			m_DlgAFD_Range_Default->GetValue().ToLong(&lTempValue);
+			m_MemoryField->m_FieldRangeDefault = (int) lTempValue;
+		}
 	}
 	
 	
@@ -320,6 +386,8 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 	// before ?
 	wxASSERT (m_MemoryField != NULL);
 	
+	wxArrayString myListValues;
+	
 	if (m_MemoryField != NULL)
 	{
 		m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
@@ -332,6 +400,30 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 			m_DlgAFD_Constrain_Values->SetValue(TRUE);
 			m_DlgAFD_Notebook->Show(TRUE);
 			m_DlgAFD_Notebook->SetSelection(m_MemoryField->m_FieldConstrain);
+			
+			if (m_MemoryField->m_FieldConstrain == FIELD_CONSTRAIN_CODED)
+			{
+				// fill the coded value list
+				for (int i = 0; i< m_pPrjDefinition->GetCountCodedValue(); i++)
+				{
+					ProjectDefMemoryFieldsCodedVal * myCodedValObj = m_pPrjDefinition->
+					GetNextCodedValue();
+					
+					// fit things returned in the list
+					myListValues.Add(wxString::Format(_T("%d"), myCodedValObj->m_ValueCode));
+					myListValues.Add(myCodedValObj->m_ValueName);
+					m_DlgAFD_Coded_Val_List->EditDataToList(myListValues);
+					myListValues.Clear();
+				}
+			}
+			
+			else // constrain with range
+			{
+				*m_DlgAFD_Range_Min << m_MemoryField->m_FieldRangeMin;
+				*m_DlgAFD_Range_Max << m_MemoryField->m_FieldRangeMax;
+				*m_DlgAFD_Range_Default << m_MemoryField->m_FieldRangeDefault;
+			}
+			
 		}
 		
 		// for setting the good size to the dialog

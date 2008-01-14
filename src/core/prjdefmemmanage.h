@@ -42,6 +42,7 @@ class PrjDefMemManage
 		ProjectDefMemoryFields * m_pActiveField;
 		int m_iActualObj;
 		int m_iActualField;
+		int m_iActualCodedVal;
 		
 		// member functions
 		void InitDefaultValues();
@@ -91,7 +92,10 @@ class PrjDefMemManage
 		// coded values belonging to fields
 		ProjectDefMemoryFieldsCodedVal *AddCodedValue();
 		int								RemoveCodedValue (int iIndex = -1); // remove last
-
+		bool							RemoveCodedValue (const wxString & ValueName); 
+		ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString & ValueName);
+		ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
+		int								GetCountCodedValue();
 		
 	};
 

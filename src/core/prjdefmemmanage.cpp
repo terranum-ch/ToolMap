@@ -48,6 +48,7 @@ void PrjDefMemManage::InitDefaultValues()
 	m_pActiveLayer = NULL;
 	m_iActualObj = 0;
 	m_iActualField = 0;
+	m_iActualCodedVal = 0;
 }
 
 
@@ -392,6 +393,74 @@ int	PrjDefMemManage::RemoveCodedValue (int iIndex)
 	field->m_pCodedValueArray->RemoveAt(iIndex);
 		
 	return field->m_pCodedValueArray->GetCount(); // number of coded values
+}
+
+
+bool PrjDefMemManage::RemoveCodedValue (const wxString & ValueName)
+{
+	// get the active field
+	ProjectDefMemoryFields * field = GetActiveField();
+	
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < field->m_pCodedValueArray->GetCount(); i++)
+	{
+		if (field->m_pCodedValueArray->Item(i).m_ValueName == ValueName)
+		{
+			wxLogDebug(_T("Coded Value found in array in position : %d"), i);
+			field->m_pCodedValueArray->RemoveAt(i);
+			return TRUE;
+		}
+	}
+	
+	return FALSE; // nothing deleted.
+}
+
+
+ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::FindCodedValue(const wxString & ValueName)
+{
+	// get the active field
+	ProjectDefMemoryFields * field = GetActiveField();
+	
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < field->m_pCodedValueArray->GetCount(); i++)
+	{
+		if (field->m_pCodedValueArray->Item(i).m_ValueName == ValueName)
+		{
+			wxLogDebug(_T("Coded Value found in array in position : %d"), i);
+			return &(field->m_pCodedValueArray->Item(i));
+		}
+	}
+	
+	return NULL; // nothing found, return null pointer.
+}
+
+
+ProjectDefMemoryFieldsCodedVal *PrjDefMemManage::GetNextCodedValue()
+{
+	// get the active field
+	ProjectDefMemoryFields * field = GetActiveField();
+	
+	// deal with the increment of the retruned item
+	if (m_iActualCodedVal >= GetCountCodedValue())
+	{
+		m_iActualCodedVal = 0;
+	}
+	
+	ProjectDefMemoryFieldsCodedVal * CodedVal = &(field->m_pCodedValueArray->Item(m_iActualCodedVal));
+	
+	// increment the object returned
+	m_iActualCodedVal ++;
+	
+	return CodedVal;
+}
+
+
+int	PrjDefMemManage::GetCountCodedValue()
+{
+	// get the active field
+	ProjectDefMemoryFields * field = GetActiveField();
+	
+	return field->m_pCodedValueArray->GetCount();
 }
 
 
