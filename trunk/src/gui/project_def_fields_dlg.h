@@ -73,10 +73,11 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 		//		void OnMySelectionChange (wxListEvent & event);
 		
 		virtual void	AfterAdding (bool bRealyAddItem);
-		virtual void 	AfterEditing (bool bRealyEdited){;}
+		virtual void 	AfterEditing (bool bRealyEdited);
 		virtual void 	BeforeAdding ();
-		virtual void 	BeforeDeleting (){;}
-		virtual void 	BeforeEditing (){;}
+		virtual void 	BeforeDeleting ();
+		virtual void 	BeforeEditing ();
+		virtual void	AddingValueToArray (wxArrayString & myImportedValues);
 		
 		wxChoice * m_ChoiceToChange;
 		
