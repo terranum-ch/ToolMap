@@ -416,7 +416,7 @@ bool PrjDefMemManage::RemoveCodedValue (const wxString & ValueName)
 }
 
 
-ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::FindCodedValue(const wxString & ValueName)
+ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::FindCodedValue(const wxString & ValueName, int & IndexPos)
 {
 	// get the active field
 	ProjectDefMemoryFields * field = GetActiveField();
@@ -427,6 +427,7 @@ ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::FindCodedValue(const wxString 
 		if (field->m_pCodedValueArray->Item(i).m_ValueName == ValueName)
 		{
 			wxLogDebug(_T("Coded Value found in array in position : %d"), i);
+			IndexPos = i;
 			return &(field->m_pCodedValueArray->Item(i));
 		}
 	}

@@ -35,10 +35,12 @@ ProjectDefFieldList::ProjectDefFieldList(wxWindow * parent, wxWindowID  id, wxSi
 	
 	CreateColumns(&myColNames, &myColsWidths);
 	
-	m_ChoiceToChange = NULL;
+	m_ChoiceToDefault = NULL;
 	
 	m_pPrjDefinition = NULL;
 	m_CodedValueObj = NULL;
+	
+	m_ChoiceIndex = 0;
 	
 }
 
@@ -80,6 +82,14 @@ void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
 		myListValues.Add( m_CodedValueObj->m_ValueName);
 		EditDataToList(myListValues);
 		
+		// add item to the choice
+		m_ChoiceToDefault->Append(wxString::Format(_T("%d, %s"),
+													  m_CodedValueObj->m_ValueCode,
+													  m_CodedValueObj->m_ValueName.c_str()));
+		if (m_ChoiceToDefault->GetCount() == 1)
+		{
+			m_ChoiceToDefault->SetSelection(0);
+		}
 	}
 	else
 		m_pPrjDefinition->RemoveCodedValue(); // remove last object not used
@@ -101,7 +111,8 @@ void ProjectDefFieldList::BeforeEditing ()
 	long mySelectedListItem = GetSelectedItem();
 	wxString myValueName = GetItemColText(mySelectedListItem, 1);
 	
-	m_CodedValueObj = m_pPrjDefinition->FindCodedValue(myValueName);
+
+	m_CodedValueObj = m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
 	
 	// find item selected and then call a new Dialog
 	// for editing the existing Field
@@ -127,6 +138,13 @@ void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
 		myListValues.Add(wxString::Format(_T("%d"), m_CodedValueObj->m_ValueCode));
 		myListValues.Add( m_CodedValueObj->m_ValueName);
 		EditDataToList(myListValues, GetSelectedItem());
+		
+		// prepare data for default value representation
+		m_ChoiceToDefault->SetString(m_ChoiceIndex,
+									 wxString::Format(_T("%d, %s"),
+													  m_CodedValueObj->m_ValueCode,
+													  m_CodedValueObj->m_ValueName.c_str()));
+		m_ChoiceToDefault->Refresh();
 	}
 	
 	// delete dialog
@@ -145,6 +163,10 @@ void ProjectDefFieldList::BeforeDeleting ()
 	long mySelectedListItem = GetSelectedItem();
 	wxString myValueName = GetItemColText(mySelectedListItem, 1);
 	
+	// remove item from the choice control
+	m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
+	m_ChoiceToDefault->Delete(m_ChoiceIndex);
+	
 	m_pPrjDefinition->RemoveCodedValue(myValueName);
 }
 
@@ -157,6 +179,15 @@ void ProjectDefFieldList::AddingValueToArray (wxArrayString & myImportedValues)
 	// pass value to this object
 	myImportedValues.Item(0).ToLong(&(m_CodedValueObj->m_ValueCode));
 	m_CodedValueObj->m_ValueName = myImportedValues.Item(1);
+	
+	// prepare data for default value representation
+	m_ChoiceToDefault->Append(wxString::Format(_T("%d, %s"),
+											   m_CodedValueObj->m_ValueCode,
+											   m_CodedValueObj->m_ValueName.c_str()));
+	if (m_ChoiceToDefault->GetCount() == 1)
+	{
+		m_ChoiceToDefault->SetSelection(0);
+	}
 }
 
 
@@ -291,6 +322,9 @@ ProjectDefFieldDlg::ProjectDefFieldDlg( wxWindow* parent,
 	m_pPrjDefinition = myPrjMemManage;
 	m_DlgAFD_Coded_Val_List->PassPrjDefToList(m_pPrjDefinition);
 	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
+	
+	// pass adress of choice control
+	m_DlgAFD_Coded_Val_List->SetChoiceList(m_DlgAFD_Default_Val);
 }
 
 
@@ -372,6 +406,11 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 			m_DlgAFD_Range_Default->GetValue().ToLong(&lTempValue);
 			m_MemoryField->m_FieldRangeDefault = (int) lTempValue;
 		}
+		else // field constrain type coded value
+		{
+			// store the index of the selected item
+			m_MemoryField->m_CodedDefaultIndex = m_DlgAFD_Default_Val->GetSelection();
+		}
 	}
 	
 	
@@ -413,7 +452,19 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 					myListValues.Add(wxString::Format(_T("%d"), myCodedValObj->m_ValueCode));
 					myListValues.Add(myCodedValObj->m_ValueName);
 					m_DlgAFD_Coded_Val_List->EditDataToList(myListValues);
+					
+					
+					// fill the choice list of default values
+					m_DlgAFD_Default_Val->Append(wxString::Format(_T("%d, %s"),
+																  myCodedValObj->m_ValueCode,
+																  myCodedValObj->m_ValueName.c_str()));
+					
 					myListValues.Clear();
+				}
+				
+				if (m_MemoryField->m_CodedDefaultIndex != wxNOT_FOUND)
+				{
+					m_DlgAFD_Default_Val->SetSelection(m_MemoryField->m_CodedDefaultIndex);
 				}
 			}
 			

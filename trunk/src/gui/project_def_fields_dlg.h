@@ -69,6 +69,7 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 	private:
 		ProjectDefMemoryFieldsCodedVal * m_CodedValueObj;
 		PrjDefMemManage *  m_pPrjDefinition;
+		int	m_ChoiceIndex;
 
 		//		void OnMySelectionChange (wxListEvent & event);
 		
@@ -79,7 +80,7 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 		virtual void 	BeforeEditing ();
 		virtual void	AddingValueToArray (wxArrayString & myImportedValues);
 		
-		wxChoice * m_ChoiceToChange;
+		wxChoice * m_ChoiceToDefault;
 		
 	public:
 		static const int ID_PARAMLIST;
@@ -95,7 +96,7 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 		//		wxString GetParamType (int imyType);
 		//
 		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-		//		void SetChoiceList (wxChoice * myChoiceList);
+		void SetChoiceList (wxChoice * myChoiceList) {m_ChoiceToDefault = myChoiceList;}
 		//		DECLARE_EVENT_TABLE();
 	};
 
