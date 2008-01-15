@@ -74,6 +74,8 @@ void ProjectDefMemoryFields::InitMemberValues()
 	m_FieldRangeMax = 0;
 	
 	m_pCodedValueArray = new PrjMemFieldCodedValArray();
+	
+	int m_CodedDefaultIndex = wxNOT_FOUND;
 }
 
 

@@ -93,7 +93,7 @@ class PrjDefMemManage
 		ProjectDefMemoryFieldsCodedVal *AddCodedValue();
 		int								RemoveCodedValue (int iIndex = -1); // remove last
 		bool							RemoveCodedValue (const wxString & ValueName); 
-		ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString & ValueName);
+		ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString & ValueName, int & IndexPos);
 		ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
 		int								GetCountCodedValue();
 		

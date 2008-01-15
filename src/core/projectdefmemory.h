@@ -231,6 +231,8 @@ class ProjectDefMemoryFields
 		// for storing coded values
 		PrjMemFieldCodedValArray * m_pCodedValueArray; 
 		
+		int m_CodedDefaultIndex;
+		
 		ProjectDefMemoryFields();
 		~ProjectDefMemoryFields();
 		
