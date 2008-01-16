@@ -604,6 +604,16 @@ ELSE(WIN32_STYLE_FIND)
         SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --gl-libs" )
       ENDIF(WXWINDOWS_USE_GL)
       ##MESSAGE("DBG: WX_CONFIG_ARGS_LIBS=${WX_CONFIG_ARGS_LIBS}===")
+
+      IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=yes" )
+      ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+      IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+        SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=no" )
+      ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+      MESSAGE("DBG: WX_CONFIG_ARGS_LIBS=${WX_CONFIG_ARGS_LIBS}")
       
       # set CXXFLAGS to be fed into CMAKE_CXX_FLAGS by the user:
       SET(CMAKE_WXWINDOWS_CXX_FLAGS "`${CMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE} --cxxflags|sed -e s/-I/-isystem/g`")
@@ -612,8 +622,7 @@ ELSE(WIN32_STYLE_FIND)
 
       # keep the back-quoted string for clarity
       SET(WXWINDOWS_LIBRARIES "`${CMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE} ${WX_CONFIG_ARGS_LIBS}`")
-      ##MESSAGE("DBG2: for linking:
-        ##WXWINDOWS_LIBRARIES=${WXWINDOWS_LIBRARIES}===")
+      #MESSAGE("DBG2: for linking WXWINDOWS_LIBRARIES=${WXWINDOWS_LIBRARIES}===")
       
       # evaluate wx-config output to separate linker flags and linkdirs for
       # rpath:
