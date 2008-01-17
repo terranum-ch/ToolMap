@@ -77,6 +77,7 @@
 #include "../gui/logwindow_dlg.h"		// log window definition
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
 #include <wx/sysopt.h>
+#include "../database/database.h"
 
 #include <wx/mstream.h>
 
