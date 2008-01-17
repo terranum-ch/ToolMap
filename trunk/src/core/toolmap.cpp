@@ -108,6 +108,8 @@ void ToolMapFrame::PostInit()
 #else
 	m_TocWindow = new TocWindowDlgGen(this);
 #endif
+	
+	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 }
 
 

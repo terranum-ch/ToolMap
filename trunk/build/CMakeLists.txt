@@ -32,6 +32,11 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  
  INCLUDE ("cmake/Use_wxWindows.cmake")
  #INCLUDE ("cmake/UsewxWidgets.cmake")
+ 
+ 
+ #MYSQL EMBEDDED
+ INCLUDE ("cmake/FindMySQLEmbedded.cmake")
+ 
 
 # Getting the subversion number and
 # generating a file called svn_version.h
