@@ -25,23 +25,6 @@
  @author Lucien Schreiber (c) CREALP 2007
  @date 18 December 2007
  *******************************************************************************/
-/*!
- \page Prj_def Project definition
- 
- \section Introduction
- The project definition is stored in the embedded database but during the process
- of creating a new project or edition of an existing one, all will be temporally
- stored into the ProjectDefMemory class for allowing user to cancel any dialogs
- operation.
- 
- \section ProjectDefMemory
- 
-
- 
- 
- 
-*/
-
 
 #ifndef PROJECTDEFMEMORY_H
 #define PROJECTDEFMEMORY_H
