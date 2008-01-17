@@ -15,7 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/*!
+ \page Prj_def Project definition
+ 
+ \section Introduction
+ The project definition is stored in the embedded database but during the process
+ of creating a new project or edition of an existing one, all will be temporally
+ stored into the PrjDefMemManage class for allowing user to cancel any dialogs
+ operation.
+ 
+ \section Structure Structure of a project
+ A project can be represented as a tree, the trunk is basicaly all project
+ related settings such as project name, path, units, etc. and then branches are constituted
+ of project layers. Each one of those layers contain properties such as layer name, type, etc.
+ And then from thoses branches starts smaller branches constituted of fields or object (see figure).
+ 
+  \image html structure_projet.jpg
+ 
+ 
+ 
+ 
+ 
+ */
+
 
 
 #ifndef PRJDEFMEMMANAGE_H
