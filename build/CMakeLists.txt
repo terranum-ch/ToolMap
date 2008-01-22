@@ -35,7 +35,7 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  
  
  #MYSQL EMBEDDED
- INCLUDE ("cmake/FindMySQLEmbedded.cmake")
+ INCLUDE ("cmake/findMySQLEmbedded.cmake")
  
 
 # Getting the subversion number and
