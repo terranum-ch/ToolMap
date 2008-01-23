@@ -110,6 +110,7 @@ void ToolMapFrame::PostInit()
 #endif
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
+	
 }
 
 

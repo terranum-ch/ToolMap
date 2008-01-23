@@ -104,6 +104,9 @@ class ProjectDefDLG: public wxDialog
 		void OnAddLayer(wxCommandEvent & event);
 		void OnRemoveLayer (wxCommandEvent & event);
 		void OnSelectProjectPath (wxCommandEvent & event);
+		void OnIdleWait(wxIdleEvent & event);
+		
+		bool CheckIdleRules();
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefDLG );
 		DECLARE_EVENT_TABLE();
@@ -144,6 +147,7 @@ class ProjectDefDLG: public wxDialog
 		wxChoice* m_DlgPd_Proj_Unit;
 		wxChoice* m_DlgPd_Proj_Projection;
 		ProjectDefList * m_DlgPd_Stat_Model_List;
+		wxButton * m_DlgPd_Button_Ok;
 		////@end ProjectDefDLG member variables
 	};
 
