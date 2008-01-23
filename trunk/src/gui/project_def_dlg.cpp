@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE( ProjectDefDLG, wxDialog )
 	EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_ADD, ProjectDefDLG::OnAddLayer)
 	EVT_BUTTON(ID_DLGPD_PROJ_PATH_BTN, ProjectDefDLG::OnSelectProjectPath)
     EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_DEL,  ProjectDefDLG::OnRemoveLayer)
+	EVT_IDLE(ProjectDefDLG::OnIdleWait)
 END_EVENT_TABLE()
 
 
@@ -50,6 +51,35 @@ void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
 	}
 }
 
+void ProjectDefDLG::OnIdleWait(wxIdleEvent & event)
+{
+	if (!CheckIdleRules())
+	{
+		m_DlgPd_Button_Ok->Enable(FALSE);
+	}
+	else
+		m_DlgPd_Button_Ok->Enable(TRUE);
+	
+}
+
+bool ProjectDefDLG::CheckIdleRules()
+{
+	// check the rules to be verified during the Idle time
+	
+	// project name
+	if (m_DlgPd_Proj_Name->GetValue().IsEmpty())
+		return FALSE;
+	
+	// project path
+	if (!wxDirExists(m_DlgPD_Proj_Path->GetValue()))
+		return FALSE;
+	
+	// contain minimum one layer
+	if (m_DlgPd_Stat_Model_List->GetItemCount() < 1)
+		return FALSE;
+	
+	return TRUE; // check passed
+}
 
 ProjectDefDLG::ProjectDefDLG()
 {
@@ -98,7 +128,8 @@ void ProjectDefDLG::Init()
     m_DlgPd_Proj_Unit = NULL;
     m_DlgPd_Proj_Projection = NULL;
     m_DlgPd_Stat_Model_List = NULL;
-
+	m_DlgPd_Button_Ok = NULL;
+	
 }
 
 
@@ -171,8 +202,9 @@ void ProjectDefDLG::CreateControls()
     wxStdDialogButtonSizer* itemStdDialogButtonSizer21 = new wxStdDialogButtonSizer;
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer21, 0, wxALIGN_RIGHT|wxALL, 5);
-    wxButton* itemButton22 = new wxButton( itemDialog1, wxID_OK, _("&Create new project"), wxDefaultPosition, wxDefaultSize, 0 );
- 	itemStdDialogButtonSizer21->AddButton(itemButton22);
+    
+	m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Create new project"), wxDefaultPosition, wxDefaultSize, 0 );
+ 	itemStdDialogButtonSizer21->AddButton(m_DlgPd_Button_Ok);
 
     wxButton* itemButton23 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer21->AddButton(itemButton23);
