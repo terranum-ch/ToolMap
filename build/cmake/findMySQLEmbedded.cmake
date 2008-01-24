@@ -52,10 +52,28 @@ ELSE (MYSQL_INCLUDE_DIR)
 	SET (MYSQL_MAIN_DIR CACHE PATH "Path to the main MySQL directory")
 	
 	IF (WIN32)
+		
+		# include directory based on main path
+		SET(MYSQL_INCLUDE_DIR "${MYSQL_MAIN_DIR}/include/")
+		
+		     
+		     SET(MYSQL_CONFIG_LIBS ${MYSQL_CONFIG_LIBS}
+		           debug "${MYSQL_MAIN_DIR}/Embedded/DLL/debug/libmysqld.lib"   optimized "${MYSQL_MAIN_DIR}/Embedded/DLL/release/libmysqld.lib")
+		     
+		     # path to libs
+		    # IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		    #    SET(MYSQL_CONFIG_LIBS "${MYSQL_MAIN_DIR}/Embedded/DLL/debug/libmysqld.lib" )
+		    #  ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		
+		    #  IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+		    #    SET(MYSQL_CONFIG_LIBS "${MYSQL_MAIN_DIR}/Embedded/DLL/release/libmysqld.lib" )
+      		    # ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+		
+		
 
 	ELSE (WIN32)
 		SET(MYSQL_INCLUDE_DIR "${MYSQL_MAIN_DIR}/include/")
-		MESSAGE ("MYSLQ_INCLUDE_DIR = ${MYSQL_INCLUDE_DIR}")
+		#MESSAGE ("MYSLQ_INCLUDE_DIR = ${MYSQL_INCLUDE_DIR}")
 		
 		SET(MYSQL_CONFIG_EXECUTABLE "${MYSQL_MAIN_DIR}/bin/mysql_config")
 		
