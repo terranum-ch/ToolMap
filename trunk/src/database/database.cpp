@@ -312,23 +312,37 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 	{
 		stemps[i] = datadir.GetChar(i);
 	}
-	
-//	char *server_args[] = 
-//	{
-//		"this_program",       /* this string is not used */
-//		stemps,
-//		"--language=./share/english",
-//		"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
-//		"--port=3309",
-//		"--character-sets-dir=./share/charsets"
-//	};
-	
+
+
+/*	if we uses the pre-compiled MySQL from MySQL A.B.
+	then we need to skip the innodb engine and we
+	alsa have to specify a path for language and
+	character-sets even if we don't use it because
+	of utf. Otherwise it leads to a crash without
+	futher explanation.
+*/
+#ifdef __WINDOWS__
 	char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
-		stemps, // "--language=./share/english", // test win32
-		"--port=3309" //,"--character-sets-dir=./share/charsets" // test win32
+		stemps,
+		"--language=./share/english",
+		"--skip-plugin-innodb",//"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
+		"--port=3309",
+		"--character-sets-dir=./share/charsets"
 	};
+/*	Those server_args could be used for home-made
+	MySQL libs (unix and mac) without innodb engine
+	and with default character-set set to utf8
+*/
+#else	
+	char *server_args[] = 
+	{
+		"this_program",       /* this string is not used */
+		stemps, // "--language=./share/english", // not needed if home-made mySQL
+		"--port=3309" //,"--character-sets-dir=./share/charsets"
+	};
+#endif
 	
 	
 	char *server_groups[] = {
@@ -351,6 +365,7 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 		{
 			wxString myDBName (DataBaseName);
 			myDBName.Prepend(_T("CREATE DATABASE "));
+			myDBName.Append (_T(" DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"));
 			
 			if(mysql_query(pMySQL,(const char *)myDBName.mb_str(wxConvUTF8)) ==0)
 			{
