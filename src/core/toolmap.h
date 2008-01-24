@@ -77,7 +77,7 @@
 #include "../gui/logwindow_dlg.h"		// log window definition
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
 #include <wx/sysopt.h>
-#include "../database/database.h"
+#include "../database/db_project.h"
 
 #include <wx/mstream.h>
 
@@ -195,7 +195,10 @@ public:
 	
 	
 private:
-	//void OnQuit(wxCommandEvent& event);
+	PrjDefMemManage m_PrjDefinition;
+	DataBase * m_Database;
+	
+	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
