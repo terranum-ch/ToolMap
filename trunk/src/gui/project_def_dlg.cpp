@@ -86,13 +86,18 @@ ProjectDefDLG::ProjectDefDLG()
     Init();
 }
 
-ProjectDefDLG::ProjectDefDLG( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+ProjectDefDLG::ProjectDefDLG( wxWindow* parent, 
+							 PrjDefMemManage * myPrjDefinition,
+							 wxWindowID id, const wxString& caption, 
+							 const wxPoint& pos, const wxSize& size, long style )
 {
     Init();
     Create(parent, id, caption, pos, size, style);
 	
+	m_pPrjDefinition = myPrjDefinition;
+	
 	// Pass Address of Project Definition to the list
-	m_DlgPd_Stat_Model_List->PassPrjDefToList(&m_PrjDefinition);
+	m_DlgPd_Stat_Model_List->PassPrjDefToList(m_pPrjDefinition);
 }
 
 
@@ -211,6 +216,18 @@ void ProjectDefDLG::CreateControls()
 
     itemStdDialogButtonSizer21->Realize();
 }
+
+
+
+bool ProjectDefDLG::TransferDataFromWindow()
+{
+	m_pPrjDefinition->m_PrjPath = m_DlgPD_Proj_Path->GetValue();
+	m_pPrjDefinition->m_PrjName = m_DlgPd_Proj_Name->GetValue();
+	m_pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) m_DlgPd_Proj_Unit->GetSelection();
+	m_pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) m_DlgPd_Proj_Projection->GetSelection();
+	return TRUE;
+}
+
 
 
 

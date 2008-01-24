@@ -121,7 +121,7 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 
 bool DataBase::DataBaseClose()
 {
-	mysql_server_end();
+	mysql_library_end();
 	IsDatabaseOpen = FALSE;
 	return TRUE;
 }
@@ -313,15 +313,23 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 		stemps[i] = datadir.GetChar(i);
 	}
 	
+//	char *server_args[] = 
+//	{
+//		"this_program",       /* this string is not used */
+//		stemps,
+//		"--language=./share/english",
+//		"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
+//		"--port=3309",
+//		"--character-sets-dir=./share/charsets"
+//	};
+	
 	char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
-		stemps,
-		"--language=./share/english",
-		"--skip-innodb",
-		"--port=3309",
-		"--character-sets-dir=./share/charsets"
+		stemps, // "--language=./share/english", // test win32
+		"--port=3309" //,"--character-sets-dir=./share/charsets" // test win32
 	};
+	
 	
 	char *server_groups[] = {
 		"embedded",
@@ -334,8 +342,8 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 	
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	
-	
-	if(mysql_server_init(num_elements, server_args, server_groups)==0)
+	int ierror = mysql_library_init(num_elements, server_args, server_groups);
+	if(ierror==0)
 	{
 		pMySQL = mysql_init(NULL);	
 		

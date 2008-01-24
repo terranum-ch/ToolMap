@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
 	EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
+	EVT_CLOSE(ToolMapFrame::OnQuit)
 END_EVENT_TABLE()
 
 
@@ -111,6 +112,8 @@ void ToolMapFrame::PostInit()
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 	
+	m_Database = NULL;
+	
 }
 
 
@@ -118,6 +121,21 @@ void ToolMapFrame::PostInit()
 ToolMapFrame::~ToolMapFrame()
 {
 	delete m_LogWindow;
+}
+
+
+void ToolMapFrame::OnQuit(wxCloseEvent & event)
+{
+	if (m_Database != NULL)
+	{
+		if (m_Database->DataBaseIsOpen())
+		{
+			m_Database->DataBaseClose();
+		}
+		//delete m_Database;
+	}
+	wxLog::SetActiveTarget (NULL);
+	this->Destroy();
 }
 
 wxMenuBar* ToolMapFrame::CreateToolMapMenu()
@@ -281,8 +299,13 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 
 void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 {
-	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this);
-	myNewProjDlg->ShowModal();
+	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this, &m_PrjDefinition);
+	if(myNewProjDlg->ShowModal() == wxID_OK)
+	{
+		DatabaseNewPrj myNewPrjDB (&m_PrjDefinition);
+		m_Database = &myNewPrjDB;
+		myNewPrjDB.CreateProject();
+	}
 	delete myNewProjDlg;
 	
 }
