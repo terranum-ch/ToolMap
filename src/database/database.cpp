@@ -75,17 +75,29 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 		stemps[i] = datadir.GetChar(i);
 	}
 	
-	
+#ifndef __WINDOWS__
 	static char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
 		stemps,
 		"--language=./share/english",
-		"--skip-innodb",
+		"--skip-plugin-innodb",
 		"--port=3309",
 		"--character-sets-dir=./share/charsets",
 		"--default-character-set=cp1250"
 	};
+#else
+	static char *server_args[] = 
+	{
+		"this_program",       /* this string is not used */
+		stemps,
+		//"--language=./share/english",
+		//"--skip-plugin-innodb",
+		"--port=3309",
+		//"--character-sets-dir=./share/charsets",
+		//"--default-character-set=cp1250"
+	};
+#endif
 	
 	static char *server_groups[] = {
 		"embedded",

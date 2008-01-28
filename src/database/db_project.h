@@ -46,6 +46,7 @@ private:
 	
 	// private functions
 	void InitMembersValues();
+	bool CreateDefaultTables ();
 	
 	
 public:
