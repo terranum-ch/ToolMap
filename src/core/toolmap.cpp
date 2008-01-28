@@ -104,11 +104,21 @@ void ToolMapFrame::PostInit()
 	wxLog::SetActiveTarget (new wxLogTextCtrl (myLogTextCtrl));
 	wxLogMessage(_("Program started"));
 	wxLogDebug(_("Debug mode enabled"));
-#if (__WXMAC__)
-	m_TocWindow = new TocWindowDlgMac (this);
-#else
-	m_TocWindow = new TocWindowDlgGen(this);
-#endif
+	
+	// create the Aui manager
+	m_AuiManager = new wxAuiManager(this);
+	
+	
+//#if (__WXMAC__)
+//	m_TocWindow = new TocWindowDlgMac (this);
+//#else
+	m_TocWindow = new TocWindowDlgGen(m_AuiManager, this);
+//#endif
+	
+	// init object attribution panel
+	//Test * a = new Test(m_AuiManager);
+	
+	
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 	
@@ -120,7 +130,12 @@ void ToolMapFrame::PostInit()
 /* Frame destruction */
 ToolMapFrame::~ToolMapFrame()
 {
+	m_AuiManager->UnInit();
+	// delete managed windows
 	delete m_LogWindow;
+	
+	
+	delete m_AuiManager;
 }
 
 

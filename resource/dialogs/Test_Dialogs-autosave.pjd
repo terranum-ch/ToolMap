@@ -396,14 +396,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -8219,9 +8211,9 @@
           <long name="working-mode">0</long>
           <string name="proxy-Id name">"ID_DLG_OBJ_ATTRIBUTION"</string>
           <long name="proxy-Id value">10039</long>
-          <string name="proxy-Class">"dlg_obj_Attribution"</string>
-          <string name="proxy-Base class">"wxDialog"</string>
-          <string name="proxy-Window kind">"wxDialog"</string>
+          <string name="proxy-Class">"AttribObjType_PANEL"</string>
+          <string name="proxy-Base class">"wxPanel"</string>
+          <string name="proxy-Window kind">"wxPanel"</string>
           <string name="proxy-Implementation filename">"dlg_obj_attribution.cpp"</string>
           <string name="proxy-Header filename">"dlg_obj_attribution.h"</string>
           <string name="proxy-XRC filename">""</string>
@@ -28709,6 +28701,14 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -28882,7 +28882,7 @@ structure as the actual one"</string>
                 <string name="proxy-Custom ctor arguments">""</string>
               </document>
               <document>
-                <string name="title">"wxTextCtrl: ID_TEXTCTRL2"</string>
+                <string name="title">"wxTextCtrl: ID_DLGEO_CODE"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"textctrl"</string>
@@ -28892,7 +28892,7 @@ structure as the actual one"</string>
                 <long name="locked">0</long>
                 <string name="created">"10/12/2007"</string>
                 <string name="proxy-type">"wbTextCtrlProxy"</string>
-                <string name="proxy-Id name">"ID_TEXTCTRL2"</string>
+                <string name="proxy-Id name">"ID_DLGEO_CODE"</string>
                 <long name="proxy-Id value">10259</long>
                 <string name="proxy-Class">"wxTextCtrl"</string>
                 <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -28900,7 +28900,7 @@ structure as the actual one"</string>
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"m_DlgEO_Code"</string>
                 <string name="proxy-Initial value">""</string>
                 <long name="proxy-Max length">0</long>
                 <string name="proxy-Help text">""</string>
@@ -28963,7 +28963,7 @@ structure as the actual one"</string>
                 <string name="proxy-Custom ctor arguments">""</string>
               </document>
               <document>
-                <string name="title">"wxTextCtrl: ID_TEXTCTRL3"</string>
+                <string name="title">"wxTextCtrl: ID_DLGEO_VALUE"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"textctrl"</string>
@@ -28973,7 +28973,7 @@ structure as the actual one"</string>
                 <long name="locked">0</long>
                 <string name="created">"10/12/2007"</string>
                 <string name="proxy-type">"wbTextCtrlProxy"</string>
-                <string name="proxy-Id name">"ID_TEXTCTRL3"</string>
+                <string name="proxy-Id name">"ID_DLGEO_VALUE"</string>
                 <long name="proxy-Id value">10260</long>
                 <string name="proxy-Class">"wxTextCtrl"</string>
                 <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -28981,7 +28981,7 @@ structure as the actual one"</string>
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"m_DlgEO_Value"</string>
                 <string name="proxy-Initial value">""</string>
                 <long name="proxy-Max length">0</long>
                 <string name="proxy-Help text">""</string>
@@ -29149,9 +29149,9 @@ structure as the actual one"</string>
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"m_DlgEO_OK_Btn"</string>
                 <string name="proxy-Label">"&amp;OK"</string>
-                <bool name="proxy-Default">0</bool>
+                <bool name="proxy-Default">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Data variable">""</string>
@@ -29165,7 +29165,7 @@ structure as the actual one"</string>
                 <string name="proxy-Foreground colour">""</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
-                <bool name="proxy-Enabled">1</bool>
+                <bool name="proxy-Enabled">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <bool name="proxy-wxBU_LEFT">0</bool>
                 <bool name="proxy-wxBU_RIGHT">0</bool>

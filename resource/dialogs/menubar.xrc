@@ -1054,7 +1054,7 @@
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_DLG_OBJ_ATTRIBUTION" subclass="dlg_obj_Attribution">
+    <object class="wxPanel" name="ID_DLG_OBJ_ATTRIBUTION" subclass="AttribObjType_PANEL">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>450,300</size>

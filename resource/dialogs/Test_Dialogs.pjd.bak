@@ -8219,8 +8219,8 @@
           <long name="working-mode">0</long>
           <string name="proxy-Id name">"ID_DLG_OBJ_ATTRIBUTION"</string>
           <long name="proxy-Id value">10039</long>
-          <string name="proxy-Class">"dlg_obj_Attribution"</string>
-          <string name="proxy-Base class">"wxDialog"</string>
+          <string name="proxy-Class">"AttribObjType_PANEL"</string>
+          <string name="proxy-Base class">"wxPanel"</string>
           <string name="proxy-Window kind">"wxDialog"</string>
           <string name="proxy-Implementation filename">"dlg_obj_attribution.cpp"</string>
           <string name="proxy-Header filename">"dlg_obj_attribution.h"</string>
@@ -8290,14 +8290,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -8396,6 +8388,8 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Tab label">"Lines"</string>
+                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Background colour">""</string>
@@ -8448,8 +8442,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <bool name="proxy-AUI manager">0</bool>
                 <string name="proxy-Event sources">""</string>
-                <string name="proxy-Tab label">"Lines"</string>
-                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -8569,6 +8561,8 @@
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
                       <string name="proxy-Member variable name">""</string>
+                      <string name="proxy-Tab label">"Frequent"</string>
+                      <string name="proxy-Tab icon">""</string>
                       <string name="proxy-Help text">""</string>
                       <string name="proxy-Tooltip text">""</string>
                       <string name="proxy-Background colour">""</string>
@@ -8621,8 +8615,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                       <bool name="proxy-AUI manager">0</bool>
                       <string name="proxy-Event sources">""</string>
-                      <string name="proxy-Tab label">"Frequent"</string>
-                      <string name="proxy-Tab icon">""</string>
                       <document>
                         <string name="title">"wxBoxSizer V"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -8741,6 +8733,8 @@
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
                       <string name="proxy-Member variable name">""</string>
+                      <string name="proxy-Tab label">"Less frequent"</string>
+                      <string name="proxy-Tab icon">""</string>
                       <string name="proxy-Help text">""</string>
                       <string name="proxy-Tooltip text">""</string>
                       <string name="proxy-Background colour">""</string>
@@ -8793,8 +8787,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                       <bool name="proxy-AUI manager">0</bool>
                       <string name="proxy-Event sources">""</string>
-                      <string name="proxy-Tab label">"Less frequent"</string>
-                      <string name="proxy-Tab icon">""</string>
                       <document>
                         <string name="title">"wxBoxSizer V"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -8916,6 +8908,8 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Tab label">"Point"</string>
+                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Background colour">""</string>
@@ -8968,8 +8962,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <bool name="proxy-AUI manager">0</bool>
                 <string name="proxy-Event sources">""</string>
-                <string name="proxy-Tab label">"Point"</string>
-                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -9364,6 +9356,8 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Tab label">"Polygons"</string>
+                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Background colour">""</string>
@@ -9416,8 +9410,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <bool name="proxy-AUI manager">0</bool>
                 <string name="proxy-Event sources">""</string>
-                <string name="proxy-Tab label">"Polygons"</string>
-                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -9536,6 +9528,8 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Tab label">"Notes"</string>
+                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Background colour">""</string>
@@ -9588,8 +9582,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <bool name="proxy-AUI manager">0</bool>
                 <string name="proxy-Event sources">""</string>
-                <string name="proxy-Tab label">"Notes"</string>
-                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -28709,6 +28701,14 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -29151,7 +29151,7 @@ structure as the actual one"</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">"m_DlgEO_OK_Btn"</string>
                 <string name="proxy-Label">"&amp;OK"</string>
-                <bool name="proxy-Default">0</bool>
+                <bool name="proxy-Default">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
                 <string name="proxy-Data variable">""</string>
