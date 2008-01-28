@@ -129,18 +129,20 @@ TocWindowDlgGen::TocWindowDlgGen()
 	Init();
 }
 
-TocWindowDlgGen::TocWindowDlgGen(wxWindow * parent, wxWindowID id,const wxString & title)
+TocWindowDlgGen::TocWindowDlgGen(wxAuiManager * myAuiManager,wxWindow * parent, wxWindowID id,const wxString & title)
 {
 	Init();
 
-	m_TocAui = new wxAuiManager(parent);
+	//m_TocAui = new wxAuiManager(parent);
+	m_TocAui = myAuiManager;
+	
 	
 	m_ContentFrame = new wxPanel(parent, wxID_ANY);
 	CreateControls(m_ContentFrame);
 	
 	m_TocAui->AddPane(m_ContentFrame, wxAuiPaneInfo().Name(SYMBOL_TOCWINDOW_DLG_TITLE).
     	Caption(SYMBOL_TOCWINDOW_DLG_TITLE).
-    	Left().Layer(1).Position(1).MinSize(SYMBOL_TOCWINDOW_DLG_SIZE));
+    	Left().Layer(1).Position(1).MinSize(SYMBOL_TOCWINDOW_DLG_SIZE).CloseButton(FALSE));
 	//m_TocAui->GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE, wxAUI_GRADIENT_NONE);
 
 

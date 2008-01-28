@@ -78,6 +78,7 @@
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
 #include <wx/sysopt.h>
 #include "../database/db_project.h"
+#include "managed_aui_wnd.h" // temp 
 
 #include <wx/mstream.h>
 
@@ -198,6 +199,8 @@ private:
 	PrjDefMemManage m_PrjDefinition;
 	DataBase * m_Database;
 	
+	wxAuiManager * m_AuiManager;
+	
 	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
@@ -205,11 +208,11 @@ private:
 	void OnTocWindow (wxCommandEvent & event);
 	
 	ImportLogDLG * m_LogWindow;
-#if (__WXMAC__)
-	TocWindowDlgMac * m_TocWindow;
-#else
+//#if (__WXMAC__)
+//	TocWindowDlgMac * m_TocWindow;
+//#else
 	TocWindowDlgGen * m_TocWindow;
-#endif
+//#endif
 	
 	DECLARE_EVENT_TABLE();
 };

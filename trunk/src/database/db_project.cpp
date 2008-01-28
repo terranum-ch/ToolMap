@@ -87,6 +87,7 @@ bool DatabaseNewPrj::CreateProject()
 
 bool DatabaseNewPrj::CreateDefaultTables ()
 {
+	int iErrCode = 0;
 	wxString myNewPrjSentence = _T("  CREATE TABLE GENERIC_LABELS ("
 								   "  OBJECT_ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,"
 								   "  OBJECT_GEOMETRY MULTIPOINT NOT NULL,"
@@ -254,7 +255,6 @@ bool DatabaseNewPrj::CreateDefaultTables ()
 								   "      ON UPDATE NO ACTION"
 								   ");");
 	
-	int iRequestResult = 0;
 	
 
 	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
@@ -262,13 +262,19 @@ bool DatabaseNewPrj::CreateDefaultTables ()
 	
 	for (uint i= 0; i<myArray.GetCount(); i++)
 	{
-		iRequestResult += DataBaseQueryMultiple(myArray.Item(i));
+		iErrCode += DataBaseQueryMultiple(myArray.Item(i));
 	}
-	wxLogDebug(_T("Number of errors during process of array : %d"), iRequestResult);
-		
+	wxLogDebug(_T("Number of errors during process of array : %d"), iErrCode);
+	if (iErrCode != 0)
+		return FALSE;
 	
-	return TRUE;
-	
+	return TRUE;	
 }
+
+//bool DatabaseNewPrj::SetProjectName()
+//{
+//	int iErrCode = 0;
+//	return TRUE;
+//}
 
 

@@ -102,7 +102,7 @@ class TocWindowDlgGen : public TocWindowContent
 		
 	public:	
 		TocWindowDlgGen();
-		TocWindowDlgGen(wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
+		TocWindowDlgGen(wxAuiManager * myAuiManager, wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
 						const wxString & title=SYMBOL_TOCWINDOW_DLG_TITLE);
 		~TocWindowDlgGen();
 		

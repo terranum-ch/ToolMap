@@ -62,33 +62,33 @@
 #define ID_BUTTON7 10055
 #define ID_BUTTON8 10056
 #define ID_CHECKBOX5 10136
-#define SYMBOL_DLG_OBJ_ATTRIBUTION_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_DLG_OBJ_ATTRIBUTION_TITLE _("Object types")
-#define SYMBOL_DLG_OBJ_ATTRIBUTION_IDNAME ID_DLG_OBJ_ATTRIBUTION
-#define SYMBOL_DLG_OBJ_ATTRIBUTION_SIZE wxSize(450, 300)
-#define SYMBOL_DLG_OBJ_ATTRIBUTION_POSITION wxDefaultPosition
+#define SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE _("Object types")
+#define SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME ID_DLG_OBJ_ATTRIBUTION
+#define SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE wxSize(450, 300)
+#define SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION wxDefaultPosition
 ////@end control identifiers
 
 
 /*!
- * dlg_obj_Attribution class declaration
+ * AttribObjType_PANEL class declaration
  */
 
-class dlg_obj_Attribution: public wxDialog
+class AttribObjType_PANEL: public wxPanel
 {    
-    DECLARE_DYNAMIC_CLASS( dlg_obj_Attribution )
+    DECLARE_DYNAMIC_CLASS( AttribObjType_PANEL )
     DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
-    dlg_obj_Attribution();
-    dlg_obj_Attribution( wxWindow* parent, wxWindowID id = SYMBOL_DLG_OBJ_ATTRIBUTION_IDNAME, const wxString& caption = SYMBOL_DLG_OBJ_ATTRIBUTION_TITLE, const wxPoint& pos = SYMBOL_DLG_OBJ_ATTRIBUTION_POSITION, const wxSize& size = SYMBOL_DLG_OBJ_ATTRIBUTION_SIZE, long style = SYMBOL_DLG_OBJ_ATTRIBUTION_STYLE );
+    AttribObjType_PANEL();
+    AttribObjType_PANEL( wxWindow* parent, wxWindowID id = SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME, const wxString& caption = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE, const wxPoint& pos = SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION, const wxSize& size = SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE, long style = SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE );
 
     /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_DLG_OBJ_ATTRIBUTION_IDNAME, const wxString& caption = SYMBOL_DLG_OBJ_ATTRIBUTION_TITLE, const wxPoint& pos = SYMBOL_DLG_OBJ_ATTRIBUTION_POSITION, const wxSize& size = SYMBOL_DLG_OBJ_ATTRIBUTION_SIZE, long style = SYMBOL_DLG_OBJ_ATTRIBUTION_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME, const wxString& caption = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE, const wxPoint& pos = SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION, const wxSize& size = SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE, long style = SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE );
 
     /// Destructor
-    ~dlg_obj_Attribution();
+    ~AttribObjType_PANEL();
 
     /// Initialises member variables
     void Init();
@@ -96,24 +96,24 @@ public:
     /// Creates the controls and sizers
     void CreateControls();
 
-////@begin dlg_obj_Attribution event handler declarations
+////@begin AttribObjType_PANEL event handler declarations
 
-////@end dlg_obj_Attribution event handler declarations
+////@end AttribObjType_PANEL event handler declarations
 
-////@begin dlg_obj_Attribution member function declarations
+////@begin AttribObjType_PANEL member function declarations
 
     /// Retrieves bitmap resources
     wxBitmap GetBitmapResource( const wxString& name );
 
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
-////@end dlg_obj_Attribution member function declarations
+////@end AttribObjType_PANEL member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
 
-////@begin dlg_obj_Attribution member variables
-////@end dlg_obj_Attribution member variables
+////@begin AttribObjType_PANEL member variables
+////@end AttribObjType_PANEL member variables
 };
 
 #endif
