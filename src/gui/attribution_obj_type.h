@@ -64,74 +64,22 @@
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE _("Object types")
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME ID_DLG_OBJ_ATTRIBUTION
-#define SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE wxSize(450, 300)
+#define SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE wxSize(300, 350)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION wxDefaultPosition
-////@end control identifiers
-
-
-/*!
- * AttribObjType_PANEL class declaration
- */
-
-//class AttribObjType_PANEL: public wxPanel
-//	{    
-//		DECLARE_DYNAMIC_CLASS( AttribObjType_PANEL )
-//		DECLARE_EVENT_TABLE()
-//		
-//	public:
-//		/// Constructors
-//		AttribObjType_PANEL();
-//		AttribObjType_PANEL(wxAuiManager * myAui, wxWindow* parent, wxWindowID id = SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME, const wxString& caption = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE, const wxPoint& pos = SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION, const wxSize& size = SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE, long style = SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE );
-//		
-//		/// Creation
-//		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME, const wxString& caption = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE, const wxPoint& pos = SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION, const wxSize& size = SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE, long style = SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE );
-//		
-//		/// Destructor
-//		~AttribObjType_PANEL();
-//		
-//		/// Initialises member variables
-//		void Init();
-//		
-//		/// Creates the controls and sizers
-//		void CreateControls();
-//		
-//
-//	};
 
 class AttribObjType_PANEL: public ManagedAuiWnd
 	{
-		//DECLARE_DYNAMIC_CLASS( AttribObjType_PANEL )
 		wxSizer * CreateControls(wxWindow * parent,
 								 bool call_fit = TRUE, 
 								 bool set_sizer = TRUE);
 
+		wxAuiPaneInfo mPaneInfo;
+		
 		
 	public:
 		AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager);
 		~AttribObjType_PANEL();
 		
-		void InitValues();
-		
 	};
-
-
-
-//class MyTestManWnd : public ManagedAuiWnd
-//{
-//private:
-//	wxAuiPaneInfo WndPaneInfo;
-//	
-//public:
-//	MyTestManWnd(wxAuiManager * AuiManager);
-//	~MyTestManWnd();
-//	
-//};
-
-
-
-
-
-
-
 
 #endif

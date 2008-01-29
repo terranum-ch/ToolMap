@@ -36,7 +36,7 @@ class ManagedAuiWnd : public wxEvtHandler
 	{
 	protected:
 		wxAuiManager * m_AuiMgr;
-		wxAuiPaneInfo * m_AuiPaneInfo;
+		wxString m_AuiPanelName;
 		
 		// private member function
 		void InitValues();
@@ -45,9 +45,13 @@ class ManagedAuiWnd : public wxEvtHandler
 		ManagedAuiWnd(wxAuiManager * AuiManager);
 		~ManagedAuiWnd();
 		
-		virtual void Show() {;}
-		virtual void Hide() {;}
-		virtual bool IsShown() {return FALSE;}
+		void AddManagedPane(wxWindow * window, 
+							const wxAuiPaneInfo & paneinfo,
+							bool bShow=FALSE);
+		
+		void ShowPanel();
+		void HidePanel();
+		bool IsPanelShown();
 	};
 
 

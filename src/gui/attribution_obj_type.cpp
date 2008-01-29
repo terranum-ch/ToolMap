@@ -19,24 +19,33 @@
 #include "attribution_obj_type.h"
 
 
-
-//IMPLEMENT_DYNAMIC_CLASS( AttribObjType_PANEL, ManagedAuiWnd )
-
-
 AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAuiWnd(AuiManager)
 {
-    InitValues();
-	wxPanel  ContentFrame (parent, wxID_ANY);
-	CreateControls(&ContentFrame);
+	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
+	CreateControls(ContentFrame);
+	
+	
+	
+	// define properties of Panel.
+	mPaneInfo.Name(SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE);
+	mPaneInfo.Caption(SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE);
+	mPaneInfo.Right();
+	mPaneInfo.Layer(2);
+	mPaneInfo.Position(2);
+	mPaneInfo.MinSize(SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE);
+	mPaneInfo.CloseButton(FALSE);
+	mPaneInfo.Hide();
+	
+	// pass panel name to parent class.
+	m_AuiPanelName = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE;
+	
+	wxLogDebug(_T("m_auiMgr (child) %p"), AuiManager);
+	
+	// add the panel
+	AddManagedPane(ContentFrame, mPaneInfo);
 }
 
 AttribObjType_PANEL::~AttribObjType_PANEL()
-{
-	
-}
-
-
-void AttribObjType_PANEL::InitValues()
 {
 	
 }

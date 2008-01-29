@@ -79,7 +79,7 @@
 #include <wx/sysopt.h>
 #include "../database/db_project.h"
 
-#include "../gui/managed_aui_wnd.h" // temp test for concurent modif
+#include "../gui/attribution_obj_type.h"
 
 
 #include <wx/mstream.h>
@@ -203,11 +203,15 @@ private:
 	
 	wxAuiManager * m_AuiManager;
 	
+	AttribObjType_PANEL * m_AttribObjPanel;
+	
+	
 	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
+	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	
 	ImportLogDLG * m_LogWindow;
 //#if (__WXMAC__)
