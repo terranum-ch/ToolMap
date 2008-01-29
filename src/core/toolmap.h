@@ -80,6 +80,8 @@
 #include "../database/db_project.h"
 
 #include "../gui/attribution_obj_type.h"
+#include "../gui/main_panel.h"
+
 
 
 #include <wx/mstream.h>
@@ -204,6 +206,7 @@ private:
 	wxAuiManager * m_AuiManager;
 	
 	AttribObjType_PANEL * m_AttribObjPanel;
+	Main_PANEL * m_MainPanel;
 	
 	
 	void OnQuit(wxCloseEvent & event);

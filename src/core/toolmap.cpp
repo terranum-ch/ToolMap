@@ -92,7 +92,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	SetToolBar(CreateToolMapToolBar(this));
 	
 	// dessin de l'interface
-	wxPanel * top_panel = new wxPanel (this, -1,wxDefaultPosition,wxDefaultSize );
+	//wxPanel * top_panel = new wxPanel (this, -1,wxDefaultPosition,wxDefaultSize );
 	//INTERFACE(top_panel, FALSE);
 	PostInit();
 	
@@ -117,7 +117,7 @@ void ToolMapFrame::PostInit()
 //#endif
 	
 	// init object attribution panel
-	//Test * a = new Test(m_AuiManager);
+	m_MainPanel = new Main_PANEL(this, m_AuiManager);	
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	
 	
