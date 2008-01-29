@@ -1,0 +1,68 @@
+/***************************************************************************
+								main_panel.cpp
+				Display the main panel where drawing occurs
+                             -------------------
+    copyright            : (C) 2007 CREALP Lucien Schreiber 
+    email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// comment doxygen
+
+#include "main_panel.h"
+
+
+Main_PANEL::Main_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAuiWnd(AuiManager)
+{
+	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
+	CreateControls(ContentFrame);
+	
+	
+	
+	// define properties of Panel.
+	mPaneInfo.Name(SYMBOL_MAIN_PANEL_TITLE);
+	mPaneInfo.CentrePane();
+		
+	// pass panel name to parent class.
+	m_AuiPanelName = SYMBOL_MAIN_PANEL_TITLE;
+		
+	// add the panel
+	AddManagedPane(ContentFrame, mPaneInfo,TRUE);
+
+}
+
+
+Main_PANEL::~Main_PANEL()
+{
+
+
+}
+
+wxSizer * Main_PANEL::CreateControls(wxWindow * parent, bool call_fit, bool set_sizer)
+{    
+    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+	
+    wxScrolledWindow * itemTreeCtrl3 = new wxScrolledWindow(parent, wxID_ANY);
+	itemTreeCtrl3->SetBackgroundColour(*wxWHITE);
+    itemBoxSizer2->Add(itemTreeCtrl3, 1, wxGROW|wxALL, 0);
+	
+  
+	
+	if (set_sizer)
+    {
+        parent->SetSizer( itemBoxSizer2 );
+        if (call_fit)
+            itemBoxSizer2->SetSizeHints( parent );
+    }
+    
+    return itemBoxSizer2;
+}
+
