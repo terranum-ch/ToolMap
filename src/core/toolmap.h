@@ -78,7 +78,9 @@
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
 #include <wx/sysopt.h>
 #include "../database/db_project.h"
-#include "managed_aui_wnd.h" // temp test for concurent modif
+
+#include "../gui/managed_aui_wnd.h" // temp test for concurent modif
+
 
 #include <wx/mstream.h>
 
