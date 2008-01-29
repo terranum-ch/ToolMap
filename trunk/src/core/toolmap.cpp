@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
 	EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
+	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 END_EVENT_TABLE()
 
@@ -117,7 +118,7 @@ void ToolMapFrame::PostInit()
 	
 	// init object attribution panel
 	//Test * a = new Test(m_AuiManager);
-	
+	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
@@ -131,10 +132,10 @@ void ToolMapFrame::PostInit()
 ToolMapFrame::~ToolMapFrame()
 {
 	m_AuiManager->UnInit();
-	// delete managed windows
+	// don't delete managed windows but check for 
+	// memory lack.
+	
 	delete m_LogWindow;
-	
-	
 	delete m_AuiManager;
 }
 
@@ -298,10 +299,10 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 	itemToolBar3->AddSeparator();
     wxBitmap itemtool13Bitmap(wxGetBitmapFromMemory(tool8));
     wxBitmap itemtool13BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL8, _T("Object type"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _T("Object type"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool14Bitmap(wxGetBitmapFromMemory(tool9));
     wxBitmap itemtool14BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL9, _T("Object attributes"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ATTRIB_ATTRIBUTES, _T("Object attributes"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     itemToolBar3->AddSeparator();
     wxBitmap itemtool16Bitmap(wxGetBitmapFromMemory(tool10));
     wxBitmap itemtool16BitmapDisabled;
@@ -356,4 +357,20 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 
 	}
 
+}
+
+
+void ToolMapFrame::OnShowObjectAttributionWindow (wxCommandEvent & event)
+{
+	if(m_AttribObjPanel->IsPanelShown())
+	{
+		m_AttribObjPanel->HidePanel();
+		GetMenuBar()->Check(ID_MENU_ATTRIB_TYPES, FALSE);
+	}
+	else
+	{
+		m_AttribObjPanel->ShowPanel();
+		GetMenuBar()->Check(ID_MENU_ATTRIB_TYPES, TRUE);
+	}
+	
 }

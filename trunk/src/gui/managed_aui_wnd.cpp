@@ -19,8 +19,10 @@
 
 #include "managed_aui_wnd.h"
 
-ManagedAuiWnd::ManagedAuiWnd(wxAuiManager * AuiManager) : m_AuiMgr(AuiManager), m_AuiPaneInfo(NULL)
+ManagedAuiWnd::ManagedAuiWnd(wxAuiManager * AuiManager) : m_AuiMgr(AuiManager)
 {
+	InitValues();
+	//wxLogDebug(_T("Value of m_AuiMgr (parent) = %p"), m_AuiPaneInfo);
 	wxLogDebug(_T("ManagedAuiWnd Ctor called %p"), m_AuiMgr);
 }
 
@@ -33,6 +35,48 @@ ManagedAuiWnd::~ManagedAuiWnd()
 
 void ManagedAuiWnd::InitValues()
 {
-
+	m_AuiPanelName = _T("");
 }
 
+
+void ManagedAuiWnd::AddManagedPane(wxWindow * window, const wxAuiPaneInfo & paneinfo, bool bShow)
+{
+	m_AuiMgr->AddPane(window, paneinfo);
+	if (bShow == TRUE)
+	{
+		ShowPanel();
+	}
+	else
+		HidePanel();
+	
+}
+
+
+void ManagedAuiWnd::ShowPanel ()
+{
+	wxASSERT_MSG(!m_AuiPanelName.IsEmpty(),
+				 _T("Define value for m_auiPanelName in the child class..."));
+	m_AuiMgr->GetPane(m_AuiPanelName).Show();
+	m_AuiMgr->Update();
+}
+
+
+void ManagedAuiWnd::HidePanel ()
+{
+	wxASSERT_MSG(!m_AuiPanelName.IsEmpty(),
+				 _T("Define value for m_auiPanelName in the child class..."));
+	m_AuiMgr->GetPane(m_AuiPanelName).Hide();
+	m_AuiMgr->Update();
+}
+
+
+bool ManagedAuiWnd::IsPanelShown()
+{
+	wxASSERT_MSG(!m_AuiPanelName.IsEmpty(),
+				 _T("Define value for m_auiPanelName in the child class..."));
+	if (m_AuiMgr->GetPane(m_AuiPanelName).IsShown() == TRUE)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
