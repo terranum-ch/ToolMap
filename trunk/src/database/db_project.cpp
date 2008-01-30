@@ -258,7 +258,7 @@ bool DatabaseNewPrj::CreateDefaultTables ()
 	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	wxLogDebug(_T("Request array size is %d sentence(s)"), myArray.GetCount());
 	
-	for (uint i= 0; i<myArray.GetCount(); i++)
+	for (unsigned int i= 0; i<myArray.GetCount(); i++)
 	{
 		iErrCode += DataBaseQueryMultiple(myArray.Item(i));
 	}
