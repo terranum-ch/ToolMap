@@ -81,6 +81,7 @@
 
 #include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
+#include "../gui/projectnewexist_dlg.h"
 
 
 
@@ -212,6 +213,7 @@ private:
 	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
+	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);

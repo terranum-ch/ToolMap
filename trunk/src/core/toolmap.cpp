@@ -60,6 +60,7 @@ bool ToolMapApp::OnInit()
 
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
+	EVT_MENU (ID_MENU_NEW_PRJ_EXISTING, ToolMapFrame::OnNewProjectExisting )
 	EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
@@ -326,6 +327,18 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	delete myNewProjDlg;
 	
 }
+
+
+void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
+{
+	ProjectNewExistDLG * myNewPrjExistDLG = new ProjectNewExistDLG(this);
+	if (myNewPrjExistDLG->ShowModal() == wxID_OK)
+	{
+		wxLogDebug(myNewPrjExistDLG->m_New_Prj_Name);
+	}
+	delete myNewPrjExistDLG;
+}
+
 
 void ToolMapFrame::OnLogWindow(wxCommandEvent & event)
 {

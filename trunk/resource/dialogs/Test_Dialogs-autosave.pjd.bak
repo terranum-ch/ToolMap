@@ -396,6 +396,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -20473,7 +20481,7 @@ structure as the actual one"</string>
           <long name="working-mode">0</long>
           <string name="proxy-Id name">"ID_NEWPROJECTFROMEXISTING"</string>
           <long name="proxy-Id value">10036</long>
-          <string name="proxy-Class">"Newprojectfromexisting"</string>
+          <string name="proxy-Class">"ProjectNewExistDLG"</string>
           <string name="proxy-Base class">"wxDialog"</string>
           <string name="proxy-Window kind">"wxDialog"</string>
           <string name="proxy-Implementation filename">"newprojectfromexisting.cpp"</string>
@@ -20544,14 +20552,6 @@ structure as the actual one"</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -20708,7 +20708,7 @@ structure as the actual one"</string>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPNE_New_Prj_Path"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -20771,7 +20771,7 @@ structure as the actual one"</string>
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxButton: ID_BUTTON22"</string>
+                  <string name="title">"wxButton: ID_DLGNPE_NEW_PRJ_PATH_BTN"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"dialogcontrol"</string>
@@ -20781,7 +20781,7 @@ structure as the actual one"</string>
                   <long name="locked">0</long>
                   <string name="created">"29/8/2007"</string>
                   <string name="proxy-type">"wbButtonProxy"</string>
-                  <string name="proxy-Id name">"ID_BUTTON22"</string>
+                  <string name="proxy-Id name">"ID_DLGNPE_NEW_PRJ_PATH_BTN"</string>
                   <long name="proxy-Id value">10150</long>
                   <string name="proxy-Class">"wxButton"</string>
                   <string name="proxy-Base class">"wxButton"</string>
@@ -20923,7 +20923,7 @@ structure as the actual one"</string>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPNE_New_Prj_Name"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -21188,7 +21188,7 @@ structure as the actual one"</string>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DlgPNE_Old_Prj_Path"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -21251,7 +21251,7 @@ structure as the actual one"</string>
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxButton: ID_BUTTON23"</string>
+                  <string name="title">"wxButton: ID_DLGNPE_OLD_PRJ_PATH_BTN"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"dialogcontrol"</string>
@@ -21261,7 +21261,7 @@ structure as the actual one"</string>
                   <long name="locked">0</long>
                   <string name="created">"29/8/2007"</string>
                   <string name="proxy-type">"wbButtonProxy"</string>
-                  <string name="proxy-Id name">"ID_BUTTON23"</string>
+                  <string name="proxy-Id name">"ID_DLGNPE_OLD_PRJ_PATH_BTN"</string>
                   <long name="proxy-Id value">10154</long>
                   <string name="proxy-Class">"wxButton"</string>
                   <string name="proxy-Base class">"wxButton"</string>
@@ -21318,7 +21318,7 @@ structure as the actual one"</string>
               </document>
             </document>
             <document>
-              <string name="title">"wxRadioBox: ID_RADIOBOX1"</string>
+              <string name="title">"wxRadioBox: ID_DLGNPE_RADIO_OPTIONS"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"radiobox"</string>
@@ -21328,7 +21328,7 @@ structure as the actual one"</string>
               <long name="locked">0</long>
               <string name="created">"29/8/2007"</string>
               <string name="proxy-type">"wbRadioBoxProxy"</string>
-              <string name="proxy-Id name">"ID_RADIOBOX1"</string>
+              <string name="proxy-Id name">"ID_DLGNPE_RADIO_OPTIONS"</string>
               <long name="proxy-Id value">10155</long>
               <string name="proxy-Class">"wxRadioBox"</string>
               <string name="proxy-Base class">"wxRadioBox"</string>

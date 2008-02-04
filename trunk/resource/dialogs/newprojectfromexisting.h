@@ -36,39 +36,39 @@
 ////@begin control identifiers
 #define ID_NEWPROJECTFROMEXISTING 10036
 #define ID_TEXTCTRL15 10149
-#define ID_BUTTON22 10150
+#define ID_DLGNPE_NEW_PRJ_PATH_BTN 10150
 #define ID_TEXTCTRL16 10151
 #define ID_STATICLINE1 10152
 #define ID_TEXTCTRL17 10153
-#define ID_BUTTON23 10154
-#define ID_RADIOBOX1 10155
-#define SYMBOL_NEWPROJECTFROMEXISTING_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_NEWPROJECTFROMEXISTING_TITLE _("New project from existing")
-#define SYMBOL_NEWPROJECTFROMEXISTING_IDNAME ID_NEWPROJECTFROMEXISTING
-#define SYMBOL_NEWPROJECTFROMEXISTING_SIZE wxSize(400, 300)
-#define SYMBOL_NEWPROJECTFROMEXISTING_POSITION wxDefaultPosition
+#define ID_DLGNPE_OLD_PRJ_PATH_BTN 10154
+#define ID_DLGNPE_RADIO_OPTIONS 10155
+#define SYMBOL_PROJECTNEWEXISTDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_PROJECTNEWEXISTDLG_TITLE _("New project from existing")
+#define SYMBOL_PROJECTNEWEXISTDLG_IDNAME ID_NEWPROJECTFROMEXISTING
+#define SYMBOL_PROJECTNEWEXISTDLG_SIZE wxSize(400, 300)
+#define SYMBOL_PROJECTNEWEXISTDLG_POSITION wxDefaultPosition
 ////@end control identifiers
 
 
 /*!
- * Newprojectfromexisting class declaration
+ * ProjectNewExistDLG class declaration
  */
 
-class Newprojectfromexisting: public wxDialog
+class ProjectNewExistDLG: public wxDialog
 {    
-    DECLARE_DYNAMIC_CLASS( Newprojectfromexisting )
+    DECLARE_DYNAMIC_CLASS( ProjectNewExistDLG )
     DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
-    Newprojectfromexisting();
-    Newprojectfromexisting( wxWindow* parent, wxWindowID id = SYMBOL_NEWPROJECTFROMEXISTING_IDNAME, const wxString& caption = SYMBOL_NEWPROJECTFROMEXISTING_TITLE, const wxPoint& pos = SYMBOL_NEWPROJECTFROMEXISTING_POSITION, const wxSize& size = SYMBOL_NEWPROJECTFROMEXISTING_SIZE, long style = SYMBOL_NEWPROJECTFROMEXISTING_STYLE );
+    ProjectNewExistDLG();
+    ProjectNewExistDLG( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTNEWEXISTDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTNEWEXISTDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTNEWEXISTDLG_POSITION, const wxSize& size = SYMBOL_PROJECTNEWEXISTDLG_SIZE, long style = SYMBOL_PROJECTNEWEXISTDLG_STYLE );
 
     /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_NEWPROJECTFROMEXISTING_IDNAME, const wxString& caption = SYMBOL_NEWPROJECTFROMEXISTING_TITLE, const wxPoint& pos = SYMBOL_NEWPROJECTFROMEXISTING_POSITION, const wxSize& size = SYMBOL_NEWPROJECTFROMEXISTING_SIZE, long style = SYMBOL_NEWPROJECTFROMEXISTING_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTNEWEXISTDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTNEWEXISTDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTNEWEXISTDLG_POSITION, const wxSize& size = SYMBOL_PROJECTNEWEXISTDLG_SIZE, long style = SYMBOL_PROJECTNEWEXISTDLG_STYLE );
 
     /// Destructor
-    ~Newprojectfromexisting();
+    ~ProjectNewExistDLG();
 
     /// Initialises member variables
     void Init();
@@ -76,24 +76,29 @@ public:
     /// Creates the controls and sizers
     void CreateControls();
 
-////@begin Newprojectfromexisting event handler declarations
+////@begin ProjectNewExistDLG event handler declarations
 
-////@end Newprojectfromexisting event handler declarations
+////@end ProjectNewExistDLG event handler declarations
 
-////@begin Newprojectfromexisting member function declarations
+////@begin ProjectNewExistDLG member function declarations
 
     /// Retrieves bitmap resources
     wxBitmap GetBitmapResource( const wxString& name );
 
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
-////@end Newprojectfromexisting member function declarations
+////@end ProjectNewExistDLG member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
 
-////@begin Newprojectfromexisting member variables
-////@end Newprojectfromexisting member variables
+////@begin ProjectNewExistDLG member variables
+    wxTextCtrl* m_DlgPNE_New_Prj_Path;
+    wxTextCtrl* m_DlgPNE_New_Prj_Name;
+    wxTextCtrl* m_DlgPNE_Old_Prj_Path;
+    wxRadioBox* m_DlgPNE_Options;
+    wxButton* m_DlgPNE_Btn_OK;
+////@end ProjectNewExistDLG member variables
 };
 
 #endif
