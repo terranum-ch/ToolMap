@@ -117,9 +117,8 @@ void ProjectNewExistDLG::Init()
 	m_DlgPNE_Btn_OK = NULL;
 
 	
-	m_New_Prj_Path = _T("");
 	m_New_Prj_Name = _T("");
-	m_Old_Prj_Path = _T("");
+	m_Old_Prj_Name = _T("");
 	m_sOption_Type = 0;
 	
 }
@@ -197,9 +196,13 @@ void ProjectNewExistDLG::CreateControls()
 
 bool ProjectNewExistDLG::TransferDataFromWindow()
 {
-	m_New_Prj_Path = m_DlgPNE_New_Prj_Path->GetValue();
-	m_New_Prj_Name = m_DlgPNE_New_Prj_Name->GetValue();
-	m_Old_Prj_Path = m_DlgPNE_Old_Prj_Path->GetValue();
+	//m_New_Prj_Path = m_DlgPNE_New_Prj_Path->GetValue();
+	//m_New_Prj_Name = m_DlgPNE_New_Prj_Name->GetValue();
+	wxFileName myNewPrjName (m_DlgPNE_New_Prj_Path->GetValue(),
+							 m_DlgPNE_New_Prj_Name->GetValue());
+
+	m_New_Prj_Name = myNewPrjName.GetFullPath();
+	m_Old_Prj_Name = m_DlgPNE_Old_Prj_Path->GetValue();
 	
 	m_sOption_Type = m_DlgPNE_Options->GetSelection();
 	return TRUE;

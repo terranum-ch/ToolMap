@@ -84,6 +84,11 @@
 #include "../gui/projectnewexist_dlg.h"
 
 
+//// temp for testing 
+#include "diroperation.h"
+//// end of testing
+
+
 
 #include <wx/mstream.h>
 
