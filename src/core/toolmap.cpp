@@ -335,6 +335,35 @@ void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
 	if (myNewPrjExistDLG->ShowModal() == wxID_OK)
 	{
 		wxLogDebug(myNewPrjExistDLG->m_New_Prj_Name);
+		
+		//// temp for testing 
+		
+		
+		DirOperation mydirOp (myNewPrjExistDLG->m_Old_Prj_Name,
+							  myNewPrjExistDLG->m_New_Prj_Name);
+		double myPrjSize = mydirOp.GetDirectorySize();
+		wxLogDebug(_T("%.*f [MB]"),3,myPrjSize);
+		
+		wxArrayString myFiles;
+		long NumOfFileToCopy = mydirOp.GetAllDirectoryFiles(myFiles);
+		
+		wxLogDebug(_T("Number of files to copy : %d"),NumOfFileToCopy);
+		
+		// create the destination path
+		if (mydirOp.IsPathWritable(DIROP_PATH_DESTINATION))
+		{
+			mydirOp.HasEnoughFreeSpace(myPrjSize, DIROP_PATH_DESTINATION);
+		}
+		
+		// copy the files 
+		if (mydirOp.CopyDirectory(myFiles,TRUE))
+			wxLogDebug(_T("Directory copy finished..."));
+		
+		
+		//// end of testing
+		
+		
+		
 	}
 	delete myNewPrjExistDLG;
 }

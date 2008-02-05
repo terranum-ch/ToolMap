@@ -33,6 +33,7 @@
 #include "wx/statline.h"
 #include <wx/dirdlg.h>				// for directory selection dialog
 #include <wx/dir.h>					// for checking if a directory exists
+#include <wx/filename.h>			// for creating filename for new project
 
 
 
@@ -98,9 +99,8 @@ class ProjectNewExistDLG: public wxDialog
 		wxRadioBox* m_DlgPNE_Options;
 		wxButton* m_DlgPNE_Btn_OK;
 		
-		wxString m_New_Prj_Path;
 		wxString m_New_Prj_Name;
-		wxString m_Old_Prj_Path;
+		wxString m_Old_Prj_Name;
 		unsigned int m_sOption_Type;
 		
 	};
