@@ -223,7 +223,8 @@ wxArrayString DataBase::DataBaseGetNextResult()
 	
 	if (m_resultNumber > 0 && pResults != NULL)
 	{
-		if(record == mysql_fetch_row(pResults))
+		record = mysql_fetch_row(pResults);
+		if(record != NULL)
 		{
 			for (int i = 0; i<m_resultNumber; i++) 
 			{
@@ -239,6 +240,31 @@ wxArrayString DataBase::DataBaseGetNextResult()
 	}
 	
 	return myRowResult;
+
+}
+
+
+int DataBase::DataBaseGetResultAsInt()
+{
+	MYSQL_ROW record;
+	int iReturnedValue = -1;
+	
+	if (m_resultNumber > 0 && pResults != NULL)
+	{
+		record = mysql_fetch_row(pResults);
+		if(record != NULL)
+		{
+			 iReturnedValue =  atoi(record[0]);
+		}
+		else 
+		{
+			// clean
+			m_resultNumber=0;
+			mysql_free_result(pResults);
+		}		
+	}
+	
+	return iReturnedValue;
 
 }
 

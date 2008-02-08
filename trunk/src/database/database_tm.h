@@ -1,6 +1,6 @@
 /***************************************************************************
-								db_project.h.h
-			deals with the creation and modification of a database project
+								database_tm.h
+                    extension of the database class for ToolMap
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,17 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-/***************************************************************************//**
- @file db_project.h
- @brief Deals with the project in database
- @details Contain class for creating and modifying project in the database.
- @author Lucien Schreiber (c) CREALP 2007
- @date 23 January 2008
- *******************************************************************************/
+// comment doxygen
 
 
-#ifndef DB_PROJECT_H
-#define DB_PROJECT_H
+#ifndef DATABASE_TM_H
+#define DATABASE_TM_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -35,38 +29,35 @@
     #include <wx/wx.h>
 #endif
 
-#include "database_tm.h"
-#include "../core/prjdefmemmanage.h" 
+#include "database.h"
+#include "projectdefmemory.h"		// for transfering data directely
 
-class DatabaseNewPrj : public DataBaseTM
-{
-private:
-	// private members
-	PrjDefMemManage * pPrjDefinition;
-	
-	// private functions
-	void InitMembersValues();
-	//bool CreateDefaultTables ();
-	
-	
-public:
-	// constructors and destructor
-	DatabaseNewPrj();
-	DatabaseNewPrj(PrjDefMemManage * myPrjDefinition);
-	~DatabaseNewPrj();
-	
-	
-	// setter, getter functions
-	void SetPrjDefMemory (PrjDefMemManage * myPrjDefinition) {pPrjDefinition = myPrjDefinition;}
-	bool IsPrjDefMemorySet();
-	
-	bool CreateEmptyProject();
-	bool PassProjectDataToDB();
-	
-	
-	
-};
+// TABLES NAMES
+const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
+const wxString TABLE_NAME_OBJECTS = _T("DMN_LAYER_OBJECT");
 
+
+
+
+class DataBaseTM : public DataBase
+	{
+	private:
+		int m_iDBLayerIndex;
+		
+	public:
+		DataBaseTM();
+		~DataBaseTM();
+		
+		bool CreateEmptyTMDatabase();
+		
+		// Database layer operations
+		bool AddLayer(ProjectDefMemoryLayers * myLayer); 
+		void SetActiveLayerId (ProjectDefMemoryLayers * myLayer);
+		int GetActiveLayerId () {return m_iDBLayerIndex;}
+		
+		// Database object operations
+		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);
+	};
 
 
 

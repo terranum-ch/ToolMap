@@ -145,6 +145,10 @@ public:
 	*/		
 	wxArrayString DataBaseGetNextResult();
 	
+	
+	
+	int DataBaseGetResultAsInt();
+	
 	/*!
     @function 
     @brief Used to execute multiple query on the database

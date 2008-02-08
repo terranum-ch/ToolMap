@@ -88,15 +88,18 @@ class PrjDefMemManage
 		int								RemoveLayer(int iIndex = -1);// remove last item by default...
 		bool							RemoveLayer(const wxString & layerName);
 		ProjectDefMemoryLayers *		FindLayer(const wxString & layerName);
+		ProjectDefMemoryLayers *		FindLayer(unsigned int iIndex = 0);
 		void							SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
 													{m_pActiveLayer = ActiveLayer;}
 		ProjectDefMemoryLayers *		GetActiveLayer(){return m_pActiveLayer;}
+		
 	
 		// object members functions
 		ProjectDefMemoryObjects *		AddObject ();
 		int								RemoveObject (int iIndex = -1); // remove last
 		bool							RemoveObject(const wxString & ObjectName);
 		ProjectDefMemoryObjects *		FindObject(const wxString & ObjectName);
+		ProjectDefMemoryObjects *		FindObject(unsigned int iIndex = 0);
 		ProjectDefMemoryObjects *		GetNextObjects();
 		int								GetCountObject();
 		
