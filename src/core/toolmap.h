@@ -180,7 +180,7 @@ public:
 	virtual bool OnInit();
 	
 };
-IMPLEMENT_APP(ToolMapApp);
+DECLARE_APP(ToolMapApp);
 
 
 
@@ -195,6 +195,7 @@ IMPLEMENT_APP(ToolMapApp);
 class ToolMapFrame: public wxFrame
 {
 public:
+	ToolMapFrame();
 	ToolMapFrame(wxFrame *frame, const wxString& title,
 			 wxPoint  pos,  wxSize  size);
 	~ToolMapFrame();
@@ -231,6 +232,7 @@ private:
 //#endif
 	
 	DECLARE_EVENT_TABLE();
+	DECLARE_DYNAMIC_CLASS(ToolMapFrame)
 };
 
 
