@@ -129,6 +129,17 @@ ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(const wxString  & layerName)
 }
 
 
+ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(unsigned int iIndex)
+{
+	if (iIndex <= m_PrjLayerArray->GetCount())
+	{
+		SetActiveLayer(&(m_PrjLayerArray->Item(iIndex)));
+		return &(m_PrjLayerArray->Item(iIndex));
+	}
+	
+	return NULL; // out of the bound
+}
+
 
 /*********************** OBJECTS FUNCTIONS **************************/
 ProjectDefMemoryObjects * PrjDefMemManage::AddObject()
@@ -205,6 +216,21 @@ ProjectDefMemoryObjects *	PrjDefMemManage::FindObject(const wxString & ObjectNam
 	}
 	
 	return NULL; // nothing found... check for null pointer
+}
+
+
+ProjectDefMemoryObjects *	PrjDefMemManage::FindObject(unsigned int iIndex)
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	if (iIndex <= layer->m_pLayerObjectArray->GetCount())
+	{
+		return &(layer->m_pLayerObjectArray->Item(iIndex));
+	}
+
+	return NULL; // nothing found... check for null pointer
+	
 }
 
 

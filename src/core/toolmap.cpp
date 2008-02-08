@@ -328,9 +328,11 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this, &m_PrjDefinition);
 	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
+		wxBusyCursor wait;
 		DatabaseNewPrj myNewPrjDB (&m_PrjDefinition);
 		m_Database = &myNewPrjDB;
-		myNewPrjDB.CreateProject();
+		if (myNewPrjDB.CreateEmptyProject())
+			myNewPrjDB.PassProjectDataToDB();
 		
 	}
 	delete myNewProjDlg;
