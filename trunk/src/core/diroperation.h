@@ -49,8 +49,9 @@ enum DIROP_SELECTDIR
  @author Lucien Schreiber (c) CREALP 2007
  @date 05 February 2008
  *******************************************************************************/
-class DirOperation
+class DirOperation : public wxObject
 	{
+	DECLARE_DYNAMIC_CLASS(DirOperation)
 	protected:
 		wxString m_Path[2];
 		//wxString m_DestinationPath;
@@ -76,7 +77,5 @@ class DirOperation
 	};
 
 
-
-
-
 #endif
+

@@ -18,6 +18,7 @@
 
 #include "diroperation.h"
 
+IMPLEMENT_DYNAMIC_CLASS(DirOperation, wxObject)
 
 DirOperation::DirOperation()
 {
@@ -154,6 +155,7 @@ bool DirOperation::CopyDirectory(const wxArrayString & filesNames, bool showprog
 	
 	return bResult;
 }
+
 
 
 

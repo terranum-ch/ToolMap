@@ -34,13 +34,16 @@
 // icon image
 #include "../img/img_icon32.cpp"
 
+IMPLEMENT_APP(ToolMapApp);
+
  inline wxBitmap _wxGetBitmapFromMemory(const unsigned char *data, int length) {
    wxMemoryInputStream is(data, length);
    return wxBitmap(wxImage(is, wxBITMAP_TYPE_ANY, -1), -1);
  }
 
-/* APPLICATION INITIALISATION */
+
 bool ToolMapApp::OnInit()
+/* APPLICATION INITIALISATION */
 {
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
@@ -56,7 +59,7 @@ bool ToolMapApp::OnInit()
 	return true;
 }
 
-
+IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
@@ -66,6 +69,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 END_EVENT_TABLE()
+
+
+ToolMapFrame::ToolMapFrame()
+{
+	
+}
 
 
 /* Frame initialisation */
@@ -339,8 +348,7 @@ void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
 		//// temp for testing 
 		
 		
-		DirOperation mydirOp (myNewPrjExistDLG->m_Old_Prj_Name,
-							  myNewPrjExistDLG->m_New_Prj_Name);
+		 DirOperation mydirOp (myNewPrjExistDLG->m_Old_Prj_Name, myNewPrjExistDLG->m_New_Prj_Name);
 		double myPrjSize = mydirOp.GetDirectorySize();
 		wxLogDebug(_T("%.*f [MB]"),3,myPrjSize);
 		
