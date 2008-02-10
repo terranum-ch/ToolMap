@@ -30,7 +30,7 @@
 #endif
 
 #include "database.h"
-#include "projectdefmemory.h"		// for transfering data directely
+#include "../core/projectdefmemory.h"		// for transfering data directely
 
 // TABLES NAMES
 const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
