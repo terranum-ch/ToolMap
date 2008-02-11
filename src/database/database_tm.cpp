@@ -63,7 +63,9 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  INDEX DMN_LAYER_OBJECT_FKIndex2 (`THEMATIC_LAYERS_LAYER_INDEX` ASC, `OBJECT_ID` ASC) ,")
 	_T("  CONSTRAINT `Contain`")
 	_T("    FOREIGN KEY (`THEMATIC_LAYERS_LAYER_INDEX` )")
-	_T("    REFERENCES  `THEMATIC_LAYERS` (`LAYER_INDEX` ));")
+	_T("    REFERENCES  `THEMATIC_LAYERS` (`LAYER_INDEX` ) ")
+	_T(" ON DELETE CASCADE")
+    _T(" ON UPDATE RESTRICT);")
 	
 	_T("CREATE  TABLE     `GENERIC_POINTS` (")
 	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT     ,")
@@ -209,12 +211,14 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 bool DataBaseTM::AddLayer(ProjectDefMemoryLayers * myLayer)
 {
 	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_LAYERS + _T(" (TYPE_CD, LAYER_NAME) VALUES ");
-	wxString sValues = wxString::Format(_T("(%d,'%s');"), myLayer->m_LayerType, myLayer->m_LayerName.c_str());
+	wxString sValues = wxString::Format(_T("(%d,'%s')"), 
+		myLayer->m_LayerType, 
+		myLayer->m_LayerName.c_str());
 	sSentence.Append(sValues);
 	
-	//wxLogDebug(sSentence);
+	wxLogDebug(sSentence);
 	
-	if (DataBaseQueryMultiple(sSentence) == 0)
+	if (DataBaseQueryReal(sSentence)==0)//DataBaseQueryMultiple(sSentence) == 0)
 	{
 		SetActiveLayerId(myLayer);
 		return TRUE;
@@ -228,7 +232,7 @@ void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 	wxString sValues = wxString::Format(_T("'%s'"), myLayer->m_LayerName.c_str());
 	sSentence.Append(sValues);
 	
-	//wxLogDebug(sSentence);
+	wxLogDebug(sSentence);
 	
 	if (DataBaseQuery(sSentence) == 0) // query OK
 	{
