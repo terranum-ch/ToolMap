@@ -89,6 +89,23 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 	unsigned int indexObject = 0;
 	bool bReturnValue = TRUE;
 	
+	wxArrayString myDbgCharacterVar;
+	
+	//// show character sets  // FOR DEBUGING
+	//int iRetour = DataBaseQuery(_T("SHOW VARIABLES LIKE 'character_set_\%'"));
+	//while(1)
+	//{
+	//	myDbgCharacterVar = DataBaseGetNextResult();
+	//	if (myDbgCharacterVar.GetCount() > 0)
+	//	{
+	//		wxLogDebug(_T("%s | %s"),myDbgCharacterVar.Item(0).c_str(), myDbgCharacterVar.Item(1));
+	//	}
+	//	else
+	//		break;
+	//}
+
+
+
 	/// adding layers, and for each layer add object and fields related to this layer
 	for (indexLayer = 0; indexLayer<pPrjDefinition->m_PrjLayerArray->GetCount();indexLayer++)
 	{
@@ -110,6 +127,22 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 			wxLogDebug(_T("Adding layer OK"));
 		}
 	}
+
+
+	//// show values passed  // FOR DEBUGING
+	//int iRetour = DataBaseQuery(_T("SELECT (LAYER_NAME) FROM THEMATIC_LAYERS"));
+	//while(1)
+	//{
+	//	myDbgCharacterVar = DataBaseGetNextResult();
+	//	if (myDbgCharacterVar.GetCount() > 0)
+	//	{
+	//		wxLogDebug(_T("layer values : %s"),myDbgCharacterVar.Item(0).c_str());
+	//	}
+	//	else
+	//		break;
+	//}
+
+
 	
 	return bReturnValue;
 }

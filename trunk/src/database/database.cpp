@@ -290,6 +290,18 @@ int DataBase::DataBaseQuery(wxString myQuery)
 }
 
 
+int DataBase::DataBaseQueryReal (wxString myQuery)
+{
+	MYSQL_RES *results;
+	//const char * mySentence = myQuery.c_str(); //mb_str(wxConvUTF8);
+
+	int iRetour = mysql_query(pMySQL,(const char*)myQuery.mb_str(wxConvUTF8));
+	results = mysql_store_result(pMySQL);
+	mysql_free_result(results);
+	return iRetour;
+
+}
+
 bool DataBase::DataBaseConvertFullPath(wxString fullpath)
 {
 	wxArrayString myDirArray;
@@ -367,7 +379,9 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 		"--language=./share/english",
 		"--skip-plugin-innodb",//"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
 		"--port=3309",
-		"--character-sets-dir=./share/charsets"
+		"--character-sets-dir=./share/charsets",
+		"--character_set_server=utf8"
+		//"--default-collation=utf8"
 	};
 /*	Those server_args could be used for home-made
 	MySQL libs (unix and mac) without innodb engine

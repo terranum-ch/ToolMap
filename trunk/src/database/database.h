@@ -181,6 +181,10 @@ public:
 	 */
 	int DataBaseQuery(wxString myQuery);
 	
+
+
+	int DataBaseQueryReal (wxString myQuery);
+
 	/*!
     @brief  return the path of the database
 	

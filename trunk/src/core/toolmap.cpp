@@ -332,7 +332,7 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 		DatabaseNewPrj myNewPrjDB (&m_PrjDefinition);
 		m_Database = &myNewPrjDB;
 		if (myNewPrjDB.CreateEmptyProject())
-			myNewPrjDB.PassProjectDataToDB();
+			myNewPrjDB.PassProjectDataToDB();	
 		
 	}
 	delete myNewProjDlg;
