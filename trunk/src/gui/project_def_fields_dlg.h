@@ -103,6 +103,8 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 
 class ProjectDefFieldDlg: public wxDialog
 	{    
+		PRJDEF_FIELD_TYPE m_FieldTypeStatus;
+		
 		ProjectDefMemoryFields * m_MemoryField;
 		PrjDefMemManage * m_pPrjDefinition;
 		
@@ -112,6 +114,15 @@ class ProjectDefFieldDlg: public wxDialog
 		void OnImportAllowedValue (wxCommandEvent & event);
 		void OnRemoveAllowedValue (wxCommandEvent & event);
 		void OnExportAllowedValue (wxCommandEvent & event);
+		void OnChangeFieldType (wxCommandEvent & event);
+		
+		
+		/// graphical function for updating fields options
+		void EnableAllCtrls (bool bUngray = TRUE);
+		void FieldIntegerSelected ();
+		void FieldTextSelected();
+		void FieldDoubleSelected();
+		void FieldDateSelected();
 		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );
