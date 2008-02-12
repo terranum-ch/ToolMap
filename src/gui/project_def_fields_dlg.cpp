@@ -207,7 +207,93 @@ BEGIN_EVENT_TABLE( ProjectDefFieldDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_EXPORT, ProjectDefFieldDlg::OnExportAllowedValue)
 	EVT_TEXT(ID_DLGAFD_FIELD_SCALE, ProjectDefFieldDlg::OnShowLiveResults)
 	EVT_TEXT(ID_DLGAFD_FIELD_PRECISION, ProjectDefFieldDlg::OnShowLiveResults)
+	EVT_CHOICE (ID_DLGAFD_DATA_TYPE, ProjectDefFieldDlg::OnChangeFieldType)
 END_EVENT_TABLE()
+
+
+
+void ProjectDefFieldDlg::OnChangeFieldType (wxCommandEvent & event)
+{
+	m_FieldTypeStatus = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
+	
+	switch (m_FieldTypeStatus)
+	{
+		case TM_FIELD_INTEGER:
+			FieldIntegerSelected();
+			break;
+		case TM_FIELD_FLOAT:
+			FieldDoubleSelected();
+			break;
+		case TM_FIELD_DATE:
+			FieldDateSelected();
+			break;
+		// default behaviour is field text	
+		default:
+			FieldTextSelected();
+			break;
+	}
+}
+
+
+
+/****************** GRAPHICAL FUNCTIONS CALLED WHEN FIELD TYPE CHANGE ********************/
+void ProjectDefFieldDlg::EnableAllCtrls (bool bUngray)
+{
+	// ungray all ctrls 
+	m_DlgAFD_Field_Precision->Enable(bUngray);
+	m_DlgAFD_Field_Scale->Enable(bUngray);
+	m_DlgAFD_Field_Orientation->Enable(bUngray);
+	m_DlgAFD_Constrain_Values->Enable(bUngray);
+	m_DlgAFD_Result->Enable(bUngray);
+}
+
+
+void ProjectDefFieldDlg::FieldIntegerSelected ()
+{
+	// ungray all
+	EnableAllCtrls();
+		
+	// gray field scale because of the integer
+	m_DlgAFD_Field_Scale->SetValue(0);
+	m_DlgAFD_Field_Scale->Enable(FALSE);
+}
+
+void ProjectDefFieldDlg::FieldTextSelected ()
+{
+	// ungray all
+	EnableAllCtrls();
+	
+	// gray field scale because of the text
+	// could not be orientation...
+	m_DlgAFD_Field_Scale->SetValue(0);
+	m_DlgAFD_Field_Scale->Enable(FALSE);
+	m_DlgAFD_Field_Orientation->SetValue(FALSE);
+	m_DlgAFD_Field_Orientation->Enable(FALSE);
+}
+
+
+void ProjectDefFieldDlg::FieldDoubleSelected ()
+{
+	// ungray all
+	EnableAllCtrls();
+}
+
+
+void ProjectDefFieldDlg::FieldDateSelected ()
+{
+	m_DlgAFD_Field_Scale->SetValue(0);
+	m_DlgAFD_Field_Precision->SetValue(0);
+	m_DlgAFD_Field_Orientation->SetValue(FALSE);
+	m_DlgAFD_Constrain_Values->SetValue(FALSE);
+	
+	// gray all
+	EnableAllCtrls(FALSE);
+	
+	wxCommandEvent myEvent;
+	OnShowConstrainValues(myEvent);
+}
+/****************** END OF GRAPHICAL FUNCTIONS CALLED WHEN FIELD TYPE CHANGE ********************/
+
 
 
 void ProjectDefFieldDlg::OnImportAllowedValue (wxCommandEvent & event)
@@ -279,7 +365,7 @@ void ProjectDefFieldDlg::OnShowLiveResults (wxCommandEvent & event)
 
 void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 {
-	if (event.IsChecked())
+	if (m_DlgAFD_Constrain_Values->IsChecked())
 	{
 		m_DlgAFD_Notebook->Show(TRUE);
 	}
@@ -339,6 +425,11 @@ bool ProjectDefFieldDlg::Create( wxWindow* parent, wxWindowID id, const wxString
         GetSizer()->SetSizeHints(this);
     }
     Centre();
+	
+	/// Set default behaviour for selection
+	FieldTextSelected();
+	
+	
     return true;
 }
 
@@ -369,6 +460,7 @@ void ProjectDefFieldDlg::Init()
 	m_DlgAFD_Constrain_Values = NULL;
 	
 	m_MemoryField = NULL;
+	m_FieldTypeStatus = TM_FIELD_TEXT;
 	////@end ProjectDefFieldDlg member initialisation
 }
 
