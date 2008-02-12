@@ -87,6 +87,7 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 {
 	unsigned int indexLayer = 0;
 	unsigned int indexObject = 0;
+	unsigned int indexField = 0;
 	bool bReturnValue = TRUE;
 	
 	wxArrayString myDbgCharacterVar;
@@ -121,7 +122,15 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 					ProjectDefMemoryObjects * myMemObj = pPrjDefinition->FindObject(indexObject);
 					if (myMemObj != NULL)
 						bReturnValue &= AddObject(myMemObj);
-				}	
+				}
+				
+				// adding fields
+				for (indexField = 0; indexField < myMemLayers->m_pLayerFieldArray->GetCount(); indexField++)
+				{
+					ProjectDefMemoryFields * myMemField = pPrjDefinition->FindField(indexField);
+					if (myMemField != NULL)
+						bReturnValue &= AddField(myMemField);
+				}
 				
 			}
 			wxLogDebug(_T("Adding layer OK"));

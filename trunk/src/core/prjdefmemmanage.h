@@ -108,6 +108,7 @@ class PrjDefMemManage
 		int								RemoveField (int iIndex = -1); // remove last
 		bool							RemoveField (const wxString & FieldName); 
 		ProjectDefMemoryFields *		FindField(const wxString & FieldName);
+		ProjectDefMemoryFields *		FindField(unsigned int iIndex = 0);
 		ProjectDefMemoryFields *		GetNextField();
 		int								GetCountFields();
 		void							SetActiveField(ProjectDefMemoryFields * ActiveField)

@@ -63,11 +63,11 @@ void ProjectDefMemoryFields::InitMemberValues()
 {
 	m_FieldID = 0;
 	m_Fieldname = _T("");
-	m_FieldType = FIELD_TEXT;
+	m_FieldType = TM_FIELD_TEXT;
 	m_FieldPrecision = 0;
 	m_FieldScale = 0;
 	m_FieldOrientation = FALSE;
-	m_FieldConstrain = FIELD_NOT_CONSTRAIN;
+	m_FieldConstrain = TM_FIELD_NOT_CONSTRAIN;
 	
 	m_FieldRangeDefault = 0;
 	m_FieldRangeMin = 0;
