@@ -244,6 +244,34 @@ wxArrayString DataBase::DataBaseGetNextResult()
 }
 
 
+
+bool DataBase::DataBaseTableExist(const wxString & tableName)
+{
+	MYSQL_ROW record;
+	// look for an existing table
+	wxString sSentence = wxString::Format (_T("SHOW TABLES  LIKE  '%s'"), tableName.c_str());
+	
+
+	if (DataBaseQuery(sSentence)==0)
+	{
+		// if the query has passed...
+		// then we check the results
+		record = mysql_fetch_row(pResults);
+		if(record != NULL)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
+	
+	
+}
+
+
+
+
+
+
 int DataBase::DataBaseGetResultAsInt()
 {
 	MYSQL_ROW record;

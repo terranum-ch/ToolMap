@@ -247,7 +247,7 @@ void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 /*************************** OBJECT DATABASE FUNCTION ****************************/
 bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex)
 {
-
+	// get the selected layer of take the actual one
 	if (DBlayerIndex == -1)
 	{
 		DBlayerIndex = GetActiveLayerId(); 
@@ -267,6 +267,66 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 	return FALSE;
 }
 
+
+
+/*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
+bool DataBaseTM::AddTableIfNotExist (const int & iLayerIndex)
+{
+	wxString sCreateTable1 = _T("CREATE  TABLE IF NOT EXISTS `LAYER_AT");
+	wxString sValues = wxString::Format(_T("%d` ("), iLayerIndex);
+	wxString sCreateTable2 = _T("  `LAYER_AT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
+	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL     ,")
+	_T("  PRIMARY KEY (`LAYER_AT_ID`) ,")
+	_T("  INDEX LAYER_ATX_FKIndex1 (`OBJECT_ID` ASC) ,")
+	_T("  CONSTRAINT `Rel_09`")
+	_T("    FOREIGN KEY (`OBJECT_ID` )")
+	_T("    REFERENCES  `GENERIC_POINTS` (`OBJECT_ID` ));");
+	sCreateTable1.Append(sValues + sCreateTable2);
+	
+	
+	if (DataBaseQueryMultiple(sCreateTable1) == 0)
+	{
+		wxLogDebug(_T("Table Creation for layer [%i]... DONE"), iLayerIndex);	
+		return TRUE;
+	}
+	wxLogDebug(_T("Table Creation for layer [%i]... FAILED"), iLayerIndex);
+	return FALSE;
+}
+
+
+
+
+/*************************** FIELD DATABASE FUNCTION ****************************/
+bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
+{
+	// get the selected layer of take the actual one
+	if (DBlayerIndex == -1)
+	{
+		DBlayerIndex = GetActiveLayerId(); 
+	}
+	
+	// first we must create the table if not exist
+	bool bCreateTable = AddTableIfNotExist(DBlayerIndex);
+	
+	
+	
+	// check that the table exists.
+	if (DataBaseTableExist(wxString::Format(_T("LAYER_AT%d"),DBlayerIndex)))
+	{
+		// then create the fields based upon the fields type
+		switch (myField->m_FieldType)
+		{
+			case TM_FIELD_INTEGER:
+				wxLogDebug(_T("Field type is integer"));
+				break;
+			default:
+				break;
+		}
+		
+		return TRUE;	
+	}
+	return FALSE;
+}
 
 /// FIELD CREATION ::
 

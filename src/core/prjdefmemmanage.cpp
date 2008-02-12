@@ -352,6 +352,25 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 
 }
 
+
+ProjectDefMemoryFields * PrjDefMemManage::FindField(unsigned int iIndex)
+{
+	// get the active layer
+	ProjectDefMemoryLayers * layer = GetActiveLayer();
+	
+	
+	if (iIndex <= layer->m_pLayerFieldArray->GetCount())
+	{
+		SetActiveField(&(layer->m_pLayerFieldArray->Item(iIndex)));
+		return &(layer->m_pLayerFieldArray->Item(iIndex));
+	}
+	
+	
+	return NULL; // nothing found, return null pointer.
+	
+}
+
+
 ProjectDefMemoryFields *PrjDefMemManage::GetNextField()
 {
 	// get the active layer

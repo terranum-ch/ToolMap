@@ -389,13 +389,13 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	m_MemoryField->m_FieldOrientation = m_DlgAFD_Field_Orientation->IsChecked();
 	if (!m_DlgAFD_Constrain_Values->IsChecked())
 	{
-		m_MemoryField->m_FieldConstrain = FIELD_NOT_CONSTRAIN;
+		m_MemoryField->m_FieldConstrain = TM_FIELD_NOT_CONSTRAIN;
 		
 	}
 	else
 	{
 		m_MemoryField->m_FieldConstrain = (PRJDEF_FIELD_CONSTAIN_VALUE_TYPE) m_DlgAFD_Notebook->GetSelection();
-		if (m_MemoryField->m_FieldConstrain == FIELD_CONSTRAIN_RANGE)
+		if (m_MemoryField->m_FieldConstrain == TM_FIELD_CONSTRAIN_RANGE)
 		{
 			m_DlgAFD_Range_Min->GetValue().ToLong(&lTempValue);
 			m_MemoryField->m_FieldRangeMin = (int) lTempValue;
@@ -434,13 +434,13 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 		m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
 		m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
 		m_DlgAFD_Field_Orientation->SetValue(m_MemoryField->m_FieldOrientation);
-		if (m_MemoryField->m_FieldConstrain != FIELD_NOT_CONSTRAIN)
+		if (m_MemoryField->m_FieldConstrain != TM_FIELD_NOT_CONSTRAIN)
 		{
 			m_DlgAFD_Constrain_Values->SetValue(TRUE);
 			m_DlgAFD_Notebook->Show(TRUE);
 			m_DlgAFD_Notebook->SetSelection(m_MemoryField->m_FieldConstrain);
 			
-			if (m_MemoryField->m_FieldConstrain == FIELD_CONSTRAIN_CODED)
+			if (m_MemoryField->m_FieldConstrain == TM_FIELD_CONSTRAIN_CODED)
 			{
 				// fill the coded value list
 				for (int i = 0; i< m_pPrjDefinition->GetCountCodedValue(); i++)
@@ -523,7 +523,7 @@ void ProjectDefFieldDlg::CreateControls()
     m_DlgAFD_Field_Type = new wxChoice( itemDialog1, ID_DLGAFD_DATA_TYPE, wxDefaultPosition, 
 										 wxDefaultSize, PRJDEF_FIELD_TYPE_NUMBER,
 										 PRJDEF_FIELD_TYPE_STRING, 0 );
-    m_DlgAFD_Field_Type->SetSelection(FIELD_TEXT);
+    m_DlgAFD_Field_Type->SetSelection(TM_FIELD_TEXT);
     itemFlexGridSizer7->Add(m_DlgAFD_Field_Type, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Field precision :"), wxDefaultPosition, wxDefaultSize, 0 );

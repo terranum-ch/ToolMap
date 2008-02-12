@@ -145,6 +145,7 @@ public:
 	*/		
 	wxArrayString DataBaseGetNextResult();
 	
+	bool DataBaseTableExist(const wxString & tableName);
 	
 	
 	int DataBaseGetResultAsInt();

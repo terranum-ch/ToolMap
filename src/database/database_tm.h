@@ -44,6 +44,10 @@ class DataBaseTM : public DataBase
 	private:
 		int m_iDBLayerIndex;
 		
+		// field operations private
+		bool AddTableIfNotExist (const int & iLayerIndex);
+		
+		
 	public:
 		DataBaseTM();
 		~DataBaseTM();
@@ -57,6 +61,9 @@ class DataBaseTM : public DataBase
 		
 		// Database object operations
 		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);
+		
+		// field operations
+		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
 	};
 
 
