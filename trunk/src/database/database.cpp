@@ -318,6 +318,15 @@ int DataBase::DataBaseQuery(const wxString & myQuery)
 }
 
 
+bool DataBase::DataBaseHasResult ()
+{
+	if (pResults == NULL)
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
+
 
 int DataBase::DataBaseQueryMultiple (const wxString & myQuery)
 {
