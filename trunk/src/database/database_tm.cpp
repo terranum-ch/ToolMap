@@ -191,18 +191,24 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  PRIMARY KEY (`SETTING_DBK`) )");
 	
 	
-	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
-	wxLogDebug(_T("Request array size is %d sentence(s)"), myArray.GetCount());
+//	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
+//	wxLogDebug(_T("Request array size is %d sentence(s)"), myArray.GetCount());
+//	
+//	for (unsigned int i= 0; i<myArray.GetCount(); i++)
+//	{
+//		iErrCode += DataBaseQueryNoResult(myArray.Item(i));
+//	}
+//	wxLogDebug(_T("Number of errors during process of array : %d"), iErrCode);
+//	if (iErrCode != 0)
+//		return FALSE;
+//	
+//	return TRUE;	
+	if (DataBaseQueryMultiple(myNewPrjSentence) == 0)
+		return TRUE;
 	
-	for (unsigned int i= 0; i<myArray.GetCount(); i++)
-	{
-		iErrCode += DataBaseQueryMultiple(myArray.Item(i));
-	}
-	wxLogDebug(_T("Number of errors during process of array : %d"), iErrCode);
-	if (iErrCode != 0)
-		return FALSE;
+	wxLogDebug(_T("Errors creating the database..."));
+	return FALSE;
 	
-	return TRUE;	
 }
 
 
@@ -260,7 +266,7 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 	
 	wxLogDebug(sSentence);
 	
-	if (DataBaseQueryMultiple(sSentence) == 0)
+	if (DataBaseQueryNoResult(sSentence) == 0)
 	{
 		return TRUE;
 	}
@@ -270,10 +276,10 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 
 
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
-bool DataBaseTM::AddTableIfNotExist (const int & iLayerIndex)
+bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 {
 	wxString sCreateTable1 = _T("CREATE  TABLE IF NOT EXISTS `");
-	wxString sValues = wxString::Format(TABLE_NAME_LAYER_AT + _T("%d` ("), iLayerIndex);
+	wxString sValues = wxString::Format(_T("%s` ("), TableName.c_str());
 	wxString sCreateTable2 = _T("  `LAYER_AT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
 	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL     ,")
 	_T("  PRIMARY KEY (`LAYER_AT_ID`) ,")
@@ -284,22 +290,22 @@ bool DataBaseTM::AddTableIfNotExist (const int & iLayerIndex)
 	sCreateTable1.Append(sValues + sCreateTable2);
 	
 	
-	if (DataBaseQueryMultiple(sCreateTable1) == 0)
+	if (DataBaseQueryNoResult(sCreateTable1) == 0)
 	{
-		wxLogDebug(_T("Table Creation for layer [%i]... DONE"), iLayerIndex);	
+		wxLogDebug(_T("Table Creation [%s]... DONE"), TableName.c_str());	
 		return TRUE;
 	}
-	wxLogDebug(_T("Table Creation for layer [%i]... FAILED"), iLayerIndex);
+	wxLogDebug(_T("Table Creation [%s]... FAILED"), TableName.c_str());
 	return FALSE;
 }
 
 
-bool DataBaseTM::CreateFieldInteger (ProjectDefMemoryFields * myField, wxString TableName)
+bool DataBaseTM::CreateFieldInteger (ProjectDefMemoryFields * myField, const wxString & TableName)
 {
 	wxString sSentence = wxString::Format(
 										  _T("ALTER TABLE `%s` ADD COLUMN `%s` INT NULL"),
 										  TableName.c_str(), myField->m_Fieldname.c_str());
-	if (DataBaseQueryMultiple(sSentence)==0)
+	if (DataBaseQueryNoResult(sSentence)==0)
 	{
 		wxLogDebug(_T("Creating integer field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
@@ -310,14 +316,14 @@ bool DataBaseTM::CreateFieldInteger (ProjectDefMemoryFields * myField, wxString 
 
 
 
-bool DataBaseTM::CreateFieldText (ProjectDefMemoryFields * myField, wxString TableName)
+bool DataBaseTM::CreateFieldText (ProjectDefMemoryFields * myField, const wxString & TableName)
 {
 	wxString sSentence = wxString::Format(
 										  _T("ALTER TABLE `%s` ADD COLUMN `%s` VARCHAR(%d) NULL"),
 										  TableName.c_str(), 
 										  myField->m_Fieldname.c_str(),
 										  myField->m_FieldPrecision);
-	if (DataBaseQueryMultiple(sSentence)==0)
+	if (DataBaseQueryNoResult(sSentence)==0)
 	{
 		wxLogDebug(_T("Creating text field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
@@ -327,7 +333,7 @@ bool DataBaseTM::CreateFieldText (ProjectDefMemoryFields * myField, wxString Tab
 }
 
 
-bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, wxString TableName)
+bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, const wxString & TableName)
 {
 	wxString sSentence = wxString::Format(
 										  _T("ALTER TABLE `%s` ADD COLUMN `%s` DECIMAL(%d,%d) NULL"),
@@ -335,7 +341,7 @@ bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, wxString T
 										  myField->m_Fieldname.c_str(),
 										  myField->m_FieldPrecision,
 										  myField->m_FieldScale);
-	if (DataBaseQueryMultiple(sSentence)==0)
+	if (DataBaseQueryNoResult(sSentence)==0)
 	{
 		wxLogDebug(_T("Creating double field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
@@ -345,13 +351,13 @@ bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, wxString T
 }
 
 
-bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, wxString TableName)
+bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, const wxString & TableName)
 {
 	wxString sSentence = wxString::Format(
 										  _T("ALTER TABLE `%s` ADD COLUMN `%s` DATE NULL"),
 										  TableName.c_str(), 
 										  myField->m_Fieldname.c_str());
-	if (DataBaseQueryMultiple(sSentence)==0)
+	if (DataBaseQueryNoResult(sSentence)==0)
 	{
 		wxLogDebug(_T("Creating date field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
@@ -361,45 +367,86 @@ bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, wxString Tab
 }
 
 
+bool DataBaseTM::AddFieldConstrain (ProjectDefMemoryFields * myField, const wxString & TableName)
+{
+	//bReturnValue = TRUE;
+	
+	// first get all coded values from the array and concanete them into
+	// a wxString.
+	wxString sValues = _T("");
+	wxString sValueTemp = _T("");
+	for (unsigned int i = 0; i< myField->m_pCodedValueArray->GetCount(); i++)
+	{
+		sValueTemp = myField->m_pCodedValueArray->Item(i).m_ValueName;
+		sValues.Append(wxString::Format(_T("\"%s\","), sValueTemp.c_str()));
+	}
+	// remove last comma
+	sValues = sValues.BeforeLast(',');
+	
+	
+	if (sValues.IsEmpty() == FALSE)
+	{
+		
+		wxString sSentence = wxString::Format(_T("ALTER TABLE `%s` MODIFY `%s` ENUM (%s)"),
+											  TableName.c_str(),
+											  myField->m_Fieldname.c_str(),
+											  sValues.c_str());
+		wxLogDebug(sSentence);
+		if (DataBaseQueryNoResult(sSentence) == 0)
+		{
+			return TRUE;
+		}
+	}	
+	return FALSE;
+}
 
 
 /*************************** FIELD DATABASE FUNCTION ****************************/
 bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 {
+	bool bReturnValue = TRUE;
+	
 	// get the selected layer of take the actual one
 	if (DBlayerIndex == -1)
 	{
 		DBlayerIndex = GetActiveLayerId(); 
 	}
 	
-	// first we must create the table if not exist
-	bool bCreateTable = AddTableIfNotExist(DBlayerIndex);
-	
+	// create the table name
 	wxString sTableName = wxString::Format(TABLE_NAME_LAYER_AT + _("%d"), DBlayerIndex);
 	
+	// first we must create the table if not exist
+	AddTableIfNotExist(sTableName);
+	
 	// check that the table exists.
-	if (DataBaseTableExist(sTableName))
+	bReturnValue &= DataBaseTableExist(sTableName);
+	if (bReturnValue)
 	{
 		// then create the fields based upon the fields type
 		switch (myField->m_FieldType)
 		{
 			case TM_FIELD_INTEGER:
-				CreateFieldInteger(myField, sTableName);
+				bReturnValue &= CreateFieldInteger(myField, sTableName);
 				break;
 			case TM_FIELD_FLOAT:
-				CreateFieldDouble(myField, sTableName);
+				bReturnValue &= CreateFieldDouble(myField, sTableName);
 				break;
 			case  TM_FIELD_DATE:
-				CreateFieldDate(myField, sTableName);
+				bReturnValue &= CreateFieldDate(myField, sTableName);
 				break;
 			default:
-				CreateFieldText(myField, sTableName);
+				bReturnValue &= CreateFieldText(myField, sTableName);
 				break;
 		}
-		
-		return TRUE;	
+		// add constrain on field if needed. 
+		// actually only support enum contrain for text field.
+		if (myField->m_FieldConstrain == TM_FIELD_CONSTRAIN_CODED)
+		{
+			bReturnValue &= AddFieldConstrain(myField, sTableName);
+		}
+
 	}
-	return FALSE;
+	return bReturnValue;
 }
 
 /// FIELD CREATION ::

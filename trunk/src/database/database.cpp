@@ -297,7 +297,7 @@ int DataBase::DataBaseGetResultAsInt()
 }
 
 
-int DataBase::DataBaseQueryMultiple(wxString myQuery)
+int DataBase::DataBaseQueryNoResult(wxString myQuery)
 {
 	MYSQL_RES *results;
 	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8) );
@@ -306,7 +306,7 @@ int DataBase::DataBaseQueryMultiple(wxString myQuery)
 	return iRetour;
 }
 
-int DataBase::DataBaseQuery(wxString myQuery)
+int DataBase::DataBaseQuery(const wxString & myQuery)
 {
 	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8) );
 	if (iRetour == 0) 
@@ -315,6 +315,29 @@ int DataBase::DataBaseQuery(wxString myQuery)
 		m_resultNumber = mysql_field_count(pMySQL);
 	}
 	return iRetour;
+}
+
+
+
+int DataBase::DataBaseQueryMultiple (const wxString & myQuery)
+{
+	int iReturnValue = 0;
+	//MYSQL_RES *results;
+	
+	// ask the server for dealing with multiple statements
+	// see also http://dev.mysql.com/doc/refman/5.1/en/mysql-set-server-option.html
+	iReturnValue &= mysql_set_server_option(pMySQL,MYSQL_OPTION_MULTI_STATEMENTS_ON);
+	
+	if (iReturnValue == 0)
+	{
+		iReturnValue &= mysql_query(pMySQL,(const char*)myQuery.mb_str(wxConvUTF8));
+	}
+	
+	
+	// change back to default behaviour
+	iReturnValue &= mysql_set_server_option(pMySQL,MYSQL_OPTION_MULTI_STATEMENTS_OFF);
+	
+	return iReturnValue;
 }
 
 
