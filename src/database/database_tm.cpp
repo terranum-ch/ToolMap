@@ -272,8 +272,8 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
 bool DataBaseTM::AddTableIfNotExist (const int & iLayerIndex)
 {
-	wxString sCreateTable1 = _T("CREATE  TABLE IF NOT EXISTS `LAYER_AT");
-	wxString sValues = wxString::Format(_T("%d` ("), iLayerIndex);
+	wxString sCreateTable1 = _T("CREATE  TABLE IF NOT EXISTS `");
+	wxString sValues = wxString::Format(TABLE_NAME_LAYER_AT + _T("%d` ("), iLayerIndex);
 	wxString sCreateTable2 = _T("  `LAYER_AT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
 	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL     ,")
 	_T("  PRIMARY KEY (`LAYER_AT_ID`) ,")
@@ -294,6 +294,73 @@ bool DataBaseTM::AddTableIfNotExist (const int & iLayerIndex)
 }
 
 
+bool DataBaseTM::CreateFieldInteger (ProjectDefMemoryFields * myField, wxString TableName)
+{
+	wxString sSentence = wxString::Format(
+										  _T("ALTER TABLE `%s` ADD COLUMN `%s` INT NULL"),
+										  TableName.c_str(), myField->m_Fieldname.c_str());
+	if (DataBaseQueryMultiple(sSentence)==0)
+	{
+		wxLogDebug(_T("Creating integer field : %s DONE"), myField->m_Fieldname.c_str());
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+
+
+bool DataBaseTM::CreateFieldText (ProjectDefMemoryFields * myField, wxString TableName)
+{
+	wxString sSentence = wxString::Format(
+										  _T("ALTER TABLE `%s` ADD COLUMN `%s` VARCHAR(%d) NULL"),
+										  TableName.c_str(), 
+										  myField->m_Fieldname.c_str(),
+										  myField->m_FieldPrecision);
+	if (DataBaseQueryMultiple(sSentence)==0)
+	{
+		wxLogDebug(_T("Creating text field : %s DONE"), myField->m_Fieldname.c_str());
+		return TRUE;
+	}
+	
+	return FALSE;	
+}
+
+
+bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, wxString TableName)
+{
+	wxString sSentence = wxString::Format(
+										  _T("ALTER TABLE `%s` ADD COLUMN `%s` DECIMAL(%d,%d) NULL"),
+										  TableName.c_str(), 
+										  myField->m_Fieldname.c_str(),
+										  myField->m_FieldPrecision,
+										  myField->m_FieldScale);
+	if (DataBaseQueryMultiple(sSentence)==0)
+	{
+		wxLogDebug(_T("Creating double field : %s DONE"), myField->m_Fieldname.c_str());
+		return TRUE;
+	}
+	
+	return FALSE;	
+}
+
+
+bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, wxString TableName)
+{
+	wxString sSentence = wxString::Format(
+										  _T("ALTER TABLE `%s` ADD COLUMN `%s` DATE NULL"),
+										  TableName.c_str(), 
+										  myField->m_Fieldname.c_str());
+	if (DataBaseQueryMultiple(sSentence)==0)
+	{
+		wxLogDebug(_T("Creating date field : %s DONE"), myField->m_Fieldname.c_str());
+		return TRUE;
+	}
+	
+	return FALSE;	
+}
+
+
 
 
 /*************************** FIELD DATABASE FUNCTION ****************************/
@@ -308,18 +375,25 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	// first we must create the table if not exist
 	bool bCreateTable = AddTableIfNotExist(DBlayerIndex);
 	
-	
+	wxString sTableName = wxString::Format(TABLE_NAME_LAYER_AT + _("%d"), DBlayerIndex);
 	
 	// check that the table exists.
-	if (DataBaseTableExist(wxString::Format(_T("LAYER_AT%d"),DBlayerIndex)))
+	if (DataBaseTableExist(sTableName))
 	{
 		// then create the fields based upon the fields type
 		switch (myField->m_FieldType)
 		{
 			case TM_FIELD_INTEGER:
-				wxLogDebug(_T("Field type is integer"));
+				CreateFieldInteger(myField, sTableName);
+				break;
+			case TM_FIELD_FLOAT:
+				CreateFieldDouble(myField, sTableName);
+				break;
+			case  TM_FIELD_DATE:
+				CreateFieldDate(myField, sTableName);
 				break;
 			default:
+				CreateFieldText(myField, sTableName);
 				break;
 		}
 		

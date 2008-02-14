@@ -35,6 +35,7 @@
 // TABLES NAMES
 const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
 const wxString TABLE_NAME_OBJECTS = _T("DMN_LAYER_OBJECT");
+const wxString TABLE_NAME_LAYER_AT = _T("LAYER_AT");
 
 
 
@@ -46,6 +47,10 @@ class DataBaseTM : public DataBase
 		
 		// field operations private
 		bool AddTableIfNotExist (const int & iLayerIndex);
+		bool CreateFieldInteger (ProjectDefMemoryFields * myField, wxString TableName);
+		bool CreateFieldText (ProjectDefMemoryFields * myField, wxString TableName);
+		bool CreateFieldDouble (ProjectDefMemoryFields * myField, wxString TableName);
+		bool CreateFieldDate (ProjectDefMemoryFields * myField, wxString TableName);
 		
 		
 	public:

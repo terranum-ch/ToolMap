@@ -253,9 +253,12 @@ void ProjectDefFieldDlg::FieldIntegerSelected ()
 	// ungray all
 	EnableAllCtrls();
 		
-	// gray field scale because of the integer
+	// gray field scale and preicision because of the integer
+	m_DlgAFD_Field_Precision->SetValue(0);
+	m_DlgAFD_Field_Precision->Enable(FALSE);
 	m_DlgAFD_Field_Scale->SetValue(0);
 	m_DlgAFD_Field_Scale->Enable(FALSE);
+	m_DlgAFD_Result->Enable(FALSE);
 }
 
 void ProjectDefFieldDlg::FieldTextSelected ()
