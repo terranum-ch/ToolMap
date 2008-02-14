@@ -166,23 +166,24 @@ public:
 	@see DataBaseCutRequest(), DataBaseQuery()
 	 
 	*/
-	int DataBaseQueryMultiple(wxString myQuery);
+	int DataBaseQueryNoResult(wxString myQuery);
 	/*!
 	@function 
 	@brief Used to execute one query on the database and then get the result
 	
-	This function works in a similar way as the DataBaseQueryMultiple() but is able
+	This function works in a similar way as the DataBaseQueryNoResult() but is able
 	to send back the result of a query.
 	
 	@param myQuery the string containing the query
 	@result true if the query was successfuly made otherwise false.
 	@warning User have to check the return value, and if false then one souldn't 
 	call the DataBaseGetNextResult()
-	@see DataBaseQueryMultiple()
+	@see DataBaseQueryNoResult()
 	 */
-	int DataBaseQuery(wxString myQuery);
+	int DataBaseQuery(const wxString & myQuery);
 	
-
+	int DataBaseQueryMultiple (const wxString & myQuery);
+	
 
 	int DataBaseQueryReal (wxString myQuery);
 
