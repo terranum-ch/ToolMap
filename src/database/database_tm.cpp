@@ -31,7 +31,7 @@ DataBaseTM::~DataBaseTM()
 
 
 }
-
+/*************************** GENERAL DATABASE FUNCTION ****************************/
 bool DataBaseTM::CreateEmptyTMDatabase()
 {
 	int iErrCode = 0;
@@ -191,24 +191,45 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  PRIMARY KEY (`SETTING_DBK`) )");
 	
 	
-//	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
-//	wxLogDebug(_T("Request array size is %d sentence(s)"), myArray.GetCount());
-//	
-//	for (unsigned int i= 0; i<myArray.GetCount(); i++)
-//	{
-//		iErrCode += DataBaseQueryNoResult(myArray.Item(i));
-//	}
-//	wxLogDebug(_T("Number of errors during process of array : %d"), iErrCode);
-//	if (iErrCode != 0)
-//		return FALSE;
-//	
-//	return TRUE;	
-	if (DataBaseQueryMultiple(myNewPrjSentence) == 0)
-		return TRUE;
+	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
+	wxLogDebug(_T("Request array size is %d sentence(s)"), myArray.GetCount());
 	
-	wxLogDebug(_T("Errors creating the database..."));
-	return FALSE;
+	for (unsigned int i= 0; i<myArray.GetCount(); i++)
+	{
+		iErrCode += DataBaseQueryNoResult(myArray.Item(i));
+	}
+	wxLogDebug(_T("Number of errors during process of array : %d"), iErrCode);
+	if (iErrCode != 0)
+		return FALSE;
 	
+	return TRUE;	
+	
+// CODE FOR PASSING MULTIPLE STATEMENT NOT WORKING (BUG) WITH VERSION 5.1.23-rc	
+//	if (DataBaseQueryMultiple(myNewPrjSentence) == 0)
+//		return TRUE;
+//	
+//	wxLogDebug(_T("Errors creating the database..."));
+//	return FALSE;
+	
+}
+
+
+/*************************** PROJECT DATABASE FUNCTION ****************************/
+bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
+{
+	// check if the project line exist
+	wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_PRJ_SETTINGS + _T(" WHERE SETTING_DBK =1");
+	if (DataBaseQuery(sSentence)==0)
+	{
+		// if ok the project settings exist and we 
+		// must update it, otherwise insert
+		if (DataBaseHasResult())
+		{
+			//sSentence = wxString::Format(_T("INSERT INTO %s (PRJ_UNIT, PRJ_PROJECTION, PRJ_NAME, PRJ_VERSION) VALUES "));
+		}
+		//else
+			//sSentence = wxString::Format(_T("UPDATE PRJ_SETTINGS SET PRJ_UNIT = %d, PRJ_PROJECTION = %d, "));
+	}
 }
 
 

@@ -31,11 +31,13 @@
 
 #include "database.h"
 #include "../core/projectdefmemory.h"		// for transfering data directely
+#include "../core/prjdefmemmanage.h"		// for transfering data directely
 
 // TABLES NAMES
 const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
 const wxString TABLE_NAME_OBJECTS = _T("DMN_LAYER_OBJECT");
 const wxString TABLE_NAME_LAYER_AT = _T("LAYER_AT");
+const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
 
 
 
@@ -59,7 +61,12 @@ class DataBaseTM : public DataBase
 		DataBaseTM();
 		~DataBaseTM();
 		
+		// general database operations
 		bool CreateEmptyTMDatabase();
+		
+		// Database project operations
+		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
+		
 		
 		// Database layer operations
 		bool AddLayer(ProjectDefMemoryLayers * myLayer); 

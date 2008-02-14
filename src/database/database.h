@@ -182,6 +182,13 @@ public:
 	 */
 	int DataBaseQuery(const wxString & myQuery);
 	
+	
+	bool DataBaseHasResult ();
+	
+	
+	/*! Execute multiple query 
+	 @bug NOT WORKING, CRASH WITH VERSION 5.1.23-rc (on windows and Mac)
+	 */
 	int DataBaseQueryMultiple (const wxString & myQuery);
 	
 
