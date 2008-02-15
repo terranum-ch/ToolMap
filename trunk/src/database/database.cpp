@@ -362,16 +362,16 @@ int DataBase::DataBaseQueryMultiple (const wxString & myQuery)
 	
 	// ask the server for dealing with multiple statements
 	// see also http://dev.mysql.com/doc/refman/5.1/en/mysql-set-server-option.html
-	iReturnValue &= mysql_set_server_option(pMySQL,MYSQL_OPTION_MULTI_STATEMENTS_ON);
+	iReturnValue = mysql_set_server_option(pMySQL,MYSQL_OPTION_MULTI_STATEMENTS_ON);
 	
 	if (iReturnValue == 0)
 	{
-		iReturnValue &= mysql_query(pMySQL,(const char*)myQuery.mb_str(wxConvUTF8));
+		iReturnValue = mysql_query(pMySQL,(const char*)myQuery.mb_str(wxConvUTF8));
 	}
 	
 	
 	// change back to default behaviour
-	iReturnValue &= mysql_set_server_option(pMySQL,MYSQL_OPTION_MULTI_STATEMENTS_OFF);
+	iReturnValue = mysql_set_server_option(pMySQL,MYSQL_OPTION_MULTI_STATEMENTS_OFF);
 	
 	return iReturnValue;
 }

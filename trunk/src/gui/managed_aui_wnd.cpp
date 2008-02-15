@@ -23,7 +23,7 @@ ManagedAuiWnd::ManagedAuiWnd(wxAuiManager * AuiManager) : m_AuiMgr(AuiManager)
 {
 	InitValues();
 	//wxLogDebug(_T("Value of m_AuiMgr (parent) = %p"), m_AuiPaneInfo);
-	wxLogDebug(_T("ManagedAuiWnd Ctor called %p"), m_AuiMgr);
+	//wxLogDebug(_T("ManagedAuiWnd Ctor called %p"), m_AuiMgr);
 }
 
 

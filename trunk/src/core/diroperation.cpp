@@ -146,7 +146,7 @@ bool DirOperation::CopyDirectory(const wxArrayString & filesNames, bool showprog
 		myFileDestinationName = myFileDestinationPathName.GetFullName();
 		myFileDestinationPathName.Assign(m_Path[DIROP_PATH_DESTINATION], myFileDestinationName);
 		
-		bResult &= wxCopyFile(myfileName, myFileDestinationPathName.GetFullPath());
+		bResult = bResult && wxCopyFile(myfileName, myFileDestinationPathName.GetFullPath());
 	}
 	
 	

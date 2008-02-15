@@ -53,7 +53,7 @@ void ProjectDefLayersObjectList::BeforeAdding()
 {
 	// create the dialog, will be destroyed in AfterAdding
 	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-	wxLogDebug(_T("Creating Object description Dialog"));
+	//wxLogDebug(_T("Creating Object description Dialog"));
 	SetDialog(myEditObjDlg);
 	
 	m_ObjectObj = m_pPrjDefinition->AddObject();
@@ -82,7 +82,7 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 		m_pPrjDefinition->RemoveObject(); // remove last object not used
 	
 	// delete the dialog
-	wxLogDebug(_T("Deleting Object description Dialog"));
+	//wxLogDebug(_T("Deleting Object description Dialog"));
 	delete m_pDialog;
 	
 }
@@ -107,7 +107,7 @@ void ProjectDefLayersObjectList::BeforeEditing ()
 {
 	// create the dialog, will be deleted in AfterEditing.
 	ProjectDefLayersEditObjectDlg * myObjectDlg = new ProjectDefLayersEditObjectDlg(this);
-	wxLogDebug(_T("Creating Object description Dialog"));
+	//wxLogDebug(_T("Creating Object description Dialog"));
 	SetDialog(myObjectDlg);
 	
 	// get selected item from the list
@@ -146,7 +146,7 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 	}
 		
 	// delete dialog
-    wxLogDebug(_T("Deleting Object description Dialog"));
+    //wxLogDebug(_T("Deleting Object description Dialog"));
 	delete m_pDialog;
 
 }
@@ -202,7 +202,7 @@ void ProjectDefLayersFieldsList::BeforeAdding ()
 {
 	// create the dialog, will be destroyed in AfterAdding
 	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this,m_pPrjDefinition);
-	wxLogDebug(_T("Creating Field Dialog"));
+	//wxLogDebug(_T("Creating Field Dialog"));
 	SetDialog(myFieldDlg);
 	
 	m_FieldsObj =  m_pPrjDefinition->AddField();
@@ -231,7 +231,7 @@ void ProjectDefLayersFieldsList::AfterAdding (bool bRealyAddItem)
 		m_pPrjDefinition->RemoveField(); // remove last field not used
 	
 	// delete the dialog
-	wxLogDebug(_T("Deleting Field Dialog"));
+	//wxLogDebug(_T("Deleting Field Dialog"));
 	delete m_pDialog;	
 }
 
@@ -254,7 +254,7 @@ void ProjectDefLayersFieldsList::BeforeEditing ()
 {
 	// create the dialog, will be deleted in AfterEditing.
 	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this,m_pPrjDefinition);
-	wxLogDebug(_T("Creating Field Dialog"));
+	//wxLogDebug(_T("Creating Field Dialog"));
 	SetDialog(myFieldDlg);
 	
 	// get selected item from the list
@@ -292,7 +292,7 @@ void ProjectDefLayersFieldsList::AfterEditing (bool bRealyEdited)
 	}
 	
 	// delete dialog
-    wxLogDebug(_T("Deleting Field Dialog"));
+    //wxLogDebug(_T("Deleting Field Dialog"));
 	delete m_pDialog;
 	
 }
@@ -551,7 +551,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 		m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName); 
 		m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE) m_LayersObj->m_LayerType);
 		
-		wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
+		//wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 		
 		// fill the object list
 		for (int i = 0; i<m_pPrjDefinition->GetCountObject(); i++)
@@ -603,7 +603,7 @@ ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPr
 	m_pPrjDefinition = pPrjDef;
 	m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
 	m_DlgPDL_Fields_List->PassPrjDefToList(m_pPrjDefinition);
-	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
+	//wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 }
 
 

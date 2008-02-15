@@ -56,7 +56,7 @@ void ProjectDefFieldList::BeforeAdding ()
 {
 	// create the object dialog, will be destroyed in AfterAdding
 	ProjectDefLayersEditObjectDlg * myEditObjDlg = new ProjectDefLayersEditObjectDlg(this);
-	wxLogDebug(_T("Creating Coded Value Dialog"));
+	//wxLogDebug(_T("Creating Coded Value Dialog"));
 	SetDialog(myEditObjDlg);
 	
 	// add object to array 
@@ -95,7 +95,7 @@ void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
 		m_pPrjDefinition->RemoveCodedValue(); // remove last object not used
 	
 	// delete the dialog
-	wxLogDebug(_T("Deleting Coded Value Dialog"));
+	//wxLogDebug(_T("Deleting Coded Value Dialog"));
 	delete m_pDialog;
 }
 
@@ -104,7 +104,7 @@ void ProjectDefFieldList::BeforeEditing ()
 {
 	// create the dialog, will be deleted in AfterEditing.
 	ProjectDefLayersEditObjectDlg * myCodedValueDlg = new ProjectDefLayersEditObjectDlg(this);
-	wxLogDebug(_T("Creating Coded Value Dialog"));
+	//wxLogDebug(_T("Creating Coded Value Dialog"));
 	SetDialog(myCodedValueDlg);
 	
 	// get selected item from the list
@@ -148,7 +148,7 @@ void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
 	}
 	
 	// delete dialog
-    wxLogDebug(_T("Deleting Coded value Dialog"));
+    //wxLogDebug(_T("Deleting Coded value Dialog"));
 	delete m_pDialog;
 }
 
@@ -410,7 +410,7 @@ ProjectDefFieldDlg::ProjectDefFieldDlg( wxWindow* parent,
 	// init prj definition and pass it to the list
 	m_pPrjDefinition = myPrjMemManage;
 	m_DlgAFD_Coded_Val_List->PassPrjDefToList(m_pPrjDefinition);
-	wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
+	//wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 	
 	// pass adress of choice control
 	m_DlgAFD_Coded_Val_List->SetChoiceList(m_DlgAFD_Default_Val);

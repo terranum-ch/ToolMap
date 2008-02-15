@@ -57,19 +57,17 @@ bool DatabaseNewPrj::CreateEmptyProject()
 	wxASSERT_MSG(IsPrjDefMemorySet(), _T("Use SetPrjDefMemory first..."));
 	if (IsPrjDefMemorySet())
 	{
-		// show the path and name...
-		//wxLogDebug(_T("Path : %s \n Name : %s"),pPrjDefinition->m_PrjPath.c_str(), pPrjDefinition->m_PrjName.c_str());
-		
 		// create the database
 		if (DataBaseCreateNew(pPrjDefinition->m_PrjPath, 
 							  pPrjDefinition->m_PrjName))
 		{
-			wxLogMessage(_("Creating the \"%s\" database"), pPrjDefinition->m_PrjName.c_str());
+			wxLogMessage(_("Creating the \"%s\" database..."), pPrjDefinition->m_PrjName.c_str());
 			
 			
 			// create the default tables
 			if (CreateEmptyTMDatabase())
 			{
+				wxLogMessage(_("Database \"%s\" created"),pPrjDefinition->m_PrjName.c_str()); 
 				return TRUE;
 			}
 			wxLogDebug(_("Default tables not created in the database"));
@@ -89,24 +87,10 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 	unsigned int indexField = 0;
 	bool bReturnValue = TRUE;
 	
-	wxArrayString myDbgCharacterVar;
 	
-	//// show character sets  // FOR DEBUGING
-	//int iRetour = DataBaseQuery(_T("SHOW VARIABLES LIKE 'character_set_\%'"));
-	//while(1)
-	//{
-	//	myDbgCharacterVar = DataBaseGetNextResult();
-	//	if (myDbgCharacterVar.GetCount() > 0)
-	//	{
-	//		wxLogDebug(_T("%s | %s"),myDbgCharacterVar.Item(0).c_str(), myDbgCharacterVar.Item(1));
-	//	}
-	//	else
-	//		break;
-	//}
-
 	// add general project settings
-	bReturnValue &= SetProjectData(pPrjDefinition);
-
+	bReturnValue = SetProjectData(pPrjDefinition);
+	
 
 	/// adding layers, and for each layer add object and fields related to this layer
 	for (indexLayer = 0; indexLayer<pPrjDefinition->m_PrjLayerArray->GetCount();indexLayer++)
@@ -122,7 +106,7 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 				{
 					ProjectDefMemoryObjects * myMemObj = pPrjDefinition->FindObject(indexObject);
 					if (myMemObj != NULL)
-						bReturnValue &= AddObject(myMemObj);
+						bReturnValue = bReturnValue && AddObject(myMemObj);
 				}
 				
 				// adding fields
@@ -130,28 +114,18 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 				{
 					ProjectDefMemoryFields * myMemField = pPrjDefinition->FindField(indexField);
 					if (myMemField != NULL)
-						bReturnValue &= AddField(myMemField);
+						bReturnValue = bReturnValue && AddField(myMemField);
 				}
 				
 			}
-			wxLogDebug(_T("Adding layer OK"));
 		}
 	}
 
 
-	//// show values passed  // FOR DEBUGING
-	//int iRetour = DataBaseQuery(_T("SELECT (LAYER_NAME) FROM THEMATIC_LAYERS"));
-	//while(1)
-	//{
-	//	myDbgCharacterVar = DataBaseGetNextResult();
-	//	if (myDbgCharacterVar.GetCount() > 0)
-	//	{
-	//		wxLogDebug(_T("layer values : %s"),myDbgCharacterVar.Item(0).c_str());
-	//	}
-	//	else
-	//		break;
-	//}
-
+	if (bReturnValue == FALSE)
+		wxLogDebug(_T("Error : adding project object, fields, or setting project data into the database"));
+	else
+		wxLogDebug(_T("Project data successfully copied into the database"));
 
 	
 	return bReturnValue;
