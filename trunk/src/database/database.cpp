@@ -252,7 +252,7 @@ bool DataBase::DataBaseTableExist(const wxString & tableName)
 	wxString sSentence = wxString::Format (_T("SHOW TABLES  LIKE  '%s'"), tableName.c_str());
 	
 
-	if (DataBaseQuery(sSentence)==0)
+	if (DataBaseQuery(sSentence))
 	{
 		// if the query has passed...
 		// then we check the results
@@ -297,34 +297,61 @@ int DataBase::DataBaseGetResultAsInt()
 }
 
 
-int DataBase::DataBaseQueryNoResult(wxString myQuery)
+bool DataBase::DataBaseIsTableEmpty(const wxString & tableName)
+{
+	bool bReturnValue = TRUE;
+	wxString sSentence = wxString::Format(_T("SELECT * FROM %s"), tableName.c_str());
+	
+	// return TRUE if the sentence was OK and
+	// return no results (table is empty)
+	if (DataBaseQuery(sSentence))
+		if(DataBaseHasResult() == FALSE)
+			return TRUE;
+	
+	// table is not empty
+	wxLogDebug (_T("Table [%s] is not empty or request error"), tableName.c_str());
+	return FALSE;
+}
+
+
+
+bool DataBase::DataBaseQueryNoResult(wxString myQuery)
 {
 	MYSQL_RES *results;
 	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8) );
 	results = mysql_store_result(pMySQL);
 	mysql_free_result(results);
-	return iRetour;
+	
+	if (iRetour == 0)
+		return TRUE;
+	
+	return FALSE;
 }
 
-int DataBase::DataBaseQuery(const wxString & myQuery)
+bool DataBase::DataBaseQuery(const wxString & myQuery)
 {
+	pResults = NULL;
 	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8) );
 	if (iRetour == 0) 
 	{
 		pResults = mysql_store_result(pMySQL);
 		m_resultNumber = mysql_field_count(pMySQL);
+		return TRUE;
 	}
-	return iRetour;
+	return FALSE;
 }
 
 
 bool DataBase::DataBaseHasResult ()
 {
-	if (pResults == NULL)
+	
+	if (pResults != NULL)
 	{
-		return FALSE;
+		// if we have some results ?
+		if( mysql_num_rows(pResults) > 0)
+			return TRUE;
 	}
-	return TRUE;
+	return FALSE;
 }
 
 
