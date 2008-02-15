@@ -150,6 +150,8 @@ public:
 	
 	int DataBaseGetResultAsInt();
 	
+	bool DataBaseIsTableEmpty(const wxString & tableName);
+	
 	/*!
     @function 
     @brief Used to execute multiple query on the database
@@ -166,7 +168,7 @@ public:
 	@see DataBaseCutRequest(), DataBaseQuery()
 	 
 	*/
-	int DataBaseQueryNoResult(wxString myQuery);
+	bool DataBaseQueryNoResult(wxString myQuery);
 	/*!
 	@function 
 	@brief Used to execute one query on the database and then get the result
@@ -180,7 +182,7 @@ public:
 	call the DataBaseGetNextResult()
 	@see DataBaseQueryNoResult()
 	 */
-	int DataBaseQuery(const wxString & myQuery);
+	bool DataBaseQuery(const wxString & myQuery);
 	
 	
 	bool DataBaseHasResult ();

@@ -38,8 +38,10 @@ const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
 const wxString TABLE_NAME_OBJECTS = _T("DMN_LAYER_OBJECT");
 const wxString TABLE_NAME_LAYER_AT = _T("LAYER_AT");
 const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
+const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
 
-
+// DATABASE VERSION IS
+const unsigned int TM_DATABASE_VERSION = 200;
 
 
 class DataBaseTM : public DataBase
@@ -62,6 +64,7 @@ class DataBaseTM : public DataBase
 		~DataBaseTM();
 		
 		// general database operations
+		bool FillLayerTableTypeData ();
 		bool CreateEmptyTMDatabase();
 		
 		// Database project operations

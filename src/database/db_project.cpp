@@ -58,7 +58,7 @@ bool DatabaseNewPrj::CreateEmptyProject()
 	if (IsPrjDefMemorySet())
 	{
 		// show the path and name...
-		wxLogDebug(_T("Path : %s \n Name : %s"),pPrjDefinition->m_PrjPath.c_str(), pPrjDefinition->m_PrjName.c_str());
+		//wxLogDebug(_T("Path : %s \n Name : %s"),pPrjDefinition->m_PrjPath.c_str(), pPrjDefinition->m_PrjName.c_str());
 		
 		// create the database
 		if (DataBaseCreateNew(pPrjDefinition->m_PrjPath, 
@@ -70,13 +70,12 @@ bool DatabaseNewPrj::CreateEmptyProject()
 			// create the default tables
 			if (CreateEmptyTMDatabase())
 			{
-				wxLogDebug(_("Default tables created in the database"));
 				return TRUE;
 			}
-		
+			wxLogDebug(_("Default tables not created in the database"));
 		
 		}
-		wxLogDebug(_T("Error creating the database"));
+		wxLogMessage(_T("Error creating the database [%s]"), pPrjDefinition->m_PrjName.c_str());
 		
 		
 	}
@@ -105,6 +104,8 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 	//		break;
 	//}
 
+	// add general project settings
+	bReturnValue &= SetProjectData(pPrjDefinition);
 
 
 	/// adding layers, and for each layer add object and fields related to this layer
