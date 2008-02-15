@@ -274,7 +274,7 @@ void ProjectDefList::BeforeAdding()
 	
 	// create and set the dialog here
 	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition);
-	wxLogDebug(_T("Creating Thematic Layer Dialog"));
+	//wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(myLayerDialog);
 
 	// creating a new layer, if not used, delete it during
@@ -307,7 +307,7 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 		m_pPrjDefinition->RemoveLayer(); // remove last unused layer object
 	
 	// delete the dialog here
-    wxLogDebug(_T("Destroying Thematic Layer Dialog"));
+    //wxLogDebug(_T("Destroying Thematic Layer Dialog"));
 	delete m_pDialog;
 	
 }
@@ -317,7 +317,7 @@ void ProjectDefList::BeforeEditing ()
 {
 	// create the dialog
 	m_LayersDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition);
-	wxLogDebug(_T("Creating Thematic Layer Dialog"));
+	//wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(m_LayersDialog);
 
 	// get selected item from the list
@@ -355,7 +355,7 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 	}
 
 	// delete dialog
-    wxLogDebug(_T("Destroying Thematic Layer Dialog"));
+    //wxLogDebug(_T("Destroying Thematic Layer Dialog"));
 	delete m_LayersDialog;	
 }
 

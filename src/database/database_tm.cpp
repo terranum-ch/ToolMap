@@ -191,7 +191,6 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	
 	
 	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
-	//wxLogDebug(_T("Request array size is %d sentence(s)"), myArray.GetCount());
 	
 	for (unsigned int i= 0; i<myArray.GetCount(); i++)
 	{
@@ -236,7 +235,6 @@ bool DataBaseTM::FillLayerTableTypeData ()
 			sSentence.Printf(_T("INSERT INTO %s VALUES (%d,\"%s\")"),
 							 TABLE_NAME_LAYER_TYPE.c_str(),
 							 i, PRJDEF_LAYERS_TYPE_STRING[i].c_str());
-			wxLogDebug(sSentence);
 			
 			// in case of error send debug message
 			if(!DataBaseQueryNoResult(sSentence))
@@ -264,7 +262,7 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 	{
 		// if ok the project settings exist and we 
 		// must update it, otherwise insert
-		if (DataBaseHasResult())
+		if (DataBaseHasResult()==FALSE)
 		{
 			sSentence = wxString::Format(_T("INSERT INTO %s (PRJ_UNIT, PRJ_PROJECTION,") 
 										 _T("PRJ_NAME, PRJ_VERSION) VALUES (\"%s\",\"%s\",\"%s\",%d)"),
@@ -299,7 +297,7 @@ bool DataBaseTM::AddLayer(ProjectDefMemoryLayers * myLayer)
 		myLayer->m_LayerName.c_str());
 	sSentence.Append(sValues);
 	
-	wxLogDebug(sSentence);
+	//wxLogDebug(sSentence);
 	
 	if (DataBaseQueryReal(sSentence)==0)//DataBaseQueryMultiple(sSentence) == 0)
 	{
@@ -315,14 +313,15 @@ void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 	wxString sValues = wxString::Format(_T("'%s'"), myLayer->m_LayerName.c_str());
 	sSentence.Append(sValues);
 	
-	wxLogDebug(sSentence);
+	//wxLogDebug(sSentence);
 	
 	if (DataBaseQuery(sSentence)) // query OK
 	{
 		m_iDBLayerIndex = DataBaseGetResultAsInt();
-		wxLogDebug(_T("Actual database index is %d"), m_iDBLayerIndex);
+		//wxLogDebug(_T("Actual database index is %d"), m_iDBLayerIndex);
 	}
-	
+	else
+		wxLogDebug(_T("Unable to find the layer [%s]"), myLayer->m_LayerName.c_str());
 }
 
 
@@ -341,12 +340,14 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 										DBlayerIndex, myObject->m_ObjectName.c_str());
 	sSentence.Append(sValues);
 	
-	wxLogDebug(sSentence);
+	//wxLogDebug(sSentence);
 	
 	if (DataBaseQueryNoResult(sSentence))
 	{
 		return TRUE;
 	}
+	
+	wxLogDebug(_T("Unable to AddObject to the database"));
 	return FALSE;
 }
 
@@ -369,7 +370,7 @@ bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 	
 	if (DataBaseQueryNoResult(sCreateTable1))
 	{
-		wxLogDebug(_T("Table Creation [%s]... DONE"), TableName.c_str());	
+		//wxLogDebug(_T("Table Creation [%s]... DONE"), TableName.c_str());	
 		return TRUE;
 	}
 	wxLogDebug(_T("Table Creation [%s]... FAILED"), TableName.c_str());
@@ -384,10 +385,10 @@ bool DataBaseTM::CreateFieldInteger (ProjectDefMemoryFields * myField, const wxS
 										  TableName.c_str(), myField->m_Fieldname.c_str());
 	if (DataBaseQueryNoResult(sSentence))
 	{
-		wxLogDebug(_T("Creating integer field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
 	}
 	
+	wxLogDebug(_T("Creating integer field : %s FAILED"), myField->m_Fieldname.c_str());
 	return FALSE;
 }
 
@@ -402,10 +403,10 @@ bool DataBaseTM::CreateFieldText (ProjectDefMemoryFields * myField, const wxStri
 										  myField->m_FieldPrecision);
 	if (DataBaseQueryNoResult(sSentence))
 	{
-		wxLogDebug(_T("Creating text field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
 	}
 	
+	wxLogDebug(_T("Creating text field : %s FAILED"), myField->m_Fieldname.c_str());
 	return FALSE;	
 }
 
@@ -420,10 +421,10 @@ bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, const wxSt
 										  myField->m_FieldScale);
 	if (DataBaseQueryNoResult(sSentence))
 	{
-		wxLogDebug(_T("Creating double field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
 	}
 	
+	wxLogDebug(_T("Creating double field : %s FAILED"), myField->m_Fieldname.c_str());
 	return FALSE;	
 }
 
@@ -436,10 +437,9 @@ bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, const wxStri
 										  myField->m_Fieldname.c_str());
 	if (DataBaseQueryNoResult(sSentence))
 	{
-		wxLogDebug(_T("Creating date field : %s DONE"), myField->m_Fieldname.c_str());
 		return TRUE;
 	}
-	
+	wxLogDebug(_T("Creating date field : %s FAILED"), myField->m_Fieldname.c_str());
 	return FALSE;	
 }
 
@@ -468,12 +468,13 @@ bool DataBaseTM::AddFieldConstrain (ProjectDefMemoryFields * myField, const wxSt
 											  TableName.c_str(),
 											  myField->m_Fieldname.c_str(),
 											  sValues.c_str());
-		wxLogDebug(sSentence);
+		
 		if (DataBaseQueryNoResult(sSentence))
 		{
 			return TRUE;
 		}
-	}	
+	}
+	wxLogDebug(_T("Unable to add constrain to field [%s]"), myField->m_Fieldname.c_str());
 	return FALSE;
 }
 
@@ -496,30 +497,30 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	AddTableIfNotExist(sTableName);
 	
 	// check that the table exists.
-	bReturnValue &= DataBaseTableExist(sTableName);
+	bReturnValue = DataBaseTableExist(sTableName);
 	if (bReturnValue)
 	{
 		// then create the fields based upon the fields type
 		switch (myField->m_FieldType)
 		{
 			case TM_FIELD_INTEGER:
-				bReturnValue &= CreateFieldInteger(myField, sTableName);
+				bReturnValue = CreateFieldInteger(myField, sTableName);
 				break;
 			case TM_FIELD_FLOAT:
-				bReturnValue &= CreateFieldDouble(myField, sTableName);
+				bReturnValue = CreateFieldDouble(myField, sTableName);
 				break;
 			case  TM_FIELD_DATE:
-				bReturnValue &= CreateFieldDate(myField, sTableName);
+				bReturnValue = CreateFieldDate(myField, sTableName);
 				break;
 			default:
-				bReturnValue &= CreateFieldText(myField, sTableName);
+				bReturnValue = CreateFieldText(myField, sTableName);
 				break;
 		}
 		// add constrain on field if needed. 
 		// actually only support enum contrain for text field.
 		if (myField->m_FieldConstrain == TM_FIELD_CONSTRAIN_CODED)
 		{
-			bReturnValue &= AddFieldConstrain(myField, sTableName);
+			bReturnValue = AddFieldConstrain(myField, sTableName);
 		}
 
 	}

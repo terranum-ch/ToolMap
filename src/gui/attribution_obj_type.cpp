@@ -39,7 +39,7 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiMa
 	// pass panel name to parent class.
 	m_AuiPanelName = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE;
 	
-	wxLogDebug(_T("m_auiMgr (child) %p"), AuiManager);
+	//wxLogDebug(_T("m_auiMgr (child) %p"), AuiManager);
 	
 	// add the panel
 	AddManagedPane(ContentFrame, mPaneInfo);
