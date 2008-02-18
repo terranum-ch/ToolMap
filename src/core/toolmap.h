@@ -208,7 +208,7 @@ public:
 	
 private:
 	PrjDefMemManage m_PrjDefinition;
-	DataBase * m_Database;
+	DataBaseTM * m_Database;
 	
 	wxAuiManager * m_AuiManager;
 	

@@ -37,7 +37,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	wxString myNewPrjSentence = _T("CREATE  TABLE     `DMN_LAYER_TYPE` (")
 	_T("  `TYPE_CD` INT UNSIGNED NOT NULL,")
 	_T("  `TYPE_DESCRIPTION` VARCHAR(20) NOT NULL     ,")
-	_T("  PRIMARY KEY (`TYPE_CD`) );")
+	_T("  PRIMARY KEY (`TYPE_CD`) ) ENGINE = InnoDB;")
 	
 	_T("CREATE  TABLE     `THEMATIC_LAYERS` (")
 	_T("  `LAYER_INDEX` INT UNSIGNED NOT NULL AUTO_INCREMENT     ,")
