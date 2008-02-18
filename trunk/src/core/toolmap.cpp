@@ -131,9 +131,12 @@ void ToolMapFrame::PostInit()
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	
 	
-	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
+	// create the database object 
+	m_Database = new DataBaseTM();
 	
-	m_Database = NULL;
+	
+	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
+
 	
 }
 
@@ -152,14 +155,13 @@ ToolMapFrame::~ToolMapFrame()
 
 void ToolMapFrame::OnQuit(wxCloseEvent & event)
 {
-	if (m_Database != NULL)
-	{
+
 		if (m_Database->DataBaseIsOpen())
 		{
 			m_Database->DataBaseClose();
 		}
-		//delete m_Database;
-	}
+		delete m_Database;
+	
 	wxLog::SetActiveTarget (NULL);
 	this->Destroy();
 }
@@ -329,10 +331,16 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
 		wxBusyCursor wait;
-		DatabaseNewPrj myNewPrjDB (&m_PrjDefinition);
-		m_Database = &myNewPrjDB;
-		if (myNewPrjDB.CreateEmptyProject())
-			myNewPrjDB.PassProjectDataToDB();	
+		
+		// Database new project creation
+		// test dynamic case 
+		//Cat* d2 = dynamic_cast<Cat*>(b);
+		DatabaseNewPrj * myNewPrjDB;  //= dynamic_cast<DataBaseTM*> (m_Database);
+		myNewPrjDB = (DatabaseNewPrj*) m_Database;
+		myNewPrjDB->SetPrjDefMemory(&m_PrjDefinition);
+		
+		if (myNewPrjDB->CreateEmptyProject())
+			myNewPrjDB->PassProjectDataToDB();	
 		
 	}
 	delete myNewProjDlg;

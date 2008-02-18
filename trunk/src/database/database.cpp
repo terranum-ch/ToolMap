@@ -133,6 +133,7 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 
 bool DataBase::DataBaseClose()
 {
+	wxLogDebug(_T("Closing [%s] database"), m_DBName.c_str());
 	mysql_library_end();
 	IsDatabaseOpen = FALSE;
 	return TRUE;
