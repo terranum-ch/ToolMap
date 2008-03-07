@@ -21,10 +21,8 @@
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefDLG, wxDialog )
 
 
-
 BEGIN_EVENT_TABLE( ProjectDefDLG, wxDialog )
 	EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_ADD, ProjectDefDLG::OnAddLayer)
-	EVT_BUTTON(ID_DLGPD_PROJ_PATH_BTN, ProjectDefDLG::OnSelectProjectPath)
     EVT_FLATBUTTON(ID_DLGPD_SPAT_MDL_DEL,  ProjectDefDLG::OnRemoveLayer)
 	EVT_IDLE(ProjectDefDLG::OnIdleWait)
 END_EVENT_TABLE()
@@ -41,15 +39,6 @@ void ProjectDefDLG::OnRemoveLayer (wxCommandEvent & event)
 	m_DlgPd_Stat_Model_List->DeleteItem();
 }
 
-
-void ProjectDefDLG::OnSelectProjectPath (wxCommandEvent & event)
-{
-	wxDirDialog myDirDialog (this);
-	if( myDirDialog.ShowModal() == wxID_OK)
-	{
-		m_DlgPD_Proj_Path->SetValue(myDirDialog.GetPath());
-	}
-}
 
 void ProjectDefDLG::OnIdleWait(wxIdleEvent & event)
 {
@@ -71,7 +60,7 @@ bool ProjectDefDLG::CheckIdleRules()
 		return FALSE;
 	
 	// project path
-	if (!wxDirExists(m_DlgPD_Proj_Path->GetValue()))
+	if (!wxDirExists(m_DlgPD_Proj_Path->GetPath()))
 		return FALSE;
 	
 	// contain minimum one layer
@@ -150,35 +139,31 @@ void ProjectDefDLG::CreateControls()
     wxStaticBoxSizer* itemStaticBoxSizer3 = new wxStaticBoxSizer(itemStaticBoxSizer3Static, wxVERTICAL);
     itemBoxSizer2->Add(itemStaticBoxSizer3, 0, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer4 = new wxFlexGridSizer(4, 3, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer4 = new wxFlexGridSizer(4, 2, 0, 0);
     itemFlexGridSizer4->AddGrowableCol(1);
     itemStaticBoxSizer3->Add(itemFlexGridSizer4, 0, wxGROW|wxALL, 5);
 
     wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Project path :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_DlgPD_Proj_Path = new wxTextCtrl( itemDialog1, ID_DLGPD_PROJ_PATH, _T(""), wxDefaultPosition, wxSize(200, -1), 0 );
-    itemFlexGridSizer4->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxButton * myDlgPd_Proj_Path_Btn = new wxButton( itemDialog1, ID_DLGPD_PROJ_PATH_BTN, _("..."), wxDefaultPosition, wxSize(50, -1), 0 );
-    itemFlexGridSizer4->Add(myDlgPd_Proj_Path_Btn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	m_DlgPD_Proj_Path = new wxDirPickerCtrl(itemDialog1, ID_DLGPD_PROJ_PATH, wxEmptyString,
+											_("Select the database folder"), wxDefaultPosition, wxDefaultSize,
+											wxDIRP_USE_TEXTCTRL | wxDIRP_DIR_MUST_EXIST);
+	itemFlexGridSizer4->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_DlgPd_Proj_Name = new wxTextCtrl( itemDialog1, ID_DLGPD_PROJ_NAME, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgPd_Proj_Name = new wxTextCtrl( itemDialog1, ID_DLGPD_PROJ_NAME, _T(""), wxDefaultPosition, wxSize(300,-1), 0 );
     itemFlexGridSizer4->Add(m_DlgPd_Proj_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    itemFlexGridSizer4->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Units"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Units :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     m_DlgPd_Proj_Unit = new wxChoice( itemDialog1, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
     m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
     itemFlexGridSizer4->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    itemFlexGridSizer4->Add(5, 5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Projection :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer4->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -221,7 +206,7 @@ void ProjectDefDLG::CreateControls()
 
 bool ProjectDefDLG::TransferDataFromWindow()
 {
-	m_pPrjDefinition->m_PrjPath = m_DlgPD_Proj_Path->GetValue();
+	m_pPrjDefinition->m_PrjPath = m_DlgPD_Proj_Path->GetPath();
 	m_pPrjDefinition->m_PrjName = m_DlgPd_Proj_Name->GetValue();
 	m_pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) m_DlgPd_Proj_Unit->GetSelection();
 	m_pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) m_DlgPd_Proj_Projection->GetSelection();

@@ -39,7 +39,6 @@ class wxToggleButton;
 ////@begin control identifiers
 #define ID_DLGPD 10000
 #define ID_DLGPD_PROJ_PATH 10001
-#define ID_DLJPD_PROJ_PATH_BTN 10002
 #define ID_DLGPD_PROJ_NAME 10003
 #define ID_DLGPD_PROJ_UNIT 10156
 #define ID_DLGPD_PROJ_PROJECTION 10119
@@ -98,7 +97,6 @@ public:
 
 ////@begin ProjectDefDLG member variables
     wxTextCtrl* m_DlgPD_Proj_Path;
-    wxButton* m_DlgPd_Proj_Path_Btn;
     wxTextCtrl* m_DlgPd_Proj_Name;
     wxChoice* m_DlgPd_Proj_Unit;
     wxChoice* m_DlgPd_Proj_Projection;
