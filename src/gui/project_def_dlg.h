@@ -45,7 +45,8 @@
 #include "listgenreport.h"
 #include "wxflatbutton.h"
 #include "project_def_layers_dlg.h"
-#include <wx/dirdlg.h>				// for directory selection dialog
+//#include <wx/dirdlg.h>				// for directory selection dialog
+#include <wx/filepicker.h>		// directory picker control
 ////@end includes
 
 
@@ -103,7 +104,6 @@ class ProjectDefDLG: public wxDialog
 		
 		void OnAddLayer(wxCommandEvent & event);
 		void OnRemoveLayer (wxCommandEvent & event);
-		void OnSelectProjectPath (wxCommandEvent & event);
 		void OnIdleWait(wxIdleEvent & event);
 		
 		bool CheckIdleRules();
@@ -144,7 +144,7 @@ class ProjectDefDLG: public wxDialog
 		virtual bool TransferDataFromWindow();
 		
 		////@begin ProjectDefDLG member variables
-		wxTextCtrl* m_DlgPD_Proj_Path;
+		wxDirPickerCtrl * m_DlgPD_Proj_Path;
 		wxTextCtrl* m_DlgPd_Proj_Name;
 		wxChoice* m_DlgPd_Proj_Unit;
 		wxChoice* m_DlgPd_Proj_Projection;

@@ -42,6 +42,9 @@
 #include <wx/tokenzr.h> // tokenizer of string
 #include <wx/dir.h> // directory operation (size)
 
+
+const wxString DATABASE_TYPE_STRING = _T("MYSQL");
+
 /*!
     @enumeration 
     @brief enumeration of allowed values for
@@ -101,8 +104,12 @@ public:
 	*/	
 	bool DataBaseIsOpen();
 
+	wxString DataBaseGetLastError();
+
 	/*!
     @function 
+	
+	
     @brief   return an array of string containing all the database tables
     @result  an array of string (wxArrayString) containing all the tables names
 	*/
@@ -117,6 +124,8 @@ public:
 	*/
 	static wxString DatabaseGetVersion();
 	
+
+	long DatabaseGetCountResults();
 	/*!
     @function 
     @brief Return an array containing all the selected table fields
@@ -145,10 +154,16 @@ public:
 	*/		
 	wxArrayString DataBaseGetNextResult();
 	
+	bool DataBaseGetNextResult(wxString & result);
+	
+	unsigned long * DataBaseGetNextRowResult (MYSQL_ROW & row);
+	
 	bool DataBaseTableExist(const wxString & tableName);
 	
 	
 	int DataBaseGetResultAsInt();
+	
+	double DataBaseGetResultAsDouble();
 	
 	bool DataBaseIsTableEmpty(const wxString & tableName);
 	
@@ -187,6 +202,7 @@ public:
 	
 	bool DataBaseHasResult ();
 	
+	void DataBaseDestroyResults ();
 	
 	/*! Execute multiple query 
 	 @bug NOT WORKING, CRASH WITH VERSION 5.1.23-rc (on windows and Mac)
