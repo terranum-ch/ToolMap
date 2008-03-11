@@ -396,6 +396,7 @@ double DataBase::DataBaseGetResultAsDouble()
 	//	sqlite3_free_table(m_Result);
 	//}
 	//return dReturnedValue;
+	return 0;
 }
 
 
