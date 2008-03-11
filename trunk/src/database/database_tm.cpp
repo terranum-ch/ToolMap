@@ -288,6 +288,21 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 }
 
 
+
+int	 DataBaseTM::GetDatabaseToolMapVersion ()
+{
+	wxString sSentence = _T("SELECT (PRJ_VERSION) FROM " + TABLE_NAME_PRJ_SETTINGS);
+	if (DataBaseQuery(sSentence))
+	{
+		return DataBaseGetResultAsInt();
+	}
+	wxLogDebug(_T("Getting database version not passed"));
+	return -1;
+	
+}
+
+
+
 /*************************** LAYER DATABASE FUNCTION ****************************/
 bool DataBaseTM::AddLayer(ProjectDefMemoryLayers * myLayer)
 {

@@ -40,6 +40,11 @@
 #include <wx/filename.h> // to create the database path and name.
 
 
+// static members
+bool DataBase::bIsLibInit = FALSE;
+
+
+
 //----------------------------------------------------------------------------
 // DataBase
 //----------------------------------------------------------------------------
@@ -50,6 +55,7 @@ DataBase::DataBase()
 
 DataBase::~DataBase()
 {
+	
 }
 
 
@@ -76,18 +82,18 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	}
 	
 #ifdef __WINDOWS__
-	static char *server_args[] = 
+	 char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
 		stemps,
 		"--language=./share/english",
-		"--skip-plugin-innodb", // remove this line if comiled without innodb...
+		//"--skip-plugin-innodb", // remove this line if comiled without innodb...
 		"--port=3309",
 		"--character-sets-dir=./share/charsets",
 		"--default-character-set=utf8"
 	};
 #else
-	static char *server_args[] = 
+	char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
 		stemps,
@@ -99,7 +105,7 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	};
 #endif
 	
-	static char *server_groups[] = {
+	 char *server_groups[] = {
 		"embedded",
 		"server",
 		"this_program_SERVER",
@@ -112,11 +118,15 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	
 	if(mysql_library_init(num_elements, server_args, server_groups)==0)
 	{
+		// the lib was initialised so we must end the lib when quitting the program
+		bIsLibInit = TRUE;
+		
 		pMySQL = mysql_init(NULL);
 		 mysql_options(pMySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
 
-		
-		if(mysql_real_connect(pMySQL,NULL,NULL,NULL,(const char *)m_DBName.mb_str(wxConvUTF8),3309,NULL,CLIENT_MULTI_STATEMENTS))
+		wxLogDebug(m_DBName);
+		if(mysql_real_connect(pMySQL,NULL,NULL,NULL,(const char *)m_DBName.mb_str(wxConvUTF8),
+							  3309,NULL,CLIENT_MULTI_STATEMENTS))
 		{
 			// change character set...
 					
@@ -128,6 +138,8 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	}
 	
 	// if something goes wrong we return FALSE
+	//delete [] server_args;
+	//delete [] server_groups;
 	delete [] stemps;
 	return Bsucces;
 	
@@ -135,12 +147,29 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 
 bool DataBase::DataBaseClose()
 {
-	wxLogDebug(_T("Closing [%s] database"), m_DBName.c_str());
-	mysql_thread_end();	
-	mysql_library_end();
+	wxLogDebug(_T("Closing database"));
+	//mysql_thread_end();	
+	//mysql_library_end();
 	IsDatabaseOpen = FALSE;
 	return TRUE;
 }
+
+
+/***************************************************************************//**
+ @brief End the library
+ @details Call this function just before quitting the program to unload the
+ mysql embedded library.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 11 March 2008
+ *******************************************************************************/
+void DataBase::DataBaseCloseLibrary()
+{
+	// close the library if the lib was used
+	// then we must quit the program.
+	if (bIsLibInit)
+		mysql_library_end();
+}
+
 
 bool DataBase::DataBaseIsOpen()
 {

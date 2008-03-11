@@ -41,7 +41,7 @@ const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
 const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
 
 // DATABASE VERSION IS
-const unsigned int TM_DATABASE_VERSION = 200;
+const int TM_DATABASE_VERSION = 200;
 
 
 class DataBaseTM : public DataBase
@@ -69,6 +69,7 @@ class DataBaseTM : public DataBase
 		
 		// Database project operations
 		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
+		int	 GetDatabaseToolMapVersion ();
 		
 		
 		// Database layer operations

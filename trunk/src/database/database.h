@@ -269,7 +269,8 @@ public:
 	*/
 	wxString DataBaseGetSize (int iPrecision=2);
 
-	
+	static void DataBaseCloseLibrary();
+
    
     
 private:
@@ -285,6 +286,8 @@ private:
 	
 	
 	bool IsDatabaseOpen;
+	
+	static bool bIsLibInit;
 	
 	/*!
     @brief  convert the path into path and database name
@@ -315,8 +318,7 @@ private:
 
 
 
-
-
+	
 };
 
 
