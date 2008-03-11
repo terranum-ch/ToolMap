@@ -49,9 +49,9 @@ bool ToolMapApp::OnInit()
 	wxImage::AddHandler(new wxPNGHandler);
 
 	
-	wxString myFrameName = _T("ToolMap 2.0.");
-	 myFrameName.Append(SVN_VERSION);
-	ToolMapFrame* frame = new ToolMapFrame(0L, myFrameName,wxDefaultPosition, wxSize(620,480));
+	//wxString myFrameName = _T("ToolMap 2.0.");
+	// myFrameName.Append(SVN_VERSION);
+	ToolMapFrame* frame = new ToolMapFrame(0L, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(620,480));
 	
 	
 	frame->Show();
@@ -67,6 +67,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
+	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 END_EVENT_TABLE()
 
@@ -132,7 +133,9 @@ void ToolMapFrame::PostInit()
 	
 	
 	// create the database object 
-	m_Database = new DataBaseTM();
+	//m_Database = new DataBaseTM();
+	
+	m_PManager = new ProjectManager(this);
 	
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
@@ -146,21 +149,24 @@ ToolMapFrame::~ToolMapFrame()
 {
 	m_AuiManager->UnInit();
 	// don't delete managed windows but check for 
-	// memory lack.
+	// memory leak.
 	
 	delete m_LogWindow;
 	delete m_AuiManager;
+	
+	// delete the project Manager
+	delete m_PManager;
 }
 
 
 void ToolMapFrame::OnQuit(wxCloseEvent & event)
 {
 
-		if (m_Database->DataBaseIsOpen())
-		{
-			m_Database->DataBaseClose();
-		}
-		delete m_Database;
+//		if (m_Database->DataBaseIsOpen())
+//		{
+//			m_Database->DataBaseClose();
+//		}
+//		delete m_Database;
 	
 	wxLog::SetActiveTarget (NULL);
 	this->Destroy();
@@ -327,24 +333,38 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 
 void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 {
-	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(this, &m_PrjDefinition);
-	if(myNewProjDlg->ShowModal() == wxID_OK)
-	{
-		wxBusyCursor wait;
-		
-		// Database new project creation
-		// test dynamic case 
-		//Cat* d2 = dynamic_cast<Cat*>(b);
-		DatabaseNewPrj * myNewPrjDB;  //= dynamic_cast<DataBaseTM*> (m_Database);
-		myNewPrjDB = (DatabaseNewPrj*) m_Database;
-		myNewPrjDB->SetPrjDefMemory(&m_PrjDefinition);
-		
-		if (myNewPrjDB->CreateEmptyProject())
-			myNewPrjDB->PassProjectDataToDB();	
-		
-	}
-	delete myNewProjDlg;
+	// call the project manager and ask for
+	// creating a new project.
+	m_PManager->CreateNewProject();
 	
+	// add name to the program bar
+	wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+	SetTitle(myProgName);
+	
+}
+
+
+void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
+{
+	// display a dir dialog for selecting the project to open
+	wxDirDialog * myDirDLG = new wxDirDialog(this, _("Choose a ToolMap project"),
+											 _T(""), wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
+	if (myDirDLG->ShowModal()==wxID_OK)
+	{
+		// call the project manager and ask to open an
+		// existing project. 
+		if (m_PManager->OpenProject(myDirDLG->GetPath()))
+		{
+			// If we can open the project,set the name in the program bar.
+			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+			SetTitle(myProgName);
+		}
+		else
+			wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),
+						 _("Opening project error"), wxICON_ERROR | wxOK,
+						 this);
+	}
+	delete myDirDLG;
 }
 
 

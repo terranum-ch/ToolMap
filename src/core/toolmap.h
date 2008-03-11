@@ -76,12 +76,13 @@
 #include "../gui/project_def_dlg.h"		// project definition dialog
 #include "../gui/logwindow_dlg.h"		// log window definition
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
-#include <wx/sysopt.h>
+//#include <wx/sysopt.h>
 #include "../database/db_project.h"
 
 #include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
 #include "../gui/projectnewexist_dlg.h"
+#include "projectmanager.h"
 
 
 //// temp for testing 
@@ -165,6 +166,7 @@
 #define ID_TOOL8 10256
 #define ID_TOOL9 10257
 #define ID_TOOL10 10258
+const wxString g_ProgName = _T("ToolMap 2.0.");
 
 #define wxGetBitmapFromMemory(name) _wxGetBitmapFromMemory(name ## _png, sizeof(name ## _png))
 
@@ -207,18 +209,20 @@ public:
 	
 	
 private:
-	PrjDefMemManage m_PrjDefinition;
-	DataBaseTM * m_Database;
+	//PrjDefMemManage m_PrjDefinition;
+	//DataBaseTM * m_Database;
 	
 	wxAuiManager * m_AuiManager;
-	
 	AttribObjType_PANEL * m_AttribObjPanel;
 	Main_PANEL * m_MainPanel;
+	
+	ProjectManager * m_PManager;
 	
 	
 	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
+	void OnOpenProject (wxCommandEvent & event);
 	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
