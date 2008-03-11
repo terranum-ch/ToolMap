@@ -54,7 +54,6 @@ ENDIF(WIN32)
 
 
 
-
 #bundle variables for compilation under Mac OS
 SET(MACOSX_BUNDLE_INFO_STRING "GIS program implementing the SION Method")
 SET(MACOSX_BUNDLE_ICON_FILE ${TRUNK_PATH}/art/toolmap2.icns)
@@ -83,5 +82,11 @@ ELSE (WIN32)
 
 ENDIF (WIN32)
 
+
+# SHOULD WE USE THE MT VERSION FOR DEFAULT 
+# COMPATIBILITY WITH < WINXP
+IF (WIN32)
+	INCLUDE ("cmake/Use_visualstudioMT.cmake")
+ENDIF (WIN32)
 
 
