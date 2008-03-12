@@ -163,7 +163,8 @@ bool ProjectManager::EditProjectObjectDefinition ()
 	bool bReturn = FALSE;
 	
 	// display the dialogs for editing the project's object definition.
-	ProjectEditObjectDefinitionDLG * myDlg = new ProjectEditObjectDefinitionDLG(m_Parent);
+	// DO NOT CALL THIS BEFORE OPENING A DB
+	ProjectEditObjectDefinitionDLG * myDlg = new ProjectEditObjectDefinitionDLG(m_Parent, m_DB);
 	if (myDlg->ShowModal() == wxID_SAVE)
 	{
 		wxLogDebug(_T("Object definition saved into the DB"));

@@ -24,9 +24,9 @@
 #include "wx/tglbtn.h"
 #include "wx/statline.h"
 #include "listgenreport.h"
+#include "../database/database_tm.h"
 
 class wxNotebook;
-//class ListGenReport;
 
 
 #define ID_DLG_ATTRIBUTION 10025
@@ -55,15 +55,16 @@ class wxNotebook;
 
 class ProjectEditObjectDefinitionDLG: public wxDialog
 {    
-    
+private:
+	DataBaseTM * m_DB;
 	
 	DECLARE_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG )
     DECLARE_EVENT_TABLE()
-
+	
 public:
     /// Constructors
     ProjectEditObjectDefinitionDLG();
-    ProjectEditObjectDefinitionDLG( wxWindow* parent, 
+    ProjectEditObjectDefinitionDLG( wxWindow* parent,DataBaseTM * pDatabase, 
 								   wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
 								   const wxString& caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
 								   const wxPoint& pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,

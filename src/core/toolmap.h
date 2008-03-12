@@ -76,8 +76,8 @@
 #include "../gui/project_def_dlg.h"		// project definition dialog
 #include "../gui/logwindow_dlg.h"		// log window definition
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
-//#include <wx/sysopt.h>
 #include "../database/db_project.h"
+#include "../gui/menumanager.h"			// for menu management (enable / diable)
 
 #include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
@@ -89,21 +89,27 @@
 #include "diroperation.h"
 //// end of testing
 
+class MenuManager;
 
 
 #include <wx/mstream.h>
 
-#define ID_MENU_NEW_PRJ_EMPTY 10019
-#define ID_MENU_NEW_PRJ_EXISTING 10148
-#define ID_MENU_OPEN_PRJ 10020
-#define ID_MENU3 10126
-#define ID_MENU_BACKUP_PRJ 10021
-#define ID_MENU_RESTORE_PRJ 10110
-#define ID_MENU_EXPORT_LAYER 10033
-#define ID_MENU_EXPORT_FULL 10034
-#define ID_MENU_PRJ_DEF 10229
-#define ID_MENU_OBJ_DEF 10230
-#define ID_MENU_PRJ_SETTINGS 10175
+
+// items from menu project.
+#define ID_MENU_NEW_PRJ_EMPTY		10300
+#define ID_MENU_NEW_PRJ_EXISTING	10301
+#define ID_MENU_OPEN_PRJ			10302
+#define ID_MENU3					10303
+#define ID_MENU_BACKUP_PRJ			10304
+#define ID_MENU_RESTORE_PRJ			10305
+#define ID_MENU_EXPORT			10306
+#define ID_MENU_EXPORT_LAYER		10307
+#define ID_MENU_EXPORT_FULL			10308
+#define ID_MENU_PRJ_EDIT		10309
+#define ID_MENU_PRJ_DEF				10310
+#define ID_MENU_OBJ_DEF				10311
+#define ID_MENU_PRJ_SETTINGS		10312
+
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
 #define ID_MENU_ZOOM_PREVIOUS_EXTEND 10023
@@ -217,6 +223,7 @@ private:
 	Main_PANEL * m_MainPanel;
 	
 	ProjectManager * m_PManager;
+	MenuManager * m_MManager;
 	
 	
 	void OnQuit(wxCloseEvent & event);
@@ -227,6 +234,7 @@ private:
 	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
+	void OnIdleTimeUpdate(wxIdleEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	
 	ImportLogDLG * m_LogWindow;
