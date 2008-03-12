@@ -20,8 +20,9 @@
 
 ////@begin includes
 #include "wx/notebook.h"
-#include "wx/grid.h"
+#include "wx/listctrl.h"
 #include "wx/tglbtn.h"
+#include "wx/statline.h"
 ////@end includes
 
 /*!
@@ -29,6 +30,8 @@
  */
 
 ////@begin forward declarations
+class wxNotebook;
+class ListParam;
 ////@end forward declarations
 
 /*!
@@ -37,44 +40,48 @@
 
 ////@begin control identifiers
 #define ID_DLG_ATTRIBUTION 10025
-#define ID_NOTEBOOK1 10026
-#define ID_PANEL1 10027
-#define ID_GRID1 10030
-#define ID_CHOICE16 10234
-#define ID_CHOICE17 10235
-#define ID_TOGGLEBUTTON9 10031
-#define ID_TOGGLEBUTTON11 10232
-#define ID_TOGGLEBUTTON12 10233
-#define ID_TOGGLEBUTTON10 10032
-#define ID_PANEL2 10028
-#define ID_PANEL3 10029
-#define SYMBOL_DLG_ATTRIBUTION_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_DLG_ATTRIBUTION_TITLE _("Objects definition")
-#define SYMBOL_DLG_ATTRIBUTION_IDNAME ID_DLG_ATTRIBUTION
-#define SYMBOL_DLG_ATTRIBUTION_SIZE wxDefaultSize
-#define SYMBOL_DLG_ATTRIBUTION_POSITION wxDefaultPosition
+#define ID_DLGPEO_NOTEBOOK 10026
+#define ID_DLGPEO_PANEL_LINE 10027
+#define ID_DLGPEO_LISTLINE 10264
+#define ID_DLGPEO_LYR_NAME_LINE 10234
+#define ID_DLGPEO_LINE_FRQ 10235
+#define ID_DLGPEO_PANEL_POINT 10028
+#define ID_DLGPEO_LISTPOINT 10000
+#define ID_DLGPEO_LYR_NAME_POINT 10234
+#define ID_DLGPEO_PANEL_POLY 10029
+#define ID_DLGPEO_LISTPOLY 10000
+#define ID_DLGPEO_LYR_NAME_POLY 10234
+#define ID_TOGGLEBUTTON8 10031
+#define ID_TOGGLEBUTTON9 10032
+#define ID_TOGGLEBUTTON10 10232
+#define ID_TOGGLEBUTTON11 10233
+#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxMAXIMIZE_BOX
+#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE _("Objects definition")
+#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME ID_DLG_ATTRIBUTION
+#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE wxDefaultSize
+#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION wxDefaultPosition
 ////@end control identifiers
 
 
 /*!
- * dlg_attribution class declaration
+ * ProjectEditObjectDefinitionDLG class declaration
  */
 
-class dlg_attribution: public wxDialog
+class ProjectEditObjectDefinitionDLG: public wxDialog
 {    
-    DECLARE_DYNAMIC_CLASS( dlg_attribution )
+    DECLARE_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG )
     DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
-    dlg_attribution();
-    dlg_attribution( wxWindow* parent, wxWindowID id = SYMBOL_DLG_ATTRIBUTION_IDNAME, const wxString& caption = SYMBOL_DLG_ATTRIBUTION_TITLE, const wxPoint& pos = SYMBOL_DLG_ATTRIBUTION_POSITION, const wxSize& size = SYMBOL_DLG_ATTRIBUTION_SIZE, long style = SYMBOL_DLG_ATTRIBUTION_STYLE );
+    ProjectEditObjectDefinitionDLG();
+    ProjectEditObjectDefinitionDLG( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION, const wxSize& size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE, long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE );
 
     /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_DLG_ATTRIBUTION_IDNAME, const wxString& caption = SYMBOL_DLG_ATTRIBUTION_TITLE, const wxPoint& pos = SYMBOL_DLG_ATTRIBUTION_POSITION, const wxSize& size = SYMBOL_DLG_ATTRIBUTION_SIZE, long style = SYMBOL_DLG_ATTRIBUTION_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME, const wxString& caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE, const wxPoint& pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION, const wxSize& size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE, long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE );
 
     /// Destructor
-    ~dlg_attribution();
+    ~ProjectEditObjectDefinitionDLG();
 
     /// Initialises member variables
     void Init();
@@ -82,24 +89,35 @@ public:
     /// Creates the controls and sizers
     void CreateControls();
 
-////@begin dlg_attribution event handler declarations
+////@begin ProjectEditObjectDefinitionDLG event handler declarations
 
-////@end dlg_attribution event handler declarations
+////@end ProjectEditObjectDefinitionDLG event handler declarations
 
-////@begin dlg_attribution member function declarations
+////@begin ProjectEditObjectDefinitionDLG member function declarations
 
     /// Retrieves bitmap resources
     wxBitmap GetBitmapResource( const wxString& name );
 
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
-////@end dlg_attribution member function declarations
+////@end ProjectEditObjectDefinitionDLG member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
 
-////@begin dlg_attribution member variables
-////@end dlg_attribution member variables
+////@begin ProjectEditObjectDefinitionDLG member variables
+    wxNotebook* m_DLGPEO_Notebook;
+    wxPanel* m_DLGPEO_Panel_Line;
+    ListParam* m_DLGPEO_List_Line;
+    wxChoice* m_DLGPEO_Choice_Lyr_Line_Name;
+    wxChoice* m_DLGPEO_Choice_Lyr_Line_Freq;
+    wxPanel* m_DLGPEO_Panel_Point;
+    ListParam* m_DLGPEO_List_Line;
+    wxChoice* m_DLGPEO_Choice_Lyr_Point_Name;
+    wxPanel* m_DLGPEO_Panel_Poly;
+    ListParam* m_DLGPEO_List_Line;
+    wxChoice* m_DLGPEO_Choice_Lyr_Poly_Name;
+////@end ProjectEditObjectDefinitionDLG member variables
 };
 
 #endif

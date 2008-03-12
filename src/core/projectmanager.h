@@ -40,9 +40,10 @@
 
 
 // include
-#include "../database/db_project.h"		// for project in memory (creation)
-#include "../database/database_tm.h"	// for database and TM database operations
-#include "../gui/project_def_dlg.h"		// new project definition dialog
+#include "../database/db_project.h"			// for project in memory (creation)
+#include "../database/database_tm.h"		// for database and TM database operations
+#include "../gui/project_def_dlg.h"			// new project definition dialog
+#include "../gui/objectattribution_dlg.h"	// for displaying object definition dlg.
 
 /***************************************************************************//**
  @brief Project operations (new, open,...)
@@ -67,6 +68,7 @@ class ProjectManager : public wxObject
 		bool CreateNewProject();
 		void CloseProject();
 		bool OpenProject(const wxString & path);
+		bool EditProjectObjectDefinition ();
 		
 		// project infos
 		wxString GetProjectName();
