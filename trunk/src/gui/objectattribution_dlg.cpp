@@ -49,12 +49,17 @@ ProjectEditObjectDefinitionDLG::ProjectEditObjectDefinitionDLG()
 
 
 ProjectEditObjectDefinitionDLG::ProjectEditObjectDefinitionDLG( wxWindow* parent, 
+															   DataBaseTM * pDatabase,
 															   wxWindowID id, 
 															   const wxString& caption, 
 															   const wxPoint& pos, 
 															   const wxSize& size, long style )
 {
     Init();
+	
+	// pass DB values
+	m_DB = pDatabase;
+	
     Create(parent, id, caption, pos, size, style);
 }
 
@@ -94,6 +99,7 @@ void ProjectEditObjectDefinitionDLG::Init()
     m_DLGPEO_Panel_Poly = NULL;
     m_DLGPEO_List_Line = NULL;
     m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
+	m_DB = NULL;
 }
 
 

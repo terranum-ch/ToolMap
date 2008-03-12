@@ -70,6 +70,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
 	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
+	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 END_EVENT_TABLE()
 
 
@@ -138,6 +139,8 @@ void ToolMapFrame::PostInit()
 	
 	m_PManager = new ProjectManager(this);
 	
+	// init the menu manager 
+	m_MManager = new MenuManager(GetMenuBar());
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 
@@ -157,6 +160,9 @@ ToolMapFrame::~ToolMapFrame()
 	
 	// delete the project Manager
 	delete m_PManager;
+	
+	// delete the menu manager
+	delete m_MManager;
 }
 
 
@@ -191,13 +197,13 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export layer..."), _T(""), wxITEM_NORMAL);
     itemMenu11->AppendSeparator();
     itemMenu11->Append(ID_MENU_EXPORT_FULL, _("Export full project"), _T(""), wxITEM_NORMAL);
-    itemMenu2->Append(wxID_ANY, _("Export project"), itemMenu11);
+    itemMenu2->Append(ID_MENU_EXPORT, _("Export project"), itemMenu11);
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
     itemMenu16->Append(ID_MENU_PRJ_DEF, _("Project definition..."), _T(""), wxITEM_NORMAL);
     itemMenu16->Append(ID_MENU_OBJ_DEF, _("Object definition..."), _T(""), wxITEM_NORMAL);
     itemMenu16->Append(ID_MENU_PRJ_SETTINGS, _("Settings..."), _T(""), wxITEM_NORMAL);
-    itemMenu2->Append(wxID_ANY, _("Edit project"), itemMenu16);
+    itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit project"), itemMenu16);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_PRINT, _("Print view...\tCtrl+P"), _T(""), wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
@@ -342,6 +348,9 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 	SetTitle(myProgName);
 	
+	// updates the menu using the menu manager
+	m_MManager->SetStatus(MENU_DB_SWITCH);
+	
 }
 
 
@@ -359,6 +368,9 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 			SetTitle(myProgName);
+			
+			// updates the menu using the menu manager
+			m_MManager->SetStatus(MENU_DB_SWITCH);
 		}
 		else
 			wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),
@@ -447,6 +459,12 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 
 	}
 
+}
+
+
+void ToolMapFrame::OnIdleTimeUpdate(wxIdleEvent & event)
+{
+	m_MManager->UpdateMenusStatus();
 }
 
 
