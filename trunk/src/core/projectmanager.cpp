@@ -134,6 +134,7 @@ bool ProjectManager::OpenProject(const wxString & path)
 			// 3. check, for version number
 			if (m_DB->GetDatabaseToolMapVersion() >= TM_DATABASE_VERSION)
 			{
+				// project is now open !
 				bReturn = TRUE;
 			}
 		}
@@ -154,6 +155,25 @@ bool ProjectManager::OpenProject(const wxString & path)
 }
 
 
+
+
+
+bool ProjectManager::EditProjectObjectDefinition ()
+{
+	bool bReturn = FALSE;
+	
+	// display the dialogs for editing the project's object definition.
+	ProjectEditObjectDefinitionDLG * myDlg = new ProjectEditObjectDefinitionDLG(m_Parent);
+	if (myDlg->ShowModal() == wxID_SAVE)
+	{
+		wxLogDebug(_T("Object definition saved into the DB"));
+		bReturn = TRUE;
+	}
+	
+	delete myDlg;
+	return bReturn;
+}
+	
 
 /***************************************************************************//**
  @brief Get the actual project name

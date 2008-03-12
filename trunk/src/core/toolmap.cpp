@@ -51,7 +51,7 @@ bool ToolMapApp::OnInit()
 	
 	//wxString myFrameName = _T("ToolMap 2.0.");
 	// myFrameName.Append(SVN_VERSION);
-	ToolMapFrame* frame = new ToolMapFrame(0L, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(620,480));
+	ToolMapFrame* frame = new ToolMapFrame(0L, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(900,500));
 	
 	
 	frame->Show();
@@ -68,6 +68,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
 	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
+	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 END_EVENT_TABLE()
 
@@ -366,6 +367,15 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 	}
 	delete myDirDLG;
 }
+
+
+
+void ToolMapFrame::OnEditProjectObjects (wxCommandEvent & event)
+{
+	// call the project manager
+	m_PManager->EditProjectObjectDefinition();
+}
+
 
 
 void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)

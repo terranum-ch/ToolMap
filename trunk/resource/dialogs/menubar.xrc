@@ -882,8 +882,8 @@
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_DLG_ATTRIBUTION" subclass="dlg_attribution">
-        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
+    <object class="wxDialog" name="ID_DLG_ATTRIBUTION" subclass="ProjectEditObjectDefinitionDLG">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxMAXIMIZE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <title>Objects definition</title>
         <centered>1</centered>
@@ -893,11 +893,11 @@
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
                 <option>1</option>
-                <object class="wxNotebook" name="ID_NOTEBOOK1">
+                <object class="wxNotebook" name="ID_DLGPEO_NOTEBOOK">
                     <style>wxBK_DEFAULT</style>
                     <object class="notebookpage">
                         <label>Lines</label>
-                        <object class="wxPanel" name="ID_PANEL1">
+                        <object class="wxPanel" name="ID_DLGPEO_PANEL_LINE">
                             <style>wxTAB_TRAVERSAL</style>
                             <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
@@ -905,9 +905,9 @@
                                     <flag>wxGROW|wxALL</flag>
                                     <border>5</border>
                                     <option>1</option>
-                                    <object class="wxGrid" name="ID_GRID1">
-                                        <size>200,150</size>
-                                        <style>wxHSCROLL|wxVSCROLL</style>
+                                    <object class="ListParam" name="ID_DLGPEO_LISTLINE">
+                                        <size>400,200</size>
+                                        <style>wxLC_REPORT</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -929,7 +929,7 @@
                                         <object class="sizeritem">
                                             <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxChoice" name="ID_CHOICE16">
+                                            <object class="wxChoice" name="ID_DLGPEO_LYR_NAME_LINE">
                                                 <content>
                                                     <item>Polygons_TS</item>
                                                 </content>
@@ -946,7 +946,7 @@
                                         <object class="sizeritem">
                                             <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
                                             <border>5</border>
-                                            <object class="wxChoice" name="ID_CHOICE17">
+                                            <object class="wxChoice" name="ID_DLGPEO_LINE_FRQ">
                                                 <content>
                                                     <item>Frequent</item>
                                                     <item>Less frequent</item>
@@ -956,43 +956,48 @@
                                         </object>
                                     </object>
                                 </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Points</label>
+                        <object class="wxPanel" name="ID_DLGPEO_PANEL_POINT">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
                                     <flag>wxGROW|wxALL</flag>
                                     <border>5</border>
-                                    <object class="wxBoxSizer">
-                                        <orient>wxHORIZONTAL</orient>
+                                    <option>1</option>
+                                    <object class="ListParam" name="ID_DLGPEO_LISTPOINT">
+                                        <size>400,200</size>
+                                        <style>wxLC_REPORT</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxFlexGridSizer">
+                                        <cols>2</cols>
+                                        <rows>1</rows>
+                                        <vgap>0</vgap>
+                                        <hgap>0</hgap>
+                                        <growablecols>1</growablecols>
                                         <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON9">
-                                                <size>40,-1</size>
-                                                <label>+</label>
-                                                <checked>0</checked>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <label>Layer name :</label>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON11">
-                                                <size>40,-1</size>
-                                                <label>-</label>
-                                                <checked>0</checked>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                            <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON12">
-                                                <label>Import...</label>
-                                                <checked>0</checked>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                            <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON10">
-                                                <label>Export...</label>
-                                                <checked>0</checked>
+                                            <object class="wxChoice" name="ID_DLGPEO_LYR_NAME_POINT">
+                                                <content>
+                                                    <item>Polygons_TS</item>
+                                                </content>
+                                                <selection>0</selection>
                                             </object>
                                         </object>
                                     </object>
@@ -1001,17 +1006,100 @@
                         </object>
                     </object>
                     <object class="notebookpage">
-                        <label>Points</label>
-                        <object class="wxPanel" name="ID_PANEL2">
-                            <style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
-                        </object>
-                    </object>
-                    <object class="notebookpage">
                         <label>Polygons</label>
-                        <object class="wxPanel" name="ID_PANEL3">
-                            <style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
+                        <object class="wxPanel" name="ID_DLGPEO_PANEL_POLY">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="ListParam" name="ID_DLGPEO_LISTPOLY">
+                                        <size>400,200</size>
+                                        <style>wxLC_REPORT</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxFlexGridSizer">
+                                        <cols>2</cols>
+                                        <rows>1</rows>
+                                        <vgap>0</vgap>
+                                        <hgap>0</hgap>
+                                        <growablecols>1</growablecols>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <label>Layer name :</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxChoice" name="ID_DLGPEO_LYR_NAME_POLY">
+                                                <content>
+                                                    <item>Polygons_TS</item>
+                                                </content>
+                                                <selection>0</selection>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
                         </object>
                     </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxLEFT|wxRIGHT|wxTOP</flag>
+                <border>5</border>
+                <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Operations</label>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxToggleButton" name="ID_TOGGLEBUTTON8">
+                            <size>40,-1</size>
+                            <label>+</label>
+                            <checked>0</checked>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxToggleButton" name="ID_TOGGLEBUTTON9">
+                            <size>40,-1</size>
+                            <label>-</label>
+                            <checked>0</checked>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxToggleButton" name="ID_TOGGLEBUTTON10">
+                            <label>Import...</label>
+                            <checked>0</checked>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxToggleButton" name="ID_TOGGLEBUTTON11">
+                            <label>Export...</label>
+                            <checked>0</checked>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxStaticLine" name="wxID_STATIC">
+                    <style>wxLI_HORIZONTAL</style>
                 </object>
             </object>
             <object class="sizeritem">
@@ -1021,15 +1109,15 @@
                     <object class="button">
                         <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                         <border>5</border>
-                        <object class="wxButton" name="wxID_OK">
-                            <label>&amp;OK</label>
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label>&amp;Cancel</label>
                         </object>
                     </object>
                     <object class="button">
                         <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                         <border>5</border>
-                        <object class="wxButton" name="wxID_CANCEL">
-                            <label>&amp;Cancel</label>
+                        <object class="wxButton" name="wxID_SAVE">
+                            <label>&amp;Save</label>
                         </object>
                     </object>
                 </object>
