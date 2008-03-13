@@ -41,7 +41,7 @@ const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
 const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 201;
+const int TM_DATABASE_VERSION = 202;
 
 
 class DataBaseTM : public DataBase

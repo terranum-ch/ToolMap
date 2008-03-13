@@ -62,7 +62,6 @@ private:
 	
 	// PRIVATE DATABASE FUNCTION
 	bool SetChoiceListText (wxChoice * choice, int listtype); 
-	//bool SetListText (int ilayertype, ListGenReport * liste);
 	
 	
 	DECLARE_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG )
