@@ -61,8 +61,8 @@ private:
 	void OnAddObject (wxCommandEvent & event);
 	
 	// PRIVATE DATABASE FUNCTION
-	bool SetChoiceListText (const wxString & table, wxChoice * choice, int listtype); 
-	bool SetListText (int ilayertype, ListGenReport * liste);
+	bool SetChoiceListText (wxChoice * choice, int listtype); 
+	//bool SetListText (int ilayertype, ListGenReport * liste);
 	
 	
 	DECLARE_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG )

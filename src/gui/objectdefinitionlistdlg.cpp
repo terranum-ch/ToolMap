@@ -44,12 +44,14 @@ ObjectDefinitionListDlg::ObjectDefinitionListDlg()
 
 ObjectDefinitionListDlg::ObjectDefinitionListDlg( wxWindow* parent,
 												 int iListlayerType,
+												 DataBaseTM * DBHandler,
 												 wxWindowID id, const wxString& caption,
 												 const wxPoint& pos, const wxSize& size, long style )
 {
     Init();
 	// should we use the frequency control
 	m_ParentListType = iListlayerType;
+	m_pDatabase = DBHandler;
 	
     Create(parent, id, caption, pos, size, style);
 }
@@ -157,9 +159,9 @@ void ObjectDefinitionListDlg::CreateControls()
 
 bool ObjectDefinitionListDlg::TransferDataToWindow()
 {
-	// called automaticaly before displaying window
-	//m_DLGODD_List_Lyr_Name->Append(<#const wxArrayString strings#>)
-	
+	// fill choice with themes
+	m_DLGODD_List_Lyr_Name->Append(m_pDatabase->GetLayerNameByType(m_ParentListType));
+	return TRUE;
 }
 
 
@@ -169,12 +171,19 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 										   wxWindowID id,
 										   PRJDEF_LAYERS_TYPE paneltype,
+										   DataBaseTM * database,
 										   wxArrayString * pColsName, 
 										   wxArrayInt * pColsSize,
 										   wxSize size) : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	m_layertype = paneltype;
+	m_DBHandler = database;
+	
+	// init list with database values
+	SetListText(m_layertype);
 }
+
+
 
 ObjectDefinitionList::~ObjectDefinitionList()
 {
@@ -182,10 +191,40 @@ ObjectDefinitionList::~ObjectDefinitionList()
 }
 
 
+bool ObjectDefinitionList::SetListText (int ilayertype)
+{
+	wxArrayString myResults;
+	
+	if(m_DBHandler->GetObjectListByLayerType(ilayertype))
+	{
+		// loop for all results 
+		while (1)
+		{
+			myResults = m_DBHandler->DataBaseGetNextResult();
+			if (myResults.GetCount() > 0)
+			{
+				// put the results in the list
+				EditDataToList(myResults);
+				myResults.Clear();
+			}
+			else 
+			{
+				break;
+			}
+			
+		}
+		return TRUE;
+		
+	}
+	
+	return FALSE;
+}
+
+
 void ObjectDefinitionList::BeforeAdding()
 {
 	// create the dialog
-	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype);
+	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
 	SetDialog(myDlg);
 }
 
@@ -202,7 +241,7 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 void ObjectDefinitionList::BeforeEditing ()
 {
 	// create the dialog
-	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype);
+	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
 	SetDialog(myDlg);
 	
 }

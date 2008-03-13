@@ -85,6 +85,7 @@ class DataBaseTM : public DataBase
 		
 		// database query
 		bool GetObjectListByLayerType(int ilayertype);
+		wxArrayString GetLayerNameByType (int ilayertype);
 	};
 
 
