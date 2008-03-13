@@ -41,7 +41,7 @@ const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
 const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 200;
+const int TM_DATABASE_VERSION = 201;
 
 
 class DataBaseTM : public DataBase
@@ -82,6 +82,9 @@ class DataBaseTM : public DataBase
 		
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
+		
+		// database query
+		bool GetObjectListByLayerType(int ilayertype);
 	};
 
 

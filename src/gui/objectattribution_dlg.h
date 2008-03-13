@@ -23,9 +23,8 @@
 #include "wx/listctrl.h"
 #include "wx/tglbtn.h"
 #include "wx/statline.h"
-#include "listgenreport.h"
-#include "../database/database_tm.h"
-
+#include "objectdefinitionlistdlg.h" // For list and edition dialog definition
+#include "wxflatbutton.h"
 class wxNotebook;
 
 
@@ -41,10 +40,10 @@ class wxNotebook;
 #define ID_DLGPEO_PANEL_POLY 10029
 #define ID_DLGPEO_LISTPOLY 10000
 #define ID_DLGPEO_LYR_NAME_POLY 10234
-#define ID_TOGGLEBUTTON8 10031
-#define ID_TOGGLEBUTTON9 10032
-#define ID_TOGGLEBUTTON10 10232
-#define ID_TOGGLEBUTTON11 10233
+#define ID_DLGPEO_BTN_ADD 10031
+#define ID_DLGPEO_BTN_DEL 10032
+#define ID_DLGPEO_BTN_IMPORT 10232
+#define ID_DLGPEO_BTN_EXPORT 10233
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxMAXIMIZE_BOX
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE _("Objects definition")
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME ID_DLG_ATTRIBUTION
@@ -57,6 +56,14 @@ class ProjectEditObjectDefinitionDLG: public wxDialog
 {    
 private:
 	DataBaseTM * m_DB;
+	
+	// EVENT FUNCTION
+	void OnAddObject (wxCommandEvent & event);
+	
+	// PRIVATE DATABASE FUNCTION
+	bool SetChoiceListText (const wxString & table, wxChoice * choice, int listtype); 
+	bool SetListText (int ilayertype, ListGenReport * liste);
+	
 	
 	DECLARE_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG )
     DECLARE_EVENT_TABLE()
@@ -83,19 +90,20 @@ public:
     ~ProjectEditObjectDefinitionDLG();
 
     void Init();
+	void PostInit();
 
     void CreateControls();
 
     wxNotebook* m_DLGPEO_Notebook;
     wxPanel* m_DLGPEO_Panel_Line;
-    ListGenReport* m_DLGPEO_List_Line;
+    ObjectDefinitionList* m_DLGPEO_List_Line;
     wxChoice* m_DLGPEO_Choice_Lyr_Line_Name;
     wxChoice* m_DLGPEO_Choice_Lyr_Line_Freq;
     wxPanel* m_DLGPEO_Panel_Point;
-    ListGenReport* m_DLGPEO_List_Point;
+    ObjectDefinitionList* m_DLGPEO_List_Point;
     wxChoice* m_DLGPEO_Choice_Lyr_Point_Name;
     wxPanel* m_DLGPEO_Panel_Poly;
-    ListGenReport* m_DLGPEO_List_Poly;
+    ObjectDefinitionList* m_DLGPEO_List_Poly;
     wxChoice* m_DLGPEO_Choice_Lyr_Poly_Name;
 };
 

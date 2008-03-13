@@ -542,6 +542,27 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	return bReturnValue;
 }
 
+
+/*************************** DATABASE QUERY FUNCTION ****************************/
+bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
+{
+	wxString sSentence =  wxString::Format(
+										   _T("SELECT OBJECT_ID, OBJECT_CD, OBJECT_DESC, THEMATIC_LAYERS.LAYER_NAME ")
+										   _T("FROM DMN_LAYER_OBJECT LEFT JOIN (THEMATIC_LAYERS) ")
+										   _T("ON (THEMATIC_LAYERS.LAYER_INDEX=DMN_LAYER_OBJECT.THEMATIC_LAYERS_LAYER_INDEX)")
+										   _T("WHERE THEMATIC_LAYERS.TYPE_CD = %d"),
+										   ilayertype);
+	if (DataBaseQuery(sSentence))
+	{
+		return TRUE;
+	}
+	wxLogDebug(_T("Error getting the list of object by layertype"));
+	return FALSE;
+	
+}
+
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")

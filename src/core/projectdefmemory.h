@@ -102,15 +102,15 @@ enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
 // Definitions for the layers type, we define the text and  the id of 
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_LAYERS_TYPE_STRING[] = 
-{
-	_("Point"),
+{	
 	_("Line"),
+	_("Point"),
 	_("Polygon")
 };
 enum PRJDEF_LAYERS_TYPE
 {
-	LAYER_POINT = 0,
-	LAYER_LINE,
+	LAYER_LINE = 0,
+	LAYER_POINT,
 	LAYER_POLYGON
 };
 static const int PRJDEF_LAYERS_TYPE_NUMBER = 3;
