@@ -262,19 +262,15 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     itemBoxSizer2->Add(itemStaticBoxSizer24, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
     wxFlatButton* itemToggleButton25 = new wxFlatButton( itemDialog1, ID_DLGPEO_BTN_ADD, _("+"),  wxSize(40, -1));
-    itemToggleButton25->SetValue(false);
     itemStaticBoxSizer24->Add(itemToggleButton25, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxFlatButton* itemToggleButton26 = new wxFlatButton( itemDialog1, ID_DLGPEO_BTN_DEL, _("-"),  wxSize(40, -1));
-    itemToggleButton26->SetValue(false);
     itemStaticBoxSizer24->Add(itemToggleButton26, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxFlatButton* itemToggleButton27 = new wxFlatButton( itemDialog1, ID_DLGPEO_BTN_IMPORT, _("Import..."),  wxDefaultSize);
-    itemToggleButton27->SetValue(false);
     itemStaticBoxSizer24->Add(itemToggleButton27, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxFlatButton* itemToggleButton28 = new wxFlatButton( itemDialog1, ID_DLGPEO_BTN_EXPORT, _("Export..."),  wxDefaultSize );
-    itemToggleButton28->SetValue(false);
     itemStaticBoxSizer24->Add(itemToggleButton28, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticLine* itemStaticLine29 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
