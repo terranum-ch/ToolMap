@@ -39,6 +39,7 @@ class ObjectDefinitionListDlg: public wxDialog
 {
     wxString m_Description;
 	int m_ParentListType;
+	DataBaseTM * m_pDatabase;
 	
 	// Controls identifiers
 	wxTextCtrl* m_DLGODD_Code;
@@ -57,6 +58,7 @@ public:
     ObjectDefinitionListDlg();
     ObjectDefinitionListDlg( wxWindow* parent,
 							int iListlayerType,
+							DataBaseTM * DBHandler,
 							wxWindowID id = SYMBOL_OBJECTDEFINITIONLISTDLG_IDNAME, 
 							const wxString& caption = SYMBOL_OBJECTDEFINITIONLISTDLG_TITLE,
 							const wxPoint& pos = SYMBOL_OBJECTDEFINITIONLISTDLG_POSITION,
@@ -83,6 +85,10 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 	{
 	private:
 		PRJDEF_LAYERS_TYPE m_layertype;
+		DataBaseTM * m_DBHandler;
+		
+		// init list with database values
+		bool SetListText (int ilayertype);
 		
 		// functions to implement 
 		virtual void BeforeAdding();
@@ -96,6 +102,7 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		ObjectDefinitionList(wxWindow * parent,
 							 wxWindowID id,
 							 PRJDEF_LAYERS_TYPE paneltype,
+							 DataBaseTM * database,
 							 wxArrayString * pColsName, 
 							 wxArrayInt * pColsSize=NULL,
 							 wxSize size = wxDefaultSize);

@@ -562,6 +562,29 @@ bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
 }
 
 
+wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
+{
+	wxArrayString myThematicResult;
+	wxString myTempResult;
+	
+	wxString sSentence = wxString::Format(_T("SELECT (LAYER_NAME) FROM %s WHERE TYPE_CD = %d"),
+										  TABLE_NAME_LAYERS.c_str(), ilayertype);
+	if (DataBaseQuery(sSentence))
+	{
+		while (DataBaseGetNextResult(myTempResult))
+		{
+			myThematicResult.Add(myTempResult);
+		} 
+	}
+	else 
+	{
+		wxLogDebug(_T("Error getting list of layer for specified listtype : %d"), ilayertype);
+	}
+
+	return myThematicResult;
+}
+
+
 
 /// FIELD CREATION ::
 
