@@ -66,8 +66,9 @@ class ListGenReport : public wxListCtrl
 		virtual void OnPressBackSpace (wxListEvent & event);
 		void OnContextMenu (wxListEvent & event);
 		void OnMoveItemInList (wxCommandEvent & event);
+		
 					
-		void OnStartDrag (wxListEvent & event);
+		//void OnStartDrag (wxListEvent & event); // not implemented now maybe layer...
 		void OnInit();
 		
 	public:
@@ -338,6 +339,13 @@ public:
 };
 
 
+// enum for disabling menu based on position
+enum MENU_DISABLE
+{
+	MENU_DISABLE_TOP = 1,
+	MENU_DISABLE_BOTTOM = 2
+};
+
 
 /*****************************************************************//**
  @brief contextual menu for ListGenReport
@@ -356,12 +364,17 @@ class ListGenMenu : public wxMenu
 		void MenuInit();
 		virtual wxMenu   *CreateContextMenu();
 		
+		
 		wxMenu *m_ContextMenu;		
 				
 		public :
 		ListGenMenu();
 		ListGenMenu(const wxString& title, long style = 0);
 		~ListGenMenu() {delete m_ContextMenu;}
+		
+		// disable portion of menu
+		void DisableMenuMove (int flags);
+		
 		
 		wxMenu * GetTheMenu() {return m_ContextMenu;}
 		

@@ -186,7 +186,7 @@ void ListGenReport::OnInit ()
 BEGIN_EVENT_TABLE(ListGenReport,wxListCtrl)
 	EVT_LIST_ITEM_ACTIVATED(ID_LIST, ListGenReport::OnDoubleClickItem)
 	EVT_LIST_KEY_DOWN (ID_LIST,ListGenReport::OnPressBackSpace)
-	EVT_LIST_BEGIN_DRAG (ID_LIST, ListGenReport::OnStartDrag)
+	//EVT_LIST_BEGIN_DRAG (ID_LIST, ListGenReport::OnStartDrag)
 	EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST, ListGenReport::OnContextMenu)
 	EVT_MENU_RANGE(ID_MENU_MOVE_TOP,ID_MENU_MOVE_BOTTOM,ListGenReport::OnMoveItemInList)
 END_EVENT_TABLE()
@@ -235,12 +235,27 @@ void ListGenReport::OnPressBackSpace (wxListEvent & event)
 
 void ListGenReport::OnContextMenu (wxListEvent & event)
 {			
-	int iSelectedItem = GetSelectedItem();
+	int flags = 0;
+	wxArrayLong mySelected;
 	
-	// check if an item is selected
-	if (iSelectedItem != -1)
+	// get all selected items 
+	int iCountSelected = GetAllSelectedItem(mySelected);
+	if (iCountSelected > 0)
 	{
+		// if first item is selected we disable the
+		// contextual top menu
+		if (mySelected.Item(0) == 0) 
+			flags = flags | MENU_DISABLE_TOP;
+		
+		// if last item is selected we disable the
+		// contextual top menu
+		if (mySelected.Last() == GetItemCount()-1)
+			flags = flags | MENU_DISABLE_BOTTOM;
+	
+		m_ListContextMenu->DisableMenuMove(flags);
+		
 		PopupMenu(m_ListContextMenu->GetTheMenu());
+		
 	}
 	event.Skip();
 }
@@ -248,6 +263,8 @@ void ListGenReport::OnContextMenu (wxListEvent & event)
 
 void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 {
+	// get all selected item
+	
 	int iSelectedItem = GetSelectedItem();
 	switch (event.GetId())
 	{
@@ -316,16 +333,16 @@ bool ListGenReport::SetItemText(int iItem, int iCol, wxString text)
 	return SetItem (Item);
 }
 
-void ListGenReport::OnStartDrag (wxListEvent & event)
-{
-	wxTextDataObject myData (_T("Test"));
-	
-	wxLogMessage(_T("OnStartDrag"));
-	
-	wxDropSource dragSource (this);
-	dragSource.SetData(myData);
-	wxDragResult dragResult = dragSource.DoDragDrop (wxDrag_AllowMove);
-}
+//void ListGenReport::OnStartDrag (wxListEvent & event)
+//{
+//	wxTextDataObject myData (_T("Test"));
+//	
+//	wxLogMessage(_T("OnStartDrag"));
+//	
+//	wxDropSource dragSource (this);
+//	dragSource.SetData(myData);
+//	wxDragResult dragResult = dragSource.DoDragDrop (wxDrag_AllowMove);
+//}
 
 void ListGenReport::MoveItem (int iItem, int iNewPos)
 {	
@@ -389,6 +406,7 @@ bool ListGenReport::DataToList(ListGenDialog * pdialog,  wxArrayString & myValue
 	}
 	return FALSE;
 }
+
 
 bool ListGenReport::DeleteSelectedItem()
 {
@@ -473,6 +491,28 @@ wxMenu * ListGenMenu::CreateContextMenu()
     itemMenu1->Append(ID_MENU_MOVE_DOWN, _("Move item &down"), _T(""), wxITEM_NORMAL);
     itemMenu1->Append(ID_MENU_MOVE_BOTTOM, _("Move item to the &bottom"), _T(""), wxITEM_NORMAL);
     return itemMenu1;
+}
+
+
+void ListGenMenu::DisableMenuMove (int flags)
+{
+	m_ContextMenu->Enable(ID_MENU_MOVE_UP, TRUE);
+	m_ContextMenu->Enable(ID_MENU_MOVE_TOP, TRUE);
+	m_ContextMenu->Enable(ID_MENU_MOVE_DOWN, TRUE);
+	m_ContextMenu->Enable(ID_MENU_MOVE_BOTTOM, TRUE);
+		
+	// if flags = MENU_DISABLE_TOP, disable two first item
+	if ((flags & MENU_DISABLE_TOP) == MENU_DISABLE_TOP)
+	{
+		m_ContextMenu->Enable(ID_MENU_MOVE_UP, FALSE);
+		m_ContextMenu->Enable(ID_MENU_MOVE_TOP, FALSE);
+	}
+	
+	if ((flags & MENU_DISABLE_BOTTOM) == MENU_DISABLE_BOTTOM)
+	{
+		m_ContextMenu->Enable(ID_MENU_MOVE_DOWN, FALSE);
+		m_ContextMenu->Enable(ID_MENU_MOVE_BOTTOM, FALSE);
+	}	
 }
 
 
