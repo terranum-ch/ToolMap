@@ -170,6 +170,17 @@ class ListGenReport : public wxListCtrl
 		 *************************************************/
 		long GetSelectedItem ();
 		
+		/***************************************************************************//**
+		 @brief Get all selected item
+		 @details Return an array of long containing all selected items in the list
+		 (only usefull if list style isn't wxLC_SINGLE_SEL)
+		 @param results an Array of long wich will be filled with selected items
+		 @return  the number of items selected
+		 @author Lucien Schreiber (c) CREALP 2007
+		 @date 14 March 2008
+		 *******************************************************************************/
+		int GetAllSelectedItem(wxArrayLong & results);
+		
 		/*****************************************************************//**
 		 @brief Move item in the list
 		 @details This function is intended to move item between two position
@@ -249,7 +260,7 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
 		 *******************************************************************************/		
-		bool EditDataToList (const wxArrayString & myValue, int index =-1);
+		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
 		
 		/***************************************************************************//**
 		 @brief Import and parse file to a list

@@ -194,6 +194,7 @@ ObjectDefinitionList::~ObjectDefinitionList()
 bool ObjectDefinitionList::SetListText (int ilayertype)
 {
 	wxArrayString myResults;
+	long lFrequency = 0;
 	
 	if(m_DBHandler->GetObjectListByLayerType(ilayertype))
 	{
@@ -203,7 +204,23 @@ bool ObjectDefinitionList::SetListText (int ilayertype)
 			myResults = m_DBHandler->DataBaseGetNextResult();
 			if (myResults.GetCount() > 0)
 			{
-				// put the results in the list
+				// if ilayertype is LINE we
+				// have to modify the bool
+				// frequency into a text
+				if (ilayertype == LAYER_LINE)
+				{
+					myResults.Item(3).ToLong(&lFrequency);
+					if (lFrequency == 0) // not frequent
+					{
+						myResults.Item(3) = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_LESS_FREQUENT];
+					}
+					else 
+					{
+						myResults.Item(3) = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT];
+					}
+				}
+				
+				//put the results in the list
 				EditDataToList(myResults);
 				myResults.Clear();
 			}
@@ -219,6 +236,58 @@ bool ObjectDefinitionList::SetListText (int ilayertype)
 	
 	return FALSE;
 }
+
+
+/***************************************************************************//**
+ @brief Pass data to the list
+ @details This function is inspired from the ListGenReport::EditDataToList()
+ one, but in this case we are storing the OBJECT_ID into the item (not
+ visible). This way we can update or delete the good item
+ @param myValue a wxArrayString containing all columns item plus the number to
+ associate with the item
+ @param index index item to modify or -1 for adding a new item
+ @param bool return TRUE if the number of items in the array is correct
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 13 March 2008
+ *******************************************************************************/
+bool ObjectDefinitionList::EditDataToList (const wxArrayString & myValue, int index)
+{
+	// check that data are stored in the array to fill the list.
+	// the last item will be used for adding not visible data (OBJECT_ID) to the list 
+
+	int iArrayItemCount = myValue.GetCount();
+	int iRunNb = 0;
+	//iArrayItemCount > GetColumnCount() ? iRunNb = GetColumnCount() : iRunNb = iArrayItemCount;
+	
+	
+	if (iArrayItemCount - 1 == GetColumnCount())
+	{
+		// add the first line in the list if index is = -1
+		if (index == -1)
+		{
+			AddItemToList(myValue.Item(0));
+			index = GetItemCount()-1;
+		}
+		else
+			SetItemText(index, 0, myValue.Item(0));
+		
+		for (int i=1; i<GetColumnCount(); i++)
+		{
+			SetItemText(index,i, myValue.Item(i));
+		}
+		// associate data to the item
+		long myData = 0;
+		myValue.Item(GetColumnCount()).ToLong(&myData);
+		SetItemData(index,myData);
+		
+		return TRUE;
+	}
+	wxLogDebug(_T("Error using EditdatatoList function, not enrough item in array"));
+	return FALSE;
+	
+	
+}
+
 
 
 void ObjectDefinitionList::BeforeAdding()
