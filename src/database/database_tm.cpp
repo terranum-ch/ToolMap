@@ -552,11 +552,18 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 /*************************** DATABASE QUERY FUNCTION ****************************/
 bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
 {
+	// different request based on the ilayertype (4 fields for LAYER_LINE and
+	// 3 fields in other cases
+	wxString sWantFrequencyField = _T("");
+	if (ilayertype == LAYER_LINE)
+		 sWantFrequencyField = _T("OBJECT_ISFREQ, ");
+	
 	wxString sSentence =  wxString::Format(
-										   _T("SELECT OBJECT_ID, OBJECT_CD, OBJECT_DESC, THEMATIC_LAYERS.LAYER_NAME ")
+										   _T("SELECT OBJECT_CD, OBJECT_DESC, THEMATIC_LAYERS.LAYER_NAME, %s OBJECT_ID ")
 										   _T("FROM DMN_LAYER_OBJECT LEFT JOIN (THEMATIC_LAYERS) ")
 										   _T("ON (THEMATIC_LAYERS.LAYER_INDEX=DMN_LAYER_OBJECT.THEMATIC_LAYERS_LAYER_INDEX)")
 										   _T("WHERE THEMATIC_LAYERS.TYPE_CD = %d"),
+										   sWantFrequencyField.c_str(),
 										   ilayertype);
 	if (DataBaseQuery(sSentence))
 	{

@@ -107,9 +107,11 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 							 wxArrayInt * pColsSize=NULL,
 							 wxSize size = wxDefaultSize);
 		
-		
 		/// Destructor
 		~ObjectDefinitionList(); 
+		
+		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
+		
 		
 	};
 

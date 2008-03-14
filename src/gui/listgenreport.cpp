@@ -20,7 +20,7 @@ const int ListGenReport::ID_LIST = wxID_ANY;
 
 ListGenReport::ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize, wxSize size)
 	: wxListCtrl(parent,id,wxDefaultPosition,
-	size,wxLC_REPORT | wxLC_SINGLE_SEL)
+	size,wxLC_REPORT) // | wxLC_SINGLE_SEL)
 {
 	CreateColumns(pColsName,pColsSize);
 	OnInit();
@@ -28,7 +28,7 @@ ListGenReport::ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * 
 
 ListGenReport::ListGenReport(wxWindow * parent, wxWindowID id, wxSize size) 
 	: wxListCtrl(parent,id,wxDefaultPosition,
-	size,wxLC_REPORT | wxLC_SINGLE_SEL)
+	size,wxLC_REPORT) // | wxLC_SINGLE_SEL)
 {
 	OnInit();
 }
@@ -282,6 +282,31 @@ long ListGenReport::GetSelectedItem()
 	return GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 }
 
+
+int ListGenReport::GetAllSelectedItem(wxArrayLong & results)
+{
+	
+	int i = -1;
+	while (1)
+	{
+		i = GetNextItem(i, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		
+		// break if nothing found
+		if (i == -1)
+			break;
+		else 
+		{
+			results.Add(i);
+		}
+		
+		
+	}
+	wxLogDebug(_T("Found %d items selected in list"), results.GetCount());
+	return results.GetCount();
+}
+
+
+
 bool ListGenReport::SetItemText(int iItem, int iCol, wxString text)
 {
 	wxListItem Item;
@@ -367,12 +392,18 @@ bool ListGenReport::DataToList(ListGenDialog * pdialog,  wxArrayString & myValue
 
 bool ListGenReport::DeleteSelectedItem()
 {
-	long iSelectedItem = GetSelectedItem();
-	if (iSelectedItem != -1)
+	wxArrayLong itemToDelete;
+	int iNbItemToDelete = GetAllSelectedItem(itemToDelete);
+	if (iNbItemToDelete > 0)
 	{
-		DeleteItem(iSelectedItem);
+		for (int i= iNbItemToDelete -1 ; i >= 0 ; i--)
+		{
+			// delete from end to avoid deleting off limits
+			DeleteItem(itemToDelete[i]);
+		}
 		return TRUE;
-	} 
+	}
+	
 	wxLogDebug(_T("No item deleted, select an item"));
 	return FALSE;
 }

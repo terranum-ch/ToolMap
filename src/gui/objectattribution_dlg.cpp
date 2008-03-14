@@ -179,6 +179,7 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 	m_DLGPEO_List_Line = new ObjectDefinitionList( m_DLGPEO_Panel_Line, ID_DLGPEO_LISTLINE,
 												  LAYER_LINE, m_DB,
 										   &mylistcolname, &mylistWidth, wxSize (500,260) );
+	//m_DLGPEO_List_Line->SetWindowStyleFlag(wxLC_REPORT | wxLC_SINGLE_SEL);
     itemBoxSizer5->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
 
     
