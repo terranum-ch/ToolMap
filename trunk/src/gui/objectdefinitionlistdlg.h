@@ -87,10 +87,12 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		PRJDEF_LAYERS_TYPE m_layertype;
 		DataBaseTM * m_DBHandler;
 		wxCheckBox * m_CheckBox;
+		wxChoice   * m_ChoiceLayer;
 		
 		// init list with database values
 		bool SetListText (int ilayertype);
 		wxCheckBoxState GetFreqStatus (int iIndex = -1);
+		wxString	GetLayerStatus (int iIndex = -1);
 		
 		
 		// derived functions to implement 
@@ -120,7 +122,7 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
 		
 		// pass pointer to ctrls to the list
-		void SetListCtrls (wxCheckBox * checkboxfreq){ m_CheckBox = checkboxfreq;}
+		void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);
 		
 		void SetFreqStatus (int frequency, wxArrayLong * iIndexes = NULL);
 		

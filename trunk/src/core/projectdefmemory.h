@@ -121,7 +121,7 @@ static const int PRJDEF_LAYERS_TYPE_NUMBER = 3;
 static wxString PRJDEF_OBJECTS_FREQ_STRING[] = 
 {
 	_("Frequent"),
-	_("Less Frequent")
+	_("")
 };
 enum PRJDEF_OBJECTS_FREQ
 {
