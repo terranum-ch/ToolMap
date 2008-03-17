@@ -60,7 +60,7 @@ MenuManager::~MenuManager()
  *******************************************************************************/
 void MenuManager::SetStatus(MENUSTATUS flags)
 {
-	m_MenuStatus = m_MenuStatus ^ flags; //XOR
+	m_MenuStatus = flags; //m_MenuStatus ^ flags; //XOR
 	
 	// change status for database opened
 	bMenu_DB_IsOpen = m_MenuStatus & MENU_DB_OPENED;

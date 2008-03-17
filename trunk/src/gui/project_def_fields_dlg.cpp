@@ -159,15 +159,34 @@ void ProjectDefFieldList::BeforeDeleting ()
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
 	
-	// get selected item from the list
-	long mySelectedListItem = GetSelectedItem();
-	wxString myValueName = GetItemColText(mySelectedListItem, 1);
+//	// get selected item from the list
+//	long mySelectedListItem = GetSelectedItem();
+//	wxString myValueName = GetItemColText(mySelectedListItem, 1);
+//	
+//	m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
+//	m_ChoiceToDefault->Delete(m_ChoiceIndex);
+//	
+//	m_pPrjDefinition->RemoveCodedValue(myValueName);
 	
-	// remove item from the choice control
-	m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
-	m_ChoiceToDefault->Delete(m_ChoiceIndex);
+	wxString myValueName;
+	// remove item from array before removing it from the list
+	// because of the unknown position of item (may have been moved)
+	// if a corresponding item was found, remove it from the array
 	
-	m_pPrjDefinition->RemoveCodedValue(myValueName);
+	// get selected items from the list
+	wxArrayLong mySelectedListItems;
+	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	{
+		myValueName = GetItemColText(mySelectedListItems[i],1);		
+		//m_pPrjDefinition->RemoveLayer(myLayerName);
+		m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
+		// remove item from the choice control
+		m_ChoiceToDefault->Delete(m_ChoiceIndex);
+		m_pPrjDefinition->RemoveCodedValue(myValueName);
+		
+	}
+
 }
 
 
