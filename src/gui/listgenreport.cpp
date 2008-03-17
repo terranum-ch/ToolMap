@@ -264,21 +264,49 @@ void ListGenReport::OnContextMenu (wxListEvent & event)
 void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 {
 	// get all selected item
+	wxArrayLong mySelectedItems;
+	int iCountSelected = GetAllSelectedItem(mySelectedItems);
+	int i=0;
+	int idestpos = 0;
 	
 	int iSelectedItem = GetSelectedItem();
 	switch (event.GetId())
 	{
 		case ID_MENU_MOVE_TOP:
-			MoveItem(iSelectedItem, 0);
+			// compute movement 
+			idestpos = mySelectedItems[0] - 0;
+
+			for (i=0; i< (int) mySelectedItems.GetCount(); i++)
+			{
+				MoveItem(mySelectedItems[i],mySelectedItems[i] - idestpos);
+			}
 			break;
+			
 		case ID_MENU_MOVE_UP:
-			MoveItem(iSelectedItem, iSelectedItem-1);
+			for (i=0; i< (int) mySelectedItems.GetCount(); i++)
+			{
+				MoveItem(mySelectedItems[i],mySelectedItems[i] - 1);
+			}
 			break;
+	
 		case ID_MENU_MOVE_DOWN:
-			MoveItem(iSelectedItem, iSelectedItem+2);
+			for (i = (int) mySelectedItems.GetCount() -1; i >= 0 ; i--)
+			{
+				MoveItem(mySelectedItems[i],mySelectedItems[i] + 2);
+			}
+			//MoveItem(iSelectedItem, iSelectedItem+2);
 			break;
 		case ID_MENU_MOVE_BOTTOM:
-			MoveItem(iSelectedItem, GetItemCount());
+			// compute movement 
+			idestpos = (GetItemCount() - 1) - mySelectedItems.Last();
+			
+			for (i = (int) mySelectedItems.GetCount() -1; i >= 0 ; i--)
+			{
+				MoveItem(mySelectedItems[i],mySelectedItems[i] + idestpos + 1);
+			}
+			
+			
+			//MoveItem(iSelectedItem, GetItemCount());
 			break;
 	}
 }

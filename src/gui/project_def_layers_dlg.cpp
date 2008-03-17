@@ -90,15 +90,30 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 
 void ProjectDefLayersObjectList::BeforeDeleting ()
 {
+//	// remove item from array before removing it from the list
+//	// because of the unknown position of item (may have been moved)
+//	// if a corresponding item was found, remove it from the array
+//		
+//	// get selected item from the list
+//	long mySelectedListItem = GetSelectedItem();
+//	wxString myObjectName = GetItemColText(mySelectedListItem, 1);
+//	
+//	m_pPrjDefinition->RemoveObject(myObjectName);
+	
+	wxString myObjectName;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
-		
-	// get selected item from the list
-	long mySelectedListItem = GetSelectedItem();
-	wxString myObjectName = GetItemColText(mySelectedListItem, 1);
 	
-	m_pPrjDefinition->RemoveObject(myObjectName);
+	// get selected items from the list
+	wxArrayLong mySelectedListItems;
+	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	{
+		myObjectName = GetItemColText(mySelectedListItems[i], 1);		
+		m_pPrjDefinition->RemoveObject(myObjectName);
+	}
+	
 	
 }
 
@@ -238,15 +253,33 @@ void ProjectDefLayersFieldsList::AfterAdding (bool bRealyAddItem)
 
 void ProjectDefLayersFieldsList::BeforeDeleting ()
 {
+//	// remove item from array before removing it from the list
+//	// because of the unknown position of item (may have been moved)
+//	// if a corresponding item was found, remove it from the array
+//	
+//	// get selected item from the list
+//	long mySelectedListItem = GetSelectedItem();
+//	wxString myFieldName = GetItemColText(mySelectedListItem, 0);
+//	
+//	m_pPrjDefinition->RemoveField(myFieldName);
+	
+	wxString myFieldName;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
 	
-	// get selected item from the list
-	long mySelectedListItem = GetSelectedItem();
-	wxString myFieldName = GetItemColText(mySelectedListItem, 0);
+	// get selected items from the list
+	wxArrayLong mySelectedListItems;
+	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	{
+		myFieldName = GetItemColText(mySelectedListItems[i], 0);		
+		m_pPrjDefinition->RemoveField(myFieldName);
+	}
 	
-	m_pPrjDefinition->RemoveField(myFieldName);
+	
+	
+	
 }
 
 

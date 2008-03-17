@@ -342,14 +342,15 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 {
 	// call the project manager and ask for
 	// creating a new project.
-	m_PManager->CreateNewProject();
-	
+	if (m_PManager->CreateNewProject())
+	{
 	// add name to the program bar
 	wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 	SetTitle(myProgName);
 	
 	// updates the menu using the menu manager
-	m_MManager->SetStatus(MENU_DB_SWITCH);
+	m_MManager->SetStatus(MENU_DB_OPENED);
+	}
 	
 }
 
@@ -370,7 +371,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			SetTitle(myProgName);
 			
 			// updates the menu using the menu manager
-			m_MManager->SetStatus(MENU_DB_SWITCH);
+			m_MManager->SetStatus(MENU_DB_OPENED);
 		}
 		else
 			wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),

@@ -348,15 +348,19 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 
 void ProjectDefList::BeforeDeleting()
 {
+	wxString myLayerName;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
 	
-	// get selected item from the list
-	long mySelectedListItem = GetSelectedItem();
-	wxString myLayerName = GetItemColText(mySelectedListItem, 0);
-
-	m_pPrjDefinition->RemoveLayer(myLayerName);
+	// get selected items from the list
+	wxArrayLong mySelectedListItems;
+	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	{
+		myLayerName = GetItemColText(mySelectedListItems[i], 0);		
+		m_pPrjDefinition->RemoveLayer(myLayerName);
+	}
 
 }
 
