@@ -181,6 +181,7 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 										   wxSize size) : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	m_CheckBox = NULL;
+	m_ChoiceLayer = NULL;
 	m_layertype = paneltype;
 	m_DBHandler = database;
 	
@@ -315,6 +316,26 @@ wxCheckBoxState ObjectDefinitionList::GetFreqStatus (int iIndex)
 }
 
 
+// iIndex not used but here for compatibility with GetFreqStatus()
+wxString ObjectDefinitionList::GetLayerStatus (int iIndex)
+{
+	// we get the values for the first selected 
+	int iFirstSelected = GetSelectedItem();
+	return GetItemColText(iFirstSelected, 2);
+}
+
+
+
+void ObjectDefinitionList::SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq)
+{
+	m_CheckBox = checkboxfreq;
+	m_ChoiceLayer = layerchoice;
+}
+
+
+
+
+
 void ObjectDefinitionList::SetFreqStatus (int frequency, wxArrayLong * iIndexes)
 {
 	for (unsigned int i = 0; i<iIndexes->GetCount();i++)
@@ -427,13 +448,20 @@ void ObjectDefinitionList::OnItemSelectChange (wxListEvent & event)
 		if (GetSelectedItemCount() > 1)
 		{
 			m_CheckBox->Set3StateValue(GetFreqStatus(-1));
-			wxLogDebug(_T("Multiple Selected items = %d"), event.GetIndex());
 		}
 		else
 		{
 			m_CheckBox->Set3StateValue(GetFreqStatus(event.GetIndex()));
-			wxLogDebug(_T("Single Selected items = %d"), event.GetIndex());
 		}
+	}
+	
+	if (m_ChoiceLayer != NULL )
+	{
+		m_ChoiceLayer->SetStringSelection(GetLayerStatus());
+	}
+	else
+	{
+		wxLogDebug(_T("Pointer to the wxChoice not passed to listctrl..."));	
 	}
 }
 

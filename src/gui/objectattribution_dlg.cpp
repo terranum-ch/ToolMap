@@ -137,7 +137,7 @@ void ProjectEditObjectDefinitionDLG::PostInit()
 	m_DLGPEO_Panel_Poly->Enable(bPoly);
 	
 	// pass controls pointer to the list
-	m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Freq);
+	m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Name, m_DLGPEO_Choice_Lyr_Line_Freq);
 		
 }
 
