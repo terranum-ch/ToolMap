@@ -34,6 +34,7 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectEditObjectDefinitionDLG, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPEO_BTN_ADD, ProjectEditObjectDefinitionDLG::OnAddObject)
+	EVT_CHECKBOX (ID_DLGPEO_LINE_FRQ, ProjectEditObjectDefinitionDLG::OnChangeFrequency)
 END_EVENT_TABLE()
 
 /**************** EVENT FUNCTION ***********************************/
@@ -55,6 +56,29 @@ void ProjectEditObjectDefinitionDLG::OnAddObject (wxCommandEvent & event)
 	}
 }
 
+
+void ProjectEditObjectDefinitionDLG::OnChangeFrequency (wxCommandEvent & event)
+{
+	wxArrayLong mySelectedItems;
+	int iFreq = 0;
+	
+	// get selected items
+	if (m_DLGPEO_List_Line->GetAllSelectedItem(mySelectedItems) > 0)
+	{
+		// if checked
+		if (m_DLGPEO_Choice_Lyr_Line_Freq->Get3StateValue() == wxCHK_CHECKED)
+		{
+			iFreq = OBJECT_FREQUENT ;
+		}
+		else
+		{
+			iFreq = OBJECT_LESS_FREQUENT;
+		}
+		
+		m_DLGPEO_List_Line->SetFreqStatus(iFreq, &mySelectedItems);
+	}
+	
+}
 
 
 /**************** PUBLIC FUNCTIONS ***********************************/
@@ -111,6 +135,9 @@ void ProjectEditObjectDefinitionDLG::PostInit()
 	m_DLGPEO_Panel_Line->Enable(bLine);
 	m_DLGPEO_Panel_Point->Enable(bPoint);
 	m_DLGPEO_Panel_Poly->Enable(bPoly);
+	
+	// pass controls pointer to the list
+	m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Freq);
 		
 }
 
@@ -183,7 +210,7 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     itemBoxSizer5->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
 
     
-	wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(2, 2, 0, 0);
+	wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
     itemFlexGridSizer7->AddGrowableCol(1);
     itemBoxSizer5->Add(itemFlexGridSizer7, 0, wxGROW|wxALL, 5);
     wxStaticText* itemStaticText8 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -195,17 +222,13 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
    // m_DLGPEO_Choice_Lyr_Line_Name->SetStringSelection(_("Polygons_TS"));
     itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxStaticText* itemStaticText10 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Frequency :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText10, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    wxArrayString m_DLGPEO_Choice_Lyr_Line_FreqStrings;
-    m_DLGPEO_Choice_Lyr_Line_FreqStrings.Add(_("Frequent"));
-    m_DLGPEO_Choice_Lyr_Line_FreqStrings.Add(_("Less frequent"));
-    m_DLGPEO_Choice_Lyr_Line_Freq = new wxChoice( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, wxDefaultPosition, wxDefaultSize, m_DLGPEO_Choice_Lyr_Line_FreqStrings, 0 );
-    m_DLGPEO_Choice_Lyr_Line_Freq->SetStringSelection(_("Frequent"));
-    itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
+	
+    m_DLGPEO_Choice_Lyr_Line_Freq = new wxCheckBox( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, _("This object is frequently used"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE);
+    m_DLGPEO_Choice_Lyr_Line_Freq->SetValue(false);
+    itemBoxSizer5->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALL, 5);
+	
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Line, _("Lines"));
+	
 
     m_DLGPEO_Panel_Point = new wxPanel( m_DLGPEO_Notebook, ID_DLGPEO_PANEL_POINT, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);

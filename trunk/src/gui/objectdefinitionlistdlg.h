@@ -86,16 +86,23 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 	private:
 		PRJDEF_LAYERS_TYPE m_layertype;
 		DataBaseTM * m_DBHandler;
+		wxCheckBox * m_CheckBox;
 		
 		// init list with database values
 		bool SetListText (int ilayertype);
+		wxCheckBoxState GetFreqStatus (int iIndex = -1);
 		
-		// functions to implement 
+		
+		// derived functions to implement 
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
 		virtual void BeforeDeleting (){;}
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
+		
+		// event functions
+		void OnItemSelectChange (wxListEvent & event);
+		 DECLARE_EVENT_TABLE()
 		
 	public:
 		/// Constructor
@@ -111,6 +118,11 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		~ObjectDefinitionList(); 
 		
 		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
+		
+		// pass pointer to ctrls to the list
+		void SetListCtrls (wxCheckBox * checkboxfreq){ m_CheckBox = checkboxfreq;}
+		
+		void SetFreqStatus (int frequency, wxArrayLong * iIndexes = NULL);
 		
 		
 	};

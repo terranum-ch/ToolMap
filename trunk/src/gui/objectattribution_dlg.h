@@ -59,6 +59,7 @@ private:
 	
 	// EVENT FUNCTION
 	void OnAddObject (wxCommandEvent & event);
+	void OnChangeFrequency (wxCommandEvent & event);
 	
 	// PRIVATE DATABASE FUNCTION
 	bool SetChoiceListText (wxChoice * choice, int listtype); 
@@ -97,7 +98,7 @@ public:
     wxPanel* m_DLGPEO_Panel_Line;
     ObjectDefinitionList* m_DLGPEO_List_Line;
     wxChoice* m_DLGPEO_Choice_Lyr_Line_Name;
-    wxChoice* m_DLGPEO_Choice_Lyr_Line_Freq;
+    wxCheckBox* m_DLGPEO_Choice_Lyr_Line_Freq;
     wxPanel* m_DLGPEO_Panel_Point;
     ObjectDefinitionList* m_DLGPEO_List_Point;
     wxChoice* m_DLGPEO_Choice_Lyr_Point_Name;

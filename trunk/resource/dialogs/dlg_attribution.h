@@ -110,7 +110,7 @@ public:
     wxPanel* m_DLGPEO_Panel_Line;
     ListParam* m_DLGPEO_List_Line;
     wxChoice* m_DLGPEO_Choice_Lyr_Line_Name;
-    wxChoice* m_DLGPEO_Choice_Lyr_Line_Freq;
+    wxCheckBox* m_DLGPEO_Choice_Lyr_Line_Freq;
     wxPanel* m_DLGPEO_Panel_Point;
     ListParam* m_DLGPEO_List_Line;
     wxChoice* m_DLGPEO_Choice_Lyr_Point_Name;

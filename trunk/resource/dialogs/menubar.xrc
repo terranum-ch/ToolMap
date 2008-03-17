@@ -915,7 +915,7 @@
                                     <border>5</border>
                                     <object class="wxFlexGridSizer">
                                         <cols>2</cols>
-                                        <rows>2</rows>
+                                        <rows>1</rows>
                                         <vgap>0</vgap>
                                         <hgap>0</hgap>
                                         <growablecols>1</growablecols>
@@ -936,24 +936,14 @@
                                                 <selection>0</selection>
                                             </object>
                                         </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
-                                            <border>5</border>
-                                            <object class="wxStaticText" name="wxID_STATIC">
-                                                <label>Frequency :</label>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
-                                            <border>5</border>
-                                            <object class="wxChoice" name="ID_DLGPEO_LINE_FRQ">
-                                                <content>
-                                                    <item>Frequent</item>
-                                                    <item>Less frequent</item>
-                                                </content>
-                                                <selection>0</selection>
-                                            </object>
-                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxCheckBox" name="ID_DLGPEO_LINE_FRQ">
+                                        <label>This object is frequently used</label>
+                                        <checked>0</checked>
                                     </object>
                                 </object>
                             </object>
@@ -1125,7 +1115,7 @@
         </object>
     </object>
     <object class="wxDialog" name="ID_OBJECTDEFINITIONLISTDLG" subclass="ObjectDefinitionListDlg">
-        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxDIALOG_MODAL|wxTAB_TRAVERSAL</style>
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
         <title>Edit object definition</title>

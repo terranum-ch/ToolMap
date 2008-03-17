@@ -8804,7 +8804,7 @@
           <string name="proxy-Implementation filename">"objectdefinitionlistdlg.cpp"</string>
           <string name="proxy-Header filename">"objectdefinitionlistdlg.h"</string>
           <string name="proxy-XRC filename">""</string>
-          <string name="proxy-Title">"ObjectDefinitionListDlg"</string>
+          <string name="proxy-Title">"Edit object definition"</string>
           <bool name="proxy-Centre">1</bool>
           <string name="proxy-Icon">""</string>
           <bool name="proxy-Dialog units">0</bool>
@@ -9008,7 +9008,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxTextCtrl: ID_TEXTCTRL2"</string>
+                  <string name="title">"wxTextCtrl: wxID_ANY"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"textctrl"</string>
@@ -9018,8 +9018,8 @@
                   <long name="locked">0</long>
                   <string name="created">"13/3/2008"</string>
                   <string name="proxy-type">"wbTextCtrlProxy"</string>
-                  <string name="proxy-Id name">"ID_TEXTCTRL2"</string>
-                  <long name="proxy-Id value">10262</long>
+                  <string name="proxy-Id name">"wxID_ANY"</string>
+                  <long name="proxy-Id value">-1</long>
                   <string name="proxy-Name">""</string>
                   <string name="proxy-Class">"wxTextCtrl"</string>
                   <string name="proxy-Base class">"wxTextCtrl"</string>
@@ -9027,7 +9027,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DLGODD_Code"</string>
                   <string name="proxy-Initial value">""</string>
                   <long name="proxy-Max length">0</long>
                   <string name="proxy-Help text">""</string>
@@ -9312,7 +9312,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxChoice: ID_CHOICE1"</string>
+                  <string name="title">"wxChoice: ID_DLGODD_LIST_LYR_NAME"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"choice"</string>
@@ -9322,7 +9322,7 @@
                   <long name="locked">0</long>
                   <string name="created">"13/3/2008"</string>
                   <string name="proxy-type">"wbChoiceProxy"</string>
-                  <string name="proxy-Id name">"ID_CHOICE1"</string>
+                  <string name="proxy-Id name">"ID_DLGODD_LIST_LYR_NAME"</string>
                   <long name="proxy-Id value">10265</long>
                   <string name="proxy-Name">""</string>
                   <string name="proxy-Class">"wxChoice"</string>
@@ -9331,7 +9331,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">""</string>
+                  <string name="proxy-Member variable name">"m_DLGODD_List_Lyr_Name"</string>
                   <string name="proxy-Strings">""</string>
                   <string name="proxy-Initial value">""</string>
                   <string name="proxy-Help text">""</string>
@@ -9373,7 +9373,7 @@
                 </document>
               </document>
               <document>
-                <string name="title">"wxRadioBox: ID_RADIOBOX1"</string>
+                <string name="title">"wxRadioBox: ID_DLGODD_FREQUENCY"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"radiobox"</string>
@@ -9383,7 +9383,7 @@
                 <long name="locked">0</long>
                 <string name="created">"13/3/2008"</string>
                 <string name="proxy-type">"wbRadioBoxProxy"</string>
-                <string name="proxy-Id name">"ID_RADIOBOX1"</string>
+                <string name="proxy-Id name">"ID_DLGODD_FREQUENCY"</string>
                 <long name="proxy-Id value">10266</long>
                 <string name="proxy-Name">""</string>
                 <string name="proxy-Class">"wxRadioBox"</string>
@@ -9392,7 +9392,7 @@
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"m_DLGODD_Frequency"</string>
                 <string name="proxy-Label">"Frequency"</string>
                 <long name="proxy-Major dimension count">1</long>
                 <string name="proxy-Items">"&amp;Frequent|&amp;Not Frequent"</string>

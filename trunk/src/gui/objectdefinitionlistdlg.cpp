@@ -54,6 +54,10 @@ ObjectDefinitionListDlg::ObjectDefinitionListDlg( wxWindow* parent,
 	m_pDatabase = DBHandler;
 	
     Create(parent, id, caption, pos, size, style);
+	
+	
+	
+	
 }
 
 
@@ -176,6 +180,7 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 										   wxArrayInt * pColsSize,
 										   wxSize size) : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
+	m_CheckBox = NULL;
 	m_layertype = paneltype;
 	m_DBHandler = database;
 	
@@ -189,6 +194,11 @@ ObjectDefinitionList::~ObjectDefinitionList()
 {
 	
 }
+
+
+BEGIN_EVENT_TABLE( ObjectDefinitionList, ListGenReportWithDialog)
+	EVT_LIST_ITEM_SELECTED(wxID_ANY, ObjectDefinitionList::OnItemSelectChange)
+END_EVENT_TABLE()
 
 
 bool ObjectDefinitionList::SetListText (int ilayertype)
@@ -235,6 +245,83 @@ bool ObjectDefinitionList::SetListText (int ilayertype)
 	}
 	
 	return FALSE;
+}
+
+
+/***************************************************************************//**
+ @brief Retrive the frequency status of a selected item
+ @details This function returns a wxCheckBoxState item indicating if the iIndex
+ item is Frequent (wxCHK_CHECKED) or less frequent (wxCHK_UNCHECKED). If iIndex
+ is -1 (the default) then this function returns the frequency for all selected
+ items
+ @param int The index value for the item we want to interogate. If -1 this
+ function returns the checked state for all selected items
+ @return  indicate if (iIndex) should be selected / unselected or undefined
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 17 March 2008
+ *******************************************************************************/
+wxCheckBoxState ObjectDefinitionList::GetFreqStatus (int iIndex)
+{
+	wxString myValue = _T("");
+	wxArrayLong myAllIndex;
+	long iNbOfSelectedItems = 0;
+	wxArrayString myAllValues;
+	int i = 0, iCompteFreq = 0;
+	
+	
+	// retrun value based on the frequency of selected items
+	// if index == -1 return value for all selected items
+	if (iIndex == -1)
+	{
+		// get all selected items
+		iNbOfSelectedItems = GetAllSelectedItem(myAllIndex);
+		for (i = 0; i<iNbOfSelectedItems; i++)
+		{
+			myAllValues.Add(GetItemColText(myAllIndex[i], 3));
+		}
+		
+		// compare text for selected items
+		for (i=0;i<iNbOfSelectedItems;i++)
+		{
+			if ( (myAllValues[i]).IsSameAs(PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT]))
+				iCompteFreq++;
+		}
+		
+		// return values based on selected texts
+		if (iCompteFreq == iNbOfSelectedItems)
+		{
+			return wxCHK_CHECKED;
+		}
+		else if (iCompteFreq == 0)
+		{
+			return wxCHK_UNCHECKED;
+		}
+		else
+		{
+			return wxCHK_UNDETERMINED;
+		}
+
+	}
+	else // return freq state for iIndex item
+	{
+		myValue = GetItemColText(iIndex, 3);
+		if (myValue == PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT])
+		{
+			return wxCHK_CHECKED;
+		}
+	}
+	
+	return wxCHK_UNCHECKED;
+}
+
+
+void ObjectDefinitionList::SetFreqStatus (int frequency, wxArrayLong * iIndexes)
+{
+	for (unsigned int i = 0; i<iIndexes->GetCount();i++)
+	{
+		SetItemText(iIndexes->Item(i), 3, PRJDEF_OBJECTS_FREQ_STRING[frequency]);
+	}
+	
 }
 
 
@@ -320,6 +407,35 @@ void ObjectDefinitionList::AfterEditing (bool bRealyEdited)
 	delete m_pDialog;
 }
 
+
+
+
+/**************************************** EVENT FUNCTION TO IMPLEMENT ***************************/
+/***************************************************************************//**
+ @brief Called when selection changes (event function)
+ @details This function is called when selection changes and update the parent
+ controls (checkbox and choice) for reflecting the selected items status
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 17 March 2008
+ *******************************************************************************/
+void ObjectDefinitionList::OnItemSelectChange (wxListEvent & event)
+{
+	// if we have a checkbox for Frequency
+	if (m_CheckBox != NULL)
+	{
+		// multiple selection ?
+		if (GetSelectedItemCount() > 1)
+		{
+			m_CheckBox->Set3StateValue(GetFreqStatus(-1));
+			wxLogDebug(_T("Multiple Selected items = %d"), event.GetIndex());
+		}
+		else
+		{
+			m_CheckBox->Set3StateValue(GetFreqStatus(event.GetIndex()));
+			wxLogDebug(_T("Single Selected items = %d"), event.GetIndex());
+		}
+	}
+}
 
 
 
