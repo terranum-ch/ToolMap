@@ -141,7 +141,7 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     m_DLGPEO_List_Line = new ListParam( m_DLGPEO_Panel_Line, ID_DLGPEO_LISTLINE, wxDefaultPosition, wxSize(400, 200), wxLC_REPORT );
     itemBoxSizer5->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(2, 2, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
     itemFlexGridSizer7->AddGrowableCol(1);
     itemBoxSizer5->Add(itemFlexGridSizer7, 0, wxGROW|wxALL, 5);
     wxStaticText* itemStaticText8 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -153,95 +153,89 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     m_DLGPEO_Choice_Lyr_Line_Name->SetStringSelection(_("Polygons_TS"));
     itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxStaticText* itemStaticText10 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Frequency :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText10, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    wxArrayString m_DLGPEO_Choice_Lyr_Line_FreqStrings;
-    m_DLGPEO_Choice_Lyr_Line_FreqStrings.Add(_("Frequent"));
-    m_DLGPEO_Choice_Lyr_Line_FreqStrings.Add(_("Less frequent"));
-    m_DLGPEO_Choice_Lyr_Line_Freq = new wxChoice( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, wxDefaultPosition, wxDefaultSize, m_DLGPEO_Choice_Lyr_Line_FreqStrings, 0 );
-    m_DLGPEO_Choice_Lyr_Line_Freq->SetStringSelection(_("Frequent"));
-    itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    m_DLGPEO_Choice_Lyr_Line_Freq = new wxCheckBox( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, _("This object is frequently used"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DLGPEO_Choice_Lyr_Line_Freq->SetValue(false);
+    itemBoxSizer5->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALL, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Line, _("Lines"));
 
     m_DLGPEO_Panel_Point = new wxPanel( m_DLGPEO_Notebook, ID_DLGPEO_PANEL_POINT, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
-    m_DLGPEO_Panel_Point->SetSizer(itemBoxSizer13);
+    wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
+    m_DLGPEO_Panel_Point->SetSizer(itemBoxSizer12);
 
     m_DLGPEO_List_Line = new ListParam( m_DLGPEO_Panel_Point, ID_DLGPEO_LISTPOINT, wxDefaultPosition, wxSize(400, 200), wxLC_REPORT );
-    itemBoxSizer13->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
+    itemBoxSizer12->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer(1, 2, 0, 0);
-    itemFlexGridSizer15->AddGrowableCol(1);
-    itemBoxSizer13->Add(itemFlexGridSizer15, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText16 = new wxStaticText( m_DLGPEO_Panel_Point, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    wxFlexGridSizer* itemFlexGridSizer14 = new wxFlexGridSizer(1, 2, 0, 0);
+    itemFlexGridSizer14->AddGrowableCol(1);
+    itemBoxSizer12->Add(itemFlexGridSizer14, 0, wxGROW|wxALL, 5);
+    wxStaticText* itemStaticText15 = new wxStaticText( m_DLGPEO_Panel_Point, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer14->Add(itemStaticText15, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     wxArrayString m_DLGPEO_Choice_Lyr_Point_NameStrings;
     m_DLGPEO_Choice_Lyr_Point_NameStrings.Add(_("Polygons_TS"));
     m_DLGPEO_Choice_Lyr_Point_Name = new wxChoice( m_DLGPEO_Panel_Point, ID_DLGPEO_LYR_NAME_POINT, wxDefaultPosition, wxDefaultSize, m_DLGPEO_Choice_Lyr_Point_NameStrings, 0 );
     m_DLGPEO_Choice_Lyr_Point_Name->SetStringSelection(_("Polygons_TS"));
-    itemFlexGridSizer15->Add(m_DLGPEO_Choice_Lyr_Point_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer14->Add(m_DLGPEO_Choice_Lyr_Point_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Point, _("Points"));
 
     m_DLGPEO_Panel_Poly = new wxPanel( m_DLGPEO_Notebook, ID_DLGPEO_PANEL_POLY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
-    m_DLGPEO_Panel_Poly->SetSizer(itemBoxSizer19);
+    wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
+    m_DLGPEO_Panel_Poly->SetSizer(itemBoxSizer18);
 
     m_DLGPEO_List_Line = new ListParam( m_DLGPEO_Panel_Poly, ID_DLGPEO_LISTPOLY, wxDefaultPosition, wxSize(400, 200), wxLC_REPORT );
-    itemBoxSizer19->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
+    itemBoxSizer18->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer21 = new wxFlexGridSizer(1, 2, 0, 0);
-    itemFlexGridSizer21->AddGrowableCol(1);
-    itemBoxSizer19->Add(itemFlexGridSizer21, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText22 = new wxStaticText( m_DLGPEO_Panel_Poly, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer21->Add(itemStaticText22, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    wxFlexGridSizer* itemFlexGridSizer20 = new wxFlexGridSizer(1, 2, 0, 0);
+    itemFlexGridSizer20->AddGrowableCol(1);
+    itemBoxSizer18->Add(itemFlexGridSizer20, 0, wxGROW|wxALL, 5);
+    wxStaticText* itemStaticText21 = new wxStaticText( m_DLGPEO_Panel_Poly, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer20->Add(itemStaticText21, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     wxArrayString m_DLGPEO_Choice_Lyr_Poly_NameStrings;
     m_DLGPEO_Choice_Lyr_Poly_NameStrings.Add(_("Polygons_TS"));
     m_DLGPEO_Choice_Lyr_Poly_Name = new wxChoice( m_DLGPEO_Panel_Poly, ID_DLGPEO_LYR_NAME_POLY, wxDefaultPosition, wxDefaultSize, m_DLGPEO_Choice_Lyr_Poly_NameStrings, 0 );
     m_DLGPEO_Choice_Lyr_Poly_Name->SetStringSelection(_("Polygons_TS"));
-    itemFlexGridSizer21->Add(m_DLGPEO_Choice_Lyr_Poly_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    itemFlexGridSizer20->Add(m_DLGPEO_Choice_Lyr_Poly_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Poly, _("Polygons"));
 
     itemBoxSizer2->Add(m_DLGPEO_Notebook, 1, wxGROW|wxALL, 5);
 
-    wxStaticBox* itemStaticBoxSizer24Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Operations"));
-    wxStaticBoxSizer* itemStaticBoxSizer24 = new wxStaticBoxSizer(itemStaticBoxSizer24Static, wxHORIZONTAL);
-    itemBoxSizer2->Add(itemStaticBoxSizer24, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+    wxStaticBox* itemStaticBoxSizer23Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Operations"));
+    wxStaticBoxSizer* itemStaticBoxSizer23 = new wxStaticBoxSizer(itemStaticBoxSizer23Static, wxHORIZONTAL);
+    itemBoxSizer2->Add(itemStaticBoxSizer23, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
-    wxToggleButton* itemToggleButton25 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON8, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    wxToggleButton* itemToggleButton24 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON8, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    itemToggleButton24->SetValue(false);
+    itemStaticBoxSizer23->Add(itemToggleButton24, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    wxToggleButton* itemToggleButton25 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON9, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
     itemToggleButton25->SetValue(false);
-    itemStaticBoxSizer24->Add(itemToggleButton25, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemStaticBoxSizer23->Add(itemToggleButton25, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxToggleButton* itemToggleButton26 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON9, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
+    wxToggleButton* itemToggleButton26 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON10, _("Import..."), wxDefaultPosition, wxDefaultSize, 0 );
     itemToggleButton26->SetValue(false);
-    itemStaticBoxSizer24->Add(itemToggleButton26, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemStaticBoxSizer23->Add(itemToggleButton26, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxToggleButton* itemToggleButton27 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON10, _("Import..."), wxDefaultPosition, wxDefaultSize, 0 );
+    wxToggleButton* itemToggleButton27 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON11, _("Export..."), wxDefaultPosition, wxDefaultSize, 0 );
     itemToggleButton27->SetValue(false);
-    itemStaticBoxSizer24->Add(itemToggleButton27, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemStaticBoxSizer23->Add(itemToggleButton27, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxToggleButton* itemToggleButton28 = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON11, _("Export..."), wxDefaultPosition, wxDefaultSize, 0 );
-    itemToggleButton28->SetValue(false);
-    itemStaticBoxSizer24->Add(itemToggleButton28, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    wxStaticLine* itemStaticLine28 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+    itemBoxSizer2->Add(itemStaticLine28, 0, wxGROW|wxALL, 5);
 
-    wxStaticLine* itemStaticLine29 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-    itemBoxSizer2->Add(itemStaticLine29, 0, wxGROW|wxALL, 5);
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer29 = new wxStdDialogButtonSizer;
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer30 = new wxStdDialogButtonSizer;
+    itemBoxSizer2->Add(itemStdDialogButtonSizer29, 0, wxALIGN_RIGHT|wxALL, 5);
+    wxButton* itemButton30 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer29->AddButton(itemButton30);
 
-    itemBoxSizer2->Add(itemStdDialogButtonSizer30, 0, wxALIGN_RIGHT|wxALL, 5);
-    wxButton* itemButton31 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer30->AddButton(itemButton31);
+    wxButton* itemButton31 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer29->AddButton(itemButton31);
 
-    wxButton* itemButton32 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer30->AddButton(itemButton32);
-
-    itemStdDialogButtonSizer30->Realize();
+    itemStdDialogButtonSizer29->Realize();
 
 ////@end ProjectEditObjectDefinitionDLG content construction
 }
