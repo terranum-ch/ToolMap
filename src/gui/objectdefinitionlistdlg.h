@@ -95,8 +95,8 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		wxCheckBox * m_CheckBox;
 		wxChoice   * m_ChoiceLayer;
 		
-		// create a memory layer object for storing changes 
-		PrjDefMemManage m_MemoryObject;
+		// get a memory layer object for storing changes 
+		PrjDefMemManage * m_MemoryObject;
 		ProjectDefMemoryObjects * m_ObjectObj;
 		
 		// index for adding items
@@ -123,6 +123,7 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		/// Constructor
 		ObjectDefinitionList(wxWindow * parent,
 							 wxWindowID id,
+							 PrjDefMemManage * memory,
 							 PRJDEF_LAYERS_TYPE paneltype,
 							 DataBaseTM * database,
 							 wxArrayString * pColsName, 

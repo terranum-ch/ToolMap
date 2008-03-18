@@ -77,7 +77,7 @@ class PrjDefMemManage
 		PRJDEF_PROJ_TYPE m_PrjProjType;
 		PrjMemLayersArray * m_PrjLayerArray;
 	
-		
+				
 		// ctor - dtor
 		PrjDefMemManage();
 		~PrjDefMemManage();

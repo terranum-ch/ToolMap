@@ -373,6 +373,59 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 }
 
 
+bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
+{
+	
+	// get layer id
+	ProjectDefMemoryLayers myLayer;
+	myLayer.m_LayerName = myObject->m_ParentLayerName;
+	
+	if (!myLayer.m_LayerName.IsEmpty())
+	{
+		SetActiveLayerId(&myLayer);
+				
+		
+	// prepare the sentence for insert or update
+	//insert
+	wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
+										_T("(OBJECT_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC VALUES, OBJECT_ISFREQ) ")
+										_T("VALUES (%d, %d, \"%s\", %d"),
+										TABLE_NAME_OBJECTS.c_str(),
+										myObject->m_ObjectCode,
+										GetActiveLayerId(),
+										myObject->m_ObjectName.c_str(),
+										(int) myObject->m_ObjectFreq);
+	
+	wxString sUpdate = wxString::Format(_T("UPDATE %s ")
+										_T("SET OBJECT_CD = %d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
+										_T("OBJECT_DESC = \"%s\", OBJECT_ISFREQ = %d ")
+										_T("WHERE OBJECT_ID = %d"),
+										TABLE_NAME_OBJECTS.c_str(),
+										myObject->m_ObjectCode,
+										GetActiveLayerId(),
+										myObject->m_ObjectName.c_str(),
+										(int) myObject->m_ObjectFreq,
+										myObject->m_ObjectID);
+	
+		// if id > 0 we update (item exist)
+		// otherwise we insert (item dosen't exist)
+		if (myObject->m_ObjectID > 0)
+		{
+			if (DataBaseQueryNoResult(sUpdate))
+				return TRUE;
+		}
+		else
+		{
+			if (DataBaseQueryNoResult(sInsert))
+				return TRUE;
+		}
+		
+	}
+	
+
+	wxLogDebug(_T("Error editing object into the database"));
+	return FALSE;
+}
 
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
 bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)

@@ -38,6 +38,7 @@ BEGIN_EVENT_TABLE( ProjectEditObjectDefinitionDLG, wxDialog )
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_LINE, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POINT, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POLY, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
+	EVT_BUTTON (wxID_SAVE, ProjectEditObjectDefinitionDLG::OnSaveChanges)
 END_EVENT_TABLE()
 
 /**************** EVENT FUNCTION ***********************************/
@@ -115,6 +116,15 @@ void ProjectEditObjectDefinitionDLG::OnChangeLayerName (wxCommandEvent & event)
 	
 }
 
+
+
+void ProjectEditObjectDefinitionDLG::OnSaveChanges (wxCommandEvent & event)
+{
+	
+	
+	
+	event.Skip();
+}
 
 
 
@@ -201,6 +211,12 @@ void ProjectEditObjectDefinitionDLG::Init()
     m_DLGPEO_List_Line = NULL;
     m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
 	m_DB = NULL;
+	
+	// create a PrjMemory object with one layer for storing all
+	// create a new layer for storing all objects (added of modified)
+	ProjectDefMemoryLayers * myLayer = m_MemoryObject.AddLayer();
+	myLayer->m_LayerName = _T("MEMORY");
+	m_MemoryObject.SetActiveLayer(myLayer);
 }
 
 
@@ -243,8 +259,8 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 	
 
 	// LIST FOR LINES
-	m_DLGPEO_List_Line = new ObjectDefinitionList( m_DLGPEO_Panel_Line, ID_DLGPEO_LISTLINE,
-												  LAYER_LINE, m_DB,
+	m_DLGPEO_List_Line = new ObjectDefinitionList( m_DLGPEO_Panel_Line, ID_DLGPEO_LISTLINE, &m_MemoryObject,
+												  LAYER_LINE, m_DB, 
 										   &mylistcolname, &mylistWidth, wxSize (500,260) );
 	//m_DLGPEO_List_Line->SetWindowStyleFlag(wxLC_REPORT | wxLC_SINGLE_SEL);
     itemBoxSizer5->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
@@ -275,7 +291,7 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     m_DLGPEO_Panel_Point->SetSizer(itemBoxSizer13);
 
 	// LIST FOR POINT
-	m_DLGPEO_List_Point = new ObjectDefinitionList( m_DLGPEO_Panel_Point, ID_DLGPEO_LISTPOINT,
+	m_DLGPEO_List_Point = new ObjectDefinitionList( m_DLGPEO_Panel_Point, ID_DLGPEO_LISTPOINT, &m_MemoryObject,
 												   LAYER_POINT, m_DB,
 										   &mylistcolname2, &mylistWidth2 );
     itemBoxSizer13->Add(m_DLGPEO_List_Point, 1, wxGROW|wxALL, 5);
@@ -300,7 +316,7 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     m_DLGPEO_Panel_Poly->SetSizer(itemBoxSizer19);
 
 	// LIST FOR POLY
-    m_DLGPEO_List_Poly = new ObjectDefinitionList( m_DLGPEO_Panel_Poly, ID_DLGPEO_LISTPOLY,
+    m_DLGPEO_List_Poly = new ObjectDefinitionList( m_DLGPEO_Panel_Poly, ID_DLGPEO_LISTPOLY, &m_MemoryObject,
 												  LAYER_POLYGON,m_DB,
 										   &mylistcolname2, & mylistWidth2);
     itemBoxSizer19->Add(m_DLGPEO_List_Poly, 1, wxGROW|wxALL, 5);
