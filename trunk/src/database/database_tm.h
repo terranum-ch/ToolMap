@@ -79,6 +79,7 @@ class DataBaseTM : public DataBase
 		
 		// Database object operations
 		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);
+		bool EditObject (ProjectDefMemoryObjects * myObject );
 		
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);

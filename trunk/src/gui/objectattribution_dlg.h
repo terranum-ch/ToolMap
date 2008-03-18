@@ -57,10 +57,15 @@ class ProjectEditObjectDefinitionDLG: public wxDialog
 private:
 	DataBaseTM * m_DB;
 	
+	// create a memory layer object for storing changes
+	PrjDefMemManage m_MemoryObject;
+
+	
 	// EVENT FUNCTION
 	void OnAddObject (wxCommandEvent & event);
 	void OnChangeFrequency (wxCommandEvent & event);
 	void OnChangeLayerName (wxCommandEvent & event);
+	void OnSaveChanges (wxCommandEvent & event);
 	
 	// PRIVATE DATABASE FUNCTION
 	bool SetChoiceListText (wxChoice * choice, int listtype); 

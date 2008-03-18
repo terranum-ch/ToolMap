@@ -190,6 +190,7 @@ int ObjectDefinitionList::iAddItems = -1;
 
 ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 										   wxWindowID id,
+										   PrjDefMemManage * memory,
 										   PRJDEF_LAYERS_TYPE paneltype,
 										   DataBaseTM * database,
 										   wxArrayString * pColsName, 
@@ -200,15 +201,11 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 	m_ChoiceLayer = NULL;
 	m_layertype = paneltype;
 	m_DBHandler = database;
+	m_MemoryObject = memory;
 	
 	
 	// init list with database values
 	SetListText(m_layertype);
-	
-	// create a new layer for storing all objects (added of modified)
-	ProjectDefMemoryLayers * myLayer = m_MemoryObject.AddLayer();
-	myLayer->m_LayerName = _T("MEMORY");
-	m_MemoryObject.SetActiveLayer(myLayer);
 }
 
 
@@ -455,7 +452,7 @@ void ObjectDefinitionList::BeforeAdding()
 	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
 	SetDialog(myDlg);
 	
-	m_ObjectObj = m_MemoryObject.AddObject();
+	m_ObjectObj = m_MemoryObject->AddObject();
 	
 	// now uses Transfert data process
 	((ObjectDefinitionListDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
@@ -472,7 +469,7 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 	if (bRealyAddItem == TRUE)
 	{
 		// add an id for the new added item
-		// needed if we are trying to modify it
+		// needed if we modify it later
 		m_ObjectObj->m_ObjectID = iAddItems;
 		iAddItems--;
 		
@@ -483,15 +480,12 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 		if (m_layertype == LAYER_LINE)
 			sResultToList.Add(PRJDEF_OBJECTS_FREQ_STRING[m_ObjectObj->m_ObjectFreq]);
 		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectID));
+		
 		EditDataToList(sResultToList);
-		
-		
-		
-		
 	}
 	else 
 	{
-		m_MemoryObject.RemoveObject();
+		m_MemoryObject->RemoveObject();
 	}
 
 	
