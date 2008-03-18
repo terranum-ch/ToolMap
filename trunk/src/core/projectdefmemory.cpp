@@ -132,6 +132,7 @@ void ProjectDefMemoryObjects::InitMemberValues()
 	m_ObjectCode = NULL_LONG_VALUE;
 	m_ObjectName = _T("");
 	m_ObjectFreq = OBJECT_FREQUENT;
+	m_ParentLayerName = _T("");
 }
 
 WX_DEFINE_OBJARRAY (PrjMemObjectsArray);

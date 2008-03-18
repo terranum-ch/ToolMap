@@ -35,6 +35,9 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG, wxDialog )
 BEGIN_EVENT_TABLE( ProjectEditObjectDefinitionDLG, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPEO_BTN_ADD, ProjectEditObjectDefinitionDLG::OnAddObject)
 	EVT_CHECKBOX (ID_DLGPEO_LINE_FRQ, ProjectEditObjectDefinitionDLG::OnChangeFrequency)
+	EVT_CHOICE (ID_DLGPEO_LYR_NAME_LINE, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
+	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POINT, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
+	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POLY, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 END_EVENT_TABLE()
 
 /**************** EVENT FUNCTION ***********************************/
@@ -79,6 +82,40 @@ void ProjectEditObjectDefinitionDLG::OnChangeFrequency (wxCommandEvent & event)
 	}
 	
 }
+
+
+
+void ProjectEditObjectDefinitionDLG::OnChangeLayerName (wxCommandEvent & event)
+{
+	ObjectDefinitionList * myList = NULL;
+	wxArrayLong mySelectedItems;
+	
+	
+	
+	// from wich control comes the event from ?
+	switch (event.GetId())
+	{
+		case ID_DLGPEO_LYR_NAME_LINE:
+			myList = m_DLGPEO_List_Line;
+			break;
+		case ID_DLGPEO_LYR_NAME_POINT:	
+			myList = m_DLGPEO_List_Point;
+			break;
+		default: 
+			myList = m_DLGPEO_List_Poly;
+			break;
+			
+	}
+	
+	// get selected items from the good list if they exists
+	if (myList->GetAllSelectedItem(mySelectedItems) > 0)
+	{
+		myList->SetLayerStatus(event.GetString(), &mySelectedItems);
+	}
+	
+}
+
+
 
 
 /**************** PUBLIC FUNCTIONS ***********************************/
@@ -138,6 +175,9 @@ void ProjectEditObjectDefinitionDLG::PostInit()
 	
 	// pass controls pointer to the list
 	m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Name, m_DLGPEO_Choice_Lyr_Line_Freq);
+	m_DLGPEO_List_Point->SetListCtrls(m_DLGPEO_Choice_Lyr_Point_Name, NULL);
+	m_DLGPEO_List_Poly->SetListCtrls(m_DLGPEO_Choice_Lyr_Poly_Name, NULL);
+	
 		
 }
 
