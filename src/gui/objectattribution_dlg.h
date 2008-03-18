@@ -36,10 +36,10 @@ class wxNotebook;
 #define ID_DLGPEO_LINE_FRQ 10235
 #define ID_DLGPEO_PANEL_POINT 10028
 #define ID_DLGPEO_LISTPOINT 10000
-#define ID_DLGPEO_LYR_NAME_POINT 10234
+#define ID_DLGPEO_LYR_NAME_POINT 10236
 #define ID_DLGPEO_PANEL_POLY 10029
 #define ID_DLGPEO_LISTPOLY 10000
-#define ID_DLGPEO_LYR_NAME_POLY 10234
+#define ID_DLGPEO_LYR_NAME_POLY 10237
 #define ID_DLGPEO_BTN_ADD 10031
 #define ID_DLGPEO_BTN_DEL 10032
 #define ID_DLGPEO_BTN_IMPORT 10232
@@ -60,6 +60,7 @@ private:
 	// EVENT FUNCTION
 	void OnAddObject (wxCommandEvent & event);
 	void OnChangeFrequency (wxCommandEvent & event);
+	void OnChangeLayerName (wxCommandEvent & event);
 	
 	// PRIVATE DATABASE FUNCTION
 	bool SetChoiceListText (wxChoice * choice, int listtype); 

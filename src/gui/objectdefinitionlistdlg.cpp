@@ -170,8 +170,24 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 
 
 
+bool ObjectDefinitionListDlg::TransferDataFromWindow()
+{
+	// fill ProjectDefMemoryObject with list values
+	(m_DLGODD_Code->GetValue()).ToLong (&(m_ObjectObj->m_ObjectCode));
+	m_ObjectObj->m_ObjectName = m_DLGODD_Description->GetValue();
+	m_ObjectObj->m_ParentLayerName = m_DLGODD_List_Lyr_Name->GetStringSelection();
+	// get the frequency item (FREQUENT must be 0)
+	if (m_ParentListType == LAYER_LINE)
+		m_ObjectObj->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) m_DLGODD_Frequency->GetSelection();
+	return TRUE;
+}
+
+
+
 
 /******************************** LIST OF OBJECT DEFINITION  ************************/
+int ObjectDefinitionList::iAddItems = -1;
+
 ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 										   wxWindowID id,
 										   PRJDEF_LAYERS_TYPE paneltype,
@@ -185,8 +201,14 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 	m_layertype = paneltype;
 	m_DBHandler = database;
 	
+	
 	// init list with database values
 	SetListText(m_layertype);
+	
+	// create a new layer for storing all objects (added of modified)
+	ProjectDefMemoryLayers * myLayer = m_MemoryObject.AddLayer();
+	myLayer->m_LayerName = _T("MEMORY");
+	m_MemoryObject.SetActiveLayer(myLayer);
 }
 
 
@@ -335,7 +357,16 @@ void ObjectDefinitionList::SetListCtrls (wxChoice * layerchoice ,wxCheckBox * ch
 
 
 
-
+/***************************************************************************//**
+ @brief Update layer freqency in response to event
+ @details May be used to change the layer frequency text from one or more item
+ in the list
+ @param frequency the new frequency to change may be OBJECT_FREQUENT or
+ OBJECT_LESS_FREQUENT
+ @param iIndexes an array of long containing index of items to be changed
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 17 March 2008
+ *******************************************************************************/
 void ObjectDefinitionList::SetFreqStatus (int frequency, wxArrayLong * iIndexes)
 {
 	for (unsigned int i = 0; i<iIndexes->GetCount();i++)
@@ -344,6 +375,26 @@ void ObjectDefinitionList::SetFreqStatus (int frequency, wxArrayLong * iIndexes)
 	}
 	
 }
+
+
+/***************************************************************************//**
+ @brief Update layer name in response to event
+ @details May be used to change the layer name text from one or more item in the
+ list
+ @param layer The new name for the layer name
+ @param iIndexes an array of long containing index of items to be changed
+ (should not be null)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 17 March 2008
+ *******************************************************************************/
+void ObjectDefinitionList::SetLayerStatus (const wxString & layer, wxArrayLong * iIndexes)
+{
+	for (unsigned int i = 0; i<iIndexes->GetCount(); i++)
+	{
+		SetItemText(iIndexes->Item(i), 2, layer);
+	}
+}
+
 
 
 /***************************************************************************//**
@@ -403,12 +454,46 @@ void ObjectDefinitionList::BeforeAdding()
 	// create the dialog
 	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
 	SetDialog(myDlg);
+	
+	m_ObjectObj = m_MemoryObject.AddObject();
+	
+	// now uses Transfert data process
+	((ObjectDefinitionListDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
+	
 }
 
 
 
 void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 {
+	wxArrayString sResultToList;
+	
+	
+	if (bRealyAddItem == TRUE)
+	{
+		// add an id for the new added item
+		// needed if we are trying to modify it
+		m_ObjectObj->m_ObjectID = iAddItems;
+		iAddItems--;
+		
+		// add item into the list
+		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
+		sResultToList.Add(m_ObjectObj->m_ObjectName);
+		sResultToList.Add(m_ObjectObj->m_ParentLayerName);
+		if (m_layertype == LAYER_LINE)
+			sResultToList.Add(PRJDEF_OBJECTS_FREQ_STRING[m_ObjectObj->m_ObjectFreq]);
+		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectID));
+		EditDataToList(sResultToList);
+		
+		
+		
+		
+	}
+	else 
+	{
+		m_MemoryObject.RemoveObject();
+	}
+
 	
 	delete m_pDialog;
 }
@@ -455,6 +540,7 @@ void ObjectDefinitionList::OnItemSelectChange (wxListEvent & event)
 		}
 	}
 	
+	// if we have a choice layer ctrl defined
 	if (m_ChoiceLayer != NULL )
 	{
 		m_ChoiceLayer->SetStringSelection(GetLayerStatus());

@@ -47,15 +47,18 @@ class ObjectDefinitionListDlg: public wxDialog
     wxChoice* m_DLGODD_List_Lyr_Name;
     wxRadioBox* m_DLGODD_Frequency;
 	
-	
 	virtual bool TransferDataToWindow();
+	virtual bool TransferDataFromWindow();
+	
+	// used for data transfert
+	ProjectDefMemoryObjects * m_ObjectObj;
 	
     DECLARE_DYNAMIC_CLASS( ObjectDefinitionListDlg )
     DECLARE_EVENT_TABLE()
 
 public:
 
-    ObjectDefinitionListDlg();
+	ObjectDefinitionListDlg();
     ObjectDefinitionListDlg( wxWindow* parent,
 							int iListlayerType,
 							DataBaseTM * DBHandler,
@@ -77,6 +80,9 @@ public:
     void Init();
 
     void CreateControls();
+	
+	void SetMemoryObjectObject(ProjectDefMemoryObjects * myObjectObj){m_ObjectObj = myObjectObj;}
+	
 };
 
 
@@ -88,6 +94,13 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		DataBaseTM * m_DBHandler;
 		wxCheckBox * m_CheckBox;
 		wxChoice   * m_ChoiceLayer;
+		
+		// create a memory layer object for storing changes 
+		PrjDefMemManage m_MemoryObject;
+		ProjectDefMemoryObjects * m_ObjectObj;
+		
+		// index for adding items
+		static int iAddItems;
 		
 		// init list with database values
 		bool SetListText (int ilayertype);
@@ -124,7 +137,8 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		// pass pointer to ctrls to the list
 		void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);
 		
-		void SetFreqStatus (int frequency, wxArrayLong * iIndexes = NULL);
+		void SetFreqStatus (int frequency, wxArrayLong * iIndexes);
+		void SetLayerStatus (const wxString & layer, wxArrayLong * iIndexes);
 		
 		
 	};

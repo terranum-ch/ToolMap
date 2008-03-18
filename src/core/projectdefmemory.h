@@ -176,6 +176,8 @@ class ProjectDefMemoryObjects
 		wxString m_ObjectName;
 		PRJDEF_OBJECTS_FREQ m_ObjectFreq;
 		
+		wxString m_ParentLayerName;
+		
 		ProjectDefMemoryObjects();
 		~ProjectDefMemoryObjects();
 		
