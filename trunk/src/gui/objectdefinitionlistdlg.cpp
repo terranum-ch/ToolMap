@@ -400,9 +400,30 @@ void ObjectDefinitionList::SetFreqStatus (int frequency, wxArrayLong * iIndexes)
  *******************************************************************************/
 void ObjectDefinitionList::SetLayerStatus (const wxString & layer, wxArrayLong * iIndexes)
 {
+	wxString myObjectName;
+	
 	for (unsigned int i = 0; i<iIndexes->GetCount(); i++)
 	{
 		SetItemText(iIndexes->Item(i), 2, layer);
+	
+	
+		// update memory objects, we first search if items exists in the objects to
+		// modify
+		myObjectName = GetItemColText(iIndexes->Item(i), 1);
+		m_ObjectObj = m_MemoryObject->FindObject(myObjectName);
+		
+		// if object not found in the array, we create a new object
+		if (m_ObjectObj == NULL)
+		{
+			m_ObjectObj = m_MemoryObject->AddObject();
+			
+			// load object with list data
+			GetObjectFromList(m_ObjectObj, iIndexes->Item(i));
+		}
+		
+		// finally change the layer to the specified value
+		m_ObjectObj->m_ParentLayerName = layer;
+	
 	}
 }
 
