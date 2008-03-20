@@ -373,44 +373,57 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 }
 
 
+
+/***************************************************************************//**
+ @brief Insert or update an object
+ @details This function insert or update an object in the database depending of
+ the myObject->m_Object_ID value : bigger or egal to 0 means to update and
+ smaller than 0 means to insert
+ @param myObject parameter of the object to modify into the DB
+ @return  TRUE if all went OK or FALSE if the query or something else dosen't
+ work as espected
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 18 March 2008
+ *******************************************************************************/
 bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 {
-	
 	// get layer id
 	ProjectDefMemoryLayers myLayer;
 	myLayer.m_LayerName = myObject->m_ParentLayerName;
 	
+	// if layer name isn't empty
 	if (!myLayer.m_LayerName.IsEmpty())
 	{
 		SetActiveLayerId(&myLayer);
-				
 		
-	// prepare the sentence for insert or update
-	//insert
-	wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
-										_T("(OBJECT_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC VALUES, OBJECT_ISFREQ) ")
-										_T("VALUES (%d, %d, \"%s\", %d"),
-										TABLE_NAME_OBJECTS.c_str(),
-										myObject->m_ObjectCode,
-										GetActiveLayerId(),
-										myObject->m_ObjectName.c_str(),
-										(int) myObject->m_ObjectFreq);
-	
-	wxString sUpdate = wxString::Format(_T("UPDATE %s ")
-										_T("SET OBJECT_CD = %d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
-										_T("OBJECT_DESC = \"%s\", OBJECT_ISFREQ = %d ")
-										_T("WHERE OBJECT_ID = %d"),
-										TABLE_NAME_OBJECTS.c_str(),
-										myObject->m_ObjectCode,
-										GetActiveLayerId(),
-										myObject->m_ObjectName.c_str(),
-										(int) myObject->m_ObjectFreq,
-										myObject->m_ObjectID);
-	
-		// if id > 0 we update (item exist)
+		
+		// prepare the sentence for insert or update
+		//sentence for insert
+		wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
+											_T("(OBJECT_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC, OBJECT_ISFREQ) ")
+											_T("VALUES (%d, %d, \"%s\", %d)"),
+											TABLE_NAME_OBJECTS.c_str(),
+											myObject->m_ObjectCode,
+											GetActiveLayerId(),
+											myObject->m_ObjectName.c_str(),
+											(int) myObject->m_ObjectFreq);
+		// sentence for update
+		wxString sUpdate = wxString::Format(_T("UPDATE %s ")
+											_T("SET OBJECT_CD = %d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
+											_T("OBJECT_DESC = \"%s\", OBJECT_ISFREQ = %d ")
+											_T("WHERE OBJECT_ID = %d"),
+											TABLE_NAME_OBJECTS.c_str(),
+											myObject->m_ObjectCode,
+											GetActiveLayerId(),
+											myObject->m_ObjectName.c_str(),
+											(int) myObject->m_ObjectFreq,
+											myObject->m_ObjectID);
+		
+		// if id >= 0 we update (item exist)
 		// otherwise we insert (item dosen't exist)
-		if (myObject->m_ObjectID > 0)
+		if (myObject->m_ObjectID >= 0)
 		{
+			wxLogDebug(sUpdate);
 			if (DataBaseQueryNoResult(sUpdate))
 				return TRUE;
 		}
@@ -422,7 +435,7 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		
 	}
 	
-
+	
 	wxLogDebug(_T("Error editing object into the database"));
 	return FALSE;
 }
