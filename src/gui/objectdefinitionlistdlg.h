@@ -37,7 +37,6 @@
 /******************************** EDIT OBJECT DEFINITION DLG ************************/ 
 class ObjectDefinitionListDlg: public wxDialog
 {
-    wxString m_Description;
 	int m_ParentListType;
 	DataBaseTM * m_pDatabase;
 	
@@ -46,6 +45,10 @@ class ObjectDefinitionListDlg: public wxDialog
     wxTextCtrl* m_DLGODD_Description;
     wxChoice* m_DLGODD_List_Lyr_Name;
     wxRadioBox* m_DLGODD_Frequency;
+	wxButton * m_DLGODD_SaveBtn;
+	
+	// event function
+	void OnIdleActivateOKButton (wxIdleEvent & event);
 	
 	virtual bool TransferDataToWindow();
 	virtual bool TransferDataFromWindow();
@@ -136,6 +139,8 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		void SetObjectToList (ProjectDefMemoryObjects * object, int iIndex = -1);
 		void GetObjectFromList (ProjectDefMemoryObjects * object, int iIndex);
 		
+		//virtual int ImportParsedFileToListCtrl(const wxString & filename, 
+		//									   const int & FilterIndex);
 		
 		// pass pointer to ctrls to the list
 		void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);

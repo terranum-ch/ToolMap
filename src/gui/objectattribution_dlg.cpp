@@ -34,6 +34,8 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectEditObjectDefinitionDLG, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPEO_BTN_ADD, ProjectEditObjectDefinitionDLG::OnAddObject)
+	EVT_FLATBUTTON (ID_DLGPEO_BTN_DEL, ProjectEditObjectDefinitionDLG::OnRemoveObject)
+	EVT_FLATBUTTON (ID_DLGPEO_BTN_IMPORT, ProjectEditObjectDefinitionDLG::OnImportFile)
 	EVT_CHECKBOX (ID_DLGPEO_LINE_FRQ, ProjectEditObjectDefinitionDLG::OnChangeFrequency)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_LINE, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POINT, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
@@ -57,6 +59,74 @@ void ProjectEditObjectDefinitionDLG::OnAddObject (wxCommandEvent & event)
 		default:
 			m_DLGPEO_List_Line->AddItem();
 			break;
+	}
+}
+
+
+void ProjectEditObjectDefinitionDLG::OnRemoveObject (wxCommandEvent & event)
+{
+	// get the selected panel and call deleteitem for selected list
+	int iSelectedPage = m_DLGPEO_Notebook->GetSelection();
+	switch (iSelectedPage)
+	{
+		case LAYER_POINT:
+			m_DLGPEO_List_Point->DeleteItem();
+			break;
+		case LAYER_POLYGON:
+			m_DLGPEO_List_Poly->DeleteItem();
+			break;
+		default:
+			m_DLGPEO_List_Line->DeleteItem();
+			break;
+	}
+	
+}
+
+
+void ProjectEditObjectDefinitionDLG::OnImportFile (wxCommandEvent & event)
+{
+	int iNumofImported = 0;
+	int iIndex = 0;
+	ProjectDefMemoryObjects * myObject;
+	ObjectDefinitionList * myList = NULL;
+	
+	
+	// get the selected panel and call deleteitem for selected list
+	int iSelectedPage = m_DLGPEO_Notebook->GetSelection();
+	switch (iSelectedPage)
+	{
+		case LAYER_POINT:
+			myList = m_DLGPEO_List_Point;
+			break;
+		case LAYER_POLYGON:
+			myList = m_DLGPEO_List_Poly;
+			break;
+		default:
+			myList = m_DLGPEO_List_Line;
+			break;
+	}
+	
+	
+	
+	// create a new file selector dialog
+	wxFileDialog myImportSelector (this, _("Import a file"), _T(""), _T(""),
+								   TextParser::GetAllSupportedParserWildCards(), 
+								   wxFD_CHANGE_DIR | wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if(myImportSelector.ShowModal() == wxID_OK)
+	{
+		 iNumofImported = myList->ImportParsedFileToListCtrl(myImportSelector.GetPath(),
+														 myImportSelector.GetFilterIndex());
+		iIndex = myList->GetItemCount();
+		for (int i = iNumofImported; i > 0; i--)
+		{
+		
+			// create a new object in the memory array
+			myObject =  m_MemoryObject.AddObject();
+			
+			// fill this object with imported data from the list
+			myList->GetObjectFromList(myObject, iIndex - i);
+			myObject->m_ObjectID = -1;
+		}
 	}
 }
 
