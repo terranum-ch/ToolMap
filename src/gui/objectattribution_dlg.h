@@ -65,6 +65,7 @@ private:
 	void OnAddObject (wxCommandEvent & event);
 	void OnRemoveObject (wxCommandEvent & event);
 	void OnImportFile (wxCommandEvent & event);
+	void OnExportFile (wxCommandEvent & event);
 	void OnChangeFrequency (wxCommandEvent & event);
 	void OnChangeLayerName (wxCommandEvent & event);
 	void OnSaveChanges (wxCommandEvent & event);

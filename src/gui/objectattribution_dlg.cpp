@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE( ProjectEditObjectDefinitionDLG, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPEO_BTN_ADD, ProjectEditObjectDefinitionDLG::OnAddObject)
 	EVT_FLATBUTTON (ID_DLGPEO_BTN_DEL, ProjectEditObjectDefinitionDLG::OnRemoveObject)
 	EVT_FLATBUTTON (ID_DLGPEO_BTN_IMPORT, ProjectEditObjectDefinitionDLG::OnImportFile)
+	EVT_FLATBUTTON (ID_DLGPEO_BTN_EXPORT, ProjectEditObjectDefinitionDLG::OnExportFile)
 	EVT_CHECKBOX (ID_DLGPEO_LINE_FRQ, ProjectEditObjectDefinitionDLG::OnChangeFrequency)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_LINE, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POINT, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
@@ -91,7 +92,7 @@ void ProjectEditObjectDefinitionDLG::OnImportFile (wxCommandEvent & event)
 	ObjectDefinitionList * myList = NULL;
 	
 	
-	// get the selected panel and call deleteitem for selected list
+	// get the selected panel
 	int iSelectedPage = m_DLGPEO_Notebook->GetSelection();
 	switch (iSelectedPage)
 	{
@@ -128,6 +129,40 @@ void ProjectEditObjectDefinitionDLG::OnImportFile (wxCommandEvent & event)
 			myObject->m_ObjectID = -1;
 		}
 	}
+}
+
+
+void ProjectEditObjectDefinitionDLG::OnExportFile (wxCommandEvent & event)
+{
+	ObjectDefinitionList * myList = NULL;
+	
+	// get the selected panel
+	int iSelectedPage = m_DLGPEO_Notebook->GetSelection();
+	switch (iSelectedPage)
+	{
+		case LAYER_POINT:
+			myList = m_DLGPEO_List_Point;
+			break;
+		case LAYER_POLYGON:
+			myList = m_DLGPEO_List_Poly;
+			break;
+		default:
+			myList = m_DLGPEO_List_Line;
+			break;
+	}
+	
+	
+	// create a new file selector dialog for setting the filename and filterindex
+	// of the file that will be used for exporting the list into
+	wxFileDialog myExportSelector (this, _("Export allowed value to file"), _T(""), _T(""),
+								   TextParser::GetAllSupportedParserWildCards(), 
+								   wxFD_CHANGE_DIR | wxFD_SAVE);
+	if(myList->GetItemCount() > 0 && myExportSelector.ShowModal() == wxID_OK)
+	{
+		myList->ExportListParsedToFile(myExportSelector.GetPath(),
+														myExportSelector.GetFilterIndex());		
+	}	
+	
 }
 
 

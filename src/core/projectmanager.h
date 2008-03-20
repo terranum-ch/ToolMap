@@ -60,6 +60,8 @@ class ProjectManager : public wxObject
 		wxWindow * m_Parent;
 		DECLARE_CLASS(ProjectManager)
 		
+		bool IsDataBasePath(const wxString & path);
+		
 	public:
 		ProjectManager(wxWindow * parent);
 		~ProjectManager();

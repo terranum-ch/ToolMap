@@ -374,9 +374,18 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			m_MManager->SetStatus(MENU_DB_OPENED);
 		}
 		else
+		{
 			wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),
 						 _("Opening project error"), wxICON_ERROR | wxOK,
 						 this);
+		
+			// If we can open the project,set the name in the program bar.
+			wxString myProgName = g_ProgName + SVN_VERSION;
+			SetTitle(myProgName);
+			
+			// updates the menu using the menu manager
+			m_MManager->SetStatus(MENU_DB_CLOSED);
+		}
 	}
 	delete myDirDLG;
 }

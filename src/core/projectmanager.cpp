@@ -115,6 +115,16 @@ void ProjectManager::CloseProject()
 }
 
 
+
+bool ProjectManager::IsDataBasePath(const wxString & path)
+{
+	if (!wxDir::FindFirst(path, TABLE_NAME_PRJ_SETTINGS + _T(".MYD"), wxDIR_FILES).IsEmpty())
+		return TRUE;
+	
+	return FALSE;
+}
+
+
 bool ProjectManager::OpenProject(const wxString & path)
 {
 	bool bReturn = FALSE;
@@ -122,31 +132,37 @@ bool ProjectManager::OpenProject(const wxString & path)
 	// close any existing project
 	CloseProject();
 	
-	
-	// 1 check, is connection with library ok on specified path 
-	m_DB = new DataBaseTM();
-	if (m_DB->DataBaseOpen(path,LANG_UTF8))
+	// 0 check if the folder contain something like a database file
+	if (IsDataBasePath(path))
 	{
+		
+		
+		
+		// 1 check, is connection with library ok on specified path 
+		m_DB = new DataBaseTM();
+		if (m_DB->DataBaseOpen(path,LANG_UTF8))
+		{
 		// 2. check, contain an embedded database ?
 		// we check if a table exists
 		if (m_DB->DataBaseTableExist(TABLE_NAME_PRJ_SETTINGS))
 		{
-			// 3. check, for version number
-			if (m_DB->GetDatabaseToolMapVersion() >= TM_DATABASE_VERSION)
-			{
-				// project is now open !
-				bReturn = TRUE;
-			}
+		// 3. check, for version number
+		if (m_DB->GetDatabaseToolMapVersion() >= TM_DATABASE_VERSION)
+		{
+		// project is now open !
+		bReturn = TRUE;
+		}
 		}
 		
 		
 		// check the tables for cbReturn = TRUE;
-	}
-	else
-	{
+		}
+		else
+		{
 		CloseProject();
+		}
 	}
-	
+		
 	//bReturn = TRUE;
 	
 	
