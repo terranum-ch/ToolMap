@@ -440,6 +440,58 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 	return FALSE;
 }
 
+
+
+
+bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,  int ilayertype)
+{
+	MYSQL_ROW record;
+	bool bReturnValue = FALSE;
+	int iCol = 3;
+	long lFreq = 0;
+	//wxArrayString myRowResult;
+	
+	if (m_resultNumber > 0 && pResults != NULL)
+	{
+		record = mysql_fetch_row(pResults);
+		if(record != NULL)
+		{
+			// check object validity
+			if (object != NULL) // && m_resultNumber)
+			{
+				wxString (record[0], wxConvUTF8).ToLong( &(object->m_ObjectCode));
+				object->m_ObjectName = wxString (record[1], wxConvUTF8);
+				object->m_ParentLayerName = wxString (record[2], wxConvUTF8);
+				
+				// if we search the frequency
+				if (ilayertype == LAYER_LINE)
+				{
+					wxString (record[iCol], wxConvUTF8).ToLong (&lFreq);
+					object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;
+					iCol ++;
+				}
+				
+				// get the id
+				wxString (record[iCol], wxConvUTF8).ToLong (&(object->m_ObjectID)); 
+				bReturnValue = TRUE;
+			}
+			
+		}
+		else 
+		{
+			// clean
+			m_resultNumber=0;
+			mysql_free_result(pResults);
+			pResults = NULL;
+		}		
+	}
+	
+	return bReturnValue;
+
+}
+
+
+
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
 bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 {

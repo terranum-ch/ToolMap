@@ -273,7 +273,7 @@ public:
 
    
     
-private:
+protected:
 	MYSQL * pMySQL;
 	
 	// for storing restults 

@@ -133,8 +133,9 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		/// Destructor
 		~ObjectDefinitionList(); 
 		
-		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
-		virtual	int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
+		void SetObjectToList (ProjectDefMemoryObjects * object, int iIndex = -1);
+		void GetObjectFromList (ProjectDefMemoryObjects * object, int iIndex);
+		
 		
 		// pass pointer to ctrls to the list
 		void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);
