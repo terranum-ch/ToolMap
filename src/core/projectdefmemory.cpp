@@ -131,7 +131,7 @@ void ProjectDefMemoryObjects::InitMemberValues()
 	m_ObjectID = 0;
 	m_ObjectCode = NULL_LONG_VALUE;
 	m_ObjectName = _T("");
-	m_ObjectFreq = OBJECT_FREQUENT;
+	m_ObjectFreq = OBJECT_LESS_FREQUENT;
 	m_ParentLayerName = _T("");
 }
 

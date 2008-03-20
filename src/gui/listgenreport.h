@@ -232,7 +232,7 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
 		 *******************************************************************************/		
-		int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
+		virtual int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
 		
 		/***************************************************************************//**
 		 @brief Check for an item existence

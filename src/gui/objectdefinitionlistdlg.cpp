@@ -131,8 +131,8 @@ void ObjectDefinitionListDlg::CreateControls()
 	if (m_ParentListType == LAYER_LINE)
 	{
 		wxArrayString m_DLGODD_FrequencyStrings;
-		m_DLGODD_FrequencyStrings.Add(_("&Frequent"));
 		m_DLGODD_FrequencyStrings.Add(_("&Not Frequent"));
+		m_DLGODD_FrequencyStrings.Add(_("&Frequent"));
 		m_DLGODD_Frequency = new wxRadioBox( itemDialog1, ID_DLGODD_FREQUENCY, _("Frequency"), wxDefaultPosition, wxDefaultSize, m_DLGODD_FrequencyStrings, 1, wxRA_SPECIFY_ROWS );
 		m_DLGODD_Frequency->SetSelection(0);
 		itemStaticBoxSizer3->Add(m_DLGODD_Frequency, 0, wxGROW|wxALL, 5);
@@ -165,6 +165,15 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 {
 	// fill choice with themes
 	m_DLGODD_List_Lyr_Name->Append(m_pDatabase->GetLayerNameByType(m_ParentListType));
+	
+	if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
+		m_DLGODD_Code->SetValue(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
+	
+	m_DLGODD_Description->SetValue(m_ObjectObj->m_ObjectName);
+	m_DLGODD_Frequency->SetSelection(m_ObjectObj->m_ObjectFreq);
+	if (!m_ObjectObj->m_ParentLayerName.IsEmpty())
+		m_DLGODD_List_Lyr_Name->SetStringSelection(m_ObjectObj->m_ParentLayerName);
+	
 	return TRUE;
 }
 
@@ -445,6 +454,22 @@ bool ObjectDefinitionList::EditDataToList (const wxArrayString & myValue, int in
 }
 
 
+int ObjectDefinitionList::GetAllDataAsStringArray(wxArrayString & myStringArray, long index)
+{
+	long lDBindex = 0;
+	int iColNumber = ListGenReport::GetAllDataAsStringArray(myStringArray, index);
+	if (iColNumber > -1)
+	{
+	// get the item data	
+		lDBindex = GetItemData(index);
+		myStringArray.Add(wxString::Format(_T("%d"), lDBindex));
+		return iColNumber + 1;
+	}
+	wxLogMessage(_T("Error getting all data as string"));
+	return -1;
+}
+
+
 
 void ObjectDefinitionList::BeforeAdding()
 {
@@ -496,14 +521,64 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 
 void ObjectDefinitionList::BeforeEditing ()
 {
+	long iSelected = 0;
+	long lTemp = 0;
+	int iIndex = 0;
+	wxArrayString mySelValues;
+	
 	// create the dialog
 	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
 	SetDialog(myDlg);
+	
+	// create an empty object and fill it with actual selection values
+	m_ObjectObj = m_MemoryObject->AddObject();
+	
+	// update values into object
+	iSelected = GetSelectedItem();
+	GetAllDataAsStringArray(mySelValues, iSelected);
+	mySelValues.Item(iIndex).ToLong(&(m_ObjectObj->m_ObjectCode)); iIndex++;
+	m_ObjectObj->m_ObjectName = mySelValues.Item(iIndex); iIndex++;
+	m_ObjectObj->m_ParentLayerName = mySelValues.Item(iIndex);iIndex++;
+	
+	// if layer line
+	if (m_layertype == LAYER_LINE)
+	{
+		if (mySelValues.Item(iIndex) == PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT])
+			m_ObjectObj->m_ObjectFreq = OBJECT_FREQUENT;
+		else
+			m_ObjectObj->m_ObjectFreq = OBJECT_LESS_FREQUENT;
+	}
+	
+	mySelValues.Item(4).ToLong(&(m_ObjectObj->m_ObjectID));
+	
+	
+	// now uses Transfert data process
+	((ObjectDefinitionListDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
+
 	
 }
 
 void ObjectDefinitionList::AfterEditing (bool bRealyEdited)
 {
+	wxArrayString sResultToList;
+	
+	if (bRealyEdited == TRUE)
+	{
+		// add item into the list
+		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
+		sResultToList.Add(m_ObjectObj->m_ObjectName);
+		sResultToList.Add(m_ObjectObj->m_ParentLayerName);
+		if (m_layertype == LAYER_LINE)
+			sResultToList.Add(PRJDEF_OBJECTS_FREQ_STRING[m_ObjectObj->m_ObjectFreq]);
+		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectID));
+		
+		EditDataToList(sResultToList);
+		
+		//wxLogDebug(_T("Editing OK"));
+	}
+	else
+		m_MemoryObject->RemoveObject();
+	
 	delete m_pDialog;
 }
 

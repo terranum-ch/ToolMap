@@ -134,6 +134,7 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		~ObjectDefinitionList(); 
 		
 		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
+		virtual	int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
 		
 		// pass pointer to ctrls to the list
 		void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);

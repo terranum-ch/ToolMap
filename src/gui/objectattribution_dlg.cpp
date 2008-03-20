@@ -120,7 +120,14 @@ void ProjectEditObjectDefinitionDLG::OnChangeLayerName (wxCommandEvent & event)
 
 void ProjectEditObjectDefinitionDLG::OnSaveChanges (wxCommandEvent & event)
 {
+	// save added and edited object in the database
+	 wxBusyCursor wait; 
 	
+	// loop for all object in the list and edit them into the database
+	for (int i = 0; i< m_MemoryObject.GetCountObject();i++)
+	{
+		m_DB->EditObject(m_MemoryObject.GetNextObjects());
+	}
 	
 	
 	event.Skip();
