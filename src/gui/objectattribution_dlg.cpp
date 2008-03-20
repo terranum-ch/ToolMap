@@ -129,6 +129,9 @@ void ProjectEditObjectDefinitionDLG::OnSaveChanges (wxCommandEvent & event)
 		m_DB->EditObject(m_MemoryObject.GetNextObjects());
 	}
 	
+	// Delete all objects marked for deletion
+	m_DB->DeleteMultipleObjects(&m_MemoryObject);
+	
 	
 	event.Skip();
 }
