@@ -551,6 +551,37 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 
 
 
+void ObjectDefinitionList::BeforeDeleting ()
+{
+	// remove item from array if exist (= pending item)
+	// otherwise store the real db item for deleting when 
+	// user press save
+
+	wxString myObjectName;
+	
+	// get selected items from the list
+	wxArrayLong mySelectedListItems;
+	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	{
+		myObjectName = GetItemColText(mySelectedListItems[i], 1);		
+		if (m_MemoryObject->RemoveObject(myObjectName) == FALSE)
+		{
+			// if item wasen't into memory store real id
+			// for later deleting
+			m_MemoryObject->m_StoreDeleteIDObj.Add(GetItemData(mySelectedListItems[i]));
+			
+		}
+	
+	}
+	
+	wxLogDebug(_T("Nb of item to delete : %d"), m_MemoryObject->m_StoreDeleteIDObj.GetCount());
+
+	
+}
+
+
+
 void ObjectDefinitionList::BeforeEditing ()
 {
 	long iSelected = 0;

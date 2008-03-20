@@ -111,7 +111,7 @@ class ObjectDefinitionList : public ListGenReportWithDialog
 		// derived functions to implement 
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
-		virtual void BeforeDeleting (){;}
+		virtual void BeforeDeleting ();
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
 		

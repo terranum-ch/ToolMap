@@ -81,6 +81,7 @@ class DataBaseTM : public DataBase
 		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);
 		bool EditObject (ProjectDefMemoryObjects * myObject );
 		bool DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object, int ilayertype);
+		int  DeleteMultipleObjects (PrjDefMemManage * pProjet);
 		
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);

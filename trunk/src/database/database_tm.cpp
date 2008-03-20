@@ -492,6 +492,29 @@ bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,
 
 
 
+
+int DataBaseTM::DeleteMultipleObjects (PrjDefMemManage * pProjet)
+{
+	wxString sSentence = _T("");
+	wxString sPattern = _T("");
+	
+	// prepare statement for multiple delete
+	for (unsigned int i=0; i< pProjet->m_StoreDeleteIDObj.GetCount(); i++)
+	{
+		sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE OBJECT_ID = %d; "),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  pProjet->m_StoreDeleteIDObj.Item(i)));
+	}
+	
+	// execute statement
+	if(DataBaseQueryNoResult(sSentence))
+		return pProjet->m_StoreDeleteIDObj.GetCount();
+	
+	return -1;
+}
+
+
+
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
 bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 {
