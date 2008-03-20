@@ -170,7 +170,12 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 		m_DLGODD_Code->SetValue(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
 	
 	m_DLGODD_Description->SetValue(m_ObjectObj->m_ObjectName);
-	m_DLGODD_Frequency->SetSelection(m_ObjectObj->m_ObjectFreq);
+	
+	// if we use the frequency control
+	if (m_ParentListType == LAYER_LINE)
+		m_DLGODD_Frequency->SetSelection(m_ObjectObj->m_ObjectFreq);
+	
+	// set parent layer
 	if (!m_ObjectObj->m_ParentLayerName.IsEmpty())
 		m_DLGODD_List_Lyr_Name->SetStringSelection(m_ObjectObj->m_ParentLayerName);
 	
@@ -230,44 +235,22 @@ BEGIN_EVENT_TABLE( ObjectDefinitionList, ListGenReportWithDialog)
 END_EVENT_TABLE()
 
 
+
 bool ObjectDefinitionList::SetListText (int ilayertype)
 {
 	wxArrayString myResults;
 	long lFrequency = 0;
+	ProjectDefMemoryObjects myTempObject;
 	
 	if(m_DBHandler->GetObjectListByLayerType(ilayertype))
 	{
 		// loop for all results 
 		while (1)
 		{
-			myResults = m_DBHandler->DataBaseGetNextResult();
-			if (myResults.GetCount() > 0)
-			{
-				// if ilayertype is LINE we
-				// have to modify the bool
-				// frequency into a text
-				if (ilayertype == LAYER_LINE)
-				{
-					myResults.Item(3).ToLong(&lFrequency);
-					if (lFrequency == 0) // not frequent
-					{
-						myResults.Item(3) = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_LESS_FREQUENT];
-					}
-					else 
-					{
-						myResults.Item(3) = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT];
-					}
-				}
-				
-				//put the results in the list
-				EditDataToList(myResults);
-				myResults.Clear();
-			}
-			else 
-			{
+			if (m_DBHandler->DataBaseGetNextResultAsObject(&myTempObject, ilayertype))
+				SetObjectToList(&myTempObject);
+			else
 				break;
-			}
-			
 		}
 		return TRUE;
 		
@@ -375,9 +358,31 @@ void ObjectDefinitionList::SetListCtrls (wxChoice * layerchoice ,wxCheckBox * ch
  *******************************************************************************/
 void ObjectDefinitionList::SetFreqStatus (int frequency, wxArrayLong * iIndexes)
 {
+	wxString myObjectName;
+	
 	for (unsigned int i = 0; i<iIndexes->GetCount();i++)
 	{
+		// update UI
 		SetItemText(iIndexes->Item(i), 3, PRJDEF_OBJECTS_FREQ_STRING[frequency]);
+		
+		// update memory objects, we first search if items exists in the objects to
+		// modify
+		myObjectName = GetItemColText(iIndexes->Item(i), 1);
+		m_ObjectObj = m_MemoryObject->FindObject(myObjectName);
+		
+		// if object not found in the array, we create a new object
+		if (m_ObjectObj == NULL)
+		{
+			m_ObjectObj = m_MemoryObject->AddObject();
+			
+			// load object with list data
+			GetObjectFromList(m_ObjectObj, iIndexes->Item(i));
+		}
+		
+		// finally change the frequency to the specified value
+		m_ObjectObj->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) frequency;
+		
+		
 	}
 	
 }
@@ -403,71 +408,84 @@ void ObjectDefinitionList::SetLayerStatus (const wxString & layer, wxArrayLong *
 
 
 
+
 /***************************************************************************//**
- @brief Pass data to the list
- @details This function is inspired from the ListGenReport::EditDataToList()
- one, but in this case we are storing the OBJECT_ID into the item (not
- visible). This way we can update or delete the good item
- @param myValue a wxArrayString containing all columns item plus the number to
- associate with the item
- @param index index item to modify or -1 for adding a new item
- @param bool return TRUE if the number of items in the array is correct
+ @brief Update list values with #ProjectDefMemoryObjects
+ @details This function update the list (or add item into) with values specified
+ in the #ProjectDefMemoryObjects pointer
+ @param object pointer to a #ProjectDefMemoryObjects containing values to set
+ into the list
+ @param iIndex the zero based index of the item to modify if iIndex is -1 (the
+ default) then a new item is added
  @author Lucien Schreiber (c) CREALP 2007
- @date 13 March 2008
+ @date 20 March 2008
  *******************************************************************************/
-bool ObjectDefinitionList::EditDataToList (const wxArrayString & myValue, int index)
+void ObjectDefinitionList::SetObjectToList (ProjectDefMemoryObjects * object, int iIndex)
 {
-	// check that data are stored in the array to fill the list.
-	// the last item will be used for adding not visible data (OBJECT_ID) to the list 
-
-	int iArrayItemCount = myValue.GetCount();
-	int iRunNb = 0;
-	//iArrayItemCount > GetColumnCount() ? iRunNb = GetColumnCount() : iRunNb = iArrayItemCount;
+	// prepare default frequency 
+	wxString sfrequency = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_LESS_FREQUENT];
 	
 	
-	if (iArrayItemCount - 1 == GetColumnCount())
+	// if we want to add an item
+	if (iIndex == -1)
 	{
-		// add the first line in the list if index is = -1
-		if (index == -1)
-		{
-			AddItemToList(myValue.Item(0));
-			index = GetItemCount()-1;
-		}
+		AddItemToList(wxString::Format(_T("%d"), object->m_ObjectCode));
+		iIndex = GetItemCount()-1;
+	}
+	else
+		SetItemText(iIndex, 0, wxString::Format(_T("%d"), object->m_ObjectCode));
+	
+	
+	// normal operations for others columns
+	SetItemText(iIndex, 1, object->m_ObjectName);
+	SetItemText(iIndex, 2, object->m_ParentLayerName);
+	
+	// if we use the frequency
+	if (m_layertype == LAYER_LINE)
+	{
+		if (object->m_ObjectFreq == OBJECT_FREQUENT)
+			sfrequency = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT];
+		SetItemText(iIndex, 3, sfrequency);
+	}
+
+	// attach data to the item
+	SetItemData(iIndex, object->m_ObjectID);
+}
+
+
+
+/***************************************************************************//**
+ @brief Get list values into #ProjectDefMemoryObjects
+ @details This function gets the list values into a #ProjectDefMemoryObjects
+ pointer for the specified list index
+ @param object pointer to a #ProjectDefMemoryObjects used for returning the
+ values
+ @param iIndex the zero based index of the item we want to get values
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 20 March 2008
+ *******************************************************************************/
+void ObjectDefinitionList::GetObjectFromList (ProjectDefMemoryObjects * object, int iIndex)
+{
+	// prepare default frequency 
+	wxString sfrequency = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_LESS_FREQUENT];
+
+	GetItemColText(iIndex, 0).ToLong(&(object->m_ObjectCode));
+	object->m_ObjectName = GetItemColText(iIndex, 1);
+	object->m_ParentLayerName = GetItemColText(iIndex, 2);
+	
+	// if we use the frequency control
+	if (m_layertype == LAYER_LINE)
+	{
+		if (GetItemColText(iIndex, 3) == sfrequency)
+			object->m_ObjectFreq = OBJECT_LESS_FREQUENT;
 		else
-			SetItemText(index, 0, myValue.Item(0));
-		
-		for (int i=1; i<GetColumnCount(); i++)
-		{
-			SetItemText(index,i, myValue.Item(i));
-		}
-		// associate data to the item
-		long myData = 0;
-		myValue.Item(GetColumnCount()).ToLong(&myData);
-		SetItemData(index,myData);
-		
-		return TRUE;
+			object->m_ObjectFreq = OBJECT_FREQUENT;
 	}
-	wxLogDebug(_T("Error using EditdatatoList function, not enrough item in array"));
-	return FALSE;
 	
-	
+	// attach data to the item
+	object->m_ObjectID = GetItemData(iIndex);
 }
 
-
-int ObjectDefinitionList::GetAllDataAsStringArray(wxArrayString & myStringArray, long index)
-{
-	long lDBindex = 0;
-	int iColNumber = ListGenReport::GetAllDataAsStringArray(myStringArray, index);
-	if (iColNumber > -1)
-	{
-	// get the item data	
-		lDBindex = GetItemData(index);
-		myStringArray.Add(wxString::Format(_T("%d"), lDBindex));
-		return iColNumber + 1;
-	}
-	wxLogMessage(_T("Error getting all data as string"));
-	return -1;
-}
 
 
 
@@ -498,15 +516,8 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 		m_ObjectObj->m_ObjectID = iAddItems;
 		iAddItems--;
 		
-		// add item into the list
-		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
-		sResultToList.Add(m_ObjectObj->m_ObjectName);
-		sResultToList.Add(m_ObjectObj->m_ParentLayerName);
-		if (m_layertype == LAYER_LINE)
-			sResultToList.Add(PRJDEF_OBJECTS_FREQ_STRING[m_ObjectObj->m_ObjectFreq]);
-		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectID));
-		
-		EditDataToList(sResultToList);
+		// update list ctrl
+		SetObjectToList(m_ObjectObj);
 	}
 	else 
 	{
@@ -530,27 +541,25 @@ void ObjectDefinitionList::BeforeEditing ()
 	ObjectDefinitionListDlg * myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
 	SetDialog(myDlg);
 	
-	// create an empty object and fill it with actual selection values
-	m_ObjectObj = m_MemoryObject->AddObject();
 	
-	// update values into object
-	iSelected = GetSelectedItem();
-	GetAllDataAsStringArray(mySelValues, iSelected);
-	mySelValues.Item(iIndex).ToLong(&(m_ObjectObj->m_ObjectCode)); iIndex++;
-	m_ObjectObj->m_ObjectName = mySelValues.Item(iIndex); iIndex++;
-	m_ObjectObj->m_ParentLayerName = mySelValues.Item(iIndex);iIndex++;
+	// get selected item from the list
+	long mySelectedListItem = GetSelectedItem();
+	wxString myObjectName = GetItemColText(mySelectedListItem, 1);
 	
-	// if layer line
-	if (m_layertype == LAYER_LINE)
+	// try to find if the object exist in the array
+	m_ObjectObj = m_MemoryObject->FindObject(myObjectName);
+	
+	// if the object wasn't found we create a new object
+	// for storing the modifications
+	if (m_ObjectObj == NULL)
 	{
-		if (mySelValues.Item(iIndex) == PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT])
-			m_ObjectObj->m_ObjectFreq = OBJECT_FREQUENT;
-		else
-			m_ObjectObj->m_ObjectFreq = OBJECT_LESS_FREQUENT;
+		// create an empty object and fill it with actual selection values
+		m_ObjectObj = m_MemoryObject->AddObject();
+		
+		
+		// fill the Object with list values 
+		GetObjectFromList(m_ObjectObj, GetSelectedItem());
 	}
-	
-	mySelValues.Item(4).ToLong(&(m_ObjectObj->m_ObjectID));
-	
 	
 	// now uses Transfert data process
 	((ObjectDefinitionListDlg*)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
@@ -564,23 +573,16 @@ void ObjectDefinitionList::AfterEditing (bool bRealyEdited)
 	
 	if (bRealyEdited == TRUE)
 	{
-		// add item into the list
-		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
-		sResultToList.Add(m_ObjectObj->m_ObjectName);
-		sResultToList.Add(m_ObjectObj->m_ParentLayerName);
-		if (m_layertype == LAYER_LINE)
-			sResultToList.Add(PRJDEF_OBJECTS_FREQ_STRING[m_ObjectObj->m_ObjectFreq]);
-		sResultToList.Add(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectID));
-		
-		EditDataToList(sResultToList);
-		
-		//wxLogDebug(_T("Editing OK"));
+		// the object was modified we show the modif in the list
+		SetObjectToList(m_ObjectObj, GetSelectedItem());
 	}
 	else
 		m_MemoryObject->RemoveObject();
 	
 	delete m_pDialog;
 }
+
+
 
 
 
