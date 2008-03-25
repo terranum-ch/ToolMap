@@ -2530,7 +2530,7 @@ structure as the actual one</label>
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_PROJECTPROPERTIES" subclass="Projectproperties">
+    <object class="wxDialog" name="ID_PROJECTPROPERTIES" subclass="ProjectPropertiesDLG">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
@@ -2542,11 +2542,11 @@ structure as the actual one</label>
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
                 <option>1</option>
-                <object class="wxNotebook" name="ID_NOTEBOOK7">
+                <object class="wxNotebook" name="ID_DLGPS_NOTEBOOK">
                     <style>wxBK_DEFAULT</style>
                     <object class="notebookpage">
                         <label>Project settings</label>
-                        <object class="wxPanel" name="ID_PANEL18">
+                        <object class="wxPanel" name="ID_DLGPS_PANEL_SETTINGS">
                             <style>wxTAB_TRAVERSAL</style>
                             <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
@@ -2561,7 +2561,7 @@ structure as the actual one</label>
                                             <border>0</border>
                                             <option>1</option>
                                             <object class="wxFlexGridSizer">
-                                                <cols>3</cols>
+                                                <cols>2</cols>
                                                 <rows>2</rows>
                                                 <vgap>0</vgap>
                                                 <hgap>0</hgap>
@@ -2576,18 +2576,14 @@ structure as the actual one</label>
                                                 <object class="sizeritem">
                                                     <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                                     <border>5</border>
-                                                    <object class="wxChoice" name="ID_CHOICE">
+                                                    <object class="wxChoice" name="ID_DLGPS_EXPORT_TYPE_CHOICE">
+                                                        <size>300,-1</size>
                                                         <content>
                                                             <item>Shapefiles</item>
                                                             <item>Graphics (EPS)</item>
                                                         </content>
                                                         <selection>0</selection>
                                                     </object>
-                                                </object>
-                                                <object class="spacer">
-                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                    <border>5</border>
-                                                    <size>5,5</size>
                                                 </object>
                                                 <object class="sizeritem">
                                                     <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
@@ -2599,14 +2595,8 @@ structure as the actual one</label>
                                                 <object class="sizeritem">
                                                     <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                                     <border>5</border>
-                                                    <object class="wxTextCtrl" name="ID_TEXTCTRL">
-                                                    </object>
-                                                </object>
-                                                <object class="sizeritem">
-                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                    <border>5</border>
-                                                    <object class="wxButton" name="ID_BUTTON">
-                                                        <label>...</label>
+                                                    <object class="wxTextCtrl" name="ID_DLGPS_EXPORT_PATH">
+                                                        <value>wxDirPickerCtrl</value>
                                                     </object>
                                                 </object>
                                             </object>
@@ -2635,14 +2625,8 @@ structure as the actual one</label>
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                                     <border>5</border>
                                                     <option>1</option>
-                                                    <object class="wxTextCtrl" name="ID_TEXTCTRL1">
-                                                    </object>
-                                                </object>
-                                                <object class="sizeritem">
-                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                    <border>5</border>
-                                                    <object class="wxButton" name="ID_BUTTON1">
-                                                        <label>...</label>
+                                                    <object class="wxTextCtrl" name="ID_DLGPS_BACKUP_PATH">
+                                                        <value>wxDirPickerCtrl</value>
                                                     </object>
                                                 </object>
                                             </object>
@@ -2654,7 +2638,7 @@ structure as the actual one</label>
                     </object>
                     <object class="notebookpage">
                         <label>Scale</label>
-                        <object class="wxPanel" name="ID_PANEL19">
+                        <object class="wxPanel" name="ID_DLGPS_PANEL_SCALE">
                             <style>wxTAB_TRAVERSAL</style>
                             <object class="wxStaticBoxSizer" name="wxID_ANY">
                                 <orient>wxVERTICAL</orient>
@@ -2663,7 +2647,7 @@ structure as the actual one</label>
                                     <flag>wxGROW|wxALL</flag>
                                     <border>0</border>
                                     <option>1</option>
-                                    <object class="wxListBox" name="ID_LISTBOX2">
+                                    <object class="wxListBox" name="ID_DLGPS_SCALE_LIST">
                                         <style>wxLB_SINGLE</style>
                                     </object>
                                 </object>
@@ -2675,7 +2659,7 @@ structure as the actual one</label>
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON19">
+                                            <object class="wxToggleButton" name="ID_DLGPS_BTN_SCALE_ADD" subclass="wxFlatButton">
                                                 <size>40,-1</size>
                                                 <label>+</label>
                                                 <checked>0</checked>
@@ -2684,7 +2668,7 @@ structure as the actual one</label>
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                             <border>5</border>
-                                            <object class="wxToggleButton" name="ID_TOGGLEBUTTON20">
+                                            <object class="wxToggleButton" name="ID_DLGPS_BTN_SCALE_DEL" subclass="wxFlatButton">
                                                 <size>40,-1</size>
                                                 <label>-</label>
                                                 <checked>0</checked>
@@ -2701,7 +2685,7 @@ structure as the actual one</label>
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                             <border>5</border>
                                             <option>1</option>
-                                            <object class="wxChoice" name="ID_CHOICE19">
+                                            <object class="wxChoice" name="ID_DLGPS_SCALE_ORDER_CHOICE">
                                                 <content>
                                                     <item>User defined</item>
                                                     <item>Sort ascending</item>
@@ -2718,22 +2702,29 @@ structure as the actual one</label>
                 </object>
             </object>
             <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxStaticLine" name="wxID_STATIC">
+                    <style>wxLI_HORIZONTAL</style>
+                </object>
+            </object>
+            <object class="sizeritem">
                 <flag>wxALIGN_RIGHT|wxALL</flag>
                 <border>5</border>
                 <object class="wxStdDialogButtonSizer">
                     <object class="button">
                         <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                         <border>5</border>
-                        <object class="wxButton" name="wxID_OK">
-                            <label>&amp;Save</label>
-                            <default>1</default>
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label>&amp;Cancel</label>
                         </object>
                     </object>
                     <object class="button">
                         <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                         <border>5</border>
-                        <object class="wxButton" name="wxID_CANCEL">
-                            <label>&amp;Cancel</label>
+                        <object class="wxButton" name="wxID_SAVE">
+                            <label>&amp;Save</label>
+                            <default>1</default>
                         </object>
                     </object>
                 </object>
