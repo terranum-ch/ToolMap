@@ -75,7 +75,7 @@ void ProjectDefMemoryFields::InitMemberValues()
 	
 	m_pCodedValueArray = new PrjMemFieldCodedValArray();
 	
-	int m_CodedDefaultIndex = wxNOT_FOUND;
+	//int m_CodedDefaultIndex = wxNOT_FOUND;
 }
 
 

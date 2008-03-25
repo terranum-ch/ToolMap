@@ -262,7 +262,6 @@ END_EVENT_TABLE()
 bool ObjectDefinitionList::SetListText (int ilayertype)
 {
 	wxArrayString myResults;
-	long lFrequency = 0;
 	ProjectDefMemoryObjects myTempObject;
 	
 	if(m_DBHandler->GetObjectListByLayerType(ilayertype))
@@ -632,7 +631,7 @@ void ObjectDefinitionList::BeforeDeleting ()
 	// get selected items from the list
 	wxArrayLong mySelectedListItems;
 	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
-	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	for (int i=0; i< iNbSelectedItems; i++)
 	{
 		myObjectName = GetItemColText(mySelectedListItems[i], 1);		
 		if (m_MemoryObject->RemoveObject(myObjectName) == FALSE)
@@ -654,9 +653,6 @@ void ObjectDefinitionList::BeforeDeleting ()
 
 void ObjectDefinitionList::BeforeEditing ()
 {
-	long iSelected = 0;
-	long lTemp = 0;
-	int iIndex = 0;
 	wxArrayString mySelValues;
 	
 	// create the dialog

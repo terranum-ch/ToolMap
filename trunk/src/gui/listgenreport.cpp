@@ -269,28 +269,27 @@ void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 	int i=0;
 	int idestpos = 0;
 	
-	int iSelectedItem = GetSelectedItem();
 	switch (event.GetId())
 	{
 		case ID_MENU_MOVE_TOP:
 			// compute movement 
 			idestpos = mySelectedItems[0] - 0;
 
-			for (i=0; i< (int) mySelectedItems.GetCount(); i++)
+			for (i=0; i< iCountSelected; i++)
 			{
 				MoveItem(mySelectedItems[i],mySelectedItems[i] - idestpos);
 			}
 			break;
 			
 		case ID_MENU_MOVE_UP:
-			for (i=0; i< (int) mySelectedItems.GetCount(); i++)
+			for (i=0; i< iCountSelected; i++)
 			{
 				MoveItem(mySelectedItems[i],mySelectedItems[i] - 1);
 			}
 			break;
 	
 		case ID_MENU_MOVE_DOWN:
-			for (i = (int) mySelectedItems.GetCount() -1; i >= 0 ; i--)
+			for (i = iCountSelected -1; i >= 0 ; i--)
 			{
 				MoveItem(mySelectedItems[i],mySelectedItems[i] + 2);
 			}
@@ -300,7 +299,7 @@ void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 			// compute movement 
 			idestpos = (GetItemCount() - 1) - mySelectedItems.Last();
 			
-			for (i = (int) mySelectedItems.GetCount() -1; i >= 0 ; i--)
+			for (i = iCountSelected -1; i >= 0 ; i--)
 			{
 				MoveItem(mySelectedItems[i],mySelectedItems[i] + idestpos + 1);
 			}
