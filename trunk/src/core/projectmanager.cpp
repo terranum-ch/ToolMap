@@ -190,7 +190,24 @@ bool ProjectManager::EditProjectObjectDefinition ()
 	delete myDlg;
 	return bReturn;
 }
+
+
+
+bool ProjectManager::EditProjectSettings ()
+{
+	bool bReturn = FALSE;
 	
+	// display the dialogs for editing the project's object definition.
+	// DO NOT CALL THIS BEFORE OPENING A DB
+	ProjectPropertiesDLG * myDLG = new ProjectPropertiesDLG(m_Parent, m_DB);
+	if(myDLG->ShowModal() == wxID_SAVE)
+	{
+		wxLogDebug(_T("Changes applied into database"));
+		bReturn = TRUE;
+	}
+	delete myDLG;
+	return bReturn;
+}
 
 /***************************************************************************//**
  @brief Get the actual project name
