@@ -229,7 +229,6 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 bool DataBaseTM::FillLayerTableTypeData ()
 {
 	wxString sSentence = _T("");
-	int iReturnValue = 0;
 	bool bReturnValue = TRUE;
 	
 	// fill the field from the layer type table

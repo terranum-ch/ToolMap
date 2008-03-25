@@ -356,7 +356,7 @@ void ProjectDefList::BeforeDeleting()
 	// get selected items from the list
 	wxArrayLong mySelectedListItems;
 	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
-	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
+	for ( int i=0; i< iNbSelectedItems; i++)
 	{
 		myLayerName = GetItemColText(mySelectedListItems[i], 0);		
 		m_pPrjDefinition->RemoveLayer(myLayerName);
