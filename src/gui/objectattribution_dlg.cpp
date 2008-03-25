@@ -15,6 +15,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/*!
+\page Prj_Edit_Obj Object Definition
+
+\section Introduction
+Editing object definition call a #ProjectEditObjectDefinitionDLG object (see figure bellow). To
+allow user cancelling his changes, we store in memory all modifications done and apply them only
+if user choose to press the "save" button. 
+ 
+\image html obj_def_dlg.png
+ 
+
+\section Details How does it work in details
+During dialog startup, a new #PrjDefMemManage object (called PM hereafter) is created and filled with 
+a new #ProjectDefMemoryLayers object called "MEMORY". 
+
+ - <B>New Object</B> : when user press the "+" button, we create a new object of type #ProjectDefMemoryObjects
+ and add it into the PM (during the ObjectDefinitionList::BeforeAdding() function). If the adding dialog is 
+ canceled, we remove this new object (during the ObjectDefinitionList::AfterAdding() function). 
+ ProjectDefMemoryObjects::m_ObjectID is set to negative incremented values.
+ 
+ - <B>Edit Object</B> : when user double-click an object, we search the PM. If the selected object exist in the PM
+ we modify it. Otherwise, we create a new #ProjectDefMemoryObjects object with the ProjectDefMemoryObjects::m_ObjectID
+ set to the item data value (OBJECT_ID column from the DMN_LAYER_OBJECT table in the DB).
+ 
+ - <B>Delete object(s)</B>  Two case are managed :
+	- The Object exist in the DB (ProjectDefMemoryObjects::m_ObjectID >= 0) : In this case the 
+ ProjectDefMemoryObjects::m_ObjectID is added to PrjDefMemManage::m_StoreDeleteIDObj.
+	- The Object exist only in memory (object recently added but not saved into the DB): In this
+ case the object is removed from the PM only (using PrjDefMemManage::RemoveObject())
+
+- <B>Save Button</B> : all objects into the PM are iterated and for each of them we UPDATE them if 
+ProjectDefMemoryObjects::m_ObjectID >= 0, or we INSERT them if ProjectDefMemoryObjects::m_ObjectID < 0.
+ Finaly we create a DELETE statement for all items contained into the PrjDefMemManage::m_StoreDeleteIDObj.
+
+*/
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

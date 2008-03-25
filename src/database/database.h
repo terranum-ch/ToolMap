@@ -46,7 +46,7 @@
 const wxString DATABASE_TYPE_STRING = _T("MYSQL");
 
 /*!
-    @enumeration 
+    @enum 
     @brief enumeration of allowed values for
 	inisialisation.
 	*/
