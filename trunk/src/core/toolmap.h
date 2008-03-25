@@ -34,6 +34,7 @@
   
  - \subpage intro 
  - \subpage Prj_def "Project definition"
+ - \subpage Prj_Edit_Obj "Object Definition"
 
  \section Licence 
  
