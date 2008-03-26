@@ -160,8 +160,8 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxStaticText* itemStaticText33 = new wxStaticText( itemPanel24, wxID_STATIC, _("Date :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer26->Add(itemStaticText33, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxDatePickerCtrl* itemDatePickerCtrl34 = new wxDatePickerCtrl( itemPanel24, ID_DATEPICKERCTRL, wxDateTime(), wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
-    itemFlexGridSizer26->Add(itemDatePickerCtrl34, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    //wxDatePickerCtrl* itemDatePickerCtrl34 = new wxDatePickerCtrl( itemPanel24, ID_DATEPICKERCTRL); //, wxDateTime(), wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
+    //itemFlexGridSizer26->Add(itemDatePickerCtrl34, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticBox* itemStaticBoxSizer35Static = new wxStaticBox(itemPanel24, wxID_ANY, _("Description"));
     wxStaticBoxSizer* itemStaticBoxSizer35 = new wxStaticBoxSizer(itemStaticBoxSizer35Static, wxVERTICAL);

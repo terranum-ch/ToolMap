@@ -175,11 +175,11 @@ void ProjectPropertiesDLG::CreateControls()
     wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
     itemStaticBoxSizer17->Add(itemBoxSizer19, 0, wxGROW|wxALL, 5);
     wxFlatButton* itemFlatButton20 = new wxFlatButton( itemPanel16, ID_DLGPS_BTN_SCALE_ADD, wxFLATBUTTON_TEXT_ADD);
-    itemFlatButton20->SetValue(false);
+    //itemFlatButton20->SetValue(false);
     itemBoxSizer19->Add(itemFlatButton20, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxFlatButton* itemFlatButton21 = new wxFlatButton( itemPanel16, ID_DLGPS_BTN_SCALE_DEL,wxFLATBUTTON_TEXT_REMOVE);
-    itemFlatButton21->SetValue(false);
+    //itemFlatButton21->SetValue(false);
     itemBoxSizer19->Add(itemFlatButton21, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText22 = new wxStaticText( itemPanel16, wxID_STATIC, _("Order :"), wxDefaultPosition, wxDefaultSize, 0 );
