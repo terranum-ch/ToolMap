@@ -39,6 +39,7 @@ const wxString TABLE_NAME_OBJECTS = _T("DMN_LAYER_OBJECT");
 const wxString TABLE_NAME_LAYER_AT = _T("LAYER_AT");
 const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
 const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
+const wxString TABLE_NAME_SCALE			= _T("ZOOM_LEVEL");
 
 // DATABASE VERSION IS
 const int TM_DATABASE_VERSION = 202;
@@ -68,6 +69,7 @@ class DataBaseTM : public DataBase
 		bool CreateEmptyTMDatabase();
 		
 		// Database project operations
+		bool IsProjectDataDefined ();
 		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
 		int	 GetDatabaseToolMapVersion ();
 		
@@ -89,6 +91,9 @@ class DataBaseTM : public DataBase
 		// database query
 		bool GetObjectListByLayerType(int ilayertype);
 		wxArrayString GetLayerNameByType (int ilayertype);
+		
+		// database Scale operations
+		long GetNextScaleValue ();
 	};
 
 

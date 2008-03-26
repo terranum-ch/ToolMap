@@ -31,14 +31,32 @@
 #include "projectproperties_dlg.h"
 
 
-/*************************************** PROJECT PROPERTIES DIALOG***********************************/
+/************************************* PROJECT PROPERTIES DIALOG***********************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectPropertiesDLG, wxDialog )
 
 
 BEGIN_EVENT_TABLE( ProjectPropertiesDLG, wxDialog )
+	EVT_BUTTON (wxID_SAVE, ProjectPropertiesDLG::OnSaveButton)
 END_EVENT_TABLE()
 
+/********************************** PROJECT PROPERTIES EVENT FUNCTION *****************************/
+void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
+{
+	// check that the project data is defined 
+	// otherwise we have a big problem :-)
+	if (m_DBHandler->IsProjectDataDefined())
+	{
+		
+		
+	}
+	else
+		wxLogError(_T("Project data not defined : critical error"));
+	
+	// propagate event for closing the dialog
+	event.Skip();
+}
 
+/************************************ PROJECT PROPERTIES FUNCTION**********************************/
 ProjectPropertiesDLG::ProjectPropertiesDLG()
 {
     Init();
@@ -53,6 +71,9 @@ ProjectPropertiesDLG::ProjectPropertiesDLG( wxWindow* parent,
     Init();
 	m_DBHandler = database;
     Create(parent, id, caption, pos, size, style);
+	
+	// init the list with scale
+	
 }
 
 
@@ -214,6 +235,10 @@ ScaleList::ScaleList(wxWindow * parent,
 	myColSize.Add(300);
 	
 	CreateColumns(&myColName, &myColSize);
+	
+	// init list values
+	LoadValueIntoList();
+	
 }
 
 
@@ -223,6 +248,38 @@ ScaleList::~ScaleList()
 	
 }
 
+
+void ScaleList::LoadValueIntoList ()
+{
+	long myScale = 0;
+	while (1)
+	{
+		myScale = m_DBHandler->GetNextScaleValue();
+		if (myScale == -1)
+			break;
+		else
+		{
+			// adding scale in the list
+			SetScaleToList(myScale);
+		}
+
+	}
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Set the scale value
+ @details Insert a new scale item or change an existing one adding the 1: text
+ in front
+ of the scale value
+ @param lscale the scale value (without the 1:)
+ @param index zero based index of the item to modify or -1 if we want to add an
+ item (the default)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 25 March 2008
+ *******************************************************************************/
 void ScaleList::SetScaleToList (long lscale, int index)
 {
 	wxString myScaleText = _T("");
@@ -235,6 +292,22 @@ void ScaleList::SetScaleToList (long lscale, int index)
 	else 
 		SetItemText(index, 0, myScaleText);
 	
+}
+
+
+/***************************************************************************//**
+ @brief Get the scale value
+ @details Return the long value of the scale for a specified item (without the
+ 1:)
+ @param index the zero based item index we want the scale for
+ @return  the scale value without the 1: text
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 25 March 2008
+ *******************************************************************************/
+long ScaleList::GetScaleFromList (int index)
+{
+	wxString myScaleText = GetItemColText(index, 0);
+	return ScaleTM::GetScaleFromString(myScaleText);
 }
 
 

@@ -356,10 +356,31 @@ bool DataBase::DataBaseTableExist(const wxString & tableName)
 
 
 
+long DataBase::DataBaseGetNextResultAsLong()
+{
+	long result = -1;
+	MYSQL_ROW record;
+	if (m_resultNumber > 0 && pResults != NULL)
+	{
+		record = mysql_fetch_row(pResults);
+		if(record != NULL)
+		{
+			result = atol(record[0]);
+		}
+		else 
+		{
+			// clean
+			m_resultNumber=0;
+			mysql_free_result(pResults);
+			pResults = NULL;
+		}		
+	}
+	return result;
+}
 
 
 
-int DataBase::DataBaseGetResultAsInt()
+int DataBase::DataBaseGetResultAsInt(bool ClearResultDirect)
 {
 	MYSQL_ROW record;
 	int iReturnedValue = -1;
@@ -370,6 +391,15 @@ int DataBase::DataBaseGetResultAsInt()
 		if(record != NULL)
 		{
 			 iReturnedValue =  atoi(record[0]);
+			// should we clear the results imediately 
+			// after the first turn ?
+			if (ClearResultDirect == TRUE)
+			{
+				// clean
+				m_resultNumber=0;
+				mysql_free_result(pResults);
+				pResults = NULL;
+			}
 		}
 		else 
 		{

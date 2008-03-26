@@ -161,7 +161,9 @@ public:
 	bool DataBaseTableExist(const wxString & tableName);
 	
 	
-	int DataBaseGetResultAsInt();
+	int DataBaseGetResultAsInt(bool ClearResultDirect = TRUE);
+	
+	long DataBaseGetNextResultAsLong();
 	
 	double DataBaseGetResultAsDouble();
 	
