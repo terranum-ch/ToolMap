@@ -147,9 +147,8 @@ void ProjectDefDLG::CreateControls()
     itemFlexGridSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 	
-	m_DlgPD_Proj_Path = new wxDirPickerCtrl(itemDialog1, ID_DLGPD_PROJ_PATH, wxEmptyString,
-											_("Select the database folder"), wxDefaultPosition, wxDefaultSize,
-											wxDIRP_USE_TEXTCTRL | wxDIRP_DIR_MUST_EXIST);
+	m_DlgPD_Proj_Path = new wxDirPickerCtrlBest(itemDialog1, ID_DLGPD_PROJ_PATH, wxEmptyString,
+												_("Select the database folder")); 
 	itemFlexGridSizer4->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );

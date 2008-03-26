@@ -46,7 +46,7 @@
 #include "wxflatbutton.h"
 #include "project_def_layers_dlg.h"
 //#include <wx/dirdlg.h>				// for directory selection dialog
-#include <wx/filepicker.h>		// directory picker control
+#include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
 ////@end includes
 
 
@@ -144,7 +144,7 @@ class ProjectDefDLG: public wxDialog
 		virtual bool TransferDataFromWindow();
 		
 		////@begin ProjectDefDLG member variables
-		wxDirPickerCtrl * m_DlgPD_Proj_Path;
+		wxDirPickerCtrlBest * m_DlgPD_Proj_Path;
 		wxTextCtrl* m_DlgPd_Proj_Name;
 		wxChoice* m_DlgPd_Proj_Unit;
 		wxChoice* m_DlgPd_Proj_Projection;

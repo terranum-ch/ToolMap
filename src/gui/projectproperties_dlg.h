@@ -23,7 +23,7 @@
 #include "wx/notebook.h"
 #include "wx/tglbtn.h"
 #include "wx/statline.h"
-#include <wx/filepicker.h>
+#include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
 #include "wxflatbutton.h"
 #include "listgenreport.h"				// for base listgenreport definition
 #include "../database/database_tm.h"	// for database manipulation
@@ -61,8 +61,8 @@ class ProjectPropertiesDLG: public wxDialog
 	// controls
 	wxNotebook* m_DLGPS_Notebook;
     wxChoice* m_DLGPS_Export_Type_Choice;
-    wxDirPickerCtrl * m_DLGPS_Export_Path;
-    wxDirPickerCtrl * m_DLGPS_Backup_Path;
+    wxDirPickerCtrlBest * m_DLGPS_Export_Path;
+    wxDirPickerCtrlBest * m_DLGPS_Backup_Path;
     ScaleList* m_DLGPS_Scale_List;
     wxChoice* m_DLGPS_Scale_Order_Choice;
 	
