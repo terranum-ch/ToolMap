@@ -17,8 +17,13 @@
 
 // comment doxygen
 
+
+
 #include "toolmap.h"
 #include "svn_version.h" // version number definition
+
+
+
 
 // toolbar images
 #include "../img/img_tool1.cpp"
@@ -34,14 +39,15 @@
 // icon image
 #include "../img/img_icon32.cpp"
 
-IMPLEMENT_APP(ToolMapApp);
+
 
  inline wxBitmap _wxGetBitmapFromMemory(const unsigned char *data, int length) {
    wxMemoryInputStream is(data, length);
    return wxBitmap(wxImage(is, wxBITMAP_TYPE_ANY, -1), -1);
  }
 
-
+IMPLEMENT_APP(ToolMapApp)
+ 
 bool ToolMapApp::OnInit()
 /* APPLICATION INITIALISATION */
 {
@@ -51,10 +57,10 @@ bool ToolMapApp::OnInit()
 	
 	//wxString myFrameName = _T("ToolMap 2.0.");
 	// myFrameName.Append(SVN_VERSION);
-	ToolMapFrame* frame = new ToolMapFrame(0L, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(900,500));
+	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(900,500));
 	
 	
-	frame->Show();
+	frame->Show(true);
 	
 	return true;
 }
@@ -83,7 +89,7 @@ ToolMapFrame::ToolMapFrame()
 
 /* Frame initialisation */
 ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wxSize size)
-			: wxFrame(frame, -1, title,pos,size)
+			: wxFrame(frame, wxID_ANY, title,pos,size)
 {
     // Generic list settings for using generic list under Mac
 	// otherwise some problem may occur with dnd and inserting
