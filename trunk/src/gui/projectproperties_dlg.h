@@ -53,8 +53,9 @@ class ScaleList;
 class ProjectPropertiesDLG: public wxDialog
 {   
 	DataBaseTM * m_DBHandler;
-	// event function
 	
+	// event function
+	void OnSaveButton (wxCommandEvent & event);
 	
 	
 	// controls
@@ -101,7 +102,8 @@ class ScaleList : public ListGenReportWithDialog
 		DataBaseTM * m_DBHandler;
 		wxChoice   * m_ChoiceOrder;
 		
-		
+		// init values into the list
+		void LoadValueIntoList ();
 		
 		// derived functions to implement 
 		virtual void BeforeAdding(){;}
@@ -126,6 +128,7 @@ class ScaleList : public ListGenReportWithDialog
 		void SetListCtrls (wxChoice * orderchoice = NULL){m_ChoiceOrder =  orderchoice;}
 		
 		void SetScaleToList (long lscale, int index = -1);
+		long GetScaleFromList (int index);
 				
 	};
 

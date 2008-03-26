@@ -78,6 +78,7 @@ class PrjDefMemManage
 		PrjMemLayersArray * m_PrjLayerArray;
 		
 		wxArrayLong m_StoreDeleteIDObj;
+		
 				
 		// ctor - dtor
 		PrjDefMemManage();

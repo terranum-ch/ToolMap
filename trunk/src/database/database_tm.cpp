@@ -254,40 +254,61 @@ bool DataBaseTM::FillLayerTableTypeData ()
 }
 
 
+/***************************************************************************//**
+ @brief Check if project data are defined
+ @details This function check the existance of a line into the PRJ_SETTINGS
+ table.
+ @return  TRUE if a line exist containing project data (in the PRJ_SETTINGS
+ table)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 25 March 2008
+ *******************************************************************************/
+bool DataBaseTM::IsProjectDataDefined ()
+{
+	// check if the project line exist
+	wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_PRJ_SETTINGS + _T(" WHERE SETTING_DBK =1");
+	if (DataBaseQuery(sSentence))
+	{
+		// if ok the project settings exist
+		if (DataBaseHasResult())
+			return TRUE;
+	}
+	
+	wxLogDebug(_T("No data found into the project settings table"));
+	return FALSE;
+}
+
+
+
+
 bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 {
 	// prepare data
 	wxString sUnit = PRJDEF_UNIT_TYPE_STRING[pPrjDefinition->m_PrjUnitType];
 	wxString sProj = PRJDEF_PROJ_TYPE_STRING[pPrjDefinition->m_PrjProjType];
+	wxString sSentence = _T("");
 	
-	
-	// check if the project line exist
-	wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_PRJ_SETTINGS + _T(" WHERE SETTING_DBK =1");
-	if (DataBaseQuery(sSentence))
+	if (IsProjectDataDefined()==FALSE)	
 	{
-		// if ok the project settings exist and we 
-		// must update it, otherwise insert
-		if (DataBaseHasResult()==FALSE)
-		{
-			sSentence = wxString::Format(_T("INSERT INTO %s (PRJ_UNIT, PRJ_PROJECTION,") 
-										 _T("PRJ_NAME, PRJ_VERSION) VALUES (\"%s\",\"%s\",\"%s\",%d)"),
-										 TABLE_NAME_PRJ_SETTINGS.c_str(),
-										 sUnit.c_str(),sProj.c_str(),
-										 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION);
-						
-		}
-		else
-			sSentence = wxString::Format(_T("UPDATE %s SET ") 
-										 _T("PRJ_UNIT = \"%s\", PRJ_PROJECTION = \"%s\", ")
-										 _T("PRJ_NAME = \"%s\", PRJ_VERSION = %d"),
-										 TABLE_NAME_PRJ_SETTINGS.c_str(),
-										 sUnit.c_str(),sProj.c_str(),
-										 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION);
+		sSentence = wxString::Format(_T("INSERT INTO %s (PRJ_UNIT, PRJ_PROJECTION,") 
+									 _T("PRJ_NAME, PRJ_VERSION) VALUES (\"%s\",\"%s\",\"%s\",%d)"),
+									 TABLE_NAME_PRJ_SETTINGS.c_str(),
+									 sUnit.c_str(),sProj.c_str(),
+									 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION);
 		
-		// processing request
-		if (DataBaseQueryNoResult(sSentence))
-			return TRUE;
 	}
+	else
+		sSentence = wxString::Format(_T("UPDATE %s SET ") 
+									 _T("PRJ_UNIT = \"%s\", PRJ_PROJECTION = \"%s\", ")
+									 _T("PRJ_NAME = \"%s\", PRJ_VERSION = %d"),
+									 TABLE_NAME_PRJ_SETTINGS.c_str(),
+									 sUnit.c_str(),sProj.c_str(),
+									 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION);
+	
+	// processing request
+	if (DataBaseQueryNoResult(sSentence))
+		return TRUE;
+	
 	wxLogDebug(_T("Error while modifing the project settings in the database"));
 	return FALSE;
 }
@@ -737,6 +758,28 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 	return myThematicResult;
 }
 
+
+/********************************** SCALE OPERATIONS **********************************/
+long DataBaseTM::GetNextScaleValue ()
+{
+	long myResult = -1;
+	
+	// no result, we process the sentence
+	if (!DataBaseHasResult())
+	{
+	
+		wxString sSentence = _T("SELECT (SCALE_VALUE) FROM ") + TABLE_NAME_SCALE;
+		if (DataBaseQuery(sSentence))
+			myResult = DataBaseGetNextResultAsLong();
+	}
+	else 
+	{
+		myResult = DataBaseGetNextResultAsLong();
+	}
+
+
+	return myResult;
+}
 
 
 /// FIELD CREATION ::
