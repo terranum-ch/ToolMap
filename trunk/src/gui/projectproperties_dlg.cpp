@@ -139,8 +139,8 @@ void ProjectPropertiesDLG::CreateControls()
     wxStaticText* itemStaticText10 = new wxStaticText( itemPanel4, wxID_STATIC, _("Export Path :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer7->Add(itemStaticText10, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    m_DLGPS_Export_Path = new wxDirPickerCtrl( itemPanel4, ID_DLGPS_EXPORT_PATH, wxEmptyString,
-											  _("Select an export path"), wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL);
+    m_DLGPS_Export_Path = new wxDirPickerCtrlBest( itemPanel4, ID_DLGPS_EXPORT_PATH, wxEmptyString,
+												  _("Select an export path")); 
     itemFlexGridSizer7->Add(m_DLGPS_Export_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(itemPanel4, wxID_ANY, _("Incremental backup directory"));
@@ -152,8 +152,8 @@ void ProjectPropertiesDLG::CreateControls()
     itemBoxSizer13->Add(itemStaticText14, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
 	
-    m_DLGPS_Backup_Path = new wxDirPickerCtrl( itemPanel4, ID_DLGPS_BACKUP_PATH, wxEmptyString,
-											  _("Select a backup folder"), wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL);
+    m_DLGPS_Backup_Path = new wxDirPickerCtrlBest( itemPanel4, ID_DLGPS_BACKUP_PATH, wxEmptyString,
+												  _("Select a backup folder")); 
     itemBoxSizer13->Add(m_DLGPS_Backup_Path, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     m_DLGPS_Notebook->AddPage(itemPanel4, _("Project settings"));
