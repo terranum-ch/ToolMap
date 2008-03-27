@@ -183,18 +183,22 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  PRIMARY KEY (`OBJECT_ID`) );")
 	
 	_T("CREATE  TABLE  `ZOOM_LEVEL` (")
-	_T("  `ZOOM_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
-	_T("  `SCALE_VALUE` INT UNSIGNED NOT NULL ,")
-	_T("  `ZOOM_TYPE` ENUM('SYS','USR') NULL ,")
-	_T("  PRIMARY KEY (`ZOOM_ID`) );")
+	_T("`ZOOM_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
+	_T("`SCALE_VALUE` INT UNSIGNED NOT NULL ,")
+	_T("`RANK` INT NULL ,")
+	_T("PRIMARY KEY (`ZOOM_ID`));")
 	
-	_T("CREATE  TABLE  `PRJ_SETTINGS` (")
-	_T("  `SETTING_DBK` INT NOT NULL AUTO_INCREMENT ,")
-	_T("  `PRJ_UNIT` VARCHAR(10) NOT NULL ,")
-	_T("  `PRJ_PROJECTION` VARCHAR(45) NOT NULL ,")
-	_T("  `PRJ_NAME` VARCHAR(45) NOT NULL ,")
-	_T("  `PRJ_VERSION` INT NOT NULL ,")
-	_T("  PRIMARY KEY (`SETTING_DBK`) )");
+	_T("CREATE  TABLE `PRJ_SETTINGS` (")
+	_T(" `SETTING_DBK` INT NOT NULL AUTO_INCREMENT ,")
+	_T(" `PRJ_UNIT` VARCHAR(10) NOT NULL ,")
+	_T(" `PRJ_PROJECTION` VARCHAR(45) NOT NULL ,")
+	_T(" `PRJ_NAME` VARCHAR(45) NOT NULL ,")
+	_T(" `PRJ_VERSION` INT NOT NULL ,")
+	_T(" `PRJ_EXPORT_PATH` VARCHAR(255) NULL ,")
+	_T(" `PRJ_EXPORT_TYPE` INT NULL DEFAULT 0 ,")
+	_T(" `PRJ_BACKUP_PATH` VARCHAR(255) NULL ,")
+	_T("  PRIMARY KEY (`SETTING_DBK`) );");
+
 	
 	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	
@@ -213,14 +217,11 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	if (FillLayerTableTypeData()==FALSE)
 		return FALSE;
 	
-	return TRUE;	
+	// pass scale data into the database
+	if (FillDefaultScaleData()==FALSE)
+		return FALSE;
 	
-// CODE FOR PASSING MULTIPLE STATEMENT NOT WORKING (BUG) WITH VERSION 5.1.23-rc	
-//	if (DataBaseQueryMultiple(myNewPrjSentence) == 0)
-//		return TRUE;
-//	
-//	wxLogDebug(_T("Errors creating the database..."));
-//	return FALSE;
+	return TRUE;	
 	
 }
 
@@ -250,6 +251,42 @@ bool DataBaseTM::FillLayerTableTypeData ()
 		}
 		
 	}
+	return bReturnValue;
+}
+
+
+
+
+bool DataBaseTM::FillDefaultScaleData ()
+{
+	bool bReturnValue = FALSE;
+	wxString sValue   = _T("INSERT INTO ") + TABLE_NAME_SCALE +
+						_T("(SCALE_VALUE) VALUES ");
+	wxString sSentence = _T("");
+	int iScale [] = {5000, 10000, 25000, 50000};
+	int iScaleNum = (sizeof (iScale) / sizeof (int));
+	
+	// check that the zoom table is empty otherwise error
+	if (DataBaseIsTableEmpty(TABLE_NAME_SCALE))
+	{
+		// prepare statement
+		for (int i = 0; i<iScaleNum; i++)
+		{
+			sSentence.Append(sValue);
+			sSentence.Append(wxString::Format(_T("(%d); "),iScale[i]));
+		}
+		
+		// execute statement
+		if (DataBaseQuery(sSentence))
+		{
+			bReturnValue = TRUE;
+		}
+		
+	}
+	
+	if (bReturnValue == FALSE)
+		wxLogError(_T("Error filling scale table. Already filled of request error ?"));
+	
 	return bReturnValue;
 }
 
