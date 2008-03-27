@@ -42,7 +42,7 @@ const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
 const wxString TABLE_NAME_SCALE			= _T("ZOOM_LEVEL");
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 202;
+const int TM_DATABASE_VERSION = 203;
 
 
 class DataBaseTM : public DataBase
@@ -66,6 +66,7 @@ class DataBaseTM : public DataBase
 		
 		// general database operations
 		bool FillLayerTableTypeData ();
+		bool FillDefaultScaleData ();
 		bool CreateEmptyTMDatabase();
 		
 		// Database project operations
