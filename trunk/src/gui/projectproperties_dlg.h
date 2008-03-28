@@ -67,6 +67,7 @@ class ProjectPropertiesDLG: public wxDialog
     wxChoice* m_DLGPS_Scale_Order_Choice;
 	
 	
+	
     DECLARE_DYNAMIC_CLASS( ProjectPropertiesDLG )
     DECLARE_EVENT_TABLE()
 
@@ -92,6 +93,9 @@ public:
     void Init();
 
     void CreateControls();
+	
+	virtual bool TransferDataToWindow();
+	
 };
 
 

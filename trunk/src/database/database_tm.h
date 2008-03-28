@@ -32,6 +32,7 @@
 #include "database.h"
 #include "../core/projectdefmemory.h"		// for transfering data directely
 #include "../core/prjdefmemmanage.h"		// for transfering data directely
+#include "../core/wxdirpickerctrlbest.h"	// for PATH_ERROR definition;
 
 // TABLES NAMES
 const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
@@ -73,6 +74,9 @@ class DataBaseTM : public DataBase
 		bool IsProjectDataDefined ();
 		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
 		int	 GetDatabaseToolMapVersion ();
+		bool SetProjectExportData (int iExportType, const wxString & spath);
+		bool SetProjectBackupPath (const wxString & spath);
+		int	 GetProjectExportData (int & iExportType, wxString &spath);
 		
 		
 		// Database layer operations
