@@ -42,11 +42,19 @@ END_EVENT_TABLE()
 /********************************** PROJECT PROPERTIES EVENT FUNCTION *****************************/
 void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
 {
+	// get the data from ctrls
+	wxString myBackupPath = m_DLGPS_Backup_Path->GetPath();
+	wxString myExportPath = m_DLGPS_Export_Path->GetPath();
+	int iSelExportType = m_DLGPS_Export_Type_Choice->GetSelection();
+	
+	
 	// check that the project data is defined 
 	// otherwise we have a big problem :-)
 	if (m_DBHandler->IsProjectDataDefined())
 	{
-		
+		// save export and backup path 
+		m_DBHandler->SetProjectExportData(iSelExportType, myExportPath);
+		m_DBHandler->SetProjectBackupPath(myBackupPath);
 		
 	}
 	else
@@ -213,6 +221,29 @@ void ProjectPropertiesDLG::CreateControls()
 	
     itemStdDialogButtonSizer25->Realize();
 	
+}
+
+
+/***************************************************************************//**
+ @brief Transfert data to dialog
+ @details This is called automatically just before displaying the
+ #ProjectPropertiesDLG for passing values to the dialog
+ @return  TRUE if data transfert OK
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 March 2008
+ *******************************************************************************/
+bool ProjectPropertiesDLG::TransferDataToWindow()
+{
+	int iResultflag;
+	int iExportType = 0;
+	wxString sExportPath = _T("");
+	
+	// get the data from the database
+	iResultflag = m_DBHandler->GetProjectExportData(iExportType, sExportPath);
+	// put the data into the dialog
+	m_DLGPS_Export_Path->SetPathWithError((PATH_ERROR) iResultflag, sExportPath);
+	
+	return TRUE;
 }
 
 

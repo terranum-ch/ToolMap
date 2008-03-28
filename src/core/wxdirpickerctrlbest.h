@@ -32,11 +32,23 @@
 
 #include <wx/filepicker.h>
 
+
+// conditional style different for unix...
 #if defined(__WXMSW__) || defined(__WXMAC__)
 const long PICKER_BEST_STYLE = wxDIRP_DIR_MUST_EXIST | wxDIRP_USE_TEXTCTRL;
 #else
 const long PICKER_BEST_STYLE = wxDIRP_DEFAULT_STYLE;	
 #endif
+
+
+// enumeration for path
+enum PATH_ERROR
+{
+	PATH_OK		= 0,
+	PATH_EMPTY =  1,
+	PATH_INVALID = 2,
+	PATH_DATABASE_ERROR = 4
+};
 
 
 class wxDirPickerCtrlBest : public wxDirPickerCtrl
@@ -49,6 +61,8 @@ class wxDirPickerCtrlBest : public wxDirPickerCtrl
 							const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, 
 							long style = PICKER_BEST_STYLE);
 		~wxDirPickerCtrlBest();
+		
+		void SetPathWithError(PATH_ERROR flags, const wxString & spath);
 	};
 
 

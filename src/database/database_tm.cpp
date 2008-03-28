@@ -256,7 +256,18 @@ bool DataBaseTM::FillLayerTableTypeData ()
 
 
 
-
+/***************************************************************************//**
+ @brief Fill default data into scale table
+ @details This function fills default scales into the scale table (ZOOM_LEVEL) if
+ the table is empty. Otherwise FALSE is returned. Default scales are :
+ - 1:5000
+ - 1:10000
+ - 1:25000
+ - 1:50000
+ @return  FALSE if the table isn't empty
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 27 March 2008
+ *******************************************************************************/
 bool DataBaseTM::FillDefaultScaleData ()
 {
 	bool bReturnValue = FALSE;
@@ -363,6 +374,67 @@ int	 DataBaseTM::GetDatabaseToolMapVersion ()
 	return -1;
 	
 }
+
+
+
+bool DataBaseTM::SetProjectExportData (int iExportType, const wxString & spath)
+{
+	wxString sSentence = wxString::Format(_T("UPDATE %s SET PRJ_EXPORT_PATH = \"%s\", ")
+										  _T("PRJ_EXPORT_TYPE = %d; "),
+										  TABLE_NAME_PRJ_SETTINGS.c_str(),
+										  spath.c_str(),
+										  iExportType);
+	if (DataBaseQuery(sSentence))
+		return TRUE;
+	
+	wxLogError(_T("Not able to update project export path : %s"), sSentence.c_str());
+	return FALSE;
+}
+
+
+bool DataBaseTM::SetProjectBackupPath (const wxString & spath)
+{
+	wxString sSentence = wxString::Format(_T("UPDATE %s SET PRJ_BACKUP_PATH = \"%s\"; "),
+										  TABLE_NAME_PRJ_SETTINGS.c_str(),
+										  spath.c_str());
+										  
+	if (DataBaseQuery(sSentence))
+		return TRUE;
+	
+	wxLogError(_T("Not able to update project backup path : %s"), sSentence.c_str());
+	return FALSE;
+	
+}
+
+
+
+int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
+{
+	int iflagreturn = PATH_OK;
+	wxArrayString myResult;
+	
+	wxString sSentence = _T("SELECT PRJ_EXPORT_TYPE, PRJ_EXPORT_PATH FROM ") + 
+						TABLE_NAME_PRJ_SETTINGS;
+	if (DataBaseQuery(sSentence) && DataBaseHasResult())
+	{
+		 // get the first result as int
+		
+		myResult = DataBaseGetNextResult();
+		iExportType = wxAtoi(myResult.Item(0));
+		spath = myResult.Item(1);
+				
+	}
+	else // error querying the database
+	{
+		wxLogDebug(_T("Unable to query the database for project ")
+				   _T("export data. or no results returned : %s"),
+				   sSentence.c_str());
+		iflagreturn = PATH_DATABASE_ERROR;
+	}
+	return iflagreturn;
+}
+
+
 
 
 
