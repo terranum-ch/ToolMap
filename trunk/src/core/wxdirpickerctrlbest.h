@@ -42,12 +42,18 @@ const long PICKER_BEST_STYLE = wxDIRP_DEFAULT_STYLE;
 
 
 // enumeration for path
+/***************************************************************************//**
+ @brief Enumeration for path
+ @details Describe the type of path, mainly used as a return value
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 March 2008
+ *******************************************************************************/
 enum PATH_ERROR
 {
-	PATH_OK		= 0,
-	PATH_EMPTY =  1,
-	PATH_INVALID = 2,
-	PATH_DATABASE_ERROR = 4
+	PATH_OK		= 0, ///<  No errors where detected with the path
+	PATH_EMPTY =  1, ///<  Path stored into the database is empty
+	PATH_INVALID = 2, ///<  The returned path isn't valid (for exemple because of different OS)
+	PATH_DATABASE_ERROR = 4 ///< Error retrieving the path from the database
 };
 
 
