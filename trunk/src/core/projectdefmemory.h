@@ -40,6 +40,22 @@
 #include "../gui/listgenreport.h"
 
 
+// Definition for the project export type
+///@todo Maybe this  must be defined elsewhere ?
+enum PRJDEF_EXPORT_TYPE
+{
+	EXPORT_SHAPEFILE = 0,
+	EXPORT_GRAPHIC
+};
+
+static wxString PRJDEF_EXPORT_TYPE_STRING[] =
+{
+	_("Shapefiles"),
+	_("Graphics (EPS)")
+};
+
+
+
 // Definitions for the project unit type, we define the text and  the id of 
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_UNIT_TYPE_STRING[] = 

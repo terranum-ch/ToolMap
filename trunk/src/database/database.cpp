@@ -708,6 +708,43 @@ wxString DataBase::DataBaseConvertMYSQLPath(wxString originalPath)
 	return myReturnPath;
 }
 
+/***************************************************************************//**
+ @brief Convert path from windows path
+ @details This function replace \ with \\ in the specified path. 
+ @note This functions does nothing for path containing / (like unix path)
+ @param spath the path to change
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 March 2008
+ *******************************************************************************/
+void DataBase::DataBaseConvertWindowsPath (wxString & spath)
+{
+	wxArrayString myNewNameArray;
+	wxFileName myDirName =  wxFileName::DirName(spath);
+	
+	// get the separator
+	wxString mySeparator = myDirName.GetPathSeparator();
+	
+	// if we detect a windows separator
+	if (mySeparator == _T("\\"))
+	{
+		
+		myNewNameArray = wxStringTokenize(spath,_T("\\"));
+		
+		// clear the original path
+		spath.Clear();
+		
+		for (unsigned int i = 0; i< myNewNameArray.GetCount(); i++)
+		{
+			spath += myNewNameArray.Item(i);
+			spath += _T("\\\\"); // add two \ for windows
+		}
+		// remove last \\
+		spath.RemoveLast(2);
+		wxLogDebug(_T("Path converted for windows : %s"), spath.c_str());
+	}
+	
+}
+
 
 wxString DataBase::DataBaseGetSize (int iPrecision)
 {
