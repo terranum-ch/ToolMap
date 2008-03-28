@@ -41,11 +41,14 @@
 
 
 // Definition for the project export type
-///@todo Maybe this  must be defined elsewhere ?
+/**
+ @brief Type of export we want
+ @todo Maybe this  must be defined elsewhere ?
+ */
 enum PRJDEF_EXPORT_TYPE
 {
-	EXPORT_SHAPEFILE = 0,
-	EXPORT_GRAPHIC
+	EXPORT_SHAPEFILE = 0, ///<  shapefile is selected (default)
+	EXPORT_GRAPHIC	///<  we specify export to graphical format
 };
 
 static wxString PRJDEF_EXPORT_TYPE_STRING[] =

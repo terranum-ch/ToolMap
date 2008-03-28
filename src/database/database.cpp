@@ -738,7 +738,7 @@ void DataBase::DataBaseConvertWindowsPath (wxString & spath)
 			spath += myNewNameArray.Item(i);
 			spath += _T("\\\\"); // add two \ for windows
 		}
-		// remove last \\
+		// remove last \ (2x)
 		spath.RemoveLast(2);
 		wxLogDebug(_T("Path converted for windows : %s"), spath.c_str());
 	}

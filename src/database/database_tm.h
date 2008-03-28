@@ -77,6 +77,7 @@ class DataBaseTM : public DataBase
 		bool SetProjectExportData (int iExportType, const wxString & spath);
 		bool SetProjectBackupPath (const wxString & spath);
 		int	 GetProjectExportData (int & iExportType, wxString &spath);
+		int  GetProjectBackupPath (wxString & spath);
 		
 		
 		// Database layer operations

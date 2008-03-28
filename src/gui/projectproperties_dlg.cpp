@@ -239,12 +239,19 @@ bool ProjectPropertiesDLG::TransferDataToWindow()
 {
 	int iResultflag;
 	int iExportType = 0;
-	wxString sExportPath = _T("");
+	wxString myPath = _T("");
+
 	
+	// get the export data
 	// get the data from the database
-	iResultflag = m_DBHandler->GetProjectExportData(iExportType, sExportPath);
+	iResultflag = m_DBHandler->GetProjectExportData(iExportType, myPath);
 	// put the data into the dialog
-	m_DLGPS_Export_Path->SetPathWithError((PATH_ERROR) iResultflag, sExportPath);
+	m_DLGPS_Export_Path->SetPathWithError((PATH_ERROR) iResultflag, myPath);
+	m_DLGPS_Export_Type_Choice->SetSelection(iExportType);
+	
+	// get the backup data
+	iResultflag = m_DBHandler->GetProjectBackupPath(myPath);
+	m_DLGPS_Backup_Path->SetPathWithError((PATH_ERROR) iResultflag,myPath );
 	
 	return TRUE;
 }

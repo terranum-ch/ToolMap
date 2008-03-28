@@ -408,26 +408,40 @@ bool DataBaseTM::SetProjectBackupPath (const wxString & spath)
 
 
 
-
+/***************************************************************************//**
+ @brief Get the export data from the database
+ @details Retrive the Export path and the export type from the database
+ @param iExportType This value will be modified with one of the
+ #PRJDEF_EXPORT_TYPE.
+ @param spath This variable will be filled with the spath if return value is
+ different of PATH_EMPTY
+ @return  the returned values is a flag of type #PATH_ERROR 
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 March 2008
+ *******************************************************************************/
 int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
 {
 	int iflagreturn = PATH_OK;
 	wxArrayString myResult;
 	
 	wxString sSentence = _T("SELECT PRJ_EXPORT_TYPE, PRJ_EXPORT_PATH FROM ") + 
-						TABLE_NAME_PRJ_SETTINGS;
+	TABLE_NAME_PRJ_SETTINGS;
 	if (DataBaseQuery(sSentence) && DataBaseHasResult())
 	{
-		 // get the first result as int
+		// get the first result as int
 		myResult = DataBaseGetNextResult();
 		iExportType = wxAtoi(myResult.Item(0));
 		spath = myResult.Item(1);
 		
-		// check for path validity
-		if (!wxFileName::DirExists(spath))
-			iflagreturn = PATH_INVALID;
+		if (spath.IsEmpty())
+			iflagreturn = PATH_EMPTY;
+		else
+		{
+			// check for path validity
+			if (!wxFileName::DirExists(spath))
+				iflagreturn = PATH_INVALID;
+		}
 		
-				
 	}
 	else // error querying the database
 	{
@@ -440,7 +454,45 @@ int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
 }
 
 
+/***************************************************************************//**
+ @brief Get the backup path from the database
+ @details Retrive the Backup path type from the database
+ @param spath This variable will be filled with the backup path from the
+ database  if return value is different of PATH_EMPTY
+ @return  the returned values is a flag of type #PATH_ERROR
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 March 2008
+ *******************************************************************************/
+int DataBaseTM::GetProjectBackupPath (wxString & spath)
+{
+	int iflagreturn = PATH_OK;
+	
+	wxString sSentence = _T("SELECT PRJ_BACKUP_PATH FROM ") + 
+						TABLE_NAME_PRJ_SETTINGS;
+	if (DataBaseQuery(sSentence) && DataBaseHasResult())
+	{
+		DataBaseGetNextResult(spath);
+		
+		if (spath.IsEmpty())
+			iflagreturn = PATH_EMPTY;
+		else
+		{
+			// check for path validity
+			if (!wxFileName::DirExists(spath))
+				iflagreturn = PATH_INVALID;
+		}
+		
+	}
+	else // error querying the database
+	{
+		wxLogDebug(_T("Unable to query the database for project ")
+				   _T("backup path. or no results returned : %s"),
+				   sSentence.c_str());
+		iflagreturn = PATH_DATABASE_ERROR;
+	}
+	return iflagreturn;
 
+}
 
 
 /*************************** LAYER DATABASE FUNCTION ****************************/
