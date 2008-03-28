@@ -47,6 +47,9 @@ void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
 	wxString myExportPath = m_DLGPS_Export_Path->GetPath();
 	int iSelExportType = m_DLGPS_Export_Type_Choice->GetSelection();
 	
+	// update path for windows, does nothing if path is unix
+	DataBase::DataBaseConvertWindowsPath(myBackupPath);
+	DataBase::DataBaseConvertWindowsPath(myExportPath);
 	
 	// check that the project data is defined 
 	// otherwise we have a big problem :-)
@@ -138,9 +141,9 @@ void ProjectPropertiesDLG::CreateControls()
     itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxArrayString m_DLGPS_Export_Type_ChoiceStrings;
-    m_DLGPS_Export_Type_ChoiceStrings.Add(_("Shapefiles"));
-    m_DLGPS_Export_Type_ChoiceStrings.Add(_("Graphics (EPS)"));
-    m_DLGPS_Export_Type_Choice = new wxChoice( itemPanel4, ID_DLGPS_EXPORT_TYPE_CHOICE, wxDefaultPosition, wxSize(300, -1), m_DLGPS_Export_Type_ChoiceStrings, 0 );
+    m_DLGPS_Export_Type_ChoiceStrings.Add(PRJDEF_EXPORT_TYPE_STRING[EXPORT_SHAPEFILE]);
+	m_DLGPS_Export_Type_ChoiceStrings.Add(PRJDEF_EXPORT_TYPE_STRING[EXPORT_GRAPHIC]);
+	m_DLGPS_Export_Type_Choice = new wxChoice( itemPanel4, ID_DLGPS_EXPORT_TYPE_CHOICE, wxDefaultPosition, wxSize(300, -1), m_DLGPS_Export_Type_ChoiceStrings, 0 );
     m_DLGPS_Export_Type_Choice->SetSelection(0);
     itemFlexGridSizer7->Add(m_DLGPS_Export_Type_Choice, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	

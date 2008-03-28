@@ -273,7 +273,7 @@ public:
 
 	static void DataBaseCloseLibrary();
 
-   
+   static void DataBaseConvertWindowsPath (wxString & spath);
     
 protected:
 	MYSQL * pMySQL;
@@ -309,6 +309,8 @@ protected:
 	loading the MYSQL server.
 	*/
 	wxString DataBaseConvertMYSQLPath(wxString originalPath);
+	
+	
 
 	/*!
     @function 

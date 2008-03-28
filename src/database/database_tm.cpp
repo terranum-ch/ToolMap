@@ -408,6 +408,7 @@ bool DataBaseTM::SetProjectBackupPath (const wxString & spath)
 
 
 
+
 int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
 {
 	int iflagreturn = PATH_OK;
@@ -418,10 +419,14 @@ int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
 	if (DataBaseQuery(sSentence) && DataBaseHasResult())
 	{
 		 // get the first result as int
-		
 		myResult = DataBaseGetNextResult();
 		iExportType = wxAtoi(myResult.Item(0));
 		spath = myResult.Item(1);
+		
+		// check for path validity
+		if (!wxFileName::DirExists(spath))
+			iflagreturn = PATH_INVALID;
+		
 				
 	}
 	else // error querying the database
