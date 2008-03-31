@@ -926,25 +926,91 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 
 
 /********************************** SCALE OPERATIONS **********************************/
-long DataBaseTM::GetNextScaleValue ()
+long DataBaseTM::GetNextScaleValue (long & DBindex)
 {
-	long myResult = -1;
+	long myResultScale = -1;
+	wxArrayLong myResults;
 	
 	// no result, we process the sentence
 	if (!DataBaseHasResult())
 	{
 	
-		wxString sSentence = _T("SELECT (SCALE_VALUE) FROM ") + TABLE_NAME_SCALE;
-		if (DataBaseQuery(sSentence))
-			myResult = DataBaseGetNextResultAsLong();
+		wxString sSentence = _T("SELECT ZOOM_ID, SCALE_VALUE FROM ") + TABLE_NAME_SCALE;
+		if (!DataBaseQuery(sSentence))
+		{
+			wxLogDebug(_T("Error getting scale data from the database : %s"), sSentence.c_str());
+		}	
 	}
-	else 
+	
+	DataBaseGetNextResultAsLong(myResults);
+	if (myResults.GetCount() > 0)
 	{
-		myResult = DataBaseGetNextResultAsLong();
+		DBindex = myResults.Item(0);
+		myResultScale = myResults.Item(1);
 	}
+	return myResultScale;
+}
 
 
-	return myResult;
+bool DataBaseTM::EditScale (ProjectDefMemoryScale * myScaleObj)
+{
+	// prepare the sentence for insert or update
+	//sentence for insert
+	wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
+										_T("(SCALE_VALUE) ")
+										_T("VALUES (%d)"),
+										TABLE_NAME_SCALE.c_str(),
+										myScaleObj->m_ScaleValue);
+	// sentence for update
+	wxString sUpdate = wxString::Format(_T("UPDATE %s ")
+										_T("SET SCALE_VALUE = %d ")
+										_T("WHERE ZOOM_ID = %d"),
+										TABLE_NAME_SCALE.c_str(),
+										myScaleObj->m_ScaleValue,
+										myScaleObj->m_DBScaleID);
+										
+	// if id >= 0 we update (item exist)
+	// otherwise we insert (item dosen't exist)
+	if (myScaleObj->m_DBScaleID >= 0)
+	{
+		wxLogDebug(sUpdate);
+		if (DataBaseQueryNoResult(sUpdate))
+			return TRUE;
+	}
+	else
+	{
+		if (DataBaseQueryNoResult(sInsert))
+			return TRUE;
+	}
+	
+	
+	wxLogDebug(_T("Error editing scale into the database"));
+	return FALSE;
+	
+	
+}
+
+
+int DataBaseTM::DeleteMultipleScales (PrjDefMemManage * pProjet)
+{
+	wxString sSentence = _T("");
+	wxString sPattern = _T("");
+	
+	// prepare statement for multiple delete
+	for (unsigned int i=0; i< pProjet->m_StoreDeleteScale.GetCount(); i++)
+	{
+		sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE ZOOM_ID = %d; "),
+										  TABLE_NAME_SCALE.c_str(),
+										  pProjet->m_StoreDeleteScale.Item(i)));
+	}
+	
+	// execute statement
+	if(DataBaseQueryNoResult(sSentence))
+		return pProjet->m_StoreDeleteIDObj.GetCount();
+	
+	wxLogDebug(_T("Error trying to delete scale from the database : %s"), sSentence.c_str());
+	
+	return -1;
 }
 
 

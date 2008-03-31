@@ -28,6 +28,7 @@
 #include "listgenreport.h"				// for base listgenreport definition
 #include "../database/database_tm.h"	// for database manipulation
 #include "../core/scale.h"				// for scale static conversion
+#include "wx/numdlg.h"					// for Number entry dialog
 
 class wxNotebook;
 class ScaleList;
@@ -53,9 +54,12 @@ class ScaleList;
 class ProjectPropertiesDLG: public wxDialog
 {   
 	DataBaseTM * m_DBHandler;
+	PrjDefMemManage  m_PrjDefinition;
 	
 	// event function
 	void OnSaveButton (wxCommandEvent & event);
+	void OnAddScaleButton (wxCommandEvent & event);
+	void OnRemoveScaleButton (wxCommandEvent & event);
 	
 	
 	// controls
@@ -105,16 +109,18 @@ class ScaleList : public ListGenReportWithDialog
 	private:
 		DataBaseTM * m_DBHandler;
 		wxChoice   * m_ChoiceOrder;
+		PrjDefMemManage * m_pPrjDefinition;
+		long m_ActualScale;
 		
 		// init values into the list
 		void LoadValueIntoList ();
 		
 		// derived functions to implement 
-		virtual void BeforeAdding(){;}
-		virtual void AfterAdding (bool bRealyAddItem){;}
-		virtual void BeforeDeleting (){;}
-		virtual void BeforeEditing (){;}
-		virtual void AfterEditing (bool bRealyEdited){;}
+		virtual void BeforeAdding();
+		virtual void AfterAdding (bool bRealyAddItem);
+		virtual void BeforeDeleting ();
+		virtual void BeforeEditing ();
+		virtual void AfterEditing (bool bRealyEdited);
 		
 		DECLARE_EVENT_TABLE()
 		
@@ -123,6 +129,7 @@ class ScaleList : public ListGenReportWithDialog
 		ScaleList(wxWindow * parent,
 							 wxWindowID id,
 							 DataBaseTM * database,
+							 PrjDefMemManage * pProjectMem,
 							 wxSize size = wxDefaultSize);
 		
 		/// Destructor

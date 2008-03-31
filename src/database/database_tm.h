@@ -99,7 +99,9 @@ class DataBaseTM : public DataBase
 		wxArrayString GetLayerNameByType (int ilayertype);
 		
 		// database Scale operations
-		long GetNextScaleValue ();
+		long GetNextScaleValue (long & DBindex);
+		bool EditScale (ProjectDefMemoryScale * myScaleObj);
+		int DeleteMultipleScales (PrjDefMemManage * pProjet);
 	};
 
 
