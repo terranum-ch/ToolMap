@@ -76,7 +76,8 @@ void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
 	}
 	
 	// Delete all objects marked for deletion
-	m_DBHandler->DeleteMultipleScales(&m_PrjDefinition);
+	if(m_PrjDefinition.m_StoreDeleteScale.GetCount() > 0)
+		m_DBHandler->DeleteMultipleScales(&m_PrjDefinition);
 	//m_DB->DeleteMultipleObjects(&m_MemoryObject);
 	
 	// propagate event for closing the dialog
