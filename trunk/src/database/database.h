@@ -165,6 +165,8 @@ public:
 	
 	long DataBaseGetNextResultAsLong();
 	
+	void DataBaseGetNextResultAsLong(wxArrayLong & resultArray);
+	
 	double DataBaseGetResultAsDouble();
 	
 	bool DataBaseIsTableEmpty(const wxString & tableName);

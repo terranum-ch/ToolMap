@@ -295,6 +295,15 @@ bool DataBase::DataBaseGetNextResult(wxString & result)
 		if(record != NULL)
 		{
 			result = wxString ( record[0], wxConvUTF8);
+			// if only one result clean imediately
+			if (m_resultNumber == 1)
+			{
+				// clean
+				m_resultNumber=0;
+				mysql_free_result(pResults);
+				pResults = NULL;
+			}
+			
 			return TRUE;
 		}
 		else 
@@ -353,6 +362,41 @@ bool DataBase::DataBaseTableExist(const wxString & tableName)
 	
 	
 }
+
+
+/***************************************************************************//**
+ @brief Return an array of long for each row
+ @details For each row of results, an array of long is returned containing all
+ results changed into long values. This function does no check about the values
+ @param resultArray this array of long is filled by the function with all values
+ from one row
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 31 March 2008
+ *******************************************************************************/
+void DataBase::DataBaseGetNextResultAsLong(wxArrayLong & resultArray)
+{
+	MYSQL_ROW record;
+	if (m_resultNumber > 0 && pResults != NULL)
+	{
+		record = mysql_fetch_row(pResults);
+		if(record != NULL)
+		{
+			for (int i = 0; i<m_resultNumber; i++) 
+			{
+				resultArray.Add(atol(record[i]));
+			}
+		}
+		else 
+		{
+			// clean
+			m_resultNumber=0;
+			mysql_free_result(pResults);
+			pResults = NULL;
+		}		
+	}
+}
+
+
 
 
 

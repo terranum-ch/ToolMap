@@ -137,3 +137,27 @@ void ProjectDefMemoryObjects::InitMemberValues()
 
 WX_DEFINE_OBJARRAY (PrjMemObjectsArray);
 
+
+
+
+/*************************         SCALE          *************************/
+ProjectDefMemoryScale::ProjectDefMemoryScale()
+{
+	InitMemberValues();
+}
+
+ProjectDefMemoryScale::~ProjectDefMemoryScale()
+{
+	
+}
+
+void ProjectDefMemoryScale::InitMemberValues()
+{
+	m_ScaleValue = 1;
+	m_DBScaleID = -1;
+}
+
+WX_DEFINE_OBJARRAY (PrjMemScaleArray);
+
+
+

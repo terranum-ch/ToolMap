@@ -278,8 +278,20 @@ WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers, PrjMemLayersArray);
 
 
 
+class ProjectDefMemoryScale
+	{
+	private:
+		void InitMemberValues();
+	public:
+		long m_DBScaleID;
+		long m_ScaleValue;
+		
+		ProjectDefMemoryScale();
+		~ProjectDefMemoryScale();
+	
+	};
 
-
-
+// Creating a list of MemoryLayers
+WX_DECLARE_OBJARRAY(ProjectDefMemoryScale, PrjMemScaleArray);
 
 #endif

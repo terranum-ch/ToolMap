@@ -66,6 +66,7 @@ class PrjDefMemManage
 		int m_iActualField;
 		int m_iActualCodedVal;
 		
+		
 		// member functions
 		void InitDefaultValues();
 		
@@ -76,9 +77,10 @@ class PrjDefMemManage
 		PRJDEF_UNIT_TYPE m_PrjUnitType;
 		PRJDEF_PROJ_TYPE m_PrjProjType;
 		PrjMemLayersArray * m_PrjLayerArray;
+		PrjMemScaleArray m_ScaleArray;
 		
 		wxArrayLong m_StoreDeleteIDObj;
-		
+		wxArrayLong m_StoreDeleteScale;
 				
 		// ctor - dtor
 		PrjDefMemManage();
@@ -124,6 +126,11 @@ class PrjDefMemManage
 		ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString & ValueName, int & IndexPos);
 		ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
 		int								GetCountCodedValue();
+		
+		// scale functions 
+		ProjectDefMemoryScale *			AddScale(const long & scale, const int & DBindex = -1);
+		ProjectDefMemoryScale *			FindScale (const long & oldscale);
+		bool							RemoveScale (const long & oldscale);
 		
 	};
 

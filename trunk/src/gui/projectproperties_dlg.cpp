@@ -37,6 +37,8 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectPropertiesDLG, wxDialog )
 
 BEGIN_EVENT_TABLE( ProjectPropertiesDLG, wxDialog )
 	EVT_BUTTON (wxID_SAVE, ProjectPropertiesDLG::OnSaveButton)
+	EVT_FLATBUTTON (ID_DLGPS_BTN_SCALE_ADD, ProjectPropertiesDLG::OnAddScaleButton)
+	EVT_FLATBUTTON (ID_DLGPS_BTN_SCALE_DEL, ProjectPropertiesDLG::OnRemoveScaleButton)
 END_EVENT_TABLE()
 
 /********************************** PROJECT PROPERTIES EVENT FUNCTION *****************************/
@@ -63,9 +65,39 @@ void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
 	else
 		wxLogError(_T("Project data not defined : critical error"));
 	
+	// save now the scales
+	wxBusyCursor wait; 
+	
+	// loop for all object in the list and edit them into the database
+	for (unsigned int i = 0; i< m_PrjDefinition.m_ScaleArray.GetCount();i++)
+	{
+		//m_DB->EditObject(m_MemoryObject.GetNextObjects());
+		m_DBHandler->EditScale(&(m_PrjDefinition.m_ScaleArray.Item(i)));
+	}
+	
+	// Delete all objects marked for deletion
+	m_DBHandler->DeleteMultipleScales(&m_PrjDefinition);
+	//m_DB->DeleteMultipleObjects(&m_MemoryObject);
+	
 	// propagate event for closing the dialog
 	event.Skip();
 }
+
+
+
+void ProjectPropertiesDLG::OnAddScaleButton (wxCommandEvent & event)
+{
+	m_DLGPS_Scale_List->AddItem();	
+}
+
+
+
+void ProjectPropertiesDLG::OnRemoveScaleButton (wxCommandEvent & event)
+{
+	m_DLGPS_Scale_List->DeleteItem();
+	
+}
+
 
 /************************************ PROJECT PROPERTIES FUNCTION**********************************/
 ProjectPropertiesDLG::ProjectPropertiesDLG()
@@ -177,7 +209,7 @@ void ProjectPropertiesDLG::CreateControls()
     wxArrayString m_DLGPS_Scale_ListStrings;
     //m_DLGPS_Scale_List = new wxListBox( itemPanel16, ID_DLGPS_SCALE_LIST, wxDefaultPosition, wxDefaultSize, m_DLGPS_Scale_ListStrings, wxLB_SINGLE );
     m_DLGPS_Scale_List = new ScaleList( itemPanel16, ID_DLGPS_SCALE_LIST,
-									   m_DBHandler);
+									   m_DBHandler, &m_PrjDefinition);
 	
 	
 	
@@ -265,10 +297,13 @@ END_EVENT_TABLE()
 ScaleList::ScaleList(wxWindow * parent,
 					 wxWindowID id,
 					 DataBaseTM * database,
+					 PrjDefMemManage * pProjectMem,
 					 wxSize size) : ListGenReportWithDialog(parent, id, size)
 {
 	m_ChoiceOrder = NULL;
 	m_DBHandler = database;
+	m_pPrjDefinition = pProjectMem;
+	m_ActualScale = -1;
 	
 	wxArrayString myColName;
 	myColName.Add(_("Scale"));
@@ -293,15 +328,19 @@ ScaleList::~ScaleList()
 void ScaleList::LoadValueIntoList ()
 {
 	long myScale = 0;
+	long myCount = 0;
+	long myDBIndex = -1;
 	while (1)
 	{
-		myScale = m_DBHandler->GetNextScaleValue();
+		myScale = m_DBHandler->GetNextScaleValue(myDBIndex);
 		if (myScale == -1)
 			break;
 		else
 		{
 			// adding scale in the list
 			SetScaleToList(myScale);
+			SetItemData(myCount, myDBIndex);
+			myCount++;
 		}
 
 	}
@@ -309,6 +348,127 @@ void ScaleList::LoadValueIntoList ()
 }
 
 
+
+void ScaleList::BeforeAdding()
+{
+	// create and set the dialog here
+	wxNumberEntryDialog * myScaleDialog = new wxNumberEntryDialog (this,
+	_("Add a new scale"), _T("1:"), _("Adding new scale"), 1, 1, 999999999);
+
+	SetDialog(myScaleDialog);
+	
+}
+
+
+
+void ScaleList::AfterAdding (bool bRealyAddItem)
+{
+	long lenteredScale = ((wxNumberEntryDialog*) m_pDialog)->GetValue();
+	
+	// if we really want to add the new scale
+	if (bRealyAddItem == TRUE)
+	{
+		m_pPrjDefinition->AddScale(lenteredScale);
+		SetScaleToList(lenteredScale);
+	}
+	
+	wxLogDebug(_T("Size of the scale array is : %d"), 
+			   m_pPrjDefinition->m_ScaleArray.GetCount());
+
+	delete m_pDialog;
+	
+}
+
+
+void ScaleList::BeforeEditing ()
+{
+	// get the selected item (or the first selected one)
+	int iSelected = GetSelectedItem();
+	m_ActualScale = GetScaleFromList(iSelected);
+	
+	// create the dialog
+	wxNumberEntryDialog * myDialog = new wxNumberEntryDialog(this,
+															 _("Edit the selected scale"),
+															 _T("1:"),
+															 _("Editting scale"),
+															 m_ActualScale,
+															 1,
+															 999999999);
+	SetDialog(myDialog);
+																
+	
+}
+
+
+void ScaleList::AfterEditing (bool bRealyEdited)
+{
+	ProjectDefMemoryScale * myScale;
+	
+	long myID = 0;
+	int myScaleValue = ((wxNumberEntryDialog*)m_pDialog)->GetValue();
+	int iSelectedScale = GetSelectedItem();
+	
+	if(bRealyEdited)
+	{
+		// search the scale in existing array
+		myScale = m_pPrjDefinition->FindScale(m_ActualScale);
+		
+		// if the scale is found we modify it
+		// otherwise we create a new scale object in memory
+		if (myScale != NULL)
+		{
+			myScale->m_ScaleValue = myScaleValue;
+		}
+		else
+		{
+			myID = GetItemData(iSelectedScale);
+			m_pPrjDefinition->AddScale(myScaleValue, myID);
+		}
+		
+		// put the scale in the list
+		SetScaleToList(myScaleValue, iSelectedScale);
+		
+	}
+	
+	wxLogDebug(_T("Size of the scale array is : %d"), 
+			   m_pPrjDefinition->m_ScaleArray.GetCount());
+	
+	delete m_pDialog;
+}
+
+
+
+void ScaleList::BeforeDeleting ()
+{
+	// remove item from array if exist (= pending item)
+	// otherwise store the real db item for deleting when 
+	// user press save
+	
+	long mySelectedScale;
+	
+	// get selected items from the list
+	wxArrayLong mySelectedListItems;
+	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	for (int i=0; i< iNbSelectedItems; i++)
+	{
+		mySelectedScale = GetScaleFromList(mySelectedListItems[i]);		
+		if (m_pPrjDefinition->RemoveScale(mySelectedScale) == FALSE)
+		{
+			// if item wasen't into memory store real id
+			// for later deleting
+			m_pPrjDefinition->m_StoreDeleteScale.Add(GetItemData(mySelectedListItems[i]));
+			//m_MemoryObject->m_StoreDeleteIDObj.Add(GetItemData());
+			
+		}
+		
+	}
+	
+	wxLogDebug(_T("Nb of scale to delete (from DB) : %d"), 
+			   m_pPrjDefinition->m_StoreDeleteScale.GetCount());
+	
+	
+	
+}
 
 /***************************************************************************//**
  @brief Set the scale value

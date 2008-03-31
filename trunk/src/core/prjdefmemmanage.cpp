@@ -511,4 +511,48 @@ int	PrjDefMemManage::GetCountCodedValue()
 
 
 
+/*********************** SCALE  FUNCTIONS **************************/
+ProjectDefMemoryScale * PrjDefMemManage::AddScale(const long & scale, const int & DBindex)
+{
+	ProjectDefMemoryScale * mytempScale = new ProjectDefMemoryScale();
+	mytempScale->m_ScaleValue = scale;
+	mytempScale->m_DBScaleID = DBindex;
+	m_ScaleArray.Add(mytempScale);
+	
+	return mytempScale;
+}
+
+
+
+ProjectDefMemoryScale * PrjDefMemManage::FindScale (const long & oldscale)
+{
+	
+	// search the array
+	for (unsigned int i= 0; i<m_ScaleArray.GetCount(); i++)
+	{
+		if (m_ScaleArray.Item(i).m_ScaleValue == oldscale)
+		{
+			return &(m_ScaleArray.Item(i));
+		}
+	}
+	return NULL;
+}
+
+
+bool PrjDefMemManage::RemoveScale (const long & oldscale)
+{
+	
+	// search this item in the array for the good scale value.
+	for (unsigned int i=0; i < m_ScaleArray.GetCount(); i++)
+	{
+		if (m_ScaleArray.Item(i).m_ScaleValue == oldscale)
+		{
+			wxLogDebug(_T("Object found in scale array in position : %d"), i);
+			m_ScaleArray.RemoveAt(i);
+			return TRUE;
+		}
+	}
+	
+	return FALSE; // nothing deleted.
+}
 
