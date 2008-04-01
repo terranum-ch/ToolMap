@@ -78,7 +78,11 @@ void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
 	// Delete all objects marked for deletion
 	if(m_PrjDefinition.m_StoreDeleteScale.GetCount() > 0)
 		m_DBHandler->DeleteMultipleScales(&m_PrjDefinition);
-	//m_DB->DeleteMultipleObjects(&m_MemoryObject);
+
+	
+	// and now save the RANK of the items
+	m_DBHandler->SetScaleRank(m_DLGPS_Scale_List, 0, TABLE_NAME_SCALE, _T("SCALE_VALUE"));
+	
 	
 	// propagate event for closing the dialog
 	event.Skip();

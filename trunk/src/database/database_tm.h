@@ -33,6 +33,8 @@
 #include "../core/projectdefmemory.h"		// for transfering data directely
 #include "../core/prjdefmemmanage.h"		// for transfering data directely
 #include "../core/wxdirpickerctrlbest.h"	// for PATH_ERROR definition;
+#include "../gui/projectproperties_dlg.h"	// for scale RANK function 
+
 
 // TABLES NAMES
 const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
@@ -102,6 +104,18 @@ class DataBaseTM : public DataBase
 		long GetNextScaleValue (long & DBindex);
 		bool EditScale (ProjectDefMemoryScale * myScaleObj);
 		int DeleteMultipleScales (PrjDefMemManage * pProjet);
+		
+		// database rank operations
+		bool SetRank (ListGenReport * list, int icol, 
+					  const wxString & stable,
+					  const wxString & sfield,
+					  bool bStringType = FALSE,
+					  const wxString & rankfield = _T("RANK"));
+		bool SetScaleRank (ScaleList * list, int icol, 
+						   const wxString & stable,
+						   const wxString & sfield,
+						   const wxString & rankfield = _T("RANK"));
+		
 	};
 
 

@@ -935,7 +935,9 @@ long DataBaseTM::GetNextScaleValue (long & DBindex)
 	if (!DataBaseHasResult())
 	{
 	
-		wxString sSentence = _T("SELECT ZOOM_ID, SCALE_VALUE FROM ") + TABLE_NAME_SCALE;
+		wxString sSentence = wxString::Format(_T("SELECT ZOOM_ID, SCALE_VALUE FROM %s ORDER BY RANK"),
+											  TABLE_NAME_SCALE.c_str());
+		
 		if (!DataBaseQuery(sSentence))
 		{
 			wxLogDebug(_T("Error getting scale data from the database : %s"), sSentence.c_str());
@@ -1012,6 +1014,120 @@ int DataBaseTM::DeleteMultipleScales (PrjDefMemManage * pProjet)
 	
 	return -1;
 }
+
+/********************************** RANK DATABASE OPERATIONS **********************************/
+/***************************************************************************//**
+ @brief Update a rank field
+ @details This may be used to update a rank field using items from a
+ #ListGenReport. This way we can store the order of items wanted by the end
+ user
+ @param list a pointer to a #ListGenReport object containing items
+ @param icol specify the column of interest in the list (zero based index)
+ @param stable the name of the table in which we want to add rank values
+ @param sfield the field name for the field containing values of the selected
+ column (icol)
+ @param bStringType TRUE if the column store textual values, FALSE otherwise. In
+ fact this function prepend brackets if TRUE for dealing with strings with
+ spaces (Default is FALSE)
+ @param rankfield Name of the field where we want to update the rank (Default is
+ field "RANK") this field must be of type integer
+ @return  Return TRUE if the query pass without problem and FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 01 April 2008
+ *******************************************************************************/
+bool DataBaseTM::SetRank (ListGenReport * list, 
+						  int icol, 
+						  const wxString & stable,
+						  const wxString & sfield,
+						  bool bStringType,
+						  const wxString & rankfield)
+{
+	wxString myText = _T("");
+	wxString sSentence = _T("");
+	
+	// loop all items from the list and update the rank in one pass...
+	for (int i= 0; i< list->GetItemCount(); i++)
+	{
+		myText = list->GetItemColText(i, icol);
+		
+		// if this is a string value we add brackets...
+		if (bStringType)
+		{
+			myText.Prepend(_T("\""));
+			myText.Append(_T("\""));
+		}
+		
+		// prepare the sentence
+		sSentence.Append(wxString::Format(_T("UPDATE %s SET %s = %d WHERE %s = %s; "),
+										  stable.c_str(),
+										  rankfield.c_str(),
+										  i,
+										  sfield.c_str(),
+										  myText.c_str()));
+	
+	}
+	
+	// process the sentence
+	if (DataBaseQueryNoResult(sSentence))
+	{
+		return TRUE;
+	}
+	
+	wxLogDebug(_T("Error updating RANK : %s"), sSentence.c_str());
+	return FALSE;
+}
+
+
+
+/***************************************************************************//**
+ @brief Update a rank field for scale table
+ @details This function is a specialized function of DataBaseTM::SetRank() used
+ to update rank for scale table (because of scale table store only long values
+ but displays 1: before the scale value
+ @param list a pointer to a #ScaleList object containing items
+ @param icol specify the column of interest in the list (zero based index)
+ @param stable the name of the table in which we want to add rank values
+ @param sfield the field name for the field containing values of the selected
+ column (icol)
+ @param rankfield Name of the field where we want to update the rank (Default is
+ field "RANK") this field must be of type integer
+ @return  Return TRUE if the query pass without problem and FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 01 April 2008
+ *******************************************************************************/
+bool DataBaseTM::SetScaleRank (ScaleList * list, int icol, 
+							   const wxString & stable,
+							   const wxString & sfield,
+							   const wxString & rankfield)
+{
+	long myScale = 0;
+	wxString sSentence = _T("");
+	
+	// loop all items from the list and update the rank in one pass...
+	for (int i= 0; i< list->GetItemCount(); i++)
+	{
+		myScale = list->GetScaleFromList(i);
+		
+		// prepare the sentence
+		sSentence.Append(wxString::Format(_T("UPDATE %s SET %s = %d WHERE %s = %d; "),
+										  stable.c_str(),
+										  rankfield.c_str(),
+										  i,
+										  sfield.c_str(),
+										  myScale));
+		
+	}
+	
+	// process the sentence
+	if (DataBaseQueryNoResult(sSentence))
+	{
+		return TRUE;
+	}
+	
+	wxLogDebug(_T("Error updating scale RANK : %s"), sSentence.c_str());
+	return FALSE;
+}
+
 
 
 /// FIELD CREATION ::
