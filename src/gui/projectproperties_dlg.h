@@ -20,6 +20,9 @@
 #define _PROJECTPROPERTIES_DLG_H_
 
 
+class ScaleList;
+class DataBaseTM;
+
 #include "wx/notebook.h"
 #include "wx/tglbtn.h"
 #include "wx/statline.h"
@@ -30,8 +33,8 @@
 #include "../core/scale.h"				// for scale static conversion
 #include "wx/numdlg.h"					// for Number entry dialog
 
-class wxNotebook;
-class ScaleList;
+//class wxNotebook;
+
 
 #define ID_PROJECTPROPERTIES 10132
 #define ID_DLGPS_NOTEBOOK 10141
