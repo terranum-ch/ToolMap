@@ -94,8 +94,8 @@ class ProjectPropertiesDLG: public wxDialog
 	
 	
 	
-    DECLARE_DYNAMIC_CLASS( ProjectPropertiesDLG )
-    DECLARE_EVENT_TABLE()
+    DECLARE_DYNAMIC_CLASS( ProjectPropertiesDLG );
+    DECLARE_EVENT_TABLE();
 
 public:
     /// Constructors
@@ -145,7 +145,7 @@ class ScaleList : public ListGenReportWithDialog
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
 		
-		DECLARE_EVENT_TABLE()
+		DECLARE_EVENT_TABLE();
 		
 	public:
 		/// Constructor
