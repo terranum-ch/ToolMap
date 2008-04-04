@@ -576,6 +576,248 @@ void ListGenReportWithDialog::InitMembers()
 }
 
 
+void ListGenReport::SortListItem(int x_col, int low , int high , int typecol, bool bAscending )
+{
+	wxASSERT(GetColumnCount() > x_col );
+	
+	
+	if( high == -1 )
+		high = GetItemCount() - 1;
+	
+	int lo = low;
+	int hi = high;
+	wxString midItem;
+	
+	if( hi <= lo ) return ; 
+	
+	wxListItem info;	info.m_itemId = (lo+hi)/2;
+	info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA|wxLIST_MASK_IMAGE;
+	info.m_col = x_col;
+	GetItem( info );
+	midItem = info.GetText();
+	
+	// loop through the list until indices cross
+	while( lo <= hi )
+	{
+		while( ( lo < high ) && ( Compare( typecol, GetItemColText(lo,
+		 x_col), midItem, bAscending ) == -1 ) )
+		 ++lo;
+		 
+		 while( ( hi > low ) && ( Compare( typecol, GetItemColText(hi,
+		 x_col), midItem, bAscending ) == 1 ) )
+		 --hi;
+		 
+		// if the indexes have not crossed, swap
+		// and if the items are not equal
+		if( lo <= hi )
+		{
+			// swap only if the items are not equal
+			if( GetItemColText(lo, x_col) != GetItemColText(hi, x_col))
+			{
+				SwapRow( lo, hi );
+			}
+			++lo;
+			--hi;
+		}
+	}
+	
+	// If the right index has not reached the left side of array
+	// must now sort the left partition.
+	if( low < hi )
+		SortListItem( x_col, low, hi, typecol, bAscending);
+	
+	// If the left index has not reached the right side of array
+	// must now sort the right partition.
+	if( lo < high )
+		SortListItem( x_col, lo, high, typecol, bAscending);
+}
+
+
+
+/***************************************************************************//**
+ @brief Swap two items value
+ @details Swap the values of items (color, item data, even icon) between two
+ items. A verification is made and nothing is done if two items are similar
+ @param x_row1 zero based index of item one
+ @param x_row2 zero based index of item two
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 03 April 2008
+ *******************************************************************************/
+void ListGenReport::SwapRow( int x_row1, int x_row2 )
+{
+	// dont change Row A with Row A - its nonsense
+	if( x_row1 == x_row2 )
+		return;
+	
+	wxListItem item1; item1.m_itemId = x_row1; item1.m_col = 0;
+	item1.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA; //|wxLIST_MASK_IMAGE;
+	GetItem( item1 );
+	
+	int iIcon		= item1.GetImage();
+	wxColour rowColor = item1.GetTextColour(); //m_pList->GetItemTextColour(x_row1 );
+	long lData		= GetItemData( x_row1 );
+	
+	wxColour item2color = GetItemTextColour( x_row2 );
+	
+	SetItemTextColour( x_row1, item2color );
+	wxListItem item2; item2.m_itemId = x_row2; item2.m_col = 0;
+	item2.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA; //|wxLIST_MASK_IMAGE;
+	GetItem( item2 );
+	SetItemImage( x_row1, item2.GetImage(), item2.GetImage() );
+	SetItemData( x_row1, GetItemData(x_row2) );
+	
+	//SetItemTextColour( x_row2, iIcon );
+	SetItemImage( x_row2, iIcon, iIcon  );
+	SetItemData( x_row2, lData );
+	
+	int maxCol = GetColumnCount();
+	
+	//////////////////////////////////
+	// swap column Values too
+	for( int c = 0; c < maxCol; ++c)
+	{
+		static wxListItem info, info2;
+		
+		info.m_itemId = x_row1;
+		info.m_col = c;
+		info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA|wxLIST_MASK_IMAGE;
+		bool b = GetItem(  info );
+		wxASSERT( b );
+		
+		info2.m_itemId = x_row2;
+		info2.m_col = c;
+		info2.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA|wxLIST_MASK_IMAGE;
+		GetItem( info2 );
+		
+		SetItem( x_row1, c, info2.GetText(), info2.GetImage() );
+		
+		SetItem( x_row2, c, info.GetText(), info.GetImage() );
+		
+	} // for
+	
+}
+
+
+/***************************************************************************//**
+ @brief Compare two values for sorting data
+ @details This function compare values of two items based on the column type
+ wich could be one of the #LIST_FIELD_TYPE
+ @param iColumnCompareType One of the #LIST_FIELD_TYPE value indicating wich
+ sort of column we are trying to sort
+ @param x_strValue1 The string value of item 1 (may be converted internally
+ based on column type)
+ @param x_strValue2 The string value of item 2 (may be converted internally
+ based on column type)
+ @param bAscending a TRUE value indicate an ascending sort and a FALSE one
+ indicate a descending sort
+ @return  if value 1 is greater than value 2 return 1, if equal return 0 and
+ finaly if value 1 is smaller than value 2 return -1
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 03 April 2008
+ *******************************************************************************/
+int ListGenReport::Compare( int iColumnCompareType, const wxString
+							   &x_strValue1,  const wxString &x_strValue2, bool bAscending )
+{
+	if( bAscending == TRUE)
+	{
+		if( iColumnCompareType == FIELD_STRING) // simple String value compare
+		{
+			if( x_strValue1 > x_strValue2 )
+				return 1;
+			else if( x_strValue1 < x_strValue2 )
+				return -1;
+			else
+				return 0;
+		}
+		else if( iColumnCompareType == FIELD_NUMBER ) // Numbers compare
+		{
+			if( wxAtof(x_strValue1) > wxAtof(x_strValue2) )
+				return 1;
+			else if( wxAtof(x_strValue1) < wxAtof(x_strValue2) )
+				return -1;
+			else
+				return 0;
+		}
+		else if( iColumnCompareType == FIELD_DATE ) // Date compare -
+		{
+			wxDateTime dt1;
+			int d=0, m=0 , y=0;
+			if (dt1.ParseDate(x_strValue1)== NULL)
+			{
+				dt1 = wxInvalidDateTime;
+			}
+			wxDateTime dt2;
+			if (dt2.ParseDate(x_strValue2)== NULL)
+			{
+				dt2 = wxInvalidDateTime;
+			}
+
+			if( dt1.IsValid() == false )
+				return -1;
+			if( dt2.IsValid() == false )
+				return 1;
+			
+			if( dt1 > dt2 )
+				return 1;
+			else if( dt1 < dt2 )
+				return -1;
+			else
+				return 0;
+			
+		}
+	}
+	else
+	{ // Reihenfolge umdrehen
+		if( iColumnCompareType == FIELD_STRING )
+		{
+			if( x_strValue1 > x_strValue2 )
+				return -1;
+			else if( x_strValue1 < x_strValue2 )
+				return 1;
+			else
+				return 0;
+		}
+		else if( iColumnCompareType == FIELD_NUMBER ) // Numbers compare
+		{
+			if( wxAtof(x_strValue1) > wxAtof(x_strValue2) )
+				return -1;
+			else if( wxAtof(x_strValue1) < wxAtof(x_strValue2) )
+				return 1;
+			else
+				return 0;
+		} // Number Compare
+		else if( iColumnCompareType == FIELD_DATE ) // Date compare -
+		{
+			wxDateTime dt1;
+			int d=0, m=0 , y=0;
+			if (dt1.ParseDate(x_strValue1)== NULL)
+			{
+				dt1 = wxInvalidDateTime;
+			}
+
+			wxDateTime dt2;
+			
+			if(dt2.ParseDate(x_strValue2)==NULL)
+			{
+				dt2 = wxInvalidDateTime;
+			}
+			
+			if( dt1.IsValid() == false )
+				return 1;
+			if( dt2.IsValid() == false )
+				return -1;
+			
+			if( dt1 > dt2 )
+				return -1;
+			else if( dt1 < dt2 )
+				return 1;
+			else
+				return 0;
+		} // Date Compare
+	}
+	return 0;
+}
+
 
 
 void ListGenReportWithDialog::AddItem()
