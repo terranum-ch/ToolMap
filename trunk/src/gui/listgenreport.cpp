@@ -284,14 +284,14 @@ void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 		case ID_MENU_MOVE_UP:
 			for (i=0; i< iCountSelected; i++)
 			{
-				MoveItem(mySelectedItems[i],mySelectedItems[i] - 1);
+				SwapRow(mySelectedItems[i],mySelectedItems[i] - 1);
 			}
 			break;
 	
 		case ID_MENU_MOVE_DOWN:
 			for (i = iCountSelected -1; i >= 0 ; i--)
 			{
-				MoveItem(mySelectedItems[i],mySelectedItems[i] + 2);
+				SwapRow(mySelectedItems[i],mySelectedItems[i] + 1);
 			}
 			//MoveItem(iSelectedItem, iSelectedItem+2);
 			break;
@@ -305,7 +305,6 @@ void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 			}
 			
 			
-			//MoveItem(iSelectedItem, GetItemCount());
 			break;
 	}
 }
