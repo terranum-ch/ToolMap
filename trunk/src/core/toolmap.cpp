@@ -46,7 +46,7 @@
    return wxBitmap(wxImage(is, wxBITMAP_TYPE_ANY, -1), -1);
  }
 
-IMPLEMENT_APP(ToolMapApp)
+IMPLEMENT_APP(ToolMapApp);
  
 bool ToolMapApp::OnInit()
 /* APPLICATION INITIALISATION */
