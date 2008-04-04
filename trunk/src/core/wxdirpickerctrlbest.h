@@ -33,12 +33,14 @@
 #include <wx/filepicker.h>
 
 
-// conditional style different for unix...
-#if defined(__WXMSW__) || defined(__WXMAC__)
+// conditional style different for unix... but not working
+// for the moment so aborted...
+// maybe later...
+//#if defined(__WXMSW__) || defined(__WXMAC__)
 const long PICKER_BEST_STYLE = wxDIRP_DIR_MUST_EXIST | wxDIRP_USE_TEXTCTRL;
-#else
-const long PICKER_BEST_STYLE = wxDIRP_DEFAULT_STYLE;	
-#endif
+//#else
+//const long PICKER_BEST_STYLE = wxDIRP_DEFAULT_STYLE;	
+//#endif
 
 
 // enumeration for path
