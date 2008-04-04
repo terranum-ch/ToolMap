@@ -39,7 +39,10 @@ BEGIN_EVENT_TABLE( ProjectPropertiesDLG, wxDialog )
 	EVT_BUTTON (wxID_SAVE, ProjectPropertiesDLG::OnSaveButton)
 	EVT_FLATBUTTON (ID_DLGPS_BTN_SCALE_ADD, ProjectPropertiesDLG::OnAddScaleButton)
 	EVT_FLATBUTTON (ID_DLGPS_BTN_SCALE_DEL, ProjectPropertiesDLG::OnRemoveScaleButton)
+	EVT_CHOICE ( ID_DLGPS_SCALE_ORDER_CHOICE, ProjectPropertiesDLG::OnChooseScaleOrder)
 END_EVENT_TABLE()
+
+
 
 /********************************** PROJECT PROPERTIES EVENT FUNCTION *****************************/
 void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
@@ -102,6 +105,30 @@ void ProjectPropertiesDLG::OnRemoveScaleButton (wxCommandEvent & event)
 	m_DLGPS_Scale_List->DeleteItem();
 	
 }
+
+
+void ProjectPropertiesDLG::OnChooseScaleOrder (wxCommandEvent & event)
+{
+	switch (event.GetSelection())
+	{
+		case SCALE_ORDER_ASCENDING:
+			// sort items ascending and then select user defined
+			m_DLGPS_Scale_List->SortListItem(0, 0, -1, 3, TRUE);
+			m_DLGPS_Scale_Order_Choice->SetSelection(SCALE_ORDER_USER);
+			break;
+		case SCALE_ORDER_DESCENDING:
+			// sort items ascending and then select user defined
+			m_DLGPS_Scale_List->SortListItem(0, 0, -1, 3, FALSE);
+			m_DLGPS_Scale_Order_Choice->SetSelection(SCALE_ORDER_USER);
+			break;
+			
+		default:
+			break;
+	}
+	
+}
+
+
 
 
 /************************************ PROJECT PROPERTIES FUNCTION**********************************/
@@ -233,13 +260,15 @@ void ProjectPropertiesDLG::CreateControls()
     wxStaticText* itemStaticText22 = new wxStaticText( itemPanel16, wxID_STATIC, _("Order :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer19->Add(itemStaticText22, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxArrayString m_DLGPS_Scale_Order_ChoiceStrings;
-    m_DLGPS_Scale_Order_ChoiceStrings.Add(_("User defined"));
-    m_DLGPS_Scale_Order_ChoiceStrings.Add(_("Sort ascending"));
-    m_DLGPS_Scale_Order_ChoiceStrings.Add(_("Sort descending"));
-    m_DLGPS_Scale_Order_Choice = new wxChoice( itemPanel16, ID_DLGPS_SCALE_ORDER_CHOICE, wxDefaultPosition, wxDefaultSize, m_DLGPS_Scale_Order_ChoiceStrings, 0 );
-    m_DLGPS_Scale_Order_Choice->SetSelection(0);  //SetStringSelection(_("User defined"));
-    itemBoxSizer19->Add(m_DLGPS_Scale_Order_Choice, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_DLGPS_Scale_Order_Choice = new wxChoice( itemPanel16, 
+											  ID_DLGPS_SCALE_ORDER_CHOICE,
+											  wxDefaultPosition, 
+											  wxDefaultSize, 
+											  sizeof (PRJPROPERTIES_SCALE_ORDER_STRING) / sizeof( wxString),
+											  PRJPROPERTIES_SCALE_ORDER_STRING);
+    m_DLGPS_Scale_Order_Choice->SetSelection(SCALE_ORDER_USER);
+	itemBoxSizer19->Add(m_DLGPS_Scale_Order_Choice, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     m_DLGPS_Notebook->AddPage(itemPanel16, _("Scale"));
 	

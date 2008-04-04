@@ -357,6 +357,45 @@ wxString ObjectDefinitionList::GetLayerStatus (int iIndex)
 	return GetItemColText(iFirstSelected, 2);
 }
 
+int ScaleList::Compare( int iColumnCompareType, const wxString
+					   &x_strValue1,  const wxString &x_strValue2, bool bAscending )
+{
+	if (bAscending == TRUE)
+	{
+		if (iColumnCompareType == 3) // FIELD_SCALE_TYPE
+		{
+			if( wxAtof(x_strValue1.AfterFirst(':')) > wxAtof(x_strValue2.AfterFirst(':')))
+				return 1;
+			else if( wxAtof(x_strValue1.AfterFirst(':')) < wxAtof(x_strValue2.AfterFirst(':')) )
+				return -1;
+			else
+				return 0;
+			
+			
+		}
+		
+	}
+	else 
+	{
+		if (iColumnCompareType == 3) // FIELD_SCALE_TYPE
+		{
+			wxLogDebug(_T("Compare x1 = %s, x2= %s"),x_strValue1.AfterFirst(':').c_str(), x_strValue2.AfterFirst(':').c_str() );
+			
+			if( wxAtof(x_strValue1.AfterFirst(':')) > wxAtof(x_strValue2.AfterFirst(':')))
+				return -1;
+			else if( wxAtof(x_strValue1.AfterFirst(':')) < wxAtof(x_strValue2.AfterFirst(':')) )
+				return 1;
+			else
+				return 0;
+		}
+		
+	}
+	
+	// if we sort other columns
+	return ListGenReport::Compare(iColumnCompareType, x_strValue1, x_strValue2, bAscending);
+	
+	
+}
 
 
 void ObjectDefinitionList::SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq)

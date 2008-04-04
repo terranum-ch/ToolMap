@@ -44,6 +44,15 @@ wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
 class ListGenMenu; // forward declaration
 class ListGenDialog; // forward declaration
 
+
+enum LIST_FIELD_TYPE
+{
+	FIELD_STRING = 0,
+	FIELD_NUMBER = 1,
+	FIELD_DATE = 2
+};
+
+
 /*******************************************************//**
  @brief Manage a report list
  @details This class is derived from wxListCtrl and is mainly 
@@ -72,6 +81,14 @@ class ListGenReport : public wxListCtrl
 		void OnInit();
 		
 	public:
+		
+		void SortListItem(int x_col, int low , int high , int typecol,bool bAscending=TRUE);
+		
+		void SwapRow( int x_row1, int x_row2 );
+		
+		virtual int Compare( int iColumnCompareType, const wxString
+					&x_strValue1,  const wxString &x_strValue2, bool bAscending );
+		
 		/*********************************************//**
 		 @brief Constructor for derived class
 		 @details This is the basic constructor mainly used
@@ -329,6 +346,7 @@ public:
 	
 	
 	void SetDialog (wxDialog * pDialog) {m_pDialog = pDialog;}
+	
 	
 	void AddItem ();
 	void DeleteItem();

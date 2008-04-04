@@ -54,6 +54,24 @@ class DataBaseTM;
 #define SYMBOL_PROJECTPROPERTIESDLG_POSITION wxDefaultPosition
 
 
+/********************* ENUMERATION FOR ORDER OPTIONS ************************/
+// this is used in the wxChoice
+enum PRJPROPERTIES_SCALE_ORDER
+{
+	SCALE_ORDER_USER = 0,
+	SCALE_ORDER_ASCENDING,
+	SCALE_ORDER_DESCENDING
+};
+
+const wxString PRJPROPERTIES_SCALE_ORDER_STRING [] =
+{
+	_("User defined"),
+	_("Sort ascending"),
+	_("Sort descending")
+};
+
+
+
 class ProjectPropertiesDLG: public wxDialog
 {   
 	DataBaseTM * m_DBHandler;
@@ -63,6 +81,7 @@ class ProjectPropertiesDLG: public wxDialog
 	void OnSaveButton (wxCommandEvent & event);
 	void OnAddScaleButton (wxCommandEvent & event);
 	void OnRemoveScaleButton (wxCommandEvent & event);
+	void OnChooseScaleOrder (wxCommandEvent & event);
 	
 	
 	// controls
@@ -107,6 +126,7 @@ public:
 
 
 
+
 class ScaleList : public ListGenReportWithDialog
 	{
 	private:
@@ -137,6 +157,10 @@ class ScaleList : public ListGenReportWithDialog
 		
 		/// Destructor
 		~ScaleList(); 
+		
+		// specific compare function for dealing with scales
+		virtual int Compare( int iColumnCompareType, const wxString
+							&x_strValue1,  const wxString &x_strValue2, bool bAsending );
 		
 		// pass pointer to ctrls to the list
 		void SetListCtrls (wxChoice * orderchoice = NULL){m_ChoiceOrder =  orderchoice;}
