@@ -84,6 +84,7 @@
 #include "../gui/main_panel.h"
 #include "../gui/projectnewexist_dlg.h"
 #include "projectmanager.h"
+#include <wx/fileconf.h>		// for using file configuration even on windows
 
 
 //// temp for testing 
@@ -100,7 +101,7 @@ class MenuManager;
 #define ID_MENU_NEW_PRJ_EMPTY		10300
 #define ID_MENU_NEW_PRJ_EXISTING	10301
 #define ID_MENU_OPEN_PRJ			10302
-#define ID_MENU3					10303
+#define ID_MENU_RECENT				10303
 #define ID_MENU_BACKUP_PRJ			10304
 #define ID_MENU_RESTORE_PRJ			10305
 #define ID_MENU_EXPORT			10306
@@ -218,6 +219,7 @@ public:
 private:
 	//PrjDefMemManage m_PrjDefinition;
 	//DataBaseTM * m_Database;
+	wxFileConfig * m_pConfig;
 	
 	wxAuiManager * m_AuiManager;
 	AttribObjType_PANEL * m_AttribObjPanel;
@@ -231,6 +233,7 @@ private:
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
 	void OnOpenProject (wxCommandEvent & event);
+	void OnOpenRecentProject (wxCommandEvent & event);
 	void OnEditProjectObjects (wxCommandEvent & event);
 	void OnEditProjectSettings (wxCommandEvent & event);
 	void OnNewProjectExisting (wxCommandEvent & event);

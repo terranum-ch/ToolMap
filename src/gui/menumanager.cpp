@@ -33,11 +33,16 @@ IMPLEMENT_CLASS(MenuManager, wxObject);
  @author Lucien Schreiber (c) CREALP 2007
  @date 12 March 2008
  *******************************************************************************/
-MenuManager::MenuManager(wxMenuBar * menubar)
+MenuManager::MenuManager(wxMenuBar * menubar, wxFileConfig * configfile)
 {
 	m_MenuStatus = MENU_DB_CLOSED;
 	m_MenuBar = menubar;
 	bMenu_DB_IsOpen = FALSE;
+	m_pFilesHistory = NULL;
+	m_pConfig = configfile;
+	
+	// prepare for recent documents
+	InitializeRecentFilesHistory();
 }
 
 /***************************************************************************//**
@@ -47,7 +52,7 @@ MenuManager::MenuManager(wxMenuBar * menubar)
  *******************************************************************************/
 MenuManager::~MenuManager()
 {
-	
+	TerminateRecentFilesHistory();
 }
 
 
@@ -93,4 +98,116 @@ void MenuManager::UpdateMenuProject()
 	}
 
 }
+
+
+/***************************************************************************//**
+ @brief Init the Recent files
+ @details This function search for the #ID_MENU_RECENT menu and set it as the
+ menu for recent files
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 April 2008
+ *******************************************************************************/
+void MenuManager::InitializeRecentFilesHistory()
+{
+	TerminateRecentFilesHistory();
+	
+	if (m_MenuBar)
+	{
+		wxMenuItem * miFound = m_MenuBar->FindItem(ID_MENU_RECENT);
+		if (miFound->IsSubMenu())
+		{
+			wxMenu * menu = miFound->GetSubMenu();
+			if (menu)
+			{
+				m_pFilesHistory = new wxFileHistory(5);
+				m_pFilesHistory->Load(*m_pConfig);
+				m_pFilesHistory->UseMenu(menu);
+				m_pFilesHistory->AddFilesToMenu();
+	
+			}
+			
+		}
+		
+	}
+	
+}
+
+
+/***************************************************************************//**
+ @brief Uninit the Recent files
+ @details This function save the actual File history on the disk and delete the
+ file history object
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 April 2008
+ *******************************************************************************/
+void MenuManager::TerminateRecentFilesHistory()
+{
+	// save the recent to the config file and delete 
+	// the object.
+	
+	if (m_pFilesHistory)
+    {
+
+		m_pFilesHistory->Save(*m_pConfig);
+
+		delete m_pFilesHistory;
+		m_pFilesHistory = 0;
+	}
+	
+}
+
+
+/***************************************************************************//**
+ @brief Add a path to the recent file menu
+ @details Call this function for adding a recent path to the Recent menu
+ @param spath a wxString containing the path we want to store into the recent
+ files
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 April 2008
+ *******************************************************************************/
+void MenuManager::AddFileToRecent (const wxString & spath)
+{
+	if (m_pFilesHistory)
+	{
+		m_pFilesHistory->AddFileToHistory(spath);
+	}
+	
+}
+
+
+/***************************************************************************//**
+ @brief Get a path from the recent file menu
+ @details Call this function for getting the path linked to an Menu event. 
+ Pay
+ attention fileid is an index and not the Menu ID sending the event see code
+ behind :
+ @code ...
+ MenuManager * m_MManager
+ m_MManager->GetRecentFile(myPath, event.GetId() - wxID_FILE1);
+ ...
+ @endcode
+ @param filepath wxString filled with filepath if funtion return TRUE otherwise
+ unchanged
+ @param fileid the index of the item we want to retrieve from the file history
+ @param bool Return true if an item was found in the file history and FALSE
+ otherwise
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 April 2008
+ *******************************************************************************/
+bool MenuManager::GetRecentFile (wxString & filepath, int fileid)
+{
+	
+	if (m_pFilesHistory)
+	{
+		filepath = m_pFilesHistory->GetHistoryFile(fileid);
+		if (!filepath.IsEmpty())
+		{
+			return true;
+		}
+		wxLogError(_T("Recent path is empty"));
+		
+	}
+	return false;
+}
+
 
