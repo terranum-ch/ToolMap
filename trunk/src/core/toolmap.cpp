@@ -76,6 +76,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
 	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
+	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 END_EVENT_TABLE()
@@ -146,8 +147,10 @@ void ToolMapFrame::PostInit()
 	
 	m_PManager = new ProjectManager(this);
 	
+	m_pConfig = new wxFileConfig();
+	
 	// init the menu manager 
-	m_MManager = new MenuManager(GetMenuBar());
+	m_MManager = new MenuManager(GetMenuBar(), m_pConfig);
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 
@@ -170,6 +173,10 @@ ToolMapFrame::~ToolMapFrame()
 	
 	// delete the menu manager
 	delete m_MManager;
+	
+	// delete the config file
+	
+	delete m_pConfig;
 }
 
 
@@ -196,7 +203,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
     itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open project...\tCtrl-O"), _T(""), wxITEM_NORMAL);
     wxMenu* itemMenu7 = new wxMenu;
-    itemMenu2->Append(ID_MENU3, _("Recent"), itemMenu7);
+    itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_BACKUP_PRJ, _("Bac&kup project"), _T(""), wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_RESTORE_PRJ, _("Restore project..."), _T(""), wxITEM_NORMAL);
@@ -379,6 +386,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			
 			// updates the menu using the menu manager
 			m_MManager->SetStatus(MENU_DB_OPENED);
+			m_MManager->AddFileToRecent(myDirDLG->GetPath());
 		}
 		else
 		{
@@ -395,6 +403,34 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		}
 	}
 	delete myDirDLG;
+}
+
+
+/***************************************************************************//**
+ @brief Open file based on recent
+ @details Event function called when user try to open a file from the recent
+ menu.
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 April 2008
+ *******************************************************************************/
+void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
+{
+	wxString myPath = _T("");
+	
+	// get the file to open (the one clicked...)
+	if (m_MManager->GetRecentFile(myPath, event.GetId() - wxID_FILE1))
+	{
+		if (m_PManager->OpenProject(myPath))
+		{
+			// If we can open the project,set the name in the program bar.
+			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+			SetTitle(myProgName);
+			
+			// updates the menu using the menu manager
+			m_MManager->SetStatus(MENU_DB_OPENED);
+		}
+	}
+	
 }
 
 

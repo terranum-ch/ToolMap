@@ -38,6 +38,8 @@
 #endif
 
 #include "../core/toolmap.h"
+#include <wx/docview.h>			// for recent documents
+#include <wx/fileconf.h>		// for using file config even on windows 
 
 
 enum MENUSTATUS
@@ -62,10 +64,14 @@ class MenuManager : public wxObject
 	private:
 		int m_MenuStatus;
 		wxMenuBar * m_MenuBar;
-		
+				
 		// store internally the status of each option
 		bool bMenu_DB_IsOpen;
 		
+		// members for recent files
+		wxFileHistory * m_pFilesHistory;
+		wxFileConfig * m_pConfig;
+
 		
 		// functions used internally for uptading menus items
 		void UpdateMenuProject();
@@ -73,12 +79,17 @@ class MenuManager : public wxObject
 		DECLARE_CLASS(MenuManager);
 		
 	public:
-		MenuManager(wxMenuBar * menubar);
+		MenuManager(wxMenuBar * menubar, wxFileConfig * configfile);
 		~MenuManager();
 		
 		void SetStatus(MENUSTATUS flags);
 		void UpdateMenusStatus();
 		
+		// deals with recent files
+		void InitializeRecentFilesHistory();
+		void TerminateRecentFilesHistory();
+		void AddFileToRecent (const wxString & spath);
+		bool GetRecentFile (wxString & filepath, int fileid);
 	};
 
 
