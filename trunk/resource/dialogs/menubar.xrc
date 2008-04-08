@@ -11,80 +11,182 @@
             <object class="sizeritem">
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
-                <object class="wxStaticBoxSizer" name="wxID_ANY">
-                    <orient>wxVERTICAL</orient>
-                    <label>Project properties</label>
-                    <object class="sizeritem">
-                        <flag>wxGROW|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxFlexGridSizer">
-                            <cols>2</cols>
-                            <rows>4</rows>
-                            <vgap>0</vgap>
-                            <hgap>0</hgap>
-                            <growablecols>1</growablecols>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxStaticText" name="wxID_STATIC">
-                                    <label>Project path :</label>
+                <option>1</option>
+                <object class="wxNotebook" name="ID_DLGPD_NOTEBOOK">
+                    <style>wxBK_DEFAULT</style>
+                    <object class="notebookpage">
+                        <label>Project properties</label>
+                        <object class="wxPanel" name="ID_DLGPD_PANEL_PROJ">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxFlexGridSizer">
+                                        <cols>2</cols>
+                                        <rows>4</rows>
+                                        <vgap>0</vgap>
+                                        <hgap>0</hgap>
+                                        <growablecols>1</growablecols>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <label>Project path :</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxTextCtrl" name="ID_DLGPD_PROJ_PATH" subclass="wxDirPickerCtrlBest">
+                                                <size>300,-1</size>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <label>Project name :</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxTextCtrl" name="ID_DLGPD_PROJ_NAME">
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <label>Units</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxChoice" name="ID_DLGPD_PROJ_UNIT">
+                                                <content>
+                                                    <item>Meters</item>
+                                                    <item>Kilometers</item>
+                                                    <item>Lat / Long</item>
+                                                </content>
+                                                <selection>0</selection>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <label>Projection :</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxChoice" name="ID_DLGPD_PROJECTION">
+                                                <content>
+                                                    <item>No projection</item>
+                                                    <item>Swiss projection</item>
+                                                </content>
+                                                <selection>0</selection>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>Summary</label>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALL</flag>
+                                            <border>5</border>
+                                            <option>1</option>
+                                            <object class="wxFlexGridSizer">
+                                                <cols>2</cols>
+                                                <rows>2</rows>
+                                                <vgap>0</vgap>
+                                                <hgap>0</hgap>
+                                                <growablecols>1</growablecols>
+                                                <growablerows>1</growablerows>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Author :</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxTextCtrl" name="ID_DLGPD_PROJ_AUTHOR">
+                                                        <maxlength>254</maxlength>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Comments :</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxTextCtrl" name="ID_DLGPD_PROJ_COMMENT">
+                                                        <style>wxTE_MULTILINE</style>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
                                 </object>
                             </object>
-                            <object class="sizeritem">
-                                <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxTextCtrl" name="ID_DLGPD_PROJ_PATH">
-                                    <size>300,-1</size>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Spatial model</label>
+                        <object class="wxPanel" name="ID_DLGPD_PANEL_SPAT">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="ListParam" name="ID_DLGPD_SPAT_MDL_LIST">
+                                        <size>100,200</size>
+                                        <style>wxLC_REPORT</style>
+                                    </object>
                                 </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxStaticText" name="wxID_STATIC">
-                                    <label>Project name :</label>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxTextCtrl" name="ID_DLGPD_PROJ_NAME">
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxStaticText" name="wxID_STATIC">
-                                    <label>Units</label>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxChoice" name="ID_DLGPD_PROJ_UNIT">
-                                    <content>
-                                        <item>Meters</item>
-                                        <item>Kilometers</item>
-                                        <item>Lat / Long</item>
-                                    </content>
-                                    <selection>0</selection>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxStaticText" name="wxID_STATIC">
-                                    <label>Projection :</label>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxChoice" name="ID_DLGPD_PROJ_PROJECTION">
-                                    <content>
-                                        <item>No projection</item>
-                                        <item>Swiss projection</item>
-                                    </content>
-                                    <selection>0</selection>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxToggleButton" name="ID_DLGPD_SPAT_MDL_ADD">
+                                                <size>40,-1</size>
+                                                <label>+</label>
+                                                <checked>0</checked>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxToggleButton" name="ID_DLGPD_SPAT_MDL_DEL">
+                                                <size>40,-1</size>
+                                                <label>-</label>
+                                                <checked>0</checked>
+                                            </object>
+                                        </object>
+                                    </object>
                                 </object>
                             </object>
                         </object>
@@ -94,44 +196,8 @@
             <object class="sizeritem">
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
-                <option>1</option>
-                <object class="wxStaticBoxSizer" name="wxID_ANY">
-                    <orient>wxVERTICAL</orient>
-                    <label>Define your spatial model</label>
-                    <object class="sizeritem">
-                        <flag>wxGROW|wxALL</flag>
-                        <border>5</border>
-                        <option>1</option>
-                        <object class="ListParam" name="ID_DLGPD_SPAT_MODEL_LIST">
-                            <size>100,200</size>
-                            <style>wxLC_REPORT</style>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <flag>wxALIGN_LEFT|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxBoxSizer">
-                            <orient>wxHORIZONTAL</orient>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
-                                <border>5</border>
-                                <object class="wxToggleButton" name="ID_DLGPD_SPAT_MDL_ADD">
-                                    <size>40,-1</size>
-                                    <label>+</label>
-                                    <checked>0</checked>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
-                                <border>5</border>
-                                <object class="wxToggleButton" name="ID_DLJPD_SPAT_MDL_DEL">
-                                    <size>40,-1</size>
-                                    <label>-</label>
-                                    <checked>0</checked>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
+                <object class="wxStaticLine" name="wxID_STATIC">
+                    <style>wxLI_HORIZONTAL</style>
                 </object>
             </object>
             <object class="sizeritem">

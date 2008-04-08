@@ -117,88 +117,122 @@ ProjectDefDLG::~ProjectDefDLG()
 
 void ProjectDefDLG::Init()
 {
+	m_DlgPd_Panel_Proj = NULL;
     m_DlgPD_Proj_Path = NULL;
     m_DlgPd_Proj_Name = NULL;
     m_DlgPd_Proj_Unit = NULL;
     m_DlgPd_Proj_Projection = NULL;
+    m_DlgPd_Proj_Author = NULL;
+    m_DlgPd_Proj_Comment = NULL;
+    m_DlgPd_Panel_Spatial = NULL;
     m_DlgPd_Stat_Model_List = NULL;
-	m_DlgPd_Button_Ok = NULL;
-	
+    m_DlgPd_Spat_Mdl_Add = NULL;
+    m_DljPd_Spat_Mdl_Del = NULL;
+    m_DlgPd_Button_Ok = NULL;
 }
 
 
 
 void ProjectDefDLG::CreateControls()
 {    
-    ProjectDefDLG* itemDialog1 = this;
-
+	ProjectDefDLG* itemDialog1 = this;
+	
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     itemDialog1->SetSizer(itemBoxSizer2);
-
-    wxStaticBox* itemStaticBoxSizer3Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Project properties"));
-    wxStaticBoxSizer* itemStaticBoxSizer3 = new wxStaticBoxSizer(itemStaticBoxSizer3Static, wxVERTICAL);
-    itemBoxSizer2->Add(itemStaticBoxSizer3, 0, wxGROW|wxALL, 5);
-
-    wxFlexGridSizer* itemFlexGridSizer4 = new wxFlexGridSizer(4, 2, 0, 0);
-    itemFlexGridSizer4->AddGrowableCol(1);
-    itemStaticBoxSizer3->Add(itemFlexGridSizer4, 0, wxGROW|wxALL, 5);
-
-    wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Project path :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
 	
-	m_DlgPD_Proj_Path = new wxDirPickerCtrlBest(itemDialog1, ID_DLGPD_PROJ_PATH, wxEmptyString,
+    wxNotebook* itemNotebook3 = new wxNotebook( itemDialog1, ID_DLGPD_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+	
+    m_DlgPd_Panel_Proj = new wxPanel( itemNotebook3, ID_DLGPD_PANEL_PROJ, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
+    m_DlgPd_Panel_Proj->SetSizer(itemBoxSizer5);
+	
+    wxFlexGridSizer* itemFlexGridSizer6 = new wxFlexGridSizer(4, 2, 0, 0);
+    itemFlexGridSizer6->AddGrowableCol(1);
+    itemBoxSizer5->Add(itemFlexGridSizer6, 0, wxGROW|wxALL, 5);
+    wxStaticText* itemStaticText7 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Project path :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer6->Add(itemStaticText7, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	m_DlgPD_Proj_Path = new wxDirPickerCtrlBest(m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PATH, wxEmptyString,
 												_("Select the database folder")); 
-	itemFlexGridSizer4->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer4->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_DlgPd_Proj_Name = new wxTextCtrl( itemDialog1, ID_DLGPD_PROJ_NAME, _T(""), wxDefaultPosition, wxSize(300,-1), 0 );
-    itemFlexGridSizer4->Add(m_DlgPd_Proj_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Units :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer4->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_DlgPd_Proj_Unit = new wxChoice( itemDialog1, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
-    m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
-    itemFlexGridSizer4->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Projection :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer4->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_DlgPd_Proj_Projection = new wxChoice( itemDialog1, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize,PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
-	m_DlgPd_Proj_Projection->SetSelection(PROJ_NOPROJ);
-    itemFlexGridSizer4->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Define your spatial model"));
-    wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
-    itemBoxSizer2->Add(itemStaticBoxSizer16, 1, wxGROW|wxALL, 5);
-
-    m_DlgPd_Stat_Model_List = new ProjectDefList( itemDialog1, ID_DLGPD_SPAT_MODEL_LIST, wxSize(-1,150),this);
-    itemStaticBoxSizer16->Add(m_DlgPd_Stat_Model_List, 1, wxGROW|wxALL, 5);
-
-    wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
-    itemStaticBoxSizer16->Add(itemBoxSizer18, 0, wxALIGN_LEFT|wxALL, 5);
-
-    wxFlatButton * myFlatButton = new wxFlatButton(itemDialog1, ID_DLGPD_SPAT_MDL_ADD, wxFLATBUTTON_TEXT_ADD);
-	itemBoxSizer18->Add(myFlatButton, 0,wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-
+    itemFlexGridSizer6->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL,0);
 	
-	wxFlatButton * myFlatButton2 = new wxFlatButton(itemDialog1, ID_DLGPD_SPAT_MDL_DEL, wxFLATBUTTON_TEXT_REMOVE);
-    itemBoxSizer18->Add(myFlatButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+    wxStaticText* itemStaticText9 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer6->Add(itemStaticText9, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_DlgPd_Proj_Name = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_NAME, _T(""), wxDefaultPosition, wxSize(300,-1), 0 );
+    itemFlexGridSizer6->Add(m_DlgPd_Proj_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText11 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Units"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer6->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+ 	m_DlgPd_Proj_Unit = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
+	m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
+	itemFlexGridSizer6->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText13 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Projection :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer6->Add(itemStaticText13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	m_DlgPd_Proj_Projection = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize,PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
+	m_DlgPd_Proj_Projection->SetSelection(PROJ_NOPROJ);
+    itemFlexGridSizer6->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(m_DlgPd_Panel_Proj, wxID_ANY, _("Summary"));
+    wxStaticBoxSizer* itemStaticBoxSizer15 = new wxStaticBoxSizer(itemStaticBoxSizer15Static, wxVERTICAL);
+    itemBoxSizer5->Add(itemStaticBoxSizer15, 1, wxGROW|wxALL, 5);
+    wxFlexGridSizer* itemFlexGridSizer16 = new wxFlexGridSizer(2, 2, 0, 0);
+    itemFlexGridSizer16->AddGrowableRow(1);
+    itemFlexGridSizer16->AddGrowableCol(1);
+    itemStaticBoxSizer15->Add(itemFlexGridSizer16, 1, wxGROW|wxALL, 5);
+    wxStaticText* itemStaticText17 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Author :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer16->Add(itemStaticText17, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_DlgPd_Proj_Author = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_AUTHOR, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgPd_Proj_Author->SetMaxLength(254);
+    itemFlexGridSizer16->Add(m_DlgPd_Proj_Author, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText19 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Comments :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer16->Add(itemStaticText19, 0, wxALIGN_LEFT|wxALIGN_TOP|wxALL, 5);
+	
+    m_DlgPd_Proj_Comment = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_COMMENT, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
+    itemFlexGridSizer16->Add(m_DlgPd_Proj_Comment, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    itemNotebook3->AddPage(m_DlgPd_Panel_Proj, _("Project properties"));
+	
+    m_DlgPd_Panel_Spatial = new wxPanel( itemNotebook3, ID_DLGPD_PANEL_SPAT, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxVERTICAL);
+    m_DlgPd_Panel_Spatial->SetSizer(itemBoxSizer22);
 
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer21 = new wxStdDialogButtonSizer;
-
-    itemBoxSizer2->Add(itemStdDialogButtonSizer21, 0, wxALIGN_RIGHT|wxALL, 5);
-    
-	m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Create new project"), wxDefaultPosition, wxDefaultSize, 0 );
- 	itemStdDialogButtonSizer21->AddButton(m_DlgPd_Button_Ok);
-
-    wxButton* itemButton23 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer21->AddButton(itemButton23);
-
-    itemStdDialogButtonSizer21->Realize();
+	m_DlgPd_Stat_Model_List = new ProjectDefList( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MODEL_LIST, wxSize(-1,150),this);
+    itemBoxSizer22->Add(m_DlgPd_Stat_Model_List, 1, wxGROW|wxALL, 5);
+	
+    wxBoxSizer* itemBoxSizer24 = new wxBoxSizer(wxHORIZONTAL);
+    itemBoxSizer22->Add(itemBoxSizer24, 0, wxGROW|wxALL, 5);
+    m_DlgPd_Spat_Mdl_Add = new wxToggleButton( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MDL_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    m_DlgPd_Spat_Mdl_Add->SetValue(false);
+    itemBoxSizer24->Add(m_DlgPd_Spat_Mdl_Add, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+    m_DljPd_Spat_Mdl_Del = new wxToggleButton( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MDL_DEL, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
+    m_DljPd_Spat_Mdl_Del->SetValue(false);
+    itemBoxSizer24->Add(m_DljPd_Spat_Mdl_Del, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+    itemNotebook3->AddPage(m_DlgPd_Panel_Spatial, _("Spatial model"));
+	
+    itemBoxSizer2->Add(itemNotebook3, 1, wxGROW|wxALL, 5);
+	
+    wxStaticLine* itemStaticLine27 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+    itemBoxSizer2->Add(itemStaticLine27, 0, wxGROW|wxALL, 5);
+	
+    wxStdDialogButtonSizer* itemStdDialogButtonSizer28 = new wxStdDialogButtonSizer;
+	
+    itemBoxSizer2->Add(itemStdDialogButtonSizer28, 0, wxALIGN_RIGHT|wxALL, 5);
+    m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Create new project"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer28->AddButton(m_DlgPd_Button_Ok);
+	
+    wxButton* itemButton30 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer28->AddButton(itemButton30);
+	
+    itemStdDialogButtonSizer28->Realize();
+		
 }
 
 
