@@ -19,8 +19,10 @@
  */
 
 ////@begin includes
+#include "wx/notebook.h"
 #include "wx/listctrl.h"
 #include "wx/tglbtn.h"
+#include "wx/statline.h"
 ////@end includes
 
 /*!
@@ -28,6 +30,7 @@
  */
 
 ////@begin forward declarations
+class wxDirPickerCtrlBest;
 class ListParam;
 class wxToggleButton;
 ////@end forward declarations
@@ -38,13 +41,18 @@ class wxToggleButton;
 
 ////@begin control identifiers
 #define ID_DLGPD 10000
-#define ID_DLGPD_PROJ_PATH 10001
-#define ID_DLGPD_PROJ_NAME 10003
-#define ID_DLGPD_PROJ_UNIT 10156
-#define ID_DLGPD_PROJ_PROJECTION 10119
-#define ID_DLGPD_SPAT_MODEL_LIST 10004
-#define ID_DLGPD_SPAT_MDL_ADD 10219
-#define ID_DLJPD_SPAT_MDL_DEL 10006
+#define ID_DLGPD_NOTEBOOK 10262
+#define ID_DLGPD_PANEL_PROJ 10263
+#define ID_DLGPD_PROJ_PATH 10267
+#define ID_DLGPD_PROJ_NAME 10268
+#define ID_DLGPD_PROJ_UNIT 10269
+#define ID_DLGPD_PROJECTION 10270
+#define ID_DLGPD_PROJ_AUTHOR 10219
+#define ID_DLGPD_PROJ_COMMENT 10273
+#define ID_DLGPD_PANEL_SPAT 10119
+#define ID_DLGPD_SPAT_MDL_LIST 10156
+#define ID_DLGPD_SPAT_MDL_ADD 10271
+#define ID_DLGPD_SPAT_MDL_DEL 10272
 #define SYMBOL_PROJECTDEFDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFDLG_TITLE _("Project Definition")
 #define SYMBOL_PROJECTDEFDLG_IDNAME ID_DLGPD
@@ -96,13 +104,18 @@ public:
     static bool ShowToolTips();
 
 ////@begin ProjectDefDLG member variables
-    wxTextCtrl* m_DlgPD_Proj_Path;
+    wxPanel* m_DlgPd_Panel_Proj;
+    wxDirPickerCtrlBest* m_DlgPD_Proj_Path;
     wxTextCtrl* m_DlgPd_Proj_Name;
     wxChoice* m_DlgPd_Proj_Unit;
     wxChoice* m_DlgPd_Proj_Projection;
+    wxTextCtrl* m_DlgPd_Proj_Author;
+    wxTextCtrl* m_DlgPd_Proj_Comment;
+    wxPanel* m_DlgPd_Panel_Spatial;
     ListParam* m_DlgPd_Stat_Model_List;
     wxToggleButton* m_DlgPd_Spat_Mdl_Add;
     wxToggleButton* m_DljPd_Spat_Mdl_Del;
+    wxButton* m_DlgPd_Button_Ok;
 ////@end ProjectDefDLG member variables
 };
 
