@@ -283,6 +283,7 @@ protected:
 	// for storing restults 
 	MYSQL_RES * pResults;
 	int m_resultNumber;
+	long m_resultCount;
 	
 	// storing database path and name.
 	wxString m_DBPath;

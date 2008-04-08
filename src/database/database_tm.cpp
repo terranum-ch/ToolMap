@@ -189,16 +189,18 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("PRIMARY KEY (`ZOOM_ID`));")
 	
 	_T("CREATE  TABLE `PRJ_SETTINGS` (")
-	_T(" `SETTING_DBK` INT NOT NULL AUTO_INCREMENT ,")
-	_T(" `PRJ_UNIT` VARCHAR(10) NOT NULL ,")
-	_T(" `PRJ_PROJECTION` VARCHAR(45) NOT NULL ,")
-	_T(" `PRJ_NAME` VARCHAR(45) NOT NULL ,")
-	_T(" `PRJ_VERSION` INT NOT NULL ,")
-	_T(" `PRJ_EXPORT_PATH` VARCHAR(255) NULL ,")
-	_T(" `PRJ_EXPORT_TYPE` INT NULL DEFAULT 0 ,")
-	_T(" `PRJ_BACKUP_PATH` VARCHAR(255) NULL ,")
+	_T("  `SETTING_DBK` INT NOT NULL AUTO_INCREMENT ,")
+	_T("  `PRJ_UNIT` VARCHAR(10) NOT NULL ,")
+	_T("  `PRJ_PROJECTION` VARCHAR(45) NOT NULL ,")
+	_T("  `PRJ_NAME` VARCHAR(45) NOT NULL ,")
+	_T("  `PRJ_VERSION` INT NOT NULL ,")
+	_T("  `PRJ_EXPORT_PATH` VARCHAR(255) NULL ,")
+	_T("  `PRJ_EXPORT_TYPE` INT NULL DEFAULT 0 ,")
+	_T("  `PRJ_BACKUP_PATH` VARCHAR(255) NULL ,")
+	_T("  `PRJ_AUTHORS` VARCHAR(255) NULL ,")
+	_T("  `PRJ_SUMMARY` TEXT NULL ,")
 	_T("  PRIMARY KEY (`SETTING_DBK`) );");
-
+	
 	
 	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	
@@ -907,14 +909,18 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 	wxArrayString myThematicResult;
 	wxString myTempResult;
 	
-	wxString sSentence = wxString::Format(_T("SELECT (LAYER_NAME) FROM %s WHERE TYPE_CD = %d"),
+	wxString sSentence = wxString::Format(_T("SELECT LAYER_NAME FROM %s WHERE TYPE_CD = %d"),
 										  TABLE_NAME_LAYERS.c_str(), ilayertype);
+	
 	if (DataBaseQuery(sSentence))
 	{
+		wxLogDebug(_T("Number of results found : %d"), DatabaseGetCountResults());	
+		
 		while (DataBaseGetNextResult(myTempResult))
 		{
 			myThematicResult.Add(myTempResult);
-		} 
+		}
+
 	}
 	else 
 	{

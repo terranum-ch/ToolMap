@@ -276,6 +276,7 @@ wxArrayString DataBase::DataBaseGetNextResult()
 		{
 			// clean
 			m_resultNumber=0;
+			m_resultCount =0;
 			mysql_free_result(pResults);
 			pResults = NULL;
 		}		
@@ -296,10 +297,11 @@ bool DataBase::DataBaseGetNextResult(wxString & result)
 		{
 			result = wxString ( record[0], wxConvUTF8);
 			// if only one result clean imediately
-			if (m_resultNumber == 1)
+			if (m_resultCount == 1)
 			{
 				// clean
 				m_resultNumber=0;
+				m_resultCount=0;
 				mysql_free_result(pResults);
 				pResults = NULL;
 			}
@@ -310,6 +312,7 @@ bool DataBase::DataBaseGetNextResult(wxString & result)
 		{
 			// clean
 			m_resultNumber=0;
+			m_resultCount=0;
 			mysql_free_result(pResults);
 			pResults = NULL;
 		}		
@@ -332,6 +335,7 @@ unsigned long * DataBase::DataBaseGetNextRowResult (MYSQL_ROW & row)
 		{
 			// clean
 			m_resultNumber=0;
+			m_resultCount=0;
 			mysql_free_result(pResults);
 			pResults = NULL;
 		}
@@ -390,6 +394,7 @@ void DataBase::DataBaseGetNextResultAsLong(wxArrayLong & resultArray)
 		{
 			// clean
 			m_resultNumber=0;
+			m_resultCount=0;
 			mysql_free_result(pResults);
 			pResults = NULL;
 		}		
@@ -415,6 +420,7 @@ long DataBase::DataBaseGetNextResultAsLong()
 		{
 			// clean
 			m_resultNumber=0;
+			m_resultCount=0;
 			mysql_free_result(pResults);
 			pResults = NULL;
 		}		
@@ -441,6 +447,7 @@ int DataBase::DataBaseGetResultAsInt(bool ClearResultDirect)
 			{
 				// clean
 				m_resultNumber=0;
+				m_resultCount=0;
 				mysql_free_result(pResults);
 				pResults = NULL;
 			}
@@ -449,6 +456,7 @@ int DataBase::DataBaseGetResultAsInt(bool ClearResultDirect)
 		{
 			// clean
 			m_resultNumber=0;
+			m_resultCount=0;
 			mysql_free_result(pResults);
 			pResults = NULL;
 		}		
@@ -512,6 +520,7 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 	{
 		pResults = mysql_store_result(pMySQL);
 		m_resultNumber = mysql_field_count(pMySQL);
+		m_resultCount = DatabaseGetCountResults();
 		return TRUE;
 	}
 	return FALSE;
