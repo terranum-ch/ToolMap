@@ -89,6 +89,7 @@ class MenuManager : public wxObject
 		void InitializeRecentFilesHistory();
 		void TerminateRecentFilesHistory();
 		void AddFileToRecent (const wxString & spath);
+		void RemoveFileFromRecent (int fileid);
 		bool GetRecentFile (wxString & filepath, int fileid);
 	};
 

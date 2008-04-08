@@ -176,6 +176,22 @@ void MenuManager::AddFileToRecent (const wxString & spath)
 
 
 /***************************************************************************//**
+ @brief Remove an item from the recent files menu
+ @details Remove the specified item from the recent files menu.
+ @param fileid index of element to remove
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 08 April 2008
+ *******************************************************************************/
+void MenuManager::RemoveFileFromRecent (int fileid)
+{
+	if(m_pFilesHistory)
+	{
+		m_pFilesHistory->RemoveFileFromHistory(fileid);
+	}
+}
+
+
+/***************************************************************************//**
  @brief Get a path from the recent file menu
  @details Call this function for getting the path linked to an Menu event. 
  Pay

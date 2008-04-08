@@ -429,6 +429,26 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 			// updates the menu using the menu manager
 			m_MManager->SetStatus(MENU_DB_OPENED);
 		}
+		else
+		{
+			wxString sMessage = _T("Unable to open the specified project.\n" 
+								   "The specified path doesen't exist or isn't\n"
+								   "a ToolMap project.\n\n"
+								   "This path is now removed from the file history.");
+			
+					
+			wxMessageBox(sMessage,_("Opening project error"), wxICON_ERROR | wxOK,this);
+			
+			// If we can't open the project,set the name in the program bar.
+			wxString myProgName = g_ProgName + SVN_VERSION;
+			SetTitle(myProgName);
+			
+			// remove the non valid history from the recent
+			m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
+			
+			// updates the menu using the menu manager
+			m_MManager->SetStatus(MENU_DB_CLOSED);
+		}
 	}
 	
 }
