@@ -45,18 +45,11 @@
 #define ID_DLGAFD_RESULT 10016
 #define ID_DLGAFD_ORIENTATION_FIELD 10118
 #define ID_DLGAFD_CONSTRAIN_VALUES 10050
-#define ID_DLGAFD_NOTEBOOK 10000
-#define ID_DLGAFD_PANEL_CODED_VALUES 10114
-#define ID_DLGAFD_CODED_VAL_LIST 10159
-#define ID_DLGAFD_DEFAULT_VAL 10228
-#define ID_DLGAFD_VAL_ADD 10217
-#define ID_DLGAFD_VAL_REMOVE 10215
-#define ID_DLGAFD_VAL_IMPORT 10216
-#define ID_DLGAFD_VAL_EXPORT 10218
-#define ID_DLGAFD_PANEL_RANGE 10017
-#define ID_DLGAFD_RANGE_DEFAULT 10018
-#define ID_DLGAFD_RANGE_MIN 10115
-#define ID_DLGAFD_RANGE_MAX 10116
+#define ID_DLGAFD_CODED_VAL_LIST 10274
+#define ID_DLGAFD_VAL_ADD 10276
+#define ID_DLGAFD_VAL_REMOVE 10277
+#define ID_DLGAFD_VAL_IMPORT 10278
+#define ID_DLGAFD_VAL_EXPORT 10279
 #define SYMBOL_PROJECTDEFFIELDDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFFIELDDLG_TITLE _("Attribute field definition")
 #define SYMBOL_PROJECTDEFFIELDDLG_IDNAME ID_DLGAFD
@@ -163,22 +156,16 @@ class ProjectDefFieldDlg: public wxDialog
 		virtual bool TransferDataFromWindow();
 		virtual bool TransferDataToWindow();
 		
-		////@begin ProjectDefFieldDlg member variables
+		
 		wxTextCtrl* m_DlgAFD_Field_Def;
+		wxChoice* m_DlgAFD_Field_Type;
 		wxSpinCtrl* m_DlgAFD_Field_Precision;
 		wxSpinCtrl* m_DlgAFD_Field_Scale;
 		wxTextCtrl* m_DlgAFD_Result;
-		wxNotebook* m_DlgAFD_Notebook;
-		wxPanel* m_DlgAFD_Panel_Coded_Values;
-		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
-		wxChoice* m_DlgAFD_Default_Val;
-		wxPanel* m_DlgAFD_Panel_Range;
-		wxTextCtrl* m_DlgAFD_Range_Default;
-		wxTextCtrl* m_DlgAFD_Range_Min;
-		wxTextCtrl* m_DlgAFD_Range_Max;
-		wxChoice * m_DlgAFD_Field_Type;
 		wxCheckBox* m_DlgAFD_Field_Orientation;
 		wxCheckBox* m_DlgAFD_Constrain_Values;
+		wxStaticBoxSizer* m_DlgAFD_Sizer_Constraint;
+		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
 		
 		
 	};

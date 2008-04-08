@@ -154,7 +154,15 @@ void ProjectDefDLG::CreateControls()
 	
 	m_DlgPD_Proj_Path = new wxDirPickerCtrlBest(m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PATH, wxEmptyString,
 												_("Select the database folder")); 
-    itemFlexGridSizer6->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL,5);
+    
+	///@bug alignement bug, only under mac ??
+	// error with mac... alignement bug ???
+#if defined(__WXMAC__)
+	itemFlexGridSizer6->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL,0);
+#else
+	itemFlexGridSizer6->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL,5);
+#endif
+	
 	
     wxStaticText* itemStaticText9 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer6->Add(itemStaticText9, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
