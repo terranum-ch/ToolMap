@@ -431,10 +431,9 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		}
 		else
 		{
-			wxString sMessage = _T("Unable to open the specified project.\n" 
-								   "The specified path doesen't exist or isn't\n"
-								   "a ToolMap project.\n\n"
-								   "This path is now removed from the file history.");
+			wxString sMessage = _("Unable to open the specified project.\n");
+			sMessage.Append(_("The specified path doesen't exist or isn't\na ToolMap project.\n\n"));
+			sMessage.Append( _( "This path is now removed from the file history."));
 			
 					
 			wxMessageBox(sMessage,_("Opening project error"), wxICON_ERROR | wxOK,this);
