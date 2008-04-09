@@ -434,7 +434,7 @@ bool ProjectDefFieldDlg::Create( wxWindow* parent, wxWindowID id, const wxString
     Centre();
 	
 	/// Set default behaviour for selection
-	FieldTextSelected();
+	//FieldTextSelected();
 	
 	
     return true;
@@ -473,7 +473,7 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	// before ?
 	wxASSERT (m_MemoryField != NULL);
 	
-	long lTempValue = 0;
+/*	long lTempValue = 0;
 	
 	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
 	m_MemoryField->m_FieldType = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
@@ -501,11 +501,11 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 			m_MemoryField->m_FieldRangeDefault = (int) lTempValue;
 		}
 		else // field constrain type coded value
-		{*/
+		{
 			// store the index of the selected item
 			//m_MemoryField->m_CodedDefaultIndex = m_DlgAFD_Default_Val->GetSelection();
 		//}
-	}
+	}*/
 	
 	
 	return TRUE;
@@ -519,7 +519,7 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 	// before ?
 	wxASSERT (m_MemoryField != NULL);
 	
-	wxArrayString myListValues;
+/*	wxArrayString myListValues;
 	
 	if (m_MemoryField != NULL)
 	{
@@ -556,7 +556,7 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 	{
 		GetSizer()->Fit(this);
 		GetSizer()->Layout();
-	}
+	}*/
 	return TRUE;
 }
 
@@ -566,7 +566,7 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
  */
 void ProjectDefFieldDlg::CreateControls()
 {    
-	ProjectDefFieldDlg* itemDialog1 = this;
+/*	ProjectDefFieldDlg* itemDialog1 = this;
 	
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     itemDialog1->SetSizer(itemBoxSizer2);
@@ -657,7 +657,190 @@ void ProjectDefFieldDlg::CreateControls()
     wxButton* itemButton28 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer26->AddButton(itemButton28);
 	
-    itemStdDialogButtonSizer26->Realize();
+    itemStdDialogButtonSizer26->Realize();*/
+	
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_statictext = new wxStaticText( this, wxID_ANY, wxT("Attribute name :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_statictext->Wrap( -1 );
+	bSizer3->Add( m_statictext, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_DlgAFD_Field_Def = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer3->Add( m_DlgAFD_Field_Def, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	bSizer2->Add( bSizer3, 0, wxEXPAND|wxLEFT|wxRIGHT, 5 );
+	
+	wxStaticBoxSizer* sbSizer12;
+	sbSizer12 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Attributes type and options") ), wxVERTICAL );
+	
+	m_DlgAFD_Choicebook = new wxChoicebook( this, ID_DLGAFD_DATA_TYPE, wxDefaultPosition, wxDefaultSize, wxCHB_DEFAULT );
+	m_panel5 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer6;
+	bSizer6 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer2;
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_panel5, wxID_ANY, wxT("Options") ), wxVERTICAL );
+	
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_staticText2 = new wxStaticText( m_panel5, wxID_ANY, wxT("Length :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2->Wrap( -1 );
+	bSizer5->Add( m_staticText2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_DlgAFD_Text_Length = new wxSpinCtrl( m_panel5, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000, 0 );
+	bSizer5->Add( m_DlgAFD_Text_Length, 1, wxALL, 5 );
+	
+	sbSizer2->Add( bSizer5, 0, wxEXPAND, 5 );
+	
+	bSizer6->Add( sbSizer2, 1, wxEXPAND, 5 );
+	
+	m_panel5->SetSizer( bSizer6 );
+	m_panel5->Layout();
+	bSizer6->Fit( m_panel5 );
+	m_DlgAFD_Choicebook->AddPage( m_panel5, wxT("TEXT"), false );
+	m_panel6 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer62;
+	bSizer62 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer22;
+	sbSizer22 = new wxStaticBoxSizer( new wxStaticBox( m_panel6, wxID_ANY, wxT("Options") ), wxVERTICAL );
+	
+	m_staticText11 = new wxStaticText( m_panel6, wxID_ANY, wxT("Integer fields may store numeric values :\n\nfrom -2147483648\nto 2147483647"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	m_staticText11->Wrap( -1 );
+	sbSizer22->Add( m_staticText11, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	m_DlgAFD_Orientation_Integer = new wxCheckBox( m_panel6, wxID_ANY, wxT("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
+	
+	sbSizer22->Add( m_DlgAFD_Orientation_Integer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	bSizer62->Add( sbSizer22, 1, wxEXPAND, 5 );
+	
+	m_panel6->SetSizer( bSizer62 );
+	m_panel6->Layout();
+	bSizer62->Fit( m_panel6 );
+	m_DlgAFD_Choicebook->AddPage( m_panel6, wxT("INTEGER"), false );
+	m_panel7 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer61;
+	bSizer61 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer21;
+	sbSizer21 = new wxStaticBoxSizer( new wxStaticBox( m_panel7, wxID_ANY, wxT("Options") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 3, 2, 0, 0 );
+	fgSizer1->AddGrowableCol( 1 );
+	fgSizer1->SetFlexibleDirection( wxBOTH );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	m_staticText6 = new wxStaticText( m_panel7, wxID_ANY, wxT("Field Precision :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText6->Wrap( -1 );
+	fgSizer1->Add( m_staticText6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_DlgAFD_Field_Precision = new wxSpinCtrl( m_panel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+	fgSizer1->Add( m_DlgAFD_Field_Precision, 0, wxALL|wxEXPAND, 5 );
+	
+	m_staticText7 = new wxStaticText( m_panel7, wxID_ANY, wxT("Field scale :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7->Wrap( -1 );
+	fgSizer1->Add( m_staticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_DlgAFD_Field_Scale = new wxSpinCtrl( m_panel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+	fgSizer1->Add( m_DlgAFD_Field_Scale, 0, wxALL|wxEXPAND, 5 );
+	
+	m_staticText8 = new wxStaticText( m_panel7, wxID_ANY, wxT("Result Sample :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8->Wrap( -1 );
+	fgSizer1->Add( m_staticText8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_DlgAFD_Result = new wxTextCtrl( m_panel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), 0 );
+	fgSizer1->Add( m_DlgAFD_Result, 1, wxALL|wxEXPAND, 5 );
+	
+	sbSizer21->Add( fgSizer1, 0, wxEXPAND, 5 );
+	
+	m_DlgAFD_Orientation_Float = new wxCheckBox( m_panel7, wxID_ANY, wxT("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
+	
+	sbSizer21->Add( m_DlgAFD_Orientation_Float, 0, wxALL, 5 );
+	
+	bSizer61->Add( sbSizer21, 1, wxEXPAND, 5 );
+	
+	m_panel7->SetSizer( bSizer61 );
+	m_panel7->Layout();
+	bSizer61->Fit( m_panel7 );
+	m_DlgAFD_Choicebook->AddPage( m_panel7, wxT("FLOAT"), true );
+	m_panel8 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer621;
+	bSizer621 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer221;
+	sbSizer221 = new wxStaticBoxSizer( new wxStaticBox( m_panel8, wxID_ANY, wxT("Options") ), wxVERTICAL );
+	
+	m_staticText111 = new wxStaticText( m_panel8, wxID_ANY, wxT("No options availlable for this type"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	m_staticText111->Wrap( -1 );
+	sbSizer221->Add( m_staticText111, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
+	
+	bSizer621->Add( sbSizer221, 1, wxEXPAND, 5 );
+	
+	m_panel8->SetSizer( bSizer621 );
+	m_panel8->Layout();
+	bSizer621->Fit( m_panel8 );
+	m_DlgAFD_Choicebook->AddPage( m_panel8, wxT("DATE"), false );
+	m_panel9 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer6211;
+	bSizer6211 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer2211;
+	sbSizer2211 = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, wxT("Allowed values") ), wxVERTICAL );
+	
+	
+	 m_DlgAFD_Coded_Val_List = new ProjectDefFieldList( m_panel9, ID_DLGAFD_CODED_VAL_LIST,  wxSize(100, 200));
+	 sbSizer2211->Add(m_DlgAFD_Coded_Val_List, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+	 
+	 wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
+	 sbSizer2211->Add(itemBoxSizer21, 0, wxGROW|wxALL, 5);
+	 
+	 wxFlatButton* itemFlatButton22 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_ADD, wxFLATBUTTON_TEXT_ADD );
+	 itemBoxSizer21->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	 
+	 wxFlatButton* itemFlatButton23 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_REMOVE, wxFLATBUTTON_TEXT_REMOVE );
+	 itemBoxSizer21->Add(itemFlatButton23, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	 
+	 wxFlatButton* itemFlatButton24 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_IMPORT, _("Import..."), wxDefaultSize);
+	 itemBoxSizer21->Add(itemFlatButton24, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	 
+	 wxFlatButton* itemFlatButton25 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_EXPORT, _("Export..."), wxDefaultSize);
+	 itemBoxSizer21->Add(itemFlatButton25, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+	
+	bSizer6211->Add( sbSizer2211, 1, wxEXPAND, 5 );
+	
+	m_panel9->SetSizer( bSizer6211 );
+	m_panel9->Layout();
+	bSizer6211->Fit( m_panel9 );
+	m_DlgAFD_Choicebook->AddPage( m_panel9, wxT("ENUMERATIONS"), false );
+	sbSizer12->Add( m_DlgAFD_Choicebook, 1, wxALL|wxGROW, 5 );
+	
+	bSizer2->Add( sbSizer12, 1, wxALL|wxEXPAND, 5 );
+	
+	
+	
+	
+	m_sdbSizer1 = new wxStdDialogButtonSizer();
+	m_sdbSizer1OK = new wxButton( this, wxID_OK );
+	m_sdbSizer1->AddButton( m_sdbSizer1OK );
+	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
+	m_sdbSizer1->Realize();
+	bSizer2->Add( m_sdbSizer1, 0, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( bSizer2 );
+	this->Layout();
+	bSizer2->Fit( this );
+	
 	
 }
 
