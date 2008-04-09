@@ -215,11 +215,11 @@ void ProjectDefDLG::CreateControls()
 	
     wxBoxSizer* itemBoxSizer24 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer22->Add(itemBoxSizer24, 0, wxGROW|wxALL, 5);
-    m_DlgPd_Spat_Mdl_Add = new wxToggleButton( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MDL_ADD, _("+"), wxDefaultPosition, wxSize(40, -1), 0 );
+    m_DlgPd_Spat_Mdl_Add = new wxFlatButton( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MDL_ADD,wxFLATBUTTON_TEXT_ADD);
     m_DlgPd_Spat_Mdl_Add->SetValue(false);
     itemBoxSizer24->Add(m_DlgPd_Spat_Mdl_Add, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 	
-    m_DljPd_Spat_Mdl_Del = new wxToggleButton( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MDL_DEL, _("-"), wxDefaultPosition, wxSize(40, -1), 0 );
+    m_DljPd_Spat_Mdl_Del = new wxFlatButton( m_DlgPd_Panel_Spatial, ID_DLGPD_SPAT_MDL_DEL, wxFLATBUTTON_TEXT_REMOVE);
     m_DljPd_Spat_Mdl_Del->SetValue(false);
     itemBoxSizer24->Add(m_DljPd_Spat_Mdl_Del, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 	

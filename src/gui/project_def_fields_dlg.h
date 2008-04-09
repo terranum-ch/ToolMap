@@ -43,6 +43,7 @@
 #define ID_DLGAFD_FIELD_PRECISION 10015
 #define ID_DLGAFD_FIELD_SCALE 10014
 #define ID_DLGAFD_RESULT 10016
+#define ID_DLGAFD_CONSTRAIN_PANEL 10017
 #define ID_DLGAFD_ORIENTATION_FIELD 10118
 #define ID_DLGAFD_CONSTRAIN_VALUES 10050
 #define ID_DLGAFD_CODED_VAL_LIST 10274
@@ -53,7 +54,7 @@
 #define SYMBOL_PROJECTDEFFIELDDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFFIELDDLG_TITLE _("Attribute field definition")
 #define SYMBOL_PROJECTDEFFIELDDLG_IDNAME ID_DLGAFD
-#define SYMBOL_PROJECTDEFFIELDDLG_SIZE wxSize(400, 300)
+#define SYMBOL_PROJECTDEFFIELDDLG_SIZE wxSize(400, -1)
 #define SYMBOL_PROJECTDEFFIELDDLG_POSITION wxDefaultPosition
 
 
@@ -164,7 +165,7 @@ class ProjectDefFieldDlg: public wxDialog
 		wxTextCtrl* m_DlgAFD_Result;
 		wxCheckBox* m_DlgAFD_Field_Orientation;
 		wxCheckBox* m_DlgAFD_Constrain_Values;
-		wxStaticBoxSizer* m_DlgAFD_Sizer_Constraint;
+		wxPanel* m_DlgAFD_Constrain_Panel;
 		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
 		
 		

@@ -154,8 +154,8 @@ class ProjectDefDLG: public wxDialog
 		wxTextCtrl* m_DlgPd_Proj_Comment;
 		wxPanel* m_DlgPd_Panel_Spatial;
 		ProjectDefList* m_DlgPd_Stat_Model_List;
-		wxToggleButton* m_DlgPd_Spat_Mdl_Add;
-		wxToggleButton* m_DljPd_Spat_Mdl_Del;
+		wxFlatButton* m_DlgPd_Spat_Mdl_Add;
+		wxFlatButton* m_DljPd_Spat_Mdl_Del;
 		wxButton* m_DlgPd_Button_Ok;
 	};
 
