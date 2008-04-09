@@ -46,6 +46,7 @@ class ProjectDefFieldList;
 #define ID_DLGAFD_RESULT 10016
 #define ID_DLGAFD_ORIENTATION_FIELD 10118
 #define ID_DLGAFD_CONSTRAIN_VALUES 10050
+#define ID_DLGAFD_CONSTRAIN_PANL 10017
 #define ID_DLGAFD_CODED_VAL_LIST 10274
 #define ID_DLGAFD_VAL_ADD 10276
 #define ID_DLGAFD_VAL_REMOVE 10277
@@ -109,7 +110,7 @@ public:
     wxTextCtrl* m_DlgAFD_Result;
     wxCheckBox* m_DlgAFD_Field_Orientation;
     wxCheckBox* m_DlgAFD_Constrain_Values;
-    wxStaticBoxSizer* m_DlgAFD_Sizer_Constraint;
+    wxPanel* m_DlgAFD_Constrain_Panel;
     ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
 ////@end ProjectDefFieldDlg member variables
 };
