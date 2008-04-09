@@ -867,8 +867,7 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 				break;
 		}
 		// add constrain on field if needed. 
-		// actually only support enum contrain for text field.
-		if (myField->m_FieldConstrain == TM_FIELD_CONSTRAIN_CODED)
+		if (myField->m_FieldConstrain == TRUE)
 		{
 			bReturnValue = AddFieldConstrain(myField, sTableName);
 		}

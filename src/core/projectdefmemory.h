@@ -110,12 +110,12 @@ enum PRJDEF_FIELD_TYPE
 static const int PRJDEF_FIELD_TYPE_NUMBER = 4;
 
 // Definition for the constrain value type
-enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
+/*enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
 {
 	TM_FIELD_CONSTRAIN_CODED = 0,
 	TM_FIELD_CONSTRAIN_RANGE,
 	TM_FIELD_NOT_CONSTRAIN
-};
+};*/
 
 
 // Definitions for the layers type, we define the text and  the id of 
@@ -226,16 +226,11 @@ class ProjectDefMemoryFields
 		int m_FieldPrecision;
 		int m_FieldScale;
 		bool m_FieldOrientation;
-		PRJDEF_FIELD_CONSTAIN_VALUE_TYPE m_FieldConstrain;
-		
-		int m_FieldRangeDefault;
-		int m_FieldRangeMin;
-		int m_FieldRangeMax;
-		
+		bool m_FieldConstrain;
+				
 		// for storing coded values
 		PrjMemFieldCodedValArray * m_pCodedValueArray; 
 		
-		int m_CodedDefaultIndex;
 		
 		ProjectDefMemoryFields();
 		~ProjectDefMemoryFields();

@@ -74,7 +74,7 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 		virtual void 	BeforeEditing ();
 		virtual void	AddingValueToArray (wxArrayString & myImportedValues);
 		
-		wxChoice * m_ChoiceToDefault;
+
 		
 	public:
 		static const int ID_PARAMLIST;
@@ -90,7 +90,7 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 		//		wxString GetParamType (int imyType);
 		//
 		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-		void SetChoiceList (wxChoice * myChoiceList) {m_ChoiceToDefault = myChoiceList;}
+		//void SetChoiceList (wxChoice * myChoiceList) {m_ChoiceToDefault = myChoiceList;}
 		//		DECLARE_EVENT_TABLE();
 	};
 
@@ -117,6 +117,7 @@ class ProjectDefFieldDlg: public wxDialog
 		void FieldTextSelected();
 		void FieldDoubleSelected();
 		void FieldDateSelected();
+		void FieldContrainSelected();
 		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );

@@ -53,7 +53,7 @@ ProjectDefMemoryFields::ProjectDefMemoryFields()
 
 ProjectDefMemoryFields::~ProjectDefMemoryFields()
 {
-	/// todo implement way of clearing the array contained inside
+	///@todo implement way of clearing the array contained inside
 }
 
 
@@ -67,15 +67,10 @@ void ProjectDefMemoryFields::InitMemberValues()
 	m_FieldPrecision = 0;
 	m_FieldScale = 0;
 	m_FieldOrientation = FALSE;
-	m_FieldConstrain = TM_FIELD_NOT_CONSTRAIN;
-	
-	m_FieldRangeDefault = 0;
-	m_FieldRangeMin = 0;
-	m_FieldRangeMax = 0;
+	m_FieldConstrain = FALSE;
 	
 	m_pCodedValueArray = new PrjMemFieldCodedValArray();
 	
-	//int m_CodedDefaultIndex = wxNOT_FOUND;
 }
 
 
@@ -101,7 +96,7 @@ ProjectDefMemoryLayers::~ProjectDefMemoryLayers()
 void ProjectDefMemoryLayers::InitMemberValues()
 {
 	m_LayerID = 0;
-	m_LayerType = LAYER_POINT;
+	m_LayerType = LAYER_LINE;
 	m_pLayerFieldArray = NULL;
 	m_pLayerObjectArray = NULL;
 	m_LayerName = _T("");
