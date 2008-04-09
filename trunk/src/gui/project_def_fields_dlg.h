@@ -33,6 +33,7 @@
 #include "wx/notebook.h"
 #include "wxflatbutton.h"
 #include "wx/spinctrl.h"
+#include <wx/choicebk.h>	// for the choicebook, sort of notebook
 #include "project_def_layers_dlg.h" // for using the dialog defined there
 #include "../core/textparser.h" // for text parsing during importation
 #include "../core/prjdefmemmanage.h" // for different project specification.
@@ -159,15 +160,40 @@ class ProjectDefFieldDlg: public wxDialog
 		virtual bool TransferDataToWindow();
 		
 		
-		wxTextCtrl* m_DlgAFD_Field_Def;
+		//wxTextCtrl* m_DlgAFD_Field_Def;
 		wxChoice* m_DlgAFD_Field_Type;
-		wxSpinCtrl* m_DlgAFD_Field_Precision;
-		wxSpinCtrl* m_DlgAFD_Field_Scale;
-		wxTextCtrl* m_DlgAFD_Result;
+		//wxSpinCtrl* m_DlgAFD_Field_Precision;
+		//wxSpinCtrl* m_DlgAFD_Field_Scale;
+		//wxTextCtrl* m_DlgAFD_Result;
 		wxCheckBox* m_DlgAFD_Field_Orientation;
 		wxCheckBox* m_DlgAFD_Constrain_Values;
 		wxPanel* m_DlgAFD_Constrain_Panel;
 		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
+		
+		wxStaticText* m_statictext;
+		wxTextCtrl* m_DlgAFD_Field_Def;
+		wxChoicebook* m_DlgAFD_Choicebook;
+		wxPanel* m_panel5;
+		wxStaticText* m_staticText2;
+		wxSpinCtrl* m_DlgAFD_Text_Length;
+		wxPanel* m_panel6;
+		wxStaticText* m_staticText11;
+		wxCheckBox* m_DlgAFD_Orientation_Integer;
+		wxPanel* m_panel7;
+		wxStaticText* m_staticText6;
+		wxSpinCtrl* m_DlgAFD_Field_Precision;
+		wxStaticText* m_staticText7;
+		wxSpinCtrl* m_DlgAFD_Field_Scale;
+		wxStaticText* m_staticText8;
+		wxTextCtrl* m_DlgAFD_Result;
+		wxCheckBox* m_DlgAFD_Orientation_Float;
+		wxPanel* m_panel8;
+		wxStaticText* m_staticText111;
+		wxPanel* m_panel9;
+		wxStdDialogButtonSizer* m_sdbSizer1;
+		wxButton* m_sdbSizer1OK;
+		wxButton* m_sdbSizer1Cancel;
+		
 		
 		
 	};
