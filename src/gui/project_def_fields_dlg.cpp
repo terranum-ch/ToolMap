@@ -685,19 +685,15 @@ void ProjectDefFieldDlg::CreateControls()
     itemStaticBoxSizer19->Add(itemBoxSizer21, 0, wxGROW|wxALL, 5);
 	
     wxFlatButton* itemFlatButton22 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_ADD, wxFLATBUTTON_TEXT_ADD );
-    itemFlatButton22->SetValue(false);
     itemBoxSizer21->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 	
     wxFlatButton* itemFlatButton23 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_REMOVE, wxFLATBUTTON_TEXT_REMOVE );
-    itemFlatButton23->SetValue(false);
     itemBoxSizer21->Add(itemFlatButton23, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 	
     wxFlatButton* itemFlatButton24 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_IMPORT, _("Import..."), wxDefaultSize);
-    itemFlatButton24->SetValue(false);
     itemBoxSizer21->Add(itemFlatButton24, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 	
     wxFlatButton* itemFlatButton25 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_EXPORT, _("Export..."), wxDefaultSize);
-    itemFlatButton25->SetValue(false);
     itemBoxSizer21->Add(itemFlatButton25, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 	
     wxStdDialogButtonSizer* itemStdDialogButtonSizer26 = new wxStdDialogButtonSizer;
