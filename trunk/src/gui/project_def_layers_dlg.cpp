@@ -694,7 +694,7 @@ void ProjectDefLayersDlg::CreateControls()
 
 
     m_DlgPDL_Layer_Type = new wxChoice( itemDialog1, ID_DLGPDL_LAYER_TYPE, wxDefaultPosition, wxDefaultSize,PRJDEF_LAYERS_TYPE_NUMBER, PRJDEF_LAYERS_TYPE_STRING, 0 );
-    m_DlgPDL_Layer_Type->SetStringSelection(PRJDEF_LAYERS_TYPE_STRING[LAYER_POINT]);
+    m_DlgPDL_Layer_Type->SetSelection(LAYER_LINE);
     itemFlexGridSizer4->Add(m_DlgPDL_Layer_Type, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -727,7 +727,7 @@ void ProjectDefLayersDlg::CreateControls()
     itemNotebook9->AddPage(m_DlgPDL_Panel_Obj, _("Objects"));
 
     m_DlgPDL_Panel_Fields = new wxPanel( itemNotebook9, ID_DLGPDL_PANEL_FIELDS, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxStaticBox* itemStaticBoxSizer18Static = new wxStaticBox(m_DlgPDL_Panel_Fields, wxID_ANY, _("Optional layer fileds"));
+    wxStaticBox* itemStaticBoxSizer18Static = new wxStaticBox(m_DlgPDL_Panel_Fields, wxID_ANY, _("Optional layer attributes"));
     wxStaticBoxSizer* itemStaticBoxSizer18 = new wxStaticBoxSizer(itemStaticBoxSizer18Static, wxVERTICAL);
     m_DlgPDL_Panel_Fields->SetSizer(itemStaticBoxSizer18);
 
@@ -742,7 +742,7 @@ void ProjectDefLayersDlg::CreateControls()
     wxFlatButton* itemFlatButton22 = new wxFlatButton( m_DlgPDL_Panel_Fields, ID_DLGPDL_FIELD_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
     itemBoxSizer20->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-    itemNotebook9->AddPage(m_DlgPDL_Panel_Fields, _("Fields"));
+    itemNotebook9->AddPage(m_DlgPDL_Panel_Fields, _("Attributes"));
 
     itemBoxSizer2->Add(itemNotebook9, 1, wxGROW|wxALL, 5);
 

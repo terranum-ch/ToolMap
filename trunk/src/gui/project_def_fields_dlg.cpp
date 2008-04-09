@@ -35,7 +35,6 @@ ProjectDefFieldList::ProjectDefFieldList(wxWindow * parent, wxWindowID  id, wxSi
 	
 	CreateColumns(&myColNames, &myColsWidths);
 	
-	m_ChoiceToDefault = NULL;
 	
 	m_pPrjDefinition = NULL;
 	m_CodedValueObj = NULL;
@@ -82,14 +81,6 @@ void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
 		myListValues.Add( m_CodedValueObj->m_ValueName);
 		EditDataToList(myListValues);
 		
-		// add item to the choice
-		m_ChoiceToDefault->Append(wxString::Format(_T("%d, %s"),
-													  m_CodedValueObj->m_ValueCode,
-													  m_CodedValueObj->m_ValueName.c_str()));
-		if (m_ChoiceToDefault->GetCount() == 1)
-		{
-			m_ChoiceToDefault->SetSelection(0);
-		}
 	}
 	else
 		m_pPrjDefinition->RemoveCodedValue(); // remove last object not used
@@ -139,12 +130,6 @@ void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
 		myListValues.Add( m_CodedValueObj->m_ValueName);
 		EditDataToList(myListValues, GetSelectedItem());
 		
-		// prepare data for default value representation
-		m_ChoiceToDefault->SetString(m_ChoiceIndex,
-									 wxString::Format(_T("%d, %s"),
-													  m_CodedValueObj->m_ValueCode,
-													  m_CodedValueObj->m_ValueName.c_str()));
-		m_ChoiceToDefault->Refresh();
 	}
 	
 	// delete dialog
@@ -155,19 +140,6 @@ void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
 
 void ProjectDefFieldList::BeforeDeleting ()
 {
-	// remove item from array before removing it from the list
-	// because of the unknown position of item (may have been moved)
-	// if a corresponding item was found, remove it from the array
-	
-//	// get selected item from the list
-//	long mySelectedListItem = GetSelectedItem();
-//	wxString myValueName = GetItemColText(mySelectedListItem, 1);
-//	
-//	m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
-//	m_ChoiceToDefault->Delete(m_ChoiceIndex);
-//	
-//	m_pPrjDefinition->RemoveCodedValue(myValueName);
-	
 	wxString myValueName;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
@@ -182,7 +154,6 @@ void ProjectDefFieldList::BeforeDeleting ()
 		//m_pPrjDefinition->RemoveLayer(myLayerName);
 		m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
 		// remove item from the choice control
-		m_ChoiceToDefault->Delete(m_ChoiceIndex);
 		m_pPrjDefinition->RemoveCodedValue(myValueName);
 		
 	}
@@ -199,14 +170,6 @@ void ProjectDefFieldList::AddingValueToArray (wxArrayString & myImportedValues)
 	myImportedValues.Item(0).ToLong(&(m_CodedValueObj->m_ValueCode));
 	m_CodedValueObj->m_ValueName = myImportedValues.Item(1);
 	
-	// prepare data for default value representation
-	m_ChoiceToDefault->Append(wxString::Format(_T("%d, %s"),
-											   m_CodedValueObj->m_ValueCode,
-											   m_CodedValueObj->m_ValueName.c_str()));
-	if (m_ChoiceToDefault->GetCount() == 1)
-	{
-		m_ChoiceToDefault->SetSelection(0);
-	}
 }
 
 
@@ -314,6 +277,22 @@ void ProjectDefFieldDlg::FieldDateSelected ()
 	wxCommandEvent myEvent;
 	OnShowConstrainValues(myEvent);
 }
+
+
+void ProjectDefFieldDlg::FieldContrainSelected()
+{
+	m_DlgAFD_Field_Scale->SetValue(0);
+	m_DlgAFD_Field_Precision->SetValue(0);
+	m_DlgAFD_Field_Orientation->SetValue(FALSE);
+	
+	m_DlgAFD_Field_Type->SetSelection(TM_FIELD_TEXT);
+	
+	// gray all
+	EnableAllCtrls(FALSE);
+	m_DlgAFD_Constrain_Values->Enable(TRUE);
+}
+
+
 /****************** END OF GRAPHICAL FUNCTIONS CALLED WHEN FIELD TYPE CHANGE ********************/
 
 
@@ -385,27 +364,22 @@ void ProjectDefFieldDlg::OnShowLiveResults (wxCommandEvent & event)
 	}
 }
 
+
 void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 {
 	if (m_DlgAFD_Constrain_Values->IsChecked())
 	{
 		m_DlgAFD_Constrain_Panel->Show(TRUE);
-		//m_DlgAFD_SuperSizer->Show(m_DlgAFD_Sizer_Constraint, TRUE, TRUE);
-		//m_DlgAFD_Sizer_Constraint->Show(TRUE);
-		//m_DlgAFD_Sizer_Constraint->Show(0, TRUE);
+		
+		// update UI controls
+		FieldContrainSelected();
+		
 	}
 	else 
 	{
 		m_DlgAFD_Constrain_Panel->Show(FALSE);
-		//m_DlgAFD_SuperSizer->Show(m_DlgAFD_Sizer_Constraint, FALSE, TRUE);
-		//m_DlgAFD_Sizer_Constraint->Show(FALSE);
-		//m_DlgAFD_Sizer_Constraint->Hide(0);
 	}
 	
-	//m_DlgAFD_SuperSizer->Fit(this);
-	//m_DlgAFD_SuperSizer->Layout();
-
-	//m_DlgAFD_Sizer_Constraint->Layout();
 	// fit the window to the minimal size 
 	// responding to the check box state
 	if (GetSizer())
@@ -422,6 +396,7 @@ void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
 {
 	m_DlgAFD_Coded_Val_List->AddItem();
 }
+
 
 ProjectDefFieldDlg::ProjectDefFieldDlg()
 {
@@ -507,11 +482,12 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	m_MemoryField->m_FieldOrientation = m_DlgAFD_Field_Orientation->IsChecked();
 	if (!m_DlgAFD_Constrain_Values->IsChecked())
 	{
-		m_MemoryField->m_FieldConstrain = TM_FIELD_NOT_CONSTRAIN;
+		m_MemoryField->m_FieldConstrain = FALSE;
 		
 	}
 	else
 	{
+		m_MemoryField->m_FieldConstrain = TRUE;
 		//m_MemoryField->m_FieldConstrain = (PRJDEF_FIELD_CONSTAIN_VALUE_TYPE) m_DlgAFD_Notebook->GetSelection();
 		/*if (m_MemoryField->m_FieldConstrain == TM_FIELD_CONSTRAIN_RANGE)
 		{
@@ -552,57 +528,34 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 		m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
 		m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
 		m_DlgAFD_Field_Orientation->SetValue(m_MemoryField->m_FieldOrientation);
-		if (m_MemoryField->m_FieldConstrain != TM_FIELD_NOT_CONSTRAIN)
+		if (m_MemoryField->m_FieldConstrain == TRUE)
 		{
 			m_DlgAFD_Constrain_Values->SetValue(TRUE);
-			//m_DlgAFD_Sizer_Constraint->Show(TRUE);
 			m_DlgAFD_Constrain_Panel->Show(TRUE);
-			//Show(m_DlgAFD_Sizer_Constraint);
-		/*	m_DlgAFD_Notebook->SetSelection(m_MemoryField->m_FieldConstrain);
-			
-			if (m_MemoryField->m_FieldConstrain == TM_FIELD_CONSTRAIN_CODED)
+			// fill the coded value list
+			for (int i = 0; i< m_pPrjDefinition->GetCountCodedValue(); i++)
 			{
-				// fill the coded value list
-				for (int i = 0; i< m_pPrjDefinition->GetCountCodedValue(); i++)
-				{
-					ProjectDefMemoryFieldsCodedVal * myCodedValObj = m_pPrjDefinition->
-					GetNextCodedValue();
-					
-					// fit things returned in the list
-					myListValues.Add(wxString::Format(_T("%d"), myCodedValObj->m_ValueCode));
-					myListValues.Add(myCodedValObj->m_ValueName);
-					m_DlgAFD_Coded_Val_List->EditDataToList(myListValues);
-					
-					
-					// fill the choice list of default values
-					m_DlgAFD_Default_Val->Append(wxString::Format(_T("%d, %s"),
-																  myCodedValObj->m_ValueCode,
-																  myCodedValObj->m_ValueName.c_str()));
-					
-					myListValues.Clear();
-				}
+				ProjectDefMemoryFieldsCodedVal * myCodedValObj = m_pPrjDefinition->
+				GetNextCodedValue();
 				
-				if (m_MemoryField->m_CodedDefaultIndex != wxNOT_FOUND)
-				{
-					m_DlgAFD_Default_Val->SetSelection(m_MemoryField->m_CodedDefaultIndex);
-				}
+				// fit things returned in the list
+				myListValues.Add(wxString::Format(_T("%d"), myCodedValObj->m_ValueCode));
+				myListValues.Add(myCodedValObj->m_ValueName);
+				m_DlgAFD_Coded_Val_List->EditDataToList(myListValues);
+				
+				
+				myListValues.Clear();
 			}
-			
-			else // constrain with range
-			{
-				*m_DlgAFD_Range_Min << m_MemoryField->m_FieldRangeMin;
-				*m_DlgAFD_Range_Max << m_MemoryField->m_FieldRangeMax;
-				*m_DlgAFD_Range_Default << m_MemoryField->m_FieldRangeDefault;
-			}*/
 			
 		}
 		
-		// for setting the good size to the dialog
-		if (GetSizer())
-		{
-			GetSizer()->Fit(this);
-			GetSizer()->Layout();
-		}
+	}
+	
+	// for setting the good size to the dialog
+	if (GetSizer())
+	{
+		GetSizer()->Fit(this);
+		GetSizer()->Layout();
 	}
 	return TRUE;
 }
@@ -611,7 +564,6 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 /*!
  * Control creation for wxDialog
  */
-
 void ProjectDefFieldDlg::CreateControls()
 {    
 	ProjectDefFieldDlg* itemDialog1 = this;
