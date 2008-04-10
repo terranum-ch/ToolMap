@@ -95,19 +95,21 @@ static const int PRJDEF_PROJ_TYPE_NUMBER = 3;
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_FIELD_TYPE_STRING[] = 
 {
+	_("Text"),
 	_("Integer"),
 	_("Float"),
-	_("Text"),
-	_("Date")
+	_("Date"),
+	_("Enumeration")
 };
 enum PRJDEF_FIELD_TYPE
-{
-	TM_FIELD_INTEGER = 0,
+{	
+	TM_FIELD_TEXT = 0,
+	TM_FIELD_INTEGER,
 	TM_FIELD_FLOAT,
-	TM_FIELD_TEXT,
-	TM_FIELD_DATE
+	TM_FIELD_DATE,
+	TM_FIELD_ENUMERATION
 };
-static const int PRJDEF_FIELD_TYPE_NUMBER = 4;
+static const int PRJDEF_FIELD_TYPE_NUMBER = 5;
 
 // Definition for the constrain value type
 /*enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
@@ -150,6 +152,7 @@ enum PRJDEF_OBJECTS_FREQ
 static const int PRJDEF_OBJECTSS_FREQ_NUMBER = 2;
 
 static const long NULL_LONG_VALUE = -9999;
+
 
 
 /***************************************************************************//**

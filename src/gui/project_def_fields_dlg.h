@@ -103,22 +103,20 @@ class ProjectDefFieldDlg: public wxDialog
 		ProjectDefMemoryFields * m_MemoryField;
 		PrjDefMemManage * m_pPrjDefinition;
 		
+		// event functions
 		void OnShowLiveResults (wxCommandEvent & event);
-		//void OnShowConstrainValues(wxCommandEvent & event);
 		void OnAddAllowedValue (wxCommandEvent & event);
 		void OnImportAllowedValue (wxCommandEvent & event);
 		void OnRemoveAllowedValue (wxCommandEvent & event);
 		void OnExportAllowedValue (wxCommandEvent & event);
-		//void OnChangeFieldType (wxCommandEvent & event);
-		
-		
-		/// graphical function for updating fields options
-		/*void EnableAllCtrls (bool bUngray = TRUE);
-		void FieldIntegerSelected ();
-		void FieldTextSelected();
-		void FieldDoubleSelected();
-		void FieldDateSelected();
-		void FieldContrainSelected();*/
+		void OnFieldNameChange (wxCommandEvent & event);
+	
+		// transfering data private function.
+		void TransfertTextValues(bool bSendDataToDlg = FALSE);
+		void TransfertIntegerValues(bool bSendDataToDlg = FALSE);
+		void TransfertFloatValues(bool bSendDataToDlg = FALSE);
+		void TransfertDateValues(bool bSendDataToDlg = FALSE);
+		void TransfertEnumValues(bool bSendDataToDlg = FALSE);
 		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );
@@ -161,13 +159,7 @@ class ProjectDefFieldDlg: public wxDialog
 		
 		
 
-	/*	wxChoice* m_DlgAFD_Field_Type;
-		wxCheckBox* m_DlgAFD_Field_Orientation;
-		wxCheckBox* m_DlgAFD_Constrain_Values;
-		wxPanel* m_DlgAFD_Constrain_Panel;*/
 		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
-		
-		
 		wxTextCtrl* m_DlgAFD_Field_Def;
 		wxChoicebook* m_DlgAFD_Choicebook;
 		wxSpinCtrl* m_DlgAFD_Text_Length;
