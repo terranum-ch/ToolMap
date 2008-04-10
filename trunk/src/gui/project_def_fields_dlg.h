@@ -104,21 +104,21 @@ class ProjectDefFieldDlg: public wxDialog
 		PrjDefMemManage * m_pPrjDefinition;
 		
 		void OnShowLiveResults (wxCommandEvent & event);
-		void OnShowConstrainValues(wxCommandEvent & event);
+		//void OnShowConstrainValues(wxCommandEvent & event);
 		void OnAddAllowedValue (wxCommandEvent & event);
 		void OnImportAllowedValue (wxCommandEvent & event);
 		void OnRemoveAllowedValue (wxCommandEvent & event);
 		void OnExportAllowedValue (wxCommandEvent & event);
-		void OnChangeFieldType (wxCommandEvent & event);
+		//void OnChangeFieldType (wxCommandEvent & event);
 		
 		
 		/// graphical function for updating fields options
-		void EnableAllCtrls (bool bUngray = TRUE);
+		/*void EnableAllCtrls (bool bUngray = TRUE);
 		void FieldIntegerSelected ();
 		void FieldTextSelected();
 		void FieldDoubleSelected();
 		void FieldDateSelected();
-		void FieldContrainSelected();
+		void FieldContrainSelected();*/
 		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );
@@ -160,41 +160,25 @@ class ProjectDefFieldDlg: public wxDialog
 		virtual bool TransferDataToWindow();
 		
 		
-		//wxTextCtrl* m_DlgAFD_Field_Def;
-		wxChoice* m_DlgAFD_Field_Type;
-		//wxSpinCtrl* m_DlgAFD_Field_Precision;
-		//wxSpinCtrl* m_DlgAFD_Field_Scale;
-		//wxTextCtrl* m_DlgAFD_Result;
+
+	/*	wxChoice* m_DlgAFD_Field_Type;
 		wxCheckBox* m_DlgAFD_Field_Orientation;
 		wxCheckBox* m_DlgAFD_Constrain_Values;
-		wxPanel* m_DlgAFD_Constrain_Panel;
+		wxPanel* m_DlgAFD_Constrain_Panel;*/
 		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
 		
-		wxStaticText* m_statictext;
+		
 		wxTextCtrl* m_DlgAFD_Field_Def;
 		wxChoicebook* m_DlgAFD_Choicebook;
-		wxPanel* m_panel5;
-		wxStaticText* m_staticText2;
 		wxSpinCtrl* m_DlgAFD_Text_Length;
-		wxPanel* m_panel6;
-		wxStaticText* m_staticText11;
 		wxCheckBox* m_DlgAFD_Orientation_Integer;
-		wxPanel* m_panel7;
-		wxStaticText* m_staticText6;
 		wxSpinCtrl* m_DlgAFD_Field_Precision;
-		wxStaticText* m_staticText7;
 		wxSpinCtrl* m_DlgAFD_Field_Scale;
-		wxStaticText* m_staticText8;
 		wxTextCtrl* m_DlgAFD_Result;
 		wxCheckBox* m_DlgAFD_Orientation_Float;
-		wxPanel* m_panel8;
-		wxStaticText* m_staticText111;
-		wxPanel* m_panel9;
-		wxStdDialogButtonSizer* m_sdbSizer1;
-		wxButton* m_sdbSizer1OK;
-		wxButton* m_sdbSizer1Cancel;
+		wxButton* m_DlgAFD_Button_OK;
 		
-		
+	
 		
 	};
 

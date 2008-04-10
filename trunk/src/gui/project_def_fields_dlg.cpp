@@ -182,18 +182,18 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefFieldDlg, wxDialog )
 
 
 BEGIN_EVENT_TABLE( ProjectDefFieldDlg, wxDialog )
-	EVT_CHECKBOX(ID_DLGAFD_CONSTRAIN_VALUES, ProjectDefFieldDlg::OnShowConstrainValues)
+	//EVT_CHECKBOX(ID_DLGAFD_CONSTRAIN_VALUES, ProjectDefFieldDlg::OnShowConstrainValues)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_ADD,ProjectDefFieldDlg::OnAddAllowedValue)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_IMPORT, ProjectDefFieldDlg::OnImportAllowedValue)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_REMOVE, ProjectDefFieldDlg::OnRemoveAllowedValue)
 	EVT_FLATBUTTON (ID_DLGAFD_VAL_EXPORT, ProjectDefFieldDlg::OnExportAllowedValue)
 	EVT_TEXT(ID_DLGAFD_FIELD_SCALE, ProjectDefFieldDlg::OnShowLiveResults)
 	EVT_TEXT(ID_DLGAFD_FIELD_PRECISION, ProjectDefFieldDlg::OnShowLiveResults)
-	EVT_CHOICE (ID_DLGAFD_DATA_TYPE, ProjectDefFieldDlg::OnChangeFieldType)
+	//EVT_CHOICE (ID_DLGAFD_DATA_TYPE, ProjectDefFieldDlg::OnChangeFieldType)
 END_EVENT_TABLE()
 
 
-
+/*
 void ProjectDefFieldDlg::OnChangeFieldType (wxCommandEvent & event)
 {
 	m_FieldTypeStatus = (PRJDEF_FIELD_TYPE) m_DlgAFD_Field_Type->GetSelection();
@@ -216,9 +216,10 @@ void ProjectDefFieldDlg::OnChangeFieldType (wxCommandEvent & event)
 	}
 }
 
-
+*/
 
 /****************** GRAPHICAL FUNCTIONS CALLED WHEN FIELD TYPE CHANGE ********************/
+/*
 void ProjectDefFieldDlg::EnableAllCtrls (bool bUngray)
 {
 	// ungray all ctrls 
@@ -291,7 +292,7 @@ void ProjectDefFieldDlg::FieldContrainSelected()
 	EnableAllCtrls(FALSE);
 	m_DlgAFD_Constrain_Values->Enable(TRUE);
 }
-
+*/
 
 /****************** END OF GRAPHICAL FUNCTIONS CALLED WHEN FIELD TYPE CHANGE ********************/
 
@@ -364,7 +365,7 @@ void ProjectDefFieldDlg::OnShowLiveResults (wxCommandEvent & event)
 	}
 }
 
-
+/*
 void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 {
 	if (m_DlgAFD_Constrain_Values->IsChecked())
@@ -389,7 +390,7 @@ void ProjectDefFieldDlg::OnShowConstrainValues(wxCommandEvent & event)
 	}
 	
 }
-
+*/
 
 
 void ProjectDefFieldDlg::OnAddAllowedValue (wxCommandEvent & event)
@@ -451,13 +452,13 @@ void ProjectDefFieldDlg::Init()
 {
 	////@begin ProjectDefFieldDlg member initialisation
 	m_DlgAFD_Field_Def = NULL;
-    m_DlgAFD_Field_Type = NULL;
+    //m_DlgAFD_Field_Type = NULL;
     m_DlgAFD_Field_Precision = NULL;
     m_DlgAFD_Field_Scale = NULL;
     m_DlgAFD_Result = NULL;
-    m_DlgAFD_Field_Orientation = NULL;
-    m_DlgAFD_Constrain_Values = NULL;
-    m_DlgAFD_Constrain_Panel = NULL;
+    //m_DlgAFD_Field_Orientation = NULL;
+    //m_DlgAFD_Constrain_Values = NULL;
+    //m_DlgAFD_Constrain_Panel = NULL;
     m_DlgAFD_Coded_Val_List = NULL;
 	
 	m_MemoryField = NULL;
@@ -566,98 +567,20 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
  */
 void ProjectDefFieldDlg::CreateControls()
 {    
-/*	ProjectDefFieldDlg* itemDialog1 = this;
-	
-    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-    itemDialog1->SetSizer(itemBoxSizer2);
-	
-    wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW|wxALL, 5);
-	
-    wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_STATIC, _("Field name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer3->Add(itemStaticText4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_DlgAFD_Field_Def = new wxTextCtrl( itemDialog1, ID_DLGAFD_FIELD_DEF, _T(""), wxDefaultPosition, wxSize(200, -1), 0 );
-    itemBoxSizer3->Add(m_DlgAFD_Field_Def, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxStaticBox* itemStaticBoxSizer6Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Field properties"));
-    wxStaticBoxSizer* itemStaticBoxSizer6 = new wxStaticBoxSizer(itemStaticBoxSizer6Static, wxVERTICAL);
-    itemBoxSizer2->Add(itemStaticBoxSizer6, 0, wxGROW|wxALL, 5);
-	
-    wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(4, 2, 0, 0);
-    itemFlexGridSizer7->AddGrowableCol(1);
-    itemStaticBoxSizer6->Add(itemFlexGridSizer7, 0, wxGROW, 5);
-	
-    wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Data Type :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_DlgAFD_Field_Type = new wxChoice( itemDialog1, ID_DLGAFD_DATA_TYPE, wxDefaultPosition,
-									   wxDefaultSize, PRJDEF_FIELD_TYPE_NUMBER, PRJDEF_FIELD_TYPE_STRING, 0 );
-    m_DlgAFD_Field_Type->SetSelection(TM_FIELD_TEXT);
-    itemFlexGridSizer7->Add(m_DlgAFD_Field_Type, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Field precision :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText10, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_DlgAFD_Field_Precision = new wxSpinCtrl( itemDialog1, ID_DLGAFD_FIELD_PRECISION, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-    itemFlexGridSizer7->Add(m_DlgAFD_Field_Precision, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxStaticText* itemStaticText12 = new wxStaticText( itemDialog1, wxID_STATIC, _("Field scale :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_DlgAFD_Field_Scale = new wxSpinCtrl( itemDialog1, ID_DLGAFD_FIELD_SCALE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-    itemFlexGridSizer7->Add(m_DlgAFD_Field_Scale, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Result sample :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_TOP|wxALL, 5);
-	
-    m_DlgAFD_Result = new wxTextCtrl( itemDialog1, ID_DLGAFD_RESULT, _T(""), wxDefaultPosition, wxDefaultSize); //, wxTE_CENTRE );
-    itemFlexGridSizer7->Add(m_DlgAFD_Result, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_DlgAFD_Field_Orientation = new wxCheckBox( itemDialog1, ID_DLGAFD_ORIENTATION_FIELD, _("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_DlgAFD_Field_Orientation->SetValue(false);
-    itemFlexGridSizer7->Add(m_DlgAFD_Field_Orientation, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
-	
-    m_DlgAFD_Constrain_Values = new wxCheckBox( itemDialog1, ID_DLGAFD_CONSTRAIN_VALUES, _("Constrain allowed values"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_DlgAFD_Constrain_Values->SetValue(false);
-    itemBoxSizer2->Add(m_DlgAFD_Constrain_Values, 0, wxGROW|wxALL, 5);
-	
-    m_DlgAFD_Constrain_Panel = new wxPanel( itemDialog1, ID_DLGAFD_CONSTRAIN_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    m_DlgAFD_Constrain_Panel->Show(FALSE);
-	itemBoxSizer2->Add(m_DlgAFD_Constrain_Panel, 1, wxGROW |wxALL, 5);
-	
-    wxStaticBox* itemStaticBoxSizer19Static = new wxStaticBox(m_DlgAFD_Constrain_Panel, wxID_ANY, _("Allowed values"));
-    wxStaticBoxSizer* itemStaticBoxSizer19 = new wxStaticBoxSizer(itemStaticBoxSizer19Static, wxVERTICAL);
-    m_DlgAFD_Constrain_Panel->SetSizer(itemStaticBoxSizer19);
-	
-    m_DlgAFD_Coded_Val_List = new ProjectDefFieldList( m_DlgAFD_Constrain_Panel, ID_DLGAFD_CODED_VAL_LIST,  wxSize(100, 200));
-    itemStaticBoxSizer19->Add(m_DlgAFD_Coded_Val_List, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-	
-    wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
-    itemStaticBoxSizer19->Add(itemBoxSizer21, 0, wxGROW|wxALL, 5);
-	
-    wxFlatButton* itemFlatButton22 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_ADD, wxFLATBUTTON_TEXT_ADD );
-    itemBoxSizer21->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	
-    wxFlatButton* itemFlatButton23 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_REMOVE, wxFLATBUTTON_TEXT_REMOVE );
-    itemBoxSizer21->Add(itemFlatButton23, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	
-    wxFlatButton* itemFlatButton24 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_IMPORT, _("Import..."), wxDefaultSize);
-    itemBoxSizer21->Add(itemFlatButton24, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	
-    wxFlatButton* itemFlatButton25 = new wxFlatButton( m_DlgAFD_Constrain_Panel, ID_DLGAFD_VAL_EXPORT, _("Export..."), wxDefaultSize);
-    itemBoxSizer21->Add(itemFlatButton25, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	
-    wxStdDialogButtonSizer* itemStdDialogButtonSizer26 = new wxStdDialogButtonSizer;
-	
-    itemBoxSizer2->Add(itemStdDialogButtonSizer26, 0, wxALIGN_RIGHT|wxALL, 5);
-    wxButton* itemButton27 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer26->AddButton(itemButton27);
-	
-    wxButton* itemButton28 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer26->AddButton(itemButton28);
-	
-    itemStdDialogButtonSizer26->Realize();*/
+	wxButton* m_sdbSizer1Cancel;
+	wxStaticText* m_statictext;
+	wxStaticText* m_staticText2;
+	wxPanel* m_panel6;
+	wxStaticText* m_staticText11;
+	wxPanel* m_panel7;
+	wxStaticText* m_staticText6;
+	wxStaticText* m_staticText7;
+	wxStaticText* m_staticText8;
+	wxPanel* m_panel8;
+	wxPanel* m_panel5;
+	wxStaticText* m_staticText111;
+	wxPanel* m_panel9;
+	wxStdDialogButtonSizer* m_sdbSizer1;
 	
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
@@ -827,11 +750,11 @@ void ProjectDefFieldDlg::CreateControls()
 	bSizer2->Add( sbSizer12, 1, wxALL|wxEXPAND, 5 );
 	
 	
-	
+	m_DlgAFD_Choicebook->SetSelection(0);
 	
 	m_sdbSizer1 = new wxStdDialogButtonSizer();
-	m_sdbSizer1OK = new wxButton( this, wxID_OK );
-	m_sdbSizer1->AddButton( m_sdbSizer1OK );
+	m_DlgAFD_Button_OK = new wxButton( this, wxID_OK );
+	m_sdbSizer1->AddButton( m_DlgAFD_Button_OK );
 	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
 	m_sdbSizer1->Realize();
