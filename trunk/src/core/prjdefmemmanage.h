@@ -74,6 +74,8 @@ class PrjDefMemManage
 		// variables
 		wxString m_PrjPath;
 		wxString m_PrjName;
+		wxString m_PrjAuthors;
+		wxString m_PrjSummary;
 		PRJDEF_UNIT_TYPE m_PrjUnitType;
 		PRJDEF_PROJ_TYPE m_PrjProjType;
 		PrjMemLayersArray * m_PrjLayerArray;

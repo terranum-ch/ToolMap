@@ -59,13 +59,12 @@ class DataBaseTM : public DataBase
 		bool CreateFieldText (ProjectDefMemoryFields * myField, const wxString & TableName);
 		bool CreateFieldDouble (ProjectDefMemoryFields * myField, const wxString & TableName);
 		bool CreateFieldDate (ProjectDefMemoryFields * myField, const wxString & TableName);
-		
-		// field operations private (adding enumeration)
-		bool AddFieldConstrain (ProjectDefMemoryFields * myField, const wxString & TableName);
+		bool CreateFieldEnum (ProjectDefMemoryFields * myField, const wxString & TableName);
 		
 	public:
 		DataBaseTM();
 		~DataBaseTM();
+		
 		
 		// general database operations
 		bool FillLayerTableTypeData ();

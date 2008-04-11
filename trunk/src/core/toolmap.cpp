@@ -76,6 +76,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
 	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
+	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
@@ -466,6 +467,15 @@ void ToolMapFrame::OnEditProjectSettings (wxCommandEvent & event)
 {
 	// call the project manager.
 	m_PManager->EditProjectSettings();
+}
+
+
+
+void ToolMapFrame::OnEditProject (wxCommandEvent & event)
+{
+	// call the project manager
+	m_PManager->EditProject();
+	
 }
 
 

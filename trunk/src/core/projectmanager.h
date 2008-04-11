@@ -73,6 +73,7 @@ class ProjectManager : public wxObject
 		bool OpenProject(const wxString & path);
 		bool EditProjectObjectDefinition ();
 		bool EditProjectSettings ();
+		bool EditProject ();
 		
 		// project infos
 		wxString GetProjectName();

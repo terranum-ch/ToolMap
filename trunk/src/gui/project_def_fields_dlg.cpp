@@ -651,14 +651,14 @@ void ProjectDefFieldDlg::CreateControls()
 	m_staticText6->Wrap( -1 );
 	fgSizer1->Add( m_staticText6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_DlgAFD_Field_Precision = new wxSpinCtrl( m_panel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+	m_DlgAFD_Field_Precision = new wxSpinCtrl( m_panel7, ID_DLGAFD_FIELD_PRECISION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
 	fgSizer1->Add( m_DlgAFD_Field_Precision, 0, wxALL|wxEXPAND, 5 );
 	
 	m_staticText7 = new wxStaticText( m_panel7, wxID_ANY, _("Field scale :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	fgSizer1->Add( m_staticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_DlgAFD_Field_Scale = new wxSpinCtrl( m_panel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+	m_DlgAFD_Field_Scale = new wxSpinCtrl( m_panel7, ID_DLGAFD_FIELD_SCALE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
 	fgSizer1->Add( m_DlgAFD_Field_Scale, 0, wxALL|wxEXPAND, 5 );
 	
 	m_staticText8 = new wxStaticText( m_panel7, wxID_ANY, _("Result Sample :"), wxDefaultPosition, wxDefaultSize, 0 );

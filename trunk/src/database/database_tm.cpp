@@ -228,6 +228,9 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 }
 
 
+
+
+
 /*************************** PROJECT DATABASE FUNCTION ****************************/
 bool DataBaseTM::FillLayerTableTypeData ()
 {
@@ -341,19 +344,25 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 	if (IsProjectDataDefined()==FALSE)	
 	{
 		sSentence = wxString::Format(_T("INSERT INTO %s (PRJ_UNIT, PRJ_PROJECTION,") 
-									 _T("PRJ_NAME, PRJ_VERSION) VALUES (\"%s\",\"%s\",\"%s\",%d)"),
+									 _T("PRJ_NAME, PRJ_VERSION, PRJ_AUTHORS, PRJ_SUMMARY) ")
+									 _T(" VALUES (\"%s\",\"%s\",\"%s\",%d,\"%s\",\"%s\")"),
 									 TABLE_NAME_PRJ_SETTINGS.c_str(),
 									 sUnit.c_str(),sProj.c_str(),
-									 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION);
+									 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION,
+									 pPrjDefinition->m_PrjAuthors.c_str(),
+									 pPrjDefinition->m_PrjSummary.c_str());
 		
 	}
 	else
 		sSentence = wxString::Format(_T("UPDATE %s SET ") 
 									 _T("PRJ_UNIT = \"%s\", PRJ_PROJECTION = \"%s\", ")
-									 _T("PRJ_NAME = \"%s\", PRJ_VERSION = %d"),
+									 _T("PRJ_NAME = \"%s\", PRJ_VERSION = %d, ")
+									 _T("PRJ_AUTHORS = \"%s\", PRJ_SUMMARY = \"%s\""),
 									 TABLE_NAME_PRJ_SETTINGS.c_str(),
 									 sUnit.c_str(),sProj.c_str(),
-									 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION);
+									 pPrjDefinition->m_PrjName.c_str(),TM_DATABASE_VERSION,
+									 pPrjDefinition->m_PrjAuthors.c_str(),
+									 pPrjDefinition->m_PrjSummary.c_str());
 	
 	// processing request
 	if (DataBaseQueryNoResult(sSentence))
@@ -794,10 +803,8 @@ bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, const wxStri
 }
 
 
-bool DataBaseTM::AddFieldConstrain (ProjectDefMemoryFields * myField, const wxString & TableName)
-{
-	//bReturnValue = TRUE;
-	
+bool DataBaseTM::CreateFieldEnum (ProjectDefMemoryFields * myField, const wxString & TableName)
+{	
 	// first get all coded values from the array and concanete them into
 	// a wxString.
 	wxString sValues = _T("");
@@ -814,7 +821,7 @@ bool DataBaseTM::AddFieldConstrain (ProjectDefMemoryFields * myField, const wxSt
 	if (sValues.IsEmpty() == FALSE)
 	{
 		
-		wxString sSentence = wxString::Format(_T("ALTER TABLE `%s` MODIFY `%s` ENUM (%s)"),
+		wxString sSentence = wxString::Format(_T("ALTER TABLE `%s` ADD `%s` ENUM (%s)"),
 											  TableName.c_str(),
 											  myField->m_Fieldname.c_str(),
 											  sValues.c_str());
@@ -862,16 +869,13 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 			case  TM_FIELD_DATE:
 				bReturnValue = CreateFieldDate(myField, sTableName);
 				break;
+			case TM_FIELD_ENUMERATION:
+				bReturnValue = CreateFieldEnum(myField, sTableName);
+				break;
 			default:
 				bReturnValue = CreateFieldText(myField, sTableName);
 				break;
 		}
-		// add constrain on field if needed. 
-		if (myField->m_FieldConstrain == TRUE)
-		{
-			bReturnValue = AddFieldConstrain(myField, sTableName);
-		}
-
 	}
 	return bReturnValue;
 }
