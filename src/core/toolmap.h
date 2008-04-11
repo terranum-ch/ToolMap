@@ -236,6 +236,7 @@ private:
 	void OnOpenRecentProject (wxCommandEvent & event);
 	void OnEditProjectObjects (wxCommandEvent & event);
 	void OnEditProjectSettings (wxCommandEvent & event);
+	void OnEditProject (wxCommandEvent & event);
 	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);

@@ -97,6 +97,25 @@ bool ProjectManager::CreateNewProject()
 	return bReturn;
 }
 
+
+
+/***************************************************************************//**
+ @brief Edit the project (layers,...)
+ @details This function may be called for editing the project (layers,
+ fields,...).
+ @note do not call this function if no DB is opened.
+ @return  TRUE if all went ok during project editing
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 10 April 2008
+ *******************************************************************************/
+bool ProjectManager::EditProject ()
+{
+	wxLogDebug(_T("Editing the project"));
+	return TRUE;
+}
+
+
+
 /***************************************************************************//**
  @brief Close the active database
  @details This function may be called as often as you want, check is made and

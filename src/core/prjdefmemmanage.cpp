@@ -41,6 +41,8 @@ void PrjDefMemManage::InitDefaultValues()
 {
 	m_PrjPath		= _T("");
 	m_PrjName		= _T("");
+	m_PrjAuthors	= _T("");
+	m_PrjSummary	= _T("");
 	m_PrjUnitType	= UNIT_METERS;
 	m_PrjProjType	= PROJ_NOPROJ;
 	m_PrjLayerArray = new PrjMemLayersArray();

@@ -249,6 +249,8 @@ bool ProjectDefDLG::TransferDataFromWindow()
 {
 	m_pPrjDefinition->m_PrjPath = m_DlgPD_Proj_Path->GetPath();
 	m_pPrjDefinition->m_PrjName = m_DlgPd_Proj_Name->GetValue();
+	m_pPrjDefinition->m_PrjAuthors = m_DlgPd_Proj_Author->GetValue();
+	m_pPrjDefinition->m_PrjSummary = m_DlgPd_Proj_Comment->GetValue();
 	m_pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) m_DlgPd_Proj_Unit->GetSelection();
 	m_pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) m_DlgPd_Proj_Projection->GetSelection();
 	return TRUE;
