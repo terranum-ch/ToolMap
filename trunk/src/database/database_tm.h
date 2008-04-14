@@ -74,6 +74,7 @@ class DataBaseTM : public DataBase
 		// Database project operations
 		bool IsProjectDataDefined ();
 		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
+		bool GetProjectData (PrjDefMemManage * pPrjDefinition);
 		int	 GetDatabaseToolMapVersion ();
 		bool SetProjectExportData (int iExportType, const wxString & spath);
 		bool SetProjectBackupPath (const wxString & spath);
@@ -85,6 +86,7 @@ class DataBaseTM : public DataBase
 		bool AddLayer(ProjectDefMemoryLayers * myLayer); 
 		void SetActiveLayerId (ProjectDefMemoryLayers * myLayer);
 		int GetActiveLayerId () {return m_iDBLayerIndex;}
+		int GetNextLayer (ProjectDefMemoryLayers * myLayer);
 		
 		// Database object operations
 		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);
@@ -114,6 +116,10 @@ class DataBaseTM : public DataBase
 						   const wxString & stable,
 						   const wxString & sfield,
 						   const wxString & rankfield = _T("RANK"));
+		
+		// projects operations
+		PrjDefMemManage * GetProjectDataFromDB ();
+		bool UpdateDataBaseProject (PrjDefMemManage * pProjDef);
 		
 	};
 

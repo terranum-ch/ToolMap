@@ -373,6 +373,67 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 }
 
 
+/***************************************************************************//**
+ @brief Retrieve basic project data
+ @details This may be used for filling a #PrjDefMemManage object with basic data
+ from project such as Project name, path, units,... In facts all stuff from the
+ Project Definition dialog (except the spatial model)
+ @param pPrjDefinition a pointer to an existing #PrjDefMemManage object, will be
+ used for storing project data (path, name,...)
+ @return bool return TRUE if data was found from the Database
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 14 April 2008
+ *******************************************************************************/
+bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
+{
+	int i=0;
+	wxString sSentence = wxString::Format(_T("SELECT PRJ_UNIT, PRJ_PROJECTION, PRJ_NAME, ")
+										  _T("PRJ_AUTHORS, PRJ_SUMMARY FROM %s"), 
+										  TABLE_NAME_PRJ_SETTINGS.c_str());
+	if (DataBaseQuery(sSentence))
+	{
+		wxArrayString myResults = DataBaseGetNextResult();
+		
+		// UNITS
+		for (i = 0; i<PRJDEF_UNIT_TYPE_NUMBER; i++)
+		{
+			if (myResults.Item(0) == PRJDEF_UNIT_TYPE_STRING[i])
+			{
+				pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) i;
+				break;
+			}
+		}
+		
+		// PROJECTION
+		for (i = 0; i< PRJDEF_PROJ_TYPE_NUMBER; i++)
+		{
+			if(myResults.Item(1) == PRJDEF_PROJ_TYPE_STRING[i])
+			{
+				pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) i;
+				break;
+			}
+			
+		}
+		
+		// NAME
+		pPrjDefinition->m_PrjName = myResults.Item(2);
+		
+		// PATH
+		pPrjDefinition->m_PrjPath = DataBaseGetPath();
+		
+		// AUTHORS
+		pPrjDefinition->m_PrjAuthors = myResults.Item(3);
+		
+		// COMMENT
+		pPrjDefinition->m_PrjSummary = myResults.Item(4);
+		
+		return TRUE;
+	}
+	wxLogError(_T("Error getting project data from the DB"));
+	return FALSE;
+}
+
+
 
 int	 DataBaseTM::GetDatabaseToolMapVersion ()
 {
@@ -540,6 +601,42 @@ void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 	}
 	else
 		wxLogDebug(_T("Unable to find the layer [%s]"), myLayer->m_LayerName.c_str());
+}
+
+
+
+int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
+{
+	wxArrayString myResults;
+	wxString sSentence = wxString::Format(_T("SELECT LAYER_INDEX, TYPE_CD, LAYER_NAME FROM %s"),
+										  TABLE_NAME_LAYERS.c_str());
+	
+	// check if we have some results 
+	if (DataBaseHasResult())
+	{
+		myResults = DataBaseGetNextResult();
+		if (!myResults.IsEmpty())
+		{
+			wxASSERT (myResults.Count() == 3);
+			
+			// LAYER ID
+			myLayer->m_LayerID = wxAtoi(myResults.Item(0));
+			
+			// LAYER TYPE
+			myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) wxAtoi(myResults.Item(1));
+			
+			// LAYER NAME
+			myLayer->m_LayerName = myResults.Item(2);
+			return 1;
+		}
+		return -1;
+		
+	}
+	else 
+	{
+		DataBaseQuery(sSentence);
+	}
+	return 0;
 }
 
 
@@ -1137,6 +1234,74 @@ bool DataBaseTM::SetScaleRank (ScaleList * list, int icol,
 	return FALSE;
 }
 
+
+/********************************** PROJECT DATABASE OPERATIONS **********************************/
+PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
+{
+	PrjDefMemManage * myPrjDef = new PrjDefMemManage();
+	ProjectDefMemoryLayers * mypLayer = NULL;
+	
+	int iLayerAdded, iFieldAdded, iReturnValue;
+	
+	// Load General project data (path, name,...)
+	if (GetProjectData(myPrjDef))
+	{
+		wxLogDebug(_T("Getting basic project data... DONE"));
+		
+		
+		// clear database results
+		DataBaseDestroyResults();
+		
+		while (1)
+		{
+			mypLayer = myPrjDef->AddLayer();
+			iReturnValue = GetNextLayer(mypLayer);
+	
+			// item found ok
+			if (iReturnValue != 1)
+			{
+				// remove last layer
+				myPrjDef->RemoveLayer();
+			}
+			
+			iLayerAdded++;
+			
+			// no more results 
+			if (iReturnValue == -1)
+				break;
+			
+		}
+		
+		
+		return myPrjDef;
+	}
+	
+	wxLogError(_T("Error loading basic project data"));
+	return NULL;
+}
+
+
+/***************************************************************************//**
+ @brief Update database
+ @details This function update the project's data. This is a "clever" function,
+ only modified data is changed
+ @param pProjDef Object of type #PrjDefMemManage containing new project values.
+ @return  return TRUE if project was updated successfully
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 14 April 2008
+ *******************************************************************************/
+bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
+{
+	// update basic project 
+	if (SetProjectData(pProjDef))
+	{
+		
+		return TRUE;
+	}
+	
+	wxLogError(_T("Error updating project in the database"));
+	return FALSE;	
+}
 
 
 /// FIELD CREATION ::
