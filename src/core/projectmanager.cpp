@@ -111,7 +111,28 @@ bool ProjectManager::CreateNewProject()
 bool ProjectManager::EditProject ()
 {
 	wxLogDebug(_T("Editing the project"));
-	return TRUE;
+	
+	PrjDefMemManage * pPrjDefinition = NULL;
+	// load data from DB --> PrjDefMemManage
+	pPrjDefinition = m_DB->GetProjectDataFromDB();
+	if (pPrjDefinition != NULL)
+	{
+		
+		ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, pPrjDefinition, TRUE);
+		if(myNewProjDlg->ShowModal() == wxID_OK)
+		{
+			
+			// modify data 
+			m_DB->UpdateDataBaseProject(pPrjDefinition);
+			
+		}
+		
+		delete myNewProjDlg;
+		delete pPrjDefinition;
+	}
+	
+	
+	return FALSE;
 }
 
 

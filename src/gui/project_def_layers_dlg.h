@@ -218,7 +218,9 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnRemoveObject (wxCommandEvent & event);
 		void OnImportObject (wxCommandEvent & event);
 		
-	
+		bool m_bIsModeEditing;
+		void DisableControlsForEdition();
+		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg );
 		DECLARE_EVENT_TABLE();
@@ -228,6 +230,7 @@ class ProjectDefLayersDlg: public wxDialog
 		ProjectDefLayersDlg();
 		ProjectDefLayersDlg( wxWindow* parent,
 							PrjDefMemManage *pPrjDef,
+							bool isEditingMode = FALSE,
 							wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
 							const wxString& caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
 							const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION, 

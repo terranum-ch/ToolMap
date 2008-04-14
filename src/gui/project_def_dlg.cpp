@@ -77,14 +77,18 @@ ProjectDefDLG::ProjectDefDLG()
 
 ProjectDefDLG::ProjectDefDLG( wxWindow* parent, 
 							 PrjDefMemManage * myPrjDefinition,
+							  bool isEditingMode,
 							 wxWindowID id, const wxString& caption, 
 							 const wxPoint& pos, const wxSize& size, long style )
 {
     Init();
+	m_bIsModeEditing = isEditingMode;
+
+	
+	// create UI
     Create(parent, id, caption, pos, size, style);
 	
 	m_pPrjDefinition = myPrjDefinition;
-	
 	// Pass Address of Project Definition to the list
 	m_DlgPd_Stat_Model_List->PassPrjDefToList(m_pPrjDefinition);
 }
@@ -129,8 +133,19 @@ void ProjectDefDLG::Init()
     m_DlgPd_Spat_Mdl_Add = NULL;
     m_DljPd_Spat_Mdl_Del = NULL;
     m_DlgPd_Button_Ok = NULL;
+	
+	m_bIsModeEditing = FALSE;
+	
 }
 
+
+void ProjectDefDLG::DisableControlsForEdition()
+{
+	m_DlgPD_Proj_Path->Enable(FALSE);
+	m_DlgPd_Proj_Projection->Enable(FALSE);
+	m_DlgPd_Proj_Unit->Enable(FALSE);
+	m_DlgPd_Button_Ok->SetLabel(_("Update Project"));
+}
 
 
 void ProjectDefDLG::CreateControls()
@@ -152,9 +167,11 @@ void ProjectDefDLG::CreateControls()
     wxStaticText* itemStaticText7 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Project path :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer6->Add(itemStaticText7, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
+
 	m_DlgPD_Proj_Path = new wxDirPickerCtrlBest(m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PATH, wxEmptyString,
 												_("Select the database folder")); 
-    
+  
+	
 	///@bug alignement bug, only under mac ??
 	// error with mac... alignement bug ???
 #if defined(__WXMAC__)
@@ -240,6 +257,11 @@ void ProjectDefDLG::CreateControls()
     itemStdDialogButtonSizer28->AddButton(itemButton30);
 	
     itemStdDialogButtonSizer28->Realize();
+	
+	// if editing mode is on, we disable some controls
+	if (m_bIsModeEditing)
+		DisableControlsForEdition();
+	
 		
 }
 
@@ -253,6 +275,25 @@ bool ProjectDefDLG::TransferDataFromWindow()
 	m_pPrjDefinition->m_PrjSummary = m_DlgPd_Proj_Comment->GetValue();
 	m_pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) m_DlgPd_Proj_Unit->GetSelection();
 	m_pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) m_DlgPd_Proj_Projection->GetSelection();
+	return TRUE;
+}
+
+bool ProjectDefDLG::TransferDataToWindow()
+{
+	// Get data from the DB and parse them into controls
+	// only if in editing mode
+	if (m_bIsModeEditing)
+	{
+		wxASSERT (m_pPrjDefinition);
+		
+		m_DlgPD_Proj_Path->SetPath(m_pPrjDefinition->m_PrjPath);
+		m_DlgPd_Proj_Name->SetValue(m_pPrjDefinition->m_PrjName);
+		m_DlgPd_Proj_Author->SetValue(m_pPrjDefinition->m_PrjAuthors);
+		m_DlgPd_Proj_Comment->SetValue(m_pPrjDefinition->m_PrjSummary);
+		m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);
+		m_DlgPd_Proj_Projection->SetSelection(m_pPrjDefinition->m_PrjProjType);
+		
+	}
 	return TRUE;
 }
 

@@ -97,12 +97,9 @@ class wxToggleButton;
 class ProjectDefDLG: public wxDialog
 	{    
 	private:
-		// may be deleted ??
-		PrjMemLayersArray  m_LayersArray;
-		
 		// Project memory class
 		PrjDefMemManage * m_pPrjDefinition;
-		
+				
 		void OnAddLayer(wxCommandEvent & event);
 		void OnRemoveLayer (wxCommandEvent & event);
 		void OnIdleWait(wxIdleEvent & event);
@@ -112,6 +109,8 @@ class ProjectDefDLG: public wxDialog
 		DECLARE_DYNAMIC_CLASS( ProjectDefDLG );
 		DECLARE_EVENT_TABLE();
 		
+		bool m_bIsModeEditing;
+		void DisableControlsForEdition();
 		
 		
 	public:
@@ -119,6 +118,7 @@ class ProjectDefDLG: public wxDialog
 		ProjectDefDLG();
 		ProjectDefDLG( wxWindow* parent, 
 					  PrjDefMemManage * myPrjDefinition,
+					  bool isEditingMode = FALSE,
 					  wxWindowID id = SYMBOL_PROJECTDEFDLG_IDNAME, 
 					  const wxString& caption = SYMBOL_PROJECTDEFDLG_TITLE, 
 					  const wxPoint& pos = SYMBOL_PROJECTDEFDLG_POSITION, 
@@ -143,6 +143,7 @@ class ProjectDefDLG: public wxDialog
 		
 		//void RemoveObjFromArray();
 		virtual bool TransferDataFromWindow();
+		virtual bool TransferDataToWindow();
 		
 		
 		wxPanel* m_DlgPd_Panel_Proj;
