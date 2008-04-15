@@ -145,6 +145,8 @@ class ProjectDefDLG: public wxDialog
 		virtual bool TransferDataFromWindow();
 		virtual bool TransferDataToWindow();
 		
+		bool IsEditMode(){return m_bIsModeEditing;}
+		
 		
 		wxPanel* m_DlgPd_Panel_Proj;
 		wxDirPickerCtrlBest* m_DlgPD_Proj_Path;
@@ -174,7 +176,7 @@ class ProjectDefDLG: public wxDialog
 class ProjectDefList : public ListGenReportWithDialog
 	{
 	private:
-		
+		bool m_bIsModeEditing;
 //		void OnMySelectionChange (wxListEvent & event);
 				
 		wxChoice * m_ChoiceToChange;
@@ -195,7 +197,8 @@ class ProjectDefList : public ListGenReportWithDialog
 	public:
 		static const int ID_PARAMLIST;
 		
-		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size,  ProjectDefDLG * myParentDlg);
+		ProjectDefList(wxWindow * parent, wxWindowID id, wxSize size, 
+					   ProjectDefDLG * myParentDlg);
 		
 		~ProjectDefList(); 
 		

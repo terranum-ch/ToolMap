@@ -142,6 +142,23 @@ ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(unsigned int iIndex)
 	return NULL; // out of the bound
 }
 
+ProjectDefMemoryLayers * PrjDefMemManage::GetNextLayer()
+{
+	
+	// deal with the increment of the retruned item
+	if (m_iActualLayers >= GetCountLayers())
+	{
+		m_iActualLayers = 0;
+	}
+	
+	ProjectDefMemoryLayers * layer = &(m_PrjLayerArray->Item(m_iActualLayers));
+	
+	// increment the object returned
+	m_iActualLayers ++;
+	
+	return layer;	
+}
+
 
 /*********************** OBJECTS FUNCTIONS **************************/
 ProjectDefMemoryObjects * PrjDefMemManage::AddObject()

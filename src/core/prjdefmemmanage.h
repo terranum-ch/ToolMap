@@ -65,6 +65,7 @@ class PrjDefMemManage
 		int m_iActualObj;
 		int m_iActualField;
 		int m_iActualCodedVal;
+		int m_iActualLayers;
 		
 		
 		// member functions
@@ -98,7 +99,8 @@ class PrjDefMemManage
 		void							SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
 													{m_pActiveLayer = ActiveLayer;}
 		ProjectDefMemoryLayers *		GetActiveLayer(){return m_pActiveLayer;}
-		
+		int								GetCountLayers(){return m_PrjLayerArray->GetCount();}
+		ProjectDefMemoryLayers *		GetNextLayer ();
 	
 		// object members functions
 		ProjectDefMemoryObjects *		AddObject ();
