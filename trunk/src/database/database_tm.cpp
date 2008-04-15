@@ -416,7 +416,7 @@ bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
 		}
 		
 		// NAME
-		pPrjDefinition->m_PrjName = myResults.Item(2);
+		pPrjDefinition->m_PrjName = DataBaseGetName();
 		
 		// PATH
 		pPrjDefinition->m_PrjPath = DataBaseGetPath();
@@ -639,6 +639,48 @@ int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
 	return 0;
 }
 
+
+/***************************************************************************//**
+ @brief Prepare statement for updating layer
+ @details This function return the prepared SQL statement for updating or
+ inserting data into the #TABLE_NAME_LAYERS. 
+ @note the most important thing is
+ to be sure that myLayer->m_LayerID is correctly set for function's good
+ behaviour.
+ @param myLayer pointer to a #ProjectDefMemoryLayers object with new data. In
+ case of modification the m_LayerID member must be set correctly
+ @param sSqlSentence reference to a wxString in which we are going to put the
+ issued sentence
+ @return TRUE if a modification statement was issued or FALSE if we
+ were preparing an INSERT statement
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 15 April 2008
+ *******************************************************************************/
+bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlSentence)
+{
+	// update or insert statement based on the m_layerID 
+	// greater than 1 for update and 0 if insert is required
+	if (myLayer->m_LayerID > 0)
+	{
+		sSqlSentence = wxString::Format(_T(" UPDATE %s SET TYPE_CD = %d, LAYER_NAME = \"%s\"")
+										  _T("WHERE LAYER_INDEX = %d; "), TABLE_NAME_LAYERS.c_str(), 
+										  myLayer->m_LayerType, 
+										  myLayer->m_LayerName.c_str(),
+										  myLayer->m_LayerID);
+		return TRUE;
+	}
+	else 
+	{
+		sSqlSentence = wxString::Format(_T(" INSERT INTO %s (TYPE_CD, LAYER_NAME) ")
+										_T("VALUES (%d,\"%s\"); "),
+										TABLE_NAME_LAYERS.c_str(), 
+										myLayer->m_LayerType, 
+										myLayer->m_LayerName.c_str());
+		return FALSE;	
+	}
+
+	
+}
 
 
 /*************************** OBJECT DATABASE FUNCTION ****************************/
@@ -1241,7 +1283,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 	PrjDefMemManage * myPrjDef = new PrjDefMemManage();
 	ProjectDefMemoryLayers * mypLayer = NULL;
 	
-	int iLayerAdded, iFieldAdded, iReturnValue;
+	int iLayerAdded = 0, iFieldAdded = 0, iReturnValue = 0;
 	
 	// Load General project data (path, name,...)
 	if (GetProjectData(myPrjDef))
@@ -1262,6 +1304,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			{
 				// remove last layer
 				myPrjDef->RemoveLayer();
+				iLayerAdded--;
 			}
 			
 			iLayerAdded++;
@@ -1272,7 +1315,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			
 		}
 		
-		
+		wxLogDebug(_T("Nb of things found in db : Layers : %d"), iLayerAdded);
 		return myPrjDef;
 	}
 	
@@ -1292,11 +1335,23 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
  *******************************************************************************/
 bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 {
+	wxString sSentence = _T("");
+	
 	// update basic project 
 	if (SetProjectData(pProjDef))
 	{
+		// update layers (insert or modify)
+		for (int i = 0; i< pProjDef->GetCountLayers(); i++)
+		{
+			UpdateLayer(pProjDef->GetNextLayer(), sSentence);
+		}
+		if (DataBaseQueryNoResult(sSentence))
+		{
 		
-		return TRUE;
+		
+			return TRUE;
+		}	
+		
 	}
 	
 	wxLogError(_T("Error updating project in the database"));

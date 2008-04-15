@@ -87,6 +87,7 @@ class DataBaseTM : public DataBase
 		void SetActiveLayerId (ProjectDefMemoryLayers * myLayer);
 		int GetActiveLayerId () {return m_iDBLayerIndex;}
 		int GetNextLayer (ProjectDefMemoryLayers * myLayer);
+		bool UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlSentence);
 		
 		// Database object operations
 		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);

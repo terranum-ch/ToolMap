@@ -583,34 +583,41 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 	
 	if (m_LayersObj != NULL)
 	{
+		// GENERIC VALUES FOR LAYER
 		m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName); 
 		m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE) m_LayersObj->m_LayerType);
 		
-		//wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 		
-		// fill the object list
-		for (int i = 0; i<m_pPrjDefinition->GetCountObject(); i++)
+		// fill the object list (but only if panel exists)
+		if (m_DlgPDL_Panel_Obj != NULL)
 		{
-			ProjectDefMemoryObjects * myObjectObj = m_pPrjDefinition->GetNextObjects();
-			
-			// fit things returned in the list
-			myObjListValues.Add(wxString::Format(_T("%d"), myObjectObj->m_ObjectCode));
-			myObjListValues.Add(myObjectObj->m_ObjectName);
-			m_DlgPDL_Object_List->EditDataToList(myObjListValues);
-			myObjListValues.Clear();
+			for (int i = 0; i<m_pPrjDefinition->GetCountObject(); i++)
+			{
+				ProjectDefMemoryObjects * myObjectObj = m_pPrjDefinition->GetNextObjects();
+				
+				// fit things returned in the list
+				myObjListValues.Add(wxString::Format(_T("%d"), myObjectObj->m_ObjectCode));
+				myObjListValues.Add(myObjectObj->m_ObjectName);
+				m_DlgPDL_Object_List->EditDataToList(myObjListValues);
+				myObjListValues.Clear();
+			}
 		}
 		
-		// fill the field list
-		for (int j=0; j < m_pPrjDefinition->GetCountFields(); j++)
+		
+		// fill the field list (but only if panel exists)
+		if (m_DlgPDL_Panel_Fields != NULL)
 		{
-			ProjectDefMemoryFields * myFieldObj = m_pPrjDefinition->GetNextField();
-			
-			// fit things returned in the list
-			myFieldListValues.Add(myFieldObj->m_Fieldname);
-			myFieldListValues.Add(PRJDEF_FIELD_TYPE_STRING[myFieldObj->m_FieldType]);
-			m_DlgPDL_Fields_List->EditDataToList(myFieldListValues);
-			myFieldListValues.Clear();
-
+			for (int j=0; j < m_pPrjDefinition->GetCountFields(); j++)
+			{
+				ProjectDefMemoryFields * myFieldObj = m_pPrjDefinition->GetNextField();
+				
+				// fit things returned in the list
+				myFieldListValues.Add(myFieldObj->m_Fieldname);
+				myFieldListValues.Add(PRJDEF_FIELD_TYPE_STRING[myFieldObj->m_FieldType]);
+				m_DlgPDL_Fields_List->EditDataToList(myFieldListValues);
+				myFieldListValues.Clear();
+				
+			}
 		}
 		
 	}
@@ -640,7 +647,9 @@ ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPr
 	
 	// init prj definition and pass it to the list
 	m_pPrjDefinition = pPrjDef;
-	m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
+	if (m_DlgPDL_Panel_Obj != NULL)
+		m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
+	if (m_DlgPDL_Panel_Fields != NULL)
 	m_DlgPDL_Fields_List->PassPrjDefToList(m_pPrjDefinition);
 	//wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 }

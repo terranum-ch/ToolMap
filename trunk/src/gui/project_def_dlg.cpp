@@ -144,6 +144,7 @@ void ProjectDefDLG::DisableControlsForEdition()
 	m_DlgPD_Proj_Path->Enable(FALSE);
 	m_DlgPd_Proj_Projection->Enable(FALSE);
 	m_DlgPd_Proj_Unit->Enable(FALSE);
+	m_DlgPd_Proj_Name->Enable(FALSE);
 	m_DlgPd_Button_Ok->SetLabel(_("Update Project"));
 }
 
@@ -280,6 +281,8 @@ bool ProjectDefDLG::TransferDataFromWindow()
 
 bool ProjectDefDLG::TransferDataToWindow()
 {
+	wxArrayString myLayerList;
+	
 	// Get data from the DB and parse them into controls
 	// only if in editing mode
 	if (m_bIsModeEditing)
@@ -293,6 +296,18 @@ bool ProjectDefDLG::TransferDataToWindow()
 		m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);
 		m_DlgPd_Proj_Projection->SetSelection(m_pPrjDefinition->m_PrjProjType);
 		
+		// fill the layers list
+		for (int i = 0; i<m_pPrjDefinition->GetCountLayers(); i++)
+		{
+			ProjectDefMemoryLayers * myObjLayers = m_pPrjDefinition->GetNextLayer();
+			
+			// fit things returned in the list
+			myLayerList.Add(myObjLayers->m_LayerName);
+			myLayerList.Add(PRJDEF_LAYERS_TYPE_STRING[myObjLayers->m_LayerType]);
+			m_DlgPd_Stat_Model_List->EditDataToList(myLayerList);
+			myLayerList.Clear();
+		}
+			
 	}
 	return TRUE;
 }
@@ -305,7 +320,7 @@ bool ProjectDefDLG::TransferDataToWindow()
 ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, ProjectDefDLG * myParentDlg) 
 	: ListGenReportWithDialog(parent,id,size)
 {
-	
+	m_bIsModeEditing = myParentDlg->IsEditMode();
 	// Create columns
 	wxArrayString myColNames;
 	wxArrayInt myColsWidths;
@@ -385,7 +400,7 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 void ProjectDefList::BeforeEditing ()
 {
 	// create the dialog
-	m_LayersDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition);
+	m_LayersDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition, m_bIsModeEditing);
 	//wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(m_LayersDialog);
 
