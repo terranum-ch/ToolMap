@@ -662,24 +662,48 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 	// greater than 1 for update and 0 if insert is required
 	if (myLayer->m_LayerID > 0)
 	{
-		sSqlSentence = wxString::Format(_T(" UPDATE %s SET TYPE_CD = %d, LAYER_NAME = \"%s\"")
-										  _T("WHERE LAYER_INDEX = %d; "), TABLE_NAME_LAYERS.c_str(), 
+		sSqlSentence.Append(wxString::Format(_T(" UPDATE %s SET TYPE_CD = %d, LAYER_NAME = \"%s\"")
+										  _T(" WHERE LAYER_INDEX = %d; "), TABLE_NAME_LAYERS.c_str(), 
 										  myLayer->m_LayerType, 
 										  myLayer->m_LayerName.c_str(),
-										  myLayer->m_LayerID);
+										  myLayer->m_LayerID));
 		return TRUE;
 	}
 	else 
 	{
-		sSqlSentence = wxString::Format(_T(" INSERT INTO %s (TYPE_CD, LAYER_NAME) ")
+		sSqlSentence.Append(wxString::Format(_T(" INSERT INTO %s (TYPE_CD, LAYER_NAME) ")
 										_T("VALUES (%d,\"%s\"); "),
 										TABLE_NAME_LAYERS.c_str(), 
 										myLayer->m_LayerType, 
-										myLayer->m_LayerName.c_str());
+										myLayer->m_LayerName.c_str()));
 		return FALSE;	
 	}
 
 	
+}
+
+
+/***************************************************************************//**
+ @brief Prepare statement for deleting layer(s)
+ @details This append to the sentence the SQL code for deleting all layers which
+ have their IDs stored into the deletelist array. This function operate on the
+ #TABLE_NAME_LAYERS table.
+ @param deletelist A wxArrayLong containing all ID we want to delete
+ @param sSqlSentence SQL sentence which will be modified with the new delete
+ statement
+ @return  allways true for the moment
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 16 April 2008
+ *******************************************************************************/
+bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSentence)
+{
+	for (unsigned int i= 0; i<deletelist.GetCount();i++)
+	{
+		sSqlSentence.Append(wxString::Format(_T(" DELETE FROM %s WHERE LAYER_INDEX = %d; "),
+											 TABLE_NAME_LAYERS.c_str(),
+											 deletelist.Item(i)));
+	}
+	return TRUE;
 }
 
 
@@ -1340,14 +1364,23 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	// update basic project 
 	if (SetProjectData(pProjDef))
 	{
-		// update layers (insert or modify)
+		// prepare sentence for updating layers (insert or modify)
 		for (int i = 0; i< pProjDef->GetCountLayers(); i++)
 		{
 			UpdateLayer(pProjDef->GetNextLayer(), sSentence);
 		}
+		// then we prepare the sentence for deleting layers
+		// based on the delete array
+		DeleteLayer(pProjDef->m_StoreDeleteLayers, sSentence);
+		
+		
+		wxLogDebug(sSentence);
+		
+		// execute the sentence for layers.
 		if (DataBaseQueryNoResult(sSentence))
 		{
-		
+			
+			
 		
 			return TRUE;
 		}	

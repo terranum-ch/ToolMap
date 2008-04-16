@@ -448,6 +448,8 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 void ProjectDefList::BeforeDeleting()
 {
 	wxString myLayerName;
+	ProjectDefMemoryLayers * layer = NULL;
+	int iDelete = 0;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
@@ -458,6 +460,19 @@ void ProjectDefList::BeforeDeleting()
 	for ( int i=0; i< iNbSelectedItems; i++)
 	{
 		myLayerName = GetItemColText(mySelectedListItems[i], 0);		
+		
+		// if we are in editing mode we must save the items to delete
+		// in the deletelayer array.
+		if (m_bIsModeEditing == TRUE)
+		{
+			layer = m_pPrjDefinition->FindLayer(myLayerName);
+			if (layer && layer->m_LayerID > 0)
+			{
+				wxLogDebug(_T("Marqued layer for deleting : %d"), layer->m_LayerID);
+				m_pPrjDefinition->m_StoreDeleteLayers.Add(layer->m_LayerID);
+			}
+		}
+		
 		m_pPrjDefinition->RemoveLayer(myLayerName);
 	}
 
