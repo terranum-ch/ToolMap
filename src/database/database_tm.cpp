@@ -1044,6 +1044,59 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 }
 
 
+
+int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex)
+{
+	wxArrayString myResults;
+	wxString sSentence = wxString::Format(_T("SHOW COLUMNS FROM %s%d"),
+										  TABLE_NAME_LAYER_AT.c_str(),
+										  DBlayerIndex);
+	
+	// check if we have some results 
+	if (DataBaseHasResult())
+	{
+		myResults = DataBaseGetNextResult();
+		if (!myResults.IsEmpty())
+		{
+			// FIELD NAME
+			myField->m_Fieldname = myResults.Item(0);
+			
+			// HERE HERE HERE put all this stuff into ProjectDefMemoryFields ------------
+			
+			
+			// LAYER TYPE
+			//myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) wxAtoi(myResults.Item(1));
+			
+			// LAYER NAME
+			//myLayer->m_LayerName = myResults.Item(2);
+			return 1; // ok continue
+		}
+		return -1; // no more results 
+		
+		
+	}
+	else
+	{
+		// check that the table (LAYER_AT...) exists
+		if (DataBaseTableExist(wxString::Format(_T("%s%d"),
+											TABLE_NAME_LAYER_AT.c_str(),
+											DBlayerIndex)))
+		{
+			// get all fields
+			if (DataBaseQuery(sSentence))
+			{
+				// skip two first lines 
+				DataBaseGetNextResult(); DataBaseGetNextResult(); 
+
+				return 0; // ok query done
+			}
+			
+		}
+	}
+	return -2; // error
+}
+
+
 /*************************** DATABASE QUERY FUNCTION ****************************/
 bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
 {
@@ -1306,8 +1359,9 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 {
 	PrjDefMemManage * myPrjDef = new PrjDefMemManage();
 	ProjectDefMemoryLayers * mypLayer = NULL;
+	ProjectDefMemoryFields * mypField = NULL;
 	
-	int iLayerAdded = 0, iFieldAdded = 0, iReturnValue = 0;
+	int iLayerAdded = 0, iFieldAdded = 0, iReturnValue = 0, iReturnFieldValue=0;
 	
 	// Load General project data (path, name,...)
 	if (GetProjectData(myPrjDef))
@@ -1318,6 +1372,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 		// clear database results
 		DataBaseDestroyResults();
 		
+		// get all layers 
 		while (1)
 		{
 			mypLayer = myPrjDef->AddLayer();
@@ -1338,6 +1393,45 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 				break;
 			
 		}
+		
+		// get fields for all layers 
+		// loop all layers and then search fields
+		for (int i = 0; i< iLayerAdded; i++)
+		{
+			mypLayer = myPrjDef->FindLayer(i); // find layer and setactivelayer...
+			if (mypLayer)
+			{
+				// loop in the layer for all fields
+				while (1)
+				{
+					
+					// add a layer
+					mypField = myPrjDef->AddField();
+					
+					iReturnFieldValue = GetNextField(mypField, mypLayer->m_LayerID);
+					
+					// item found ok
+					if (iReturnFieldValue != 1)
+					{
+						// remove last field
+						myPrjDef->RemoveField();
+						iFieldAdded--;
+					}
+					
+					iFieldAdded++;
+					
+					wxLogDebug(_T("returned values for field is : %d"), iReturnFieldValue);
+					
+					if (iReturnFieldValue < 0) // error or no more results
+					{
+						break;
+					}
+				}
+				
+			}
+		}
+		
+		
 		
 		wxLogDebug(_T("Nb of things found in db : Layers : %d"), iLayerAdded);
 		return myPrjDef;

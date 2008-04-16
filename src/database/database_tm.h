@@ -98,6 +98,7 @@ class DataBaseTM : public DataBase
 		
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
+		int GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex);
 		
 		// database query
 		bool GetObjectListByLayerType(int ilayertype);
