@@ -349,7 +349,7 @@ bool DataBase::DataBaseTableExist(const wxString & tableName)
 {
 	MYSQL_ROW record;
 	// look for an existing table
-	wxString sSentence = wxString::Format (_T("SHOW TABLES  LIKE  '%s'"), tableName.c_str());
+	wxString sSentence = wxString::Format (_T("SHOW TABLES  LIKE  \"%s\""), tableName.c_str());
 	
 
 	if (DataBaseQuery(sSentence))
