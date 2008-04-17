@@ -660,7 +660,7 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 		"this_program",       /* this string is not used */
 		stemps,
 		"--language=./share/english",
-		"--skip-plugin-innodb",//"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
+		//"--skip-plugin-innodb",//"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
 		"--port=3309",
 		"--character-sets-dir=./share/charsets",
 		"--character_set_server=utf8"
