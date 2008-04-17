@@ -1058,17 +1058,8 @@ int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex
 		myResults = DataBaseGetNextResult();
 		if (!myResults.IsEmpty())
 		{
-			// FIELD NAME
-			myField->m_Fieldname = myResults.Item(0);
+			myField->SetValues(myResults);
 			
-			// HERE HERE HERE put all this stuff into ProjectDefMemoryFields ------------
-			
-			
-			// LAYER TYPE
-			//myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) wxAtoi(myResults.Item(1));
-			
-			// LAYER NAME
-			//myLayer->m_LayerName = myResults.Item(2);
 			return 1; // ok continue
 		}
 		return -1; // no more results 

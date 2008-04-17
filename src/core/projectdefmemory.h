@@ -175,6 +175,9 @@ class ProjectDefMemoryFieldsCodedVal
 		ProjectDefMemoryFieldsCodedVal();
 		~ProjectDefMemoryFieldsCodedVal();
 		
+		static int ExtractCodedValuesFromString (const wxString & codedvalue, 
+										  wxArrayString & results);
+		
 	};
 
 // Creating a list of MemoryObjects
@@ -222,6 +225,8 @@ class ProjectDefMemoryFields
 	private:
 		void InitMemberValues();
 		
+		wxString ExtractValuesFromString(const wxString & fielddef);
+		
 	public:
 		int m_FieldID;
 		wxString m_Fieldname;
@@ -237,6 +242,8 @@ class ProjectDefMemoryFields
 		
 		ProjectDefMemoryFields();
 		~ProjectDefMemoryFields();
+		
+		bool SetValues(const wxArrayString & fielddef);
 		
 	
 	};
