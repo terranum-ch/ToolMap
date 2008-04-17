@@ -88,7 +88,7 @@ enum PRJDEF_PROJ_TYPE
 	PROJ_NOPROJ = 0,
 	PROJ_SWISSPROJ
 };
-static const int PRJDEF_PROJ_TYPE_NUMBER = 3;
+static const int PRJDEF_PROJ_TYPE_NUMBER = 2;
 
 
 // Definitions for the field type, we define the text and  the id of 

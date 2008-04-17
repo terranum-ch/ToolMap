@@ -51,6 +51,7 @@ void PrjDefMemManage::InitDefaultValues()
 	m_iActualObj = 0;
 	m_iActualField = 0;
 	m_iActualCodedVal = 0;
+	m_iActualLayers = 0;
 }
 
 
