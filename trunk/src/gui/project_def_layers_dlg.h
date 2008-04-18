@@ -103,7 +103,7 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 	{
 	private:
-		
+		bool m_bIsModeEditing;
 		//		void OnMySelectionChange (wxListEvent & event);
 		
 		PrjDefMemManage *  m_pPrjDefinition;
@@ -252,6 +252,8 @@ class ProjectDefLayersDlg: public wxDialog
 		
 		/// Initialises member variables
 		void Init();
+		
+		bool IsEditMode(){return m_bIsModeEditing;}
 				
 		/// Creates the controls and sizers
 		void CreateControls();

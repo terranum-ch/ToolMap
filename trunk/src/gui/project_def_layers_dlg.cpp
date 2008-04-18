@@ -204,6 +204,8 @@ ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWind
 	m_pPrjDefinition = NULL;
 	m_FieldsObj = NULL;
 	
+	m_bIsModeEditing = myDlg->IsEditMode();
+	
 }
 
 ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
@@ -286,7 +288,7 @@ void ProjectDefLayersFieldsList::BeforeDeleting ()
 void ProjectDefLayersFieldsList::BeforeEditing ()
 {
 	// create the dialog, will be deleted in AfterEditing.
-	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this,m_pPrjDefinition);
+	ProjectDefFieldDlg * myFieldDlg = new ProjectDefFieldDlg(this,m_pPrjDefinition, m_bIsModeEditing);
 	//wxLogDebug(_T("Creating Field Dialog"));
 	SetDialog(myFieldDlg);
 	
