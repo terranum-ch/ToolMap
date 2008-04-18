@@ -520,27 +520,31 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
 	
 	// transfert values based on the actual selected field type in
-	// the choicebook. // modify here
-	switch (m_DlgAFD_Choicebook->GetSelection())
-	{
-		case TM_FIELD_INTEGER:
-			TransfertIntegerValues(FALSE);
-			break;
-		case TM_FIELD_FLOAT:
-			TransfertFloatValues(FALSE);
-			break;
-		case TM_FIELD_DATE:
-			TransfertDateValues(FALSE);
-			break;
-		case TM_FIELD_ENUMERATION:
-			TransfertEnumValues(FALSE);
-			break;
+	// the choicebook (use the text value not the index, because
+	// when in edit mode only one field type is availlable).
+	wxString mySelectedTextValue = m_DlgAFD_Choicebook->
+					GetPageText(m_DlgAFD_Choicebook->GetSelection());
 
-		default: // default is field text
-			TransfertTextValues(FALSE);
-			break;
+	if (mySelectedTextValue == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER])
+	{
+		TransfertIntegerValues(FALSE);
 	}
-		
+	else if (mySelectedTextValue == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT])
+	{
+		TransfertFloatValues(FALSE);
+	}
+	else if (mySelectedTextValue == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_DATE])
+	{
+		TransfertDateValues(FALSE);
+	}
+	else if (mySelectedTextValue == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION])
+	{
+		TransfertEnumValues(FALSE);
+	}
+	else if (mySelectedTextValue == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT])
+	{
+		TransfertTextValues(FALSE);
+	}
 	return TRUE;
 }
 
