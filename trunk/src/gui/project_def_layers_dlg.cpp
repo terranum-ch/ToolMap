@@ -689,6 +689,13 @@ void ProjectDefLayersDlg::Init()
 {
 	m_FieldDialog = NULL;
 	m_bIsModeEditing = FALSE;
+
+	 m_DlgPDL_Layer_Type = NULL;
+	 m_DlgPDL_Layer_Name = NULL;
+	 m_DlgPDL_Panel_Obj = NULL;
+	 m_DlgPDL_Object_List = NULL;
+	 m_DlgPDL_Panel_Fields = NULL;
+	 m_DlgPDL_Fields_List = NULL;
 }
 
 

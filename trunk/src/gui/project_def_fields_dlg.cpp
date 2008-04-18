@@ -520,7 +520,7 @@ bool ProjectDefFieldDlg::TransferDataFromWindow()
 	m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
 	
 	// transfert values based on the actual selected field type in
-	// the choicebook.
+	// the choicebook. // modify here
 	switch (m_DlgAFD_Choicebook->GetSelection())
 	{
 		case TM_FIELD_INTEGER:
@@ -554,39 +554,48 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 	
 	m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
 
+	
+	// delete all fields but the one we need
+	if (m_bIsModeEditing)
+	{
+		HideUnusedTabs(m_MemoryField->m_FieldType);
+		m_DlgAFD_Choicebook->SetSelection(0);
+	}
+	else
+	// we select the field type if not in edit mode
+	{
+		m_DlgAFD_Choicebook->SetSelection(m_MemoryField->m_FieldType);
+	}
+
 	// transfert values based on the field type
 	// and select good panel
 	switch (m_MemoryField->m_FieldType)
 	{
 		case TM_FIELD_INTEGER:
 			TransfertIntegerValues(TRUE);
-			m_DlgAFD_Choicebook->SetSelection(TM_FIELD_INTEGER);
+			//m_DlgAFD_Choicebook->SetSelection(TM_FIELD_INTEGER);
 			break;
 		case TM_FIELD_FLOAT:
 			TransfertFloatValues(TRUE);
-			m_DlgAFD_Choicebook->SetSelection(TM_FIELD_FLOAT);
+			//m_DlgAFD_Choicebook->SetSelection(TM_FIELD_FLOAT);
 			break;
 		case TM_FIELD_DATE:
 			// nothing is done here but keeped for compatibility
 			TransfertDateValues(TRUE);
-			m_DlgAFD_Choicebook->SetSelection(TM_FIELD_DATE);
+			//m_DlgAFD_Choicebook->SetSelection(TM_FIELD_DATE);
 			break;
 		case TM_FIELD_ENUMERATION:
 			TransfertEnumValues(TRUE);
-			m_DlgAFD_Choicebook->SetSelection(TM_FIELD_ENUMERATION);
+			//m_DlgAFD_Choicebook->SetSelection(TM_FIELD_ENUMERATION);
 			break;
 			
 		default: // default is field text
 			TransfertTextValues(TRUE);
-			m_DlgAFD_Choicebook->SetSelection(TM_FIELD_TEXT);
+			//m_DlgAFD_Choicebook->SetSelection(TM_FIELD_TEXT);
 			break;
 		}
 	
-	// destroy unusable fields
-	if (m_bIsModeEditing)
-	{
-		HideUnusedTabs(m_DlgAFD_Choicebook->GetSelection());
-	}
+
 	
 	return TRUE;
 }
