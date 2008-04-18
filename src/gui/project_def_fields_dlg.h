@@ -103,6 +103,7 @@ class ProjectDefFieldDlg: public wxDialog
 		ProjectDefMemoryFields * m_MemoryField;
 		PrjDefMemManage * m_pPrjDefinition;
 		
+		
 		// event functions
 		void OnShowLiveResults (wxCommandEvent & event);
 		void OnAddAllowedValue (wxCommandEvent & event);
@@ -118,6 +119,10 @@ class ProjectDefFieldDlg: public wxDialog
 		void TransfertDateValues(bool bSendDataToDlg = FALSE);
 		void TransfertEnumValues(bool bSendDataToDlg = FALSE);
 		
+		bool m_bIsModeEditing;
+		void DisableControlsForEdition();
+		
+		void HideUnusedTabs (int iIndexShow);
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );
 		DECLARE_EVENT_TABLE();
@@ -127,6 +132,7 @@ class ProjectDefFieldDlg: public wxDialog
 		ProjectDefFieldDlg();
 		ProjectDefFieldDlg( wxWindow* parent,
 						   PrjDefMemManage * myPrjMemManage,
+						   bool isEditingMode = FALSE,
 						   wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME, 
 						   const wxString& caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE, 
 						   const wxPoint& pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION, 

@@ -287,11 +287,15 @@ ProjectDefFieldDlg::ProjectDefFieldDlg()
 
 ProjectDefFieldDlg::ProjectDefFieldDlg( wxWindow* parent,
 									    PrjDefMemManage * myPrjMemManage,
+									   bool isEditingMode,
 									   wxWindowID id, const wxString& caption, 
 									   const wxPoint& pos, const wxSize& size, long style )
 {
     Init();
-    Create(parent, id, caption, pos, size, style);
+    
+	m_bIsModeEditing = isEditingMode;
+	
+	Create(parent, id, caption, pos, size, style);
 	
 	// init prj definition and pass it to the list
 	m_pPrjDefinition = myPrjMemManage;
@@ -470,6 +474,40 @@ void ProjectDefFieldDlg::TransfertEnumValues(bool bSendDataToDlg)
 }
 
 
+/***************************************************************************//**
+ @brief disable some controls if in edit mode
+ @details This function disable some GUI controls if we are in edit mode (if
+ ProjectDefFieldDlg::m_bIsModeEditing is TRUE)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 17 April 2008
+ *******************************************************************************/
+void ProjectDefFieldDlg::DisableControlsForEdition()
+{
+	if (m_bIsModeEditing)
+	{
+		// nothing to do ???
+		//m_DlgAFD_Choicebook->Disable();
+	}
+}
+
+
+/***************************************************************************//**
+ @brief Hide panel not usable
+ @details During edit mode, we don't want user to be allowed to change field
+ type so we delete all panels except the actual used one.
+ @param iIndexShow Zero based index of the selected panel (the only panel not
+ destroyed)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 18 April 2008
+ *******************************************************************************/
+void ProjectDefFieldDlg::HideUnusedTabs (int iIndexShow)
+{
+	for (int i=PRJDEF_FIELD_TYPE_NUMBER-1; i>=0; i--)
+	{
+		if (i != iIndexShow)
+			m_DlgAFD_Choicebook->DeletePage(i);
+	}
+}
 
 
 bool ProjectDefFieldDlg::TransferDataFromWindow()
@@ -542,7 +580,14 @@ bool ProjectDefFieldDlg::TransferDataToWindow()
 			TransfertTextValues(TRUE);
 			m_DlgAFD_Choicebook->SetSelection(TM_FIELD_TEXT);
 			break;
+		}
+	
+	// destroy unusable fields
+	if (m_bIsModeEditing)
+	{
+		HideUnusedTabs(m_DlgAFD_Choicebook->GetSelection());
 	}
+	
 	return TRUE;
 }
 
@@ -745,6 +790,9 @@ void ProjectDefFieldDlg::CreateControls()
 	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
 	m_sdbSizer1->Realize();
 	bSizer2->Add( m_sdbSizer1, 0, wxALL|wxEXPAND, 5 );
+	
+	// disable controls if in edit mode
+	DisableControlsForEdition();
 	
 	this->SetSizer( bSizer2 );
 	this->Layout();
