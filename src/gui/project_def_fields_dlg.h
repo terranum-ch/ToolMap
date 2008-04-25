@@ -163,7 +163,6 @@ class ProjectDefFieldDlg: public wxDialog
 		virtual bool TransferDataFromWindow();
 		virtual bool TransferDataToWindow();
 		
-		
 
 		ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
 		wxTextCtrl* m_DlgAFD_Field_Def;

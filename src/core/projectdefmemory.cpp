@@ -88,6 +88,7 @@ void ProjectDefMemoryFields::InitMemberValues()
 {
 	m_FieldID = 0;
 	m_Fieldname = _T("");
+	m_FieldOldName = _T("");
 	m_FieldType = TM_FIELD_TEXT;
 	m_FieldPrecision = 0;
 	m_FieldScale = 0;
@@ -147,8 +148,12 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 	
 	if(fielddef.GetCount() >= 2)
 	{
+		// assign a field id greather than 0
+		m_FieldID = 1;
+		
 		// get the field name
 		m_Fieldname = fielddef.Item(0);
+		m_FieldOldName = fielddef.Item(0);
 		
 		// get the field type
 		myFieldType = fielddef.Item(1).BeforeFirst('(');
@@ -218,6 +223,62 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 	wxLogError(_T("Text passed for field conversion seems to be false..."));
 	return FALSE;
 }
+
+
+/***************************************************************************//**
+ @brief Create string type
+ @details This function create string type :
+ - DATE
+ - ENUM(item1,item2,...)
+ - VARCHAR(Length)
+ - DECIMAL(Precision, Scale)
+ - INT
+ from the stored field type ProjectDefMemoryFields::m_FieldType
+ @param sResult Will be modified to contain the string type who could be used
+ for adding or modifing columns
+ @return  Always true for the moment
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 24 April 2008
+ *******************************************************************************/
+bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
+{
+	wxString sValuesConcatTemp = _T("");
+	wxString sValuesConcat = _T("");
+	
+	switch (m_FieldType)
+	{
+		case TM_FIELD_ENUMERATION:
+			// get all coded values from array and concatenate them
+			for (unsigned int i = 0; i< m_pCodedValueArray->GetCount(); i++)
+			{
+				sValuesConcatTemp = m_pCodedValueArray->Item(i).m_ValueName;
+				sValuesConcat.Append(wxString::Format(_T("\"%s\","), sValuesConcatTemp.c_str()));
+			}
+			// remove last comma
+			sValuesConcat = sValuesConcat.BeforeLast(',');
+			if (!sValuesConcat.IsEmpty())
+			{
+				sResult=wxString::Format(_T("ENUM(%s)"),sValuesConcat.c_str());
+			}
+			break;
+		case TM_FIELD_DATE:
+			sResult = _T("DATE NULL"); // column date with null values
+			break;
+		case TM_FIELD_INTEGER :
+			sResult = _T("INT NULL");
+		case TM_FIELD_FLOAT:
+			sResult = wxString::Format(_T("DECIMAL(%d,%d) NULL"), m_FieldPrecision,
+									   m_FieldScale);
+			break;
+		default:
+			// default is text
+			sResult = wxString::Format(_T("VARCHAR(%d) NULL"),m_FieldPrecision);
+			break;
+	}
+
+	return TRUE;
+}
+
 
 
 

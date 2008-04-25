@@ -230,6 +230,7 @@ class ProjectDefMemoryFields
 	public:
 		int m_FieldID;
 		wxString m_Fieldname;
+		wxString m_FieldOldName; // used for modifications
 		PRJDEF_FIELD_TYPE m_FieldType;
 		int m_FieldPrecision;
 		int m_FieldScale;
@@ -244,6 +245,7 @@ class ProjectDefMemoryFields
 		~ProjectDefMemoryFields();
 		
 		bool SetValues(const wxArrayString & fielddef);
+		bool GetStringTypeFromValues (wxString & sResult);
 		
 	
 	};
