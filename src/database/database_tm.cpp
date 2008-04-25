@@ -900,109 +900,12 @@ bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 }
 
 
-bool DataBaseTM::CreateFieldInteger (ProjectDefMemoryFields * myField, const wxString & TableName)
-{
-	wxString sSentence = wxString::Format(
-										  _T("ALTER TABLE `%s` ADD COLUMN `%s` INT NULL"),
-										  TableName.c_str(), myField->m_Fieldname.c_str());
-	if (DataBaseQueryNoResult(sSentence))
-	{
-		return TRUE;
-	}
-	
-	wxLogDebug(_T("Creating integer field : %s FAILED"), myField->m_Fieldname.c_str());
-	return FALSE;
-}
-
-
-
-bool DataBaseTM::CreateFieldText (ProjectDefMemoryFields * myField, const wxString & TableName)
-{
-	wxString sSentence = wxString::Format(
-										  _T("ALTER TABLE `%s` ADD COLUMN `%s` VARCHAR(%d) NULL"),
-										  TableName.c_str(), 
-										  myField->m_Fieldname.c_str(),
-										  myField->m_FieldPrecision);
-	if (DataBaseQueryNoResult(sSentence))
-	{
-		return TRUE;
-	}
-	
-	wxLogDebug(_T("Creating text field : %s FAILED"), myField->m_Fieldname.c_str());
-	return FALSE;	
-}
-
-
-bool DataBaseTM::CreateFieldDouble (ProjectDefMemoryFields * myField, const wxString & TableName)
-{
-	wxString sSentence = wxString::Format(
-										  _T("ALTER TABLE `%s` ADD COLUMN `%s` DECIMAL(%d,%d) NULL"),
-										  TableName.c_str(), 
-										  myField->m_Fieldname.c_str(),
-										  myField->m_FieldPrecision,
-										  myField->m_FieldScale);
-	if (DataBaseQueryNoResult(sSentence))
-	{
-		return TRUE;
-	}
-	
-	wxLogDebug(_T("Creating double field : %s FAILED"), myField->m_Fieldname.c_str());
-	return FALSE;	
-}
-
-
-bool DataBaseTM::CreateFieldDate (ProjectDefMemoryFields * myField, const wxString & TableName)
-{
-	wxString sSentence = wxString::Format(
-										  _T("ALTER TABLE `%s` ADD COLUMN `%s` DATE NULL"),
-										  TableName.c_str(), 
-										  myField->m_Fieldname.c_str());
-	if (DataBaseQueryNoResult(sSentence))
-	{
-		return TRUE;
-	}
-	wxLogDebug(_T("Creating date field : %s FAILED"), myField->m_Fieldname.c_str());
-	return FALSE;	
-}
-
-
-bool DataBaseTM::CreateFieldEnum (ProjectDefMemoryFields * myField, const wxString & TableName)
-{	
-	// first get all coded values from the array and concanete them into
-	// a wxString.
-	wxString sValues = _T("");
-	wxString sValueTemp = _T("");
-	for (unsigned int i = 0; i< myField->m_pCodedValueArray->GetCount(); i++)
-	{
-		sValueTemp = myField->m_pCodedValueArray->Item(i).m_ValueName;
-		sValues.Append(wxString::Format(_T("\"%s\","), sValueTemp.c_str()));
-	}
-	// remove last comma
-	sValues = sValues.BeforeLast(',');
-	
-	
-	if (sValues.IsEmpty() == FALSE)
-	{
-		
-		wxString sSentence = wxString::Format(_T("ALTER TABLE `%s` ADD `%s` ENUM (%s)"),
-											  TableName.c_str(),
-											  myField->m_Fieldname.c_str(),
-											  sValues.c_str());
-		
-		if (DataBaseQueryNoResult(sSentence))
-		{
-			return TRUE;
-		}
-	}
-	wxLogDebug(_T("Unable to add constrain to field [%s]"), myField->m_Fieldname.c_str());
-	return FALSE;
-}
-
 
 /*************************** FIELD DATABASE FUNCTION ****************************/
 bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 {
 	bool bReturnValue = TRUE;
+	wxString sSentence = _T("");
 	
 	// get the selected layer of take the actual one
 	if (DBlayerIndex == -1)
@@ -1021,25 +924,14 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	if (bReturnValue)
 	{
 		// then create the fields based upon the fields type
-		switch (myField->m_FieldType)
-		{
-			case TM_FIELD_INTEGER:
-				bReturnValue = CreateFieldInteger(myField, sTableName);
-				break;
-			case TM_FIELD_FLOAT:
-				bReturnValue = CreateFieldDouble(myField, sTableName);
-				break;
-			case  TM_FIELD_DATE:
-				bReturnValue = CreateFieldDate(myField, sTableName);
-				break;
-			case TM_FIELD_ENUMERATION:
-				bReturnValue = CreateFieldEnum(myField, sTableName);
-				break;
-			default:
-				bReturnValue = CreateFieldText(myField, sTableName);
-				break;
-		}
+		// use the same function for updating 
+		UpdateField(myField, DBlayerIndex, sSentence);
+		bReturnValue = DataBaseQueryNoResult(sSentence);
 	}
+	
+	if (bReturnValue == FALSE)
+		wxLogError(_T("Unable to add field to the database : %s"), sSentence.c_str());
+	
 	return bReturnValue;
 }
 
