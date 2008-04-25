@@ -1088,6 +1088,56 @@ int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex
 }
 
 
+/***************************************************************************//**
+ @brief Prepare statement for updating fields
+ @details This function prepare the SQL sentence used for updating the fields.
+ The main concept is the ProjectDefMemoryFields::m_FieldID :
+ - if this integer is greather than 0, we update the field
+ - if this integer is egal to 0, we prepare a sentence for adding a new field
+ - finally if this integer is egal to -1, then we want to delete this field.
+ @param myField a #ProjectDefMemoryFields object containing all the field data
+ @param iLayer The layer index the field belong to. 
+ @param sSqlSentence the string containing the SQL sentence we want to modify
+ @return  Allways true for the moment
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 23 April 2008
+ *******************************************************************************/
+bool DataBaseTM::UpdateField(ProjectDefMemoryFields * myField,int iLayer, wxString & sSqlSentence)
+{
+	wxString myTypeFieldTemp = _T("");
+	
+	switch (myField->m_FieldID)
+	{
+		case 0: // we insert
+			myField->GetStringTypeFromValues(myTypeFieldTemp);
+			sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d ADD COLUMN %s %s; "),
+								TABLE_NAME_LAYER_AT.c_str(),
+								iLayer,
+								myField->m_Fieldname.c_str(),
+								myTypeFieldTemp.c_str()));
+			break;
+		case -1: // delete the field
+			sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d DROP COLUMN %s; "),
+												 TABLE_NAME_LAYER_AT.c_str(),
+												 iLayer,
+												 myField->m_FieldOldName.c_str()));
+			break;
+		default: // modifiy the field
+			myField->GetStringTypeFromValues(myTypeFieldTemp);
+			sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d CHANGE COLUMN %s %s %s; "),
+												 TABLE_NAME_LAYER_AT.c_str(),
+												 iLayer,
+												 myField->m_FieldOldName.c_str(),
+												 myField->m_Fieldname.c_str(),
+												 myTypeFieldTemp.c_str()));
+			
+			break;
+	}
+	return TRUE;
+}
+
+
+
 /*************************** DATABASE QUERY FUNCTION ****************************/
 bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
 {
@@ -1445,6 +1495,8 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 {
 	wxString sSentence = _T("");
+	wxString sFieldSentence = _T("");
+	ProjectDefMemoryLayers * pLayers = NULL;
 	
 	// update basic project 
 	if (SetProjectData(pProjDef))
@@ -1452,7 +1504,30 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 		// prepare sentence for updating layers (insert or modify)
 		for (int i = 0; i< pProjDef->GetCountLayers(); i++)
 		{
-			UpdateLayer(pProjDef->GetNextLayer(), sSentence);
+			pLayers = pProjDef->GetNextLayer();
+			UpdateLayer(pLayers, sSentence);
+			
+			// check if a table exists for fields 
+			if(DataBaseTableExist(wxString::Format(_T("%s%d"),
+								  TABLE_NAME_LAYER_AT.c_str(),
+								  pLayers->m_LayerID)) )
+			{
+				wxLogDebug(_T("Fields exist for layer : %s, [%d]"),
+						   pLayers->m_LayerName.c_str(),
+						   pLayers->m_LayerID);
+				// fields exists, we update them
+				sFieldSentence.Clear();
+				for (int j = 0; j < pProjDef->GetCountFields(); j++)
+				{
+					UpdateField(pProjDef->GetNextField(), pLayers->m_LayerID, sFieldSentence);
+				}
+				
+				// modfiy the fields in the database
+				if(!DataBaseQueryNoResult(sFieldSentence))
+					wxLogError(_T("Error modifing field data in the database : %s"),
+							   sFieldSentence.c_str());
+			}
+			
 		}
 		// then we prepare the sentence for deleting layers
 		// based on the delete array
@@ -1464,6 +1539,11 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 		// execute the sentence for layers.
 		if (DataBaseQueryNoResult(sSentence))
 		{
+			
+			// update, add and delete fields based on the 
+			// field ID, 1 means we want to update the field
+			// -1 means we want to delete the field
+			// and finally 0 means we want to add a new field
 			
 			
 		

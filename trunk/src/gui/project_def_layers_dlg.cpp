@@ -255,17 +255,8 @@ void ProjectDefLayersFieldsList::AfterAdding (bool bRealyAddItem)
 
 void ProjectDefLayersFieldsList::BeforeDeleting ()
 {
-//	// remove item from array before removing it from the list
-//	// because of the unknown position of item (may have been moved)
-//	// if a corresponding item was found, remove it from the array
-//	
-//	// get selected item from the list
-//	long mySelectedListItem = GetSelectedItem();
-//	wxString myFieldName = GetItemColText(mySelectedListItem, 0);
-//	
-//	m_pPrjDefinition->RemoveField(myFieldName);
-	
 	wxString myFieldName;
+	ProjectDefMemoryFields * field = NULL;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array
@@ -276,12 +267,25 @@ void ProjectDefLayersFieldsList::BeforeDeleting ()
 	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
 	{
 		myFieldName = GetItemColText(mySelectedListItems[i], 0);		
+
+		// if we are in editing mode we must save the items to delete
+		// in the delete field array.
+		if (m_bIsModeEditing == TRUE)
+		{
+			field = m_pPrjDefinition->FindField(myFieldName);
+			if (field && field->m_FieldID > 0)
+			{
+				// put the field id negative indicating we want to delete it
+				field->m_FieldID = m_pPrjDefinition->GetActiveLayer()->m_LayerID;
+				
+				wxLogDebug(_T("Marqued field for deleting : %s"), field->m_Fieldname.c_str());
+				m_pPrjDefinition->m_StoreDeleteFields.Add(field->m_Fieldname);
+			}
+		}
+		
 		m_pPrjDefinition->RemoveField(myFieldName);
 	}
-	
-	
-	
-	
+
 }
 
 

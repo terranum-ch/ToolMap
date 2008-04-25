@@ -23,6 +23,8 @@
 ProjectDefFieldList::ProjectDefFieldList(wxWindow * parent, wxWindowID  id, wxSize size) 
 	: ListGenReportWithDialog(parent,id,size)
 {
+
+	
 	// Create columns
 	wxArrayString myColNames;
 	wxArrayInt myColsWidths;
@@ -153,7 +155,6 @@ void ProjectDefFieldList::BeforeDeleting ()
 		myValueName = GetItemColText(mySelectedListItems[i],1);		
 		m_pPrjDefinition->FindCodedValue(myValueName, m_ChoiceIndex);
 		m_pPrjDefinition->RemoveCodedValue(myValueName);
-		
 	}
 
 }

@@ -99,6 +99,7 @@ class DataBaseTM : public DataBase
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
 		int GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex);
+		bool UpdateField(ProjectDefMemoryFields * myField, int iLayer, wxString & sSqlSentence);
 		
 		// database query
 		bool GetObjectListByLayerType(int ilayertype);
