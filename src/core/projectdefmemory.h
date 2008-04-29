@@ -276,6 +276,9 @@ class ProjectDefMemoryLayers
 		/// list of objects related to a layer
 		PrjMemObjectsArray * m_pLayerObjectArray;
 		
+		// for storing layers to delete
+		wxArrayString m_StoreDeleteFields;
+		
 		ProjectDefMemoryLayers();
 		~ProjectDefMemoryLayers();
 	};

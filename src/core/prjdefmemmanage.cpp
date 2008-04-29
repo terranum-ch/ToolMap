@@ -154,6 +154,9 @@ ProjectDefMemoryLayers * PrjDefMemManage::GetNextLayer()
 	
 	ProjectDefMemoryLayers * layer = &(m_PrjLayerArray->Item(m_iActualLayers));
 	
+	// set the active layer
+	SetActiveLayer(layer);
+	
 	// increment the object returned
 	m_iActualLayers ++;
 	

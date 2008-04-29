@@ -309,6 +309,7 @@ void ProjectDefMemoryLayers::InitMemberValues()
 	
 	m_pLayerFieldArray = new PrjMemFieldArray();
 	m_pLayerObjectArray = new PrjMemObjectsArray();
+	m_StoreDeleteFields.Clear();
 }
 
 WX_DEFINE_OBJARRAY (PrjMemLayersArray);

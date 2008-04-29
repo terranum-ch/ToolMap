@@ -275,11 +275,9 @@ void ProjectDefLayersFieldsList::BeforeDeleting ()
 			field = m_pPrjDefinition->FindField(myFieldName);
 			if (field && field->m_FieldID > 0)
 			{
-				// put the field id negative indicating we want to delete it
-				field->m_FieldID = m_pPrjDefinition->GetActiveLayer()->m_LayerID;
-				
-				wxLogDebug(_T("Marqued field for deleting : %s"), field->m_Fieldname.c_str());
-				m_pPrjDefinition->m_StoreDeleteFields.Add(field->m_Fieldname);
+				// if field exists in the database we mark it for deleting
+				wxLogDebug(_T("Marqued field for deleting : %s"), field->m_FieldOldName.c_str());
+				(m_pPrjDefinition->GetActiveLayer())->m_StoreDeleteFields.Add(field->m_FieldOldName);
 			}
 		}
 		
