@@ -676,6 +676,7 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 										TABLE_NAME_LAYERS.c_str(), 
 										myLayer->m_LayerType, 
 										myLayer->m_LayerName.c_str()));
+		
 		return FALSE;	
 	}
 
@@ -697,11 +698,35 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
  *******************************************************************************/
 bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSentence)
 {
+	wxString sDeleteSentence = _T("");
+	
 	for (unsigned int i= 0; i<deletelist.GetCount();i++)
 	{
 		sSqlSentence.Append(wxString::Format(_T(" DELETE FROM %s WHERE LAYER_INDEX = %d; "),
 											 TABLE_NAME_LAYERS.c_str(),
 											 deletelist.Item(i)));
+		
+		// delete associated field table (if existing)
+		if(!DeleteTableIfExist(TABLE_NAME_LAYER_AT + wxString::Format(_T("%d"),
+																	  deletelist.Item(i))))
+		{
+			wxLogError(_T("Error deleting table : %s%d"),
+					   TABLE_NAME_LAYER_AT.c_str(),
+					   deletelist.Item(i));
+		}
+		
+		// prepare delete attribution objects from the object table
+		DeleteLayersObjects(deletelist.Item(i), sDeleteSentence);
+		
+		
+		// prepare delete GIS objects from the gis tables
+		
+		
+		// execute prepared statement
+		if(!DataBaseQueryNoResult(sDeleteSentence))
+			wxLogError(_T("Error deleting objects (GIS or attribution) : %s"),
+					   sDeleteSentence.c_str());
+		
 	}
 	return TRUE;
 }
@@ -873,7 +898,40 @@ int DataBaseTM::DeleteMultipleObjects (PrjDefMemManage * pProjet)
 	return -1;
 }
 
+/***************************************************************************//**
+ @brief Delete all objects from a layer
+ @details Delete all objects belonging to a layers. May be used when one try to
+ delete a layer.
+ This function dosen't delete the table but issued a sentence
+ for this purpose.
+ @param iLayer Index of the layer (Starts at 1 in MySQL)
+ @param sSqlSentence The sentence for storing the SQL sentence issued in the
+ function
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 April 2008
+ *******************************************************************************/
+void DataBaseTM::DeleteLayersObjects (int iLayer, wxString & sSqlSentence)
+{
+	sSqlSentence.Append(wxString::Format(_T(" DELETE FROM %s WHERE THEMATIC_LAYERS_LAYER_INDEX = %d; "),
+										 TABLE_NAME_OBJECTS.c_str(), iLayer));
+}
 
+/***************************************************************************//**
+ @brief Delete a Table
+ @details Delete a table if this table exists
+ @param TableName Name of the table to delete
+ @return  Return True if the table was deleted
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 April 2008
+ *******************************************************************************/
+bool DataBaseTM::DeleteTableIfExist (const wxString & TableName)
+{
+	wxString sSentence = wxString::Format(_T("DROP TABLE IF EXISTS %s; "),
+										  TableName.c_str());
+	if (DataBaseQueryNoResult(sSentence))
+		return TRUE;
+	return FALSE;
+}
 
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
 bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
@@ -986,7 +1044,6 @@ int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex
  The main concept is the ProjectDefMemoryFields::m_FieldID :
  - if this integer is greather than 0, we update the field
  - if this integer is egal to 0, we prepare a sentence for adding a new field
- - finally if this integer is egal to -1, then we want to delete this field.
  @param myField a #ProjectDefMemoryFields object containing all the field data
  @param iLayer The layer index the field belong to. 
  @param sSqlSentence the string containing the SQL sentence we want to modify
@@ -1008,12 +1065,7 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields * myField,int iLayer, wxStri
 								myField->m_Fieldname.c_str(),
 								myTypeFieldTemp.c_str()));
 			break;
-		case -1: // delete the field
-			sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d DROP COLUMN %s; "),
-												 TABLE_NAME_LAYER_AT.c_str(),
-												 iLayer,
-												 myField->m_FieldOldName.c_str()));
-			break;
+
 		default: // modifiy the field
 			myField->GetStringTypeFromValues(myTypeFieldTemp);
 			sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d CHANGE COLUMN %s %s %s; "),
@@ -1027,6 +1079,37 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields * myField,int iLayer, wxStri
 	}
 	return TRUE;
 }
+
+
+/***************************************************************************//**
+ @brief Prepare statement for deleting
+ @details This prepare the SQL statement for deleting fields stored into the
+ PrjDefMemManage::m_StoreDeleteFields.
+ @param myFields the array containing the name of the fields we want to delete
+ @param iLayer the zero based layer index of the fields (Number used for table
+ name)
+ @param sSqlSentence The string we filled with the issued SQL sentence
+ @return  TRUE if the passed Array (myFields) is greater than 0
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 28 April 2008
+ *******************************************************************************/
+bool DataBaseTM::DeleteField (wxArrayString & myFields, int iLayer, wxString & sSqlSentence)
+{
+	sSqlSentence.Clear();
+	int myNumberOfItems = myFields.GetCount();
+	for (unsigned int i = myNumberOfItems ;i>0 ; i--)
+	{
+		sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d DROP COLUMN %s; "),
+											 TABLE_NAME_LAYER_AT.c_str(),
+											 iLayer,
+											 myFields.Item(i-1).c_str()));
+	}
+	
+	if (myNumberOfItems > 0)
+		return TRUE;
+	return FALSE;
+}
+
 
 
 
@@ -1388,6 +1471,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 {
 	wxString sSentence = _T("");
 	wxString sFieldSentence = _T("");
+	wxString sDeleteString = _T("");
 	ProjectDefMemoryLayers * pLayers = NULL;
 	
 	// update basic project 
@@ -1401,32 +1485,89 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 			
 			// check if a table exists for fields 
 			if(DataBaseTableExist(wxString::Format(_T("%s%d"),
-								  TABLE_NAME_LAYER_AT.c_str(),
-								  pLayers->m_LayerID)) )
+												   TABLE_NAME_LAYER_AT.c_str(),
+												   pLayers->m_LayerID)) )
 			{
-				wxLogDebug(_T("Fields exist for layer : %s, [%d]"),
+				wxLogDebug(_T("Fields Table exist for layer : %s, [%d]"),
 						   pLayers->m_LayerName.c_str(),
 						   pLayers->m_LayerID);
-				// fields exists, we update them
-				sFieldSentence.Clear();
-				for (int j = 0; j < pProjDef->GetCountFields(); j++)
+				
+				// check if we have some fields 
+				if (pProjDef->GetCountFields() > 0)
 				{
-					UpdateField(pProjDef->GetNextField(), pLayers->m_LayerID, sFieldSentence);
+					
+					// fields exists, we update, insert them
+					sFieldSentence.Clear();
+					for (int j = 0; j < pProjDef->GetCountFields(); j++)
+					{
+						UpdateField(pProjDef->GetNextField(), pLayers->m_LayerID, sFieldSentence);
+					}
+					
+					
+					// modfiy the fields in the database
+					if(!DataBaseQueryNoResult(sFieldSentence))
+						wxLogError(_T("Error modifing field data in the database : %s"),
+								   sFieldSentence.c_str());
 				}
 				
-				// modfiy the fields in the database
-				if(!DataBaseQueryNoResult(sFieldSentence))
-					wxLogError(_T("Error modifing field data in the database : %s"),
-							   sFieldSentence.c_str());
+				
+				// process for deleting fields // normally the table should exists 
+				sDeleteString.Clear();
+				if (pLayers->m_StoreDeleteFields.GetCount() > 0)
+				{
+					DeleteField(pLayers->m_StoreDeleteFields, pLayers->m_LayerID,
+								sDeleteString);
+					
+					if(!DataBaseQueryNoResult(sDeleteString))
+						wxLogError(_T("Unable to delete Fields from table : %s%d, %s"),
+								   TABLE_NAME_LAYER_AT.c_str(),
+								   pLayers->m_LayerID,
+								   sDeleteString.c_str());
+				}
+				
+				
 			}
 			
+			
+			
+			
+			
+			else // the table dosen't exist, need to create the table if fields > 0
+			{
+				if (pProjDef->GetCountFields() > 0)
+				{
+					// create the table 
+					if(!AddTableIfNotExist(wxString::Format(TABLE_NAME_LAYER_AT + _T("%d"),
+															pLayers->m_LayerID)))
+					{
+						wxLogError(_T("Unable to create the Field's table : %d"),
+								   pLayers->m_LayerID);
+					}
+					
+					// update, insert fields
+					sFieldSentence.Clear();
+					for (int j = 0; j < pProjDef->GetCountFields(); j++)
+					{
+						UpdateField(pProjDef->GetNextField(), pLayers->m_LayerID, sFieldSentence);
+					}
+					
+					
+					// modfiy the fields in the database
+					if(!DataBaseQueryNoResult(sFieldSentence))
+						wxLogError(_T("Error modifing field data in the database : %s"),
+								   sFieldSentence.c_str());
+				}
+			}
+			
+			
+			
 		}
+		
+		
 		// then we prepare the sentence for deleting layers
 		// based on the delete array
 		DeleteLayer(pProjDef->m_StoreDeleteLayers, sSentence);
 		
-		
-		wxLogDebug(sSentence);
 		
 		// execute the sentence for layers.
 		if (DataBaseQueryNoResult(sSentence))

@@ -55,6 +55,7 @@ class DataBaseTM : public DataBase
 		
 		// field operations private (creation)
 		bool AddTableIfNotExist (const wxString & TableName);
+		bool DeleteTableIfExist (const wxString & TableName);
 		
 	public:
 		DataBaseTM();
@@ -90,11 +91,13 @@ class DataBaseTM : public DataBase
 		bool EditObject (ProjectDefMemoryObjects * myObject );
 		bool DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object, int ilayertype);
 		int  DeleteMultipleObjects (PrjDefMemManage * pProjet);
+		void DeleteLayersObjects (int iLayer, wxString & sSqlSentence);
 		
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
 		int GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex);
 		bool UpdateField(ProjectDefMemoryFields * myField, int iLayer, wxString & sSqlSentence);
+		bool DeleteField (wxArrayString & myFields, int iLayer, wxString & sSqlSentence);
 		
 		// database query
 		bool GetObjectListByLayerType(int ilayertype);
