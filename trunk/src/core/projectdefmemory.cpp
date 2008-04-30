@@ -266,6 +266,7 @@ bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 			break;
 		case TM_FIELD_INTEGER :
 			sResult = _T("INT NULL");
+			break;
 		case TM_FIELD_FLOAT:
 			sResult = wxString::Format(_T("DECIMAL(%d,%d) NULL"), m_FieldPrecision,
 									   m_FieldScale);
