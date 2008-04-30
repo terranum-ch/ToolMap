@@ -719,7 +719,7 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
 		DeleteLayersObjects(deletelist.Item(i), sDeleteSentence);
 		
 		
-		// prepare delete GIS objects from the gis tables
+		///@todo prepare delete GIS objects from the gis tables
 		
 		
 		// execute prepared statement
