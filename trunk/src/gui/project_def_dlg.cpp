@@ -357,7 +357,10 @@ void ProjectDefList::BeforeAdding()
 {
 	
 	// create and set the dialog here
-	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this, m_pPrjDefinition);
+	ProjectDefLayersDlg * myLayerDialog = new ProjectDefLayersDlg (this, 
+																   m_pPrjDefinition,
+																   m_bIsModeEditing,
+																   m_bIsModeEditing);
 	//wxLogDebug(_T("Creating Thematic Layer Dialog"));
 	SetDialog(myLayerDialog);
 

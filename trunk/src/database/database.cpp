@@ -369,6 +369,32 @@ bool DataBase::DataBaseTableExist(const wxString & tableName)
 
 
 /***************************************************************************//**
+ @brief Return the next increment
+ @details When an object is inserted into an auto-incremented table, an id
+ corresponding to this increment is used. This function may be used for
+ guessing the new number
+ @param tablename name of the table we want the new number
+ @param fieldname name of the auto-incremented field int the table
+ @return  the new number (or -1 if something goes wrong)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 05 May 2008
+ *******************************************************************************/
+long DataBase::DataBaseGetLastInsertID ()
+{
+	wxString sSentence = wxString::Format(_T("SELECT LAST_INSERT_ID(); "));
+	if(DataBaseQuery(sSentence))
+	{
+		return DataBaseGetNextResultAsLong();
+	}
+	else
+	{
+		wxLogDebug(_T("Error getting last inserted id : %s"), sSentence.c_str());
+		return -1;
+	}
+
+}
+
+/***************************************************************************//**
  @brief Return an array of long for each row
  @details For each row of results, an array of long is returned containing all
  results changed into long values. This function does no check about the values

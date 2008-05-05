@@ -154,6 +154,8 @@ public:
 	*/		
 	wxArrayString DataBaseGetNextResult();
 	
+	long DataBaseGetLastInsertID ();
+	
 	bool DataBaseGetNextResult(wxString & result);
 	
 	unsigned long * DataBaseGetNextRowResult (MYSQL_ROW & row);
