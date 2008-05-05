@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
 	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
+	EVT_MENU (ID_MENU_BACKUP_PRJ, ToolMapFrame::OnBackupProject)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
@@ -571,4 +572,10 @@ void ToolMapFrame::OnShowObjectAttributionWindow (wxCommandEvent & event)
 		GetMenuBar()->Check(ID_MENU_ATTRIB_TYPES, TRUE);
 	}
 	
+}
+
+
+void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
+{
+	m_PManager->BackupProject();
 }

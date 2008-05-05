@@ -136,6 +136,21 @@ bool ProjectManager::EditProject ()
 }
 
 
+/***************************************************************************//**
+ @brief Backup the project
+ @return  TRUE if the backup was succes
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 05 May 2008
+ *******************************************************************************/
+bool ProjectManager::BackupProject ()
+{
+	Backup myBackup (m_DB);
+	myBackup.GetDatabasePath();
+	
+	return TRUE;
+}
+
+
 
 /***************************************************************************//**
  @brief Close the active database
