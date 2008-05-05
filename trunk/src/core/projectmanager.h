@@ -45,6 +45,7 @@
 #include "../gui/project_def_dlg.h"			// new project definition dialog
 #include "../gui/objectattribution_dlg.h"	// for displaying object definition dlg.
 #include "../gui/projectproperties_dlg.h"	// for displaying project properties dlg.
+#include "backup.h"							// for backup and restore operations
 
 /***************************************************************************//**
  @brief Project operations (new, open,...)
@@ -74,6 +75,7 @@ class ProjectManager : public wxObject
 		bool EditProjectObjectDefinition ();
 		bool EditProjectSettings ();
 		bool EditProject ();
+		bool BackupProject ();
 		
 		// project infos
 		wxString GetProjectName();

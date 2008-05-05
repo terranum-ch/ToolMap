@@ -242,6 +242,7 @@ private:
 	void OnTocWindow (wxCommandEvent & event);
 	void OnIdleTimeUpdate(wxIdleEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
+	void OnBackupProject (wxCommandEvent & event);
 	
 	ImportLogDLG * m_LogWindow;
 //#if (__WXMAC__)
