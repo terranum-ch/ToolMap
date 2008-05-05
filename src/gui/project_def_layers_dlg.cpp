@@ -637,7 +637,7 @@ ProjectDefLayersDlg::ProjectDefLayersDlg()
 }
 
 ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPrjDef,
-										  bool isEditingMode,
+										  bool isEditingMode, bool isAddingMode,
 										 wxWindowID id, const wxString& caption, 
 										 const wxPoint& pos, const wxSize& size,
 										 long style )
@@ -645,6 +645,7 @@ ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPr
     Init();
 	
 	m_bIsModeEditing = isEditingMode;
+	m_bIsModeAddingEditing = isAddingMode;
 	
     Create(parent, id, caption, pos, size, style);
 	
@@ -798,7 +799,9 @@ void ProjectDefLayersDlg::CreateControls()
 
     itemStdDialogButtonSizer23->Realize();
 	
-	if (m_bIsModeEditing)
+	// disable the list only if in edding mode but not in adding mode
+	// user want to select the type of layers :-)
+	if (m_bIsModeEditing && !m_bIsModeAddingEditing)
 		DisableControlsForEdition();
 
 }

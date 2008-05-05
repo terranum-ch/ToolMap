@@ -658,6 +658,9 @@ int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
  *******************************************************************************/
 bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlSentence)
 {
+	wxString sInsertSentence = _T("");
+	long myLastInsertedId = 0;
+	
 	// update or insert statement based on the m_layerID 
 	// greater than 1 for update and 0 if insert is required
 	if (myLayer->m_LayerID > 0)
@@ -670,12 +673,29 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 		return TRUE;
 	}
 	else 
+		// we need to insert layer immediately to get the real layer_ID.
+		// used later during the attribute table creation process.
+
 	{
-		sSqlSentence.Append(wxString::Format(_T(" INSERT INTO %s (TYPE_CD, LAYER_NAME) ")
+		sInsertSentence = wxString::Format(_T(" INSERT INTO %s (TYPE_CD, LAYER_NAME) ")
 										_T("VALUES (%d,\"%s\"); "),
 										TABLE_NAME_LAYERS.c_str(), 
 										myLayer->m_LayerType, 
-										myLayer->m_LayerName.c_str()));
+										myLayer->m_LayerName.c_str());
+		if(DataBaseQueryNoResult(sInsertSentence))
+		{
+			// get the last inserted id
+			myLastInsertedId = DataBaseGetLastInsertID();
+			if (myLastInsertedId > 0)
+			{
+				myLayer->m_LayerID = myLastInsertedId;
+			}
+			else
+				wxLogError(_T("Error, last inserted ID is not bigger than 0 : %d"),
+						   myLastInsertedId);
+		}
+		else
+			wxLogError(_T("Problem inserting layer : %s"), sInsertSentence.c_str());
 		
 		return FALSE;	
 	}
@@ -1474,9 +1494,25 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	wxString sDeleteString = _T("");
 	ProjectDefMemoryLayers * pLayers = NULL;
 	
-	// update basic project 
+	/********* PART 1 : BASIC PROJECT UPDATING *********************/
 	if (SetProjectData(pProjDef))
 	{
+		
+		/********* PART 2 : DELETING AND CLEANING *********************/ 
+		// we prepare the sentence for deleting layers
+		// based on the delete array
+		DeleteLayer(pProjDef->m_StoreDeleteLayers, sSentence);
+		
+		// execute the sentence for deleting
+		if (!DataBaseQueryNoResult(sSentence))
+			wxLogError(_T("Error deleting layers : %s"), sSentence.c_str());
+		
+		// clean the delete sentence
+		sSentence.Clear();
+		
+		
+		/********* PART 3 : INSERT AND UPDATE *********************/
+		
 		// prepare sentence for updating layers (insert or modify)
 		for (int i = 0; i< pProjDef->GetCountLayers(); i++)
 		{
@@ -1563,23 +1599,11 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 			
 		}
 		
-		
-		// then we prepare the sentence for deleting layers
-		// based on the delete array
-		DeleteLayer(pProjDef->m_StoreDeleteLayers, sSentence);
-		
+	
 		
 		// execute the sentence for layers.
 		if (DataBaseQueryNoResult(sSentence))
 		{
-			
-			// update, add and delete fields based on the 
-			// field ID, 1 means we want to update the field
-			// -1 means we want to delete the field
-			// and finally 0 means we want to add a new field
-			
-			
-		
 			return TRUE;
 		}	
 		

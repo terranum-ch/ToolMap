@@ -219,6 +219,8 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnImportObject (wxCommandEvent & event);
 		
 		bool m_bIsModeEditing;
+		bool m_bIsModeAddingEditing;
+		
 		void DisableControlsForEdition();
 		
 		
@@ -231,6 +233,7 @@ class ProjectDefLayersDlg: public wxDialog
 		ProjectDefLayersDlg( wxWindow* parent,
 							PrjDefMemManage *pPrjDef,
 							bool isEditingMode = FALSE,
+							bool isAddingMode = FALSE,
 							wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
 							const wxString& caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
 							const wxPoint& pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION, 
