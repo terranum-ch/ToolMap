@@ -36,30 +36,43 @@
 
 #include "../database/database_tm.h"
 
+/***************************************************************************//**
+ @brief Used for generic backup restore operations
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 06 May 2008
+ *******************************************************************************/
 class BackupRestore : public wxObject
 	{
 	private:
+		int GetDatabasePath();
 		DataBaseTM * m_pDatabase;
 		
 	protected:
+		
 		wxString m_DatabasePath;
 		wxString m_UserDefinedPath;
 		
 		
 	public:
+		// ctor - dtor
 		BackupRestore(DataBaseTM * pDB);
 		~BackupRestore();
 		
-		int GetDatabasePath();
-		bool IsPathsSpecified(){return TRUE;}
 		
+		bool IsPathsSpecified();
 		
+		// getters and setters 
 		virtual wxString GetDirOrigin (){ return wxEmptyString;}
 		virtual wxString GetDirDestination (){ return wxEmptyString;}
 	};
 
 
 
+/***************************************************************************//**
+ @brief Used for Backup of the project
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 06 May 2008
+ *******************************************************************************/
 class Backup : public BackupRestore
 	{
 	public:
