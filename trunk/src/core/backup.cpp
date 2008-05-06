@@ -18,6 +18,9 @@
 
 #include "backup.h"
 
+wxDEFINE_SCOPED_PTR(wxZipEntry, wxZipEntryPtr);
+
+
 /********************************** BACKUPRESTORE CLASS **********************/
 
 /***************************************************************************//**
@@ -34,7 +37,6 @@ BackupRestore::BackupRestore(DataBaseTM * pDB)
 	m_pDatabase = pDB;
 	m_DatabasePath = _T("");
 	m_UserDefinedPath = _T("");
-	
 	
 	GetDatabasePath();
 }
@@ -103,6 +105,56 @@ bool BackupRestore::IsPathsSpecified()
 }
 
 
+/***************************************************************************//**
+ @brief List all compatible files
+ @details This function lists all files the program must backuped. Only files
+ with following extensions are stored into the files parameter :
+ - .opt
+ - .frm
+ - .myd
+ - .myi
+ @param sDir the dir where the files are located
+ @param files an array filled with files name to backup
+ @return  the number of files in the array
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 06 May 2008
+ *******************************************************************************/
+long BackupRestore::ListDirFiles (const wxString & sDir, wxArrayString & files)
+{
+	wxDir listdir (sDir);
+	long iCountFiles = 0;
+	
+	// file filter for only those filetypes
+	wxRegEx FileSpec(wxT(".opt|.frm|.MYD|.MYI"));
+	
+	if (!listdir.IsOpened())
+	{
+		return -1;
+	}
+	
+	wxString filename;
+	
+	// iterates all files in directory
+	bool cont = listdir.GetFirst(&filename, wxEmptyString, wxDIR_FILES);
+	while (cont)
+	{
+		if (FileSpec.Matches(filename))
+		{
+			files.Add(filename);
+			iCountFiles ++;
+		}
+		else 
+		{
+			wxLogDebug(_T("Files %s not matching file specs..."), filename.c_str());
+		}
+
+		cont = listdir.GetNext(&filename);
+	}
+	
+	wxLogDebug(_T("Number of files for backup : %d"),iCountFiles);
+	return iCountFiles;
+}
+
 
 
 /******************************************** BACKUP CLASS **********************/
@@ -131,3 +183,127 @@ Backup::Backup(DataBaseTM * pDB) : BackupRestore(pDB)
 	
 }
 
+
+bool Backup::TestZip(wxString filename1, wxString filename2)
+{
+	// file verifications
+	if (!wxFileExists(filename1))
+	{
+		wxLogError(wxT("File does not exist: ") + filename1);
+		return false;
+	}
+	
+	if (!wxFileExists(filename2))
+	{
+		wxLogError(wxT("File does not exist: ") + filename2);
+		return false;
+	}
+	
+	//wxFFileInputStream inf(filename2);
+	wxFFileOutputStream outf(filename2);
+	
+	if (!outf.Ok())
+	{
+		wxLogError(wxT("Could not open file: ") + filename2);
+		return false;
+	}
+	
+	wxZipOutputStream outzip(outf);
+	
+	
+	/*wxString tempfilename = wxFileName::CreateTempFileName(_T("rls"));
+	wxFFileOutputStream outf(tempfilename);
+	
+	if (!outf.Ok())
+	{
+		wxLogError(wxT("Could not open file: ") + tempfilename);
+		return false;
+	}
+	
+	wxZipInputStream inzip(inf);
+	wxZipOutputStream outzip(outf);
+	wxZipEntryPtr entry;
+	
+	outzip.CopyArchiveMetaData(inzip);
+	
+	
+	
+	while (entry.reset(inzip.GetNextEntry()), entry.get() != NULL)
+	{
+		if (fn1.GetFullName() == entry->GetName())
+		{
+			// delete any existing file with the same name
+			// (otherwise there would be two entries with the same name)
+			continue;
+		}
+		if (!outzip.CopyEntry(entry.release(), inzip))
+		{
+			break;
+		}
+	}
+	
+	if (!inzip.Eof())
+	{
+		wxLogError(wxT("Error during zip copy"));
+		return false;
+	}*/
+	
+	// here actually add filename1
+	
+	wxFileInputStream f1stream(filename1);
+	wxFileName fn1(filename1);
+	
+	if (!f1stream.Ok())
+	{
+		wxLogError(wxT("Error opening file: ") + filename1);
+		return false;
+	}
+	
+	
+	outzip.PutNextEntry(fn1.GetFullName());
+	
+	//outzip << f1stream;
+	outzip.Write(f1stream);
+	
+	if (!outzip.Close())
+	{
+		wxLogError(wxT("Error during outzip.Close()"));
+		return false;
+	}
+	
+	outf.Close();
+	
+	/*if (!wxCopyFile(tempfilename, filename2))
+	{
+		wxLogError(wxT("Error during wxCopyFile"));
+		return false;
+	}
+	
+	wxRemoveFile(tempfilename);*/
+	
+	return true;
+	
+	
+	
+}
+
+
+/*
+void CreateZip(wxString zipFile, wxArrayString files)
+{
+	//progress_set_text(wxString::Format(wxT("Creating ZIP file...")));
+	wxFileOutputStream f(zipFile);
+	if (!f.IsOk()) return;
+	wxZipOutputStream zf(f);
+	wxDataOutputStream bin(zf);
+	
+	for (unsigned i = 0; i < files.size(); i++) {
+		zf.PutNextEntry(GetFn(files[i]));
+	//	ArchiveFile(bin, files[i]);
+		//
+	//	progress_set_progress(0.8+0.2*(i+1.0)/files.size());
+	//	progress_set_text(wxString::Format(
+	//									   wxT("Creating ZIP file...%u of %u (%s)"),
+	//									   i+1, files.size(), GetFn(files[i]).c_str()), i+files.size());
+	}
+}*/
