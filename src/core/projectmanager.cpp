@@ -145,8 +145,21 @@ bool ProjectManager::EditProject ()
 bool ProjectManager::BackupProject ()
 {
 	Backup myBackup (m_DB);
+	wxArrayString myFiles;
+	
 	if(myBackup.IsPathsSpecified())
+	{
+		// test zip
+		//myBackup.TestZip(_T("/Users/Lucien/Desktop/tm2test/DMN_LAYER_OBJECT.frm"), 
+		//				 _T("/Users/Lucien/Desktop/time.zip"));
+		
+		//myBackup.TestZip(_T("/Users/Lucien/Desktop/tm2test/DMN_LAYER_OBJECT.MYD"), 
+		//				 _T("/Users/Lucien/Desktop/time.zip"));
+		
+		myBackup.ListDirFiles(myBackup.GetDirOrigin(), myFiles);
+		
 		return TRUE;
+	}
 	return FALSE;
 }
 

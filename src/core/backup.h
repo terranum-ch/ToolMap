@@ -34,7 +34,11 @@
     #include <wx/wx.h>
 #endif
 
-#include "../database/database_tm.h"
+#include "../database/database_tm.h"	// TM2 database operations
+#include "wx/wfstream.h"				// file stream operations
+#include "wx/zipstrm.h"					// zip file stream operations
+#include <wx/ptr_scpd.h>				// scoped pointer
+#include <wx/regex.h>					// regular expresion for files specs.
 
 /***************************************************************************//**
  @brief Used for generic backup restore operations
@@ -60,6 +64,7 @@ class BackupRestore : public wxObject
 		
 		
 		bool IsPathsSpecified();
+		long ListDirFiles (const wxString & sDir, wxArrayString & files);
 		
 		// getters and setters 
 		virtual wxString GetDirOrigin (){ return wxEmptyString;}
@@ -82,8 +87,10 @@ class Backup : public BackupRestore
 		virtual wxString GetDirOrigin (){ return m_UserDefinedPath;}
 		virtual wxString GetDirDestination (){ return m_DatabasePath;}
 		
+		bool TestZip (wxString filename1, wxString filename2);
+		
 	};
 
-
+wxDECLARE_SCOPED_PTR(wxZipEntry, wxZipEntryPtr);
 
 #endif
