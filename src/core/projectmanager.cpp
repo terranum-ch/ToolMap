@@ -145,9 +145,9 @@ bool ProjectManager::EditProject ()
 bool ProjectManager::BackupProject ()
 {
 	Backup myBackup (m_DB);
-	myBackup.GetDatabasePath();
-	
-	return TRUE;
+	if(myBackup.IsPathsSpecified())
+		return TRUE;
+	return FALSE;
 }
 
 

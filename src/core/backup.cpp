@@ -34,6 +34,9 @@ BackupRestore::BackupRestore(DataBaseTM * pDB)
 	m_pDatabase = pDB;
 	m_DatabasePath = _T("");
 	m_UserDefinedPath = _T("");
+	
+	
+	GetDatabasePath();
 }
 
 /***************************************************************************//**
@@ -79,7 +82,25 @@ int BackupRestore::GetDatabasePath()
 }
 
 
-//bool IsPathsSpecified();
+/***************************************************************************//**
+ @brief Check if path are specified
+ @details This function must be used to check if both (Database and user
+ specified) path aren't null.
+ @note No backups or restore operations could be
+ done with empty paths.
+ @return  TRUE if both paths aren't empty, FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 05 May 2008
+ *******************************************************************************/
+bool BackupRestore::IsPathsSpecified()
+{
+	if (m_DatabasePath.IsEmpty() && m_DatabasePath.IsEmpty())
+	{
+		wxLogDebug(_T("Database path or user path are empty !"));
+		return FALSE;
+	}
+	return TRUE;
+}
 
 
 
@@ -87,9 +108,26 @@ int BackupRestore::GetDatabasePath()
 /******************************************** BACKUP CLASS **********************/
 
 
-
+/***************************************************************************//**
+ @brief Constructor of the backup object
+ @details This constructor init origin directory with values of the actual
+ loaded database
+ @param pDB pointer to an object of type #DataBaseTM
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 06 May 2008
+ *******************************************************************************/
 Backup::Backup(DataBaseTM * pDB) : BackupRestore(pDB)
 {
-
+	// load the origin path name from the database
+	m_UserDefinedPath = pDB->DataBaseGetPath() + 
+						wxFileName::GetPathSeparator() + 
+						pDB->DataBaseGetName();
+	if (m_UserDefinedPath.Length() <= 1)
+	{
+		wxLogError(_T("Error, database name seems to be incorrect : %s"), 
+				   m_UserDefinedPath.c_str());
+		m_UserDefinedPath = _T("");
+	}
+	
 }
 
