@@ -60,6 +60,12 @@ BackupRestore::~BackupRestore()
  *******************************************************************************/
 int BackupRestore::GetDatabasePath()
 {
+	// error msg
+	wxString sErrMsg =	_("No path specified or path invalid \n"); 
+	sErrMsg.Append(		_("for backups or restore operations,\n\n"));
+	sErrMsg.Append(		_("Please go to Project->Edit Project->Settings...\n")); 
+	sErrMsg.Append(		_("and specify a valid path."));
+	
 	// get the backup path from database
 	int iPathStatus = m_pDatabase->GetProjectBackupPath(m_DatabasePath);
 	if(iPathStatus == PATH_OK)
@@ -69,15 +75,9 @@ int BackupRestore::GetDatabasePath()
 	}
 	else 
 	{
-		wxMessageBox(_("No path specified or path invalid \n"
-					   "for backups or restore operations,\n\n"
-					   "Please go to Project->Edit Project->Settings...\n"
-					   "and specify a valid path."),
-					 _("No valid path found"), 
-					 wxICON_ERROR | wxOK);
+		wxMessageBox(sErrMsg,_("No valid path found"),wxICON_ERROR | wxOK);
 	}
-	
-	
+		
 	return iPathStatus;
 }
 
