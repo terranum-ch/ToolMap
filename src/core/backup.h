@@ -39,6 +39,7 @@
 #include "wx/zipstrm.h"					// zip file stream operations
 #include <wx/ptr_scpd.h>				// scoped pointer
 #include <wx/regex.h>					// regular expresion for files specs.
+#include <wx/progdlg.h>					// the progress dialog
 
 /***************************************************************************//**
  @brief Used for generic backup restore operations
@@ -50,6 +51,7 @@ class BackupRestore : public wxObject
 	private:
 		int GetDatabasePath();
 		DataBaseTM * m_pDatabase;
+		wxString m_DBName;
 		
 	protected:
 		
@@ -69,6 +71,7 @@ class BackupRestore : public wxObject
 		// getters and setters 
 		virtual wxString GetDirOrigin (){ return wxEmptyString;}
 		virtual wxString GetDirDestination (){ return wxEmptyString;}
+		wxString GetDatabaseName(){return m_DBName;}
 	};
 
 
@@ -80,6 +83,12 @@ class BackupRestore : public wxObject
  *******************************************************************************/
 class Backup : public BackupRestore
 	{
+	private:
+		
+		
+	protected:
+		wxString CreateBackupName ();
+		
 	public:
 		Backup(DataBaseTM * pDB);
 		~Backup(){;}
@@ -87,6 +96,7 @@ class Backup : public BackupRestore
 		virtual wxString GetDirOrigin (){ return m_UserDefinedPath;}
 		virtual wxString GetDirDestination (){ return m_DatabasePath;}
 		
+		bool Save (const wxArrayString & files);
 		bool TestZip (wxString filename1, wxString filename2);
 		
 	};

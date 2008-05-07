@@ -39,6 +39,8 @@ BackupRestore::BackupRestore(DataBaseTM * pDB)
 	m_UserDefinedPath = _T("");
 	
 	GetDatabasePath();
+	
+	m_DBName = m_pDatabase->DataBaseGetName();
 }
 
 /***************************************************************************//**
@@ -182,6 +184,140 @@ Backup::Backup(DataBaseTM * pDB) : BackupRestore(pDB)
 	}
 	
 }
+
+
+/***************************************************************************//**
+ @brief Construct a backup file name
+ @details This function may be called for creating a backup file name of the
+ following type : databasename-2008-05-30-13:12:54.zip
+ @return  the new backup filename + path if all goes OK, otherwise empty string
+ is returned
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 06 May 2008
+ *******************************************************************************/
+wxString Backup::CreateBackupName ()
+{
+	wxString dbname = GetDatabaseName();
+	if (dbname.IsEmpty())
+	{
+		wxLogError(_T("Database name is empty ! "));
+		return wxEmptyString;
+	}
+	
+	wxDateTime dt = wxDateTime::Now();
+	wxString filename = dbname;
+	filename.Append( _T("-") + dt.FormatISODate() + _T("-") + dt.FormatISOTime() + _T(".zip"));	
+	
+	wxFileName bkpname (GetDirDestination(),filename);
+	if (!bkpname.IsOk())
+	{
+		wxLogDebug(_T("Backup file name seems not to be correct : ") + bkpname.GetFullPath());
+		return wxEmptyString;
+	}
+	
+	return bkpname.GetFullPath();
+}
+
+
+
+/***************************************************************************//**
+ @brief Save files to Zip
+ @details This functions save the passed files array to zip file
+ To avoid
+ errors, one can call BackupRestore::ListDirFiles() before.
+ @code
+ Backup myBackup (m_DB);
+ wxArrayString myFiles;
+ 
+ if(myBackup.IsPathsSpecified())
+ {
+	myBackup.ListDirFiles(myBackup.GetDirOrigin(), myFiles);
+	myBackup.Save(myFiles);
+ 
+	return TRUE;
+ }
+ @endcode
+ @param files String array containing ONLY files name, Directory can be
+ retrieved with Backup::GetDirDestination() or Backup::GetDirOrigin()
+ @return  True if backup was successfull, false otherwise (see error message)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 May 2008
+ *******************************************************************************/
+bool Backup::Save (const wxArrayString & files)
+{
+	// the progress dialog
+	
+	
+	
+	// get and check directory
+	wxString fromdir	= GetDirOrigin();
+	wxString todir		= GetDirDestination();
+	
+	if (!wxDirExists(fromdir))
+	{
+		wxLogError(_T("Backup directory dosen't exist : ") + fromdir);
+		return FALSE;
+	}
+	
+	if (!wxDirExists(todir))
+	{
+		wxLogError(_T("Backup directory dosen't exist : ") + todir);
+		return FALSE;		
+	}
+	
+	// get and check future backup filename
+	wxString dbbackupname = CreateBackupName();
+	
+	if (wxFileExists(dbbackupname))
+	{
+		wxLogError(_("Backup with same name allready exists : ") + dbbackupname);
+		return FALSE;
+	}
+	
+	
+	// open stream to file
+	wxFFileOutputStream outf(dbbackupname);
+	
+	if (!outf.Ok())
+	{
+		wxLogError(wxT("Could not open file: ") + dbbackupname);
+		return false;
+	}
+	
+	wxZipOutputStream outzip(outf);
+	
+	
+	// loop for adding all files
+	wxFileName fn1 (GetDirOrigin(), files.Item(0));
+	wxFileInputStream f1stream(fn1.GetFullPath());
+	
+	if (!f1stream.Ok())
+	{
+		wxLogError(wxT("Error opening file: ") + files.Item(0));
+		return false;
+	}
+	
+	
+	outzip.PutNextEntry(files.Item(0));
+	
+	outzip << f1stream;
+	
+	if (!outzip.Close())
+	{
+		wxLogError(wxT("Error during outzip.Close()"));
+		return false;
+	}
+	
+	outf.Close();
+	
+	
+	
+	wxLogDebug(_T("Backup DONE is : ")  + dbbackupname);
+	return TRUE;
+}
+
+
+
 
 
 bool Backup::TestZip(wxString filename1, wxString filename2)

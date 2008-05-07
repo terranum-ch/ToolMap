@@ -157,6 +157,7 @@ bool ProjectManager::BackupProject ()
 		//				 _T("/Users/Lucien/Desktop/time.zip"));
 		
 		myBackup.ListDirFiles(myBackup.GetDirOrigin(), myFiles);
+		myBackup.Save(myFiles);
 		
 		return TRUE;
 	}
