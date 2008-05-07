@@ -72,12 +72,7 @@ int BackupRestore::GetDatabasePath()
 	
 	// get the backup path from database
 	int iPathStatus = m_pDatabase->GetProjectBackupPath(m_DatabasePath);
-	if(iPathStatus == PATH_OK)
-	{
-		wxLogDebug(_T("Backup / restore path found : %s"),m_DatabasePath.c_str());
-		
-	}
-	else 
+	if(iPathStatus != PATH_OK)
 	{
 		wxMessageBox(sErrMsg,_("No valid path found"),wxICON_ERROR | wxOK);
 	}
@@ -147,7 +142,7 @@ long BackupRestore::ListDirFiles (const wxString & sDir, wxArrayString & files)
 		}
 		else 
 		{
-			wxLogDebug(_T("Files %s not matching file specs..."), filename.c_str());
+			wxLogError(_T("File %s will not be backuped"), filename.c_str());
 		}
 
 		cont = listdir.GetNext(&filename);
@@ -206,7 +201,9 @@ wxString Backup::CreateBackupName ()
 	
 	wxDateTime dt = wxDateTime::Now();
 	wxString filename = dbname;
-	filename.Append( _T("-") + dt.FormatISODate() + _T("-") + dt.FormatISOTime() + _T(".zip"));	
+	filename.Append( _T("-") + dt.Format(_T("%Y%m%d-%H%M%S.zip")));
+					
+					// dt.FormatISODate() + _T("-") + dt.FormatISOTime() + _T(".zip"));	
 	
 	wxFileName bkpname (GetDirDestination(),filename);
 	if (!bkpname.IsOk())
@@ -245,10 +242,6 @@ wxString Backup::CreateBackupName ()
  *******************************************************************************/
 bool Backup::Save (const wxArrayString & files)
 {
-	// the progress dialog
-	
-	
-	
 	// get and check directory
 	wxString fromdir	= GetDirOrigin();
 	wxString todir		= GetDirDestination();
@@ -273,7 +266,7 @@ bool Backup::Save (const wxArrayString & files)
 		wxLogError(_("Backup with same name allready exists : ") + dbbackupname);
 		return FALSE;
 	}
-	
+
 	
 	// open stream to file
 	wxFFileOutputStream outf(dbbackupname);
@@ -283,24 +276,57 @@ bool Backup::Save (const wxArrayString & files)
 		wxLogError(wxT("Could not open file: ") + dbbackupname);
 		return false;
 	}
-	
 	wxZipOutputStream outzip(outf);
 	
+
+	
+	// the progress dialog
+	wxFileName dbkfilename (dbbackupname);
+	wxString mydlgtext =	_("Backup of the database : ") + GetDatabaseName() +
+							_(" In progress.");
+	wxProgressDialog ProgDlg (_("Backup in progress"),mydlgtext,50,NULL,
+							  wxPD_CAN_ABORT |  wxPD_AUTO_HIDE | wxPD_APP_MODAL);
+	
+	// compute progress increment
+	double dStep = files.GetCount();
+	if (dStep > 50)
+		dStep = dStep / 50;
+	else
+		dStep = 50 / dStep;
+	double dIncrement = dStep;
+	
+	
+	bool bCompleted = TRUE;
 	
 	// loop for adding all files
-	wxFileName fn1 (GetDirOrigin(), files.Item(0));
-	wxFileInputStream f1stream(fn1.GetFullPath());
-	
-	if (!f1stream.Ok())
+	for (unsigned int i = 0; i<files.GetCount(); i++)
 	{
-		wxLogError(wxT("Error opening file: ") + files.Item(0));
-		return false;
+		wxFileName fn1 (GetDirOrigin(), files.Item(i));
+		wxFileInputStream f1stream(fn1.GetFullPath());
+		
+		if (!f1stream.Ok())
+		{
+			wxLogError(wxT("Error opening file: ") + files.Item(i));
+			return false;
+		}
+		
+		// incrementing progress dialog
+		if (!ProgDlg.Update(dIncrement))
+		{
+			bCompleted = FALSE;
+			wxLogMessage(_("Backup into %s cancelled by user"), dbkfilename.GetFullName().c_str());
+			break;
+		}
+		dIncrement  = dIncrement + dStep;
+		if (dIncrement > 50)
+			dIncrement = 50;
+		
+		
+		// realy adding files into zip
+		outzip.PutNextEntry(files.Item(i));
+		outzip << f1stream;
+		
 	}
-	
-	
-	outzip.PutNextEntry(files.Item(0));
-	
-	outzip << f1stream;
 	
 	if (!outzip.Close())
 	{
@@ -311,135 +337,12 @@ bool Backup::Save (const wxArrayString & files)
 	outf.Close();
 	
 	
+	if (bCompleted)
+		wxLogMessage(_("Database backuped into : ") + dbkfilename.GetFullName());
 	
-	wxLogDebug(_T("Backup DONE is : ")  + dbbackupname);
+	//wxLogDebug(_T("Backup DONE is : ")  + dbbackupname);
 	return TRUE;
 }
 
 
 
-
-
-bool Backup::TestZip(wxString filename1, wxString filename2)
-{
-	// file verifications
-	if (!wxFileExists(filename1))
-	{
-		wxLogError(wxT("File does not exist: ") + filename1);
-		return false;
-	}
-	
-	if (!wxFileExists(filename2))
-	{
-		wxLogError(wxT("File does not exist: ") + filename2);
-		return false;
-	}
-	
-	//wxFFileInputStream inf(filename2);
-	wxFFileOutputStream outf(filename2);
-	
-	if (!outf.Ok())
-	{
-		wxLogError(wxT("Could not open file: ") + filename2);
-		return false;
-	}
-	
-	wxZipOutputStream outzip(outf);
-	
-	
-	/*wxString tempfilename = wxFileName::CreateTempFileName(_T("rls"));
-	wxFFileOutputStream outf(tempfilename);
-	
-	if (!outf.Ok())
-	{
-		wxLogError(wxT("Could not open file: ") + tempfilename);
-		return false;
-	}
-	
-	wxZipInputStream inzip(inf);
-	wxZipOutputStream outzip(outf);
-	wxZipEntryPtr entry;
-	
-	outzip.CopyArchiveMetaData(inzip);
-	
-	
-	
-	while (entry.reset(inzip.GetNextEntry()), entry.get() != NULL)
-	{
-		if (fn1.GetFullName() == entry->GetName())
-		{
-			// delete any existing file with the same name
-			// (otherwise there would be two entries with the same name)
-			continue;
-		}
-		if (!outzip.CopyEntry(entry.release(), inzip))
-		{
-			break;
-		}
-	}
-	
-	if (!inzip.Eof())
-	{
-		wxLogError(wxT("Error during zip copy"));
-		return false;
-	}*/
-	
-	// here actually add filename1
-	
-	wxFileInputStream f1stream(filename1);
-	wxFileName fn1(filename1);
-	
-	if (!f1stream.Ok())
-	{
-		wxLogError(wxT("Error opening file: ") + filename1);
-		return false;
-	}
-	
-	
-	outzip.PutNextEntry(fn1.GetFullName());
-	
-	//outzip << f1stream;
-	outzip.Write(f1stream);
-	
-	if (!outzip.Close())
-	{
-		wxLogError(wxT("Error during outzip.Close()"));
-		return false;
-	}
-	
-	outf.Close();
-	
-	/*if (!wxCopyFile(tempfilename, filename2))
-	{
-		wxLogError(wxT("Error during wxCopyFile"));
-		return false;
-	}
-	
-	wxRemoveFile(tempfilename);*/
-	
-	return true;
-	
-	
-	
-}
-
-
-/*
-void CreateZip(wxString zipFile, wxArrayString files)
-{
-	//progress_set_text(wxString::Format(wxT("Creating ZIP file...")));
-	wxFileOutputStream f(zipFile);
-	if (!f.IsOk()) return;
-	wxZipOutputStream zf(f);
-	wxDataOutputStream bin(zf);
-	
-	for (unsigned i = 0; i < files.size(); i++) {
-		zf.PutNextEntry(GetFn(files[i]));
-	//	ArchiveFile(bin, files[i]);
-		//
-	//	progress_set_progress(0.8+0.2*(i+1.0)/files.size());
-	//	progress_set_text(wxString::Format(
-	//									   wxT("Creating ZIP file...%u of %u (%s)"),
-	//									   i+1, files.size(), GetFn(files[i]).c_str()), i+files.size());
-	}
-}*/
