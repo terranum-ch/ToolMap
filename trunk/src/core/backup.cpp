@@ -312,7 +312,8 @@ bool Backup::Save (const wxArrayString & files)
 	bool bCompleted = TRUE;
 	
 	// adding directory into archive
-	outzip.PutNextDirEntry(GetDatabaseName() + _T("-") + GetDateAsString());
+	wxString dirname = GetDatabaseName() + GetDateAsString();
+	outzip.PutNextDirEntry(dirname);
 	
 	// loop for adding all files
 	for (unsigned int i = 0; i<files.GetCount(); i++)
@@ -339,7 +340,7 @@ bool Backup::Save (const wxArrayString & files)
 		
 		
 		// realy adding files into zip
-		outzip.PutNextEntry(files.Item(i));
+		outzip.PutNextEntry(dirname + wxFileName::GetPathSeparator() + files.Item(i));
 		outzip << f1stream;
 		
 	}
