@@ -201,7 +201,7 @@ wxString Backup::CreateBackupName ()
 	
 	wxDateTime dt = wxDateTime::Now();
 	wxString filename = dbname;
-	filename.Append( _T("-") + dt.Format(_T("%Y%m%d-%H%M%S.zip")));
+	filename.Append( _T("-") + GetDateAsString() + dt.Format(_T("-%H%M%S.zip")));
 					
 					// dt.FormatISODate() + _T("-") + dt.FormatISOTime() + _T(".zip"));	
 	
@@ -213,6 +213,19 @@ wxString Backup::CreateBackupName ()
 	}
 	
 	return bkpname.GetFullPath();
+}
+
+
+/***************************************************************************//**
+ @brief Return actual date as string
+ @param wxString the actual date as string (YYYYMMDD)
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 07 May 2008
+ *******************************************************************************/
+wxString Backup::GetDateAsString()
+{
+	wxDateTime dt = wxDateTime::Now();
+	return dt.Format(_T("%Y%m%d"));
 }
 
 
@@ -297,6 +310,9 @@ bool Backup::Save (const wxArrayString & files)
 	
 	
 	bool bCompleted = TRUE;
+	
+	// adding directory into archive
+	outzip.PutNextDirEntry(GetDatabaseName() + _T("-") + GetDateAsString());
 	
 	// loop for adding all files
 	for (unsigned int i = 0; i<files.GetCount(); i++)

@@ -88,6 +88,7 @@ class Backup : public BackupRestore
 		
 	protected:
 		wxString CreateBackupName ();
+		wxString GetDateAsString();
 		
 	public:
 		Backup(DataBaseTM * pDB);
