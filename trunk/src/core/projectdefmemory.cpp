@@ -130,7 +130,7 @@ wxString ProjectDefMemoryFields::ExtractValuesFromString(const wxString & fieldd
  @brief Assign values based on string
  @details This function may be used for assigning values to a
  #ProjectDefMemoryFields object from a string (for applications see string
- extracted from some SQL query like 'SHOW COLUMNS FROM ...'
+ extracted from some SQL query like 'SHOW FULL COLUMNS FROM ...'
  @param fielddef an Array of String containing minimum 2 items (verified
  internally), the first item should be the field name and the second is a
  string with the width of the field or the values in case of enumerations
@@ -215,6 +215,11 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 			}
 
 		}
+		
+		// get orientation (item number 8)
+		if (fielddef.Item(8) == ProjectDefMemoryFields::GetOrientationName())
+			m_FieldOrientation = TRUE;
+		// otherwise, field orientation is false :-)
 			
 			
 		return TRUE;
@@ -276,6 +281,12 @@ bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 			sResult = wxString::Format(_T("VARCHAR(%d) NULL"),m_FieldPrecision);
 			break;
 	}
+	
+	// deals with orientation :
+	if (m_FieldOrientation)
+		sResult.Append(_T(" COMMENT \"") + GetOrientationName() + _T("\""));
+	else
+		sResult.Append(_T(" COMMENT ''"));
 
 	return TRUE;
 }

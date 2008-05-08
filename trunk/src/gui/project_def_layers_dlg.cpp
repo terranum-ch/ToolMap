@@ -386,15 +386,13 @@ void ProjectDefLayersFieldsList::AfterEditing (bool bRealyEdited)
  @author Lucien Schreiber (c) CREALP 2008
  @date 08 May 2008
  *******************************************************************************/
-bool ProjectDefLayersFieldsList::SetOrientation (int orientation, const int & index)
+void ProjectDefLayersFieldsList::SetOrientation (int orientation, const int & index)
 {
 	wxString myFieldName;
-	wxString myFieldType;
 	ProjectDefMemoryFields * field = NULL;
 	
 			
 	myFieldName = GetItemColText(index,0);
-	myFieldType = GetItemColText(index, 1);
 	field = m_pPrjDefinition->FindField(myFieldName);
 	
 	// if field not found -> Error
@@ -402,33 +400,42 @@ bool ProjectDefLayersFieldsList::SetOrientation (int orientation, const int & in
 	{
 		wxLogError(_T("Field with name : %s not found in memory array"),
 				   myFieldName.c_str());
-		return FALSE;
+		return;
 	}
 	
-	// check that we are using the good field type (integer or float)
-	if (myFieldType == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER] ||
-		myFieldType == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT])
-	{
-		// update UI
-		SetItemText(index, 2, PRJDEF_FIELD_ORIENTATION_STRING[orientation]);
-		
-		// finally change the frequency to the specified value
-		if (orientation == TM_FIELD_ORIENT_YES)
-			field->m_FieldOrientation =  TRUE;
-		else
-			field->m_FieldOrientation = FALSE;
-	}
+
+	// update UI
+	SetItemText(index, 2, PRJDEF_FIELD_ORIENTATION_STRING[orientation]);
+	
+	// finally change the frequency to the specified value
+	if (orientation == TM_FIELD_ORIENT_YES)
+		field->m_FieldOrientation =  TRUE;
 	else
-	{
-		wxLogMessage(_("Field \"%s\" is not of the Integer or Float type"),
-					 myFieldName.c_str());
-		return FALSE;
-	}
-	
-	
-	return TRUE;
+		field->m_FieldOrientation = FALSE;
+
 }
 
+
+/***************************************************************************//**
+ @brief Check if a field may be used for orientation
+ @details Only following fields could be set as orientation fields :
+ - INTEGER
+ - FLOAT
+ @param index Zero based item index
+ @return  TRUE if fields may be used for orientation
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 08 May 2008
+ *******************************************************************************/
+bool ProjectDefLayersFieldsList::IsOrientationAllowed(int index)
+{
+	wxString fieldtype = GetItemColText(index, 1);
+	if (fieldtype == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER] ||
+		fieldtype == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT])
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
 
 
 
@@ -656,31 +663,57 @@ void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 
 /***************************************************************************//**
  @brief Called when checkbox is pressed
+This functions does the following things  :
+ - Set the parameter orientation if field type is Integer or Float
+ - Remove every other orientation fields.
  @author Lucien Schreiber (c) CREALP 2008
  @date 08 May 2008
  *******************************************************************************/
 void ProjectDefLayersDlg::OnChangeOrientation (wxCommandEvent & event)
 {
 	int iIndex = 0;
-	int iOrient = 0;
 	
-	// get first selected items.
-	// changing multiple values isn't usefull !
+	// check : one item must be selected, otherwise return
 	iIndex = m_DlgPDL_Fields_List->GetSelectedItem();
 	if (iIndex < 0)
 	{
-		wxLogDebug(_T("TEMP : no item selected, index is %d"), iIndex);
+		m_DlgPDL_Orientation_FLD->SetValue(FALSE);
+		//wxLogDebug(_T("TEMP : no item selected, index is %d"), iIndex);
 		return;
 	}
 	
-	// if checked 
-	if(m_DlgPDL_Orientation_FLD->IsChecked())
-		iOrient = TM_FIELD_ORIENT_YES;
-	else
-		iOrient = TM_FIELD_ORIENT_NO;
-	
-	if(!(m_DlgPDL_Fields_List->SetOrientation(iOrient, iIndex)))
+	// check : field must be of type integer or float
+	if (!m_DlgPDL_Fields_List->IsOrientationAllowed(iIndex))
+	{
 		m_DlgPDL_Orientation_FLD->SetValue(FALSE);
+		wxLogMessage(_("Field \"%s\" is not of the Integer or Float type"),
+				   m_DlgPDL_Fields_List->GetItemColText(iIndex, 1).c_str());
+		return;
+	}
+	
+	
+	// if checkbox is checked, check this one and uncheck all others
+	if(m_DlgPDL_Orientation_FLD->IsChecked())
+	{		
+		int iNbItem = m_DlgPDL_Fields_List->GetItemCount();
+		//wxString fieldname  = _T("");
+		for (int i=0; i<iNbItem; i++)
+		{
+			if (i!=iIndex)
+			{	
+				if(m_DlgPDL_Fields_List->IsOrientationAllowed(i))
+					m_DlgPDL_Fields_List->SetOrientation(TM_FIELD_ORIENT_NO, i);
+			}
+			else
+				m_DlgPDL_Fields_List->SetOrientation(TM_FIELD_ORIENT_YES, i);
+		}
+		
+		
+	}
+	else // just uncheck this one
+	{
+		m_DlgPDL_Fields_List->SetOrientation(TM_FIELD_ORIENT_NO, iIndex);
+	}
 }
 
 

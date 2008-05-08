@@ -379,12 +379,12 @@ void ProjectDefFieldDlg::TransfertIntegerValues(bool bSendDataToDlg)
 {
 	if (bSendDataToDlg == TRUE)	// DATA --> DIALOG	
 	{
-		m_DlgAFD_Orientation_Integer->SetValue(m_MemoryField->m_FieldOrientation);
+		//m_DlgAFD_Orientation_Integer->SetValue(m_MemoryField->m_FieldOrientation);
 	}
 	else	// DIALOG --> DATA
 	{
 		m_MemoryField->m_FieldType = TM_FIELD_INTEGER;
-		m_MemoryField->m_FieldOrientation = m_DlgAFD_Orientation_Integer->IsChecked();
+		//m_MemoryField->m_FieldOrientation = m_DlgAFD_Orientation_Integer->IsChecked();
 	}	
 }
 
@@ -403,14 +403,14 @@ void ProjectDefFieldDlg::TransfertFloatValues(bool bSendDataToDlg)
 	{
 		m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
 		m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
-		m_DlgAFD_Orientation_Float->SetValue(m_MemoryField->m_FieldOrientation);
+		//m_DlgAFD_Orientation_Float->SetValue(m_MemoryField->m_FieldOrientation);
 	}
 	else	// DIALOG --> DATA
 	{
 		m_MemoryField->m_FieldType = TM_FIELD_FLOAT;
 		m_MemoryField->m_FieldPrecision = m_DlgAFD_Field_Precision->GetValue(); 
 		m_MemoryField->m_FieldScale = m_DlgAFD_Field_Scale->GetValue();
-		m_MemoryField->m_FieldOrientation = m_DlgAFD_Orientation_Float->IsChecked();
+		//m_MemoryField->m_FieldOrientation = m_DlgAFD_Orientation_Float->IsChecked();
 	}		
 }
 
@@ -682,11 +682,7 @@ void ProjectDefFieldDlg::CreateControls()
 	m_staticText11 = new wxStaticText( m_panel6, wxID_ANY, _("Integer fields may store numeric values :\n\nfrom -2147483648\nto 2147483647"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText11->Wrap( -1 );
 	sbSizer22->Add( m_staticText11, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
-	m_DlgAFD_Orientation_Integer = new wxCheckBox( m_panel6, wxID_ANY, _("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
-	
-	sbSizer22->Add( m_DlgAFD_Orientation_Integer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+		
 	bSizer62->Add( sbSizer22, 1, wxEXPAND, 5 );
 	
 	m_panel6->SetSizer( bSizer62 );
@@ -728,11 +724,7 @@ void ProjectDefFieldDlg::CreateControls()
 	fgSizer1->Add( m_DlgAFD_Result, 1, wxALL|wxEXPAND, 5 );
 	
 	sbSizer21->Add( fgSizer1, 0, wxEXPAND, 5 );
-	
-	m_DlgAFD_Orientation_Float = new wxCheckBox( m_panel7, wxID_ANY, _("Orientation field"), wxDefaultPosition, wxDefaultSize, 0 );
-	
-	sbSizer21->Add( m_DlgAFD_Orientation_Float, 0, wxALL, 5 );
-	
+		
 	bSizer61->Add( sbSizer21, 1, wxEXPAND, 5 );
 	
 	m_panel7->SetSizer( bSizer61 );
