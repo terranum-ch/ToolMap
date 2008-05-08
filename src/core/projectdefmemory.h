@@ -239,6 +239,7 @@ class ProjectDefMemoryFields
 		
 		wxString ExtractValuesFromString(const wxString & fielddef);
 		
+		
 	public:
 		int m_FieldID;
 		wxString m_Fieldname;
@@ -258,6 +259,7 @@ class ProjectDefMemoryFields
 		
 		bool SetValues(const wxArrayString & fielddef);
 		bool GetStringTypeFromValues (wxString & sResult);
+		static wxString GetOrientationName(){return _T("ORIENTATION");}
 		
 	
 	};

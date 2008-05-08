@@ -168,11 +168,11 @@ class ProjectDefFieldDlg: public wxDialog
 		wxTextCtrl* m_DlgAFD_Field_Def;
 		wxChoicebook* m_DlgAFD_Choicebook;
 		wxSpinCtrl* m_DlgAFD_Text_Length;
-		wxCheckBox* m_DlgAFD_Orientation_Integer;
+		//wxCheckBox* m_DlgAFD_Orientation_Integer;
 		wxSpinCtrl* m_DlgAFD_Field_Precision;
 		wxSpinCtrl* m_DlgAFD_Field_Scale;
 		wxTextCtrl* m_DlgAFD_Result;
-		wxCheckBox* m_DlgAFD_Orientation_Float;
+		//wxCheckBox* m_DlgAFD_Orientation_Float;
 		wxButton* m_DlgAFD_Button_OK;
 		
 	

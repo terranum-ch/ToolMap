@@ -1018,7 +1018,7 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 {
 	wxArrayString myResults;
-	wxString sSentence = wxString::Format(_T("SHOW COLUMNS FROM %s%d"),
+	wxString sSentence = wxString::Format(_T("SHOW FULL COLUMNS FROM %s%d"),
 										  TABLE_NAME_LAYER_AT.c_str(),
 										  DBlayerIndex);
 	

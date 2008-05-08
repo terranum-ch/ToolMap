@@ -139,7 +139,8 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 		
 		
 		void SetListCtrls (wxCheckBox * pChkOrientation = NULL) {m_ChkOrientation = pChkOrientation;}
-		bool SetOrientation (int orientation, const int & index);
+		void SetOrientation (int orientation, const int & index);
+		bool IsOrientationAllowed(int index);
 		//	int GetParamType (wxString myTextParam);
 		//		
 		//		wxString GetParamType (int imyType);
