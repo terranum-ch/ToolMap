@@ -193,9 +193,11 @@ ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWind
 	
 	myColNames.Add(_("Name"));
 	myColNames.Add(_("Type"));
+	myColNames.Add(_("Orientation"));
 	
-	myColsWidths.Add(250);
+	myColsWidths.Add(150);
 	myColsWidths.Add(80);
+	myColsWidths.Add(85);
 	
 	CreateColumns(&myColNames, &myColsWidths);
 	
@@ -203,10 +205,48 @@ ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow * parent, wxWind
 	
 	m_pPrjDefinition = NULL;
 	m_FieldsObj = NULL;
+	m_ChkOrientation = NULL;
 	
 	m_bIsModeEditing = myDlg->IsEditMode();
 	
 }
+
+BEGIN_EVENT_TABLE( ProjectDefLayersFieldsList, ListGenReportWithDialog)
+	EVT_LIST_ITEM_SELECTED(wxID_ANY, ProjectDefLayersFieldsList::OnItemSelectChange)
+END_EVENT_TABLE()
+
+
+/***************************************************************************//**
+ @brief Called when item is selected
+ @details This functions update the checkbox
+ (ProjectDefLayersFieldsList::m_ChkOrientation) based on the Field orientation
+ status
+ @author Lucien Schreiber (c) CREALP 2007
+ @date 08 May 2008
+ *******************************************************************************/
+void ProjectDefLayersFieldsList::OnItemSelectChange (wxListEvent & event)
+{
+	// check validity of checkbox
+	if (m_ChkOrientation == NULL)
+	{
+		wxLogError(_T("Checkbox pointer is null, use SetListCtrl() to pass")
+				   _T(" pointer adress !"));
+		return;
+	}
+	
+	int iIndex = GetSelectedItem();
+	// works on the first item only
+	if (iIndex >= 0)
+	{
+		wxString chkvalue = GetItemColText(iIndex, 2);
+		if (chkvalue == PRJDEF_FIELD_ORIENTATION_STRING[TM_FIELD_ORIENT_YES])
+			m_ChkOrientation->SetValue(TRUE);
+		else
+			m_ChkOrientation->SetValue(FALSE);
+	}
+
+}
+
 
 ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList()
 {
@@ -332,6 +372,61 @@ void ProjectDefLayersFieldsList::AfterEditing (bool bRealyEdited)
     //wxLogDebug(_T("Deleting Field Dialog"));
 	delete m_pDialog;
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Set orientation for field
+ @details This function set or clear orientation for specified field.
+ @param orientation value of orientation to set. Allowed values are : 
+ - TM_FIELD_ORIENT_YES 
+ - TM_FIELD_ORIENT_NO
+ @param index Zero based index of the item to modify.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 08 May 2008
+ *******************************************************************************/
+bool ProjectDefLayersFieldsList::SetOrientation (int orientation, const int & index)
+{
+	wxString myFieldName;
+	wxString myFieldType;
+	ProjectDefMemoryFields * field = NULL;
+	
+			
+	myFieldName = GetItemColText(index,0);
+	myFieldType = GetItemColText(index, 1);
+	field = m_pPrjDefinition->FindField(myFieldName);
+	
+	// if field not found -> Error
+	if (field == NULL)
+	{
+		wxLogError(_T("Field with name : %s not found in memory array"),
+				   myFieldName.c_str());
+		return FALSE;
+	}
+	
+	// check that we are using the good field type (integer or float)
+	if (myFieldType == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER] ||
+		myFieldType == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT])
+	{
+		// update UI
+		SetItemText(index, 2, PRJDEF_FIELD_ORIENTATION_STRING[orientation]);
+		
+		// finally change the frequency to the specified value
+		if (orientation == TM_FIELD_ORIENT_YES)
+			field->m_FieldOrientation =  TRUE;
+		else
+			field->m_FieldOrientation = FALSE;
+	}
+	else
+	{
+		wxLogMessage(_("Field \"%s\" is not of the Integer or Float type"),
+					 myFieldName.c_str());
+		return FALSE;
+	}
+	
+	
+	return TRUE;
 }
 
 
@@ -510,6 +605,7 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_REMOVE, ProjectDefLayersDlg::OnRemoveObject)
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_IMPORT, ProjectDefLayersDlg::OnImportObject)
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_REMOVE, ProjectDefLayersDlg::OnRemoveField)
+	EVT_CHECKBOX(ID_DLGPDL_CHK_ORIENTATION,ProjectDefLayersDlg::OnChangeOrientation)
 END_EVENT_TABLE()
 
 
@@ -557,6 +653,35 @@ void ProjectDefLayersDlg::OnImportObject (wxCommandEvent & event)
 	
 }
 
+
+/***************************************************************************//**
+ @brief Called when checkbox is pressed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 08 May 2008
+ *******************************************************************************/
+void ProjectDefLayersDlg::OnChangeOrientation (wxCommandEvent & event)
+{
+	int iIndex = 0;
+	int iOrient = 0;
+	
+	// get first selected items.
+	// changing multiple values isn't usefull !
+	iIndex = m_DlgPDL_Fields_List->GetSelectedItem();
+	if (iIndex < 0)
+	{
+		wxLogDebug(_T("TEMP : no item selected, index is %d"), iIndex);
+		return;
+	}
+	
+	// if checked 
+	if(m_DlgPDL_Orientation_FLD->IsChecked())
+		iOrient = TM_FIELD_ORIENT_YES;
+	else
+		iOrient = TM_FIELD_ORIENT_NO;
+	
+	if(!(m_DlgPDL_Fields_List->SetOrientation(iOrient, iIndex)))
+		m_DlgPDL_Orientation_FLD->SetValue(FALSE);
+}
 
 
 
@@ -618,6 +743,12 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 				// fit things returned in the list
 				myFieldListValues.Add(myFieldObj->m_Fieldname);
 				myFieldListValues.Add(PRJDEF_FIELD_TYPE_STRING[myFieldObj->m_FieldType]);
+				
+				if (myFieldObj->m_FieldOrientation)
+					myFieldListValues.Add(PRJDEF_FIELD_ORIENTATION_STRING[TM_FIELD_ORIENT_YES]);
+				else
+					myFieldListValues.Add(PRJDEF_FIELD_ORIENTATION_STRING[TM_FIELD_ORIENT_NO]);
+				
 				m_DlgPDL_Fields_List->EditDataToList(myFieldListValues);
 				myFieldListValues.Clear();
 				
@@ -657,6 +788,9 @@ ProjectDefLayersDlg::ProjectDefLayersDlg( wxWindow* parent, PrjDefMemManage *pPr
 	if (m_DlgPDL_Panel_Fields != NULL)
 	m_DlgPDL_Fields_List->PassPrjDefToList(m_pPrjDefinition);
 	//wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
+	
+	// pass address of checkbox to the list
+	m_DlgPDL_Fields_List->SetListCtrls(m_DlgPDL_Orientation_FLD);
 }
 
 
@@ -699,6 +833,7 @@ void ProjectDefLayersDlg::Init()
 	 m_DlgPDL_Object_List = NULL;
 	 m_DlgPDL_Panel_Fields = NULL;
 	 m_DlgPDL_Fields_List = NULL;
+	m_DlgPDL_Orientation_FLD = NULL;
 }
 
 
@@ -772,7 +907,9 @@ void ProjectDefLayersDlg::CreateControls()
     wxStaticBoxSizer* itemStaticBoxSizer18 = new wxStaticBoxSizer(itemStaticBoxSizer18Static, wxVERTICAL);
     m_DlgPDL_Panel_Fields->SetSizer(itemStaticBoxSizer18);
 
-    m_DlgPDL_Fields_List = new ProjectDefLayersFieldsList( m_DlgPDL_Panel_Fields, ID_DLGPDL_FIELDS_LIST, wxSize(100, 100), this);
+    m_DlgPDL_Fields_List = new ProjectDefLayersFieldsList( m_DlgPDL_Panel_Fields, 
+														  ID_DLGPDL_FIELDS_LIST, wxSize(100, 100),
+														  this);
     itemStaticBoxSizer18->Add(m_DlgPDL_Fields_List, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
@@ -782,7 +919,11 @@ void ProjectDefLayersDlg::CreateControls()
 
     wxFlatButton* itemFlatButton22 = new wxFlatButton( m_DlgPDL_Panel_Fields, ID_DLGPDL_FIELD_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
     itemBoxSizer20->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-
+	
+	m_DlgPDL_Orientation_FLD = new wxCheckBox(m_DlgPDL_Panel_Fields,ID_DLGPDL_CHK_ORIENTATION,
+										 _("Orientation field"));
+	itemBoxSizer20->Add(m_DlgPDL_Orientation_FLD,0,wxALIGN_CENTER_VERTICAL | wxALL,5);
+	
     itemNotebook9->AddPage(m_DlgPDL_Panel_Fields, _("Attributes"));
 
     itemBoxSizer2->Add(itemNotebook9, 1, wxGROW|wxALL, 5);

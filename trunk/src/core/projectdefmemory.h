@@ -111,6 +111,18 @@ enum PRJDEF_FIELD_TYPE
 };
 static const int PRJDEF_FIELD_TYPE_NUMBER = 5;
 
+static wxString PRJDEF_FIELD_ORIENTATION_STRING[] =
+{
+	_("Yes"),
+	_T("")
+};
+
+enum PRJDEF_FIELD_ORIENTATION
+{
+	TM_FIELD_ORIENT_YES = 0,
+	TM_FIELD_ORIENT_NO
+};
+
 // Definition for the constrain value type
 /*enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
 {
