@@ -56,6 +56,7 @@ class ProjectDefLayersEditObjectDlg;
 #define ID_DLGPDL_FIELDS_LIST 10220
 #define ID_DLGPDL_FIELD_ADD 10005
 #define ID_DLGPDL_FIELD_REMOVE 10006
+#define ID_DLGPDL_CHK_ORIENTATION 10290
 #define SYMBOL_PROJECTDEFLAYERSDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFLAYERSDLG_TITLE _("Thematic layer definition")
 #define SYMBOL_PROJECTDEFLAYERSDLG_IDNAME ID_DLGPDL
@@ -104,10 +105,10 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 	{
 	private:
 		bool m_bIsModeEditing;
-		//		void OnMySelectionChange (wxListEvent & event);
 		
 		PrjDefMemManage *  m_pPrjDefinition;
 		ProjectDefMemoryFields * m_FieldsObj;
+		wxCheckBox * m_ChkOrientation;
 		
 		
 		virtual void	AfterAdding (bool bRealyAddItem);
@@ -122,16 +123,23 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog
 		ProjectDefLayersDlg * m_DlgParent;
 		
 		wxChoice * m_ChoiceToChange;
+		// event functions
+		void OnItemSelectChange (wxListEvent & event);
+		DECLARE_EVENT_TABLE();
 		
 	public:
 		static const int ID_PARAMLIST;
 		
-		ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID id, wxSize size, ProjectDefLayersDlg * myDlg);
+		ProjectDefLayersFieldsList(wxWindow * parent, wxWindowID id, 
+								   wxSize size, ProjectDefLayersDlg * myDlg);
 		
 		~ProjectDefLayersFieldsList(); 
 		
 		void PassPrjDefToList (PrjDefMemManage *  myPrjMemManage) {m_pPrjDefinition = myPrjMemManage;}
 		
+		
+		void SetListCtrls (wxCheckBox * pChkOrientation = NULL) {m_ChkOrientation = pChkOrientation;}
+		bool SetOrientation (int orientation, const int & index);
 		//	int GetParamType (wxString myTextParam);
 		//		
 		//		wxString GetParamType (int imyType);
@@ -217,6 +225,8 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnAddObject (wxCommandEvent & event);
 		void OnRemoveObject (wxCommandEvent & event);
 		void OnImportObject (wxCommandEvent & event);
+		void OnChangeOrientation (wxCommandEvent & event);
+
 		
 		bool m_bIsModeEditing;
 		bool m_bIsModeAddingEditing;
@@ -277,6 +287,7 @@ class ProjectDefLayersDlg: public wxDialog
 		ProjectDefLayersObjectList* m_DlgPDL_Object_List;
 		wxPanel* m_DlgPDL_Panel_Fields;
 		ProjectDefLayersFieldsList* m_DlgPDL_Fields_List;
+		wxCheckBox * m_DlgPDL_Orientation_FLD;
 		
 		
 	};

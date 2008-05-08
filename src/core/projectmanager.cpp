@@ -146,19 +146,23 @@ bool ProjectManager::BackupProject ()
 {
 	Backup myBackup (m_DB);
 	wxArrayString myFiles;
+	long lTotfiles = 0;
+	wxString dlgmsg = _("Some files weren't backuped. More informations\n");
+	dlgmsg += _("may be found in the log window.\n\n");
+	dlgmsg += _("To show the log window : Window -> Log Window...");
 	
 	if(myBackup.IsPathsSpecified())
 	{
-		// test zip
-		//myBackup.TestZip(_T("/Users/Lucien/Desktop/tm2test/DMN_LAYER_OBJECT.frm"), 
-		//				 _T("/Users/Lucien/Desktop/time.zip"));
 		
-		//myBackup.TestZip(_T("/Users/Lucien/Desktop/tm2test/DMN_LAYER_OBJECT.MYD"), 
-		//				 _T("/Users/Lucien/Desktop/time.zip"));
-		
-		myBackup.ListDirFiles(myBackup.GetDirOrigin(), myFiles);
+		lTotfiles = myBackup.ListDirFiles(myBackup.GetDirOrigin(), myFiles);
 		myBackup.Save(myFiles);
 		
+		// show message if some files aren't backuped
+		if (lTotfiles > (signed) myFiles.Count())
+		{
+			wxMessageBox(dlgmsg, _("Some files not backuped"), 
+						 wxICON_INFORMATION | wxOK);
+		}
 		return TRUE;
 	}
 	return FALSE;

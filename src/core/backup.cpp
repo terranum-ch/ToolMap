@@ -112,7 +112,8 @@ bool BackupRestore::IsPathsSpecified()
  - .myi
  @param sDir the dir where the files are located
  @param files an array filled with files name to backup
- @return  the number of files in the array
+ @return  the number of files found in the folder (also files not
+ backuped) in the array
  @author Lucien Schreiber (c) CREALP 2007
  @date 06 May 2008
  *******************************************************************************/
@@ -138,13 +139,13 @@ long BackupRestore::ListDirFiles (const wxString & sDir, wxArrayString & files)
 		if (FileSpec.Matches(filename))
 		{
 			files.Add(filename);
-			iCountFiles ++;
 		}
 		else 
 		{
 			wxLogError(_T("File %s will not be backuped"), filename.c_str());
 		}
-
+		
+		iCountFiles ++;
 		cont = listdir.GetNext(&filename);
 	}
 	

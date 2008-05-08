@@ -96,7 +96,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxCheckListBox* itemCheckListBox15 = new wxCheckListBox( itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, itemCheckListBox15Strings, wxLB_SINGLE );
     itemBoxSizer14->Add(itemCheckListBox15, 1, wxGROW|wxALL, 5);
 	
-    wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemPanel13, wxID_ANY, _("Orientation"));
+    /*wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemPanel13, wxID_ANY, _("Orientation"));
     wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
     itemBoxSizer14->Add(itemStaticBoxSizer16, 0, wxGROW|wxALL, 5);
     wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
@@ -108,7 +108,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemBoxSizer17->Add(itemTextCtrl19, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxButton* itemButton20 = new wxButton( itemPanel13, ID_BUTTON9, _(" Interactive orientation"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticBoxSizer16->Add(itemButton20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    itemStaticBoxSizer16->Add(itemButton20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);*/
 	
     itemNotebook3->AddPage(itemPanel13, _("Point"));
 	
@@ -118,7 +118,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
     wxArrayString itemCheckListBox23Strings;
     wxCheckListBox* itemCheckListBox23 = new wxCheckListBox( itemPanel21, ID_CHECKLISTBOX1, wxDefaultPosition, wxDefaultSize, itemCheckListBox23Strings, wxLB_SINGLE );
-    itemBoxSizer22->Add(itemCheckListBox23, 1, wxGROW, 5);
+    itemBoxSizer22->Add(itemCheckListBox23, 1, wxGROW | wxALL, 5);
 	
     itemNotebook3->AddPage(itemPanel21, _("Polygons"));
 	
