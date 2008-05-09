@@ -110,7 +110,6 @@ bool ProjectManager::CreateNewProject()
  *******************************************************************************/
 bool ProjectManager::EditProject ()
 {
-	wxLogDebug(_T("Editing the project"));
 	
 	PrjDefMemManage * pPrjDefinition = NULL;
 	// load data from DB --> PrjDefMemManage
@@ -123,8 +122,8 @@ bool ProjectManager::EditProject ()
 		{
 			
 			// modify data 
-			m_DB->UpdateDataBaseProject(pPrjDefinition);
-			
+			if (m_DB->UpdateDataBaseProject(pPrjDefinition))
+				wxLogDebug(_T("Database modified"));
 		}
 		
 		delete myNewProjDlg;

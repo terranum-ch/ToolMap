@@ -107,7 +107,7 @@ void ProjectDefLayersObjectList::BeforeDeleting ()
 	
 	// get selected items from the list
 	wxArrayLong mySelectedListItems;
-	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	GetAllSelectedItem(mySelectedListItems);
 	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
 	{
 		myObjectName = GetItemColText(mySelectedListItems[i], 1);		
@@ -303,7 +303,7 @@ void ProjectDefLayersFieldsList::BeforeDeleting ()
 	
 	// get selected items from the list
 	wxArrayLong mySelectedListItems;
-	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	GetAllSelectedItem(mySelectedListItems);
 	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
 	{
 		myFieldName = GetItemColText(mySelectedListItems[i], 0);		

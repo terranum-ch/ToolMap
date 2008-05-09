@@ -452,7 +452,7 @@ void ProjectDefList::BeforeDeleting()
 {
 	wxString myLayerName;
 	ProjectDefMemoryLayers * layer = NULL;
-	int iDelete = 0;
+	//int iDelete = 0;
 	// remove item from array before removing it from the list
 	// because of the unknown position of item (may have been moved)
 	// if a corresponding item was found, remove it from the array

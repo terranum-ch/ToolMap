@@ -68,7 +68,7 @@ static wxString TEXTPARSER_NAME[] =
  @author Lucien Schreiber (c) CREALP 2007
  @date 11 December 2007
  *******************************************************************************/
-class TextParser
+class TextParser : public wxObject
 	{
 	protected:
 		
