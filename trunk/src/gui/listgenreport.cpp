@@ -740,7 +740,7 @@ int ListGenReport::Compare( int iColumnCompareType, const wxString
 		else if( iColumnCompareType == FIELD_DATE ) // Date compare -
 		{
 			wxDateTime dt1;
-			int d=0, m=0 , y=0;
+			//int d=0, m=0 , y=0;
 			if (dt1.ParseDate(x_strValue1)== NULL)
 			{
 				dt1 = wxInvalidDateTime;
@@ -788,7 +788,7 @@ int ListGenReport::Compare( int iColumnCompareType, const wxString
 		else if( iColumnCompareType == FIELD_DATE ) // Date compare -
 		{
 			wxDateTime dt1;
-			int d=0, m=0 , y=0;
+			//int d=0, m=0 , y=0;
 			if (dt1.ParseDate(x_strValue1)== NULL)
 			{
 				dt1 = wxInvalidDateTime;

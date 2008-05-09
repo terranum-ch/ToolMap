@@ -1456,7 +1456,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 					
 					iFieldAdded++;
 					
-					wxLogDebug(_T("returned values for field is : %d"), iReturnFieldValue);
+					//wxLogDebug(_T("returned values for field is : %d"), iReturnFieldValue);
 					
 					if (iReturnFieldValue < 0) // error or no more results
 					{
@@ -1504,8 +1504,9 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 		DeleteLayer(pProjDef->m_StoreDeleteLayers, sSentence);
 		
 		// execute the sentence for deleting
-		if (!DataBaseQueryNoResult(sSentence))
-			wxLogError(_T("Error deleting layers : %s"), sSentence.c_str());
+		if (!sSentence.IsEmpty())
+			if (!DataBaseQueryNoResult(sSentence))
+				wxLogError(_T("Error deleting layers : %s"), sSentence.c_str());
 		
 		// clean the delete sentence
 		sSentence.Clear();
@@ -1524,9 +1525,9 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 												   TABLE_NAME_LAYER_AT.c_str(),
 												   pLayers->m_LayerID)) )
 			{
-				wxLogDebug(_T("Fields Table exist for layer : %s, [%d]"),
-						   pLayers->m_LayerName.c_str(),
-						   pLayers->m_LayerID);
+				//wxLogDebug(_T("Fields Table exist for layer : %s, [%d]"),
+				//		   pLayers->m_LayerName.c_str(),
+				//		   pLayers->m_LayerID);
 				
 				// check if we have some fields 
 				if (pProjDef->GetCountFields() > 0)

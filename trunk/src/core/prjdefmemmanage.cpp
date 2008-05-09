@@ -66,7 +66,7 @@ ProjectDefMemoryLayers * PrjDefMemManage::AddLayer()
 	// attach it, don't delete this myNewLayerObj, it is now part of the
 	// array and will only be deleted if not used in the RemoveLayer method.
 	m_PrjLayerArray->Add(myNewLayerObj);
-	wxLogDebug(_T("Array Size : Layer = %d"),m_PrjLayerArray->GetCount());
+	//wxLogDebug(_T("Array Size : Layer = %d"),m_PrjLayerArray->GetCount());
 	
 	// set the active layer
 	SetActiveLayer(myNewLayerObj);
@@ -121,13 +121,13 @@ ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(const wxString  & layerName)
 	{
 		if (m_PrjLayerArray->Item(i).m_LayerName == layerName)
 		{
-			wxLogDebug(_T("Object found in Layer array in position : %d"), i);
+			//wxLogDebug(_T("Object found in Layer array in position : %d"), i);
 			// set active layer
 			SetActiveLayer(&(m_PrjLayerArray->Item(i)));
 			return &(m_PrjLayerArray->Item(i));
 		}
 	}
-	
+	wxLogDebug(_T("Object not found in Layer array"));
 	return NULL; // nothing found... check for null pointer
 }
 
@@ -176,7 +176,7 @@ ProjectDefMemoryObjects * PrjDefMemManage::AddObject()
 	{
 		
 		layer->m_pLayerObjectArray->Add(myNewObjectObj);
-		wxLogDebug(_T("Array Size : Object = %d"),layer->m_pLayerObjectArray->GetCount());
+		//wxLogDebug(_T("Array Size : Object = %d"),layer->m_pLayerObjectArray->GetCount());
 		
 		return myNewObjectObj; // pointer to the added object.
 	}
@@ -213,12 +213,12 @@ bool PrjDefMemManage::RemoveObject(const wxString & ObjectName)
 	{
 		if (layer->m_pLayerObjectArray->Item(i).m_ObjectName == ObjectName)
 		{
-			wxLogDebug(_T("Object found in object array in position : %d"), i);
+			//wxLogDebug(_T("Object found in object array in position : %d"), i);
 			layer->m_pLayerObjectArray->RemoveAt(i);
 			return TRUE;
 		}
 	}
-	
+	wxLogDebug(_T("Object not found in object array"));
 	return FALSE; // nothing deleted.
 }
 
@@ -233,7 +233,7 @@ ProjectDefMemoryObjects *	PrjDefMemManage::FindObject(const wxString & ObjectNam
 	{
 		if (layer->m_pLayerObjectArray->Item(i).m_ObjectName == ObjectName)
 		{
-			wxLogDebug(_T("Object found in object array in position : %d"), i);
+			//wxLogDebug(_T("Object found in object array in position : %d"), i);
 			return &(layer->m_pLayerObjectArray->Item(i));
 		}
 	}
@@ -300,7 +300,7 @@ ProjectDefMemoryFields * PrjDefMemManage::AddField ()
 	{
 		
 		layer->m_pLayerFieldArray->Add(myNewFieldObj);
-		wxLogDebug(_T("Array Size : Field = %d"),layer->m_pLayerFieldArray->GetCount());
+		//wxLogDebug(_T("Array Size : Field = %d"),layer->m_pLayerFieldArray->GetCount());
 		
 		// set the active field
 		SetActiveField(myNewFieldObj);
@@ -343,7 +343,7 @@ bool PrjDefMemManage::RemoveField(const wxString & FieldName)
 	{
 		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
 		{
-			wxLogDebug(_T("Object found in Field array in position : %d"), i);
+			//wxLogDebug(_T("Object found in Field array in position : %d"), i);
 			layer->m_pLayerFieldArray->RemoveAt(i);
 			// set null for active field
 			SetActiveField(NULL);
@@ -351,6 +351,7 @@ bool PrjDefMemManage::RemoveField(const wxString & FieldName)
 		}
 	}
 	
+	wxLogDebug(_T("Object not found in Field array"));
 	return FALSE; // nothing deleted.
 }
 
@@ -365,7 +366,7 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 	{
 		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
 		{
-			wxLogDebug(_T("Object found in Field array in position : %d"), i);
+			//wxLogDebug(_T("Object found in Field array in position : %d"), i);
 			SetActiveField(&(layer->m_pLayerFieldArray->Item(i)));
 			return &(layer->m_pLayerFieldArray->Item(i));
 		}
@@ -438,7 +439,7 @@ ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::AddCodedValue()
 	if (field != NULL)
 	{
 		field->m_pCodedValueArray->Add(myNewCodedValObj);	
-		wxLogDebug(_T("Array Size : Coded Value = %d"),field->m_pCodedValueArray->GetCount());
+		//wxLogDebug(_T("Array Size : Coded Value = %d"),field->m_pCodedValueArray->GetCount());
 		
 		return myNewCodedValObj; // pointer to the added field.
 	}
@@ -570,7 +571,7 @@ bool PrjDefMemManage::RemoveScale (const long & oldscale)
 	{
 		if (m_ScaleArray.Item(i).m_ScaleValue == oldscale)
 		{
-			wxLogDebug(_T("Object found in scale array in position : %d"), i);
+			//wxLogDebug(_T("Object found in scale array in position : %d"), i);
 			m_ScaleArray.RemoveAt(i);
 			return TRUE;
 		}

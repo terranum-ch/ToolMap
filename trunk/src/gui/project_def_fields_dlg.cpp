@@ -149,7 +149,7 @@ void ProjectDefFieldList::BeforeDeleting ()
 	
 	// get selected items from the list
 	wxArrayLong mySelectedListItems;
-	int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
+	GetAllSelectedItem(mySelectedListItems);
 	for (unsigned int i=0; i< mySelectedListItems.GetCount(); i++)
 	{
 		myValueName = GetItemColText(mySelectedListItems[i],1);		
