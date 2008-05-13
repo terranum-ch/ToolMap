@@ -46,6 +46,9 @@
 #include "../gui/objectattribution_dlg.h"	// for displaying object definition dlg.
 #include "../gui/projectproperties_dlg.h"	// for displaying project properties dlg.
 #include "backup.h"							// for backup and restore operations
+#include "menumanager.h"					// for menu management (recent, greyed,...)
+
+
 
 /***************************************************************************//**
  @brief Project operations (new, open,...)
@@ -60,6 +63,8 @@ class ProjectManager : public wxObject
 		bool bProjectIsOpen;
 		DataBaseTM * m_DB;
 		wxWindow * m_Parent;
+		MenuManager * m_pMManager;
+		
 		DECLARE_CLASS(ProjectManager)
 		
 		bool IsDataBasePath(const wxString & path);
@@ -79,6 +84,10 @@ class ProjectManager : public wxObject
 		
 		// project infos
 		wxString GetProjectName();
+		
+		// setter and getter
+		void SetMenuManager(MenuManager * pMenu){m_pMManager = pMenu;}
+		MenuManager * GetMenuManager() {return m_pMManager;}
 	};
 
 

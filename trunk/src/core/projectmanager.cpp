@@ -29,6 +29,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	bProjectIsOpen = FALSE;
 	m_DB = NULL;
 	m_Parent = parent;
+	m_pMManager = NULL;
 }
 
 
@@ -87,11 +88,23 @@ bool ProjectManager::CreateNewProject()
 			if (bReturn == FALSE)
 			{
 				wxLogError(_("Error creating the new project"));
+				
+				// change menu status
+				m_pMManager->SetStatus(MENU_DB_CLOSED);
+				
 				CloseProject();
 			}
 			
 		}
 		delete myNewProjDlg;
+		
+		// change menu status
+		
+		m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
+									 wxFileName::GetPathSeparator() +
+									 myNewPrjDB->DataBaseGetName());
+		m_pMManager->SetStatus(MENU_DB_OPENED);
+		
 		return TRUE;
 	}
 	return bReturn;
@@ -214,27 +227,32 @@ bool ProjectManager::OpenProject(const wxString & path)
 		m_DB = new DataBaseTM();
 		if (m_DB->DataBaseOpen(path,LANG_UTF8))
 		{
-		// 2. check, contain an embedded database ?
-		// we check if a table exists
-		if (m_DB->DataBaseTableExist(TABLE_NAME_PRJ_SETTINGS))
-		{
-		// 3. check, for version number
-		if (m_DB->GetDatabaseToolMapVersion() >= TM_DATABASE_VERSION)
-		{
-		// project is now open !
-		bReturn = TRUE;
-		}
-		}
-		
-		
-		// check the tables for cbReturn = TRUE;
+			// 2. check, contain an embedded database ?
+			// we check if a table exists
+			if (m_DB->DataBaseTableExist(TABLE_NAME_PRJ_SETTINGS))
+			{
+				// 3. check, for version number
+				if (m_DB->GetDatabaseToolMapVersion() >= TM_DATABASE_VERSION)
+				{
+					// updates the menu using the menu manager
+					m_pMManager->SetStatus(MENU_DB_OPENED);
+					m_pMManager->AddFileToRecent(path);
+										
+					// project is now open !
+					bReturn = TRUE;
+				}
+			}
+			
+			
+			// check the tables for cbReturn = TRUE;
 		}
 		else
 		{
-		CloseProject();
+			m_pMManager->SetStatus(MENU_DB_CLOSED);
+			CloseProject();
 		}
 	}
-		
+	
 	//bReturn = TRUE;
 	
 	
