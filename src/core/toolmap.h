@@ -92,7 +92,7 @@
 //// end of testing
 
 class MenuManager;
-
+class ProjectManager;
 
 #include <wx/mstream.h>
 

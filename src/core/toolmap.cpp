@@ -147,12 +147,14 @@ void ToolMapFrame::PostInit()
 	// create the database object 
 	//m_Database = new DataBaseTM();
 	
-	m_PManager = new ProjectManager(this);
-	
 	m_pConfig = new wxFileConfig();
-	
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar(), m_pConfig);
+		
+	m_PManager = new ProjectManager(this);
+	m_PManager->SetMenuManager(m_MManager);
+	
+
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 
@@ -364,8 +366,7 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 	SetTitle(myProgName);
 	
-	// updates the menu using the menu manager
-	m_MManager->SetStatus(MENU_DB_OPENED);
+
 	}
 	
 }
@@ -386,9 +387,6 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 			SetTitle(myProgName);
 			
-			// updates the menu using the menu manager
-			m_MManager->SetStatus(MENU_DB_OPENED);
-			m_MManager->AddFileToRecent(myDirDLG->GetPath());
 		}
 		else
 		{
@@ -400,8 +398,6 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			wxString myProgName = g_ProgName + SVN_VERSION;
 			SetTitle(myProgName);
 			
-			// updates the menu using the menu manager
-			m_MManager->SetStatus(MENU_DB_CLOSED);
 		}
 	}
 	delete myDirDLG;
