@@ -34,6 +34,7 @@
 #include "wx/datectrl.h"
 #include "wx/dateevt.h"
 #include <wx/srchctrl.h>
+#include "tmchecklistbox.h"		// for advanced checklistbox
 
 #define ID_DLG_OBJ_ATTRIBUTION 10039
 #define ID_NOTEBOOK2 10040
@@ -76,9 +77,15 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxAuiPaneInfo mPaneInfo;
 		
 		
+		
+		
 	public:
 		AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager);
 		~AttribObjType_PANEL();
+		
+		// controls
+		tmCheckListBox * m_pObjList_PT;
+
 		
 	};
 

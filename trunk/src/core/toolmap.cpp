@@ -78,6 +78,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
 	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
 	EVT_MENU (ID_MENU_BACKUP_PRJ, ToolMapFrame::OnBackupProject)
+	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
@@ -575,3 +576,13 @@ void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
 {
 	m_PManager->BackupProject();
 }
+
+
+void ToolMapFrame::OnUpdateAttributionObjects(wxCommandEvent & event)
+{
+	m_AttribObjPanel->m_pObjList_PT->AddItem(-1, -1, _T("coucou"));
+}
+
+
+
+
