@@ -92,9 +92,10 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
     itemPanel13->SetSizer(itemBoxSizer14);
 	
-    wxArrayString itemCheckListBox15Strings;
-    wxCheckListBox* itemCheckListBox15 = new wxCheckListBox( itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, itemCheckListBox15Strings, wxLB_SINGLE );
-    itemBoxSizer14->Add(itemCheckListBox15, 1, wxGROW|wxALL, 5);
+	m_pObjList_PT = new tmCheckListBox (itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize);
+    //wxArrayString itemCheckListBox15Strings;
+    //wxCheckListBox* itemCheckListBox15 = new wxCheckListBox( itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, itemCheckListBox15Strings, wxLB_SINGLE );
+    itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW|wxALL, 5);
 	
     /*wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemPanel13, wxID_ANY, _("Orientation"));
     wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);

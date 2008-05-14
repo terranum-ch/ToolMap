@@ -48,7 +48,7 @@
 #include "backup.h"							// for backup and restore operations
 #include "menumanager.h"					// for menu management (recent, greyed,...)
 
-
+class MenuManager;
 
 /***************************************************************************//**
  @brief Project operations (new, open,...)
