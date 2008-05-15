@@ -46,7 +46,7 @@
 #include "../gui/objectattribution_dlg.h"	// for displaying object definition dlg.
 #include "../gui/projectproperties_dlg.h"	// for displaying project properties dlg.
 #include "backup.h"							// for backup and restore operations
-#include "menumanager.h"					// for menu management (recent, greyed,...)
+#include "../gui/menumanager.h"					// for menu management (recent, greyed,...)
 
 class MenuManager;
 

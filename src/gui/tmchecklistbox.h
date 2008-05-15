@@ -84,7 +84,7 @@ class tmCheckListBox : public wxCheckListBox
 		tmCheckListBox(wxWindow * parent,
 					   wxWindowID id,
 					   const wxPoint & pos = wxDefaultPosition,
-					   const wxSize & size = wxDefaultPosition,
+					   const wxSize & size = wxDefaultSize,
 					   int nStrings = 0,
 					   const wxString * choices = NULL,
 					   long style = 0,

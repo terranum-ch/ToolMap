@@ -211,8 +211,11 @@ bool tmCheckListBox::EditItem (long index, long id,
 		SetString(index, name);
 	
 	// change check state 
-	if (checked == 0 || checked == 1)
-		Check(index, (bool) checked);
+	if (checked == 0)
+		Check (index, FALSE);
+	if (checked == 1)
+		Check (index, TRUE);
+
 	
 	return TRUE;
 	
