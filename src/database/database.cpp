@@ -685,10 +685,10 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 	{
 		"this_program",       /* this string is not used */
 		stemps,
-		//"--language=./share/english", // Bug #3, lead to a crash
+		"--language=./share/english/",
 		//"--skip-plugin-innodb",//"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
 		"--port=3309",
-		//"--character-sets-dir=./share/charsets", // Bug #3, lead to a crash
+		"--character-sets-dir=./share/charsets",
 		"--character_set_server=utf8"
 		//"--default-collation=utf8"
 	};
@@ -713,7 +713,7 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 		(char *)NULL
 	};
 
-	
+	wxLogDebug(myCorrectPathName);
 	
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	
@@ -778,6 +778,8 @@ wxString DataBase::DataBaseConvertMYSQLPath(wxString originalPath)
 		myReturnPath += _T("/");	
 		}
 		
+		myReturnPath.RemoveLast();
+
 	}
 	else 
 	{
