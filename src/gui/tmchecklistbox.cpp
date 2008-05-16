@@ -115,6 +115,30 @@ void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent & event)
 	if(GetCount() <= 0 || GetSelections(m_Selections) <= 0)
 		return;
 	
+	// enable all
+	m_PopupMenu->Enable(tmCHECK_MENU_MOVE_UP, TRUE);
+	m_PopupMenu->Enable(tmCHECK_MENU_MOVE_TOP, TRUE);
+	m_PopupMenu->Enable(tmCHECK_MENU_MOVE_DOWN, TRUE);
+	m_PopupMenu->Enable(tmCHECK_MENU_MOVE_BOTTOM, TRUE);
+	
+	// disable popup items based on selected items
+	for (unsigned int i = 0; i< m_Selections.GetCount(); i++)
+	{
+		if (m_Selections.Item(i) == 0)
+		{
+			m_PopupMenu->Enable(tmCHECK_MENU_MOVE_UP, FALSE);
+			m_PopupMenu->Enable(tmCHECK_MENU_MOVE_TOP, FALSE);
+		}
+		
+		if (m_Selections.Item(i) == (signed) (GetCount() -1))
+		{
+			m_PopupMenu->Enable(tmCHECK_MENU_MOVE_DOWN, FALSE);
+			m_PopupMenu->Enable(tmCHECK_MENU_MOVE_BOTTOM, FALSE);
+		}
+		
+	}
+
+	// show the menu
 	PopupMenu(m_PopupMenu, event.GetPosition());
 	event.Skip();
 }
@@ -159,35 +183,28 @@ void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
 			}
 			break;
 			
-			/*case tmCHECK_MENU_MOVE_DOWN:
+			case tmCHECK_MENU_MOVE_DOWN:
 			for (i = iCountSelected -1; i >= 0 ; i--)
 			{
-				SwapRow(mySelectedItems[i],mySelectedItems[i] + 1);
+				SwapItem(m_Selections[i],m_Selections[i] + 1);
 			}
-			//MoveItem(iSelectedItem, iSelectedItem+2);
 			break;
+			
 			case tmCHECK_MENU_MOVE_BOTTOM:
 			// compute movement 
-			idestpos = (GetItemCount() - 1) - mySelectedItems.Last();
+			idestpos = (GetCount() - 1) - m_Selections.Last();
 			
 			for (i = iCountSelected -1; i >= 0 ; i--)
 			{
-				MoveItem(mySelectedItems[i],mySelectedItems[i] + idestpos + 1);
+				MoveItem(m_Selections[i],m_Selections[i] + idestpos + 1);
 			}
-			
-			
-			break;*/
+			break;
 	}
 	
 	// no selection
-	for (int i = iCountSelected-1; i>=0; i--)
-	{
-		Deselect(m_Selections.Item(i));
-		wxLogDebug(_T("Deselected item : %d"), m_Selections.Item(i));
-	}
 	//DeselectAll();
-	
-	
+	/// @bug DeselectAll() is not working as espected in the actual version of wxWidgets
+
 }
 
 
@@ -365,39 +382,6 @@ bool tmCheckListBox::MoveItem (long index1, long index2)
 	RemoveItem(index1);
 	
 	AddItem(index2, id1, name1, bcheck1);
-	
-	/*wxArrayString myItemAllText;
-	int i=0;
-	unsigned int j=0;
-	
-	// get item
-	if (iItem != -1 && iNewPos < GetItemCount()+1)
-	{
-		for (i=0; i< GetColumnCount(); i++)
-		{
-			myItemAllText.Add( GetItemColText(iItem, i));
-		}	
-		
-		// copy to new item
-		AddItemToList(myItemAllText.Item(0),iNewPos);
-		
-		// add text to new item
-		for (j=1; j< myItemAllText.GetCount(); j++)
-		{
-			SetItemText(iNewPos, j, myItemAllText.Item(j));
-		}
-		myItemAllText.Clear();
-		
-		// delete old item
-		if (iNewPos < iItem)
-		{
-			iItem ++;
-		}
-		
-		DeleteItem(iItem);
-		
-	}*/
-	
 	
 	return TRUE;
 }
