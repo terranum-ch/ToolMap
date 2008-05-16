@@ -154,8 +154,7 @@ void ToolMapFrame::PostInit()
 		
 	m_PManager = new ProjectManager(this);
 	m_PManager->SetMenuManager(m_MManager);
-	
-
+	m_PManager->GetObjectManager()->SetPanel(m_AttribObjPanel);
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 
@@ -580,7 +579,8 @@ void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
 
 void ToolMapFrame::OnUpdateAttributionObjects(wxCommandEvent & event)
 {
-	m_AttribObjPanel->m_pObjList_PT->AddItem(-1, -1, _T("coucou"));
+	//m_AttribObjPanel->UpdateObjectPointList(m_Database);
+	//m_AttribObjPanel->m_pObjList_PT->AddItem(-1, -1, _T("coucou"));
 }
 
 

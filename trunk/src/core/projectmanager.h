@@ -49,6 +49,7 @@
 #include "../gui/menumanager.h"					// for menu management (recent, greyed,...)
 
 class MenuManager;
+class ObjectManager;
 
 /***************************************************************************//**
  @brief Project operations (new, open,...)
@@ -64,6 +65,7 @@ class ProjectManager : public wxObject
 		DataBaseTM * m_DB;
 		wxWindow * m_Parent;
 		MenuManager * m_pMManager;
+		ObjectManager * m_Obj;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -88,10 +90,40 @@ class ProjectManager : public wxObject
 		// setter and getter
 		void SetMenuManager(MenuManager * pMenu){m_pMManager = pMenu;}
 		MenuManager * GetMenuManager() {return m_pMManager;}
+		ObjectManager * GetObjectManager() {return m_Obj;}
 	};
 
 
 
+/***************************************************************************//**
+ @brief Deals with objects in the attribution panels
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+class ObjectManager : public wxObject 
+	{
+	private:
+		AttribObjType_PANEL * m_panel;
+		void InitValues();
+		
+		
+	public:
+		// ctor
+		ObjectManager() {InitValues();}
+		ObjectManager(AttribObjType_PANEL * panel)
+		{
+			InitValues();
+			SetPanel(panel);
+		}
+		
+		// setter
+		void SetPanel (AttribObjType_PANEL * panel) {m_panel = panel;}
+			
+		
+		// functions
+		bool UpdatePointList(DataBaseTM * pDB);
+		
+	};
 
 
 #endif

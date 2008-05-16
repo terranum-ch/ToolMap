@@ -34,7 +34,9 @@
 #include "wx/datectrl.h"
 #include "wx/dateevt.h"
 #include <wx/srchctrl.h>
-#include "tmchecklistbox.h"		// for advanced checklistbox
+#include "tmchecklistbox.h"				// for advanced checklistbox
+#include "../database/database_tm.h"	// for database acces (updating lists)
+#include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
 
 #define ID_DLG_OBJ_ATTRIBUTION 10039
 #define ID_NOTEBOOK2 10040
@@ -75,13 +77,16 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 								 bool set_sizer = TRUE);
 
 		wxAuiPaneInfo mPaneInfo;
-		
+		bool UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pList,
+							  int type, short frequency = 2);
 		
 		
 		
 	public:
 		AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager);
 		~AttribObjType_PANEL();
+		
+		bool UpdateObjectPointList(DataBaseTM * pDB);
 		
 		// controls
 		tmCheckListBox * m_pObjList_PT;

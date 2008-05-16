@@ -37,10 +37,10 @@
 #define tmLB_MENU 0x10000	// we want menu
 
 // check box event list
-const int tmCHECK_MENU_MOVE_TOP = 1;
-const int tmCHECK_MENU_MOVE_BOTTOM = 2;
-const int tmCHECK_MENU_MOVE_UP = 3;
-const int tmCHECK_MENU_MOVE_DOWN = 4;
+const int tmCHECK_MENU_MOVE_TOP = 10001;
+const int tmCHECK_MENU_MOVE_BOTTOM = 10002;
+const int tmCHECK_MENU_MOVE_UP = 10003;
+const int tmCHECK_MENU_MOVE_DOWN = 10004;
 
 
 // event ids
@@ -67,6 +67,7 @@ class tmCheckListBox : public wxCheckListBox
 		
 		// event functions
 		void OnDisplayPopupMenu(wxMouseEvent & event);
+		void OnMoveItemInList (wxCommandEvent & event);
 		
 	protected:
 		
@@ -115,6 +116,7 @@ class tmCheckListBox : public wxCheckListBox
 					   const wxString & name = wxEmptyString,
 					   short checked = 2);
 		bool MoveItem (long index1, long index2 = -1);
+		void ClearItems ();
 		
 		
 					
