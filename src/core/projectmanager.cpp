@@ -82,6 +82,10 @@ bool ProjectManager::CreateNewProject()
 			if(myNewPrjDB->PassProjectDataToDB())
 			{
 				m_DB = myNewPrjDB;
+				
+				// update objects to lists
+				m_Obj->UpdateObjectLists(m_DB);
+				
 				bReturn = TRUE;
 			}
 			
@@ -281,6 +285,10 @@ bool ProjectManager::EditProjectObjectDefinition ()
 	if (myDlg->ShowModal() == wxID_SAVE)
 	{
 		wxLogDebug(_T("Object definition saved into the DB"));
+		
+		// update objects to lists
+		m_Obj->UpdateObjectLists(m_DB);
+		
 		bReturn = TRUE;
 	}
 	

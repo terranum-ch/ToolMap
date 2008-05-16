@@ -192,7 +192,8 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemBoxSizer2->Add(itemGridSizer38, 0, wxGROW|wxALL, 5);
 	
     wxSearchCtrl* itemSearchCtrl39 = new wxSearchCtrl( parent, ID_SEARCHCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    itemGridSizer38->Add(itemSearchCtrl39, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemSearchCtrl39->ShowCancelButton(TRUE);
+	itemGridSizer38->Add(itemSearchCtrl39, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxCheckBox* itemCheckBox40 = new wxCheckBox( parent, ID_CHECKBOX9, _("full attribution"), wxDefaultPosition, wxDefaultSize, 0 );
     itemCheckBox40->SetValue(true);
