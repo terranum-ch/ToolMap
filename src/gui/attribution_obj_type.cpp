@@ -68,9 +68,12 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     itemPanel7->SetSizer(itemBoxSizer8);
 	
-    wxArrayString itemCheckListBox9Strings;
-    wxCheckListBox* itemCheckListBox9 = new wxCheckListBox( itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition, wxDefaultSize, itemCheckListBox9Strings, wxLB_SINGLE );
-    itemBoxSizer8->Add(itemCheckListBox9, 1, wxGROW, 5);
+    
+	m_pObjList_L_Freq = new tmCheckListBox  (itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition,
+											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+	//wxArrayString itemCheckListBox9Strings;
+    //wxCheckListBox* itemCheckListBox9 = new wxCheckListBox( itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition, wxDefaultSize, itemCheckListBox9Strings, wxLB_SINGLE );
+    itemBoxSizer8->Add(m_pObjList_L_Freq, 1, wxGROW, 5);
 	
     itemNotebook6->AddPage(itemPanel7, _("Frequent"));
 	
@@ -78,9 +81,12 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
     itemPanel10->SetSizer(itemBoxSizer11);
 	
-    wxArrayString itemCheckListBox12Strings;
-    wxCheckListBox* itemCheckListBox12 = new wxCheckListBox( itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition, wxDefaultSize, itemCheckListBox12Strings, wxLB_SINGLE );
-    itemBoxSizer11->Add(itemCheckListBox12, 1, wxGROW, 5);
+	m_pObjList_L_NoFreq = new tmCheckListBox  (itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition,
+											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+	
+    //wxArrayString itemCheckListBox12Strings;
+    //wxCheckListBox* itemCheckListBox12 = new wxCheckListBox( itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition, wxDefaultSize, itemCheckListBox12Strings, wxLB_SINGLE );
+    itemBoxSizer11->Add(m_pObjList_L_NoFreq, 1, wxGROW, 5);
 	
     itemNotebook6->AddPage(itemPanel10, _("Less frequent"));
 	
@@ -117,9 +123,13 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxVERTICAL);
     itemPanel21->SetSizer(itemBoxSizer22);
 	
-    wxArrayString itemCheckListBox23Strings;
-    wxCheckListBox* itemCheckListBox23 = new wxCheckListBox( itemPanel21, ID_CHECKLISTBOX1, wxDefaultPosition, wxDefaultSize, itemCheckListBox23Strings, wxLB_SINGLE );
-    itemBoxSizer22->Add(itemCheckListBox23, 1, wxGROW | wxALL, 5);
+    m_pObjList_PLG = new tmCheckListBox(itemPanel21, ID_CHECKLISTBOX1, 
+										wxDefaultPosition, wxDefaultSize,
+										0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+	
+	//wxArrayString itemCheckListBox23Strings;
+    //wxCheckListBox* itemCheckListBox23 = new wxCheckListBox( itemPanel21, ID_CHECKLISTBOX1, wxDefaultPosition, wxDefaultSize, itemCheckListBox23Strings, wxLB_SINGLE );
+    itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 5);
 	
     itemNotebook3->AddPage(itemPanel21, _("Polygons"));
 	
@@ -212,7 +222,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 
 
 /***************************************************************************//**
- @brief Update items in the object list
+ @brief Update items in the object point list
  @details This functions delete all items in the list and add items directly
  from the database
  @param pDB object of #DataBaseTM
@@ -227,6 +237,45 @@ bool AttribObjType_PANEL::UpdateObjectPointList(DataBaseTM * pDB)
 	return UpdateObjectList(pDB, m_pObjList_PT, LAYER_POINT);
 }
 
+
+/***************************************************************************//**
+ @brief Update items in the object polygon list
+ @details This functions delete all items in the list and add items directly
+ from the database
+ @param pDB object of #DataBaseTM
+ @return  TRUE if operations was a succes, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+bool AttribObjType_PANEL::UpdateObjectPolyList (DataBaseTM * pDB)
+{
+	m_pObjList_PLG->ClearItems();
+	return UpdateObjectList(pDB, m_pObjList_PLG, LAYER_POLYGON);
+}
+
+
+/***************************************************************************//**
+ @brief Update items in the object line list
+ @details This functions delete all items in the list and add items directly
+ from the database
+ @param pDB object of #DataBaseTM
+ @return  TRUE if operations was a succes, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+bool AttribObjType_PANEL::UpdateObjectLineList (DataBaseTM * pDB)
+{
+	m_pObjList_L_Freq->ClearItems();
+	m_pObjList_L_NoFreq->ClearItems();
+	
+	if(!UpdateObjectList(pDB, m_pObjList_L_Freq, LAYER_LINE, OBJECT_FREQUENT))
+		return FALSE;
+	
+	if (!UpdateObjectList(pDB, m_pObjList_L_NoFreq, LAYER_LINE, OBJECT_LESS_FREQUENT))
+		return FALSE;
+		
+	return TRUE;
+}
 
 /***************************************************************************//**
  @brief Update lists
@@ -270,14 +319,25 @@ bool AttribObjType_PANEL::UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pLi
 	{
 		if (pDB->DataBaseGetNextResultAsObject(&myTempObject, type))
 		{
-			pList->AddItem(-1, myTempObject.m_ObjectID,
+			if (type != LAYER_LINE)
+			{
+					pList->AddItem(-1, myTempObject.m_ObjectID,
 						   myTempObject.m_ObjectName);
+			}
+			else // layer line
+			{
+				if (frequency == myTempObject.m_ObjectFreq)
+				{
+					pList->AddItem(-1, myTempObject.m_ObjectID,
+								   myTempObject.m_ObjectName);
+				}
+			}
+
 		}
 			
 		else
 			break;
 	}
-	
 		
 	
 	return TRUE;
