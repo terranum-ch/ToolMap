@@ -121,7 +121,8 @@ class ObjectManager : public wxObject
 			
 		
 		// functions
-		bool UpdatePointList(DataBaseTM * pDB);
+		bool UpdateObjectLists(DataBaseTM * pDB);
+	
 		
 	};
 

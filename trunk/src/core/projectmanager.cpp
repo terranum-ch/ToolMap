@@ -243,7 +243,7 @@ bool ProjectManager::OpenProject(const wxString & path)
 					m_pMManager->AddFileToRecent(path);
 					
 					// update objects to lists
-					m_Obj->UpdatePointList(m_DB);
+					m_Obj->UpdateObjectLists(m_DB);
 					
 					// project is now open !
 					bReturn = TRUE;
@@ -336,12 +336,31 @@ void ObjectManager::InitValues()
 
 
 /***************************************************************************//**
- @brief Update the point list
+ @brief Update the point, the poly and the line list
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 May 2008
  *******************************************************************************/
-bool ObjectManager::UpdatePointList(DataBaseTM * pDB)
+bool ObjectManager::UpdateObjectLists(DataBaseTM * pDB)
 {
-	return m_panel->UpdateObjectPointList(pDB);
+	if(!m_panel->UpdateObjectPointList(pDB))
+	{
+		wxLogDebug(_T("Unable to update the Point list"));
+		return FALSE;
+	}
+	
+	if (!m_panel->UpdateObjectPolyList(pDB))
+	{
+		wxLogDebug(_T("Unable to update the polygon list"));
+		return FALSE;
+	}
+	
+	if (!m_panel->UpdateObjectLineList(pDB))
+	{
+		wxLogDebug(_T("Unable to update the Line list"));
+		return FALSE;
+	}
+		
+	
+	return TRUE;
 }
 
