@@ -30,6 +30,8 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_DB = NULL;
 	m_Parent = parent;
 	m_pMManager = NULL;
+	
+	m_Obj = new ObjectManager();
 }
 
 
@@ -99,12 +101,14 @@ bool ProjectManager::CreateNewProject()
 		delete myNewProjDlg;
 		
 		// change menu status
-		
-		m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
-									 wxFileName::GetPathSeparator() +
-									 myNewPrjDB->DataBaseGetName());
-		m_pMManager->SetStatus(MENU_DB_OPENED);
-		
+		if (bReturn)
+		{
+			m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
+										 wxFileName::GetPathSeparator() +
+										 myNewPrjDB->DataBaseGetName());
+			m_pMManager->SetStatus(MENU_DB_OPENED);
+		}
+			
 		return TRUE;
 	}
 	return bReturn;
@@ -237,7 +241,10 @@ bool ProjectManager::OpenProject(const wxString & path)
 					// updates the menu using the menu manager
 					m_pMManager->SetStatus(MENU_DB_OPENED);
 					m_pMManager->AddFileToRecent(path);
-										
+					
+					// update objects to lists
+					m_Obj->UpdatePointList(m_DB);
+					
 					// project is now open !
 					bReturn = TRUE;
 				}
@@ -311,5 +318,30 @@ wxString ProjectManager::GetProjectName()
 	if (m_DB != NULL)
 		return m_DB->DataBaseGetName();
 	return wxEmptyString;
+}
+
+
+
+/***************************** OBJECT MANAGER **********************************/
+
+/***************************************************************************//**
+ @brief Init values
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+void ObjectManager::InitValues()
+{
+	m_panel = NULL;
+}
+
+
+/***************************************************************************//**
+ @brief Update the point list
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+bool ObjectManager::UpdatePointList(DataBaseTM * pDB)
+{
+	return m_panel->UpdateObjectPointList(pDB);
 }
 

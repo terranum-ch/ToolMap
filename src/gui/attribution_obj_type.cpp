@@ -209,3 +209,76 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     return itemBoxSizer2;
 }
 
+
+
+/***************************************************************************//**
+ @brief Update items in the object list
+ @details This functions delete all items in the list and add items directly
+ from the database
+ @param pDB object of #DataBaseTM
+ @return  TRUE if operations was a succes, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 May 2008
+ *******************************************************************************/
+bool AttribObjType_PANEL::UpdateObjectPointList(DataBaseTM * pDB)
+{
+	// clear and update
+	m_pObjList_PT->ClearItems();
+	return UpdateObjectList(pDB, m_pObjList_PT, LAYER_POINT);
+}
+
+
+/***************************************************************************//**
+ @brief Update lists
+ @details This functions is called internally by
+ AttribObj_PANEL::UpdateObjectPointList() for exemple and is used for updating
+ all lists
+ @param pDB Pointer to a valid #DataBaseTM instance
+ @param pList Pointer to a valid #tmCheckListBox instance
+ @param type The type of the list to update. may be one of the following : 
+ - #LAYER_LINE 
+ - #LAYER_POINT 
+ - #LAYER_POLYGON
+ @param frequency @todo describe frequency here
+ @return  TRUE if list updated, FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+bool AttribObjType_PANEL::UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pList,
+										   int type, short frequency)
+{
+	// check database
+	if(!pDB)
+	{
+		wxLogDebug(_T("Pointer to the database not valid"));
+		return FALSE;
+	}
+	
+	
+	
+	// get objects from the database (all points)
+	if(!pDB->GetObjectListByLayerType(type))
+	{
+		wxLogDebug(_T("Error getting object for layer : %d"), type);
+		return FALSE;
+	}
+		
+		
+	// loop for all results 
+	ProjectDefMemoryObjects myTempObject;
+	while (1)
+	{
+		if (pDB->DataBaseGetNextResultAsObject(&myTempObject, type))
+		{
+			pList->AddItem(-1, myTempObject.m_ObjectID,
+						   myTempObject.m_ObjectName);
+		}
+			
+		else
+			break;
+	}
+	
+		
+	
+	return TRUE;
+}

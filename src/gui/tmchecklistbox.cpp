@@ -53,7 +53,10 @@ bool tmCheckListBox::Create(wxWindow * parent,
 		// attach the menu to the event
 		Connect(id, wxEVT_RIGHT_DOWN,
 				wxMouseEventHandler(tmCheckListBox::OnDisplayPopupMenu));
-		
+		Connect(tmCHECK_MENU_MOVE_TOP,
+				tmCHECK_MENU_MOVE_DOWN,
+				wxEVT_COMMAND_MENU_SELECTED, 
+				wxCommandEventHandler(tmCheckListBox::OnMoveItemInList));	
 	}
 	
 	return TRUE;
@@ -98,7 +101,11 @@ bool tmCheckListBox::CreateStandardMenu()
 	return TRUE;
 }
 
-
+/***************************************************************************//**
+ @brief Called when user right click an item
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 May 2008
+ *******************************************************************************/
 void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent & event)
 {
 	
@@ -109,6 +116,70 @@ void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent & event)
 		return;
 	
 	PopupMenu(m_PopupMenu, event.GetPosition());
+	event.Skip();
+}
+
+
+
+/***************************************************************************//**
+ @brief Called for moving items in the list
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 May 2008
+ *******************************************************************************/
+void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
+{
+	// selected items where get from the OnDisplayPopupMenu functions
+	int i=0;
+	int idestpos = 0;
+	int iCountSelected = m_Selections.GetCount();
+	
+	if (iCountSelected <= 0)
+	{
+		wxLogDebug(_T("No items selected, select an item first"));
+		return;
+	}
+	
+	
+	switch (event.GetId())
+	{
+		case tmCHECK_MENU_MOVE_TOP:
+			// compute movement 
+			idestpos = m_Selections[0] - 0;
+			
+			for (i=0; i< iCountSelected; i++)
+			{
+				MoveItem(m_Selections[i],m_Selections[i] - idestpos);
+			}
+			break;
+			
+			/*case tmCHECK_MENU_MOVE_UP:
+			for (i=0; i< iCountSelected; i++)
+			{
+				MoveItem(mySelectedItems[i],mySelectedItems[i] - 1);
+			}
+			break;
+			
+			case tmCHECK_MENU_MOVE_DOWN:
+			for (i = iCountSelected -1; i >= 0 ; i--)
+			{
+				SwapRow(mySelectedItems[i],mySelectedItems[i] + 1);
+			}
+			//MoveItem(iSelectedItem, iSelectedItem+2);
+			break;
+			case tmCHECK_MENU_MOVE_BOTTOM:
+			// compute movement 
+			idestpos = (GetItemCount() - 1) - mySelectedItems.Last();
+			
+			for (i = iCountSelected -1; i >= 0 ; i--)
+			{
+				MoveItem(mySelectedItems[i],mySelectedItems[i] + idestpos + 1);
+			}
+			
+			
+			break;*/
+	}
+	
+	
 }
 
 
@@ -255,6 +326,18 @@ bool tmCheckListBox::MoveItem (long index1, long index2)
 	EditItem(index1, m_ids.Item(index2), GetString(index2), IsChecked(index2));
 	EditItem(index2, id1, name1, checked1);
 	return TRUE;
+}
+
+
+/***************************************************************************//**
+ @brief Empty the checklist and associated array
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+void tmCheckListBox::ClearItems ()
+{
+	Clear();
+	m_ids.Clear();
 }
 
 
