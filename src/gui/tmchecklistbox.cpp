@@ -152,14 +152,14 @@ void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
 			}
 			break;
 			
-			/*case tmCHECK_MENU_MOVE_UP:
+			case tmCHECK_MENU_MOVE_UP:
 			for (i=0; i< iCountSelected; i++)
 			{
-				MoveItem(mySelectedItems[i],mySelectedItems[i] - 1);
+				SwapItem(m_Selections[i],m_Selections[i] - 1);
 			}
 			break;
 			
-			case tmCHECK_MENU_MOVE_DOWN:
+			/*case tmCHECK_MENU_MOVE_DOWN:
 			for (i = iCountSelected -1; i >= 0 ; i--)
 			{
 				SwapRow(mySelectedItems[i],mySelectedItems[i] + 1);
@@ -178,6 +178,14 @@ void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
 			
 			break;*/
 	}
+	
+	// no selection
+	for (int i = iCountSelected-1; i>=0; i--)
+	{
+		Deselect(m_Selections.Item(i));
+		wxLogDebug(_T("Deselected item : %d"), m_Selections.Item(i));
+	}
+	//DeselectAll();
 	
 	
 }
@@ -241,8 +249,9 @@ bool tmCheckListBox::RemoveItem (long index)
 	}
 	
 	Delete(index);
-	m_ids.Remove(index);
 	
+	m_ids.RemoveAt(index);
+		
 	return TRUE;
 }
 
@@ -304,11 +313,11 @@ bool tmCheckListBox::EditItem (long index, long id,
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 May 2008
  *******************************************************************************/
-bool tmCheckListBox::MoveItem (long index1, long index2)
+bool tmCheckListBox::SwapItem (long index1, long index2)
 {
 	// check that items exists
 	if (index2 == -1)
-		if (!MoveItem(index1, GetCount() -1))
+		if (!SwapItem(index1, GetCount() -1))
 			return FALSE;
 	
 	if (index1 < 0 && index1 >= (signed) GetCount())
@@ -325,6 +334,103 @@ bool tmCheckListBox::MoveItem (long index1, long index2)
 	// switch items
 	EditItem(index1, m_ids.Item(index2), GetString(index2), IsChecked(index2));
 	EditItem(index2, id1, name1, checked1);
+	return TRUE;
+}
+
+
+/***************************************************************************//**
+ @brief Move an items to a specified position
+ @details This functions may be used for moving items and keeping id's
+ array organised.
+ @param index1 zero based index of item 1
+ @param index2 zero based index of item 2, 
+ @return  TRUE if item exists and FALSE if trying to move items out of limits
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+bool tmCheckListBox::MoveItem (long index1, long index2)
+{
+
+	// copy item 1
+	long id1 = 0;
+	wxString name1 = wxEmptyString;
+	bool bcheck1 = FALSE;
+	
+	if (!GetItem(index1, id1, name1, bcheck1))
+	{
+		return FALSE;
+	}
+	
+	// delete item 1
+	RemoveItem(index1);
+	
+	AddItem(index2, id1, name1, bcheck1);
+	
+	/*wxArrayString myItemAllText;
+	int i=0;
+	unsigned int j=0;
+	
+	// get item
+	if (iItem != -1 && iNewPos < GetItemCount()+1)
+	{
+		for (i=0; i< GetColumnCount(); i++)
+		{
+			myItemAllText.Add( GetItemColText(iItem, i));
+		}	
+		
+		// copy to new item
+		AddItemToList(myItemAllText.Item(0),iNewPos);
+		
+		// add text to new item
+		for (j=1; j< myItemAllText.GetCount(); j++)
+		{
+			SetItemText(iNewPos, j, myItemAllText.Item(j));
+		}
+		myItemAllText.Clear();
+		
+		// delete old item
+		if (iNewPos < iItem)
+		{
+			iItem ++;
+		}
+		
+		DeleteItem(iItem);
+		
+	}*/
+	
+	
+	return TRUE;
+}
+
+
+/***************************************************************************//**
+ @brief Get value for item at the specified position
+ @param index zero based index of the item we want to get
+ @param id the ID of the item stored in the corresponding array
+ @param name the string displayed in the list
+ @param bcheck the status of the check box
+ @return  TRUE if all was correct, FALSE if we pass an index outside the limits
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 May 2008
+ *******************************************************************************/
+bool tmCheckListBox::GetItem (long index, long & id, wxString & name, bool & bcheck)
+{
+	// check that we aren't outside the limits
+	if (index > (signed) GetCount() - 1)
+	{
+		wxLogDebug(_T("Index : %d is outside the limits"), index);
+		return FALSE;
+	}
+	
+	if (index > (signed) m_ids.GetCount() - 1)
+	{
+		wxLogDebug(_T("Index %d is greather than the wxArrayLong"), index);
+		return FALSE;
+	}
+	
+	id = m_ids.Item(index);
+	name = GetString(index);
+	bcheck = IsChecked(index);
 	return TRUE;
 }
 
