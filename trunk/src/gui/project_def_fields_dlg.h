@@ -37,6 +37,7 @@
 #include "project_def_layers_dlg.h" // for using the dialog defined there
 #include "../core/textparser.h" // for text parsing during importation
 #include "../core/prjdefmemmanage.h" // for different project specification.
+#include "../core/tmvalidator.h"	// for control input validation
 
 #define ID_DLGAFD 10011
 #define ID_DLGAFD_FIELD_DEF 10012

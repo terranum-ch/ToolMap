@@ -804,6 +804,9 @@ void ProjectDefFieldDlg::CreateControls()
 	this->Layout();
 	bSizer2->Fit( this );
 	
+	// validators
+	//m_DlgAFD_Field_Def->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_RESTRICTED));
+	
 	
 }
 
