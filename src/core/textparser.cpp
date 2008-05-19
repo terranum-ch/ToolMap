@@ -27,6 +27,7 @@ TextParser::TextParser()
 	m_ParseFileType = _T("") ; //wxEmptyString;
 	m_ParseFileName = wxFileName(_T("")); //wxEmptyString);
 	m_LineCount = 0;
+	m_NbFieldToParse = 0;
 }
 
 
@@ -119,6 +120,20 @@ TextParser * TextParser::CreateParserBasedOnType (const int & textparser_index)
 	return NULL;
 }
 
+/***************************************************************************//**
+ @brief Set the number of fields we are looking for
+ @details This function must be called for letting the parser know how many
+ fields must been found in the file. This number is used for checking the
+ file.
+ @note If this function isn't called, a message is issued in debug mode
+ @param inbfield The number of fields whom must been present in the file
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 May 2008
+ *******************************************************************************/
+void TextParser::SetNumberOfFields (int inbfield)
+{
+	m_NbFieldToParse = inbfield;
+}
 
 
 /*************************TEXT PARSER FOR TEXT FILES ************************/
@@ -281,6 +296,63 @@ bool TextParserTxtFile::WriteNextLine (const wxArrayString & myValues)
 	return FALSE;
 }
 
+
+/***************************************************************************//**
+ @brief Check that the file has the correct separator 
+ @note open the file first ! and specify the number of fields we are looking for
+ using the TextParser::SetNumberOfFields() function.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 May 2008
+ *******************************************************************************/
+bool TextParserTxtFile::CheckFileToParse ()
+{
+	if (!m_File->IsOpened()) 
+	{
+		wxLogDebug(_T("No file open for parsing, please open file first"));
+		return FALSE;
+	}
+	
+	// debug check : m_NbFieldToParse must be set
+	if(m_NbFieldToParse == 0)
+	{
+		wxLogDebug(_T("Number of fields not specified, parsing not allowed"));
+		return FALSE;
+	}
+	
+	// check that the file isn't empty
+	wxString myTestLine = m_File->GetLine(0);
+	if (myTestLine.IsEmpty())
+	{
+		wxLogError(_("File %s is empty, nothing to parse"), 
+				   m_ParseFileName.GetFullName().c_str());
+		return FALSE;
+	}
+	
+	// check that we are using the good parser format
+	if(myTestLine.Find(m_TextSeparator) == wxNOT_FOUND)
+	{
+		wxLogError(_("Format of %s seems to be incorrect. Parser is waiting for : %s"),
+				   m_ParseFileName.GetFullName().c_str(),
+				   GetParserType().c_str());
+		return FALSE;
+	}
+	
+	
+	// check that we have the good number of fields in the file
+	int iFoundNbField = myTestLine.Freq(m_TextSeparator[0]) + 1;
+	if (iFoundNbField != m_NbFieldToParse)
+	{
+		wxLogError(_("Number of fields not correct : found %d field(s), waiting for %d field(s)"),
+				   iFoundNbField, m_NbFieldToParse);
+		return FALSE;
+	}
+	
+	
+	return TRUE;
+}
+
+
+
 /*************************TEXT PARSER FOR COMMA SEPARATED TXT FILES ************************/
 TextParserTxtFileComma::TextParserTxtFileComma()
 {
@@ -297,7 +369,7 @@ TextParserTxtFileComma::TextParserTxtFileComma(const wxString & filename)
 void TextParserTxtFileComma::InitParserValue()
 {
 	m_ParseFileType = TEXTPARSER_NAME[TXTFILE_COMMA];
-	m_TextSeparator = _T(",");
+	m_TextSeparator = _T(";");
 }
 
 
