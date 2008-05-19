@@ -66,18 +66,68 @@ bool ProjectManager::CreateNewProject()
 	PrjDefMemManage PrjDefinition;
 	bool bReturn = FALSE;
 	
+	
+	// first step, displaying the new project dialog
+	ProjectDefNew * myNewDBDlg = new ProjectDefNew(m_Parent, &PrjDefinition);
+	if (myNewDBDlg->ShowModal() != wxID_OK)
+	{
+		wxLogDebug(_T("New project creation cancelled"));
+		delete myNewDBDlg;
+		return FALSE;
+	}
+	delete myNewDBDlg;
+	
+	
+	// Create new empty project
+	wxBusyInfo * wait = new wxBusyInfo(_("Please wait, creating empty project..."), m_Parent);
+	DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
+	myNewPrjDB->SetPrjDefMemory(&PrjDefinition);
+	
+	if (!myNewPrjDB->CreateEmptyProject())
+	{
+		wxLogError(_("Database name and / or path are invalid"));
+		delete myNewPrjDB;
+		delete wait;
+		return FALSE;
+	}
+	delete wait;
+	
+
+	// fill the project
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
-	if(myNewProjDlg->ShowModal() == wxID_OK)
+	if(myNewProjDlg->ShowModal() != wxID_OK)
+	{
+		delete myNewProjDlg;
+		return FALSE;
+	}
+	delete myNewProjDlg;
+	
+	
+	if(!myNewPrjDB->PassProjectDataToDB())
+	{
+		wxLogError(_T("Error passing data to database"));
+		// change menu status
+		m_pMManager->SetStatus(MENU_DB_CLOSED);
+		CloseProject();
+		return FALSE;
+	}
+	
+	m_DB = myNewPrjDB;
+	m_Obj->UpdateObjectLists(m_DB);
+	
+	m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
+								 wxFileName::GetPathSeparator() +
+								 myNewPrjDB->DataBaseGetName());
+	m_pMManager->SetStatus(MENU_DB_OPENED);
+	
+	
+	/*if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
 		wxBusyCursor wait;
 
-		// Database new project creation
-		DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
+				
+		/* create the project on disk
 		
-		myNewPrjDB->SetPrjDefMemory(&PrjDefinition);
-		
-		// create the project on disk
-		if (myNewPrjDB->CreateEmptyProject())
 		{
 			if(myNewPrjDB->PassProjectDataToDB())
 			{
@@ -113,9 +163,9 @@ bool ProjectManager::CreateNewProject()
 			m_pMManager->SetStatus(MENU_DB_OPENED);
 		}
 			
-		return TRUE;
-	}
-	return bReturn;
+		return TRUE;*/
+	//}
+	return TRUE;
 }
 
 

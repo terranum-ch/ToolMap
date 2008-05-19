@@ -283,14 +283,18 @@ bool ProjectDefDLG::TransferDataToWindow()
 {
 	wxArrayString myLayerList;
 	
+	
+	m_DlgPD_Proj_Path->SetPath(m_pPrjDefinition->m_PrjPath);
+	m_DlgPd_Proj_Name->SetValue(m_pPrjDefinition->m_PrjName);
+	
 	// Get data from the DB and parse them into controls
 	// only if in editing mode
 	if (m_bIsModeEditing)
 	{
 		wxASSERT (m_pPrjDefinition);
 		
-		m_DlgPD_Proj_Path->SetPath(m_pPrjDefinition->m_PrjPath);
-		m_DlgPd_Proj_Name->SetValue(m_pPrjDefinition->m_PrjName);
+		//m_DlgPD_Proj_Path->SetPath(m_pPrjDefinition->m_PrjPath);
+		//m_DlgPd_Proj_Name->SetValue(m_pPrjDefinition->m_PrjName);
 		m_DlgPd_Proj_Author->SetValue(m_pPrjDefinition->m_PrjAuthors);
 		m_DlgPd_Proj_Comment->SetValue(m_pPrjDefinition->m_PrjSummary);
 		m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);

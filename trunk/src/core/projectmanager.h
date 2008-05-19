@@ -45,8 +45,10 @@
 #include "../gui/project_def_dlg.h"			// new project definition dialog
 #include "../gui/objectattribution_dlg.h"	// for displaying object definition dlg.
 #include "../gui/projectproperties_dlg.h"	// for displaying project properties dlg.
+#include "../gui/projectdefnew_dlg.h"		// for the first dialog (creating the db)
 #include "backup.h"							// for backup and restore operations
-#include "../gui/menumanager.h"					// for menu management (recent, greyed,...)
+#include "../gui/menumanager.h"				// for menu management (recent, greyed,...)
+#include <wx/busyinfo.h>					// informations message for busy time
 
 class MenuManager;
 class ObjectManager;
