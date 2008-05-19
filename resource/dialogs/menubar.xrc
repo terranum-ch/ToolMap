@@ -1,5 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+    <object class="wxDialog" name="ID_PROJECTDEFNEW" subclass="ProjectDefNew">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxDIALOG_MODAL|wxTAB_TRAVERSAL</style>
+        <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
+        <size>400,300</size>
+        <title>New project</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>2</rows>
+                    <vgap>0</vgap>
+                    <hgap>0</hgap>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <label>Static text</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL1">
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <label>Static text</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL2">
+                            <size>300,-1</size>
+                            <maxlength>50</maxlength>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="spacer">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+                <size>5,5</size>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxStaticLine" name="wxID_STATIC">
+                    <style>wxLI_HORIZONTAL</style>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALIGN_RIGHT|wxALL</flag>
+                <border>5</border>
+                <object class="wxStdDialogButtonSizer">
+                    <object class="button">
+                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="wxID_OK">
+                            <label>&amp;OK</label>
+                        </object>
+                    </object>
+                    <object class="button">
+                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label>&amp;Cancel</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
     <object class="wxDialog" name="ID_DLGPD" subclass="ProjectDefDLG">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
@@ -3887,262 +3969,6 @@ structure as the actual one</label>
                             <enabled>0</enabled>
                             <label>&amp;OK</label>
                             <default>1</default>
-                        </object>
-                    </object>
-                    <object class="button">
-                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxButton" name="wxID_CANCEL">
-                            <label>&amp;Cancel</label>
-                        </object>
-                    </object>
-                </object>
-            </object>
-        </object>
-    </object>
-    <object class="wxDialog" name="MyDialog1">
-        <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-        <object class="wxBoxSizer">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                <border>5</border>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxStaticText" name="m_staticText1">
-                            <label>Attribute name :</label>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                        <border>5</border>
-                        <option>1</option>
-                        <object class="wxTextCtrl" name="m_textCtrl1">
-                        </object>
-                    </object>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <flag>wxGROW|wxALL</flag>
-                <border>5</border>
-                <object class="wxStaticBoxSizer" name="wxID_ANY">
-                    <orient>wxVERTICAL</orient>
-                    <label>Attributes type and options</label>
-                    <object class="sizeritem">
-                        <flag>wxGROW|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxChoicebook" name="m_choicebook1">
-                            <style>wxCHB_DEFAULT</style>
-                            <object class="wxPanel" name="m_panel5">
-                                <style>wxTAB_TRAVERSAL</style>
-                                <object class="wxBoxSizer">
-                                    <orient>wxVERTICAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxGROW</flag>
-                                        <border>5</border>
-                                        <option>1</option>
-                                        <object class="wxStaticBoxSizer" name="wxID_ANY">
-                                            <orient>wxVERTICAL</orient>
-                                            <label>Options</label>
-                                            <object class="sizeritem">
-                                                <flag>wxGROW</flag>
-                                                <border>5</border>
-                                                <object class="wxBoxSizer">
-                                                    <orient>wxHORIZONTAL</orient>
-                                                    <object class="sizeritem">
-                                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                        <border>5</border>
-                                                        <object class="wxStaticText" name="m_staticText2">
-                                                            <label>Length :</label>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <flag>wxALIGN_TOP|wxALL</flag>
-                                                        <border>5</border>
-                                                        <option>1</option>
-                                                        <object class="wxTextCtrl" name="m_textCtrl2">
-                                                        </object>
-                                                    </object>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="wxPanel" name="m_panel6">
-                                <style>wxTAB_TRAVERSAL</style>
-                                <object class="wxBoxSizer">
-                                    <orient>wxVERTICAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxGROW</flag>
-                                        <border>5</border>
-                                        <option>1</option>
-                                        <object class="wxStaticBoxSizer" name="wxID_ANY">
-                                            <orient>wxVERTICAL</orient>
-                                            <label>Options</label>
-                                            <object class="sizeritem">
-                                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-                                                <border>5</border>
-                                                <object class="wxStaticText" name="m_staticText11">
-                                                    <style>wxALIGN_CENTRE</style>
-                                                    <label>Integer fields may store numeric values :
-
-from -2147483648
-to 2147483647</label>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="wxPanel" name="m_panel7">
-                                <style>wxTAB_TRAVERSAL</style>
-                                <object class="wxBoxSizer">
-                                    <orient>wxVERTICAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxGROW</flag>
-                                        <border>5</border>
-                                        <option>1</option>
-                                        <object class="wxStaticBoxSizer" name="wxID_ANY">
-                                            <orient>wxVERTICAL</orient>
-                                            <label>Options</label>
-                                            <object class="sizeritem">
-                                                <flag>wxGROW</flag>
-                                                <border>5</border>
-                                                <object class="wxFlexGridSizer">
-                                                    <cols>2</cols>
-                                                    <rows>3</rows>
-                                                    <vgap>0</vgap>
-                                                    <hgap>0</hgap>
-                                                    <growablecols>1</growablecols>
-                                                    <object class="sizeritem">
-                                                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                        <border>5</border>
-                                                        <object class="wxStaticText" name="m_staticText6">
-                                                            <label>Field Precision :</label>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <flag>wxGROW|wxGROW|wxALL</flag>
-                                                        <border>5</border>
-                                                        <object class="wxSpinCtrl" name="m_spinCtrl1">
-                                                            <style>wxSP_ARROW_KEYS</style>
-                                                            <value>0</value>
-                                                            <min>0</min>
-                                                            <max>10</max>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                        <border>5</border>
-                                                        <object class="wxStaticText" name="m_staticText7">
-                                                            <label>Field scale :</label>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <flag>wxGROW|wxGROW|wxALL</flag>
-                                                        <border>5</border>
-                                                        <object class="wxSpinCtrl" name="m_spinCtrl2">
-                                                            <style>wxSP_ARROW_KEYS</style>
-                                                            <value>0</value>
-                                                            <min>0</min>
-                                                            <max>10</max>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                                        <border>5</border>
-                                                        <object class="wxStaticText" name="m_staticText8">
-                                                            <label>Result Sample :</label>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <flag>wxGROW|wxGROW|wxALL</flag>
-                                                        <border>5</border>
-                                                        <option>1</option>
-                                                        <object class="wxTextCtrl" name="m_textCtrl8">
-                                                            <size>150,-1</size>
-                                                        </object>
-                                                    </object>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="wxPanel" name="m_panel8">
-                                <style>wxTAB_TRAVERSAL</style>
-                                <object class="wxBoxSizer">
-                                    <orient>wxVERTICAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxGROW</flag>
-                                        <border>5</border>
-                                        <option>1</option>
-                                        <object class="wxStaticBoxSizer" name="wxID_ANY">
-                                            <orient>wxVERTICAL</orient>
-                                            <label>Options</label>
-                                            <object class="sizeritem">
-                                                <flag>wxGROW|wxALL</flag>
-                                                <border>5</border>
-                                                <object class="wxStaticText" name="m_staticText111">
-                                                    <style>wxALIGN_CENTRE</style>
-                                                    <label>No options availlable for this type</label>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="wxPanel" name="m_panel9">
-                                <style>wxTAB_TRAVERSAL</style>
-                                <object class="wxBoxSizer">
-                                    <orient>wxVERTICAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxGROW</flag>
-                                        <border>5</border>
-                                        <option>1</option>
-                                        <object class="wxStaticBoxSizer" name="wxID_ANY">
-                                            <orient>wxVERTICAL</orient>
-                                            <label>Allowed values</label>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <flag>wxGROW</flag>
-                <border>5</border>
-                <option>1</option>
-                <object class="wxStdDialogButtonSizer">
-                    <object class="button">
-                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-                        <border>5</border>
-                        <object class="button" name="ID_FOREIGN">
-                            <object class="wxButton" name="wxID_OK">
-                                <label>&amp;OK</label>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="button">
-                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-                        <border>5</border>
-                        <object class="button" name="ID_FOREIGN">
-                            <object class="wxButton" name="wxID_CANCEL">
-                                <label>&amp;Cancel</label>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="button">
-                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxButton" name="wxID_OK">
-                            <label>&amp;OK</label>
                         </object>
                     </object>
                     <object class="button">
