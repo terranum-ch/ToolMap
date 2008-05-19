@@ -891,6 +891,17 @@ void ListGenReportWithDialog::OnPressBackSpace (wxListEvent & event)
 }
 
 
+/***************************************************************************//**
+ @brief Import file data to list
+ @details This functions uses the #TextParser class for importing data. A text
+ parser derived object is created using the FilterIndex parameter.
+ @param filename The name of the file to parse for import
+ @param FilterIndex the zero based index of the selected filter (One of the
+ #TEXTPARSER_TYPE values).
+ @return  The number of lines found or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 May 2008
+ *******************************************************************************/
 int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filename, 
 											  const int & FilterIndex)
 {
@@ -902,33 +913,56 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filenam
 	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
 	m_ImportParser->SetParseFileName(filename);
 	
+	// specify the number of cols we are looking for
+	m_ImportParser->SetNumberOfFields(GetColumnCount());
+	
+	
 	// check that the parser is not null or may crash
 	wxASSERT(m_ImportParser != NULL);
 	
 	// try to open the file for parsing
-	if(m_ImportParser->OpenParseFile())
+	if(!m_ImportParser->OpenParseFile())
 	{
-		wxLogDebug(_T("Opening OK, my nice parser is : %s"), 
-				   m_ImportParser->GetParserType().c_str());
-		
-		// loop for parsing all line
-		iLineCount = m_ImportParser->GetLineCount();
-		for (int i=0; i < iLineCount; i++)
-		{
-			m_ImportParser->ParseNextLine(myArrValues);
-			
-			// add values to the array
-			AddingValueToArray(myArrValues);
-			
-			// add values to the list
-			EditDataToList(myArrValues);
-			
-			// clear the array
-			myArrValues.Clear();
-		}
-		m_ImportParser->CloseParseFile();
-		
+		wxLogError(_("Error opening file %s for parsing. Format may be incorrect"),
+				   filename.c_str());
+		return -1;
 	}
+	
+	
+	// file is now open for parsing
+	wxLogDebug(_T("Parser is : %s"), 
+			   m_ImportParser->GetParserType().c_str());
+	
+	
+	
+	// check file to parse for avoiding errors
+	wxString sError = _("Error importing files, see log window for more informations\n\n");
+	sError += _("Log window may be displayed using : Window -> Log Window");
+	if (!m_ImportParser->CheckFileToParse())
+	{
+		wxMessageBox(sError,_("Error importing files"), wxOK | wxICON_ERROR);
+		return -1;
+	}
+	
+	
+	// loop for parsing all line
+	iLineCount = m_ImportParser->GetLineCount();
+	for (int i=0; i < iLineCount; i++)
+	{
+		m_ImportParser->ParseNextLine(myArrValues);
+		
+		// add values to the array
+		AddingValueToArray(myArrValues);
+		
+		// add values to the list
+		EditDataToList(myArrValues);
+		
+		// clear the array
+		myArrValues.Clear();
+	}
+	m_ImportParser->CloseParseFile();
+	
+	
 	if (m_ImportParser != NULL)
 		delete m_ImportParser;
 	return iLineCount;

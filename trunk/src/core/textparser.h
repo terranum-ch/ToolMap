@@ -51,12 +51,12 @@ enum TEXTPARSER_TYPE
 };
 
 static wxString TEXTPARSER_WILDCARDS[] = 
-		{_("Comma delimited text files (*.csv)|*.csv"),
+		{_("Semi-colon delimited text files (*.csv)|*.csv"),
 		_("Tab delimited text files (*.txt)|*.txt")};
 
 
 static wxString TEXTPARSER_NAME[] = 
-		{_("Comma delimited text files"),
+		{_("Semi-colon delimited text files"),
 		_("Tab delimited text files")};
 
 /***************************************************************************//**
@@ -77,6 +77,7 @@ class TextParser : public wxObject
 		wxFileName m_ParseFileName;
 		static int m_iActualLine;
 		int m_LineCount;
+		int m_NbFieldToParse;
 		
 		bool CheckParseFileExist();
 		
@@ -89,7 +90,7 @@ class TextParser : public wxObject
 		TextParser();
 		~TextParser();
 		
-		 wxString GetParserType() {return m_ParseFileType;}
+		wxString GetParserType() {return m_ParseFileType;}
 		void SetParseFileName (const wxString & myFileName);
 		void SetParseFileName(const wxFileName & myFileName);
 		virtual bool OpenParseFile (bool bCreate = FALSE);
@@ -102,6 +103,8 @@ class TextParser : public wxObject
 		int GetLineCount () {return m_LineCount;}
 		static wxString GetAllSupportedParserWildCards();
 		static TextParser * CreateParserBasedOnType (const int & textparser_index);
+		virtual bool CheckFileToParse (){return TRUE;}
+		void SetNumberOfFields (int inbfield);
 	};
 
 
@@ -132,6 +135,7 @@ class TextParserTxtFile : public TextParser
 		virtual bool CloseParseFile ();
 		virtual int ParseNextLine (wxArrayString & myValues);
 		virtual bool WriteNextLine (const wxArrayString & myValues);
+		virtual bool CheckFileToParse ();
 		
 	};
 
