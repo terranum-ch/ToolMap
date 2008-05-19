@@ -224,7 +224,7 @@ void ProjectDefNew::CreateControls()
 	
 	
 	// validators
-	 m_DlgPd_Proj_Name->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_RESTRICTED));
+	 m_DlgPd_Proj_Name->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_DATABASE));
 
 }
 

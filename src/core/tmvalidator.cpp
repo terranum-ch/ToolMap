@@ -23,12 +23,38 @@ tmValidator::tmValidator(long style)
 {
 	if (style & tmFILTER_EXCLUDE_CHAR_RESTRICTED)
 		SetCharRestricted();
+	
+	if (style & tmFILTER_EXCLUDE_CHAR_DATABASE)
+		SetCharDataBase();
 }
 
 
 void tmValidator::SetCharRestricted()
 {
 	wxArrayString mylist;
+	GetAlphaList(mylist);
+	
+	mylist.Add(_T("-"));mylist.Add(_T("_"));
+	
+	SetStyle(wxFILTER_INCLUDE_CHAR_LIST);
+	SetIncludes(mylist);
+}
+
+
+void tmValidator::SetCharDataBase ()
+{
+	wxArrayString mylist;
+	GetAlphaList(mylist);
+	
+	mylist.Add(_T("_"));
+	
+	SetStyle(wxFILTER_INCLUDE_CHAR_LIST);
+	SetIncludes(mylist);	
+}
+
+
+void tmValidator::GetAlphaList (wxArrayString & mylist)
+{
 	mylist.Add(_T("a")); mylist.Add(_T("A"));
 	mylist.Add(_T("b")); mylist.Add(_T("B"));
 	mylist.Add(_T("c")); mylist.Add(_T("C"));
@@ -63,10 +89,4 @@ void tmValidator::SetCharRestricted()
 	mylist.Add(_T("5")); 
 	mylist.Add(_T("6")); 
 	
-	mylist.Add(_T("-"));mylist.Add(_T("_"));
-	
-	SetStyle(wxFILTER_INCLUDE_CHAR_LIST);
-	SetIncludes(mylist);
-
 }
-

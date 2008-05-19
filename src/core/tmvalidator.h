@@ -31,12 +31,14 @@
 #endif
 
 #define tmFILTER_EXCLUDE_CHAR_RESTRICTED 0x0100
-
+#define tmFILTER_EXCLUDE_CHAR_DATABASE   0x0200
 
 class tmValidator : public wxTextValidator
 	{
 	private:
 		void SetCharRestricted();
+		void SetCharDataBase (); 
+		void GetAlphaList (wxArrayString & mylist);
 		
 	public:
 		tmValidator(long style = wxFILTER_NONE);
