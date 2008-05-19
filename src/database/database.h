@@ -208,6 +208,8 @@ public:
 	
 	bool DataBaseHasResult ();
 	
+	bool DataBaseResultExists();
+	
 	void DataBaseDestroyResults ();
 	
 	/*! Execute multiple query 

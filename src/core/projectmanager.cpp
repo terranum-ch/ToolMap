@@ -78,6 +78,8 @@ bool ProjectManager::CreateNewProject()
 	delete myNewDBDlg;
 	
 	
+	
+	
 	// Create new empty project
 	wxBusyInfo * wait = new wxBusyInfo(_("Please wait, creating empty project..."), m_Parent);
 	DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
@@ -92,13 +94,31 @@ bool ProjectManager::CreateNewProject()
 	}
 	delete wait;
 	
+	// passing basic data (validity of the database)
+	if (!myNewPrjDB->SetProjectData(&PrjDefinition))
+	{
+		wxLogError(_T("Error passing basic data to the database, database is unvalid !"));
+		return FALSE;
+	}
+	
+	
+	// update menu status
+	m_DB = myNewPrjDB;
+	m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
+								 wxFileName::GetPathSeparator() +
+								 myNewPrjDB->DataBaseGetName());
+	m_pMManager->SetStatus(MENU_DB_OPENED);
+	m_pMManager->UpdateMenusStatus();
+	
+
+	
 
 	// fill the project
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
 	if(myNewProjDlg->ShowModal() != wxID_OK)
 	{
 		delete myNewProjDlg;
-		return FALSE;
+		return TRUE;
 	}
 	delete myNewProjDlg;
 	
@@ -112,13 +132,12 @@ bool ProjectManager::CreateNewProject()
 		return FALSE;
 	}
 	
-	m_DB = myNewPrjDB;
+	
+	
+	//m_DB = myNewPrjDB;
 	m_Obj->UpdateObjectLists(m_DB);
 	
-	m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
-								 wxFileName::GetPathSeparator() +
-								 myNewPrjDB->DataBaseGetName());
-	m_pMManager->SetStatus(MENU_DB_OPENED);
+	
 	
 	
 	/*if(myNewProjDlg->ShowModal() == wxID_OK)
@@ -375,6 +394,11 @@ wxString ProjectManager::GetProjectName()
 {
 	if (m_DB != NULL)
 		return m_DB->DataBaseGetName();
+	else 
+	{
+		wxLogDebug(_T("Database pointer is null"));
+	}
+
 	return wxEmptyString;
 }
 

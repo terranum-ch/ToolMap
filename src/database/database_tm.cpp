@@ -612,7 +612,7 @@ int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
 										  TABLE_NAME_LAYERS.c_str());
 	
 	// check if we have some results 
-	if (DataBaseHasResult())
+	if (DataBaseResultExists())
 	{
 		myResults = DataBaseGetNextResult();
 		if (!myResults.IsEmpty())

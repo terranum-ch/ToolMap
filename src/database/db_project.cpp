@@ -89,7 +89,7 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 	
 	
 	// add general project settings
-	bReturnValue = SetProjectData(pPrjDefinition);
+	//bReturnValue = SetProjectData(pPrjDefinition);
 	
 
 	/// adding layers, and for each layer add object and fields related to this layer
