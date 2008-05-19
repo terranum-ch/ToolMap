@@ -149,8 +149,8 @@ class ProjectDefDLG: public wxDialog
 		
 		
 		wxPanel* m_DlgPd_Panel_Proj;
-		wxDirPickerCtrlBest* m_DlgPD_Proj_Path;
-		wxTextCtrl* m_DlgPd_Proj_Name;
+		//wxDirPickerCtrlBest* m_DlgPD_Proj_Path;
+		//wxTextCtrl* m_DlgPd_Proj_Name;
 		wxChoice* m_DlgPd_Proj_Unit;
 		wxChoice* m_DlgPd_Proj_Projection;
 		wxTextCtrl* m_DlgPd_Proj_Author;

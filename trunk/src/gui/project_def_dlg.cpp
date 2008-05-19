@@ -55,14 +55,6 @@ bool ProjectDefDLG::CheckIdleRules()
 {
 	// check the rules to be verified during the Idle time
 	
-	// project name
-	if (m_DlgPd_Proj_Name->GetValue().IsEmpty())
-		return FALSE;
-	
-	// project path
-	if (!wxDirExists(m_DlgPD_Proj_Path->GetPath()))
-		return FALSE;
-	
 	// contain minimum one layer
 	if (m_DlgPd_Stat_Model_List->GetItemCount() < 1)
 		return FALSE;
@@ -122,8 +114,6 @@ ProjectDefDLG::~ProjectDefDLG()
 void ProjectDefDLG::Init()
 {
 	m_DlgPd_Panel_Proj = NULL;
-    m_DlgPD_Proj_Path = NULL;
-    m_DlgPd_Proj_Name = NULL;
     m_DlgPd_Proj_Unit = NULL;
     m_DlgPd_Proj_Projection = NULL;
     m_DlgPd_Proj_Author = NULL;
@@ -141,10 +131,9 @@ void ProjectDefDLG::Init()
 
 void ProjectDefDLG::DisableControlsForEdition()
 {
-	m_DlgPD_Proj_Path->Enable(FALSE);
+
 	m_DlgPd_Proj_Projection->Enable(FALSE);
 	m_DlgPd_Proj_Unit->Enable(FALSE);
-	m_DlgPd_Proj_Name->Enable(FALSE);
 	m_DlgPd_Button_Ok->SetLabel(_("Update Project"));
 }
 
@@ -162,37 +151,16 @@ void ProjectDefDLG::CreateControls()
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     m_DlgPd_Panel_Proj->SetSizer(itemBoxSizer5);
 	
-    wxFlexGridSizer* itemFlexGridSizer6 = new wxFlexGridSizer(4, 2, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer6 = new wxFlexGridSizer(2, 2, 0, 0);
     itemFlexGridSizer6->AddGrowableCol(1);
     itemBoxSizer5->Add(itemFlexGridSizer6, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText7 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Project path :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer6->Add(itemStaticText7, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-
-	m_DlgPD_Proj_Path = new wxDirPickerCtrlBest(m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PATH, wxEmptyString,
-												_("Select the database folder")); 
-  
-	
-	///@bug alignement bug, only under mac ??
-	// error with mac... alignement bug ???
-#if defined(__WXMAC__)
-	itemFlexGridSizer6->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL,0);
-#else
-	itemFlexGridSizer6->Add(m_DlgPD_Proj_Path, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL,5);
-#endif
-	
-	
-    wxStaticText* itemStaticText9 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Project name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer6->Add(itemStaticText9, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_DlgPd_Proj_Name = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_NAME, _T(""), wxDefaultPosition, wxSize(300,-1), 0 );
-    itemFlexGridSizer6->Add(m_DlgPd_Proj_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText11 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Units"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer6->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
  	m_DlgPd_Proj_Unit = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
 	m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
+	m_DlgPd_Proj_Unit->Enable(FALSE);
 	itemFlexGridSizer6->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText13 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Projection :"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -200,6 +168,7 @@ void ProjectDefDLG::CreateControls()
 	
 	m_DlgPd_Proj_Projection = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize,PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
 	m_DlgPd_Proj_Projection->SetSelection(PROJ_NOPROJ);
+	m_DlgPd_Proj_Projection->Enable(FALSE);
     itemFlexGridSizer6->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(m_DlgPd_Panel_Proj, wxID_ANY, _("Summary"));
@@ -209,10 +178,12 @@ void ProjectDefDLG::CreateControls()
     itemFlexGridSizer16->AddGrowableRow(1);
     itemFlexGridSizer16->AddGrowableCol(1);
     itemStaticBoxSizer15->Add(itemFlexGridSizer16, 1, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText17 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Author :"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText17 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC,
+													  _("Author :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer16->Add(itemStaticText17, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    m_DlgPd_Proj_Author = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_AUTHOR, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgPd_Proj_Author = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_AUTHOR, _T(""),
+										 wxDefaultPosition, wxSize(300,-1), 0 );
     m_DlgPd_Proj_Author->SetMaxLength(254);
     itemFlexGridSizer16->Add(m_DlgPd_Proj_Author, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
@@ -270,12 +241,8 @@ void ProjectDefDLG::CreateControls()
 
 bool ProjectDefDLG::TransferDataFromWindow()
 {
-	m_pPrjDefinition->m_PrjPath = m_DlgPD_Proj_Path->GetPath();
-	m_pPrjDefinition->m_PrjName = m_DlgPd_Proj_Name->GetValue();
 	m_pPrjDefinition->m_PrjAuthors = m_DlgPd_Proj_Author->GetValue();
 	m_pPrjDefinition->m_PrjSummary = m_DlgPd_Proj_Comment->GetValue();
-	m_pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) m_DlgPd_Proj_Unit->GetSelection();
-	m_pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) m_DlgPd_Proj_Projection->GetSelection();
 	return TRUE;
 }
 
@@ -284,8 +251,8 @@ bool ProjectDefDLG::TransferDataToWindow()
 	wxArrayString myLayerList;
 	
 	
-	m_DlgPD_Proj_Path->SetPath(m_pPrjDefinition->m_PrjPath);
-	m_DlgPd_Proj_Name->SetValue(m_pPrjDefinition->m_PrjName);
+	m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);
+	m_DlgPd_Proj_Projection->SetSelection(m_pPrjDefinition->m_PrjProjType);
 	
 	// Get data from the DB and parse them into controls
 	// only if in editing mode
@@ -293,12 +260,8 @@ bool ProjectDefDLG::TransferDataToWindow()
 	{
 		wxASSERT (m_pPrjDefinition);
 		
-		//m_DlgPD_Proj_Path->SetPath(m_pPrjDefinition->m_PrjPath);
-		//m_DlgPd_Proj_Name->SetValue(m_pPrjDefinition->m_PrjName);
 		m_DlgPd_Proj_Author->SetValue(m_pPrjDefinition->m_PrjAuthors);
 		m_DlgPd_Proj_Comment->SetValue(m_pPrjDefinition->m_PrjSummary);
-		m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);
-		m_DlgPd_Proj_Projection->SetSelection(m_pPrjDefinition->m_PrjProjType);
 		
 		// fill the layers list
 		for (int i = 0; i<m_pPrjDefinition->GetCountLayers(); i++)

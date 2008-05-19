@@ -553,6 +553,15 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 }
 
 
+/***************************************************************************//**
+ @brief Check results
+ @details This function checks if a result exists AND isn't empty. 
+ @see For
+ checking only the existence of a result (even if this result is empty) :
+ DataBase::DataBaseResultExists()
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 May 2008
+ *******************************************************************************/
 bool DataBase::DataBaseHasResult ()
 {
 	
@@ -564,6 +573,23 @@ bool DataBase::DataBaseHasResult ()
 	}
 	return FALSE;
 }
+
+
+/***************************************************************************//**
+ @brief Check results
+ @details This function only checks if a result exists. No check is done to know
+ if this result is or isn't empty
+ @see Function checking if result isn't empty is : DataBase::DataBaseHasResult()
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 May 2008
+ *******************************************************************************/
+bool DataBase::DataBaseResultExists()
+{
+	if (pResults != NULL)
+		return TRUE;
+	return FALSE;
+}
+
 
 long DataBase::DatabaseGetCountResults()
 {

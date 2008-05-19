@@ -36,11 +36,26 @@ IMPLEMENT_DYNAMIC_CLASS( ProjectDefNew, wxDialog )
 
 
 BEGIN_EVENT_TABLE( ProjectDefNew, wxDialog )
-
-////@begin ProjectDefNew event table entries
-////@end ProjectDefNew event table entries
-
+	EVT_IDLE(ProjectDefNew::OnIdleWait)
 END_EVENT_TABLE()
+
+
+/***************************************************************************//**
+ @brief Called during idle time
+ @details Use the ProjectDefNew::CheckIdleRules() function for checking that the
+ path and name aren't empty. Otherwise we discard the Continue button
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 May 2008
+ *******************************************************************************/
+void ProjectDefNew::OnIdleWait(wxIdleEvent & event)
+{
+	if (!CheckIdleRules())
+	{
+		m_DlgPd_Button_Ok->Enable(FALSE);
+	}
+	else
+		m_DlgPd_Button_Ok->Enable(TRUE);
+}
 
 
 
@@ -93,14 +108,41 @@ ProjectDefNew::~ProjectDefNew()
 void ProjectDefNew::Init()
 {
 	m_PrjDefinition = NULL;
+	
+	m_DlgPD_Proj_Path = NULL;
+	m_DlgPd_Proj_Name = NULL;
+	m_DlgPd_Proj_Unit = NULL;
+	m_DlgPd_Proj_Projection = NULL;
+	m_DlgPd_Button_Ok = NULL;
+	
 }
 
 bool ProjectDefNew::TransferDataFromWindow()
 {
 	m_PrjDefinition->m_PrjName = m_DlgPd_Proj_Name->GetValue();
 	m_PrjDefinition->m_PrjPath = m_DlgPD_Proj_Path->GetPath();
+	m_PrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) m_DlgPd_Proj_Unit->GetSelection();
+	m_PrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) m_DlgPd_Proj_Projection->GetSelection();
 	return TRUE;
 }
+
+
+bool ProjectDefNew::CheckIdleRules()
+{
+	// check the rules to be verified during the Idle time
+
+	// project name
+	if (m_DlgPd_Proj_Name->GetValue().IsEmpty())
+		return FALSE;
+	
+	// project path
+	if (!wxDirExists(m_DlgPD_Proj_Path->GetPath()))
+		return FALSE;
+	
+	return TRUE; // check passed
+}
+
+
 
 /***************************************************************************//**
  @brief Create the controls
@@ -115,7 +157,7 @@ void ProjectDefNew::CreateControls()
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     itemDialog1->SetSizer(itemBoxSizer2);
 
-    wxFlexGridSizer* itemFlexGridSizer3 = new wxFlexGridSizer(2, 2, 0, 0);
+    wxFlexGridSizer* itemFlexGridSizer3 = new wxFlexGridSizer(4, 2, 0, 0);
     itemFlexGridSizer3->AddGrowableCol(1);
     itemBoxSizer2->Add(itemFlexGridSizer3, 0, wxGROW|wxALL, 5);
 	
@@ -143,6 +185,26 @@ void ProjectDefNew::CreateControls()
 	m_DlgPd_Proj_Name->SetMaxLength(50);
     itemFlexGridSizer3->Add(m_DlgPd_Proj_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
+	wxStaticText* itemStaticText11 = new wxStaticText( itemDialog1, wxID_STATIC, _("Units"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+ 	m_DlgPd_Proj_Unit = new wxChoice( itemDialog1, ID_DLGPD_PROJ_UNIT_NEW, wxDefaultPosition,
+									 wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
+	m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
+	itemFlexGridSizer3->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText13 = new wxStaticText( itemDialog1, wxID_STATIC, _("Projection :"), 
+													  wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer3->Add(itemStaticText13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	m_DlgPd_Proj_Projection = new wxChoice( itemDialog1, ID_DLGPD_PROJ_PROJECTION_NEW,
+										   wxDefaultPosition, wxDefaultSize,
+										   PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
+	m_DlgPd_Proj_Projection->SetSelection(PROJ_NOPROJ);
+    itemFlexGridSizer3->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	
+	
 
     itemBoxSizer2->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
@@ -152,8 +214,8 @@ void ProjectDefNew::CreateControls()
     wxStdDialogButtonSizer* itemStdDialogButtonSizer10 = new wxStdDialogButtonSizer;
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer10, 0, wxALIGN_RIGHT|wxALL, 5);
-    wxButton* itemButton11 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStdDialogButtonSizer10->AddButton(itemButton11);
+    m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Continue"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemStdDialogButtonSizer10->AddButton(m_DlgPd_Button_Ok);
 
     wxButton* itemButton12 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer10->AddButton(itemButton12);

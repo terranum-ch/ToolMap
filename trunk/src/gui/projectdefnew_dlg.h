@@ -26,6 +26,8 @@
 
 #define ID_DLGPD_PROJ_PATH_NEW 10019
 #define ID_DLGPD_PROJ_NAME_NEW 10020
+#define ID_DLGPD_PROJ_UNIT_NEW 10021
+#define ID_DLGPD_PROJ_PROJECTION_NEW 10022
 #define ID_PROJECTDEFNEW 10018
 #define ID_TEXTCTRL1 10114
 #define ID_TEXTCTRL2 10115
@@ -39,8 +41,12 @@ class ProjectDefNew: public wxDialog
 {    
     DECLARE_DYNAMIC_CLASS( ProjectDefNew )
     DECLARE_EVENT_TABLE()
-	
 	PrjDefMemManage * m_PrjDefinition;
+	
+	// private functions
+	bool CheckIdleRules();
+	
+	void OnIdleWait(wxIdleEvent & event);
 
 public:
     /// Constructors
@@ -73,6 +79,9 @@ public:
 	
 	wxDirPickerCtrlBest* m_DlgPD_Proj_Path;
 	wxTextCtrl* m_DlgPd_Proj_Name;
+	wxChoice* m_DlgPd_Proj_Unit;
+	wxChoice* m_DlgPd_Proj_Projection;
+	wxButton * m_DlgPd_Button_Ok;
 	
 	virtual bool TransferDataFromWindow();
 };
