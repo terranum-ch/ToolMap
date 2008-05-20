@@ -34,7 +34,7 @@
 #include "wx/datectrl.h"
 #include "wx/dateevt.h"
 #include <wx/srchctrl.h>
-#include "tmchecklistbox.h"				// for advanced checklistbox
+#include "tmchecklistboxrank.h"			// for advanced checklistbox
 #include "../database/database_tm.h"	// for database acces (updating lists)
 #include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
 
@@ -94,7 +94,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		// controls
 		tmCheckListBox * m_pObjList_PT;
 		tmCheckListBox * m_pObjList_PLG;
-		tmCheckListBox * m_pObjList_L_Freq;
+		tmCheckListBoxRank * m_pObjList_L_Freq;
 		tmCheckListBox * m_pObjList_L_NoFreq;
 
 		

@@ -69,7 +69,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemPanel7->SetSizer(itemBoxSizer8);
 	
     
-	m_pObjList_L_Freq = new tmCheckListBox  (itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition,
+	m_pObjList_L_Freq = new tmCheckListBoxRank (itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition,
 											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
 	//wxArrayString itemCheckListBox9Strings;
     //wxCheckListBox* itemCheckListBox9 = new wxCheckListBox( itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition, wxDefaultSize, itemCheckListBox9Strings, wxLB_SINGLE );
