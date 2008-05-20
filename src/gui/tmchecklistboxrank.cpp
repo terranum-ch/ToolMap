@@ -72,7 +72,10 @@ bool tmCheckListBoxRank::Create(wxWindow * parent,
 			return FALSE;
 		}
 		
-		
+		// all seems correct, connect the menu now
+		Connect(tmCHECK_MENU_SAVE_RANK,
+				wxEVT_COMMAND_MENU_SELECTED, 
+				wxCommandEventHandler(tmCheckListBoxRank::OnSaveOrder));	
 		
 		
 	}
@@ -107,7 +110,9 @@ tmCheckListBoxRank::~tmCheckListBoxRank()
  *******************************************************************************/
 void tmCheckListBoxRank::Init()
 {
-
+	m_RankColName = _T("RANK");
+	m_TableName = TABLE_NAME_OBJECTS;
+	m_pDB = NULL;
 }
 
 
@@ -136,3 +141,115 @@ bool tmCheckListBoxRank::AddToMenu()
 
 
 
+/***************************************************************************//**
+ @brief Set the rank column name
+ @details If your rank column has default name "RANK", no need to call this
+ function
+ @param colrank The name of the rank column (default is RANK)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void tmCheckListBoxRank::SetRankColName(const wxString & colrank)
+{
+	m_RankColName = colrank;
+} 
+
+
+/***************************************************************************//**
+ @brief Set the table name
+ @details The table name will be used for setting order when user press the
+ "Save order" popup menu.
+ @param tabname The name of the table. Default is the value of
+ #TABLE_NAME_OBJECTS
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void tmCheckListBoxRank::SetTableName (const wxString & tabname)
+{
+	m_TableName = tabname;
+}
+
+
+/***************************************************************************//**
+ @brief Save the list order
+ @details Called when user press the "Save order" button in the popup menu
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void tmCheckListBoxRank::OnSaveOrder (wxCommandEvent & event)
+{
+	// check that the database is correct
+	if (m_pDB == NULL)
+	{
+		wxLogDebug(_T("Error : pointer to database not defined"));
+		return ;
+	}
+	
+	// preparing statement
+	wxString sqlstatement = _T("");
+	if(!PrepareOrderStatement(sqlstatement))
+	   return;
+	   
+	   wxLogDebug(sqlstatement);
+	
+	// do the query
+	
+	wxLogDebug(_T("Saving rank"));
+}
+
+
+/***************************************************************************//**
+ @brief Get the actual order from the list
+ @details Every item's id from the list is returned in the same order as they
+ appear in the list now
+ @param id The array of long containing id values in the same order as in the
+ list
+ @return  TRUE if the list isn't empty
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+bool tmCheckListBoxRank::GetOrder ( wxArrayLong & id)
+{
+	return TRUE;
+}
+
+
+/***************************************************************************//**
+ @brief Prepare the statement for setting order
+ @details Create the sql statement for setting the item's order in the database
+ @param sqlstatement string will be filled with the issued statement for setting
+ the item's order
+ @return  TRUE if the list isn't empty
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+bool tmCheckListBoxRank::PrepareOrderStatement (wxString & sqlstatement)
+{
+	unsigned int iListItemCount = GetCount();
+	if (iListItemCount == 0)
+	{
+		wxLogDebug(_T("List is empty, not able to set the order"));
+		return FALSE;
+	}
+	
+	// get the items
+	wxString itemname = wxEmptyString;
+	long itemid = 0;
+	bool itemchecked = FALSE;
+	for (unsigned i = 0; i<iListItemCount; i++)
+	{
+		if(GetItem(i, itemid, itemname, itemchecked))
+		{	
+			wxLogDebug(_T("Getting item n. %d error"),i);
+			return FALSE;
+		}
+		
+		sqlstatement.Append(wxString::Format(_T("UPDATE %s SET %s=%d WHERE %s=%d; "),
+											 GetTableName().c_str(),
+											 GetRankColName().c_str(),
+											 i,
+											 _T("OBJECT_ID"),
+											 itemid));
+	}
+	return TRUE;
+}
