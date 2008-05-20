@@ -179,6 +179,8 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 		ProjectDefMemoryObjects * m_ObjectObj;
 		ProjectDefMemoryFieldsCodedVal * m_CodedValObj;
 		
+		void SetValidator();
+		
 	public:
 		/// Constructors
 		ProjectDefLayersEditObjectDlg();

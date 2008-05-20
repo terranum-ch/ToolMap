@@ -511,6 +511,7 @@ void ProjectDefFieldDlg::HideUnusedTabs (int iIndexShow)
 }
 
 
+
 bool ProjectDefFieldDlg::TransferDataFromWindow()
 {
 	// some checks, have we called
@@ -805,8 +806,20 @@ void ProjectDefFieldDlg::CreateControls()
 	bSizer2->Fit( this );
 	
 	// validators
-	//m_DlgAFD_Field_Def->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_RESTRICTED));
+	SetValidator();
+	
 	
 	
 }
+
+/***************************************************************************//**
+ @brief Set the validator for the controls
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void ProjectDefFieldDlg::SetValidator()
+{
+	m_DlgAFD_Field_Def->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_DATABASE));
+}
+
 

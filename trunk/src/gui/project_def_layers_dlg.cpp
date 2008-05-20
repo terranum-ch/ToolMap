@@ -507,7 +507,7 @@ void ProjectDefLayersEditObjectDlg::Init()
 
 void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 {    
-	////@begin ProjectDefLayersEditObjectDlg content construction
+
     ProjectDefLayersEditObjectDlg* itemDialog1 = this;
 	
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
@@ -545,7 +545,18 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 	
     itemStdDialogButtonSizer9->Realize();
 	
-	////@end ProjectDefLayersEditObjectDlg content construction
+	// set the validator for the controls
+	SetValidator();
+}
+
+/***************************************************************************//**
+ @brief Set the validator for the controls
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void ProjectDefLayersEditObjectDlg::SetValidator()
+{
+	m_DlgEO_Code->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
 }
 
 

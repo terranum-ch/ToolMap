@@ -30,15 +30,34 @@
     #include <wx/wx.h>
 #endif
 
-#define tmFILTER_EXCLUDE_CHAR_RESTRICTED 0x0100
-#define tmFILTER_EXCLUDE_CHAR_DATABASE   0x0200
+#define tmFILTER_EXCLUDE_CHAR_RESTRICTED		0x0100
+#define tmFILTER_EXCLUDE_CHAR_DATABASE			0x0200
+#define tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT	0x0400
 
+
+/***************************************************************************//**
+ @brief Validator for text controls
+ @details This class may be used for controls validations. It extend the
+ wxTextValidator with some more strict styles (see tmValidator::tmValidator()
+ for allowed styles).
+ Exemple :
+ @code
+ wxTextCtrl myCtrl;
+ myCtrl.SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_RESTRICTED));
+ @endcode
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
 class tmValidator : public wxTextValidator
 	{
 	private:
 		void SetCharRestricted();
 		void SetCharDataBase (); 
+		void SetCharNumericStric();
+		
 		void GetAlphaList (wxArrayString & mylist);
+		void GetStrictNumList (wxArrayString & mylist);
+		bool SetEnhancedStyle (long style);
 		
 	public:
 		tmValidator(long style = wxFILTER_NONE);

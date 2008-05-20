@@ -15,24 +15,47 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
 
 #include "tmvalidator.h"
 
+
+/***************************************************************************//**
+ @brief Constructor
+ @details Construct a control validator, all style referenced for wxValidator
+ (see wxWidgets doc) may be used plus the following :
+ - #tmFILTER_EXCLUDE_CHAR_RESTRICTED : allow only character (without accents) and
+ numerics plus underscore and "-".
+ - #tmFILTER_EXCLUDE_CHAR_DATABASE : allow
+ the same as above minus the "-" character wich isn't compatible with MySQL's
+ database
+ - #tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT : allow only numeric char
+ (0123456789) nothing else. #wxFILTER_NUMERIC is more flexible, it allows some
+ character like "." or "e".
+ @param style one of the style described above
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
 tmValidator::tmValidator(long style)
 {
-	if (style & tmFILTER_EXCLUDE_CHAR_RESTRICTED)
-		SetCharRestricted();
-	
-	if (style & tmFILTER_EXCLUDE_CHAR_DATABASE)
-		SetCharDataBase();
+	// if we arn't trying to use one of the new 
+	// style, then use normal style
+	if (!SetEnhancedStyle(style))	
+		m_validatorStyle = style;
 }
 
 
+
+/***************************************************************************//**
+ @brief Create a char restricted validator
+ @details used for style = #tmFILTER_EXCLUDE_CHAR_RESTRICTED
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
 void tmValidator::SetCharRestricted()
 {
 	wxArrayString mylist;
 	GetAlphaList(mylist);
+	GetStrictNumList(mylist);
 	
 	mylist.Add(_T("-"));mylist.Add(_T("_"));
 	
@@ -41,10 +64,17 @@ void tmValidator::SetCharRestricted()
 }
 
 
+/***************************************************************************//**
+ @brief Create a database restricted validator
+ @details used for style = #tmFILTER_EXCLUDE_CHAR_DATABASE
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
 void tmValidator::SetCharDataBase ()
 {
 	wxArrayString mylist;
 	GetAlphaList(mylist);
+	GetStrictNumList(mylist);
 	
 	mylist.Add(_T("_"));
 	
@@ -53,6 +83,81 @@ void tmValidator::SetCharDataBase ()
 }
 
 
+/***************************************************************************//**
+ @brief Create a strict numeric validator
+ @details used for style = #tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void tmValidator::SetCharNumericStric()
+{
+	wxArrayString mylist;
+	GetStrictNumList(mylist);
+	
+	SetStyle(wxFILTER_INCLUDE_CHAR_LIST);
+	SetIncludes(mylist);
+}
+
+
+/***************************************************************************//**
+ @brief Is the passed style an enhanced one
+ @details Create an object of the enhanced style if needed. Otherwise we use the
+ standard wxTextValidator styles
+ @param style one of the style. Allowed style are all of the wxTextValidator
+ style plus those described in the tmValidator::tmValidator() constructor
+ @return  TRUE if an enhanced style was passed, FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+bool tmValidator::SetEnhancedStyle (long style)
+{
+	if (style & tmFILTER_EXCLUDE_CHAR_RESTRICTED)
+	{
+		SetCharRestricted();
+		return TRUE;
+	}
+	
+	if (style & tmFILTER_EXCLUDE_CHAR_DATABASE)
+	{
+		SetCharDataBase();
+		return TRUE;
+	}
+
+	if (style & tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT)
+	{
+		SetCharNumericStric();
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+
+/***************************************************************************//**
+ @brief Add numeric values to array
+ @param mylist Reference to a wxArrayString. Numeric values (0123456789) will be
+ added into this array when calling this function
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
+void tmValidator::GetStrictNumList (wxArrayString & mylist)
+{
+	mylist.Add(_T("1")); mylist.Add(_T("7"));
+	mylist.Add(_T("2")); mylist.Add(_T("8"));
+	mylist.Add(_T("3")); mylist.Add(_T("9"));
+	mylist.Add(_T("4")); mylist.Add(_T("0"));
+	mylist.Add(_T("5")); 
+	mylist.Add(_T("6")); 
+}
+
+
+/***************************************************************************//**
+ @brief Add alphabetic values to array
+ @param mylist Reference to a wxArrayString. Alphabetic values (upper and lower
+ case) will be added into this array when calling this function
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 May 2008
+ *******************************************************************************/
 void tmValidator::GetAlphaList (wxArrayString & mylist)
 {
 	mylist.Add(_T("a")); mylist.Add(_T("A"));
@@ -81,12 +186,4 @@ void tmValidator::GetAlphaList (wxArrayString & mylist)
 	mylist.Add(_T("x")); mylist.Add(_T("X"));
 	mylist.Add(_T("y")); mylist.Add(_T("Y"));
 	mylist.Add(_T("z")); mylist.Add(_T("Z"));
-	
-	mylist.Add(_T("1")); mylist.Add(_T("7"));
-	mylist.Add(_T("2")); mylist.Add(_T("8"));
-	mylist.Add(_T("3")); mylist.Add(_T("9"));
-	mylist.Add(_T("4")); mylist.Add(_T("0"));
-	mylist.Add(_T("5")); 
-	mylist.Add(_T("6")); 
-	
 }
