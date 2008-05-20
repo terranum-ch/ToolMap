@@ -124,6 +124,7 @@ class ProjectDefFieldDlg: public wxDialog
 		void DisableControlsForEdition();
 		
 		void HideUnusedTabs (int iIndexShow);
+		void SetValidator();
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefFieldDlg );
 		DECLARE_EVENT_TABLE();

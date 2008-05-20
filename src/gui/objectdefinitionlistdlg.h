@@ -22,6 +22,7 @@
 #include "wx/statline.h"
 #include "listgenreport.h"				// for base listgenreport definition
 #include "../database/database_tm.h"	// for database manipulation
+#include "../core/tmvalidator.h"		// for controls validation
 
 
 #define ID_OBJECTDEFINITIONLISTDLG 10030
@@ -52,6 +53,8 @@ class ObjectDefinitionListDlg: public wxDialog
 	
 	virtual bool TransferDataToWindow();
 	virtual bool TransferDataFromWindow();
+	
+	void SetValidator();
 	
 	// used for data transfert
 	ProjectDefMemoryObjects * m_ObjectObj;

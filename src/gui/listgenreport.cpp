@@ -921,8 +921,11 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filenam
 	wxASSERT(m_ImportParser != NULL);
 	
 	// try to open the file for parsing
+	wxString sError = _("Error importing files, see log window for more informations\n\n");
+	sError += _("Log window may be displayed using : Window -> Log Window");
 	if(!m_ImportParser->OpenParseFile())
 	{
+		wxMessageBox(sError,_("Error importing files"), wxOK | wxICON_ERROR);
 		wxLogError(_("Error opening file %s for parsing. Format may be incorrect"),
 				   filename.c_str());
 		return -1;
@@ -936,8 +939,6 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filenam
 	
 	
 	// check file to parse for avoiding errors
-	wxString sError = _("Error importing files, see log window for more informations\n\n");
-	sError += _("Log window may be displayed using : Window -> Log Window");
 	if (!m_ImportParser->CheckFileToParse())
 	{
 		wxMessageBox(sError,_("Error importing files"), wxOK | wxICON_ERROR);
