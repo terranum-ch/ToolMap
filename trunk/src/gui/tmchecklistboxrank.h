@@ -96,6 +96,7 @@ class tmCheckListBoxRank : public tmCheckListBox
 		void		SetTableName (const wxString & tabname = TABLE_NAME_OBJECTS);
 		
 		// set the database
+		void		SetDataBase (DataBaseTM * pDB) {m_pDB = pDB;}
 		
 		
 	};

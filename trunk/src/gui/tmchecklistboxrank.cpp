@@ -189,10 +189,14 @@ void tmCheckListBoxRank::OnSaveOrder (wxCommandEvent & event)
 	wxString sqlstatement = _T("");
 	if(!PrepareOrderStatement(sqlstatement))
 	   return;
-	   
-	   wxLogDebug(sqlstatement);
 	
 	// do the query
+	if (!m_pDB->DataBaseQueryNoResult(sqlstatement))
+	{
+		wxLogError(_("Error saving order to project"));
+	    wxLogDebug(_T("Order statement is : ") + sqlstatement);
+	}
+	
 	
 	wxLogDebug(_T("Saving rank"));
 }
@@ -238,7 +242,7 @@ bool tmCheckListBoxRank::PrepareOrderStatement (wxString & sqlstatement)
 	bool itemchecked = FALSE;
 	for (unsigned i = 0; i<iListItemCount; i++)
 	{
-		if(GetItem(i, itemid, itemname, itemchecked))
+		if(!GetItem(i, itemid, itemname, itemchecked))
 		{	
 			wxLogDebug(_T("Getting item n. %d error"),i);
 			return FALSE;

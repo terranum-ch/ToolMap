@@ -1135,13 +1135,26 @@ bool DataBaseTM::DeleteField (wxArrayString & myFields, int iLayer, wxString & s
 
 
 /*************************** DATABASE QUERY FUNCTION ****************************/
-bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
+/***************************************************************************//**
+ @brief Retrive objects from the object table
+ @details This functions may be called for getting all objects from within a
+ layer type. This is used by the "Object definition dialog" but also by the
+ "Attribution window".
+ @param ilayertype the zero based type of layer, see #PRJDEF_LAYERS_TYPE
+ @param bOrder Return the result in the "RANK" order if set to TRUE
+ @return  FALSE if the query wasn't valid
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 May 2008
+ *******************************************************************************/
+bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 {
 	// different request based on the ilayertype (4 fields for LAYER_LINE and
 	// 3 fields in other cases
 	wxString sWantFrequencyField = _T("");
 	if (ilayertype == LAYER_LINE)
 		 sWantFrequencyField = _T("OBJECT_ISFREQ, ");
+	
+	
 	
 	wxString sSentence =  wxString::Format(
 										   _T("SELECT OBJECT_CD, OBJECT_DESC, THEMATIC_LAYERS.LAYER_NAME, %s OBJECT_ID ")
@@ -1150,11 +1163,15 @@ bool DataBaseTM::GetObjectListByLayerType(int ilayertype)
 										   _T("WHERE THEMATIC_LAYERS.TYPE_CD = %d"),
 										   sWantFrequencyField.c_str(),
 										   ilayertype);
+	
+	if (bOrder)
+		sSentence.Append(_T(" ORDER BY RANK "));
+	
 	if (DataBaseQuery(sSentence))
 	{
 		return TRUE;
 	}
-	wxLogDebug(_T("Error getting the list of object by layertype"));
+	wxLogDebug(_T("Error getting the list of object by layertype : %s"), sSentence.c_str());
 	return FALSE;
 	
 }

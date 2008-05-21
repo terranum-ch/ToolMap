@@ -71,8 +71,6 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     
 	m_pObjList_L_Freq = new tmCheckListBoxRank (itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition,
 											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
-	//wxArrayString itemCheckListBox9Strings;
-    //wxCheckListBox* itemCheckListBox9 = new wxCheckListBox( itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition, wxDefaultSize, itemCheckListBox9Strings, wxLB_SINGLE );
     itemBoxSizer8->Add(m_pObjList_L_Freq, 1, wxGROW, 5);
 	
     itemNotebook6->AddPage(itemPanel7, _("Frequent"));
@@ -81,11 +79,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
     itemPanel10->SetSizer(itemBoxSizer11);
 	
-	m_pObjList_L_NoFreq = new tmCheckListBox  (itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition,
+	m_pObjList_L_NoFreq = new tmCheckListBoxRank  (itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition,
 											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
 	
-    //wxArrayString itemCheckListBox12Strings;
-    //wxCheckListBox* itemCheckListBox12 = new wxCheckListBox( itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition, wxDefaultSize, itemCheckListBox12Strings, wxLB_SINGLE );
     itemBoxSizer11->Add(m_pObjList_L_NoFreq, 1, wxGROW, 5);
 	
     itemNotebook6->AddPage(itemPanel10, _("Less frequent"));
@@ -98,10 +94,8 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
     itemPanel13->SetSizer(itemBoxSizer14);
 	
-	m_pObjList_PT = new tmCheckListBox (itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
-    //wxArrayString itemCheckListBox15Strings;
-    //wxCheckListBox* itemCheckListBox15 = new wxCheckListBox( itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, itemCheckListBox15Strings, wxLB_SINGLE );
-    itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW|wxALL, 5);
+	m_pObjList_PT = new tmCheckListBoxRank (itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+     itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW|wxALL, 5);
 	
     /*wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemPanel13, wxID_ANY, _("Orientation"));
     wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
@@ -123,13 +117,11 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxVERTICAL);
     itemPanel21->SetSizer(itemBoxSizer22);
 	
-    m_pObjList_PLG = new tmCheckListBox(itemPanel21, ID_CHECKLISTBOX1, 
+    m_pObjList_PLG = new tmCheckListBoxRank(itemPanel21, ID_CHECKLISTBOX1, 
 										wxDefaultPosition, wxDefaultSize,
 										0, NULL, wxLB_MULTIPLE | tmLB_MENU);
 	
-	//wxArrayString itemCheckListBox23Strings;
-    //wxCheckListBox* itemCheckListBox23 = new wxCheckListBox( itemPanel21, ID_CHECKLISTBOX1, wxDefaultPosition, wxDefaultSize, itemCheckListBox23Strings, wxLB_SINGLE );
-    itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 5);
+   itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 5);
 	
     itemNotebook3->AddPage(itemPanel21, _("Polygons"));
 	
@@ -307,7 +299,7 @@ bool AttribObjType_PANEL::UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pLi
 	
 	
 	// get objects from the database (all points)
-	if(!pDB->GetObjectListByLayerType(type))
+	if(!pDB->GetObjectListByLayerType(type, TRUE))
 	{
 		wxLogDebug(_T("Error getting object for layer : %d"), type);
 		return FALSE;
@@ -339,7 +331,28 @@ bool AttribObjType_PANEL::UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pLi
 		else
 			break;
 	}
+	
+	// pass database pointer to list
+	SetDataBaseToList(pDB);
 		
 	
 	return TRUE;
+}
+
+
+/***************************************************************************//**
+ @brief Pass database to check box list
+ @param pDB pointer to a valid database instance
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 May 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::SetDataBaseToList (DataBaseTM * pDB)
+{
+	if (pDB == NULL)
+		return;
+	
+	m_pObjList_L_Freq->SetDataBase(pDB);
+	m_pObjList_L_NoFreq->SetDataBase(pDB);
+	m_pObjList_PLG->SetDataBase(pDB);
+	m_pObjList_PT->SetDataBase(pDB);
 }
