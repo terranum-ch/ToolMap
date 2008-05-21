@@ -90,12 +90,15 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		bool UpdateObjectPolyList (DataBaseTM * pDB);
 		bool UpdateObjectLineList (DataBaseTM * pDB);
 		
+		// init list with databasae
+		void SetDataBaseToList (DataBaseTM * pDB);
+		
 		
 		// controls
-		tmCheckListBox * m_pObjList_PT;
-		tmCheckListBox * m_pObjList_PLG;
+		tmCheckListBoxRank * m_pObjList_PT;
+		tmCheckListBoxRank * m_pObjList_PLG;
 		tmCheckListBoxRank * m_pObjList_L_Freq;
-		tmCheckListBox * m_pObjList_L_NoFreq;
+		tmCheckListBoxRank * m_pObjList_L_NoFreq;
 
 		
 	};

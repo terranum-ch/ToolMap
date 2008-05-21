@@ -100,7 +100,7 @@ class DataBaseTM : public DataBase
 		bool DeleteField (wxArrayString & myFields, int iLayer, wxString & sSqlSentence);
 		
 		// database query
-		bool GetObjectListByLayerType(int ilayertype);
+		bool GetObjectListByLayerType(int ilayertype, bool bOrder = FALSE);
 		wxArrayString GetLayerNameByType (int ilayertype);
 		
 		// database Scale operations
