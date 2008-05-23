@@ -515,6 +515,17 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     wxButton* itemButton32 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer30->AddButton(itemButton32);
 	SetAffirmativeId(wxID_SAVE);
+	
+	
+	wxStatusBar* itemStatusBar13 = new wxStatusBar( itemDialog1, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
+    itemStatusBar13->SetFieldsCount(2);
+    itemStatusBar13->SetStatusText(_("Query passed OK"), 0);
+    itemStatusBar13->SetStatusText(_("10 Queries"), 1);
+    //int itemStatusBar13Widths[2];
+    //itemStatusBar13Widths[0] = -2;
+    //itemStatusBar13Widths[1] = -1;
+    //itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
+    itemBoxSizer2->Add(itemStatusBar13, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     itemStdDialogButtonSizer30->Realize();
 }
