@@ -348,8 +348,8 @@ public:
 	void SetDialog (wxDialog * pDialog) {m_pDialog = pDialog;}
 	
 	
-	void AddItem ();
-	void DeleteItem();
+	virtual void AddItem ();
+	virtual void DeleteItem();
 	void EditItem();
 	
 

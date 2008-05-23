@@ -83,6 +83,8 @@ ProjectDefDLG::ProjectDefDLG( wxWindow* parent,
 	m_pPrjDefinition = myPrjDefinition;
 	// Pass Address of Project Definition to the list
 	m_DlgPd_Stat_Model_List->PassPrjDefToList(m_pPrjDefinition);
+	
+
 }
 
 
@@ -123,6 +125,7 @@ void ProjectDefDLG::Init()
     m_DlgPd_Spat_Mdl_Add = NULL;
     m_DljPd_Spat_Mdl_Del = NULL;
     m_DlgPd_Button_Ok = NULL;
+	m_DlgPd_Status = NULL;
 	
 	m_bIsModeEditing = FALSE;
 	
@@ -230,6 +233,21 @@ void ProjectDefDLG::CreateControls()
 	
     itemStdDialogButtonSizer28->Realize();
 	
+	
+	// status bar
+	m_DlgPd_Status = new wxStatusBar( itemDialog1, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
+    m_DlgPd_Status->SetFieldsCount(2);
+    //m_DlgPd_Status->SetStatusText(_T(""), 0);
+    //m_DlgPd_Status->SetStatusText(_(""), 1);
+    //int itemStatusBar13Widths[2];
+    //itemStatusBar13Widths[0] = -2;
+    //itemStatusBar13Widths[1] = -1;
+    //itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
+    itemBoxSizer2->Add(m_DlgPd_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	
+	// pass the status bar to the list
+	m_DlgPd_Stat_Model_List->SetStatusBar(m_DlgPd_Status);
+	
 	// if editing mode is on, we disable some controls
 	if (m_bIsModeEditing)
 		DisableControlsForEdition();
@@ -274,6 +292,9 @@ bool ProjectDefDLG::TransferDataToWindow()
 			m_DlgPd_Stat_Model_List->EditDataToList(myLayerList);
 			myLayerList.Clear();
 		}
+		
+		// update status bar
+		m_DlgPd_Stat_Model_List->UpdateStatus(STATUS_FIELD_ITEM_COUNT);
 			
 	}
 	return TRUE;
@@ -285,7 +306,7 @@ bool ProjectDefDLG::TransferDataToWindow()
 
 /************************ PROJECT DEF LIST **********************************/
 ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, ProjectDefDLG * myParentDlg) 
-	: ListGenReportWithDialog(parent,id,size)
+	: ListGenReportWithStatus(parent,id,NULL)
 {
 	m_bIsModeEditing = myParentDlg->IsEditMode();
 	// Create columns
@@ -307,7 +328,8 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 	m_LayersArray = NULL;
 
 	m_LayersDialog = NULL;
-
+	
+	SetTextFields(_("Number of layer(s) : %d"), _("%d layer(s) selected"));
 }
 
 

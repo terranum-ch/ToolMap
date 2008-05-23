@@ -40,14 +40,14 @@
     #include <wx/wx.h>
 #endif
 
-////@begin includes
+
 #include "wx/listctrl.h"
 #include "listgenreport.h"
 #include "wxflatbutton.h"
 #include "project_def_layers_dlg.h"
 //#include <wx/dirdlg.h>				// for directory selection dialog
 #include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
-////@end includes
+#include "listgenreport_status.h"		// list with status
 
 
 
@@ -160,6 +160,7 @@ class ProjectDefDLG: public wxDialog
 		wxFlatButton* m_DlgPd_Spat_Mdl_Add;
 		wxFlatButton* m_DljPd_Spat_Mdl_Del;
 		wxButton* m_DlgPd_Button_Ok;
+		wxStatusBar * m_DlgPd_Status;
 	};
 
 
@@ -173,7 +174,7 @@ class ProjectDefDLG: public wxDialog
  @author Lucien Schreiber (c) CREALP 2007
  @date 04 December 2007
  *******************************************************************************/
-class ProjectDefList : public ListGenReportWithDialog
+class ProjectDefList : public ListGenReportWithStatus
 	{
 	private:
 		bool m_bIsModeEditing;
