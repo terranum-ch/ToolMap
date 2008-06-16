@@ -20,7 +20,8 @@
 
 #include "wx/valtext.h"
 #include "wx/statline.h"
-#include "listgenreport.h"				// for base listgenreport definition
+//#include "listgenreport.h"				// for base listgenreport definition
+#include "listgenreport_status.h"		// for list with status 
 #include "../database/database_tm.h"	// for database manipulation
 #include "../core/tmvalidator.h"		// for controls validation
 
@@ -93,7 +94,7 @@ public:
 
 
 /******************************** LIST OF OBJECT DEFINITION  ************************/
-class ObjectDefinitionList : public ListGenReportWithDialog
+class ObjectDefinitionList : public ListGenReportWithStatus
 	{
 	private:
 		PRJDEF_LAYERS_TYPE m_layertype;
