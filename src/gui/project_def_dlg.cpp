@@ -243,7 +243,7 @@ void ProjectDefDLG::CreateControls()
     //itemStatusBar13Widths[0] = -2;
     //itemStatusBar13Widths[1] = -1;
     //itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
-    itemBoxSizer2->Add(m_DlgPd_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    itemBoxSizer2->Add(m_DlgPd_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
 	
 	// pass the status bar to the list
 	m_DlgPd_Stat_Model_List->SetStatusBar(m_DlgPd_Status);

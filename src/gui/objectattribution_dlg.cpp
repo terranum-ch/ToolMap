@@ -555,7 +555,7 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 	
 	m_DLGPEO_StatusBar = new wxStatusBar( itemDialog1, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
     m_DLGPEO_StatusBar->SetFieldsCount(2);
-    itemBoxSizer2->Add(m_DLGPEO_StatusBar, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	itemBoxSizer2->Add(m_DLGPEO_StatusBar, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
 	
 	m_DLGPEO_List_Line->SetStatusBar(m_DLGPEO_StatusBar);
 	m_DLGPEO_List_Line->SetTextFields(_("%d Line(s) defined"), wxEmptyString);
