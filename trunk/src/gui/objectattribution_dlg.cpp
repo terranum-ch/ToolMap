@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE( ProjectEditObjectDefinitionDLG, wxDialog )
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POINT, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 	EVT_CHOICE (ID_DLGPEO_LYR_NAME_POLY, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
 	EVT_BUTTON (wxID_SAVE, ProjectEditObjectDefinitionDLG::OnSaveChanges)
+	EVT_NOTEBOOK_PAGE_CHANGED (ID_DLGPEO_NOTEBOOK, ProjectEditObjectDefinitionDLG::OnNotebookChangeTab)
 END_EVENT_TABLE()
 
 /**************** EVENT FUNCTION ***********************************/
@@ -277,6 +278,37 @@ void ProjectEditObjectDefinitionDLG::OnSaveChanges (wxCommandEvent & event)
 }
 
 
+/***************************************************************************//**
+ @brief Called each time we change the tab
+ @details When the user change between tabs, we update the status bar for
+ displaying the number of items and the number of selected items
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 June 2008
+ *******************************************************************************/
+void ProjectEditObjectDefinitionDLG::OnNotebookChangeTab(wxNotebookEvent & event)
+{
+	switch (event.GetSelection())
+	{
+		case LAYER_LINE:
+			m_DLGPEO_List_Line->UpdateStatus(STATUS_FIELD_ITEM_BOTH);
+			break;
+			
+		case LAYER_POINT:
+			m_DLGPEO_List_Point->UpdateStatus(STATUS_FIELD_ITEM_BOTH);
+			break;
+			
+		case LAYER_POLYGON:
+			m_DLGPEO_List_Poly->UpdateStatus(STATUS_FIELD_ITEM_BOTH);
+			break;
+			
+		default:
+			break;
+	} 
+	
+	event.Skip();
+}
+
+
 
 /**************** PUBLIC FUNCTIONS ***********************************/
 ProjectEditObjectDefinitionDLG::ProjectEditObjectDefinitionDLG()
@@ -338,6 +370,9 @@ void ProjectEditObjectDefinitionDLG::PostInit()
 	m_DLGPEO_List_Point->SetListCtrls(m_DLGPEO_Choice_Lyr_Point_Name, NULL);
 	m_DLGPEO_List_Poly->SetListCtrls(m_DLGPEO_Choice_Lyr_Poly_Name, NULL);
 	
+	// display number of items for line list 
+	m_DLGPEO_List_Line->UpdateStatus(STATUS_FIELD_ITEM_COUNT);
+	
 		
 }
 
@@ -361,6 +396,7 @@ void ProjectEditObjectDefinitionDLG::Init()
     m_DLGPEO_List_Line = NULL;
     m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
 	m_DB = NULL;
+	m_DLGPEO_StatusBar = NULL;
 	
 	// create a PrjMemory object with one layer for storing all
 	// create a new layer for storing all objects (added of modified)
@@ -517,16 +553,17 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 	SetAffirmativeId(wxID_SAVE);
 	
 	
-	wxStatusBar* itemStatusBar13 = new wxStatusBar( itemDialog1, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
-    itemStatusBar13->SetFieldsCount(2);
-    itemStatusBar13->SetStatusText(_("Query passed OK"), 0);
-    itemStatusBar13->SetStatusText(_("10 Queries"), 1);
-    //int itemStatusBar13Widths[2];
-    //itemStatusBar13Widths[0] = -2;
-    //itemStatusBar13Widths[1] = -1;
-    //itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
-    itemBoxSizer2->Add(itemStatusBar13, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
+	m_DLGPEO_StatusBar = new wxStatusBar( itemDialog1, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
+    m_DLGPEO_StatusBar->SetFieldsCount(2);
+    itemBoxSizer2->Add(m_DLGPEO_StatusBar, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	
+	m_DLGPEO_List_Line->SetStatusBar(m_DLGPEO_StatusBar);
+	m_DLGPEO_List_Line->SetTextFields(_("%d Line(s) defined"), wxEmptyString);
+	m_DLGPEO_List_Poly->SetStatusBar(m_DLGPEO_StatusBar);
+	m_DLGPEO_List_Poly->SetTextFields(_("%d Polygon(s) defined"), wxEmptyString);
+	m_DLGPEO_List_Point->SetStatusBar(m_DLGPEO_StatusBar);
+	m_DLGPEO_List_Point->SetTextFields(_("%d Point(s) defined"), wxEmptyString);
+	
     itemStdDialogButtonSizer30->Realize();
 }
 

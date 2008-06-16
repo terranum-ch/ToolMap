@@ -69,6 +69,7 @@ private:
 	void OnChangeFrequency (wxCommandEvent & event);
 	void OnChangeLayerName (wxCommandEvent & event);
 	void OnSaveChanges (wxCommandEvent & event);
+	void OnNotebookChangeTab(wxNotebookEvent & event);
 	
 	// PRIVATE DATABASE FUNCTION
 	bool SetChoiceListText (wxChoice * choice, int listtype); 
@@ -114,6 +115,7 @@ public:
     wxPanel* m_DLGPEO_Panel_Poly;
     ObjectDefinitionList* m_DLGPEO_List_Poly;
     wxChoice* m_DLGPEO_Choice_Lyr_Poly_Name;
+	wxStatusBar * m_DLGPEO_StatusBar;
 };
 
 #endif

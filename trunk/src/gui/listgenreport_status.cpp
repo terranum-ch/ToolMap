@@ -191,5 +191,6 @@ void ListGenReportWithStatus::DeleteItem()
 void ListGenReportWithStatus::OnSelectionChange(wxListEvent & event)
 {
 	UpdateStatus(STATUS_FIELD_ITEM_SELECTED);
+	event.Skip();
 }
 

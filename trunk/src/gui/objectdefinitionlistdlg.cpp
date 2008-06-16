@@ -243,7 +243,7 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 										   DataBaseTM * database,
 										   wxArrayString * pColsName, 
 										   wxArrayInt * pColsSize,
-										   wxSize size) : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
+										   wxSize size) : ListGenReportWithStatus(parent, id, pColsName, pColsSize, size)
 {
 	m_CheckBox = NULL;
 	m_ChoiceLayer = NULL;
