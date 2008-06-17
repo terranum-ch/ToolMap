@@ -1039,11 +1039,6 @@ int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex
 	}
 	else
 	{
-		// check that the table (LAYER_AT...) exists
-		if (DataBaseTableExist(wxString::Format(_T("%s%d"),
-											TABLE_NAME_LAYER_AT.c_str(),
-											DBlayerIndex)))
-		{
 			// get all fields
 			if (DataBaseQuery(sSentence))
 			{
@@ -1053,7 +1048,6 @@ int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex
 				return 0; // ok query done
 			}
 			
-		}
 	}
 	return -2; // error
 }
@@ -1416,6 +1410,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 	ProjectDefMemoryFields * mypField = NULL;
 	
 	int iLayerAdded = 0, iFieldAdded = 0, iReturnValue = 0, iReturnFieldValue=0;
+	wxArrayInt myLayerIDArray;
 	
 	// Load General project data (path, name,...)
 	if (GetProjectData(myPrjDef))
@@ -1432,13 +1427,15 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			mypLayer = myPrjDef->AddLayer();
 			iReturnValue = GetNextLayer(mypLayer);
 	
-			// item found ok
+			// item not found 
 			if (iReturnValue != 1)
 			{
 				// remove last layer
 				myPrjDef->RemoveLayer();
 				iLayerAdded--;
 			}
+			else	// add layer id to array
+				myLayerIDArray.Add(mypLayer->m_LayerID);
 			
 			iLayerAdded++;
 			
@@ -1448,9 +1445,30 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			
 		}
 		
+		wxStopWatch sw1;
+		
+		wxLogDebug(_T("Array id size is : %d"), myLayerIDArray.GetCount());
+		
+		// check fields table exists
+		for (int j = myLayerIDArray.GetCount()-1; j>=0; j--)
+		{
+			if (!DataBaseTableExist(wxString::Format(_T("%s%d"),
+													TABLE_NAME_LAYER_AT.c_str(),
+													myLayerIDArray.Item(j))))
+			{
+				wxLogDebug(_T("Item %d removed"),myLayerIDArray.Item(j));
+				myLayerIDArray.Remove(j);
+			}
+		}
+		// clear database results
+		DataBaseDestroyResults();
+		
+		wxLogDebug(_T("Checking table existence is done in %d"), sw1.Time());
+		sw1.Start();
+		
 		// get fields for all layers 
 		// loop all layers and then search fields
-		for (int i = 0; i< iLayerAdded; i++)
+		for (unsigned int i = 0; i< myLayerIDArray.GetCount(); i++)
 		{
 			mypLayer = myPrjDef->FindLayer(i); // find layer and setactivelayer...
 			if (mypLayer)
@@ -1485,6 +1503,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			}
 		}
 		
+		wxLogDebug(_T("Getting all fields data in %d"), sw1.Time());
 		
 		
 		wxLogDebug(_T("Nb of things found in db : Layers : %d"), iLayerAdded);
