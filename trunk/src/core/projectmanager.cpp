@@ -202,8 +202,16 @@ bool ProjectManager::EditProject ()
 {
 	
 	PrjDefMemManage * pPrjDefinition = NULL;
+	
+	// compute time for loading project
+	wxStopWatch sw;
+	
 	// load data from DB --> PrjDefMemManage
 	pPrjDefinition = m_DB->GetProjectDataFromDB();
+	wxLogMessage(_T("Data loaded in : %d [ms]"),sw.Time());
+	sw.Pause();
+	
+	
 	if (pPrjDefinition != NULL)
 	{
 		
@@ -277,14 +285,32 @@ void ProjectManager::CloseProject()
 }
 
 
-
+/***************************************************************************//**
+ @brief Check if the path is a Toolmap path
+ @details This function checks the existence of the #TABLE_NAME_PRJ_SETTINGS
+ .MYD file.
+ Upper and lower case are tested
+ @param path The path we want to test
+ @return  TRUE if the file exist in the path
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 June 2008
+ *******************************************************************************/
 bool ProjectManager::IsDataBasePath(const wxString & path)
 {
+	// upper case
 	if (!wxDir::FindFirst(path, TABLE_NAME_PRJ_SETTINGS + _T(".MYD"), wxDIR_FILES).IsEmpty())
 		return TRUE;
 	
+	// lower case
+	if (!wxDir::FindFirst(path, TABLE_NAME_PRJ_SETTINGS.Lower() + _T(".MYD"), wxDIR_FILES).IsEmpty())
+		return TRUE;
+
+	wxLogDebug(_T("Not a ToolMap project, file : %s not found in %s"),
+			   (TABLE_NAME_PRJ_SETTINGS + _T(".MYD")).c_str(),
+			   path.c_str());
 	return FALSE;
 }
+
 
 
 bool ProjectManager::OpenProject(const wxString & path)
