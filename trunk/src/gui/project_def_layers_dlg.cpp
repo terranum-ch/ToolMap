@@ -624,6 +624,7 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_IMPORT, ProjectDefLayersDlg::OnImportObject)
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_REMOVE, ProjectDefLayersDlg::OnRemoveField)
 	EVT_CHECKBOX(ID_DLGPDL_CHK_ORIENTATION,ProjectDefLayersDlg::OnChangeOrientation)
+	EVT_CHOICE(ID_DLGPDL_LAYER_TYPE,  ProjectDefLayersDlg::OnActivateOrientation)
 END_EVENT_TABLE()
 
 
@@ -727,8 +728,31 @@ void ProjectDefLayersDlg::OnChangeOrientation (wxCommandEvent & event)
 	}
 }
 
+/***************************************************************************//**
+ @brief Activate / desactivate the Orientation check box
+ @details This is called every time when an item on the layer type choice is
+ selected.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 June 2008
+ *******************************************************************************/
+void ProjectDefLayersDlg::OnActivateOrientation (wxCommandEvent & event)
+{
+	ActivateOrientation();
+}
 
 
+/***************************************************************************//**
+ @brief Activate / desactivate the Orientation check box ctrl
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 June 2008
+ *******************************************************************************/
+void ProjectDefLayersDlg::ActivateOrientation()
+{
+	bool bActivated = FALSE;
+	if (m_DlgPDL_Layer_Type->GetSelection() == LAYER_POINT)
+		bActivated = TRUE;
+	m_DlgPDL_Orientation_FLD->Enable(bActivated);
+}
 
 
 bool ProjectDefLayersDlg::TransferDataFromWindow()
@@ -798,7 +822,10 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 				
 			}
 		}
-		
+	
+		// activate or desactivate the checkbox for orientation
+		// based on the selection made in the layer type choice ctrl
+		ActivateOrientation();
 	}
 	return TRUE;
 }

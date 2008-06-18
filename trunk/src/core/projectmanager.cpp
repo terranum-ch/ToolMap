@@ -206,8 +206,11 @@ bool ProjectManager::EditProject ()
 	// compute time for loading project
 	wxStopWatch sw;
 	
+	wxBusyInfo * wait = new wxBusyInfo(_("Please wait, loading data from project..."), m_Parent);
 	// load data from DB --> PrjDefMemManage
 	pPrjDefinition = m_DB->GetProjectDataFromDB();
+	delete wait;
+	
 	wxLogMessage(_T("Data loaded in : %d [ms]"),sw.Time());
 	sw.Pause();
 	

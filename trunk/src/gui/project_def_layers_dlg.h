@@ -229,12 +229,15 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnRemoveObject (wxCommandEvent & event);
 		void OnImportObject (wxCommandEvent & event);
 		void OnChangeOrientation (wxCommandEvent & event);
+		void OnActivateOrientation (wxCommandEvent & event);
 
+		
 		
 		bool m_bIsModeEditing;
 		bool m_bIsModeAddingEditing;
 		
 		void DisableControlsForEdition();
+		void ActivateOrientation();
 		
 		
 		DECLARE_DYNAMIC_CLASS( ProjectDefLayersDlg );
