@@ -37,15 +37,15 @@
 
 
 // TABLES NAMES
-const wxString TABLE_NAME_LAYERS = _T("THEMATIC_LAYERS");
-const wxString TABLE_NAME_OBJECTS = _T("DMN_LAYER_OBJECT");
-const wxString TABLE_NAME_LAYER_AT = _T("LAYER_AT");
-const wxString TABLE_NAME_PRJ_SETTINGS = _T("PRJ_SETTINGS");
-const wxString TABLE_NAME_LAYER_TYPE = _T("DMN_LAYER_TYPE");
-const wxString TABLE_NAME_SCALE			= _T("ZOOM_LEVEL");
+const wxString TABLE_NAME_LAYERS = _T("thematic_layers");
+const wxString TABLE_NAME_OBJECTS = _T("dmn_layer_object");
+const wxString TABLE_NAME_LAYER_AT = _T("layer_at");
+const wxString TABLE_NAME_PRJ_SETTINGS = _T("prj_settings");
+const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
+const wxString TABLE_NAME_SCALE			= _T("zoom_level");
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 205;
+const int TM_DATABASE_VERSION = 206;
 
 
 class DataBaseTM : public DataBase
