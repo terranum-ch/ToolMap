@@ -1457,7 +1457,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 													myLayerIDArray.Item(j))))
 			{
 				wxLogDebug(_T("Item %d removed"),myLayerIDArray.Item(j));
-				myLayerIDArray.RemoveAt(j);
+				myLayerIDArray.Item(j) = -1;
 			}
 		}
 		// clear database results
@@ -1470,36 +1470,42 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 		// loop all layers and then search fields
 		for (unsigned int i = 0; i< myLayerIDArray.GetCount(); i++)
 		{
-			mypLayer = myPrjDef->FindLayer(i); // find layer and setactivelayer...
-			if (mypLayer)
+			// search field only if table exists
+			if (myLayerIDArray.Item(i) != -1)
 			{
-				// loop in the layer for all fields
-				while (1)
-				{
-					
-					// add a layer
-					mypField = myPrjDef->AddField();
-					
-					iReturnFieldValue = GetNextField(mypField, mypLayer->m_LayerID);
-					
-					// item found ok
-					if (iReturnFieldValue != 1)
-					{
-						// remove last field
-						myPrjDef->RemoveField();
-						iFieldAdded--;
-					}
-					
-					iFieldAdded++;
-					
-					//wxLogDebug(_T("returned values for field is : %d"), iReturnFieldValue);
-					
-					if (iReturnFieldValue < 0) // error or no more results
-					{
-						break;
-					}
-				}
 				
+				
+				mypLayer = myPrjDef->FindLayer(i); // find layer and setactivelayer...
+				if (mypLayer)
+				{
+					// loop in the layer for all fields
+					while (1)
+					{
+						
+						// add a layer
+						mypField = myPrjDef->AddField();
+						
+						iReturnFieldValue = GetNextField(mypField, mypLayer->m_LayerID);
+						
+						// item found ok
+						if (iReturnFieldValue != 1)
+						{
+							// remove last field
+							myPrjDef->RemoveField();
+							iFieldAdded--;
+						}
+						
+						iFieldAdded++;
+						
+						//wxLogDebug(_T("returned values for field is : %d"), iReturnFieldValue);
+						
+						if (iReturnFieldValue < 0) // error or no more results
+						{
+							break;
+						}
+					}
+					
+				}
 			}
 		}
 		
