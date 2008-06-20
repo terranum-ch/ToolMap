@@ -96,6 +96,7 @@ class DataBaseTM : public DataBase
 		// field operations
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
 		int GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex);
+		int GetFieldsFromDB (PrjDefMemManage * myPrj);
 		bool UpdateField(ProjectDefMemoryFields * myField, int iLayer, wxString & sSqlSentence);
 		bool DeleteField (wxArrayString & myFields, int iLayer, wxString & sSqlSentence);
 		

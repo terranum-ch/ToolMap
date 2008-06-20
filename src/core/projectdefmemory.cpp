@@ -146,17 +146,17 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 	wxArrayString myCodedValResults;
 	int iCountCodedVal = 0;
 	
-	if(fielddef.GetCount() >= 2)
+	if(fielddef.GetCount() != 3)
 	{
 		// assign a field id greather than 0
 		m_FieldID = 1;
 		
 		// get the field name
-		m_Fieldname = fielddef.Item(0);
-		m_FieldOldName = fielddef.Item(0);
+		m_Fieldname = fielddef.Item(1);
+		m_FieldOldName = fielddef.Item(1);
 		
 		// get the field type
-		myFieldType = fielddef.Item(1).BeforeFirst('(');
+		myFieldType = fielddef.Item(2).BeforeFirst('(');
 		if (!myFieldType.IsEmpty())
 		{
 			// ENUMERATION //
@@ -165,7 +165,7 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 				m_FieldType = TM_FIELD_ENUMERATION;
 				
 				// compute the enumerations values
-				myTempConvert = ExtractValuesFromString(fielddef.Item(1));
+				myTempConvert = ExtractValuesFromString(fielddef.Item(2));
 				iCountCodedVal = ProjectDefMemoryFieldsCodedVal::
 					ExtractCodedValuesFromString(myTempConvert, myCodedValResults);
 				for (int i = 0; i < iCountCodedVal ; i++)
@@ -193,7 +193,7 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 			{
 				m_FieldType = TM_FIELD_FLOAT;
 				// compute precision and scale
-				myTempConvert = ExtractValuesFromString(fielddef.Item(1));
+				myTempConvert = ExtractValuesFromString(fielddef.Item(2));
 				m_FieldPrecision	= wxAtoi(myTempConvert.BeforeFirst(','));
 				m_FieldScale		= wxAtoi(myTempConvert.AfterFirst(','));
 			}
@@ -211,13 +211,13 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 			{
 				m_FieldType = TM_FIELD_TEXT;
 				// compute size (precision)
-				m_FieldPrecision = wxAtoi(ExtractValuesFromString(fielddef.Item(1)));
+				m_FieldPrecision = wxAtoi(ExtractValuesFromString(fielddef.Item(2)));
 			}
 
 		}
 		
 		// get orientation (item number 8)
-		if (fielddef.Item(8) == ProjectDefMemoryFields::GetOrientationName())
+		if (fielddef.Item(3) == ProjectDefMemoryFields::GetOrientationName())
 			m_FieldOrientation = TRUE;
 		// otherwise, field orientation is false :-)
 			

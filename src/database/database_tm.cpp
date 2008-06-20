@@ -1015,11 +1015,105 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 }
 
 
+/***************************************************************************//**
+ @brief Fill an existing project with fields
+ @details The myPrj parameter must point to a existing project in memory.
+ containing all layers. This function will add all fields into this project
+ @param myPrj Pointer to an existing #PrjDefMemManage containing all layers
+ @return  return the number of fields added, or -1 if something goes wrong
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 June 2008
+ *******************************************************************************/
+int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
+{
+	// some checks 
+	if (!myPrj)
+	{
+		wxLogDebug(_T("Pointer to project in memory is empty"));
+		return -1;
+	}
+	
+	// getting data from database
+	wxString sSentence = _T("SELECT CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,")
+	_T("COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS")
+	_T(" WHERE table_schema = \"") + DataBaseGetName() + _T("\"")
+	_T(" AND  table_name IN (SELECT TABLE_NAME FROM")
+	_T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +TABLE_NAME_LAYER_AT +
+	_T("\%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
+	
+	if(DataBaseQuery(sSentence) == FALSE)
+	{
+		wxLogDebug(_T("Error gettings fields from database : %s"),sSentence.c_str());
+		return -1;
+	}
+	
+	
+	// results must contain some results
+	if (!DataBaseHasResult())
+	{
+		wxLogDebug(_T("No results found for the fields"));
+		return -1;
+	}
+	
+	int iNbFields = 0;
+	long iRealLayerID = 0;
+	wxArrayString myResults;
+	ProjectDefMemoryLayers * myLayer = NULL;
+	ProjectDefMemoryFields * myField = NULL;
+	while (1) // loop until no more results
+	{
+		myResults = DataBaseGetNextResult();
+		// if no more results : break
+		if (myResults.IsEmpty())
+			break;
+		
+		// find layer by real id
+		myResults.Item(0).ToLong(&iRealLayerID);
+		myLayer = myPrj->FindLayerByRealID(iRealLayerID);
+		if (!myLayer)
+		{
+			wxLogDebug(_T("Layer error, layer %d not found"), iRealLayerID);
+			break;
+		}
+		
+		// add field and set values to this field
+		iNbFields ++;
+		myField = myPrj->AddField();
+		myField->SetValues(myResults);
+		
+		myResults.Clear();
+	}
+	
+	
+	return iNbFields; 
+
+}
+
 
 int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 {
+	// if no result execute the sentence
+	// otherwise parse the results
+	if (!DataBaseHasResult())
+	{
+		wxLogDebug(_T("No results found for the fields"));
+		return -2;
+	}
+	
+	
+	
 	wxArrayString myResults;
-	wxString sSentence = wxString::Format(_T("SHOW FULL COLUMNS FROM %s%d"),
+	myResults = DataBaseGetNextResult();
+	if (!myResults.IsEmpty())
+	{
+		myField->SetValues(myResults);
+		
+		return 1; // ok continue
+	}
+	return -1; // no more results 
+	
+	
+	/*wxString sSentence = wxString::Format(_T("SHOW FULL COLUMNS FROM %s%d"),
 										  TABLE_NAME_LAYER_AT.c_str(),
 										  DBlayerIndex);
 	
@@ -1049,7 +1143,7 @@ int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex
 			}
 			
 	}
-	return -2; // error
+	return -2; // error*/
 }
 
 
@@ -1410,17 +1504,17 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 	ProjectDefMemoryFields * mypField = NULL;
 	
 	int iLayerAdded = 0, iFieldAdded = 0, iReturnValue = 0, iReturnFieldValue=0;
-	wxArrayInt myLayerIDArray;
+	//wxArrayInt myLayerIDArray;
 	
 	// Load General project data (path, name,...)
 	if (GetProjectData(myPrjDef))
 	{
-		wxLogDebug(_T("Getting basic project data... DONE"));
-		
-		
 		// clear database results
 		DataBaseDestroyResults();
+
 		
+		
+		// STEP 1
 		// get all layers 
 		while (1)
 		{
@@ -1434,8 +1528,8 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 				myPrjDef->RemoveLayer();
 				iLayerAdded--;
 			}
-			else	// add layer id to array
-				myLayerIDArray.Add(mypLayer->m_LayerID);
+			//else	// add layer id to array
+			//	myLayerIDArray.Add(mypLayer->m_LayerID);
 			
 			iLayerAdded++;
 			
@@ -1445,74 +1539,12 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			
 		}
 		
-		wxStopWatch sw1;
 		
-		wxLogDebug(_T("Array id size is : %d"), myLayerIDArray.GetCount());
+		int iNumFieldAdded = GetFieldsFromDB(myPrjDef);
 		
-		// check fields table exists
-		for (int j = myLayerIDArray.GetCount()-1; j>=0; j--)
-		{
-			if (!DataBaseTableExist(wxString::Format(_T("%s%d"),
-													TABLE_NAME_LAYER_AT.c_str(),
-													myLayerIDArray.Item(j))))
-			{
-				wxLogDebug(_T("Item %d removed"),myLayerIDArray.Item(j));
-				myLayerIDArray.Item(j) = -1;
-			}
-		}
-		// clear database results
-		DataBaseDestroyResults();
+		wxLogDebug(_T("Number of fields parsed %d"), iNumFieldAdded);
+		wxLogDebug(_T("Nb of layers found in db : %d"), iLayerAdded);
 		
-		wxLogDebug(_T("Checking table existence is done in %d"), sw1.Time());
-		sw1.Start();
-		
-		// get fields for all layers 
-		// loop all layers and then search fields
-		for (unsigned int i = 0; i< myLayerIDArray.GetCount(); i++)
-		{
-			// search field only if table exists
-			if (myLayerIDArray.Item(i) != -1)
-			{
-				
-				
-				mypLayer = myPrjDef->FindLayer(i); // find layer and setactivelayer...
-				if (mypLayer)
-				{
-					// loop in the layer for all fields
-					while (1)
-					{
-						
-						// add a layer
-						mypField = myPrjDef->AddField();
-						
-						iReturnFieldValue = GetNextField(mypField, mypLayer->m_LayerID);
-						
-						// item found ok
-						if (iReturnFieldValue != 1)
-						{
-							// remove last field
-							myPrjDef->RemoveField();
-							iFieldAdded--;
-						}
-						
-						iFieldAdded++;
-						
-						//wxLogDebug(_T("returned values for field is : %d"), iReturnFieldValue);
-						
-						if (iReturnFieldValue < 0) // error or no more results
-						{
-							break;
-						}
-					}
-					
-				}
-			}
-		}
-		
-		wxLogDebug(_T("Getting all fields data in %d"), sw1.Time());
-		
-		
-		wxLogDebug(_T("Nb of things found in db : Layers : %d"), iLayerAdded);
 		return myPrjDef;
 	}
 	
