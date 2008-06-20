@@ -98,6 +98,7 @@ class PrjDefMemManage
 		bool							RemoveLayer(const wxString & layerName);
 		ProjectDefMemoryLayers *		FindLayer(const wxString & layerName);
 		ProjectDefMemoryLayers *		FindLayer(unsigned int iIndex = 0);
+		ProjectDefMemoryLayers *		FindLayerByRealID (unsigned int iIndex);
 		void							SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
 													{m_pActiveLayer = ActiveLayer;}
 		ProjectDefMemoryLayers *		GetActiveLayer(){return m_pActiveLayer;}

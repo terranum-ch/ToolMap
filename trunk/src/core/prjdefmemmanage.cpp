@@ -143,6 +143,33 @@ ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(unsigned int iIndex)
 	return NULL; // out of the bound
 }
 
+/***************************************************************************//**
+ @brief Find field based on real ID
+ @param iIndex The Real ID for the field
+ @return  A valid pointer to a #ProjectDefMemoryFields if field is found and
+ NULL otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 19 June 2008
+ *******************************************************************************/
+ProjectDefMemoryLayers * PrjDefMemManage::FindLayerByRealID (unsigned int iIndex)
+{
+	// search this item in the array for the good layer name.
+	for (unsigned int i=0; i < m_PrjLayerArray->GetCount(); i++)
+	{
+		if (m_PrjLayerArray->Item(i).m_LayerID == (signed int) iIndex)
+		{
+			//wxLogDebug(_T("Object found in Layer array in position : %d"), i);
+			// set active layer
+			SetActiveLayer(&(m_PrjLayerArray->Item(i)));
+			return &(m_PrjLayerArray->Item(i));
+		}
+	}
+	wxLogDebug(_T("Object not found in Layer array"));
+	return NULL; // nothing found... check for null pointer
+}
+
+
+
 ProjectDefMemoryLayers * PrjDefMemManage::GetNextLayer()
 {
 	
@@ -375,6 +402,9 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 	return NULL; // nothing found, return null pointer.
 
 }
+
+
+
 
 
 ProjectDefMemoryFields * PrjDefMemManage::FindField(unsigned int iIndex)
