@@ -43,6 +43,10 @@ ProjectDefFieldList::ProjectDefFieldList(wxWindow * parent, wxWindowID  id, wxSi
 	
 	m_ChoiceIndex = 0;
 	
+	
+
+	
+	
 }
 
 
@@ -170,7 +174,6 @@ void ProjectDefFieldList::AddingValueToArray (wxArrayString & myImportedValues)
 	m_CodedValueObj->m_ValueName = myImportedValues.Item(1);
 	
 }
-
 
 
 

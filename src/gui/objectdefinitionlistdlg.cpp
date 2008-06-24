@@ -254,6 +254,12 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 	
 	// init list with database values
 	SetListText(m_layertype);
+	
+	m_bAscending[0] = TRUE;
+	m_bAscending[1] = TRUE;
+	m_bAscending[2] = TRUE;
+	m_bAscending[3] = TRUE;
+	
 }
 
 
@@ -788,6 +794,24 @@ void ObjectDefinitionList::OnItemSelectChange (wxListEvent & event)
 	{
 		wxLogDebug(_T("Pointer to the wxChoice not passed to listctrl..."));	
 	}
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when user click on the column header
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 June 2008
+ *******************************************************************************/
+void ObjectDefinitionList::OnSortColumns (wxListEvent & event)
+{
+	int myTypeCol [4] = {FIELD_NUMBER, FIELD_STRING, FIELD_STRING, FIELD_STRING};
+	int iCol = event.m_col;
+	
+	SortListItem(iCol, 0, -1, myTypeCol[iCol], m_bAscending[iCol]);
+	
+	// invert ascending : descending
+	m_bAscending[iCol] == TRUE ? m_bAscending[iCol] = FALSE : m_bAscending[iCol] = TRUE;
 }
 
 

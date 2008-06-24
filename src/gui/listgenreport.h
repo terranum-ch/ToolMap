@@ -75,6 +75,7 @@ class ListGenReport : public wxListCtrl
 		virtual void OnPressBackSpace (wxListEvent & event);
 		void OnContextMenu (wxListEvent & event);
 		void OnMoveItemInList (wxCommandEvent & event);
+		virtual void OnSortColumns (wxListEvent & event);
 		
 					
 		//void OnStartDrag (wxListEvent & event); // not implemented now maybe layer...

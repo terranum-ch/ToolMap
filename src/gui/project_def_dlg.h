@@ -195,6 +195,9 @@ class ProjectDefList : public ListGenReportWithStatus
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
 		
+		bool m_bAscending [2];
+		virtual void OnSortColumns(wxListEvent & event);
+		
 	public:
 		static const int ID_PARAMLIST;
 		

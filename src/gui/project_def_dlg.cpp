@@ -330,6 +330,8 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 	m_LayersDialog = NULL;
 	
 	SetTextFields(_("Number of layer(s) : %d"), _("%d layer(s) selected"));
+	m_bAscending [0] = TRUE;
+	m_bAscending [1] = TRUE;
 }
 
 
@@ -469,6 +471,24 @@ void ProjectDefList::BeforeDeleting()
 	}
 
 }
+
+
+/***************************************************************************//**
+ @brief Called when user click on the column header
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 June 2008
+ *******************************************************************************/
+void ProjectDefList::OnSortColumns (wxListEvent & event)
+{
+	int myTypeCol [2] = {FIELD_STRING, FIELD_STRING};
+	int iCol = event.m_col;
+	
+	SortListItem(iCol, 0, -1, myTypeCol[iCol], m_bAscending[iCol]);
+	
+	// invert ascending : descending
+	m_bAscending[iCol] == TRUE ? m_bAscending[iCol] = FALSE : m_bAscending[iCol] = TRUE;
+}
+
 
 
 
