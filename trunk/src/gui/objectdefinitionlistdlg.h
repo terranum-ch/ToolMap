@@ -122,6 +122,10 @@ class ObjectDefinitionList : public ListGenReportWithStatus
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
 		
+		bool m_bAscending [4];
+		virtual void OnSortColumns(wxListEvent & event);
+		
+		
 		// event functions
 		void OnItemSelectChange (wxListEvent & event);
 		 DECLARE_EVENT_TABLE()

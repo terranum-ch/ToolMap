@@ -76,7 +76,7 @@ class ProjectDefFieldList : public ListGenReportWithDialog
 		virtual void 	BeforeEditing ();
 		virtual void	AddingValueToArray (wxArrayString & myImportedValues);
 		
-
+		
 		
 	public:
 		static const int ID_PARAMLIST;

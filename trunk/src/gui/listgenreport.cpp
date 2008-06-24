@@ -189,6 +189,7 @@ BEGIN_EVENT_TABLE(ListGenReport,wxListCtrl)
 	//EVT_LIST_BEGIN_DRAG (ID_LIST, ListGenReport::OnStartDrag)
 	EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST, ListGenReport::OnContextMenu)
 	EVT_MENU_RANGE(ID_MENU_MOVE_TOP,ID_MENU_MOVE_BOTTOM,ListGenReport::OnMoveItemInList)
+	EVT_LIST_COL_CLICK(ID_LIST, ListGenReport::OnSortColumns)
 END_EVENT_TABLE()
 
 
@@ -308,6 +309,18 @@ void ListGenReport::OnMoveItemInList (wxCommandEvent & event)
 			break;
 	}
 }
+
+
+/***************************************************************************//**
+ @brief Called when user click on the column header
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 June 2008
+ *******************************************************************************/
+void ListGenReport::OnSortColumns (wxListEvent & event)
+{
+	event.Skip();
+}
+
 
 wxString ListGenReport::GetItemColText(int iItem, int iCol)
 {
@@ -574,7 +587,20 @@ void ListGenReportWithDialog::InitMembers()
 	
 }
 
-
+/***************************************************************************//**
+ @brief Sort columns
+ @details This functions sort columns based on type in ascending or descending
+ order
+ @param x_col zero based index of column used for sorting
+ @param low zero based index of first item to sort (pass 0 for sorting since the
+ begining)
+ @param high zero based top index of item to sort (pass -1 for sorting to the
+ end)
+ @param typecol One of the col type described in #LIST_FIELD_TYPE
+ @param bAscending TRUE for sorting ascending, FALSE for descending order
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 June 2008
+ *******************************************************************************/
 void ListGenReport::SortListItem(int x_col, int low , int high , int typecol, bool bAscending )
 {
 	wxASSERT(GetColumnCount() > x_col );
