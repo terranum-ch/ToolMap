@@ -138,7 +138,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  `CONTENT_PATH` VARCHAR(255) NULL ,")
 	_T("  `CONTENT_NAME` VARCHAR(255) NULL ,")
 	_T("  `CONTENT_STATUS` BOOLEAN NULL DEFAULT 1 ,")
-	_T("  `GENERIC_LAYERS` BOOLEAN NULL DEFAULT 0 ,")
+	_T("  `GENERIC_LAYERS` TINYINT NULL DEFAULT 100 ,")
 	_T("  `RANK` INT NULL ,")
 	_T("  PRIMARY KEY (`CONTENT_ID`) ,")
 	_T("  INDEX PROJECT_TOC_FKIndex1 (`TYPE_CD` ASC) ,")
@@ -1687,6 +1687,54 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	wxLogError(_T("Error updating project in the database"));
 	return FALSE;	
 }
+
+
+
+/***************************************************************************//**
+ @brief Init the TOC
+ @details This function fill the TOC with generic layers which are :
+ - <B>generic_points</B> : For storing all points
+ - <B>generic_lines</B> : For storing all lines and limits of polygons
+ - <B>generic_labels</B> : For storing all polygon's labels
+ - <B>generic_notes</B> : For storing all notes, errors, questions. 
+ @note User could'nt remove those layers. Value of column GENERIC_LAYERS is linked to
+ the #TOC_GENERIC_NAME
+ @return  TRUE if table was succesfully filled, FALSE if an error occur (see log)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 26 June 2008
+ *******************************************************************************/
+bool DataBaseTM::InitTOCGenericLayers()
+{
+	// check that a database is opened
+	if (!DataBaseIsOpen())
+	{
+		wxLogDebug(_T("Database not opened, open database first"));
+		return FALSE;
+	}
+	
+	
+	int iTypes [] = {LAYER_LINE, LAYER_POINT, LAYER_POINT, LAYER_POINT};
+
+	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_TOC + _T(" (TYPE_CD, ")
+	_T("CONTENT_NAME, GENERIC_LAYERS) VALUES (%d, \"%s\", %d); ");
+	wxString sRealSentence = _T("");
+	
+	for (int i = TOC_NAME_LINES; i<= TOC_NAME_ANNOTATIONS; i++)
+	{
+		sRealSentence.Append(wxString::Format(sSentence,iTypes[i],
+											  TOC_GENERIC_NAME_STRING[i].c_str(),
+											  TOC_NAME_LINES+i));
+	}
+	
+	if (!DataBaseQueryNoResult(sRealSentence))
+	{
+		wxLogDebug(_T("Error in TOC init : ") + sRealSentence);
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
 
 
 /// FIELD CREATION ::

@@ -86,6 +86,8 @@ class ProjectManager : public wxObject
 		bool EditProject ();
 		bool BackupProject ();
 		
+		bool TempTempInitTOC ();
+		
 		// project infos
 		wxString GetProjectName();
 		

@@ -43,9 +43,33 @@ const wxString TABLE_NAME_LAYER_AT = _T("layer_at");
 const wxString TABLE_NAME_PRJ_SETTINGS = _T("prj_settings");
 const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
 const wxString TABLE_NAME_SCALE			= _T("zoom_level");
+const wxString TABLE_NAME_TOC		= _T("project_toc");
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 207;
+const int TM_DATABASE_VERSION = 208;
+
+// TOC Generics values
+// Definitions for the generic layers, we define the text and  the id of 
+// each string.
+static wxString TOC_GENERIC_NAME_STRING[] = 
+{
+	_("Lines"),
+	_("Points"),
+	_("Labels"),
+	_("Annotations"),
+	_("Not Generic layers")
+};
+enum TOC_GENERIC_NAME
+{
+	TOC_NAME_LINES = 0,
+	TOC_NAME_POINTS,
+	TOC_NAME_LABELS,
+	TOC_NAME_ANNOTATIONS,
+	TOC_NAME_NOT_GENERIC = 100
+};
+static const int TOC_GENERIC_NAME_NUMBER = 5;
+
+
 
 
 class DataBaseTM : public DataBase
@@ -123,6 +147,9 @@ class DataBaseTM : public DataBase
 		// projects operations
 		PrjDefMemManage * GetProjectDataFromDB ();
 		bool UpdateDataBaseProject (PrjDefMemManage * pProjDef);
+		
+		// database TOC operations
+		bool InitTOCGenericLayers();
 		
 	};
 

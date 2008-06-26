@@ -245,6 +245,8 @@ private:
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	
+	void OnShowQueryManager (wxCommandEvent & event);
+	
 	ImportLogDLG * m_LogWindow;
 //#if (__WXMAC__)
 //	TocWindowDlgMac * m_TocWindow;
