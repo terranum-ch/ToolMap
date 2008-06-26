@@ -80,6 +80,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_BACKUP_PRJ, ToolMapFrame::OnBackupProject)
 	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
+
+	EVT_MENU (ID_MENU_QUERIES, ToolMapFrame::OnShowQueryManager)
+
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 END_EVENT_TABLE()
@@ -581,6 +584,15 @@ void ToolMapFrame::OnUpdateAttributionObjects(wxCommandEvent & event)
 {
 	//m_AttribObjPanel->UpdateObjectPointList(m_Database);
 	//m_AttribObjPanel->m_pObjList_PT->AddItem(-1, -1, _T("coucou"));
+}
+
+
+
+
+void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)
+{
+	m_PManager->TempTempInitTOC();
+	
 }
 
 

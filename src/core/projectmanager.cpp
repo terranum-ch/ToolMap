@@ -137,53 +137,12 @@ bool ProjectManager::CreateNewProject()
 	//m_DB = myNewPrjDB;
 	m_Obj->UpdateObjectLists(m_DB);
 	
+	// create TOC tables entry
+	m_DB->InitTOCGenericLayers();
 	
 	
+	// read TOC
 	
-	/*if(myNewProjDlg->ShowModal() == wxID_OK)
-	{
-		wxBusyCursor wait;
-
-				
-		/* create the project on disk
-		
-		{
-			if(myNewPrjDB->PassProjectDataToDB())
-			{
-				m_DB = myNewPrjDB;
-				
-				// update objects to lists
-				m_Obj->UpdateObjectLists(m_DB);
-				
-				bReturn = TRUE;
-			}
-			
-			// Error message if something goes wrong
-			// we try to close the database
-			if (bReturn == FALSE)
-			{
-				wxLogError(_("Error creating the new project"));
-				
-				// change menu status
-				m_pMManager->SetStatus(MENU_DB_CLOSED);
-				
-				CloseProject();
-			}
-			
-		}
-		delete myNewProjDlg;
-		
-		// change menu status
-		if (bReturn)
-		{
-			m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
-										 wxFileName::GetPathSeparator() +
-										 myNewPrjDB->DataBaseGetName());
-			m_pMManager->SetStatus(MENU_DB_OPENED);
-		}
-			
-		return TRUE;*/
-	//}
 	return TRUE;
 }
 
@@ -347,6 +306,8 @@ bool ProjectManager::OpenProject(const wxString & path)
 					// update objects to lists
 					m_Obj->UpdateObjectLists(m_DB);
 					
+					// read the TOC
+					
 					// project is now open !
 					bReturn = TRUE;
 				}
@@ -433,6 +394,30 @@ wxString ProjectManager::GetProjectName()
 
 
 
+
+bool ProjectManager::TempTempInitTOC ()
+{
+	if (m_DB == NULL)
+	{
+		wxLogDebug(_T("No database started, start a database first"));
+		return FALSE;
+	}
+	
+	if (wxMessageBox(_T("Add default layers in project TOC ?"),
+				 _T("Temporary Functions"),  wxYES_NO, m_Parent) != wxYES)
+		return FALSE;
+	
+	
+	m_DB->InitTOCGenericLayers();
+	return TRUE;
+}
+
+
+
+
+
+
+
 /***************************** OBJECT MANAGER **********************************/
 
 /***************************************************************************//**
@@ -474,4 +459,6 @@ bool ObjectManager::UpdateObjectLists(DataBaseTM * pDB)
 	
 	return TRUE;
 }
+
+
 
