@@ -45,7 +45,7 @@ const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
 const wxString TABLE_NAME_SCALE			= _T("zoom_level");
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 206;
+const int TM_DATABASE_VERSION = 207;
 
 
 class DataBaseTM : public DataBase
