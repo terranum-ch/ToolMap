@@ -30,6 +30,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_DB = NULL;
 	m_Parent = parent;
 	m_pMManager = NULL;
+	m_ParentStatus = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -282,6 +283,12 @@ bool ProjectManager::OpenProject(const wxString & path)
 	// close any existing project
 	CloseProject();
 	
+	
+	// display waiting progress, automaticaly stoped
+	// when object is deleted
+	tmProgressIndicator ProgIndicator(m_ParentStatus);
+	ProgIndicator.DisplayProgress();
+	
 	// 0 check if the folder contain something like a database file
 	if (IsDataBasePath(path))
 	{
@@ -323,7 +330,9 @@ bool ProjectManager::OpenProject(const wxString & path)
 		}
 	}
 	
-	//bReturn = TRUE;
+	
+	// TEMP TEMP TEMP TEMP //
+	wxSleep(2);
 	
 	
 	

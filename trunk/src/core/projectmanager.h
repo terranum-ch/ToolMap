@@ -49,6 +49,7 @@
 #include "backup.h"							// for backup and restore operations
 #include "../gui/menumanager.h"				// for menu management (recent, greyed,...)
 #include <wx/busyinfo.h>					// informations message for busy time
+#include "../gis/tmprogress.h"				// progress indicator
 
 class MenuManager;
 class ObjectManager;
@@ -68,6 +69,7 @@ class ProjectManager : public wxObject
 		wxWindow * m_Parent;
 		MenuManager * m_pMManager;
 		ObjectManager * m_Obj;
+		wxStatusBar * m_ParentStatus;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -95,6 +97,7 @@ class ProjectManager : public wxObject
 		void SetMenuManager(MenuManager * pMenu){m_pMManager = pMenu;}
 		MenuManager * GetMenuManager() {return m_pMManager;}
 		ObjectManager * GetObjectManager() {return m_Obj;}
+		void SetStatusBar (wxStatusBar * status) {m_ParentStatus = status;}
 	};
 
 
