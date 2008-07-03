@@ -216,6 +216,7 @@ public:
 	
 	
 	
+	
 private:
 	//PrjDefMemManage m_PrjDefinition;
 	//DataBaseTM * m_Database;

@@ -38,6 +38,54 @@ void tmProgressIndicator::InitMembers()
 {
 	m_MessageTarget = NULL;
 	m_MessageID = TMPROGRESS_LOAD_PRJ;
+	m_Thread = NULL;
+}
+
+
+/***************************************************************************//**
+ @brief Internal checking function for Target
+ @details This function checks that :
+ - Target isn't NULL
+ - Target contain enought fields
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+bool tmProgressIndicator::CheckTarget()
+{
+	// target not null
+	if (!m_MessageTarget)
+	{
+		wxLogDebug(_T("Pointer to target is empty, error"));
+		return FALSE;
+	}
+	
+	// do we have enought seperator in the status
+	if (m_MessageTarget->GetFieldsCount() < TMPROGRESS_STATUS_FIELD + 1)
+	{
+		wxLogDebug(_T("Not enought fields in the status bar : need %d, has %d"),
+		TMPROGRESS_STATUS_FIELD + 1, m_MessageTarget->GetFieldsCount());
+		return FALSE;
+	}
+	
+	return TRUE;	
+}
+
+/***************************************************************************//**
+ @brief Internal checking function for Messages
+ @details This function checks that :
+ - Message is in the limits
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+bool tmProgressIndicator::CheckMessage()
+{
+	
+	if (m_MessageID < 0 || m_MessageID >= TMPROGRESS_MESSAGE_NUMBER -1)
+	{
+		wxLogDebug(_T("Message is out of the limits : %d"), m_MessageID);
+		return FALSE;
+	}
+	return TRUE;
 }
 
 
@@ -78,7 +126,8 @@ tmProgressIndicator::tmProgressIndicator(wxStatusBar * status)
  *******************************************************************************/
 tmProgressIndicator::~tmProgressIndicator()
 {
-
+	// delete the thread if running
+	StopProgress();
 }
 
 
@@ -95,22 +144,125 @@ tmProgressIndicator::~tmProgressIndicator()
  *******************************************************************************/
 bool tmProgressIndicator::SetProgressTarget (wxStatusBar * status)
 {
-	// status must not be null
-	if (!status)
-	{
-		wxLogDebug(_T("Pointer to status is empty, error"));
-		return FALSE;
-	}
-	
-	// do we have enought seperator in the status
-	if (status->GetFieldsCount() >= TMPROGRESS_STATUS_FIELD)
-	{
-		wxLogDebug(_T("Not enought fields in the status bar"));
-		return FALSE;
-	}
-	
 	m_MessageTarget = status;
+	
+	if(!CheckTarget())
+		return FALSE;
+		
 	return TRUE;
+}
+
+
+/***************************************************************************//**
+ @brief Select wich message to display
+ @param messageid One of the message ID, see #TMPROGRESS_MESSAGE_NUMBER for
+ options
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+void tmProgressIndicator::SetMessage (TMPROGRESS_MESSAGE_ID messageid)
+{
+	if(!CheckMessage())
+		return;
+	
+	m_MessageID = messageid;
+}
+
+
+/***************************************************************************//**
+ @brief Display the current progress message
+ @details Verifications are done before displaying the progress message :
+ - Target is valid
+ - Message isn't empty
+ One call this function securely
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+void tmProgressIndicator::DisplayProgress ()
+{
+	// only checking message, checking target is done in DisplayProgress()
+	if (!CheckMessage())
+		return;
+	
+	DisplayProgress(TMPROGRESS_MESSAGES_STRING[m_MessageID]);
+
+}
+
+/***************************************************************************//**
+ @brief Display a personnal progress message
+ @note Use preferably stock message (#TMPROGRESS_MESSAGES_STRING) to
+ allow constant UI design
+ @param message Message used for the progess
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+void tmProgressIndicator::DisplayProgress (const wxString & message)
+{
+	if (!CheckTarget())
+		return;
+	
+		
+	m_Thread = new tmProgressIndicatorThread(message, m_MessageTarget);
+	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
+	{
+		wxLogError(_T("Can't create thread for progress"));
+		return;
+	}
+	m_Thread->Run();
+}
+
+
+/***************************************************************************//**
+ @brief Stop the progress
+ @note If no progress is running, this function is doing nothing.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 July 2008
+ *******************************************************************************/
+void tmProgressIndicator::StopProgress ()
+{
+	if(!m_Thread)
+	{
+		wxLogDebug(_T("No progress is running, not able to stop anything"));
+		return;
+	}
+	
+	m_Thread->StopThread();
+	// thread will be deleted itself.
+	m_MessageTarget->SetStatusText(TMPROGRESS_MESSAGES_STRING[TMPROGRESS_EMPTY_MSG],
+								   TMPROGRESS_STATUS_FIELD);
+		
+}
+
+
+
+
+
+/******************************* THREAD FONCTIONS *******************************/
+
+/***************************************************************************//**
+ @brief Entry function for the thread
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+void * tmProgressIndicatorThread::Entry()
+{
+	wxString sProgress;
+	while (1)
+	{
+		sProgress = _T("");
+		
+		for (int i= 0; i<TMPROGRESS_NUMBER_PROGRESS_INDICATOR; i++)
+		{
+			// exit thread
+			if (m_Stop == TRUE)
+				return NULL;
+			
+			sProgress.Append(TMPROGRESS_INDICATOR_CHAR); 
+			m_Status->SetStatusText(m_Message + sProgress,
+									TMPROGRESS_STATUS_FIELD);
+			Sleep(TMPROGRESS_WAIT_BETWEEN_INDICATOR);
+		}
+	}
 }
 
 

@@ -109,7 +109,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	SetIcon(icon);
 	
     // adding status bar
-	CreateStatusBar(2,0,wxID_ANY);
+	CreateStatusBar(3,0,wxID_ANY);
 	
 	// adding menubar
 	SetMenuBar(CreateToolMapMenu());
@@ -158,6 +158,7 @@ void ToolMapFrame::PostInit()
 	m_PManager = new ProjectManager(this);
 	m_PManager->SetMenuManager(m_MManager);
 	m_PManager->GetObjectManager()->SetPanel(m_AttribObjPanel);
+	m_PManager->SetStatusBar(GetStatusBar());
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);

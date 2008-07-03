@@ -26,8 +26,8 @@
  *******************************************************************************/
 
 
-#ifndef NAME_H
-#define NAME_H
+#ifndef _TMPROGRESS_H
+#define _TMPROGRESS_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -37,6 +37,15 @@
     #include <wx/wx.h>
 #endif
 
+// forward declaration
+class tmProgressIndicatorThread;
+
+
+// PARAMETERS 
+static const int TMPROGRESS_STATUS_FIELD = 2;
+static const wxString TMPROGRESS_INDICATOR_CHAR = _T("."); 
+static const int TMPROGRESS_NUMBER_PROGRESS_INDICATOR = 10;
+static const int TMPROGRESS_WAIT_BETWEEN_INDICATOR = 200;
 
 /***************************************************************************//**
  @brief Message used by #tmProgressIndicator
@@ -45,20 +54,21 @@
  *******************************************************************************/
 static wxString TMPROGRESS_MESSAGES_STRING[] = 
 {
+	_T(""),
 	_("Loading project. Please wait"),
 	_("Loading data. Please wait"),
 	_("Drawing data. Please wait")
 };
 enum TMPROGRESS_MESSAGE_ID
 {
-	TMPROGRESS_LOAD_PRJ = 0,
+	TMPROGRESS_EMPTY_MSG = 0,
+	TMPROGRESS_LOAD_PRJ,
 	TMPROGRESS_LOAD_DATA,
 	TMPROGRESS_DRAW_DATA
 };
-static const int TMPROGRESS_MESSAGE_NUMBER = 3;
+static const int TMPROGRESS_MESSAGE_NUMBER = 4;
 
 
-static const int TMPROGRESS_STATUS_FIELD = 2;
 
 
 /***************************************************************************//**
@@ -74,9 +84,14 @@ class tmProgressIndicator : public wxObject
 	private:
 		wxStatusBar * m_MessageTarget;
 		TMPROGRESS_MESSAGE_ID m_MessageID;
+		tmProgressIndicatorThread * m_Thread;
 		
 		// init function
 		void InitMembers();
+		
+		// internal check function
+		bool CheckTarget();
+		bool CheckMessage();
 		
 	public:
 		// ctor - dtor
@@ -84,11 +99,35 @@ class tmProgressIndicator : public wxObject
 		tmProgressIndicator(wxStatusBar * status);
 		~tmProgressIndicator();
 		
-		// setting target
+		// setting parameters 
 		bool SetProgressTarget (wxStatusBar * status);
+		void SetMessage (TMPROGRESS_MESSAGE_ID messageid);
+		
+		// displaying progress
+		void DisplayProgress ();
+		void DisplayProgress (const wxString & message);
+		void StopProgress ();
 	};
 
 
-
+/***************************************************************************//**
+ @brief Internal thread class for tmProgressIndicator
+ @details @note Don't call this class directly, use instead tmProgressIndicator
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 02 July 2008
+ *******************************************************************************/
+class tmProgressIndicatorThread : public wxThread
+	{
+	private:
+		wxString m_Message;
+		wxStatusBar * m_Status;
+		bool m_Stop;
+		
+	public:
+		tmProgressIndicatorThread(const wxString & message, wxStatusBar * status) : 
+		m_Message(message), m_Status(status), m_Stop(FALSE) {}
+		virtual void * Entry();
+		void StopThread (){m_Stop = TRUE;}
+	};
 
 #endif
