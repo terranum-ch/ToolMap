@@ -85,7 +85,17 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
+
+	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_PROGRESS, ToolMapFrame::OnGetMessage)
 END_EVENT_TABLE()
+
+
+
+void ToolMapFrame::OnGetMessage (wxCommandEvent & event)
+{
+	wxLogDebug(_T("Parent has got the message"));
+	event.Skip();
+}
 
 
 ToolMapFrame::ToolMapFrame()
@@ -380,6 +390,14 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 
 void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 {
+	
+	
+	
+	tmProgressIndicator * testtm = new tmProgressIndicator(this, GetStatusBar());
+	testtm->DisplayProgress();
+		
+	
+	
 	// display a dir dialog for selecting the project to open
 	wxDirDialog * myDirDLG = new wxDirDialog(this, _("Choose a ToolMap project"),
 											 _T(""), wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
@@ -407,6 +425,9 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		}
 	}
 	delete myDirDLG;
+	
+	delete testtm;
+
 }
 
 

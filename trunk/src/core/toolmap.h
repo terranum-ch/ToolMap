@@ -86,6 +86,9 @@
 #include "projectmanager.h"
 #include <wx/fileconf.h>		// for using file configuration even on windows
 
+// TODO: REMOVE THIS AFTER TEST
+#include "../gis/tmprogress.h"	// for direct acces to progress 
+
 
 //// temp for testing 
 #include "diroperation.h"
@@ -247,6 +250,8 @@ private:
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	
 	void OnShowQueryManager (wxCommandEvent & event);
+	
+	void OnGetMessage (wxCommandEvent & event);
 	
 	ImportLogDLG * m_LogWindow;
 //#if (__WXMAC__)

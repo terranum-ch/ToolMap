@@ -37,6 +37,9 @@
     #include <wx/wx.h>
 #endif
 
+#include <wx/event.h>
+#include <wx/app.h>
+
 // forward declaration
 class tmProgressIndicatorThread;
 
@@ -69,6 +72,10 @@ enum TMPROGRESS_MESSAGE_ID
 static const int TMPROGRESS_MESSAGE_NUMBER = 4;
 
 
+// EVENT FOR THREAD
+DECLARE_EVENT_TYPE(tmEVT_THREAD_PROGRESS, -1)
+
+
 
 
 /***************************************************************************//**
@@ -79,24 +86,27 @@ static const int TMPROGRESS_MESSAGE_NUMBER = 4;
  @author Lucien Schreiber (c) CREALP 2008
  @date 01 July 2008
  *******************************************************************************/
-class tmProgressIndicator : public wxObject
+class tmProgressIndicator : public wxEvtHandler
 	{
 	private:
 		wxStatusBar * m_MessageTarget;
 		TMPROGRESS_MESSAGE_ID m_MessageID;
 		tmProgressIndicatorThread * m_Thread;
+		wxWindow * m_ParentForEvent;
 		
 		// init function
-		void InitMembers();
+		void InitMembers(wxWindow * parent);
 		
 		// internal check function
 		bool CheckTarget();
 		bool CheckMessage();
 		
+		DECLARE_EVENT_TABLE()
+				
 	public:
 		// ctor - dtor
-		tmProgressIndicator();
-		tmProgressIndicator(wxStatusBar * status);
+		tmProgressIndicator(wxWindow * parent);
+		tmProgressIndicator(wxWindow * parent, wxStatusBar * status);
 		~tmProgressIndicator();
 		
 		// setting parameters 
@@ -107,7 +117,16 @@ class tmProgressIndicator : public wxObject
 		void DisplayProgress ();
 		void DisplayProgress (const wxString & message);
 		void StopProgress ();
+		
+		// event function
+		void OnUpdateUI (wxCommandEvent & event);
+		
+		
+		
 	};
+
+
+
 
 
 /***************************************************************************//**
@@ -120,14 +139,17 @@ class tmProgressIndicatorThread : public wxThread
 	{
 	private:
 		wxString m_Message;
-		wxStatusBar * m_Status;
 		bool m_Stop;
+	protected:
+		wxWindow * m_Parent;
 		
 	public:
-		tmProgressIndicatorThread(const wxString & message, wxStatusBar * status) : 
-		m_Message(message), m_Status(status), m_Stop(FALSE) {}
+		tmProgressIndicatorThread(wxWindow * parent, const wxString & message) : 
+		m_Parent(parent), m_Message(message), m_Stop(FALSE) {}
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}
 	};
+
+
 
 #endif

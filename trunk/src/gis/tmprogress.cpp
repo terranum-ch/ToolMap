@@ -29,16 +29,35 @@
 #include "tmprogress.h"
 
 
+DEFINE_EVENT_TYPE(tmEVT_THREAD_PROGRESS)
+
+// EVENT TABLE FOR MAIN WORKER THREAD
+// IN CHARGE OF GUI COMMUNICATION
+BEGIN_EVENT_TABLE(tmProgressIndicator, wxEvtHandler)
+	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_PROGRESS, tmProgressIndicator::OnUpdateUI)
+END_EVENT_TABLE()
+
+
+
 /***************************************************************************//**
  @brief Init class members with default values
  @author Lucien Schreiber (c) CREALP 2008
  @date 01 July 2008
  *******************************************************************************/
-void tmProgressIndicator::InitMembers()
+void tmProgressIndicator::InitMembers(wxWindow * parent)
 {
 	m_MessageTarget = NULL;
 	m_MessageID = TMPROGRESS_LOAD_PRJ;
 	m_Thread = NULL;
+	
+	m_ParentForEvent = parent;
+	if (!m_ParentForEvent)
+	{
+		wxLogDebug(_T("Pointer empty, problem"));
+		return;
+	}
+	
+	m_ParentForEvent->PushEventHandler(this);
 }
 
 
@@ -97,9 +116,9 @@ bool tmProgressIndicator::CheckMessage()
  @author Lucien Schreiber (c) CREALP 2008
  @date 01 July 2008
  *******************************************************************************/
-tmProgressIndicator::tmProgressIndicator()
+tmProgressIndicator::tmProgressIndicator(wxWindow * parent) : wxEvtHandler()
 {
-	InitMembers();
+	InitMembers(parent);
 }
 
 
@@ -111,9 +130,9 @@ tmProgressIndicator::tmProgressIndicator()
  @author Lucien Schreiber (c) CREALP 2008
  @date 01 July 2008
  *******************************************************************************/
-tmProgressIndicator::tmProgressIndicator(wxStatusBar * status)
+tmProgressIndicator::tmProgressIndicator(wxWindow * parent, wxStatusBar * status) : wxEvtHandler()
 {
-	InitMembers();
+	InitMembers(parent);
 	SetProgressTarget(status);
 }
 
@@ -128,6 +147,8 @@ tmProgressIndicator::~tmProgressIndicator()
 {
 	// delete the thread if running
 	StopProgress();
+
+	m_ParentForEvent->PopEventHandler(FALSE);
 }
 
 
@@ -201,8 +222,7 @@ void tmProgressIndicator::DisplayProgress (const wxString & message)
 	if (!CheckTarget())
 		return;
 	
-		
-	m_Thread = new tmProgressIndicatorThread(message, m_MessageTarget);
+	m_Thread = new tmProgressIndicatorThread(m_ParentForEvent, message);
 	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(_T("Can't create thread for progress"));
@@ -235,6 +255,16 @@ void tmProgressIndicator::StopProgress ()
 
 
 
+/***************************************************************************//**
+ @brief event function for drawing to the GUI
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 July 2008
+ *******************************************************************************/
+void tmProgressIndicator::OnUpdateUI (wxCommandEvent & event)
+{
+	m_MessageTarget->SetStatusText(event.GetString(), TMPROGRESS_STATUS_FIELD);
+}
+
 
 
 /******************************* THREAD FONCTIONS *******************************/
@@ -257,12 +287,17 @@ void * tmProgressIndicatorThread::Entry()
 			if (m_Stop == TRUE)
 				return NULL;
 			
+			wxCommandEvent evt(tmEVT_THREAD_PROGRESS, wxID_ANY);
 			sProgress.Append(TMPROGRESS_INDICATOR_CHAR); 
-			m_Status->SetStatusText(m_Message + sProgress,
-									TMPROGRESS_STATUS_FIELD);
+			evt.SetString(m_Message + sProgress);
+			m_Parent->GetEventHandler()->AddPendingEvent(evt);
+			
 			Sleep(TMPROGRESS_WAIT_BETWEEN_INDICATOR);
 		}
 	}
 }
+
+
+
 
 
