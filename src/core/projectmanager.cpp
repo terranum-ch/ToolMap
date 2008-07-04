@@ -286,8 +286,11 @@ bool ProjectManager::OpenProject(const wxString & path)
 	
 	// display waiting progress, automaticaly stoped
 	// when object is deleted
-	tmProgressIndicator ProgIndicator(m_ParentStatus);
-	ProgIndicator.DisplayProgress();
+	//tmProgressIndicator ProgIndicator(m_Parent, m_ParentStatus);
+	//ProgIndicator.DisplayProgress();
+	
+	//TestEvtHandler tevnt;
+	//tevnt.SendMessageToMe();
 	
 	// 0 check if the folder contain something like a database file
 	if (IsDataBasePath(path))
