@@ -80,6 +80,9 @@
 #include "../database/db_project.h"
 #include "../gui/menumanager.h"			// for menu management (enable / diable)
 
+// GIS Includes
+#include "../gis/tmlayermanager.h"		// gis central manager
+
 #include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
 #include "../gui/projectnewexist_dlg.h"
@@ -232,6 +235,7 @@ private:
 	ProjectManager * m_PManager;
 	MenuManager * m_MManager;
 	
+	tmLayerManager * m_LayerManager;
 	
 	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);

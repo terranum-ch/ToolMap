@@ -31,6 +31,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_Parent = parent;
 	m_pMManager = NULL;
 	m_ParentStatus = NULL;
+	m_LayerManager = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -245,6 +246,7 @@ void ProjectManager::CloseProject()
 		delete m_DB;
 		m_DB = NULL;
 	}
+	m_LayerManager->UnInitLayerManager();
 }
 
 
@@ -316,7 +318,8 @@ bool ProjectManager::OpenProject(const wxString & path)
 					// update objects to lists
 					m_Obj->UpdateObjectLists(m_DB);
 					
-					// read the TOC
+					// LayerManager Job
+					m_LayerManager->InitLayerManager(m_DB);
 					
 					// project is now open !
 					bReturn = TRUE;
@@ -333,11 +336,7 @@ bool ProjectManager::OpenProject(const wxString & path)
 		}
 	}
 	
-	
-	// TEMP TEMP TEMP TEMP //
-	wxSleep(2);
-	
-	
+
 	
 	return bReturn;
 }

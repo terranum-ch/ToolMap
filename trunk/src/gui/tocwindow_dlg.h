@@ -33,7 +33,8 @@
 
 
 #include <wx/aui/aui.h>
-#include "wx/treectrl.h"
+//#include "wx/treectrl.h"
+#include "../gis/tmtocctrl.h"
 #include "wx/tglbtn.h"
 #include "wxflatbutton.h"
 
@@ -53,6 +54,8 @@ class TocWindowContent : public wxEvtHandler
 	private:
 		DECLARE_DYNAMIC_CLASS(TocWindowContent);
 		
+		tmTOCCtrl * m_TOCCtrl;
+		
 		public :
 		TocWindowContent();
 		~TocWindowContent();
@@ -63,6 +66,8 @@ class TocWindowContent : public wxEvtHandler
 		virtual void Show() {;}
 		virtual void Hide() {;}
 		virtual bool IsShown() {return FALSE;}
+		
+		tmTOCCtrl * GetTOCCtrl () {return m_TOCCtrl;}
 		
 	};
 

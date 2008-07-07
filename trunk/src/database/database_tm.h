@@ -34,6 +34,7 @@
 #include "../core/prjdefmemmanage.h"		// for transfering data directely
 #include "../core/wxdirpickerctrlbest.h"	// for PATH_ERROR definition;
 #include "../gui/projectproperties_dlg.h"	// for scale RANK function 
+#include "../gis/tmlayermanager.h"			// GIS definition 
 
 
 // TABLES NAMES
@@ -48,26 +49,7 @@ const wxString TABLE_NAME_TOC		= _T("project_toc");
 // DATABASE VERSION IS
 const int TM_DATABASE_VERSION = 208;
 
-// TOC Generics values
-// Definitions for the generic layers, we define the text and  the id of 
-// each string.
-static wxString TOC_GENERIC_NAME_STRING[] = 
-{
-	_("Lines"),
-	_("Points"),
-	_("Labels"),
-	_("Annotations"),
-	_("Not Generic layers")
-};
-enum TOC_GENERIC_NAME
-{
-	TOC_NAME_LINES = 0,
-	TOC_NAME_POINTS,
-	TOC_NAME_LABELS,
-	TOC_NAME_ANNOTATIONS,
-	TOC_NAME_NOT_GENERIC = 100
-};
-static const int TOC_GENERIC_NAME_NUMBER = 5;
+
 
 
 
@@ -150,6 +132,7 @@ class DataBaseTM : public DataBase
 		
 		// database TOC operations
 		bool InitTOCGenericLayers();
+		tmLayerProperties * GetNextTOCEntry();
 		
 	};
 
