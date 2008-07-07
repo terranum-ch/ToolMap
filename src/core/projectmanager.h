@@ -70,6 +70,7 @@ class ProjectManager : public wxObject
 		MenuManager * m_pMManager;
 		ObjectManager * m_Obj;
 		wxStatusBar * m_ParentStatus;
+		tmLayerManager * m_LayerManager;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -98,6 +99,8 @@ class ProjectManager : public wxObject
 		MenuManager * GetMenuManager() {return m_pMManager;}
 		ObjectManager * GetObjectManager() {return m_Obj;}
 		void SetStatusBar (wxStatusBar * status) {m_ParentStatus = status;}
+		
+		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 	};
 
 

@@ -158,6 +158,10 @@ void ToolMapFrame::PostInit()
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	
 	
+	
+	// create layer manager object
+	m_LayerManager = new tmLayerManager(this, m_TocWindow->GetTOCCtrl());
+	
 	// create the database object 
 	//m_Database = new DataBaseTM();
 	
@@ -169,6 +173,9 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetMenuManager(m_MManager);
 	m_PManager->GetObjectManager()->SetPanel(m_AttribObjPanel);
 	m_PManager->SetStatusBar(GetStatusBar());
+	m_PManager->SetLayerManager(m_LayerManager);
+	
+	
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);
@@ -187,6 +194,9 @@ ToolMapFrame::~ToolMapFrame()
 	
 	delete m_LogWindow;
 	delete m_AuiManager;
+	
+	
+	delete m_LayerManager;
 	
 	// delete the project Manager
 	delete m_PManager;

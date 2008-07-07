@@ -1736,6 +1736,60 @@ bool DataBaseTM::InitTOCGenericLayers()
 }
 
 
+/***************************************************************************//**
+ @brief Get entry from the TOC
+ @details This function returns all entry from the TOC one by one. Only one
+ request is issued and then each time this function is called the next layer is
+ returned
+ @return  a #tmLayerProperties pointer, or NULL if no more layer to proceed
+ @note if result isn't NULL, you need to delete pointer after use.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
+tmLayerProperties * DataBaseTM::GetNextTOCEntry()
+{
+	wxArrayString myTempResults;
+	
+	if(!DataBaseHasResult())
+	{
+		
+		wxString sSentence = _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
+		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS FROM ") + TABLE_NAME_TOC +
+		_T(" ORDER by RANK");
+		
+		if (!DataBaseQuery(sSentence))
+		{
+			wxLogDebug(_T("Error getting layers from the TOC : %s"), sSentence.c_str());
+			return NULL;
+		}
+	}
+	
+	if (DataBaseHasResult())
+	{
+		myTempResults = DataBaseGetNextResult();
+		
+		if (myTempResults.GetCount() != 6)
+		{
+			wxLogDebug(_T("Error with the results : attended 6 results, got %d"),
+					   myTempResults.GetCount());
+			return NULL;
+		}
+		
+		// parsing results
+		tmLayerProperties * myLayerProp = new tmLayerProperties();
+		myLayerProp->InitFromArray(myTempResults);
+		myTempResults.Clear();
+		
+		
+		return myLayerProp;
+		
+		
+		
+	}
+	
+	return NULL;
+}
+
 
 /// FIELD CREATION ::
 

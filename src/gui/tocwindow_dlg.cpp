@@ -24,7 +24,7 @@
 /**************** TOC WINDOW CONTENT (BASE CLASS) ****************************/
 TocWindowContent::TocWindowContent()
 {
-
+	m_TOCCtrl = NULL;
 }
 
 TocWindowContent::~TocWindowContent()
@@ -45,8 +45,9 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
 {    
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-    wxTreeCtrl* itemTreeCtrl3 = new wxTreeCtrl( parent, ID_TREECTRL1, wxDefaultPosition, wxSize(200, -1), wxTR_SINGLE );
-    itemBoxSizer2->Add(itemTreeCtrl3, 1, wxGROW|wxALL, 5);
+    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE);
+    itemBoxSizer2->Add(m_TOCCtrl, 1, wxGROW|wxALL, 5);
+
 
     wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer2->Add(itemBoxSizer4, 0, wxALIGN_LEFT|wxALL, 5);
