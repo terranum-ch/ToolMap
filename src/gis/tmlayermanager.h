@@ -33,28 +33,36 @@
 #include "../database/database_tm.h"	// class database
 
 
-
+/***************************************************************************//**
+ @brief GIS class for dealing with layers
+ @details This is the super class for dealing with GIS. This class is the
+ central point dealing with : 
+ - Database (#DataBaseTM)
+ - TOC controls (#tmTOCCtrl)
+ - GIS progress indicator (#tmProgressIndicator)
+ - ...
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 class tmLayerManager : public wxEvtHandler 
 	{
 	private:
-		// members
 		tmTOCCtrl * m_TOCCtrl;
 		wxWindow * m_Parent;
 		DataBaseTM * m_DB;
 		
+		// init member values to default
 		void InitMemberValue();
 		
 		// TOC specific functions
 		void FillTOCArray();
 		
-		
 	public:
+		// ctor / dtor
 		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl );
 		~tmLayerManager();
 		
-		// setter, getter
-		void SetDataBase (DataBaseTM * db) {m_DB = db;}
-		
+			
 		// Init layermanager
 		bool InitLayerManager(DataBaseTM * db);
 		bool UnInitLayerManager();

@@ -1768,6 +1768,11 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 	{
 		myTempResults = DataBaseGetNextResult();
 		
+		if (myTempResults.GetCount() == 0)
+		{
+			return NULL;
+		}
+				
 		if (myTempResults.GetCount() != 6)
 		{
 			wxLogDebug(_T("Error with the results : attended 6 results, got %d"),

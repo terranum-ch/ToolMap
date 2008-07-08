@@ -20,7 +20,12 @@
 #include "tmlayermanager.h"
 
 
-
+/***************************************************************************//**
+ @brief Constructor
+ @details Init values to default and init members.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl)
 {
 	InitMemberValue();
@@ -30,13 +35,22 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl)
 }
 
 
-
+/***************************************************************************//**
+ @brief Destructor
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 tmLayerManager::~tmLayerManager()
 {
 
 }
 
 
+/***************************************************************************//**
+ @brief Init members to default
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 void tmLayerManager::InitMemberValue()
 {
 	m_TOCCtrl = NULL;
@@ -46,6 +60,15 @@ void tmLayerManager::InitMemberValue()
 
 
 
+/***************************************************************************//**
+ @brief Init the layer manager with a project
+ @details Call this function when a project is opened, this allows the needed
+ initialization to takes place.
+ @param db Pointer to a valid #DataBaseTM object (ASSERT is done in debug mode)
+ @return  Always TRUE for the moment
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 {
 	// check
@@ -59,10 +82,6 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 	// 2) Init TOCCtrl
 	m_TOCCtrl->InsertProjectName(m_DB->DataBaseGetName());
 	FillTOCArray();
-	
-	
-	
-	
 		
 	
 	
@@ -71,7 +90,12 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 
 
 
-
+/***************************************************************************//**
+ @brief Un-Init the layer manager
+ @details Call this function when a project is closed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 bool tmLayerManager::UnInitLayerManager()
 {
 	wxLogDebug(_T("Clearing TOC"));
@@ -84,7 +108,11 @@ bool tmLayerManager::UnInitLayerManager()
 }
 
 
-
+/***************************************************************************//**
+ @brief Fill TOC control with Database TOC values
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 July 2008
+ *******************************************************************************/
 void tmLayerManager::FillTOCArray()
 {
 	wxASSERT_MSG (m_DB != NULL, _T("Database pointer is empty... error"));
@@ -102,9 +130,10 @@ void tmLayerManager::FillTOCArray()
 			break;
 		}
 		
-		iNumberAdded = m_TOCCtrl->InsertLayer(lyrproptemp, -1);
+		  if(!m_TOCCtrl->InsertLayer(lyrproptemp, -1))
+			  break;
 	}
 	
-	wxLogDebug(_T("%d items added to TOC array"), iNumberAdded);
+	wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
 }
 

@@ -102,6 +102,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// private functions
 		void InitMemberValues();
 		
+		// graphical display
+		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
+		
 	public:
 		// construcor / destructor
 		tmTOCCtrl (wxWindow * parent, wxWindowID id, wxSize size,  long style);
@@ -115,6 +118,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		//bool EditLayer (long position, tmLayerProperties & newitemdata);
 		
 		// moving item functions
+		
+		// counting layers only
+		unsigned int GetCountLayers();
 		
 
 		

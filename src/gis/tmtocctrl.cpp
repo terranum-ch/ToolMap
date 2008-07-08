@@ -107,22 +107,27 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, long position)
 	
 	m_TOCArray.Add(item);
 	
+	
 	if (!m_root.IsOk())
 	{
 		wxLogDebug(_T("Root item not defined, define it first"));
 		return FALSE;
 	}
 	
-		// appending item
+	wxTreeItemId itemid;
+	// appending item
 	if (position == -1 || position >= (signed) GetCount())
 	{
-		AppendItem(m_root, item->m_LayerNameExt);
+		itemid = AppendItem(m_root, item->m_LayerNameExt);
 	}
 	else
 	{
 		// inserting item
-		InsertItem(m_root, position, item->m_LayerNameExt);
+		itemid = InsertItem(m_root, position, item->m_LayerNameExt);
 	}
+	
+	// setting item style
+	SetItemStyle(itemid, item);
 	
 	return TRUE;
 }
@@ -141,4 +146,19 @@ void tmTOCCtrl::ClearAllLayers()
 }
 
 
+
+void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
+{
+	// change style to bold if generic layer
+	if (item->m_LayerIsGeneric < TOC_NAME_NOT_GENERIC)
+	{
+		SetItemBold(id, TRUE);
+	}
+}
+
+
+unsigned int tmTOCCtrl::GetCountLayers()
+{
+	return m_TOCArray.GetCount();
+}
 
