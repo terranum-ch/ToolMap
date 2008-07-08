@@ -26,6 +26,7 @@
 
 
 // toolbar images
+#include "../img/tmimgfunc.h"	// for image processing
 #include "../img/img_tool1.cpp"
 #include "../img/img_tool2.cpp"
 #include "../img/img_tool3.cpp"
@@ -40,11 +41,6 @@
 #include "../img/img_icon32.cpp"
 
 
-
- inline wxBitmap _wxGetBitmapFromMemory(const unsigned char *data, int length) {
-   wxMemoryInputStream is(data, length);
-   return wxBitmap(wxImage(is, wxBITMAP_TYPE_ANY, -1), -1);
- }
 
 IMPLEMENT_APP(ToolMapApp);
  

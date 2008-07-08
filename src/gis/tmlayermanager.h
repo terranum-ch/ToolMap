@@ -68,8 +68,6 @@ class tmLayerManager : public wxEvtHandler
 		bool UnInitLayerManager();
 		
 		
-		
-		
 		// adding layer
 		
 		

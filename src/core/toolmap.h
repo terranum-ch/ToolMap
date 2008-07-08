@@ -182,7 +182,6 @@ class ProjectManager;
 #define ID_TOOL10 10258
 const wxString g_ProgName = _T("ToolMap 2.0.");
 
-#define wxGetBitmapFromMemory(name) _wxGetBitmapFromMemory(name ## _png, sizeof(name ## _png))
 
 
 /***************************************************************************//**

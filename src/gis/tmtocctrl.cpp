@@ -19,6 +19,14 @@
 
 #include "tmtocctrl.h"
 
+
+// Tree ctrl images (checked, unchecked)
+#include "../img/tmimgfunc.h"	// for image processing
+#include "../img/img_tree_unchecked.cpp"
+#include "../img/img_tree_checked.cpp"
+
+
+
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmLayerPropertiesArray);
 
@@ -72,6 +80,19 @@ void tmTOCCtrl::InitMemberValues()
 }
 
 
+void tmTOCCtrl::LoadImageList()
+{
+	 wxImageList *images = new wxImageList(16, 16, true);
+	
+	wxBitmap img_treectrl1 (wxGetBitmapFromMemory(unchecked_tree_sml));
+	images->Add(img_treectrl1);
+	wxBitmap img_treectrl2 (wxGetBitmapFromMemory(checked_tree_sml));
+	images->Add(img_treectrl2);
+	
+	AssignImageList(images);
+
+}
+
 
 
 /***************************************************************************//**
@@ -83,7 +104,7 @@ tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) 
 		wxTreeCtrl (parent, id, wxDefaultPosition, size, style)
 {
 	InitMemberValues();
-
+	LoadImageList();
 }
 
 
@@ -118,12 +139,12 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, long position)
 	// appending item
 	if (position == -1 || position >= (signed) GetCount())
 	{
-		itemid = AppendItem(m_root, item->m_LayerNameExt);
+		itemid = AppendItem(m_root, item->m_LayerNameExt, item->m_LayerVisible);
 	}
 	else
 	{
 		// inserting item
-		itemid = InsertItem(m_root, position, item->m_LayerNameExt);
+		itemid = InsertItem(m_root, position, item->m_LayerNameExt, item->m_LayerVisible);
 	}
 	
 	// setting item style
