@@ -32,6 +32,7 @@
 
 #include "../core/projectdefmemory.h"	// for PRJDEF_LAYERS_TYPE
 #include <wx/treectrl.h>
+#include "wx/imaglist.h"			// for image list for toc
 
 
 // TOC Generics values
@@ -54,6 +55,7 @@ enum TOC_GENERIC_NAME
 	TOC_NAME_NOT_GENERIC = 100
 };
 static const int TOC_GENERIC_NAME_NUMBER = 5;
+
 
 
 
@@ -101,6 +103,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// private functions
 		void InitMemberValues();
+		void LoadImageList();
 		
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
