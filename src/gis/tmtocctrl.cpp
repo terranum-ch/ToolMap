@@ -27,9 +27,6 @@
 
 
 
-#include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY (tmLayerPropertiesArray);
-
 /***************************************************************************//**
  @brief Default values for tmLayerProperties
  @author Lucien Schreiber (c) CREALP 2008
@@ -71,6 +68,11 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 
 
 /******************************* TOC CONTROL *************************************/
+
+BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
+	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
+END_EVENT_TABLE()
+
 
 
 void tmTOCCtrl::InitMemberValues()
@@ -122,12 +124,10 @@ void tmTOCCtrl::InsertProjectName (const wxString & prjname)
 
 
 
-bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, long position)
+bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 {
 	wxASSERT_MSG(item, _T("Error adding empty item to TOC array"));
-	
-	m_TOCArray.Add(item);
-	
+
 	
 	if (!m_root.IsOk())
 	{
@@ -137,18 +137,38 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, long position)
 	
 	wxTreeItemId itemid;
 	// appending item
-	if (position == -1 || position >= (signed) GetCount())
+	if (!position.IsOk())
 	{
-		itemid = AppendItem(m_root, item->m_LayerNameExt, item->m_LayerVisible);
+		itemid = AppendItem(m_root, item->m_LayerNameExt, item->m_LayerVisible, -1, item);
+		wxLogDebug(_T("Adding item"));
 	}
 	else
 	{
 		// inserting item
-		itemid = InsertItem(m_root, position, item->m_LayerNameExt, item->m_LayerVisible);
+		itemid = InsertItem(m_root, position, item->m_LayerNameExt, item->m_LayerVisible, -1, item);
+		wxLogDebug(_T("Inserting item"));
 	}
 	
 	// setting item style
 	SetItemStyle(itemid, item);
+	
+	return TRUE;
+}
+
+
+
+bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position)
+{
+	// check item exists
+	if (!position.IsOk())
+	{
+		wxLogDebug(_T("Position dosen't exist, unable to modify item"));
+		return FALSE;
+	}
+	
+	SetItemText(position, newitemdata->m_LayerNameExt);
+	SetItemImage(position, newitemdata->m_LayerVisible);
+	SetItemStyle(position, newitemdata);
 	
 	return TRUE;
 }
@@ -162,7 +182,6 @@ void tmTOCCtrl::ClearAllLayers()
 	DeleteAllItems();
 	m_root = 0;
 	
-	m_TOCArray.Clear();
 	
 }
 
@@ -180,6 +199,31 @@ void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
 
 unsigned int tmTOCCtrl::GetCountLayers()
 {
-	return m_TOCArray.GetCount();
+	return GetChildrenCount(m_root, FALSE);
 }
+
+
+
+void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
+{
+	wxTreeItemId clickedid = 0;
+	int flags = 0;
+	// = NULL;
+	
+	clickedid = HitTest(event.GetPosition(), flags);
+	if (flags & wxTREE_HITTEST_ONITEMICON)
+	{
+		tmLayerProperties * itemdata = (tmLayerProperties*) GetItemData(clickedid);
+		itemdata->m_LayerVisible == TRUE ? itemdata->m_LayerVisible = FALSE : itemdata->m_LayerVisible = TRUE; 
+				
+		// change item image
+		EditLayer(itemdata, clickedid);
+	}
+	
+	event.Skip();
+}
+
+
+
+
 
