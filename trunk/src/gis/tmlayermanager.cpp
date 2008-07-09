@@ -130,7 +130,7 @@ void tmLayerManager::FillTOCArray()
 			break;
 		}
 		
-		  if(!m_TOCCtrl->InsertLayer(lyrproptemp, -1))
+		  if(!m_TOCCtrl->InsertLayer(lyrproptemp))
 			  break;
 	}
 	

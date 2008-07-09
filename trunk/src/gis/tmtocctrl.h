@@ -64,7 +64,7 @@ static const int TOC_GENERIC_NAME_NUMBER = 5;
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-class tmLayerProperties : public wxObject
+class tmLayerProperties : public wxTreeItemData
 	{
 	private:
 		void InitMemberValues();
@@ -85,8 +85,7 @@ class tmLayerProperties : public wxObject
 		~tmLayerProperties(){;}
 	};
 
-// Creating a list of MemoryFields
-WX_DECLARE_OBJARRAY(tmLayerProperties, tmLayerPropertiesArray);
+
 
 /***************************************************************************//**
  @brief GIS TOC class
@@ -99,7 +98,6 @@ class tmTOCCtrl  : public wxTreeCtrl
 	{
 	private:
 		wxTreeItemId m_root;
-		tmLayerPropertiesArray m_TOCArray;
 		
 		// private functions
 		void InitMemberValues();
@@ -108,6 +106,12 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
 		
+		
+		// event functions
+		void OnMouseClick (wxMouseEvent & event);
+		DECLARE_EVENT_TABLE()
+		
+		
 	public:
 		// construcor / destructor
 		tmTOCCtrl (wxWindow * parent, wxWindowID id, wxSize size,  long style);
@@ -115,10 +119,10 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// adding, removing layers functions
 		void InsertProjectName (const wxString & prjname);
-		bool InsertLayer(tmLayerProperties * item, long position = -1);
+		bool InsertLayer(tmLayerProperties * item, wxTreeItemId postion = 0);
 		//bool RemoveLayer (long position);
 		void ClearAllLayers();
-		//bool EditLayer (long position, tmLayerProperties & newitemdata);
+		bool EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position);
 		
 		// moving item functions
 		
