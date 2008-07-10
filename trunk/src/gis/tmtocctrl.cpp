@@ -26,6 +26,7 @@
 #include "../img/img_tree_checked.cpp"
 
 
+DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 
 /***************************************************************************//**
  @brief Default values for tmLayerProperties
@@ -95,7 +96,7 @@ END_EVENT_TABLE()
  *******************************************************************************/
 void tmTOCCtrl::InitMemberValues()
 {
-	
+	m_ParentEvt = NULL;
 	
 }
 
@@ -133,6 +134,8 @@ tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) 
 {
 	InitMemberValues();
 	LoadImageList();
+	m_ParentEvt = parent;
+	//m_ParentEvt->PushEventHandler(this)
 }
 
 
@@ -202,6 +205,8 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
  @param position the item we want to delete
  @param bRemoveChild TRUE if we want to delete all item's children (default)
  @return  TRUE if item deleted and FALSE if the position dosen't exists
+ @note Only first level items are allowed to be deleted (verification is done
+ internally)
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
@@ -213,10 +218,18 @@ bool tmTOCCtrl::RemoveLayer (wxTreeItemId position, bool bRemoveChild)
 		return FALSE;
 	}
 	
+	// delete only if first level item
+	if(!GetItemParent(position) == m_root || position == m_root)
+	{
+		wxLogDebug(_T("Only layers could be deleted, don't select legend or project name"));
+		return FALSE;
+		
+	}
 	// delete children first if required
 	if (bRemoveChild)
 		DeleteChildren(position);
 	Delete(position);
+	
 	return TRUE;
 }
 
@@ -323,5 +336,40 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 
 
 
-
+/***************************************************************************//**
+ @brief Called when user try to remove a layer
+ @note Verifications are done internally to ensure that a valid layers
+ was selected and that we don't try to remove a generic layer.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
+void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
+{
+	wxArrayTreeItemIds selectedarray;
+	unsigned int iNbSelectedItems = 0;
+	
+	iNbSelectedItems = GetSelections(selectedarray);
+	UnselectAll();
+	
+	// only one item actually, the first item from array
+	if(iNbSelectedItems == 0)
+	{
+		wxLogMessage(_("No layer selected, select a layer first"));
+		return;
+	}
+	
+	// not able to remove generic layers
+	if (((tmLayerProperties*) GetItemData(selectedarray.Item(0)))->m_LayerIsGeneric < TOC_NAME_NOT_GENERIC)
+	{
+		wxLogMessage(_("Not allowed to remove generic layers from project"));
+		return;
+	}
+	
+	// only delete the first selected layer 
+	if (RemoveLayer(selectedarray.Item(0), TRUE))
+	{
+		wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+}
 

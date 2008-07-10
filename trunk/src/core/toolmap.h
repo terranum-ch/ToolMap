@@ -195,6 +195,7 @@ public:
 	virtual bool OnInit();
 	
 };
+
 DECLARE_APP(ToolMapApp);
 
 

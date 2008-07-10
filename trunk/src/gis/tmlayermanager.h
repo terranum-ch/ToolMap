@@ -33,6 +33,8 @@
 #include "../database/database_tm.h"	// class database
 
 
+
+
 /***************************************************************************//**
  @brief GIS class for dealing with layers
  @details This is the super class for dealing with GIS. This class is the
@@ -57,6 +59,8 @@ class tmLayerManager : public wxEvtHandler
 		// TOC specific functions
 		void FillTOCArray();
 		
+		DECLARE_EVENT_TABLE()
+		
 	public:
 		// ctor / dtor
 		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl );
@@ -68,7 +72,8 @@ class tmLayerManager : public wxEvtHandler
 		bool UnInitLayerManager();
 		
 		
-		// adding layer
+		// layers operations
+		void RemoveLayer (wxCommandEvent & event);
 		
 		
 		

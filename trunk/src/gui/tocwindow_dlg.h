@@ -55,7 +55,7 @@ class TocWindowContent : public wxEvtHandler
 		DECLARE_DYNAMIC_CLASS(TocWindowContent);
 		
 		tmTOCCtrl * m_TOCCtrl;
-		
+				
 		public :
 		TocWindowContent();
 		~TocWindowContent();
@@ -68,6 +68,8 @@ class TocWindowContent : public wxEvtHandler
 		virtual bool IsShown() {return FALSE;}
 		
 		tmTOCCtrl * GetTOCCtrl () {return m_TOCCtrl;}
+		
+		
 		
 	};
 
@@ -104,6 +106,10 @@ class TocWindowDlgGen : public TocWindowContent
 		
 		wxAuiManager * m_TocAui;
 		wxPanel * m_ContentFrame;
+		wxWindow * m_ParentEvt;
+		
+		DECLARE_EVENT_TABLE();
+
 		
 	public:	
 		TocWindowDlgGen();
@@ -114,8 +120,11 @@ class TocWindowDlgGen : public TocWindowContent
 		virtual void Show();
 		virtual void Hide();
 		virtual bool IsShown();
+		
 
 		
+		void OnPressRemoveLayers(wxCommandEvent & event);
+		void OnPressAddLayers(wxCommandEvent & event){;}
 		
 	};
 

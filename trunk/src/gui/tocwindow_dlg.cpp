@@ -25,6 +25,7 @@
 TocWindowContent::TocWindowContent()
 {
 	m_TOCCtrl = NULL;
+	
 }
 
 TocWindowContent::~TocWindowContent()
@@ -45,7 +46,7 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
 {    
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE);
+    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE | wxTR_MULTIPLE);
     itemBoxSizer2->Add(m_TOCCtrl, 1, wxGROW|wxALL, 5);
 
 
@@ -66,9 +67,6 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
     
     return itemBoxSizer2;
 }
-
-
-
 
 
 
@@ -137,6 +135,8 @@ TocWindowDlgGen::TocWindowDlgGen(wxAuiManager * myAuiManager,wxWindow * parent, 
 	//m_TocAui = new wxAuiManager(parent);
 	m_TocAui = myAuiManager;
 	
+	m_ParentEvt = parent;
+	m_ParentEvt->PushEventHandler(this);
 	
 	m_ContentFrame = new wxPanel(parent, wxID_ANY);
 	CreateControls(m_ContentFrame);
@@ -154,6 +154,9 @@ TocWindowDlgGen::~TocWindowDlgGen()
 {
 	delete m_TocAui;
 	delete m_ContentFrame;
+	
+	m_ParentEvt->PopEventHandler(FALSE);
+	
 	m_TocAui->UnInit();
 }
 
@@ -161,6 +164,7 @@ void TocWindowDlgGen::Init()
 {
 	m_TocAui = NULL;
 	m_ContentFrame = NULL;
+	m_ParentEvt = NULL;
 }
 
 IMPLEMENT_DYNAMIC_CLASS( TocWindowDlgGen, TocWindowContent)
@@ -181,3 +185,16 @@ bool TocWindowDlgGen::IsShown()
 {
 	return m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).IsShown();
 }
+
+
+BEGIN_EVENT_TABLE(TocWindowDlgGen, TocWindowContent)
+	EVT_FLATBUTTON(ID_DLGTOC_REMOVE, TocWindowDlgGen::OnPressRemoveLayers)
+END_EVENT_TABLE()
+
+
+
+void TocWindowDlgGen::OnPressRemoveLayers(wxCommandEvent & event)
+{
+	m_TOCCtrl->OnRemoveItem(event);
+}
+

@@ -35,6 +35,8 @@
 #include "wx/imaglist.h"			// for image list for toc
 
 
+//DECLARE_APP(ToolMapApp)
+
 // TOC Generics values
 // Definitions for the generic layers, we define the text and  the id of 
 // each string.
@@ -87,6 +89,10 @@ class tmLayerProperties : public wxTreeItemData
 
 
 
+// EVENT FOR TOC CTRL
+DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
+
+
 /***************************************************************************//**
  @brief GIS TOC class
  @details This object is in charge of all operations linked to the table of
@@ -98,6 +104,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 	{
 	private:
 		wxTreeItemId m_root;
+		wxWindow * m_ParentEvt;
 		
 		// private functions
 		void InitMemberValues();
@@ -106,7 +113,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
 				
-		// event functions
+		// private event functions
 		void OnMouseClick (wxMouseEvent & event);
 		DECLARE_EVENT_TABLE()
 		
@@ -127,6 +134,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// counting layers only
 		unsigned int GetCountLayers();
+		
+		// public event function
+		void OnRemoveItem (wxCommandEvent & event);
 		
 
 		

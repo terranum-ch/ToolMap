@@ -20,6 +20,14 @@
 #include "tmlayermanager.h"
 
 
+
+
+BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
+END_EVENT_TABLE()
+
+
+
 /***************************************************************************//**
  @brief Constructor
  @details Init values to default and init members.
@@ -32,6 +40,7 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl)
 	
 	m_TOCCtrl = tocctrl;
 	m_Parent = parent;
+	m_Parent->PushEventHandler(this);
 }
 
 
@@ -42,7 +51,7 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl)
  *******************************************************************************/
 tmLayerManager::~tmLayerManager()
 {
-
+	m_Parent->PopEventHandler(FALSE);
 }
 
 
@@ -137,3 +146,9 @@ void tmLayerManager::FillTOCArray()
 	wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
 }
 
+
+
+void tmLayerManager::RemoveLayer (wxCommandEvent & event)
+{
+	wxLogDebug(_T("tmLayerManager : removing layer"));
+}
