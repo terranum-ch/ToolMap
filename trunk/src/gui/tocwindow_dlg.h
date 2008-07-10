@@ -124,7 +124,7 @@ class TocWindowDlgGen : public TocWindowContent
 
 		
 		void OnPressRemoveLayers(wxCommandEvent & event);
-		void OnPressAddLayers(wxCommandEvent & event){;}
+		void OnPressAddLayers(wxCommandEvent & event);
 		
 	};
 

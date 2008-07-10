@@ -74,6 +74,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		// layers operations
 		void RemoveLayer (wxCommandEvent & event);
+		void AddLayer (wxCommandEvent & event);
 		
 		
 		

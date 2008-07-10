@@ -27,6 +27,7 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
+DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
 
 /***************************************************************************//**
  @brief Default values for tmLayerProperties
@@ -304,7 +305,9 @@ void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
  *******************************************************************************/
 unsigned int tmTOCCtrl::GetCountLayers()
 {
-	return GetChildrenCount(m_root, FALSE);
+	if (m_root.IsOk())
+		return GetChildrenCount(m_root, FALSE);
+	return 0;
 }
 
 

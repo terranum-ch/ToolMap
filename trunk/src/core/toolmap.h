@@ -253,9 +253,12 @@ private:
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	
+	// GIS functions
+	void OnAddGisData (wxCommandEvent & event);
+	
 	void OnShowQueryManager (wxCommandEvent & event);
 	
-	void OnGetMessage (wxCommandEvent & event);
+	
 	
 	ImportLogDLG * m_LogWindow;
 //#if (__WXMAC__)
