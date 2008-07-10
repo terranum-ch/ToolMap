@@ -43,7 +43,15 @@ void tmLayerProperties::InitMemberValues()
 }
 
 
-
+/***************************************************************************//**
+ @brief Init from a string array
+ @details This may be used for initing an #tmLayerProperties object from a
+ string array. No verifications are made on the array size
+ @param array string array containing 6 values
+ @return  allways TRUE
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 {
 	long temptype = 0;
@@ -67,6 +75,12 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 }
 
 
+
+
+
+
+
+
 /******************************* TOC CONTROL *************************************/
 
 BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
@@ -74,7 +88,11 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 END_EVENT_TABLE()
 
 
-
+/***************************************************************************//**
+ @brief Init member variables
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 void tmTOCCtrl::InitMemberValues()
 {
 	
@@ -82,6 +100,14 @@ void tmTOCCtrl::InitMemberValues()
 }
 
 
+
+/***************************************************************************//**
+ @brief Load the image list
+ @details This loads the image list (checked, unchecked, ...) and assign the
+ list to the tree ctrl (#tmTOCCtrl)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 void tmTOCCtrl::LoadImageList()
 {
 	 wxImageList *images = new wxImageList(16, 16, true);
@@ -111,6 +137,13 @@ tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) 
 
 
 
+/***************************************************************************//**
+ @brief Add the first tree root (project name)
+ @note If the first root exists, nothing is done and a Debug message is
+ issued in debug mode
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 void tmTOCCtrl::InsertProjectName (const wxString & prjname)
 {
 	if (m_root.IsOk())
@@ -124,6 +157,14 @@ void tmTOCCtrl::InsertProjectName (const wxString & prjname)
 
 
 
+/***************************************************************************//**
+ @brief Append or insert a layer entry
+ @param item pointer to data to attach to every tree item
+ @param position item position
+ @return  true if item added or inserted sucessfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 {
 	wxASSERT_MSG(item, _T("Error adding empty item to TOC array"));
@@ -156,7 +197,39 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 }
 
 
+/***************************************************************************//**
+ @brief Delete item (and all its children)
+ @param position the item we want to delete
+ @param bRemoveChild TRUE if we want to delete all item's children (default)
+ @return  TRUE if item deleted and FALSE if the position dosen't exists
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
+bool tmTOCCtrl::RemoveLayer (wxTreeItemId position, bool bRemoveChild)
+{
+	if (!position.IsOk())
+	{
+		wxLogDebug(_T("Tree position error, position unknown"));
+		return FALSE;
+	}
+	
+	// delete children first if required
+	if (bRemoveChild)
+		DeleteChildren(position);
+	Delete(position);
+	return TRUE;
+}
 
+
+
+/***************************************************************************//**
+ @brief Modify an existing layer entry
+ @param newitemdata tmLayerProperties object with new values to modify
+ @param position the position of item
+ @param bool TRUE if item was modified, FALSE if the item dosen't exists
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position)
 {
 	// check item exists
@@ -175,18 +248,29 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 
 
 
-
+/***************************************************************************//**
+ @brief Remove all layers from tree ctrl
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 void tmTOCCtrl::ClearAllLayers()
 {
 	// Delete all items and clear the root
 	DeleteAllItems();
 	m_root = 0;
-	
-	
 }
 
 
 
+/***************************************************************************//**
+ @brief Set the layer style
+ @details Change the style used for displaying the layer in the TOC
+ @param id position of the item
+ @param item value of the item is used for changing style, for exemple generic
+ layers are displayed in bold
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
 {
 	// change style to bold if generic layer
@@ -197,6 +281,14 @@ void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
 }
 
 
+
+/***************************************************************************//**
+ @brief Count the number of layers
+ @todo Check that this function works correctly with sub-childs (like
+ layer types or legend).
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 unsigned int tmTOCCtrl::GetCountLayers()
 {
 	return GetChildrenCount(m_root, FALSE);
@@ -204,11 +296,17 @@ unsigned int tmTOCCtrl::GetCountLayers()
 
 
 
+/***************************************************************************//**
+ @brief Called when mouse is clicked
+ @details Change the picture value (checked, unchecked) if mouse click occur
+ inside picture
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 July 2008
+ *******************************************************************************/
 void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 {
 	wxTreeItemId clickedid = 0;
 	int flags = 0;
-	// = NULL;
 	
 	clickedid = HitTest(event.GetPosition(), flags);
 	if (flags & wxTREE_HITTEST_ONITEMICON)

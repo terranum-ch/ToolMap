@@ -105,8 +105,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
-		
-		
+				
 		// event functions
 		void OnMouseClick (wxMouseEvent & event);
 		DECLARE_EVENT_TABLE()
@@ -120,7 +119,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// adding, removing layers functions
 		void InsertProjectName (const wxString & prjname);
 		bool InsertLayer(tmLayerProperties * item, wxTreeItemId postion = 0);
-		//bool RemoveLayer (long position);
+		bool RemoveLayer (wxTreeItemId position, bool bRemoveChild = TRUE);
 		void ClearAllLayers();
 		bool EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position);
 		
