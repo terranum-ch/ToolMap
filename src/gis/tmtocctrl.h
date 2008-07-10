@@ -91,7 +91,7 @@ class tmLayerProperties : public wxTreeItemData
 
 // EVENT FOR TOC CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
-
+DECLARE_EVENT_TYPE(tmEVT_LM_ADD, -1)
 
 /***************************************************************************//**
  @brief GIS TOC class

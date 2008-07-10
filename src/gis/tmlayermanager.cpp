@@ -24,6 +24,7 @@
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD,  tmLayerManager::AddLayer)
 END_EVENT_TABLE()
 
 
@@ -151,4 +152,22 @@ void tmLayerManager::FillTOCArray()
 void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 {
 	wxLogDebug(_T("tmLayerManager : removing layer"));
+}
+
+
+
+void tmLayerManager::AddLayer (wxCommandEvent & event)
+{
+	// TODO: Import data using GIS class
+	
+	
+	// TEMP: code for trying adding
+	tmLayerProperties * item = new tmLayerProperties();
+	item->m_LayerID = m_TOCCtrl->GetCountLayers() + 10;
+	item->m_LayerNameExt = wxString::Format(_T("TestAdding_%d.shp"), item->m_LayerID);
+	
+	// adding entry to TOC
+	if(!m_TOCCtrl->InsertLayer(item))
+		return;
+	
 }

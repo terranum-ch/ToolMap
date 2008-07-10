@@ -76,22 +76,16 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_BACKUP_PRJ, ToolMapFrame::OnBackupProject)
 	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
+	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 
 	EVT_MENU (ID_MENU_QUERIES, ToolMapFrame::OnShowQueryManager)
 
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 
-	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_PROGRESS, ToolMapFrame::OnGetMessage)
+	
 END_EVENT_TABLE()
 
-
-
-void ToolMapFrame::OnGetMessage (wxCommandEvent & event)
-{
-	wxLogDebug(_T("Parent has got the message"));
-	event.Skip();
-}
 
 
 ToolMapFrame::ToolMapFrame()
@@ -617,6 +611,10 @@ void ToolMapFrame::OnUpdateAttributionObjects(wxCommandEvent & event)
 }
 
 
+void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
+{
+	m_LayerManager->AddLayer(event);
+}
 
 
 void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)
