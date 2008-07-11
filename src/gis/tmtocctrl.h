@@ -138,6 +138,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// public event function
 		void OnRemoveItem (wxCommandEvent & event);
 		
+		// Project check function
+		bool IsTOCReady();
+		
 
 		
 	};

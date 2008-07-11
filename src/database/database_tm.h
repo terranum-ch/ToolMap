@@ -133,6 +133,8 @@ class DataBaseTM : public DataBase
 		// database TOC operations
 		bool InitTOCGenericLayers();
 		tmLayerProperties * GetNextTOCEntry();
+		long AddTOCLayer (tmLayerProperties * item);
+		bool RemoveTOCLayer (const long & itemid); 
 		
 	};
 

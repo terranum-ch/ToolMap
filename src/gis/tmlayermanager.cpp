@@ -149,15 +149,48 @@ void tmLayerManager::FillTOCArray()
 
 
 
+/***************************************************************************//**
+ @brief Response to the event sent by the #tmTOCCtrl
+ @details Item was alleready delleted from the tmTOCCtrl and is now removed from
+ the DB and the display is refreshed.
+ @param event Contain the layer database ID into the GetExtraLong() function
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 July 2008
+ *******************************************************************************/
 void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 {
-	wxLogDebug(_T("tmLayerManager : removing layer"));
+	// checks where allready done by the tmTOCCtrl
+	// we can delete item here from the DB
+	long litemID = event.GetExtraLong();
+	
+	if (!m_DB->RemoveTOCLayer(litemID))
+		return;
+	
+	// TODO: Refresh screen display
+	
+	
+	wxLogDebug(_T("tmLayerManager : removing layer %d"), litemID);
 }
 
 
 
+/***************************************************************************//**
+ @brief Response to the event sent by the "Add Gis Data" menu
+ @details This function is doing following operations :
+ - Checking that #tmTOCCtrl is ready : tmTOCCtrl::IsTOCReady()
+ - Importing data 
+ - Saving layer to the database and getting back his real ID
+ - Adding layer to the tmTOCCtrl
+ with his real ID.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 July 2008
+ *******************************************************************************/
 void tmLayerManager::AddLayer (wxCommandEvent & event)
 {
+	// check that the a project was opened !
+	if (!m_TOCCtrl->IsTOCReady())
+		return;
+	
 	// TODO: Import data using GIS class
 	
 	
@@ -166,8 +199,19 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	item->m_LayerID = m_TOCCtrl->GetCountLayers() + 10;
 	item->m_LayerNameExt = wxString::Format(_T("TestAdding_%d.shp"), item->m_LayerID);
 	
+	// saving to the database and getting the last ID
+	long lastinsertedID = m_DB->AddTOCLayer(item);
+	if (lastinsertedID < 0)
+		return;
+	
+	item->m_LayerID = lastinsertedID;
+	item->m_LayerNameExt.Append(wxString::Format(_T(" [%d]"),lastinsertedID));
+	
 	// adding entry to TOC
 	if(!m_TOCCtrl->InsertLayer(item))
 		return;
+	
+	
+	
 	
 }
