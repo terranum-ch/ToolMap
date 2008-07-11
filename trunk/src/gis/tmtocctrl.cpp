@@ -362,17 +362,49 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	}
 	
 	// not able to remove generic layers
-	if (((tmLayerProperties*) GetItemData(selectedarray.Item(0)))->m_LayerIsGeneric < TOC_NAME_NOT_GENERIC)
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selectedarray.Item(0));
+	if (item->m_LayerIsGeneric < TOC_NAME_NOT_GENERIC)
 	{
 		wxLogMessage(_("Not allowed to remove generic layers from project"));
 		return;
 	}
 	
+	wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
+	evt.SetExtraLong(item->m_LayerID);
+	
 	// only delete the first selected layer 
 	if (RemoveLayer(selectedarray.Item(0), TRUE))
 	{
-		wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
 		GetEventHandler()->AddPendingEvent(evt);
 	}
+}
+
+
+
+/***************************************************************************//**
+ @brief Checks if the TOC is ready
+ @details This function may be used to know if the TOC was correctely started
+ and ready to be filled with others layers. Following checks are made :
+ - Root item exists
+ - Number of layers is not less than 4 (generic layers)
+ @return  TRUE if both tests above pass, FALSE otherwise. In debug mode messages
+ are sent for explaining problem
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 July 2008
+ *******************************************************************************/
+bool tmTOCCtrl::IsTOCReady()
+{
+	if(!m_root.IsOk())
+	{
+		wxLogDebug(_T("No root item defined, project no open ?"));
+		return FALSE;
+	}
+	
+	if(GetCountLayers() < 4)
+	{
+		wxLogDebug(_T("Not enought layers found. Is this a ToolMap project ?"));
+		return FALSE;
+	}
+	return TRUE;
 }
 

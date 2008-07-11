@@ -1796,6 +1796,65 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 }
 
 
+
+long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
+{
+	DataBaseDestroyResults();
+	wxString sSentence = wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
+										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
+										  _T("CONTENT_STATUS, GENERIC_LAYERS) ") +
+										  _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d ); "),
+										  item->m_LayerType,
+										  item->m_LayerPathOnly.c_str(),
+										  item->m_LayerNameExt.c_str(),
+										  item->m_LayerVisible,
+										  item->m_LayerIsGeneric);
+		
+	if(!DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error inserting layer into database : %s"), sSentence.c_str());
+		return -1;
+	}
+	
+	// getting ID back
+	sSentence = (_T("SELECT CONTENT_ID FROM ") + TABLE_NAME_TOC +
+				 _T(" ORDER BY CONTENT_ID DESC LIMIT 1; "));
+	
+	if (!DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting the last layer id"));
+		return -1;
+		
+	}		
+	if(!DataBaseHasResult())
+	{
+		wxLogDebug(_T("Error no results returned, not able to know the layer ID"));
+		return -1;
+	}
+	
+	long lRetVal = DataBaseGetNextResultAsLong();
+	DataBaseDestroyResults();
+	
+	return lRetVal;
+}
+
+
+
+bool DataBaseTM::RemoveTOCLayer (const long & itemid)
+{
+	wxString sSentence = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_TOC +
+										  _T(" WHERE CONTENT_ID = %d"), itemid);
+	if (!DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Not able to remove item from DB : %s"), sSentence.c_str());
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
