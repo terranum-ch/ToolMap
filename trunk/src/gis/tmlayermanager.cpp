@@ -52,6 +52,7 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl)
  *******************************************************************************/
 tmLayerManager::~tmLayerManager()
 {
+	UnInitLayerManager();
 	m_Parent->PopEventHandler(FALSE);
 }
 
@@ -108,8 +109,14 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
  *******************************************************************************/
 bool tmLayerManager::UnInitLayerManager()
 {
+	
+	// saving TOC status
+	if (m_TOCCtrl->IsTOCReady())
+		SaveTOCStatus();
+	
 	wxLogDebug(_T("Clearing TOC"));
 	m_DB = NULL;
+	
 	
 	// clear the ctrl
 	m_TOCCtrl->ClearAllLayers();
@@ -145,6 +152,46 @@ void tmLayerManager::FillTOCArray()
 	}
 	
 	wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
+}
+
+
+
+bool tmLayerManager::SaveTOCStatus()
+{
+	wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));
+	
+	tmLayerProperties * itemProp = NULL;
+	int iRank = 0;
+	
+	wxString sSentence = _T("");
+	
+	while (1)
+	{
+		if (iRank == 0)
+		{
+			itemProp = m_TOCCtrl->IterateLayers(TRUE);
+		}
+		else
+		{
+			itemProp = m_TOCCtrl->IterateLayers(FALSE);
+		}
+		
+		if (!itemProp)
+			break;
+		
+		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank);
+		iRank ++;
+	}
+	
+	// update the database with toc status
+	if (!m_DB->DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error updating DB with TOC status : %s"),sSentence.c_str());
+		return FALSE;
+	}
+	
+	return TRUE;
+	
 }
 
 

@@ -134,7 +134,9 @@ class DataBaseTM : public DataBase
 		bool InitTOCGenericLayers();
 		tmLayerProperties * GetNextTOCEntry();
 		long AddTOCLayer (tmLayerProperties * item);
-		bool RemoveTOCLayer (const long & itemid); 
+		bool RemoveTOCLayer (const long & itemid);
+		void PrepareTOCStatusUpdate(wxString & sentence, 
+									tmLayerProperties * item, int itemRank=0);
 		
 	};
 
