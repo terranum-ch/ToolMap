@@ -58,6 +58,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		// TOC specific functions
 		void FillTOCArray();
+		bool SaveTOCStatus();
 		
 		DECLARE_EVENT_TABLE()
 		

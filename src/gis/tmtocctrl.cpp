@@ -263,6 +263,43 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 
 
 /***************************************************************************//**
+ @brief Iterate through all layers in the TOC
+ @details Call this function recursively until there is no more layers to
+ iterate. Use ResetToFirst = TRUE during the first iteration and then set this value
+ to false
+ @param ResetToFirst TRUE for reseting iteration to the beginning and false to 
+ continue
+ @return  a valid #tmLayerProperties or NULL if there is no more item to iterate
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 July 2008
+ *******************************************************************************/
+tmLayerProperties * tmTOCCtrl::IterateLayers (bool ResetToFirst)
+{
+	// check
+	wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
+		
+	wxTreeItemId ItemID = 0;
+
+	
+	// if we are starting from the begining
+	if(ResetToFirst)
+	{
+		ItemID = GetFirstChild(m_root, m_Cookie);
+	}
+	else 
+	{
+		ItemID = GetNextChild(m_root, m_Cookie);
+	}
+	
+	if (!ItemID.IsOk())
+		return NULL;
+	
+	return (tmLayerProperties*) GetItemData(ItemID);
+}
+
+
+
+/***************************************************************************//**
  @brief Remove all layers from tree ctrl
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008

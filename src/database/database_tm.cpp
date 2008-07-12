@@ -1855,6 +1855,18 @@ bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 
 
 
+void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties * item, int itemRank)
+{
+	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
+									 _T(" SET CONTENT_STATUS = %d, RANK=%d ")
+									 _T("WHERE CONTENT_ID = %d; "),
+									 item->m_LayerVisible,
+									 itemRank,
+									 item->m_LayerID));
+	
+}
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")

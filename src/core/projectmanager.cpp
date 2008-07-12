@@ -240,13 +240,14 @@ bool ProjectManager::BackupProject ()
  *******************************************************************************/
 void ProjectManager::CloseProject()
 {
+	m_LayerManager->UnInitLayerManager();
 	if (m_DB != NULL)
 	{
 		wxLogDebug(_T("Closing the database object"));
 		delete m_DB;
 		m_DB = NULL;
 	}
-	m_LayerManager->UnInitLayerManager();
+	
 }
 
 
