@@ -170,8 +170,11 @@ void ToolMapFrame::PostInit()
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);
 	wxLogMessage(_("Running under : %s"), wxGetOsDescription().c_str());
-
 	
+	
+	// loading GIS drivers
+	tmGISData::InitGISDrivers(TRUE, TRUE);
+
 }
 
 
