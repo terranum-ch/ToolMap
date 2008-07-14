@@ -247,7 +247,19 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	if (!m_TOCCtrl->IsTOCReady())
 		return;
 	
+	
 	// TODO: Import data using GIS class
+	wxFileDialog * m_dlg = new wxFileDialog(m_Parent, _("Add GIS layer to the project"),
+											_T(""), _T(""),
+											tmGISData::GetAllSupportedGISFormatsWildcards());
+	if(m_dlg->ShowModal() == wxID_CANCEL)
+	{
+		delete m_dlg;
+		return;
+	}
+	
+	delete m_dlg;
+	
 	
 	
 	// TEMP: code for trying adding

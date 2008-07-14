@@ -90,7 +90,9 @@
 #include <wx/fileconf.h>		// for using file configuration even on windows
 
 // TODO: REMOVE THIS AFTER TEST
-#include "../gis/tmprogress.h"	// for direct acces to progress 
+//#include "../gis/tmprogress.h"	// for direct acces to progress 
+
+#include "../gis/tmgisdata.h"	// for GIS data access
 
 
 //// temp for testing 
