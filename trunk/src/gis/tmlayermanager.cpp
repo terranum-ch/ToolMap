@@ -156,6 +156,15 @@ void tmLayerManager::FillTOCArray()
 
 
 
+/***************************************************************************//**
+ @brief Save TOC status to database
+ @details This function called when closing project saves the status of the TOC
+ ctrl. Only visibility and rank of layers are saved, other informations are
+ saved in real time when adding a new layer or removing one.
+ @return  TRUE if data saved to database, FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 July 2008
+ *******************************************************************************/
 bool tmLayerManager::SaveTOCStatus()
 {
 	wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));

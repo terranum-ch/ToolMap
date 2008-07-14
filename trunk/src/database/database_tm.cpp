@@ -1797,6 +1797,14 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 
 
 
+/***************************************************************************//**
+ @brief Add TOC item to the database
+ @details Called when a new layer is added.
+ @param item The item to add to the database
+ @return  The database ID of the added item or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 July 2008
+ *******************************************************************************/
 long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 {
 	DataBaseDestroyResults();
@@ -1839,7 +1847,14 @@ long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 }
 
 
-
+/***************************************************************************//**
+ @brief Delete a TOC item from the database
+ @details Called when a layer is removed.
+ @param itemid database ID of the item to remove
+ @return  TRUE if item sucessfully removed, FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 July 2008
+ *******************************************************************************/
 bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 {
 	wxString sSentence = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_TOC +

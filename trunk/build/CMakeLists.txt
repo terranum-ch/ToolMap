@@ -37,6 +37,10 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  
  #MYSQL EMBEDDED
  INCLUDE ("cmake/findMySQLEmbedded.cmake")
+
+
+#GEOS - GDAL libs
+ INCLUDE ("cmake/findGISLib.cmake")
  
 
 # Getting the subversion number and
@@ -91,6 +95,10 @@ ELSE (WIN32)
  	#TARGET_LINK_LIBRARIES (ToolMap2)
 
 ENDIF (WIN32)
+
+# copy libs to bundle if we are under mac...
+# check is done internally.
+INCLUDE ("cmake/installMacGISLib.cmake")
 
 
 #SOULD WE ADD THE LIBTIFF INTO BUNDLE
