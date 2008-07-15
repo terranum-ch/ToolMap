@@ -35,10 +35,10 @@ tmGISDataVectorSHP::~tmGISDataVectorSHP()
 
 
 
-bool tmGISDataVectorSHP::Open (const wxString & filename)
+bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 {
 	// init parent member values
-	tmGISData::Open(filename);
+	tmGISData::Open(filename, bReadWrite);
 	
 	// convert utf wxString into char *
 	const char* ascii_str = (const char*)filename.mb_str(wxConvUTF8);

@@ -269,6 +269,13 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 			   2, myRect.x_max, 2, myRect.y_max);
 	
 	
+	// trying some database functions 
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
+	tmGISData * myDBGIS = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
+	myDBGIS->Open(_T("project_toc"));
+	
+	if (myDBGIS)
+		delete myDBGIS;
 	
 	
 	// TEMP: code for trying adding

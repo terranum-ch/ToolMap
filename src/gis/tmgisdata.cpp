@@ -137,7 +137,7 @@ tmGISData * tmGISData::CreateGISBasedOnType (const int & gis_format_index)
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008
  *******************************************************************************/
-bool tmGISData::Open (const wxString & filename)
+bool tmGISData::Open (const wxString & filename, bool bReadWrite)
 {
 	wxFileName myFilename (filename);
 	m_ShortFileName = myFilename.GetFullName();
