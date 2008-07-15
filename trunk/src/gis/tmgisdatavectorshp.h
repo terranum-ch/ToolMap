@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmgisdatavector.h
-                   Super class for dealing with vector GIS data
+								tmgisdatavectorshp.h
+                    class for dealing with vector SHP data
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_GISDATAVECTOR_H_
-#define _TM_GISDATAVECTOR_H_
+#ifndef _TM_GISDATAVECTOR_SHP_H_
+#define _TM_GISDATAVECTOR_SHP_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,38 +29,24 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmgisdata.h"
-
-// Number of formats reserved for rasters
-const int tmGISVECTOR_OFFSET = 2;
-
-enum tmGISDATA_VECTOR_TYPES
-{
-	tmGIS_VECTOR_SHAPEFILE = tmGISVECTOR_OFFSET,
-	tmGIS_VECTOR_MYSQL // should allways been put as last item
-};
-
-static wxString tmGISDATA_VECTOR_TYPE_WILDCARDS[] = 
-{_("Esri's shapefiles (*.shp)|*.shp"),
-_("MySQL geometric table (*.MYD)|*.MYD")};
+#include "tmgisdatavector.h"
+#include "ogrsf_frmts.h"
 
 
-class tmGISDataVector : public tmGISData
+class tmGISDataVectorSHP : public tmGISDataVector
 	{
 	private:
-		
+		OGRDataSource       *m_Datasource;
+		OGRLayer			*m_Layer;
+	
 	protected:
-		
-		
 	public:
-		// ctor, dtor
-		tmGISDataVector();
-		~tmGISDataVector();
+		tmGISDataVectorSHP();
+		~tmGISDataVectorSHP();
 		
-		// static functions
-		static void InitGISDriversVector();
-		static wxString GetAllVectorGISFormatsWildcards();
-		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
+		// implementing virtual function
+		virtual bool Open (const wxString & filename);
+		virtual tmRealRect GetMinimalBoundingRectangle();
 		
 	};
 

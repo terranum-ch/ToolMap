@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmgisdatavector.h"
+#include "tmgisdatavectorshp.h"
 
 
 tmGISDataVector::tmGISDataVector()
@@ -38,7 +39,7 @@ wxString tmGISDataVector::GetAllVectorGISFormatsWildcards()
 	// Don't return mysql wildcard, used only internally
 	wxString myWildcards = _T("");
 	
-	myWildcards.Append(tmGISDATA_VECTOR_TYPE_WILDCARDS[tmGIS_VECTOR_SHAPEFILE]);
+	myWildcards.Append(tmGISDATA_VECTOR_TYPE_WILDCARDS[tmGIS_VECTOR_SHAPEFILE - tmGISVECTOR_OFFSET]);
 	return myWildcards;
 }
 
@@ -48,11 +49,18 @@ tmGISDataVector * tmGISDataVector::CreateGISVectorBasedOnType(const int & gis_fo
 	switch (gis_format_index)
 	{
 		case tmGIS_VECTOR_SHAPEFILE:
-			return NULL;
+			return new tmGISDataVectorSHP();
 			break;
 		case tmGIS_VECTOR_MYSQL:
 			return NULL;
 			break;
 	}
 	return NULL;
+}
+
+
+
+void tmGISDataVector::InitGISDriversVector()
+{
+	OGRRegisterAll();
 }

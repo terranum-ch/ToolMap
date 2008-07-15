@@ -32,13 +32,11 @@
 #include "tmgisdata.h"
 
 
-// 10 format reserved for vector
-const int tmGISRASTER_OFFSET = 10;
-
-
+// if you add some raster format, don't forget
+// to update the tmGISVECTOR_OFFSET
 enum tmGISDATA_RASTER_TYPES
 {
-	tmGIS_RASTER_TIFF = tmGISRASTER_OFFSET, 
+	tmGIS_RASTER_TIFF = 0, 
 	tmGIS_RASTER_BINGRID
 };
 
@@ -57,6 +55,7 @@ class tmGISDataRaster : public tmGISData
 		~tmGISDataRaster();
 		
 		// static functions
+		static void InitGISDriversRaster();
 		static wxString GetAllRasterGISFormatsWildcards();
 		static tmGISDataRaster * CreateGISRasterBasedOnType (const int & gis_format_index);
 	};

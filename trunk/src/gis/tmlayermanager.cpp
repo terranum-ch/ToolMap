@@ -258,14 +258,36 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 	}
 	
-	delete m_dlg;
+	tmGISData * myData;
+	
+	myData = tmGISData::CreateGISBasedOnType( m_dlg->GetFilterIndex());
+	wxASSERT(myData);
+	myData->Open(m_dlg->GetPath());
+	tmRealRect myRect = myData->GetMinimalBoundingRectangle();
+	wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
+			   2,myRect.x_min, 2, myRect.y_min,
+			   2, myRect.x_max, 2, myRect.y_max);
+	
 	
 	
 	
 	// TEMP: code for trying adding
 	tmLayerProperties * item = new tmLayerProperties();
 	item->m_LayerID = m_TOCCtrl->GetCountLayers() + 10;
-	item->m_LayerNameExt = wxString::Format(_T("TestAdding_%d.shp"), item->m_LayerID);
+	item->m_LayerNameExt = myData->GetShortFileName();
+	
+	
+	
+	delete m_dlg;
+	if(myData)
+	{
+		wxLogDebug(_T("Pointer not empty, Nice"));
+		delete myData;
+	
+	}
+	
+	
+	
 	
 	// saving to the database and getting the last ID
 	long lastinsertedID = m_DB->AddTOCLayer(item);
