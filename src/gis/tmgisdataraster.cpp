@@ -62,3 +62,12 @@ tmGISDataRaster * tmGISDataRaster::CreateGISRasterBasedOnType (const int & gis_f
 	}
 	return NULL;
 }
+
+
+
+void tmGISDataRaster::InitGISDriversRaster()
+{
+	GDALAllRegister();
+}
+
+

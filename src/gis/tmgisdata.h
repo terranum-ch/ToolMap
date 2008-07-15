@@ -32,22 +32,18 @@
 
 #include "gdal_priv.h"		// GDAL ACCES C++
 #include "ogrsf_frmts.h"	// OGR accessing
+#include "geos_c.h"			// GEOS accessing
 #include <wx/filename.h>	// for dealing with filename class
 
 
-/*enum tmGISDATA_TYPES
-{
-	tmGIS_VECTOR_SHAPEFILE = 0,
-	tmGIS_RASTER_TIFF
-};
-
-static wxString tmGISDATA_TYPE_WILDCARDS[] = 
-{_("Esri's shapefiles (*.shp)|*.shp"),
-_("Tiff raster file (*.tif *.tiff)|*.tif *.tiff")};*/
 
 
-
-
+/***************************************************************************//**
+ @brief Class representing real rectangle
+ @details Used for storing bounding box values
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 July 2008
+ *******************************************************************************/
 class tmRealRect 
 {
 public:
@@ -69,6 +65,7 @@ public:
 
 
 
+
 /***************************************************************************//**
  @brief Main class for dealing with GIS data
  @details This class may be used for accessing GIS data using GDAL / OGR driver
@@ -79,11 +76,11 @@ public:
 class tmGISData : public wxObject
 	{
 	private:
+		wxString		m_ShortFileName;
+				
 		void InitMemberValue();
 		
-		static void InitGISDriversRaster();
-		static void InitGISDriversVector();
-		
+	
 	protected:
 	public:
 		// ctor and dtor
@@ -95,8 +92,15 @@ class tmGISData : public wxObject
 		static wxString GetAllSupportedGISFormatsWildcards();
 		static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
 		
-		virtual bool Open (const wxString & filename){return TRUE;}
+		// gis function
+		virtual bool Open (const wxString & filename);
 		virtual tmRealRect GetMinimalBoundingRectangle(){return tmRealRect(0,0,0,0);}
+		
+		
+		// misc function
+		wxString GetShortFileName (){return m_ShortFileName;}
+		
+		
 	};
 
 
