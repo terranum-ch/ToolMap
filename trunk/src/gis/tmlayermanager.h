@@ -32,6 +32,7 @@
 #include "tmtocctrl.h"					// class TOC ctrl
 #include "../database/database_tm.h"	// class database
 #include "tmgisdata.h"					// for GISdata
+#include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
 
 
 

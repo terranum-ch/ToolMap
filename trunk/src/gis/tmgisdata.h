@@ -93,7 +93,7 @@ class tmGISData : public wxObject
 		static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
 		
 		// gis function
-		virtual bool Open (const wxString & filename);
+		virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
 		virtual tmRealRect GetMinimalBoundingRectangle(){return tmRealRect(0,0,0,0);}
 		
 		

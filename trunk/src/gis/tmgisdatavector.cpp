@@ -19,6 +19,7 @@
 
 #include "tmgisdatavector.h"
 #include "tmgisdatavectorshp.h"
+#include "tmgisdatavectormysql.h"
 
 
 tmGISDataVector::tmGISDataVector()
@@ -52,7 +53,7 @@ tmGISDataVector * tmGISDataVector::CreateGISVectorBasedOnType(const int & gis_fo
 			return new tmGISDataVectorSHP();
 			break;
 		case tmGIS_VECTOR_MYSQL:
-			return NULL;
+			return new tmGISDataVectorMYSQL();
 			break;
 	}
 	return NULL;

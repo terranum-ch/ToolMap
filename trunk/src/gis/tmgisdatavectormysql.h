@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmgisdatavectorshp.h
-                    class for dealing with vector SHP data
+								tmgisdatavectormysql.h
+                    For dealing with spatial data from a mysql database
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_GISDATAVECTOR_SHP_H_
-#define _TM_GISDATAVECTOR_SHP_H_
+#ifndef _TM_GISDATAVECTOR_MYSQL_H_
+#define _TM_GISDATAVECTOR_MYSQL_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,24 +29,38 @@
     #include <wx/wx.h>
 #endif
 
+
 #include "tmgisdatavector.h"
-#include "ogrsf_frmts.h"
+#include "../database/database_tm.h"
 
 
-class tmGISDataVectorSHP : public tmGISDataVector
+
+const wxString tmGISMYSQL_FIELD1 = _T("OBJECT_ID");
+const wxString tmGISMYSQL_FIELD2 = _T("OBJECT_GEOMETRY");
+
+
+class tmGISDataVectorMYSQL : public tmGISDataVector
 	{
 	private:
-		OGRDataSource       *m_Datasource;
-		OGRLayer			*m_Layer;
-	
+		static DataBaseTM * m_DB;
+		
+
 	protected:
+		// checking db fields
+		bool CheckGeometryFields(const wxString & tablename);
+		
+		
 	public:
-		tmGISDataVectorSHP();
-		~tmGISDataVectorSHP();
+		tmGISDataVectorMYSQL();
+		~tmGISDataVectorMYSQL();
+		
+		// special function for DB, use it first.
+		static void SetDataBaseHandle(DataBaseTM * db) {m_DB = db;}
 		
 		// implementing virtual function
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
 		virtual tmRealRect GetMinimalBoundingRectangle();
+		
 		
 	};
 
