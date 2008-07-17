@@ -185,7 +185,6 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 	if (!position.IsOk())
 	{
 		itemid = AppendItem(m_root, item->m_LayerNameExt, item->m_LayerVisible, -1, item);
-		wxLogDebug(_T("Adding item"));
 	}
 	else
 	{
