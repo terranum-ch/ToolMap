@@ -97,6 +97,7 @@ bool tmGISDataVectorMYSQL::Open (const wxString & filename, bool bReadWrite)
 tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 {
 	
+	
 	return tmRealRect(0,0,0,0);
 }
 

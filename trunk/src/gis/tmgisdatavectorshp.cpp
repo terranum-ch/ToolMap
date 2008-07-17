@@ -23,7 +23,8 @@
 
 tmGISDataVectorSHP::tmGISDataVectorSHP()
 {
-
+	m_Datasource = NULL;
+	m_Layer = NULL;
 }
 
 
@@ -41,9 +42,12 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	tmGISData::Open(filename, bReadWrite);
 	
 	// convert utf wxString into char *
-	const char* ascii_str = (const char*)filename.mb_str(wxConvUTF8);
+	//const char* ascii_str = 
+	char * buffer = new char [filename.Length()+2];
+	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
+	
 	// open the shapefile and return true if success
-	m_Datasource = OGRSFDriverRegistrar::Open(ascii_str, FALSE );
+	m_Datasource = OGRSFDriverRegistrar::Open(buffer, FALSE );
 	if( m_Datasource==NULL)
 	{
 		wxLogDebug(_T("Unable to open shp : %s"), filename.c_str());
