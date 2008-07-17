@@ -49,6 +49,11 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		// checking db fields
 		bool CheckGeometryFields(const wxString & tablename);
 		
+		// gis database function
+		OGRGeometry * CreateDataBaseGeometry(MYSQL_ROW & row,
+											 unsigned long * length,
+											 int geometry_col=0);
+		
 		
 	public:
 		tmGISDataVectorMYSQL();

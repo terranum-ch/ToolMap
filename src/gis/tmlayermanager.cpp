@@ -272,13 +272,21 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	// trying some database functions 
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
 	tmGISData * myDBGIS = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
-	myDBGIS->Open(_T("project_toc"));
+	if(myDBGIS->Open(_T("generic_lines")))
+	{
+		myRect = myDBGIS->GetMinimalBoundingRectangle();
+		wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
+				   2,myRect.x_min, 2, myRect.y_min,
+				   2, myRect.x_max, 2, myRect.y_max);
+	}
+	
 	
 	if (myDBGIS)
 		delete myDBGIS;
 	
 	
 	// TEMP: code for trying adding
+	
 	tmLayerProperties * item = new tmLayerProperties();
 	item->m_LayerID = m_TOCCtrl->GetCountLayers() + 10;
 	item->m_LayerNameExt = myData->GetShortFileName();
