@@ -55,10 +55,11 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	}
 	
 	
+	
 	m_Layer = m_Datasource->GetLayer(0);
 	wxASSERT (m_Layer);
 	
-	
+	delete buffer;
 	return TRUE;
 }
 

@@ -69,6 +69,8 @@ bool tmGISDataVectorMYSQL:: CheckGeometryFields(const wxString & tablename)
 
 bool tmGISDataVectorMYSQL::Open (const wxString & filename, bool bReadWrite)
 {
+	tmGISData::Open(filename, bReadWrite);
+	
 	// ensure that we have set a valid pointer to the database
 	wxASSERT(m_DB);
 	if (!m_DB)
@@ -96,9 +98,89 @@ bool tmGISDataVectorMYSQL::Open (const wxString & filename, bool bReadWrite)
 
 tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 {
+	OGREnvelope * psExtent = new OGREnvelope();
+	OGREnvelope oEnv;
+	MYSQL_ROW row;
+	unsigned long *  row_length;
+	
+	// query for the geometry enveloppe for all lines
+	wxString sSentence = wxString::Format(_T("SELECT Envelope(%s) FROM %s"),
+										  tmGISMYSQL_FIELD2.c_str(), GetShortFileName().c_str());
+	if (m_DB->DataBaseQuery(sSentence))
+	{
+		// init extend based on the first object
+		// to avoid 0 values for Xmin.
+		row_length = m_DB->DataBaseGetNextRowResult(row);
+		
+		if(!row)
+		{
+			wxLogDebug(_T("No spatial data in the layer : %s"),
+					   GetShortFileName().c_str());
+			
+			return tmRealRect(0,0,0,0);
+		}
+		
+		
+		OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
+		
+		wxASSERT(poGeometry);
+		
+		poGeometry->getEnvelope(&oEnv);
+		psExtent->MinX = oEnv.MinX;
+		psExtent->MinY = oEnv.MinY;
+		delete poGeometry;
+		
+		// loop all lines
+		while (1)
+		{
+			row_length = m_DB->DataBaseGetNextRowResult(row);
+			if (row_length == NULL)
+				break;
+			
+			// compute the geometry and get the xmin xmax, ymin, ymax
+			OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
+			if ( poGeometry != NULL )
+			{
+				poGeometry->getEnvelope(&oEnv);
+				if (oEnv.MinX < psExtent->MinX) 
+					psExtent->MinX = oEnv.MinX;
+				if (oEnv.MinY < psExtent->MinY) 
+					psExtent->MinY = oEnv.MinY;
+				if (oEnv.MaxX > psExtent->MaxX) 
+					psExtent->MaxX = oEnv.MaxX;
+				if (oEnv.MaxY > psExtent->MaxY) 
+					psExtent->MaxY = oEnv.MaxY;
+			}
+			delete poGeometry;
+		}
+		return tmRealRect(psExtent->MinX,psExtent->MinY,
+						  psExtent->MaxX,psExtent->MaxY);
+		
+	}
+	
+	wxLogDebug(_T("Error computing extend : %s : Sentence is %s "),
+			   m_DB->DataBaseGetLastError().c_str(),
+			   sSentence.c_str());
+	
 	
 	
 	return tmRealRect(0,0,0,0);
 }
+
+
+
+OGRGeometry *  tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW & row,
+															unsigned long * length,
+															int geometry_col)
+{
+	OGRGeometry * geometry = NULL;
+	// Geometry columns will have the first 4 bytes contain the SRID.
+	OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, 
+									  NULL,
+									  &geometry,
+									  length[geometry_col] - 4 );
+	return geometry;
+}
+
 
 
