@@ -93,7 +93,13 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 	// 2) Init TOCCtrl
 	m_TOCCtrl->InsertProjectName(m_DB->DataBaseGetName());
 	FillTOCArray();
-		
+	
+	// 3) Load Data
+	if(!LoadProjectLayers())
+	{
+		wxLogDebug(_T("Loading layers not completed succesfully"));
+		return FALSE;
+	}	
 	
 	
 	return TRUE;
@@ -315,8 +321,78 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	// adding entry to TOC
 	if(!m_TOCCtrl->InsertLayer(item))
 		return;
+
+	
+}
+
+
+
+bool tmLayerManager::LoadProjectLayers()
+{
+	// ensure that TOC ctrl isn't empty
+	if (m_TOCCtrl->GetCountLayers() == 0)
+	{
+		wxLogDebug(_T("No data loaded into the TOC ctrl, load data into the TOC first"));
+		return FALSE;
+	}
+	
+	// iterate throught all layers
+	// TODO: May be need a threaded version here
+	int iRank = 0;
+	tmLayerProperties * itemProp = NULL;
+	
+	// prepare loading of MySQL data
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
+	while (1)
+	{
+		if (iRank == 0)
+		{
+			itemProp = m_TOCCtrl->IterateLayers(TRUE);
+		}
+		else
+		{
+			itemProp = m_TOCCtrl->IterateLayers(FALSE);
+		}
+		
+		if (!itemProp)
+			break;
+		
+		// loading data
+		LoadLayer(itemProp);
+		
+		iRank ++;
+		
+	}
 	
 	
+	return TRUE;
+}
+
+
+
+bool tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
+{
+	wxASSERT(layerProp);
+	tmGISData * m_Data = NULL;
 	
+	switch (layerProp->m_LayerIsGeneric)
+	{
+		case TOC_NAME_LINES:
+		case TOC_NAME_POINTS:
+		case TOC_NAME_ANNOTATIONS:
+		case TOC_NAME_LABELS:
+			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
+			break;
+		default:
+			wxLogDebug(_T("%s file format not supported yet"),layerProp->m_LayerNameExt.c_str() );
+			m_Data = NULL;
+			break;
+	}
 	
+	if(!m_Data)
+		return FALSE;
+	
+	// here load data
+		
+	return TRUE;
 }

@@ -62,6 +62,9 @@ class tmLayerManager : public wxEvtHandler
 		void FillTOCArray();
 		bool SaveTOCStatus();
 		
+		// layer specific functions
+		bool LoadLayer (tmLayerProperties * layerProp);
+		
 		DECLARE_EVENT_TABLE()
 		
 	public:
@@ -78,6 +81,8 @@ class tmLayerManager : public wxEvtHandler
 		// layers operations
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
+		
+		bool LoadProjectLayers();
 		
 		
 		
