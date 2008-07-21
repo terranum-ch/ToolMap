@@ -292,10 +292,12 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	
 	
 	// TEMP: code for trying adding
+	wxFileName myFilename (m_dlg->GetPath());
+	
 	
 	tmLayerProperties * item = new tmLayerProperties();
-	item->m_LayerID = m_TOCCtrl->GetCountLayers() + 10;
-	item->m_LayerNameExt = myData->GetShortFileName();
+	item->m_LayerNameExt = myFilename.GetFullName();
+	item->m_LayerPathOnly = myFilename.GetPath();
 	
 	
 	
@@ -337,7 +339,7 @@ bool tmLayerManager::LoadProjectLayers()
 	}
 	
 	// iterate throught all layers
-	// TODO: May be need a threaded version here
+	// TODO: May need a threaded version here
 	int iRank = 0;
 	tmLayerProperties * itemProp = NULL;
 	
@@ -358,7 +360,20 @@ bool tmLayerManager::LoadProjectLayers()
 			break;
 		
 		// loading data
-		LoadLayer(itemProp);
+		tmGISData * layerData = LoadLayer(itemProp);
+		
+		// processing data
+		
+		// deleting data
+		if (layerData)
+		{
+			wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
+			wxLogDebug(myfilename.GetFullPath());
+			//layerData->Open(<#const wxString filename#>, <#bool bReadWrite#>)
+			
+			delete layerData;
+		}
+		
 		
 		iRank ++;
 		
@@ -370,10 +385,11 @@ bool tmLayerManager::LoadProjectLayers()
 
 
 
-bool tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
+tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 {
 	wxASSERT(layerProp);
 	tmGISData * m_Data = NULL;
+	wxString myExtension = _T("");
 	
 	switch (layerProp->m_LayerIsGeneric)
 	{
@@ -381,18 +397,22 @@ bool tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_POINTS:
 		case TOC_NAME_ANNOTATIONS:
 		case TOC_NAME_LABELS:
+		case TOC_NAME_FRAME:
 			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
 			break;
+		case TOC_NAME_NOT_GENERIC:
+			myExtension = layerProp->GetFileExtension();
+			m_Data = tmGISData::CreateGISBasedOnExt(myExtension);
+			break;
+			
 		default:
 			wxLogDebug(_T("%s file format not supported yet"),layerProp->m_LayerNameExt.c_str() );
-			m_Data = NULL;
+			return NULL;
 			break;
 	}
 	
-	if(!m_Data)
-		return FALSE;
 	
 	// here load data
 		
-	return TRUE;
+	return m_Data;
 }

@@ -45,7 +45,8 @@ static wxString TOC_GENERIC_NAME_STRING[] =
 	_("Lines"),
 	_("Points"),
 	_("Labels"),
-	_("Annotations"),
+	_("Notes"),
+	_("Frame"),
 	_("Not Generic layers")
 };
 enum TOC_GENERIC_NAME
@@ -54,9 +55,10 @@ enum TOC_GENERIC_NAME
 	TOC_NAME_POINTS,
 	TOC_NAME_LABELS,
 	TOC_NAME_ANNOTATIONS,
+	TOC_NAME_FRAME,
 	TOC_NAME_NOT_GENERIC = 100
 };
-static const int TOC_GENERIC_NAME_NUMBER = 5;
+static const int TOC_GENERIC_NAME_NUMBER = 6;
 
 
 
@@ -81,6 +83,8 @@ class tmLayerProperties : public wxTreeItemData
 		
 		// init from string array
 		bool InitFromArray(const wxArrayString & array);
+		wxString GetFileExtension ();
+		
 		
 		// constructor
 		tmLayerProperties(){InitMemberValues();}

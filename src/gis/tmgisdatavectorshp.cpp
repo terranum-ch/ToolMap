@@ -31,7 +31,9 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
 
 tmGISDataVectorSHP::~tmGISDataVectorSHP()
 {
-
+	// safe destroy the datasource if needed
+	if (m_Datasource)
+		OGRDataSource::DestroyDataSource(m_Datasource);
 }
 
 

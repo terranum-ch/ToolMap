@@ -65,6 +65,19 @@ tmGISDataRaster * tmGISDataRaster::CreateGISRasterBasedOnType (const int & gis_f
 
 
 
+tmGISDataRaster * tmGISDataRaster::CreateGISRasterBasedOnExt (const wxString & extension)
+{
+	int iLoop = sizeof( tmGISDATA_RASTER_TYPE_EXTENSION) / sizeof(wxString);
+	for (int i = 0; i< iLoop; i++)
+	{
+		if (tmGISDATA_RASTER_TYPE_EXTENSION[i].Contains(extension))
+			return CreateGISRasterBasedOnType(i);
+	}
+	return NULL;
+}
+
+
+
 void tmGISDataRaster::InitGISDriversRaster()
 {
 	GDALAllRegister();

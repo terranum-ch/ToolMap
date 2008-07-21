@@ -44,6 +44,12 @@ static wxString tmGISDATA_RASTER_TYPE_WILDCARDS[] =
 {_("Tiff raster file (*.tif *.tiff)|*.tif *.tiff"),
 _("Esri's binary GRID (*.hdr)|*.hdr")};
 
+static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
+{
+	_T("tif,tiff"),
+	_T("hdr"),
+};
+
 
 
 class tmGISDataRaster : public tmGISData
@@ -58,6 +64,7 @@ class tmGISDataRaster : public tmGISData
 		static void InitGISDriversRaster();
 		static wxString GetAllRasterGISFormatsWildcards();
 		static tmGISDataRaster * CreateGISRasterBasedOnType (const int & gis_format_index);
+		static tmGISDataRaster * CreateGISRasterBasedOnExt (const wxString & extension);
 	};
 
 
