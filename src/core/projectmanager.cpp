@@ -66,7 +66,7 @@ ProjectManager::~ProjectManager()
 bool ProjectManager::CreateNewProject()
 {
 	PrjDefMemManage PrjDefinition;
-	bool bReturn = FALSE;
+	//bool bReturn = FALSE;
 	
 	
 	// first step, displaying the new project dialog
