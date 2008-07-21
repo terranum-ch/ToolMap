@@ -25,6 +25,7 @@
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD,  tmLayerManager::AddLayer)
+	EVT_COMMAND(wxID_ANY,tmEVT_LM_SIZE_CHANGED,   tmLayerManager::OnSizeChange)
 END_EVENT_TABLE()
 
 
@@ -35,11 +36,12 @@ END_EVENT_TABLE()
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl)
+tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer)
 {
 	InitMemberValue();
 	
 	m_TOCCtrl = tocctrl;
+	m_GISRenderer = renderer;
 	m_Parent = parent;
 	m_Parent->PushEventHandler(this);
 }
@@ -67,6 +69,7 @@ void tmLayerManager::InitMemberValue()
 	m_TOCCtrl = NULL;
 	m_Parent = NULL;
 	m_DB = NULL;
+	m_GISRenderer = NULL;
 }
 
 
@@ -290,6 +293,27 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 
+void tmLayerManager::OnSizeChange (wxCommandEvent & event)
+{
+	// pass size to scale object but don't make 
+	// any computation if no project are opened
+	wxSize * mySize = (wxSize *) event.GetClientData();
+	m_Scale.SetWindowExtent(wxRect(0,0,mySize->GetWidth(), mySize->GetHeight()));
+		
+	// ensure that a project is opened
+	if (!m_TOCCtrl->IsTOCReady())
+		return;
+	
+	// TODO: Do computation and reload project in a thread
+	
+	wxLogDebug(_("Size message received : %d, %d"), mySize->GetWidth(), mySize->GetHeight());
+	
+	delete mySize;
+	
+}
+
+
+
 bool tmLayerManager::LoadProjectLayers()
 {
 	// ensure that TOC ctrl isn't empty
@@ -353,6 +377,11 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	wxLogDebug(_T("Max visible extent is : %.*f, %.*f -- %.*f, %.*f"),
 			   2, r.x_min, 2, r.y_min, 2, r.x_max, 2, r.y_max );
+	
+	wxLogDebug(_T("Computed factor is : %.*f"), 3,
+			   m_Scale.ComputeDivFactor());
+	wxPaintEvent ev;
+	m_GISRenderer->OnPaint(ev);
 	
 	
 	return TRUE;

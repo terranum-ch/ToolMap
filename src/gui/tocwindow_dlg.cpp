@@ -30,7 +30,7 @@ TocWindowContent::TocWindowContent()
 
 TocWindowContent::~TocWindowContent()
 {
-
+	delete m_TOCCtrl;
 }
 
 IMPLEMENT_DYNAMIC_CLASS( TocWindowContent, wxEvtHandler)
