@@ -305,6 +305,7 @@ bool tmLayerManager::LoadProjectLayers()
 	tmLayerProperties * itemProp = NULL;
 	tmRealRect myExtent (0,0,0,0);
 	
+	
 	// prepare loading of MySQL data
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
 	while (1)
@@ -332,10 +333,13 @@ bool tmLayerManager::LoadProjectLayers()
 			wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
 			
 			// computing extend 
+							
 			myExtent = layerData->GetMinimalBoundingRectangle();
 			wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
 					   2,myExtent.x_min, 2, myExtent.y_min,
 					   2, myExtent.x_max, 2, myExtent.y_max);
+			
+			m_Scale.SetMaxLayersExtentAsExisting(myExtent);
 		
 			delete layerData;
 		}
@@ -344,6 +348,11 @@ bool tmLayerManager::LoadProjectLayers()
 		iRank ++;
 		
 	}
+	
+	tmRealRect r = m_Scale.GetMaxLayersExtent();
+	
+	wxLogDebug(_T("Max visible extent is : %.*f, %.*f -- %.*f, %.*f"),
+			   2, r.x_min, 2, r.y_min, 2, r.x_max, 2, r.y_max );
 	
 	
 	return TRUE;

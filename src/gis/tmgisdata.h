@@ -34,34 +34,7 @@
 #include "ogrsf_frmts.h"	// OGR accessing
 #include "geos_c.h"			// GEOS accessing
 #include <wx/filename.h>	// for dealing with filename class
-
-
-
-
-/***************************************************************************//**
- @brief Class representing real rectangle
- @details Used for storing bounding box values
- @author Lucien Schreiber (c) CREALP 2008
- @date 14 July 2008
- *******************************************************************************/
-class tmRealRect 
-{
-public:
-	double x_min;
-	double y_min;
-	double x_max;
-	double y_max;
-	
-	tmRealRect() : x_min(0.0), y_min(0.0), x_max(0.0), y_max(0.0) { }
-	tmRealRect(double xmin, double ymin, double xmax, double ymax) :
-	x_min(xmin), y_min(ymin), x_max(xmax), y_max(ymax) { }
-	
-	bool operator==(const tmRealRect& pt) const
-    {
-        return wxIsSameDouble(x_min, pt.x_min) && wxIsSameDouble(y_min, pt.y_min)
-		&& wxIsSameDouble(x_max, pt.x_max) && wxIsSameDouble(y_max, pt.y_max);
-    }
-};
+#include "tmgisscale.h"		// for dealing with scale and real rectangle.
 
 
 

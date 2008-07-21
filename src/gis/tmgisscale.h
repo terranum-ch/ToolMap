@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmlayermanager.h
-                    Central point for layer management 
+								tmgisscale.h
+                    Deals with GIS scale and conversion
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_LAYERMANAGER_H_
-#define _TM_LAYERMANAGER_H_
+#ifndef _TM_GIS_SCALE_H_
+#define _TM_GIS_SCALE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,66 +29,60 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmtocctrl.h"					// class TOC ctrl
-#include "../database/database_tm.h"	// class database
-#include "tmgisdata.h"					// for GISdata
-#include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
-
-
-
 
 /***************************************************************************//**
- @brief GIS class for dealing with layers
- @details This is the super class for dealing with GIS. This class is the
- central point dealing with : 
- - Database (#DataBaseTM)
- - TOC controls (#tmTOCCtrl)
- - GIS progress indicator (#tmProgressIndicator)
- - ...
+ @brief Class representing real rectangle
+ @details Used for storing bounding box values
  @author Lucien Schreiber (c) CREALP 2008
- @date 07 July 2008
+ @date 14 July 2008
  *******************************************************************************/
-class tmLayerManager : public wxEvtHandler 
+class tmRealRect 
 	{
-	private:
-		tmTOCCtrl * m_TOCCtrl;
-		wxWindow * m_Parent;
-		DataBaseTM * m_DB;
-		tmGISScale m_Scale;
-		
-		// init member values to default
-		void InitMemberValue();
-		
-		// TOC specific functions
-		void FillTOCArray();
-		bool SaveTOCStatus();
-		
-		// layer specific functions
-		tmGISData * LoadLayer (tmLayerProperties * layerProp);
-		
-		DECLARE_EVENT_TABLE()
-		
 	public:
-		// ctor / dtor
-		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl );
-		~tmLayerManager();
+		double x_min;
+		double y_min;
+		double x_max;
+		double y_max;
 		
-			
-		// Init layermanager
-		bool InitLayerManager(DataBaseTM * db);
-		bool UnInitLayerManager();
+		tmRealRect() : x_min(0.0), y_min(0.0), x_max(0.0), y_max(0.0) { }
+		tmRealRect(double xmin, double ymin, double xmax, double ymax) :
+		x_min(xmin), y_min(ymin), x_max(xmax), y_max(ymax) { }
 		
-		
-		// layers operations
-		void RemoveLayer (wxCommandEvent & event);
-		void AddLayer (wxCommandEvent & event);
-		
-		bool LoadProjectLayers();
-		
-		
-		
+		bool operator==(const tmRealRect& pt) const
+		{
+			return wxIsSameDouble(x_min, pt.x_min) && wxIsSameDouble(y_min, pt.y_min)
+			&& wxIsSameDouble(x_max, pt.x_max) && wxIsSameDouble(y_max, pt.y_max);
+		}
 	};
 
+
+
+class tmGISScale : public wxObject
+	{
+	private:
+		tmRealRect m_ExtentMaxLayers;
+		wxRect m_ExtentWnd;
+		
+		void InitMemberValues();
+		
+	protected:
+	public:
+		tmGISScale();
+		~tmGISScale();
+		
+		// static functions
+		static tmRealRect ComputeMaxExtent (const tmRealRect & r1, const tmRealRect & r2);
+		
+		// setter and getter for layers
+		void SetMaxLayersExtentAsExisting (const tmRealRect & r);
+		void SetMaxLayersExtent (const tmRealRect & r){ m_ExtentMaxLayers = r;}
+		tmRealRect GetMaxLayersExtent(){ return m_ExtentMaxLayers;}
+		
+		// setter and getters for windows 
+		void SetWindowExtent (const wxRect & extent){m_ExtentWnd = extent;}
+		wxRect GetWindowExtent () {return m_ExtentWnd;}
+		
+	};
 
 
 
