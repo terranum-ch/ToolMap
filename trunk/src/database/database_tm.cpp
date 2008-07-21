@@ -1500,9 +1500,9 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 {
 	PrjDefMemManage * myPrjDef = new PrjDefMemManage();
 	ProjectDefMemoryLayers * mypLayer = NULL;
-	ProjectDefMemoryFields * mypField = NULL;
+	//ProjectDefMemoryFields * mypField = NULL;
 	
-	int iLayerAdded = 0, iFieldAdded = 0, iReturnValue = 0, iReturnFieldValue=0;
+	int iLayerAdded = 0, iReturnValue = 0; // iReturnFieldValue=0; //  iFieldAdded = 0
 	//wxArrayInt myLayerIDArray;
 	
 	// Load General project data (path, name,...)

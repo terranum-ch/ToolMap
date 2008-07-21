@@ -142,7 +142,7 @@ void tmLayerManager::FillTOCArray()
 	
 	
 	tmLayerProperties * lyrproptemp = NULL;
-	int iNumberAdded = 0;
+	//int iNumberAdded = 0;
 	
 	while (1)
 	{
@@ -228,10 +228,10 @@ void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 	if (!m_DB->RemoveTOCLayer(litemID))
 		return;
 	
-	// TODO: Refresh screen display
-	
-	
 	wxLogDebug(_T("tmLayerManager : removing layer %d"), litemID);
+	
+	
+	LoadProjectLayers();
 }
 
 
@@ -254,7 +254,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 	
 	
-	// TODO: Import data using GIS class
+	
 	wxFileDialog * m_dlg = new wxFileDialog(m_Parent, _("Add GIS layer to the project"),
 											_T(""), _T(""),
 											tmGISData::GetAllSupportedGISFormatsWildcards());
@@ -264,53 +264,11 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 	}
 	
-	tmGISData * myData;
-	
-	myData = tmGISData::CreateGISBasedOnType( m_dlg->GetFilterIndex());
-	wxASSERT(myData);
-	myData->Open(m_dlg->GetPath());
-	tmRealRect myRect = myData->GetMinimalBoundingRectangle();
-	wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
-			   2,myRect.x_min, 2, myRect.y_min,
-			   2, myRect.x_max, 2, myRect.y_max);
-	
-	
-	// trying some database functions 
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
-	tmGISData * myDBGIS = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
-	if(myDBGIS->Open(_T("generic_lines")))
-	{
-		myRect = myDBGIS->GetMinimalBoundingRectangle();
-		wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
-				   2,myRect.x_min, 2, myRect.y_min,
-				   2, myRect.x_max, 2, myRect.y_max);
-	}
-	
-	
-	if (myDBGIS)
-		delete myDBGIS;
-	
-	
-	// TEMP: code for trying adding
 	wxFileName myFilename (m_dlg->GetPath());
-	
-	
 	tmLayerProperties * item = new tmLayerProperties();
 	item->m_LayerNameExt = myFilename.GetFullName();
 	item->m_LayerPathOnly = myFilename.GetPath();
-	
-	
-	
 	delete m_dlg;
-	if(myData)
-	{
-		wxLogDebug(_T("Pointer not empty, Nice"));
-		delete myData;
-	
-	}
-	
-	
-	
 	
 	// saving to the database and getting the last ID
 	long lastinsertedID = m_DB->AddTOCLayer(item);
@@ -323,8 +281,11 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	// adding entry to TOC
 	if(!m_TOCCtrl->InsertLayer(item))
 		return;
-
 	
+	// re-load project
+	LoadProjectLayers();
+
+
 }
 
 
@@ -342,6 +303,7 @@ bool tmLayerManager::LoadProjectLayers()
 	// TODO: May need a threaded version here
 	int iRank = 0;
 	tmLayerProperties * itemProp = NULL;
+	tmRealRect myExtent (0,0,0,0);
 	
 	// prepare loading of MySQL data
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
@@ -362,15 +324,19 @@ bool tmLayerManager::LoadProjectLayers()
 		// loading data
 		tmGISData * layerData = LoadLayer(itemProp);
 		
-		// processing data
 		
-		// deleting data
+		// processing and deleting data
 		if (layerData)
 		{
 			wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
-			wxLogDebug(myfilename.GetFullPath());
-			//layerData->Open(<#const wxString filename#>, <#bool bReadWrite#>)
+			wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
 			
+			// computing extend 
+			myExtent = layerData->GetMinimalBoundingRectangle();
+			wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
+					   2,myExtent.x_min, 2, myExtent.y_min,
+					   2, myExtent.x_max, 2, myExtent.y_max);
+		
 			delete layerData;
 		}
 		
@@ -389,7 +355,10 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 {
 	wxASSERT(layerProp);
 	tmGISData * m_Data = NULL;
-	wxString myExtension = _T("");
+	wxString myFileName = _T("");
+	wxString myErrMsg = _T("");
+	// only used if not generic layers
+	wxFileName layerfullname (layerProp->m_LayerPathOnly, layerProp->m_LayerNameExt);
 	
 	switch (layerProp->m_LayerIsGeneric)
 	{
@@ -399,10 +368,14 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_LABELS:
 		case TOC_NAME_FRAME:
 			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
+			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->m_LayerIsGeneric];
+			myErrMsg = layerProp->m_LayerNameExt;
 			break;
+	
 		case TOC_NAME_NOT_GENERIC:
-			myExtension = layerProp->GetFileExtension();
-			m_Data = tmGISData::CreateGISBasedOnExt(myExtension);
+			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetFileExtension());
+			myFileName = layerfullname.GetFullPath();
+			myErrMsg = myFileName;
 			break;
 			
 		default:
@@ -413,6 +386,17 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 	
 	
 	// here load data
+	if (!m_Data)
+	{
+		wxLogError(_("Error loading : %s"), myErrMsg.c_str());
+		return NULL;
+	}
+	if (!m_Data->Open(myFileName, TRUE))
+	{
+		wxLogError(_("Error opening : %s"), myErrMsg.c_str());
+		return NULL;
+	}
+	
 		
 	return m_Data;
 }
