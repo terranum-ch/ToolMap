@@ -1808,12 +1808,18 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 {
 	DataBaseDestroyResults();
+
+	// converting path to windows path
+	// do nothing if not a windows path.
+	wxString myPath = item->m_LayerPathOnly;
+	DataBase::DataBaseConvertWindowsPath(myPath);
+
 	wxString sSentence = wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
 										  _T("CONTENT_STATUS, GENERIC_LAYERS) ") +
 										  _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d ); "),
 										  item->m_LayerType,
-										  item->m_LayerPathOnly.c_str(),
+										  myPath.c_str(),
 										  item->m_LayerNameExt.c_str(),
 										  item->m_LayerVisible,
 										  item->m_LayerIsGeneric);

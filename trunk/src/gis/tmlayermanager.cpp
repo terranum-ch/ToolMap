@@ -276,7 +276,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 	
 	item->m_LayerID = lastinsertedID;
-	item->m_LayerNameExt.Append(wxString::Format(_T(" [%d]"),lastinsertedID));
+	wxLogDebug(_T("Last inserted item id is : %d"),lastinsertedID);
 	
 	// adding entry to TOC
 	if(!m_TOCCtrl->InsertLayer(item))
@@ -326,7 +326,7 @@ bool tmLayerManager::LoadProjectLayers()
 		
 		
 		// processing and deleting data
-		if (layerData)
+		if (layerData && itemProp->m_LayerVisible)
 		{
 			wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
 			wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
