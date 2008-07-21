@@ -63,7 +63,7 @@ class tmLayerManager : public wxEvtHandler
 		bool SaveTOCStatus();
 		
 		// layer specific functions
-		bool LoadLayer (tmLayerProperties * layerProp);
+		tmGISData * LoadLayer (tmLayerProperties * layerProp);
 		
 		DECLARE_EVENT_TABLE()
 		

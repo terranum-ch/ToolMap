@@ -45,6 +45,13 @@ static wxString tmGISDATA_VECTOR_TYPE_WILDCARDS[] =
 _("MySQL geometric table (*.MYD)|*.MYD")};
 
 
+static wxString tmGISDATA_VECTOR_TYPE_EXTENSION[] =
+{
+	_T("shp"),
+	_T("myd"),
+};
+
+
 class tmGISDataVector : public tmGISData
 	{
 	private:
@@ -61,6 +68,7 @@ class tmGISDataVector : public tmGISData
 		static void InitGISDriversVector();
 		static wxString GetAllVectorGISFormatsWildcards();
 		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
+		static tmGISDataVector * CreateGISVectorBasedOnExt (const wxString & extension);
 		
 	};
 

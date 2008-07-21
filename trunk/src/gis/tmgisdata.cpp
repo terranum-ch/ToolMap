@@ -129,6 +129,29 @@ tmGISData * tmGISData::CreateGISBasedOnType (const int & gis_format_index)
 
 
 
+tmGISData * tmGISData::CreateGISBasedOnExt (const wxString & extension)
+{
+	tmGISData * myDataObj = NULL;
+	
+	// try opening vector extensions
+	myDataObj = tmGISDataVector::CreateGISVectorBasedOnExt(extension);
+	if (myDataObj)
+		return myDataObj;
+	
+	// try opening raster extensions
+	myDataObj = tmGISDataRaster::CreateGISRasterBasedOnExt(extension);
+	if (myDataObj)
+		return myDataObj;
+	
+	// if all failed then return null.
+	wxLogDebug(_T("No format handler found for extension : %s"), extension.c_str());
+	return NULL;
+	
+}
+
+
+
+
 /***************************************************************************//**
  @brief Generic open code
  @details Mainly init member values used by all GIS class

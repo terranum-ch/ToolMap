@@ -91,6 +91,7 @@ class tmGISData : public wxObject
 		static void InitGISDrivers (bool bRaster = TRUE, bool bVector = TRUE);
 		static wxString GetAllSupportedGISFormatsWildcards();
 		static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
+		static tmGISData * CreateGISBasedOnExt (const wxString & extension);
 		
 		// gis function
 		virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);

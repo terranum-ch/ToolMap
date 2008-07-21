@@ -1713,13 +1713,13 @@ bool DataBaseTM::InitTOCGenericLayers()
 	}
 	
 	
-	int iTypes [] = {LAYER_LINE, LAYER_POINT, LAYER_POINT, LAYER_POINT};
+	int iTypes [] = {LAYER_LINE, LAYER_POINT, LAYER_POINT, LAYER_POINT, LAYER_POLYGON};
 
 	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_TOC + _T(" (TYPE_CD, ")
 	_T("CONTENT_NAME, GENERIC_LAYERS) VALUES (%d, \"%s\", %d); ");
 	wxString sRealSentence = _T("");
 	
-	for (int i = TOC_NAME_LINES; i<= TOC_NAME_ANNOTATIONS; i++)
+	for (int i = TOC_NAME_LINES; i<= TOC_NAME_FRAME; i++)
 	{
 		sRealSentence.Append(wxString::Format(sSentence,iTypes[i],
 											  TOC_GENERIC_NAME_STRING[i].c_str(),

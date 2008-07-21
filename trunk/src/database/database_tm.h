@@ -46,6 +46,15 @@ const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
 const wxString TABLE_NAME_SCALE			= _T("zoom_level");
 const wxString TABLE_NAME_TOC		= _T("project_toc");
 
+const wxString TABLE_NAME_GIS_GENERIC[] = 
+{
+	_T("generic_lines"),
+	_T("generic_points"),
+	_T("generic_labels"),
+	_T("generic_notes"),
+	_T("generic_frame")
+};
+
 // DATABASE VERSION IS
 const int TM_DATABASE_VERSION = 208;
 

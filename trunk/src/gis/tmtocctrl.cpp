@@ -78,6 +78,11 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 
 
 
+wxString tmLayerProperties::GetFileExtension()
+{
+	wxFileName filename (m_LayerNameExt);
+	return filename.GetExt();
+}
 
 
 

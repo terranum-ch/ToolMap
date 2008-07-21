@@ -61,6 +61,20 @@ tmGISDataVector * tmGISDataVector::CreateGISVectorBasedOnType(const int & gis_fo
 
 
 
+tmGISDataVector * tmGISDataVector::CreateGISVectorBasedOnExt (const wxString & extension)
+{
+	int iLoop = sizeof(tmGISDATA_VECTOR_TYPE_EXTENSION) / sizeof(wxString);
+	for (int i = 0; i< iLoop; i++)
+	{
+		if (tmGISDATA_VECTOR_TYPE_EXTENSION[i].Contains(extension))
+			return CreateGISVectorBasedOnType(i+tmGISVECTOR_OFFSET);
+	}
+	return NULL;
+}
+
+
+
+
 void tmGISDataVector::InitGISDriversVector()
 {
 	OGRRegisterAll();
