@@ -40,19 +40,25 @@ Main_PANEL::Main_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAu
 }
 
 
+
 Main_PANEL::~Main_PANEL()
 {
-
+	delete m_GISRenderer;
 
 }
+
+
+
 
 wxSizer * Main_PANEL::CreateControls(wxWindow * parent, bool call_fit, bool set_sizer)
 {    
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 	
-    wxScrolledWindow * itemTreeCtrl3 = new wxScrolledWindow(parent, wxID_ANY);
-	itemTreeCtrl3->SetBackgroundColour(*wxWHITE);
-    itemBoxSizer2->Add(itemTreeCtrl3, 1, wxGROW|wxALL, 0);
+    m_GISRenderer = new tmRenderer(parent, wxID_ANY);
+	
+	
+	m_GISRenderer->SetBackgroundColour(*wxWHITE);
+    itemBoxSizer2->Add(m_GISRenderer, 1, wxGROW|wxALL, 0);
 	
   
 	

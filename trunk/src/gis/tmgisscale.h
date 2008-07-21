@@ -82,6 +82,10 @@ class tmGISScale : public wxObject
 		void SetWindowExtent (const wxRect & extent){m_ExtentWnd = extent;}
 		wxRect GetWindowExtent () {return m_ExtentWnd;}
 		
+		// computing scale and reduction factor
+		double ComputeDivFactor ();
+		
+		
 	};
 
 

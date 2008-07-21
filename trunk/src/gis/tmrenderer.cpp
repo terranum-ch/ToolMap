@@ -1,6 +1,6 @@
 /***************************************************************************
-								main_panel.h
-                    Display the main panel where drawing occurs
+								tmrenderer.cpp
+                    Deals with the main renderer windows
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -17,44 +17,52 @@
 
 // comment doxygen
 
+#include "tmrenderer.h"
 
-#ifndef MAIN_PANEL_H
-#define MAIN_PANEL_H
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
 
-// Include wxWidgets' headers
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
 
-#include "managed_aui_wnd.h"
-//#include <wx/scrolwin.h>
-#include "../gis/tmrenderer.h"	// for GIS renderer
+BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
+	EVT_SIZE(tmRenderer::OnSizeChange)
+	EVT_PAINT ( tmRenderer::OnPaint)
+END_EVENT_TABLE()
 
-#define SYMBOL_MAIN_PANEL_TITLE _("Main Panel")
 
-class Main_PANEL : public ManagedAuiWnd
-	{
-		wxSizer * CreateControls(wxWindow * parent,
-								 bool call_fit = TRUE, 
-								 bool set_sizer = TRUE);
-		
-		tmRenderer * m_GISRenderer;
-		wxAuiPaneInfo mPaneInfo;
-		
-		
-	public:
-		Main_PANEL(wxWindow * parent, wxAuiManager * AuiManager);
-		~Main_PANEL();
-		
-		tmRenderer * GetGISRenderer () {return m_GISRenderer;}
-		
-	};
+tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(parent,id)
+{
+
+	
+}
 
 
 
 
+void tmRenderer::OnSizeChange(wxSizeEvent & event)
+{
+	// new size object, will be deleted in the 
+	// layer manager
+	wxSize * mySize = new wxSize(event.GetSize());
+	
+	// send size to the layermanager
+	wxCommandEvent evt(tmEVT_LM_SIZE_CHANGED, wxID_ANY);
+	evt.SetClientData(mySize);
+	GetEventHandler()->AddPendingEvent(evt);
+}
 
-#endif
+
+
+void tmRenderer::OnPaint(wxPaintEvent & event)
+{
+	// draw the image
+	wxPaintDC dc (this);
+	DoPrepareDC(dc);
+	dc.Clear();
+	
+	
+	dc.SetPen(*wxBLACK_PEN); 
+	
+	
+	dc.DrawLine(0, 0, 100, 200); 
+	
+}

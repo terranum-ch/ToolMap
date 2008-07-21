@@ -437,7 +437,7 @@ bool tmTOCCtrl::IsTOCReady()
 {
 	if(!m_root.IsOk())
 	{
-		wxLogDebug(_T("No root item defined, project no open ?"));
+		//wxLogDebug(_T("No root item defined, project no open ?"));
 		return FALSE;
 	}
 	

@@ -72,3 +72,20 @@ void tmGISScale::SetMaxLayersExtentAsExisting (const tmRealRect & r)
 	m_ExtentMaxLayers = ComputeMaxExtent(r, m_ExtentMaxLayers);
 }
 
+
+double tmGISScale::ComputeDivFactor ()
+{
+	double dx = 0, dy=0;
+	
+	// check data
+	if (m_ExtentWnd == wxRect(0,0,0,0) || m_ExtentMaxLayers == tmRealRect(0,0,0,0))
+		return 0.0;
+	
+	dx = (m_ExtentMaxLayers.x_max -  m_ExtentMaxLayers.x_min) / m_ExtentWnd.GetWidth();
+	dy = (m_ExtentMaxLayers.y_max - m_ExtentMaxLayers.y_min) / m_ExtentWnd.GetHeight();
+	if (dx > dy)
+		return dx;
+	else 
+		return dy;
+}
+

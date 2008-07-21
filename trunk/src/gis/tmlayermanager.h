@@ -33,6 +33,7 @@
 #include "../database/database_tm.h"	// class database
 #include "tmgisdata.h"					// for GISdata
 #include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
+#include "tmrenderer.h"					// for GIS rendering
 
 
 
@@ -52,6 +53,7 @@ class tmLayerManager : public wxEvtHandler
 	{
 	private:
 		tmTOCCtrl * m_TOCCtrl;
+		tmRenderer * m_GISRenderer;
 		wxWindow * m_Parent;
 		DataBaseTM * m_DB;
 		tmGISScale m_Scale;
@@ -70,7 +72,7 @@ class tmLayerManager : public wxEvtHandler
 		
 	public:
 		// ctor / dtor
-		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl );
+		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer);
 		~tmLayerManager();
 		
 			
@@ -82,6 +84,9 @@ class tmLayerManager : public wxEvtHandler
 		// layers operations
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
+		
+		// size operations
+		void OnSizeChange (wxCommandEvent & event);
 		
 		bool LoadProjectLayers();
 		
