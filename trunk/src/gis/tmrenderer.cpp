@@ -74,9 +74,10 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	{
 		// draw the image
 		wxPaintDC dc (this);
+		dc.SetBackground(*wxWHITE);
 		dc.Clear();
 		
-		dc.SetPen(*wxBLACK_PEN);
+		//dc.SetPen(*wxBLACK_PEN);
 		dc.DrawBitmap (*m_bmp,wxPoint(0,0),false);
 
 	}
