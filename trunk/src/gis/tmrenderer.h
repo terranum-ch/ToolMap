@@ -43,6 +43,8 @@ class tmRenderer : public wxScrolledWindow
 		
 		DECLARE_EVENT_TABLE()
 	protected:
+		 
+		
 	public:
 		tmRenderer(wxWindow * parent, wxWindowID id);
 		~tmRenderer(){;}

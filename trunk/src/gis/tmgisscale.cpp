@@ -84,8 +84,8 @@ double tmGISScale::ComputeDivFactor ()
 	if (m_ExtentWnd == wxRect(0,0,0,0) || m_ExtentMaxLayers == tmRealRect(0,0,0,0))
 		return 0.0;
 	
-	dx = (m_ExtentMaxLayers.x_max -  m_ExtentMaxLayers.x_min) / m_ExtentWnd.GetWidth();
-	dy = (m_ExtentMaxLayers.y_max - m_ExtentMaxLayers.y_min) / m_ExtentWnd.GetHeight();
+	dx = (m_ExtentMaxLayers.x_max -  m_ExtentMaxLayers.x_min) / (m_ExtentWnd.GetWidth() - tmSCALE_MARGIN);
+	dy = (m_ExtentMaxLayers.y_max - m_ExtentMaxLayers.y_min) / (m_ExtentWnd.GetHeight() - tmSCALE_MARGIN);
 	if (dx > dy)
 		return dx;
 	else 

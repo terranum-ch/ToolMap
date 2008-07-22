@@ -74,27 +74,10 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	{
 		// draw the image
 		wxPaintDC dc (this);
-		//DoPrepareDC(dc);
-		
-		dc.SetAxisOrientation(true, true);
-		//dc.ComputeScaleAndOrigin();
-		
 		dc.Clear();
 		
-		//wxCoord myCoord (50,50);
-		int x = 50; //dc.LogicalToDeviceX(50);
-		int y = 50; //dc.LogicalToDeviceYRel(50);
-			
-		dc.CrossHair(x,y );
-		
-		
-		
-		dc.SetPen(*wxBLACK_PEN); 
-		
-		
-		dc.DrawLine(0, 0, 100, 200); 
-		
-		//dc.DrawBitmap (*m_bmp,wxPoint(0,0),false);
+		dc.SetPen(*wxBLACK_PEN);
+		dc.DrawBitmap (*m_bmp,wxPoint(0,0),false);
 
 	}
 	
