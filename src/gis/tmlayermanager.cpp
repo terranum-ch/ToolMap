@@ -508,6 +508,9 @@ void tmLayerManager::DrawExtentIntoBitmap(const double & divfactor, const tmReal
 	temp_dc.SetAxisOrientation(TRUE, TRUE);
 	temp_dc.SelectObject(*m_Bitmap);
 	
+	temp_dc.SetPen(*wxRED_PEN);
+	temp_dc.SetBackground(*wxWHITE);
+	
 	int xmin = 0, ymin = 0;
 	int xmax = (extent.x_max - extent.x_min) / divfactor;
 	int ymax = ( extent.y_max - extent.y_min) / divfactor;
