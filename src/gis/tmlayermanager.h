@@ -58,6 +58,8 @@ class tmLayerManager : public wxEvtHandler
 		DataBaseTM * m_DB;
 		tmGISScale m_Scale;
 		
+		wxBitmap * m_Bitmap;
+		
 		// init member values to default
 		void InitMemberValue();
 		
@@ -67,6 +69,10 @@ class tmLayerManager : public wxEvtHandler
 		
 		// layer specific functions
 		tmGISData * LoadLayer (tmLayerProperties * layerProp);
+		
+		// bitmap specific functions
+		void CreateBitmap (const wxSize & size); 
+		void DrawExtentIntoBitmap(const double & divfactor, const tmRealRect & extent);
 		
 		DECLARE_EVENT_TABLE()
 		

@@ -70,6 +70,7 @@ void tmLayerManager::InitMemberValue()
 	m_Parent = NULL;
 	m_DB = NULL;
 	m_GISRenderer = NULL;
+	m_Bitmap = NULL;
 }
 
 
@@ -125,6 +126,17 @@ bool tmLayerManager::UnInitLayerManager()
 	
 	wxLogDebug(_T("Clearing TOC"));
 	m_DB = NULL;
+	
+	// delete bitmap if existing 
+	if(m_Bitmap)
+	{
+		wxLogDebug(_T("deleting bitmap"));
+		delete m_Bitmap;
+		m_Bitmap = NULL;
+	}
+	
+	// clear the scale too
+	m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
 	
 	
 	// clear the ctrl
@@ -300,9 +312,14 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	wxSize * mySize = (wxSize *) event.GetClientData();
 	m_Scale.SetWindowExtent(wxRect(0,0,mySize->GetWidth(), mySize->GetHeight()));
 		
+	// create new bitmap based on size
+
+	
 	// ensure that a project is opened
 	if (!m_TOCCtrl->IsTOCReady())
 		return;
+	
+	 
 	
 	// TODO: Do computation and reload project in a thread
 	
@@ -323,6 +340,11 @@ bool tmLayerManager::LoadProjectLayers()
 		return FALSE;
 	}
 	
+	// invalidate bitmap
+	m_GISRenderer->SetBitmapStatus();
+	CreateBitmap(wxSize(m_Scale.GetWindowExtent().GetWidth(),
+						m_Scale.GetWindowExtent().GetHeight()));
+		
 	// iterate throught all layers
 	// TODO: May need a threaded version here
 	int iRank = 0;
@@ -380,8 +402,14 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	wxLogDebug(_T("Computed factor is : %.*f"), 3,
 			   m_Scale.ComputeDivFactor());
-	wxPaintEvent ev;
-	m_GISRenderer->OnPaint(ev);
+	
+	
+	// draw into bitmap
+	DrawExtentIntoBitmap(m_Scale.ComputeDivFactor(), r);
+	
+	// set active bitmap	
+	m_GISRenderer->SetBitmapStatus(m_Bitmap);
+	
 	
 	
 	return TRUE;
@@ -389,6 +417,15 @@ bool tmLayerManager::LoadProjectLayers()
 
 
 
+/***************************************************************************//**
+ @brief Load a layer
+ @details This function load a layer based on his properties (see
+ #tmLayerProperties) and return a pointer to a tmGISData object.
+ @param layerProp properties of layer to load (#tmLayerProperties)
+ @return  a valid pointer to a tmGISData or NULL if something goes wrong
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 July 2008
+ *******************************************************************************/
 tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 {
 	wxASSERT(layerProp);
@@ -438,3 +475,56 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 		
 	return m_Data;
 }
+
+
+
+
+void tmLayerManager::CreateBitmap (const wxSize & size)
+{
+	if (m_Bitmap)
+	{
+		wxLogDebug(_T("deleting bitmap"));
+		delete m_Bitmap;
+		m_Bitmap = NULL;
+	}
+	
+	m_Bitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
+				   wxLogDebug(_T("Creating bitmap"));
+	
+}
+
+
+
+void tmLayerManager::DrawExtentIntoBitmap(const double & divfactor, const tmRealRect & extent)
+{
+	if (!m_Bitmap)
+	{
+		wxLogDebug(_T("No bitmap present, unable to draw into"));
+		return;
+	}
+	
+	
+	wxMemoryDC temp_dc;
+	temp_dc.SetAxisOrientation(TRUE, TRUE);
+	temp_dc.SelectObject(*m_Bitmap);
+	
+	double xmax = (extent.x_max - extent.x_min) / divfactor;
+	double ymax = ( extent.y_max - extent.y_min) / divfactor;
+	
+	wxLogDebug(_T("Computed size : %.*f, %.*f"), 2, (extent.x_max - extent.x_min),
+			   2, ( extent.y_max - extent.y_min));
+	
+	wxLogDebug(_T("divized size : %.*f, %.*f"), 2, (extent.x_max - extent.x_min) / divfactor,
+			 2,   ( extent.y_max - extent.y_min) / divfactor);
+
+	
+	temp_dc.DrawLine(0,0,xmax,0);
+	temp_dc.DrawLine(xmax, 0, xmax, ymax);
+	
+	wxBitmap nullbmp;
+	temp_dc.SelectObject(nullbmp);
+	
+}
+
+
+

@@ -39,6 +39,7 @@ DECLARE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED, -1)
 class tmRenderer : public wxScrolledWindow
 	{
 	private:
+		wxBitmap * m_bmp;
 		
 		DECLARE_EVENT_TABLE()
 	protected:
@@ -49,6 +50,8 @@ class tmRenderer : public wxScrolledWindow
 		void OnSizeChange(wxSizeEvent & event);
 		
 		void OnPaint(wxPaintEvent & event);
+		
+		void SetBitmapStatus(wxBitmap * bmp = NULL) {m_bmp = bmp;}
 
 		
 	};

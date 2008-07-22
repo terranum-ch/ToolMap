@@ -51,6 +51,9 @@ tmRealRect tmGISScale::ComputeMaxExtent (const tmRealRect & r1, const tmRealRect
 	if (r2 == tmRealRect(0,0,0,0))
 		return r1;
 	
+	if (r1 == r2)
+		return r1;
+	
 	tmRealRect retRect (r2.x_min,r2.y_min,r2.x_max,r2.y_max);
 	
 	if (r1.x_min < r2.x_min) 
