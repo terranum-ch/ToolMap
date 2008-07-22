@@ -29,15 +29,29 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 END_EVENT_TABLE()
 
 
+
+/***************************************************************************//**
+ @brief Constructor
+ @details Do nothing for the moment
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 July 2008
+ *******************************************************************************/
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(parent,id)
 {
-
+	m_bmp = NULL;
 	
 }
 
 
 
-
+/***************************************************************************//**
+ @brief Respond to a Size message
+ @details This function is called each time the size of the tmRenderer windows
+ change. This function does nothing but send the informations to the
+ tmLayerManager
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 July 2008
+ *******************************************************************************/
 void tmRenderer::OnSizeChange(wxSizeEvent & event)
 {
 	// new size object, will be deleted in the 
@@ -52,17 +66,36 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 
 
 
+
 void tmRenderer::OnPaint(wxPaintEvent & event)
 {
-	// draw the image
-	wxPaintDC dc (this);
-	DoPrepareDC(dc);
-	dc.Clear();
 	
-	
-	dc.SetPen(*wxBLACK_PEN); 
-	
-	
-	dc.DrawLine(0, 0, 100, 200); 
+	if (m_bmp)
+	{
+		// draw the image
+		wxPaintDC dc (this);
+		//DoPrepareDC(dc);
+		
+		dc.SetAxisOrientation(true, true);
+		//dc.ComputeScaleAndOrigin();
+		
+		dc.Clear();
+		
+		//wxCoord myCoord (50,50);
+		int x = 50; //dc.LogicalToDeviceX(50);
+		int y = 50; //dc.LogicalToDeviceYRel(50);
+			
+		dc.CrossHair(x,y );
+		
+		
+		
+		dc.SetPen(*wxBLACK_PEN); 
+		
+		
+		dc.DrawLine(0, 0, 100, 200); 
+		
+		//dc.DrawBitmap (*m_bmp,wxPoint(0,0),false);
+
+	}
 	
 }
