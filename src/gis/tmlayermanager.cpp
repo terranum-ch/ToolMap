@@ -508,8 +508,9 @@ void tmLayerManager::DrawExtentIntoBitmap(const double & divfactor, const tmReal
 	temp_dc.SetAxisOrientation(TRUE, TRUE);
 	temp_dc.SelectObject(*m_Bitmap);
 	
-	double xmax = (extent.x_max - extent.x_min) / divfactor;
-	double ymax = ( extent.y_max - extent.y_min) / divfactor;
+	int xmin = 0, ymin = 0;
+	int xmax = (extent.x_max - extent.x_min) / divfactor;
+	int ymax = ( extent.y_max - extent.y_min) / divfactor;
 	
 	wxLogDebug(_T("Computed size : %.*f, %.*f"), 2, (extent.x_max - extent.x_min),
 			   2, ( extent.y_max - extent.y_min));
@@ -518,8 +519,12 @@ void tmLayerManager::DrawExtentIntoBitmap(const double & divfactor, const tmReal
 			 2,   ( extent.y_max - extent.y_min) / divfactor);
 
 	
-	temp_dc.DrawLine(0,0,xmax,0);
-	temp_dc.DrawLine(xmax, 0, xmax, ymax);
+	m_Scale.InvertYAxis(xmin, ymin, xmax, ymax);
+	
+	temp_dc.DrawLine(xmin,ymin,xmax,ymin);
+	temp_dc.DrawLine(xmax,ymin, xmax, ymax);
+	temp_dc.DrawLine(xmax, ymax, xmin, ymax);
+	temp_dc.DrawLine(xmin, ymax, xmin, ymin);
 	
 	wxBitmap nullbmp;
 	temp_dc.SelectObject(nullbmp);

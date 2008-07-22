@@ -30,6 +30,9 @@
 #endif
 
 
+const int tmSCALE_MARGIN = 10;
+
+
 /***************************************************************************//**
  @brief Class representing real rectangle
  @details Used for storing bounding box values
@@ -54,6 +57,8 @@ class tmRealRect
 			&& wxIsSameDouble(x_max, pt.x_max) && wxIsSameDouble(y_max, pt.y_max);
 		}
 	};
+
+
 
 
 
@@ -84,6 +89,17 @@ class tmGISScale : public wxObject
 		
 		// computing scale and reduction factor
 		double ComputeDivFactor ();
+		
+		// changing orientation for y axis
+		//inline void InvertYAxis (int & x, int & y) {y = m_ExtentWnd.GetHeight() - y;}
+		inline void InvertYAxis (int & x1, int & y1, int & x2, int & y2) 
+		{
+			x1 = x1 + (tmSCALE_MARGIN / 2);
+			x2 = x2 + (tmSCALE_MARGIN / 2);
+			y1 = m_ExtentWnd.GetHeight() - y1 - (tmSCALE_MARGIN / 2);
+			y2 = m_ExtentWnd.GetHeight() -y2 - (tmSCALE_MARGIN / 2);
+		}
+		
 		
 		
 	};
