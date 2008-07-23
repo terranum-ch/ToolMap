@@ -151,7 +151,8 @@ void ToolMapFrame::PostInit()
 	
 	// create layer manager object
 	m_LayerManager = new tmLayerManager(this, m_TocWindow->GetTOCCtrl(),
-										m_MainPanel->GetGISRenderer());
+										m_MainPanel->GetGISRenderer(),
+										GetStatusBar());
 	
 	// create the database object 
 	//m_Database = new DataBaseTM();

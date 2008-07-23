@@ -59,6 +59,7 @@ class tmLayerManager : public wxEvtHandler
 		tmGISScale m_Scale;
 		
 		wxBitmap * m_Bitmap;
+		wxStatusBar * m_StatusBar;
 		
 		// init member values to default
 		void InitMemberValue();
@@ -72,13 +73,14 @@ class tmLayerManager : public wxEvtHandler
 		
 		// bitmap specific functions
 		void CreateBitmap (const wxSize & size); 
-		void DrawExtentIntoBitmap(const double & divfactor, const tmRealRect & extent);
+		void DrawExtentIntoBitmap(wxBitmap * bitmap);
 		
 		DECLARE_EVENT_TABLE()
 		
 	public:
 		// ctor / dtor
-		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer);
+		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer,
+					   wxStatusBar * status);
 		~tmLayerManager();
 		
 			
@@ -93,6 +95,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		// size operations
 		void OnSizeChange (wxCommandEvent & event);
+		void OnUpdateCoordinates (wxCommandEvent &event);
 		
 		bool LoadProjectLayers();
 		

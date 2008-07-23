@@ -34,6 +34,7 @@
 
 // EVENT FOR GIS RENDERER CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED, -1)
+DECLARE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED , -1)
 
 
 class tmRenderer : public wxScrolledWindow
@@ -54,6 +55,8 @@ class tmRenderer : public wxScrolledWindow
 		void OnPaint(wxPaintEvent & event);
 		
 		void SetBitmapStatus(wxBitmap * bmp = NULL) {m_bmp = bmp;}
+		
+		void OnMouseMouve (wxMouseEvent & event);
 
 		
 	};

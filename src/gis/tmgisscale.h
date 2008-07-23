@@ -67,6 +67,8 @@ class tmGISScale : public wxObject
 	private:
 		tmRealRect m_ExtentMaxLayers;
 		wxRect m_ExtentWnd;
+		tmRealRect m_ExtentWndReal;
+		double m_PixelSize;
 		
 		void InitMemberValues();
 		
@@ -76,7 +78,8 @@ class tmGISScale : public wxObject
 		~tmGISScale();
 		
 		// static functions
-		static tmRealRect ComputeMaxExtent (const tmRealRect & r1, const tmRealRect & r2);
+		static tmRealRect ComputeMaxCoord (const tmRealRect & r1, const tmRealRect & r2);
+		
 		
 		// setter and getter for layers
 		void SetMaxLayersExtentAsExisting (const tmRealRect & r);
@@ -88,19 +91,25 @@ class tmGISScale : public wxObject
 		wxRect GetWindowExtent () {return m_ExtentWnd;}
 		
 		// computing scale and reduction factor
-		double ComputeDivFactor ();
+		double ComputeDivFactor (wxSize wnd_extent = wxDefaultSize);
+		bool ComputeMaxExtent (); 
+		wxSize ComputeCenterPxWnd (double divratio, wxSize wnd_extent = wxDefaultSize);
+		bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
 		
-		// changing orientation for y axis
-		//inline void InvertYAxis (int & x, int & y) {y = m_ExtentWnd.GetHeight() - y;}
-		inline void InvertYAxis (int & x1, int & y1, int & x2, int & y2) 
+		
+		// converting pixels - real (with inverting y axis)
+		inline wxRealPoint PixelToReal (wxPoint pt)
 		{
-			x1 = x1 + (tmSCALE_MARGIN / 2);
-			x2 = x2 + (tmSCALE_MARGIN / 2);
-			y1 = m_ExtentWnd.GetHeight() - y1 - (tmSCALE_MARGIN / 2);
-			y2 = m_ExtentWnd.GetHeight() -y2 - (tmSCALE_MARGIN / 2);
+			return (wxRealPoint( m_ExtentWndReal.x_min + (pt.x * m_PixelSize),
+								m_ExtentWndReal.y_min + (pt.y * m_PixelSize)));
 		}
 		
-		
+		inline wxPoint RealToPixel (wxRealPoint realpt)
+		{
+			return (wxPoint((realpt.x - m_ExtentWndReal.x_min) / m_PixelSize,
+							m_ExtentWnd.GetHeight() - ((realpt.y - m_ExtentWndReal.y_min) / m_PixelSize)));
+			
+		}
 		
 	};
 
