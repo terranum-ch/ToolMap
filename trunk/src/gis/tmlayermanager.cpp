@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD,  tmLayerManager::AddLayer)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_SIZE_CHANGED,   tmLayerManager::OnSizeChange)
+	EVT_COMMAND(wxID_ANY,tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
 END_EVENT_TABLE()
 
 
@@ -36,13 +37,15 @@ END_EVENT_TABLE()
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer)
+tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, 
+							   tmRenderer * renderer,  wxStatusBar * status)
 {
 	InitMemberValue();
 	
 	m_TOCCtrl = tocctrl;
 	m_GISRenderer = renderer;
 	m_Parent = parent;
+	m_StatusBar = status;
 	m_Parent->PushEventHandler(this);
 }
 
@@ -71,6 +74,7 @@ void tmLayerManager::InitMemberValue()
 	m_DB = NULL;
 	m_GISRenderer = NULL;
 	m_Bitmap = NULL;
+	m_StatusBar = NULL;
 }
 
 
@@ -331,6 +335,27 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 
 
 
+void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
+{
+	if (!m_StatusBar)
+		return;
+	
+	// ensure that a project is opened
+	if (!m_TOCCtrl->IsTOCReady())
+		return;
+	
+	wxPoint * mousepoint = (wxPoint*) event.GetClientData();
+	wxRealPoint mouserealpoint = m_Scale.PixelToReal(*mousepoint);
+	delete mousepoint;
+	
+	wxString sCoord = wxString::Format(_T("x: %.*f -- y: %.*f"),
+									   4, mouserealpoint.x, 4, mouserealpoint.y);
+	m_StatusBar->SetStatusText(sCoord, 1);
+}
+
+
+
+
 bool tmLayerManager::LoadProjectLayers()
 {
 	// ensure that TOC ctrl isn't empty
@@ -405,7 +430,8 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	
 	// draw into bitmap
-	DrawExtentIntoBitmap(m_Scale.ComputeDivFactor(), r);
+	m_Scale.ComputeMaxExtent();
+	DrawExtentIntoBitmap(m_Bitmap);
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -495,9 +521,9 @@ void tmLayerManager::CreateBitmap (const wxSize & size)
 
 
 
-void tmLayerManager::DrawExtentIntoBitmap(const double & divfactor, const tmRealRect & extent)
+void tmLayerManager::DrawExtentIntoBitmap(wxBitmap * bitmap)
 {
-	if (!m_Bitmap)
+	if (!bitmap)
 	{
 		wxLogDebug(_T("No bitmap present, unable to draw into"));
 		return;
@@ -505,29 +531,22 @@ void tmLayerManager::DrawExtentIntoBitmap(const double & divfactor, const tmReal
 	
 	
 	wxMemoryDC temp_dc;
-	temp_dc.SetAxisOrientation(TRUE, TRUE);
-	temp_dc.SelectObject(*m_Bitmap);
+	temp_dc.SelectObject(*bitmap);
 	
 	temp_dc.SetPen(*wxRED_PEN);
 	temp_dc.SetBackground(*wxWHITE);
 	
-	int xmin = 0, ymin = 0;
-	int xmax = (extent.x_max - extent.x_min) / divfactor;
-	int ymax = ( extent.y_max - extent.y_min) / divfactor;
+	tmRealRect myRealExt = m_Scale.GetMaxLayersExtent();
 	
-	wxLogDebug(_T("Computed size : %.*f, %.*f"), 2, (extent.x_max - extent.x_min),
-			   2, ( extent.y_max - extent.y_min));
+	wxPoint pts[5];
+	pts[0] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
+	pts[1] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_min));
+	pts[2] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_max));
+	pts[3] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_max));
+	pts[4] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
 	
-	wxLogDebug(_T("divized size : %.*f, %.*f"), 2, (extent.x_max - extent.x_min) / divfactor,
-			 2,   ( extent.y_max - extent.y_min) / divfactor);
+	temp_dc.DrawLines(5, pts);
 
-	
-	m_Scale.InvertYAxis(xmin, ymin, xmax, ymax);
-	
-	temp_dc.DrawLine(xmin,ymin,xmax,ymin);
-	temp_dc.DrawLine(xmax,ymin, xmax, ymax);
-	temp_dc.DrawLine(xmax, ymax, xmin, ymax);
-	temp_dc.DrawLine(xmin, ymax, xmin, ymin);
 	
 	wxBitmap nullbmp;
 	temp_dc.SelectObject(nullbmp);

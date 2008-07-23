@@ -21,11 +21,13 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
+DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_SIZE(tmRenderer::OnSizeChange)
 	EVT_PAINT ( tmRenderer::OnPaint)
+	EVT_MOTION (tmRenderer::OnMouseMouve)
 END_EVENT_TABLE()
 
 
@@ -83,3 +85,18 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	}
 	
 }
+
+			
+
+void tmRenderer::OnMouseMouve (wxMouseEvent & event)
+{
+	// new point object, will be deleted in the layer
+	// manager
+	wxPoint * myPoint = new wxPoint(event.GetPosition());
+	
+	wxCommandEvent evt(tmEVT_LM_MOUSE_MOVED, wxID_ANY);
+	evt.SetClientData(myPoint);
+	GetEventHandler()->AddPendingEvent(evt);
+}
+
+
