@@ -435,6 +435,7 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
+	m_GISRenderer->Refresh();
 	
 	
 	
@@ -516,6 +517,13 @@ void tmLayerManager::CreateBitmap (const wxSize & size)
 	
 	m_Bitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
 				   wxLogDebug(_T("Creating bitmap"));
+
+	// ensure that the bitmap is white (win and linux)
+	wxMemoryDC dc;
+	dc.SelectObject (*m_Bitmap);
+	dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
+	dc.SetPen (wxPen(*wxWHITE_PEN));
+	dc.DrawRectangle (0,0,size.GetWidth(), size.GetHeight());
 	
 }
 
