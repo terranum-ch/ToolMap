@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
+	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnZoomToFit)
 
 	EVT_MENU (ID_MENU_QUERIES, ToolMapFrame::OnShowQueryManager)
 
@@ -341,7 +342,7 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     itemToolBar3->AddTool(ID_TOOL1, _("Select"), itemtool4Bitmap, wxNullBitmap, wxITEM_NORMAL, _T(""), wxEmptyString);
 	wxBitmap itemtool5Bitmap(wxGetBitmapFromMemory(tool2));
     wxBitmap itemtool5BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL2, _T("Fit"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _T("Fit"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool6Bitmap(wxGetBitmapFromMemory(tool3));
     wxBitmap itemtool6BitmapDisabled;
     itemToolBar3->AddTool(ID_TOOL3, _T("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
@@ -620,6 +621,13 @@ void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
 {
 	m_LayerManager->AddLayer(event);
 }
+
+
+void ToolMapFrame::OnZoomToFit (wxCommandEvent & event)
+{
+	m_LayerManager->OnZoomToFit();
+}
+
 
 
 void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)

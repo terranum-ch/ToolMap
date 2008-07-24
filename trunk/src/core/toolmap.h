@@ -257,6 +257,7 @@ private:
 	
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
+	void OnZoomToFit (wxCommandEvent & event);
 	
 	void OnShowQueryManager (wxCommandEvent & event);
 	
