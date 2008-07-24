@@ -541,7 +541,13 @@ bool DataBase::DataBaseQueryNoResult(wxString myQuery)
 bool DataBase::DataBaseQuery(const wxString & myQuery)
 {
 	pResults = NULL;
-	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8) );
+	
+	// conversion Unicode wxString -> const char *
+	char * buffer = new char [myQuery.Length()+2];
+	strcpy(buffer, (const char*)myQuery.mb_str(wxConvUTF8));
+
+	
+	int iRetour = mysql_query(pMySQL, buffer);
 	if (iRetour == 0) 
 	{
 		pResults = mysql_store_result(pMySQL);
@@ -898,5 +904,44 @@ bool DataBase::DataBaseSetCharacterSet (enum Lang_Flag myFlag)
 
 
 	return FALSE;
+}
+
+
+
+/***************************************************************************//**
+ @brief Init internal variables for new thread
+ @details Call this function to init internal values for each new
+ thread.
+ @return TRUE if thread init success, FALSE in case of faillure. An
+ LogDebug message is also issued
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+bool DataBase::DataBaseNewThreadInit()
+{
+	if (mysql_thread_init() == 0)
+	{
+		
+		return TRUE;
+	}
+	else
+	{
+		// try to get the last error
+		wxLogDebug(DataBaseGetLastError());
+		return FALSE;
+	}
+}
+
+
+/***************************************************************************//**
+ @brief End internal variables for new thread
+ @details Call this function for each thread you have called
+ DataBase::DataBaseNewThreadInit()
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+void DataBase::DataBaseNewThreadUnInit()
+{
+	mysql_thread_end();
 }
 
