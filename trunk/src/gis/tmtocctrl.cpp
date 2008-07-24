@@ -373,6 +373,9 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 				
 		// change item image
 		EditLayer(itemdata, clickedid);
+		
+		// change item data
+		
 	}
 	
 	event.Skip();

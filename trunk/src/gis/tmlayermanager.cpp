@@ -487,6 +487,8 @@ bool tmLayerManager::ReloadProjectLayersThreadStart()
 	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
 							  m_Scale.GetWindowExtent().GetHeight()));
 	
+	// prepare loading of mySQL data in tmGISData
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
 		
 	// start a thread if not existing,
 	// stop the existing otherwise.
@@ -497,12 +499,13 @@ bool tmLayerManager::ReloadProjectLayersThreadStart()
 	}
 	
 		
-	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB);
+	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, &m_Drawer);
 	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(_T("Can't create thread for GIS data loading"));
 		return FALSE;
 	}
+	wxLogDebug(_T("Gis thread started..."));
 	m_Thread->Run();
 	
 	
@@ -517,14 +520,13 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	wxLogDebug(_T("GIS thread finished"));
 	m_Thread = NULL; // thread finished
 	
+	// FIXME: This code is optional for debug purpose (or options)
 	// draw into bitmap
-	//m_Scale.ComputeMaxExtent();
-	
-	
-	//m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
+	m_Scale.ComputeMaxExtent();
+	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
 	
 	// set active bitmap	
-	//m_GISRenderer->SetBitmapStatus(m_Bitmap);
+	m_GISRenderer->SetBitmapStatus(m_Bitmap);
 	m_GISRenderer->Refresh();
 	return;
 	
@@ -627,22 +629,20 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 
 tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
 											   tmGISScale * scale,
-											   DataBaseTM * database)
+											   DataBaseTM * database,
+											   tmDrawer * drawer)
 {
 	m_Parent = parent;
 	m_TOC = toc;
 	m_Scale = scale;
 	m_DB = database;
 	m_Stop = FALSE;
-	
-	// init new thread support
-	m_DB->DataBaseNewThreadInit();
-	
+	m_Drawer = drawer;
 }
 
 tmGISLoadingDataThread::~tmGISLoadingDataThread()
 {
-	m_DB->DataBaseNewThreadUnInit();
+	
 }
 
 
@@ -657,20 +657,16 @@ tmGISLoadingDataThread::~tmGISLoadingDataThread()
  *******************************************************************************/
 void * tmGISLoadingDataThread::Entry()
 {
-	// iterate throught all layers
+	// variables 
+	bool breakthread = false;
 	int iRank = 0;
 	tmLayerProperties * itemProp = NULL;
 	tmRealRect myExtent (0,0,0,0);
 	
 	
-	// prepare loading of MySQL data
+	// Init new thread
+	m_DB->DataBaseNewThreadInit();
 	
-	//m_DB->DataBaseIsOpen();
-	
-	m_DB->DataBaseListTables();
-	
-	/*
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
 	while (1)
 	{
 		if (iRank == 0)
@@ -685,13 +681,15 @@ void * tmGISLoadingDataThread::Entry()
 		if (!itemProp)
 			break;
 		
+		// TODO: remove this temp code
+		Sleep(200);
 		// exit thread
 		if (m_Stop == TRUE)
 		{
-			wxLogDebug(_T("GIS thread stoped"));
-			return NULL;
+			breakthread = true;
+			//wxLogDebug(_T("GIS thread stoped"));
+			break;
 		}
-		
 		
 		// loading data
 		tmGISData * layerData = tmLayerManager::LoadLayer(itemProp);
@@ -699,21 +697,8 @@ void * tmGISLoadingDataThread::Entry()
 		// processing and deleting data
 		if (layerData && itemProp->m_LayerVisible)
 		{
-			
-			
-			
-			//wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
-			//wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
-			
-			// computing extend 
-			
-			// TODO: Remove this later, this is temp code
+			// computing max visible extend 
 			myExtent = layerData->GetMinimalBoundingRectangle();
-			wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
-					   2,myExtent.x_min, 2, myExtent.y_min,
-					   2, myExtent.x_max, 2, myExtent.y_max);
-			//
-			
 			m_Scale->SetMaxLayersExtentAsExisting(myExtent);
 			delete layerData;
 		}
@@ -722,15 +707,23 @@ void * tmGISLoadingDataThread::Entry()
 		// exit thread
 		if (m_Stop == TRUE)
 		{
-			wxLogDebug(_T("GIS thread stoped"));
-			return NULL;
+			breakthread = true;
+			break;
 		}
-	}*/
+	}
 	
 	
+	
+	// uninit thread variables
+	m_DB->DataBaseNewThreadUnInit();
+	
+	// if the thread was stopped
+	if (breakthread)
+		return NULL;
+	
+	// if thread finished correctly, send a message to
+	// the layer manager to display the new image
 	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
-	//sProgress.Append(TMPROGRESS_INDICATOR_CHAR); 
-	//evt.SetString(m_Message + sProgress);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	return NULL;
 }
