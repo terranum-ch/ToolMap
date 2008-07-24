@@ -34,8 +34,12 @@
 #include "tmgisdata.h"					// for GISdata
 #include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
 #include "tmrenderer.h"					// for GIS rendering
+#include "tmdrawer.h"					// for drawing into bitmaps
 
+// forward declaration
+class tmGISLoadingDataThread;
 
+DECLARE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED, -1)
 
 
 /***************************************************************************//**
@@ -57,6 +61,7 @@ class tmLayerManager : public wxEvtHandler
 		wxWindow * m_Parent;
 		DataBaseTM * m_DB;
 		tmGISScale m_Scale;
+		tmDrawer m_Drawer;
 		
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
@@ -67,13 +72,13 @@ class tmLayerManager : public wxEvtHandler
 		// TOC specific functions
 		void FillTOCArray();
 		bool SaveTOCStatus();
+		bool IsOK ();
 		
 		// layer specific functions
 		tmGISData * LoadLayer (tmLayerProperties * layerProp);
 		
 		// bitmap specific functions
 		void CreateBitmap (const wxSize & size); 
-		void DrawExtentIntoBitmap(wxBitmap * bitmap);
 		
 		DECLARE_EVENT_TABLE()
 		
@@ -97,12 +102,39 @@ class tmLayerManager : public wxEvtHandler
 		void OnSizeChange (wxCommandEvent & event);
 		void OnUpdateCoordinates (wxCommandEvent &event);
 		
-		bool LoadProjectLayers();
+		// zoom operations
+		void OnZoomToFit ();
 		
+		bool LoadProjectLayers();
+		bool ReloadProjectLayersThreadStart();
+		void OnReloadProjectLayersDone (wxCommandEvent & event);
 		
 		
 	};
 
+
+
+
+/***************************************************************************//**
+ @brief Thread Class for loading GIS data
+ @note Don't call this class directly, use the tmLayerManager class
+ instead
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+class tmGISLoadingDataThread : public wxThread
+	{
+	private:
+		bool m_Stop;
+	protected:
+		wxWindow * m_Parent;
+		
+	public:
+		tmGISLoadingDataThread(wxWindow * parent) : 
+		m_Parent(parent), m_Stop(FALSE) {}
+		virtual void * Entry();
+		void StopThread (){m_Stop = TRUE;}
+	};
 
 
 

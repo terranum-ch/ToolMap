@@ -20,7 +20,7 @@
 #include "tmlayermanager.h"
 
 
-
+DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED)
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
@@ -269,8 +269,12 @@ void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 void tmLayerManager::AddLayer (wxCommandEvent & event)
 {
 	// check that the a project was opened !
-	if (!m_TOCCtrl->IsTOCReady())
+	// normal project contain 4 layers minimum
+	if (!IsOK())
 		return;
+		
+	//if (!m_TOCCtrl->IsTOCReady())
+	//	return;
 	
 	
 	
@@ -320,7 +324,9 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 
 	
 	// ensure that a project is opened
-	if (!m_TOCCtrl->IsTOCReady())
+	//if (!m_TOCCtrl->IsTOCReady())
+	//	return;
+	if (!IsOK())
 		return;
 	
 	 
@@ -341,8 +347,10 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 		return;
 	
 	// ensure that a project is opened
-	if (!m_TOCCtrl->IsTOCReady())
+	if (!IsOK())
 		return;
+	//if (!m_TOCCtrl->IsTOCReady())
+	//	return;
 	
 	wxPoint * mousepoint = (wxPoint*) event.GetClientData();
 	wxRealPoint mouserealpoint = m_Scale.PixelToReal(*mousepoint);
@@ -355,8 +363,21 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 
 
 
+void tmLayerManager::OnZoomToFit ()
+{
+	wxLogDebug(_T("On zoom to fit"));
+}
 
-bool tmLayerManager::LoadProjectLayers()
+
+
+
+/***************************************************************************//**
+ @brief Is the layer manager ready with some project
+ @return  TRUE if some layers are loaded into the project, FALSE otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+bool tmLayerManager::IsOK()
 {
 	// ensure that TOC ctrl isn't empty
 	if (m_TOCCtrl->GetCountLayers() == 0)
@@ -364,6 +385,14 @@ bool tmLayerManager::LoadProjectLayers()
 		wxLogDebug(_T("No data loaded into the TOC ctrl, load data into the TOC first"));
 		return FALSE;
 	}
+	return TRUE;
+}
+
+
+bool tmLayerManager::LoadProjectLayers()
+{
+	if (!IsOK())
+		return FALSE; 
 	
 	// invalidate bitmap
 	m_GISRenderer->SetBitmapStatus();
@@ -371,7 +400,6 @@ bool tmLayerManager::LoadProjectLayers()
 						m_Scale.GetWindowExtent().GetHeight()));
 		
 	// iterate throught all layers
-	// TODO: May need a threaded version here
 	int iRank = 0;
 	tmLayerProperties * itemProp = NULL;
 	tmRealRect myExtent (0,0,0,0);
@@ -396,52 +424,64 @@ bool tmLayerManager::LoadProjectLayers()
 		// loading data
 		tmGISData * layerData = LoadLayer(itemProp);
 		
-		
 		// processing and deleting data
 		if (layerData && itemProp->m_LayerVisible)
 		{
-			wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
-			wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
+			//wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
+			//wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
 			
 			// computing extend 
-							
+			
+			// TODO: Remove this later, this is temp code
 			myExtent = layerData->GetMinimalBoundingRectangle();
 			wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
 					   2,myExtent.x_min, 2, myExtent.y_min,
 					   2, myExtent.x_max, 2, myExtent.y_max);
+			//
 			
 			m_Scale.SetMaxLayersExtentAsExisting(myExtent);
-		
 			delete layerData;
 		}
-		
-		
 		iRank ++;
-		
 	}
 	
-	tmRealRect r = m_Scale.GetMaxLayersExtent();
+	//tmRealRect r = m_Scale.GetMaxLayersExtent();
 	
-	wxLogDebug(_T("Max visible extent is : %.*f, %.*f -- %.*f, %.*f"),
-			   2, r.x_min, 2, r.y_min, 2, r.x_max, 2, r.y_max );
+	//wxLogDebug(_T("Max visible extent is : %.*f, %.*f -- %.*f, %.*f"),
+	//		   2, r.x_min, 2, r.y_min, 2, r.x_max, 2, r.y_max );
 	
-	wxLogDebug(_T("Computed factor is : %.*f"), 3,
-			   m_Scale.ComputeDivFactor());
+	//wxLogDebug(_T("Computed factor is : %.*f"), 3,
+	//		   m_Scale.ComputeDivFactor());
 	
 	
 	// draw into bitmap
 	m_Scale.ComputeMaxExtent();
-	DrawExtentIntoBitmap(m_Bitmap);
+	
+
+	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
 	m_GISRenderer->Refresh();
-	
-	
-	
 	return TRUE;
 }
 
+
+
+bool tmLayerManager::ReloadProjectLayersThreadStart()
+{
+	// start a thread if not existing,
+	// stop the existing otherwise.
+	
+	
+
+	return TRUE;
+}	
+
+void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
+{
+	
+}
 
 
 /***************************************************************************//**
@@ -529,37 +569,35 @@ void tmLayerManager::CreateBitmap (const wxSize & size)
 
 
 
-void tmLayerManager::DrawExtentIntoBitmap(wxBitmap * bitmap)
-{
-	if (!bitmap)
-	{
-		wxLogDebug(_T("No bitmap present, unable to draw into"));
-		return;
-	}
-	
-	
-	wxMemoryDC temp_dc;
-	temp_dc.SelectObject(*bitmap);
-	
-	temp_dc.SetPen(*wxRED_PEN);
-	temp_dc.SetBackground(*wxWHITE);
-	
-	tmRealRect myRealExt = m_Scale.GetMaxLayersExtent();
-	
-	wxPoint pts[5];
-	pts[0] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
-	pts[1] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_min));
-	pts[2] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_max));
-	pts[3] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_max));
-	pts[4] = m_Scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
-	
-	temp_dc.DrawLines(5, pts);
 
-	
-	wxBitmap nullbmp;
-	temp_dc.SelectObject(nullbmp);
-	
+
+
+
+/****************************** THREAD CLASS FUNCTION BELOW ***********************/
+
+/***************************************************************************//**
+ @brief Entry point for thread
+ @details This function is loading the layers using thread. Allowing user to
+ stop the loading process if for exemple the image size has changed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+void * tmGISLoadingDataThread::Entry()
+{
+
+			// exit thread
+			if (m_Stop == TRUE)
+				return NULL;
+			
+			
+			wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
+			//sProgress.Append(TMPROGRESS_INDICATOR_CHAR); 
+			//evt.SetString(m_Message + sProgress);
+			m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	return NULL;
 }
+
+
 
 
 
