@@ -280,6 +280,10 @@ public:
 	static void DataBaseCloseLibrary();
 
    static void DataBaseConvertWindowsPath (wxString & spath);
+	
+	bool DataBaseNewThreadInit();
+	
+	void DataBaseNewThreadUnInit();
     
 protected:
 	MYSQL * pMySQL;

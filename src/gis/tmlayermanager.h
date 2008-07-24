@@ -62,6 +62,7 @@ class tmLayerManager : public wxEvtHandler
 		DataBaseTM * m_DB;
 		tmGISScale m_Scale;
 		tmDrawer m_Drawer;
+		tmGISLoadingDataThread * m_Thread;
 		
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
@@ -74,11 +75,9 @@ class tmLayerManager : public wxEvtHandler
 		bool SaveTOCStatus();
 		bool IsOK ();
 		
-		// layer specific functions
-		tmGISData * LoadLayer (tmLayerProperties * layerProp);
-		
+			
 		// bitmap specific functions
-		void CreateBitmap (const wxSize & size); 
+		void CreateEmptyBitmap (const wxSize & size); 
 		
 		DECLARE_EVENT_TABLE()
 		
@@ -97,6 +96,7 @@ class tmLayerManager : public wxEvtHandler
 		// layers operations
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
+		static tmGISData * LoadLayer (tmLayerProperties * layerProp);
 		
 		// size operations
 		void OnSizeChange (wxCommandEvent & event);
@@ -128,10 +128,15 @@ class tmGISLoadingDataThread : public wxThread
 		bool m_Stop;
 	protected:
 		wxWindow * m_Parent;
+		tmTOCCtrl * m_TOC;
+		tmGISScale * m_Scale;
+		DataBaseTM * m_DB;
 		
 	public:
-		tmGISLoadingDataThread(wxWindow * parent) : 
-		m_Parent(parent), m_Stop(FALSE) {}
+		tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
+							   tmGISScale * scale,
+							   DataBaseTM * database);
+		~tmGISLoadingDataThread();
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}
 	};
