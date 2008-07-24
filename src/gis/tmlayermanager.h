@@ -131,11 +131,13 @@ class tmGISLoadingDataThread : public wxThread
 		tmTOCCtrl * m_TOC;
 		tmGISScale * m_Scale;
 		DataBaseTM * m_DB;
+		tmDrawer * m_Drawer;
 		
 	public:
 		tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
 							   tmGISScale * scale,
-							   DataBaseTM * database);
+							   DataBaseTM * database,
+							   tmDrawer * drawer);
 		~tmGISLoadingDataThread();
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}

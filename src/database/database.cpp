@@ -123,6 +123,7 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 		
 		pMySQL = mysql_init(NULL);
 		 mysql_options(pMySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
+		mysql_thread_init();
 
 		wxLogDebug(m_DBName);
 		if(mysql_real_connect(pMySQL,NULL,NULL,NULL,(const char *)m_DBName.mb_str(wxConvUTF8),
@@ -167,6 +168,7 @@ void DataBase::DataBaseCloseLibrary()
 	// close the library if the lib was used
 	// then we must quit the program.
 	if (bIsLibInit)
+		mysql_thread_end();
 		mysql_library_end();
 }
 
