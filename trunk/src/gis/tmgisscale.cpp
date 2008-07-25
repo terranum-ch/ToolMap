@@ -159,4 +159,35 @@ bool tmGISScale::ComputeMaxExtentReal (wxSize wnd_offset)
 
 
 
+double tmGISScale::GetBestDivFactor (const wxRect & selected_rect)
+{
+	double dx = (double) m_ExtentWnd.GetWidth() / (double)selected_rect.GetWidth();
+	double dy = (double) m_ExtentWnd.GetHeight() / (double)selected_rect.GetHeight();
+	
+	if (dy < dx)
+		return dy;
+	
+	return dx;
+}
+
+
+
+void tmGISScale::ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left)
+{
+	double drealx = m_ExtentWndReal.x_max - m_ExtentWndReal.x_min;
+	double drealy = m_ExtentWndReal.y_max - m_ExtentWndReal.y_min;
+	
+	// new pixel size
+	double dOldPxSize = m_PixelSize;
+	//m_PixelSize = drealx / (m_PixelSize * ((double)calc_wnd_extent.GetWidth()));
+	
+	// set new real windows coordinates
+	m_ExtentWndReal.x_min = m_ExtentWndReal.x_min + (((double)top_left.x) * dOldPxSize);
+	m_ExtentWndReal.y_min = m_ExtentWndReal.y_min + (((double)top_left.y) * dOldPxSize);
+	m_ExtentWndReal.x_max = m_ExtentWndReal.x_min + (((double)calc_wnd_extent.GetWidth()) * dOldPxSize);
+	m_ExtentWndReal.y_max = m_ExtentWndReal.y_min + (((double)calc_wnd_extent.GetHeight()) * dOldPxSize);
+	
+	m_PixelSize = (m_ExtentWndReal.x_max - m_ExtentWndReal.x_min) / ((double)m_ExtentWnd.GetWidth());
+}
+
 

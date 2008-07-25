@@ -96,6 +96,10 @@ class tmGISScale : public wxObject
 		wxSize ComputeCenterPxWnd (double divratio, wxSize wnd_extent = wxDefaultSize);
 		bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
 		
+		// zoom functions
+		double GetBestDivFactor (const wxRect & selected_rect);
+		void ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left);
+		
 		
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)
