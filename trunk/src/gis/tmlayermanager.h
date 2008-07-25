@@ -35,6 +35,7 @@
 #include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
 #include "tmrenderer.h"					// for GIS rendering
 #include "tmdrawer.h"					// for drawing into bitmaps
+#include "tmprogress.h"					// for displaying progress during load
 
 // forward declaration
 class tmGISLoadingDataThread;
@@ -63,6 +64,7 @@ class tmLayerManager : public wxEvtHandler
 		tmGISScale m_Scale;
 		tmDrawer m_Drawer;
 		tmGISLoadingDataThread * m_Thread;
+		tmProgressIndicator * m_Progress;
 		
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
@@ -98,12 +100,14 @@ class tmLayerManager : public wxEvtHandler
 		void AddLayer (wxCommandEvent & event);
 		static tmGISData * LoadLayer (tmLayerProperties * layerProp);
 		
-		// size operations
+		// event operations
 		void OnSizeChange (wxCommandEvent & event);
 		void OnUpdateCoordinates (wxCommandEvent &event);
+		void OnShowLayer (wxCommandEvent & event);
 		
 		// zoom operations
 		void OnZoomToFit ();
+		
 		
 		bool LoadProjectLayers();
 		bool ReloadProjectLayersThreadStart();

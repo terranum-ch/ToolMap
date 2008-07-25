@@ -99,7 +99,7 @@ bool tmProgressIndicator::CheckTarget()
 bool tmProgressIndicator::CheckMessage()
 {
 	
-	if (m_MessageID < 0 || m_MessageID >= TMPROGRESS_MESSAGE_NUMBER -1)
+	if (m_MessageID < 0 || m_MessageID > TMPROGRESS_MESSAGE_NUMBER -1)
 	{
 		wxLogDebug(_T("Message is out of the limits : %d"), m_MessageID);
 		return FALSE;
@@ -125,6 +125,8 @@ tmProgressIndicator::tmProgressIndicator(wxWindow * parent) : wxEvtHandler()
 /***************************************************************************//**
  @brief Advanced constructor
  @details Init internal members and specify a target.
+ @param parent pointer to a valid wxWindow object able to process event message. 
+ Candidats are windows, frame or controls.
  @param status pointer to a valid Statusbar containing enought fields, see
  #TMPROGRESS_STATUS_FIELD
  @author Lucien Schreiber (c) CREALP 2008

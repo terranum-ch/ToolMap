@@ -77,6 +77,7 @@ void tmLayerManager::InitMemberValue()
 	m_Bitmap = NULL;
 	m_StatusBar = NULL;
 	m_Thread = NULL;
+	m_Progress = NULL;
 }
 
 
@@ -372,6 +373,25 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 
 
 
+void tmLayerManager::OnShowLayer (wxCommandEvent & event)
+{
+	
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when user press Zoom to fit
+ @details This functions does the following :
+ - Loading all visible layers (computing maximum extent)
+ - Drawing
+ This function is threaded, one can call
+ this multiple time, if a thread allready exists it will be destroyed and a new
+ one will be started
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
 void tmLayerManager::OnZoomToFit ()
 {
 	
@@ -399,7 +419,14 @@ bool tmLayerManager::IsOK()
 }
 
 
-
+/***************************************************************************//**
+ @brief Load all layers (non threaded)
+ @details This functions does closely the same that the
+ #ReloadProjectLayersThreadStart() one but isn't threaded and is called during
+ project opening.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
 bool tmLayerManager::LoadProjectLayers()
 {
 	if (!IsOK())
@@ -489,6 +516,9 @@ bool tmLayerManager::ReloadProjectLayersThreadStart()
 	
 	// prepare loading of mySQL data in tmGISData
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
+	
+	// invalidate max_extent
+	m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
 		
 	// start a thread if not existing,
 	// stop the existing otherwise.
@@ -497,6 +527,16 @@ bool tmLayerManager::ReloadProjectLayersThreadStart()
 		m_Thread->StopThread();
 		m_Thread = NULL;
 	}
+	
+	// display a progress thread
+	// only if nothing is displayed
+	if (!m_Progress)
+	{
+		m_Progress = new tmProgressIndicator(m_Parent, m_StatusBar);
+		m_Progress->SetMessage(TMPROGRESS_DRAW_DATA);
+		m_Progress->DisplayProgress();
+	}
+		
 	
 		
 	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, &m_Drawer);
@@ -524,6 +564,14 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	// draw into bitmap
 	m_Scale.ComputeMaxExtent();
 	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
+	
+	// stoping progress display
+	if (m_Progress)
+	{
+		m_Progress->StopProgress();
+		delete m_Progress;
+		m_Progress = NULL;
+	}
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -627,6 +675,17 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 
 /****************************** THREAD CLASS FUNCTION BELOW ***********************/
 
+/***************************************************************************//**
+ @brief Thread constructor
+ @param parent A valid pointer to a wxWindow object (object must be able to deal
+ with event such as wxFrame, wxControls and so on)
+ @param toc a valid pointer to the tmTOCCtrl
+ @param scale 
+ @param database 
+ @param drawer 
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
 tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
 											   tmGISScale * scale,
 											   DataBaseTM * database,
