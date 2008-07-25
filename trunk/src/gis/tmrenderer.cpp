@@ -27,7 +27,9 @@ DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_SIZE(tmRenderer::OnSizeChange)
 	EVT_PAINT ( tmRenderer::OnPaint)
-	EVT_MOTION (tmRenderer::OnMouseMouve)
+	EVT_MOTION (tmRenderer::OnMouseMove)
+	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
+	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 END_EVENT_TABLE()
 
 
@@ -41,7 +43,8 @@ END_EVENT_TABLE()
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(parent,id)
 {
 	m_bmp = NULL;
-	
+	m_SelectRect = new wxRubberBand(parent);
+	m_RubberStartCoord = wxPoint(-1,-1);
 }
 
 
@@ -87,10 +90,20 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	
 }
 
-			
 
-void tmRenderer::OnMouseMouve (wxMouseEvent & event)
+
+void tmRenderer::OnMouseDown(wxMouseEvent & event)
 {
+	RubberBandStart(event.GetPosition());
+}
+
+
+
+void tmRenderer::OnMouseMove (wxMouseEvent & event)
+{
+	// rubber band
+	RubberBandUpdate(event.GetPosition());
+	
 	// new point object, will be deleted in the layer
 	// manager
 	wxPoint * myPoint = new wxPoint(event.GetPosition());
@@ -101,3 +114,36 @@ void tmRenderer::OnMouseMouve (wxMouseEvent & event)
 }
 
 
+
+void tmRenderer::OnMouseUp(wxMouseEvent & event)
+{
+	RubberBandStop();
+	
+}
+
+
+void tmRenderer::RubberBandStart (const wxPoint & mousepos)
+{
+	m_RubberStartCoord = mousepos;
+}
+
+
+void tmRenderer::RubberBandUpdate(const wxPoint & mousepos)
+{
+	if (m_RubberStartCoord == wxPoint (-1,-1))
+		return;
+	
+	m_SelectRect->SetGeometry(m_RubberStartCoord, mousepos);
+
+}
+
+
+
+void tmRenderer::RubberBandStop()
+{
+	if (m_RubberStartCoord == wxPoint(-1,-1))
+		return;
+	
+	m_SelectRect->ClearOldRubberRect();
+	m_RubberStartCoord = wxPoint(-1,-1);
+}

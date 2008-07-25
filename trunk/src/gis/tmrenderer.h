@@ -30,11 +30,19 @@
 #endif
 
 #include <wx/scrolwin.h>	// for scrolled window base
+#include "../gui/wxrubberband.h"	// for selection rubber band
 
 
 // EVENT FOR GIS RENDERER CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED , -1)
+
+enum tmGIS_TOOL
+{
+	tmTOOL_SELECT = 0,
+	tmTOOL_ZOOM_RECTANGLE,
+	tmTOOL_PAN
+};
 
 
 class tmRenderer : public wxScrolledWindow
@@ -42,13 +50,27 @@ class tmRenderer : public wxScrolledWindow
 	private:
 		wxBitmap * m_bmp;
 		
+		// rubber band
+		wxRubberBand * m_SelectRect;
+		wxPoint m_RubberStartCoord;
+		
+		// mouse event function
+		void OnMouseDown	(wxMouseEvent & event);
+		void OnMouseMove	(wxMouseEvent & event);
+		void OnMouseUp		(wxMouseEvent & event);	
+	
+		
 		DECLARE_EVENT_TABLE()
 	protected:
-		 
 		
+		// rubber band functions
+		void RubberBandStart (const wxPoint & mousepos);
+		void RubberBandUpdate(const wxPoint & mousepos);
+		void RubberBandStop();
+	
 	public:
 		tmRenderer(wxWindow * parent, wxWindowID id);
-		~tmRenderer(){;}
+		~tmRenderer(){ delete m_SelectRect;}
 		
 		void OnSizeChange(wxSizeEvent & event);
 		
@@ -56,8 +78,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		void SetBitmapStatus(wxBitmap * bmp = NULL) {m_bmp = bmp;}
 		
-		void OnMouseMouve (wxMouseEvent & event);
-
+		void SetSelectedTool (tmGIS_TOOL selected_tool);
 		
 	};
 
