@@ -29,6 +29,8 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
 	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_GISDATALOADED, tmLayerManager::OnReloadProjectLayersDone)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_SHOW_HIDE, tmLayerManager::OnShowLayer)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
 END_EVENT_TABLE()
 
 
@@ -398,6 +400,41 @@ void tmLayerManager::OnZoomToFit ()
 	ReloadProjectLayersThreadStart();
 }
 
+
+
+void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
+{
+	// computing best ratio between actuall windows size 
+	// and selection size
+	wxRect * mySelectedRect = (wxRect *) event.GetClientData();
+	double dSmaller = m_Scale.GetBestDivFactor(*mySelectedRect);
+	
+	// calcul the new reduced window size (px)
+	wxRect myActualExtent = m_Scale.GetWindowExtent();
+	wxRect myNewWndExtent (0,0,0,0);
+	double dwidth = ((double) myActualExtent.GetWidth()) / dSmaller;
+	double dheight = ((double) myActualExtent.GetHeight()) / dSmaller;
+	
+	myNewWndExtent.SetWidth((int) dwidth);
+	myNewWndExtent.SetHeight((int) dheight);
+	
+	// modify the real window extent
+	m_Scale.ComputeNewRealExtent(myNewWndExtent, 
+								 wxPoint(mySelectedRect->GetX(),
+										 mySelectedRect->GetY()));
+	
+	// reload data
+	ReloadProjectLayersThreadStart(FALSE);
+	delete mySelectedRect;
+}
+
+
+
+void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
+{
+	wxRect * mySelectedRect = (wxRect *) event.GetClientData();
+	delete mySelectedRect;
+}
 
 
 

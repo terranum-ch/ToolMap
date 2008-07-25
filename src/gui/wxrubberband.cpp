@@ -24,10 +24,7 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 25 July 2008
  *******************************************************************************/
-
-
 #include "wxrubberband.h"
-
 
 
 // default constructor
@@ -48,7 +45,6 @@ wxRubberBand::wxRubberBand(wxWindow *wnd)
 // destructor
 wxRubberBand::~wxRubberBand()
 {
-	// do nothing for the moment
 }
 
 void wxRubberBand::RubberInitValues()
@@ -63,7 +59,7 @@ void wxRubberBand::RubberInitValues()
 	
 }
 
-void wxRubberBand::SetGeometry(int x, int y, int width, int height)
+/*void wxRubberBand::SetGeometry(int x, int y, int width, int height)
 {
 	
 		wxClientDC MyDC(theWnd);
@@ -72,7 +68,7 @@ void wxRubberBand::SetGeometry(int x, int y, int width, int height)
 		MyDC.SetPen (thePen);
 		if (VerifyRubberLines(x,y,width,height)) // must be not null see documentation
 			DrawRectangleLines (&MyDC,x,y,width,height);
-}
+}*/
 
 
 
@@ -103,7 +99,7 @@ void wxRubberBand::SetGeometry (const wxPoint & posStart, const  wxPoint & posEn
 }
 
 
-void wxRubberBand::DrawRectangleLines(wxDC * MyDC,int x, int y, int width, int height)
+/*void wxRubberBand::DrawRectangleLines(wxDC * MyDC,int x, int y, int width, int height)
 {
 	// dessine new lines
 	MyDC->DrawLine (x,y, x+width,y);				// top segment
@@ -129,7 +125,7 @@ void wxRubberBand::DrawRectangleLines(wxDC * MyDC,int x, int y, int width, int h
 	theOldRubberRect.width = width;
 	theOldRubberRect.height = height;
 
-}
+}*/
 
 
 void wxRubberBand::SetPen()
@@ -139,7 +135,8 @@ void wxRubberBand::SetPen()
 	
 }
 
-bool wxRubberBand::VerifyRubberLines(int x, int y, int width, int height)
+
+/*bool wxRubberBand::VerifyRubberLines(int x, int y, int width, int height)
 {
 	if (x < 0 || y < 0)
 		return FALSE;
@@ -147,12 +144,14 @@ bool wxRubberBand::VerifyRubberLines(int x, int y, int width, int height)
 		return FALSE;
 	return TRUE;
 
-}
+}*/
+
 
 void wxRubberBand::SetPen(wxPen &pen)
 {
 	thePen = pen;
 }
+
 
 void wxRubberBand::ClearOldRubberRect()
 {
@@ -186,6 +185,56 @@ void wxRubberBand::EraseLastRubber (wxDC * dc)
 		};
 		dc->DrawLines(5, oldPts, 0, 0);
 	}
+}
+
+
+bool wxRubberBand::IsSelectedRectangleValid()
+{
+	// empty values
+	if (m_OldPosStart == wxPoint (-1,-1) || m_OldPosEnd == wxPoint(-1,-1))
+	{
+		wxLogDebug(_T("Rubber band isn't valid : Start or stop position are empty"));
+		return FALSE;
+	}
+	
+	// minimum one pixels width
+	if (m_OldPosEnd.x - m_OldPosStart.x == 0 || 
+		m_OldPosEnd.y - m_OldPosStart.y == 0)
+	{
+		wxLogDebug(_T("Rubber band size is too small"));
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+
+
+bool wxRubberBand::IsSelectedRectanglePositive()
+{
+	if (m_OldPosEnd.x - m_OldPosStart.x > 0)
+	{
+		return TRUE;
+	}
+	
+	if (m_OldPosEnd.y - m_OldPosStart.y > 0)
+	{
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+
+
+wxRect wxRubberBand::GetSelectedRectangle()
+{
+	if (IsSelectedRectanglePositive())
+	{
+		return wxRect(m_OldPosStart, m_OldPosEnd);
+	}
+	else
+		return wxRect (m_OldPosEnd, m_OldPosStart);
 }
 
 

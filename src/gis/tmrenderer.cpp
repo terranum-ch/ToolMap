@@ -22,6 +22,8 @@
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
 DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
+DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
+DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -141,8 +143,38 @@ void tmRenderer::RubberBandUpdate(const wxPoint & mousepos)
 
 void tmRenderer::RubberBandStop()
 {
+	wxRect * mySelectedRect = NULL;
+	wxCommandEvent evt;
+	evt.SetId(wxID_ANY);
+	
+	
+	
+	
+	
 	if (m_RubberStartCoord == wxPoint(-1,-1))
 		return;
+	
+	// get selected values if selection is valid
+	// and send it to the layermanager
+	if(m_SelectRect->IsSelectedRectangleValid())
+	{
+		if(m_SelectRect->IsSelectedRectanglePositive())
+		{
+			evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_IN);
+			mySelectedRect = new wxRect(m_SelectRect->GetSelectedRectangle());
+			evt.SetClientData(mySelectedRect);
+			
+		}
+		else
+		{
+			evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_OUT);
+			mySelectedRect = new wxRect(m_SelectRect->GetSelectedRectangle());
+			evt.SetClientData(mySelectedRect);
+		}
+		
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+	
 	
 	m_SelectRect->ClearOldRubberRect();
 	m_RubberStartCoord = wxPoint(-1,-1);

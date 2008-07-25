@@ -109,6 +109,8 @@ class tmLayerManager : public wxEvtHandler
 		
 		// zoom operations
 		void OnZoomToFit ();
+		void OnZoomRectangleIn (wxCommandEvent & event);
+		void OnZoomRectangleOut (wxCommandEvent & event);
 		
 		
 		bool LoadProjectLayers();

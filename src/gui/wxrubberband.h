@@ -38,6 +38,7 @@
 #endif
 
 #include <wx/dcclient.h>
+
 ///\brief Class used for drawing a rubber band.
 /** This class was created for drawing a selection box 
 * it is a very simple one. 
@@ -63,7 +64,7 @@ private:
 	 *
 	 * We draw lines and not rectangle directely to avoid filckering. This function is called
 	 * from the SetGeometry One*/
-	void DrawRectangleLines (wxDC *MyDC,int x, int y, int width, int height);
+	//void DrawRectangleLines (wxDC *MyDC,int x, int y, int width, int height);
 	
 	/** \brief [PRIVATE FUNCTION] Line verification against inverse 
 	 *selection rectangle 
@@ -71,9 +72,13 @@ private:
 	 * The following verification are made : x et y must not be < 0
 	 * width and height must be > 0 
 	 * \return TRUE if all verifications are good*/
-	bool VerifyRubberLines (int x, int y, int width, int height);
+	//bool VerifyRubberLines (int x, int y, int width, int height);
 	
 	void EraseLastRubber (wxDC * dc);
+	
+
+	
+	
 	
 	
 public:
@@ -84,7 +89,7 @@ public:
 	/**\brief wxRubberBand Destructor */
 	~wxRubberBand();
 	/** \brief Resize the rubber band */
-	void SetGeometry (int x, int y, int width, int height);
+	//void SetGeometry (int x, int y, int width, int height);
 	/** \brief Resize the rubber band using two wxPoint */
 	void SetGeometry (const wxPoint & posStart,const  wxPoint & posEnd);
 	/** \brief Set the default pen */
@@ -97,6 +102,12 @@ public:
 	 * This function is needed when used try to change 
 	 * the pen for exemple. */
 	void ClearOldRubberRect ();
+	
+	bool IsSelectedRectangleValid();
+	bool IsSelectedRectanglePositive();
+	wxRect GetSelectedRectangle();
+	
+	
 	
 	
 };
