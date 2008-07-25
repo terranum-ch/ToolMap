@@ -65,9 +65,11 @@ class tmLayerManager : public wxEvtHandler
 		tmDrawer m_Drawer;
 		tmGISLoadingDataThread * m_Thread;
 		tmProgressIndicator * m_Progress;
-		
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
+		
+		// values for thread
+		bool m_computeFullExtent;
 		
 		// init member values to default
 		void InitMemberValue();
@@ -110,7 +112,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		
 		bool LoadProjectLayers();
-		bool ReloadProjectLayersThreadStart();
+		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE);
 		void OnReloadProjectLayersDone (wxCommandEvent & event);
 		
 		

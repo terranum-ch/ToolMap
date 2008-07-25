@@ -28,6 +28,7 @@
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
+DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE)
 
 /***************************************************************************//**
  @brief Default values for tmLayerProperties
@@ -374,8 +375,10 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 		// change item image
 		EditLayer(itemdata, clickedid);
 		
-		// change item data
-		
+		// Send message show/hide to layermanager
+		wxCommandEvent evt(tmEVT_LM_SHOW_HIDE, wxID_ANY);
+		evt.SetInt((int) itemdata->m_LayerVisible);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 	
 	event.Skip();
