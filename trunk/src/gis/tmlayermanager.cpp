@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_SIZE_CHANGED,   tmLayerManager::OnSizeChange)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
 	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_GISDATALOADED, tmLayerManager::OnReloadProjectLayersDone)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_SHOW_HIDE, tmLayerManager::OnShowLayer)
 END_EVENT_TABLE()
 
 
@@ -375,8 +376,7 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 
 void tmLayerManager::OnShowLayer (wxCommandEvent & event)
 {
-	
-	
+	ReloadProjectLayersThreadStart(FALSE);
 }
 
 
@@ -507,8 +507,11 @@ bool tmLayerManager::LoadProjectLayers()
 
 
 
-bool tmLayerManager::ReloadProjectLayersThreadStart()
+bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent)
 {
+	// init values
+	m_computeFullExtent = bFullExtent;
+	
 	// invalidate bitmap
 	m_GISRenderer->SetBitmapStatus();
 	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
@@ -562,7 +565,10 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	
 	// FIXME: This code is optional for debug purpose (or options)
 	// draw into bitmap
-	m_Scale.ComputeMaxExtent();
+	if (m_computeFullExtent)
+		m_Scale.ComputeMaxExtent();
+			
+		
 	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
 	
 	// stoping progress display
