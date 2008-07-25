@@ -45,7 +45,7 @@ END_EVENT_TABLE()
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(parent,id)
 {
 	m_bmp = NULL;
-	m_SelectRect = new wxRubberBand(parent);
+	m_SelectRect = new wxRubberBand(this);
 	m_RubberStartCoord = wxPoint(-1,-1);
 }
 
@@ -76,11 +76,11 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 
 void tmRenderer::OnPaint(wxPaintEvent & event)
 {
+	wxPaintDC dc (this);
 	
 	if (m_bmp)
 	{
 		// draw the image
-		wxPaintDC dc (this);
 		dc.SetBackground(*wxWHITE);
 		dc.Clear();
 
