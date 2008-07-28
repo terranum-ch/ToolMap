@@ -144,6 +144,7 @@ bool ProjectManager::CreateNewProject()
 	
 	
 	// read TOC
+	bProjectIsOpen = TRUE;
 	
 	return TRUE;
 }
@@ -248,6 +249,8 @@ void ProjectManager::CloseProject()
 		m_DB = NULL;
 	}
 	
+	bProjectIsOpen = FALSE;
+	
 }
 
 
@@ -324,6 +327,7 @@ bool ProjectManager::OpenProject(const wxString & path)
 					
 					// project is now open !
 					bReturn = TRUE;
+					bProjectIsOpen = TRUE;
 				}
 			}
 			

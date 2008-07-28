@@ -122,16 +122,20 @@ class ProjectManager;
 
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
-#define ID_MENU_ZOOM_PREVIOUS_EXTEND 10023
-#define ID_MENU_ZOOM 10164
-#define ID_MENU_PAN 10165
-#define ID_MENU_ZOOM_FIT 10113
-#define ID_MENU_ZOOM_GIVEN_SCALE 10120
-#define ID_MENU_ZOOM_COORDINATE 10210
-#define ID_MENU_ZOOM_NEXT_SCALE 10184
-#define ID_MENU_PREVIOUS_SCALE 10185
-#define ID_MENU_SELECTION 10131
-#define ID_MENU_SELECTED_LAYER 10208
+
+#define ID_MENU_ZOOM_PREVIOUS_EXTEND 10313
+#define ID_MENU_ZOOM 10314
+#define ID_MENU_PAN 10315
+#define ID_MENU_ZOOM_FIT 10316
+#define ID_MENU_ZOOM_GIVEN_SCALE 10317
+#define ID_MENU_ZOOM_COORDINATE 10318
+#define ID_MENU_ZOOM_NEXT_SCALE 10319
+#define ID_MENU_PREVIOUS_SCALE 10320
+#define ID_MENU_SELECTED_LAYER 10321
+
+#define ID_MENU_SELECTION 10322
+
+
 #define ID_MENU_UNDO 10179
 #define ID_MENU_REDO 10180
 #define ID_MENU_DRAW 10176
@@ -254,12 +258,14 @@ private:
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
+	void OnToolChanged (wxCommandEvent & event);
 	
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
-	void OnZoomToFit (wxCommandEvent & event);
+	//void OnZoomToFit (wxCommandEvent & event);
 	
 	void OnShowQueryManager (wxCommandEvent & event);
+	
 	
 	
 	

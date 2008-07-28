@@ -79,6 +79,10 @@ class tmLayerManager : public wxEvtHandler
 		bool SaveTOCStatus();
 		bool IsOK ();
 		
+		// event functions
+		void OnZoomRectangleIn (wxCommandEvent & event);
+		void OnZoomRectangleOut (wxCommandEvent & event);
+		
 			
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size); 
@@ -107,10 +111,13 @@ class tmLayerManager : public wxEvtHandler
 		void OnUpdateCoordinates (wxCommandEvent &event);
 		void OnShowLayer (wxCommandEvent & event);
 		
-		// zoom operations
+		
+		// tool operations
 		void OnZoomToFit ();
-		void OnZoomRectangleIn (wxCommandEvent & event);
-		void OnZoomRectangleOut (wxCommandEvent & event);
+		void OnZoomRectangle();
+		void OnPan ();
+		void OnSelect();
+		
 		
 		
 		bool LoadProjectLayers();

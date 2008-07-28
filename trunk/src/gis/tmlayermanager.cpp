@@ -396,8 +396,27 @@ void tmLayerManager::OnShowLayer (wxCommandEvent & event)
  *******************************************************************************/
 void tmLayerManager::OnZoomToFit ()
 {
-	
 	ReloadProjectLayersThreadStart();
+}
+
+
+void tmLayerManager::OnZoomRectangle()
+{
+	m_GISRenderer->SetTool(tmTOOL_ZOOM_RECTANGLE);
+}
+
+
+
+void tmLayerManager::OnPan ()
+{
+	m_GISRenderer->SetTool(tmTOOL_PAN);
+}
+
+
+void tmLayerManager::OnSelect()
+{
+	
+	m_GISRenderer->SetTool(tmTOOL_SELECT);
 }
 
 

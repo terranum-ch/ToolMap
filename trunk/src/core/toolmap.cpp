@@ -77,7 +77,13 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
-	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnZoomToFit)
+	
+	// TOOL EVENT
+	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
+
 
 	EVT_MENU (ID_MENU_QUERIES, ToolMapFrame::OnShowQueryManager)
 
@@ -339,16 +345,16 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     itemToolBar3->SetToolBitmapSize(wxSize(32, 32));
     wxBitmap itemtool4Bitmap (wxGetBitmapFromMemory(tool1));
     wxBitmap itemtool4BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL1, _("Select"), itemtool4Bitmap, wxNullBitmap, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_SELECT, _("Select"), itemtool4Bitmap, wxNullBitmap, wxITEM_NORMAL, _T(""), wxEmptyString);
 	wxBitmap itemtool5Bitmap(wxGetBitmapFromMemory(tool2));
     wxBitmap itemtool5BitmapDisabled;
     itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _T("Fit"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool6Bitmap(wxGetBitmapFromMemory(tool3));
     wxBitmap itemtool6BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL3, _T("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ZOOM, _T("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool7Bitmap(wxGetBitmapFromMemory(tool4));
     wxBitmap itemtool7BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL4, _T("Pan"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_PAN, _T("Pan"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxArrayString itemComboBox8Strings;
     wxComboBox* itemComboBox8 = new wxComboBox( itemToolBar3, ID_COMBOBOX2, _T(""), wxDefaultPosition, wxDefaultSize, itemComboBox8Strings, wxCB_DROPDOWN );
     itemToolBar3->AddControl(itemComboBox8);
@@ -623,10 +629,10 @@ void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
 }
 
 
-void ToolMapFrame::OnZoomToFit (wxCommandEvent & event)
+/*void ToolMapFrame::OnZoomToFit (wxCommandEvent & event)
 {
 	m_LayerManager->OnZoomToFit();
-}
+}*/
 
 
 
@@ -636,6 +642,40 @@ void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)
 	
 }
 
+
+void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
+{
+	// check that a project is open
+	if (!m_PManager->IsProjectOpen())
+		return;
+	
+	switch (event.GetId())
+	{
+		case ID_MENU_SELECT:
+			m_LayerManager->OnSelect();
+			break;
+			
+		case ID_MENU_ZOOM_FIT:
+			// execute command imediatly
+			m_LayerManager->OnZoomToFit();
+			break;
+			
+		case ID_MENU_ZOOM:
+			m_LayerManager->OnZoomRectangle();
+			break;
+			
+		case ID_MENU_PAN:
+			m_LayerManager->OnPan();
+			break;
+			
+		default:
+			m_LayerManager->OnSelect();
+			wxLogDebug(_T("Tool Not supported now : %d"), event.GetId());
+			break;
+	}
+	
+	
+}
 
 
 
