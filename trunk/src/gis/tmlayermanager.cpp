@@ -433,6 +433,26 @@ void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 {
 	wxRect * mySelectedRect = (wxRect *) event.GetClientData();
+	
+	// compute ratio between actual window size and selection
+	double dBigger = m_Scale.GetBestDivFactor(*mySelectedRect);
+	
+	// calcul the new bigger window size (px)
+	wxRect myActualExtent = m_Scale.GetWindowExtent();
+	wxRect myNewWndExtent (0,0,0,0);
+	double dwidth = ((double) myActualExtent.GetWidth()) * dBigger;
+	double dheight = ((double) myActualExtent.GetHeight()) * dBigger;
+	
+	myNewWndExtent.SetWidth((int) dwidth);
+	myNewWndExtent.SetHeight((int) dheight);
+	
+	// modify the real window extent
+	m_Scale.ComputeNewRealExtent(myNewWndExtent, 
+								 wxPoint(-mySelectedRect->GetX(),
+										 -mySelectedRect->GetY()));
+	
+	// reload data
+	ReloadProjectLayersThreadStart(FALSE);
 	delete mySelectedRect;
 }
 
