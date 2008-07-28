@@ -620,8 +620,7 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	wxLogDebug(_T("GIS thread finished"));
 	m_Thread = NULL; // thread finished
 	
-	// FIXME: This code is optional for debug purpose (or options)
-	// draw into bitmap
+	// compute max extent if required by option
 	if (m_computeFullExtent)
 		m_Scale.ComputeMaxExtent();
 			
@@ -632,7 +631,6 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	if (m_Progress)
 	{
 		m_Progress->StopProgress();
-		delete m_Progress;
 		m_Progress = NULL;
 	}
 	
