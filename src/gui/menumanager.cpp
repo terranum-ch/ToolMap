@@ -82,7 +82,10 @@ void MenuManager::SetStatus(MENUSTATUS flags)
 void MenuManager::UpdateMenusStatus()
 {
 	UpdateMenuProject();
+	UpdateMenuData();
+	UpdateMenuView();
 }
+
 
 
 /***************************************************************************//**
@@ -97,6 +100,22 @@ void MenuManager::UpdateMenuProject()
 		m_MenuBar->Enable(i, bMenu_DB_IsOpen);
 	}
 
+}
+
+
+void MenuManager::UpdateMenuData ()
+{
+	m_MenuBar->Enable(ID_MENU_ADD_SPATIAL_DATA, bMenu_DB_IsOpen);
+	m_MenuBar->Enable(ID_MENU_IMPORT_GIS_DATA, bMenu_DB_IsOpen);
+}
+
+
+void MenuManager::UpdateMenuView ()
+{
+	for (int i = ID_MENU_ZOOM_PREVIOUS_EXTEND; i <= ID_MENU_SELECTED_LAYER ; i++)
+	{
+		m_MenuBar->Enable(i, bMenu_DB_IsOpen);
+	}
 }
 
 

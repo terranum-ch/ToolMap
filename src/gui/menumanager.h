@@ -75,6 +75,8 @@ class MenuManager : public wxObject
 		
 		// functions used internally for uptading menus items
 		void UpdateMenuProject();
+		void UpdateMenuData ();
+		void UpdateMenuView ();
 		
 		DECLARE_CLASS(MenuManager);
 		

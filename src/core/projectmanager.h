@@ -101,6 +101,7 @@ class ProjectManager : public wxObject
 		void SetStatusBar (wxStatusBar * status) {m_ParentStatus = status;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
+		bool IsProjectOpen () {return bProjectIsOpen;}
 	};
 
 

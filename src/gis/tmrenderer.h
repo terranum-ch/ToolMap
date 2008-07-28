@@ -51,10 +51,14 @@ class tmRenderer : public wxScrolledWindow
 	{
 	private:
 		wxBitmap * m_bmp;
+		tmGIS_TOOL m_ActualTool;
 		
 		// rubber band
 		wxRubberBand * m_SelectRect;
 		wxPoint m_RubberStartCoord;
+		
+		// changing cursors
+		void ChangeCursor (const tmGIS_TOOL & selected_tool);
 		
 		// mouse event function
 		void OnMouseDown	(wxMouseEvent & event);
@@ -80,7 +84,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		void SetBitmapStatus(wxBitmap * bmp = NULL) {m_bmp = bmp;}
 		
-		void SetSelectedTool (tmGIS_TOOL selected_tool);
+		void SetTool (tmGIS_TOOL selected_tool);
 		
 	};
 

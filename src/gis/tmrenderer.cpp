@@ -47,6 +47,7 @@ tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(pare
 	m_bmp = NULL;
 	m_SelectRect = new wxRubberBand(this);
 	m_RubberStartCoord = wxPoint(-1,-1);
+	m_ActualTool = tmTOOL_SELECT;
 }
 
 
@@ -73,6 +74,35 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 
 
 
+void tmRenderer::SetTool (tmGIS_TOOL selected_tool)
+{
+	m_ActualTool = selected_tool;
+	
+	ChangeCursor(selected_tool);
+}
+
+
+
+void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
+{
+	switch (selected_tool)
+	{
+		case tmTOOL_ZOOM_RECTANGLE:
+			this->SetCursor(wxCursor(wxCURSOR_MAGNIFIER));
+			break;
+			
+		case tmTOOL_PAN:
+			this->SetCursor(wxCursor(wxCURSOR_HAND));
+			break;
+		
+		default:
+			this->SetCursor(wxCursor(wxCURSOR_ARROW));
+			break;
+	}
+	
+}
+
+
 
 void tmRenderer::OnPaint(wxPaintEvent & event)
 {
@@ -96,15 +126,17 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 
 void tmRenderer::OnMouseDown(wxMouseEvent & event)
 {
-	RubberBandStart(event.GetPosition());
+	// rectangle zoom
+	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
+		RubberBandStart(event.GetPosition());
 }
 
 
 
 void tmRenderer::OnMouseMove (wxMouseEvent & event)
 {
-	// rubber band
-	RubberBandUpdate(event.GetPosition());
+	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
+		RubberBandUpdate(event.GetPosition());
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -119,7 +151,8 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 
 void tmRenderer::OnMouseUp(wxMouseEvent & event)
 {
-	RubberBandStop();
+	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
+		RubberBandStop();
 	
 }
 
@@ -146,9 +179,6 @@ void tmRenderer::RubberBandStop()
 	wxRect * mySelectedRect = NULL;
 	wxCommandEvent evt;
 	evt.SetId(wxID_ANY);
-	
-	
-	
 	
 	
 	if (m_RubberStartCoord == wxPoint(-1,-1))
