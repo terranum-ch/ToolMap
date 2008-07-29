@@ -93,6 +93,7 @@
 //#include "../gis/tmprogress.h"	// for direct acces to progress 
 
 #include "../gis/tmgisdata.h"	// for GIS data access
+#include "../gis/tmscalectrl.h"	// for GIS scale control combo box
 
 
 //// temp for testing 
@@ -224,7 +225,8 @@ public:
 	void PostInit();
 	
 	static wxMenuBar* CreateToolMapMenu();
-	static wxToolBar * CreateToolMapToolBar(wxWindow * parent);
+	//static wxToolBar * CreateToolMapToolBar(wxWindow * parent);
+	wxToolBar * CreateToolMapToolBar(wxWindow * parent);
 	
 	
 	
@@ -242,6 +244,9 @@ private:
 	MenuManager * m_MManager;
 	
 	tmLayerManager * m_LayerManager;
+	tmScaleCtrlCombo * m_ScaleCombo;
+	
+	
 	
 	void OnQuit(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);

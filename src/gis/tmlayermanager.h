@@ -36,9 +36,11 @@
 #include "tmrenderer.h"					// for GIS rendering
 #include "tmdrawer.h"					// for drawing into bitmaps
 #include "tmprogress.h"					// for displaying progress during load
+#include "tmscalectrl.h"				// for combo box scale control
 
 // forward declaration
 class tmGISLoadingDataThread;
+class tmScaleCtrlCombo;
 
 DECLARE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED, -1)
 
@@ -67,6 +69,7 @@ class tmLayerManager : public wxEvtHandler
 		tmProgressIndicator * m_Progress;
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
+		tmScaleCtrlCombo * m_ScaleCtrl;
 		
 		// values for thread
 		bool m_computeFullExtent;
@@ -78,6 +81,9 @@ class tmLayerManager : public wxEvtHandler
 		void FillTOCArray();
 		bool SaveTOCStatus();
 		bool IsOK ();
+		
+		// scale ctrl functions
+		void InitScaleCtrlList ();
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -92,7 +98,7 @@ class tmLayerManager : public wxEvtHandler
 	public:
 		// ctor / dtor
 		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer,
-					   wxStatusBar * status);
+					   wxStatusBar * status, tmScaleCtrlCombo * scalectrl);
 		~tmLayerManager();
 		
 			

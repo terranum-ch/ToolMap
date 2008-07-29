@@ -39,6 +39,7 @@ void tmGISScale::InitMemberValues()
 {
 	m_ExtentMaxLayers = tmRealRect(0,0,0,0);
 	m_ExtentWnd = wxRect(0,0,0,0);
+	m_ExtentWndMM = wxSize(0,0);
 }
 
 
@@ -154,6 +155,9 @@ bool tmGISScale::ComputeMaxExtentReal (wxSize wnd_offset)
 	m_ExtentWndReal.y_min = m_ExtentMaxLayers.y_min - m_PixelSize * yoffset;
 	m_ExtentWndReal.y_max = m_ExtentWndReal.y_min + m_PixelSize * m_ExtentWnd.GetHeight();
 	
+	// scale has changed
+	ComputeUnitScale();
+	
 	return TRUE;
 }
 
@@ -188,6 +192,31 @@ void tmGISScale::ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxP
 	m_ExtentWndReal.y_max = m_ExtentWndReal.y_min + (((double)calc_wnd_extent.GetHeight()) * dOldPxSize);
 	
 	m_PixelSize = (m_ExtentWndReal.x_max - m_ExtentWndReal.x_min) / ((double)m_ExtentWnd.GetWidth());
+	
+	// scale has changed
+	ComputeUnitScale();
 }
 
 
+long tmGISScale::ComputeUnitScale ()
+{
+	int MMtoM = 1000;
+	double ddistance = 0.0;
+	if (m_ExtentWndReal.x_max != 0)
+	{
+		if (m_ExtentWndReal.x_max < 0)
+		{
+			ddistance = m_ExtentWndReal.x_max + m_ExtentWndReal.x_min;
+		}
+		else
+		{
+			ddistance = m_ExtentWndReal.x_max - m_ExtentWndReal.x_min;
+		}
+		
+	// send message to scale control
+		
+	m_UnitScale =  ddistance / (((double)m_ExtentWndMM.GetWidth()) / MMtoM);	
+		return m_UnitScale;
+	}
+	return 0;
+}
