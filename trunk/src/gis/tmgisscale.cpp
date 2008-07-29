@@ -40,6 +40,9 @@ void tmGISScale::InitMemberValues()
 	m_ExtentMaxLayers = tmRealRect(0,0,0,0);
 	m_ExtentWnd = wxRect(0,0,0,0);
 	m_ExtentWndMM = wxSize(0,0);
+	m_UnitScale = 0;
+	m_PixelSize = 0;
+	m_ExtentWndMM = wxSize(0,0);
 }
 
 
@@ -228,4 +231,40 @@ bool tmGISScale::IsLayerExtentValid()
 		return FALSE;
 	return TRUE;
 }
+
+
+void tmGISScale::DistanceFromScale (const long & scale, double & xdist, double & ydist)
+{
+	xdist = ((double)m_ExtentWndMM.GetWidth()) / 1000 * scale;
+	ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000 * scale;
+	m_UnitScale = scale;
+}
+
+
+void tmGISScale::ComputeNewScaleExtent (const long & scale)
+{
+	// getting new distance from scale and window with (mm)
+	double dNewDistX = 0, dNewDistY = 0;
+	DistanceFromScale(scale, dNewDistX, dNewDistY);
+	
+	// getting difference between new distance and actual distance
+	// distance mean (windows extent real x max - x min)
+	double dActDistX = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
+	double dActDistY = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
+	
+	double dDiffX = (dNewDistX - dActDistX) / 2;
+	double dDiffY = (dNewDistY - dActDistY) / 2;
+	
+	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dDiffX);
+	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dDiffY);
+	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dDiffX);
+	m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dDiffY);
+	
+	// change pixels size too :-)
+	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
+				((double)m_ExtentWnd.GetWidth());
+
+}
+
+
 

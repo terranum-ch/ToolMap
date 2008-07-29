@@ -106,6 +106,10 @@ class tmGISScale : public wxObject
 		wxSize ComputeCenterPxWnd (double divratio, wxSize wnd_extent = wxDefaultSize);
 		bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
 		
+		// scale function
+		void DistanceFromScale (const long & scale, double & xdist, double & ydist);
+		void ComputeNewScaleExtent (const long & scale);
+		
 		// zoom functions
 		double GetBestDivFactor (const wxRect & selected_rect);
 		void ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left);
@@ -125,6 +129,45 @@ class tmGISScale : public wxObject
 			
 		}
 		
+		inline double DifferenceDouble (const double & d1, const double &d2)
+		{
+			if (wxIsSameDouble(d1, d2))
+				return 0;
+			if (d1 > d2)
+				return d1 - d2;
+			else 
+				return d2-d1;
+		}
+		
+		inline double DifferenceCoord (const double & coordmax, const double & coordmin)
+		{
+			if (wxIsSameDouble(coordmax, coordmin))
+				return 0;
+			if (coordmax <= 0 && coordmin >= 0)
+				return coordmax + coordmin;
+			if (coordmax >= 0 && coordmin < coordmax)
+				return coordmax - coordmin;
+			
+			wxLogDebug(_T("Unable to compute difference between : %.*f and %.*f"),
+					   2,coordmax,2, coordmin);
+				return 0;
+		}
+		
+		inline double RemoveFromCoord (const double & coord1, const double & value)
+		{
+			if (coord1 > 0)
+				return coord1 - value;
+			else
+				return coord1 + value;
+		}
+		
+		inline double AppendToCoord (const double & coord1, const double & value)
+		{
+			if (coord1 > 0)
+				return coord1 + value;
+			else
+				return coord1 - value;
+		}
 		
 		// extent validity
 		bool IsLayerExtentValid();
