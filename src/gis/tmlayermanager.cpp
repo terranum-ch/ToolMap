@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_SHOW_HIDE, tmLayerManager::OnShowLayer)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
+	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 END_EVENT_TABLE()
 
 
@@ -397,6 +398,28 @@ void tmLayerManager::OnShowLayer (wxCommandEvent & event)
 {
 	ReloadProjectLayersThreadStart(FALSE);
 }
+
+
+
+void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
+{
+	// checking that project is open and contain GIS data
+	if (!IsOK() && m_Scale.GetMaxLayersExtent() == tmRealRect(0,0,0,0))
+	{
+		wxLogMessage(_T("Not able to process scale if no project open\n")
+					 _T("or if not GIS data"));
+		return;
+	}
+	
+	// computing new real extent based on scale
+	m_Scale.ComputeNewScaleExtent(event.GetExtraLong());
+	
+	//double dNewScaleDist = m_Scale.DistanceFromScale(event.GetExtraLong());
+	ReloadProjectLayersThreadStart(FALSE);
+	
+	
+}
+
 
 
 

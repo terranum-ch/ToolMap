@@ -116,6 +116,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnSizeChange (wxCommandEvent & event);
 		void OnUpdateCoordinates (wxCommandEvent &event);
 		void OnShowLayer (wxCommandEvent & event);
+		void OnScaleChanged (wxCommandEvent & event);
 		
 		
 		// tool operations

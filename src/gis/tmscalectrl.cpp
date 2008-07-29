@@ -20,9 +20,12 @@
 #include "tmscalectrl.h"
 
 
+DEFINE_EVENT_TYPE(tmEVT_SCALE_USER_CHANGED)
 
 
 BEGIN_EVENT_TABLE(tmScaleCtrlCombo, wxComboBox)
+	EVT_TEXT_ENTER(wxID_ANY, tmScaleCtrlCombo::OnUserSetValue)
+	EVT_COMBOBOX (wxID_ANY,  tmScaleCtrlCombo::OnUserSetValue)
 END_EVENT_TABLE()
 
 
@@ -73,6 +76,33 @@ void tmScaleCtrlCombo::SetValueScale (const long & scale)
 
 void tmScaleCtrlCombo::OnUserSetValue (wxCommandEvent & event)
 {
+	// get value and pass it to the layermanager
+	wxString myScaleString = GetValue();
+	long myScaleLong = 0;
+	wxString myTempDisplayedString = _T("");
 	
+	if (myScaleString.IsEmpty())
+		return;
+	
+	// deal with scale of format 1:1000 or 1000
+	if (myScaleString.GetChar(1) == ':')
+	{
+		myScaleLong = ScaleTM::GetScaleFromString(myScaleString);
+	}
+	else
+	{
+		myScaleString.ToLong(&myScaleLong);
+		ScaleTM::GetScaleFromLong(myScaleLong, myTempDisplayedString);
+		SetValue(myTempDisplayedString);
+	}
+	
+	// check scale greather than zero
+	if ( myScaleLong <= 0)
+		return;
+	
+	// all seems correct 
+	wxCommandEvent evt (tmEVT_SCALE_USER_CHANGED, wxID_ANY);
+	evt.SetExtraLong(myScaleLong);
+	m_ParentEvent->GetEventHandler()->AddPendingEvent(evt);
 }
 

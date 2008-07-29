@@ -34,7 +34,7 @@
 #include "../core/scale.h"				// for ScaleTM
 
 // EVENT FOR SCALE CTRL
-//DECLARE_EVENT_TYPE(tmEVT_SCALE_INIT_DATABASE, -1)
+DECLARE_EVENT_TYPE(tmEVT_SCALE_USER_CHANGED, -1)
 
 class tmScaleCtrlCombo : public wxComboBox 
 	{
