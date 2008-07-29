@@ -1292,13 +1292,13 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 
 
 /********************************** SCALE OPERATIONS **********************************/
-long DataBaseTM::GetNextScaleValue (long & DBindex)
+long DataBaseTM::GetNextScaleValue (long & DBindex, bool bFirst)
 {
 	long myResultScale = -1;
 	wxArrayLong myResults;
 	
 	// no result, we process the sentence
-	if (!DataBaseHasResult())
+	if (!DataBaseHasResult() || bFirst == TRUE)
 	{
 	
 		wxString sSentence = wxString::Format(_T("SELECT ZOOM_ID, SCALE_VALUE FROM %s ORDER BY RANK"),
@@ -1316,6 +1316,10 @@ long DataBaseTM::GetNextScaleValue (long & DBindex)
 		DBindex = myResults.Item(0);
 		myResultScale = myResults.Item(1);
 	}
+	
+	if (myResultScale == -1)
+		DataBaseDestroyResults();
+	
 	return myResultScale;
 }
 
