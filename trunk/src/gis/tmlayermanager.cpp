@@ -42,7 +42,8 @@ END_EVENT_TABLE()
  @date 07 July 2008
  *******************************************************************************/
 tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, 
-							   tmRenderer * renderer,  wxStatusBar * status)
+							   tmRenderer * renderer,  wxStatusBar * status,
+							   tmScaleCtrlCombo * scalectrl)
 {
 	InitMemberValue();
 	
@@ -50,6 +51,7 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl,
 	m_GISRenderer = renderer;
 	m_Parent = parent;
 	m_StatusBar = status;
+	m_ScaleCtrl = scalectrl;
 	m_Parent->PushEventHandler(this);
 }
 
@@ -108,7 +110,11 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 	m_TOCCtrl->InsertProjectName(m_DB->DataBaseGetName());
 	FillTOCArray();
 	
-	// 3) Load Data (not threaded)
+	// 3) Init scale from database
+	InitScaleCtrlList();
+	
+	
+	// 4) Load Data (not threaded)
 	if(!LoadProjectLayers())
 	{
 		wxLogDebug(_T("Loading layers not completed succesfully"));
@@ -325,7 +331,15 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	// any computation if no project are opened
 	wxSize * mySize = (wxSize *) event.GetClientData();
 	m_Scale.SetWindowExtent(wxRect(0,0,mySize->GetWidth(), mySize->GetHeight()));
-		
+	
+	// compute reel size in MM
+	wxClientDC dc (m_GISRenderer);
+	m_Scale.SetWindowExtentMM(dc.GetSizeMM());
+	
+	
+	// conversion 
+	
+	
 	// create new bitmap based on size
 
 	
@@ -573,6 +587,9 @@ bool tmLayerManager::LoadProjectLayers()
 	m_Scale.ComputeMaxExtent();
 	
 
+	// update scale
+	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+	
 	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
 	
 	// set active bitmap	
@@ -645,6 +662,9 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 			
 		
 	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
+	
+	// update scale
+	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 	
 	// stoping progress display
 	if (m_Progress)
@@ -868,6 +888,32 @@ void * tmGISLoadingDataThread::Entry()
 }
 
 
+
+void tmLayerManager::InitScaleCtrlList ()
+{
+	wxASSERT (m_DB);
+	wxArrayLong  myValues;
+	
+	long myScale = 0;
+	long myCount = 0;
+	long myDBIndex = -1;
+	while (1)
+	{
+		myScale = m_DB->GetNextScaleValue(myDBIndex);
+		if (myScale == -1)
+			break;
+		else
+		{
+			// adding scale in the list
+			myValues.Add(myScale);
+			myCount++;
+		}
+	}
+		
+	// send message 
+	m_ScaleCtrl->InitScaleFromDatabase(myValues);
+	
+}
 
 
 

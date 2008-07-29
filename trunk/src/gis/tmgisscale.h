@@ -69,8 +69,12 @@ class tmGISScale : public wxObject
 		wxRect m_ExtentWnd;
 		tmRealRect m_ExtentWndReal;
 		double m_PixelSize;
+		wxSize m_ExtentWndMM;
+		long m_UnitScale;
 		
 		void InitMemberValues();
+		
+		long ComputeUnitScale ();
 		
 	protected:
 	public:
@@ -89,6 +93,12 @@ class tmGISScale : public wxObject
 		// setter and getters for windows 
 		void SetWindowExtent (const wxRect & extent){m_ExtentWnd = extent;}
 		wxRect GetWindowExtent () {return m_ExtentWnd;}
+		void SetWindowExtentMM (const wxSize & size) 
+		{
+			m_ExtentWndMM = size;
+			m_UnitScale = ComputeUnitScale();
+		}
+		long GetActualScale (){return m_UnitScale;}
 		
 		// computing scale and reduction factor
 		double ComputeDivFactor (wxSize wnd_extent = wxDefaultSize);
@@ -114,6 +124,9 @@ class tmGISScale : public wxObject
 							(realpt.y - m_ExtentWndReal.y_min) / m_PixelSize));
 			
 		}
+		
+		// pixels to real units
+		
 		
 	};
 

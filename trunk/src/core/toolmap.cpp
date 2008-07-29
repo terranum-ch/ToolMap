@@ -97,7 +97,7 @@ END_EVENT_TABLE()
 
 ToolMapFrame::ToolMapFrame()
 {
-	
+
 }
 
 
@@ -159,7 +159,8 @@ void ToolMapFrame::PostInit()
 	// create layer manager object
 	m_LayerManager = new tmLayerManager(this, m_TocWindow->GetTOCCtrl(),
 										m_MainPanel->GetGISRenderer(),
-										GetStatusBar());
+										GetStatusBar(),
+										m_ScaleCombo);
 	
 	// create the database object 
 	//m_Database = new DataBaseTM();
@@ -175,6 +176,7 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetLayerManager(m_LayerManager);
 	
 	
+		
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DatabaseGetVersion().c_str());
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);
@@ -356,8 +358,8 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     wxBitmap itemtool7BitmapDisabled;
     itemToolBar3->AddTool(ID_MENU_PAN, _T("Pan"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxArrayString itemComboBox8Strings;
-    wxComboBox* itemComboBox8 = new wxComboBox( itemToolBar3, ID_COMBOBOX2, _T(""), wxDefaultPosition, wxDefaultSize, itemComboBox8Strings, wxCB_DROPDOWN );
-    itemToolBar3->AddControl(itemComboBox8);
+    m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize );
+	itemToolBar3->AddControl(m_ScaleCombo);
     wxBitmap itemtool9Bitmap(wxGetBitmapFromMemory(tool5));
     wxBitmap itemtool9BitmapDisabled;
     itemToolBar3->AddTool(ID_TOOL5, _T("Draw"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
