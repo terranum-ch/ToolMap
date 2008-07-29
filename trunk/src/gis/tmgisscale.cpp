@@ -220,3 +220,12 @@ long tmGISScale::ComputeUnitScale ()
 	}
 	return 0;
 }
+
+
+bool tmGISScale::IsLayerExtentValid()
+{
+	if (m_ExtentMaxLayers == tmRealRect(0,0,0,0))
+		return FALSE;
+	return TRUE;
+}
+

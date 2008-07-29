@@ -114,8 +114,9 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 		
 		if(!row)
 		{
-			wxLogDebug(_T("No spatial data in the layer : %s"),
-					   GetShortFileName().c_str());
+			// no comment for thread version --> SIGTRAP
+			//wxLogDebug(_T("No spatial data in the layer : %s"),
+			//		   GetShortFileName().c_str());
 			
 			return tmRealRect(0,0,0,0);
 		}
@@ -158,9 +159,9 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 		
 	}
 	
-	wxLogDebug(_T("Error computing extend : %s : Sentence is %s "),
-			   m_DB->DataBaseGetLastError().c_str(),
-			   sSentence.c_str());
+	//wxLogDebug(_T("Error computing extend : %s : Sentence is %s "),
+	//		   m_DB->DataBaseGetLastError().c_str(),
+	//		   sSentence.c_str());
 	
 	
 	

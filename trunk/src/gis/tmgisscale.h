@@ -125,7 +125,9 @@ class tmGISScale : public wxObject
 			
 		}
 		
-		// pixels to real units
+		
+		// extent validity
+		bool IsLayerExtentValid();
 		
 		
 	};
