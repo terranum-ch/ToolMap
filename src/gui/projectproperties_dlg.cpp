@@ -364,19 +364,23 @@ void ScaleList::LoadValueIntoList ()
 	long myScale = 0;
 	long myCount = 0;
 	long myDBIndex = -1;
+	// first loop
+	myScale = m_DBHandler->GetNextScaleValue(myDBIndex, TRUE);
+	
 	while (1)
 	{
-		myScale = m_DBHandler->GetNextScaleValue(myDBIndex);
-		if (myScale == -1)
-			break;
-		else
+		
+		if (myScale != -1)
 		{
 			// adding scale in the list
 			SetScaleToList(myScale);
 			SetItemData(myCount, myDBIndex);
 			myCount++;
 		}
-
+		else
+			break;
+		
+		myScale = m_DBHandler->GetNextScaleValue(myDBIndex, FALSE);
 	}
 	
 }

@@ -897,17 +897,21 @@ void tmLayerManager::InitScaleCtrlList ()
 	long myScale = 0;
 	long myCount = 0;
 	long myDBIndex = -1;
+	
+	myScale = m_DB->GetNextScaleValue(myDBIndex, TRUE);
+	
 	while (1)
 	{
-		myScale = m_DB->GetNextScaleValue(myDBIndex);
-		if (myScale == -1)
-			break;
-		else
+		if (myScale != -1)
 		{
 			// adding scale in the list
 			myValues.Add(myScale);
 			myCount++;
 		}
+		else
+			break;
+		
+		myScale = m_DB->GetNextScaleValue(myDBIndex, FALSE);
 	}
 		
 	// send message 
