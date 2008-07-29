@@ -117,8 +117,7 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 	// 4) Load Data (not threaded)
 	if(!LoadProjectLayers())
 	{
-		wxLogDebug(_T("Loading layers not completed succesfully"));
-		return FALSE;
+		wxLogDebug(_T("Layers don't contains any spatial informations yet."));
 	}	
 	
 	
@@ -376,8 +375,12 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 	// ensure that a project is opened
 	if (!IsOK())
 		return;
-	//if (!m_TOCCtrl->IsTOCReady())
-	//	return;
+	
+	if (!m_Scale.IsLayerExtentValid())
+	{
+		m_StatusBar->SetStatusText(_T(""), 1);
+		return;
+	}
 	
 	wxPoint * mousepoint = (wxPoint*) event.GetClientData();
 	wxRealPoint mouserealpoint = m_Scale.PixelToReal(*mousepoint);
@@ -502,7 +505,7 @@ bool tmLayerManager::IsOK()
 	// ensure that TOC ctrl isn't empty
 	if (m_TOCCtrl->GetCountLayers() == 0)
 	{
-		wxLogDebug(_T("No data loaded into the TOC ctrl, load data into the TOC first"));
+		//wxLogDebug(_T("No data loaded into the TOC ctrl, load data into the TOC first"));
 		return FALSE;
 	}
 	return TRUE;
@@ -583,6 +586,12 @@ bool tmLayerManager::LoadProjectLayers()
 	//		   m_Scale.ComputeDivFactor());
 	
 	
+	// test validity of layers extent. If no extent is 
+	// specified (like no data displayed) return 
+	if (!m_Scale.IsLayerExtentValid())
+		return FALSE;
+	
+	
 	// draw into bitmap
 	m_Scale.ComputeMaxExtent();
 	
@@ -656,22 +665,27 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	wxLogDebug(_T("GIS thread finished"));
 	m_Thread = NULL; // thread finished
 	
-	// compute max extent if required by option
-	if (m_computeFullExtent)
-		m_Scale.ComputeMaxExtent();
-			
-		
-	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
-	
-	// update scale
-	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
-	
 	// stoping progress display
 	if (m_Progress)
 	{
 		m_Progress->StopProgress();
 		m_Progress = NULL;
 	}
+	
+	
+	// test validity of layers extent. If no extent is 
+	// specified (like no data displayed)  
+	if (m_Scale.IsLayerExtentValid())
+	{
+		// compute max extent if required by option
+		if (m_computeFullExtent)
+			m_Scale.ComputeMaxExtent();
+		
+		m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
+	}
+		
+	// update scale
+	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -873,8 +887,10 @@ void * tmGISLoadingDataThread::Entry()
 	
 	
 	
+	
 	// uninit thread variables
 	m_DB->DataBaseNewThreadUnInit();
+	
 	
 	// if the thread was stopped
 	if (breakthread)
