@@ -30,6 +30,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
 DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
+DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -52,7 +53,7 @@ tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(pare
 {
 	m_bmp = NULL;
 	m_SelectRect = new wxRubberBand(this);
-	m_RubberStartCoord = wxPoint(-1,-1);
+	m_StartCoord = wxPoint(-1,-1);
 	m_ActualTool = tmTOOL_SELECT;
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
 }
@@ -169,6 +170,10 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	// rectangle zoom
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		RubberBandStart(event.GetPosition());
+	
+	// psn
+	if (m_ActualTool == tmTOOL_PAN)
+		PanStart(event.GetPosition());
 }
 
 
@@ -177,6 +182,9 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 {
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		RubberBandUpdate(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_PAN)
+		PanUpdate(event.GetPosition());
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -194,21 +202,24 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		RubberBandStop();
 	
+	if (m_ActualTool == tmTOOL_PAN)
+		PanStop(event.GetPosition());
+	
 }
 
 
 void tmRenderer::RubberBandStart (const wxPoint & mousepos)
 {
-	m_RubberStartCoord = mousepos;
+	m_StartCoord = mousepos;
 }
 
 
 void tmRenderer::RubberBandUpdate(const wxPoint & mousepos)
 {
-	if (m_RubberStartCoord == wxPoint (-1,-1))
+	if (m_StartCoord == wxPoint (-1,-1))
 		return;
 	
-	m_SelectRect->SetGeometry(m_RubberStartCoord, mousepos);
+	m_SelectRect->SetGeometry(m_StartCoord, mousepos);
 	
 	// change cursor if needed
 	if (m_SelectRect->IsSelectedRectanglePositive() && 
@@ -235,7 +246,7 @@ void tmRenderer::RubberBandStop()
 	evt.SetId(wxID_ANY);
 	
 	
-	if (m_RubberStartCoord == wxPoint(-1,-1))
+	if (m_StartCoord == wxPoint(-1,-1))
 		return;
 	
 	// get selected values if selection is valid
@@ -260,5 +271,74 @@ void tmRenderer::RubberBandStop()
 	}
 	
 	m_SelectRect->ClearOldRubberRect();
-	m_RubberStartCoord = wxPoint(-1,-1);
+	m_StartCoord = wxPoint(-1,-1);
 }
+
+
+
+void tmRenderer::PanStart (const wxPoint & mousepos)
+{
+	m_StartCoord = mousepos;
+	
+	// capture the dc in a bitmap
+	wxClientDC dc (this);
+	
+	wxSize mybitmapsize=dc.GetSize(); 
+		
+	wxBitmap thebmp(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),-1); 
+	wxMemoryDC mdc; 
+	mdc.SelectObject(thebmp); 
+	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0); 
+		
+	m_PanBmp = thebmp;
+}
+
+
+void tmRenderer::PanUpdate (const wxPoint & mousepos)
+{
+	// compute the new raster origin
+	wxPoint myNewPos(mousepos.x - m_StartCoord.x,
+					 mousepos.y - m_StartCoord.y);
+	
+	if (!m_PanBmp.IsOk())
+		return;
+		
+	// we move the raster if mouse mouve
+	if (myNewPos.x != 0 && myNewPos.y != 0)
+	{
+		wxMemoryDC dc;
+		wxSize wndsize = GetSize();
+		wxBitmap tmpbmp (wndsize.GetWidth(), wndsize.GetHeight());
+		dc.SelectObject (tmpbmp);
+		
+		// draw all white
+		dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
+		dc.SetPen   (wxPen(*wxWHITE_PEN));
+		dc.DrawRectangle (0,0,wndsize.GetWidth(),wndsize.GetHeight());
+		dc.DrawBitmap (m_PanBmp, myNewPos.x,myNewPos.y);
+		dc.SelectObject(wxNullBitmap);
+		
+		*m_bmp = tmpbmp;
+		Refresh();
+		Update();
+	}
+}
+
+
+void tmRenderer::PanStop (const wxPoint & mousepos)
+{
+	// compute the new raster origin
+	// myNewPos will be deleted in the layermanager
+	wxPoint * myNewPos = new wxPoint(mousepos.x - m_StartCoord.x,
+									 mousepos.y - m_StartCoord.y);
+	
+	// send message to renderer with 
+	// displacement done.
+	wxCommandEvent evt(tmEVT_LM_PAN_ENDED, wxID_ANY);
+	evt.SetClientData(myNewPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+	m_PanBmp.SetOk(FALSE);
+	m_StartCoord = wxPoint(-1,-1);
+}
+

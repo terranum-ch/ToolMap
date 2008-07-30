@@ -32,6 +32,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
 END_EVENT_TABLE()
 
 
@@ -478,7 +479,7 @@ void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 	myNewWndExtent.SetHeight((int) dheight);
 	
 	// modify the real window extent
-	m_Scale.ComputeNewRealExtent(myNewWndExtent, 
+	m_Scale.ComputeNewRealZoomExtent(myNewWndExtent, 
 								 wxPoint(mySelectedRect->GetX(),
 										 mySelectedRect->GetY()));
 	
@@ -506,13 +507,27 @@ void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 	myNewWndExtent.SetHeight((int) dheight);
 	
 	// modify the real window extent
-	m_Scale.ComputeNewRealExtent(myNewWndExtent, 
+	m_Scale.ComputeNewRealZoomExtent(myNewWndExtent, 
 								 wxPoint(-mySelectedRect->GetX(),
 										 -mySelectedRect->GetY()));
 	
 	// reload data
 	ReloadProjectLayersThreadStart(FALSE);
 	delete mySelectedRect;
+}
+
+
+
+void tmLayerManager::OnPanFinished (wxCommandEvent & event)
+{
+	wxPoint * myNewPosPx = (wxPoint*) event.GetClientData();
+	
+	// change coordinates
+	m_Scale.ComputeNewRealPanExtent(*myNewPosPx);
+	ReloadProjectLayersThreadStart(FALSE);
+	
+	
+	delete myNewPosPx;
 }
 
 

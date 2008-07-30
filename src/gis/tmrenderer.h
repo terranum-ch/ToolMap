@@ -36,8 +36,9 @@
 // EVENT FOR GIS RENDERER CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED , -1)
-DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT,1)
-DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN,1)
+DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT,-1)
+DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN,-1)
+DECLARE_EVENT_TYPE(tmEVT_LM_PAN_ENDED,-1)
 
 enum tmGIS_TOOL
 {
@@ -65,7 +66,8 @@ class tmRenderer : public wxScrolledWindow
 		
 		// rubber band
 		wxRubberBand * m_SelectRect;
-		wxPoint m_RubberStartCoord;
+		wxPoint m_StartCoord;
+		wxBitmap m_PanBmp;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
@@ -84,6 +86,11 @@ class tmRenderer : public wxScrolledWindow
 		void RubberBandStart (const wxPoint & mousepos);
 		void RubberBandUpdate(const wxPoint & mousepos);
 		void RubberBandStop();
+		
+		// panning function
+		void PanStart (const wxPoint & mousepos);
+		void PanUpdate (const wxPoint & mousepos);
+		void PanStop (const wxPoint & mousepos);
 	
 	public:
 		tmRenderer(wxWindow * parent, wxWindowID id);

@@ -179,7 +179,7 @@ double tmGISScale::GetBestDivFactor (const wxRect & selected_rect)
 
 
 
-void tmGISScale::ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left)
+void tmGISScale::ComputeNewRealZoomExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left)
 {
 	double drealx = m_ExtentWndReal.x_max - m_ExtentWndReal.x_min;
 	double drealy = m_ExtentWndReal.y_max - m_ExtentWndReal.y_min;
@@ -198,6 +198,19 @@ void tmGISScale::ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxP
 	
 	// scale has changed
 	ComputeUnitScale();
+}
+
+
+void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
+{
+	double dmovex = ((double)offsetxtop.x) * m_PixelSize;
+	double dmovey = ((double)offsetxtop.y) * m_PixelSize;
+	
+	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dmovex);
+	m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, dmovex);
+	
+	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dmovey);
+	m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, dmovey);
 }
 
 

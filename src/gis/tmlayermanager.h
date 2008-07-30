@@ -88,6 +88,7 @@ class tmLayerManager : public wxEvtHandler
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
 		void OnZoomRectangleOut (wxCommandEvent & event);
+		void OnPanFinished (wxCommandEvent & event);
 		
 			
 		// bitmap specific functions
