@@ -42,8 +42,17 @@ DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN,1)
 enum tmGIS_TOOL
 {
 	tmTOOL_SELECT = 0,
-	tmTOOL_ZOOM_RECTANGLE,
-	tmTOOL_PAN
+	tmTOOL_ZOOM_RECTANGLE_IN,
+	tmTOOL_ZOOM_RECTANGLE_OUT,
+	tmTOOL_PAN,
+	tmTOOL_ZOOM_RECTANGLE = tmTOOL_ZOOM_RECTANGLE_IN
+};
+
+enum tmGIS_CURSOR
+{
+	tmCURSOR_ZOOM_IN,
+	tmCURSOR_ZOOM_OUT,
+	tmCURSOR_HAND
 };
 
 
@@ -52,12 +61,14 @@ class tmRenderer : public wxScrolledWindow
 	private:
 		wxBitmap * m_bmp;
 		tmGIS_TOOL m_ActualTool;
+		tmGIS_CURSOR m_ActualNotStockCursor;
 		
 		// rubber band
 		wxRubberBand * m_SelectRect;
 		wxPoint m_RubberStartCoord;
 		
 		// changing cursors
+		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
 		void ChangeCursor (const tmGIS_TOOL & selected_tool);
 		
 		// mouse event function

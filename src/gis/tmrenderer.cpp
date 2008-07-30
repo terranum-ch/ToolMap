@@ -19,6 +19,12 @@
 
 #include "tmrenderer.h"
 
+// cursor images
+#include "../img/tmimgfunc.h"	// for image processing
+#include "../img/cursor_zoom_in.cpp"
+#include "../img/cursor_zoom_out.cpp"
+#include "../img/cursor_hand.cpp"
+
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
 DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
@@ -48,6 +54,7 @@ tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(pare
 	m_SelectRect = new wxRubberBand(this);
 	m_RubberStartCoord = wxPoint(-1,-1);
 	m_ActualTool = tmTOOL_SELECT;
+	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
 }
 
 
@@ -83,16 +90,49 @@ void tmRenderer::SetTool (tmGIS_TOOL selected_tool)
 
 
 
+wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
+{
+	wxBitmap myCursorBmp;
+	
+	switch (cursor)
+	{
+		case tmCURSOR_ZOOM_IN:
+			myCursorBmp = wxGetBitmapFromMemory(cursor_zoom_in);
+			break;
+		case tmCURSOR_ZOOM_OUT:
+			myCursorBmp = wxGetBitmapFromMemory(cursor_zoom_out);
+			break;
+		case tmCURSOR_HAND:
+			myCursorBmp = wxGetBitmapFromMemory(cursor_hand);
+			break;
+		default:
+			return wxCursor (wxCURSOR_ARROW);
+			break;
+	}
+	m_ActualNotStockCursor = cursor;
+	
+	wxImage mycursor (myCursorBmp.ConvertToImage()); 
+	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_X,6);
+	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_Y,6);
+	return wxCursor(mycursor);
+	
+}
+
+
 void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 {
 	switch (selected_tool)
 	{
-		case tmTOOL_ZOOM_RECTANGLE:
-			this->SetCursor(wxCursor(wxCURSOR_MAGNIFIER));
+		case tmTOOL_ZOOM_RECTANGLE_IN:
+			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_ZOOM_IN));
+			break;
+			
+		case tmTOOL_ZOOM_RECTANGLE_OUT:
+			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_ZOOM_OUT));
 			break;
 			
 		case tmTOOL_PAN:
-			this->SetCursor(wxCursor(wxCURSOR_HAND));
+			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_HAND));
 			break;
 		
 		default:
@@ -169,6 +209,20 @@ void tmRenderer::RubberBandUpdate(const wxPoint & mousepos)
 		return;
 	
 	m_SelectRect->SetGeometry(m_RubberStartCoord, mousepos);
+	
+	// change cursor if needed
+	if (m_SelectRect->IsSelectedRectanglePositive() && 
+		m_ActualNotStockCursor != tmCURSOR_ZOOM_IN)
+	{
+		ChangeCursor(tmTOOL_ZOOM_RECTANGLE_IN);
+	}
+	
+	if (!m_SelectRect->IsSelectedRectanglePositive() && 
+		m_ActualNotStockCursor != tmCURSOR_ZOOM_OUT)
+	{
+		ChangeCursor(tmTOOL_ZOOM_RECTANGLE_OUT);
+	}
+
 
 }
 
@@ -204,7 +258,6 @@ void tmRenderer::RubberBandStop()
 		
 		GetEventHandler()->AddPendingEvent(evt);
 	}
-	
 	
 	m_SelectRect->ClearOldRubberRect();
 	m_RubberStartCoord = wxPoint(-1,-1);
