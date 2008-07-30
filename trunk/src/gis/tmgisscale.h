@@ -112,7 +112,10 @@ class tmGISScale : public wxObject
 		
 		// zoom functions
 		double GetBestDivFactor (const wxRect & selected_rect);
-		void ComputeNewRealExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left);
+		void ComputeNewRealZoomExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left);
+		
+		// pan functions
+		void ComputeNewRealPanExtent (const wxPoint & offsetxtop);
 		
 		
 		// converting pixels - real (with inverting y axis)
