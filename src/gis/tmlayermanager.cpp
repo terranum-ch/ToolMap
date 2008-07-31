@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
 END_EVENT_TABLE()
 
 
@@ -529,6 +530,38 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 	
 	delete myNewPosPx;
 }
+
+
+
+void tmLayerManager::OnScrolled (wxCommandEvent & event)
+{
+	wxScrollWinEvent * myScrollEvent = (wxScrollWinEvent*) event.GetClientData();
+	
+	wxLogDebug(_T("Scroll message : pos = %d, scrollrange = %d"),
+	myScrollEvent->GetPosition(),
+			   m_GISRenderer->GetScrollRange(myScrollEvent->GetOrientation()));
+	
+	// compute the move set by the scroll bar.
+	int x = 0, xx = 0;
+	int y = 0, yy = 0;
+	
+	if (myScrollEvent->GetOrientation() == wxHORIZONTAL)
+		x = myScrollEvent->GetPosition();
+	else
+		y = myScrollEvent->GetPosition();
+	
+	m_GISRenderer->GetScrollPixelsPerUnit(&xx, &yy);
+	wxLogDebug(_T("calculed is : %d, %d, %d, %d"), x, y, xx, yy);
+	wxLogDebug(_T("nb of pixels is : %d"), x * xx);
+
+	
+	m_Scale.ComputeScrollMoveReal(myScrollEvent->GetOrientation(),
+								  myScrollEvent->GetPosition(),
+								  xx,yy);
+	
+	delete myScrollEvent;
+}
+
 
 
 void tmLayerManager::UpdateScrollBars ()

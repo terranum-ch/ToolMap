@@ -120,6 +120,7 @@ class tmGISScale : public wxObject
 		// scrollbar functions
 		wxSize GetVirtualPxSize ();
 		wxPoint GetVirtualPxPosition ();
+		void ComputeScrollMoveReal (int orientation, int newpos, int pxperunitx, int pxperunity);
 		
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)

@@ -264,7 +264,7 @@ private:
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);
-	
+		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
 	//void OnZoomToFit (wxCommandEvent & event);
