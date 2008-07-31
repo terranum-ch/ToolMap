@@ -118,8 +118,8 @@ class tmGISScale : public wxObject
 		void ComputeNewRealPanExtent (const wxPoint & offsetxtop);
 		
 		// scrollbar functions
-		//bool IsMaxExtentBiggerThanDisplay (bool bHorizontalextent = TRUE);
 		wxSize GetVirtualPxSize ();
+		wxPoint GetVirtualPxPosition ();
 		
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)

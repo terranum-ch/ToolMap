@@ -214,25 +214,6 @@ void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 }
 
 
-/*bool tmGISScale::IsMaxExtentBiggerThanDisplay (bool bHorizontalextent)
-{
-	// compute for x
-	if (bHorizontalextent)
-	{
-		if (m_ExtentMaxLayers.x_min < m_ExtentWndReal.x_min)
-			return TRUE;
-		return FALSE;
-	}
-	// compute for y
-	else 
-	{
-		if (m_ExtentMaxLayers.y_min <m_ExtentWndReal.y_min)
-			return TRUE;
-		return FALSE;
-	}
-
-	
-}*/
 
 wxSize tmGISScale::GetVirtualPxSize ()
 {
@@ -245,6 +226,19 @@ wxSize tmGISScale::GetVirtualPxSize ()
 	int heightpx = (int)(dheightLayers / m_PixelSize);
 	
 	return wxSize(widthpx, heightpx);
+}
+
+
+wxPoint tmGISScale::GetVirtualPxPosition ()
+{
+	double dRealOriginDiffX = DifferenceCoord(m_ExtentWndReal.x_min, m_ExtentMaxLayers.x_min);
+	double dRealOriginDiffY = DifferenceCoord(m_ExtentWndReal.y_min, m_ExtentMaxLayers.y_min);
+	
+	int xVirtPos = (int)(dRealOriginDiffX / m_PixelSize);
+	int yVirtPos = (int)(dRealOriginDiffY / m_PixelSize);
+	
+	return wxPoint(xVirtPos, yVirtPos);
+	
 }
 
 

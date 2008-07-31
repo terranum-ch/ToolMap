@@ -533,9 +533,6 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 
 void tmLayerManager::UpdateScrollBars ()
 {
-	//bool bVerti = FALSE;
-	//bool bHoriz = FALSE;
-	//AreScrollBarNeeded(bHoriz, bVerti);
 	wxSize myVirtualLayerSize = m_Scale.GetVirtualPxSize();
 	m_GISRenderer->SetVirtualSize(myVirtualLayerSize);
 	
@@ -548,15 +545,19 @@ void tmLayerManager::UpdateScrollBars ()
 	
 	m_GISRenderer->SetScrollRate(xscrollrate, yscrollrate);
 	
-}
-
-
-void tmLayerManager::AreScrollBarNeeded (bool & bHoriz, bool & bVerti)
-{
-	//bHoriz = m_Scale.IsMaxExtentBiggerThanDisplay(TRUE);
-	//bVerti = m_Scale.IsMaxExtentBiggerThanDisplay(FALSE);
+	if (xscrollrate <= 0 && yscrollrate <= 0)
+		return;
+	
+	wxPoint myVirtPos = m_Scale.GetVirtualPxPosition();
+	myVirtPos.x = myVirtPos.x / xscrollrate;
+	myVirtPos.y = myVirtPos.y / yscrollrate;
+	
+	m_GISRenderer->SetScrollPos(wxHORIZONTAL, myVirtPos.x);
+	m_GISRenderer->SetScrollPos(wxVERTICAL, myVirtPos.y);
 	
 }
+
+
 
 
 

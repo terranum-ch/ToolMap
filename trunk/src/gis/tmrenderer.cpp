@@ -76,7 +76,7 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 {
 	// new size object, will be deleted in the 
 	// layer manager
-	wxSize * mySize = new wxSize(event.GetSize());
+	wxSize * mySize = new wxSize(GetClientSize());
 	
 	// send size to the layermanager
 	wxCommandEvent evt(tmEVT_LM_SIZE_CHANGED, wxID_ANY);
