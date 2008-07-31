@@ -77,8 +77,7 @@ class tmRenderer : public wxScrolledWindow
 		void OnMouseDown	(wxMouseEvent & event);
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);	
-	
-		
+			
 		DECLARE_EVENT_TABLE()
 	protected:
 		

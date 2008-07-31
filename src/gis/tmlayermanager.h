@@ -90,6 +90,10 @@ class tmLayerManager : public wxEvtHandler
 		void OnZoomRectangleOut (wxCommandEvent & event);
 		void OnPanFinished (wxCommandEvent & event);
 		
+		// scrollbars
+		void UpdateScrollBars ();
+		void AreScrollBarNeeded (bool & bHoriz, bool & bVerti);
+		
 			
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size); 
