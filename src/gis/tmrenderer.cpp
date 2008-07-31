@@ -277,6 +277,16 @@ void tmRenderer::RubberBandStop()
 
 
 
+/***************************************************************************//**
+ @brief Start the pan
+ @details Call this function when the mouse is down for initiating the pan
+ process. 
+ This function grab the screen into a bitmap used later (in
+ #PanUpdate()) when user moves the mouse.
+ @param mousepos wxPoint position of the mouse when user click
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 July 2008
+ *******************************************************************************/
 void tmRenderer::PanStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;
@@ -286,12 +296,25 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 	
 	wxSize mybitmapsize=dc.GetSize(); 
 		
-	wxBitmap thebmp(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),-1); 
-	wxMemoryDC mdc; 
-	mdc.SelectObject(thebmp); 
-	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0); 
-		
-	m_PanBmp = new wxBitmap(thebmp);
+	//wxBitmap thebmp(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),-1); 
+	//wxMemoryDC mdc; 
+	//mdc.SelectObject(thebmp); 
+	//mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0); 
+	
+	if (m_PanBmp)
+	{
+		delete m_PanBmp;
+		m_PanBmp = NULL;
+	}
+	
+	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),-1);
+	wxMemoryDC mdc;
+	mdc.SelectObject(*m_PanBmp);
+	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0);
+	mdc.SelectObject(wxNullBitmap);
+	
+	// empty real bmp
+	SetBitmapStatus();
 }
 
 
@@ -307,19 +330,23 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 	// we move the raster if mouse mouve
 	if (myNewPos.x != 0 && myNewPos.y != 0)
 	{
-		wxMemoryDC dc;
+		wxMemoryDC mdc;
 		wxSize wndsize = GetSize();
 		wxBitmap tmpbmp (wndsize.GetWidth(), wndsize.GetHeight());
-		dc.SelectObject (tmpbmp);
+		mdc.SelectObject (tmpbmp);
 		
 		// draw all white
-		dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
-		dc.SetPen   (wxPen(*wxWHITE_PEN));
-		dc.DrawRectangle (0,0,wndsize.GetWidth(),wndsize.GetHeight());
-		dc.DrawBitmap (*m_PanBmp, myNewPos.x,myNewPos.y);
-		dc.SelectObject(wxNullBitmap);
+		mdc.SetBrush (wxBrush(*wxWHITE_BRUSH));
+		mdc.SetPen   (wxPen(*wxWHITE_PEN));
+		mdc.DrawRectangle (0,0,wndsize.GetWidth(),wndsize.GetHeight());
+		mdc.DrawBitmap (*m_PanBmp, myNewPos.x,myNewPos.y);
+		mdc.SelectObject(wxNullBitmap);
 		
-		*m_bmp = tmpbmp;
+		m_bmp = new wxBitmap(tmpbmp);
+		
+		
+		
+		SetBitmapStatus(m_bmp);
 		Refresh();
 		Update();
 	}
@@ -338,6 +365,10 @@ void tmRenderer::PanStop (const wxPoint & mousepos)
 	wxCommandEvent evt(tmEVT_LM_PAN_ENDED, wxID_ANY);
 	evt.SetClientData(myNewPos);
 	GetEventHandler()->AddPendingEvent(evt);
+	
+	SetBitmapStatus();
+	delete m_bmp;
+	m_bmp = NULL;
 	
 	delete m_PanBmp;
 	m_PanBmp = NULL;
