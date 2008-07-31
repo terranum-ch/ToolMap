@@ -49,7 +49,8 @@ END_EVENT_TABLE()
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 July 2008
  *******************************************************************************/
-tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(parent,id)
+tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : 
+wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, wxHSCROLL | wxVSCROLL | wxALWAYS_SHOW_SB )
 {
 	m_bmp = NULL;
 	m_SelectRect = new wxRubberBand(this);
@@ -57,6 +58,8 @@ tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(pare
 	m_ActualTool = tmTOOL_SELECT;
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
 	m_PanBmp = NULL;
+	
+	SetScrollbar(wxHORIZONTAL, 0, 16, 50);
 }
 
 
@@ -209,6 +212,10 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 }
 
 
+
+
+
+
 void tmRenderer::RubberBandStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;
@@ -296,11 +303,6 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 	
 	wxSize mybitmapsize=dc.GetSize(); 
 		
-	//wxBitmap thebmp(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),-1); 
-	//wxMemoryDC mdc; 
-	//mdc.SelectObject(thebmp); 
-	//mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0); 
-	
 	if (m_PanBmp)
 	{
 		delete m_PanBmp;
@@ -318,6 +320,14 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 }
 
 
+
+/***************************************************************************//**
+ @brief Update the pan image during mouse move
+ @details Call this function when the mouse move for moving the pan image.
+ @param mousepos actual mouse position
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 July 2008
+ *******************************************************************************/
 void tmRenderer::PanUpdate (const wxPoint & mousepos)
 {
 	// compute the new raster origin
@@ -353,6 +363,14 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 }
 
 
+/***************************************************************************//**
+ @brief Refresh screen after pan
+ @details Call this function when the pan is over to make cleanup and refresh
+ screen.
+ @param mousepos actual mouse position
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 July 2008
+ *******************************************************************************/
 void tmRenderer::PanStop (const wxPoint & mousepos)
 {
 	// compute the new raster origin

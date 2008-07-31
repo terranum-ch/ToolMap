@@ -214,6 +214,40 @@ void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 }
 
 
+/*bool tmGISScale::IsMaxExtentBiggerThanDisplay (bool bHorizontalextent)
+{
+	// compute for x
+	if (bHorizontalextent)
+	{
+		if (m_ExtentMaxLayers.x_min < m_ExtentWndReal.x_min)
+			return TRUE;
+		return FALSE;
+	}
+	// compute for y
+	else 
+	{
+		if (m_ExtentMaxLayers.y_min <m_ExtentWndReal.y_min)
+			return TRUE;
+		return FALSE;
+	}
+
+	
+}*/
+
+wxSize tmGISScale::GetVirtualPxSize ()
+{
+	double dwidthLayers = DifferenceCoord(m_ExtentMaxLayers.x_max, 
+										  m_ExtentMaxLayers.x_min);
+	double dheightLayers = DifferenceCoord(m_ExtentMaxLayers.y_max, 
+										  m_ExtentMaxLayers.y_min);
+	
+	int widthpx = (int)(dwidthLayers / m_PixelSize);
+	int heightpx = (int)(dheightLayers / m_PixelSize);
+	
+	return wxSize(widthpx, heightpx);
+}
+
+
 long tmGISScale::ComputeUnitScale ()
 {
 	int MMtoM = 1000;

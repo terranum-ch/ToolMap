@@ -531,6 +531,35 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 }
 
 
+void tmLayerManager::UpdateScrollBars ()
+{
+	//bool bVerti = FALSE;
+	//bool bHoriz = FALSE;
+	//AreScrollBarNeeded(bHoriz, bVerti);
+	wxSize myVirtualLayerSize = m_Scale.GetVirtualPxSize();
+	m_GISRenderer->SetVirtualSize(myVirtualLayerSize);
+	
+	wxSize myWndSize (m_Scale.GetWindowExtent().GetWidth(),
+					  m_Scale.GetWindowExtent().GetHeight());
+		
+	wxSize myDiffSize = myVirtualLayerSize - myWndSize;
+	int xscrollrate = myDiffSize.GetWidth() / 50;
+	int yscrollrate = myDiffSize.GetHeight() / 50;
+	
+	m_GISRenderer->SetScrollRate(xscrollrate, yscrollrate);
+	
+}
+
+
+void tmLayerManager::AreScrollBarNeeded (bool & bHoriz, bool & bVerti)
+{
+	//bHoriz = m_Scale.IsMaxExtentBiggerThanDisplay(TRUE);
+	//bVerti = m_Scale.IsMaxExtentBiggerThanDisplay(FALSE);
+	
+}
+
+
+
 
 /***************************************************************************//**
  @brief Is the layer manager ready with some project
@@ -724,6 +753,10 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		
 	// update scale
 	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+	
+	// update scrollbars
+	UpdateScrollBars();
+	
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
