@@ -67,7 +67,7 @@ class tmRenderer : public wxScrolledWindow
 		// rubber band
 		wxRubberBand * m_SelectRect;
 		wxPoint m_StartCoord;
-		wxBitmap m_PanBmp;
+		wxBitmap * m_PanBmp;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
