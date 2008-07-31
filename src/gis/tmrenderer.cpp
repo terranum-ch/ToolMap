@@ -56,6 +56,7 @@ tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : wxScrolledWindow(pare
 	m_StartCoord = wxPoint(-1,-1);
 	m_ActualTool = tmTOOL_SELECT;
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
+	m_PanBmp = NULL;
 }
 
 
@@ -290,7 +291,7 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 	mdc.SelectObject(thebmp); 
 	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0); 
 		
-	m_PanBmp = thebmp;
+	m_PanBmp = new wxBitmap(thebmp);
 }
 
 
@@ -300,7 +301,7 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 	wxPoint myNewPos(mousepos.x - m_StartCoord.x,
 					 mousepos.y - m_StartCoord.y);
 	
-	if (!m_PanBmp.IsOk())
+	if (m_PanBmp == NULL || !m_PanBmp->IsOk())
 		return;
 		
 	// we move the raster if mouse mouve
@@ -315,7 +316,7 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 		dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
 		dc.SetPen   (wxPen(*wxWHITE_PEN));
 		dc.DrawRectangle (0,0,wndsize.GetWidth(),wndsize.GetHeight());
-		dc.DrawBitmap (m_PanBmp, myNewPos.x,myNewPos.y);
+		dc.DrawBitmap (*m_PanBmp, myNewPos.x,myNewPos.y);
 		dc.SelectObject(wxNullBitmap);
 		
 		*m_bmp = tmpbmp;
@@ -338,7 +339,8 @@ void tmRenderer::PanStop (const wxPoint & mousepos)
 	evt.SetClientData(myNewPos);
 	GetEventHandler()->AddPendingEvent(evt);
 	
-	m_PanBmp.SetOk(FALSE);
+	delete m_PanBmp;
+	m_PanBmp = NULL;
 	m_StartCoord = wxPoint(-1,-1);
 }
 
