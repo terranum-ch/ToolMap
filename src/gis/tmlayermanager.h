@@ -92,8 +92,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		// scrollbars
 		void UpdateScrollBars ();
-		void AreScrollBarNeeded (bool & bHoriz, bool & bVerti);
-		
+	
 			
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size); 
