@@ -31,6 +31,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
 DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
+DEFINE_EVENT_TYPE(tmEVT_LM_SCROLL_MOVED)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -39,6 +40,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_MOTION (tmRenderer::OnMouseMove)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
+	EVT_SCROLLWIN (tmRenderer::OnScroll)
 END_EVENT_TABLE()
 
 
@@ -50,7 +52,8 @@ END_EVENT_TABLE()
  @date 21 July 2008
  *******************************************************************************/
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : 
-wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, wxHSCROLL | wxVSCROLL | wxALWAYS_SHOW_SB )
+wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, 
+				 wxHSCROLL | wxVSCROLL | wxALWAYS_SHOW_SB | wxWS_EX_PROCESS_UI_UPDATES )
 {
 	m_bmp = NULL;
 	m_SelectRect = new wxRubberBand(this);
@@ -213,6 +216,17 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 
 
 
+void tmRenderer::OnScroll (wxScrollWinEvent & event)
+{
+	wxCommandEvent evt (tmEVT_LM_SCROLL_MOVED, wxID_ANY);
+	
+	// create new scroll event, deleted in the layermanager
+	wxScrollWinEvent * myScrollEvt = new wxScrollWinEvent(event.GetEventType(),
+														  event.GetPosition(),
+														  event.GetOrientation());
+	evt.SetClientData(myScrollEvt);
+	GetEventHandler()->AddPendingEvent(evt);
+}
 
 
 

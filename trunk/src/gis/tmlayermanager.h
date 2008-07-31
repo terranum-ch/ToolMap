@@ -89,6 +89,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnZoomRectangleIn (wxCommandEvent & event);
 		void OnZoomRectangleOut (wxCommandEvent & event);
 		void OnPanFinished (wxCommandEvent & event);
+		void OnScrolled (wxCommandEvent & event);
 		
 		// scrollbars
 		void UpdateScrollBars ();

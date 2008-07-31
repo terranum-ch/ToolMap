@@ -242,6 +242,34 @@ wxPoint tmGISScale::GetVirtualPxPosition ()
 }
 
 
+
+void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos, 
+										int pxperunitx, int pxperunity)
+{
+	wxLogDebug(_T("Px size is : %.*f"), 2, m_PixelSize);
+	wxLogDebug(_T("coord are : %.*f"),2, pxperunitx * newpos * m_PixelSize);
+	
+	/*double dRealMove = scrollrate * m_PixelSize;
+	wxLogDebug(_T("wnd size  is : %.*f x pos = %.*f"), 2, dRealMove,2, dRealMove * newpos);
+	switch (orientation)
+	{
+		case wxHORIZONTAL:
+			
+			//m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, dRealMove);
+			//m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dRealMove);
+			break;
+		case wxVERTICAL:
+			//m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, dRealMove);
+			//m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dRealMove);
+			break;
+	}*/
+
+}
+
+
+
+
+
 long tmGISScale::ComputeUnitScale ()
 {
 	int MMtoM = 1000;
