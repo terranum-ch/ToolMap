@@ -151,18 +151,26 @@ class tmGISScale : public wxObject
 				return d2-d1;
 		}
 		
+		
+				
 		inline double DifferenceCoord (const double & coordmax, const double & coordmin)
 		{
 			if (wxIsSameDouble(coordmax, coordmin))
 				return 0;
 			if (coordmax <= 0 && coordmin >= 0)
 				return coordmax + coordmin;
-			if (coordmax >= 0 && coordmin < coordmax)
+			if (coordmax >= 0 )//&& coordmin < coordmax)
 				return coordmax - coordmin;
 			
-			wxLogDebug(_T("Unable to compute difference between : %.*f and %.*f"),
-					   2,coordmax,2, coordmin);
-				return 0;
+			// if case isn't taken into account
+			wxString sFunction = wxString::FromAscii(__FUNCTION__);
+			wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
+														   sFunction.c_str(), __LINE__); 
+			wxString sErrMsg = wxString::Format(_T("%s values are coord min-max : %.*f - %.*f "),
+												sFunctionLineError.c_str(), 2, coordmin, 2 , coordmax);
+			wxASSERT_MSG(0,sErrMsg);
+			
+			return 0;
 		}
 		
 		inline double RemoveFromCoord (const double & coord1, const double & value)

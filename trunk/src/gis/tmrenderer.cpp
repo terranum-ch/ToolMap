@@ -315,7 +315,8 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 	// capture the dc in a bitmap
 	wxClientDC dc (this);
 	
-	wxSize mybitmapsize=dc.GetSize(); 
+	wxSize mybitmapsize= GetClientSize(); 
+	wxSize myFullSize = GetSize();
 		
 	if (m_PanBmp)
 	{
@@ -323,11 +324,13 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 		m_PanBmp = NULL;
 	}
 	
-	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),-1);
+	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),mybitmapsize.GetHeight() - (myFullSize.GetWidth() - mybitmapsize.GetWidth()) ,-1);
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_PanBmp);
 	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0);
 	mdc.SelectObject(wxNullBitmap);
+	
+	m_PanBmp->SaveFile(_T("/Users/Lucien/Desktop/testbmp1.png"), wxBITMAP_TYPE_PNG);
 	
 	// empty real bmp
 	SetBitmapStatus();
@@ -355,7 +358,7 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 	if (myNewPos.x != 0 && myNewPos.y != 0)
 	{
 		wxMemoryDC mdc;
-		wxSize wndsize = GetSize();
+		wxSize wndsize = GetClientSize();
 		wxBitmap tmpbmp (wndsize.GetWidth(), wndsize.GetHeight());
 		mdc.SelectObject (tmpbmp);
 		
