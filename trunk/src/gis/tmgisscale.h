@@ -31,6 +31,7 @@
 
 
 const int tmSCALE_MARGIN = 10;
+const int tmSCROLLBARS_DIV = 50; // number of divisors for scrollbars
 
 
 /***************************************************************************//**
@@ -89,6 +90,8 @@ class tmGISScale : public wxObject
 		void SetMaxLayersExtentAsExisting (const tmRealRect & r);
 		void SetMaxLayersExtent (const tmRealRect & r){ m_ExtentMaxLayers = r;}
 		tmRealRect GetMaxLayersExtent(){ return m_ExtentMaxLayers;}
+		double GetLayersExtentWidth();
+		double GetLayersExtentHeight();
 		
 		// setter and getters for windows 
 		void SetWindowExtent (const wxRect & extent){m_ExtentWnd = extent;}
@@ -99,6 +102,8 @@ class tmGISScale : public wxObject
 			m_UnitScale = ComputeUnitScale();
 		}
 		long GetActualScale (){return m_UnitScale;}
+		double GetWindowRealWidth();
+		double GetwindowRealHeight();
 		
 		// computing scale and reduction factor
 		double ComputeDivFactor (wxSize wnd_extent = wxDefaultSize);
@@ -120,7 +125,7 @@ class tmGISScale : public wxObject
 		// scrollbar functions
 		wxSize GetVirtualPxSize ();
 		wxPoint GetVirtualPxPosition ();
-		void ComputeScrollMoveReal (int orientation, int newpos, int pxperunitx, int pxperunity);
+		void ComputeScrollMoveReal (int orientation, int newpos);
 		
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)

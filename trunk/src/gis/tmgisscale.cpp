@@ -80,6 +80,33 @@ void tmGISScale::SetMaxLayersExtentAsExisting (const tmRealRect & r)
 }
 
 
+double tmGISScale::GetLayersExtentWidth()
+{
+	return DifferenceCoord(m_ExtentMaxLayers.x_max, m_ExtentMaxLayers.x_min);
+}
+
+
+double tmGISScale::GetLayersExtentHeight()
+{
+	return DifferenceCoord(m_ExtentMaxLayers.y_max, m_ExtentMaxLayers.y_min);
+}
+
+
+
+double tmGISScale::GetWindowRealWidth()
+{
+	return DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
+}
+
+
+
+double tmGISScale::GetwindowRealHeight()
+{
+	return DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);	
+}
+
+
+
 double tmGISScale::ComputeDivFactor (wxSize wnd_extent)
 {
 	if (wnd_extent == wxDefaultSize)
@@ -243,27 +270,33 @@ wxPoint tmGISScale::GetVirtualPxPosition ()
 
 
 
-void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos, 
-										int pxperunitx, int pxperunity)
+void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos)
 {
-	wxLogDebug(_T("Px size is : %.*f"), 2, m_PixelSize);
-	wxLogDebug(_T("coord are : %.*f"),2, pxperunitx * newpos * m_PixelSize);
+	double dLayersWidth = 0, dLayersHeight = 0;
+	double dWndWidth = 0, dWndHeight = 0;
+	double dstep = 0;
+	double dxminmargin = 0, dyminmargin = 0;
 	
-	/*double dRealMove = scrollrate * m_PixelSize;
-	wxLogDebug(_T("wnd size  is : %.*f x pos = %.*f"), 2, dRealMove,2, dRealMove * newpos);
+	
 	switch (orientation)
 	{
 		case wxHORIZONTAL:
-			
-			//m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, dRealMove);
-			//m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dRealMove);
+			dLayersWidth = GetLayersExtentWidth() + (tmSCALE_MARGIN * m_PixelSize);
+			dWndWidth = GetWindowRealWidth();
+			dstep = (dLayersWidth - dWndWidth) / tmSCROLLBARS_DIV;
+			dxminmargin =  m_ExtentMaxLayers.x_min - (m_PixelSize * (tmSCALE_MARGIN / 2));
+			m_ExtentWndReal.x_min = dxminmargin + (newpos * dstep);
+			m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_min, dWndWidth);
 			break;
 		case wxVERTICAL:
-			//m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, dRealMove);
-			//m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dRealMove);
+			dLayersHeight = GetLayersExtentHeight() + (tmSCALE_MARGIN * m_PixelSize);
+			dWndHeight = GetwindowRealHeight();
+			dstep = (dLayersHeight - dWndHeight) / tmSCROLLBARS_DIV;
+			dyminmargin = m_ExtentMaxLayers.y_min - (m_PixelSize * (tmSCALE_MARGIN / 2));
+			m_ExtentWndReal.y_min = dyminmargin + (newpos * dstep);
+			m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_min, dWndHeight);
 			break;
-	}*/
-
+	}
 }
 
 
