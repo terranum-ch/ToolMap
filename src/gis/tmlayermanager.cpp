@@ -536,30 +536,11 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 void tmLayerManager::OnScrolled (wxCommandEvent & event)
 {
 	wxScrollWinEvent * myScrollEvent = (wxScrollWinEvent*) event.GetClientData();
-	
-	wxLogDebug(_T("Scroll message : pos = %d, scrollrange = %d"),
-	myScrollEvent->GetPosition(),
-			   m_GISRenderer->GetScrollRange(myScrollEvent->GetOrientation()));
-	
-	// compute the move set by the scroll bar.
-	int x = 0, xx = 0;
-	int y = 0, yy = 0;
-	
-	if (myScrollEvent->GetOrientation() == wxHORIZONTAL)
-		x = myScrollEvent->GetPosition();
-	else
-		y = myScrollEvent->GetPosition();
-	
-	m_GISRenderer->GetScrollPixelsPerUnit(&xx, &yy);
-	wxLogDebug(_T("calculed is : %d, %d, %d, %d"), x, y, xx, yy);
-	wxLogDebug(_T("nb of pixels is : %d"), x * xx);
-
-	
 	m_Scale.ComputeScrollMoveReal(myScrollEvent->GetOrientation(),
-								  myScrollEvent->GetPosition(),
-								  xx,yy);
-	
+								  myScrollEvent->GetPosition());
 	delete myScrollEvent;
+	ReloadProjectLayersThreadStart(FALSE, FALSE);
+	
 }
 
 
@@ -573,8 +554,8 @@ void tmLayerManager::UpdateScrollBars ()
 					  m_Scale.GetWindowExtent().GetHeight());
 		
 	wxSize myDiffSize = myVirtualLayerSize - myWndSize;
-	int xscrollrate = myDiffSize.GetWidth() / 50;
-	int yscrollrate = myDiffSize.GetHeight() / 50;
+	int xscrollrate = myDiffSize.GetWidth() / tmSCROLLBARS_DIV;
+	int yscrollrate = myDiffSize.GetHeight() / tmSCROLLBARS_DIV;
 	
 	m_GISRenderer->SetScrollRate(xscrollrate, yscrollrate);
 	
@@ -710,7 +691,7 @@ bool tmLayerManager::LoadProjectLayers()
 
 
 
-bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent)
+bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
 {
 	// init values
 	m_computeFullExtent = bFullExtent;
@@ -724,7 +705,8 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent)
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
 	
 	// invalidate max_extent
-	m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
+	if (bInvalidateFullExt)
+		m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
 		
 	// start a thread if not existing,
 	// stop the existing otherwise.

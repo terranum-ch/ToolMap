@@ -133,7 +133,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		
 		bool LoadProjectLayers();
-		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE);
+		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
 		void OnReloadProjectLayersDone (wxCommandEvent & event);
 		
 		
