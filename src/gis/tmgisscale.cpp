@@ -264,6 +264,9 @@ wxPoint tmGISScale::GetVirtualPxPosition ()
 	int xVirtPos = (int)(dRealOriginDiffX / m_PixelSize);
 	int yVirtPos = (int)(dRealOriginDiffY / m_PixelSize);
 	
+	fprintf(stderr, "%s line %d : xVirtPos = %d YVirtPos = %d\n ", __FUNCTION__, __LINE__,
+			xVirtPos, yVirtPos);
+	
 	return wxPoint(xVirtPos, yVirtPos);
 	
 }
@@ -365,8 +368,6 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale)
 	// change pixels size too :-)
 	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
 				((double)m_ExtentWnd.GetWidth());
-
 }
-
 
 
