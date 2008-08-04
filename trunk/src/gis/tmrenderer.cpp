@@ -156,7 +156,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 {
 	wxPaintDC dc (this);
 	
-	if (m_bmp)
+	if (m_bmp && m_bmp->IsOk())
 	{
 		// draw the image
 		dc.SetBackground(*wxWHITE);
@@ -226,6 +226,7 @@ void tmRenderer::OnScroll (wxScrollWinEvent & event)
 														  event.GetOrientation());
 	evt.SetClientData(myScrollEvt);
 	GetEventHandler()->AddPendingEvent(evt);
+	event.Skip();
 }
 
 
@@ -324,13 +325,13 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 		m_PanBmp = NULL;
 	}
 	
-	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),mybitmapsize.GetHeight() - (myFullSize.GetWidth() - mybitmapsize.GetWidth()) ,-1);
+	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(), -1); // - (myFullSize.GetWidth() - mybitmapsize.GetWidth()) ,-1);
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_PanBmp);
 	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0);
 	mdc.SelectObject(wxNullBitmap);
 	
-	m_PanBmp->SaveFile(_T("/Users/Lucien/Desktop/testbmp1.png"), wxBITMAP_TYPE_PNG);
+	//m_PanBmp->SaveFile(_T("/Users/Lucien/Desktop/testbmp1.png"), wxBITMAP_TYPE_PNG);
 	
 	// empty real bmp
 	SetBitmapStatus();
