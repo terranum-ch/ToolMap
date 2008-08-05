@@ -18,17 +18,25 @@
 // comment doxygen
 
 #include "tmgisdataraster.h"
+#include "tmgisdatarastertiff.h"
 
 
 tmGISDataRaster::tmGISDataRaster()
 {
-	
+	m_DataSet = NULL;
+	m_RasterBand = NULL;
 }
 
 
 tmGISDataRaster::~tmGISDataRaster()
 {
-	
+	// closing GDAL raster dataset
+	if (m_DataSet)
+	{
+		GDALClose(m_DataSet);
+		m_DataSet = NULL;
+	}
+	m_RasterBand = NULL;
 }
 
 
@@ -54,7 +62,7 @@ tmGISDataRaster * tmGISDataRaster::CreateGISRasterBasedOnType (const int & gis_f
 	switch (gis_format_index)
 	{
 		case tmGIS_RASTER_TIFF:
-			return NULL;
+			return new tmGISDataRasterTIFF();
 			break;
 		case tmGIS_RASTER_BINGRID:
 			return NULL;

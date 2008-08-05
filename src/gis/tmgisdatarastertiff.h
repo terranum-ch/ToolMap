@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmgisdataraster.h
-                    Super class for dealing with raster GIS data
+								tmgisdatarastertiff.h
+                   For dealing with spatial raster data (*.tiff, *.tif)
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_GISDATARASTER_H_
-#define _TM_GISDATARASTER_H_
+#ifndef _TM_GISDATARASTER_TIFF_H_
+#define _TM_GISDATARASTER_TIFF_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,46 +29,28 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmgisdata.h"
+#include "tmgisdataraster.h"
+#include "gdal_priv.h"	
 
 
-// if you add some raster format, don't forget
-// to update the tmGISVECTOR_OFFSET
-enum tmGISDATA_RASTER_TYPES
-{
-	tmGIS_RASTER_TIFF = 0, 
-	tmGIS_RASTER_BINGRID
-};
-
-static wxString tmGISDATA_RASTER_TYPE_WILDCARDS[] = 
-{_("Tiff raster file (*.tif,*.tiff)|*.tif;*.tiff"),
-_("Esri's binary GRID (*.hdr)|*.hdr")};
-
-static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
-{
-	_T("tif,tiff"),
-	_T("hdr"),
-};
-
-
-
-class tmGISDataRaster : public tmGISData
+class tmGISDataRasterTIFF : public tmGISDataRaster
 	{
 	private:
+		//OGRDataSource       *m_Datasource;
+		//OGRLayer			*m_Layer;
+		
 	protected:
-		GDALDataset * m_DataSet;
-		GDALRasterBand * m_RasterBand;
-		
 	public:
-		tmGISDataRaster();
-		~tmGISDataRaster();
+		tmGISDataRasterTIFF();
+		~tmGISDataRasterTIFF();
 		
-		// static functions
-		static void InitGISDriversRaster();
-		static wxString GetAllRasterGISFormatsWildcards();
-		static tmGISDataRaster * CreateGISRasterBasedOnType (const int & gis_format_index);
-		static tmGISDataRaster * CreateGISRasterBasedOnExt (const wxString & extension);
+		// implementing virtual function
+		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
+		virtual tmRealRect GetMinimalBoundingRectangle();
+		
 	};
+
+
 
 
 
