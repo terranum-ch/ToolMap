@@ -36,9 +36,7 @@
 class tmGISDataRasterTIFF : public tmGISDataRaster
 	{
 	private:
-		//OGRDataSource       *m_Datasource;
-		//OGRLayer			*m_Layer;
-		
+			
 	protected:
 	public:
 		tmGISDataRasterTIFF();
