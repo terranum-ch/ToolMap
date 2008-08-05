@@ -19,6 +19,7 @@
 
 #include "tmgisdataraster.h"
 #include "tmgisdatarastertiff.h"
+#include "tmgisdatarasteregrid.h"
 
 
 tmGISDataRaster::tmGISDataRaster()
@@ -65,7 +66,7 @@ tmGISDataRaster * tmGISDataRaster::CreateGISRasterBasedOnType (const int & gis_f
 			return new tmGISDataRasterTIFF();
 			break;
 		case tmGIS_RASTER_BINGRID:
-			return NULL;
+			return new tmGISDataRasterEGRID();
 			break;
 	}
 	return NULL;

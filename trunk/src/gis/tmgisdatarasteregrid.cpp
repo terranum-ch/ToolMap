@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmgisdatarastertiff.cpp
-				For dealing with spatial raster data (*.tiff, *.tif)
+								tmgisdatarasteregrid.cpp
+                    For dealing with raster ESRI's binary grid
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -17,21 +17,24 @@
 
 // comment doxygen
 
-#include "tmgisdatarastertiff.h"
+#include "tmgisdatarasteregrid.h"
 
 
-tmGISDataRasterTIFF::tmGISDataRasterTIFF()
+tmGISDataRasterEGRID::tmGISDataRasterEGRID()
 {
 	
-}
-
-tmGISDataRasterTIFF::~tmGISDataRasterTIFF()
-{
 	
 }
 
 
-bool tmGISDataRasterTIFF::Open (const wxString & filename, bool bReadWrite)
+tmGISDataRasterEGRID::~tmGISDataRasterEGRID()
+{
+
+}
+
+
+
+bool tmGISDataRasterEGRID::Open (const wxString & filename, bool bReadWrite)
 {
 	// init parent member values
 	tmGISData::Open(filename, bReadWrite);
@@ -54,7 +57,8 @@ bool tmGISDataRasterTIFF::Open (const wxString & filename, bool bReadWrite)
 }
 
 
-tmRealRect tmGISDataRasterTIFF::GetMinimalBoundingRectangle()
+
+tmRealRect tmGISDataRasterEGRID::GetMinimalBoundingRectangle()
 {
 	// ASSERT m_DataSet
 	wxString sFunction = wxString::FromAscii(__FUNCTION__);
@@ -80,9 +84,8 @@ tmRealRect tmGISDataRasterTIFF::GetMinimalBoundingRectangle()
 	myCoord.y_max = dCoord[3];
 	myCoord.y_min = myCoord.y_max + (m_DataSet->GetRasterYSize() * dCoord[5]);
 	myCoord.x_max = myCoord.x_min + (m_DataSet->GetRasterXSize() * dCoord[1]);
-		
-	return myCoord;
 	
+	return myCoord;
 }
 
 
