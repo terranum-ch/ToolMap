@@ -31,6 +31,7 @@
 
 #include <wx/scrolwin.h>	// for scrolled window base
 #include "../gui/wxrubberband.h"	// for selection rubber band
+#include "tmgisscale.h"			// for number of division;
 
 
 // EVENT FOR GIS RENDERER CTRL
@@ -78,6 +79,7 @@ class tmRenderer : public wxScrolledWindow
 		void OnMouseDown	(wxMouseEvent & event);
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);	
+		void OnMouseWheel	(wxMouseEvent & event);
 		
 		// scrollbar event (received)
 		void OnScroll (wxScrollWinEvent & event);

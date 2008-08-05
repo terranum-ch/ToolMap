@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_SCROLLWIN (tmRenderer::OnScroll)
+	EVT_MOUSEWHEEL (tmRenderer::OnMouseWheel)
 END_EVENT_TABLE()
 
 
@@ -178,9 +179,11 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		RubberBandStart(event.GetPosition());
 	
-	// psn
+	// pan
 	if (m_ActualTool == tmTOOL_PAN)
 		PanStart(event.GetPosition());
+	
+	event.Skip();
 }
 
 
@@ -212,6 +215,54 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_PAN)
 		PanStop(event.GetPosition());
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Respond to a mouse wheel event
+ @details This function send message to the layer manager (like the #OnScroll()
+ function) for moving the scrollbars and the display.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 05 August 2008
+ *******************************************************************************/
+void tmRenderer::OnMouseWheel(wxMouseEvent & event)
+{
+	int iLines = event.GetWheelRotation() / event.GetWheelDelta();
+	int iVertScrollPos = 0;
+	WXTYPE tScrollDirection = wxEVT_SCROLLWIN_LINEDOWN;
+	int iSystemLinPerAction = 1;
+		
+	if (iLines != 0)
+	{
+		// get system preferences
+		iSystemLinPerAction = event.GetLinesPerAction();
+		
+		// get the vert scrollbar position
+		iVertScrollPos = GetScrollPos(wxVERTICAL) - iLines;
+		
+		if (iLines > 0)
+		{
+			tScrollDirection = wxEVT_SCROLLWIN_LINEUP;
+		}
+		
+		// keep scroll position into boudaries
+		if (iVertScrollPos < 0)
+			iVertScrollPos = 0;
+		if (iVertScrollPos > tmSCROLLBARS_DIV)
+			iVertScrollPos = tmSCROLLBARS_DIV;
+		
+		SetScrollPos(wxVERTICAL, iVertScrollPos, FALSE);
+		
+	
+		// send event notification to the layer manager
+		wxCommandEvent evt (tmEVT_LM_SCROLL_MOVED, wxID_ANY);
+		wxScrollWinEvent * myScrollEvt = new wxScrollWinEvent(tScrollDirection,
+															  iVertScrollPos,
+															  wxVERTICAL);
+		evt.SetClientData(myScrollEvt);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 
@@ -318,6 +369,7 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 	
 	wxSize mybitmapsize= GetClientSize(); 
 	wxSize myFullSize = GetSize();
+	int iHeight = mybitmapsize.GetHeight();
 		
 	if (m_PanBmp)
 	{
@@ -325,13 +377,17 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
 		m_PanBmp = NULL;
 	}
 	
-	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),mybitmapsize.GetHeight(), -1); // - (myFullSize.GetWidth() - mybitmapsize.GetWidth()) ,-1);
+	//FIXME: BUG IN OSX
+#ifdef __WXMAC__
+	iHeight -= myFullSize.GetHeight() - iHeight;
+#endif
+	//
+	
+	m_PanBmp = new wxBitmap(mybitmapsize.GetWidth(),iHeight, -1);
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_PanBmp);
 	mdc.Blit(0,0,mybitmapsize.GetWidth(),mybitmapsize.GetHeight(),&dc,0,0);
 	mdc.SelectObject(wxNullBitmap);
-	
-	//m_PanBmp->SaveFile(_T("/Users/Lucien/Desktop/testbmp1.png"), wxBITMAP_TYPE_PNG);
 	
 	// empty real bmp
 	SetBitmapStatus();

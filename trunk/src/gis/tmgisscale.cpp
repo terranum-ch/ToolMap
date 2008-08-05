@@ -264,9 +264,6 @@ wxPoint tmGISScale::GetVirtualPxPosition ()
 	int xVirtPos = (int)(dRealOriginDiffX / m_PixelSize);
 	int yVirtPos = (int)(dRealOriginDiffY / m_PixelSize);
 	
-	fprintf(stderr, "%s line %d : xVirtPos = %d YVirtPos = %d\n ", __FUNCTION__, __LINE__,
-			xVirtPos, yVirtPos);
-	
 	return wxPoint(xVirtPos, yVirtPos);
 	
 }
