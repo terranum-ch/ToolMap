@@ -239,7 +239,7 @@ void tmRenderer::OnMouseWheel(wxMouseEvent & event)
 		iSystemLinPerAction = event.GetLinesPerAction();
 		
 		// get the vert scrollbar position
-		iVertScrollPos = GetScrollPos(wxVERTICAL) - iLines;
+		iVertScrollPos = GetScrollPos(wxVERTICAL) - (iLines * iSystemLinPerAction);
 		
 		if (iLines > 0)
 		{
