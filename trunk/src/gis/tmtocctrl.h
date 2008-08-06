@@ -93,6 +93,7 @@ class tmLayerProperties : public wxTreeItemData
 		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
 								  const wxArrayString & supportedext);
 		wxString GetFileExtension ();
+		wxString GetDisplayName ();
 		
 		
 		// constructor

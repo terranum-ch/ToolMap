@@ -816,7 +816,9 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 			myErrMsg = layerProp->m_LayerNameExt;
 			break;
 	
-		case TOC_NAME_NOT_GENERIC:
+		case TOC_NAME_TIFF:
+		case TOC_NAME_EGRID:
+		case TOC_NAME_SHP:
 			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetFileExtension());
 			myFileName = layerfullname.GetFullPath();
 			myErrMsg = myFileName;

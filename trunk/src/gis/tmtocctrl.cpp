@@ -136,6 +136,32 @@ wxString tmLayerProperties::GetFileExtension()
 
 
 
+/***************************************************************************//**
+ @brief Return the display name for using in the TOC
+ @details Because in some case file name isn't very explicit we sould use this
+ function for getting a good display name (exemple is ESRI binary grid)
+ @return  A more explicit name
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 August 2008
+ *******************************************************************************/
+wxString tmLayerProperties::GetDisplayName ()
+{
+	wxFileName myDirName (m_LayerPathOnly, m_LayerNameExt);
+	
+	// special behaviour for ESRI grid.
+	if (m_LayerType == TOC_NAME_EGRID)
+	{
+		if (myDirName.IsOk())
+		{
+			return myDirName.GetDirs().Last();
+		}
+		
+		return _T("DIR_NAME_ERROR");
+	}
+	return m_LayerNameExt;
+}
+
+
 
 
 /******************************* TOC CONTROL *************************************/
@@ -235,16 +261,18 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 		return FALSE;
 	}
 	
+	wxString myDisplayName = item->GetDisplayName();
+	
 	wxTreeItemId itemid;
 	// appending item
 	if (!position.IsOk())
 	{
-		itemid = AppendItem(m_root, item->m_LayerNameExt, item->m_LayerVisible, -1, item);
+		itemid = AppendItem(m_root, myDisplayName, item->m_LayerVisible, -1, item);
 	}
 	else
 	{
 		// inserting item
-		itemid = InsertItem(m_root, position, item->m_LayerNameExt, item->m_LayerVisible, -1, item);
+		itemid = InsertItem(m_root, position, myDisplayName, item->m_LayerVisible, -1, item);
 		wxLogDebug(_T("Inserting item"));
 	}
 	
