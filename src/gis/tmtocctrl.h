@@ -35,7 +35,6 @@
 #include "wx/imaglist.h"			// for image list for toc
 
 
-//DECLARE_APP(ToolMapApp)
 
 // TOC Generics values
 // Definitions for the generic layers, we define the text and  the id of 
@@ -49,6 +48,10 @@ static wxString TOC_GENERIC_NAME_STRING[] =
 	_("Frame"),
 	_("Not Generic layers")
 };
+
+
+// warning, max values are 127 because stored in a tiny int
+// into the database
 enum TOC_GENERIC_NAME
 {
 	TOC_NAME_LINES = 0,
@@ -56,7 +59,11 @@ enum TOC_GENERIC_NAME
 	TOC_NAME_LABELS,
 	TOC_NAME_ANNOTATIONS,
 	TOC_NAME_FRAME,
-	TOC_NAME_NOT_GENERIC = 100
+	TOC_NAME_NOT_GENERIC = 100,
+	TOC_NAME_TIFF,
+	TOC_NAME_EGRID,
+	TOC_NAME_SHP,
+	TOC_NAME_UNKNOWN = 120
 };
 static const int TOC_GENERIC_NAME_NUMBER = 6;
 
@@ -75,14 +82,16 @@ class tmLayerProperties : public wxTreeItemData
 		
 	public:
 		long m_LayerID;
-		PRJDEF_LAYERS_TYPE m_LayerType;
+		PRJDEF_LAYERS_TYPE m_LayerSpatialType;
 		wxString m_LayerPathOnly;
 		wxString m_LayerNameExt;
 		bool m_LayerVisible;
-		int m_LayerIsGeneric;
+		int m_LayerType;
 		
 		// init from string array
 		bool InitFromArray(const wxArrayString & array);
+		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
+								  const wxArrayString & supportedext);
 		wxString GetFileExtension ();
 		
 		

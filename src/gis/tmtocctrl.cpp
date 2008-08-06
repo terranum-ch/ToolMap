@@ -38,11 +38,11 @@ DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE)
 void tmLayerProperties::InitMemberValues()
 {
 	m_LayerID = 0;
-	m_LayerType = LAYER_LINE;
+	m_LayerSpatialType = LAYER_LINE;
 	m_LayerPathOnly = wxEmptyString;
 	m_LayerNameExt = wxEmptyString;
 	m_LayerVisible = TRUE;
-	m_LayerIsGeneric = TOC_NAME_NOT_GENERIC;
+	m_LayerType = TOC_NAME_NOT_GENERIC;
 }
 
 
@@ -63,7 +63,7 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	
 	array.Item(0).ToLong(&m_LayerID);
 	array.Item(1).ToLong(&temptype);
-	m_LayerType = (PRJDEF_LAYERS_TYPE) temptype;
+	m_LayerSpatialType = (PRJDEF_LAYERS_TYPE) temptype;
 	
 	m_LayerPathOnly = array.Item(2);
 	m_LayerNameExt = array.Item(3);
@@ -72,10 +72,59 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	m_LayerVisible = (bool) tempstatus;
 	
 	array.Item(5).ToLong(&tempgeneric);
-	m_LayerIsGeneric = (int) tempgeneric;
+	m_LayerType = (int) tempgeneric;
 	
 	return TRUE;
 }
+
+
+/***************************************************************************//**
+ @brief Init name, path and type member
+ @details Init member based on path, name (with extension) and a list of
+ supported GIS extension. Those extensions may be retreived using the function
+ bellow.
+ @code
+ wxArrayString myAllExt = tmGISData::GetAllSupportedGISFormatsExtensions();
+ @endcode
+ @param path string containing the path
+ @param nameext string containing the name and extension
+ @param supportedext an array of all supported extension. See code above
+ @return  TRUE if name and path aren't empty
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 August 2008
+ *******************************************************************************/
+bool tmLayerProperties::InitFromPathAndName (const wxString & path, 
+											 const wxString & nameext,
+											 const wxArrayString & supportedext)
+{
+	if (nameext.IsEmpty() || path.IsEmpty())
+		return FALSE;
+		
+	m_LayerNameExt = nameext;
+	m_LayerPathOnly = path;
+	
+	
+	// init extension based on supported extension, TOC_NAME_UNKNOWN otherwise
+	wxFileName myfileName (nameext);
+	wxString myExt = myfileName.GetExt();
+	
+	for (unsigned int i= 0; i<supportedext.GetCount(); i++)
+	{
+		if (supportedext.Item(i).Contains(myExt))
+		{
+			m_LayerType = TOC_NAME_NOT_GENERIC + i + 1;
+			break;
+		}
+		
+	}
+	// nothing found -> unknown
+	if (m_LayerType == TOC_NAME_NOT_GENERIC)
+		m_LayerType = TOC_NAME_UNKNOWN;
+	
+	
+	return TRUE;
+}
+
 
 
 
@@ -330,7 +379,7 @@ void tmTOCCtrl::ClearAllLayers()
 void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
 {
 	// change style to bold if generic layer
-	if (item->m_LayerIsGeneric < TOC_NAME_NOT_GENERIC)
+	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
 	{
 		SetItemBold(id, TRUE);
 	}
@@ -410,7 +459,7 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	
 	// not able to remove generic layers
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selectedarray.Item(0));
-	if (item->m_LayerIsGeneric < TOC_NAME_NOT_GENERIC)
+	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
 	{
 		wxLogMessage(_("Not allowed to remove generic layers from project"));
 		return;

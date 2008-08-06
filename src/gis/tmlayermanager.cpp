@@ -303,8 +303,11 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	
 	wxFileName myFilename (m_dlg->GetPath());
 	tmLayerProperties * item = new tmLayerProperties();
-	item->m_LayerNameExt = myFilename.GetFullName();
-	item->m_LayerPathOnly = myFilename.GetPath();
+	item->InitFromPathAndName(myFilename.GetPath(),
+							  myFilename.GetFullName(),
+							  tmGISData::GetAllSupportedGISFormatsExtensions());
+	//item->m_LayerNameExt = myFilename.GetFullName();
+	//item->m_LayerPathOnly = myFilename.GetPath();
 	delete m_dlg;
 	
 	// saving to the database and getting the last ID
@@ -801,7 +804,7 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 	// only used if not generic layers
 	wxFileName layerfullname (layerProp->m_LayerPathOnly, layerProp->m_LayerNameExt);
 	
-	switch (layerProp->m_LayerIsGeneric)
+	switch (layerProp->m_LayerType)
 	{
 		case TOC_NAME_LINES:
 		case TOC_NAME_POINTS:
@@ -809,7 +812,7 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_LABELS:
 		case TOC_NAME_FRAME:
 			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
-			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->m_LayerIsGeneric];
+			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->m_LayerType];
 			myErrMsg = layerProp->m_LayerNameExt;
 			break;
 	

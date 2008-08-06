@@ -109,6 +109,36 @@ wxString tmGISData::GetAllSupportedGISFormatsWildcards()
 
 
 /***************************************************************************//**
+ @brief Returning all extensions in an array string
+ @details All supported extensions in an array string but not the mysql one
+ (because no extension is valid for that format).
+ @note Raster format are returned first
+ @param wxArrayString all supported extension, raster ones first
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 August 2008
+ *******************************************************************************/
+wxArrayString tmGISData::GetAllSupportedGISFormatsExtensions()
+{
+	wxArrayString myExtensions;
+	
+	int iNbRaster = sizeof(tmGISDATA_RASTER_TYPE_EXTENSION) / sizeof (wxString);
+	int iNbVector = sizeof(tmGISDATA_VECTOR_TYPE_EXTENSION) / sizeof (wxString);
+	iNbVector = iNbVector - 1; // removing mysql format.
+	
+	
+	// adding rasters
+	for (int r = 0; r< iNbRaster; r++)
+		myExtensions.Add(tmGISDATA_RASTER_TYPE_EXTENSION[r]);
+	
+	// adding vectors
+	for (int v = 0; v< iNbVector; v++)
+		myExtensions.Add(tmGISDATA_VECTOR_TYPE_EXTENSION[v]);
+	
+	return myExtensions;
+}
+
+
+/***************************************************************************//**
  @brief Create an object of the specified format
  @details Allowed values for gis_format_index are those from the
  #tmGISDATA_RASTER_TYPES and from the #tmGISDATA_VECTOR_TYPES
