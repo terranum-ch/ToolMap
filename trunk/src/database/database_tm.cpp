@@ -1822,11 +1822,11 @@ long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
 										  _T("CONTENT_STATUS, GENERIC_LAYERS) ") +
 										  _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d ); "),
-										  item->m_LayerType,
+										  item->m_LayerSpatialType,
 										  myPath.c_str(),
 										  item->m_LayerNameExt.c_str(),
 										  item->m_LayerVisible,
-										  item->m_LayerIsGeneric);
+										  item->m_LayerType);
 		
 	if(!DataBaseQueryNoResult(sSentence))
 	{
