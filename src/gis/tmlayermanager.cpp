@@ -562,8 +562,14 @@ void tmLayerManager::UpdateScrollBars ()
 	
 	m_GISRenderer->SetScrollRate(xscrollrate, yscrollrate);
 	
-	if (xscrollrate <= 0 && yscrollrate <= 0)
-		return;
+	
+	// avoid div by 0
+	if (xscrollrate <= 0)
+		xscrollrate = 1;
+		
+	if(yscrollrate <= 0)
+		yscrollrate = 1;
+		
 	
 	wxPoint myVirtPos = m_Scale.GetVirtualPxPosition();
 	myVirtPos.x = myVirtPos.x / xscrollrate;
