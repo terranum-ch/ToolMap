@@ -335,7 +335,7 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 		return FALSE;
 	}
 	
-	SetItemText(position, newitemdata->m_LayerNameExt);
+	SetItemText(position, newitemdata->GetDisplayName());
 	SetItemImage(position, newitemdata->m_LayerVisible);
 	SetItemStyle(position, newitemdata);
 	
