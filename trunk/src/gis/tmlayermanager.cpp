@@ -340,28 +340,16 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	// compute reel size in MM
 	wxClientDC dc (m_GISRenderer);
 	m_Scale.SetWindowExtentMM(dc.GetSizeMM());
-	
-	
-	// conversion 
-	
-	
-	// create new bitmap based on size
-
+	delete mySize;
 	
 	// ensure that a project is opened
-	//if (!m_TOCCtrl->IsTOCReady())
-	//	return;
 	if (!IsOK())
 		return;
 	
+	// compute new pixel size (display area remain the same)
+	m_Scale.ComputeNewPixelSize();
 	 
-	
-	// TODO: Do computation and reload project in a thread
-	
-	wxLogDebug(_("Size message received : %d, %d"), mySize->GetWidth(), mySize->GetHeight());
-	
-	delete mySize;
-	
+	ReloadProjectLayersThreadStart(FALSE, FALSE);
 }
 
 

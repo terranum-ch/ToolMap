@@ -111,6 +111,9 @@ class tmGISScale : public wxObject
 		wxSize ComputeCenterPxWnd (double divratio, wxSize wnd_extent = wxDefaultSize);
 		bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
 		
+		// size windows changed -> px size change too
+		void ComputeNewPixelSize ();
+		
 		// scale function
 		void DistanceFromScale (const long & scale, double & xdist, double & ydist);
 		void ComputeNewScaleExtent (const long & scale);
