@@ -193,6 +193,25 @@ bool tmGISScale::ComputeMaxExtentReal (wxSize wnd_offset)
 
 
 
+void tmGISScale::ComputeNewPixelSize ()
+{
+	double dx = 0, dy=0;
+	
+	// check data
+	if (m_ExtentWnd == wxSize(0,0) || m_ExtentMaxLayers == tmRealRect(0,0,0,0))
+		return ;
+	
+	dx = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / (m_ExtentWnd.GetWidth());
+	dy = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) / (m_ExtentWnd.GetHeight());
+	if (dx > dy)
+		m_PixelSize = dx;
+	else 
+		m_PixelSize = dy;
+	
+}
+
+
+
 double tmGISScale::GetBestDivFactor (const wxRect & selected_rect)
 {
 	double dx = (double) m_ExtentWnd.GetWidth() / (double)selected_rect.GetWidth();
