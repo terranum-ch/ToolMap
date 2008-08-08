@@ -43,8 +43,9 @@ tmTOCCtrlMenu::~tmTOCCtrlMenu()
 void tmTOCCtrlMenu::CreateTOCContextMenu(PRJDEF_LAYERS_TYPE spattype, bool bIsGeneric)
 {
 	CreateTOCBasic(bIsGeneric); // REMOVE ITEM
-	//---------------	
-	CreateTOCShowVertex(spattype); // SHOW VERTEX 
+	CreateTOCShowVertex(spattype); // SHOW VERTEX (only if needed)
+	CreateTOCProperties();	// menu properties
+	
 	
 }
 
@@ -57,7 +58,7 @@ void tmTOCCtrlMenu::CreateTOCBasic (bool bIsGeneric)
 	if (!bIsGeneric)
 	{
 		Append(ID_TOCMENU_REMOVE, _("Remove layer"));
-		AppendSeparator();
+		//AppendSeparator();
 	}
 }
 
@@ -67,25 +68,33 @@ void tmTOCCtrlMenu::CreateTOCShowVertex (PRJDEF_LAYERS_TYPE spattype)
 	switch (spattype) {
 		case LAYER_LINE:
 		case LAYER_POLYGON:
+		{
 			wxMenu * menushow = new wxMenu();
 			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
 			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_ALL, _("All"));
 			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_NONE, _("None"));
 			Append(wxID_ANY, _("Show vertex"), menushow);
-			AppendSeparator();
+			//AppendSeparator();
 			break;
-			
+		}	
 		case LAYER_RASTER:
 		case LAYER_POINT:
+		{
 			// do nothing :-) nice no !
-			
 			break;
-			
+		}
 			
 		default:
 			wxLogDebug(_T("Unknown spattype = %d, case note supported"), spattype);
 			break;
 	}
+}
+
+
+void tmTOCCtrlMenu::CreateTOCProperties ()
+{
+	Append(ID_TOCMENU_PROPERTIES, _("Properties..."));
+	
 }
 
 

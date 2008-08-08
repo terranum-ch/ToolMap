@@ -492,9 +492,6 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 		return;
 	}
 	
-	wxLogDebug(_T("Right click received : displaying contextual menu"));
-	//TODO: Call contextual menu here
-	
 	if(m_ContextMenu)
 		delete m_ContextMenu;
 	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid));

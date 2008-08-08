@@ -39,6 +39,7 @@ const int ID_TOCMENU_REMOVE					= 20100;
 const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END	= 20101;
 const int ID_TOCMENU_SHOW_VERTEX_ALL		= 20102;
 const int ID_TOCMENU_SHOW_VERTEX_NONE		= 20103;
+const int ID_TOCMENU_PROPERTIES				= 20104;
 
 
 
@@ -48,6 +49,7 @@ class tmTOCCtrlMenu : public wxMenu
 	private:
 		void CreateTOCBasic (bool bIsGeneric);
 		void CreateTOCShowVertex (PRJDEF_LAYERS_TYPE spattype);
+		void CreateTOCProperties ();
 		
 	protected:
 		void CreateTOCContextMenu(PRJDEF_LAYERS_TYPE spattype, bool bIsGeneric);
