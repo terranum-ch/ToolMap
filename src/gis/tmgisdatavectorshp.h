@@ -47,6 +47,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		// implementing virtual function
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
 		virtual tmRealRect GetMinimalBoundingRectangle();
+		virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
 		
 	};
 

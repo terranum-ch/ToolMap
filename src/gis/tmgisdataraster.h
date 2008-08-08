@@ -68,6 +68,10 @@ class tmGISDataRaster : public tmGISData
 		static wxString GetAllRasterGISFormatsWildcards();
 		static tmGISDataRaster * CreateGISRasterBasedOnType (const int & gis_format_index);
 		static tmGISDataRaster * CreateGISRasterBasedOnExt (const wxString & extension);
+		
+		// gis functions
+		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_RASTER;}
+		
 	};
 
 

@@ -86,3 +86,57 @@ tmRealRect tmGISDataVectorSHP::GetMinimalBoundingRectangle()
 
 
 
+
+TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
+{
+	OGRGeometry *poGeometry;
+	OGRFeature *poFeature;
+	
+	wxASSERT(m_Layer);
+	
+	// computing features count, not able to know the
+	// spatial type if no features are present.
+	if (m_Layer->GetFeatureCount () <= 0)
+	{
+		wxLogError(_("Unable to add the %s layer, layer is empty"),
+				   GetShortFileName().c_str());
+		return LAYER_SPATIAL_UNKNOWN;
+	}
+	
+	// computing layer type (point, line, polygon or unknown)
+	if ((poFeature = m_Layer->GetNextFeature()) == NULL)
+	{
+		wxLogError(_("Unable to read feature from : %s, layer may be corrupted"),
+				   GetShortFileName().c_str());
+		return LAYER_SPATIAL_UNKNOWN;
+	}
+		
+	
+	poGeometry = poFeature->GetGeometryRef();
+	if( poGeometry != NULL)
+		{	
+			switch (wkbFlatten(poGeometry->getGeometryType()))
+			{
+				case wkbLineString:
+					return LAYER_SPATIAL_LINE;
+					break;
+				case wkbPoint:
+					return LAYER_SPATIAL_POINT;
+					break;
+				case wkbPolygon:
+					return LAYER_SPATIAL_POLYGON;
+					break;
+				default:
+					return LAYER_SPATIAL_UNKNOWN;
+					break;
+			}
+		}
+	
+	
+	wxLogDebug(_T("Error getting spatial layer type for : %s"), GetShortFileName().c_str());
+	return LAYER_ERR;
+}
+
+
+
+

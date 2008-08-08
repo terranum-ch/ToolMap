@@ -30,79 +30,12 @@
 #endif
 
 
-#include "../core/projectdefmemory.h"	// for PRJDEF_LAYERS_TYPE
+//#include "../core/projectdefmemory.h"	// for PRJDEF_LAYERS_TYPE
 #include <wx/treectrl.h>
 #include "wx/imaglist.h"			// for image list for toc
 #include "tmtocctrlmenu.h"			// for contextual menu
 
 
-class tmTOCCtrlMenu;
-
-
-// TOC Generics values
-// Definitions for the generic layers, we define the text and  the id of 
-// each string.
-static wxString TOC_GENERIC_NAME_STRING[] = 
-{
-	_("Lines"),
-	_("Points"),
-	_("Labels"),
-	_("Notes"),
-	_("Frame"),
-	_("Not Generic layers")
-};
-
-
-// warning, max values are 127 because stored in a tiny int
-// into the database
-enum TOC_GENERIC_NAME
-{
-	TOC_NAME_LINES = 0,
-	TOC_NAME_POINTS,
-	TOC_NAME_LABELS,
-	TOC_NAME_ANNOTATIONS,
-	TOC_NAME_FRAME,
-	TOC_NAME_NOT_GENERIC = 100,
-	TOC_NAME_TIFF,
-	TOC_NAME_EGRID,
-	TOC_NAME_SHP,
-	TOC_NAME_UNKNOWN = 120
-};
-static const int TOC_GENERIC_NAME_NUMBER = 6;
-
-
-
-
-/***************************************************************************//**
- @brief Storing object of layer type
- @author Lucien Schreiber (c) CREALP 2008
- @date 07 July 2008
- *******************************************************************************/
-class tmLayerProperties : public wxTreeItemData
-	{
-	private:
-		void InitMemberValues();
-		
-	public:
-		long m_LayerID;
-		PRJDEF_LAYERS_TYPE m_LayerSpatialType;
-		wxString m_LayerPathOnly;
-		wxString m_LayerNameExt;
-		bool m_LayerVisible;
-		int m_LayerType;
-		
-		// init from string array
-		bool InitFromArray(const wxArrayString & array);
-		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
-								  const wxArrayString & supportedext);
-		wxString GetFileExtension ();
-		wxString GetDisplayName ();
-		
-		
-		// constructor
-		tmLayerProperties(){InitMemberValues();}
-		~tmLayerProperties(){;}
-	};
 
 
 

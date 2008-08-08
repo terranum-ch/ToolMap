@@ -40,7 +40,7 @@ tmTOCCtrlMenu::~tmTOCCtrlMenu()
 }
 
 
-void tmTOCCtrlMenu::CreateTOCContextMenu(PRJDEF_LAYERS_TYPE spattype, bool bIsGeneric)
+void tmTOCCtrlMenu::CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIsGeneric)
 {
 	CreateTOCBasic(bIsGeneric); // REMOVE ITEM
 	CreateTOCShowVertex(spattype); // SHOW VERTEX (only if needed)
@@ -63,11 +63,11 @@ void tmTOCCtrlMenu::CreateTOCBasic (bool bIsGeneric)
 }
 
 
-void tmTOCCtrlMenu::CreateTOCShowVertex (PRJDEF_LAYERS_TYPE spattype)
+void tmTOCCtrlMenu::CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype)
 {
 	switch (spattype) {
-		case LAYER_LINE:
-		case LAYER_POLYGON:
+		case LAYER_SPATIAL_LINE:
+		case LAYER_SPATIAL_POLYGON:
 		{
 			wxMenu * menushow = new wxMenu();
 			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
@@ -77,8 +77,8 @@ void tmTOCCtrlMenu::CreateTOCShowVertex (PRJDEF_LAYERS_TYPE spattype)
 			//AppendSeparator();
 			break;
 		}	
-		case LAYER_RASTER:
-		case LAYER_POINT:
+		case LAYER_SPATIAL_RASTER:
+		case LAYER_SPATIAL_POINT:
 		{
 			// do nothing :-) nice no !
 			break;

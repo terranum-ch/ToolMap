@@ -29,10 +29,9 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmtocctrl.h"
+//#include "tmtocctrl.h"
 #include <wx/menu.h>
-
-class tmLayerProperties;
+#include "tmlayerproperties.h"
 
 
 const int ID_TOCMENU_REMOVE					= 20100;
@@ -48,11 +47,11 @@ class tmTOCCtrlMenu : public wxMenu
 	{
 	private:
 		void CreateTOCBasic (bool bIsGeneric);
-		void CreateTOCShowVertex (PRJDEF_LAYERS_TYPE spattype);
+		void CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype);
 		void CreateTOCProperties ();
 		
 	protected:
-		void CreateTOCContextMenu(PRJDEF_LAYERS_TYPE spattype, bool bIsGeneric);
+		void CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIsGeneric);
 		
 		
 	public:
