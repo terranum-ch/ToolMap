@@ -286,11 +286,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	// normal project contain 4 layers minimum
 	if (!IsOK())
 		return;
-		
-	//if (!m_TOCCtrl->IsTOCReady())
-	//	return;
-	
-	
+
 	
 	wxFileDialog * m_dlg = new wxFileDialog(m_Parent, _("Add GIS layer to the project"),
 											_T(""), _T(""),
@@ -306,9 +302,23 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	item->InitFromPathAndName(myFilename.GetPath(),
 							  myFilename.GetFullName(),
 							  tmGISData::GetAllSupportedGISFormatsExtensions());
-	//item->m_LayerNameExt = myFilename.GetFullName();
-	//item->m_LayerPathOnly = myFilename.GetPath();
 	delete m_dlg;
+	
+	// try to open the file for getting the spatial type
+	tmGISData * myLayer = LoadLayer(item);
+	if (!myLayer)
+	{
+		wxLogDebug(_T("Not able to open the layer : %s"), item->GetDisplayName().c_str());
+		return;
+	}
+	item->m_LayerSpatialType = myLayer->GetSpatialType();
+	delete myLayer;
+	if (item->m_LayerSpatialType == LAYER_ERR || 
+		item->m_LayerSpatialType == LAYER_SPATIAL_UNKNOWN)
+	{
+		return;
+	}
+		
 	
 	// saving to the database and getting the last ID
 	long lastinsertedID = m_DB->AddTOCLayer(item);

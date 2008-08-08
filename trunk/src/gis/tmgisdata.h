@@ -30,11 +30,12 @@
 #endif
 
 
-#include "gdal_priv.h"		// GDAL ACCES C++
-#include "ogrsf_frmts.h"	// OGR accessing
-#include "geos_c.h"			// GEOS accessing
-#include <wx/filename.h>	// for dealing with filename class
-#include "tmgisscale.h"		// for dealing with scale and real rectangle.
+#include "gdal_priv.h"			// GDAL ACCES C++
+#include "ogrsf_frmts.h"		// OGR accessing
+#include "geos_c.h"				// GEOS accessing
+#include <wx/filename.h>		// for dealing with filename class
+#include "tmgisscale.h"			// for dealing with scale and real rectangle.
+#include "tmlayerproperties.h"	// for GIS spatial types and tmLayerProperties
 
 
 
@@ -71,7 +72,7 @@ class tmGISData : public wxObject
 		// gis function
 		virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
 		virtual tmRealRect GetMinimalBoundingRectangle(){return tmRealRect(0,0,0,0);}
-		
+		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_ERR;}
 		
 		// misc function
 		wxString GetShortFileName (){return m_ShortFileName;}

@@ -70,6 +70,9 @@ class tmGISDataVector : public tmGISData
 		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
 		static tmGISDataVector * CreateGISVectorBasedOnExt (const wxString & extension);
 		
+		// gis function
+		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_UNKNOWN;}
+		
 	};
 
 

@@ -144,8 +144,7 @@ enum PRJDEF_LAYERS_TYPE
 {
 	LAYER_LINE = 0,
 	LAYER_POINT,
-	LAYER_POLYGON,
-	LAYER_RASTER
+	LAYER_POLYGON
 };
 static const int PRJDEF_LAYERS_TYPE_NUMBER = 3; // only takes the 3 first
 
