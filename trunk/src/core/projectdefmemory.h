@@ -144,9 +144,10 @@ enum PRJDEF_LAYERS_TYPE
 {
 	LAYER_LINE = 0,
 	LAYER_POINT,
-	LAYER_POLYGON
+	LAYER_POLYGON,
+	LAYER_RASTER
 };
-static const int PRJDEF_LAYERS_TYPE_NUMBER = 3;
+static const int PRJDEF_LAYERS_TYPE_NUMBER = 3; // only takes the 3 first
 
 
 // Definitions for the objects type, we define the text and  the id of 

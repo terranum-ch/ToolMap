@@ -207,7 +207,6 @@ void tmGISScale::ComputeNewPixelSize ()
 		m_PixelSize = dx;
 	else 
 		m_PixelSize = dy;
-	
 }
 
 

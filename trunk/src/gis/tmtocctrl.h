@@ -33,7 +33,10 @@
 #include "../core/projectdefmemory.h"	// for PRJDEF_LAYERS_TYPE
 #include <wx/treectrl.h>
 #include "wx/imaglist.h"			// for image list for toc
+#include "tmtocctrlmenu.h"			// for contextual menu
 
+
+class tmTOCCtrlMenu;
 
 
 // TOC Generics values
@@ -121,6 +124,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		wxTreeItemId m_root;
 		wxWindow * m_ParentEvt;
 		wxTreeItemIdValue m_Cookie;
+		tmTOCCtrlMenu * m_ContextMenu;
 		
 		// private functions
 		void InitMemberValues();
@@ -131,13 +135,14 @@ class tmTOCCtrl  : public wxTreeCtrl
 				
 		// private event functions
 		void OnMouseClick (wxMouseEvent & event);
+		void OnMouseItemRightClick (wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
 		
 		
 	public:
 		// construcor / destructor
 		tmTOCCtrl (wxWindow * parent, wxWindowID id, wxSize size,  long style);
-		~tmTOCCtrl(){;}
+		~tmTOCCtrl();
 		
 		// adding, removing layers functions
 		void InsertProjectName (const wxString & prjname);

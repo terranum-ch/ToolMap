@@ -117,6 +117,10 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 		}
 		
 	}
+	
+	
+	
+	
 	// nothing found -> unknown
 	if (m_LayerType == TOC_NAME_NOT_GENERIC)
 		m_LayerType = TOC_NAME_UNKNOWN;
@@ -168,6 +172,7 @@ wxString tmLayerProperties::GetDisplayName ()
 
 BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
+	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
 END_EVENT_TABLE()
 
 
@@ -179,6 +184,7 @@ END_EVENT_TABLE()
 void tmTOCCtrl::InitMemberValues()
 {
 	m_ParentEvt = NULL;
+	m_ContextMenu = NULL;
 	
 }
 
@@ -220,6 +226,13 @@ tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) 
 	//m_ParentEvt->PushEventHandler(this)
 }
 
+
+tmTOCCtrl::~tmTOCCtrl()
+{
+	if(m_ContextMenu)
+		delete m_ContextMenu;
+	
+}
 
 
 /***************************************************************************//**
@@ -461,6 +474,32 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 	event.Skip();
 }
 
+
+
+/***************************************************************************//**
+ @brief Called when right mouse is clicked on item
+ @details Check that some first level item (layers) where clicked and then call
+ contextual menu
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 08 August 2008
+ *******************************************************************************/
+void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
+{
+	wxTreeItemId itemid = event.GetItem();
+	if (GetItemParent(itemid) != m_root)
+	{
+		wxLogDebug(_T("No menu for this item : Maybe the parent item ?"));
+		return;
+	}
+	
+	wxLogDebug(_T("Right click received : displaying contextual menu"));
+	//TODO: Call contextual menu here
+	
+	if(m_ContextMenu)
+		delete m_ContextMenu;
+	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid));
+	PopupMenu(m_ContextMenu, event.GetPoint());
+}
 
 
 /***************************************************************************//**
