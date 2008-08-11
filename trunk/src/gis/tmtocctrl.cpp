@@ -38,6 +38,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE)
 BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
+	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
 END_EVENT_TABLE()
 
 
@@ -355,6 +356,13 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 	{
 		wxLogDebug(_T("No menu for this item : Maybe the parent item ?"));
 		return;
+	}
+	
+	// select item if needed
+	if (GetSelection() != itemid)
+	{
+		wxLogDebug(_T("Changing selection"));
+		SelectItem(itemid, TRUE);
 	}
 	
 	if(m_ContextMenu)

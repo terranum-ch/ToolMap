@@ -42,13 +42,21 @@ const int ID_TOCMENU_PROPERTIES				= 20104;
 
 
 
-
+/***************************************************************************//**
+ @brief Display contextual menu for TOC
+ @details Contextual menu is created mainly based on the spatial type ( See
+ #TM_GIS_SPATIAL_TYPES).
+ @note All events are processed in the tmTOCCtrl Class
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 August 2008
+ *******************************************************************************/
 class tmTOCCtrlMenu : public wxMenu
 	{
 	private:
 		void CreateTOCBasic (bool bIsGeneric);
 		void CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype);
 		void CreateTOCProperties ();
+		
 		
 	protected:
 		void CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIsGeneric);

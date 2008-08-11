@@ -20,6 +20,8 @@
 #include "tmtocctrlmenu.h"
 
 
+
+
 tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item) :
 	wxMenu(item->GetDisplayName(), 0)
 {
@@ -40,6 +42,7 @@ tmTOCCtrlMenu::~tmTOCCtrlMenu()
 }
 
 
+
 void tmTOCCtrlMenu::CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIsGeneric)
 {
 	CreateTOCBasic(bIsGeneric); // REMOVE ITEM
@@ -50,9 +53,6 @@ void tmTOCCtrlMenu::CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIs
 }
 
 
-
-
-
 void tmTOCCtrlMenu::CreateTOCBasic (bool bIsGeneric)
 {
 	if (!bIsGeneric)
@@ -61,6 +61,7 @@ void tmTOCCtrlMenu::CreateTOCBasic (bool bIsGeneric)
 		//AppendSeparator();
 	}
 }
+
 
 
 void tmTOCCtrlMenu::CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype)
@@ -91,11 +92,14 @@ void tmTOCCtrlMenu::CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype)
 }
 
 
+
 void tmTOCCtrlMenu::CreateTOCProperties ()
 {
 	Append(ID_TOCMENU_PROPERTIES, _("Properties..."));
 	
 }
+
+
 
 
 
