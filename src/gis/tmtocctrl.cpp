@@ -39,6 +39,7 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
 	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
+	EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
 END_EVENT_TABLE()
 
 
@@ -358,18 +359,39 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 		return;
 	}
 	
-	// select item if needed
-	if (GetSelection() != itemid)
+	// only one item selected in the TOC ctrl otherwise no contextual menu
+	wxArrayTreeItemIds selection;
+	if (GetSelections(selection) != 1)
 	{
-		wxLogDebug(_T("Changing selection"));
-		SelectItem(itemid, TRUE);
+		wxLogDebug(_T("No contextual menu allowed for more than one item"));
+		return;
 	}
 	
+
 	if(m_ContextMenu)
 		delete m_ContextMenu;
 	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid));
 	PopupMenu(m_ContextMenu, event.GetPoint());
 }
+
+
+
+/***************************************************************************//**
+ @brief Called when contextual menu "Properties" is pressed
+ @details All events from tmTOCCtrlMenu are processed in tmTOCCtrl
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 August 2008
+ *******************************************************************************/
+void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
+{
+	wxLogDebug(_T("Showing properties"));
+	tmSymbol mySymbol;
+	
+	
+	mySymbol.ShowSymbologyDialog(GetParent(), wxGetMousePosition());
+}
+
+
 
 
 /***************************************************************************//**

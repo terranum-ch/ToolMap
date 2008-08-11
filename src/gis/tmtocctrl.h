@@ -34,6 +34,7 @@
 #include <wx/treectrl.h>
 #include "wx/imaglist.h"			// for image list for toc
 #include "tmtocctrlmenu.h"			// for contextual menu
+#include "tmsymbol.h"				// for symbology
 
 
 
@@ -69,6 +70,10 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// private event functions
 		void OnMouseClick (wxMouseEvent & event);
 		void OnMouseItemRightClick (wxTreeEvent & event);
+		
+		// contextual menu event functions
+		void OnShowProperties (wxCommandEvent & event);
+		
 		DECLARE_EVENT_TABLE()
 		
 		

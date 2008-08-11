@@ -20,7 +20,7 @@
 #include "tmtocctrlmenu.h"
 
 
-
+ 
 
 tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item) :
 	wxMenu(item->GetDisplayName(), 0)

@@ -4015,7 +4015,7 @@ structure as the actual one</label>
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_LINESSYMBOLOGY" subclass="Linessymbology">
+    <object class="wxDialog" name="ID_LINESSYMBOLOGY" subclass="tmSymbolDLG">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
@@ -4205,7 +4205,7 @@ structure as the actual one</label>
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_LINESSYMBOLOGY" subclass="Linessymbology">
+    <object class="wxDialog" name="ID_LINESSYMBOLOGY" subclass="tmSymbolDLG">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
