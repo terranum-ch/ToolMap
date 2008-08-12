@@ -106,20 +106,20 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxArrayString itemChoice15Strings;
     itemChoice15Strings.Add(_("----------"));
     itemChoice15Strings.Add(_("..............."));
-    m_LinePatternCtrl = new wxChoice( itemPanel10, ID_CHOICE4, wxDefaultPosition, wxDefaultSize, itemChoice15Strings, 0 );
+    m_LinePatternCtrl = new wxChoice( itemPanel10, ID_SYMDLGL_PATTERN, wxDefaultPosition, wxDefaultSize, itemChoice15Strings, 0 );
     itemFlexGridSizer11->Add(m_LinePatternCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText16 = new wxStaticText( itemPanel10, wxID_STATIC, _("Width :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    m_LineWidthCtrl = new wxSpinCtrl( itemPanel10, ID_SPINCTRL3, _T("0"),
+    m_LineWidthCtrl = new wxSpinCtrl( itemPanel10, ID_SYMDLGL_WIDTH, _T("0"),
 												wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS,
 												0, 100, 1 );
     itemFlexGridSizer11->Add(m_LineWidthCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     itemNotebook9->AddPage(itemPanel10, _("Unique"));
 	
-    wxPanel* itemPanel18 = new wxPanel( itemNotebook9, ID_PANEL12, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxPanel* itemPanel18 = new wxPanel( itemNotebook9, ID_SYMDLGL_PANEL3, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
     itemPanel18->SetSizer(itemBoxSizer19);
 	
@@ -128,7 +128,7 @@ void tmSymbolDLGLine::CreateControlsLine()
 	
     itemNotebook9->AddPage(itemPanel18, _("Discrete"));
 	
-    wxPanel* itemPanel21 = new wxPanel( itemNotebook9, ID_PANEL13, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxPanel* itemPanel21 = new wxPanel( itemNotebook9, ID_SYMDLGL_PANEL4, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxVERTICAL);
     itemPanel21->SetSizer(itemBoxSizer22);
 	
@@ -142,10 +142,16 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxStaticBox* itemStaticBoxSizer24Static = new wxStaticBox(itemPanel7, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer24 = new wxStaticBoxSizer(itemStaticBoxSizer24Static, wxHORIZONTAL);
     itemBoxSizer8->Add(itemStaticBoxSizer24, 0, wxGROW|wxALL, 5);
-    wxSlider* itemSlider25 = new wxSlider( itemPanel7, ID_SLIDER1, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    itemStaticBoxSizer24->Add(itemSlider25, 1, wxGROW|wxALL, 5);
+  
+	tmSliderWithTxt * itemSlider25 = new tmSliderWithTxt(itemPanel7, ID_SYMDLGL_TRANSPARENCY,
+														 0,100,0);
+	itemStaticBoxSizer24->Add(itemSlider25, 1, wxGROW|wxALL, 5);
 	
-    wxTextCtrl* itemTextCtrl26 = new wxTextCtrl( itemPanel7, ID_TEXTCTRL10, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+	
+	/* wxSlider* itemSlider25 = new wxSlider( itemPanel7, ID_SYMDLGL_TRANSPARENCY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+    itemStaticBoxSizer24->Add(itemSlider25, 1, wxGROW|wxALL, 5);*/
+	
+    wxTextCtrl* itemTextCtrl26 = new wxTextCtrl( itemPanel7, ID_SYMDLGL_TRANSPARENCY_TXT, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticBoxSizer24->Add(itemTextCtrl26, 0, wxGROW|wxALL, 5);
 	
     m_NoteBook->AddPage(itemPanel7, _("Line Symbology"));
