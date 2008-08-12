@@ -30,14 +30,18 @@
 #endif
 
 #include "tmsymbol.h"	// tmSymbol class definition
+#include "tmsymboldlg.h" 
 
 class tmSymbolVector : public tmSymbol
 	{
 	private:
+		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
 	protected:
 	public:
 		tmSymbolVector();
 		~tmSymbolVector();
+		
+		static tmSymbolVector * CreateSymbolVectorBasedOnType (tmLayerProperties * item);
 	};
 
 

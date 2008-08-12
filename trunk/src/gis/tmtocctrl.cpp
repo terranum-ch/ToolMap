@@ -384,11 +384,17 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
  *******************************************************************************/
 void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 {
-	wxLogDebug(_T("Showing properties"));
-	tmSymbol mySymbol;
+	// get selected item
+	wxArrayTreeItemIds selection;
+	GetSelections(selection);
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
 	
+	tmSymbol * mySymbol = tmSymbol::CreateSymbolBasedOnType(item);
+	if (mySymbol == NULL)
+		return;
 	
-	mySymbol.ShowSymbologyDialog(GetParent(), wxGetMousePosition());
+	mySymbol->ShowSymbologyDialog(GetParent(), wxGetMousePosition());
+	delete mySymbol;
 }
 
 

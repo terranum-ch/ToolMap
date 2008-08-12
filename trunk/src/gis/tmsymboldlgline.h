@@ -56,7 +56,11 @@ const int ID_BUTTON1 = 10218;
 
 class tmSymbolDLGLine : public tmSymbolDLG
 	{    
-	private:		
+	private:
+		tmColourPickerCtrl * m_LineColourCtrl;
+		wxSpinCtrl* m_LineWidthCtrl;
+		wxChoice* m_LinePatternCtrl;
+		
 		void Init();
 		void CreateControlsLine();
 				

@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmsymbolvector.cpp
-				Deals with GIS vector symbology and associed dialog
+								tmsymbolvectorline.cpp
+				Deals with GIS line vector symbology and associed dialog
 								-------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -17,11 +17,10 @@
 
 // comment doxygen
 
-#include "tmsymbolvector.h"
 #include "tmsymbolvectorline.h"
 
 
-tmSymbolVector::tmSymbolVector()
+tmSymbolVectorLine::tmSymbolVectorLine()
 {
 	
 	
@@ -29,33 +28,16 @@ tmSymbolVector::tmSymbolVector()
 
 
 
-tmSymbolVector::~tmSymbolVector()
+tmSymbolVectorLine::~tmSymbolVectorLine()
 {
 	
 }
 
 
-tmSymbolDLG * tmSymbolVector::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+tmSymbolDLG * tmSymbolVectorLine::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
-	return new tmSymbolDLG(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+	return new tmSymbolDLGLine(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
 							   SYMBOL_TMSYMBOLDLG_TITLE,
 							   dlgpos);
-}
-
-
-
-tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (tmLayerProperties * item)
-{
-	switch (item->m_LayerSpatialType)
-	{
-		case LAYER_SPATIAL_LINE:
-			return new tmSymbolVectorLine();
-			break;
-		default:
-			wxLogDebug(_T("Symbology for this format not implemented now"));
-			return NULL;
-			break;
-	}
-
 }
 

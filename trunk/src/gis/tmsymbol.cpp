@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmsymbol.h"
+#include "tmsymbolvector.h"
 
 tmSymbol::tmSymbol()
 {
@@ -34,17 +35,19 @@ tmSymbol::~tmSymbol()
 }
 
 
+tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+{
+	return new tmSymbolDLG(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+						   SYMBOL_TMSYMBOLDLG_TITLE,
+						   dlgpos);
+	
+}
+
 
 int tmSymbol::ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
+	tmSymbolDLG * mydlg = GetSymbolDialog(parent,dlgpos);
 
-	tmSymbolDLGLine * mydlg = new tmSymbolDLGLine(parent, SYMBOL_TMSYMBOLDLG_IDNAME,
-										  SYMBOL_TMSYMBOLDLG_TITLE, 
-										  dlgpos);
-	//mydlg->CreateControlsLine();
-	//mydlg->CreateControlsPoint();
-	//mydlg->CreateControlsPolygon();
-	//mydlg->CreateControlsRaster();
 	if (mydlg->ShowModal() == wxID_OK)
 	{
 		wxLogDebug(_T("dialog : OK"));
@@ -55,3 +58,19 @@ int tmSymbol::ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos)
 	return 0;
 }
 
+
+tmSymbol * tmSymbol::CreateSymbolBasedOnType (tmLayerProperties * item)
+{
+	switch (item->m_LayerSpatialType)
+	{
+		case LAYER_SPATIAL_LINE:
+		case LAYER_SPATIAL_POINT:
+		case LAYER_SPATIAL_POLYGON:
+			return tmSymbolVector::CreateSymbolVectorBasedOnType(item);
+			break;
+		default:
+			return new tmSymbol();
+			break;
+	}
+	
+}
