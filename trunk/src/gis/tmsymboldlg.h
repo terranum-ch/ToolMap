@@ -34,6 +34,7 @@
 #include "wx/spinctrl.h"
 #include <wx/clrpicker.h>		// colour picker used in all child
 #include "../core/tmcolourpickerctrl.h"	// colour picker
+#include "../core/tmsliderwithtxt.h"	// slider with textctrl
 
 
 const int ID_LINESSYMBOLOGY	= 10079;
