@@ -62,9 +62,14 @@ tmSymbolDLGLine::~tmSymbolDLGLine()
 }
 
 
+
 void tmSymbolDLGLine::Init()
 {
+	m_LineColourCtrl	= NULL;
+	m_LineWidthCtrl		= NULL;
+	m_LinePatternCtrl	= NULL;
 }
+
 
 
 void tmSymbolDLGLine::CreateControlsLine()
@@ -90,30 +95,10 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxStaticText* itemStaticText12 = new wxStaticText( itemPanel10, wxID_STATIC, _("Color :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    tmColourPickerCtrl * itemButton13 = new tmColourPickerCtrl(itemPanel10, ID_SYMDLGL_COLOR,
+    m_LineColourCtrl = new tmColourPickerCtrl(itemPanel10, ID_SYMDLGL_COLOR,
 															   *wxBLUE);
-	itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);													   
+	itemFlexGridSizer11->Add(m_LineColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);													   
 	
-	/*wxColourPickerCtrl * itemButton13 = new wxColourPickerCtrl( itemPanel10, ID_SYMDLGL_COLOR, *wxBLACK, 
-	wxDefaultPosition, wxDefaultSize, wxCLRP_USE_TEXTCTRL | wxCLRP_SHOW_LABEL);
-    itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
-	
-/*	wxBitmap myBitmap (10,10);
-	wxMemoryDC dc;
-	dc.SelectObject(myBitmap);
-	dc.SetBrush(*wxBLUE_BRUSH);
-	dc.DrawRectangle(0, 0, 10, 10);
-	dc.SelectObject(wxNullBitmap);
-	
-	wxBitmapButton * itemButton13 = new wxBitmapButton(itemPanel10, ID_SYMDLGL_COLOR, myBitmap);
-	
-	
-/*	wxButton* itemButton13 = new wxButton( itemPanel10, ID_SYMDLGL_COLOR, _("Button"), wxDefaultPosition,
-										  wxDefaultSize, 0 );
-	itemButton13->SetForegroundColour(*wxBLUE);
-	itemButton13->SetBackgroundColour(*wxBLUE);
-	itemButton13->SetOwnForegroundColour(*wxBLUE);*/
-	//itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText14 = new wxStaticText( itemPanel10, wxID_STATIC, _("Shape :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -121,14 +106,16 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxArrayString itemChoice15Strings;
     itemChoice15Strings.Add(_("----------"));
     itemChoice15Strings.Add(_("..............."));
-    wxChoice* itemChoice15 = new wxChoice( itemPanel10, ID_CHOICE4, wxDefaultPosition, wxDefaultSize, itemChoice15Strings, 0 );
-    itemFlexGridSizer11->Add(itemChoice15, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_LinePatternCtrl = new wxChoice( itemPanel10, ID_CHOICE4, wxDefaultPosition, wxDefaultSize, itemChoice15Strings, 0 );
+    itemFlexGridSizer11->Add(m_LinePatternCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText16 = new wxStaticText( itemPanel10, wxID_STATIC, _("Width :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxSpinCtrl* itemSpinCtrl17 = new wxSpinCtrl( itemPanel10, ID_SPINCTRL3, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-    itemFlexGridSizer11->Add(itemSpinCtrl17, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_LineWidthCtrl = new wxSpinCtrl( itemPanel10, ID_SPINCTRL3, _T("0"),
+												wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS,
+												0, 100, 1 );
+    itemFlexGridSizer11->Add(m_LineWidthCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     itemNotebook9->AddPage(itemPanel10, _("Unique"));
 	

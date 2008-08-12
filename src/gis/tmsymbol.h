@@ -29,17 +29,22 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmsymboldlgline.h"
+#include "tmsymboldlg.h"
+#include "tmlayerproperties.h"	// for tmLayerProperties definition
 
 class tmSymbol : public wxObject
 	{
 	private:
+		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos); 
 	protected:
 	public:
 		tmSymbol();
 		~tmSymbol();
 		
-		int ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos = wxDefaultPosition);
+		static tmSymbol * CreateSymbolBasedOnType (tmLayerProperties * item);
+		
+		int ShowSymbologyDialog (wxWindow * parent, 
+								 const wxPoint & dlgpos = wxDefaultPosition);
 		
 	};
 
