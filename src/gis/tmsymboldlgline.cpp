@@ -56,7 +56,7 @@ bool tmSymbolDLGLine::Create( wxWindow* parent, wxWindowID id, const wxString& c
 
 
 
-tmSymbolDLGLine::~tmSymbolDLG()
+tmSymbolDLGLine::~tmSymbolDLGLine()
 {
 
 }
@@ -90,9 +90,30 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxStaticText* itemStaticText12 = new wxStaticText( itemPanel10, wxID_STATIC, _("Color :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxColourPickerCtrl * itemButton13 = new wxColourPickerCtrl( itemPanel10, ID_SYMDLGL_COLOR, *wxBLACK, 
+    tmColourPickerCtrl * itemButton13 = new tmColourPickerCtrl(itemPanel10, ID_SYMDLGL_COLOR,
+															   *wxBLUE);
+	itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);													   
+	
+	/*wxColourPickerCtrl * itemButton13 = new wxColourPickerCtrl( itemPanel10, ID_SYMDLGL_COLOR, *wxBLACK, 
 	wxDefaultPosition, wxDefaultSize, wxCLRP_USE_TEXTCTRL | wxCLRP_SHOW_LABEL);
-    itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
+	
+/*	wxBitmap myBitmap (10,10);
+	wxMemoryDC dc;
+	dc.SelectObject(myBitmap);
+	dc.SetBrush(*wxBLUE_BRUSH);
+	dc.DrawRectangle(0, 0, 10, 10);
+	dc.SelectObject(wxNullBitmap);
+	
+	wxBitmapButton * itemButton13 = new wxBitmapButton(itemPanel10, ID_SYMDLGL_COLOR, myBitmap);
+	
+	
+/*	wxButton* itemButton13 = new wxButton( itemPanel10, ID_SYMDLGL_COLOR, _("Button"), wxDefaultPosition,
+										  wxDefaultSize, 0 );
+	itemButton13->SetForegroundColour(*wxBLUE);
+	itemButton13->SetBackgroundColour(*wxBLUE);
+	itemButton13->SetOwnForegroundColour(*wxBLUE);*/
+	//itemFlexGridSizer11->Add(itemButton13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText14 = new wxStaticText( itemPanel10, wxID_STATIC, _("Shape :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);

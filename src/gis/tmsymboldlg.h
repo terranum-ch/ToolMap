@@ -33,6 +33,7 @@
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include <wx/clrpicker.h>		// colour picker used in all child
+#include "../core/tmcolourpickerctrl.h"	// colour picker
 
 
 const int ID_LINESSYMBOLOGY	= 10079;
