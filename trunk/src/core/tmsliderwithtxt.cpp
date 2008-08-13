@@ -22,7 +22,7 @@
 
 
 
-tmSliderWithTxt::tmSliderWithTxt()
+tmSliderWithTxt::tmSliderWithTxt() : wxBoxSizer(wxHORIZONTAL)
 {
 	InitMemberValues();
 }
@@ -33,36 +33,47 @@ void tmSliderWithTxt::InitMemberValues()
 {
 	m_Slider	= NULL;
 	m_Text		= NULL;
+	m_Unit		= NULL;
 }
 
 
 
-tmSliderWithTxt::tmSliderWithTxt(wxWindow * parent, wxWindowID id, int min, 
-								 int max, int value, const wxPoint & position,
-								 const  wxSize & size)
+tmSliderWithTxt::tmSliderWithTxt(wxWindow * parent, 
+								 wxWindowID idslider,
+								 wxWindowID idtext,
+								 int min, int max, int value,
+								 const wxString & unit,
+								 const wxPoint & position,
+								 const wxSize & size) : wxBoxSizer(wxHORIZONTAL)
 {
 	InitMemberValues();
-	Create(parent, id,min, max, value, position, size);
+	Create(parent, idslider, idtext ,min, max, value, unit, position, size);
 }
 
 
 
-void tmSliderWithTxt::Create (wxWindow * parent, wxWindowID id, int min, 
-							  int max, int value, const  wxPoint  & position,
+void tmSliderWithTxt::Create (wxWindow * parent, 
+							  wxWindowID idslider,
+							  wxWindowID idtext,
+							  int min, int max, int value,
+							  const wxString & unit,
+							  const wxPoint & position,
 							  const wxSize & size)
 {
-	wxSlider::Create(parent, id, value, min, max, position, size);
-	/* create sizer and controls
-	wxBoxSizer* sizerbox = new wxBoxSizer(wxHORIZONTAL);
 	
-    m_Slider = new wxSlider( parent, id, value, min, max, position, size, wxSL_HORIZONTAL);
-    sizerbox->Add(m_Slider, 1, wxGROW|wxALL, 5);
+	// create controls
+    m_Slider = new wxSlider( parent, idslider, value, min, max, position, size, wxSL_HORIZONTAL);
+    Add(m_Slider, 1, wxGROW|wxALL, 5);
 	
+	m_Text = new wxTextCtrl( parent, idtext, wxString::Format(_T("%d"), value),
+							wxDefaultPosition, wxDefaultSize, 0 ); 
+	Add(m_Text, 0, wxGROW|wxALL, 5);
 	
+	m_Unit = new wxStaticText(parent, wxID_ANY, unit);
+	Add(m_Unit, 0, wxALL, 5);
 	
-	//m_Text = new wxTextCtrl( parent, id+1, wxString::Format(_T("%d"), value),
-	//						wxDefaultPosition, wxDefaultSize, 0 );
-    //sizerbox->Add(m_Text, 0, wxGROW|wxALL, 5);*/
+	// connect event
+	//m_Slider->Connect(idslider, wxEVT_SCROLL_CHANGED, wxScrollEventHandler(tmSliderWithTxt::OnSliderChange));
 	
 }
 

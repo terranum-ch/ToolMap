@@ -33,26 +33,41 @@
 //#include <wx/control.h>
 #include <wx/slider.h>
 
-class tmSliderWithTxt : public wxSlider
+class tmSliderWithTxt : public wxBoxSizer
 	{
 	private:
 		wxSlider * m_Slider;
 		wxTextCtrl * m_Text;
+		wxStaticText * m_Unit;
 		
 		void InitMemberValues();
+		
+		// event functions
+		void OnSliderChange (wxScrollEvent & event);
+		void OnTextChange (wxCommandEvent & event);
 		
 	protected:
 	public:
 		tmSliderWithTxt();
-		tmSliderWithTxt(wxWindow * parent, wxWindowID id, int min, int max, int value,
+		tmSliderWithTxt(wxWindow * parent, 
+						wxWindowID idslider,
+						wxWindowID idtext,
+						int min, int max, int value,
+						const wxString & unit = _T(""),
 						const wxPoint & position = wxDefaultPosition,
 						const wxSize & size = wxDefaultSize);		
-		void Create (wxWindow * parent, wxWindowID id, int min, int max, int value,
+		void Create (wxWindow * parent, 
+					 wxWindowID idslider,
+					 wxWindowID idtext,
+					 int min, int max, int value,
+					 const wxString & unit = _T(""),
 					 const wxPoint & position = wxDefaultPosition,
 					 const wxSize & size = wxDefaultSize);
 		~tmSliderWithTxt();
 				
 };
+
+
 
 
 
