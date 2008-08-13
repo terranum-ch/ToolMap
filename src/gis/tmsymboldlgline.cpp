@@ -143,9 +143,8 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxStaticBoxSizer* itemStaticBoxSizer24 = new wxStaticBoxSizer(itemStaticBoxSizer24Static, wxHORIZONTAL);
     itemBoxSizer8->Add(itemStaticBoxSizer24, 0, wxGROW|wxALL, 5);
   
-	tmSliderWithTxt * itemSlider25 = new tmSliderWithTxt(itemPanel7, ID_SYMDLGL_TRANSPARENCY,
-														 ID_SYMDLGL_TRANSPARENCY_TXT,
-														 0,100,0, _T("%"));
+	tmSliderWithText * itemSlider25 = new tmSliderWithText(itemPanel7, ID_SYMDLGL_TRANSPARENCY,0,0,100,_T("%"),
+														   wxDefaultPosition, wxDefaultSize, 0);
 	itemStaticBoxSizer24->Add(itemSlider25, 1, wxGROW|wxALL, 5);
 	
 	
