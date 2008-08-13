@@ -21,130 +21,160 @@
 #include "tmsliderwithtxt.h"
 
 
+IMPLEMENT_DYNAMIC_CLASS( tmSliderWithText, wxPanel )
 
-tmSliderWithTxt::tmSliderWithTxt() 
+
+tmSliderWithText::tmSliderWithText()
 {
-	InitMemberValues();
+    Init();
 }
 
 
 
-void tmSliderWithTxt::InitMemberValues()
+tmSliderWithText::tmSliderWithText( wxWindow* parent, wxWindowID id,  
+								   int ivalue, int imin,int imax,
+								   const wxString & unitvalue,
+								   const wxPoint& pos,
+								   const wxSize& size, long style )
 {
-	m_Slider	= NULL;
-	m_Text		= NULL;
-	m_Unit		= NULL;
-	
-	m_limitmin = 0;
-	m_limitmax = 100;
+    Init();
+    Create(parent, id, ivalue, imin, imax, unitvalue, pos, size, style);
 }
 
 
 
-tmSliderWithTxt::tmSliderWithTxt(wxWindow * parent, 
-								 wxWindowID idslider,
-								 wxWindowID idtext,
-								 int min, int max, int value,
-								 const wxString & unit,
-								 const wxPoint & position,
-								 const wxSize & size) 
+bool tmSliderWithText::Create( wxWindow* parent, wxWindowID id,
+							  int ivalue, int imin,int imax,
+							  const wxString & unitvalue, 
+							  const wxPoint& pos,
+							  const wxSize& size, long style )
 {
-	InitMemberValues();
-	Create(parent, idslider, idtext ,min, max, value, unit, position, size);
-}
-
-
-
-void tmSliderWithTxt::Create (wxWindow * parent, 
-							  wxWindowID idslider,
-							  wxWindowID idtext,
-							  int min, int max, int value,
-							  const wxString & unit,
-							  const wxPoint & position,
-							  const wxSize & size)
-{
-	m_limitmin = min;
-	m_limitmax = max;
+	wxPanel::Create( parent, id, pos, size, style );
+    
+	m_iLimitMin = imin;
+	m_iLimitMax = imax;
 	
-	
-	wxPanel::Create(parent, wxID_ANY, position, size);
-	
-	// create sizer
-	wxBoxSizer * mysizer = new wxBoxSizer(wxHORIZONTAL);
-	SetSizer(mysizer);
-	
-	
-	// create controls
-    m_Slider = new wxSlider( this, idslider, value, min, max, position, size, wxSL_HORIZONTAL);
-    mysizer->Add(m_Slider, 1, wxGROW|wxALL, 5);
-	
-	m_Text = new wxTextCtrl( this, idtext, wxString::Format(_T("%d"), value),
-							wxDefaultPosition, wxDefaultSize, 0 ); 
-	mysizer->Add(m_Text, 0, wxGROW|wxALL, 5);
-	
-	m_Unit = new wxStaticText(this, wxID_ANY, unit);
-	mysizer->Add(m_Unit, 0, wxALL, 5);
-	
-	
+	CreateControls(ivalue, imin, imax, unitvalue);
 	
 	// connect event
-	m_Slider->Connect(idslider, wxEVT_SCROLL_CHANGED, wxScrollEventHandler(tmSliderWithTxt::OnSliderChange));
-	m_Text->Connect(idtext,  wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(tmSliderWithTxt::OnTextChange));
+	Connect(ID_TMSLIDER_TEXT, wxEVT_COMMAND_TEXT_UPDATED, 
+			wxCommandEventHandler(tmSliderWithText::OnTextUpdated));
+	Connect(ID_TMSLIDER_SLIDER, wxEVT_SCROLL_THUMBTRACK, 
+			wxScrollEventHandler(tmSliderWithText::OnSliderUpdated));
 	
+    if (GetSizer())
+    {
+        GetSizer()->SetSizeHints(this);
+    }
+    Centre();
+    return true;
 }
 
 
 
-tmSliderWithTxt::~tmSliderWithTxt()
+tmSliderWithText::~tmSliderWithText()
 {
-	if (m_Slider)
-		delete m_Slider;
-	
-	if (m_Text)
-		delete m_Text;
-	
 }
 
 
 
-void tmSliderWithTxt::OnSliderChange (wxScrollEvent & event)
+void tmSliderWithText::Init()
 {
-	m_Text->SetLabel(wxString::Format(_T("%d"), event.GetInt()));
-	wxLogDebug(_T("value changed"));
+	m_Slider = NULL;
+    m_Text = NULL;
+	m_UnitValue = NULL;
+	
+	m_iLimitMin = 0;
+	m_iLimitMax = 100;
 }
 
 
-void tmSliderWithTxt::OnTextChange (wxCommandEvent & event)
-{
-	int iActualValue = 0;
-	iActualValue = wxAtoi(event.GetString());
+
+void tmSliderWithText::CreateControls(int ivalue, int imin,int imax,
+									  const wxString & unitvalue)
+{    
+    tmSliderWithText* itemPanel1 = this;
 	
-	/*if (iActualValue <= m_limitmin && iActualValue >= m_limitmax)
-	{	
-		wxLogDebug(_T("value : %d is out of the limits : %d - %d"),
-				   iActualValue, m_limitmin, m_limitmax);
-		iActualValue = m_limitmin;
-		m_Text->SetLabel(wxString::Format(_T("%d"), iActualValue));
-	}
+    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    itemPanel1->SetSizer(itemBoxSizer2);
 	
-	m_Slider->SetValue(iActualValue);*/
-	SetSliderValue(iActualValue);
+    m_Slider = new wxSlider( itemPanel1, ID_TMSLIDER_SLIDER, ivalue, imin, imax,
+							wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+    itemBoxSizer2->Add(m_Slider, 1, wxGROW|wxALL, 5);
 	
+    m_Text = new wxTextCtrl( itemPanel1, ID_TMSLIDER_TEXT, wxString::Format(_T("%d"),ivalue),
+							wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer2->Add(m_Text, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	m_UnitValue = new wxStaticText( itemPanel1, wxID_ANY, unitvalue,
+								   wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer2->Add(m_UnitValue, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
 }
 
 
-int tmSliderWithTxt::SetSliderValue (int inewValue)
+
+int tmSliderWithText::SetSliderValue (int iNewValue)
 {
-	wxASSERT(m_Slider);
-	
-	if(inewValue <= m_limitmin && inewValue >= m_limitmax)
+	// check that value specified for slider is inside limits
+	if (iNewValue < m_iLimitMin || iNewValue > m_iLimitMax)
 	{
-		wxLogDebug(_T("value : %d is out of the limits : %d - %d"),
-				   inewValue, m_limitmin, m_limitmax);
+		wxLogDebug(_T("Value %d is out of limits : %d - %d"),
+				   iNewValue, m_iLimitMin, m_iLimitMax);
 		return m_Slider->GetValue();
 	}
 	
-	m_Slider->SetValue(inewValue);
-	return inewValue;
+	// if checks passed, then set new value to the slider
+	m_Slider->SetValue(iNewValue);
+	return iNewValue;
+	
 }
 
+
+
+void tmSliderWithText::OnTextUpdated( wxCommandEvent& event )
+{
+    event.Skip();
+	int iNewValue = wxAtoi(event.GetString());
+	int iValidValue = SetSliderValue(iNewValue);
+	if (iValidValue != iNewValue)
+		m_Text->SetValue(wxString::Format(_T("%d"), iValidValue));		
+}
+
+
+
+void tmSliderWithText::OnSliderUpdated (wxScrollEvent & event)
+{
+	event.Skip();
+	m_Text->SetValue(wxString::Format(_T("%d"),event.GetPosition()));
+	
+}
+
+
+
+int tmSliderWithText::GetValue()
+{
+	return m_Slider->GetValue();
+}
+
+
+
+bool tmSliderWithText::SetValue(int iValue)
+{
+	int iValidValue = SetSliderValue(iValue);
+	int iPassedValue = iValue;
+	bool bReturn = TRUE;
+	
+	// check that value passed is in the limits
+	// if not, set all to 0
+	if (iValidValue != iValue)
+	{
+		iPassedValue = m_iLimitMin;
+		bReturn = FALSE;
+	}
+	
+	m_Slider->SetValue(iPassedValue);
+	m_Text->SetValue(wxString::Format(_T("%d"),iPassedValue));
+		
+	return bReturn;
+}
