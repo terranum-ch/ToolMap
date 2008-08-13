@@ -33,12 +33,17 @@
 //#include <wx/control.h>
 #include <wx/slider.h>
 
-class tmSliderWithTxt : public wxBoxSizer
+
+
+class tmSliderWithTxt : public wxPanel
 	{
 	private:
 		wxSlider * m_Slider;
 		wxTextCtrl * m_Text;
 		wxStaticText * m_Unit;
+		
+		int m_limitmin;
+		int m_limitmax;
 		
 		void InitMemberValues();
 		
@@ -47,6 +52,9 @@ class tmSliderWithTxt : public wxBoxSizer
 		void OnTextChange (wxCommandEvent & event);
 		
 	protected:
+		int SetSliderValue (int inewValue);
+		
+		
 	public:
 		tmSliderWithTxt();
 		tmSliderWithTxt(wxWindow * parent, 
