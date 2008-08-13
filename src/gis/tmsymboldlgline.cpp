@@ -144,15 +144,10 @@ void tmSymbolDLGLine::CreateControlsLine()
     itemBoxSizer8->Add(itemStaticBoxSizer24, 0, wxGROW|wxALL, 5);
   
 	tmSliderWithTxt * itemSlider25 = new tmSliderWithTxt(itemPanel7, ID_SYMDLGL_TRANSPARENCY,
-														 0,100,0);
+														 ID_SYMDLGL_TRANSPARENCY_TXT,
+														 0,100,0, _T("%"));
 	itemStaticBoxSizer24->Add(itemSlider25, 1, wxGROW|wxALL, 5);
 	
-	
-	/* wxSlider* itemSlider25 = new wxSlider( itemPanel7, ID_SYMDLGL_TRANSPARENCY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-    itemStaticBoxSizer24->Add(itemSlider25, 1, wxGROW|wxALL, 5);*/
-	
-    wxTextCtrl* itemTextCtrl26 = new wxTextCtrl( itemPanel7, ID_SYMDLGL_TRANSPARENCY_TXT, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticBoxSizer24->Add(itemTextCtrl26, 0, wxGROW|wxALL, 5);
 	
     m_NoteBook->AddPage(itemPanel7, _("Line Symbology"));
 	
