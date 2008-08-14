@@ -318,6 +318,9 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	{
 		return;
 	}
+	
+	// init the symbology
+	item->InitSymbology();
 		
 	
 	// saving to the database and getting the last ID

@@ -15,7 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/*!
+ \page tmColourPicker "Colour picker control"
+ Using default wxWidgets class wxColourPickerCtrl gives very poor (see picture bellow)
+ results under Mac OS, so we have made a new class called tmColourPickerCtrl based on :
+ - wxBitmapButton : for Mac
+ - wxColourPickerCtrl : for Linux and Windows
+ 
+ tmColourPickerCtrl is very simillar to wxColourPickerCtrl and same methods may be 
+ used such as #GetColour() or #SetColour() for getting or setting colours from the 
+ control.
+ 
+  \image html tmcolourpickerctrl.png
+ 
+ */
 
 
 #ifndef _TM_COLOURPICKERCTRL_H_
@@ -29,7 +42,7 @@
     #include <wx/wx.h>
 #endif
 
-//#include <wx/clrpicker.h>
+
 
 #if (__WXMAC__) // SPECIFIC CODE FOR MAC
 

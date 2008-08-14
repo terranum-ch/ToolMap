@@ -60,14 +60,14 @@ int tmSymbol::ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos)
 }
 
 
-tmSymbol * tmSymbol::CreateSymbolBasedOnType (tmLayerProperties * item)
+tmSymbol * tmSymbol::CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES spattype)
 {
-	switch (item->m_LayerSpatialType)
+	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
 		case LAYER_SPATIAL_POINT:
 		case LAYER_SPATIAL_POLYGON:
-			return tmSymbolVector::CreateSymbolVectorBasedOnType(item);
+			return tmSymbolVector::CreateSymbolVectorBasedOnType(spattype);
 			break;
 			
 		case LAYER_SPATIAL_RASTER:

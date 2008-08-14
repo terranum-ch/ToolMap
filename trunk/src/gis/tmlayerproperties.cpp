@@ -33,6 +33,7 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerNameExt = wxEmptyString;
 	m_LayerVisible = TRUE;
 	m_LayerType = TOC_NAME_NOT_GENERIC;
+	m_LayerSymbol = NULL;
 }
 
 
@@ -64,8 +65,33 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	array.Item(5).ToLong(&tempgeneric);
 	m_LayerType = (int) tempgeneric;
 	
+	InitSymbology();
+	
 	return TRUE;
 }
+
+
+
+void tmLayerProperties::InitSymbology ()
+{
+	// creating symbology object
+	if (m_LayerSymbol)
+	{
+		wxLogError(_T("m_LayerSymbol allready defined, check code !"));
+		return;
+	}
+	
+	m_LayerSymbol = tmSymbol::CreateSymbolBasedOnType(m_LayerSpatialType);	
+}
+
+
+
+tmLayerProperties::~tmLayerProperties()
+{
+	if(m_LayerSymbol)
+		delete m_LayerSymbol;
+}
+
 
 
 /***************************************************************************//**

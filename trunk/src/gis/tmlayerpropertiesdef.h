@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmsymbolvector.h
-				Deals with GIS vector symbology and associed dialog
+								tmlayerpropertiesdef.h
+				Class containing definitions for layer informations 
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_SYMBOLVECTOR_H_
-#define _TM_SYMBOLVECTOR_H_
+#ifndef _TM_LAYERPROPERTIES_DEF_H_
+#define _TM_LAYERPROPERTIES_DEF_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,22 +29,50 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmsymbol.h"	// tmSymbol class definition
-#include "tmsymboldlg.h" 
-
-class tmSymbolVector : public tmSymbol
-	{
-	private:
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-	protected:
-	public:
-		tmSymbolVector();
-		~tmSymbolVector();
-		
-		static tmSymbolVector * CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype);
-	};
 
 
+// TOC Generics values
+// Definitions for the generic layers, we define the text and  the id of 
+// each string.
+static wxString TOC_GENERIC_NAME_STRING[] = 
+{
+	_("Lines"),
+	_("Points"),
+	_("Labels"),
+	_("Notes"),
+	_("Frame"),
+	_("Not Generic layers")
+};
+
+
+// warning, max values are 127 because stored in a tiny int
+// into the database
+enum TOC_GENERIC_NAME
+{
+	TOC_NAME_LINES = 0,
+	TOC_NAME_POINTS,
+	TOC_NAME_LABELS,
+	TOC_NAME_ANNOTATIONS,
+	TOC_NAME_FRAME,
+	TOC_NAME_NOT_GENERIC = 100,
+	TOC_NAME_TIFF,
+	TOC_NAME_EGRID,
+	TOC_NAME_SHP,
+	TOC_NAME_UNKNOWN = 120
+};
+static const int TOC_GENERIC_NAME_NUMBER = 6;
+
+
+
+enum TM_GIS_SPATIAL_TYPES
+{
+	LAYER_SPATIAL_LINE = 0,
+	LAYER_SPATIAL_POINT,
+	LAYER_SPATIAL_POLYGON,
+	LAYER_SPATIAL_RASTER,
+	LAYER_SPATIAL_UNKNOWN,
+	LAYER_ERR
+};
 
 
 #endif
