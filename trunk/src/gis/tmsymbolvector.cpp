@@ -20,6 +20,7 @@
 #include "tmsymbolvector.h"
 #include "tmsymbolvectorline.h"
 #include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpolygon.h"
 
 
 tmSymbolVector::tmSymbolVector()
@@ -43,7 +44,7 @@ tmSymbolDLG * tmSymbolVector::GetSymbolDialog (wxWindow * parent, const wxPoint 
 							   dlgpos);
 }
 
-
+ 
 
 tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (tmLayerProperties * item)
 {
@@ -55,6 +56,10 @@ tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (tmLayerPropertie
 		case LAYER_SPATIAL_POINT:
 			return new tmSymbolVectorPoint();
 			break;
+		case LAYER_SPATIAL_POLYGON:
+			return new tmSymbolVectorPolygon();
+			break;
+			
 		default:
 			wxLogDebug(_T("Symbology for this format not implemented now"));
 			return NULL;

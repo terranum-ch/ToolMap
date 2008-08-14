@@ -4629,6 +4629,14 @@ structure as the actual one</label>
                                         <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                                             <border>5</border>
+                                            <object class="wxCheckBox" name="ID_CHECKBOX">
+                                                <label>Use color transparency</label>
+                                                <checked>0</checked>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                            <border>5</border>
                                             <object class="wxButton" name="ID_BUTTON2">
                                                 <label>Pick a color</label>
                                             </object>
