@@ -16,7 +16,21 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/*!
+ \page tmSliderWithText "Slider with text control"
+ We use in some dialogs : slider with an associed text control for displaying
+ for exemple transparency. User sould be able to set the value using the slider
+ on imputing value directly inside the text control (with value checking).
+ 
+ We have implemented this into the class tmSliderWithText (see picture bellow).
+ This class, based on wxPanel contain the following controls :
+ - A wxSlider
+ - A wxTextCtrl
+ - A wxStaticText, used for displaying units for exemple.
+ 
+  \image html tmsliderwithtext.png 
+ 
+*/
 
 
 #ifndef _TM_SLIDERWITHTXT_H_

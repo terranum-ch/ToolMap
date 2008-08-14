@@ -46,9 +46,9 @@ tmSymbolDLG * tmSymbolVector::GetSymbolDialog (wxWindow * parent, const wxPoint 
 
  
 
-tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (tmLayerProperties * item)
+tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES spattype)
 {
-	switch (item->m_LayerSpatialType)
+	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
 			return new tmSymbolVectorLine();

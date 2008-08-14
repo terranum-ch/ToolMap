@@ -35,6 +35,7 @@
  - \subpage intro 
  - \subpage Prj_def "Project definition"
  - \subpage Prj_Edit_Obj "Object Definition"
+ - \subpage Misc "Miscellaneous"
 
  \section Licence 
  
@@ -58,6 +59,18 @@
  a graphical UI designer.
  
  The program is then started and mainly waiting for event.
+
+ \page Misc "Miscellaneous"
+ 
+ Here are presented some various stuff used in the ToolMap project but not 
+ specificaly related to a category.
+ 
+ \section ctrl Controls
+ Some controls we have tweaked for Toolmap's need but probably usefull for others projects
+ - \subpage tmColourPicker "Colour picker control"
+ - \subpage tmSliderWithText "Slider with text control"
+ 
+ 
  */
 
 

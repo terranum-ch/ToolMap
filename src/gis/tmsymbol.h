@@ -30,7 +30,8 @@
 #endif
 
 #include "tmsymboldlg.h"
-#include "tmlayerproperties.h"	// for tmLayerProperties definition
+#include "tmlayerpropertiesdef.h"	// for tmLayerProperties definition
+
 
 class tmSymbol : public wxObject
 	{
@@ -41,7 +42,7 @@ class tmSymbol : public wxObject
 		tmSymbol();
 		~tmSymbol();
 		
-		static tmSymbol * CreateSymbolBasedOnType (tmLayerProperties * item);
+		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype);
 		
 		int ShowSymbologyDialog (wxWindow * parent, 
 								 const wxPoint & dlgpos = wxDefaultPosition);

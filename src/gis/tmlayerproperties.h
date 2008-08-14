@@ -31,49 +31,9 @@
 
 #include <wx/treectrl.h>
 #include <wx/filename.h>
+#include "tmlayerpropertiesdef.h"
+#include "tmsymbol.h"
 
-// TOC Generics values
-// Definitions for the generic layers, we define the text and  the id of 
-// each string.
-static wxString TOC_GENERIC_NAME_STRING[] = 
-{
-	_("Lines"),
-	_("Points"),
-	_("Labels"),
-	_("Notes"),
-	_("Frame"),
-	_("Not Generic layers")
-};
-
-
-// warning, max values are 127 because stored in a tiny int
-// into the database
-enum TOC_GENERIC_NAME
-{
-	TOC_NAME_LINES = 0,
-	TOC_NAME_POINTS,
-	TOC_NAME_LABELS,
-	TOC_NAME_ANNOTATIONS,
-	TOC_NAME_FRAME,
-	TOC_NAME_NOT_GENERIC = 100,
-	TOC_NAME_TIFF,
-	TOC_NAME_EGRID,
-	TOC_NAME_SHP,
-	TOC_NAME_UNKNOWN = 120
-};
-static const int TOC_GENERIC_NAME_NUMBER = 6;
-
-
-
-enum TM_GIS_SPATIAL_TYPES
-{
-	LAYER_SPATIAL_LINE = 0,
-	LAYER_SPATIAL_POINT,
-	LAYER_SPATIAL_POLYGON,
-	LAYER_SPATIAL_RASTER,
-	LAYER_SPATIAL_UNKNOWN,
-	LAYER_ERR
-};
 
 
 /***************************************************************************//**
@@ -93,9 +53,11 @@ class tmLayerProperties : public wxTreeItemData
 		wxString m_LayerNameExt;
 		bool m_LayerVisible;
 		int m_LayerType;
+		tmSymbol * m_LayerSymbol;
 		
 		// init from string array
 		bool InitFromArray(const wxArrayString & array);
+		void InitSymbology ();
 		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
 								  const wxArrayString & supportedext);
 		wxString GetFileExtension ();
@@ -104,7 +66,7 @@ class tmLayerProperties : public wxTreeItemData
 		
 		// constructor
 		tmLayerProperties(){InitMemberValues();}
-		~tmLayerProperties(){;}
+		~tmLayerProperties();
 	};
 
 
