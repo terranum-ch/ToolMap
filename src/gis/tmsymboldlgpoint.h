@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmsymboldlgline.h
-							Display Line Symbology dialog
+								tmsymboldlgpoint.h
+							Display Point Symbology dialog
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_SYMBOLDLGLINE_H_
-#define _TM_SYMBOLDLGLINE_H_
+#ifndef _TM_SYMBOLDLGPOINT_H_
+#define _TM_SYMBOLDLGPOINT_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -36,39 +36,37 @@
 
 
 
-const int ID_SYMDLGL_PANEL = 10216;
-const int ID_SYMDLGL_NOTEBOOK  = 10080;
-const int ID_SYMDLGL_PANEL2 = 10081;
-const int ID_SYMDLGL_COLOR = 10082;
-const int ID_SYMDLGL_PATTERN = 10083;
-const int ID_SYMDLGL_WIDTH = 10084;
-const int ID_SYMDLGL_PANEL3 = 10085;
-const int ID_SYMDLGL_PANEL4 = 10088;
-const int ID_SYMDLGL_TRANSPARENCY = 10086;
+const int ID_SYMDLGP_PANEL = 10216;
+const int ID_SYMDLGP_NOTEBOOK  = 10080;
+const int ID_SYMDLGP_PANEL2 = 10081;
+const int ID_SYMDLGP_COLOR = 10082;
+const int ID_SYMDLGP_WIDTH = 10084;
+const int ID_SYMDLGP_PANEL3 = 10085;
+const int ID_SYMDLGP_PANEL4 = 10088;
+const int ID_SYMDLGP_TRANSPARENCY = 10086;
 
 
 
 
 
-class tmSymbolDLGLine : public tmSymbolDLG
+class tmSymbolDLGPoint : public tmSymbolDLG
 	{    
 	private:
-		tmColourPickerCtrl * m_LineColourCtrl;
-		wxSpinCtrl* m_LineWidthCtrl;
-		wxChoice* m_LinePatternCtrl;
+		tmColourPickerCtrl * m_PointColourCtrl;
+		wxSpinCtrl* m_PointWidthCtrl;
 		tmSliderWithText * m_TransparencySlider;
 		
 		void Init();
 		void CreateControlsLine();
 				
-		DECLARE_DYNAMIC_CLASS( tmSymbolDLGLine )
+		DECLARE_DYNAMIC_CLASS( tmSymbolDLGPoint )
 		DECLARE_EVENT_TABLE()
 		
 	public:
 		/// Constructors
-		tmSymbolDLGLine();
-		~tmSymbolDLGLine();
-		tmSymbolDLGLine( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+		tmSymbolDLGPoint();
+		~tmSymbolDLGPoint();
+		tmSymbolDLGPoint( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
 					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, 
 					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
 					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
