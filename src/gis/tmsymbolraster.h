@@ -30,10 +30,12 @@
 #endif
 
 #include "tmsymbol.h"	// tmSymbol class definition
+#include "tmsymboldlgraster.h"	// raster dialog definition
 
 class tmSymbolRaster : public tmSymbol
 	{
 	private:
+		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
 	protected:
 	public:
 		tmSymbolRaster();

@@ -19,6 +19,7 @@
 
 #include "tmsymbol.h"
 #include "tmsymbolvector.h"
+#include "tmsymbolraster.h"
 
 tmSymbol::tmSymbol()
 {
@@ -68,6 +69,11 @@ tmSymbol * tmSymbol::CreateSymbolBasedOnType (tmLayerProperties * item)
 		case LAYER_SPATIAL_POLYGON:
 			return tmSymbolVector::CreateSymbolVectorBasedOnType(item);
 			break;
+			
+		case LAYER_SPATIAL_RASTER:
+			return new tmSymbolRaster();
+			break;
+			
 		default:
 			return new tmSymbol();
 			break;

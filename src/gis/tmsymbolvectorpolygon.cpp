@@ -1,7 +1,7 @@
 /***************************************************************************
-								tmsymbolraster.cpp
-				Deals with GIS raster symbology and associed dialog
-                             -------------------
+								tmsymbolvectorpolygon.cpp
+				Deals with GIS polygon vector symbology and associed dialog
+								-------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
@@ -17,25 +17,27 @@
 
 // comment doxygen
 
-#include "tmsymbolraster.h"
-
-tmSymbolRaster::tmSymbolRaster()
-{
-	
-}
+#include "tmsymbolvectorpolygon.h"
 
 
-
-tmSymbolRaster::~tmSymbolRaster()
+tmSymbolVectorPolygon::tmSymbolVectorPolygon()
 {
 	
 	
 }
 
 
-tmSymbolDLG * tmSymbolRaster::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+
+tmSymbolVectorPolygon::~tmSymbolVectorPolygon()
 {
-	return new tmSymbolDLGRaster(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
-						   SYMBOL_TMSYMBOLDLG_TITLE,
-						   dlgpos);
+	
 }
+
+
+tmSymbolDLG * tmSymbolVectorPolygon::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+{
+	return new tmSymbolDLGPolygon(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+							   SYMBOL_TMSYMBOLDLG_TITLE,
+							   dlgpos);
+}
+

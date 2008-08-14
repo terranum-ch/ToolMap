@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmsymbolraster.cpp
-				Deals with GIS raster symbology and associed dialog
+								tmsymbolvectorpolygon.h
+				Deals with GIS polygon vector symbology and associed dialog
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -17,25 +17,32 @@
 
 // comment doxygen
 
-#include "tmsymbolraster.h"
 
-tmSymbolRaster::tmSymbolRaster()
-{
-	
-}
+#ifndef _TM_SYMBOLVECTORPOLYGON_H_
+#define _TM_SYMBOLVECTORPOLYGON_H_
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
+#endif
+
+#include "tmsymbolvector.h"	// tmSymbol class definition
+#include "tmsymboldlgpolygon.h" 
+
+class tmSymbolVectorPolygon : public tmSymbolVector
+	{
+	private:
+		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
+	protected:
+	public:
+		tmSymbolVectorPolygon();
+		~tmSymbolVectorPolygon();
+	};
 
 
 
-tmSymbolRaster::~tmSymbolRaster()
-{
-	
-	
-}
 
-
-tmSymbolDLG * tmSymbolRaster::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
-{
-	return new tmSymbolDLGRaster(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
-						   SYMBOL_TMSYMBOLDLG_TITLE,
-						   dlgpos);
-}
+#endif
