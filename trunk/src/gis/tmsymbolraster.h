@@ -35,7 +35,11 @@
 class tmSymbolRaster : public tmSymbol
 	{
 	private:
+		tmSymbolDataRaster m_RasterData;
+				
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
+		virtual bool GetDialogData(tmSymbolDLG * dlg);
+		
 	protected:
 	public:
 		tmSymbolRaster();

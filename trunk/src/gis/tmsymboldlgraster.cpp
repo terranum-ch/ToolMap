@@ -48,7 +48,7 @@ bool tmSymbolDLGRaster::Create( wxWindow* parent, wxWindowID id, const wxString&
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	    
-	CreateControlsLine();
+	CreateControls();
 	
 	return true;
 }
@@ -72,7 +72,7 @@ void tmSymbolDLGRaster::Init()
 
 
 
-void tmSymbolDLGRaster::CreateControlsLine()
+void tmSymbolDLGRaster::CreateControls()
 {
 	wxString sFunction = wxString::FromAscii(__FUNCTION__);
 	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
@@ -111,6 +111,28 @@ void tmSymbolDLGRaster::CreateControlsLine()
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();
+}
+
+
+
+bool tmSymbolDLGRaster::TransferDataToWindow()
+{
+	m_UseTransparencyColourCtrl->SetValue(m_DlgData.m_bUseColorTransparency);
+	m_TransparencyColourCtrl->SetColour(m_DlgData.m_TransparencyColour);
+	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
+	
+	return TRUE;
+}
+
+
+
+bool tmSymbolDLGRaster::TransferDataFromWindow()
+{
+	m_DlgData.m_bUseColorTransparency = m_UseTransparencyColourCtrl->GetValue();
+	m_DlgData.m_TransparencyColour = m_TransparencyColourCtrl->GetColour();
+	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
+	
+	return TRUE;
 }
 
 

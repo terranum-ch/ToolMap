@@ -31,7 +31,7 @@ tmSymbol::tmSymbol()
 
 tmSymbol::~tmSymbol()
 {
-	
+	m_LayerTransparency = 0;
 	
 }
 
@@ -51,6 +51,7 @@ int tmSymbol::ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos)
 
 	if (mydlg->ShowModal() == wxID_OK)
 	{
+		GetDialogData(mydlg);
 		wxLogDebug(_T("dialog : OK"));
 	}
 		
@@ -79,4 +80,12 @@ tmSymbol * tmSymbol::CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES spattype)
 			break;
 	}
 	
+}
+
+
+
+bool tmSymbol::GetDialogData(tmSymbolDLG * dlg)
+{
+	wxLogDebug(_T("Getting data back from dialog not implemented"));
+	return FALSE;
 }

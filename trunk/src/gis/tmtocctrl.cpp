@@ -392,12 +392,7 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 	wxASSERT(item->m_LayerSymbol);
 	item->m_LayerSymbol->ShowSymbologyDialog(GetParent(), wxGetMousePosition());
 	
-	/*tmSymbol * mySymbol = tmSymbol::CreateSymbolBasedOnType(item->m_LayerSpatialType);
-	if (mySymbol == NULL)
-		return;
 	
-	mySymbol->ShowSymbologyDialog(GetParent(), wxGetMousePosition());
-	delete mySymbol;*/
 }
 
 

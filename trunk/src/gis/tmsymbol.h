@@ -37,7 +37,11 @@ class tmSymbol : public wxObject
 	{
 	private:
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos); 
+		virtual bool GetDialogData(tmSymbolDLG * dlg);
+		
 	protected:
+		int m_LayerTransparency;
+		
 	public:
 		tmSymbol();
 		~tmSymbol();

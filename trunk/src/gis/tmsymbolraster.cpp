@@ -21,7 +21,10 @@
 
 tmSymbolRaster::tmSymbolRaster()
 {
-	
+	m_RasterData.m_bUseColorTransparency = FALSE;
+	m_RasterData.m_TransparencyColour = wxColour(*wxBLACK);
+	m_RasterData.m_GlobalTransparency = 0;
+
 }
 
 
@@ -35,7 +38,18 @@ tmSymbolRaster::~tmSymbolRaster()
 
 tmSymbolDLG * tmSymbolRaster::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
-	return new tmSymbolDLGRaster(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
-						   SYMBOL_TMSYMBOLDLG_TITLE,
-						   dlgpos);
+	tmSymbolDLGRaster * myDlg = new tmSymbolDLGRaster(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+													  SYMBOL_TMSYMBOLDLG_TITLE,
+													  dlgpos);
+	myDlg->SetDialogData(m_RasterData);
+	
+	return myDlg;
 }
+
+
+bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
+{
+	m_RasterData = ((tmSymbolDLGRaster *) dlg)->GetDialogData();
+	return TRUE;
+}
+
