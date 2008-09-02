@@ -40,10 +40,14 @@ class tmSymbolRaster : public tmSymbol
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
 		virtual bool GetDialogData(tmSymbolDLG * dlg);
 		
+			
 	protected:
 	public:
 		tmSymbolRaster();
 		~tmSymbolRaster();
+		
+		virtual bool Serialize(wxSerialize &s);
+
 	};
 
 

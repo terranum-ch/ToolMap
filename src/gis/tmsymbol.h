@@ -30,6 +30,7 @@
 #endif
 
 #include "tmsymboldlg.h"
+#include "../wxserialize/wxSerialize.h"	// for object serialization
 #include "tmlayerpropertiesdef.h"	// for tmLayerProperties definition
 
 
