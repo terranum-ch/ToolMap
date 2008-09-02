@@ -42,7 +42,12 @@ const int ID_SYMDLGRASTER_TRANSPARENCY_COLOR = 10087;
 const int ID_SYMDLGRASTER_TRANSPARENCY = 10086;
 
 
-
+struct tmSymbolDataRaster
+{
+	bool m_bUseColorTransparency;
+	wxColour m_TransparencyColour;
+	int m_GlobalTransparency;
+};
 
 
 class tmSymbolDLGRaster : public tmSymbolDLG
@@ -52,8 +57,14 @@ class tmSymbolDLGRaster : public tmSymbolDLG
 		tmColourPickerCtrl * m_TransparencyColourCtrl;
 		tmSliderWithText * m_TransparencySlider;
 		
+		tmSymbolDataRaster m_DlgData;
+		
+				
 		void Init();
-		void CreateControlsLine();
+		void CreateControls();
+		
+		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
 				
 		DECLARE_DYNAMIC_CLASS( tmSymbolDLGRaster )
 		DECLARE_EVENT_TABLE()
@@ -74,7 +85,8 @@ class tmSymbolDLGRaster : public tmSymbolDLG
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
 		
 				
-		
+		void SetDialogData ( const tmSymbolDataRaster & data) {m_DlgData = data;}
+		tmSymbolDataRaster GetDialogData () {return m_DlgData;}
 				
 
 	};
