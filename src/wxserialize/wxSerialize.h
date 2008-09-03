@@ -22,8 +22,9 @@
 #define WXSERIALIZE_MAJOR_VERSION 1
 #define WXSERIALIZE_MINOR_VERSION 1
 
-/** \author Jorgen Bodde
-    \mainpage
+
+/** \page wxSerialize "wxSerialize" 
+	\author Jorgen Bodde
 
     This is the wxSerialize documentation guide. wxSerialize is a serializing class meant for serializing / de-serializing
 	a complete (or partial) object model to a stream. The streaming is made type safe and reliable. This means when an
