@@ -1,5 +1,6 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) LUCIEN SCHREIBER CREALP 2007
+cmake_minimum_required(VERSION 2.4)
 
 
 SET (PROGNAME ToolMap2)
