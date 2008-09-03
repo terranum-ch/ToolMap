@@ -21,6 +21,8 @@
 
 //TODO: remove this code
 #include <wx/mstream.h>
+#include <wx/txtstrm.h>
+#include <wx/datstrm.h>
 
 
 tmSymbolRaster::tmSymbolRaster()
@@ -57,20 +59,22 @@ bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
 	
 		
 	// serialize
-	wxMemoryOutputStream out; 
+	wxStringOutputStream out;
 	wxSerialize a(out);
 	Serialize(a);
-	size_t sizeout = out.GetSize();
+	wxString outstring = out.GetString();
+	wxLogDebug(outstring);
 	
-	char * buffer = new char [sizeout];
-	size_t copied = out.CopyTo(buffer, sizeout);
+	wxStringInputStream in
+	wxSerialize b(in);
+	Serialize(b);
 	
-	// unserialize
+	/* unserialize
 	wxMemoryInputStream in (buffer, copied);
 	wxSerialize b (in);
 	Serialize(b);
 	
-	//wxLogDebug(_T("Serialized string is : ") + serialString);
+	//wxLogDebug(_T("Serialized string is : ") + serialString);*/
 	
 	
 	return TRUE;

@@ -34,6 +34,7 @@
 #include "tmlayerpropertiesdef.h"
 #include "tmsymbol.h"
 
+#include <wx/mstream.h>
 
 
 /***************************************************************************//**
