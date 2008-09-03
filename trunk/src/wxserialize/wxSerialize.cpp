@@ -925,6 +925,7 @@ bool wxSerialize::Write(const wxMemoryBuffer &buffer)
         if(size > 0)
             m_odstr.Write(buffer.GetData(), size);
     }
+	return TRUE;
 }
 
 // Must be at global scope for VC++ 5 (ripped from wxDataInputStream)
@@ -1081,7 +1082,7 @@ void wxSerialize::SaveString(const wxString &value)
 		    // we write in unicode even when we are not compiled
 		    // in unicode. This means writing pairs of wxInt16
 		    // bytes. We need optional conversion in wxUint16
-            for(int i = 0; i < len; i++)
+            for(unsigned int i = 0; i < len; i++)
                 SaveUint16((wxUint16)value.GetChar(i));
 		}
 	}

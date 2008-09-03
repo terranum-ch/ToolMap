@@ -227,7 +227,12 @@ bool tmLayerManager::SaveTOCStatus()
 		if (!itemProp)
 			break;
 		
-		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank);
+		// serialize symbology //
+		wxStringOutputStream symbolstring;
+		wxSerialize a(symbolstring);
+		itemProp->m_LayerSymbol->Serialize(a);
+		
+		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, symbolstring.GetString());
 		iRank ++;
 	}
 	
@@ -320,7 +325,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	}
 	
 	// init the symbology
-	item->InitSymbology();
+	item->InitSymbology(wxEmptyString);
 		
 	
 	// saving to the database and getting the last ID

@@ -51,6 +51,7 @@ class tmSymbol : public wxObject
 		
 		int ShowSymbologyDialog (wxWindow * parent, 
 								 const wxPoint & dlgpos = wxDefaultPosition);
+		virtual bool Serialize(wxSerialize &s);
 		
 	};
 

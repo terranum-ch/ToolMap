@@ -947,3 +947,39 @@ void DataBase::DataBaseNewThreadUnInit()
 	mysql_thread_end();
 }
 
+
+
+/***************************************************************************//**
+ @brief Send query to the database
+ @details This query may be used for storing binary data into the database
+ because no conversion are done for the 'query' parameter
+ @param query contain the query, no transformations done
+ @param DestroyResult if = TRUE, we destroy results imediately
+ @return  TRUE if query passed, false otherwise (with a debug message in debug
+ mode)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 September 2008
+ *******************************************************************************/
+bool DataBase::DataBaseQueryBinary(const char * query,  bool DestroyResult)
+{
+	pResults = NULL;
+	
+	int iRetour = mysql_query(pMySQL, query);
+	if (iRetour == 0) 
+	{
+		
+		if (!DestroyResult)
+		{
+			pResults = mysql_store_result(pMySQL);
+			m_resultNumber = mysql_field_count(pMySQL);
+			m_resultCount = DatabaseGetCountResults();
+		}
+		return TRUE;
+	}
+	
+	// try to get the last error
+	wxLogDebug(DataBaseGetLastError());
+	return FALSE;
+	
+}
+

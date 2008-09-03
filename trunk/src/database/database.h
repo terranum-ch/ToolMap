@@ -284,6 +284,8 @@ public:
 	bool DataBaseNewThreadInit();
 	
 	void DataBaseNewThreadUnInit();
+	
+	bool DataBaseQueryBinary(const char * query, bool DestroyResult = FALSE);
     
 protected:
 	MYSQL * pMySQL;
