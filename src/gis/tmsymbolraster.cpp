@@ -19,8 +19,9 @@
 
 #include "tmsymbolraster.h"
 
-#include <wx/mstream.h>
+//TODO: remove this code
 #include <wx/wfstream.h>
+
 
 tmSymbolRaster::tmSymbolRaster()
 {
@@ -54,10 +55,24 @@ bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
 {
 	m_RasterData = ((tmSymbolDLGRaster *) dlg)->GetDialogData();
 	
+	wxString serialString = wxEmptyString;
 	
-	wxFileOutputStream file(_T("thisisatest.dat"));
-	wxSerialize a(file);
+	// serialize
+	wxFileOutputStream out(_T("thisisatest.dat")); 
+	wxSerialize a(out);
 	Serialize(a);
+	
+	//serialString = out.GetString();
+	
+	//wxLogDebug(_T("Serialized string is : ") + serialString);
+	
+	// unserialize
+	wxFileInputStream in(_T("thisisatest.dat"));
+	//wxStringInputStream in(serialString);
+	wxSerialize b (in);
+	Serialize(b);
+	
+	//wxLogDebug(_T("Serialized string is : ") + serialString);
 	
 	
 	return TRUE;
@@ -71,7 +86,7 @@ bool tmSymbolRaster::Serialize(wxSerialize &s)
 	int colourgreen = m_RasterData.m_TransparencyColour.Green(); 
 	int colourblue = m_RasterData.m_TransparencyColour.Blue();
 	
-	
+	s.EnterObject();
 	if(s.IsStoring())
 	{
 		s << m_RasterData.m_bUseColorTransparency;
@@ -86,6 +101,7 @@ bool tmSymbolRaster::Serialize(wxSerialize &s)
 		s >> m_RasterData.m_GlobalTransparency;
 		m_RasterData.m_TransparencyColour.Set(colourred, colourgreen, colourblue);
 	}
+	s.LeaveObject();
 	
 	// return false when the archive encountered an error
 	return s.IsOk();

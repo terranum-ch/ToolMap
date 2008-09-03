@@ -57,7 +57,7 @@ class tmLayerProperties : public wxTreeItemData
 		
 		// init from string array
 		bool InitFromArray(const wxArrayString & array);
-		void InitSymbology ();
+		void InitSymbology (const wxString & itemBinSymbology);
 		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
 								  const wxArrayString & supportedext);
 		wxString GetFileExtension ();

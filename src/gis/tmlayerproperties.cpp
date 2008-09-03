@@ -65,14 +65,14 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	array.Item(5).ToLong(&tempgeneric);
 	m_LayerType = (int) tempgeneric;
 	
-	InitSymbology();
+	InitSymbology(array.Item(6));
 	
 	return TRUE;
 }
 
 
 
-void tmLayerProperties::InitSymbology ()
+void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 {
 	// creating symbology object
 	if (m_LayerSymbol)
@@ -81,7 +81,16 @@ void tmLayerProperties::InitSymbology ()
 		return;
 	}
 	
-	m_LayerSymbol = tmSymbol::CreateSymbolBasedOnType(m_LayerSpatialType);	
+	m_LayerSymbol = tmSymbol::CreateSymbolBasedOnType(m_LayerSpatialType);
+	
+	// unserialize object
+	if (m_LayerSymbol && !itemBinSymbology.IsEmpty())
+	{
+		//wxLogDebug(itemBinSymbology);
+		//wxStringInputStream symbolstring(itemBinSymbology);
+		//wxSerialize a(symbolstring);
+		//m_LayerSymbol->Serialize(a); 
+	}
 }
 
 

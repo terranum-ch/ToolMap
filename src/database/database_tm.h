@@ -145,7 +145,8 @@ class DataBaseTM : public DataBase
 		long AddTOCLayer (tmLayerProperties * item);
 		bool RemoveTOCLayer (const long & itemid);
 		void PrepareTOCStatusUpdate(wxString & sentence, 
-									tmLayerProperties * item, int itemRank=0);
+									tmLayerProperties * item, int itemRank=0, 
+									wxString itemBinSymbology = wxEmptyString);
 		
 	};
 

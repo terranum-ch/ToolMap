@@ -1759,7 +1759,7 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 	{
 		
 		wxString sSentence = _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
-		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS FROM ") + TABLE_NAME_TOC +
+		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY FROM ") + TABLE_NAME_TOC +
 		_T(" ORDER by RANK");
 		
 		if (!DataBaseQuery(sSentence))
@@ -1778,7 +1778,7 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 			return NULL;
 		}
 				
-		if (myTempResults.GetCount() != 6)
+		if (myTempResults.GetCount() != 7)
 		{
 			wxLogDebug(_T("Error with the results : attended 6 results, got %d"),
 					   myTempResults.GetCount());
@@ -1881,13 +1881,15 @@ bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 
 
 
-void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties * item, int itemRank)
+void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties * item, 
+										int itemRank, wxString itemBinSymbology)
 {
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
-									 _T(" SET CONTENT_STATUS = %d, RANK=%d ")
+									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\"")
 									 _T("WHERE CONTENT_ID = %d; "),
 									 item->m_LayerVisible,
 									 itemRank,
+									 itemBinSymbology.c_str(),
 									 item->m_LayerID));
 	
 }

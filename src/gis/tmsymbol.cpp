@@ -89,3 +89,12 @@ bool tmSymbol::GetDialogData(tmSymbolDLG * dlg)
 	wxLogDebug(_T("Getting data back from dialog not implemented"));
 	return FALSE;
 }
+
+
+bool tmSymbol::Serialize(wxSerialize &s)
+{
+	wxLogDebug(_T("Not able to serialize, not implemented actually"));
+	return TRUE;
+}
+
+
