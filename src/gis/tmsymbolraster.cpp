@@ -20,7 +20,7 @@
 #include "tmsymbolraster.h"
 
 //TODO: remove this code
-#include <wx/wfstream.h>
+#include <wx/mstream.h>
 
 
 tmSymbolRaster::tmSymbolRaster()
@@ -55,20 +55,18 @@ bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
 {
 	m_RasterData = ((tmSymbolDLGRaster *) dlg)->GetDialogData();
 	
-	wxString serialString = wxEmptyString;
-	
+		
 	// serialize
-	wxFileOutputStream out(_T("thisisatest.dat")); 
+	wxMemoryOutputStream out; 
 	wxSerialize a(out);
 	Serialize(a);
+	size_t sizeout = out.GetSize();
 	
-	//serialString = out.GetString();
-	
-	//wxLogDebug(_T("Serialized string is : ") + serialString);
+	char * buffer = new char [sizeout];
+	size_t copied = out.CopyTo(buffer, sizeout);
 	
 	// unserialize
-	wxFileInputStream in(_T("thisisatest.dat"));
-	//wxStringInputStream in(serialString);
+	wxMemoryInputStream in (buffer, copied);
 	wxSerialize b (in);
 	Serialize(b);
 	
