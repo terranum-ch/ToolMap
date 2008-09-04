@@ -29,38 +29,58 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/sstream.h>
+#include <wx/tokenzr.h>	// for string tokenizer
 
 const int TMSERIALIZE_VERSION = 1; // increment each time something change
+const wxString tmSERIAL_MAINSEP = _T("|");
+const wxString tmSERIAL_AUXSEP = _T("§");
 
 
 class tmSerialize
 	{
 	private:
-		bool m_writeMode;
-		wxOutputStream &m_odstr;
-		wxInputStream &m_idstr;
+		bool m_outdirection;
+		wxString m_stream;
+		wxStringTokenizer m_divStream;
 		
-		// temp vars for init
-		wxString m_tmpostr;
-		wxString m_tmpistr;
-		wxStringOutputStream m_otmp;
-		wxStringInputStream m_itmp;
+		bool CanStore () {return m_outdirection;}
+		bool CanRead ();
+		void AddSeparator() {m_stream.Append(tmSERIAL_MAINSEP);}
+		void AddAuxSeparator() {m_stream.Append(tmSERIAL_AUXSEP);}
 		
-		void SaveUint16(wxUint16 value);
-		
+		void WriteInt (int value);
+		int ReadInt (const wxString & part);
+		bool ReadStream (wxString & part);
 		
 	protected:
 	public:
-		tmSerialize(wxInputStream &stream);
-		tmSerialize(wxOutputStream &stream);
+		tmSerialize();
+		tmSerialize(wxString stream);
 		
-		bool CanStore();
 		
 		
 		
 		virtual tmSerialize &operator << (bool value);
 		virtual tmSerialize &operator << (wxString value);
+		virtual tmSerialize &operator <<(const wxString& value);	
+		virtual tmSerialize &operator <<(const wxChar* pvalue);
+		virtual tmSerialize &operator <<(wxColour value);
+		virtual tmSerialize &operator <<(int value);
+
+		virtual tmSerialize &operator >> (bool & value);
+		virtual tmSerialize &operator >> (wxString  & value);
+		virtual tmSerialize &operator >> (wxColour & value);
+		virtual tmSerialize &operator >> (int & value);
+		
+				
+		
+		wxString GetString(){return m_stream;}
+		bool IsStoring();
+		bool IsOk() {return TRUE;}
+		
+		// for compatibility with wxSerialize
+		void EnterObject(){;}
+		void LeaveObject(){;}
 
 	};
 

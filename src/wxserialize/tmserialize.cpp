@@ -20,81 +20,202 @@
 #include "tmserialize.h"
 
 
-tmSerialize::tmSerialize(wxInputStream &stream) : 
-m_idstr(stream),
-m_otmp(&m_tmpostr),
-m_odstr(m_otmp),
-m_itmp(m_tmpistr)
+// serializing data out
+tmSerialize::tmSerialize()
 {
-	m_writeMode = FALSE;
-	//m_idstr = stream;
+	m_outdirection = TRUE;
+	m_stream = _T("");
+}
+
+
+// serializing data in
+tmSerialize::tmSerialize(wxString stream)
+{
+	m_outdirection = FALSE;
+	m_stream = stream;
+	m_divStream.SetString(m_stream, tmSERIAL_MAINSEP);
+}
+
+
+
+bool tmSerialize::CanRead ()
+{
+	if (m_outdirection)
+	{
+		wxLogDebug(_T("Error, stream is in writing mode"));
+		return FALSE;
+	}
 	
-	// all ok, use this stream
-    if(stream.IsOk())
-    {
-		
-		
-	}		
+	if (m_stream.IsEmpty())
+	{
+		wxLogDebug(_T("Nothing to read, stream empty"));
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
+
+
+void tmSerialize::WriteInt (int value)
+{
+	if(CanStore())
+	{
+		m_stream.Append(wxString::Format(_T("%d"),value));
+	}
 	
 }
 
 
-tmSerialize::tmSerialize(wxOutputStream & stream) : 
- m_odstr(stream),
- m_itmp(m_tmpistr),
- m_idstr(m_itmp),
- m_otmp(&m_tmpostr)
+int tmSerialize::ReadInt (const wxString & part)
 {
-	m_writeMode = TRUE;
-	//m_odstr = stream;
-	if (!m_odstr.IsOk())
-		wxLogDebug(_T("Stream not ok"));
-
+	long lvalue = 0;
+	if(!part.ToLong(&lvalue))
+		wxLogDebug(_T("Error trying to convert string to integer"));
+	
+	return lvalue;
 }
 
 
-bool tmSerialize::CanStore()
+
+bool tmSerialize::ReadStream (wxString & part)
 {
-    // are we in an ok state?
-    if(m_writeMode)
-    {
-        return (TRUE);
-    }
-    else
-        wxLogDebug(_T("Not able to write"));
-	
+	if(CanRead())
+	{
+		if (m_divStream.HasMoreTokens())
+		{ 
+			part = m_divStream.GetNextToken();
+			return true;
+		}
+	}
+	part = wxEmptyString;
 	return false;
 }
 
 
-tmSerialize & tmSerialize::operator <<(bool value)
+
+
+
+tmSerialize & tmSerialize::operator << (bool value)
 {
-	if (m_writeMode)
-		m_odstr.Write((void *)&value, sizeof(bool));
-	
+	if (CanStore())
+	{
+		WriteInt((int) value);
+		AddSeparator();
+	}
 	return *this;
 }
 
 
 tmSerialize & tmSerialize::operator << (wxString value)
 {
-	size_t len = value.Len();
-	if(len > 0)
+	if (CanStore())
 	{
-		// we write in unicode even when we are not compiled
-		// in unicode. This means writing pairs of wxInt16
-		// bytes. We need optional conversion in wxUint16
-		for(unsigned int i = 0; i < len; i++)
-			SaveUint16((wxUint16)value.GetChar(i));
+		m_stream.Append(value);
+		AddSeparator();
 	}
 	return *this;
 }
 
-void tmSerialize::SaveUint16(wxUint16 value)
+
+tmSerialize & tmSerialize::operator <<(const wxString& value)
 {
-	wxUint16 tmpval = wxUINT16_SWAP_ON_LE(value);
+	if (CanStore())
+	{
+		m_stream.Append(value);
+		AddSeparator();
+	}
+	return *this;
+}
+
+tmSerialize & tmSerialize::operator <<(const wxChar* pvalue)
+{
+	wxString value(pvalue);
+	if (CanStore())
+	{
+		m_stream.Append(value);
+		AddSeparator();
+	}
+	return *this;
+}
+
+
+tmSerialize & tmSerialize::operator <<(wxColour value)
+{
 	if(CanStore())
-        m_odstr.Write(&tmpval, sizeof(wxUint16));
+	{
+		m_stream.Append(value.GetAsString(wxC2S_CSS_SYNTAX));
+		AddSeparator();
+	}
+	return *this;
+}
+
+
+
+tmSerialize & tmSerialize::operator <<(int value)
+{
+	if (CanStore())
+	{
+		WriteInt(value);
+		AddSeparator();
+	}
+	return * this;
+	
+}
+
+
+
+tmSerialize & tmSerialize::operator >> (bool & value)
+{
+	wxString partstream = wxEmptyString;
+	if (ReadStream(partstream))
+	{
+		value = (bool) ReadInt(partstream);
+	}
+	return * this;
+}
+
+
+tmSerialize & tmSerialize::operator >> (wxString & value)
+{
+	wxString partstream = wxEmptyString;
+	if(ReadStream(partstream))
+	{
+		value = partstream;
+	}
+	return * this;
+}
+
+
+tmSerialize & tmSerialize::operator >> (wxColour & value)
+{
+	wxString partstream = wxEmptyString;
+	if (ReadStream(partstream))
+	{
+		wxColour tmpcol(partstream);
+		if (tmpcol.IsOk())
+			value = tmpcol;
+	}
+	return * this;
+}
+
+
+tmSerialize & tmSerialize::operator >> (int & value)
+{
+	wxString partstream = wxEmptyString;
+	if (ReadStream(partstream))
+	{
+		value = ReadInt(partstream);
+	}
+	return * this;
+}
+
+
+bool tmSerialize::IsStoring()
+{
+	if (m_outdirection)
+		return TRUE;
+	return FALSE;
 }
 
 
