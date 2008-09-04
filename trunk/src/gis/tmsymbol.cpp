@@ -91,7 +91,7 @@ bool tmSymbol::GetDialogData(tmSymbolDLG * dlg)
 }
 
 
-bool tmSymbol::Serialize(wxSerialize &s)
+bool tmSymbol::Serialize(tmSerialize &s)
 {
 	wxLogDebug(_T("Not able to serialize, not implemented actually"));
 	return TRUE;

@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmsymbol.h
-				Deals with GIS symbology and associed dialog
+								tmserialize.h
+                    for serializating object in a simple way
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_SYMBOL_H_
-#define _TM_SYMBOL_H_
+#ifndef _TM_SERIALIZE_H_
+#define _TM_SERIALIZE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,30 +29,39 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmsymboldlg.h"
-#include "../wxserialize/tmSerialize.h"	// for object serialization
-#include "tmlayerpropertiesdef.h"	// for tmLayerProperties definition
+#include <wx/sstream.h>
+
+const int TMSERIALIZE_VERSION = 1; // increment each time something change
 
 
-class tmSymbol : public wxObject
+class tmSerialize
 	{
 	private:
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos); 
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
+		bool m_writeMode;
+		wxOutputStream &m_odstr;
+		wxInputStream &m_idstr;
+		
+		// temp vars for init
+		wxString m_tmpostr;
+		wxString m_tmpistr;
+		wxStringOutputStream m_otmp;
+		wxStringInputStream m_itmp;
+		
+		void SaveUint16(wxUint16 value);
+		
 		
 	protected:
-		int m_LayerTransparency;
-		
 	public:
-		tmSymbol();
-		~tmSymbol();
+		tmSerialize(wxInputStream &stream);
+		tmSerialize(wxOutputStream &stream);
 		
-		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype);
+		bool CanStore();
 		
-		int ShowSymbologyDialog (wxWindow * parent, 
-								 const wxPoint & dlgpos = wxDefaultPosition);
-		virtual bool Serialize(tmSerialize &s);
 		
+		
+		virtual tmSerialize &operator << (bool value);
+		virtual tmSerialize &operator << (wxString value);
+
 	};
 
 
