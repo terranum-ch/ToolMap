@@ -60,14 +60,14 @@ bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
 		
 	// serialize
 	wxStringOutputStream out;
-	wxSerialize a(out);
+	tmSerialize a(out);
 	Serialize(a);
 	wxString outstring = out.GetString();
 	wxLogDebug(outstring);
 	
-	wxStringInputStream in
-	wxSerialize b(in);
-	Serialize(b);
+	//wxStringInputStream in(outstring);
+//wxSerialize b(in);
+//	Serialize(b);
 	
 	/* unserialize
 	wxMemoryInputStream in (buffer, copied);
@@ -82,9 +82,15 @@ bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
 
 
 
-bool tmSymbolRaster::Serialize(wxSerialize &s)
+bool tmSymbolRaster::Serialize(tmSerialize &s)
 {
-	int colourred = m_RasterData.m_TransparencyColour.Red();
+	s << m_RasterData.m_bUseColorTransparency;
+	s << _T("coucou");
+	s << TRUE;
+	s << FALSE;
+	s << _T("test continue");
+	
+	/*int colourred = m_RasterData.m_TransparencyColour.Red();
 	int colourgreen = m_RasterData.m_TransparencyColour.Green(); 
 	int colourblue = m_RasterData.m_TransparencyColour.Blue();
 	
@@ -103,10 +109,11 @@ bool tmSymbolRaster::Serialize(wxSerialize &s)
 		s >> m_RasterData.m_GlobalTransparency;
 		m_RasterData.m_TransparencyColour.Set(colourred, colourgreen, colourblue);
 	}
-	s.LeaveObject();
+	s.LeaveObject();*/
 	
 	// return false when the archive encountered an error
-	return s.IsOk();
+	//return s.IsOk(); 
+	return TRUE;
 }
 
 

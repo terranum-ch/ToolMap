@@ -46,7 +46,7 @@ class tmSymbolRaster : public tmSymbol
 		tmSymbolRaster();
 		~tmSymbolRaster();
 		
-		virtual bool Serialize(wxSerialize &s);
+		virtual bool Serialize(tmSerialize &s);
 
 	};
 
