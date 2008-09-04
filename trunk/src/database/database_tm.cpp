@@ -1883,17 +1883,14 @@ bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 
 void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties * item, 
 										int itemRank,
-										char * binSymbology, size_t binSymbolSize)
+										const wxString & symbology)
 {
-	wxString mySymbology = _T("");
-	mySymbology = wxString::From8BitData(binSymbology, binSymbolSize);
-	
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
 									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\"")
 									 _T("WHERE CONTENT_ID = %d; "),
 									 item->m_LayerVisible,
 									 itemRank,
-									 mySymbology.c_str(),
+									 symbology.c_str(),
 									 item->m_LayerID));
 	
 }

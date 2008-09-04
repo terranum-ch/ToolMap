@@ -227,24 +227,11 @@ bool tmLayerManager::SaveTOCStatus()
 		if (!itemProp)
 			break;
 		
-		/* serialize symbology //
-		wxMemoryOutputStream out;
-		wxSerialize a(out);
-		itemProp->m_LayerSymbol->Serialize(a);
-		symbolsize = out.GetSize();
+		// serialize symbology //
+		tmSerialize out;
+		itemProp->m_LayerSymbol->Serialize(out);
 		
-		wxStreamBuffer * myBuff = out.GetOutputStreamBuffer();
-		
-		
-		pSymbol = new char[symbolsize];
-		if (out.CopyTo(pSymbol, symbolsize) != symbolsize)
-		{
-			wxLogError(_T("Error trying to store the symbology"));
-			return FALSE;
-		}
-		wxLogDebug(_T("symbol :") + wxString::FromUTF8(pSymbol, symbolsize));
-		*/
-		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank);
+		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, out.GetString());
 		iRank ++;
 	}
 	
@@ -254,9 +241,6 @@ bool tmLayerManager::SaveTOCStatus()
 		wxLogDebug(_T("Error updating DB with TOC status : %s"),sSentence.c_str());
 		return FALSE;
 	}
-	
-	//TODO: remove temp code
-	wxLogDebug(sSentence);
 	
 	return TRUE;
 	
