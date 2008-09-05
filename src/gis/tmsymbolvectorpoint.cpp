@@ -22,8 +22,10 @@
 
 tmSymbolVectorPoint::tmSymbolVectorPoint()
 {
-	
-	
+	m_ptUniqueSymbol.m_PanelNo = 0;
+	m_ptUniqueSymbol.m_Colour = wxColour(*wxBLACK);
+	m_ptUniqueSymbol.m_Radius = 1;
+	m_ptUniqueSymbol.m_GlobalTransparency = 0;
 }
 
 
@@ -34,10 +36,44 @@ tmSymbolVectorPoint::~tmSymbolVectorPoint()
 }
 
 
+
 tmSymbolDLG * tmSymbolVectorPoint::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
-	return new tmSymbolDLGPoint(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+	tmSymbolDLGPoint * dlg =  new tmSymbolDLGPoint(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
 							   SYMBOL_TMSYMBOLDLG_TITLE,
 							   dlgpos);
+	dlg->SetDialogData(m_ptUniqueSymbol);
+	return dlg;
+}
+
+
+bool tmSymbolVectorPoint::GetDialogData(tmSymbolDLG * dlg)
+{
+	m_ptUniqueSymbol = ((tmSymbolDLGPoint *) dlg)->GetDialogData();
+	return TRUE;
+}
+
+
+bool tmSymbolVectorPoint::Serialize(tmSerialize &s)
+{
+	s.EnterObject();
+	if(s.IsStoring())
+	{
+		s << m_ptUniqueSymbol.m_PanelNo;
+		s << m_ptUniqueSymbol.m_Colour;
+		s << m_ptUniqueSymbol.m_Radius;
+		s << m_ptUniqueSymbol.m_GlobalTransparency;
+	}
+	else
+	{
+		s >> m_ptUniqueSymbol.m_PanelNo;
+		s >> m_ptUniqueSymbol.m_Colour;
+		s >> m_ptUniqueSymbol.m_Radius;
+		s >> m_ptUniqueSymbol.m_GlobalTransparency;
+	}
+	s.LeaveObject();
+	
+	// return false when the archive encountered an error
+	return s.IsOk(); 
 }
 

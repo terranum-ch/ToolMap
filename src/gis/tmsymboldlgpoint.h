@@ -46,7 +46,13 @@ const int ID_SYMDLGP_PANEL4 = 10088;
 const int ID_SYMDLGP_TRANSPARENCY = 10086;
 
 
-
+struct tmSymbolDataPointUnique
+{
+	int m_PanelNo;
+	wxColour m_Colour;
+	int m_Radius;
+	int m_GlobalTransparency;
+};
 
 
 class tmSymbolDLGPoint : public tmSymbolDLG
@@ -56,8 +62,13 @@ class tmSymbolDLGPoint : public tmSymbolDLG
 		wxSpinCtrl* m_PointWidthCtrl;
 		tmSliderWithText * m_TransparencySlider;
 		
+		tmSymbolDataPointUnique m_DlgData;
+		
 		void Init();
 		void CreateControlsLine();
+		
+		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
 				
 		DECLARE_DYNAMIC_CLASS( tmSymbolDLGPoint )
 		DECLARE_EVENT_TABLE()
@@ -78,7 +89,9 @@ class tmSymbolDLGPoint : public tmSymbolDLG
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
 		
 				
-		
+		void SetDialogData ( const tmSymbolDataPointUnique & data) {m_DlgData = data;}
+		tmSymbolDataPointUnique GetDialogData () {return m_DlgData;}
+
 				
 
 	};

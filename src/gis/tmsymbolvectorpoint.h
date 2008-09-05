@@ -35,11 +35,16 @@
 class tmSymbolVectorPoint : public tmSymbolVector
 	{
 	private:
+		tmSymbolDataPointUnique m_ptUniqueSymbol;
+		
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
+		virtual bool GetDialogData(tmSymbolDLG * dlg);
 	protected:
 	public:
 		tmSymbolVectorPoint();
 		~tmSymbolVectorPoint();
+		
+		virtual bool Serialize(tmSerialize &s);
 	};
 
 

@@ -56,30 +56,6 @@ tmSymbolDLG * tmSymbolRaster::GetSymbolDialog (wxWindow * parent, const wxPoint 
 bool tmSymbolRaster::GetDialogData(tmSymbolDLG * dlg)
 {
 	m_RasterData = ((tmSymbolDLGRaster *) dlg)->GetDialogData();
-	
-		
-	// serialize
-	//wxStringOutputStream out;
-	tmSerialize a;
-	Serialize(a);
-	wxString outstring = a.GetString();
-	wxLogDebug(outstring);
-	
-	tmSerialize in(outstring);
-	Serialize(in);
-	
-	//wxStringInputStream in(outstring);
-//wxSerialize b(in);
-//	Serialize(b);
-	
-	/* unserialize
-	wxMemoryInputStream in (buffer, copied);
-	wxSerialize b (in);
-	Serialize(b);
-	
-	//wxLogDebug(_T("Serialized string is : ") + serialString);*/
-	
-	
 	return TRUE;
 }
 
