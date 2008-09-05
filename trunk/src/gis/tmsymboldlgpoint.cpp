@@ -142,4 +142,23 @@ void tmSymbolDLGPoint::CreateControlsLine()
 }
 
 
+bool tmSymbolDLGPoint::TransferDataToWindow()
+{
+	m_PointColourCtrl->SetColour(m_DlgData.m_Colour);
+	m_PointWidthCtrl->SetValue(m_DlgData.m_Radius);
+	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
+	return TRUE;
+}
+
+
+
+bool tmSymbolDLGPoint::TransferDataFromWindow()
+{
+	m_DlgData.m_Colour = m_PointColourCtrl->GetColour();
+	m_DlgData.m_Radius = m_PointWidthCtrl->GetValue();
+	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
+	
+	return TRUE;
+}
+
 

@@ -96,18 +96,16 @@ void tmSymbolDLGLine::CreateControlsLine()
     wxStaticText* itemStaticText12 = new wxStaticText( itemPanel10, wxID_STATIC, _("Color :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    m_LineColourCtrl = new tmColourPickerCtrl(itemPanel10, ID_SYMDLGL_COLOR,
-															   *wxBLUE);
+    m_LineColourCtrl = new tmColourPickerCtrl(itemPanel10, ID_SYMDLGL_COLOR);
 	itemFlexGridSizer11->Add(m_LineColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);													   
 	
 	
     wxStaticText* itemStaticText14 = new wxStaticText( itemPanel10, wxID_STATIC, _("Shape :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxArrayString itemChoice15Strings;
-    itemChoice15Strings.Add(_("----------"));
-    itemChoice15Strings.Add(_("..............."));
-    m_LinePatternCtrl = new wxChoice( itemPanel10, ID_SYMDLGL_PATTERN, wxDefaultPosition, wxDefaultSize, itemChoice15Strings, 0 );
+    m_LinePatternCtrl = new wxChoice( itemPanel10, ID_SYMDLGL_PATTERN, wxDefaultPosition, wxDefaultSize,
+									  (sizeof(tmSYMBOLPENSTYLES_NAME) / sizeof(wxString)),
+									 tmSYMBOLPENSTYLES_NAME, 0 );
     itemFlexGridSizer11->Add(m_LinePatternCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText16 = new wxStaticText( itemPanel10, wxID_STATIC, _("Width :"), wxDefaultPosition, wxDefaultSize, 0 );

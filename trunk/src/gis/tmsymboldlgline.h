@@ -33,6 +33,7 @@
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "tmsymboldlg.h"		// tmSymbolDlg declaration
+#include "tmsymbolpendef.h"		// pen and brush defintions
 
 
 
