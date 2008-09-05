@@ -118,12 +118,10 @@ void tmSymbolDLGPolygon::CreateControlsLine()
     wxStaticText* itemStaticText18 = new wxStaticText( itemPanel10, wxID_STATIC, _("Fill style :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText18, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxArrayString itemChoice19Strings;
-    itemChoice19Strings.Add(_("----------"));
-    itemChoice19Strings.Add(_("..............."));
-    
 	m_PolygonFillPattern = new wxChoice( itemPanel10, ID_SYMDLGPLG_FILL_PATTERN, 
-										wxDefaultPosition, wxDefaultSize, itemChoice19Strings, 0 );
+										wxDefaultPosition, wxDefaultSize, 
+										(sizeof(tmSYMBOLFILLSTYLES_NAME) / sizeof (wxString)),
+										tmSYMBOLFILLSTYLES_NAME, 0 );
     itemFlexGridSizer11->Add(m_PolygonFillPattern, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     itemNotebook9->AddPage(itemPanel10, _("Unique"));
@@ -163,5 +161,27 @@ void tmSymbolDLGPolygon::CreateControlsLine()
 	SetSizeHint();
 }
 
+
+bool tmSymbolDLGPolygon::TransferDataToWindow()
+{
+	m_PolygonBorderColourCtrl->SetColour(m_DlgData.m_bColour);
+	m_PolygonBorderWidthCtrl->SetValue(m_DlgData.m_bWidth);
+	m_PolygonFillColourCtrl->SetColour(m_DlgData.m_fColour);
+	m_PolygonFillPattern->SetSelection(m_DlgData.m_fStyle);
+	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
+	return TRUE;
+}
+
+
+
+bool tmSymbolDLGPolygon::TransferDataFromWindow()
+{
+	m_DlgData.m_bColour = m_PolygonBorderColourCtrl->GetColour();
+	m_DlgData.m_bWidth = m_PolygonBorderWidthCtrl->GetValue();
+	m_DlgData.m_fColour = m_PolygonFillColourCtrl->GetColour();
+	m_DlgData.m_fStyle = m_PolygonFillPattern->GetSelection();
+	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
+	return TRUE;
+}
 
 

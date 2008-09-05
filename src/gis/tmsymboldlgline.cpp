@@ -155,3 +155,25 @@ void tmSymbolDLGLine::CreateControlsLine()
 
 
 
+bool tmSymbolDLGLine::TransferDataToWindow()
+{
+	m_LineColourCtrl->SetColour(m_DlgData.m_Colour);
+	m_LinePatternCtrl->SetSelection(m_DlgData.m_Shape);
+	m_LineWidthCtrl->SetValue(m_DlgData.m_Width);
+	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
+	return true;
+}
+
+
+
+bool tmSymbolDLGLine::TransferDataFromWindow()
+{
+	m_DlgData.m_Colour = m_LineColourCtrl->GetColour();
+	m_DlgData.m_Shape = m_LinePatternCtrl->GetSelection();
+	m_DlgData.m_Width = m_LineWidthCtrl->GetValue();
+	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
+	return true;
+}
+
+
+

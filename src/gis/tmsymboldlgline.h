@@ -33,7 +33,6 @@
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "tmsymboldlg.h"		// tmSymbolDlg declaration
-#include "tmsymbolpendef.h"		// pen and brush defintions
 
 
 
@@ -48,6 +47,14 @@ const int ID_SYMDLGL_PANEL4 = 10088;
 const int ID_SYMDLGL_TRANSPARENCY = 10086;
 
 
+struct tmSymbolDataLineUnique
+{
+	int m_PanelNo;
+	wxColour m_Colour;
+	int m_Shape;
+	int m_Width;
+	int m_GlobalTransparency;
+};
 
 
 
@@ -59,9 +66,15 @@ class tmSymbolDLGLine : public tmSymbolDLG
 		wxChoice* m_LinePatternCtrl;
 		tmSliderWithText * m_TransparencySlider;
 		
+		tmSymbolDataLineUnique m_DlgData;
+		
 		void Init();
 		void CreateControlsLine();
-				
+		
+		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
+		
+		
 		DECLARE_DYNAMIC_CLASS( tmSymbolDLGLine )
 		DECLARE_EVENT_TABLE()
 		
@@ -81,7 +94,9 @@ class tmSymbolDLGLine : public tmSymbolDLG
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
 		
 				
-		
+		void SetDialogData ( const tmSymbolDataLineUnique & data) {m_DlgData = data;}
+		tmSymbolDataLineUnique GetDialogData () {return m_DlgData;}
+
 				
 
 	};

@@ -48,7 +48,15 @@ const int ID_SYMDLGPLG_PANEL4 = 10088;
 const int ID_SYMDLGPLG_TRANSPARENCY = 10086;
 
 
-
+struct tmSymbolDataPolygonUnique
+{
+	int m_PanelNo;
+	wxColour m_bColour;
+	int m_bWidth;
+	wxColour m_fColour;
+	int m_fStyle;
+	int m_GlobalTransparency;
+};
 
 
 class tmSymbolDLGPolygon : public tmSymbolDLG
@@ -60,8 +68,14 @@ class tmSymbolDLGPolygon : public tmSymbolDLG
 		wxChoice* m_PolygonFillPattern;
 		tmSliderWithText * m_TransparencySlider;
 		
+		tmSymbolDataPolygonUnique m_DlgData;
+		
 		void Init();
 		void CreateControlsLine();
+		
+		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
+
 				
 		DECLARE_DYNAMIC_CLASS( tmSymbolDLGPolygon )
 		DECLARE_EVENT_TABLE()
@@ -80,6 +94,10 @@ class tmSymbolDLGPolygon : public tmSymbolDLG
 					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
 					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
+		
+		void SetDialogData ( const tmSymbolDataPolygonUnique & data) {m_DlgData = data;}
+		tmSymbolDataPolygonUnique GetDialogData () {return m_DlgData;}
+
 		
 				
 		
