@@ -35,11 +35,16 @@
 class tmSymbolVectorLine : public tmSymbolVector
 	{
 	private:
+		tmSymbolDataLineUnique m_lSymUnique;
+		
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
+		virtual bool GetDialogData(tmSymbolDLG * dlg);
 	protected:
 	public:
 		tmSymbolVectorLine();
 		~tmSymbolVectorLine();
+		
+		virtual bool Serialize(tmSerialize &s);
 	};
 
 

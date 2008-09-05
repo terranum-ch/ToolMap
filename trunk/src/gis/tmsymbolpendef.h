@@ -37,12 +37,12 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 September 2008
  *******************************************************************************/
-enum tmSYMBOLPENSYLES
+const int tmSYMBOLPENSYLES[] =
 {
-	tmSOLID		= wxSOLID,
-	tmDOT		= wxDOT,
-	tmDASH		= wxLONG_DASH,
-	tmDOT_DASH	= wxDOT_DASH,
+	wxSOLID,
+	wxDOT,
+	wxLONG_DASH,
+	wxDOT_DASH,
 };
 
 /***************************************************************************//**
@@ -67,13 +67,13 @@ _("Dot-dashed line")
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 September 2008
  *******************************************************************************/
-enum tmSYMBOLFILLSTYLES
+const int tmSYMBOLFILLSTYLES[] = 
 {
-	tmFILL_SOLID = wxSOLID,
-	tmFILL_DIAGONAL_BACK = wxBDIAGONAL_HATCH,
-	tmFILL_DIAGONAL_FWD = wxFDIAGONAL_HATCH,
-	tmFILL_CROSS	= wxCROSS_HATCH,
-	tmFILL_VERTICAL = wxVERTICAL_HATCH
+	wxSOLID,
+	wxBDIAGONAL_HATCH,
+	wxFDIAGONAL_HATCH,
+	wxCROSS_HATCH,
+	wxVERTICAL_HATCH
 };
 
 

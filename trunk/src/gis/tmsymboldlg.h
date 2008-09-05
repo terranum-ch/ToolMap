@@ -35,6 +35,7 @@
 #include <wx/clrpicker.h>		// colour picker used in all child
 #include "../core/tmcolourpickerctrl.h"	// colour picker
 #include "../core/tmsliderwithtxt.h"	// slider with textctrl
+#include "tmsymbolpendef.h"		// pen and brush defintions
 
 
 const int ID_LINESSYMBOLOGY	= 10079;
