@@ -632,6 +632,8 @@ bool tmLayerManager::LoadProjectLayers()
 	tmLayerProperties * itemProp = NULL;
 	tmRealRect myExtent (0,0,0,0);
 	
+	//TODO: remove this temp code
+	m_Drawer.InitDrawer(m_Bitmap, m_Scale);
 	
 	// prepare loading of MySQL data
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
@@ -659,6 +661,7 @@ bool tmLayerManager::LoadProjectLayers()
 			//wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
 			
 			// computing extend 
+			m_Drawer.Draw(itemProp);
 			
 			// TODO: Remove this later, this is temp code
 			myExtent = layerData->GetMinimalBoundingRectangle();
@@ -672,6 +675,7 @@ bool tmLayerManager::LoadProjectLayers()
 		}
 		iRank ++;
 	}
+	
 	
 	//tmRealRect r = m_Scale.GetMaxLayersExtent();
 	
@@ -688,14 +692,17 @@ bool tmLayerManager::LoadProjectLayers()
 		return FALSE;
 	
 	
-	// draw into bitmap
+	
 	m_Scale.ComputeMaxExtent();
 	
 
 	// update scale
 	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 	
-	m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
+	//TODO: compute scale and size first then init drawer
+	m_Drawer.InitDrawer(m_Bitmap, m_Scale);
+	// draw into bitmap
+	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);//m_Bitmap, m_Scale);
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -777,8 +784,8 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		// compute max extent if required by option
 		if (m_computeFullExtent)
 			m_Scale.ComputeMaxExtent();
-		
-		m_Drawer.DrawExtentIntoBitmap(m_Bitmap, m_Scale);
+		m_Drawer.InitDrawer(m_Bitmap, m_Scale);
+		m_Drawer.DrawExtentIntoBitmap();//m_Bitmap, m_Scale);
 	}
 		
 	// update scale
@@ -976,6 +983,7 @@ void * tmGISLoadingDataThread::Entry()
 			// computing max visible extend 
 			myExtent = layerData->GetMinimalBoundingRectangle();
 			m_Scale->SetMaxLayersExtentAsExisting(myExtent);
+			
 			delete layerData;
 		}
 		iRank ++;

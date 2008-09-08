@@ -30,6 +30,7 @@
 #endif
 
 #include "tmgisscale.h"
+#include "tmlayerproperties.h"
 
 
 
@@ -41,13 +42,22 @@
 class tmDrawer : public wxObject 
 	{
 	private:
+		wxBitmap * m_bmp;
+		tmGISScale m_scale;
+		bool m_IsInitialised;
+		
+		bool DrawLines(tmLayerProperties * itemProp);
+		
 	protected:
 	public:
 		tmDrawer();
 		~tmDrawer();
 		
+		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale);
+		
 		// Extent Drawing
-		bool DrawExtentIntoBitmap (wxBitmap * bitmap,  tmGISScale & scale);
+		bool DrawExtentIntoBitmap (int width = 1, const wxColour & col = wxColour(*wxBLACK));
+		bool Draw (tmLayerProperties * itemProp);
 		
 		
 	};
