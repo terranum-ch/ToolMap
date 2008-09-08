@@ -13,5 +13,5 @@ Update Database
 	- UPDATE prj_settings SET PRJ_VERSION = 208;
 	- ALTER  TABLE `project_toc` MODIFY COLUMN  `GENERIC_LAYERS` TINYINT NULL DEFAULT 100
 - 208 -> 209 (Adding column for binary symbology)
-	- ALTER TABLE `project_toc` ADD COLUMN `SYMBOLOGY` VARCHAR(255) NULL
+	- ALTER TABLE `project_toc` ADD COLUMN `SYMBOLOGY` VARCHAR(255) NULL;
 	- UPDATE prj_settings SET PRJ_VERSION = 209;
