@@ -627,82 +627,25 @@ bool tmLayerManager::LoadProjectLayers()
 							  m_Scale.GetWindowExtent().GetHeight()));
 
 		
-	// iterate throught all layers
-	int iRank = 0;
-	tmLayerProperties * itemProp = NULL;
-	tmRealRect myExtent (0,0,0,0);
+	int iRead = ReadLayerExtent(true);
+	wxLogDebug(_T("%d layer(s) read"),iRead);
 	
-	//TODO: remove this temp code
-	m_Drawer.InitDrawer(m_Bitmap, m_Scale);
-	
-	// prepare loading of MySQL data
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
-	while (1)
-	{
-		if (iRank == 0)
-		{
-			itemProp = m_TOCCtrl->IterateLayers(TRUE);
-		}
-		else
-		{
-			itemProp = m_TOCCtrl->IterateLayers(FALSE);
-		}
-		
-		if (!itemProp)
-			break;
-		
-		// loading data
-		tmGISData * layerData = LoadLayer(itemProp);
-		
-		// processing and deleting data
-		if (layerData && itemProp->m_LayerVisible)
-		{
-			//wxFileName myfilename (itemProp->m_LayerPathOnly, itemProp->m_LayerNameExt);
-			//wxLogDebug(myfilename.GetFullPath() + _T(" - Opened"));
-			
-			// computing extend 
-			m_Drawer.Draw(itemProp);
-			
-			// TODO: Remove this later, this is temp code
-			myExtent = layerData->GetMinimalBoundingRectangle();
-			wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
-					   2,myExtent.x_min, 2, myExtent.y_min,
-					   2, myExtent.x_max, 2, myExtent.y_max);
-			//
-			
-			m_Scale.SetMaxLayersExtentAsExisting(myExtent);
-			delete layerData;
-		}
-		iRank ++;
-	}
-	
-	
-	//tmRealRect r = m_Scale.GetMaxLayersExtent();
-	
-	//wxLogDebug(_T("Max visible extent is : %.*f, %.*f -- %.*f, %.*f"),
-	//		   2, r.x_min, 2, r.y_min, 2, r.x_max, 2, r.y_max );
-	
-	//wxLogDebug(_T("Computed factor is : %.*f"), 3,
-	//		   m_Scale.ComputeDivFactor());
-	
+	//TODO: iterate for drawing layers here
 	
 	// test validity of layers extent. If no extent is 
 	// specified (like no data displayed) return 
 	if (!m_Scale.IsLayerExtentValid())
 		return FALSE;
-	
-	
+
 	
 	m_Scale.ComputeMaxExtent();
 	
-
 	// update scale
 	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 	
 	//TODO: compute scale and size first then init drawer
 	m_Drawer.InitDrawer(m_Bitmap, m_Scale);
-	// draw into bitmap
-	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);//m_Bitmap, m_Scale);
+	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -894,6 +837,97 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 
 
 
+/***************************************************************************//**
+ @brief Iterate all layers for extent
+ @details This function iterates through all layers, loading layers and their
+ extent.
+ @param loginfo TRUE if the function should log some info about what is done.
+ <B>When used in thread, this parameter has to be set to false</B>
+ @return  the number of layers really read, a. k. a. number of visible layers
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 September 2008
+ *******************************************************************************/
+int tmLayerManager::ReadLayerExtent(bool loginfo)
+{
+	// iterate throught all layers
+	int iRank = 0;
+	int iReaded = 0;
+	
+	tmLayerProperties * pLayerProp = NULL;
+	tmRealRect myExtent (0,0,0,0);
+	
+	// prepare loading of MySQL data
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
+	while (1)
+	{
+		if (iRank == 0)
+		{
+			pLayerProp = m_TOCCtrl->IterateLayers(TRUE);
+		}
+		else
+		{
+			pLayerProp = m_TOCCtrl->IterateLayers(FALSE);
+		}
+		
+		if (!pLayerProp)
+			break;
+		
+		// loading data
+		tmGISData * layerData = LoadLayer(pLayerProp);
+		
+		// processing and deleting data
+		if (layerData && pLayerProp->m_LayerVisible)
+		{
+			myExtent = layerData->GetMinimalBoundingRectangle();
+			m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+			iReaded ++;
+			
+			// show some logging info, not working
+			// in thread mode
+			if (loginfo)
+			{
+				wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
+						   2,myExtent.x_min, 2, myExtent.y_min,
+						   2, myExtent.x_max, 2, myExtent.y_max);
+			}
+			delete layerData;
+		}
+		iRank ++;
+	}
+	return iReaded;
+}
+
+
+
+void tmLayerManager::InitScaleCtrlList ()
+{
+	wxASSERT (m_DB);
+	wxArrayLong  myValues;
+	
+	long myScale = 0;
+	long myCount = 0;
+	long myDBIndex = -1;
+	
+	myScale = m_DB->GetNextScaleValue(myDBIndex, TRUE);
+	
+	while (1)
+	{
+		if (myScale != -1)
+		{
+			// adding scale in the list
+			myValues.Add(myScale);
+			myCount++;
+		}
+		else
+			break;
+		
+		myScale = m_DB->GetNextScaleValue(myDBIndex, FALSE);
+	}
+	
+	// send message 
+	m_ScaleCtrl->InitScaleFromDatabase(myValues);
+	
+}
 
 
 
@@ -939,9 +973,32 @@ tmGISLoadingDataThread::~tmGISLoadingDataThread()
  @date 24 July 2008
  *******************************************************************************/
 void * tmGISLoadingDataThread::Entry()
+{	
+	// if the thread was stopped
+	if (ReadLayerExtentThread()==false)	
+		return NULL;
+	
+	// if thread finished correctly, send a message to
+	// the layer manager to display the new image
+	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	return NULL;
+}
+
+
+
+/***************************************************************************//**
+ @brief Iterate all layers for extent (threaded version
+ @details This function iterates through all layers, loading layers and their
+ extent.
+ @return  true if the thread wasn't stopped
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 September 2008
+ *******************************************************************************/
+bool tmGISLoadingDataThread::ReadLayerExtentThread()
 {
 	// variables 
-	bool breakthread = false;
+	bool IsthreadComplete = true;
 	int iRank = 0;
 	tmLayerProperties * itemProp = NULL;
 	tmRealRect myExtent (0,0,0,0);
@@ -967,10 +1024,9 @@ void * tmGISLoadingDataThread::Entry()
 		// TODO: remove this temp code
 		Sleep(200);
 		// exit thread
-		if (m_Stop == TRUE)
+		if (m_Stop == true)
 		{
-			breakthread = true;
-			//wxLogDebug(_T("GIS thread stoped"));
+			IsthreadComplete = false;
 			break;
 		}
 		
@@ -983,67 +1039,22 @@ void * tmGISLoadingDataThread::Entry()
 			// computing max visible extend 
 			myExtent = layerData->GetMinimalBoundingRectangle();
 			m_Scale->SetMaxLayersExtentAsExisting(myExtent);
-			
 			delete layerData;
 		}
 		iRank ++;
 		
 		// exit thread
-		if (m_Stop == TRUE)
+		if (m_Stop == true)
 		{
-			breakthread = true;
+			IsthreadComplete = false;
 			break;
 		}
 	}
-	
-	
-	
 	
 	// uninit thread variables
 	m_DB->DataBaseNewThreadUnInit();
 	
-	
-	// if the thread was stopped
-	if (breakthread)
-		return NULL;
-	
-	// if thread finished correctly, send a message to
-	// the layer manager to display the new image
-	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
-	return NULL;
-}
-
-
-
-void tmLayerManager::InitScaleCtrlList ()
-{
-	wxASSERT (m_DB);
-	wxArrayLong  myValues;
-	
-	long myScale = 0;
-	long myCount = 0;
-	long myDBIndex = -1;
-	
-	myScale = m_DB->GetNextScaleValue(myDBIndex, TRUE);
-	
-	while (1)
-	{
-		if (myScale != -1)
-		{
-			// adding scale in the list
-			myValues.Add(myScale);
-			myCount++;
-		}
-		else
-			break;
-		
-		myScale = m_DB->GetNextScaleValue(myDBIndex, FALSE);
-	}
-		
-	// send message 
-	m_ScaleCtrl->InitScaleFromDatabase(myValues);
-	
+	return IsthreadComplete;
 }
 
 
