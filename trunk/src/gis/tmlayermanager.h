@@ -94,9 +94,11 @@ class tmLayerManager : public wxEvtHandler
 		// scrollbars
 		void UpdateScrollBars ();
 	
-			
 		// bitmap specific functions
-		void CreateEmptyBitmap (const wxSize & size); 
+		void CreateEmptyBitmap (const wxSize & size);
+		
+		// Reading all layers
+		int ReadLayerExtent(bool loginfo = false); 
 		
 		DECLARE_EVENT_TABLE()
 		
@@ -153,6 +155,9 @@ class tmGISLoadingDataThread : public wxThread
 	{
 	private:
 		bool m_Stop;
+		
+		bool ReadLayerExtentThread(); 
+		
 	protected:
 		wxWindow * m_Parent;
 		tmTOCCtrl * m_TOC;
