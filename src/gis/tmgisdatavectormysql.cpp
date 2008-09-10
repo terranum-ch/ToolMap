@@ -185,3 +185,104 @@ OGRGeometry *  tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW & row,
 
 
 
+/***************************************************************************//**
+ @brief Set a spatial filter for geometric data
+ @details This function sets a Geometric filter and ask the database for all
+ data inside this filter
+ @param filter the desired spatial filter
+ @param type one of the #TOC_GENERIC_NAME, used to get the database table name
+ @return  TRUE if the query works
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 September 2008
+ *******************************************************************************/
+bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
+{
+	m_DB->DataBaseDestroyResults();
+	
+	wxString table = GetTableName(type);	
+	// check that a table is specified.
+	if (table.IsEmpty())
+	{
+		wxLogError(_T("No database table specified"));
+		return false;
+	}
+	
+	wxString sFilter = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
+										filter.x_min, filter.y_min,
+										filter.x_max, filter.y_min,
+										filter.x_max, filter.y_max,
+										filter.x_min, filter.y_max,
+										filter.x_min, filter.y_min);
+	wxString sSentence = wxString::Format( _T("SELECT (OBJECT_GEOMETRY) FROM %s WHERE ")
+										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+										  table.c_str(), sFilter.c_str());
+	
+	if (m_DB->DataBaseQuery(sSentence))
+	{
+		bool bResult = m_DB->DataBaseHasResult();
+		return TRUE;
+	}
+	
+	wxLogDebug(wxString::Format(_T("Error setting spatial filter : %s"),
+								m_DB->DataBaseGetLastError().c_str()));
+	
+	return FALSE;
+}
+
+
+
+wxString tmGISDataVectorMYSQL::GetTableName (int type)
+{
+	if (type < TOC_GENERIC_NAME_NUMBER)
+	{
+		return wxString(TABLE_NAME_GIS_GENERIC[type]);
+	}
+	return _T("");
+}
+
+
+
+wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
+{
+	MYSQL_ROW row;
+	unsigned long *  row_length;
+	
+	// security check
+	if(!m_DB->DataBaseHasResult())
+	{
+		wxLogError(_T("Database should have results..."));
+		nbvertex = 0;
+		return NULL;
+	}
+	
+	
+	row_length = m_DB->DataBaseGetNextRowResult(row);
+	if (row_length == NULL)
+	{
+		wxLogDebug(_T("No more results"));
+		nbvertex = 0;
+		return NULL;
+	}
+		
+		
+	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, row_length);
+	wxASSERT(pline);
+	nbvertex = pline->getNumPoints();
+	if (nbvertex == 0)
+	{
+		wxLogDebug(_T("No vertex in this line ???"));
+		return NULL;
+	}
+	
+	wxRealPoint * pts = new wxRealPoint[nbvertex];
+	
+	for (int i=0; i<nbvertex;i++)
+	{
+		pts[i].x = pline->getX(i);
+		pts[i].y = pline->getY(i);
+	}
+	return pts;
+	
+}
+
+

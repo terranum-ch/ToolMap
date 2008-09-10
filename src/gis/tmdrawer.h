@@ -31,6 +31,12 @@
 
 #include "tmgisscale.h"
 #include "tmlayerproperties.h"
+#include "tmgisdata.h"
+
+#include "tmsymbolvectorline.h"
+#include "tmgisdatavector.h"
+
+//#include "../database/database_tm.h"
 
 
 
@@ -45,19 +51,20 @@ class tmDrawer : public wxObject
 		wxBitmap * m_bmp;
 		tmGISScale m_scale;
 		bool m_IsInitialised;
+		tmRealRect m_spatFilter;
 		
-		bool DrawLines(tmLayerProperties * itemProp);
+		bool DrawLines(tmLayerProperties * itemProp, tmGISData * pdata);
 		
 	protected:
 	public:
 		tmDrawer();
 		~tmDrawer();
 		
-		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale);
+		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter);
 		
 		// Extent Drawing
 		bool DrawExtentIntoBitmap (int width = 1, const wxColour & col = wxColour(*wxBLACK));
-		bool Draw (tmLayerProperties * itemProp);
+		bool Draw (tmLayerProperties * itemProp, tmGISData * pdata);
 		
 		
 	};

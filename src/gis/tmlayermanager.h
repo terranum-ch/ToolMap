@@ -97,8 +97,10 @@ class tmLayerManager : public wxEvtHandler
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size);
 		
-		// Reading all layers
-		int ReadLayerExtent(bool loginfo = false); 
+		// Reading all layers for extent or drawing
+		int ReadLayerExtent(bool loginfo = false);
+		int ReadLayerDraw ();
+		
 		
 		DECLARE_EVENT_TABLE()
 		

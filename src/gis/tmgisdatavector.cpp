@@ -79,3 +79,5 @@ void tmGISDataVector::InitGISDriversVector()
 {
 	OGRRegisterAll();
 }
+
+
