@@ -74,6 +74,7 @@ class tmGISDataVector : public tmGISData
 		// gis function
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_UNKNOWN;}
 		
+		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex){return NULL;}
 		

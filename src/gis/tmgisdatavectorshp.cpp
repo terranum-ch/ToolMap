@@ -139,4 +139,55 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 
 
 
+bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
+{
+	wxASSERT(m_Layer);
+	
+	// clearing filter...
+	if (filter == tmRealRect(0,0,0,0))
+	{
+		m_Layer->SetSpatialFilter(NULL);
+	}
+	else 
+	{
+		m_Layer->SetSpatialFilterRect(filter.x_max, filter.y_min,
+									  filter.x_max, filter.y_max);
+	}
+	
+	m_Layer->ResetReading();
+	return TRUE;
+}
+
+
+
+wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
+{
+	wxASSERT(m_Layer);
+	OGRLineString * pline = (OGRLineString*) m_Layer->GetNextFeature();
+	
+	// nothing more to read
+	if (pline == NULL)
+	{
+		nbvertex = 0;
+		return NULL;		
+	}
+	
+	// normal reading
+	nbvertex = pline->getNumPoints();
+	if (nbvertex <= 1)
+	{
+		wxLogDebug(_T("Only one vertex or less in this line ???"));
+		OGRGeometryFactory::destroyGeometry	(pline);
+		return NULL;
+	}
+	
+	wxRealPoint * pts = new wxRealPoint[nbvertex];
+	for (int i=0; i<nbvertex;i++)
+	{
+		pts[i].x = pline->getX(i);
+		pts[i].y = pline->getY(i);
+	}
+	OGRGeometryFactory::destroyGeometry	(pline);
+	return pts;
+}
 
