@@ -138,31 +138,49 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType);
 	
 	int iNbVertex = 0;
-	wxRealPoint * pptsReal = NULL;
-	pptsReal = pVectLine->GetNextDataLine(iNbVertex);
-	
-	
-	if (iNbVertex <= 0)
+	bool bReturn = true;
+	bool bSkip = false;
+	int iLoop = 0;
+	while (1)
 	{
-		wxLogDebug(_T("No vertex returned"));
-		return FALSE;
+		iNbVertex = 0;
+		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
+		
+		// line must have more than one vertex... we
+		// could try to skip invalid line once
+		if (iNbVertex <= 1 && bSkip)
+		{
+			wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
+			bReturn = false;
+			break;
+		}
+		
+		if(iNbVertex <= 1)
+		{
+			wxLogDebug(_T("Trying to skip line : %d"),iLoop);
+			bSkip = true;
+		}
+		else
+		{
+			bSkip = false;
+			wxPoint *pIntpts = new wxPoint[iNbVertex];
+			for (int i = 0; i<iNbVertex; i++)
+			{
+				pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
+			}
+			
+			
+			temp_dc.DrawLines(iNbVertex, pIntpts);
+			
+			delete [] pptsReal;
+			delete [] pIntpts;
+			iLoop++;
+		}
+		
 	}
 	
-	wxPoint *pIntpts = new wxPoint[iNbVertex];
-	for (int i = 0; i<iNbVertex; i++)
-	{
-		pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
-	}
 	
-	
-	temp_dc.DrawLines(iNbVertex, pIntpts);
-	
-	delete [] pptsReal;
-	delete [] pIntpts;
-	
-	
-	wxLogDebug(_T("Lines drawn"));
-	
+	wxLogDebug(_T("%d Lines drawn"), iLoop);
 	
 	wxBitmap nullbmp;
 	temp_dc.SelectObject(nullbmp);

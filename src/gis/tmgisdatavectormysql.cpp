@@ -268,9 +268,10 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, row_length);
 	wxASSERT(pline);
 	nbvertex = pline->getNumPoints();
-	if (nbvertex == 0)
+	if (nbvertex <= 1)
 	{
-		wxLogDebug(_T("No vertex in this line ???"));
+		wxLogDebug(_T("Only one vertex or less in this line ???"));
+		OGRGeometryFactory::destroyGeometry	(pline);
 		return NULL;
 	}
 	
@@ -281,6 +282,7 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 		pts[i].x = pline->getX(i);
 		pts[i].y = pline->getY(i);
 	}
+	OGRGeometryFactory::destroyGeometry	(pline);
 	return pts;
 	
 }
