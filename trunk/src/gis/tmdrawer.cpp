@@ -120,6 +120,18 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 }
 
 
+
+/***************************************************************************//**
+ @brief Draw all lines
+ @details This  function uses the symbology (#tmSymbol) and the GIS data
+ (#tmGISData) for drawing all lines into the bitmap.
+ @param itemProp contain all informations about the layer properties.
+ @param pdata A valid object of tmGISData type
+ @return  false if it wasen't able to define a spatial filter see :
+ tmGISDataVectorMYSQL::SetSpatialFilter
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 September 2008
+ *******************************************************************************/
 bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	wxMemoryDC temp_dc;
@@ -130,13 +142,18 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
 	temp_dc.SetPen(myPen);
 	temp_dc.SetBackground(*wxWHITE);
-
 	
 	
-	// iterates all lines
+	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
-	pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType);
+	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	{
+		wxLogDebug(_T("Error setting spatial filter"));
+		return false;
+	}
 	
+	// iterate for all lines, will not work on a threaded version
+	// because of all wxLogDebug commands
 	int iNbVertex = 0;
 	bool bReturn = true;
 	bool bSkip = false;
@@ -186,6 +203,4 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	temp_dc.SelectObject(nullbmp);
 	
 	return TRUE;
-	
-	
 }

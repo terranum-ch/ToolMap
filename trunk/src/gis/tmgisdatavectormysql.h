@@ -67,6 +67,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
 		virtual tmRealRect GetMinimalBoundingRectangle();
 		
+		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex);
 		
