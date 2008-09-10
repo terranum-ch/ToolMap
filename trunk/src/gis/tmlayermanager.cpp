@@ -630,21 +630,24 @@ bool tmLayerManager::LoadProjectLayers()
 	int iRead = ReadLayerExtent(true);
 	wxLogDebug(_T("%d layer(s) read"),iRead);
 	
-	//TODO: iterate for drawing layers here
 	
+	m_Scale.ComputeMaxExtent();
 	// test validity of layers extent. If no extent is 
 	// specified (like no data displayed) return 
 	if (!m_Scale.IsLayerExtentValid())
 		return FALSE;
-
 	
-	m_Scale.ComputeMaxExtent();
+	
+	m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
+	
+	
+	//TODO: iterate for drawing layers here
+	ReadLayerDraw();
+	
 	
 	// update scale
 	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 	
-	//TODO: compute scale and size first then init drawer
-	m_Drawer.InitDrawer(m_Bitmap, m_Scale);
 	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
 	
 	// set active bitmap	
@@ -727,7 +730,7 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		// compute max extent if required by option
 		if (m_computeFullExtent)
 			m_Scale.ComputeMaxExtent();
-		m_Drawer.InitDrawer(m_Bitmap, m_Scale);
+		m_Drawer.InitDrawer(m_Bitmap, m_Scale, tmRealRect(0,0,0,0));
 		m_Drawer.DrawExtentIntoBitmap();//m_Bitmap, m_Scale);
 	}
 		
@@ -890,6 +893,55 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 						   2,myExtent.x_min, 2, myExtent.y_min,
 						   2, myExtent.x_max, 2, myExtent.y_max);
 			}
+			delete layerData;
+		}
+		iRank ++;
+	}
+	return iReaded;
+}
+
+
+
+/***************************************************************************//**
+ @brief Iterate all visible layers for drawing them
+ @return  Number of layers really drawn (visible layers)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 September 2008
+ *******************************************************************************/
+int tmLayerManager::ReadLayerDraw ()
+{
+	// iterate throught all layers
+	int iRank = 0;
+	int iReaded = 0;
+	
+	tmLayerProperties * pLayerProp = NULL;
+	tmRealRect myExtent (0,0,0,0);
+	
+	// prepare loading of MySQL data
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
+	while (1)
+	{
+		if (iRank == 0)
+		{
+			pLayerProp = m_TOCCtrl->IterateLayers(TRUE);
+		}
+		else
+		{
+			pLayerProp = m_TOCCtrl->IterateLayers(FALSE);
+		}
+		
+		if (!pLayerProp)
+			break;
+		
+		// loading data
+		tmGISData * layerData = LoadLayer(pLayerProp);
+		
+		// processing and deleting data
+		if (layerData && pLayerProp->m_LayerVisible)
+		{
+			// draw layer data
+			m_Drawer.Draw(pLayerProp, layerData);
+			iReaded ++;
 			delete layerData;
 		}
 		iRank ++;

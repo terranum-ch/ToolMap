@@ -35,10 +35,11 @@ tmDrawer::~tmDrawer()
 
 
 
-void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale)
+void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter)
 {
 	m_bmp = bitmap;
 	m_scale = scale;
+	m_spatFilter = filter;
 	
 	if (m_bmp && m_bmp->IsOk())
 		m_IsInitialised = TRUE;
@@ -103,12 +104,12 @@ bool tmDrawer::DrawExtentIntoBitmap (int width, const wxColour & col)
 
 
 
-bool tmDrawer::Draw (tmLayerProperties * itemProp)
+bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	switch (itemProp->m_LayerSpatialType)
 	{
 		case LAYER_SPATIAL_LINE:
-			DrawLines(itemProp);
+			DrawLines(itemProp, pdata);
 			break;
 		default:
 			return FALSE;
@@ -119,24 +120,47 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp)
 }
 
 
-bool tmDrawer::DrawLines(tmLayerProperties * itemProp)
+bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	wxMemoryDC temp_dc;
 	temp_dc.SelectObject(*m_bmp);
 	
-	wxPen myPen (wxColour(*wxBLUE),2);
+	// create pen based on symbology
+	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->m_LayerSymbol;
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
 	temp_dc.SetPen(myPen);
 	temp_dc.SetBackground(*wxWHITE);
-	
-	
-	//tmRealRect myRealExt = m_scale.GetMaxLayersExtent();
-	
-	wxPoint pts[2];
-	pts[0] = wxPoint(50,50);
-	pts[1] = wxPoint(200,200);
 
 	
-	temp_dc.DrawLines(2, pts);
+	
+	// iterates all lines
+	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
+	pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType);
+	
+	int iNbVertex = 0;
+	wxRealPoint * pptsReal = NULL;
+	pptsReal = pVectLine->GetNextDataLine(iNbVertex);
+	
+	
+	if (iNbVertex <= 0)
+	{
+		wxLogDebug(_T("No vertex returned"));
+		return FALSE;
+	}
+	
+	wxPoint *pIntpts = new wxPoint[iNbVertex];
+	for (int i = 0; i<iNbVertex; i++)
+	{
+		pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
+	}
+	
+	
+	temp_dc.DrawLines(iNbVertex, pIntpts);
+	
+	delete [] pptsReal;
+	delete [] pIntpts;
+	
+	
 	wxLogDebug(_T("Lines drawn"));
 	
 	

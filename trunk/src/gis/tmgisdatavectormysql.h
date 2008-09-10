@@ -53,6 +53,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		OGRGeometry * CreateDataBaseGeometry(MYSQL_ROW & row,
 											 unsigned long * length,
 											 int geometry_col=0);
+		virtual wxString GetTableName (int type);
 		
 		
 	public:
@@ -65,6 +66,9 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		// implementing virtual function
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
 		virtual tmRealRect GetMinimalBoundingRectangle();
+		
+		virtual bool SetSpatialFilter (tmRealRect filter, int type);
+		virtual wxRealPoint * GetNextDataLine (int & nbvertex);
 		
 		
 	};

@@ -96,6 +96,7 @@ class tmGISScale : public wxObject
 		// setter and getters for windows 
 		void SetWindowExtent (const wxRect & extent){m_ExtentWnd = extent;}
 		wxRect GetWindowExtent () {return m_ExtentWnd;}
+		tmRealRect GetWindowExtentReal() {return m_ExtentWndReal;}
 		void SetWindowExtentMM (const wxSize & size) 
 		{
 			m_ExtentWndMM = size;

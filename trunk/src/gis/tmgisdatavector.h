@@ -57,6 +57,7 @@ class tmGISDataVector : public tmGISData
 	private:
 		
 	protected:
+		virtual wxString GetTableName (TOC_GENERIC_NAME type) {return wxEmptyString;}
 		
 		
 	public:
@@ -72,6 +73,9 @@ class tmGISDataVector : public tmGISData
 		
 		// gis function
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_UNKNOWN;}
+		
+		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
+		virtual wxRealPoint * GetNextDataLine (int & nbvertex){return NULL;}
 		
 	};
 
