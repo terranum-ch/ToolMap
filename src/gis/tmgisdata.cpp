@@ -90,7 +90,7 @@ void tmGISData::InitGISDrivers (bool bRaster, bool bVector)
 /***************************************************************************//**
  @brief Return all supported formats
  @details Return the wildcards of all supported formats for loading.
- @param wxString A String containing all supported formats as wildcards that one
+ @return A String containing all supported formats as wildcards that one
  may use in a dialog box for file selection
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008
@@ -113,7 +113,7 @@ wxString tmGISData::GetAllSupportedGISFormatsWildcards()
  @details All supported extensions in an array string but not the mysql one
  (because no extension is valid for that format).
  @note Raster format are returned first
- @param wxArrayString all supported extension, raster ones first
+ @return all supported extension, raster ones first
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 August 2008
  *******************************************************************************/
@@ -186,6 +186,7 @@ tmGISData * tmGISData::CreateGISBasedOnExt (const wxString & extension)
  @brief Generic open code
  @details Mainly init member values used by all GIS class
  @param filename path and name of the GIS data to open
+ @param bReadWrite Should we open the dataset for r/w operations ?
  @return  Allways TRUE
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008

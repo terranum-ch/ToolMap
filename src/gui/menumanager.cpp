@@ -224,8 +224,7 @@ void MenuManager::RemoveFileFromRecent (int fileid)
  @param filepath wxString filled with filepath if funtion return TRUE otherwise
  unchanged
  @param fileid the index of the item we want to retrieve from the file history
- @param bool Return true if an item was found in the file history and FALSE
- otherwise
+ @return true if an item was found in the file history and FALSE otherwise
  @author Lucien Schreiber (c) CREALP 2007
  @date 07 April 2008
  *******************************************************************************/

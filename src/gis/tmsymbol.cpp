@@ -36,6 +36,27 @@ tmSymbol::~tmSymbol()
 }
 
 
+
+/***************************************************************************//**
+ @brief Convert transparency
+ @details Convert transparency from a percent basis (%) to a 0-255 colour basis.
+ See documentation of wxColour for more informations
+ @param itransparency the transparency to convert from. Based on a 0-100 percent
+ scale
+ @return  The new transparency : on a 0 (transparent) -255 (opaque) scale. 
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 September 2008
+ *******************************************************************************/
+char tmSymbol::ConvertTransparency (int itransparency)
+{
+	const double iConvFactor = 2.55;
+	double dNewTransparency = iConvFactor * itransparency;
+	dNewTransparency = 255 - dNewTransparency;
+	return (char)dNewTransparency;
+}
+
+
+
 tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
 	return new tmSymbolDLG(parent,SYMBOL_TMSYMBOLDLG_IDNAME,

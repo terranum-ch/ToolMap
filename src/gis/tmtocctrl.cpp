@@ -202,7 +202,7 @@ bool tmTOCCtrl::RemoveLayer (wxTreeItemId position, bool bRemoveChild)
  @brief Modify an existing layer entry
  @param newitemdata tmLayerProperties object with new values to modify
  @param position the position of item
- @param bool TRUE if item was modified, FALSE if the item dosen't exists
+ @return TRUE if item was modified, FALSE if the item dosen't exists
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/

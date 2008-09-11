@@ -375,8 +375,6 @@ bool DataBase::DataBaseTableExist(const wxString & tableName)
  @details When an object is inserted into an auto-incremented table, an id
  corresponding to this increment is used. This function may be used for
  guessing the new number
- @param tablename name of the table we want the new number
- @param fieldname name of the auto-incremented field int the table
  @return  the new number (or -1 if something goes wrong)
  @author Lucien Schreiber (c) CREALP 2007
  @date 05 May 2008

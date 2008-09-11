@@ -23,7 +23,7 @@
  - wxColourPickerCtrl : for Linux and Windows
  
  tmColourPickerCtrl is very simillar to wxColourPickerCtrl and same methods may be 
- used such as #GetColour() or #SetColour() for getting or setting colours from the 
+ used such as GetColour() or SetColour() for getting or setting colours from the 
  control.
  
   \image html tmcolourpickerctrl.png

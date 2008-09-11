@@ -53,11 +53,11 @@ void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRec
 
 /***************************************************************************//**
  @brief Draw the max extent
- @details Draw a red rectangle corresponding to the maximum extent of all
- visible layers
- @param bitmap pointer to a valid bitmap
- @param scale actual values of scale and zoom
- @return  TRUE if bitmap drawn, FALSE if bitmap not valid
+ @details Draw a rectangle of specified colour and width corresponding to the 
+ maximum extent of all visible layers
+ @param width Width of the pen (in pixels)
+ @param col Colour of the pen
+ @return always true
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 July 2008
  *******************************************************************************/
@@ -111,6 +111,9 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 		case LAYER_SPATIAL_LINE:
 			DrawLines(itemProp, pdata);
 			break;
+		case LAYER_SPATIAL_POINT:
+			DrawPoints(itemProp, pdata);
+			break;
 		default:
 			return FALSE;
 			break;
@@ -156,43 +159,32 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	// because of all wxLogDebug commands
 	int iNbVertex = 0;
 	bool bReturn = true;
-	bool bSkip = false;
 	int iLoop = 0;
 	while (1)
 	{
 		iNbVertex = 0;
 		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
 		
-		// line must have more than one vertex... we
-		// could try to skip invalid line once
-		if (iNbVertex <= 1 && bSkip)
+		// line must have more than one vertex
+		if (iNbVertex <= 1) 
 		{
 			wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
 			bReturn = false;
 			break;
 		}
 		
-		if(iNbVertex <= 1)
+		wxPoint *pIntpts = new wxPoint[iNbVertex];
+		for (int i = 0; i<iNbVertex; i++)
 		{
-			wxLogDebug(_T("Trying to skip line : %d"),iLoop);
-			bSkip = true;
+			pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
 		}
-		else
-		{
-			bSkip = false;
-			wxPoint *pIntpts = new wxPoint[iNbVertex];
-			for (int i = 0; i<iNbVertex; i++)
-			{
-				pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
-			}
-			
-			
-			temp_dc.DrawLines(iNbVertex, pIntpts);
-			
-			delete [] pptsReal;
-			delete [] pIntpts;
-			iLoop++;
-		}
+		
+		
+		temp_dc.DrawLines(iNbVertex, pIntpts);
+		
+		delete [] pptsReal;
+		delete [] pIntpts;
+		iLoop++;
 		
 	}
 	
@@ -204,3 +196,68 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	return TRUE;
 }
+
+
+
+bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
+{
+	wxMemoryDC temp_dc;
+	temp_dc.SelectObject(*m_bmp);
+	
+	// create pen based on symbology
+	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
+	temp_dc.SetPen(myPen);
+	temp_dc.SetBackground(*wxWHITE);
+	
+	
+	/* define spatial filter
+	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
+	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	{
+		wxLogDebug(_T("Error setting spatial filter"));
+		return false;
+	}
+	
+	// iterate for all lines, will not work on a threaded version
+	// because of all wxLogDebug commands
+	int iNbVertex = 0;
+	bool bReturn = true;
+	int iLoop = 0;
+	while (1)
+	{
+		iNbVertex = 0;
+		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
+		
+		// line must have more than one vertex
+		if (iNbVertex <= 1) 
+		{
+			wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
+			bReturn = false;
+			break;
+		}
+		
+		wxPoint *pIntpts = new wxPoint[iNbVertex];
+		for (int i = 0; i<iNbVertex; i++)
+		{
+			pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
+		}
+		
+		
+		temp_dc.DrawLines(iNbVertex, pIntpts);
+		
+		delete [] pptsReal;
+		delete [] pIntpts;
+		iLoop++;
+		
+	}
+	
+	
+	wxLogDebug(_T("%d Lines drawn"), iLoop);
+	
+	wxBitmap nullbmp;
+	temp_dc.SelectObject(nullbmp);*/
+	
+	return TRUE;
+}
+

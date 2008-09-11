@@ -29,7 +29,7 @@
  the same as above minus the "-" character wich isn't compatible with MySQL's
  database
  - #tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT : allow only numeric char
- (0123456789) nothing else. #wxFILTER_NUMERIC is more flexible, it allows some
+ (0123456789) nothing else. wxFILTER_NUMERIC is more flexible, it allows some
  character like "." or "e".
  @param style one of the style described above
  @author Lucien Schreiber (c) CREALP 2008

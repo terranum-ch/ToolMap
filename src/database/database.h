@@ -46,7 +46,6 @@
 const wxString DATABASE_TYPE_STRING = _T("MYSQL");
 
 /*!
-    @enum 
     @brief enumeration of allowed values for
 	inisialisation.
 	*/
@@ -69,23 +68,21 @@ class DataBase
 {
 public:
     // constructors and destructors
-    /*!
-    @method     
+    /*!   
     @brief   Constructor, do nothing
 	*/
 	DataBase();
-    /*!
-    @method    
+    /*!  
 	
 	@brief Destructor, do nothing
 	*/
 	~DataBase();
-	/*!
-    @function  
+	/*!  
     @brief   Function used to init the MySql embedded server and to open a database
     
 	This function must be called before other Database functions.
     @param      path wxString containing the directory where live the database
+	@param		flag Character set for opening Database (see #Lang_Flag)
     @result     return true if library and connexion to the database ok
 	*/
     bool DataBaseOpen(wxString path,enum Lang_Flag flag);
@@ -107,7 +104,6 @@ public:
 	wxString DataBaseGetLastError();
 
 	/*!
-    @function 
 	
 	
     @brief   return an array of string containing all the database tables
@@ -116,7 +112,6 @@ public:
 	wxArrayString DataBaseListTables();
 	
 	/*!
-    @function 
     @brief   Return a wxString containing the version of the embedded server
 	
 	This function is the only one who may be called before DataBaseOpen().
@@ -126,8 +121,7 @@ public:
 	
 
 	long DatabaseGetCountResults();
-	/*!
-    @function 
+	/*! 
     @brief Return an array containing all the selected table fields
     @param      sTable a String containing the table name
     @result     an array of string containing the fields name.
@@ -135,7 +129,6 @@ public:
 	wxArrayString DatabaseListFields(wxString sTable);
 	
 	/*!
-    @function 
     @brief Get all data stored in a table.
 	
 	This function just process the request, to get the result row
@@ -147,7 +140,6 @@ public:
 	bool DataBaseGetAllTableContent(wxString sTable);
 	
 	/*!
-    @function 
     @brief Return the result of the last request.
 	
     @result     An array of strings containing the values of one row.
@@ -173,8 +165,7 @@ public:
 	
 	bool DataBaseIsTableEmpty(const wxString & tableName);
 	
-	/*!
-    @function 
+	/*! 
     @brief Used to execute multiple query on the database
 	
 	This function is mainly created to execute multiple query without results.
@@ -191,7 +182,6 @@ public:
 	*/
 	bool DataBaseQueryNoResult(wxString myQuery);
 	/*!
-	@function 
 	@brief Used to execute one query on the database and then get the result
 	
 	This function works in a similar way as the DataBaseQueryNoResult() but is able
@@ -268,7 +258,6 @@ public:
 	wxArrayString DataBaseCutRequest (wxString theRequest);
 	
 	/*!
-    @function 
     @brief   Compute the database file size
 	@param  iPrecision an integer giving the requested precision for the result 
 	(default is 2 decimals after the dot) 
@@ -311,8 +300,7 @@ protected:
 	*/	
 	bool DataBaseConvertFullPath(wxString fullpath);
 	
-	/*!
-    @function 
+	/*! 
     @brief Function used in windows to convert all the '\' path separator
 	into a '/' separator.
 	
@@ -326,7 +314,6 @@ protected:
 	
 
 	/*!
-    @function 
     @brief Function used to set the character set used by the embedded server
 	
 	This function is call by DataBaseOpen(), do not call it directly.
