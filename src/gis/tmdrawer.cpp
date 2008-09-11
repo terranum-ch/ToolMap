@@ -211,52 +211,46 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	temp_dc.SetBackground(*wxWHITE);
 	
 	
-	/* define spatial filter
-	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
-	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	// define spatial filter
+	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
+	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
 		wxLogDebug(_T("Error setting spatial filter"));
 		return false;
 	}
 	
-	// iterate for all lines, will not work on a threaded version
+	// iterate for all points, will not work on a threaded version
 	// because of all wxLogDebug commands
-	int iNbVertex = 0;
 	bool bReturn = true;
 	int iLoop = 0;
+	wxPoint Intpts (0,0);
+	
 	while (1)
 	{
-		iNbVertex = 0;
-		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
+		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint();
 		
-		// line must have more than one vertex
-		if (iNbVertex <= 1) 
+		if(pptsReal == NULL)
 		{
-			wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
-			bReturn = false;
+			wxLogDebug(_T("No point returned @loop : %d"), iLoop);
+			bReturn = FALSE;
 			break;
 		}
 		
-		wxPoint *pIntpts = new wxPoint[iNbVertex];
-		for (int i = 0; i<iNbVertex; i++)
-		{
-			pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
-		}
+		// convert from real coordinates to screen coordinates
+		Intpts = m_scale.RealToPixel(*pptsReal);
+	
 		
+		temp_dc.DrawPoint(Intpts);
 		
-		temp_dc.DrawLines(iNbVertex, pIntpts);
-		
-		delete [] pptsReal;
-		delete [] pIntpts;
+		delete pptsReal;
 		iLoop++;
-		
 	}
 	
 	
-	wxLogDebug(_T("%d Lines drawn"), iLoop);
+	wxLogDebug(_T("%d Points drawn"), iLoop);
 	
 	wxBitmap nullbmp;
-	temp_dc.SelectObject(nullbmp);*/
+	temp_dc.SelectObject(nullbmp);
 	
 	return TRUE;
 }
