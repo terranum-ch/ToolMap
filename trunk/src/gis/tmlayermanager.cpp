@@ -800,6 +800,7 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 		wxLogError(_("Error loading : %s"), myErrMsg.c_str());
 		return NULL;
 	}
+	
 	if (!m_Data->Open(myFileName, TRUE))
 	{
 		wxLogError(_("Error opening : %s"), myErrMsg.c_str());

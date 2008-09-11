@@ -56,8 +56,6 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 		return FALSE;
 	}
 	
-	
-	
 	m_Layer = m_Datasource->GetLayer(0);
 	wxASSERT (m_Layer);
 	
@@ -91,6 +89,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 {
 	OGRGeometry *poGeometry;
 	OGRFeature *poFeature;
+	TM_GIS_SPATIAL_TYPES retvalue = LAYER_ERR;
 	
 	wxASSERT(m_Layer);
 	
@@ -118,23 +117,29 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 			switch (wkbFlatten(poGeometry->getGeometryType()))
 			{
 				case wkbLineString:
-					return LAYER_SPATIAL_LINE;
+					retvalue = LAYER_SPATIAL_LINE;
 					break;
 				case wkbPoint:
-					return LAYER_SPATIAL_POINT;
+					retvalue = LAYER_SPATIAL_POINT;
 					break;
 				case wkbPolygon:
-					return LAYER_SPATIAL_POLYGON;
+					retvalue = LAYER_SPATIAL_POLYGON;
 					break;
 				default:
-					return LAYER_SPATIAL_UNKNOWN;
+					retvalue = LAYER_SPATIAL_UNKNOWN;
 					break;
 			}
 		}
 	
+	 OGRFeature::DestroyFeature( poFeature );
 	
-	wxLogDebug(_T("Error getting spatial layer type for : %s"), GetShortFileName().c_str());
-	return LAYER_ERR;
+	if (retvalue == LAYER_ERR)
+	{
+		wxLogDebug(_T("Error getting spatial layer type for : %s"), 
+				   GetShortFileName().c_str());
+	}
+	
+	return retvalue;
 }
 
 
@@ -142,8 +147,9 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 {
 	wxASSERT(m_Layer);
+
 	
-	// clearing filter...
+	/* clearing filter...
 	if (filter == tmRealRect(0,0,0,0))
 	{
 		m_Layer->SetSpatialFilter(NULL);
@@ -154,7 +160,7 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 									  filter.x_max, filter.y_max);
 	}
 	
-	m_Layer->ResetReading();
+	m_Layer->ResetReading();*/
 	return TRUE;
 }
 
@@ -163,14 +169,20 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 {
 	wxASSERT(m_Layer);
-	OGRLineString * pline = (OGRLineString*) m_Layer->GetNextFeature();
+	//wxLogDebug(_T("Getting features 3: %d"), m_Layer->GetFeatureCount());
+
+	OGRFeature * poFeature = m_Layer->GetNextFeature();
 	
 	// nothing more to read
-	if (pline == NULL)
+	if (poFeature == NULL)
 	{
 		nbvertex = 0;
 		return NULL;		
 	}
+	
+	
+	OGRLineString * pline = (OGRLineString*) poFeature->GetGeometryRef();
+	wxASSERT(pline);	
 	
 	// normal reading
 	nbvertex = pline->getNumPoints();
@@ -187,7 +199,7 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 		pts[i].x = pline->getX(i);
 		pts[i].y = pline->getY(i);
 	}
-	OGRGeometryFactory::destroyGeometry	(pline);
+	OGRFeature::DestroyFeature( poFeature );
 	return pts;
 }
 
