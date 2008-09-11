@@ -52,6 +52,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex);
+		virtual wxRealPoint * GetNextDataPoint ();
 		
 	};
 

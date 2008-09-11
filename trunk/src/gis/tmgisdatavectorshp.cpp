@@ -169,8 +169,6 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 {
 	wxASSERT(m_Layer);
-	//wxLogDebug(_T("Getting features 3: %d"), m_Layer->GetFeatureCount());
-
 	OGRFeature * poFeature = m_Layer->GetNextFeature();
 	
 	// nothing more to read
@@ -203,3 +201,27 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 	return pts;
 }
 
+
+
+wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint ()
+{
+	wxASSERT(m_Layer);
+	OGRFeature * poFeature = m_Layer->GetNextFeature();
+	
+	// nothing more to read
+	if (poFeature == NULL)
+	{
+		return NULL;		
+	}
+	
+	
+	OGRPoint * pPoint = (OGRPoint*) poFeature->GetGeometryRef();
+	wxASSERT(pPoint);	
+	
+	wxRealPoint * pts = new wxRealPoint();
+	pts->x = pPoint->getX();
+	pts->y = pPoint->getY();
+	
+	OGRFeature::DestroyFeature( poFeature );
+	return pts;
+}
