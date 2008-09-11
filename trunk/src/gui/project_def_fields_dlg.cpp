@@ -445,8 +445,7 @@ void ProjectDefFieldDlg::TransfertDateValues(bool bSendDataToDlg)
  @brief Transfering enum data
  @details Send data from memory to the panel or get data from memory to
  controls. 
- @note In case of enums, the data were already passed into the
- #m_pCodedValueArray
+ @note In case of enums, the data were already passed into the Value array
  @param bSendDataToDlg TRUE means DATA --> DIALOG and FALSE mean : DIALOG -->
  DATA
  @author Lucien Schreiber (c) CREALP 2007

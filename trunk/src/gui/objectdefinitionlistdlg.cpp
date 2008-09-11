@@ -305,7 +305,7 @@ bool ObjectDefinitionList::SetListText (int ilayertype)
  item is Frequent (wxCHK_CHECKED) or less frequent (wxCHK_UNCHECKED). If iIndex
  is -1 (the default) then this function returns the frequency for all selected
  items
- @param int The index value for the item we want to interogate. If -1 this
+ @param iIndex The index value for the item we want to interogate. If -1 this
  function returns the checked state for all selected items
  @return  indicate if (iIndex) should be selected / unselected or undefined
  @author Lucien Schreiber (c) CREALP 2007

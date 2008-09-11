@@ -44,6 +44,11 @@ class tmSymbolVectorPoint : public tmSymbolVector
 		tmSymbolVectorPoint();
 		~tmSymbolVectorPoint();
 		
+		wxColour GetColour();
+		int GetRadius(){return m_ptUniqueSymbol.m_Radius;}
+		virtual int GetTransparency(){return m_ptUniqueSymbol.m_GlobalTransparency;}
+		
+		
 		virtual bool Serialize(tmSerialize &s);
 	};
 

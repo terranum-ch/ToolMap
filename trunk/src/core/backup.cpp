@@ -219,7 +219,7 @@ wxString Backup::CreateBackupName ()
 
 /***************************************************************************//**
  @brief Return actual date as string
- @param wxString the actual date as string (YYYYMMDD)
+ @return the actual date as string (YYYYMMDD)
  @author Lucien Schreiber (c) CREALP 2007
  @date 07 May 2008
  *******************************************************************************/

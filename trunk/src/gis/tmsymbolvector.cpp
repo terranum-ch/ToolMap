@@ -44,6 +44,24 @@ tmSymbolDLG * tmSymbolVector::GetSymbolDialog (wxWindow * parent, const wxPoint 
 							   dlgpos);
 }
 
+
+
+/***************************************************************************//**
+ @brief Get colour with transparency
+ @param col the original colour
+ @param trans the percent of transparency. 0% is opaque, 100% is fully
+ transparent
+ @return  The new colour containing the alpha chanel
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 September 2008
+ *******************************************************************************/
+wxColour tmSymbolVector::GetColourWithTransparency (const wxColour & col, int trans)
+{
+	char cTrans = ConvertTransparency(trans);
+	wxColour ColTrans (col.Red(), col.Green(), col.Blue(), cTrans);					   
+	return ColTrans;
+}
+
  
 
 tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES spattype)

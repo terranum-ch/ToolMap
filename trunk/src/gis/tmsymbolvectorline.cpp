@@ -80,3 +80,11 @@ bool tmSymbolVectorLine::Serialize(tmSerialize &s)
 	return s.IsOk(); 
 }
 
+
+
+wxColour tmSymbolVectorLine::GetColour()
+{
+	return GetColourWithTransparency(m_lSymUnique.m_Colour,
+									 m_lSymUnique.m_GlobalTransparency);
+}
+

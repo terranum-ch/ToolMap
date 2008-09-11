@@ -37,6 +37,8 @@ class tmSymbolVector : public tmSymbol
 	private:
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
 	protected:
+		wxColour GetColourWithTransparency (const wxColour & col, int trans);
+		
 	public:
 		tmSymbolVector();
 		~tmSymbolVector();

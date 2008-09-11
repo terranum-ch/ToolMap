@@ -42,6 +42,7 @@ class tmSymbol : public wxObject
 		
 	protected:
 		int m_LayerTransparency;
+		char ConvertTransparency (int itransparency);
 		
 	public:
 		tmSymbol();
@@ -52,6 +53,7 @@ class tmSymbol : public wxObject
 		int ShowSymbologyDialog (wxWindow * parent, 
 								 const wxPoint & dlgpos = wxDefaultPosition);
 		virtual bool Serialize(tmSerialize &s);
+		virtual int GetTransparency(){return 0;}
 		
 	};
 

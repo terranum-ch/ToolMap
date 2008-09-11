@@ -77,3 +77,10 @@ bool tmSymbolVectorPoint::Serialize(tmSerialize &s)
 	return s.IsOk(); 
 }
 
+
+wxColour tmSymbolVectorPoint::GetColour()
+{
+
+		return GetColourWithTransparency(m_ptUniqueSymbol.m_Colour,
+										 m_ptUniqueSymbol.m_GlobalTransparency);	
+}
