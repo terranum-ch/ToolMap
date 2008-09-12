@@ -191,8 +191,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	wxLogDebug(_T("%d Lines drawn"), iLoop);
 	
-	wxBitmap nullbmp;
-	temp_dc.SelectObject(nullbmp);
+	
+	temp_dc.SelectObject(wxNullBitmap);
 	
 	return TRUE;
 }
@@ -201,9 +201,38 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 
 bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 {
+	//creating empty bmp;
+	wxBitmap bitmap (m_bmp->GetWidth(), m_bmp->GetHeight());
+	wxBitmap mask (m_bmp->GetWidth(),m_bmp->GetHeight());
+	wxMemoryDC dc;
+	dc.SelectObject(bitmap);
+	
+	wxBrush myBrush (wxColour(255,0,0,100));
+	
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
+	wxGraphicsBrush myGBrush =	pgdc->CreateBrush(myBrush);
+	pgdc->SetBrush(myGBrush);
+	pgdc->DrawRectangle(0, 0, 200, 200);
+	
+	//wxGCDC gcdc(dc); 
+				   //wxGraphicsContext * gdc = new wxGraphicsContext();
+				   
+				   
+/*	dc.SetBrush (wxBrush(wxColour(255,0,0,100)));
+	dc.SetPen (wxPen(*wxWHITE_PEN));
+	dc.DrawRectangle (50,50,m_bmp->GetWidth(), m_bmp->GetHeight());*/
+	
+				   
+	dc.SelectObject(wxNullBitmap);
+	
+	
+	
 	wxMemoryDC temp_dc;
 	temp_dc.SelectObject(*m_bmp);
 	
+	
+	temp_dc.DrawBitmap(bitmap, 0, 0, TRUE);
+	/*
 	// create pen based on symbology
 	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
@@ -247,10 +276,9 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	}
 	
 	
-	wxLogDebug(_T("%d Points drawn"), iLoop);
+	wxLogDebug(_T("%d Points drawn"), iLoop);*/
 	
-	wxBitmap nullbmp;
-	temp_dc.SelectObject(nullbmp);
+	temp_dc.SelectObject(wxNullBitmap);
 	
 	return TRUE;
 }
