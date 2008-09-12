@@ -240,7 +240,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		Intpts = m_scale.RealToPixel(*pptsReal);
 	
 		
-		temp_dc.DrawPoint(Intpts);
+		temp_dc.DrawLine(Intpts, Intpts);
 		
 		delete pptsReal;
 		iLoop++;
