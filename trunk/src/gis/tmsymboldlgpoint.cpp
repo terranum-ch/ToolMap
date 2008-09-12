@@ -48,7 +48,7 @@ bool tmSymbolDLGPoint::Create( wxWindow* parent, wxWindowID id, const wxString& 
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	    
-	CreateControlsLine();
+	CreateControlsPoint();
 	
 	return true;
 }
@@ -72,7 +72,7 @@ void tmSymbolDLGPoint::Init()
 
 
 
-void tmSymbolDLGPoint::CreateControlsLine()
+void tmSymbolDLGPoint::CreateControlsPoint()
 {
 	wxString sFunction = wxString::FromAscii(__FUNCTION__);
 	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
@@ -132,10 +132,9 @@ void tmSymbolDLGPoint::CreateControlsLine()
    
 	m_TransparencySlider = new tmSliderWithText(itemPanel7, ID_SYMDLGP_TRANSPARENCY,0,0,100,_T("%"),
 												wxDefaultPosition, wxDefaultSize, 0);
-    itemStaticBoxSizer22->Add(m_TransparencySlider, 0, wxGROW|wxALL, 5);
+    itemStaticBoxSizer22->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
 	
     m_NoteBook->AddPage(itemPanel7, _("Point Symbology"));
-	
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();

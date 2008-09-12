@@ -48,7 +48,7 @@ bool tmSymbolDLGPolygon::Create( wxWindow* parent, wxWindowID id, const wxString
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	    
-	CreateControlsLine();
+	CreateControlsPoly();
 	
 	return true;
 }
@@ -74,7 +74,7 @@ void tmSymbolDLGPolygon::Init()
 
 
 
-void tmSymbolDLGPolygon::CreateControlsLine()
+void tmSymbolDLGPolygon::CreateControlsPoly()
 {
 	wxString sFunction = wxString::FromAscii(__FUNCTION__);
 	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),

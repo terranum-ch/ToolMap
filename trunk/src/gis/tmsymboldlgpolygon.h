@@ -71,7 +71,7 @@ class tmSymbolDLGPolygon : public tmSymbolDLG
 		tmSymbolDataPolygonUnique m_DlgData;
 		
 		void Init();
-		void CreateControlsLine();
+		void CreateControlsPoly();
 		
 		virtual bool TransferDataToWindow();
 		virtual bool TransferDataFromWindow();
