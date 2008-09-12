@@ -65,7 +65,7 @@ class tmSymbolDLGPoint : public tmSymbolDLG
 		tmSymbolDataPointUnique m_DlgData;
 		
 		void Init();
-		void CreateControlsLine();
+		void CreateControlsPoint();
 		
 		virtual bool TransferDataToWindow();
 		virtual bool TransferDataFromWindow();
