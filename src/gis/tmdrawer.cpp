@@ -207,8 +207,15 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	wxMemoryDC dc;
 	dc.SelectObject(bitmap);
 	
+	// coloring bitmap in white (works with unix)
+	dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
+	dc.Clear();
+	//TODO: Put above code in the creating empty bitmap function 
+
+	// red half-transparent
 	wxBrush myBrush (wxColour(255,0,0,100));
 	
+
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
 	wxGraphicsBrush myGBrush =	pgdc->CreateBrush(myBrush);
 	pgdc->SetBrush(myGBrush);
