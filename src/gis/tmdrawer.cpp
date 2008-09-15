@@ -201,51 +201,14 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 
 bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 {
-	//creating empty bmp;
-	wxBitmap bitmap (m_bmp->GetWidth(), m_bmp->GetHeight());
-	wxBitmap mask (m_bmp->GetWidth(),m_bmp->GetHeight());
 	wxMemoryDC dc;
-	dc.SelectObject(bitmap);
-	
-	// coloring bitmap in white (works with unix)
-	dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
-	dc.Clear();
-	//TODO: Put above code in the creating empty bitmap function 
-
-	// red half-transparent
-	wxBrush myBrush (wxColour(255,0,0,100));
-	
-
+	dc.SelectObject(*m_bmp);
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
-	wxGraphicsBrush myGBrush =	pgdc->CreateBrush(myBrush);
-	pgdc->SetBrush(myGBrush);
-	pgdc->DrawRectangle(0, 0, 200, 200);
-	
-	//wxGCDC gcdc(dc); 
-				   //wxGraphicsContext * gdc = new wxGraphicsContext();
-				   
-				   
-/*	dc.SetBrush (wxBrush(wxColour(255,0,0,100)));
-	dc.SetPen (wxPen(*wxWHITE_PEN));
-	dc.DrawRectangle (50,50,m_bmp->GetWidth(), m_bmp->GetHeight());*/
-	
-				   
-	dc.SelectObject(wxNullBitmap);
-	
-	
-	
-	wxMemoryDC temp_dc;
-	temp_dc.SelectObject(*m_bmp);
-	
-	
-	temp_dc.DrawBitmap(bitmap, 0, 0, TRUE);
-	/*
+
 	// create pen based on symbology
 	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
-	temp_dc.SetPen(myPen);
-	temp_dc.SetBackground(*wxWHITE);
-	
+	pgdc->SetPen(myPen);
 	
 	// define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
@@ -275,17 +238,20 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		// convert from real coordinates to screen coordinates
 		Intpts = m_scale.RealToPixel(*pptsReal);
 	
-		
-		temp_dc.DrawLine(Intpts, Intpts);
+#ifdef __WXMSW__
+		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+#else
+		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+#endif
 		
 		delete pptsReal;
 		iLoop++;
 	}
 	
 	
-	wxLogDebug(_T("%d Points drawn"), iLoop);*/
+	wxLogDebug(_T("%d Points drawn"), iLoop);
 	
-	temp_dc.SelectObject(wxNullBitmap);
+	dc.SelectObject(wxNullBitmap);
 	
 	return TRUE;
 }

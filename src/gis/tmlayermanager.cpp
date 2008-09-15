@@ -833,9 +833,12 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 	// ensure that the bitmap is white (win and linux)
 	wxMemoryDC dc;
 	dc.SelectObject (*m_Bitmap);
-	dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
-	dc.SetPen (wxPen(*wxWHITE_PEN));
-	dc.DrawRectangle (0,0,size.GetWidth(), size.GetHeight());
+	dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
+	dc.Clear();
+
+	//dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
+	//dc.SetPen (wxPen(*wxWHITE_PEN));
+	//dc.DrawRectangle (0,0,size.GetWidth(), size.GetHeight());
 	
 }
 
