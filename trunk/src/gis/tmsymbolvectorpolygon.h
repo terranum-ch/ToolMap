@@ -44,6 +44,13 @@ class tmSymbolVectorPolygon : public tmSymbolVector
 		tmSymbolVectorPolygon();
 		~tmSymbolVectorPolygon();
 		
+		wxColour GetBorderColour();
+		wxColour GetFillColour();
+		int GetBorderWidth() {return m_plgUniqueSymbol.m_bWidth;}
+		int GetFillStyle() {return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];}
+		virtual int GetTransparency(){return m_plgUniqueSymbol.m_GlobalTransparency;}
+		
+		
 		virtual bool Serialize(tmSerialize &s);
 	};
 
