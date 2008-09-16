@@ -139,13 +139,12 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	wxMemoryDC temp_dc;
 	temp_dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
 	
 	// create pen based on symbology
 	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
-	temp_dc.SetPen(myPen);
-	temp_dc.SetBackground(*wxWHITE);
-	
+	pgdc->SetPen(myPen);
 	
 	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
@@ -173,17 +172,18 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		}
 		
-		wxPoint *pIntpts = new wxPoint[iNbVertex];
-		for (int i = 0; i<iNbVertex; i++)
-		{
-			pIntpts[i] = m_scale.RealToPixel(pptsReal[i]);
-		}
 		
+		// creating path
 		
-		temp_dc.DrawLines(iNbVertex, pIntpts);
+		wxGraphicsPath myPath = pgdc->CreatePath();
+		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+		for (int i = 1; i< iNbVertex; i++)
+			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
 		
+		pgdc->StrokePath(myPath);
+				
 		delete [] pptsReal;
-		delete [] pIntpts;
+		//delete [] pIntpts;
 		iLoop++;
 		
 	}
@@ -199,6 +199,18 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 
 
 
+/***************************************************************************//**
+ @brief Draw all points
+ @details This functions draw all points using the new wxGraphicsContext
+ engine.
+ @note library must be compiled with options according to that.
+ @param itemProp contain all informations about the layer's properties such as
+ the symbology
+ @param pdata pointer to the GIS data (see wxGISData) and derived.
+ @return  false if not able to draw all points
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 September 2008
+ *******************************************************************************/
 bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	wxMemoryDC dc;

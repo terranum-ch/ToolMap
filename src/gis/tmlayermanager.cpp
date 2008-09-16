@@ -839,7 +839,6 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 	//dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
 	//dc.SetPen (wxPen(*wxWHITE_PEN));
 	//dc.DrawRectangle (0,0,size.GetWidth(), size.GetHeight());
-	
 }
 
 
