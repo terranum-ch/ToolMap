@@ -35,6 +35,7 @@
 
 #include "tmsymbolvectorline.h"
 #include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpolygon.h"
 #include "tmgisdatavector.h"
 
 //#include "../database/database_tm.h"
@@ -59,6 +60,7 @@ class tmDrawer : public wxObject
 		// drawing functions
 		bool DrawLines(tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata);
+		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
 		
 	protected:
 	public:

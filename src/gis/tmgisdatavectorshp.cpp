@@ -225,3 +225,62 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint ()
 	OGRFeature::DestroyFeature( poFeature );
 	return pts;
 }
+
+
+
+wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int & nbrings, int & nbvertex)
+{
+	wxASSERT(m_Layer);
+	
+	OGRFeature * poFeature = m_Layer->GetNextFeature();
+	
+	// nothing more to read
+	if (poFeature == NULL)
+	{
+		nbvertex = 0;
+		nbrings = 0;
+		return NULL;		
+	}
+	
+	
+	OGRPolygon * plgon = (OGRPolygon*) poFeature->GetGeometryRef();
+	wxASSERT(plgon);	
+	
+	// check validity
+	if(!plgon->IsValid())
+	{
+		wxLogDebug(_T("Polygon not valid"));
+		nbvertex = 0;
+		nbrings = 0;
+		OGRFeature::DestroyFeature( poFeature );
+		return NULL;
+	}
+	
+	// count rings + 1 (exterior ring)
+	nbrings = plgon->getNumInteriorRings(); + 1;
+	
+	
+	/*
+	
+	// normal reading
+	nbvertex = plgon->getNumPoints();
+	if (nbvertex <= 1)
+	{
+		wxLogDebug(_T("Only one vertex or less in this line ???"));
+		OGRGeometryFactory::destroyGeometry	(plgon);
+		return NULL;
+	}
+	
+	wxRealPoint * pts = new wxRealPoint[nbvertex];
+	for (int i=0; i<nbvertex;i++)
+	{
+		pts[i].x = plgon->getX(i);
+		pts[i].y = plgon->getY(i);
+	}
+	OGRFeature::DestroyFeature( poFeature );
+	return pts;*/
+	return NULL;
+	
+	
+}
+

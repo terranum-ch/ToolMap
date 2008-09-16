@@ -82,3 +82,18 @@ bool tmSymbolVectorPolygon::Serialize(tmSerialize &s)
 	// return false when the archive encountered an error
 	return s.IsOk(); 
 }
+
+
+wxColour tmSymbolVectorPolygon::GetBorderColour()
+{
+	
+	return GetColourWithTransparency(m_plgUniqueSymbol.m_bColour,
+									 m_plgUniqueSymbol.m_GlobalTransparency);	
+}
+
+wxColour tmSymbolVectorPolygon::GetFillColour()
+{
+	
+	return GetColourWithTransparency(m_plgUniqueSymbol.m_fColour,
+									 m_plgUniqueSymbol.m_GlobalTransparency);	
+}

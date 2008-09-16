@@ -78,6 +78,7 @@ class tmGISDataVector : public tmGISData
 		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex){return NULL;}
 		virtual wxRealPoint * GetNextDataPoint (){return NULL;}
+		virtual wxRealPoint * GetNextDataPolygon (int & nbvertex){return NULL;}
 		
 	};
 

@@ -114,6 +114,9 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 		case LAYER_SPATIAL_POINT:
 			DrawPoints(itemProp, pdata);
 			break;
+		case LAYER_SPATIAL_POLYGON:
+			DrawPolygons(itemProp, pdata);
+			break;
 		default:
 			return FALSE;
 			break;
@@ -174,7 +177,6 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		
 		// creating path
-		
 		wxGraphicsPath myPath = pgdc->CreatePath();
 		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
 		for (int i = 1; i< iNbVertex; i++)
@@ -183,7 +185,6 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		pgdc->StrokePath(myPath);
 				
 		delete [] pptsReal;
-		//delete [] pIntpts;
 		iLoop++;
 		
 	}
@@ -266,5 +267,75 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	dc.SelectObject(wxNullBitmap);
 	
 	return TRUE;
+}
+
+
+
+
+bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
+{
+	wxMemoryDC dc;
+	dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
+	
+	// create pen based on symbology
+	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
+	wxPen myPen (pSymbol->GetBorderColour(), pSymbol->GetBorderWidth());
+	wxBrush myBrush (pSymbol->GetFillColour(),pSymbol->GetFillStyle());
+	pgdc->SetPen(myPen);
+	pgdc->SetBrush(myBrush);
+	
+	
+	// define spatial filter
+	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
+	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	{
+		wxLogDebug(_T("Error setting spatial filter"));
+		return false;
+	}
+	
+	// iterate all polygons will not work on a threaded version
+	// because of all wxLogDebug commands
+	int iLoop = 0;
+	
+	
+	
+	/* iterate for all points, will not work on a threaded version
+	// because of all wxLogDebug commands
+	bool bReturn = true;
+	int iLoop = 0;
+	wxPoint Intpts (0,0);
+	
+	while (1)
+	{
+		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint();
+		
+		if(pptsReal == NULL)
+		{
+			wxLogDebug(_T("No point returned @loop : %d"), iLoop);
+			bReturn = FALSE;
+			break;
+		}
+		
+		// convert from real coordinates to screen coordinates
+		Intpts = m_scale.RealToPixel(*pptsReal);
+		
+#ifdef __WXMSW__
+		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+#else
+		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+#endif
+		
+		delete pptsReal;
+		iLoop++;
+	}
+	
+	
+	wxLogDebug(_T("%d Points drawn"), iLoop);
+	
+	dc.SelectObject(wxNullBitmap);*/
+	
+	
+	return true;
 }
 
