@@ -38,6 +38,9 @@ class tmGISDataVectorSHP : public tmGISDataVector
 	private:
 		OGRDataSource       *m_Datasource;
 		OGRLayer			*m_Layer;
+		
+		OGRFeature			*m_Feature;
+		int					m_polyTotalRings;
 	
 	protected:
 	public:
@@ -53,6 +56,12 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex);
 		virtual wxRealPoint * GetNextDataPoint ();
+		virtual int GetNextDataPolygonInfo ();
+		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
+		
+		// count
+		//TODO: Implement this function in tmGISDataVectroMySQL
+		virtual int GetCount (); 
 		
 	};
 

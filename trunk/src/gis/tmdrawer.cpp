@@ -287,12 +287,24 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	// define spatial filter
-	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
-	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
 		wxLogDebug(_T("Error setting spatial filter"));
 		return false;
 	}
+	
+	// get polygons info
+	int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
+	if (iPolyRings <= 0)
+	{
+		wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
+		return FALSE;
+	}
+	
+	// get polygons data
+	int iNbVertex = 0;
+	wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(0, iNbVertex); 
 	
 	// iterate all polygons will not work on a threaded version
 	// because of all wxLogDebug commands
@@ -331,9 +343,9 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	}
 	
 	
-	wxLogDebug(_T("%d Points drawn"), iLoop);
+	wxLogDebug(_T("%d Points drawn"), iLoop);*/
 	
-	dc.SelectObject(wxNullBitmap);*/
+	dc.SelectObject(wxNullBitmap);
 	
 	
 	return true;
