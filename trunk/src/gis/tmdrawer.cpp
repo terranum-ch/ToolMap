@@ -302,7 +302,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
-	// loop all features 
+	 //loop all features 
 	while (1)
 	{
 		// get polygons info
@@ -310,7 +310,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		if (iPolyRings <= 0)
 		{
 			wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
-			return FALSE;
+			break;
 		}
 		
 		//TODO: Temp code, for debuging remove after
@@ -318,12 +318,12 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		{
 			wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
 		}
-	
+			
 		wxGraphicsPath myPolygonPath = pgdc->CreatePath();
 		// get polygons data, loop all rings into polygons
 		for (i = 0; i<iPolyRings; i++)
 		{
-			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(0, iNbVertex);
+			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 			
 			if(pptsReal == NULL)
 			{
@@ -338,18 +338,39 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 			myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
 			for (int i = 1; i< iNbVertex; i++)
 				myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+			
+			myPath.CloseSubpath();
 			myPolygonPath.AddPath(myPath);
 			delete [] pptsReal;
 		}
-			
+		
 		
 		pgdc->DrawPath(myPolygonPath);
-		
+	
 		
 		iLoop ++;
 		
 	}
-		
+	
+	/*const double base = 80.0;  // sizes used in shapes drawn below 
+    const double base2 = base/2.0; 
+    const double base4 = base/4.0; 
+	
+	wxGraphicsPath path = pgdc->CreatePath();
+	path.AddCircle(0, 0, base2); 
+    path.MoveToPoint(0, -base2); 
+    path.AddLineToPoint(0, base2); 
+    path.MoveToPoint(-base2, 0); 
+    path.AddLineToPoint(base2, 0); 
+    path.CloseSubpath(); 
+    path.AddRectangle(-base4, -base4/2, base2, base4); 
+	pgdc->Translate(2*base, 2*base);
+	
+	//pgdc->StrokePath(path); 
+	//
+	//pgdc->StrokePath(path);
+	//pgdc->FillPath(path);
+	pgdc->DrawPath(path);*/
 	
 	wxLogDebug(_T("%d Polygons drawn"), iLoop);
 	

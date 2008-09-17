@@ -245,13 +245,18 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
 	OGRPolygon * plgon = (OGRPolygon*) m_Feature->GetGeometryRef();
 	wxASSERT(plgon);	
 	
-	// check validity
-	if(!plgon->IsValid())
+	if (plgon == NULL)
 	{
-		wxLogDebug(_T("Polygon not valid"));
+		wxLogDebug(_T("Conversion to polygon error"));
 		m_polyTotalRings = 0;
 		OGRFeature::DestroyFeature( m_Feature );
 		return 0;
+	}
+	
+	// check polygons validity, long operations ??
+	if(!plgon->IsValid())
+	{
+		wxLogDebug(_T("Polygon not valid @ FID : %d"), m_Feature->GetFID());
 	}
 	
 	// count rings + 1 (exterior ring)
