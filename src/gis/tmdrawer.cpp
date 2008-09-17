@@ -195,7 +195,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	temp_dc.SelectObject(wxNullBitmap);
 	
-	return TRUE;
+	return bReturn;
 }
 
 
@@ -274,18 +274,26 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 
 bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 {
+	// variables
 	wxMemoryDC dc;
+	bool bReturn = true;
+	int iNbVertex = 0;
+	int iLoop = 0;
+	int i=0;
+	
+	// device context for drawing
 	dc.SelectObject(*m_bmp);
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
 	
-	// create pen based on symbology
+	
+	// create pen and brush based on symbology
 	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetBorderColour(), pSymbol->GetBorderWidth());
 	wxBrush myBrush (pSymbol->GetFillColour(),pSymbol->GetFillStyle());
 	pgdc->SetPen(myPen);
 	pgdc->SetBrush(myBrush);
 	
-	
+		
 	// define spatial filter
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
 	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
@@ -294,60 +302,60 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
-	// get polygons info
-	int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
-	if (iPolyRings <= 0)
-	{
-		wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
-		return FALSE;
-	}
-	
-	// get polygons data
-	int iNbVertex = 0;
-	wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(0, iNbVertex); 
-	
-	// iterate all polygons will not work on a threaded version
-	// because of all wxLogDebug commands
-	int iLoop = 0;
-	
-	
-	
-	/* iterate for all points, will not work on a threaded version
-	// because of all wxLogDebug commands
-	bool bReturn = true;
-	int iLoop = 0;
-	wxPoint Intpts (0,0);
-	
+	// loop all features 
 	while (1)
 	{
-		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint();
-		
-		if(pptsReal == NULL)
+		// get polygons info
+		int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
+		if (iPolyRings <= 0)
 		{
-			wxLogDebug(_T("No point returned @loop : %d"), iLoop);
-			bReturn = FALSE;
-			break;
+			wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
+			return FALSE;
 		}
 		
-		// convert from real coordinates to screen coordinates
-		Intpts = m_scale.RealToPixel(*pptsReal);
+		//TODO: Temp code, for debuging remove after
+		if (iPolyRings > 1)
+		{
+			wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
+		}
+	
+		wxGraphicsPath myPolygonPath = pgdc->CreatePath();
+		// get polygons data, loop all rings into polygons
+		for (i = 0; i<iPolyRings; i++)
+		{
+			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(0, iNbVertex);
+			
+			if(pptsReal == NULL)
+			{
+				wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
+				bReturn = FALSE;
+				break;
+			}
+			
+			// creating path based on ring data and putting this path
+			// into main path
+			wxGraphicsPath myPath = pgdc->CreatePath();
+			myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+			for (int i = 1; i< iNbVertex; i++)
+				myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+			myPolygonPath.AddPath(myPath);
+			delete [] pptsReal;
+		}
+			
 		
-#ifdef __WXMSW__
-		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
-#else
-		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
-#endif
+		pgdc->DrawPath(myPolygonPath);
 		
-		delete pptsReal;
-		iLoop++;
+		
+		iLoop ++;
+		
 	}
+		
 	
-	
-	wxLogDebug(_T("%d Points drawn"), iLoop);*/
+	wxLogDebug(_T("%d Polygons drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
 	
 	
-	return true;
+	return bReturn;
 }
 
