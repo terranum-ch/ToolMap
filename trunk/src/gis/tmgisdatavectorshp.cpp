@@ -259,6 +259,8 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
 	return m_polyTotalRings;
 }
 
+
+
 wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbvertex)
 {
 	if (m_Feature ==NULL)
