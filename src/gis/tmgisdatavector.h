@@ -78,7 +78,11 @@ class tmGISDataVector : public tmGISData
 		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex){return NULL;}
 		virtual wxRealPoint * GetNextDataPoint (){return NULL;}
-		virtual wxRealPoint * GetNextDataPolygon (int & nbvertex){return NULL;}
+		virtual int GetNextDataPolygonInfo (){return -1;}
+		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex){return NULL;}
+		
+		// counting
+		virtual int GetCount (){return -1;}
 		
 	};
 

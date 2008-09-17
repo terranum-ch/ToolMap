@@ -25,6 +25,8 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
 {
 	m_Datasource = NULL;
 	m_Layer = NULL;
+	m_Feature = NULL;
+	m_polyTotalRings = 0;
 }
 
 
@@ -228,59 +230,103 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint ()
 
 
 
-wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int & nbrings, int & nbvertex)
+int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
 {
 	wxASSERT(m_Layer);
-	
-	OGRFeature * poFeature = m_Layer->GetNextFeature();
+	m_Feature = m_Layer->GetNextFeature();
 	
 	// nothing more to read
-	if (poFeature == NULL)
+	if (m_Feature == NULL)
 	{
-		nbvertex = 0;
-		nbrings = 0;
-		return NULL;		
+		m_polyTotalRings = 0;
+		return 0;
 	}
 	
-	
-	OGRPolygon * plgon = (OGRPolygon*) poFeature->GetGeometryRef();
+	OGRPolygon * plgon = (OGRPolygon*) m_Feature->GetGeometryRef();
 	wxASSERT(plgon);	
 	
 	// check validity
 	if(!plgon->IsValid())
 	{
 		wxLogDebug(_T("Polygon not valid"));
-		nbvertex = 0;
-		nbrings = 0;
-		OGRFeature::DestroyFeature( poFeature );
-		return NULL;
+		m_polyTotalRings = 0;
+		OGRFeature::DestroyFeature( m_Feature );
+		return 0;
 	}
 	
 	// count rings + 1 (exterior ring)
-	nbrings = plgon->getNumInteriorRings(); + 1;
+	m_polyTotalRings = plgon->getNumInteriorRings() + 1;
+	return m_polyTotalRings;
+}
+
+wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbvertex)
+{
+	if (m_Feature ==NULL)
+	{
+		wxLogDebug(_T("Feature is null, call GetNextDataPolygonInfo first"));
+		m_polyTotalRings = 0;
+		return NULL;
+	}
 	
+	OGRPolygon * plgon = (OGRPolygon*) m_Feature->GetGeometryRef();
+	wxASSERT(plgon);	
 	
-	/*
+	// getting ring data (exterior then interior)
+	OGRLineString * pLinePoly = NULL;
+	if (currentring == 0)
+		pLinePoly = plgon->getExteriorRing();
+	else
+		pLinePoly = plgon->getInteriorRing(currentring-1);
 	
-	// normal reading
-	nbvertex = plgon->getNumPoints();
+	if (pLinePoly == NULL)
+	{
+		wxLogDebug(_T("Error getting ring for polygon. Ring num. is : %d"), currentring);
+		m_polyTotalRings = 0;
+		OGRFeature::DestroyFeature( m_Feature );
+		return NULL;
+	}
+	
+	// Exporting vertex for rings
+	nbvertex = pLinePoly->getNumPoints();
 	if (nbvertex <= 1)
 	{
-		wxLogDebug(_T("Only one vertex or less in this line ???"));
-		OGRGeometryFactory::destroyGeometry	(plgon);
+		wxLogDebug(_T("Only one vertex or less in this polygon ring ???"));
+		OGRGeometryFactory::destroyGeometry	(pLinePoly);
 		return NULL;
 	}
 	
 	wxRealPoint * pts = new wxRealPoint[nbvertex];
 	for (int i=0; i<nbvertex;i++)
 	{
-		pts[i].x = plgon->getX(i);
-		pts[i].y = plgon->getY(i);
+		pts[i].x = pLinePoly->getX(i);
+		pts[i].y = pLinePoly->getY(i);
 	}
-	OGRFeature::DestroyFeature( poFeature );
-	return pts;*/
-	return NULL;
 	
 	
+	// destroying feature only if all rings read
+	if (currentring == m_polyTotalRings)
+		OGRFeature::DestroyFeature( m_Feature );
+	
+	return pts;
 }
 
+
+/***************************************************************************//**
+ @brief Counting features in layer
+ @details This function return the number of lines, points, or polygons stored
+ in the layer.
+ @todo Implement this function in #tmGISDataVectorMYSQL
+ @return  Number of features found or -1 if an error is encountered
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 September 2008
+ *******************************************************************************/
+int tmGISDataVectorSHP::GetCount ()
+{
+	if(!m_Layer)
+	{
+		wxLogDebug(_T("m_layer not defined, error"));
+		return -1;
+	}
+	
+	return m_Layer->GetFeatureCount();
+}
