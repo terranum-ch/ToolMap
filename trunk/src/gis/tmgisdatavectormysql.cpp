@@ -288,3 +288,46 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 }
 
 
+
+wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
+{
+	MYSQL_ROW row;
+	unsigned long *  row_length;
+	
+	// security check
+	if(!m_DB->DataBaseHasResult())
+	{
+		wxLogError(_T("Database should have results..."));
+		return NULL;
+	}
+	
+	
+	row_length = m_DB->DataBaseGetNextRowResult(row);
+	if (row_length == NULL)
+	{
+		wxLogDebug(_T("No more results"));
+		return NULL;
+	}
+	
+	
+	OGRPoint * pPoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length);
+	wxASSERT(pPoint);
+	
+	if (!pPoint)
+	{
+		wxLogError(_T("Not able to create geometry"));
+		return NULL;
+	}
+	
+	
+	wxRealPoint * pts = new wxRealPoint;
+	
+	pts->x = pPoint->getX();
+	pts->y = pPoint->getY();
+	
+	OGRGeometryFactory::destroyGeometry	(pPoint);
+	return pts;
+}
+
+
+
