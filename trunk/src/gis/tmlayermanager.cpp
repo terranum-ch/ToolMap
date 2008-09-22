@@ -789,7 +789,8 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 			break;
 			
 		default:
-			wxLogDebug(_T("%s file format not supported yet"),layerProp->m_LayerNameExt.c_str() );
+			fprintf(stderr, "%s line %d : %s file format not supported yet \n ", __FUNCTION__, __LINE__,
+					layerProp->m_LayerNameExt.c_str());
 			return NULL;
 			break;
 	}

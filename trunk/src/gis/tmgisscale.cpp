@@ -226,19 +226,17 @@ double tmGISScale::GetBestDivFactor (const wxRect & selected_rect)
 
 void tmGISScale::ComputeNewRealZoomExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left)
 {
-	double drealx = m_ExtentWndReal.x_max - m_ExtentWndReal.x_min;
-	double drealy = m_ExtentWndReal.y_max - m_ExtentWndReal.y_min;
 	
-	// new pixel size
+	// keep old pixel size
 	double dOldPxSize = m_PixelSize;
-	//m_PixelSize = drealx / (m_PixelSize * ((double)calc_wnd_extent.GetWidth()));
 	
-	// set new real windows coordinates
-	m_ExtentWndReal.x_min = m_ExtentWndReal.x_min + (((double)top_left.x) * dOldPxSize);
-	m_ExtentWndReal.y_min = m_ExtentWndReal.y_min + (((double)top_left.y) * dOldPxSize);
-	m_ExtentWndReal.x_max = m_ExtentWndReal.x_min + (((double)calc_wnd_extent.GetWidth()) * dOldPxSize);
-	m_ExtentWndReal.y_max = m_ExtentWndReal.y_min + (((double)calc_wnd_extent.GetHeight()) * dOldPxSize);
-	
+	// compute new x / y
+	m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, ((double)top_left.x) * dOldPxSize);
+	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_min, (((double)calc_wnd_extent.GetWidth()) * dOldPxSize));
+
+	m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, (((double)top_left.y) * dOldPxSize));
+	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max, (((double)calc_wnd_extent.GetHeight()) * dOldPxSize));
+		
 	m_PixelSize = (m_ExtentWndReal.x_max - m_ExtentWndReal.x_min) / ((double)m_ExtentWnd.GetWidth());
 	
 	// scale has changed
@@ -254,8 +252,8 @@ void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dmovex);
 	m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, dmovex);
 	
-	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dmovey);
-	m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, dmovey);
+	m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, dmovey);
+	m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dmovey);
 }
 
 
