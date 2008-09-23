@@ -277,14 +277,8 @@ wxPoint tmGISScale::GetVirtualPxPosition ()
 	double dRealOriginDiffX = DifferenceCoord(m_ExtentWndReal.x_min, m_ExtentMaxLayers.x_min);
 	double dRealOriginDiffY = DifferenceCoord(m_ExtentMaxLayers.y_max, m_ExtentWndReal.y_max);
 	
-	fprintf(stderr, "%s line %d : extentreal = %.*f extentmax layers = %.*f \n ", __FUNCTION__, __LINE__,
-			2, m_ExtentMaxLayers.y_max, 2, m_ExtentWndReal.y_max);
-	
 	int xVirtPos =  (int)(dRealOriginDiffX / m_PixelSize);
 	int yVirtPos = (int)(dRealOriginDiffY / m_PixelSize);
-	
-	fprintf(stderr, "%s line %d : diffX = %.*f, diffY = %.*f, xVirtpos = %d  yVirtpos = %d \n ", __FUNCTION__, __LINE__,
-			2, dRealOriginDiffX,2, dRealOriginDiffY, xVirtPos, yVirtPos);
 	
 	return wxPoint(xVirtPos, yVirtPos);
 	
@@ -314,25 +308,11 @@ void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos)
 			dLayersHeight = GetLayersExtentHeight() + (tmSCALE_MARGIN * m_PixelSize);
 			dWndHeight = GetwindowRealHeight();
 			dstep = (dLayersHeight - dWndHeight) / tmSCROLLBARS_DIV;
-			//dyminmargin = m_ExtentMaxLayers.y_min - (m_PixelSize * (tmSCALE_MARGIN / 2));
-			//dyminmargin = (m_PixelSize * (tmSCALE_MARGIN / 2));
 			
 			dymaxmargin = m_ExtentMaxLayers.y_max - (m_PixelSize * (tmSCALE_MARGIN / 2));
 			m_ExtentWndReal.y_max = dymaxmargin - (newpos * dstep);
 			m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max, dWndHeight);
-			
-			//m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, newpos * dstep);
-			//m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max,
-			//										dWndHeight -  dymaxmargin);
-			
-			
-			//DEBUG
-			fprintf(stderr, "%s line %d : dstep = %.*f, newpos = %d \n ", __FUNCTION__, __LINE__,
-					2, dstep, newpos);
-			
-			
-			//m_ExtentWndReal.y_min = dyminmargin + (newpos * dstep);
-			//m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_min, dWndHeight);
+
 			break;
 	}
 }
