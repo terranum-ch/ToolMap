@@ -108,6 +108,14 @@ INCLUDE ("cmake/installMacGISLIB.cmake")
 # CAN CALL THIS WITHOUT FEAR...
 INCLUDE ("cmake/installMacLibTiff.cmake")
 
+
+#SOULD WE ADD THE GDIPLUS.dll INTO project
+# ONLY FOR Windows, do nothing under other 
+# OS. 
+# CHECK ARE DONE INTERNALLY YOU 
+# CAN CALL THIS WITHOUT FEAR...
+INCLUDE ("cmake/Use_wingdiplus.cmake")
+
 # SHOULD WE USE THE MT VERSION FOR DEFAULT 
 # COMPATIBILITY WITH < WINXP
 IF (WIN32)
