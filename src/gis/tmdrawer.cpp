@@ -389,6 +389,10 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	
+	tmGISDataRaster * pRaster = (tmGISDataRaster*) pdata;
+	pRaster->SetSpatialFilter(m_spatFilter, itemProp->m_LayerType);
+	
+	
 	return TRUE;	
 }
 

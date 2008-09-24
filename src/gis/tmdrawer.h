@@ -37,6 +37,7 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
 #include "tmgisdatavector.h"
+#include "tmgisdataraster.h"
 
 //#include "../database/database_tm.h"
 

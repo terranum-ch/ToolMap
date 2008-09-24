@@ -42,6 +42,28 @@ const int tmSCROLLBARS_DIV = 50; // number of divisors for scrollbars
  *******************************************************************************/
 class tmRealRect 
 	{
+	private:
+		double GetDifferences (const double & min, const double & max)
+		{
+			if (wxIsSameDouble(max, min))
+				return 0;
+			if (max <= 0 && min >= 0)
+				return max + min;
+			if (max >= 0 )//&& min < max)
+				return max - min;
+			
+			// if case isn't taken into account
+			wxString sFunction = wxString::FromAscii(__FUNCTION__);
+			wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
+														   sFunction.c_str(), __LINE__); 
+			wxString sErrMsg = wxString::Format(_T("%s values are coord min-max : %.*f - %.*f "),
+												sFunctionLineError.c_str(), 2, min, 2 , max);
+			wxASSERT_MSG(0,sErrMsg);
+			
+			return 0;
+		}
+		
+		
 	public:
 		double x_min;
 		double y_min;
@@ -52,11 +74,17 @@ class tmRealRect
 		tmRealRect(double xmin, double ymin, double xmax, double ymax) :
 		x_min(xmin), y_min(ymin), x_max(xmax), y_max(ymax) { }
 		
+		bool Clip (const tmRealRect & src, tmRealRect & result);
+		
 		bool operator==(const tmRealRect& pt) const
 		{
 			return wxIsSameDouble(x_min, pt.x_min) && wxIsSameDouble(y_min, pt.y_min)
 			&& wxIsSameDouble(x_max, pt.x_max) && wxIsSameDouble(y_max, pt.y_max);
 		}
+		
+		double GetWidth () {return GetDifferences(x_min, x_max);}
+		double GetHeight () {return GetDifferences(y_min, y_max);}
+	
 	};
 
 
@@ -131,6 +159,7 @@ class tmGISScale : public wxObject
 		wxPoint GetVirtualPxPosition ();
 		void ComputeScrollMoveReal (int orientation, int newpos);
 		
+			
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)
 		{
@@ -145,7 +174,7 @@ class tmGISScale : public wxObject
 			
 		}
 		
-		inline double DifferenceDouble (const double & d1, const double &d2)
+		static inline double DifferenceDouble (const double & d1, const double &d2)
 		{
 			if (wxIsSameDouble(d1, d2))
 				return 0;
@@ -157,7 +186,7 @@ class tmGISScale : public wxObject
 		
 		
 				
-		inline double DifferenceCoord (const double & coordmax, const double & coordmin)
+		static inline double DifferenceCoord (const double & coordmax, const double & coordmin)
 		{
 			if (wxIsSameDouble(coordmax, coordmin))
 				return 0;
@@ -177,7 +206,7 @@ class tmGISScale : public wxObject
 			return 0;
 		}
 		
-		inline double RemoveFromCoord (const double & coord1, const double & value)
+		static inline double RemoveFromCoord (const double & coord1, const double & value)
 		{
 			if (coord1 > 0)
 				return coord1 - value;
@@ -185,7 +214,7 @@ class tmGISScale : public wxObject
 				return coord1 + value;
 		}
 		
-		inline double AppendToCoord (const double & coord1, const double & value)
+		static inline double AppendToCoord (const double & coord1, const double & value)
 		{
 			if (coord1 > 0)
 				return coord1 + value;

@@ -27,6 +27,7 @@ tmGISDataRaster::tmGISDataRaster()
 	m_DataSet = NULL;
 	m_RasterBand = NULL;
 	m_FileType = _T("Generic GDAL Raster");
+	m_PxImgFilter = wxRect(0,0,-1,-1);
 }
 
 
@@ -153,6 +154,27 @@ void tmGISDataRaster::InitGISDriversRaster()
 }
 
 
+
+/***************************************************************************//**
+ @brief Get Image dimensions in Pixels
+ @return  The image dimensions in pixels or -1,-1 if image wasen't open
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 September 2008
+ *******************************************************************************/
+wxSize tmGISDataRaster::GetImagePxDim ()
+{
+	if (m_DataSet)
+	{
+		return wxSize (m_DataSet->GetRasterXSize(), m_DataSet->GetRasterYSize());
+	}
+	
+	fprintf(stderr, "%s line %d : Error getting image dimension \n ", __FUNCTION__, __LINE__);
+	return wxSize (-1,-1);
+}
+
+
+
+
 /***************************************************************************//**
  @brief Define the area of interest
  @details This function define the area we are interessed in. Reading may be
@@ -169,7 +191,35 @@ void tmGISDataRaster::InitGISDriversRaster()
  *******************************************************************************/
 bool tmGISDataRaster::SetSpatialFilter (tmRealRect filter, int type)
 {
-	//is image inside spatial filter
+	// Compute image pixels value 
+	wxASSERT (m_DataSet);
+
+	wxSize imgDim = GetImagePxDim();
+	if (imgDim == wxSize (-1,-1))
+		return FALSE;
+	
+	tmRealRect myImgCoord = GetMinimalBoundingRectangle();
+	if (myImgCoord == tmRealRect(0,0,0,0))
+		return FALSE;
+	tmRealRect myImgCliped (0,0,0,0);
+	
+	myImgCoord.Clip(filter, myImgCliped);
+	
+	
+	// image with and height (Real)
+	double dImgW = myImgCoord.GetWidth();
+	double dImgH = myImgCoord.GetHeight();
+		
+	
+	double dPxX =  dImgW / imgDim.GetWidth();
+	double dPxY = dImgH / imgDim.GetHeight();
+	
+	
+	// wich part of image is inside filter
+	
+	
+	//double dOffsetXMax = tmGISScale::RemoveFromCoord(myImgCoord.x_max, filter.x_max);
+	//m_PxImgFilter.
 	
 	
 	return TRUE;
