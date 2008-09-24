@@ -117,7 +117,12 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 		case LAYER_SPATIAL_POLYGON:
 			DrawPolygons(itemProp, pdata);
 			break;
+		case LAYER_SPATIAL_RASTER:
+			DrawRaster(itemProp, pdata);
+			break;
 		default:
+			fprintf(stderr, "%s line %d : Error - no drawer found for one object\n ",
+					__FUNCTION__, __LINE__);
 			return FALSE;
 			break;
 	}
@@ -378,5 +383,12 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	return bReturn;
+}
+
+
+bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
+{
+	
+	return TRUE;	
 }
 

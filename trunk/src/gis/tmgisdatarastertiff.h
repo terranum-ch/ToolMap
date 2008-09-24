@@ -42,10 +42,7 @@ class tmGISDataRasterTIFF : public tmGISDataRaster
 		tmGISDataRasterTIFF();
 		~tmGISDataRasterTIFF();
 		
-		// implementing virtual function
-		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
-		virtual tmRealRect GetMinimalBoundingRectangle();
-		
+
 	};
 
 
