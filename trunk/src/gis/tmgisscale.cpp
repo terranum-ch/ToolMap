@@ -20,6 +20,71 @@
 #include "tmgisscale.h"
 
 
+/***************************************************************************//**
+ @brief Clip rectangle with another
+ @details This function clip the rectangle with a src one and return the result.
+ @param src Rectangle used for clipping (bigger)
+ @param result Result of a clipping area, in case of no clipping, value of
+ result isn't changed
+ @return true if we can clip (image visible), false if we are outside the cliping area
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 September 2008
+ *******************************************************************************/
+bool tmRealRect::Clip (const tmRealRect & src, tmRealRect & result)
+{
+	//double srcWidth = src.GetWidth();
+	//double srcHeight = src.GetHeight();
+	
+	// Check to see if the image is even visible
+	if(x_max <= src.x_min) // Too far off to the left
+		return false;
+	if(x_min >= src.x_max) // Too far off to the right
+		return false;
+	if(y_min >= src.y_max) // Too far off to the top
+		return false;
+	if(y_max <= src.y_min) // Too far off to the bottom
+		return false;
+	
+	// copy into result if no clipping
+	result = tmRealRect(x_min, y_min, x_max, y_max);
+	
+	// Ok image visible proceed with cliping
+	if(x_min < src.x_min) // Image is hidden partially by the left edge of the screen
+	{
+		// Crop from lef
+		result.x_min = src.x_min;
+		result.x_max = y_max;
+	}
+
+	if(x_max > src.x_max) // Image is hidden partially by the right edge of the screen
+	{
+		// Crop from right
+		result.x_min = x_min;
+		result.x_max = src.x_max;
+	}
+	
+	if(y_min < src.y_min) // Image is hidden partially by the top edge of the screen
+	{
+		// Crop from top
+		result.y_min = src.y_min;
+		result.y_max = y_max;
+	}
+
+	if(y_max > src.y_max) // Image is hidden parially by the bottom edge of the screen
+	{
+		// Crop from bottom
+		result.y_max = src.y_max;
+		result.y_min = y_min;
+	}
+	// Since the image is visible, return true
+	return true;
+	
+	
+	
+}
+
+
+
 
 tmGISScale::tmGISScale()
 {
@@ -316,7 +381,6 @@ void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos)
 			break;
 	}
 }
-
 
 
 

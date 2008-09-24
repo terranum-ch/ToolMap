@@ -59,6 +59,10 @@ class tmGISDataRaster : public tmGISData
 		GDALDataset * m_DataSet;
 		GDALRasterBand * m_RasterBand;
 		wxString	m_FileType;
+		wxRect m_PxImgFilter;
+		
+		wxSize GetImagePxDim ();
+		
 		
 	public:
 		tmGISDataRaster();
