@@ -43,10 +43,6 @@ class tmGISDataRasterEGRID : public tmGISDataRaster
 		tmGISDataRasterEGRID();
 		~tmGISDataRasterEGRID();
 		
-		// implementing virtual function
-		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
-		virtual tmRealRect GetMinimalBoundingRectangle();
-		
 	};
 
 

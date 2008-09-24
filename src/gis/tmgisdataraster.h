@@ -58,10 +58,15 @@ class tmGISDataRaster : public tmGISData
 	protected:
 		GDALDataset * m_DataSet;
 		GDALRasterBand * m_RasterBand;
+		wxString	m_FileType;
 		
 	public:
 		tmGISDataRaster();
 		~tmGISDataRaster();
+		
+		// standard GDAL functions
+		virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
+		virtual tmRealRect GetMinimalBoundingRectangle();
 		
 		// static functions
 		static void InitGISDriversRaster();
@@ -71,6 +76,9 @@ class tmGISDataRaster : public tmGISData
 		
 		// gis functions
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_RASTER;}
+		
+		// reading functions
+		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		
 	};
 
