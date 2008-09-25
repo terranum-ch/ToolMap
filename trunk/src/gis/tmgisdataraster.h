@@ -85,6 +85,8 @@ class tmGISDataRaster : public tmGISData
 		
 		// reading functions
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
+		bool IsImageInsideVisibleArea ();
+		
 		
 	};
 

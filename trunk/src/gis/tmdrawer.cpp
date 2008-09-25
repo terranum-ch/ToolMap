@@ -386,11 +386,25 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 }
 
 
+
 bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	
 	tmGISDataRaster * pRaster = (tmGISDataRaster*) pdata;
-	pRaster->SetSpatialFilter(m_spatFilter, itemProp->m_LayerType);
+	if(!pRaster->SetSpatialFilter(m_spatFilter, itemProp->m_LayerType))
+	{
+		return false;
+	}
+	
+	// check if we need to draw raster (inside visible area)
+	if (!pRaster->IsImageInsideVisibleArea())
+	{
+		return false;
+	}
+	
+	
+	
+	
 	
 	
 	return TRUE;	
