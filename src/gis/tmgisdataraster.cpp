@@ -303,6 +303,24 @@ bool tmGISDataRaster::SetSpatialFilter (tmRealRect filter, int type)
 }
 
 
+/***************************************************************************//**
+ @brief Should we load image data
+ @details This function works only if tmGISDataRaster::SetSpatialFilter was
+ called before. This function return true if m_PxImgFilter contain valid
+ coordinates
+ @return  true if the image is visible (inside drawing area), false otherwise.
+ If false is returned, no need to call the drawing process
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 25 September 2008
+ *******************************************************************************/
+bool tmGISDataRaster::IsImageInsideVisibleArea ()
+{
+	if (m_PxImgFilter != wxRect (0,0,-1,-1))
+		return TRUE;
+	return FALSE;
+}
+
+
 
 /***************************************************************************//**
  @brief Extract image data
