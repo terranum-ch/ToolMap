@@ -402,8 +402,56 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
+	// load image using GDAL
+	unsigned char      *imgbuf = NULL;
+	unsigned int        imglen = 0;
+	unsigned char      *maskbuf = NULL;
+	unsigned int        masklen= 0;
+	bool bReturn =		true;
 	
+	if (pRaster->GetImageData(&imgbuf, &imglen, &maskbuf, &masklen) != CE_None)
+	{
+		fprintf(stderr, "%s line %d : Error loading image data \n ", __FUNCTION__, __LINE__);
+		// need cleanup
+		// in all case, clean data
+		if (imgbuf)
+			delete imgbuf;
+		if (maskbuf)
+			delete maskbuf;
+		return false;
+	}
 	
+	// data loaded successfully, draw image on display now
+	// device context for drawing
+	wxMemoryDC dc;
+	dc.SelectObject(*m_bmp);
+	//wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
+	
+	tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
+	wxPoint topleftpx = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_min,
+														myClippedCoordReal.y_min));
+	wxPoint bottomright = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
+														  myClippedCoordReal.y_max));
+	wxRect myClippedCoordPx (topleftpx, bottomright);
+	wxImage myRaster (myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+	myRaster.SetData(imgbuf);
+	dc.SetPen(*wxRED_PEN);
+	
+	//dc.SetTextBackground(*wxBLUE);
+	//dc.SetTextForeground(*wxGREEN);
+	
+	//dc.DrawBitmap(myRaster, wxPoint (0,0));
+	dc.DrawBitmap(myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),FALSE);
+	
+	dc.DrawLine(topleftpx, bottomright);
+	
+	dc.SelectObject(wxNullBitmap);
+	
+	// in all case, clean data
+	//if (imgbuf)
+	//	delete imgbuf;
+	//if (maskbuf)
+	//	delete maskbuf;
 	
 	
 	

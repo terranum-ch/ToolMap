@@ -56,10 +56,11 @@ class tmGISDataRaster : public tmGISData
 	{
 	private:
 	protected:
-		GDALDataset * m_DataSet;
-		GDALRasterBand * m_RasterBand;
-		wxString	m_FileType;
-		wxRect m_PxImgFilter;
+		GDALDataset *	m_DataSet;
+		GDALRasterBand *m_RasterBand;
+		wxString		m_FileType;
+		wxRect			m_PxImgFilter;
+		tmRealRect		m_ClippedCoord;
 		
 		wxSize GetImagePxDim ();
 		bool GetImagePxSize (double & pxsizeX, double & pxsizeY, 
@@ -86,6 +87,9 @@ class tmGISDataRaster : public tmGISData
 		// reading functions
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		bool IsImageInsideVisibleArea ();
+		CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
+							unsigned char **maskbuf, unsigned int   *masklen);
+		tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
 		
 		
 	};

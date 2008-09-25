@@ -28,6 +28,7 @@ tmGISDataRaster::tmGISDataRaster()
 	m_RasterBand = NULL;
 	m_FileType = _T("Generic GDAL Raster");
 	m_PxImgFilter = wxRect(0,0,-1,-1);
+	m_ClippedCoord = tmRealRect (0,0,0,0);
 }
 
 
@@ -290,12 +291,11 @@ bool tmGISDataRaster::SetSpatialFilter (tmRealRect filter, int type)
 		return FALSE;
 	
 	
-	tmRealRect myImgCliped (0,0,0,0);
-	if(myImgCoord.Clip(filter, myImgCliped))
+	if(myImgCoord.Clip(filter, m_ClippedCoord))
 	{
 		// image visible,
 		// clip image with spatial filter
-		m_PxImgFilter = ConvertClipedImage(myImgCoord, myImgCliped);
+		m_PxImgFilter = ConvertClipedImage(myImgCoord, m_ClippedCoord);
 		
 	}
 	
@@ -331,28 +331,28 @@ bool tmGISDataRaster::IsImageInsideVisibleArea ()
  byte RGB information. This could be done as the data is written to the data
  set or afterwards, as it is done here. Any minor savings from our own driver
  are outweighed by the high development/maintenance costs.
+ @warning You must call tmGISDataRaster::SetSpatialFilter() before this function
+ for initialization to take place.
  @note Comes from
  THUBAN (http://thuban.intevation.org/) and modified for ToolMap2. Extracted
  from version 1.2.0
- @param ds ???
  @param imgbuf ???
  @param imglen ???
  @param maskbuf ???
  @param masklen ???
- @return ???
+ @return CE_None if data was read succesfully
  @author Thuban Team & modfied by Lucien Schreiber
  @date 24 September 2008
  *******************************************************************************/
-static CPLErr GetImageData(GDALDataset *ds,
-                           unsigned char **imgbuf,
+/*CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
                            unsigned int   *imglen,
                            unsigned char **maskbuf,
                            unsigned int   *masklen)
 {
     // my definitions 
-	int             bEnableDstAlpha = FALSE, bEnableSrcAlpha = FALSE;
+	int             bEnablem_DataSettAlpha = FALSE, bEnableSrcAlpha = FALSE;
 	int             bMakeMask, bMakeAlpha, bInvertMask;
-	
+	wxRect imgfilter = m_PxImgFilter;
 	
 	
 	CPLErr ret = CE_None;
@@ -360,11 +360,11 @@ static CPLErr GetImageData(GDALDataset *ds,
     GDALColorTable *pal = NULL;
 	
 	
-    ds->FlushCache();
+    m_DataSet->FlushCache();
 	
-    int rasterCount  = ds->GetRasterCount();
-    int nRasterXSize = ds->GetRasterXSize();
-    int nRasterYSize = ds->GetRasterYSize();
+    int rasterCount  = m_DataSet->GetRasterCount();
+    int nRasterXSize = imgfilter.GetWidth();		//m_DataSet->GetRasterXSize();
+    int nRasterYSize = imgfilter.GetHeight();	//m_DataSet->GetRasterYSize();
     if ( ! (nRasterXSize > 0 && nRasterYSize > 0 ))
     {
 		wxLogMessage(_("The dimensions (%ix%i) are invalid"), 
@@ -384,7 +384,7 @@ static CPLErr GetImageData(GDALDataset *ds,
     }
 	
     //
-    // if there are three or more bands assume that the first three
+    // if there are three or more banm_DataSet assume that the first three
     // are for RGB, unless told otherwise
     //
     if (rasterCount >= 3)
@@ -392,7 +392,7 @@ static CPLErr GetImageData(GDALDataset *ds,
         for (int i=1; i <= 3; i++)
         {
             int offs = 0;
-            GDALRasterBand *band = ds->GetRasterBand(i);
+            GDALRasterBand *band = m_DataSet->GetRasterBand(i);
 			
             switch (band->GetColorInterpretation())
             {
@@ -411,7 +411,7 @@ static CPLErr GetImageData(GDALDataset *ds,
 			
             if (0 <= offs && offs < 3)
             {
-                ret = band->RasterIO(GF_Read, 0, 0,
+                ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
                                      nRasterXSize, nRasterYSize,
                                      *imgbuf+offs, nRasterXSize, nRasterYSize,
                                      GDT_Byte, 3, 0);
@@ -429,7 +429,7 @@ static CPLErr GetImageData(GDALDataset *ds,
         // one band is either a palette based image, or greyscale
         //
 		
-        GDALRasterBand *band = ds->GetRasterBand(1);
+        GDALRasterBand *band = m_DataSet->GetRasterBand(1);
 		
         switch (band->GetColorInterpretation())
         {
@@ -451,7 +451,7 @@ static CPLErr GetImageData(GDALDataset *ds,
                     // loop through the buffer replacing the values
                     // with the correct RGB triples.
                     //
-                    ret = band->RasterIO(GF_Read, 0, 0,
+                    ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
                                          nRasterXSize, nRasterYSize,
                                          *imgbuf, nRasterXSize, nRasterYSize,
                                          GDT_UInt16, 3, 0);
@@ -495,7 +495,7 @@ static CPLErr GetImageData(GDALDataset *ds,
                 // loop through the buffer replacing the values
                 // with the correct RGB triples.
                 //
-                ret = band->RasterIO(GF_Read, 0, 0,
+                ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
                                      nRasterXSize, nRasterYSize,
                                      *imgbuf, nRasterXSize, nRasterYSize,
                                      GDT_Byte, 3, 0);
@@ -527,18 +527,18 @@ static CPLErr GetImageData(GDALDataset *ds,
     }
     else
     {
-		wxLogError(_T("Unsupported number of raster bands (%i) in image"),
+		wxLogError(_T("Unsupported number of raster banm_DataSet (%i) in image"),
 				   rasterCount);
 		
         ret = CE_Failure;
     }
 	
-    if (ret == CE_None && bEnableDstAlpha && rasterCount > 1)
+    if (ret == CE_None && bEnablem_DataSettAlpha && rasterCount > 1)
     {
         if (bMakeMask)
         {
             //
-            // The mask is really an XBM image. In other words, each
+            // The mask is really an XBM image. In other worm_DataSet, each
             // pixel is represented by one bit in a byte array.
             //
             // First read the alpha band, and then convert it to
@@ -560,9 +560,9 @@ static CPLErr GetImageData(GDALDataset *ds,
                 }
                 else
                 {
-                    GDALRasterBand *band = ds->GetRasterBand(rasterCount);
+                    GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
 					
-                    ret = band->RasterIO(GF_Read, 0, 0,
+                    ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
                                          nRasterXSize, nRasterYSize,
                                          tmp, nRasterXSize, nRasterYSize,
                                          GDT_Byte, 0, 0);
@@ -650,9 +650,9 @@ static CPLErr GetImageData(GDALDataset *ds,
 			
             if ( *maskbuf != NULL )
             {
-                GDALRasterBand *band = ds->GetRasterBand(rasterCount);
+                GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
 				
-                ret = band->RasterIO(GF_Read, 0, 0,
+                ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
                                      nRasterXSize, nRasterYSize,
                                      *maskbuf, nRasterXSize, nRasterYSize,
                                      GDT_Byte, 0, 0);
@@ -675,6 +675,344 @@ static CPLErr GetImageData(GDALDataset *ds,
     }
 	
     return ret;
+}*/
+CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, 
+								 unsigned int   *imglen,
+								 unsigned char **maskbuf, 
+								 unsigned int   *masklen
+								 )//int winXsize, int winYsize, int ImgXSize, int ImgYSize,
+								 //int ImgXPos, int ImgYPos) 
+{
+    CPLErr ret = CE_None;
+	
+    GDALColorTable *pal = NULL;
+	
+	wxRect imgfilter = m_PxImgFilter;
+	
+	
+    m_DataSet->FlushCache();
+	
+    int rasterCount  = m_DataSet->GetRasterCount();
+    int nRasterXSize = imgfilter.GetWidth();
+    int nRasterYSize = imgfilter.GetHeight();
+    if ( ! (nRasterXSize > 0 && nRasterYSize > 0 ))
+    {
+        wxLogMessage(_("The dimensions (%ix%i) are invalid"), 
+					 nRasterXSize, nRasterYSize);
+        return CE_Failure;
+    }
+	
+    //
+    // create the new image array for RGBRGB... values
+    //
+    //*imglen = 3 * nRasterXSize * nRasterYSize;
+    *imglen = 3 * imgfilter.GetWidth() * imgfilter.GetHeight();
+	*imgbuf = (unsigned char*)CPLMalloc(*imglen);
+    if ( *imgbuf == NULL ) 
+    {
+		wxLogMessage(_("The system does not have enough memory to project"));
+        return CE_Failure;
+    }
+	
+    //
+    // if there are three or more banm_DataSet assume that the first three
+    // are for RGB, unless told otherwise 
+    //
+    if (rasterCount >= 3)
+    {
+        for (int i=1; i <= 3; i++)
+        {
+            int offs = 0;
+            GDALRasterBand *band = m_DataSet->GetRasterBand(i);
+			
+			
+            switch (band->GetColorInterpretation())
+            {
+                case GCI_Undefined: offs = i-1; break;
+                case GCI_RedBand:   offs = 1; break;
+                case GCI_GreenBand: offs = 2; break;
+                case GCI_BlueBand:  offs = 3; break;
+                default:            offs = -1; break;
+            }
+			
+            //
+            // copy the image into the buffer using the proper offset
+            // so we first copy over all Red values, then all Green
+            // values, and then all Blue values
+            //
+			
+            if (0 <= offs && offs < 3)
+            {
+                ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
+                                     nRasterXSize, nRasterYSize,
+                                     *imgbuf+offs, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                     GDT_Byte, 3, 0);
+                if (ret == CE_Failure)
+                {
+					
+					wxLogMessage(_("An unknown error occured while reading band %i"),i);
+                    break;
+                }
+            }
+        }
+    }
+    else if (rasterCount >= 1)
+    {
+        //
+        // one band is either a palette based image, or greyscale
+        //
+		
+        GDALRasterBand *band = m_DataSet->GetRasterBand(1);
+		
+        switch (band->GetColorInterpretation())
+        {
+            case GCI_PaletteIndex:
+				
+                pal = band->GetColorTable();
+                
+                if (pal == NULL)
+                {
+					wxLogMessage(_("Couldn't find a palette for palette-based image")); 
+					
+                    ret = CE_Failure;
+                }
+                else
+                {
+                    GDALPaletteInterp pal_interp 
+					= pal->GetPaletteInterpretation();
+					
+                    //
+                    // copy over all the palette indices and then
+                    // loop through the buffer replacing the values
+                    // with the correct RGB triples. 
+                    //
+                    ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
+                                         nRasterXSize, nRasterYSize,
+                                         *imgbuf, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                         GDT_UInt16, 3, 0);
+					
+                    if (ret == CE_Failure) 
+                    {
+                        
+						wxLogMessage(_("An unknown error occured while reading band 1"));
+						break;
+                    }
+					
+                    for (unsigned char *data = *imgbuf;
+                         data != (*imgbuf+*imglen);
+                         data += 3)
+                    {
+						
+                        unsigned short int val = *((unsigned short int *)data);
+						
+                        const GDALColorEntry *color = pal->GetColorEntry(val);
+						
+                        if (pal_interp == GPI_Gray)
+                        {
+                            *(data + 0) = color->c1;
+                            *(data + 1) = color->c1;
+                            *(data + 2) = color->c1;
+                        }
+                        else
+                        {
+                            *(data + 0) = color->c1;
+                            *(data + 1) = color->c2;
+                            *(data + 2) = color->c3;
+                        }
+                    }
+                }
+                break;
+				
+            case GCI_Undefined: // can we try to make a greyscale image?
+            case GCI_GrayIndex:
+				
+                //
+                // copy over all the palette indices and then
+                // loop through the buffer replacing the values
+                // with the correct RGB triples. 
+                //
+                ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
+                                     nRasterXSize, nRasterYSize,
+                                     *imgbuf, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                     GDT_Byte, 3, 0);
+				
+                if (ret == CE_Failure) 
+                {
+                    wxLogMessage(_("An unknown error occured while reading band 1"));
+                    break;
+                }
+				
+                for (unsigned char *data = *imgbuf;
+                     data != (*imgbuf+*imglen);
+                     data += 3)
+                {
+                    //pal->GetColorEntry(*data, &color);
+					
+                    //*(data + 0) = *data; // already correct
+                    *(data + 1) = *data;
+                    *(data + 2) = *data;
+                }
+                break;
+				
+            default:
+                wxLogMessage (_("Unsupported color interpretation '%s'"), 
+							  GDALGetColorInterpretationName(
+															 band->GetColorInterpretation()));
+				
+				
+                ret = CE_Failure;
+                break;
+        }
+    }
+    else
+    {
+		wxLogMessage(_("Unsupported number of raster banm_DataSet (%i)"),
+					 rasterCount);
+		
+        ret = CE_Failure;
+    }
+	
+    if (ret == CE_None && 0  && rasterCount > 1) //&& bEnablem_DataSettAlpha
+    {
+        if (1) //bMakeMask)
+        {
+            //
+            // The mask is really an XBM image. In other worm_DataSet, each
+            // pixel is represented by one bit in a byte array.
+            //
+            // First read the alpha band, and then convert it to
+            // a bit array by thresholding each pixel value at 128.
+            //
+            
+            *masklen = ((nRasterXSize + 7) / 8) * nRasterYSize;
+            *maskbuf = (unsigned char *)CPLMalloc(*masklen);
+			
+            if ( *maskbuf != NULL )
+            {
+                unsigned char *tmp 
+				= (unsigned char *)CPLMalloc(nRasterXSize * nRasterYSize);
+				
+                if ( tmp == NULL )
+                {
+                    CPLFree(*maskbuf);
+                    *maskbuf = NULL;
+                }
+                else
+                {
+                    GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
+					
+                    ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
+                                         nRasterXSize, nRasterYSize,
+                                         tmp, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                         GDT_Byte, 0, 0);
+					
+                    if (ret != CE_Failure)
+                    {
+                        int i, j, b=1, c=0;
+                        unsigned char *ptr = *maskbuf;
+                        unsigned char *tptr = tmp;
+						
+                        //unsigned int empty_count=0;
+						
+                        for (i=0; i < nRasterYSize; i++)
+                        {
+                            for (j=nRasterXSize; j >= 8; j -= 8)
+                            {
+                                c=0; b=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                
+								// if (bInvertMask) 
+								//   *(ptr++) = ~c;
+								// else
+								//   *(ptr++) = c;
+                            }
+							
+                            c=0; b=1;
+                            switch (nRasterXSize & 7)
+                            {
+                                case 7: if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                case 6: if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                case 5: if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                case 4: if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                case 3: if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                case 2: if (*tptr++ >= 128) {c|=b;} b<<=1;
+                                case 1: 
+                                    if (*tptr++ >= 128) {c|=b;} 
+                                    b<<=1;
+									
+                                    //
+                                    // byte should be padded with 0's so
+                                    // it's not a simple inversion
+                                    //
+                                    //if (bInvertMask) 
+									//  *(ptr++) = ~c & (b-1);
+                                    //else
+									//  *(ptr++) = c;
+									
+                                default: break;
+                            }
+                        }
+						
+#if 0
+                        if (empty_count == *masklen)
+                        {
+                            fprintf(stderr, "mask not used\n");
+							
+                            CPLFree(*maskbuf);
+                            *maskbuf = NULL;
+                        }
+#endif
+                    }
+					
+                    CPLFree(tmp);
+                    tmp = NULL;
+                }
+				
+            }
+        }
+		//        else if (bMakeAlpha)
+		//        {
+		//            //
+		//            // This is the simple case. The array we get back from RasterIO
+		//            // is already in the correct format.
+		//            //
+		//            
+		//            *masklen = nRasterXSize * nRasterYSize;
+		//            *maskbuf = (unsigned char *)CPLMalloc(*masklen);
+		//
+		//            if ( *maskbuf != NULL )
+		//            {
+		//                GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
+		//
+		//                ret = band->RasterIO(GF_Read, 0, 0, 
+		//                                     nRasterXSize, nRasterYSize,
+		//                                     *maskbuf, nRasterXSize, nRasterYSize, 
+		//                                     GDT_Byte, 0, 0);
+		//
+		//#if 0
+		//                if (ret == CE_Failure)
+		//                {
+		//                    CPLFree(*maskbuf);
+		//                    *maskbuf = NULL;
+		//                }
+		//#endif
+		//            }
+		//        }
+    }
+	
+    if (ret != CE_None) 
+    {
+        if (*imgbuf  != NULL) { CPLFree(*imgbuf);  *imgbuf  = NULL; }
+        if (*maskbuf != NULL) { CPLFree(*maskbuf); *maskbuf = NULL; }
+    }
+	
+    return ret;
 }
-
 
