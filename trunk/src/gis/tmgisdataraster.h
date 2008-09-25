@@ -62,7 +62,9 @@ class tmGISDataRaster : public tmGISData
 		wxRect m_PxImgFilter;
 		
 		wxSize GetImagePxDim ();
-		
+		bool GetImagePxSize (double & pxsizeX, double & pxsizeY, 
+							 const tmRealRect & imgrealcoord = tmRealRect(0,0,0,0));
+		wxRect ConvertClipedImage (const tmRealRect & origin, const tmRealRect & clipped);
 		
 	public:
 		tmGISDataRaster();

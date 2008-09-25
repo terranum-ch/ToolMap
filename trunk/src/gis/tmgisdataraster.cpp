@@ -173,6 +173,98 @@ wxSize tmGISDataRaster::GetImagePxDim ()
 }
 
 
+/***************************************************************************//**
+ @brief Return width and height of pixels in real units
+ @details Divide the width and height of image by the width and height of image
+ in pixels
+ @param pxsizeX value of one pixels width in real units
+ @param pxsizeY value of one pixels height in real units
+ @param imgrealcoord If specified, image coordinates aren't calculated again. 
+ But if empty, function will calculate image coordinate.
+ @return  True if values are valid
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 25 September 2008
+ *******************************************************************************/
+bool tmGISDataRaster::GetImagePxSize (double & pxsizeX, double & pxsizeY,const tmRealRect & imgrealcoord)
+{
+	tmRealRect myImageCoord = imgrealcoord;
+	if (imgrealcoord == tmRealRect(0,0,0,0))
+		myImageCoord = GetMinimalBoundingRectangle();
+	
+	wxSize pxdim = GetImagePxDim();
+	
+	pxsizeX = myImageCoord.GetWidth() / pxdim.GetWidth();
+	pxsizeY = myImageCoord.GetHeight() / pxdim.GetHeight();
+	
+	if (pxsizeX > 0 && pxsizeY > 0)
+		return true;
+	
+	return false;
+}
+
+
+
+/***************************************************************************//**
+ @brief Convert clipped Real size to image pixels size
+ @param origin Non clipped coordinates (Real)
+ @param clipped Clipped coordinates (Real)
+ @return  Clipped coordinates (Pixels), may be used for loading part of image
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 25 September 2008
+ *******************************************************************************/
+wxRect tmGISDataRaster::ConvertClipedImage (const tmRealRect & origin, 
+											const tmRealRect & clipped)
+{
+	// getting informations : image width in pixels and sizeof one pixels width
+	// height.
+	wxSize originPX = GetImagePxDim();
+	if (originPX == wxSize (-1,-1))
+	{
+		fprintf(stderr, "%s line %d : Error getting image width and height in px \n ",
+				__FUNCTION__, __LINE__);
+		return wxRect (0,0,-1,-1);
+	}
+	
+	double dPxWidthX = 0, dPxWidthY = 0;
+	if (!GetImagePxSize(dPxWidthX, dPxWidthY, origin))
+	{
+		fprintf(stderr, "%s line %d : Error getting pixel width and height \n ",
+				__FUNCTION__, __LINE__);
+		return wxRect (0,0,-1,-1);
+	}
+	
+	// converting Real size to image pixels size 
+	wxRect clippedPX = wxRect (0,0,originPX.GetWidth(), originPX.GetHeight());
+	
+	// simple case, origin and clipped are similar, image is fully displayed
+	if (origin == clipped)
+		return clippedPX;
+	
+	if (origin.x_min < clipped.x_min) // left clipped
+	{
+		clippedPX.x = (clipped.x_min - origin.x_min) / dPxWidthX;
+		clippedPX.width = clippedPX.GetWidth() - clippedPX.x;
+	}
+	
+	if (clipped.x_max < origin.x_max) // right clipped
+	{
+		clippedPX.width = clippedPX.width - ((origin.x_max - clipped.x_max) / dPxWidthX);
+	}
+	
+	if (origin.y_min < clipped.y_min) // bottom clipped
+	{
+		clippedPX.y = (clipped.y_min - origin.y_min) / dPxWidthY;
+		clippedPX.height = clippedPX.GetHeight() - clippedPX.y;
+	}
+	
+	if (clipped.y_max < origin.y_max) // top clipped
+	{
+		clippedPX.height = clippedPX.height - ((origin.y_max - clipped.y_max) / dPxWidthY);
+	}
+	
+	return clippedPX;
+}
+
 
 
 /***************************************************************************//**
@@ -181,46 +273,31 @@ wxSize tmGISDataRaster::GetImagePxDim ()
  done after with GetRasterData function.
  @note Real coordinates passed here are
  converted into raster coordinates
- @param tmRealRect Real coordinates
+ @param filter Filter real coordinates
  @param type one of value defined in #TOC_GENERIC_NAME such as :  
- -TOC_NAME_TIFF
- -TOC_NAME_EGRID
- @param bool true if all works, false otherwise
+  - TOC_NAME_TIFF
+  - TOC_NAME_EGRID
+ @return bool true if all works, false otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 September 2008
  *******************************************************************************/
 bool tmGISDataRaster::SetSpatialFilter (tmRealRect filter, int type)
 {
-	// Compute image pixels value 
 	wxASSERT (m_DataSet);
-
-	wxSize imgDim = GetImagePxDim();
-	if (imgDim == wxSize (-1,-1))
-		return FALSE;
 	
 	tmRealRect myImgCoord = GetMinimalBoundingRectangle();
 	if (myImgCoord == tmRealRect(0,0,0,0))
 		return FALSE;
+	
+	
 	tmRealRect myImgCliped (0,0,0,0);
-	
-	myImgCoord.Clip(filter, myImgCliped);
-	
-	
-	// image with and height (Real)
-	double dImgW = myImgCoord.GetWidth();
-	double dImgH = myImgCoord.GetHeight();
+	if(myImgCoord.Clip(filter, myImgCliped))
+	{
+		// image visible,
+		// clip image with spatial filter
+		m_PxImgFilter = ConvertClipedImage(myImgCoord, myImgCliped);
 		
-	
-	double dPxX =  dImgW / imgDim.GetWidth();
-	double dPxY = dImgH / imgDim.GetHeight();
-	
-	
-	// wich part of image is inside filter
-	
-	
-	//double dOffsetXMax = tmGISScale::RemoveFromCoord(myImgCoord.x_max, filter.x_max);
-	//m_PxImgFilter.
-	
+	}
 	
 	return TRUE;
 }
@@ -239,16 +316,15 @@ bool tmGISDataRaster::SetSpatialFilter (tmRealRect filter, int type)
  @note Comes from
  THUBAN (http://thuban.intevation.org/) and modified for ToolMap2. Extracted
  from version 1.2.0
- @param ds 
- @param imgbuf 
- @param imglen 
- @param maskbuf 
- @param masklen 
- @param CPLErr 
+ @param ds ???
+ @param imgbuf ???
+ @param imglen ???
+ @param maskbuf ???
+ @param masklen ???
+ @return ???
  @author Thuban Team & modfied by Lucien Schreiber
  @date 24 September 2008
  *******************************************************************************/
-
 static CPLErr GetImageData(GDALDataset *ds,
                            unsigned char **imgbuf,
                            unsigned int   *imglen,
