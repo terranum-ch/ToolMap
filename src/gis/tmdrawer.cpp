@@ -403,13 +403,25 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	}
 	
 	// load image using GDAL
+	// owned by image, do not destroy manually.
 	unsigned char      *imgbuf = NULL;
 	unsigned int        imglen = 0;
 	unsigned char      *maskbuf = NULL;
 	unsigned int        masklen= 0;
 	bool bReturn =		true;
 	
-	if (pRaster->GetImageData(&imgbuf, &imglen, &maskbuf, &masklen) != CE_None)
+	// converting image coordinate & clipping 
+	tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
+	wxPoint topleftpx = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_min,
+														myClippedCoordReal.y_min));
+	wxPoint bottomright = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
+														  myClippedCoordReal.y_max));
+	wxRect myClippedCoordPx (topleftpx, bottomright);
+	wxImage myRaster (myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+
+		
+	if (pRaster->GetImageData(&imgbuf, &imglen, &maskbuf, &masklen, 
+							  wxSize(myClippedCoordPx.GetWidth(),myClippedCoordPx.GetHeight())) != CE_None)
 	{
 		fprintf(stderr, "%s line %d : Error loading image data \n ", __FUNCTION__, __LINE__);
 		// need cleanup
@@ -427,13 +439,8 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	dc.SelectObject(*m_bmp);
 	//wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
 	
-	tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
-	wxPoint topleftpx = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_min,
-														myClippedCoordReal.y_min));
-	wxPoint bottomright = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
-														  myClippedCoordReal.y_max));
-	wxRect myClippedCoordPx (topleftpx, bottomright);
-	wxImage myRaster (myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+	
+	
 	myRaster.SetData(imgbuf);
 	dc.SetPen(*wxRED_PEN);
 	

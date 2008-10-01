@@ -677,11 +677,12 @@ bool tmGISDataRaster::IsImageInsideVisibleArea ()
     return ret;
 }*/
 CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, 
-								 unsigned int   *imglen,
-								 unsigned char **maskbuf, 
-								 unsigned int   *masklen
-								 )//int winXsize, int winYsize, int ImgXSize, int ImgYSize,
-								 //int ImgXPos, int ImgYPos) 
+									 unsigned int   *imglen,
+									 unsigned char **maskbuf, 
+									 unsigned int   *masklen,
+									 wxSize imgSize
+									 )//int winXsize, int winYsize, int ImgXSize, int ImgYSize,
+//int ImgXPos, int ImgYPos) 
 {
     CPLErr ret = CE_None;
 	
@@ -706,13 +707,15 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
     // create the new image array for RGBRGB... values
     //
     //*imglen = 3 * nRasterXSize * nRasterYSize;
-    *imglen = 3 * imgfilter.GetWidth() * imgfilter.GetHeight();
+    *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
 	*imgbuf = (unsigned char*)CPLMalloc(*imglen);
     if ( *imgbuf == NULL ) 
     {
 		wxLogMessage(_("The system does not have enough memory to project"));
         return CE_Failure;
     }
+	
+	wxLogDebug(_T("Image length is : %d"), *imglen);
 	
     //
     // if there are three or more banm_DataSet assume that the first three
@@ -745,7 +748,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
             {
                 ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
                                      nRasterXSize, nRasterYSize,
-                                     *imgbuf+offs, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                     *imgbuf+offs, imgSize.GetWidth(), imgSize.GetHeight(), 
                                      GDT_Byte, 3, 0);
                 if (ret == CE_Failure)
                 {
@@ -788,7 +791,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
                     //
                     ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
                                          nRasterXSize, nRasterYSize,
-                                         *imgbuf, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                         *imgbuf, imgSize.GetWidth(), imgSize.GetHeight(), 
                                          GDT_UInt16, 3, 0);
 					
                     if (ret == CE_Failure) 
@@ -833,7 +836,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
                 //
                 ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
                                      nRasterXSize, nRasterYSize,
-                                     *imgbuf, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                     *imgbuf, imgSize.GetWidth(), imgSize.GetHeight(), 
                                      GDT_Byte, 3, 0);
 				
                 if (ret == CE_Failure) 
@@ -903,7 +906,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 					
                     ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), 
                                          nRasterXSize, nRasterYSize,
-                                         tmp, imgfilter.GetWidth(), imgfilter.GetHeight(), 
+                                         tmp, imgSize.GetWidth(), imgSize.GetHeight(), 
                                          GDT_Byte, 0, 0);
 					
                     if (ret != CE_Failure)
