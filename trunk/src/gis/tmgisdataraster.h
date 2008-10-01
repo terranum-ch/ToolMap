@@ -88,7 +88,8 @@ class tmGISDataRaster : public tmGISData
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		bool IsImageInsideVisibleArea ();
 		CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
-							unsigned char **maskbuf, unsigned int   *masklen);
+							unsigned char **maskbuf, unsigned int   *masklen,
+							wxSize imgSize);
 		tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
 		
 		
