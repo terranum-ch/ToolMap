@@ -442,25 +442,9 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	myRaster.SetData(imgbuf);
-	dc.SetPen(*wxRED_PEN);
-	
-	//dc.SetTextBackground(*wxBLUE);
-	//dc.SetTextForeground(*wxGREEN);
-	
-	//dc.DrawBitmap(myRaster, wxPoint (0,0));
+
 	dc.DrawBitmap(myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),FALSE);
-	
-	dc.DrawLine(topleftpx, bottomright);
-	
 	dc.SelectObject(wxNullBitmap);
-	
-	// in all case, clean data
-	//if (imgbuf)
-	//	delete imgbuf;
-	//if (maskbuf)
-	//	delete maskbuf;
-	
-	
 	
 	return TRUE;	
 }
