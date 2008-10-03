@@ -355,6 +355,10 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 	int             bMakeMask, bMakeAlpha, bInvertMask;
 	wxRect imgfilter = m_PxImgFilter;
 	
+	double dmin = 0;
+	double dmax = 0;
+	double dnodata = 0;
+	
 	
 	CPLErr ret = CE_None;
 	
@@ -491,15 +495,45 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
             case GCI_Undefined: // can we try to make a greyscale image?
             case GCI_GrayIndex:
 				
-                //
+				// compute stats,
+				// TODO: move stat computation in another place
+			
+				GetStatMinMaxNoDataValue(dmin, dmax, dnodata);
+				double dRange = dmax - dmin;
+				
+				
+				GDALDataType myDataType = band->GetRasterDataType();
+                void * myGdalScanData = ReadImageData(band, imgfilter, imgSize);
+				
+				double myGrayValDouble = ReadGDALValueToDouble(myGdalScanData,
+															   myDataType, 1);
+				
+				int myGrayValInt = static_cast < int >((myGrayValDouble - dmin) * (255 / dRange));
+				if (myGrayValInt < 0) myGrayValInt = 0;
+				if (myGrayValInt > 255) myGrayValInt = 255;
+				
+				unsigned char myGrayValChar = static_cast<unsigned char> (myGrayValInt);
+				
+				int myGrayValIntTest = myGrayValInt + 200;
+				
+				char Resultat[10];
+				//memcpy(&Resultat, &myGrayValIntTest, 8);
+				sprintf(Resultat, "%x",myGrayValIntTest);
+				unsigned char myTestChar = static_cast<unsigned char> (myGrayValInt + 200);
+				
+				//TODO: Dealing with no-data here
+				
+				
+				CPLFree (myGdalScanData);
+				//
                 // copy over all the palette indices and then
                 // loop through the buffer replacing the values
                 // with the correct RGB triples.
                 //
-                ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
+                /*ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
                                      nRasterXSize, nRasterYSize,
                                      *imgbuf,imgSize.GetWidth(), imgSize.GetHeight(),
-                                     GDT_Byte, 3, 0);
+                                       GDT_UInt16, 3, 0); //GDT_Byte, 3, 0);
 				
                 if (ret == CE_Failure)
                 {
@@ -512,10 +546,10 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
                 {
                     //pal->GetColorEntry(*data, &color);
 					
-                    //*(data + 0) = *data; // already correct
+                   // *(data + 0) = *data; // already correct
                     *(data + 1) = *data;
                     *(data + 2) = *data;
-                }
+                }*/
                 break;
 				
             default:
@@ -678,3 +712,135 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
     return ret;
 }
 
+
+
+/***************************************************************************//**
+ @brief Reading image data based on GDAL type
+ @details This function is used actually for DTM but may be extended for all
+ raster.
+ @note inspired by QGIS code
+ @param gdalBand Pointer to a valid GDAL band
+ @param imgfilter Position and width of the image in real px. For reading all
+ image pass 0,0, width, height
+ @param imgSize Size of the bitmap we will use for displaying data
+ @return  pointer to data of type GDALDataType, data must be freed with CPLFree
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 October 2008
+ *******************************************************************************/
+void *tmGISDataRaster::ReadImageData ( GDALRasterBand *gdalBand, const wxRect & imgfilter,
+								 const wxSize & imgSize)
+{
+	GDALDataType type = gdalBand->GetRasterDataType();
+	int size = GDALGetDataTypeSize ( type ) / 8;
+	
+	void *data = CPLMalloc ( size * imgSize.GetWidth() * imgSize.GetHeight());
+		
+	CPLErr myErr = gdalBand->RasterIO ( GF_Read,
+									   imgfilter.GetX(),
+									   imgfilter.GetY(),
+									   imgfilter.GetWidth(),
+									   imgfilter.GetHeight(),
+									   data,
+									   imgSize.GetWidth(),
+									   imgSize.GetHeight(),
+									   type, 0, 0 );
+	
+	return data;
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting double value from data returned by GDAL
+ @details This function allows to deals with image with different data type such
+ as those described in GDALDataType (see gdal doc)
+ @note inspired by QGIS code
+ @param data Pointer to data returned by tmGISDataRaster::ReadImageData
+ @param type type of data as returned by gdalBand->GetRasterDataType()
+ @param index index of the pixel
+ @return  Pixel value at position index
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 October 2008
+ *******************************************************************************/
+double tmGISDataRaster::ReadGDALValueToDouble ( void *data, GDALDataType type, int index )
+{
+	double val;
+	
+	switch ( type )
+	{
+		case GDT_Byte:
+			return (double) ((GByte *)data)[index];
+			break;
+		case GDT_UInt16:
+			return (double) ((GUInt16 *)data)[index];
+			break;
+		case GDT_Int16:
+			return (double) ((GInt16 *)data)[index];
+			break;
+		case GDT_UInt32:
+			return (double) ((GUInt32 *)data)[index];
+			break;
+		case GDT_Int32:
+			return (double) ((GInt32 *)data)[index];
+			break;
+		case GDT_Float32:
+			return (double) ((float *)data)[index];
+			break;
+		case GDT_Float64:
+			val = ((double *)data)[index];
+			return (double) ((double *)data)[index];
+			break;
+		default:
+			wxLogDebug(_T("GDAL data type is not supported"));
+	}
+	return 0.0;
+}
+
+
+
+/***************************************************************************//**
+ @brief Returning min - max - nodata stat
+ @details This function return the following statistics :
+ - Minimum band values (altitudes in case of DTM)
+ - Maximum band values
+ - Nodata values.
+ If a value wasen't computed, 0 is returned.
+ @param dmin will contain the minimum value
+ @param dmax will contain the maximum value
+ @param dnodata will contain the value used for nodata
+ @return  true if at least one value was computed succesfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 October 2008
+ *******************************************************************************/
+bool tmGISDataRaster::GetStatMinMaxNoDataValue (double & dmin, double & dmax,
+												double & dnodata)
+{
+	int bResult = false;
+	bool bReturn = false;
+	dmin = 0;
+	dmax = 0;
+	dnodata = 0;
+	
+	double dtempmin = m_RasterBand->GetMinimum(&bResult);
+	if (bResult)
+	{
+		dmin = dtempmin;
+		bReturn = true;
+	}
+	
+	double dtempmax = m_RasterBand->GetMaximum(&bResult);
+	if (bResult)
+	{
+		dmax = dtempmax;
+		bReturn = true;
+	}
+	
+	double dtempnodata = m_RasterBand->GetNoDataValue(&bResult);
+	if (bResult)
+	{
+		dnodata = dtempnodata;
+		bReturn = true;
+	}
+	
+	return bReturn;
+}
