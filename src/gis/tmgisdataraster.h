@@ -67,6 +67,14 @@ class tmGISDataRaster : public tmGISData
 							 const tmRealRect & imgrealcoord = tmRealRect(0,0,0,0));
 		wxRect ConvertClipedImage (const tmRealRect & origin, const tmRealRect & clipped);
 		
+		// reading image (DTM)
+		void * ReadImageData ( GDALRasterBand *gdalBand, const wxRect & imgfilter,
+							  const wxSize & imgSize);
+		double ReadGDALValueToDouble ( void *data, GDALDataType type, int index );
+		
+		// statistics function
+		bool GetStatMinMaxNoDataValue (double & dmin, double & dmax, double & dnodata);
+		
 	public:
 		tmGISDataRaster();
 		~tmGISDataRaster();
