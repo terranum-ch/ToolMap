@@ -443,7 +443,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	myRaster.SetData(imgbuf);
 
-	dc.DrawBitmap(myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),FALSE);
+	dc.DrawBitmap(myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),true);
 	dc.SelectObject(wxNullBitmap);
 	
 	return TRUE;	
