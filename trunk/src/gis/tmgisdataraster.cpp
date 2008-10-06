@@ -435,6 +435,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
         //
 		
         GDALRasterBand *band = m_DataSet->GetRasterBand(1);
+		int iLoop = 0;
 		
         switch (band->GetColorInterpretation())
         {
@@ -503,54 +504,38 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 				
 				
 				GDALDataType myDataType = band->GetRasterDataType();
-                void * myGdalScanData = ReadImageData(band, imgfilter, imgSize);
-				
-				double myGrayValDouble = ReadGDALValueToDouble(myGdalScanData,
-															   myDataType, 1);
-				
-				int myGrayValInt = static_cast < int >((myGrayValDouble - dmin) * (255 / dRange));
-				if (myGrayValInt < 0) myGrayValInt = 0;
-				if (myGrayValInt > 255) myGrayValInt = 255;
-				
-				unsigned char myGrayValChar = static_cast<unsigned char> (myGrayValInt);
-				
-				int myGrayValIntTest = myGrayValInt + 200;
-				
-				char Resultat[10];
-				//memcpy(&Resultat, &myGrayValIntTest, 8);
-				sprintf(Resultat, "%x",myGrayValIntTest);
-				unsigned char myTestChar = static_cast<unsigned char> (myGrayValInt + 200);
-				
-				//TODO: Dealing with no-data here
+				int iBuffSize;
+                void * myGdalScanData = ReadImageData(band, imgfilter, imgSize, iBuffSize);
 				
 				
-				CPLFree (myGdalScanData);
-				//
-                // copy over all the palette indices and then
-                // loop through the buffer replacing the values
-                // with the correct RGB triples.
-                //
-                /*ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(),
-                                     nRasterXSize, nRasterYSize,
-                                     *imgbuf,imgSize.GetWidth(), imgSize.GetHeight(),
-                                       GDT_UInt16, 3, 0); //GDT_Byte, 3, 0);
-				
-                if (ret == CE_Failure)
+				//for (unsigned char *data = *imgbuf;
+                  //   data != (*imgbuf+*imglen);
+                    // data += 3)
+				unsigned char *data = *imgbuf;
+				char Resultat;
+				for (unsigned int i = 0; i<*imglen; i += 3)
                 {
-					wxLogError(_T("An unknown error occured while reading band 1"));                    break;
-                }
-				
-                for (unsigned char *data = *imgbuf;
-                     data != (*imgbuf+*imglen);
-                     data += 3)
-                {
-                    //pal->GetColorEntry(*data, &color);
 					
-                   // *(data + 0) = *data; // already correct
-                    *(data + 1) = *data;
-                    *(data + 2) = *data;
-                }*/
-                break;
+					double myGrayValDouble = ReadGDALValueToDouble(myGdalScanData,
+																   myDataType, iLoop);
+					iLoop ++;
+					
+					int myGrayValInt = static_cast < int >((myGrayValDouble - dmin) * (255 / dRange));
+					if (myGrayValInt < 0) myGrayValInt = 0;
+					if (myGrayValInt > 255) myGrayValInt = 255;
+					
+					//TODO: Dealing with no-data here
+					
+					
+					*(data + i) = myGrayValInt;
+					*(data + i + 1) = myGrayValInt;
+					*(data + i + 2) = myGrayValInt;
+					
+				}
+				
+					
+				CPLFree (myGdalScanData);
+		        break;
 				
             default:
                 wxLogError(_T("Unsupported color interpretation '%s'"),
@@ -723,17 +708,19 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
  @param imgfilter Position and width of the image in real px. For reading all
  image pass 0,0, width, height
  @param imgSize Size of the bitmap we will use for displaying data
+ @param buffsize 
  @return  pointer to data of type GDALDataType, data must be freed with CPLFree
  @author Lucien Schreiber (c) CREALP 2008
  @date 03 October 2008
  *******************************************************************************/
 void *tmGISDataRaster::ReadImageData ( GDALRasterBand *gdalBand, const wxRect & imgfilter,
-								 const wxSize & imgSize)
+								 const wxSize & imgSize, int & buffsize)
 {
 	GDALDataType type = gdalBand->GetRasterDataType();
 	int size = GDALGetDataTypeSize ( type ) / 8;
 	
-	void *data = CPLMalloc ( size * imgSize.GetWidth() * imgSize.GetHeight());
+	buffsize = size * imgSize.GetWidth() * imgSize.GetHeight();
+	void *data = CPLMalloc (buffsize);
 		
 	CPLErr myErr = gdalBand->RasterIO ( GF_Read,
 									   imgfilter.GetX(),

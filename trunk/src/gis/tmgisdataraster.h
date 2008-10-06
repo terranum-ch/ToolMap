@@ -69,7 +69,7 @@ class tmGISDataRaster : public tmGISData
 		
 		// reading image (DTM)
 		void * ReadImageData ( GDALRasterBand *gdalBand, const wxRect & imgfilter,
-							  const wxSize & imgSize);
+							  const wxSize & imgSize, int & buffsize);
 		double ReadGDALValueToDouble ( void *data, GDALDataType type, int index );
 		
 		// statistics function
