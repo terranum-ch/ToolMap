@@ -56,6 +56,12 @@ class tmDrawer : public wxObject
 		bool m_IsInitialised;
 		tmRealRect m_spatFilter;
 		
+		// load image using GDAL
+		// owned by image, do not destroy manually.
+		unsigned char      *imgbuf;
+		unsigned int        imglen;
+		unsigned char      *maskbuf;
+		unsigned int        masklen;
 
 		
 		// drawing functions
