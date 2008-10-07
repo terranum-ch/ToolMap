@@ -424,7 +424,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	wxPoint bottomright = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
 														  myClippedCoordReal.y_max));
 	wxRect myClippedCoordPx (topleftpx, bottomright);
-	wxImage myRaster (myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+	wxImage * myRaster = new wxImage (myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
 
 		
 	if (pRaster->GetImageData(&imgbuf, &imglen, &maskbuf, &masklen, 
@@ -448,10 +448,13 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	
-	myRaster.SetData(imgbuf);
+	myRaster->SetData(imgbuf);
 
-	dc.DrawBitmap(myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),true);
+	dc.DrawBitmap(*myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),true);
 	dc.SelectObject(wxNullBitmap);
+
+	// destroying bitmap lead to a crash under windows
+	//myRaster->Destroy();
 	
 	return TRUE;	
 }
