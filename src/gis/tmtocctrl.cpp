@@ -52,7 +52,7 @@ void tmTOCCtrl::InitMemberValues()
 {
 	m_ParentEvt = NULL;
 	m_ContextMenu = NULL;
-	
+	m_ActualItemID = 0;
 }
 
 
@@ -227,36 +227,36 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 /***************************************************************************//**
  @brief Iterate through all layers in the TOC
  @details Call this function recursively until there is no more layers to
- iterate. Use ResetToFirst = TRUE during the first iteration and then set this value
- to false
- @param ResetToFirst TRUE for reseting iteration to the beginning and false to 
- continue
+ iterate. Use ResetToLast = TRUE during the first iteration and then set this value
+ to false. To display layers in the correct order, we iterate starting from the end
+ (see figure bellow).
+ \image html iterate_orders.png
+ @param ResetToLast TRUE for reseting iteration to the End and false to 
+ continue iterating things up
  @return  a valid #tmLayerProperties or NULL if there is no more item to iterate
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 July 2008
  *******************************************************************************/
-tmLayerProperties * tmTOCCtrl::IterateLayers (bool ResetToFirst)
+tmLayerProperties * tmTOCCtrl::IterateLayers (bool ResetToLast)
 {
 	// check
 	wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
-		
-	wxTreeItemId ItemID = 0;
 
 	
-	// if we are starting from the begining
-	if(ResetToFirst)
+	// if we are starting from the End
+	if(ResetToLast)
 	{
-		ItemID = GetFirstChild(m_root, m_Cookie);
+		m_ActualItemID = GetLastChild(m_root);
 	}
 	else 
 	{
-		ItemID = GetNextChild(m_root, m_Cookie);
+		m_ActualItemID = GetPrevSibling (m_ActualItemID);
 	}
 	
-	if (!ItemID.IsOk())
+	if (!m_ActualItemID.IsOk())
 		return NULL;
 	
-	return (tmLayerProperties*) GetItemData(ItemID);
+	return (tmLayerProperties*) GetItemData(m_ActualItemID);
 }
 
 
