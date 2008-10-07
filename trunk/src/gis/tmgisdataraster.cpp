@@ -352,7 +352,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 {
     // my definitions 
 	int             bEnablem_DataSettAlpha = FALSE, bEnableSrcAlpha = FALSE;
-	int             bMakeMask, bMakeAlpha, bInvertMask;
+	int             bMakeMask = false, bMakeAlpha = false, bInvertMask = false;
 	wxRect imgfilter = m_PxImgFilter;
 	
 	double dmin = 0;
@@ -434,8 +434,15 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
         // one band is either a palette based image, or greyscale
         //
 		
+		// definitions for grayscale
         GDALRasterBand *band = m_DataSet->GetRasterBand(1);
 		int iLoop = 0;
+		double dRange = 0;
+		int iBuffSize = 0;
+        void * myGdalScanData = NULL;
+		unsigned char *data = NULL;
+		char Resultat = '\n';
+		GDALDataType myDataType;
 		
         switch (band->GetColorInterpretation())
         {
@@ -498,21 +505,12 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 				
 				// compute stats,
 				// TODO: move stat computation in another place
-			
 				GetStatMinMaxNoDataValue(dmin, dmax, dnodata);
-				double dRange = dmax - dmin;
+				dRange = dmax - dmin;
 				
-				
-				GDALDataType myDataType = band->GetRasterDataType();
-				int iBuffSize;
-                void * myGdalScanData = ReadImageData(band, imgfilter, imgSize, iBuffSize);
-				
-				
-				//for (unsigned char *data = *imgbuf;
-                  //   data != (*imgbuf+*imglen);
-                    // data += 3)
-				unsigned char *data = *imgbuf;
-				char Resultat;
+				myDataType = band->GetRasterDataType();
+                myGdalScanData = ReadImageData(band, imgfilter, imgSize, iBuffSize);
+					data = *imgbuf;
 				for (unsigned int i = 0; i<*imglen; i += 3)
                 {
 					
@@ -526,13 +524,11 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 					
 					//TODO: Dealing with no-data here
 					
-					
 					*(data + i) = myGrayValInt;
 					*(data + i + 1) = myGrayValInt;
 					*(data + i + 2) = myGrayValInt;
 					
 				}
-				
 					
 				CPLFree (myGdalScanData);
 		        break;

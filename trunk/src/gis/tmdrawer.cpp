@@ -24,6 +24,13 @@ tmDrawer::tmDrawer()
 {
 	m_bmp = NULL;
 	m_IsInitialised = FALSE;
+
+	// load image using GDAL
+	// owned by image, do not destroy manually.
+	imgbuf = NULL;
+	imglen = 0;
+	maskbuf = NULL;
+	masklen= 0;
 }
 
 
@@ -402,12 +409,12 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
-	// load image using GDAL
+	/*// load image using GDAL
 	// owned by image, do not destroy manually.
 	unsigned char      *imgbuf = NULL;
 	unsigned int        imglen = 0;
 	unsigned char      *maskbuf = NULL;
-	unsigned int        masklen= 0;
+	unsigned int        masklen= 0;*/
 	bool bReturn =		true;
 	
 	// converting image coordinate & clipping 
