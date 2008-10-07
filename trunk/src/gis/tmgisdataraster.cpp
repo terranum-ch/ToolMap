@@ -340,6 +340,7 @@ bool tmGISDataRaster::IsImageInsideVisibleArea ()
  @param imglen ???
  @param maskbuf ???
  @param masklen ???
+ @param imgSize ???
  @return CE_None if data was read succesfully
  @author Thuban Team & modfied by Lucien Schreiber
  @date 24 September 2008

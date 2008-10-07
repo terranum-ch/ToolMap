@@ -59,6 +59,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		wxWindow * m_ParentEvt;
 		wxTreeItemIdValue m_Cookie;
 		tmTOCCtrlMenu * m_ContextMenu;
+		wxTreeItemId m_ActualItemID;
 		
 		// private functions
 		void InitMemberValues();
@@ -88,7 +89,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		bool RemoveLayer (wxTreeItemId position, bool bRemoveChild = TRUE);
 		void ClearAllLayers();
 		bool EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position);
-		tmLayerProperties * IterateLayers (bool ResetToFirst);
+		tmLayerProperties * IterateLayers (bool ResetToLast);
 		
 		// moving item functions
 		

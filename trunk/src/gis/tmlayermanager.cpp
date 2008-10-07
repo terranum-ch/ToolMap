@@ -209,13 +209,13 @@ bool tmLayerManager::SaveTOCStatus()
 	wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));
 	
 	tmLayerProperties * itemProp = NULL;
-	int iRank = 0;
+	unsigned int iRank = m_TOCCtrl->GetCountLayers();
 	
 	wxString sSentence = _T("");
 	
 	while (1)
 	{
-		if (iRank == 0)
+		if (iRank == m_TOCCtrl->GetCountLayers())
 		{
 			itemProp = m_TOCCtrl->IterateLayers(TRUE);
 		}
@@ -232,7 +232,11 @@ bool tmLayerManager::SaveTOCStatus()
 		itemProp->m_LayerSymbol->Serialize(out);
 		
 		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, out.GetString());
-		iRank ++;
+		iRank --;
+		
+		if (iRank < 0)
+			wxLogDebug(_T("Getting rank for layers seem wrong : %d"), iRank);
+		
 	}
 	
 	// update the database with toc status
