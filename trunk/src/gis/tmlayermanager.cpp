@@ -88,6 +88,7 @@ void tmLayerManager::InitMemberValue()
 	m_StatusBar = NULL;
 	m_Thread = NULL;
 	m_Progress = NULL;
+	m_ThreadBitmap = NULL;
 }
 
 
@@ -670,9 +671,9 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	m_computeFullExtent = bFullExtent;
 	
 	// invalidate bitmap
-	m_GISRenderer->SetBitmapStatus();
-	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
-							  m_Scale.GetWindowExtent().GetHeight()));
+	//m_GISRenderer->SetBitmapStatus();
+	//CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
+	//						  m_Scale.GetWindowExtent().GetHeight()));
 	
 	// prepare loading of mySQL data in tmGISData
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
@@ -680,7 +681,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	// invalidate max_extent
 	if (bInvalidateFullExt)
 		m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
-		
+	
 
 	// stop an existing thread if needed.
 	s_SharedDataCritical.Enter();
@@ -693,12 +694,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	else
 		s_SharedDataCritical.Leave();
 	
-	/*if (m_Thread != NULL)
-	{
-		m_Thread->StopThread();
-		m_Thread = NULL;
-	}*/
-	
+
 	// display a progress thread
 	// only if nothing is displayed
 	if (!m_Progress)
@@ -707,10 +703,11 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		m_Progress->SetMessage(TMPROGRESS_DRAW_DATA);
 		m_Progress->DisplayProgress();
 	}
-		
 	
 		
-	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, &m_Drawer, &m_Shared_ThreadStatus);
+	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, 
+										  &m_Drawer, &m_Shared_ThreadStatus,
+										  m_ThreadBitmap);
 	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(_T("Can't create thread for GIS data loading"));
@@ -718,9 +715,6 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	}
 	wxLogDebug(_T("Gis thread started..."));
 	m_Thread->Run();
-	//delete m_Thread;
-	
-
 	return TRUE;
 }	
 
@@ -746,8 +740,24 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		// compute max extent if required by option
 		if (m_computeFullExtent)
 			m_Scale.ComputeMaxExtent();
-		m_Drawer.InitDrawer(m_Bitmap, m_Scale, tmRealRect(0,0,0,0));
-		m_Drawer.DrawExtentIntoBitmap();//m_Bitmap, m_Scale);
+		
+		//TODO: Here check validity and then copy m_ThreadBitmap into m_Bitmap
+		wxCriticalSectionLocker lock (s_SharedDataCritical);
+		if (m_ThreadBitmap->IsOk())
+		{
+			wxMemoryDC dc;
+			dc.SelectObject(*m_Bitmap);
+			dc.DrawBitmap(*m_ThreadBitmap, 0, 0, TRUE);
+			dc.SelectObject(wxNullBitmap);
+		}
+		else
+		{
+			wxLogDebug(_T("Error with bitmap."));
+		}
+			
+		
+		//m_Drawer.InitDrawer(m_Bitmap, m_Scale, tmRealRect(0,0,0,0));
+		//m_Drawer.DrawExtentIntoBitmap();//m_Bitmap, m_Scale);
 	}
 		
 	// update scale
@@ -1012,7 +1022,9 @@ void tmLayerManager::InitScaleCtrlList ()
  @param toc a valid pointer to the tmTOCCtrl
  @param scale 
  @param database 
- @param drawer 
+ @param drawer
+ @param threadstatus
+ @param threadbitmap
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 July 2008
  *******************************************************************************/
@@ -1020,7 +1032,8 @@ tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * to
 											   tmGISScale * scale,
 											   DataBaseTM * database,
 											   tmDrawer * drawer,
-											   tmTHREAD_STATUS * threadstatus)
+											   tmTHREAD_STATUS * threadstatus,
+											   wxBitmap * threadbitmap)
 {
 	m_Parent = parent;
 	m_TOC = toc;
@@ -1029,6 +1042,8 @@ tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * to
 	m_Stop = FALSE;
 	m_Drawer = drawer;
 	m_ThreadStatus = threadstatus;
+	m_ThreadBmp = threadbitmap;
+	
 }
 
 tmGISLoadingDataThread::~tmGISLoadingDataThread()
@@ -1048,12 +1063,33 @@ tmGISLoadingDataThread::~tmGISLoadingDataThread()
  *******************************************************************************/
 void * tmGISLoadingDataThread::Entry()
 {	
+	// indicate to main that thread is running
 	s_SharedDataCritical.Enter();
 	* m_ThreadStatus = tmTHREAD_RUN;
 	s_SharedDataCritical.Leave();
+	
+	// process loading of GIS data
+	
 	// if the thread was stopped
 	//if (ReadLayerExtentThread()==false)	
 	//	return NULL;
+	
+	if (!CreateEmptyBitmap(m_Scale->GetWindowExtent().GetWidth(),
+						  m_Scale->GetWindowExtent().GetHeight()))
+		return NULL;
+	
+	
+	// read layers extent
+	int iNbLayers = ReadLayerExtentThread();
+	if (iNbLayers == -1)
+		return NULL;
+	
+	// read layers for drawing
+	m_Drawer->InitDrawer(m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal(),true);
+	int iNbLayersDraw = ReadLayerDraw();
+	if (iNbLayersDraw == -1)
+		return NULL;
+	
 	
 	for (int i = 0;i<10; i++)
 	{
@@ -1064,23 +1100,11 @@ void * tmGISLoadingDataThread::Entry()
 	}
 	
 	
-/*	s_SharedDataMutex.Lock();
-	* m_ThreadStatus = tmTHREAD_RUN;
-	s_SharedDataMutex.Unlock();
-	
-	if(TestDestroyThread())
-		return NULL;
-	
-	Sleep(1000);
-	
-	if(TestDestroyThread())
-		return NULL;
-	*/
-	
-	wxCriticalSectionLocker lock (s_SharedDataCritical);
-	* m_ThreadStatus = tmTHREAD_STOP;
 	// if thread finished correctly, send a message to
 	// the layer manager to display the new image
+	wxCriticalSectionLocker lock (s_SharedDataCritical);
+	* m_ThreadStatus = tmTHREAD_STOP;
+
 	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	return NULL;
@@ -1092,18 +1116,88 @@ void * tmGISLoadingDataThread::Entry()
  @brief Iterate all layers for extent (threaded version
  @details This function iterates through all layers, loading layers and their
  extent.
- @return  true if the thread wasn't stopped
+ @return  the number of layers read or -1 if the thread sould be stopped
  @author Lucien Schreiber (c) CREALP 2008
  @date 09 September 2008
  *******************************************************************************/
-bool tmGISLoadingDataThread::ReadLayerExtentThread()
+int tmGISLoadingDataThread::ReadLayerExtentThread()
 {
-	// variables 
-	bool IsthreadComplete = true;
+	// iterate throught all layers
 	int iRank = 0;
-	tmLayerProperties * itemProp = NULL;
+	int iReaded = 0;
+	bool bInteruptedThread = false;
+	
+	tmLayerProperties * pLayerProp = NULL;
 	tmRealRect myExtent (0,0,0,0);
 	
+	// Init new thread
+	m_DB->DataBaseNewThreadInit();
+
+	while (1)
+	{
+		if (iRank == 0)
+		{
+			pLayerProp = m_TOC->IterateLayers(TRUE);
+		}
+		else
+		{
+			pLayerProp = m_TOC->IterateLayers(FALSE);
+		}
+		
+		if (!pLayerProp)
+			break;
+		
+		// check for thread stopped.
+		if (TestDestroy())
+		{
+			bInteruptedThread = true;
+			break;
+		}
+		
+		// loading data
+		tmGISData * layerData = tmLayerManager::LoadLayer(pLayerProp);
+		
+		// processing and deleting data
+		if (layerData && pLayerProp->m_LayerVisible)
+		{
+			myExtent = layerData->GetMinimalBoundingRectangle();
+			m_Scale->SetMaxLayersExtentAsExisting(myExtent);
+			iReaded ++;
+			
+			delete layerData;
+		}
+		iRank ++;
+	}
+	
+	// uninit thread variables
+	m_DB->DataBaseNewThreadUnInit();
+	
+	// if thread need to be stopped, then 
+	// return -1.
+	if (bInteruptedThread)
+		iReaded = -1;
+	
+	return iReaded;	
+}
+
+
+
+/***************************************************************************//**
+ @brief Draw layers into bitmap [THREADED]
+ @return  number of layers drawed, or -1 if thread was stopped and need to
+ return immediatelly
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 October 2008
+ *******************************************************************************/
+int tmGISLoadingDataThread::ReadLayerDraw ()
+{
+	// iterate throught all layers
+	int iRank = 0;
+	int iReaded = 0;
+	bool bInteruptedThread = false;
+	
+	tmLayerProperties * pLayerProp = NULL;
+	tmRealRect myExtent (0,0,0,0);
 	
 	// Init new thread
 	m_DB->DataBaseNewThreadInit();
@@ -1112,50 +1206,73 @@ bool tmGISLoadingDataThread::ReadLayerExtentThread()
 	{
 		if (iRank == 0)
 		{
-			itemProp = m_TOC->IterateLayers(TRUE);
+			pLayerProp = m_TOC->IterateLayers(TRUE);
 		}
 		else
 		{
-			itemProp = m_TOC->IterateLayers(FALSE);
+			pLayerProp = m_TOC->IterateLayers(FALSE);
 		}
 		
-		if (!itemProp)
+		if (!pLayerProp)
 			break;
 		
-		// TODO: remove this temp code
-		Sleep(200);
-		// exit thread
-		if (m_Stop == true)
+		
+		if (TestDestroy())
 		{
-			IsthreadComplete = false;
-			break;
+			bInteruptedThread = true;
+			break;			
 		}
 		
 		// loading data
-		tmGISData * layerData = tmLayerManager::LoadLayer(itemProp);
+		tmGISData * layerData = tmLayerManager::LoadLayer(pLayerProp);
 		
 		// processing and deleting data
-		if (layerData && itemProp->m_LayerVisible)
+		if (layerData && pLayerProp->m_LayerVisible)
 		{
-			// computing max visible extend 
-			myExtent = layerData->GetMinimalBoundingRectangle();
-			m_Scale->SetMaxLayersExtentAsExisting(myExtent);
+			// draw layer data
+			m_Drawer->Draw(pLayerProp, layerData);
+			iReaded ++;
 			delete layerData;
 		}
 		iRank ++;
-		
-		// exit thread
-		if (m_Stop == true)
-		{
-			IsthreadComplete = false;
-			break;
-		}
 	}
 	
 	// uninit thread variables
 	m_DB->DataBaseNewThreadUnInit();
 	
-	return IsthreadComplete;
+	// if thread need to be stopped, then 
+	// return -1.
+	if (bInteruptedThread)
+		iReaded = -1;
+	
+	return iReaded;
+}
+
+
+
+
+
+
+/***************************************************************************//**
+ @brief Create a tempory bitmap for drawing in threads
+ @param width width of the bitmap to create
+ @param height height of the bitmap to create
+ @return  true if bitmap was created succesfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 October 2008
+ *******************************************************************************/
+bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
+{
+	// I don't wont to share my data...
+	wxCriticalSectionLocker lock (s_SharedDataCritical);
+	
+	if (m_ThreadBmp)
+		delete m_ThreadBmp;
+	
+	m_ThreadBmp = new wxBitmap (width, height);
+	if (m_ThreadBmp->IsOk())
+		return TRUE;
+	return FALSE;
 }
 
 

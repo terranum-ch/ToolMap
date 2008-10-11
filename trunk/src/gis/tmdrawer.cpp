@@ -42,11 +42,13 @@ tmDrawer::~tmDrawer()
 
 
 
-void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter)
+void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter,
+						  bool bIsThreaded)
 {
 	m_bmp = bitmap;
 	m_scale = scale;
 	m_spatFilter = filter;
+	bIsThreadedMode = bIsThreaded;
 	
 	if (m_bmp && m_bmp->IsOk())
 		m_IsInitialised = TRUE;
@@ -163,7 +165,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
-	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType) && !bIsThreadedMode)
 	{
 		wxLogDebug(_T("Error setting spatial filter"));
 		return false;
@@ -180,7 +182,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
 		
 		// line must have more than one vertex
-		if (iNbVertex <= 1) 
+		if (iNbVertex <= 1 && ! bIsThreadedMode) 
 		{
 			wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
 			bReturn = false;
@@ -201,8 +203,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	}
 	
-	
-	wxLogDebug(_T("%d Lines drawn"), iLoop);
+	if (!bIsThreadedMode)
+		wxLogDebug(_T("%d Lines drawn"), iLoop);
 	
 	
 	temp_dc.SelectObject(wxNullBitmap);
@@ -237,7 +239,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
-	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType) && ! bIsThreadedMode)
 	{
 		wxLogDebug(_T("Error setting spatial filter"));
 		return false;
@@ -253,7 +255,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	{
 		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint();
 		
-		if(pptsReal == NULL)
+		if(pptsReal == NULL && !bIsThreadedMode)
 		{
 			wxLogDebug(_T("No point returned @loop : %d"), iLoop);
 			bReturn = FALSE;
@@ -273,8 +275,8 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		iLoop++;
 	}
 	
-	
-	wxLogDebug(_T("%d Points drawn"), iLoop);
+	if (!bIsThreadedMode)
+		wxLogDebug(_T("%d Points drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
 	
@@ -308,7 +310,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	// define spatial filter
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
-	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType) && !bIsThreadedMode)
 	{
 		wxLogDebug(_T("Error setting spatial filter"));
 		return false;
@@ -319,14 +321,14 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	{
 		// get polygons info
 		int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
-		if (iPolyRings <= 0)
+		if (iPolyRings <= 0 && !bIsThreadedMode)
 		{
 			wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
 			break;
 		}
 		
 		//TODO: Temp code, for debuging remove after
-		if (iPolyRings > 1)
+		if (iPolyRings > 1 && !bIsThreadedMode)
 		{
 			wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
 		}
@@ -337,7 +339,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		{
 			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 			
-			if(pptsReal == NULL)
+			if(pptsReal == NULL && !bIsThreadedMode)
 			{
 				wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
 				bReturn = FALSE;
@@ -383,8 +385,8 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	//pgdc->StrokePath(path);
 	//pgdc->FillPath(path);
 	pgdc->DrawPath(path);*/
-	
-	wxLogDebug(_T("%d Polygons drawn"), iLoop);
+	if (!bIsThreadedMode)
+		wxLogDebug(_T("%d Polygons drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
 	

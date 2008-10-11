@@ -59,7 +59,6 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 	m_DataSet = (GDALDataset*) GDALOpen(buffer, (GDALAccess) bReadWrite);
 	if (m_DataSet == NULL)
 	{
-		//TODO: Change this with sprintf version for threads...
 		wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
 		return FALSE;
 	}

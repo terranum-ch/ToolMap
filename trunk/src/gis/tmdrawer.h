@@ -55,6 +55,7 @@ class tmDrawer : public wxObject
 		tmGISScale m_scale;
 		bool m_IsInitialised;
 		tmRealRect m_spatFilter;
+		bool bIsThreadedMode;
 		
 		// load image using GDAL
 		// owned by image, do not destroy manually.
@@ -75,7 +76,8 @@ class tmDrawer : public wxObject
 		tmDrawer();
 		~tmDrawer();
 		
-		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter);
+		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale, 
+						 const tmRealRect & filter, bool bIsThreaded = false);
 		
 		// Extent Drawing
 		bool DrawExtentIntoBitmap (int width = 1, const wxColour & col = wxColour(*wxBLACK));

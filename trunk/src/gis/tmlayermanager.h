@@ -81,6 +81,7 @@ class tmLayerManager : public wxEvtHandler
 		// shared member data with thread
 		 
 		tmTHREAD_STATUS m_Shared_ThreadStatus;
+		wxBitmap * m_ThreadBitmap;
 		
 		// values for thread
 		bool m_computeFullExtent;
@@ -170,7 +171,9 @@ class tmGISLoadingDataThread : public wxThread
 		bool m_Stop;
 		tmTHREAD_STATUS * m_ThreadStatus;
 		
-		bool ReadLayerExtentThread(); 
+		bool CreateEmptyBitmap (int width, int height);
+		int ReadLayerExtentThread();
+		int ReadLayerDraw ();
 		
 	protected:
 		wxWindow * m_Parent;
@@ -178,13 +181,15 @@ class tmGISLoadingDataThread : public wxThread
 		tmGISScale * m_Scale;
 		DataBaseTM * m_DB;
 		tmDrawer * m_Drawer;
+		wxBitmap * m_ThreadBmp;
 		
 	public:
 		tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
 							   tmGISScale * scale,
 							   DataBaseTM * database,
 							   tmDrawer * drawer,
-							   tmTHREAD_STATUS * threadstatus);
+							   tmTHREAD_STATUS * threadstatus,
+							   wxBitmap * threadbitmap);
 		~tmGISLoadingDataThread();
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}
