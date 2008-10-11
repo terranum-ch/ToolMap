@@ -56,6 +56,8 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl,
 	m_StatusBar = status;
 	m_ScaleCtrl = scalectrl;
 	m_Parent->PushEventHandler(this);
+	
+	m_Shared_ThreadStatus = tmTHREAD_STOP;
 }
 
 
@@ -679,13 +681,23 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	if (bInvalidateFullExt)
 		m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
 		
-	// start a thread if not existing,
-	// stop the existing otherwise.
-	if (m_Thread != NULL)
+
+	// stop an existing thread if needed.
+	s_SharedDataCritical.Enter();
+	if (m_Shared_ThreadStatus == tmTHREAD_RUN)
+	{
+		m_Shared_ThreadStatus = tmTHREAD_STOP;
+		s_SharedDataCritical.Leave();
+		m_Thread->Delete();
+	}
+	else
+		s_SharedDataCritical.Leave();
+	
+	/*if (m_Thread != NULL)
 	{
 		m_Thread->StopThread();
 		m_Thread = NULL;
-	}
+	}*/
 	
 	// display a progress thread
 	// only if nothing is displayed
@@ -698,7 +710,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		
 	
 		
-	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, &m_Drawer);
+	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, &m_Drawer, &m_Shared_ThreadStatus);
 	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(_T("Can't create thread for GIS data loading"));
@@ -706,7 +718,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	}
 	wxLogDebug(_T("Gis thread started..."));
 	m_Thread->Run();
-	
+	//delete m_Thread;
 	
 
 	return TRUE;
@@ -716,7 +728,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 
 void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 {
-	wxLogDebug(_T("GIS thread finished"));
+	wxLogDebug(_T("GIS thread finished without interuption"));
 	m_Thread = NULL; // thread finished
 	
 	// stoping progress display
@@ -1007,7 +1019,8 @@ void tmLayerManager::InitScaleCtrlList ()
 tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
 											   tmGISScale * scale,
 											   DataBaseTM * database,
-											   tmDrawer * drawer)
+											   tmDrawer * drawer,
+											   tmTHREAD_STATUS * threadstatus)
 {
 	m_Parent = parent;
 	m_TOC = toc;
@@ -1015,6 +1028,7 @@ tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * to
 	m_DB = database;
 	m_Stop = FALSE;
 	m_Drawer = drawer;
+	m_ThreadStatus = threadstatus;
 }
 
 tmGISLoadingDataThread::~tmGISLoadingDataThread()
@@ -1034,10 +1048,37 @@ tmGISLoadingDataThread::~tmGISLoadingDataThread()
  *******************************************************************************/
 void * tmGISLoadingDataThread::Entry()
 {	
+	s_SharedDataCritical.Enter();
+	* m_ThreadStatus = tmTHREAD_RUN;
+	s_SharedDataCritical.Leave();
 	// if the thread was stopped
-	if (ReadLayerExtentThread()==false)	
+	//if (ReadLayerExtentThread()==false)	
+	//	return NULL;
+	
+	for (int i = 0;i<10; i++)
+	{
+		if (TestDestroy())
+			return NULL;
+		
+		 wxThread::Sleep(200);
+	}
+	
+	
+/*	s_SharedDataMutex.Lock();
+	* m_ThreadStatus = tmTHREAD_RUN;
+	s_SharedDataMutex.Unlock();
+	
+	if(TestDestroyThread())
 		return NULL;
 	
+	Sleep(1000);
+	
+	if(TestDestroyThread())
+		return NULL;
+	*/
+	
+	wxCriticalSectionLocker lock (s_SharedDataCritical);
+	* m_ThreadStatus = tmTHREAD_STOP;
 	// if thread finished correctly, send a message to
 	// the layer manager to display the new image
 	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
@@ -1117,5 +1158,16 @@ bool tmGISLoadingDataThread::ReadLayerExtentThread()
 	return IsthreadComplete;
 }
 
+
+
+bool tmGISLoadingDataThread::TestDestroyThread()
+{
+	/*wxMutexLocker lock (s_SharedDataCritical);
+	if (*m_ThreadStatus == tmTHREAD_STOP)
+	{	
+		return true;
+	}*/
+	return false;
+}
 
 

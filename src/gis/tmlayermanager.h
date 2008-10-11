@@ -44,6 +44,13 @@ class tmScaleCtrlCombo;
 
 DECLARE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED, -1)
 
+enum tmTHREAD_STATUS 
+{
+	tmTHREAD_STOP = 0,
+	tmTHREAD_RUN
+};
+
+static wxCriticalSection s_SharedDataCritical;
 
 /***************************************************************************//**
  @brief GIS class for dealing with layers
@@ -70,6 +77,10 @@ class tmLayerManager : public wxEvtHandler
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
 		tmScaleCtrlCombo * m_ScaleCtrl;
+		
+		// shared member data with thread
+		 
+		tmTHREAD_STATUS m_Shared_ThreadStatus;
 		
 		// values for thread
 		bool m_computeFullExtent;
@@ -157,6 +168,7 @@ class tmGISLoadingDataThread : public wxThread
 	{
 	private:
 		bool m_Stop;
+		tmTHREAD_STATUS * m_ThreadStatus;
 		
 		bool ReadLayerExtentThread(); 
 		
@@ -171,10 +183,12 @@ class tmGISLoadingDataThread : public wxThread
 		tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
 							   tmGISScale * scale,
 							   DataBaseTM * database,
-							   tmDrawer * drawer);
+							   tmDrawer * drawer,
+							   tmTHREAD_STATUS * threadstatus);
 		~tmGISLoadingDataThread();
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}
+		bool TestDestroyThread();
 	};
 
 
