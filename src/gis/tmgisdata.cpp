@@ -21,6 +21,8 @@
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
 
+bool tmGISData::m_LogOn = false;
+
 /***************************************************************************//**
  @brief Constructor
  @author Lucien Schreiber (c) CREALP 2008
@@ -174,6 +176,7 @@ tmGISData * tmGISData::CreateGISBasedOnExt (const wxString & extension)
 		return myDataObj;
 	
 	// if all failed then return null.
+	//if (m_LogOn)
 	wxLogDebug(_T("No format handler found for extension : %s"), extension.c_str());
 	return NULL;
 	

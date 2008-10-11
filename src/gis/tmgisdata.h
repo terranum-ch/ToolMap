@@ -51,12 +51,16 @@ class tmGISData : public wxObject
 	{
 	private:
 		wxString		m_ShortFileName;
-				
+		static bool	m_LogOn;	
+		
 		void InitMemberValue();
 		
 	
 	protected:
+		
+		
 	public:
+		
 		// ctor and dtor
 		tmGISData();
 		~tmGISData();
@@ -67,6 +71,9 @@ class tmGISData : public wxObject
 		static wxArrayString GetAllSupportedGISFormatsExtensions();
 		static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
 		static tmGISData * CreateGISBasedOnExt (const wxString & extension);
+		
+		static void EnableLogging (bool enable = true) {m_LogOn = enable;}
+		static bool IsLoggingEnabled () {return m_LogOn;}
 		
 		
 		// gis function
