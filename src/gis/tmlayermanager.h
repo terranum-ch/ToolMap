@@ -181,7 +181,7 @@ class tmGISLoadingDataThread : public wxThread
 		tmGISScale * m_Scale;
 		DataBaseTM * m_DB;
 		tmDrawer * m_Drawer;
-		wxBitmap * m_ThreadBmp;
+		wxBitmap ** m_ThreadBmp;
 		
 	public:
 		tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
@@ -189,7 +189,7 @@ class tmGISLoadingDataThread : public wxThread
 							   DataBaseTM * database,
 							   tmDrawer * drawer,
 							   tmTHREAD_STATUS * threadstatus,
-							   wxBitmap * threadbitmap);
+							   wxBitmap ** threadbitmap);
 		~tmGISLoadingDataThread();
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}

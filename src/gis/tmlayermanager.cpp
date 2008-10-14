@@ -715,7 +715,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		
 	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, 
 										  &m_Drawer, &m_Shared_ThreadStatus,
-										  m_ThreadBitmap);
+										  &m_ThreadBitmap);
 	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(_T("Can't create thread for GIS data loading"));
@@ -749,9 +749,8 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		if (m_computeFullExtent)
 			m_Scale.ComputeMaxExtent();
 		
-		//TODO: Here check validity and then copy m_ThreadBitmap into m_Bitmap
 		wxCriticalSectionLocker lock (s_SharedDataCritical);
-		if (m_ThreadBitmap->IsOk())
+		if (m_ThreadBitmap && m_ThreadBitmap->IsOk())
 		{
 			wxMemoryDC dc;
 			dc.SelectObject(*m_Bitmap);
@@ -1041,7 +1040,7 @@ tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * to
 											   DataBaseTM * database,
 											   tmDrawer * drawer,
 											   tmTHREAD_STATUS * threadstatus,
-											   wxBitmap * threadbitmap)
+											   wxBitmap ** threadbitmap)
 {
 	m_Parent = parent;
 	m_TOC = toc;
@@ -1093,13 +1092,13 @@ void * tmGISLoadingDataThread::Entry()
 		return NULL;
 	
 	// read layers for drawing
-	m_Drawer->InitDrawer(m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
+	m_Drawer->InitDrawer(*m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
 	int iNbLayersDraw = ReadLayerDraw();
 	if (iNbLayersDraw == -1)
 		return NULL;
 	
 	
-	for (int i = 0;i<10; i++)
+	for (int i = 0;i<5; i++)
 	{
 		if (TestDestroy())
 			return NULL;
@@ -1274,12 +1273,19 @@ bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
 	// I don't wont to share my data...
 	wxCriticalSectionLocker lock (s_SharedDataCritical);
 	
-	if (m_ThreadBmp)
-		delete m_ThreadBmp;
+	if (*m_ThreadBmp)
+		delete *m_ThreadBmp;
 	
-	m_ThreadBmp = new wxBitmap (width, height);
-	if (m_ThreadBmp->IsOk())
+	*m_ThreadBmp = new wxBitmap (width, height);
+	if ((*m_ThreadBmp)->IsOk())
+	{
+		wxMemoryDC dc;
+		dc.SelectObject(**m_ThreadBmp);
+		dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
+		dc.Clear();
+		dc.SelectObject(wxNullBitmap);
 		return TRUE;
+	}
 	return FALSE;
 }
 
