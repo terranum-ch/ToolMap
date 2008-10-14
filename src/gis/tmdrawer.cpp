@@ -20,6 +20,8 @@
 #include "tmdrawer.h"
 
 
+bool tmDrawer::m_LogOn = true;
+
 tmDrawer::tmDrawer()
 {
 	m_bmp = NULL;
@@ -42,13 +44,11 @@ tmDrawer::~tmDrawer()
 
 
 
-void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter,
-						  bool bIsThreaded)
+void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter)
 {
 	m_bmp = bitmap;
 	m_scale = scale;
 	m_spatFilter = filter;
-	bIsThreadedMode = bIsThreaded;
 	
 	if (m_bmp && m_bmp->IsOk())
 		m_IsInitialised = TRUE;
@@ -165,9 +165,10 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
-	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType) && !bIsThreadedMode)
+	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
-		wxLogDebug(_T("Error setting spatial filter"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error setting spatial filter"));
 		return false;
 	}
 	
@@ -182,9 +183,10 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
 		
 		// line must have more than one vertex
-		if (iNbVertex <= 1 && ! bIsThreadedMode) 
+		if (iNbVertex <= 1) 
 		{
-			wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
 			bReturn = false;
 			break;
 		}
@@ -203,7 +205,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	}
 	
-	if (!bIsThreadedMode)
+	if (IsLoggingEnabled())
 		wxLogDebug(_T("%d Lines drawn"), iLoop);
 	
 	
@@ -239,9 +241,10 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
-	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType) && ! bIsThreadedMode)
+	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
-		wxLogDebug(_T("Error setting spatial filter"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error setting spatial filter"));
 		return false;
 	}
 	
@@ -255,9 +258,10 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	{
 		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint();
 		
-		if(pptsReal == NULL && !bIsThreadedMode)
+		if(pptsReal == NULL)
 		{
-			wxLogDebug(_T("No point returned @loop : %d"), iLoop);
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("No point returned @loop : %d"), iLoop);
 			bReturn = FALSE;
 			break;
 		}
@@ -275,7 +279,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		iLoop++;
 	}
 	
-	if (!bIsThreadedMode)
+	if (IsLoggingEnabled())
 		wxLogDebug(_T("%d Points drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
@@ -310,9 +314,10 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	// define spatial filter
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
-	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType) && !bIsThreadedMode)
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
-		wxLogDebug(_T("Error setting spatial filter"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error setting spatial filter"));
 		return false;
 	}
 	
@@ -321,16 +326,18 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	{
 		// get polygons info
 		int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
-		if (iPolyRings <= 0 && !bIsThreadedMode)
+		if (iPolyRings <= 0)
 		{
-			wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
 			break;
 		}
 		
 		//TODO: Temp code, for debuging remove after
-		if (iPolyRings > 1 && !bIsThreadedMode)
+		if (iPolyRings > 1)
 		{
-			wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
 		}
 			
 		wxGraphicsPath myPolygonPath = pgdc->CreatePath();
@@ -339,9 +346,10 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		{
 			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 			
-			if(pptsReal == NULL && !bIsThreadedMode)
+			if(pptsReal == NULL)
 			{
-				wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
+				if (IsLoggingEnabled())
+					wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
 				bReturn = FALSE;
 				break;
 			}
@@ -385,7 +393,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	//pgdc->StrokePath(path);
 	//pgdc->FillPath(path);
 	pgdc->DrawPath(path);*/
-	if (!bIsThreadedMode)
+	if (IsLoggingEnabled())
 		wxLogDebug(_T("%d Polygons drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
