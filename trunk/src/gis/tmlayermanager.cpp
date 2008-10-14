@@ -625,6 +625,10 @@ bool tmLayerManager::IsOK()
  *******************************************************************************/
 bool tmLayerManager::LoadProjectLayers()
 {
+	// enable logging
+	tmGISData::EnableLogging(true);
+	tmDrawer::EnableLogging(true);
+	
 	if (!IsOK())
 		return FALSE; 
 	
@@ -669,6 +673,10 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 {
 	// init values
 	m_computeFullExtent = bFullExtent;
+	
+	// disable logging (Mac OS thread problem)
+	tmGISData::EnableLogging(false);
+	tmDrawer::EnableLogging(false);
 	
 	// invalidate bitmap
 	//m_GISRenderer->SetBitmapStatus();
@@ -1085,7 +1093,7 @@ void * tmGISLoadingDataThread::Entry()
 		return NULL;
 	
 	// read layers for drawing
-	m_Drawer->InitDrawer(m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal(),true);
+	m_Drawer->InitDrawer(m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
 	int iNbLayersDraw = ReadLayerDraw();
 	if (iNbLayersDraw == -1)
 		return NULL;

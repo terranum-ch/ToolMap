@@ -54,7 +54,8 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	m_Datasource = OGRSFDriverRegistrar::Open(buffer, FALSE );
 	if( m_Datasource==NULL)
 	{
-		wxLogDebug(_T("Unable to open shp : %s"), filename.c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Unable to open shp : %s"), filename.c_str());
 		return FALSE;
 	}
 	
@@ -75,7 +76,8 @@ tmRealRect tmGISDataVectorSHP::GetMinimalBoundingRectangle()
 	OGRErr myError = m_Layer->GetExtent(&myEnveloppe, TRUE);
 	if (myError == OGRERR_FAILURE)
 	{
-		wxLogDebug(_T("Unable to compute extend for %s"), GetShortFileName().c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Unable to compute extend for %s"), GetShortFileName().c_str());
 		return tmRealRect(0,0,0,0);
 	}
 	
@@ -99,16 +101,18 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 	// spatial type if no features are present.
 	if (m_Layer->GetFeatureCount () <= 0)
 	{
-		wxLogError(_("Unable to add the %s layer, layer is empty"),
-				   GetShortFileName().c_str());
+		if (IsLoggingEnabled())
+			wxLogError(_("Unable to add the %s layer, layer is empty"),
+					   GetShortFileName().c_str());
 		return LAYER_SPATIAL_UNKNOWN;
 	}
 	
 	// computing layer type (point, line, polygon or unknown)
 	if ((poFeature = m_Layer->GetNextFeature()) == NULL)
 	{
-		wxLogError(_("Unable to read feature from : %s, layer may be corrupted"),
-				   GetShortFileName().c_str());
+		if (IsLoggingEnabled())
+			wxLogError(_("Unable to read feature from : %s, layer may be corrupted"),
+					   GetShortFileName().c_str());
 		return LAYER_SPATIAL_UNKNOWN;
 	}
 		
@@ -137,8 +141,9 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 	
 	if (retvalue == LAYER_ERR)
 	{
-		wxLogDebug(_T("Error getting spatial layer type for : %s"), 
-				   GetShortFileName().c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error getting spatial layer type for : %s"), 
+					   GetShortFileName().c_str());
 	}
 	
 	return retvalue;
@@ -188,7 +193,8 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 	nbvertex = pline->getNumPoints();
 	if (nbvertex <= 1)
 	{
-		wxLogDebug(_T("Only one vertex or less in this line ???"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Only one vertex or less in this line ???"));
 		OGRGeometryFactory::destroyGeometry	(pline);
 		return NULL;
 	}
@@ -247,7 +253,8 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
 	
 	if (plgon == NULL)
 	{
-		wxLogDebug(_T("Conversion to polygon error"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Conversion to polygon error"));
 		m_polyTotalRings = 0;
 		OGRFeature::DestroyFeature( m_Feature );
 		return 0;
@@ -256,7 +263,8 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
 	// check polygons validity, long operations ??
 	if(!plgon->IsValid())
 	{
-		wxLogDebug(_T("Polygon not valid @ FID : %d"), m_Feature->GetFID());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Polygon not valid @ FID : %d"), m_Feature->GetFID());
 	}
 	
 	// count rings + 1 (exterior ring)
@@ -270,7 +278,8 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbv
 {
 	if (m_Feature ==NULL)
 	{
-		wxLogDebug(_T("Feature is null, call GetNextDataPolygonInfo first"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Feature is null, call GetNextDataPolygonInfo first"));
 		m_polyTotalRings = 0;
 		return NULL;
 	}
@@ -287,7 +296,8 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbv
 	
 	if (pLinePoly == NULL)
 	{
-		wxLogDebug(_T("Error getting ring for polygon. Ring num. is : %d"), currentring);
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error getting ring for polygon. Ring num. is : %d"), currentring);
 		m_polyTotalRings = 0;
 		OGRFeature::DestroyFeature( m_Feature );
 		return NULL;
@@ -297,7 +307,8 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbv
 	nbvertex = pLinePoly->getNumPoints();
 	if (nbvertex <= 1)
 	{
-		wxLogDebug(_T("Only one vertex or less in this polygon ring ???"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Only one vertex or less in this polygon ring ???"));
 		OGRGeometryFactory::destroyGeometry	(pLinePoly);
 		return NULL;
 	}
@@ -331,7 +342,8 @@ int tmGISDataVectorSHP::GetCount ()
 {
 	if(!m_Layer)
 	{
-		wxLogDebug(_T("m_layer not defined, error"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("m_layer not defined, error"));
 		return -1;
 	}
 	

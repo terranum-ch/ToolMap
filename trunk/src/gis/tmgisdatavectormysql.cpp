@@ -51,13 +51,15 @@ bool tmGISDataVectorMYSQL:: CheckGeometryFields(const wxString & tablename)
 	
 	if (!m_DB->DataBaseQuery(sSentence))
 	{
-		wxLogDebug(_T("Error checking geometry fields : %s"), sSentence.c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error checking geometry fields : %s"), sSentence.c_str());
 		return FALSE;
 	}
 	
 	if (m_DB->DatabaseGetCountResults() != 2)
 	{
-		wxLogDebug(_T("The table : %s dosen't contain needed geometry fields"), tablename.c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("The table : %s dosen't contain needed geometry fields"), tablename.c_str());
 		return FALSE;
 	}
 	
@@ -75,14 +77,16 @@ bool tmGISDataVectorMYSQL::Open (const wxString & filename, bool bReadWrite)
 	wxASSERT(m_DB);
 	if (!m_DB)
 	{
-		wxLogDebug(_T("Pointer to database invalid, open database first"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Pointer to database invalid, open database first"));
 		return FALSE;
 	}
 	
 	// does the table exists ?
 	if(!m_DB->DataBaseTableExist(filename))
 	{
-		wxLogDebug(_T("Table '%s' dosen't exists in the database"), filename.c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Table '%s' dosen't exists in the database"), filename.c_str());
 		return FALSE;
 	}
 	
@@ -203,7 +207,8 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 	// check that a table is specified.
 	if (table.IsEmpty())
 	{
-		wxLogError(_T("No database table specified"));
+		if (IsLoggingEnabled())
+			wxLogError(_T("No database table specified"));
 		return false;
 	}
 	
@@ -223,8 +228,9 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 		return TRUE;
 	}
 	
-	wxLogDebug(wxString::Format(_T("Error setting spatial filter : %s"),
-								m_DB->DataBaseGetLastError().c_str()));
+	if (IsLoggingEnabled())
+		wxLogDebug(wxString::Format(_T("Error setting spatial filter : %s"),
+									m_DB->DataBaseGetLastError().c_str()));
 	
 	return FALSE;
 }
@@ -250,7 +256,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 	// security check
 	if(!m_DB->DataBaseHasResult())
 	{
-		wxLogError(_T("Database should have results..."));
+		if (IsLoggingEnabled())
+			wxLogError(_T("Database should have results..."));
 		nbvertex = 0;
 		return NULL;
 	}
@@ -259,7 +266,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 	row_length = m_DB->DataBaseGetNextRowResult(row);
 	if (row_length == NULL)
 	{
-		wxLogDebug(_T("No more results"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("No more results"));
 		nbvertex = 0;
 		return NULL;
 	}
@@ -270,7 +278,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 	nbvertex = pline->getNumPoints();
 	if (nbvertex <= 1)
 	{
-		wxLogDebug(_T("Only one vertex or less in this line ???"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Only one vertex or less in this line ???"));
 		OGRGeometryFactory::destroyGeometry	(pline);
 		return NULL;
 	}
@@ -297,7 +306,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
 	// security check
 	if(!m_DB->DataBaseHasResult())
 	{
-		wxLogError(_T("Database should have results..."));
+		if (IsLoggingEnabled())
+			wxLogError(_T("Database should have results..."));
 		return NULL;
 	}
 	
@@ -305,7 +315,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
 	row_length = m_DB->DataBaseGetNextRowResult(row);
 	if (row_length == NULL)
 	{
-		wxLogDebug(_T("No more results"));
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("No more results"));
 		return NULL;
 	}
 	
@@ -315,7 +326,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
 	
 	if (!pPoint)
 	{
-		wxLogError(_T("Not able to create geometry"));
+		if (IsLoggingEnabled())
+			wxLogError(_T("Not able to create geometry"));
 		return NULL;
 	}
 	
