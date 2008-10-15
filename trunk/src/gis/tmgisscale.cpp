@@ -53,13 +53,11 @@ bool tmRealRect::Clip (const tmRealRect & src, tmRealRect & result)
 	{
 		// Crop from lef
 		result.x_min = src.x_min;
-		result.x_max = y_max;
 	}
 
 	if(x_max > src.x_max) // Image is hidden partially by the right edge of the screen
 	{
 		// Crop from right
-		result.x_min = x_min;
 		result.x_max = src.x_max;
 	}
 	
@@ -67,20 +65,15 @@ bool tmRealRect::Clip (const tmRealRect & src, tmRealRect & result)
 	{
 		// Crop from top
 		result.y_min = src.y_min;
-		result.y_max = y_max;
 	}
 
 	if(y_max > src.y_max) // Image is hidden parially by the bottom edge of the screen
 	{
 		// Crop from bottom
 		result.y_max = src.y_max;
-		result.y_min = y_min;
 	}
 	// Since the image is visible, return true
 	return true;
-	
-	
-	
 }
 
 

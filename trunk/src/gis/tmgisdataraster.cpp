@@ -251,17 +251,16 @@ wxRect tmGISDataRaster::ConvertClipedImage (const tmRealRect & origin,
 		clippedPX.width = clippedPX.width - ((origin.x_max - clipped.x_max) / dPxWidthX);
 	}
 	
-	if (origin.y_min < clipped.y_min) // bottom clipped
+	if (clipped.y_max < origin.y_max) // top clipped
 	{
-		clippedPX.y = (clipped.y_min - origin.y_min) / dPxWidthY;
+		clippedPX.y = (origin.y_max - clipped.y_max) / dPxWidthY;
 		clippedPX.height = clippedPX.GetHeight() - clippedPX.y;
 	}
 	
-	if (clipped.y_max < origin.y_max) // top clipped
+	if (origin.y_min < clipped.y_min) // bottom clipped
 	{
-		clippedPX.height = clippedPX.height - ((origin.y_max - clipped.y_max) / dPxWidthY);
+		clippedPX.height = clippedPX.GetHeight() - ((clipped.y_min - origin.y_min) / dPxWidthY);
 	}
-	
 	return clippedPX;
 }
 
