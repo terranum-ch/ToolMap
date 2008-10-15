@@ -354,6 +354,14 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 
+/***************************************************************************//**
+ @brief Called when windows size change
+ @details This function is called by the renderer (#tmRenderer) when the size
+ change. It call the rendering of all layers in a multi-threaded way.
+ @param event Contain the new windows size.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 October 2008
+ *******************************************************************************/
 void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 {
 	// pass size to scale object but don't make 
@@ -411,6 +419,14 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 
 
 
+/***************************************************************************//**
+ @brief Called when showing or hiding a layer
+ @details This function is called by the TOC (#tmTOCCtrl) when a layers is
+ displayed or hidden
+ @param event empty.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 October 2008
+ *******************************************************************************/
 void tmLayerManager::OnShowLayer (wxCommandEvent & event)
 {
 	ReloadProjectLayersThreadStart(FALSE);
@@ -418,6 +434,14 @@ void tmLayerManager::OnShowLayer (wxCommandEvent & event)
 
 
 
+/***************************************************************************//**
+ @brief Called when user change scale
+ @details This function is called by the Scale control (#tmScaleCtrlCombo) when
+ user specify a scale.
+ @param event empty.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 October 2008
+ *******************************************************************************/
 void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
 {
 	// checking that project is open and contain GIS data
@@ -436,7 +460,6 @@ void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
 	
 	
 }
-
 
 
 
@@ -652,7 +675,7 @@ bool tmLayerManager::LoadProjectLayers()
 	m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
 	
 	
-	//TODO: iterate for drawing layers here
+	// iterate for drawing layers
 	ReadLayerDraw();
 	
 	
@@ -712,10 +735,14 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		m_Progress->DisplayProgress();
 	}
 	
-		
+	// create and launch thread
+	wxSize myScreenSize (m_Scale.GetWindowExtent().GetWidth(),
+						 m_Scale.GetWindowExtent().GetHeight());
 	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, 
 										  &m_Drawer, &m_Shared_ThreadStatus,
-										  &m_ThreadBitmap);
+										  &m_ThreadBitmap,
+										  bFullExtent,
+										  myScreenSize);
 	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(_T("Can't create thread for GIS data loading"));
@@ -743,30 +770,30 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	
 	// test validity of layers extent. If no extent is 
 	// specified (like no data displayed)  
-	if (m_Scale.IsLayerExtentValid())
+	//if (m_Scale.IsLayerExtentValid())
+	//{
+	// compute max extent if required by option
+	//	if (m_computeFullExtent)
+	//		m_Scale.ComputeMaxExtent();
+	
+	wxCriticalSectionLocker lock (s_SharedDataCritical);
+	if (m_ThreadBitmap && m_ThreadBitmap->IsOk())
 	{
-		// compute max extent if required by option
-		if (m_computeFullExtent)
-			m_Scale.ComputeMaxExtent();
+		wxSize myWndpxSize (m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight());
+		CreateEmptyBitmap(myWndpxSize);
 		
-		wxCriticalSectionLocker lock (s_SharedDataCritical);
-		if (m_ThreadBitmap && m_ThreadBitmap->IsOk())
-		{
-			wxMemoryDC dc;
-			dc.SelectObject(*m_Bitmap);
-			dc.DrawBitmap(*m_ThreadBitmap, 0, 0, TRUE);
-			dc.SelectObject(wxNullBitmap);
-		}
-		else
-		{
-			wxLogDebug(_T("Error with bitmap."));
-		}
-			
+		wxMemoryDC dc;
+		dc.SelectObject(*m_Bitmap);
+		dc.DrawBitmap(*m_ThreadBitmap, 0, 0, TRUE);
+		dc.SelectObject(wxNullBitmap);
 		
-		//m_Drawer.InitDrawer(m_Bitmap, m_Scale, tmRealRect(0,0,0,0));
-		//m_Drawer.DrawExtentIntoBitmap();//m_Bitmap, m_Scale);
 	}
-		
+	else
+	{
+		wxLogDebug(_T("Error with bitmap."));
+	}
+	
+	
 	// update scale
 	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 	
@@ -869,10 +896,6 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 	dc.SelectObject (*m_Bitmap);
 	dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
 	dc.Clear();
-
-	//dc.SetBrush (wxBrush(*wxWHITE_BRUSH));
-	//dc.SetPen (wxPen(*wxWHITE_PEN));
-	//dc.DrawRectangle (0,0,size.GetWidth(), size.GetHeight());
 }
 
 
@@ -1032,6 +1055,8 @@ void tmLayerManager::InitScaleCtrlList ()
  @param drawer
  @param threadstatus
  @param threadbitmap
+ @param computefullextent Should we compute the full extent
+ @param wndpxsize Size of the windows in pixels
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 July 2008
  *******************************************************************************/
@@ -1040,7 +1065,9 @@ tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * to
 											   DataBaseTM * database,
 											   tmDrawer * drawer,
 											   tmTHREAD_STATUS * threadstatus,
-											   wxBitmap ** threadbitmap)
+											   wxBitmap ** threadbitmap,
+											   bool computefullextent,
+											   const wxSize & wndpxsize)
 {
 	m_Parent = parent;
 	m_TOC = toc;
@@ -1050,6 +1077,10 @@ tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * to
 	m_Drawer = drawer;
 	m_ThreadStatus = threadstatus;
 	m_ThreadBmp = threadbitmap;
+	m_computeFullExtent = computefullextent;
+	
+	// creating img for drawing
+	CreateEmptyBitmap(wndpxsize.GetWidth(), wndpxsize.GetHeight());
 	
 }
 
@@ -1075,15 +1106,11 @@ void * tmGISLoadingDataThread::Entry()
 	* m_ThreadStatus = tmTHREAD_RUN;
 	s_SharedDataCritical.Leave();
 	
-	// process loading of GIS data
+
 	
-	// if the thread was stopped
-	//if (ReadLayerExtentThread()==false)	
+	//if (!CreateEmptyBitmap(m_Scale->GetWindowExtent().GetWidth(),
+	//					  m_Scale->GetWindowExtent().GetHeight()))
 	//	return NULL;
-	
-	if (!CreateEmptyBitmap(m_Scale->GetWindowExtent().GetWidth(),
-						  m_Scale->GetWindowExtent().GetHeight()))
-		return NULL;
 	
 	
 	// read layers extent
@@ -1091,21 +1118,32 @@ void * tmGISLoadingDataThread::Entry()
 	if (iNbLayers == -1)
 		return NULL;
 	
-	// read layers for drawing
-	m_Drawer->InitDrawer(*m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
-	int iNbLayersDraw = ReadLayerDraw();
-	if (iNbLayersDraw == -1)
-		return NULL;
 	
-	
-	for (int i = 0;i<5; i++)
+	if (m_Scale->IsLayerExtentValid())
 	{
-		if (TestDestroy())
+		// compute max extent if required by option
+		if (m_computeFullExtent)
+			m_Scale->ComputeMaxExtent();
+		
+		
+		// read layers for drawing
+		m_Drawer->InitDrawer(*m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
+		int iNbLayersDraw = ReadLayerDraw();
+		if (iNbLayersDraw == -1)
 			return NULL;
 		
-		 wxThread::Sleep(200);
+		
+		//TODO: remove this temp loosing time code
+		/*for (int i = 0;i<5; i++)
+		{
+			if (TestDestroy())
+				return NULL;
+			
+			wxThread::Sleep(200);
+		}*/
+		if (TestDestroy())
+			return NULL;
 	}
-	
 	
 	// if thread finished correctly, send a message to
 	// the layer manager to display the new image
@@ -1281,7 +1319,7 @@ bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
 	{
 		wxMemoryDC dc;
 		dc.SelectObject(**m_ThreadBmp);
-		dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
+		dc.SetBackground(wxBrush(*wxGREY_BRUSH));
 		dc.Clear();
 		dc.SelectObject(wxNullBitmap);
 		return TRUE;

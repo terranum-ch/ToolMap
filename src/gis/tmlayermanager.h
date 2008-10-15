@@ -182,6 +182,7 @@ class tmGISLoadingDataThread : public wxThread
 		DataBaseTM * m_DB;
 		tmDrawer * m_Drawer;
 		wxBitmap ** m_ThreadBmp;
+		bool m_computeFullExtent;
 		
 	public:
 		tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
@@ -189,7 +190,9 @@ class tmGISLoadingDataThread : public wxThread
 							   DataBaseTM * database,
 							   tmDrawer * drawer,
 							   tmTHREAD_STATUS * threadstatus,
-							   wxBitmap ** threadbitmap);
+							   wxBitmap ** threadbitmap,
+							   bool computefullextent,
+							   const wxSize & wndpxsize);
 		~tmGISLoadingDataThread();
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}
