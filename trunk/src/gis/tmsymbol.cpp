@@ -66,19 +66,31 @@ tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlg
 }
 
 
+/***************************************************************************//**
+ @brief Display the symbology dialog
+ @details A personalized symbology dialog is displayed
+ @param parent Adress of the parent (for the dialog)
+ @param dlgpos Desired position for the dialog
+ @return  wxID_OK if user select 'ok' in the symbology dialog, wxID_CANCER
+ otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 October 2008
+ *******************************************************************************/
 int tmSymbol::ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
 	tmSymbolDLG * mydlg = GetSymbolDialog(parent,dlgpos);
-
+	int iRetVal = wxID_CANCEL;
+	
+	
 	if (mydlg->ShowModal() == wxID_OK)
 	{
 		GetDialogData(mydlg);
-		wxLogDebug(_T("dialog : OK"));
+		iRetVal = wxID_OK;
 	}
 		
 	delete mydlg;
 	
-	return 0;
+	return iRetVal;
 }
 
 
