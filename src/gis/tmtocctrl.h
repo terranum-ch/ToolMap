@@ -43,7 +43,7 @@
 // EVENT FOR TOC CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ADD, -1)
-DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE, -1)
+DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE, -1) // used also for updating symbology
 
 /***************************************************************************//**
  @brief GIS TOC class

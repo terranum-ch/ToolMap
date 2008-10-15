@@ -390,9 +390,13 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
 	
 	wxASSERT(item->m_LayerSymbol);
-	item->m_LayerSymbol->ShowSymbologyDialog(GetParent(), wxGetMousePosition());
-	
-	
+	if(item->m_LayerSymbol->ShowSymbologyDialog(GetParent(),
+												wxGetMousePosition())==wxID_OK)
+	{
+		// send event to the layer manager for updating display
+		wxCommandEvent evt(tmEVT_LM_SHOW_HIDE, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 
