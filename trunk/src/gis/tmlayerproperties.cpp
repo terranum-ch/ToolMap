@@ -34,6 +34,7 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerVisible = TRUE;
 	m_LayerType = TOC_NAME_NOT_GENERIC;
 	m_LayerSymbol = NULL;
+	m_DrawFlags = 0;
 }
 
 

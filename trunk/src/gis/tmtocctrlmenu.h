@@ -53,13 +53,17 @@ const int ID_TOCMENU_PROPERTIES				= 20104;
 class tmTOCCtrlMenu : public wxMenu
 	{
 	private:
+		tmDRAWING_FLAGS m_flags;
+		//TODO : define generic and spattype here.
+		
 		void CreateTOCBasic (bool bIsGeneric);
 		void CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype);
 		void CreateTOCProperties ();
 		
 		
 	protected:
-		void CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIsGeneric);
+		void CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype,
+								  bool bIsGeneric);
 		
 		
 	public:

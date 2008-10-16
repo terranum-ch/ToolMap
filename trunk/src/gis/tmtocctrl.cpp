@@ -28,7 +28,7 @@
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
-DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE)
+DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 
 
 
@@ -40,6 +40,8 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
 	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
 	EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
+	EVT_MENU_RANGE (ID_TOCMENU_SHOW_VERTEX_BEGIN_END, 
+					ID_TOCMENU_SHOW_VERTEX_NONE, tmTOCCtrl::OnVertexMenu)
 END_EVENT_TABLE()
 
 
@@ -333,7 +335,7 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 		EditLayer(itemdata, clickedid);
 		
 		// Send message show/hide to layermanager
-		wxCommandEvent evt(tmEVT_LM_SHOW_HIDE, wxID_ANY);
+		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
 		evt.SetInt((int) itemdata->m_LayerVisible);
 		GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -394,12 +396,47 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 												wxGetMousePosition())==wxID_OK)
 	{
 		// send event to the layer manager for updating display
-		wxCommandEvent evt(tmEVT_LM_SHOW_HIDE, wxID_ANY);
+		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
 		GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
 
+
+/***************************************************************************//**
+ @brief Called when contextual menu "Vertex" is pressed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 October 2008
+ *******************************************************************************/
+void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
+{
+	// get selected item
+	wxArrayTreeItemIds selection;
+	GetSelections(selection);
+	
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
+	// keep old value to avoid drawing if value not changed
+	int oldflags = item->m_DrawFlags;
+	
+	switch (event.GetId())
+	{
+		case ID_TOCMENU_SHOW_VERTEX_ALL:
+			item->m_DrawFlags = tmDRAW_VERTEX_ALL;
+			break;
+		case ID_TOCMENU_SHOW_VERTEX_BEGIN_END:
+			item->m_DrawFlags = tmDRAW_VERTEX_BEGIN_END;
+		default:
+			item->m_DrawFlags = tmDRAW_VERTEX_NONE;
+			break;
+	}
+	
+	if (item->m_DrawFlags != oldflags)
+	{
+		// send event to the layer manager for updating display
+		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+}
 
 
 /***************************************************************************//**
