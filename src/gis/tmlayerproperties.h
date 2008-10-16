@@ -55,6 +55,7 @@ class tmLayerProperties : public wxTreeItemData
 		bool m_LayerVisible;
 		int m_LayerType;
 		tmSymbol * m_LayerSymbol;
+		int m_DrawFlags;
 		
 		// init from string array
 		bool InitFromArray(const wxArrayString & array);

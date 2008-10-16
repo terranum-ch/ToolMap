@@ -43,7 +43,9 @@
 // EVENT FOR TOC CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ADD, -1)
-DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_HIDE, -1) // used also for updating symbology
+DECLARE_EVENT_TYPE(tmEVT_LM_UPDATE, -1) // used also for updating symbology
+
+
 
 /***************************************************************************//**
  @brief GIS TOC class
@@ -72,8 +74,10 @@ class tmTOCCtrl  : public wxTreeCtrl
 		void OnMouseClick (wxMouseEvent & event);
 		void OnMouseItemRightClick (wxTreeEvent & event);
 		
+		
 		// contextual menu event functions
 		void OnShowProperties (wxCommandEvent & event);
+		void OnVertexMenu (wxCommandEvent & event);
 		
 		DECLARE_EVENT_TABLE()
 		

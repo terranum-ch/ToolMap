@@ -25,6 +25,8 @@
 tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item) :
 	wxMenu(item->GetDisplayName(), 0)
 {
+	m_flags = (tmDRAWING_FLAGS) item->m_DrawFlags;
+	
 	bool bIsGeneric = FALSE;
 	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
 		bIsGeneric =TRUE;
@@ -43,7 +45,8 @@ tmTOCCtrlMenu::~tmTOCCtrlMenu()
 
 
 
-void tmTOCCtrlMenu::CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, bool bIsGeneric)
+void tmTOCCtrlMenu::CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, 
+										 bool bIsGeneric)
 {
 	CreateTOCBasic(bIsGeneric); // REMOVE ITEM
 	CreateTOCShowVertex(spattype); // SHOW VERTEX (only if needed)

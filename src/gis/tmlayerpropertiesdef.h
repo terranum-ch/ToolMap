@@ -75,4 +75,14 @@ enum TM_GIS_SPATIAL_TYPES
 };
 
 
+// enum for drawing vertex
+enum tmDRAWING_FLAGS 
+{
+	tmDRAW_VERTEX_NONE = 0,
+	tmDRAW_VERTEX_ALL,
+	tmDRAW_VERTEX_BEGIN_END
+};
+
+
+
 #endif
