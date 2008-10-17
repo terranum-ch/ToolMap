@@ -1139,13 +1139,16 @@ void * tmGISLoadingDataThread::Entry()
 	if (m_Scale->IsLayerExtentValid())
 	{
 		// compute max extent if required by option
+		wxMutexGuiEnter();
 		if (m_computeFullExtent)
 			m_Scale->ComputeMaxExtent();
 		
 		
 		// read layers for drawing
+		
 		m_Drawer->InitDrawer(*m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
 		int iNbLayersDraw = ReadLayerDraw();
+		wxMutexGuiLeave();
 		if (iNbLayersDraw == -1)
 			return NULL;
 		
