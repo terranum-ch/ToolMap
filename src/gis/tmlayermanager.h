@@ -50,7 +50,7 @@ enum tmTHREAD_STATUS
 	tmTHREAD_RUN
 };
 
-static wxCriticalSection s_SharedDataCritical;
+static wxMutex s_SharedDataCritical;
 
 /***************************************************************************//**
  @brief GIS class for dealing with layers

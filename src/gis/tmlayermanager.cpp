@@ -716,42 +716,46 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	
 
 	// stop an existing thread if needed.
-	s_SharedDataCritical.Enter();
-	if (m_Shared_ThreadStatus == tmTHREAD_RUN)
+	if (s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
 	{
-		m_Shared_ThreadStatus = tmTHREAD_STOP;
-		s_SharedDataCritical.Leave();
-		m_Thread->Delete();
+		if (m_Shared_ThreadStatus == tmTHREAD_RUN)
+		{
+			m_Shared_ThreadStatus = tmTHREAD_STOP;
+			s_SharedDataCritical.Unlock();
+			m_Thread->Delete();
+		}
+		else
+			s_SharedDataCritical.Unlock();
+		
+		
+		// display a progress thread
+		// only if nothing is displayed
+		if (!m_Progress)
+		{
+			m_Progress = new tmProgressIndicator(m_Parent, m_StatusBar);
+			m_Progress->SetMessage(TMPROGRESS_DRAW_DATA);
+			m_Progress->DisplayProgress();
+		}
+		
+		// create and launch thread
+		wxSize myScreenSize (m_Scale.GetWindowExtent().GetWidth(),
+							 m_Scale.GetWindowExtent().GetHeight());
+		m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, 
+											  &m_Drawer, &m_Shared_ThreadStatus,
+											  &m_ThreadBitmap,
+											  bFullExtent,
+											  myScreenSize);
+		if (m_Thread->Create() != wxTHREAD_NO_ERROR)
+		{
+			wxLogError(_T("Can't create thread for GIS data loading"));
+			return FALSE;
+		}
+		wxLogDebug(_T("Gis thread started..."));
+		m_Thread->Run();
+		return TRUE;
 	}
-	else
-		s_SharedDataCritical.Leave();
-	
-
-	// display a progress thread
-	// only if nothing is displayed
-	if (!m_Progress)
-	{
-		m_Progress = new tmProgressIndicator(m_Parent, m_StatusBar);
-		m_Progress->SetMessage(TMPROGRESS_DRAW_DATA);
-		m_Progress->DisplayProgress();
-	}
-	
-	// create and launch thread
-	wxSize myScreenSize (m_Scale.GetWindowExtent().GetWidth(),
-						 m_Scale.GetWindowExtent().GetHeight());
-	m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, 
-										  &m_Drawer, &m_Shared_ThreadStatus,
-										  &m_ThreadBitmap,
-										  bFullExtent,
-										  myScreenSize);
-	if (m_Thread->Create() != wxTHREAD_NO_ERROR)
-	{
-		wxLogError(_T("Can't create thread for GIS data loading"));
-		return FALSE;
-	}
-	wxLogDebug(_T("Gis thread started..."));
-	m_Thread->Run();
-	return TRUE;
+	wxLogDebug(_T("Unable to lock mutex during thread start"));
+	return FALSE;
 }	
 
 
@@ -781,30 +785,31 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	//	if (m_computeFullExtent)
 	//		m_Scale.ComputeMaxExtent();
 	
-	wxCriticalSectionLocker lock (s_SharedDataCritical);
-	if (m_ThreadBitmap && m_ThreadBitmap->IsOk())
+	if (s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
 	{
-		wxSize myWndpxSize (m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight());
-		CreateEmptyBitmap(myWndpxSize);
+		if (m_ThreadBitmap && m_ThreadBitmap->IsOk())
+		{
+			wxSize myWndpxSize (m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight());
+			CreateEmptyBitmap(myWndpxSize);
+			
+			wxMemoryDC dc;
+			dc.SelectObject(*m_Bitmap);
+			dc.DrawBitmap(*m_ThreadBitmap, 0, 0, TRUE);
+			dc.SelectObject(wxNullBitmap);
+			
+		}
+		else
+		{
+			wxLogDebug(_T("Error with bitmap."));
+		}
+		s_SharedDataCritical.Unlock();
 		
-		wxMemoryDC dc;
-		dc.SelectObject(*m_Bitmap);
-		dc.DrawBitmap(*m_ThreadBitmap, 0, 0, TRUE);
-		dc.SelectObject(wxNullBitmap);
+		// update scale
+		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 		
+		// update scrollbars
+		UpdateScrollBars();
 	}
-	else
-	{
-		wxLogDebug(_T("Error with bitmap."));
-	}
-	
-	
-	// update scale
-	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
-	
-	// update scrollbars
-	UpdateScrollBars();
-	
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -1107,9 +1112,11 @@ tmGISLoadingDataThread::~tmGISLoadingDataThread()
 void * tmGISLoadingDataThread::Entry()
 {	
 	// indicate to main that thread is running
-	s_SharedDataCritical.Enter();
+	if (!s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
+		return NULL;
+		
 	* m_ThreadStatus = tmTHREAD_RUN;
-	s_SharedDataCritical.Leave();
+	s_SharedDataCritical.Unlock();
 	
 
 	
@@ -1152,11 +1159,15 @@ void * tmGISLoadingDataThread::Entry()
 	
 	// if thread finished correctly, send a message to
 	// the layer manager to display the new image
-	wxCriticalSectionLocker lock (s_SharedDataCritical);
+	if(!s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
+		return NULL;
+	
 	* m_ThreadStatus = tmTHREAD_STOP;
+	s_SharedDataCritical.Unlock();
 
 	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+		
 	return NULL;
 }
 
@@ -1314,7 +1325,10 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
 {
 	// I don't wont to share my data...
-	wxCriticalSectionLocker lock (s_SharedDataCritical);
+	wxMutexLocker lock (s_SharedDataCritical);
+	if(!lock.IsOk())
+		return false;
+
 	
 	if (*m_ThreadBmp)
 		delete *m_ThreadBmp;
@@ -1327,9 +1341,9 @@ bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
 		dc.SetBackground(wxBrush(*wxGREY_BRUSH));
 		dc.Clear();
 		dc.SelectObject(wxNullBitmap);
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
