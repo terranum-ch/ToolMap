@@ -68,6 +68,10 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	
 	InitSymbology(array.Item(6));
 	
+	wxString myVFlags = array.Item(7);
+	m_DrawFlags = wxAtoi(myVFlags.c_str());
+	
+	
 	return TRUE;
 }
 

@@ -35,9 +35,9 @@
 
 
 const int ID_TOCMENU_REMOVE					= 20100;
-const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END	= 20101;
+const int ID_TOCMENU_SHOW_VERTEX_NONE		= 20101;
 const int ID_TOCMENU_SHOW_VERTEX_ALL		= 20102;
-const int ID_TOCMENU_SHOW_VERTEX_NONE		= 20103;
+const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END	= 20103;
 const int ID_TOCMENU_PROPERTIES				= 20104;
 
 
@@ -54,16 +54,16 @@ class tmTOCCtrlMenu : public wxMenu
 	{
 	private:
 		tmDRAWING_FLAGS m_flags;
-		//TODO : define generic and spattype here.
+		TM_GIS_SPATIAL_TYPES m_spattypes;
+		bool m_Generic;
 		
-		void CreateTOCBasic (bool bIsGeneric);
-		void CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype);
+		void CreateTOCBasic ();
+		void CreateTOCShowVertex ();
 		void CreateTOCProperties ();
 		
 		
 	protected:
-		void CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype,
-								  bool bIsGeneric);
+		void CreateTOCContextMenu();
 		
 		
 	public:
