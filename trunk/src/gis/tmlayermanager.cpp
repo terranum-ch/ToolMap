@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 END_EVENT_TABLE()
 
 
+bool tmLayerManager::m_LogOn = true;
 
 /***************************************************************************//**
  @brief Constructor
@@ -698,10 +699,6 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	// init values
 	m_computeFullExtent = bFullExtent;
 	
-	// disable logging (Mac OS thread problem)
-	tmGISData::EnableLogging(false);
-	tmDrawer::EnableLogging(false);
-	
 	// invalidate bitmap
 	//m_GISRenderer->SetBitmapStatus();
 	//CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
@@ -727,6 +724,10 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		else
 			s_SharedDataCritical.Unlock();
 		
+		// disable logging (Mac OS thread problem)
+		tmGISData::EnableLogging(false);
+		tmDrawer::EnableLogging(false);
+		tmLayerManager::EnableLogging(false);
 		
 		// display a progress thread
 		// only if nothing is displayed
@@ -765,6 +766,7 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	// enable logging
 	tmGISData::EnableLogging(true);
 	tmDrawer::EnableLogging(true);
+	tmLayerManager::EnableLogging (true);
 	
 	wxLogDebug(_T("GIS thread finished without interuption"));
 	m_Thread = NULL; // thread finished
@@ -859,7 +861,8 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 			break;
 			
 		default:
-			fprintf(stderr, "%s line %d : %s file format not supported yet \n ", __FUNCTION__, __LINE__,
+			if (IsLoggingEnabled())
+			wxLogDebug(_T("%s file format not supported yet \n "),
 					layerProp->m_LayerNameExt.c_str());
 			return NULL;
 			break;
@@ -868,13 +871,15 @@ tmGISData * tmLayerManager::LoadLayer (tmLayerProperties * layerProp)
 	// here load data
 	if (!m_Data)
 	{
-		wxLogError(_("Error loading : %s"), myErrMsg.c_str());
+		if (IsLoggingEnabled())
+			wxLogError(_("Error loading : %s"), myErrMsg.c_str());
 		return NULL;
 	}
 	
 	if (!m_Data->Open(myFileName, TRUE))
 	{
-		wxLogError(_("Error opening : %s"), myErrMsg.c_str());
+		if (IsLoggingEnabled())
+			wxLogError(_("Error opening : %s"), myErrMsg.c_str());
 		return NULL;
 	}
 		
