@@ -141,6 +141,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  `GENERIC_LAYERS` TINYINT NULL DEFAULT 100 ,")
 	_T("  `RANK` INT NULL ,")
 	_T("  `SYMBOLOGY` BINARY(255) NULL ,")
+	_T("  `VERTEX_FLAGS` TINYINT NULL  ,")
 	_T("  PRIMARY KEY (`CONTENT_ID`) ,")
 	_T("  INDEX PROJECT_TOC_FKIndex1 (`TYPE_CD` ASC) ,")
 	_T("  CONSTRAINT `Rel_10`")
@@ -1759,7 +1760,7 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 	{
 		
 		wxString sSentence = _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
-		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY FROM ") + TABLE_NAME_TOC +
+		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS FROM ") + TABLE_NAME_TOC +
 		_T(" ORDER by RANK");
 		
 		if (!DataBaseQuery(sSentence))
@@ -1778,9 +1779,9 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 			return NULL;
 		}
 				
-		if (myTempResults.GetCount() != 7)
+		if (myTempResults.GetCount() != 8)
 		{
-			wxLogDebug(_T("Error with the results : attended 6 results, got %d"),
+			wxLogDebug(_T("Error with the results : attended 8 results, got %d"),
 					   myTempResults.GetCount());
 			return NULL;
 		}

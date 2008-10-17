@@ -15,3 +15,6 @@ Update Database
 - 208 -> 209 (Adding column for binary symbology)
 	- ALTER TABLE `project_toc` ADD COLUMN `SYMBOLOGY` VARCHAR(255) NULL;
 	- UPDATE prj_settings SET PRJ_VERSION = 209;
+- 209 -> 210 (Adding column for storing display status of vertex)
+	- ALTER TABLE `project_toc` ADD COLUMN `VERTEX_FLAGS` TINYINT NULL;
+	- UPDATE `prj_settings` SET PRJ_VERSION = 210;

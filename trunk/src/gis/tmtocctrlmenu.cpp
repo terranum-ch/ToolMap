@@ -26,13 +26,15 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item) :
 	wxMenu(item->GetDisplayName(), 0)
 {
 	m_flags = (tmDRAWING_FLAGS) item->m_DrawFlags;
-	
-	bool bIsGeneric = FALSE;
+	m_spattypes = item->m_LayerSpatialType;
 	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
-		bIsGeneric =TRUE;
+		m_Generic = true;
+	else
+		m_Generic = false;
+
 	
 	// create menu based on item spatial type
-	CreateTOCContextMenu(item->m_LayerSpatialType, bIsGeneric);
+	CreateTOCContextMenu();
 	
 }
 
@@ -45,40 +47,40 @@ tmTOCCtrlMenu::~tmTOCCtrlMenu()
 
 
 
-void tmTOCCtrlMenu::CreateTOCContextMenu(TM_GIS_SPATIAL_TYPES spattype, 
-										 bool bIsGeneric)
+void tmTOCCtrlMenu::CreateTOCContextMenu()
 {
-	CreateTOCBasic(bIsGeneric); // REMOVE ITEM
-	CreateTOCShowVertex(spattype); // SHOW VERTEX (only if needed)
+	CreateTOCBasic(); // REMOVE ITEM
+	CreateTOCShowVertex(); // SHOW VERTEX (only if needed)
 	CreateTOCProperties();	// menu properties
 	
 	
 }
 
 
-void tmTOCCtrlMenu::CreateTOCBasic (bool bIsGeneric)
+void tmTOCCtrlMenu::CreateTOCBasic ()
 {
-	if (!bIsGeneric)
+	if (!m_Generic)
 	{
 		Append(ID_TOCMENU_REMOVE, _("Remove layer"));
-		//AppendSeparator();
 	}
 }
 
 
 
-void tmTOCCtrlMenu::CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype)
+void tmTOCCtrlMenu::CreateTOCShowVertex ()
 {
-	switch (spattype) {
+	switch (m_spattypes)
+	{
 		case LAYER_SPATIAL_LINE:
 		case LAYER_SPATIAL_POLYGON:
 		{
-			wxMenu * menushow = new wxMenu();
-			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
+			wxMenu * menushow = new wxMenu();			
+			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_NONE, _("None"));			
 			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_ALL, _("All"));
-			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_NONE, _("None"));
+			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
+			menushow->Check(ID_TOCMENU_SHOW_VERTEX_NONE + m_flags,
+							true);
 			Append(wxID_ANY, _("Show vertex"), menushow);
-			//AppendSeparator();
 			break;
 		}	
 		case LAYER_SPATIAL_RASTER:
@@ -89,7 +91,7 @@ void tmTOCCtrlMenu::CreateTOCShowVertex (TM_GIS_SPATIAL_TYPES spattype)
 		}
 			
 		default:
-			wxLogDebug(_T("Unknown spattype = %d, case note supported"), spattype);
+			wxLogDebug(_T("Unknown spattype = %d, case note supported"), m_spattypes);
 			break;
 	}
 }

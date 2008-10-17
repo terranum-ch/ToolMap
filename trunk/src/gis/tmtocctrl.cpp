@@ -40,8 +40,9 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
 	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
 	EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
-	EVT_MENU_RANGE (ID_TOCMENU_SHOW_VERTEX_BEGIN_END, 
-					ID_TOCMENU_SHOW_VERTEX_NONE, tmTOCCtrl::OnVertexMenu)
+	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_NONE,tmTOCCtrl::OnVertexMenu)
+	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_ALL,tmTOCCtrl::OnVertexMenu)
+	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_BEGIN_END,tmTOCCtrl::OnVertexMenu)
 END_EVENT_TABLE()
 
 
@@ -425,6 +426,7 @@ void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
 			break;
 		case ID_TOCMENU_SHOW_VERTEX_BEGIN_END:
 			item->m_DrawFlags = tmDRAW_VERTEX_BEGIN_END;
+			break;
 		default:
 			item->m_DrawFlags = tmDRAW_VERTEX_NONE;
 			break;
