@@ -69,7 +69,8 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl,
 tmLayerManager::~tmLayerManager()
 {
 	UnInitLayerManager();
-	m_Parent->PopEventHandler(FALSE);
+	m_Parent->PopEventHandler(false);
+	m_Parent->SetEventHandler(m_Parent);
 }
 
 
@@ -201,8 +202,8 @@ void tmLayerManager::FillTOCArray()
 /***************************************************************************//**
  @brief Save TOC status to database
  @details This function called when closing project saves the status of the TOC
- ctrl. Only visibility and rank of layers are saved, other informations are
- saved in real time when adding a new layer or removing one.
+ ctrl. Only visibility rank of layers and vertex flags are saved, other 
+ informations are saved in real time when adding a new layer or removing one.
  @return  TRUE if data saved to database, FALSE otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008
@@ -757,6 +758,10 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 
 void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 {
+	// enable logging
+	tmGISData::EnableLogging(true);
+	tmDrawer::EnableLogging(true);
+	
 	wxLogDebug(_T("GIS thread finished without interuption"));
 	m_Thread = NULL; // thread finished
 	
