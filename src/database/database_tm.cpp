@@ -1887,11 +1887,13 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 										const wxString & symbology)
 {
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
-									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\"")
+									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
+									 _T(" VERTEX_FLAGS = %d ")
 									 _T("WHERE CONTENT_ID = %d; "),
 									 item->m_LayerVisible,
 									 itemRank,
 									 symbology.c_str(),
+									 item->m_DrawFlags,
 									 item->m_LayerID));
 	
 }
