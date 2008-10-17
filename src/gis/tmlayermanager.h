@@ -77,6 +77,7 @@ class tmLayerManager : public wxEvtHandler
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
 		tmScaleCtrlCombo * m_ScaleCtrl;
+		static bool	m_LogOn;
 		
 		// shared member data with thread
 		 
@@ -138,6 +139,10 @@ class tmLayerManager : public wxEvtHandler
 		void OnUpdateCoordinates (wxCommandEvent &event);
 		void OnShowLayer (wxCommandEvent & event);
 		void OnScaleChanged (wxCommandEvent & event);
+		
+		// for logging (only one thread may acces the GUI.
+		static void EnableLogging (bool enable = true) {m_LogOn = enable;}
+		static bool IsLoggingEnabled () {return m_LogOn;}
 		
 		
 		// tool operations

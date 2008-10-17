@@ -57,9 +57,10 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 	
 	// open the raster and return true if success
 	m_DataSet = (GDALDataset*) GDALOpen(buffer, (GDALAccess) bReadWrite);
-	if (m_DataSet == NULL && IsLoggingEnabled())
+	if (m_DataSet == NULL)
 	{
-		wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
 		return FALSE;
 	}
 	

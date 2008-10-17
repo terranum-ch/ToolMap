@@ -243,7 +243,9 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 tmLayerProperties * tmTOCCtrl::IterateLayers (bool ResetToLast)
 {
 	// check
-	wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
+	if (!m_root.IsOk())
+		return NULL;
+	//wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
 
 	
 	// if we are starting from the End
