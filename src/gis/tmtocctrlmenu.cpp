@@ -75,9 +75,9 @@ void tmTOCCtrlMenu::CreateTOCShowVertex ()
 		case LAYER_SPATIAL_POLYGON:
 		{
 			wxMenu * menushow = new wxMenu();			
-			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_NONE, _("None"));			
-			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_ALL, _("All"));
-			menushow->AppendRadioItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
+			menushow->AppendCheckItem(ID_TOCMENU_SHOW_VERTEX_NONE, _("None"));			
+			menushow->AppendCheckItem(ID_TOCMENU_SHOW_VERTEX_ALL, _("All"));
+			menushow->AppendCheckItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
 			menushow->Check(ID_TOCMENU_SHOW_VERTEX_NONE + m_flags,
 							true);
 			Append(wxID_ANY, _("Show vertex"), menushow);
