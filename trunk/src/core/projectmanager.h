@@ -54,6 +54,8 @@
 class MenuManager;
 class ObjectManager;
 
+
+
 /***************************************************************************//**
  @brief Project operations (new, open,...)
  @details This is used to implement all project operations such as creating new
@@ -83,7 +85,7 @@ class ProjectManager : public wxObject
 		// project operations 
 		bool CreateNewProject();
 		void CloseProject();
-		bool OpenProject(const wxString & path);
+		int OpenProject(const wxString & path);
 		bool EditProjectObjectDefinition ();
 		bool EditProjectSettings ();
 		bool EditProject ();

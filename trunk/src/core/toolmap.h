@@ -106,8 +106,7 @@
 #include "projectmanager.h"
 #include <wx/fileconf.h>		// for using file configuration even on windows
 
-// TODO: REMOVE THIS AFTER TEST
-//#include "../gis/tmprogress.h"	// for direct acces to progress 
+#include "../gui/openerror_dlg.h"	// open error dlg
 
 #include "../gis/tmgisdata.h"	// for GIS data access
 #include "../gis/tmscalectrl.h"	// for GIS scale control combo box

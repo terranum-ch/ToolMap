@@ -419,7 +419,8 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 	{
 		// call the project manager and ask to open an
 		// existing project. 
-		if (m_PManager->OpenProject(myDirDLG->GetPath()))
+		int iActError = m_PManager->OpenProject(myDirDLG->GetPath());
+		if (iActError == TM_DATABASE_VERSION)
 		{
 			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
@@ -428,9 +429,12 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		}
 		else
 		{
-			wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),
+			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myDirDLG->GetPath());
+			dlg.ShowModal();
+			
+			/*wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),
 						 _("Opening project error"), wxICON_ERROR | wxOK,
-						 this);
+						 this);*/
 		
 			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION;
@@ -459,7 +463,8 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 	// get the file to open (the one clicked...)
 	if (m_MManager->GetRecentFile(myPath, event.GetId() - wxID_FILE1))
 	{
-		if (m_PManager->OpenProject(myPath))
+		int iActError = m_PManager->OpenProject(myPath);
+		if (iActError == TM_DATABASE_VERSION)
 		{
 			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
@@ -470,12 +475,8 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		}
 		else
 		{
-			wxString sMessage = _("Unable to open the specified project.\n");
-			sMessage.Append(_("The specified path doesen't exist or isn't\na ToolMap project.\n\n"));
-			sMessage.Append( _( "This path is now removed from the file history."));
-			
-					
-			wxMessageBox(sMessage,_("Opening project error"), wxICON_ERROR | wxOK,this);
+			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myPath);
+			dlg.ShowModal();
 			
 			// If we can't open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION;
