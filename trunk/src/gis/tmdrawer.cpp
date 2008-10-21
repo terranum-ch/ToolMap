@@ -162,7 +162,10 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	// create pen based on symbology
 	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
-	pgdc->SetPen(myPen);
+	
+	
+	// pen for vertex
+	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
 	
 	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
@@ -180,6 +183,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	int iLoop = 0;
 	while (1)
 	{
+		pgdc->SetPen(myPen);
+		
 		iNbVertex = 0;
 		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
 		
@@ -200,6 +205,9 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
 		
 		pgdc->StrokePath(myPath);
+		
+		// drawing vertex
+		DrawVertex(pgdc, pptsReal, iNbVertex, itemProp, myVPen);
 				
 		delete [] pptsReal;
 		iLoop++;
@@ -211,7 +219,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	temp_dc.SelectObject(wxNullBitmap);
-	
+	delete myVPen;
 	return bReturn;
 }
 
@@ -470,3 +478,79 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	return TRUE;	
 }
 
+
+
+/***************************************************************************//**
+ @brief Draw the vertex for lines and polygons
+ @details If required by options, this function draw a dot for each vertex of
+ the line or polygons
+ @param pgdc pointer to a valid wxGraphicsContext (no check done)
+ @param pts pointer to a list of nb_pts points. This function dosen't take owner
+ of the list. Il must be destroyed elsewhere
+ @param nb_pts number of points stored in pts
+ @param bool true if no exception encoutered
+ @param itemProp Properties of item.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 20 October 2008
+ *******************************************************************************/
+bool tmDrawer::DrawVertex (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
+						   tmLayerProperties * itemProp, wxPen * pen, int nb_pen)
+{
+	wxPoint Intpts (0,0);
+	int i = 0;
+	
+	if (nb_pen == 1) // only one pen
+		pgdc->SetPen(*pen);
+	
+	
+	switch (itemProp->m_DrawFlags)
+	{
+		case tmDRAW_VERTEX_ALL:
+			for (i = 0;i<nb_pts; i++)
+			{
+				// convert from real coordinates to screen coordinates
+				Intpts = m_scale.RealToPixel(pts[i]);
+				
+			#ifdef __WXMSW__
+				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+			#else
+				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+			#endif
+			}
+			break;
+			
+		case tmDRAW_VERTEX_BEGIN_END:
+			for (i = 0; i< nb_pts; i = i+nb_pts-1)
+			{
+				Intpts = m_scale.RealToPixel(pts[i]);
+				#ifdef __WXMSW__
+				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+				#else
+				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+				#endif
+			}
+			break;
+			
+		default:
+			break;
+	}
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Create a pen for drawin vertex
+ @details This create an unique pen of color wxBLACK and where size is two time
+ the line's size.
+ @param itemProp Properties of item
+ @return  Pointer to a wxPen. User must take care of destroying the pen after
+ usage
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 October 2008
+ *******************************************************************************/
+wxPen * tmDrawer::CreateVertexUniquePen (tmLayerProperties * itemProp, int size)
+{
+	wxPen * myPen = new wxPen (*wxBLACK, size*2);
+	return myPen;
+}
