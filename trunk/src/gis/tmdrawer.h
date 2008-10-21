@@ -71,8 +71,11 @@ class tmDrawer : public wxObject
 		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);
 		
-		bool DrawVertex (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
+		// drawing vertex
+		bool DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
 						 tmLayerProperties * itemProp, wxPen * pen, int nb_pen = 1);
+		bool DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata);
+		
 		wxPen * CreateVertexUniquePen (tmLayerProperties * itemProp, int size);
 		
 	protected:
