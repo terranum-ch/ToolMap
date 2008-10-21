@@ -282,28 +282,26 @@ bool ProjectManager::IsDataBasePath(const wxString & path)
 
 
 
-bool ProjectManager::OpenProject(const wxString & path)
+/***************************************************************************//**
+ @brief Open ToolMap project
+ @details Try to open a toolmap project
+ @param path path to the project
+ @return  one of the #tmPROJECT_OPEN_ERROR. If database version isn't correct,
+ return the not correct number as error code
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 October 2008
+ *******************************************************************************/
+int ProjectManager::OpenProject(const wxString & path)
 {
-	bool bReturn = FALSE;
-	
+		
 	// close any existing project
 	CloseProject();
-	
-	
-	// display waiting progress, automaticaly stoped
-	// when object is deleted
-	//tmProgressIndicator ProgIndicator(m_Parent, m_ParentStatus);
-	//ProgIndicator.DisplayProgress();
-	
-	//TestEvtHandler tevnt;
-	//tevnt.SendMessageToMe();
+	int myReturnVal = OPEN_DB_FAILED;
+
 	
 	// 0 check if the folder contain something like a database file
 	if (IsDataBasePath(path))
 	{
-		
-		
-		
 		// 1 check, is connection with library ok on specified path 
 		m_DB = new DataBaseTM();
 		if (m_DB->DataBaseOpen(path,LANG_UTF8))
@@ -313,7 +311,8 @@ bool ProjectManager::OpenProject(const wxString & path)
 			if (m_DB->DataBaseTableExist(TABLE_NAME_PRJ_SETTINGS))
 			{
 				// 3. check, for version number
-				if (m_DB->GetDatabaseToolMapVersion() >= TM_DATABASE_VERSION)
+				int iActVersion = m_DB->GetDatabaseToolMapVersion();
+				if (iActVersion == TM_DATABASE_VERSION)
 				{
 					// updates the menu using the menu manager
 					m_pMManager->SetStatus(MENU_DB_OPENED);
@@ -326,16 +325,21 @@ bool ProjectManager::OpenProject(const wxString & path)
 					m_LayerManager->InitLayerManager(m_DB);
 					
 					// project is now open !
-					bReturn = TRUE;
 					bProjectIsOpen = TRUE;
+					myReturnVal = OPEN_OK;
 				}
+				else
+					myReturnVal = iActVersion;
 			}
+			else
+				myReturnVal = OPEN_NOT_TM_DB;
 			
 			
 			// check the tables for cbReturn = TRUE;
 		}
 		else
 		{
+			myReturnVal = OPEN_NOT_TM_DB;
 			m_pMManager->SetStatus(MENU_DB_CLOSED);
 			CloseProject();
 		}
@@ -343,7 +347,7 @@ bool ProjectManager::OpenProject(const wxString & path)
 	
 
 	
-	return bReturn;
+	return myReturnVal;
 }
 
 
