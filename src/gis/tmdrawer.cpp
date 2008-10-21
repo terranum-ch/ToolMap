@@ -126,6 +126,7 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		case LAYER_SPATIAL_POLYGON:
 			DrawPolygons(itemProp, pdata);
+			DrawVertexPoly(itemProp, pdata);
 			break;
 		case LAYER_SPATIAL_RASTER:
 			DrawRaster(itemProp, pdata);
@@ -207,7 +208,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		pgdc->StrokePath(myPath);
 		
 		// drawing vertex
-		DrawVertex(pgdc, pptsReal, iNbVertex, itemProp, myVPen);
+		DrawVertexLine(pgdc, pptsReal, iNbVertex, itemProp, myVPen);
 				
 		delete [] pptsReal;
 		iLoop++;
@@ -317,9 +318,8 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetBorderColour(), pSymbol->GetBorderWidth());
 	wxBrush myBrush (pSymbol->GetFillColour(),pSymbol->GetFillStyle());
-	pgdc->SetPen(myPen);
 	pgdc->SetBrush(myBrush);
-	
+	pgdc->SetPen(myPen);
 		
 	// define spatial filter
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
@@ -382,26 +382,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		iLoop ++;
 		
 	}
-	
-	/*const double base = 80.0;  // sizes used in shapes drawn below 
-    const double base2 = base/2.0; 
-    const double base4 = base/4.0; 
-	
-	wxGraphicsPath path = pgdc->CreatePath();
-	path.AddCircle(0, 0, base2); 
-    path.MoveToPoint(0, -base2); 
-    path.AddLineToPoint(0, base2); 
-    path.MoveToPoint(-base2, 0); 
-    path.AddLineToPoint(base2, 0); 
-    path.CloseSubpath(); 
-    path.AddRectangle(-base4, -base4/2, base2, base4); 
-	pgdc->Translate(2*base, 2*base);
-	
-	//pgdc->StrokePath(path); 
-	//
-	//pgdc->StrokePath(path);
-	//pgdc->FillPath(path);
-	pgdc->DrawPath(path);*/
+
 	if (IsLoggingEnabled())
 		wxLogDebug(_T("%d Polygons drawn"), iLoop);
 	
@@ -493,7 +474,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 October 2008
  *******************************************************************************/
-bool tmDrawer::DrawVertex (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
+bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
 						   tmLayerProperties * itemProp, wxPen * pen, int nb_pen)
 {
 	wxPoint Intpts (0,0);
@@ -505,7 +486,7 @@ bool tmDrawer::DrawVertex (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pt
 	
 	switch (itemProp->m_DrawFlags)
 	{
-		case tmDRAW_VERTEX_ALL:
+		case tmDRAW_VERTEX_ALL: // ALL VERTEX
 			for (i = 0;i<nb_pts; i++)
 			{
 				// convert from real coordinates to screen coordinates
@@ -519,7 +500,7 @@ bool tmDrawer::DrawVertex (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pt
 			}
 			break;
 			
-		case tmDRAW_VERTEX_BEGIN_END:
+		case tmDRAW_VERTEX_BEGIN_END: // ONLY BEGIN / END
 			for (i = 0; i< nb_pts; i = i+nb_pts-1)
 			{
 				Intpts = m_scale.RealToPixel(pts[i]);
@@ -535,6 +516,95 @@ bool tmDrawer::DrawVertex (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pt
 			break;
 	}
 	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Draw vertex for polygons
+ @details Because polygons may hide points if we draw them in the same loop, we
+ must draw vertex in a second loop to ensure they are displayed properly
+ @param itemProp Item's properties
+ @param pdata Item's data
+ @return  true if drawing was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 21 October 2008
+ *******************************************************************************/
+bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
+{
+	// variables
+	wxMemoryDC dc;
+	bool bReturn = true;
+	int iNbVertex = 0;
+	int iLoop = 0;
+	int i=0;
+	
+	// check if this function must run
+	if (itemProp->m_DrawFlags == tmDRAW_VERTEX_NONE)
+		return false;
+	
+	// device context for drawing
+	dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
+	
+	
+	// create pen for vertex
+	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
+	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetBorderWidth());
+	
+	// define spatial filter
+	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Error setting spatial filter"));
+		return false;
+	}
+	
+	//loop all features 
+	while (1)
+	{
+		// get polygons info
+		int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
+		if (iPolyRings <= 0)
+		{
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
+			break;
+		}
+		
+		if (iPolyRings > 1)
+		{
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
+		}
+		
+		// get polygons data, loop all rings into polygons
+		for (i = 0; i<iPolyRings; i++)
+		{
+			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
+			
+			if(pptsReal == NULL)
+			{
+				if (IsLoggingEnabled())
+					wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
+				bReturn = FALSE;
+				break;
+			}
+			
+			// drawing vertex
+			DrawVertexLine(pgdc, pptsReal, iNbVertex, itemProp, myVPen);
+			
+			
+			delete [] pptsReal;
+		}
+		iLoop ++;
+		
+	}
+	delete myVPen;
+	dc.SelectObject(wxNullBitmap);
+	return bReturn;
+	
 }
 
 

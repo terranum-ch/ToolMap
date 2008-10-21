@@ -166,8 +166,8 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 		m_Layer->SetSpatialFilterRect(filter.x_max, filter.y_min,
 									  filter.x_max, filter.y_max);
 	}
-	
-	m_Layer->ResetReading();*/
+	*/
+	m_Layer->ResetReading();
 	return TRUE;
 }
 
