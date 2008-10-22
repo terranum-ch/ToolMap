@@ -92,9 +92,9 @@ void tmSymbolDLG::CreateControlsBasic()
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     itemPanel4->SetSizer(itemBoxSizer5);
 	
-    wxTextCtrl* itemTextCtrl6 = new wxTextCtrl( itemPanel4, ID_SYMDLG_INFOTXT, _T(""),
-											   wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-    itemBoxSizer5->Add(itemTextCtrl6, 1, wxGROW|wxALL, 5);
+    m_MetaDataWnd = new wxHtmlWindow( itemPanel4, ID_SYMDLG_INFOTXT,
+									 wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN  | wxHW_DEFAULT_STYLE);
+    itemBoxSizer5->Add(m_MetaDataWnd, 1, wxGROW|wxALL, 5);
 	
     m_NoteBook->AddPage(itemPanel4, _("Informations"));
 	
@@ -112,6 +112,13 @@ void tmSymbolDLG::CreateControlsBasic()
 	
     itemStdDialogButtonSizer27->Realize();
 
+}
+
+
+
+void tmSymbolDLG::SetMetaData (const wxString & metadata)
+{
+	m_MetaDataWnd->SetPage(metadata);
 }
 
 

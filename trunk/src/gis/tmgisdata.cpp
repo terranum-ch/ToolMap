@@ -56,6 +56,7 @@ tmGISData::~tmGISData()
 void tmGISData::InitMemberValue()
 {
 	m_ShortFileName = _T("");
+	m_FullFileName = _T("");
 }
 
 
@@ -199,6 +200,7 @@ bool tmGISData::Open (const wxString & filename, bool bReadWrite)
 {
 	wxFileName myFilename (filename);
 	m_ShortFileName = myFilename.GetFullName();
+	m_FullFileName = myFilename.GetFullPath();
 	
 	return TRUE;
 }

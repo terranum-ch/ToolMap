@@ -50,7 +50,8 @@ class tmSymbol : public wxObject
 		
 		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype);
 		
-		int ShowSymbologyDialog (wxWindow * parent, 
+		int ShowSymbologyDialog (wxWindow * parent,
+								 const wxString & metadata,
 								 const wxPoint & dlgpos = wxDefaultPosition);
 		virtual bool Serialize(tmSerialize &s);
 		virtual int GetTransparency(){return 0;}

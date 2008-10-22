@@ -349,3 +349,23 @@ int tmGISDataVectorSHP::GetCount ()
 	
 	return m_Layer->GetFeatureCount();
 }
+
+
+
+/***************************************************************************//**
+ @brief Get Metadata information well formated
+ @return  An html string to be displayed in the properties dialog
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 22 October 2008
+ *******************************************************************************/
+wxString tmGISDataVectorSHP::GetMetaDataAsHtml ()
+{
+	wxString myType = TM_GIS_SPATIAL_TYPES_STRING[GetSpatialType()];
+	wxString myResult = _T("");
+	myResult.Append(_("<B><U>Name</B></U><BR>"));
+	myResult.Append(GetFullFileName() + _T("<BR><BR>"));
+	
+	myResult.Append(_("<B><U>General informations</B></U><BR>"));
+	myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
+	return myResult;
+}

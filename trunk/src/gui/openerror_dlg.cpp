@@ -49,7 +49,7 @@ OpenErrorDlg::OpenErrorDlg( wxWindow* parent,
 	wxBoxSizer* item2;
 	item2 = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxBitmap bmpError = wxArtProvider::GetBitmap(wxART_ERROR);
+	wxBitmap bmpError = wxArtProvider::GetBitmap(wxART_ERROR, wxART_MESSAGE_BOX);
 	m_dlgbmp = new wxStaticBitmap( this, ID_OPENERROR_BMP, bmpError, wxDefaultPosition, wxDefaultSize, 0 );
 	item2->Add( m_dlgbmp, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	

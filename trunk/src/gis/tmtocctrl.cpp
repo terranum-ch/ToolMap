@@ -29,6 +29,7 @@
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
+DEFINE_EVENT_TYPE (tmEVT_LM_SHOW_PROPERTIES)
 
 
 
@@ -383,7 +384,8 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 
 /***************************************************************************//**
  @brief Called when contextual menu "Properties" is pressed
- @details All events from tmTOCCtrlMenu are processed in tmTOCCtrl
+ @details All events from tmTOCCtrlMenu are processed in tmTOCCtrl. As this event
+ requires data from GIS Layers, it is processed into #tmLayerManager
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 August 2008
  *******************************************************************************/
@@ -395,13 +397,9 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
 	
 	wxASSERT(item->m_LayerSymbol);
-	if(item->m_LayerSymbol->ShowSymbologyDialog(GetParent(),
-												wxGetMousePosition())==wxID_OK)
-	{
-		// send event to the layer manager for updating display
-		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->AddPendingEvent(evt);
-	}
+	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
+	Evt.SetClientData(item);
+	GetEventHandler()->AddPendingEvent(Evt);
 }
 
 

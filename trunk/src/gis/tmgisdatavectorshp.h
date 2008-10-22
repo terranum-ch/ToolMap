@@ -59,6 +59,9 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual int GetNextDataPolygonInfo ();
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
 		
+		// virtual function for metadata
+		virtual wxString GetMetaDataAsHtml ();
+		
 		// count
 		//TODO: Implement this function in tmGISDataVectroMySQL
 		virtual int GetCount (); 
