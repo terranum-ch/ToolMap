@@ -76,9 +76,12 @@ tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlg
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 October 2008
  *******************************************************************************/
-int tmSymbol::ShowSymbologyDialog (wxWindow * parent, const wxPoint & dlgpos)
+int tmSymbol::ShowSymbologyDialog (wxWindow * parent, 
+								   const wxString & metadata,
+								   const wxPoint & dlgpos)
 {
 	tmSymbolDLG * mydlg = GetSymbolDialog(parent,dlgpos);
+	mydlg->SetMetaData(metadata);
 	int iRetVal = wxID_CANCEL;
 	
 	

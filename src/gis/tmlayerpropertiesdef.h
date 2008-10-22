@@ -74,6 +74,14 @@ enum TM_GIS_SPATIAL_TYPES
 	LAYER_ERR
 };
 
+const wxString TM_GIS_SPATIAL_TYPES_STRING[] = 
+{
+_("Lines"),
+_("Points"),
+_("Polygons"),
+_("Raster")
+};
+
 
 // enum for drawing vertex
 enum tmDRAWING_FLAGS 

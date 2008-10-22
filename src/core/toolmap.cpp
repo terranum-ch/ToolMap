@@ -420,7 +420,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		// call the project manager and ask to open an
 		// existing project. 
 		int iActError = m_PManager->OpenProject(myDirDLG->GetPath());
-		if (iActError == TM_DATABASE_VERSION)
+		if (iActError == OPEN_OK)
 		{
 			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
@@ -464,7 +464,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 	if (m_MManager->GetRecentFile(myPath, event.GetId() - wxID_FILE1))
 	{
 		int iActError = m_PManager->OpenProject(myPath);
-		if (iActError == TM_DATABASE_VERSION)
+		if (iActError == OPEN_OK)
 		{
 			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();

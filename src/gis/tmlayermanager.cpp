@@ -34,6 +34,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
+	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
 END_EVENT_TABLE()
 
 
@@ -463,6 +464,42 @@ void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Show properties dialog
+ @param event Contain the #tmLayerProperties info. Use GetClientInfo() for
+ getting info out.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 22 October 2008
+ *******************************************************************************/
+void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
+{
+	tmLayerProperties * itemProp = (tmLayerProperties*) event.GetClientData();
+	if (!itemProp)
+	{
+		wxLogError(_("Problem during data transfert"));
+		return;
+	}
+	
+	
+	tmGISData * myData = LoadLayer(itemProp);
+	if (!myData)
+	{
+		wxLogError(_("Error loading GIS data for metadata"));
+		return;
+	}
+	wxString myMetaData = myData->GetMetaDataAsHtml();
+	
+	
+	if (itemProp->m_LayerSymbol->ShowSymbologyDialog(m_TOCCtrl,
+													 myMetaData,
+													 wxGetMousePosition())==wxID_OK)
+	{
+		ReloadProjectLayersThreadStart(FALSE);
+	}
+	
+}
 
 
 /***************************************************************************//**
@@ -1153,7 +1190,7 @@ void * tmGISLoadingDataThread::Entry()
 			return NULL;
 		
 		
-		//TODO: remove this temp loosing time code
+		// temp loosing time code
 		/*for (int i = 0;i<5; i++)
 		{
 			if (TestDestroy())

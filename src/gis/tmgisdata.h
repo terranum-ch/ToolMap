@@ -51,6 +51,7 @@ class tmGISData : public wxObject
 	{
 	private:
 		wxString		m_ShortFileName;
+		wxString		m_FullFileName;
 		static bool	m_LogOn;	
 		
 		void InitMemberValue();
@@ -83,6 +84,10 @@ class tmGISData : public wxObject
 		
 		// misc function
 		wxString GetShortFileName (){return m_ShortFileName;}
+		wxString GetFullFileName () {return m_FullFileName;}
+		
+		// metadata functions
+		virtual wxString GetMetaDataAsHtml (){return wxEmptyString;}
 		
 		
 	};
