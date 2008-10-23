@@ -836,3 +836,77 @@ bool tmGISDataRaster::GetStatMinMaxNoDataValue (double & dmin, double & dmax,
 	
 	return bReturn;
 }
+
+
+
+/***************************************************************************//**
+ @brief Get Metadata information well formated
+ @return  An html string to be displayed in the properties dialog
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 22 October 2008
+ *******************************************************************************/
+wxString tmGISDataRaster::GetMetaDataAsHtml ()
+{
+	wxString myResult = _T("");
+	myResult.Append(_("<B><U>Name</B></U><BR>"));
+	myResult.Append(GetFullFileName() + _T("<BR><BR>"));
+	
+	myResult.Append(_("<B><U>General informations</B></U><BR>"));
+	myResult.Append(GetBandMetaData());
+	
+	/*myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
+	myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
+	
+	myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
+	
+	myResult.Append(GetFieldsMetadata() + _T("<BR>"));
+	
+	myResult.Append(GetDataSizeAsHtml());*/
+	
+	return myResult;
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting number of band
+ @return  The number of band or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+int tmGISDataRaster::GetBandCount ()
+{
+
+	if (!m_DataSet)
+	{
+		wxLogDebug(_T("m_Dataset not defined, please define it first"));
+		return -1;
+	}
+	return m_DataSet->GetRasterCount();
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting number of band formatted as html
+ @return  An html compliant string indicating the number of bands
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+wxString tmGISDataRaster::GetBandMetaData ()
+{
+	int iNbBand = GetBandCount();
+	if (iNbBand == -1)
+	{
+		return _("Unable to compute the number of band<BR>");
+	}
+	
+	return wxString::Format(_("Number of band(s) : %d<BR>"), iNbBand);
+}
+
+
+wxString tmGISDataRaster::GetUnitMetaData ()
+{
+	return _T("");
+}

@@ -51,6 +51,23 @@ static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 };
 
 
+const wxString tmRASTER_DATATYPES[] = {
+    _("Unknown data type"),
+   _("Eight bit unsigned integer"),           
+   _("Sixteen bit unsigned integer"),         
+    _("Sixteen bit signed integer"),        
+    _("Thirty two bit unsigned integer"),  
+    _("Thirty two bit signed integer"),     
+    _("Thirty two bit floating point"),    
+    _("Sixty four bit floating point"),     
+    _("Complex Int16"),                   
+    _("Complex Int32"),                    
+   _("Complex Float32"),                  
+    _("Complex Float64"),            
+    _("Data type out of limits")          
+};
+
+
 
 class tmGISDataRaster : public tmGISData
 	{
@@ -99,6 +116,15 @@ class tmGISDataRaster : public tmGISData
 							unsigned char **maskbuf, unsigned int   *masklen,
 							wxSize imgSize);
 		tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
+		
+		
+		virtual int GetBandCount ();
+		
+		// virtual function for metadata
+		virtual wxString GetMetaDataAsHtml ();
+		wxString GetBandMetaData ();
+		wxString GetUnitMetaData ();
+		
 		
 		
 	};
