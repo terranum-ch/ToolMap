@@ -38,6 +38,9 @@
 const wxString tmGISMYSQL_FIELD1 = _T("OBJECT_ID");
 const wxString tmGISMYSQL_FIELD2 = _T("OBJECT_GEOMETRY");
 
+// same order as in TM_GIS_SPATIAL_TYPES
+const wxString tmGISMYSQL_TEXT_TYPES[] = {_T("linestring"), _T("multipoint"), _T("polygon")};
+
 
 class tmGISDataVectorMYSQL : public tmGISDataVector
 	{
@@ -66,11 +69,21 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		// implementing virtual function
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
 		virtual tmRealRect GetMinimalBoundingRectangle();
+		virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
 		
 		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex);
 		virtual wxRealPoint * GetNextDataPoint ();
+		
+		// metadata
+		virtual wxString GetMetaDataAsHtml ();
+		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
+		
+		// count
+		virtual int GetCount ();
+		
+		
 		
 		
 	};

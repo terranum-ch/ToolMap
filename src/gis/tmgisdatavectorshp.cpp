@@ -410,7 +410,7 @@ wxString tmGISDataVectorSHP::GetDataSizeAsHtml (int iPrecision)
 	double dMegaBytes =  (myFilesSize.ToDouble() / 1024) / 1024;
 	
 	wxString myResult = _("<U><B>File Size</B></U><BR>");
-	myResult.Append(wxString::Format(_("Shapefile size is : %.*f [Mb]"), 
+	myResult.Append(wxString::Format(_("Shapefile size is : %.*f [Mb]<BR>"), 
 									 iPrecision, dMegaBytes));
 	return myResult;
 	

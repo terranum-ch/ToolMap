@@ -64,7 +64,6 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 		
 		// count
-		//TODO: Implement this function in tmGISDataVectroMySQL
 		virtual int GetCount ();
 		
 		// fields functions

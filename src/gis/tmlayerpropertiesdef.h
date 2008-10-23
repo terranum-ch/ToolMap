@@ -79,7 +79,9 @@ const wxString TM_GIS_SPATIAL_TYPES_STRING[] =
 _("Lines"),
 _("Points"),
 _("Polygons"),
-_("Raster")
+_("Raster"),
+_("Unknown"),
+_("Error getting layers type")
 };
 
 

@@ -222,7 +222,9 @@ wxString tmGISData::GetMinimalBoundingRectangleAsHtml (int iprecision)
 	
 	if (MinBounding == tmRealRect(0,0,0,0))
 	{
-		return _("Unable to compute the layers extent<BR>");
+		myReturnedVal.Append(_("Unable to compute the layers extent<BR>"));
+		myReturnedVal.Append(_("<I>Maybe no data are present in the layer</I><BR>"));
+		return myReturnedVal;
 	}
 	
 	myReturnedVal.Append(wxString::Format(_("x min : %.*f<br>x max : %.*f<BR>"),
