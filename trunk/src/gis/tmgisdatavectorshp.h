@@ -61,10 +61,16 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		
 		// virtual function for metadata
 		virtual wxString GetMetaDataAsHtml ();
+		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 		
 		// count
 		//TODO: Implement this function in tmGISDataVectroMySQL
-		virtual int GetCount (); 
+		virtual int GetCount ();
+		
+		// fields functions
+		virtual int GetFieldsCount();
+		virtual bool GetFieldsName (wxArrayString & Fields);
+		
 		
 	};
 
