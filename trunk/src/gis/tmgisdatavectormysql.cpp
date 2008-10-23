@@ -343,3 +343,129 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
 
 
 
+/***************************************************************************//**
+ @brief Getting Data Spatial type
+ @return  One of the #TM_GIS_SPATIAL_TYPES values : 
+ - LAYER_SPATIAL_LINE
+ - LAYER_SPATIAL_POINT
+ - LAYER_SPATIAL_POLYGON
+ - LAYER_ERR
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+TM_GIS_SPATIAL_TYPES tmGISDataVectorMYSQL::GetSpatialType ()
+{
+	TM_GIS_SPATIAL_TYPES myRetVal = LAYER_ERR;
+	
+	wxString sSentence = _T("");
+	sSentence = wxString::Format(_T("SELECT COLUMN_TYPE from INFORMATION_SCHEMA.COLUMNS WHERE ")
+								 _T("table_schema=\"%s\" AND ")
+								 _T("table_name='%s' AND COLUMN_NAME IN ('%s')"),
+								 m_DB->DataBaseGetName().c_str(),
+								 GetFullFileName().c_str(),
+								 tmGISMYSQL_FIELD2.c_str());
+	if (!m_DB->DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting table type : %s"), m_DB->DataBaseGetLastError().c_str());
+		return myRetVal;
+	}
+	
+	wxString myResult = _T("");
+	m_DB->DataBaseGetNextResult(myResult);
+	
+	if (myResult == tmGISMYSQL_TEXT_TYPES[0])
+		myRetVal = LAYER_SPATIAL_LINE; // lines
+	
+	else if (myResult == tmGISMYSQL_TEXT_TYPES[1])
+		myRetVal = LAYER_SPATIAL_POINT; // points
+	
+	else if (myResult == tmGISMYSQL_TEXT_TYPES[2])
+		myRetVal = LAYER_SPATIAL_POLYGON; // polygons
+
+	return myRetVal;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get Metadata information well formated
+ @return  An html string to be displayed in the properties dialog
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 22 October 2008
+ *******************************************************************************/
+wxString tmGISDataVectorMYSQL::GetMetaDataAsHtml ()
+{
+	wxString myType = TM_GIS_SPATIAL_TYPES_STRING[GetSpatialType()];
+	wxString myResult = _T("");
+	myResult.Append(_("<B><U>Embedded table Name</B></U><BR>"));
+	myResult.Append(GetFullFileName() + _T("<BR><BR>"));
+	
+	myResult.Append(_("<B><U>General informations</B></U><BR>"));
+	myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
+	myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
+	
+	myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
+	
+	// no sense to display fields
+	/*myResult.Append(GetFieldsMetadata() + _T("<BR>"));*/
+	
+	myResult.Append(GetDataSizeAsHtml());
+	
+	return myResult;
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting number of features
+ @return  Number of feature in the layer
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+int tmGISDataVectorMYSQL::GetCount ()
+{
+	wxString sSentence = _T("");
+	sSentence = wxString::Format(_T("SELECT COUNT(*) FROM %s"),
+								 GetFullFileName().c_str());
+	if (!m_DB->DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting number of features for %s, error was : %s"),
+				   GetFullFileName().c_str(),
+				   m_DB->DataBaseGetLastError().c_str());
+		return 0;
+	}
+	
+	return m_DB->DataBaseGetResultAsInt(true);
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting Database size
+ @details Return the size of the database
+ @return  Human readable and html compliant string containing data size
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
+{
+	wxString myResultVal = _("<U><B>Database Size</B></U><BR>");
+	
+	wxULongLong myDBSize = wxDir::GetTotalSize(m_DB->DataBaseGetPath() + 
+											   wxFileName::GetPathSeparator() + 
+											   m_DB->DataBaseGetName());
+	if (myDBSize == wxInvalidSize)
+	{
+		myResultVal.Append(_("Error computing database size<BR>"));
+		return myResultVal;
+	}
+	
+	// modifiy the size to be MB
+	double dMegaBytes =  (myDBSize.ToDouble() / 1024) / 1024;
+	myResultVal.Append(wxString::Format(_("Total project size is : %.*f [Mb]<BR>"), 
+									 iPrecision, dMegaBytes));
+	return myResultVal;
+	
+}
+
+
