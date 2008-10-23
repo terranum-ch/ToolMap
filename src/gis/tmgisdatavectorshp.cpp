@@ -367,5 +367,94 @@ wxString tmGISDataVectorSHP::GetMetaDataAsHtml ()
 	
 	myResult.Append(_("<B><U>General informations</B></U><BR>"));
 	myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
+	myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
+	
+	myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
+	
+	myResult.Append(GetFieldsMetadata() + _T("<BR>"));
+	
+	myResult.Append(GetDataSizeAsHtml());
+	
 	return myResult;
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting Data size
+ @details Return the size of the dataset
+ @return  Human readable and html compliant string containing data size
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+wxString tmGISDataVectorSHP::GetDataSizeAsHtml (int iPrecision)
+{
+	// compute size for all part of the shp file
+	wxULongLong myFilesSize = 0;
+	wxFileName myFileName (GetFullFileName()); 
+	wxString myFileWoutExt = myFileName.GetPath(wxPATH_GET_SEPARATOR) + 
+							myFileName.GetName();
+	wxString myShpExt[] = {_T(".shp"), _T(".sbn"), _T(".shx"), _T(".dbf")};
+	
+	for (unsigned int i=0;i< (sizeof(myShpExt) / sizeof(wxString));i++)
+	{
+		wxULongLong myTempSize = wxFileName::GetSize(myFileWoutExt + myShpExt[i]);
+		if (myTempSize != wxInvalidSize)
+			myFilesSize += myTempSize;
+		else
+			wxLogDebug(_T("Unable to compute %s%s file size, maybe dosen't exists"),
+					   myFileWoutExt.c_str(), myShpExt[i].c_str());
+	}
+		
+	// modifiy the size to be MB
+	double dMegaBytes =  (myFilesSize.ToDouble() / 1024) / 1024;
+	
+	wxString myResult = _("<U><B>File Size</B></U><BR>");
+	myResult.Append(wxString::Format(_("Shapefile size is : %.*f [Mb]"), 
+									 iPrecision, dMegaBytes));
+	return myResult;
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Get the number of fields
+ @return  Number of fields. If -1 is returned, an error occur
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+int tmGISDataVectorSHP::GetFieldsCount()
+{
+	if (!m_Layer)
+		return -1;
+	
+	OGRFeatureDefn * poFDefn = m_Layer->GetLayerDefn();
+	return  poFDefn->GetFieldCount ();	
+}
+
+
+
+/***************************************************************************//**
+ @brief Getting fields name
+ @param Fields adress of an array string to be filled with fields name
+ @return  true if fields name returned succesfully, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields)
+{
+	if (!m_Layer)
+		return false;
+	
+	OGRFeatureDefn * poFDefn = m_Layer->GetLayerDefn();
+	OGRFieldDefn * poFieldDf = NULL;
+	
+	for (int i=0;i<GetFieldsCount();i++)
+	{
+		poFieldDf = poFDefn->GetFieldDefn(i);
+		Fields.Add(wxString::FromAscii(poFieldDf->GetNameRef()));
+	}
+	
+	return true;
 }

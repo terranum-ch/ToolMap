@@ -81,3 +81,40 @@ void tmGISDataVector::InitGISDriversVector()
 }
 
 
+
+/***************************************************************************//**
+ @brief Formating fields info into html string
+ @return  The html compliant string
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+wxString tmGISDataVector::GetFieldsMetadata ()
+{
+	wxString myResult = _("<B><U>Fields info</U></B><BR>");
+	int iNbFields = GetFieldsCount();
+	if (iNbFields < 0)
+	{
+		myResult.Append(_("Error getting fields info<BR>"));
+		return myResult;
+	}
+	
+	myResult.Append(wxString::Format(_("Number of field(s) : %d<BR>"), iNbFields));
+	
+	wxArrayString myFieldName;
+	if (GetFieldsName(myFieldName)==false)
+	{
+		myResult.Append(_("Error getting fields name<BR>"));
+		return myResult;
+	}
+	
+	myResult.Append(_T("<OL>"));
+	
+	for (unsigned int i =0; i<myFieldName.GetCount();i++)
+		myResult.Append(_T("<LI>") + myFieldName.Item(i) + _T("</LI>"));
+	
+	myResult.Append(_T("</OL><BR>"));
+
+	
+	return myResult;
+}
+

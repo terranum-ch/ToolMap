@@ -58,7 +58,7 @@ class tmGISData : public wxObject
 		
 	
 	protected:
-		
+		wxString GetMinimalBoundingRectangleAsHtml (int iprecision = 2);
 		
 	public:
 		
@@ -88,6 +88,10 @@ class tmGISData : public wxObject
 		
 		// metadata functions
 		virtual wxString GetMetaDataAsHtml (){return wxEmptyString;}
+		virtual wxString GetDataSizeAsHtml (int iPrecision = 2){return wxEmptyString;}
+		
+		
+		
 		
 		
 	};

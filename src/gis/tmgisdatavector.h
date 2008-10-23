@@ -84,6 +84,13 @@ class tmGISDataVector : public tmGISData
 		// counting
 		virtual int GetCount (){return -1;}
 		
+		// fields functions
+		virtual int GetFieldsCount() {return -1;}
+		virtual bool GetFieldsName (wxArrayString & Fields){return false;}
+		
+		// Metadata
+		wxString GetFieldsMetadata ();
+		
 	};
 
 

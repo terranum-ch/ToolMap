@@ -207,3 +207,32 @@ bool tmGISData::Open (const wxString & filename, bool bReadWrite)
 
 
 
+/***************************************************************************//**
+ @brief Get Minimal bounding rectangle as html
+ @details This function is intented for getting minimal bounding rectangle for
+ metadata
+ @return  An html compliant string
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
+wxString tmGISData::GetMinimalBoundingRectangleAsHtml (int iprecision)
+{
+	tmRealRect MinBounding = GetMinimalBoundingRectangle();
+	wxString myReturnedVal = _("<U><B>Extent of the layers</B></U><BR>");
+	
+	if (MinBounding == tmRealRect(0,0,0,0))
+	{
+		return _("Unable to compute the layers extent<BR>");
+	}
+	
+	myReturnedVal.Append(wxString::Format(_("x min : %.*f<br>x max : %.*f<BR>"),
+										  iprecision, MinBounding.x_min,
+										  iprecision, MinBounding.x_max));
+	myReturnedVal.Append(wxString::Format(_("y min : %.*f<BR>y max : %.*f<BR>"),
+										  iprecision, MinBounding.y_min,
+										  iprecision, MinBounding.y_max));
+	return myReturnedVal;
+	
+}
+
+
