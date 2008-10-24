@@ -30,7 +30,7 @@
 #endif
 
 
-//#include "../core/projectdefmemory.h"	// for PRJDEF_LAYERS_TYPE
+//#include "../core/projectdefmemory.h"	for PRJDEF_LAYERS_TYPE
 #include <wx/treectrl.h>
 #include "wx/imaglist.h"			// for image list for toc
 #include "tmtocctrlmenu.h"			// for contextual menu
@@ -65,7 +65,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		wxTreeItemId m_ActualItemID;
 		
 		// private functions
-		void InitMemberValues();
+		void InitTocMemberValues();
 		void LoadImageList();
 		
 		// graphical display

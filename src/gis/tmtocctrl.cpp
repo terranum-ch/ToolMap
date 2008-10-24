@@ -21,6 +21,7 @@
 
 
 // Tree ctrl images (checked, unchecked)
+
 #include "../img/tmimgfunc.h"	// for image processing
 #include "../img/img_tree_unchecked.cpp"
 #include "../img/img_tree_checked.cpp"
@@ -52,7 +53,7 @@ END_EVENT_TABLE()
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-void tmTOCCtrl::InitMemberValues()
+void tmTOCCtrl::InitTocMemberValues()
 {
 	m_ParentEvt = NULL;
 	m_ContextMenu = NULL;
@@ -91,7 +92,7 @@ void tmTOCCtrl::LoadImageList()
 tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) : 
 		wxTreeCtrl (parent, id, wxDefaultPosition, size, style)
 {
-	InitMemberValues();
+	InitTocMemberValues();
 	LoadImageList();
 	m_ParentEvt = parent;
 	//m_ParentEvt->PushEventHandler(this)
@@ -509,4 +510,5 @@ bool tmTOCCtrl::IsTOCReady()
 	}
 	return TRUE;
 }
+
 
