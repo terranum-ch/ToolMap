@@ -30,6 +30,7 @@
 #endif
 
 #include "tmgisdata.h"
+#include <wx/dir.h>	// for computing dir size
 
 
 // if you add some raster format, don't forget
@@ -119,12 +120,14 @@ class tmGISDataRaster : public tmGISData
 		
 		
 		virtual int GetBandCount ();
-		virtual int GetPyramidsInfo (wxArrayString & pyramids);
+		virtual int GetPyramidsInfo (wxArrayString * pyramids = NULL);
 		
 		// virtual function for metadata
 		virtual wxString GetMetaDataAsHtml ();
 		wxString GetBandMetaData ();
 		wxString GetUnitMetaData ();
+		wxString GetPyramidsMetadata();
+		wxString GetImagePxSizeMetadata ();
 		
 		
 		

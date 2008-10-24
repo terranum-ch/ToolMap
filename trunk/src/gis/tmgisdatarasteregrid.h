@@ -43,6 +43,8 @@ class tmGISDataRasterEGRID : public tmGISDataRaster
 		tmGISDataRasterEGRID();
 		~tmGISDataRasterEGRID();
 		
+		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
+		
 	};
 
 

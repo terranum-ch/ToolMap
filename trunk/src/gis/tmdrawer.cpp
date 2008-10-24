@@ -469,7 +469,10 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
  @param pts pointer to a list of nb_pts points. This function dosen't take owner
  of the list. Il must be destroyed elsewhere
  @param nb_pts number of points stored in pts
- @param bool true if no exception encoutered
+ @param pen Adress of a pen or pen array see also nb_pen
+ @param nb_pen Number of pen stored into pen. May be used for drawing vertex in
+ with different pen (not implemented now)
+ @return true if no exception encoutered
  @param itemProp Properties of item.
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 October 2008
@@ -614,6 +617,7 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
  @details This create an unique pen of color wxBLACK and where size is two time
  the line's size.
  @param itemProp Properties of item
+ @param size This is half the size of the vertex (vertex radius)
  @return  Pointer to a wxPen. User must take care of destroying the pen after
  usage
  @author Lucien Schreiber (c) CREALP 2008

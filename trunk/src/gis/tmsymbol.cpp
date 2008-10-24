@@ -70,6 +70,8 @@ tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlg
  @brief Display the symbology dialog
  @details A personalized symbology dialog is displayed
  @param parent Adress of the parent (for the dialog)
+ @param metadata String containing html formatted metadata for displaying in the
+ first dialog tab.
  @param dlgpos Desired position for the dialog
  @return  wxID_OK if user select 'ok' in the symbology dialog, wxID_CANCER
  otherwise

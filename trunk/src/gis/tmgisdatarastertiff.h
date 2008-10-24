@@ -42,6 +42,7 @@ class tmGISDataRasterTIFF : public tmGISDataRaster
 		tmGISDataRasterTIFF();
 		~tmGISDataRasterTIFF();
 		
+		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 
 	};
 
