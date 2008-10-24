@@ -852,14 +852,13 @@ wxString tmGISDataRaster::GetMetaDataAsHtml ()
 	myResult.Append(GetFullFileName() + _T("<BR><BR>"));
 	
 	myResult.Append(_("<B><U>General informations</B></U><BR>"));
-	myResult.Append(GetBandMetaData());
-	
-	/*myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
-	myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
+	myResult.Append(GetBandMetaData() + _T("<BR>"));
+	myResult.Append(GetUnitMetaData() + _T("<BR><BR>"));
 	
 	myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
 	
-	myResult.Append(GetFieldsMetadata() + _T("<BR>"));
+	//TODO: Add pyramids and file size metadata here
+	/*myResult.Append(GetFieldsMetadata() + _T("<BR>"));
 	
 	myResult.Append(GetDataSizeAsHtml());*/
 	
@@ -899,14 +898,42 @@ wxString tmGISDataRaster::GetBandMetaData ()
 	int iNbBand = GetBandCount();
 	if (iNbBand == -1)
 	{
-		return _("Unable to compute the number of band<BR>");
+		return _("Unable to compute the number of band");
 	}
 	
-	return wxString::Format(_("Number of band(s) : %d<BR>"), iNbBand);
+	return wxString::Format(_("Number of band(s) : %d"), iNbBand);
 }
 
 
+
+/***************************************************************************//**
+ @brief Get Informations about Unit formatted for html
+ @param wxString An html compliant string containing the unit used for the raster
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 23 October 2008
+ *******************************************************************************/
 wxString tmGISDataRaster::GetUnitMetaData ()
 {
-	return _T("");
+	GDALDataType myDataType = m_DataSet->GetRasterBand(1)->GetRasterDataType();
+	wxString myRetVal = _("Raster units are : ");
+	myRetVal.Append(tmRASTER_DATATYPES[(int) myDataType]);
+	return myRetVal;
 }
+
+
+
+/***************************************************************************//**
+ @brief Get info about pyramids
+ @details Pyramids are small image subsets usefull for displaying raster faster
+ @param pyramids String containing all pyramids informations
+ @return  Number of pyramids in the raster
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 October 2008
+ *******************************************************************************/
+int tmGISDataRaster::GetPyramidsInfo (wxArrayString & pyramids)
+{
+	
+	return 0;
+}
+
+

@@ -119,6 +119,7 @@ class tmGISDataRaster : public tmGISData
 		
 		
 		virtual int GetBandCount ();
+		virtual int GetPyramidsInfo (wxArrayString & pyramids);
 		
 		// virtual function for metadata
 		virtual wxString GetMetaDataAsHtml ();
