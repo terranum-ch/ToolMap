@@ -853,17 +853,16 @@ wxString tmGISDataRaster::GetMetaDataAsHtml ()
 	
 	myResult.Append(_("<B><U>General informations</B></U><BR>"));
 	myResult.Append(GetBandMetaData() + _T("<BR>"));
-	myResult.Append(GetUnitMetaData() + _T("<BR><BR>"));
+	myResult.Append(GetUnitMetaData() + _T("<BR>"));
+	myResult.Append(GetImagePxSizeMetadata() + _T("<BR><BR>"));
 	
 	myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
 	
-	//TODO: Add pyramids and file size metadata here
-	/*myResult.Append(GetFieldsMetadata() + _T("<BR>"));
+	myResult.Append(GetPyramidsMetadata() + _T("<BR><BR>"));
 	
-	myResult.Append(GetDataSizeAsHtml());*/
+	myResult.Append(GetDataSizeAsHtml(2));
 	
 	return myResult;
-	
 }
 
 
@@ -908,7 +907,7 @@ wxString tmGISDataRaster::GetBandMetaData ()
 
 /***************************************************************************//**
  @brief Get Informations about Unit formatted for html
- @param wxString An html compliant string containing the unit used for the raster
+ @return An html compliant string containing the unit used for the raster
  @author Lucien Schreiber (c) CREALP 2008
  @date 23 October 2008
  *******************************************************************************/
@@ -925,15 +924,95 @@ wxString tmGISDataRaster::GetUnitMetaData ()
 /***************************************************************************//**
  @brief Get info about pyramids
  @details Pyramids are small image subsets usefull for displaying raster faster
- @param pyramids String containing all pyramids informations
+ @param pyramids String containing all pyramids informations if pyramids isn't
+ NULL. 
  @return  Number of pyramids in the raster
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 October 2008
  *******************************************************************************/
-int tmGISDataRaster::GetPyramidsInfo (wxArrayString & pyramids)
+int tmGISDataRaster::GetPyramidsInfo (wxArrayString * pyramids)
 {
+	int iNbPyramids = 0;
+	GDALRasterBand * myOverview = NULL;
 	
-	return 0;
+	if (!m_RasterBand)
+	{
+		m_RasterBand = m_DataSet->GetRasterBand(1);
+	}
+	
+	// counting pyramids
+	iNbPyramids = m_RasterBand->GetOverviewCount();
+	
+	// getting all pyramids if required
+	if (iNbPyramids > 0 && pyramids != NULL)
+	{
+		for (int i = 0; i< iNbPyramids; i++)
+		{
+			myOverview = m_RasterBand->GetOverview(i);
+			if (myOverview)
+			{
+				pyramids->Add(wxString::Format(_T("%d x %d"),
+											   myOverview->GetXSize(),
+											   myOverview->GetYSize()));
+			}
+		}
+		
+	}
+	
+	
+	return iNbPyramids;
 }
 
+
+
+/***************************************************************************//**
+ @brief Getting pyramids info as html string
+ @details Pyramids are small image subsets usefull for displaying raster faster
+ @return  html compliant string containing pyramids info
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 October 2008
+ *******************************************************************************/
+wxString tmGISDataRaster::GetPyramidsMetadata()
+{
+	wxString myRetString = _("<U><B>Raster Overviews</B></U><BR>");
+	wxArrayString myPyramidsInfoString;
+	int iNbPyramids = GetPyramidsInfo(&myPyramidsInfoString);
+	
+	myRetString.Append(wxString::Format(_("Number of raster overview : %d<BR>"),
+										iNbPyramids));
+	
+	if (iNbPyramids == 0)
+	{
+		
+		myRetString.Append(_("<I>Build image overviews for faster image display</I>"));
+		return myRetString;
+	}
+	
+	// list of overviews
+	myRetString.Append(_T("<UL>"));
+	for (unsigned int i = 0; i<myPyramidsInfoString.GetCount(); i++)
+	{
+		myRetString.Append(_T("<LI>") + myPyramidsInfoString.Item(i) + _T("</LI>"));
+	}
+	myRetString.Append(_T("</UL>"));
+	
+	
+	return myRetString;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get Pixels width and height
+ @return  html compliant string containing width and height of the raster in
+ pixels
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 October 2008
+ *******************************************************************************/
+wxString tmGISDataRaster::GetImagePxSizeMetadata ()
+{
+	wxSize myRasterSize = GetImagePxDim();
+	return wxString::Format(_("Raster width : %d (pixels)<BR>Raster height : %d (pixels)"),
+							myRasterSize.GetWidth(), myRasterSize.GetHeight());
+}
 
