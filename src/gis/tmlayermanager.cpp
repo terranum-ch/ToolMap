@@ -196,6 +196,8 @@ void tmLayerManager::FillTOCArray()
 			  break;
 	}
 	
+	m_TOCCtrl->ExpandAllLayers();
+	
 	wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
 }
 

@@ -107,6 +107,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// Project check function
 		bool IsTOCReady();
 		
+		// expanding all child
+		bool ExpandAllLayers();
+		
 
 		
 	};

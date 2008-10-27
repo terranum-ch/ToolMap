@@ -512,3 +512,22 @@ bool tmTOCCtrl::IsTOCReady()
 }
 
 
+
+/***************************************************************************//**
+ @brief Expand all layers
+ @details Call this function for expanding all layers once the root layers is
+ defined
+ @return  true if expanding was allowed (root item defined), false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+bool tmTOCCtrl::ExpandAllLayers()
+{
+	if(IsTOCReady())
+	{
+		ExpandAllChildren(m_root);
+		return true;
+	}
+	return false;
+}
+
