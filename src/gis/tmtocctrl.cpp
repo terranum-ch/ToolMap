@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_MOVE_UP, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
+	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
 END_EVENT_TABLE()
 
 
@@ -412,7 +413,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
  new position.
  @param item Id of the item to swap
  @param newpos item with wich to swap
- @param bool true if swapping was successful
+ @return bool true if swapping was successful
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
@@ -562,8 +563,65 @@ void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
 			break;
 	}
 	
+	// update display
+	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt);
+	
 }
 
+
+
+/***************************************************************************//**
+ @brief Called when a key is pressed
+ @details This function implements the keyboard shortcuts for some TOC Ctrl
+ shortcuts such as Moving layers.
+ @param event Contain the key pressed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
+{
+	if (event.CmdDown() && IsTOCReady())
+	{
+		wxArrayTreeItemIds selected;
+		wxCommandEvent evt (wxEVT_COMMAND_MENU_SELECTED);
+		int eventid = wxID_ANY;
+		if(GetSelections(selected) == 1)
+		{
+			switch (event.GetKeyCode())
+			{
+				case  WXK_HOME: // move layers to top
+					eventid =ID_TOCMENU_MOVE_TOP;
+					break;
+					
+				case WXK_PAGEUP: // move layers up
+					eventid = ID_TOCMENU_MOVE_UP;
+					break;
+					
+				case WXK_PAGEDOWN: // move layers down
+					eventid = ID_TOCMENU_MOVE_DOWN;
+					break;
+
+				case WXK_END: // move layers to the bottom
+					eventid = ID_TOCMENU_MOVE_BOTTOM;
+					break;
+			}
+		}
+		
+		if (eventid != wxID_ANY)
+		{
+			//wxCommandEvent evt2 (, ID_TOCMENU_MOVE_UP);
+			evt.SetId(eventid);
+			GetEventHandler()->AddPendingEvent(evt);
+			return; // do not propagate event.
+		}
+		
+	}
+	event.Skip();
+}
+
+
+				  
 /***************************************************************************//**
  @brief Called when contextual menu "Properties" is pressed
  @details All events from tmTOCCtrlMenu are processed in tmTOCCtrl. As this event
