@@ -67,6 +67,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// private functions
 		void InitTocMemberValues();
 		void LoadImageList();
+		int GetSelectedPosition ();
 		
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
@@ -100,6 +101,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// counting layers only
 		unsigned int GetCountLayers();
+		
 		
 		// public event function
 		void OnRemoveItem (wxCommandEvent & event);

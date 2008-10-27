@@ -22,7 +22,7 @@
 
  
 
-tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item) :
+tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems) :
 	wxMenu(item->GetDisplayName(), 0)
 {
 	m_flags = (tmDRAWING_FLAGS) item->m_DrawFlags;
@@ -32,6 +32,8 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item) :
 	else
 		m_Generic = false;
 
+	m_SelectedPos = pos;
+	m_TotalLayers = numberitems;
 	
 	// create menu based on item spatial type
 	CreateTOCContextMenu();
@@ -50,6 +52,7 @@ tmTOCCtrlMenu::~tmTOCCtrlMenu()
 void tmTOCCtrlMenu::CreateTOCContextMenu()
 {
 	CreateTOCBasic(); // REMOVE ITEM
+	CreateTOCMoveMenu();
 	CreateTOCShowVertex(); // SHOW VERTEX (only if needed)
 	CreateTOCProperties();	// menu properties
 	
@@ -106,6 +109,35 @@ void tmTOCCtrlMenu::CreateTOCProperties ()
 
 
 
-
+/***************************************************************************//**
+ @brief Create "move" menu
+ @details Append to the contextual menu entry for moving layers up, down, to the
+ top and to the bottom.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+void tmTOCCtrlMenu::CreateTOCMoveMenu ()
+{
+	wxMenu * menumove = new wxMenu();
+	menumove->Append(ID_TOCMENU_MOVE_TOP, _("To the top\tCtrl+Home"));
+	menumove->Append(ID_TOCMENU_MOVE_UP, _("Up\tCtrl+PgUp"));
+	menumove->Append(ID_TOCMENU_MOVE_DOWN, _("Down\tCtrl+PgDn"));
+	menumove->Append(ID_TOCMENU_MOVE_BOTTOM, _("To the bottom\tCtrl+End"));
+	
+	// gray menu based on position and number of layers
+	if (m_SelectedPos == 0)
+	{
+		menumove->Enable(ID_TOCMENU_MOVE_TOP, false);
+		menumove->Enable(ID_TOCMENU_MOVE_UP, false);
+	}
+	
+	if (m_SelectedPos == m_TotalLayers -1)
+	{
+		menumove->Enable(ID_TOCMENU_MOVE_DOWN, false);
+		menumove->Enable(ID_TOCMENU_MOVE_BOTTOM, false);
+	}
+	
+	Append(wxID_ANY, _("Move layer"), menumove);
+}
 
 

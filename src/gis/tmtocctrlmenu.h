@@ -39,7 +39,10 @@ const int ID_TOCMENU_SHOW_VERTEX_NONE		= 20101;
 const int ID_TOCMENU_SHOW_VERTEX_ALL		= 20102;
 const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END	= 20103;
 const int ID_TOCMENU_PROPERTIES				= 20104;
-
+const int ID_TOCMENU_MOVE_TOP				= 20105;
+const int ID_TOCMENU_MOVE_UP				= 20106;
+const int ID_TOCMENU_MOVE_DOWN				= 20107;
+const int ID_TOCMENU_MOVE_BOTTOM			= 20108;
 
 
 /***************************************************************************//**
@@ -56,10 +59,13 @@ class tmTOCCtrlMenu : public wxMenu
 		tmDRAWING_FLAGS m_flags;
 		TM_GIS_SPATIAL_TYPES m_spattypes;
 		bool m_Generic;
+		int m_SelectedPos;
+		int m_TotalLayers;
 		
 		void CreateTOCBasic ();
 		void CreateTOCShowVertex ();
 		void CreateTOCProperties ();
+		void CreateTOCMoveMenu ();
 		
 		
 	protected:
@@ -68,7 +74,7 @@ class tmTOCCtrlMenu : public wxMenu
 		
 	public:
 		tmTOCCtrlMenu(){;}
-		tmTOCCtrlMenu(tmLayerProperties * item);
+		tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems);
 		~tmTOCCtrlMenu();
 	};
 
