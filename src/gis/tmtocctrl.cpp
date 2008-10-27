@@ -45,6 +45,10 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_NONE,tmTOCCtrl::OnVertexMenu)
 	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_ALL,tmTOCCtrl::OnVertexMenu)
 	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_BEGIN_END,tmTOCCtrl::OnVertexMenu)
+	EVT_MENU (ID_TOCMENU_MOVE_TOP, tmTOCCtrl::OnMoveLayers)
+	EVT_MENU (ID_TOCMENU_MOVE_UP, tmTOCCtrl::OnMoveLayers)
+	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
+	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
 END_EVENT_TABLE()
 
 
@@ -364,6 +368,101 @@ int tmTOCCtrl::GetSelectedPosition ()
 }
 
 
+
+/***************************************************************************//**
+ @brief Moving items between position
+ @details This function may be used for moving items passed as parameter to the
+ new position.
+ @param item Id of the item to move
+ @param newpos New position for the item
+ @return  true if items was succesfully moved
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
+{
+	// getting data from layers 1;
+	bool item1_bold = IsBold(item);
+	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
+	wxString item1_text = GetItemText(item);
+	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
+	
+	tmLayerProperties * newinserteditemData = new tmLayerProperties (*item1_data);
+	
+	// inserting item to the new position
+	wxTreeItemId newinserteditem = InsertItem(m_root,
+											  newpos, 
+											  item1_text,
+											  item1_image,
+											  item1_image,
+											  newinserteditemData);
+	SetItemBold(newinserteditem, item1_bold);
+	SelectItem(newinserteditem, true);
+	
+	Delete(item);
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Swaping items between position
+ @details This function may be used for swaping items passed as parameter to the
+ new position.
+ @param item Id of the item to swap
+ @param newpos item with wich to swap
+ @param bool true if swapping was successful
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
+{
+	// getting data from layers 1;
+	bool item1_bold = IsBold(item);
+	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
+	wxString item1_text = GetItemText(item);
+	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
+	
+	
+	// searching and getting data from new position
+	wxTreeItemId item2;
+	wxTreeItemIdValue cookie;
+	
+	for (int i = 0; i<= newpos; i++)
+	{
+		if (i==0)
+			item2 = GetFirstChild(m_root, cookie);
+		else
+			item2 = GetNextChild(m_root, cookie);
+	}
+	if (!item2.IsOk())
+	{
+		wxLogDebug(_T("Returned item isn't valid"));
+		return false;
+	}
+	
+	bool item2_bold = IsBold(item2);
+	int item2_image = GetItemImage(item2, wxTreeItemIcon_Normal);
+	wxString item2_text = GetItemText(item2);
+	tmLayerProperties * item2_data = (tmLayerProperties*) GetItemData(item2);
+	
+	// swapping items
+	SetItemBold(item, item2_bold);
+	SetItemImage(item, item2_image);
+	SetItemText(item, item2_text);
+	SetItemData(item, item2_data);
+	SelectItem(item, false);
+	
+	SetItemBold(item2, item1_bold);
+	SetItemImage(item2, item1_image);
+	SetItemText(item2, item1_text);
+	SetItemData(item2, item1_data);
+	SelectItem(item2, true);
+	
+	return true;
+}
+
 /***************************************************************************//**
  @brief Called when mouse is clicked
  @details Change the picture value (checked, unchecked) if mouse click occur
@@ -430,6 +529,40 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 }
 
 
+
+/***************************************************************************//**
+ @brief Called when user move layers
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
+{
+	wxLogDebug(_T("Moving layers..."));
+	
+	wxArrayTreeItemIds mySelecteds;
+	GetSelections(mySelecteds);
+	
+	
+	switch (event.GetId())
+	{
+		case ID_TOCMENU_MOVE_TOP:
+			MoveLayers(mySelecteds.Item(0), 0);
+			break;
+			
+		case ID_TOCMENU_MOVE_UP:
+			SwapLayers(mySelecteds.Item(0), GetSelectedPosition() -1);
+			break;
+			
+		case ID_TOCMENU_MOVE_DOWN:
+			SwapLayers(mySelecteds.Item(0), GetSelectedPosition() + 1);
+			break;
+			
+		default:
+			MoveLayers(mySelecteds.Item(0), GetCountLayers());
+			break;
+	}
+	
+}
 
 /***************************************************************************//**
  @brief Called when contextual menu "Properties" is pressed

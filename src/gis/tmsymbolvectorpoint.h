@@ -42,6 +42,7 @@ class tmSymbolVectorPoint : public tmSymbolVector
 	protected:
 	public:
 		tmSymbolVectorPoint();
+		tmSymbolVectorPoint(const tmSymbolVectorPoint & origin);
 		~tmSymbolVectorPoint();
 		
 		wxColour GetColour();

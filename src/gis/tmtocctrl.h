@@ -51,7 +51,9 @@ DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES, -1)
 /***************************************************************************//**
  @brief GIS TOC class
  @details This object is in charge of all operations linked to the table of
- content (TOC)
+ content (TOC). Most of the events comming from the #tmTOCCtrlMenu are processed
+ here except events needing direct acces to GIS data wich are processed in the 
+ #tmLayerManager.
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
@@ -68,6 +70,8 @@ class tmTOCCtrl  : public wxTreeCtrl
 		void InitTocMemberValues();
 		void LoadImageList();
 		int GetSelectedPosition ();
+		bool MoveLayers (const wxTreeItemId & item, int newpos);
+		bool SwapLayers (const wxTreeItemId & item, int newpos);
 		
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
@@ -75,6 +79,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// private event functions
 		void OnMouseClick (wxMouseEvent & event);
 		void OnMouseItemRightClick (wxTreeEvent & event);
+		void OnMoveLayers (wxCommandEvent & event);
 		
 		
 		// contextual menu event functions

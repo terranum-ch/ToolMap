@@ -32,6 +32,16 @@ tmSymbolVectorPolygon::tmSymbolVectorPolygon()
 }
 
 
+tmSymbolVectorPolygon::tmSymbolVectorPolygon(const tmSymbolVectorPolygon & origin)
+{
+	m_plgUniqueSymbol.m_PanelNo = origin.m_plgUniqueSymbol.m_PanelNo;
+	m_plgUniqueSymbol.m_bColour = origin.m_plgUniqueSymbol.m_bColour;
+	m_plgUniqueSymbol.m_bWidth = origin.m_plgUniqueSymbol.m_bWidth;
+	m_plgUniqueSymbol.m_fColour = origin.m_plgUniqueSymbol.m_fColour;
+	m_plgUniqueSymbol.m_fStyle = origin.m_plgUniqueSymbol.m_fStyle;
+	m_plgUniqueSymbol.m_GlobalTransparency = origin.m_plgUniqueSymbol.m_GlobalTransparency;
+}
+
 
 tmSymbolVectorPolygon::~tmSymbolVectorPolygon()
 {

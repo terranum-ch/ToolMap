@@ -42,6 +42,7 @@ class tmSymbolVectorLine : public tmSymbolVector
 	protected:
 	public:
 		tmSymbolVectorLine();
+		tmSymbolVectorLine(const tmSymbolVectorLine & origin);
 		~tmSymbolVectorLine();
 		
 		virtual bool Serialize(tmSerialize &s);

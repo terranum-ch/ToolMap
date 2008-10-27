@@ -196,3 +196,29 @@ wxString tmLayerProperties::GetDisplayName ()
 
 
 
+/***************************************************************************//**
+ @brief Copy constructor
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
+{
+	// just to be sure
+	InitMemberValues();
+	
+	m_LayerID = layerprop.m_LayerID;
+	m_LayerSpatialType = layerprop.m_LayerSpatialType;
+	m_LayerPathOnly = layerprop.m_LayerPathOnly;
+	m_LayerNameExt = layerprop.m_LayerNameExt;
+	m_LayerVisible = layerprop.m_LayerVisible;
+	m_LayerType = layerprop.m_LayerType;
+	
+	m_LayerSymbol = tmSymbol::CreateCopySymbolBasedOnType(m_LayerSpatialType,
+														  layerprop.m_LayerSymbol);
+	
+	
+	m_DrawFlags = layerprop.m_DrawFlags;
+	
+}
+
+
