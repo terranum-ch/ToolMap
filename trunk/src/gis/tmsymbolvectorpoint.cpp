@@ -29,6 +29,14 @@ tmSymbolVectorPoint::tmSymbolVectorPoint()
 }
 
 
+tmSymbolVectorPoint::tmSymbolVectorPoint(const tmSymbolVectorPoint & origin)
+{
+	m_ptUniqueSymbol.m_PanelNo = origin.m_ptUniqueSymbol.m_PanelNo;
+	m_ptUniqueSymbol.m_Colour = origin.m_ptUniqueSymbol.m_Colour;
+	m_ptUniqueSymbol.m_Radius = origin.m_ptUniqueSymbol.m_Radius;
+	m_ptUniqueSymbol.m_GlobalTransparency = origin.m_ptUniqueSymbol.m_GlobalTransparency;
+}
+
 
 tmSymbolVectorPoint::~tmSymbolVectorPoint()
 {

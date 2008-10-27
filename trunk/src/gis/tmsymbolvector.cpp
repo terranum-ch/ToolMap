@@ -82,7 +82,31 @@ tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_T
 			wxLogDebug(_T("Symbology for this format not implemented now"));
 			return NULL;
 			break;
-	}
+	}	
+}
 
+
+
+tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,
+																	tmSymbol * origin)
+{
+	switch (spattype)
+	{
+		case LAYER_SPATIAL_LINE:
+			return new tmSymbolVectorLine(*((tmSymbolVectorLine*)origin));
+			break;
+		case LAYER_SPATIAL_POINT:
+			return new tmSymbolVectorPoint(*((tmSymbolVectorPoint*)origin));
+			break;
+		case LAYER_SPATIAL_POLYGON:
+			return new tmSymbolVectorPolygon(*((tmSymbolVectorPolygon*) origin));
+			break;
+			
+		default:
+			wxLogDebug(_T("Symbology for this format not implemented now"));
+			return NULL;
+			break;
+	}
+	
 }
 

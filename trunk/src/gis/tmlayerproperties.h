@@ -68,7 +68,10 @@ class tmLayerProperties : public wxTreeItemData
 		
 		// constructor
 		tmLayerProperties(){InitMemberValues();}
+		tmLayerProperties (const tmLayerProperties & layerprop);
+		
 		~tmLayerProperties();
+		
 	};
 
 

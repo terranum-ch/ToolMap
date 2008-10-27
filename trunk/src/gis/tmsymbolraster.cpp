@@ -33,6 +33,12 @@ tmSymbolRaster::tmSymbolRaster()
 
 }
 
+tmSymbolRaster::tmSymbolRaster(const  tmSymbolRaster & origin)
+{
+	m_RasterData.m_bUseColorTransparency = origin.m_RasterData.m_bUseColorTransparency;
+	m_RasterData.m_TransparencyColour = origin.m_RasterData.m_TransparencyColour;
+	m_RasterData.m_GlobalTransparency = origin.m_RasterData.m_GlobalTransparency;
+}
 
 
 tmSymbolRaster::~tmSymbolRaster()

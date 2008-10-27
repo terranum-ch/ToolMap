@@ -121,6 +121,27 @@ tmSymbol * tmSymbol::CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES spattype)
 }
 
 
+tmSymbol * tmSymbol::CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, tmSymbol * origin)
+{
+	switch (spattype)
+	{
+		case LAYER_SPATIAL_LINE:
+		case LAYER_SPATIAL_POINT:
+		case LAYER_SPATIAL_POLYGON:
+			return tmSymbolVector::CreateCopySymbolVectorBasedOnType(spattype, origin);
+			break;
+			
+		case LAYER_SPATIAL_RASTER:
+			return new tmSymbolRaster(*((tmSymbolRaster*) origin));
+			break;
+			
+		default:
+			return new tmSymbol();
+			break;
+	}
+	
+}
+
 
 bool tmSymbol::GetDialogData(tmSymbolDLG * dlg)
 {

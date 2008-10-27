@@ -31,6 +31,15 @@ tmSymbolVectorLine::tmSymbolVectorLine()
 }
 
 
+tmSymbolVectorLine::tmSymbolVectorLine(const tmSymbolVectorLine & origin)
+{
+	m_lSymUnique.m_PanelNo = origin.m_lSymUnique.m_PanelNo;
+	m_lSymUnique.m_Colour = origin.m_lSymUnique.m_Colour;
+	m_lSymUnique.m_Shape = origin.m_lSymUnique.m_Shape;
+	m_lSymUnique.m_Width = origin.m_lSymUnique.m_Width;
+	m_lSymUnique.m_GlobalTransparency = origin.m_lSymUnique.m_GlobalTransparency;
+}
+
 
 tmSymbolVectorLine::~tmSymbolVectorLine()
 {

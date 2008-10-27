@@ -44,7 +44,9 @@ class tmSymbolRaster : public tmSymbol
 	protected:
 	public:
 		tmSymbolRaster();
+		tmSymbolRaster(const tmSymbolRaster & origin);
 		~tmSymbolRaster();
+		
 		
 		virtual bool Serialize(tmSerialize &s);
 

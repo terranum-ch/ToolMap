@@ -42,6 +42,7 @@ class tmSymbolVectorPolygon : public tmSymbolVector
 	protected:
 	public:
 		tmSymbolVectorPolygon();
+		tmSymbolVectorPolygon(const tmSymbolVectorPolygon & origin);
 		~tmSymbolVectorPolygon();
 		
 		wxColour GetBorderColour();
