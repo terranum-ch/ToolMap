@@ -319,6 +319,52 @@ unsigned int tmTOCCtrl::GetCountLayers()
 
 
 /***************************************************************************//**
+ @brief Get the selected layers position
+ @details Count the number of previous layers before main layers. This is mainly
+ used for graying items in contextual menu (move menu)
+ @return  The layer's position, -1 in case of error
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 27 October 2008
+ *******************************************************************************/
+int tmTOCCtrl::GetSelectedPosition ()
+{
+	if (!IsTOCReady())
+	{
+		wxLogDebug(_T("TOC isn't ready..."));
+		return -1;
+	}
+	
+	wxArrayTreeItemIds mySelecteds;
+	GetSelections(mySelecteds);
+	
+	wxTreeItemIdValue cookie;
+	
+	int iTotalLayers = GetCountLayers();
+	if (iTotalLayers == 0)
+	{
+		wxLogDebug(_T("Not able to count layers or layers count = 0"));
+		return -1;
+	}
+	
+	
+	wxTreeItemId child; 
+	for (int i = 0; i < iTotalLayers; i++)
+	{
+		if (i == 0)
+			child = GetFirstChild(m_root, cookie);
+		else
+			child = GetNextChild(m_root, cookie);
+		
+		if (child == mySelecteds.Item(0))
+			return i;
+		
+	}
+	wxLogDebug(_T("Getting selected position error"));
+	return -1;
+}
+
+
+/***************************************************************************//**
  @brief Called when mouse is clicked
  @details Change the picture value (checked, unchecked) if mouse click occur
  inside picture
@@ -377,7 +423,9 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 
 	if(m_ContextMenu)
 		delete m_ContextMenu;
-	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid));
+	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid),
+									  GetSelectedPosition(),
+									  GetCountLayers());
 	PopupMenu(m_ContextMenu, event.GetPoint());
 }
 
