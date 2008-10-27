@@ -80,6 +80,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		void OnMouseClick (wxMouseEvent & event);
 		void OnMouseItemRightClick (wxTreeEvent & event);
 		void OnMoveLayers (wxCommandEvent & event);
+		void OnShortcutKey (wxKeyEvent & event);
 		
 		
 		// contextual menu event functions
