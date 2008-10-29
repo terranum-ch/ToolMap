@@ -128,7 +128,7 @@ int tmSelectedDataMemory::Search (const long & value)
  - Removing all items
  @param selected array of items we want to remove. If NULL, all values are
  removed
- @param bool return true if removing items successfull
+ @return return true if removing items successfull
  @author Lucien Schreiber (c) CREALP 2008
  @date 28 October 2008
  *******************************************************************************/

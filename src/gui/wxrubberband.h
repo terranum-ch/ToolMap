@@ -95,7 +95,7 @@ public:
 	/** \brief Set the default pen */
 	void SetPen ();
 	/** \brief Set an specific pen */
-	void SetPen (wxPen &pen);
+	void SetPen (const wxPen &pen);
 	/** \brief Clear theOldRubberRect needed each time
 	 * the mouse button is released
 	 *
