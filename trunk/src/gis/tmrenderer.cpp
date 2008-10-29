@@ -42,6 +42,8 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_SCROLLWIN (tmRenderer::OnScroll)
 	EVT_MOUSEWHEEL (tmRenderer::OnMouseWheel)
+	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
+	EVT_KEY_UP (tmRenderer::OnShiftUp)
 END_EVENT_TABLE()
 
 
@@ -62,6 +64,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_ActualTool = tmTOOL_SELECT;
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
 	m_PanBmp = NULL;
+	m_ShiftDown = false;
 	
 	SetScrollbar(wxHORIZONTAL, 0, 16, 50);
 }
@@ -183,6 +186,10 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_PAN)
 		PanStart(event.GetPosition());
 	
+	// select
+	if (m_ActualTool == tmTOOL_SELECT)
+		SelectStart(event.GetPosition());
+	
 	event.Skip();
 }
 
@@ -195,6 +202,9 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_PAN)
 		PanUpdate(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_SELECT)
+		SelectUpdate(event.GetPosition());
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -214,6 +224,9 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_PAN)
 		PanStop(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_SELECT)
+		SelectStop(event.GetPosition());
 	
 }
 
@@ -265,6 +278,37 @@ void tmRenderer::OnMouseWheel(wxMouseEvent & event)
 	}
 }
 
+/***************************************************************************//**
+ @brief Called when a key is pressed
+ @details This function is used for changing tmRenderer::m_ShiftDown
+ status.
+ Because when user selects features, we need to know if shift was down.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmRenderer::OnShiftDown	(wxKeyEvent & event)
+{
+	if(event.GetKeyCode() == WXK_SHIFT)
+		m_ShiftDown = true;
+	event.Skip();
+		
+}
+
+/***************************************************************************//**
+ @brief Called when a key is released
+ @details This function is used for changing tmRenderer::m_ShiftDown
+ status.
+ Because when user selects features, we need to know if shift was down.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmRenderer::OnShiftUp		(wxKeyEvent & event)
+{
+	if (event.GetKeyCode() == WXK_SHIFT)
+		m_ShiftDown = false;
+	event.Skip();
+}
+
 
 
 void tmRenderer::OnScroll (wxScrollWinEvent & event)
@@ -285,6 +329,7 @@ void tmRenderer::OnScroll (wxScrollWinEvent & event)
 void tmRenderer::RubberBandStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;
+	m_SelectRect->SetPen(); // default pen
 }
 
 
@@ -347,6 +392,72 @@ void tmRenderer::RubberBandStop()
 	m_SelectRect->ClearOldRubberRect();
 	m_StartCoord = wxPoint(-1,-1);
 }
+
+
+/***************************************************************************//**
+ @brief Called when selection start (mouse down)
+ @param mousepos actual coordinate of the mouse in screen pixels
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmRenderer::SelectStart (const wxPoint & mousepos)
+{
+	m_StartCoord = mousepos;
+	m_SelectRect->SetPen(*wxBLACK_PEN);
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when selection is updated (mouse move)
+ @param mousepos actual coordinate of the mouse in screen pixels
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmRenderer::SelectUpdate (const wxPoint & mousepos)
+{
+	// avoid drawing all the times when mouse wasen't down first.
+	if (m_StartCoord == wxPoint(-1,-1))
+		return;
+	
+	
+	m_SelectRect->SetGeometry(m_StartCoord, mousepos);
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when selection finished (mouse up)
+ @param mousepos actual coordinate of the mouse in screen pixels
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmRenderer::SelectStop (const wxPoint & mousepos)
+{
+	bool myShiftDown = m_ShiftDown;
+	
+	// if no rectangle is selected, select data by point
+	// we make a small rectangle around the curent point
+	wxRect mySelectionRect(0,0,0,0);
+	if(m_SelectRect->IsSelectedRectangleValid() == false)
+	{
+		int myRadius = tmSELECTION_DIAMETER / 2;
+		mySelectionRect = wxRect (mousepos.x - myRadius,
+								  mousepos.y - myRadius,
+								  tmSELECTION_DIAMETER,
+								  tmSELECTION_DIAMETER);
+	}
+	else // if selection was done by rectangle
+	{
+		mySelectionRect = m_SelectRect->GetSelectedRectangle();
+	}
+
+	
+	
+	
+	m_StartCoord = wxPoint(-1,-1);
+}
+
 
 
 

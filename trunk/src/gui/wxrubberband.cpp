@@ -147,7 +147,7 @@ void wxRubberBand::SetPen()
 }*/
 
 
-void wxRubberBand::SetPen(wxPen &pen)
+void wxRubberBand::SetPen(const wxPen &pen)
 {
 	thePen = pen;
 }

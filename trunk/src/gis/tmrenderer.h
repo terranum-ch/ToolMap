@@ -58,6 +58,10 @@ enum tmGIS_CURSOR
 	tmCURSOR_HAND
 };
 
+// parameter : size of selection in pixels
+// sould be able to divide it by two
+const int tmSELECTION_DIAMETER = 2;
+
 
 class tmRenderer : public wxScrolledWindow
 	{
@@ -71,6 +75,9 @@ class tmRenderer : public wxScrolledWindow
 		wxPoint m_StartCoord;
 		wxBitmap * m_PanBmp;
 		
+		// status of shift key
+		bool m_ShiftDown;
+		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
 		void ChangeCursor (const tmGIS_TOOL & selected_tool);
@@ -80,6 +87,8 @@ class tmRenderer : public wxScrolledWindow
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);	
 		void OnMouseWheel	(wxMouseEvent & event);
+		void OnShiftDown	(wxKeyEvent & event);
+		void OnShiftUp		(wxKeyEvent & event);
 		
 		// scrollbar event (received)
 		void OnScroll (wxScrollWinEvent & event);
@@ -92,10 +101,17 @@ class tmRenderer : public wxScrolledWindow
 		void RubberBandUpdate(const wxPoint & mousepos);
 		void RubberBandStop();
 		
+		// selecting function
+		void SelectStart (const wxPoint & mousepos);
+		void SelectUpdate (const wxPoint & mousepos);
+		void SelectStop (const wxPoint & mousepos);
+		
 		// panning function
 		void PanStart (const wxPoint & mousepos);
 		void PanUpdate (const wxPoint & mousepos);
 		void PanStop (const wxPoint & mousepos);
+		
+	
 	
 	public:
 		tmRenderer(wxWindow * parent, wxWindowID id);
