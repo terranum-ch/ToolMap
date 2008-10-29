@@ -103,6 +103,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnZoomRectangleOut (wxCommandEvent & event);
 		void OnPanFinished (wxCommandEvent & event);
 		void OnScrolled (wxCommandEvent & event);
+		void OnSelection (wxCommandEvent & event);
 		
 		// scrollbars
 		void UpdateScrollBars ();
@@ -152,8 +153,9 @@ class tmLayerManager : public wxEvtHandler
 		void OnPan ();
 		void OnSelect();
 		
-		
-		
+		// selection function
+		bool SelectedSearch (const wxRect & rect, bool shiftdown = false);
+			
 		bool LoadProjectLayers();
 		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
 		void OnReloadProjectLayersDone (wxCommandEvent & event);

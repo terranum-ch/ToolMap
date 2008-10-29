@@ -103,10 +103,11 @@ class tmTOCCtrl  : public wxTreeCtrl
 		bool EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position);
 		tmLayerProperties * IterateLayers (bool ResetToLast);
 		
-		// moving item functions
-		
 		// counting layers only
 		unsigned int GetCountLayers();
+		
+		// getting info
+		long GetSelectionID ();
 		
 		
 		// public event function
