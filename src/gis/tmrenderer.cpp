@@ -32,6 +32,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
 DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
 DEFINE_EVENT_TYPE(tmEVT_LM_SCROLL_MOVED)
+DEFINE_EVENT_TYPE(tmEVT_LM_SELECTION)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -438,23 +439,31 @@ void tmRenderer::SelectStop (const wxPoint & mousepos)
 	
 	// if no rectangle is selected, select data by point
 	// we make a small rectangle around the curent point
-	wxRect mySelectionRect(0,0,0,0);
+	wxRect * mySelectionRect = new wxRect(0,0,0,0);
 	if(m_SelectRect->IsSelectedRectangleValid() == false)
 	{
 		int myRadius = tmSELECTION_DIAMETER / 2;
-		mySelectionRect = wxRect (mousepos.x - myRadius,
+		*mySelectionRect = wxRect (mousepos.x - myRadius,
 								  mousepos.y - myRadius,
 								  tmSELECTION_DIAMETER,
 								  tmSELECTION_DIAMETER);
 	}
 	else // if selection was done by rectangle
 	{
-		mySelectionRect = m_SelectRect->GetSelectedRectangle();
+		*mySelectionRect = m_SelectRect->GetSelectedRectangle();
 	}
-
+	
+	// send event to the layermanager
+	wxCommandEvent evt(tmEVT_LM_SELECTION, wxID_ANY);
+	evt.SetInt(static_cast<int> (myShiftDown));
+	// do not delete mySelection Rect, will be deleted in the layer
+	// manager
+	evt.SetClientData(mySelectionRect);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 	
-	
+	// cleaning stuff
+	m_SelectRect->ClearOldRubberRect();
 	m_StartCoord = wxPoint(-1,-1);
 }
 

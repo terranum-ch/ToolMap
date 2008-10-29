@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
+	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 END_EVENT_TABLE()
 
 
@@ -542,6 +543,41 @@ void tmLayerManager::OnSelect()
 
 
 
+/***************************************************************************//**
+ @brief Searching data for selection
+ @details This function search and update the #tmSelectedDataMemory structure
+ with searched data. If this function return true we should redraw all layers
+ @param rect area we sould search for selecting data
+ @param shiftdown status of the shift key. If down we mainly add data to the
+ selection
+ @return  true if function succeed and we should reload layers, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
+{
+	// is a project open
+	if (!m_TOCCtrl->IsTOCReady())
+	{
+		if (IsLoggingEnabled())
+			wxLogMessage(_("Open a project first"));
+		return false;
+	}
+	
+	// is a layer selected and wich one
+	long iSelectedLayerID = m_TOCCtrl->GetSelectionID();
+	if (iSelectedLayerID == -1)
+	{
+		if (IsLoggingEnabled())
+			wxLogMessage(_("Select a layer first in the TOC"));
+		return false;
+	}
+	
+	
+	return true;
+}
+
+
 void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 {
 	// computing best ratio between actuall windows size 
@@ -621,6 +657,35 @@ void tmLayerManager::OnScrolled (wxCommandEvent & event)
 	ReloadProjectLayersThreadStart(FALSE, FALSE);
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Called when selection was made
+ @details This is called by the #tmRenderer when a selection (either by point or
+ rectangle) was made
+ @param event Contain data about the status of the shift key and the rectangle
+ size. 
+ - Use event.GetInt() for getting the status of the shift key
+ - Use event.GetClientObject() for getting the wxRect.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmLayerManager::OnSelection (wxCommandEvent & event)
+{
+	bool IsShiftDown = static_cast<bool> (event.GetInt());
+	wxRect * mySelectedRect = (wxRect *) event.GetClientData();
+	
+	if (SelectedSearch(*mySelectedRect, IsShiftDown))
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Selection done"));
+	}
+	
+	
+	delete mySelectedRect;
+}
+
 
 
 

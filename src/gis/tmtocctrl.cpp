@@ -324,6 +324,28 @@ unsigned int tmTOCCtrl::GetCountLayers()
 
 
 /***************************************************************************//**
+ @brief Return the Layer ID of the first selected layer
+ @details The layer ID returned by this function is the CONTENT_ID of the layers
+ stored in the Database
+ @return  Layer ID of first selected item or -1 if nothing selected
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+long tmTOCCtrl::GetSelectionID ()
+{
+	wxArrayTreeItemIds selecteds;
+	if (GetSelections(selecteds) < 1)
+		return -1;
+	
+	tmLayerProperties * itemprop = (tmLayerProperties*)	GetItemData(selecteds.Item(0));
+	if (!itemprop)
+		return -1;
+	
+	return itemprop->m_LayerID;
+}
+
+
+/***************************************************************************//**
  @brief Get the selected layers position
  @details Count the number of previous layers before main layers. This is mainly
  used for graying items in contextual menu (move menu)
