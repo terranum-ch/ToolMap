@@ -37,6 +37,7 @@
 #include "tmdrawer.h"					// for drawing into bitmaps
 #include "tmprogress.h"					// for displaying progress during load
 #include "tmscalectrl.h"				// for combo box scale control
+#include "tmselecteddatamemory.h"		// for storing selected data into memory
 
 // forward declaration
 class tmGISLoadingDataThread;
@@ -78,6 +79,7 @@ class tmLayerManager : public wxEvtHandler
 		wxStatusBar * m_StatusBar;
 		tmScaleCtrlCombo * m_ScaleCtrl;
 		static bool	m_LogOn;
+		tmSelectedDataMemory m_SelectedData;
 		
 		// shared member data with thread
 		 

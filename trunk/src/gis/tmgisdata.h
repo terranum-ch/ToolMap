@@ -90,7 +90,8 @@ class tmGISData : public wxObject
 		virtual wxString GetMetaDataAsHtml (){return wxEmptyString;}
 		virtual wxString GetDataSizeAsHtml (int iPrecision = 2){return wxEmptyString;}
 		
-		
+		// search function
+		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type){return NULL;}
 		
 		
 		
