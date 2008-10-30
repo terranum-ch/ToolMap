@@ -32,10 +32,7 @@
 
 #include <wx/dynarray.h> // support for array
 WX_DEFINE_SORTED_ARRAY_LONG(long, tmArraySortedLong); 
-int CompareLongs(long n1, long n2)
-{ 
-    return static_cast<int> (n1 - n2); 
-} 
+
 
 /***************************************************************************//**
  @brief Store ID of selected data into memory
@@ -49,11 +46,13 @@ int CompareLongs(long n1, long n2)
 class tmSelectedDataMemory : public wxObject
 	{
 	private:
-		int m_LayerID;
+		long m_LayerID;
 		tmArraySortedLong * m_SelectedIDs;
 		wxColour m_Colour;
 		
 		void InitMemberValues ();
+		
+
 		
 	protected:
 		int Search (const long & value);
@@ -68,6 +67,10 @@ class tmSelectedDataMemory : public wxObject
 		bool Remove (wxArrayLong * selected = NULL);
 		bool IsSelected (const long & value);
 		unsigned int GetCount();
+		
+		// getters / setters
+		void SetLayerID (long layerID);
+		void Clear() {m_SelectedIDs->Clear();}
 		
 	};
 

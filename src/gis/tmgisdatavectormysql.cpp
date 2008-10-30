@@ -469,3 +469,58 @@ wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
 }
 
 
+
+/***************************************************************************//**
+ @brief Search spatial data
+ @param rect Real rectangle for searching data
+ @return  An array containing OID of data found or NULL if nothing found
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int type)
+{
+	m_DB->DataBaseDestroyResults();
+	
+	wxString table = GetTableName(type);	
+	// check that a table is specified.
+	if (table.IsEmpty())
+	{
+		if (IsLoggingEnabled())
+			wxLogError(_T("No database table specified"));
+		return NULL;
+	}
+	
+	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
+										rect.x_min, rect.y_min,
+										rect.x_max, rect.y_min,
+										rect.x_max, rect.y_max,
+										rect.x_min, rect.y_max,
+										rect.x_min, rect.y_min);
+	wxString sSentence = wxString::Format( _T("SELECT (OBJECT_ID) FROM %s WHERE ")
+										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+										  table.c_str(), sRect.c_str());
+	
+	if (m_DB->DataBaseQuery(sSentence))
+	{
+		if (m_DB->DataBaseHasResult())
+		{
+			// get all oid
+			wxArrayLong * myArray = new wxArrayLong();
+			for (int i = 0; i< m_DB->DatabaseGetCountResults();i++)
+			{
+				myArray->Add(m_DB->DataBaseGetNextResultAsLong()); 
+			}
+			return myArray;
+		}
+		
+	}
+	
+	
+	if (IsLoggingEnabled())
+		wxLogDebug(wxString::Format(_T("Error searching MySQL data : %s"),
+									m_DB->DataBaseGetLastError().c_str()));
+	
+	return NULL;
+
+}
+

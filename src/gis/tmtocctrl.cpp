@@ -327,21 +327,22 @@ unsigned int tmTOCCtrl::GetCountLayers()
  @brief Return the Layer ID of the first selected layer
  @details The layer ID returned by this function is the CONTENT_ID of the layers
  stored in the Database
- @return  Layer ID of first selected item or -1 if nothing selected
+ @return  Properties of the first selected Layer or NULL if nothing selected. Do
+ not delete the pointer returned, it belong to the tmTOCCtrl
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-long tmTOCCtrl::GetSelectionID ()
+tmLayerProperties * tmTOCCtrl::GetSelectionLayer ()
 {
 	wxArrayTreeItemIds selecteds;
 	if (GetSelections(selecteds) < 1)
-		return -1;
+		return NULL;
 	
 	tmLayerProperties * itemprop = (tmLayerProperties*)	GetItemData(selecteds.Item(0));
 	if (!itemprop)
-		return -1;
+		return NULL;
 	
-	return itemprop->m_LayerID;
+	return itemprop;
 }
 
 

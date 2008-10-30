@@ -19,7 +19,12 @@
 
 #include "tmselecteddatamemory.h"
 
- 
+// for comparaison 
+int CompareLongs(long n1, long n2)
+{ 
+	return static_cast<int> (n1 - n2); 
+} 
+
 
 /***************************************************************************//**
  @brief Constructor
@@ -185,3 +190,22 @@ unsigned int tmSelectedDataMemory::GetCount()
 	return m_SelectedIDs->GetCount();
 }
 
+
+
+/***************************************************************************//**
+ @brief Set on which layer we are working on
+ @details This function ensure that only selection in one layer is done : if
+ layerID is different from member m_LayerID then it indicates that we are
+ trying to operate on another layer and all selected data are removed from the
+ selection.
+ @param layerID ID of the layer on which we want to operate
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+void tmSelectedDataMemory::SetLayerID (long layerID)
+{
+	if (layerID != m_LayerID)
+		m_SelectedIDs->Clear();
+	
+	m_LayerID = layerID;
+}

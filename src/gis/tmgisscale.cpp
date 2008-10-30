@@ -377,6 +377,27 @@ void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos)
 
 
 
+/***************************************************************************//**
+ @brief Convert pixel rectange to real units
+ @param rectpx pixels values rectangle to convert
+ @return  The real coordinates
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 29 October 2008
+ *******************************************************************************/
+tmRealRect tmGISScale::PixelsToReal (const wxRect & rectpx)
+{
+	tmRealRect rectreal (0,0,0,0);
+	
+	wxRealPoint bottomleft = PixelToReal(wxPoint(rectpx.x, rectpx.y));
+	
+	rectreal.x_min = bottomleft.x;
+	rectreal.y_max = bottomleft.y;
+	rectreal.x_max = AppendToCoord(rectreal.x_min, rectpx.width * m_PixelSize);
+	rectreal.y_min = RemoveFromCoord(rectreal.y_max, rectpx.height * m_PixelSize);
+	return rectreal;
+}
+
+
 
 long tmGISScale::ComputeUnitScale ()
 {

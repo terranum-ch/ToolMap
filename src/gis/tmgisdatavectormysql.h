@@ -83,6 +83,9 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		// count
 		virtual int GetCount ();
 		
+		// searching data
+		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
+		
 		
 		
 		

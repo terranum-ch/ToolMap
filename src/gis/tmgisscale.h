@@ -159,7 +159,7 @@ class tmGISScale : public wxObject
 		wxPoint GetVirtualPxPosition ();
 		void ComputeScrollMoveReal (int orientation, int newpos);
 		
-			
+					
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)
 		{
@@ -173,6 +173,8 @@ class tmGISScale : public wxObject
 				m_ExtentWnd.height - ((realpt.y - m_ExtentWndReal.y_min) / m_PixelSize)));
 			
 		}
+		tmRealRect PixelsToReal (const wxRect & rectpx);
+		
 		
 		static inline double DifferenceDouble (const double & d1, const double &d2)
 		{

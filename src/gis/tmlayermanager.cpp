@@ -565,17 +565,64 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	}
 	
 	// is a layer selected and wich one
-	long iSelectedLayerID = m_TOCCtrl->GetSelectionID();
-	if (iSelectedLayerID == -1)
+	tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
+	if (!layerprop)
 	{
 		if (IsLoggingEnabled())
 			wxLogMessage(_("Select a layer first in the TOC"));
 		return false;
 	}
 	
+	// converting wxRect to RealRect
+	tmRealRect mySelReal = m_Scale.PixelsToReal(rect);
+	tmGISData * myLayerData = LoadLayer(layerprop);
+	if (!myLayerData)
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Unable to get data for the layer"));
+		return false;
+	}
+	
+	
+	// searching for data
+	wxArrayLong * myArray = myLayerData->SearchData(mySelReal, layerprop->m_LayerType);
+	if (!myArray)
+		myArray = new wxArrayLong();
+		
+	int myArrayCount = myArray->GetCount();
+	
+	
+	// are we in the same layer ?
+	m_SelectedData.SetLayerID(layerprop->m_LayerID);
+	
+	if (IsLoggingEnabled())
+		wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
+	
+	
+	// add, remove or clear selection depending on :
+	// - number of items selected
+	// - Status of shift key.
+	if (myArrayCount >= 1)
+	{
+		if (shiftdown == false)
+			m_SelectedData.Clear();
+		m_SelectedData.AddSelected(myArray);
+	}
+	else
+	{
+		if (shiftdown == false)
+			m_SelectedData.Clear();
+	}
+	
+	myArray->Clear();
+	delete myArray;
+	
+	wxLogDebug(_T("Number of features flaged as selected : %d"),
+			   m_SelectedData.GetCount());
 	
 	return true;
 }
+
 
 
 void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
