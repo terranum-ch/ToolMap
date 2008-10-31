@@ -61,6 +61,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual wxString GetTableName (int type);
 		
 		
+		
 	public:
 		tmGISDataVectorMYSQL();
 		~tmGISDataVectorMYSQL();

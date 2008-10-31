@@ -498,6 +498,7 @@ wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
  @param rect Real rectangle for searching data
  @param type Layertype see #tmLayerProperties
  @return  An array containing OID of data found or NULL if nothing found
+ @note This function needs GEOS to ensure that real intersection is computed
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
@@ -514,15 +515,23 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 		return NULL;
 	}
 	
+	
 	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
 										rect.x_min, rect.y_min,
 										rect.x_max, rect.y_min,
 										rect.x_max, rect.y_max,
 										rect.x_min, rect.y_max,
 										rect.x_min, rect.y_min);
-	wxString sSentence = wxString::Format( _T("SELECT (OBJECT_ID) FROM %s WHERE ")
+	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
 										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
 										  table.c_str(), sRect.c_str());
+	
+	GEOSGeom  grect = CreateGEOSGeometry(rect);
+	if (!grect)
+		return NULL;
+	
+	MYSQL_ROW row;
+	unsigned long * row_size = 0;
 	
 	if (m_DB->DataBaseQuery(sSentence))
 	{
@@ -532,12 +541,23 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 			wxArrayLong * myArray = new wxArrayLong();
 			for (int i = 0; i< m_DB->DatabaseGetCountResults();i++)
 			{
-				myArray->Add(m_DB->DataBaseGetNextResultAsLong()); 
+				// construct geos geom
+				row_size = m_DB->DataBaseGetNextRowResult(row);
+				OGRGeometry * ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
+				GEOSGeom  geom = CreateGEOSGeometry(ogrgeom);
+				
+				if (CheckGEOSIntersection(&grect,&geom))
+					myArray->Add(GetOid(row, 0)); 
+				
+				// destroy geometry
+				GEOSGeom_destroy(geom);
 			}
 			return myArray;
 		}
 		
 	}
+	
+	GEOSGeom_destroy(grect);
 	
 	
 	if (IsLoggingEnabled())
@@ -547,4 +567,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 	return NULL;
 
 }
+
+
+
 

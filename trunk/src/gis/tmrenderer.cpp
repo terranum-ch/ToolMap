@@ -405,6 +405,15 @@ void tmRenderer::SelectStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;
 	m_SelectRect->SetPen(*wxBLACK_PEN);
+	
+	/* TODO: Remove this temp code
+	wxClientDC dc (this);
+	int myRadius = tmSELECTION_DIAMETER / 2;
+	dc.DrawRectangle(mousepos.x - myRadius,
+					 mousepos.y - myRadius,
+					 tmSELECTION_DIAMETER,
+					 tmSELECTION_DIAMETER);*/
+	
 }
 
 

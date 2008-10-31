@@ -585,6 +585,11 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 		return false;
 	}
 	
+	//TODO: Remove, temp code for drawing rectangle
+	//wxClientDC dc(m_GISRenderer);
+	//dc.DrawLine(m_Scale.RealToPixel(wxRealPoint(mySelReal.x_min, mySelReal.y_max)),
+	//			m_Scale.RealToPixel(wxRealPoint(mySelReal.x_max, mySelReal.y_min)));
+	
 	
 	// searching for data
 	wxArrayLong * myArray = myLayerData->SearchData(mySelReal, layerprop->m_LayerType);

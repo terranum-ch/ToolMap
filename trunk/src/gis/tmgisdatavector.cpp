@@ -118,3 +118,78 @@ wxString tmGISDataVector::GetFieldsMetadata ()
 	return myResult;
 }
 
+
+
+/***************************************************************************//**
+ @brief Compute real GEOS intersection (not bounding box)
+ @details This function may be used for ensuring that a geometry really
+ intersects another one
+ @note Needs GEOS library
+ @param rect GEOS geometry of intersecting rectangle
+ @param object GEOS geometry of object
+ @return  true if object really intersects rect.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 October 2008
+ *******************************************************************************/
+bool tmGISDataVector::CheckGEOSIntersection(GEOSGeom * rect, GEOSGeom * object)
+{
+	char result = GEOSIntersects(*object, *rect);
+	if (result == 1)
+		return true;
+	return false;
+}
+
+
+/***************************************************************************//**
+ @brief Create a GEOS geometry
+ @details This function may be used for creating a GEOS compatible geometry from
+ an OGR object
+ @note Needs GEOS library
+ @warning Don't forget to destroy Object
+ returned with : GEOSGeom_destroy(GEOSGeometry* g)
+ @param geom A valid OGR geometry
+ @return Valid GEOS object or NULL if an error occur. Don't forget
+ to destroy the returned object with GEOSGeom_destroy(GEOSGeometry* g);
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 October 2008
+ *******************************************************************************/
+GEOSGeom tmGISDataVector::CreateGEOSGeometry (OGRGeometry * geom)
+{
+	GEOSGeom geosgeom =  geom->exportToGEOS();
+
+	return geosgeom;
+}
+
+
+
+/***************************************************************************//**
+ @brief Create a GEOS geometry
+ @details This function may be used for creating a GEOS compatible geometry from
+ an real rectangle
+ @note Needs GEOS library
+ @warning Don't forget to destroy Object returned with :
+ GEOSGeom_destroy(GEOSGeometry* g)
+ @param rect A #tmRealRect object
+ @return Valid GEOS object or NULL if an error occur. Don't forget
+ to destroy the returned object with GEOSGeom_destroy(GEOSGeometry* g);
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 October 2008
+ *******************************************************************************/
+GEOSGeom  tmGISDataVector::CreateGEOSGeometry (const tmRealRect & rect)
+{
+	// creating using wkt
+	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
+									  rect.x_min, rect.y_min,
+									  rect.x_max, rect.y_min,
+									  rect.x_max, rect.y_max,
+									  rect.x_min, rect.y_max,
+									  rect.x_min, rect.y_min);
+	// conversion Unicode wxString -> const char *
+	char * buffer = new char [sRect.Length()+2];
+	strcpy(buffer, (const char*)sRect.mb_str(wxConvUTF8));
+	GEOSGeom  grect = GEOSGeomFromWKT(buffer);
+		
+	return grect;
+}
+
+
