@@ -93,6 +93,8 @@ void tmLayerManager::InitMemberValue()
 	m_Thread = NULL;
 	m_Progress = NULL;
 	m_ThreadBitmap = NULL;
+	// init selected data structure
+	m_Drawer.SetSelectedData(&m_SelectedData);
 }
 
 
@@ -727,6 +729,8 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	{
 		if (IsLoggingEnabled())
 			wxLogDebug(_T("Selection done"));
+		
+		ReloadProjectLayersThreadStart(false, false);
 	}
 	
 	
@@ -1497,7 +1501,7 @@ bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
 	{
 		wxMemoryDC dc;
 		dc.SelectObject(**m_ThreadBmp);
-		dc.SetBackground(wxBrush(*wxGREY_BRUSH));
+		dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
 		dc.Clear();
 		dc.SelectObject(wxNullBitmap);
 		return true;

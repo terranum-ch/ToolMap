@@ -38,6 +38,7 @@
 #include "tmsymbolvectorpolygon.h"
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
+#include "tmselecteddatamemory.h"	// for stroing selected data into memory
 
 //#include "../database/database_tm.h"
 
@@ -56,6 +57,8 @@ class tmDrawer : public wxObject
 		bool m_IsInitialised;
 		tmRealRect m_spatFilter;
 		static bool m_LogOn;
+		long m_ActuallayerID;
+		tmSelectedDataMemory * m_SelMem;
 		
 		// load image using GDAL
 		// owned by image, do not destroy manually.
@@ -82,6 +85,7 @@ class tmDrawer : public wxObject
 	public:
 		tmDrawer();
 		~tmDrawer();
+		void SetSelectedData (tmSelectedDataMemory * selectedmemory){m_SelMem = selectedmemory;}
 		
 		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale, 
 						 const tmRealRect & filter);
