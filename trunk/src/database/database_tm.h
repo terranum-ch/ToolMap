@@ -44,7 +44,7 @@ const wxString TABLE_NAME_LAYER_AT = _T("layer_at");
 const wxString TABLE_NAME_PRJ_SETTINGS = _T("prj_settings");
 const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
 const wxString TABLE_NAME_SCALE			= _T("zoom_level");
-const wxString TABLE_NAME_TOC		= _T("project_toc");
+const wxString TABLE_NAME_TOC		= _T("prj_toc");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -56,7 +56,7 @@ const wxString TABLE_NAME_GIS_GENERIC[] =
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 210;
+const int TM_DATABASE_VERSION = 211;
 
 
 
