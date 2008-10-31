@@ -193,3 +193,31 @@ GEOSGeom  tmGISDataVector::CreateGEOSGeometry (const tmRealRect & rect)
 }
 
 
+
+/***************************************************************************//**
+ @brief Create a OGR geometry
+ @param rect object of type : #tmRealRect
+ @return  return an OGRgeometry or null
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 October 2008
+ *******************************************************************************/
+OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
+{
+	
+	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
+									  rect.x_min, rect.y_min,
+									  rect.x_max, rect.y_min,
+									  rect.x_max, rect.y_max,
+									  rect.x_min, rect.y_max,
+									  rect.x_min, rect.y_min);
+	// conversion Unicode wxString -> const char *
+	char * buffer = new char [sRect.Length()+2];
+	strcpy(buffer, (const char*)sRect.mb_str(wxConvUTF8));
+	
+	
+	OGRGeometry * geom = NULL;
+	OGRGeometryFactory::createFromWkt(&buffer, NULL, &geom);
+	
+	return geom;
+}
+

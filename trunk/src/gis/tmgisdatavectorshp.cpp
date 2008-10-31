@@ -240,7 +240,7 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
 
 
 
-int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
+int tmGISDataVectorSHP::GetNextDataPolygonInfo (long & oid)
 {
 	wxASSERT(m_Layer);
 	m_Feature = m_Layer->GetNextFeature();
@@ -249,8 +249,11 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo ()
 	if (m_Feature == NULL)
 	{
 		m_polyTotalRings = 0;
+		oid = -1;
 		return 0;
 	}
+	
+	oid = m_Feature->GetFID();
 	
 	OGRPolygon * plgon = (OGRPolygon*) m_Feature->GetGeometryRef();
 	wxASSERT(plgon);	
@@ -462,3 +465,49 @@ bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields)
 	
 	return true;
 }
+
+
+/***************************************************************************//**
+ @brief Search spatial data
+ @param rect Real rectangle for searching data
+ @param type Layertype see #tmLayerProperties
+ @return  An array containing OID of data found or NULL if nothing found
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 October 2008
+ *******************************************************************************/
+wxArrayLong * tmGISDataVectorSHP::SearchData (const tmRealRect & rect, int type)
+{
+	// test one going directly
+	
+	m_Layer->ResetReading();
+	wxBusyCursor wait;
+	
+	OGRGeometry * poGeometry;
+	OGRFeature * poFeature;
+	OGRGeometry * poRectGeom = CreateOGRGeometry(rect);
+	if (!poRectGeom)
+	{
+		if(IsLoggingEnabled())
+			wxLogDebug(_T("Unable to create geometry for rectangle"));
+		return NULL;	
+	}
+	
+	// searching all features
+	wxArrayLong * myArray = new wxArrayLong();
+	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
+	{
+		poGeometry = poFeature->GetGeometryRef();
+		if (poGeometry)
+		{
+			if (poGeometry->Intersect(poRectGeom))
+				myArray->Add(poFeature->GetFID());
+		
+			OGRGeometryFactory::destroyGeometry(poGeometry);
+		}
+	}
+	OGRGeometryFactory::destroyGeometry(poRectGeom);
+	
+	return myArray;
+	
+}
+

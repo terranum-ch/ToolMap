@@ -504,6 +504,7 @@ wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
  *******************************************************************************/
 wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int type)
 {
+	wxBusyCursor wait;
 	m_DB->DataBaseDestroyResults();
 	
 	wxString table = GetTableName(type);	
@@ -526,9 +527,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
 										  table.c_str(), sRect.c_str());
 	
-	GEOSGeom  grect = CreateGEOSGeometry(rect);
-	if (!grect)
-		return NULL;
+	
 	
 	MYSQL_ROW row;
 	unsigned long * row_size = 0;
@@ -537,6 +536,10 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 	{
 		if (m_DB->DataBaseHasResult())
 		{
+			GEOSGeom  grect = CreateGEOSGeometry(rect);
+			if (!grect)
+				return NULL;
+			
 			// get all oid
 			wxArrayLong * myArray = new wxArrayLong();
 			for (int i = 0; i< m_DB->DatabaseGetCountResults();i++)
@@ -552,12 +555,13 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 				// destroy geometry
 				GEOSGeom_destroy(geom);
 			}
+			GEOSGeom_destroy(grect);
 			return myArray;
 		}
 		
 	}
 	
-	GEOSGeom_destroy(grect);
+	
 	
 	
 	if (IsLoggingEnabled())
