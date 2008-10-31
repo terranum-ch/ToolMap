@@ -18,3 +18,6 @@ Update Database
 - 209 -> 210 (Adding column for storing display status of vertex)
 	- ALTER TABLE `project_toc` ADD COLUMN `VERTEX_FLAGS` TINYINT NULL;
 	- UPDATE `prj_settings` SET PRJ_VERSION = 210;
+- 210 -> 211 (Homogenizing table name)
+	- ALTER TABLE project_toc RENAME prj_toc;
+	- UPDATE `prj_settings` SET PRJ_VERSION = 211;
