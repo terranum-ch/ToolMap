@@ -63,7 +63,7 @@ class tmGISDataVector : public tmGISData
 		bool CheckGEOSIntersection(GEOSGeom * rect, GEOSGeom * object);
 		GEOSGeom  CreateGEOSGeometry (OGRGeometry * geom);
 		GEOSGeom  CreateGEOSGeometry (const tmRealRect & rect);
-		
+		OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
 		
 		
 	public:
@@ -84,7 +84,7 @@ class tmGISDataVector : public tmGISData
 		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex, long & oid){return NULL;}
 		virtual wxRealPoint * GetNextDataPoint (long & oid){return NULL;}
-		virtual int GetNextDataPolygonInfo (){return -1;}
+		virtual int GetNextDataPolygonInfo (long & oid){return -1;}
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex){return NULL;}
 		
 		// counting

@@ -311,7 +311,10 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		// returning to basic pen
 		if (bAsSelection)
+		{
+			bAsSelection = false;
 			pgdc->SetPen(myPen);
+		}
 		
 	}
 	
@@ -344,6 +347,10 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetBorderColour(), pSymbol->GetBorderWidth());
 	wxBrush myBrush (pSymbol->GetFillColour(),pSymbol->GetFillStyle());
+	
+	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetBorderWidth());
+	wxBrush mySBrush (m_SelMem->GetSelectionColour2(), pSymbol->GetFillStyle());
+	
 	pgdc->SetBrush(myBrush);
 	pgdc->SetPen(myPen);
 		
@@ -356,11 +363,13 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
+	long myOid = -1;
+	bool bAsSelection = false;
 	 //loop all features 
 	while (1)
 	{
 		// get polygons info
-		int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
+		int iPolyRings = pVectPoly->GetNextDataPolygonInfo(myOid);
 		if (iPolyRings <= 0)
 		{
 			if (IsLoggingEnabled())
@@ -389,6 +398,16 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 				break;
 			}
 			
+			// changing pen for selected data
+			if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
+				if (m_SelMem->IsSelected(myOid))
+				{
+					pgdc->SetPen(mySPen);
+					pgdc->SetBrush(mySBrush);
+					bAsSelection = true;
+				}
+			
+			
 			// creating path based on ring data and putting this path
 			// into main path
 			wxGraphicsPath myPath = pgdc->CreatePath();
@@ -406,6 +425,14 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 		
 		iLoop ++;
+		
+		// returning to basic pen
+		if (bAsSelection)
+		{
+			pgdc->SetPen(myPen);
+			pgdc->SetBrush(myBrush);
+			bAsSelection = false;
+		}
 		
 	}
 
@@ -590,11 +617,12 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
+	long myOid = -1;
 	//loop all features 
 	while (1)
 	{
 		// get polygons info
-		int iPolyRings = pVectPoly->GetNextDataPolygonInfo();
+		int iPolyRings = pVectPoly->GetNextDataPolygonInfo(myOid);
 		if (iPolyRings <= 0)
 		{
 			if (IsLoggingEnabled())

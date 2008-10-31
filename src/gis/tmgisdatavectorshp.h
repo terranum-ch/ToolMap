@@ -56,7 +56,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex,long & oid);
 		virtual wxRealPoint * GetNextDataPoint (long & oid);
-		virtual int GetNextDataPolygonInfo ();
+		virtual int GetNextDataPolygonInfo (long & oid);
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
 		
 		// virtual function for metadata
@@ -70,6 +70,8 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual int GetFieldsCount();
 		virtual bool GetFieldsName (wxArrayString & Fields);
 		
+		// searching data
+		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
 		
 	};
 
