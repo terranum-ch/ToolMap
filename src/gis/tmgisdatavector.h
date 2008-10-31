@@ -58,6 +58,12 @@ class tmGISDataVector : public tmGISData
 		
 	protected:
 		virtual wxString GetTableName (TOC_GENERIC_NAME type) {return wxEmptyString;}
+
+		// GEOS functions 
+		bool CheckGEOSIntersection(GEOSGeom * rect, GEOSGeom * object);
+		GEOSGeom  CreateGEOSGeometry (OGRGeometry * geom);
+		GEOSGeom  CreateGEOSGeometry (const tmRealRect & rect);
+		
 		
 		
 	public:
