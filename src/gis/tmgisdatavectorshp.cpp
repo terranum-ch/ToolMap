@@ -173,7 +173,7 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 
 
 
-wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
+wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex, long & oid)
 {
 	wxASSERT(m_Layer);
 	OGRFeature * poFeature = m_Layer->GetNextFeature();
@@ -182,12 +182,14 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 	if (poFeature == NULL)
 	{
 		nbvertex = 0;
+		oid = -1;
 		return NULL;		
 	}
 	
 	
 	OGRLineString * pline = (OGRLineString*) poFeature->GetGeometryRef();
-	wxASSERT(pline);	
+	wxASSERT(pline);
+	oid = poFeature->GetFID();
 	
 	// normal reading
 	nbvertex = pline->getNumPoints();
@@ -211,7 +213,7 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex)
 
 
 
-wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint ()
+wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
 {
 	wxASSERT(m_Layer);
 	OGRFeature * poFeature = m_Layer->GetNextFeature();
@@ -219,12 +221,14 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint ()
 	// nothing more to read
 	if (poFeature == NULL)
 	{
+		oid = -1;
 		return NULL;		
 	}
 	
 	
 	OGRPoint * pPoint = (OGRPoint*) poFeature->GetGeometryRef();
 	wxASSERT(pPoint);	
+	oid = poFeature->GetFID();
 	
 	wxRealPoint * pts = new wxRealPoint();
 	pts->x = pPoint->getX();

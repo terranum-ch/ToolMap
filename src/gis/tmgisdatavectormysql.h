@@ -56,6 +56,8 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		OGRGeometry * CreateDataBaseGeometry(MYSQL_ROW & row,
 											 unsigned long * length,
 											 int geometry_col=0);
+		long GetOid (MYSQL_ROW & row, const int & col);
+
 		virtual wxString GetTableName (int type);
 		
 		
@@ -73,8 +75,8 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		
 		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
-		virtual wxRealPoint * GetNextDataLine (int & nbvertex);
-		virtual wxRealPoint * GetNextDataPoint ();
+		virtual wxRealPoint * GetNextDataLine (int & nbvertex, long & oid);
+		virtual wxRealPoint * GetNextDataPoint (long & oid);
 		
 		// metadata
 		virtual wxString GetMetaDataAsHtml ();

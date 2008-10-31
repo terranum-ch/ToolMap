@@ -184,7 +184,26 @@ OGRGeometry *  tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW & row,
 									  NULL,
 									  &geometry,
 									  length[geometry_col] - 4 );
+	
 	return geometry;
+}
+
+
+/***************************************************************************//**
+ @brief Get object ID from MYSQL row results
+ @param row Adress of a row MySQL result
+ @param col The zero based index of the column in which are stored the OID
+ @return  the object OID or 0 if an error occured
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 30 October 2008
+ *******************************************************************************/
+long tmGISDataVectorMYSQL::GetOid (MYSQL_ROW & row, const int & col)
+{
+	if (!row)
+		return 0;
+	long lreturnOID = 0;
+	wxString (row[col], wxConvUTF8).ToLong( &lreturnOID);
+	return lreturnOID;
 }
 
 
@@ -218,8 +237,10 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 										filter.x_max, filter.y_max,
 										filter.x_min, filter.y_max,
 										filter.x_min, filter.y_min);
-	wxString sSentence = wxString::Format( _T("SELECT (OBJECT_GEOMETRY) FROM %s WHERE ")
+	wxString sSentence = wxString::Format( _T("SELECT %s, %s FROM %s WHERE ")
 										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+										  tmGISMYSQL_FIELD1.c_str(),
+										  tmGISMYSQL_FIELD2.c_str(),
 										  table.c_str(), sFilter.c_str());
 	
 	if (m_DB->DataBaseQuery(sSentence))
@@ -248,7 +269,7 @@ wxString tmGISDataVectorMYSQL::GetTableName (int type)
 
 
 
-wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
+wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 {
 	MYSQL_ROW row;
 	unsigned long *  row_length;
@@ -273,7 +294,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 	}
 		
 		
-	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, row_length);
+	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, row_length, 1);
+	oid = GetOid(row, 0);
 	wxASSERT(pline);
 	nbvertex = pline->getNumPoints();
 	if (nbvertex <= 1)
@@ -298,7 +320,7 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex)
 
 
 
-wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
+wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 {
 	MYSQL_ROW row;
 	unsigned long *  row_length;
@@ -321,7 +343,8 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint ()
 	}
 	
 	
-	OGRPoint * pPoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length);
+	OGRPoint * pPoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length,1);
+	oid = GetOid(row, 0);
 	wxASSERT(pPoint);
 	
 	if (!pPoint)
@@ -473,6 +496,7 @@ wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
 /***************************************************************************//**
  @brief Search spatial data
  @param rect Real rectangle for searching data
+ @param type Layertype see #tmLayerProperties
  @return  An array containing OID of data found or NULL if nothing found
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008

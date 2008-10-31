@@ -33,6 +33,8 @@ tmDrawer::tmDrawer()
 	imglen = 0;
 	maskbuf = NULL;
 	masklen= 0;
+	m_ActuallayerID = 0;
+	m_SelMem = NULL;
 }
 
 
@@ -116,6 +118,7 @@ bool tmDrawer::DrawExtentIntoBitmap (int width, const wxColour & col)
 
 bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 {
+	m_ActuallayerID = itemProp->m_LayerID;
 	switch (itemProp->m_LayerSpatialType)
 	{
 		case LAYER_SPATIAL_LINE:
@@ -164,6 +167,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
 	
+	// pen for selection
+	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
 	
 	// pen for vertex
 	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
@@ -181,13 +186,15 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	// because of all wxLogDebug commands
 	int iNbVertex = 0;
 	bool bReturn = true;
+	bool bSelected = false;
 	int iLoop = 0;
 	while (1)
 	{
 		pgdc->SetPen(myPen);
 		
 		iNbVertex = 0;
-		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex);
+		long myOid = 0;
+		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
 		
 		// line must have more than one vertex
 		if (iNbVertex <= 1) 
@@ -198,6 +205,9 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		}
 		
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
+			if (m_SelMem->IsSelected(myOid))
+				pgdc->SetPen(mySPen);
 		
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
@@ -247,6 +257,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	// create pen based on symbology
 	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
+	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
 	pgdc->SetPen(myPen);
 	
 	// define spatial filter
@@ -262,11 +273,13 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	// because of all wxLogDebug commands
 	bool bReturn = true;
 	int iLoop = 0;
+	long myOid = 0;
 	wxPoint Intpts (0,0);
+	bool bAsSelection = false;
 	
 	while (1)
 	{
-		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint();
+		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint(myOid);
 		
 		if(pptsReal == NULL)
 		{
@@ -275,6 +288,14 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 			bReturn = FALSE;
 			break;
 		}
+		
+		// changing pen for selected data
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
+			if (m_SelMem->IsSelected(myOid))
+			{
+				pgdc->SetPen(mySPen);
+				bAsSelection = true;
+			}
 		
 		// convert from real coordinates to screen coordinates
 		Intpts = m_scale.RealToPixel(*pptsReal);
@@ -287,6 +308,11 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		delete pptsReal;
 		iLoop++;
+		
+		// returning to basic pen
+		if (bAsSelection)
+			pgdc->SetPen(myPen);
+		
 	}
 	
 	if (IsLoggingEnabled())
