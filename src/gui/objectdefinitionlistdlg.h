@@ -101,6 +101,7 @@ class ObjectDefinitionList : public ListGenReportWithStatus
 		DataBaseTM * m_DBHandler;
 		wxCheckBox * m_CheckBox;
 		wxChoice   * m_ChoiceLayer;
+		int m_ListSpatType;
 		
 		// get a memory layer object for storing changes 
 		PrjDefMemManage * m_MemoryObject;
@@ -146,6 +147,8 @@ class ObjectDefinitionList : public ListGenReportWithStatus
 		
 		void SetObjectToList (ProjectDefMemoryObjects * object, int iIndex = -1);
 		void GetObjectFromList (ProjectDefMemoryObjects * object, int iIndex);
+		
+		void SetListSpatialType (int iSpatialType) {m_ListSpatType = iSpatialType;}
 		
 		//virtual int ImportParsedFileToListCtrl(const wxString & filename, 
 		//									   const int & FilterIndex);

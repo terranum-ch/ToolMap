@@ -344,6 +344,7 @@ void ProjectDefMemoryObjects::InitMemberValues()
 {
 	m_ObjectID = 0;
 	m_ObjectCode = NULL_LONG_VALUE;
+	m_ObjectType = LAYER_LINE;
 	m_ObjectName = _T("");
 	m_ObjectFreq = OBJECT_LESS_FREQUENT;
 	m_ParentLayerName = _T("");

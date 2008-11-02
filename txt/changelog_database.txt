@@ -21,3 +21,6 @@ Update Database
 - 210 -> 211 (Homogenizing table name)
 	- ALTER TABLE project_toc RENAME prj_toc;
 	- UPDATE `prj_settings` SET PRJ_VERSION = 211;
+- 211 -> 212 (Adding column with object spatial type for lines building polygons)
+	- ALTER TABLE  dmn_layer_object ADD COLUMN OBJECT_TYPE_CD INT NOT NULL AFTER OBJECT_CD;
+	- UPDATE `prj_settings` SET PRJ_VERSION = 212;

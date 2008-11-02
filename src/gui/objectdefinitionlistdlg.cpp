@@ -250,6 +250,7 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 	m_layertype = paneltype;
 	m_DBHandler = database;
 	m_MemoryObject = memory;
+	m_ListSpatType = LAYER_LINE;
 	
 	
 	// init list with database values
@@ -661,6 +662,7 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 		// needed if we modify it later
 		m_ObjectObj->m_ObjectID = iAddItems;
 		iAddItems--;
+		m_ObjectObj->m_ObjectType = m_ListSpatType;
 		
 		// update list ctrl
 		SetObjectToList(m_ObjectObj);
