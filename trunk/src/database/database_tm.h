@@ -56,7 +56,7 @@ const wxString TABLE_NAME_GIS_GENERIC[] =
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 211;
+const int TM_DATABASE_VERSION = 212;
 
 
 

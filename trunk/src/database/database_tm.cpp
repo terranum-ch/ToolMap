@@ -807,20 +807,22 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		// prepare the sentence for insert or update
 		//sentence for insert
 		wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
-											_T("(OBJECT_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC, OBJECT_ISFREQ) ")
-											_T("VALUES (%d, %d, \"%s\", %d)"),
+											_T("(OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC, OBJECT_ISFREQ) ")
+											_T("VALUES (%d, %d, %d, \"%s\", %d)"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
+											myObject->m_ObjectType,
 											GetActiveLayerId(),
 											myObject->m_ObjectName.c_str(),
 											(int) myObject->m_ObjectFreq);
 		// sentence for update
 		wxString sUpdate = wxString::Format(_T("UPDATE %s ")
-											_T("SET OBJECT_CD = %d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
+											_T("SET OBJECT_CD = %d, OBJECT_TYPE_CD=%d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
 											_T("OBJECT_DESC = \"%s\", OBJECT_ISFREQ = %d ")
 											_T("WHERE OBJECT_ID = %d"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
+											myObject->m_ObjectType,
 											GetActiveLayerId(),
 											myObject->m_ObjectName.c_str(),
 											(int) myObject->m_ObjectFreq,
@@ -1244,14 +1246,20 @@ bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 		 sWantFrequencyField = _T("OBJECT_ISFREQ, ");
 	
 	
-	
 	wxString sSentence =  wxString::Format(
+										   _T("SELECT OBJECT_CD, OBJECT_DESC, thematic_layers.LAYER_NAME, %s OBJECT_ID ")
+										   _T("FROM dmn_layer_object LEFT JOIN (thematic_layers) ")
+										   _T("ON (thematic_layers.LAYER_INDEX=dmn_layer_object.THEMATIC_LAYERS_LAYER_INDEX)")
+										   _T("WHERE OBJECT_TYPE_CD = %d"),
+										   sWantFrequencyField.c_str(),
+										   ilayertype);
+	/*wxString sSentence =  wxString::Format(
 										   _T("SELECT OBJECT_CD, OBJECT_DESC, thematic_layers.LAYER_NAME, %s OBJECT_ID ")
 										   _T("FROM dmn_layer_object LEFT JOIN (thematic_layers) ")
 										   _T("ON (thematic_layers.LAYER_INDEX=dmn_layer_object.THEMATIC_LAYERS_LAYER_INDEX)")
 										   _T("WHERE thematic_layers.TYPE_CD = %d"),
 										   sWantFrequencyField.c_str(),
-										   ilayertype);
+										   ilayertype);*/
 	
 	if (bOrder)
 		sSentence.Append(_T(" ORDER BY RANK "));
@@ -1266,13 +1274,39 @@ bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 }
 
 
+/***************************************************************************//**
+ @brief Return list of layers name for selected type
+ @details This function returns all layers name corresponding to a layer type.
+ Layer type are defined there : #PRJDEF_LAYERS_TYPE
+ @note There is a special
+ behaviour in case of ilayertype = LAYER_LINE (0). In this case the function
+ returns all line layers and all polygons layers too. Because we should be able
+ to define lines for creating polygons
+ @see Bug #25
+ @param ilayertype one of the #PRJDEF_LAYERS_TYPE
+ @return  An array containing all layers name for the selected layer type
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 31 October 2008
+ *******************************************************************************/
 wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 {
 	wxArrayString myThematicResult;
 	wxString myTempResult;
+	wxString sSentence = _T("");
 	
-	wxString sSentence = wxString::Format(_T("SELECT LAYER_NAME FROM %s WHERE TYPE_CD = %d"),
+	// normal behaviour
+	if (ilayertype != LAYER_LINE)
+	{
+	sSentence = wxString::Format(_T("SELECT LAYER_NAME FROM %s WHERE TYPE_CD = %d"),
 										  TABLE_NAME_LAYERS.c_str(), ilayertype);
+	}
+	else // special behavious, see documentation above.
+	{
+		sSentence = wxString::Format(_T("SELECT LAYER_NAME FROM %s WHERE TYPE_CD=%d OR TYPE_CD=%d"),
+									 TABLE_NAME_LAYERS.c_str(),
+									 LAYER_LINE,
+									 LAYER_POLYGON);
+	}
 	
 	if (DataBaseQuery(sSentence))
 	{
