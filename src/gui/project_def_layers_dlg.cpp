@@ -629,6 +629,7 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_REMOVE, ProjectDefLayersDlg::OnRemoveField)
 	EVT_CHECKBOX(ID_DLGPDL_CHK_ORIENTATION,ProjectDefLayersDlg::OnChangeOrientation)
 	EVT_CHOICE(ID_DLGPDL_LAYER_TYPE,  ProjectDefLayersDlg::OnSelectLayerType)
+	EVT_TEXT (ID_DLGPDL_LAYER_NAME, ProjectDefLayersDlg::OnLayerNameChange)
 END_EVENT_TABLE()
 
 
@@ -743,10 +744,60 @@ void ProjectDefLayersDlg::OnSelectLayerType (wxCommandEvent & event)
 {
 	int iActualSpatType = m_DlgPDL_Layer_Type->GetSelection();
 	if (iActualSpatType >= LAYER_LINE && iActualSpatType <= LAYER_POLYGON)
-		m_DlgPDL_Object_List->SetSpatialType(iActualSpatType);
+		if (m_DlgPDL_Object_List)
+			m_DlgPDL_Object_List->SetSpatialType(iActualSpatType);
+	
+	bool bShowPolyCtrl = false;
+	if (iActualSpatType == LAYER_POLYGON)
+		bShowPolyCtrl = true;
+	
+	if (m_DlgPDL_Contour_Name)
+	{
+		m_DlgPDL_Contour_Name->Show(bShowPolyCtrl);
+		m_DlgPDL_Contour_Static->Show(bShowPolyCtrl);
+		
+		
+		UpdateDefaultPolygonBorderName(m_DlgPDL_Layer_Name->GetValue());
+		this->Layout();
+	}
+	
+	
+	
 	
 	ActivateOrientation();
 }
+
+
+
+/***************************************************************************//**
+ @brief Called when layer name is changing
+ @details This function updates the Polygon contour value with a
+ #m_DlgPDL_Contour_Prefix
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 November 2008
+ *******************************************************************************/
+void ProjectDefLayersDlg::OnLayerNameChange (wxCommandEvent & event)
+{
+	UpdateDefaultPolygonBorderName(event.GetString());
+	
+	event.Skip();
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Update polygon default contour name
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 November 2008
+ *******************************************************************************/
+void ProjectDefLayersDlg::UpdateDefaultPolygonBorderName (const wxString & name)
+{
+	if (m_bIsModeEditing == false)
+		if (m_DlgPDL_Contour_Name)
+			m_DlgPDL_Contour_Name->SetValue(m_DlgPDL_Contour_Prefix + name);
+}
+
 
 
 /***************************************************************************//**
@@ -770,6 +821,10 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
 	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
+	if (m_LayersObj->m_LayerType ==  LAYER_POLYGON)
+		m_LayersObj->m_LayerPolygonDefaultValue = m_DlgPDL_Contour_Name->GetValue();
+	else
+		m_LayersObj->m_LayerPolygonDefaultValue = wxEmptyString;
 	return TRUE;
 	
 }
@@ -792,6 +847,13 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 		m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName); 
 		m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE) m_LayersObj->m_LayerType);
 		
+		if (m_LayersObj->m_LayerType == LAYER_POLYGON && m_bIsModeEditing == false)
+		{
+			m_DlgPDL_Contour_Name->Show(true);
+			m_DlgPDL_Contour_Static->Show(true);
+			m_DlgPDL_Contour_Name->SetValue(m_LayersObj->m_LayerPolygonDefaultValue);
+			this->Layout();
+		}
 		
 		// fill the object list (but only if panel exists)
 		if (m_DlgPDL_Panel_Obj != NULL)
@@ -913,6 +975,9 @@ void ProjectDefLayersDlg::Init()
 	 m_DlgPDL_Panel_Fields = NULL;
 	 m_DlgPDL_Fields_List = NULL;
 	m_DlgPDL_Orientation_FLD = NULL;
+	m_DlgPDL_Contour_Prefix = _("Border of ");
+	m_DlgPDL_Contour_Name = NULL;
+	m_DlgPDL_Contour_Static = NULL;
 }
 
 
@@ -991,12 +1056,7 @@ void ProjectDefLayersDlg::CreateControls()
 														  this);
     itemStaticBoxSizer18->Add(m_DlgPDL_Fields_List, 1, wxGROW|wxALL, 5);
 	
-	// textctrl for polygon border name
-	//if (m_bIsModeEditing == false)
-//	{
-//		
-//	}
-
+	
     wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
     itemStaticBoxSizer18->Add(itemBoxSizer20, 0, wxALIGN_LEFT|wxALL, 5);
     wxFlatButton* itemFlatButton21 = new wxFlatButton( m_DlgPDL_Panel_Fields, ID_DLGPDL_FIELD_ADD, wxFLATBUTTON_TEXT_ADD);
@@ -1012,7 +1072,21 @@ void ProjectDefLayersDlg::CreateControls()
     itemNotebook9->AddPage(m_DlgPDL_Panel_Fields, _("Attributes"));
 
     itemBoxSizer2->Add(itemNotebook9, 1, wxGROW|wxALL, 5);
-
+	
+	// textctrl for polygon border name
+	if (m_bIsModeEditing == false)
+	{
+		m_DlgPDL_Contour_Static = new wxStaticBoxSizer( new wxStaticBox( itemDialog1,wxID_ANY, _("Polygon contour value") ),
+													   wxVERTICAL );
+		
+		m_DlgPDL_Contour_Name = new wxTextCtrl( itemDialog1, wxID_ANY, wxEmptyString,
+											   wxDefaultPosition, wxDefaultSize, 0 );
+		m_DlgPDL_Contour_Static->Add( m_DlgPDL_Contour_Name, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+		itemBoxSizer2->Add(m_DlgPDL_Contour_Static, 0, wxGROW|wxALL, 5);
+		m_DlgPDL_Contour_Name->Show(false);
+		m_DlgPDL_Contour_Static->Show(false);
+	}
+	
     wxStdDialogButtonSizer* itemStdDialogButtonSizer23 = new wxStdDialogButtonSizer;
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer23, 0, wxALIGN_RIGHT|wxALL, 5);

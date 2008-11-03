@@ -94,7 +94,8 @@ class DataBaseTM : public DataBase
 		
 		
 		// Database layer operations
-		bool AddLayer(ProjectDefMemoryLayers * myLayer); 
+		bool AddLayer(ProjectDefMemoryLayers * myLayer);
+		bool AddLayerPolygonDefaultBorder (ProjectDefMemoryLayers * myLayer);
 		void SetActiveLayerId (ProjectDefMemoryLayers * myLayer);
 		int GetActiveLayerId () {return m_iDBLayerIndex;}
 		int GetNextLayer (ProjectDefMemoryLayers * myLayer);

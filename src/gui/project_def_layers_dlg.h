@@ -212,6 +212,8 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 class ProjectDefLayersDlg: public wxDialog
 	{  
 	private:
+		wxString m_DlgPDL_Contour_Prefix;
+		
 		ProjectDefFieldDlg * m_FieldDialog;
 		ProjectDefMemoryLayers * m_LayersObj;
 		
@@ -225,7 +227,9 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnImportObject (wxCommandEvent & event);
 		void OnChangeOrientation (wxCommandEvent & event);
 		void OnSelectLayerType (wxCommandEvent & event);
-
+		void OnLayerNameChange (wxCommandEvent & event);
+		
+		void UpdateDefaultPolygonBorderName (const wxString & name);
 		
 		
 		bool m_bIsModeEditing;
@@ -291,6 +295,8 @@ class ProjectDefLayersDlg: public wxDialog
 		wxCheckBox * m_DlgPDL_Orientation_FLD;
 		
 		// control for line constructing polygons
+		wxStaticBoxSizer* m_DlgPDL_Contour_Static;
+		wxTextCtrl* m_DlgPDL_Contour_Name;
 		
 		
 	};
