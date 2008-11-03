@@ -56,6 +56,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("CREATE  TABLE `dmn_layer_object` (")
 	_T("  `OBJECT_ID` BIGINT NOT NULL AUTO_INCREMENT ,")
 	_T("  `OBJECT_CD` INT UNSIGNED NOT NULL COMMENT 'Feature code' ,")
+	_T("  `OBJECT_TYPE_CD` INT UNSIGNED NOT NULL COMMENT 'Spatial object code' ,")	
 	_T("  `THEMATIC_LAYERS_LAYER_INDEX` INT UNSIGNED NOT NULL COMMENT 'Associated thematic layer' ,")
 	_T("  `OBJECT_DESC` VARCHAR(100) NOT NULL COMMENT 'Feature description' ,")
 	_T("  `OBJECT_ISFREQ` BOOLEAN NOT NULL DEFAULT FALSE ,")
@@ -763,9 +764,13 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 		DBlayerIndex = GetActiveLayerId(); 
 	}
 	
-	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_OBJECTS + _T(" (OBJECT_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES ");
-	wxString sValues = wxString::Format(_T("(%d,%d,\"%s\")"),myObject->m_ObjectCode,
-										DBlayerIndex, myObject->m_ObjectName.c_str());
+	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_OBJECTS +
+	_T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES ");
+	wxString sValues = wxString::Format(_T("(%d, %d, %d,\"%s\")"),
+										myObject->m_ObjectCode,
+										myObject->m_ObjectType,										
+										DBlayerIndex, 
+										myObject->m_ObjectName.c_str());
 	sSentence.Append(sValues);
 	
 	//wxLogDebug(sSentence);

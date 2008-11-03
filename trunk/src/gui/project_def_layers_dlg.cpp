@@ -39,6 +39,7 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 	m_ChoiceToChange = NULL;
 	
 	m_pPrjDefinition = NULL;
+	m_SpatialType = LAYER_LINE;
 }
 
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
@@ -71,6 +72,8 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 	if (bRealyAddItem)
 	{
 		// data allready added to the array
+		// set the spatial type
+		m_ObjectObj->m_ObjectType = m_SpatialType;
 		
 		// add item to the list
 		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
@@ -277,6 +280,7 @@ void ProjectDefLayersFieldsList::AfterAdding (bool bRealyAddItem)
 	if (bRealyAddItem)
 	{
 		// data allready added to the array
+		
 		
 		// add item to the list
 		myListValues.Add(m_FieldsObj->m_Fieldname);
@@ -624,7 +628,7 @@ BEGIN_EVENT_TABLE( ProjectDefLayersDlg, wxDialog )
 	EVT_FLATBUTTON (ID_DLGPDL_OBJECT_IMPORT, ProjectDefLayersDlg::OnImportObject)
 	EVT_FLATBUTTON (ID_DLGPDL_FIELD_REMOVE, ProjectDefLayersDlg::OnRemoveField)
 	EVT_CHECKBOX(ID_DLGPDL_CHK_ORIENTATION,ProjectDefLayersDlg::OnChangeOrientation)
-	EVT_CHOICE(ID_DLGPDL_LAYER_TYPE,  ProjectDefLayersDlg::OnActivateOrientation)
+	EVT_CHOICE(ID_DLGPDL_LAYER_TYPE,  ProjectDefLayersDlg::OnSelectLayerType)
 END_EVENT_TABLE()
 
 
@@ -729,14 +733,18 @@ void ProjectDefLayersDlg::OnChangeOrientation (wxCommandEvent & event)
 }
 
 /***************************************************************************//**
- @brief Activate / desactivate the Orientation check box
+ @brief Called every time the layer type is selected
  @details This is called every time when an item on the layer type choice is
  selected.
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 June 2008
  *******************************************************************************/
-void ProjectDefLayersDlg::OnActivateOrientation (wxCommandEvent & event)
+void ProjectDefLayersDlg::OnSelectLayerType (wxCommandEvent & event)
 {
+	int iActualSpatType = m_DlgPDL_Layer_Type->GetSelection();
+	if (iActualSpatType >= LAYER_LINE && iActualSpatType <= LAYER_POLYGON)
+		m_DlgPDL_Object_List->SetSpatialType(iActualSpatType);
+	
 	ActivateOrientation();
 }
 
@@ -982,6 +990,12 @@ void ProjectDefLayersDlg::CreateControls()
 														  ID_DLGPDL_FIELDS_LIST, wxSize(100, 100),
 														  this);
     itemStaticBoxSizer18->Add(m_DlgPDL_Fields_List, 1, wxGROW|wxALL, 5);
+	
+	// textctrl for polygon border name
+	//if (m_bIsModeEditing == false)
+//	{
+//		
+//	}
 
     wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
     itemStaticBoxSizer18->Add(itemBoxSizer20, 0, wxALIGN_LEFT|wxALL, 5);

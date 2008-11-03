@@ -210,7 +210,7 @@ class ProjectDefMemoryObjects
 	public:
 		long m_ObjectID;
 		long m_ObjectCode;
-		short m_ObjectType;
+		short m_ObjectType; // spatial type
 		wxString m_ObjectName;
 		PRJDEF_OBJECTS_FREQ m_ObjectFreq;
 		

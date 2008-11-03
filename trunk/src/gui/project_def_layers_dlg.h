@@ -68,6 +68,7 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 	private:
 		//		void OnMySelectionChange (wxListEvent & event);		
 		wxChoice * m_ChoiceToChange;
+		int m_SpatialType;
 		
 		
 		ProjectDefMemoryObjects * m_ObjectObj;
@@ -87,13 +88,7 @@ class ProjectDefLayersObjectList : public ListGenReportWithDialog
 		~ProjectDefLayersObjectList(); 
 		PrjMemObjectsArray * m_ObjectsArray;
 			
-		//	int GetParamType (wxString myTextParam);
-		//		
-		//		wxString GetParamType (int imyType);
-		//
-		//		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-		//		void SetChoiceList (wxChoice * myChoiceList);
-		//	
+		void SetSpatialType (int spatialtype) {m_SpatialType = spatialtype;}
 		void PassPrjDefToList (PrjDefMemManage *  myPrjMemManage) {m_pPrjDefinition = myPrjMemManage;}
 
 	};
@@ -229,7 +224,7 @@ class ProjectDefLayersDlg: public wxDialog
 		void OnRemoveObject (wxCommandEvent & event);
 		void OnImportObject (wxCommandEvent & event);
 		void OnChangeOrientation (wxCommandEvent & event);
-		void OnActivateOrientation (wxCommandEvent & event);
+		void OnSelectLayerType (wxCommandEvent & event);
 
 		
 		
@@ -294,6 +289,8 @@ class ProjectDefLayersDlg: public wxDialog
 		wxPanel* m_DlgPDL_Panel_Fields;
 		ProjectDefLayersFieldsList* m_DlgPDL_Fields_List;
 		wxCheckBox * m_DlgPDL_Orientation_FLD;
+		
+		// control for line constructing polygons
 		
 		
 	};
