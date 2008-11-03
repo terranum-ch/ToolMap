@@ -112,39 +112,39 @@ bool ProjectManager::CreateNewProject()
 	m_pMManager->SetStatus(MENU_DB_OPENED);
 	m_pMManager->UpdateMenusStatus();
 	
-
 	
-
+	// create TOC toolmap layers tables entry
+	m_DB->InitTOCGenericLayers();
+	
+	
 	// fill the project
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
-	if(myNewProjDlg->ShowModal() != wxID_OK)
+	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
-		delete myNewProjDlg;
-		return TRUE;
+		
+		if(!myNewPrjDB->PassProjectDataToDB())
+		{
+			delete myNewProjDlg;
+			wxLogError(_T("Error passing data to database"));
+			// change menu status
+			m_pMManager->SetStatus(MENU_DB_CLOSED);
+			CloseProject();
+			return FALSE;
+		}
 	}
 	delete myNewProjDlg;
 	
-	
-	if(!myNewPrjDB->PassProjectDataToDB())
+
+	// open the newly created project
+	if (OpenProject(PrjDefinition.m_PrjPath + 
+					wxFileName::GetPathSeparator() + 
+					PrjDefinition.m_PrjName) != OPEN_OK)
 	{
-		wxLogError(_T("Error passing data to database"));
-		// change menu status
 		m_pMManager->SetStatus(MENU_DB_CLOSED);
 		CloseProject();
 		return FALSE;
 	}
-	
-	
-	
-	//m_DB = myNewPrjDB;
-	m_Obj->UpdateObjectLists(m_DB);
-	
-	// create TOC tables entry
-	m_DB->InitTOCGenericLayers();
-	
-	
-	// read TOC
-	bProjectIsOpen = TRUE;
+
 	
 	return TRUE;
 }
