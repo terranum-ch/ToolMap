@@ -821,7 +821,7 @@ bool ProjectDefLayersDlg::TransferDataFromWindow()
 	wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, not initialised."));
 	m_LayersObj->m_LayerName = m_DlgPDL_Layer_Name->GetValue();
 	m_LayersObj->m_LayerType = (PRJDEF_LAYERS_TYPE) m_DlgPDL_Layer_Type->GetSelection();
-	if (m_LayersObj->m_LayerType ==  LAYER_POLYGON)
+	if (m_LayersObj->m_LayerType ==  LAYER_POLYGON &&  m_DlgPDL_Contour_Name)
 		m_LayersObj->m_LayerPolygonDefaultValue = m_DlgPDL_Contour_Name->GetValue();
 	else
 		m_LayersObj->m_LayerPolygonDefaultValue = wxEmptyString;
