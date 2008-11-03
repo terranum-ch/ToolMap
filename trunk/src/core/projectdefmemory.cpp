@@ -318,6 +318,7 @@ void ProjectDefMemoryLayers::InitMemberValues()
 	m_pLayerFieldArray = NULL;
 	m_pLayerObjectArray = NULL;
 	m_LayerName = _T("");
+	m_LayerPolygonDefaultValue = wxEmptyString;
 	
 	m_pLayerFieldArray = new PrjMemFieldArray();
 	m_pLayerObjectArray = new PrjMemObjectsArray();

@@ -589,6 +589,36 @@ bool DataBaseTM::AddLayer(ProjectDefMemoryLayers * myLayer)
 	return FALSE;
 }
 
+
+
+/***************************************************************************//**
+ @brief Add border default value for polygons layer
+ @param myLayer pointer to a valid #ProjectDefMemoryLayers object
+ @return  true if adding succesfull
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 03 November 2008
+ *******************************************************************************/
+bool DataBaseTM::AddLayerPolygonDefaultBorder (ProjectDefMemoryLayers * myLayer)
+{
+	if (myLayer->m_LayerType != LAYER_POLYGON || myLayer->m_LayerPolygonDefaultValue.IsEmpty())
+		return false;
+	
+	wxString sSentence = wxString::Format( _T("INSERT INTO ") + TABLE_NAME_OBJECTS + 
+										  _T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES ")
+										  _T("(%d, %d, %d, \"%s\")"),
+										  GetActiveLayerId() * 1000, LAYER_LINE, GetActiveLayerId(),
+										  myLayer->m_LayerPolygonDefaultValue.c_str());
+	if (DataBaseQuery(sSentence))
+		return true;
+	else
+		wxLogDebug(_T("Error setting default border values : %s"),
+				   DataBaseGetLastError().c_str());
+	
+	return false;
+}
+
+
+
 void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 {
 	wxString sSentence = _T("SELECT LAYER_INDEX FROM ") + TABLE_NAME_LAYERS + _(" WHERE LAYER_NAME = ");

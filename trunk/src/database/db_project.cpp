@@ -100,6 +100,10 @@ bool DatabaseNewPrj::PassProjectDataToDB()
 		{
 			if (AddLayer(myMemLayers))
 			{
+				// if layer is polygon, add a default line for border
+				// checks are done internally
+				AddLayerPolygonDefaultBorder(myMemLayers);
+				
 				
 				// Adding Objects 
 				for (indexObject = 0;indexObject < myMemLayers->m_pLayerObjectArray->GetCount(); indexObject++)

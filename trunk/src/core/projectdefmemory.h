@@ -285,6 +285,8 @@ class ProjectDefMemoryLayers
 		int m_LayerID;
 		PRJDEF_LAYERS_TYPE m_LayerType;
 		wxString m_LayerName;
+		// for special case : polygons and default border value
+		wxString m_LayerPolygonDefaultValue;
 		
 		/// list of fields related to a layer
 		PrjMemFieldArray * m_pLayerFieldArray;
