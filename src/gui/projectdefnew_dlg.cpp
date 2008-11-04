@@ -216,6 +216,7 @@ void ProjectDefNew::CreateControls()
     itemBoxSizer2->Add(itemStdDialogButtonSizer10, 0, wxALIGN_RIGHT|wxALL, 5);
     m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Continue"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer10->AddButton(m_DlgPd_Button_Ok);
+	m_DlgPd_Button_Ok->SetDefault();
 
     wxButton* itemButton12 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer10->AddButton(itemButton12);
@@ -224,7 +225,7 @@ void ProjectDefNew::CreateControls()
 	
 	
 	// validators
-	 m_DlgPd_Proj_Name->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_DATABASE));
+	m_DlgPd_Proj_Name->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_DATABASE));
 
 }
 

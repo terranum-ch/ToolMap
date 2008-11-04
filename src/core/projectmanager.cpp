@@ -73,6 +73,8 @@ bool ProjectManager::CreateNewProject()
 	ProjectDefNew * myNewDBDlg = new ProjectDefNew(m_Parent, &PrjDefinition);
 	if (myNewDBDlg->ShowModal() != wxID_OK)
 	{
+		// this is needed, bug #26
+		myNewDBDlg->m_DlgPd_Proj_Name->SetFocus();
 		wxLogDebug(_T("New project creation cancelled"));
 		delete myNewDBDlg;
 		return FALSE;
