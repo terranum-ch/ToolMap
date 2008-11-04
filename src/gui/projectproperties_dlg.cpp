@@ -323,6 +323,20 @@ bool ProjectPropertiesDLG::TransferDataToWindow()
 }
 
 
+
+/***************************************************************************//**
+ @brief Set focus to the scale list
+ @details This function try to solve the bug n°23, it seems that this is a wxMac
+ only bug.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 04 November 2008
+ *******************************************************************************/
+void ProjectPropertiesDLG::SetScaleListFocus()
+{
+	m_DLGPS_Scale_List->SetFocus();
+}
+
+
 /*************************************** SCALE LIST *****************************************/
 BEGIN_EVENT_TABLE( ScaleList, ListGenReportWithDialog )
 END_EVENT_TABLE()

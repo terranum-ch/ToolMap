@@ -121,6 +121,7 @@ public:
     void CreateControls();
 	
 	virtual bool TransferDataToWindow();
+	void SetScaleListFocus();
 	
 };
 
