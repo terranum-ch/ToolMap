@@ -97,8 +97,7 @@ class tmLayerManager : public wxEvtHandler
 		bool SaveTOCStatus();
 		bool IsOK ();
 		
-		// scale ctrl functions
-		void InitScaleCtrlList ();
+
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -126,6 +125,8 @@ class tmLayerManager : public wxEvtHandler
 					   wxStatusBar * status, tmScaleCtrlCombo * scalectrl);
 		~tmLayerManager();
 		
+		// scale ctrl functions
+		void InitScaleCtrlList ();
 			
 		// Init layermanager
 		bool InitLayerManager(DataBaseTM * db);

@@ -388,6 +388,7 @@ bool ProjectManager::EditProjectSettings ()
 	ProjectPropertiesDLG * myDLG = new ProjectPropertiesDLG(m_Parent, m_DB);
 	if(myDLG->ShowModal() == wxID_SAVE)
 	{
+		m_LayerManager->InitScaleCtrlList();
 		wxLogDebug(_T("Changes applied into database"));
 		bReturn = TRUE;
 	}
