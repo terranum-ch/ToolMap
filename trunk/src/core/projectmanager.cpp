@@ -391,6 +391,9 @@ bool ProjectManager::EditProjectSettings ()
 		wxLogDebug(_T("Changes applied into database"));
 		bReturn = TRUE;
 	}
+	//BUG: bug #23 Workaround for mac
+	myDLG->SetScaleListFocus();
+	
 	delete myDLG;
 	return bReturn;
 }
