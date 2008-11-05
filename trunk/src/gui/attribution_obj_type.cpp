@@ -19,8 +19,19 @@
 #include "attribution_obj_type.h"
 
 
+DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)
+
+BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
+	EVT_BUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
+END_EVENT_TABLE()
+
+
 AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAuiWnd(AuiManager)
 {
+	m_AttribBtnLabel = _("Attribute");
+	m_ParentEvt = parent;
+	m_ParentEvt->PushEventHandler(this);
+	
 	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
 	CreateControls(ContentFrame);
 	
@@ -47,7 +58,7 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiMa
 
 AttribObjType_PANEL::~AttribObjType_PANEL()
 {
-	
+	m_ParentEvt->PopEventHandler(FALSE);
 }
 
 
@@ -56,9 +67,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     //itemPanel1->SetSizer(itemBoxSizer2);
 	
-    wxNotebook* itemNotebook3 = new wxNotebook( parent, ID_NOTEBOOK2, wxDefaultPosition, wxSize(300, -1), wxBK_DEFAULT );
+   m_AttribNotebook = new wxNotebook( parent, ID_NOTEBOOK2, wxDefaultPosition, wxSize(300, -1), wxBK_DEFAULT );
 	
-    wxPanel* itemPanel4 = new wxPanel( itemNotebook3, ID_PANEL4, wxDefaultPosition, wxSize(300, 300), wxTAB_TRAVERSAL );
+    wxPanel* itemPanel4 = new wxPanel( m_AttribNotebook, ID_PANEL4, wxDefaultPosition, wxSize(300, 300), wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     itemPanel4->SetSizer(itemBoxSizer5);
 	
@@ -88,9 +99,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
     itemBoxSizer5->Add(itemNotebook6, 1, wxGROW|wxALL, 5);
 	
-    itemNotebook3->AddPage(itemPanel4, _("Lines"));
+    m_AttribNotebook->AddPage(itemPanel4, _("Lines"));
 	
-    wxPanel* itemPanel13 = new wxPanel( itemNotebook3, ID_PANEL7, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxPanel* itemPanel13 = new wxPanel( m_AttribNotebook, ID_PANEL7, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
     itemPanel13->SetSizer(itemBoxSizer14);
 	
@@ -111,9 +122,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxButton* itemButton20 = new wxButton( itemPanel13, ID_BUTTON9, _(" Interactive orientation"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticBoxSizer16->Add(itemButton20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);*/
 	
-    itemNotebook3->AddPage(itemPanel13, _("Point"));
+    m_AttribNotebook->AddPage(itemPanel13, _("Point"));
 	
-    wxPanel* itemPanel21 = new wxPanel( itemNotebook3, ID_PANEL8, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxPanel* itemPanel21 = new wxPanel( m_AttribNotebook, ID_PANEL8, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxVERTICAL);
     itemPanel21->SetSizer(itemBoxSizer22);
 	
@@ -123,9 +134,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
    itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 5);
 	
-    itemNotebook3->AddPage(itemPanel21, _("Polygons"));
+    m_AttribNotebook->AddPage(itemPanel21, _("Polygons"));
 	
-    wxPanel* itemPanel24 = new wxPanel( itemNotebook3, ID_PANEL23, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    wxPanel* itemPanel24 = new wxPanel( m_AttribNotebook, ID_PANEL23, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
     itemPanel24->SetSizer(itemBoxSizer25);
 	
@@ -176,9 +187,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemCheckBox37->SetValue(false);
     itemBoxSizer25->Add(itemCheckBox37, 0, wxGROW|wxALL, 5);
 	
-    itemNotebook3->AddPage(itemPanel24, _("Notes"));
+    m_AttribNotebook->AddPage(itemPanel24, _("Notes"));
 	
-    itemBoxSizer2->Add(itemNotebook3, 1, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(m_AttribNotebook, 1, wxGROW|wxALL, 5);
 	
     wxGridSizer* itemGridSizer38 = new wxGridSizer(2, 2, 0, 0);
     itemBoxSizer2->Add(itemGridSizer38, 0, wxGROW|wxALL, 5);
@@ -192,12 +203,15 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemGridSizer38->Add(itemCheckBox40, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxButton* itemButton41 = new wxButton( parent, ID_BUTTON7, _("Info"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemGridSizer38->Add(itemButton41, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemButton41->Enable(false);
+	itemGridSizer38->Add(itemButton41, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxButton* itemButton42 = new wxButton( parent, ID_BUTTON8, _("Attribute"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemGridSizer38->Add(itemButton42, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxCheckBox* itemCheckBox43 = new wxCheckBox( parent, ID_CHECKBOX5, _("Clear value list after attribution"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_AttribBtn = new wxButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
+							   m_AttribBtnLabel, wxDefaultPosition, wxDefaultSize, 0 );
+    m_AttribBtn->Enable(false); // disable by default
+	itemGridSizer38->Add(m_AttribBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+		
+    wxCheckBox* itemCheckBox43 = new wxCheckBox( parent, ID_CHECKBOX5, _("Auto display attributes"), wxDefaultPosition, wxDefaultSize, 0 );
     itemCheckBox43->SetValue(true);
     itemBoxSizer2->Add(itemCheckBox43, 0, wxGROW|wxALL, 5);
 	
@@ -356,3 +370,137 @@ void AttribObjType_PANEL::SetDataBaseToList (DataBaseTM * pDB)
 	m_pObjList_PLG->SetDataBase(pDB);
 	m_pObjList_PT->SetDataBase(pDB);
 }
+
+
+
+/***************************************************************************//**
+ @brief Set the text for the button
+ @details This function allows a visual indication about the numer of item
+ selected. Bellow are the possible case based on the number of selected
+ features :
+ - 0 : Button is disabled
+ - 1 : Button is normal
+ - 1+ : Button is bold and number of features are specified next to the label
+ @param nbfeatures Number of features selected
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 04 November 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures)
+{
+	wxString myButtonLabel = m_AttribBtnLabel;
+	bool myEnable = true;
+	wxFont myBtnFont (*wxNORMAL_FONT);
+	
+	
+	if (nbfeatures == 0) // 0 item selected
+		myEnable = false;
+	
+	if (nbfeatures > 1) // more than one feature selected
+	{
+		myButtonLabel.Append(wxString::Format(_T(" (%d)"),nbfeatures));
+		myBtnFont.SetWeight(wxFONTWEIGHT_BOLD);
+	}
+	
+	m_AttribBtn->SetLabel(myButtonLabel);
+	m_AttribBtn->Enable(myEnable);
+	m_AttribBtn->SetFont(myBtnFont); 
+
+}
+
+
+
+/***************************************************************************//**
+ @brief Set visible notebook
+ @details Activate the correct notebook depending on the selected object type.
+ Case supported are : 
+ - TOC_NAME_LINES
+ - TOC_NAME_POINTS
+ - TOC_NAME_LABELS
+ - TOC_NAME_ANNOTATIONS
+ for other case, nothing is changed
+ @param notebooktype one of the #TOC_GENERIC_NAME values
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 05 November 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::SetVisibleNotebook (TOC_GENERIC_NAME notebooktype)
+{
+	switch (notebooktype)
+	{
+		case TOC_NAME_LINES:
+			m_AttribNotebook->ChangeSelection(0);
+			break;
+			
+		case TOC_NAME_POINTS:
+			m_AttribNotebook->ChangeSelection(1);
+			break;
+			
+		case TOC_NAME_LABELS:
+			m_AttribNotebook->ChangeSelection(2);
+			break;
+			
+		case TOC_NAME_ANNOTATIONS:
+			m_AttribNotebook->ChangeSelection(3);
+			break;
+			
+		default:
+			break;
+	}
+}
+
+
+
+/***************************************************************************//**
+ @brief Get visible notebook page
+ @details Return the selected notebook page.
+ @return  One of the following values :
+ - TOC_NAME_LINES 
+ - TOC_NAME_POINTS
+ - TOC_NAME_LABELS
+ - TOC_NAME_ANNOTATIONS
+ - TOC_NAME_UNKNOWN in case of error
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 05 November 2008
+ *******************************************************************************/
+TOC_GENERIC_NAME AttribObjType_PANEL::GetVisibleNotebook ()
+{
+	TOC_GENERIC_NAME myRetVal = TOC_NAME_UNKNOWN;
+	switch (m_AttribNotebook->GetSelection())
+	{
+		case 0:
+			myRetVal = TOC_NAME_LINES;
+			break;
+			
+		case 1:
+			myRetVal = TOC_NAME_POINTS;
+			break;
+			
+		case 2:
+			myRetVal = TOC_NAME_LABELS;
+			break;
+			
+		case 3:
+			myRetVal = TOC_NAME_ANNOTATIONS;
+			break;
+			
+		default:
+			myRetVal = TOC_NAME_UNKNOWN;
+			break;
+	}
+	return myRetVal;
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when user press attribute
+ @details This function only send an event of type tmEVT_ATTRIBUTION_BTN_PRESSED
+ actually intercepted by the #tmAttributionManager
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 05 November 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
+{
+	wxCommandEvent evt (tmEVT_ATTRIBUTION_BTN_PRESSED, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+}
+
