@@ -32,6 +32,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_pMManager = NULL;
 	m_ParentStatus = NULL;
 	m_LayerManager = NULL;
+	m_AttribManager = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -244,6 +245,7 @@ bool ProjectManager::BackupProject ()
 void ProjectManager::CloseProject()
 {
 	m_LayerManager->UnInitLayerManager();
+	m_AttribManager->UnInitAttributionManager();
 	if (m_DB != NULL)
 	{
 		wxLogDebug(_T("Closing the database object"));
@@ -325,6 +327,10 @@ int ProjectManager::OpenProject(const wxString & path)
 					
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);
+					
+					// attribution manager
+					wxASSERT(m_AttribManager->InitAttributionManager(m_DB));
+				
 					
 					// project is now open !
 					bProjectIsOpen = TRUE;

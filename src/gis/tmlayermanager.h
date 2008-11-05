@@ -38,6 +38,7 @@
 #include "tmprogress.h"					// for displaying progress during load
 #include "tmscalectrl.h"				// for combo box scale control
 #include "tmselecteddatamemory.h"		// for storing selected data into memory
+#include "tmmanagerevent.h"				// for shared event with other manager
 
 // forward declaration
 class tmGISLoadingDataThread;
@@ -162,6 +163,8 @@ class tmLayerManager : public wxEvtHandler
 		bool LoadProjectLayers();
 		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
 		void OnReloadProjectLayersDone (wxCommandEvent & event);
+		
+		tmSelectedDataMemory * GetSelectedDataMemory (){return &m_SelectedData;}
 		
 		
 	};

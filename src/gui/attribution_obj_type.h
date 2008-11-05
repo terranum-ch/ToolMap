@@ -38,6 +38,10 @@
 #include "../database/database_tm.h"	// for database acces (updating lists)
 #include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
 
+// EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
+DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
+
+
 #define ID_DLG_OBJ_ATTRIBUTION 10039
 #define ID_NOTEBOOK2 10040
 #define ID_PANEL4 10041
@@ -62,7 +66,7 @@
 #define ID_SEARCHCTRL1 10053
 #define ID_CHECKBOX9 10054
 #define ID_BUTTON7 10055
-#define ID_BUTTON8 10056
+#define ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE 10056
 #define ID_CHECKBOX5 10136
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE _("Object types")
@@ -79,8 +83,16 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxAuiPaneInfo mPaneInfo;
 		bool UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pList,
 							  int type, short frequency = 2);
+		wxWindow * m_ParentEvt;
 		
+		wxString m_AttribBtnLabel;
+		wxButton * m_AttribBtn;
+		wxNotebook * m_AttribNotebook;
 		
+		// event function
+		void OnAttributeBtn (wxCommandEvent & event);
+		
+		DECLARE_EVENT_TABLE()
 		
 	public:
 		AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager);
@@ -92,6 +104,13 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		
 		// init list with databasae
 		void SetDataBaseToList (DataBaseTM * pDB);
+		
+		// update attribution btn
+		void SetAttributeBtn (int nbfeatures);
+		
+		// select correct panel
+		void SetVisibleNotebook (TOC_GENERIC_NAME notebooktype);
+		TOC_GENERIC_NAME GetVisibleNotebook ();
 		
 		
 		// controls

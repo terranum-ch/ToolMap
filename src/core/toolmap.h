@@ -111,6 +111,8 @@
 #include "../gis/tmgisdata.h"	// for GIS data access
 #include "../gis/tmscalectrl.h"	// for GIS scale control combo box
 
+#include "../gis/tmattributionmanager.h"	// attribution manager
+
 
 //// temp for testing 
 #include "diroperation.h"
@@ -262,6 +264,7 @@ private:
 	tmLayerManager * m_LayerManager;
 	tmScaleCtrlCombo * m_ScaleCombo;
 	
+	tmAttributionManager * m_AttribManager;
 	
 	
 	void OnQuit(wxCloseEvent & event);

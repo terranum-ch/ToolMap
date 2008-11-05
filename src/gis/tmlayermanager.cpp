@@ -21,6 +21,7 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED)
+DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE)
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
@@ -739,7 +740,11 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	}
 	
 	
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	
 	delete mySelectedRect;
+	
 }
 
 

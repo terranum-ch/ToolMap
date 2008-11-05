@@ -50,6 +50,7 @@
 #include "../gui/menumanager.h"				// for menu management (recent, greyed,...)
 #include <wx/busyinfo.h>					// informations message for busy time
 #include "../gis/tmprogress.h"				// progress indicator
+#include "../gis/tmattributionmanager.h"	// for attribution manager
 
 class MenuManager;
 class ObjectManager;
@@ -73,6 +74,7 @@ class ProjectManager : public wxObject
 		ObjectManager * m_Obj;
 		wxStatusBar * m_ParentStatus;
 		tmLayerManager * m_LayerManager;
+		tmAttributionManager * m_AttribManager;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -101,6 +103,7 @@ class ProjectManager : public wxObject
 		MenuManager * GetMenuManager() {return m_pMManager;}
 		ObjectManager * GetObjectManager() {return m_Obj;}
 		void SetStatusBar (wxStatusBar * status) {m_ParentStatus = status;}
+		void SetAttributionManager (tmAttributionManager * pAManager) {m_AttribManager = pAManager;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 		bool IsProjectOpen () {return bProjectIsOpen;}

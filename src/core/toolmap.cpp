@@ -162,6 +162,12 @@ void ToolMapFrame::PostInit()
 										GetStatusBar(),
 										m_ScaleCombo);
 	
+	m_AttribManager = new tmAttributionManager(this,
+											   m_TocWindow->GetTOCCtrl(),
+											   m_AttribObjPanel,
+											   m_LayerManager->GetSelectedDataMemory());
+											   
+	
 	// create the database object 
 	//m_Database = new DataBaseTM();
 	
@@ -174,6 +180,7 @@ void ToolMapFrame::PostInit()
 	m_PManager->GetObjectManager()->SetPanel(m_AttribObjPanel);
 	m_PManager->SetStatusBar(GetStatusBar());
 	m_PManager->SetLayerManager(m_LayerManager);
+	m_PManager->SetAttributionManager(m_AttribManager);
 	
 	
 		
@@ -201,6 +208,8 @@ ToolMapFrame::~ToolMapFrame()
 	
 	
 	delete m_LayerManager;
+	
+	delete m_AttribManager;
 	
 	// delete the project Manager
 	delete m_PManager;
