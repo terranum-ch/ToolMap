@@ -209,3 +209,27 @@ void tmSelectedDataMemory::SetLayerID (long layerID)
 	
 	m_LayerID = layerID;
 }
+
+
+
+/***************************************************************************//**
+ @brief Getting selected values
+ @return  Adress of a wxArrayLong. or null in case of error. The returned array
+ may be destroyed saftly by the caller.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+wxArrayLong * tmSelectedDataMemory::GetSelectedValues ()
+{
+	unsigned iNbItems = GetCount();
+	if (iNbItems == 0)
+		return NULL;
+	
+	wxArrayLong * myCopyArray = new wxArrayLong();
+	for (unsigned int i = 0; i< iNbItems; i++)
+		myCopyArray->Add(m_SelectedIDs->Item(i));
+	
+	return myCopyArray;
+}
+
+

@@ -182,8 +182,28 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 		return;
 	}
 	
+	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
+	int myLayerIndex = m_SelData->GetSelectedLayer();
 	
+	// create attribution object based on type
+	tmAttributionData * myAttrib = NULL;
+	switch (m_pLayerProperties->m_LayerType)
+	{
+		case TOC_NAME_LINES:
+			myAttrib = new tmAttributionDataLine();
+			break;
+			
+		default:
+			myAttrib = new tmAttributionData();
+			break;
+	}
+	myAttrib->Create(mySelObjArray, m_pDB);
+	if(!myAttrib->SetAttributeBasic(m_Panel))
+	{
+		wxLogMessage(_("Unable to attribute those data"));
+	}
 	
+	delete myAttrib;
 		
 	
 	

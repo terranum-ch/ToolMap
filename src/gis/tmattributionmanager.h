@@ -36,6 +36,8 @@
 #include "../database/database_tm.h"		// for database
 #include "tmmanagerevent.h"					// for shared event with other manager
 
+#include "tmattributiondataline.h"			// for line attribution
+
 
 
 /***************************************************************************//**
