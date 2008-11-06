@@ -112,6 +112,11 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		void SetVisibleNotebook (TOC_GENERIC_NAME notebooktype);
 		TOC_GENERIC_NAME GetVisibleNotebook ();
 		
+		// get selected values
+		int GetSelectedValues (TOC_GENERIC_NAME panel_name,
+							   wxArrayLong & values,
+							   bool panel_freq = FALSE);
+		
 		
 		// controls
 		tmCheckListBoxRank * m_pObjList_PT;

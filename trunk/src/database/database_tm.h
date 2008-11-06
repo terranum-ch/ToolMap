@@ -55,6 +55,14 @@ const wxString TABLE_NAME_GIS_GENERIC[] =
 	_T("generic_frame")
 };
 
+const wxString TABLE_NAME_GIS_ATTRIBUTION[] = 
+{
+_T("generic_aat"),
+_T("generic_pat"),
+_T("generic_labels"),
+_T("generic_notes")
+};
+
 // DATABASE VERSION IS
 const int TM_DATABASE_VERSION = 213;
 

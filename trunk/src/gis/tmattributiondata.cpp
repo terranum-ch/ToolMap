@@ -101,3 +101,65 @@ bool tmAttributionData::IsValid ()
 	
 	return bRetVal;
 }
+
+
+
+/***************************************************************************//**
+ @brief Create MySQL statement for attribution
+ @details This function may be used for preparing generic statement for
+ attribution for TOC_NAME_LINES, TOC_NAME_LABELS and TOC_NAME_POINTS. For
+ TOC_NAME_ANNOTATION it won't work.
+ @param statement String for storing statement
+ @param checkedVal Adress of an array containing all checked IDs
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+void tmAttributionData::PrepareAttributionStatement (wxString & statement,
+													const wxString & tablename,
+													 wxArrayLong * checkedVal)
+{
+	statement.Clear();
+	
+	// clean before inserting
+	PrepareCleaningStatement(statement, tablename);
+	
+	wxString sTmp = _T("INSERT INTO ") + tablename + _T(" VALUES (%d, %d); ");
+	
+	unsigned int geomNumber = m_SelIDs->GetCount();
+	unsigned int valNumber = checkedVal->GetCount();
+
+	// loop for all selected geometry
+	for (unsigned int geom= 0; geom< geomNumber; geom++)
+	{
+		
+		// loop for values 
+		for (unsigned int val = 0; val < valNumber; val++)
+				statement.Append(wxString::Format(sTmp, checkedVal->Item(val),
+												  m_SelIDs->Item(geom)));
+	
+	}
+	
+}
+
+
+/***************************************************************************//**
+ @brief Create MySQL statement for attribution
+ @details This function may be used for preparing generic statement for
+ cleaning, a.k.a as removing attribution for TOC_NAME_LINES, TOC_NAME_LABELS
+ and TOC_NAME_POINTS. For TOC_NAME_ANNOTATION it won't work.
+ @param statement String for storing statement
+ @param tablename name of the database table to insert into (generic_aat, etc.)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+void tmAttributionData::PrepareCleaningStatement (wxString & statement,
+												  const wxString & tablename)
+{
+	statement.Clear();
+	wxString sTmp = _T("DELETE FROM ") + tablename + _T(" WHERE OBJECT_GEOM_ID=%d; "); 
+	
+	for (unsigned int i = 0; i<m_SelIDs->GetCount(); i++)
+		statement.Append(wxString::Format(sTmp, m_SelIDs->Item(i)));
+	
+}
+

@@ -56,6 +56,13 @@ class tmAttributionData : public wxObject
 		// checking function
 		virtual bool IsValid ();
 		
+		// database function
+		void PrepareAttributionStatement (wxString & statement,
+										  const wxString & tablename,
+										  wxArrayLong * checkedVal);
+		void PrepareCleaningStatement (wxString & statement, const wxString & tablename);
+		
+		
 		
 	public:
 		// ctor - dtor

@@ -504,3 +504,67 @@ void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
+
+
+/***************************************************************************//**
+ @brief Get checked values from lists
+ @param panel_name one of the #TOC_GENERIC_NAME. Allowed values are :
+ - TOC_NAME_LINES 
+ - TOC_NAME_POINTS 
+ - TOC_NAME_LABELS 
+ @param values return all ids of checked values
+ @param panel_freq if true, get values for Frequent lines. Usefull only if
+ panel_name = TOC_NAME_LINES
+ @return  number of values checked
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+int AttribObjType_PANEL::GetSelectedValues (TOC_GENERIC_NAME panel_name,
+					   wxArrayLong & values,
+					   bool panel_freq)
+{
+	tmCheckListBoxRank * myList = NULL;
+	switch (panel_name)
+	{
+		case TOC_NAME_LINES:
+			if (panel_freq)
+				myList = m_pObjList_L_Freq;
+			else
+				myList = m_pObjList_L_NoFreq;
+			break;
+			
+		case TOC_NAME_POINTS:
+			myList = m_pObjList_PT;
+			break;
+			
+		case TOC_NAME_LABELS:
+			myList = m_pObjList_PLG;
+			break;
+			
+		default:
+			myList = NULL;
+			break;
+	}
+	
+	if (!myList)
+		return 0;
+	
+	
+	long myCheckedID = 0;
+	wxString mytemp = _T("");
+	bool myChecked = false;
+	
+	for (unsigned int i = 0; i< myList->GetCount(); i++)
+	{
+		if (myList->GetItem(i, myCheckedID, mytemp, myChecked))
+		{
+			if (myChecked == true)
+				values.Add(myCheckedID);
+		}
+		else
+			break;
+	}
+	
+	return values.GetCount();
+}
+
