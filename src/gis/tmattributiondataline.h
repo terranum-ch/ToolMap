@@ -40,7 +40,7 @@ class tmAttributionDataLine : public tmAttributionData
 		
 	
 	protected:
-		bool GetPanelValues (wxArrayLong & valueids);
+		bool GetPanelValues (AttribObjType_PANEL * panel, wxArrayLong & valueids);
 		
 	public:
 		// ctor - dtor

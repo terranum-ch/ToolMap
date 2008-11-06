@@ -91,6 +91,28 @@ bool tmAttributionDataLine::SetAttributeBasic (AttribObjType_PANEL * panel)
 	if (!IsValid())
 		return false;
 	
+	wxArrayLong myChekedValues;
+	wxString myStatement = _T("");
+	if (GetPanelValues(panel, myChekedValues)) // attribution
+	{
+		PrepareAttributionStatement(myStatement,
+									TABLE_NAME_GIS_ATTRIBUTION[0],
+									&myChekedValues);
+	}
+	else // cleaning data
+	{
+		PrepareCleaningStatement(myStatement,
+								 TABLE_NAME_GIS_ATTRIBUTION[0]);
+	}
+		
+	
+	if (!m_pDB->DataBaseQueryNoResult(myStatement))
+	{
+		wxLogDebug(_T("Error attributing data : %s"), 
+				   m_pDB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
 	return true;
 }
 
@@ -100,14 +122,23 @@ bool tmAttributionDataLine::SetAttributeBasic (AttribObjType_PANEL * panel)
  @brief Get all selected values from the panel
  @param valueids if true was returned, valueids contain all value choosen for
  attribution
+ @param panel Adress of a #AttribObjType_PANEL used for getting values from
  @return  true if there is selected values (attribution), false otherwise
  (cleaning)
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-bool tmAttributionDataLine::GetPanelValues (wxArrayLong & valueids)
+bool tmAttributionDataLine::GetPanelValues (AttribObjType_PANEL * panel, 
+											wxArrayLong & valueids)
 {
-	return true;
+	// get values for frequent lines and less frequent
+	panel->GetSelectedValues(TOC_NAME_LINES, valueids, false);
+	panel->GetSelectedValues(TOC_NAME_LINES, valueids, true);
+	
+	if (valueids.GetCount() > 0)
+		return true;
+	
+	return false;
 }
 
 
