@@ -40,6 +40,8 @@
 
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
 DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
+DECLARE_EVENT_TYPE(tmEVT_INFO_BTN_PRESSED, -1)
+
 
 
 #define ID_DLG_OBJ_ATTRIBUTION 10039
@@ -65,7 +67,7 @@ DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
 #define ID_CHECKBOX7 10209
 #define ID_SEARCHCTRL1 10053
 #define ID_CHECKBOX9 10054
-#define ID_BUTTON7 10055
+#define ID_DLG_OBJ_ATTRIBUTION_BTN_INFO 10055
 #define ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE 10056
 #define ID_CHECKBOX5 10136
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
@@ -87,10 +89,12 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		
 		wxString m_AttribBtnLabel;
 		wxButton * m_AttribBtn;
+		wxButton * m_InfoBtn;
 		wxNotebook * m_AttribNotebook;
 		
 		// event function
 		void OnAttributeBtn (wxCommandEvent & event);
+		void OnInfoBtn (wxCommandEvent & event);
 		
 		DECLARE_EVENT_TABLE()
 		
@@ -105,8 +109,9 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		// init list with databasae
 		void SetDataBaseToList (DataBaseTM * pDB);
 		
-		// update attribution btn
+		// update  btn
 		void SetAttributeBtn (int nbfeatures);
+		void SetInfoBtn (int nbfeatures);
 		
 		// select correct panel
 		void SetVisibleNotebook (TOC_GENERIC_NAME notebooktype);
@@ -115,7 +120,11 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		// get selected values
 		int GetSelectedValues (TOC_GENERIC_NAME panel_name,
 							   wxArrayLong & values,
-							   bool panel_freq = FALSE);
+							   bool panel_freq = false);
+		void SetSelectedValues (TOC_GENERIC_NAME panel_name,
+								const wxArrayLong & values,
+								bool panel_freq = false);
+								
 		
 		
 		// controls

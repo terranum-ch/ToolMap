@@ -59,7 +59,7 @@ tmAttributionDataLine::tmAttributionDataLine(wxArrayLong * selected,DataBaseTM *
 void tmAttributionDataLine::Create (wxArrayLong * selected,DataBaseTM * database)
 {
 	tmAttributionData::Create(selected,database);
-	SetDataBaseTable(_T("generic_aat"));
+	SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[0]);
 }
 
 
@@ -142,3 +142,60 @@ bool tmAttributionDataLine::GetPanelValues (AttribObjType_PANEL * panel,
 }
 
 
+
+/***************************************************************************//**
+ @brief Retrive the values info
+ @details Call this function only if there is one feature selected
+ @param panel Adress of a #AttribObjType_PANEL used for setting values to
+ @return  true if info where returned (object contain attributes)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+bool tmAttributionDataLine::GetInfoBasic (AttribObjType_PANEL * panel)
+{
+	// checking
+	if (!IsValid())
+		return false;
+
+	// getting values
+	wxString sStatement = _T("");
+	PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
+	if (!m_pDB->DataBaseQuery(sStatement))
+	{
+		wxLogDebug(_T("Error getting info : %s"),
+				   m_pDB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	wxArrayLong mySelValues;
+	long mySelTemp = wxNOT_FOUND;
+	while (1)
+	{
+		mySelTemp = m_pDB->DataBaseGetNextResultAsLong();
+		if (mySelTemp == wxNOT_FOUND)
+			break;
+		mySelValues.Add(mySelTemp);
+	}
+	
+	// updating panel
+	SetPanelValues(panel, mySelValues);
+
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Set Panel values
+ @details 
+ @param panel Adress of a #AttribObjType_PANEL used for setting values to
+ @param valueids contain all attribution value
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+void tmAttributionDataLine::SetPanelValues (AttribObjType_PANEL * panel,
+											const wxArrayLong & valueids)
+{
+	panel->SetSelectedValues(TOC_NAME_LINES, valueids, false);
+	panel->SetSelectedValues(TOC_NAME_LINES, valueids, true);
+}

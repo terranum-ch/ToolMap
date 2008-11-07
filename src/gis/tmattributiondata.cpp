@@ -80,7 +80,7 @@ tmAttributionData::tmAttributionData(wxArrayLong * selected,DataBaseTM * databas
 
 /***************************************************************************//**
  @brief Verify validity of member objects
- @param bool return true if all objects are valid and correctly initialized,
+ @return true if all objects are valid and correctly initialized,
  false otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
@@ -110,6 +110,7 @@ bool tmAttributionData::IsValid ()
  attribution for TOC_NAME_LINES, TOC_NAME_LABELS and TOC_NAME_POINTS. For
  TOC_NAME_ANNOTATION it won't work.
  @param statement String for storing statement
+ @param tablename name of the database table to insert into (generic_aat, etc.)
  @param checkedVal Adress of an array containing all checked IDs
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
@@ -163,3 +164,22 @@ void tmAttributionData::PrepareCleaningStatement (wxString & statement,
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Create MySQL statement for getting info
+ @details Returning info works only for one selected feature so we get selected
+ values only for the first selected values.
+ @param statement a place for storing the statement
+ @param tablename Name of the table : see #TABLE_NAME_GIS_ATTRIBUTION
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 November 2008
+ *******************************************************************************/
+void tmAttributionData::PrepareGetInfoStatement (wxString & statement, const wxString & tablename)
+{
+	statement.Clear();
+	wxString sTmp = _T("SELECT OBJECT_VAL_ID FROM ") + tablename + 
+					_T(" WHERE OBJECT_GEOM_ID=%d; ");
+	
+	statement.Append(wxString::Format(sTmp, m_SelIDs->Item(0)));
+}

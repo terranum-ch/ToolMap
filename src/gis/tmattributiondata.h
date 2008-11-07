@@ -61,7 +61,7 @@ class tmAttributionData : public wxObject
 										  const wxString & tablename,
 										  wxArrayLong * checkedVal);
 		void PrepareCleaningStatement (wxString & statement, const wxString & tablename);
-		
+		void PrepareGetInfoStatement (wxString & statement, const wxString & tablename);
 		
 		
 	public:
