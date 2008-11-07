@@ -59,7 +59,7 @@ const wxString TABLE_NAME_GIS_ATTRIBUTION[] =
 {
 _T("generic_aat"),
 _T("generic_pat"),
-_T("generic_labels"),
+_T("generic_lat"),
 _T("generic_notes")
 };
 
