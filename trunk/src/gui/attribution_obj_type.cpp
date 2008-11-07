@@ -214,9 +214,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     m_AttribBtn->Enable(false); // disable by default
 	itemGridSizer38->Add(m_AttribBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 		
-    wxCheckBox* itemCheckBox43 = new wxCheckBox( parent, ID_CHECKBOX5, _("Auto display attributes"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemCheckBox43->SetValue(true);
-    itemBoxSizer2->Add(itemCheckBox43, 0, wxGROW|wxALL, 5);
+    m_AutoDisplayAttributes = new wxCheckBox( parent, ID_CHECKBOX5, _("Auto display attributes"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_AutoDisplayAttributes->SetValue(true);
+    itemBoxSizer2->Add(m_AutoDisplayAttributes, 0, wxGROW|wxALL, 5);
 	
 	
 	if (set_sizer)
@@ -671,5 +671,18 @@ void AttribObjType_PANEL::SetSelectedValues (TOC_GENERIC_NAME panel_name,
 		myList->EditItem(l, -1, wxEmptyString, myChecked);
 	}
 
+}
+
+
+
+/***************************************************************************//**
+ @brief Get Status of Auto display attributes checkbox
+ @return  true if "Auto Display Attribute" check box is checked, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 November 2008
+ *******************************************************************************/
+bool AttribObjType_PANEL::IsAutoDisplayAttributeChecked()
+{
+	return m_AutoDisplayAttributes->IsChecked();
 }
 
