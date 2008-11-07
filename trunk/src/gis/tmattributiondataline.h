@@ -41,6 +41,7 @@ class tmAttributionDataLine : public tmAttributionData
 	
 	protected:
 		bool GetPanelValues (AttribObjType_PANEL * panel, wxArrayLong & valueids);
+		void SetPanelValues (AttribObjType_PANEL * panel, const wxArrayLong & valueids);
 		
 	public:
 		// ctor - dtor
@@ -54,7 +55,7 @@ class tmAttributionDataLine : public tmAttributionData
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel);
 		
 		// info
-		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
+		virtual bool GetInfoBasic (AttribObjType_PANEL * panel);
 	};
 
 

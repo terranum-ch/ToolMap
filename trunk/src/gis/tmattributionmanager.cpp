@@ -23,6 +23,7 @@
 BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
+	EVT_COMMAND (wxID_ANY, tmEVT_INFO_BTN_PRESSED, tmAttributionManager::OnInfoBtn)
 END_EVENT_TABLE()
 
 
@@ -154,6 +155,7 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 		return;
 	
 	m_Panel->SetAttributeBtn(iSelFeatureCount);
+	m_Panel->SetInfoBtn(iSelFeatureCount);
 	TOC_GENERIC_NAME mySelType = static_cast<TOC_GENERIC_NAME> (m_pLayerProperties->m_LayerType);
 	m_Panel->SetVisibleNotebook(mySelType);
 	
@@ -183,11 +185,67 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	}
 	
 	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
-	int myLayerIndex = m_SelData->GetSelectedLayer();
+	//int myLayerIndex = m_SelData->GetSelectedLayer();
 	
 	// create attribution object based on type
+	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->m_LayerType);
+	myAttrib->Create(mySelObjArray, m_pDB);
+	if(!myAttrib->SetAttributeBasic(m_Panel))
+	{
+		wxLogMessage(_("Unable to attribute those data"));
+	}
+	
+	delete myAttrib;
+
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when user press the info button
+ @details This function is called by the #AttribObjType_PANEL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 November 2008
+ *******************************************************************************/
+void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
+{
+	wxLogDebug(_T("Getting info"));
+	
+	// create attribution object based on type
+	wxASSERT(m_pLayerProperties);
+	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
+	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->m_LayerType);
+	myAttrib->Create(mySelObjArray, m_pDB);
+	if (!myAttrib->GetInfoBasic(m_Panel))
+	{
+		wxLogError(_("Error getting informations for objects"));
+	}
+	
+	delete myAttrib;
+	
+	
+}
+
+
+
+
+/***************************************************************************//**
+ @brief Create an object of #tmAttributionData type
+ @details This function may be used for getting a valid pointer on one of the
+ #tmAttributionData derived class.
+ @param type one of the following : 
+ - TOC_NAME_LINES 
+ - TOC_NAME_LABELS
+ - TOC_NAME_POINTS 
+ - TOC_NAME_ANNOTATION
+ @return  A valid pointer of type #tmAttributionData class
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
+{
 	tmAttributionData * myAttrib = NULL;
-	switch (m_pLayerProperties->m_LayerType)
+	switch (type)
 	{
 		case TOC_NAME_LINES:
 			myAttrib = new tmAttributionDataLine();
@@ -197,16 +255,6 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 			myAttrib = new tmAttributionData();
 			break;
 	}
-	myAttrib->Create(mySelObjArray, m_pDB);
-	if(!myAttrib->SetAttributeBasic(m_Panel))
-	{
-		wxLogMessage(_("Unable to attribute those data"));
-	}
-	
-	delete myAttrib;
-		
-	
-	
+	return myAttrib;
 }
-
 

@@ -20,9 +20,11 @@
 
 
 DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)
+DEFINE_EVENT_TYPE (tmEVT_INFO_BTN_PRESSED)
 
 BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
 	EVT_BUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
+	EVT_BUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
 END_EVENT_TABLE()
 
 
@@ -202,9 +204,10 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemCheckBox40->SetValue(true);
     itemGridSizer38->Add(itemCheckBox40, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxButton* itemButton41 = new wxButton( parent, ID_BUTTON7, _("Info"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemButton41->Enable(false);
-	itemGridSizer38->Add(itemButton41, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_InfoBtn = new wxButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"),
+							 wxDefaultPosition, wxDefaultSize, 0 );
+    m_InfoBtn->Enable(false);
+	itemGridSizer38->Add(m_InfoBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     m_AttribBtn = new wxButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
 							   m_AttribBtnLabel, wxDefaultPosition, wxDefaultSize, 0 );
@@ -408,6 +411,26 @@ void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures)
 }
 
 
+/***************************************************************************//**
+ @brief Enable or disable the Info button
+ @details Based on the number of features passed, this function enable or not
+ the info button :
+ - 0 features, button disabled
+ - 1 feature, button enabled
+ - 1+ feature, button disabled
+ @param nbfeatures Number of selected features
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 November 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::SetInfoBtn (int nbfeatures)
+{
+	if (nbfeatures == 1)
+		m_InfoBtn->Enable(true);
+	else
+		m_InfoBtn->Enable(false);
+}
+
+
 
 /***************************************************************************//**
  @brief Set visible notebook
@@ -507,6 +530,20 @@ void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
 
 
 /***************************************************************************//**
+ @brief Called when user press Info
+ @details This function only send an event of type tmEVT_INFO_BTN_PRESSED
+ actually intercepted by the #tmAttributionManager
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 07 November 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::OnInfoBtn (wxCommandEvent & event)
+{
+	wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+}
+
+
+/***************************************************************************//**
  @brief Get checked values from lists
  @param panel_name one of the #TOC_GENERIC_NAME. Allowed values are :
  - TOC_NAME_LINES 
@@ -566,5 +603,73 @@ int AttribObjType_PANEL::GetSelectedValues (TOC_GENERIC_NAME panel_name,
 	}
 	
 	return values.GetCount();
+}
+
+
+/***************************************************************************//**
+ @brief Set checked values to the lists
+ @param panel_name one of the #TOC_GENERIC_NAME. Allowed values are :
+ - TOC_NAME_LINES 
+ - TOC_NAME_POINTS 
+ - TOC_NAME_LABELS 
+ @param values contain all values to check
+ @param panel_freq if true, set values for Frequent lines. Usefull only if
+ panel_name = TOC_NAME_LINES
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 06 November 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::SetSelectedValues (TOC_GENERIC_NAME panel_name,
+											 const wxArrayLong & values,
+											 bool panel_freq)
+{
+	tmCheckListBoxRank * myList = NULL;
+	switch (panel_name)
+	{
+		case TOC_NAME_LINES:
+			if (panel_freq)
+				myList = m_pObjList_L_Freq;
+			else
+				myList = m_pObjList_L_NoFreq;
+			break;
+			
+		case TOC_NAME_POINTS:
+			myList = m_pObjList_PT;
+			break;
+			
+		case TOC_NAME_LABELS:
+			myList = m_pObjList_PLG;
+			break;
+			
+		default:
+			myList = NULL;
+			break;
+	}
+	
+	if (!myList)
+		return;
+	
+	
+	long myCheckedID = 0;
+	wxString mytemp = _T("");
+	bool myChecked = false;
+	
+	// for each item in the list 
+	for (unsigned int l = 0; l < myList->GetCount(); l++)
+	{
+		myList->GetItem(l, myCheckedID, mytemp, myChecked);
+		myChecked = false;
+		// search the values
+		for (unsigned int v = 0; v< values.GetCount(); v++)
+		{
+			if (values.Item(v) == myCheckedID)
+			{
+				myChecked = true;
+				break;
+			}
+		}
+		
+		myList->EditItem(l, -1, wxEmptyString, myChecked);
+	}
+
 }
 
