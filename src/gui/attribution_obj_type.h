@@ -91,6 +91,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxButton * m_AttribBtn;
 		wxButton * m_InfoBtn;
 		wxNotebook * m_AttribNotebook;
+		wxCheckBox * m_AutoDisplayAttributes;
 		
 		// event function
 		void OnAttributeBtn (wxCommandEvent & event);
@@ -124,6 +125,8 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		void SetSelectedValues (TOC_GENERIC_NAME panel_name,
 								const wxArrayLong & values,
 								bool panel_freq = false);
+		
+		bool IsAutoDisplayAttributeChecked();
 								
 		
 		

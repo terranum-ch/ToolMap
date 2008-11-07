@@ -159,6 +159,13 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	TOC_GENERIC_NAME mySelType = static_cast<TOC_GENERIC_NAME> (m_pLayerProperties->m_LayerType);
 	m_Panel->SetVisibleNotebook(mySelType);
 	
+	// if auto display attribute is checked 
+	if (m_Panel->IsAutoDisplayAttributeChecked() && iSelFeatureCount == 1)
+	{
+		wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
+		m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	
 	
 }
 
