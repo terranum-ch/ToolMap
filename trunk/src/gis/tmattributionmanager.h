@@ -37,6 +37,8 @@
 #include "tmmanagerevent.h"					// for shared event with other manager
 
 #include "tmattributiondataline.h"			// for line attribution
+#include "tmattributiondatapoint.h"			// for point attribution
+#include "tmattributiondatalabel.h"			// for label attributions
 
 
 

@@ -258,6 +258,14 @@ tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
 			myAttrib = new tmAttributionDataLine();
 			break;
 			
+		case TOC_NAME_POINTS:
+			myAttrib = new tmAttributionDataPoint();
+			break;
+			
+		case TOC_NAME_LABELS:
+			myAttrib = new tmAttributionDataLabel();
+			break;
+			
 		default:
 			myAttrib = new tmAttributionData();
 			break;
