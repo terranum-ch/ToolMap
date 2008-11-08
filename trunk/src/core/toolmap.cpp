@@ -85,7 +85,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
 
 
-	EVT_MENU (ID_MENU_QUERIES, ToolMapFrame::OnShowQueryManager)
+	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
@@ -153,6 +153,7 @@ void ToolMapFrame::PostInit()
 	// init object attribution panel
 	m_MainPanel = new Main_PANEL(this, m_AuiManager);	
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
+	m_QueriesPanel = new Queries_PANEL(this,wxID_ANY, m_AuiManager);
 	
 	
 	
@@ -324,7 +325,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
     menuBar->Append(itemMenu66, _("Selection"));
     wxMenu* itemMenu72 = new wxMenu;
-    itemMenu72->Append(ID_MENU_QUERIES, _("Queries editor..."), _T(""), wxITEM_NORMAL);
+    itemMenu72->Append(ID_MENU_QUERIES, _("Queries editor"), _T(""), wxITEM_CHECK);
     itemMenu72->AppendSeparator();
     itemMenu72->Append(ID_MENUITEM11, _("User query 1"), _T(""), wxITEM_NORMAL);
     itemMenu72->Append(ID_MENUITEM12, _("User query 2"), _T(""), wxITEM_NORMAL);
@@ -622,6 +623,27 @@ void ToolMapFrame::OnShowObjectAttributionWindow (wxCommandEvent & event)
 }
 
 
+/***************************************************************************//**
+ @brief Display or hide the #Queries_PANEL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 08 November 2008
+ *******************************************************************************/
+void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
+{
+	if (m_QueriesPanel->IsPanelShown())
+	{
+		m_QueriesPanel->HidePanel();
+		GetMenuBar()->Check(ID_MENU_QUERIES, false);
+	}
+	else
+	{
+		m_QueriesPanel->ShowPanel();
+		GetMenuBar()->Check(ID_MENU_QUERIES, true);
+	}
+	
+}
+
+
 void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
 {
 	m_PManager->BackupProject();
@@ -648,11 +670,11 @@ void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
 
 
 
-void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)
+/*void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)
 {
 	m_PManager->TempTempInitTOC();
 	
-}
+}*/
 
 
 void ToolMapFrame::OnToolChanged (wxCommandEvent & event)

@@ -102,6 +102,7 @@
 
 #include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
+#include "../gui/queries_panel.h"		// for queries panel
 #include "../gui/projectnewexist_dlg.h"
 #include "projectmanager.h"
 #include <wx/fileconf.h>		// for using file configuration even on windows
@@ -257,6 +258,7 @@ private:
 	wxAuiManager * m_AuiManager;
 	AttribObjType_PANEL * m_AttribObjPanel;
 	Main_PANEL * m_MainPanel;
+	Queries_PANEL * m_QueriesPanel;
 	
 	ProjectManager * m_PManager;
 	MenuManager * m_MManager;
@@ -280,6 +282,7 @@ private:
 	void OnTocWindow (wxCommandEvent & event);
 	void OnIdleTimeUpdate(wxIdleEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
+	void OnShowQueriesWindow (wxCommandEvent & event);
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);

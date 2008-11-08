@@ -43,33 +43,33 @@
 #define ID_TOGGLEBUTTON15 10236
 #define ID_BUTTON 10000
 #define ID_STATUSBAR1 10065
-#define SYMBOL_QUERIESEDITOR_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_QUERIESEDITOR_TITLE _("Queries Editor")
-#define SYMBOL_QUERIESEDITOR_IDNAME ID_QUERIESEDITOR
-#define SYMBOL_QUERIESEDITOR_SIZE wxSize(400, 300)
-#define SYMBOL_QUERIESEDITOR_POSITION wxDefaultPosition
+#define SYMBOL_QUERIES_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_QUERIES_PANEL_TITLE _("Queries Editor")
+#define SYMBOL_QUERIES_PANEL_IDNAME ID_QUERIESEDITOR
+#define SYMBOL_QUERIES_PANEL_SIZE wxSize(400, 300)
+#define SYMBOL_QUERIES_PANEL_POSITION wxDefaultPosition
 ////@end control identifiers
 
 
 /*!
- * QueriesEditor class declaration
+ * Queries_PANEL class declaration
  */
 
-class QueriesEditor: public wxDialog
+class Queries_PANEL: public ManagedAuiWnd
 {    
-    DECLARE_DYNAMIC_CLASS( QueriesEditor )
+    DECLARE_DYNAMIC_CLASS( Queries_PANEL )
     DECLARE_EVENT_TABLE()
 
 public:
     /// Constructors
-    QueriesEditor();
-    QueriesEditor( wxWindow* parent, wxWindowID id = SYMBOL_QUERIESEDITOR_IDNAME, const wxString& caption = SYMBOL_QUERIESEDITOR_TITLE, const wxPoint& pos = SYMBOL_QUERIESEDITOR_POSITION, const wxSize& size = SYMBOL_QUERIESEDITOR_SIZE, long style = SYMBOL_QUERIESEDITOR_STYLE );
+    Queries_PANEL();
+    Queries_PANEL( wxWindow* parent, wxWindowID id = SYMBOL_QUERIES_PANEL_IDNAME, const wxString& caption = SYMBOL_QUERIES_PANEL_TITLE, const wxPoint& pos = SYMBOL_QUERIES_PANEL_POSITION, const wxSize& size = SYMBOL_QUERIES_PANEL_SIZE, long style = SYMBOL_QUERIES_PANEL_STYLE );
 
     /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_QUERIESEDITOR_IDNAME, const wxString& caption = SYMBOL_QUERIESEDITOR_TITLE, const wxPoint& pos = SYMBOL_QUERIESEDITOR_POSITION, const wxSize& size = SYMBOL_QUERIESEDITOR_SIZE, long style = SYMBOL_QUERIESEDITOR_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_QUERIES_PANEL_IDNAME, const wxString& caption = SYMBOL_QUERIES_PANEL_TITLE, const wxPoint& pos = SYMBOL_QUERIES_PANEL_POSITION, const wxSize& size = SYMBOL_QUERIES_PANEL_SIZE, long style = SYMBOL_QUERIES_PANEL_STYLE );
 
     /// Destructor
-    ~QueriesEditor();
+    ~Queries_PANEL();
 
     /// Initialises member variables
     void Init();
@@ -77,24 +77,24 @@ public:
     /// Creates the controls and sizers
     void CreateControls();
 
-////@begin QueriesEditor event handler declarations
+////@begin Queries_PANEL event handler declarations
 
-////@end QueriesEditor event handler declarations
+////@end Queries_PANEL event handler declarations
 
-////@begin QueriesEditor member function declarations
+////@begin Queries_PANEL member function declarations
 
     /// Retrieves bitmap resources
     wxBitmap GetBitmapResource( const wxString& name );
 
     /// Retrieves icon resources
     wxIcon GetIconResource( const wxString& name );
-////@end QueriesEditor member function declarations
+////@end Queries_PANEL member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
 
-////@begin QueriesEditor member variables
-////@end QueriesEditor member variables
+////@begin Queries_PANEL member variables
+////@end Queries_PANEL member variables
 };
 
 #endif
