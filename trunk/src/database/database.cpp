@@ -559,6 +559,68 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 }
 
 
+
+/***************************************************************************//**
+ @brief Thread Safe query returning array of long
+ @param myQuery The query as a string
+ @return  A pointer to a valid wxArrayLong (user should destroy the array when
+ finished), or null if no results
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 08 November 2008
+ *******************************************************************************/
+wxArrayLong * DataBase::DataBaseQuerySafe (const wxString & myQuery)
+{
+	// conversion Unicode wxString -> const char *
+	char * buffer = new char [myQuery.Length()+2];
+	strcpy(buffer, (const char*)myQuery.mb_str(wxConvUTF8));
+	
+	
+	DataBaseDestroyResults();
+	
+	// start new thread
+	if (!DataBaseNewThreadInit())
+		return NULL;
+	
+	
+	int iRetour = mysql_query(pMySQL, buffer);
+	MYSQL_RES * myResults = NULL;
+	if (iRetour == 0) 
+	{
+		myResults = mysql_store_result(pMySQL);
+	}
+	
+	MYSQL_ROW record;
+	wxArrayLong * myRetArray = new wxArrayLong ();
+	
+	if (myResults)
+	{
+		while (1)
+		{
+			record = mysql_fetch_row(myResults);
+			if (!record)
+				break;
+			
+			myRetArray->Add(atol(record[0]));
+		}
+	
+	
+		mysql_free_result(myResults);
+	}
+	
+	// uninit thead
+	DataBaseNewThreadUnInit();
+	
+	if (myRetArray->GetCount() < 1)
+	{
+		delete myRetArray;
+		return NULL;
+	}
+	
+	return myRetArray;
+
+}
+
+
 /***************************************************************************//**
  @brief Check results
  @details This function checks if a result exists AND isn't empty. 

@@ -215,7 +215,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	itemGridSizer38->Add(m_AttribBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 		
     m_AutoDisplayAttributes = new wxCheckBox( parent, ID_CHECKBOX5, _("Auto display attributes"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_AutoDisplayAttributes->SetValue(true);
+    m_AutoDisplayAttributes->SetValue(false);
     itemBoxSizer2->Add(m_AutoDisplayAttributes, 0, wxGROW|wxALL, 5);
 	
 	

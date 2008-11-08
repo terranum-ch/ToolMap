@@ -195,6 +195,8 @@ public:
 	 */
 	bool DataBaseQuery(const wxString & myQuery);
 	
+	wxArrayLong * DataBaseQuerySafe (const wxString & myQuery);
+	
 	
 	bool DataBaseHasResult ();
 	
