@@ -1596,7 +1596,7 @@
             </object>
         </object>
     </object>
-    <object class="wxDialog" name="ID_QUERIESEDITOR" subclass="QueriesEditor">
+    <object class="wxDialog" name="ID_QUERIESEDITOR" subclass="Queries_PANEL">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
