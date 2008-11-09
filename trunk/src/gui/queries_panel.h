@@ -26,6 +26,7 @@
 #include "wxflatbutton.h"		// for flat button
 #include "listgenreport_status.h"	// for list with  status support
 #include "../database/database_tm.h"	// for database support
+#include "queries_panel_dlg.h"			// for the queries edition dialog
 
 #define ID_QUERIESEDITOR 10049
 #define ID_QUERIES_LIST 10051
@@ -46,6 +47,12 @@ class QueriesList : public ListGenReportWithStatus
 	{
 	private:
 		DataBaseTM * m_pDB;
+		
+		virtual void BeforeAdding();
+		virtual void AfterAdding (bool bRealyAddItem);
+		/*virtual void BeforeDeleting ();
+		virtual void BeforeEditing ();
+		virtual void AfterEditing (bool bRealyEdited);*/
 		
 	protected:
 	public:
@@ -75,6 +82,9 @@ private:
 	wxAuiPaneInfo m_PaneInfo;
 	DataBaseTM * m_pDB;
 	QueriesList* m_QueriesList;
+	wxWindow * m_ParentEvt;
+	bool m_IsProjectOpen;
+	
 	
 	
 	// event function
@@ -103,7 +113,8 @@ public:
 	
 	void SetDataBase (DataBaseTM * database); 
 	
-	bool LoadQueries ();
+	bool LoadQueries (DataBaseTM * database);
+	void EnableQueriesPanel (bool projectopen = true);
 	
 	
 	

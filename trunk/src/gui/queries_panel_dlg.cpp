@@ -31,7 +31,7 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 							   const wxSize& size, long style ) 
 : wxDialog( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetSizeHints( wxSize (300,300), wxDefaultSize );
 	
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
@@ -44,16 +44,16 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	m_staticText2->Wrap( -1 );
 	bSizer3->Add( m_staticText2, 0, wxALL, 5 );
 	
-	m_QueriesName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200,-1 ), 0 );
-	m_QueriesDescription->SetMaxLength( 255 ); 
-	bSizer3->Add( m_QueriesDescription, 0, wxALL, 5 );
+	m_QueriesName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition,wxDefaultSize, 0 ); // wxSize( 200,-1 )
+	m_QueriesName->SetMaxLength( 255 ); 
+	bSizer3->Add( m_QueriesName, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer2->Add( bSizer3, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Queries (SQL Select statement)") ), wxVERTICAL );
 	
-	m_QueriesDescription = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,100 ), 0 );
+	m_QueriesDescription = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 ); //wxSize( -1,100 )
 	sbSizer2->Add( m_QueriesDescription, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer2->Add( sbSizer2, 1, wxALL|wxEXPAND, 5 );
@@ -66,19 +66,23 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxButton* m_button3;
-	m_button3 = new wxButton( this, ID_DLG_QUERIES_ADD, wxT("&Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button3 = new wxButton( this, wxID_OK, wxT("&Add"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button3->SetDefault(); 
 	bSizer4->Add( m_button3, 0, wxALL, 5 );
 	
 	wxButton* m_button4;
-	m_button4 = new wxButton( this, ID_DLG_QUERIES_CLOSE, wxT("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button4 = new wxButton( this, wxID_CANCEL, wxT("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer4->Add( m_button4, 0, wxALL, 5 );
 	
-	bSizer2->Add( bSizer4, 0, wxALIGN_RIGHT, 5 );
+	bSizer2->Add( bSizer4, 0, wxALIGN_RIGHT | wxALL, 5 );
 	
 	this->SetSizer( bSizer2 );
 	this->Layout();
 	bSizer2->Fit( this );
+	
+	this->CenterOnParent();
+	this->SetMinSize(wxSize(300, 200));
+	
 }
 
 

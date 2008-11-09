@@ -32,7 +32,7 @@
 
 
 BEGIN_EVENT_TABLE( Queries_PANEL, ManagedAuiWnd )
-	EVT_BUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
+	EVT_FLATBUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
 END_EVENT_TABLE()
 
 
@@ -47,6 +47,9 @@ Queries_PANEL::Queries_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * au
 	ManagedAuiWnd(auimanager)
 {
 	InitMemberValues();
+	
+	m_ParentEvt = parent;
+	m_ParentEvt->PushEventHandler(this);
 	
 	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
 	CreateControls(ContentFrame);	
@@ -75,6 +78,7 @@ Queries_PANEL::Queries_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * au
  *******************************************************************************/
 Queries_PANEL::~Queries_PANEL()
 {
+	m_ParentEvt->PopEventHandler(FALSE);
 }
 
 
@@ -87,6 +91,8 @@ Queries_PANEL::~Queries_PANEL()
 void Queries_PANEL::InitMemberValues()
 {
 	m_pDB = NULL;
+	m_ParentEvt = NULL;
+	m_IsProjectOpen = false; // project isn't open now
 }
 
 
@@ -147,13 +153,15 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
 
     wxStatusBar* itemStatusBar13 = new wxStatusBar( parent, ID_STATUSBAR1, wxST_SIZEGRIP|wxNO_BORDER );
     itemStatusBar13->SetFieldsCount(2);
-    itemStatusBar13->SetStatusText(_("Query passed OK"), 0);
-    itemStatusBar13->SetStatusText(_("10 Queries"), 1);
+    //itemStatusBar13->SetStatusText(_("Query passed OK"), 0);
+    //itemStatusBar13->SetStatusText(_("10 Queries"), 1);
     int itemStatusBar13Widths[2];
     itemStatusBar13Widths[0] = -2;
     itemStatusBar13Widths[1] = -1;
     itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
     itemBoxSizer2->Add(itemStatusBar13, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	
+	m_QueriesList->SetStatusBar(itemStatusBar13);
 	
 	if (set_sizer)
     {
@@ -187,16 +195,33 @@ void Queries_PANEL::SetDataBase (DataBaseTM * database)
 
 /***************************************************************************//**
  @brief Load the queries from the database
- @details Don't forget to set the database using (Queries_PANEL::SetDataBase())
- before calling this function
- @return true if the queries where loaded succesfully
+ @details Don't need to callQueries_PANEL::SetDataBase(), call is done internaly
+  @return true if the queries where loaded succesfully
  @author Lucien Schreiber (c) CREALP 2008
  @date 09 November 2008
  *******************************************************************************/
-bool Queries_PANEL::LoadQueries ()
+bool Queries_PANEL::LoadQueries (DataBaseTM * database)
 {
+	SetDataBase(database);
 	wxASSERT(m_pDB);
+	EnableQueriesPanel(true);
 	return false;
+}
+
+
+
+/***************************************************************************//**
+ @brief Indicate if a project is open or not
+ @details If a project is open, controls are accessible otherwise not.
+ @param projectopen Status of project : is a project open (default is true)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+void Queries_PANEL::EnableQueriesPanel (bool projectopen)
+{
+	m_IsProjectOpen = projectopen;
+	
+	//TODO: enable or disable control if needed
 }
 
 
@@ -207,7 +232,8 @@ bool Queries_PANEL::LoadQueries ()
  *******************************************************************************/
 void Queries_PANEL::OnAddQueries (wxCommandEvent & event)
 {
-	m_QueriesList->AddItem();
+	if (m_IsProjectOpen)
+		m_QueriesList->AddItem();
 }
 
 
@@ -244,5 +270,55 @@ QueriesList::~QueriesList()
 {
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Called by AddItem just before dispalying the dialog
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+void QueriesList::BeforeAdding()
+{
+	QueriesListDLG * myQueriesDlg = new QueriesListDLG (this);
+	SetDialog(myQueriesDlg);
+														
+}
+
+
+/***************************************************************************//**
+ @brief Called just after adding an item
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+void QueriesList::AfterAdding (bool bRealyAddItem)
+{
+	wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
+	wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
+	
+	
+	if (bRealyAddItem)
+	{
+		// try to add the query into database
+		
+		// add the item to the list
+		AddItemToList(myName, -1);
+		
+		// set the queries id to the item_data
+		
+		
+		
+		
+		wxLogDebug(_T("Item added"));
+	}
+	
+	delete m_pDialog;
+	
+}
+
+/*virtual void BeforeDeleting ();
+virtual void BeforeEditing ();
+virtual void AfterEditing (bool bRealyEdited);*/
+
 
 
