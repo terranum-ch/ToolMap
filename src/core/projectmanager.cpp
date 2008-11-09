@@ -33,6 +33,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_ParentStatus = NULL;
 	m_LayerManager = NULL;
 	m_AttribManager = NULL;
+	m_QueriesPanel = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -324,6 +325,9 @@ int ProjectManager::OpenProject(const wxString & path)
 					
 					// update objects to lists
 					m_Obj->UpdateObjectLists(m_DB);
+					
+					// activate project opening
+					m_QueriesPanel->LoadQueries(m_DB);
 					
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);

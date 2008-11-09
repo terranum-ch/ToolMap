@@ -64,7 +64,7 @@ _T("generic_notes")
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 213;
+const int TM_DATABASE_VERSION = 214;
 
 
 

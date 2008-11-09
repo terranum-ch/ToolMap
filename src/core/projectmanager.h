@@ -51,6 +51,7 @@
 #include <wx/busyinfo.h>					// informations message for busy time
 #include "../gis/tmprogress.h"				// progress indicator
 #include "../gis/tmattributionmanager.h"	// for attribution manager
+#include "../gui/queries_panel.h"			// for queries panel
 
 class MenuManager;
 class ObjectManager;
@@ -75,6 +76,7 @@ class ProjectManager : public wxObject
 		wxStatusBar * m_ParentStatus;
 		tmLayerManager * m_LayerManager;
 		tmAttributionManager * m_AttribManager;
+		Queries_PANEL * m_QueriesPanel;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -104,6 +106,7 @@ class ProjectManager : public wxObject
 		ObjectManager * GetObjectManager() {return m_Obj;}
 		void SetStatusBar (wxStatusBar * status) {m_ParentStatus = status;}
 		void SetAttributionManager (tmAttributionManager * pAManager) {m_AttribManager = pAManager;}
+		void SetQueriesPanel (Queries_PANEL * queriespanel) {m_QueriesPanel = queriespanel;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 		bool IsProjectOpen () {return bProjectIsOpen;}

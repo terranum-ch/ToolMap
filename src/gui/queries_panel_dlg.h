@@ -33,8 +33,6 @@
 #include <wx/statline.h>	// for static_line
 
 
-#define ID_DLG_QUERIES_ADD 1000
-#define ID_DLG_QUERIES_CLOSE 1001
 
 
 
@@ -60,8 +58,11 @@ class QueriesListDLG : public wxDialog
 					   const wxString& title = wxT("Edit queries"),
 					   const wxPoint& pos = wxDefaultPosition,
 					   const wxSize& size = wxDefaultSize,
-					   long style = wxDEFAULT_DIALOG_STYLE );
+					   long style = wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
 		~QueriesListDLG();
+		
+		wxString GetQueriesName () {return m_QueriesName->GetValue();}
+		wxString GetQueriesDescription() {return m_QueriesDescription->GetValue();}
 		
 	};
 
