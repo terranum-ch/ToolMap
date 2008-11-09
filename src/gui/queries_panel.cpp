@@ -32,7 +32,7 @@
 
 
 BEGIN_EVENT_TABLE( Queries_PANEL, ManagedAuiWnd )
-
+	EVT_BUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
 END_EVENT_TABLE()
 
 
@@ -86,6 +86,7 @@ Queries_PANEL::~Queries_PANEL()
  *******************************************************************************/
 void Queries_PANEL::InitMemberValues()
 {
+	m_pDB = NULL;
 }
 
 
@@ -106,21 +107,29 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     wxStaticBoxSizer* itemStaticBoxSizer3 = new wxStaticBoxSizer(itemStaticBoxSizer3Static, wxVERTICAL);
     itemBoxSizer2->Add(itemStaticBoxSizer3, 1, wxGROW|wxALL, 5);
 
-    wxListCtrl* itemListCtrl4 = new wxListCtrl( parent, ID_LISTCTRL4, wxDefaultPosition, wxSize(100, 100), wxLC_REPORT );
-    itemStaticBoxSizer3->Add(itemListCtrl4, 1, wxGROW|wxTOP|wxBOTTOM, 5);
+	wxArrayString colname;
+	colname.Add(_("Description"));
+	
+	wxArrayInt colsize;
+	colsize.Add(200);
+	
+    m_QueriesList = new QueriesList( parent, ID_QUERIES_LIST,
+												 &colname, & colsize,
+												 wxSize(100, 100));
+    itemStaticBoxSizer3->Add(m_QueriesList, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
     itemStaticBoxSizer3->Add(itemBoxSizer5, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
-    wxFlatButton* itemToggleButton6 = new wxFlatButton( parent, ID_TOGGLEBUTTON13, wxFLATBUTTON_TEXT_ADD);
+    wxFlatButton* itemToggleButton6 = new wxFlatButton( parent, ID_QUERIES_ADD, wxFLATBUTTON_TEXT_ADD);
     itemToggleButton6->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxFlatButton* itemToggleButton7 = new wxFlatButton( parent, ID_TOGGLEBUTTON14, wxFLATBUTTON_TEXT_REMOVE);
+    wxFlatButton* itemToggleButton7 = new wxFlatButton( parent, ID_QUERIES_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
     itemToggleButton7->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxFlatButton* itemToggleButton8 = new wxFlatButton( parent, ID_TOGGLEBUTTON15, _("Run selected"), wxDefaultSize);
+    wxFlatButton* itemToggleButton8 = new wxFlatButton( parent, ID_QUERIES_RUN, _("Run selected"), wxDefaultSize);
     itemToggleButton8->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -155,6 +164,85 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     
     return itemBoxSizer2;
 
+}
+
+
+
+/***************************************************************************//**
+ @brief Set the database object
+ @details Set the database object for the #Queries_PANEL but also for the
+ #QueriesList.
+ @param database Object of type #DataBaseTM. Validity is checked in debug mode
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+void Queries_PANEL::SetDataBase (DataBaseTM * database)
+{
+	wxASSERT(database);
+	m_pDB = database;
+	m_QueriesList->SetDataBase(database);
+}
+
+
+
+/***************************************************************************//**
+ @brief Load the queries from the database
+ @details Don't forget to set the database using (Queries_PANEL::SetDataBase())
+ before calling this function
+ @return true if the queries where loaded succesfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+bool Queries_PANEL::LoadQueries ()
+{
+	wxASSERT(m_pDB);
+	return false;
+}
+
+
+/***************************************************************************//**
+ @brief User press the Add queries button
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+void Queries_PANEL::OnAddQueries (wxCommandEvent & event)
+{
+	m_QueriesList->AddItem();
+}
+
+
+
+
+
+
+
+
+
+/***************************************************************************//**
+ @brief Constructor
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+QueriesList::QueriesList (wxWindow * parent,
+						  wxWindowID id,
+						  wxArrayString * pColsName, 
+						  wxArrayInt * pColsSize,
+						  wxSize size) :
+ListGenReportWithStatus(parent, id, pColsName, pColsSize, size)
+{
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Destructor
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
+QueriesList::~QueriesList()
+{
+	
 }
 
 

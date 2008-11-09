@@ -24,12 +24,14 @@
 #include "wx/statusbr.h"
 #include "managed_aui_wnd.h"
 #include "wxflatbutton.h"		// for flat button
+#include "listgenreport_status.h"	// for list with  status support
+#include "../database/database_tm.h"	// for database support
 
 #define ID_QUERIESEDITOR 10049
-#define ID_LISTCTRL4 10051
-#define ID_TOGGLEBUTTON13 10052
-#define ID_TOGGLEBUTTON14 10064
-#define ID_TOGGLEBUTTON15 10236
+#define ID_QUERIES_LIST 10051
+#define ID_QUERIES_ADD 10052
+#define ID_QUERIES_REMOVE 10064
+#define ID_QUERIES_RUN 10236
 #define ID_BUTTON 10000
 #define ID_STATUSBAR1 10065
 #define SYMBOL_QUERIES_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
@@ -40,10 +42,44 @@
 
 
 
+class QueriesList : public ListGenReportWithStatus
+	{
+	private:
+		DataBaseTM * m_pDB;
+		
+	protected:
+	public:
+		QueriesList (wxWindow * parent,
+					 wxWindowID id,
+					 wxArrayString * pColsName, 
+					 wxArrayInt * pColsSize=NULL,
+					 wxSize size = wxDefaultSize);
+		~QueriesList();
+		
+		// setter
+		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+		
+	};
+
+
+
+/***************************************************************************//**
+ @brief Display the Queries Panel
+ @details Queries are immediatly added or removed from the database.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 November 2008
+ *******************************************************************************/
 class Queries_PANEL: public ManagedAuiWnd
 {
 private:
 	wxAuiPaneInfo m_PaneInfo;
+	DataBaseTM * m_pDB;
+	QueriesList* m_QueriesList;
+	
+	
+	// event function
+	void OnAddQueries (wxCommandEvent & event);
+	
 	
     DECLARE_EVENT_TABLE()
 
@@ -64,8 +100,19 @@ public:
     wxSizer * CreateControls(wxWindow * parent,
 							 bool call_fit = true,
 							 bool set_sizer = true);
+	
+	void SetDataBase (DataBaseTM * database); 
+	
+	bool LoadQueries ();
+	
+	
+	
 
 };
+
+
+
+
 
 #endif
 
