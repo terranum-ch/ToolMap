@@ -27,6 +27,8 @@
 #include "listgenreport_status.h"	// for list with  status support
 #include "../database/database_tm.h"	// for database support
 #include "queries_panel_dlg.h"			// for the queries edition dialog
+#include "../gis/tmmanagerevent.h"		// for manager event
+
 
 #define ID_QUERIESEDITOR 10049
 #define ID_QUERIES_LIST 10051
@@ -90,6 +92,7 @@ private:
 	// event function
 	void OnAddQueries (wxCommandEvent & event);
 	void OnRemoveQueries (wxCommandEvent & event);
+	void OnRunQueries (wxCommandEvent & event);
 	
 	
     DECLARE_EVENT_TABLE()

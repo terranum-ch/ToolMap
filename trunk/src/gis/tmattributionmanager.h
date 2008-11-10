@@ -70,6 +70,9 @@ class tmAttributionManager : public wxEvtHandler
 		void OnAttributeBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
 		
+		// query function
+		void OnRunQuery (wxCommandEvent & event);
+		
 		// Attribution data creation
 		tmAttributionData * CreateAttributionData (int type);
 		
