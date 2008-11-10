@@ -50,9 +50,9 @@ class QueriesList : public ListGenReportWithStatus
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
-		/*virtual void BeforeDeleting ();
+		virtual void BeforeDeleting ();
 		virtual void BeforeEditing ();
-		virtual void AfterEditing (bool bRealyEdited);*/
+		virtual void AfterEditing (bool bRealyEdited);
 		
 	protected:
 	public:
@@ -89,6 +89,7 @@ private:
 	
 	// event function
 	void OnAddQueries (wxCommandEvent & event);
+	void OnRemoveQueries (wxCommandEvent & event);
 	
 	
     DECLARE_EVENT_TABLE()
