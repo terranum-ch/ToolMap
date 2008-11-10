@@ -2070,7 +2070,7 @@ bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & d
  @param name Name of the query
  @param description SQL code of the query
  @param qid ID of the query for modification or -1 for adding query
- @param 		bool return true if a query was modified or added and false otherwise
+ @return true if a query was modified or added and false otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 November 2008
  *******************************************************************************/
