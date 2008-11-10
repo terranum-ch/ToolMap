@@ -205,12 +205,34 @@ bool Queries_PANEL::LoadQueries (DataBaseTM * database)
 	SetDataBase(database);
 	wxASSERT(m_pDB);
 	EnableQueriesPanel(true);
+	
+	long myQid = 0;
+	wxString myQName = _T("");
+	wxString myQDescription = _T("");
+	bool iFirstLoop = true;
+	int iLoop = 0;
+	
+	
+	while (1)
+	{
+		if(!m_pDB->GetNextQueries(myQid, myQName, myQDescription,iFirstLoop))
+			break;
+			
+		iFirstLoop = false;
+		m_QueriesList->AddItemToList(myQName, -1);
+		m_QueriesList->SetItemData(iLoop, myQid);
+		iLoop ++;
+		
+	}
+	
+	
+	
 	return false;
 }
 
 
 
-/***************************************************************************//**
+/*******************************************//**
  @brief Indicate if a project is open or not
  @details If a project is open, controls are accessible otherwise not.
  @param projectopen Status of project : is a project open (default is true)

@@ -45,6 +45,7 @@ const wxString TABLE_NAME_PRJ_SETTINGS = _T("prj_settings");
 const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
 const wxString TABLE_NAME_SCALE			= _T("zoom_level");
 const wxString TABLE_NAME_TOC		= _T("prj_toc");
+const wxString TABLE_NAME_QUERIES	= _T("prj_queries");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -157,6 +158,12 @@ class DataBaseTM : public DataBase
 									tmLayerProperties * item, int itemRank=0, 
 									const wxString & symbology = wxEmptyString);
 		
+		// database query operations
+		bool GetNextQueries (long & qid, wxString & name, wxString & description, bool bfirst); 
+		bool GetQueriesById (const long & qid, wxString & name, wxString & description);
+		bool EditQueries (const wxString & name, 
+						  const wxString & description, long qid = -1);
+		bool DeleteQuery (long qid);
 	};
 
 

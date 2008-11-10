@@ -1971,6 +1971,162 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 }
 
 
+
+/***************************************************************************//**
+ @brief Get all queries
+ @details Return all queries one after the other. Call this function
+ recursivelly for getting all queries.
+ @param qid return the ID of the query
+ @param name return the name of the query
+ @param description return the description of the query
+ @param bfirst set to true during the first call for creating the MySQL statement
+ @return  true if a query was returned successfull
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & description, bool bfirst)
+{
+	
+	wxString sStatement = _T("");
+	if (!DataBaseHasResult() && bfirst == true)
+	{
+		sStatement = _T("SELECT * FROM ") + TABLE_NAME_QUERIES;
+		if (!DataBaseQuery(sStatement))
+		{
+			wxLogDebug(_T("Error getting queries : %s"),
+					   DataBaseGetLastError().c_str());
+			return false;
+			
+		}
+	}
+	
+	wxArrayString myResults = DataBaseGetNextResult();
+	
+	// no more results
+	if (myResults.GetCount() == 0)
+		return false;
+	
+	// invalid result
+	if (myResults.GetCount() != 3)
+	{
+		wxLogDebug(_T("Error, number of data retreived doesn't correspond to what attended : %d"),
+				   myResults.GetCount());
+		return false;
+	}
+	
+	
+	qid = wxAtol(myResults.Item(0));
+	name = myResults.Item(1);
+	description = myResults.Item(2);
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get a queries by ID
+ @details Return the corresponding queries based on ID.
+ @param qid MySQL id of the searched queries
+ @param name return the query name
+ @param description return the query description
+ @return  true if a query returned, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & description)
+{
+	wxString sStatement = wxString::Format(_T("SELECT (QUERIES_NAME, QUERIES_CODE) from ") + 
+										   TABLE_NAME_QUERIES +
+										   _T(" WHERE QUERIES_ID=%d;"),
+										   qid);
+	if(!DataBaseQuery(sStatement))
+	{
+		wxLogDebug(_T("Error getting query : %s"), DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	wxArrayString myResults = DataBaseGetNextResult();
+	
+	// no results
+	if (myResults.GetCount() == 0)
+		return false;
+	
+	if (myResults.GetCount() != 2)
+	{
+		wxLogDebug(_T("Wrong number of results returned : %d"), myResults.GetCount());
+		return false;
+	}
+	
+	name = myResults.Item(0);
+	description = myResults.Item(1);
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Edit or add a query
+ @param name Name of the query
+ @param description SQL code of the query
+ @param qid ID of the query for modification or -1 for adding query
+ @param 		bool return true if a query was modified or added and false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+bool DataBaseTM::EditQueries (const wxString & name, 
+				  const wxString & description, long qid)
+{
+	wxString sAddStatement =  wxString::Format(_T("INSERT INTO ") + TABLE_NAME_QUERIES +
+											   _T(" (QUERIES_NAME, QUERIES_CODE)")
+											   _T(" VALUES (\"%s\", \"%s\")"),
+											   name.c_str(),
+											   description.c_str());
+	wxString sUpdStatement = wxString::Format(_T("UPDATE ") + TABLE_NAME_QUERIES +
+											  _T(" SET QUERIES_NAME=\"%s\", ")
+											  _T(" QUERIES_CODE=\"%s\" WHERE QUERIES_ID=%d"),
+											  name.c_str(),
+											  description.c_str(),
+											  qid);
+	wxString sStatement = wxEmptyString;
+	if (qid == -1) // adding query
+	{
+		sStatement = sAddStatement;
+	}
+	else // update statement
+	{
+		sStatement = sUpdStatement;
+	}
+	
+	if (!DataBaseQuery(sStatement))
+	{
+		wxLogDebug(_T("Error during query : %s"),DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Delete a query
+ @param qid id of the query to delete
+ @return  true if the query was deleted
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+bool DataBaseTM::DeleteQuery (long qid)
+{
+	wxString sStatement = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_QUERIES +
+										   _T(" WHERE QUERIES_ID=%d"), qid);
+	if (!DataBaseQuery(sStatement))
+	{
+		wxLogDebug(_T("Error during query : %s"),DataBaseGetLastError().c_str());
+		return false;
+	}
+	return true;
+}
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
