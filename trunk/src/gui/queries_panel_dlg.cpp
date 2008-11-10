@@ -66,7 +66,7 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxButton* m_button3;
-	m_button3 = new wxButton( this, wxID_OK, wxT("&Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button3 = new wxButton( this, wxID_OK, wxT("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button3->SetDefault(); 
 	bSizer4->Add( m_button3, 0, wxALL, 5 );
 	

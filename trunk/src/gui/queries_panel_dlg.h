@@ -62,7 +62,9 @@ class QueriesListDLG : public wxDialog
 		~QueriesListDLG();
 		
 		wxString GetQueriesName () {return m_QueriesName->GetValue();}
+		void SetQueriesName (const wxString & name){m_QueriesName->SetValue(name);}
 		wxString GetQueriesDescription() {return m_QueriesDescription->GetValue();}
+		void SetQueriesDescription(const wxString & desc){m_QueriesDescription->SetValue(desc);}
 		
 	};
 

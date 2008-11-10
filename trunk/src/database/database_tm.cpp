@@ -2036,7 +2036,7 @@ bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & descrip
  *******************************************************************************/
 bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & description)
 {
-	wxString sStatement = wxString::Format(_T("SELECT (QUERIES_NAME, QUERIES_CODE) from ") + 
+	wxString sStatement = wxString::Format(_T("SELECT QUERIES_NAME, QUERIES_CODE from ") + 
 										   TABLE_NAME_QUERIES +
 										   _T(" WHERE QUERIES_ID=%d;"),
 										   qid);

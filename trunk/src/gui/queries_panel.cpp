@@ -33,6 +33,7 @@
 
 BEGIN_EVENT_TABLE( Queries_PANEL, ManagedAuiWnd )
 	EVT_FLATBUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
+	EVT_FLATBUTTON(ID_QUERIES_REMOVE,Queries_PANEL::OnRemoveQueries)
 END_EVENT_TABLE()
 
 
@@ -259,7 +260,16 @@ void Queries_PANEL::OnAddQueries (wxCommandEvent & event)
 }
 
 
-
+/***************************************************************************//**
+ @brief User press the remove queries
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+void Queries_PANEL::OnRemoveQueries (wxCommandEvent & event)
+{
+	if (m_IsProjectOpen)
+		m_QueriesList->DeleteItem();
+}
 
 
 
@@ -317,26 +327,109 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 {
 	wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
 	wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
-	
+	long myID = -1;
 	
 	if (bRealyAddItem)
 	{
 		// try to add the query into database
-		
-		// add the item to the list
-		AddItemToList(myName, -1);
-		
-		// set the queries id to the item_data
-		
-		
-		
-		
-		wxLogDebug(_T("Item added"));
+		if (m_pDB->EditQueries(myName, myQuery, -1))
+		{
+			myID = m_pDB->DataBaseGetLastInsertID();
+			if (myID != -1)
+			{
+				// add the item to the list
+				AddItemToList(myName, -1);
+				
+				// set the queries id to the item_data
+				SetItemData(GetItemCount()-1, myID);
+			}
+		}
 	}
 	
 	delete m_pDialog;
 	
 }
+
+
+/***************************************************************************//**
+ @brief Called just before deleting item(s)
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+void QueriesList::BeforeDeleting ()
+{
+	wxArrayLong mySelected;
+	GetAllSelectedItem(mySelected);
+	
+	for (unsigned int i = 0; i< mySelected.GetCount();i++)
+	{
+		if (!m_pDB->DeleteQuery(GetItemData(mySelected.Item(i))))
+		{
+			wxLogDebug(_T("Error deleting query"));
+			break;
+		}
+	}
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Called just before editing item
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+void QueriesList::BeforeEditing ()
+{
+	// get info for first selected item
+	wxArrayLong mySelected;
+	GetAllSelectedItem(mySelected);
+	
+	wxString myName = wxEmptyString;
+	wxString myQuery = _T("Error getting the query");
+	
+	int iIndex = mySelected.Item(0);
+	if (!m_pDB->GetQueriesById(GetItemData(iIndex), myName, myQuery))
+		wxLogDebug(_T("Error getting the query"));
+	
+	QueriesListDLG * myQueriesDlg = new QueriesListDLG (this);
+	myQueriesDlg->SetQueriesName(myName);
+	myQueriesDlg->SetQueriesDescription(myQuery);
+	SetDialog(myQueriesDlg);
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Called just after editing is done
+ @param bRealyEdited true if edition was accepted using wxID_OK, false if
+ edition was cancelled
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+void QueriesList::AfterEditing (bool bRealyEdited)
+{
+	wxArrayLong mySelected;
+	GetAllSelectedItem(mySelected);
+	long myQid = GetItemData(mySelected.Item(0));
+	
+	wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
+	wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
+	
+	// if save pressed, update the DB
+	if (bRealyEdited)
+	{
+		if(!m_pDB->EditQueries(myName, myQuery, myQid))
+			wxLogDebug(_T("Error modifying the query"));
+		
+	}
+	
+	
+	
+	delete m_pDialog;
+}
+
 
 /*virtual void BeforeDeleting ();
 virtual void BeforeEditing ();
