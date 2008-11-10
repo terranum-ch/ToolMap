@@ -24,6 +24,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_INFO_BTN_PRESSED, tmAttributionManager::OnInfoBtn)
+	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_RUN, tmAttributionManager::OnRunQuery)
 END_EVENT_TABLE()
 
 
@@ -271,5 +272,68 @@ tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
 			break;
 	}
 	return myAttrib;
+}
+
+
+
+/***************************************************************************//**
+ @brief Received when user select run Query
+ @details This function receive the query from the #Queries_PANEL. The query may
+ be retreived from GetString() function
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
+{
+	wxASSERT(m_pDB);
+	wxASSERT(m_TOC);
+	wxASSERT(m_SelData);
+	
+	wxLogDebug(_T("Running query"));
+	
+	// getting the query
+	wxString myQuery = event.GetString();
+	
+	// getting the layer ID
+	tmLayerProperties * myActualLayer = m_TOC->GetSelectionLayer();
+	if (!myActualLayer)
+	{
+		wxLogDebug(_T("Select a layer first"));
+		return;
+	}
+	
+	// passing the query
+	if (!m_pDB->DataBaseQuery(myQuery))
+	{
+		wxString szError = wxString::Format(_("Error running the query. Bellow is the error rapported by MySQL\n%s"),
+											m_pDB->DataBaseGetLastError().c_str());
+		wxMessageBox(szError,
+					 _("Error running the query"),
+					 wxICON_EXCLAMATION | wxOK ,
+					 m_Parent);
+		return;
+	}
+	
+	// query succeed, getting results
+	wxArrayLong myResults;
+	long myTempRes = -1;
+	while (1)
+	{
+		myTempRes = m_pDB->DataBaseGetNextResultAsLong();
+		if (myTempRes == -1)
+			break;
+		myResults.Add(myTempRes);
+	}
+	
+	// clear selection
+	m_SelData->Clear();
+	m_SelData->SetLayerID(myActualLayer->m_LayerID);
+	
+	m_SelData->AddSelected(&myResults);
+	
+	// update display
+	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	
 }
 

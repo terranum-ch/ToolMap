@@ -29,11 +29,13 @@
 #include "queries_panel.h"
 
 
+DEFINE_EVENT_TYPE(tmEVT_QUERY_RUN)
 
 
 BEGIN_EVENT_TABLE( Queries_PANEL, ManagedAuiWnd )
 	EVT_FLATBUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
 	EVT_FLATBUTTON(ID_QUERIES_REMOVE,Queries_PANEL::OnRemoveQueries)
+	EVT_FLATBUTTON(ID_QUERIES_RUN, Queries_PANEL::OnRunQueries)
 END_EVENT_TABLE()
 
 
@@ -272,6 +274,34 @@ void Queries_PANEL::OnRemoveQueries (wxCommandEvent & event)
 }
 
 
+
+/***************************************************************************//**
+ @brief User press the run query
+ @details This function get data about the selected query and send a message
+ tmEVT_QUERY_RUN to the #tmAttribution Manger
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 November 2008
+ *******************************************************************************/
+void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
+{
+	wxArrayLong myResutls;
+	m_QueriesList->GetAllSelectedItem(myResutls);
+	if (myResutls.GetCount() == 0)
+		return;
+		
+	int myQid = m_QueriesList->GetItemData(myResutls.Item(0));
+	wxString myQName = wxEmptyString;
+	wxString myQCode =wxEmptyString;
+	
+	
+	if (m_pDB->GetQueriesById(myQid, myQName, myQCode))
+	{
+		// sending event to the tmAttributionManager
+		wxCommandEvent evt (tmEVT_QUERY_RUN, wxID_ANY);
+		evt.SetString(myQCode);
+		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
 
 
 
