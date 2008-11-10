@@ -45,7 +45,7 @@
 
 
 
-class QueriesList : public ListGenReportWithStatus
+class QueriesList : public ListGenReportWithDialog
 	{
 	private:
 		DataBaseTM * m_pDB;

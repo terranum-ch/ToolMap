@@ -142,11 +142,11 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     itemToggleButton8->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer2->Add(itemBoxSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
+    //wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
+    //itemBoxSizer2->Add(itemBoxSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
 
-    wxButton* itemButton10 = new wxButton( parent, ID_BUTTON, _("Clear selection"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer9->Add(itemButton10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    //wxButton* itemButton10 = new wxButton( parent, ID_BUTTON, _("Clear selection"), wxDefaultPosition, wxDefaultSize, 0 );
+    //itemBoxSizer9->Add(itemButton10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     /*wxButton* itemButton11 = new wxButton( parent, wxID_CLOSE, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer9->Add(itemButton11, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
@@ -154,7 +154,7 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     /*wxButton* itemButton12 = new wxButton( parent, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer9->Add(itemButton12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
 
-    wxStatusBar* itemStatusBar13 = new wxStatusBar( parent, ID_STATUSBAR1, wxST_SIZEGRIP|wxNO_BORDER );
+    /*wxStatusBar* itemStatusBar13 = new wxStatusBar( parent, ID_STATUSBAR1, wxST_SIZEGRIP|wxNO_BORDER );
     itemStatusBar13->SetFieldsCount(2);
     //itemStatusBar13->SetStatusText(_("Query passed OK"), 0);
     //itemStatusBar13->SetStatusText(_("10 Queries"), 1);
@@ -164,7 +164,7 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
     itemBoxSizer2->Add(itemStatusBar13, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 	
-	m_QueriesList->SetStatusBar(itemStatusBar13);
+	m_QueriesList->SetStatusBar(itemStatusBar13);*/
 	
 	if (set_sizer)
     {
@@ -278,12 +278,15 @@ void Queries_PANEL::OnRemoveQueries (wxCommandEvent & event)
 /***************************************************************************//**
  @brief User press the run query
  @details This function get data about the selected query and send a message
- tmEVT_QUERY_RUN to the #tmAttribution Manger
+ tmEVT_QUERY_RUN to the #tmAttributionManager
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 November 2008
  *******************************************************************************/
 void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 {
+	if (!m_IsProjectOpen)
+		return;
+	
 	wxArrayLong myResutls;
 	m_QueriesList->GetAllSelectedItem(myResutls);
 	if (myResutls.GetCount() == 0)
@@ -316,7 +319,7 @@ QueriesList::QueriesList (wxWindow * parent,
 						  wxArrayString * pColsName, 
 						  wxArrayInt * pColsSize,
 						  wxSize size) :
-ListGenReportWithStatus(parent, id, pColsName, pColsSize, size)
+ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	
 }

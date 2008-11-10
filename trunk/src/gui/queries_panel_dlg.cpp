@@ -53,7 +53,9 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Queries (SQL Select statement)") ), wxVERTICAL );
 	
-	m_QueriesDescription = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 ); //wxSize( -1,100 )
+	m_QueriesDescription = new wxTextCtrl( this, wxID_ANY, wxEmptyString,
+										  wxDefaultPosition, wxDefaultSize,
+										  wxTE_MULTILINE | wxTE_BESTWRAP); //wxSize( -1,100 )
 	sbSizer2->Add( m_QueriesDescription, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer2->Add( sbSizer2, 1, wxALL|wxEXPAND, 5 );
