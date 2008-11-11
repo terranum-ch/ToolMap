@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ToolMap"
-!define PRODUCT_VERSION '2.0'
+!define PRODUCT_VERSION '2.0.381'
 !define PRODUCT_VERSION_LONG "2.0 Codename `Lugano`"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.crealp.ch"
@@ -36,7 +36,7 @@
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; Language files
-!insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "English"
 
 ; MUI end ------
 

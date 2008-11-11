@@ -131,15 +131,15 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     itemStaticBoxSizer3->Add(itemBoxSizer5, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
     wxFlatButton* itemToggleButton6 = new wxFlatButton( parent, ID_QUERIES_ADD, wxFLATBUTTON_TEXT_ADD);
-    itemToggleButton6->SetValue(false);
+    //itemToggleButton6->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxFlatButton* itemToggleButton7 = new wxFlatButton( parent, ID_QUERIES_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
-    itemToggleButton7->SetValue(false);
+    //itemToggleButton7->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxFlatButton* itemToggleButton8 = new wxFlatButton( parent, ID_QUERIES_RUN, _("Run selected"), wxDefaultSize);
-    itemToggleButton8->SetValue(false);
+    //itemToggleButton8->SetValue(false);
     itemBoxSizer5->Add(itemToggleButton8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     //wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);

@@ -158,7 +158,7 @@ bool tmSelectedDataMemory::Remove (wxArrayLong * selected)
 			wxLogDebug(_T("Trying to remove non existring item from memory..."));
 		}
 	}
-	
+	return true;
 }
 
 
