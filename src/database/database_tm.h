@@ -65,7 +65,7 @@ _T("generic_notes")
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 214;
+const int TM_DATABASE_VERSION = 215;
 
 
 
@@ -160,8 +160,9 @@ class DataBaseTM : public DataBase
 		
 		// database query operations
 		bool GetNextQueries (long & qid, wxString & name, wxString & description, bool bfirst); 
-		bool GetQueriesById (const long & qid, wxString & name, wxString & description);
-		bool EditQueries (const wxString & name, 
+		bool GetQueriesById (const long & qid, int & target,
+							 wxString & name, wxString & description);
+		bool EditQueries (int target, const wxString & name, 
 						  const wxString & description, long qid = -1);
 		bool DeleteQuery (long qid);
 	};

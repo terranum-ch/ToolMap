@@ -36,19 +36,33 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 	
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer1->AddGrowableCol( 1 );
+	fgSizer1->SetFlexibleDirection( wxHORIZONTAL );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxStaticText* m_staticText2;
-	m_staticText2 = new wxStaticText( this, wxID_ANY, wxT("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2 = new wxStaticText( this, wxID_ANY, wxT("Description :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
-	bSizer3->Add( m_staticText2, 0, wxALL, 5 );
+	fgSizer1->Add( m_staticText2, 0, wxALL|wxALIGN_RIGHT, 5 );
 	
-	m_QueriesName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition,wxDefaultSize, 0 ); // wxSize( 200,-1 )
+	m_QueriesName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 200,-1 ), 0 );
 	m_QueriesName->SetMaxLength( 255 ); 
-	bSizer3->Add( m_QueriesName, 1, wxALL|wxEXPAND, 5 );
+	fgSizer1->Add( m_QueriesName, 0, wxALL|wxEXPAND, 5 );
 	
-	bSizer2->Add( bSizer3, 0, wxALL|wxEXPAND, 5 );
+	wxStaticText* m_staticText21;
+	m_staticText21 = new wxStaticText( this, wxID_ANY, wxT("Target :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText21->Wrap( -1 );
+	fgSizer1->Add( m_staticText21, 0, wxALL|wxALIGN_RIGHT, 5 );
+	
+	m_Target = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
+							4, TOC_GENERIC_NAME_STRING, 0 );
+	m_Target->SetSelection( 0 );
+	fgSizer1->Add( m_Target, 0, wxALL|wxEXPAND, 5 );
+	
+	bSizer2->Add( fgSizer1, 0, wxEXPAND|wxTOP, 5 );
+	
 	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Queries (SQL Select statement)") ), wxVERTICAL );

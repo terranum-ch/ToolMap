@@ -30,7 +30,8 @@
 #endif
 
 
-#include <wx/statline.h>	// for static_line
+#include <wx/statline.h>					// for static_line
+#include "../gis/tmlayerpropertiesdef.h"	// for target definition
 
 
 
@@ -52,6 +53,7 @@ class QueriesListDLG : public wxDialog
 	protected:
 		wxTextCtrl* m_QueriesName;
 		wxTextCtrl* m_QueriesDescription;
+		wxChoice* m_Target;
 		
 	public:
 		QueriesListDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
@@ -61,10 +63,18 @@ class QueriesListDLG : public wxDialog
 					   long style = wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
 		~QueriesListDLG();
 		
+		// query name
 		wxString GetQueriesName () {return m_QueriesName->GetValue();}
 		void SetQueriesName (const wxString & name){m_QueriesName->SetValue(name);}
+		
+		// query description
 		wxString GetQueriesDescription() {return m_QueriesDescription->GetValue();}
 		void SetQueriesDescription(const wxString & desc){m_QueriesDescription->SetValue(desc);}
+		
+		// query target
+		int GetQueriesTarget () {return m_Target->GetSelection();}
+		void SetQueriesTarget (int toc_generic_name){m_Target->SetSelection(toc_generic_name);}
+		
 		
 	};
 

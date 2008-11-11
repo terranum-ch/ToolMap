@@ -202,6 +202,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	
 	_T("CREATE TABLE `prj_queries` (")
 	_T(" `QUERIES_ID` INTEGER NOT NULL AUTO_INCREMENT ,")
+	_T(" `QUERIES_TARGET` INT NOT NULL , ")	
 	_T(" `QUERIES_NAME` VARCHAR(255) NOT NULL,")
 	_T(" `QUERIES_CODE` VARCHAR(1000),")
 	_T(" PRIMARY KEY (`QUERIES_ID`) );");
@@ -2007,7 +2008,7 @@ bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & descrip
 		return false;
 	
 	// invalid result
-	if (myResults.GetCount() != 3)
+	if (myResults.GetCount() != 4)
 	{
 		wxLogDebug(_T("Error, number of data retreived doesn't correspond to what attended : %d"),
 				   myResults.GetCount());
@@ -2016,8 +2017,8 @@ bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & descrip
 	
 	
 	qid = wxAtol(myResults.Item(0));
-	name = myResults.Item(1);
-	description = myResults.Item(2);
+	name = myResults.Item(2);
+	description = myResults.Item(3);
 	
 	return true;
 }
@@ -2028,15 +2029,18 @@ bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & descrip
  @brief Get a queries by ID
  @details Return the corresponding queries based on ID.
  @param qid MySQL id of the searched queries
+ @param target : one of the TOC_GENERIC_NAME value indicating to wich layers the
+ queries is dedicated to.
  @param name return the query name
  @param description return the query description
  @return  true if a query returned, false otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 November 2008
  *******************************************************************************/
-bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & description)
+bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
+								 wxString & name, wxString & description)
 {
-	wxString sStatement = wxString::Format(_T("SELECT QUERIES_NAME, QUERIES_CODE from ") + 
+	wxString sStatement = wxString::Format(_T("SELECT QUERIES_NAME, QUERIES_CODE, QUERIES_TARGET from ") + 
 										   TABLE_NAME_QUERIES +
 										   _T(" WHERE QUERIES_ID=%d;"),
 										   qid);
@@ -2052,7 +2056,7 @@ bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & d
 	if (myResults.GetCount() == 0)
 		return false;
 	
-	if (myResults.GetCount() != 2)
+	if (myResults.GetCount() != 3)
 	{
 		wxLogDebug(_T("Wrong number of results returned : %d"), myResults.GetCount());
 		return false;
@@ -2060,6 +2064,7 @@ bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & d
 	
 	name = myResults.Item(0);
 	description = myResults.Item(1);
+	target = wxAtoi(myResults.Item(2));
 	return true;
 }
 
@@ -2074,19 +2079,22 @@ bool DataBaseTM::GetQueriesById (const long & qid, wxString & name, wxString & d
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 November 2008
  *******************************************************************************/
-bool DataBaseTM::EditQueries (const wxString & name, 
+bool DataBaseTM::EditQueries (int target, const wxString & name, 
 				  const wxString & description, long qid)
 {
 	wxString sAddStatement =  wxString::Format(_T("INSERT INTO ") + TABLE_NAME_QUERIES +
-											   _T(" (QUERIES_NAME, QUERIES_CODE)")
-											   _T(" VALUES (\"%s\", \"%s\")"),
+											   _T(" (QUERIES_TARGET, QUERIES_NAME, QUERIES_CODE)")
+											   _T(" VALUES (%d,\"%s\", \"%s\")"),
+											   target,
 											   name.c_str(),
 											   description.c_str());
 	wxString sUpdStatement = wxString::Format(_T("UPDATE ") + TABLE_NAME_QUERIES +
 											  _T(" SET QUERIES_NAME=\"%s\", ")
-											  _T(" QUERIES_CODE=\"%s\" WHERE QUERIES_ID=%d"),
+											  _T(" QUERIES_CODE=\"%s\", QUERIES_TARGET=%d ")
+											  _T(" WHERE QUERIES_ID=%d"),
 											  name.c_str(),
 											  description.c_str(),
+											  target,
 											  qid);
 	wxString sStatement = wxEmptyString;
 	if (qid == -1) // adding query

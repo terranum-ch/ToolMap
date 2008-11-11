@@ -294,6 +294,7 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	// getting the query
 	wxString myQuery = event.GetString();
 	
+	
 	// getting the layer ID
 	tmLayerProperties * myActualLayer = m_TOC->GetSelectionLayer();
 	if (!myActualLayer)
@@ -301,6 +302,9 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 		wxLogDebug(_T("Select a layer first"));
 		return;
 	}
+	
+	int myLayerID = event.GetInt();
+	
 	
 	// passing the query
 	if (!m_pDB->DataBaseQuery(myQuery))

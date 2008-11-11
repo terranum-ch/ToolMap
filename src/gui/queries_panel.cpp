@@ -295,13 +295,15 @@ void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 	int myQid = m_QueriesList->GetItemData(myResutls.Item(0));
 	wxString myQName = wxEmptyString;
 	wxString myQCode =wxEmptyString;
+	int myQTarget = 0;
 	
 	
-	if (m_pDB->GetQueriesById(myQid, myQName, myQCode))
+	if (m_pDB->GetQueriesById(myQid, myQTarget, myQName, myQCode))
 	{
 		// sending event to the tmAttributionManager
 		wxCommandEvent evt (tmEVT_QUERY_RUN, wxID_ANY);
 		evt.SetString(myQCode);
+		evt.SetInt(myQTarget);
 		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
@@ -360,12 +362,13 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 {
 	wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
 	wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
+	int myQTarget = ((QueriesListDLG*)m_pDialog)->GetQueriesTarget();
 	long myID = -1;
 	
 	if (bRealyAddItem)
 	{
 		// try to add the query into database
-		if (m_pDB->EditQueries(myName, myQuery, -1))
+		if (m_pDB->EditQueries(myQTarget, myName, myQuery, -1))
 		{
 			myID = m_pDB->DataBaseGetLastInsertID();
 			if (myID != -1)
@@ -420,14 +423,16 @@ void QueriesList::BeforeEditing ()
 	
 	wxString myName = wxEmptyString;
 	wxString myQuery = _T("Error getting the query");
+	int myQTarget = 0;
 	
 	int iIndex = mySelected.Item(0);
-	if (!m_pDB->GetQueriesById(GetItemData(iIndex), myName, myQuery))
+	if (!m_pDB->GetQueriesById(GetItemData(iIndex), myQTarget, myName, myQuery))
 		wxLogDebug(_T("Error getting the query"));
 	
 	QueriesListDLG * myQueriesDlg = new QueriesListDLG (this);
 	myQueriesDlg->SetQueriesName(myName);
 	myQueriesDlg->SetQueriesDescription(myQuery);
+	myQueriesDlg->SetQueriesTarget(myQTarget);
 	SetDialog(myQueriesDlg);
 	
 }
@@ -449,11 +454,12 @@ void QueriesList::AfterEditing (bool bRealyEdited)
 	
 	wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
 	wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
+	int myQTarget = ((QueriesListDLG*)m_pDialog)->GetQueriesTarget();
 	
 	// if save pressed, update the DB
 	if (bRealyEdited)
 	{
-		if(!m_pDB->EditQueries(myName, myQuery, myQid))
+		if(!m_pDB->EditQueries(myQTarget, myName, myQuery, myQid))
 			wxLogDebug(_T("Error modifying the query"));
 		
 	}
