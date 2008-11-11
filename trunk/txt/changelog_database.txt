@@ -38,3 +38,6 @@ Update Database
 - 213 -> 214 (Adding queries table)
 	- CREATE TABLE `prj_queries`(`QUERIES_ID` INTEGER NOT NULL AUTO_INCREMENT ,`QUERIES_NAME` VARCHAR(255) NOT NULL, `QUERIES_CODE` VARCHAR(1000), PRIMARY KEY (`QUERIES_ID`));
 	- UPDATE `prj_settings` SET PRJ_VERSION = 214;
+- 214 -> 215 (Adding target column in queries table)
+	- ALTER TABLE  prj_queries ADD COLUMN QUERIES_TARGET INT NOT NULL AFTER QUERIES_ID;
+	- UPDATE `prj_settings` SET PRJ_VERSION = 215;
