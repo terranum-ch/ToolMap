@@ -82,17 +82,18 @@ bool tmGISDataVectorMYSQL::Open (const wxString & filename, bool bReadWrite)
 		return FALSE;
 	}
 	
+	//TODO: Only checks those once
 	// does the table exists ?
-	if(!m_DB->DataBaseTableExist(filename))
+	/*if(!m_DB->DataBaseTableExist(filename))
 	{
 		if (IsLoggingEnabled())
 			wxLogDebug(_T("Table '%s' dosen't exists in the database"), filename.c_str());
 		return FALSE;
-	}
+	}*/
 	
 	// does the fields exists ?
-	if (!CheckGeometryFields(filename))
-		return FALSE;
+	//if (!CheckGeometryFields(filename))
+	//	return FALSE;
 
 	return TRUE;
 }
