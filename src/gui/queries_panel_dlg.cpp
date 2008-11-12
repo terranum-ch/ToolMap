@@ -61,7 +61,7 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	m_Target->SetSelection( 0 );
 	fgSizer1->Add( m_Target, 0, wxALL|wxEXPAND, 5 );
 	
-	bSizer2->Add( fgSizer1, 0, wxEXPAND|wxTOP, 5 );
+	bSizer2->Add( fgSizer1, 0, wxEXPAND|wxALL, 5 );
 	
 	
 	wxStaticBoxSizer* sbSizer2;
