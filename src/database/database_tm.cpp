@@ -789,6 +789,39 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
 }
 
 
+/***************************************************************************//**
+ @brief Return the layer ID based on layer type
+ @details This function works only for following "unique" layers : 
+ - TOC_NAME_LINES
+ - TOC_NAME_POINTS,
+ - TOC_NAME_LABELS,
+ - TOC_NAME_ANNOTATIONS,
+ - TOC_NAME_FRAME,
+ for others type, wxNOT_FOUND is returned
+ @param int the layer ID or wxNOT_FOUND if an error occur or the layer dosen't
+ exist
+ @param layertype One of the #TOC_GENERIC_NAME values, see above
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 November 2008
+ *******************************************************************************/
+int DataBaseTM::GetLayerID (TOC_GENERIC_NAME layertype)
+{
+	wxString sStatement = wxString::Format(_T("SELECT CONTENT_ID FROM ") + 
+										   TABLE_NAME_TOC + 
+										   _T(" WHERE GENERIC_LAYERS=%d"),
+										   layertype);
+	
+	if (!DataBaseQuery(sStatement))
+	{
+		wxASSERT_MSG(0,_T("Error during query"));
+		return wxNOT_FOUND;
+	}
+	
+	return DataBaseGetResultAsInt(true);
+}
+
+
+
 /*************************** OBJECT DATABASE FUNCTION ****************************/
 bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex)
 {
