@@ -157,7 +157,8 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 				if (oEnv.MaxY > psExtent->MaxY) 
 					psExtent->MaxY = oEnv.MaxY;
 			}
-			delete poGeometry;
+			OGRGeometryFactory::destroyGeometry(poGeometry);
+			//delete row_length;
 		}
 		return tmRealRect(psExtent->MinX,psExtent->MinY,
 						  psExtent->MaxX,psExtent->MaxY);

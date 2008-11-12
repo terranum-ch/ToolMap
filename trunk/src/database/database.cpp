@@ -541,6 +541,7 @@ bool DataBase::DataBaseQueryNoResult(wxString myQuery)
 bool DataBase::DataBaseQuery(const wxString & myQuery)
 {
 	pResults = NULL;
+	bool bReturn = false;
 	
 	// conversion Unicode wxString -> const char *
 	char * buffer = new char [myQuery.Length()+2];
@@ -553,9 +554,10 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 		pResults = mysql_store_result(pMySQL);
 		m_resultNumber = mysql_field_count(pMySQL);
 		m_resultCount = DatabaseGetCountResults();
-		return TRUE;
+		bReturn = true;
 	}
-	return FALSE;
+	delete [] buffer;
+	return bReturn;
 }
 
 
