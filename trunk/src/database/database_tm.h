@@ -110,6 +110,7 @@ class DataBaseTM : public DataBase
 		int GetNextLayer (ProjectDefMemoryLayers * myLayer);
 		bool UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlSentence);
 		bool DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSentence);
+		int GetLayerID (TOC_GENERIC_NAME layertype);
 		
 		// Database object operations
 		bool AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex=-1);

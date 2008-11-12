@@ -296,14 +296,16 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	
 	
 	// getting the layer ID
-	tmLayerProperties * myActualLayer = m_TOC->GetSelectionLayer();
-	if (!myActualLayer)
+	int myLayerType = event.GetInt();
+	int myLayerID = m_pDB->GetLayerID(static_cast<TOC_GENERIC_NAME> (myLayerType));
+	if (myLayerID == wxNOT_FOUND)
 	{
-		wxLogDebug(_T("Select a layer first"));
+		wxASSERT_MSG (0, _T("Error getting layer ID"));
 		return;
 	}
-	
-	int myLayerID = event.GetInt();
+	// Selecting layer in TOC
+	m_TOC->SetSelectedLayer(myLayerID);
+		
 	
 	
 	// passing the query
@@ -331,7 +333,7 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	
 	// clear selection
 	m_SelData->Clear();
-	m_SelData->SetLayerID(myActualLayer->m_LayerID);
+	m_SelData->SetLayerID(myLayerID);
 	
 	m_SelData->AddSelected(&myResults);
 	

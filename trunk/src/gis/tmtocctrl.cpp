@@ -347,6 +347,37 @@ tmLayerProperties * tmTOCCtrl::GetSelectionLayer ()
 
 
 /***************************************************************************//**
+ @brief Select a item
+ @details Based on the layer ID (MySQL column CONTENT_ID, in prj_toc).
+ @param layerID Layer ID
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 November 2008
+ *******************************************************************************/
+void tmTOCCtrl::SetSelectedLayer (int layerID)
+{
+	tmLayerProperties * itemprop = NULL;
+	bool bFirstLoop = true;
+	
+	while (1)
+	{
+		itemprop = IterateLayers(bFirstLoop);
+		bFirstLoop = false;
+		if (!itemprop)
+			break;
+		
+		if (itemprop->m_LayerID == layerID)
+		{
+			if (!IsSelected(m_ActualItemID))
+				SelectItem(m_ActualItemID, true);
+		}
+		else
+			SelectItem(m_ActualItemID, false);
+	}
+	
+}
+
+
+/***************************************************************************//**
  @brief Get the selected layers position
  @details Count the number of previous layers before main layers. This is mainly
  used for graying items in contextual menu (move menu)

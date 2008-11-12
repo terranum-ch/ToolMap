@@ -106,8 +106,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// counting layers only
 		unsigned int GetCountLayers();
 		
-		// getting info
+		// selection
 		tmLayerProperties * GetSelectionLayer ();
+		void SetSelectedLayer (int layerID);
 		
 		
 		// public event function
