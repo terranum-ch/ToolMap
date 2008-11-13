@@ -84,6 +84,10 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
 
+	// EXPORT MENU
+	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
+	EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
+
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 
@@ -712,5 +716,37 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 	
 }
 
+
+/***************************************************************************//**
+ @brief Called when export selected is pressed
+ @details This function create an object of type #tmExportManager
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 13 November 2008
+ *******************************************************************************/
+void ToolMapFrame::OnExportSelected (wxCommandEvent & event)
+{
+	if (m_PManager->IsProjectOpen())
+	{
+		tmExportManager myExport(this, m_PManager->GetDatabase());
+		if (myExport.ExportSelected())
+			wxLogDebug(_T("Exporting project success"));
+		else
+			wxLogDebug(_T("Exporting project failed"));
+	}
+		
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when export all is pressed
+ @details Export all layers without any further user intervention
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 13 November 2008
+ *******************************************************************************/
+void ToolMapFrame::OnExportAll (wxCommandEvent & event)
+{
+	
+}
 
 
