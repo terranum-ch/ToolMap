@@ -30,6 +30,7 @@ void tmExportManager::InitMemberValues()
 {
 	m_pDB = NULL;
 	m_Parent = NULL;
+	m_ExportType = EXPORT_SHAPEFILE;
 }
 
 
@@ -217,6 +218,18 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	if (layers->GetCount() == 0)
 		return false;
 	
+	// check and init path and export type
+	wxString szErr = _("Error, export directory isn't specified or isn't valid.");
+	if (!IsExportPathValid())
+	{
+		
+		wxMessageBox(szErr, _("Error exporting project"),
+					 wxOK | wxICON_ERROR ,m_Parent);
+		return false;
+	}
+	
+	
+	
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
@@ -259,3 +272,28 @@ PrjMemFieldArray * tmExportManager::GetAllFieldsForLayer(ProjectDefMemoryLayers 
 }
 
 
+
+/***************************************************************************//**
+ @brief Get and check the export path
+ @details We verify that an export path was defined and is valid
+ @return  true if the export path is defined and valid, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 13 November 2008
+ *******************************************************************************/
+bool tmExportManager::IsExportPathValid()
+{
+	wxASSERT(m_pDB);
+	wxString myExportPath = wxEmptyString;
+	int myExportType = -1;
+	if (m_pDB->GetProjectExportData(myExportType, myExportPath) != PATH_OK)
+		return false;
+	
+	m_ExportType = static_cast<PRJDEF_EXPORT_TYPE> (myExportType);
+	m_ExportPath = wxFileName (myExportPath, _T(""));
+	
+	if (m_ExportPath.IsDirWritable())
+		return true;
+	
+	
+	return false;
+}
