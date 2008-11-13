@@ -1165,60 +1165,39 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 }
 
 
-int DataBaseTM::GetNextField (ProjectDefMemoryFields * myField, int DBlayerIndex)
+
+/***************************************************************************//**
+ @brief Get all fields for specified layer
+ @param fieldarray This array contain all fields for specified layer
+ @param actuallayer the layer for wich to retreive fields
+ @return  true if fields where  returned, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 13 November 2008
+ *******************************************************************************/
+bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayers * actuallayer)
 {
-	// if no result execute the sentence
-	// otherwise parse the results
-	if (!DataBaseHasResult())
-	{
-		wxLogDebug(_T("No results found for the fields"));
-		return -2;
-	}
-	
-	
-	
-	wxArrayString myResults;
-	myResults = DataBaseGetNextResult();
-	if (!myResults.IsEmpty())
-	{
-		myField->SetValues(myResults);
-		
-		return 1; // ok continue
-	}
-	return -1; // no more results 
-	
-	
-	/*wxString sSentence = wxString::Format(_T("SHOW FULL COLUMNS FROM %s%d"),
+	wxASSERT(actuallayer);
+	wxString sSentence = wxString::Format(_T("SHOW FULL COLUMNS FROM %s%d"),
 										  TABLE_NAME_LAYER_AT.c_str(),
-										  DBlayerIndex);
-	
-	// check if we have some results 
-	if (DataBaseHasResult())
+										  actuallayer->m_LayerID);
+	if (!DataBaseQuery(sSentence))
+	{
+		//wxLogDebug(_T("Error getting fields : %s"), DataBaseGetLastError().c_str());
+		return false;
+	}
+	ProjectDefMemoryFields * myField = NULL;
+	wxArrayString myResults;
+	while (1)
 	{
 		myResults = DataBaseGetNextResult();
-		if (!myResults.IsEmpty())
-		{
-			myField->SetValues(myResults);
-			
-			return 1; // ok continue
-		}
-		return -1; // no more results 
-		
-		
+		if (myResults.IsEmpty())
+			break;
+		myField = new ProjectDefMemoryFields();
+		myField->SetValues(myResults);
+		fieldarray.Add(myField);
 	}
-	else
-	{
-			// get all fields
-			if (DataBaseQuery(sSentence))
-			{
-				// skip two first lines 
-				DataBaseGetNextResult(); DataBaseGetNextResult(); 
-
-				return 0; // ok query done
-			}
-			
-	}
-	return -2; // error*/
+	
+	return true;
 }
 
 

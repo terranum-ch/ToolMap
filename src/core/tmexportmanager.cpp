@@ -151,12 +151,12 @@ bool tmExportManager::ExportSelected ()
 	/* logging
 	for (unsigned int e = 0; e < myLayers->GetCount();e++)
 		wxLogDebug(_T("Layers : %d - %s"), e, myLayers->Item(e).m_LayerName.c_str());*/
-	
+	bool bReturn = ExportLayers(myLayers);
 	
 	myLayers->Clear();
 	delete myLayers;
 
-	return true;
+	return bReturn;
 }
 
 
@@ -199,6 +199,63 @@ PrjMemLayersArray * tmExportManager::GetAllLayers ()
 	}
 	
 	return myLayers;
+}
+
+
+
+/***************************************************************************//**
+ @brief Export layers
+ @details This function is called either by ExportSelected() or ExportAll()
+ @param layers An array of #PrjMemLayersArray
+ @return  true if export was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 13 November 2008
+ *******************************************************************************/
+bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
+{
+	wxASSERT(layers);
+	if (layers->GetCount() == 0)
+		return false;
+	
+	// for each layer
+	for (unsigned int i = 0; i<layers->GetCount();i++)
+	{
+		// create SIG layer
+		
+		
+		// add optionnal fields
+		PrjMemFieldArray * myFields = GetAllFieldsForLayer(&(layers->Item(i)));
+		if (myFields) // ok we have advanced fields
+		{
+						
+		
+			delete myFields;
+		}
+	}
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get all fields
+ @param layer a valid #ProjectDefMemoryLayers for the layer we want to get fields
+ @return  an adress containing Array of fields or null if an error occur. Returned
+ object must be destroyed by caller.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 13 November 2008
+ *******************************************************************************/
+PrjMemFieldArray * tmExportManager::GetAllFieldsForLayer(ProjectDefMemoryLayers * layer)
+{
+	wxASSERT(layer);
+	m_pDB->DataBaseDestroyResults();
+	
+	PrjMemFieldArray * myFieldArray = new PrjMemFieldArray();
+	if(m_pDB->GetFields(*myFieldArray, layer))
+		return myFieldArray;
+	
+	return NULL;
 }
 
 

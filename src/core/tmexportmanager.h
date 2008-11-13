@@ -44,8 +44,12 @@ class tmExportManager : public wxObject
 		// init values
 		void InitMemberValues();
 		
-		// getting layers
+		// getting layers and fields
 		PrjMemLayersArray * GetAllLayers ();
+		PrjMemFieldArray * GetAllFieldsForLayer(ProjectDefMemoryLayers * layer);
+		
+		// export function
+		bool ExportLayers (PrjMemLayersArray * layers);
 		
 	protected:
 	public:
