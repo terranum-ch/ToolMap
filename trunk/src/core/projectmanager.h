@@ -107,6 +107,7 @@ class ProjectManager : public wxObject
 		void SetStatusBar (wxStatusBar * status) {m_ParentStatus = status;}
 		void SetAttributionManager (tmAttributionManager * pAManager) {m_AttribManager = pAManager;}
 		void SetQueriesPanel (Queries_PANEL * queriespanel) {m_QueriesPanel = queriespanel;}
+		DataBaseTM * GetDatabase() {return m_DB;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 		bool IsProjectOpen () {return bProjectIsOpen;}

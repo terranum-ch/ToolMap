@@ -113,6 +113,7 @@
 #include "../gis/tmscalectrl.h"	// for GIS scale control combo box
 
 #include "../gis/tmattributionmanager.h"	// attribution manager
+#include "tmexportmanager.h"				// export manager
 
 
 //// temp for testing 
@@ -286,6 +287,8 @@ private:
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);
+	void OnExportSelected (wxCommandEvent & event);
+	void OnExportAll (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
