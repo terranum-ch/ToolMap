@@ -40,6 +40,9 @@ class tmExportManager : public wxObject
 	private:
 		DataBaseTM * m_pDB;
 		wxWindow * m_Parent;
+		PRJDEF_EXPORT_TYPE m_ExportType;
+		wxFileName m_ExportPath;
+
 		
 		// init values
 		void InitMemberValues();
@@ -50,6 +53,11 @@ class tmExportManager : public wxObject
 		
 		// export function
 		bool ExportLayers (PrjMemLayersArray * layers);
+		
+		// check path
+		bool IsExportPathValid();
+		
+		// create file
 		
 	protected:
 	public:
