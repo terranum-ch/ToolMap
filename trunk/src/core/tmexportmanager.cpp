@@ -65,6 +65,7 @@ tmExportManager::~tmExportManager()
  @brief Create function for two step initialization
  @details If default constructor was used, need to call this function for
  initialization to take place
+ @param parent Adress of parent, maily used for parenting dialogs
  @param database a valid #DataBaseTM object adress
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
@@ -80,6 +81,7 @@ void tmExportManager::Create(wxWindow * parent, DataBaseTM * database)
 
 /***************************************************************************//**
  @brief Full constructor
+ @param parent a valid wxWindow. Mainly used for parent of dialogs
  @param database a valid #DataBaseTM object adress
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
@@ -164,9 +166,8 @@ bool tmExportManager::ExportSelected ()
 /***************************************************************************//**
  @brief Get all layers from database
  @details This function return all layers in an Array of
- #ProjectDefMemoryLayers. nblayers indicating the numbers of layers returned.
- @param nblayers the number of layers returned in the array
- @return  An array of #ProjectDefMemoryLayers or NULL in case of error
+ #ProjectDefMemoryLayers.
+ @return  An array of PrjMeLayersArray or NULL in case of error
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
@@ -207,7 +208,7 @@ PrjMemLayersArray * tmExportManager::GetAllLayers ()
 /***************************************************************************//**
  @brief Export layers
  @details This function is called either by ExportSelected() or ExportAll()
- @param layers An array of #PrjMemLayersArray
+ @param layers An array of PrjMemLayersArray
  @return  true if export was successfull, false otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
@@ -229,24 +230,61 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	}
 	
 	
-	
+
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
 		// create SIG layer
-		
-		
-		// add optionnal fields
-		PrjMemFieldArray * myFields = GetAllFieldsForLayer(&(layers->Item(i)));
-		if (myFields) // ok we have advanced fields
-		{
-						
-		
-			delete myFields;
-		}
+		if (CreateExportLayer(&(layers->Item(i))))
+			// export data to layer
+			wxLogDebug(_T("Exporting layers : %s - OK-"),
+					   layers->Item(i).m_LayerName.c_str());
+			
 	}
 	
 	return true;
+}
+
+
+/***************************************************************************//**
+ @brief First export step
+ @details During this step, we try to create the file and attach needed files
+ @param layer a valid #ProjectDefMemoryLayers object
+ @return  true if layers was created successfully, false otherwise and info is
+ added to the rapport
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 November 2008
+ *******************************************************************************/
+bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
+{
+	wxASSERT(layer);
+	bool bReturn = true;
+	
+	// create SIG layer
+	tmExportData * myExportData = CreateExportData();
+	if (myExportData->
+		CreateEmptyExportFile(layer,
+							  m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)))
+	{
+				
+		// add optionnal fields
+		PrjMemFieldArray * myFields = GetAllFieldsForLayer(layer);
+		if (myFields) // ok we have advanced fields
+		{
+			
+			
+			delete myFields;
+		}
+		
+		
+		
+	}
+	else
+		bReturn = false;
+			
+	
+	delete myExportData;
+	return bReturn;
 }
 
 
@@ -297,3 +335,32 @@ bool tmExportManager::IsExportPathValid()
 	
 	return false;
 }
+
+
+
+/***************************************************************************//**
+ @brief Create object
+ @details depanding of export type, an object of type #tmExportData is created
+ and allow us to support more export format in the future without too much work
+ @return  A valid object of type #tmExportData
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 November 2008
+ *******************************************************************************/
+tmExportData * tmExportManager::CreateExportData ()
+{
+	wxASSERT (m_pDB);
+	switch (m_ExportType)
+	{
+		case EXPORT_SHAPEFILE:
+			return new tmExportDataSHP(m_pDB);
+			break;
+			
+			
+		default:
+			return new tmExportData(m_pDB);
+			break;
+	} 
+	
+	return NULL;
+}
+

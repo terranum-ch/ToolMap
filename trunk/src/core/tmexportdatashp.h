@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmexportmanager.h
-                    Main class for dealing with export process
+								tmexportdatashp.h
+                    Class for the process of exporting data as SHP
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_EXPORTMANAGER_H_
-#define _TM_EXPORTMANAGER_H_
+#ifndef _TM_EXPORTDATA_SHP_H_
+#define _TM_EXPORTDATA_SHP_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -30,54 +30,31 @@
 #endif
 
 
-#include "../database/database_tm.h"	// for database access
-#include "projectdefmemory.h"			// for PojectDefMemoryLayers definition
-
-#include "tmexportdatashp.h"			// for exporting data in SHP
+#include "tmexportdata.h"		// for parent class definition
 
 
-
-class tmExportManager : public wxObject
+class tmExportDataSHP : public tmExportData
 	{
 	private:
-		DataBaseTM * m_pDB;
-		wxWindow * m_Parent;
-		PRJDEF_EXPORT_TYPE m_ExportType;
-		wxFileName m_ExportPath;
-
-		
-		// init values
 		void InitMemberValues();
-		
-		// getting layers and fields
-		PrjMemLayersArray * GetAllLayers ();
-		PrjMemFieldArray * GetAllFieldsForLayer(ProjectDefMemoryLayers * layer);
-		
-		// export function
-		bool ExportLayers (PrjMemLayersArray * layers);
-		bool CreateExportLayer (ProjectDefMemoryLayers * layer);
-		
-		// check path
-		bool IsExportPathValid();
-		
-		// create tmExportData object
-		tmExportData * CreateExportData ();
 		
 	protected:
 	public:
+		// ctor
+		tmExportDataSHP();
+		tmExportDataSHP (DataBaseTM * database);
+		void Create (DataBaseTM * database);
+		~tmExportDataSHP();
+
 		
-		// construction and destruction
-		tmExportManager();
-		~tmExportManager();
-		tmExportManager(wxWindow * parent, DataBaseTM * database);
-		void Create (wxWindow * parent, DataBaseTM * database);
+		// create export file
+		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
+											const wxString & path);
 		
-		// Export public function
-		bool ExportAll (){ return false;}
-		bool ExportSelected ();
-};
+	};
 
 
 
 
 #endif
+

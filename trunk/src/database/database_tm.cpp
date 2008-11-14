@@ -798,9 +798,9 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
  - TOC_NAME_ANNOTATIONS,
  - TOC_NAME_FRAME,
  for others type, wxNOT_FOUND is returned
- @param int the layer ID or wxNOT_FOUND if an error occur or the layer dosen't
- exist
  @param layertype One of the #TOC_GENERIC_NAME values, see above
+ @return the layer ID or wxNOT_FOUND if an error occur or the layer dosen't
+ exist
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 November 2008
  *******************************************************************************/
@@ -2084,6 +2084,7 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 
 /***************************************************************************//**
  @brief Edit or add a query
+ @param target Int of the target (allowed values : #TOC_GENERIC_NAME)
  @param name Name of the query
  @param description SQL code of the query
  @param qid ID of the query for modification or -1 for adding query
