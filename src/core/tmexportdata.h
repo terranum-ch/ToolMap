@@ -1,6 +1,6 @@
 /***************************************************************************
-								tmexportmanager.h
-                    Main class for dealing with export process
+								tmexportdata.h
+                    main class for the process of exporting data
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_EXPORTMANAGER_H_
-#define _TM_EXPORTMANAGER_H_
+#ifndef _TM_EXPORTDATA_H_
+#define _TM_EXPORTDATA_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,53 +29,44 @@
     #include <wx/wx.h>
 #endif
 
-
 #include "../database/database_tm.h"	// for database access
-#include "projectdefmemory.h"			// for PojectDefMemoryLayers definition
-
-#include "tmexportdatashp.h"			// for exporting data in SHP
+#include "projectdefmemory.h"			// for ProjectDefMemoryLayers definition
 
 
-
-class tmExportManager : public wxObject
+/***************************************************************************//**
+ @brief Parent class for exporting data
+ @details This class is used by the #tmExportManager to abstract the access to
+ the data and to allow us to implement new export format
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 November 2008
+ *******************************************************************************/
+class tmExportData : public wxObject
 	{
 	private:
-		DataBaseTM * m_pDB;
-		wxWindow * m_Parent;
-		PRJDEF_EXPORT_TYPE m_ExportType;
-		wxFileName m_ExportPath;
-
-		
-		// init values
 		void InitMemberValues();
 		
-		// getting layers and fields
-		PrjMemLayersArray * GetAllLayers ();
-		PrjMemFieldArray * GetAllFieldsForLayer(ProjectDefMemoryLayers * layer);
-		
-		// export function
-		bool ExportLayers (PrjMemLayersArray * layers);
-		bool CreateExportLayer (ProjectDefMemoryLayers * layer);
-		
-		// check path
-		bool IsExportPathValid();
-		
-		// create tmExportData object
-		tmExportData * CreateExportData ();
-		
 	protected:
+		DataBaseTM * m_pDB;
+		wxString m_Extension;
+		
+		// protected functions
+		wxFileName * GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path);
+		
 	public:
+		// ctor
+		tmExportData();
+		tmExportData (DataBaseTM * database);
+		void Create (DataBaseTM * database);
+		~tmExportData();
 		
-		// construction and destruction
-		tmExportManager();
-		~tmExportManager();
-		tmExportManager(wxWindow * parent, DataBaseTM * database);
-		void Create (wxWindow * parent, DataBaseTM * database);
+		// create export file
+		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
+											const wxString & path){return false;}
 		
-		// Export public function
-		bool ExportAll (){ return false;}
-		bool ExportSelected ();
-};
+	
+	};
+
+
 
 
 
