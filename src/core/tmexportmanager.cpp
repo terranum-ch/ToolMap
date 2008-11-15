@@ -272,7 +272,7 @@ bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 		if (myFields) // ok we have advanced fields
 		{
 			
-			
+			myExportData->AddOptFields(myFields);
 			delete myFields;
 		}
 		

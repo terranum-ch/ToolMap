@@ -1177,7 +1177,15 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayers * actuallayer)
 {
 	wxASSERT(actuallayer);
-	wxString sSentence = wxString::Format(_T("SHOW FULL COLUMNS FROM %s%d"),
+	
+	
+	wxString sStatmt = _T("SELECT CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,")
+	_T(" COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM")
+	_T(" INFORMATION_SCHEMA.COLUMNS Where table_schema = \"%s\" and")
+	_T(" table_name = \"%s%d\" AND COLUMN_NAME NOT IN ('OBJECT_ID', 'LAYER_AT_ID')");
+	
+	wxString sSentence = wxString::Format(sStatmt,
+										  DataBaseGetName().c_str(),
 										  TABLE_NAME_LAYER_AT.c_str(),
 										  actuallayer->m_LayerID);
 	if (!DataBaseQuery(sSentence))

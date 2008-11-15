@@ -98,6 +98,7 @@ tmExportDataSHP::~tmExportDataSHP()
 bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
 											 const wxString & path)
 {
+	bool bReturn = true;
 	wxASSERT(myLayer);
 	wxFileName * myShpFileName = GetFileName(myLayer, path);
 	if (!myShpFileName)
@@ -107,10 +108,70 @@ bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
 	}
 	
 	
+	
+	if(!m_Shp.CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType))
+		bReturn =  false;
+	
 	// create the shp
 	//TODO: Add error to report indicating that export file wasn't created
 	
 	delete myShpFileName;
-	return true;
+	return bReturn;
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Add optional fields to the Shp
+ @param myfields array of fields for this shapefile
+ @return  true if fields were added successfully, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::AddOptFields (PrjMemFieldArray * myfields)
+{
+	wxASSERT (myfields);
+	
+	bool bReturn = true; // if adding fields failed, stop
+	for (unsigned int i = 0; i< myfields->GetCount(); i++)
+	{
+		ProjectDefMemoryFields field = myfields->Item(i);
+		int iSize = 0;
+		
+		switch (field.m_FieldType)
+		{
+			case TM_FIELD_TEXT:
+				bReturn = m_Shp.AddFieldText(field.m_Fieldname, field.m_FieldPrecision);
+				break;
+				
+			case TM_FIELD_INTEGER:
+				bReturn = m_Shp.AddFieldNumeric(field.m_Fieldname, false);
+				break;
+				
+			case TM_FIELD_FLOAT:
+				bReturn = m_Shp.AddFieldNumeric(field.m_Fieldname, true);
+				break;
+				
+			case TM_FIELD_ENUMERATION:
+				// compute max size for enum
+				iSize = GetSizeOfEnum(field.m_pCodedValueArray);
+				bReturn = m_Shp.AddFieldText(field.m_Fieldname, iSize);
+				break;
+				
+			case TM_FIELD_DATE:
+				bReturn = m_Shp.AddFieldDate(field.m_Fieldname);
+				break;
+				
+			default:
+				bReturn = false;
+				break;
+		}
+		
+		if (!bReturn)
+			break;
+		
+	}
+	
+	return bReturn;
 }

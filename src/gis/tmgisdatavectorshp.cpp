@@ -511,3 +511,171 @@ wxArrayLong * tmGISDataVectorSHP::SearchData (const tmRealRect & rect, int type)
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Create the shp on the disk
+ @param filename the filename we want to create
+ @param type one of the following values : 
+  - 0 for lines
+  - 1 for points
+  - 2 for polygons
+ @return  true if file creation succeed, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
+{
+	const char *pszDriverName = "ESRI Shapefile";
+    OGRSFDriver *poDriver;
+	
+  	
+    poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
+																	 pszDriverName );
+    if( poDriver == NULL )
+    {
+		wxASSERT_MSG(0, _T(" driver not available."));
+		return false;
+    }
+	
+   
+	
+	// creating the file
+	wxString mysFileName = filename.GetFullPath();
+	char * buffer = new char [mysFileName.Length()+2];
+	strcpy(buffer, (const char*)mysFileName.mb_str(wxConvUTF8));
+	
+	m_Datasource = poDriver->CreateDataSource( buffer, NULL );
+    if( m_Datasource == NULL )
+    {
+        wxASSERT_MSG(0, _T("Creation of output file failed."));
+        return false;
+    }
+	
+	
+	OGRwkbGeometryType myGeomType = wkbUnknown;
+	switch (type)
+	{
+		case 0: // LINE
+			myGeomType = wkbMultiLineString;
+			break;
+			
+		case 1: // POINT
+			myGeomType = wkbMultiPoint;
+			break;
+			
+		case 2: // POLYGON
+			myGeomType = wkbMultiPolygon;
+			break;
+			
+		default:
+			myGeomType = wkbUnknown;
+			break;
+	}
+	
+	if (myGeomType == wkbUnknown)
+		return false;
+	
+	
+	// creating the layer
+	wxString myFileNameWOExt = filename.GetName();
+	char * buffer2 = new char [myFileNameWOExt.Length()+2];
+	strcpy(buffer2, (const char*)myFileNameWOExt.mb_str(wxConvUTF8));
+	
+	m_Layer = m_Datasource->CreateLayer( buffer2, NULL, myGeomType, NULL );
+    if( m_Layer == NULL )
+    {
+		wxASSERT_MSG(0 , _T("Layer creation failed."));
+        return false;
+    }
+	
+	
+	return true;	
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Add text fields to the Shp
+ @param fieldname name of the field
+ @param size length of the field
+ @return true if field added, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::AddFieldText (const wxString & fieldname, int size)
+{
+	wxASSERT (m_Layer);
+	
+	char * buffer = new char [fieldname.Length()+2];
+	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
+	OGRFieldDefn oField( buffer, OFTString );
+	
+    oField.SetWidth(size);
+	
+    if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
+    {
+        wxASSERT_MSG(0,_T("Creating text field failed."));
+        return false;
+    }
+	return true;
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Add int field to the Shp
+ @param fieldname name of the field
+ @param isfloat Set this value to true if you want a float field
+ @return true if field added, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::AddFieldNumeric (const wxString & fieldname, bool isfloat)
+{
+	wxASSERT (m_Layer);
+	
+	char * buffer = new char [fieldname.Length()+2];
+	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
+	
+	OGRFieldType myFieldType = OFTInteger;
+	if (isfloat)
+		myFieldType = OFTReal;
+		
+	OGRFieldDefn oField( buffer, myFieldType);	
+	
+    if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
+    {
+        wxASSERT_MSG(0,_T("Creating int field failed."));
+        return false;
+    }
+	return true;	
+}
+
+
+
+/***************************************************************************//**
+ @brief Add date field to the Shp
+ @param fieldname name of the field
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
+{
+	wxASSERT (m_Layer);
+	
+	char * buffer = new char [fieldname.Length()+2];
+	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
+	
+		
+	OGRFieldDefn oField( buffer, OFTDateTime);	
+	
+    if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
+    {
+        wxASSERT_MSG(0,_T("Creating int field failed."));
+        return false;
+    }
+	return true;	
+}
