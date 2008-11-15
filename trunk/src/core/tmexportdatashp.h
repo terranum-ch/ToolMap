@@ -31,11 +31,15 @@
 
 
 #include "tmexportdata.h"		// for parent class definition
+#include "../gis/tmgisdatavectorshp.h"	// for shp
 
 
 class tmExportDataSHP : public tmExportData
 	{
 	private:
+		tmGISDataVectorSHP  m_Shp;
+		
+		// private function
 		void InitMemberValues();
 		
 	protected:
@@ -50,6 +54,8 @@ class tmExportDataSHP : public tmExportData
 		// create export file
 		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
 											const wxString & path);
+		
+		virtual bool AddOptFields (PrjMemFieldArray * myfields);
 		
 	};
 

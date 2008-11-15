@@ -110,3 +110,28 @@ wxFileName * tmExportData::GetFileName (ProjectDefMemoryLayers * myLayer,  const
 
 
 
+/***************************************************************************//**
+ @brief Get the max size of the items stored into array
+ @details This function may be used for getting the max size we should plan for
+ storring all enum values
+ @param mCodedVal Contain all enum values
+ @return  size of the field for storing those enum
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 November 2008
+ *******************************************************************************/
+int tmExportData::GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal)
+{
+	wxASSERT (mCodedVal);
+	int iRetour = 0;
+	int iTemp = 0;
+	for (unsigned int i = 0; i<mCodedVal->GetCount();i++)
+	{
+		iTemp = mCodedVal->Item(i).m_ValueName.Len();
+		if (iTemp > iRetour)
+			iRetour = iTemp;
+	}
+	
+	return iRetour;
+		
+}
+

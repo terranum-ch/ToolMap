@@ -73,6 +73,12 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		// searching data
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
 		
+		// creating file & fields
+		virtual bool CreateFile (const wxFileName & filename, int type);
+		virtual bool AddFieldText (const wxString & fieldname, int size);
+		virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
+		virtual bool AddFieldDate (const wxString & fieldname);
+		
 	};
 
 
