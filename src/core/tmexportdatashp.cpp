@@ -29,6 +29,7 @@
 void tmExportDataSHP::InitMemberValues()
 {
 	m_Extension = _T(".shp");
+	m_Frame = NULL;
 }
 
 
@@ -80,7 +81,8 @@ void tmExportDataSHP::Create (DataBaseTM * database)
  *******************************************************************************/
 tmExportDataSHP::~tmExportDataSHP()
 {
-	
+	if (m_Frame)
+		OGRGeometryFactory::destroyGeometry(m_Frame);
 }
 
 
@@ -198,3 +200,75 @@ bool tmExportDataSHP::AddGenericFields (int iObjeDescSize)
 	return false;
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Write all geometrics lines to the shp
+ @param myLayer object containing info on the actual layer, such as layer_ID or
+ layer_Name
+ @return  false if write failled, true otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
+{
+	wxASSERT (m_Frame);
+	tmGISDataVectorMYSQL myDBData;
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+	OGRLineString * myLine = NULL;
+	OGRGeometry * myCropLine = NULL;
+	long myOid = 0;
+	
+	while (1)
+	{
+		myLine = myDBData.GetNextDataLine(myOid);
+		if (!myLine)
+			break;
+		
+		// intersects with the frame
+		myCropLine = myLine->Intersection(m_Frame);
+		if (!myCropLine->IsEmpty())
+		{
+			m_Shp.AddGeometry(myCropLine, myOid);
+			
+		}
+		
+		
+		OGRGeometryFactory::destroyGeometry(myLine);
+		OGRGeometryFactory::destroyGeometry(myCropLine);
+	}
+	
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Set the frame
+ @details If the frame allready exists, it is destroyed and this new frame is
+ used
+ @param points array of points creating a polygon
+ @param nbvertex number of vertex
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
+{
+	wxASSERT (points);
+	if (m_Frame)
+		OGRGeometryFactory::destroyGeometry(m_Frame);
+	
+	m_Frame =(OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
+	OGRLineString * myLine;
+	myLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	for (int i = 0; i<nbvertex;i++)
+		myLine->addPoint(points[i].x, points[i].y);
+	
+	m_Frame->addRing((OGRLinearRing*) myLine);
+	
+	OGRGeometryFactory::destroyGeometry(myLine);
+	
+}
+

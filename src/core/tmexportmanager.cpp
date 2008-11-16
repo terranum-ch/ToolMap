@@ -242,6 +242,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
 		m_ExportData = CreateExportData();
+		m_ExportData->SetFrame(pFrame, iFrameVertex);
 		
 		// create SIG layer
 		if (CreateExportLayer(&(layers->Item(i))))
@@ -407,9 +408,67 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 {
 	wxASSERT (m_ExportData);
 	
+	// get gis data
+	wxString sGeomTable = wxEmptyString;
+	wxString sValTable = wxEmptyString;
+	switch (layer->m_LayerType)
+	{
+		case LAYER_POLYGON:
+		case LAYER_LINE:
+			sGeomTable = TABLE_NAME_GIS_GENERIC[0]; // lines
+			sValTable = TABLE_NAME_GIS_ATTRIBUTION[0];
+			break;
+			
+		case LAYER_POINT:
+			sGeomTable = TABLE_NAME_GIS_GENERIC[1];
+			sValTable = TABLE_NAME_GIS_ATTRIBUTION[1];
+			break;
+
+		default:
+			break;
+	}
 	
 	
-	return true;
+	wxString sTemp = _T("SELECT %s.OBJECT_ID, %s.OBJECT_GEOMETRY, %s.OBJECT_CD,")
+	_T(" %s.OBJECT_DESC FROM %s ")
+	_T(" LEFT JOIN %s ON (%s.OBJECT_ID = %s.OBJECT_GEOM_ID) ") 
+	_T(" LEFT JOIN %s ON %s.OBJECT_VAL_ID = %s.OBJECT_ID WHERE")
+	_T(" %s.THEMATIC_LAYERS_LAYER_INDEX = %d");
+	wxString sSentence = wxString::Format(sTemp,
+										  sGeomTable.c_str(),
+										  sGeomTable.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  sGeomTable.c_str(),
+										  sValTable.c_str(),
+										  sGeomTable.c_str(),
+										  sValTable.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  sValTable.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  layer->m_LayerID);
+	if (!m_pDB->DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting data : %s"),
+				   m_pDB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	
+	switch (layer->m_LayerType)
+	{
+		case LAYER_LINE:
+			if (m_ExportData->WriteLines(layer))
+				return true;
+			break;
+		default:
+			break;
+	}
+	
+	m_pDB->DataBaseDestroyResults();
+	
+	return false;
 }
 
 

@@ -679,3 +679,31 @@ bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
     }
 	return true;	
 }
+
+
+
+/***************************************************************************//**
+ @brief Add a geometry in the shapefile
+ @param Geom a OGRGeometry
+ @param oid the oid of the new geometry added
+ @return  true if geometry added, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
+{
+	wxASSERT(Geom);
+	wxASSERT (m_Layer);
+	
+	OGRFeature * poFeature;
+	poFeature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
+	poFeature->SetFID(oid);
+	poFeature->SetGeometry(Geom);
+	
+	if (m_Layer->CreateFeature(poFeature) != OGRERR_NONE)
+		return false;
+	
+	OGRFeature::DestroyFeature(poFeature);
+	return true;
+	
+}
