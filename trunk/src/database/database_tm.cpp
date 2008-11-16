@@ -167,7 +167,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	
 	_T("CREATE  TABLE `generic_frame` (")
 	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Feature identifier' ,")
-	_T("  `OBJECT_GEOMETRY` POLYGON NOT NULL COMMENT 'Feature geometry' ,")
+	_T("  `OBJECT_GEOMETRY`  LINESTRING NOT NULL COMMENT 'Feature geometry' ,")
 	_T("  PRIMARY KEY (`OBJECT_ID`) );")
 	
 	_T("CREATE  TABLE `zoom_level` (")
@@ -1812,7 +1812,7 @@ bool DataBaseTM::InitTOCGenericLayers()
 	}
 	
 	
-	int iTypes [] = {LAYER_LINE, LAYER_POINT, LAYER_POINT, LAYER_POINT, LAYER_POLYGON};
+	int iTypes [] = {LAYER_LINE, LAYER_POINT, LAYER_POINT, LAYER_POINT, LAYER_LINE};
 
 	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_TOC + _T(" (TYPE_CD, ")
 	_T("CONTENT_NAME, GENERIC_LAYERS) VALUES (%d, \"%s\", %d); ");

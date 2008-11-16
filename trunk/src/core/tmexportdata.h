@@ -53,6 +53,7 @@ class tmExportData : public wxObject
 		wxFileName * GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path);
 		int GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal);
 		
+		
 	public:
 		// ctor
 		tmExportData();
@@ -60,11 +61,16 @@ class tmExportData : public wxObject
 		void Create (DataBaseTM * database);
 		~tmExportData();
 		
+		// informations
+		int GetSizeOfObjDesc (int layerindex);
+		
+		
 		// create export file
 		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
 											const wxString & path){return false;}
 		
 		virtual bool AddOptFields (PrjMemFieldArray * myfields){return false;}
+		virtual bool AddGenericFields (int iSize){return false;}
 		
 	
 	};

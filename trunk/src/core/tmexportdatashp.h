@@ -56,6 +56,7 @@ class tmExportDataSHP : public tmExportData
 											const wxString & path);
 		
 		virtual bool AddOptFields (PrjMemFieldArray * myfields);
+		virtual bool AddGenericFields (int iSize);
 		
 	};
 

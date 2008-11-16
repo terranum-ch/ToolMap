@@ -135,3 +135,43 @@ int tmExportData::GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal)
 		
 }
 
+
+
+/***************************************************************************//**
+ @brief Getting size of Object Desc column
+ @details This function return an array of int corresponding to the minimum size
+ of the column needed for containing the OBJECT_DESC text
+ @param colarray adress of a wxArrayInt structure
+ @return  true if all works, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+int tmExportData::GetSizeOfObjDesc (int layerindex)
+{
+	wxASSERT(m_pDB);
+	
+	wxString sStemp = _T("SELECT OBJECT_DESC FROM ") +
+	TABLE_NAME_OBJECTS + _T(" WHERE THEMATIC_LAYERS_LAYER_INDEX = %d;");
+	wxString sSentence = wxString::Format(sStemp, layerindex);
+	
+	
+	if (!m_pDB->DataBaseQuery(sSentence))
+		return 0;
+	
+	wxString myResult;
+	int iActualCharCount = 0;
+	int iTempCharCount = 0;
+	while (1)
+	{
+		if(!m_pDB->DataBaseGetNextResult(myResult))
+			break;
+		
+		iTempCharCount = myResult.Len();
+		if (iTempCharCount > iActualCharCount)
+			iActualCharCount = iTempCharCount;
+	}
+	
+	return iActualCharCount;
+	
+}
+
