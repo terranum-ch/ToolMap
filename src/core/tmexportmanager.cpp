@@ -462,6 +462,12 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 			if (m_ExportData->WriteLines(layer))
 				return true;
 			break;
+			
+		case LAYER_POINT:
+			if (m_ExportData->WritePoints(layer))
+				return true;
+			break;
+			
 		default:
 			break;
 	}

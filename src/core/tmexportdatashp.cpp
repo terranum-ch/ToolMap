@@ -246,6 +246,44 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 
 /***************************************************************************//**
+ @brief Write all geometrics points to the shp
+ @param myLayer object containing info on the actual layer, such as layer_ID or
+ layer_Name
+ @return  false if write failled, true otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
+{
+	wxASSERT (m_Frame);
+	tmGISDataVectorMYSQL myDBData;
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+	OGRPoint * myPoint = NULL;
+	long myOid = 0;
+	
+	while (1)
+	{
+		myPoint = myDBData.GetOGRNextDataPoint(myOid);
+		if (!myPoint)
+			break;
+		
+		// intersects with the frame
+		if( myPoint->Intersect((OGRGeometry*)m_Frame))
+		{
+			m_Shp.AddGeometry((OGRGeometry*)myPoint, myOid);
+		}
+		
+		OGRGeometryFactory::destroyGeometry(myPoint);
+	}
+	
+	
+	return true;
+	
+}
+
+
+
+/***************************************************************************//**
  @brief Set the frame
  @details If the frame allready exists, it is destroyed and this new frame is
  used

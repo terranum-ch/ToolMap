@@ -73,6 +73,7 @@ class tmExportData : public wxObject
 		virtual bool AddGenericFields (int iSize){return false;}
 		
 		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
+		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
 		
 		
