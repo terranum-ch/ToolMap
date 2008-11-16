@@ -38,7 +38,7 @@ class tmExportDataSHP : public tmExportData
 	{
 	private:
 		tmGISDataVectorSHP  m_Shp;
-		
+		OGRPolygon * m_Frame;
 		// private function
 		void InitMemberValues();
 		
@@ -57,6 +57,14 @@ class tmExportDataSHP : public tmExportData
 		
 		virtual bool AddOptFields (PrjMemFieldArray * myfields);
 		virtual bool AddGenericFields (int iSize);
+		
+		// frame function
+		virtual void SetFrame (wxRealPoint * points, int nbvertex);
+
+		
+		// writing functions
+		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer);
+		//virtual bool WritePoints (ProjectDefMemoryLayers * myLayer);
 		
 	};
 

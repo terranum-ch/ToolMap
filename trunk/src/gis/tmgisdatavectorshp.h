@@ -79,6 +79,8 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
 		virtual bool AddFieldDate (const wxString & fieldname);
 		
+		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid);
+		
 	};
 
 
