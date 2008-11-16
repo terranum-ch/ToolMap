@@ -79,6 +79,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex, long & oid);
 		virtual wxRealPoint * GetNextDataPoint (long & oid);
 		virtual OGRLineString * GetNextDataLine (long & oid); 
+		virtual OGRPoint * GetOGRNextDataPoint (long & oid);
 		
 		// metadata
 		virtual wxString GetMetaDataAsHtml ();

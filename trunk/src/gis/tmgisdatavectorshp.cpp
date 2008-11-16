@@ -557,15 +557,15 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	switch (type)
 	{
 		case 0: // LINE
-			myGeomType = wkbMultiLineString;
+			myGeomType = wkbLineString;
 			break;
 			
 		case 1: // POINT
-			myGeomType = wkbMultiPoint;
+			myGeomType = wkbPoint;
 			break;
 			
 		case 2: // POLYGON
-			myGeomType = wkbMultiPolygon;
+			myGeomType = wkbPolygon;
 			break;
 			
 		default:
@@ -699,8 +699,8 @@ bool tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
 	poFeature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
 	poFeature->SetFID(oid);
 	poFeature->SetGeometry(Geom);
-	
-	if (m_Layer->CreateFeature(poFeature) != OGRERR_NONE)
+	OGRErr myErr = m_Layer->CreateFeature(poFeature);
+	if (myErr != OGRERR_NONE)
 		return false;
 	
 	OGRFeature::DestroyFeature(poFeature);

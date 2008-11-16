@@ -353,6 +353,36 @@ OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 
 
 
+OGRPoint * tmGISDataVectorMYSQL::GetOGRNextDataPoint (long & oid)
+{
+	MYSQL_ROW row;
+	unsigned long *  row_length;
+	
+	// security check
+	if(!m_DB->DataBaseHasResult())
+	{
+		if (IsLoggingEnabled())
+			wxLogError(_T("Database should have results..."));
+		return NULL;
+	}
+	
+	
+	row_length = m_DB->DataBaseGetNextRowResult(row);
+	if (row_length == NULL)
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("No more results"));
+		return NULL;
+	}
+	
+	
+	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length, 1);
+	oid = GetOid(row, 0);
+	return ppoint;
+}
+
+
+
 wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 {
 	MYSQL_ROW row;

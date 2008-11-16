@@ -64,7 +64,7 @@ class tmExportDataSHP : public tmExportData
 		
 		// writing functions
 		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer);
-		//virtual bool WritePoints (ProjectDefMemoryLayers * myLayer);
+		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer);
 		
 	};
 
