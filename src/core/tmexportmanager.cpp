@@ -31,6 +31,7 @@ void tmExportManager::InitMemberValues()
 	m_pDB = NULL;
 	m_Parent = NULL;
 	m_ExportType = EXPORT_SHAPEFILE;
+	m_ExportData = NULL;
 }
 
 
@@ -56,7 +57,8 @@ tmExportManager::tmExportManager()
  *******************************************************************************/
 tmExportManager::~tmExportManager()
 {
-
+	if (m_ExportData)
+		delete m_ExportData;
 }
 
 
@@ -229,19 +231,34 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		return false;
 	}
 	
+	// get frame
+	int iFrameVertex = 0;
+	wxRealPoint * pFrame = GetFrame(iFrameVertex);
+	if (!pFrame)
+		return false;
 	
 
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
+		m_ExportData = CreateExportData();
+		
 		// create SIG layer
 		if (CreateExportLayer(&(layers->Item(i))))
+		{
 			// export data to layer
-			wxLogDebug(_T("Exporting layers : %s - OK-"),
-					   layers->Item(i).m_LayerName.c_str());
-			
+			if (ExportGISData(&(layers->Item(i))))
+				wxLogDebug(_T("Exporting layers : %s - OK-"),
+						   layers->Item(i).m_LayerName.c_str());
+		}
+		
+		delete m_ExportData;
+		m_ExportData = NULL;
+		
 	}
 	
+	
+	delete [] pFrame;
 	return true;
 }
 
@@ -258,32 +275,44 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 {
 	wxASSERT(layer);
+	wxASSERT (m_ExportData);
 	bool bReturn = true;
 	
+	
+	
+	// get size of object_description
+	int iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
+	
+	
 	// create SIG layer
-	tmExportData * myExportData = CreateExportData();
-	if (myExportData->
+	if (m_ExportData->
 		CreateEmptyExportFile(layer,
 							  m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)))
 	{
 				
-		// add optionnal fields
-		PrjMemFieldArray * myFields = GetAllFieldsForLayer(layer);
-		if (myFields) // ok we have advanced fields
+		// add obligatory fields
+		if (!m_ExportData->AddGenericFields(iSizeOfObjCol))
+			bReturn = false;
+		else
 		{
-			
-			myExportData->AddOptFields(myFields);
-			delete myFields;
+		
+			// add optionnal fields
+			PrjMemFieldArray * myFields = GetAllFieldsForLayer(layer);
+			if (myFields) // ok we have advanced fields
+			{
+				
+				m_ExportData->AddOptFields(myFields);
+				delete myFields;
+			}
+		
 		}
-		
-		
 		
 	}
 	else
 		bReturn = false;
 			
 	
-	delete myExportData;
+	
 	return bReturn;
 }
 
@@ -364,3 +393,49 @@ tmExportData * tmExportManager::CreateExportData ()
 	return NULL;
 }
 
+
+
+
+/***************************************************************************//**
+ @brief Export GIS data to the created layer
+ @param layer a valid object of type #ProjectDefMemoryLayers
+ @return  true if GIS data added successfully to the layer
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
+{
+	wxASSERT (m_ExportData);
+	
+	
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get the frame
+ @details Array of wxRealPoints returned must be destroyed by caller
+ @param nbvertex the nb of vertex contained in the wxRealPoint array returned
+ @return  An array of nbvertex item containing all vertex creating the frame
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
+{
+	wxASSERT(m_pDB);
+	wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_GIS_GENERIC[4];
+	
+	if (!m_pDB->DataBaseQuery(sSentence))
+	{
+		nbvertex = 0;
+		return NULL;
+	}
+	
+	tmGISDataVectorMYSQL myFrameDB;
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+	long loid = 0;
+	return myFrameDB.GetNextDataLine(nbvertex, loid);
+	
+}

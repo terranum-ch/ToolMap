@@ -44,6 +44,7 @@ class tmExportManager : public wxObject
 		wxWindow * m_Parent;
 		PRJDEF_EXPORT_TYPE m_ExportType;
 		wxFileName m_ExportPath;
+		tmExportData * m_ExportData;
 
 		
 		// init values
@@ -56,6 +57,8 @@ class tmExportManager : public wxObject
 		// export function
 		bool ExportLayers (PrjMemLayersArray * layers);
 		bool CreateExportLayer (ProjectDefMemoryLayers * layer);
+		bool ExportGISData (ProjectDefMemoryLayers * layer);
+		wxRealPoint * GetFrame (int & nbvertex);
 		
 		// check path
 		bool IsExportPathValid();

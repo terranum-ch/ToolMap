@@ -41,3 +41,7 @@ Update Database
 - 214 -> 215 (Adding target column in queries table)
 	- ALTER TABLE  prj_queries ADD COLUMN QUERIES_TARGET INT NOT NULL AFTER QUERIES_ID;
 	- UPDATE `prj_settings` SET PRJ_VERSION = 215;
+- 215 -> 216 (generic_frame is set to line)
+	- ALTER TABLE generic_frame MODIFY COLUMN OBJECT_GEOMETRY  LINESTRING NOT NULL;
+	- UPDATE `prj_settings` SET PRJ_VERSION = 216;
+	- UPDATE prj_toc SET TYPE_CD = 0 WHERE CONTENT_NAME ="frame";

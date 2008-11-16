@@ -175,3 +175,26 @@ bool tmExportDataSHP::AddOptFields (PrjMemFieldArray * myfields)
 	
 	return bReturn;
 }
+
+
+
+/***************************************************************************//**
+ @brief Adding generic fields
+ @details Adding field :
+ - OBJECT_CD
+ - OBJECT_DESC
+ @return  true if fields added successfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::AddGenericFields (int iObjeDescSize)
+{
+	wxASSERT (iObjeDescSize);
+	
+	if (m_Shp.AddFieldNumeric(_T("OBJ_CD")) &&
+		m_Shp.AddFieldText(_T("OBJ_DESC"), iObjeDescSize))
+		return true;
+	
+	return false;
+	
+}
