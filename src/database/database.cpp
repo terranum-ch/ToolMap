@@ -670,6 +670,13 @@ long DataBase::DatabaseGetCountResults()
 	return 0;
 }
 
+int DataBase::DatabaseGetCountCols()
+{
+	if (pResults)
+		return mysql_num_fields(pResults);
+	return -1;
+}
+
 
 void DataBase::DataBaseDestroyResults ()
 {

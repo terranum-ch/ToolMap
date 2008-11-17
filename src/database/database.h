@@ -121,6 +121,9 @@ public:
 	
 
 	long DatabaseGetCountResults();
+	
+	int DatabaseGetCountCols();
+	
 	/*! 
     @brief Return an array containing all the selected table fields
     @param      sTable a String containing the table name

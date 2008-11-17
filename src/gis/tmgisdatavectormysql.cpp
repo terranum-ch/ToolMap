@@ -383,6 +383,47 @@ OGRPoint * tmGISDataVectorMYSQL::GetOGRNextDataPoint (long & oid)
 
 
 
+OGRPoint * tmGISDataVectorMYSQL::GetNextDataPointWithAttrib (long & oid,
+															 wxArrayString & values)
+{
+	MYSQL_ROW row;
+	unsigned long *  row_length;
+	values.Clear();
+	
+	// security check
+	if(!m_DB->DataBaseHasResult())
+	{
+		if (IsLoggingEnabled())
+			wxLogError(_T("Database should have results..."));
+		return NULL;
+	}
+	
+	
+	row_length = m_DB->DataBaseGetNextRowResult(row);	
+	if (row_length == NULL)
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("No more results"));
+		return NULL;
+	}
+	
+	int iRows = m_DB->DatabaseGetCountCols();
+	wxASSERT(iRows > 2);
+	for (int i = 2; i<iRows;i++)
+	{
+		values.Add(wxString ( row[i], wxConvUTF8));
+	}
+	
+	
+	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length, 1);
+	oid = GetOid(row, 0);
+
+	return ppoint;
+
+}
+
+
+
 wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 {
 	MYSQL_ROW row;

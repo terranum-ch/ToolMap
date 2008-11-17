@@ -336,6 +336,25 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbv
 }
 
 
+
+/***************************************************************************//**
+ @brief Get the actual feature as polygon
+ @param oid the oid of the returned polygon
+ @return  a valid OGRPolygon (must be destroyed by caller) or NULL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+OGRPolygon * tmGISDataVectorSHP::GetNextDataOGRPolygon (long & oid)
+{
+	wxASSERT(m_Feature);
+	OGRPolygon * myPoly = (OGRPolygon*) m_Feature->GetGeometryRef();
+	oid = m_Feature->GetFID();
+	
+	return myPoly;
+}
+
+
+
 /***************************************************************************//**
  @brief Counting features in layer
  @details This function return the number of lines, points, or polygons stored

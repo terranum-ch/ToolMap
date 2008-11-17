@@ -78,6 +78,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex, long & oid);
 		virtual wxRealPoint * GetNextDataPoint (long & oid);
+		OGRPoint * GetNextDataPointWithAttrib (long & oid, wxArrayString & values);
 		virtual OGRLineString * GetNextDataLine (long & oid); 
 		virtual OGRPoint * GetOGRNextDataPoint (long & oid);
 		

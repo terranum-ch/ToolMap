@@ -534,10 +534,10 @@ bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
 				return true;
 			break;
 			
-		/*case LAYER_POLYGON:
-			if (m_ExportData->WritePolygons(layer))
+		case LAYER_POLYGON:
+			if (m_ExportData->AddSimpleDataToPolygon(layer))
 				return true;
-			break;*/
+			break;
 			
 		default:
 			break;
