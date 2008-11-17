@@ -249,6 +249,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		{
 			// export data to layer
 			if (ExportGISData(&(layers->Item(i))))
+				if (AddAttributionSimpleData(&(layers->Item(i))))
 				wxLogDebug(_T("Exporting layers : %s - OK-"),
 						   layers->Item(i).m_LayerName.c_str());
 		}
@@ -508,4 +509,39 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	long loid = 0;
 	return myFrameDB.GetNextDataLine(nbvertex, loid);
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Fill columns OBJ_CD, OBJ_DESC
+ @param layer informations about the current layer
+ @return  true if value were passed successfully, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
+{
+	switch (layer->m_LayerType)
+	{
+		case LAYER_LINE:
+			if (m_ExportData->AddSimpleDataToLine(layer))
+				return true;
+			break;
+			
+		/*case LAYER_POINT:
+			if (m_ExportData->WritePoints(layer))
+				return true;
+			break;
+			
+		case LAYER_POLYGON:
+			if (m_ExportData->WritePolygons(layer))
+				return true;
+			break;*/
+			
+		default:
+			break;
+	}
+	
+	return false;
 }

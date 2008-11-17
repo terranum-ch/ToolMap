@@ -175,3 +175,63 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Process query for getting simple attributs
+ @param layertype type of the layer (point, line, polygon)
+ @param layerindex layer index of the layer in the database
+ @return  true if the query succeed, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmExportData::GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex)
+{
+	wxString sGeomTable = wxEmptyString;
+	wxString sValTable = wxEmptyString;
+	switch (layertype)
+	{
+			
+		case LAYER_LINE:
+			sGeomTable = TABLE_NAME_GIS_GENERIC[0]; // lines
+			sValTable = TABLE_NAME_GIS_ATTRIBUTION[0];
+			break;
+			
+		case LAYER_POINT:
+			sGeomTable = TABLE_NAME_GIS_GENERIC[1];
+			sValTable = TABLE_NAME_GIS_ATTRIBUTION[1];
+			break;
+			
+		case LAYER_POLYGON:
+			sGeomTable = TABLE_NAME_GIS_GENERIC[2];
+			sValTable = TABLE_NAME_GIS_ATTRIBUTION[2];
+			break;
+			
+		default:
+			break;
+	}
+	
+	
+	wxString sTemp = _T("SELECT %s.OBJECT_CD,")
+	_T(" %s.OBJECT_DESC FROM %s ")
+	_T(" LEFT JOIN %s ON (%s.OBJECT_ID = %s.OBJECT_GEOM_ID) ") 
+	_T(" LEFT JOIN %s ON %s.OBJECT_VAL_ID = %s.OBJECT_ID WHERE")
+	_T(" %s.THEMATIC_LAYERS_LAYER_INDEX = %d");
+	wxString sSentence = wxString::Format(sTemp,
+										  TABLE_NAME_OBJECTS.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  sGeomTable.c_str(),
+										  sValTable.c_str(),
+										  sGeomTable.c_str(),
+										  sValTable.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  sValTable.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  TABLE_NAME_OBJECTS.c_str(),
+										  layerindex);
+	if (m_pDB->DataBaseQuery(sSentence))
+		return true;
+	
+	return false;
+		
+}

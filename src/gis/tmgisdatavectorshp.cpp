@@ -708,3 +708,106 @@ bool tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
 	return true;
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Move to next feature
+ @param resetreading should we restart iterating features ?
+ @return true if next feature is a valid feature, false otherwise (end of file
+ encountred).
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::SetNextFeature (bool resetreading)
+{
+	wxASSERT (m_Layer);
+	if (m_Feature)
+		OGRFeature::DestroyFeature(m_Feature);
+	
+	if (resetreading)
+		m_Layer->ResetReading();
+	
+	m_Feature = m_Layer->GetNextFeature();
+		
+	if (m_Feature)
+		return true;
+	
+	return false;
+}
+
+
+
+/***************************************************************************//**
+ @brief Add value into a field
+ @param value a wxString containing the value (will be converted in the function)
+ @param fieldtype the type of the field based on : #PRJDEF_FIELD_TYPE
+ @param iindex 0 based field index
+ @param bool true if value was added to the field
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::SetFieldValue (const wxString & value, 
+							int fieldtype, int iindex)
+{
+	wxASSERT(m_Feature);
+	
+	// check that the field exists
+	if (iindex > m_Feature->GetFieldCount() -1)
+	{
+		wxASSERT_MSG(0, _T("Trying to set value to a field that doesn't exists"));
+		return false;
+	}
+	
+	char * buffer = new char [value.Length()+2];
+	strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
+	
+	switch (fieldtype)
+	{
+		case 4: // enumeration
+		case 0: // TEXT
+			m_Feature->SetField(iindex, buffer);
+			break;
+			
+		case 1: // INTEGER
+			m_Feature->SetField(iindex, wxAtoi(value));
+			break;
+			
+		case 2: // FLOAT
+			m_Feature->SetField(iindex, wxAtof(value));
+			break;
+		
+			//TODO: Implement field date here (3)
+
+			
+		default:
+			wxLogDebug(_T("Not implemented now, sorrry...."));
+			return false;
+			break;
+	}
+
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Update the actual feature
+ @details This function should be used after applying modification to the
+ feature for saving the modification in the file. For exemple after setting
+ fields value with tmGISDataVectorSHP::SetFieldValue() use this function for
+ apply changes
+ @return  true if saving features works
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmGISDataVectorSHP::UpdateFeature ()
+{
+	wxASSERT(m_Feature);
+	wxASSERT (m_Layer);
+	
+	if (m_Layer->SetFeature(m_Feature) != OGRERR_NONE)
+		return false;
+	
+	return true;
+}

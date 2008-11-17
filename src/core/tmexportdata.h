@@ -52,7 +52,7 @@ class tmExportData : public wxObject
 		// protected functions
 		wxFileName * GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path);
 		int GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal);
-		
+		bool GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex);
 		
 	public:
 		// ctor
@@ -76,6 +76,8 @@ class tmExportData : public wxObject
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
+		
+		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer){return false;}
 		
 		
 	
