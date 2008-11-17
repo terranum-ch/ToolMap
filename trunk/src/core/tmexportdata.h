@@ -74,6 +74,7 @@ class tmExportData : public wxObject
 		
 		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
+		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
 		
 		
