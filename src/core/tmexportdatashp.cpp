@@ -305,21 +305,21 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	if (myNbResuts == 0)
 		return false;
 	
-	GEOSGeom * myArrayofCrop = new GEOSGeom[myNbResuts+1];
+	GEOSGeom * myArrayofCrop = new GEOSGeom();
 
 	
-	// add frame into array
-	OGRGeometry * myFrame = m_Frame->getExteriorRing();
-	char * myTxtFrame;
-	myFrame->exportToWkt(&myTxtFrame);
-	GEOSWKTReader * myReader = GEOSWKTReader_create();
-	GEOSGeometry * myFrame1 = GEOSWKTReader_read(myReader, myTxtFrame);
-	delete myTxtFrame;
+	// transform non standard OGRLinearRing -> OGRLineString
+	OGRLinearRing * myFrame = m_Frame->getExteriorRing();
+	OGRLineString * myLineString = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	for (int p= 0; p<myFrame->getNumPoints();p++)
+	{
+		OGRPoint * myPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
+		myFrame->getPoint(p,myPoint);
+		myLineString->addPoint(myPoint);
+	}
 	
-	myArrayofCrop[iValidLines] = myFrame1;
-	iValidLines++;
 	
-		
+	OGRGeometry * myTempNodedLines = OGRGeometryFactory::createGeometry(wkbMultiLineString);
 	// get lines into array
 	for (int i = 0; i < myNbResuts ; i++)
 	{
@@ -331,10 +331,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		myCropLine = myLine->Intersection(m_Frame);
 		if (!myCropLine->IsEmpty())
 		{
-			
-			myArrayofCrop[iValidLines] = myCropLine->exportToGEOS();
-			iValidLines++;
-			
+			// union all lines into one multiline
+			myTempNodedLines = myCropLine->Union(myTempNodedLines);
 		}
 		
 		
@@ -342,14 +340,23 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		OGRGeometryFactory::destroyGeometry(myCropLine);
 	}
 	
+	// union with frame
+	OGRGeometry * myLinesNoded = myTempNodedLines->Union(myLineString);
+	GEOSGeometry * myGEOSLinesNoded = myLinesNoded->exportToGEOS();
+	*myArrayofCrop = myGEOSLinesNoded;
 	
 	// create polygons
-	GEOSGeometry  * myPolCol = GEOSPolygonize(myArrayofCrop, iValidLines);
+	GEOSGeometry  * myPolCol = GEOSPolygonize(myArrayofCrop, 1);
 	int myNbPoly = GEOSGetNumGeometries(myPolCol);
 	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
 	
 	
+	// clean
+	OGRGeometryFactory::destroyGeometry(myLinesNoded);
+	OGRGeometryFactory::destroyGeometry(myTempNodedLines);
 	
+	
+	// save polygon to shp
 	for (int j = 0; j < myNbPoly;j++)
 	{
 		OGRPolygon * myPoly = (OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
@@ -359,11 +366,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		
 	}
 		
-	delete [] myArrayofCrop;
-	
+	delete  myArrayofCrop;
 	return true;
-	
-	
 }
 
 
