@@ -70,6 +70,7 @@ class tmExportDataSHP : public tmExportData
 		// adding field data
 		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer);
 		virtual bool AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer);
+		virtual bool AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer);
 		
 	};
 

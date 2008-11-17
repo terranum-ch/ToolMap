@@ -58,6 +58,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual wxRealPoint * GetNextDataPoint (long & oid);
 		virtual int GetNextDataPolygonInfo (long & oid);
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
+		virtual OGRPolygon * GetNextDataOGRPolygon (long & oid);
 		
 		// virtual function for metadata
 		virtual wxString GetMetaDataAsHtml ();

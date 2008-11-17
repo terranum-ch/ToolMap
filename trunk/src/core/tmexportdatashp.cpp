@@ -466,3 +466,74 @@ bool tmExportDataSHP::AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer)
 {
 	return AddSimpleDataToLine(myLayer);	
 }
+
+
+/***************************************************************************//**
+ @brief Setting simple attributs into SHP for polygons
+ @param myLayer informations about the current layer
+ @return  true if data passed successfully to the SHP
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
+{
+	wxASSERT(m_pDB);
+	
+	// process request 
+	if (!GetSimpleAttribDataWithSpatial (myLayer->m_LayerType, myLayer->m_LayerID))
+	{	
+		wxLogDebug(_T("Unable to get layer attribution information"));
+		return false;
+	}
+	
+	tmGISDataVectorMYSQL mySQLData;
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+	
+	long myOidPT = 0;
+	wxArrayString myAttribVal;
+	bool bFirstLoop = true;
+	OGRPolygon * myPolygon;
+	long myOidPLG = 0;
+	
+	// loop for all labels and search polygons
+	while (1)
+	{
+
+		OGRPoint * myPoint = mySQLData.GetNextDataPointWithAttrib(myOidPT, myAttribVal);
+		if (myPoint)
+		{
+			
+			
+			// loop for all polygons
+			while (1)
+			{
+				if(!m_Shp.SetNextFeature(bFirstLoop))
+					break;
+				
+				myPolygon = m_Shp.GetNextDataOGRPolygon(myOidPLG);
+				if (myPolygon)
+				{
+					if (myPoint->Intersect(myPolygon))
+					{
+						m_Shp.SetFieldValue(myAttribVal.Item(0), TM_FIELD_INTEGER, 0);
+						m_Shp.SetFieldValue(myAttribVal.Item(1), TM_FIELD_TEXT, 1);
+						m_Shp.UpdateFeature();
+					}
+				
+					OGRGeometryFactory::destroyGeometry(myPolygon);	
+				}
+				bFirstLoop = false;
+			
+			}
+			
+			
+			bFirstLoop = true;
+			OGRGeometryFactory::destroyGeometry(myPoint);
+		}
+		else
+			break;
+	}	
+	
+
+	return false;
+}
