@@ -80,6 +80,10 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool AddFieldDate (const wxString & fieldname);
 		
 		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid);
+		virtual bool SetNextFeature (bool resetreading = false);
+		virtual bool SetFieldValue (const wxString & value, 
+									int fieldtype, int iindex);
+		virtual bool UpdateFeature ();
 		
 	};
 

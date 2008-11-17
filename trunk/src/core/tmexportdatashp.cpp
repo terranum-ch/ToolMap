@@ -398,3 +398,56 @@ void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Setting simple attributs into SHP
+ @param myLayer informations about the current layer
+ @return  true if data passed successfully to the SHP
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer)
+{
+	wxASSERT(m_pDB);
+	
+	if (!GetSimpleAttribData(myLayer->m_LayerType, myLayer->m_LayerID))
+	{	
+		wxLogDebug(_T("Unable to get layer attribution information"));
+		return false;
+	}
+	
+	bool bFirstLoop = true;
+	wxArrayString myResults;
+	bool bSetFieldValue = true;
+	while (1) 
+	{
+		if(!m_Shp.SetNextFeature(bFirstLoop))
+			break;
+		
+		bFirstLoop = false;
+		myResults = m_pDB->DataBaseGetNextResult();
+		if (myResults.GetCount() != 2)
+			break;
+		
+		if(!m_Shp.SetFieldValue(myResults.Item(0), TM_FIELD_INTEGER, 0))
+		{
+			bSetFieldValue = false;
+			break;
+		}
+		
+		if(!m_Shp.SetFieldValue(myResults.Item(1), TM_FIELD_TEXT, 1))
+		{
+			bSetFieldValue = false;
+			break;
+		}
+		
+		m_Shp.UpdateFeature();
+
+	}
+	
+	
+	m_pDB->DataBaseDestroyResults();
+	return bSetFieldValue;
+	
+}

@@ -67,6 +67,9 @@ class tmExportDataSHP : public tmExportData
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer);
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer);
 		
+		// adding field data
+		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer);
+		
 	};
 
 
