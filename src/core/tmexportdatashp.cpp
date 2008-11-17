@@ -306,11 +306,21 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		return false;
 	
 	GEOSGeom * myArrayofCrop = new GEOSGeom[myNbResuts+1];
+
 	
-	//GEOSGeometry * myGeom = GEOSGeom_createCollection(GEOS_LINESTRING,
-	//												 &myArrayofCrop, myNbResuts);
+	// add frame into array
+	OGRGeometry * myFrame = m_Frame->getExteriorRing();
+	char * myTxtFrame;
+	myFrame->exportToWkt(&myTxtFrame);
+	GEOSWKTReader * myReader = GEOSWKTReader_create();
+	GEOSGeometry * myFrame1 = GEOSWKTReader_read(myReader, myTxtFrame);
+	delete myTxtFrame;
 	
+	myArrayofCrop[iValidLines] = myFrame1;
+	iValidLines++;
 	
+		
+	// get lines into array
 	for (int i = 0; i < myNbResuts ; i++)
 	{
 		myLine = myDBData.GetNextDataLine(myOid);
@@ -332,11 +342,6 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		OGRGeometryFactory::destroyGeometry(myCropLine);
 	}
 	
-	// adding the frame to the geomarray
-	OGRLineString * myFrame = (OGRLineString*) m_Frame->getExteriorRing();
-	wxASSERT (myFrame);
-	myArrayofCrop[iValidLines] = myFrame->exportToGEOS();
-	//iValidLines++;
 	
 	// create polygons
 	GEOSGeometry  * myPolCol = GEOSPolygonize(myArrayofCrop, iValidLines);
