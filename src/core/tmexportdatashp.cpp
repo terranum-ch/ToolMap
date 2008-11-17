@@ -284,6 +284,85 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 
 
 /***************************************************************************//**
+ @brief Compute polygons from lines
+ @details This function uses GEOS for computing polygon from lines
+ @param myLayer Informations about the current layer
+ @return  true if polygons were created successfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
+{
+	wxASSERT (m_Frame);
+	tmGISDataVectorMYSQL myDBData;
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+	OGRLineString * myLine = NULL;
+	OGRGeometry * myCropLine = NULL;
+	long myOid = 0;
+	int iValidLines = 0;
+	
+	int myNbResuts = m_pDB->DatabaseGetCountResults();
+	if (myNbResuts == 0)
+		return false;
+	
+	GEOSGeom * myArrayofCrop = new GEOSGeom[myNbResuts+1];
+	
+	//GEOSGeometry * myGeom = GEOSGeom_createCollection(GEOS_LINESTRING,
+	//												 &myArrayofCrop, myNbResuts);
+	
+	
+	for (int i = 0; i < myNbResuts ; i++)
+	{
+		myLine = myDBData.GetNextDataLine(myOid);
+		if (!myLine)
+			break;
+		
+		// intersects with the frame
+		myCropLine = myLine->Intersection(m_Frame);
+		if (!myCropLine->IsEmpty())
+		{
+			
+			myArrayofCrop[iValidLines] = myCropLine->exportToGEOS();
+			iValidLines++;
+			
+		}
+		
+		
+		OGRGeometryFactory::destroyGeometry(myLine);
+		OGRGeometryFactory::destroyGeometry(myCropLine);
+	}
+	
+	// adding the frame to the geomarray
+	OGRLineString * myFrame = (OGRLineString*) m_Frame->getExteriorRing();
+	wxASSERT (myFrame);
+	myArrayofCrop[iValidLines] = myFrame->exportToGEOS();
+	//iValidLines++;
+	
+	// create polygons
+	GEOSGeometry  * myPolCol = GEOSPolygonize(myArrayofCrop, iValidLines);
+	int myNbPoly = GEOSGetNumGeometries(myPolCol);
+	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
+	
+	
+	
+	for (int j = 0; j < myNbPoly;j++)
+	{
+		OGRPolygon * myPoly = (OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
+		char * myTxt = GEOSWKTWriter_write(myWriter,GEOSGetGeometryN(myPolCol, j));
+		myPoly->importFromWkt(&myTxt);
+		m_Shp.AddGeometry((OGRGeometry*)myPoly, -1);
+		
+	}
+		
+	delete [] myArrayofCrop;
+	
+	return true;
+	
+	
+}
+
+
+/***************************************************************************//**
  @brief Set the frame
  @details If the frame allready exists, it is destroyed and this new frame is
  used

@@ -468,6 +468,11 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 				return true;
 			break;
 			
+		case LAYER_POLYGON:
+			if (m_ExportData->WritePolygons(layer))
+				return true;
+			break;
+			
 		default:
 			break;
 	}

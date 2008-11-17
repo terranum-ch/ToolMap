@@ -141,8 +141,8 @@ int tmExportData::GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal)
  @brief Getting size of Object Desc column
  @details This function return an array of int corresponding to the minimum size
  of the column needed for containing the OBJECT_DESC text
- @param colarray adress of a wxArrayInt structure
- @return  true if all works, false otherwise
+ @param layerindex the Database layerindex
+ @return the size of the column Object_Description for the specified layers
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/

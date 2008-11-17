@@ -697,7 +697,8 @@ bool tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
 	
 	OGRFeature * poFeature;
 	poFeature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
-	poFeature->SetFID(oid);
+	if (oid != -1)
+		poFeature->SetFID(oid);
 	poFeature->SetGeometry(Geom);
 	OGRErr myErr = m_Layer->CreateFeature(poFeature);
 	if (myErr != OGRERR_NONE)
