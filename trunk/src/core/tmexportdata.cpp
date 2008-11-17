@@ -171,7 +171,7 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
 			iActualCharCount = iTempCharCount;
 	}
 	
-	return iActualCharCount;
+	return iActualCharCount + 1;
 	
 }
 

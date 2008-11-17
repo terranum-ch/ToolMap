@@ -78,6 +78,7 @@ class tmExportData : public wxObject
 		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
 		
 		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer){return false;}
+		virtual bool AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer){return false;}
 		
 		
 	

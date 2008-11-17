@@ -401,7 +401,7 @@ void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
 
 
 /***************************************************************************//**
- @brief Setting simple attributs into SHP
+ @brief Setting simple attributs into SHP for lines
  @param myLayer informations about the current layer
  @return  true if data passed successfully to the SHP
  @author Lucien Schreiber (c) CREALP 2008
@@ -450,4 +450,19 @@ bool tmExportDataSHP::AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer)
 	m_pDB->DataBaseDestroyResults();
 	return bSetFieldValue;
 	
+}
+
+
+/***************************************************************************//**
+ @brief Setting simple attributs into SHP for points
+ @details Actually this is exactly the same as calling 
+ tmExportDataSHP::AddSimpleDataToLine() but is kept for clarity.
+ @param myLayer informations about the current layer
+ @return  true if data passed successfully to the SHP
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 17 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer)
+{
+	return AddSimpleDataToLine(myLayer);	
 }
