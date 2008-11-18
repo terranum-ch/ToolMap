@@ -165,6 +165,36 @@ bool tmExportManager::ExportSelected ()
 }
 
 
+
+/***************************************************************************//**
+ @brief Export all layers without futher informations from user
+ @return  return true if all layers exported successfully, false otherwise.
+ Warnings may be treated in a report
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 November 2008
+ *******************************************************************************/
+bool tmExportManager::ExportAll ()
+{
+	wxASSERT(m_pDB);
+	wxASSERT(m_Parent);
+	
+	// get all layers from DB
+	PrjMemLayersArray * myLayers = GetAllLayers();
+	if (!myLayers)
+	{
+		return false;
+	}
+	
+	bool bReturn = ExportLayers(myLayers);
+	
+	myLayers->Clear();
+	delete myLayers;
+	
+	return bReturn;
+}
+
+
+
 /***************************************************************************//**
  @brief Get all layers from database
  @details This function return all layers in an Array of
@@ -178,8 +208,12 @@ PrjMemLayersArray * tmExportManager::GetAllLayers ()
 	wxASSERT(m_pDB);
 	
 	
-	ProjectDefMemoryLayers myLayer;
+	//TODO: Remove this wait dialog and add a progress dialog
+	wxBusyInfo wait (_("Please wait, exporting project ..."));
 	
+	
+	ProjectDefMemoryLayers myLayer;
+		
 	// first loop, destroy remaining results
 	m_pDB->DataBaseDestroyResults();
 	if(m_pDB->GetNextLayer(&myLayer) != 0)

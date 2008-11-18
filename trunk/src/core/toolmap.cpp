@@ -746,6 +746,14 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 {
+	if (m_PManager->IsProjectOpen())
+	{
+		tmExportManager myExport(this, m_PManager->GetDatabase());
+		if (myExport.ExportAll())
+			wxLogDebug(_T("Exporting all project success"));
+		else
+			wxLogDebug(_T("Exporting all project failed"));
+	}
 	
 }
 
