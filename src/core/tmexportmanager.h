@@ -34,7 +34,7 @@
 #include "projectdefmemory.h"			// for PojectDefMemoryLayers definition
 
 #include "tmexportdatashp.h"			// for exporting data in SHP
-
+#include <wx/busyinfo.h>				// for busy info dialog, remove if no more needed
 
 
 class tmExportManager : public wxObject
@@ -77,7 +77,7 @@ class tmExportManager : public wxObject
 		void Create (wxWindow * parent, DataBaseTM * database);
 		
 		// Export public function
-		bool ExportAll (){ return false;}
+		bool ExportAll ();
 		bool ExportSelected ();
 };
 
