@@ -227,20 +227,80 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 			break;
 		
 		// intersects with the frame
-		myCropLine = myLine->Intersection(m_Frame);
-		if (!myCropLine->IsEmpty())
+		//myCropLine = myLine->Intersection(m_Frame);
+		myCropLine = SafeIntersection(myLine, m_Frame);
+		if (myCropLine)
 		{
-			m_Shp.AddGeometry(myCropLine, myOid);
-			
+			if (!myCropLine->IsEmpty())
+			{
+				m_Shp.AddGeometry(myCropLine, myOid);
+				
+			}
+		
+			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}
 		
 		
 		OGRGeometryFactory::destroyGeometry(myLine);
-		OGRGeometryFactory::destroyGeometry(myCropLine);
+		
 	}
 	
 	
 	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Compute intersection
+ @details This function try to bypass the Intersection() bug of GDAL by using
+ GEOS directly
+ @param line The line to intersect
+ @param frame the frame for intersecting
+ @return  A valid OGRLineString or NULL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 November 2008
+ *******************************************************************************/
+OGRLineString * tmExportDataSHP::SafeIntersection(OGRLineString * line, OGRPolygon * frame)
+{
+	wxASSERT(line);
+	wxASSERT(frame);
+	
+	GEOSGeometry * geosline = NULL;
+	GEOSGeometry * geosframe = NULL;
+	GEOSGeometry * geosintersect = NULL;
+	OGRLineString * returncrop = NULL;
+	
+	
+	// convert to GEOS
+#ifdef __WXOSX__
+	return (OGRLineString*) line->Intersection(frame);
+	
+#else
+	
+	geosline = line->exportToGEOS();
+	geosframe = frame->exportToGEOS();
+	
+	wxASSERT(geosline);
+	wxASSERT(geosframe);
+	
+	geosintersect = GEOSIntersection(geosline, geosframe);
+	if (!geosintersect)
+		return NULL;
+	
+	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
+	
+	
+	returncrop = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	char * myTxt = GEOSWKTWriter_write(myWriter,geosintersect);
+	returncrop->importFromWkt(&myTxt);
+
+	return returncrop;	
+	
+	
+#endif
+	
+	
+	return NULL;
 }
 
 
@@ -328,16 +388,20 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 			break;
 		
 		// intersects with the frame
-		myCropLine = myLine->Intersection(m_Frame);
-		if (!myCropLine->IsEmpty())
+		//myCropLine = myLine->Intersection(m_Frame);
+		myCropLine = SafeIntersection(myLine, m_Frame);
+		if (myCropLine)
 		{
-			// union all lines into one multiline
-			myTempNodedLines = myCropLine->Union(myTempNodedLines);
+			if (!myCropLine->IsEmpty())
+			{
+				// union all lines into one multiline
+				myTempNodedLines = myCropLine->Union(myTempNodedLines);
+			}
+			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}
 		
-		
 		OGRGeometryFactory::destroyGeometry(myLine);
-		OGRGeometryFactory::destroyGeometry(myCropLine);
+		
 	}
 	
 	// union with frame

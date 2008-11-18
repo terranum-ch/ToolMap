@@ -42,6 +42,10 @@ class tmExportDataSHP : public tmExportData
 		// private function
 		void InitMemberValues();
 		
+		// for windows bug
+		OGRLineString * SafeIntersection(OGRLineString * line, OGRPolygon * frame);
+		
+		
 	protected:
 	public:
 		// ctor
