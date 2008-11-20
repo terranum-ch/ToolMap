@@ -304,6 +304,61 @@ OGRLineString * tmExportDataSHP::SafeIntersection(OGRLineString * line, OGRPolyg
 }
 
 
+/***************************************************************************//**
+ @brief Compute Union
+ @details This function try to bypass the Union() bug of GDAL by using
+ GEOS directly
+ @param union1 The multi-line string 
+ @param line The line to intersect
+ @return  A valid OGRLineString or NULL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 November 2008
+ *******************************************************************************/
+OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * line)
+{
+	wxASSERT(union1);
+	wxASSERT(line);
+	
+	GEOSGeometry * geosline = NULL;
+	GEOSGeometry * geosmultiline = NULL;
+	GEOSGeometry * geosunion = NULL;
+	OGRGeometry * returnunion = NULL;
+	
+	
+	// convert to GEOS
+#ifdef __WXOSX__
+	return union1->Union(line);
+	
+#else
+	
+	geosline = line->exportToGEOS();
+	geosmultiline = union1->exportToGEOS();
+	
+	wxASSERT(geosline);
+	wxASSERT(geosmultiline);
+	
+	geosunion = GEOSUnion(geosmultiline, geosline);
+	if (!geosunion)
+		return NULL;
+	
+	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
+	
+	
+	returnunion =  OGRGeometryFactory::createGeometry(wkbMultiLineString);
+	char * myTxt = GEOSWKTWriter_write(myWriter,geosunion);
+	returnunion->importFromWkt(&myTxt);
+	
+	return returnunion;	
+	
+	
+#endif
+	
+	
+	return NULL;
+	
+	
+}
+
 
 /***************************************************************************//**
  @brief Write all geometrics points to the shp
@@ -395,7 +450,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 			if (!myCropLine->IsEmpty())
 			{
 				// union all lines into one multiline
-				myTempNodedLines = myCropLine->Union(myTempNodedLines);
+				//myTempNodedLines = myCropLine->Union(myTempNodedLines);
+				myTempNodedLines = SafeUnion(myTempNodedLines, myCropLine);
 			}
 			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}

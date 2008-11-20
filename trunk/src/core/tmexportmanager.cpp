@@ -208,10 +208,6 @@ PrjMemLayersArray * tmExportManager::GetAllLayers ()
 	wxASSERT(m_pDB);
 	
 	
-	//TODO: Remove this wait dialog and add a progress dialog
-	wxBusyInfo wait (_("Please wait, exporting project ..."));
-	
-	
 	ProjectDefMemoryLayers myLayer;
 		
 	// first loop, destroy remaining results
@@ -264,6 +260,10 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 					 wxOK | wxICON_ERROR ,m_Parent);
 		return false;
 	}
+	
+	//TODO: Remove this wait dialog and add a progress dialog
+	wxBusyInfo wait (_("Please wait, exporting project ..."), m_Parent);
+	wxBusyCursor wait2;
 	
 	// get frame
 	int iFrameVertex = 0;
