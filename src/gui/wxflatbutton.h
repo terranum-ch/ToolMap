@@ -34,7 +34,7 @@
 
 
 #define wxFLATBUTTON_STYLE wxBORDER_NONE 
-#define wxFLATBUTTON_SIZE wxSize(40,-1)
+#define wxFLATBUTTON_SIZE wxSize(30,-1)
 #define wxFLATBUTTON_TEXT_ADD _T("+")
 #define wxFLATBUTTON_TEXT_REMOVE _T("-")
 
