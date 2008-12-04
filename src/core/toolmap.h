@@ -114,6 +114,7 @@
 
 #include "../gis/tmattributionmanager.h"	// attribution manager
 #include "tmexportmanager.h"				// export manager
+#include "../gui/shortcut_panel.h"			// for shortcut panel
 
 
 //// temp for testing 
@@ -260,6 +261,7 @@ private:
 	AttribObjType_PANEL * m_AttribObjPanel;
 	Main_PANEL * m_MainPanel;
 	Queries_PANEL * m_QueriesPanel;
+	Shortcuts_PANEL * m_ShortCutPanel;
 	
 	ProjectManager * m_PManager;
 	MenuManager * m_MManager;
@@ -289,6 +291,7 @@ private:
 	void OnToolChanged (wxCommandEvent & event);
 	void OnExportSelected (wxCommandEvent & event);
 	void OnExportAll (wxCommandEvent & event);
+	void OnShowShortcutWindow (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);

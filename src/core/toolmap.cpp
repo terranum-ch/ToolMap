@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
+	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
 	
 	// TOOL EVENT
 	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
@@ -158,7 +159,7 @@ void ToolMapFrame::PostInit()
 	m_MainPanel = new Main_PANEL(this, m_AuiManager);	
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	m_QueriesPanel = new Queries_PANEL(this,wxID_ANY, m_AuiManager);
-	
+	m_ShortCutPanel = new Shortcuts_PANEL(this, wxID_ANY, m_AuiManager);
 	
 	
 	// create layer manager object
@@ -314,7 +315,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-Paste Attribution\tCtrl+B"), _T(""), wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
-    itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcuts..."), _T(""), wxITEM_NORMAL);
+    itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcuts..."), _T(""), wxITEM_CHECK);
     menuBar->Append(itemMenu55, _("Attribution"));
     wxMenu* itemMenu63 = new wxMenu;
     itemMenu63->Append(ID_MENU_CHECK_GEOM, _("Check Geometry..."), _T(""), wxITEM_CHECK);
@@ -647,6 +648,29 @@ void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
 	}
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Display or hide the #Shortcut_PANEL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 04 December 2008
+ *******************************************************************************/
+void ToolMapFrame::OnShowShortcutWindow (wxCommandEvent & event)
+{
+	if (m_ShortCutPanel->IsPanelShown())
+	{
+		m_ShortCutPanel->HidePanel();
+		GetMenuBar()->Check(ID_MENU_SHORTCUTS, false);
+	}
+	else
+	{
+		m_ShortCutPanel->ShowPanel();
+		GetMenuBar()->Check(ID_MENU_SHORTCUTS, true);
+	}
+	
+}
+
 
 
 void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
