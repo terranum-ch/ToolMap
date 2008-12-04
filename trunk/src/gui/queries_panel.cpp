@@ -107,14 +107,8 @@ void Queries_PANEL::InitMemberValues()
 wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
 						 bool call_fit,	 bool set_sizer)
 {    
-    //Queries_PANEL* itemManagedAuiWnd1 = this;
 
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-    //itemManagedAuiWnd1->SetSizer(itemBoxSizer2);
-
-    wxStaticBox* itemStaticBoxSizer3Static = new wxStaticBox(parent, wxID_ANY, _("Define your queries"));
-    wxStaticBoxSizer* itemStaticBoxSizer3 = new wxStaticBoxSizer(itemStaticBoxSizer3Static, wxVERTICAL);
-    itemBoxSizer2->Add(itemStaticBoxSizer3, 1, wxGROW|wxALL, 5);
 
 	wxArrayString colname;
 	colname.Add(_("Description"));
@@ -125,46 +119,20 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
     m_QueriesList = new QueriesList( parent, ID_QUERIES_LIST,
 												 &colname, & colsize,
 												 wxSize(100, 100));
-    itemStaticBoxSizer3->Add(m_QueriesList, 1, wxGROW|wxTOP|wxBOTTOM, 5);
+    itemBoxSizer2->Add(m_QueriesList, 1, wxGROW,0);//|wxTOP|wxBOTTOM, 5);
 
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-    itemStaticBoxSizer3->Add(itemBoxSizer5, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+    itemBoxSizer2->Add(itemBoxSizer5, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
     wxFlatButton* itemToggleButton6 = new wxFlatButton( parent, ID_QUERIES_ADD, wxFLATBUTTON_TEXT_ADD);
-    //itemToggleButton6->SetValue(false);
-    itemBoxSizer5->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer5->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
     wxFlatButton* itemToggleButton7 = new wxFlatButton( parent, ID_QUERIES_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
-    //itemToggleButton7->SetValue(false);
-    itemBoxSizer5->Add(itemToggleButton7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer5->Add(itemToggleButton7, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
     wxFlatButton* itemToggleButton8 = new wxFlatButton( parent, ID_QUERIES_RUN, _("Run selected"), wxDefaultSize);
-    //itemToggleButton8->SetValue(false);
-    itemBoxSizer5->Add(itemToggleButton8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer5->Add(itemToggleButton8, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-    //wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
-    //itemBoxSizer2->Add(itemBoxSizer9, 0, wxALIGN_RIGHT|wxALL, 5);
-
-    //wxButton* itemButton10 = new wxButton( parent, ID_BUTTON, _("Clear selection"), wxDefaultPosition, wxDefaultSize, 0 );
-    //itemBoxSizer9->Add(itemButton10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    /*wxButton* itemButton11 = new wxButton( parent, wxID_CLOSE, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer9->Add(itemButton11, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
-
-    /*wxButton* itemButton12 = new wxButton( parent, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer9->Add(itemButton12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
-
-    /*wxStatusBar* itemStatusBar13 = new wxStatusBar( parent, ID_STATUSBAR1, wxST_SIZEGRIP|wxNO_BORDER );
-    itemStatusBar13->SetFieldsCount(2);
-    //itemStatusBar13->SetStatusText(_("Query passed OK"), 0);
-    //itemStatusBar13->SetStatusText(_("10 Queries"), 1);
-    int itemStatusBar13Widths[2];
-    itemStatusBar13Widths[0] = -2;
-    itemStatusBar13Widths[1] = -1;
-    itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
-    itemBoxSizer2->Add(itemStatusBar13, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-	
-	m_QueriesList->SetStatusBar(itemStatusBar13);*/
 	
 	if (set_sizer)
     {
