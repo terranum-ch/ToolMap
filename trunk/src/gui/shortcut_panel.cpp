@@ -38,6 +38,7 @@ ManagedAuiWnd(auimanager)
 	// create the controls
 	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
 	CreateControls(ContentFrame);
+	ContentFrame->Fit();
 	
 	// define properties of Panel.
 	m_PaneInfo.Name(SHORTCUT_PANEL_TITLE);
@@ -47,14 +48,15 @@ ManagedAuiWnd(auimanager)
 	m_PaneInfo.Layer(4);
 	m_PaneInfo.Position(4);
 	m_PaneInfo.MinSize(SHORTCUT_PANEL_SIZE);
-	m_PaneInfo.CloseButton(FALSE);
+	m_PaneInfo.CloseButton(true);
 	m_PaneInfo.Hide();
-	m_PaneInfo.Gripper(false);
 	m_PaneInfo.FloatingPosition(100, 150);
+	m_PaneInfo.FloatingSize(SHORTCUT_PANEL_SIZE + wxSize(100,100));
 	
 	m_AuiPanelName = SHORTCUT_PANEL_TITLE;
 	
 	AddManagedPane(ContentFrame, m_PaneInfo);
+
 	
 }
 
@@ -62,9 +64,6 @@ void Shortcuts_PANEL::InitMemberValues()
 {
 	 m_TargetChoice = NULL;
 	 m_ListShortcuts= NULL;
-	 m_ShortcutAdd= NULL;
-	 m_ShortcutDel= NULL;
-	 m_ShortcutEdit= NULL;
 	 m_ParentEvt= NULL;	
 	
 }
@@ -105,29 +104,34 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
 	m_ListShortcuts = new wxListCtrl( parent, IDDLG_SHORT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT );
-	bSizer1->Add( m_ListShortcuts, 1, wxALL|wxEXPAND, 5 );
+	bSizer1->Add( m_ListShortcuts, 1, wxALL|wxEXPAND, 0 );
 	
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_ShortcutAdd = new wxButton( parent, IDDLG_SHORT_ADD_BTN, _("+"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer3->Add( m_ShortcutAdd, 0, wxALL, 5 );
+	wxFlatButton * myShortcutAdd = new wxFlatButton( parent, IDDLG_SHORT_ADD_BTN, wxFLATBUTTON_TEXT_ADD);
+	bSizer3->Add( myShortcutAdd, 0, wxLEFT, 0 );
 	
-	m_ShortcutDel = new wxButton( parent, IDDLG_SHORT_DEL_BTN, _("-"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer3->Add( m_ShortcutDel, 0, wxALL, 5 );
+	wxFlatButton * myShortcutDel = new wxFlatButton( parent, IDDLG_SHORT_DEL_BTN, wxFLATBUTTON_TEXT_REMOVE);
+	bSizer3->Add( myShortcutDel, 0, wxLEFT, 5 );
 	
-	m_ShortcutEdit = new wxButton( parent, IDDLG_SHORT_EDIT_BTN, _("Edit selected..."), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer3->Add( m_ShortcutEdit, 0, wxALL, 5 );
+	wxFlatButton * myShortcutEdit = new wxFlatButton( parent, IDDLG_SHORT_EDIT_BTN, _("Edit selected..."), wxDefaultSize);
+	//wxSize myBtnBestSize =  myShortcutEdit->GetBestSize();
+	//myShortcutEdit->SetSize(myBtnBestSize);
+	//myShortcutEdit->Fit();
+	bSizer3->Add( myShortcutEdit, 0, wxLEFT|wxRIGHT, 5 );
 	
-	bSizer1->Add( bSizer3, 0, wxBOTTOM|wxEXPAND, 5 );
-	
+	bSizer1->Add( bSizer3, 0, wxALL, 5 );
 	
 	
 	if (set_sizer)
     {
         parent->SetSizer( bSizer1 );
         if (call_fit)
+		{
             bSizer1->SetSizeHints( parent );
+		//bSizer1->Fit(parent);
+		}
 	}
     
     return bSizer1;

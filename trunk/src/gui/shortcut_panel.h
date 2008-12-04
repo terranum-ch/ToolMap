@@ -30,6 +30,7 @@
 
 #include "managed_aui_wnd.h"
 #include "listgenreport.h"
+#include "wxflatbutton.h"
 
 
 #define IDDLG_SHORT_TARGET 21000
@@ -38,7 +39,7 @@
 #define IDDLG_SHORT_DEL_BTN 21003
 #define IDDLG_SHORT_EDIT_BTN 21004
 #define SHORTCUT_PANEL_TITLE _("Shortcuts")
-#define SHORTCUT_PANEL_SIZE wxSize(200, 300)
+#define SHORTCUT_PANEL_SIZE wxSize(250, 200)
 
 
 class Shortcuts_PANEL : public ManagedAuiWnd 
@@ -48,9 +49,6 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		//Control Member
 		wxChoice* m_TargetChoice;
 		wxListCtrl* m_ListShortcuts;
-		wxButton* m_ShortcutAdd;
-		wxButton* m_ShortcutDel;
-		wxButton* m_ShortcutEdit;
 		
 		// other member
 		wxWindow * m_ParentEvt;
