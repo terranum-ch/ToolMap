@@ -87,7 +87,8 @@ private:
 	wxWindow * m_ParentEvt;
 	bool m_IsProjectOpen;
 	
-	
+	/// Initialises member variables
+    void InitMemberValues();
 	
 	// event function
 	void OnAddQueries (wxCommandEvent & event);
@@ -107,9 +108,7 @@ public:
     /// Destructor
     ~Queries_PANEL();
 
-    /// Initialises member variables
-    void InitMemberValues();
-
+  
     /// Creates the controls and sizers
     wxSizer * CreateControls(wxWindow * parent,
 							 bool call_fit = true,
