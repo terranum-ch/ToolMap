@@ -23,14 +23,17 @@ DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)
 DEFINE_EVENT_TYPE (tmEVT_INFO_BTN_PRESSED)
 
 BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
-	EVT_BUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
-	EVT_BUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
+	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
+	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
+	EVT_MENU (ID_CTXT_AUTODISPLAY_ATTRIB, AttribObjType_PANEL::OnDisplayAttributesAuto)
+
 END_EVENT_TABLE()
 
 
 AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAuiWnd(AuiManager)
 {
 	m_AttribBtnLabel = _("Attribute");
+	m_AutoDisplayAttributes = false;
 	m_ParentEvt = parent;
 	m_ParentEvt->PushEventHandler(this);
 	
@@ -66,7 +69,7 @@ AttribObjType_PANEL::~AttribObjType_PANEL()
 
 wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, bool set_sizer)
 {    
-    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+    m_AttribSizer = new wxBoxSizer(wxVERTICAL);
     //itemPanel1->SetSizer(itemBoxSizer2);
 	
    m_AttribNotebook = new wxChoicebook( parent, ID_NOTEBOOK2, wxDefaultPosition, wxSize(300, -1), wxBK_DEFAULT );
@@ -178,9 +181,59 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
     m_AttribNotebook->AddPage(itemPanel24, _("Notes"));
 	
-    itemBoxSizer2->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
+    m_AttribSizer->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
 	
-    wxGridSizer* itemGridSizer38 = new wxGridSizer(2, 2, 0, 0);
+    
+	
+	/* options menu */
+	wxMenu* opt_menu = new wxMenu();
+	wxMenuItem* m_fullatrib;
+	m_fullatrib = new wxMenuItem( opt_menu, ID_CTXT_FULL_ATTRIB, wxString( _("Enable Full attribution") ) , wxEmptyString, wxITEM_CHECK );
+	opt_menu->Append( m_fullatrib );
+	
+	opt_menu->AppendSeparator();
+	
+	wxMenuItem* m_AutoDisplayAttrib;
+	m_AutoDisplayAttrib = new wxMenuItem( opt_menu, ID_CTXT_AUTODISPLAY_ATTRIB, wxString( _("Enable auto display attributes") ) , wxEmptyString, wxITEM_CHECK );
+	opt_menu->Append( m_AutoDisplayAttrib );
+	
+	opt_menu->AppendSeparator();
+	
+	wxMenuItem* m_Filter;
+	m_Filter = new wxMenuItem( opt_menu, ID_CTXT_FILTER, wxString( _("Filter list...") ) , wxEmptyString, wxITEM_NORMAL );
+	opt_menu->Append( m_Filter );
+	
+	//m_menubar2->Append( opt_menu, _("Options") );
+	
+	
+	
+	
+	
+	m_ButtonSizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_InfoBtn = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"), wxDefaultSize);
+	m_ButtonSizer->Add( m_InfoBtn, 0, wxEXPAND, 5 );
+	
+	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
+									m_AttribBtnLabel, wxDefaultSize);
+/*	wxSize myBtnSize = m_AttribBtn->GetSize();
+	myBtnSize.x += 100;
+	m_AttribBtn->SetSize(myBtnSize);*/
+	m_AttribBtn->Enable(false);
+	m_ButtonSizer->Add( m_AttribBtn, 0, wxEXPAND|wxLEFT, 5 );
+	
+	
+	m_ButtonSizer->Add( 0, 0, 2, 0, 5 );
+	
+	tmOptionButton * m_button7 = new tmOptionButton( parent, wxID_ANY, opt_menu);
+	m_ButtonSizer->Add( m_button7, 0, wxLEFT|wxRIGHT, 5 );
+	
+	m_AttribSizer->Add( m_ButtonSizer, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	
+	
+	/*wxGridSizer* itemGridSizer38 = new wxGridSizer(2, 2, 0, 0);
     itemBoxSizer2->Add(itemGridSizer38, 0, wxGROW|wxALL, 5);
 	
     wxSearchCtrl* itemSearchCtrl39 = new wxSearchCtrl( parent, ID_SEARCHCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
@@ -199,22 +252,41 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     m_AttribBtn = new wxButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
 							   m_AttribBtnLabel, wxDefaultPosition, wxDefaultSize, 0 );
     m_AttribBtn->Enable(false); // disable by default
+	
 	itemGridSizer38->Add(m_AttribBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 		
     m_AutoDisplayAttributes = new wxCheckBox( parent, ID_CHECKBOX5, _("Auto display attributes"), wxDefaultPosition, wxDefaultSize, 0 );
     m_AutoDisplayAttributes->SetValue(false);
-    itemBoxSizer2->Add(m_AutoDisplayAttributes, 0, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(m_AutoDisplayAttributes, 0, wxGROW|wxALL, 5);*/
+	
 	
 	
 	if (set_sizer)
     {
-        parent->SetSizer( itemBoxSizer2 );
+        parent->SetSizer( m_AttribSizer );
         if (call_fit)
-            itemBoxSizer2->SetSizeHints( parent );
+            m_AttribSizer->SetSizeHints( parent );
     }
     
-    return itemBoxSizer2;
+    return m_AttribSizer;
 }
+
+
+
+/***************************************************************************//**
+ @brief Called when Auto Display Attributes is enabled
+ @details Switch state of Auto dispaly attributes each time this is called
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 09 December 2008
+ *******************************************************************************/
+void AttribObjType_PANEL::OnDisplayAttributesAuto(wxCommandEvent & event)
+{
+	if (m_AutoDisplayAttributes)
+		m_AutoDisplayAttributes = false;
+	else
+		m_AutoDisplayAttributes = true;
+}
+
 
 
 
@@ -394,6 +466,7 @@ void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures)
 	m_AttribBtn->SetLabel(myButtonLabel);
 	m_AttribBtn->Enable(myEnable);
 	m_AttribBtn->SetFont(myBtnFont); 
+	m_ButtonSizer->Layout();
 
 }
 
@@ -670,6 +743,6 @@ void AttribObjType_PANEL::SetSelectedValues (TOC_GENERIC_NAME panel_name,
  *******************************************************************************/
 bool AttribObjType_PANEL::IsAutoDisplayAttributeChecked()
 {
-	return m_AutoDisplayAttributes->IsChecked();
+	return m_AutoDisplayAttributes;
 }
 
