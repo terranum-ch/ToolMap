@@ -37,6 +37,7 @@
 #include "tmchecklistboxrank.h"			// for advanced checklistbox
 #include "../database/database_tm.h"	// for database acces (updating lists)
 #include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
+#include <wx/choicebk.h>				// for choicebook
 
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
 DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
@@ -90,7 +91,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxString m_AttribBtnLabel;
 		wxButton * m_AttribBtn;
 		wxButton * m_InfoBtn;
-		wxNotebook * m_AttribNotebook;
+		wxChoicebook * m_AttribNotebook;
 		wxCheckBox * m_AutoDisplayAttributes;
 		
 		// event function

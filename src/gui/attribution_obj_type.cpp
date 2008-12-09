@@ -69,13 +69,14 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     //itemPanel1->SetSizer(itemBoxSizer2);
 	
-   m_AttribNotebook = new wxNotebook( parent, ID_NOTEBOOK2, wxDefaultPosition, wxSize(300, -1), wxBK_DEFAULT );
+   m_AttribNotebook = new wxChoicebook( parent, ID_NOTEBOOK2, wxDefaultPosition, wxSize(300, -1), wxBK_DEFAULT );
 	
     wxPanel* itemPanel4 = new wxPanel( m_AttribNotebook, ID_PANEL4, wxDefaultPosition, wxSize(300, 300), wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     itemPanel4->SetSizer(itemBoxSizer5);
 	
-    wxNotebook* itemNotebook6 = new wxNotebook( itemPanel4, ID_NOTEBOOK3, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+    wxAuiNotebook* itemNotebook6 = new wxAuiNotebook( itemPanel4, ID_NOTEBOOK3, 
+													 wxDefaultPosition, wxDefaultSize, wxAUI_NB_WINDOWLIST_BUTTON );
 	
     wxPanel* itemPanel7 = new wxPanel( itemNotebook6, ID_PANEL5, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
@@ -84,7 +85,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     
 	m_pObjList_L_Freq = new tmCheckListBoxRank (itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition,
 											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
-    itemBoxSizer8->Add(m_pObjList_L_Freq, 1, wxGROW, 5);
+    itemBoxSizer8->Add(m_pObjList_L_Freq, 1, wxGROW, 0); //5);
 	
     itemNotebook6->AddPage(itemPanel7, _("Frequent"));
 	
@@ -95,11 +96,11 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	m_pObjList_L_NoFreq = new tmCheckListBoxRank  (itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition,
 											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
 	
-    itemBoxSizer11->Add(m_pObjList_L_NoFreq, 1, wxGROW, 5);
+    itemBoxSizer11->Add(m_pObjList_L_NoFreq, 1, wxGROW,0);// 5);
 	
     itemNotebook6->AddPage(itemPanel10, _("Less frequent"));
 	
-    itemBoxSizer5->Add(itemNotebook6, 1, wxGROW|wxALL, 5);
+    itemBoxSizer5->Add(itemNotebook6, 1, wxGROW, 0);// 5);
 	
     m_AttribNotebook->AddPage(itemPanel4, _("Lines"));
 	
@@ -108,21 +109,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemPanel13->SetSizer(itemBoxSizer14);
 	
 	m_pObjList_PT = new tmCheckListBoxRank (itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
-     itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW|wxALL, 5);
-	
-    /*wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemPanel13, wxID_ANY, _("Orientation"));
-    wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
-    itemBoxSizer14->Add(itemStaticBoxSizer16, 0, wxGROW|wxALL, 5);
-    wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
-    itemStaticBoxSizer16->Add(itemBoxSizer17, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText18 = new wxStaticText( itemPanel13, wxID_STATIC, _("Angle :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer17->Add(itemStaticText18, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxTextCtrl* itemTextCtrl19 = new wxTextCtrl( itemPanel13, ID_TEXTCTRL6, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer17->Add(itemTextCtrl19, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxButton* itemButton20 = new wxButton( itemPanel13, ID_BUTTON9, _(" Interactive orientation"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticBoxSizer16->Add(itemButton20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);*/
+	itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW|wxALL, 0);// 5);
 	
     m_AttribNotebook->AddPage(itemPanel13, _("Point"));
 	
@@ -134,7 +121,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 										wxDefaultPosition, wxDefaultSize,
 										0, NULL, wxLB_MULTIPLE | tmLB_MENU);
 	
-   itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 5);
+	itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 0);// 5);
 	
     m_AttribNotebook->AddPage(itemPanel21, _("Polygons"));
 	
@@ -144,9 +131,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
     wxFlexGridSizer* itemFlexGridSizer26 = new wxFlexGridSizer(4, 2, 0, 0);
     itemFlexGridSizer26->AddGrowableCol(1);
-    itemBoxSizer25->Add(itemFlexGridSizer26, 0, wxGROW|wxALL, 5);
+    itemBoxSizer25->Add(itemFlexGridSizer26, 0, wxGROW|wxLEFT|wxRIGHT, 5);
     wxStaticText* itemStaticText27 = new wxStaticText( itemPanel24, wxID_STATIC, _("Priority :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer26->Add(itemStaticText27, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemStaticText27, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
 	
     wxArrayString itemChoice28Strings;
     itemChoice28Strings.Add(_("High"));
@@ -154,16 +141,16 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemChoice28Strings.Add(_("Low"));
     wxChoice* itemChoice28 = new wxChoice( itemPanel24, ID_CHOICE13, wxDefaultPosition, wxDefaultSize, itemChoice28Strings, 0 );
     itemChoice28->SetStringSelection(_("High"));
-    itemFlexGridSizer26->Add(itemChoice28, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemChoice28, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 0);
 	
     wxStaticText* itemStaticText29 = new wxStaticText( itemPanel24, wxID_STATIC, _("Author :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer26->Add(itemStaticText29, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemStaticText29, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 	
     wxTextCtrl* itemTextCtrl30 = new wxTextCtrl( itemPanel24, ID_TEXTCTRL19, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer26->Add(itemTextCtrl30, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemTextCtrl30, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 	
     wxStaticText* itemStaticText31 = new wxStaticText( itemPanel24, wxID_STATIC, _("Code :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer26->Add(itemStaticText31, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemStaticText31, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 	
     wxArrayString itemChoice32Strings;
     itemChoice32Strings.Add(_("Error"));
@@ -171,27 +158,27 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemChoice32Strings.Add(_("Task"));
     wxChoice* itemChoice32 = new wxChoice( itemPanel24, ID_CHOICE14, wxDefaultPosition, wxDefaultSize, itemChoice32Strings, 0 );
     itemChoice32->SetStringSelection(_("Error"));
-    itemFlexGridSizer26->Add(itemChoice32, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemChoice32, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 	
     wxStaticText* itemStaticText33 = new wxStaticText( itemPanel24, wxID_STATIC, _("Date :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer26->Add(itemStaticText33, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemStaticText33, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	
     wxDatePickerCtrl* itemDatePickerCtrl34 = new wxDatePickerCtrl( itemPanel24, ID_DATEPICKERCTRL); //, wxDateTime(), wxDefaultPosition, wxDefaultSize, wxDP_DEFAULT );
-    itemFlexGridSizer26->Add(itemDatePickerCtrl34, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer26->Add(itemDatePickerCtrl34, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
 	
     wxStaticBox* itemStaticBoxSizer35Static = new wxStaticBox(itemPanel24, wxID_ANY, _("Description"));
     wxStaticBoxSizer* itemStaticBoxSizer35 = new wxStaticBoxSizer(itemStaticBoxSizer35Static, wxVERTICAL);
-    itemBoxSizer25->Add(itemStaticBoxSizer35, 1, wxGROW|wxALL, 5);
+    itemBoxSizer25->Add(itemStaticBoxSizer35, 1, wxGROW, 0);
     wxTextCtrl* itemTextCtrl36 = new wxTextCtrl( itemPanel24, ID_TEXTCTRL21, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-    itemStaticBoxSizer35->Add(itemTextCtrl36, 1, wxGROW, 5);
+    itemStaticBoxSizer35->Add(itemTextCtrl36, 1, wxGROW, 0);
 	
     wxCheckBox* itemCheckBox37 = new wxCheckBox( itemPanel24, ID_CHECKBOX7, _("fixed"), wxDefaultPosition, wxDefaultSize, 0 );
     itemCheckBox37->SetValue(false);
-    itemBoxSizer25->Add(itemCheckBox37, 0, wxGROW|wxALL, 5);
+    itemBoxSizer25->Add(itemCheckBox37, 0, wxGROW|wxTOP, 5);
 	
     m_AttribNotebook->AddPage(itemPanel24, _("Notes"));
 	
-    itemBoxSizer2->Add(m_AttribNotebook, 1, wxGROW|wxALL, 5);
+    itemBoxSizer2->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
 	
     wxGridSizer* itemGridSizer38 = new wxGridSizer(2, 2, 0, 0);
     itemBoxSizer2->Add(itemGridSizer38, 0, wxGROW|wxALL, 5);
