@@ -15,7 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
+/*!
+ \page tmOptionButton "Option Button"
+ 
+ For better space utilisation and based on standard controls in Mac OS sdk, we have
+ developped the tmOptionButton, which is basically a Bitmap button displaying a menu.
+ See picture bellow for an outline of tmOptionButton.
+ 
+ \image html tmoptionbutton.png
+ 
+ */
+
 
 
 #ifndef _TM_OPTION_BUTTON_H_
@@ -30,6 +40,13 @@
 #endif
 
 
+/***************************************************************************//**
+ @brief Option button
+ @details This class display an option button (based on wxBitmapButton) and when
+ clicked, it shows the attached menu
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 class tmOptionButton : public wxBitmapButton
 	{
 	private:

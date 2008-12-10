@@ -652,7 +652,7 @@ void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
 
 
 /***************************************************************************//**
- @brief Display or hide the #Shortcut_PANEL
+ @brief Display or hide the #Shortcuts_PANEL
  @author Lucien Schreiber (c) CREALP 2008
  @date 04 December 2008
  *******************************************************************************/
