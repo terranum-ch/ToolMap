@@ -148,8 +148,8 @@ TocWindowDlgGen::TocWindowDlgGen(wxAuiManager * myAuiManager,wxWindow * parent, 
 	
 	wxAuiDockArt * myDockArt = m_TocAui->GetArtProvider();
 	wxASSERT(myDockArt);
-	myDockArt->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 0);
-	myDockArt->SetMetric(wxAUI_DOCKART_SASH_SIZE, 3);
+	myDockArt->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 1);
+	myDockArt->SetMetric(wxAUI_DOCKART_SASH_SIZE, 2);
 	//myDockArt->SetColor(wxAUI_DOCKART_BORDER_COLOUR, wxColour(*wxBLACK));
 	//myDockArt->SetColor(wxAUI_DOCKART_SASH_COLOUR, wxColour(*wxBLACK));
 
