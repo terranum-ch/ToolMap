@@ -149,21 +149,21 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("CREATE  TABLE `dmn_shortcut_key` (")
 	_T("  `SHORTCUT_CD` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
 	_T("  `SHORTCUT_KEY` VARCHAR(20) NOT NULL ,")
+	_T("  `SHORTCUT_DESC` VARCHAR(255) NULL ,")
 	_T("  PRIMARY KEY (`SHORTCUT_CD`) );")
 	
 	_T("CREATE  TABLE `shortcut_list` (")
-	_T("  `OBJECT_CD` INT UNSIGNED NOT NULL ,")
-	_T("  `THEMATIC_LAYERS_LAYER_INDEX` INT UNSIGNED NOT NULL ,")
+	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL ,")
 	_T("  `SHORTCUT_CD` INT UNSIGNED NOT NULL ,")
-	_T("  PRIMARY KEY (`OBJECT_CD`, `THEMATIC_LAYERS_LAYER_INDEX`, `SHORTCUT_CD`) ,")
-	_T("  INDEX SHORTCUT_KEYS_has_DMN_LAYER_OBJECT_FKIndex2 (`OBJECT_CD` ASC, `THEMATIC_LAYERS_LAYER_INDEX` ASC) ,")
+	_T("  PRIMARY KEY (`OBJECT_ID`, `SHORTCUT_CD`) ,")
+	_T("  INDEX SHORTCUT_KEYS_has_DMN_LAYER_OBJECT_FKIndex2 (`OBJECT_ID` ASC) ,")
 	_T("  INDEX SHORTCUT_LIST_FKIndex2 (`SHORTCUT_CD` ASC) ,")
 	_T("  CONSTRAINT `Rel_14`")
 	_T("    FOREIGN KEY (`SHORTCUT_CD` )")
 	_T("    REFERENCES `dmn_shortcut_key` (`SHORTCUT_CD` ),")
 	_T("  CONSTRAINT `Rel_15`")
-	_T("    FOREIGN KEY (`OBJECT_CD` , `THEMATIC_LAYERS_LAYER_INDEX` )")
-	_T("    REFERENCES `dmn_layer_object` (`OBJECT_CD` , `THEMATIC_LAYERS_LAYER_INDEX` ));")
+	_T("    FOREIGN KEY (`OBJECT_ID`)")
+	_T("    REFERENCES `dmn_layer_object` (`OBJECT_ID`));")
 	
 	_T("CREATE  TABLE `generic_frame` (")
 	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Feature identifier' ,")
@@ -229,6 +229,9 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	// pass scale data into the database
 	if (FillDefaultScaleData()==FALSE)
 		return FALSE;
+	
+	if (FillShortCutTable()==false)
+		return false;
 	
 	return TRUE;	
 	
@@ -311,6 +314,41 @@ bool DataBaseTM::FillDefaultScaleData ()
 		wxLogError(_T("Error filling scale table. Already filled of request error ?"));
 	
 	return bReturnValue;
+}
+
+
+
+/***************************************************************************//**
+ @brief Fill database with shortcut values
+ @details Default values are passed into table when a new project is created.
+ Values are : 
+ - F1
+ - F2
+ - ...
+ - F12
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
+bool DataBaseTM::FillShortCutTable ()
+{
+	wxString sValue = _T("INSERT INTO ") + TABLE_NAME_SHORTCUT_DMN + 
+	_T(" (SHORTCUT_CD, SHORTCUT_KEY) VALUES ");
+	wxString sSentence = _T("");
+	
+	int iNbKey = sizeof (tmShortCutKeys) / sizeof (wxString);
+	for (int i = 0; i< iNbKey;i++)
+	{
+		sSentence.Append(sValue);
+		sSentence.Append(wxString::Format(_T("(%d, \"%s\"); "), i+1, tmShortCutKeys[i].c_str()));
+	}
+	
+	if (!DataBaseQuery(sSentence))
+	{
+		wxLogError(_("Error filling shortcut table : %s"), DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	return true;
 }
 
 

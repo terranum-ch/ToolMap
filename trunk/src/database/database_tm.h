@@ -35,6 +35,7 @@
 #include "../core/wxdirpickerctrlbest.h"	// for PATH_ERROR definition;
 #include "../gui/projectproperties_dlg.h"	// for scale RANK function 
 #include "../gis/tmlayermanager.h"			// GIS definition 
+#include "../gui/shortcut_defs.h"			// for key definitions (F1,...)
 
 
 // TABLES NAMES
@@ -46,6 +47,7 @@ const wxString TABLE_NAME_LAYER_TYPE = _T("dmn_layer_type");
 const wxString TABLE_NAME_SCALE			= _T("zoom_level");
 const wxString TABLE_NAME_TOC		= _T("prj_toc");
 const wxString TABLE_NAME_QUERIES	= _T("prj_queries");
+const wxString TABLE_NAME_SHORTCUT_DMN = _T("dmn_shortcut_key");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -65,7 +67,7 @@ _T("generic_notes")
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 216;
+const int TM_DATABASE_VERSION = 217;
 
 
 
@@ -89,6 +91,7 @@ class DataBaseTM : public DataBase
 		// general database operations
 		bool FillLayerTableTypeData ();
 		bool FillDefaultScaleData ();
+		bool FillShortCutTable ();
 		bool CreateEmptyTMDatabase();
 		
 		// Database project operations
