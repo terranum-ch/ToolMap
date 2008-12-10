@@ -96,14 +96,25 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	m_staticText1->Wrap( -1 );
 	bSizer2->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_TargetChoiceChoices;
-	m_TargetChoice = new wxChoice( parent, IDDLG_SHORT_TARGET, wxDefaultPosition, wxDefaultSize, m_TargetChoiceChoices, 0 );
-	m_TargetChoice->SetSelection( 0 );
+	m_TargetChoice = new wxChoice( parent, IDDLG_SHORT_TARGET, wxDefaultPosition, wxDefaultSize,
+								  3,TOC_GENERIC_NAME_STRING , 0 );
+	m_TargetChoice->SetSelection( TOC_NAME_LINES );
 	bSizer2->Add( m_TargetChoice, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
-	m_ListShortcuts = new wxListCtrl( parent, IDDLG_SHORT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT );
+	wxArrayString myColName;
+	myColName.Add(_("Key"));
+	myColName.Add(_("Description"));
+	
+	wxArrayInt myColWidth;
+	myColWidth.Add(80);
+	myColWidth.Add(200);
+	
+	m_ListShortcuts = new ShortcutList( parent, IDDLG_SHORT_LIST,
+									   &myColName,
+									   &myColWidth,
+									   wxDefaultSize);
 	bSizer1->Add( m_ListShortcuts, 1, wxALL|wxEXPAND, 0 );
 	
 	wxBoxSizer* bSizer3;
@@ -116,9 +127,6 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	bSizer3->Add( myShortcutDel, 0, wxLEFT, 5 );
 	
 	wxFlatButton * myShortcutEdit = new wxFlatButton( parent, IDDLG_SHORT_EDIT_BTN, _("Edit selected..."), wxDefaultSize);
-	//wxSize myBtnBestSize =  myShortcutEdit->GetBestSize();
-	//myShortcutEdit->SetSize(myBtnBestSize);
-	//myShortcutEdit->Fit();
 	bSizer3->Add( myShortcutEdit, 0, wxLEFT|wxRIGHT, 5 );
 	
 	bSizer1->Add( bSizer3, 0, wxALL, 5 );
@@ -130,11 +138,46 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
         if (call_fit)
 		{
             bSizer1->SetSizeHints( parent );
-		//bSizer1->Fit(parent);
 		}
 	}
     
     return bSizer1;
+}
+
+
+
+
+
+
+/***************************** SHORTCUT LIST *****************************/
+
+
+
+/***************************************************************************//**
+ @brief Constructor
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
+ShortcutList::ShortcutList (wxWindow * parent,
+						  wxWindowID id,
+						  wxArrayString * pColsName, 
+						  wxArrayInt * pColsSize,
+						  wxSize size) :
+ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
+{
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Destructor
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
+ShortcutList::~ShortcutList()
+{
+	
 }
 
 

@@ -31,6 +31,7 @@
 #include "managed_aui_wnd.h"
 #include "listgenreport.h"
 #include "wxflatbutton.h"
+#include "../database/database_tm.h"
 
 
 #define IDDLG_SHORT_TARGET 21000
@@ -42,13 +43,40 @@
 #define SHORTCUT_PANEL_SIZE wxSize(250, 200)
 
 
+class ShortcutList : public ListGenReportWithDialog
+	{
+	private:
+		DataBaseTM * m_pDB;
+		
+		virtual void BeforeAdding(){;}
+		virtual void AfterAdding (bool bRealyAddItem){;}
+		virtual void BeforeDeleting (){;}
+		virtual void BeforeEditing (){;}
+		virtual void AfterEditing (bool bRealyEdited){;}
+		
+	protected:
+	public:
+		ShortcutList (wxWindow * parent,
+					 wxWindowID id,
+					 wxArrayString * pColsName, 
+					 wxArrayInt * pColsSize=NULL,
+					 wxSize size = wxDefaultSize);
+		~ShortcutList();
+		
+		// setter
+		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+		
+	};
+
+
+
 class Shortcuts_PANEL : public ManagedAuiWnd 
 	{
 		
 	private:
 		//Control Member
 		wxChoice* m_TargetChoice;
-		wxListCtrl* m_ListShortcuts;
+		ShortcutList* m_ListShortcuts;
 		
 		// other member
 		wxWindow * m_ParentEvt;
