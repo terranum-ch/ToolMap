@@ -762,7 +762,7 @@ bool tmGISDataVectorSHP::SetNextFeature (bool resetreading)
  @param value a wxString containing the value (will be converted in the function)
  @param fieldtype the type of the field based on : #PRJDEF_FIELD_TYPE
  @param iindex 0 based field index
- @param bool true if value was added to the field
+ @return true if value was added to the field
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/

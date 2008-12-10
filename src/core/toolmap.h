@@ -69,6 +69,7 @@
  Some controls we have tweaked for Toolmap's need but probably usefull for others projects
  - \subpage tmColourPicker "Colour picker control"
  - \subpage tmSliderWithText "Slider with text control"
+ - \subpage tmOptionButton "Option Button"
  
  \section lib Libraries
  Some code created by others that we use

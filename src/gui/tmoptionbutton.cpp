@@ -24,12 +24,30 @@
 #include "../img/img_option_button.cpp"
 
 
+/***************************************************************************//**
+ @brief Constructor
+ @details This is the two step constructor, you need to call
+ tmOptionButton::Create() in order to create correctly the tmOptionButton
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 tmOptionButton::tmOptionButton()
 {
 	InitMemberValues();
 }
 
 
+
+/***************************************************************************//**
+ @brief Constructor
+ @details This is the full constructor
+ @param parent Adress of a valid parent
+ @param id ID of the control
+ @param menu Attached menu. It will be automatically displayed when button is
+ pressed. The menu must be deleted by owner, when not more needed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 tmOptionButton::tmOptionButton(wxWindow * parent, wxWindowID id, wxMenu * menu)
 {
 	InitMemberValues();
@@ -37,6 +55,19 @@ tmOptionButton::tmOptionButton(wxWindow * parent, wxWindowID id, wxMenu * menu)
 }
 
 
+
+/***************************************************************************//**
+ @brief Two step contructor
+ @details When using the default constructor, you need to call this function in
+ order to init correctly the control
+ @param parent Adress of a valid parent
+ @param id ID of the control
+ @param menu Attached menu. It will be automatically displayed when button is
+ pressed. The menu must be deleted by owner, when not more needed
+ @return Allways true
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 bool tmOptionButton::Create(wxWindow * parent, wxWindowID id, wxMenu * menu)
 {
 	wxASSERT(menu);
@@ -52,21 +83,43 @@ bool tmOptionButton::Create(wxWindow * parent, wxWindowID id, wxMenu * menu)
 }
 
 
+
+/***************************************************************************//**
+ @brief Destructor
+ @details Do nothing actually
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 tmOptionButton::~tmOptionButton()
 {
 	
 }
 
 
+
+/***************************************************************************//**
+ @brief Init default values
+ @details To member data
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 void tmOptionButton::InitMemberValues()
 {
 	m_Menu = NULL;
 }
 
 
+
+/***************************************************************************//**
+ @brief Respond to button pressed
+ @details This funciton display the attached menu when button is pressed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 December 2008
+ *******************************************************************************/
 void tmOptionButton::OnPressButton(wxCommandEvent & event)
 {
 	wxASSERT(m_Menu);
 	PopupMenu(m_Menu);
 	event.Skip();
 }
+
