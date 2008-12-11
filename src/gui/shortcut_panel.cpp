@@ -65,6 +65,7 @@ void Shortcuts_PANEL::InitMemberValues()
 	 m_TargetChoice = NULL;
 	 m_ListShortcuts= NULL;
 	 m_ParentEvt= NULL;	
+	m_pDB = NULL;
 	
 }
 
@@ -144,6 +145,52 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
     return bSizer1;
 }
 
+
+
+/***************************************************************************//**
+ @brief Load Shortcut into the Shortcut list
+ @details This function loads the shortcuts from the DB into the shortcut list
+ layer type is selected by actual list choice.
+ @return  Number of values loaded
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 December 2008
+ *******************************************************************************/
+int Shortcuts_PANEL::LoadShortcutList ()
+{
+	wxASSERT(m_pDB);
+	if (!m_pDB)
+	{
+		return wxNOT_FOUND;
+	}
+	
+	// clear list
+	m_ListShortcuts->ClearAll();
+	
+	
+	// load data from db and add in the shortcut list
+	bool myFirstLoop = true;
+	int iCount = 0;
+	wxString myKey = wxEmptyString;
+	wxString myDescription = wxEmptyString;
+		
+	while (1) 
+	{
+		if (!m_pDB->GetNextShortcutByLayerType(m_TargetChoice->GetSelection(),
+										  myKey, myDescription, myFirstLoop))
+		{
+			break;
+		}
+		
+		myFirstLoop = false;
+		
+		m_ListShortcuts->AddItemToList(myKey);
+		m_ListShortcuts->SetItemText(iCount, 1, myDescription);
+		
+		iCount++;
+	}
+
+	return iCount;
+}
 
 
 

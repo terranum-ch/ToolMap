@@ -48,6 +48,7 @@ const wxString TABLE_NAME_SCALE			= _T("zoom_level");
 const wxString TABLE_NAME_TOC		= _T("prj_toc");
 const wxString TABLE_NAME_QUERIES	= _T("prj_queries");
 const wxString TABLE_NAME_SHORTCUT_DMN = _T("dmn_shortcut_key");
+const wxString TABLE_NAME_SHORTCUT_LIST = _T("shortcut_list");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -169,6 +170,10 @@ class DataBaseTM : public DataBase
 		bool EditQueries (int target, const wxString & name, 
 						  const wxString & description, long qid = -1);
 		bool DeleteQuery (long qid);
+		
+		// database shortcut operations
+		bool GetNextShortcutByLayerType (int layer_type, wxString & key, 
+										wxString & description, bool bFirstLoop);
 	};
 
 

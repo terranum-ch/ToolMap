@@ -34,6 +34,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_LayerManager = NULL;
 	m_AttribManager = NULL;
 	m_QueriesPanel = NULL;
+	m_ShortcutPanel = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -328,6 +329,11 @@ int ProjectManager::OpenProject(const wxString & path)
 					
 					// activate project opening
 					m_QueriesPanel->LoadQueries(m_DB);
+					
+					// load shortcuts
+					m_ShortcutPanel->SetDataBase(m_DB); 
+					// load shortcuts for lines by default
+					m_ShortcutPanel->LoadShortcutList();
 					
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);

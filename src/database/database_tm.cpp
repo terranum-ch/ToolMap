@@ -2194,6 +2194,65 @@ bool DataBaseTM::DeleteQuery (long qid)
 	return true;
 }
 
+
+
+/***************************************************************************//**
+ @brief Load shortcut from the DB based on layer type
+ @param layer_type The layer type, valid values are : 
+ - TOC_NAME_LINES
+ - TOC_NAME_POINTS 
+ - TOC_NAME_LABELS
+ @param key A wxString containing The key (F1...F12)
+ @param description A wxString containing the shortcut description
+ @param bFirstLoop Indicate if we are running the first loop.
+ @return  true if a result was returned, false otherwise 
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 11 December 2008
+ *******************************************************************************/
+bool DataBaseTM::GetNextShortcutByLayerType (int layer_type, wxString & key, 
+										  wxString & description, bool bFirstLoop)
+{
+	wxString sValue = _T("SELECT a.SHORTCUT_KEY, a.SHORTCUT_DESC FROM %s a, %s b WHERE ")
+	_T("b.SHORTCUT_CD = a.SHORTCUT_CD AND b.OBJECT_ID IN (SELECT c.OBJECT_ID FROM %s c ")
+	_T("WHERE c.OBJECT_TYPE_CD = %d)");
+	
+	// do the query during the first loop
+	if (!DataBaseHasResult() && bFirstLoop == true)
+	{
+		wxString sStatement = wxString::Format(sValue,	
+											   TABLE_NAME_SHORTCUT_DMN.c_str(),
+											   TABLE_NAME_SHORTCUT_LIST.c_str(),
+											   TABLE_NAME_OBJECTS.c_str(),
+											   layer_type);
+		
+		if (!DataBaseQuery(sStatement))
+		{
+			wxLogDebug(_T("Error during query : %s"), DataBaseGetLastError().c_str());
+			return false;
+		}
+	}
+	
+	wxArrayString myResults = DataBaseGetNextResult();
+	
+	// no more results
+	if (myResults.GetCount() == 0)
+		return false;
+	
+	// invalid result
+	if (myResults.GetCount() != 2)
+	{
+		wxLogDebug(_T("Error, number of data retreived doesn't correspond to what attended : %d"),
+				   myResults.GetCount());
+		return false;
+	}
+	
+	key = myResults.Item(0);
+	description = myResults.Item(1);
+	
+	return true;
+}
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
