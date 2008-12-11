@@ -81,6 +81,7 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		// other member
 		wxWindow * m_ParentEvt;
 		wxAuiPaneInfo m_PaneInfo;
+		DataBaseTM * m_pDB;
 		
 		
 		
@@ -104,6 +105,11 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		Shortcuts_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * auimanager);
 		~Shortcuts_PANEL();
 		
+		int LoadShortcutList ();
+		
+		
+		// setter
+		void SetDataBase (DataBaseTM * database){m_pDB = database;}
 		
 		
 	};

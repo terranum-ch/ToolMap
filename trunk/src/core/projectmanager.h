@@ -52,6 +52,7 @@
 #include "../gis/tmprogress.h"				// progress indicator
 #include "../gis/tmattributionmanager.h"	// for attribution manager
 #include "../gui/queries_panel.h"			// for queries panel
+#include "../gui/shortcut_panel.h"			// for shortcut panel
 
 class MenuManager;
 class ObjectManager;
@@ -77,6 +78,7 @@ class ProjectManager : public wxObject
 		tmLayerManager * m_LayerManager;
 		tmAttributionManager * m_AttribManager;
 		Queries_PANEL * m_QueriesPanel;
+		Shortcuts_PANEL * m_ShortcutPanel;
 		
 		DECLARE_CLASS(ProjectManager)
 		
