@@ -32,6 +32,7 @@
 #include "listgenreport.h"
 #include "wxflatbutton.h"
 #include "../database/database_tm.h"
+#include "shortcut_panel_dlg.h"		// dialog for adding shortcuts
 
 
 #define IDDLG_SHORT_TARGET 21000
@@ -48,8 +49,8 @@ class ShortcutList : public ListGenReportWithDialog
 	private:
 		DataBaseTM * m_pDB;
 		
-		virtual void BeforeAdding(){;}
-		virtual void AfterAdding (bool bRealyAddItem){;}
+		virtual void BeforeAdding();
+		virtual void AfterAdding (bool bRealyAddItem);
 		virtual void BeforeDeleting (){;}
 		virtual void BeforeEditing (){;}
 		virtual void AfterEditing (bool bRealyEdited){;}
@@ -82,12 +83,13 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		wxWindow * m_ParentEvt;
 		wxAuiPaneInfo m_PaneInfo;
 		DataBaseTM * m_pDB;
+		bool m_ProjectOpen;
 		
 		
 		
 		// event function for panel
-		void OnChangeTarget( wxCommandEvent& event ){ event.Skip(); }
-		void OnShortcutAdd( wxCommandEvent& event ){ event.Skip(); }
+		void OnChangeTarget( wxCommandEvent& event );
+		void OnShortcutAdd( wxCommandEvent& event );
 		void OnShortcutDel( wxCommandEvent& event ){ event.Skip(); }
 		void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
 		
@@ -109,8 +111,8 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		
 		
 		// setter
-		void SetDataBase (DataBaseTM * database){m_pDB = database;}
-		
+		void SetProjectOpen (bool bStatus = true){m_ProjectOpen = bStatus;}
+		void SetDataBase (DataBaseTM * database);
 		
 	};
 

@@ -2253,6 +2253,40 @@ bool DataBaseTM::GetNextShortcutByLayerType (int layer_type, wxString & key,
 }
 
 
+
+/***************************************************************************//**
+ @brief Get All unused shortcut key
+ @details All shortcut allready assigned (F1... F12) aren't returned into array.
+ @param keylist wxArrayString will be filled with unused shortcut key
+ @return  false if an error occur, true otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+bool DataBaseTM::GetAllUnusedShortcuts (wxArrayString & keylist) 
+{
+	// static sentence, no parameter
+	wxString sSentence = _T("SELECT a.SHORTCUT_KEY FROM ") + TABLE_NAME_SHORTCUT_DMN 
+			+ _T(" a, ") + TABLE_NAME_SHORTCUT_LIST + 
+			_T(" b WHERE a.SHORTCUT_CD <> b.SHORTCUT_CD");
+	
+	if (!DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting Shortcut key : %s"), DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	wxString myResult = _T("");
+	keylist.Clear();
+	for (int i = 0; i< DatabaseGetCountResults(); i++)
+	{
+		if (DataBaseGetNextResult(myResult))
+			keylist.Add(myResult);
+	}
+	
+	return true;
+}
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")

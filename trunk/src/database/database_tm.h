@@ -174,6 +174,7 @@ class DataBaseTM : public DataBase
 		// database shortcut operations
 		bool GetNextShortcutByLayerType (int layer_type, wxString & key, 
 										wxString & description, bool bFirstLoop);
+		bool GetAllUnusedShortcuts (wxArrayString & keylist);
 	};
 
 
