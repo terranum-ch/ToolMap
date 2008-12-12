@@ -188,6 +188,7 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetLayerManager(m_LayerManager);
 	m_PManager->SetAttributionManager(m_AttribManager);
 	m_PManager->SetQueriesPanel(m_QueriesPanel);
+	m_PManager->SetShortcutPanel(m_ShortCutPanel);
 	
 	
 		

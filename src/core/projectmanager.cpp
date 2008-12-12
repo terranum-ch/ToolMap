@@ -334,6 +334,7 @@ int ProjectManager::OpenProject(const wxString & path)
 					m_ShortcutPanel->SetDataBase(m_DB); 
 					// load shortcuts for lines by default
 					m_ShortcutPanel->LoadShortcutList();
+					m_ShortcutPanel->SetProjectOpen(true);
 					
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);

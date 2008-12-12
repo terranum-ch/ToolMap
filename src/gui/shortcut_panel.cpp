@@ -21,9 +21,9 @@
 
 BEGIN_EVENT_TABLE( Shortcuts_PANEL, ManagedAuiWnd )
 	EVT_CHOICE( IDDLG_SHORT_TARGET, Shortcuts_PANEL::OnChangeTarget )
-	EVT_BUTTON( IDDLG_SHORT_ADD_BTN, Shortcuts_PANEL::OnShortcutAdd )
-	EVT_BUTTON( IDDLG_SHORT_DEL_BTN, Shortcuts_PANEL::OnShortcutDel )
-	EVT_BUTTON( IDDLG_SHORT_EDIT_BTN, Shortcuts_PANEL::OnShortcutEdit )
+	EVT_FLATBUTTON( IDDLG_SHORT_ADD_BTN, Shortcuts_PANEL::OnShortcutAdd )
+	EVT_FLATBUTTON( IDDLG_SHORT_DEL_BTN, Shortcuts_PANEL::OnShortcutDel )
+	EVT_FLATBUTTON( IDDLG_SHORT_EDIT_BTN, Shortcuts_PANEL::OnShortcutEdit )
 END_EVENT_TABLE()
 
 
@@ -78,6 +78,21 @@ Shortcuts_PANEL::~Shortcuts_PANEL()
 
 
 /***************************************************************************//**
+ @brief Setter for the Database
+ @details Set database to the panel and to the contained list
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+void Shortcuts_PANEL::SetDataBase (DataBaseTM * database)
+{
+	wxASSERT(database);
+	m_pDB = database;
+	m_ListShortcuts->SetDataBase(database);
+}
+
+
+
+/***************************************************************************//**
  @brief Control creation
  @author Lucien Schreiber (c) CREALP 2008
  @date 08 November 2008
@@ -115,7 +130,7 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	m_ListShortcuts = new ShortcutList( parent, IDDLG_SHORT_LIST,
 									   &myColName,
 									   &myColWidth,
-									   wxDefaultSize);
+									    wxSize(100, 100));
 	bSizer1->Add( m_ListShortcuts, 1, wxALL|wxEXPAND, 0 );
 	
 	wxBoxSizer* bSizer3;
@@ -160,18 +175,18 @@ int Shortcuts_PANEL::LoadShortcutList ()
 	wxASSERT(m_pDB);
 	if (!m_pDB)
 	{
+		SetProjectOpen(false);
 		return wxNOT_FOUND;
 	}
 	
 	// clear list
-	m_ListShortcuts->ClearAll();
-	
+	m_ListShortcuts->DeleteAllItems();
 	
 	// load data from db and add in the shortcut list
 	bool myFirstLoop = true;
 	int iCount = 0;
-	wxString myKey = wxEmptyString;
-	wxString myDescription = wxEmptyString;
+	wxString myKey = _T("");
+	wxString myDescription = _T("");
 		
 	while (1) 
 	{
@@ -183,16 +198,43 @@ int Shortcuts_PANEL::LoadShortcutList ()
 		
 		myFirstLoop = false;
 		
-		m_ListShortcuts->AddItemToList(myKey);
+		m_ListShortcuts->AddItemToList(myKey, iCount);
 		m_ListShortcuts->SetItemText(iCount, 1, myDescription);
 		
 		iCount++;
 	}
-
 	return iCount;
 }
 
 
+
+/***************************************************************************//**
+ @brief When target changes
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+void Shortcuts_PANEL::OnChangeTarget( wxCommandEvent& event )
+{
+	LoadShortcutList();
+	event.Skip();	
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when adding new shortcut
+ @details Check is done if project is open
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+void Shortcuts_PANEL::OnShortcutAdd( wxCommandEvent& event )
+{
+	if (m_ProjectOpen)
+		m_ListShortcuts->AddItem();
+		
+		
+	event.Skip();
+}
 
 
 
@@ -225,6 +267,44 @@ ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 ShortcutList::~ShortcutList()
 {
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Called just before adding shortcut
+ @details Prepare the dialog to be displayed for adding a shortcut
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+void ShortcutList::BeforeAdding()
+{
+	// get unused key (all non assigned keys)
+	wxArrayString myUnusedKeys;
+	bool bGetKeys = m_pDB->GetAllUnusedShortcuts(myUnusedKeys);
+	wxASSERT (bGetKeys);
+	
+	
+	
+	Shortcut_Panel_DLG * myDlg = new Shortcut_Panel_DLG(this);
+	myDlg->SetKeyList(myUnusedKeys);
+	
+	SetDialog(myDlg);
+}
+
+
+/***************************************************************************//**
+ @brief Called just after adding shortcut
+ @details Add the new shortcut to the database
+ @param bRealyAddItem is true if
+ item was added, and false if dialog was cancelled
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+void ShortcutList::AfterAdding (bool bRealyAddItem)
+{
+
+	delete m_pDialog;
 }
 
 
