@@ -175,6 +175,7 @@ class DataBaseTM : public DataBase
 		bool GetNextShortcutByLayerType (int layer_type, wxString & key, 
 										wxString & description, bool bFirstLoop);
 		bool GetAllUnusedShortcuts (wxArrayString & keylist);
+		bool GetNextShortCutObject (long & shortcutid, const int & key, bool bFirstLoop);
 	};
 
 

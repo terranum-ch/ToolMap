@@ -126,3 +126,68 @@ void Shortcut_Panel_DLG::SetKeyList (const wxArrayString & keys)
 	}
 }
 
+
+bool Shortcut_Panel_DLG::SetTypeList (DataBaseTM * database, 
+									  int layer_type, int key)
+{
+	SetDataBase(database);
+	
+	// get objects from the database (all objects)
+	if(!m_pDB->GetObjectListByLayerType(layer_type, TRUE))
+	{
+		wxLogDebug(_T("Error getting object for layer : %d"), layer_type);
+		return false;
+	}
+	
+	
+	// loop for all results 
+	ProjectDefMemoryObjects myTempObject;
+	while (1)
+	{
+		if (m_pDB->DataBaseGetNextResultAsObject(&myTempObject, layer_type))
+		{
+			
+			m_TypeList->AddItem(-1, myTempObject.m_ObjectID,
+								myTempObject.m_ObjectName);
+		}
+		
+		else
+			break;
+	}
+	
+	// check result if needed (key != 0)
+	long myShortcutID = 0;
+	bool bFirstLoop = true;
+	unsigned int myListCountItem = m_TypeList->GetCount();
+	long myCheckedID = 0;
+	wxString mytemp = _T("");
+	bool myChecked = false;
+	if (key)
+	{
+		while (1)
+		{
+			if(m_pDB->GetNextShortCutObject(myShortcutID, key, bFirstLoop))
+			{
+				bFirstLoop = false;
+				
+				// search into list
+				for (unsigned int i = 0; i< myListCountItem;i++)
+				{
+					m_TypeList->GetItem(i, myCheckedID, mytemp, myChecked);
+					if (myCheckedID == myShortcutID)
+						m_TypeList->Check(i, true);
+				}
+				
+			}
+			else
+				break;
+		}
+		
+		
+		
+	}
+	
+	
+	return true;
+}
+

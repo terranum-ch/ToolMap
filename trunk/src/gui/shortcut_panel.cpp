@@ -216,6 +216,7 @@ int Shortcuts_PANEL::LoadShortcutList ()
 void Shortcuts_PANEL::OnChangeTarget( wxCommandEvent& event )
 {
 	LoadShortcutList();
+	m_ListShortcuts->SetLayerType(event.GetSelection());
 	event.Skip();	
 }
 
@@ -254,7 +255,7 @@ ShortcutList::ShortcutList (wxWindow * parent,
 						  wxSize size) :
 ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
-	
+	m_LayerType = 0;
 }
 
 
@@ -284,10 +285,11 @@ void ShortcutList::BeforeAdding()
 	bool bGetKeys = m_pDB->GetAllUnusedShortcuts(myUnusedKeys);
 	wxASSERT (bGetKeys);
 	
-	
+		
 	
 	Shortcut_Panel_DLG * myDlg = new Shortcut_Panel_DLG(this);
 	myDlg->SetKeyList(myUnusedKeys);
+	myDlg->SetTypeList(m_pDB, m_LayerType);
 	
 	SetDialog(myDlg);
 }
@@ -304,6 +306,41 @@ void ShortcutList::BeforeAdding()
 void ShortcutList::AfterAdding (bool bRealyAddItem)
 {
 
+	delete m_pDialog;
+}
+
+
+
+void ShortcutList::BeforeEditing ()
+{
+	// get actual selected key
+	wxString myActualKey = GetItemColText(GetSelectedItem(), 0);
+	
+	
+	wxArrayString myUnusedKeys;
+	// add actual selected key
+	myUnusedKeys.Add(myActualKey);
+	// get unused key (all non assigned keys)
+	bool bGetKeys = m_pDB->GetAllUnusedShortcuts(myUnusedKeys);
+	wxASSERT (bGetKeys);
+	
+	// convert key to integer
+	myActualKey = myActualKey.AfterFirst('F');
+	int iActualKey = wxAtoi(myActualKey);
+	wxASSERT (iActualKey > 0 && iActualKey < 13);
+	
+	// load check list
+	Shortcut_Panel_DLG * myDlg = new Shortcut_Panel_DLG(this);
+	myDlg->SetKeyList(myUnusedKeys);
+	myDlg->SetTypeList(m_pDB, m_LayerType, iActualKey);
+	
+	SetDialog(myDlg);
+}
+
+
+
+void ShortcutList::AfterEditing (bool bRealyEdited)
+{
 	delete m_pDialog;
 }
 

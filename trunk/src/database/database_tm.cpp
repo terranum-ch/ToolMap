@@ -2276,7 +2276,6 @@ bool DataBaseTM::GetAllUnusedShortcuts (wxArrayString & keylist)
 	}
 	
 	wxString myResult = _T("");
-	keylist.Clear();
 	for (int i = 0; i< DatabaseGetCountResults(); i++)
 	{
 		if (DataBaseGetNextResult(myResult))
@@ -2285,6 +2284,46 @@ bool DataBaseTM::GetAllUnusedShortcuts (wxArrayString & keylist)
 	
 	return true;
 }
+
+
+
+/***************************************************************************//**
+ @brief Get checked values for given shortcut key
+ @param shortcutid ID checked corresponding to the key shortcut
+ @param key the shortcut key we are searching values for (F1....F12), values are
+ : (1-12)
+ @param bFirstLoop true during the first loop (do the query) and should be set
+ to false otherwise
+ @return  true if ID is correctly returned (shortcutid), false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+bool DataBaseTM::GetNextShortCutObject (long & shortcutid, const int & key, 
+										bool bFirstLoop)
+{
+	wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID FROM %s WHERE SHORTCUT_CD = %d; "),
+										  TABLE_NAME_SHORTCUT_LIST.c_str(),
+										  key);
+	
+	if (bFirstLoop)
+	{
+		if (!DataBaseQuery(sSentence))
+		{
+			wxLogDebug(_T("Error getting shortcut : %s"), DataBaseGetLastError().c_str());
+			return false;
+		}
+		
+	}
+	
+	if (!DataBaseHasResult())
+	{
+		return false;
+	}
+
+	shortcutid = DataBaseGetNextResultAsLong();
+	return true;
+}
+
 
 
 /// FIELD CREATION ::

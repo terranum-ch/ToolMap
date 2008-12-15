@@ -32,6 +32,7 @@
 #include "tmchecklistbox.h"		// check list box
 #include <wx/statline.h>		// static line
 #include "shortcut_defs.h"		// for key definitions (F1,...)
+#include "../database/database_tm.h"	// for databse acces 
 
 #define ID_DLG_SHORTCUT_LIST 21000
 
@@ -44,6 +45,8 @@ class Shortcut_Panel_DLG : public wxDialog
 		wxTextCtrl* m_ShortcutDescription;
 		tmCheckListBox * m_TypeList;
 		wxButton* m_SaveButton;
+		
+		DataBaseTM * m_pDB;
 		
 		// create controls
 		void CreateControls();
@@ -60,6 +63,12 @@ class Shortcut_Panel_DLG : public wxDialog
 		
 		// key setter
 		void SetKeyList (const wxArrayString & keys);
+		void SetDataBase (DataBaseTM * database)
+		{
+			wxASSERT(database);
+			m_pDB = database;
+		}
+		bool SetTypeList (DataBaseTM * database, int layer_type, int key = 0);
 		
 	};
 
