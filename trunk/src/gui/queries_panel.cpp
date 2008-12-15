@@ -438,9 +438,7 @@ void QueriesList::AfterEditing (bool bRealyEdited)
 }
 
 
-/*virtual void BeforeDeleting ();
-virtual void BeforeEditing ();
-virtual void AfterEditing (bool bRealyEdited);*/
+
 
 
 

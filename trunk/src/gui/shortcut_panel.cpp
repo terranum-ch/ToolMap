@@ -23,7 +23,7 @@ BEGIN_EVENT_TABLE( Shortcuts_PANEL, ManagedAuiWnd )
 	EVT_CHOICE( IDDLG_SHORT_TARGET, Shortcuts_PANEL::OnChangeTarget )
 	EVT_FLATBUTTON( IDDLG_SHORT_ADD_BTN, Shortcuts_PANEL::OnShortcutAdd )
 	EVT_FLATBUTTON( IDDLG_SHORT_DEL_BTN, Shortcuts_PANEL::OnShortcutDel )
-	EVT_FLATBUTTON( IDDLG_SHORT_EDIT_BTN, Shortcuts_PANEL::OnShortcutEdit )
+	//EVT_FLATBUTTON( IDDLG_SHORT_EDIT_BTN, Shortcuts_PANEL::OnShortcutEdit )
 END_EVENT_TABLE()
 
 
@@ -142,8 +142,8 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	wxFlatButton * myShortcutDel = new wxFlatButton( parent, IDDLG_SHORT_DEL_BTN, wxFLATBUTTON_TEXT_REMOVE);
 	bSizer3->Add( myShortcutDel, 0, wxLEFT, 5 );
 	
-	wxFlatButton * myShortcutEdit = new wxFlatButton( parent, IDDLG_SHORT_EDIT_BTN, _("Edit selected..."), wxDefaultSize);
-	bSizer3->Add( myShortcutEdit, 0, wxLEFT|wxRIGHT, 5 );
+	/*wxFlatButton * myShortcutEdit = new wxFlatButton( parent, IDDLG_SHORT_EDIT_BTN, _("Edit selected..."), wxDefaultSize);
+	bSizer3->Add( myShortcutEdit, 0, wxLEFT|wxRIGHT, 5 );*/
 	
 	bSizer1->Add( bSizer3, 0, wxALL, 5 );
 	
@@ -239,6 +239,21 @@ void Shortcuts_PANEL::OnShortcutAdd( wxCommandEvent& event )
 
 
 
+/***************************************************************************//**
+ @brief Called when removing a shortcut
+ @details Check is done if project is open
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 12 December 2008
+ *******************************************************************************/
+void Shortcuts_PANEL::OnShortcutDel( wxCommandEvent& event )
+{
+	if (m_ProjectOpen)
+		m_ListShortcuts->DeleteItem();
+	
+	event.Skip();
+}
+
+
 /***************************** SHORTCUT LIST *****************************/
 
 
@@ -270,6 +285,25 @@ ShortcutList::~ShortcutList()
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Convert shortcut key displayed as string into integer
+ @details An internal verification is done to avoid being outer bound
+ @param myShortCut The shortcut we want to convert
+ @return  The shortcut as integer
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+int ShortcutList::GetShortcutInt (const wxString & myShortCut)
+{
+	// convert key to integer
+	wxString myActualKey = myShortCut.AfterFirst('F');
+	int iActualKey = wxAtoi(myActualKey);
+	wxASSERT (iActualKey > 0 && iActualKey < 13);
+	return iActualKey;
+	
+}
 
 
 /***************************************************************************//**
@@ -306,15 +340,33 @@ void ShortcutList::BeforeAdding()
 void ShortcutList::AfterAdding (bool bRealyAddItem)
 {
 
+	Shortcut_Panel_DLG * myDlg = static_cast<Shortcut_Panel_DLG*> (m_pDialog);	
+	if (bRealyAddItem)
+	{
+		m_pDB->EditShortcut(myDlg->m_SelectedKey,
+							myDlg->m_Description, 
+							myDlg->m_CheckedTypes);
+		
+	}
+	
+	AddItemToList(GetKeyFromInt(myDlg->m_SelectedKey), -1);
+	SetItemText(GetItemCount()-1, 1, myDlg->m_Description);
+	
 	delete m_pDialog;
 }
 
 
 
+/***************************************************************************//**
+ @brief Called just before editing a shortcut
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
 void ShortcutList::BeforeEditing ()
 {
 	// get actual selected key
 	wxString myActualKey = GetItemColText(GetSelectedItem(), 0);
+
 	
 	
 	wxArrayString myUnusedKeys;
@@ -325,23 +377,55 @@ void ShortcutList::BeforeEditing ()
 	wxASSERT (bGetKeys);
 	
 	// convert key to integer
-	myActualKey = myActualKey.AfterFirst('F');
-	int iActualKey = wxAtoi(myActualKey);
-	wxASSERT (iActualKey > 0 && iActualKey < 13);
+	m_OldKey = GetShortcutInt(myActualKey);
+	
 	
 	// load check list
 	Shortcut_Panel_DLG * myDlg = new Shortcut_Panel_DLG(this);
+	myDlg->m_Description = GetItemColText(GetSelectedItem(), 1);
 	myDlg->SetKeyList(myUnusedKeys);
-	myDlg->SetTypeList(m_pDB, m_LayerType, iActualKey);
+	myDlg->SetTypeList(m_pDB, m_LayerType, m_OldKey);
 	
 	SetDialog(myDlg);
 }
 
 
 
+/***************************************************************************//**
+ @brief Called just after editing a shortcut
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
 void ShortcutList::AfterEditing (bool bRealyEdited)
 {
+	Shortcut_Panel_DLG * myDlg = static_cast<Shortcut_Panel_DLG*> (m_pDialog);	
+	if (bRealyEdited)
+	{
+		if (m_OldKey != myDlg->m_SelectedKey)
+			m_pDB->DeleteShortcut(m_OldKey);
+			
+		m_pDB->EditShortcut(myDlg->m_SelectedKey,
+							myDlg->m_Description, 
+							myDlg->m_CheckedTypes);
+		
+	}
+	
+	int iIndex = GetSelectedItem();
+	SetItemText(iIndex, 0, GetKeyFromInt(myDlg->m_SelectedKey) );
+	SetItemText(iIndex, 1, myDlg->m_Description);
+	
 	delete m_pDialog;
 }
 
 
+
+/***************************************************************************//**
+ @brief Called just before deleting a shortcut
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+void ShortcutList::BeforeDeleting ()
+{
+	int mySelected = GetSelectedItem();
+	m_pDB->DeleteShortcut(GetShortcutInt(GetItemColText(mySelected, 0)));
+}

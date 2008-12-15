@@ -105,6 +105,50 @@ void Shortcut_Panel_DLG::CreateControls()
 
 
 /***************************************************************************//**
+ @brief Called just before closing the dialog
+ @details Using for data tranfert
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+bool Shortcut_Panel_DLG::TransferDataFromWindow()
+{
+	m_SelectedKey = wxAtoi (m_ShortcutKey->GetStringSelection().AfterFirst('F'));
+	m_Description = m_ShortcutDescription->GetValue();
+	m_CheckedTypes.Clear();
+	
+	long myCheckedID = 0;
+	wxString mytemp = _T("");
+	bool myChecked = false;
+
+	for (unsigned int i = 0; i< m_TypeList->GetCount();i++)
+	{
+		m_TypeList->GetItem(i, myCheckedID, mytemp, myChecked);
+		if (myChecked == true)
+			m_CheckedTypes.Add(myCheckedID);
+	}
+	
+	
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Called just before displaying the dialog
+ @details Using for data tranfert. Lot of data transfert was allready done in
+ ShortcutList::BeforeAdding() and in ShortcutList::BeforeEditing ()
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+bool Shortcut_Panel_DLG::TransferDataToWindow()
+{
+	m_ShortcutDescription->SetValue(m_Description);
+	return true;
+}
+
+
+/***************************************************************************//**
  @brief Set values for keys
  @details This function set the list of keys. If the wxArrayString is empty, the
  Save button is disabled

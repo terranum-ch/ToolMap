@@ -176,6 +176,9 @@ class DataBaseTM : public DataBase
 										wxString & description, bool bFirstLoop);
 		bool GetAllUnusedShortcuts (wxArrayString & keylist);
 		bool GetNextShortCutObject (long & shortcutid, const int & key, bool bFirstLoop);
+		bool EditShortcut (int shortcutkey, const wxString & description, 
+						   const wxArrayLong & types);
+		bool DeleteShortcut (int shortcutkey);
 	};
 
 
