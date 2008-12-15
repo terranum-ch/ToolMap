@@ -48,12 +48,13 @@ class ShortcutList : public ListGenReportWithDialog
 	{
 	private:
 		DataBaseTM * m_pDB;
+		int m_LayerType;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
 		virtual void BeforeDeleting (){;}
-		virtual void BeforeEditing (){;}
-		virtual void AfterEditing (bool bRealyEdited){;}
+		virtual void BeforeEditing ();
+		virtual void AfterEditing (bool bRealyEdited);
 		
 	protected:
 	public:
@@ -66,6 +67,7 @@ class ShortcutList : public ListGenReportWithDialog
 		
 		// setter
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+		void SetLayerType (int iLayertype) {m_LayerType = iLayertype;}
 		
 	};
 
