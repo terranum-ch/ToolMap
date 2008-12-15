@@ -39,7 +39,7 @@
 #define IDDLG_SHORT_LIST 21001
 #define IDDLG_SHORT_ADD_BTN 21002
 #define IDDLG_SHORT_DEL_BTN 21003
-#define IDDLG_SHORT_EDIT_BTN 21004
+//#define IDDLG_SHORT_EDIT_BTN 21004
 #define SHORTCUT_PANEL_TITLE _("Shortcuts")
 #define SHORTCUT_PANEL_SIZE wxSize(250, 200)
 
@@ -49,10 +49,11 @@ class ShortcutList : public ListGenReportWithDialog
 	private:
 		DataBaseTM * m_pDB;
 		int m_LayerType;
+		int m_OldKey;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
-		virtual void BeforeDeleting (){;}
+		virtual void BeforeDeleting ();
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
 		
@@ -68,6 +69,10 @@ class ShortcutList : public ListGenReportWithDialog
 		// setter
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
 		void SetLayerType (int iLayertype) {m_LayerType = iLayertype;}
+		
+		// key function
+		int GetShortcutInt (const wxString & myShortCut);
+		wxString GetKeyFromInt (int key){return wxString::Format(_T("F%d"), key);}
 		
 	};
 
@@ -92,8 +97,8 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		// event function for panel
 		void OnChangeTarget( wxCommandEvent& event );
 		void OnShortcutAdd( wxCommandEvent& event );
-		void OnShortcutDel( wxCommandEvent& event ){ event.Skip(); }
-		void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
+		void OnShortcutDel( wxCommandEvent& event );
+		//void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
 		
 		
 		/// Creates the controls and sizers

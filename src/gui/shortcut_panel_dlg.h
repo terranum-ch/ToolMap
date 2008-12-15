@@ -70,6 +70,14 @@ class Shortcut_Panel_DLG : public wxDialog
 		}
 		bool SetTypeList (DataBaseTM * database, int layer_type, int key = 0);
 		
+		// transfer data from windows
+		virtual bool TransferDataFromWindow();
+		virtual bool TransferDataToWindow();
+		wxArrayLong m_CheckedTypes;
+		int m_SelectedKey;
+		wxString m_Description;
+		
+		
 	};
 
 

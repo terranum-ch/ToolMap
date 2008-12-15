@@ -2212,7 +2212,7 @@ bool DataBaseTM::DeleteQuery (long qid)
 bool DataBaseTM::GetNextShortcutByLayerType (int layer_type, wxString & key, 
 										  wxString & description, bool bFirstLoop)
 {
-	wxString sValue = _T("SELECT a.SHORTCUT_KEY, a.SHORTCUT_DESC FROM %s a, %s b WHERE ")
+	wxString sValue = _T("SELECT DISTINCT a.SHORTCUT_KEY, a.SHORTCUT_DESC FROM %s a, %s b WHERE ")
 	_T("b.SHORTCUT_CD = a.SHORTCUT_CD AND b.OBJECT_ID IN (SELECT c.OBJECT_ID FROM %s c ")
 	_T("WHERE c.OBJECT_TYPE_CD = %d)");
 	
@@ -2265,9 +2265,10 @@ bool DataBaseTM::GetNextShortcutByLayerType (int layer_type, wxString & key,
 bool DataBaseTM::GetAllUnusedShortcuts (wxArrayString & keylist) 
 {
 	// static sentence, no parameter
+	//SELECT  a.SHORTCUT_KEY FROM dmn_shortcut_key a LEFT JOIN shortcut_list b  ON  a.SHORTCUT_CD = b.SHORTCUT_CD WHERE b.SHORTCUT_CD IS NULL
 	wxString sSentence = _T("SELECT a.SHORTCUT_KEY FROM ") + TABLE_NAME_SHORTCUT_DMN 
-			+ _T(" a, ") + TABLE_NAME_SHORTCUT_LIST + 
-			_T(" b WHERE a.SHORTCUT_CD <> b.SHORTCUT_CD");
+			+ _T(" a LEFT JOIN ") + TABLE_NAME_SHORTCUT_LIST + 
+			_T(" b ON  a.SHORTCUT_CD = b.SHORTCUT_CD WHERE  b.SHORTCUT_CD IS NULL");
 	
 	if (!DataBaseQuery(sSentence))
 	{
@@ -2324,6 +2325,72 @@ bool DataBaseTM::GetNextShortCutObject (long & shortcutid, const int & key,
 	return true;
 }
 
+
+
+/***************************************************************************//**
+ @brief Delete specified shortcut
+ @details 
+ @param shortcutkey the shortcut ID used (1.... 12)
+ @return  true if query was successfully passed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+bool DataBaseTM::DeleteShortcut (int shortcutkey)
+{
+	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE SHORTCUT_CD = %d; ")
+										  _T("UPDATE %s SET SHORTCUT_DESC = \"\" WHERE SHORTCUT_CD = %d; "),
+										  TABLE_NAME_SHORTCUT_LIST.c_str(),
+										  shortcutkey,
+										  TABLE_NAME_SHORTCUT_DMN.c_str(),
+										  shortcutkey);
+	if (!DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error deleting shortcut : %s"), DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Append or edit a shortcut
+ @param shortcutkey the index of the selected shortcut (1...12)
+ @param description Description used for the shortcut
+ @param types Array of integer containing the types of objects
+ @return  true if the shortcut was edited successfully
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 December 2008
+ *******************************************************************************/
+bool DataBaseTM::EditShortcut (int shortcutkey, const wxString & description, 
+							   const wxArrayLong & types)
+{
+	// update dmn_shortcut
+	wxString sSentence = wxString::Format(_T("UPDATE %s SET SHORTCUT_DESC = ")
+										   _T(" \"%s\" WHERE SHORTCUT_CD = %d; "),
+										   TABLE_NAME_SHORTCUT_DMN.c_str(),
+										   description.c_str(),
+										   shortcutkey);
+	sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE SHORTCUT_CD = %d; "),
+									  TABLE_NAME_SHORTCUT_LIST.c_str(),
+									  shortcutkey));
+	
+	for (unsigned int i = 0; i<types.GetCount();i++)
+		sSentence.Append(wxString::Format(_T("INSERT INTO %s VALUES (%d,%d); "),
+										  TABLE_NAME_SHORTCUT_LIST.c_str(),
+										  types.Item(i),
+										  shortcutkey));
+	
+	if (!DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error editing shortcut : %s"),
+				   DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	return true;
+}
 
 
 /// FIELD CREATION ::
