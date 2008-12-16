@@ -347,10 +347,12 @@ void ShortcutList::AfterAdding (bool bRealyAddItem)
 							myDlg->m_Description, 
 							myDlg->m_CheckedTypes);
 		
+	
+	
+		AddItemToList(GetKeyFromInt(myDlg->m_SelectedKey), -1);
+		SetItemText(GetItemCount()-1, 1, myDlg->m_Description);
 	}
 	
-	AddItemToList(GetKeyFromInt(myDlg->m_SelectedKey), -1);
-	SetItemText(GetItemCount()-1, 1, myDlg->m_Description);
 	
 	delete m_pDialog;
 }
@@ -403,16 +405,17 @@ void ShortcutList::AfterEditing (bool bRealyEdited)
 	{
 		if (m_OldKey != myDlg->m_SelectedKey)
 			m_pDB->DeleteShortcut(m_OldKey);
-			
+		
 		m_pDB->EditShortcut(myDlg->m_SelectedKey,
 							myDlg->m_Description, 
 							myDlg->m_CheckedTypes);
 		
+		// updating list
+		int iIndex = GetSelectedItem();
+		SetItemText(iIndex, 0, GetKeyFromInt(myDlg->m_SelectedKey) );
+		SetItemText(iIndex, 1, myDlg->m_Description);
 	}
 	
-	int iIndex = GetSelectedItem();
-	SetItemText(iIndex, 0, GetKeyFromInt(myDlg->m_SelectedKey) );
-	SetItemText(iIndex, 1, myDlg->m_Description);
 	
 	delete m_pDialog;
 }
