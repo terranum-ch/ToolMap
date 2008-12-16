@@ -86,8 +86,11 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemPanel7->SetSizer(itemBoxSizer8);
 	
     
-	m_pObjList_L_Freq = new tmCheckListBoxRank (itemPanel7, ID_CHECKLISTBOX4, wxDefaultPosition,
-											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+	m_pObjList_L_Freq = new tmCheckListBoxRank (itemPanel7, ID_CHECKLISTBOX4,
+												wxDefaultPosition,
+												wxDefaultSize, 0, NULL,
+												tmLB_MENU);
+												//wxLB_MULTIPLE | tmLB_MENU);
     itemBoxSizer8->Add(m_pObjList_L_Freq, 1, wxGROW, 0); //5);
 	
     itemNotebook6->AddPage(itemPanel7, _("Frequent"));
@@ -97,7 +100,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemPanel10->SetSizer(itemBoxSizer11);
 	
 	m_pObjList_L_NoFreq = new tmCheckListBoxRank  (itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition,
-											 wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+											 wxDefaultSize, 0, NULL,
+												   tmLB_MENU);
+												   //wxLB_MULTIPLE | tmLB_MENU);
 	
     itemBoxSizer11->Add(m_pObjList_L_NoFreq, 1, wxGROW,0);// 5);
 	
@@ -111,7 +116,11 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
     itemPanel13->SetSizer(itemBoxSizer14);
 	
-	m_pObjList_PT = new tmCheckListBoxRank (itemPanel13, ID_CHECKLISTBOX2, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+	m_pObjList_PT = new tmCheckListBoxRank (itemPanel13, ID_CHECKLISTBOX2, 
+											wxDefaultPosition, wxDefaultSize,
+											0, NULL,
+											tmLB_MENU);
+											//wxLB_MULTIPLE | tmLB_MENU);
 	itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW|wxALL, 0);// 5);
 	
     m_AttribNotebook->AddPage(itemPanel13, _("Point"));
@@ -122,7 +131,9 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
     m_pObjList_PLG = new tmCheckListBoxRank(itemPanel21, ID_CHECKLISTBOX1, 
 										wxDefaultPosition, wxDefaultSize,
-										0, NULL, wxLB_MULTIPLE | tmLB_MENU);
+										0, NULL,
+											tmLB_MENU);
+											//wxLB_MULTIPLE | tmLB_MENU);
 	
 	itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 0);// 5);
 	
