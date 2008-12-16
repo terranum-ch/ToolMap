@@ -201,6 +201,8 @@ void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
 			break;
 	}
 	
+	event.Skip();
+	
 	// no selection
 	//DeselectAll();
 	/// @bug DeselectAll() is not working as espected in the actual version of wxWidgets
