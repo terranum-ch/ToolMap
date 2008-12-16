@@ -98,6 +98,10 @@ void Shortcut_Panel_DLG::CreateControls()
 	this->Layout();
 	bSizer10->Fit( this );
 	
+	// specify a default size
+	this->SetSize(300, 350);
+	this->SetMinSize(wxSize(200,200));
+	
 	this->Centre( wxBOTH );
 	
 }
