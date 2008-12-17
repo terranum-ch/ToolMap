@@ -152,6 +152,8 @@ void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent & event)
  *******************************************************************************/
 void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
 {
+	wxLogDebug(_T("Move called !"));
+	
 	// selected items where get from the OnDisplayPopupMenu functions
 	int i=0;
 	int idestpos = 0;
@@ -201,7 +203,8 @@ void tmCheckListBox::OnMoveItemInList (wxCommandEvent & event)
 			break;
 	}
 	
-	event.Skip();
+	// do not skip event, otherwise may be called more than once
+	//event.Skip();
 	
 	// no selection
 	//DeselectAll();
@@ -384,6 +387,12 @@ bool tmCheckListBox::MoveItem (long index1, long index2)
 	RemoveItem(index1);
 	
 	AddItem(index2, id1, name1, bcheck1);
+	
+	this->SetSelection(2, true);
+	wxLogDebug(_T("Setting selection to index : %d"),
+			   2);
+		
+	//Check(3, true);
 	
 	return TRUE;
 }
