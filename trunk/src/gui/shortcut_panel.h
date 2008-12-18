@@ -44,12 +44,14 @@
 #define SHORTCUT_PANEL_SIZE wxSize(250, 200)
 
 
+
 class ShortcutList : public ListGenReportWithDialog
 	{
 	private:
 		DataBaseTM * m_pDB;
 		int m_LayerType;
 		int m_OldKey;
+		wxWindow * m_ParentEvt;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
@@ -57,9 +59,12 @@ class ShortcutList : public ListGenReportWithDialog
 		virtual void BeforeEditing ();
 		virtual void AfterEditing (bool bRealyEdited);
 		
+		
+		
 	protected:
 	public:
 		ShortcutList (wxWindow * parent,
+					  wxWindow * parent_evt,
 					 wxWindowID id,
 					 wxArrayString * pColsName, 
 					 wxArrayInt * pColsSize=NULL,
@@ -74,6 +79,9 @@ class ShortcutList : public ListGenReportWithDialog
 		int GetShortcutInt (const wxString & myShortCut);
 		wxString GetKeyFromInt (int key){return wxString::Format(_T("F%d"), key);}
 		
+		
+		// send order to attribution manager
+		void RefreshShortcuts ();
 	};
 
 
@@ -108,18 +116,20 @@ class Shortcuts_PANEL : public ManagedAuiWnd
 		
 		void InitMemberValues();
 		
+		
 		DECLARE_EVENT_TABLE()
 		
 	public:
 		Shortcuts_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * auimanager);
 		~Shortcuts_PANEL();
 		
-		int LoadShortcutList ();
+		int LoadShortcutList (bool bStoreShortcutinmemory = false);
 		
 		
 		// setter
 		void SetProjectOpen (bool bStatus = true){m_ProjectOpen = bStatus;}
 		void SetDataBase (DataBaseTM * database);
+		
 		
 	};
 

@@ -25,6 +25,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_INFO_BTN_PRESSED, tmAttributionManager::OnInfoBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_RUN, tmAttributionManager::OnRunQuery)
+	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
 END_EVENT_TABLE()
 
 
@@ -231,6 +232,20 @@ void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
 	
 	delete myAttrib;
 	
+	
+}
+
+
+/***************************************************************************//**
+ @brief Called when user modifies the shortcut
+ @details This function reload the shortcuts into memory when shortcuts are
+ changed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+void tmAttributionManager::OnRefreshShortcut (wxCommandEvent & event)
+{
+	wxLogDebug(_T("Reload shortcuts"));
 	
 }
 

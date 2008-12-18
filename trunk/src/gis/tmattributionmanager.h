@@ -69,6 +69,7 @@ class tmAttributionManager : public wxEvtHandler
 		void OnSelection (wxCommandEvent & event);
 		void OnAttributeBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
+		void OnRefreshShortcut (wxCommandEvent & event);
 		
 		// query function
 		void OnRunQuery (wxCommandEvent & event);
