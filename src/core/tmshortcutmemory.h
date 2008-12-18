@@ -58,7 +58,22 @@ WX_DECLARE_OBJARRAY(tmShortcutObject, tmShortCutObjArray);
 
 
 
-
+/***************************************************************************//**
+ @brief Store shortcuts for attribution in memory
+ @details Shortcuts are stored in :
+ - The database
+ - Memory
+ For the latest,
+ shortcuts are stored in memory for direct access when attributing. When the
+ following operations are exectued in the #Shortcuts_PANEL all shortcuts are
+ read again from the database and stored into memory 
+ - Project is open
+ - New shortcut is added
+ - Shortcut is edited
+ - A shortcut is removed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
 class tmShortcutMemory : public wxObject
 	{
 	private:
@@ -70,6 +85,14 @@ class tmShortcutMemory : public wxObject
 	public:
 		tmShortcutMemory();
 		~tmShortcutMemory();
+		
+		// shortcut operations
+		void AddShortcutMemory(int iLayerType, int iKey, const wxString & description,
+							   long lShortcutValue);
+		
+		void Clear();
+		int GetShortcut (int iKey, int & iLayerType, 
+						 wxString & description, wxArrayLong & shortcutvalues);
 		
 		
 };

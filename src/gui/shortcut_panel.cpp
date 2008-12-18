@@ -19,6 +19,8 @@
 
 #include "shortcut_panel.h"
 
+DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_REFRESH)
+
 BEGIN_EVENT_TABLE( Shortcuts_PANEL, ManagedAuiWnd )
 	EVT_CHOICE( IDDLG_SHORT_TARGET, Shortcuts_PANEL::OnChangeTarget )
 	EVT_FLATBUTTON( IDDLG_SHORT_ADD_BTN, Shortcuts_PANEL::OnShortcutAdd )
@@ -68,6 +70,10 @@ void Shortcuts_PANEL::InitMemberValues()
 	m_pDB = NULL;
 	
 }
+
+
+
+
 
 
 Shortcuts_PANEL::~Shortcuts_PANEL()
@@ -127,7 +133,7 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	myColWidth.Add(80);
 	myColWidth.Add(200);
 	
-	m_ListShortcuts = new ShortcutList( parent, IDDLG_SHORT_LIST,
+	m_ListShortcuts = new ShortcutList( parent, m_ParentEvt, IDDLG_SHORT_LIST,
 									   &myColName,
 									   &myColWidth,
 									    wxSize(100, 100));
@@ -166,11 +172,12 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
  @brief Load Shortcut into the Shortcut list
  @details This function loads the shortcuts from the DB into the shortcut list
  layer type is selected by actual list choice.
+ @param bStoreShortcutinmemory If set to true, Shortcuts are stored into memory.
  @return  Number of values loaded
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 December 2008
  *******************************************************************************/
-int Shortcuts_PANEL::LoadShortcutList ()
+int Shortcuts_PANEL::LoadShortcutList (bool bStoreShortcutinmemory)
 {
 	wxASSERT(m_pDB);
 	if (!m_pDB)
@@ -203,6 +210,12 @@ int Shortcuts_PANEL::LoadShortcutList ()
 		
 		iCount++;
 	}
+	
+	// save shortcut into memory
+	if (bStoreShortcutinmemory)
+		m_ListShortcuts->RefreshShortcuts();
+	
+	
 	return iCount;
 }
 
@@ -231,7 +244,9 @@ void Shortcuts_PANEL::OnChangeTarget( wxCommandEvent& event )
 void Shortcuts_PANEL::OnShortcutAdd( wxCommandEvent& event )
 {
 	if (m_ProjectOpen)
+	{
 		m_ListShortcuts->AddItem();
+	}
 		
 		
 	event.Skip();
@@ -248,7 +263,9 @@ void Shortcuts_PANEL::OnShortcutAdd( wxCommandEvent& event )
 void Shortcuts_PANEL::OnShortcutDel( wxCommandEvent& event )
 {
 	if (m_ProjectOpen)
+	{
 		m_ListShortcuts->DeleteItem();
+	}
 	
 	event.Skip();
 }
@@ -264,6 +281,7 @@ void Shortcuts_PANEL::OnShortcutDel( wxCommandEvent& event )
  @date 10 December 2008
  *******************************************************************************/
 ShortcutList::ShortcutList (wxWindow * parent,
+							wxWindow * parent_evt,
 						  wxWindowID id,
 						  wxArrayString * pColsName, 
 						  wxArrayInt * pColsSize,
@@ -271,6 +289,7 @@ ShortcutList::ShortcutList (wxWindow * parent,
 ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	m_LayerType = 0;
+	m_ParentEvt = parent_evt;
 }
 
 
@@ -351,6 +370,7 @@ void ShortcutList::AfterAdding (bool bRealyAddItem)
 	
 		AddItemToList(GetKeyFromInt(myDlg->m_SelectedKey), -1);
 		SetItemText(GetItemCount()-1, 1, myDlg->m_Description);
+		RefreshShortcuts();
 	}
 	
 	
@@ -414,6 +434,7 @@ void ShortcutList::AfterEditing (bool bRealyEdited)
 		int iIndex = GetSelectedItem();
 		SetItemText(iIndex, 0, GetKeyFromInt(myDlg->m_SelectedKey) );
 		SetItemText(iIndex, 1, myDlg->m_Description);
+		RefreshShortcuts();
 	}
 	
 	
@@ -431,4 +452,19 @@ void ShortcutList::BeforeDeleting ()
 {
 	int mySelected = GetSelectedItem();
 	m_pDB->DeleteShortcut(GetShortcutInt(GetItemColText(mySelected, 0)));
+	RefreshShortcuts();
 }
+
+
+/***************************************************************************//**
+ @brief Send order to refresh shortcuts
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+void ShortcutList::RefreshShortcuts ()
+{
+	wxCommandEvent evt (tmEVT_SHORTCUT_REFRESH, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+}
+
+
