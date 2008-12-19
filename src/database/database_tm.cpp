@@ -2393,6 +2393,66 @@ bool DataBaseTM::EditShortcut (int shortcutkey, const wxString & description,
 }
 
 
+
+/***************************************************************************//**
+ @brief Get Full informations for shortcuts
+ @details This function is used for storing shortcuts into memory.
+ @param bFirstLoop set to true if this is the first loop (issue the query)
+ @param layertype get the layer type (see #PRJDEF_LAYERS_TYPE)
+ @param key get the shortcut key (as int, between 1-12)
+ @param description get the shortcut description
+ @param shortcutvalue get the shortcut value
+ @return  return true if all is correct, false otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+bool DataBaseTM::GetNextShortcutFull (bool bFirstLoop, int & layertype, 
+						  int & key, wxString & description, 
+						  long & shortcutvalue)
+{
+	wxString sSentence = wxString::Format(_T("SELECT  a.SHORTCUT_CD, c.OBJECT_TYPE_CD,")
+										  _T(" a.SHORTCUT_DESC, b.OBJECT_ID FROM %s a")
+										  _T(" LEFT JOIN (%s b, %s c) ON  (b.SHORTCUT_CD")
+										  _T(" = a.SHORTCUT_CD AND b.OBJECT_ID = c.OBJECT_ID)")
+										  _T(" WHERE b.SHORTCUT_CD = a.SHORTCUT_CD ORDER BY")
+										  _T(" a.SHORTCUT_CD"),
+										  TABLE_NAME_SHORTCUT_DMN.c_str(),
+										  TABLE_NAME_SHORTCUT_LIST.c_str(),
+										  TABLE_NAME_OBJECTS.c_str());
+	// running query
+	
+	if (bFirstLoop)
+	{
+		DataBaseDestroyResults();
+		if (!DataBaseQuery(sSentence))
+		{
+			wxLogDebug(_T("Error getting info for shortcuts : %s"),
+					   DataBaseGetLastError().c_str());
+			return false;
+		}
+		
+	}
+	
+	// getting data
+	if (!DataBaseHasResult())
+	{
+		return false;
+	}
+	
+	wxArrayString myResultRow = DataBaseGetNextResult();
+	wxASSERT(myResultRow.GetCount() != 4);
+	if (myResultRow.GetCount() != 4)
+		return false;
+	
+	key = wxAtoi(myResultRow.Item(0));
+	layertype = wxAtoi(myResultRow.Item(1));
+	description = myResultRow.Item(2);
+	myResultRow.Item(3).ToLong(&shortcutvalue);
+	
+	return true;
+	
+}
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")

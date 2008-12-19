@@ -179,6 +179,9 @@ class DataBaseTM : public DataBase
 		bool EditShortcut (int shortcutkey, const wxString & description, 
 						   const wxArrayLong & types);
 		bool DeleteShortcut (int shortcutkey);
+		bool GetNextShortcutFull (bool bFirstLoop, int & layertype, 
+								  int & key, wxString & description, 
+								  long & shortcutvalue);
 	};
 
 
