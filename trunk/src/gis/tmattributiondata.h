@@ -76,6 +76,7 @@ class tmAttributionData : public wxObject
 		
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel) {return false;}
+		virtual bool SetAttributeBasicValues(wxArrayLong * values);
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}

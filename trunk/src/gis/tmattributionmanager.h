@@ -41,19 +41,7 @@
 #include "tmattributiondatalabel.h"			// for label attributions
 #include "tmshortcutmemory.h"				// for shortcuts in memory
 
-// event for shortcuts
-#define TM_EVENT_F1		22000
-#define TM_EVENT_F2		22001
-#define TM_EVENT_F3		22002
-#define TM_EVENT_F4		22003
-#define TM_EVENT_F5		22004
-#define TM_EVENT_F6		22005
-#define TM_EVENT_F7		22006
-#define TM_EVENT_F8		22007
-#define TM_EVENT_F9		22008
-#define TM_EVENT_F10	22009
-#define TM_EVENT_F11	22010
-#define TM_EVENT_F12	22011
+DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 
 
 /***************************************************************************//**

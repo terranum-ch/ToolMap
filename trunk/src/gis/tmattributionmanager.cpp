@@ -20,6 +20,8 @@
 #include "tmattributionmanager.h"
 
 
+DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
+
 BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
@@ -109,27 +111,33 @@ void tmAttributionManager::OnShortcutPressed (wxKeyEvent & event)
 			
 			// verification 			
 			if (mySelObjArray && ShortcutAttributionChecking(mySelObjArray->GetCount(),
-											myLayerType))
+															 myLayerType))
 			{
 				wxLogDebug(_T("Shortcut found : %s"), myDescription.c_str());
 				
 				// create attribution object based on type
-				 tmAttributionData * myAttrib = CreateAttributionData(myLayerType);
-				 myAttrib->Create(mySelObjArray, m_pDB);
-				 //if(!myAttrib->SetAttributeBasic(m_Panel))
-				 //{
-				 //wxLogMessage(_("Unable to attribute those data"));
-				 //}
-				 
-				 delete myAttrib;
+				tmAttributionData * myAttrib = CreateAttributionData(myLayerType);
+				myAttrib->Create(mySelObjArray, m_pDB);
+				if(!myAttrib->SetAttributeBasicValues(&myValues))
+				{
+					wxLogMessage(_("Unable to attribute those data"));
+				}
+				
+				delete myAttrib;
+				
+				// send notification to frame
+				wxCommandEvent evt(tmEVT_SHORTCUT_ATTRIBUTION_DONE, wxID_ANY);
+				evt.SetString(myDescription);
+				m_Parent->GetEventHandler()->AddPendingEvent(evt);
+				
 			}
 		}
-
+		
 		event.Skip(false); // otherwise two events are processed
 	}
 	else // if not a shortcut, skip
 		event.Skip(true);
-
+	
 }
 
 

@@ -298,7 +298,9 @@ private:
 	void OnAddGisData (wxCommandEvent & event);
 	//void OnZoomToFit (wxCommandEvent & event);
 	
-	void OnShowQueryManager (wxCommandEvent & event);
+	//void OnShowQueryManager (wxCommandEvent & event);
+	
+	void OnShortcutAttributionDone (wxCommandEvent & event);
 	
 	
 	
