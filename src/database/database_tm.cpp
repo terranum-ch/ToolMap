@@ -2440,7 +2440,6 @@ bool DataBaseTM::GetNextShortcutFull (bool bFirstLoop, int & layertype,
 	}
 	
 	wxArrayString myResultRow = DataBaseGetNextResult();
-	wxASSERT(myResultRow.GetCount() != 4);
 	if (myResultRow.GetCount() != 4)
 		return false;
 	
