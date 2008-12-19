@@ -413,9 +413,12 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 	
 	if (!m_Scale.IsLayerExtentValid())
 	{
+		
 		m_StatusBar->SetStatusText(_T(""), 1);
 		return;
 	}
+	// clear status bar
+	m_StatusBar->SetStatusText(_T(""), 0);
 	
 	wxPoint * mousepoint = (wxPoint*) event.GetClientData();
 	wxRealPoint mouserealpoint = m_Scale.PixelToReal(*mousepoint);

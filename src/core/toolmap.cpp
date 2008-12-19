@@ -95,6 +95,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 
+	// NOTIFICATION EVENT
+	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_ATTRIBUTION_DONE, ToolMapFrame::OnShortcutAttributionDone)
+
 	
 END_EVENT_TABLE()
 
@@ -690,6 +693,15 @@ void ToolMapFrame::OnUpdateAttributionObjects(wxCommandEvent & event)
 void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
 {
 	m_LayerManager->AddLayer(event);
+}
+
+
+void ToolMapFrame::OnShortcutAttributionDone (wxCommandEvent & event)
+{
+	wxString myStatusInfo =  event.GetString();
+	myStatusInfo.Append(_(" : Attribution DONE"));
+	
+	GetStatusBar()->SetStatusText(myStatusInfo, 0);
 }
 
 

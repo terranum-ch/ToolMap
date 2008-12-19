@@ -183,3 +183,38 @@ void tmAttributionData::PrepareGetInfoStatement (wxString & statement, const wxS
 	
 	statement.Append(wxString::Format(sTmp, m_SelIDs->Item(0)));
 }
+
+
+
+/***************************************************************************//**
+ @brief Set Basic attribution
+ @details This function attributes the selected object with the specified
+ values. This works in two steps : First we delete all values for selected
+ object and then we insert specified values for selected objects
+ This function is mainly used for attribution by shortcuts
+ @param values An array of long containing the values for attribution
+ @return  Return true if all works correctly, otherwise false
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
+{
+	wxASSERT (!m_TableName.IsEmpty());
+	wxString myClearStatement;
+	wxString myAttribStatement;
+	
+	PrepareCleaningStatement(myClearStatement, m_TableName);
+	PrepareAttributionStatement(myAttribStatement, m_TableName, values);
+	
+	wxASSERT (m_pDB);
+	if (!m_pDB->DataBaseQueryNoResult(myClearStatement + myAttribStatement))
+	{
+		wxLogDebug(_T("Error trying to attributes objects : %s"),
+				   m_pDB->DataBaseGetLastError().c_str());
+		return false;
+		
+	}
+	
+	return true;
+}
+
