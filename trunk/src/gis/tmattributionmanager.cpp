@@ -51,6 +51,136 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
 	m_Parent->PushEventHandler(this);
+	
+}
+
+
+/***************************************************************************//**
+ @brief Connect shortcut
+ @details This function is called when project is open
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+void tmAttributionManager::ConnectShortcutEvent()
+{
+	Connect(wxID_ANY, wxEVT_CHAR, 
+			wxCharEventHandler(tmAttributionManager::OnShortcutPressed));
+
+}
+
+
+/***************************************************************************//**
+ @brief Disconnect shortcut
+ @details This function is called when project is closed
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+void tmAttributionManager::DisconnectShortcutEvent()
+{
+	Disconnect(wxID_ANY, wxEVT_CHAR, 
+			   wxCharEventHandler(tmAttributionManager::OnShortcutPressed));
+		
+}
+
+
+/***************************************************************************//**
+ @brief Called when a key is pressed
+ @details This function respond to the F1-F12 shortcut key
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+void tmAttributionManager::OnShortcutPressed (wxKeyEvent & event)
+{
+	int iShortcutIndex = 0;
+	int myLayerType = -1;
+	wxString myDescription = _T("");
+	wxArrayLong myValues;
+	
+	if (event.GetKeyCode() >= WXK_F1 && event.GetKeyCode() <= WXK_F12)
+	{
+		// get the key index : 
+		iShortcutIndex = event.GetKeyCode() - WXK_F1 + 1;
+		wxASSERT(iShortcutIndex >= 1 && iShortcutIndex <=12);
+		if(m_ShortcutMem.GetShortcut(iShortcutIndex, myLayerType,
+									 myDescription, myValues) != wxNOT_FOUND)
+		{
+			// get selected features
+			wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
+			
+			// verification 			
+			if (mySelObjArray && ShortcutAttributionChecking(mySelObjArray->GetCount(),
+											myLayerType))
+			{
+				wxLogDebug(_T("Shortcut found : %s"), myDescription.c_str());
+				
+				// create attribution object based on type
+				 tmAttributionData * myAttrib = CreateAttributionData(myLayerType);
+				 myAttrib->Create(mySelObjArray, m_pDB);
+				 //if(!myAttrib->SetAttributeBasic(m_Panel))
+				 //{
+				 //wxLogMessage(_("Unable to attribute those data"));
+				 //}
+				 
+				 delete myAttrib;
+			}
+		}
+
+		event.Skip(false); // otherwise two events are processed
+	}
+	else // if not a shortcut, skip
+		event.Skip(true);
+
+}
+
+
+
+/***************************************************************************//**
+ @brief Validate program state before shortcut attribution
+ @details We should ensure that :
+ - Selected layer in the TOC correspond to the Shortcut layer type
+ - There is some object selected
+ - Display a validation
+ dialog if trying to give values to more than one object to avoid big
+ attribution mistakes
+ @param iCount Number of selected object
+ @param shortcutlayer_type The layer type of the shortcut
+ @return  true if all checks listed above are valid, false if we shouldn't
+ attribute
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+bool tmAttributionManager::ShortcutAttributionChecking (int iCount, int shortcutlayer_type)
+{
+	wxASSERT(m_pLayerProperties);
+	if (m_pLayerProperties->m_LayerType != shortcutlayer_type)
+	{
+		wxLogDebug(_T("Something incorrect, selected shortcut")
+				   _T(" doesn't correspond to the selected layer"));
+		return false;
+	}
+	
+	
+	if (iCount == 0)
+	{
+		wxLogDebug(_T("No object selected, unable to attribute"));
+		return false;
+	}
+	
+	// more than one object selected, display confirmation dialog box
+	if (iCount > 1)
+	{
+		wxString myM = _("More than one object is selected!\n");
+		wxString myM2 = _("Are you really sure you want to attributes\n");
+		wxString myM3 = wxString::Format(_("the %d selected features ?\n"),
+										 iCount);
+				
+		if(wxMessageBox(myM + myM2 + myM3,
+						_("Warning more than one object selected"),
+						wxYES_NO | wxNO_DEFAULT, m_Parent) == wxNO)
+			return false;
+	}
+	
+	return true;
 }
 
 
@@ -84,7 +214,11 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM * pDb)
 	m_pLayerProperties = NULL;
 	
 	// check validity for all objects
-	return IsAttributionManagerReady();
+	bool bIsReady = IsAttributionManagerReady();
+	if (bIsReady)
+		ConnectShortcutEvent();
+	
+	return bIsReady;
 }
 
 
@@ -99,6 +233,8 @@ void tmAttributionManager::UnInitAttributionManager()
 {
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
+	
+	DisconnectShortcutEvent();
 }
 
 
