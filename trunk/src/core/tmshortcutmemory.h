@@ -93,6 +93,7 @@ class tmShortcutMemory : public wxObject
 		void Clear();
 		int GetShortcut (int iKey, int & iLayerType, 
 						 wxString & description, wxArrayLong & shortcutvalues);
+		int GetCount() {return m_Shortcuts.GetCount();}
 		
 		
 };

@@ -39,6 +39,7 @@
 #include "tmattributiondataline.h"			// for line attribution
 #include "tmattributiondatapoint.h"			// for point attribution
 #include "tmattributiondatalabel.h"			// for label attributions
+#include "tmshortcutmemory.h"				// for shortcuts in memory
 
 
 
@@ -64,12 +65,16 @@ class tmAttributionManager : public wxEvtHandler
 		DataBaseTM *			m_pDB;
 		
 		tmLayerProperties * m_pLayerProperties;
+		tmShortcutMemory		m_ShortcutMem;
 		
 		// event function
 		void OnSelection (wxCommandEvent & event);
 		void OnAttributeBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
+		
+		// shortcut function
 		void OnRefreshShortcut (wxCommandEvent & event);
+		int LoadShortcutIntoMemory ();
 		
 		// query function
 		void OnRunQuery (wxCommandEvent & event);
@@ -77,6 +82,7 @@ class tmAttributionManager : public wxEvtHandler
 		// Attribution data creation
 		tmAttributionData * CreateAttributionData (int type);
 		
+				
 		// verification 
 		bool IsAttributionManagerReady();
 		DECLARE_EVENT_TABLE()

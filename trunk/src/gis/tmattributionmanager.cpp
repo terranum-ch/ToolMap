@@ -245,10 +245,52 @@ void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
  *******************************************************************************/
 void tmAttributionManager::OnRefreshShortcut (wxCommandEvent & event)
 {
-	wxLogDebug(_T("Reload shortcuts"));
 	
+	wxLogDebug(_T("%d : shortcuts loaded into memory"),
+			   LoadShortcutIntoMemory());
 }
 
+
+
+/***************************************************************************//**
+ @brief Load shortcuts from database into memory
+ @return  the number of loaded shortcuts
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 December 2008
+ *******************************************************************************/
+int tmAttributionManager::LoadShortcutIntoMemory ()
+{
+	wxASSERT(m_pDB);
+	bool bFirstLoop = true;
+	int myLayerType = -1;
+	int myKey = 0;
+	wxString myDescription = _T("");
+	long myShortcutValues = 0;
+	
+	// clear shortcut from memory
+	m_ShortcutMem.Clear();
+	
+	
+	// load shortcuts from memory
+	while (1)
+	{
+		if(!m_pDB->GetNextShortcutFull(bFirstLoop, myLayerType,
+								   myKey, myDescription, myShortcutValues))
+		{
+			break;
+		}
+		bFirstLoop = false;
+		
+		//wxLogDebug(_T("Shortcut : %d, %s, %d "),
+		//		   myKey, myDescription.c_str(),myShortcutValues);
+		
+		m_ShortcutMem.AddShortcutMemory(myLayerType, myKey, 
+										myDescription, myShortcutValues);
+	}
+	
+	
+	return m_ShortcutMem.GetCount();
+}
 
 
 
