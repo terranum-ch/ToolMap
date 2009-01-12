@@ -39,7 +39,7 @@
 #include "tmattributiondataline.h"			// for line attribution
 #include "tmattributiondatapoint.h"			// for point attribution
 #include "tmattributiondatalabel.h"			// for label attributions
-#include "tmshortcutmemory.h"				// for shortcuts in memory
+#include "../core/tmshortcutmemory.h"		// for shortcuts in memory
 
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 
