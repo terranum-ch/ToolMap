@@ -1,7 +1,8 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) LUCIEN SCHREIBER CREALP 2007
 cmake_minimum_required(VERSION 2.4)
-
+
+
 ## POLICY FOR WINDOWS ONLY ???
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -17,8 +18,6 @@ SOURCE_GROUP (source FILES ${SRC_FILES})
 # search all headers files
 FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
 SOURCE_GROUP (header FILES ${HEAD_FILES})
-
-SET(TRUNK_PATH ${PROJECT_SOURCE_DIR}/.. CACHE PATH "Path to the trunk" )
 
 
 MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
@@ -53,12 +52,12 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 IF (WIN32)
 	EXECUTE_PROCESS(
 		COMMAND version_svn_win.bat
-		WORKING_DIRECTORY ${TRUNK_PATH}/build/
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
 	)
 ELSE (WIN32)
 	EXECUTE_PROCESS(
 		COMMAND sh version_svn_unix.sh
-		WORKING_DIRECTORY ${TRUNK_PATH}/build/
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
 	)
 ENDIF(WIN32)
 
