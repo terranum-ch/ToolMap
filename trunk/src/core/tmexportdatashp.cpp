@@ -260,47 +260,44 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 November 2008
  *******************************************************************************/
-OGRLineString * tmExportDataSHP::SafeIntersection(OGRLineString * line, OGRPolygon * frame)
+OGRGeometry * tmExportDataSHP::SafeIntersection(OGRGeometry * line, OGRGeometry * frame)
 {
 	wxASSERT(line);
 	wxASSERT(frame);
 	
-	GEOSGeometry * geosline = NULL;
-	GEOSGeometry * geosframe = NULL;
-	GEOSGeometry * geosintersect = NULL;
-	OGRLineString * returncrop = NULL;
+	GEOSGeom  geosline = NULL;
+	GEOSGeom  geosframe = NULL;
+	GEOSGeom  geosintersect = NULL;
+	OGRGeometry * returncrop = NULL;
 	
 	
-	// convert to GEOS
+	/* convert to GEOS
 #ifdef __WXOSX__
 	return (OGRLineString*) line->Intersection(frame);
 	
-#else
+#else*/
 	
 	geosline = line->exportToGEOS();
 	geosframe = frame->exportToGEOS();
 	
 	wxASSERT(geosline);
 	wxASSERT(geosframe);
+	if (geosline != NULL && geosframe != NULL)
+	{
+		geosintersect = GEOSIntersection(geosline, geosframe);
+		GEOSGeom_destroy(geosline);
+		GEOSGeom_destroy(geosframe);
+		
+		if (geosintersect != NULL)
+		{
+			returncrop = OGRGeometryFactory::createFromGEOS(geosintersect);
+			GEOSGeom_destroy(geosintersect);
+		}
+		
+		
+	}
 	
-	geosintersect = GEOSIntersection(geosline, geosframe);
-	if (!geosintersect)
-		return NULL;
-	
-	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
-	
-	
-	returncrop = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
-	char * myTxt = GEOSWKTWriter_write(myWriter,geosintersect);
-	returncrop->importFromWkt(&myTxt);
-
-	return returncrop;	
-	
-	
-#endif
-	
-	
-	return NULL;
+	return returncrop;
 }
 
 
@@ -319,44 +316,38 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 	wxASSERT(union1);
 	wxASSERT(line);
 	
-	GEOSGeometry * geosline = NULL;
-	GEOSGeometry * geosmultiline = NULL;
-	GEOSGeometry * geosunion = NULL;
+	GEOSGeom  geosline = NULL;
+	GEOSGeom  geosunion = NULL;
+	GEOSGeom  geosresult = NULL;
 	OGRGeometry * returnunion = NULL;
 	
 	
 	// convert to GEOS
-#ifdef __WXOSX__
-	return union1->Union(line);
+//#ifdef __WXOSX__
+//	return union1->Union(line);
 	
-#else
+//#else
 	
 	geosline = line->exportToGEOS();
-	geosmultiline = union1->exportToGEOS();
+	geosunion = union1->exportToGEOS();
+	if (geosline != NULL && union1 != NULL)
+	{
+		geosresult = GEOSUnion(geosunion, geosline);
+		GEOSGeom_destroy(geosline);
+		GEOSGeom_destroy(geosunion);
+		
+		if (geosresult != NULL)
+		{
+			returnunion = OGRGeometryFactory::createFromGEOS(geosresult);
+			GEOSGeom_destroy(geosresult);
+		}
+		
+	}
 	
-	wxASSERT(geosline);
-	wxASSERT(geosmultiline);
+	return returnunion;
+
 	
-	geosunion = GEOSUnion(geosmultiline, geosline);
-	if (!geosunion)
-		return NULL;
-	
-	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
-	
-	
-	returnunion =  OGRGeometryFactory::createGeometry(wkbMultiLineString);
-	char * myTxt = GEOSWKTWriter_write(myWriter,geosunion);
-	returnunion->importFromWkt(&myTxt);
-	
-	return returnunion;	
-	
-	
-#endif
-	
-	
-	return NULL;
-	
-	
+//#endif
 }
 
 
@@ -442,16 +433,18 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		if (!myLine)
 			break;
 		
+	
+		
 		// intersects with the frame
-		//myCropLine = myLine->Intersection(m_Frame);
 		myCropLine = SafeIntersection(myLine, m_Frame);
 		if (myCropLine)
 		{
 			if (!myCropLine->IsEmpty())
 			{
 				// union all lines into one multiline
-				//myTempNodedLines = myCropLine->Union(myTempNodedLines);
 				myTempNodedLines = SafeUnion(myTempNodedLines, myCropLine);
+				int myGeomCount = ((OGRGeometryCollection *)myTempNodedLines)->getNumGeometries();
+				wxLogDebug(_T("Nb of geom : %d"), myGeomCount);
 			}
 			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}
@@ -461,7 +454,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	}
 	
 	// union with frame
-	OGRGeometry * myLinesNoded = myTempNodedLines->Union(myLineString);
+	//OGRGeometry * myLinesNoded = myTempNodedLines->Union(myLineString);
+	OGRGeometry * myLinesNoded = SafeUnion(myTempNodedLines, myLineString);
 	GEOSGeometry * myGEOSLinesNoded = myLinesNoded->exportToGEOS();
 	*myArrayofCrop = myGEOSLinesNoded;
 	
