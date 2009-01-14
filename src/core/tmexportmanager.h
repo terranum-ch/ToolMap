@@ -35,6 +35,7 @@
 
 #include "tmexportdatashp.h"			// for exporting data in SHP
 #include <wx/busyinfo.h>				// for busy info dialog, remove if no more needed
+#include <wx/progdlg.h>					// the progress dialog
 
 
 class tmExportManager : public wxObject
@@ -66,6 +67,14 @@ class tmExportManager : public wxObject
 		
 		// create tmExportData object
 		tmExportData * CreateExportData ();
+		
+		// progress function and variables
+		wxProgressDialog * m_ProgressDlg;
+		wxBusyInfo * m_ProgressBusy;
+		wxString m_ProgressText;
+		void CreateProgress(int iNbLayers, const wxString & layername);
+		bool UpdateProgress(int iActualLayer, const wxString & layername);
+		void DeleteProgress();
 		
 	protected:
 	public:

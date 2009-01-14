@@ -262,8 +262,21 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	}
 	
 	//TODO: Remove this wait dialog and add a progress dialog
-	wxBusyInfo wait (_("Please wait, exporting project ..."), m_Parent);
-	wxBusyCursor wait2;
+	//wxBusyInfo wait (_("Please wait, exporting project ..."), m_Parent);
+	//wxBusyCursor wait2;
+	
+	// progress dialog
+	/*bool bSkip = false;
+	wxString mydlgtext =	_("Exporting  Layers    :    ");
+	wxProgressDialog ProgDlg (_("Exporting Project in progress"),
+							  mydlgtext + layers->Item(0).m_LayerName,
+							  layers->GetCount(),
+							  m_Parent,
+							  wxPD_CAN_ABORT |  wxPD_AUTO_HIDE | wxPD_APP_MODAL);*/
+	CreateProgress(layers->GetCount(),
+				   layers->Item(0).m_LayerName);
+	
+	
 	
 	// get frame
 	int iFrameVertex = 0;
@@ -291,11 +304,93 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		delete m_ExportData;
 		m_ExportData = NULL;
 		
+		// update progress dialog
+		if(UpdateProgress(i, layers->Item(i).m_LayerName))
+		{
+			wxLogMessage(_("Export cancelled by user."));
+			break;
+		}
+			
+		/*ProgDlg.Update(i,
+					   mydlgtext + layers->Item(i).m_LayerName,
+					   &bSkip);
+		if (bSkip)
+		{
+			wxLogMessage(_("Export cancelled by user."));
+			break;
+		}*/
 	}
 	
-	
+	DeleteProgress();
 	delete [] pFrame;
 	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Create the progress dialog
+ @details This function uses the wxProgressDialog class when more than one
+ layers is to be exported and a wxBusyinfo when only one layers is
+ exported.
+ @param iNbLayer The number of layers to export
+ @param layername The first layername
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 January 2009
+ *******************************************************************************/
+void tmExportManager::CreateProgress(int iNbLayers, const wxString & layername)
+{
+	m_ProgressDlg = NULL;
+	m_ProgressBusy = NULL;
+	m_ProgressText = _("Exporting  Layers    :    ");
+	
+	if (iNbLayers > 1)
+	{
+		m_ProgressDlg = new wxProgressDialog(_("Exporting Project in progress"),
+											 m_ProgressText + layername,
+											 iNbLayers,
+											 m_Parent,
+											 wxPD_CAN_ABORT |  wxPD_AUTO_HIDE | wxPD_APP_MODAL);
+		
+	}
+	else
+	{
+		m_ProgressBusy = new wxBusyInfo(_("Please wait, exporting : ") + layername,
+										m_Parent);
+	}
+	
+}
+
+/***************************************************************************//**
+ @brief Update the progress dialog
+ @details This function does nothing if only one layers is exported and
+ otherwise it update the progress dialog
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 January 2009
+ *******************************************************************************/
+bool tmExportManager::UpdateProgress(int iActualLayer, const wxString & layername)
+{
+	bool bSkip = false; 
+	if (m_ProgressDlg)
+	{
+		m_ProgressDlg->Update(iActualLayer, m_ProgressText + layername, &bSkip);
+	}
+	
+	return bSkip;
+}
+
+
+/***************************************************************************//**
+ @brief Delete the progress indicator
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 14 January 2009
+ *******************************************************************************/
+void tmExportManager::DeleteProgress()
+{
+	if (m_ProgressDlg)
+		delete m_ProgressDlg;
+	
+	if (m_ProgressBusy)
+		delete m_ProgressBusy;
 }
 
 
