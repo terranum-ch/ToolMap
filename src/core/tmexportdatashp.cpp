@@ -407,13 +407,12 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	long myOid = 0;
 	int iValidLines = 0;
 	
+	
 	int myNbResuts = m_pDB->DatabaseGetCountResults();
 	if (myNbResuts == 0)
 		return false;
 	
-	GEOSGeom * myArrayofCrop = new GEOSGeom();
-
-	
+		
 	// transform non standard OGRLinearRing -> OGRLineString
 	OGRLinearRing * myFrame = m_Frame->getExteriorRing();
 	OGRLineString * myLineString = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
@@ -425,15 +424,14 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	}
 	
 	
+	// loop for all lines 
 	OGRGeometry * myTempNodedLines = OGRGeometryFactory::createGeometry(wkbMultiLineString);
-	// get lines into array
 	for (int i = 0; i < myNbResuts ; i++)
 	{
 		myLine = myDBData.GetNextDataLine(myOid);
 		if (!myLine)
 			break;
 		
-	
 		
 		// intersects with the frame
 		myCropLine = SafeIntersection(myLine, m_Frame);
@@ -443,44 +441,40 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 			{
 				// union all lines into one multiline
 				myTempNodedLines = SafeUnion(myTempNodedLines, myCropLine);
-				int myGeomCount = ((OGRGeometryCollection *)myTempNodedLines)->getNumGeometries();
-				wxLogDebug(_T("Nb of geom : %d"), myGeomCount);
+				//int myGeomCount = ((OGRGeometryCollection *)myTempNodedLines)->getNumGeometries();
+				//wxLogDebug(_T("Nb of geom : %d"), myGeomCount);
 			}
 			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}
 		
 		OGRGeometryFactory::destroyGeometry(myLine);
-		
 	}
 	
+	
 	// union with frame
-	//OGRGeometry * myLinesNoded = myTempNodedLines->Union(myLineString);
-	OGRGeometry * myLinesNoded = SafeUnion(myTempNodedLines, myLineString);
-	GEOSGeometry * myGEOSLinesNoded = myLinesNoded->exportToGEOS();
-	*myArrayofCrop = myGEOSLinesNoded;
+	OGRGeometry * myAllLinesNoded = SafeUnion(myTempNodedLines, myLineString);
+	OGRGeometryFactory::destroyGeometry(myTempNodedLines);
+	OGRGeometryFactory::destroyGeometry(myLineString);
 	
 	// create polygons
-	GEOSGeometry  * myPolCol = GEOSPolygonize(myArrayofCrop, 1);
-	int myNbPoly = GEOSGetNumGeometries(myPolCol);
-	GEOSWKTWriter * myWriter = GEOSWKTWriter_create();
-	
-	
-	// clean
-	OGRGeometryFactory::destroyGeometry(myLinesNoded);
-	OGRGeometryFactory::destroyGeometry(myTempNodedLines);
-	
+	GEOSGeom myGEOSAllLines = myAllLinesNoded->exportToGEOS();
+	OGRGeometryFactory::destroyGeometry(myAllLinesNoded);
+	GEOSGeom  myGEOSPoly = GEOSPolygonize(&myGEOSAllLines, 1);
+	GEOSGeom_destroy(myGEOSAllLines);
+	int myNbPoly = GEOSGetNumGeometries(myGEOSPoly);
+
 	
 	// save polygon to shp
 	for (int j = 0; j < myNbPoly;j++)
 	{
-		OGRPolygon * myPoly = (OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
-		char * myTxt = GEOSWKTWriter_write(myWriter,GEOSGetGeometryN(myPolCol, j));
-		myPoly->importFromWkt(&myTxt);
-		m_Shp.AddGeometry((OGRGeometry*)myPoly, -1);
-		
+		const GEOSGeometry * myActualPoly = GEOSGetGeometryN(myGEOSPoly, j);
+		GEOSGeom myActualPolyClone = GEOSGeom_clone(myActualPoly);
+		OGRGeometry * myPoly = OGRGeometryFactory::createFromGEOS(myActualPolyClone);
+		GEOSGeom_destroy(myActualPolyClone);
+		m_Shp.AddGeometry(myPoly, -1);
+		OGRGeometryFactory::destroyGeometry(myPoly);
 	}
-		
-	delete  myArrayofCrop;
+	GEOSGeom_destroy(myGEOSPoly);
 	return true;
 }
 
