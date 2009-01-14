@@ -43,7 +43,7 @@ class tmExportDataSHP : public tmExportData
 		void InitMemberValues();
 		
 		// for windows bug
-		OGRLineString * SafeIntersection(OGRLineString * line, OGRPolygon * frame);
+		OGRGeometry * SafeIntersection(OGRGeometry * line, OGRGeometry * frame);
 		OGRGeometry * SafeUnion (OGRGeometry * union1, OGRGeometry * line);
 		
 	protected:
