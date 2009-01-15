@@ -742,8 +742,11 @@ bool tmGISDataVectorSHP::SetNextFeature (bool resetreading)
 {
 	wxASSERT (m_Layer);
 	if (m_Feature)
+	{
 		OGRFeature::DestroyFeature(m_Feature);
-	
+		m_Feature = NULL;
+	}
+
 	if (resetreading)
 		m_Layer->ResetReading();
 	
