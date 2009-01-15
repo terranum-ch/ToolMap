@@ -40,7 +40,6 @@ DECLARE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED , -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_PAN_ENDED,-1)
-DECLARE_EVENT_TYPE(tmEVT_LM_SCROLL_MOVED, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SELECTION, -1)
 
 enum tmGIS_TOOL
@@ -87,12 +86,12 @@ class tmRenderer : public wxScrolledWindow
 		void OnMouseDown	(wxMouseEvent & event);
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);	
-		void OnMouseWheel	(wxMouseEvent & event);
+		//void OnMouseWheel	(wxMouseEvent & event);
 		void OnShiftDown	(wxKeyEvent & event);
 		void OnShiftUp		(wxKeyEvent & event);
 		
 		// scrollbar event (received)
-		void OnScroll (wxScrollWinEvent & event);
+		//void OnScroll (wxScrollWinEvent & event);
 			
 		DECLARE_EVENT_TABLE()
 	protected:

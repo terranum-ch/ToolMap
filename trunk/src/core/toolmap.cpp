@@ -134,8 +134,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	SetToolBar(CreateToolMapToolBar(this));
 	
 	// dessin de l'interface
-	//wxPanel * top_panel = new wxPanel (this, -1,wxDefaultPosition,wxDefaultSize );
-	//INTERFACE(top_panel, FALSE);
 	PostInit();
 	
 }
@@ -177,9 +175,7 @@ void ToolMapFrame::PostInit()
 											   m_LayerManager->GetSelectedDataMemory());
 											   
 	
-	// create the database object 
-	//m_Database = new DataBaseTM();
-	
+
 	m_pConfig = new wxFileConfig();
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar(), m_pConfig);
@@ -236,12 +232,6 @@ ToolMapFrame::~ToolMapFrame()
 
 void ToolMapFrame::OnQuit(wxCloseEvent & event)
 {
-
-//		if (m_Database->DataBaseIsOpen())
-//		{
-//			m_Database->DataBaseClose();
-//		}
-//		delete m_Database;
 	
 	wxLog::SetActiveTarget (NULL);
 	this->Destroy();
@@ -703,20 +693,6 @@ void ToolMapFrame::OnShortcutAttributionDone (wxCommandEvent & event)
 	
 	GetStatusBar()->SetStatusText(myStatusInfo, 0);
 }
-
-
-/*void ToolMapFrame::OnZoomToFit (wxCommandEvent & event)
-{
-	m_LayerManager->OnZoomToFit();
-}*/
-
-
-
-/*void ToolMapFrame::OnShowQueryManager (wxCommandEvent & event)
-{
-	m_PManager->TempTempInitTOC();
-	
-}*/
 
 
 void ToolMapFrame::OnToolChanged (wxCommandEvent & event)

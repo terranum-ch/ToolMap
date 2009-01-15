@@ -247,15 +247,12 @@ public:
 	void PostInit();
 	
 	static wxMenuBar* CreateToolMapMenu();
-	//static wxToolBar * CreateToolMapToolBar(wxWindow * parent);
 	wxToolBar * CreateToolMapToolBar(wxWindow * parent);
 	
 	
 	
 	
 private:
-	//PrjDefMemManage m_PrjDefinition;
-	//DataBaseTM * m_Database;
 	wxFileConfig * m_pConfig;
 	
 	wxAuiManager * m_AuiManager;
@@ -296,9 +293,6 @@ private:
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
-	//void OnZoomToFit (wxCommandEvent & event);
-	
-	//void OnShowQueryManager (wxCommandEvent & event);
 	
 	void OnShortcutAttributionDone (wxCommandEvent & event);
 	
