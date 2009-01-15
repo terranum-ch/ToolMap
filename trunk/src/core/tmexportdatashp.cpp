@@ -290,7 +290,7 @@ OGRGeometry * tmExportDataSHP::SafeIntersection(OGRGeometry * line, OGRGeometry 
 		
 		if (geosintersect != NULL)
 		{
-			returncrop = OGRGeometryFactory::createFromGEOS(geosintersect);
+			returncrop = SafeCreateFromGEOS(geosintersect);
 			GEOSGeom_destroy(geosintersect);
 		}
 		
@@ -338,7 +338,7 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 		
 		if (geosresult != NULL)
 		{
-			returnunion = OGRGeometryFactory::createFromGEOS(geosresult);
+			returnunion = SafeCreateFromGEOS(geosresult);
 			GEOSGeom_destroy(geosresult);
 		}
 		
@@ -379,7 +379,10 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
 	
     if( pabyBuf != NULL )
     {
-        free( pabyBuf );
+#ifndef  __WXMSW__    
+		delete pabyBuf;
+#endif
+		//delete( pabyBuf );
     }
 	
     return poGeometry;
@@ -505,7 +508,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	{
 		const GEOSGeometry * myActualPoly = GEOSGetGeometryN(myGEOSPoly, j);
 		GEOSGeom myActualPolyClone = GEOSGeom_clone(myActualPoly);
-		OGRGeometry * myPoly = OGRGeometryFactory::createFromGEOS(myActualPolyClone);
+		OGRGeometry * myPoly = SafeCreateFromGEOS(myActualPolyClone);
 		GEOSGeom_destroy(myActualPolyClone);
 		m_Shp.AddGeometry(myPoly, -1);
 		OGRGeometryFactory::destroyGeometry(myPoly);
@@ -636,7 +639,7 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 	long myOidPT = 0;
 	wxArrayString myAttribVal;
 	bool bFirstLoop = true;
-	OGRPolygon * myPolygon;
+	//OGRPolygon * myPolygon;
 	long myOidPLG = 0;
 	
 	// loop for all labels and search polygons
@@ -647,14 +650,13 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 		if (myPoint)
 		{
 			
-			
 			// loop for all polygons
 			while (1)
 			{
 				if(!m_Shp.SetNextFeature(bFirstLoop))
 					break;
 				
-				myPolygon = m_Shp.GetNextDataOGRPolygon(myOidPLG);
+				OGRPolygon * myPolygon = m_Shp.GetNextDataOGRPolygon(myOidPLG);
 				if (myPolygon)
 				{
 					if (myPoint->Intersect(myPolygon))
@@ -662,9 +664,10 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 						m_Shp.SetFieldValue(myAttribVal.Item(0), TM_FIELD_INTEGER, 0);
 						m_Shp.SetFieldValue(myAttribVal.Item(1), TM_FIELD_TEXT, 1);
 						m_Shp.UpdateFeature();
-					}
-				
-					OGRGeometryFactory::destroyGeometry(myPolygon);	
+					}				
+					// do not destroy geometry, will be destroyed 
+					// when feature is destroyed.
+					//OGRGeometryFactory::destroyGeometry(myPolygon);	
 				}
 				bFirstLoop = false;
 			
