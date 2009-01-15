@@ -45,6 +45,7 @@ class tmExportDataSHP : public tmExportData
 		// for windows bug
 		OGRGeometry * SafeIntersection(OGRGeometry * line, OGRGeometry * frame);
 		OGRGeometry * SafeUnion (OGRGeometry * union1, OGRGeometry * line);
+		OGRGeometry * SafeCreateFromGEOS (GEOSGeom geosGeom);
 		
 	protected:
 	public:
