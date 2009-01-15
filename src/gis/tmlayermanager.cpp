@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
-	EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
+	//EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 END_EVENT_TABLE()
@@ -706,18 +706,6 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 
 
 
-void tmLayerManager::OnScrolled (wxCommandEvent & event)
-{
-	wxScrollWinEvent * myScrollEvent = (wxScrollWinEvent*) event.GetClientData();
-	m_Scale.ComputeScrollMoveReal(myScrollEvent->GetOrientation(),
-								  myScrollEvent->GetPosition());
-	delete myScrollEvent;
-	ReloadProjectLayersThreadStart(FALSE, FALSE);
-	
-}
-
-
-
 /***************************************************************************//**
  @brief Called when selection was made
  @details This is called by the #tmRenderer when a selection (either by point or
@@ -749,44 +737,6 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	delete mySelectedRect;
 	
 }
-
-
-
-
-void tmLayerManager::UpdateScrollBars ()
-{
-	wxSize myVirtualLayerSize = m_Scale.GetVirtualPxSize();
-	m_GISRenderer->SetVirtualSize(myVirtualLayerSize);
-	
-	wxSize myWndSize (m_Scale.GetWindowExtent().GetWidth(),
-					  m_Scale.GetWindowExtent().GetHeight());
-		
-	wxSize myDiffSize = myVirtualLayerSize - myWndSize;
-	int xscrollrate = myDiffSize.GetWidth() / tmSCROLLBARS_DIV;
-	int yscrollrate = myDiffSize.GetHeight() / tmSCROLLBARS_DIV;
-	
-	m_GISRenderer->SetScrollRate(xscrollrate, yscrollrate);
-	
-	
-	// avoid div by 0
-	if (xscrollrate <= 0)
-		xscrollrate = 1;
-		
-	if(yscrollrate <= 0)
-		yscrollrate = 1;
-		
-	
-	wxPoint myVirtPos = m_Scale.GetVirtualPxPosition();
-	myVirtPos.x = myVirtPos.x / xscrollrate;
-	myVirtPos.y = myVirtPos.y / yscrollrate;
-	
-	m_GISRenderer->SetScrollPos(wxHORIZONTAL, myVirtPos.x);
-	m_GISRenderer->SetScrollPos(wxVERTICAL, myVirtPos.y);
-	
-}
-
-
-
 
 
 
@@ -978,7 +928,7 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
 		
 		// update scrollbars
-		UpdateScrollBars();
+		//UpdateScrollBars();
 	}
 	
 	// set active bitmap	

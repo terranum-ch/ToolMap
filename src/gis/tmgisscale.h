@@ -30,8 +30,8 @@
 #endif
 
 
-const int tmSCALE_MARGIN = 10;
-const int tmSCROLLBARS_DIV = 50; // number of divisors for scrollbars
+const int tmSCALE_MARGIN = 10; // margin between image and border in full screen mode
+
 
 
 /***************************************************************************//**
@@ -154,12 +154,6 @@ class tmGISScale : public wxObject
 		// pan functions
 		void ComputeNewRealPanExtent (const wxPoint & offsetxtop);
 		
-		// scrollbar functions
-		wxSize GetVirtualPxSize ();
-		wxPoint GetVirtualPxPosition ();
-		void ComputeScrollMoveReal (int orientation, int newpos);
-		
-					
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)
 		{

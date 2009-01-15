@@ -316,67 +316,6 @@ void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 
 
 
-wxSize tmGISScale::GetVirtualPxSize ()
-{
-	double dwidthLayers = DifferenceCoord(m_ExtentMaxLayers.x_max, 
-										  m_ExtentMaxLayers.x_min);
-	double dheightLayers = DifferenceCoord(m_ExtentMaxLayers.y_max, 
-										  m_ExtentMaxLayers.y_min);
-	
-	int widthpx = (int)(dwidthLayers / m_PixelSize);
-	int heightpx = (int)(dheightLayers / m_PixelSize);
-	
-	return wxSize(widthpx, heightpx);
-}
-
-
-wxPoint tmGISScale::GetVirtualPxPosition ()
-{
-	double dRealOriginDiffX = DifferenceCoord(m_ExtentWndReal.x_min, m_ExtentMaxLayers.x_min);
-	double dRealOriginDiffY = DifferenceCoord(m_ExtentMaxLayers.y_max, m_ExtentWndReal.y_max);
-	
-	int xVirtPos =  (int)(dRealOriginDiffX / m_PixelSize);
-	int yVirtPos = (int)(dRealOriginDiffY / m_PixelSize);
-	
-	return wxPoint(xVirtPos, yVirtPos);
-	
-}
-
-
-
-void tmGISScale::ComputeScrollMoveReal (int orientation, int newpos)
-{
-	double dLayersWidth = 0, dLayersHeight = 0;
-	double dWndWidth = 0, dWndHeight = 0;
-	double dstep = 0;
-	double dxminmargin = 0, dymaxmargin = 0;
-	
-	
-	switch (orientation)
-	{
-		case wxHORIZONTAL:
-			dLayersWidth = GetLayersExtentWidth() + (tmSCALE_MARGIN * m_PixelSize);
-			dWndWidth = GetWindowRealWidth();
-			dstep = (dLayersWidth - dWndWidth) / tmSCROLLBARS_DIV;
-			dxminmargin =  m_ExtentMaxLayers.x_min - (m_PixelSize * (tmSCALE_MARGIN / 2));
-			m_ExtentWndReal.x_min = dxminmargin + (newpos * dstep);
-			m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_min, dWndWidth);
-			break;
-		case wxVERTICAL:
-			dLayersHeight = GetLayersExtentHeight() + (tmSCALE_MARGIN * m_PixelSize);
-			dWndHeight = GetwindowRealHeight();
-			dstep = (dLayersHeight - dWndHeight) / tmSCROLLBARS_DIV;
-			
-			dymaxmargin = m_ExtentMaxLayers.y_max - (m_PixelSize * (tmSCALE_MARGIN / 2));
-			m_ExtentWndReal.y_max = dymaxmargin - (newpos * dstep);
-			m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max, dWndHeight);
-
-			break;
-	}
-}
-
-
-
 /***************************************************************************//**
  @brief Convert pixel rectange to real units
  @param rectpx pixels values rectangle to convert

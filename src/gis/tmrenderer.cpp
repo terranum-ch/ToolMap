@@ -31,7 +31,6 @@ DEFINE_EVENT_TYPE(tmEVT_LM_MOUSE_MOVED)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
 DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
-DEFINE_EVENT_TYPE(tmEVT_LM_SCROLL_MOVED)
 DEFINE_EVENT_TYPE(tmEVT_LM_SELECTION)
 
 
@@ -41,8 +40,6 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_MOTION (tmRenderer::OnMouseMove)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
-	EVT_SCROLLWIN (tmRenderer::OnScroll)
-	EVT_MOUSEWHEEL (tmRenderer::OnMouseWheel)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
 END_EVENT_TABLE()
@@ -57,7 +54,7 @@ END_EVENT_TABLE()
  *******************************************************************************/
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : 
 wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, 
-				 wxHSCROLL | wxVSCROLL | wxALWAYS_SHOW_SB | wxWS_EX_PROCESS_UI_UPDATES )
+				  wxWS_EX_PROCESS_UI_UPDATES )
 {
 	m_bmp = NULL;
 	m_SelectRect = new wxRubberBand(this);
@@ -67,7 +64,6 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_PanBmp = NULL;
 	m_ShiftDown = false;
 	
-	SetScrollbar(wxHORIZONTAL, 0, 16, 50);
 }
 
 
@@ -233,51 +229,6 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 
 
 
-/***************************************************************************//**
- @brief Respond to a mouse wheel event
- @details This function send message to the layer manager (like the #OnScroll()
- function) for moving the scrollbars and the display.
- @author Lucien Schreiber (c) CREALP 2008
- @date 05 August 2008
- *******************************************************************************/
-void tmRenderer::OnMouseWheel(wxMouseEvent & event)
-{
-	int iLines = event.GetWheelRotation() / event.GetWheelDelta();
-	int iVertScrollPos = 0;
-	WXTYPE tScrollDirection = wxEVT_SCROLLWIN_LINEDOWN;
-	int iSystemLinPerAction = 1;
-		
-	if (iLines != 0)
-	{
-		// get system preferences
-		iSystemLinPerAction = event.GetLinesPerAction();
-		
-		// get the vert scrollbar position
-		iVertScrollPos = GetScrollPos(wxVERTICAL) - (iLines * iSystemLinPerAction);
-		
-		if (iLines > 0)
-		{
-			tScrollDirection = wxEVT_SCROLLWIN_LINEUP;
-		}
-		
-		// keep scroll position into boudaries
-		if (iVertScrollPos < 0)
-			iVertScrollPos = 0;
-		if (iVertScrollPos > tmSCROLLBARS_DIV)
-			iVertScrollPos = tmSCROLLBARS_DIV;
-		
-		SetScrollPos(wxVERTICAL, iVertScrollPos, FALSE);
-		
-	
-		// send event notification to the layer manager
-		wxCommandEvent evt (tmEVT_LM_SCROLL_MOVED, wxID_ANY);
-		wxScrollWinEvent * myScrollEvt = new wxScrollWinEvent(tScrollDirection,
-															  iVertScrollPos,
-															  wxVERTICAL);
-		evt.SetClientData(myScrollEvt);
-		GetEventHandler()->AddPendingEvent(evt);
-	}
-}
 
 /***************************************************************************//**
  @brief Called when a key is pressed
@@ -311,19 +262,6 @@ void tmRenderer::OnShiftUp		(wxKeyEvent & event)
 }
 
 
-
-void tmRenderer::OnScroll (wxScrollWinEvent & event)
-{
-	wxCommandEvent evt (tmEVT_LM_SCROLL_MOVED, wxID_ANY);
-	
-	// create new scroll event, deleted in the layermanager
-	wxScrollWinEvent * myScrollEvt = new wxScrollWinEvent(event.GetEventType(),
-														  event.GetPosition(),
-														  event.GetOrientation());
-	evt.SetClientData(myScrollEvt);
-	GetEventHandler()->AddPendingEvent(evt);
-	event.Skip();
-}
 
 
 
@@ -405,14 +343,6 @@ void tmRenderer::SelectStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;
 	m_SelectRect->SetPen(*wxBLACK_PEN);
-	
-	/* TODO: Remove this temp code
-	wxClientDC dc (this);
-	int myRadius = tmSELECTION_DIAMETER / 2;
-	dc.DrawRectangle(mousepos.x - myRadius,
-					 mousepos.y - myRadius,
-					 tmSELECTION_DIAMETER,
-					 tmSELECTION_DIAMETER);*/
 	
 }
 

@@ -107,9 +107,6 @@ class tmLayerManager : public wxEvtHandler
 		void OnScrolled (wxCommandEvent & event);
 		void OnSelection (wxCommandEvent & event);
 		
-		// scrollbars
-		void UpdateScrollBars ();
-	
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size);
 		
