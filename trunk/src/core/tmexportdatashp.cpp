@@ -352,6 +352,42 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 
 
 /***************************************************************************//**
+ @brief Safe conversion function
+ @param geosGeom The GEOSGeom to convert
+ @return  A valid OGRGeometry or NULL if an error occur
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 January 2009
+ *******************************************************************************/
+OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
+{
+	size_t nSize = 0;
+    unsigned char *pabyBuf = NULL;
+    OGRGeometry *poGeometry = NULL;
+	
+    pabyBuf = GEOSGeomToWKB_buf( geosGeom, &nSize );
+    if( pabyBuf == NULL || nSize == 0 )
+    {
+        return NULL;
+    }
+	
+    if( OGRGeometryFactory::createFromWkb( (unsigned char *) pabyBuf, 
+										  NULL, &poGeometry, (int) nSize )
+	   != OGRERR_NONE )
+    {
+        poGeometry = NULL;
+    }
+	
+    if( pabyBuf != NULL )
+    {
+        free( pabyBuf );
+    }
+	
+    return poGeometry;
+
+}
+
+
+/***************************************************************************//**
  @brief Write all geometrics points to the shp
  @param myLayer object containing info on the actual layer, such as layer_ID or
  layer_Name
