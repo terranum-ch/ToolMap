@@ -336,6 +336,10 @@ int ProjectManager::OpenProject(const wxString & path)
 					m_ShortcutPanel->LoadShortcutList(true);
 					m_ShortcutPanel->SetProjectOpen(true);
 					
+					// load snapping
+					m_SnappingPanel->SetDataBase(m_DB);
+					m_SnappingPanel->LoadSnappingStatus();
+					
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);
 					

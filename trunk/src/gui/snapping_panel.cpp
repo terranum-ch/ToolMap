@@ -76,6 +76,7 @@ void Snapping_PANEL::InitMembersValue()
 	m_Tolerence = NULL;
 	m_SnappingList = NULL;
 	m_ParentEvt = NULL;
+	m_pDB = NULL;
 }
 
 
@@ -161,6 +162,40 @@ Snapping_PANEL::~Snapping_PANEL()
 
 
 
+/***************************************************************************//**
+ @brief Load the snapping from database
+ @details Call the Snapping_PANEL::SetDataBase() function before
+ @return  true if snapping status was loaded successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 19 January 2009
+ *******************************************************************************/
+bool Snapping_PANEL::LoadSnappingStatus ()
+{
+	wxASSERT(m_pDB);
+	
+	long mylid = 0;
+	wxString mylName = _T("");
+	int mySnapStatus = 0;
+	bool iFirstLoop = true;
+	int iLoop = 0;
+	
+	while (1)
+	{
+		if (!m_pDB->GetNextSnapping(mylid, mylName, mySnapStatus, iFirstLoop))
+			break;
+		iFirstLoop = false;
+		m_SnappingList->AddItemToList(mylName, iLoop);
+		m_SnappingList->SetSnappingStatus(mySnapStatus, iLoop, false);
+		m_SnappingList->SetItemData(iLoop, mylid);
+		iLoop++;
+	}
+	
+	
+	return true;
+}
+
+
+
 
 /************************ SNAPPING LIST *****************************************/
 /***************************************************************************//**
@@ -190,5 +225,33 @@ SnappingList::~SnappingList()
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Set the snapping status
+ @details Put yes or empty in snapping status column
+ @param snapStatus The snapping status as integer :
+  - 0 = No snapping 
+  - 1 = Snapping vertex 
+  - 2 = snapping Begin/End
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 19 January 2009
+ *******************************************************************************/
+void SnappingList::SetSnappingStatus (int snapStatus, int iRow, bool clearbefore)
+{
+	// clear text
+	if (clearbefore)
+	{
+		SetItemText(iRow, 1, _T(""));
+		SetItemText(iRow, 2, _T(""));
+	}
+	
+	if ((snapStatus & 1) == 1)
+		SetItemText(iRow, 1, tmSNAPPING_TEXT_YES);
+	
+	if ((snapStatus & 2) == 2)
+		SetItemText(iRow, 2, tmSNAPPING_TEXT_YES);
+		
+}
 
 

@@ -2460,6 +2460,57 @@ bool DataBaseTM::GetNextShortcutFull (bool bFirstLoop, int & layertype,
 	
 }
 
+
+/***************************************************************************//**
+ @brief Get the snapping from database
+ @param lid return the layer id (CONTENT_ID of prj_toc table)
+ @param layername return the layer name
+ @param snapstatus return the snapping status 0 = no snapping, 1 = Snapping for
+ vertex, 2 = Snapping for Begin/End (only for lines)
+ @param bfirstloop set to true if the first loop to issue the query
+ @param bool return true if the query was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 19 January 2009
+ *******************************************************************************/
+bool DataBaseTM::GetNextSnapping (long & lid, wxString & layername, 
+					  int & snapstatus,  bool bfirstloop)
+{
+	wxString sSentence = wxString::Format(_T("SELECT a.TOC_ID, b.CONTENT_NAME, a.SNAPPING_TYPE")
+										  _T(" from %s AS a LEFT JOIN  (%s b)")
+										  _T(" ON (b.CONTENT_ID = a.TOC_ID);"),
+										  TABLE_NAME_SNAPPING.c_str(),
+										  TABLE_NAME_TOC.c_str());
+	// if first loop
+	if (bfirstloop)
+	{
+		DataBaseDestroyResults();
+		if (!DataBaseQuery(sSentence))
+		{
+			wxLogDebug(_T("Error getting info for snapping : %s"),
+					   DataBaseGetLastError().c_str());
+			return false;
+		}
+		
+	}
+	
+	// getting data
+	if (!DataBaseHasResult())
+	{
+		return false;
+	}
+	
+	wxArrayString myResultRow = DataBaseGetNextResult();
+	if (myResultRow.GetCount() != 3)
+		return false;
+	
+	myResultRow.Item(0).ToLong(&lid);
+	layername = myResultRow.Item(1);
+	snapstatus = wxAtoi(myResultRow.Item(2));
+	
+	return true;
+}
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
