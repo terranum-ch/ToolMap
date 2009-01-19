@@ -78,6 +78,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
+	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
 	
 	// TOOL EVENT
 	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
@@ -161,6 +162,7 @@ void ToolMapFrame::PostInit()
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	m_QueriesPanel = new Queries_PANEL(this,wxID_ANY, m_AuiManager);
 	m_ShortCutPanel = new Shortcuts_PANEL(this, wxID_ANY, m_AuiManager);
+	m_SnappingPanel = new Snapping_PANEL(this, wxID_ANY, m_AuiManager);
 	
 	
 	// create layer manager object
@@ -300,7 +302,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersections\tCtrl+I"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+F"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected objects"), _T(""), wxITEM_NORMAL);
-    itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Adjust snapping...\tCtrl+S"), _T(""), wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Adjust snapping...\tCtrl+S"), _T(""), wxITEM_CHECK);
     menuBar->Append(itemMenu41, _("Edition"));
     wxMenu* itemMenu55 = new wxMenu;
     itemMenu55->Append(ID_MENU_ATTRIB_TYPES, _("Object types..."), _T(""), wxITEM_CHECK);
@@ -665,6 +667,27 @@ void ToolMapFrame::OnShowShortcutWindow (wxCommandEvent & event)
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Display or hide the #Snapping_PANEL
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 19 January 2009
+ *******************************************************************************/
+void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
+{
+	if (m_SnappingPanel->IsPanelShown())
+	{
+		m_SnappingPanel->HidePanel();
+		GetMenuBar()->Check(ID_MENU_ADJUST_SNAPPING, false);
+	}
+	else
+	{
+		m_SnappingPanel->ShowPanel();
+		GetMenuBar()->Check(ID_MENU_ADJUST_SNAPPING, true);
+	}
+	
+}
 
 
 void ToolMapFrame::OnBackupProject (wxCommandEvent & event)

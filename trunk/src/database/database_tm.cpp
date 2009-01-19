@@ -205,7 +205,15 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T(" `QUERIES_TARGET` INT NOT NULL , ")	
 	_T(" `QUERIES_NAME` VARCHAR(255) NOT NULL,")
 	_T(" `QUERIES_CODE` VARCHAR(1000),")
-	_T(" PRIMARY KEY (`QUERIES_ID`) );");
+	_T(" PRIMARY KEY (`QUERIES_ID`) );")
+	
+	
+	_T("CREATE TABLE `prj_snapping`(")
+	_T(" `TOC_ID` INTEGER NOT NULL,")
+	_T(" `SNAPPING_TYPE` INTEGER NOT NULL,")
+	_T("  PRIMARY KEY (`TOC_ID`),")
+	_T("CONSTRAINT `Rel_30`")
+	_T("  FOREIGN KEY (`TOC_ID`) REFERENCES `prj_toc` (`CONTENT_ID`));");
 
 	
 	

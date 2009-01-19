@@ -62,3 +62,6 @@ Update Database
 	- INSERT INTO dmn_shortcut_key (SHORTCUT_CD, SHORTCUT_KEY) VALUES (11, 'F11');
 	- INSERT INTO dmn_shortcut_key (SHORTCUT_CD, SHORTCUT_KEY) VALUES (12, 'F12');
 	- UPDATE `prj_settings` SET PRJ_VERSION = 217;
+- 217 -> 218 (Adding snapping table)
+	- CREATE TABLE `prj_snapping`(`TOC_ID` INTEGER NOT NULL,`SNAPPING_TYPE` INTEGER NOT NULL,PRIMARY KEY (`TOC_ID`),CONSTRAINT `Rel_30` FOREIGN KEY (`TOC_ID`) REFERENCES `prj_toc` (`CONTENT_ID`));
+	- UPDATE `prj_settings` SET PRJ_VERSION = 218;
