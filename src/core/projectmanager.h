@@ -53,6 +53,7 @@
 #include "../gis/tmattributionmanager.h"	// for attribution manager
 #include "../gui/queries_panel.h"			// for queries panel
 #include "../gui/shortcut_panel.h"			// for shortcut panel
+#include "../gui/snapping_panel.h"			// for snapping panel
 
 class MenuManager;
 class ObjectManager;
@@ -79,6 +80,7 @@ class ProjectManager : public wxObject
 		tmAttributionManager * m_AttribManager;
 		Queries_PANEL * m_QueriesPanel;
 		Shortcuts_PANEL * m_ShortcutPanel;
+		Snapping_PANEL * m_SnappingPanel;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -110,6 +112,7 @@ class ProjectManager : public wxObject
 		void SetAttributionManager (tmAttributionManager * pAManager) {m_AttribManager = pAManager;}
 		void SetQueriesPanel (Queries_PANEL * queriespanel) {m_QueriesPanel = queriespanel;}
 		void SetShortcutPanel (Shortcuts_PANEL * panel) {m_ShortcutPanel = panel;}
+		void SetSnappingPanel (Snapping_PANEL * panel) {m_SnappingPanel = panel;}
 		DataBaseTM * GetDatabase() {return m_DB;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}

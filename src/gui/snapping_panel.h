@@ -35,6 +35,9 @@
 #include "../database/database_tm.h"	// for database support
 #include "listgenreport.h"				// listgenreport support
 
+//TODO: Put this code into tmSnappingMemory
+const wxString tmSNAPPING_TEXT_YES = _("Yes");
+
 
 #define ID_SNAP_TOLERENCE_TXT 22000
 #define ID_SNAP_LIST 22001
@@ -76,6 +79,8 @@ class SnappingList : public ListGenReportWithDialog
 		// setter
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
 		
+		void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
+		
 	};
 
 
@@ -93,6 +98,7 @@ class Snapping_PANEL : public ManagedAuiWnd
 		SnappingList * m_SnappingList;
 		wxWindow * m_ParentEvt;
 		wxAuiPaneInfo m_PaneInfo;
+		DataBaseTM * m_pDB;
 		
 		// init private functions
 		void InitMembersValue();
@@ -112,6 +118,14 @@ class Snapping_PANEL : public ManagedAuiWnd
 		Snapping_PANEL( wxWindow* parent, wxWindowID id, 
 					   wxAuiManager * auimanager);
 		~Snapping_PANEL();
+		
+		void SetDataBase (DataBaseTM * database) 
+		{
+			m_SnappingList->SetDataBase(database);
+			m_pDB = database;
+		}
+		
+		bool LoadSnappingStatus ();
 		
 	};
 

@@ -49,6 +49,7 @@ const wxString TABLE_NAME_TOC		= _T("prj_toc");
 const wxString TABLE_NAME_QUERIES	= _T("prj_queries");
 const wxString TABLE_NAME_SHORTCUT_DMN = _T("dmn_shortcut_key");
 const wxString TABLE_NAME_SHORTCUT_LIST = _T("shortcut_list");
+const wxString TABLE_NAME_SNAPPING = _T("prj_snapping");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -182,6 +183,10 @@ class DataBaseTM : public DataBase
 		bool GetNextShortcutFull (bool bFirstLoop, int & layertype, 
 								  int & key, wxString & description, 
 								  long & shortcutvalue);
+		
+		// database snapping operations
+		bool GetNextSnapping (long & lid, wxString & layername, 
+							  int & snapstatus,  bool bfirstloop);
 	};
 
 
