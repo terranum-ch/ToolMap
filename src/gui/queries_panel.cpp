@@ -176,6 +176,7 @@ bool Queries_PANEL::LoadQueries (DataBaseTM * database)
 	SetDataBase(database);
 	wxASSERT(m_pDB);
 	EnableQueriesPanel(true);
+	m_QueriesList->DeleteAllItems();
 	
 	long myQid = 0;
 	wxString myQName = _T("");

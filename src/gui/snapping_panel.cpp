@@ -178,6 +178,7 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 	int mySnapStatus = 0;
 	bool iFirstLoop = true;
 	int iLoop = 0;
+	m_SnappingList->DeleteAllItems();
 	
 	while (1)
 	{
@@ -202,7 +203,6 @@ bool Snapping_PANEL::LoadSnappingStatus ()
  *******************************************************************************/
 void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
 {
-	wxASSERT (m_pDB);
 	if (m_pDB)
 	{
 		m_SnappingList->AddItem();
@@ -210,7 +210,19 @@ void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
 }
 
 
+/***************************************************************************//**
+ @brief Called when user press remove snapping
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+void Snapping_PANEL::OnRemoveSnapping( wxCommandEvent& event )
+{
+	if (m_pDB)
+	{
+		m_SnappingList->DeleteItem();
+	}
 
+}
 
 
 
@@ -313,6 +325,7 @@ int SnappingList::GetSnappingStatus (int iRow)
 }
 
 
+
 /***************************************************************************//**
  @brief Called just before displaying the add dialog
  @author Lucien Schreiber (c) CREALP 2009
@@ -320,18 +333,20 @@ int SnappingList::GetSnappingStatus (int iRow)
  *******************************************************************************/
 void SnappingList::BeforeAdding()
 {
-	wxArrayLong myLayersId;
-	wxArrayString myLayersName;
+	m_LayersID.Clear();
+	m_LayersName.Clear();
+	
 	wxString myDlgMessage = _("Select one or more layer to add to the snapping list");
 	wxString myDlgCaption = _("Add one or more snapping layer(s)");
 	
-	m_pDB->GetValidLayersForSnapping(myLayersId, myLayersName);
+	m_pDB->GetValidLayersForSnapping(m_LayersID, m_LayersName);
 	wxMultiChoiceDialog * myDlg = new wxMultiChoiceDialog(this,
 														  myDlgMessage,
 														  myDlgCaption,
-														  myLayersName);
+														  m_LayersName);
 	SetDialog(myDlg);
 }
+
 
 
 /***************************************************************************//**
@@ -341,6 +356,49 @@ void SnappingList::BeforeAdding()
  *******************************************************************************/
 void SnappingList::AfterAdding (bool bRealyAddItem)
 {
+	wxArrayInt mySelectedLayers = ((wxMultiChoiceDialog*) m_pDialog)->GetSelections();
+	wxArrayLong myRealSelectedID;
+	if (bRealyAddItem && mySelectedLayers.GetCount() > 0)
+	{
+		
+		for (unsigned int i = 0; i< mySelectedLayers.GetCount(); i++)
+		{
+			// get real id from selected (zero based id)
+			myRealSelectedID.Add(m_LayersID.Item(mySelectedLayers.Item(i)));
+		
+			//add snapping layers into list
+			AddItemToList(m_LayersName.Item(mySelectedLayers.Item(i)));
+		}
+		
+		// add snapping layers into database
+		m_pDB->AddLayersSnapping(myRealSelectedID);
+		
+		
+		//TODO: Stores items in memory
+	}
 	delete m_pDialog;
+}
+
+
+
+/***************************************************************************//**
+ @brief Called just before deleting an item
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+void SnappingList::BeforeDeleting ()
+{
+	wxArrayLong mySelected;
+	GetAllSelectedItem(mySelected);
+	
+	for (unsigned int i = 0; i< mySelected.GetCount();i++)
+	{
+		if(!m_pDB->DeleteLayerSnapping(GetItemData(mySelected.Item(i))))
+		{
+			wxLogDebug(_T("Error deleting snapping layers : %d"),
+					   GetItemData(mySelected.Item(i)));
+			break;
+		}
+	}
 }
 
