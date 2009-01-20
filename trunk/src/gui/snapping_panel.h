@@ -60,10 +60,12 @@ class SnappingList : public ListGenReportWithDialog
 	{
 	private:
 		DataBaseTM * m_pDB;
+		wxArrayLong m_LayersID;
+		wxArrayString m_LayersName;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
-		virtual void BeforeDeleting (){;}
+		virtual void BeforeDeleting ();
 		virtual void BeforeEditing (){;}
 		virtual void AfterEditing (bool bRealyEdited){;}
 		
@@ -111,7 +113,7 @@ class Snapping_PANEL : public ManagedAuiWnd
 		//  event handlers
 		virtual void OnUpdateTolerence( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnAddSnapping( wxCommandEvent& event );
-		virtual void OnRemoveSnapping( wxCommandEvent& event ){ event.Skip(); }
+		virtual void OnRemoveSnapping( wxCommandEvent& event );
 		virtual void OnClearSnapping( wxCommandEvent& event ){ event.Skip(); }
 		DECLARE_EVENT_TABLE()
 		

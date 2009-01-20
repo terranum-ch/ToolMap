@@ -2558,6 +2558,56 @@ bool DataBaseTM::GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & 
 	return true;
 }
 
+
+
+/***************************************************************************//**
+ @brief Save new snapping layers into database
+ @details This function add into the database one or more layers used for
+ snapping.
+ @param lids ids of the layers to add
+ @return  true if query was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
+{
+	wxString sSentence = _T("INSERT INTO %s VALUES (%d, 0); ");
+	wxString sFullSentence = wxEmptyString;
+	
+	for (unsigned int i = 0; i<lids.GetCount(); i++)
+		sFullSentence.Append(wxString::Format(sSentence,
+							 TABLE_NAME_SNAPPING.c_str(),
+							 lids.Item(i)));
+	
+	if (!DataBaseQueryNoResult(sFullSentence))
+	{
+		wxLogDebug(sFullSentence);
+		wxLogDebug(_T("Error adding layers for snapping : %s"),
+				   DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Delete a snapping layer from the database
+ @param layersid the layers ID (TOC_ID field in prj_snapping table)
+ @return  true if the item was deleted from the database, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+bool DataBaseTM::DeleteLayerSnapping (int layersid)
+{
+	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE TOC_ID = %d; "),
+										  TABLE_NAME_SNAPPING.c_str(),
+										  layersid);
+	return DataBaseQueryNoResult(sSentence);
+}
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
