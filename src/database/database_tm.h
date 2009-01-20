@@ -187,6 +187,8 @@ class DataBaseTM : public DataBase
 		// database snapping operations
 		bool GetNextSnapping (long & lid, wxString & layername, 
 							  int & snapstatus,  bool bfirstloop);
+		
+		bool GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & lnames);
 	};
 
 

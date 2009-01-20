@@ -195,6 +195,33 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 }
 
 
+/***************************************************************************//**
+ @brief Called when user press add snapping
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
+{
+	wxASSERT (m_pDB);
+	if (m_pDB)
+	{
+		m_SnappingList->AddItem();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /************************ SNAPPING LIST *****************************************/
@@ -254,4 +281,66 @@ void SnappingList::SetSnappingStatus (int snapStatus, int iRow, bool clearbefore
 		
 }
 
+
+
+/***************************************************************************//**
+ @brief Get the snapping status from the list
+ @details This function gets the snapping status from one lists row into an
+ integer
+ @param iRow the zero based index of the row we want to get the snapping status
+ @return  one of the following values :
+ - 0 = no snapping 
+ - 1 = snapping vertex
+ - 2 = snapping begin/end 
+ - 3 = snapping both
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+int SnappingList::GetSnappingStatus (int iRow)
+{
+	// ensure that the row exists
+	wxASSERT (iRow <= (GetItemCount() -1));
+	
+	int iReturnSnap = 0;
+	if (GetItemColText(iRow, 1) == tmSNAPPING_TEXT_YES)
+		iReturnSnap = iReturnSnap | 1;
+	
+	if (GetItemColText(iRow, 2) == tmSNAPPING_TEXT_YES)
+		iReturnSnap = iReturnSnap | 2;
+		
+	
+	return iReturnSnap;
+}
+
+
+/***************************************************************************//**
+ @brief Called just before displaying the add dialog
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+void SnappingList::BeforeAdding()
+{
+	wxArrayLong myLayersId;
+	wxArrayString myLayersName;
+	wxString myDlgMessage = _("Select one or more layer to add to the snapping list");
+	wxString myDlgCaption = _("Add one or more snapping layer(s)");
+	
+	m_pDB->GetValidLayersForSnapping(myLayersId, myLayersName);
+	wxMultiChoiceDialog * myDlg = new wxMultiChoiceDialog(this,
+														  myDlgMessage,
+														  myDlgCaption,
+														  myLayersName);
+	SetDialog(myDlg);
+}
+
+
+/***************************************************************************//**
+ @brief Called after the adding dialog was closed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+void SnappingList::AfterAdding (bool bRealyAddItem)
+{
+	delete m_pDialog;
+}
 

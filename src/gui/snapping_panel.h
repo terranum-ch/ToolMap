@@ -61,8 +61,8 @@ class SnappingList : public ListGenReportWithDialog
 	private:
 		DataBaseTM * m_pDB;
 		
-		virtual void BeforeAdding(){;}
-		virtual void AfterAdding (bool bRealyAddItem){;}
+		virtual void BeforeAdding();
+		virtual void AfterAdding (bool bRealyAddItem);
 		virtual void BeforeDeleting (){;}
 		virtual void BeforeEditing (){;}
 		virtual void AfterEditing (bool bRealyEdited){;}
@@ -80,6 +80,7 @@ class SnappingList : public ListGenReportWithDialog
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
 		
 		void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
+		int GetSnappingStatus (int iRow);
 		
 	};
 
@@ -109,7 +110,7 @@ class Snapping_PANEL : public ManagedAuiWnd
 		
 		//  event handlers
 		virtual void OnUpdateTolerence( wxCommandEvent& event ){ event.Skip(); }
-		virtual void OnAddSnapping( wxCommandEvent& event ){ event.Skip(); }
+		virtual void OnAddSnapping( wxCommandEvent& event );
 		virtual void OnRemoveSnapping( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnClearSnapping( wxCommandEvent& event ){ event.Skip(); }
 		DECLARE_EVENT_TABLE()
