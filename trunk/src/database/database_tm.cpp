@@ -2511,6 +2511,53 @@ bool DataBaseTM::GetNextSnapping (long & lid, wxString & layername,
 }
 
 
+
+/***************************************************************************//**
+ @brief Get all layers valid for snapping
+ @details This function returns all layers that are : 
+ - Not allready in the snapping list
+ - Valid a.k.a. Vector layers
+ @param lids An array filled with list of arrays id
+ @param lnames An array filled with list of arrays name
+ @return  true if the query was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+bool DataBaseTM::GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & lnames)
+{
+	wxString sSentence = wxString::Format(_T("SELECT a.CONTENT_ID, a.CONTENT_NAME")
+										  _T(" FROM %s a LEFT JOIN (%s b)")
+										  _T(" ON (a.CONTENT_ID = b.TOC_ID) WHERE  b.TOC_ID")
+										  _T(" IS NULL AND a.TYPE_CD < %d ORDER BY a.RANK"),
+										  TABLE_NAME_TOC.c_str(),
+										  TABLE_NAME_SNAPPING.c_str(),
+										  LAYER_SPATIAL_RASTER);
+	
+	DataBaseDestroyResults();
+	if (!DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting valid layers for snapping : %s"),
+				   DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	wxArrayString myResultRow;
+	long myResultlid = 0;
+	for (int i = 0; i< DatabaseGetCountResults(); i++)
+	{
+		myResultRow = DataBaseGetNextResult();
+		if (myResultRow.GetCount() != 2)
+			return false;
+
+		myResultRow.Item(0).ToLong(&myResultlid);
+		lids.Add(myResultlid);
+		lnames.Add(myResultRow.Item(1));
+		myResultRow.Clear();
+	}
+	
+	return true;
+}
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
