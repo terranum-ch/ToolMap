@@ -249,7 +249,7 @@ SnappingList::SnappingList (wxWindow * parent,
 						  wxSize size) :
 ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
-	
+	m_Parent = parent;
 }
 
 
@@ -399,6 +399,74 @@ void SnappingList::BeforeDeleting ()
 					   GetItemData(mySelected.Item(i)));
 			break;
 		}
+	}
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when user double-click an item
+ @details Here we don't use the traditionnal dialog for editing type of
+ snapping. We toogle the snapping status when double-clicking into one's item
+ column.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 20 January 2009
+ *******************************************************************************/
+void SnappingList::OnDoubleClickItem (wxListEvent & event)
+{	
+	wxPoint myPos (0,0);
+	wxGetMousePosition(&(myPos.x), &(myPos.y));
+	//wxPoint myPos = event.GetPoint();
+	wxLogMessage(_T("Double click item : %d "),event.GetIndex());
+	wxLogMessage(_T("Mouse position = %d / %d"), myPos.x, myPos.y);
+	
+	
+	//TODO: If working, move this code to the ListGenReport code
+		
+	int myClickedPos = myPos.x;
+	int myBorderMargin = 0;
+	int myWindowXPosition = 0;
+	m_Parent->GetScreenPosition(&myWindowXPosition,NULL);
+	
+	wxRect mySize (0,0,0,0);
+	GetItemRect(event.GetIndex(), mySize);
+	wxLogDebug(_T("Event rect is : %d, width = %d"), mySize.x, mySize.GetWidth());
+	
+	
+	// get columns size 
+	wxArrayInt myColsSize;
+	for (int i = 0; i< GetColumnCount(); i++)
+		myColsSize.Add(GetColumnWidth(i));
+	
+	wxLogMessage(_T("Windows x pos = %d, colsize = %d, %d, %d"),
+				 myWindowXPosition, myColsSize.Item(0),
+				 myColsSize.Item(1),myColsSize.Item(2));
+	
+	// get the columns, -1 for not found
+	int iColClicked = -1;
+	int iColTotal = myBorderMargin + myWindowXPosition + mySize.GetX();
+	for (unsigned int j = 0; j<myColsSize.GetCount(); j++)
+	{	
+		iColTotal += myColsSize.Item(j);
+		if (myClickedPos <= iColTotal)
+		{
+			iColClicked = j;
+			break;
+		}
+	}
+	wxLogDebug(_T("Col clicked is : %d"), iColClicked);
+	// some tests 
+	
+	
+	
+	
+	// get the status and set the status for the snapping
+	if (iColClicked > 0)
+	{
+		int iActualSnapStatus = GetSnappingStatus(event.GetIndex());
+		iActualSnapStatus = iActualSnapStatus ^ iColClicked;
+		
+		SetSnappingStatus(iActualSnapStatus, event.GetIndex(), true);
 	}
 }
 

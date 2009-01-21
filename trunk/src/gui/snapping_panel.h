@@ -62,12 +62,16 @@ class SnappingList : public ListGenReportWithDialog
 		DataBaseTM * m_pDB;
 		wxArrayLong m_LayersID;
 		wxArrayString m_LayersName;
+		wxWindow * m_Parent;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
 		virtual void BeforeDeleting ();
-		virtual void BeforeEditing (){;}
-		virtual void AfterEditing (bool bRealyEdited){;}
+		
+		// very different editing process, here we don't use
+		// a dialog for editing
+		virtual void OnDoubleClickItem (wxListEvent & event);
+		
 		
 	protected:
 	public:
