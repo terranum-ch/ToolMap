@@ -36,6 +36,7 @@
 #include "../gui/projectproperties_dlg.h"	// for scale RANK function 
 #include "../gis/tmlayermanager.h"			// GIS definition 
 #include "../gui/shortcut_defs.h"			// for key definitions (F1,...)
+#include "../core/tmsnappingmemory.h"		// for snapping defintions.
 
 
 // TABLES NAMES
@@ -191,6 +192,7 @@ class DataBaseTM : public DataBase
 		bool GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & lnames);
 		bool AddLayersSnapping (const wxArrayLong & lids);
 		bool DeleteLayerSnapping (int layersid);
+		bool SaveSnappingAllStatus (tmSnappingMemory * snapmemory);
 	};
 
 

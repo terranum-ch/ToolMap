@@ -309,6 +309,8 @@ class ListGenReport : public wxListCtrl
 		int ExportListParsedToFile (const wxString & filename,
 									const int & FilterIndex);
 		
+		int GetColumnClicked (wxWindow * parent, int iIndex, int iBorderMargin); 
+		
 		DECLARE_EVENT_TABLE();
 	};
 

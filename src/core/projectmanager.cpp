@@ -246,6 +246,9 @@ bool ProjectManager::BackupProject ()
  *******************************************************************************/
 void ProjectManager::CloseProject()
 {
+	// save the snapping informations
+	m_SnappingPanel->SaveSnappingStatus();
+	
 	m_LayerManager->UnInitLayerManager();
 	m_AttribManager->UnInitAttributionManager();
 	if (m_DB != NULL)

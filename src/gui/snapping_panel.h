@@ -34,9 +34,7 @@
 #include "wxflatbutton.h"				// for flat button
 #include "../database/database_tm.h"	// for database support
 #include "listgenreport.h"				// listgenreport support
-
-//TODO: Put this code into tmSnappingMemory
-const wxString tmSNAPPING_TEXT_YES = _("Yes");
+#include "../core/tmsnappingmemory.h"	// store snapping status into memory
 
 
 #define ID_SNAP_TOLERENCE_TXT 22000
@@ -63,6 +61,7 @@ class SnappingList : public ListGenReportWithDialog
 		wxArrayLong m_LayersID;
 		wxArrayString m_LayersName;
 		wxWindow * m_Parent;
+		tmSnappingMemory * m_SnappingMemory;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
@@ -88,6 +87,9 @@ class SnappingList : public ListGenReportWithDialog
 		void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
 		int GetSnappingStatus (int iRow);
 		
+		// Used by the panel for initial loading into memory
+		void LoadSnappingIntoMemory (const long & lid, const int & snapstatus); 
+		bool SaveSnappingStatus();
 	};
 
 
@@ -133,6 +135,7 @@ class Snapping_PANEL : public ManagedAuiWnd
 		}
 		
 		bool LoadSnappingStatus ();
+		bool SaveSnappingStatus ();
 		
 	};
 
