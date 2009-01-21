@@ -502,6 +502,54 @@ bool ListGenReport::ItemExist(long index)
 }
 
 
+
+/***************************************************************************//**
+ @brief Get the column in wich user has clicked
+ @param parent Adress of a wxWindow Parent. Used to get the position of the
+ window in screen coordinates
+ @param iIndex zero based index of item clicked
+ @return  return the zero based index of the selected column or -1 if not found
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 21 January 2009
+ *******************************************************************************/
+int ListGenReport::GetColumnClicked (wxWindow * parent, int iIndex, int iBorderMargin)
+{
+	// get the mouse pos
+	wxPoint myPos (0,0);
+	wxGetMousePosition(&(myPos.x), &(myPos.y));
+	
+	// get the windows position
+	int myWindowXPosition = 0;
+	parent->GetScreenPosition(&myWindowXPosition,NULL);
+	
+	// get the rectangle of the item
+	wxRect mySize (0,0,0,0);
+	GetItemRect(iIndex, mySize);
+	
+	// get columns size 
+	wxArrayInt myColsSize;
+	for (int i = 0; i< GetColumnCount(); i++)
+		myColsSize.Add(GetColumnWidth(i));
+	
+	// get the columns, -1 for not found
+	int iColClicked = -1;
+	int iColTotal = iBorderMargin + myWindowXPosition + mySize.GetX();
+	for (unsigned int j = 0; j<myColsSize.GetCount(); j++)
+	{	
+		iColTotal += myColsSize.Item(j);
+		if (myPos.x <= iColTotal)
+		{
+			iColClicked = j;
+			break;
+		}
+	}
+	wxLogDebug(_T("Col clicked is : %d"), iColClicked);
+	return iColClicked;
+}
+
+
+
+
 /************************ LISTGENMNEU **********************************/
 
 ListGenMenu::ListGenMenu() : wxMenu()

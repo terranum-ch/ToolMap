@@ -175,7 +175,7 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 	
 	long mylid = 0;
 	wxString mylName = _T("");
-	int mySnapStatus = 0;
+	int mySnapStatus = tmSNAPPING_OFF;
 	bool iFirstLoop = true;
 	int iLoop = 0;
 	m_SnappingList->DeleteAllItems();
@@ -193,6 +193,20 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 	
 	
 	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Save snapping status to the database
+ @details Layers used for snapping were allready saved, we must save now the
+ snapping staus for those layers
+ @return  true if snapping status was saved successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 21 January 2009
+ *******************************************************************************/
+bool Snapping_PANEL::SaveSnappingStatus ()
+{
+	return m_SnappingList->SaveSnappingStatus();
 }
 
 
@@ -250,6 +264,7 @@ SnappingList::SnappingList (wxWindow * parent,
 ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	m_Parent = parent;
+	m_SnappingMemory = new tmSnappingMemory();
 }
 
 
@@ -261,7 +276,7 @@ ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
  *******************************************************************************/
 SnappingList::~SnappingList()
 {
-	
+	delete m_SnappingMemory;
 }
 
 
@@ -285,10 +300,10 @@ void SnappingList::SetSnappingStatus (int snapStatus, int iRow, bool clearbefore
 		SetItemText(iRow, 2, _T(""));
 	}
 	
-	if ((snapStatus & 1) == 1)
+	if ((snapStatus & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX)
 		SetItemText(iRow, 1, tmSNAPPING_TEXT_YES);
 	
-	if ((snapStatus & 2) == 2)
+	if ((snapStatus & tmSNAPPING_BEGIN_END) == tmSNAPPING_BEGIN_END)
 		SetItemText(iRow, 2, tmSNAPPING_TEXT_YES);
 		
 }
@@ -315,14 +330,51 @@ int SnappingList::GetSnappingStatus (int iRow)
 	
 	int iReturnSnap = 0;
 	if (GetItemColText(iRow, 1) == tmSNAPPING_TEXT_YES)
-		iReturnSnap = iReturnSnap | 1;
+		iReturnSnap = iReturnSnap | tmSNAPPING_VERTEX;
 	
 	if (GetItemColText(iRow, 2) == tmSNAPPING_TEXT_YES)
-		iReturnSnap = iReturnSnap | 2;
+		iReturnSnap = iReturnSnap | tmSNAPPING_BEGIN_END;
 		
 	
 	return iReturnSnap;
 }
+
+
+
+/***************************************************************************//**
+ @brief Load snapping info into memory
+ @details This function is only needed for adding to the panel the ability to
+ initially load snapping info to memory. After, all informations are updated by
+ the #SnappingList itself (during adding, removing, etc)
+ @param lids layer ID to add to the memory
+ @param snapstatus snapping status to attach to the layer ID
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 21 January 2009
+ *******************************************************************************/
+void SnappingList::LoadSnappingIntoMemory (const long & lid, const int & snapstatus)
+{
+	m_SnappingMemory->AddSnappingMemory(lid, snapstatus);
+}
+
+
+/***************************************************************************//**
+ @brief Save snapping status to the database
+ @details Layers used for snapping were allready saved, we must save now the
+ snapping staus for those layers
+ @return  true if snapping status was saved successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 21 January 2009
+ *******************************************************************************/
+bool SnappingList::SaveSnappingStatus ()
+{
+	if (m_pDB)
+	{
+		return m_pDB->SaveSnappingAllStatus(m_SnappingMemory);
+	}
+	
+	return true;
+}
+
 
 
 
@@ -368,13 +420,18 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		
 			//add snapping layers into list
 			AddItemToList(m_LayersName.Item(mySelectedLayers.Item(i)));
+			
+			// Stores items in memory
+			m_SnappingMemory->AddSnappingMemory(m_LayersID.Item(mySelectedLayers.Item(i)),
+												0);
 		}
 		
 		// add snapping layers into database
 		m_pDB->AddLayersSnapping(myRealSelectedID);
 		
+		//TODO: send message to update snapping status
 		
-		//TODO: Stores items in memory
+		
 	}
 	delete m_pDialog;
 }
@@ -393,6 +450,10 @@ void SnappingList::BeforeDeleting ()
 	
 	for (unsigned int i = 0; i< mySelected.GetCount();i++)
 	{
+		// delete item from memory
+		m_SnappingMemory->DeleteSnappingMemory(GetItemData(mySelected.Item(i)));
+		
+		// delete item from database
 		if(!m_pDB->DeleteLayerSnapping(GetItemData(mySelected.Item(i))))
 		{
 			wxLogDebug(_T("Error deleting snapping layers : %d"),
@@ -400,6 +461,8 @@ void SnappingList::BeforeDeleting ()
 			break;
 		}
 	}
+	
+	// TODO: send message to update snapping status
 }
 
 
@@ -414,51 +477,8 @@ void SnappingList::BeforeDeleting ()
  *******************************************************************************/
 void SnappingList::OnDoubleClickItem (wxListEvent & event)
 {	
-	wxPoint myPos (0,0);
-	wxGetMousePosition(&(myPos.x), &(myPos.y));
-	//wxPoint myPos = event.GetPoint();
-	wxLogMessage(_T("Double click item : %d "),event.GetIndex());
-	wxLogMessage(_T("Mouse position = %d / %d"), myPos.x, myPos.y);
-	
-	
-	//TODO: If working, move this code to the ListGenReport code
-		
-	int myClickedPos = myPos.x;
-	int myBorderMargin = 0;
-	int myWindowXPosition = 0;
-	m_Parent->GetScreenPosition(&myWindowXPosition,NULL);
-	
-	wxRect mySize (0,0,0,0);
-	GetItemRect(event.GetIndex(), mySize);
-	wxLogDebug(_T("Event rect is : %d, width = %d"), mySize.x, mySize.GetWidth());
-	
-	
-	// get columns size 
-	wxArrayInt myColsSize;
-	for (int i = 0; i< GetColumnCount(); i++)
-		myColsSize.Add(GetColumnWidth(i));
-	
-	wxLogMessage(_T("Windows x pos = %d, colsize = %d, %d, %d"),
-				 myWindowXPosition, myColsSize.Item(0),
-				 myColsSize.Item(1),myColsSize.Item(2));
-	
-	// get the columns, -1 for not found
-	int iColClicked = -1;
-	int iColTotal = myBorderMargin + myWindowXPosition + mySize.GetX();
-	for (unsigned int j = 0; j<myColsSize.GetCount(); j++)
-	{	
-		iColTotal += myColsSize.Item(j);
-		if (myClickedPos <= iColTotal)
-		{
-			iColClicked = j;
-			break;
-		}
-	}
-	wxLogDebug(_T("Col clicked is : %d"), iColClicked);
-	// some tests 
-	
-	
-	
+	int iColClicked = GetColumnClicked(m_Parent,
+									   event.GetIndex(), 0);
 	
 	// get the status and set the status for the snapping
 	if (iColClicked > 0)
@@ -467,6 +487,12 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 		iActualSnapStatus = iActualSnapStatus ^ iColClicked;
 		
 		SetSnappingStatus(iActualSnapStatus, event.GetIndex(), true);
+		
+		// modifiy status into memory
+		m_SnappingMemory->SetSnappingMemoryStatus(GetItemData(event.GetIndex()),
+												  iActualSnapStatus);
+		
+		//TODO: send message to update snapping status
 	}
 }
 

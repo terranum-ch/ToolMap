@@ -2581,7 +2581,6 @@ bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
 	
 	if (!DataBaseQueryNoResult(sFullSentence))
 	{
-		wxLogDebug(sFullSentence);
 		wxLogDebug(_T("Error adding layers for snapping : %s"),
 				   DataBaseGetLastError().c_str());
 		return false;
@@ -2605,6 +2604,46 @@ bool DataBaseTM::DeleteLayerSnapping (int layersid)
 										  TABLE_NAME_SNAPPING.c_str(),
 										  layersid);
 	return DataBaseQueryNoResult(sSentence);
+}
+
+
+
+/***************************************************************************//**
+ @brief Save snapping status to the database
+ @param snapmemory a valid #tmSnappingMemory object
+ @param bool true if snapping status was saved successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 21 January 2009
+ *******************************************************************************/
+bool DataBaseTM::SaveSnappingAllStatus (tmSnappingMemory * snapmemory)
+{
+	wxString sSentence = _T(" UPDATE %s SET SNAPPING_TYPE=%d WHERE TOC_ID=%d; ");
+	wxString sFullSentence = wxEmptyString;
+	
+	long myLayerindex = 0;
+	int mySnappingStatus = tmSNAPPING_OFF;
+	
+	for (unsigned int i = 0; i< snapmemory->GetCount(); i++)
+	{
+		if (snapmemory->GetSnappingInfo(i, myLayerindex, mySnappingStatus))
+		{
+			sFullSentence.Append(wxString::Format(sSentence,
+												  TABLE_NAME_SNAPPING.c_str(),
+												  mySnappingStatus,
+												  myLayerindex));
+		}
+	}
+	
+	if (sFullSentence.Len() > 0)
+		if (!DataBaseQueryNoResult(sFullSentence))
+		{
+			wxLogDebug(_T("Error saving snapping status  : %s"),
+					   DataBaseGetLastError().c_str());
+			return false;
+		}
+	
+	return true;
+	
 }
 
 
