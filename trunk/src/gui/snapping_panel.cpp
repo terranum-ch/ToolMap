@@ -188,9 +188,15 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 		m_SnappingList->AddItemToList(mylName, iLoop);
 		m_SnappingList->SetSnappingStatus(mySnapStatus, iLoop, false);
 		m_SnappingList->SetItemData(iLoop, mylid);
+		
+		// load item to memory
+		m_SnappingList->LoadSnappingIntoMemory(mylid, mySnapStatus);
+		
 		iLoop++;
 	}
 	
+	// update snapping
+	m_SnappingList->SnappingUpdate();
 	
 	return true;
 }
@@ -430,7 +436,7 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		m_pDB->AddLayersSnapping(myRealSelectedID);
 		
 		//TODO: send message to update snapping status
-		
+		SnappingUpdate();
 		
 	}
 	delete m_pDialog;
@@ -463,6 +469,7 @@ void SnappingList::BeforeDeleting ()
 	}
 	
 	// TODO: send message to update snapping status
+	SnappingUpdate();
 }
 
 
@@ -493,6 +500,14 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 												  iActualSnapStatus);
 		
 		//TODO: send message to update snapping status
+		SnappingUpdate();
 	}
+}
+
+
+
+void SnappingList::SnappingUpdate()
+{
+	wxLogDebug(_T("Snapping changed, %d item stored in memory"), m_SnappingMemory->GetCount());
 }
 

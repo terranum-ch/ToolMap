@@ -72,6 +72,8 @@ class SnappingList : public ListGenReportWithDialog
 		virtual void OnDoubleClickItem (wxListEvent & event);
 		
 		
+		
+		
 	protected:
 	public:
 		SnappingList (wxWindow * parent,
@@ -90,6 +92,8 @@ class SnappingList : public ListGenReportWithDialog
 		// Used by the panel for initial loading into memory
 		void LoadSnappingIntoMemory (const long & lid, const int & snapstatus); 
 		bool SaveSnappingStatus();
+		
+		void SnappingUpdate();
 	};
 
 
@@ -114,6 +118,8 @@ class Snapping_PANEL : public ManagedAuiWnd
 		wxSizer * CreateControls(wxWindow * parent,
 								 bool call_fit = true,
 								 bool set_sizer = true);
+		
+	
 		
 		
 		//  event handlers
