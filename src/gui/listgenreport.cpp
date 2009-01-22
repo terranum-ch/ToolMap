@@ -508,6 +508,7 @@ bool ListGenReport::ItemExist(long index)
  @param parent Adress of a wxWindow Parent. Used to get the position of the
  window in screen coordinates
  @param iIndex zero based index of item clicked
+ @param iBorderMargin the left space between window and the control
  @return  return the zero based index of the selected column or -1 if not found
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009

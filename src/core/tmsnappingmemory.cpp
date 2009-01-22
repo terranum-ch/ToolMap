@@ -186,3 +186,19 @@ int tmSnappingMemory::FindSnappingItem (const long & lid)
 	return iReturn;
 }
 
+
+
+/***************************************************************************//**
+ @brief Set all snapping status to #tmSNAPPING_OFF
+ @details This function doesn't remove layers from the memory
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 22 January 2009
+ *******************************************************************************/
+void tmSnappingMemory::ClearSnappingStatus ()
+{
+	for (unsigned int i = 0; i< GetCount(); i++)
+	{
+		m_Snapping.Item(i).m_SnappingStatus = tmSNAPPING_OFF;
+	}
+}
+

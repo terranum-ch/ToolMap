@@ -22,7 +22,7 @@
 
 // EVENT TABLE
 BEGIN_EVENT_TABLE( Snapping_PANEL, ManagedAuiWnd )
-	EVT_TEXT( ID_SNAP_TOLERENCE_TXT, Snapping_PANEL::OnUpdateTolerence )
+	EVT_SPINCTRL( ID_SNAP_TOLERENCE_TXT, Snapping_PANEL::OnUpdateTolerence )
 	EVT_FLATBUTTON( ID_SNAP_ADD, Snapping_PANEL::OnAddSnapping )
 	EVT_FLATBUTTON( ID_SNAP_REMOVE, Snapping_PANEL::OnRemoveSnapping )
 	EVT_FLATBUTTON( ID_SNAP_CLEAR, Snapping_PANEL::OnClearSnapping )
@@ -101,7 +101,14 @@ wxSizer * Snapping_PANEL::CreateControls(wxWindow * parent,
 	m_staticText5->Wrap( -1 );
 	bSizer14->Add( m_staticText5, 0, wxALL, 5 );
 	
-	m_Tolerence = new wxTextCtrl( parent, ID_SNAP_TOLERENCE_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_Tolerence = new wxSpinCtrl( parent, ID_SNAP_TOLERENCE_TXT,
+								 _T("10"), 
+								 wxDefaultPosition, 
+								 wxDefaultSize, 
+								 wxSP_ARROW_KEYS,
+								 1,
+								 100,
+								 10);
 	bSizer14->Add( m_Tolerence, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer13->Add( bSizer14, 0, wxEXPAND, 5 );
@@ -182,6 +189,11 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 	m_SnappingList->DeleteAllItems();
 	m_SnappingList->ClearSnappingMemory();
 	
+	// save tolerence to ctrl, memory
+	int iTolerence = m_pDB->GetSnappingTolerence();
+	m_SnappingList->SetSnappingMemoryTolerence(iTolerence);
+	m_Tolerence->SetValue(iTolerence);
+	
 	while (1)
 	{
 		if (!m_pDB->GetNextSnapping(mylid, mylName, mySnapStatus, iFirstLoop))
@@ -232,6 +244,21 @@ void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
 }
 
 
+
+/***************************************************************************//**
+ @brief called when tolerence is changed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 22 January 2009
+ *******************************************************************************/
+void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event )
+{
+	m_SnappingList->SetSnappingMemoryTolerence(event.GetInt());
+	wxLogDebug(_T("Snapping tolerence set to %d"), event.GetInt());
+	m_SnappingList->SnappingUpdate();
+	event.Skip(); 
+}
+
+
 /***************************************************************************//**
  @brief Called when user press remove snapping
  @author Lucien Schreiber (c) CREALP 2009
@@ -246,6 +273,18 @@ void Snapping_PANEL::OnRemoveSnapping( wxCommandEvent& event )
 
 }
 
+
+
+/***************************************************************************//**
+ @brief Remove all snapping set
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 22 January 2009
+ *******************************************************************************/
+void Snapping_PANEL::OnClearSnapping( wxCommandEvent& event )
+{
+	m_SnappingList->ClearSnappingStatus();
+	event.Skip();
+}
 
 
 
@@ -296,6 +335,8 @@ SnappingList::~SnappingList()
   - 0 = No snapping 
   - 1 = Snapping vertex 
   - 2 = snapping Begin/End
+ @param iRow the zero based row index of the item to change
+ @param clearbefore If set to true, we remove old values.
  @author Lucien Schreiber (c) CREALP 2009
  @date 19 January 2009
  *******************************************************************************/
@@ -354,7 +395,7 @@ int SnappingList::GetSnappingStatus (int iRow)
  @details This function is only needed for adding to the panel the ability to
  initially load snapping info to memory. After, all informations are updated by
  the #SnappingList itself (during adding, removing, etc)
- @param lids layer ID to add to the memory
+ @param lid layer ID to add to the memory
  @param snapstatus snapping status to attach to the layer ID
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
@@ -377,6 +418,11 @@ bool SnappingList::SaveSnappingStatus ()
 {
 	if (m_pDB)
 	{
+		// save tolerence
+		if (!m_pDB->SetSnappingTolerence(GetSnappingMemoryTolerence()))
+			return false;
+				
+		// save snapping status
 		return m_pDB->SaveSnappingAllStatus(m_SnappingMemory);
 	}
 	
@@ -438,7 +484,7 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		// add snapping layers into database
 		m_pDB->AddLayersSnapping(myRealSelectedID);
 		
-		//TODO: send message to update snapping status
+		//send message to update snapping status
 		SnappingUpdate();
 		
 	}
@@ -471,7 +517,7 @@ void SnappingList::BeforeDeleting ()
 		}
 	}
 	
-	// TODO: send message to update snapping status
+	// send message to update snapping status
 	SnappingUpdate();
 }
 
@@ -502,7 +548,7 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 		m_SnappingMemory->SetSnappingMemoryStatus(GetItemData(event.GetIndex()),
 												  iActualSnapStatus);
 		
-		//TODO: send message to update snapping status
+		// send message to update snapping status
 		SnappingUpdate();
 	}
 }
@@ -512,5 +558,22 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 void SnappingList::SnappingUpdate()
 {
 	wxLogDebug(_T("Snapping changed, %d item stored in memory"), m_SnappingMemory->GetCount());
+}
+
+
+/***************************************************************************//**
+ @brief Remove all snapping set
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 22 January 2009
+ *******************************************************************************/
+void SnappingList::ClearSnappingStatus ()
+{
+	for (int i = 0;i< GetItemCount();i++)
+	{
+		SetSnappingStatus(tmSNAPPING_OFF, i, true);
+	}
+	m_SnappingMemory->ClearSnappingStatus();
+	
+	SnappingUpdate();
 }
 

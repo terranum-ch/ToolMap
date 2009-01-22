@@ -94,7 +94,15 @@ class SnappingList : public ListGenReportWithDialog
 		void LoadSnappingIntoMemory (const long & lid, const int & snapstatus); 
 		bool SaveSnappingStatus();
 		
+		// when snapping change
 		void SnappingUpdate();
+		
+		void SetSnappingMemoryTolerence (int iTolerence)
+		{
+			m_SnappingMemory->SetTolerence(iTolerence);
+		}
+		int GetSnappingMemoryTolerence (){return m_SnappingMemory->GetTolerence();}
+		void ClearSnappingStatus ();
 	};
 
 
@@ -108,7 +116,7 @@ class SnappingList : public ListGenReportWithDialog
 class Snapping_PANEL : public ManagedAuiWnd  
 	{
 	private:
-		wxTextCtrl* m_Tolerence;
+		wxSpinCtrl* m_Tolerence;
 		SnappingList * m_SnappingList;
 		wxWindow * m_ParentEvt;
 		wxAuiPaneInfo m_PaneInfo;
@@ -124,10 +132,10 @@ class Snapping_PANEL : public ManagedAuiWnd
 		
 		
 		//  event handlers
-		virtual void OnUpdateTolerence( wxCommandEvent& event ){ event.Skip(); }
+		virtual void OnUpdateTolerence( wxSpinEvent & event );
 		virtual void OnAddSnapping( wxCommandEvent& event );
 		virtual void OnRemoveSnapping( wxCommandEvent& event );
-		virtual void OnClearSnapping( wxCommandEvent& event ){ event.Skip(); }
+		virtual void OnClearSnapping( wxCommandEvent& event );
 		DECLARE_EVENT_TABLE()
 		
 	public:
