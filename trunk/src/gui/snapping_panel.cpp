@@ -312,6 +312,7 @@ ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	m_Parent = parent;
 	m_SnappingMemory = new tmSnappingMemory();
+	m_pDB = NULL;
 }
 
 
