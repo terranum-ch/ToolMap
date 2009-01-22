@@ -70,7 +70,7 @@ _T("generic_notes")
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 218;
+const int TM_DATABASE_VERSION = 219;
 
 
 
@@ -193,6 +193,10 @@ class DataBaseTM : public DataBase
 		bool AddLayersSnapping (const wxArrayLong & lids);
 		bool DeleteLayerSnapping (int layersid);
 		bool SaveSnappingAllStatus (tmSnappingMemory * snapmemory);
+		
+		// database snapping tolerence operations
+		bool SetSnappingTolerence(int iTolerence);
+		int GetSnappingTolerence ();
 	};
 
 

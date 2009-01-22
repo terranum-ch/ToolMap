@@ -187,6 +187,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  `PRJ_BACKUP_PATH` VARCHAR(255) NULL ,")
 	_T("  `PRJ_AUTHORS` VARCHAR(255) NULL ,")
 	_T("  `PRJ_SUMMARY` TEXT NULL ,")
+	_T("  `PRJ_SNAP_TOLERENCE` INT NOT NULL DEFAULT 10 ,")
 	_T("  PRIMARY KEY (`SETTING_DBK`) );")
 	
 	_T("CREATE  TABLE `generic_notes` (")
@@ -2468,7 +2469,7 @@ bool DataBaseTM::GetNextShortcutFull (bool bFirstLoop, int & layertype,
  @param snapstatus return the snapping status 0 = no snapping, 1 = Snapping for
  vertex, 2 = Snapping for Begin/End (only for lines)
  @param bfirstloop set to true if the first loop to issue the query
- @param bool return true if the query was successfull, false otherwise
+ @return true if the query was successfull, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 19 January 2009
  *******************************************************************************/
@@ -2611,7 +2612,7 @@ bool DataBaseTM::DeleteLayerSnapping (int layersid)
 /***************************************************************************//**
  @brief Save snapping status to the database
  @param snapmemory a valid #tmSnappingMemory object
- @param bool true if snapping status was saved successfully
+ @return true if snapping status was saved successfully
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
@@ -2644,6 +2645,52 @@ bool DataBaseTM::SaveSnappingAllStatus (tmSnappingMemory * snapmemory)
 	
 	return true;
 	
+}
+
+
+/***************************************************************************//**
+ @brief Save the tolerence into database
+ @param iTolerence The tolerence
+ @return true if the tolerence was successfully saved, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 22 January 2009
+ *******************************************************************************/
+bool DataBaseTM::SetSnappingTolerence(int iTolerence)
+{
+	wxString sSentence = wxString::Format(_T(" UPDATE %s SET PRJ_SNAP_TOLERENCE = %d;"),
+										  TABLE_NAME_PRJ_SETTINGS.c_str(),
+										  iTolerence);
+	if (!DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error saving snapping tolerence : %s"),
+				   DataBaseGetLastError().c_str());
+		return false;
+	}
+	return true;
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Get the tolerence from the database
+ @return  the tolerence value
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 22 January 2009
+ *******************************************************************************/
+int DataBaseTM::GetSnappingTolerence ()
+{
+	int iSnappingTol = 0;
+	wxString sSentence = wxString::Format(_T(" SELECT PRJ_SNAP_TOLERENCE FROM %s;"),
+										  TABLE_NAME_PRJ_SETTINGS.c_str());
+	if (!DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting snapping tolerence : %s"),
+				   DataBaseGetLastError().c_str());
+		return iSnappingTol;
+	}
+	
+	return DataBaseGetResultAsInt(true);
 }
 
 

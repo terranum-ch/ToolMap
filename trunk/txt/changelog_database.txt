@@ -65,3 +65,6 @@ Update Database
 - 217 -> 218 (Adding snapping table)
 	- CREATE TABLE `prj_snapping`(`TOC_ID` INTEGER NOT NULL,`SNAPPING_TYPE` INTEGER NOT NULL,PRIMARY KEY (`TOC_ID`),CONSTRAINT `Rel_30` FOREIGN KEY (`TOC_ID`) REFERENCES `prj_toc` (`CONTENT_ID`));
 	- UPDATE `prj_settings` SET PRJ_VERSION = 218;
+- 218 -> 219 (Saving snapping tolerence)
+	- ALTER TABLE  prj_settings ADD COLUMN PRJ_SNAP_TOLERENCE INT NOT NULL DEFAULT 10 AFTER PRJ_SUMMARY;
+	- UPDATE `prj_settings` SET PRJ_VERSION = 219;

@@ -89,6 +89,7 @@ class tmSnappingMemory : public wxObject
 		bool SetSnappingMemoryStatus  (const long & lid, int snapstatus);
 		bool GetSnappingInfo (unsigned int iIndex, long & lid, int & snapstatus);
 		void Clear(){m_Snapping.Clear();}
+		void ClearSnappingStatus ();
 		
 		// tolerence operations
 		void SetTolerence (int tolereance) {m_Tolerence = tolereance;}

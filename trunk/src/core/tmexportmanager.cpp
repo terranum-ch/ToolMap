@@ -332,7 +332,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
  @details This function uses the wxProgressDialog class when more than one
  layers is to be exported and a wxBusyinfo when only one layers is
  exported.
- @param iNbLayer The number of layers to export
+ @param iNbLayers The number of layers to export
  @param layername The first layername
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 January 2009
