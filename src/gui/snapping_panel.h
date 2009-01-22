@@ -90,6 +90,7 @@ class SnappingList : public ListGenReportWithDialog
 		int GetSnappingStatus (int iRow);
 		
 		// Used by the panel for initial loading into memory
+		void ClearSnappingMemory (){ m_SnappingMemory->Clear();}
 		void LoadSnappingIntoMemory (const long & lid, const int & snapstatus); 
 		bool SaveSnappingStatus();
 		

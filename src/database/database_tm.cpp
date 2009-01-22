@@ -2477,7 +2477,7 @@ bool DataBaseTM::GetNextSnapping (long & lid, wxString & layername,
 {
 	wxString sSentence = wxString::Format(_T("SELECT a.TOC_ID, b.CONTENT_NAME, a.SNAPPING_TYPE")
 										  _T(" from %s AS a LEFT JOIN  (%s b)")
-										  _T(" ON (b.CONTENT_ID = a.TOC_ID);"),
+										  _T(" ON (b.CONTENT_ID = a.TOC_ID) ORDER BY b.RANK;"),
 										  TABLE_NAME_SNAPPING.c_str(),
 										  TABLE_NAME_TOC.c_str());
 	// if first loop
