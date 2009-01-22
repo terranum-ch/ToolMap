@@ -178,7 +178,9 @@ bool Snapping_PANEL::LoadSnappingStatus ()
 	int mySnapStatus = tmSNAPPING_OFF;
 	bool iFirstLoop = true;
 	int iLoop = 0;
+	
 	m_SnappingList->DeleteAllItems();
+	m_SnappingList->ClearSnappingMemory();
 	
 	while (1)
 	{
@@ -426,6 +428,7 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		
 			//add snapping layers into list
 			AddItemToList(m_LayersName.Item(mySelectedLayers.Item(i)));
+			SetItemData(GetItemCount()-1, m_LayersID.Item(mySelectedLayers.Item(i)));
 			
 			// Stores items in memory
 			m_SnappingMemory->AddSnappingMemory(m_LayersID.Item(mySelectedLayers.Item(i)),
