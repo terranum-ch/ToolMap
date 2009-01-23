@@ -93,6 +93,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 
+	//TODO: Temp function for testing purpose, remove.
+	EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnTempBlockRefresh)
+
+	// AUI EVENT WHEN PANE CLOSED
+	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
+
 	EVT_CLOSE(ToolMapFrame::OnQuit)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 
@@ -717,6 +723,32 @@ void ToolMapFrame::OnShortcutAttributionDone (wxCommandEvent & event)
 	
 	GetStatusBar()->SetStatusText(myStatusInfo, 0);
 }
+
+
+
+/***************************************************************************//**
+ @brief This is called when a pane was closed using the close button
+ @details In this case, we should remove the tick near the window name in the
+ menu
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 January 2009
+ *******************************************************************************/
+void ToolMapFrame::OnCloseManagedPane(wxAuiManagerEvent & event)
+{
+	int iId = wxNOT_FOUND;
+	wxAuiPaneInfo * myPaneInfo = event.GetPane();
+	
+	if (myPaneInfo->name == SHORTCUT_PANEL_TITLE)
+		iId = ID_MENU_SHORTCUTS;
+	
+	if (myPaneInfo->name == SNAPPING_PANEL_TITLE)
+		iId = ID_MENU_ADJUST_SNAPPING;
+	
+	if (iId != wxNOT_FOUND)
+		GetMenuBar()->Check(iId, false);
+}
+
+
 
 
 void ToolMapFrame::OnToolChanged (wxCommandEvent & event)

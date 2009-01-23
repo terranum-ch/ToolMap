@@ -81,6 +81,7 @@ class tmLayerManager : public wxEvtHandler
 		tmScaleCtrlCombo * m_ScaleCtrl;
 		static bool	m_LogOn;
 		tmSelectedDataMemory m_SelectedData;
+		bool m_BlockRefresh;
 		
 		// shared member data with thread
 		 
@@ -163,6 +164,9 @@ class tmLayerManager : public wxEvtHandler
 		
 		tmSelectedDataMemory * GetSelectedDataMemory (){return &m_SelectedData;}
 		
+		// blocking, unblocking the refresh process
+		void BlockRefreshProcess(bool block = true){m_BlockRefresh = block;}
+		bool GetRefreshBlocked () {return m_BlockRefresh;}
 		
 	};
 
