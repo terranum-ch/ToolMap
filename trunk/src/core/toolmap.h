@@ -299,6 +299,22 @@ private:
 	
 	void OnShortcutAttributionDone (wxCommandEvent & event);
 	
+	//TODO: Remove this temp function
+	void OnTempBlockRefresh( wxCommandEvent & event)
+	{
+		if(m_LayerManager->GetRefreshBlocked())
+		{
+			m_LayerManager->BlockRefreshProcess(false);
+			wxLogDebug(_T("Refresh blocked"));
+		}
+		else
+		{
+			m_LayerManager->BlockRefreshProcess(true);
+			wxLogDebug(_T("Refresh unblocked"));
+		}
+	}
+		
+	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
 	
 	

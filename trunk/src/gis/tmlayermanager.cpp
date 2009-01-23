@@ -96,6 +96,7 @@ void tmLayerManager::InitMemberValue()
 	m_ThreadBitmap = NULL;
 	// init selected data structure
 	m_Drawer.SetSelectedData(&m_SelectedData);
+	m_BlockRefresh = false;
 }
 
 
@@ -814,6 +815,9 @@ bool tmLayerManager::LoadProjectLayers()
 
 bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
 {
+	if (m_BlockRefresh)
+		return false;
+	
 	// init values
 	m_computeFullExtent = bFullExtent;
 	
