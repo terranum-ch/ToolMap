@@ -23,6 +23,9 @@
 WX_DEFINE_OBJARRAY (tmSnappingObjArray);
 
 
+DEFINE_EVENT_TYPE(tmEVT_SNAPPING_UPDATED)
+
+
 tmSnappingObject::tmSnappingObject()
 {
 	InitMemberValues();

@@ -36,6 +36,10 @@ const int tmSNAPPING_BEGIN_END		= 2;
 const wxString tmSNAPPING_TEXT_YES = _("Yes");
 
 
+// event sent when snapping change or is loaded
+DECLARE_EVENT_TYPE(tmEVT_SNAPPING_UPDATED,-1)
+
+
 class tmSnappingObject
 	{
 	private:

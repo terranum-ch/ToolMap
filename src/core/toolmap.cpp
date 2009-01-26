@@ -85,6 +85,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -183,6 +185,11 @@ void ToolMapFrame::PostInit()
 											   m_LayerManager->GetSelectedDataMemory());
 											   
 	
+	m_EditManager = new tmEditManager (this,
+									   m_TocWindow->GetTOCCtrl(),
+									   m_LayerManager->GetSelectedDataMemory(),
+									   m_MainPanel->GetGISRenderer());
+									   
 
 	m_pConfig = new wxFileConfig();
 	// init the menu manager 
@@ -197,6 +204,7 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetQueriesPanel(m_QueriesPanel);
 	m_PManager->SetShortcutPanel(m_ShortCutPanel);
 	m_PManager->SetSnappingPanel(m_SnappingPanel);
+	m_PManager->SetEditManager(m_EditManager);
 	
 	
 		
@@ -222,10 +230,11 @@ ToolMapFrame::~ToolMapFrame()
 	delete m_LogWindow;
 	delete m_AuiManager;
 	
-	
+	delete m_EditManager;
+	delete m_AttribManager;
 	delete m_LayerManager;
 	
-	delete m_AttribManager;
+	
 	
 	// delete the project Manager
 	delete m_PManager;
@@ -381,10 +390,10 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 	itemToolBar3->AddControl(m_ScaleCombo);
     wxBitmap itemtool9Bitmap(wxGetBitmapFromMemory(tool5));
     wxBitmap itemtool9BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL5, _T("Draw"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_DRAW, _T("Draw"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool10Bitmap(wxGetBitmapFromMemory(tool6));
     wxBitmap itemtool10BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL6, _T("Modify"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_MODIFY, _T("Modify"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
     wxBitmap itemtool11BitmapDisabled;
     itemToolBar3->AddTool(ID_TOOL7, _T("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
@@ -774,6 +783,14 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 			
 		case ID_MENU_PAN:
 			m_LayerManager->OnPan();
+			break;
+			
+		case ID_MENU_DRAW:
+			m_EditManager->OnToolEdit();
+			break;
+			
+		case ID_MENU_MODIFY:
+			m_EditManager->OnToolModify();
 			break;
 			
 		default:

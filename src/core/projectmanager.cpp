@@ -35,6 +35,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_AttribManager = NULL;
 	m_QueriesPanel = NULL;
 	m_ShortcutPanel = NULL;
+	m_EditManager = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -246,8 +247,12 @@ bool ProjectManager::BackupProject ()
  *******************************************************************************/
 void ProjectManager::CloseProject()
 {
+	wxASSERT (m_EditManager);
+	
 	// save the snapping informations
 	m_SnappingPanel->SaveSnappingStatus();
+	
+	m_EditManager->SetDatabase(NULL);
 	
 	m_LayerManager->UnInitLayerManager();
 	m_AttribManager->UnInitAttributionManager();
@@ -349,6 +354,8 @@ int ProjectManager::OpenProject(const wxString & path)
 					// attribution manager
 					wxASSERT(m_AttribManager->InitAttributionManager(m_DB));
 				
+					// edition manager
+					m_EditManager->SetDatabase(m_DB);
 					
 					// project is now open !
 					bProjectIsOpen = TRUE;
