@@ -98,6 +98,9 @@ class tmSnappingMemory : public wxObject
 		// tolerence operations
 		void SetTolerence (int tolereance) {m_Tolerence = tolereance;}
 		int GetTolerence () {return m_Tolerence;}
+		
+		// misc function
+		bool IsSnappingEnabled ();
 	};
 
 

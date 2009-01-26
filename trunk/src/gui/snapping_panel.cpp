@@ -568,8 +568,9 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 void SnappingList::SnappingUpdate()
 {
 	wxCommandEvent evt(tmEVT_SNAPPING_UPDATED, wxID_ANY);
-	evt.SetEventObject(m_SnappingMemory);
+	evt.SetClientData(m_SnappingMemory);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+
 }
 
 

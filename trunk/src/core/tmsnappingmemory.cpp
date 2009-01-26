@@ -205,3 +205,26 @@ void tmSnappingMemory::ClearSnappingStatus ()
 	}
 }
 
+
+
+/***************************************************************************//**
+ @brief Checks if snapping is enabled
+ @details This function checks if at least one layer contain a defined snapping
+ @return  true if at least one layer has snapping enabled
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+bool tmSnappingMemory::IsSnappingEnabled ()
+{
+	bool bSnappingIsOn = false;
+	for (unsigned int i = 0; i<m_Snapping.GetCount(); i++)
+	{
+		if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF)
+		{
+			bSnappingIsOn = true;
+			break;
+		}
+	}
+		
+	return bSnappingIsOn;
+}
