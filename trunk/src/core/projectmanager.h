@@ -54,6 +54,7 @@
 #include "../gui/queries_panel.h"			// for queries panel
 #include "../gui/shortcut_panel.h"			// for shortcut panel
 #include "../gui/snapping_panel.h"			// for snapping panel
+#include "../gis/tmeditmanager.h"			// for editing stuff
 
 class MenuManager;
 class ObjectManager;
@@ -81,6 +82,7 @@ class ProjectManager : public wxObject
 		Queries_PANEL * m_QueriesPanel;
 		Shortcuts_PANEL * m_ShortcutPanel;
 		Snapping_PANEL * m_SnappingPanel;
+		tmEditManager * m_EditManager;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -113,6 +115,7 @@ class ProjectManager : public wxObject
 		void SetQueriesPanel (Queries_PANEL * queriespanel) {m_QueriesPanel = queriespanel;}
 		void SetShortcutPanel (Shortcuts_PANEL * panel) {m_ShortcutPanel = panel;}
 		void SetSnappingPanel (Snapping_PANEL * panel) {m_SnappingPanel = panel;}
+		void SetEditManager (tmEditManager * editmanager) {m_EditManager = editmanager;}
 		DataBaseTM * GetDatabase() {return m_DB;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}

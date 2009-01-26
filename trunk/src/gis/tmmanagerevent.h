@@ -38,5 +38,4 @@ DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_REFRESH, -1);
 
 
 
-
 #endif

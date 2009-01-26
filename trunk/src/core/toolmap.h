@@ -117,6 +117,7 @@
 #include "tmexportmanager.h"				// export manager
 #include "../gui/shortcut_panel.h"			// for shortcut panel
 #include "../gui/snapping_panel.h"			// for snapping panel
+#include "../gis/tmeditmanager.h"			// for editing manager
 
 
 //// temp for testing 
@@ -270,6 +271,8 @@ private:
 	tmScaleCtrlCombo * m_ScaleCombo;
 	
 	tmAttributionManager * m_AttribManager;
+	
+	tmEditManager * m_EditManager;
 	
 	
 	void OnQuit(wxCloseEvent & event);

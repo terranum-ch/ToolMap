@@ -20,6 +20,8 @@
 
 #include "snapping_panel.h"
 
+
+
 // EVENT TABLE
 BEGIN_EVENT_TABLE( Snapping_PANEL, ManagedAuiWnd )
 	EVT_SPINCTRL( ID_SNAP_TOLERENCE_TXT, Snapping_PANEL::OnUpdateTolerence )
@@ -555,11 +557,21 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 }
 
 
-
+/***************************************************************************//**
+ @brief Called when snapping change
+ @details This function sent an event containing a valid tmSnappingMemory
+ pointer. User sould not delete the pointer, will be deleted by the
+ tmSnappingMemory itself
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
 void SnappingList::SnappingUpdate()
 {
-	wxLogDebug(_T("Snapping changed, %d item stored in memory"), m_SnappingMemory->GetCount());
+	wxCommandEvent evt(tmEVT_SNAPPING_UPDATED, wxID_ANY);
+	evt.SetEventObject(m_SnappingMemory);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 }
+
 
 
 /***************************************************************************//**

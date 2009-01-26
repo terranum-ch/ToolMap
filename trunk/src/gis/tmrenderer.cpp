@@ -143,6 +143,14 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 		case tmTOOL_PAN:
 			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_HAND));
 			break;
+			
+		case tmTOOL_EDIT:
+			this->SetCursor(wxCursor(wxCURSOR_CROSS));
+			break;
+			
+		case tmTOOL_MODIFY:
+			this->SetCursor(wxCursor(wxCURSOR_SIZING));
+			break;
 		
 		default:
 			this->SetCursor(wxCursor(wxCURSOR_ARROW));
