@@ -42,13 +42,14 @@ DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_PAN_ENDED,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SELECTION, -1)
 
+
 enum tmGIS_TOOL
 {
 	tmTOOL_SELECT = 0,
 	tmTOOL_ZOOM_RECTANGLE_IN,
 	tmTOOL_ZOOM_RECTANGLE_OUT,
 	tmTOOL_PAN,
-	tmTOOL_EDIT,
+	tmTOOL_DRAW,
 	tmTOOL_MODIFY,
 	tmTOOL_ZOOM_RECTANGLE = tmTOOL_ZOOM_RECTANGLE_IN
 };
@@ -71,7 +72,7 @@ class tmRenderer : public wxScrolledWindow
 		wxBitmap * m_bmp;
 		tmGIS_TOOL m_ActualTool;
 		tmGIS_CURSOR m_ActualNotStockCursor;
-		
+				
 		// rubber band
 		wxRubberBand * m_SelectRect;
 		wxPoint m_StartCoord;
@@ -79,6 +80,9 @@ class tmRenderer : public wxScrolledWindow
 		
 		// status of shift key
 		bool m_ShiftDown;
+		
+		// snapping
+		int m_SnappingRadius;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
@@ -92,6 +96,7 @@ class tmRenderer : public wxScrolledWindow
 		void OnShiftDown	(wxKeyEvent & event);
 		void OnShiftUp		(wxKeyEvent & event);
 		
+			
 		// scrollbar event (received)
 		//void OnScroll (wxScrollWinEvent & event);
 			
@@ -113,11 +118,14 @@ class tmRenderer : public wxScrolledWindow
 		void PanUpdate (const wxPoint & mousepos);
 		void PanStop (const wxPoint & mousepos);
 		
+		// drawing functions
+		void DrawStart (const wxPoint & mousepos);
+		
 	
 	
 	public:
 		tmRenderer(wxWindow * parent, wxWindowID id);
-		~tmRenderer(){ delete m_SelectRect;}
+		~tmRenderer();
 		
 		void OnSizeChange(wxSizeEvent & event);
 		
@@ -126,6 +134,10 @@ class tmRenderer : public wxScrolledWindow
 		void SetBitmapStatus(wxBitmap * bmp = NULL){m_bmp = bmp;}
 		
 		void SetTool (tmGIS_TOOL selected_tool);
+		
+		// edit snapping event
+		void ToogleSnapping (int snapradius);
+
 		
 	};
 

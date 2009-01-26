@@ -85,7 +85,7 @@ void tmEditManager::InitMemberValues()
 void tmEditManager::OnToolEdit ()
 {
 	wxASSERT (m_Renderer);
-	m_Renderer->SetTool(tmTOOL_EDIT);
+	m_Renderer->SetTool(tmTOOL_DRAW);
 }
 
 
@@ -111,6 +111,16 @@ void tmEditManager::OnToolModify ()
 void tmEditManager::OnSnappingChange (wxCommandEvent & event)
 {
 	m_SnapMem = (tmSnappingMemory*) event.GetClientData();
+	wxASSERT (m_SnapMem);
+	
+	
+	//TODO: Check for keyboard to skip snapping
+	int iSnapRadius = 0;
+	if (m_SnapMem->IsSnappingEnabled())
+	{
+		iSnapRadius = m_SnapMem->GetTolerence();
+	}
+	m_Renderer->ToogleSnapping(iSnapRadius);
 }
 
 

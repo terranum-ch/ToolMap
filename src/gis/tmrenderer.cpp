@@ -63,9 +63,23 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
 	m_PanBmp = NULL;
 	m_ShiftDown = false;
+	m_SnappingRadius = 0;
+	
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Destructor
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+tmRenderer::~tmRenderer()
+{
+	
+	delete m_SelectRect;
+}
 
 
 /***************************************************************************//**
@@ -144,7 +158,7 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_HAND));
 			break;
 			
-		case tmTOOL_EDIT:
+		case tmTOOL_DRAW:
 			this->SetCursor(wxCursor(wxCURSOR_CROSS));
 			break;
 			
@@ -194,6 +208,10 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	// select
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectStart(event.GetPosition());
+	
+	// draw
+	if (m_ActualTool == tmTOOL_DRAW)
+		DrawStart(event.GetPosition());
 	
 	event.Skip();
 }
@@ -532,5 +550,35 @@ void tmRenderer::PanStop (const wxPoint & mousepos)
 	delete m_PanBmp;
 	m_PanBmp = NULL;
 	m_StartCoord = wxPoint(-1,-1);
+}
+
+
+
+/***************************************************************************//**
+ @brief Activate or not the snapping informations
+ @details When activated, during mouse click, a radius indicating the snapping
+ radius
+ @param snapradius Size of the snapping tolerence, if 0 snapping is OFF
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+void tmRenderer::ToogleSnapping (int snapradius)
+{
+	m_SnappingRadius = snapradius;
+}
+
+
+
+/***************************************************************************//**
+ @brief User click with Draw tool activated
+ @param mousepos Actual mouse position in screen coordinate
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+void tmRenderer::DrawStart (const wxPoint & mousepos)
+{
+	//TODO: Draw snap circle
+	
+	
 }
 
