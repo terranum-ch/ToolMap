@@ -120,7 +120,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		// drawing functions
 		void DrawStart (const wxPoint & mousepos);
-		
+		void DrawStop  (const wxPoint & mousepos);
 	
 	
 	public:

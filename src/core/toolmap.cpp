@@ -188,7 +188,9 @@ void ToolMapFrame::PostInit()
 	m_EditManager = new tmEditManager (this,
 									   m_TocWindow->GetTOCCtrl(),
 									   m_LayerManager->GetSelectedDataMemory(),
-									   m_MainPanel->GetGISRenderer());
+									   m_MainPanel->GetGISRenderer(),
+									   m_LayerManager->GetScale());
+	
 									   
 
 	m_pConfig = new wxFileConfig();

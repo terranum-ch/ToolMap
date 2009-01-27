@@ -57,12 +57,18 @@ class tmEditManager : public wxEvtHandler
 		// defined by function or event.
 		DataBaseTM * m_pDB;
 		tmSnappingMemory * m_SnapMem;
+		tmGISScale * m_Scale;
 		
 		
 		// FUNCTIONS
 		void InitMemberValues();
-		void OnSnappingChange (wxCommandEvent & event);
 		
+		// Extern EVENT function
+		void OnSnappingChange (wxCommandEvent & event);
+		void OnViewUpdated (wxCommandEvent & event);
+		
+		// member tool function
+		void DisplayRendererSnappingTolerence();
 		
 		DECLARE_EVENT_TABLE()
 	protected:
@@ -72,12 +78,14 @@ class tmEditManager : public wxEvtHandler
 		tmEditManager(wxWindow * parent,
 					  tmTOCCtrl * toc,
 					  tmSelectedDataMemory * seldata,
-					  tmRenderer * renderer);
+					  tmRenderer * renderer,
+					  tmGISScale * scale);
 		~tmEditManager();
 		
 		//! @brief Set database functions.
 		//! If database is valid then project is open.
 		void SetDatabase (DataBaseTM * database){m_pDB = database;}
+	
 	
 		//change tool functions
 		void OnToolEdit ();

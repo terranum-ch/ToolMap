@@ -22,6 +22,7 @@
 
 DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED)
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE)
+DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED)
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
@@ -805,6 +806,9 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
 	
+	// send view updated message 
+	ViewUpdated();
+	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
 	m_GISRenderer->Refresh();
@@ -933,6 +937,9 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		
 		// update scrollbars
 		//UpdateScrollBars();
+		
+		ViewUpdated();
+		
 	}
 	
 	// set active bitmap	
@@ -940,6 +947,20 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	m_GISRenderer->Refresh();
 	return;
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Sent a message when view is updated
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+void tmLayerManager::ViewUpdated()
+{
+	// send view updated message 
+	wxCommandEvent evt(tmEVT_VIEW_REFRESHED, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
