@@ -48,6 +48,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
  *******************************************************************************/
 ProjectManager::~ProjectManager()
 {
+	
 	// closing database only at the program end.
 	if (m_DB != NULL)
 	{

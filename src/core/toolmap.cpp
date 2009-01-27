@@ -225,6 +225,10 @@ void ToolMapFrame::PostInit()
 /* Frame destruction */
 ToolMapFrame::~ToolMapFrame()
 {
+	// close project
+	m_PManager->CloseProject();
+	
+	
 	m_AuiManager->UnInit();
 	// don't delete managed windows but check for 
 	// memory leak.
