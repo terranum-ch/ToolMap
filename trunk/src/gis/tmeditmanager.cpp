@@ -22,6 +22,7 @@
 
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SNAPPING_UPDATED, tmEditManager::OnSnappingChange)
+	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
 END_EVENT_TABLE()
 
 
@@ -33,13 +34,15 @@ END_EVENT_TABLE()
  *******************************************************************************/
 tmEditManager::tmEditManager(wxWindow * parent,tmTOCCtrl * toc,
 							 tmSelectedDataMemory * seldata,
-							 tmRenderer * renderer)
+							 tmRenderer * renderer,
+							 tmGISScale * scale)
 {
 	InitMemberValues();
 	m_ParentEvt = parent;
 	m_TOC = toc;
 	m_SelectedData = seldata;
 	m_Renderer = renderer;
+	m_Scale = scale;
 
 	m_ParentEvt->PushEventHandler(this);
 
@@ -112,15 +115,42 @@ void tmEditManager::OnSnappingChange (wxCommandEvent & event)
 {
 	m_SnapMem = (tmSnappingMemory*) event.GetClientData();
 	wxASSERT (m_SnapMem);
-	
-	
-	//TODO: Check for keyboard to skip snapping
-	int iSnapRadius = 0;
-	if (m_SnapMem->IsSnappingEnabled())
-	{
-		iSnapRadius = m_SnapMem->GetTolerence();
-	}
-	m_Renderer->ToogleSnapping(iSnapRadius);
+	DisplayRendererSnappingTolerence();
 }
 
 
+
+/***************************************************************************//**
+ @brief Called when the view is updated
+ @details After a zoom, pan or when loading the project
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 January 2009
+ *******************************************************************************/
+void tmEditManager::OnViewUpdated (wxCommandEvent & event)
+{
+	DisplayRendererSnappingTolerence();
+	wxLogDebug(_T("View updated"));
+}
+
+
+
+/***************************************************************************//**
+ @brief Display snapping if snapping enabled
+ @details This function display a video inverse circle if snapping is enabled
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 January 2009
+ *******************************************************************************/
+void tmEditManager::DisplayRendererSnappingTolerence()
+{
+	if (m_SnapMem && m_Scale)
+	{
+		int iSnapRadius = 0;
+		if (m_SnapMem->IsSnappingEnabled())
+		{
+			iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
+		}
+		m_Renderer->ToogleSnapping(iSnapRadius);
+	}
+	else
+		wxLogDebug(_T("Snapping memory or scale not defined"));
+}

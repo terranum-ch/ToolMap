@@ -180,6 +180,10 @@ class tmGISScale : public wxObject
 				return d2-d1;
 		}
 		
+		inline double DistanceToReal(int iDistance)
+		{
+			return ((double) iDistance) / m_PixelSize;
+		}
 		
 				
 		static inline double DifferenceCoord (const double & coordmax, const double & coordmin)

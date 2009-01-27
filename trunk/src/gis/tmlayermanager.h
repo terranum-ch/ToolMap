@@ -99,7 +99,8 @@ class tmLayerManager : public wxEvtHandler
 		bool SaveTOCStatus();
 		bool IsOK ();
 		
-
+		// function called when view is updated
+		void ViewUpdated();
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -136,6 +137,7 @@ class tmLayerManager : public wxEvtHandler
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
 		static tmGISData * LoadLayer (tmLayerProperties * layerProp);
+		tmGISScale * GetScale (){return &m_Scale;}
 		
 		// event operations
 		void OnSizeChange (wxCommandEvent & event);

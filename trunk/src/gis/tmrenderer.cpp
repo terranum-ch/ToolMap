@@ -251,6 +251,10 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectStop(event.GetPosition());
 	
+	// draw
+	if (m_ActualTool == tmTOOL_DRAW)
+		DrawStop(event.GetPosition());
+	
 }
 
 
@@ -577,8 +581,31 @@ void tmRenderer::ToogleSnapping (int snapradius)
  *******************************************************************************/
 void tmRenderer::DrawStart (const wxPoint & mousepos)
 {
-	//TODO: Draw snap circle
+	m_StartCoord = mousepos;
 	
+	wxClientDC myDC (this);
+	myDC.SetLogicalFunction (wxINVERT);
+	
+	if (m_SnappingRadius > 0)
+		myDC.DrawCircle(mousepos.x, mousepos.y, m_SnappingRadius);
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Called when mouse up and drawing tool selected
+ @param mousepos Actual mouse position
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+void tmRenderer::DrawStop  (const wxPoint & mousepos)
+{
+	wxClientDC myDC (this);
+	myDC.SetLogicalFunction(wxINVERT);
+	if (m_SnappingRadius > 0 && m_StartCoord != wxPoint(-1,-1))
+	{
+		myDC.DrawCircle(m_StartCoord.x, m_StartCoord.y, m_SnappingRadius);
+		m_StartCoord = wxPoint(-1,-1);
+	}
+}
