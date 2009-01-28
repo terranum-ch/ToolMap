@@ -59,16 +59,21 @@ class tmEditManager : public wxEvtHandler
 		tmSnappingMemory * m_SnapMem;
 		tmGISScale * m_Scale;
 		
-		
+				
 		// FUNCTIONS
 		void InitMemberValues();
 		
 		// Extern EVENT function
 		void OnSnappingChange (wxCommandEvent & event);
 		void OnViewUpdated (wxCommandEvent & event);
+		void OnDrawClicked (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();
+		
+		// internal verification
+		bool IsCorrectLayerSelected();
+		bool IsObjectSelected();
 		
 		DECLARE_EVENT_TABLE()
 	protected:
@@ -90,6 +95,12 @@ class tmEditManager : public wxEvtHandler
 		//change tool functions
 		void OnToolEdit ();
 		void OnToolModify ();
+		
+		// validiting editing / modfication
+		bool IsDrawingAllowed();
+		bool IsModifictionAllowed();
+		
+		// Drawing functions
 	};
 
 

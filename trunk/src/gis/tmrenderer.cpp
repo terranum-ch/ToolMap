@@ -32,6 +32,8 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
 DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
 DEFINE_EVENT_TYPE(tmEVT_LM_SELECTION)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
+DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -606,6 +608,14 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	if (m_SnappingRadius > 0 && m_StartCoord != wxPoint(-1,-1))
 	{
 		myDC.DrawCircle(m_StartCoord.x, m_StartCoord.y, m_SnappingRadius);
-		m_StartCoord = wxPoint(-1,-1);
 	}
+	
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_DRAW_CLICK, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(m_StartCoord.x,
+										 m_StartCoord.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+	m_StartCoord = wxPoint(-1,-1);
 }
