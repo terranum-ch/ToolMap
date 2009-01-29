@@ -833,3 +833,55 @@ bool tmGISDataVectorSHP::UpdateFeature ()
 	
 	return true;
 }
+
+
+
+/***************************************************************************//**
+ @brief Get snapping coordinate
+ @details Return, if found, the closest existing coordinate for snapping
+ @param clickpt The real coordinate of the clicked point
+ @param iBuffer the size of the buffer in map unit
+ @param snappt the returned snapping coordinate if function return true
+ @return  true if a snapping coordinate was found, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 January 2009
+ *******************************************************************************/
+bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+						   wxRealPoint & snappt)
+{
+	// create OGRpoint and buffer
+	OGRPoint myClickPoint;
+	myClickPoint.setX(clickpt.x);
+	myClickPoint.setY(clickpt.y);
+	
+	OGRGeometry * myBufferClick = myClickPoint.Buffer(iBuffer);
+	wxASSERT (myBufferClick);
+	wxASSERT (m_Layer);
+	
+	// searching all features
+	m_Layer->ResetReading();
+	OGRGeometry * poGeometry;
+	OGRFeature * poFeature;
+	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
+	{
+		poGeometry = poFeature->GetGeometryRef();
+		if (poGeometry)
+		{
+			if (poGeometry->Intersect(myBufferClick))
+			{
+				//TODO: Check for vertex intersection
+				//TODO: Check for begin/end intersection
+				
+			}
+				//myArray->Add(poFeature->GetFID());
+			
+			OGRGeometryFactory::destroyGeometry(poGeometry);
+		}
+	}
+	OGRGeometryFactory::destroyGeometry(myBufferClick);
+	
+	
+
+	
+	return false;
+}

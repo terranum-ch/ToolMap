@@ -92,6 +92,9 @@ class tmGISData : public wxObject
 		
 		// search function
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type){return NULL;}
+		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+								   wxRealPoint & snappt) {return false;}
+		
 		
 		
 		
