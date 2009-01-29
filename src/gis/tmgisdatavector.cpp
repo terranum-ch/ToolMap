@@ -221,3 +221,38 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
 	return geom;
 }
 
+
+/***************************************************************************//**
+ @brief Search if a vertex intersect the passed geometry
+ @details Check for all geometry (point, lines, polygon) if a vertex intersect
+ the passed geometry. If true this vertex is returned
+ @param geometry A valid geometry (point, line, polygon)
+ @return  the vertex intersecting the geometry (dont forget to delete) or null
+ if nothing found
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 January 2009
+ *******************************************************************************/
+wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry)
+{
+	
+	return NULL;
+}
+
+
+
+/***************************************************************************//**
+ @brief Search if a Begin/End vertex intersect the passed geometry
+ @details This function is very close to the 
+ tmGISDataVector::GetVertexIntersection but search only for begin / end vertex.
+ So it works only for lines
+ @param geometry A valid geometry (line ONLY)
+ @return  the vertex intersecting the geometry (dont forget to delete) or null 
+ if nothing found
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 January 2009
+ *******************************************************************************/
+wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry)
+{
+	return NULL;
+}
+
