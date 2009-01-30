@@ -75,6 +75,9 @@ class tmEditManager : public wxEvtHandler
 		bool IsCorrectLayerSelected();
 		bool IsObjectSelected();
 		
+		// snapping function
+		wxRealPoint * IterateAllSnappingLayers(const wxRealPoint & clickedpoint);
+		
 		DECLARE_EVENT_TABLE()
 	protected:
 		

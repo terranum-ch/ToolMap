@@ -19,6 +19,8 @@
 
 #include "tmgisdatavectorshp.h"
 
+// for snapping constants
+#include "../core/tmsnappingmemory.h"
 
 
 tmGISDataVectorSHP::tmGISDataVectorSHP()
@@ -847,7 +849,7 @@ bool tmGISDataVectorSHP::UpdateFeature ()
  @date 29 January 2009
  *******************************************************************************/
 bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-						   wxRealPoint & snappt)
+						   wxRealPoint & snappt, int snaptype)
 {
 	// create OGRpoint and buffer
 	OGRPoint myClickPoint;
@@ -862,6 +864,8 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 	m_Layer->ResetReading();
 	OGRGeometry * poGeometry;
 	OGRFeature * poFeature;
+	wxRealPoint * mySnapPoint = NULL;
+	bool bReturn = false;
 	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
 	{
 		poGeometry = poFeature->GetGeometryRef();
@@ -869,19 +873,28 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 		{
 			if (poGeometry->Intersect(myBufferClick))
 			{
-				//TODO: Check for vertex intersection
-				//TODO: Check for begin/end intersection
+				if (snaptype == tmSNAPPING_BEGIN_END)
+				{
+					mySnapPoint = GetBeginEndInterseciton(poGeometry, myBufferClick);
+				}
+				if (snaptype == tmSNAPPING_VERTEX)
+				{
+					mySnapPoint = GetVertexIntersection(poGeometry, myBufferClick);
+				}
 				
+				if (mySnapPoint)
+				{
+					snappt = wxRealPoint(mySnapPoint->x,mySnapPoint->y);
+					delete mySnapPoint;
+					bReturn = true;
+					break;
+				}
 			}
-				//myArray->Add(poFeature->GetFID());
 			
 			OGRGeometryFactory::destroyGeometry(poGeometry);
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myBufferClick);
-	
-	
 
-	
-	return false;
+	return bReturn;
 }

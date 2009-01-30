@@ -109,6 +109,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// selection
 		tmLayerProperties * GetSelectionLayer ();
 		void SetSelectedLayer (int layerID);
+		tmLayerProperties * GetLayerById (long layerid);
 		
 		
 		// public event function

@@ -66,8 +66,11 @@ class tmGISDataVector : public tmGISData
 		OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
 		
 		// Intersection for snapping
-		wxRealPoint * GetVertexIntersection(OGRGeometry * geometry);
-		wxRealPoint * GetBeginEndInterseciton (OGRGeometry * geometry);
+		
+		wxRealPoint * GetVertexIntersection(OGRGeometry * geometry,  
+											OGRGeometry * buffer);
+		wxRealPoint * GetBeginEndInterseciton (OGRGeometry * geometry,
+											   OGRGeometry * buffer);
 		
 	public:
 		// ctor, dtor

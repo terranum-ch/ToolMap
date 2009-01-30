@@ -232,10 +232,75 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry)
+wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, 
+													 OGRGeometry * buffer)
 {
+	OGRPoint * myPoint = NULL;
+	OGRLineString * myLine = NULL;
+	OGRPolygon * myPoly = NULL;
+	int i = 0;
+	wxRealPoint * ptReturn = NULL;
 	
-	return NULL;
+	switch (wkbFlatten(geometry->getGeometryType()))
+	{
+		case wkbLineString:
+			myLine = (OGRLineString*) geometry;
+			for (i=0; i<myLine->getNumPoints();i++)
+			{
+				myLine->getPoint(i, myPoint);
+				if (myPoint && myPoint->Intersect(buffer))
+				{
+					ptReturn = new wxRealPoint(myPoint->getX(),
+											   myPoint->getY());
+					break;
+				}
+			}
+			break;
+		
+			
+			
+			
+		case wkbPoint:
+			myPoint = (OGRPoint*) geometry;
+			if (myPoint && myPoint->Intersect(buffer))
+			{
+				ptReturn = new wxRealPoint(myPoint->getX(),
+										   myPoint->getY());
+			}
+			break;
+			
+			
+			
+		case wkbPolygon:
+			myPoly = (OGRPolygon*) geometry;
+			// exterior ring
+			myLine = (OGRLineString*) myPoly->getExteriorRing();
+			ptReturn = GetVertexIntersection(myLine, buffer);
+			
+			// interior ring if needed
+			if (!ptReturn)
+			{
+				for (i = 0; i<myPoly->getNumInteriorRings();i++)
+				{
+					myLine = (OGRLineString*) myPoly->getInteriorRing(i);
+					if (!myLine)
+						break;
+					
+					ptReturn = GetVertexIntersection(myLine, buffer);
+					if (ptReturn)
+						break;
+				}
+			}
+			break;
+		
+		
+		default:
+			break;
+	}
+	//TODO: should we delete the geometries after use or are they destroyed 
+	//when geometries is destroyed
+	
+	return ptReturn;
 }
 
 
@@ -251,8 +316,37 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry)
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry)
+wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, 
+														OGRGeometry * buffer)
 {
-	return NULL;
+	wxRealPoint * ptReturn = NULL;
+	
+	if (wkbFlatten(geometry->getGeometryType()) == wkbLineString)
+	{
+		OGRLineString *	myLine = (OGRLineString*) geometry;
+		int iPointLine = myLine->getNumPoints();
+		
+		
+		OGRPoint * myPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
+		OGRPoint * myPoint2 = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
+		
+		myLine->getPoint(0, myPoint);
+		myLine->getPoint(iPointLine-1, myPoint2);
+		
+		if (myPoint->Intersect(buffer))
+		{
+			ptReturn = new wxRealPoint(myPoint->getX(),
+									   myPoint->getY());
+			
+		}
+		else if (myPoint2->Intersect(buffer))
+		{
+			ptReturn = new wxRealPoint(myPoint2->getX(),
+									   myPoint2->getY());
+		}
+		
+	}
+	
+	return ptReturn;
 }
 

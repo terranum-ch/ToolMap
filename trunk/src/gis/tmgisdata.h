@@ -40,6 +40,7 @@
 
 
 
+
 /***************************************************************************//**
  @brief Main class for dealing with GIS data
  @details This class may be used for accessing GIS data using GDAL / OGR driver
@@ -72,6 +73,8 @@ class tmGISData : public wxObject
 		static wxArrayString GetAllSupportedGISFormatsExtensions();
 		static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
 		static tmGISData * CreateGISBasedOnExt (const wxString & extension);
+		// load layer
+		static tmGISData * LoadLayer (tmLayerProperties * layerprop);
 		
 		static void EnableLogging (bool enable = true) {m_LogOn = enable;}
 		static bool IsLoggingEnabled () {return m_LogOn;}
@@ -93,7 +96,7 @@ class tmGISData : public wxObject
 		// search function
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type){return NULL;}
 		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-								   wxRealPoint & snappt) {return false;}
+								   wxRealPoint & snappt, int snaptype) {return false;}
 		
 		
 		

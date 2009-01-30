@@ -21,6 +21,8 @@
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
 
+#include "database_tm.h"		// for database acces (only for LoadLayer())
+
 // logging start enabled
 bool tmGISData::m_LogOn = true;
 
@@ -236,5 +238,72 @@ wxString tmGISData::GetMinimalBoundingRectangleAsHtml (int iprecision)
 	return myReturnedVal;
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Call this function for loading a layer
+ @details This function create an object of type #tmGISData based on layer
+ properties
+ @param layerProp the layer properties
+ @return  a valid tmGISData object or NULL if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 30 January 2009
+ *******************************************************************************/
+tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
+{
+	wxASSERT(layerProp);
+	tmGISData * m_Data = NULL;
+	wxString myFileName = _T("");
+	wxString myErrMsg = _T("");
+	// only used if not generic layers
+	wxFileName layerfullname (layerProp->m_LayerPathOnly, layerProp->m_LayerNameExt);
+	
+	switch (layerProp->m_LayerType)
+	{
+		case TOC_NAME_LINES:
+		case TOC_NAME_POINTS:
+		case TOC_NAME_ANNOTATIONS:
+		case TOC_NAME_LABELS:
+		case TOC_NAME_FRAME:
+			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
+			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->m_LayerType];
+			myErrMsg = layerProp->m_LayerNameExt;
+			break;
+			
+		case TOC_NAME_TIFF:
+		case TOC_NAME_EGRID:
+		case TOC_NAME_SHP:
+			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetFileExtension());
+			myFileName = layerfullname.GetFullPath();
+			myErrMsg = myFileName;
+			break;
+			
+		default:
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("%s file format not supported yet \n "),
+						   layerProp->m_LayerNameExt.c_str());
+			return NULL;
+			break;
+	}
+	
+	// here load data
+	if (!m_Data)
+	{
+		if (IsLoggingEnabled())
+			wxLogError(_("Error loading : %s"), myErrMsg.c_str());
+		return NULL;
+	}
+	
+	if (!m_Data->Open(myFileName, TRUE))
+	{
+		if (IsLoggingEnabled())
+			wxLogError(_("Error opening : %s"), myErrMsg.c_str());
+		return NULL;
+	}
+	
+	return m_Data;
+}
+
 
 
