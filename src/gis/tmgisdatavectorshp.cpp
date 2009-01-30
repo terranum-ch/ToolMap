@@ -874,19 +874,18 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 		{
 			if (poGeometry->Intersect(myBufferClick))
 			{
-				if (snaptype == tmSNAPPING_BEGIN_END)
-				{
-					mySnapPoint = GetBeginEndInterseciton(poGeometry, myBufferClick);
-				}
-				if (snaptype == tmSNAPPING_VERTEX)
+				
+				if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
 				{
 					mySnapPoint = GetVertexIntersection(poGeometry, myBufferClick);
+				}
+				else if (snaptype == tmSNAPPING_BEGIN_END)
+				{
+					mySnapPoint = GetBeginEndInterseciton(poGeometry, myBufferClick);
 				}
 				
 			}
 			
-			
-			//OGRGeometryFactory::destroyGeometry(poGeometry);
 			OGRFeature::DestroyFeature(poFeature);
 			
 			if (mySnapPoint)
