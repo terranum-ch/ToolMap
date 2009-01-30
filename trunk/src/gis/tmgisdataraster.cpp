@@ -57,6 +57,7 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 	
 	// open the raster and return true if success
 	m_DataSet = (GDALDataset*) GDALOpen(buffer, (GDALAccess) bReadWrite);
+	delete [] buffer;
 	if (m_DataSet == NULL)
 	{
 		if (IsLoggingEnabled())
