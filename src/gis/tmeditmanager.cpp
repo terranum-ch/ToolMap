@@ -246,21 +246,27 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
 	wxRealPoint * mySnapCoord = NULL;
 	
+	
 	// check drawing allowed
 	if (IsDrawingAllowed())
 		wxLogDebug(_T("Adding data to layer"));
 	
-	// get layer
-	//tmGISData * myLayerData = tmGISData::LoadLayer(m_TOC->GetSelectionLayer());
-	//wxASSERT (myLayerData);
-	
+
 	// check snapping if needed
 	//TODO: add support for stopping snapping with keyboard 
 	if (m_SnapMem->IsSnappingEnabled())
 	{
 		mySnapCoord = IterateAllSnappingLayers(myRealCoord);
+		
+		//TODO: Remove this temp logging code
+		if (mySnapCoord)
+			wxLogDebug(_T("Point found for snapping @ : %.*f, %.*f"),
+					   2, mySnapCoord->x, 
+					   2, mySnapCoord->y);
+		else
+			wxLogDebug(_T("No snapping found"));
+		// END of temp logging code
 	}
-	
 	
 	if (mySnapCoord)
 		delete mySnapCoord;
@@ -283,7 +289,7 @@ wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clicke
 	long myLayerId = 0;
 	int mySnapStatus = tmSNAPPING_OFF;
 	tmLayerProperties * myActualLayer = NULL;
-	tmGISData * myActualGISData = NULL;
+	
 	wxRealPoint * myReturnedSnappedPoint = NULL;
 	wxRealPoint mySnapPoint;
 	
@@ -295,7 +301,7 @@ wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clicke
 			break;
 		
 		// search snapping for that layer
-		myActualGISData = tmGISData::LoadLayer(myActualLayer);
+		tmGISData * myActualGISData = tmGISData::LoadLayer(myActualLayer);
 		if (!myActualGISData)
 			break;
 				
@@ -304,8 +310,10 @@ wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clicke
 									  mySnapPoint,mySnapStatus))
 		{
 			myReturnedSnappedPoint = new wxRealPoint(mySnapPoint);
+			delete myActualGISData;
 			break;
 		}
+		delete myActualGISData;
 	}
 	return myReturnedSnappedPoint;
 }

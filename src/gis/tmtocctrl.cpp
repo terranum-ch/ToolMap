@@ -351,7 +351,7 @@ tmLayerProperties * tmTOCCtrl::GetSelectionLayer ()
  @brief Get a layer by ID
  @details we are talking about the CONTENT_ID column
  @param layerid The layer id (see CONTENT_ID column)
- @param tmLayerProperties return a valid tmLayerProperties object or null if
+ @return a valid tmLayerProperties object or null if
  nothing found (do not delete, belong to the TOC)
  @author Lucien Schreiber (c) CREALP 2009
  @date 30 January 2009

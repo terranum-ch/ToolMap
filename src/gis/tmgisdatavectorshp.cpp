@@ -844,6 +844,7 @@ bool tmGISDataVectorSHP::UpdateFeature ()
  @param clickpt The real coordinate of the clicked point
  @param iBuffer the size of the buffer in map unit
  @param snappt the returned snapping coordinate if function return true
+ @param snaptype the type of snapping : #tmSNAPPING_BEGIN_END or tmSNAPPING_VERTEX
  @return  true if a snapping coordinate was found, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
@@ -882,16 +883,20 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 					mySnapPoint = GetVertexIntersection(poGeometry, myBufferClick);
 				}
 				
-				if (mySnapPoint)
-				{
-					snappt = wxRealPoint(mySnapPoint->x,mySnapPoint->y);
-					delete mySnapPoint;
-					bReturn = true;
-					break;
-				}
 			}
 			
-			OGRGeometryFactory::destroyGeometry(poGeometry);
+			
+			//OGRGeometryFactory::destroyGeometry(poGeometry);
+			OGRFeature::DestroyFeature(poFeature);
+			
+			if (mySnapPoint)
+			{
+				snappt = wxRealPoint(mySnapPoint->x,mySnapPoint->y);
+				delete mySnapPoint;
+				bReturn = true;
+				break;
+			}
+			
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myBufferClick);
