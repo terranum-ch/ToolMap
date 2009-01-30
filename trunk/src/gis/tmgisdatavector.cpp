@@ -236,26 +236,33 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
 wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, 
 													 OGRGeometry * buffer)
 {
-	OGRPoint * myPoint = NULL;
-	OGRLineString * myLine = NULL;
+	OGRPoint * myPointLine = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
+	
+	// should not be deleted, belong to OGR
+	OGRLineString * myLineLine = NULL;
 	OGRPolygon * myPoly = NULL;
+	OGRPoint * myPoint = NULL;
+	
 	int i = 0;
 	wxRealPoint * ptReturn = NULL;
+	//bool bBreak = false;
 	
 	switch (wkbFlatten(geometry->getGeometryType()))
 	{
 		case wkbLineString:
-			myLine = (OGRLineString*) geometry;
-			for (i=0; i<myLine->getNumPoints();i++)
+			myLineLine = (OGRLineString*) geometry;
+			for (i=0; i<myLineLine->getNumPoints();i++)
 			{
-				myLine->getPoint(i, myPoint);
-				if (myPoint && myPoint->Intersect(buffer))
+				myLineLine->getPoint(i, myPointLine);
+				if (myPointLine && myPointLine->Intersect(buffer))
 				{
-					ptReturn = new wxRealPoint(myPoint->getX(),
-											   myPoint->getY());
+					ptReturn = new wxRealPoint(myPointLine->getX(),
+											   myPointLine->getY());
 					break;
 				}
+				
 			}
+			OGRGeometryFactory::destroyGeometry(myPointLine);
 			break;
 		
 			
@@ -269,25 +276,26 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 										   myPoint->getY());
 			}
 			break;
+
 			
 			
 			
 		case wkbPolygon:
 			myPoly = (OGRPolygon*) geometry;
 			// exterior ring
-			myLine = (OGRLineString*) myPoly->getExteriorRing();
-			ptReturn = GetVertexIntersection(myLine, buffer);
+			myLineLine = (OGRLineString*) myPoly->getExteriorRing();
+			ptReturn = GetVertexIntersection(myLineLine, buffer);
 			
 			// interior ring if needed
 			if (!ptReturn)
 			{
 				for (i = 0; i<myPoly->getNumInteriorRings();i++)
 				{
-					myLine = (OGRLineString*) myPoly->getInteriorRing(i);
-					if (!myLine)
+					myLineLine = (OGRLineString*) myPoly->getInteriorRing(i);
+					if (!myLineLine)
 						break;
 					
-					ptReturn = GetVertexIntersection(myLine, buffer);
+					ptReturn = GetVertexIntersection(myLineLine, buffer);
 					if (ptReturn)
 						break;
 				}
@@ -298,8 +306,6 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 		default:
 			break;
 	}
-	//TODO: should we delete the geometries after use or are they destroyed 
-	//when geometries is destroyed
 	
 	return ptReturn;
 }
