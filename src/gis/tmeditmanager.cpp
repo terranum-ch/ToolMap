@@ -243,13 +243,71 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
 	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
+	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
+	wxRealPoint * mySnapCoord = NULL;
 	
 	// check drawing allowed
 	if (IsDrawingAllowed())
 		wxLogDebug(_T("Adding data to layer"));
 	
+	// get layer
+	//tmGISData * myLayerData = tmGISData::LoadLayer(m_TOC->GetSelectionLayer());
+	//wxASSERT (myLayerData);
+	
+	// check snapping if needed
+	//TODO: add support for stopping snapping with keyboard 
+	if (m_SnapMem->IsSnappingEnabled())
+	{
+		mySnapCoord = IterateAllSnappingLayers(myRealCoord);
+	}
+	
+	
+	if (mySnapCoord)
+		delete mySnapCoord;
 	delete myPxCoord;
 }
 
+
+
+/***************************************************************************//**
+ @brief Iterate all layers in snapping memory
+ @details Try to get the snapped coordinate for the clicked point
+ @param clickedpoint The real coordinate of the clicked point
+ @return  a valid wxRealPoint if snapped point found, null otherwise (don't
+ forget to delete)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 30 January 2009
+ *******************************************************************************/
+wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clickedpoint)
+{
+	long myLayerId = 0;
+	int mySnapStatus = tmSNAPPING_OFF;
+	tmLayerProperties * myActualLayer = NULL;
+	tmGISData * myActualGISData = NULL;
+	wxRealPoint * myReturnedSnappedPoint = NULL;
+	wxRealPoint mySnapPoint;
+	
+	for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++)
+	{
+		m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
+		myActualLayer = m_TOC->GetLayerById(myLayerId);
+		if (!myActualLayer)
+			break;
+		
+		// search snapping for that layer
+		myActualGISData = tmGISData::LoadLayer(myActualLayer);
+		if (!myActualGISData)
+			break;
+				
+		if (myActualGISData->GetSnapCoord(clickedpoint,
+									  m_SnapMem->GetTolerence(),
+									  mySnapPoint,mySnapStatus))
+		{
+			myReturnedSnappedPoint = new wxRealPoint(mySnapPoint);
+			break;
+		}
+	}
+	return myReturnedSnappedPoint;
+}
 
 

@@ -136,7 +136,6 @@ class tmLayerManager : public wxEvtHandler
 		// layers operations
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
-		static tmGISData * LoadLayer (tmLayerProperties * layerProp);
 		tmGISScale * GetScale (){return &m_Scale;}
 		
 		// event operations

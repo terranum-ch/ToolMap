@@ -74,7 +74,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		// searching data
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
 		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-								   wxRealPoint & snappt);
+								   wxRealPoint & snappt, int snaptype);
 		
 		// creating file & fields
 		virtual bool CreateFile (const wxFileName & filename, int type);
