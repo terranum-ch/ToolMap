@@ -65,6 +65,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		wxTreeItemIdValue m_Cookie;
 		tmTOCCtrlMenu * m_ContextMenu;
 		wxTreeItemId m_ActualItemID;
+		tmLayerProperties * m_EditingLayer;
 		
 		// private functions
 		void InitTocMemberValues();
@@ -72,6 +73,9 @@ class tmTOCCtrl  : public wxTreeCtrl
 		int GetSelectedPosition ();
 		bool MoveLayers (const wxTreeItemId & item, int newpos);
 		bool SwapLayers (const wxTreeItemId & item, int newpos);
+		void StartEditing ();
+		void StopEditing ();
+		void SwitchVisualEditingStyle (const wxTreeItemId & item, bool underline = true);
 		
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);
@@ -86,6 +90,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// contextual menu event functions
 		void OnShowProperties (wxCommandEvent & event);
 		void OnVertexMenu (wxCommandEvent & event);
+		void OnEditingChange (wxCommandEvent & event);
 		
 		DECLARE_EVENT_TABLE()
 		
@@ -120,6 +125,10 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// expanding all child
 		bool ExpandAllLayers();
+		
+		// Setting, Getting editing layer
+		tmLayerProperties * GetEditLayer() {return m_EditingLayer;}
+		void SetEditLayer(tmLayerProperties * layerprop){m_EditingLayer = layerprop;}
 		
 
 		

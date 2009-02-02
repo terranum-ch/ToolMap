@@ -43,6 +43,7 @@ const int ID_TOCMENU_MOVE_TOP				= 20105;
 const int ID_TOCMENU_MOVE_UP				= 20106;
 const int ID_TOCMENU_MOVE_DOWN				= 20107;
 const int ID_TOCMENU_MOVE_BOTTOM			= 20108;
+const int ID_TOCMENU_EDIT_LAYER				= 20109;
 
 
 /***************************************************************************//**
@@ -61,6 +62,7 @@ class tmTOCCtrlMenu : public wxMenu
 		bool m_Generic;
 		int m_SelectedPos;
 		int m_TotalLayers;
+		bool m_bEditLayer;
 		
 		void CreateTOCBasic ();
 		void CreateTOCShowVertex ();
@@ -74,7 +76,8 @@ class tmTOCCtrlMenu : public wxMenu
 		
 	public:
 		tmTOCCtrlMenu(){;}
-		tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems);
+		tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems,
+					  tmLayerProperties * editlayer);
 		~tmTOCCtrlMenu();
 	};
 

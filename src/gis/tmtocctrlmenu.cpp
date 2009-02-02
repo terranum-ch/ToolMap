@@ -22,8 +22,9 @@
 
  
 
-tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems) :
-	wxMenu(item->GetDisplayName(), 0)
+tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems,
+							 tmLayerProperties * editlayer) :
+							wxMenu(item->GetDisplayName(), 0)
 {
 	m_flags = (tmDRAWING_FLAGS) item->m_DrawFlags;
 	m_spattypes = item->m_LayerSpatialType;
@@ -35,8 +36,16 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems)
 	m_SelectedPos = pos;
 	m_TotalLayers = numberitems;
 	
+	// is this the editing layer ?
+	m_bEditLayer = false;
+	if (editlayer == item)
+		m_bEditLayer = true;
+	
+	
 	// create menu based on item spatial type
 	CreateTOCContextMenu();
+	
+	
 	
 }
 
@@ -66,6 +75,13 @@ void tmTOCCtrlMenu::CreateTOCBasic ()
 	{
 		Append(ID_TOCMENU_REMOVE, _("Remove layer"));
 	}
+	else 
+	{
+		AppendCheckItem(ID_TOCMENU_EDIT_LAYER, _("Edit this layer"));
+		if (m_bEditLayer)
+			Check(ID_TOCMENU_EDIT_LAYER, true);
+	}
+
 }
 
 
