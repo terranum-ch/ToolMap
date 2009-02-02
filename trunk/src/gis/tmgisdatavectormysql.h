@@ -61,7 +61,6 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual wxString GetTableName (int type);
 		
 		
-		
 	public:
 		tmGISDataVectorMYSQL();
 		~tmGISDataVectorMYSQL();
@@ -91,6 +90,8 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		
 		// searching data
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
+		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+								   wxRealPoint & snappt, int snaptype);
 		
 		
 		

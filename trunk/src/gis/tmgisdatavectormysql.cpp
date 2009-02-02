@@ -271,6 +271,7 @@ wxString tmGISDataVectorMYSQL::GetTableName (int type)
 
 
 
+
 wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 {
 	MYSQL_ROW row;
@@ -610,16 +611,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 {
 	wxBusyCursor wait;
 	m_DB->DataBaseDestroyResults();
-	
-	wxString table = GetTableName(type);	
-	// check that a table is specified.
-	if (table.IsEmpty())
-	{
-		if (IsLoggingEnabled())
-			wxLogError(_T("No database table specified"));
-		return NULL;
-	}
-	
+
 	
 	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
 										rect.x_min, rect.y_min,
@@ -629,7 +621,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 										rect.x_min, rect.y_min);
 	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
 										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
-										  table.c_str(), sRect.c_str());
+										  GetShortFileName().c_str(), sRect.c_str());
 	
 	
 	
@@ -676,6 +668,99 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 
 }
 
+
+
+/***************************************************************************//**
+ @brief Get snapping coordinate
+ @details Return, if found, the closest existing coordinate for snapping
+ @param clickpt The real coordinate of the clicked point
+ @param iBuffer the size of the buffer in map unit
+ @param snappt the returned snapping coordinate if function return true
+ @param snaptype the type of snapping : #tmSNAPPING_BEGIN_END or tmSNAPPING_VERTEX
+ @return  true if a snapping coordinate was found, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 January 2009
+ *******************************************************************************/
+bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+									   wxRealPoint & snappt, int snaptype)
+{
+	 //create OGRpoint and buffer
+	OGRPoint myClickPoint;
+	myClickPoint.setX(clickpt.x);
+	myClickPoint.setY(clickpt.y);
+	
+	OGRGeometry * myBufferClick = myClickPoint.Buffer(iBuffer);
+	wxASSERT (myBufferClick);
+		
+	
+	// convert buffer to text for sql query
+	char * buffer;
+	myBufferClick->exportToWkt(&buffer);
+	wxASSERT(buffer);
+	wxString mySBuffer = wxString::FromAscii(buffer);
+	delete [] buffer;
+	
+	
+	// search for intersecting features
+	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+										  GetShortFileName().c_str(), mySBuffer.c_str());
+		
+	
+	MYSQL_ROW row;
+	unsigned long * row_size = 0;
+	
+	if (!m_DB->DataBaseQuery(sSentence))
+	{
+		wxLogError(_T("Error getting snapping info : %s"),
+				   m_DB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	// no results found
+	if (!m_DB->DataBaseHasResult())
+	{
+		return false;
+	}
+		
+	
+	// search into returned object for intersection
+	bool bReturn = false;
+	wxRealPoint * mySnapPoint = NULL;
+	for (int i = 0; i< m_DB->DatabaseGetCountResults();i++)
+	{
+		row_size = m_DB->DataBaseGetNextRowResult(row);
+		OGRGeometry * poGeometry = CreateDataBaseGeometry(row, row_size, 1);
+		
+		if (poGeometry->Intersects(myBufferClick))
+		{
+			if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
+			{
+				mySnapPoint = GetVertexIntersection(poGeometry, myBufferClick);
+			}
+			else if (snaptype == tmSNAPPING_BEGIN_END)
+			{
+				mySnapPoint = GetBeginEndInterseciton(poGeometry, myBufferClick);
+			}
+			
+			
+		}
+		
+		OGRGeometryFactory::destroyGeometry(poGeometry);
+		if (mySnapPoint)
+		{
+			snappt = wxRealPoint(mySnapPoint->x,mySnapPoint->y);
+			delete mySnapPoint;
+			bReturn = true;
+			break;
+		}
+		
+	}
+	
+	OGRGeometryFactory::destroyGeometry(myBufferClick);
+	
+	return bReturn;
+}
 
 
 
