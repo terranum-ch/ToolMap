@@ -21,7 +21,7 @@
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
 
-#include "database_tm.h"		// for database acces (only for LoadLayer())
+#include "../database/database_tm.h"		// for database acces (only for LoadLayer())
 
 // logging start enabled
 bool tmGISData::m_LogOn = true;
