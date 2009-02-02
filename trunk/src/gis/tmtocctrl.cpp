@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_MOVE_UP, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
+	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
 	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
 END_EVENT_TABLE()
 
@@ -63,6 +64,7 @@ void tmTOCCtrl::InitTocMemberValues()
 	m_ParentEvt = NULL;
 	m_ContextMenu = NULL;
 	m_ActualItemID = 0;
+	m_EditingLayer = NULL;
 }
 
 
@@ -298,11 +300,22 @@ void tmTOCCtrl::ClearAllLayers()
  *******************************************************************************/
 void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
 {
+	wxFont myFont = wxFont(*wxNORMAL_FONT);
+	
 	// change style to bold if generic layer
 	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
 	{
-		SetItemBold(id, TRUE);
+		myFont.SetWeight(wxFONTWEIGHT_BOLD);
+		
+		//SetItemBold(id, TRUE);
 	}
+	
+	if (item == GetEditLayer())
+	{
+		myFont.SetUnderlined(true);
+	}
+	
+	SetItemFont(id, myFont);
 }
 
 
@@ -603,12 +616,15 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 		return;
 	}
 	
-
 	if(m_ContextMenu)
 		delete m_ContextMenu;
 	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid),
 									  GetSelectedPosition(),
-									  GetCountLayers());
+									  GetCountLayers(),
+									  GetEditLayer());
+	
+		
+	
 	PopupMenu(m_ContextMenu, event.GetPoint());
 }
 
@@ -703,6 +719,94 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 	event.Skip();
 }
 
+
+/***************************************************************************//**
+ @brief Called when Editing is started or stoped
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 February 2009
+ *******************************************************************************/
+void tmTOCCtrl::OnEditingChange (wxCommandEvent & event)
+{
+	if (event.IsChecked())
+		StartEditing();
+	else
+		StopEditing();
+}
+
+
+/***************************************************************************//**
+ @brief Called when editing is started
+ @details Display a visual indication when a layer is in editing mode
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 February 2009
+ *******************************************************************************/
+void tmTOCCtrl::StartEditing ()
+{
+	// stop editing if needed
+	if (GetEditLayer())
+		StopEditing();
+	
+	// get selected item
+	wxArrayTreeItemIds selection;
+	GetSelections(selection);
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
+	SetEditLayer(item);
+	
+	//SwitchVisualEditingStyle(selection.Item(0), true);
+	SetItemStyle(selection.Item(0), item);
+	
+	m_ContextMenu->Check(ID_TOCMENU_EDIT_LAYER, true);
+}
+
+
+/***************************************************************************//**
+ @brief Called when editing is stoped
+ @details Display a visual indication when a layer is in editing mode
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 February 2009
+ *******************************************************************************/
+void tmTOCCtrl::StopEditing ()
+{
+	// get selected item
+	bool bReset = true;
+	tmLayerProperties * iterlayer = NULL;
+	while (1)
+	{
+		iterlayer = IterateLayers(bReset);
+		bReset = false;
+		if (!iterlayer)
+		{
+			break;
+		}
+		
+		
+		if (iterlayer == GetEditLayer())
+		{
+			SetEditLayer(NULL);
+			SetItemStyle(m_ActualItemID, 
+						 (tmLayerProperties*) GetItemData(m_ActualItemID));
+			break;
+		}
+	}
+	
+
+}
+
+
+/***************************************************************************//**
+ @brief Change the visual style when item is in editing mode
+ @param item The item
+ @param underline if true, Set the style to Edition
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 February 2009
+ *******************************************************************************/
+void tmTOCCtrl::SwitchVisualEditingStyle (const wxTreeItemId & item, bool  underline)
+{
+	wxFont myFont = GetItemFont(item);
+	myFont.SetUnderlined(underline);
+	myFont.SetWeight(wxFONTWEIGHT_BOLD);
+	SetItemFont(item, myFont);
+}
 
 				  
 /***************************************************************************//**
