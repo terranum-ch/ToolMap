@@ -31,7 +31,8 @@ DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
-
+DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_START)
+DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
 
 
 
@@ -730,7 +731,7 @@ void tmTOCCtrl::OnEditingChange (wxCommandEvent & event)
 	if (event.IsChecked())
 		StartEditing();
 	else
-		StopEditing();
+		StopEditing(true);
 }
 
 
@@ -744,7 +745,7 @@ void tmTOCCtrl::StartEditing ()
 {
 	// stop editing if needed
 	if (GetEditLayer())
-		StopEditing();
+		StopEditing(); // no message sent
 	
 	// get selected item
 	wxArrayTreeItemIds selection;
@@ -756,16 +757,23 @@ void tmTOCCtrl::StartEditing ()
 	SetItemStyle(selection.Item(0), item);
 	
 	m_ContextMenu->Check(ID_TOCMENU_EDIT_LAYER, true);
+	
+	// sent message
+	wxCommandEvent evt(tmEVT_EM_EDIT_START, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt);
+	
 }
 
 
 /***************************************************************************//**
  @brief Called when editing is stoped
  @details Display a visual indication when a layer is in editing mode
+ @param bSentmessage if set to true, we sent a message indicating the end of 
+ the editing process
  @author Lucien Schreiber (c) CREALP 2009
  @date 02 February 2009
  *******************************************************************************/
-void tmTOCCtrl::StopEditing ()
+void tmTOCCtrl::StopEditing (bool bSentmessage)
 {
 	// get selected item
 	bool bReset = true;
@@ -789,24 +797,14 @@ void tmTOCCtrl::StopEditing ()
 		}
 	}
 	
+	if (bSentmessage)
+	{
+		wxCommandEvent evt(tmEVT_EM_EDIT_STOP, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
 
 }
 
-
-/***************************************************************************//**
- @brief Change the visual style when item is in editing mode
- @param item The item
- @param underline if true, Set the style to Edition
- @author Lucien Schreiber (c) CREALP 2009
- @date 02 February 2009
- *******************************************************************************/
-void tmTOCCtrl::SwitchVisualEditingStyle (const wxTreeItemId & item, bool  underline)
-{
-	wxFont myFont = GetItemFont(item);
-	myFont.SetUnderlined(underline);
-	myFont.SetWeight(wxFONTWEIGHT_BOLD);
-	SetItemFont(item, myFont);
-}
 
 				  
 /***************************************************************************//**
