@@ -245,3 +245,11 @@ bool MenuManager::GetRecentFile (wxString & filepath, int fileid)
 }
 
 
+
+void MenuManager::EditingStatus(bool started)
+{
+	m_MenuBar->Enable(ID_MENU_DRAW, started);
+	m_MenuBar->Enable(ID_MENU_EDIT_VERTEX_POS, started);
+	
+}
+

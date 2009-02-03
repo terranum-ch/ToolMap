@@ -138,10 +138,15 @@ bool tmGISDataVectorMemory::InsertVertex (const wxRealPoint & pt, int index)
 	if (m_Feature == NULL)
 		return false;
 	
-	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
-	if (myMemLine == NULL)
-		return false;
+	OGRLineString * myMemLine = NULL;
+	if (GetVertexCount() == 0)
+	{
+		OGRLineString line;
+		m_Feature->SetGeometry(&line);
+	}
+	myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
 	
+		
 	// Adding vertex
 	if (index == -1 || myMemLine->IsEmpty())
 	{
@@ -211,6 +216,57 @@ bool tmGISDataVectorMemory::RemoveVertex (int index)
 		}
 	}
 	delete [] myRawPoints;
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Count the vertex
+ @return  The number of vertex in the memory line
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+int tmGISDataVectorMemory::GetVertexCount()
+{
+	int iReturn = 0;
+	if (m_Feature)
+	{
+		OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
+		if (myMemLine)
+			iReturn = myMemLine->getNumPoints();
+	}
+	
+	return iReturn;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get a specified vertex
+ @param pt if true is returned, will contain a valid vertex
+ @param index the vertex we want back (-1, means the last vertex)
+ @param bool true if a vertex exists at the specified index, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
+{
+	if (m_Feature == NULL)
+		return false;
+	
+	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
+	if (myMemLine == NULL)
+		return false;
+		
+	if (index == -1)
+		index = myMemLine->getNumPoints() -1;
+	
+	//wxASSERT(index > myMemLine->getNumPoints());
+	
+	pt.x = myMemLine->getX(index);
+	pt.y = myMemLine->getY(index);
+	
 	return true;
 }
 

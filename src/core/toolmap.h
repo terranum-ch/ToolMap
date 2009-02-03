@@ -296,6 +296,7 @@ private:
 	void OnExportAll (wxCommandEvent & event);
 	void OnShowShortcutWindow (wxCommandEvent & event);
 	void OnShowSnappingWindow (wxCommandEvent & event);
+	void OnEditSwitch (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);

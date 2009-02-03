@@ -106,7 +106,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	// NOTIFICATION EVENT
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_ATTRIBUTION_DONE, ToolMapFrame::OnShortcutAttributionDone)
-
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
 	
 END_EVENT_TABLE()
 
@@ -710,6 +711,18 @@ void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
 	}
 	
 }
+
+
+
+void ToolMapFrame::OnEditSwitch (wxCommandEvent & event)
+{
+	bool bEditStart = false;
+	if (event.GetEventType() == tmEVT_EM_EDIT_START)
+		bEditStart = true;
+	m_MManager->EditingStatus(bEditStart);
+	
+}
+
 
 
 void ToolMapFrame::OnBackupProject (wxCommandEvent & event)

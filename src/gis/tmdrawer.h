@@ -39,6 +39,7 @@
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
 #include "tmselecteddatamemory.h"	// for stroing selected data into memory
+#include "tmrenderer.h"				// for drawing directly (edition mode)
 
 //#include "../database/database_tm.h"
 
@@ -80,6 +81,7 @@ class tmDrawer : public wxObject
 		bool DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata);
 		
 		wxPen * CreateVertexUniquePen (tmLayerProperties * itemProp, int size);
+		wxPen * CreateEditUniquePen (int size);
 		
 	protected:
 	public:
@@ -96,6 +98,15 @@ class tmDrawer : public wxObject
 		
 		static void EnableLogging (bool enable) {m_LogOn = enable;}
 		static bool IsLoggingEnabled () {return m_LogOn;}
+		
+		void DrawEditVertex (const wxRealPoint & pt, tmGISScale * scale, 
+							 int size, tmRenderer * renderer);
+		void DrawEditSegment (const wxRealPoint & pt1,
+							  const wxRealPoint & pt2,
+							  tmGISScale * scale,
+							  tmRenderer * renderer,
+							  int size,
+							  bool bVideoInvert = false);
 		
 		
 	};

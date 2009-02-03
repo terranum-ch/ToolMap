@@ -682,3 +682,81 @@ wxPen * tmDrawer::CreateVertexUniquePen (tmLayerProperties * itemProp, int size)
 	wxPen * myPen = new wxPen (*wxBLACK, size*2);
 	return myPen;
 }
+
+
+/***************************************************************************//**
+ @brief Create a pen for drawing editing vertex
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+wxPen * tmDrawer::CreateEditUniquePen (int size)
+{
+	wxPen * myPen = new wxPen (*wxRED, size);
+	return myPen;
+}
+
+
+/***************************************************************************//**
+ @brief Draw a vertex (used during editing)
+ @param pt a point (real coordinates)
+ @param scale adress of a valid scale
+ @param layerprop informations about the layer in edition
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+void tmDrawer::DrawEditVertex (const wxRealPoint & pt, tmGISScale * scale, 
+					 int size,  tmRenderer * renderer)
+{
+	wxPoint myScreenPt = scale->RealToPixel(pt);
+	wxClientDC dc(renderer);
+	wxPen * myVPen = CreateEditUniquePen (size);
+	dc.SetPen(*myVPen);
+
+#ifdef __WXMSW__
+	dc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x + 0.1, myScreenPt.y + 0.1);
+#else
+	dc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x, myScreenPt.y);
+#endif
+	
+	delete myVPen;
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Draw the segment between two points
+ @param pt1 first point (Real)
+ @param pt2 second point (Real)
+ @param scale adress of a valid scale
+ @param renderer adress of a valid renderer
+ @param size size of the segment
+ @param bVideoInvert should we draw in video inverse
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+void tmDrawer::DrawEditSegment (const wxRealPoint & pt1,
+								const wxRealPoint & pt2,
+								tmGISScale * scale,
+								tmRenderer * renderer,
+								int size,
+								bool bVideoInvert)
+{
+	wxPoint myPt1 = scale->RealToPixel(pt1);
+	wxPoint myPt2 = scale->RealToPixel(pt2);
+	
+	wxClientDC dc(renderer);
+	
+	// inverse video
+	if (bVideoInvert)
+		dc.SetLogicalFunction (wxINVERT);
+	
+	wxPen * myPen = CreateEditUniquePen(size);
+	dc.SetPen(*myPen);
+	
+	dc.DrawLine(myPt1, myPt2);
+	
+	delete myPen;
+}
+
+

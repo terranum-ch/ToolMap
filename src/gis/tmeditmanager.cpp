@@ -46,6 +46,7 @@ tmEditManager::tmEditManager(wxWindow * parent,tmTOCCtrl * toc,
 	m_SelectedData = seldata;
 	m_Renderer = renderer;
 	m_Scale = scale;
+	m_EditStarted = false;
 
 	m_ParentEvt->PushEventHandler(this);
 
@@ -209,7 +210,10 @@ bool tmEditManager::IsObjectSelected()
  *******************************************************************************/
 bool tmEditManager::IsDrawingAllowed()
 {
-	return IsCorrectLayerSelected();
+	if (IsCorrectLayerSelected() && m_EditStarted)
+		return true;
+	
+	return false;
 }
 
 
@@ -245,9 +249,9 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 	
 	
 	// check drawing allowed
-	if (IsDrawingAllowed())
-		wxLogDebug(_T("Adding data to layer"));
-	
+	if (!IsDrawingAllowed())
+		return;
+		
 
 	// check snapping if needed
 	//TODO: add support for stopping snapping with keyboard 
@@ -263,11 +267,78 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 		else
 			wxLogDebug(_T("No snapping found"));
 		// END of temp logging code
+		
+		if (mySnapCoord)
+		{
+			myRealCoord.x = mySnapCoord->x;
+			myRealCoord.y = mySnapCoord->y;
+			delete mySnapCoord;
+		}
 	}
 	
-	if (mySnapCoord)
-		delete mySnapCoord;
+	// add  line vertex
+	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
+	{
+		AddLineVertex(myRealCoord);
+		DrawLastSegment();
+	}
+	else // add point 
+	{
+		//AddPointVertex(myRealCoord);
+	}
+	
 	delete myPxCoord;
+}
+
+
+
+/***************************************************************************//**
+ @brief Add a vertex for line
+ @details store the line vertex in memory
+ @param pt the coordinate to store in memory
+ @return  true if vertex was stored in memory
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
+{
+	bool bReturn = m_GISMemory->InsertVertex(pt, -1);
+	wxLogDebug(_T("Number of stored vertex : %d"), m_GISMemory->GetVertexCount());
+
+	return bReturn;
+}
+
+
+
+/***************************************************************************//**
+ @brief Directly draw the last segment
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+void tmEditManager::DrawLastSegment ()
+{
+	wxRealPoint LastRealPt, LastLastRealPt;
+	tmDrawer myEditDrawer;
+	
+	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+		
+	if (m_GISMemory->GetVertex(LastRealPt, -1))
+	{
+		myEditDrawer.DrawEditVertex(LastRealPt, m_Scale,
+									mySymbol->GetWidth(),
+									m_Renderer);
+	}
+	
+	if (m_GISMemory->GetVertex(LastLastRealPt, m_GISMemory->GetVertexCount()-2))
+	{
+		myEditDrawer.DrawEditSegment(LastLastRealPt,
+									 LastRealPt, 
+									 m_Scale, 
+									 m_Renderer, 
+									 mySymbol->GetWidth(), 
+									 false);
+	}
+	
 }
 
 
@@ -279,7 +350,8 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 void tmEditManager::OnEditStart (wxCommandEvent & event)
 {
 	m_GISMemory->CreateFeature();
-	wxLogDebug(_T("Creating feature"));
+	m_EditStarted = true;
+	event.Skip();
 }
 
 
@@ -291,7 +363,8 @@ void tmEditManager::OnEditStart (wxCommandEvent & event)
 void tmEditManager::OnEditStop (wxCommandEvent & event)
 {
 	m_GISMemory->DestroyFeature();
-	wxLogDebug(_T("Manually delete feature"));
+	m_EditStarted = false;
+	event.Skip();
 }
 
 
