@@ -45,6 +45,8 @@ DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ADD, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_UPDATE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_START, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_STOP,-1)
 
 
 
@@ -74,8 +76,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		bool MoveLayers (const wxTreeItemId & item, int newpos);
 		bool SwapLayers (const wxTreeItemId & item, int newpos);
 		void StartEditing ();
-		void StopEditing ();
-		void SwitchVisualEditingStyle (const wxTreeItemId & item, bool underline = true);
+		void StopEditing (bool bSentmessage = false);
 		
 		// graphical display
 		void SetItemStyle (wxTreeItemId id, tmLayerProperties * item);

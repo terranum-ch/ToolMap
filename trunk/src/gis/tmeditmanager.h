@@ -36,6 +36,7 @@
 //#include "tmmanagerevent.h"					// for shared event with other manager
 #include "tmrenderer.h"						// for GIS rendering
 #include "../core/tmsnappingmemory.h"		// for snapping 
+#include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
 
 
 /***************************************************************************//**
@@ -53,6 +54,8 @@ class tmEditManager : public wxEvtHandler
 		tmTOCCtrl * m_TOC;
 		tmSelectedDataMemory * m_SelectedData;
 		tmRenderer * m_Renderer;
+		tmGISDataVectorMemory * m_GISMemory;
+		
 		
 		// defined by function or event.
 		DataBaseTM * m_pDB;
@@ -67,6 +70,8 @@ class tmEditManager : public wxEvtHandler
 		void OnSnappingChange (wxCommandEvent & event);
 		void OnViewUpdated (wxCommandEvent & event);
 		void OnDrawClicked (wxCommandEvent & event);
+		void OnEditStart (wxCommandEvent & event);
+		void OnEditStop (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();

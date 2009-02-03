@@ -24,6 +24,8 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SNAPPING_UPDATED, tmEditManager::OnSnappingChange)
 	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawClicked)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
 END_EVENT_TABLE()
 
 
@@ -47,6 +49,7 @@ tmEditManager::tmEditManager(wxWindow * parent,tmTOCCtrl * toc,
 
 	m_ParentEvt->PushEventHandler(this);
 
+	m_GISMemory = new tmGISDataVectorMemory();
 }
 
 
@@ -60,6 +63,8 @@ tmEditManager::~tmEditManager()
 {
 	m_ParentEvt->PopEventHandler(false);
 	m_ParentEvt->SetEventHandler(m_ParentEvt);
+	
+	delete m_GISMemory;
 }
 
 
@@ -161,24 +166,16 @@ void tmEditManager::DisplayRendererSnappingTolerence()
 /***************************************************************************//**
  @brief Checks that a layer is selected
  @details 
- @return  true if : a layer is selected and this selected layer is <
- TOC_NAME_NOT_GENERIC
+ @return  true if : a layer is defined as editing layer 
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
 bool tmEditManager::IsCorrectLayerSelected()
 {
 	wxASSERT(m_TOC);
-	tmLayerProperties * tmFirstSelected =  m_TOC->GetSelectionLayer();
-	if (!tmFirstSelected)
+	if (!m_TOC->GetEditLayer())
 	{
 		wxLogMessage(_("No layer selected, select a layer for drawing"));
-		return false;
-	}	
-	
-	if (tmFirstSelected->m_LayerType >= TOC_NAME_NOT_GENERIC)
-	{
-		wxLogMessage(_("Selected layer isn't editable, select an other layer"));
 		return false;
 	}
 		
@@ -271,6 +268,30 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 	if (mySnapCoord)
 		delete mySnapCoord;
 	delete myPxCoord;
+}
+
+
+/***************************************************************************//**
+ @brief Called when TOC start editing
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+void tmEditManager::OnEditStart (wxCommandEvent & event)
+{
+	m_GISMemory->CreateFeature();
+	wxLogDebug(_T("Creating feature"));
+}
+
+
+/***************************************************************************//**
+ @brief Called when TOC stop editing
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+void tmEditManager::OnEditStop (wxCommandEvent & event)
+{
+	m_GISMemory->DestroyFeature();
+	wxLogDebug(_T("Manually delete feature"));
 }
 
 
