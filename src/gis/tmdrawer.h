@@ -81,7 +81,10 @@ class tmDrawer : public wxObject
 		bool DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata);
 		
 		wxPen * CreateVertexUniquePen (tmLayerProperties * itemProp, int size);
-		wxPen * CreateEditUniquePen (int size);
+		wxPen * CreateEditUniqueVertexPen (int size);
+		wxPen * CreateEditUniqueSegmentPen (int size);
+		
+		void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
 		
 	protected:
 	public:
@@ -99,14 +102,10 @@ class tmDrawer : public wxObject
 		static void EnableLogging (bool enable) {m_LogOn = enable;}
 		static bool IsLoggingEnabled () {return m_LogOn;}
 		
-		void DrawEditVertex (const wxRealPoint & pt, tmGISScale * scale, 
-							 int size, tmRenderer * renderer);
+		void DrawEditVertex (const wxRealPoint & pt,int size);
 		void DrawEditSegment (const wxRealPoint & pt1,
 							  const wxRealPoint & pt2,
-							  tmGISScale * scale,
-							  tmRenderer * renderer,
-							  int size,
-							  bool bVideoInvert = false);
+							  int size);
 		
 		
 	};

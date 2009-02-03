@@ -118,7 +118,6 @@ class tmEditManager : public wxEvtHandler
 		bool IsDrawingAllowed();
 		bool IsModifictionAllowed();
 		
-		// Drawing functions
 	};
 
 

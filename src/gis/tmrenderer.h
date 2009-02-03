@@ -139,6 +139,9 @@ class tmRenderer : public wxScrolledWindow
 		
 		// edit snapping event
 		void ToogleSnapping (int snapradius);
+		
+		// get bitmap
+		wxBitmap * GetBitmap(){return m_bmp;}
 
 		
 	};
