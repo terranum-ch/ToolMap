@@ -317,28 +317,36 @@ bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
  *******************************************************************************/
 void tmEditManager::DrawLastSegment ()
 {
-	wxRealPoint LastRealPt, LastLastRealPt;
-	tmDrawer myEditDrawer;
+	wxRealPoint LastRealPt(0,0), LastLastRealPt(0,0);
 	
+	// init a drawer 
+	tmDrawer myEditDrawer;
+	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
+							*m_Scale, m_Scale->GetWindowExtentReal());
+	
+	// get the symbology
 	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
-		
+	
+	/* draw vertex 
 	if (m_GISMemory->GetVertex(LastRealPt, -1))
 	{
-		myEditDrawer.DrawEditVertex(LastRealPt, m_Scale,
-									mySymbol->GetWidth(),
-									m_Renderer);
-	}
+		myEditDrawer.DrawEditVertex(LastRealPt,
+									mySymbol->GetWidth());
+	}*/
 	
-	if (m_GISMemory->GetVertex(LastLastRealPt, m_GISMemory->GetVertexCount()-2))
-	{
-		myEditDrawer.DrawEditSegment(LastLastRealPt,
-									 LastRealPt, 
-									 m_Scale, 
-									 m_Renderer, 
-									 mySymbol->GetWidth(), 
-									 false);
-	}
 	
+	
+	// if existing, draw segment too
+	
+	// get two last vertex 
+	m_GISMemory->GetVertex(LastRealPt, -1);
+	m_GISMemory->GetVertex(LastLastRealPt, m_GISMemory->GetVertexCount()-2);
+	
+	myEditDrawer.DrawEditSegment(LastLastRealPt,
+								LastRealPt, 
+								mySymbol->GetWidth());
+	m_Renderer->Refresh();
+	m_Renderer->Update();
 }
 
 

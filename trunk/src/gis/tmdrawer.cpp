@@ -684,12 +684,26 @@ wxPen * tmDrawer::CreateVertexUniquePen (tmLayerProperties * itemProp, int size)
 }
 
 
+
 /***************************************************************************//**
  @brief Create a pen for drawing editing vertex
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
  *******************************************************************************/
-wxPen * tmDrawer::CreateEditUniquePen (int size)
+wxPen * tmDrawer::CreateEditUniqueVertexPen (int size)
+{
+	wxPen * myPen = new wxPen (*wxBLACK, size);
+	return myPen;
+}
+
+
+
+/***************************************************************************//**
+ @brief Create a pen for drawing editing segment
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+wxPen * tmDrawer::CreateEditUniqueSegmentPen (int size)
 {
 	wxPen * myPen = new wxPen (*wxRED, size);
 	return myPen;
@@ -704,22 +718,22 @@ wxPen * tmDrawer::CreateEditUniquePen (int size)
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
  *******************************************************************************/
-void tmDrawer::DrawEditVertex (const wxRealPoint & pt, tmGISScale * scale, 
-					 int size,  tmRenderer * renderer)
+void tmDrawer::DrawEditVertex (const wxRealPoint & pt,int size)
 {
-	wxPoint myScreenPt = scale->RealToPixel(pt);
-	wxClientDC dc(renderer);
-	wxPen * myVPen = CreateEditUniquePen (size);
-	dc.SetPen(*myVPen);
+	wxPoint myScreenPt = m_scale.RealToPixel(pt);
+	wxMemoryDC mdc;
+	mdc.SelectObject(*m_bmp);
+	wxPen * myVPen = CreateEditUniqueVertexPen (size);
+	mdc.SetPen(*myVPen);
 
 #ifdef __WXMSW__
-	dc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x + 0.1, myScreenPt.y + 0.1);
+	mdc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x + 0.1, myScreenPt.y + 0.1);
 #else
-	dc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x, myScreenPt.y);
+	mdc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x, myScreenPt.y);
 #endif
 	
 	delete myVPen;
-	
+	mdc.SelectObject(wxNullBitmap);
 }
 
 
@@ -737,26 +751,57 @@ void tmDrawer::DrawEditVertex (const wxRealPoint & pt, tmGISScale * scale,
  *******************************************************************************/
 void tmDrawer::DrawEditSegment (const wxRealPoint & pt1,
 								const wxRealPoint & pt2,
-								tmGISScale * scale,
-								tmRenderer * renderer,
-								int size,
-								bool bVideoInvert)
+								int size)
 {
-	wxPoint myPt1 = scale->RealToPixel(pt1);
-	wxPoint myPt2 = scale->RealToPixel(pt2);
+	wxPoint myPt1(0,0), myPt2(0,0);
+	wxPen * mySegmentPen = CreateEditUniqueSegmentPen(size);
+	wxPen * myVertexPen = CreateEditUniqueVertexPen(size);
 	
-	wxClientDC dc(renderer);
+	wxMemoryDC mdc;
+	mdc.SelectObject(*m_bmp);
+
+	myPt1 = m_scale.RealToPixel(pt1);
 	
-	// inverse video
-	if (bVideoInvert)
-		dc.SetLogicalFunction (wxINVERT);
+	// draw segment first, then vertex
+	if (pt2 != wxRealPoint(0,0))
+	{
+		myPt2 = m_scale.RealToPixel(pt2);
+		
+		mdc.SetPen(*mySegmentPen);
+		mdc.DrawLine(myPt1, myPt2);
+		
+		mdc.SetPen(*myVertexPen);
+		DrawPoint(myPt2, &mdc);
+	}
 	
-	wxPen * myPen = CreateEditUniquePen(size);
-	dc.SetPen(*myPen);
 	
-	dc.DrawLine(myPt1, myPt2);
+	if (pt1 != wxRealPoint(0,0))
+	{
+		DrawPoint(myPt1, &mdc);
+	}
 	
-	delete myPen;
+	
+	// cleaning
+	mdc.SelectObject(wxNullBitmap);
+	delete myVertexPen;
+	delete mySegmentPen;
+}
+
+
+/***************************************************************************//**
+ @brief Draw a point
+ @param pt a point value in screen coordinates
+ @param pMdc a valid wxMemory object
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 February 2009
+ *******************************************************************************/
+void tmDrawer::DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc)
+{
+#ifdef __WXMSW__
+	pMdc->DrawLine(pt.x, pt.y, pt.x + 0.1, pt.y + 0.1);
+#else
+	pMdc->DrawLine(pt.x, pt.y, pt.x, pt.y);
+#endif
 }
 
 
