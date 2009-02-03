@@ -51,9 +51,12 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		bool CreateFeature();
 		bool DestroyFeature();
 		
-		// editing vertex
+		// vertex operations
 		bool InsertVertex (const wxRealPoint & pt, int index = -1);
 		bool RemoveVertex (int index = -1);
+		int GetVertexCount();
+		bool GetVertex (wxRealPoint & pt, int index = -1);
+		
 		
 	};
 

@@ -55,6 +55,7 @@ class tmEditManager : public wxEvtHandler
 		tmSelectedDataMemory * m_SelectedData;
 		tmRenderer * m_Renderer;
 		tmGISDataVectorMemory * m_GISMemory;
+		bool m_EditStarted;
 		
 		
 		// defined by function or event.
@@ -82,6 +83,15 @@ class tmEditManager : public wxEvtHandler
 		
 		// snapping function
 		wxRealPoint * IterateAllSnappingLayers(const wxRealPoint & clickedpoint);
+		
+		// adding, storing object
+		bool AddLineVertex (const wxRealPoint & pt);
+		bool StorePoint (const wxRealPoint & pt){ return false;}
+		
+		// drawing line object
+		void DrawLastSegment ();
+		
+		
 		
 		DECLARE_EVENT_TABLE()
 	protected:
