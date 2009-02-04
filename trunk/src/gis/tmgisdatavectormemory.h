@@ -32,6 +32,7 @@
 
 #include "tmgisdatavector.h"
 #include "ogrsf_frmts.h"
+#include "../database/database_tm.h"	// for database support
 
 class tmGISDataVectorMemory : public tmGISDataVector
 	{
@@ -43,6 +44,11 @@ class tmGISDataVectorMemory : public tmGISDataVector
 	
 		
 	protected:
+		long SaveDatabaseGeometry (OGRGeometry * myGeom,
+								   int ilayertype,
+								   DataBaseTM * database);
+		
+		
 	public:
 		tmGISDataVectorMemory();
 		~tmGISDataVectorMemory();
@@ -56,6 +62,9 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		bool RemoveVertex (int index = -1);
 		int GetVertexCount();
 		bool GetVertex (wxRealPoint & pt, int index = -1);
+		
+		// saving to database
+		long SavePointToDatabase (DataBaseTM * database, int layertype); 
 		
 		
 	};

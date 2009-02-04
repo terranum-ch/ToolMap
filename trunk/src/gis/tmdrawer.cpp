@@ -713,28 +713,23 @@ wxPen * tmDrawer::CreateEditUniqueSegmentPen (int size)
 /***************************************************************************//**
  @brief Draw a vertex (used during editing)
  @param pt a point (real coordinates)
- @param scale adress of a valid scale
- @param layerprop informations about the layer in edition
+ @param size the size of the vertex to draw
+ @param colour the wxColour to use for drawing vertex 
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
  *******************************************************************************/
-void tmDrawer::DrawEditVertex (const wxRealPoint & pt,int size)
+void tmDrawer::DrawEditVertex (const wxRealPoint & pt,int size, wxColour colour)
 {
 	wxPoint myScreenPt = m_scale.RealToPixel(pt);
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_bmp);
-	wxPen * myVPen = CreateEditUniqueVertexPen (size);
+	wxPen * myVPen = new wxPen(colour, size);
 	mdc.SetPen(*myVPen);
-
-#ifdef __WXMSW__
-	mdc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x + 0.1, myScreenPt.y + 0.1);
-#else
-	mdc.DrawLine(myScreenPt.x, myScreenPt.y, myScreenPt.x, myScreenPt.y);
-#endif
-	
+	DrawPoint(myScreenPt, &mdc);	
 	delete myVPen;
 	mdc.SelectObject(wxNullBitmap);
 }
+
 
 
 
@@ -742,10 +737,7 @@ void tmDrawer::DrawEditVertex (const wxRealPoint & pt,int size)
  @brief Draw the segment between two points
  @param pt1 first point (Real)
  @param pt2 second point (Real)
- @param scale adress of a valid scale
- @param renderer adress of a valid renderer
  @param size size of the segment
- @param bVideoInvert should we draw in video inverse
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
  *******************************************************************************/
@@ -803,6 +795,24 @@ void tmDrawer::DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc)
 	pMdc->DrawLine(pt.x, pt.y, pt.x, pt.y);
 #endif
 }
+
+
+/***************************************************************************//**
+ @brief Draw a point
+ @param pt a point value in screen coordinates
+ @param pcdc a valid wxClientDC object
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+void tmDrawer::DrawPoint (const wxPoint & pt, wxClientDC * pcdc)
+{
+#ifdef __WXMSW__
+	pcdc->DrawLine(pt.x, pt.y, pt.x + 0.1, pt.y + 0.1);
+#else
+	pcdc->DrawLine(pt.x, pt.y, pt.x, pt.y);
+#endif
+}
+
 
 
 /***************************************************************************//**

@@ -287,7 +287,7 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 	}
 	else // add point 
 	{
-		//AddPointVertex(myRealCoord);
+		AddPointVertex(myRealCoord);
 	}
 	
 	delete myPxCoord;
@@ -311,6 +311,78 @@ bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 	return bReturn;
 }
 
+
+/***************************************************************************//**
+ @brief Draw and store the point into database
+ @param pt the point (real)
+ @return  true if the point was successfully added to the database
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
+{
+	bool bReturn = true;
+	// draw the point
+	tmDrawer myEditDrawer;
+	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
+							*m_Scale, m_Scale->GetWindowExtentReal());
+	
+	// get the symbology
+	tmSymbolVectorPoint * mySymbol = (tmSymbolVectorPoint*) m_TOC->GetEditLayer()->m_LayerSymbol;
+	
+	// draw the vertex in selected colour
+	myEditDrawer.DrawEditVertex(pt, mySymbol->GetRadius(),
+								*wxRED);
+
+	
+	//TODO: draw the previous vertex in normal colour (blue) 
+	
+	// store the vertex into database
+	long lpOid = StorePoint(pt);
+	if (lpOid == -1)
+	{
+		wxLogError(_T("Error inserting point into database"));
+		return false;
+	}
+	
+	// select the last inserted oid
+	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
+	m_SelectedData->SetSelected(lpOid);
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	
+	//TODO: Remove this temp code
+	wxLogDebug(_T("Selected OID = %d"), lpOid);
+	
+	
+	m_Renderer->Refresh();
+	m_Renderer->Update();
+	return bReturn;
+}
+
+
+
+/***************************************************************************//**
+ @brief Save the passed point to the database
+ @param pt the point (real)
+ @return  the OID of the stored point, -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+long tmEditManager::StorePoint (const wxRealPoint & pt)
+{
+	// get table
+	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
+	if (layerprop == NULL)
+		return -1;
+	
+	tmGISDataVectorMemory myTempPoint;
+	myTempPoint.CreateFeature();
+	myTempPoint.InsertVertex(pt);
+	long lid = myTempPoint.SavePointToDatabase(m_pDB, layerprop->m_LayerType);
+	
+	return lid;
+}
 
 
 /***************************************************************************//**

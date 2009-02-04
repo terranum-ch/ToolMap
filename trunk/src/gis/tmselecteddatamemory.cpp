@@ -111,6 +111,21 @@ bool tmSelectedDataMemory::AddSelected (wxArrayLong * selected)
 
 
 /***************************************************************************//**
+ @brief Save any geometry into database
+ @details This function clear the actual selection and specifiy as the selection
+ the passed value
+ @param selected The selected value
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+void tmSelectedDataMemory::SetSelected (long selected)
+{
+	Clear();
+	m_SelectedIDs->Add(selected);
+}
+
+
+/***************************************************************************//**
  @brief Search for existing item in the array
  @param value value we are searching for
  @return  the 0 based index of the result or wxNOT_FOUND
