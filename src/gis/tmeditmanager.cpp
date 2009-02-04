@@ -333,10 +333,8 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	// draw the vertex in selected colour
 	myEditDrawer.DrawEditVertex(pt, mySymbol->GetRadius(),
 								*wxRED);
+	wxLogDebug(_T("Drawing %.*f - %.*f"), 2, pt.x, 2, pt.y);
 
-	
-	//TODO: draw the previous vertex in normal colour (blue) 
-	
 	// store the vertex into database
 	long lpOid = StorePoint(pt);
 	if (lpOid == -1)
@@ -344,6 +342,30 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 		wxLogError(_T("Error inserting point into database"));
 		return false;
 	}
+	
+	// draw the selected in normal colour (blue)
+	tmGISDataVectorMemory myGISMem;
+	wxArrayLong * mySelArray = m_SelectedData->GetSelectedValues();
+	if (mySelArray != NULL)
+	{
+		for (unsigned int k = 0; k<mySelArray->GetCount();k++)
+		{
+			wxRealPoint myRealPt = myGISMem.GetPointFromDatabase(m_pDB, mySelArray->Item(k),
+																 m_TOC->GetEditLayer()->m_LayerType);
+			
+			if (myRealPt == wxRealPoint(-1,-1))
+				break;
+			
+			wxLogDebug(_T("Drawing (Erasing) %.*f - %.*f"), 2, myRealPt.x, 2, myRealPt.y);
+			myEditDrawer.DrawEditVertex(myRealPt, mySymbol->GetRadius()+1,
+										mySymbol->GetColour());
+			
+		}
+		delete mySelArray;
+	}
+	
+	
+	
 	
 	// select the last inserted oid
 	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
