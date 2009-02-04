@@ -343,3 +343,77 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 }
 
 
+
+/***************************************************************************//**
+ @brief Load any geometry from database
+ @param oid the OID of the searched Geometry
+ @param ilayertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @param database a valid #DataBaseTM object
+ @return  A valid OGRGeometry if ok (caller must destroy the geometry) or NULL
+ if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
+									int ilayertype,
+									DataBaseTM * database)
+{
+	wxString sSentence = wxString::Format(_T("SELECT (OBJECT_GEOMETRY)")
+										  _T(" FROM %s WHERE OBJECT_ID=%d;"),
+										  TABLE_NAME_GIS_GENERIC[ilayertype].c_str(),
+										  oid);
+	if (!database->DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting geometry for id %d - %s"),
+				   oid, database->DataBaseGetLastError().c_str());
+		return NULL;
+	}
+	
+	
+	unsigned long *  row_length;
+	MYSQL_ROW row;
+	
+	row_length = database->DataBaseGetNextRowResult(row);
+	if (row_length == NULL)
+	{
+		wxLogDebug(_T("No geometry found for id : %d"), oid);
+		return NULL;
+	}
+	
+	OGRGeometry * geometry = NULL;
+	// Geometry columns will have the first 4 bytes contain the SRID.
+	OGRGeometryFactory::createFromWkb(((unsigned char *)row[0]) + 4, 
+									  NULL,
+									  &geometry,
+									  row_length[0] - 4 );
+	
+	return geometry;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get a specified point from database
+ @param database a valid #DataBaseTM object
+ @param oid the OID of the searched point
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @return  A wxRealPoint or -1,-1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+wxRealPoint tmGISDataVectorMemory::GetPointFromDatabase (DataBaseTM * database,
+														 long oid,
+														 int layertype)
+{
+	OGRPoint * myOGRPoint = (OGRPoint*) LoadDatabaseGeometry(oid, 
+													layertype, database);
+	if (myOGRPoint == NULL)
+		return wxRealPoint(-1,-1);
+	
+	wxRealPoint myPoint (myOGRPoint->getX(), myOGRPoint->getY());
+	OGRGeometryFactory::destroyGeometry(myOGRPoint);
+	
+	return myPoint;
+}

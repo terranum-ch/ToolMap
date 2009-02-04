@@ -44,9 +44,14 @@ class tmGISDataVectorMemory : public tmGISDataVector
 	
 		
 	protected:
+		
+		// load and save any geometry into database
 		long SaveDatabaseGeometry (OGRGeometry * myGeom,
 								   int ilayertype,
 								   DataBaseTM * database);
+		OGRGeometry * LoadDatabaseGeometry (long oid,
+											int ilayertype,
+											DataBaseTM * database);
 		
 		
 	public:
@@ -63,9 +68,10 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		int GetVertexCount();
 		bool GetVertex (wxRealPoint & pt, int index = -1);
 		
-		// saving to database
+		// saving /loading point
 		long SavePointToDatabase (DataBaseTM * database, int layertype); 
-		
+		wxRealPoint GetPointFromDatabase (DataBaseTM * database, long oid,
+										  int layertype);
 		
 	};
 
