@@ -805,3 +805,46 @@ void tmDrawer::DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc)
 }
 
 
+/***************************************************************************//**
+ @brief Draw all edited lines
+ @param pts Adress of a wxRealPoints array
+ @param nb_pts nb of items in the wxRealPoints array
+ @param size Size of the line
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+void tmDrawer::DrawEditLine (wxRealPoint * pts, int nb_pts, int size)
+{
+	wxMemoryDC mdc;
+	mdc.SelectObject(*m_bmp);
+	
+	wxPen * mySegPen = CreateEditUniqueSegmentPen(size);
+	wxPen * myVertexPen = CreateEditUniqueVertexPen(size);
+	
+	// convert real to screen
+	wxPoint * myPts = new wxPoint[nb_pts];
+	for (int i = 0; i<nb_pts; i++)
+	{
+		myPts[i] = m_scale.RealToPixel(pts[i]);
+	}
+	
+	// draw segments
+	mdc.SetPen(*mySegPen);
+	mdc.DrawLines(nb_pts, myPts);
+	
+	// Draw Vertex
+	mdc.SetPen(*myVertexPen);
+	for (int j = 0; j< nb_pts; j++)
+	{
+		DrawPoint(myPts[j], &mdc);		
+	}
+	
+	delete [] myPts;
+	delete mySegPen;
+	delete myVertexPen;
+	
+}
+
+
+
+

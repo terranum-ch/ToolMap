@@ -137,6 +137,9 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 {
 	DisplayRendererSnappingTolerence();
 	wxLogDebug(_T("View updated"));
+	
+	// draw memory line
+	DrawEditLine();
 }
 
 
@@ -327,17 +330,6 @@ void tmEditManager::DrawLastSegment ()
 	// get the symbology
 	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
 	
-	/* draw vertex 
-	if (m_GISMemory->GetVertex(LastRealPt, -1))
-	{
-		myEditDrawer.DrawEditVertex(LastRealPt,
-									mySymbol->GetWidth());
-	}*/
-	
-	
-	
-	// if existing, draw segment too
-	
 	// get two last vertex 
 	m_GISMemory->GetVertex(LastRealPt, -1);
 	m_GISMemory->GetVertex(LastLastRealPt, m_GISMemory->GetVertexCount()-2);
@@ -347,6 +339,44 @@ void tmEditManager::DrawLastSegment ()
 								mySymbol->GetWidth());
 	m_Renderer->Refresh();
 	m_Renderer->Update();
+}
+
+
+
+/***************************************************************************//**
+ @brief Draw again the line in editing when image reloaded
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+void tmEditManager::DrawEditLine ()
+{
+	// check edit memory data for drawing
+	int iNbVertexMemory = m_GISMemory->GetVertexCount();
+	if (iNbVertexMemory == 0)
+		return;
+	
+	// init a drawer 
+	tmDrawer myEditDrawer;
+	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
+							*m_Scale, m_Scale->GetWindowExtentReal());
+	// get the symbology
+	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+
+	
+	
+	// get all vertex 
+	wxRealPoint * myRealPts = new wxRealPoint[iNbVertexMemory];
+	for (int i = 0; i<iNbVertexMemory; i++)
+	{
+		m_GISMemory->GetVertex(myRealPts[i], i);
+	}
+	
+	myEditDrawer.DrawEditLine(myRealPts, iNbVertexMemory,
+							  mySymbol->GetWidth());
+	
+	m_Renderer->Refresh();
+	m_Renderer->Update();
+
 }
 
 
