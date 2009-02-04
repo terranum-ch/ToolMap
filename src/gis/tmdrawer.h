@@ -85,6 +85,7 @@ class tmDrawer : public wxObject
 		wxPen * CreateEditUniqueSegmentPen (int size);
 		
 		void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
+		void DrawPoint (const wxPoint & pt, wxClientDC * pcdc);
 		
 	protected:
 	public:
@@ -102,7 +103,7 @@ class tmDrawer : public wxObject
 		static void EnableLogging (bool enable) {m_LogOn = enable;}
 		static bool IsLoggingEnabled () {return m_LogOn;}
 		
-		void DrawEditVertex (const wxRealPoint & pt,int size);
+		void DrawEditVertex (const wxRealPoint & pt,int size, wxColour colour);
 		void DrawEditSegment (const wxRealPoint & pt1,
 							  const wxRealPoint & pt2,
 							  int size);

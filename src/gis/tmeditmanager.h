@@ -86,11 +86,13 @@ class tmEditManager : public wxEvtHandler
 		
 		// adding, storing object
 		bool AddLineVertex (const wxRealPoint & pt);
-		bool StorePoint (const wxRealPoint & pt){ return false;}
+		bool AddPointVertex (const wxRealPoint & pt);
+		long StorePoint (const wxRealPoint & pt);
 		
-		// drawing line object
+		// drawing editing object
 		void DrawLastSegment ();
 		void DrawEditLine ();
+
 		
 		
 		

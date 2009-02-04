@@ -67,6 +67,7 @@ class tmSelectedDataMemory : public wxObject
 		bool Remove (wxArrayLong * selected = NULL);
 		bool IsSelected (const long & value);
 		unsigned int GetCount();
+		void SetSelected (long selected);
 		
 		// getters / setters
 		void SetLayerID (long layerID);

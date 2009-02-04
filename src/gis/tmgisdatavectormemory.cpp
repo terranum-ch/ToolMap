@@ -246,7 +246,7 @@ int tmGISDataVectorMemory::GetVertexCount()
  @brief Get a specified vertex
  @param pt if true is returned, will contain a valid vertex
  @param index the vertex we want back (-1, means the last vertex)
- @param bool true if a vertex exists at the specified index, false otherwise
+ @return true if a vertex exists at the specified index, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
  *******************************************************************************/
@@ -262,12 +262,84 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 	if (index == -1)
 		index = myMemLine->getNumPoints() -1;
 	
-	//wxASSERT(index > myMemLine->getNumPoints());
 	
 	pt.x = myMemLine->getX(index);
 	pt.y = myMemLine->getY(index);
 	
 	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Save into database the first vertex in the feature
+ @param database Adress of a valid database
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @return the ID of the insered point or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+long tmGISDataVectorMemory::SavePointToDatabase (DataBaseTM * database,
+												 int layertype)
+{
+	wxRealPoint myPt; 
+	if (GetVertex(myPt, 0) == false)
+		return false;
+	
+	wxASSERT (database);
+	wxASSERT (layertype < TOC_NAME_NOT_GENERIC);
+	
+	OGRPoint * myOGRPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
+	myOGRPoint->setX(myPt.x);
+	myOGRPoint->setY(myPt.y);
+	//myOGRPoint->flattenTo2D()
+	
+	long lReturn = SaveDatabaseGeometry((OGRGeometry*) myOGRPoint, layertype, database);
+	OGRGeometryFactory::destroyGeometry(myOGRPoint);
+	return lReturn;
+}
+
+
+
+/***************************************************************************//**
+ @brief Save any geometry into database
+ @param myGeom a valid geometry (the caller must delete the geometry)
+ @param ilayertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @param database a valid #DataBaseTM object
+ @return  the ID of stored item into database or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 February 2009
+ *******************************************************************************/
+long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
+												  int ilayertype,
+												  DataBaseTM * database)
+{
+	long lReturn = -1;
+	char * myCharGeom = NULL;
+	myGeom->exportToWkt(&myCharGeom);
+	if (!myCharGeom)
+		return -1;
+	
+	wxString mySGeom = wxString::FromAscii(myCharGeom);
+	delete myCharGeom;	
+		
+	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
+										  _T(" VALUES (GeomFromText('%s'));"),
+										  TABLE_NAME_GIS_GENERIC[ilayertype].c_str(),
+										  mySGeom.c_str());
+	if (!database->DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error inserting geometry %s into database : %s"),
+				   sSentence.c_str(),
+				   database->DataBaseGetLastError().c_str());
+		return -1;
+	}
+	
+		
+	lReturn = database->DataBaseGetLastInsertID();
+	return lReturn;
 }
 
 
