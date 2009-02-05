@@ -43,6 +43,7 @@ DECLARE_EVENT_TYPE(tmEVT_LM_PAN_ENDED,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SELECTION, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER, -1)
 
 
 enum tmGIS_TOOL
@@ -97,6 +98,7 @@ class tmRenderer : public wxScrolledWindow
 		//void OnMouseWheel	(wxMouseEvent & event);
 		void OnShiftDown	(wxKeyEvent & event);
 		void OnShiftUp		(wxKeyEvent & event);
+		void OnEnterKey		(wxKeyEvent & event);
 		
 			
 		// scrollbar event (received)

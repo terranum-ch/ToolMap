@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawClicked)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureStop)
 END_EVENT_TABLE()
 
 
@@ -305,6 +306,50 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
  *******************************************************************************/
 bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 {
+	
+	// display old selected line when first vertex is called
+	if (m_GISMemory->GetVertexCount() == 0)
+	{
+		tmDrawer myEditDrawer;
+		myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
+								*m_Scale, m_Scale->GetWindowExtentReal());
+		
+		// get the symbology
+		tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+		
+		// draw the selected in normal colour (blue)
+		tmGISDataVectorMemory myGISMem;
+		myGISMem.CreateFeature();
+		wxArrayLong * mySelArray = m_SelectedData->GetSelectedValues();
+		if (mySelArray != NULL)
+		{
+			for (unsigned int k = 0; k<mySelArray->GetCount();k++)
+			{
+				if (myGISMem.GetLineFromDatabase(m_pDB, 
+												  mySelArray->Item(k),
+												  m_TOC->GetEditLayer()->m_LayerType) == false)
+					break;
+				int myPtsNumber = 0;
+				wxRealPoint * myPts = myGISMem.GetVertexAll(myPtsNumber);
+				if (myPts == NULL)
+					break;
+				
+				myEditDrawer.DrawEditLine(myPts, myPtsNumber, 
+										  mySymbol->GetWidth(),
+										  mySymbol->GetColour());
+				delete [] myPts;
+			}
+			if (mySelArray)
+				delete mySelArray;
+		}
+
+	}
+	
+	
+	
+	
+	
+	
 	bool bReturn = m_GISMemory->InsertVertex(pt, -1);
 	wxLogDebug(_T("Number of stored vertex : %d"), m_GISMemory->GetVertexCount());
 
@@ -333,7 +378,6 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	// draw the vertex in selected colour
 	myEditDrawer.DrawEditVertex(pt, mySymbol->GetRadius(),
 								*wxRED);
-	wxLogDebug(_T("Drawing %.*f - %.*f"), 2, pt.x, 2, pt.y);
 
 	// store the vertex into database
 	long lpOid = StorePoint(pt);
@@ -356,7 +400,6 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 			if (myRealPt == wxRealPoint(-1,-1))
 				break;
 			
-			wxLogDebug(_T("Drawing (Erasing) %.*f - %.*f"), 2, myRealPt.x, 2, myRealPt.y);
 			myEditDrawer.DrawEditVertex(myRealPt, mySymbol->GetRadius()+1,
 										mySymbol->GetColour());
 			
@@ -405,6 +448,25 @@ long tmEditManager::StorePoint (const wxRealPoint & pt)
 	
 	return lid;
 }
+
+
+/***************************************************************************//**
+ @brief Store the line in memory into database
+ @details @warning No verification are done internally, make all checks before
+ calling this function
+ @return the OID of the line inserted or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+long tmEditManager::StoreLine ()
+{
+	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
+	if (layerprop == NULL)
+		return -1;
+	
+	return m_GISMemory->SaveLineToDatabase(m_pDB, layerprop->m_LayerType);
+}
+
 
 
 /***************************************************************************//**
@@ -498,6 +560,49 @@ void tmEditManager::OnEditStop (wxCommandEvent & event)
 	m_EditStarted = false;
 	event.Skip();
 }
+
+
+
+/***************************************************************************//**
+ @brief Called when user press enter in the #tmRenderer
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void tmEditManager::OnDrawFeatureStop (wxCommandEvent & event)
+{
+	if (IsDrawingAllowed() == false)
+		return;
+	
+	// minimum 2 vertex for saving line into database
+	if (m_GISMemory->GetVertexCount() < 2) 
+		return;
+	
+	long lid = StoreLine();
+	if (lid == -1)
+	{
+		wxLogDebug(_T("Line not saved into database"));
+		return;
+	}
+	
+			
+	wxLogDebug(_T("Line saved : OID = %d"), lid);
+	
+	// Clear memory
+	m_GISMemory->DestroyFeature();
+	m_GISMemory->CreateFeature();
+	
+	// set selection
+	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
+	m_SelectedData->SetSelected(lid);
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+
+}
+
 
 
 

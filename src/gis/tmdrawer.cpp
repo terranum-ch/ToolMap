@@ -820,15 +820,16 @@ void tmDrawer::DrawPoint (const wxPoint & pt, wxClientDC * pcdc)
  @param pts Adress of a wxRealPoints array
  @param nb_pts nb of items in the wxRealPoints array
  @param size Size of the line
+ @param colour the Colour of the line to draw, default is RED
  @author Lucien Schreiber (c) CREALP 2009
  @date 04 February 2009
  *******************************************************************************/
-void tmDrawer::DrawEditLine (wxRealPoint * pts, int nb_pts, int size)
+void tmDrawer::DrawEditLine (wxRealPoint * pts, int nb_pts, int size, wxColour colour)
 {
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_bmp);
 	
-	wxPen * mySegPen = CreateEditUniqueSegmentPen(size);
+	wxPen * mySegPen = new wxPen(colour, size);
 	wxPen * myVertexPen = CreateEditUniqueVertexPen(size);
 	
 	// convert real to screen

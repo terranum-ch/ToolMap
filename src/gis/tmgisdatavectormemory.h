@@ -67,11 +67,19 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		bool RemoveVertex (int index = -1);
 		int GetVertexCount();
 		bool GetVertex (wxRealPoint & pt, int index = -1);
+		wxRealPoint * GetVertexAll (int & nb_pts);
 		
 		// saving /loading point
 		long SavePointToDatabase (DataBaseTM * database, int layertype); 
 		wxRealPoint GetPointFromDatabase (DataBaseTM * database, long oid,
 										  int layertype);
+		
+		// saving / loading line
+		long SaveLineToDatabase (DataBaseTM * database,	int layertype);
+		bool GetLineFromDatabase (DataBaseTM * database, long oid, 
+								  int layertype);
+
+	
 		
 	};
 

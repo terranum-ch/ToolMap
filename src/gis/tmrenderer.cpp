@@ -34,6 +34,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
 DEFINE_EVENT_TYPE(tmEVT_LM_SELECTION)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -44,6 +45,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
+	EVT_CHAR (tmRenderer::OnEnterKey)
 END_EVENT_TABLE()
 
 
@@ -293,6 +295,25 @@ void tmRenderer::OnShiftUp		(wxKeyEvent & event)
 	event.Skip();
 }
 
+
+
+/***************************************************************************//**
+ @brief Enter key was pressed
+ @details This function mainly send a message to the #tmEditManager for saving
+ the edited line
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void tmRenderer::OnEnterKey	(wxKeyEvent & event)
+{
+	if (event.GetKeyCode() == WXK_RETURN)
+	{
+		wxCommandEvent evt(tmEVT_EM_DRAW_ENTER, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+	
+	event.Skip();
+}
 
 
 
