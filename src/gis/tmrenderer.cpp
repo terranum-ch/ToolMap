@@ -35,6 +35,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_SELECTION)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER)
+DEFINE_EVENT_TYPE(tmEVT_EM_CUT_LINE)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -45,7 +46,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
-	EVT_CHAR (tmRenderer::OnEnterKey)
+	EVT_KEY_DOWN (tmRenderer::OnEnterKey)
 END_EVENT_TABLE()
 
 
@@ -168,6 +169,10 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			
 		case tmTOOL_MODIFY:
 			this->SetCursor(wxCursor(wxCURSOR_SIZING));
+			break;
+			
+		case tmTOOL_CUT_LINES:
+			this->SetCursor(wxCursor(wxCURSOR_BULLSEYE));
 			break;
 		
 		default:
@@ -639,4 +644,24 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	GetEventHandler()->AddPendingEvent(evt);
 	
 	m_StartCoord = wxPoint(-1,-1);
+}
+
+
+
+
+
+
+
+/***************************************************************************//**
+ @brief Click up with cut line tool
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void tmRenderer::CutLineClick (const wxPoint & mousepos)
+{
+	wxCommandEvent evt(tmEVT_EM_CUT_LINE, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
 }

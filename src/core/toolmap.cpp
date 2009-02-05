@@ -87,9 +87,11 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
 
 	//EDIT MENU
 	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
+	EVT_MENU (ID_MENU_UNDO, ToolMapFrame::OnEditUndo)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -317,7 +319,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu28, _("View"));
     wxMenu* itemMenu41 = new wxMenu;
     itemMenu41->Append(ID_MENU_UNDO, _("Undo\tCtrl+Z"), _T(""), wxITEM_NORMAL);
-    itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
+    //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw\tD"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify\tM"), _T(""), wxITEM_NORMAL);
@@ -740,6 +742,17 @@ void ToolMapFrame::OnEditDeleteSelected (wxCommandEvent & event)
 
 
 
+/***************************************************************************//**
+ @brief Called when user press "Undo"
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void ToolMapFrame::OnEditUndo (wxCommandEvent & event)
+{
+	m_EditManager->UndoLastVertex();
+}
+
+
 void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
 {
 	m_PManager->BackupProject();
@@ -825,6 +838,10 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 			
 		case ID_MENU_MODIFY:
 			m_EditManager->OnToolModify();
+			break;
+			
+		case ID_MENU_CUT_LINES:
+			m_EditManager->OnToolCutLines();
 			break;
 			
 		default:
