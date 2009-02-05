@@ -689,7 +689,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	myClickPoint.setX(clickpt.x);
 	myClickPoint.setY(clickpt.y);
 	
-	OGRGeometry * myBufferClick = myClickPoint.Buffer(iBuffer);
+	OGRGeometry * myBufferClick = tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
 	wxASSERT (myBufferClick);
 		
 	
@@ -698,8 +698,9 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	myBufferClick->exportToWkt(&buffer);
 	wxASSERT(buffer);
 	wxString mySBuffer = wxString::FromAscii(buffer);
+#ifndef  __WXMSW__   
 	delete [] buffer;
-	
+#endif
 	
 	// search for intersecting features
 	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
