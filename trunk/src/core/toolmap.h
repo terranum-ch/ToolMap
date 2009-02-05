@@ -297,6 +297,7 @@ private:
 	void OnShowShortcutWindow (wxCommandEvent & event);
 	void OnShowSnappingWindow (wxCommandEvent & event);
 	void OnEditSwitch (wxCommandEvent & event);
+	void OnEditDeleteSelected (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);

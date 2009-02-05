@@ -197,6 +197,12 @@ class DataBaseTM : public DataBase
 		// database snapping tolerence operations
 		bool SetSnappingTolerence(int iTolerence);
 		int GetSnappingTolerence ();
+		
+		// database geometry operations
+		bool DeleteGeometry (wxArrayLong * selected, int layertype);
+		
+		// attribution operations
+		bool DeleteAttribution (wxArrayLong * selected, int layertype);
 	};
 
 

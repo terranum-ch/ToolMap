@@ -123,6 +123,9 @@ class tmEditManager : public wxEvtHandler
 		bool IsDrawingAllowed();
 		bool IsModifictionAllowed();
 		
+		// deleting selected
+		bool DeleteSelected(bool Clearselection = true);
+		
 	};
 
 

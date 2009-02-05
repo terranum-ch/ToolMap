@@ -650,3 +650,34 @@ wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clicke
 }
 
 
+
+/***************************************************************************//**
+ @brief Delete the geometry and attribution of selected object
+ @param Clearselection true if we sould clear selection ids, if you need to
+ delete more stuff (attribution for exemple) set to false
+ @param bool true if geometry are deleted
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+bool tmEditManager::DeleteSelected(bool Clearselection)
+{
+	// make some checks 
+	if (!IsDrawingAllowed() || m_SelectedData->GetCount() <= 0)
+		return false;
+	
+	// delete ids from database
+	wxArrayLong * mySelectedIds = m_SelectedData->GetSelectedValues();
+	if (mySelectedIds == NULL)
+		return false;
+	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->m_LayerType);
+	m_pDB->DeleteAttribution(mySelectedIds, m_TOC->GetEditLayer()->m_LayerType);
+	delete mySelectedIds;
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	return true;
+}
+
+
