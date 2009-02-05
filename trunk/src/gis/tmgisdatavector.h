@@ -72,6 +72,9 @@ class tmGISDataVector : public tmGISData
 		wxRealPoint * GetBeginEndInterseciton (OGRGeometry * geometry,
 											   OGRGeometry * buffer);
 		
+		static OGRGeometry * SafeCreateFromGEOS (GEOSGeom geom);
+		static OGRGeometry * SafeBuffer (OGRGeometry * ogrgeom,  int size);
+		
 	public:
 		// ctor, dtor
 		tmGISDataVector();

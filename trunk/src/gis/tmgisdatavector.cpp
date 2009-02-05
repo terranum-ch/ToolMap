@@ -361,3 +361,67 @@ wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry,
 	return ptReturn;
 }
 
+
+/***************************************************************************//**
+ @brief Safe conversion function
+ @param geosGeom The GEOSGeom to convert
+ @return  A valid OGRGeometry or NULL if an error occur
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 15 January 2009
+ *******************************************************************************/
+OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
+{
+	size_t nSize = 0;
+    unsigned char *pabyBuf = NULL;
+    OGRGeometry *poGeometry = NULL;
+	
+    pabyBuf = GEOSGeomToWKB_buf( geosGeom, &nSize );
+    if( pabyBuf == NULL || nSize == 0 )
+    {
+        return NULL;
+    }
+	
+    if( OGRGeometryFactory::createFromWkb( (unsigned char *) pabyBuf, 
+										  NULL, &poGeometry, (int) nSize )
+	   != OGRERR_NONE )
+    {
+        poGeometry = NULL;
+    }
+	
+    if( pabyBuf != NULL )
+    {
+#ifndef  __WXMSW__    
+		delete pabyBuf;
+#endif
+		//delete( pabyBuf );
+    }
+	
+    return poGeometry;
+	
+}
+
+
+
+OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
+{
+	wxASSERT (ogrgeom);
+	GEOSGeom geom = ogrgeom->exportToGEOS();
+	GEOSGeom geombuffer;
+	OGRGeometry * returnbuffer = NULL;
+	
+	if (geom != NULL)
+	{
+		geombuffer = GEOSBuffer(geom, size, 30);
+		GEOSGeom_destroy(geom);
+		
+		if (geombuffer != NULL)
+		{
+			returnbuffer = tmGISDataVector::SafeCreateFromGEOS(geombuffer);
+			GEOSGeom_destroy(geombuffer);
+		}
+	}
+	
+	return returnbuffer;
+}
+
+
