@@ -162,7 +162,7 @@ class ProjectManager;
 
 
 #define ID_MENU_UNDO 10179
-#define ID_MENU_REDO 10180
+//#define ID_MENU_REDO 10180
 #define ID_MENU_DRAW 10176
 #define ID_MENU_MODIFY 10177
 #define ID_MENU_CUT_LINES 10178
@@ -298,6 +298,7 @@ private:
 	void OnShowSnappingWindow (wxCommandEvent & event);
 	void OnEditSwitch (wxCommandEvent & event);
 	void OnEditDeleteSelected (wxCommandEvent & event);
+	void OnEditUndo (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);

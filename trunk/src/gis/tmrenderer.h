@@ -44,6 +44,7 @@ DECLARE_EVENT_TYPE(tmEVT_LM_SELECTION, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_CUT_LINE, -1)
 
 
 enum tmGIS_TOOL
@@ -54,6 +55,7 @@ enum tmGIS_TOOL
 	tmTOOL_PAN,
 	tmTOOL_DRAW,
 	tmTOOL_MODIFY,
+	tmTOOL_CUT_LINES,
 	tmTOOL_ZOOM_RECTANGLE = tmTOOL_ZOOM_RECTANGLE_IN
 };
 
@@ -125,6 +127,9 @@ class tmRenderer : public wxScrolledWindow
 		// drawing functions
 		void DrawStart (const wxPoint & mousepos);
 		void DrawStop  (const wxPoint & mousepos);
+		
+	
+		void CutLineClick (const wxPoint & mousepos);
 	
 	
 	public:

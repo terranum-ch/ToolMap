@@ -207,6 +207,9 @@ bool tmGISDataVectorMemory::RemoveVertex (int index)
 	// cleaning line
 	myMemLine->empty();
 	
+	if (index == -1) 
+		index = numPoints-1;
+	
 	// inserting points
 	for(int i = 0; i< numPoints;i++)
 	{

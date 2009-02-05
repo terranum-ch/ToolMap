@@ -115,6 +115,19 @@ void tmEditManager::OnToolModify ()
 
 
 /***************************************************************************//**
+ @brief Set tool to cut line tool
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void tmEditManager::OnToolCutLines ()
+{
+	wxASSERT(m_Renderer);
+	m_Renderer->SetTool(tmTOOL_CUT_LINES);
+}
+
+
+
+/***************************************************************************//**
  @brief Called when snapping change
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
@@ -679,5 +692,32 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
 	
 	return true;
 }
+
+
+
+/***************************************************************************//**
+ @brief Remove the last vertex from memory
+ @details This function will only work while editing lines, calling this for
+ points wont work
+ @return  true if the last vertex was successfully removed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+bool tmEditManager::UndoLastVertex ()
+{
+	// some checks
+	if (!IsDrawingAllowed() || m_GISMemory->GetVertexCount() == 0)
+		return false;
+	
+	// remove last vertex
+	m_GISMemory->RemoveVertex(-1);
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	return true;
+}
+
 
 

@@ -118,6 +118,7 @@ class tmEditManager : public wxEvtHandler
 		//change tool functions
 		void OnToolEdit ();
 		void OnToolModify ();
+		void OnToolCutLines();
 		
 		// validiting editing / modfication
 		bool IsDrawingAllowed();
@@ -125,6 +126,7 @@ class tmEditManager : public wxEvtHandler
 		
 		// deleting selected
 		bool DeleteSelected(bool Clearselection = true);
+		bool UndoLastVertex ();
 		
 	};
 
