@@ -88,6 +88,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
 
+	//EDIT MENU
+	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
+
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
 	EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
@@ -721,6 +724,18 @@ void ToolMapFrame::OnEditSwitch (wxCommandEvent & event)
 		bEditStart = true;
 	m_MManager->EditingStatus(bEditStart);
 	
+}
+
+
+/***************************************************************************//**
+ @brief User press the "Delete selected object" menu
+ @image html editdeletemenu.png
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void ToolMapFrame::OnEditDeleteSelected (wxCommandEvent & event)
+{
+	m_EditManager->DeleteSelected(true);
 }
 
 

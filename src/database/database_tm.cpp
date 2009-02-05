@@ -2694,6 +2694,76 @@ int DataBaseTM::GetSnappingTolerence ()
 }
 
 
+/***************************************************************************//**
+ @brief Delete geometry from the database
+ @param selected An array of selected values. Caller must destroy the object.
+ This function doesn't take ownership of the object
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @return  true if geometry was successfully destroyed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+bool DataBaseTM::DeleteGeometry (wxArrayLong * selected, int layertype)
+{
+	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE OBJECT_ID IN ("),
+										  TABLE_NAME_GIS_GENERIC[layertype].c_str());
+	for (unsigned int i = 0; i<selected->GetCount(); i++)
+	{
+		sSentence.Append(wxString::Format(_T("%d,"),selected->Item(i)));
+	}
+	sSentence.RemoveLast(1);
+	sSentence.Append(_T(");"));
+	
+	if (!DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error deleting selected geometry : %s - %s"),
+				   DataBaseGetLastError().c_str(),
+				   sSentence.c_str());
+		return false;
+	}
+	
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Delete attribution from the database
+ @param selected An array of selected values. Caller must destroy the object.
+ This function doesn't take ownership of the object
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @return  true if attribution for selected geometry was successfully destroyed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+bool DataBaseTM::DeleteAttribution (wxArrayLong * selected, int layertype)
+{
+	if (layertype > TOC_NAME_LABELS)
+		return false;
+	
+	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE OBJECT_GEOM_ID IN ("),
+										  TABLE_NAME_GIS_ATTRIBUTION[layertype].c_str());
+	
+	for (unsigned int i = 0; i<selected->GetCount(); i++)
+	{
+		sSentence.Append(wxString::Format(_T("%d,"),selected->Item(i)));
+	}
+	sSentence.RemoveLast(1);
+	sSentence.Append(_T(");"));
+	
+	if (!DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error deleting selected attribution : %s - %s"),
+				   DataBaseGetLastError().c_str(),
+				   sSentence.c_str());
+		return false;
+	}
+	
+	return true;
+}
+
+
 /// FIELD CREATION ::
 
 //_T("CREATE  TABLE     `LAYER_AT3` (")
