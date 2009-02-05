@@ -73,6 +73,7 @@ class tmEditManager : public wxEvtHandler
 		void OnDrawClicked (wxCommandEvent & event);
 		void OnEditStart (wxCommandEvent & event);
 		void OnEditStop (wxCommandEvent & event);
+		void OnDrawFeatureStop (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();
@@ -88,6 +89,7 @@ class tmEditManager : public wxEvtHandler
 		bool AddLineVertex (const wxRealPoint & pt);
 		bool AddPointVertex (const wxRealPoint & pt);
 		long StorePoint (const wxRealPoint & pt);
+		long StoreLine ();
 		
 		// drawing editing object
 		void DrawLastSegment ();

@@ -107,7 +107,7 @@ class tmDrawer : public wxObject
 		void DrawEditSegment (const wxRealPoint & pt1,
 							  const wxRealPoint & pt2,
 							  int size);
-		void DrawEditLine (wxRealPoint * pts, int nb_pts, int size);
+		void DrawEditLine (wxRealPoint * pts, int nb_pts, int size, wxColour colour = *wxRED);
 		
 		
 	};

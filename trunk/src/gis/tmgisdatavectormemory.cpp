@@ -270,6 +270,34 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 }
 
 
+/***************************************************************************//**
+ @brief Get all vertex from the line
+ @param nb_pts The number of points returned.
+ @return  a wxRealPoint array (delete after use) or null if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+wxRealPoint * tmGISDataVectorMemory::GetVertexAll (int & nb_pts)
+{
+	if (m_Feature == NULL)
+		return false;
+	
+	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
+	if (myMemLine == NULL)
+		return false;
+	
+	nb_pts = myMemLine->getNumPoints();
+	wxRealPoint * myPts = new wxRealPoint[nb_pts-1];
+	
+	for(int i = 0; i< nb_pts;i++)
+	{
+		myPts[i].x = myMemLine->getX(i);
+		myPts[i].y = myMemLine->getY(i);
+	}
+	
+	return myPts;
+}
+
 
 /***************************************************************************//**
  @brief Save into database the first vertex in the feature
@@ -299,6 +327,35 @@ long tmGISDataVectorMemory::SavePointToDatabase (DataBaseTM * database,
 	OGRGeometryFactory::destroyGeometry(myOGRPoint);
 	return lReturn;
 }
+
+
+/***************************************************************************//**
+ @brief Save the line into database
+ @param database a valid #DataBaseTM object
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC) 
+ @return  the OID of the inserted line or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+long tmGISDataVectorMemory::SaveLineToDatabase (DataBaseTM * database,
+												int layertype)
+{
+	wxASSERT (database);
+	wxASSERT (layertype < TOC_NAME_NOT_GENERIC);
+	
+	OGRLineString * myOGRLine = (OGRLineString*) m_Feature->GetGeometryRef();
+	if (myOGRLine == NULL)
+		return -1;
+	
+	// ensure only 2D
+	myOGRLine->setCoordinateDimension(2);
+	
+	return SaveDatabaseGeometry((OGRGeometry*) myOGRLine, layertype, database);
+}
+
+
+
 
 
 
@@ -417,3 +474,31 @@ wxRealPoint tmGISDataVectorMemory::GetPointFromDatabase (DataBaseTM * database,
 	
 	return myPoint;
 }
+
+
+/***************************************************************************//**
+ @brief Get a specified line from database
+ @param database a valid #DataBaseTM object
+ @param oid the OID of the searched line
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @return  true if the line was loaded or false if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+bool tmGISDataVectorMemory::GetLineFromDatabase (DataBaseTM * database, long oid, 
+												 int layertype)
+{
+	
+		
+	OGRLineString * myOGRLine = (OGRLineString*) LoadDatabaseGeometry(oid,
+																	  layertype,
+																	  database);
+	if (myOGRLine == NULL)
+		return false;
+	
+	m_Feature->SetGeometry(myOGRLine);
+	OGRGeometryFactory::destroyGeometry(myOGRLine);
+	return true;
+}
+
