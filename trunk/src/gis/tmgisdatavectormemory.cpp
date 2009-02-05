@@ -380,7 +380,10 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 		return -1;
 	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
-	delete myCharGeom;	
+#ifndef  __WXMSW__    
+	delete [] myCharGeom;	
+#endif
+	
 		
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
 										  _T(" VALUES (GeomFromText('%s'));"),

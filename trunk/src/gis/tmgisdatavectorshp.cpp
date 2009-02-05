@@ -857,9 +857,10 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 	myClickPoint.setX(clickpt.x);
 	myClickPoint.setY(clickpt.y);
 	
-	OGRGeometry * myBufferClick = myClickPoint.Buffer(iBuffer);
+	OGRGeometry * myBufferClick = tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
 	wxASSERT (myBufferClick);
 	wxASSERT (m_Layer);
+	//OGRGeometryFactory::destroyGeometry(myClickPoint);
 	
 	// searching all features
 	m_Layer->ResetReading();
