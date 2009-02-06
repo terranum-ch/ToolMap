@@ -469,6 +469,48 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
 }
 
 
+/***************************************************************************//**
+ @brief Compute Union
+ @details This function try to bypass the Union() bug of GDAL by using
+ GEOS directly
+ @param union1 The multi-line string 
+ @param line The line to intersect
+ @return  A valid OGRLineString or NULL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 November 2008
+ *******************************************************************************/
+OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * line)
+{
+	wxASSERT(union1);
+	wxASSERT(line);
+	
+	GEOSGeom  geosline = NULL;
+	GEOSGeom  geosunion = NULL;
+	GEOSGeom  geosresult = NULL;
+	OGRGeometry * returnunion = NULL;
+	
+	
+	
+	geosline = line->exportToGEOS();
+	geosunion = union1->exportToGEOS();
+	if (geosline != NULL && union1 != NULL)
+	{
+		geosresult = GEOSUnion(geosunion, geosline);
+		GEOSGeom_destroy(geosline);
+		GEOSGeom_destroy(geosunion);
+		
+		if (geosresult != NULL)
+		{
+			returnunion = SafeCreateFromGEOS(geosresult);
+			GEOSGeom_destroy(geosresult);
+		}
+		
+	}
+	
+	return returnunion;
+}
+
+
 
 /***************************************************************************//**
  @brief Cut line in two at specified point
@@ -526,14 +568,110 @@ bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * poin
 		return true;
 		
 	}
-	else 
+	else // intersection outside a vertex
 	{
-		wxASSERT_MSG(0,_T("Not implemented"));
-		return false;
+		// create intersection
+		int iInsertedVertex = 0;
+		OGRLineString * myLineWithIntersect = InsertVertex(pointbuffer,
+														   line1, 
+														   iInsertedVertex);
+		int myIntersection = iInsertedVertex;
+		
+		if (myLineWithIntersect)
+		{
+			// fill both geometry
+			for (int j=0;j<myLineWithIntersect->getNumPoints();j++)
+			{
+				if (j <= myIntersection)
+				{
+					lineresult1.addPoint(myLineWithIntersect->getX(j), 
+										 myLineWithIntersect->getY(j), 
+										 myLineWithIntersect->getZ(j));
+				}
+				
+				if (j >= myIntersection)
+				{
+					lineresult2.addPoint(myLineWithIntersect->getX(j), 
+										 myLineWithIntersect->getY(j), 
+										 myLineWithIntersect->getZ(j));
+				}
+			}
+			OGRGeometryFactory::destroyGeometry(myLineWithIntersect);
+			return true;
+		}
+
 	}
 	
 	
-	return true;
+	return false;
 }
 
+
+
+/***************************************************************************//**
+ @brief Insert a vertex in a passed line
+ @param pointbuffer the buffer (polygon) intersecting the line
+ @param line the line
+ @param inseredvertex return the number of the inserted vertex
+ @return  The new line with the inserted vertex (caller should delete the 
+ returned Geometry)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer,
+								   OGRLineString * line, int & inseredvertex)
+{
+	
+	// check segment by segment
+	OGRPoint p1;
+	OGRPoint p2;
+	OGRLineString segment;
+	OGRLineString * returnedLine = NULL;
+	inseredvertex = -1;
+	
+	
+	for (int i = 0;i < line->getNumPoints(); i++)
+	{
+		line->getPoint(i, &p1);
+		
+		if (i+1 < line->getNumPoints())
+		{
+			line->getPoint(i+1, &p2);
+			segment.addPoint(&p1);
+			segment.addPoint(&p2);
+			
+			// intersection found
+			if (segment.Intersect(pointbuffer))
+			{
+				inseredvertex = i+1;
+				wxLogDebug(_T("Intersection between vertex %d - %d"), i, inseredvertex);
+			}
+			
+			segment.empty();
+		}
+		
+		// end the loop when intersection found
+		if (inseredvertex != -1)
+			break;
+		
+	}
+	
+	
+	// if intersection found, add vertex
+	returnedLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	for (int j = 0; j < line->getNumPoints(); j++)
+	{
+		line->getPoint(j, &p1);
+		returnedLine->addPoint(&p1);
+		
+		if (j == inseredvertex-1)
+		{
+			((OGRPolygon*) pointbuffer)->Centroid(&p2);
+			returnedLine->addPoint(&p2);
+		}
+		
+	}
+	
+	return returnedLine;
+}
 

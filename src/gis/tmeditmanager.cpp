@@ -670,10 +670,13 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	OGRLineString myLine1;
 	OGRLineString myLine2;
 	
-	mySelLine->CutLineGeometry(myLine, myClickBuffer,
+	bool bCut = mySelLine->CutLineGeometry(myLine, myClickBuffer,
 							   myLine1, myLine2);
 	OGRGeometryFactory::destroyGeometry(myLine);
 	OGRGeometryFactory::destroyGeometry (myClickBuffer);
+	
+	if (bCut == false)
+		return;
 	
 	// update and insert geometry 
 	mySelLine->UpdateGeometry(&myLine1, m_SelectedData->GetSelectedUnique());
