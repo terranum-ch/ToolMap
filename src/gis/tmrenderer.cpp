@@ -264,6 +264,9 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_DRAW)
 		DrawStop(event.GetPosition());
 	
+	if (m_ActualTool == tmTOOL_CUT_LINES)
+		CutLineClick(event.GetPosition());
+	
 }
 
 
@@ -665,3 +668,5 @@ void tmRenderer::CutLineClick (const wxPoint & mousepos)
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);
 }
+
+

@@ -27,6 +27,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureStop)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
 END_EVENT_TABLE()
 
 
@@ -617,6 +618,125 @@ void tmEditManager::OnDrawFeatureStop (wxCommandEvent & event)
 }
 
 
+/***************************************************************************//**
+ @brief Called if user try to cut lines
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void tmEditManager::OnCutLines (wxCommandEvent & event)
+{
+	// get mouse position
+	wxPoint * mypCutPos = (wxPoint*) event.GetClientData();
+	wxPoint myCutPos = wxPoint(*mypCutPos);	
+	delete mypCutPos;
+	
+	// change cursor
+	m_Renderer->SetTool(tmTOOL_SELECT);
+	
+	// some checks 
+	if (IsDrawingAllowed() == false)
+		return;
+	
+	if (m_TOC->GetEditLayer()->m_LayerSpatialType != LAYER_SPATIAL_LINE)
+		return;
+	
+	wxLogDebug(_T("Ok for cutting line @ %d / %d"),myCutPos.x, myCutPos.y);
+	
+	// Find the line (see selection)
+	if (SelectedSearch(myCutPos) == false)
+		return;
+	
+	// Get the selected line 
+	tmGISDataVector * mySelLine = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (!mySelLine)
+		return;
+	
+	// get the geometry of selected line to cut
+	OGRLineString * myLine = (OGRLineString*) mySelLine->GetGeometryByOID(m_SelectedData->GetSelectedUnique());
+	if (!myLine)
+		return;
+	
+	// create buffer for point
+	int myRadius = tmSELECTION_DIAMETER;
+	wxRect myClickRect = wxRect (myCutPos.x - myRadius,
+								 myCutPos.y - myRadius,
+								 tmSELECTION_DIAMETER * 2,
+								 tmSELECTION_DIAMETER * 2);
+	tmRealRect myClickReal = m_Scale->PixelsToReal(myClickRect);
+	OGRGeometry * myClickBuffer =  tmGISDataVector::CreateOGRGeometry(myClickReal);
+	if (!myClickBuffer)
+		return;
+		
+	OGRLineString myLine1;
+	OGRLineString myLine2;
+	
+	mySelLine->CutLineGeometry(myLine, myClickBuffer,
+							   myLine1, myLine2);
+	OGRGeometryFactory::destroyGeometry(myLine);
+	OGRGeometryFactory::destroyGeometry (myClickBuffer);
+	
+	// update and insert geometry 
+	mySelLine->UpdateGeometry(&myLine1, m_SelectedData->GetSelectedUnique());
+	mySelLine->AddGeometry(&myLine2, 0);
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+}
+
+
+
+/***************************************************************************//**
+ @brief Search function
+ @details This function is widly inspired from #tmLayerManager
+ @param screenpt Coordinate of the clicked point
+ @return  true if an object was found
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
+{
+	wxASSERT(IsDrawingAllowed());
+	tmLayerProperties * pLayerprop = m_TOC->GetEditLayer();
+	wxASSERT(pLayerprop);
+	
+	// create rect from point
+	int myRadius = tmSELECTION_DIAMETER / 2;
+	wxRect myClickRect = wxRect (screenpt.x - myRadius,
+								 screenpt.y - myRadius,
+								 tmSELECTION_DIAMETER,
+								 tmSELECTION_DIAMETER);
+	
+	tmRealRect myClickReal = m_Scale->PixelsToReal(myClickRect);
+	tmGISData * myLayerData = tmGISData::LoadLayer(pLayerprop);
+	wxASSERT (myLayerData);
+	if (!myLayerData)
+		return false;
+	
+	
+	
+	wxArrayLong * myArray = myLayerData->SearchData(myClickReal, pLayerprop->m_LayerType);
+	if (!myArray)
+		return false;
+	
+	int myArrayCount = myArray->GetCount();
+	if (myArrayCount == 0)
+	{
+		wxLogDebug(_T("No data found at specified coordinates"));
+		return false;
+	}
+	wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
+	
+	
+	m_SelectedData->SetLayerID(pLayerprop->m_LayerID);
+	m_SelectedData->Clear();
+	m_SelectedData->AddSelected(myArray);
+	myArray->Clear();
+	delete myArray;
+	
+	return true;
+}
+
 
 
 /***************************************************************************//**
@@ -668,7 +788,7 @@ wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clicke
  @brief Delete the geometry and attribution of selected object
  @param Clearselection true if we sould clear selection ids, if you need to
  delete more stuff (attribution for exemple) set to false
- @param bool true if geometry are deleted
+ @return true if geometry are deleted
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/

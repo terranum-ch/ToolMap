@@ -74,6 +74,7 @@ class tmEditManager : public wxEvtHandler
 		void OnEditStart (wxCommandEvent & event);
 		void OnEditStop (wxCommandEvent & event);
 		void OnDrawFeatureStop (wxCommandEvent & event);
+		void OnCutLines (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();
@@ -128,6 +129,8 @@ class tmEditManager : public wxEvtHandler
 		bool DeleteSelected(bool Clearselection = true);
 		bool UndoLastVertex ();
 		
+		// search function (from tmLayerManager)
+		bool SelectedSearch (const wxPoint & screenpt);  
 	};
 
 

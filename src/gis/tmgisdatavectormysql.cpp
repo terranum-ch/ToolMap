@@ -765,3 +765,112 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 
 
 
+/***************************************************************************//**
+ @brief Get the geometry for specified oid
+ @param oid The OID of the searched feature
+ @return  A valid OGRGeometry (caller must delete the returned geometry) or NULL
+ if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
+{
+	wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+										  _T("OBJECT_ID = %d;"),
+										  GetShortFileName().c_str(),
+										  oid);
+	long myUnusedOid = 0;
+	if (!m_DB->DataBaseQuery(sSentence))
+	{
+		wxLogError(_T("Error getting geometry for oid = %d : %s, %s"),oid,
+				   m_DB->DataBaseGetLastError().c_str(),
+				   sSentence.c_str());
+		return false;
+	}
+
+	return GetNextDataLine(myUnusedOid);
+}
+
+
+
+/***************************************************************************//**
+ @brief Add geometry into database
+ @param Geom The Geometry to Add
+ @param oid No oid may be specified for MySQL, it's auto-incremented
+ @return  true if the geometry was added successfull
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+bool tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
+{
+	long lReturn = -1;
+	char * myCharGeom = NULL;
+	Geom->setCoordinateDimension(2);
+	Geom->exportToWkt(&myCharGeom);
+	if (!myCharGeom)
+		return false;
+	
+	wxString mySGeom = wxString::FromAscii(myCharGeom);
+#ifndef  __WXMSW__    
+	delete [] myCharGeom;	
+#endif
+	
+	
+	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
+										  _T(" VALUES (GeomFromText('%s'));"),
+										  GetShortFileName().c_str(),
+										  mySGeom.c_str());
+	if (!m_DB->DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error inserting geometry %s into database : %s"),
+				   sSentence.c_str(),
+				   m_DB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	
+	return true;
+	
+}
+
+
+/***************************************************************************//**
+ @brief Update the geometry for specified OID
+ @param geom The Geometry to Add
+ @param oid The OID we want to update
+ @return  true if the geometry was added successfull
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+bool tmGISDataVectorMYSQL::UpdateGeometry (OGRGeometry * geom, const long & oid)
+{
+	long lReturn = -1;
+	char * myCharGeom = NULL;
+	geom->setCoordinateDimension(2);
+	geom->exportToWkt(&myCharGeom);
+	if (!myCharGeom)
+		return false;
+	
+	wxString mySGeom = wxString::FromAscii(myCharGeom);
+#ifndef  __WXMSW__    
+	delete [] myCharGeom;	
+#endif
+	
+	
+	wxString sSentence = wxString::Format(_T("UPDATE  %s SET OBJECT_GEOMETRY=")
+										  _T("(GeomFromText('%s')) WHERE OBJECT_ID=%d;"),
+										  GetShortFileName().c_str(),
+										  mySGeom.c_str(), 
+										  oid);
+	if (!m_DB->DataBaseQueryNoResult(sSentence))
+	{
+		wxLogDebug(_T("Error updating geometry %s into database : %s"),
+				   sSentence.c_str(),
+				   m_DB->DataBaseGetLastError().c_str());
+		return false;
+	}	
+	return true;
+}
+
+
+
