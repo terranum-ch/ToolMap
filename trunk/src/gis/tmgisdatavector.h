@@ -75,6 +75,7 @@ class tmGISDataVector : public tmGISData
 		static OGRGeometry * SafeCreateFromGEOS (GEOSGeom geom);
 		static OGRGeometry * SafeBuffer (OGRGeometry * ogrgeom,  int size);
 		static OGRGeometry * SafeIntersection (OGRGeometry * geom1, OGRGeometry * geom2);
+		static OGRGeometry * SafeUnion (OGRGeometry * union1, OGRGeometry * line);
 		
 		
 	public:
@@ -88,6 +89,9 @@ class tmGISDataVector : public tmGISData
 		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
 		static tmGISDataVector * CreateGISVectorBasedOnExt (const wxString & extension);
 		static OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
+		static OGRLineString * InsertVertex (OGRGeometry * pointbuffer,
+										   OGRLineString * line, int & inseredvertex);
+		
 		
 		// gis function
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_UNKNOWN;}
