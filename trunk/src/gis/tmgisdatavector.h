@@ -63,7 +63,7 @@ class tmGISDataVector : public tmGISData
 		bool CheckGEOSIntersection(GEOSGeom * rect, GEOSGeom * object);
 		GEOSGeom  CreateGEOSGeometry (OGRGeometry * geom);
 		GEOSGeom  CreateGEOSGeometry (const tmRealRect & rect);
-		OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
+	
 		
 		// Intersection for snapping
 		
@@ -74,6 +74,8 @@ class tmGISDataVector : public tmGISData
 		
 		static OGRGeometry * SafeCreateFromGEOS (GEOSGeom geom);
 		static OGRGeometry * SafeBuffer (OGRGeometry * ogrgeom,  int size);
+		static OGRGeometry * SafeIntersection (OGRGeometry * geom1, OGRGeometry * geom2);
+		
 		
 	public:
 		// ctor, dtor
@@ -85,6 +87,7 @@ class tmGISDataVector : public tmGISData
 		static wxString GetAllVectorGISFormatsWildcards();
 		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
 		static tmGISDataVector * CreateGISVectorBasedOnExt (const wxString & extension);
+		static OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
 		
 		// gis function
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_UNKNOWN;}
@@ -95,6 +98,9 @@ class tmGISDataVector : public tmGISData
 		virtual wxRealPoint * GetNextDataPoint (long & oid){return NULL;}
 		virtual int GetNextDataPolygonInfo (long & oid){return -1;}
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex){return NULL;}
+		virtual OGRGeometry * GetGeometryByOID (long oid){ return NULL;}
+		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid){return false;}
+		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid){return false;}
 		
 		// counting
 		virtual int GetCount (){return -1;}
@@ -105,6 +111,10 @@ class tmGISDataVector : public tmGISData
 		
 		// Metadata
 		wxString GetFieldsMetadata ();
+		
+		// transformations
+		bool CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
+							  OGRLineString & lineresult1, OGRLineString & lineresult2);
 		
 	};
 

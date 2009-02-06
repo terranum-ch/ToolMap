@@ -76,6 +76,7 @@ class tmSelectedDataMemory : public wxObject
 		wxColour GetSelectionColour2() {return *wxGREEN;}
 		long GetSelectedLayer () {return m_LayerID;}
 		wxArrayLong * GetSelectedValues ();
+		long GetSelectedUnique();
 		
 	};
 

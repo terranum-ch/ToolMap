@@ -248,3 +248,20 @@ wxArrayLong * tmSelectedDataMemory::GetSelectedValues ()
 }
 
 
+/***************************************************************************//**
+ @brief Get the selected value
+ @details This function is designed to get the selected value when only one
+ object is selected.
+ @return  The oid of the selected layer, or -1 if an error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+long tmSelectedDataMemory::GetSelectedUnique()
+{
+	unsigned iNbItems = GetCount();
+	if (iNbItems != 1)
+		return -1;
+	
+	return m_SelectedIDs->Item(0);
+}
+

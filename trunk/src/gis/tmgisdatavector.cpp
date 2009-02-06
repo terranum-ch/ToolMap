@@ -424,4 +424,116 @@ OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
 	return returnbuffer;
 }
 
+/***************************************************************************//**
+ @brief Compute intersection
+ @details This function try to bypass the Intersection() bug of GDAL by using
+ GEOS directly
+ @param geom1 The geometry to intersect
+ @param geom2 the geometry intersecting
+ @return  A valid OGRLineString or NULL
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 18 November 2008
+ *******************************************************************************/
+OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry * geom2)
+{
+	wxASSERT(geom1);
+	wxASSERT(geom2);
+	
+	GEOSGeom  geosline = NULL;
+	GEOSGeom  geosframe = NULL;
+	GEOSGeom  geosintersect = NULL;
+	OGRGeometry * returncrop = NULL;
+	
+	
+	geosline = geom1->exportToGEOS();
+	geosframe = geom2->exportToGEOS();
+	
+	wxASSERT(geosline);
+	wxASSERT(geosframe);
+	if (geosline != NULL && geosframe != NULL)
+	{
+		geosintersect = GEOSIntersection(geosline, geosframe);
+		GEOSGeom_destroy(geosline);
+		GEOSGeom_destroy(geosframe);
+		
+		if (geosintersect != NULL)
+		{
+			returncrop = SafeCreateFromGEOS(geosintersect);
+			GEOSGeom_destroy(geosintersect);
+		}
+		
+		
+	}
+	
+	return returncrop;
+}
+
+
+
+/***************************************************************************//**
+ @brief Cut line in two at specified point
+ @param line1 The original line to cut
+ @param pointbuffer the point
+ @param lineresult1 the resulting line 1
+ @param lineresult2 the resulting line 2
+ @return true if succeed, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
+					  OGRLineString & lineresult1, OGRLineString & lineresult2)
+{
+	// get all vertex
+	int iLine1Vertex = line1->getNumPoints();
+	OGRPoint myActualVertex;
+	int iIntersectVertex = -1;
+	for(int i = 0; i< iLine1Vertex;i++)
+	{
+		myActualVertex.setX(line1->getX(i));
+		myActualVertex.setY(line1->getY(i));
+		
+		if (myActualVertex.Intersect(pointbuffer))
+		{
+			iIntersectVertex = i;
+			wxLogDebug(_T("Vertex found for cutting : %d"), iIntersectVertex);
+			break;
+		}
+	}
+	
+	if (iIntersectVertex == 0 || iIntersectVertex == iLine1Vertex-1)
+	{
+		wxLogDebug(_T("Unable to cut at first or last vertex, try again"));
+		return false;
+	}
+	
+	// intersection @ vertex
+	if (iIntersectVertex != -1)
+	{
+		// fill both geometry
+		for (int j=0;j<iLine1Vertex;j++)
+		{
+			if (j <= iIntersectVertex)
+			{
+				lineresult1.addPoint(line1->getX(j), line1->getY(j), line1->getZ(j));
+			}
+			
+			if (j >= iIntersectVertex)
+			{
+				lineresult2.addPoint(line1->getX(j), line1->getY(j), line1->getZ(j));
+			}
+		}
+		
+		return true;
+		
+	}
+	else 
+	{
+		wxASSERT_MSG(0,_T("Not implemented"));
+		return false;
+	}
+	
+	
+	return true;
+}
+
 
