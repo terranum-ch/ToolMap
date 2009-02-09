@@ -89,7 +89,7 @@ class tmGISDataVector : public tmGISData
 		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
 		static tmGISDataVector * CreateGISVectorBasedOnExt (const wxString & extension);
 		static OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
-		static OGRLineString * InsertVertex (OGRGeometry * pointbuffer,
+		static OGRLineString * InsertVertex (OGRGeometry * pointbuffer,wxRealPoint ptclicked,
 										   OGRLineString * line, int & inseredvertex);
 		
 		
@@ -118,7 +118,8 @@ class tmGISDataVector : public tmGISData
 		
 		// transformations
 		bool CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
-							  OGRLineString & lineresult1, OGRLineString & lineresult2);
+							  wxRealPoint ptclicked, OGRLineString & lineresult1,
+							  OGRLineString & lineresult2);
 		
 	};
 
