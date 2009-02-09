@@ -44,6 +44,9 @@
 //#include "../database/database_tm.h"
 
 
+// DELCARE ARRAY OF REALPOINTS
+WX_DECLARE_OBJARRAY(wxRealPoint, wxArrayRealPoints);
+
 
 /***************************************************************************//**
  @brief In charge of all the drawing into bitmaps
@@ -107,10 +110,12 @@ class tmDrawer : public wxObject
 		void DrawEditSegment (const wxRealPoint & pt1,
 							  const wxRealPoint & pt2,
 							  int size);
-		void DrawEditLine (wxRealPoint * pts, int nb_pts, int size, wxColour colour = *wxRED);
+		void DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour colour = *wxRED);
 		
 		
 	};
+
+
 
 
 

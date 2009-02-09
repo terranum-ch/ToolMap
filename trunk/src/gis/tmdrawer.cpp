@@ -22,6 +22,9 @@
 
 bool tmDrawer::m_LogOn = true;
 
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY (wxArrayRealPoints);
+
 tmDrawer::tmDrawer()
 {
 	m_bmp = NULL;
@@ -824,7 +827,7 @@ void tmDrawer::DrawPoint (const wxPoint & pt, wxClientDC * pcdc)
  @author Lucien Schreiber (c) CREALP 2009
  @date 04 February 2009
  *******************************************************************************/
-void tmDrawer::DrawEditLine (wxRealPoint * pts, int nb_pts, int size, wxColour colour)
+void tmDrawer::DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour colour)
 {
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_bmp);
@@ -833,10 +836,11 @@ void tmDrawer::DrawEditLine (wxRealPoint * pts, int nb_pts, int size, wxColour c
 	wxPen * myVertexPen = CreateEditUniqueVertexPen(size);
 	
 	// convert real to screen
+	int nb_pts = pts.GetCount();
 	wxPoint * myPts = new wxPoint[nb_pts];
 	for (int i = 0; i<nb_pts; i++)
 	{
-		myPts[i] = m_scale.RealToPixel(pts[i]);
+		myPts[i] = m_scale.RealToPixel(pts.Item(i));
 	}
 	
 	// draw segments

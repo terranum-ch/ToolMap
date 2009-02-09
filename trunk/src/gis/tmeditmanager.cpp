@@ -343,15 +343,13 @@ bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 												  mySelArray->Item(k),
 												  m_TOC->GetEditLayer()->m_LayerType) == false)
 					break;
-				int myPtsNumber = 0;
-				wxRealPoint * myPts = myGISMem.GetVertexAll(myPtsNumber);
-				if (myPts == NULL)
+				wxArrayRealPoints myPts;
+				if(myGISMem.GetVertexAll(myPts) == false)
 					break;
 				
-				myEditDrawer.DrawEditLine(myPts, myPtsNumber, 
+				myEditDrawer.DrawEditLine(myPts, 
 										  mySymbol->GetWidth(),
 										  mySymbol->GetColour());
-				delete [] myPts;
 			}
 			if (mySelArray)
 				delete mySelArray;
@@ -535,13 +533,15 @@ void tmEditManager::DrawEditLine ()
 	
 	
 	// get all vertex 
-	wxRealPoint * myRealPts = new wxRealPoint[iNbVertexMemory];
+	wxArrayRealPoints myRealPts;
+	wxRealPoint myActualPoint;
 	for (int i = 0; i<iNbVertexMemory; i++)
 	{
-		m_GISMemory->GetVertex(myRealPts[i], i);
+		m_GISMemory->GetVertex(myActualPoint, i);
+		myRealPts.Add(myActualPoint);
 	}
 	
-	myEditDrawer.DrawEditLine(myRealPts, iNbVertexMemory,
+	myEditDrawer.DrawEditLine(myRealPts,
 							  mySymbol->GetWidth());
 	
 	m_Renderer->Refresh();

@@ -98,6 +98,8 @@ void tmAttributionManager::OnShortcutPressed (wxKeyEvent & event)
 	wxString myDescription = _T("");
 	wxArrayLong myValues;
 	
+	wxLogDebug(_T("Key pressed : value %d"),event.GetKeyCode());
+	
 	if (event.GetKeyCode() >= WXK_F1 && event.GetKeyCode() <= WXK_F12)
 	{
 		// get the key index : 
