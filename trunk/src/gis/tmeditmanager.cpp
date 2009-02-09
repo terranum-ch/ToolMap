@@ -670,7 +670,8 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	OGRLineString myLine1;
 	OGRLineString myLine2;
 	
-	bool bCut = mySelLine->CutLineGeometry(myLine, myClickBuffer,
+	wxRealPoint myClickedPoint = m_Scale->PixelToReal(myCutPos);
+	bool bCut = mySelLine->CutLineGeometry(myLine, myClickBuffer,myClickedPoint,
 							   myLine1, myLine2);
 	OGRGeometryFactory::destroyGeometry(myLine);
 	OGRGeometryFactory::destroyGeometry (myClickBuffer);

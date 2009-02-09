@@ -523,7 +523,9 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
  @date 06 February 2009
  *******************************************************************************/
 bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
-					  OGRLineString & lineresult1, OGRLineString & lineresult2)
+									   wxRealPoint ptclicked,
+									   OGRLineString & lineresult1,
+									   OGRLineString & lineresult2)
 {
 	// get all vertex
 	int iLine1Vertex = line1->getNumPoints();
@@ -572,7 +574,7 @@ bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * poin
 	{
 		// create intersection
 		int iInsertedVertex = 0;
-		OGRLineString * myLineWithIntersect = InsertVertex(pointbuffer,
+		OGRLineString * myLineWithIntersect = InsertVertex(pointbuffer, ptclicked,
 														   line1, 
 														   iInsertedVertex);
 		int myIntersection = iInsertedVertex;
@@ -618,7 +620,7 @@ bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * poin
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
-OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer,
+OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer, wxRealPoint ptclicked,
 								   OGRLineString * line, int & inseredvertex)
 {
 	
@@ -666,7 +668,8 @@ OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer,
 		
 		if (j == inseredvertex-1)
 		{
-			((OGRPolygon*) pointbuffer)->Centroid(&p2);
+			p2.setX(ptclicked.x);
+			p2.setY(ptclicked.y);
 			returnedLine->addPoint(&p2);
 		}
 		
