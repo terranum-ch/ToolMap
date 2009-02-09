@@ -64,6 +64,7 @@ class tmAttributionManager : public wxEvtHandler
 		tmSelectedDataMemory *	m_SelData;
 		tmTOCCtrl *				m_TOC;
 		DataBaseTM *			m_pDB;
+		bool					m_ShortcutLoaded;
 		
 		tmLayerProperties * m_pLayerProperties;
 		tmShortcutMemory		m_ShortcutMem;
@@ -78,7 +79,7 @@ class tmAttributionManager : public wxEvtHandler
 		int LoadShortcutIntoMemory ();
 		void ConnectShortcutEvent();
 		void DisconnectShortcutEvent();
-		void OnShortcutPressed (wxKeyEvent & event);
+		void OnShortcutPressed (wxCommandEvent & event);
 		bool ShortcutAttributionChecking (int iCount,
 										  int shortcutlayer_type);
 		

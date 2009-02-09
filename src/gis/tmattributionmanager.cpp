@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_INFO_BTN_PRESSED, tmAttributionManager::OnInfoBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_RUN, tmAttributionManager::OnRunQuery)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
+	EVT_COMMAND (wxID_ANY, tmEVT_AM_SHORTCUT_PRESSED, tmAttributionManager::OnShortcutPressed)
 END_EVENT_TABLE()
 
 
@@ -53,6 +54,7 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
 	m_Parent->PushEventHandler(this);
+	m_ShortcutLoaded = false;
 	
 }
 
@@ -65,9 +67,7 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
  *******************************************************************************/
 void tmAttributionManager::ConnectShortcutEvent()
 {
-	Connect(wxID_ANY, wxEVT_CHAR, 
-			wxCharEventHandler(tmAttributionManager::OnShortcutPressed));
-
+	m_ShortcutLoaded = true;
 }
 
 
@@ -79,9 +79,7 @@ void tmAttributionManager::ConnectShortcutEvent()
  *******************************************************************************/
 void tmAttributionManager::DisconnectShortcutEvent()
 {
-	Disconnect(wxID_ANY, wxEVT_CHAR, 
-			   wxCharEventHandler(tmAttributionManager::OnShortcutPressed));
-		
+	m_ShortcutLoaded = false;
 }
 
 
@@ -91,19 +89,24 @@ void tmAttributionManager::DisconnectShortcutEvent()
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 December 2008
  *******************************************************************************/
-void tmAttributionManager::OnShortcutPressed (wxKeyEvent & event)
+void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event)
 {
 	int iShortcutIndex = 0;
 	int myLayerType = -1;
 	wxString myDescription = _T("");
 	wxArrayLong myValues;
+
+	if (m_ShortcutLoaded == false)
+		return;
+
+	int myKeyCode = event.GetInt();
 	
-	wxLogDebug(_T("Key pressed : value %d"),event.GetKeyCode());
+	wxLogDebug(_T("Key pressed : value %d"),myKeyCode);
 	
-	if (event.GetKeyCode() >= WXK_F1 && event.GetKeyCode() <= WXK_F12)
+	if (myKeyCode >= WXK_F1 && myKeyCode <= WXK_F12)
 	{
 		// get the key index : 
-		iShortcutIndex = event.GetKeyCode() - WXK_F1 + 1;
+		iShortcutIndex = myKeyCode - WXK_F1 + 1;
 		wxASSERT(iShortcutIndex >= 1 && iShortcutIndex <=12);
 		if(m_ShortcutMem.GetShortcut(iShortcutIndex, myLayerType,
 									 myDescription, myValues) != wxNOT_FOUND)
@@ -135,10 +138,8 @@ void tmAttributionManager::OnShortcutPressed (wxKeyEvent & event)
 			}
 		}
 		
-		event.Skip(false); // otherwise two events are processed
+		
 	}
-	else // if not a shortcut, skip
-		event.Skip(true);
 	
 }
 
