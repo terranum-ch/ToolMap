@@ -36,6 +36,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER)
 DEFINE_EVENT_TYPE(tmEVT_EM_CUT_LINE)
+DEFINE_EVENT_TYPE(tmEVT_AM_SHORTCUT_PRESSED)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -46,7 +47,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
-	EVT_KEY_DOWN (tmRenderer::OnEnterKey)
+	EVT_KEY_DOWN (tmRenderer::OnKey)
 END_EVENT_TABLE()
 
 
@@ -312,13 +313,21 @@ void tmRenderer::OnShiftUp		(wxKeyEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/
-void tmRenderer::OnEnterKey	(wxKeyEvent & event)
+void tmRenderer::OnKey	(wxKeyEvent & event)
 {
 	if (event.GetKeyCode() == WXK_RETURN)
 	{
 		wxCommandEvent evt(tmEVT_EM_DRAW_ENTER, wxID_ANY);
 		GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	if (event.GetKeyCode() >= WXK_F1 && event.GetKeyCode() <= WXK_F12)
+	{
+		wxCommandEvent evt2(tmEVT_AM_SHORTCUT_PRESSED, wxID_ANY);
+		evt2.SetInt( event.GetKeyCode());
+		GetEventHandler()->AddPendingEvent(evt2);
+	}
+
 	
 	event.Skip();
 }
