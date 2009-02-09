@@ -280,7 +280,7 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVectorMemory::GetVertexAll (int & nb_pts)
+bool tmGISDataVectorMemory::GetVertexAll (wxArrayRealPoints & myPts)
 {
 	if (m_Feature == NULL)
 		return false;
@@ -289,16 +289,20 @@ wxRealPoint * tmGISDataVectorMemory::GetVertexAll (int & nb_pts)
 	if (myMemLine == NULL)
 		return false;
 	
-	nb_pts = myMemLine->getNumPoints();
-	wxRealPoint * myPts = new wxRealPoint[nb_pts-1];
+	
+	
+	int nb_pts = myMemLine->getNumPoints();
+	//wxRealPoint * myPts = new wxRealPoint[nb_pts-1];
+	wxRealPoint myPoint;
 	
 	for(int i = 0; i< nb_pts;i++)
 	{
-		myPts[i].x = myMemLine->getX(i);
-		myPts[i].y = myMemLine->getY(i);
+		myPoint.x = myMemLine->getX(i);
+		myPoint.y = myMemLine->getY(i);
+		myPts.Add(myPoint);
 	}
 	
-	return myPts;
+	return true;
 }
 
 
