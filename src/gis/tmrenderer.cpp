@@ -59,7 +59,7 @@ END_EVENT_TABLE()
  *******************************************************************************/
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : 
 wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, 
-				  wxWS_EX_PROCESS_UI_UPDATES )
+				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS )
 {
 	m_bmp = NULL;
 	m_SelectRect = new wxRubberBand(this);
