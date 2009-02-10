@@ -121,9 +121,14 @@ class tmGISDataVector : public tmGISData
 		bool CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
 							  wxRealPoint ptclicked, OGRLineString & lineresult1,
 							  OGRLineString & lineresult2);
+		bool CutLineGeometry(OGRLineString * line1, OGRLineString * line2,
+							 OGRMultiLineString & res1, 
+							 OGRMultiLineString & res2);
 		
 		// Searching 
 		virtual wxArrayLong * SearchIntersectingGeometry (OGRGeometry * intersectinggeom){return NULL;}
+		
+		
 		
 	};
 

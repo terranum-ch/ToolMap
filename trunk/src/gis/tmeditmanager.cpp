@@ -646,10 +646,6 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	wxLogDebug(_T("Ok for cutting line @ %d / %d"),myCutPos.x, myCutPos.y);
 	
 	
-	// Find the line (see selection)
-	//if (SelectedSearch(myCutPos) == false)
-	//	return;
-	
 	// Get the selected line 
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
 	if (!mySelLayer)
@@ -883,6 +879,20 @@ bool tmEditManager::CreateIntersections ()
 		return false;
 	}
 	
+	
+	// for all crossing line, compute intersections
+	//TODO: This is a test
+	OGRLineString * myCrossedL = (OGRLineString*) mySelLayer->
+					GetGeometryByOID(myLinesCrossing->Item(0));
+	
+	OGRMultiLineString myRes1;
+	OGRMultiLineString myRes2;
+	
+	mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
+								myRes1,	myRes2);
+	
+	if (myCrossedL)
+		OGRGeometryFactory::destroyGeometry(myCrossedL);
 	
 	
 	OGRGeometryFactory::destroyGeometry(myOGRSelLine);

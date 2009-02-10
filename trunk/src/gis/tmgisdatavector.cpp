@@ -633,6 +633,50 @@ bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * poin
 
 
 /***************************************************************************//**
+ @brief Cut two lines where they intesects.
+ @param line1 The first passed line for intersection
+ @param line2 The second line passed for intersection
+ @param res1 Resulting multi-lines for first passed lines
+ @param res2 Resulting multi-lines for second passed line
+ @return  true if the function works.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 10 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * line2,
+									   OGRMultiLineString & res1, 
+									   OGRMultiLineString & res2)
+{
+	OGRGeometry * myIntersectionPoint = SafeIntersection(line1, line2);
+	if (myIntersectionPoint == NULL)
+		return false;
+	
+	// Fill an array of intersections point
+	OGRMultiPoint myPoints;
+	OGRwkbGeometryType myIntersectionType = wkbFlatten(myIntersectionPoint->getGeometryType());
+	if (myIntersectionType == wkbPoint)
+	{
+		
+		myPoints.addGeometry(((OGRPoint*) myIntersectionPoint))
+		
+	}
+	else if (myIntersectionType == wkbMultiPoint)
+	{
+		OGRMultiPoint * myIntersectionsPoints = (OGRMultiPoint*) myIntersectionPoint;
+		for (int i = 0; i< myIntersectionsPoints->getNumGeometries(); i++)
+			myPoints.addGeometry(myIntersectionsPoints->getGeometryRef(i));
+	}
+	OGRGeometryFactory::destroyGeometry(myIntersectionPoint);
+	wxASSERT(myPoints.getNumGeometries() > 0);
+	
+	// insert vertex into lines
+	
+	
+	
+	return true;
+}
+
+
+/***************************************************************************//**
  @brief Insert a vertex in a passed line
  @param pointbuffer the buffer (polygon) intersecting the line
  @param line the line
