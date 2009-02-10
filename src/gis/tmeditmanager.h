@@ -131,6 +131,9 @@ class tmEditManager : public wxEvtHandler
 		
 		// search function (from tmLayerManager)
 		bool SelectedSearch (const wxPoint & screenpt);  
+		
+		// segmentation
+		bool CreateIntersections ();
 	};
 
 

@@ -92,6 +92,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	//EDIT MENU
 	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
 	EVT_MENU (ID_MENU_UNDO, ToolMapFrame::OnEditUndo)
+	EVT_MENU (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnCreateIntersections)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -750,6 +751,18 @@ void ToolMapFrame::OnEditDeleteSelected (wxCommandEvent & event)
 void ToolMapFrame::OnEditUndo (wxCommandEvent & event)
 {
 	m_EditManager->UndoLastVertex();
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when user try to create intersections
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 09 February 2009
+ *******************************************************************************/
+void ToolMapFrame::OnCreateIntersections (wxCommandEvent & event)
+{
+	m_EditManager->CreateIntersections();
 }
 
 

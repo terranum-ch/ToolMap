@@ -668,6 +668,70 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 
 }
 
+/***************************************************************************//**
+ @brief Search data for intersection
+ @details Search in all dataset for objects intersecting the passed geometry.
+ First we specify a rectangle (for spatial filter) and then we search with GEOS
+ inside the results
+ @param intersectinggeom The geometry we search for intersection
+ @return  Adress of an array of OID, or NULL if nothing found
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 09 February 2009
+ *******************************************************************************/
+wxArrayLong * tmGISDataVectorMYSQL::SearchIntersectingGeometry (OGRGeometry * intersectinggeom)
+{
+	m_DB->DataBaseDestroyResults();
+	
+	// create bounding box
+	wxASSERT (intersectinggeom);
+	OGREnvelope myEnv;
+	intersectinggeom->getEnvelope(&myEnv);
+	
+	
+	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
+									  myEnv.MinX, myEnv.MinY,
+									  myEnv.MaxX, myEnv.MinY,
+									  myEnv.MaxX, myEnv.MaxY,
+									  myEnv.MinX, myEnv.MaxY,
+									  myEnv.MinX, myEnv.MinY);
+	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+										  GetShortFileName().c_str(), sRect.c_str());
+	
+	MYSQL_ROW row;
+	unsigned long * row_size = 0;
+	GEOSGeom grect = CreateGEOSGeometry(intersectinggeom);
+	
+	if (m_DB->DataBaseQuery(sSentence))
+	{
+		
+		wxArrayLong * myArray = new wxArrayLong();
+		for (int i = 0; i< m_DB->DatabaseGetCountResults();i++)
+		{
+			// construct geos geom
+			row_size = m_DB->DataBaseGetNextRowResult(row);
+			OGRGeometry * ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
+			GEOSGeom  geom = CreateGEOSGeometry(ogrgeom);
+			
+			if (CheckGEOSCrosses(&grect,&geom))
+				myArray->Add(GetOid(row, 0)); 
+			
+			// destroy geometry
+			GEOSGeom_destroy(geom);
+			OGRGeometryFactory::destroyGeometry(ogrgeom);
+		}
+		GEOSGeom_destroy(grect);
+		return myArray;
+			
+		
+	}
+	
+	
+	wxLogDebug(_T("Error searching spatial data : %s"),
+			   m_DB->DataBaseGetLastError().c_str());
+	return NULL;
+}
+
 
 
 /***************************************************************************//**

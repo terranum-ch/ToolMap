@@ -140,6 +140,28 @@ bool tmGISDataVector::CheckGEOSIntersection(GEOSGeom * rect, GEOSGeom * object)
 }
 
 
+
+/***************************************************************************//**
+ @brief Check for crossing (not bounding box)
+ @details This function may be used for ensuring that a geometry really
+ crosses another one
+ @note Needs GEOS library
+ @param g1 GEOS geometry
+ @param g2 GEOS geometry
+ @return  true if g2 really crosses g1.
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 10 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::CheckGEOSCrosses (GEOSGeom * g1, GEOSGeom * g2)
+{
+	char result = GEOSCrosses(*g1, *g2);
+	if (result == 1)
+		return true;
+	
+	return false;
+}
+
+
 /***************************************************************************//**
  @brief Create a GEOS geometry
  @details This function may be used for creating a GEOS compatible geometry from
