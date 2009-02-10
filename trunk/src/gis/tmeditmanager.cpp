@@ -845,3 +845,57 @@ bool tmEditManager::UndoLastVertex ()
 
 
 
+/***************************************************************************//**
+ @brief Create intersections
+ @details between the selected line and all crossed lines.
+ @return  true if all works, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 09 February 2009
+ *******************************************************************************/
+bool tmEditManager::CreateIntersections ()
+{
+	// checks (editing mode and 1 line selected)
+	if (IsModifictionAllowed() == false)
+		return false;
+	
+	if (m_TOC->GetEditLayer()->m_LayerSpatialType != LAYER_SPATIAL_LINE)
+		return false;
+	
+	// Get the Layer (Line MySQL) 
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (!mySelLayer)
+		return false;
+	
+	OGRLineString * myOGRSelLine = (OGRLineString*) mySelLayer->GetGeometryByOID(m_SelectedData->GetSelectedUnique());
+	if (!myOGRSelLine)
+		return false;
+	
+	// Get all line crossing
+	wxArrayLong * myLinesCrossing = mySelLayer->SearchIntersectingGeometry(myOGRSelLine);
+	if (myLinesCrossing == NULL)
+	{
+		OGRGeometryFactory::destroyGeometry(myOGRSelLine);
+		wxLogDebug(_T("No intersections found"));
+		return false;
+	}
+	
+	
+	
+	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
+	
+	// Select all line crossing (TEMP)
+	m_SelectedData->Clear();
+	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
+	m_SelectedData->AddSelected(myLinesCrossing);
+	delete myLinesCrossing;
+	
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	
+	return true;	
+}
+
+

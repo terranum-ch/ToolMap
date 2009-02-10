@@ -299,6 +299,7 @@ private:
 	void OnEditSwitch (wxCommandEvent & event);
 	void OnEditDeleteSelected (wxCommandEvent & event);
 	void OnEditUndo (wxCommandEvent & event);
+	void OnCreateIntersections (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);

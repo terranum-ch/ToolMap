@@ -61,6 +61,7 @@ class tmGISDataVector : public tmGISData
 
 		// GEOS functions 
 		bool CheckGEOSIntersection(GEOSGeom * rect, GEOSGeom * object);
+		bool CheckGEOSCrosses (GEOSGeom * g1, GEOSGeom * g2);
 		GEOSGeom  CreateGEOSGeometry (OGRGeometry * geom);
 		GEOSGeom  CreateGEOSGeometry (const tmRealRect & rect);
 	
@@ -120,6 +121,9 @@ class tmGISDataVector : public tmGISData
 		bool CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
 							  wxRealPoint ptclicked, OGRLineString & lineresult1,
 							  OGRLineString & lineresult2);
+		
+		// Searching 
+		virtual wxArrayLong * SearchIntersectingGeometry (OGRGeometry * intersectinggeom){return NULL;}
 		
 	};
 
