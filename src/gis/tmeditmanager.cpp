@@ -633,26 +633,30 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	// change cursor
 	m_Renderer->SetTool(tmTOOL_SELECT);
 	
-	// some checks 
-	if (IsDrawingAllowed() == false)
+	// some checks (1 object selected)
+	if (IsModifictionAllowed() == false)
+	{
+		wxLogDebug(_T("Unable to cut line, select a line first"));
 		return;
-	
+	}
 	if (m_TOC->GetEditLayer()->m_LayerSpatialType != LAYER_SPATIAL_LINE)
 		return;
 	
+	
 	wxLogDebug(_T("Ok for cutting line @ %d / %d"),myCutPos.x, myCutPos.y);
 	
+	
 	// Find the line (see selection)
-	if (SelectedSearch(myCutPos) == false)
-		return;
+	//if (SelectedSearch(myCutPos) == false)
+	//	return;
 	
 	// Get the selected line 
-	tmGISDataVector * mySelLine = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
-	if (!mySelLine)
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (!mySelLayer)
 		return;
 	
 	// get the geometry of selected line to cut
-	OGRLineString * myLine = (OGRLineString*) mySelLine->GetGeometryByOID(m_SelectedData->GetSelectedUnique());
+	OGRLineString * myLine = (OGRLineString*) mySelLayer->GetGeometryByOID(m_SelectedData->GetSelectedUnique());
 	if (!myLine)
 		return;
 	
@@ -671,7 +675,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	OGRLineString myLine2;
 	
 	wxRealPoint myClickedPoint = m_Scale->PixelToReal(myCutPos);
-	bool bCut = mySelLine->CutLineGeometry(myLine, myClickBuffer,myClickedPoint,
+	bool bCut = mySelLayer->CutLineGeometry(myLine, myClickBuffer,myClickedPoint,
 							   myLine1, myLine2);
 	OGRGeometryFactory::destroyGeometry(myLine);
 	OGRGeometryFactory::destroyGeometry (myClickBuffer);
@@ -680,8 +684,8 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 		return;
 	
 	// update and insert geometry 
-	mySelLine->UpdateGeometry(&myLine1, m_SelectedData->GetSelectedUnique());
-	mySelLine->AddGeometry(&myLine2, 0);
+	mySelLayer->UpdateGeometry(&myLine1, m_SelectedData->GetSelectedUnique());
+	mySelLayer->AddGeometry(&myLine2, 0);
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
