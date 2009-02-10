@@ -543,12 +543,8 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 	pResults = NULL;
 	bool bReturn = false;
 	
-	// conversion Unicode wxString -> const char *
-	char * buffer = new char [myQuery.Length()+2];
-	strcpy(buffer, (const char*)myQuery.mb_str(wxConvUTF8));
-
 	
-	int iRetour = mysql_query(pMySQL, buffer);
+	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8));
 	if (iRetour == 0) 
 	{
 		pResults = mysql_store_result(pMySQL);
@@ -556,7 +552,7 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 		m_resultCount = DatabaseGetCountResults();
 		bReturn = true;
 	}
-	delete [] buffer;
+
 	return bReturn;
 }
 
@@ -572,10 +568,7 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
  *******************************************************************************/
 wxArrayLong * DataBase::DataBaseQuerySafe (const wxString & myQuery)
 {
-	// conversion Unicode wxString -> const char *
-	char * buffer = new char [myQuery.Length()+2];
-	strcpy(buffer, (const char*)myQuery.mb_str(wxConvUTF8));
-	
+
 	
 	DataBaseDestroyResults();
 	
@@ -584,7 +577,7 @@ wxArrayLong * DataBase::DataBaseQuerySafe (const wxString & myQuery)
 		return NULL;
 	
 	
-	int iRetour = mysql_query(pMySQL, buffer);
+	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8));
 	MYSQL_RES * myResults = NULL;
 	if (iRetour == 0) 
 	{
