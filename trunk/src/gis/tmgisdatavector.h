@@ -123,6 +123,7 @@ class tmGISDataVector : public tmGISData
 		virtual OGRGeometry * GetGeometryByOID (long oid){ return NULL;}
 		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid){return false;}
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid){return false;}
+		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid);
 		
 		// counting
 		virtual int GetCount (){return -1;}

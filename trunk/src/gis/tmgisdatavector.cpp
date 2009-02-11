@@ -755,6 +755,30 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Save splitted geometry to file
+ @details The first geometry is updated, others are added into database.
+ @param gCol the collection of geometries to update
+ @param oid the oid
+ @return  true if all operations are successfull
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::SplitGeometry (OGRGeometryCollection * gCol, const long & oid)
+{
+	if (UpdateGeometry(gCol->getGeometryRef(0), oid) == false)
+		return false;
+	
+	for (int i = 1;i < gCol->getNumGeometries(); i++)
+		if (AddGeometry(gCol->getGeometryRef(i), -1) == false)
+			return false;
+		
+	return true;
+}
+
+
 /***************************************************************************//**
  @brief Split line at specified vertex
  @param line The line to split

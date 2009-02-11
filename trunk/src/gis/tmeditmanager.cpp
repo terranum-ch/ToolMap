@@ -883,45 +883,34 @@ bool tmEditManager::CreateIntersections ()
 	OGRMultiLineString myRes2;
 	
 	// for all crossing line, compute intersections
-	//TODO: This is a test
-	OGRLineString * myCrossedL = (OGRLineString*) mySelLayer->
-					GetGeometryByOID(myLinesCrossing->Item(0));
-	
 
 	
-	mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
-								myRes1,	myRes2);
-	
-	if (myCrossedL)
-		OGRGeometryFactory::destroyGeometry(myCrossedL);
-	
-	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
-	
-	// test : update geometry
-	if (myRes1.getNumGeometries() > 0)
+	for (unsigned int i = 0 ; i< myLinesCrossing->GetCount(); i++)
 	{
-		mySelLayer->UpdateGeometry(myRes1.getGeometryRef(0),
-								   m_SelectedData->GetSelectedUnique());
-		for (int i = 1; i< myRes1.getNumGeometries(); i++)
-			mySelLayer->AddGeometry(myRes1.getGeometryRef(i),-1);
-		
-		wxLogDebug(_T("%d geometries updated / added"),
-				   myRes1.getNumGeometries());
-		
+		OGRLineString * myCrossedL = (OGRLineString*) mySelLayer->
+					GetGeometryByOID(myLinesCrossing->Item(i));
+		if (myCrossedL)
+		{
+			mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
+										myRes1,	myRes2);
+			OGRGeometryFactory::destroyGeometry(myCrossedL);
+			
+			// update geometry
+			mySelLayer->SplitGeometry(&myRes1, m_SelectedData->GetSelectedUnique());
+			mySelLayer->SplitGeometry(&myRes2, myLinesCrossing->Item(i));
+			
+			
+		}
 	}
 	
 	
-	// Select all line crossing (TEMP)
-	m_SelectedData->Clear();
-	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
-	m_SelectedData->AddSelected(myLinesCrossing);
+	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
 	delete myLinesCrossing;
 	
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
-	
 	
 	return true;	
 }
