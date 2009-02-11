@@ -894,8 +894,21 @@ bool tmEditManager::CreateIntersections ()
 	if (myCrossedL)
 		OGRGeometryFactory::destroyGeometry(myCrossedL);
 	
-	
 	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
+	
+	// test : update geometry
+	if (myRes1.getNumGeometries() > 0)
+	{
+		mySelLayer->UpdateGeometry(myRes1.getGeometryRef(0),
+								   m_SelectedData->GetSelectedUnique());
+		/*for (int i = 1; i< myRes1.getNumGeometries(); i++)
+			mySelLayer->AddGeometry(myRes1.getGeometryRef(i),-1);*/
+		
+		wxLogDebug(_T("%d geometries updated / added"),
+				   myRes1.getNumGeometries());
+		
+	}
+	
 	
 	// Select all line crossing (TEMP)
 	m_SelectedData->Clear();

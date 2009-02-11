@@ -646,17 +646,17 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * lin
 									   OGRMultiLineString & res1, 
 									   OGRMultiLineString & res2)
 {
-	OGRGeometry * myIntersectionPoint = SafeIntersection(line1, line2);
+	/*OGRGeometry * myIntersectionPoint = SafeIntersection(line1, line2);
 	if (myIntersectionPoint == NULL)
 		return false;
 	
-	// Fill an array of intersections point
+	/ Fill an array of intersections point
 	OGRMultiPoint myPoints;
 	OGRwkbGeometryType myIntersectionType = wkbFlatten(myIntersectionPoint->getGeometryType());
 	if (myIntersectionType == wkbPoint)
 	{
 		
-		myPoints.addGeometry(((OGRPoint*) myIntersectionPoint))
+		myPoints.addGeometry(((OGRPoint*) myIntersectionPoint));
 		
 	}
 	else if (myIntersectionType == wkbMultiPoint)
@@ -669,10 +669,213 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * lin
 	wxASSERT(myPoints.getNumGeometries() > 0);
 	
 	// insert vertex into lines
+	wxArrayInt myVertexLine1;
+	OGRGeometry * myLine1 = InsertVertexMultiple(line1, &myPoints, myVertexLine1);
 	
+	if (myLine1)
+		OGRGeometryFactory::destroyGeometry(myLine1);*/
 	
+	// get vertex position
+	wxArrayInt myLine1VertexPos;
+	wxArrayInt myLine2VertexPos;
+	int myLine1Count = SearchVertexPos(line1, line2, myLine1VertexPos, true);
+	int myLine2Count = SearchVertexPos(line2, line1, myLine2VertexPos, true);
+	
+	if (myLine1Count == wxNOT_FOUND || myLine2Count == wxNOT_FOUND)
+		return false;
+	
+	// compute intersection
+	OGRMultiPoint multiPts1;
+	OGRMultiPoint multiPts2;
+	if (ComputeLineLineIntersection(line1, line2, myLine1VertexPos, multiPts1) == false)
+		return false;
+	if (ComputeLineLineIntersection(line2, line1, myLine2VertexPos, multiPts2) == false)
+		return false;
+	
+	/*int i = 0;
+	for (i = 0; i < multiPts1.getNumGeometries(); i++)
+		wxLogDebug(_T("Points 1 : %d = %.*f, %.*f"), i, 4, 
+				   ((OGRPoint*) multiPts1.getGeometryRef(i))->getX(),
+				   4,
+				   ((OGRPoint*) multiPts1.getGeometryRef(i))->getY());
+	
+	for (i = 0; i < multiPts2.getNumGeometries(); i++)
+		wxLogDebug(_T("Points 2 : %d = %.*f, %.*f"), i, 4, 
+				   ((OGRPoint*) multiPts2.getGeometryRef(i))->getX(),
+				   4,
+				   ((OGRPoint*) multiPts2.getGeometryRef(i))->getY());*/
+
+	
+	// insert vertex multiple
+	OGRLineString * myLine1WVertex;
+	OGRLineString * myLine2WVertex;
+	myLine1WVertex = InsertVertexMultiple(line1, &multiPts1, myLine1VertexPos);
+	if (myLine1WVertex == NULL)
+	{
+		wxLogDebug(_T("Error inserting vertex"));
+		return false;
+	}
+	myLine2WVertex = InsertVertexMultiple(line2, &multiPts2, myLine2VertexPos);
+	if (myLine2WVertex == NULL)
+	{
+		wxLogDebug(_T("Error inserting vertex"));
+		return false;
+	}
+	
+	res1.addGeometry(myLine1WVertex);
+	res2.addGeometry(myLine2WVertex);
+	
+	// cut lines @ specified vertex 
+	//SplitLinesAtVertex(myLine1WVertex, myLine1VertexPos , res1);
+	//SplitLinesAtVertex(myLine2WVertex, myLine2VertexPos, res2);
+	
+		
+	OGRGeometryFactory::destroyGeometry(myLine1WVertex);
+	OGRGeometryFactory::destroyGeometry(myLine2WVertex);
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Split line at specified vertex
+ @param line The line to split
+ @param splitpos an array containing the position to split
+ @param splitedline return all splitted lines
+ @return  true if spliting line works, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
+										  const wxArrayInt & splitpos,
+										  OGRMultiLineString & splitedline)
+{
+	OGRLineString myLine;
+	OGRPoint pt;
+	int lastpos = 0;
+	
+	for (unsigned int i = 0; i< splitpos.GetCount(); i++) 
+	{
+		for (int j = lastpos; j <= splitpos.Item(i) + (signed)i; j++)
+		{
+			line->getPoint(j, &pt);
+			myLine.addPoint(&pt);
+		}
+		splitedline.addGeometry(&myLine);
+		myLine.empty();
+		lastpos = splitpos.Item(i) + (signed) i;
+		wxLogDebug(_T("Splitting occur at : %d"), lastpos);
+	}
 	
 	return true;
+	
+}
+
+
+
+
+/***************************************************************************//**
+ @brief Compute intersection
+ @details between two line. The vertexindex is used to create a segment user for
+ intersection
+ @param line line used for creating segment for intersection
+ @param intersection line used for intersecting
+ @param vertexindex contain the vertex index, intersection should occur between
+ vertexindex  and vertexindex + 1
+ @param resultpos the position of the intersections
+ @param bool true if point returned
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line, 
+												   OGRLineString * intersection,
+												   const wxArrayInt & vertexindex,
+												   OGRMultiPoint & resultpos)
+{
+	OGRLineString segment;
+	OGRPoint p1;
+	OGRPoint p2;
+	bool bReturn = true;
+	
+	for (unsigned int i = 0; i< vertexindex.GetCount();i++)
+	{
+		line->getPoint(vertexindex.Item(i) -1,&p1);
+		line->getPoint(vertexindex.Item(i), &p2);
+		segment.addPoint(&p1);
+		segment.addPoint(&p2);
+		
+		OGRGeometry * myIntersectionPoint = SafeIntersection(&segment, intersection);
+		if (myIntersectionPoint)
+		{
+			if (wkbFlatten(myIntersectionPoint->getGeometryType()) == wkbPoint)
+			{
+				OGRPoint * myPt = (OGRPoint*) myIntersectionPoint;
+				resultpos.addGeometryDirectly(myPt);
+			}
+			else
+			{
+				wxLogError(_T("Result of intersection isn't a point !"));
+				bReturn = false;
+			}
+			
+			//OGRGeometryFactory::destroyGeometry(myIntersectionPoint);
+		}
+		segment.empty();
+	}
+	return bReturn;
+}
+
+/***************************************************************************//**
+ @brief Search where passed geometry intersect the line
+ @param line the line to intersect
+ @param intersecttarget the intersecting geometry
+ @return  wxNOT_FOUND If no intersection is found or the position where to insert the
+ vertex. vertex should be inserted between retuned and returned + 1
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 10 February 2009
+ *******************************************************************************/
+int tmGISDataVector::SearchVertexPos (OGRLineString * line, OGRGeometry * intersecttarget,
+									  wxArrayInt & myVertexFoundPos, bool bContinue)
+{
+	OGRPoint p1;
+	OGRPoint p2;
+	OGRLineString segment;
+	int inseredvertex = wxNOT_FOUND;
+	bool bFound = false;
+	
+	
+	for (int i = 0;i < line->getNumPoints(); i++)
+	{
+		line->getPoint(i, &p1);
+		
+		if (i+1 < line->getNumPoints())
+		{
+			line->getPoint(i+1, &p2);
+			segment.addPoint(&p1);
+			segment.addPoint(&p2);
+			
+			// intersection found
+			if (segment.Intersect(intersecttarget))
+			{
+				myVertexFoundPos.Add(i+1);
+				bFound = true;
+				wxLogDebug(_T("Intersection found between vertex %d - (%d)"), i, i+1);
+			}
+			
+			segment.empty();
+		}
+		
+		// end the loop when intersection found
+		if (bFound == true && bContinue == false)
+		{
+			break;
+		}
+	}
+	
+	if (myVertexFoundPos.GetCount() == 0)
+		return wxNOT_FOUND;
+
+	
+	return myVertexFoundPos.GetCount();
 }
 
 
@@ -742,5 +945,56 @@ OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer, wxReal
 	}
 	
 	return returnedLine;
+}
+
+
+
+/***************************************************************************//**
+ @brief Insert multiple vertex into line
+ @details This function insert vertex at the right place into a line, based on
+ where intersect the vertex to insert.
+ @param line the passed geometry
+ @param vertex an OGRMultiPoint structure containing all vertex to insert
+ @param point_pos  index where the vertex are to be insered
+ @return  The modified line with inserted vertex (must be destroyed by caller)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 10 February 2009
+ *******************************************************************************/
+OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line, 
+													   OGRMultiPoint * vertex, 
+													   const wxArrayInt & point_pos)
+{
+	// if intersection found, add multiple vertex
+	OGRLineString * returnedLine;
+	OGRPoint p1;
+	OGRPoint p2;
+	returnedLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	int PointTruePos = 0;
+	int RealIndex = 0;
+	
+	for (int k = 0; k < line->getNumPoints(); k++)
+	{
+		line->getPoint(k, &p1);
+		returnedLine->addPoint(&p1);
+		
+		for (unsigned int l = 0; l<point_pos.GetCount();l++)
+		{
+			PointTruePos = point_pos.Item(l) -1 ; //+ (signed) l;
+			if (k == PointTruePos)
+			{
+				OGRPoint * myPoint = (OGRPoint*) vertex->getGeometryRef(l);
+				wxASSERT(myPoint);
+				p2.setX(myPoint->getX());
+				p2.setY(myPoint->getY());
+				returnedLine->addPoint(&p2);
+				RealIndex++;
+			}
+		}
+		RealIndex++;
+		
+	}
+	
+	return returnedLine;
+	
 }
 
