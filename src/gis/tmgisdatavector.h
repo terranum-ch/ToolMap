@@ -55,6 +55,16 @@ static wxString tmGISDATA_VECTOR_TYPE_EXTENSION[] =
 class tmGISDataVector : public tmGISData
 	{
 	private:
+		// inserting private function
+		int SearchVertexPos (OGRLineString * line, OGRGeometry * intersecttarget,
+							 wxArrayInt & myVertexFoundPos, bool bContinue = false);
+		bool ComputeLineLineIntersection (OGRLineString * line, OGRLineString * intersection,
+										 const wxArrayInt & vertexindex,
+										  OGRMultiPoint & resultpos);
+		bool SplitLinesAtVertex (OGRLineString * line,
+								 const wxArrayInt & splitpos,
+								 OGRMultiLineString & splitedline);
+		
 		
 	protected:
 		virtual wxString GetTableName (TOC_GENERIC_NAME type) {return wxEmptyString;}
@@ -67,11 +77,12 @@ class tmGISDataVector : public tmGISData
 	
 		
 		// Intersection for snapping
-		
 		wxRealPoint * GetVertexIntersection(OGRGeometry * geometry,  
 											OGRGeometry * buffer);
 		wxRealPoint * GetBeginEndInterseciton (OGRGeometry * geometry,
 											   OGRGeometry * buffer);
+		
+		
 		
 		static OGRGeometry * SafeCreateFromGEOS (GEOSGeom geom);
 		static OGRGeometry * SafeBuffer (OGRGeometry * ogrgeom,  int size);
@@ -90,8 +101,11 @@ class tmGISDataVector : public tmGISData
 		static tmGISDataVector * CreateGISVectorBasedOnType (const int & gis_format_index);
 		static tmGISDataVector * CreateGISVectorBasedOnExt (const wxString & extension);
 		static OGRGeometry * CreateOGRGeometry (const tmRealRect & rect);
-		static OGRLineString * InsertVertex (OGRGeometry * pointbuffer,wxRealPoint ptclicked,
-										   OGRLineString * line, int & inseredvertex);
+		OGRLineString * InsertVertex (OGRGeometry * pointbuffer,wxRealPoint ptclicked,
+									  OGRLineString * line, int & inseredvertex);
+		OGRLineString * InsertVertexMultiple (OGRLineString * line, 
+											  OGRMultiPoint * vertex, 
+											  const wxArrayInt & point_pos);
 		
 		
 		// gis function
