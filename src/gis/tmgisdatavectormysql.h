@@ -83,7 +83,6 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual OGRGeometry * GetGeometryByOID (long oid);
 		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid);
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid);
-
 		
 		// metadata
 		virtual wxString GetMetaDataAsHtml ();
