@@ -64,6 +64,9 @@ class tmGISDataVector : public tmGISData
 		bool SplitLinesAtVertex (OGRLineString * line,
 								 const wxArrayInt & splitpos,
 								 OGRMultiLineString & splitedline);
+		OGRLineString * GetLineWithIntersection (OGRLineString * line, 
+												 OGRLineString * intersection,
+												 wxArrayInt & insertedvertex);
 		
 		
 	protected:

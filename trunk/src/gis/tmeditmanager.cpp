@@ -879,14 +879,15 @@ bool tmEditManager::CreateIntersections ()
 		return false;
 	}
 	
+	OGRMultiLineString myRes1;
+	OGRMultiLineString myRes2;
 	
 	// for all crossing line, compute intersections
 	//TODO: This is a test
 	OGRLineString * myCrossedL = (OGRLineString*) mySelLayer->
 					GetGeometryByOID(myLinesCrossing->Item(0));
 	
-	OGRMultiLineString myRes1;
-	OGRMultiLineString myRes2;
+
 	
 	mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
 								myRes1,	myRes2);
@@ -901,8 +902,8 @@ bool tmEditManager::CreateIntersections ()
 	{
 		mySelLayer->UpdateGeometry(myRes1.getGeometryRef(0),
 								   m_SelectedData->GetSelectedUnique());
-		/*for (int i = 1; i< myRes1.getNumGeometries(); i++)
-			mySelLayer->AddGeometry(myRes1.getGeometryRef(i),-1);*/
+		for (int i = 1; i< myRes1.getNumGeometries(); i++)
+			mySelLayer->AddGeometry(myRes1.getGeometryRef(i),-1);
 		
 		wxLogDebug(_T("%d geometries updated / added"),
 				   myRes1.getNumGeometries());

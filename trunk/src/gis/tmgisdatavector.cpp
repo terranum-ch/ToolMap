@@ -646,95 +646,114 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * lin
 									   OGRMultiLineString & res1, 
 									   OGRMultiLineString & res2)
 {
-	/*OGRGeometry * myIntersectionPoint = SafeIntersection(line1, line2);
-	if (myIntersectionPoint == NULL)
-		return false;
-	
-	/ Fill an array of intersections point
-	OGRMultiPoint myPoints;
-	OGRwkbGeometryType myIntersectionType = wkbFlatten(myIntersectionPoint->getGeometryType());
-	if (myIntersectionType == wkbPoint)
-	{
-		
-		myPoints.addGeometry(((OGRPoint*) myIntersectionPoint));
-		
-	}
-	else if (myIntersectionType == wkbMultiPoint)
-	{
-		OGRMultiPoint * myIntersectionsPoints = (OGRMultiPoint*) myIntersectionPoint;
-		for (int i = 0; i< myIntersectionsPoints->getNumGeometries(); i++)
-			myPoints.addGeometry(myIntersectionsPoints->getGeometryRef(i));
-	}
-	OGRGeometryFactory::destroyGeometry(myIntersectionPoint);
-	wxASSERT(myPoints.getNumGeometries() > 0);
-	
-	// insert vertex into lines
-	wxArrayInt myVertexLine1;
-	OGRGeometry * myLine1 = InsertVertexMultiple(line1, &myPoints, myVertexLine1);
-	
-	if (myLine1)
-		OGRGeometryFactory::destroyGeometry(myLine1);*/
-	
 	// get vertex position
 	wxArrayInt myLine1VertexPos;
 	wxArrayInt myLine2VertexPos;
-	int myLine1Count = SearchVertexPos(line1, line2, myLine1VertexPos, true);
-	int myLine2Count = SearchVertexPos(line2, line1, myLine2VertexPos, true);
 	
-	if (myLine1Count == wxNOT_FOUND || myLine2Count == wxNOT_FOUND)
-		return false;
-	
-	// compute intersection
-	OGRMultiPoint multiPts1;
-	OGRMultiPoint multiPts2;
-	if (ComputeLineLineIntersection(line1, line2, myLine1VertexPos, multiPts1) == false)
-		return false;
-	if (ComputeLineLineIntersection(line2, line1, myLine2VertexPos, multiPts2) == false)
-		return false;
-	
-	/*int i = 0;
-	for (i = 0; i < multiPts1.getNumGeometries(); i++)
-		wxLogDebug(_T("Points 1 : %d = %.*f, %.*f"), i, 4, 
-				   ((OGRPoint*) multiPts1.getGeometryRef(i))->getX(),
-				   4,
-				   ((OGRPoint*) multiPts1.getGeometryRef(i))->getY());
-	
-	for (i = 0; i < multiPts2.getNumGeometries(); i++)
-		wxLogDebug(_T("Points 2 : %d = %.*f, %.*f"), i, 4, 
-				   ((OGRPoint*) multiPts2.getGeometryRef(i))->getX(),
-				   4,
-				   ((OGRPoint*) multiPts2.getGeometryRef(i))->getY());*/
-
-	
-	// insert vertex multiple
 	OGRLineString * myLine1WVertex;
 	OGRLineString * myLine2WVertex;
-	myLine1WVertex = InsertVertexMultiple(line1, &multiPts1, myLine1VertexPos);
+	myLine1WVertex = GetLineWithIntersection(line1, line2, myLine1VertexPos);
 	if (myLine1WVertex == NULL)
 	{
 		wxLogDebug(_T("Error inserting vertex"));
 		return false;
 	}
-	myLine2WVertex = InsertVertexMultiple(line2, &multiPts2, myLine2VertexPos);
+	myLine2WVertex = GetLineWithIntersection(line2, line1, myLine2VertexPos);
 	if (myLine2WVertex == NULL)
 	{
 		wxLogDebug(_T("Error inserting vertex"));
 		return false;
 	}
 	
-	res1.addGeometry(myLine1WVertex);
-	res2.addGeometry(myLine2WVertex);
+	// LOG 
+	for (unsigned int i = 0; i< myLine1VertexPos.GetCount(); i++)
+		wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
+	// END LOG
 	
 	// cut lines @ specified vertex 
-	//SplitLinesAtVertex(myLine1WVertex, myLine1VertexPos , res1);
-	//SplitLinesAtVertex(myLine2WVertex, myLine2VertexPos, res2);
+	SplitLinesAtVertex(myLine1WVertex, myLine1VertexPos , res1);
+	SplitLinesAtVertex(myLine2WVertex, myLine2VertexPos, res2);
 	
-		
 	OGRGeometryFactory::destroyGeometry(myLine1WVertex);
 	OGRGeometryFactory::destroyGeometry(myLine2WVertex);
+
 	return true;
 }
 
+
+/***************************************************************************//**
+ @brief Get a line with all intersection vertex
+ @param line line to intersect
+ @param intersection line used for intersection
+ @param insertedvertex position of inserted vertex
+ @param OGRLineString An line with inserted vertex. NULL if an error occur.
+ (call should take care of deleting passed object)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 February 2009
+ *******************************************************************************/
+OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line, 
+														  OGRLineString * intersection,
+														  wxArrayInt & insertedvertex)
+{	
+	OGRPoint p1;
+	OGRPoint p2;
+	OGRLineString segment;
+	OGRLineString * myResLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	int iNumLineVertex = line->getNumPoints();
+
+	
+	for (int i = 0; i< iNumLineVertex; i++)
+	{
+		line->getPoint(i, &p1);
+		myResLine->addPoint(&p1);
+		
+		if (i+1 < iNumLineVertex)
+		{
+			line->getPoint(i+1, &p2);
+			segment.addPoint(&p1);
+			segment.addPoint(&p2);
+			
+			// intersection found
+			if (segment.Intersect(intersection))
+			{
+				OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection); 
+				wxASSERT (myGeomIntersection);
+				// simple intersection
+				if (wkbFlatten(myGeomIntersection->getGeometryType()) == wkbPoint)
+				{
+					myResLine->addPoint(((OGRPoint*) myGeomIntersection));
+					insertedvertex.Add(myResLine->getNumPoints()-1);
+				}
+				// multiple intersections
+				else if (wkbFlatten(myGeomIntersection->getGeometryType()) == wkbMultiPoint)
+				{
+					OGRMultiPoint * myPts = (OGRMultiPoint*) myGeomIntersection;
+					for (int j = 0; j< myPts->getNumGeometries();j++)
+					{
+						myResLine->addPoint((OGRPoint*)myPts->getGeometryRef(j));
+						insertedvertex.Add(myResLine->getNumPoints()-1);
+					}
+				}
+				// error
+				else
+				{
+					wxASSERT_MSG (0, _T("This case isn't taken into account"));
+					return NULL;
+				}
+				
+				
+				
+				OGRGeometryFactory::destroyGeometry(myGeomIntersection);
+			}
+
+			segment.empty();
+		}
+		
+	}
+	
+	return myResLine;
+	
+}
 
 /***************************************************************************//**
  @brief Split line at specified vertex
@@ -752,19 +771,28 @@ bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
 	OGRLineString myLine;
 	OGRPoint pt;
 	int lastpos = 0;
+	int splititem = 0;
 	
-	for (unsigned int i = 0; i< splitpos.GetCount(); i++) 
+	for (int i = 0 ; i< line->getNumPoints(); i++)
 	{
-		for (int j = lastpos; j <= splitpos.Item(i) + (signed)i; j++)
+		line->getPoint(i, &pt);
+		myLine.addPoint(&pt);
+		
+		if (i == splitpos.Item(splititem))
 		{
-			line->getPoint(j, &pt);
+			splitedline.addGeometry(&myLine);
+			myLine.empty();
 			myLine.addPoint(&pt);
+			splititem++;
+			if (splititem >= (signed) splitpos.GetCount())
+				splititem = 0;
 		}
-		splitedline.addGeometry(&myLine);
-		myLine.empty();
-		lastpos = splitpos.Item(i) + (signed) i;
-		wxLogDebug(_T("Splitting occur at : %d"), lastpos);
+		
 	}
+	
+	if (myLine.getNumPoints() >= 2)
+		splitedline.addGeometry(&myLine);
+	
 	
 	return true;
 	
@@ -791,6 +819,7 @@ bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
 												   const wxArrayInt & vertexindex,
 												   OGRMultiPoint & resultpos)
 {
+	//TODO: Remove this function if no more used
 	OGRLineString segment;
 	OGRPoint p1;
 	OGRPoint p2;
