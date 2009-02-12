@@ -64,7 +64,8 @@ enum tmGIS_CURSOR
 {
 	tmCURSOR_ZOOM_IN,
 	tmCURSOR_ZOOM_OUT,
-	tmCURSOR_HAND
+	tmCURSOR_HAND,
+	tmCURSOR_EDIT
 };
 
 // parameter : size of selection in pixels

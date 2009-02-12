@@ -24,6 +24,7 @@
 #include "../img/cursor_zoom_in.cpp"
 #include "../img/cursor_zoom_out.cpp"
 #include "../img/cursor_hand.cpp"
+#include "../img/cursor_editing.cpp"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -134,6 +135,10 @@ wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
 		case tmCURSOR_HAND:
 			myCursorBmp = wxGetBitmapFromMemory(cursor_hand);
 			break;
+		case tmCURSOR_EDIT:
+			myCursorBmp = wxGetBitmapFromMemory(cursor_editing);
+			break;
+			
 		default:
 			return wxCursor (wxCURSOR_ARROW);
 			break;
@@ -165,7 +170,9 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			break;
 			
 		case tmTOOL_DRAW:
-			this->SetCursor(wxCursor(wxCURSOR_CROSS));
+			
+			//this->SetCursor(wxCursor(wxCURSOR_CROSS));
+			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_EDIT));
 			break;
 			
 		case tmTOOL_MODIFY:
