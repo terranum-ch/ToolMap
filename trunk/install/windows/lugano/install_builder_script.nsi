@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ToolMap"
-!define PRODUCT_VERSION '2.0.475'
+;!define PRODUCT_VERSION '2.0.475'
 !define PRODUCT_VERSION_LONG "2.0 Codename `Geneva`"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.crealp.ch"
