@@ -67,6 +67,9 @@ class tmGISDataVector : public tmGISData
 		OGRLineString * GetLineWithIntersection (OGRLineString * line, 
 												 OGRLineString * intersection,
 												 wxArrayInt & insertedvertex);
+		OGRLineString * GetLineWithIntersection(OGRLineString * line, 
+												OGRMultiLineString * multiline,
+												wxArrayInt & intertedvertex);
 		
 		
 	protected:
@@ -142,6 +145,8 @@ class tmGISDataVector : public tmGISData
 		bool CutLineGeometry(OGRLineString * line1, OGRLineString * line2,
 							 OGRMultiLineString & res1, 
 							 OGRMultiLineString & res2);
+		bool CutLineMultiple (OGRLineString * linetocut, OGRMultiLineString * cutlines,
+							  OGRMultiLineString & results);
 		
 		// Searching 
 		virtual wxArrayLong * SearchIntersectingGeometry (OGRGeometry * intersectinggeom){return NULL;}

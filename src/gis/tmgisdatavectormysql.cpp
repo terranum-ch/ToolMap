@@ -910,6 +910,10 @@ bool tmGISDataVectorMYSQL::UpdateGeometry (OGRGeometry * geom, const long & oid)
 {
 	long lReturn = -1;
 	char * myCharGeom = NULL;
+	
+	if (geom == NULL)
+		return false;
+	
 	geom->setCoordinateDimension(2);
 	geom->exportToWkt(&myCharGeom);
 	if (!myCharGeom)
