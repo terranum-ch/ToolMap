@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ToolMap"
-;!define PRODUCT_VERSION '2.0.475'
+;!define PRODUCT_VERSION '2.0.475' (removed for batch script)
 !define PRODUCT_VERSION_LONG "2.0 Codename `Geneva`"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.crealp.ch"
@@ -29,7 +29,7 @@
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\ToolMap2.exe"
+;!define MUI_FINISHPAGE_RUN "$INSTDIR\ToolMap2.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
