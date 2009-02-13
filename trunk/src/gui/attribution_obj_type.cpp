@@ -206,9 +206,8 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	wxMenuItem* m_clearvalueatrib;
 	m_clearvalueatrib = new wxMenuItem( opt_menu, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,
 									   wxString( _("Empty list after attribution")) , wxEmptyString, wxITEM_CHECK );
-	m_clearvalueatrib->Check(true);
 	opt_menu->Append( m_clearvalueatrib );
-	
+	m_clearvalueatrib->Check(true);
 	
 	wxMenuItem* m_AutoDisplayAttrib;
 	m_AutoDisplayAttrib = new wxMenuItem( opt_menu, ID_CTXT_AUTODISPLAY_ATTRIB, wxString( _("Enable auto display attributes") ) , wxEmptyString, wxITEM_CHECK );
