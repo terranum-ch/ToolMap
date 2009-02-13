@@ -352,7 +352,11 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	}
 	
 	delete myAttrib;
-
+	
+	// clear list if needed
+	if (m_Panel->IsEmptyListValuesRequired())
+		m_Panel->EmptyListValues();
+	
 }
 
 

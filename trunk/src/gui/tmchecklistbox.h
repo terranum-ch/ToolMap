@@ -119,6 +119,7 @@ class tmCheckListBox : public wxCheckListBox
 		bool MoveItem (long index1, long index2);
 		bool GetItem (long index, long & id, wxString & name, bool & bcheck);
 		void ClearItems ();
+		void ClearCheckMarks ();
 		
 		
 					

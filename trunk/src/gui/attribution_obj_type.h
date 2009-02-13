@@ -81,6 +81,7 @@ DECLARE_EVENT_TYPE(tmEVT_INFO_BTN_PRESSED, -1)
 #define ID_CTXT_FULL_ATTRIB 21000
 #define ID_CTXT_FILTER 21001
 #define ID_CTXT_AUTODISPLAY_ATTRIB 21002
+#define ID_CTXT_EMPTY_LIST_AFTER_ATTRIB 21003
 
 class AttribObjType_PANEL: public ManagedAuiWnd
 	{
@@ -98,6 +99,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxFlatButton * m_InfoBtn;
 		wxChoicebook * m_AttribNotebook;
 		bool m_AutoDisplayAttributes;
+		bool m_EmptyListAfterAttributes;
 		wxBoxSizer* m_ButtonSizer;
 		wxBoxSizer* m_AttribSizer;
 		
@@ -107,8 +109,10 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		
 		// option menu event function
 		void OnDisplayAttributesAuto(wxCommandEvent & event);
+		void OnEmptyListAffterAttributes (wxCommandEvent & event);
 		
 		
+				
 		DECLARE_EVENT_TABLE()
 		
 	public:
@@ -139,7 +143,9 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 								bool panel_freq = false);
 		
 		bool IsAutoDisplayAttributeChecked();
-								
+		bool IsEmptyListValuesRequired(){return m_EmptyListAfterAttributes;}						
+		
+		void EmptyListValues();
 		
 		
 		// controls
