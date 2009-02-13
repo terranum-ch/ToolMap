@@ -442,3 +442,18 @@ void tmCheckListBox::ClearItems ()
 }
 
 
+/***************************************************************************//**
+ @brief Uncheck all items
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 13 February 2009
+ *******************************************************************************/
+void tmCheckListBox::ClearCheckMarks ()
+{
+	for (unsigned int i = 0; i< GetCount();i++)
+	{
+		EditItem(i, -1, wxEmptyString, 0);
+	}
+}
+
+
+

@@ -34,6 +34,7 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiMa
 {
 	m_AttribBtnLabel = _("Attribute");
 	m_AutoDisplayAttributes = false;
+	m_EmptyListAfterAttributes = true;
 	m_ParentEvt = parent;
 	m_ParentEvt->PushEventHandler(this);
 	
@@ -202,7 +203,12 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	m_fullatrib = new wxMenuItem( opt_menu, ID_CTXT_FULL_ATTRIB, wxString( _("Enable Full attribution") ) , wxEmptyString, wxITEM_CHECK );
 	opt_menu->Append( m_fullatrib );
 	
-	opt_menu->AppendSeparator();
+	wxMenuItem* m_clearvalueatrib;
+	m_clearvalueatrib = new wxMenuItem( opt_menu, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,
+									   wxString( _("Empty list after attribution")) , wxEmptyString, wxITEM_CHECK );
+	m_clearvalueatrib->Check(true);
+	opt_menu->Append( m_clearvalueatrib );
+	
 	
 	wxMenuItem* m_AutoDisplayAttrib;
 	m_AutoDisplayAttrib = new wxMenuItem( opt_menu, ID_CTXT_AUTODISPLAY_ATTRIB, wxString( _("Enable auto display attributes") ) , wxEmptyString, wxITEM_CHECK );
@@ -299,6 +305,34 @@ void AttribObjType_PANEL::OnDisplayAttributesAuto(wxCommandEvent & event)
 }
 
 
+/***************************************************************************//**
+ @brief Switch status of cleaning attribution each time called
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 13 February 2009
+ *******************************************************************************/
+void AttribObjType_PANEL::OnEmptyListAffterAttributes (wxCommandEvent & event)
+{
+	if (m_EmptyListAfterAttributes)
+		m_EmptyListAfterAttributes = false;
+	else
+		m_EmptyListAfterAttributes = true;
+	
+}
+
+
+/***************************************************************************//**
+ @brief Clear all attributes set when called
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 13 February 2009
+ *******************************************************************************/
+void AttribObjType_PANEL::EmptyListValues()
+{
+	wxASSERT(m_EmptyListAfterAttributes);
+	m_pObjList_PT->ClearCheckMarks();
+	m_pObjList_PLG->ClearCheckMarks();
+	m_pObjList_L_Freq->ClearCheckMarks();
+	m_pObjList_L_NoFreq->ClearCheckMarks();
+}
 
 
 /***************************************************************************//**
