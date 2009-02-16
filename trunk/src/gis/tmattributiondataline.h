@@ -56,6 +56,8 @@ class tmAttributionDataLine : public tmAttributionData
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel);
+		virtual bool GetInfoBasicValues (const long & selected, 
+										 wxArrayLong & values);
 	};
 
 

@@ -865,14 +865,14 @@ OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
-bool tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
+long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
 {
 	long lReturn = -1;
 	char * myCharGeom = NULL;
 	Geom->setCoordinateDimension(2);
 	Geom->exportToWkt(&myCharGeom);
 	if (!myCharGeom)
-		return false;
+		return -1;
 	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
 #ifndef  __WXMSW__    
@@ -889,12 +889,10 @@ bool tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
 		wxLogDebug(_T("Error inserting geometry %s into database : %s"),
 				   sSentence.c_str(),
 				   m_DB->DataBaseGetLastError().c_str());
-		return false;
+		return -1;
 	}
-	
-	
-	return true;
-	
+		
+	return m_DB->DataBaseGetLastInsertID();
 }
 
 

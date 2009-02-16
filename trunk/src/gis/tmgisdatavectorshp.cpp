@@ -711,7 +711,7 @@ bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
+long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
 {
 	wxASSERT(Geom);
 	wxASSERT (m_Layer);
@@ -723,10 +723,10 @@ bool tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
 	poFeature->SetGeometry(Geom);
 	OGRErr myErr = m_Layer->CreateFeature(poFeature);
 	if (myErr != OGRERR_NONE)
-		return false;
-	
+		return -1;
+	long lRetVal = poFeature->GetFID();
 	OGRFeature::DestroyFeature(poFeature);
-	return true;
+	return lRetVal;
 	
 }
 

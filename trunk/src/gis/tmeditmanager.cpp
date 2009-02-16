@@ -889,14 +889,26 @@ bool tmEditManager::CreateIntersections ()
 	
 		
 	// for selected lines, compute all intersections (with all lines)
+	wxArrayLong myInsertedIDs1;
 	OGRMultiLineString selectedsegments;
 	mySelLayer->CutLineMultiple(myOGRSelLine, &LinesCrossing, selectedsegments);
-	mySelLayer->SplitGeometry (&selectedsegments, m_SelectedData->GetSelectedUnique());
+	mySelLayer->SplitGeometry (&selectedsegments, m_SelectedData->GetSelectedUnique(),
+							   myInsertedIDs1);
+	
+	
+	
+	// add attributions for new segment of selected line 
+	//TODO: temp code, remove me
+	for (unsigned int w = 0; w < myInsertedIDs1.GetCount();w++)
+		wxLogDebug(_T("ID inserted : %d"), myInsertedIDs1.Item(w));
+	
+	// end of temp code
+	
 	
 	// compute intersections for other lines
 	OGRMultiLineString myRes1;
 	OGRMultiLineString myRes2;
-	
+	wxArrayLong myInsertedIDs2;
 	// for all crossing line, compute intersections
 	for (unsigned int i = 0 ; i< myLinesCrossing->GetCount(); i++)
 	{
@@ -905,12 +917,33 @@ bool tmEditManager::CreateIntersections ()
 		{
 			mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
 										myRes1,	myRes2);
-			mySelLayer->SplitGeometry(&myRes2, myLinesCrossing->Item(i));
+			mySelLayer->SplitGeometry(&myRes2, myLinesCrossing->Item(i),
+									  myInsertedIDs2);
 		}
 	}
-	
 	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
+	
+	// TODO: Should be in attribution manager ?
+	/* attribution only if line contain attribution
+	wxArrayLong myAttribValues;
+	tmAttributionDataLine myAttributionObj(myLinesCrossing,m_DB);
+	if (myAttributionObj.GetInfoBasicValues(m_SelectedData->GetSelectedUnique(),
+										myAttribValues)==true)
+	{
+		
+		
+	}*/
+	
+	
+	
 	delete myLinesCrossing;
+	
+	// add segment to selection
+	m_SelectedData->AddSelected(&myInsertedIDs1);
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	
+	
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);

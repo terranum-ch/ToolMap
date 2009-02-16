@@ -82,6 +82,8 @@ class tmAttributionData : public wxObject
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
+		virtual bool GetInfoBasicValues (const long & selected, 
+										 wxArrayLong & values){return false;}
 	};
 
 
