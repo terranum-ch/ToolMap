@@ -218,3 +218,84 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
 	return true;
 }
 
+
+
+/***************************************************************************//**
+ @brief Copy attribution between objects
+ @details Use tmAttributionData::Create for setting database and the 
+ Multiples OID of the objects we copy attributes to
+ @param copyfrom OID of the object we copy attributes from
+ @return  true if copy succeed, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 16 February 2009
+ *******************************************************************************/
+bool tmAttributionData::CopyAttributesBasic (const long & copyfrom)
+{
+	
+	wxASSERT (!m_TableName.IsEmpty());
+	wxASSERT (IsValid());
+	if (IsValid()==false)
+		return false;
+	
+	wxArrayLong myAttribValues;
+	if (GetInfoBasicValues(copyfrom, myAttribValues)== false)
+		return false;
+	
+	if (myAttribValues.GetCount() == 0)
+	{
+		wxLogDebug(_T("No attribution to copy"));
+		return false;
+	}
+	
+	if (SetAttributeBasicValues(&myAttribValues)== false)
+		return false;
+	
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Get basic attribution values for passed ID
+ @param selected The feature ID we want attribution for
+ @param values The returned attribution values
+ @return true if attributions where returned, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 13 February 2009
+ *******************************************************************************/
+bool tmAttributionData::GetInfoBasicValues (const long & selected, 
+												wxArrayLong & values)
+{
+	// checking
+	wxASSERT (!m_TableName.IsEmpty());
+	wxASSERT (IsValid());
+	if (!IsValid())
+		return false;
+	
+	// getting values
+	wxString sStatement = _T("");
+	
+	m_SelIDs->Insert(selected,0);
+	PrepareGetInfoStatement(sStatement, m_TableName);
+	m_SelIDs->RemoveAt(0);
+	
+	if (!m_pDB->DataBaseQuery(sStatement))
+	{
+		wxLogDebug(_T("Error getting info : %s"),
+				   m_pDB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	
+	long mySelTemp = wxNOT_FOUND;
+	while (1)
+	{
+		mySelTemp = m_pDB->DataBaseGetNextResultAsLong();
+		if (mySelTemp == wxNOT_FOUND)
+			break;
+		values.Add(mySelTemp);
+	}
+	
+	return true;
+}
+
+

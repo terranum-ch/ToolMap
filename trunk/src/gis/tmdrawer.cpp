@@ -820,8 +820,7 @@ void tmDrawer::DrawPoint (const wxPoint & pt, wxClientDC * pcdc)
 
 /***************************************************************************//**
  @brief Draw all edited lines
- @param pts Adress of a wxRealPoints array
- @param nb_pts nb of items in the wxRealPoints array
+ @param pts Adress of a wxArrayRealPoints
  @param size Size of the line
  @param colour the Colour of the line to draw, default is RED
  @author Lucien Schreiber (c) CREALP 2009

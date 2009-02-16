@@ -54,10 +54,14 @@ class tmAttributionDataLine : public tmAttributionData
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel);
 		
+		// copy attribution
+		//virtual bool CopyAttributesBasic (const long & copyfrom,
+		//								  const wxArrayLong & copyto);
+		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel);
-		virtual bool GetInfoBasicValues (const long & selected, 
-										 wxArrayLong & values);
+		//virtual bool GetInfoBasicValues (const long & selected, 
+		//								 wxArrayLong & values);
 	};
 
 

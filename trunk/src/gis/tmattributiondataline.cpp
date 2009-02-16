@@ -118,6 +118,7 @@ bool tmAttributionDataLine::SetAttributeBasic (AttribObjType_PANEL * panel)
 
 
 
+
 /***************************************************************************//**
  @brief Get all selected values from the panel
  @param valueids if true was returned, valueids contain all value choosen for
@@ -183,48 +184,6 @@ bool tmAttributionDataLine::GetInfoBasic (AttribObjType_PANEL * panel)
 	return true;
 }
 
-
-/***************************************************************************//**
- @brief Get basic attribution values for passed ID
- @param selected The feature ID we want attribution for
- @param values The returned attribution values
- @param bool true if attributions where returned, false otherwise
- @author Lucien Schreiber (c) CREALP 2009
- @date 13 February 2009
- *******************************************************************************/
-bool tmAttributionDataLine::GetInfoBasicValues (const long & selected, 
-												wxArrayLong & values)
-{
-	// checking
-	if (!IsValid())
-		return false;
-	
-	// getting values
-	wxString sStatement = _T("");
-	
-	m_SelIDs->Insert(selected,0);
-	PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
-	m_SelIDs->RemoveAt(0);
-	
-	if (!m_pDB->DataBaseQuery(sStatement))
-	{
-		wxLogDebug(_T("Error getting info : %s"),
-				   m_pDB->DataBaseGetLastError().c_str());
-		return false;
-	}
-	
-
-	long mySelTemp = wxNOT_FOUND;
-	while (1)
-	{
-		mySelTemp = m_pDB->DataBaseGetNextResultAsLong();
-		if (mySelTemp == wxNOT_FOUND)
-			break;
-		values.Add(mySelTemp);
-	}
-	
-	return true;
-}
 
 
 /***************************************************************************//**
