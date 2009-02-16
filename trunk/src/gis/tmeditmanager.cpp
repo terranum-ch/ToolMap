@@ -934,6 +934,7 @@ bool tmEditManager::CreateIntersections ()
 			wxArrayLong * myTempArray2 = new wxArrayLong(myInsertedIDs2); 
 			attribevt2.SetClientData(myTempArray2);
 			m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt2);
+			myInsertedIDs2.Clear();
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
