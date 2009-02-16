@@ -78,12 +78,13 @@ class tmAttributionData : public wxObject
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool SetAttributeBasicValues(wxArrayLong * values);
 		
-		
+		// copy attribution
+		virtual bool CopyAttributesBasic (const long & copyfrom);
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool GetInfoBasicValues (const long & selected, 
-										 wxArrayLong & values){return false;}
+										 wxArrayLong & values);
 	};
 
 

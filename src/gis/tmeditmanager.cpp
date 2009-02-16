@@ -897,11 +897,17 @@ bool tmEditManager::CreateIntersections ()
 	
 	
 	
-	// add attributions for new segment of selected line 
-	//TODO: temp code, remove me
-	for (unsigned int w = 0; w < myInsertedIDs1.GetCount();w++)
-		wxLogDebug(_T("ID inserted : %d"), myInsertedIDs1.Item(w));
+	// add attributions for new segment of selected line
+	wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
+	attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
+	wxArrayLong * myTempArray = new wxArrayLong(myInsertedIDs1); 
+	attribevt1.SetClientData(myTempArray);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
 	
+	
+	//TODO: temp code, remove me
+	//for (unsigned int w = 0; w < myInsertedIDs1.GetCount();w++)
+	//	wxLogDebug(_T("ID inserted : %d"), myInsertedIDs1.Item(w));
 	// end of temp code
 	
 	
@@ -909,6 +915,7 @@ bool tmEditManager::CreateIntersections ()
 	OGRMultiLineString myRes1;
 	OGRMultiLineString myRes2;
 	wxArrayLong myInsertedIDs2;
+	wxCommandEvent attribevt2(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
 	// for all crossing line, compute intersections
 	for (unsigned int i = 0 ; i< myLinesCrossing->GetCount(); i++)
 	{
@@ -921,31 +928,21 @@ bool tmEditManager::CreateIntersections ()
 									  myInsertedIDs2);
 			myRes1.empty();
 			myRes2.empty();
+			
+			// send attribution message
+			attribevt2.SetExtraLong(myLinesCrossing->Item(i));
+			wxArrayLong * myTempArray2 = new wxArrayLong(myInsertedIDs2); 
+			attribevt2.SetClientData(myTempArray2);
+			m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt2);
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
-	
-	
-	// TODO: Should be in attribution manager ?
-	/* attribution only if line contain attribution
-	wxArrayLong myAttribValues;
-	tmAttributionDataLine myAttributionObj(myLinesCrossing,m_DB);
-	if (myAttributionObj.GetInfoBasicValues(m_SelectedData->GetSelectedUnique(),
-										myAttribValues)==true)
-	{
-		
-		
-	}*/
-	
-	
-	
 	delete myLinesCrossing;
 	
 	// add segment to selection
 	m_SelectedData->AddSelected(&myInsertedIDs1);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
     m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-	
 	
 	
 	// update display

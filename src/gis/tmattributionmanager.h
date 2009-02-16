@@ -89,6 +89,9 @@ class tmAttributionManager : public wxEvtHandler
 		// Attribution data creation
 		tmAttributionData * CreateAttributionData (int type);
 		
+		// copy attribution function
+		void OnCopyAttribution (wxCommandEvent & event);
+		
 				
 		// verification 
 		bool IsAttributionManagerReady();

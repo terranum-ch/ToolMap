@@ -538,6 +538,7 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
  @brief Cut line in two at specified point
  @param line1 The original line to cut
  @param pointbuffer the point
+ @param ptclicked the coordinate of the clicked point
  @param lineresult1 the resulting line 1
  @param lineresult2 the resulting line 2
  @return true if succeed, false otherwise
@@ -686,7 +687,7 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * lin
  @param linetocut The line to cut
  @param cutlines Lines used for cutting
  @param results all resulting lines
- @param bool true if operation succeed, false otherwise
+ @return true if operation succeed, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 12 February 2009
  *******************************************************************************/
@@ -706,8 +707,8 @@ bool tmGISDataVector::CutLineMultiple (OGRLineString * linetocut,
 	}
 	
 	// LOG 
-	for (unsigned int i = 0; i< myLine1VertexPos.GetCount(); i++)
-		wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
+	//for (unsigned int i = 0; i< myLine1VertexPos.GetCount(); i++)
+	//	wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
 	// END LOG
 	
 	// cut lines @ specified vertex 
@@ -724,7 +725,7 @@ bool tmGISDataVector::CutLineMultiple (OGRLineString * linetocut,
  @param line line to intersect
  @param intersection line used for intersection
  @param insertedvertex position of inserted vertex
- @param OGRLineString An line with inserted vertex. NULL if an error occur.
+ @return A line with inserted vertex. NULL if an error occur.
  (call should take care of deleting passed object)
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 February 2009
@@ -969,7 +970,7 @@ bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
  @param vertexindex contain the vertex index, intersection should occur between
  vertexindex  and vertexindex + 1
  @param resultpos the position of the intersections
- @param bool true if point returned
+ @return true if point returned
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 February 2009
  *******************************************************************************/
@@ -1012,64 +1013,11 @@ bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
 	return bReturn;
 }
 
-/***************************************************************************//**
- @brief Search where passed geometry intersect the line
- @param line the line to intersect
- @param intersecttarget the intersecting geometry
- @return  wxNOT_FOUND If no intersection is found or the position where to insert the
- vertex. vertex should be inserted between retuned and returned + 1
- @author Lucien Schreiber (c) CREALP 2009
- @date 10 February 2009
- *******************************************************************************/
-int tmGISDataVector::SearchVertexPos (OGRLineString * line, OGRGeometry * intersecttarget,
-									  wxArrayInt & myVertexFoundPos, bool bContinue)
-{
-	OGRPoint p1;
-	OGRPoint p2;
-	OGRLineString segment;
-	int inseredvertex = wxNOT_FOUND;
-	bool bFound = false;
-	
-	
-	for (int i = 0;i < line->getNumPoints(); i++)
-	{
-		line->getPoint(i, &p1);
-		
-		if (i+1 < line->getNumPoints())
-		{
-			line->getPoint(i+1, &p2);
-			segment.addPoint(&p1);
-			segment.addPoint(&p2);
-			
-			// intersection found
-			if (segment.Intersect(intersecttarget))
-			{
-				myVertexFoundPos.Add(i+1);
-				bFound = true;
-				wxLogDebug(_T("Intersection found between vertex %d - (%d)"), i, i+1);
-			}
-			
-			segment.empty();
-		}
-		
-		// end the loop when intersection found
-		if (bFound == true && bContinue == false)
-		{
-			break;
-		}
-	}
-	
-	if (myVertexFoundPos.GetCount() == 0)
-		return wxNOT_FOUND;
-
-	
-	return myVertexFoundPos.GetCount();
-}
-
 
 /***************************************************************************//**
  @brief Insert a vertex in a passed line
  @param pointbuffer the buffer (polygon) intersecting the line
+ @param ptclicked the coordinate of the clicked point
  @param line the line
  @param inseredvertex return the number of the inserted vertex
  @return  The new line with the inserted vertex (caller should delete the 

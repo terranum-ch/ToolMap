@@ -275,8 +275,8 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 
 /***************************************************************************//**
  @brief Get all vertex from the line
- @param nb_pts The number of points returned.
- @return  a wxRealPoint array (delete after use) or null if an error occur
+ @param myPts An array of wxRealPoints containing all vertex 
+ @return true if points were returned, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/

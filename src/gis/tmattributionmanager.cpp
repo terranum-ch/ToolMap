@@ -21,6 +21,7 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
+DEFINE_EVENT_TYPE(tmEVT_AM_COPY_ATTRIBUTION);
 
 BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
@@ -29,6 +30,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_RUN, tmAttributionManager::OnRunQuery)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_SHORTCUT_PRESSED, tmAttributionManager::OnShortcutPressed)
+	EVT_COMMAND (wxID_ANY, tmEVT_AM_COPY_ATTRIBUTION, tmAttributionManager::OnCopyAttribution)
 END_EVENT_TABLE()
 
 
@@ -480,6 +482,37 @@ tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
 			break;
 	}
 	return myAttrib;
+}
+
+
+/***************************************************************************//**
+ @brief Copy attribution between objects
+ @details This event function may be called for copying attributions between
+ objects.
+ @param event event should contain following informations : 
+ - event.GetExtraLong() the ID of the object we copy attribution from
+ - event.GetClientData() (wxArrayLong*) the ID of objects we copy attribution to.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 16 February 2009
+ *******************************************************************************/
+void tmAttributionManager::OnCopyAttribution (wxCommandEvent & event)
+{
+	tmAttributionData * myAttrib = CreateAttributionData(m_TOC->GetEditLayer()->
+														 m_LayerType);
+	if (myAttrib == NULL)
+		return;
+	
+	// init 
+	wxArrayLong * mySelectedValues = (wxArrayLong*) event.GetClientData();
+	myAttrib->Create(mySelectedValues, m_pDB);
+	myAttrib->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[m_TOC->GetEditLayer()->
+														  m_LayerType]);
+	
+	// copy attribution
+	myAttrib->CopyAttributesBasic(event.GetExtraLong());
+	
+	delete mySelectedValues;
+	delete myAttrib;
 }
 
 

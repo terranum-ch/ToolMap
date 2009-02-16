@@ -56,8 +56,6 @@ class tmGISDataVector : public tmGISData
 	{
 	private:
 		// inserting private function
-		int SearchVertexPos (OGRLineString * line, OGRGeometry * intersecttarget,
-							 wxArrayInt & myVertexFoundPos, bool bContinue = false);
 		bool ComputeLineLineIntersection (OGRLineString * line, OGRLineString * intersection,
 										 const wxArrayInt & vertexindex,
 										  OGRMultiPoint & resultpos);
