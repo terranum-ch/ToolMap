@@ -919,9 +919,12 @@ bool tmEditManager::CreateIntersections ()
 										myRes1,	myRes2);
 			mySelLayer->SplitGeometry(&myRes2, myLinesCrossing->Item(i),
 									  myInsertedIDs2);
+			myRes1.empty();
+			myRes2.empty();
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
+	
 	
 	// TODO: Should be in attribution manager ?
 	/* attribution only if line contain attribution
