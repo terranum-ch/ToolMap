@@ -124,9 +124,10 @@ class tmGISDataVector : public tmGISData
 		virtual int GetNextDataPolygonInfo (long & oid){return -1;}
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex){return NULL;}
 		virtual OGRGeometry * GetGeometryByOID (long oid){ return NULL;}
-		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid){return false;}
+		virtual long AddGeometry (OGRGeometry * Geom, const long & oid){return -1;}
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid){return false;}
-		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid);
+		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid, 
+									wxArrayLong & AddedIds);
 		
 		// counting
 		virtual int GetCount (){return -1;}

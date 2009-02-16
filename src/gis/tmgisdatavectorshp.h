@@ -82,7 +82,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
 		virtual bool AddFieldDate (const wxString & fieldname);
 		
-		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid);
+		virtual long AddGeometry (OGRGeometry * Geom, const long & oid);
 		virtual bool SetNextFeature (bool resetreading = false);
 		virtual bool SetFieldValue (const wxString & value, 
 									int fieldtype, int iindex);

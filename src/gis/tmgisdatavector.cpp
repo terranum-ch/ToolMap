@@ -884,18 +884,24 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
  @details The first geometry is updated, others are added into database.
  @param gCol the collection of geometries to update
  @param oid the oid
+ @param AddedIds All IDs added.
  @return  true if all operations are successfull
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 February 2009
  *******************************************************************************/
-bool tmGISDataVector::SplitGeometry (OGRGeometryCollection * gCol, const long & oid)
+bool tmGISDataVector::SplitGeometry (OGRGeometryCollection * gCol, const long & oid,
+									 wxArrayLong & AddedIds)
 {
 	if (UpdateGeometry(gCol->getGeometryRef(0), oid) == false)
 		return false;
-	
+	long lAdded = -1;
 	for (int i = 1;i < gCol->getNumGeometries(); i++)
-		if (AddGeometry(gCol->getGeometryRef(i), -1) == false)
+	{
+		lAdded = AddGeometry(gCol->getGeometryRef(i), -1);
+		if (lAdded == -1)
 			return false;
+		AddedIds.Add(lAdded);
+	}
 		
 	return true;
 }

@@ -81,7 +81,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual OGRLineString * GetNextDataLine (long & oid); 
 		virtual OGRPoint * GetOGRNextDataPoint (long & oid);
 		virtual OGRGeometry * GetGeometryByOID (long oid);
-		virtual bool AddGeometry (OGRGeometry * Geom, const long & oid);
+		virtual long AddGeometry (OGRGeometry * Geom, const long & oid);
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid);
 		
 		// metadata
