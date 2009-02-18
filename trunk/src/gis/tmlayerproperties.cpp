@@ -91,7 +91,7 @@ void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 	// unserialize object
 	if (m_LayerSymbol && !itemBinSymbology.IsEmpty())
 	{
-		wxLogDebug(itemBinSymbology);
+		//wxLogDebug(itemBinSymbology);
 		tmSerialize in(itemBinSymbology);
 		m_LayerSymbol->Serialize(in);
 	}

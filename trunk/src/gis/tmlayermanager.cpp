@@ -160,7 +160,7 @@ bool tmLayerManager::UnInitLayerManager()
 	// delete bitmap if existing 
 	if(m_Bitmap)
 	{
-		wxLogDebug(_T("deleting bitmap"));
+		//wxLogDebug(_T("deleting bitmap"));
 		delete m_Bitmap;
 		m_Bitmap = NULL;
 	}
@@ -610,10 +610,16 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	
 	if (IsLoggingEnabled())
 		wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
-	for (int i = 0; i < myArrayCount; i++)
-	{
-		wxLogMessage(_T(" - Selected Features ID : %d"), myArray->Item(i));
-	}
+	
+		for (int i = 0; i < myArrayCount; i++)
+		{
+			if (i == 10)
+			{
+				wxLogDebug(_T("- More selected features selected .... "));
+				break;
+			}
+			wxLogMessage(_T(" - Selected Features ID : %d"), myArray->Item(i));
+		}
 	
 	
 	
@@ -635,8 +641,8 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	myArray->Clear();
 	delete myArray;
 	
-	wxLogDebug(_T("Number of features flaged as selected : %d"),
-			   m_SelectedData.GetCount());
+	//wxLogDebug(_T("Number of features flaged as selected : %d"),
+	//		   m_SelectedData.GetCount());
 	
 	return true;
 }
@@ -731,8 +737,8 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	
 	if (SelectedSearch(*mySelectedRect, IsShiftDown))
 	{
-		if (IsLoggingEnabled())
-			wxLogDebug(_T("Selection done"));
+		//if (IsLoggingEnabled())
+		//	wxLogDebug(_T("Selection done"));
 		
 		ReloadProjectLayersThreadStart(false, false);
 	}
@@ -981,13 +987,13 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 {
 	if (m_Bitmap)
 	{
-		wxLogDebug(_T("deleting bitmap"));
+		//wxLogDebug(_T("deleting bitmap"));
 		delete m_Bitmap;
 		m_Bitmap = NULL;
 	}
 	
 	m_Bitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
-				   wxLogDebug(_T("Creating bitmap"));
+				   //wxLogDebug(_T("Creating bitmap"));
 
 	// ensure that the bitmap is white (win and linux)
 	wxMemoryDC dc;

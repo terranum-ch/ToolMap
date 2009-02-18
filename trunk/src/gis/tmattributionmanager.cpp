@@ -293,8 +293,6 @@ bool tmAttributionManager::IsAttributionManagerReady()
  *******************************************************************************/
 void tmAttributionManager::OnSelection (wxCommandEvent & event)
 {
-	wxLogDebug(_T("----Selection done received by AttributionManager---"));
-	
 	int iSelFeatureCount = m_SelData->GetCount();
 	
 	// some verifications :
