@@ -105,5 +105,22 @@ class MenuManager : public wxObject
 
 
 
+class ToolbarManager : public wxObject
+	{
+	private:
+		wxToolBar * m_TBar;
+	protected:
+	public:
+		ToolbarManager(wxToolBar * toolbar);
+		~ToolbarManager();
+		
+		// editing 
+		void EditingStatus(bool started);
+		
+	};
+
+
+
+
 
 #endif
