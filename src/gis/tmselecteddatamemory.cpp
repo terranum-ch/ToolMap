@@ -103,7 +103,7 @@ bool tmSelectedDataMemory::AddSelected (wxArrayLong * selected)
 		m_SelectedIDs->Add(selected->Item(i));
 	}
 	
-	wxLogDebug(_T("%d items added to the memory"), m_SelectedIDs->GetCount());
+	//wxLogDebug(_T("%d items added to the memory"), m_SelectedIDs->GetCount());
 	return true;
 	
 }
