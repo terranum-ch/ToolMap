@@ -37,7 +37,7 @@
 // for the moment so aborted...
 // maybe later...
 //#if defined(__WXMSW__) || defined(__WXMAC__)
-const long PICKER_BEST_STYLE = wxDIRP_DIR_MUST_EXIST | wxDIRP_USE_TEXTCTRL;
+const long PICKER_BEST_STYLE = wxDIRP_USE_TEXTCTRL; //| wxDIRP_DIR_MUST_EXIST;
 //#else
 //const long PICKER_BEST_STYLE = wxDIRP_DEFAULT_STYLE;	
 //#endif

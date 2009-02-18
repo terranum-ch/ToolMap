@@ -204,6 +204,7 @@ void ToolMapFrame::PostInit()
 	m_pConfig = new wxFileConfig();
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar(), m_pConfig);
+	m_TManager = new ToolbarManager (GetToolBar());
 		
 	m_PManager = new ProjectManager(this);
 	m_PManager->SetMenuManager(m_MManager);
@@ -255,6 +256,7 @@ ToolMapFrame::~ToolMapFrame()
 	
 	// delete the menu manager
 	delete m_MManager;
+	delete m_TManager;
 	
 	// delete the config file
 	
@@ -323,8 +325,10 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu41->Append(ID_MENU_UNDO, _("Undo\tCtrl+Z"), _T(""), wxITEM_NORMAL);
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
-    itemMenu41->Append(ID_MENU_DRAW, _("Draw\tD"), _T(""), wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_DRAW, _("Draw\tD"), _T(""), wxITEM_NORMAL); 
+	itemMenu41->Enable(ID_MENU_DRAW, false);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify\tM"), _T(""), wxITEM_NORMAL);
+	itemMenu41->Enable(ID_MENU_MODIFY, false);
     itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut lines\tCtrl+X"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex position\tCtrl+V"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
@@ -407,9 +411,11 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     itemToolBar3->AddTool(ID_MENU_DRAW, _T("Draw"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool10Bitmap(wxGetBitmapFromMemory(tool6));
     wxBitmap itemtool10BitmapDisabled;
+	itemToolBar3->EnableTool (ID_MENU_DRAW, false);
     itemToolBar3->AddTool(ID_MENU_MODIFY, _T("Modify"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
     wxBitmap itemtool11BitmapDisabled;
+	itemToolBar3->EnableTool(ID_MENU_MODIFY, false);
     itemToolBar3->AddTool(ID_TOOL7, _T("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
 	itemToolBar3->AddSeparator();
     wxBitmap itemtool13Bitmap(wxGetBitmapFromMemory(tool8));
@@ -721,12 +727,18 @@ void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
 
 
 
+
 void ToolMapFrame::OnEditSwitch (wxCommandEvent & event)
 {
 	bool bEditStart = false;
 	if (event.GetEventType() == tmEVT_EM_EDIT_START)
 		bEditStart = true;
+	else
+		m_LayerManager->OnSelect(); // set the select cursor
+	
 	m_MManager->EditingStatus(bEditStart);
+	m_TManager->EditingStatus(bEditStart);
+
 	
 }
 
@@ -776,7 +788,6 @@ void ToolMapFrame::OnCreateIntersections (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 {
-	wxLogDebug(_T("----Selection done received by ToolMapFrame---"));
 	m_MManager->UpdateSelection(m_AttribManager->GetSelectionCount());
 	event.Skip();
 }
@@ -895,9 +906,9 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event)
 	{
 		tmExportManager myExport(this, m_PManager->GetDatabase());
 		if (myExport.ExportSelected())
-			wxLogDebug(_T("Exporting project success"));
+			wxLogDebug(_T("Exporting layer(s) success"));
 		else
-			wxLogDebug(_T("Exporting project failed"));
+			wxLogDebug(_T("Exporting layer(s) failed"));
 	}
 		
 }

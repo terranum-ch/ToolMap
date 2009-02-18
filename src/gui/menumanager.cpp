@@ -267,3 +267,27 @@ void MenuManager::UpdateSelection (int iNbSelected)
 	m_MenuBar->SetLabel(ID_MENU_DELETE_OBJ, sNumber);
 	
 }
+
+
+
+
+/********************************* TOOLBAR MANAGER ********************************/
+ToolbarManager::ToolbarManager(wxToolBar * toolbar)
+{
+	wxASSERT(toolbar);
+	m_TBar = toolbar;
+}
+
+
+ToolbarManager::~ToolbarManager()
+{
+	
+}
+
+
+void ToolbarManager::EditingStatus(bool started)
+{
+	m_TBar->EnableTool(ID_MENU_DRAW, started);
+	m_TBar->EnableTool(ID_MENU_MODIFY, started);
+}
+

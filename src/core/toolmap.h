@@ -125,6 +125,7 @@
 //// end of testing
 
 class MenuManager;
+class ToolbarManager;
 class ProjectManager;
 
 #include <wx/mstream.h>
@@ -266,6 +267,7 @@ private:
 	
 	ProjectManager * m_PManager;
 	MenuManager * m_MManager;
+	ToolbarManager * m_TManager;
 	
 	tmLayerManager * m_LayerManager;
 	tmScaleCtrlCombo * m_ScaleCombo;
