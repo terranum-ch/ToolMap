@@ -610,6 +610,11 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	
 	if (IsLoggingEnabled())
 		wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
+	for (int i = 0; i < myArrayCount; i++)
+	{
+		wxLogMessage(_T(" - Selected Features ID : %d"), myArray->Item(i));
+	}
+	
 	
 	
 	// add, remove or clear selection depending on :

@@ -110,6 +110,9 @@ class tmAttributionManager : public wxEvtHandler
 		bool InitAttributionManager(DataBaseTM * pDb);
 		void UnInitAttributionManager();
 		
+		// selection informations
+		int GetSelectionCount(){return m_SelData->GetCount();}
+		
 	
 	};
 

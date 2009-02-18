@@ -300,6 +300,9 @@ private:
 	void OnEditDeleteSelected (wxCommandEvent & event);
 	void OnEditUndo (wxCommandEvent & event);
 	void OnCreateIntersections (wxCommandEvent & event);
+	
+	// changing status function
+	void OnUpdateSelection (wxCommandEvent & event);
 		
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);

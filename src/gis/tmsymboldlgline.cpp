@@ -148,6 +148,7 @@ void tmSymbolDLGLine::CreateControlsLine()
 	
 	
     m_NoteBook->AddPage(itemPanel7, _("Line Symbology"));
+	m_NoteBook->ChangeSelection(1);
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();

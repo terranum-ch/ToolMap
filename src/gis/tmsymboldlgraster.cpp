@@ -107,6 +107,7 @@ void tmSymbolDLGRaster::CreateControls()
     itemStaticBoxSizer12->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
 	
     m_NoteBook->AddPage(itemPanel7, _("Raster Symbology"));
+	m_NoteBook->ChangeSelection(1);
 
 	
 	// adapt dialog size to new controls added
