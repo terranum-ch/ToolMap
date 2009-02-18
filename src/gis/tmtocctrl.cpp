@@ -483,6 +483,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 {
 	// getting data from layers 1;
 	bool item1_bold = IsBold(item);
+	wxFont item1_font = GetItemFont(item);
 	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
 	wxString item1_text = GetItemText(item);
 	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
@@ -498,6 +499,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 											  newinserteditemData);
 	SetItemBold(newinserteditem, item1_bold);
 	SelectItem(newinserteditem, true);
+	SetItemFont(newinserteditem, item1_font);
 	
 	Delete(item);
 	
@@ -523,6 +525,7 @@ bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
 	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
 	wxString item1_text = GetItemText(item);
 	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
+	wxFont item1_font = GetItemFont(item);
 	
 	
 	// searching and getting data from new position
@@ -546,19 +549,24 @@ bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
 	int item2_image = GetItemImage(item2, wxTreeItemIcon_Normal);
 	wxString item2_text = GetItemText(item2);
 	tmLayerProperties * item2_data = (tmLayerProperties*) GetItemData(item2);
+	wxFont item2_font = GetItemFont(item2);
 	
 	// swapping items
 	SetItemBold(item, item2_bold);
 	SetItemImage(item, item2_image);
 	SetItemText(item, item2_text);
 	SetItemData(item, item2_data);
+	SetItemFont(item, item2_font);
 	SelectItem(item, false);
+	
 	
 	SetItemBold(item2, item1_bold);
 	SetItemImage(item2, item1_image);
 	SetItemText(item2, item1_text);
 	SetItemData(item2, item1_data);
+	SetItemFont(item2, item1_font);
 	SelectItem(item2, true);
+	
 	
 	return true;
 }
