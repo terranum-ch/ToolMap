@@ -97,6 +97,9 @@ class MenuManager : public wxObject
 		// Editing 
 		void EditingStatus(bool started);
 		
+		// Selection done
+		void UpdateSelection (int iNbSelected);
+		
 	};
 
 

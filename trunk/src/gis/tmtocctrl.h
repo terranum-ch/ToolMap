@@ -84,6 +84,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// private event functions
 		void OnMouseClick (wxMouseEvent & event);
 		void OnMouseItemRightClick (wxTreeEvent & event);
+		void OnMouseItemDoubleClick (wxTreeEvent & event);
 		void OnMoveLayers (wxCommandEvent & event);
 		void OnShortcutKey (wxKeyEvent & event);
 		

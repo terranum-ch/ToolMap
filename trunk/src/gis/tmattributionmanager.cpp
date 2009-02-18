@@ -293,6 +293,8 @@ bool tmAttributionManager::IsAttributionManagerReady()
  *******************************************************************************/
 void tmAttributionManager::OnSelection (wxCommandEvent & event)
 {
+	wxLogDebug(_T("----Selection done received by AttributionManager---"));
+	
 	int iSelFeatureCount = m_SelData->GetCount();
 	
 	// some verifications :
@@ -316,6 +318,9 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 		wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
 		m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	}
+	
+	// propagate to menu
+	event.Skip();
 	
 	
 }

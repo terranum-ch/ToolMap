@@ -135,6 +135,7 @@ void tmSymbolDLGPoint::CreateControlsPoint()
     itemStaticBoxSizer22->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
 	
     m_NoteBook->AddPage(itemPanel7, _("Point Symbology"));
+	m_NoteBook->ChangeSelection(1);
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();

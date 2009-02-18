@@ -114,6 +114,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_ATTRIBUTION_DONE, ToolMapFrame::OnShortcutAttributionDone)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
+	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
 	
 END_EVENT_TABLE()
 
@@ -763,6 +764,21 @@ void ToolMapFrame::OnEditUndo (wxCommandEvent & event)
 void ToolMapFrame::OnCreateIntersections (wxCommandEvent & event)
 {
 	m_EditManager->CreateIntersections();
+}
+
+
+
+/***************************************************************************//**
+ @brief Called earch time the selection is updated
+ @details Modifies menu according to number of selected item
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 18 February 2009
+ *******************************************************************************/
+void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
+{
+	wxLogDebug(_T("----Selection done received by ToolMapFrame---"));
+	m_MManager->UpdateSelection(m_AttribManager->GetSelectionCount());
+	event.Skip();
 }
 
 

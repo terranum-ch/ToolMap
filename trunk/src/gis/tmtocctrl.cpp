@@ -40,7 +40,9 @@ DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
 
 BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
-	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
+	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, tmTOCCtrl::OnMouseItemDoubleClick)
+	//EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
+	EVT_TREE_ITEM_MENU(wxID_ANY,tmTOCCtrl::OnMouseItemRightClick)
 	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
 	EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
 	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_NONE,tmTOCCtrl::OnVertexMenu)
@@ -627,6 +629,22 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 		
 	
 	PopupMenu(m_ContextMenu, event.GetPoint());
+	
+	event.Skip();
+}
+
+
+/***************************************************************************//**
+ @brief Called when user double-click an item
+ @details Actually display the show properties dialog
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 18 February 2009
+ *******************************************************************************/
+void tmTOCCtrl::OnMouseItemDoubleClick (wxTreeEvent & event)
+{
+	wxCommandEvent evt;
+	OnShowProperties(evt);
+	event.Skip();
 }
 
 
