@@ -369,7 +369,9 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
  @brief Called when windows size change
  @details This function is called by the renderer (#tmRenderer) when the size
  change. It call the rendering of all layers in a multi-threaded way.
- @param event Contain the new windows size.
+ @param event Contain a tmArraySize with :
+ - Item 0 containing the old Size (in pixels).
+ - Item 1 containing the new size (in pixels).
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 October 2008
  *******************************************************************************/
@@ -377,22 +379,28 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 {
 	// pass size to scale object but don't make 
 	// any computation if no project are opened
-	wxSize * mySize = (wxSize *) event.GetClientData();
-	m_Scale.SetWindowExtent(wxRect(0,0,mySize->GetWidth(), mySize->GetHeight()));
+	tmArraySize * mySizes = (tmArraySize *) event.GetClientData();
+	wxASSERT(mySizes);
+	wxSize myOldSize = mySizes->Item(0);
+	wxSize myNewSize = mySizes->Item(1);
+	bool mybSmaller = (bool) event.GetInt();
+	delete mySizes;
+	
+	// actual wnd extent
+	m_Scale.SetWindowExtent(wxRect(0,0,myNewSize.GetWidth(), myNewSize.GetHeight()));
 	
 	// compute reel size in MM
 	wxClientDC dc (m_GISRenderer);
 	m_Scale.SetWindowExtentMM(dc.GetSizeMM());
-	delete mySize;
+	
 	
 	// ensure that a project is opened
 	if (!IsOK())
 		return;
 	
-	// compute new pixel size (display area remain the same)
-	m_Scale.ComputeNewPixelSize();
-	 
-	ReloadProjectLayersThreadStart(FALSE, FALSE);
+	// compute new pixel size
+	if (m_Scale.ComputeNewPixelSize(myOldSize, myNewSize))
+		ReloadProjectLayersThreadStart(false, false);
 }
 
 
