@@ -261,18 +261,6 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		return false;
 	}
 	
-	//TODO: Remove this wait dialog and add a progress dialog
-	//wxBusyInfo wait (_("Please wait, exporting project ..."), m_Parent);
-	//wxBusyCursor wait2;
-	
-	// progress dialog
-	/*bool bSkip = false;
-	wxString mydlgtext =	_("Exporting  Layers    :    ");
-	wxProgressDialog ProgDlg (_("Exporting Project in progress"),
-							  mydlgtext + layers->Item(0).m_LayerName,
-							  layers->GetCount(),
-							  m_Parent,
-							  wxPD_CAN_ABORT |  wxPD_AUTO_HIDE | wxPD_APP_MODAL);*/
 	CreateProgress(layers->GetCount(),
 				   layers->Item(0).m_LayerName);
 	

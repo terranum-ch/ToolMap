@@ -32,6 +32,8 @@
 
 const int tmSCALE_MARGIN = 10; // margin between image and border in full screen mode
 
+bool tmIsSameDouble(double left, double right, double epsilon);
+
 
 
 /***************************************************************************//**
@@ -90,7 +92,6 @@ class tmRealRect
 
 
 
-
 class tmGISScale : public wxObject
 	{
 	private:
@@ -141,7 +142,7 @@ class tmGISScale : public wxObject
 		bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
 		
 		// size windows changed -> px size change too
-		void ComputeNewPixelSize ();
+		bool ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize);
 		
 		// scale function
 		void DistanceFromScale (const long & scale, double & xdist, double & ydist);

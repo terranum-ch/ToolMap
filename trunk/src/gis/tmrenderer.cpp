@@ -71,8 +71,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_PanBmp = NULL;
 	m_ShiftDown = false;
 	m_SnappingRadius = 0;
-	
-	
+	m_OldSize = wxSize(0,0);
 }
 
 
@@ -99,13 +98,29 @@ tmRenderer::~tmRenderer()
  *******************************************************************************/
 void tmRenderer::OnSizeChange(wxSizeEvent & event)
 {
-	// new size object, will be deleted in the 
-	// layer manager
-	wxSize * mySize = new wxSize(GetClientSize());
+	wxSize myActualSize = GetClientSize();
+
+	// size change direction : smaller, bigger
+	bool bSmaller = true;
+	if (myActualSize.GetWidth() > m_OldSize.GetWidth() ||
+		myActualSize.GetHeight() > m_OldSize.GetHeight())
+		bSmaller = false;
+	else if (myActualSize == m_OldSize)
+		return;
+	
+		
+	// new size array object, will be deleted in the layer manager
+	tmArraySize * mySizes = new tmArraySize();
+	mySizes->Add(m_OldSize);
+	mySizes->Add(myActualSize);
+		
+	
+	m_OldSize = myActualSize;
 	
 	// send size to the layermanager
 	wxCommandEvent evt(tmEVT_LM_SIZE_CHANGED, wxID_ANY);
-	evt.SetClientData(mySize);
+	evt.SetInt(bSmaller);
+	evt.SetClientData(mySizes);
 	GetEventHandler()->AddPendingEvent(evt);
 }
 

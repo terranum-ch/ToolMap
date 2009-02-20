@@ -32,6 +32,7 @@
 #include <wx/scrolwin.h>	// for scrolled window base
 #include "../gui/wxrubberband.h"	// for selection rubber band
 #include "tmgisscale.h"			// for number of division;
+#include "tmarraysize.h"		// for array of wxSize items
 
 
 // EVENT FOR GIS RENDERER CTRL
@@ -79,6 +80,9 @@ class tmRenderer : public wxScrolledWindow
 		wxBitmap * m_bmp;
 		tmGIS_TOOL m_ActualTool;
 		tmGIS_CURSOR m_ActualNotStockCursor;
+		
+		// sizeing process
+		wxSize m_OldSize;
 				
 		// rubber band
 		wxRubberBand * m_SelectRect;
