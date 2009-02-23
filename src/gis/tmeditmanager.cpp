@@ -967,16 +967,57 @@ bool tmEditManager::CreateIntersections ()
 bool tmEditManager::EditVertexPosition ()
 {
 	// validation
-	//TODO: Add this check 
-	//if (IsModifictionAllowed()==false)
-	//	return false;
+	if (IsModifictionAllowed()==false)
+		return false;
 	
+	// get the editing layers
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (!mySelLayer)
+		return false;
+	
+	// getting geometry info
+	long lSelectedOID = m_SelectedData->GetSelectedUnique();
+	OGRGeometry * myGeom = mySelLayer->GetGeometryByOID(lSelectedOID);
+	if (!myGeom)
+		return false;
+	OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
+	
+	// preparing dialog and dialog data
 	EditVertexDLG myDlg (m_Renderer);
-	if(myDlg.ShowModal() != wxID_OK)
-		return true;
+	myDlg.m_SelectedOID = lSelectedOID;
+	bool bReturn = true;
+	
+	switch (myType)
+	{
+		case wkbPoint:
+			OGRPoint * myPt = (OGRPoint*) myGeom;
+			myDlg.m_VertexPts.Add(wxRealPoint(myPt->getX(), myPt->getY()));
+			break;
+			
+		case wkbLineString:
+			OGRLineString * myLine = (OGRLineString*) myGeom;
+			for (int i = 0; i< myLine->getNumPoints();i++)
+				myDlg.m_VertexPts.Add(wxRealPoint(myLine->getX(i), myLine->getY(i)));
+			break;
 		
-	return true;
+		default:
+			bReturn = false;
+			break;
+	}
+	OGRGeometryFactory::destroyGeometry(myGeom);
+	
+	
+	// displaying dialog
+	if (bReturn == true)
+		if(myDlg.ShowModal() != wxID_OK)
+			return true;
+		
+	return bReturn;
 }
+
+
+
+
 
 
 
