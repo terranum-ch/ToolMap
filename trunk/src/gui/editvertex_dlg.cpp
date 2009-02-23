@@ -62,7 +62,7 @@ void EditVertexDLG::CreateControls()
 	m_VertexGrid = new wxGrid( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	
 	// Grid
-	m_VertexGrid->SetDefaultColSize(100);
+	//m_VertexGrid->SetDefaultColSize(100);
 	m_VertexGrid->CreateGrid( 5, 2 );
 	m_VertexGrid->EnableEditing( true );
 	m_VertexGrid->EnableGridLines( true );
@@ -79,7 +79,7 @@ void EditVertexDLG::CreateControls()
 	
 	// Rows
 	m_VertexGrid->EnableDragRowSize( true );
-	m_VertexGrid->SetRowLabelSize( 80 );
+	m_VertexGrid->SetRowLabelSize( 40 );
 	m_VertexGrid->SetRowLabelAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
 	
 	// Label Appearance
@@ -90,21 +90,21 @@ void EditVertexDLG::CreateControls()
 	
 	bSizer19->Add( m_VertexGrid, 1, wxEXPAND|wxBOTTOM, 5 );
 	
-	wxBoxSizer* bSizer20;
-	bSizer20 = new wxBoxSizer( wxHORIZONTAL );
+	wxStaticBoxSizer * bSizer20;
+	bSizer20 = new wxStaticBoxSizer( wxHORIZONTAL, this, _("Operations"));
 	
 	wxFlatButton* m_button17;
 	m_button17 = new wxFlatButton( this, ID_BTN_ADD_VERTEX, wxFLATBUTTON_TEXT_ADD);
-	bSizer20->Add( m_button17, 0, wxLEFT | wxTOP | wxBOTTOM, 5 );
+	bSizer20->Add( m_button17, 0, 0, 0 );
 	
 	wxFlatButton* m_button18;
 	m_button18 = new wxFlatButton( this, ID_BTN_REMOVE_VERTEX, wxFLATBUTTON_TEXT_REMOVE);
-	bSizer20->Add( m_button18, 0, wxLEFT | wxTOP | wxBOTTOM, 5 );
+	bSizer20->Add( m_button18, 0, wxLEFT , 5 );
 	
 	m_DisplayVertexPosBtn = new wxFlatButton( this, ID_BTN_DISPLAYVERTEX, 
 										 _("Display vertex position"), wxDefaultSize);
-	bSizer20->Add( m_DisplayVertexPosBtn, 0, wxLEFT | wxTOP | wxBOTTOM, 5 );	
-	bSizer19->Add( bSizer20, 0, wxEXPAND, 5 );
+	bSizer20->Add( m_DisplayVertexPosBtn, 0, wxLEFT, 5 );	
+	bSizer19->Add( bSizer20, 0, wxEXPAND | wxALL, 5 );
 	
 	/*wxStaticLine* m_staticline2;
 	m_staticline2 = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -138,7 +138,8 @@ void EditVertexDLG::CreateControls()
 	this->Centre( wxBOTH );	
 	this->SetMinSize(wxSize(220,200));
 	
-	//wxSize myDlgSize = this->GetSize();
-	//wxLogDebug(_T("Size is %d, %d"), myDlgSize.GetWidth(), myDlgSize.GetHeight());
+	wxSize myDlgSize = this->GetSize();
+	m_VertexGrid->SetDefaultColSize((myDlgSize.GetWidth() - m_VertexGrid->GetRowLabelSize()) / 2 , true);
+	wxLogDebug(_T("Size is %d, %d"), myDlgSize.GetWidth(), myDlgSize.GetHeight());
 }
 

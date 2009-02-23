@@ -29,10 +29,10 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/scrolwin.h>	// for scrolled window base
+#include <wx/scrolwin.h>			// for scrolled window base
 #include "../gui/wxrubberband.h"	// for selection rubber band
-#include "tmgisscale.h"			// for number of division;
-#include "tmarraysize.h"		// for array of wxSize items
+#include "tmgisscale.h"				// for number of division;
+#include "../core/tmarraysize.h"	// for array of wxSize items
 
 
 // EVENT FOR GIS RENDERER CTRL
