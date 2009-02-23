@@ -39,13 +39,14 @@
 #define ID_BTN_REMOVE_VERTEX 22101
 #define ID_BTN_DISPLAYVERTEX 22102
 
+const int tmVERTEX_PRECISION = 10;
 
 // margin for systems
-#ifdef __WXMSW__
+//#ifdef __WXMSW__
 const int gSizeMargin = 10;
-#else
-const int gSizeMargin = 0;
-#endif
+//#else
+//const int gSizeMargin = 0;
+//#endif
 
 
 class EditVertexDLG : public wxDialog 
@@ -62,6 +63,18 @@ class EditVertexDLG : public wxDialog
 		//status function
 		void SetStatusSelectedID (long oid);
 		void SetStatusNumberVertex (int ivertexnumber);
+		
+		// Grid functions
+		bool GridInsertLine (int iIndex = -1, wxRealPoint * pt = NULL);
+		bool GridClear ();
+		int GridGetSelection ();
+		
+		//event function
+		void OnVertexAdd (wxCommandEvent & event);
+		void OnVertexRemove (wxCommandEvent & event);
+		void OnVertexHighlight (wxCommandEvent & event);
+		
+		DECLARE_EVENT_TABLE();
 		
 		
 	public:

@@ -19,6 +19,11 @@
 
 #include "editvertex_dlg.h"
 
+BEGIN_EVENT_TABLE(EditVertexDLG, wxDialog)
+	EVT_FLATBUTTON (ID_BTN_ADD_VERTEX, EditVertexDLG::OnVertexAdd)
+	EVT_FLATBUTTON (ID_BTN_REMOVE_VERTEX, EditVertexDLG::OnVertexRemove)
+END_EVENT_TABLE()
+
 
 /***************************************************************************//**
  @brief Constructor
@@ -190,6 +195,13 @@ bool EditVertexDLG::TransferDataToWindow()
 	SetStatusNumberVertex(m_VertexPts.GetCount());
 	
 	
+	if (GridClear() == false)
+		return false;
+	
+	for (unsigned int i = 0; i< m_VertexPts.GetCount();i++)
+		if (GridInsertLine(i, &m_VertexPts.Item(i))== false)
+			return false;
+	
 	return true;
 }
 
@@ -204,4 +216,99 @@ bool EditVertexDLG::TransferDataFromWindow()
 {
 	
 	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Insert or add a line
+ @param iIndex index of the line to insert or -1 for adding at the end
+ @param pt value of the point to add in the new line or null to add an empty line
+ @return  true if inserting or adding was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+bool EditVertexDLG::GridInsertLine (int iIndex, wxRealPoint * pt)
+{
+	if (iIndex == -1)
+		iIndex == m_VertexGrid->GetNumberRows();
+	
+	wxASSERT (iIndex <= m_VertexGrid->GetNumberRows());
+	
+	
+	if (m_VertexGrid->InsertRows(iIndex, 1) == false)
+	{
+		wxLogError(_T("Error inserting row @ index = %d"), iIndex);
+		return false;
+	}
+	
+	if (pt != NULL)
+	{
+		wxString myXText = wxString::Format(_T("%.*f"),tmVERTEX_PRECISION, pt->x);
+		wxString myYText = wxString::Format(_T("%.*f"),tmVERTEX_PRECISION,pt->y);
+		
+		m_VertexGrid->SetCellValue(iIndex, 0, myXText);
+		m_VertexGrid->SetCellValue(iIndex, 1, myYText);
+	}
+
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Delete all rows from Grid
+ @return  true if all rows where successfully deleted
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+bool EditVertexDLG::GridClear ()
+{
+	return m_VertexGrid->DeleteRows(0, m_VertexGrid->GetNumberRows());
+} 
+
+
+
+/***************************************************************************//**
+ @brief Get the selected row
+ @details This function return the index of selected row. Only valid if one row
+ is selected. We didn't support multiple row selection actually.
+ @return  index of selected row or wxNOT_FOUND if no row or more than one row
+ selected
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+int EditVertexDLG::GridGetSelection ()
+{
+	wxArrayInt mySelRow = m_VertexGrid->GetSelectedRows();
+	if (mySelRow.GetCount() == 1)
+		return mySelRow.Item(0);
+	
+	return wxNOT_FOUND;
+}
+	
+
+void EditVertexDLG::OnVertexAdd (wxCommandEvent & event)
+{
+	int iSelected = GridGetSelection();
+	if (iSelected == wxNOT_FOUND)
+		return;
+		
+	GridInsertLine(iSelected+1, NULL);
+	SetStatusNumberVertex(m_VertexGrid->GetNumberRows());
+}
+
+void EditVertexDLG::OnVertexRemove (wxCommandEvent & event)
+{
+	int iSelected = GridGetSelection();
+	if (iSelected == wxNOT_FOUND)
+		return;
+	
+	m_VertexGrid->DeleteRows(iSelected, 1);
+	SetStatusNumberVertex(m_VertexGrid->GetNumberRows());
+}
+
+
+void EditVertexDLG::OnVertexHighlight (wxCommandEvent & event)
+{
+	
 }
