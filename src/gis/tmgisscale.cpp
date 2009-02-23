@@ -270,14 +270,12 @@ bool tmGISScale::ComputeNewPixelSize (const wxSize & oldsize, const wxSize & new
 	
 	wxASSERT (oldsize != wxSize(0,0));
 	wxASSERT (newsize != wxSize(0,0));
+	wxASSERT (newsize == wxSize(m_ExtentWnd.GetWidth(), m_ExtentWnd.GetHeight()));
 
 	
 	// check data
 	if (m_ExtentWnd == wxSize(0,0) || m_ExtentMaxLayers == tmRealRect(0,0,0,0))
 		return false;
-	
-	//dx = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / (m_ExtentWnd.GetWidth());
-	//dy = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) / (m_ExtentWnd.GetHeight());
 	
 	
 	//TODO: Remove, for debug only
@@ -291,94 +289,43 @@ bool tmGISScale::ComputeNewPixelSize (const wxSize & oldsize, const wxSize & new
 	wxLogDebug(sSentence);
 	// END
 	
+	 
+	// compute x, y reduction
+	int redxpx = newsize.GetWidth() - oldsize.GetWidth();
+	int redypx = newsize.GetHeight() - oldsize.GetHeight();
+	int yNewComputedSize = 0;
+	int xNewComputedSize = 0;
+	double yRealDiff = 0;
+	double xRealDiff = 0;
 	
-	mydiffxpx = newsize.GetWidth() - oldsize.GetWidth();
-	mydiffypx = newsize.GetHeight() - oldsize.GetHeight();
-	double dmarginx = 0, dmarginy = 0;
-	
-	if (abs(mydiffxpx) > abs(mydiffypx)) // more change in x axis
+	// Y movement greather than x
+	if (abs(redypx) > abs(redxpx))
 	{
-		m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / (m_ExtentWnd.GetWidth());
-		myPixely = m_PixelSize * newsize.GetWidth() / oldsize.GetWidth();
-		dmarginy = myPixely * abs(mydiffxpx) / 2;
-		if (mydiffxpx < 0)
-		{
-			m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dmarginy);
-			m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dmarginy);	
-		}
-		else
-		{
-			m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, dmarginy);
-			m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, dmarginy);
-		}
+		m_PixelSize = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) / 
+		(m_ExtentWnd.GetHeight());
 		
-	}
-	else if (abs(mydiffxpx) < abs(mydiffypx)) // more change in y axis
-	{
-		m_PixelSize = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) / (m_ExtentWnd.GetHeight());
-		myPixelx = m_PixelSize * newsize.GetHeight() / oldsize.GetHeight();
-		dmarginx = myPixelx * abs(mydiffypx) / 2;
-		if (mydiffypx < 0)
-		{
-			m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dmarginy);
-			m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dmarginy);	
-		}
-		else
-		{
-			m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, dmarginy);
-			m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, dmarginy);
-		}
+		xNewComputedSize = newsize.GetHeight() * oldsize.GetWidth() / oldsize.GetHeight();
+		xRealDiff = (xNewComputedSize - oldsize.GetWidth() - 
+					 (oldsize.GetWidth() - newsize.GetWidth())) / 2 * m_PixelSize;
 		
+		m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, xRealDiff);
+		m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, xRealDiff);
+
 	}
-	else // same change on both axis
+	else // X Movement greather or = Y
 	{
-		m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / (m_ExtentWnd.GetWidth());
-	}
-	
-	
-	
-	
-	
-	/*if (mydiffxpx > 0) // client area is bigger
-	{
-		//m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dmarginx);
-		//m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dmarginx);
-	}
-	if (mydiffxpx < 0) // client area is going smaller
-	{
-		//m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, dmarginx);
-		//m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, dmarginx);
-	}
-	
-	
-	/*
-	if (IsSmaller) // windows was sized down
-	{
-		if (dx > dy)
-			m_PixelSize = dx;
-		else 
-			m_PixelSize = dy;
+		// compute new pixel size
+		m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
+					(m_ExtentWnd.GetWidth());
 		
+		yNewComputedSize = newsize.GetWidth() * oldsize.GetHeight() / oldsize.GetWidth();
+		yRealDiff = (yNewComputedSize - oldsize.GetHeight() - 
+				 (newsize.GetHeight() - oldsize.GetHeight())) / 2 * m_PixelSize;
+	
+		m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, yRealDiff);
+		m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, yRealDiff);
+
 	}
-	else // windows was sized up
-	{
-		if (dx < dy)
-			m_PixelSize = dx;
-		else 
-			m_PixelSize = dy;
-	}
-	
-	/*
-	
-	// compute new windows extend
-	//TODO: this is temp code working only for x reduction
-	double dDiff = dx / myOldPxSize; 
-	double dYDist = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
-	double dAddingYDist = (dYDist * dDiff - dYDist) / 2;
-	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dAddingYDist);
-	m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dAddingYDist);
-	
-	return myOldPxSize;*/
 	return true;
 }
 
