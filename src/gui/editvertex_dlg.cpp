@@ -27,6 +27,8 @@
  *******************************************************************************/
 EditVertexDLG::EditVertexDLG( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+	m_VertexPts.Clear();
+	m_SelectedOID = -1;
 	
 	CreateControls();
 }
@@ -126,8 +128,8 @@ void EditVertexDLG::CreateControls()
 	
 	bSizer16->Add( bSizer19, 1, wxEXPAND, 5 );
 	
-	wxStatusBar * m_Status = new wxStatusBar( this, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
-    m_Status->SetFieldsCount(1);
+	m_Status = new wxStatusBar( this, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
+    m_Status->SetFieldsCount(2);
 	bSizer16->Add(m_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
 	
 	
@@ -138,8 +140,68 @@ void EditVertexDLG::CreateControls()
 	this->Centre( wxBOTH );	
 	this->SetMinSize(wxSize(220,200));
 	
+	// sizing columns acording to the wnd size
 	wxSize myDlgSize = this->GetSize();
-	m_VertexGrid->SetDefaultColSize((myDlgSize.GetWidth() - m_VertexGrid->GetRowLabelSize()) / 2 , true);
-	wxLogDebug(_T("Size is %d, %d"), myDlgSize.GetWidth(), myDlgSize.GetHeight());
+	m_VertexGrid->SetDefaultColSize((myDlgSize.GetWidth() - m_VertexGrid->GetRowLabelSize()) / 2 - gSizeMargin,
+									true);
 }
 
+
+
+/***************************************************************************//**
+ @brief Update the status text
+ @details Display the selected object ID
+ @param oid Object ID selected
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+void EditVertexDLG::SetStatusSelectedID (long oid)
+{
+	wxString myStatText = wxString::Format(_("Object ID : %d"), oid);
+	m_Status->SetStatusText(myStatText, 0);
+}
+
+
+
+/***************************************************************************//**
+ @brief Update the status text
+ @details Display the number of vertex
+ @param ivertexnumber Number of vertex
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+void EditVertexDLG::SetStatusNumberVertex (int ivertexnumber)
+{
+	wxString myStatText = wxString::Format(_("%d Vertex"), ivertexnumber);
+	m_Status->SetStatusText(myStatText, 1);
+}
+
+
+
+/***************************************************************************//**
+ @brief Data transfert
+ @details This function is automatically called when dialog is diasplayed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+bool EditVertexDLG::TransferDataToWindow()
+{
+	SetStatusSelectedID(m_SelectedOID);
+	SetStatusNumberVertex(m_VertexPts.GetCount());
+	
+	
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Data transfert
+ @details This function is automatically called when dialog is closed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+bool EditVertexDLG::TransferDataFromWindow()
+{
+	
+	return true;
+}

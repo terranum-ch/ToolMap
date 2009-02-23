@@ -44,8 +44,6 @@
 //#include "../database/database_tm.h"
 
 
-// DELCARE ARRAY OF REALPOINTS
-WX_DECLARE_OBJARRAY(wxRealPoint, wxArrayRealPoints);
 
 
 /***************************************************************************//**

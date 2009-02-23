@@ -29,17 +29,23 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/statline.h>	// for staticline
-#include <wx/grid.h>		// for grid definition
-#include "wxflatbutton.h"	// for flat buttons. 
+#include <wx/statline.h>			// for staticline
+#include <wx/grid.h>				// for grid definition
+#include "wxflatbutton.h"			// for flat buttons. 
+#include "../core/tmarraysize.h"	// for array of real
 
 
 #define ID_BTN_ADD_VERTEX 22100
 #define ID_BTN_REMOVE_VERTEX 22101
 #define ID_BTN_DISPLAYVERTEX 22102
-const wxString EditVertexDLGTitle = _("Edit Vertex Position (ID : ");
 
 
+// margin for systems
+#ifdef __WXMSW__
+const int gSizeMargin = 10;
+#else
+const int gSizeMargin = 0;
+#endif
 
 
 class EditVertexDLG : public wxDialog 
@@ -48,18 +54,32 @@ class EditVertexDLG : public wxDialog
 		// member controls
 		wxGrid* m_VertexGrid;
 		wxFlatButton* m_DisplayVertexPosBtn;
+		wxStatusBar * m_Status;
 		
 		// member functions
 		void CreateControls();
 		
+		//status function
+		void SetStatusSelectedID (long oid);
+		void SetStatusNumberVertex (int ivertexnumber);
+		
+		
 	public:
 		// ctor and dtor
 		EditVertexDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-					  const wxString& title = EditVertexDLGTitle,
+					  const wxString& title = _("Edit Vertex Position"),
 					  const wxPoint& pos = wxDefaultPosition,
 					  const wxSize& size = wxDefaultSize,
 					  long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 		~EditVertexDLG();
+		
+		// member for data exchange
+		wxArrayRealPoints m_VertexPts;
+		long m_SelectedOID;
+		
+		// data transfert, called automatically
+		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
 		
 	};
 
