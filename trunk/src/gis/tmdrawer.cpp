@@ -22,8 +22,7 @@
 
 bool tmDrawer::m_LogOn = true;
 
-#include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY (wxArrayRealPoints);
+
 
 tmDrawer::tmDrawer()
 {

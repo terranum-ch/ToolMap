@@ -42,7 +42,9 @@
 		
 		wxSize m_Size;
 	};*/
-WX_DECLARE_OBJARRAY(wxSize, tmArraySize);		
+WX_DECLARE_OBJARRAY(wxSize, tmArraySize);	
+
+WX_DECLARE_OBJARRAY(wxRealPoint, wxArrayRealPoints);
 
 
 

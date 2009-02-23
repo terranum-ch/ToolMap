@@ -40,3 +40,7 @@ void tmSize::InitMemberValues()
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmArraySize);
+
+//#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY (wxArrayRealPoints);
+
