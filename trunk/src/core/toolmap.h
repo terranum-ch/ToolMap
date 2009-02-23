@@ -302,6 +302,7 @@ private:
 	void OnEditDeleteSelected (wxCommandEvent & event);
 	void OnEditUndo (wxCommandEvent & event);
 	void OnCreateIntersections (wxCommandEvent & event);
+	void OnEditVertexPosition (wxCommandEvent & event);
 	
 	// changing status function
 	void OnUpdateSelection (wxCommandEvent & event);

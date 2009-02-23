@@ -954,3 +954,29 @@ bool tmEditManager::CreateIntersections ()
 }
 
 
+
+/***************************************************************************//**
+ @brief Display a dialog for editing vertex position
+ @details Checks are done internally for ensuring that :
+ - An object is selected
+ - Editing layer is selected
+ @return  true if Editing vertex is allowed, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+bool tmEditManager::EditVertexPosition ()
+{
+	// validation
+	//TODO: Add this check 
+	//if (IsModifictionAllowed()==false)
+	//	return false;
+	
+	EditVertexDLG myDlg (m_Renderer);
+	if(myDlg.ShowModal() != wxID_OK)
+		return true;
+		
+	return true;
+}
+
+
+

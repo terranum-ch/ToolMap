@@ -93,6 +93,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
 	EVT_MENU (ID_MENU_UNDO, ToolMapFrame::OnEditUndo)
 	EVT_MENU (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnCreateIntersections)
+	EVT_MENU (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnEditVertexPosition)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -776,6 +777,18 @@ void ToolMapFrame::OnEditUndo (wxCommandEvent & event)
 void ToolMapFrame::OnCreateIntersections (wxCommandEvent & event)
 {
 	m_EditManager->CreateIntersections();
+}
+
+
+
+/***************************************************************************//**
+ @brief Display the edit vertex position dialog
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 23 February 2009
+ *******************************************************************************/
+void ToolMapFrame::OnEditVertexPosition (wxCommandEvent & event)
+{
+	m_EditManager->EditVertexPosition();
 }
 
 
