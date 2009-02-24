@@ -33,6 +33,7 @@
 #include <wx/grid.h>				// for grid definition
 #include "wxflatbutton.h"			// for flat buttons. 
 #include "../core/tmarraysize.h"	// for array of real
+#include "../gis/tmlayerpropertiesdef.h"	// for LAYER_LINE definitions
 
 
 #define ID_BTN_ADD_VERTEX 22100
@@ -56,6 +57,9 @@ class EditVertexDLG : public wxDialog
 		wxGrid* m_VertexGrid;
 		wxFlatButton* m_DisplayVertexPosBtn;
 		wxStatusBar * m_Status;
+		wxFlatButton* m_BtnAddVertex;
+		wxFlatButton* m_BtnRemoveVertex;
+		wxButton* m_BtnUpdate;
 		
 		// member functions
 		void CreateControls();
@@ -63,6 +67,12 @@ class EditVertexDLG : public wxDialog
 		//status function
 		void SetStatusSelectedID (long oid);
 		void SetStatusNumberVertex (int ivertexnumber);
+		
+		// buttons update functions
+		void UpdateAddVertexButton(bool selection);
+		void UpdateRemoveVertexButton (bool selection);
+		void UpdateHighlightVertexButton (bool selection);
+		void UpdateSaveButton ();
 		
 		// Grid functions
 		bool GridInsertLine (int iIndex = -1, wxRealPoint * pt = NULL);
@@ -73,6 +83,7 @@ class EditVertexDLG : public wxDialog
 		void OnVertexAdd (wxCommandEvent & event);
 		void OnVertexRemove (wxCommandEvent & event);
 		void OnVertexHighlight (wxCommandEvent & event);
+		void OnIdleTime (wxIdleEvent & event);
 		
 		DECLARE_EVENT_TABLE();
 		
@@ -89,6 +100,7 @@ class EditVertexDLG : public wxDialog
 		// member for data exchange
 		wxArrayRealPoints m_VertexPts;
 		long m_SelectedOID;
+		int m_LayerType;
 		
 		// data transfert, called automatically
 		virtual bool TransferDataToWindow();

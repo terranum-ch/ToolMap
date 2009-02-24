@@ -985,6 +985,7 @@ bool tmEditManager::EditVertexPosition ()
 	// preparing dialog and dialog data
 	EditVertexDLG myDlg (m_Renderer);
 	myDlg.m_SelectedOID = lSelectedOID;
+	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerType;
 	bool bReturn = true;
 	
 	switch (myType)
