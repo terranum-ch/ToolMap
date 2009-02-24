@@ -701,3 +701,20 @@ void tmRenderer::CutLineClick (const wxPoint & mousepos)
 }
 
 
+
+/***************************************************************************//**
+ @brief Draw a circle using inverse video
+ @param pt Coordinate of center
+ @param radius Circle radius in px.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void tmRenderer::DrawCircleVideoInverse (wxPoint pt, int radius)
+{
+	wxClientDC dc(this);
+	dc.SetLogicalFunction(wxINVERT);
+	
+	dc.DrawCircle(pt, radius);
+}
+
+

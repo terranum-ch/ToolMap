@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureStop)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
+	EVT_COMMAND (wxID_ANY,tmEVT_EV_DISPLAY_VERTEX_COORD, tmEditManager::OnShowVertexPosition)
 END_EVENT_TABLE()
 
 
@@ -49,6 +50,7 @@ tmEditManager::tmEditManager(wxWindow * parent,tmTOCCtrl * toc,
 	m_Renderer = renderer;
 	m_Scale = scale;
 	m_EditStarted = false;
+	m_OldVertexPos = wxDefaultPosition;
 
 	m_ParentEvt->PushEventHandler(this);
 
@@ -691,6 +693,34 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 
 
 /***************************************************************************//**
+ @brief Called to display vertex position
+ @details Respond to tmEVT_EV_DISPLAY_VERTEX_COORD event.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
+{
+	wxRealPoint * myPt = (wxRealPoint*) event.GetClientData();
+	if (myPt == NULL)
+		return;
+	
+	wxLogDebug(_T("Showing vertex @ %.*f / %.*f"), 2, myPt->x, 2, myPt->y);
+	
+	// convert to px
+	wxPoint myPxPt = m_Scale->RealToPixel(*myPt);
+	delete myPt;
+	
+	if (m_OldVertexPos != wxDefaultPosition && m_OldVertexPos != myPxPt)
+		m_Renderer->DrawCircleVideoInverse(m_OldVertexPos, 7);
+		
+	m_Renderer->DrawCircleVideoInverse(myPxPt, 7);
+	m_OldVertexPos = myPxPt;
+
+}
+
+
+
+/***************************************************************************//**
  @brief Search function
  @details This function is widly inspired from #tmLayerManager
  @param screenpt Coordinate of the clicked point
@@ -983,6 +1013,7 @@ bool tmEditManager::EditVertexPosition ()
 	OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
 	
 	// preparing dialog and dialog data
+	m_OldVertexPos = wxDefaultPosition;
 	EditVertexDLG myDlg (m_Renderer);
 	myDlg.m_SelectedOID = lSelectedOID;
 	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerType;
