@@ -22,6 +22,7 @@
 BEGIN_EVENT_TABLE(EditVertexDLG, wxDialog)
 	EVT_FLATBUTTON (ID_BTN_ADD_VERTEX, EditVertexDLG::OnVertexAdd)
 	EVT_FLATBUTTON (ID_BTN_REMOVE_VERTEX, EditVertexDLG::OnVertexRemove)
+	EVT_IDLE (EditVertexDLG::OnIdleTime)
 END_EVENT_TABLE()
 
 
@@ -34,6 +35,7 @@ EditVertexDLG::EditVertexDLG( wxWindow* parent, wxWindowID id, const wxString& t
 {
 	m_VertexPts.Clear();
 	m_SelectedOID = -1;
+	m_LayerType = -1;
 	
 	CreateControls();
 }
@@ -100,13 +102,11 @@ void EditVertexDLG::CreateControls()
 	wxStaticBoxSizer * bSizer20;
 	bSizer20 = new wxStaticBoxSizer( wxHORIZONTAL, this, _("Operations"));
 	
-	wxFlatButton* m_button17;
-	m_button17 = new wxFlatButton( this, ID_BTN_ADD_VERTEX, wxFLATBUTTON_TEXT_ADD);
-	bSizer20->Add( m_button17, 0, 0, 0 );
+	m_BtnAddVertex = new wxFlatButton( this, ID_BTN_ADD_VERTEX, wxFLATBUTTON_TEXT_ADD);
+	bSizer20->Add( m_BtnAddVertex, 0, 0, 0 );
 	
-	wxFlatButton* m_button18;
-	m_button18 = new wxFlatButton( this, ID_BTN_REMOVE_VERTEX, wxFLATBUTTON_TEXT_REMOVE);
-	bSizer20->Add( m_button18, 0, wxLEFT , 5 );
+	m_BtnRemoveVertex = new wxFlatButton( this, ID_BTN_REMOVE_VERTEX, wxFLATBUTTON_TEXT_REMOVE);
+	bSizer20->Add( m_BtnRemoveVertex, 0, wxLEFT , 5 );
 	
 	m_DisplayVertexPosBtn = new wxFlatButton( this, ID_BTN_DISPLAYVERTEX, 
 										 _("Display vertex position"), wxDefaultSize);
@@ -120,7 +120,7 @@ void EditVertexDLG::CreateControls()
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxButton* m_BtnUpdate;
+	
 	m_BtnUpdate = new wxButton( this, wxID_OK, _("Update"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_BtnUpdate->SetDefault(); 
 	bSizer18->Add( m_BtnUpdate, 0, wxALL, 5 );
@@ -285,22 +285,44 @@ int EditVertexDLG::GridGetSelection ()
 	
 	return wxNOT_FOUND;
 }
-	
 
+
+
+/***************************************************************************//**
+ @brief Called when user press +
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
 void EditVertexDLG::OnVertexAdd (wxCommandEvent & event)
 {
 	int iSelected = GridGetSelection();
 	if (iSelected == wxNOT_FOUND)
-		return;
+		iSelected = m_VertexGrid->GetNumberRows()-1;
+	
+	wxASSERT (m_LayerType != -1);
+	if (m_LayerType == LAYER_SPATIAL_POINT)
+		return;	
 		
 	GridInsertLine(iSelected+1, NULL);
 	SetStatusNumberVertex(m_VertexGrid->GetNumberRows());
 }
 
+
+
+/***************************************************************************//**
+ @brief Called when user press -
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
 void EditVertexDLG::OnVertexRemove (wxCommandEvent & event)
 {
 	int iSelected = GridGetSelection();
 	if (iSelected == wxNOT_FOUND)
+		return;
+	
+	// not able to remove if layertype is point
+	wxASSERT (m_LayerType != -1);
+	if (m_LayerType == LAYER_SPATIAL_POINT)
 		return;
 	
 	m_VertexGrid->DeleteRows(iSelected, 1);
@@ -308,7 +330,94 @@ void EditVertexDLG::OnVertexRemove (wxCommandEvent & event)
 }
 
 
+
+/***************************************************************************//**
+ @brief Called when user press "Highlight vertex"
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
 void EditVertexDLG::OnVertexHighlight (wxCommandEvent & event)
 {
 	
 }
+
+
+/***************************************************************************//**
+ @brief Called during idle time
+ @details Update the buttons and controls. + and - controls are disabled if
+ nothing seleced
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void EditVertexDLG::OnIdleTime (wxIdleEvent & event)
+{
+	// get selection status
+	bool bSelection = false;
+	if (GridGetSelection() != wxNOT_FOUND)
+		bSelection = true;
+	
+	UpdateAddVertexButton(bSelection);
+	UpdateRemoveVertexButton(bSelection);
+	UpdateHighlightVertexButton(bSelection);
+	UpdateSaveButton();
+	
+}
+
+/***************************************************************************//**
+ @brief Enable / Diable Add vertex button
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void EditVertexDLG::UpdateAddVertexButton(bool selection)
+{
+	if (m_LayerType == LAYER_SPATIAL_LINE)
+		m_BtnAddVertex->Enable(true);
+	else
+		m_BtnAddVertex->Enable(false);
+		
+}
+
+
+
+/***************************************************************************//**
+ @brief Enable / Diable Remove vertex button
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void EditVertexDLG::UpdateRemoveVertexButton (bool selection)
+{
+	if (selection && m_LayerType == LAYER_SPATIAL_LINE)
+		m_BtnRemoveVertex->Enable(true);
+	else
+		m_BtnRemoveVertex->Enable(false);
+}
+
+
+/***************************************************************************//**
+ @brief Enable / Diable highlight vertex button
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void EditVertexDLG::UpdateHighlightVertexButton (bool selection)
+{
+	if (selection)
+		m_DisplayVertexPosBtn->Enable(true);
+	else 
+		m_DisplayVertexPosBtn->Enable(false);
+
+}
+
+
+/***************************************************************************//**
+ @brief Enable / Diable Update  button
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void EditVertexDLG::UpdateSaveButton ()
+{
+	if (m_LayerType == LAYER_SPATIAL_LINE && m_VertexGrid->GetNumberRows() < 2)
+		m_BtnUpdate->Enable(false);
+	else
+		m_BtnUpdate->Enable(true);
+}
+
