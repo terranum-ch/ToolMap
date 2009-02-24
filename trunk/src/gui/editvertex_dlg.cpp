@@ -19,9 +19,14 @@
 
 #include "editvertex_dlg.h"
 
+DEFINE_EVENT_TYPE(tmEVT_EV_DISPLAY_VERTEX_COORD);
+
+
+// EVENT TABLE
 BEGIN_EVENT_TABLE(EditVertexDLG, wxDialog)
 	EVT_FLATBUTTON (ID_BTN_ADD_VERTEX, EditVertexDLG::OnVertexAdd)
 	EVT_FLATBUTTON (ID_BTN_REMOVE_VERTEX, EditVertexDLG::OnVertexRemove)
+	EVT_FLATBUTTON (ID_BTN_DISPLAYVERTEX, EditVertexDLG::OnVertexHighlight)
 	EVT_BUTTON (wxID_OK, EditVertexDLG::OnSave)
 	EVT_IDLE (EditVertexDLG::OnIdleTime)
 END_EVENT_TABLE()
@@ -349,7 +354,21 @@ void EditVertexDLG::OnVertexRemove (wxCommandEvent & event)
  *******************************************************************************/
 void EditVertexDLG::OnVertexHighlight (wxCommandEvent & event)
 {
+	// get selection status
+	int iSel = GridGetSelection();
+	if (iSel == wxNOT_FOUND)
+		return;
 	
+	// getting cell value
+	double dx = 0, dy = 0;
+	m_VertexGrid->GetCellValue(iSel, 0).ToDouble(&dx);
+	m_VertexGrid->GetCellValue(iSel, 1).ToDouble(&dy);
+	
+	// sending event to tmEditManager
+	wxCommandEvent evt(tmEVT_EV_DISPLAY_VERTEX_COORD, wxID_ANY);
+	wxRealPoint * myPt = new wxRealPoint(dx,dy);
+	evt.SetClientData(myPt);
+	GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -406,7 +425,7 @@ void EditVertexDLG::OnSave (wxCommandEvent & event)
  @details This function checks all cells for empy or non numeric ones.
  @param col adress of first false cell (col)
  @param row adress of first false cell (row)
- @param bool true if all cells are numeric, false otherwise
+ @return true if all cells are numeric, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 24 February 2009
  *******************************************************************************/

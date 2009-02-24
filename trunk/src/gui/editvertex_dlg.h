@@ -42,14 +42,31 @@
 
 const int tmVERTEX_PRECISION = 10;
 
+// EVENT
+DECLARE_EVENT_TYPE (tmEVT_EV_DISPLAY_VERTEX_COORD, -1);
+
 // margin for systems
-//#ifdef __WXMSW__
 const int gSizeMargin = 10;
-//#else
-//const int gSizeMargin = 0;
-//#endif
 
 
+/***************************************************************************//**
+ @brief Display a dialog for editing vertex position
+ @details The displayed dialog contain a wxGrid with two columns displaying
+ coordinates. It may be used for lines and for points. The pseudo-code bellow
+ indicate how to use this class
+ @code
+ EditVertexDLG myDlg (parent);
+ // init member data for data transfert
+ myDlg.m_SelectedOID = selectedoid;
+ myDlg.m_LayerType = LAYER_SPATIAL_LINE;
+ myDlg.m_VertexPts = wxArrayRealPoints;
+ 
+ // now display the dialog
+ myDlg.ShowDialogModal();
+ @endcode
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
 class EditVertexDLG : public wxDialog 
 	{
 	private:

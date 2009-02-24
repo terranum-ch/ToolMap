@@ -57,6 +57,7 @@ class tmEditManager : public wxEvtHandler
 		tmRenderer * m_Renderer;
 		tmGISDataVectorMemory * m_GISMemory;
 		bool m_EditStarted;
+		wxPoint m_OldVertexPos;
 		
 		
 		// defined by function or event.
@@ -76,6 +77,7 @@ class tmEditManager : public wxEvtHandler
 		void OnEditStop (wxCommandEvent & event);
 		void OnDrawFeatureStop (wxCommandEvent & event);
 		void OnCutLines (wxCommandEvent & event);
+		void OnShowVertexPosition (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();

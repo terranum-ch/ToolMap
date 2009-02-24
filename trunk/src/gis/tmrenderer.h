@@ -155,6 +155,9 @@ class tmRenderer : public wxScrolledWindow
 		
 		// get bitmap
 		wxBitmap * GetBitmap(){return m_bmp;}
+		
+		// drawing
+		void DrawCircleVideoInverse (wxPoint pt, int radius);
 
 		
 	};
