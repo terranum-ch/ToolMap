@@ -74,6 +74,9 @@ class EditVertexDLG : public wxDialog
 		void UpdateHighlightVertexButton (bool selection);
 		void UpdateSaveButton ();
 		
+		// validation function
+		bool IsAllCellsNumber(int & col, int & row);
+		
 		// Grid functions
 		bool GridInsertLine (int iIndex = -1, wxRealPoint * pt = NULL);
 		bool GridClear ();
@@ -84,6 +87,7 @@ class EditVertexDLG : public wxDialog
 		void OnVertexRemove (wxCommandEvent & event);
 		void OnVertexHighlight (wxCommandEvent & event);
 		void OnIdleTime (wxIdleEvent & event);
+		void OnSave (wxCommandEvent & event);
 		
 		DECLARE_EVENT_TABLE();
 		
