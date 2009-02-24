@@ -987,16 +987,18 @@ bool tmEditManager::EditVertexPosition ()
 	myDlg.m_SelectedOID = lSelectedOID;
 	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerType;
 	bool bReturn = true;
+	OGRLineString * myLine = NULL;
+	OGRPoint * myPt = NULL;
 	
 	switch (myType)
 	{
 		case wkbPoint:
-			OGRPoint * myPt = (OGRPoint*) myGeom;
+			myPt = (OGRPoint*) myGeom;
 			myDlg.m_VertexPts.Add(wxRealPoint(myPt->getX(), myPt->getY()));
 			break;
 			
 		case wkbLineString:
-			OGRLineString * myLine = (OGRLineString*) myGeom;
+			myLine = (OGRLineString*) myGeom;
 			for (int i = 0; i< myLine->getNumPoints();i++)
 				myDlg.m_VertexPts.Add(wxRealPoint(myLine->getX(i), myLine->getY(i)));
 			break;
