@@ -986,7 +986,6 @@ bool tmEditManager::EditVertexPosition ()
 	EditVertexDLG myDlg (m_Renderer);
 	myDlg.m_SelectedOID = lSelectedOID;
 	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerType;
-	bool bReturn = true;
 	OGRLineString * myLine = NULL;
 	OGRPoint * myPt = NULL;
 	
@@ -1004,18 +1003,43 @@ bool tmEditManager::EditVertexPosition ()
 			break;
 		
 		default:
-			bReturn = false;
+			OGRGeometryFactory::destroyGeometry(myGeom);
+			return false;
 			break;
 	}
-	OGRGeometryFactory::destroyGeometry(myGeom);
-	
 	
 	// displaying dialog
-	if (bReturn == true)
-		if(myDlg.ShowModal() != wxID_OK)
-			return true;
-		
-	return bReturn;
+	if(myDlg.ShowModal() != wxID_OK)
+	{
+		OGRGeometryFactory::destroyGeometry(myGeom);
+		return true;
+	}
+	
+	
+	// apply modification
+	if (myPt)
+	{
+		wxASSERT (myDlg.m_VertexPts.GetCount() == 1);
+		myPt->setX(myDlg.m_VertexPts.Item(0).x);
+		myPt->setY(myDlg.m_VertexPts.Item(0).y);
+	}
+	else if (myLine)
+	{
+		myLine->empty();
+		for (unsigned int j = 0; j < myDlg.m_VertexPts.GetCount(); j++)
+		{
+		myLine->addPoint(myDlg.m_VertexPts.Item(j).x,
+						 myDlg.m_VertexPts.Item(j).y);	
+		}
+	}
+	mySelLayer->UpdateGeometry(myGeom, myDlg.m_SelectedOID);
+	OGRGeometryFactory::destroyGeometry(myGeom);
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	return true;
 }
 
 

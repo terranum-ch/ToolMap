@@ -22,6 +22,7 @@
 BEGIN_EVENT_TABLE(EditVertexDLG, wxDialog)
 	EVT_FLATBUTTON (ID_BTN_ADD_VERTEX, EditVertexDLG::OnVertexAdd)
 	EVT_FLATBUTTON (ID_BTN_REMOVE_VERTEX, EditVertexDLG::OnVertexRemove)
+	EVT_BUTTON (wxID_OK, EditVertexDLG::OnSave)
 	EVT_IDLE (EditVertexDLG::OnIdleTime)
 END_EVENT_TABLE()
 
@@ -107,9 +108,11 @@ void EditVertexDLG::CreateControls()
 	
 	m_BtnRemoveVertex = new wxFlatButton( this, ID_BTN_REMOVE_VERTEX, wxFLATBUTTON_TEXT_REMOVE);
 	bSizer20->Add( m_BtnRemoveVertex, 0, wxLEFT , 5 );
+	m_BtnRemoveVertex->Enable(false);
 	
 	m_DisplayVertexPosBtn = new wxFlatButton( this, ID_BTN_DISPLAYVERTEX, 
 										 _("Display vertex position"), wxDefaultSize);
+	m_DisplayVertexPosBtn->Enable(false);
 	bSizer20->Add( m_DisplayVertexPosBtn, 0, wxLEFT, 5 );	
 	bSizer19->Add( bSizer20, 0, wxEXPAND | wxALL, 5 );
 	
@@ -214,7 +217,15 @@ bool EditVertexDLG::TransferDataToWindow()
  *******************************************************************************/
 bool EditVertexDLG::TransferDataFromWindow()
 {
+	double dx = 0, dy = 0;
+	m_VertexPts.Clear();
 	
+	for (int i = 0; i< m_VertexGrid->GetNumberRows();i++)
+	{
+		m_VertexGrid->GetCellValue(i, 0).ToDouble(&dx);
+		m_VertexGrid->GetCellValue(i, 1).ToDouble(&dy);
+		m_VertexPts.Add(wxRealPoint(dx,dy));
+	}
 	return true;
 }
 
@@ -361,6 +372,70 @@ void EditVertexDLG::OnIdleTime (wxIdleEvent & event)
 	UpdateHighlightVertexButton(bSelection);
 	UpdateSaveButton();
 	
+}
+
+
+/***************************************************************************//**
+ @brief Called when Save button is pressed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+void EditVertexDLG::OnSave (wxCommandEvent & event)
+{
+	wxString myErrMsg = _("Some coordinates aren't correctly defined\n");
+	wxString myErrMsg2 = _("Please define all coordinates before updating");
+	
+	int iRow = 0, iCol = 0;
+	if (IsAllCellsNumber(iCol, iRow)== false)
+	{
+		wxMessageBox(myErrMsg + myErrMsg2,
+					 _("Coordinate error"),
+					 wxICON_STOP | wxOK , this);
+				
+		m_VertexGrid->SelectRow(iRow);
+		m_VertexGrid->MakeCellVisible(iRow, iCol);
+	}
+	else
+		event.Skip();
+}
+
+
+
+/***************************************************************************//**
+ @brief Checks validity of cells
+ @details This function checks all cells for empy or non numeric ones.
+ @param col adress of first false cell (col)
+ @param row adress of first false cell (row)
+ @param bool true if all cells are numeric, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 February 2009
+ *******************************************************************************/
+bool EditVertexDLG::IsAllCellsNumber(int & col, int & row)
+{
+	double dx = 0, dy = 0;
+	
+	for (int i=0; i< m_VertexGrid->GetNumberRows(); i++)
+	{
+		wxString myNumX = m_VertexGrid->GetCellValue(i, 0);
+		wxString myNumY = m_VertexGrid->GetCellValue(i, 1);
+		
+		
+		if (!myNumX.ToDouble(&dx))
+		{
+			row = i;
+			col = 0;
+			return false;
+		}
+		
+		if (!myNumY.ToDouble(&dy))
+		{
+			row = i;
+			col = 1;
+			return false;
+		}
+		
+	}
+	return true;
 }
 
 /***************************************************************************//**
