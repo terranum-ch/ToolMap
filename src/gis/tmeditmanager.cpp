@@ -1040,30 +1040,26 @@ bool tmEditManager::EditVertexPosition ()
 	}
 	
 	// displaying dialog
-	if(myDlg.ShowModal() != wxID_OK)
+	if(myDlg.ShowModal() == wxID_OK)
 	{
-		OGRGeometryFactory::destroyGeometry(myGeom);
-		return true;
-	}
-	
-	
-	// apply modification
-	if (myPt)
-	{
-		wxASSERT (myDlg.m_VertexPts.GetCount() == 1);
-		myPt->setX(myDlg.m_VertexPts.Item(0).x);
-		myPt->setY(myDlg.m_VertexPts.Item(0).y);
-	}
-	else if (myLine)
-	{
-		myLine->empty();
-		for (unsigned int j = 0; j < myDlg.m_VertexPts.GetCount(); j++)
+		// apply modification
+		if (myPt)
 		{
-		myLine->addPoint(myDlg.m_VertexPts.Item(j).x,
-						 myDlg.m_VertexPts.Item(j).y);	
+			wxASSERT (myDlg.m_VertexPts.GetCount() == 1);
+			myPt->setX(myDlg.m_VertexPts.Item(0).x);
+			myPt->setY(myDlg.m_VertexPts.Item(0).y);
 		}
+		else if (myLine)
+		{
+			myLine->empty();
+			for (unsigned int j = 0; j < myDlg.m_VertexPts.GetCount(); j++)
+			{
+				myLine->addPoint(myDlg.m_VertexPts.Item(j).x,
+								 myDlg.m_VertexPts.Item(j).y);	
+			}
+		}
+		mySelLayer->UpdateGeometry(myGeom, myDlg.m_SelectedOID);
 	}
-	mySelLayer->UpdateGeometry(myGeom, myDlg.m_SelectedOID);
 	OGRGeometryFactory::destroyGeometry(myGeom);
 	
 	// update display
