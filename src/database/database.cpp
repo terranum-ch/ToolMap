@@ -51,6 +51,7 @@ bool DataBase::bIsLibInit = FALSE;
 DataBase::DataBase()
 {
 	IsDatabaseOpen = FALSE;
+	pMySQL = NULL;
 }
 
 DataBase::~DataBase()
@@ -59,11 +60,18 @@ DataBase::~DataBase()
 }
 
 
-
-bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
+/***************************************************************************//**
+ @brief Init the MySQL library
+ @details This is the first function to call. It must return 0 for continuing.
+ This function log (wxLogError) in case of problems.
+ @param int 0 if succeed, other value if an error occur. (see wxLogError for
+ more informations)
+ @param path the path of the project we want to open
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 25 February 2009
+ *******************************************************************************/
+int DataBase::DataBaseInitLibrary (const wxString & path)
 {
-	bool Bsucces = FALSE;
-	
 	// conversion from path, return values in m_DBName and m_DBPath
 	DataBaseConvertFullPath(path);
 	
@@ -81,8 +89,8 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 		stemps[i] = datadir.GetChar(i);
 	}
 	
-#ifdef __WINDOWS__
-	 char *server_args[] = 
+#if defined(__WINDOWS__)
+	char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
 		stemps,
@@ -92,31 +100,80 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 		"--character-sets-dir=./share/charsets",
 		"--default-character-set=utf8"
 	};
-#else
+	
+#elif defined(__WXMAC__)
 	char *server_args[] = 
 	{
 		"this_program",       /* this string is not used */
 		stemps,
-		//"--language=./share/english",
+		"--language=./ToolMap2.app/Contents/share/english",
 		//"--skip-plugin-innodb",
 		"--port=3309",
+		//"--default-character-set=utf8",
+		"--lower_case_table_names=1"
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=cp1250"
 	};
+
+	
+#elif defined(__WXGTK20__)	
+	char *server_args[] = 
+	{
+		"this_program",       /* this string is not used */
+		stemps,
+		//"--language=./ToolMap2.app/Contents/share/english",
+		//"--skip-plugin-innodb",
+		"--port=3309",
+		//"--default-character-set=utf8",
+		//"--lower_case_table_names=1"
+		//"--character-sets-dir=./share/charsets",
+		//"--default-character-set=cp1250"
+	};
+
+	
+#else 
+	wxASSERT_MSG (0, _T("Check compilation option for MySQL"));
+	char *server_args[] = 
+	{
+		"this_program",       /* this string is not used */
+		stemps,
+		"--port=3309",
+	};
 #endif
 	
-	 char *server_groups[] = {
+	char *server_groups[] = {
 		"embedded",
 		"server",
 		"this_program_SERVER",
 		(char *)NULL
 	};
-
+	
+	wxASSERT (pMySQL==NULL);
 	
 	int num_elements = (sizeof(server_args) / sizeof(char *));
+	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
+	if (myReturn != 0)
+	{
+		
+		for(int i = 0; i< 5; i++)
+		{
+			wxString myErrorDesc = DataBaseGetLastError();
+			if (myErrorDesc.IsEmpty())
+				break;
+			wxLogError(_("Return code: %d, Error: %s"), myReturn, myErrorDesc.c_str());
+		}
+	}
+	delete [] stemps;
+	return myReturn;
+}
 
-	
-	if(mysql_library_init(num_elements, server_args, server_groups)==0)
+
+
+
+bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
+{
+	bool Bsucces = FALSE;
+	if(DataBaseInitLibrary(path)==0)
 	{
 		// the lib was initialised so we must end the lib when quitting the program
 		bIsLibInit = TRUE;
@@ -141,7 +198,7 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	// if something goes wrong we return FALSE
 	//delete [] server_args;
 	//delete [] server_groups;
-	delete [] stemps;
+	//delete [] stemps;
 	return Bsucces;
 	
 }
@@ -149,6 +206,8 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 bool DataBase::DataBaseClose()
 {
 	wxLogDebug(_T("Closing database"));
+	mysql_library_end();
+	pMySQL = NULL;
 	//mysql_thread_end();	
 	//mysql_library_end();
 	IsDatabaseOpen = FALSE;

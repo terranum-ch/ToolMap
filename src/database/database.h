@@ -87,6 +87,8 @@ public:
 	*/
     bool DataBaseOpen(wxString path,enum Lang_Flag flag);
 	
+	int DataBaseInitLibrary (const wxString & path);
+	
 	/*!
     @brief   Function called to close the database and free the library
     

@@ -81,6 +81,12 @@ IF( APPLE )
 	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
 	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../art/${APP_ICON} ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
 	
+	# Copy errmsg.sys into file
+	EXECUTE_PROCESS(
+		COMMAND sh copy_mysql_errmsg_mac.sh "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app"
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
+		)
+	
 ENDIF (APPLE)
 
 
