@@ -154,14 +154,9 @@ int DataBase::DataBaseInitLibrary (const wxString & path)
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
 	if (myReturn != 0)
 	{
-		
-		for(int i = 0; i< 5; i++)
-		{
-			wxString myErrorDesc = DataBaseGetLastError();
-			if (myErrorDesc.IsEmpty())
-				break;
-			wxLogError(_("Return code: %d, Error: %s"), myReturn, myErrorDesc.c_str());
-		}
+
+			wxLogError(_("Return code: %d, Error: %s"), myReturn, 
+					   DataBaseGetLastError().c_str());
 	}
 	delete [] stemps;
 	return myReturn;
@@ -196,12 +191,10 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	}
 	
 	// if something goes wrong we return FALSE
-	//delete [] server_args;
-	//delete [] server_groups;
-	//delete [] stemps;
 	return Bsucces;
 	
 }
+
 
 bool DataBase::DataBaseClose()
 {
@@ -813,66 +806,8 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 {
 	bool BSucces = FALSE;
 
-	// converting the path for being compatible with mysql
-	// converting only in windows
-	wxString myCorrectPathName = DataBaseConvertMYSQLPath (DataBasePath);
 	
-	wxString datadir = _T("--datadir=") + myCorrectPathName;
-
-	// convertion to char *.... no other way ?
-	int iLen = datadir.Len();
-	char * stemps = new char[iLen+1];
-	for (int i =0;i<=iLen;i++)
-	{
-		stemps[i] = datadir.GetChar(i);
-	}
-
-
-/*	if we uses the pre-compiled MySQL from MySQL A.B.
-	then we need to skip the innodb engine and we
-	alsa have to specify a path for language and
-	character-sets even if we don't use it because
-	of utf. Otherwise it leads to a crash without
-	futher explanation.
-*/
-#ifdef __WINDOWS__
-	char *server_args[] = 
-	{
-		"this_program",       /* this string is not used */
-		stemps,
-		"--language=./share/english/",
-		//"--skip-plugin-innodb",//"--skip-innodb", // dosen't exist in 5.1 --> lead to a crash
-		"--port=3309",
-		"--character-sets-dir=./share/charsets",
-		"--character_set_server=utf8"
-		//"--default-collation=utf8"
-	};
-/*	Those server_args could be used for home-made
-	MySQL libs (unix and mac) without innodb engine
-	and with default character-set set to utf8
-*/
-#else	
-	char *server_args[] = 
-	{
-		"this_program",       /* this string is not used */
-		stemps, // "--language=./share/english", // not needed if home-made mySQL
-		"--port=3309" //,"--character-sets-dir=./share/charsets"
-	};
-#endif
-	
-	
-	char *server_groups[] = {
-		"embedded",
-		"server",
-		"this_program_SERVER",
-		(char *)NULL
-	};
-
-	wxLogDebug(myCorrectPathName);
-	
-	int num_elements = (sizeof(server_args) / sizeof(char *));
-	
-	int ierror = mysql_library_init(num_elements, server_args, server_groups);
+	int ierror = DataBaseInitLibrary(DataBasePath);
 	if(ierror==0)
 	{
 		pMySQL = mysql_init(NULL);	
@@ -902,7 +837,6 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 		
 	}
 	// if something goes wrong
-	delete stemps;
 	return BSucces;
 }
 
