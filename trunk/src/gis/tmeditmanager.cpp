@@ -205,6 +205,41 @@ bool tmEditManager::IsCorrectLayerSelected()
 
 
 /***************************************************************************//**
+ @brief Check that a layer of type specified is selected
+ @param layertype type of layer. Allowed values are : 
+ - LAYER_SPATIAL_LINE
+ - LAYER_SPATIAL_POINT
+ - LAYER_SPATIAL_POLYGON
+ @return  true if seleced layer is of specified type
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 February 2009
+ *******************************************************************************/
+bool tmEditManager::IsLayerTypeSelected (int layertype)
+{
+	wxASSERT(m_TOC);
+	tmLayerProperties * myEditLayer = m_TOC->GetEditLayer();
+	if (myEditLayer == NULL)
+	{
+		wxLogMessage(_("No editing layer selected. Define an edit layer"));
+		return false;
+	}
+	
+	
+	if (m_TOC->GetEditLayer()->m_LayerType != layertype)
+	{
+		wxLogMessage(_("Layer isn't of correct type.") + 
+					 wxString::Format(_("Please select a layer of type %s"),
+					 TM_GIS_SPATIAL_TYPES_STRING[layertype].c_str()));
+		return false;
+	}
+	
+	return true;
+	
+}
+
+
+
+/***************************************************************************//**
  @brief Checks that an object is selected
  @details 
  @return  true if an object is selected, false if no object or more than one
@@ -219,6 +254,27 @@ bool tmEditManager::IsObjectSelected()
 	
 	return false;
 }
+
+
+
+/***************************************************************************//**
+ @brief Check that minimum x objects are selected
+ @param iNumbermin Number of minimum objects to be selected
+ @return  true if minimum x objects are selected
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 February 2009
+ *******************************************************************************/
+bool tmEditManager::IsObjectMinNumberSelected (unsigned int iNumbermin)
+{
+	if (m_SelectedData->GetCount() >= iNumbermin)
+		return true;
+	
+	wxLogDebug(_T("%d item selected, expected : %d"), m_SelectedData->GetCount(),
+			   iNumbermin);
+	return false;
+}
+
+
 
 
 /***************************************************************************//**
@@ -885,12 +941,9 @@ bool tmEditManager::UndoLastVertex ()
 bool tmEditManager::CreateIntersections ()
 {
 	// checks (editing mode and 1 line selected)
-	if (IsModifictionAllowed() == false)
+	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectMinNumberSelected(1))
 		return false;
-	
-	if (m_TOC->GetEditLayer()->m_LayerSpatialType != LAYER_SPATIAL_LINE)
-		return false;
-	
+
 	// Get the Layer (Line MySQL) 
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
 	if (!mySelLayer)
@@ -1071,6 +1124,53 @@ bool tmEditManager::EditVertexPosition ()
 
 
 
+/***************************************************************************//**
+ @brief Merge selected lines
+ @details  This function Checks the following rules:
+ - Minimum two objects of type lines should been selected.
+ - Editing mode should be turned on.
+ Merging is done without user input if all selected lines share the same attribution.
+ If a line is different, a dialog-box is displayed allowing the user to choice
+ the attribution he want to keep for the new merged line.
+ @return  true if merging was successfull or allowed, see above
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 February 2009
+ *******************************************************************************/
+bool tmEditManager::MergeSelectedLines ()
+{
+	//verifications
+	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectMinNumberSelected(2))
+		return false;
+	
+	
+	// getting selections ids
+	wxArrayLong * mySelectedIDs = m_SelectedData->GetSelectedValues();
+	wxASSERT (mySelectedIDs);
+	
+	// merge lines
+	tmGISDataVector * myLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	wxASSERT (myLayer);
+	OGRGeometry * myMergeGeom = NULL;
+	OGRMultiLineString * mySelGeom = 
+				(OGRMultiLineString*) myLayer->GetGeometryColByOID (mySelectedIDs);
+	//bool bMergeSuccess = myLayer->LinesMerge(mySelGeom, &myMergeGeom);
+	//tmGISDataVector::SafeUnion();
+	
+	OGRGeometryFactory::destroyGeometry(mySelGeom);
+	
+	/*if (bMergeSuccess == false)
+	{
+		wxLogDebug(_T("Merge failed"));
+		return false;
+	}*/
+	
+	
+	
+	
+	//wxLogDebug(_T("Success"));
+	
+	return true;
+}
 
 
 

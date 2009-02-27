@@ -1134,3 +1134,26 @@ OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
 	
 }
 
+
+
+/***************************************************************************//**
+ @brief Merge lines
+ @param linetomerge lines to merge
+ @param bool true if merging was successfull, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 February 2009
+ *******************************************************************************/
+bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
+								  OGRGeometry ** linemerged)
+{
+	bool bReturn = true;
+	GEOSGeom myLinesToMerge = linetomerge->exportToGEOS();
+	GEOSGeom myResult = GEOSLineMerge(myLinesToMerge);
+	GEOSGeom_destroy(myLinesToMerge);
+	if (!myResult)
+		return false;
+	
+	*(linemerged) = SafeCreateFromGEOS(myResult);
+	return true;
+}
+
