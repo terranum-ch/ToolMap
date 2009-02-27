@@ -126,6 +126,7 @@ class tmGISDataVector : public tmGISData
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid){return false;}
 		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid, 
 									wxArrayLong & AddedIds);
+		virtual OGRGeometryCollection * GetGeometryColByOID(wxArrayLong * OIDs){return NULL;}
 		
 		// counting
 		virtual int GetCount (){return -1;}
@@ -146,6 +147,10 @@ class tmGISDataVector : public tmGISData
 							 OGRMultiLineString & res2);
 		bool CutLineMultiple (OGRLineString * linetocut, OGRMultiLineString * cutlines,
 							  OGRMultiLineString & results);
+		
+		// merging
+		bool LinesMerge (OGRMultiLineString * linetomerge,
+						 OGRGeometry ** linemerged); 
 		
 		// Searching 
 		virtual wxArrayLong * SearchIntersectingGeometry (OGRGeometry * intersectinggeom){return NULL;}

@@ -94,6 +94,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_UNDO, ToolMapFrame::OnEditUndo)
 	EVT_MENU (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnCreateIntersections)
 	EVT_MENU (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnEditVertexPosition)
+	EVT_MENU (ID_MENU_MERGE_LINES, ToolMapFrame::OnMergeSelectedLines)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -792,6 +793,16 @@ void ToolMapFrame::OnEditVertexPosition (wxCommandEvent & event)
 }
 
 
+
+/***************************************************************************//**
+ @brief Called when line merge menu is pressed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 February 2009
+ *******************************************************************************/
+void ToolMapFrame::OnMergeSelectedLines (wxCommandEvent & event)
+{
+	m_EditManager->MergeSelectedLines();
+}
 
 /***************************************************************************//**
  @brief Called earch time the selection is updated

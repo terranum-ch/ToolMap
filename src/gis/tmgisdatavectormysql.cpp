@@ -940,3 +940,69 @@ bool tmGISDataVectorMYSQL::UpdateGeometry (OGRGeometry * geom, const long & oid)
 
 
 
+/***************************************************************************//**
+ @brief Get all geometries passed as array
+ @param OIDs List of all OIDs for getting geometries
+ @return  All geometries as a geometry collection or NULL if an error occur
+ user should delete the returned geometries after use.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 February 2009
+ *******************************************************************************/
+OGRGeometryCollection * tmGISDataVectorMYSQL::
+						GetGeometryColByOID(wxArrayLong * OIDs)
+{
+	// prepare query
+	wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+										  _T("OBJECT_ID IN ("),
+										  GetShortFileName().c_str());
+	unsigned int i = 0;
+	for (i = 0; i< OIDs->GetCount();i++)
+	{
+		sSentence.Append(wxString::Format(_T("%d,"), OIDs->Item(i)));
+	}
+	sSentence.RemoveLast(1);
+	sSentence.Append(_T(");"));
+	
+	// run query
+	if (!m_DB->DataBaseQuery(sSentence))
+	{
+		if (IsLoggingEnabled())
+			wxLogError(_T("Error getting geometry for multiple oid : %s %s"),
+				   m_DB->DataBaseGetLastError().c_str(),
+				   sSentence.c_str());
+		return NULL;
+	}
+	
+	
+	// create geometries
+	OGRGeometryCollection * myGeomCol = (OGRGeometryCollection*) 
+				OGRGeometryFactory::createGeometry(wkbGeometryCollection);
+	MYSQL_ROW row;
+	unsigned long *  row_length;
+
+	for (i = 0; i< OIDs->GetCount();i++)
+	{
+		row_length = m_DB->DataBaseGetNextRowResult(row);
+		if (row_length == NULL)
+		{
+			if (IsLoggingEnabled())
+				wxLogDebug(_T("No more results"));
+			return NULL;
+		}
+		
+		OGRGeometry * pGeom = CreateDataBaseGeometry(row, row_length, 1);
+		myGeomCol->addGeometry(pGeom);
+		OGRGeometryFactory::destroyGeometry(pGeom);
+		//oid = GetOid(row, 0);
+		
+
+	}	
+	
+		
+	
+	return myGeomCol;
+}
+
+
+
+

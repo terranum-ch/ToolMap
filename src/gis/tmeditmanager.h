@@ -85,6 +85,8 @@ class tmEditManager : public wxEvtHandler
 		// internal verification
 		bool IsCorrectLayerSelected();
 		bool IsObjectSelected();
+		bool IsObjectMinNumberSelected (unsigned int iNumbermin = 1);
+		bool IsLayerTypeSelected (int layertype = LAYER_SPATIAL_LINE);
 		
 		// snapping function
 		wxRealPoint * IterateAllSnappingLayers(const wxRealPoint & clickedpoint);
@@ -140,6 +142,9 @@ class tmEditManager : public wxEvtHandler
 		
 		// editing vertex dialog
 		bool EditVertexPosition ();
+		
+		// merging lines
+		bool MergeSelectedLines ();
 	};
 
 
