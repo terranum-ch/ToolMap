@@ -1153,21 +1153,24 @@ bool tmEditManager::MergeSelectedLines ()
 	OGRGeometry * myMergeGeom = NULL;
 	OGRMultiLineString * mySelGeom = 
 				(OGRMultiLineString*) myLayer->GetGeometryColByOID (mySelectedIDs);
-	//bool bMergeSuccess = myLayer->LinesMerge(mySelGeom, &myMergeGeom);
-	//tmGISDataVector::SafeUnion();
+	bool bMergeSuccess = myLayer->LinesMerge(mySelGeom, &myMergeGeom);
+
 	
 	OGRGeometryFactory::destroyGeometry(mySelGeom);
-	
-	/*if (bMergeSuccess == false)
+	if (bMergeSuccess == false)
 	{
-		wxLogDebug(_T("Merge failed"));
+		wxMessageBox(_("Selected lines are not adjacent"),
+					 _("Merge failed"), wxOK | wxICON_ERROR);
 		return false;
-	}*/
+	}
+	
+	
+	// get attributions
+	tmAttributionDataLine myAttrib (m_SelectedData->GetSelectedValues(), m_pDB);
 	
 	
 	
-	
-	//wxLogDebug(_T("Success"));
+	wxLogDebug(_T("Success"));
 	
 	return true;
 }

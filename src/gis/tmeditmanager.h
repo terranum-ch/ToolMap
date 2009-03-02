@@ -38,6 +38,7 @@
 #include "../core/tmsnappingmemory.h"		// for snapping 
 #include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
+#include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
 
 
 /***************************************************************************//**

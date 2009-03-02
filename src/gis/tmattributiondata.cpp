@@ -299,3 +299,20 @@ bool tmAttributionData::GetInfoBasicValues (const long & selected,
 }
 
 
+
+/***************************************************************************//**
+ @brief Get basic attributions for selected objets
+ @param values object of type : #tmAttributionBasicArray containing all ids and
+ values for selected objects
+ @return  true if attribution was retrieved, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 March 2009
+ *******************************************************************************/
+bool tmAttributionData::GetInfoBasic(tmAttributionBasicArray & values)
+{
+	
+
+	return false;
+}
+
+
