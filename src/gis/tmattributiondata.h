@@ -63,6 +63,7 @@ class tmAttributionData : public wxObject
 										  wxArrayLong * checkedVal);
 		void PrepareCleaningStatement (wxString & statement, const wxString & tablename);
 		void PrepareGetInfoStatement (wxString & statement, const wxString & tablename);
+		void PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename);
 		
 		
 	public:
@@ -86,7 +87,8 @@ class tmAttributionData : public wxObject
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool GetInfoBasicValues (const long & selected, 
 										 wxArrayLong & values);
-		virtual bool GetInfoBasic(tmAttributionBasicArray & values);
+		virtual bool GetInfoBasicArray(tmAttributionBasicArray & values);
+		static bool IsAttributionSimilar (const tmAttributionBasicArray & values);
 	};
 
 
