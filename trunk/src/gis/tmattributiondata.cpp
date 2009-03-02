@@ -187,6 +187,32 @@ void tmAttributionData::PrepareGetInfoStatement (wxString & statement, const wxS
 
 
 /***************************************************************************//**
+ @brief Create MySQL statement for getting info
+ @details Get info for all selected object
+ @param statement used for storing the returned statement
+ @param tablename the tablename to use
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 March 2009
+ *******************************************************************************/
+void tmAttributionData::PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename)
+{
+	wxASSERT (m_SelIDs);
+	
+	statement = _T("SELECT OBJECT_GEOM_ID, OBJECT_VAL_ID from ") + tablename +
+	_T(" WHERE OBJECT_GEOM_ID IN (");
+	
+	for(unsigned int i = 0; i< m_SelIDs->GetCount();i++)
+	{
+		statement.Append(wxString::Format(_T("%d,"), m_SelIDs->Item(i)));
+	}
+	statement.RemoveLast(1);
+	statement.Append(_T(") ORDER BY OBJECT_GEOM_ID, OBJECT_VAL_ID;"));
+						 
+}
+
+
+
+/***************************************************************************//**
  @brief Set Basic attribution
  @details This function attributes the selected object with the specified
  values. This works in two steps : First we delete all values for selected
@@ -266,7 +292,6 @@ bool tmAttributionData::GetInfoBasicValues (const long & selected,
 												wxArrayLong & values)
 {
 	// checking
-	wxASSERT (!m_TableName.IsEmpty());
 	wxASSERT (IsValid());
 	if (!IsValid())
 		return false;
@@ -308,11 +333,98 @@ bool tmAttributionData::GetInfoBasicValues (const long & selected,
  @author Lucien Schreiber (c) CREALP 2009
  @date 02 March 2009
  *******************************************************************************/
-bool tmAttributionData::GetInfoBasic(tmAttributionBasicArray & values)
+bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 {
-	
+	wxASSERT(IsValid());
+	wxString sStatement = wxEmptyString;
+	PrepareGetInfoMultipleStatement(sStatement, m_TableName);
 
-	return false;
+	if (!m_pDB->DataBaseQuery(sStatement))
+	{
+		wxLogDebug(_T("Error getting info : %s"),
+				   m_pDB->DataBaseGetLastError().c_str());
+		return false;
+	}
+	
+	
+	values.Clear();
+	tmAttributionBasic myAttrib;
+	wxArrayLong myRetValues;
+	bool bGetNextResult = true;
+	for (unsigned int i = 0; i<m_SelIDs->GetCount();i++)
+	{
+		myAttrib.m_Oid = m_SelIDs->Item(i);
+		while (1)
+		{
+			if (bGetNextResult)
+			{
+				myRetValues.Clear();
+				m_pDB->DataBaseGetNextResultAsLong(myRetValues);
+			}
+				
+			if (myRetValues.GetCount() != 2)
+			{
+				break;
+			}
+			
+			if (myRetValues.Item(0)== myAttrib.m_Oid)
+			{
+				if (myRetValues.Item(1) != 0)
+					myAttrib.m_Values.Add(myRetValues.Item(1));
+			}
+			else
+			{
+				bGetNextResult = false;
+				break;
+			}
+			bGetNextResult = true;
+			
+		}
+		
+		values.Add(myAttrib);
+	}
+	return true;
 }
 
+
+
+/***************************************************************************//**
+ @brief Check array for similar attribution
+ @details The array store the OID and an array of attribution. This function
+ return true if all OID share the same attribution. Used mainly for lines
+ merging.
+ @param values an tmAttributionBasicArray containing OID and attribution values
+ @return  true if all OID share the same attribution
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 02 March 2009
+ *******************************************************************************/
+bool tmAttributionData::IsAttributionSimilar (const tmAttributionBasicArray & values)
+{
+	/*for (unsigned int i = 1; i< values.GetCount();i++)
+	{
+		if (values.Item(i).m_Values != values.Item(0).m_Values)
+			return false;
+	}*/
+	
+	
+	// rapid check for same number of attributions
+	unsigned int NbAttribution = values.Item(0).m_Values.GetCount();
+	unsigned int i = 0;
+	for (i = 1; i< values.GetCount();i++)
+	{
+		if (values.Item(i).m_Values.GetCount() != NbAttribution)
+			return false;
+	}
+	
+	// if rapid check passed, check values
+	for(i=1;i<values.GetCount();i++)
+	{
+		//TODO: Add values check here
+		
+	}
+	
+	
+	
+	return true;
+}
 

@@ -1166,7 +1166,11 @@ bool tmEditManager::MergeSelectedLines ()
 	
 	
 	// get attributions
+	tmAttributionBasicArray myAttributions;
 	tmAttributionDataLine myAttrib (m_SelectedData->GetSelectedValues(), m_pDB);
+	if (myAttrib.GetInfoBasicArray(myAttributions) == false)
+		return false;
+	
 	
 	
 	
