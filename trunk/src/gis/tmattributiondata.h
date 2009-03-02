@@ -31,6 +31,7 @@
 
 #include "../database/database_tm.h"	// for database objects
 #include "../gui/attribution_obj_type.h" // attribution panel
+#include "tmattributionbasicarray.h"	// for storing attribution into array
 
 
 
@@ -85,6 +86,7 @@ class tmAttributionData : public wxObject
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool GetInfoBasicValues (const long & selected, 
 										 wxArrayLong & values);
+		virtual bool GetInfoBasic(tmAttributionBasicArray & values);
 	};
 
 

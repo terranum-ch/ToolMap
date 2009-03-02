@@ -1154,6 +1154,17 @@ bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
 		return false;
 	
 	*(linemerged) = SafeCreateFromGEOS(myResult);
+	OGRGeometry * myMerge = *(linemerged);
+	if (myMerge == NULL)
+		return false;
+	
+	OGRwkbGeometryType myType = wkbFlatten(myMerge->getGeometryType());
+	if (myType != wkbLineString)
+	{
+		wxLogDebug(_T("Unable to merge lines, they aren't adjacent."));
+		return false;
+	}
+			
 	return true;
 }
 
