@@ -1169,13 +1169,64 @@ bool tmEditManager::MergeSelectedLines ()
 	tmAttributionBasicArray myAttributions;
 	tmAttributionDataLine myAttrib (m_SelectedData->GetSelectedValues(), m_pDB);
 	if (myAttrib.GetInfoBasicArray(myAttributions) == false)
+	{
+		wxLogDebug(_T("Unable to get attributions from selected lines"));
 		return false;
+	}
+	
+	//FIXME: remove, this is temp logging code
+	for (unsigned int k = 0; k<myAttributions.GetCount();k++)
+	{
+		wxString sTmp = wxString::Format(_T("Values for OID : %d are : "), 
+										 myAttributions.Item(k).m_Oid);
+		for (unsigned int m = 0; m< myAttributions.Item(k).m_Values.GetCount() ;m++)
+		{
+			sTmp.Append(wxString::Format(_T("%d, "), myAttributions.Item(k).m_Values.Item(m)));
+		}
+		
+		wxLogDebug(sTmp);
+	}
+	//END 
 	
 	
+	// compare attributions
+	int iLineToKeep = 0;
+	wxArrayString myConcatenedAttrib;
+	if (tmAttributionData::IsAttributionSimilar(myAttributions) == false)
+	{
+		// get attribution name 
+		if (!myAttrib.GetConcatenedBasicName(myAttributions, myConcatenedAttrib))
+		{
+			wxLogError(_T("Error getting concatenated basic values"));
+			return false;
+		}
+		
+		// display dialog
+		wxSingleChoiceDialog myDlg (m_ParentEvt,
+									_("Select the attribution to be kept"),
+									_("Merge lines"),
+									myConcatenedAttrib);
+		if (myDlg.ShowModal()==wxID_CANCEL)
+			return false;
+		
+		iLineToKeep = myDlg.GetSelection();
+	}
 	
-	
-	wxLogDebug(_T("Success"));
-	
+	// remove lines
+	wxLogDebug(_T("We keep : OID %d"), myAttributions.Item(iLineToKeep).m_Oid);
+	mySelectedIDs->RemoveAt(iLineToKeep);
+	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->m_LayerType);
+	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->m_LayerType);
+
+	// update geometry
+	wxASSERT (myMergeGeom);
+	myLayer->UpdateGeometry(myMergeGeom, myAttributions.Item(iLineToKeep).m_Oid);
+	OGRGeometryFactory::destroyGeometry(myMergeGeom);
+		
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+		
 	return true;
 }
 

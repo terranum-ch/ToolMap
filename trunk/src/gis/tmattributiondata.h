@@ -89,6 +89,10 @@ class tmAttributionData : public wxObject
 										 wxArrayLong & values);
 		virtual bool GetInfoBasicArray(tmAttributionBasicArray & values);
 		static bool IsAttributionSimilar (const tmAttributionBasicArray & values);
+		bool GetBasicNameFromID (const tmAttributionBasic & myAttribObj, 
+								 wxArrayString & txtvalues);
+		bool GetConcatenedBasicName (const tmAttributionBasicArray & myAttrib,
+									 wxArrayString & concatenedattrib);
 	};
 
 

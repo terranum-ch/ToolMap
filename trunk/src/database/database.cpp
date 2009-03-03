@@ -64,9 +64,9 @@ DataBase::~DataBase()
  @brief Init the MySQL library
  @details This is the first function to call. It must return 0 for continuing.
  This function log (wxLogError) in case of problems.
- @param int 0 if succeed, other value if an error occur. (see wxLogError for
- more informations)
  @param path the path of the project we want to open
+ @return 0 if succeed, other value if an error occur. (see wxLogError for
+ more informations)
  @author Lucien Schreiber (c) CREALP 2009
  @date 25 February 2009
  *******************************************************************************/
