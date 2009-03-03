@@ -42,6 +42,13 @@ xcodebuild -configuration Release
 echo "3)Building project... DONE"
 echo $VARLINE
 
+#copying file for installer
+echo "4a) Copy files for installer"
+cd $VARTRUNKDIR/install/mac
+cp tm_dmg_background.jpg $VARBINDIR/Release/
+cp InstallDS_Store $VARBINDIR/Release/.DS_Store
+echo "4a) Copy files for installer... DONE"
+
 #creating installer
 echo "4) Creating installer..."
 cd $VARINSTALLERDIR
