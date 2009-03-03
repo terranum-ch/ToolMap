@@ -1139,7 +1139,8 @@ OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
 /***************************************************************************//**
  @brief Merge lines
  @param linetomerge lines to merge
- @param bool true if merging was successfull, false otherwise
+ @param linemerged the resulting geometry if function return true. 
+ @return true if merging was successfull, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 27 February 2009
  *******************************************************************************/

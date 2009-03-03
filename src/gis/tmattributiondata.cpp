@@ -327,7 +327,7 @@ bool tmAttributionData::GetInfoBasicValues (const long & selected,
 
 /***************************************************************************//**
  @brief Get basic attributions for selected objets
- @param values object of type : #tmAttributionBasicArray containing all ids and
+ @param values object of type : #tmAttributionBasic Array containing all ids and
  values for selected objects
  @return  true if attribution was retrieved, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
@@ -337,6 +337,8 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 {
 	wxASSERT(IsValid());
 	wxString sStatement = wxEmptyString;
+	
+	//if (m_SelIDs
 	PrepareGetInfoMultipleStatement(sStatement, m_TableName);
 
 	if (!m_pDB->DataBaseQuery(sStatement))
@@ -382,6 +384,7 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 		}
 		
 		values.Add(myAttrib);
+		myAttrib.m_Values.Clear();
 	}
 	return true;
 }
@@ -400,13 +403,6 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
  *******************************************************************************/
 bool tmAttributionData::IsAttributionSimilar (const tmAttributionBasicArray & values)
 {
-	/*for (unsigned int i = 1; i< values.GetCount();i++)
-	{
-		if (values.Item(i).m_Values != values.Item(0).m_Values)
-			return false;
-	}*/
-	
-	
 	// rapid check for same number of attributions
 	unsigned int NbAttribution = values.Item(0).m_Values.GetCount();
 	unsigned int i = 0;
@@ -417,14 +413,118 @@ bool tmAttributionData::IsAttributionSimilar (const tmAttributionBasicArray & va
 	}
 	
 	// if rapid check passed, check values
+	wxArrayLong * myBaseValue = &(values.Item(0).m_Values);
+	wxASSERT (myBaseValue);
 	for(i=1;i<values.GetCount();i++)
 	{
-		//TODO: Add values check here
+		wxArrayLong * myAttribValues = &(values.Item(i).m_Values);
+		wxASSERT (myAttribValues);
+		for (unsigned int j = 0; j < myAttribValues->GetCount();j++)
+		{
+			if (myBaseValue->Item(j) != myAttribValues->Item(j))
+				return false;
+		}
 		
 	}
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Get Basic attribution string from database
+ @param myAttribObj object of type #tmAttributionBasic
+ @param txtvalues If function return true, This array will be filled with basic
+ attribution strings
+ @return  true if attribution values returned succesfully, false otherwise. If true is
+ returned, txtvalues may still be empty = no attributions.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 March 2009
+ *******************************************************************************/
+bool tmAttributionData::GetBasicNameFromID (const tmAttributionBasic & myAttribObj, 
+											wxArrayString & txtvalues)
+{
+	// check for no attributions
+	if (myAttribObj.m_Values.GetCount() == 0)
+	{
+		txtvalues.Clear();
+		return true;
+	}
 	
+	wxString sSentence = _T("SELECT OBJECT_DESC FROM ") + TABLE_NAME_OBJECTS +
+	_T(" WHERE OBJECT_ID IN (");
 	
+	for (unsigned int i = 0; i< myAttribObj.m_Values.GetCount();i++)
+	{
+		sSentence.Append(wxString::Format(_T("%d,"), myAttribObj.m_Values.Item(i)));
+	}
+	sSentence.RemoveLast(1);
+	sSentence.Append(_T(");"));
+	
+	wxASSERT (m_pDB);
+	if (!m_pDB->DataBaseQuery(sSentence))
+	{
+		wxLogDebug(_T("Error getting name from id %s, %s"),
+				   m_pDB->DataBaseGetLastError().c_str(),
+				   sSentence.c_str());
+		return false;
+	}
+	
+	wxString myTmpBuffer;
+	txtvalues.Clear();
+	while(1)
+	{
+		if (!m_pDB->DataBaseGetNextResult(myTmpBuffer))
+		{
+			break;
+		}
+		txtvalues.Add(myTmpBuffer);
+	}
 	
 	return true;
 }
+
+
+
+/***************************************************************************//**
+ @brief Get Concatened basic attribution values for object
+ @param myAttrib Contain attribution for all selected objects
+ @param concatenedattrib an array of string containing all attribution basic
+ values concatenated
+ @return true if function return successfully, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 03 March 2009
+ *******************************************************************************/
+bool tmAttributionData::GetConcatenedBasicName (const tmAttributionBasicArray & myAttrib,
+												wxArrayString & concatenedattrib)
+{
+	wxArrayString myResults;
+	wxString myConcat;
+	for (unsigned int i = 0; i< myAttrib.GetCount(); i++)
+	{
+		if (!GetBasicNameFromID(myAttrib.Item(i), myResults))
+		{
+			return false;
+		}
+		
+		if (myResults.GetCount() > 0)
+		{
+			myConcat = myResults.Item(0);
+			for (unsigned int j = 1; j< myResults.GetCount(); j++)
+			{
+				myConcat.Append(_T(", ") + myResults.Item(j));
+			}
+			concatenedattrib.Add(myConcat);
+			
+		}
+		else
+		{
+			concatenedattrib.Add(_("No attribution"));	
+		}
+		
+		
+	}
+	
+	return true;
+}
+
 
