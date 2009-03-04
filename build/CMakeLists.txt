@@ -46,6 +46,10 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 #GEOS - GDAL libs
  INCLUDE ("cmake/findGISLib.cmake")
  
+ 
+ #wxTreeMultiCtrl
+ INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
+ 
 
 # Getting the subversion number and
 # generating a file called svn_version.h
