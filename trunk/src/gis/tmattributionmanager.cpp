@@ -224,6 +224,8 @@ tmAttributionManager::~tmAttributionManager()
 bool tmAttributionManager::InitAttributionManager(DataBaseTM * pDb)
 {
 	m_pDB = pDb;
+	wxASSERT (m_pDB);
+	
 	m_pLayerProperties = NULL;
 	
 	// check validity for all objects
@@ -376,10 +378,14 @@ void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
 {
 	wxLogDebug(_T("Getting info"));
 	
-	// create attribution object based on type
+	
 	wxASSERT(m_pLayerProperties);
+	wxASSERT (m_pDB);
+	
+	// create attribution object based on type
 	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
 	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->m_LayerType);
+	
 	myAttrib->Create(mySelObjArray, m_pDB);
 	if (!myAttrib->GetInfoBasic(m_Panel))
 	{

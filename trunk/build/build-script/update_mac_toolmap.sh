@@ -52,7 +52,7 @@ echo "4a) Copy files for installer... DONE"
 #creating installer
 echo "4) Creating installer..."
 cd $VARINSTALLERDIR
-hdiutil create -srcfolder $VARBINDIR/Release ToolMap2_r$VARSVNNUMBER.dmg
+hdiutil create -volname "ToolMap" -srcfolder $VARBINDIR/Release ToolMap2_r$VARSVNNUMBER.dmg
 echo "4) Creating installer... DONE"
 
 
