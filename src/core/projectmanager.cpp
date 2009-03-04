@@ -353,7 +353,7 @@ int ProjectManager::OpenProject(const wxString & path)
 					m_LayerManager->InitLayerManager(m_DB);
 					
 					// attribution manager
-					bool bReady = m_AttribManager->InitAttributionManager(m_DB)
+					bool bReady = m_AttribManager->InitAttributionManager(m_DB);
 					wxASSERT(bReady);
 				
 					// edition manager
