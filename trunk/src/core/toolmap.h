@@ -74,6 +74,7 @@
  \section lib Libraries
  Some code created by others that we use
  - \subpage wxSerialize "wxSerialize"
+ - \subpage wxTreeMultiCtrl "wxTreeMultiCtrl"
  
  
  */
