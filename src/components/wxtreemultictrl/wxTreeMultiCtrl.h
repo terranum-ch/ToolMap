@@ -12,8 +12,9 @@
 #ifndef __WXTREEMULTICTRL_H__
 #define __WXTREEMULTICTRL_H__
 
-/** \author Jorgen Bodde
-    \mainpage
+/** 
+    \page wxTreeMultiCtrl "wxTreeMultiCtrl"
+	\author Jorgen Bodde
 
     This is the wxTreeMultiCtrl documentation guide. For the upcoming CodeShop project I am working on, I've
     created a new control for wxWidgets (http://www.wxwidgets.com), with similar functionality as
