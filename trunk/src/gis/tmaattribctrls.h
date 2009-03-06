@@ -30,6 +30,7 @@
 #endif
 
 #include "../components/wxtreemultictrl/wxTreeMultiCtrl.h"	// for wxTreeMultiCtrl
+#include "../components/wxtreemultictrl/TreeMultiItemWindow.h"
 
 
 class tmAAttribTree : public wxTreeMultiCtrl

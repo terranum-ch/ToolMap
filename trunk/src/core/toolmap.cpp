@@ -68,7 +68,6 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_NEW_PRJ_EXISTING, ToolMapFrame::OnNewProjectExisting )
 	EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
-	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
 	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
 	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
@@ -95,6 +94,10 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnCreateIntersections)
 	EVT_MENU (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnEditVertexPosition)
 	EVT_MENU (ID_MENU_MERGE_LINES, ToolMapFrame::OnMergeSelectedLines)
+
+	//ATTRIBUTION MENU
+	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
+	EVT_MENU (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnShowAAttributionWindow)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -802,6 +805,17 @@ void ToolMapFrame::OnEditVertexPosition (wxCommandEvent & event)
 void ToolMapFrame::OnMergeSelectedLines (wxCommandEvent & event)
 {
 	m_EditManager->MergeSelectedLines();
+}
+
+
+/***************************************************************************//**
+ @details Called when Display Advanced attribution is pressed
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 March 2009
+ *******************************************************************************/
+void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
+{
+	m_AttribManager->AAttributionButtonShow();
 }
 
 /***************************************************************************//**

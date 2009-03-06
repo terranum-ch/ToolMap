@@ -597,3 +597,22 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	
 }
 
+
+//TODO: Add comment here
+int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & values)
+{
+	tmAAttribWindow myAADlg (m_Parent, wxID_ANY);
+	return myAADlg.ShowModal();
+							 
+}
+
+
+
+//TODO: Add comment here
+bool tmAttributionManager::AAttributionButtonShow ()
+{
+	wxArrayString myValues;
+	DisplayAAttributionWindow(myValues);
+	return true;
+}
+

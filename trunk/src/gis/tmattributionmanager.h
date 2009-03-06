@@ -41,6 +41,8 @@
 #include "tmattributiondatalabel.h"			// for label attributions
 #include "../core/tmshortcutmemory.h"		// for shortcuts in memory
 
+#include "tmaattribwindow.h"				// for advanced attribution
+
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 
 
@@ -92,10 +94,13 @@ class tmAttributionManager : public wxEvtHandler
 		// copy attribution function
 		void OnCopyAttribution (wxCommandEvent & event);
 		
+		// advanced attribution
+		int DisplayAAttributionWindow (const wxArrayString & values);
 				
 		// verification 
 		bool IsAttributionManagerReady();
 		DECLARE_EVENT_TABLE()
+		
 		
 	protected:
 	public:
@@ -112,6 +117,9 @@ class tmAttributionManager : public wxEvtHandler
 		
 		// selection informations
 		int GetSelectionCount(){return m_SelData->GetCount();}
+		
+		// advanced attribution
+		bool AAttributionButtonShow ();
 		
 	
 	};

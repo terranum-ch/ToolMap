@@ -29,8 +29,8 @@
     #include <wx/wx.h>
 #endif
 
-
-#include <wx/treectrl.h>	//FIXME: Remove this header when using wxTreeMultiCtrl
+#include <wx/treectrl.h>
+#include "tmaattribctrls.h"	// for Adavanced attribution tree
 
 
 
@@ -45,8 +45,13 @@
 class tmAAttribWindow : public wxDialog 
 	{
 	private:
+		// windows position
+		static wxRect m_WndPos; 
+		void GetWindowPosition();
+		void SetWindowPosition();
+		
 		// member controls
-		wxTreeCtrl* m_AAttribTree;
+		wxTreeCtrl * m_AAttribTree;
 		
 		
 		// member function
@@ -57,7 +62,7 @@ class tmAAttribWindow : public wxDialog
 		
 	public:
 		tmAAttribWindow( wxWindow* parent, wxWindowID id = wxID_ANY,
-						const wxString& title = wxEmptyString,
+						const wxString& title = _("Advanced attribution"),
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
 						long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );

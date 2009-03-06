@@ -305,6 +305,7 @@ private:
 	void OnCreateIntersections (wxCommandEvent & event);
 	void OnEditVertexPosition (wxCommandEvent & event);
 	void OnMergeSelectedLines (wxCommandEvent & event);
+	void OnShowAAttributionWindow (wxCommandEvent & event);
 	
 	// changing status function
 	void OnUpdateSelection (wxCommandEvent & event);
