@@ -31,11 +31,19 @@
 
 #include "../components/wxtreemultictrl/wxTreeMultiCtrl.h"	// for wxTreeMultiCtrl
 #include "../components/wxtreemultictrl/TreeMultiItemWindow.h"
+#include "../core/projectdefmemory.h"				// for fields definitions
 
 
 class tmAAttribTree : public wxTreeMultiCtrl
 	{
 	private:
+		// member
+		wxTreeMultiItem m_ActualNode;
+		
+		// control template
+		
+		
+		bool CreateRoot();
 	protected:
 	public:
 		tmAAttribTree();
@@ -45,15 +53,16 @@ class tmAAttribTree : public wxTreeMultiCtrl
 					  const wxSize & size = wxDefaultSize,
 					  long style = wxTMC_DEFAULT_STYLE,
 					  const wxValidator & validator = wxDefaultValidator,
-					  const wxString & name = wxTreeMultiCtrlNameStr);
-		bool Create (wxWindow * parent,
-					 wxWindowID id = -1,
-					 const wxPoint & pos = wxDefaultPosition,
-					 const wxSize & size = wxDefaultSize,
-					 long style = wxTMC_DEFAULT_STYLE,
-					 const wxValidator & validator = wxDefaultValidator,
-					 const wxString & name = wxTreeMultiCtrlNameStr);
+					  const wxString & name = _T("tmAAttribTree"));
 		~tmAAttribTree();
+		
+		// layer operations
+		void AddLayerNode (const wxString & layername);
+		bool FindLayerNode (const wxString & layername); 
+		
+		// attributes operations
+		void AddControl (const ProjectDefMemoryFields & fieldinfo);
+		
 };
 
 

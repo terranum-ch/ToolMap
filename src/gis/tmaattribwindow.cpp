@@ -59,10 +59,7 @@ void tmAAttribWindow::CreateControls ()
 	wxBoxSizer* bSizer20;
 	bSizer20 = new wxBoxSizer( wxVERTICAL );
 	
-	m_AAttribTree = new wxTreeCtrl( this, wxID_ANY, wxDefaultPosition,
-								   wxSize( 300,200 ),wxTR_HIDE_ROOT);
-	wxTreeItemId rootid = m_AAttribTree->AddRoot(_T("Coucou"));
-	m_AAttribTree->AppendItem(rootid, _T("Salut"));
+	m_AAttribTree = new tmAAttribTree( this, wxID_ANY);
 	bSizer20->Add( m_AAttribTree, 1, wxALL|wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer21;
@@ -70,12 +67,12 @@ void tmAAttribWindow::CreateControls ()
 	
 	wxButton* m_button18;
 	m_button18 = new wxButton( this, wxID_CANCEL, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer21->Add( m_button18, 0, wxALL, 5 );
+	bSizer21->Add( m_button18, 0, wxBOTTOM | wxLEFT | wxRIGHT, 5 );
 	
 	wxButton* m_button19;
 	m_button19 = new wxButton( this, wxID_OK, _("&Attribute"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button19->SetDefault(); 
-	bSizer21->Add( m_button19, 0, wxALL, 5 );
+	bSizer21->Add( m_button19, 0, wxBOTTOM | wxLEFT | wxRIGHT, 5 );
 	
 	bSizer20->Add( bSizer21, 0, wxALIGN_RIGHT, 5 );
 	
@@ -123,6 +120,9 @@ void tmAAttribWindow::SetWindowPosition()
 {
 	if (m_WndPos.IsEmpty())
 	{
+		wxSize myCurrentSize = this->GetSize();
+		if (myCurrentSize.GetWidth() < 200 || myCurrentSize.GetHeight() < 200)
+			this->SetSize(300, 200);
 		this->Center(wxVERTICAL | wxHORIZONTAL);
 	}
 	else
