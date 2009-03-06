@@ -51,7 +51,7 @@ class tmAAttribWindow : public wxDialog
 		void SetWindowPosition();
 		
 		// member controls
-		wxTreeCtrl * m_AAttribTree;
+		tmAAttribTree * m_AAttribTree;
 		
 		
 		// member function
