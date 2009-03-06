@@ -62,6 +62,24 @@ bool tmAAttribTree::Create (wxWindow * parent,wxWindowID id, const wxPoint & pos
 {
 	wxTreeMultiCtrl::Create(parent,id,pos,size,style,validator,name);
 	
+	// add root
+    wxTreeMultiItem item = AddRoot(_T("This is the first root"));
+	
+    // create a wxTreeMultiWindowInfo object for indenting etc
+    wxTreeMultiWindowInfo wndinfo (0, 10,10);
+	
+    // add subitem to root
+    AppendWindow(item, new wxButton(this, -1, _T("Press this")), _T(""), wndinfo);
+	
+    /* indent a few
+    wndinfo.Indent(4);
+	int ID_MYCHECK = 22220;
+    // add a new one
+    AddWindow(item, new wxCheckBox(this, ID_MYCHECK, _T("Check this!")), _T(""), wndinfo);
+	
+    // now check the value of the checkbox
+    SetBooleanValue(ID_MYCHECK, true);*/
+	
 	return true;
 }
 

@@ -19,6 +19,10 @@
 
 #include "tmaattribwindow.h"
 
+// init static member
+wxRect tmAAttribWindow::m_WndPos = wxRect(wxDefaultPosition, wxDefaultSize);
+
+
 /***************************************************************************//**
  @brief Constructor
  @author Lucien Schreiber (c) CREALP 2009
@@ -55,7 +59,10 @@ void tmAAttribWindow::CreateControls ()
 	wxBoxSizer* bSizer20;
 	bSizer20 = new wxBoxSizer( wxVERTICAL );
 	
-	m_AAttribTree = new wxTreeCtrl( this, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ), wxTR_DEFAULT_STYLE|wxTR_HIDE_ROOT );
+	m_AAttribTree = new wxTreeCtrl( this, wxID_ANY, wxDefaultPosition,
+								   wxSize( 300,200 ),wxTR_HIDE_ROOT);
+	wxTreeItemId rootid = m_AAttribTree->AddRoot(_T("Coucou"));
+	m_AAttribTree->AppendItem(rootid, _T("Salut"));
 	bSizer20->Add( m_AAttribTree, 1, wxALL|wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer21;
@@ -76,7 +83,7 @@ void tmAAttribWindow::CreateControls ()
 	this->Layout();
 	bSizer20->Fit( this );
 	
-	this->Centre( wxVERTICAL );
+	SetWindowPosition();
 }
 
 
@@ -88,5 +95,49 @@ void tmAAttribWindow::CreateControls ()
  *******************************************************************************/
 tmAAttribWindow::~tmAAttribWindow()
 {
+	GetWindowPosition();
+}
+
+
+
+/***************************************************************************//**
+ @brief Get Window position
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 March 2009
+ *******************************************************************************/
+void tmAAttribWindow::GetWindowPosition()
+{
+	m_WndPos.SetPosition(this->GetPosition());
+	m_WndPos.SetSize(this->GetSize());
+}
+
+
+
+/***************************************************************************//**
+ @brief Set Window position
+ @details Checks that we are inside the visible part of the screen
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 06 March 2009
+ *******************************************************************************/
+void tmAAttribWindow::SetWindowPosition()
+{
+	if (m_WndPos.IsEmpty())
+	{
+		this->Center(wxVERTICAL | wxHORIZONTAL);
+	}
+	else
+	{
+		// check that we are inside the screen
+		wxSize myScreenSize = wxGetDisplaySize();
+		wxRect myScreenRect (wxPoint (0,0), myScreenSize);
+		if (myScreenRect.Contains(m_WndPos))
+		{
+			this->SetSize(m_WndPos);
+		}
+		else
+		{
+			this->Center(wxVERTICAL | wxHORIZONTAL);
+		}
+	}
 }
 
