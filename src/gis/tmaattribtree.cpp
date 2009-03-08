@@ -1,5 +1,5 @@
 /***************************************************************************
-								tmaattribctrls.cpp
+								tmaattribtree.cpp
 		Definition of advanced attribution controls such as the tmAAttribTree
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
@@ -17,7 +17,7 @@
 
 // comment doxygen
 
-#include "tmaattribctrls.h"
+#include "tmaattribtree.h"
 
 
 
@@ -61,6 +61,10 @@ tmAAttribTree::tmAAttribTree(wxWindow * parent,wxWindowID id, const wxPoint & po
 bool tmAAttribTree::CreateRoot () 
 {
 	ProjectDefMemoryFields myField;
+	myField.m_Fieldname = _T("Coucou");
+	myField.m_FieldPrecision = 6;
+	myField.m_FieldScale = 2;
+
 	
 	AddLayerNode(_T("failles"));
 	AddControl(myField);
@@ -168,7 +172,21 @@ void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 	bSizer24->Add( m_choice3, 0, wxALL|wxEXPAND, 5 );*/
 	
 	
-	wxBoxSizer* bSizer25;
+	/*tmAAttribCtrlText * myTree;
+	myTree = new tmAAttribCtrlText(this, wxID_ANY);
+	myTree->SetProperties(fieldinfo);*/
+	
+	/*tmAAttribCtrlInteger * myTree;
+	myTree = new tmAAttribCtrlInteger(this, wxID_ANY);
+	myTree->SetProperties(fieldinfo);*/
+	
+	tmAAttribCtrlFloat * myTree;
+	myTree = new tmAAttribCtrlFloat(this, wxID_ANY);
+	myTree->SetProperties(fieldinfo);
+	
+	
+	
+	/*wxBoxSizer* bSizer25;
 	bSizer25 = new wxBoxSizer( wxVERTICAL );
 	
 	wxRadioButton* m_radioBtn4;
@@ -188,12 +206,12 @@ void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 	
 	m_panel4->SetSizer( bSizer24 );
 	m_panel4->Layout();
-	bSizer24->Fit( m_panel4 );
+	bSizer24->Fit( m_panel4 );*/
 	
 	wxTreeMultiWindowInfo wndinfo (0, 0,0);
 	
     // add subitem to root
-    AppendWindow(m_ActualNode, m_panel4, _T(""), wndinfo);
+    AppendWindow(m_ActualNode, myTree, _T(""), wndinfo);
 	
 }
 
