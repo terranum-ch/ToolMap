@@ -30,7 +30,7 @@
 #endif
 
 #include <wx/treectrl.h>
-#include "tmaattribctrls.h"	// for Adavanced attribution tree
+#include "tmaattribtree.h"	// for Adavanced attribution tree
 
 
 
