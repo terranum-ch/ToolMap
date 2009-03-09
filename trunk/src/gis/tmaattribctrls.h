@@ -58,16 +58,20 @@ class tmAAttribCtrl  : public wxPanel
 		
 	public:
 		tmAAttribCtrl(){;}
-		tmAAttribCtrl(wxWindow * parent, wxWindowID id = wxID_ANY,
+		tmAAttribCtrl(wxWindow * parent, 
+					  const ProjectDefMemoryFields & fieldinfo,
+					  wxWindowID id = wxID_ANY,
 					  const wxPoint & 	pos = wxDefaultPosition,
 					  const wxSize & 	size = wxDefaultSize,
 					  long 	style = wxTAB_TRAVERSAL,
 					  const wxString & 	name = _T("tmAAttribCtrl")){;}
-		virtual void Create (wxWindow * parent, wxWindowID id = wxID_ANY,
-					 const wxPoint & 	pos = wxDefaultPosition,
-					 const wxSize & 	size = wxDefaultSize,
-					 long 	style = wxTAB_TRAVERSAL,
-					 const wxString & 	name = _T("tmAAttribCtrl")) = 0;
+		virtual void Create (wxWindow * parent,
+							 const ProjectDefMemoryFields & fieldinfo,
+							 wxWindowID id = wxID_ANY,
+							 const wxPoint & 	pos = wxDefaultPosition,
+							 const wxSize & 	size = wxDefaultSize,
+							 long 	style = wxTAB_TRAVERSAL,
+							 const wxString & 	name = _T("tmAAttribCtrl")) = 0;
 		~tmAAttribCtrl(){;}
 		
 		// label operations
@@ -79,7 +83,7 @@ class tmAAttribCtrl  : public wxPanel
 		virtual wxString GetControlValue () = 0;
 		
 		// control properties
-		virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo) = 0;
+		//virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo) = 0;
 	};
 
 
@@ -96,15 +100,21 @@ class tmAAttribCtrlText : public tmAAttribCtrl
 	{
 	private:
 		wxTextCtrl* m_Control;
+		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+
 	protected:
 	public:
 		tmAAttribCtrlText();
-		tmAAttribCtrlText(wxWindow * parent, wxWindowID id = wxID_ANY,
-					  const wxPoint & 	pos = wxDefaultPosition,
-					  const wxSize & 	size = wxDefaultSize,
-					  long 	style = wxTAB_TRAVERSAL,
-					  const wxString & 	name = _T("tmAAttribCtrl"));
-		void Create (wxWindow * parent, wxWindowID id = wxID_ANY,
+		tmAAttribCtrlText(wxWindow * parent, 
+						  const ProjectDefMemoryFields & fieldinfo,
+						  wxWindowID id = wxID_ANY,
+						  const wxPoint & 	pos = wxDefaultPosition,
+						  const wxSize & 	size = wxDefaultSize,
+						  long 	style = wxTAB_TRAVERSAL,
+						  const wxString & 	name = _T("tmAAttribCtrl"));
+		void Create (wxWindow * parent,
+					 const ProjectDefMemoryFields & fieldinfo,
+					 wxWindowID id = wxID_ANY,
 					 const wxPoint & 	pos = wxDefaultPosition,
 					 const wxSize & 	size = wxDefaultSize,
 					 long 	style = wxTAB_TRAVERSAL,
@@ -117,7 +127,7 @@ class tmAAttribCtrlText : public tmAAttribCtrl
 		virtual wxString GetControlValue ();
 		
 		// control properties
-		virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		//virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
 		
 
 };
@@ -129,15 +139,21 @@ class tmAAttribCtrlInteger : public tmAAttribCtrl
 	{
 	private:
 		wxSpinCtrl * m_Control;
+		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		
 	protected:
 	public:
 		tmAAttribCtrlInteger();
-		tmAAttribCtrlInteger(wxWindow * parent, wxWindowID id = wxID_ANY,
-						  const wxPoint & 	pos = wxDefaultPosition,
-						  const wxSize & 	size = wxDefaultSize,
-						  long 	style = wxTAB_TRAVERSAL,
-						  const wxString & 	name = _T("tmAAttribCtrl"));
-		void Create (wxWindow * parent, wxWindowID id = wxID_ANY,
+		tmAAttribCtrlInteger(wxWindow * parent,
+							 const ProjectDefMemoryFields & fieldinfo,
+							 wxWindowID id = wxID_ANY,
+							 const wxPoint & 	pos = wxDefaultPosition,
+							 const wxSize & 	size = wxDefaultSize,
+							 long 	style = wxTAB_TRAVERSAL,
+							 const wxString & 	name = _T("tmAAttribCtrl"));
+		void Create (wxWindow * parent,
+					 const ProjectDefMemoryFields & fieldinfo,
+					 wxWindowID id = wxID_ANY,
 					 const wxPoint & 	pos = wxDefaultPosition,
 					 const wxSize & 	size = wxDefaultSize,
 					 long 	style = wxTAB_TRAVERSAL,
@@ -150,7 +166,7 @@ class tmAAttribCtrlInteger : public tmAAttribCtrl
 		virtual wxString GetControlValue ();
 		
 		// control properties
-		virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		//virtual 
 		
 		
 	};
@@ -163,15 +179,21 @@ class tmAAttribCtrlFloat : public tmAAttribCtrl
 	private:
 		wxTextCtrl * m_Control;
 		wxStaticText * m_ControlInfo;
+		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		
 	protected:
 	public:
 		tmAAttribCtrlFloat();
-		tmAAttribCtrlFloat(wxWindow * parent, wxWindowID id = wxID_ANY,
-							 const wxPoint & 	pos = wxDefaultPosition,
-							 const wxSize & 	size = wxDefaultSize,
-							 long 	style = wxTAB_TRAVERSAL,
-							 const wxString & 	name = _T("tmAAttribCtrl"));
-		void Create (wxWindow * parent, wxWindowID id = wxID_ANY,
+		tmAAttribCtrlFloat(wxWindow * parent,
+						   const ProjectDefMemoryFields & fieldinfo,
+						   wxWindowID id = wxID_ANY,
+						   const wxPoint & 	pos = wxDefaultPosition,
+						   const wxSize & 	size = wxDefaultSize,
+						   long 	style = wxTAB_TRAVERSAL,
+						   const wxString & 	name = _T("tmAAttribCtrl"));
+		void Create (wxWindow * parent,
+					 const ProjectDefMemoryFields & fieldinfo,
+					 wxWindowID id = wxID_ANY,
 					 const wxPoint & 	pos = wxDefaultPosition,
 					 const wxSize & 	size = wxDefaultSize,
 					 long 	style = wxTAB_TRAVERSAL,
@@ -184,7 +206,55 @@ class tmAAttribCtrlFloat : public tmAAttribCtrl
 		virtual wxString GetControlValue ();
 		
 		// control properties
-		virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		//virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		
+		
+	};
+
+
+const unsigned int AATTRIB_ENUM_RADIO_NUMBER = 3;
+class tmAAttribCtrlEnum : public tmAAttribCtrl
+	{
+	private:
+		wxChoice * m_ControlChoice;
+		wxRadioButton * m_ControlRadios[AATTRIB_ENUM_RADIO_NUMBER];
+		int m_iNumRadios;
+		
+		// private init function
+		void InitMemberValues ();
+		bool IsChoiceList();
+		
+		// control creating
+		wxSizer * CreateChoiceControl (PrjMemFieldCodedValArray * valarray);
+		
+		
+		
+	protected:
+	public:
+		tmAAttribCtrlEnum();
+		tmAAttribCtrlEnum(wxWindow * parent,
+						  const ProjectDefMemoryFields & fieldinfo,
+						  wxWindowID id = wxID_ANY,
+						  const wxPoint & 	pos = wxDefaultPosition,
+						  const wxSize & 	size = wxDefaultSize,
+						  long 	style = wxTAB_TRAVERSAL,
+						  const wxString & 	name = _T("tmAAttribCtrl"));
+		void Create (wxWindow * parent,
+					 const ProjectDefMemoryFields & fieldinfo,
+					 wxWindowID id = wxID_ANY,
+					 const wxPoint & 	pos = wxDefaultPosition,
+					 const wxSize & 	size = wxDefaultSize,
+					 long 	style = wxTAB_TRAVERSAL,
+					 const wxString & 	name = _T("tmAAttribCtrl"));
+		~tmAAttribCtrlEnum();
+		
+		
+		// control operations
+		virtual void SetControlValue(const wxString & value);
+		virtual wxString GetControlValue ();
+		
+		// control properties
+		//virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
 		
 		
 	};

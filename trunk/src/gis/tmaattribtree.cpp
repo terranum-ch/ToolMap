@@ -45,6 +45,7 @@ tmAAttribTree::tmAAttribTree(wxWindow * parent,wxWindowID id, const wxPoint & po
 							wxTreeMultiCtrl(parent,id,pos,size,style,validator)
 {
 
+	SetBackgroundColour(*wxWHITE);
 	CreateRoot();
 }
 
@@ -62,8 +63,22 @@ bool tmAAttribTree::CreateRoot ()
 {
 	ProjectDefMemoryFields myField;
 	myField.m_Fieldname = _T("Coucou");
+	myField.m_FieldType = TM_FIELD_ENUMERATION;
 	myField.m_FieldPrecision = 6;
 	myField.m_FieldScale = 2;
+	
+	PrjMemFieldCodedValArray myArray;
+	ProjectDefMemoryFieldsCodedVal myVal;
+	myVal.m_ValueName = _T("Actif");
+	myArray.Add(myVal);
+	myVal.m_ValueName = _T("Inactif");
+	myArray.Add(myVal);
+	myVal.m_ValueName = _T("Tassé");
+	myArray.Add(myVal);	
+	myVal.m_ValueName = _T("Mangé");
+	myArray.Add(myVal);
+	
+	myField.m_pCodedValueArray = &myArray;
 
 	
 	AddLayerNode(_T("failles"));
@@ -148,7 +163,39 @@ bool tmAAttribTree::FindLayerNode (const wxString & layername)
  *******************************************************************************/
 void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 {
-	wxPanel* m_panel4;
+	tmAAttribCtrl * mypControl = NULL;
+	switch (fieldinfo.m_FieldType)
+	{
+		case TM_FIELD_INTEGER:
+			tmAAttribCtrlInteger * mypControlInt = new tmAAttribCtrlInteger(this, fieldinfo);
+			mypControl = mypControlInt;
+			break;
+			
+		case TM_FIELD_FLOAT:
+			tmAAttribCtrlFloat * mypControlFloat = new tmAAttribCtrlFloat(this, fieldinfo);
+			mypControl = mypControlFloat;
+			break;
+			
+		case TM_FIELD_ENUMERATION:
+			tmAAttribCtrlEnum * mypControlEnum = new tmAAttribCtrlEnum(this, fieldinfo);
+			mypControl = mypControlEnum;
+			break;
+			
+			
+		default: // tmfieldText
+			tmAAttribCtrlText * mypControlText = new tmAAttribCtrlText(this, fieldinfo);
+			mypControl = mypControlText;
+			break;
+	}
+	//mypControl->SetProperties(fieldinfo);
+	
+	
+	wxTreeMultiWindowInfo wndinfo (0, 0,0);
+	// add subitem to root
+    AppendWindow(m_ActualNode, mypControl, _T(""), wndinfo);
+	
+	
+	/*wxPanel* m_panel4;
 	m_panel4 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
@@ -180,9 +227,9 @@ void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 	myTree = new tmAAttribCtrlInteger(this, wxID_ANY);
 	myTree->SetProperties(fieldinfo);*/
 	
-	tmAAttribCtrlFloat * myTree;
+	/*tmAAttribCtrlFloat * myTree;
 	myTree = new tmAAttribCtrlFloat(this, wxID_ANY);
-	myTree->SetProperties(fieldinfo);
+	myTree->SetProperties(fieldinfo);*/
 	
 	
 	
@@ -208,10 +255,7 @@ void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 	m_panel4->Layout();
 	bSizer24->Fit( m_panel4 );*/
 	
-	wxTreeMultiWindowInfo wndinfo (0, 0,0);
 	
-    // add subitem to root
-    AppendWindow(m_ActualNode, myTree, _T(""), wndinfo);
 	
 }
 
