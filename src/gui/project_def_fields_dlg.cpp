@@ -682,7 +682,7 @@ void ProjectDefFieldDlg::CreateControls()
 	wxStaticBoxSizer* sbSizer22;
 	sbSizer22 = new wxStaticBoxSizer( new wxStaticBox( m_panel6, wxID_ANY, _("Options") ), wxVERTICAL );
 	
-	m_staticText11 = new wxStaticText( m_panel6, wxID_ANY, _("Integer fields may store numeric values :\n\nfrom -2147483648\nto 2147483647"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	m_staticText11 = new wxStaticText( m_panel6, wxID_ANY, _("Integer fields may store numeric values :\n\nfrom -2147483647\nto 2147483647"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText11->Wrap( -1 );
 	sbSizer22->Add( m_staticText11, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 		
