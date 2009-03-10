@@ -85,7 +85,7 @@ bool tmAAttribTree::CreateRoot ()
 	AddControl(myField);
 	
 	AddLayerNode(_T("tests"));
-	AddControl(myField);
+	//AddControl(myField);
 	// add root
    /* wxTreeMultiItem item = AddRoot(_T("Advanced attribution"));
 	
@@ -164,30 +164,40 @@ bool tmAAttribTree::FindLayerNode (const wxString & layername)
 void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 {
 	tmAAttribCtrl * mypControl = NULL;
+	tmAAttribCtrlInteger * mypControlInt;
+	tmAAttribCtrlFloat * mypControlFloat;
+	tmAAttribCtrlEnum * mypControlEnum;
+	tmAAttribCtrlDate * mypControlDate;
+	tmAAttribCtrlText * mypControlText;
+	
+	int myID = 22210;
 	switch (fieldinfo.m_FieldType)
 	{
 		case TM_FIELD_INTEGER:
-			tmAAttribCtrlInteger * mypControlInt = new tmAAttribCtrlInteger(this, fieldinfo);
+			mypControlInt = new tmAAttribCtrlInteger(this, fieldinfo);
 			mypControl = mypControlInt;
 			break;
 			
 		case TM_FIELD_FLOAT:
-			tmAAttribCtrlFloat * mypControlFloat = new tmAAttribCtrlFloat(this, fieldinfo);
+			mypControlFloat = new tmAAttribCtrlFloat(this, fieldinfo);
 			mypControl = mypControlFloat;
 			break;
 			
 		case TM_FIELD_ENUMERATION:
-			tmAAttribCtrlEnum * mypControlEnum = new tmAAttribCtrlEnum(this, fieldinfo);
+			mypControlEnum = new tmAAttribCtrlEnum(this, fieldinfo);
 			mypControl = mypControlEnum;
 			break;
 			
+		case TM_FIELD_DATE:
+			mypControlDate = new tmAAttribCtrlDate(this, fieldinfo, myID);
+			mypControl = mypControlDate;
+			break;
 			
 		default: // tmfieldText
-			tmAAttribCtrlText * mypControlText = new tmAAttribCtrlText(this, fieldinfo);
+			mypControlText = new tmAAttribCtrlText(this, fieldinfo);
 			mypControl = mypControlText;
 			break;
 	}
-	//mypControl->SetProperties(fieldinfo);
 	
 	
 	wxTreeMultiWindowInfo wndinfo (0, 0,0);
