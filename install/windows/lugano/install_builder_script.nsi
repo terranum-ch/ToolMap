@@ -103,7 +103,7 @@ Section Uninstall
   Delete "$INSTDIR\ToolBasView.exe"
 
   Delete "$SMPROGRAMS\ToolMap 2\Uninstall.lnk"
-  Delete "$SMPROGRAMS\ToolMap 2\ToolBasViw.lnk"
+  Delete "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\Website.lnk"
   Delete "$DESKTOP\ToolMap 2.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk"
