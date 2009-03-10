@@ -806,8 +806,9 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 {
 	bool BSucces = FALSE;
 
-	
-	int ierror = DataBaseInitLibrary(DataBasePath);
+	wxFileName myFullName (DataBasePath, _T(""));
+	myFullName.AppendDir(DataBaseName);
+	int ierror = DataBaseInitLibrary(myFullName.GetFullPath());
 	if(ierror==0)
 	{
 		pMySQL = mysql_init(NULL);	
@@ -833,10 +834,14 @@ bool DataBase::DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,en
 						BSucces = TRUE;
 				}
 			}
-		}	
+		}
 		
 	}
 	// if something goes wrong
+	if (BSucces == false)
+		wxLogError(_T("Error Creating project : %s"), DataBaseGetLastError().c_str());
+
+	
 	return BSucces;
 }
 
