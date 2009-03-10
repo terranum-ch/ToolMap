@@ -46,7 +46,7 @@ tmAAttribTree::tmAAttribTree(wxWindow * parent,wxWindowID id, const wxPoint & po
 {
 
 	SetBackgroundColour(*wxWHITE);
-	CreateRoot();
+	//CreateRoot();
 }
 
 

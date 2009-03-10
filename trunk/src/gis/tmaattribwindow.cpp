@@ -28,9 +28,16 @@ wxRect tmAAttribWindow::m_WndPos = wxRect(wxDefaultPosition, wxDefaultSize);
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 March 2009
  *******************************************************************************/
-tmAAttribWindow::tmAAttribWindow( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+tmAAttribWindow::tmAAttribWindow( wxWindow* parent, PrjMemLayersArray * layers,
+								 wxArrayString * values, wxWindowID id, 
+								 const wxString& title, const wxPoint& pos,
+								 const wxSize& size, long style ) :
+wxDialog( parent, id, title, pos, size, style )
 {
+	InitMemberValue();
 	CreateControls();
+	m_Layers = layers;
+	m_Values = values;
 }
 
 
@@ -43,6 +50,8 @@ tmAAttribWindow::tmAAttribWindow( wxWindow* parent, wxWindowID id, const wxStrin
 void tmAAttribWindow::InitMemberValue ()
 {
 	m_AAttribTree = NULL;
+	m_Layers = NULL;
+	m_Values = NULL;
 }
 
 
@@ -139,5 +148,22 @@ void tmAAttribWindow::SetWindowPosition()
 			this->Center(wxVERTICAL | wxHORIZONTAL);
 		}
 	}
+}
+
+
+
+
+bool tmAAttribWindow::TransfertDataToWindow()
+{
+	wxASSERT (m_Layers);
+	wxASSERT (m_Values);
+	wxASSERT (m_AAttribTree);
+	
+	for (unsigned int i = 0; i< m_Layers->GetCount();i++)
+	{
+		m_AAttribTree->AddLayerNode(m_Layers->Item(i).m_LayerName);
+	}
+	
+	return true;
 }
 

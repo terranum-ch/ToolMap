@@ -53,6 +53,10 @@ class tmAAttribWindow : public wxDialog
 		// member controls
 		tmAAttribTree * m_AAttribTree;
 		
+		// member initialized by ctor
+		PrjMemLayersArray * m_Layers;
+		wxArrayString * m_Values;
+		
 		
 		// member function
 		void InitMemberValue ();
@@ -61,12 +65,21 @@ class tmAAttribWindow : public wxDialog
 	protected:
 		
 	public:
-		tmAAttribWindow( wxWindow* parent, wxWindowID id = wxID_ANY,
+		tmAAttribWindow( wxWindow* parent,
+						PrjMemLayersArray * layers,
+						wxArrayString * values,
+						wxWindowID id = wxID_ANY,
 						const wxString& title = _("Advanced attribution"),
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
 						long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );
 		~tmAAttribWindow();
+		
+		// data transfert
+		virtual bool TransfertDataToWindow();
+		
+		
+		
 		
 	};
 
