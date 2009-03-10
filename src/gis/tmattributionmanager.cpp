@@ -601,7 +601,28 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 //TODO: Add comment here
 int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & values)
 {
-	tmAAttribWindow myAADlg (m_Parent, wxID_ANY);
+	//TODO: Remove temp code
+	PrjMemLayersArray myLayersArray;
+	
+	PrjMemFieldArray myFieldArray1;
+	ProjectDefMemoryFields myField1;
+	myField1.m_Fieldname = _T("Etat");
+	myField1.m_FieldType = TM_FIELD_TEXT;
+	myField1.m_FieldPrecision = 20;
+	myFieldArray1.Add(myField1);
+	
+	
+	
+	ProjectDefMemoryLayers myLayer1;
+	myLayer1.m_LayerName = _T("Faille");
+	myLayer1.m_pLayerFieldArray = & myFieldArray1;
+	myLayersArray.Add(myLayer1);
+	//
+	
+	wxArrayString myValues;
+	myValues.Add(_T("Remarques"));
+	
+	tmAAttribWindow myAADlg (m_Parent, &myLayersArray, &myValues, wxID_ANY);
 	return myAADlg.ShowModal();
 							 
 }
