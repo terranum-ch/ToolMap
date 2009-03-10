@@ -61,12 +61,47 @@ tmAAttribTree::tmAAttribTree(wxWindow * parent,wxWindowID id, const wxPoint & po
  *******************************************************************************/
 bool tmAAttribTree::CreateRoot () 
 {
-	ProjectDefMemoryFields myField;
-	myField.m_Fieldname = _T("Coucou");
-	myField.m_FieldType = TM_FIELD_ENUMERATION;
-	myField.m_FieldPrecision = 6;
-	myField.m_FieldScale = 2;
 	
+	/*PrjMemFieldCodedValArray myArray;
+	ProjectDefMemoryFieldsCodedVal myVal;
+	myVal.m_ValueName = _T("Actif");
+	myArray.Add(myVal);
+	myVal.m_ValueName = _T("Inactif");
+	myArray.Add(myVal);
+	myVal.m_ValueName = _T("Tassé");
+	myArray.Add(myVal);	
+	myVal.m_ValueName = _T("Mangé");
+	myArray.Add(myVal);*/
+	
+	ProjectDefMemoryFields myField1;
+	myField1.m_Fieldname = _T("Coucou");
+	myField1.m_FieldType = TM_FIELD_TEXT;
+	myField1.m_FieldPrecision = 10;
+	//myField1.m_pCodedValueArray = & myArray;
+	
+	
+	PrjMemFieldCodedValArray myArray2;
+	ProjectDefMemoryFieldsCodedVal myVal2;
+	myVal2.m_ValueName = _T("Actif");
+	myArray2.Add(myVal2);
+	myVal2.m_ValueName = _T("Inactif");
+	myArray2.Add(myVal2);
+
+	
+	
+	ProjectDefMemoryFields myField2;
+	myField2.m_Fieldname = _T("Coucou2");
+	myField2.m_FieldType = TM_FIELD_ENUMERATION;
+	myField2.m_pCodedValueArray = & myArray2;
+
+	
+	//myField2.m_pCodedValueArray = &myArray;*/
+	
+		
+/*	
+	myField2.m_FieldPrecision = 6;
+	myField2.m_FieldScale = 2;
+
 	PrjMemFieldCodedValArray myArray;
 	ProjectDefMemoryFieldsCodedVal myVal;
 	myVal.m_ValueName = _T("Actif");
@@ -78,13 +113,16 @@ bool tmAAttribTree::CreateRoot ()
 	myVal.m_ValueName = _T("Mangé");
 	myArray.Add(myVal);
 	
-	myField.m_pCodedValueArray = &myArray;
+	myField.m_pCodedValueArray = &myArray;*/
 
 	
 	AddLayerNode(_T("failles"));
-	AddControl(myField);
+	tmAAttribCtrl * myCtrl = AddControl(myField1);
+	myCtrl->SetControlValue(_T("Inactif"));
 	
 	AddLayerNode(_T("tests"));
+	myCtrl = AddControl(myField2);
+	myCtrl->SetControlValue(_T("Inactif"));
 	//AddControl(myField);
 	// add root
    /* wxTreeMultiItem item = AddRoot(_T("Advanced attribution"));
@@ -161,16 +199,16 @@ bool tmAAttribTree::FindLayerNode (const wxString & layername)
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 March 2009
  *******************************************************************************/
-void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
+tmAAttribCtrl * tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 {
 	tmAAttribCtrl * mypControl = NULL;
 	tmAAttribCtrlInteger * mypControlInt;
 	tmAAttribCtrlFloat * mypControlFloat;
 	tmAAttribCtrlEnum * mypControlEnum;
-	tmAAttribCtrlDate * mypControlDate;
 	tmAAttribCtrlText * mypControlText;
+	tmAAttribCtrlDate * mypControlDate;
+	tmAAttribCtrlSafeDate * mypControlSafeDate;
 	
-	int myID = 22210;
 	switch (fieldinfo.m_FieldType)
 	{
 		case TM_FIELD_INTEGER:
@@ -189,8 +227,14 @@ void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 			break;
 			
 		case TM_FIELD_DATE:
-			mypControlDate = new tmAAttribCtrlDate(this, fieldinfo, myID);
+#ifdef __WXOSX__
+			mypControlSafeDate = new tmAAttribCtrlSafeDate(this, fieldinfo);
+			mypControl = mypControlSafeDate;
+#else
+			mypControlDate = new tmAAttribCtrlDate(this, fieldinfo);
 			mypControl = mypControlDate;
+#endif
+			
 			break;
 			
 		default: // tmfieldText
@@ -198,74 +242,12 @@ void tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldinfo)
 			mypControl = mypControlText;
 			break;
 	}
-	
+
+	wxASSERT (mypControl);
 	
 	wxTreeMultiWindowInfo wndinfo (0, 0,0);
 	// add subitem to root
     AppendWindow(m_ActualNode, mypControl, _T(""), wndinfo);
-	
-	
-	/*wxPanel* m_panel4;
-	m_panel4 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer24;
-	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
-	
-	wxStaticText* m_staticText8;
-	m_staticText8 = new wxStaticText( m_panel4, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	//m_staticText8->Wrap( -1 );
-	bSizer24->Add( m_staticText8, 0, wxALL, 5);  //wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-	
-	/*wxTextCtrl* m_textCtrl4;
-	m_textCtrl4 = new wxTextCtrl( m_panel4, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
-	m_textCtrl4->SetSize(200, -1);
-	m_textCtrl4->SetMinSize(wxSize(200,-1));
-	bSizer24->Add( m_textCtrl4, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );*/
-	
-	/*wxChoice* m_choice3;
-	wxString m_choice3Choices[] = { _("test1"), _("test2"), _("test3") };
-	int m_choice3NChoices = sizeof( m_choice3Choices ) / sizeof( wxString );
-	m_choice3 = new wxChoice( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice3NChoices, m_choice3Choices, 0 );
-	m_choice3->SetSelection( 0 );
-	bSizer24->Add( m_choice3, 0, wxALL|wxEXPAND, 5 );*/
-	
-	
-	/*tmAAttribCtrlText * myTree;
-	myTree = new tmAAttribCtrlText(this, wxID_ANY);
-	myTree->SetProperties(fieldinfo);*/
-	
-	/*tmAAttribCtrlInteger * myTree;
-	myTree = new tmAAttribCtrlInteger(this, wxID_ANY);
-	myTree->SetProperties(fieldinfo);*/
-	
-	/*tmAAttribCtrlFloat * myTree;
-	myTree = new tmAAttribCtrlFloat(this, wxID_ANY);
-	myTree->SetProperties(fieldinfo);*/
-	
-	
-	
-	/*wxBoxSizer* bSizer25;
-	bSizer25 = new wxBoxSizer( wxVERTICAL );
-	
-	wxRadioButton* m_radioBtn4;
-	m_radioBtn4 = new wxRadioButton( m_panel4, wxID_ANY, _("incertain"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer25->Add( m_radioBtn4, 0, wxALL, 5 );
-	
-	wxRadioButton* m_radioBtn5;
-	m_radioBtn5 = new wxRadioButton( m_panel4, wxID_ANY, _("inactif"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer25->Add( m_radioBtn5, 0, wxALL, 5 );
-	
-	wxRadioButton* m_radioBtn6;
-	m_radioBtn6 = new wxRadioButton( m_panel4, wxID_ANY, _("actif"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer25->Add( m_radioBtn6, 0, wxALL, 5 );
-	
-	bSizer24->Add( bSizer25, 1, wxEXPAND, 5 );
-	
-	
-	m_panel4->SetSizer( bSizer24 );
-	m_panel4->Layout();
-	bSizer24->Fit( m_panel4 );*/
-	
-	
-	
+	return mypControl;
 }
 

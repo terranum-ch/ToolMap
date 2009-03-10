@@ -61,9 +61,10 @@ class tmAAttribTree : public wxTreeMultiCtrl
 		bool FindLayerNode (const wxString & layername); 
 		
 		// attributes operations
-		void AddControl (const ProjectDefMemoryFields & fieldinfo);
+		tmAAttribCtrl * AddControl (const ProjectDefMemoryFields & fieldinfo);
 		
 };
+
 
 
 
