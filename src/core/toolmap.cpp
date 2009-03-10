@@ -281,10 +281,10 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
  wxMenuBar* menuBar = new wxMenuBar;
     wxMenu* itemMenu2 = new wxMenu;
     wxMenu* itemMenu3 = new wxMenu;
-    itemMenu3->Append(ID_MENU_NEW_PRJ_EMPTY, _("&Empty project...\tCtrl-N"), _T(""), wxITEM_NORMAL);
+    itemMenu3->Append(ID_MENU_NEW_PRJ_EMPTY, _("&Empty project...\tCtrl+N"), _T(""), wxITEM_NORMAL);
     itemMenu3->Append(ID_MENU_NEW_PRJ_EXISTING, _("From existing..."), _T(""), wxITEM_NORMAL);
     itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
-    itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open project...\tCtrl-O"), _T(""), wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open project...\tCtrl+O"), _T(""), wxITEM_NORMAL);
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();

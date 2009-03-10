@@ -32,6 +32,7 @@
 #include "../core/projectdefmemory.h"		// for fields definitions
 #include <wx/spinctrl.h>					// for spin ctrl
 //#include <wx/generic/spinctrg.h>			// for float spin ctrl
+#include <wx/datectrl.h>					// for date picker ctrl
 
 
 const wxString LABELDEFAULT = _T("MyLabel");
@@ -204,12 +205,9 @@ class tmAAttribCtrlFloat : public tmAAttribCtrl
 		// control operations
 		virtual void SetControlValue(const wxString & value);
 		virtual wxString GetControlValue ();
-		
-		// control properties
-		//virtual void SetProperties (const ProjectDefMemoryFields & fieldinfo);
-		
-		
+
 	};
+
 
 
 const unsigned int AATTRIB_ENUM_RADIO_NUMBER = 3;
@@ -258,6 +256,40 @@ class tmAAttribCtrlEnum : public tmAAttribCtrl
 		
 		
 	};
+
+
+class tmAAttribCtrlDate : public tmAAttribCtrl
+	{
+	private:
+		wxDatePickerCtrl * m_Control;
+		//void SetProperties (const ProjectDefMemoryFields & fieldinfo);
+		
+	protected:
+	public:
+		tmAAttribCtrlDate();
+		tmAAttribCtrlDate(wxWindow * parent,
+						   const ProjectDefMemoryFields & fieldinfo,
+						   wxWindowID id = wxID_ANY,
+						   const wxPoint & 	pos = wxDefaultPosition,
+						   const wxSize & 	size = wxDefaultSize,
+						   long 	style = wxTAB_TRAVERSAL,
+						   const wxString & 	name = _T("tmAAttribCtrl"));
+		void Create (wxWindow * parent,
+					 const ProjectDefMemoryFields & fieldinfo,
+					 wxWindowID id = wxID_ANY,
+					 const wxPoint & 	pos = wxDefaultPosition,
+					 const wxSize & 	size = wxDefaultSize,
+					 long 	style = wxTAB_TRAVERSAL,
+					 const wxString & 	name = _T("tmAAttribCtrl"));
+		~tmAAttribCtrlDate();
+		
+		
+		// control operations
+		virtual void SetControlValue(const wxString & value);
+		virtual wxString GetControlValue ();
+		
+	};
+
 
 
 #endif

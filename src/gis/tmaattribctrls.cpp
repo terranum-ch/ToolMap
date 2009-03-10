@@ -367,20 +367,7 @@ void tmAAttribCtrlEnum::Create (wxWindow * parent,
 	wxSizer * mySizer = CreateChoiceControl(fieldinfo.m_pCodedValueArray);
 	wxASSERT (mySizer);
 	bSizer24->Add( mySizer, 1, wxEXPAND, 5 );
-	
-	/*wxBoxSizer* bSizer25;
-	bSizer25 = new wxBoxSizer( wxVERTICAL );
-	
-	m_Control = new wxTextCtrl( this, wxID_ANY, wxEmptyString,
-							   wxDefaultPosition, wxSize( 120,-1 ),0,
-							   wxTextValidator(wxFILTER_NUMERIC));
-	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
-	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER, 5); 
-	
-	*/
-	
+		
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
@@ -507,5 +494,126 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 	}
 }
 
+
+
+
+///////////////////////////////////////////////////////
+//////////// FLOAT NUMBER  CONTROL ///////////////////
+//////////////////////////////////////////////////////
+tmAAttribCtrlDate::tmAAttribCtrlDate()
+{
+	
+}
+
+
+
+tmAAttribCtrlDate::tmAAttribCtrlDate(wxWindow * parent,
+									   const ProjectDefMemoryFields & fieldinfo,
+									   wxWindowID id,
+									   const wxPoint & 	pos,
+									   const wxSize & 	size,
+									   long 	style,
+									   const wxString & 	name)
+{
+	tmAAttribCtrlDate::Create(parent,fieldinfo, id,pos,size,style,name);
+}
+
+
+
+void tmAAttribCtrlDate::Create (wxWindow * parent,
+								 const ProjectDefMemoryFields & fieldinfo,
+								 wxWindowID id ,
+								 const wxPoint & 	pos,
+								 const wxSize & 	size,
+								 long 	style,
+								 const wxString & 	name)
+{
+	wxPanel::Create(parent,id,pos,size,style,name);
+	wxBoxSizer* bSizer24;
+	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
+	m_Label = new wxStaticText( this, wxID_ANY,
+							   LABELDEFAULT,
+							   wxDefaultPosition,
+							   wxDefaultSize, 0 );
+	SetLabel(fieldinfo.m_Fieldname);
+	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+	bSizer24->Add( m_Label, 0, wxALL , 5); 
+	
+	
+	
+	m_Control = new wxDatePickerCtrl ( this, wxID_ANY);
+	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	//SetProperties(fieldinfo);
+	
+	//bSizer24->Add( bSizer25, 1, wxEXPAND, 5 );
+	
+	SetSizer( bSizer24 );
+	Layout();
+	bSizer24->Fit( this );
+	
+	
+}
+
+
+
+tmAAttribCtrlDate::~tmAAttribCtrlDate()
+{
+	delete m_Control;
+	m_Control = NULL;
+}
+
+
+void tmAAttribCtrlDate::SetControlValue(const wxString & value)
+{
+	// only date passed as : YYYY-MM-DD
+	wxASSERT(value.GetChar(4) == '-');
+	
+	
+	
+	wxDateTime myDate;
+	if (myDate.ParseDate(value)!=NULL)
+	{
+		m_Control->SetValue(myDate);
+	}
+	else
+		wxLogError(_T("Error parsing date in %s"), value.c_str());
+	
+}
+
+
+wxString tmAAttribCtrlDate::GetControlValue ()
+{
+	wxDateTime myDate = m_Control->GetValue();
+	/*wxString myDateText = wxString::Format( _T("%d-&d-&d"),
+										   myDate.GetYear(),
+										   myDate.GetMonth(),
+										   myDate.GetDay());*/
+	wxString myDateText = myDate.FormatISODate();
+	wxLogDebug(_T("Date returned is : %s"), myDateText.c_str());
+	return myDateText;
+}
+
+
+/*void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo)
+{
+	//SetLabel(fieldinfo.m_Fieldname);
+	
+	wxASSERT (fieldinfo.m_FieldPrecision != 0);
+	wxASSERT (fieldinfo.m_FieldScale != 0);
+	
+	wxString myExemple = wxEmptyString;
+	for (int i = 0; i< fieldinfo.m_FieldPrecision; i++)
+		myExemple.Append(_T("9"));
+	
+	myExemple.insert(fieldinfo.m_FieldPrecision - fieldinfo.m_FieldScale,
+					 _T("."));
+	myExemple.Prepend(_("Max : "));
+	m_ControlInfo->SetLabel(myExemple);
+	wxFont myFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	myFont.SetStyle(wxFONTSTYLE_ITALIC);
+	m_ControlInfo->SetFont(myFont);
+	
+	
+}*/
 
 
