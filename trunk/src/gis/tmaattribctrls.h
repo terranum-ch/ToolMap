@@ -84,6 +84,15 @@ class tmAAttribCtrl  : public wxPanel
 		virtual wxString GetControlValue () = 0;
 	};
 
+// Creating a list of Ctrls
+class tmAAttribCtrlStruct : public wxObject
+	{
+	public:
+		tmAAttribCtrlStruct() {m_Ctrl = NULL;}
+		tmAAttribCtrl * m_Ctrl;
+	};
+
+WX_DECLARE_OBJARRAY(tmAAttribCtrlStruct, tmAAttribCtrlArray);
 
 
 /***************************************************************************//**
