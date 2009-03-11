@@ -40,6 +40,11 @@ wxString tmAAttribCtrl::GetLabel ()
 }
 
 
+void tmAAttribCtrl::SetPanelColour ()
+{
+	this->SetBackgroundColour(*wxWHITE);
+}
+
 
 
 
@@ -75,6 +80,7 @@ void tmAAttribCtrlText::Create (wxWindow * parent,
 								const wxString & 	name)
 {
 	wxPanel::Create(parent,id,pos,size,style,name);
+	SetPanelColour();
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
 	m_Label = new wxStaticText( this, wxID_ANY,
@@ -83,7 +89,7 @@ void tmAAttribCtrlText::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5); 
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5); 
 	
 	wxBoxSizer * bSizer25 = new wxBoxSizer(wxHORIZONTAL);
 	m_Control = new wxTextCtrl( this, wxID_ANY, wxEmptyString,
@@ -96,7 +102,7 @@ void tmAAttribCtrlText::Create (wxWindow * parent,
 	bSizer25->Add(m_ControlInfo,0,wxLEFT |wxALIGN_CENTER_VERTICAL,5);
 	
 	
-	bSizer24->Add( bSizer25, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	bSizer24->Add( bSizer25, 1, wxALL | wxALIGN_CENTER_VERTICAL, 2);
 	
 	SetSizer( bSizer24 );
 	Layout();
@@ -174,6 +180,7 @@ void tmAAttribCtrlInteger::Create (wxWindow * parent,
 {
 	wxPanel::Create(parent,id,pos,size,style,name);
 	wxBoxSizer* bSizer24;
+	SetPanelColour();
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
 	m_Label = new wxStaticText( this, wxID_ANY,
 							   LABELDEFAULT,
@@ -181,13 +188,13 @@ void tmAAttribCtrlInteger::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5); 
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5); 
 	
 	
 	m_Control = new wxSpinCtrl( this, wxID_ANY, wxEmptyString,
 							   wxDefaultPosition, wxSize( 120,-1 ));
 	SetProperties(fieldinfo);
-	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 2 );
 	
 	
 	SetSizer( bSizer24 );
@@ -260,6 +267,7 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 								 const wxString & 	name)
 {
 	wxPanel::Create(parent,id,pos,size,style,name);
+	SetPanelColour();
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
 	m_Label = new wxStaticText( this, wxID_ANY,
@@ -268,7 +276,7 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxALL , 5); 
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5); 
 	
 	
 	wxBoxSizer* bSizer25;
@@ -282,7 +290,7 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER, 5); 
 	SetProperties(fieldinfo);
 	
-	bSizer24->Add( bSizer25, 1, wxEXPAND, 5 );
+	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );
 	
 	SetSizer( bSizer24 );
 	Layout();
@@ -367,7 +375,7 @@ void tmAAttribCtrlEnum::Create (wxWindow * parent,
 {
 	wxPanel::Create(parent,id,pos,size,style,name);
 	InitMemberValues();
-	
+	SetPanelColour();
 	// creating label
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
@@ -377,11 +385,11 @@ void tmAAttribCtrlEnum::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxALL | wxALIGN_CENTER_VERTICAL , 5); 
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL , 5); 
 	
 	wxSizer * mySizer = CreateChoiceControl(fieldinfo.m_pCodedValueArray);
 	wxASSERT (mySizer);
-	bSizer24->Add( mySizer, 1, wxEXPAND, 5 );
+	bSizer24->Add( mySizer, 1, wxEXPAND, 2 );
 		
 	SetSizer( bSizer24 );
 	Layout();
@@ -545,6 +553,7 @@ void tmAAttribCtrlDate::Create (wxWindow * parent,
 								 const wxString & 	name)
 {
 	wxPanel::Create(parent,id,pos,size,style,name);
+	SetPanelColour();
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
 	m_Label = new wxStaticText( this, wxID_ANY,
@@ -553,12 +562,12 @@ void tmAAttribCtrlDate::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxALL , 5); 
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5); 
 	
 	
 	
 	m_Control = new wxDatePickerCtrl ( this, wxID_ANY);
-	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 2 );
 	
 	SetSizer( bSizer24 );
 	Layout();
@@ -638,6 +647,7 @@ void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 								 const wxString & 	name)
 {
 	wxPanel::Create(parent,id,pos,size,style,name);
+	SetPanelColour();
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
 	m_Label = new wxStaticText( this, wxID_ANY,
@@ -646,7 +656,7 @@ void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxALL , 5); 
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5); 
 	
 	
 	wxBoxSizer* bSizer25;
@@ -660,7 +670,7 @@ void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER, 5); 
 	SetProperties(fieldinfo);
 	
-	bSizer24->Add( bSizer25, 1, wxEXPAND, 5 );
+	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );
 	
 	SetSizer( bSizer24 );
 	Layout();

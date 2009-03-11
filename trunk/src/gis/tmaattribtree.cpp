@@ -245,7 +245,9 @@ tmAAttribCtrl * tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldi
 
 	wxASSERT (mypControl);
 	
-	wxTreeMultiWindowInfo wndinfo (0, 0,0);
+	wxTreeMultiWindowInfo wndinfo (0,0,0);
+	
+	
 	// add subitem to root
     AppendWindow(m_ActualNode, mypControl, _T(""), wndinfo);
 	return mypControl;

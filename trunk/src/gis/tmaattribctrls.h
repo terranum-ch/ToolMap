@@ -56,6 +56,8 @@ class tmAAttribCtrl  : public wxPanel
 	protected:
 		wxStaticText* m_Label;
 		
+		// panel control
+		void SetPanelColour ();
 		
 	public:
 		tmAAttribCtrl(){;}
