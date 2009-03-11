@@ -611,6 +611,17 @@ int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & value
 	myField1.m_FieldPrecision = 20;
 	myFieldArray1.Add(myField1);
 	
+	ProjectDefMemoryFields myField2;
+	myField2.m_Fieldname = _T("Status");
+	myField2.m_FieldType = TM_FIELD_ENUMERATION;
+	ProjectDefMemoryFieldsCodedVal myCodedVal1;
+	myCodedVal1.m_ValueName = _T("Actif");
+	PrjMemFieldCodedValArray myVals;
+	myVals.Add(myCodedVal1);
+	myCodedVal1.m_ValueName = _T("Inactif");
+	myVals.Add(myCodedVal1);
+	myField2.m_pCodedValueArray = &myVals;
+	myFieldArray1.Add(myField2);
 	
 	
 	ProjectDefMemoryLayers myLayer1;

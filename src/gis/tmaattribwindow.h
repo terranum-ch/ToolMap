@@ -57,10 +57,16 @@ class tmAAttribWindow : public wxDialog
 		PrjMemLayersArray * m_Layers;
 		wxArrayString * m_Values;
 		
+		// member
+		int m_iTotalControls;
+		tmAAttribCtrlArray m_Ctrls;
 		
 		// member function
 		void InitMemberValue ();
 		void CreateControls ();
+		int GetNumberControls ();
+		bool CheckValuesAndControls();
+		bool SetValue (unsigned int pos, tmAAttribCtrl * ctrl); 
 		
 	protected:
 		
@@ -76,7 +82,7 @@ class tmAAttribWindow : public wxDialog
 		~tmAAttribWindow();
 		
 		// data transfert
-		virtual bool TransfertDataToWindow();
+		virtual bool TransferDataToWindow();
 		
 		
 		
