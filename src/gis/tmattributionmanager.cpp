@@ -283,6 +283,24 @@ bool tmAttributionManager::IsAttributionManagerReady()
 
 
 /***************************************************************************//**
+ @brief Checks that only one object is selected
+ @details Use the IsAttributionManagerReady() before to ensure that all controls
+ are well initialised
+ @param bool true if only one item is selected
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 March 2009
+ *******************************************************************************/
+bool tmAttributionManager::IsOnlyOneObjSelected ()
+{
+	wxASSERT (m_SelData);
+	if (m_SelData->GetCount() == 1)
+		return true;
+	return false;
+}
+
+
+
+/***************************************************************************//**
  @brief Called when selection was made
  @details This is called by the #tmRenderer when a selection (either by point or
  rectangle) was made. This event is also used by #tmLayerManager::OnSelection
@@ -632,6 +650,7 @@ int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & value
 	
 	wxArrayString myValues;
 	myValues.Add(_T("Remarques"));
+	myValues.Add(_T("Inactif"));
 	
 	tmAAttribWindow myAADlg (m_Parent, &myLayersArray, &myValues, wxID_ANY);
 	return myAADlg.ShowModal();
@@ -640,11 +659,42 @@ int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & value
 
 
 
-//TODO: Add comment here
+/***************************************************************************//**
+ @brief Advanced Attribution button is pressed
+ @return  true if the advanced attribution succeed, false if cancelled or if an
+ error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 March 2009
+ *******************************************************************************/
 bool tmAttributionManager::AAttributionButtonShow ()
 {
+	// validating
+	if (IsAttributionManagerReady() == false)
+	{
+		wxLogDebug(_T("Project isn't ready, open a project or define a Edit Layer"));
+		return false;
+	}
+	if (IsOnlyOneObjSelected() == false)
+	{
+		wxLogDebug(_T("This works only if one object is selected, select only one object"));
+		return false;
+	}
+	tmLayerProperties * myEditLayer = m_TOC->GetEditLayer();
+	if (myEditLayer == NULL)
+	{
+		wxLogDebug(_T("You aren't in edit mode, please start editing one layer first"));
+		return false;
+	} 
+	
+	
+	// get basic attribution for object into PrjDefMemLayers
+	
+	
+	
+	
 	wxArrayString myValues;
 	DisplayAAttributionWindow(myValues);
+	
 	return true;
 }
 

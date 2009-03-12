@@ -99,6 +99,7 @@ class tmAttributionManager : public wxEvtHandler
 				
 		// verification 
 		bool IsAttributionManagerReady();
+		bool IsOnlyOneObjSelected ();
 		DECLARE_EVENT_TABLE()
 		
 		
