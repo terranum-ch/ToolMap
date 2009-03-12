@@ -52,6 +52,7 @@ class tmAAttribWindow : public wxDialog
 		
 		// member controls
 		tmAAttribTree * m_AAttribTree;
+		wxStatusBar * m_Status;
 		
 		// member initialized by ctor
 		PrjMemLayersArray * m_Layers;
@@ -67,6 +68,7 @@ class tmAAttribWindow : public wxDialog
 		int GetNumberControls ();
 		bool CheckValuesAndControls();
 		bool SetValue (unsigned int pos, tmAAttribCtrl * ctrl); 
+		void SetStatusNumberControl(int ictrl, unsigned int layers);
 		
 	protected:
 		

@@ -41,6 +41,7 @@ wxDialog( parent, id, title, pos, size, style )
 	m_Values = values;
 	m_iTotalControls = GetNumberControls();
 	CheckValuesAndControls();
+	SetStatusNumberControl(m_iTotalControls, m_Layers->GetCount());
 }
 
 
@@ -57,6 +58,7 @@ void tmAAttribWindow::InitMemberValue ()
 	m_Values = NULL;
 	m_Ctrls.Clear();
 	m_iTotalControls = 0;
+	m_Status = NULL;
 }
 
 
@@ -82,6 +84,20 @@ bool tmAAttribWindow::CheckValuesAndControls()
 	return true;
 }
 
+
+/***************************************************************************//**
+ @brief Display a message into the status bar
+ @param ictrl Number of loaded control to display into status bar
+ @param layers Number of layers loaded
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 March 2009
+ *******************************************************************************/
+void tmAAttribWindow::SetStatusNumberControl(int ictrl, unsigned int layers)
+{
+	wxASSERT(m_Status);
+	m_Status->SetStatusText(wxString::Format(_("%d Control(s) in %d layer(s)"),
+											 ictrl, layers));
+}
 
 
 /***************************************************************************//**
@@ -113,9 +129,14 @@ void tmAAttribWindow::CreateControls ()
 	
 	bSizer20->Add( bSizer21, 0, wxALIGN_RIGHT, 5 );
 	
+	m_Status = new wxStatusBar( this, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
+    bSizer20->Add(m_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
+	
+	
 	this->SetSizer( bSizer20 );
 	this->Layout();
 	bSizer20->Fit( this );
+
 	
 	SetWindowPosition();
 }
@@ -253,9 +274,23 @@ bool tmAAttribWindow::TransferDataToWindow()
 }
 
 
+/***************************************************************************//**
+ @brief Set value to the specified control
+ @details Transfert value from the wxArrayString to the tmAAttribCtrl with a
+ security. wxArrayString is checked for pos. and if the position exists, we
+ also checks for wxEmptyString.
+ @param pos the position of the control (index)
+ @param ctrl Adress of a valid tmAAttribCtrl object (a check is made in debug
+ mode)
+ @return  true if all checks are correct and a value was set to the control,
+ false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 11 March 2009
+ *******************************************************************************/
 bool tmAAttribWindow::SetValue (unsigned int pos, tmAAttribCtrl * ctrl)
 {
 	wxASSERT (m_Values);
+	wxASSERT (ctrl);
 	if (pos >= m_Values->GetCount())
 	{
 		wxLogDebug(_T("Value for control @ position %d doesn't exist !"), pos);
