@@ -83,6 +83,7 @@ class ProjectManager : public wxObject
 		Shortcuts_PANEL * m_ShortcutPanel;
 		Snapping_PANEL * m_SnappingPanel;
 		tmEditManager * m_EditManager;
+		PrjDefMemManage * m_PrjMem;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -120,6 +121,9 @@ class ProjectManager : public wxObject
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 		bool IsProjectOpen () {return bProjectIsOpen;}
+		
+		// project defintion into memory
+		bool LoadProjectDefintion (short int message = 0);
 	};
 
 

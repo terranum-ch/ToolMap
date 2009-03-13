@@ -1713,6 +1713,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	wxString sFieldSentence = _T("");
 	wxString sDeleteString = _T("");
 	ProjectDefMemoryLayers * pLayers = NULL;
+	bool bReturn = true;
 	
 	/********* PART 1 : BASIC PROJECT UPDATING *********************/
 	if (SetProjectData(pProjDef))
@@ -1726,7 +1727,12 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 		// execute the sentence for deleting
 		if (!sSentence.IsEmpty())
 			if (!DataBaseQueryNoResult(sSentence))
+			{
 				wxLogError(_T("Error deleting layers : %s"), sSentence.c_str());
+				bReturn = false;
+				return bReturn;
+				
+			}
 		
 		// clean the delete sentence
 		sSentence.Clear();
@@ -1745,10 +1751,6 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 												   TABLE_NAME_LAYER_AT.c_str(),
 												   pLayers->m_LayerID)) )
 			{
-				//wxLogDebug(_T("Fields Table exist for layer : %s, [%d]"),
-				//		   pLayers->m_LayerName.c_str(),
-				//		   pLayers->m_LayerID);
-				
 				// check if we have some fields 
 				if (pProjDef->GetCountFields() > 0)
 				{
@@ -1763,8 +1765,12 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					
 					// modfiy the fields in the database
 					if(!DataBaseQueryNoResult(sFieldSentence))
+					{
 						wxLogError(_T("Error modifing field data in the database : %s"),
 								   sFieldSentence.c_str());
+						bReturn = false;
+						break;
+					}
 				}
 				
 				
@@ -1776,19 +1782,18 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 								sDeleteString);
 					
 					if(!DataBaseQueryNoResult(sDeleteString))
+					{
 						wxLogError(_T("Unable to delete Fields from table : %s%d, %s"),
 								   TABLE_NAME_LAYER_AT.c_str(),
 								   pLayers->m_LayerID,
 								   sDeleteString.c_str());
+						bReturn = false;
+						break;
+					}
 				}
 				
 				
 			}
-			
-			
-			
-			
-			
 			else // the table dosen't exist, need to create the table if fields > 0
 			{
 				if (pProjDef->GetCountFields() > 0)
@@ -1799,6 +1804,8 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					{
 						wxLogError(_T("Unable to create the Field's table : %d"),
 								   pLayers->m_LayerID);
+						bReturn = false;
+						break;
 					}
 					
 					// update, insert fields
@@ -1811,8 +1818,12 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					
 					// modfiy the fields in the database
 					if(!DataBaseQueryNoResult(sFieldSentence))
+					{
 						wxLogError(_T("Error modifing field data in the database : %s"),
 								   sFieldSentence.c_str());
+						bReturn = false;
+						break;
+					}
 				}
 			}
 			
@@ -1823,15 +1834,18 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	
 		
 		// execute the sentence for layers.
-		if (DataBaseQueryNoResult(sSentence))
+		if (!DataBaseQueryNoResult(sSentence))
 		{
-			return TRUE;
+			wxLogError(_T("Error updating project in the database"));
+			bReturn = false;
 		}	
 		
 	}
+	else
+		bReturn = false;
 	
-	wxLogError(_T("Error updating project in the database"));
-	return FALSE;	
+	
+	return bReturn;	
 }
 
 
