@@ -36,6 +36,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_QueriesPanel = NULL;
 	m_ShortcutPanel = NULL;
 	m_EditManager = NULL;
+	m_PrjMem = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -48,6 +49,9 @@ ProjectManager::ProjectManager(wxWindow * parent)
  *******************************************************************************/
 ProjectManager::~ProjectManager()
 {
+	if (m_PrjMem)
+		delete m_PrjMem;
+	
 	
 	// closing database only at the program end.
 	if (m_DB != NULL)
@@ -169,39 +173,40 @@ bool ProjectManager::CreateNewProject()
  *******************************************************************************/
 bool ProjectManager::EditProject ()
 {
-	
-	PrjDefMemManage * pPrjDefinition = NULL;
-	
-	// compute time for loading project
-	wxStopWatch sw;
-	
-	wxBusyInfo * wait = new wxBusyInfo(_("Please wait, loading data from project..."), m_Parent);
-	// load data from DB --> PrjDefMemManage
-	pPrjDefinition = m_DB->GetProjectDataFromDB();
-	delete wait;
-	
-	wxLogMessage(_T("Data loaded in : %d [ms]"),sw.Time());
-	sw.Pause();
-	
-	
-	if (pPrjDefinition != NULL)
+
+	bool bReturn = true;
+	wxASSERT (m_PrjMem);
+	if (m_PrjMem != NULL)
 	{
 		
-		ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, pPrjDefinition, TRUE);
+		ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, m_PrjMem, TRUE);
 		if(myNewProjDlg->ShowModal() == wxID_OK)
 		{
 			
 			// modify data 
-			if (m_DB->UpdateDataBaseProject(pPrjDefinition))
+			if (m_DB->UpdateDataBaseProject(m_PrjMem))
+			{
 				wxLogDebug(_T("Database modified"));
+				LoadProjectDefintion(1);
+			}
+			else
+			{
+				wxLogDebug(_T("Project Modification error : %s"),
+						   m_DB->DataBaseGetLastError().c_str());
+				bReturn = false;
+				// reload actual project
+				LoadProjectDefintion(2);
+			}
+		}
+		else // dialog cancelled
+		{
+			LoadProjectDefintion(2);
 		}
 		
 		delete myNewProjDlg;
-		delete pPrjDefinition;
+		
 	}
-	
-	
-	return FALSE;
+	return bReturn;
 }
 
 
@@ -359,6 +364,11 @@ int ProjectManager::OpenProject(const wxString & path)
 					// edition manager
 					m_EditManager->SetDatabase(m_DB);
 					
+					
+					// load project definition
+					bool bLoaded = LoadProjectDefintion(1);
+					wxASSERT (bLoaded);
+					
 					// project is now open !
 					bProjectIsOpen = TRUE;
 					myReturnVal = OPEN_OK;
@@ -470,6 +480,74 @@ bool ProjectManager::TempTempInitTOC ()
 	m_DB->InitTOCGenericLayers();
 	return TRUE;
 }
+
+
+
+/***************************************************************************//**
+ @brief Load project defintion from database to memory
+ @details Project defintion is used for :
+ - Editing project 
+ - Advanced
+ attribution
+ @param message Message displayed during project loading : 
+ - 0 = No Message
+ - 1= Loading project in progress
+ - 2 = Cancelling in progress
+ @return  true if loading project definition succeed false and an assert in
+ debug mode
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 12 March 2009
+ *******************************************************************************/
+bool ProjectManager::LoadProjectDefintion (short int message)
+{
+	wxASSERT (m_DB);
+	wxASSERT (message >= 0 && message <= 2);
+	wxASSERT (m_Parent);
+	
+	if (m_PrjMem)
+	{
+		delete m_PrjMem;
+		m_PrjMem = new PrjDefMemManage();
+	}
+	
+	wxStopWatch sw;
+	wxString myWaitString = wxEmptyString;
+	switch (message)
+	{
+		case 1:
+			myWaitString = _("Please wait, loading project...");
+			break;
+		case 2:
+			myWaitString = _("Please wait, cancelling in progress...");
+			break;
+			
+		default:
+			break;
+	}
+	wxBusyInfo * wait = NULL;
+	if (!myWaitString.IsEmpty())
+		wait = new wxBusyInfo(myWaitString, m_Parent);
+
+	// load data from DB --> PrjDefMemManage
+	m_PrjMem = m_DB->GetProjectDataFromDB();
+	
+	if (wait)
+		delete wait;
+	
+	wxLogMessage(_T("Project Data loaded in : %d [ms]"),sw.Time());	
+	
+	wxASSERT (m_PrjMem);
+	if (m_PrjMem == NULL)
+		return false;
+	
+	
+	return true;
+}
+
+
+
+
+
 
 
 
