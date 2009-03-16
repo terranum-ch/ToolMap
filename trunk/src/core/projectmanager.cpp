@@ -356,18 +356,19 @@ int ProjectManager::OpenProject(const wxString & path)
 					
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);
-					
-					// attribution manager
-					bool bReady = m_AttribManager->InitAttributionManager(m_DB);
-					wxASSERT(bReady);
 				
 					// edition manager
 					m_EditManager->SetDatabase(m_DB);
-					
-					
+						
 					// load project definition
 					bool bLoaded = LoadProjectDefintion(1);
-					wxASSERT (bLoaded);
+					wxASSERT (bLoaded);	
+					
+					// attribution manager
+					bool bReady = m_AttribManager->
+						InitAttributionManager(m_DB,
+											   GetMemoryProjectDefinition());
+					wxASSERT(bReady);
 					
 					// project is now open !
 					bProjectIsOpen = TRUE;
@@ -544,6 +545,21 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 	return true;
 }
 
+
+
+
+/***************************************************************************//**
+ @brief Get the project definition
+ @return  a valid PrjDefMemManage object (if project isn't initialized an
+ wxASSERT is issued in debug mode
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 16 March 2009
+ *******************************************************************************/
+PrjDefMemManage * ProjectManager::GetMemoryProjectDefinition()
+{
+	wxASSERT(m_PrjMem);
+	return m_PrjMem;
+}
 
 
 

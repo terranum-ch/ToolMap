@@ -528,3 +528,53 @@ bool tmAttributionData::GetConcatenedBasicName (const tmAttributionBasicArray & 
 }
 
 
+
+/***************************************************************************//**
+ @brief Get Layer attributed for selected geometry
+ @details When doing advanced attribution, we should know what are the layers we
+ should display control for.
+ @param geomid the object id we search attribution layers
+ @param layersid an (empty) wxArrayLong used by this function for storing
+ returned layers id
+ @param tablename the name of the table containing the basic attribution.
+ @return  true if layers where returned, false otherwise (no basic attribution
+ for exemple or error in the query)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 16 March 2009
+ *******************************************************************************/
+bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid, 
+													   wxArrayLong & layersid,
+													   const wxString & tablename)
+{
+	wxASSERT (layersid.GetCount() == 0);
+	wxASSERT (!tablename.IsEmpty());
+	
+	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX FROM %s l LEFT")
+					_T(" JOIN (%s a) ON (l.OBJECT_ID = a.OBJECT_VAL_ID) WHERE")
+					_T(" a.OBJECT_GEOM_ID = %d ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;");
+	wxString sSentence = wxString::Format(sTmp,
+										  TABLE_NAME_OBJECTS.c_str(),
+										  tablename.c_str(),
+										  geomid);
+	wxASSERT (m_pDB);
+	if (!m_pDB->DataBaseQuery(sSentence, true))
+		return false;
+	
+	long myLayerTemp = wxNOT_FOUND;
+	while(1)
+	{
+		myLayerTemp = m_pDB->DataBaseGetNextResultAsLong();
+		if (myLayerTemp == wxNOT_FOUND)
+			break;
+		layersid.Add(myLayerTemp);
+	}
+	
+	if (layersid.GetCount() > 0)
+		return true;
+	
+	wxLogDebug(_T("No basic attribution, advanced attribution not availlable"));
+	return false;
+}
+
+
+

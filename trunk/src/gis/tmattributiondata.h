@@ -64,7 +64,8 @@ class tmAttributionData : public wxObject
 		void PrepareCleaningStatement (wxString & statement, const wxString & tablename);
 		void PrepareGetInfoStatement (wxString & statement, const wxString & tablename);
 		void PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename);
-		
+		bool PrepareGetAttributionLayersID (const long & geomid, wxArrayLong & layersid,
+											const wxString & tablename);
 		
 	public:
 		// ctor - dtor
@@ -93,6 +94,8 @@ class tmAttributionData : public wxObject
 								 wxArrayString & txtvalues);
 		bool GetConcatenedBasicName (const tmAttributionBasicArray & myAttrib,
 									 wxArrayString & concatenedattrib);
+		
+		virtual bool GetAttributionLayersID (const long & geomid, wxArrayLong & layersid){return false;}
 	};
 
 

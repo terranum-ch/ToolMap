@@ -199,3 +199,18 @@ void tmAttributionDataPoint::SetPanelValues (AttribObjType_PANEL * panel,
 {
 	panel->SetSelectedValues(TOC_NAME_POINTS, valueids);
 }
+
+
+/***************************************************************************//**
+ @brief Get Layer attributed for selected geometry
+ @details See tmAttributionData::PrepareGetAttributionLayersID() for description.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 16 March 2009
+ *******************************************************************************/
+bool tmAttributionDataPoint::GetAttributionLayersID (const long & geomid,
+													 wxArrayLong & layersid)
+{
+	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
+															layersid,
+															TABLE_NAME_GIS_ATTRIBUTION[1]);	
+}

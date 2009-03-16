@@ -198,7 +198,7 @@ public:
 	call the DataBaseGetNextResult()
 	@see DataBaseQueryNoResult()
 	 */
-	bool DataBaseQuery(const wxString & myQuery);
+	bool DataBaseQuery(const wxString & myQuery, bool logerror = false);
 	
 	wxArrayLong * DataBaseQuerySafe (const wxString & myQuery);
 	

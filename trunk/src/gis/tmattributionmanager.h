@@ -67,6 +67,7 @@ class tmAttributionManager : public wxEvtHandler
 		tmTOCCtrl *				m_TOC;
 		DataBaseTM *			m_pDB;
 		bool					m_ShortcutLoaded;
+		PrjDefMemManage *		m_pPrjMem;
 		
 		tmLayerProperties * m_pLayerProperties;
 		tmShortcutMemory		m_ShortcutMem;
@@ -95,7 +96,8 @@ class tmAttributionManager : public wxEvtHandler
 		void OnCopyAttribution (wxCommandEvent & event);
 		
 		// advanced attribution
-		int DisplayAAttributionWindow (const wxArrayString & values);
+		int DisplayAAttributionWindow (wxArrayString * values,
+									    PrjMemLayersArray * layers);
 				
 		// verification 
 		bool IsAttributionManagerReady();
@@ -113,7 +115,7 @@ class tmAttributionManager : public wxEvtHandler
 		~tmAttributionManager();
 		
 		// Init attribution
-		bool InitAttributionManager(DataBaseTM * pDb);
+		bool InitAttributionManager(DataBaseTM * pDb, PrjDefMemManage * memprojdef);
 		void UnInitAttributionManager();
 		
 		// selection informations

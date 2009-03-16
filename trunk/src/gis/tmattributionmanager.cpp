@@ -52,6 +52,7 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
 	m_TOC = toc;
 	m_Panel = panel;
 	m_SelData = selection;
+	m_pPrjMem = NULL;
 	
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
@@ -221,10 +222,14 @@ tmAttributionManager::~tmAttributionManager()
  @author Lucien Schreiber (c) CREALP 2008
  @date 04 November 2008
  *******************************************************************************/
-bool tmAttributionManager::InitAttributionManager(DataBaseTM * pDb)
+bool tmAttributionManager::InitAttributionManager(DataBaseTM * pDb, 
+												  PrjDefMemManage * memprojdef)
 {
 	m_pDB = pDb;
 	wxASSERT (m_pDB);
+	
+	m_pPrjMem = memprojdef;
+	wxASSERT(m_pPrjMem);
 	
 	m_pLayerProperties = NULL;
 	
@@ -508,6 +513,10 @@ tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
 			myAttrib = new tmAttributionData();
 			break;
 	}
+	
+	if (myAttrib == NULL)
+		wxLogDebug(_T("Error creating attribution object"));
+	
 	return myAttrib;
 }
 
@@ -617,9 +626,10 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 
 
 //TODO: Add comment here
-int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & values)
+int tmAttributionManager::DisplayAAttributionWindow (wxArrayString * values,
+													 PrjMemLayersArray * layers)
 {
-	//TODO: Remove temp code
+	/*TODO: Remove temp code
 	PrjMemLayersArray myLayersArray;
 	
 	PrjMemFieldArray myFieldArray1;
@@ -650,9 +660,9 @@ int tmAttributionManager::DisplayAAttributionWindow (const wxArrayString & value
 	
 	wxArrayString myValues;
 	myValues.Add(_T("Remarques"));
-	myValues.Add(_T("Inactif"));
+	myValues.Add(_T("Inactif"));*/
 	
-	tmAAttribWindow myAADlg (m_Parent, &myLayersArray, &myValues, wxID_ANY);
+	tmAAttribWindow myAADlg (m_Parent, layers, values, wxID_ANY);
 	return myAADlg.ShowModal();
 							 
 }
@@ -687,14 +697,44 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	} 
 	
 	
-	// get basic attribution for object into PrjDefMemLayers
+	tmAttributionData * myAttribObj = CreateAttributionData(myEditLayer->m_LayerType);
+	if (myAttribObj == NULL)
+		return false;
+	myAttribObj->Create(m_SelData->GetSelectedValues(), m_pDB);
 	
+	// attributed layers
+	wxArrayLong myLayersID;
+	if (myAttribObj->GetAttributionLayersID(m_SelData->GetSelectedUnique(),
+											myLayersID)==false)
+		return false;
 	
+
+
+	
+	// get layers info
+	wxASSERT (m_pPrjMem);
+	PrjMemLayersArray myLayersInfoArray;
+	for (unsigned int i = 0; i<myLayersID.GetCount();i++)
+	{
+		wxLogDebug(_T("layer %d searched"), myLayersID.Item(i));
+		
+		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i));
+		if (!myActualLayer)
+		{
+			wxLogDebug(_T("Layers %d not found, error"), myLayersID.Item(i));
+			return false;
+		}
+		myLayersInfoArray.Add(myActualLayer);
+	}
 	
 	
 	wxArrayString myValues;
-	DisplayAAttributionWindow(myValues);
+	DisplayAAttributionWindow(&myValues, &myLayersInfoArray);
 	
+	// cleaning without deleting item
+	for (unsigned int j = 0; j<myLayersInfoArray.GetCount();j++)
+		myLayersInfoArray.Detach(j);
+
 	return true;
 }
 
