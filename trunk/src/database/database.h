@@ -193,6 +193,7 @@ public:
 	to send back the result of a query.
 	
 	@param myQuery the string containing the query
+	@param logerror If set to true, we log the error if the query doesn't work as expected.
 	@result true if the query was successfuly made otherwise false.
 	@warning User have to check the return value, and if false then one souldn't 
 	call the DataBaseGetNextResult()

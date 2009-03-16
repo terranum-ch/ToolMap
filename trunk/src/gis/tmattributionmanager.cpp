@@ -291,7 +291,7 @@ bool tmAttributionManager::IsAttributionManagerReady()
  @brief Checks that only one object is selected
  @details Use the IsAttributionManagerReady() before to ensure that all controls
  are well initialised
- @param bool true if only one item is selected
+ @return true if only one item is selected
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 March 2009
  *******************************************************************************/
