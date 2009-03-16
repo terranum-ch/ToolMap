@@ -1069,7 +1069,7 @@ bool tmEditManager::EditVertexPosition ()
 	m_OldVertexPos = wxDefaultPosition;
 	EditVertexDLG myDlg (m_Renderer);
 	myDlg.m_SelectedOID = lSelectedOID;
-	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerType;
+	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerSpatialType;
 	OGRLineString * myLine = NULL;
 	OGRPoint * myPt = NULL;
 	
