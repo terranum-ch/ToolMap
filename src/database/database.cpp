@@ -590,7 +590,7 @@ bool DataBase::DataBaseQueryNoResult(wxString myQuery)
 	return FALSE;
 }
 
-bool DataBase::DataBaseQuery(const wxString & myQuery)
+bool DataBase::DataBaseQuery(const wxString & myQuery, bool logerror)
 {
 	pResults = NULL;
 	bool bReturn = false;
@@ -605,6 +605,10 @@ bool DataBase::DataBaseQuery(const wxString & myQuery)
 		bReturn = true;
 	}
 
+	if (bReturn == false && logerror)
+		wxLogDebug(_T("Error in query : %s - %s"), myQuery.c_str(),
+				   DataBaseGetLastError().c_str());
+	
 	return bReturn;
 }
 

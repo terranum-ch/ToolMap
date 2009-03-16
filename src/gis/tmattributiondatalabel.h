@@ -56,6 +56,10 @@ class tmAttributionDataLabel : public tmAttributionData
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel);
+		
+		// for compatibility
+		virtual bool GetAttributionLayersID (const long & geomid, wxArrayLong & layersid);
+	
 	};
 
 
