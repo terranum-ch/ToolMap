@@ -536,6 +536,10 @@ bool tmAttributionData::GetConcatenedBasicName (const tmAttributionBasicArray & 
  @param geomid the object id we search attribution layers
  @param layersid an (empty) wxArrayLong used by this function for storing
  returned layers id
+ @param layertype one of the following value :
+ - LAYER_SPATIAL_LINE
+ - LAYER_SPATIAL_POINT
+ - LAYER_SPATIAL_POLYGON
  @param tablename the name of the table containing the basic attribution.
  @return  true if layers where returned, false otherwise (no basic attribution
  for exemple or error in the query)
@@ -544,18 +548,24 @@ bool tmAttributionData::GetConcatenedBasicName (const tmAttributionBasicArray & 
  *******************************************************************************/
 bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid, 
 													   wxArrayLong & layersid,
-													   const wxString & tablename)
+													   const wxString & tablename,
+													   int layertype )
 {
 	wxASSERT (layersid.GetCount() == 0);
 	wxASSERT (!tablename.IsEmpty());
+	wxASSERT (layertype >= LAYER_SPATIAL_LINE && layertype < LAYER_SPATIAL_POLYGON);
 	
 	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX FROM %s l LEFT")
-					_T(" JOIN (%s a) ON (l.OBJECT_ID = a.OBJECT_VAL_ID) WHERE")
-					_T(" a.OBJECT_GEOM_ID = %d ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;");
+					_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")
+					_T("AND t.LAYER_INDEX=l.THEMATIC_LAYERS_LAYER_INDEX) WHERE")
+					_T(" a.OBJECT_GEOM_ID = %d AND t.TYPE_CD=%d ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;");
+	
 	wxString sSentence = wxString::Format(sTmp,
 										  TABLE_NAME_OBJECTS.c_str(),
 										  tablename.c_str(),
-										  geomid);
+										  TABLE_NAME_LAYERS.c_str(),
+										  geomid,
+										  layertype);
 	wxASSERT (m_pDB);
 	if (!m_pDB->DataBaseQuery(sSentence, true))
 		return false;
