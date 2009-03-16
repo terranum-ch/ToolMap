@@ -65,7 +65,7 @@ class tmAttributionData : public wxObject
 		void PrepareGetInfoStatement (wxString & statement, const wxString & tablename);
 		void PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename);
 		bool PrepareGetAttributionLayersID (const long & geomid, wxArrayLong & layersid,
-											const wxString & tablename);
+											const wxString & tablename, int layertype);
 		
 	public:
 		// ctor - dtor

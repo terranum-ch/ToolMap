@@ -212,7 +212,8 @@ bool tmAttributionDataLabel::GetAttributionLayersID (const long & geomid,
 {
 	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
 															layersid,
-															TABLE_NAME_GIS_ATTRIBUTION[2]);	
+															TABLE_NAME_GIS_ATTRIBUTION[2],
+															LAYER_SPATIAL_POLYGON);	
 }
 
 
