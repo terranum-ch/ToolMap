@@ -125,6 +125,7 @@ class ProjectManager : public wxObject
 		// project defintion into memory
 		bool LoadProjectDefintion (short int message = 0);
 		PrjDefMemManage * GetMemoryProjectDefinition();
+		
 	};
 
 

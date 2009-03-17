@@ -174,6 +174,17 @@ bool ProjectManager::CreateNewProject()
 bool ProjectManager::EditProject ()
 {
 
+	//TODO: temp code for test, remove after use
+	if(m_PrjMem->FindLayer(_T("TectoBound_L")))
+	{
+		ProjectDefMemoryFields * mypField = m_PrjMem->FindField(_T("Type"));
+		
+		ProjectDefMemoryFields myField;
+		myField = *mypField; 
+	}
+	
+	//
+	
 	bool bReturn = true;
 	wxASSERT (m_PrjMem);
 	if (m_PrjMem != NULL)
@@ -560,6 +571,8 @@ PrjDefMemManage * ProjectManager::GetMemoryProjectDefinition()
 	wxASSERT(m_PrjMem);
 	return m_PrjMem;
 }
+
+
 
 
 
