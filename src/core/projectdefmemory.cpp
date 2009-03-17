@@ -136,18 +136,14 @@ ProjectDefMemoryFields & ProjectDefMemoryFields::operator = (const ProjectDefMem
 	m_FieldConstrain = source.m_FieldConstrain;
 	
 	// copy enum values if existing
-	if (m_pCodedValueArray)
+	m_pCodedValueArray->Clear();
+	wxASSERT (source.m_pCodedValueArray);
+	for (unsigned int i = 0; i< source.m_pCodedValueArray->GetCount();i++)
 	{
-		m_pCodedValueArray->Clear();
-		wxASSERT (source.m_pCodedValueArray);
-		for (unsigned int i = 0; i< source.m_pCodedValueArray->GetCount();i++)
-		{
-			ProjectDefMemoryFieldsCodedVal CVal = source.m_pCodedValueArray->Item(i);
-			m_pCodedValueArray->Add(CVal);
-		}
-		
+		ProjectDefMemoryFieldsCodedVal CVal = source.m_pCodedValueArray->Item(i);
+		m_pCodedValueArray->Add(CVal);
 	}
-	
+			
 	return *this;
 }
 
@@ -395,19 +391,18 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 	m_pLayerObjectArray->Clear();
 	
 	// copy field
-	ProjectDefMemoryFields myField;
-	for (unsigned int i = 0; source.m_pLayerFieldArray->GetCount();i++)
+	for (unsigned int i = 0; i< source.m_pLayerFieldArray->GetCount();i++)
 	{
-		myField = source.m_pLayerFieldArray->Item(i);
-		m_pLayerFieldArray->Add(myField);
+		m_pLayerFieldArray->Add(new ProjectDefMemoryFields());
+		m_pLayerFieldArray->Item(i) = source.m_pLayerFieldArray->Item(i);
 	}
 	
+	
 	// copy objects
-	ProjectDefMemoryObjects myObj;
 	for (unsigned int j=0; j<source.m_pLayerObjectArray->GetCount();j++)
 	{
-		myObj = source.m_pLayerObjectArray->Item(j);
-		m_pLayerObjectArray->Add(myObj);
+		m_pLayerObjectArray->Add(new ProjectDefMemoryObjects());
+		m_pLayerObjectArray->Item(j) = source.m_pLayerObjectArray->Item(j);
 	}
 	
 	return *this;
