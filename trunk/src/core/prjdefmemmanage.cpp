@@ -610,3 +610,40 @@ bool PrjDefMemManage::RemoveScale (const long & oldscale)
 	return FALSE; // nothing deleted.
 }
 
+
+/***************************************************************************//**
+ @brief Overloading = operator
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 17 March 2009
+ *******************************************************************************/
+PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
+{
+	m_PrjPath = source.m_PrjPath;
+	m_PrjName = source.m_PrjName;
+	m_PrjAuthors = source.m_PrjAuthors;
+	 m_PrjSummary = source.m_PrjSummary;
+	m_PrjUnitType = source.m_PrjUnitType;
+	 m_PrjProjType = source.m_PrjProjType;
+	
+	// arrays not copied (used only for deleting)
+	m_StoreDeleteIDObj.Clear();
+	m_StoreDeleteScale.Clear();
+	m_StoreDeleteLayers.Clear();
+	
+	m_ScaleArray.Clear();
+	for (unsigned int i = 0; i<source.m_ScaleArray.GetCount();i++)
+		m_ScaleArray.Add(source.m_ScaleArray.Item(i));
+	
+	ProjectDefMemoryLayers myLayer;
+	m_PrjLayerArray->Clear();
+	for (unsigned int j = 0; j<source.m_PrjLayerArray->GetCount();j++)
+	{
+		myLayer = source.m_PrjLayerArray->Item(j);
+		m_PrjLayerArray->Add(myLayer);
+	}
+	
+	//TODO add init for private member.
+	return *this;
+}
+
+

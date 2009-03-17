@@ -139,6 +139,8 @@ class PrjDefMemManage
 		ProjectDefMemoryScale *			FindScale (const long & oldscale);
 		bool							RemoveScale (const long & oldscale);
 		
+		// copy function
+		PrjDefMemManage &				operator=(const PrjDefMemManage & source);		
 	};
 
 #endif

@@ -64,6 +64,23 @@ int ProjectDefMemoryFieldsCodedVal::ExtractCodedValuesFromString (const wxString
 }
 
 
+
+/***************************************************************************//**
+ @brief Copy fields coded values
+ @return  always true
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 17 March 2009
+ *******************************************************************************/
+bool ProjectDefMemoryFieldsCodedVal::CopyFieldCodedVal (ProjectDefMemoryFieldsCodedVal & fieldcodedval)
+{
+	fieldcodedval.m_ValueID = m_ValueID;
+	fieldcodedval.m_ValueCode = m_ValueCode;
+	fieldcodedval.m_ValueName = m_ValueName;
+	return true;
+}
+
+
+
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (PrjMemFieldCodedValArray);
 
@@ -97,6 +114,41 @@ void ProjectDefMemoryFields::InitMemberValues()
 	
 	m_pCodedValueArray = new PrjMemFieldCodedValArray();
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Copy Field values (and array of coded values)
+ @return  always true
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 17 March 2009
+ *******************************************************************************/
+ProjectDefMemoryFields & ProjectDefMemoryFields::operator = (const ProjectDefMemoryFields & source)
+{
+	m_FieldID = source.m_FieldID;
+	m_Fieldname = source.m_Fieldname;
+	m_FieldOldName= source.m_FieldOldName;
+	m_FieldType = source.m_FieldType;
+	m_FieldPrecision = source.m_FieldPrecision;
+	m_FieldScale = source.m_FieldScale;
+	m_FieldOrientation = source.m_FieldOrientation;
+	m_FieldConstrain = source.m_FieldConstrain;
+	
+	// copy enum values if existing
+	if (m_pCodedValueArray)
+	{
+		m_pCodedValueArray->Clear();
+		wxASSERT (source.m_pCodedValueArray);
+		for (unsigned int i = 0; i< source.m_pCodedValueArray->GetCount();i++)
+		{
+			ProjectDefMemoryFieldsCodedVal CVal = source.m_pCodedValueArray->Item(i);
+			m_pCodedValueArray->Add(CVal);
+		}
+		
+	}
+	
+	return *this;
 }
 
 
@@ -325,6 +377,43 @@ void ProjectDefMemoryLayers::InitMemberValues()
 	m_StoreDeleteFields.Clear();
 }
 
+
+
+/***************************************************************************//**
+ @brief Overloading = operator
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 17 March 2009
+ *******************************************************************************/
+ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMemoryLayers & source)
+{
+	m_LayerID = source.m_LayerID;
+	m_LayerType = source.m_LayerType;
+	m_LayerName = source.m_LayerName;
+	m_LayerPolygonDefaultValue = source.m_LayerName;
+	
+	m_pLayerFieldArray->Clear();
+	m_pLayerObjectArray->Clear();
+	
+	// copy field
+	ProjectDefMemoryFields myField;
+	for (unsigned int i = 0; source.m_pLayerFieldArray->GetCount();i++)
+	{
+		myField = source.m_pLayerFieldArray->Item(i);
+		m_pLayerFieldArray->Add(myField);
+	}
+	
+	// copy objects
+	ProjectDefMemoryObjects myObj;
+	for (unsigned int j=0; j<source.m_pLayerObjectArray->GetCount();j++)
+	{
+		myObj = source.m_pLayerObjectArray->Item(j);
+		m_pLayerObjectArray->Add(myObj);
+	}
+	
+	return *this;
+}
+
+
 WX_DEFINE_OBJARRAY (PrjMemLayersArray);
 
 
@@ -350,6 +439,25 @@ void ProjectDefMemoryObjects::InitMemberValues()
 	m_ObjectFreq = OBJECT_LESS_FREQUENT;
 	m_ParentLayerName = _T("");
 }
+
+
+/***************************************************************************//**
+ @brief Copy object values
+ @return  always true
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 17 March 2009
+ *******************************************************************************/
+bool ProjectDefMemoryObjects::CopyObject (ProjectDefMemoryObjects & object)
+{
+	object.m_ObjectID = m_ObjectID;
+	object.m_ObjectCode = m_ObjectCode;
+	object.m_ObjectType = m_ObjectType;
+	object.m_ObjectName = m_ObjectName;
+	object.m_ObjectFreq = m_ObjectFreq;
+	object.m_ParentLayerName = m_ParentLayerName;
+	return true;
+}
+
 
 WX_DEFINE_OBJARRAY (PrjMemObjectsArray);
 

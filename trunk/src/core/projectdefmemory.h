@@ -189,6 +189,8 @@ class ProjectDefMemoryFieldsCodedVal
 		
 		static int ExtractCodedValuesFromString (const wxString & codedvalue, 
 										  wxArrayString & results);
+		// copy 
+		bool CopyFieldCodedVal (ProjectDefMemoryFieldsCodedVal & fieldcodedval);
 		
 	};
 
@@ -220,6 +222,9 @@ class ProjectDefMemoryObjects
 		~ProjectDefMemoryObjects();
 		
 		void InitMemberValues();
+		
+		// copy operations
+		bool CopyObject (ProjectDefMemoryObjects & object);
 		
 	};
 
@@ -262,6 +267,9 @@ class ProjectDefMemoryFields
 		bool GetStringTypeFromValues (wxString & sResult);
 		static wxString GetOrientationName(){return _T("ORIENTATION");}
 		
+		// copy function
+		ProjectDefMemoryFields &operator = (const ProjectDefMemoryFields & source);
+		
 	
 	};
 
@@ -298,6 +306,9 @@ class ProjectDefMemoryLayers
 		
 		ProjectDefMemoryLayers();
 		~ProjectDefMemoryLayers();
+		
+		// copy operator
+		ProjectDefMemoryLayers &operator = (const ProjectDefMemoryLayers & source);
 	};
 
 // Creating a list of MemoryLayers
