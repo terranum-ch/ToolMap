@@ -630,19 +630,48 @@ PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
 	m_StoreDeleteScale.Clear();
 	m_StoreDeleteLayers.Clear();
 	
+	// copy scale array
 	m_ScaleArray.Clear();
 	for (unsigned int i = 0; i<source.m_ScaleArray.GetCount();i++)
 		m_ScaleArray.Add(source.m_ScaleArray.Item(i));
 	
-	ProjectDefMemoryLayers myLayer;
+	// copy layers
+	ProjectDefMemoryLayers * myLayer = NULL;
 	m_PrjLayerArray->Clear();
 	for (unsigned int j = 0; j<source.m_PrjLayerArray->GetCount();j++)
 	{
-		myLayer = source.m_PrjLayerArray->Item(j);
-		m_PrjLayerArray->Add(myLayer);
+		myLayer = AddLayer();
+		*myLayer = source.m_PrjLayerArray->Item(j);
+		
+		//*myLayer = source.m_PrjLayerArray->Item(j);
+		//m_PrjLayerArray->Add(myLayer);
 	}
 	
-	//TODO add init for private member.
+	// private members
+	m_pActiveLayer = NULL;
+	if (source.m_pActiveLayer != NULL)
+	{
+		//wxLogDebug(_T("Finding Layer %s"), source.m_pActiveLayer->m_LayerName);
+		m_pActiveLayer = FindLayer(source.m_pActiveLayer->m_LayerName);
+		wxASSERT (m_pActiveLayer);
+	}
+	
+	m_pActiveField = NULL;
+	if (source.m_pActiveField != NULL)
+	{
+		//wxLogDebug();
+		m_pActiveField = FindField(source.m_pActiveField->m_Fieldname);
+		wxASSERT_MSG (m_pActiveField,
+					  wxString::Format(_T("Finding Field Error %s in active layer : %s"), 
+									   source.m_pActiveField->m_Fieldname.c_str(),
+									   m_pActiveLayer->m_LayerName.c_str()));
+	}
+	
+	m_iActualObj = source.m_iActualObj;
+	m_iActualField = source.m_iActualField;
+	m_iActualCodedVal = source.m_iActualCodedVal;
+	m_iActualLayers = source.m_iActualLayers;
+	
 	return *this;
 }
 

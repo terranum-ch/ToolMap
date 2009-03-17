@@ -173,50 +173,40 @@ bool ProjectManager::CreateNewProject()
  *******************************************************************************/
 bool ProjectManager::EditProject ()
 {
-
-	//TODO: temp code for test, remove after use
-	if(m_PrjMem->FindLayer(_T("TectoBound_L")))
-	{
-		ProjectDefMemoryFields * mypField = m_PrjMem->FindField(_T("Type"));
-		
-		ProjectDefMemoryFields myField;
-		myField = *mypField; 
-	}
-	
-	//
-	
-	bool bReturn = true;
 	wxASSERT (m_PrjMem);
-	if (m_PrjMem != NULL)
+	bool bReturn = true;
+	
+	// copy project definition
+	PrjDefMemManage myPrjDef;
+	myPrjDef = *m_PrjMem;
+	
+	
+	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &myPrjDef, TRUE);
+	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
 		
-		ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, m_PrjMem, TRUE);
-		if(myNewProjDlg->ShowModal() == wxID_OK)
+		// modify data 
+		if (m_DB->UpdateDataBaseProject(&myPrjDef))
 		{
-			
-			// modify data 
-			if (m_DB->UpdateDataBaseProject(m_PrjMem))
-			{
-				wxLogDebug(_T("Database modified"));
-				LoadProjectDefintion(1);
-			}
-			else
-			{
-				wxLogDebug(_T("Project Modification error : %s"),
-						   m_DB->DataBaseGetLastError().c_str());
-				bReturn = false;
-				// reload actual project
-				LoadProjectDefintion(2);
-			}
+			wxLogDebug(_T("Database modified"));
+			LoadProjectDefintion(1);
 		}
-		else // dialog cancelled
+		else
 		{
+			wxLogDebug(_T("Project Modification error : %s"),
+					   m_DB->DataBaseGetLastError().c_str());
+			bReturn = false;
+			// reload actual project
 			LoadProjectDefintion(2);
 		}
-		
-		delete myNewProjDlg;
-		
 	}
+	else // dialog cancelled
+	{
+		//LoadProjectDefintion(2);
+	}
+	
+	delete myNewProjDlg;
+	
 	return bReturn;
 }
 
