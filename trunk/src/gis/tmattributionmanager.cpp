@@ -629,38 +629,6 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 int tmAttributionManager::DisplayAAttributionWindow (wxArrayString * values,
 													 PrjMemLayersArray * layers)
 {
-	/*TODO: Remove temp code
-	PrjMemLayersArray myLayersArray;
-	
-	PrjMemFieldArray myFieldArray1;
-	ProjectDefMemoryFields myField1;
-	myField1.m_Fieldname = _T("Etat");
-	myField1.m_FieldType = TM_FIELD_TEXT;
-	myField1.m_FieldPrecision = 20;
-	myFieldArray1.Add(myField1);
-	
-	ProjectDefMemoryFields myField2;
-	myField2.m_Fieldname = _T("Status");
-	myField2.m_FieldType = TM_FIELD_ENUMERATION;
-	ProjectDefMemoryFieldsCodedVal myCodedVal1;
-	myCodedVal1.m_ValueName = _T("Actif");
-	PrjMemFieldCodedValArray myVals;
-	myVals.Add(myCodedVal1);
-	myCodedVal1.m_ValueName = _T("Inactif");
-	myVals.Add(myCodedVal1);
-	myField2.m_pCodedValueArray = &myVals;
-	myFieldArray1.Add(myField2);
-	
-	
-	ProjectDefMemoryLayers myLayer1;
-	myLayer1.m_LayerName = _T("Faille");
-	myLayer1.m_pLayerFieldArray = & myFieldArray1;
-	myLayersArray.Add(myLayer1);
-	//
-	
-	wxArrayString myValues;
-	myValues.Add(_T("Remarques"));
-	myValues.Add(_T("Inactif"));*/
 	
 	tmAAttribWindow myAADlg (m_Parent, layers, values, wxID_ANY);
 	return myAADlg.ShowModal();
@@ -719,22 +687,25 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		wxLogDebug(_T("layer %d searched"), myLayersID.Item(i));
 		
 		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i));
-		if (!myActualLayer)
+		if (myActualLayer)
 		{
-			wxLogDebug(_T("Layers %d not found, error"), myLayersID.Item(i));
-			return false;
+			myLayersInfoArray.Add(myActualLayer);
 		}
-		myLayersInfoArray.Add(myActualLayer);
+		else
+			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i));
 	}
-	
-	
+		
 	wxArrayString myValues;
 	DisplayAAttributionWindow(&myValues, &myLayersInfoArray);
 	
 	// cleaning without deleting item
-	for (unsigned int j = 0; j<myLayersInfoArray.GetCount();j++)
-		myLayersInfoArray.Detach(j);
-
+	int iNumberLoop = myLayersInfoArray.GetCount();
+	for ( int j = iNumberLoop-1; j >= 0;j--)
+	{
+		myLayersInfoArray.Detach(0);
+	}
+	
+	wxASSERT (myLayersInfoArray.GetCount() == 0);
 	return true;
 }
 
