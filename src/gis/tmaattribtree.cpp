@@ -205,17 +205,24 @@ tmAAttribCtrl * tmAAttribTree::IterateAllCtrl (bool restart)
 {
 	if (restart == true)
 	{
-		m_Root = GetFirstRoot();
-		wxASSERT(!m_Root.IsOk());
+		m_ActualNode = GetFirstRoot();
+		wxASSERT(m_ActualNode.IsOk());
 	}
 	
-	m_ActualNode = GetNext(m_Root);
-	if (m_ActualNode.IsOk())
+	m_ActualNode = GetNext(m_ActualNode);
+	if (!m_ActualNode.IsOk())
+		return NULL;
+	
+	if (m_ActualNode.IsWindowItem()==false)
 	{
-		return (tmAAttribCtrl *) GetWindow(m_ActualNode);
+		// if we are passing on the parent branch
+		IterateAllCtrl(false);
 	}
 	
-	return NULL;
+	
+	tmAAttribCtrl * myCtrl = (tmAAttribCtrl *) GetWindow(m_ActualNode);
+	return myCtrl;
+
 }
 
 
