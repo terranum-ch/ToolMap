@@ -588,3 +588,25 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 
 
 
+/***************************************************************************//**
+ @brief Prepare advanced attribution statement
+ @param statement adress of the statement to fill
+ @param layer pointer to a valid ProjectDefMemoryLayer (don't destroy)
+ @param values Array of string (not all values will be used)
+ @param startvalues Where to start in the values array.
+ @return  the number of fields used (used for recursivity)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 March 2009
+ *******************************************************************************/
+int tmAttributionData::PrepareAAttribStatement (wxString & statement,
+												ProjectDefMemoryLayers * layer,
+												const wxArrayString & values,
+												int startvalues)
+{
+	
+	
+	return 0;
+}
+
+
+

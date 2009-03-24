@@ -1081,9 +1081,8 @@ bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 {
 	wxString sCreateTable1 = _T("CREATE  TABLE IF NOT EXISTS `");
 	wxString sValues = wxString::Format(_T("%s` ("), TableName.c_str());
-	wxString sCreateTable2 = _T("  `LAYER_AT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
-	_T("  `OBJECT_ID` INT UNSIGNED NOT NULL     ,")
-	_T("  PRIMARY KEY (`LAYER_AT_ID`) ,")
+	wxString sCreateTable2 = _T("  `OBJECT_ID` INT UNSIGNED NOT NULL     ,")
+	_T("  PRIMARY KEY (`OBJECT_ID`) ,")
 	_T("  INDEX LAYER_ATX_FKIndex1 (`OBJECT_ID` ASC) ,")
 	_T("  CONSTRAINT `Rel_09`")
 	_T("    FOREIGN KEY (`OBJECT_ID` )")

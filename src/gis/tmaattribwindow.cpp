@@ -289,6 +289,7 @@ bool tmAAttribWindow::TransferDataToWindow()
  *******************************************************************************/
 bool tmAAttribWindow::TransferDataFromWindow()
 {
+	wxASSERT (m_Values->GetCount() == (unsigned)m_iTotalControls);
 	bool bStart = true;
 	tmAAttribCtrl * myCtrl = NULL;
 	for (int i = 0; i< m_iTotalControls;i++)
@@ -302,8 +303,14 @@ bool tmAAttribWindow::TransferDataFromWindow()
 			break;
 		}
 		
+		m_Values->Item(i) = myCtrl->GetControlValue().c_str();
+		//TODO: Remove this temp code
 		wxLogDebug(_T("Value : %s"), myCtrl->GetControlValue().c_str());
 	}
+	
+	
+	
+	
 	
 	return true;
 }

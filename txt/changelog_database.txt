@@ -68,3 +68,9 @@ Update Database
 - 218 -> 219 (Saving snapping tolerence)
 	- ALTER TABLE  prj_settings ADD COLUMN PRJ_SNAP_TOLERENCE INT NOT NULL DEFAULT 10 AFTER PRJ_SUMMARY;
 	- UPDATE `prj_settings` SET PRJ_VERSION = 219;
+- 219 -> 220 (Remove Layer_at%.LAYER_AT_ID columns)
+	- ALTER TABLE layer_at1 DROP COLUMN LAYER_AT_ID;
+	- ALTER TABLE layer_at2 DROP COLUMN LAYER_AT_ID;
+	- ALTER TABLE layer_at3 DROP COLUMN LAYER_AT_ID;
+	- ...... MANUAL LOOP ........
+	- UPDATE `prj_settings` SET PRJ_VERSION = 220;

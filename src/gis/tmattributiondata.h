@@ -66,6 +66,11 @@ class tmAttributionData : public wxObject
 		void PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename);
 		bool PrepareGetAttributionLayersID (const long & geomid, wxArrayLong & layersid,
 											const wxString & tablename, int layertype);
+		int PrepareAAttribStatement (wxString & statement,
+									 ProjectDefMemoryLayers * layer,
+									 const wxArrayString & values,
+									 int startvalues);
+		
 		
 	public:
 		// ctor - dtor
@@ -80,6 +85,9 @@ class tmAttributionData : public wxObject
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool SetAttributeBasicValues(wxArrayLong * values);
+		virtual bool SetAttributesAdvanced(const PrjMemLayersArray & layers,
+										   const wxString & values){return false;}
+		
 		
 		// copy attribution
 		virtual bool CopyAttributesBasic (const long & copyfrom);
