@@ -79,6 +79,13 @@ bool tmAAttribWindow::CheckValuesAndControls()
 	{
 		wxLogError(_T("Not same number of values (%d) that they are controls (%d)"),
 				   m_Values->GetCount(), m_iTotalControls);
+		
+		
+		// setting same number of values
+		m_Values->Clear();
+		for (int i = 0; i< m_iTotalControls; i++)
+			m_Values->Add(wxEmptyString);
+		
 		return false;
 	}
 	return true;
@@ -268,6 +275,31 @@ bool tmAAttribWindow::TransferDataToWindow()
 			SetValue(iCtrlPos, mypCtrl);
 			iCtrlPos++;
 		}
+	}
+	
+	return true;
+}
+
+
+/***************************************************************************//**
+ @brief Transfert data from the window
+ @details Called automatically when the dialog is closed.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 18 March 2009
+ *******************************************************************************/
+bool tmAAttribWindow::TransferDataFromWindow()
+{
+	bool bStart = true;
+	tmAAttribCtrl * myCtrl = NULL;
+	for (int i = 0; i< m_iTotalControls;i++)
+	{
+		myCtrl = m_AAttribTree->IterateAllCtrl(bStart);
+		bStart = false;
+		
+		if (myCtrl == NULL)
+			break;
+		
+		
 	}
 	
 	return true;

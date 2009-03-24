@@ -194,6 +194,33 @@ bool tmAAttribTree::FindLayerNode (const wxString & layername)
 
 
 /***************************************************************************//**
+ @brief Iterate all controls
+ @param restart read controls from the begining ?
+ @return  A valid tmAAttribCtrl pointer (don't destroy) or NULL if no more
+ controls
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 18 March 2009
+ *******************************************************************************/
+tmAAttribCtrl * tmAAttribTree::IterateAllCtrl (bool restart)
+{
+	if (restart == true)
+	{
+		m_Root = GetFirstRoot();
+		wxASSERT(!m_Root.IsOk());
+	}
+	
+	m_ActualNode = GetNext(m_Root);
+	if (m_ActualNode.IsOk())
+	{
+		return (tmAAttribCtrl *) GetWindow(m_ActualNode);
+	}
+	
+	return NULL;
+}
+
+
+
+/***************************************************************************//**
  @brief Add control into actual node
  @param fieldinfo All fields info such as Type, name, etc.
  @author Lucien Schreiber (c) CREALP 2009
