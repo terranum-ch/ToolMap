@@ -689,7 +689,8 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i));
 		if (myActualLayer)
 		{
-			myLayersInfoArray.Add(myActualLayer);
+			myLayersInfoArray.Add(new ProjectDefMemoryLayers());
+			myLayersInfoArray.Item(myLayersInfoArray.GetCount()-1) = *myActualLayer; 
 		}
 		else
 			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i));
@@ -698,14 +699,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	wxArrayString myValues;
 	DisplayAAttributionWindow(&myValues, &myLayersInfoArray);
 	
-	// cleaning without deleting item
-	int iNumberLoop = myLayersInfoArray.GetCount();
-	for ( int j = iNumberLoop-1; j >= 0;j--)
-	{
-		myLayersInfoArray.Detach(0);
-	}
 	
-	wxASSERT (myLayersInfoArray.GetCount() == 0);
 	return true;
 }
 

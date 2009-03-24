@@ -214,7 +214,7 @@ void ProjectDefNew::CreateControls()
     wxStdDialogButtonSizer* itemStdDialogButtonSizer10 = new wxStdDialogButtonSizer;
 
     itemBoxSizer2->Add(itemStdDialogButtonSizer10, 0, wxALIGN_RIGHT|wxALL, 5);
-    m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Continue"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_DlgPd_Button_Ok = new wxButton( itemDialog1, wxID_OK, _("&Create new project"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStdDialogButtonSizer10->AddButton(m_DlgPd_Button_Ok);
 	m_DlgPd_Button_Ok->SetDefault();
 

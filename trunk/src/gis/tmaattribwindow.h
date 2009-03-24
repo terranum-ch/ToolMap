@@ -85,6 +85,7 @@ class tmAAttribWindow : public wxDialog
 		
 		// data transfert
 		virtual bool TransferDataToWindow();
+		virtual bool TransferDataFromWindow();
 		
 		
 		

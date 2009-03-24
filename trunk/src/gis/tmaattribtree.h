@@ -39,6 +39,7 @@ class tmAAttribTree : public wxTreeMultiCtrl
 	private:
 		// member
 		wxTreeMultiItem m_ActualNode;
+		wxTreeMultiItem m_Root;
 		
 		// control template
 		
@@ -59,6 +60,7 @@ class tmAAttribTree : public wxTreeMultiCtrl
 		// layer operations
 		void AddLayerNode (const wxString & layername);
 		bool FindLayerNode (const wxString & layername); 
+		tmAAttribCtrl * IterateAllCtrl (bool restart = false);
 		
 		// attributes operations
 		tmAAttribCtrl * AddControl (const ProjectDefMemoryFields & fieldinfo);
