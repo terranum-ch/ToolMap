@@ -39,8 +39,7 @@ class tmAAttribTree : public wxTreeMultiCtrl
 	private:
 		// member
 		wxTreeMultiItem m_ActualNode;
-		wxTreeMultiItem m_Root;
-		
+			
 		// control template
 		
 		

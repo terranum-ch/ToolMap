@@ -297,9 +297,12 @@ bool tmAAttribWindow::TransferDataFromWindow()
 		bStart = false;
 		
 		if (myCtrl == NULL)
+		{
+			wxASSERT_MSG(0, _T("Control null returned : Error")); 
 			break;
+		}
 		
-		
+		wxLogDebug(_T("Value : %s"), myCtrl->GetControlValue().c_str());
 	}
 	
 	return true;
