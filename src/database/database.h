@@ -181,6 +181,7 @@ public:
 	@warning  This function process the query and then destroy the query results,
 	so no results could be see using DataBaseGetNextResult().
     @param     myQuery the string containing the query
+	@param	   logerror If set to true, log sql error in debug mode.
     @result    return 0 if the query works and the MYSQL error code otherwise.
 	@see DataBaseCutRequest(), DataBaseQuery()
 	 

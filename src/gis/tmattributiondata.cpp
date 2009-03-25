@@ -249,7 +249,6 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
  @brief Set advanced attribution
  @param layers Adress of a valid array of ProjectDefMemoryLayers
  @param values a valid wxArrayString containing all attributions
- @param selected ID of the selected object
  @return  true if advanced attribution was done successfully
  @author Lucien Schreiber (c) CREALP 2009
  @date 24 March 2009
@@ -275,6 +274,37 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
 }
 
 
+
+/***************************************************************************//**
+ @brief Get advanced attribution in all layers for an object ID
+ @param layers Array of layers for advanced attribution
+ @param values wxArrayString filled by the actual values
+ @return true if all was ok (maybe no attribution returned) and false if an
+ error occur
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 25 March 2009
+ *******************************************************************************/
+bool tmAttributionData::GetAttributesAdvanced (PrjMemLayersArray * layers,
+											   wxArrayString & values)
+{
+	wxASSERT (m_SelIDs);
+	wxASSERT (m_SelIDs->GetCount() == 1);
+	wxASSERT (m_pDB);
+	bool bReturn = true;
+	values.Clear();
+	for (unsigned int i = 0; i< layers->GetCount(); i++)
+	{
+		ProjectDefMemoryLayers  myLayer = layers->Item(i);
+		if (GetAdvancedAttribution(&myLayer, values, m_SelIDs->Item(0))==false)
+		{
+			bReturn = false;
+			break;
+		}
+		
+	}
+	
+	return bReturn;
+}
 
 
 
@@ -654,6 +684,47 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 	statement.Append(sDel);
 	statement.Append(sAdd);
 	return iTotField;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get advanced attribution for a layer
+ @param layer Adress of a valid layer
+ @param values An array, data will be added to
+ @param selected The selected object ID
+ @return  true if getting values succeed, false otherwise.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 25 March 2009
+ *******************************************************************************/
+bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
+											   wxArrayString & values,
+											   long selected)
+{
+	m_pDB->DataBaseDestroyResults();
+	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%d"),
+									   layer->m_LayerID, selected);
+	if (!m_pDB->DataBaseQuery(sQuery, true))
+		return false;
+	
+	// no results, fill array with empty strings
+	if (!m_pDB->DataBaseHasResult())
+	{
+		for (unsigned int i = 0; i<layer->m_pLayerFieldArray->GetCount();i++)
+		{
+			values.Add(wxEmptyString);
+		}
+	}
+	else // if results, parse them
+	{
+		wxArrayString myResults = m_pDB->DataBaseGetNextResult();
+		m_pDB->DataBaseDestroyResults();
+		
+		for (unsigned int j = 1 ; j< myResults.GetCount();j++)
+			values.Add(myResults.Item(j));
+	
+	}
+	return true;
 }
 
 
