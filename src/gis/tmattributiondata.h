@@ -69,7 +69,8 @@ class tmAttributionData : public wxObject
 		int PrepareAAttribStatement (wxString & statement,
 									 ProjectDefMemoryLayers * layer,
 									 const wxArrayString & values,
-									 int startvalues);
+									 int startvalues,
+									 long selected);
 		
 		
 	public:
@@ -85,8 +86,8 @@ class tmAttributionData : public wxObject
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool SetAttributeBasicValues(wxArrayLong * values);
-		virtual bool SetAttributesAdvanced(const PrjMemLayersArray & layers,
-										   const wxString & values){return false;}
+		virtual bool SetAttributesAdvanced(PrjMemLayersArray * layers,
+										   const wxArrayString & values);
 		
 		
 		// copy attribution

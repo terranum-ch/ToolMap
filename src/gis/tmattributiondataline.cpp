@@ -118,20 +118,6 @@ bool tmAttributionDataLine::SetAttributeBasic (AttribObjType_PANEL * panel)
 
 
 
-bool tmAttributionDataLine::SetAttributesAdvanced(const PrjMemLayersArray & layers,
-												  const wxString & values)
-{
-	wxString sSentence = wxEmptyString;
-	for (unsigned int i = 0; i<layers.GetCount(); i++)
-	{
-		//TODO: Update attributes here
-	}
-	
-	
-	return true;
-}
-
-
 
 /***************************************************************************//**
  @brief Get all selected values from the panel

@@ -245,6 +245,38 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
 }
 
 
+/***************************************************************************//**
+ @brief Set advanced attribution
+ @param layers Adress of a valid array of ProjectDefMemoryLayers
+ @param values a valid wxArrayString containing all attributions
+ @param selected ID of the selected object
+ @return  true if advanced attribution was done successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 March 2009
+ *******************************************************************************/
+bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
+												  const wxArrayString & values)
+{
+	wxASSERT (m_SelIDs);
+	wxASSERT (m_pDB);
+	
+	wxString sSentence = wxEmptyString;
+	int iStep = 0;
+	for (unsigned int i = 0; i<layers->GetCount(); i++)
+	{
+		ProjectDefMemoryLayers myLayer = layers->Item(i);
+		iStep = PrepareAAttribStatement(sSentence,&myLayer, values, iStep, m_SelIDs->Item(0));
+	}
+	
+	if (!m_pDB->DataBaseQueryNoResult(sSentence))
+		return false;
+	
+	return true;
+}
+
+
+
+
 
 /***************************************************************************//**
  @brief Copy attribution between objects
@@ -594,6 +626,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
  @param layer pointer to a valid ProjectDefMemoryLayer (don't destroy)
  @param values Array of string (not all values will be used)
  @param startvalues Where to start in the values array.
+ @param selected The Object ID of the selected value.
  @return  the number of fields used (used for recursivity)
  @author Lucien Schreiber (c) CREALP 2009
  @date 24 March 2009
@@ -601,11 +634,26 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 												ProjectDefMemoryLayers * layer,
 												const wxArrayString & values,
-												int startvalues)
+												int startvalues,
+												long selected)
 {
+	wxString sDel = wxString::Format(_T("DELETE FROM layer_at%d WHERE OBJECT_ID=%d;"),
+									 layer->m_LayerID, selected);
+	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%d,"),
+									 layer->m_LayerID, selected);
 	
+	wxASSERT (layer->m_pLayerFieldArray->GetCount() + startvalues <= values.GetCount());
+	unsigned int iTotField = layer->m_pLayerFieldArray->GetCount();
+	for (unsigned int i = 0; i< iTotField;  i++)
+	{
+		sAdd.Append(wxString::Format(_T("\"%s\","), values.Item(i+startvalues).c_str()));
+	}
+	sAdd.RemoveLast(1);
+	sAdd.Append(_T(");"));
 	
-	return 0;
+	statement.Append(sDel);
+	statement.Append(sAdd);
+	return iTotField;
 }
 
 

@@ -185,7 +185,7 @@ public:
 	@see DataBaseCutRequest(), DataBaseQuery()
 	 
 	*/
-	bool DataBaseQueryNoResult(wxString myQuery);
+	bool DataBaseQueryNoResult(wxString myQuery, bool logerror = false);
 	/*!
 	@brief Used to execute one query on the database and then get the result
 	
