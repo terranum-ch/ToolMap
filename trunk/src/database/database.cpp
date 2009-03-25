@@ -577,7 +577,7 @@ bool DataBase::DataBaseIsTableEmpty(const wxString & tableName)
 
 
 
-bool DataBase::DataBaseQueryNoResult(wxString myQuery)
+bool DataBase::DataBaseQueryNoResult(wxString myQuery, bool logerror)
 {
 	MYSQL_RES *results;
 	int iRetour = mysql_query(pMySQL, (const char*)myQuery.mb_str(wxConvUTF8) );
@@ -585,9 +585,13 @@ bool DataBase::DataBaseQueryNoResult(wxString myQuery)
 	mysql_free_result(results);
 	
 	if (iRetour == 0)
-		return TRUE;
+		return true;
 	
-	return FALSE;
+	if (logerror)
+		wxLogDebug(_T("Error in query : %s - %s"), myQuery.c_str(),
+				   DataBaseGetLastError().c_str());
+	
+	return false;
 }
 
 bool DataBase::DataBaseQuery(const wxString & myQuery, bool logerror)

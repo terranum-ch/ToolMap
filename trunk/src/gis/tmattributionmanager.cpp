@@ -697,9 +697,11 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	}
 		
 	wxArrayString myValues;
-	DisplayAAttributionWindow(&myValues, &myLayersInfoArray);
-	
-	
+	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray)==wxID_OK)
+	{
+		return myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);
+	}
+		
 	return true;
 }
 

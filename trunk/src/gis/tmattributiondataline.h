@@ -53,8 +53,6 @@ class tmAttributionDataLine : public tmAttributionData
 		
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel);
-		virtual bool SetAttributesAdvanced(const PrjMemLayersArray & layers,
-										   const wxString & values);
 		// copy attribution
 		//virtual bool CopyAttributesBasic (const long & copyfrom,
 		//								  const wxArrayLong & copyto);
