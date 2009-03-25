@@ -676,7 +676,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 											myLayersID)==false)
 		return false;
 	
-
+	
 
 	
 	// get layers info
@@ -696,7 +696,14 @@ bool tmAttributionManager::AAttributionButtonShow ()
 			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i));
 	}
 		
+	// get advanced attribution values (if existing)
 	wxArrayString myValues;
+	bool bGetAAttrib = myAttribObj->GetAttributesAdvanced(&myLayersInfoArray, myValues);
+	if (bGetAAttrib == false)
+		wxLogDebug(_T("Problem getting advanced attribution values"));
+	
+	
+	
 	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray)==wxID_OK)
 	{
 		return myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);
