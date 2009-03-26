@@ -684,3 +684,58 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 
 	return false;
 }
+
+
+/***************************************************************************//**
+ @brief Set Advanced values into SHP columns
+ @param layer information about the current layer
+ @return  true if data passed succesfully to the shapefile
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 March 2009
+ *******************************************************************************/
+bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
+{
+	// process request
+	if (!GetAdvancedAttribution(layer))
+	{
+		wxLogDebug(_T("Unable to get advanced attribution informations"));
+		return false;
+	}
+
+	
+	bool bFirstLoop = true;
+	bool bReturn = true;
+	wxArrayString myResults;
+	bool bSetFieldValue = true;
+	while (1) 
+	{
+		// loop shapefile
+		if(!m_Shp.SetNextFeature(bFirstLoop))
+			break;
+		bFirstLoop = false;
+		
+		// get advanced attribution
+		myResults = m_pDB->DataBaseGetNextResult();
+		if (myResults.GetCount() == 1)
+		{
+			wxLogDebug(_T("No advanced attribution for layer : %d"), 
+					   layer->m_LayerName.c_str());
+			bReturn = false;
+			break;
+		}
+		
+		// compare to OID
+		long lAAOid = wxNOT_FOUND;
+		myResults.Item(0).ToLong(&lAAOid);
+		if (m_Shp.GetActualOID() == lAAOid)
+		{
+			wxLogDebug(_T("Found Advanced attribution for id %d"), lAAOid);
+		}
+		
+	}
+	
+	return bReturn;
+}
+
+
+

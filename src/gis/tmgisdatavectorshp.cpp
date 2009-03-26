@@ -763,6 +763,22 @@ bool tmGISDataVectorSHP::SetNextFeature (bool resetreading)
 
 
 /***************************************************************************//**
+ @brief Return the actual OID
+ @return  the actual OID or wxNOT_FOUND if not found
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 March 2009
+ *******************************************************************************/
+long tmGISDataVectorSHP::GetActualOID ()
+{
+	wxASSERT (m_Layer);
+	if (m_Feature)
+		return m_Feature->GetFID();
+	else
+		return wxNOT_FOUND;
+}
+
+
+/***************************************************************************//**
  @brief Add value into a field
  @param value a wxString containing the value (will be converted in the function)
  @param fieldtype the type of the field based on : #PRJDEF_FIELD_TYPE

@@ -546,7 +546,7 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 			break;
 	}
 	
-	
+	//TODO: Order by object ID ??
 	wxString sTemp = _T("SELECT %s.OBJECT_ID, %s.OBJECT_GEOMETRY, %s.OBJECT_CD,")
 	_T(" %s.OBJECT_DESC FROM %s ")
 	_T(" LEFT JOIN %s ON (%s.OBJECT_ID = %s.OBJECT_GEOM_ID) ") 
@@ -661,4 +661,41 @@ bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
 	}
 	
 	return false;
+}
+
+
+
+/***************************************************************************//**
+ @brief Fill Advanced columns
+ @param layer information object about the current layer
+ @return  true if values where passed successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 March 2009
+ *******************************************************************************/
+bool tmExportManager::AddAttributionAdvanced (ProjectDefMemoryLayers * layer)
+{
+	switch (layer->m_LayerType)
+	{
+		case LAYER_LINE:
+			if (m_ExportData->AddAdvancedDataToLine(layer))
+				return true;
+			break;
+			
+		/*case LAYER_POINT:
+			if (m_ExportData->AddSimpleDataToPoint(layer))
+				return true;
+			break;
+			
+		case LAYER_POLYGON:
+			if (m_ExportData->AddSimpleDataToPolygon(layer))
+				return true;
+			break;*/
+			
+		default:
+			wxLogDebug(_T("Layer type not supported now : %d"), layer->m_LayerType);
+			break;
+	}
+	
+	return false;
+	
 }
