@@ -211,7 +211,7 @@ bool tmExportData::GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layer
 			break;
 	}
 	
-	
+	//TODO: Order data by OID ??
 	wxString sTemp = _T("SELECT %s.OBJECT_CD,")
 	_T(" %s.OBJECT_DESC FROM %s ")
 	_T(" LEFT JOIN %s ON (%s.OBJECT_ID = %s.OBJECT_GEOM_ID) ") 
@@ -297,4 +297,24 @@ bool tmExportData::GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype,
 	
 	return false;
 	
+}
+
+
+
+/***************************************************************************//**
+ @brief Process the query for getting advanced values from database
+ @param layer informations about the layer
+ @return  true if query passed, false otherwise (plus informations in debug mode)
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 March 2009
+ *******************************************************************************/
+bool tmExportData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer)
+{
+	wxASSERT (layer);
+	wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%d ORDER BY OBJECT_ID"),
+										  layer->m_LayerID);
+	if (!m_pDB->DataBaseQuery(sSentence, true))
+		return false;
+		
+	return true;
 }

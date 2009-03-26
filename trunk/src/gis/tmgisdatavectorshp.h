@@ -86,6 +86,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool SetNextFeature (bool resetreading = false);
 		virtual bool SetFieldValue (const wxString & value, 
 									int fieldtype, int iindex);
+		virtual long GetActualOID ();
 		virtual bool UpdateFeature ();
 		
 	};

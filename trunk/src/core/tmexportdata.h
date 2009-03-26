@@ -54,6 +54,7 @@ class tmExportData : public wxObject
 		int GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal);
 		bool GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex);
 		bool GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype, long layerindex);
+		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer);
 		
 	public:
 		// ctor
@@ -82,6 +83,7 @@ class tmExportData : public wxObject
 		virtual bool AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer){return false;}
 		
+		virtual bool AddAdvancedDataToLine (ProjectDefMemoryLayers * layer){return false;}
 		
 	
 	};
