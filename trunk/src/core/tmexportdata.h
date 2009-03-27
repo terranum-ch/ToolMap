@@ -73,6 +73,7 @@ class tmExportData : public wxObject
 		
 		virtual bool AddOptFields (PrjMemFieldArray * myfields){return false;}
 		virtual bool AddGenericFields (int iSize){return false;}
+		virtual bool AddFIDField (){return false;}
 		
 		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}

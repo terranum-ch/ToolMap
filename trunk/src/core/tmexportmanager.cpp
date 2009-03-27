@@ -408,7 +408,11 @@ bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 		CreateEmptyExportFile(layer,
 							  m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)))
 	{
-				
+		
+		// add toolmap field
+		if (!m_ExportData->AddFIDField())
+			bReturn = false;
+		
 		// add obligatory fields
 		if (!m_ExportData->AddGenericFields(iSizeOfObjCol))
 			bReturn = false;
@@ -546,24 +550,15 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 			break;
 	}
 	
-	//TODO: Order by object ID ??
-	wxString sTemp = _T("SELECT %s.OBJECT_ID, %s.OBJECT_GEOMETRY, %s.OBJECT_CD,")
-	_T(" %s.OBJECT_DESC FROM %s ")
-	_T(" LEFT JOIN %s ON (%s.OBJECT_ID = %s.OBJECT_GEOM_ID) ") 
-	_T(" LEFT JOIN %s ON %s.OBJECT_VAL_ID = %s.OBJECT_ID WHERE")
-	_T(" %s.THEMATIC_LAYERS_LAYER_INDEX = %d");
+	
+	wxString sTemp = _T("SELECT g.OBJECT_ID, g.OBJECT_GEOMETRY, o.OBJECT_CD,")
+	_T(" o.OBJECT_DESC FROM  %s g LEFT JOIN %s a ON (g.OBJECT_ID")
+	_T(" = a.OBJECT_GEOM_ID) LEFT JOIN %s o ON a.OBJECT_VAL_ID =")
+	_T(" o.OBJECT_ID WHERE o.THEMATIC_LAYERS_LAYER_INDEX =%d ORDER BY g.OBJECT_ID ");
+	
 	wxString sSentence = wxString::Format(sTemp,
 										  sGeomTable.c_str(),
-										  sGeomTable.c_str(),
-										  TABLE_NAME_OBJECTS.c_str(),
-										  TABLE_NAME_OBJECTS.c_str(),
-										  sGeomTable.c_str(),
 										  sValTable.c_str(),
-										  sGeomTable.c_str(),
-										  sValTable.c_str(),
-										  TABLE_NAME_OBJECTS.c_str(),
-										  sValTable.c_str(),
-										  TABLE_NAME_OBJECTS.c_str(),
 										  TABLE_NAME_OBJECTS.c_str(),
 										  layer->m_LayerID);
 	if (!m_pDB->DataBaseQuery(sSentence))

@@ -62,6 +62,7 @@ class tmExportDataSHP : public tmExportData
 		
 		virtual bool AddOptFields (PrjMemFieldArray * myfields);
 		virtual bool AddGenericFields (int iSize);
+		virtual bool AddFIDField ();
 		
 		// frame function
 		virtual void SetFrame (wxRealPoint * points, int nbvertex);
