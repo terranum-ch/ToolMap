@@ -47,13 +47,10 @@ class tmExportManager : public wxObject
 		wxFileName m_ExportPath;
 		tmExportData * m_ExportData;
 
+		PrjDefMemManage * m_ProjMem;
 		
 		// init values
 		void InitMemberValues();
-		
-		// getting layers and fields
-		PrjMemLayersArray * GetAllLayers ();
-		PrjMemFieldArray * GetAllFieldsForLayer(ProjectDefMemoryLayers * layer);
 		
 		// export function
 		bool ExportLayers (PrjMemLayersArray * layers);
@@ -87,8 +84,8 @@ class tmExportManager : public wxObject
 		void Create (wxWindow * parent, DataBaseTM * database);
 		
 		// Export public function
-		bool ExportAll ();
-		bool ExportSelected ();
+		bool ExportAll (PrjDefMemManage * localprojdef);
+		bool ExportSelected (PrjDefMemManage * localprojdef);
 };
 
 

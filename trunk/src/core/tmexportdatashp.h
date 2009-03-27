@@ -47,6 +47,10 @@ class tmExportDataSHP : public tmExportData
 		OGRGeometry * SafeUnion (OGRGeometry * union1, OGRGeometry * line);
 		OGRGeometry * SafeCreateFromGEOS (GEOSGeom geosGeom);
 		
+		// multiple fields
+		bool SetMultipleFields (ProjectDefMemoryLayers * layer,
+								const wxArrayString & values);
+		
 	protected:
 	public:
 		// ctor
@@ -80,6 +84,8 @@ class tmExportDataSHP : public tmExportData
 		
 		// advanced attribution
 		virtual bool AddAdvancedDataToLine (ProjectDefMemoryLayers * layer);
+		virtual bool AddAdvancedDataToPoint (ProjectDefMemoryLayers * layer);
+		virtual bool AddAdvancedDataToPolygon (ProjectDefMemoryLayers * layer);
 		
 	};
 

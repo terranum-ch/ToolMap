@@ -244,20 +244,12 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		if (!myLine)
 			break;
 		
-		//wxLogDebug(_T("OID : %d "), myOid);
-		
-		// intersects with the frame
-		//myCropLine = myLine->Intersection(m_Frame);
 		myCropLine = SafeIntersection(myLine, m_Frame);
 		if (myCropLine)
 		{
 			if (!myCropLine->IsEmpty())
 			{
 				long myAddedOID = m_Shp.AddGeometry(myCropLine, myOid);
-				
-				
-				
-				wxLogDebug(_T("Added OID = %d"), myAddedOID);
 			}
 		
 			OGRGeometryFactory::destroyGeometry(myCropLine);
@@ -684,6 +676,7 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 				{
 					if (myPoint->Intersect(myPolygon))
 					{
+						m_Shp.SetActualOID(myOidPT);
 						m_Shp.SetFieldValue(myAttribVal.Item(0), TM_FIELD_INTEGER, 1);
 						m_Shp.SetFieldValue(myAttribVal.Item(1), TM_FIELD_TEXT, 2);
 						m_Shp.UpdateFeature();
@@ -705,7 +698,7 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 	}	
 	
 
-	return false;
+	return true;
 }
 
 
@@ -728,8 +721,9 @@ bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
 	
 	bool bFirstLoop = true;
 	bool bReturn = true;
+	bool bGetNextResult = true;
 	wxArrayString myResults;
-	bool bSetFieldValue = true;
+	//bool bSetFieldValue = true;
 	while (1) 
 	{
 		// loop shapefile
@@ -738,13 +732,23 @@ bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
 		bFirstLoop = false;
 		
 		// get advanced attribution
-		myResults = m_pDB->DataBaseGetNextResult();
-		if (myResults.GetCount() == 1)
+		if (bGetNextResult)
 		{
-			wxLogDebug(_T("No advanced attribution for layer : %d"), 
-					   layer->m_LayerName.c_str());
-			bReturn = false;
-			break;
+			myResults = m_pDB->DataBaseGetNextResult();
+			if (myResults.GetCount() == 1)
+			{
+				wxLogDebug(_T("No advanced attribution for layer : %d"), 
+						   layer->m_LayerName.c_str());
+				bReturn = false;
+				break;
+			}
+			
+			// no more resutls
+			if (myResults.GetCount() == 0)
+			{
+				wxLogDebug(_T("No more advanced attribution found"));
+				break;
+			}
 		}
 		
 		// compare to OID
@@ -752,12 +756,64 @@ bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
 		myResults.Item(0).ToLong(&lAAOid);
 		if (m_Shp.GetActualOID() == lAAOid)
 		{
-			wxLogDebug(_T("Found Advanced attribution for id %d"), lAAOid);
+			if (!SetMultipleFields(layer, myResults))
+			{
+				wxLogError(_("Error exporting advanced attribution for layer : %s, OID : %d"),
+						   layer->m_LayerName.c_str(), lAAOid);
+			}
+			bGetNextResult = true;
+		}
+		else
+		{
+			bGetNextResult = false;
 		}
 		
 	}
 	
 	return bReturn;
+}
+
+
+
+bool tmExportDataSHP::AddAdvancedDataToPoint (ProjectDefMemoryLayers * layer)
+{
+	return AddAdvancedDataToLine(layer);
+}
+
+
+bool tmExportDataSHP::AddAdvancedDataToPolygon (ProjectDefMemoryLayers * layer)
+{
+	return AddAdvancedDataToLine(layer);
+}
+
+
+/***************************************************************************//**
+ @brief Set value for multiple fields
+ @details Loop in all layer's field and set value for all of them
+ @param layer valid object containing layer (and layer's fields) definition
+ @param values values to set to fields (a check is done that the numbers of
+ values is egal to the number of fields)
+ @return  true if all fields were set correctly
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 27 March 2009
+ *******************************************************************************/
+bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
+										 const wxArrayString & values)
+{
+	PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
+	unsigned int nbField = myFields->GetCount();
+	wxASSERT (myFields);
+	wxASSERT (values.GetCount()-1 == myFields->GetCount());
+	
+	for (unsigned int i = 0; i<myFields->GetCount();i++)
+	{
+		if(!m_Shp.SetFieldValue(values.Item(i+1), myFields->Item(i).m_FieldType, i+3))
+			return false;
+		else
+			m_Shp.UpdateFeature();
+	}
+	
+	return true;
 }
 
 
