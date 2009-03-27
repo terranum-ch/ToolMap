@@ -733,7 +733,7 @@ int DataBase::DatabaseGetCountCols()
 
 void DataBase::DataBaseDestroyResults ()
 {
-	if (pResults != NULL && DataBaseHasResult())
+	if (pResults != NULL) // && DataBaseHasResult())
 	{
 		mysql_free_result(pResults);
 		pResults = NULL;

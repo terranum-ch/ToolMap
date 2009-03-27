@@ -32,6 +32,7 @@ void tmExportManager::InitMemberValues()
 	m_Parent = NULL;
 	m_ExportType = EXPORT_SHAPEFILE;
 	m_ExportData = NULL;
+	m_ProjMem = NULL;
 }
 
 
@@ -103,13 +104,15 @@ tmExportManager::tmExportManager(wxWindow * parent, DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportSelected ()
+bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 {
 	wxASSERT(m_pDB);
 	wxASSERT(m_Parent);
+	wxASSERT (localprojdef);
+	m_ProjMem = localprojdef;
 	
-	// get all layers from DB
-	PrjMemLayersArray * myLayers = GetAllLayers();
+	// get all layers from memory
+	PrjMemLayersArray * myLayers = m_ProjMem->m_PrjLayerArray;
 	if (!myLayers)
 	{
 		return false;
@@ -125,8 +128,6 @@ bool tmExportManager::ExportSelected ()
 	if (myDlg.ShowModal() != wxID_OK)
 	// select layers dialog canceled
 	{
-		myLayers->Clear();
-		delete myLayers;
 		return false;
 	}
 	
@@ -153,14 +154,7 @@ bool tmExportManager::ExportSelected ()
 		bRemove = true;
 	}
 	
-	/* logging
-	for (unsigned int e = 0; e < myLayers->GetCount();e++)
-		wxLogDebug(_T("Layers : %d - %s"), e, myLayers->Item(e).m_LayerName.c_str());*/
 	bool bReturn = ExportLayers(myLayers);
-	
-	myLayers->Clear();
-	delete myLayers;
-
 	return bReturn;
 }
 
@@ -173,67 +167,21 @@ bool tmExportManager::ExportSelected ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportAll ()
+bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 {
 	wxASSERT(m_pDB);
 	wxASSERT(m_Parent);
+	wxASSERT (localprojdef);
+	m_ProjMem = localprojdef;
 	
-	// get all layers from DB
-	PrjMemLayersArray * myLayers = GetAllLayers();
+	PrjMemLayersArray * myLayers = m_ProjMem->m_PrjLayerArray ;
 	if (!myLayers)
 	{
 		return false;
 	}
-	
-	bool bReturn = ExportLayers(myLayers);
-	
-	myLayers->Clear();
-	delete myLayers;
-	
-	return bReturn;
+	return ExportLayers(myLayers);
 }
 
-
-
-/***************************************************************************//**
- @brief Get all layers from database
- @details This function return all layers in an Array of
- #ProjectDefMemoryLayers.
- @return  An array of PrjMeLayersArray or NULL in case of error
- @author Lucien Schreiber (c) CREALP 2008
- @date 13 November 2008
- *******************************************************************************/
-PrjMemLayersArray * tmExportManager::GetAllLayers ()
-{
-	wxASSERT(m_pDB);
-	
-	
-	ProjectDefMemoryLayers myLayer;
-		
-	// first loop, destroy remaining results
-	m_pDB->DataBaseDestroyResults();
-	if(m_pDB->GetNextLayer(&myLayer) != 0)
-	{
-		wxASSERT_MSG(0, _T("Error getting layers"));
-		return NULL;
-	}
-	int nblayers = m_pDB->DatabaseGetCountResults();
-	if (nblayers == 0)
-	{
-		wxASSERT_MSG (0, _T("No layers returned : Error, unable to export"));
-		return NULL;
-	}
-	
-	PrjMemLayersArray * myLayers = new PrjMemLayersArray;
-	
-	for (int i = 0 ; i<nblayers;i++)
-	{
-		if (m_pDB->GetNextLayer(&myLayer)==1)
-			myLayers->Add(myLayer);
-	}
-	
-	return myLayers;
-}
 
 
 
@@ -272,7 +220,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	if (!pFrame)
 		return false;
 	
-
+	bool bExportResult = false;
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
@@ -280,15 +228,30 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		m_ExportData->SetFrame(pFrame, iFrameVertex);
 		
 		// create SIG layer
-		if (CreateExportLayer(&(layers->Item(i))))
+		ProjectDefMemoryLayers myLayer = layers->Item(i);
+		
+		if (CreateExportLayer(&myLayer))
 		{
 			// export data to layer
-			if (ExportGISData(&(layers->Item(i))))
-				if (AddAttributionSimpleData(&(layers->Item(i))))
-				wxLogDebug(_T("Exporting layers : %s - OK-"),
-						   layers->Item(i).m_LayerName.c_str());
+			if (ExportGISData(&myLayer))
+				if (AddAttributionSimpleData(&myLayer))
+					if (AddAttributionAdvanced(&myLayer))
+						bExportResult = true;
 		}
 		
+		// logging
+		if (bExportResult == true)
+		{
+			wxLogDebug(_T("Exporting layers : %s - OK-"),
+					   layers->Item(i).m_LayerName.c_str());
+		}
+		else
+		{
+			wxLogDebug(_T("Exporting layers : %s - FAILED -"),
+					   layers->Item(i).m_LayerName.c_str());
+			break;
+		}
+			
 		delete m_ExportData;
 		m_ExportData = NULL;
 		
@@ -299,19 +262,11 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 			break;
 		}
 			
-		/*ProgDlg.Update(i,
-					   mydlgtext + layers->Item(i).m_LayerName,
-					   &bSkip);
-		if (bSkip)
-		{
-			wxLogMessage(_("Export cancelled by user."));
-			break;
-		}*/
 	}
 	
 	DeleteProgress();
 	delete [] pFrame;
-	return true;
+	return bExportResult;
 }
 
 
@@ -397,8 +352,6 @@ bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 	wxASSERT (m_ExportData);
 	bool bReturn = true;
 	
-	
-	
 	// get size of object_description
 	int iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
 	
@@ -420,12 +373,11 @@ bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 		{
 		
 			// add optionnal fields
-			PrjMemFieldArray * myFields = GetAllFieldsForLayer(layer);
+			PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
 			if (myFields) // ok we have advanced fields
 			{
 				
 				m_ExportData->AddOptFields(myFields);
-				delete myFields;
 			}
 		
 		}
@@ -441,25 +393,6 @@ bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 
 
 
-/***************************************************************************//**
- @brief Get all fields
- @param layer a valid #ProjectDefMemoryLayers for the layer we want to get fields
- @return  an adress containing Array of fields or null if an error occur. Returned
- object must be destroyed by caller.
- @author Lucien Schreiber (c) CREALP 2008
- @date 13 November 2008
- *******************************************************************************/
-PrjMemFieldArray * tmExportManager::GetAllFieldsForLayer(ProjectDefMemoryLayers * layer)
-{
-	wxASSERT(layer);
-	m_pDB->DataBaseDestroyResults();
-	
-	PrjMemFieldArray * myFieldArray = new PrjMemFieldArray();
-	if(m_pDB->GetFields(*myFieldArray, layer))
-		return myFieldArray;
-	
-	return NULL;
-}
 
 
 
@@ -676,15 +609,15 @@ bool tmExportManager::AddAttributionAdvanced (ProjectDefMemoryLayers * layer)
 				return true;
 			break;
 			
-		/*case LAYER_POINT:
-			if (m_ExportData->AddSimpleDataToPoint(layer))
+		case LAYER_POINT:
+			if (m_ExportData->AddAdvancedDataToPoint(layer))
 				return true;
 			break;
 			
 		case LAYER_POLYGON:
-			if (m_ExportData->AddSimpleDataToPolygon(layer))
+			if (m_ExportData->AddAdvancedDataToPolygon(layer))
 				return true;
-			break;*/
+			break;
 			
 		default:
 			wxLogDebug(_T("Layer type not supported now : %d"), layer->m_LayerType);

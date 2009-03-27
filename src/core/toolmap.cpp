@@ -942,8 +942,14 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event)
 {
 	if (m_PManager->IsProjectOpen())
 	{
+		// get project def from memory
+		PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
+		PrjDefMemManage myCopyProj;
+		myCopyProj = *memProj;
+		
+		
 		tmExportManager myExport(this, m_PManager->GetDatabase());
-		if (myExport.ExportSelected())
+		if (myExport.ExportSelected(&myCopyProj))
 			wxLogDebug(_T("Exporting layer(s) success"));
 		else
 			wxLogDebug(_T("Exporting layer(s) failed"));
@@ -963,8 +969,13 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 {
 	if (m_PManager->IsProjectOpen())
 	{
+		// get project def from memory
+		PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
+		PrjDefMemManage myCopyProj;
+		myCopyProj = *memProj;
+		
 		tmExportManager myExport(this, m_PManager->GetDatabase());
-		if (myExport.ExportAll())
+		if (myExport.ExportAll(&myCopyProj))
 			wxLogDebug(_T("Exporting all project success"));
 		else
 			wxLogDebug(_T("Exporting all project failed"));
