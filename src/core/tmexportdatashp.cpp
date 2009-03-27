@@ -202,6 +202,24 @@ bool tmExportDataSHP::AddGenericFields (int iObjeDescSize)
 }
 
 
+/***************************************************************************//**
+ @brief Adding Field for storing ToolMap FID
+ @details Add a first field containing ToolMap's FID. This is needed for adding
+ advanced attribution because setting FID doesn't work with Shapefile (GDAL Bug
+ ???). Added field name is TM_OID
+ @return  true if field added successfully
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 March 2009
+ *******************************************************************************/
+bool tmExportDataSHP::AddFIDField ()
+{
+	if(m_Shp.AddFieldNumeric(_T("TM_OID"), false))
+		return true;
+	
+	return false;
+}
+
+
 
 /***************************************************************************//**
  @brief Write all geometrics lines to the shp
@@ -226,6 +244,8 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		if (!myLine)
 			break;
 		
+		//wxLogDebug(_T("OID : %d "), myOid);
+		
 		// intersects with the frame
 		//myCropLine = myLine->Intersection(m_Frame);
 		myCropLine = SafeIntersection(myLine, m_Frame);
@@ -233,8 +253,11 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		{
 			if (!myCropLine->IsEmpty())
 			{
-				m_Shp.AddGeometry(myCropLine, myOid);
+				long myAddedOID = m_Shp.AddGeometry(myCropLine, myOid);
 				
+				
+				
+				wxLogDebug(_T("Added OID = %d"), myAddedOID);
 			}
 		
 			OGRGeometryFactory::destroyGeometry(myCropLine);
@@ -577,13 +600,13 @@ bool tmExportDataSHP::AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer)
 		if (myResults.GetCount() != 2)
 			break;
 		
-		if(!m_Shp.SetFieldValue(myResults.Item(0), TM_FIELD_INTEGER, 0))
+		if(!m_Shp.SetFieldValue(myResults.Item(0), TM_FIELD_INTEGER, 1))
 		{
 			bSetFieldValue = false;
 			break;
 		}
 		
-		if(!m_Shp.SetFieldValue(myResults.Item(1), TM_FIELD_TEXT, 1))
+		if(!m_Shp.SetFieldValue(myResults.Item(1), TM_FIELD_TEXT, 2))
 		{
 			bSetFieldValue = false;
 			break;
@@ -661,8 +684,8 @@ bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
 				{
 					if (myPoint->Intersect(myPolygon))
 					{
-						m_Shp.SetFieldValue(myAttribVal.Item(0), TM_FIELD_INTEGER, 0);
-						m_Shp.SetFieldValue(myAttribVal.Item(1), TM_FIELD_TEXT, 1);
+						m_Shp.SetFieldValue(myAttribVal.Item(0), TM_FIELD_INTEGER, 1);
+						m_Shp.SetFieldValue(myAttribVal.Item(1), TM_FIELD_TEXT, 2);
 						m_Shp.UpdateFeature();
 					}				
 					// do not destroy geometry, will be destroyed 

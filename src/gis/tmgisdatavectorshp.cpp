@@ -716,14 +716,24 @@ long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
 	wxASSERT(Geom);
 	wxASSERT (m_Layer);
 	
+	
 	OGRFeature * poFeature;
 	poFeature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
-	if (oid != -1)
-		poFeature->SetFID(oid);
+	
 	poFeature->SetGeometry(Geom);
+	if (oid != -1)
+	{
+		poFeature->SetFID(oid);
+	}
+	
+	// add FID into special column
+	poFeature->SetField(0, (int) oid);
+	
 	OGRErr myErr = m_Layer->CreateFeature(poFeature);
 	if (myErr != OGRERR_NONE)
 		return -1;
+	
+	
 	long lRetVal = poFeature->GetFID();
 	OGRFeature::DestroyFeature(poFeature);
 	return lRetVal;
