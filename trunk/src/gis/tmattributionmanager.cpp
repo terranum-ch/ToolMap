@@ -706,7 +706,11 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	
 	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray)==wxID_OK)
 	{
-		return myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);
+		bool bClean = myAttribObj->CleanAttributesAdvanced(m_pPrjMem, myLayersInfoArray.Item(0).m_LayerType);
+		bool bAttrib = myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);
+		if (bClean && bAttrib)
+			return true;
+		return false;
 	}
 		
 	return true;

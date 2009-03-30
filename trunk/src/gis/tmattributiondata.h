@@ -76,6 +76,7 @@ class tmAttributionData : public wxObject
 									long selected);
 		
 		
+		
 	public:
 		// ctor - dtor
 		tmAttributionData();
@@ -89,6 +90,7 @@ class tmAttributionData : public wxObject
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool SetAttributeBasicValues(wxArrayLong * values);
+		virtual bool CleanAttributesAdvanced (PrjDefMemManage * prjdef, PRJDEF_LAYERS_TYPE layertype);
 		virtual bool SetAttributesAdvanced(PrjMemLayersArray * layers,
 										   const wxArrayString & values);
 		

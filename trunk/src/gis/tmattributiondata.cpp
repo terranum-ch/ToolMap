@@ -276,6 +276,51 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
 
 
 /***************************************************************************//**
+ @brief Clean advanced attribution
+ @details Because we don't have relationnal intergrity, we delete advanced
+ attribution when advanced attribution is changed for a n object
+ @param bool true if deleting was successfull
+ @param prjdef project definition
+ @param layertype one of the spatial type
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 30 March 2009
+ *******************************************************************************/
+bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
+												 PRJDEF_LAYERS_TYPE layertype)
+{
+	wxASSERT (m_SelIDs);
+	wxASSERT (m_pDB);
+	
+	wxString sSentence = wxEmptyString;
+	wxString sDel = _T("DELETE FROM layer_at%d WHERE OBJECT_ID=%d; "); 
+		
+	// search layer for same spatial type
+	unsigned int i = 0;
+	wxArrayInt myLayerIDs;
+	for (i = 0; i< prjdef->m_PrjLayerArray->GetCount();i++)
+	{
+		if (prjdef->m_PrjLayerArray->Item(i).m_LayerType == layertype)
+		{
+			if (prjdef->m_PrjLayerArray->Item(i).m_pLayerFieldArray->GetCount() > 0)
+			{
+				sSentence.Append(wxString::Format(sDel,
+												  prjdef->m_PrjLayerArray->Item(i).m_LayerID,
+												  m_SelIDs->Item(0)));
+			}
+		}
+	}
+	
+	wxLogDebug(_T("Layers found with spatial type : %d -- %s"),
+			   layertype, sSentence.c_str());
+	
+	if (!m_pDB->DataBaseQueryNoResult(sSentence, true))
+		return false;
+
+	return true;
+}
+
+
+/***************************************************************************//**
  @brief Get advanced attribution in all layers for an object ID
  @param layers Array of layers for advanced attribution
  @param values wxArrayString filled by the actual values
@@ -667,8 +712,6 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 												int startvalues,
 												long selected)
 {
-	wxString sDel = wxString::Format(_T("DELETE FROM layer_at%d WHERE OBJECT_ID=%d;"),
-									 layer->m_LayerID, selected);
 	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%d,"),
 									 layer->m_LayerID, selected);
 	
@@ -681,7 +724,6 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 	sAdd.RemoveLast(1);
 	sAdd.Append(_T(");"));
 	
-	statement.Append(sDel);
 	statement.Append(sAdd);
 	return iTotField;
 }
