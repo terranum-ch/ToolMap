@@ -714,7 +714,8 @@ bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
 	// process request
 	if (!GetAdvancedAttribution(layer))
 	{
-		wxLogDebug(_T("Unable to get advanced attribution informations"));
+		wxLogDebug(_T("No advanced attribution informations for layer %s"),
+				   layer->m_LayerName.c_str());
 		return false;
 	}
 

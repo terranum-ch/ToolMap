@@ -224,6 +224,13 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
+		// update progress dialog
+		if(UpdateProgress(i, layers->Item(i).m_LayerName))
+		{
+			wxLogMessage(_("Export cancelled by user."));
+			break;
+		}
+		
 		m_ExportData = CreateExportData();
 		m_ExportData->SetFrame(pFrame, iFrameVertex);
 		
@@ -255,12 +262,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		delete m_ExportData;
 		m_ExportData = NULL;
 		
-		// update progress dialog
-		if(UpdateProgress(i, layers->Item(i).m_LayerName))
-		{
-			wxLogMessage(_("Export cancelled by user."));
-			break;
-		}
+
 			
 	}
 	
