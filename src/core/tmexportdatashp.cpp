@@ -395,7 +395,7 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
     if( pabyBuf != NULL )
     {
 #ifndef  __WXMSW__    
-		delete pabyBuf;
+		delete [] pabyBuf;
 #endif
 		//delete( pabyBuf );
     }
@@ -489,6 +489,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		
 		// intersects with the frame
 		myCropLine = SafeIntersection(myLine, m_Frame);
+		OGRGeometryFactory::destroyGeometry(myLine);
 		if (myCropLine)
 		{
 			if (!myCropLine->IsEmpty())
@@ -501,7 +502,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}
 		
-		OGRGeometryFactory::destroyGeometry(myLine);
+		
 	}
 	
 	
