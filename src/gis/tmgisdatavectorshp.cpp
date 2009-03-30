@@ -833,6 +833,7 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 	bool bReturn = true;
 	char * buffer = new char [value.Length()+2];
 	strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
+
 	wxStringTokenizer myTok;
 	int myYear = 0, myMonth = 0, myDay = 0;
 	
@@ -873,7 +874,7 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 			break;
 	}
 
-	delete buffer;
+	//delete [] buffer;
 	return bReturn;
 }
 
