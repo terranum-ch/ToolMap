@@ -40,13 +40,13 @@
 
 
 const int ID_LINESSYMBOLOGY	= 10079;
-const int ID_SYMDLG_NOTEBOOK = 10116;
+//const int ID_SYMDLG_NOTEBOOK = 10116;
 const int ID_SYMDLG_PANEL = 10159;
-const int ID_SYMDLG_INFOTXT = 10215;
+//const int ID_SYMDLG_INFOTXT = 10215;
 
 
 #define SYMBOL_TMSYMBOLDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_TMSYMBOLDLG_TITLE _("Properties")
+#define SYMBOL_TMSYMBOLDLG_TITLE _("Symbology")
 #define SYMBOL_TMSYMBOLDLG_IDNAME ID_LINESSYMBOLOGY
 #define SYMBOL_TMSYMBOLDLG_SIZE wxSize(400, 300)
 #define SYMBOL_TMSYMBOLDLG_POSITION wxDefaultPosition
@@ -63,8 +63,8 @@ class tmSymbolDLG: public wxDialog
 		DECLARE_EVENT_TABLE()
 		
 	protected:
-		wxNotebook * m_NoteBook;
-		wxHtmlWindow * m_MetaDataWnd;
+		wxPanel * m_SymbolPanel;
+		//wxHtmlWindow * m_MetaDataWnd;
 		void SetSizeHint ();
 		
 		
@@ -83,7 +83,7 @@ class tmSymbolDLG: public wxDialog
 					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
 		
-		void SetMetaData (const wxString & metadata);
+		//void SetMetaData (const wxString & metadata);
 		//void CreateControlsLine();
 		/*void CreateControlsPoint();
 		void CreateControlsPolygon();

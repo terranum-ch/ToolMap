@@ -80,15 +80,15 @@ void tmSymbolDLGPolygon::CreateControlsPoly()
 	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
 												   sFunction.c_str(), __LINE__); 
 	wxString sErrMsg = wxString::Format(_T("%s Undefined m_Notebook"), sFunctionLineError.c_str());
-	wxASSERT_MSG(m_NoteBook,sErrMsg);
+	wxASSERT_MSG(m_SymbolPanel,sErrMsg);
 
 	
 	
-	wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGPLG_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	//wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGPLG_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
-    itemPanel7->SetSizer(itemBoxSizer8);
+    m_SymbolPanel->SetSizer(itemBoxSizer8);
 	
-    wxNotebook* itemNotebook9 = new wxNotebook( itemPanel7, ID_SYMDLGPLG_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+    wxNotebook* itemNotebook9 = new wxNotebook( m_SymbolPanel, ID_SYMDLGPLG_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 	
     wxPanel* itemPanel10 = new wxPanel( itemNotebook9, ID_SYMDLGPLG_PANEL2, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxFlexGridSizer* itemFlexGridSizer11 = new wxFlexGridSizer(4, 2, 0, 0);
@@ -146,17 +146,14 @@ void tmSymbolDLGPolygon::CreateControlsPoly()
 	
     itemBoxSizer8->Add(itemNotebook9, 1, wxGROW|wxALL, 5);
 	
-    wxStaticBox* itemStaticBoxSizer26Static = new wxStaticBox(itemPanel7, wxID_ANY, _("Transparency"));
+    wxStaticBox* itemStaticBoxSizer26Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer26 = new wxStaticBoxSizer(itemStaticBoxSizer26Static, wxHORIZONTAL);
     itemBoxSizer8->Add(itemStaticBoxSizer26, 0, wxGROW|wxALL, 5);
     
-	m_TransparencySlider = new tmSliderWithText(itemPanel7, ID_SYMDLGPLG_TRANSPARENCY,
+	m_TransparencySlider = new tmSliderWithText(m_SymbolPanel, ID_SYMDLGPLG_TRANSPARENCY,
 												0,0,100, _T("%"));
     itemStaticBoxSizer26->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
-	
-     m_NoteBook->AddPage(itemPanel7, _("Polygon Symbology"));
-	m_NoteBook->ChangeSelection(1);
-	
+		
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();

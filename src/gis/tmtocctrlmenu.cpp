@@ -119,7 +119,7 @@ void tmTOCCtrlMenu::CreateTOCShowVertex ()
 
 void tmTOCCtrlMenu::CreateTOCProperties ()
 {
-	Append(ID_TOCMENU_PROPERTIES, _("Properties..."));
+	Append(ID_TOCMENU_PROPERTIES, _("Symbology..."));
 	
 }
 

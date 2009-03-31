@@ -83,7 +83,7 @@ int tmSymbol::ShowSymbologyDialog (wxWindow * parent,
 								   const wxPoint & dlgpos)
 {
 	tmSymbolDLG * mydlg = GetSymbolDialog(parent,dlgpos);
-	mydlg->SetMetaData(metadata);
+	//mydlg->SetMetaData(metadata);
 	int iRetVal = wxID_CANCEL;
 	
 	
