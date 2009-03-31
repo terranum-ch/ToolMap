@@ -103,6 +103,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
 	EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
 
+	//SELECTION MENU
+	EVT_MENU (ID_MENU_SELECT_NONE, ToolMapFrame::OnSelectNone)
+
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 
@@ -359,11 +362,11 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu63, _("Tools"));
     wxMenu* itemMenu66 = new wxMenu;
     itemMenu66->Append(ID_MENU_SELECT, _("Select\tS"), _T(""), wxITEM_NORMAL);
-    itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
+    //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Select none"), _T(""), wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
     itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert selection"), _T(""), wxITEM_NORMAL);
-    itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
+    //itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
     menuBar->Append(itemMenu66, _("Selection"));
     wxMenu* itemMenu72 = new wxMenu;
     itemMenu72->Append(ID_MENU_QUERIES, _("Queries editor"), _T(""), wxITEM_CHECK);
@@ -817,6 +820,20 @@ void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
 {
 	m_AttribManager->AAttributionButtonShow();
 }
+
+
+
+/***************************************************************************//**
+ @brief Clear active selection
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 31 March 2009
+ *******************************************************************************/
+void ToolMapFrame::OnSelectNone (wxCommandEvent & event)
+{
+	m_LayerManager->SelectedClear();
+}
+
+
 
 /***************************************************************************//**
  @brief Called earch time the selection is updated

@@ -657,6 +657,27 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 
 
 
+/***************************************************************************//**
+ @brief Clear all selected objects
+ @details This function clear all selected objects
+ @return  true if they where selected items, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 31 March 2009
+ *******************************************************************************/
+bool tmLayerManager::SelectedClear ()
+{
+	bool bReturn = false;
+	if (m_SelectedData.GetCount() > 0)
+		bReturn = true;
+	
+	m_SelectedData.Clear();
+	ReloadProjectLayersThreadStart(false, true);
+	return bReturn;
+}
+
+
+
+
 void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 {
 	// computing best ratio between actuall windows size 
