@@ -105,6 +105,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	//SELECTION MENU
 	EVT_MENU (ID_MENU_SELECT_NONE, ToolMapFrame::OnSelectNone)
+	EVT_MENU (ID_MENU_SELECT_INVERSE, ToolMapFrame::OnSelectInvert)
 
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
@@ -831,6 +832,17 @@ void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
 void ToolMapFrame::OnSelectNone (wxCommandEvent & event)
 {
 	m_LayerManager->SelectedClear();
+}
+
+
+/***************************************************************************//**
+ @brief Invert actual selection
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 31 March 2009
+ *******************************************************************************/
+void ToolMapFrame::OnSelectInvert (wxCommandEvent & event)
+{
+	m_LayerManager->SelectedInvert();
 }
 
 
