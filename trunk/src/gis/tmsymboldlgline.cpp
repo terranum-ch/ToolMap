@@ -79,14 +79,14 @@ void tmSymbolDLGLine::CreateControlsLine()
 	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
 												   sFunction.c_str(), __LINE__); 
 	wxString sErrMsg = wxString::Format(_T("%s Undefined m_Notebook"), sFunctionLineError.c_str());
-	wxASSERT_MSG(m_NoteBook,sErrMsg);
+	wxASSERT_MSG(m_SymbolPanel,sErrMsg);
 	
 	
-	wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGL_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	//wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGL_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
-    itemPanel7->SetSizer(itemBoxSizer8);
+    m_SymbolPanel->SetSizer(itemBoxSizer8);
 	
-    wxNotebook* itemNotebook9 = new wxNotebook( itemPanel7, ID_SYMDLGL_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+    wxNotebook* itemNotebook9 = new wxNotebook( m_SymbolPanel, ID_SYMDLGL_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 	
     wxPanel* itemPanel10 = new wxPanel( itemNotebook9, ID_SYMDLGL_PANEL2, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxFlexGridSizer* itemFlexGridSizer11 = new wxFlexGridSizer(3, 2, 0, 0);
@@ -138,17 +138,14 @@ void tmSymbolDLGLine::CreateControlsLine()
 	
     itemBoxSizer8->Add(itemNotebook9, 1, wxGROW|wxALL, 5);
 	
-    wxStaticBox* itemStaticBoxSizer24Static = new wxStaticBox(itemPanel7, wxID_ANY, _("Transparency"));
+    wxStaticBox* itemStaticBoxSizer24Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer24 = new wxStaticBoxSizer(itemStaticBoxSizer24Static, wxHORIZONTAL);
     itemBoxSizer8->Add(itemStaticBoxSizer24, 0, wxGROW|wxALL, 5);
   
-	m_TransparencySlider = new tmSliderWithText(itemPanel7, ID_SYMDLGL_TRANSPARENCY,0,0,100,_T("%"),
+	m_TransparencySlider = new tmSliderWithText(m_SymbolPanel, ID_SYMDLGL_TRANSPARENCY,0,0,100,_T("%"),
 														   wxDefaultPosition, wxDefaultSize, 0);
 	itemStaticBoxSizer24->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
 	
-	
-    m_NoteBook->AddPage(itemPanel7, _("Line Symbology"));
-	m_NoteBook->ChangeSelection(1);
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();

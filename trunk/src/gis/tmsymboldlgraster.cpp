@@ -78,38 +78,34 @@ void tmSymbolDLGRaster::CreateControls()
 	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
 												   sFunction.c_str(), __LINE__); 
 	wxString sErrMsg = wxString::Format(_T("%s Undefined m_Notebook"), sFunctionLineError.c_str());
-	wxASSERT_MSG(m_NoteBook,sErrMsg);
+	wxASSERT_MSG(m_SymbolPanel,sErrMsg);
 
 	
 	
-	wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGRASTER_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	//wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGRASTER_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
-    itemPanel7->SetSizer(itemBoxSizer8);
+    m_SymbolPanel->SetSizer(itemBoxSizer8);
 	
-    wxStaticBox* itemStaticBoxSizer9Static = new wxStaticBox(itemPanel7, wxID_ANY, _("Color transparency"));
+    wxStaticBox* itemStaticBoxSizer9Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Color transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer9 = new wxStaticBoxSizer(itemStaticBoxSizer9Static, wxVERTICAL);
     itemBoxSizer8->Add(itemStaticBoxSizer9, 1, wxGROW|wxALL, 5);
-    m_UseTransparencyColourCtrl = new wxCheckBox( itemPanel7, 
+    m_UseTransparencyColourCtrl = new wxCheckBox( m_SymbolPanel, 
 												 ID_SYMDLGRASTER_USE_TRANSPARENCY_COLOR, 
 												 _("Use color transparency"), 
 												 wxDefaultPosition, wxDefaultSize, 0 );
     m_UseTransparencyColourCtrl->SetValue(false);
     itemStaticBoxSizer9->Add(m_UseTransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 	
-    m_TransparencyColourCtrl = new tmColourPickerCtrl( itemPanel7, ID_SYMDLGRASTER_TRANSPARENCY_COLOR);
+    m_TransparencyColourCtrl = new tmColourPickerCtrl( m_SymbolPanel, ID_SYMDLGRASTER_TRANSPARENCY_COLOR);
     itemStaticBoxSizer9->Add(m_TransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 	
-    wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(itemPanel7, wxID_ANY, _("Transparency"));
+    wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer12 = new wxStaticBoxSizer(itemStaticBoxSizer12Static, wxHORIZONTAL);
     itemBoxSizer8->Add(itemStaticBoxSizer12, 0, wxGROW|wxALL, 5);
-    m_TransparencySlider = new tmSliderWithText(itemPanel7, ID_SYMDLGRASTER_TRANSPARENCY,
+    m_TransparencySlider = new tmSliderWithText(m_SymbolPanel, ID_SYMDLGRASTER_TRANSPARENCY,
 												0, 0, 100, _T("%"));
     itemStaticBoxSizer12->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
-	
-    m_NoteBook->AddPage(itemPanel7, _("Raster Symbology"));
-	m_NoteBook->ChangeSelection(1);
-
-	
+		
 	// adapt dialog size to new controls added
 	SetSizeHint();
 }
