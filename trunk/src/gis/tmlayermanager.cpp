@@ -679,7 +679,7 @@ bool tmLayerManager::SelectedClear ()
 
 /***************************************************************************//**
  @brief Invert selected values
- @param bool true if sucess, false otherwise
+ @return true if sucess, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 31 March 2009
  *******************************************************************************/

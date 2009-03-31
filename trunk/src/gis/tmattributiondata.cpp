@@ -279,9 +279,9 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
  @brief Clean advanced attribution
  @details Because we don't have relationnal intergrity, we delete advanced
  attribution when advanced attribution is changed for a n object
- @param bool true if deleting was successfull
  @param prjdef project definition
  @param layertype one of the spatial type
+ @return true if deleting was successfull
  @author Lucien Schreiber (c) CREALP 2009
  @date 30 March 2009
  *******************************************************************************/
