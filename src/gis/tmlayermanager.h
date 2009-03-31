@@ -158,6 +158,8 @@ class tmLayerManager : public wxEvtHandler
 		
 		// selection function
 		bool SelectedSearch (const wxRect & rect, bool shiftdown = false);
+		bool SelectedClear ();
+		//bool SelectedInverse ();
 			
 		bool LoadProjectLayers();
 		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);

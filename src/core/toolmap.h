@@ -307,6 +307,9 @@ private:
 	void OnMergeSelectedLines (wxCommandEvent & event);
 	void OnShowAAttributionWindow (wxCommandEvent & event);
 	
+	// selection
+	void OnSelectNone (wxCommandEvent & event);
+	
 	// changing status function
 	void OnUpdateSelection (wxCommandEvent & event);
 		
