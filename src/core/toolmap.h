@@ -309,6 +309,7 @@ private:
 	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);
+	void OnSelectInvert (wxCommandEvent & event);
 	
 	// changing status function
 	void OnUpdateSelection (wxCommandEvent & event);

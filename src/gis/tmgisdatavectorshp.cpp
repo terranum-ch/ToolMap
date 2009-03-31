@@ -535,6 +535,28 @@ wxArrayLong * tmGISDataVectorSHP::SearchData (const tmRealRect & rect, int type)
 
 
 /***************************************************************************//**
+ @brief Get OID of all features back from the shapefile
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 31 March 2009
+ *******************************************************************************/
+wxArrayLong * tmGISDataVectorSHP::GetAllData ()
+{
+	wxASSERT (m_Layer);
+	
+	OGRFeature * poFeature = NULL;
+	m_Layer->ResetReading();
+	// searching all features
+	wxArrayLong * myArray = new wxArrayLong();
+	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
+	{
+			myArray->Add(poFeature->GetFID());
+	}
+	
+	return myArray;
+}
+
+
+/***************************************************************************//**
  @brief Create the shp on the disk
  @param filename the filename we want to create
  @param type one of the following values : 

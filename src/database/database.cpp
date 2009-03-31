@@ -485,7 +485,7 @@ void DataBase::DataBaseGetNextResultAsLong(wxArrayLong & resultArray)
 
 long DataBase::DataBaseGetNextResultAsLong()
 {
-	long result = -1;
+	long result = wxNOT_FOUND;
 	MYSQL_ROW record;
 	if (m_resultNumber > 0 && pResults != NULL)
 	{

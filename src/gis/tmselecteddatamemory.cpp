@@ -163,11 +163,11 @@ bool tmSelectedDataMemory::Remove (wxArrayLong * selected)
 	
 	// normal behaviour
 	int iIndex = 0;
-	for (unsigned int i = selected->GetCount()-1 ; i >= 0 ; i--)
+	for (signed int i = (signed) selected->GetCount()-1 ; i >= 0 ; i--)
 	{
 		iIndex = Search(selected->Item(i));
 		if (iIndex != wxNOT_FOUND)
-			m_SelectedIDs->Remove(iIndex);
+			m_SelectedIDs->RemoveAt(iIndex);
 		else
 		{
 			wxLogDebug(_T("Trying to remove non existring item from memory..."));

@@ -665,8 +665,34 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 									m_DB->DataBaseGetLastError().c_str()));
 	
 	return NULL;
-
 }
+
+
+/***************************************************************************//**
+ @brief Get All OID back from the MySQL layer
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 31 March 2009
+ *******************************************************************************/
+wxArrayLong * tmGISDataVectorMYSQL::GetAllData ()
+{
+	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID FROM %s ORDER BY OBJECT_ID"),
+										  GetShortFileName().c_str());
+	if (!m_DB->DataBaseQuery(sSentence))
+		return NULL;
+	
+	wxArrayLong * mySel = new wxArrayLong();
+	while (1)
+	{
+		long myVal = m_DB->DataBaseGetNextResultAsLong();
+		if (myVal == wxNOT_FOUND)
+			break;
+		
+		mySel->Add(myVal);
+	}
+	
+	return mySel;
+}
+
 
 /***************************************************************************//**
  @brief Search data for intersection

@@ -677,6 +677,61 @@ bool tmLayerManager::SelectedClear ()
 
 
 
+/***************************************************************************//**
+ @brief Invert selected values
+ @param bool true if sucess, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 31 March 2009
+ *******************************************************************************/
+bool tmLayerManager::SelectedInvert ()
+{
+	// selection have value ?
+	if (m_SelectedData.GetCount() == 0)
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("No value selected, select object(s) first"));
+		return false;
+	}
+	
+	
+	// get all selected values
+	tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
+	if (!layerprop)
+	{
+		if (IsLoggingEnabled())
+			wxLogMessage(_("Select a layer first in the TOC"));
+		return false;
+	}
+
+	tmGISData * myLayerData = tmGISData::LoadLayer(layerprop);
+	if (!myLayerData)
+	{
+		if (IsLoggingEnabled())
+			wxLogDebug(_T("Unable to get data for the layer"));
+		return false;
+	}
+	
+	wxArrayLong * myAllData = myLayerData->GetAllData();
+	if (!myAllData)
+		return false;
+	
+		
+	// actual values
+	wxArrayLong * myActualSelVal = m_SelectedData.GetSelectedValues();
+	wxASSERT (myActualSelVal);
+	
+	m_SelectedData.Clear();
+	m_SelectedData.AddSelected(myAllData);
+	m_SelectedData.Remove(myActualSelVal);
+
+	delete myAllData;
+	delete myActualSelVal;
+	
+	ReloadProjectLayersThreadStart(false, true);
+	return true;
+}
+
+
 
 void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 {
