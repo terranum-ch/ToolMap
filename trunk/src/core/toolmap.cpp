@@ -856,9 +856,9 @@ void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
 
 void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 {
-	int i = 0;
+	/*int i = 0;
 	int * pi = NULL;
-	*pi = 12;
+	*pi = 12;*/
 }
 
 
