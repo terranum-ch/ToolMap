@@ -22,8 +22,10 @@
 #include "toolmap.h"
 #include "svn_version.h" // version number definition
 
-
-
+#if wxUSE_CRASHREPORT
+	#include <wx/msw/crashrpt.h>
+#endif
+	#include <wx/stdpaths.h>
 
 // toolbar images
 #include "../img/tmimgfunc.h"	// for image processing
@@ -40,7 +42,7 @@
 // icon image
 #include "../img/img_icon32.cpp"
 
-#include <wx/stdpaths.h>
+
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -67,14 +69,11 @@ bool ToolMapApp::OnInit()
 void ToolMapApp::OnFatalException()
 {	
 	wxDateTime dt = wxDateTime::Now();
-	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%s-%s.log"),
-											dt.FormatISODate().c_str(),
-											dt.FormatISOTime().c_str());
-	wxFileName myCrashFile(wxStandardPaths::Get().GetDocumentsDir(), myCrashName);
-	
-	
-
-	
+	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%d%d%d-%d%d%d.txt"),
+		dt.GetYear(),dt.GetMonth(), dt.GetDay(),
+		dt.GetHour(),dt.GetMinute(),dt.GetSecond());
+	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName);
+		
 	wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
 				 _T("Please send the file : ") + myCrashFile.GetFullPath() +
 				 _T("\nto lucien.schreiber@crealp.vs.ch with a small description\n")
