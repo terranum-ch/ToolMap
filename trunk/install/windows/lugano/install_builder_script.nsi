@@ -51,7 +51,7 @@ Section "SectionPrincipale" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "..\..\..\..\bin\win32_VS2008\Debug\ToolMap2.exe"
-  File "D:\LS\PROGRAMATION\ToolBasView\bin09\Debug\ToolBasView.exe"
+  File "D:\LS\PROGRAMATION\ToolBasView\bin\Debug\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap 2"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
