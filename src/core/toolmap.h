@@ -226,6 +226,7 @@ class ToolMapApp : public wxApp
 {
 public:
 	virtual bool OnInit();
+	virtual void OnFatalException();
 	
 };
 
@@ -306,6 +307,7 @@ private:
 	void OnEditVertexPosition (wxCommandEvent & event);
 	void OnMergeSelectedLines (wxCommandEvent & event);
 	void OnShowAAttributionWindow (wxCommandEvent & event);
+	void OnShowInformationDialog (wxCommandEvent & event);
 	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);
@@ -318,6 +320,8 @@ private:
 	void OnAddGisData (wxCommandEvent & event);
 	
 	void OnShortcutAttributionDone (wxCommandEvent & event);
+	
+	
 	
 	//TODO: Remove this temp function
 	void OnTempBlockRefresh( wxCommandEvent & event)
