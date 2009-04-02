@@ -49,6 +49,7 @@ bool ToolMapApp::OnInit()
 {
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
+	wxHandleFatalExceptions();
 
 	
 	//wxString myFrameName = _T("ToolMap 2.0.");
@@ -64,8 +65,21 @@ bool ToolMapApp::OnInit()
 
 void ToolMapApp::OnFatalException()
 {
-	wxMessageBox(_T("Fatal exception, generating log file"), _T("Fatal exception"),
-				 wxYES | wxICON_ERROR);
+	wxDateTime dt = wxDateTime::Now();
+	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%s-%s.log"),
+											dt.FormatISODate().c_str(),
+											dt.FormatISOTime().c_str());
+	wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
+				 _T("Please send the file : ") + myCrashName +
+				 _T("\nto lucien.schreiber@crealp.vs.ch with a small description\n")
+					_T("of what you where doing"), _T("Fatal exception"),
+				 wxOK | wxICON_ERROR);
+	
+	
+#if wxUSE_CRASHREPORT
+	wxCrashReport::SetFileName(myCrashName);											
+	wxCrashReport::Generate();
+#endif //USE CRASHREPORT												
 	
 }
 
