@@ -61,6 +61,15 @@ bool ToolMapApp::OnInit()
 	return true;
 }
 
+
+void ToolMapApp::OnFatalException()
+{
+	wxMessageBox(_T("Fatal exception, generating log file"), _T("Fatal exception"),
+				 wxYES | wxICON_ERROR);
+	
+}
+
+
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
@@ -106,6 +115,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	//SELECTION MENU
 	EVT_MENU (ID_MENU_SELECT_NONE, ToolMapFrame::OnSelectNone)
 	EVT_MENU (ID_MENU_SELECT_INVERSE, ToolMapFrame::OnSelectInvert)
+
+	EVT_MENU (ID_MENU_INFO_WINDOW, ToolMapFrame::OnShowInformationDialog)
 
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
@@ -820,6 +831,15 @@ void ToolMapFrame::OnMergeSelectedLines (wxCommandEvent & event)
 void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
 {
 	m_AttribManager->AAttributionButtonShow();
+}
+
+
+
+void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
+{
+	int i = 0;
+	int * pi = NULL;
+	*pi = 12;
 }
 
 
