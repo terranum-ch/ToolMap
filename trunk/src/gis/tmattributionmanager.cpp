@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_SHORTCUT_PRESSED, tmAttributionManager::OnShortcutPressed)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_COPY_ATTRIBUTION, tmAttributionManager::OnCopyAttribution)
+	EVT_COMMAND (wxID_ANY, tmEVT_TOC_SELECTION_CHANGED,tmAttributionManager::OnLayerChanged)
 END_EVENT_TABLE()
 
 
@@ -53,6 +54,7 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
 	m_Panel = panel;
 	m_SelData = selection;
 	m_pPrjMem = NULL;
+	m_InfoDLG = new InformationDLG(parent);
 	
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
@@ -210,6 +212,7 @@ tmAttributionManager::~tmAttributionManager()
 	UnInitAttributionManager();
 	m_Parent->PopEventHandler(false);
 	m_Parent->SetEventHandler(m_Parent);
+	delete  m_InfoDLG;
 }
 
 
@@ -713,6 +716,77 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		return false;
 	}
 		
+	return true;
+}
+
+
+
+/***************************************************************************//**
+ @brief Show the information dialog if not visible
+ @details If the informations windows was allready visible then we don't do
+ anything
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 07 April 2009
+ *******************************************************************************/
+void tmAttributionManager::DisplayInformationsWnd()
+{
+	// show information window if not visible
+	if (!m_InfoDLG->IsShown())
+	{
+		m_InfoDLG->Show(true);
+		
+		// update metadata and feature
+		UpdateInfoMetadata();
+		
+	}
+	
+}
+
+
+
+/***************************************************************************//**
+ @brief Called when layer selection change in the TOC
+ @details Update the information window if visible
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 07 April 2009
+ *******************************************************************************/
+void tmAttributionManager::OnLayerChanged (wxCommandEvent & event)
+{
+	if (!m_InfoDLG->IsShown())
+		return;
+	
+	UpdateInfoMetadata();
+		
+}
+
+
+/***************************************************************************//**
+ @brief Update informations dialog with layer metadata
+ @details To avoid loosing performence only call this function if the dialog is
+ visible
+ @return true if Update was successfull
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 07 April 2009
+ *******************************************************************************/
+bool tmAttributionManager::UpdateInfoMetadata()
+{
+	// load layer informations only if dialog is visible
+	tmLayerProperties * itemProp = m_TOC->GetSelectionLayer();
+	if (!itemProp)
+	{
+		wxLogDebug(_T("No layer selected, select a layer"));
+		return false;
+	}
+	
+	
+	tmGISData * myData = tmGISData::LoadLayer(itemProp);
+	if (!myData)
+	{
+		wxLogError(_("Error loading GIS data for metadata"));
+		return false;
+	}
+	wxString myMetaData = myData->GetMetaDataAsHtml();
+	m_InfoDLG->SetMetaData(myMetaData);
 	return true;
 }
 

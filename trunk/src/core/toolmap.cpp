@@ -466,7 +466,7 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     itemToolBar3->AddSeparator();
     wxBitmap itemtool16Bitmap(wxGetBitmapFromMemory(tool10));
     wxBitmap itemtool16BitmapDisabled;
-    itemToolBar3->AddTool(ID_TOOL10, _T("Informations"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _T("Informations"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _T(""), wxEmptyString);
     itemToolBar3->Realize();
 	
 	return itemToolBar3;
@@ -853,12 +853,18 @@ void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
 }
 
 
-
+/***************************************************************************//**
+ @brief Show the informations dialog
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 07 April 2009
+ *******************************************************************************/
 void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 {
 	/*int i = 0;
 	int * pi = NULL;
 	*pi = 12;*/
+	
+	m_AttribManager->DisplayInformationsWnd();
 }
 
 

@@ -47,6 +47,7 @@ DECLARE_EVENT_TYPE(tmEVT_LM_UPDATE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_START, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_STOP,-1)
+DECLARE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED, -1)
 
 
 
@@ -87,6 +88,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		void OnMouseItemDoubleClick (wxTreeEvent & event);
 		void OnMoveLayers (wxCommandEvent & event);
 		void OnShortcutKey (wxKeyEvent & event);
+		void OnLayerSelected (wxTreeEvent & event);
 		
 		
 		// contextual menu event functions

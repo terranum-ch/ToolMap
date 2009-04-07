@@ -33,6 +33,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_START)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
+DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
 
 
 
@@ -41,6 +42,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
 BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
 	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, tmTOCCtrl::OnMouseItemDoubleClick)
+	EVT_TREE_SEL_CHANGED(wxID_ANY, tmTOCCtrl::OnLayerSelected)
 	//EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
 	EVT_TREE_ITEM_MENU(wxID_ANY,tmTOCCtrl::OnMouseItemRightClick)
 	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
@@ -745,6 +747,21 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 	}
 	event.Skip();
 }
+
+
+/***************************************************************************//**
+ @brief Called when layer selection change
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 07 April 2009
+ *******************************************************************************/
+void tmTOCCtrl::OnLayerSelected (wxTreeEvent & event)
+{
+	wxCommandEvent evt(tmEVT_TOC_SELECTION_CHANGED, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+	event.Skip();
+}
+
 
 
 /***************************************************************************//**
