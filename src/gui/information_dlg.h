@@ -30,12 +30,30 @@
 #endif
 
 
+#include <wx/html/htmlwin.h>
+#include <wx/notebook.h>
+
+
 class InformationDLG : public wxDialog
 	{
 	private:
+		// controls
+		wxNotebook* m_notebook;
+		wxHtmlWindow* m_LayerInfo;
+		wxButton* m_CloseBtn;
+		
+		void CreateControls();
+		void InitMembersValue();
+		
 	protected:
 	public:
-		InformationDLG();
+		InformationDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
+						const wxString& title = _("Informations"),
+						const wxPoint& pos = wxDefaultPosition,
+						const wxSize& size = wxDefaultSize,
+						long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSTAY_ON_TOP );
+		~InformationDLG();
+		void SetMetaData (const wxString & metadata);
 
 	};
 
