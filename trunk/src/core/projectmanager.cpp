@@ -248,7 +248,8 @@ bool ProjectManager::BackupProject ()
 /***************************************************************************//**
  @brief Close the active database
  @details This function may be called as often as you want, check is made and
- database is closed only if previously opened.
+ database is closed only if previously opened. 
+ @note All internal functions should work event if database is empty
  @author Lucien Schreiber (c) CREALP 2007
  @date 11 March 2008
  *******************************************************************************/
@@ -257,12 +258,14 @@ void ProjectManager::CloseProject()
 	wxASSERT (m_EditManager);
 	
 	// save the snapping informations
+	m_SnappingPanel->SetDataBase(m_DB);
 	m_SnappingPanel->SaveSnappingStatus();
 	
 	m_EditManager->SetDatabase(NULL);
 	
 	m_LayerManager->UnInitLayerManager();
 	m_AttribManager->UnInitAttributionManager();
+	
 	if (m_DB != NULL)
 	{
 		wxLogDebug(_T("Closing the database object"));
@@ -314,7 +317,6 @@ bool ProjectManager::IsDataBasePath(const wxString & path)
  *******************************************************************************/
 int ProjectManager::OpenProject(const wxString & path)
 {
-		
 	// close any existing project
 	CloseProject();
 	int myReturnVal = OPEN_DB_FAILED;

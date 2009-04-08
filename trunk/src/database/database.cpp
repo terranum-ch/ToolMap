@@ -56,7 +56,7 @@ DataBase::DataBase()
 
 DataBase::~DataBase()
 {
-	
+	DataBaseClose(); 
 }
 
 
@@ -72,6 +72,7 @@ DataBase::~DataBase()
  *******************************************************************************/
 int DataBase::DataBaseInitLibrary (const wxString & path)
 {
+	
 	// conversion from path, return values in m_DBName and m_DBPath
 	DataBaseConvertFullPath(path);
 	
@@ -158,6 +159,12 @@ int DataBase::DataBaseInitLibrary (const wxString & path)
 			wxLogError(_("Return code: %d, Error: %s"), myReturn, 
 					   DataBaseGetLastError().c_str());
 	}
+	else
+	{
+		// the lib was initialised so we must end the lib when quitting the program
+		bIsLibInit = TRUE;
+	}
+	
 	delete [] stemps;
 	return myReturn;
 }
@@ -171,10 +178,10 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	if(DataBaseInitLibrary(path)==0)
 	{
 		// the lib was initialised so we must end the lib when quitting the program
-		bIsLibInit = TRUE;
+		//bIsLibInit = TRUE;
 		
 		pMySQL = mysql_init(NULL);
-		 mysql_options(pMySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
+		mysql_options(pMySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
 		mysql_thread_init();
 
 		wxLogDebug(m_DBName);
@@ -191,18 +198,19 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 	}
 	
 	// if something goes wrong we return FALSE
+	wxLogDebug(_T("Error connecting to DB : %s"), DataBaseGetLastError().c_str());
 	return Bsucces;
 	
 }
 
 
+
 bool DataBase::DataBaseClose()
 {
 	wxLogDebug(_T("Closing database"));
-	mysql_library_end();
+	DataBaseCloseLibrary();
+	
 	pMySQL = NULL;
-	//mysql_thread_end();	
-	//mysql_library_end();
 	IsDatabaseOpen = FALSE;
 	return TRUE;
 }
@@ -220,8 +228,12 @@ void DataBase::DataBaseCloseLibrary()
 	// close the library if the lib was used
 	// then we must quit the program.
 	if (bIsLibInit)
+	{
 		mysql_thread_end();
 		mysql_library_end();
+		bIsLibInit = false;
+	}
+	
 }
 
 

@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
 	EVT_MENU (ID_CTXT_AUTODISPLAY_ATTRIB, AttribObjType_PANEL::OnDisplayAttributesAuto)
-
+	EVT_MENU (ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,  AttribObjType_PANEL::OnEmptyListAffterAttributes)
 END_EVENT_TABLE()
 
 
@@ -213,11 +213,11 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	m_AutoDisplayAttrib = new wxMenuItem( opt_menu, ID_CTXT_AUTODISPLAY_ATTRIB, wxString( _("Enable auto display attributes") ) , wxEmptyString, wxITEM_CHECK );
 	opt_menu->Append( m_AutoDisplayAttrib );
 	
-	opt_menu->AppendSeparator();
+	//opt_menu->AppendSeparator();
 	
-	wxMenuItem* m_Filter;
-	m_Filter = new wxMenuItem( opt_menu, ID_CTXT_FILTER, wxString( _("Filter list...") ) , wxEmptyString, wxITEM_NORMAL );
-	opt_menu->Append( m_Filter );
+	//wxMenuItem* m_Filter;
+	//m_Filter = new wxMenuItem( opt_menu, ID_CTXT_FILTER, wxString( _("Filter list...") ) , wxEmptyString, wxITEM_NORMAL );
+	//opt_menu->Append( m_Filter );
 	
 	//m_menubar2->Append( opt_menu, _("Options") );
 	

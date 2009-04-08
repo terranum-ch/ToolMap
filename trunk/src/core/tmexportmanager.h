@@ -38,6 +38,8 @@
 #include <wx/progdlg.h>					// the progress dialog
 
 
+const int tmFILENAME_MAX_SEARCH = 500;	// number of search for a file name
+
 class tmExportManager : public wxObject
 	{
 	private:
@@ -54,14 +56,17 @@ class tmExportManager : public wxObject
 		
 		// export function
 		bool ExportLayers (PrjMemLayersArray * layers);
+		bool ExportLayer (ProjectDefMemoryLayers * layer, 
+						  wxRealPoint * frame, const int & framevertex);
 		bool CreateExportLayer (ProjectDefMemoryLayers * layer);
 		bool ExportGISData (ProjectDefMemoryLayers * layer);
 		wxRealPoint * GetFrame (int & nbvertex);
 		bool AddAttributionSimpleData (ProjectDefMemoryLayers * layer);
 		bool AddAttributionAdvanced (ProjectDefMemoryLayers * layer);
 		
-		// check path
+		// check path & file name
 		bool IsExportPathValid();
+		bool GetAvailableFileName (ProjectDefMemoryLayers * layer);
 		
 		// create tmExportData object
 		tmExportData * CreateExportData ();
