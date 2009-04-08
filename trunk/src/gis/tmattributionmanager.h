@@ -42,7 +42,7 @@
 #include "../core/tmshortcutmemory.h"		// for shortcuts in memory
 
 #include "tmaattribwindow.h"				// for advanced attribution
-#include "information_dlg.h"				// for informations window
+#include "../gui/information_dlg.h"				// for informations window
 
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 
