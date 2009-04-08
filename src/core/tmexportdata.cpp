@@ -176,6 +176,18 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
 }
 
 
+/***************************************************************************//**
+ @brief Return extension without the leading dot.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 08 April 2009
+ *******************************************************************************/
+wxString tmExportData::GetFileExtension()
+{
+	wxString myRetExt = m_Extension;
+	myRetExt.Remove(0, 1);
+	return myRetExt;
+}
+
 
 /***************************************************************************//**
  @brief Process query for getting simple attributs

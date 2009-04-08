@@ -65,6 +65,7 @@ class tmExportData : public wxObject
 		
 		// informations
 		int GetSizeOfObjDesc (int layerindex);
+		wxString GetFileExtension();
 		
 		
 		// create export file

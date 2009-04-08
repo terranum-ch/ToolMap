@@ -209,6 +209,9 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		return false;
 	}
 	
+	
+	
+	
 	CreateProgress(layers->GetCount(),
 				   layers->Item(0).m_LayerName);
 	
@@ -220,16 +223,25 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	if (!pFrame)
 		return false;
 	
-	bool bExportResult = false;
+	bool bExportResult = true;
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
 		// update progress dialog
-		if(UpdateProgress(i, layers->Item(i).m_LayerName))
+		ProjectDefMemoryLayers myLayer = layers->Item(i);
+		if(UpdateProgress(i, myLayer.m_LayerName))
 		{
 			wxLogMessage(_("Export cancelled by user."));
 			break;
 		}
+		
+		if (!ExportLayer(&myLayer, pFrame, iFrameVertex))
+			bExportResult = false;
+		
+		/*
+		// check for file name 
+		
+		
 		
 		m_ExportData = CreateExportData();
 		m_ExportData->SetFrame(pFrame, iFrameVertex);
@@ -260,7 +272,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		}
 			
 		delete m_ExportData;
-		m_ExportData = NULL;
+		m_ExportData = NULL;*/
 		
 
 			
@@ -269,6 +281,60 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	DeleteProgress();
 	delete [] pFrame;
 	return bExportResult;
+}
+
+
+
+/***************************************************************************//**
+ @brief Export a layer, don't call directly
+ @details This function is called through the ExportLayers() function, don't
+ call directly
+ @param layer information about the actual layer to export
+ @return  true if export of selected layer success
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 08 April 2009
+ *******************************************************************************/
+bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
+								   wxRealPoint * frame, const int & framevertex)
+{
+	
+	// check for file name 
+	if (GetAvailableFileName(layer) == false)
+		return false;
+	
+	
+	// EXPORT
+	bool bReturn = false;
+	m_ExportData = CreateExportData();
+	m_ExportData->SetFrame(frame, framevertex);
+	
+	// create SIG layer
+	//ProjectDefMemoryLayers myLayer = layers->Item(i);
+	
+	if (CreateExportLayer(layer))
+	{
+		// export data to layer
+		if (ExportGISData(layer))
+			if (AddAttributionSimpleData(layer))
+				if (AddAttributionAdvanced(layer))
+					bReturn = true;
+	}
+	
+	// logging
+	if (bReturn == true)
+	{
+		wxLogDebug(_T("Exporting layers : %s ... OK"),
+				   layer->m_LayerName.c_str());
+	}
+	else
+	{
+		wxLogDebug(_T("Exporting layers : %s ... FAILED"),
+				   layer->m_LayerName.c_str());
+	}
+	
+	delete m_ExportData;
+	m_ExportData = NULL;
+	return bReturn;	
 }
 
 
@@ -420,6 +486,54 @@ bool tmExportManager::IsExportPathValid()
 		return true;
 	
 	
+	return false;
+}
+
+
+
+/***************************************************************************//**
+ @brief Get the export file name
+ @details Checks that the file doesn't exists and if the file exists, we try to
+ add an increment
+ @param layer layer information about what we are trying to export
+ @param bool true if system was able to find a file name, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 08 April 2009
+ *******************************************************************************/
+bool tmExportManager::GetAvailableFileName (ProjectDefMemoryLayers * layer)
+{
+	// get the extension
+	tmExportData * myExportFile = CreateExportData();
+	wxASSERT (myExportFile);
+	wxString myExtension = myExportFile->GetFileExtension();
+	delete myExportFile;
+	
+	// does the actual file name exists ?
+	wxFileName myFileName = wxFileName(m_ExportPath.GetPathWithSep(),
+									   layer->m_LayerName, myExtension);
+	if (myFileName.FileExists() == false)
+	{
+		return true;
+	}
+	
+	
+	// search for available name
+	wxString myFileSearchedTemplate = _T("%s-%.*d");
+	for (int i = 1; i <= tmFILENAME_MAX_SEARCH;i++)
+	{
+		myFileName.SetName(wxString::Format(myFileSearchedTemplate, 
+											layer->m_LayerName.c_str(),
+											3, i));
+		wxLogDebug(_T("Searching for file : %s"), myFileName.GetFullName().c_str());
+		if (myFileName.FileExists() == false)
+		{
+			layer->m_LayerName = myFileName.GetName();
+			return true;
+		}
+	}
+	
+	
+	wxASSERT_MSG(0, _T("500 files searched for export name...."));
 	return false;
 }
 

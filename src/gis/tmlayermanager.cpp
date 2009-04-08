@@ -164,6 +164,7 @@ bool tmLayerManager::UnInitLayerManager()
 		delete m_Bitmap;
 		m_Bitmap = NULL;
 	}
+	m_GISRenderer->SetBitmapStatus(NULL);
 	
 	// clear the scale too
 	m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
