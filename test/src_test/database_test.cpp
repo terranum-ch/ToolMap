@@ -27,7 +27,7 @@
 class DataBaseTEST : public CppUnit::TestFixture 
 { 
 	CPPUNIT_TEST_SUITE( DataBaseTEST );
-	CPPUNIT_TEST( TESTInitLibrary );
+	CPPUNIT_TEST( TESTOpenDatabase );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -36,6 +36,7 @@ private:
 public: 
 	void setUp()
 	{
+		m_DB = new DataBase();
 		//m_DB1 = new tmoDatabase();
 		//CPPUNIT_ASSERT( m_DB1->DatabaseOpen("--datadir=/Users/Lucien/DATA/SIG/COMBIOULA/EXERCICE/", 
 		//	"combioula_exercice")== true);
@@ -45,17 +46,18 @@ public:
 	
 	void tearDown() 
 	{
-		//delete m_DB1;
-		//delete m_DB2;
+		delete m_DB;
 	}
 	
-	void TESTInitLibrary()
+	void TESTOpenDatabase()
 	{
-		CPPUNIT_ASSERT(true == true);
-		/*
-		 bool bOpen = m_DB1->DatabaseOpen("--datadir=/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/",
-		 "combioula_correct");
-		 CPPUNIT_ASSERT(bOpen == true);*/
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct")) == true);
+		CPPUNIT_ASSERT( m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/EXERCICESSSSS"),
+						   _T("combioula_exercice"))==false);
+		CPPUNIT_ASSERT( m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/EXERCICE"),
+										   _T("combioula_exercice"))==true);
+		
 	}
 	
 	/*

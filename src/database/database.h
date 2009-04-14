@@ -37,12 +37,43 @@
 #endif
 
 #include "mysql.h"
-#include <wx/arrstr.h> // array string
-#include <wx/strconv.h> // unicode conversion
-#include <wx/tokenzr.h> // tokenizer of string
-#include <wx/dir.h> // directory operation (size)
+//#include <wx/arrstr.h> // array string
+//#include <wx/strconv.h> // unicode conversion
+//#include <wx/tokenzr.h> // tokenizer of string
+//#include <wx/dir.h> // directory operation (size)
+//#include <wx/filename.h>
+#include <wx/buffer.h>
 
 
+class DataBase
+	{
+	private:
+		// member
+		bool		m_IsLibraryStarted;
+		bool		m_IsDatabaseOpened;
+		MYSQL	*	m_MySQL;
+		MYSQL_RES *	m_MySQLRes;
+		
+		bool DBLibraryInit (const wxString & datadir);
+		void DBLibraryEnd ();
+		void DBLogLastError ();
+		bool DBUseDatabase(const wxString & dbname);
+		
+	protected:
+	public:
+		DataBase();
+		~DataBase();
+		
+		bool DataBaseOpen(const wxString & datadir, const wxString & name);
+};
+
+
+
+
+
+
+
+#if(0)
 const wxString DATABASE_TYPE_STRING = _T("MYSQL");
 
 /*!
@@ -55,6 +86,10 @@ enum Lang_Flag
 	LANG_LATIN1
 };
 
+
+
+
+
 //----------------------------------------------------------------------------
 // DataBase
 //----------------------------------------------------------------------------
@@ -64,6 +99,12 @@ enum Lang_Flag
 	
 	This class used the embedded library of MySQL to open and connect to databases.
 */
+
+
+
+
+
+
 class DataBase 
 {
 public:
@@ -333,6 +374,6 @@ protected:
 
 	
 };
-
+#endif
 
 #endif
