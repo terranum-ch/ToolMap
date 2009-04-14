@@ -28,6 +28,8 @@ class DataBaseTEST : public CppUnit::TestFixture
 { 
 	CPPUNIT_TEST_SUITE( DataBaseTEST );
 	CPPUNIT_TEST( TESTOpenDatabase );
+	CPPUNIT_TEST( TESTResults );
+	CPPUNIT_TEST( TESTQueryNoResults );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -37,6 +39,7 @@ public:
 	void setUp()
 	{
 		m_DB = new DataBase();
+		
 		//m_DB1 = new tmoDatabase();
 		//CPPUNIT_ASSERT( m_DB1->DatabaseOpen("--datadir=/Users/Lucien/DATA/SIG/COMBIOULA/EXERCICE/", 
 		//	"combioula_exercice")== true);
@@ -57,7 +60,26 @@ public:
 						   _T("combioula_exercice"))==false);
 		CPPUNIT_ASSERT( m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/EXERCICE"),
 										   _T("combioula_exercice"))==true);
+	}
+	
+	void TESTResults ()
+	{
+		CPPUNIT_ASSERT( m_DB->DataBaseHasResults() == false);
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM generic_lines"))==true);
+		CPPUNIT_ASSERT( m_DB->DataBaseHasResults() == true);
 		
+	}
+	
+	void TESTQueryNoResults ()
+	{
+		
+		CPPUNIT_ASSERT(m_DB->DataBaseQueryNoResults(_T("SELECT OBJECT_ID FROM generic_lines"))==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+						   _T("combioula_correct"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQueryNoResults(_T("SELECT OBJECT_ID FROM generic_lines"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQueryNoResults(_T("SELECT COUNT(*) FROM generic_linesss"))==false);
 	}
 	
 	/*

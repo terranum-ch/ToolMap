@@ -54,17 +54,31 @@ class DataBase
 		MYSQL	*	m_MySQL;
 		MYSQL_RES *	m_MySQLRes;
 		
+		// functions
 		bool DBLibraryInit (const wxString & datadir);
 		void DBLibraryEnd ();
 		void DBLogLastError ();
-		bool DBUseDatabase(const wxString & dbname);
+		bool DBUseDataBase(const wxString & dbname);
+		bool DBIsDataBaseReady ();
 		
 	protected:
 	public:
 		DataBase();
 		~DataBase();
 		
+		// database operations
 		bool DataBaseOpen(const wxString & datadir, const wxString & name);
+		
+		// query operations
+		bool DataBaseQueryNoResults(const wxString & query);
+		bool DataBaseQuery (const wxString & query); 
+		
+		// results operations
+		bool DataBaseHasResults();
+		void DataBaseClearResults();
+		
+		
+		
 };
 
 

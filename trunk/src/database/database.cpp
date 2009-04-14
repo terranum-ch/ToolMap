@@ -125,7 +125,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 
 
-bool DataBase::DBUseDatabase(const wxString & dbname)
+bool DataBase::DBUseDataBase(const wxString & dbname)
 {
 	char buf[dbname.Len()];
 	strcpy( buf, (const char*)dbname.mb_str(wxConvUTF8));
@@ -171,13 +171,95 @@ bool DataBase::DataBaseOpen(const wxString & datadir, const wxString & name)
 	if (m_IsLibraryStarted == false)
 		return false;
 	
-	m_IsDatabaseOpened = DBUseDatabase(name);
+	m_IsDatabaseOpened = DBUseDataBase(name);
 	if (m_IsDatabaseOpened == false)
 		return false;
 		
 	return true;
 }
 
+
+
+bool DataBase::DataBaseHasResults()
+{
+	if (m_MySQLRes == NULL)
+		return false;
+	
+	return true;
+}
+
+
+void DataBase::DataBaseClearResults()
+{
+	if (m_MySQLRes != NULL)
+	{
+		mysql_free_result(m_MySQLRes);
+		m_MySQLRes = NULL;
+	}
+}
+
+
+bool DataBase::DataBaseQueryNoResults(const wxString & query)
+{
+	if (DBIsDataBaseReady() == false)
+		return false;
+	
+	if (DataBaseHasResults())
+		return false;
+	
+	char buf[query.Len()];
+	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
+	if (mysql_query(m_MySQL, buf) != 0)
+	{
+		DBLogLastError();
+		return false;
+	}
+	
+	m_MySQLRes = mysql_store_result(m_MySQL);
+	DataBaseClearResults();
+		
+	
+	return true;
+}
+
+
+bool DataBase::DataBaseQuery (const wxString & query)
+{
+	if (DBIsDataBaseReady() == false)
+		return false;
+	
+	if (DataBaseHasResults())
+		return false;
+	
+	char buf[query.Len()];
+	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
+	if (mysql_query(m_MySQL, buf) != 0)
+	{
+		DBLogLastError();
+		return false;
+	}
+	
+	m_MySQLRes = mysql_store_result(m_MySQL);
+	return true;
+}
+
+
+
+bool DataBase::DBIsDataBaseReady ()
+{
+	if (m_IsLibraryStarted == false)
+	{
+		wxLogError(_("MySQL library not started"));
+		return false;	
+	}
+	
+	if (m_IsDatabaseOpened == false)
+	{
+		wxLogError(_("No database open"));
+		return false;
+	}
+	return true;
+}
 
 
 #if (0)
