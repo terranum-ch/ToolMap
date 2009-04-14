@@ -40,6 +40,148 @@
 #include <wx/filename.h> // to create the database path and name.
 
 
+
+DataBase::DataBase()
+{
+	m_IsDatabaseOpened		= false;
+	m_IsLibraryStarted		= false;
+	m_MySQL					= NULL;
+	m_MySQLRes				= NULL;
+	
+}
+
+
+
+DataBase::~DataBase()
+{
+	if (m_IsLibraryStarted)
+	{
+		DBLibraryEnd();
+		m_IsLibraryStarted = false;
+	}
+}
+
+
+
+bool DataBase::DBLibraryInit (const wxString & datadir)
+{
+
+	// path validity
+	wxFileName myValidPath (datadir, _T(""));
+	if (myValidPath.IsDirReadable()==false)
+	{
+		wxLogError(_("Directory : %s doesn't exists or isn't readable"),datadir.c_str());
+		return false;
+	}
+	
+	//init library
+	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX);
+	char bufDataDir[myDatadir.Len()];
+	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
+	
+#if defined(__WINDOWS__)
+	char * mylanguagedir = "--language=./share/english";
+#elif defined(__WXMAC__)
+	char * mylanguagedir =	"--language=./ToolMap2.app/Contents/share/english";
+#elif defined(__WXGTK20__)
+	char * mylanguagedir = "";
+#else 
+	wxASSERT_MSG (0, _T("Check compilation option for MySQL"));
+	char * mylanguagedir = "";
+#endif	
+	
+	
+	char *server_args[] = 
+	{
+		"this_program",       /* this string is not used */
+		bufDataDir,
+		mylanguagedir,
+		"--port=3309",
+		//"--character-sets-dir=./share/charsets",
+		//"--default-character-set=utf8"
+	};
+	
+	char *server_groups[] = 
+	{
+		"embedded",
+		"server",
+		"this_program_SERVER",
+		(char *)NULL
+	};
+	
+	int num_elements = (sizeof(server_args) / sizeof(char *));
+	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
+	if (myReturn != 0)
+	{
+		DBLogLastError();
+		return false;
+	}
+	
+	m_MySQL = mysql_init(NULL);
+	mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
+	wxLogDebug(_T("Initing MySQL library..."));
+	return true;
+}
+
+
+
+bool DataBase::DBUseDatabase(const wxString & dbname)
+{
+	char buf[dbname.Len()];
+	strcpy( buf, (const char*)dbname.mb_str(wxConvUTF8));
+	if(mysql_real_connect(m_MySQL,NULL,NULL,NULL,buf,
+						  3309,NULL,CLIENT_MULTI_STATEMENTS) == NULL)
+	{
+		DBLogLastError();
+		return false;
+	}
+	
+	wxLogMessage(_("Opening database : ") + dbname);
+	return true;
+}
+
+
+
+void DataBase::DBLibraryEnd ()
+{
+	wxLogDebug(_T("Ending MySQL library..."));
+	mysql_close(m_MySQL);
+	mysql_library_end();	
+}
+
+
+
+void DataBase::DBLogLastError ()
+{
+	wxString myTextError = wxString::FromAscii(mysql_error(m_MySQL));
+	wxLogError(_("MySQL Error : %s"), myTextError.c_str());
+}
+
+
+
+bool DataBase::DataBaseOpen(const wxString & datadir, const wxString & name)
+{
+	if (m_IsLibraryStarted)
+	{
+		DBLibraryEnd();
+		m_IsLibraryStarted = false;
+	}
+	
+	m_IsLibraryStarted = DBLibraryInit(datadir);
+	if (m_IsLibraryStarted == false)
+		return false;
+	
+	m_IsDatabaseOpened = DBUseDatabase(name);
+	if (m_IsDatabaseOpened == false)
+		return false;
+		
+	return true;
+}
+
+
+
+#if (0)
+
 // static members
 bool DataBase::bIsLibInit = FALSE;
 
@@ -1062,4 +1204,4 @@ bool DataBase::DataBaseQueryBinary(const char * query,  bool DestroyResult)
 	return FALSE;
 	
 }
-
+#endif
