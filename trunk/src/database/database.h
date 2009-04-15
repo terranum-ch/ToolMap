@@ -39,11 +39,11 @@
 #include "mysql.h"
 //#include <wx/arrstr.h> // array string
 //#include <wx/strconv.h> // unicode conversion
-//#include <wx/tokenzr.h> // tokenizer of string
 //#include <wx/dir.h> // directory operation (size)
 //#include <wx/filename.h>
-#include <wx/buffer.h>
 
+#include <wx/buffer.h>
+#include <wx/tokenzr.h> // tokenizer of string
 
 class DataBase
 	{
@@ -53,6 +53,8 @@ class DataBase
 		bool		m_IsDatabaseOpened;
 		MYSQL	*	m_MySQL;
 		MYSQL_RES *	m_MySQLRes;
+		wxString	m_DBName;
+		wxString	m_DBPath;
 		
 		// functions
 		bool DBLibraryInit (const wxString & datadir);
@@ -60,6 +62,7 @@ class DataBase
 		void DBLogLastError ();
 		bool DBUseDataBase(const wxString & dbname);
 		bool DBIsDataBaseReady ();
+		bool DBGetNextRecord (MYSQL_ROW & record);
 		
 	protected:
 	public:
@@ -68,17 +71,30 @@ class DataBase
 		
 		// database operations
 		bool DataBaseOpen(const wxString & datadir, const wxString & name);
+		wxString DataBaseGetName ();
+		wxString DataBaseGetPath ();
+		static wxString DataBaseGetVersion ();
 		
 		// query operations
 		bool DataBaseQueryNoResults(const wxString & query);
 		bool DataBaseQuery (const wxString & query); 
+		int DataBaseQueriesNumber (const wxString & query);
 		
 		// results operations
 		bool DataBaseHasResults();
 		void DataBaseClearResults();
+		// results by rows (clear after use)
 		bool DataBaseGetResultSize (unsigned int * pcols, long * prows); 
 		bool DataBaseGetNextResult(wxString & result);
 		bool DataBaseGetNextResult(wxArrayString & results);
+		bool DataBaseGetNextResult(long & result);
+		bool DataBaseGetNextResult(wxArrayLong & results);
+		bool DataBaseGetNextResult(double & result);
+		bool DataBaseGetNextResult(wxArrayDouble & results);
+		// results set (auto cleared after use)
+		bool DataBaseGetResults(wxArrayString & results);
+		bool DataBaseGetResults(wxArrayLong & results);
+		bool DataBaseGetResults(wxArrayDouble & results);
 		
 		
 };
@@ -176,7 +192,7 @@ public:
 	This function is the only one who may be called before DataBaseOpen().
     @result  a wxString containing the version number
 	*/
-	static wxString DatabaseGetVersion();
+	//static wxString DatabaseGetVersion();
 	
 
 //	long DatabaseGetCountResults();
@@ -217,13 +233,13 @@ public:
 	bool DataBaseTableExist(const wxString & tableName);
 	
 	
-	int DataBaseGetResultAsInt(bool ClearResultDirect = TRUE);
+	//int DataBaseGetResultAsInt(bool ClearResultDirect = TRUE);
 	
-	long DataBaseGetNextResultAsLong();
+//	long DataBaseGetNextResultAsLong();
 	
-	void DataBaseGetNextResultAsLong(wxArrayLong & resultArray);
+//	void DataBaseGetNextResultAsLong(wxArrayLong & resultArray);
 	
-	double DataBaseGetResultAsDouble();
+//	double DataBaseGetResultAsDouble();
 	
 	bool DataBaseIsTableEmpty(const wxString & tableName);
 	
@@ -282,7 +298,7 @@ public:
 	This function must be called only after DataBaseOpen().
 	@result return the path of the database
 	*/	
-	wxString DataBaseGetPath();
+	//wxString DataBaseGetPath();
 
 	/*!
     @brief  return the Name of the database
@@ -290,7 +306,7 @@ public:
 	This function must be called only after DataBaseOpen().
 	@result return the name of the database
 	*/	
-	wxString DataBaseGetName();
+	//wxString DataBaseGetName();
 	
 	/*!
     @brief  return the character set used for the transaction
@@ -298,7 +314,7 @@ public:
 	This function must be called only after DataBaseOpen().
 	@result return the name of the character set used.
 	*/	
-	wxString DatabaseGetCharacterSet();
+	//wxString DatabaseGetCharacterSet();
 	
 	/*!
     @brief  create a new database
@@ -321,7 +337,7 @@ public:
 	@param theRequest a wxString containing the full request.
 	@result a wxArrayString containing a unique request for each array.
 	*/	
-	wxArrayString DataBaseCutRequest (wxString theRequest);
+	//wxArrayString DataBaseCutRequest (wxString theRequest);
 	
 	/*!
     @brief   Compute the database file size
@@ -340,7 +356,7 @@ public:
 	
 	void DataBaseNewThreadUnInit();
 	
-	bool DataBaseQueryBinary(const char * query, bool DestroyResult = FALSE);
+	//bool DataBaseQueryBinary(const char * query, bool DestroyResult = FALSE);
     
 protected:
 //	MYSQL * pMySQL;
@@ -351,8 +367,8 @@ protected:
 //	long m_resultCount;
 	
 	// storing database path and name.
-	wxString m_DBPath;
-	wxString m_DBName;
+	//wxString m_DBPath;
+	//wxString m_DBName;
 	
 	
 //	bool IsDatabaseOpen;

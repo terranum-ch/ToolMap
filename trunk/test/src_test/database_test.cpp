@@ -33,6 +33,16 @@ class DataBaseTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTResultString  );
 	CPPUNIT_TEST( TESTResultArrayString );
 	CPPUNIT_TEST( TESTCountResults );
+	CPPUNIT_TEST( TESTResultLong );
+	CPPUNIT_TEST( TESTResultArrayLong );
+	CPPUNIT_TEST( TESTResultDouble );
+	CPPUNIT_TEST( TESTResultArrayDouble );
+	CPPUNIT_TEST( TESTColResultsString );
+	CPPUNIT_TEST( TESTColResultsLong );
+	CPPUNIT_TEST( TESTColResultsDouble );
+	CPPUNIT_TEST( TESTPathName );
+	CPPUNIT_TEST( TESTQueriesNumber );
+	CPPUNIT_TEST( TESTVersion );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -147,23 +157,131 @@ public:
 		
 	}
 	
+	void TESTResultLong()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		long myResult = 0;
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myResult));
+		CPPUNIT_ASSERT(myResult == 17);
+	}
+	
+	void TESTResultArrayLong()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID, OBJECT_CD FROM dmn_layer_object WHERE OBJECT_ID <= 17")));
+		
+		uint myCols = 0;
+		long myRows = 0;
+		
+		CPPUNIT_ASSERT (m_DB->DataBaseGetResultSize(&myCols, &myRows));
+		CPPUNIT_ASSERT (myCols == 2 && myRows == 17);
+		
+		
+		wxArrayLong myResults;
+		int i = 0;
+		bool bReturn = false;
+		while (1)
+		{
+			bReturn = m_DB->DataBaseGetNextResult(myResults);
+			if (i < 17)
+			{
+				CPPUNIT_ASSERT(bReturn == true);
+			}
+			else
+				CPPUNIT_ASSERT(bReturn == false);
+			i++;
+			if (bReturn == false)
+				break;
+		}
+		
+		m_DB->DataBaseClearResults();
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID <= 17 ORDER BY OBJECT_ID")));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myResults));
+		CPPUNIT_ASSERT (m_DB->DataBaseGetResultSize(&myCols, &myRows));
+		CPPUNIT_ASSERT (myCols == 1 && myRows == 17);
+	}
+	
+	void TESTResultDouble()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 WHERE OBJECT_ID = 1")));
+		double value = 0;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(value));
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(8.99, value, 0.01);
+		CPPUNIT_ASSERT(value == 8.99);
+	}
+	
+	void TESTResultArrayDouble()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 ORDER BY OBJECT_ID")));
+		wxArrayDouble values;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(values));
+		CPPUNIT_ASSERT(values.Item(0) == 8.99);
+	}
+	
+	void TESTColResultsString ()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestText FROM layer_at1 ORDER BY OBJECT_ID")));
+		wxArrayString myResults;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResults(myResults));
+		CPPUNIT_ASSERT(myResults.GetCount() == 2);
+		CPPUNIT_ASSERT(myResults.Item(1) == _T("Ceci est un test pour un max de caracteres ke lonp"));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResults(myResults)==false);
+		CPPUNIT_ASSERT(myResults.GetCount() == 0);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestText FROM layer_at1 ORDER BY OBJECT_ID")));
+		m_DB->DataBaseClearResults();
+	}
+	
+	void TESTColResultsLong ()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM layer_at1 ORDER BY OBJECT_ID")));
+		wxArrayLong myResults;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResults(myResults));
+		CPPUNIT_ASSERT(myResults.GetCount() == 2);
+		CPPUNIT_ASSERT(myResults.Item(1) == 4);
+	}
+	
+	void TESTColResultsDouble()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 ORDER BY OBJECT_ID")));
+		wxArrayDouble myResults;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResults(myResults));
+		CPPUNIT_ASSERT(myResults.GetCount() == 2);
+		CPPUNIT_ASSERT(myResults.Item(1) == 6.00);
+	}
+	
+	void TESTPathName()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseGetName() == wxEmptyString);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetPath() == wxEmptyString);
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetName() == _T("testfields"));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetPath() == _T("/Users/Lucien/Downloads/"));
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads"),_T("testfieldssss"))==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetName() == wxEmptyString);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetPath() == wxEmptyString);
+	}
 	
 	
-	/*
-	 void testDatabaseQueryNoResults()
-	 {
-	 CPPUNIT_ASSERT (m_DB1->DatabaseQueryNoResults("SELECT COUNT(*) FROM generic_lines") == true);
-	 }
-	 
-	 void testDatabaseResults()
-	 {
-	 CPPUNIT_ASSERT(m_DB1->DatabaseHasResults() == false);
-	 CPPUNIT_ASSERT(m_DB1->DatabaseQuery("SELECT COUNT(*) FROM generic_lines")==true);
-	 CPPUNIT_ASSERT(m_DB1->DatabaseHasResults() == true);
-	 m_DB1->DatabaseClearResults();
-	 CPPUNIT_ASSERT(m_DB1->DatabaseQuery("SELECT COUNT(*) FROM generic_aat")==true);
-	 }*/
+	void TESTQueriesNumber()
+	{
+		wxString myQueries = _T("SELECT * FROM COUCOU; INSERT INTO ..; SELECT ALL");
+		CPPUNIT_ASSERT(m_DB->DataBaseQueriesNumber(myQueries)==3);
+		wxString myQueries2 = _T("SELECT * FROM COUCOU; INSERT INTO; SELECT ALL;");
+		CPPUNIT_ASSERT(m_DB->DataBaseQueriesNumber(myQueries)==3);		
+	}
 	
+	void TESTVersion()
+	{
+		CPPUNIT_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.33"));
+	}
 	
 	
 };
