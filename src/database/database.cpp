@@ -54,6 +54,9 @@ DataBase::DataBase()
 
 DataBase::~DataBase()
 {
+	if (DataBaseHasResults()==true)
+		DataBaseClearResults();
+	
 	if (m_IsLibraryStarted)
 	{
 		DBLibraryEnd();
@@ -199,6 +202,80 @@ void DataBase::DataBaseClearResults()
 }
 
 
+bool DataBase::DataBaseGetResultSize (unsigned int * pcols, long * prows)
+{
+	if (DBIsDataBaseReady()==false)
+		return false;
+	
+	if (DataBaseHasResults() == false)
+		return false;
+	
+	if (pcols != NULL)
+		*pcols = mysql_num_fields(m_MySQLRes);
+	
+	if (prows != NULL)
+		*prows = mysql_num_rows(m_MySQLRes);
+	
+	return true;
+}
+
+
+bool DataBase::DataBaseGetNextResult(wxString & result)
+{
+	result = wxEmptyString;
+	
+	if (DBIsDataBaseReady()==false)
+		return false;
+	
+	if (DataBaseHasResults()==false)
+		return false;
+	
+	MYSQL_ROW record;
+	
+	record = mysql_fetch_row(m_MySQLRes);
+	if(record == NULL)
+		return false;
+	
+	result = wxString ( record[0], wxConvUTF8);
+	return true;	
+}
+
+
+
+bool DataBase::DataBaseGetNextResult(wxArrayString & results)
+{
+	results.Clear();
+	
+	if (DBIsDataBaseReady()==false)
+		return false;
+	
+	if (DataBaseHasResults()==false)
+		return false;
+	
+	
+	MYSQL_ROW record;
+
+	record = mysql_fetch_row(m_MySQLRes);
+	if(record == NULL)
+		return false;
+	
+	uint myCols = 0;
+	DataBaseGetResultSize(&myCols, NULL);
+	if (myCols == 1)
+	{
+		wxLogDebug(_T("Only one columns returned, use the ")
+				   _T("DataBaseGetNextResult(wxString) function instead of this one"));
+	}
+
+	for (unsigned int i = 0; i< myCols; i++) 
+	{
+		results.Add(wxString ( record[i], wxConvUTF8));
+	}
+	return true;	
+}
+
+
+
 bool DataBase::DataBaseQueryNoResults(const wxString & query)
 {
 	if (DBIsDataBaseReady() == false)
@@ -217,10 +294,9 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 	
 	m_MySQLRes = mysql_store_result(m_MySQL);
 	DataBaseClearResults();
-		
-	
 	return true;
 }
+
 
 
 bool DataBase::DataBaseQuery (const wxString & query)

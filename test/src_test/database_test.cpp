@@ -30,6 +30,9 @@ class DataBaseTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTOpenDatabase );
 	CPPUNIT_TEST( TESTResults );
 	CPPUNIT_TEST( TESTQueryNoResults );
+	CPPUNIT_TEST( TESTResultString  );
+	CPPUNIT_TEST( TESTResultArrayString );
+	CPPUNIT_TEST( TESTCountResults );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -81,6 +84,70 @@ public:
 		CPPUNIT_ASSERT(m_DB->DataBaseQueryNoResults(_T("SELECT OBJECT_ID FROM generic_lines"))==true);
 		CPPUNIT_ASSERT(m_DB->DataBaseQueryNoResults(_T("SELECT COUNT(*) FROM generic_linesss"))==false);
 	}
+	
+	void TESTResultString ()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		wxString myReturnedString =  wxEmptyString;
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		// second query should fail, must delete results first.
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17"))==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==true);
+		CPPUNIT_ASSERT(myReturnedString == _T("bord d'érosion")); // oid = 17
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==false);
+		CPPUNIT_ASSERT(myReturnedString == wxEmptyString);
+		m_DB->DataBaseClearResults();
+		
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17777")));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==false);
+		CPPUNIT_ASSERT(myReturnedString == wxEmptyString);
+		
+	}
+	
+	void TESTResultArrayString()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		wxArrayString myResults;
+		
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myResults));
+		CPPUNIT_ASSERT(myResults.GetCount() == 9); // 9 cols in dmn_layer_object
+		CPPUNIT_ASSERT(myResults.Item(4) == _T("bord d'érosion"));
+		m_DB->DataBaseClearResults();
+		// limit tests
+		
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myResults));
+		CPPUNIT_ASSERT(myResults.GetCount() == 1);
+		m_DB->DataBaseClearResults();
+		
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJCT_ID = 17777"))==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myResults)==false);
+		CPPUNIT_ASSERT(myResults.GetCount() == 0);
+	}
+	
+	void TESTCountResults()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		uint myCols = 0;
+		long myRows = 0;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResultSize(&myCols, &myRows)==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResultSize(&myCols, NULL));
+		CPPUNIT_ASSERT(myCols == 9);
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResultSize(NULL, &myRows));
+		CPPUNIT_ASSERT(myRows == 1);
+		myRows = 0;
+		myCols = 0;
+		CPPUNIT_ASSERT(m_DB->DataBaseGetResultSize(&myCols, &myRows));
+		CPPUNIT_ASSERT(myRows == 1 && myCols == 9);
+		
+	}
+	
+	
 	
 	/*
 	 void testDatabaseQueryNoResults()
