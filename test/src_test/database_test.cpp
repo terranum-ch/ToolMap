@@ -43,6 +43,9 @@ class DataBaseTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTPathName );
 	CPPUNIT_TEST( TESTQueriesNumber );
 	CPPUNIT_TEST( TESTVersion );
+	CPPUNIT_TEST( TESTCreateNewDatabase );
+	CPPUNIT_TEST( TESTGetDataBaseSize );
+	CPPUNIT_TEST( TESTGetLastInsertID );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -283,6 +286,46 @@ public:
 		CPPUNIT_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.33"));
 	}
 	
+	
+	void TESTCreateNewDatabase()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseCreateNew(_T("/Users/Lucien/Downloads/"), _T("mytest1"))==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"), _T("mytest1")));
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SHOW TABLES FROM mytest1")));
+	}
+	
+	void TESTGetDataBaseSize()
+	{
+		wxString myFailMsg = _("Not available");
+		wxString myDBSize = m_DB->DataBaseGetSize(2, myFailMsg);
+		CPPUNIT_ASSERT(myDBSize == myFailMsg);
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"), _T("mytest1")));
+		myDBSize = m_DB->DataBaseGetSize(2, myFailMsg);
+		wxLogDebug(myDBSize);
+		CPPUNIT_ASSERT(myDBSize != myFailMsg);
+		
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/DATA/SIG/COMBIOULA/CORRIGE/TOOLMAP/"),
+										  _T("combioula_correct"))==true);
+		myDBSize = m_DB->DataBaseGetSize(2, myFailMsg);
+		wxLogDebug(myDBSize);
+		CPPUNIT_ASSERT(myDBSize != myFailMsg);
+	}
+	
+	void TESTGetLastInsertID()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
+		long myIID = m_DB->DataBaseGetLastInsertedID();
+		CPPUNIT_ASSERT(myIID == wxNOT_FOUND);
+		CPPUNIT_ASSERT(m_DB->DataBaseQueryNoResults(_T("INSERT INTO dmn_layer_object (OBJECT_CD) VALUES (1)")));
+		
+		myIID = m_DB->DataBaseGetLastInsertedID();
+		CPPUNIT_ASSERT(myIID != wxNOT_FOUND);
+		wxLogDebug(_T("Last inserted ID = %d"), myIID);
+		
+		myIID = m_DB->DataBaseGetLastInsertedID();
+		CPPUNIT_ASSERT(myIID != wxNOT_FOUND);
+		
+	}
 	
 };
 

@@ -140,8 +140,9 @@ bool DataBase::DBUseDataBase(const wxString & dbname)
 		DBLogLastError();
 		return false;
 	}
+	if (dbname != wxEmptyString)
+		wxLogMessage(_("Opening database : ") + dbname);
 	
-	wxLogMessage(_("Opening database : ") + dbname);
 	return true;
 }
 
@@ -165,6 +166,40 @@ void DataBase::DBLogLastError ()
 	wxLogError(_("MySQL Error : %s"), myTextError.c_str());
 }
 
+
+bool DataBase::DataBaseCreateNew(const wxString & datadir, const wxString & name)
+{
+	if (m_IsLibraryStarted)
+	{
+		DBLibraryEnd();
+		m_IsLibraryStarted=false;
+	}
+	
+	m_IsLibraryStarted = DBLibraryInit(datadir);
+	if (m_IsLibraryStarted == false)
+		return false;
+	
+	m_IsDatabaseOpened = DBUseDataBase(wxEmptyString);
+	if (m_IsDatabaseOpened == false)
+		return false;
+	
+	wxString myDBNewQuery (name);
+	myDBNewQuery.Prepend(_T("CREATE DATABASE "));
+	myDBNewQuery.Append (_T(" DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"));
+	if(DataBaseQueryNoResults(myDBNewQuery)==false)
+	{
+		wxLogError(_("Error creating database : ") + name);
+		return false;
+	}
+	
+	m_IsDatabaseOpened = DBUseDataBase(name);
+	if (m_IsDatabaseOpened == false)
+		return false;
+	
+	m_DBName = name;
+	m_DBPath = datadir;
+	return true;
+}
 
 
 bool DataBase::DataBaseOpen(const wxString & datadir, const wxString & name)
@@ -201,6 +236,28 @@ wxString DataBase::DataBaseGetPath ()
 {
 	return m_DBPath;
 }
+
+
+
+wxString DataBase::DataBaseGetSize (int precision, const wxString & failmsg)
+{
+	if (DBIsDataBaseReady() == false)
+		return failmsg;
+	
+	wxFileName myDBFileName (DataBaseGetPath(), DataBaseGetName());
+	if (myDBFileName.IsOk()==false)
+		return failmsg;
+	
+	wxArrayString mySkipedFiles;
+	wxULongLong myDBDirSize = wxDir::GetTotalSize(myDBFileName.GetFullPath(), &mySkipedFiles);
+	if (mySkipedFiles.GetCount() > 0)
+		wxLogDebug(_T("%d files skipped, size may not be 100% accurate"));
+	
+		
+	wxString myDBStringSize = wxFileName::GetHumanReadableSize(myDBDirSize, failmsg);
+	return 	myDBStringSize;
+}
+
 
 
 wxString DataBase::DataBaseGetVersion ()
@@ -513,6 +570,19 @@ int DataBase::DataBaseQueriesNumber (const wxString & query)
 	return tokenizer.CountTokens();
 }
 
+long DataBase::DataBaseGetLastInsertedID()
+{
+	long myIID = wxNOT_FOUND;
+	if (DBIsDataBaseReady()==false)
+		return myIID;
+	
+	myIID = mysql_insert_id(m_MySQL);
+	if (myIID == 0)
+		myIID = wxNOT_FOUND;
+	
+	return myIID;
+}
+
 
 bool DataBase::DBIsDataBaseReady ()
 {
@@ -818,6 +888,8 @@ wxArrayString DataBase::DatabaseListFields(wxString sTable)
 	return myStingArray;
 
 }
+
+
 
 bool DataBase::DataBaseGetAllTableContent(wxString sTable)
 {
