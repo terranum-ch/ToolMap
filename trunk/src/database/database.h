@@ -39,11 +39,12 @@
 #include "mysql.h"
 //#include <wx/arrstr.h> // array string
 //#include <wx/strconv.h> // unicode conversion
-//#include <wx/dir.h> // directory operation (size)
+
 //#include <wx/filename.h>
 
 #include <wx/buffer.h>
 #include <wx/tokenzr.h> // tokenizer of string
+#include <wx/dir.h> // directory operation (size)
 
 class DataBase
 	{
@@ -70,15 +71,18 @@ class DataBase
 		~DataBase();
 		
 		// database operations
+		bool DataBaseCreateNew(const wxString & datadir, const wxString & name);
 		bool DataBaseOpen(const wxString & datadir, const wxString & name);
 		wxString DataBaseGetName ();
 		wxString DataBaseGetPath ();
+		wxString DataBaseGetSize (int precision = 2, const wxString & failmsg = _("Not available"));
 		static wxString DataBaseGetVersion ();
 		
 		// query operations
 		bool DataBaseQueryNoResults(const wxString & query);
 		bool DataBaseQuery (const wxString & query); 
 		int DataBaseQueriesNumber (const wxString & query);
+		long DataBaseGetLastInsertedID();
 		
 		// results operations
 		bool DataBaseHasResults();
@@ -325,7 +329,7 @@ public:
 	allowed values are (default)LANG_UTF8, LANG_LATIN1, 
 	@result return TRUE if the new database was created succesfully.
 	*/	
-	bool DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,enum Lang_Flag Flag=LANG_UTF8);
+	//bool DataBaseCreateNew(wxString DataBasePath, wxString DataBaseName,enum Lang_Flag Flag=LANG_UTF8);
 	
 	
 	/*!
@@ -346,7 +350,7 @@ public:
 	@result  Return an human readable string containing the database size plus
 	the unit  (MB)
 	*/
-	wxString DataBaseGetSize (int iPrecision=2);
+//	wxString DataBaseGetSize (int iPrecision=2);
 
 //	static void DataBaseCloseLibrary();
 
