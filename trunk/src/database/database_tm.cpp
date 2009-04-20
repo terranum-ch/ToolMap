@@ -471,7 +471,7 @@ bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
 		wxLogError(myError);
 		return false;
 	}
-	
+	DataBaseClearResults();
 	wxASSERT(myResults.GetCount() == 4);
 		
 	// UNITS
@@ -688,12 +688,10 @@ bool DataBaseTM::AddLayerPolygonDefaultBorder (ProjectDefMemoryLayers * myLayer)
 										  _T("(%d, %d, %d, \"%s\")"),
 										  GetActiveLayerId() * 1000, LAYER_LINE, GetActiveLayerId(),
 										  myLayer->m_LayerPolygonDefaultValue.c_str());
-	if (DataBaseQuery(sSentence))
+	if (DataBaseQueryNoResults(sSentence))
 		return true;
 	else
-		wxLogDebug(_T("Error setting default border values : %s"),
-				   DataBaseGetLastError().c_str());
-	
+		wxLogError(_("Error setting default border values"));
 	return false;
 }
 
@@ -705,12 +703,13 @@ void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 	wxString sValues = wxString::Format(_T("'%s'"), myLayer->m_LayerName.c_str());
 	sSentence.Append(sValues);
 	
-	//wxLogDebug(sSentence);
-	
+	long myIndex = wxNOT_FOUND;
 	if (DataBaseQuery(sSentence)) // query OK
 	{
-		m_iDBLayerIndex = DataBaseGetResultAsInt();
-		//wxLogDebug(_T("Actual database index is %d"), m_iDBLayerIndex);
+		if (DataBaseGetNextResult(myIndex))
+			m_iDBLayerIndex == myIndex;
+		
+		DataBaseClearResults();
 	}
 	else
 		wxLogDebug(_T("Unable to find the layer [%s]"), myLayer->m_LayerName.c_str());
@@ -725,10 +724,9 @@ int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
 										  TABLE_NAME_LAYERS.c_str());
 	
 	// check if we have some results 
-	if (DataBaseResultExists())
+	if (DataBaseHasResults())
 	{
-		myResults = DataBaseGetNextResult();
-		if (!myResults.IsEmpty())
+		if(DataBaseGetNextResult(myResults))
 		{
 			wxASSERT (myResults.Count() == 3);
 			
@@ -742,12 +740,14 @@ int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
 			myLayer->m_LayerName = myResults.Item(2);
 			return 1;
 		}
+		DataBaseClearResults();
 		return -1;
 		
 	}
 	else 
 	{
-		DataBaseQuery(sSentence);
+		bool bQuery = DataBaseQuery(sSentence);
+		wxASSERT (bQuery);
 	}
 	return 0;
 }
@@ -783,7 +783,7 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 										  myLayer->m_LayerType, 
 										  myLayer->m_LayerName.c_str(),
 										  myLayer->m_LayerID));
-		return TRUE;
+		return true;
 	}
 	else 
 		// we need to insert layer immediately to get the real layer_ID.
@@ -795,22 +795,22 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 										TABLE_NAME_LAYERS.c_str(), 
 										myLayer->m_LayerType, 
 										myLayer->m_LayerName.c_str());
-		if(DataBaseQueryNoResult(sInsertSentence))
+		if(DataBaseQueryNoResults(sInsertSentence))
 		{
 			// get the last inserted id
-			myLastInsertedId = DataBaseGetLastInsertID();
-			if (myLastInsertedId > 0)
+			myLastInsertedId = DataBaseGetLastInsertedID();
+			if (myLastInsertedId !=  wxNOT_FOUND)
 			{
 				myLayer->m_LayerID = myLastInsertedId;
 			}
 			else
-				wxLogError(_T("Error, last inserted ID is not bigger than 0 : %d"),
+				wxLogError(_T("Error, last inserted ID not found : %d"),
 						   myLastInsertedId);
 		}
 		else
 			wxLogError(_T("Problem inserting layer : %s"), sInsertSentence.c_str());
 		
-		return FALSE;	
+		return false;	
 	}
 
 	
@@ -856,7 +856,7 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
 		
 		
 		// execute prepared statement
-		if(!DataBaseQueryNoResult(sDeleteSentence))
+		if(!DataBaseQueryNoResults(sDeleteSentence))
 			wxLogError(_T("Error deleting objects (GIS or attribution) : %s"),
 					   sDeleteSentence.c_str());
 		
@@ -893,7 +893,11 @@ int DataBaseTM::GetLayerID (TOC_GENERIC_NAME layertype)
 		return wxNOT_FOUND;
 	}
 	
-	return DataBaseGetResultAsInt(true);
+	long mylID = wxNOT_FOUND;
+	DataBaseGetNextResult(mylID);
+	DataBaseClearResults();
+		
+	return (int) mylID;
 }
 
 
@@ -918,13 +922,13 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 	
 	//wxLogDebug(sSentence);
 	
-	if (DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence))
 	{
-		return TRUE;
+		return true;
 	}
 	
 	wxLogDebug(_T("Unable to AddObject to the database"));
-	return FALSE;
+	return false;
 }
 
 
@@ -981,13 +985,13 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		if (myObject->m_ObjectID >= 0)
 		{
 			wxLogDebug(sUpdate);
-			if (DataBaseQueryNoResult(sUpdate))
-				return TRUE;
+			if (DataBaseQueryNoResults(sUpdate))
+				return true;
 		}
 		else
 		{
-			if (DataBaseQueryNoResult(sInsert))
-				return TRUE;
+			if (DataBaseQueryNoResults(sInsert))
+				return true;
 		}
 		
 	}
@@ -1002,49 +1006,37 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 
 bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,  int ilayertype)
 {
-	MYSQL_ROW record;
-	bool bReturnValue = FALSE;
-	int iCol = 3;
-	long lFreq = 0;
-	//wxArrayString myRowResult;
+	wxASSERT (object);
 	
-	if (m_resultNumber > 0 && pResults != NULL)
+	wxArrayString myRowResults;
+	if (DataBaseHasResults()==false)
 	{
-		record = mysql_fetch_row(pResults);
-		if(record != NULL)
-		{
-			// check object validity
-			if (object != NULL) // && m_resultNumber)
-			{
-				wxString (record[0], wxConvUTF8).ToLong( &(object->m_ObjectCode));
-				object->m_ObjectName = wxString (record[1], wxConvUTF8);
-				object->m_ParentLayerName = wxString (record[2], wxConvUTF8);
-				
-				// if we search the frequency
-				if (ilayertype == LAYER_LINE)
-				{
-					wxString (record[iCol], wxConvUTF8).ToLong (&lFreq);
-					object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;
-					iCol ++;
-				}
-				
-				// get the id
-				wxString (record[iCol], wxConvUTF8).ToLong (&(object->m_ObjectID)); 
-				bReturnValue = TRUE;
-			}
-			
-		}
-		else 
-		{
-			// clean
-			m_resultNumber=0;
-			mysql_free_result(pResults);
-			pResults = NULL;
-		}		
+		return false;
+	}
+
+	
+	if(DataBaseGetNextResult(myRowResults)==false)
+	{
+		DataBaseClearResults();
+		return false;
+	}
+		
+	wxASSERT (myRowResults.GetCount() >= 3); 
+	myRowResults.Item(0).ToLong(&(object->m_ObjectCode));
+	object->m_ObjectName = myRowResults.Item(1);
+	object->m_ParentLayerName = myRowResults.Item(2);
+	
+	
+	// if we search the frequency
+	if (ilayertype == LAYER_LINE)
+	{
+		long lFreq = 0;
+		myRowResults.Item(3).ToLong(&lFreq);
+		object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;
 	}
 	
-	return bReturnValue;
-
+	// get the id
+	myRowResults.Last().ToLong(&(object->m_ObjectID));
 }
 
 
@@ -1064,7 +1056,7 @@ int DataBaseTM::DeleteMultipleObjects (PrjDefMemManage * pProjet)
 	}
 	
 	// execute statement
-	if(DataBaseQueryNoResult(sSentence))
+	if(DataBaseQueryNoResults(sSentence))
 		return pProjet->m_StoreDeleteIDObj.GetCount();
 	
 	return -1;
@@ -1100,9 +1092,9 @@ bool DataBaseTM::DeleteTableIfExist (const wxString & TableName)
 {
 	wxString sSentence = wxString::Format(_T("DROP TABLE IF EXISTS %s; "),
 										  TableName.c_str());
-	if (DataBaseQueryNoResult(sSentence))
-		return TRUE;
-	return FALSE;
+	if (DataBaseQueryNoResults(sSentence))
+		return true;
+	return false;
 }
 
 /*************************** FIELD DATABASE FUNCTION [ PRIVATE ] *******************/
@@ -1119,13 +1111,12 @@ bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 	sCreateTable1.Append(sValues + sCreateTable2);
 	
 	
-	if (DataBaseQueryNoResult(sCreateTable1))
-	{
-		//wxLogDebug(_T("Table Creation [%s]... DONE"), TableName.c_str());	
-		return TRUE;
+	if (DataBaseQueryNoResults(sCreateTable1))
+	{	
+		return true;
 	}
 	wxLogDebug(_T("Table Creation [%s]... FAILED"), TableName.c_str());
-	return FALSE;
+	return false;
 }
 
 
@@ -1133,7 +1124,6 @@ bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 /*************************** FIELD DATABASE FUNCTION ****************************/
 bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 {
-	bool bReturnValue = TRUE;
 	wxString sSentence = _T("");
 	
 	// get the selected layer of take the actual one
@@ -1146,22 +1136,20 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	wxString sTableName = wxString::Format(TABLE_NAME_LAYER_AT + _("%d"), DBlayerIndex);
 	
 	// first we must create the table if not exist
-	AddTableIfNotExist(sTableName);
+	bool bAdded = AddTableIfNotExist(sTableName);
+	wxASSERT (bAdded);
 	
-	// check that the table exists.
-	bReturnValue = DataBaseTableExist(sTableName);
-	if (bReturnValue)
+	
+	// then create the fields based upon the fields type
+	// use the same function for updating 
+	UpdateField(myField, DBlayerIndex, sSentence);
+	if (DataBaseQueryNoResults(sSentence)==false)
 	{
-		// then create the fields based upon the fields type
-		// use the same function for updating 
-		UpdateField(myField, DBlayerIndex, sSentence);
-		bReturnValue = DataBaseQueryNoResult(sSentence);
+		wxLogError(_T("Unable to add field to the database : %s"), sSentence.c_str());
+		return false;
 	}
 	
-	if (bReturnValue == FALSE)
-		wxLogError(_T("Unable to add field to the database : %s"), sSentence.c_str());
-	
-	return bReturnValue;
+	return true;
 }
 
 
@@ -1191,32 +1179,21 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 	_T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +TABLE_NAME_LAYER_AT +
 	_T("\%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
 	
-	if(DataBaseQuery(sSentence) == FALSE)
+	if(DataBaseQuery(sSentence) == false)
 	{
 		wxLogDebug(_T("Error gettings fields from database : %s"),sSentence.c_str());
 		return -1;
 	}
 	
 	
-	// results must contain some results
-	if (!DataBaseHasResult())
-	{
-		wxLogDebug(_T("No results found for the fields"));
-		return -1;
-	}
-	
 	int iNbFields = 0;
 	long iRealLayerID = 0;
 	wxArrayString myResults;
 	ProjectDefMemoryLayers * myLayer = NULL;
 	ProjectDefMemoryFields * myField = NULL;
-	while (1) // loop until no more results
+	while (DataBaseGetNextResult(myResults)) // loop until no more results
 	{
-		myResults = DataBaseGetNextResult();
-		// if no more results : break
-		if (myResults.IsEmpty())
-			break;
-		
+
 		// find layer by real id
 		myResults.Item(0).ToLong(&iRealLayerID);
 		myLayer = myPrj->FindLayerByRealID(iRealLayerID);
@@ -1230,11 +1207,8 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 		iNbFields ++;
 		myField = myPrj->AddField();
 		myField->SetValues(myResults);
-		
-		myResults.Clear();
 	}
-	
-	
+	DataBaseClearResults();
 	return iNbFields; 
 
 }
@@ -1253,7 +1227,6 @@ bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayer
 {
 	wxASSERT(actuallayer);
 	
-	
 	wxString sStatmt = _T("SELECT CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,")
 	_T(" COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM")
 	_T(" INFORMATION_SCHEMA.COLUMNS Where table_schema = \"%s\" and")
@@ -1265,21 +1238,18 @@ bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayer
 										  actuallayer->m_LayerID);
 	if (!DataBaseQuery(sSentence))
 	{
-		//wxLogDebug(_T("Error getting fields : %s"), DataBaseGetLastError().c_str());
 		return false;
 	}
+	
 	ProjectDefMemoryFields * myField = NULL;
 	wxArrayString myResults;
-	while (1)
+	while (DataBaseGetNextResult(myResults))
 	{
-		myResults = DataBaseGetNextResult();
-		if (myResults.IsEmpty())
-			break;
 		myField = new ProjectDefMemoryFields();
 		myField->SetValues(myResults);
 		fieldarray.Add(myField);
 	}
-	
+	DataBaseClearResults();
 	return true;
 }
 
@@ -1425,14 +1395,14 @@ bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 {
 	wxArrayString myThematicResult;
-	wxString myTempResult;
 	wxString sSentence = _T("");
+	
 	
 	// normal behaviour
 	if (ilayertype != LAYER_LINE)
 	{
-	sSentence = wxString::Format(_T("SELECT LAYER_NAME FROM %s WHERE TYPE_CD = %d"),
-										  TABLE_NAME_LAYERS.c_str(), ilayertype);
+		sSentence = wxString::Format(_T("SELECT LAYER_NAME FROM %s WHERE TYPE_CD = %d"),
+									 TABLE_NAME_LAYERS.c_str(), ilayertype);
 	}
 	else // special behavious, see documentation above.
 	{
@@ -1444,19 +1414,10 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 	
 	if (DataBaseQuery(sSentence))
 	{
-		wxLogDebug(_T("Number of results found : %d"), DatabaseGetCountResults());	
-		
-		while (DataBaseGetNextResult(myTempResult))
-		{
-			myThematicResult.Add(myTempResult);
-		}
-
+		bool bResults = DataBaseGetResults(myThematicResult);
+		wxASSERT(bResults);
 	}
-	else 
-	{
-		wxLogDebug(_T("Error getting list of layer for specified listtype : %d"), ilayertype);
-	}
-
+	wxLogDebug(_T("Number of results found : %d"), myThematicResult.GetCount());
 	return myThematicResult;
 }
 
@@ -1464,11 +1425,11 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 /********************************** SCALE OPERATIONS **********************************/
 long DataBaseTM::GetNextScaleValue (long & DBindex, bool bFirst)
 {
-	long myResultScale = -1;
+	long myResultScale = wxNOT_FOUND;
 	wxArrayLong myResults;
 	
 	// no result, we process the sentence
-	if (!DataBaseHasResult() || bFirst == TRUE)
+	if (!DataBaseHasResults() || bFirst == TRUE)
 	{
 	
 		wxString sSentence = wxString::Format(_T("SELECT ZOOM_ID, SCALE_VALUE FROM %s ORDER BY RANK"),
@@ -1480,16 +1441,17 @@ long DataBaseTM::GetNextScaleValue (long & DBindex, bool bFirst)
 		}	
 	}
 	
-	DataBaseGetNextResultAsLong(myResults);
-	if (myResults.GetCount() > 0)
+	if (DataBaseGetNextResult(myResults)==false)
 	{
-		DBindex = myResults.Item(0);
-		myResultScale = myResults.Item(1);
+		DataBaseClearResults();
+		return wxNOT_FOUND;
 	}
 	
-	if (myResultScale == -1)
-		DataBaseDestroyResults();
+	wxASSERT(myResults.GetCount() == 2);
 	
+	
+	DBindex = myResults.Item(0);
+	myResultScale = myResults.Item(1);
 	return myResultScale;
 }
 
@@ -1515,22 +1477,20 @@ bool DataBaseTM::EditScale (ProjectDefMemoryScale * myScaleObj)
 	// otherwise we insert (item dosen't exist)
 	if (myScaleObj->m_DBScaleID >= 0)
 	{
-		wxLogDebug(sUpdate);
-		if (DataBaseQueryNoResult(sUpdate))
-			return TRUE;
+		if (DataBaseQueryNoResults(sUpdate))
+			return true;
 	}
 	else
 	{
-		if (DataBaseQueryNoResult(sInsert))
-			return TRUE;
+		if (DataBaseQueryNoResults(sInsert))
+			return true;
 	}
 	
 	
-	wxLogDebug(_T("Error editing scale into the database"));
-	return FALSE;
-	
-	
+	wxLogError(_("Error editing scale into the database"));
+	return false;
 }
+
 
 
 int DataBaseTM::DeleteMultipleScales (PrjDefMemManage * pProjet)
@@ -1547,11 +1507,10 @@ int DataBaseTM::DeleteMultipleScales (PrjDefMemManage * pProjet)
 	}
 	
 	// execute statement
-	if(DataBaseQueryNoResult(sSentence))
+	if(DataBaseQueryNoResults(sSentence))
 		return pProjet->m_StoreDeleteIDObj.GetCount();
 	
 	wxLogDebug(_T("Error trying to delete scale from the database : %s"), sSentence.c_str());
-	
 	return -1;
 }
 
@@ -1608,13 +1567,13 @@ bool DataBaseTM::SetRank (ListGenReport * list,
 	}
 	
 	// process the sentence
-	if (DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence))
 	{
-		return TRUE;
+		return true;
 	}
 	
 	wxLogDebug(_T("Error updating RANK : %s"), sSentence.c_str());
-	return FALSE;
+	return false;
 }
 
 
@@ -1659,13 +1618,13 @@ bool DataBaseTM::SetScaleRank (ScaleList * list, int icol,
 	}
 	
 	// process the sentence
-	if (DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence))
 	{
-		return TRUE;
+		return true;
 	}
 	
 	wxLogDebug(_T("Error updating scale RANK : %s"), sSentence.c_str());
-	return FALSE;
+	return false;
 }
 
 
@@ -1674,18 +1633,13 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 {
 	PrjDefMemManage * myPrjDef = new PrjDefMemManage();
 	ProjectDefMemoryLayers * mypLayer = NULL;
-	//ProjectDefMemoryFields * mypField = NULL;
+
 	
-	int iLayerAdded = 0, iReturnValue = 0; // iReturnFieldValue=0; //  iFieldAdded = 0
-	//wxArrayInt myLayerIDArray;
+	int iLayerAdded = 0, iReturnValue = 0; 
 	
 	// Load General project data (path, name,...)
 	if (GetProjectData(myPrjDef))
 	{
-		// clear database results
-		DataBaseDestroyResults();
-
-		
 		
 		// STEP 1
 		// get all layers 
@@ -1701,8 +1655,6 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 				myPrjDef->RemoveLayer();
 				iLayerAdded--;
 			}
-			//else	// add layer id to array
-			//	myLayerIDArray.Add(mypLayer->m_LayerID);
 			
 			iLayerAdded++;
 			
@@ -1754,7 +1706,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 		
 		// execute the sentence for deleting
 		if (!sSentence.IsEmpty())
-			if (!DataBaseQueryNoResult(sSentence))
+			if (!DataBaseQueryNoResults(sSentence))
 			{
 				wxLogError(_T("Error deleting layers : %s"), sSentence.c_str());
 				bReturn = false;
@@ -1775,9 +1727,9 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 			UpdateLayer(pLayers, sSentence);
 			
 			// check if a table exists for fields 
-			if(DataBaseTableExist(wxString::Format(_T("%s%d"),
-												   TABLE_NAME_LAYER_AT.c_str(),
-												   pLayers->m_LayerID)) )
+			if(TableExist(wxString::Format(_T("%s%d"),
+										   TABLE_NAME_LAYER_AT.c_str(),
+										   pLayers->m_LayerID)) )
 			{
 				// check if we have some fields 
 				if (pProjDef->GetCountFields() > 0)
@@ -1792,7 +1744,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					
 					
 					// modfiy the fields in the database
-					if(!DataBaseQueryNoResult(sFieldSentence))
+					if(!DataBaseQueryNoResults(sFieldSentence))
 					{
 						wxLogError(_T("Error modifing field data in the database : %s"),
 								   sFieldSentence.c_str());
@@ -1809,7 +1761,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					DeleteField(pLayers->m_StoreDeleteFields, pLayers->m_LayerID,
 								sDeleteString);
 					
-					if(!DataBaseQueryNoResult(sDeleteString))
+					if(!DataBaseQueryNoResults(sDeleteString))
 					{
 						wxLogError(_T("Unable to delete Fields from table : %s%d, %s"),
 								   TABLE_NAME_LAYER_AT.c_str(),
@@ -1845,7 +1797,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					
 					
 					// modfiy the fields in the database
-					if(!DataBaseQueryNoResult(sFieldSentence))
+					if(!DataBaseQueryNoResults(sFieldSentence))
 					{
 						wxLogError(_T("Error modifing field data in the database : %s"),
 								   sFieldSentence.c_str());
@@ -1862,7 +1814,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	
 		
 		// execute the sentence for layers.
-		if (!DataBaseQueryNoResult(sSentence))
+		if (!DataBaseQueryNoResults(sSentence))
 		{
 			wxLogError(_T("Error updating project in the database"));
 			bReturn = false;
@@ -1894,10 +1846,10 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 bool DataBaseTM::InitTOCGenericLayers()
 {
 	// check that a database is opened
-	if (!DataBaseIsOpen())
+	if (DataBaseGetName() == wxEmptyString)
 	{
 		wxLogDebug(_T("Database not opened, open database first"));
-		return FALSE;
+		return false;
 	}
 	
 	
@@ -1914,13 +1866,13 @@ bool DataBaseTM::InitTOCGenericLayers()
 											  TOC_NAME_LINES+i));
 	}
 	
-	if (!DataBaseQueryNoResult(sRealSentence))
+	if (!DataBaseQueryNoResults(sRealSentence))
 	{
 		wxLogDebug(_T("Error in TOC init : ") + sRealSentence);
-		return FALSE;
+		return false;
 	}
 	
-	return TRUE;
+	return true;
 }
 
 
@@ -1938,9 +1890,8 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 {
 	wxArrayString myTempResults;
 	
-	if(!DataBaseHasResult())
+	if(DataBaseHasResults()==false)
 	{
-		
 		wxString sSentence = _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
 		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS FROM ") + TABLE_NAME_TOC +
 		_T(" ORDER by RANK");
@@ -1952,35 +1903,19 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 		}
 	}
 	
-	if (DataBaseHasResult())
+	if (DataBaseGetNextResult(myTempResults)==false)
 	{
-		myTempResults = DataBaseGetNextResult();
-		
-		if (myTempResults.GetCount() == 0)
-		{
-			return NULL;
-		}
-				
-		if (myTempResults.GetCount() != 8)
-		{
-			wxLogDebug(_T("Error with the results : attended 8 results, got %d"),
-					   myTempResults.GetCount());
-			return NULL;
-		}
-		
-		// parsing results
-		tmLayerProperties * myLayerProp = new tmLayerProperties();
-		myLayerProp->InitFromArray(myTempResults);
-		myTempResults.Clear();
-		
-		
-		return myLayerProp;
-		
-		
-		
+		DataBaseClearResults();
+		return NULL;
 	}
+		
+	wxASSERT (myTempResults.GetCount() != 8);
+	// parsing results
+	tmLayerProperties * myLayerProp = new tmLayerProperties();
+	myLayerProp->InitFromArray(myTempResults);
+	myTempResults.Clear();
 	
-	return NULL;
+	return myLayerProp;
 }
 
 
@@ -1995,12 +1930,13 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
  *******************************************************************************/
 long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 {
-	DataBaseDestroyResults();
+	//DataBaseDestroyResults();
 
 	// converting path to windows path
 	// do nothing if not a windows path.
 	wxString myPath = item->m_LayerPathOnly;
-	DataBase::DataBaseConvertWindowsPath(myPath);
+	//FIXME: Is that needed ?
+	//DataBase::DataBaseConvertWindowsPath(myPath);
 
 	wxString sSentence = wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
@@ -2012,13 +1948,13 @@ long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 										  item->m_LayerVisible,
 										  item->m_LayerType);
 		
-	if(!DataBaseQueryNoResult(sSentence))
+	if(DataBaseQueryNoResults(sSentence)==false)
 	{
 		wxLogDebug(_T("Error inserting layer into database : %s"), sSentence.c_str());
 		return -1;
 	}
 	
-	// getting ID back
+	/* getting ID back
 	sSentence = (_T("SELECT CONTENT_ID FROM ") + TABLE_NAME_TOC +
 				 _T(" ORDER BY CONTENT_ID DESC LIMIT 1; "));
 	
@@ -2035,9 +1971,11 @@ long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 	}
 	
 	long lRetVal = DataBaseGetNextResultAsLong();
-	DataBaseDestroyResults();
+	DataBaseDestroyResults();*/
+	long myLID = DataBaseGetLastInsertedID();
+	wxASSERT(myLID != wxNOT_FOUND);
 	
-	return lRetVal;
+	return myLID;
 }
 
 
@@ -2053,13 +1991,13 @@ bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 {
 	wxString sSentence = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_TOC +
 										  _T(" WHERE CONTENT_ID = %d"), itemid);
-	if (!DataBaseQueryNoResult(sSentence))
+	if (!DataBaseQueryNoResults(sSentence))
 	{
 		wxLogDebug(_T("Not able to remove item from DB : %s"), sSentence.c_str());
-		return FALSE;
+		return false;
 	}
 	
-	return TRUE;
+	return true;
 }
 
 
@@ -2098,21 +2036,27 @@ bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & descrip
 {
 	
 	wxString sStatement = _T("");
-	if (!DataBaseHasResult() && bfirst == true)
+	if (!DataBaseHasResults() && bfirst == true)
 	{
 		sStatement = _T("SELECT * FROM ") + TABLE_NAME_QUERIES;
 		if (!DataBaseQuery(sStatement))
 		{
-			wxLogDebug(_T("Error getting queries : %s"),
-					   DataBaseGetLastError().c_str());
+			wxLogDebug(_T("Error getting queries"));
 			return false;
-			
 		}
 	}
 	
-	wxArrayString myResults = DataBaseGetNextResult();
+	wxArrayString myResults;
+	if (DataBaseGetNextResult(myResults)==false)
+	{
+		DataBaseClearResults();
+		return false;
+	}
+		
 	
-	// no more results
+	wxASSERT (myResults.GetCount() == 4);
+	
+	/* no more results
 	if (myResults.GetCount() == 0)
 		return false;
 	
@@ -2122,7 +2066,7 @@ bool DataBaseTM::GetNextQueries (long & qid, wxString & name, wxString & descrip
 		wxLogDebug(_T("Error, number of data retreived doesn't correspond to what attended : %d"),
 				   myResults.GetCount());
 		return false;
-	}
+	}*/
 	
 	
 	qid = wxAtol(myResults.Item(0));
@@ -2155,9 +2099,18 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 										   qid);
 	if(!DataBaseQuery(sStatement))
 	{
-		wxLogDebug(_T("Error getting query : %s"), DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error getting query"));
 		return false;
 	}
+	
+	if (DataBaseGetNextResult(myResults)==false)
+	{
+		DataBaseClearResults();
+		return false;
+	}
+	
+	
+	//TODO: HERE I'M NOT FINISHED
 	
 	wxArrayString myResults = DataBaseGetNextResult();
 	
