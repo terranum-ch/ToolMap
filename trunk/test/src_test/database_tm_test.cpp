@@ -1,7 +1,6 @@
 /***************************************************************************
-								main.cpp
-				test program for ToolMap 2. Unit testing using
-							cppunit library
+								database_tm_test.cpp
+							Test for database_tm class
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,30 +13,51 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- **************************************************************************/
-#include <stdio.h>
-#include "wx/string.h"
+ ***************************************************************************/
 
-#include <cppunit/ui/text/TestRunner.h>
-
-// INCLUDE TESTS FILES
-#include "../../src/database/database.cpp"
-#include "database_test.cpp"	// testing the database
-
-#include "../../src/database/database_tm.cpp"
-#include "database_tm_test.cpp"	// testing the toolmap database
+#ifndef _DATABASE_TM_TEST_CPP_
+#define _DATABASE_TM_TEST_CPP_
 
 
+#include "../../src/database/database_tm.h"
 
+#include <cppunit/TestCase.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-int main (int argc, char * const argv[])
-{
+class DataBaseTMTEST : public CppUnit::TestFixture 
+{ 
+	CPPUNIT_TEST_SUITE( DataBaseTMTEST );
+	CPPUNIT_TEST ( TESTTableExist );
+	CPPUNIT_TEST ( TESTToolMapVersion );
+	CPPUNIT_TEST_SUITE_END();
+	
+private:
+	DataBaseTM * m_DB;	
+	
+public: 
+	void setUp()
+	{
+		m_DB = new DataBaseTM();
+	}
+	
+	void tearDown() 
+	{
+		delete m_DB;
+	}
+	
+	void TESTTableExist()
+	{
+		CPPUNIT_ASSERT(m_DB->TableExist(_T("generic_lines")));
+	}
+	
+	void TESTToolMapVersion()
+	{
+		CPPUNIT_ASSERT(m_DB->GetDatabaseToolMapVersion()==220);
+	}
+	
+	
+	
+};
 
-	CppUnit::TextUi::TestRunner runner;
-	runner.addTest( DataBaseTEST::suite() );
-	runner.addTest( DataBaseTMTEST::suite() );
-	runner.run();
-	return 0;
-}
-
+#endif
 

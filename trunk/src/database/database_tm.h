@@ -86,16 +86,20 @@ class DataBaseTM : public DataBase
 		bool AddTableIfNotExist (const wxString & TableName);
 		bool DeleteTableIfExist (const wxString & TableName);
 		
-	public:
-		DataBaseTM();
-		~DataBaseTM();
-		
-		
 		// general database operations
 		bool FillLayerTableTypeData ();
 		bool FillDefaultScaleData ();
 		bool FillShortCutTable ();
+		bool TableEmpty (const wxString & tablename);
+		
+		
+	public:
+		DataBaseTM();
+		~DataBaseTM();
+		
+		// database operations
 		bool CreateEmptyTMDatabase();
+		bool TableExist (const wxString & tablename);
 		
 		// Database project operations
 		bool IsProjectDataDefined ();
