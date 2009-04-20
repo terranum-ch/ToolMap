@@ -80,8 +80,8 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	}
 	
 	//init library
-	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_UNIX);
-	char bufDataDir[myDatadir.Len()];
+	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
+	char * bufDataDir = new char[myDatadir.Len() * sizeof(wxString)];
 	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
 	
 #if defined(__WINDOWS__)
@@ -114,14 +114,17 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		(char *)NULL
 	};
 	
+	
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
 	if (myReturn != 0)
 	{
+		delete [] bufDataDir;
 		DBLogLastError();
 		return false;
 	}
 	
+	delete [] bufDataDir;
 	m_MySQL = mysql_init(NULL);
 	mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
 	wxLogDebug(_T("Initing MySQL library..."));
@@ -132,14 +135,27 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 bool DataBase::DBUseDataBase(const wxString & dbname)
 {
-	char buf[dbname.Len()];
-	strcpy( buf, (const char*)dbname.mb_str(wxConvUTF8));
+	char * buf = NULL;
+	if (dbname.IsEmpty())
+	{
+		buf = new char [3]; 
+		strcpy(buf, "");
+	}
+	else
+	{
+		buf = new char [dbname.Len() * sizeof(wxString)];
+		strcpy( buf, (const char*)dbname.mb_str(wxConvUTF8));
+	}
+
 	if(mysql_real_connect(m_MySQL,NULL,NULL,NULL,buf,
 						  3309,NULL,CLIENT_MULTI_STATEMENTS) == NULL)
 	{
+		delete [] buf;
 		DBLogLastError();
 		return false;
 	}
+	
+	delete[] buf;
 	if (dbname != wxEmptyString)
 		wxLogMessage(_("Opening database : ") + dbname);
 	
@@ -326,7 +342,7 @@ bool DataBase::DataBaseGetNextResult(wxArrayString & results)
 	if (DBGetNextRecord(record)==false)
 		return false;
 	
-	uint myCols = 0;
+	unsigned int myCols = 0;
 	DataBaseGetResultSize(&myCols, NULL);
 	if (myCols == 1)
 	{
@@ -364,7 +380,7 @@ bool DataBase::DataBaseGetNextResult(wxArrayLong & results)
 	if (DBGetNextRecord(record)==false)
 		return false;
 	
-	uint myCols = 0;
+	unsigned int myCols = 0;
 	DataBaseGetResultSize(&myCols, NULL);
 	if (myCols == 1)
 	{
@@ -402,7 +418,7 @@ bool DataBase::DataBaseGetNextResult(wxArrayDouble & results)
 	if (DBGetNextRecord(record)==false)
 		return false;
 	
-	uint myCols = 0;
+	unsigned int myCols = 0;
 	DataBaseGetResultSize(&myCols, NULL);
 	if (myCols == 1)
 	{
@@ -415,6 +431,23 @@ bool DataBase::DataBaseGetNextResult(wxArrayDouble & results)
 		results.Add(atof(record[i]));
 	}
 	return true;		
+}
+
+
+
+
+bool DataBase::DataBaseGetNextRowResult(MYSQL_ROW & row, unsigned long & length)
+{
+	row = NULL;
+	length = 0;
+	
+	if (DBGetNextRecord(row)==false)
+		return false;
+	
+	unsigned long * myTempLength = mysql_fetch_lengths(m_MySQLRes);
+	wxASSERT(*myTempLength != 0);
+	length = *myTempLength;
+	return true;
 }
 
 
@@ -526,16 +559,21 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 		return false;
 	
 	if (DataBaseHasResults())
+	{
+		wxLogDebug(_T("Not able to run query, results were not cleared"));
 		return false;
-	
-	char buf[query.Len()];
+	}
+
+	char * buf = new char[query.Len() * sizeof(wxString)];
 	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
 	if (mysql_query(m_MySQL, buf) != 0)
 	{
+		delete [] buf;
 		DBLogLastError();
 		return false;
 	}
 	
+	delete [] buf;
 	m_MySQLRes = mysql_store_result(m_MySQL);
 	DataBaseClearResults();
 	return true;
@@ -549,16 +587,20 @@ bool DataBase::DataBaseQuery (const wxString & query)
 		return false;
 	
 	if (DataBaseHasResults())
+	{
+		wxLogDebug(_T("Not able to run query, results were not cleared"));
 		return false;
-	
-	char buf[query.Len()];
+	}
+		
+	char * buf = new char[query.Len() * sizeof(wxString)];
 	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
 	if (mysql_query(m_MySQL, buf) != 0)
 	{
+		delete [] buf;
 		DBLogLastError();
 		return false;
 	}
-	
+	delete [] buf;	
 	m_MySQLRes = mysql_store_result(m_MySQL);
 	return true;
 }

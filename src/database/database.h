@@ -95,6 +95,8 @@ class DataBase
 		bool DataBaseGetNextResult(wxArrayLong & results);
 		bool DataBaseGetNextResult(double & result);
 		bool DataBaseGetNextResult(wxArrayDouble & results);
+		bool DataBaseGetNextRowResult(MYSQL_ROW & row, unsigned long & length);
+		
 		// results set (auto cleared after use)
 		bool DataBaseGetResults(wxArrayString & results);
 		bool DataBaseGetResults(wxArrayLong & results);
