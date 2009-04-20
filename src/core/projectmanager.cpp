@@ -56,11 +56,9 @@ ProjectManager::~ProjectManager()
 	// closing database only at the program end.
 	if (m_DB != NULL)
 	{
-			delete m_DB;
+		delete m_DB;
+		m_DB = NULL;
 	}
-	
-	// closing the library
-	DataBase::DataBaseCloseLibrary();
 }
 
 
@@ -193,18 +191,12 @@ bool ProjectManager::EditProject ()
 		}
 		else
 		{
-			wxLogDebug(_T("Project Modification error : %s"),
-					   m_DB->DataBaseGetLastError().c_str());
+			wxLogError(_("Project definition update error"));
 			bReturn = false;
 			// reload actual project
 			LoadProjectDefintion(2);
 		}
 	}
-	else // dialog cancelled
-	{
-		//LoadProjectDefintion(2);
-	}
-	
 	delete myNewProjDlg;
 	
 	return bReturn;
@@ -315,7 +307,7 @@ bool ProjectManager::IsDataBasePath(const wxString & path)
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 October 2008
  *******************************************************************************/
-int ProjectManager::OpenProject(const wxString & path)
+int ProjectManager::OpenProject(const wxString & path, const wxString & name)
 {
 	// close any existing project
 	CloseProject();

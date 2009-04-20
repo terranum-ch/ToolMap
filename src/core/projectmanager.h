@@ -96,7 +96,7 @@ class ProjectManager : public wxObject
 		// project operations 
 		bool CreateNewProject();
 		void CloseProject();
-		int OpenProject(const wxString & path);
+		int OpenProject(const wxString & path, const wxString & name);
 		bool EditProjectObjectDefinition ();
 		bool EditProjectSettings ();
 		bool EditProject ();

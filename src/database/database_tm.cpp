@@ -218,31 +218,23 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 
 	
 	
-	wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
-	
-	for (unsigned int i= 0; i<myArray.GetCount(); i++)
-	{
-		if(!DataBaseQueryNoResult(myArray.Item(i)))
-		{
-			// request in not ok
-			wxLogDebug(_T("Errors during process of Tables creation"));
-			return FALSE;
-		}
-	}
+	//wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
+	if (DataBaseQueryNoResults(myNewPrjSentence)==false)
+		return false;
 	
 	
 	// pass field data to the database
-	if (FillLayerTableTypeData()==FALSE)
-		return FALSE;
+	if (FillLayerTableTypeData()==false)
+		return false;
 	
 	// pass scale data into the database
-	if (FillDefaultScaleData()==FALSE)
-		return FALSE;
+	if (FillDefaultScaleData()==false)
+		return false;
 	
 	if (FillShortCutTable()==false)
 		return false;
 	
-	return TRUE;	
+	return true;	
 	
 }
 
@@ -250,15 +242,30 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 
 
 
+bool DataBaseTM::TableExist (const wxString & tablename)
+{
+	return false;
+	
+}
+
+
+bool DataBaseTM::TableEmpty (const wxString & tablename)
+{
+	return false;
+}
+
+
 /*************************** PROJECT DATABASE FUNCTION ****************************/
 bool DataBaseTM::FillLayerTableTypeData ()
 {
 	wxString sSentence = _T("");
-	bool bReturnValue = TRUE;
+	bool bReturnValue = false;
 	
+	wxASSERT(TableExist(TABLE_NAME_LAYER_TYPE));
+
 	// fill the field from the layer type table
 	// only if the table is empty...
-	if (DataBaseIsTableEmpty(TABLE_NAME_LAYER_TYPE))
+	if (TableEmpty(TABLE_NAME_LAYER_TYPE))
 	{
 		for (int i = 0; i< PRJDEF_LAYERS_TYPE_NUMBER; i++)
 		{
@@ -267,11 +274,13 @@ bool DataBaseTM::FillLayerTableTypeData ()
 							 i, PRJDEF_LAYERS_TYPE_STRING[i].c_str());
 			
 			// in case of error send debug message
-			if(!DataBaseQueryNoResult(sSentence))
+			if(DataBaseQueryNoResults(sSentence)==false)
 			{
-				wxLogDebug(_T("Error filling data into the [%s] tables"),
-						   TABLE_NAME_LAYER_TYPE.c_str());	
+				wxLogError(_("Error filling data into the [%s] tables"),
+						   TABLE_NAME_LAYER_TYPE.c_str());
 			}
+			else
+				bReturnValue = true;
 		}
 		
 	}
@@ -302,7 +311,7 @@ bool DataBaseTM::FillDefaultScaleData ()
 	int iScaleNum = (sizeof (iScale) / sizeof (int));
 	
 	// check that the zoom table is empty otherwise error
-	if (DataBaseIsTableEmpty(TABLE_NAME_SCALE))
+	if (TableEmpty(TABLE_NAME_SCALE))
 	{
 		// prepare statement
 		for (int i = 0; i<iScaleNum; i++)
@@ -351,9 +360,9 @@ bool DataBaseTM::FillShortCutTable ()
 		sSentence.Append(wxString::Format(_T("(%d, \"%s\"); "), i+1, tmShortCutKeys[i].c_str()));
 	}
 	
-	if (!DataBaseQuery(sSentence))
+	if (DataBaseQuery(sSentence)==false)
 	{
-		wxLogError(_("Error filling shortcut table : %s"), DataBaseGetLastError().c_str());
+		wxLogError(_("Error filling shortcut table"));
 		return false;
 	}
 	
@@ -377,12 +386,15 @@ bool DataBaseTM::IsProjectDataDefined ()
 	if (DataBaseQuery(sSentence))
 	{
 		// if ok the project settings exist
-		if (DataBaseHasResult())
-			return TRUE;
+		if (DataBaseHasResults())
+		{
+			DataBaseClearResults();
+			return true;
+		}
 	}
 	
 	wxLogDebug(_T("No data found into the project settings table"));
-	return FALSE;
+	return false;
 }
 
 
@@ -419,11 +431,11 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 									 pPrjDefinition->m_PrjSummary.c_str());
 	
 	// processing request
-	if (DataBaseQueryNoResult(sSentence))
-		return TRUE;
+	if (DataBaseQueryNoResults(sSentence))
+		return true;
 	
 	wxLogDebug(_T("Error while modifing the project settings in the database"));
-	return FALSE;
+	return false;
 }
 
 
@@ -441,50 +453,60 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
 {
 	int i=0;
-	wxString sSentence = wxString::Format(_T("SELECT PRJ_UNIT, PRJ_PROJECTION, PRJ_NAME, ")
+	wxString sSentence = wxString::Format(_T("SELECT PRJ_UNIT, PRJ_PROJECTION,")
 										  _T("PRJ_AUTHORS, PRJ_SUMMARY FROM %s"), 
 										  TABLE_NAME_PRJ_SETTINGS.c_str());
-	if (DataBaseQuery(sSentence))
+	
+	wxString myError = _T("Error getting project data from the Database");
+	if (DataBaseQuery(sSentence)==false)
 	{
-		wxArrayString myResults = DataBaseGetNextResult();
-		
-		// UNITS
-		for (i = 0; i<PRJDEF_UNIT_TYPE_NUMBER; i++)
-		{
-			if (myResults.Item(0) == PRJDEF_UNIT_TYPE_STRING[i])
-			{
-				pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) i;
-				break;
-			}
-		}
-		
-		// PROJECTION
-		for (i = 0; i< PRJDEF_PROJ_TYPE_NUMBER; i++)
-		{
-			if(myResults.Item(1) == PRJDEF_PROJ_TYPE_STRING[i])
-			{
-				pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) i;
-				break;
-			}
-			
-		}
-		
-		// NAME
-		pPrjDefinition->m_PrjName = DataBaseGetName();
-		
-		// PATH
-		pPrjDefinition->m_PrjPath = DataBaseGetPath();
-		
-		// AUTHORS
-		pPrjDefinition->m_PrjAuthors = myResults.Item(3);
-		
-		// COMMENT
-		pPrjDefinition->m_PrjSummary = myResults.Item(4);
-		
-		return TRUE;
+		wxLogError(myError);
+		return false;
 	}
-	wxLogError(_T("Error getting project data from the DB"));
-	return FALSE;
+	
+	
+	wxArrayString myResults;
+	if(DataBaseGetNextResult(myResults)==false)
+	{
+		wxLogError(myError);
+		return false;
+	}
+	
+	wxASSERT(myResults.GetCount() == 4);
+		
+	// UNITS
+	for (i = 0; i<PRJDEF_UNIT_TYPE_NUMBER; i++)
+	{
+		if (myResults.Item(0) == PRJDEF_UNIT_TYPE_STRING[i])
+		{
+			pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) i;
+			break;
+		}
+	}
+	
+	// PROJECTION
+	for (i = 0; i< PRJDEF_PROJ_TYPE_NUMBER; i++)
+	{
+		if(myResults.Item(1) == PRJDEF_PROJ_TYPE_STRING[i])
+		{
+			pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) i;
+			break;
+		}
+		
+	}
+	
+	// NAME
+	pPrjDefinition->m_PrjName = DataBaseGetName();
+	
+	// PATH
+	pPrjDefinition->m_PrjPath = DataBaseGetPath();
+	
+	// AUTHORS
+	pPrjDefinition->m_PrjAuthors = myResults.Item(2);
+	
+	// COMMENT
+	pPrjDefinition->m_PrjSummary = myResults.Item(3);
+	return TRUE;
 }
 
 
@@ -492,13 +514,16 @@ bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
 int	 DataBaseTM::GetDatabaseToolMapVersion ()
 {
 	wxString sSentence = _T("SELECT (PRJ_VERSION) FROM " + TABLE_NAME_PRJ_SETTINGS);
+	long myVersion = 0;
+	int iReturnedVersion = wxNOT_FOUND;
 	if (DataBaseQuery(sSentence))
 	{
-		return DataBaseGetResultAsInt();
+		if(DataBaseGetNextResult(myVersion))
+			iReturnedVersion = (int) myVersion;
+		
+		DataBaseClearResults();
 	}
-	wxLogDebug(_T("Getting database version not passed"));
-	return -1;
-	
+	return iReturnedVersion;
 }
 
 
@@ -548,16 +573,19 @@ bool DataBaseTM::SetProjectBackupPath (const wxString & spath)
 int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
 {
 	int iflagreturn = PATH_OK;
-	wxArrayString myResult;
+	wxArrayString myResults;
 	
 	wxString sSentence = _T("SELECT PRJ_EXPORT_TYPE, PRJ_EXPORT_PATH FROM ") + 
 	TABLE_NAME_PRJ_SETTINGS;
-	if (DataBaseQuery(sSentence) && DataBaseHasResult())
+	if (DataBaseQuery(sSentence) && DataBaseHasResults())
 	{
 		// get the first result as int
-		myResult = DataBaseGetNextResult();
-		iExportType = wxAtoi(myResult.Item(0));
-		spath = myResult.Item(1);
+		bool bValue = DataBaseGetNextResult(myResults);
+		wxASSERT (bValue);
+		wxASSERT (myResults.GetCount() == 2);
+
+		iExportType = wxAtoi(myResults.Item(0));
+		spath = myResults.Item(1);
 		
 		if (spath.IsEmpty())
 			iflagreturn = PATH_EMPTY;
@@ -567,6 +595,8 @@ int	DataBaseTM::GetProjectExportData (int & iExportType, wxString &spath)
 			if (!wxFileName::DirExists(spath))
 				iflagreturn = PATH_INVALID;
 		}
+		
+		DataBaseClearResults();
 		
 	}
 	else // error querying the database
@@ -595,7 +625,7 @@ int DataBaseTM::GetProjectBackupPath (wxString & spath)
 	
 	wxString sSentence = _T("SELECT PRJ_BACKUP_PATH FROM ") + 
 						TABLE_NAME_PRJ_SETTINGS;
-	if (DataBaseQuery(sSentence) && DataBaseHasResult())
+	if (DataBaseQuery(sSentence) && DataBaseHasResults())
 	{
 		DataBaseGetNextResult(spath);
 		
@@ -630,14 +660,13 @@ bool DataBaseTM::AddLayer(ProjectDefMemoryLayers * myLayer)
 		myLayer->m_LayerName.c_str());
 	sSentence.Append(sValues);
 	
-	//wxLogDebug(sSentence);
 	
-	if (DataBaseQueryReal(sSentence)==0)//DataBaseQueryMultiple(sSentence) == 0)
+	if (DataBaseQueryNoResults(sSentence))
 	{
 		SetActiveLayerId(myLayer);
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -2298,11 +2327,11 @@ bool DataBaseTM::GetAllUnusedShortcuts (wxArrayString & keylist)
 		return false;
 	}
 	
-	wxString myResult = _T("");
+	wxString myResults = _T("");
 	for (int i = 0; i< DatabaseGetCountResults(); i++)
 	{
-		if (DataBaseGetNextResult(myResult))
-			keylist.Add(myResult);
+		if (DataBaseGetNextResult(myResults))
+			keylist.Add(myResults);
 	}
 	
 	return true;
