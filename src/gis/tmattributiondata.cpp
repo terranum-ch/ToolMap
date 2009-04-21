@@ -233,12 +233,10 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
 	PrepareAttributionStatement(myAttribStatement, m_TableName, values);
 	
 	wxASSERT (m_pDB);
-	if (!m_pDB->DataBaseQueryNoResult(myClearStatement + myAttribStatement))
+	if (m_pDB->DataBaseQueryNoResults(myClearStatement + myAttribStatement)==false)
 	{
-		wxLogDebug(_T("Error trying to attributes objects : %s"),
-				   m_pDB->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error trying to attributes objects"));
 		return false;
-		
 	}
 	
 	return true;
@@ -267,7 +265,7 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
 		iStep = PrepareAAttribStatement(sSentence,&myLayer, values, iStep, m_SelIDs->Item(0));
 	}
 	
-	if (!m_pDB->DataBaseQueryNoResult(sSentence))
+	if (m_pDB->DataBaseQueryNoResults(sSentence)==false)
 		return false;
 	
 	return true;
@@ -313,7 +311,7 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
 	wxLogDebug(_T("Layers found with spatial type : %d -- %s"),
 			   layertype, sSentence.c_str());
 	
-	if (!m_pDB->DataBaseQueryNoResult(sSentence, true))
+	if (m_pDB->DataBaseQueryNoResults(sSentence)==false)
 		return false;
 
 	return true;
@@ -410,23 +408,19 @@ bool tmAttributionData::GetInfoBasicValues (const long & selected,
 	PrepareGetInfoStatement(sStatement, m_TableName);
 	m_SelIDs->RemoveAt(0);
 	
-	if (!m_pDB->DataBaseQuery(sStatement))
+	if (m_pDB->DataBaseQuery(sStatement)==false)
 	{
-		wxLogDebug(_T("Error getting info : %s"),
-				   m_pDB->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error getting info "));
 		return false;
 	}
 	
 	
 	long mySelTemp = wxNOT_FOUND;
-	while (1)
+	while (m_pDB->DataBaseGetNextResult(mySelTemp))
 	{
-		mySelTemp = m_pDB->DataBaseGetNextResultAsLong();
-		if (mySelTemp == wxNOT_FOUND)
-			break;
 		values.Add(mySelTemp);
 	}
-	
+	m_pDB->DataBaseClearResults();
 	return true;
 }
 
@@ -448,10 +442,9 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 	//if (m_SelIDs
 	PrepareGetInfoMultipleStatement(sStatement, m_TableName);
 
-	if (!m_pDB->DataBaseQuery(sStatement))
+	if (m_pDB->DataBaseQuery(sStatement)==false)
 	{
-		wxLogDebug(_T("Error getting info : %s"),
-				   m_pDB->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error getting info"));
 		return false;
 	}
 	
@@ -467,14 +460,15 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 		{
 			if (bGetNextResult)
 			{
-				myRetValues.Clear();
-				m_pDB->DataBaseGetNextResultAsLong(myRetValues);
+				bool bReturn = m_pDB->DataBaseGetResults(myRetValues);
+				wxASSERT(bReturn);
 			}
-				
+			
 			if (myRetValues.GetCount() != 2)
 			{
 				break;
 			}
+			
 			
 			if (myRetValues.Item(0)== myAttrib.m_Oid)
 			{
@@ -493,6 +487,7 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 		values.Add(myAttrib);
 		myAttrib.m_Values.Clear();
 	}
+	m_pDB->DataBaseClearResults();
 	return true;
 }
 
@@ -568,26 +563,17 @@ bool tmAttributionData::GetBasicNameFromID (const tmAttributionBasic & myAttribO
 	sSentence.Append(_T(");"));
 	
 	wxASSERT (m_pDB);
-	if (!m_pDB->DataBaseQuery(sSentence))
+	if (m_pDB->DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting name from id %s, %s"),
-				   m_pDB->DataBaseGetLastError().c_str(),
-				   sSentence.c_str());
+		wxLogDebug(_T("Error getting name from id %s"),sSentence.c_str());
 		return false;
 	}
 	
-	wxString myTmpBuffer;
-	txtvalues.Clear();
-	while(1)
-	{
-		if (!m_pDB->DataBaseGetNextResult(myTmpBuffer))
-		{
-			break;
-		}
-		txtvalues.Add(myTmpBuffer);
-	}
-	
+	if (m_pDB->DataBaseGetResults(txtvalues)==false)
+		return false;
+		
 	return true;
+
 }
 
 
@@ -674,17 +660,13 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 										  geomid,
 										  layertype);
 	wxASSERT (m_pDB);
-	if (!m_pDB->DataBaseQuery(sSentence, true))
+	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return false;
 	
 	long myLayerTemp = wxNOT_FOUND;
-	while(1)
-	{
-		myLayerTemp = m_pDB->DataBaseGetNextResultAsLong();
-		if (myLayerTemp == wxNOT_FOUND)
-			break;
-		layersid.Add(myLayerTemp);
-	}
+	
+	if (m_pDB->DataBaseGetResults(layersid)==false)
+		return false;
 	
 	if (layersid.GetCount() > 0)
 		return true;
@@ -743,14 +725,14 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 											   wxArrayString & values,
 											   long selected)
 {
-	m_pDB->DataBaseDestroyResults();
+	//m_pDB->DataBaseDestroyResults();
 	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%d"),
 									   layer->m_LayerID, selected);
-	if (!m_pDB->DataBaseQuery(sQuery, true))
+	if (m_pDB->DataBaseQuery(sQuery)==false)
 		return false;
 	
 	// no results, fill array with empty strings
-	if (!m_pDB->DataBaseHasResult())
+	if (m_pDB->DataBaseHasResults()==false)
 	{
 		for (unsigned int i = 0; i<layer->m_pLayerFieldArray->GetCount();i++)
 		{
@@ -759,8 +741,10 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 	}
 	else // if results, parse them
 	{
-		wxArrayString myResults = m_pDB->DataBaseGetNextResult();
-		m_pDB->DataBaseDestroyResults();
+		wxArrayString myResults;
+		bool bResult = m_pDB->DataBaseGetNextResult(myResults);
+		wxASSERT (bResult);
+		m_pDB->DataBaseClearResults();
 		
 		for (unsigned int j = 1 ; j< myResults.GetCount();j++)
 			values.Add(myResults.Item(j));

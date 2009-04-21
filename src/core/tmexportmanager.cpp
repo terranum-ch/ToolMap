@@ -610,10 +610,9 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 										  sValTable.c_str(),
 										  TABLE_NAME_OBJECTS.c_str(),
 										  layer->m_LayerID);
-	if (!m_pDB->DataBaseQuery(sSentence))
+	if (m_pDB->DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting data : %s"),
-				   m_pDB->DataBaseGetLastError().c_str());
+		wxLogError(_("Error getting data"));
 		return false;
 	}
 	
@@ -639,7 +638,7 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 			break;
 	}
 	
-	m_pDB->DataBaseDestroyResults();
+	m_pDB->DataBaseClearResults();
 	
 	return false;
 }

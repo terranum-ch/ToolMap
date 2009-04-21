@@ -312,7 +312,7 @@ bool tmExportData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer)
 	wxASSERT (layer);
 	wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%d ORDER BY OBJECT_ID"),
 										  layer->m_LayerID);
-	if (!m_pDB->DataBaseQuery(sSentence, true))
+	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return false;
 		
 	return true;
