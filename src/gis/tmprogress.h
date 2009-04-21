@@ -144,8 +144,8 @@ class tmProgressIndicatorThread : public wxThread
 		wxWindow * m_Parent;
 		
 	public:
-		tmProgressIndicatorThread(wxWindow * parent, const wxString & message) : 
-		m_Parent(parent), m_Message(message), m_Stop(FALSE) {}
+		tmProgressIndicatorThread(wxWindow * parent, const wxString & message); // : 
+//		m_Parent(parent), m_Message(message), m_Stop(FALSE) {}
 		virtual void * Entry();
 		void StopThread (){m_Stop = TRUE;}
 	};

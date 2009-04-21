@@ -56,7 +56,7 @@ class tmSerialize
 	public:
 		tmSerialize();
 		tmSerialize(wxString stream);
-		
+		virtual ~tmSerialize(){;}
 		
 		
 		

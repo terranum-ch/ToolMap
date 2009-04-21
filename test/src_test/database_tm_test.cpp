@@ -38,6 +38,7 @@ public:
 	void setUp()
 	{
 		m_DB = new DataBaseTM();
+		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"), _T("testedit")));
 	}
 	
 	void tearDown() 
@@ -48,6 +49,9 @@ public:
 	void TESTTableExist()
 	{
 		CPPUNIT_ASSERT(m_DB->TableExist(_T("generic_lines")));
+		CPPUNIT_ASSERT(m_DB->TableExist(_T("generic_linesss"))==false);
+		CPPUNIT_ASSERT(m_DB->TableExist(_T("dmn_layer_object")));
+		CPPUNIT_ASSERT(m_DB->TableExist(_T("prj_settings")));
 	}
 	
 	void TESTToolMapVersion()

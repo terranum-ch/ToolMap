@@ -53,8 +53,9 @@ void ProjectPropertiesDLG::OnSaveButton (wxCommandEvent & event)
 	int iSelExportType = m_DLGPS_Export_Type_Choice->GetSelection();
 	
 	// update path for windows, does nothing if path is unix
-	DataBase::DataBaseConvertWindowsPath(myBackupPath);
-	DataBase::DataBaseConvertWindowsPath(myExportPath);
+	//DataBase::DataBaseConvertWindowsPath(myBackupPath);
+	//DataBase::DataBaseConvertWindowsPath(myExportPath);
+	//FIXME: Is windows path needed ?
 	
 	// check that the project data is defined 
 	// otherwise we have a big problem :-)

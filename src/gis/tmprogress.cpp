@@ -300,6 +300,13 @@ void * tmProgressIndicatorThread::Entry()
 }
 
 
+tmProgressIndicatorThread::tmProgressIndicatorThread(wxWindow * parent, const wxString & message)
+{
+	m_Parent = parent;
+	m_Message = message;
+	m_Stop = false;
+}
+
 
 
 
