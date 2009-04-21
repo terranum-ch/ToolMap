@@ -244,7 +244,16 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 
 bool DataBaseTM::TableExist (const wxString & tablename)
 {
-	return false;
+	wxString mySentence =	_T("SELECT * FROM ") + tablename + 
+							_T(" LIMIT 5");
+	if (DataBaseQuery(mySentence)==false)
+		return false;
+	
+	if (DataBaseHasResults()==false)
+		return false;
+	
+	DataBaseClearResults();
+	return true;
 	
 }
 
@@ -707,7 +716,7 @@ void DataBaseTM::SetActiveLayerId (ProjectDefMemoryLayers * myLayer)
 	if (DataBaseQuery(sSentence)) // query OK
 	{
 		if (DataBaseGetNextResult(myIndex))
-			m_iDBLayerIndex == myIndex;
+			m_iDBLayerIndex = myIndex;
 		
 		DataBaseClearResults();
 	}
@@ -1037,6 +1046,7 @@ bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,
 	
 	// get the id
 	myRowResults.Last().ToLong(&(object->m_ObjectID));
+	return true;
 }
 
 
@@ -2103,27 +2113,15 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 		return false;
 	}
 	
+	wxArrayString myResults;
 	if (DataBaseGetNextResult(myResults)==false)
 	{
 		DataBaseClearResults();
 		return false;
 	}
 	
-	
-	//TODO: HERE I'M NOT FINISHED
-	
-	wxArrayString myResults = DataBaseGetNextResult();
-	
-	// no results
-	if (myResults.GetCount() == 0)
-		return false;
-	
-	if (myResults.GetCount() != 3)
-	{
-		wxLogDebug(_T("Wrong number of results returned : %d"), myResults.GetCount());
-		return false;
-	}
-	
+	wxASSERT(myResults.GetCount() == 3);
+			
 	name = myResults.Item(0);
 	description = myResults.Item(1);
 	target = wxAtoi(myResults.Item(2));
@@ -2169,12 +2167,10 @@ bool DataBaseTM::EditQueries (int target, const wxString & name,
 		sStatement = sUpdStatement;
 	}
 	
-	if (!DataBaseQuery(sStatement))
+	if (DataBaseQueryNoResults(sStatement) == false)
 	{
-		wxLogDebug(_T("Error during query : %s"),DataBaseGetLastError().c_str());
 		return false;
-	}
-	
+	}	
 	return true;
 }
 
@@ -2190,9 +2186,8 @@ bool DataBaseTM::DeleteQuery (long qid)
 {
 	wxString sStatement = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_QUERIES +
 										   _T(" WHERE QUERIES_ID=%d"), qid);
-	if (!DataBaseQuery(sStatement))
+	if (DataBaseQueryNoResults(sStatement)==false)
 	{
-		wxLogDebug(_T("Error during query : %s"),DataBaseGetLastError().c_str());
 		return false;
 	}
 	return true;
@@ -2221,7 +2216,7 @@ bool DataBaseTM::GetNextShortcutByLayerType (int layer_type, wxString & key,
 	_T("WHERE c.OBJECT_TYPE_CD = %d)");
 	
 	// do the query during the first loop
-	if (!DataBaseHasResult() && bFirstLoop == true)
+	if (!DataBaseHasResults() && bFirstLoop == true)
 	{
 		wxString sStatement = wxString::Format(sValue,	
 											   TABLE_NAME_SHORTCUT_DMN.c_str(),
@@ -2229,30 +2224,22 @@ bool DataBaseTM::GetNextShortcutByLayerType (int layer_type, wxString & key,
 											   TABLE_NAME_OBJECTS.c_str(),
 											   layer_type);
 		
-		if (!DataBaseQuery(sStatement))
+		if (DataBaseQuery(sStatement)==false)
 		{
-			wxLogDebug(_T("Error during query : %s"), DataBaseGetLastError().c_str());
 			return false;
 		}
 	}
 	
-	wxArrayString myResults = DataBaseGetNextResult();
-	
-	// no more results
-	if (myResults.GetCount() == 0)
-		return false;
-	
-	// invalid result
-	if (myResults.GetCount() != 2)
+	wxArrayString myResults;
+	if (DataBaseGetNextResult(myResults)==false)
 	{
-		wxLogDebug(_T("Error, number of data retreived doesn't correspond to what attended : %d"),
-				   myResults.GetCount());
+		DataBaseClearResults();
 		return false;
 	}
+	wxASSERT (myResults.GetCount() == 2);
 	
 	key = myResults.Item(0);
 	description = myResults.Item(1);
-	
 	return true;
 }
 
@@ -2274,18 +2261,13 @@ bool DataBaseTM::GetAllUnusedShortcuts (wxArrayString & keylist)
 			+ _T(" a LEFT JOIN ") + TABLE_NAME_SHORTCUT_LIST + 
 			_T(" b ON  a.SHORTCUT_CD = b.SHORTCUT_CD WHERE  b.SHORTCUT_CD IS NULL");
 	
-	if (!DataBaseQuery(sSentence))
+	if (DataBaseQuery(sSentence) == false)
 	{
-		wxLogDebug(_T("Error getting Shortcut key : %s"), DataBaseGetLastError().c_str());
 		return false;
 	}
 	
-	wxString myResults = _T("");
-	for (int i = 0; i< DatabaseGetCountResults(); i++)
-	{
-		if (DataBaseGetNextResult(myResults))
-			keylist.Add(myResults);
-	}
+	if (DataBaseGetResults(keylist)==false)
+		return false;
 	
 	return true;
 }
@@ -2312,20 +2294,19 @@ bool DataBaseTM::GetNextShortCutObject (long & shortcutid, const int & key,
 	
 	if (bFirstLoop)
 	{
-		if (!DataBaseQuery(sSentence))
+		if (DataBaseQuery(sSentence)==false)
 		{
-			wxLogDebug(_T("Error getting shortcut : %s"), DataBaseGetLastError().c_str());
 			return false;
 		}
 		
 	}
 	
-	if (!DataBaseHasResult())
+	if (DataBaseGetNextResult(shortcutid)==false)
 	{
+		DataBaseClearResults();
 		return false;
 	}
 
-	shortcutid = DataBaseGetNextResultAsLong();
 	return true;
 }
 
@@ -2347,9 +2328,8 @@ bool DataBaseTM::DeleteShortcut (int shortcutkey)
 										  shortcutkey,
 										  TABLE_NAME_SHORTCUT_DMN.c_str(),
 										  shortcutkey);
-	if (!DataBaseQuery(sSentence))
+	if (DataBaseQueryNoResults(sSentence)==false)
 	{
-		wxLogDebug(_T("Error deleting shortcut : %s"), DataBaseGetLastError().c_str());
 		return false;
 	}
 	
@@ -2386,10 +2366,9 @@ bool DataBaseTM::EditShortcut (int shortcutkey, const wxString & description,
 										  types.Item(i),
 										  shortcutkey));
 	
-	if (!DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence)==false)
 	{
-		wxLogDebug(_T("Error editing shortcut : %s"),
-				   DataBaseGetLastError().c_str());
+		wxLogError(_("Error editing shortcut"));
 		return false;
 	}
 	
@@ -2423,37 +2402,30 @@ bool DataBaseTM::GetNextShortcutFull (bool bFirstLoop, int & layertype,
 										  TABLE_NAME_SHORTCUT_DMN.c_str(),
 										  TABLE_NAME_SHORTCUT_LIST.c_str(),
 										  TABLE_NAME_OBJECTS.c_str());
-	// running query
-	
+	// running query	
 	if (bFirstLoop)
 	{
-		DataBaseDestroyResults();
-		if (!DataBaseQuery(sSentence))
+		if (DataBaseQuery(sSentence)==false)
 		{
-			wxLogDebug(_T("Error getting info for shortcuts : %s"),
-					   DataBaseGetLastError().c_str());
 			return false;
 		}
 		
 	}
 	
-	// getting data
-	if (!DataBaseHasResult())
+	wxArrayString myResultRow;
+	if (DataBaseGetNextResult(myResultRow)==false)
 	{
+		DataBaseClearResults();
 		return false;
 	}
 	
-	wxArrayString myResultRow = DataBaseGetNextResult();
-	if (myResultRow.GetCount() != 4)
-		return false;
+	wxASSERT(myResultRow.GetCount() == 4);
 	
 	key = wxAtoi(myResultRow.Item(0));
 	layertype = wxAtoi(myResultRow.Item(1));
 	description = myResultRow.Item(2);
-	myResultRow.Item(3).ToLong(&shortcutvalue);
-	
+	myResultRow.Item(3).ToLong(&shortcutvalue);	
 	return true;
-	
 }
 
 
@@ -2479,30 +2451,24 @@ bool DataBaseTM::GetNextSnapping (long & lid, wxString & layername,
 	// if first loop
 	if (bfirstloop)
 	{
-		DataBaseDestroyResults();
-		if (!DataBaseQuery(sSentence))
+		if (DataBaseQuery(sSentence)==false)
 		{
-			wxLogDebug(_T("Error getting info for snapping : %s"),
-					   DataBaseGetLastError().c_str());
 			return false;
-		}
-		
+		}		
 	}
 	
-	// getting data
-	if (!DataBaseHasResult())
+	
+	wxArrayString myResultRow;
+	if (DataBaseGetNextResult(myResultRow)==false)
 	{
+		DataBaseClearResults();
 		return false;
 	}
-	
-	wxArrayString myResultRow = DataBaseGetNextResult();
-	if (myResultRow.GetCount() != 3)
-		return false;
+	wxASSERT (myResultRow.GetCount() == 3);
 	
 	myResultRow.Item(0).ToLong(&lid);
 	layername = myResultRow.Item(1);
 	snapstatus = wxAtoi(myResultRow.Item(2));
-	
 	return true;
 }
 
@@ -2529,28 +2495,21 @@ bool DataBaseTM::GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & 
 										  TABLE_NAME_SNAPPING.c_str(),
 										  LAYER_SPATIAL_RASTER);
 	
-	DataBaseDestroyResults();
-	if (!DataBaseQuery(sSentence))
+	if (DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting valid layers for snapping : %s"),
-				   DataBaseGetLastError().c_str());
 		return false;
 	}
 	
-	wxArrayString myResultRow;
 	long myResultlid = 0;
-	for (int i = 0; i< DatabaseGetCountResults(); i++)
+	wxArrayString myResultRow;
+	while (DataBaseGetNextResult(myResultRow))
 	{
-		myResultRow = DataBaseGetNextResult();
-		if (myResultRow.GetCount() != 2)
-			return false;
-
+		wxASSERT (myResultRow.GetCount() == 2);
 		myResultRow.Item(0).ToLong(&myResultlid);
 		lids.Add(myResultlid);
-		lnames.Add(myResultRow.Item(1));
-		myResultRow.Clear();
+		lnames.Add(myResultRow.Item(1));		
 	}
-	
+	DataBaseClearResults();
 	return true;
 }
 
@@ -2575,10 +2534,8 @@ bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
 							 TABLE_NAME_SNAPPING.c_str(),
 							 lids.Item(i)));
 	
-	if (!DataBaseQueryNoResult(sFullSentence))
+	if (DataBaseQueryNoResults(sFullSentence)==false)
 	{
-		wxLogDebug(_T("Error adding layers for snapping : %s"),
-				   DataBaseGetLastError().c_str());
 		return false;
 	}
 	
@@ -2599,7 +2556,7 @@ bool DataBaseTM::DeleteLayerSnapping (int layersid)
 	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE TOC_ID = %d; "),
 										  TABLE_NAME_SNAPPING.c_str(),
 										  layersid);
-	return DataBaseQueryNoResult(sSentence);
+	return DataBaseQueryNoResults(sSentence);
 }
 
 
@@ -2631,10 +2588,9 @@ bool DataBaseTM::SaveSnappingAllStatus (tmSnappingMemory * snapmemory)
 	}
 	
 	if (sFullSentence.Len() > 0)
-		if (!DataBaseQueryNoResult(sFullSentence))
+		if (DataBaseQueryNoResults(sFullSentence)==false)
 		{
-			wxLogDebug(_T("Error saving snapping status  : %s"),
-					   DataBaseGetLastError().c_str());
+			wxLogError(_("Error saving snapping status"));
 			return false;
 		}
 	
@@ -2655,14 +2611,12 @@ bool DataBaseTM::SetSnappingTolerence(int iTolerence)
 	wxString sSentence = wxString::Format(_T(" UPDATE %s SET PRJ_SNAP_TOLERENCE = %d;"),
 										  TABLE_NAME_PRJ_SETTINGS.c_str(),
 										  iTolerence);
-	if (!DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence)==false)
 	{
-		wxLogDebug(_T("Error saving snapping tolerence : %s"),
-				   DataBaseGetLastError().c_str());
+		wxLogError(_("Error saving snapping tolerence"));
 		return false;
 	}
 	return true;
-	
 }
 
 
@@ -2675,17 +2629,20 @@ bool DataBaseTM::SetSnappingTolerence(int iTolerence)
  *******************************************************************************/
 int DataBaseTM::GetSnappingTolerence ()
 {
-	int iSnappingTol = 0;
+	long iSnappingTol = 0;
 	wxString sSentence = wxString::Format(_T(" SELECT PRJ_SNAP_TOLERENCE FROM %s;"),
 										  TABLE_NAME_PRJ_SETTINGS.c_str());
-	if (!DataBaseQuery(sSentence))
+	if (DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting snapping tolerence : %s"),
-				   DataBaseGetLastError().c_str());
-		return iSnappingTol;
+		wxLogError(_("Error getting snapping tolerence"));
+		return (int) iSnappingTol;
 	}
 	
-	return DataBaseGetResultAsInt(true);
+	if(DataBaseGetNextResult(iSnappingTol)==false)
+		iSnappingTol = 0;
+	
+	DataBaseClearResults();
+	return (int) iSnappingTol;
 }
 
 
@@ -2710,14 +2667,11 @@ bool DataBaseTM::DeleteGeometry (wxArrayLong * selected, int layertype)
 	sSentence.RemoveLast(1);
 	sSentence.Append(_T(");"));
 	
-	if (!DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence)==false)
 	{
-		wxLogDebug(_T("Error deleting selected geometry : %s - %s"),
-				   DataBaseGetLastError().c_str(),
-				   sSentence.c_str());
+		wxLogError(_("Error deleting selected geometry : %s"), sSentence.c_str());
 		return false;
 	}
-	
 	return true;
 }
 
@@ -2747,25 +2701,11 @@ bool DataBaseTM::DeleteAttribution (wxArrayLong * selected, int layertype)
 	sSentence.RemoveLast(1);
 	sSentence.Append(_T(");"));
 	
-	if (!DataBaseQueryNoResult(sSentence))
+	if (DataBaseQueryNoResults(sSentence) == false)
 	{
-		wxLogDebug(_T("Error deleting selected attribution : %s - %s"),
-				   DataBaseGetLastError().c_str(),
-				   sSentence.c_str());
+		wxLogDebug(_T("Error deleting selected attribution : %s"),sSentence.c_str());
 		return false;
 	}
-	
 	return true;
 }
 
-
-/// FIELD CREATION ::
-
-//_T("CREATE  TABLE     `LAYER_AT3` (")
-//_T("  `LAYER_AT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
-//_T("  `OBJECT_ID` INT UNSIGNED NOT NULL     ,")
-//_T("  PRIMARY KEY (`LAYER_AT_ID`) ,")
-//_T("  INDEX LAYER_ATX_FKIndex1 (`OBJECT_ID` ASC) ,")
-//_T("  CONSTRAINT `Rel_09`")
-//_T("    FOREIGN KEY (`OBJECT_ID` )")
-//_T("    REFERENCES  `generic_points` (`OBJECT_ID` ));")
