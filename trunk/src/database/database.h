@@ -64,6 +64,7 @@ class DataBase
 		bool DBUseDataBase(const wxString & dbname);
 		bool DBIsDataBaseReady ();
 		bool DBGetNextRecord (MYSQL_ROW & record);
+		bool DBResultsNotNull ();
 		
 	protected:
 	public:
@@ -73,10 +74,12 @@ class DataBase
 		// database operations
 		bool DataBaseCreateNew(const wxString & datadir, const wxString & name);
 		bool DataBaseOpen(const wxString & datadir, const wxString & name);
+		bool DataBaseDelete();
 		wxString DataBaseGetName ();
 		wxString DataBaseGetPath ();
 		wxString DataBaseGetSize (int precision = 2, const wxString & failmsg = _("Not available"));
 		static wxString DataBaseGetVersion ();
+		
 		
 		// query operations
 		bool DataBaseQueryNoResults(const wxString & query);

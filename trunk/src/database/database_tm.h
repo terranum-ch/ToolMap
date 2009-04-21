@@ -73,7 +73,13 @@ _T("generic_notes")
 const int TM_DATABASE_VERSION = 220;
 
 
-
+enum tmDB_OPEN_STATUS
+{
+	tmDB_OPEN_FAILED = 0,
+	tmDB_OPEN_OK = 1,
+	tmDB_OPEN_FAILED_NOT_TM_DB = 2,
+	tmDB_OPEN_FAILED_WRONG_VERSION = 100
+};
 
 
 
@@ -90,22 +96,24 @@ class DataBaseTM : public DataBase
 		bool FillLayerTableTypeData ();
 		bool FillDefaultScaleData ();
 		bool FillShortCutTable ();
-		bool TableEmpty (const wxString & tablename);
-		
+		//bool TableEmpty (const wxString & tablename);
+		bool CreateEmptyTMDatabase();
 		
 	public:
 		DataBaseTM();
 		~DataBaseTM();
 		
 		// database operations
-		bool CreateEmptyTMDatabase();
-		bool TableExist (const wxString & tablename);
+		bool TableExist (const wxString & tablename);										//[TESTED]
+		tmDB_OPEN_STATUS OpenTMDatabase(const wxString & pathname);							//[TESTED]
+		bool CreateTMDatabase (PrjDefMemManage * pPrjDefinition);							//[TESTED]
+		
 		
 		// Database project operations
 		bool IsProjectDataDefined ();
 		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
 		bool GetProjectData (PrjDefMemManage * pPrjDefinition);
-		int	 GetDatabaseToolMapVersion ();
+		int	 GetDatabaseToolMapVersion ();													//[TESTED]
 		bool SetProjectExportData (int iExportType, const wxString & spath);
 		bool SetProjectBackupPath (const wxString & spath);
 		int	 GetProjectExportData (int & iExportType, wxString &spath);

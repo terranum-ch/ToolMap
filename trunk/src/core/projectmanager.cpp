@@ -307,7 +307,7 @@ bool ProjectManager::IsDataBasePath(const wxString & path)
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 October 2008
  *******************************************************************************/
-int ProjectManager::OpenProject(const wxString & path, const wxString & name)
+int ProjectManager::OpenProject(const wxString & path)
 {
 	// close any existing project
 	CloseProject();

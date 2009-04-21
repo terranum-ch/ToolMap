@@ -23,12 +23,15 @@
 
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <wx/filefn.h> 
 
 class DataBaseTMTEST : public CppUnit::TestFixture 
 { 
 	CPPUNIT_TEST_SUITE( DataBaseTMTEST );
 	CPPUNIT_TEST ( TESTTableExist );
 	CPPUNIT_TEST ( TESTToolMapVersion );
+	CPPUNIT_TEST ( TESTOpenTMDatabase );
+	CPPUNIT_TEST ( TESTCreateNewTMDatabase );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -59,6 +62,37 @@ public:
 		CPPUNIT_ASSERT(m_DB->GetDatabaseToolMapVersion()==220);
 	}
 	
+	void TESTCreateNewTMDatabase()
+	{
+		// deleting if existing
+		if(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"), _T("testedit_13")))
+		{	
+			wxLogDebug(_T("Deleting database : %s"), m_DB->DataBaseGetName().c_str());
+			CPPUNIT_ASSERT(m_DB->DataBaseDelete()==true);
+		}
+			
+		PrjDefMemManage myPrjdef;
+		myPrjdef.m_PrjName = _T("testedit");
+		myPrjdef.m_PrjPath = _T("/Users/Lucien/Downloads/");
+		myPrjdef.m_PrjProjType = PROJ_SWISSPROJ;
+		myPrjdef.m_PrjUnitType = UNIT_LATLONG;
+		
+		CPPUNIT_ASSERT(m_DB->CreateTMDatabase(&myPrjdef)==false);
+		myPrjdef.m_PrjName = _T("testedit_13");
+		CPPUNIT_ASSERT(m_DB->CreateTMDatabase(&myPrjdef)==true);
+		CPPUNIT_ASSERT(m_DB->OpenTMDatabase(myPrjdef.m_PrjPath + 
+											wxFileName::GetPathSeparator() + 
+											myPrjdef.m_PrjName)==tmDB_OPEN_OK);
+	}
+	
+	void TESTOpenTMDatabase()
+	{
+		CPPUNIT_ASSERT(m_DB->OpenTMDatabase(_T("/Users/Lucien/Downloads/testedit"))==tmDB_OPEN_OK);
+		CPPUNIT_ASSERT(m_DB->OpenTMDatabase(_T("/Users/Lucien/Downloads/mytest1"))==tmDB_OPEN_FAILED_NOT_TM_DB);
+		tmDB_OPEN_STATUS myStatus = m_DB->OpenTMDatabase(_T("/Users/Lucien/DATA/SIG/LUGANO/TM_Project/luganoTM"));
+		CPPUNIT_ASSERT(myStatus == tmDB_OPEN_FAILED_WRONG_VERSION);
+		CPPUNIT_ASSERT(m_DB->GetDatabaseToolMapVersion() != TM_DATABASE_VERSION);
+	}
 	
 	
 };

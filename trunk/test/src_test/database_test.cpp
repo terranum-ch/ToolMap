@@ -48,6 +48,7 @@ class DataBaseTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTGetDataBaseSize );
 	CPPUNIT_TEST( TESTGetLastInsertID );
 	CPPUNIT_TEST( TESTGetRawRow );
+	CPPUNIT_TEST( TESTDeleteDB );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -56,13 +57,7 @@ private:
 public: 
 	void setUp()
 	{
-		m_DB = new DataBase();
-		
-		//m_DB1 = new tmoDatabase();
-		//CPPUNIT_ASSERT( m_DB1->DatabaseOpen("--datadir=/Users/Lucien/DATA/SIG/COMBIOULA/EXERCICE/", 
-		//	"combioula_exercice")== true);
-		
-		//m_DB2 = new tmoDatabase();
+		m_DB = new DataBase();		
 	}
 	
 	void tearDown() 
@@ -87,6 +82,9 @@ public:
 										  _T("combioula_correct"))==true);
 		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM generic_lines"))==true);
 		CPPUNIT_ASSERT( m_DB->DataBaseHasResults() == true);
+		m_DB->DataBaseClearResults();
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM generic_lines WHERE OBJECT_ID = 1000000")));
+		CPPUNIT_ASSERT(m_DB->DataBaseHasResults() == false);
 		
 	}
 	
@@ -353,7 +351,12 @@ public:
 		std::cin >> i;
 	}
 	
-	
+	void TESTDeleteDB()
+	{
+		CPPUNIT_ASSERT(m_DB->DataBaseDelete()==false);
+		CPPUNIT_ASSERT(m_DB->DataBaseCreateNew(_T("/Users/Lucien/Downloads/"),_T("testedit_12"))==true);
+		CPPUNIT_ASSERT(m_DB->DataBaseDelete()==true);
+	}
 	
 };
 
