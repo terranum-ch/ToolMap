@@ -96,7 +96,7 @@
 #include "../gui/project_def_dlg.h"		// project definition dialog
 #include "../gui/logwindow_dlg.h"		// log window definition
 #include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
-#include "../database/db_project.h"
+//#include "../database/db_project.h"
 #include "../gui/menumanager.h"			// for menu management (enable / diable)
 
 // GIS Includes

@@ -260,7 +260,7 @@ void ProjectManager::CloseProject()
 	
 	if (m_DB != NULL)
 	{
-		wxLogDebug(_T("Closing the database object"));
+		wxLogDebug(_T("Deleting the database object"));
 		delete m_DB;
 		m_DB = NULL;
 	}
@@ -311,9 +311,59 @@ int ProjectManager::OpenProject(const wxString & path)
 {
 	// close any existing project
 	CloseProject();
-	int myReturnVal = OPEN_DB_FAILED;
 
+	tmDB_OPEN_STATUS mystatus = m_DB->OpenTMDatabase(path);
 	
+	if (mystatus == tmDB_OPEN_OK)
+	{
+		// updates the menu using the menu manager
+		m_pMManager->SetStatus(MENU_DB_OPENED);
+		m_pMManager->AddFileToRecent(path);
+		
+		// update objects to lists
+		m_Obj->UpdateObjectLists(m_DB);
+		
+		// activate project opening
+		m_QueriesPanel->LoadQueries(m_DB);
+		
+		// load shortcuts
+		m_ShortcutPanel->SetDataBase(m_DB); 
+		// load shortcuts for lines by default
+		m_ShortcutPanel->LoadShortcutList(true);
+		m_ShortcutPanel->SetProjectOpen(true);
+		
+		// load snapping
+		m_SnappingPanel->SetDataBase(m_DB);
+		m_SnappingPanel->LoadSnappingStatus();
+		
+		// LayerManager Job
+		m_LayerManager->InitLayerManager(m_DB);
+		
+		// edition manager
+		m_EditManager->SetDatabase(m_DB);
+		
+		// load project definition
+		bool bLoaded = LoadProjectDefintion(1);
+		wxASSERT (bLoaded);	
+		
+		// attribution manager
+		bool bReady = m_AttribManager->
+		InitAttributionManager(m_DB,
+							   GetMemoryProjectDefinition());
+		wxASSERT(bReady);
+		
+		// project is now open !
+		bProjectIsOpen = TRUE;
+		//myReturnVal = OPEN_OK;
+		
+	}
+	else
+	{
+		m_pMManager->SetStatus(MENU_DB_CLOSED);
+		CloseProject();
+	}
+	
+	/*
 	// 0 check if the folder contain something like a database file
 	if (IsDataBasePath(path))
 	{
@@ -385,10 +435,10 @@ int ProjectManager::OpenProject(const wxString & path)
 			CloseProject();
 		}
 	}
-	
+	*/
 
 	
-	return myReturnVal;
+	return (int) mystatus;
 }
 
 
