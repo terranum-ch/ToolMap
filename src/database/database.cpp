@@ -56,7 +56,7 @@ DataBase::DataBase()
 
 DataBase::~DataBase()
 {
-	if (DataBaseHasResults()==true)
+	if (DBResultsNotNull()==true)
 		DataBaseClearResults();
 	
 	if (m_IsLibraryStarted)
@@ -241,6 +241,23 @@ bool DataBase::DataBaseOpen(const wxString & datadir, const wxString & name)
 }
 
 
+bool DataBase::DataBaseDelete()
+{
+	if (DBIsDataBaseReady() == false)
+		return false;
+	
+	if (DataBaseQuery(_T("DROP DATABASE ") + DataBaseGetName())==false)
+		return false;
+	
+	long ldeltables = wxNOT_FOUND;
+	if (DataBaseGetNextResult(ldeltables)==true)
+		wxLogDebug(_T("%d tables deleted"), ldeltables);
+		
+	DataBaseClearResults();
+	return true;
+}
+
+
 
 wxString DataBase::DataBaseGetName ()
 {
@@ -284,9 +301,21 @@ wxString DataBase::DataBaseGetVersion ()
 
 bool DataBase::DataBaseHasResults()
 {
-	if (m_MySQLRes == NULL)
+	if (DBResultsNotNull()==false)
 		return false;
 	
+	long lrow = 0;
+	if (DataBaseGetResultSize(NULL, &lrow)==false)
+	{
+		wxLogError(_T("Unable to compute number of results"));
+	}
+	
+	if (lrow <= 0)
+	{
+		DataBaseClearResults();
+		return false;
+	}
+		
 	return true;
 }
 
@@ -306,7 +335,7 @@ bool DataBase::DataBaseGetResultSize (unsigned int * pcols, long * prows)
 	if (DBIsDataBaseReady()==false)
 		return false;
 	
-	if (DataBaseHasResults() == false)
+	if (DBResultsNotNull() == false)
 		return false;
 	
 	if (pcols != NULL)
@@ -558,7 +587,7 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 	if (DBIsDataBaseReady() == false)
 		return false;
 	
-	if (DataBaseHasResults())
+	if (DBResultsNotNull())
 	{
 		wxLogDebug(_T("Not able to run query, results were not cleared"));
 		return false;
@@ -586,7 +615,7 @@ bool DataBase::DataBaseQuery (const wxString & query)
 	if (DBIsDataBaseReady() == false)
 		return false;
 	
-	if (DataBaseHasResults())
+	if (DBResultsNotNull())
 	{
 		wxLogDebug(_T("Not able to run query, results were not cleared"));
 		return false;
@@ -648,12 +677,21 @@ bool DataBase::DBGetNextRecord (MYSQL_ROW & record)
 	if (DBIsDataBaseReady()==false)
 		return false;
 	
-	if (DataBaseHasResults()==false)
+	if (DBResultsNotNull()==false)
 		return false;
 	
 	
 	record = mysql_fetch_row(m_MySQLRes);
 	if (record == NULL)
+		return false;
+	
+	return true;
+}
+
+
+bool DataBase::DBResultsNotNull ()
+{
+	if (m_MySQLRes == NULL)
 		return false;
 	
 	return true;

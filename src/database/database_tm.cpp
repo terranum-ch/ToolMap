@@ -31,6 +31,54 @@ DataBaseTM::~DataBaseTM()
 
 
 }
+
+
+tmDB_OPEN_STATUS DataBaseTM::OpenTMDatabase(const wxString & pathname)
+{
+	wxFileName myPath (pathname, _T(""));
+	if (myPath.IsOk()==false)
+		return tmDB_OPEN_FAILED;
+	
+	wxArrayString myDirs;
+	myDirs = myPath.GetDirs();
+	wxString myName = myDirs.Last();
+	myPath.RemoveLastDir();
+		
+	if (DataBaseOpen(myPath.GetFullPath(), myName)==false)
+		return tmDB_OPEN_FAILED;
+	
+	if (TableExist(TABLE_NAME_PRJ_SETTINGS)==false)
+		return tmDB_OPEN_FAILED_NOT_TM_DB;
+	
+	if (GetDatabaseToolMapVersion() != TM_DATABASE_VERSION)
+		return tmDB_OPEN_FAILED_WRONG_VERSION;
+	
+	
+	wxLogDebug(_T("%s is a ToolMap database version : %d"),
+			   DataBaseGetName().c_str(),
+			   TM_DATABASE_VERSION);
+	return tmDB_OPEN_OK;
+	
+}
+
+
+bool DataBaseTM::CreateTMDatabase (PrjDefMemManage * pPrjDefinition)
+{
+	if (DataBaseCreateNew(pPrjDefinition->m_PrjPath, pPrjDefinition->m_PrjName)==false)
+		return false;
+	
+	if (CreateEmptyTMDatabase()==false)
+		return false;
+	
+	if (SetProjectData(pPrjDefinition)==false)
+		return false;
+	
+	return true;
+}
+
+
+
+
 /*************************** GENERAL DATABASE FUNCTION ****************************/
 bool DataBaseTM::CreateEmptyTMDatabase()
 {
@@ -244,8 +292,8 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 
 bool DataBaseTM::TableExist (const wxString & tablename)
 {
-	wxString mySentence =	_T("SELECT * FROM ") + tablename + 
-							_T(" LIMIT 5");
+	wxString mySentence =	_T("SHOW TABLES LIKE \"") + tablename + 
+							_T("\"");
 	if (DataBaseQuery(mySentence)==false)
 		return false;
 	
@@ -258,10 +306,6 @@ bool DataBaseTM::TableExist (const wxString & tablename)
 }
 
 
-bool DataBaseTM::TableEmpty (const wxString & tablename)
-{
-	return false;
-}
 
 
 /*************************** PROJECT DATABASE FUNCTION ****************************/
@@ -271,28 +315,25 @@ bool DataBaseTM::FillLayerTableTypeData ()
 	bool bReturnValue = false;
 	
 	wxASSERT(TableExist(TABLE_NAME_LAYER_TYPE));
-
+	
 	// fill the field from the layer type table
 	// only if the table is empty...
-	if (TableEmpty(TABLE_NAME_LAYER_TYPE))
+	for (int i = 0; i< PRJDEF_LAYERS_TYPE_NUMBER; i++)
 	{
-		for (int i = 0; i< PRJDEF_LAYERS_TYPE_NUMBER; i++)
-		{
-			sSentence.Printf(_T("INSERT INTO %s VALUES (%d,\"%s\")"),
-							 TABLE_NAME_LAYER_TYPE.c_str(),
-							 i, PRJDEF_LAYERS_TYPE_STRING[i].c_str());
-			
-			// in case of error send debug message
-			if(DataBaseQueryNoResults(sSentence)==false)
-			{
-				wxLogError(_("Error filling data into the [%s] tables"),
-						   TABLE_NAME_LAYER_TYPE.c_str());
-			}
-			else
-				bReturnValue = true;
-		}
+		sSentence.Printf(_T("INSERT INTO %s VALUES (%d,\"%s\")"),
+						 TABLE_NAME_LAYER_TYPE.c_str(),
+						 i, PRJDEF_LAYERS_TYPE_STRING[i].c_str());
 		
+		// in case of error send debug message
+		if(DataBaseQueryNoResults(sSentence)==false)
+		{
+			wxLogError(_("Error filling data into the [%s] tables"),
+					   TABLE_NAME_LAYER_TYPE.c_str());
+		}
+		else
+			bReturnValue = true;
 	}
+	
 	return bReturnValue;
 }
 
@@ -319,23 +360,20 @@ bool DataBaseTM::FillDefaultScaleData ()
 	int iScale [] = {5000, 10000, 25000, 50000};
 	int iScaleNum = (sizeof (iScale) / sizeof (int));
 	
-	// check that the zoom table is empty otherwise error
-	if (TableEmpty(TABLE_NAME_SCALE))
+	
+	// prepare statement
+	for (int i = 0; i<iScaleNum; i++)
 	{
-		// prepare statement
-		for (int i = 0; i<iScaleNum; i++)
-		{
-			sSentence.Append(sValue);
-			sSentence.Append(wxString::Format(_T("(%d); "),iScale[i]));
-		}
-		
-		// execute statement
-		if (DataBaseQuery(sSentence))
-		{
-			bReturnValue = TRUE;
-		}
-		
+		sSentence.Append(sValue);
+		sSentence.Append(wxString::Format(_T("(%d); "),iScale[i]));
 	}
+	
+	// execute statement
+	if (DataBaseQuery(sSentence))
+	{
+		bReturnValue = TRUE;
+	}
+	
 	
 	if (bReturnValue == FALSE)
 		wxLogError(_T("Error filling scale table. Already filled of request error ?"));
@@ -401,8 +439,6 @@ bool DataBaseTM::IsProjectDataDefined ()
 			return true;
 		}
 	}
-	
-	wxLogDebug(_T("No data found into the project settings table"));
 	return false;
 }
 
