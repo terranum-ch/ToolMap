@@ -663,7 +663,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return false;
 	
-	long myLayerTemp = wxNOT_FOUND;
+	//long myLayerTemp = wxNOT_FOUND;
 	
 	if (m_pDB->DataBaseGetResults(layersid)==false)
 		return false;

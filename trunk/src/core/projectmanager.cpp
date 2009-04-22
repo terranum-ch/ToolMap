@@ -88,12 +88,51 @@ bool ProjectManager::CreateNewProject()
 	}
 	delete myNewDBDlg;
 	
-	
-	
+	// close
+	CloseProject();
+	m_DB = new DataBaseTM();
 	
 	// Create new empty project
-	wxBusyInfo * wait = new wxBusyInfo(_("Please wait, creating empty project..."), m_Parent);
-	DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
+	wxBusyInfo  wait(_("Please wait, creating empty project..."), m_Parent);
+	
+	if(m_DB->CreateTMDatabase(&PrjDefinition)==false)
+	{
+		CloseProject();
+		//delete wait;
+		return false;
+	}
+	
+	
+	// fill the project
+	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
+	if(myNewProjDlg->ShowModal() == wxID_OK)
+	{
+		
+		if(m_DB->InitProjectWithStartingWizard(&PrjDefinition)==false)
+		{
+			delete myNewProjDlg;
+			wxLogError(_T("Error passing data to database"));
+			// change menu status
+			//m_pMManager->SetStatus(MENU_DB_CLOSED);
+			CloseProject();
+			return false;
+		}
+	}
+	delete myNewProjDlg;
+	
+	
+	// open the newly created project
+	if (OpenProject(PrjDefinition.m_PrjPath + 
+					wxFileName::GetPathSeparator() + 
+					PrjDefinition.m_PrjName) != OPEN_OK)
+	{
+		//m_pMManager->SetStatus(MENU_DB_CLOSED);
+		CloseProject();
+		return false;
+	}
+	return true;
+
+	/*DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
 	myNewPrjDB->SetPrjDefMemory(&PrjDefinition);
 	
 	if (!myNewPrjDB->CreateEmptyProject())
@@ -155,7 +194,7 @@ bool ProjectManager::CreateNewProject()
 	}
 
 	
-	return TRUE;
+	return TRUE;*/
 }
 
 
@@ -311,7 +350,7 @@ int ProjectManager::OpenProject(const wxString & path)
 {
 	// close any existing project
 	CloseProject();
-
+	m_DB = new DataBaseTM();
 	tmDB_OPEN_STATUS mystatus = m_DB->OpenTMDatabase(path);
 	
 	if (mystatus == tmDB_OPEN_OK)
