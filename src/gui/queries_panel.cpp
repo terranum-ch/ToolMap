@@ -339,8 +339,8 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 		// try to add the query into database
 		if (m_pDB->EditQueries(myQTarget, myName, myQuery, -1))
 		{
-			myID = m_pDB->DataBaseGetLastInsertID();
-			if (myID != -1)
+			myID = m_pDB->DataBaseGetLastInsertedID();
+			if (myID != wxNOT_FOUND)
 			{
 				// add the item to the list
 				AddItemToList(myName, -1);

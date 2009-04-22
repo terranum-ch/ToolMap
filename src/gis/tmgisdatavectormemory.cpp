@@ -396,16 +396,13 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 										  _T(" VALUES (GeomFromText('%s'));"),
 										  TABLE_NAME_GIS_GENERIC[ilayertype].c_str(),
 										  mySGeom.c_str());
-	if (!database->DataBaseQueryNoResult(sSentence))
+	if (database->DataBaseQueryNoResults(sSentence)==false)
 	{
-		wxLogDebug(_T("Error inserting geometry %s into database : %s"),
-				   sSentence.c_str(),
-				   database->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error inserting geometry %s into database"),sSentence.c_str());
 		return -1;
 	}
 	
-		
-	lReturn = database->DataBaseGetLastInsertID();
+	lReturn = database->DataBaseGetLastInsertedID();	
 	return lReturn;
 }
 
@@ -430,31 +427,31 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 										  _T(" FROM %s WHERE OBJECT_ID=%d;"),
 										  TABLE_NAME_GIS_GENERIC[ilayertype].c_str(),
 										  oid);
-	if (!database->DataBaseQuery(sSentence))
+	if (database->DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting geometry for id %d - %s"),
-				   oid, database->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error getting geometry for id %d"),oid);
 		return NULL;
 	}
 	
 	
-	unsigned long *  row_length;
+	unsigned long row_length = 0;
 	MYSQL_ROW row;
 	
-	row_length = database->DataBaseGetNextRowResult(row);
-	if (row_length == NULL)
+	if(database->DataBaseGetNextRowResult(row, row_length)==false)
 	{
 		wxLogDebug(_T("No geometry found for id : %d"), oid);
 		return NULL;
 	}
+	database->DataBaseClearResults();
 	
+	wxASSERT(row_length != 0);
+	unsigned long * prow_length = &row_length;
 	OGRGeometry * geometry = NULL;
 	// Geometry columns will have the first 4 bytes contain the SRID.
 	OGRGeometryFactory::createFromWkb(((unsigned char *)row[0]) + 4, 
 									  NULL,
 									  &geometry,
-									  row_length[0] - 4 );
-	
+									  prow_length[0] - 4 );
 	return geometry;
 }
 
