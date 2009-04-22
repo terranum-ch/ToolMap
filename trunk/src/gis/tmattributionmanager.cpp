@@ -591,8 +591,7 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	// passing the query
 	if (!m_pDB->DataBaseQuery(myQuery))
 	{
-		wxString szError = wxString::Format(_("Error running the query. Bellow is the error rapported by MySQL\n%s"),
-											m_pDB->DataBaseGetLastError().c_str());
+		wxString szError = _("Error running the query. See the log window for a more detailled explaintion");
 		wxMessageBox(szError,
 					 _("Error running the query"),
 					 wxICON_EXCLAMATION | wxOK ,
@@ -602,19 +601,12 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	
 	// query succeed, getting results
 	wxArrayLong myResults;
-	long myTempRes = -1;
-	while (1)
-	{
-		myTempRes = m_pDB->DataBaseGetNextResultAsLong();
-		if (myTempRes == -1)
-			break;
-		myResults.Add(myTempRes);
-	}
+	if (m_pDB->DataBaseGetResults(myResults)==false)
+		return;
 	
 	// clear selection
 	m_SelData->Clear();
 	m_SelData->SetLayerID(myLayerID);
-	
 	m_SelData->AddSelected(&myResults);
 	
 	// update display

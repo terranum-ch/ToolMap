@@ -106,13 +106,11 @@ bool tmAttributionDataLine::SetAttributeBasic (AttribObjType_PANEL * panel)
 	}
 		
 	
-	if (!m_pDB->DataBaseQueryNoResult(myStatement))
+	if (m_pDB->DataBaseQueryNoResults(myStatement)==false)
 	{
-		wxLogDebug(_T("Error attributing data : %s"), 
-				   m_pDB->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error attributing data"));
 		return false;
 	}
-	
 	return true;
 }
 
@@ -161,23 +159,16 @@ bool tmAttributionDataLine::GetInfoBasic (AttribObjType_PANEL * panel)
 	// getting values
 	wxString sStatement = _T("");
 	PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
-	if (!m_pDB->DataBaseQuery(sStatement))
+	if (m_pDB->DataBaseQuery(sStatement)==false)
 	{
-		wxLogDebug(_T("Error getting info : %s"),
-				   m_pDB->DataBaseGetLastError().c_str());
+		wxLogDebug(_T("Error getting info "));
 		return false;
 	}
 	
 	wxArrayLong mySelValues;
-	long mySelTemp = wxNOT_FOUND;
-	while (1)
-	{
-		mySelTemp = m_pDB->DataBaseGetNextResultAsLong();
-		if (mySelTemp == wxNOT_FOUND)
-			break;
-		mySelValues.Add(mySelTemp);
-	}
-	
+	if (m_pDB->DataBaseGetResults(mySelValues)==false)
+		return false;
+		
 	// updating panel
 	SetPanelValues(panel, mySelValues);
 

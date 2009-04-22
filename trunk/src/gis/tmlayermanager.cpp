@@ -255,13 +255,13 @@ bool tmLayerManager::SaveTOCStatus()
 	}
 	
 	// update the database with toc status
-	if (!m_DB->DataBaseQueryNoResult(sSentence))
+	if (m_DB->DataBaseQueryNoResults(sSentence)==false)
 	{
 		wxLogDebug(_T("Error updating DB with TOC status : %s"),sSentence.c_str());
-		return FALSE;
+		return false;
 	}
 	
-	return TRUE;
+	return true;
 	
 }
 
@@ -384,7 +384,7 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	wxASSERT(mySizes);
 	wxSize myOldSize = mySizes->Item(0);
 	wxSize myNewSize = mySizes->Item(1);
-	bool mybSmaller = (bool) event.GetInt();
+	//bool mybSmaller = (bool) event.GetInt();
 	delete mySizes;
 	
 	// actual wnd extent
@@ -1374,7 +1374,7 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 	tmRealRect myExtent (0,0,0,0);
 	
 	// Init new thread
-	m_DB->DataBaseNewThreadInit();
+	//m_DB->DataBaseNewThreadInit();
 
 	while (1)
 	{
@@ -1413,7 +1413,7 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 	}
 	
 	// uninit thread variables
-	m_DB->DataBaseNewThreadUnInit();
+	//m_DB->DataBaseNewThreadUnInit();
 	
 	// if thread need to be stopped, then 
 	// return -1.
@@ -1443,7 +1443,7 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 	tmRealRect myExtent (0,0,0,0);
 	
 	// Init new thread
-	m_DB->DataBaseNewThreadInit();
+	//m_DB->DataBaseNewThreadInit();
 	
 	while (1)
 	{
@@ -1481,7 +1481,7 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 	}
 	
 	// uninit thread variables
-	m_DB->DataBaseNewThreadUnInit();
+	//m_DB->DataBaseNewThreadUnInit();
 	
 	// if thread need to be stopped, then 
 	// return -1.
