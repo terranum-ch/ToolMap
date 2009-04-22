@@ -113,6 +113,7 @@ class DataBaseTM : public DataBase
 		bool IsProjectDataDefined ();
 		bool SetProjectData (PrjDefMemManage * pPrjDefinition);
 		bool GetProjectData (PrjDefMemManage * pPrjDefinition);
+		bool InitProjectWithStartingWizard(PrjDefMemManage * pPrjDefinition);
 		int	 GetDatabaseToolMapVersion ();													//[TESTED]
 		bool SetProjectExportData (int iExportType, const wxString & spath);
 		bool SetProjectBackupPath (const wxString & spath);

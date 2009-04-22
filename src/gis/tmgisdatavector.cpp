@@ -923,7 +923,7 @@ bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
 {
 	OGRLineString myLine;
 	OGRPoint pt;
-	int lastpos = 0;
+	//int lastpos = 0;
 	int splititem = 0;
 	
 	// security
@@ -1147,7 +1147,7 @@ OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
 bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
 								  OGRGeometry ** linemerged)
 {
-	bool bReturn = true;
+	//bool bReturn = true;
 	GEOSGeom myLinesToMerge = linetomerge->exportToGEOS();
 	GEOSGeom myResult = GEOSLineMerge(myLinesToMerge);
 	GEOSGeom_destroy(myLinesToMerge);

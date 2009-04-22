@@ -102,6 +102,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		bufDataDir,
 		mylanguagedir,
 		"--port=3309",
+		"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=utf8"
 	};
@@ -589,6 +590,7 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 	
 	if (DBResultsNotNull())
 	{
+		wxASSERT_MSG(0, _T("Not able to run query, results were not cleared"));
 		wxLogDebug(_T("Not able to run query, results were not cleared"));
 		return false;
 	}
@@ -617,6 +619,7 @@ bool DataBase::DataBaseQuery (const wxString & query)
 	
 	if (DBResultsNotNull())
 	{
+		wxASSERT_MSG(0, _T("Not able to run query, results were not cleared"));
 		wxLogDebug(_T("Not able to run query, results were not cleared"));
 		return false;
 	}

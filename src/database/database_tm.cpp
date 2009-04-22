@@ -73,6 +73,9 @@ bool DataBaseTM::CreateTMDatabase (PrjDefMemManage * pPrjDefinition)
 	if (SetProjectData(pPrjDefinition)==false)
 		return false;
 	
+	if (InitTOCGenericLayers()==false)
+		return false;
+	
 	return true;
 }
 
@@ -552,6 +555,61 @@ bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
 	// COMMENT
 	pPrjDefinition->m_PrjSummary = myResults.Item(3);
 	return TRUE;
+}
+
+
+bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage * pPrjDefinition)
+{
+	unsigned int indexLayer = 0;
+	unsigned int indexObject = 0;
+	unsigned int indexField = 0;
+	bool bReturnValue = TRUE;
+	
+	
+	/// adding layers, and for each layer add object and fields related to this layer
+	for (indexLayer = 0; indexLayer<pPrjDefinition->m_PrjLayerArray->GetCount();indexLayer++)
+	{
+		ProjectDefMemoryLayers * myMemLayers = 	pPrjDefinition->FindLayer(indexLayer);
+		if (myMemLayers != NULL)
+		{
+			if (AddLayer(myMemLayers))
+			{
+				// if layer is polygon, add a default line for border
+				// checks are done internally
+				AddLayerPolygonDefaultBorder(myMemLayers);
+				
+				// Adding Objects 
+				for (indexObject = 0;indexObject < myMemLayers->m_pLayerObjectArray->GetCount(); indexObject++)
+				{
+					ProjectDefMemoryObjects * myMemObj = pPrjDefinition->FindObject(indexObject);
+					if (myMemObj != NULL)
+					{
+						bReturnValue = bReturnValue && AddObject(myMemObj);
+						wxASSERT(bReturnValue == true);
+					}
+				}
+				
+				// adding fields
+				for (indexField = 0; indexField < myMemLayers->m_pLayerFieldArray->GetCount(); indexField++)
+				{
+					ProjectDefMemoryFields * myMemField = pPrjDefinition->FindField(indexField);
+					if (myMemField != NULL)
+					{
+						bReturnValue = bReturnValue && AddField(myMemField);
+						wxASSERT(bReturnValue == true);
+					}
+				}
+				
+			}
+		}
+	}
+	
+	
+	if (bReturnValue == FALSE)
+		wxLogDebug(_T("Error : adding project object, fields, or setting project data into the database"));
+	else
+		wxLogDebug(_T("Project data successfully copied into the database"));
+	return bReturnValue;
 }
 
 
@@ -1475,9 +1533,10 @@ long DataBaseTM::GetNextScaleValue (long & DBindex, bool bFirst)
 	wxArrayLong myResults;
 	
 	// no result, we process the sentence
+	bool dRes = DataBaseHasResults();
 	if (!DataBaseHasResults() || bFirst == TRUE)
 	{
-	
+		
 		wxString sSentence = wxString::Format(_T("SELECT ZOOM_ID, SCALE_VALUE FROM %s ORDER BY RANK"),
 											  TABLE_NAME_SCALE.c_str());
 		
@@ -1955,7 +2014,7 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 		return NULL;
 	}
 		
-	wxASSERT (myTempResults.GetCount() != 8);
+	wxASSERT (myTempResults.GetCount() == 8);
 	// parsing results
 	tmLayerProperties * myLayerProp = new tmLayerProperties();
 	myLayerProp->InitFromArray(myTempResults);
