@@ -649,13 +649,9 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 		mdc.DrawBitmap (*m_PanBmp, myNewPos.x,myNewPos.y);
 		mdc.SelectObject(wxNullBitmap);
 		
-		//m_bmp = new wxBitmap(tmpbmp);
-		
-		
-		
-		//SetBitmapStatus(m_bmp);
-		//Refresh();
-		//Update();
+		SetBitmapStatus(&tmpbmp);
+		Refresh();
+		Update();
 	}
 }
 
