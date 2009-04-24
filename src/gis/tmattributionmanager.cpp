@@ -589,7 +589,7 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	
 	
 	// passing the query
-	if (!m_pDB->DataBaseQuery(myQuery))
+	if (m_pDB->DataBaseQuery(myQuery)==false)
 	{
 		wxString szError = _("Error running the query. See the log window for a more detailled explaintion");
 		wxMessageBox(szError,

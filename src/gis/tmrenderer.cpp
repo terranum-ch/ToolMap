@@ -107,7 +107,7 @@ bool tmRenderer::BitmapSetToWhite()
 	
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_bmp);
-	mdc.SetBrush (wxBrush(*wxRED_BRUSH));
+	mdc.SetBrush (wxBrush(*wxWHITE_BRUSH));
 	mdc.SetPen   (wxPen(*wxWHITE_PEN));
 	mdc.DrawRectangle (0,0,myWidth,myHeight);
 	mdc.SelectObject(wxNullBitmap);	

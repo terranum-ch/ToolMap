@@ -262,7 +262,7 @@ bool tmGISScale::ComputeMaxExtentReal (wxSize wnd_offset)
  @author Lucien Schreiber (c) CREALP 2009
  @date 20 February 2009
  *******************************************************************************/
-bool tmGISScale::ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize)
+/*bool tmGISScale::ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize)
 {
 	double myPixelx = 0, myPixely=0;
 	int mydiffxpx = 0, mydiffypx = 0;
@@ -326,6 +326,19 @@ bool tmGISScale::ComputeNewPixelSize (const wxSize & oldsize, const wxSize & new
 		m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, yRealDiff);
 
 	}
+	return true;
+}*/
+
+
+/***************************************************************************//**
+ @brief Compute new real extend when windows size change
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 April 2009
+ *******************************************************************************/
+bool tmGISScale::ComptuteNewWindowSize (const wxSize & oldsize, const wxSize & newsize)
+{
+	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_min, m_PixelSize * m_ExtentWnd.GetWidth());
+	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max, m_PixelSize * m_ExtentWnd.GetHeight());
 	return true;
 }
 

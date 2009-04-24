@@ -2202,7 +2202,7 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 										   TABLE_NAME_QUERIES +
 										   _T(" WHERE QUERIES_ID=%d;"),
 										   qid);
-	if(!DataBaseQuery(sStatement))
+	if(DataBaseQuery(sStatement)==false)
 	{
 		wxLogDebug(_T("Error getting query"));
 		return false;
@@ -2214,7 +2214,7 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 		DataBaseClearResults();
 		return false;
 	}
-	
+	DataBaseClearResults();
 	wxASSERT(myResults.GetCount() == 3);
 			
 	name = myResults.Item(0);
