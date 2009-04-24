@@ -188,7 +188,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	// because of all wxLogDebug commands
 	int iNbVertex = 0;
 	bool bReturn = true;
-	bool bSelected = false;
+	//bool bSelected = false;
 	int iLoop = 0;
 	while (1)
 	{
@@ -470,7 +470,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	unsigned int        imglen = 0;
 	unsigned char      *maskbuf = NULL;
 	unsigned int        masklen= 0;*/
-	bool bReturn =		true;
+	//bool bReturn =		true;
 	
 	// converting image coordinate & clipping 
 	tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
