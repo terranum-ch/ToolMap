@@ -1533,7 +1533,7 @@ long DataBaseTM::GetNextScaleValue (long & DBindex, bool bFirst)
 	wxArrayLong myResults;
 	
 	// no result, we process the sentence
-	bool dRes = DataBaseHasResults();
+	//bool dRes = DataBaseHasResults();
 	if (!DataBaseHasResults() || bFirst == TRUE)
 	{
 		

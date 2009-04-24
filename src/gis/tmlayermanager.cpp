@@ -1449,6 +1449,7 @@ void * tmGISLoadingDataThread::Entry()
  *******************************************************************************/
 int tmGISLoadingDataThread::ReadLayerExtentThread()
 {
+	/*
 	// iterate throught all layers
 	int iRank = 0;
 	int iReaded = 0;
@@ -1459,7 +1460,7 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 	
 	// Init new thread
 	m_DB->DataBaseThreadInit();
-	/*
+	
 	while (1)
 	{
 		if (iRank == 0)
@@ -1495,7 +1496,7 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 		}
 		iRank ++;
 	}
-	*/
+	
 	// uninit thread variables
 	m_DB->DataBaseThreadEnd();
 	
@@ -1504,7 +1505,8 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 	if (bInteruptedThread)
 		iReaded = -1;
 	
-	return iReaded;	
+	return iReaded;	*/
+	return -1;
 }
 
 
@@ -1518,6 +1520,7 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
  *******************************************************************************/
 int tmGISLoadingDataThread::ReadLayerDraw ()
 {
+	/*
 	// iterate throught all layers
 	int iRank = 0;
 	int iReaded = 0;
@@ -1562,7 +1565,7 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 			delete layerData;
 		}
 		iRank ++;
-	}*/
+	}
 	
 	// uninit thread variables
 	m_DB->DataBaseThreadEnd();
@@ -1572,7 +1575,8 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 	if (bInteruptedThread)
 		iReaded = -1;
 	
-	return iReaded;
+	return iReaded;*/
+	return -1;
 }
 
 

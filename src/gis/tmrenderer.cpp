@@ -74,6 +74,8 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_OldSize = wxSize(0,0);
 	
 	BitmapUpdateSize();
+	bool bWhite = BitmapSetToWhite();
+	wxASSERT(bWhite);
 }
 
 
@@ -90,11 +92,6 @@ bool tmRenderer::BitmapUpdateSize()
 	GetClientSize(&myWidth, &myHeight);
 	
 	m_bmp = new wxBitmap(myWidth, myHeight);
-	
-	
-	bool bWhite = BitmapSetToWhite();
-	wxASSERT(bWhite);
-	
 	return true;
 }
 
@@ -159,6 +156,7 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 	wxSize myActualSize = GetClientSize();
 	
 	BitmapUpdateSize();
+	BitmapSetToWhite();
 
 	// size change direction : smaller, bigger
 	bool bSmaller = true;
