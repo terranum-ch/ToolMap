@@ -108,7 +108,12 @@ class tmRenderer : public wxScrolledWindow
 		void OnShiftUp		(wxKeyEvent & event);
 		void OnKey			(wxKeyEvent & event);
 		
-			
+		
+		// bitmap functions
+		bool BitmapUpdateSize();
+		bool BitmapSetToWhite();
+		bool BitmapCopyInto(wxBitmap * bmp);
+		
 		// scrollbar event (received)
 		//void OnScroll (wxScrollWinEvent & event);
 			

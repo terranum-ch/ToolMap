@@ -160,11 +160,12 @@ bool tmLayerManager::UnInitLayerManager()
 	// delete bitmap if existing 
 	if(m_Bitmap != NULL)
 	{
+		wxASSERT_MSG(0, _T("Bitmap should be allready deleted ?"));
 		//wxLogDebug(_T("deleting bitmap"));
 		delete m_Bitmap;
 		m_Bitmap = NULL;
 	}
-	m_GISRenderer->SetBitmapStatus(NULL);
+	m_GISRenderer->SetBitmapStatus();
 	
 	// clear the scale too
 	m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
@@ -907,6 +908,12 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
+	if (m_Bitmap)
+	{
+		delete m_Bitmap;
+		m_Bitmap = NULL;
+	}
+		
 	m_GISRenderer->Refresh();
 	return TRUE;
 }
@@ -968,6 +975,12 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
+	if (m_Bitmap)
+	{
+		delete m_Bitmap;
+		m_Bitmap = NULL;
+	}
+	
 	m_GISRenderer->Refresh();
 	return true;
 }
