@@ -72,8 +72,64 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_ShiftDown = false;
 	m_SnappingRadius = 0;
 	m_OldSize = wxSize(0,0);
+	
+	BitmapUpdateSize();
 }
 
+
+bool tmRenderer::BitmapUpdateSize()
+{
+	if (m_bmp != NULL)
+	{
+		delete m_bmp;
+		m_bmp = NULL;
+	}
+	
+	int myWidth = 0;
+	int myHeight = 0;
+	GetClientSize(&myWidth, &myHeight);
+	
+	m_bmp = new wxBitmap(myWidth, myHeight);
+	
+	
+	bool bWhite = BitmapSetToWhite();
+	wxASSERT(bWhite);
+	
+	return true;
+}
+
+
+bool tmRenderer::BitmapSetToWhite()
+{
+	if (m_bmp == NULL)
+		return false;
+	
+	int myWidth = 0;
+	int myHeight = 0;
+	GetClientSize(&myWidth, &myHeight);
+	
+	wxMemoryDC mdc;
+	mdc.SelectObject(*m_bmp);
+	mdc.SetBrush (wxBrush(*wxRED_BRUSH));
+	mdc.SetPen   (wxPen(*wxWHITE_PEN));
+	mdc.DrawRectangle (0,0,myWidth,myHeight);
+	mdc.SelectObject(wxNullBitmap);	
+	return true;
+}
+
+
+bool tmRenderer::BitmapCopyInto(wxBitmap * bmp)
+{
+	wxASSERT(bmp);
+	wxASSERT(bmp->GetWidth() == m_bmp->GetWidth());
+	wxASSERT(bmp->GetHeight() == m_bmp->GetHeight());
+	
+	wxMemoryDC mdc;
+	mdc.SelectObject(*m_bmp);
+	mdc.DrawBitmap (*bmp, 0,0);
+	mdc.SelectObject(wxNullBitmap);	
+	return true;
+}
 
 
 /***************************************************************************//**
@@ -83,6 +139,8 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
  *******************************************************************************/
 tmRenderer::~tmRenderer()
 {
+	if (m_bmp)
+		delete m_bmp;
 	
 	delete m_SelectRect;
 }
@@ -99,6 +157,8 @@ tmRenderer::~tmRenderer()
 void tmRenderer::OnSizeChange(wxSizeEvent & event)
 {
 	wxSize myActualSize = GetClientSize();
+	
+	BitmapUpdateSize();
 
 	// size change direction : smaller, bigger
 	bool bSmaller = true;
@@ -228,13 +288,14 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 
 void tmRenderer::SetBitmapStatus(wxBitmap * bmp)
 {
-	if (m_bmp != NULL)
+	if (bmp == NULL)
 	{
-		delete m_bmp;
-		m_bmp = NULL;
+		BitmapSetToWhite();
+		return;
 	}
 	
-	m_bmp = bmp;
+	
+	BitmapCopyInto(bmp);
 }
 
 
@@ -588,7 +649,7 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 		mdc.DrawBitmap (*m_PanBmp, myNewPos.x,myNewPos.y);
 		mdc.SelectObject(wxNullBitmap);
 		
-		m_bmp = new wxBitmap(tmpbmp);
+		//m_bmp = new wxBitmap(tmpbmp);
 		
 		
 		
