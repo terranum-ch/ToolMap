@@ -391,6 +391,9 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	// actual wnd extent
 	m_Scale.SetWindowExtent(wxRect(0,0,myNewSize.GetWidth(), myNewSize.GetHeight()));
 	
+	
+	
+	
 	// compute reel size in MM
 	wxClientDC dc (m_GISRenderer);
 	m_Scale.SetWindowExtentMM(dc.GetSizeMM());
@@ -399,9 +402,11 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	// ensure that a project is opened
 	if (!IsOK())
 		return;
+	// compute new extend in map unit
 	
 	// compute new pixel size
-	if (m_Scale.ComputeNewPixelSize(myOldSize, myNewSize))
+	//if (m_Scale.ComputeNewPixelSize(myOldSize, myNewSize))
+	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize))
 		ReloadProjectLayersThreadStart(false, false);
 }
 
@@ -1532,7 +1537,7 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 	// Init new thread
 	m_DB->DataBaseThreadInit();
 	
-	/*while (1)
+	while (1)
 	{
 		if (iRank == 0)
 		{

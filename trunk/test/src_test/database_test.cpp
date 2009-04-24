@@ -105,7 +105,8 @@ public:
 		wxString myReturnedString =  wxEmptyString;
 		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17")));
 		// second query should fail, must delete results first.
-		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17"))==false);
+		m_DB->DataBaseClearResults();
+		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17"))==true);
 		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==true);
 		CPPUNIT_ASSERT(myReturnedString == _T("bord d'érosion")); // oid = 17
 		CPPUNIT_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==false);

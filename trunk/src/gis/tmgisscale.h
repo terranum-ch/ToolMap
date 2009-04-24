@@ -142,7 +142,8 @@ class tmGISScale : public wxObject
 		bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
 		
 		// size windows changed -> px size change too
-		bool ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize);
+		//bool ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize);
+		bool ComptuteNewWindowSize (const wxSize & oldsize, const wxSize & newsize);
 		
 		// scale function
 		void DistanceFromScale (const long & scale, double & xdist, double & ydist);
