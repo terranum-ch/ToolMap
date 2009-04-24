@@ -226,6 +226,16 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 }
 
 
+void tmRenderer::SetBitmapStatus(wxBitmap * bmp)
+{
+	if (m_bmp != NULL)
+	{
+		delete m_bmp;
+	}
+	
+	m_bmp = bmp;
+}
+
 
 void tmRenderer::OnMouseDown(wxMouseEvent & event)
 {

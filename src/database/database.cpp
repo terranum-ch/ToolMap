@@ -299,6 +299,43 @@ wxString DataBase::DataBaseGetVersion ()
 	return wxString(mysql_get_client_info(), wxConvUTF8);
 }
 
+/***************************************************************************//**
+ @brief Init internal variables for new thread
+ @details Call this function to init internal values for each new
+ thread.
+ @return TRUE if thread init success, FALSE in case of faillure. An
+ LogDebug message is also issued
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+bool DataBase::DataBaseThreadInit()
+{
+	if (mysql_thread_init() == 0)
+	{
+		return true;
+	}
+	else
+	{
+		// try to get the last error
+		DBLogLastError();
+		return false;
+	}
+}
+
+
+/***************************************************************************//**
+ @brief End internal variables for new thread
+ @details Call this function for each thread you have called
+ DataBase::DataBaseNewThreadInit()
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 24 July 2008
+ *******************************************************************************/
+void DataBase::DataBaseThreadEnd()
+{
+	mysql_thread_end();
+}
+
+
 
 bool DataBase::DataBaseHasResults()
 {

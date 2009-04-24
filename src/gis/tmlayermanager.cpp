@@ -911,8 +911,68 @@ bool tmLayerManager::LoadProjectLayers()
 	return TRUE;
 }
 
+/*void myTestFunc()
+{
+	char * myTest = new char[10000000];
+	//delete [] myTest;
+}*/
 
 
+// non threaded version for tests
+//FIXME: Convert to threaded version when stable
+bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
+{
+	// invalidate bitmap
+	m_GISRenderer->SetBitmapStatus();
+	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
+							  m_Scale.GetWindowExtent().GetHeight()));
+	
+	// invalidate max_extent
+	if (bInvalidateFullExt)
+		m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
+	
+
+	
+	int iRead = ReadLayerExtent(true);
+	wxLogDebug(_T("%d layer(s) read"),iRead);
+	if (iRead == -1)
+		return false;
+	
+		
+	if (m_Scale.IsLayerExtentValid()==false)
+	{
+		wxASSERT_MSG(0,_T("Failed computing"));
+		return false;
+	}
+		
+
+	// compute max extent if required by option
+	if (bFullExtent)
+		m_Scale.ComputeMaxExtent();
+	
+	
+	// read layers for drawing
+	m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
+	int iNbLayersDraw = ReadLayerDraw();
+	if (iNbLayersDraw == -1)
+		return false;
+	
+	// update scale
+	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+	
+	// update scrollbars
+	//UpdateScrollBars();
+	
+	ViewUpdated();
+	
+	
+	// set active bitmap	
+	m_GISRenderer->SetBitmapStatus(m_Bitmap);
+	m_GISRenderer->Refresh();
+	return true;
+}
+
+#if (0)
 bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
 {
 	if (m_BlockRefresh)
@@ -980,7 +1040,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	wxLogDebug(_T("Unable to lock mutex during thread start"));
 	return FALSE;
 }	
-
+#endif
 
 
 void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
@@ -1142,8 +1202,12 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 						   2,myExtent.x_min, 2, myExtent.y_min,
 						   2, myExtent.x_max, 2, myExtent.y_max);
 			}
-			delete layerData;
 		}
+		
+		if (layerData != NULL)
+			delete layerData;
+		
+		
 		iRank ++;
 	}
 	return iReaded;
@@ -1191,8 +1255,12 @@ int tmLayerManager::ReadLayerDraw ()
 			// draw layer data
 			m_Drawer.Draw(pLayerProp, layerData);
 			iReaded ++;
-			delete layerData;
 		}
+		
+		if (layerData != NULL)
+			delete layerData;
+		
+		
 		iRank ++;
 	}
 	return iReaded;
@@ -1374,8 +1442,8 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 	tmRealRect myExtent (0,0,0,0);
 	
 	// Init new thread
-	//m_DB->DataBaseNewThreadInit();
-
+	m_DB->DataBaseThreadInit();
+	/*
 	while (1)
 	{
 		if (iRank == 0)
@@ -1411,9 +1479,9 @@ int tmGISLoadingDataThread::ReadLayerExtentThread()
 		}
 		iRank ++;
 	}
-	
+	*/
 	// uninit thread variables
-	//m_DB->DataBaseNewThreadUnInit();
+	m_DB->DataBaseThreadEnd();
 	
 	// if thread need to be stopped, then 
 	// return -1.
@@ -1443,9 +1511,9 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 	tmRealRect myExtent (0,0,0,0);
 	
 	// Init new thread
-	//m_DB->DataBaseNewThreadInit();
+	m_DB->DataBaseThreadInit();
 	
-	while (1)
+	/*while (1)
 	{
 		if (iRank == 0)
 		{
@@ -1478,10 +1546,10 @@ int tmGISLoadingDataThread::ReadLayerDraw ()
 			delete layerData;
 		}
 		iRank ++;
-	}
+	}*/
 	
 	// uninit thread variables
-	//m_DB->DataBaseNewThreadUnInit();
+	m_DB->DataBaseThreadEnd();
 	
 	// if thread need to be stopped, then 
 	// return -1.

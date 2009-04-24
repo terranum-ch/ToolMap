@@ -509,7 +509,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	dc.SelectObject(wxNullBitmap);
 
 	// destroying bitmap lead to a crash under windows
-	//myRaster->Destroy();
+	myRaster->Destroy();
 	
 	return TRUE;	
 }
