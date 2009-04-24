@@ -158,7 +158,7 @@ bool tmLayerManager::UnInitLayerManager()
 	m_DB = NULL;
 	
 	// delete bitmap if existing 
-	if(m_Bitmap)
+	if(m_Bitmap != NULL)
 	{
 		//wxLogDebug(_T("deleting bitmap"));
 		delete m_Bitmap;
@@ -1130,11 +1130,14 @@ void tmLayerManager::ViewUpdated()
  *******************************************************************************/
 void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
 {
-	if (m_Bitmap)
+	if (m_Bitmap != NULL)
 	{
+		//if (m_Bitmap->IsOk())
+		//{
 		//wxLogDebug(_T("deleting bitmap"));
 		delete m_Bitmap;
 		m_Bitmap = NULL;
+		//}
 	}
 	
 	m_Bitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
