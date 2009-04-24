@@ -231,6 +231,7 @@ void tmRenderer::SetBitmapStatus(wxBitmap * bmp)
 	if (m_bmp != NULL)
 	{
 		delete m_bmp;
+		m_bmp = NULL;
 	}
 	
 	m_bmp = bmp;
@@ -591,9 +592,9 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
 		
 		
 		
-		SetBitmapStatus(m_bmp);
-		Refresh();
-		Update();
+		//SetBitmapStatus(m_bmp);
+		//Refresh();
+		//Update();
 	}
 }
 
@@ -620,11 +621,12 @@ void tmRenderer::PanStop (const wxPoint & mousepos)
 	GetEventHandler()->AddPendingEvent(evt);
 	
 	SetBitmapStatus();
-	delete m_bmp;
-	m_bmp = NULL;
-	
-	delete m_PanBmp;
-	m_PanBmp = NULL;
+
+	if (m_PanBmp)
+	{
+		delete m_PanBmp;
+		m_PanBmp = NULL;
+	}
 	m_StartCoord = wxPoint(-1,-1);
 }
 
