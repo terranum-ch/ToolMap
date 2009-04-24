@@ -277,6 +277,7 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 	
 	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
 	{
+		m_DB->DataBaseClearResults();
 		nbvertex = 0;
 		return NULL;
 	}
@@ -320,7 +321,10 @@ OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 	}
 	
 	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
+	{
+		m_DB->DataBaseClearResults();
 		return NULL;
+	}
 	
 	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, &row_length, 1);
 	oid = GetOid(row, 0);
@@ -344,7 +348,10 @@ OGRPoint * tmGISDataVectorMYSQL::GetOGRNextDataPoint (long & oid)
 	}
 	
 	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
+	{
+		m_DB->DataBaseClearResults();
 		return NULL;
+	}
 	
 
 	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, &row_length, 1);
@@ -370,7 +377,10 @@ OGRPoint * tmGISDataVectorMYSQL::GetNextDataPointWithAttrib (long & oid,
 	}
 	
 	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
+	{
+		m_DB->DataBaseClearResults();
 		return NULL;
+	}
 	
 	unsigned int iRows = 0;
 	bool bCount = m_DB->DataBaseGetResultSize(&iRows, NULL);
@@ -402,8 +412,11 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 	}
 	
 	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
+	{
+		m_DB->DataBaseClearResults();
 		return NULL;
-	
+	}
+		
 	OGRPoint * pPoint = (OGRPoint*) CreateDataBaseGeometry(row, &row_length,1);
 	oid = GetOid(row, 0);
 	wxASSERT(pPoint);
@@ -968,7 +981,8 @@ OGRGeometryCollection * tmGISDataVectorMYSQL::
 		OGRGeometry * pGeom = CreateDataBaseGeometry(row, &row_length, 1);
 		myGeomCol->addGeometry(pGeom);
 		OGRGeometryFactory::destroyGeometry(pGeom);
-	}	
+	}
+	m_DB->DataBaseClearResults();
 	return myGeomCol;
 }
 

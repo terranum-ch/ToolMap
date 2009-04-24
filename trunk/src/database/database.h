@@ -80,6 +80,10 @@ class DataBase
 		wxString DataBaseGetSize (int precision = 2, const wxString & failmsg = _("Not available"));
 		static wxString DataBaseGetVersion ();
 		
+		// thread operations
+		bool DataBaseThreadInit();
+		void DataBaseThreadEnd();
+		
 		
 		// query operations
 		bool DataBaseQueryNoResults(const wxString & query);

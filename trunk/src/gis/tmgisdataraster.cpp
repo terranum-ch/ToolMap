@@ -52,7 +52,7 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 	
 	// convert utf wxString into char *
 	//const char* ascii_str = 
-	char * buffer = new char [filename.Length()+2];
+	char * buffer = new char [filename.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
 	
 	// open the raster and return true if success
