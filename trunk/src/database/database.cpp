@@ -85,11 +85,11 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
 	
 #if defined(__WINDOWS__)
-	char * mylanguagedir = "--language=./share/english";
+	char * mylanguagedir = "--language=./mysql/english";
 #elif defined(__WXMAC__)
-	char * mylanguagedir =	"--language=./ToolMap2.app/Contents/share/english";
+	char * mylanguagedir =	"--language=./ToolMap2.app/Contents/mysql";
 #elif defined(__WXGTK20__)
-	char * mylanguagedir = "";
+	char * mylanguagedir = "--language=./mysql/english";
 #else 
 	wxASSERT_MSG (0, _T("Check compilation option for MySQL"));
 	char * mylanguagedir = "";
@@ -102,7 +102,9 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		bufDataDir,
 		mylanguagedir,
 		"--port=3309",
-		"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
+//#if defined (__WXDEBUG__)
+//		"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
+//#endif
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=utf8"
 	};

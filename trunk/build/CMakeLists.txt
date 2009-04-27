@@ -39,6 +39,8 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  #INCLUDE ("cmake/UsewxWidgets.cmake")
  
  
+ 
+ 
  #MYSQL EMBEDDED
  INCLUDE ("cmake/findMySQLEmbedded.cmake")
 
@@ -50,22 +52,6 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  #wxTreeMultiCtrl
  INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
  
-
-# Getting the subversion number and
-# generating a file called svn_version.h
-IF (WIN32)
-	EXECUTE_PROCESS(
-		COMMAND version_svn_win.bat
-		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
-	)
-ELSE (WIN32)
-	EXECUTE_PROCESS(
-		COMMAND sh version_svn_unix.sh
-		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
-	)
-ENDIF(WIN32)
-
-
 
 
 
@@ -86,10 +72,10 @@ IF( APPLE )
 	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../art/${APP_ICON} ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
 	
 	# Copy errmsg.sys into file
-	EXECUTE_PROCESS(
-		COMMAND sh copy_mysql_errmsg_mac.sh "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app"
-		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
-		)
+	#EXECUTE_PROCESS(
+	#	COMMAND sh copy_mysql_errmsg_mac.sh "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app"
+	#	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
+	#	)
 	
 ENDIF (APPLE)
 
@@ -115,6 +101,11 @@ ENDIF (WIN32)
 INCLUDE ("cmake/installMacGISLIB.cmake")
 
 
+#SVN NUMBERING
+ INCLUDE ("cmake/use_svnnumber.cmake")
+
+
+
 #SOULD WE ADD THE LIBTIFF INTO BUNDLE
 # ONLY FOR CERTAIN MAC WITH PPC 
 # CHECK ARE DONE INTERNALLY YOU 
@@ -134,6 +125,9 @@ INCLUDE ("cmake/Use_wingdiplus.cmake")
 IF (WIN32)
 	INCLUDE ("cmake/Use_visualstudioMT.cmake")
 ENDIF (WIN32)
+
+#Copy errmsg.sys to correct path
+INCLUDE ("cmake/useMySQLEmbedded.cmake")
 
 
 # UNIT TEST PROGRAM
