@@ -119,7 +119,6 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 
 	int num_elements = (sizeof(server_args) / sizeof(char *));
-	int ithread = mysql_thread_init();
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
 	if (myReturn != 0)
 	{
