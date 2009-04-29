@@ -40,7 +40,7 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		OGRDataSource       *m_Datasource;
 		OGRLayer			*m_Layer;
 		OGRFeature			*m_Feature;
-		
+		long				m_OID;
 	
 		
 	protected:
@@ -52,6 +52,9 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		OGRGeometry * LoadDatabaseGeometry (long oid,
 											int ilayertype,
 											DataBaseTM * database);
+		bool UpdateDatabaseGeometry(OGRGeometry * geom,
+									int layertype,
+									DataBaseTM * database);
 		
 		
 	public:
@@ -76,10 +79,13 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		
 		// saving / loading line
 		long SaveLineToDatabase (DataBaseTM * database,	int layertype);
+		bool UpdateLineToDatabase(DataBaseTM * database, int layertype);
 		bool GetLineFromDatabase (DataBaseTM * database, long oid, 
 								  int layertype);
 
-	
+		// OID related functions.
+		void SetOID (long oid){m_OID = oid;}
+		bool IsUpdating ();
 		
 	};
 

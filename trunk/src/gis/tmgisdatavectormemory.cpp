@@ -30,6 +30,7 @@ tmGISDataVectorMemory::tmGISDataVectorMemory()
 	// init member
 	m_Layer = NULL;
 	m_Feature = NULL;
+	m_OID = wxNOT_FOUND;
 	
 	 OGRRegisterAll();
 	// create memory layer
@@ -86,6 +87,7 @@ bool tmGISDataVectorMemory::CreateFeature()
 {
 	DestroyFeature();
 	m_Feature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
+	m_OID = wxNOT_FOUND;
 	if (m_Layer->CreateFeature(m_Feature) != OGRERR_NONE)
 	{
 		wxASSERT_MSG(0,_T("Error creating feature in memory"));
@@ -362,6 +364,32 @@ long tmGISDataVectorMemory::SaveLineToDatabase (DataBaseTM * database,
 }
 
 
+/***************************************************************************//**
+ @brief Update the line into database
+ @param database a valid #DataBaseTM object
+ @param layertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC) 
+ @return  true if line updated, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 April 2009
+ *******************************************************************************/
+bool tmGISDataVectorMemory::UpdateLineToDatabase(DataBaseTM * database, int layertype)
+{
+	wxASSERT (database);
+	wxASSERT (layertype < TOC_NAME_NOT_GENERIC);
+	
+	OGRLineString * myOGRLine = (OGRLineString*) m_Feature->GetGeometryRef();
+	if (myOGRLine == NULL)
+		return false;
+	
+	// ensure only 2D
+	myOGRLine->setCoordinateDimension(2);
+
+	bool bUpdate = UpdateDatabaseGeometry(myOGRLine, layertype, database);
+	wxASSERT(bUpdate);
+	return bUpdate;
+}
+
 
 
 
@@ -381,15 +409,16 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 												  DataBaseTM * database)
 {
 	long lReturn = -1;
-	char * myCharGeom = NULL;
+	int num = myGeom->WkbSize();
+	char * myCharGeom = new char[num*3];
 	myGeom->exportToWkt(&myCharGeom);
-	if (!myCharGeom)
-		return -1;
+	//if (!myCharGeom)
+	//	return -1;
 	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
-#ifndef  __WXMSW__    
+//#ifndef  __WXMSW__    
 	delete [] myCharGeom;	
-#endif
+//#endif
 	
 		
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
@@ -404,6 +433,42 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 	
 	lReturn = database->DataBaseGetLastInsertedID();	
 	return lReturn;
+}
+
+
+
+/***************************************************************************//**
+ @brief Update any geometry into database
+ @param myGeom a valid geometry (the caller must delete the geometry)
+ @param ilayertype one of the #TOC_GENERIC_NAME values (must be <
+ TOC_NAME_NOT_GENERIC)
+ @param database a valid #DataBaseTM object
+ @return  true if updated was success
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 April 2009
+ *******************************************************************************/
+bool tmGISDataVectorMemory::UpdateDatabaseGeometry(OGRGeometry * geom,
+												   int layertype,
+												   DataBaseTM * database)
+{
+	int num = geom->WkbSize();
+	char * myCharGeom = new char[num*3];
+	geom->exportToWkt(&myCharGeom);
+	wxString mySGeom = wxString::FromAscii(myCharGeom);
+	delete [] myCharGeom;	
+	
+	wxString sSentence = wxString::Format(_T("UPDATE %s SET OBJECT_GEOMETRY=")
+										  _T("GeomFromText('%s') WHERE OBJECT_ID=%d"),
+										  TABLE_NAME_GIS_GENERIC[layertype].c_str(),
+										  mySGeom.c_str(),
+										  m_OID);
+	if(database->DataBaseQueryNoResults(sSentence)==false)
+	{
+		wxLogError(_("Error updating geometry : %s"),
+				   sSentence.c_str());
+		return false;
+	}
+	return true;
 }
 
 
@@ -508,4 +573,29 @@ bool tmGISDataVectorMemory::GetLineFromDatabase (DataBaseTM * database, long oid
 	OGRGeometryFactory::destroyGeometry(myOGRLine);
 	return true;
 }
+
+
+
+/***************************************************************************//**
+ @brief Is the edit object present into database
+ @details if true, geometry will be updated and no new object will be created
+ @return  true if geometry is present into database, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 April 2009
+ *******************************************************************************/
+bool tmGISDataVectorMemory::IsUpdating ()
+{
+	if (m_OID == wxNOT_FOUND)
+		return false;
+	
+	return true;
+}
+
+
+
+
+
+
+
+
 

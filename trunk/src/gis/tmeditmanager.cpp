@@ -124,6 +124,7 @@ void tmEditManager::OnToolModify ()
 	bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
 												  mypLayerProp->m_LayerType);
 	wxASSERT(bCopy);
+	m_GISMemory->SetOID(myActualSel);
 }
 
 
@@ -563,6 +564,30 @@ long tmEditManager::StoreLine ()
 
 
 /***************************************************************************//**
+ @brief Update line in database
+ @details This function works only if tmGISDataVectorMemory object contain a
+ valid OID
+ @param bool true if updating was successfull
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 April 2009
+ *******************************************************************************/
+bool tmEditManager::UpdateLine()
+{
+	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
+	wxASSERT (layerprop);
+	if (layerprop == NULL)
+		return false;
+	
+	bool bContainOID = m_GISMemory->IsUpdating();
+	wxASSERT(bContainOID);
+	if (bContainOID == false)
+		return false;
+	
+	return m_GISMemory->UpdateLineToDatabase(m_pDB, layerprop->m_LayerType);
+}
+
+
+/***************************************************************************//**
  @brief Directly draw the last segment
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
@@ -673,16 +698,31 @@ void tmEditManager::OnDrawFeatureStop (wxCommandEvent & event)
 	
 	// minimum 2 vertex for saving line into database
 	if (m_GISMemory->GetVertexCount() < 2) 
-		return;
-	
-	long lid = StoreLine();
-	if (lid == -1)
 	{
-		wxLogDebug(_T("Line not saved into database"));
+		m_GISMemory->DestroyFeature();
+		m_GISMemory->CreateFeature();
 		return;
 	}
 	
-			
+	long lid = wxNOT_FOUND;
+	// UPDATING
+	if (m_GISMemory->IsUpdating())
+	{
+		lid = m_SelectedData->GetSelectedUnique();
+		bool bUpdate = UpdateLine();
+		wxASSERT(bUpdate);
+	}
+	else // CREATING NEW
+	{
+		lid = StoreLine();
+		if (lid == -1)
+		{
+			wxLogDebug(_T("Line not saved into database"));
+			return;
+		}
+		
+	}
+
 	wxLogDebug(_T("Line saved : OID = %d"), lid);
 	
 	// Clear memory
