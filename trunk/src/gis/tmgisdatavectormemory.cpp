@@ -434,7 +434,7 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 	}
 	
 	
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 	MYSQL_ROW row;
 	
 	if(database->DataBaseGetNextRowResult(row, row_length)==false)
@@ -444,14 +444,14 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 	}
 	database->DataBaseClearResults();
 	
-	wxASSERT(row_length != 0);
-	unsigned long * prow_length = &row_length;
+	wxASSERT(row_length.GetCount() == 1);
+	//unsigned long * prow_length = &row_length;
 	OGRGeometry * geometry = NULL;
 	// Geometry columns will have the first 4 bytes contain the SRID.
 	OGRGeometryFactory::createFromWkb(((unsigned char *)row[0]) + 4, 
 									  NULL,
 									  &geometry,
-									  prow_length[0] - 4 );
+									  row_length.Item(0) - 4 );
 	return geometry;
 }
 

@@ -334,13 +334,13 @@ public:
 		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),_T("testfields"))==true);
 		CPPUNIT_ASSERT(m_DB->DataBaseQuery(_T("SELECT Envelope(OBJECT_GEOMETRY) FROM generic_lines WHERE OBJECT_ID = 1"))); //WHERE OBJECT_ID = 2")));
 		MYSQL_ROW myRow;
-		unsigned long myLength = 0;
+		tmArrayULong myLength;
 		CPPUNIT_ASSERT(m_DB->DataBaseGetNextRowResult(myRow, myLength));
 		CPPUNIT_ASSERT(myRow != NULL);
-		CPPUNIT_ASSERT(myLength != 0);
+		CPPUNIT_ASSERT(myLength.GetCount() != 0);
 		CPPUNIT_ASSERT(m_DB->DataBaseGetNextRowResult(myRow, myLength)==false);
 		CPPUNIT_ASSERT(myRow == NULL);
-		CPPUNIT_ASSERT(myLength == 0);
+		CPPUNIT_ASSERT(myLength.GetCount() == 0);
 		
 	}
 	

@@ -113,7 +113,7 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 	OGREnvelope * psExtent = new OGREnvelope();
 	OGREnvelope oEnv;
 	MYSQL_ROW row;
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 	
 	// query for the geometry enveloppe for all lines
 	wxString sSentence = wxString::Format(_T("SELECT Envelope(%s) FROM %s"),
@@ -130,7 +130,7 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 		return tmRealRect(0,0,0,0);
 	}
 	
-	OGRGeometry *poGeometry = CreateDataBaseGeometry(row, &row_length);
+	OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
 	wxASSERT(poGeometry);
 	
 	poGeometry->getEnvelope(&oEnv);
@@ -142,7 +142,7 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 	while (m_DB->DataBaseGetNextRowResult(row, row_length))
 	{
 		// compute the geometry and get the xmin xmax, ymin, ymax
-		OGRGeometry *poGeometry = CreateDataBaseGeometry(row, &row_length);
+		OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
 		if ( poGeometry != NULL )
 		{
 			poGeometry->getEnvelope(&oEnv);
@@ -166,7 +166,7 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 
 
 OGRGeometry *  tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW & row,
-															unsigned long * length,
+															const tmArrayULong & row_lengths,
 															int geometry_col)
 {
 	OGRGeometry * geometry = NULL;
@@ -174,7 +174,7 @@ OGRGeometry *  tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW & row,
 	OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, 
 									  NULL,
 									  &geometry,
-									  length[geometry_col] - 4 );
+									  row_lengths.Item(geometry_col) - 4 );
 	
 	return geometry;
 }
@@ -264,7 +264,7 @@ wxString tmGISDataVectorMYSQL::GetTableName (int type)
 wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 {
 	MYSQL_ROW row;
-	unsigned long  row_length = 0;
+	tmArrayULong  row_length;
 	
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
@@ -282,7 +282,7 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 		return NULL;
 	}
 	
-	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, &row_length, 1);
+	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, row_length, 1);
 	oid = GetOid(row, 0);
 	wxASSERT(pline);
 	nbvertex = pline->getNumPoints();
@@ -310,7 +310,7 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 {
 	MYSQL_ROW row;
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 	
 	// security check
 	if(!m_DB->DataBaseHasResults()==false)
@@ -326,7 +326,7 @@ OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 		return NULL;
 	}
 	
-	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, &row_length, 1);
+	OGRLineString * pline = (OGRLineString*) CreateDataBaseGeometry(row, row_length, 1);
 	oid = GetOid(row, 0);
 	wxASSERT (pline);
 	return pline;
@@ -337,7 +337,7 @@ OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 OGRPoint * tmGISDataVectorMYSQL::GetOGRNextDataPoint (long & oid)
 {
 	MYSQL_ROW row;
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 	
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
@@ -354,7 +354,7 @@ OGRPoint * tmGISDataVectorMYSQL::GetOGRNextDataPoint (long & oid)
 	}
 	
 
-	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, &row_length, 1);
+	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length, 1);
 	oid = GetOid(row, 0);
 	return ppoint;
 }
@@ -365,7 +365,7 @@ OGRPoint * tmGISDataVectorMYSQL::GetNextDataPointWithAttrib (long & oid,
 															 wxArrayString & values)
 {
 	MYSQL_ROW row;
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 	values.Clear();
 	
 	// security check
@@ -391,7 +391,7 @@ OGRPoint * tmGISDataVectorMYSQL::GetNextDataPointWithAttrib (long & oid,
 		values.Add(wxString ( row[i], wxConvUTF8));
 	}
 	
-	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, &row_length, 1);
+	OGRPoint * ppoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length, 1);
 	oid = GetOid(row, 0);
 	return ppoint;
 }
@@ -401,7 +401,7 @@ OGRPoint * tmGISDataVectorMYSQL::GetNextDataPointWithAttrib (long & oid,
 wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 {
 	MYSQL_ROW row;
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 	
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
@@ -417,17 +417,9 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 		return NULL;
 	}
 		
-	OGRPoint * pPoint = (OGRPoint*) CreateDataBaseGeometry(row, &row_length,1);
+	OGRPoint * pPoint = (OGRPoint*) CreateDataBaseGeometry(row, row_length,1);
 	oid = GetOid(row, 0);
 	wxASSERT(pPoint);
-	
-	/*if (!pPoint)
-	{
-		if (IsLoggingEnabled())
-			wxLogError(_T("Not able to create geometry"));
-		return NULL;
-	}*/
-	
 	
 	wxRealPoint * pts = new wxRealPoint;
 	
@@ -601,7 +593,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 		
 	
 	MYSQL_ROW row;
-	unsigned long row_size = 0;
+	tmArrayULong row_size;
 	
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
@@ -622,7 +614,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchData (const tmRealRect & rect, int typ
 	while (m_DB->DataBaseGetNextRowResult(row, row_size))
 	{
 		
-		OGRGeometry * ogrgeom = CreateDataBaseGeometry(row, &row_size, 1);
+		OGRGeometry * ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
 		GEOSGeom  geom = CreateGEOSGeometry(ogrgeom);
 		
 		if (CheckGEOSIntersection(&grect,&geom))
@@ -695,7 +687,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchIntersectingGeometry (OGRGeometry * in
 										  GetShortFileName().c_str(), sRect.c_str());
 	
 	MYSQL_ROW row;
-	unsigned long row_size = 0;
+	tmArrayULong row_size;
 	GEOSGeom grect = CreateGEOSGeometry(intersectinggeom);
 	
 	if (m_DB->DataBaseQuery(sSentence)==false)
@@ -713,7 +705,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchIntersectingGeometry (OGRGeometry * in
 	wxArrayLong * myArray = new wxArrayLong();
 	while (m_DB->DataBaseGetNextRowResult(row, row_size))
 	{
-		OGRGeometry * ogrgeom = CreateDataBaseGeometry(row, &row_size, 1);
+		OGRGeometry * ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
 		GEOSGeom  geom = CreateGEOSGeometry(ogrgeom);
 		
 		if (CheckGEOSCrosses(&grect,&geom))
@@ -772,7 +764,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 		
 	
 	MYSQL_ROW row;
-	unsigned long row_size = 0;
+	tmArrayULong row_size;
 	
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
@@ -793,7 +785,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	
 	while(m_DB->DataBaseGetNextRowResult(row, row_size))
 	{
-		OGRGeometry * poGeometry = CreateDataBaseGeometry(row, &row_size, 1);
+		OGRGeometry * poGeometry = CreateDataBaseGeometry(row, row_size, 1);
 		if (poGeometry->Intersects(myBufferClick))
 		{
 			if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
@@ -963,22 +955,14 @@ OGRGeometryCollection * tmGISDataVectorMYSQL::
 	OGRGeometryCollection * myGeomCol = (OGRGeometryCollection*) 
 				OGRGeometryFactory::createGeometry(wkbGeometryCollection);
 	MYSQL_ROW row;
-	unsigned long row_length = 0;
+	tmArrayULong row_length;
 
 	for (i = 0; i< OIDs->GetCount();i++)
 	{
 		if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
 			break;
 		
-/*		row_length = m_DB->DataBaseGetNextRowResult(row);
-		if (row_length == NULL)
-		{
-			if (IsLoggingEnabled())
-				wxLogDebug(_T("No more results"));
-			return NULL;
-		}*/
-		
-		OGRGeometry * pGeom = CreateDataBaseGeometry(row, &row_length, 1);
+		OGRGeometry * pGeom = CreateDataBaseGeometry(row, row_length, 1);
 		myGeomCol->addGeometry(pGeom);
 		OGRGeometryFactory::destroyGeometry(pGeom);
 	}
