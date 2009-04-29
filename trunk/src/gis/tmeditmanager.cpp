@@ -112,7 +112,18 @@ void tmEditManager::OnToolEdit ()
 void tmEditManager::OnToolModify ()
 {
 	wxASSERT (m_Renderer);
+	if (IsModifictionAllowed()==false)
+		return;
+	
 	m_Renderer->SetTool(tmTOOL_MODIFY);
+	
+	long myActualSel = m_SelectedData->GetSelectedUnique();
+	tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
+	wxASSERT(myActualSel != wxNOT_FOUND);
+	wxASSERT(mypLayerProp);
+	bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
+												  mypLayerProp->m_LayerType);
+	wxASSERT(bCopy);
 }
 
 
@@ -249,9 +260,12 @@ bool tmEditManager::IsLayerTypeSelected (int layertype)
  *******************************************************************************/
 bool tmEditManager::IsObjectSelected()
 {
-	if (m_SelectedData->GetCount() == 1)
+	unsigned int mySelCount = m_SelectedData->GetCount();
+	
+	if (mySelCount == 1)
 		return true;
 	
+	wxLogMessage(_("%d object(s) selected, expected 1"), mySelCount);
 	return false;
 }
 
@@ -303,10 +317,19 @@ bool tmEditManager::IsDrawingAllowed()
  *******************************************************************************/
 bool tmEditManager::IsModifictionAllowed()
 {
-	if (IsCorrectLayerSelected() && IsObjectSelected())
-		return true;
-		
-	return false;
+	if (IsCorrectLayerSelected() == false)
+		return false;
+	
+	if ( IsObjectSelected() == false)
+		return false;
+	
+	if (m_GISMemory->GetVertexCount()!= 0)
+	{
+		wxLogDebug(_T("Finish actual line first !"));
+			return false;
+	}
+	
+	return true;
 }
 
 
@@ -606,6 +629,9 @@ void tmEditManager::DrawEditLine ()
 	m_Renderer->Update();
 
 }
+
+
+
 
 
 /***************************************************************************//**

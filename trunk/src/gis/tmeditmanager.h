@@ -101,7 +101,6 @@ class tmEditManager : public wxEvtHandler
 		// drawing editing object
 		void DrawLastSegment ();
 		void DrawEditLine ();
-
 		
 		
 		
