@@ -309,6 +309,50 @@ bool tmGISDataVectorMemory::GetVertexAll (wxArrayRealPoints & myPts)
 
 
 /***************************************************************************//**
+ @brief Search vertex from memory
+ @param ptsearched coordinate of the searched point
+ @param index zero based index of the vertex found, only if true is returned
+ @param ibuffsize size of the buffer we should search into
+ @return  true if vertex was found, and then index is valid
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 April 2009
+ *******************************************************************************/
+bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched, 
+										  int & index, int ibuffsize)
+{
+	index = wxNOT_FOUND;
+	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
+	wxASSERT (myptClicked);
+	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, ibuffsize);
+	wxASSERT(myBuffClicked);
+	OGRGeometryFactory::destroyGeometry(myptClicked);
+	
+	wxArrayRealPoints myPts;
+	bool bAllVertex = GetVertexAll(myPts);
+	wxASSERT(bAllVertex);
+	
+	bool bFound = false;
+	for (unsigned int i = 0; i<myPts.GetCount();i++)
+	{
+		OGRGeometry * myPt = CreateOGRGeometry(myPts.Item(i));
+		OGRGeometry * myInter = SafeIntersection(myBuffClicked, myPt);
+		OGRGeometryFactory::destroyGeometry (myPt);
+		if (myInter != NULL)
+		{
+			OGRGeometryFactory::destroyGeometry(myInter);
+			index = i;
+			bFound = true;
+			break;
+		}
+	}
+	OGRGeometryFactory::destroyGeometry(myBuffClicked);
+	
+	return bFound;
+}
+
+
+
+/***************************************************************************//**
  @brief Save into database the first vertex in the feature
  @param database Adress of a valid database
  @param layertype one of the #TOC_GENERIC_NAME values (must be <

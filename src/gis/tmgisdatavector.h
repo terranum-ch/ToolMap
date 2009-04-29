@@ -93,6 +93,8 @@ class tmGISDataVector : public tmGISData
 		static OGRGeometry * SafeIntersection (OGRGeometry * geom1, OGRGeometry * geom2);
 		static OGRGeometry * SafeUnion (OGRGeometry * union1, OGRGeometry * line);
 		
+		static OGRGeometry * CreateOGRGeometry(const wxRealPoint & pt);
+		
 		
 	public:
 		// ctor, dtor

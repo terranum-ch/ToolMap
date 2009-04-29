@@ -79,6 +79,7 @@ class tmEditManager : public wxEvtHandler
 		void OnDrawFeatureStop (wxCommandEvent & event);
 		void OnCutLines (wxCommandEvent & event);
 		void OnShowVertexPosition (wxCommandEvent & event);
+		void OnModifySearch (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();
@@ -102,6 +103,10 @@ class tmEditManager : public wxEvtHandler
 		// drawing editing object
 		void DrawLastSegment ();
 		void DrawEditLine ();
+		
+		// modify functions
+		//bool SearchModifyVertex (const wxRealPoint & clickedpoint,
+		//						 wxRealPoint & returned);
 		
 		
 		
