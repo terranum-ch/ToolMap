@@ -29,6 +29,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureStop)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
 	EVT_COMMAND (wxID_ANY,tmEVT_EV_DISPLAY_VERTEX_COORD, tmEditManager::OnShowVertexPosition)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
 END_EVENT_TABLE()
 
 
@@ -657,6 +658,21 @@ void tmEditManager::DrawEditLine ()
 
 
 
+/***************************************************************************//**
+ @brief Search vertex into memory arround specified point
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 29 April 2009
+ *******************************************************************************/
+//bool tmEditManager::SearchModifyVertex (const wxRealPoint & clickedpoint,
+	//									wxRealPoint & returned)
+//{
+//	returned = wxRealPoint(0,0);
+	
+	
+///	return true;
+//}
+
+
 
 
 /***************************************************************************//**
@@ -838,6 +854,35 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
 	m_Renderer->DrawCircleVideoInverse(myPxPt, 7);
 	m_OldVertexPos = myPxPt;
 
+}
+
+
+/***************************************************************************//**
+ @brief Called to when modify is clicked down for searching vertex
+ @details Respond to tmEVT_EM_MODIFY_CLICK event.
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 April 2009
+ *******************************************************************************/
+void tmEditManager::OnModifySearch (wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
+	delete myPt;
+	wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
+	
+	//wxRealPoint myFoundVertex (0,0);
+	//if (SearchModifyVertex(myRPt, myFoundVertex)==false)
+	//	return;
+	int iIndex = wxNOT_FOUND;
+	if (m_GISMemory->SearchVertex(myRPt, iIndex, tmSELECTION_DIAMETER)==false)
+		return;
+	
+	wxRealPoint myFPt;
+	bool bGetVertex = m_GISMemory->GetVertex(myFPt, iIndex);
+	wxASSERT(bGetVertex);
+	wxLogDebug(_T("Vertex found @%d, : %.*f - %.*f"),
+			   iIndex, 2, myFPt.x, 2, myFPt.y);
 }
 
 

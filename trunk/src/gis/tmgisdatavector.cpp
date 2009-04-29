@@ -424,6 +424,8 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 
 
 
+
+
 OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
 {
 	wxASSERT (ogrgeom);
@@ -532,6 +534,18 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 	return returnunion;
 }
 
+
+
+OGRGeometry * tmGISDataVector::CreateOGRGeometry(const wxRealPoint & pt)
+{
+	OGRGeometry * pPt = OGRGeometryFactory::createGeometry(wkbPoint);
+	OGRPoint * mypPt = (OGRPoint*) pPt;
+	wxASSERT (pPt);
+	mypPt->setX(pt.x);
+	mypPt->setY(pt.y);
+	
+	return pPt;
+}
 
 
 /***************************************************************************//**

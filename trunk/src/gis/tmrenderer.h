@@ -92,6 +92,8 @@ class tmRenderer : public wxScrolledWindow
 		// status of shift key
 		bool m_ShiftDown;
 		
+		bool m_ModifyCalled;
+		
 		// snapping
 		int m_SnappingRadius;
 		
@@ -138,6 +140,11 @@ class tmRenderer : public wxScrolledWindow
 		// drawing functions
 		void DrawStart (const wxPoint & mousepos);
 		void DrawStop  (const wxPoint & mousepos);
+		
+		// modify functions
+		void ModifyStart (const wxPoint & mousepos);
+		void ModifyUpdate (const wxPoint & mousepos);
+		void ModifyStop (const wxPoint & mousepos);
 		
 	
 		void CutLineClick (const wxPoint & mousepos);

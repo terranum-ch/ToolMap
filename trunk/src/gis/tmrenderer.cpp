@@ -64,6 +64,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS )
 {
 	m_bmp = NULL;
+	m_ModifyCalled = false;
 	m_SelectRect = new wxRubberBand(this);
 	m_StartCoord = wxPoint(-1,-1);
 	m_ActualTool = tmTOOL_SELECT;
@@ -315,6 +316,9 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_DRAW)
 		DrawStart(event.GetPosition());
 	
+	if (m_ActualTool == tmTOOL_MODIFY)
+		ModifyStart(event.GetPosition());
+	
 	event.Skip();
 }
 
@@ -330,6 +334,9 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectUpdate(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_MODIFY)
+		ModifyUpdate(event.GetPosition());
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -359,6 +366,9 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_CUT_LINES)
 		CutLineClick(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_MODIFY)
+		ModifyStop(event.GetPosition());
 	
 }
 
@@ -748,6 +758,52 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 }
 
 
+/***************************************************************************//**
+ @brief Called when mouse down and modify tool selected
+ @param mousepos Actual mouse position
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 April 2009
+ *******************************************************************************/
+void tmRenderer::ModifyStart (const wxPoint & mousepos)
+{
+	// ensure only called once.
+	if (m_ModifyCalled == true)
+		return;
+	
+	m_ModifyCalled = true;
+	
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_MODIFY_CLICK, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+}
+
+
+/***************************************************************************//**
+ @brief Called when mouse move and modify tool selected
+ @param mousepos Actual mouse position
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 April 2009
+ *******************************************************************************/
+void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
+{
+	
+}
+
+
+/***************************************************************************//**
+ @brief Called when mouse up and modify tool selected
+ @param mousepos Actual mouse position
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 April 2009
+ *******************************************************************************/
+void tmRenderer::ModifyStop (const wxPoint & mousepos)
+{
+	wxASSERT(m_ModifyCalled == true);
+	m_ModifyCalled = false;
+}
 
 
 
