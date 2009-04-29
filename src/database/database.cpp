@@ -505,17 +505,26 @@ bool DataBase::DataBaseGetNextResult(wxArrayDouble & results)
 
 
 
-bool DataBase::DataBaseGetNextRowResult(MYSQL_ROW & row, unsigned long & length)
+bool DataBase::DataBaseGetNextRowResult(MYSQL_ROW & row, tmArrayULong & lengths)
 {
 	row = NULL;
-	length = 0;
+	lengths.Clear();
 
+
+	
 	if (DBGetNextRecord(row)==false)
 		return false;
 
+	unsigned int myNumFields = mysql_field_count(m_MySQL);
+	wxASSERT(myNumFields > 0);
+	
 	unsigned long * myTempLength = mysql_fetch_lengths(m_MySQLRes);
 	wxASSERT(*myTempLength != 0);
-	length = *myTempLength;
+	
+	for (unsigned int i =  0; i<myNumFields;i++)
+		lengths.Add(myTempLength[i]);
+	
+	//delete [] myTempLength; (not needed ?)
 	return true;
 }
 

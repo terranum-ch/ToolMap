@@ -54,7 +54,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		
 		// gis database function
 		OGRGeometry * CreateDataBaseGeometry(MYSQL_ROW & row,
-											 unsigned long * length,
+											 const tmArrayULong & row_lengths,
 											 int geometry_col=0);
 		long GetOid (MYSQL_ROW & row, const int & col);
 
