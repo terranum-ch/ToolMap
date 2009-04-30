@@ -801,6 +801,9 @@ void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
  *******************************************************************************/
 void tmRenderer::ModifyStop (const wxPoint & mousepos)
 {
+	if (m_ModifyCalled == false)
+		return;
+	
 	wxASSERT(m_ModifyCalled == true);
 	m_ModifyCalled = false;
 }
