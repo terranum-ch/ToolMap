@@ -746,14 +746,11 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 		
 	
 	// convert buffer to text for sql query
-	char * buffer;
+	char * buffer = NULL;
 	myBufferClick->exportToWkt(&buffer);
 	wxASSERT(buffer);
 	wxString mySBuffer = wxString::FromAscii(buffer);
-#ifndef  __WXMSW__   
-	delete [] buffer;
-#endif
-	//TODO: Check here for deleting problem under windows
+	OGRFree(buffer);
 	
 	
 	
@@ -858,9 +855,8 @@ long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
 		return -1;
 	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
-#ifndef  __WXMSW__    
-	delete [] myCharGeom;	
-#endif
+	OGRFree(myCharGeom);
+
 	
 	
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
@@ -887,9 +883,7 @@ long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
  *******************************************************************************/
 bool tmGISDataVectorMYSQL::UpdateGeometry (OGRGeometry * geom, const long & oid)
 {
-	//long lReturn = -1;
 	char * myCharGeom = NULL;
-	
 	if (geom == NULL)
 		return false;
 	
@@ -897,11 +891,8 @@ bool tmGISDataVectorMYSQL::UpdateGeometry (OGRGeometry * geom, const long & oid)
 	geom->exportToWkt(&myCharGeom);
 	if (!myCharGeom)
 		return false;
-	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
-#ifndef  __WXMSW__    
-	delete [] myCharGeom;	
-#endif
+	OGRFree(myCharGeom);
 	
 	
 	wxString sSentence = wxString::Format(_T("UPDATE  %s SET OBJECT_GEOMETRY=")
