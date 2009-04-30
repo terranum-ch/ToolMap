@@ -327,6 +327,7 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 	wxASSERT(myBuffClicked);
 	OGRGeometryFactory::destroyGeometry(myptClicked);
 	
+	
 	wxArrayRealPoints myPts;
 	bool bAllVertex = GetVertexAll(myPts);
 	wxASSERT(bAllVertex);
@@ -335,11 +336,10 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 	for (unsigned int i = 0; i<myPts.GetCount();i++)
 	{
 		OGRGeometry * myPt = CreateOGRGeometry(myPts.Item(i));
-		OGRGeometry * myInter = SafeIntersection(myBuffClicked, myPt);
+		bool bIntersect = myBuffClicked->Intersect(myPt);
 		OGRGeometryFactory::destroyGeometry (myPt);
-		if (myInter != NULL)
+		if (bIntersect)
 		{
-			OGRGeometryFactory::destroyGeometry(myInter);
 			index = i;
 			bFound = true;
 			break;
