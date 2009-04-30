@@ -39,6 +39,8 @@
 #include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
+#include "../gis/tmdraweredit.h"			// for drawing line in modification
+
 
 
 /***************************************************************************//**
@@ -59,6 +61,7 @@ class tmEditManager : public wxEvtHandler
 		tmGISDataVectorMemory * m_GISMemory;
 		bool m_EditStarted;
 		wxPoint m_OldVertexPos;
+		tmDrawerEditLine m_DrawLine;
 		
 		
 		// defined by function or event.
@@ -80,6 +83,7 @@ class tmEditManager : public wxEvtHandler
 		void OnCutLines (wxCommandEvent & event);
 		void OnShowVertexPosition (wxCommandEvent & event);
 		void OnModifySearch (wxCommandEvent & event);
+		void OnModifyMove (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();

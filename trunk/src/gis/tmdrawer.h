@@ -85,8 +85,8 @@ class tmDrawer : public wxObject
 		wxPen * CreateEditUniqueVertexPen (int size);
 		wxPen * CreateEditUniqueSegmentPen (int size);
 		
-		void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
-		void DrawPoint (const wxPoint & pt, wxClientDC * pcdc);
+		static void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
+		static void DrawPoint (const wxPoint & pt, wxClientDC * pcdc);
 		
 	protected:
 	public:

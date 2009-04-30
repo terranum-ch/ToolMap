@@ -31,14 +31,18 @@ tmDrawerEditLine::tmDrawerEditLine()
 
 tmDrawerEditLine::~tmDrawerEditLine()
 {
+	if(m_Pt != NULL)
+	{
+		DLVertexDelete();
+	}
 	
+	wxASSERT(m_LeftPT == NULL);
+	wxASSERT(m_RightPT == NULL);
 }
 
 
 
-
-
-bool tmDrawerEditLine::DLIsVertexCreated()
+bool tmDrawerEditLine::IsOK()
 {
 	if (m_Pt != NULL)
 		return true;
@@ -68,10 +72,10 @@ void tmDrawerEditLine::DLVertexDelete()
 
 
 
-bool tmDrawerEditLine::CreateVertex(const wxArrayRealPoints & pts, int index)
+bool tmDrawerEditLine::CreateVertex(const wxArrayPoints & pts, int index)
 {
 	wxASSERT(index >= 0);
-	if (DLIsVertexCreated()==true)
+	if (IsOK()==true)
 		DLVertexDelete();
 	
 	if (pts.GetCount() <= 1)
@@ -84,20 +88,46 @@ bool tmDrawerEditLine::CreateVertex(const wxArrayRealPoints & pts, int index)
 	{
 		wxString myErr = _("Trying to get a vertex outside of array");
 		wxLogError(myErr);
-		//wxASSERT_MSG (0, myErr);
 		return false;
 	}
 		
 	wxASSERT(m_Pt == NULL);
-	m_Pt = new wxRealPoint(pts.Item(index));
+	m_Pt = new wxPoint(pts.Item(index));
 	
 	
 	if (index - 1 >= 0)
-		m_LeftPT = new wxRealPoint(pts.Item(index -1));
+		m_LeftPT = new wxPoint(pts.Item(index -1));
 	
 	if (index + 1 < (signed) pts.GetCount())
-		m_RightPT = new wxRealPoint(pts.Item(index+1));
+		m_RightPT = new wxPoint(pts.Item(index+1));
 		
+	return true;
+}
+
+
+
+
+bool tmDrawerEditLine::CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint * right)
+{
+	if (IsOK()==true)
+		DLVertexDelete();
+	
+	if (left == NULL && right == NULL)
+	{
+		wxLogDebug(_("Left or right should not be NULL"));
+		return false;
+	}
+	
+	
+	wxASSERT(m_Pt == NULL);
+	m_Pt = new wxPoint(pt);
+	
+	if (left != NULL)
+		m_LeftPT = new wxPoint(*left);
+	
+	if (right != NULL)
+		m_RightPT = new wxPoint(*right);
+
 	return true;
 }
 
@@ -110,3 +140,38 @@ bool tmDrawerEditLine::IsEndVertex ()
 	
 	return false;
 }
+
+
+
+bool tmDrawerEditLine::SetVertex(const wxPoint & pt)
+{
+	if (IsOK()==false)
+	{
+		wxLogDebug(_T("Error setting vertex, no existing vertex ! Use")
+				   _T(" CreateVertex() function first"));
+		return false;
+	}
+		
+	wxASSERT(m_Pt);
+	m_Pt->x = pt.x;
+	m_Pt->y = pt.y;
+	return true;
+}
+
+
+
+bool tmDrawerEditLine::DrawEditLine(wxClientDC * pdc)
+{
+	if (IsOK()==false)
+	{
+		wxLogDebug(_T("Error CreateVertex() first"));
+		return false;
+	}
+	
+	wxASSERT(pdc != NULL);
+	
+	
+	return true;
+}
+
+

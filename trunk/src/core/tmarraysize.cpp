@@ -44,3 +44,5 @@ WX_DEFINE_OBJARRAY (tmArraySize);
 //#include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (wxArrayRealPoints);
 
+WX_DEFINE_OBJARRAY (wxArrayPoints);
+

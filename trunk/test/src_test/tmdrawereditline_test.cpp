@@ -29,21 +29,25 @@
 class tmDrawerEditLineTEST : public CppUnit::TestFixture 
 { 
 	CPPUNIT_TEST_SUITE( tmDrawerEditLineTEST );
-	CPPUNIT_TEST ( TESTCreateDraw );
+	CPPUNIT_TEST ( TESTCreateVertex );
+	CPPUNIT_TEST (TESTCreateVertex2 );
+	CPPUNIT_TEST ( TESTIsOk );
+	CPPUNIT_TEST ( TESTSetVertex );
+	CPPUNIT_TEST ( TestDrawEditLine );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
 	tmDrawerEditLine * m_DL;
-	wxArrayRealPoints m_Pts;
+	wxArrayPoints m_Pts;
 	
 	
 public: 
 	void setUp()
 	{
 		m_DL = new tmDrawerEditLine();	
-		m_Pts.Add(wxRealPoint(598100.10, 110000.100));
-		m_Pts.Add(wxRealPoint(520500.20, 111000.200));
-		m_Pts.Add(wxRealPoint(600100.30, 112000.300));
+		m_Pts.Add(wxPoint(598, 110));
+		m_Pts.Add(wxPoint(520, 111));
+		m_Pts.Add(wxPoint(600, 112));
 	}
 	
 	void tearDown() 
@@ -52,7 +56,7 @@ public:
 		m_Pts.Clear();
 	}
 	
-	void TESTCreateDraw()
+	void TESTCreateVertex()
 	{
 		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 2)==true);
 		CPPUNIT_ASSERT(m_DL->IsEndVertex()==true);
@@ -60,7 +64,48 @@ public:
 		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 2)==false);
 		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 1)==true);
 		CPPUNIT_ASSERT(m_DL->IsEndVertex()==true);
+	}
 
+	void TESTCreateVertex2()
+	{
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts.Item(0),NULL, NULL)==false);
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts.Item(0),&m_Pts.Item(1),&m_Pts.Item(2))==true);
+		CPPUNIT_ASSERT(m_DL->IsEndVertex()==false);
+		
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts.Item(0),&m_Pts.Item(1),NULL)==true);
+		CPPUNIT_ASSERT(m_DL->IsEndVertex()==true);
+	}
+	
+	
+	
+	void TESTIsOk()
+	{
+		
+		CPPUNIT_ASSERT(m_DL->IsOK()==false);
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 0)==true);
+		CPPUNIT_ASSERT(m_DL->IsOK()==true);
+		CPPUNIT_ASSERT(m_DL->IsEndVertex()==true);
+
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 2)==true);
+		CPPUNIT_ASSERT(m_DL->IsOK()==true);
+		CPPUNIT_ASSERT(m_DL->IsEndVertex()==true);
+		
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 1)==true);
+		CPPUNIT_ASSERT(m_DL->IsOK()==true);
+		CPPUNIT_ASSERT(m_DL->IsEndVertex()==false);
+	}
+	
+	void TESTSetVertex()
+	{
+		CPPUNIT_ASSERT(m_DL->SetVertex(wxPoint(500,114))==false);
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts, 1)==true);
+		CPPUNIT_ASSERT(m_DL->SetVertex(wxPoint(500,114))==true);
+	}
+	
+	void TestDrawEditLine()
+	{
+		
+		CPPUNIT_ASSERT(m_DL->DrawEditLine(NULL)==false);
 		
 	}
 	

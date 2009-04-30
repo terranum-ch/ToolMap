@@ -865,20 +865,66 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
  *******************************************************************************/
 void tmEditManager::OnModifySearch (wxCommandEvent & event)
 {
-	wxPoint * myPt = (wxPoint*) event.GetClientData();
-	wxASSERT (myPt);
-	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
-	delete myPt;
+	// getting point
+	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myTempPt);
+	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
 	wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
 	
+	
+	// searching vertex
 	int iIndex = wxNOT_FOUND;
 	if (m_GISMemory->SearchVertex(myRPt, iIndex, tmSELECTION_DIAMETER)==false)
+	{
+		delete myTempPt;
 		return;
-	wxRealPoint myFPt;
-	bool bGetVertex = m_GISMemory->GetVertex(myFPt, iIndex);
-	wxASSERT(bGetVertex);
-	wxLogDebug(_T("Vertex found @%d, : %.*f - %.*f"),
-			   iIndex, 2, myFPt.x, 2, myFPt.y);
+	}
+	
+	wxPoint * myLeft = NULL;
+	wxPoint * myRight = NULL;
+	wxPoint myPoint;
+	
+	wxRealPoint myPtToConvert;
+	bool bGetPoint = m_GISMemory->GetVertex(myPtToConvert, iIndex);
+	wxASSERT(bGetPoint);
+	myPoint = m_Scale->RealToPixel(myPtToConvert);
+	
+	if (m_GISMemory->GetVertex(myPtToConvert, iIndex + 1)==true)
+	{
+		myRight = new wxPoint(m_Scale->RealToPixel(myPtToConvert));
+	}
+	
+	if (m_GISMemory->GetVertex(myPtToConvert, iIndex -1)==true)
+	{
+		myLeft = new wxPoint (m_Scale->RealToPixel(myPtToConvert));
+	}
+	
+	
+	// converting
+	bool bCreateDrawerLine = m_DrawLine.CreateVertex(myPoint, myLeft, myRight);
+	wxASSERT(bCreateDrawerLine);
+	
+	if (myLeft != NULL)
+		delete myLeft;
+	
+	if (myRight != NULL)
+		delete myRight;
+	
+	delete myTempPt;
+}
+
+
+
+void tmEditManager::OnModifyMove (wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	
+	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
+	wxASSERT(bSetVertex);
+	delete myPt;
+	
+	
 	
 }
 

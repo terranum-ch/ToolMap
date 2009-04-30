@@ -46,6 +46,7 @@ WX_DECLARE_OBJARRAY(wxSize, tmArraySize);
 
 WX_DECLARE_OBJARRAY(wxRealPoint, wxArrayRealPoints);
 
+WX_DECLARE_OBJARRAY(wxPoint, wxArrayPoints);
 
 
 #endif

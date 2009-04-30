@@ -34,21 +34,28 @@
 class tmDrawerEditLine : public wxObject
 	{
 	private:
-		wxRealPoint * m_LeftPT;
-		wxRealPoint * m_Pt;
-		wxRealPoint * m_RightPT;
+		wxPoint * m_LeftPT;
+		wxPoint * m_Pt;
+		wxPoint * m_RightPT;
 	
-		bool DLIsVertexCreated();
 		void DLVertexDelete();
-		
+	
 	protected:
 	
 	public:
 		tmDrawerEditLine();
 		~tmDrawerEditLine();
 		
-		bool CreateVertex(const wxArrayRealPoints & pts, int index);
+		// creating and validating
+		bool CreateVertex(const wxArrayPoints & pts, int index);
+		bool CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint * right);
 		bool IsEndVertex ();
+		bool IsOK();
+		
+		bool SetVertex(const wxPoint & pt);
+		
+		// Drawing functions
+		bool DrawEditLine(wxClientDC * pdc);
 		
 	};
 

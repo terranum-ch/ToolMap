@@ -62,7 +62,7 @@
 
 
 // DRAWEREDIT
-//#include "../../src/gis/tmdraweredit.cpp"
+#include "../../src/gis/tmdraweredit.cpp"
 #include "../../src/core/tmarraysize.cpp"
 #include "tmdrawereditline_test.cpp"
 
