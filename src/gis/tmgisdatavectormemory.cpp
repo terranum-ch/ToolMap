@@ -454,15 +454,10 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 {
 	long lReturn = -1;
 	int num = myGeom->WkbSize();
-	char * myCharGeom = new char[num*3];
+	char * myCharGeom = NULL;
 	myGeom->exportToWkt(&myCharGeom);
-	//if (!myCharGeom)
-	//	return -1;
-	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
-//#ifndef  __WXMSW__    
-	delete [] myCharGeom;	
-//#endif
+	OGRFree (myCharGeom);
 	
 		
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
@@ -495,11 +490,12 @@ bool tmGISDataVectorMemory::UpdateDatabaseGeometry(OGRGeometry * geom,
 												   int layertype,
 												   DataBaseTM * database)
 {
+	int iChar = sizeof(char);
 	int num = geom->WkbSize();
-	char * myCharGeom = new char[num*3];
+	char * myCharGeom = NULL;
 	geom->exportToWkt(&myCharGeom);
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
-	delete [] myCharGeom;	
+	OGRFree(myCharGeom);
 	
 	wxString sSentence = wxString::Format(_T("UPDATE %s SET OBJECT_GEOMETRY=")
 										  _T("GeomFromText('%s') WHERE OBJECT_ID=%d"),
@@ -551,7 +547,7 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 		wxLogDebug(_T("No geometry found for id : %d"), oid);
 		return NULL;
 	}
-	database->DataBaseClearResults();
+	
 	
 	wxASSERT(row_length.GetCount() == 1);
 	//unsigned long * prow_length = &row_length;
@@ -561,6 +557,7 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 									  NULL,
 									  &geometry,
 									  row_length.Item(0) - 4 );
+	database->DataBaseClearResults();
 	return geometry;
 }
 
