@@ -871,18 +871,15 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	delete myPt;
 	wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
 	
-	//wxRealPoint myFoundVertex (0,0);
-	//if (SearchModifyVertex(myRPt, myFoundVertex)==false)
-	//	return;
 	int iIndex = wxNOT_FOUND;
 	if (m_GISMemory->SearchVertex(myRPt, iIndex, tmSELECTION_DIAMETER)==false)
 		return;
-	
 	wxRealPoint myFPt;
 	bool bGetVertex = m_GISMemory->GetVertex(myFPt, iIndex);
 	wxASSERT(bGetVertex);
 	wxLogDebug(_T("Vertex found @%d, : %.*f - %.*f"),
 			   iIndex, 2, myFPt.x, 2, myFPt.y);
+	
 }
 
 

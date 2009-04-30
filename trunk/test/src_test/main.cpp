@@ -61,13 +61,20 @@
 
 
 
+// DRAWEREDIT
+//#include "../../src/gis/tmdraweredit.cpp"
+#include "../../src/core/tmarraysize.cpp"
+#include "tmdrawereditline_test.cpp"
+
+
 
 int main (int argc, char * const argv[])
 {
 
 	CppUnit::TextUi::TestRunner runner;
-	runner.addTest( DataBaseTEST::suite() );
-	runner.addTest( DataBaseTMTEST::suite() );
+	//runner.addTest( DataBaseTEST::suite() );
+	//runner.addTest( DataBaseTMTEST::suite() );
+	runner.addTest( tmDrawerEditLineTEST::suite() );
 	runner.run();
 	return 0;
 }
