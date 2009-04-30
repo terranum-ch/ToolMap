@@ -51,6 +51,7 @@ Section "SectionPrincipale" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "..\..\..\..\bin\win32_VS2008\Debug\ToolMap2.exe"
+  File "..\..\..\..\bin\win32_VS2008\Debug\ToolMap2.pdb"
   File "D:\LS\PROGRAMATION\ToolBasView\bin\Debug\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap 2"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
@@ -59,9 +60,9 @@ Section "SectionPrincipale" SEC01
   File "..\..\..\..\bin\win32_VS2008\Debug\gdal16.dll"
   File "..\..\..\..\bin\win32_VS2008\Debug\geos_c.dll"
   File "..\..\..\..\bin\win32_VS2008\Debug\libmysqld.dll"
-  CreateDirectory "$INSTDIR\share"
-  SetOutPath "$INSTDIR\share\english"
-  File "..\..\..\..\bin\win32_VS2008\Debug\share\english\errmsg.sys"
+  CreateDirectory "$INSTDIR\mysql"
+  SetOutPath "$INSTDIR\mysql"
+  File "..\..\..\..\bin\win32_VS2008\Debug\mysql\errmsg.sys"
 SectionEnd
 
 Section -AdditionalIcons
@@ -94,11 +95,12 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\share\english\errmsg.sys"
+  Delete "$INSTDIR\mysql\errmsg.sys"
   Delete "$INSTDIR\libmysqld.dll"
   Delete "$INSTDIR\gdal16.dll"
   Delete "$INSTDIR\geos_c.dll"
   Delete "$INSTDIR\ToolMap2.exe"
+  Delete "$INSTDIR\ToolMap2.pdb"
   Delete "$INSTDIR\ToolMap.url"
   Delete "$INSTDIR\ToolBasView.exe"
 
@@ -109,8 +111,7 @@ Section Uninstall
   Delete "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk"
 
   RMDir "$SMPROGRAMS\ToolMap 2"
-  RMDir "$INSTDIR\share\english"
-  RMDIR "$INSTDIR\share"
+  RMDir "$INSTDIR\mysql"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"

@@ -41,9 +41,9 @@ ECHO 2) Making Visual studio solution... DONE
 ECHO -----------------------------------------------
 ECHO 3) BUILDING TOOLMAP2 (MAY TAKE SOME TIMES)-----
 ECHO -----------------------------------------------
-c:
-cd %vsdir%
-VCExpress.exe %BINDIR%\ToolMap2.sln /Out %BINDIR%\solution.log /Build
+
+cd %BINDIR%
+"%vsdir%\VCExpress.exe" ToolMap2.sln /Out solution.log /Build
 echo %ERRORLEVEL%
 IF ERRORLEVEL 1 goto QuitErrorBuild
 ECHO 3) BUILDING TOOLMAP2 DONE
