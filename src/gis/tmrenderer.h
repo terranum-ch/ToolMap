@@ -48,6 +48,7 @@ DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_CUT_LINE, -1)
 DECLARE_EVENT_TYPE(tmEVT_AM_SHORTCUT_PRESSED, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_MOVED, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_UP, -1)
 
 
 enum tmGIS_TOOL
@@ -171,7 +172,9 @@ class tmRenderer : public wxScrolledWindow
 		
 		// drawing
 		void DrawCircleVideoInverse (wxPoint pt, int radius);
-
+		
+		// editing 
+		void StopModifyEvent (){m_ModifyCalled = false;}
 		
 	};
 

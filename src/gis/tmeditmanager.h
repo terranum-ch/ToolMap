@@ -84,6 +84,7 @@ class tmEditManager : public wxEvtHandler
 		void OnShowVertexPosition (wxCommandEvent & event);
 		void OnModifySearch (wxCommandEvent & event);
 		void OnModifyMove (wxCommandEvent & event);
+		void OnModifyUp (wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();

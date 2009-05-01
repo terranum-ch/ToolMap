@@ -283,6 +283,27 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 }
 
 
+bool tmGISDataVectorMemory::SetVertex (wxRealPoint & pt, int index)
+{
+	wxASSERT (m_Feature);
+	if (m_Feature == NULL)
+		return false;
+	
+	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
+	if (myMemLine == NULL)
+		return false;
+	
+	if (index < 0)
+		return false;
+	
+	if (index >= myMemLine->getNumPoints())
+		return false;
+	
+	myMemLine->setPoint(index, pt.x, pt.y);
+	return true;
+}
+
+
 /***************************************************************************//**
  @brief Get all vertex from the line
  @param myPts An array of wxRealPoints containing all vertex 
@@ -461,7 +482,6 @@ long tmGISDataVectorMemory::SaveDatabaseGeometry (OGRGeometry * myGeom,
 												  DataBaseTM * database)
 {
 	long lReturn = -1;
-	int num = myGeom->WkbSize();
 	char * myCharGeom = NULL;
 	myGeom->exportToWkt(&myCharGeom);
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
@@ -498,8 +518,6 @@ bool tmGISDataVectorMemory::UpdateDatabaseGeometry(OGRGeometry * geom,
 												   int layertype,
 												   DataBaseTM * database)
 {
-	int iChar = sizeof(char);
-	int num = geom->WkbSize();
 	char * myCharGeom = NULL;
 	geom->exportToWkt(&myCharGeom);
 	wxString mySGeom = wxString::FromAscii(myCharGeom);

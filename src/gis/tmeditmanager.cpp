@@ -30,6 +30,8 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
 	EVT_COMMAND (wxID_ANY,tmEVT_EV_DISPLAY_VERTEX_COORD, tmEditManager::OnShowVertexPosition)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MOVED, tmEditManager::OnModifyMove)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_UP, tmEditManager::OnModifyUp)
 END_EVENT_TABLE()
 
 
@@ -651,8 +653,8 @@ void tmEditManager::DrawEditLine ()
 	myEditDrawer.DrawEditLine(myRealPts,
 							  mySymbol->GetWidth());
 	
-	m_Renderer->Refresh();
-	m_Renderer->Update();
+	//m_Renderer->Refresh();
+	//m_Renderer->Update();
 
 }
 
@@ -869,13 +871,19 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myTempPt);
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
-	wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
+	//wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
 	
+	// getting symbology
+	tmSymbolVectorLine * myLSymbol = 
+	(tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+	m_DrawLine.SetSymbology(myLSymbol->GetColour(), myLSymbol->GetWidth());
 	
 	// searching vertex
 	int iIndex = wxNOT_FOUND;
 	if (m_GISMemory->SearchVertex(myRPt, iIndex, tmSELECTION_DIAMETER)==false)
 	{
+		wxLogDebug(_T("No Vertex Found"));
+		m_Renderer->StopModifyEvent();
 		delete myTempPt;
 		return;
 	}
@@ -901,7 +909,7 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	
 	
 	// converting
-	bool bCreateDrawerLine = m_DrawLine.CreateVertex(myPoint, myLeft, myRight);
+	bool bCreateDrawerLine = m_DrawLine.CreateVertex(myPoint, myLeft, myRight, iIndex);
 	wxASSERT(bCreateDrawerLine);
 	
 	if (myLeft != NULL)
@@ -920,14 +928,39 @@ void tmEditManager::OnModifyMove (wxCommandEvent & event)
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
+	wxClientDC dc (m_Renderer);
+	bool BDraw = m_DrawLine.DrawEditPart(&dc);
+	wxASSERT(BDraw);
 	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 	wxASSERT(bSetVertex);
+	
+	BDraw = m_DrawLine.DrawEditPart(&dc);
+	wxASSERT(BDraw);
+	
 	delete myPt;
-	
-	
-	
 }
 
+
+void tmEditManager::OnModifyUp (wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	
+	//TODO: check snapping here
+
+	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
+	wxASSERT(bSetVertex);
+
+	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
+	bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
+	wxASSERT(BSave);
+	
+	
+	m_Renderer->Refresh();
+	m_Renderer->Update();
+	DrawEditLine();
+	
+}
 
 
 /***************************************************************************//**
