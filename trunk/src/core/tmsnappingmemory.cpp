@@ -210,13 +210,19 @@ void tmSnappingMemory::ClearSnappingStatus ()
 /***************************************************************************//**
  @brief Checks if snapping is enabled
  @details This function checks if at least one layer contain a defined snapping
+ and if the space key isn't pressed. If space key is pressed, snapping is totally
+ disabled
  @return  true if at least one layer has snapping enabled
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
 bool tmSnappingMemory::IsSnappingEnabled ()
 {
+	
 	bool bSnappingIsOn = false;
+	if (wxGetKeyState(WXK_SPACE)==true)
+		return bSnappingIsOn;
+	
 	for (unsigned int i = 0; i<m_Snapping.GetCount(); i++)
 	{
 		if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF)

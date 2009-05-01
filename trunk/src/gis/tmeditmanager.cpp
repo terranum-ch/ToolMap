@@ -350,37 +350,16 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 	// get coordinate and dont forget to delete it
 	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
 	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
-	wxRealPoint * mySnapCoord = NULL;
+	
 	
 	
 	// check drawing allowed
 	if (!IsDrawingAllowed())
 		return;
-		
-
-	// check snapping if needed
-	//TODO: add support for stopping snapping with keyboard 
-	if (m_SnapMem->IsSnappingEnabled())
-	{
-		mySnapCoord = IterateAllSnappingLayers(myRealCoord);
-		
-		//TODO: Remove this temp logging code
-		if (mySnapCoord)
-			wxLogDebug(_T("Point found for snapping @ : %.*f, %.*f"),
-					   2, mySnapCoord->x, 
-					   2, mySnapCoord->y);
-		else
-			wxLogDebug(_T("No snapping found"));
-		// END of temp logging code
-		
-		if (mySnapCoord)
-		{
-			myRealCoord.x = mySnapCoord->x;
-			myRealCoord.y = mySnapCoord->y;
-			delete mySnapCoord;
-		}
-	}
 	
+	// snapping
+	EMGetSnappingCoord(myRealCoord);
+		
 	// add  line vertex
 	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
 	{
@@ -678,23 +657,8 @@ void tmEditManager::DrawMemoryData()
 	
 	wxClientDC dc(m_Renderer);
 	myEditDrawer.DrawMemoryData(m_GISMemory, m_TOC->GetEditLayer(), &dc);
+	
 }
-
-
-/***************************************************************************//**
- @brief Search vertex into memory arround specified point
- @author Lucien Schreiber (c) CREALP 2009
- @date 29 April 2009
- *******************************************************************************/
-//bool tmEditManager::SearchModifyVertex (const wxRealPoint & clickedpoint,
-	//									wxRealPoint & returned)
-//{
-//	returned = wxRealPoint(0,0);
-	
-	
-///	return true;
-//}
-
 
 
 
@@ -967,22 +931,36 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
-	//TODO: check snapping here
-
+	//check snapping
+	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
+	bool bSnappingFound = EMGetSnappingCoord(myRPt);
+	
 	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 	wxASSERT(bSetVertex);
 
-	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
 	bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
 	wxASSERT(BSave);
 	
-	m_Renderer->Refresh();
-	m_Renderer->Update();
+//	m_Renderer->Refresh();
+//	m_Renderer->Update();
 	DrawMemoryData();
-
-	//DrawEditLine();
-	
+	if (bSnappingFound)
+		EMDrawSnappingStatus(*myPt);
+	delete myPt;
 }
+
+
+
+void tmEditManager::EMDrawSnappingStatus (const wxPoint & pt)
+{
+	double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
+	
+	m_Renderer->DrawCircleVideoInverse(pt, iSnapRadius);
+	m_Renderer->Update();
+	wxMilliSleep(150);
+	m_Renderer->DrawCircleVideoInverse(pt, iSnapRadius);
+}
+
 
 
 /***************************************************************************//**
@@ -1038,6 +1016,46 @@ bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
 
 
 
+
+bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt)
+{
+	// Snapping may be disabled using space key
+	if (m_SnapMem->IsSnappingEnabled()==false)
+		return false;
+	
+	
+	//bool bReturn = false;
+	wxRealPoint * mySnapCoord = NULL;
+	mySnapCoord = EMIterateAllSnappingLayers(pt);
+		
+	//TODO: Remove this temp logging code
+	if (mySnapCoord)
+	{
+		wxLogDebug(_T("Point found for snapping @ : %.*f, %.*f"),
+				   2, mySnapCoord->x, 
+				   2, mySnapCoord->y);
+	}	
+	else
+	{
+		wxLogDebug(_T("No snapping found"));
+	}
+	// END of temp logging code
+		
+	
+	if (mySnapCoord)
+	{
+		pt.x = mySnapCoord->x;
+		pt.y = mySnapCoord->y;
+		delete mySnapCoord;
+		return true;
+	}
+	return false;
+}
+	
+
+
+
+
 /***************************************************************************//**
  @brief Iterate all layers in snapping memory
  @details Try to get the snapped coordinate for the clicked point
@@ -1047,7 +1065,7 @@ bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
  @author Lucien Schreiber (c) CREALP 2009
  @date 30 January 2009
  *******************************************************************************/
-wxRealPoint * tmEditManager::IterateAllSnappingLayers(const wxRealPoint & clickedpoint)
+wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint)
 {
 	long myLayerId = 0;
 	int mySnapStatus = tmSNAPPING_OFF;
