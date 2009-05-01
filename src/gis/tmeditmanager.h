@@ -96,7 +96,9 @@ class tmEditManager : public wxEvtHandler
 		bool IsLayerTypeSelected (int layertype = LAYER_SPATIAL_LINE);
 		
 		// snapping function
-		wxRealPoint * IterateAllSnappingLayers(const wxRealPoint & clickedpoint);
+		bool EMGetSnappingCoord (wxRealPoint & pt);
+		wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
+		void EMDrawSnappingStatus (const wxPoint & pt);
 		
 		// adding, storing object
 		bool AddLineVertex (const wxRealPoint & pt);
@@ -109,10 +111,6 @@ class tmEditManager : public wxEvtHandler
 		void DrawLastSegment ();
 		void DrawEditBitmapLine ();
 		void DrawMemoryData();
-		
-		// modify functions
-		//bool SearchModifyVertex (const wxRealPoint & clickedpoint,
-		//						 wxRealPoint & returned);
 		
 		
 		

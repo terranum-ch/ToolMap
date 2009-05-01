@@ -29,6 +29,7 @@
     #include <wx/wx.h>
 #endif
 
+
 // some constants
 const int tmSNAPPING_OFF			= 0;
 const int tmSNAPPING_VERTEX			= 1;

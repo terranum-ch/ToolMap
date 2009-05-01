@@ -823,8 +823,7 @@ void tmRenderer::ModifyStop (const wxPoint & mousepos)
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);
 	
-	
-	
+		
 	wxASSERT(m_ModifyCalled == true);
 	m_ModifyCalled = false;
 }
