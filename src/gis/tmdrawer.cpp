@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmdrawer.h"
+#include "tmgisdatavectormemory.h"
 
 
 bool tmDrawer::m_LogOn = true;
@@ -859,5 +860,80 @@ void tmDrawer::DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour c
 }
 
 
+
+void tmDrawer::DrawMemoryData (tmGISData * data,
+							   tmLayerProperties * layerprop,
+							   wxClientDC * dc)
+{
+	wxASSERT (layerprop);
+	wxASSERT (data);
+	//m_ActuallayerID = layerprop->m_LayerID;
+	switch (layerprop->m_LayerSpatialType)
+	{
+		case LAYER_SPATIAL_LINE:
+			DrawMemoryDataLine(data, layerprop, dc);
+			break;
+			/*case LAYER_SPATIAL_POINT:
+			 DrawPoints(layerprop, pdata);
+			 break;
+			 case LAYER_SPATIAL_POLYGON:
+			 DrawPolygons(layerprop, pdata);
+			 DrawVertexPoly(layerprop, pdata);
+			 break;
+			 case LAYER_SPATIAL_RASTER:
+			 DrawRaster(layerprop, pdata);
+			 break;*/
+		default:
+			wxFAIL_MSG(_T("No drawer found"));
+			break;
+	}
+	
+}
+
+
+
+void tmDrawer::DrawMemoryDataLine (tmGISData * data, 
+								   tmLayerProperties * layerprop,
+								   wxClientDC * dc)
+{
+	
+	tmGISDataVectorMemory * memdata = (tmGISDataVectorMemory*) data;
+	if (memdata->GetVertexCount() <= 0)
+		return;
+	
+	
+	//wxClientDC dc(this);
+	//wxGraphicsContext* pgdc = wxGraphicsContext::Create(dc);
+	
+	// create pen based on symbology
+	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) layerprop->m_LayerSymbol;
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth());//, pSymbol->GetShape());
+	
+	// pen for vertex
+	wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
+	
+	dc->SetPen(myPen);
+		
+	int iVertexNumber = 0;
+	wxRealPoint * pptsReal = memdata->GetVertexAll(iVertexNumber);
+	wxASSERT(pptsReal != NULL);
+	wxASSERT(iVertexNumber > 0);
+	
+	wxPoint * myPxPts = new wxPoint[iVertexNumber];
+	for (int i = 0; i< iVertexNumber; i++)
+		myPxPts[i] = m_scale.RealToPixel(pptsReal[i]);
+	
+	
+	// creating path
+	dc->DrawLines(iVertexNumber, myPxPts);
+	
+	
+	// drawing vertex
+	//DrawVertexLine(pgdc, pptsReal, iVertexNumber, layerprop, myVPen);
+	
+	delete [] myPxPts;
+	delete [] pptsReal;
+	delete myVPen;
+}
 
 

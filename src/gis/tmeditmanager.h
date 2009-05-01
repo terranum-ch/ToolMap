@@ -107,7 +107,8 @@ class tmEditManager : public wxEvtHandler
 		
 		// drawing editing object
 		void DrawLastSegment ();
-		void DrawEditLine ();
+		void DrawEditBitmapLine ();
+		void DrawMemoryData();
 		
 		// modify functions
 		//bool SearchModifyVertex (const wxRealPoint & clickedpoint,

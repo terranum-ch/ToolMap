@@ -72,6 +72,7 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		bool GetVertex (wxRealPoint & pt, int index = -1);
 		bool SetVertex (wxRealPoint & pt, int index);
 		bool GetVertexAll (wxArrayRealPoints & myPts);
+		wxRealPoint * GetVertexAll (int & number);
 		bool SearchVertex (const wxRealPoint & ptsearched, int & index, int ibuffsize);
 		
 		// saving /loading point

@@ -40,9 +40,10 @@
 #include "tmgisdataraster.h"
 #include "tmselecteddatamemory.h"	// for stroing selected data into memory
 #include "tmrenderer.h"				// for drawing directly (edition mode)
+//#include "tmgisdatavectormemory.h"	// for drawing memory data
 
 //#include "../database/database_tm.h"
-
+//class tmGISDataVectorMemory;
 
 
 
@@ -75,6 +76,10 @@ class tmDrawer : public wxObject
 		bool DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);
+		
+		void DrawMemoryDataLine (tmGISData * data, 
+								 tmLayerProperties * layerprop,
+								 wxClientDC * dc);
 		
 		// drawing vertex
 		bool DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
@@ -109,7 +114,8 @@ class tmDrawer : public wxObject
 							  const wxRealPoint & pt2,
 							  int size);
 		void DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour colour = *wxRED);
-		
+		void DrawMemoryData (tmGISData * data, tmLayerProperties * layerprop,
+							 wxClientDC * dc);
 		
 	};
 

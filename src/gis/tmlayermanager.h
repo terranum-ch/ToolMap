@@ -29,12 +29,12 @@
     #include <wx/wx.h>
 #endif
 
+#include "tmdrawer.h"					// for drawing into bitmaps
 #include "tmtocctrl.h"					// class TOC ctrl
 #include "../database/database_tm.h"	// class database
 #include "tmgisdata.h"					// for GISdata
 #include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
 #include "tmrenderer.h"					// for GIS rendering
-#include "tmdrawer.h"					// for drawing into bitmaps
 #include "tmprogress.h"					// for displaying progress during load
 #include "tmscalectrl.h"				// for combo box scale control
 #include "tmselecteddatamemory.h"		// for storing selected data into memory
@@ -43,6 +43,7 @@
 // forward declaration
 class tmGISLoadingDataThread;
 class tmScaleCtrlCombo;
+//class tmDrawer;
 
 DECLARE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED, -1)
 
