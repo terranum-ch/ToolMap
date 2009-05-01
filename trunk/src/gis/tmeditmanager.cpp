@@ -167,11 +167,13 @@ void tmEditManager::OnSnappingChange (wxCommandEvent & event)
  *******************************************************************************/
 void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 {
+	
 	DisplayRendererSnappingTolerence();
 	wxLogDebug(_T("View updated"));
 	
 	// draw memory line
-	DrawEditLine();
+	DrawMemoryData();
+	//DrawEditLine();
 }
 
 
@@ -432,9 +434,9 @@ bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 				if(myGISMem.GetVertexAll(myPts) == false)
 					break;
 				
-				myEditDrawer.DrawEditLine(myPts, 
-										  mySymbol->GetWidth(),
-										  mySymbol->GetColour());
+				//myEditDrawer.DrawEditLine(myPts, 
+				//						  mySymbol->GetWidth(),
+				//						  mySymbol->GetColour());
 			}
 			if (mySelArray)
 				delete mySelArray;
@@ -625,7 +627,7 @@ void tmEditManager::DrawLastSegment ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 04 February 2009
  *******************************************************************************/
-void tmEditManager::DrawEditLine ()
+void tmEditManager::DrawEditBitmapLine ()
 {
 	// check edit memory data for drawing
 	int iNbVertexMemory = m_GISMemory->GetVertexCount();
@@ -653,11 +655,30 @@ void tmEditManager::DrawEditLine ()
 	myEditDrawer.DrawEditLine(myRealPts,
 							  mySymbol->GetWidth());
 	
-	//m_Renderer->Refresh();
-	//m_Renderer->Update();
+	m_Renderer->Refresh();
+	m_Renderer->Update();
 
 }
 
+
+void tmEditManager::DrawMemoryData()
+{
+	// check edit memory data for drawing
+	int iNbVertexMemory = m_GISMemory->GetVertexCount();
+	if (iNbVertexMemory == 0)
+		return;
+	
+	m_Renderer->Refresh();
+	m_Renderer->Update();
+	
+	// init a drawer 
+	tmDrawer myEditDrawer;
+	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
+							*m_Scale, m_Scale->GetWindowExtentReal());
+	
+	wxClientDC dc(m_Renderer);
+	myEditDrawer.DrawMemoryData(m_GISMemory, m_TOC->GetEditLayer(), &dc);
+}
 
 
 /***************************************************************************//**
@@ -874,9 +895,9 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	//wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
 	
 	// getting symbology
-	tmSymbolVectorLine * myLSymbol = 
-	(tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
-	m_DrawLine.SetSymbology(myLSymbol->GetColour(), myLSymbol->GetWidth());
+	//tmSymbolVectorLine * myLSymbol = 
+	//(tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+	//m_DrawLine.SetSymbology(myLSymbol->GetColour(), myLSymbol->GetWidth());
 	
 	// searching vertex
 	int iIndex = wxNOT_FOUND;
@@ -955,10 +976,11 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
 	wxASSERT(BSave);
 	
-	
 	m_Renderer->Refresh();
 	m_Renderer->Update();
-	DrawEditLine();
+	DrawMemoryData();
+
+	//DrawEditLine();
 	
 }
 

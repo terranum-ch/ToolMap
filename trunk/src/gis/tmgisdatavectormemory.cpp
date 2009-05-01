@@ -337,6 +337,32 @@ bool tmGISDataVectorMemory::GetVertexAll (wxArrayRealPoints & myPts)
 }
 
 
+
+wxRealPoint * tmGISDataVectorMemory::GetVertexAll (int & number)
+{
+	number = wxNOT_FOUND;
+	if (m_Feature == NULL)
+		return NULL;
+	
+	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
+	if (myMemLine == NULL)
+		return NULL;
+	
+	
+	number = myMemLine->getNumPoints();
+	wxRealPoint * myPts = new wxRealPoint[number];
+	for(int i = 0; i< number;i++)
+	{
+		myPts[i].x = myMemLine->getX(i);
+		myPts[i].y = myMemLine->getY(i);
+	}
+	
+	return myPts;
+}
+
+
+
+
 /***************************************************************************//**
  @brief Search vertex from memory
  @param ptsearched coordinate of the searched point

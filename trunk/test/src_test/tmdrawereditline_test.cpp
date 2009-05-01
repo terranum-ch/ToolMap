@@ -106,7 +106,7 @@ public:
 	void TestDrawEditLine()
 	{
 		
-		CPPUNIT_ASSERT(m_DL->DrawEditLine(NULL)==false);
+		CPPUNIT_ASSERT(m_DL->DrawEditPart(NULL)==false);
 		
 	}
 	
