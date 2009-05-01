@@ -37,8 +37,14 @@ class tmDrawerEditLine : public wxObject
 		wxPoint * m_LeftPT;
 		wxPoint * m_Pt;
 		wxPoint * m_RightPT;
+		int		m_Index;
+		
+		wxPen m_EditPen;
 	
+		
 		void DLVertexDelete();
+		int DLGetCountPoints();
+		wxPoint * DLGetPoints ();
 	
 	protected:
 	
@@ -48,14 +54,18 @@ class tmDrawerEditLine : public wxObject
 		
 		// creating and validating
 		bool CreateVertex(const wxArrayPoints & pts, int index);
-		bool CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint * right);
+		bool CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint * right, int index);
 		bool IsEndVertex ();
 		bool IsOK();
 		
 		bool SetVertex(const wxPoint & pt);
+		int GetVertexIndex (){ return m_Index;}
 		
 		// Drawing functions
-		bool DrawEditLine(wxClientDC * pdc);
+		void SetSymbology (wxColour col, int width);
+		bool DrawEditPart(wxClientDC * pdc);
+		//bool DrawEditedLine (wxClientDC * pdc, tmGISDataVectorMemory * memory);
+		//bool DrawFinishPart (wxClientDC * pdc, tmSymbolVectorLine & symbology);
 		
 	};
 

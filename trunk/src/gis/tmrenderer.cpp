@@ -39,6 +39,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_CUT_LINE)
 DEFINE_EVENT_TYPE(tmEVT_AM_SHORTCUT_PRESSED)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_MOVED)
+DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_UP)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -813,6 +814,16 @@ void tmRenderer::ModifyStop (const wxPoint & mousepos)
 {
 	if (m_ModifyCalled == false)
 		return;
+	
+	
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_MODIFY_UP, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+	
 	
 	wxASSERT(m_ModifyCalled == true);
 	m_ModifyCalled = false;
