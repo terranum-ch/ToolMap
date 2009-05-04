@@ -55,8 +55,10 @@ class tmDrawerEditLine : public wxObject
 		// creating and validating
 		bool CreateVertex(const wxArrayPoints & pts, int index);
 		bool CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint * right, int index);
+		bool CreateVertex(const wxPoint & pt);
 		bool IsEndVertex ();
 		bool IsOK();
+		bool ClearVertex();
 		
 		bool SetVertex(const wxPoint & pt);
 		int GetVertexIndex (){ return m_Index;}

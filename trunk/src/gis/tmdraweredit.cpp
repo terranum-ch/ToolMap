@@ -175,6 +175,19 @@ bool tmDrawerEditLine::CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint 
 }
 
 
+bool tmDrawerEditLine::CreateVertex(const wxPoint & pt)
+{
+	if (IsOK()==true)
+		DLVertexDelete();
+	
+	wxASSERT(m_Pt == NULL);
+	m_Pt = new wxPoint(pt);
+	
+	m_LeftPT = new wxPoint(pt);
+	return true;
+}
+
+
 
 bool tmDrawerEditLine::IsEndVertex ()
 {
@@ -200,6 +213,7 @@ bool tmDrawerEditLine::SetVertex(const wxPoint & pt)
 	m_Pt->y = pt.y;
 	return true;
 }
+
 
 
 void tmDrawerEditLine::SetSymbology (wxColour col, int width)
@@ -229,6 +243,20 @@ bool tmDrawerEditLine::DrawEditPart(wxClientDC * pdc)
 	pdc->DrawLines(iNumPts, myPts);
 	
 	
+	return true;
+}
+
+
+
+bool tmDrawerEditLine::ClearVertex()
+{
+	if (IsOK()==false)
+	{
+		wxLogDebug(_T("Nothing to clear, CreateVertex() first"));
+		return false;
+	}
+	
+	DLVertexDelete();
 	return true;
 }
 

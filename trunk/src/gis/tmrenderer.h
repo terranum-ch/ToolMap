@@ -42,13 +42,14 @@ DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_PAN_ENDED,-1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SELECTION, -1)
-DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_CUT_LINE, -1)
 DECLARE_EVENT_TYPE(tmEVT_AM_SHORTCUT_PRESSED, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_MOVED, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_UP, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_MOVE, -1)
 
 
 enum tmGIS_TOOL
@@ -95,6 +96,7 @@ class tmRenderer : public wxScrolledWindow
 		bool m_ShiftDown;
 		
 		bool m_ModifyCalled;
+		bool m_DrawCalled;
 		
 		// snapping
 		int m_SnappingRadius;
@@ -141,6 +143,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		// drawing functions
 		void DrawStart (const wxPoint & mousepos);
+		void DrawMove (const wxPoint & mousepos);
 		void DrawStop  (const wxPoint & mousepos);
 		
 		// modify functions
