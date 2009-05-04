@@ -41,6 +41,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_MOVED)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_UP)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_MOVE)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_DOWN)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -738,11 +739,18 @@ void tmRenderer::DrawStart (const wxPoint & mousepos)
 	
 	m_StartCoord = mousepos;
 	
-	wxClientDC myDC (this);
+	
+	wxCommandEvent evt(tmEVT_EM_DRAW_DOWN, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+	/*wxClientDC myDC (this);
 	myDC.SetLogicalFunction (wxINVERT);
 	
 	if (m_SnappingRadius > 0)
-		myDC.DrawCircle(mousepos.x, mousepos.y, m_SnappingRadius);
+		myDC.DrawCircle(mousepos.x, mousepos.y, m_SnappingRadius);*/
 	
 }
 
@@ -754,9 +762,6 @@ void tmRenderer::DrawStart (const wxPoint & mousepos)
  *******************************************************************************/
 void tmRenderer::DrawMove (const wxPoint & mousepos)
 {
-	//if (m_DrawCalled == false)
-	//	return;
-	
 	// sent message to edit manager
 	wxCommandEvent evt(tmEVT_EM_DRAW_MOVE, wxID_ANY);
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
@@ -777,12 +782,12 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	if (m_DrawCalled == false)
 		return;
 	
-	wxClientDC myDC (this);
+	/*wxClientDC myDC (this);
 	myDC.SetLogicalFunction(wxINVERT);
 	if (m_SnappingRadius > 0 && m_StartCoord != wxPoint(-1,-1))
 	{
 		myDC.DrawCircle(m_StartCoord.x, m_StartCoord.y, m_SnappingRadius);
-	}
+	}*/
 	
 	// sent message to edit manager
 	wxCommandEvent evt(tmEVT_EM_DRAW_CLICK, wxID_ANY);

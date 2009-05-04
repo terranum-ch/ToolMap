@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_UP, tmEditManager::OnModifyUp)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawUp)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 END_EVENT_TABLE()
 
 
@@ -350,9 +351,35 @@ bool tmEditManager::IsModifictionAllowed()
 }
 
 
+/***************************************************************************//**
+ @brief Called when a click down is issued with Draw tool
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 28 January 2009
+ *******************************************************************************/
+void tmEditManager::OnDrawDown(wxCommandEvent & event)
+{
+	// get coordinate and dont forget to delete it
+	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
+	
+	// check drawing allowed
+	if (!IsDrawingAllowed())
+	{
+		delete myPxCoord;
+		return;
+	}
+
+	
+	if (m_SnapMem->IsSnappingEnabled()==true)
+	{
+		double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
+		m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
+		//m_Renderer->Update();
+	}
+}
+
 
 /***************************************************************************//**
- @brief Called when a click is issued with Draw tool
+ @brief Called when a click up is issued with Draw tool
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
@@ -373,6 +400,14 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	bool bCreate = m_DrawLine.CreateVertex(*myPxCoord);
 	wxASSERT(bCreate);
 		
+	if (m_SnapMem->IsSnappingEnabled()==true)
+	{
+		double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
+		m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
+		//m_Renderer->Update();
+	}
+	
+	
 	// snapping
 	if (EMGetSnappingCoord(myRealCoord)==true)
 	{
