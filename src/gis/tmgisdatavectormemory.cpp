@@ -263,10 +263,7 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
 	if (myMemLine == NULL)
 		return false;
-	
-	
-	if (index < 0)
-		return false;
+		
 	
 	if (index >= myMemLine->getNumPoints())
 		return false;
@@ -275,6 +272,9 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 	if (index == -1)
 		index = myMemLine->getNumPoints() -1;
 	
+	if (index < 0)
+		return false;
+
 	
 	pt.x = myMemLine->getX(index);
 	pt.y = myMemLine->getY(index);

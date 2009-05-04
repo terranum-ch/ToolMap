@@ -35,6 +35,9 @@ class tmDrawerEditLineTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST ( TESTSetVertex );
 	CPPUNIT_TEST ( TestDrawEditLine );
 	CPPUNIT_TEST ( TESTGetVertexIndex );
+	CPPUNIT_TEST ( TESTCreateVertex3 );
+	CPPUNIT_TEST ( TESTClear );
+	//CPPUNIT_TEST ( TESTGetLastVertex );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -122,6 +125,29 @@ public:
 		CPPUNIT_ASSERT(m_DL->GetVertexIndex() == 12);
 	}
 	
+	void TESTCreateVertex3()
+	{
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts.Item(0))==true);
+		CPPUNIT_ASSERT(m_DL->SetVertex(m_Pts.Item(1))==true);
+		CPPUNIT_ASSERT(m_DL->GetVertexIndex() == wxNOT_FOUND);
+	}
+	
+	void TESTClear()
+	{
+		CPPUNIT_ASSERT(m_DL->ClearVertex()==false);
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts.Item(0))==true);
+		CPPUNIT_ASSERT(m_DL->ClearVertex()==true);
+		CPPUNIT_ASSERT(m_DL->IsOK()==false);
+	}
+	
+	/*void TESTGetLastVertex()
+	{
+		CPPUNIT_ASSERT(m_DL->GetLastVertex()== wxDefaultPosition);
+		CPPUNIT_ASSERT(m_DL->CreateVertex(m_Pts.Item(0)));
+		CPPUNIT_ASSERT(m_DL->GetLastVertex() == m_Pts.Item(0));
+		CPPUNIT_ASSERT(m_DL->SetVertex(m_Pts.Item(1))==true);
+		CPPUNIT_ASSERT(m_DL->GetLastVertex() == m_Pts.Item(0));
+	}*/
 	
 };
 

@@ -33,13 +33,14 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_OUT)
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_RECTANGLE_IN)
 DEFINE_EVENT_TYPE(tmEVT_LM_PAN_ENDED)
 DEFINE_EVENT_TYPE(tmEVT_LM_SELECTION)
-DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ENTER)
 DEFINE_EVENT_TYPE(tmEVT_EM_CUT_LINE)
 DEFINE_EVENT_TYPE(tmEVT_AM_SHORTCUT_PRESSED)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_MOVED)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_UP)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_MOVE)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -67,6 +68,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 {
 	m_bmp = NULL;
 	m_ModifyCalled = false;
+	m_DrawCalled = false;
 	m_SelectRect = new wxRubberBand(this);
 	m_StartCoord = wxPoint(-1,-1);
 	m_ActualTool = tmTOOL_SELECT;
@@ -337,8 +339,13 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectUpdate(event.GetPosition());
 	
+	if (m_ActualTool == tmTOOL_DRAW)
+		DrawMove(event.GetPosition());
+	
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyUpdate(event.GetPosition());
+	
+	
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -722,6 +729,13 @@ void tmRenderer::ToogleSnapping (int snapradius)
  *******************************************************************************/
 void tmRenderer::DrawStart (const wxPoint & mousepos)
 {
+	// ensure only called once.
+	if (m_DrawCalled == true)
+		return;
+	
+	m_DrawCalled = true;
+	
+	
 	m_StartCoord = mousepos;
 	
 	wxClientDC myDC (this);
@@ -732,6 +746,24 @@ void tmRenderer::DrawStart (const wxPoint & mousepos)
 	
 }
 
+/***************************************************************************//**
+ @brief User move with Draw tool activated
+ @param mousepos Actual mouse position in screen coordinate
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 January 2009
+ *******************************************************************************/
+void tmRenderer::DrawMove (const wxPoint & mousepos)
+{
+	//if (m_DrawCalled == false)
+	//	return;
+	
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_DRAW_MOVE, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+}
 
 
 /***************************************************************************//**
@@ -742,6 +774,9 @@ void tmRenderer::DrawStart (const wxPoint & mousepos)
  *******************************************************************************/
 void tmRenderer::DrawStop  (const wxPoint & mousepos)
 {
+	if (m_DrawCalled == false)
+		return;
+	
 	wxClientDC myDC (this);
 	myDC.SetLogicalFunction(wxINVERT);
 	if (m_SnappingRadius > 0 && m_StartCoord != wxPoint(-1,-1))
@@ -757,6 +792,9 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	GetEventHandler()->AddPendingEvent(evt);
 	
 	m_StartCoord = wxPoint(-1,-1);
+	
+	wxASSERT(m_DrawCalled);
+	m_DrawCalled = false;
 }
 
 

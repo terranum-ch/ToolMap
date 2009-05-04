@@ -23,7 +23,6 @@
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SNAPPING_UPDATED, tmEditManager::OnSnappingChange)
 	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawClicked)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureStop)
@@ -32,6 +31,8 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MOVED, tmEditManager::OnModifyMove)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_UP, tmEditManager::OnModifyUp)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawUp)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
 END_EVENT_TABLE()
 
 
@@ -171,9 +172,19 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 	DisplayRendererSnappingTolerence();
 	wxLogDebug(_T("View updated"));
 	
+	if (IsDrawingAllowed()==false)
+		return;
+	
+	wxRealPoint myRPT;
+	if (m_GISMemory->GetVertex(myRPT, -1))
+	{
+		wxPoint myPt = m_Scale->RealToPixel(myRPT);
+		m_DrawLine.CreateVertex(myPt);
+	}
+	
+	
 	// draw memory line
 	DrawMemoryData();
-	//DrawEditLine();
 }
 
 
@@ -345,26 +356,39 @@ bool tmEditManager::IsModifictionAllowed()
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
-void tmEditManager::OnDrawClicked (wxCommandEvent & event)
+void tmEditManager::OnDrawUp (wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
 	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
 	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
 	
 	
-	
 	// check drawing allowed
 	if (!IsDrawingAllowed())
+	{
+		delete myPxCoord;
 		return;
+	}
 	
+	bool bCreate = m_DrawLine.CreateVertex(*myPxCoord);
+	wxASSERT(bCreate);
+		
 	// snapping
-	EMGetSnappingCoord(myRealCoord);
+	if (EMGetSnappingCoord(myRealCoord)==true)
+	{
+		// if snapping found, update the vertex for drawing
+		// live next segment
+		wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
+		bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
+		wxASSERT(bCreate);
+	}
+		
 		
 	// add  line vertex
 	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
 	{
 		AddLineVertex(myRealCoord);
-		DrawLastSegment();
+		DrawMemoryData();
 	}
 	else // add point 
 	{
@@ -372,6 +396,35 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
 	}
 	
 	delete myPxCoord;
+}
+
+
+/***************************************************************************//**
+ @brief Called when a move is issued with Draw tool
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 4 May 2009
+ *******************************************************************************/
+void tmEditManager::OnDrawMove (wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	
+	if (m_DrawLine.IsOK() == false)
+	{
+		delete myPt;
+		return; 
+	}
+	
+	wxClientDC dc (m_Renderer);
+	bool BDraw = m_DrawLine.DrawEditPart(&dc);
+	wxASSERT(BDraw);
+	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
+	wxASSERT(bSetVertex);
+	
+	BDraw = m_DrawLine.DrawEditPart(&dc);
+	wxASSERT(BDraw);
+	
+	delete myPt;	
 }
 
 
@@ -386,7 +439,7 @@ void tmEditManager::OnDrawClicked (wxCommandEvent & event)
  *******************************************************************************/
 bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 {
-	
+	/*
 	// display old selected line when first vertex is called
 	if (m_GISMemory->GetVertexCount() == 0)
 	{
@@ -421,7 +474,7 @@ bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 				delete mySelArray;
 		}
 
-	}
+	}*/
 	
 	
 	
@@ -644,7 +697,7 @@ void tmEditManager::DrawMemoryData()
 {
 	// check edit memory data for drawing
 	int iNbVertexMemory = m_GISMemory->GetVertexCount();
-	if (iNbVertexMemory == 0)
+	if (iNbVertexMemory <= 1)
 		return;
 	
 	m_Renderer->Refresh();
@@ -706,6 +759,8 @@ void tmEditManager::OnDrawFeatureStop (wxCommandEvent & event)
 		m_GISMemory->CreateFeature();
 		return;
 	}
+	
+	m_DrawLine.ClearVertex();
 	
 	long lid = wxNOT_FOUND;
 	// UPDATING
@@ -1148,11 +1203,13 @@ bool tmEditManager::UndoLastVertex ()
 	
 	// remove last vertex
 	m_GISMemory->RemoveVertex(-1);
+	wxRealPoint myPreviousRPT;
+	bool bGet = m_GISMemory->GetVertex(myPreviousRPT, -1);
+	wxASSERT(bGet);
+	wxPoint myPreviousPT = m_Scale->RealToPixel(myPreviousRPT);
+	m_DrawLine.CreateVertex(myPreviousPT);
 	
-	// update display
-	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
-	
+	DrawMemoryData();
 	return true;
 }
 
