@@ -40,8 +40,13 @@
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
+#include <wx/list.h>						// for iterating lists
 
 
+const int tmEM_CONTEXTMENU_VERTEX_INSERT =	22200;
+const int tmEM_CONTEXTMENU_VERTEX_DELETE =	22201;
+const int tmEM_CONTEXTMENU_LINE_SAVE =		22202;
+const int tmEM_CONTEXTMENU_LINE_CANCEL =	22203;
 
 /***************************************************************************//**
  @brief Deals with editing data
@@ -103,6 +108,14 @@ class tmEditManager : public wxEvtHandler
 		bool EMGetSnappingCoord (wxRealPoint & pt);
 		wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
 		void EMDrawSnappingStatus (const wxPoint & pt);
+		
+		// menu functions
+		void EMCreateMenu(wxMenu & menu);
+		void EMGetMenuLine(wxMenu & menu);
+		void EMGetMenuVertex(wxMenu & menu);
+		
+		// loading functions
+		bool EMLoadModifyData();
 		
 		// adding, storing object
 		bool AddLineVertex (const wxRealPoint & pt);

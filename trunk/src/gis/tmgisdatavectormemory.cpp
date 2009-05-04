@@ -385,6 +385,7 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 	
 	wxArrayRealPoints myPts;
 	bool bAllVertex = GetVertexAll(myPts);
+	
 	wxASSERT(bAllVertex);
 	
 	bool bFound = false;

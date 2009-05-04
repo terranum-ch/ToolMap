@@ -1071,29 +1071,95 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 
 
 
+void tmEditManager::EMCreateMenu(wxMenu & menu)
+{
+	// cleaning first
+	wxMenuItemList items = menu.GetMenuItems();
+	wxMenuItemList::iterator iter;
+    for (iter = items.begin(); iter != items.end(); ++iter)
+	{
+		wxMenuItem *current = *iter;
+		menu.Destroy(current);
+	}
+	wxASSERT(menu.GetMenuItemCount() == 0);
+	
+	menu.Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Insert vertex"), _("Insert a vertex"));
+	menu.Append(tmEM_CONTEXTMENU_VERTEX_DELETE, _("Delete selected vertex"),
+				_("Delete the selected vertex"));
+	menu.AppendSeparator();
+	menu.Append(tmEM_CONTEXTMENU_LINE_SAVE, _("Apply modifications\tTAB"), 
+				_("Apply modifications)"));
+	menu.Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Cancel modifications\tESC"),
+				_("Cancel modifications"));
+}
+
+
+void tmEditManager::EMGetMenuLine(wxMenu & menu)
+{
+	EMCreateMenu(menu);
+	menu.Enable(tmEM_CONTEXTMENU_VERTEX_INSERT, true);
+	menu.Enable(tmEM_CONTEXTMENU_VERTEX_DELETE, false);
+}
+
+
+void tmEditManager::EMGetMenuVertex(wxMenu & menu)
+{
+	EMCreateMenu(menu);
+	menu.Enable(tmEM_CONTEXTMENU_VERTEX_INSERT, false);
+	menu.Enable(tmEM_CONTEXTMENU_VERTEX_DELETE, true);
+}
+
+
+bool tmEditManager::EMLoadModifyData()
+{
+	if (IsModifictionAllowed()==false)
+		return false;
+	
+	// load line if needed
+	if( m_GISMemory->GetVertexCount() == 0)
+	{
+		long myActualSel = m_SelectedData->GetSelectedUnique();
+		tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
+		wxASSERT(myActualSel != wxNOT_FOUND);
+		wxASSERT(mypLayerProp);
+		bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
+													  mypLayerProp->m_LayerType);
+		wxASSERT(bCopy);
+		m_GISMemory->SetOID(myActualSel);
+	}
+	return true;
+}
+
+
+
 void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
 	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
 	wxRealPoint myRPT = m_Scale->PixelToReal(*myPxCoord);
 	
-	// check drawing allowed
-	if (IsModifictionAllowed()==false)
+	if (EMLoadModifyData()==false)
 	{
 		delete myPxCoord;
 		return;
 	}
 	
+	
+	//TODO: Comment gérer le vertex sélectionné pour insertion ou suppression
+	// Peut-être stocker un vertex actif dans les données en mémoire ?
+	// ou alors ici sous forme de m_INSDELVertex ??
+	wxMenu myPopupMenu;
 	int iIndex = wxNOT_FOUND;
 	if (m_GISMemory->IsIntersectingGeometry(myRPT, tmSELECTION_DIAMETER)==true)
 	{
 		wxLogDebug(_T("Line found"));
-		
+		EMGetMenuLine(myPopupMenu);
 		if (m_GISMemory->SearchVertex(myRPT, iIndex, tmSELECTION_DIAMETER)==true)
 		{
 			wxLogDebug(_T("Vertex %d found"), iIndex);
+			EMGetMenuVertex(myPopupMenu);
 		}
-		
+		m_Renderer->PopupMenu(&myPopupMenu, *myPxCoord);
 	}
 	
 	
