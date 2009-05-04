@@ -42,6 +42,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_UP)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_MOVE)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_DOWN)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ESC)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -427,9 +428,15 @@ void tmRenderer::OnShiftUp		(wxKeyEvent & event)
  *******************************************************************************/
 void tmRenderer::OnKey	(wxKeyEvent & event)
 {
-	if (event.GetKeyCode() == WXK_RETURN)
+	if (event.GetKeyCode() == WXK_RETURN || event.GetKeyCode() == WXK_TAB)
 	{
 		wxCommandEvent evt(tmEVT_EM_DRAW_ENTER, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+	
+	if (event.GetKeyCode() == WXK_ESCAPE)
+	{
+		wxCommandEvent evt(tmEVT_EM_DRAW_ESC, wxID_ANY);
 		GetEventHandler()->AddPendingEvent(evt);
 	}
 

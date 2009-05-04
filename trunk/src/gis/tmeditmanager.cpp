@@ -25,7 +25,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureStop)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureValidate)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
 	EVT_COMMAND (wxID_ANY,tmEVT_EV_DISPLAY_VERTEX_COORD, tmEditManager::OnShowVertexPosition)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
@@ -34,6 +34,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawUp)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
 END_EVENT_TABLE()
 
 
@@ -778,11 +779,11 @@ void tmEditManager::OnEditStop (wxCommandEvent & event)
 
 
 /***************************************************************************//**
- @brief Called when user press enter in the #tmRenderer
+ @brief Called when user press enter / TAB in the #tmRenderer
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/
-void tmEditManager::OnDrawFeatureStop (wxCommandEvent & event)
+void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 {
 	if (IsDrawingAllowed() == false)
 		return;
@@ -831,6 +832,28 @@ void tmEditManager::OnDrawFeatureStop (wxCommandEvent & event)
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+
+}
+
+
+/***************************************************************************//**
+ @brief Called when user press ESC in the #tmRenderer
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 05 February 2009
+ *******************************************************************************/
+void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event)
+{
+	if (IsDrawingAllowed() == false)
+		return;
+	
+	m_DrawLine.ClearVertex();
+	
+	// Clear memory
+	m_GISMemory->DestroyFeature();
+	m_GISMemory->CreateFeature();
+	
+	m_Renderer->Refresh();
+	m_Renderer->Update();
 
 }
 
