@@ -465,13 +465,8 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
-	/*// load image using GDAL
-	// owned by image, do not destroy manually.
-	unsigned char      *imgbuf = NULL;
-	unsigned int        imglen = 0;
-	unsigned char      *maskbuf = NULL;
-	unsigned int        masklen= 0;*/
-	//bool bReturn =		true;
+	imgbuf = NULL;
+	maskbuf = NULL;
 	
 	// converting image coordinate & clipping 
 	tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
@@ -490,9 +485,16 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 		// need cleanup
 		// in all case, clean data
 		if (imgbuf)
-			delete imgbuf;
+		{
+			CPLFree(imgbuf);
+			imgbuf = NULL;
+		}
+
 		if (maskbuf)
-			delete maskbuf;
+		{
+			CPLFree(maskbuf);
+			maskbuf = NULL;
+		}
 		return false;
 	}
 	
@@ -504,13 +506,24 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	
-	myRaster->SetData(imgbuf);
+	myRaster->SetData(imgbuf, true);
 
 	dc.DrawBitmap(*myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),true);
 	dc.SelectObject(wxNullBitmap);
 
-	// destroying bitmap lead to a crash under windows
+
 	myRaster->Destroy();
+	if (imgbuf)
+	{
+		CPLFree(imgbuf);
+		imgbuf = NULL;
+	}
+
+	if (maskbuf)
+	{
+		CPLFree(maskbuf);
+		maskbuf = NULL;
+	}
 	
 	return TRUE;	
 }
