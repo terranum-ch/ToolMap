@@ -81,7 +81,8 @@ class tmEditManager : public wxEvtHandler
 		void OnDrawMove (wxCommandEvent & event);
 		void OnEditStart (wxCommandEvent & event);
 		void OnEditStop (wxCommandEvent & event);
-		void OnDrawFeatureStop (wxCommandEvent & event);
+		void OnDrawFeatureValidate (wxCommandEvent & event);
+		void OnDrawFeatureEscape (wxCommandEvent & event);
 		void OnCutLines (wxCommandEvent & event);
 		void OnShowVertexPosition (wxCommandEvent & event);
 		void OnModifySearch (wxCommandEvent & event);
