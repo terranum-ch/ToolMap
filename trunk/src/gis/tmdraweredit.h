@@ -45,6 +45,7 @@ class tmDrawerEditLine : public wxObject
 		void DLVertexDelete();
 		int DLGetCountPoints();
 		wxPoint * DLGetPoints ();
+		void DLReorderVertex();
 	
 	protected:
 	

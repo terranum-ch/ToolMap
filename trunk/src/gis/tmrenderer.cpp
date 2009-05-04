@@ -43,6 +43,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_MOVE)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_DOWN)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ESC)
+DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_MENU)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -50,6 +51,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_PAINT ( tmRenderer::OnPaint)
 	EVT_MOTION (tmRenderer::OnMouseMove)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
+	EVT_RIGHT_DOWN (tmRenderer::OnMouseRightDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
@@ -328,6 +330,15 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	event.Skip();
 }
 
+
+
+void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
+{
+	if (m_ActualTool == tmTOOL_MODIFY)
+		ModifyMenu(event.GetPosition());
+	
+	event.Skip();
+}
 
 
 void tmRenderer::OnMouseMove (wxMouseEvent & event)
@@ -879,6 +890,16 @@ void tmRenderer::ModifyStop (const wxPoint & mousepos)
 }
 
 
+
+void tmRenderer::ModifyMenu (const wxPoint & mousepos)
+{
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_MODIFY_MENU, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);	
+}
 
 
 

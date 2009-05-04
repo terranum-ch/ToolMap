@@ -114,6 +114,21 @@ wxPoint * tmDrawerEditLine::DLGetPoints ()
 }
 
 
+void tmDrawerEditLine::DLReorderVertex()
+{
+	if (IsEndVertex()==true)
+	{
+		if (m_RightPT != NULL)
+		{
+			wxASSERT(m_LeftPT == NULL);
+			m_LeftPT = new wxPoint(*m_RightPT);
+			delete m_RightPT;
+			m_RightPT = NULL;
+		}
+	}
+}
+
+
 bool tmDrawerEditLine::CreateVertex(const wxArrayPoints & pts, int index)
 {
 	wxASSERT(index >= 0);
@@ -142,7 +157,8 @@ bool tmDrawerEditLine::CreateVertex(const wxArrayPoints & pts, int index)
 	
 	if (index + 1 < (signed) pts.GetCount())
 		m_RightPT = new wxPoint(pts.Item(index+1));
-		
+	
+	DLReorderVertex();
 	return true;
 }
 
@@ -171,6 +187,7 @@ bool tmDrawerEditLine::CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint 
 	if (right != NULL)
 		m_RightPT = new wxPoint(*right);
 
+	bool DLReorderVertex();
 	return true;
 }
 

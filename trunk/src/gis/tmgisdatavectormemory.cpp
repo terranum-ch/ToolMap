@@ -407,6 +407,29 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 
 
 
+bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearched, int ibuffsize)
+{
+	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
+	wxASSERT (myptClicked);
+	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, ibuffsize);
+	wxASSERT(myBuffClicked);
+	OGRGeometryFactory::destroyGeometry(myptClicked);
+	
+	wxASSERT(m_Feature);
+	OGRGeometry * myLine = m_Feature->GetGeometryRef();
+	if (myLine == NULL)
+	{
+		OGRGeometryFactory::destroyGeometry(myBuffClicked);
+		return false;
+	}
+	
+	bool bIntersect = myBuffClicked->Intersect(myLine);
+	OGRGeometryFactory::destroyGeometry(myBuffClicked);
+	
+	return bIntersect;
+}
+
+
 /***************************************************************************//**
  @brief Save into database the first vertex in the feature
  @param database Adress of a valid database

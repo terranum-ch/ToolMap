@@ -52,6 +52,7 @@ DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_CLICK, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_MOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_DOWN, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ESC, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_MENU, -1)
 
 
 enum tmGIS_TOOL
@@ -109,6 +110,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		// mouse event function
 		void OnMouseDown	(wxMouseEvent & event);
+		void OnMouseRightDown (wxMouseEvent & event);
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);	
 		//void OnMouseWheel	(wxMouseEvent & event);
@@ -152,6 +154,7 @@ class tmRenderer : public wxScrolledWindow
 		void ModifyStart (const wxPoint & mousepos);
 		void ModifyUpdate (const wxPoint & mousepos);
 		void ModifyStop (const wxPoint & mousepos);
+		void ModifyMenu (const wxPoint & mousepos);
 		
 	
 		void CutLineClick (const wxPoint & mousepos);
