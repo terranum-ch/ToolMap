@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
 END_EVENT_TABLE()
 
 
@@ -123,14 +124,7 @@ void tmEditManager::OnToolModify ()
 	
 	m_Renderer->SetTool(tmTOOL_MODIFY);
 	
-	long myActualSel = m_SelectedData->GetSelectedUnique();
-	tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
-	wxASSERT(myActualSel != wxNOT_FOUND);
-	wxASSERT(mypLayerProp);
-	bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
-												  mypLayerProp->m_LayerType);
-	wxASSERT(bCopy);
-	m_GISMemory->SetOID(myActualSel);
+	
 }
 
 
@@ -344,8 +338,8 @@ bool tmEditManager::IsModifictionAllowed()
 	
 	if (m_GISMemory->GetVertexCount()!= 0)
 	{
-		wxLogDebug(_T("Finish actual line first !"));
-			return false;
+		wxLogDebug(_T("Not empty..."));
+		/*	return false;*/
 	}
 	
 	return true;
@@ -376,6 +370,7 @@ void tmEditManager::OnDrawDown(wxCommandEvent & event)
 		m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
 		//m_Renderer->Update();
 	}
+	delete myPxCoord;
 }
 
 
@@ -460,7 +455,7 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
 	BDraw = m_DrawLine.DrawEditPart(&dc);
 	wxASSERT(BDraw);
 	
-	delete myPt;	
+	delete myPt;
 }
 
 
@@ -969,12 +964,21 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myTempPt);
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
-	//wxLogDebug(_T("Searching vertex @ %.*f / %.*f"), 2, myRPt.x, 2, myRPt.y);
+
 	
-	// getting symbology
-	//tmSymbolVectorLine * myLSymbol = 
-	//(tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
-	//m_DrawLine.SetSymbology(myLSymbol->GetColour(), myLSymbol->GetWidth());
+	// load line if needed
+	if( m_GISMemory->GetVertexCount() == 0)
+	{
+		long myActualSel = m_SelectedData->GetSelectedUnique();
+		tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
+		wxASSERT(myActualSel != wxNOT_FOUND);
+		wxASSERT(mypLayerProp);
+		bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
+													  mypLayerProp->m_LayerType);
+		wxASSERT(bCopy);
+		m_GISMemory->SetOID(myActualSel);
+	}
+	
 	
 	// searching vertex
 	int iIndex = wxNOT_FOUND;
@@ -1000,9 +1004,12 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 		myRight = new wxPoint(m_Scale->RealToPixel(myPtToConvert));
 	}
 	
-	if (m_GISMemory->GetVertex(myPtToConvert, iIndex -1)==true)
+	if (iIndex -1 >= 0)
 	{
-		myLeft = new wxPoint (m_Scale->RealToPixel(myPtToConvert));
+		if (m_GISMemory->GetVertex(myPtToConvert, iIndex -1)==true)
+		{
+			myLeft = new wxPoint (m_Scale->RealToPixel(myPtToConvert));
+		}
 	}
 	
 	
@@ -1062,6 +1069,37 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	delete myPt;
 }
 
+
+
+void tmEditManager::OnModifyMenu (wxCommandEvent & event)
+{
+	// get coordinate and dont forget to delete it
+	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
+	wxRealPoint myRPT = m_Scale->PixelToReal(*myPxCoord);
+	
+	// check drawing allowed
+	if (IsModifictionAllowed()==false)
+	{
+		delete myPxCoord;
+		return;
+	}
+	
+	int iIndex = wxNOT_FOUND;
+	if (m_GISMemory->IsIntersectingGeometry(myRPT, tmSELECTION_DIAMETER)==true)
+	{
+		wxLogDebug(_T("Line found"));
+		
+		if (m_GISMemory->SearchVertex(myRPT, iIndex, tmSELECTION_DIAMETER)==true)
+		{
+			wxLogDebug(_T("Vertex %d found"), iIndex);
+		}
+		
+	}
+	
+	
+	delete myPxCoord;
+	
+}
 
 
 void tmEditManager::EMDrawSnappingStatus (const wxPoint & pt)
