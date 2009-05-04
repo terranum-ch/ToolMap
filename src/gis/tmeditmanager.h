@@ -76,6 +76,7 @@ class tmEditManager : public wxEvtHandler
 		// Extern EVENT function
 		void OnSnappingChange (wxCommandEvent & event);
 		void OnViewUpdated (wxCommandEvent & event);
+		void OnDrawDown(wxCommandEvent & event);
 		void OnDrawUp (wxCommandEvent & event);
 		void OnDrawMove (wxCommandEvent & event);
 		void OnEditStart (wxCommandEvent & event);
