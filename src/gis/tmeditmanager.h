@@ -67,6 +67,8 @@ class tmEditManager : public wxEvtHandler
 		bool m_EditStarted;
 		wxPoint m_OldVertexPos;
 		tmDrawerEditLine m_DrawLine;
+		int m_INSDELVertex;
+		wxRealPoint m_INSVertexPos;
 		
 		
 		// defined by function or event.
@@ -94,6 +96,10 @@ class tmEditManager : public wxEvtHandler
 		void OnModifyMove (wxCommandEvent & event);
 		void OnModifyUp (wxCommandEvent & event);
 		void OnModifyMenu (wxCommandEvent & event);
+		
+		// menu event
+		void OnMenuInsertVertex(wxCommandEvent & event);
+		void OnMenuDeleteVertex(wxCommandEvent & event);
 		
 		// member tool function
 		void DisplayRendererSnappingTolerence();
