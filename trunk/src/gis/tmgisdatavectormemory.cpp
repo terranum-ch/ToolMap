@@ -375,7 +375,6 @@ wxRealPoint * tmGISDataVectorMemory::GetVertexAll (int & number)
 bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched, 
 										  int & index, int ibuffsize)
 {
-	index = wxNOT_FOUND;
 	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
 	wxASSERT (myptClicked);
 	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, ibuffsize);
@@ -408,7 +407,8 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 
 
 
-bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearched, int ibuffsize)
+bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearched, int & index,
+													int ibuffsize)
 {
 	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
 	wxASSERT (myptClicked);
@@ -417,14 +417,43 @@ bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearch
 	OGRGeometryFactory::destroyGeometry(myptClicked);
 	
 	wxASSERT(m_Feature);
-	OGRGeometry * myLine = m_Feature->GetGeometryRef();
-	if (myLine == NULL)
+	OGRGeometry * myGeom = m_Feature->GetGeometryRef();
+	if (myGeom == NULL)
 	{
 		OGRGeometryFactory::destroyGeometry(myBuffClicked);
 		return false;
 	}
 	
-	bool bIntersect = myBuffClicked->Intersect(myLine);
+	OGRLineString * myLine = (OGRLineString*) myGeom;
+	bool bIntersect = myBuffClicked->Intersect(myGeom);
+	// try to found where occur the intersection
+	
+	OGRPoint p1;
+	OGRPoint p2;
+	OGRLineString segment;
+	if (bIntersect)
+	{
+		//myLine->g
+	int iNumVertex = myLine->getNumPoints();
+	for (int i = 0; i< iNumVertex; i++)
+		{
+			myLine->getPoint(i, &p1);
+			if (i+1 < iNumVertex)
+			{
+				myLine->getPoint(i+1, &p2);
+				segment.addPoint(&p1);
+				segment.addPoint(&p2);
+				
+				// intersection found
+				if (segment.Intersect(myBuffClicked))
+				{
+					index = i;
+				}
+				segment.empty();
+			}
+		}
+	}
+	
 	OGRGeometryFactory::destroyGeometry(myBuffClicked);
 	
 	return bIntersect;

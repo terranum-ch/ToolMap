@@ -36,6 +36,12 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
+
+	EVT_MENU (tmEM_CONTEXTMENU_LINE_CANCEL,tmEditManager::OnDrawFeatureEscape)
+	EVT_MENU (tmEM_CONTEXTMENU_LINE_SAVE, tmEditManager::OnDrawFeatureValidate)
+	EVT_MENU (tmEM_CONTEXTMENU_VERTEX_INSERT,tmEditManager::OnMenuInsertVertex)
+	EVT_MENU (tmEM_CONTEXTMENU_VERTEX_DELETE,tmEditManager::OnMenuDeleteVertex)
+
 END_EVENT_TABLE()
 
 
@@ -94,6 +100,8 @@ void tmEditManager::InitMemberValues()
 	m_Renderer = NULL;
 	m_pDB = NULL;
 	m_SnapMem = NULL;
+	m_INSDELVertex = wxNOT_FOUND;
+	m_INSVertexPos = wxRealPoint(-1,-1);
 }
 
 
@@ -1144,28 +1152,53 @@ void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 		return;
 	}
 	
-	
-	//TODO: Comment gérer le vertex sélectionné pour insertion ou suppression
-	// Peut-être stocker un vertex actif dans les données en mémoire ?
-	// ou alors ici sous forme de m_INSDELVertex ??
 	wxMenu myPopupMenu;
-	int iIndex = wxNOT_FOUND;
-	if (m_GISMemory->IsIntersectingGeometry(myRPT, tmSELECTION_DIAMETER)==true)
+	m_INSDELVertex = wxNOT_FOUND;
+	m_INSVertexPos = wxRealPoint(-1,-1);
+	if (m_GISMemory->IsIntersectingGeometry(myRPT,m_INSDELVertex, tmSELECTION_DIAMETER)==true)
 	{
-		wxLogDebug(_T("Line found"));
+		m_INSVertexPos = myRPT;
 		EMGetMenuLine(myPopupMenu);
-		if (m_GISMemory->SearchVertex(myRPT, iIndex, tmSELECTION_DIAMETER)==true)
+		
+		if (m_GISMemory->SearchVertex(myRPT, m_INSDELVertex, tmSELECTION_DIAMETER)==true)
 		{
-			wxLogDebug(_T("Vertex %d found"), iIndex);
 			EMGetMenuVertex(myPopupMenu);
 		}
 		m_Renderer->PopupMenu(&myPopupMenu, *myPxCoord);
 	}
-	
-	
-	delete myPxCoord;
-	
+	delete myPxCoord;	
 }
+
+
+
+void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event)
+{
+	if (m_INSDELVertex == wxNOT_FOUND || m_INSVertexPos == wxRealPoint(-1,-1))
+	{
+		wxFAIL_MSG(_T("Error inserting vertex"));
+		return;
+	}
+	
+	wxLogDebug(_T("Inserting vertex after %d"), m_INSDELVertex);
+	m_GISMemory->InsertVertex(m_INSVertexPos, m_INSDELVertex+1);
+	DrawMemoryData();
+}
+
+
+void tmEditManager::OnMenuDeleteVertex(wxCommandEvent & event)
+{
+	if (m_INSDELVertex == wxNOT_FOUND)
+	{
+		wxFAIL_MSG(_T("Error deleting vertex"));
+		return;
+	}
+	wxLogDebug(_T("Deleting vertex @ %d"), m_INSDELVertex);
+	
+	m_GISMemory->RemoveVertex(m_INSDELVertex);
+	DrawMemoryData();
+}
+
+
 
 
 void tmEditManager::EMDrawSnappingStatus (const wxPoint & pt)
