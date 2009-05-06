@@ -313,7 +313,7 @@ OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 	tmArrayULong row_length;
 	
 	// security check
-	if(!m_DB->DataBaseHasResults()==false)
+	if(m_DB->DataBaseHasResults()==false)
 	{
 		if (IsLoggingEnabled())
 			wxLogError(_T("Database should have results..."));
@@ -831,8 +831,10 @@ OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
 		wxLogError(_T("Error getting geometry for oid = %d"),oid);
 		return false;
 	}
-
-	return GetNextDataLine(myUnusedOid);
+	
+	OGRGeometry * myGeom = GetNextDataLine(myUnusedOid);
+	m_DB->DataBaseClearResults();
+	return myGeom;
 }
 
 
