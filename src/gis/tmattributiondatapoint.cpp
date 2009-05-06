@@ -166,8 +166,7 @@ bool tmAttributionDataPoint::GetInfoBasic (AttribObjType_PANEL * panel)
 	}
 	
 	wxArrayLong mySelValues;
-	if (m_pDB->DataBaseGetResults(mySelValues)==false)
-		return false;
+	m_pDB->DataBaseGetResults(mySelValues);
 		
 	// updating panel
 	SetPanelValues(panel, mySelValues);
