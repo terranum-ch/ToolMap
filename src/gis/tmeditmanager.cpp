@@ -63,7 +63,6 @@ tmEditManager::tmEditManager(wxWindow * parent,tmTOCCtrl * toc,
 	m_Renderer = renderer;
 	m_Scale = scale;
 	m_EditStarted = false;
-	m_OldVertexPos = wxDefaultPosition;
 
 	m_ParentEvt->PushEventHandler(this);
 
@@ -951,12 +950,10 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
 	wxPoint myPxPt = m_Scale->RealToPixel(*myPt);
 	delete myPt;
 	
-	if (m_OldVertexPos != wxDefaultPosition && m_OldVertexPos != myPxPt)
-		m_Renderer->DrawCircleVideoInverse(m_OldVertexPos, 7);
+	m_Renderer->Refresh();
+	m_Renderer->Update();
 		
 	m_Renderer->DrawCircleVideoInverse(myPxPt, 7);
-	m_OldVertexPos = myPxPt;
-
 }
 
 
@@ -1545,7 +1542,6 @@ bool tmEditManager::EditVertexPosition ()
 	OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
 	
 	// preparing dialog and dialog data
-	m_OldVertexPos = wxDefaultPosition;
 	EditVertexDLG myDlg (m_Renderer);
 	myDlg.m_SelectedOID = lSelectedOID;
 	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerSpatialType;

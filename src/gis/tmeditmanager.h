@@ -65,7 +65,6 @@ class tmEditManager : public wxEvtHandler
 		tmRenderer * m_Renderer;
 		tmGISDataVectorMemory * m_GISMemory;
 		bool m_EditStarted;
-		wxPoint m_OldVertexPos;
 		tmDrawerEditLine m_DrawLine;
 		int m_INSDELVertex;
 		wxRealPoint m_INSVertexPos;
