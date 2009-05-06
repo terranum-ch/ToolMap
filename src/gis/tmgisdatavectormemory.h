@@ -75,13 +75,15 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		wxRealPoint * GetVertexAll (int & number);
 		
 		bool SearchVertex (const wxRealPoint & ptsearched, int & index, int ibuffsize);
+		bool SearchPoint (const wxRealPoint & ptsearched, int ibuffsize);
 		bool IsIntersectingGeometry (const wxRealPoint & ptsearched,int & index,
 									 int ibuffsize);
 		
 		
 		// saving /loading point
-		long SavePointToDatabase (DataBaseTM * database, int layertype); 
-		wxRealPoint GetPointFromDatabase (DataBaseTM * database, long oid,
+		long SavePointToDatabase (DataBaseTM * database, int layertype);
+		bool UpdatePointToDatabase(DataBaseTM * database, int layertype);
+		bool GetPointFromDatabase (DataBaseTM * database, long oid,
 										  int layertype);
 		
 		// saving / loading line

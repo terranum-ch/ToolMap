@@ -237,9 +237,24 @@ int tmGISDataVectorMemory::GetVertexCount()
 	int iReturn = 0;
 	if (m_Feature)
 	{
-		OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
-		if (myMemLine)
+		OGRGeometry * myGeom =  m_Feature->GetGeometryRef();
+		if (myGeom == NULL)
+			return 0;
+			
+		OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
+		
+		if (myType == wkbLineString)
+		{
+			OGRLineString * myMemLine = (OGRLineString*) myGeom;
+			wxASSERT(myMemLine);
 			iReturn = myMemLine->getNumPoints();
+		}
+		else
+		{
+			wxASSERT(myType == wkbPoint);
+			iReturn = 1;
+		}
+		
 	}
 	
 	return iReturn;
@@ -260,24 +275,38 @@ bool tmGISDataVectorMemory::GetVertex (wxRealPoint & pt, int index)
 	if (m_Feature == NULL)
 		return false;
 	
-	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
-	if (myMemLine == NULL)
+	OGRGeometry * myGeom = m_Feature->GetGeometryRef();
+	if (myGeom == NULL)
 		return false;
+	
+	OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
+	if (myType == wkbLineString)
+	{
+		OGRLineString * myMemLine = (OGRLineString*) myGeom;
+		wxASSERT(myMemLine);
 		
-	
-	if (index >= myMemLine->getNumPoints())
-		return false;
-	
-	
-	if (index == -1)
-		index = myMemLine->getNumPoints() -1;
-	
-	if (index < 0)
-		return false;
-
-	
-	pt.x = myMemLine->getX(index);
-	pt.y = myMemLine->getY(index);
+		if (index >= myMemLine->getNumPoints())
+			return false;
+		
+		if (index == -1)
+			index = myMemLine->getNumPoints() -1;
+		
+		if (index < 0)
+			return false;
+		
+		
+		pt.x = myMemLine->getX(index);
+		pt.y = myMemLine->getY(index);
+	}
+	else
+	{
+		wxASSERT(myType == wkbPoint);
+		OGRPoint * myPoint = (OGRPoint *) myGeom;
+		wxASSERT(myPoint);
+		
+		pt.x = myPoint->getX();
+		pt.y = myPoint->getY();
+	}
 	
 	return true;
 }
@@ -289,18 +318,37 @@ bool tmGISDataVectorMemory::SetVertex (wxRealPoint & pt, int index)
 	if (m_Feature == NULL)
 		return false;
 	
-	OGRLineString * myMemLine = (OGRLineString*) m_Feature->GetGeometryRef();
-	if (myMemLine == NULL)
+	OGRGeometry * myGeom = m_Feature->GetGeometryRef();
+	if (myGeom == NULL)
 		return false;
 	
 	if (index < 0)
 		return false;
 	
-	if (index >= myMemLine->getNumPoints())
-		return false;
+	OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
+	if (myType == wkbLineString)
+	{
 	
-	myMemLine->setPoint(index, pt.x, pt.y);
-	return true;
+		OGRLineString * myMemLine = (OGRLineString*)myGeom;
+		wxASSERT(myMemLine);	
+
+		
+		if (index >= myMemLine->getNumPoints())
+			return false;
+		
+		myMemLine->setPoint(index, pt.x, pt.y);
+	}
+	else
+	{
+		wxASSERT(myType == wkbPoint);
+		OGRPoint * myPoint = (OGRPoint*) myGeom;
+		wxASSERT(myPoint);
+		myPoint->setX(pt.x);
+		myPoint->setY(pt.y);
+	}
+	
+	
+		return true;
 }
 
 
@@ -407,6 +455,31 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 
 
 
+
+bool tmGISDataVectorMemory::SearchPoint (const wxRealPoint & ptsearched, int ibuffsize)
+{
+	wxASSERT(GetVertexCount() == 1);
+	
+	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
+	wxASSERT (myptClicked);
+	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, ibuffsize);
+	wxASSERT(myBuffClicked);
+	OGRGeometryFactory::destroyGeometry(myptClicked);
+	
+	wxRealPoint myRStorePt;
+	bool bGetV = GetVertex(myRStorePt);
+	wxASSERT(bGetV);
+	
+	OGRGeometry * myStoredPt = CreateOGRGeometry(myRStorePt);
+	bool bReturn = myBuffClicked->Intersect(myStoredPt);
+	OGRGeometryFactory::destroyGeometry(myStoredPt);
+	OGRGeometryFactory::destroyGeometry(myBuffClicked);
+	
+	return bReturn;
+}
+
+
+
 bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearched, int & index,
 													int ibuffsize)
 {
@@ -489,6 +562,26 @@ long tmGISDataVectorMemory::SavePointToDatabase (DataBaseTM * database,
 	return lReturn;
 }
 
+
+
+bool tmGISDataVectorMemory::UpdatePointToDatabase(DataBaseTM * database, int layertype)
+{
+	wxASSERT (database);
+	wxASSERT (layertype < TOC_NAME_NOT_GENERIC);
+	wxASSERT (GetVertexCount() == 1);
+	
+	OGRPoint * myOGRPoint = (OGRPoint*) m_Feature->GetGeometryRef();
+	if (myOGRPoint == NULL)
+		return false;
+	
+	// ensure only 2D
+	myOGRPoint->setCoordinateDimension(2);
+	
+	bool bUpdate = UpdateDatabaseGeometry(myOGRPoint, layertype, database);
+	wxASSERT(bUpdate);
+	return bUpdate;
+	
+}
 
 /***************************************************************************//**
  @brief Save the line into database
@@ -678,19 +771,19 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
  @author Lucien Schreiber (c) CREALP 2009
  @date 04 February 2009
  *******************************************************************************/
-wxRealPoint tmGISDataVectorMemory::GetPointFromDatabase (DataBaseTM * database,
+bool tmGISDataVectorMemory::GetPointFromDatabase (DataBaseTM * database,
 														 long oid,
 														 int layertype)
 {
 	OGRPoint * myOGRPoint = (OGRPoint*) LoadDatabaseGeometry(oid, 
 													layertype, database);
 	if (myOGRPoint == NULL)
-		return wxRealPoint(-1,-1);
+		return false;
 	
-	wxRealPoint myPoint (myOGRPoint->getX(), myOGRPoint->getY());
+	m_Feature->SetGeometry(myOGRPoint);
 	OGRGeometryFactory::destroyGeometry(myOGRPoint);
 	
-	return myPoint;
+	return true;
 }
 
 

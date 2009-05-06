@@ -109,6 +109,11 @@ class tmEditManager : public wxEvtHandler
 		bool IsObjectMinNumberSelected (unsigned int iNumbermin = 1);
 		bool IsLayerTypeSelected (int layertype = LAYER_SPATIAL_LINE);
 		
+		// modify function
+		bool EMModifySearchLine(const wxRealPoint & pt);
+		bool EMModifySearchPoint(const wxRealPoint & pt);
+		
+		
 		// snapping function
 		bool EMGetSnappingCoord (wxRealPoint & pt);
 		wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
@@ -126,6 +131,7 @@ class tmEditManager : public wxEvtHandler
 		bool AddLineVertex (const wxRealPoint & pt);
 		bool AddPointVertex (const wxRealPoint & pt);
 		long StorePoint (const wxRealPoint & pt);
+		bool UpdatePoint();
 		long StoreLine ();
 		bool UpdateLine();
 		
