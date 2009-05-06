@@ -400,8 +400,8 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		return;
 	}
 	
-	bool bCreate = m_DrawLine.CreateVertex(*myPxCoord);
-	wxASSERT(bCreate);
+	//bool bCreate = m_DrawLine.CreateVertex(*myPxCoord);
+	//wxASSERT(bCreate);
 		
 	if (m_SnapMem->IsSnappingEnabled()==true)
 	{
@@ -410,21 +410,16 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		//m_Renderer->Update();
 	}
 	
-	
 	// snapping
-	if (EMGetSnappingCoord(myRealCoord)==true)
-	{
-		// if snapping found, update the vertex for drawing
-		// live next segment
-		wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
-		bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
-		wxASSERT(bCreate);
-	}
-		
-		
+	EMGetSnappingCoord(myRealCoord);
+	
 	// add  line vertex
 	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
-	{
+	{	
+		wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
+		bool bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
+		wxASSERT(bCreate);
+
 		AddLineVertex(myRealCoord);
 		DrawMemoryData();
 	}
@@ -477,48 +472,6 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
  *******************************************************************************/
 bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 {
-	/*
-	// display old selected line when first vertex is called
-	if (m_GISMemory->GetVertexCount() == 0)
-	{
-		tmDrawer myEditDrawer;
-		myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
-								*m_Scale, m_Scale->GetWindowExtentReal());
-		
-		// get the symbology
-		tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
-		
-		// draw the selected in normal colour (blue)
-		tmGISDataVectorMemory myGISMem;
-		myGISMem.CreateFeature();
-		wxArrayLong * mySelArray = m_SelectedData->GetSelectedValues();
-		if (mySelArray != NULL)
-		{
-			for (unsigned int k = 0; k<mySelArray->GetCount();k++)
-			{
-				if (myGISMem.GetLineFromDatabase(m_pDB, 
-												  mySelArray->Item(k),
-												  m_TOC->GetEditLayer()->m_LayerType) == false)
-					break;
-				wxArrayRealPoints myPts;
-				if(myGISMem.GetVertexAll(myPts) == false)
-					break;
-				
-				//myEditDrawer.DrawEditLine(myPts, 
-				//						  mySymbol->GetWidth(),
-				//						  mySymbol->GetColour());
-			}
-			if (mySelArray)
-				delete mySelArray;
-		}
-
-	}*/
-	
-	
-	
-	
-	
-	
 	bool bReturn = m_GISMemory->InsertVertex(pt, -1);
 	wxLogDebug(_T("Number of stored vertex : %d"), m_GISMemory->GetVertexCount());
 
@@ -563,20 +516,20 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	{
 		for (unsigned int k = 0; k<mySelArray->GetCount();k++)
 		{
-			wxRealPoint myRealPt = myGISMem.GetPointFromDatabase(m_pDB, mySelArray->Item(k),
-																 m_TOC->GetEditLayer()->m_LayerType);
 			
-			if (myRealPt == wxRealPoint(-1,-1))
+			wxRealPoint myRealPt;
+			if(myGISMem.GetPointFromDatabase(m_pDB, mySelArray->Item(k),
+											 m_TOC->GetEditLayer()->m_LayerType)==false)
 				break;
 			
+			bool bGet = myGISMem.GetVertex(myRealPt);
+			wxASSERT(bGet);
 			myEditDrawer.DrawEditVertex(myRealPt, mySymbol->GetRadius()+1,
 										mySymbol->GetColour());
 			
 		}
 		delete mySelArray;
 	}
-	
-	
 	
 	
 	// select the last inserted oid
@@ -659,6 +612,22 @@ bool tmEditManager::UpdateLine()
 		return false;
 	
 	return m_GISMemory->UpdateLineToDatabase(m_pDB, layerprop->m_LayerType);
+}
+
+
+bool tmEditManager::UpdatePoint()
+{
+	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
+	wxASSERT (layerprop);
+	if (layerprop == NULL)
+		return false;
+	
+	bool bContainOID = m_GISMemory->IsUpdating();
+	wxASSERT(bContainOID);
+	if (bContainOID == false)
+		return false;
+	
+	return m_GISMemory->UpdatePointToDatabase(m_pDB, layerprop->m_LayerType);
 }
 
 
@@ -971,7 +940,60 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
 
 	
-	// load line if needed
+	bool bSearch = false;
+	
+	if (m_TOC->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE)
+	{
+		bSearch = EMModifySearchLine(myRPt);
+	}
+	else
+	{
+		bSearch = EMModifySearchPoint(myRPt);
+	}
+
+	delete myTempPt;
+	if (bSearch == false)
+	{
+		wxLogDebug(_T("No Vertex Found"));
+		m_Renderer->StopModifyEvent();
+	}
+}
+
+
+
+
+bool tmEditManager::EMModifySearchPoint(const wxRealPoint & pt)
+{
+	// load point
+	wxASSERT(m_GISMemory->GetVertexCount() == 0);
+	long myActualSel = m_SelectedData->GetSelectedUnique();
+	tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
+	wxASSERT(myActualSel != wxNOT_FOUND);
+	wxASSERT(mypLayerProp);
+	bool bCopy = m_GISMemory->GetPointFromDatabase(m_pDB, myActualSel,
+												  mypLayerProp->m_LayerType);
+	wxASSERT(bCopy);
+	m_GISMemory->SetOID(myActualSel);
+	
+	// searching if point was correctly clicked
+	if (m_GISMemory->SearchPoint(pt, tmSELECTION_DIAMETER)==false)
+		return false;
+	
+	wxRealPoint myStoredRPt;
+	bool bGetPoint = m_GISMemory->GetVertex(myStoredRPt);
+	wxASSERT(bGetPoint);
+	wxPoint myPoint = m_Scale->RealToPixel(myStoredRPt);
+	bool bCreateDrawerLine = m_DrawLine.CreateVertex(myPoint);
+	wxASSERT(bCreateDrawerLine);
+	return true;
+}
+
+
+
+
+bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
+{
+	// Load Line from DB -> Memory (if needed)
 	if( m_GISMemory->GetVertexCount() == 0)
 	{
 		long myActualSel = m_SelectedData->GetSelectedUnique();
@@ -987,14 +1009,11 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	
 	// searching vertex
 	int iIndex = wxNOT_FOUND;
-	if (m_GISMemory->SearchVertex(myRPt, iIndex, tmSELECTION_DIAMETER)==false)
-	{
-		wxLogDebug(_T("No Vertex Found"));
-		m_Renderer->StopModifyEvent();
-		delete myTempPt;
-		return;
-	}
+	if (m_GISMemory->SearchVertex(pt, iIndex, tmSELECTION_DIAMETER)==false)
+		return false;
 	
+	
+	// creating invert-video drawing
 	wxPoint * myLeft = NULL;
 	wxPoint * myRight = NULL;
 	wxPoint myPoint;
@@ -1027,10 +1046,8 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	
 	if (myRight != NULL)
 		delete myRight;
-	
-	delete myTempPt;
+	return true;
 }
-
 
 
 void tmEditManager::OnModifyMove (wxCommandEvent & event)
@@ -1038,6 +1055,8 @@ void tmEditManager::OnModifyMove (wxCommandEvent & event)
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
+	//if (m_TOC->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE)
+	//{
 	wxClientDC dc (m_Renderer);
 	bool BDraw = m_DrawLine.DrawEditPart(&dc);
 	wxASSERT(BDraw);
@@ -1046,6 +1065,20 @@ void tmEditManager::OnModifyMove (wxCommandEvent & event)
 	
 	BDraw = m_DrawLine.DrawEditPart(&dc);
 	wxASSERT(BDraw);
+	/*}
+	else
+	{
+		tmSymbolVectorPoint * mySymbol = (tmSymbolVectorPoint*) m_TOC->GetEditLayer()->m_LayerSymbol;
+		int iRadius = mySymbol->GetRadius();
+		
+		m_Renderer->Refresh();
+		m_Renderer->Update();
+		wxClientDC dc(m_Renderer);
+		
+		wxASSERT(mySymbol);
+		//dc.DrawRectangle(MyRefreshRect);
+		dc.DrawCircle(*myPt,iRadius );
+	}*/
 	
 	delete myPt;
 }
@@ -1060,17 +1093,39 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
 	bool bSnappingFound = EMGetSnappingCoord(myRPt);
 	
-	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
-	wxASSERT(bSetVertex);
+	if (m_TOC->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE)
+	{
+		bool bSetVertex = m_DrawLine.SetVertex(*myPt);
+		wxASSERT(bSetVertex);
+		
+		bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
+		wxASSERT(BSave);
+		
+		//	m_Renderer->Refresh();
+		//	m_Renderer->Update();
+		DrawMemoryData();
+		if (bSnappingFound)
+			EMDrawSnappingStatus(*myPt);
+	}
+	else
+	{
+		bool BSave = m_GISMemory->SetVertex(myRPt, 0);
+		wxASSERT(BSave);
+		
+		m_DrawLine.ClearVertex();
+		bool bUpdate =UpdatePoint();
+		wxASSERT(bUpdate);
+		
+		// refresh screen
+		// Clear memory
+		m_GISMemory->DestroyFeature();
+		m_GISMemory->CreateFeature();
+		
+		// update display
+		wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	}
 
-	bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
-	wxASSERT(BSave);
-	
-//	m_Renderer->Refresh();
-//	m_Renderer->Update();
-	DrawMemoryData();
-	if (bSnappingFound)
-		EMDrawSnappingStatus(*myPt);
 	delete myPt;
 }
 

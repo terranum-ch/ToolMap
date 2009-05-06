@@ -101,9 +101,9 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		"this_program",       /* this string is not used */
 		bufDataDir,
 		mylanguagedir,
-		"--port=3309",
+		"--port=3309" //,
 //#if defined (__WXDEBUG__)
-		"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
+		//"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
 //#endif
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=utf8"
