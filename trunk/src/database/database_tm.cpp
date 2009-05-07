@@ -731,6 +731,7 @@ int DataBaseTM::GetProjectBackupPath (wxString & spath)
 	if (DataBaseQuery(sSentence) && DataBaseHasResults())
 	{
 		DataBaseGetNextResult(spath);
+		DataBaseClearResults();
 		
 		if (spath.IsEmpty())
 			iflagreturn = PATH_EMPTY;
@@ -1518,8 +1519,7 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 	
 	if (DataBaseQuery(sSentence))
 	{
-		bool bResults = DataBaseGetResults(myThematicResult);
-		wxASSERT(bResults);
+		DataBaseGetResults(myThematicResult);
 	}
 	wxLogDebug(_T("Number of results found : %d"), myThematicResult.GetCount());
 	return myThematicResult;

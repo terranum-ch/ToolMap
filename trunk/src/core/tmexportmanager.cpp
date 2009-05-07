@@ -616,22 +616,22 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 		return false;
 	}
 	
-	
+	bool bReturn = false;
 	switch (layer->m_LayerType)
 	{
 		case LAYER_LINE:
 			if (m_ExportData->WriteLines(layer))
-				return true;
+				bReturn = true;
 			break;
 			
 		case LAYER_POINT:
 			if (m_ExportData->WritePoints(layer))
-				return true;
+				bReturn = true;
 			break;
 			
 		case LAYER_POLYGON:
 			if (m_ExportData->WritePolygons(layer))
-				return true;
+				bReturn = true;
 			break;
 			
 		default:
@@ -640,7 +640,7 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 	
 	m_pDB->DataBaseClearResults();
 	
-	return false;
+	return bReturn;
 }
 
 
@@ -658,7 +658,7 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	wxASSERT(m_pDB);
 	wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_GIS_GENERIC[4];
 	
-	if (!m_pDB->DataBaseQuery(sSentence))
+	if (m_pDB->DataBaseQuery(sSentence)==false)
 	{
 		nbvertex = 0;
 		return NULL;
@@ -667,8 +667,18 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	tmGISDataVectorMYSQL myFrameDB;
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
 	long loid = 0;
-	return myFrameDB.GetNextDataLine(nbvertex, loid);
 	
+	long myRows = 0;
+	if(m_pDB->DataBaseGetResultSize(NULL, &myRows)==true)
+	{
+		if (myRows > 1)
+			wxFAIL_MSG(_T("Too many frame results"));
+	}
+	
+	
+	wxRealPoint * myPt = myFrameDB.GetNextDataLine(nbvertex, loid);
+	m_pDB->DataBaseClearResults();
+	return myPt;
 }
 
 

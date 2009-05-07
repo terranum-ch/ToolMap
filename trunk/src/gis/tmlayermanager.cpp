@@ -160,8 +160,8 @@ bool tmLayerManager::UnInitLayerManager()
 	// delete bitmap if existing 
 	if(m_Bitmap != NULL)
 	{
-		wxASSERT_MSG(0, _T("Bitmap should be allready deleted ?"));
-		//wxLogDebug(_T("deleting bitmap"));
+		//wxASSERT_MSG(0, _T("Bitmap should be allready deleted ?"));
+		wxLogDebug(_T("deleting bitmap"));
 		delete m_Bitmap;
 		m_Bitmap = NULL;
 	}
@@ -953,7 +953,8 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		
 	if (m_Scale.IsLayerExtentValid()==false)
 	{
-		wxASSERT_MSG(0,_T("Failed computing"));
+		wxLogError(_T("Extend not valid"));
+		//wxASSERT_MSG(0,_T("Failed computing"));
 		return false;
 	}
 		
