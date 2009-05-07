@@ -393,13 +393,15 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
         poGeometry = NULL;
     }
 	
-    if( pabyBuf != NULL )
+	OGRFree(pabyBuf);
+	
+/*    if( pabyBuf != NULL )
     {
 #ifndef  __WXMSW__    
 		delete [] pabyBuf;
 #endif
 		//delete( pabyBuf );
-    }
+    }*/
 	
     return poGeometry;
 
@@ -775,7 +777,7 @@ bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
 		}
 		
 	}
-	
+	m_pDB->DataBaseClearResults();
 	return bReturn;
 }
 

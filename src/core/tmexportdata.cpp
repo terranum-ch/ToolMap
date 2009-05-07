@@ -155,22 +155,19 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
 	wxString sSentence = wxString::Format(sStemp, layerindex);
 	
 	
-	if (!m_pDB->DataBaseQuery(sSentence))
+	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return 0;
 	
 	wxString myResult;
 	int iActualCharCount = 0;
 	int iTempCharCount = 0;
-	while (1)
+	while (m_pDB->DataBaseGetNextResult(myResult))
 	{
-		if(!m_pDB->DataBaseGetNextResult(myResult))
-			break;
-		
 		iTempCharCount = myResult.Len();
 		if (iTempCharCount > iActualCharCount)
 			iActualCharCount = iTempCharCount;
 	}
-	
+	m_pDB->DataBaseClearResults();
 	return iActualCharCount + 1;
 	
 }
