@@ -942,7 +942,7 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	
 	bool bSearch = false;
 	
-	if (m_TOC->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
 	{
 		bSearch = EMModifySearchLine(myRPt);
 	}
@@ -965,16 +965,18 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 bool tmEditManager::EMModifySearchPoint(const wxRealPoint & pt)
 {
 	// load point
-	wxASSERT(m_GISMemory->GetVertexCount() == 0);
-	long myActualSel = m_SelectedData->GetSelectedUnique();
-	tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
-	wxASSERT(myActualSel != wxNOT_FOUND);
-	wxASSERT(mypLayerProp);
-	bool bCopy = m_GISMemory->GetPointFromDatabase(m_pDB, myActualSel,
-												  mypLayerProp->m_LayerType);
-	wxASSERT(bCopy);
-	m_GISMemory->SetOID(myActualSel);
-	
+	if(m_GISMemory->GetVertexCount() == 0)
+	{
+		long myActualSel = m_SelectedData->GetSelectedUnique();
+		tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
+		wxASSERT(myActualSel != wxNOT_FOUND);
+		wxASSERT(mypLayerProp);
+		bool bCopy = m_GISMemory->GetPointFromDatabase(m_pDB, myActualSel,
+													   mypLayerProp->m_LayerType);
+		wxASSERT(bCopy);
+		m_GISMemory->SetOID(myActualSel);
+	}
+		
 	// searching if point was correctly clicked
 	if (m_GISMemory->SearchPoint(pt, tmSELECTION_DIAMETER)==false)
 		return false;
@@ -1093,7 +1095,7 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
 	bool bSnappingFound = EMGetSnappingCoord(myRPt);
 	
-	if (m_TOC->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
 	{
 		bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 		wxASSERT(bSetVertex);
@@ -1116,7 +1118,9 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 		bool bUpdate =UpdatePoint();
 		wxASSERT(bUpdate);
 		
-		// refresh screen
+		if (bSnappingFound)
+			EMDrawSnappingStatus(*myPt);
+		
 		// Clear memory
 		m_GISMemory->DestroyFeature();
 		m_GISMemory->CreateFeature();

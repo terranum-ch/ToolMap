@@ -157,8 +157,6 @@ bool tmAttributionDataPoint::GetInfoBasic (AttribObjType_PANEL * panel)
 	wxString sStatement = _T("");
 	PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[1]);
 	
-	
-	wxLogDebug(sStatement);
 	if (!m_pDB->DataBaseQuery(sStatement))
 	{
 		wxLogDebug(_T("Error getting info"));
