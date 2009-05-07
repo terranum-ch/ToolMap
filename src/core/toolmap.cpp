@@ -401,9 +401,9 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu66, _("Selection"));
     wxMenu* itemMenu72 = new wxMenu;
     itemMenu72->Append(ID_MENU_QUERIES, _("Queries editor"), _T(""), wxITEM_CHECK);
-    itemMenu72->AppendSeparator();
-    itemMenu72->Append(ID_MENUITEM11, _("User query 1"), _T(""), wxITEM_NORMAL);
-    itemMenu72->Append(ID_MENUITEM12, _("User query 2"), _T(""), wxITEM_NORMAL);
+    //itemMenu72->AppendSeparator();
+    //itemMenu72->Append(ID_MENUITEM11, _("User query 1"), _T(""), wxITEM_NORMAL);
+    //itemMenu72->Append(ID_MENUITEM12, _("User query 2"), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu72, _("Queries"));
     wxMenu* itemMenu77 = new wxMenu;
     itemMenu77->Append(ID_MENU_TOC_WINDOW, _("Table of content"), _T(""), wxITEM_CHECK);
