@@ -103,7 +103,8 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		mylanguagedir,
 		"--port=3309",
 //#if defined (__WXDEBUG__)
-		"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
+		"--log=C:/toolmap_mysql_log.txt"
+		//"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
 //#endif
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=utf8"
