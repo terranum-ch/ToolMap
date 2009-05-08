@@ -56,7 +56,7 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
 	
 	// open the raster and return true if success
-	m_DataSet = (GDALDataset*) GDALOpen(buffer, (GDALAccess) bReadWrite);
+	m_DataSet = (GDALDataset*) GDALOpen(buffer, (GDALAccess) false); // bReadWrite);
 	delete [] buffer;
 	if (m_DataSet == NULL)
 	{
