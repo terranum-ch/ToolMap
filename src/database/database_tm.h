@@ -216,6 +216,9 @@ class DataBaseTM : public DataBase
 		
 		// attribution operations
 		bool DeleteAttribution (wxArrayLong * selected, int layertype);
+		
+		// static path convertion
+		static bool ConvertPath(wxString & path);
 	};
 
 
