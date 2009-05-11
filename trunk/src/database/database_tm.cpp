@@ -2804,3 +2804,34 @@ bool DataBaseTM::DeleteAttribution (wxArrayLong * selected, int layertype)
 	return true;
 }
 
+
+
+bool DataBaseTM::ConvertPath(wxString & path)
+{
+	wxArrayString myNewNameArray;
+	wxFileName myDirName =  wxFileName::DirName(path);
+	
+	// get the separator
+	wxString mySeparator = myDirName.GetPathSeparator();
+	
+	// if we don't detect a windows separator
+	if (mySeparator != _T("\\"))
+		return false;
+	
+	myNewNameArray = wxStringTokenize(path,_T("\\"));
+	
+	// clear the original path
+	path.Clear();
+	
+	for (unsigned int i = 0; i< myNewNameArray.GetCount(); i++)
+	{
+		path += myNewNameArray.Item(i);
+		path += _T("\\\\"); // add two \ for windows
+	}
+	// remove last \ (2x)
+	path.RemoveLast(2);
+	return true;
+
+}
+
+

@@ -32,6 +32,7 @@ class DataBaseTMTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST ( TESTToolMapVersion );
 	CPPUNIT_TEST ( TESTOpenTMDatabase );
 	CPPUNIT_TEST ( TESTCreateNewTMDatabase );
+	CPPUNIT_TEST ( TESTConvertPath );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -92,6 +93,16 @@ public:
 		tmDB_OPEN_STATUS myStatus = m_DB->OpenTMDatabase(_T("/Users/Lucien/DATA/SIG/LUGANO/TM_Project/luganoTM"));
 		CPPUNIT_ASSERT(myStatus == tmDB_OPEN_FAILED_WRONG_VERSION);
 		CPPUNIT_ASSERT(m_DB->GetDatabaseToolMapVersion() != TM_DATABASE_VERSION);
+	}
+	
+	void TESTConvertPath()
+	{
+		wxString myPath = _T("C:\\Test\\");
+		wxString myUnixPath = _T("User/share/test");
+		wxString myConvertedPath = _T("C:\\\\Test\\\\");
+		
+		CPPUNIT_ASSERT(DataBaseTM::ConvertPath(myPath)==false);
+		CPPUNIT_ASSERT(DataBaseTM::ConvertPath(myUnixPath)==false);
 	}
 	
 	
