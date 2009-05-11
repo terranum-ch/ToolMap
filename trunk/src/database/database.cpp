@@ -39,6 +39,9 @@
 #include "database.h"
 #include <wx/filename.h> // to create the database path and name.
 
+#include "database-config.h" // for logging
+#include <wx/stdpaths.h>	// std path for logging too.
+
 
 
 DataBase::DataBase()
@@ -95,17 +98,24 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	char * mylanguagedir = "";
 #endif
 
+	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
+	wxString myLogDirString = _T("--log=");
+	myLogDirString.Append(myLogDirName.GetFullPath());
+#if defined (MYSQL_IS_LOGGING)
+	char * bufLogPath = new char[myLogDirString.Len() * sizeof(wxString)];
+	strcpy(bufLogPath, (const char*)myLogDirString.mb_str(wxConvUTF8));
+#endif
+
 
 	char *server_args[] =
 	{
 		"this_program",       /* this string is not used */
 		bufDataDir,
 		mylanguagedir,
-		"--port=3309"//,
-//#if defined (__WXDEBUG__)
-		//"--log=C:/toolmap_mysql_log.txt"
-		//"--log=/Users/Lucien/Downloads/toolmap2_log.txt"
-//#endif
+		"--port=3309"
+#if defined (MYSQL_IS_LOGGING)
+		, bufLogPath
+#endif
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=utf8"
 	};
@@ -121,6 +131,11 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
+	
+#if defined (MYSQL_IS_LOGGING)
+	delete [] bufLogPath; 
+#endif	
+	
 	if (myReturn != 0)
 	{
 		delete [] bufDataDir;

@@ -2035,13 +2035,11 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
  *******************************************************************************/
 long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 {
-	//DataBaseDestroyResults();
+	wxString myPath = item->m_LayerPathOnly;
 
 	// converting path to windows path
 	// do nothing if not a windows path.
-	wxString myPath = item->m_LayerPathOnly;
-	//FIXME: Is that needed ?
-	//DataBase::DataBaseConvertWindowsPath(myPath);
+	DataBaseTM::ConvertPath(myPath);
 
 	wxString sSentence = wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
