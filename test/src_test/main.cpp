@@ -18,6 +18,10 @@
 #include <stdio.h>
 #include "wx/string.h"
 
+
+#define UNIT_TESTING
+
+
 #include <cppunit/ui/text/TestRunner.h>
 
 // INCLUDE TESTS FILES

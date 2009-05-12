@@ -37,11 +37,15 @@
 #endif
 
 #include "database.h"
+
+
 #include <wx/filename.h> // to create the database path and name.
 
-#include "database-config.h" // for logging
-#include <wx/stdpaths.h>	// std path for logging too.
 
+#include "database-config.h" // for logging
+#ifndef UNIT_TESTING
+	#include <wx/stdpaths.h>	// std path for logging too.
+#endif
 
 
 DataBase::DataBase()
@@ -74,6 +78,7 @@ DataBase::~DataBase()
 bool DataBase::DBLibraryInit (const wxString & datadir)
 {
 
+
 	// path validity
 	wxFileName myValidPath (datadir, _T(""));
 	if (myValidPath.IsDirReadable()==false)
@@ -81,11 +86,25 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		wxLogError(_("Directory : %s doesn't exists or isn't readable"),datadir.c_str());
 		return false;
 	}
+	
 
 	//init library
 	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
 	char * bufDataDir = new char[myDatadir.Len() * sizeof(wxString)];
 	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
+	
+#ifndef UNIT_TESTING	
+	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
+	wxString myLogDirString = _T("--log=");
+	myLogDirString.Append(myLogDirName.GetFullPath());
+	
+#if defined (MYSQL_IS_LOGGING)
+	char * bufLogPath = new char[myLogDirString.Len() * sizeof(wxString)];
+	strcpy(bufLogPath, (const char*)myLogDirString.mb_str(wxConvUTF8));
+#endif
+
+	
+#endif
 
 #if defined(__WINDOWS__)
 	char * mylanguagedir = "--language=./mysql";
@@ -98,13 +117,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	char * mylanguagedir = "";
 #endif
 
-	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
-	wxString myLogDirString = _T("--log=");
-	myLogDirString.Append(myLogDirName.GetFullPath());
-#if defined (MYSQL_IS_LOGGING)
-	char * bufLogPath = new char[myLogDirString.Len() * sizeof(wxString)];
-	strcpy(bufLogPath, (const char*)myLogDirString.mb_str(wxConvUTF8));
-#endif
+
 
 
 	char *server_args[] =
@@ -113,8 +126,10 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		bufDataDir,
 		mylanguagedir,
 		"--port=3309"
+#ifndef UNIT_TESTING
 #if defined (MYSQL_IS_LOGGING)
 		, bufLogPath
+#endif
 #endif
 		//"--character-sets-dir=./share/charsets",
 		//"--default-character-set=utf8"
@@ -131,10 +146,11 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
-	
+#ifndef UNIT_TESTING	
 #if defined (MYSQL_IS_LOGGING)
 	delete [] bufLogPath; 
-#endif	
+#endif
+#endif
 	
 	if (myReturn != 0)
 	{
