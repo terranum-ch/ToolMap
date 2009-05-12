@@ -920,8 +920,12 @@ void ToolMapFrame::OnMenuHighlightOn (wxMenuEvent & event)
 void ToolMapFrame::OnMenuHighligntOff(wxMenuEvent & event)
 {
 
-	if (m_MenuForDeletePressed == true && event.GetMenuId() != ID_MENU_DELETE_OBJ)
+	if (m_MenuForDeletePressed == true && 
+		event.GetMenuId() != ID_MENU_DELETE_OBJ &&
+		event.GetMenuId() != wxNOT_FOUND)
+	{
 		m_MenuForDeletePressed = false;
+	}
 	event.Skip();
 }
 
