@@ -171,6 +171,7 @@ class tmEditManager : public wxEvtHandler
 		// deleting selected
 		bool DeleteSelected(bool Clearselection = true);
 		bool UndoLastVertex ();
+		int GetSelectionCount();
 		
 		// search function (from tmLayerManager)
 		bool SelectedSearch (const wxPoint & screenpt);  

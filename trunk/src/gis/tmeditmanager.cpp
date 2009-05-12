@@ -1454,6 +1454,18 @@ bool tmEditManager::UndoLastVertex ()
 
 
 /***************************************************************************//**
+ @brief Number of selected features
+ @return  the number of features selected
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 12 May 2009
+ *******************************************************************************/
+int tmEditManager::GetSelectionCount()
+{
+	return m_SelectedData->GetCount();
+}
+
+
+/***************************************************************************//**
  @brief Create intersections
  @details between the selected line and all crossed lines.
  @return  true if all works, false otherwise
