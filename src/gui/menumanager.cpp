@@ -263,7 +263,7 @@ void MenuManager::EditingStatus(bool started)
  *******************************************************************************/
 void MenuManager::UpdateSelection (int iNbSelected)
 {
-	wxString sNumber = wxString::Format( _("Delete (%d) selected objects"),
+	wxString sNumber = wxString::Format( _("Delete (%d) selected objects\tDel"),
 										iNbSelected);
 	m_MenuBar->SetLabel(ID_MENU_DELETE_OBJ, sNumber);
 	
