@@ -841,9 +841,6 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	wxPoint myCutPos = wxPoint(*mypCutPos);	
 	delete mypCutPos;
 	
-	// change cursor
-	m_Renderer->SetTool(tmTOOL_SELECT);
-	
 	// some checks (1 object selected)
 	if (IsModifictionAllowed() == false)
 	{
@@ -853,50 +850,40 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	if (m_TOC->GetEditLayer()->m_LayerSpatialType != LAYER_SPATIAL_LINE)
 		return;
 	
-	
-	wxLogDebug(_T("Ok for cutting line @ %d / %d"),myCutPos.x, myCutPos.y);
-	
-	
-	// Get the selected line 
+		
+	// Get the selected layer 
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
 	if (!mySelLayer)
 		return;
 	
-	// get the geometry of selected line to cut
-	OGRLineString * myLine = (OGRLineString*) mySelLayer->GetGeometryByOID(m_SelectedData->GetSelectedUnique());
-	if (!myLine)
-		return;
 	
-	// create buffer for point
-	int myRadius = tmSELECTION_DIAMETER;
-	wxRect myClickRect = wxRect (myCutPos.x - myRadius,
-								 myCutPos.y - myRadius,
-								 tmSELECTION_DIAMETER * 2,
-								 tmSELECTION_DIAMETER * 2);
-	tmRealRect myClickReal = m_Scale->PixelsToReal(myClickRect);
-	OGRGeometry * myClickBuffer =  tmGISDataVector::CreateOGRGeometry(myClickReal);
-	if (!myClickBuffer)
-		return;
-		
-	OGRLineString myLine1;
-	OGRLineString myLine2;
+	// display radius 
+	int icutRadius = tmSELECTION_DIAMETER;
+	if (m_SnapMem->IsSnappingEnabled())
+	{
+		icutRadius = m_SnapMem->GetTolerence();
+		double dRadius = m_Scale->DistanceToReal(icutRadius);
+		icutRadius = int(dRadius + 0.5);
+	}
+
+	m_Renderer->DrawCircleVideoInverse(myCutPos, icutRadius);
+	m_Renderer->Update();
+	wxMilliSleep(200);
+	m_Renderer->DrawCircleVideoInverse(myCutPos, icutRadius);
 	
-	wxRealPoint myClickedPoint = m_Scale->PixelToReal(myCutPos);
-	bool bCut = mySelLayer->CutLineGeometry(myLine, myClickBuffer,myClickedPoint,
-							   myLine1, myLine2);
-	OGRGeometryFactory::destroyGeometry(myLine);
-	OGRGeometryFactory::destroyGeometry (myClickBuffer);
 	
+	bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(),
+											m_Scale->PixelToReal(myCutPos),
+											tmSELECTION_DIAMETER);	
 	if (bCut == false)
 		return;
-	
-	// update and insert geometry 
-	mySelLayer->UpdateGeometry(&myLine1, m_SelectedData->GetSelectedUnique());
-	mySelLayer->AddGeometry(&myLine2, 0);
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	// change cursor
+	m_Renderer->SetTool(tmTOOL_SELECT);
 }
 
 

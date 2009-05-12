@@ -559,90 +559,91 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry(const wxRealPoint & pt)
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
-bool tmGISDataVector::CutLineGeometry (OGRLineString * line1, OGRGeometry * pointbuffer,
+bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius)
+/*(OGRLineString * line1, OGRGeometry * pointbuffer,
 									   wxRealPoint ptclicked,
 									   OGRLineString & lineresult1,
-									   OGRLineString & lineresult2)
+									   OGRLineString & lineresult2)*/
 {
-	// get all vertex
-	int iLine1Vertex = line1->getNumPoints();
-	OGRPoint myActualVertex;
-	int iIntersectVertex = -1;
-	for(int i = 0; i< iLine1Vertex;i++)
+	// get the line
+	OGRLineString * myLine = (OGRLineString*) GetGeometryByOID(oid);
+	if (myLine == NULL)
 	{
-		myActualVertex.setX(line1->getX(i));
-		myActualVertex.setY(line1->getY(i));
-		
-		if (myActualVertex.Intersect(pointbuffer))
-		{
-			iIntersectVertex = i;
-			wxLogDebug(_T("Vertex found for cutting : %d"), iIntersectVertex);
-			break;
-		}
-	}
-	
-	if (iIntersectVertex == 0 || iIntersectVertex == iLine1Vertex-1)
-	{
-		wxLogDebug(_T("Unable to cut at first or last vertex, try again"));
+		wxLogDebug(_T("%d line not found !"), oid);
 		return false;
 	}
 	
+	// create search buffer
+	OGRPoint myClickPt;
+	myClickPt.setX(clickedpt.x);
+	myClickPt.setY(clickedpt.y);
+	OGRGeometry * myClickBuffer = SafeBuffer(&myClickPt, searchRadius);
+	wxASSERT(myClickBuffer);
+	
+	// iterate all vertex
+	int iNumVertex = myLine->getNumPoints();
+	OGRPoint myActualVertex;
+	int iIntersectVertex = wxNOT_FOUND;
+	for(int i = 0; i< iNumVertex;i++)
+	{
+		myActualVertex.setX(myLine->getX(i));
+		myActualVertex.setY(myLine->getY(i));
+		
+		if (myActualVertex.Intersect(myClickBuffer))
+		{
+			iIntersectVertex = i;
+			wxLogDebug(_T("Cutting @ vertex : %d"), iIntersectVertex);
+			break;
+		}
+	}
+	OGRGeometryFactory::destroyGeometry(myClickBuffer);
+		
+	
+	// checks for boundary
+	if (iIntersectVertex == 0 || iIntersectVertex == iNumVertex-1)
+	{
+		wxLogDebug(_T("Unable to cut at first or last vertex, try again"));
+		OGRGeometryFactory::destroyGeometry(myLine);
+		return false;
+	}
+
+	
+	if (iIntersectVertex == wxNOT_FOUND)
+	{
+		OGRGeometryFactory::destroyGeometry(myLine);
+		return false;	
+	}
+	
+	
+	OGRLineString myLine1;
+	OGRLineString myLine2;
 	// intersection @ vertex
 	if (iIntersectVertex != -1)
 	{
 		// fill both geometry
-		for (int j=0;j<iLine1Vertex;j++)
+		for (int j=0;j<iNumVertex;j++)
 		{
 			if (j <= iIntersectVertex)
 			{
-				lineresult1.addPoint(line1->getX(j), line1->getY(j), line1->getZ(j));
+				myLine1.addPoint(myLine->getX(j), myLine->getY(j), myLine->getZ(j));
 			}
 			
 			if (j >= iIntersectVertex)
 			{
-				lineresult2.addPoint(line1->getX(j), line1->getY(j), line1->getZ(j));
+				myLine2.addPoint(myLine->getX(j), myLine->getY(j), myLine->getZ(j));
 			}
 		}
-		
-		return true;
-		
 	}
-	else // intersection outside a vertex
-	{
-		// create intersection
-		int iInsertedVertex = 0;
-		OGRLineString * myLineWithIntersect = InsertVertex(pointbuffer, ptclicked,
-														   line1, 
-														   iInsertedVertex);
-		int myIntersection = iInsertedVertex;
-		
-		if (myLineWithIntersect)
-		{
-			// fill both geometry
-			for (int j=0;j<myLineWithIntersect->getNumPoints();j++)
-			{
-				if (j <= myIntersection)
-				{
-					lineresult1.addPoint(myLineWithIntersect->getX(j), 
-										 myLineWithIntersect->getY(j), 
-										 myLineWithIntersect->getZ(j));
-				}
-				
-				if (j >= myIntersection)
-				{
-					lineresult2.addPoint(myLineWithIntersect->getX(j), 
-										 myLineWithIntersect->getY(j), 
-										 myLineWithIntersect->getZ(j));
-				}
-			}
-			OGRGeometryFactory::destroyGeometry(myLineWithIntersect);
-			return true;
-		}
+	OGRGeometryFactory::destroyGeometry(myLine);
+	
+	
+	// update geometry
+	bool bupd = UpdateGeometry(&myLine1, oid);
+	bool bAdd = AddGeometry(&myLine2, oid);
+	wxASSERT(bupd);
+	wxASSERT(bAdd);
 
-	}
-	
-	
-	return false;
+	return true;
 }
 
 

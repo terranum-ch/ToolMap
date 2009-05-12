@@ -460,8 +460,10 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray & values)
 		{
 			if (bGetNextResult)
 			{
-				bool bReturn = m_pDB->DataBaseGetResults(myRetValues);
-				wxASSERT(bReturn);
+				bool bReturn = m_pDB->DataBaseGetNextResult(myRetValues);
+				if (bReturn == false)
+					break;
+				//wxASSERT(bReturn);
 			}
 			
 			if (myRetValues.GetCount() != 2)
