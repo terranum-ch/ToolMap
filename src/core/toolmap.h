@@ -119,6 +119,7 @@
 #include "../gui/shortcut_panel.h"			// for shortcut panel
 #include "../gui/snapping_panel.h"			// for snapping panel
 #include "../gis/tmeditmanager.h"			// for editing manager
+#include "../gui/tmtoolmanager.h"			// for tools 
 
 
 //// temp for testing 
@@ -180,7 +181,7 @@ class ProjectManager;
 #define ID_MENU_COPY_PASTE_ATTRIB 10231
 #define ID_MENU_SHORTCUTS 10183
 #define ID_MENU_CHECK_GEOM 10123
-#define ID_MENU_CHECK_DANGLING 10048
+#define ID_MENU_TOOL_DANGLING 10048
 #define ID_MENU_SELECT 10163
 #define ID_MENU_SELECT_ALL 10162
 #define ID_MENU_SELECT_NONE 10160
@@ -278,6 +279,7 @@ private:
 	tmAttributionManager * m_AttribManager;
 	
 	tmEditManager * m_EditManager;
+	tmToolManager * m_ToolManager;
 	
 	
 	void OnQuit(wxCloseEvent & event);
@@ -324,6 +326,8 @@ private:
 	
 	void OnShortcutAttributionDone (wxCommandEvent & event);
 	
+	// ToolsFunction
+	void OnDanglingNodes(wxCommandEvent & event);
 	
 	
 	//TODO: Remove this temp function

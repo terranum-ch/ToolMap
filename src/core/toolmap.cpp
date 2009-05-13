@@ -139,6 +139,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_MENU (ID_MENU_INFO_WINDOW, ToolMapFrame::OnShowInformationDialog)
 
+	//TOOL MENU
+	EVT_MENU (ID_MENU_TOOL_DANGLING, ToolMapFrame::OnDanglingNodes)
+
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 
@@ -258,6 +261,11 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetSnappingPanel(m_SnappingPanel);
 	m_PManager->SetEditManager(m_EditManager);
 	
+	m_ToolManager = new tmToolManager(this,
+									  m_TocWindow->GetTOCCtrl(),
+									  m_LayerManager->GetSelectedDataMemory(),
+									  m_MainPanel->GetGISRenderer(),
+									  m_LayerManager->GetScale());
 	
 		
 	
@@ -299,6 +307,10 @@ ToolMapFrame::~ToolMapFrame()
 	// delete the menu manager
 	delete m_MManager;
 	delete m_TManager;
+	
+	// delete toolmanager
+	delete m_ToolManager;
+	
 	
 	// delete the config file
 	
@@ -392,7 +404,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu63 = new wxMenu;
     itemMenu63->Append(ID_MENU_CHECK_GEOM, _("Check Geometry..."), _T(""), wxITEM_CHECK);
     itemMenu63->Check(ID_MENU_CHECK_GEOM, true);
-    itemMenu63->Append(ID_MENU_CHECK_DANGLING, _("Check dangling nodes"), _T(""), wxITEM_NORMAL);
+    itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Search dangling nodes"), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu63, _("Tools"));
     wxMenu* itemMenu66 = new wxMenu;
     itemMenu66->Append(ID_MENU_SELECT, _("Select\tS"), _T(""), wxITEM_NORMAL);
@@ -1118,5 +1130,18 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 	}
 	
 }
+
+
+
+/***************************************************************************//**
+ @brief Called when user press "Search dangling node" menu
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 13 May 2009
+ *******************************************************************************/
+void ToolMapFrame::OnDanglingNodes(wxCommandEvent & event)
+{
+	m_ToolManager->FindDanglingNodes();
+}
+
 
 
