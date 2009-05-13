@@ -55,6 +55,7 @@
 #include "../gui/shortcut_panel.h"			// for shortcut panel
 #include "../gui/snapping_panel.h"			// for snapping panel
 #include "../gis/tmeditmanager.h"			// for editing stuff
+#include "../gui/tmtoolmanager.h"			// for tool manager (dangling nodes)
 
 class MenuManager;
 class ObjectManager;
@@ -84,6 +85,7 @@ class ProjectManager : public wxObject
 		Snapping_PANEL * m_SnappingPanel;
 		tmEditManager * m_EditManager;
 		PrjDefMemManage * m_PrjMem;
+		tmToolManager * m_ToolManager;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -118,6 +120,7 @@ class ProjectManager : public wxObject
 		void SetSnappingPanel (Snapping_PANEL * panel) {m_SnappingPanel = panel;}
 		void SetEditManager (tmEditManager * editmanager) {m_EditManager = editmanager;}
 		DataBaseTM * GetDatabase() {return m_DB;}
+		void SetToolManager (tmToolManager * tm){m_ToolManager = tm;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 		bool IsProjectOpen () {return bProjectIsOpen;}

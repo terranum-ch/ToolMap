@@ -37,6 +37,7 @@ ProjectManager::ProjectManager(wxWindow * parent)
 	m_ShortcutPanel = NULL;
 	m_EditManager = NULL;
 	m_PrjMem = NULL;
+	m_ToolManager = NULL;
 	
 	m_Obj = new ObjectManager();
 }
@@ -390,6 +391,8 @@ int ProjectManager::OpenProject(const wxString & path)
 		InitAttributionManager(m_DB,
 							   GetMemoryProjectDefinition());
 		wxASSERT(bReady);
+		
+		m_ToolManager->SetDatabase(m_DB);
 		
 		// project is now open !
 		bProjectIsOpen = TRUE;

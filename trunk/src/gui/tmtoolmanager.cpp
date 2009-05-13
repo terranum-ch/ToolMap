@@ -54,3 +54,30 @@ tmToolManager::~tmToolManager()
 
 
 }
+
+
+
+bool tmToolManager::FindDanglingNodes()
+{
+	if (TMIsOk()==false)
+		return false;
+
+	DanglingNode_DLG myDlg(m_Parent);
+	myDlg.ShowModal();
+	
+	return true;
+}
+
+
+
+bool tmToolManager::TMIsOk()
+{
+	if (m_pDB == NULL)
+	{
+		wxLogDebug(_T("Database not inited, init database first"));
+		return false;
+	}
+	
+	return true;
+	
+}

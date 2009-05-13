@@ -185,10 +185,6 @@ class tmEditManager : public wxEvtHandler
 		// merging lines
 		bool MergeSelectedLines ();
 		
-		// display find dangling nodes
-		//FIXME: Put somewhere else ? in tmToolManager ???
-		bool FindDanglingNodes();
-		
 	};
 
 

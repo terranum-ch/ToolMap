@@ -243,6 +243,12 @@ void ToolMapFrame::PostInit()
 									   m_MainPanel->GetGISRenderer(),
 									   m_LayerManager->GetScale());
 	
+	
+	m_ToolManager = new tmToolManager(this,
+									  m_TocWindow->GetTOCCtrl(),
+									  m_LayerManager->GetSelectedDataMemory(),
+									  m_MainPanel->GetGISRenderer(),
+									  m_LayerManager->GetScale());
 									   
 
 	m_pConfig = new wxFileConfig();
@@ -260,12 +266,9 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetShortcutPanel(m_ShortCutPanel);
 	m_PManager->SetSnappingPanel(m_SnappingPanel);
 	m_PManager->SetEditManager(m_EditManager);
+	m_PManager->SetToolManager(m_ToolManager);
 	
-	m_ToolManager = new tmToolManager(this,
-									  m_TocWindow->GetTOCCtrl(),
-									  m_LayerManager->GetSelectedDataMemory(),
-									  m_MainPanel->GetGISRenderer(),
-									  m_LayerManager->GetScale());
+	
 	
 		
 	
