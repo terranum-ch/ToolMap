@@ -32,6 +32,7 @@ class tmToolDanglingNodesTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTCreate1 );
 	CPPUNIT_TEST( TESTCreate2 );
 	CPPUNIT_TEST( TESTSearch1 );
+	CPPUNIT_TEST( TESTSearch2 );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -79,9 +80,20 @@ public:
 	
 	void TESTSearch1()
 	{
-		CPPUNIT_ASSERT(m_DN->Search(1)==false);
-		CPPUNIT_ASSERT(m_DN->Search(9)==true);
-		CPPUNIT_ASSERT(m_DN->Search(100)==false);
+		CPPUNIT_ASSERT(m_DN->SearchInit(1)==false);
+		CPPUNIT_ASSERT(m_DN->SearchInit(9)==true);
+		CPPUNIT_ASSERT(m_DN->SearchInit(100)==false);
+	}
+	
+	void TESTSearch2 ()
+	{
+		int iFeatureSearched = 0;
+		CPPUNIT_ASSERT(m_DN->SearchInfo(iFeatureSearched)==false);
+		CPPUNIT_ASSERT(m_DN->SearchInit(9)==true);
+		
+		CPPUNIT_ASSERT(m_DN->SearchInfo(iFeatureSearched));
+		CPPUNIT_ASSERT(iFeatureSearched > 0);
+		wxLogDebug(_T("Number of feature to process : %d"), iFeatureSearched);
 	}
 	
 	

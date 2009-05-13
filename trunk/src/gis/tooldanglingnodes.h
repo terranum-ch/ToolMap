@@ -37,13 +37,18 @@ class ToolDanglingNodes : public wxObject
 	private:
 		wxArrayRealPoints m_DanglingPts;
 		DataBaseTM * m_pDB;
+		bool m_bSearchDone;
 		
 		void DNInitValues();
 		
 		// private check
 		bool DNIsLayerCorrect(long layerid);
+		bool DNIsSearchInitedOk ();
 		
-		
+		// private search part
+		bool DNGetAllLines(long layerid);
+		bool DNProcessSearchResults();
+		void DNSearchCleanUp ();
 		
 	protected:
 	public:
@@ -55,7 +60,9 @@ class ToolDanglingNodes : public wxObject
 		bool IsOk();
 		bool GetDanglingNodes(wxArrayRealPoints & pts);
 		
-		bool Search (long layerid);
+		bool SearchInit (long layerid);
+		bool SearchInfo (int & numberlines);
+		
 };
 
 
