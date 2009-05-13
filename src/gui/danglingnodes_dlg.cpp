@@ -57,7 +57,7 @@ void DanglingNode_DLG::CreateControls()
 	bSizer24->Add( m_LayerChoice, 0, wxALL|wxEXPAND, 5 );
 	
 	
-	bSizer24->Add( 0, 20, 1, wxEXPAND, 0 );
+	//bSizer24->Add( 0, 20, 1, wxEXPAND, 0 );
 	
 	wxBoxSizer* bSizer25;
 	bSizer25 = new wxBoxSizer( wxHORIZONTAL );
@@ -76,5 +76,7 @@ void DanglingNode_DLG::CreateControls()
 	this->SetSizer( bSizer24 );
 	this->Layout();
 	bSizer24->Fit( this );
+	
+	this->CenterOnParent(wxBOTH);
 
 }

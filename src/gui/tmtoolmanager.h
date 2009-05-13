@@ -36,6 +36,8 @@
 #include "../database/database_tm.h"		// for database
 #include "../gis/tmrenderer.h"				// for GIS rendering
 
+
+
 class tmToolManager : public wxEvtHandler
 	{
 	private:
@@ -50,7 +52,12 @@ class tmToolManager : public wxEvtHandler
 		// defined by function or event.
 		DataBaseTM * m_pDB;
 		
+		// commun private functions
 		void InitMemberValues();
+		bool TMIsOk();
+		
+		// dangling nodes private functions
+		
 		
 		
 		
@@ -65,8 +72,8 @@ class tmToolManager : public wxEvtHandler
 		
 		void SetDatabase(DataBaseTM * db){m_pDB = db;}
 		
-		bool FindDanglingNodes(){return false;}
-		
+		// find dangling nodes
+		bool FindDanglingNodes();
 		
 }; 
 

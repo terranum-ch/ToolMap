@@ -48,7 +48,7 @@ class DanglingNode_DLG : public wxDialog
 						 const wxString& title = _("Dangling nodes"),
 						 const wxPoint& pos = wxDefaultPosition,
 						 const wxSize& size = wxDefaultSize,
-						 long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+						 long style = wxDEFAULT_DIALOG_STYLE); //|wxRESIZE_BORDER );
 		~DanglingNode_DLG();
 		
 	};
