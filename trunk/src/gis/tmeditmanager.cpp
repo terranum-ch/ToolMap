@@ -1657,6 +1657,8 @@ bool tmEditManager::EditVertexPosition ()
 
 
 
+
+
 /***************************************************************************//**
  @brief Merge selected lines
  @details  This function Checks the following rules:
