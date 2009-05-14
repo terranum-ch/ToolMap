@@ -33,6 +33,9 @@ class tmToolDanglingNodesTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTCreate2 );
 	CPPUNIT_TEST( TESTSearch1 );
 	CPPUNIT_TEST( TESTSearch2 );
+	CPPUNIT_TEST( TESTSearchRun1 );
+	CPPUNIT_TEST( TESTSearchRun2 );
+	CPPUNIT_TEST( TESTSearchRun3 );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -44,7 +47,7 @@ public:
 	void setUp()
 	{
 		
-		m_DBPathName = _T("/Users/Lucien/Downloads/testedit");
+		m_DBPathName = _T("/Users/Lucien/Downloads/testdangling");
 		m_DB = new DataBaseTM();
 		m_DB->OpenTMDatabase(m_DBPathName);
 		m_DN = new ToolDanglingNodes(m_DB);
@@ -80,8 +83,8 @@ public:
 	
 	void TESTSearch1()
 	{
-		CPPUNIT_ASSERT(m_DN->SearchInit(1)==false);
-		CPPUNIT_ASSERT(m_DN->SearchInit(9)==true);
+		CPPUNIT_ASSERT(m_DN->SearchInit(2)==false);
+		CPPUNIT_ASSERT(m_DN->SearchInit(1)==true);
 		CPPUNIT_ASSERT(m_DN->SearchInit(100)==false);
 	}
 	
@@ -89,13 +92,35 @@ public:
 	{
 		int iFeatureSearched = 0;
 		CPPUNIT_ASSERT(m_DN->SearchInfo(iFeatureSearched)==false);
-		CPPUNIT_ASSERT(m_DN->SearchInit(9)==true);
+		CPPUNIT_ASSERT(m_DN->SearchInit(1)==true);
 		
 		CPPUNIT_ASSERT(m_DN->SearchInfo(iFeatureSearched));
 		CPPUNIT_ASSERT(iFeatureSearched > 0);
 		wxLogDebug(_T("Number of feature to process : %d"), iFeatureSearched);
 	}
 	
+	void TESTSearchRun1()
+	{
+		CPPUNIT_ASSERT(m_DN->SearchRun()==false);
+	}
+	
+	void TESTSearchRun2()
+	{
+		int iNum = 0;
+		CPPUNIT_ASSERT(m_DN->SearchInit(1)==true);
+		CPPUNIT_ASSERT(m_DN->SearchRun()==true);
+		CPPUNIT_ASSERT(m_DN->SearchInfo(iNum)==false);
+	}
+	
+	void TESTSearchRun3()
+	{
+		//int iNum = 0;
+		CPPUNIT_ASSERT(m_DN->SearchInit(1)==true);
+		CPPUNIT_ASSERT(m_DN->SearchRun()==true);
+		wxArrayRealPoints myPts;
+		CPPUNIT_ASSERT(m_DN->GetDanglingNodes(myPts)==true);
+		wxLogDebug(_T("%d dangling nodes "), myPts.GetCount());
+	}
 	
 };
 
