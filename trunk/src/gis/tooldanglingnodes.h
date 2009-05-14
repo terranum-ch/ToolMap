@@ -31,13 +31,59 @@
 
 #include "../core/tmarraysize.h"
 #include "../database/database_tm.h"
+#include <wx/progdlg.h>				// for progress dialog definition
+#include "../gis/tmgisdatavectormysql.h"	// for mysql gis data manipulation
+
+
+
+
+class DanglingPtsToCheck
+	{
+	private:
+		void InitMemberValues();
+	
+	public:
+		wxRealPoint m_Pt;
+		long m_LineOID;	
+		
+		DanglingPtsToCheck()
+		{
+			m_Pt = wxRealPoint(-1,-1);
+			m_LineOID = wxNOT_FOUND;
+		}
+		DanglingPtsToCheck(const wxRealPoint & pt, long oid)
+		{
+			m_Pt = pt;
+			m_LineOID = oid;
+		}
+		~DanglingPtsToCheck(){;}
+	};
+
+// Creating a list of MemoryFields
+WX_DECLARE_OBJARRAY(DanglingPtsToCheck, tmArrayDanglingPtsToCheck);
+
+
+
+
+
 
 class ToolDanglingNodes : public wxObject
 	{
 	private:
 		wxArrayRealPoints m_DanglingPts;
+		tmArrayDanglingPtsToCheck m_PtsToCheck;
 		DataBaseTM * m_pDB;
 		bool m_bSearchDone;
+		long m_LayerID;
+		
+		bool m_bIsRunning;
+		int  m_LoopNum;
+		wxProgressDialog * m_pDlg;
+		
+		tmGISDataVectorMYSQL m_GisData;
+		OGRPolygon * m_GeomFrame;
+		
+		
 		
 		void DNInitValues();
 		
@@ -47,8 +93,11 @@ class ToolDanglingNodes : public wxObject
 		
 		// private search part
 		bool DNGetAllLines(long layerid);
-		bool DNProcessSearchResults();
+		bool DNSearchValidVertex();
+		void DNChecksDanglingNodes ();
+		bool DNIsPointInside(OGRPoint * pt);
 		void DNSearchCleanUp ();
+		bool DNGetFrameGeometry();
 		
 	protected:
 	public:
@@ -62,6 +111,7 @@ class ToolDanglingNodes : public wxObject
 		
 		bool SearchInit (long layerid);
 		bool SearchInfo (int & numberlines);
+		bool SearchRun (wxProgressDialog * myProgDlg = NULL);
 		
 };
 

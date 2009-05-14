@@ -73,6 +73,14 @@
 
 //DANGLING NODES
 
+#include "../../src/gis/tmgisdatavectormysql.cpp"
+#include "../../src/gis/tmgisdatavector.cpp"
+#include "../../src/gis/tmgisdatavectorshp.cpp"
+#include "../../src/gis/tmgisdata.cpp"
+#include "../../src/gis/tmgisdataraster.cpp"
+#include "../../src/gis/tmgisdatarasteregrid.cpp"
+#include "../../src/gis/tmgisdatarastertiff.cpp"
+#include "../../src/gis/tmgisscale.cpp"
 #include "tooldanglingnodes_test.cpp"
 #include "../../src/gis/tooldanglingnodes.cpp"
 
