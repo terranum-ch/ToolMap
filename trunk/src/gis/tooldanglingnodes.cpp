@@ -51,8 +51,8 @@ void ToolDanglingNodes::Create (DataBaseTM * database)
 void ToolDanglingNodes::DNInitValues()
 {
 	m_pDB = NULL;
-	m_bSearchDone = false;
-	m_bIsRunning = false;
+	m_bSearchInited = false;
+	m_bSearchRun = false;
 	m_LoopNum = wxNOT_FOUND;
 	m_pDlg = NULL;
 	m_GeomFrame = NULL;
@@ -123,6 +123,7 @@ bool ToolDanglingNodes::DNGetAllLines(long layerid)
 		return false;
 	}
 	
+	m_bSearchInited = true;
 	return true;
 }
 
@@ -133,8 +134,7 @@ bool ToolDanglingNodes::DNSearchValidVertex()
 	wxASSERT(IsOk());
 	wxASSERT(m_pDB->DataBaseHasResults());
 	wxASSERT(m_GeomFrame);
-	m_bIsRunning = true;
-	
+	wxASSERT(m_PtsToCheck.IsEmpty());
 
 	long myOid = wxNOT_FOUND;
 
@@ -166,7 +166,6 @@ bool ToolDanglingNodes::DNSearchValidVertex()
 	}
 	
 	wxLogDebug(_T("%d nodes to check"), m_PtsToCheck.GetCount());
-	m_bIsRunning = false;
 	DNSearchCleanUp();
 	
 	if (m_PtsToCheck.IsEmpty()==true)
@@ -204,7 +203,7 @@ void ToolDanglingNodes::DNSearchCleanUp ()
 		m_GeomFrame = NULL;
 	}
 	
-	m_bSearchDone = false;
+	m_bSearchInited = false;
 }
 
 
@@ -255,7 +254,7 @@ bool ToolDanglingNodes::DNGetFrameGeometry()
 bool ToolDanglingNodes::DNIsSearchInitedOk ()
 {
 	wxASSERT(IsOk());
-	if (m_bSearchDone == false)
+	if (m_bSearchInited == false)
 	{
 		wxLogDebug(_T("Please use searchinit() first"));
 		return false;
@@ -273,9 +272,9 @@ bool ToolDanglingNodes::DNIsSearchInitedOk ()
 
 ToolDanglingNodes::~ToolDanglingNodes()
 {
-	m_DanglingPts.Clear();
+	//m_DanglingPts.Clear();
 	
-	if (m_bSearchDone == true)
+	if (m_bSearchInited == true)
 		DNSearchCleanUp();
 	
 	wxASSERT(m_GeomFrame == NULL);
@@ -283,9 +282,8 @@ ToolDanglingNodes::~ToolDanglingNodes()
 
 
 
-void ToolDanglingNodes::DNChecksDanglingNodes ()
-{
-	m_DanglingPts.Clear();
+void ToolDanglingNodes::DNFlagNodes ()
+{	
 	wxASSERT(m_PtsToCheck.GetCount() > 0);
 	
 	long myOid = 0;
@@ -309,16 +307,30 @@ void ToolDanglingNodes::DNChecksDanglingNodes ()
 			{
 				if (m_PtsToCheck.Item(i).m_Pt.x == p1.getX())
 					if (m_PtsToCheck.Item(i).m_Pt.y == p1.getY())
-						m_DanglingPts.Add(wxRealPoint(p1.getX(), p1.getY()));
+						m_PtsToCheck.Item(i).m_Flaged++;
 				
 				if (m_PtsToCheck.Item(i).m_Pt.x == p2.getX())
 					if (m_PtsToCheck.Item(i).m_Pt.y == p2.getY())
-						m_DanglingPts.Add(wxRealPoint(p2.getX(), p2.getY()));
+						m_PtsToCheck.Item(i).m_Flaged++;
 			}
 		}
-		
-		
 		OGRGeometryFactory::destroyGeometry(myLineToCheck);
+	}
+	
+}
+
+
+
+void ToolDanglingNodes::DNParseFlagedPts (wxArrayRealPoints & dpts)
+{
+	dpts.Clear();
+	for (unsigned int i = 0; i<m_PtsToCheck.GetCount();i++)
+	{
+		wxLogDebug(_T("Checking pts : node : %d has %d flags"),
+				   i,m_PtsToCheck.Item(i).m_Flaged);
+		
+		if (m_PtsToCheck.Item(i).m_Flaged == 0)
+			dpts.Add(m_PtsToCheck.Item(i).m_Pt);
 	}
 	
 }
@@ -334,8 +346,17 @@ void ToolDanglingNodes::DNChecksDanglingNodes ()
  *******************************************************************************/
 bool ToolDanglingNodes::GetDanglingNodes(wxArrayRealPoints & pts)
 {
-	if (IsOk() == false || m_DanglingPts.GetCount() == 0)
+	if (IsOk()==false)
 		return false;
+	
+	if (m_bSearchRun == false)
+	{
+		wxLogDebug(_T("Use searchrun() first"));
+		return false;
+	}
+	
+	DNParseFlagedPts(pts);
+
 	
 	return true;
 }
@@ -349,8 +370,6 @@ bool ToolDanglingNodes::IsOk()
 		wxLogDebug(_T("Database not inited in Dangling nodes, init the DB first"));
 		return false;
 	}
-	
-	
 	return true;
 }
 
@@ -362,7 +381,7 @@ bool ToolDanglingNodes::SearchInit (long layerid)
 	if (IsOk() == false)
 		return false;
 	
-	if (m_bSearchDone == true)
+	if (m_bSearchInited == true)
 		DNSearchCleanUp();
 	
 	// layer exist and correct format (poly)
@@ -378,7 +397,6 @@ bool ToolDanglingNodes::SearchInit (long layerid)
 		return false;
 	
 	m_LayerID = layerid;
-	m_bSearchDone = true;
 	return true;
 }
 
@@ -405,6 +423,7 @@ bool ToolDanglingNodes::SearchInfo (int & numberlines)
 
 bool ToolDanglingNodes::SearchRun (wxProgressDialog * myProgDlg)
 {
+	m_bSearchRun = false;
 	if (IsOk() == false)
 		return false;
 	
@@ -412,16 +431,17 @@ bool ToolDanglingNodes::SearchRun (wxProgressDialog * myProgDlg)
 		return false;
 	
 	m_pDlg = myProgDlg;
+	m_PtsToCheck.Clear();
 	if (DNSearchValidVertex()==false)
 		return false;
 	
 	wxASSERT(m_LayerID != wxNOT_FOUND);
-	if (SearchInit(m_LayerID)==false)
+	if (DNGetAllLines(m_LayerID)==false)
 		return false;
 	
-	DNChecksDanglingNodes();
+	DNFlagNodes();
 
-	m_PtsToCheck.Clear();
 	m_LayerID = wxNOT_FOUND;
+	m_bSearchRun = true;
 	return true;
 }

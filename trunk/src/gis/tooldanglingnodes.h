@@ -44,17 +44,20 @@ class DanglingPtsToCheck
 	
 	public:
 		wxRealPoint m_Pt;
-		long m_LineOID;	
+		long m_LineOID;
+		int m_Flaged;
 		
 		DanglingPtsToCheck()
 		{
 			m_Pt = wxRealPoint(-1,-1);
 			m_LineOID = wxNOT_FOUND;
+			m_Flaged = 0;
 		}
 		DanglingPtsToCheck(const wxRealPoint & pt, long oid)
 		{
 			m_Pt = pt;
 			m_LineOID = oid;
+			m_Flaged = 0;
 		}
 		~DanglingPtsToCheck(){;}
 	};
@@ -70,13 +73,13 @@ WX_DECLARE_OBJARRAY(DanglingPtsToCheck, tmArrayDanglingPtsToCheck);
 class ToolDanglingNodes : public wxObject
 	{
 	private:
-		wxArrayRealPoints m_DanglingPts;
 		tmArrayDanglingPtsToCheck m_PtsToCheck;
 		DataBaseTM * m_pDB;
-		bool m_bSearchDone;
+		bool m_bSearchInited;
+		bool m_bSearchRun;
+		
 		long m_LayerID;
 		
-		bool m_bIsRunning;
 		int  m_LoopNum;
 		wxProgressDialog * m_pDlg;
 		
@@ -94,10 +97,11 @@ class ToolDanglingNodes : public wxObject
 		// private search part
 		bool DNGetAllLines(long layerid);
 		bool DNSearchValidVertex();
-		void DNChecksDanglingNodes ();
+		void DNFlagNodes ();
 		bool DNIsPointInside(OGRPoint * pt);
 		void DNSearchCleanUp ();
 		bool DNGetFrameGeometry();
+		void DNParseFlagedPts (wxArrayRealPoints & dpts);
 		
 	protected:
 	public:
