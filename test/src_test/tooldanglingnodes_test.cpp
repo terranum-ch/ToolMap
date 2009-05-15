@@ -109,6 +109,7 @@ public:
 		int iNum = 0;
 		CPPUNIT_ASSERT(m_DN->SearchInit(1)==true);
 		CPPUNIT_ASSERT(m_DN->SearchRun()==true);
+		CPPUNIT_ASSERT(m_DN->SearchRun()==false);
 		CPPUNIT_ASSERT(m_DN->SearchInfo(iNum)==false);
 	}
 	
@@ -118,8 +119,14 @@ public:
 		CPPUNIT_ASSERT(m_DN->SearchInit(1)==true);
 		CPPUNIT_ASSERT(m_DN->SearchRun()==true);
 		wxArrayRealPoints myPts;
-		CPPUNIT_ASSERT(m_DN->GetDanglingNodes(myPts)==true);
-		wxLogDebug(_T("%d dangling nodes "), myPts.GetCount());
+		bool bGet = m_DN->GetDanglingNodes(myPts)==true;
+		CPPUNIT_ASSERT(bGet);
+		if (bGet)
+			wxLogDebug(_T("%d dangling nodes "), myPts.GetCount());
+		
+		for (unsigned int i = 0; i<myPts.GetCount();i++)
+			wxLogDebug(_T("--- dangling node : %.*f, %.*f"), 2,myPts.Item(i).x, 2, myPts.Item(i).y);
+		
 	}
 	
 };
