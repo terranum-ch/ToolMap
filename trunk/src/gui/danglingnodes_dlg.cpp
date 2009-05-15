@@ -26,6 +26,7 @@ DanglingNode_DLG::DanglingNode_DLG( wxWindow* parent, wxWindowID id,
 								   const wxSize& size, long style ) : 
 wxDialog( parent, id, title, pos, size, style )
 {
+	m_SelectedLayer = wxNOT_FOUND;
 	CreateControls();
 }
 
@@ -67,7 +68,7 @@ void DanglingNode_DLG::CreateControls()
 	bSizer25->Add( m_button21, 2, wxALL, 5 );
 	
 	wxButton* m_button22;
-	m_button22 = new wxButton( this, ID_DLGDN_SEARCH, _("Search"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button22 = new wxButton( this, wxID_OK, _("Search"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button22->SetDefault(); 
 	bSizer25->Add( m_button22, 1, wxALL, 5 );
 	
@@ -79,4 +80,29 @@ void DanglingNode_DLG::CreateControls()
 	
 	this->CenterOnParent(wxBOTH);
 
+}
+
+
+void DanglingNode_DLG::InitDialog (const wxArrayString & layers,
+								   int selected)
+{
+	m_SelectedLayer = selected;
+	
+	wxASSERT(layers.GetCount() > 1);
+	m_LayerChoice->Append(layers);
+	
+	if (selected == wxNOT_FOUND)
+		m_LayerChoice->SetSelection(0);
+	else
+	{
+		m_LayerChoice->SetSelection(selected);
+	}
+}
+
+
+
+bool DanglingNode_DLG::TransferDataFromWindow()
+{
+	m_SelectedLayer = m_LayerChoice->GetSelection();
+	return true;
 }

@@ -35,6 +35,7 @@
 #include "../gis/tmselecteddatamemory.h"	// for selection data
 #include "../database/database_tm.h"		// for database
 #include "../gis/tmrenderer.h"				// for GIS rendering
+#include "../gis/tooldanglingnodes.h"		// for computing dangling nodes (engine class)
 
 
 
@@ -57,8 +58,10 @@ class tmToolManager : public wxEvtHandler
 		bool TMIsOk();
 		
 		// dangling nodes private functions
-		
-		
+		bool TMGetLayers(wxArrayString & layersname);
+		bool TMSearchDanglingNodes(int selectedlayer, 
+								   const wxArrayString & layersname);
+		void TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname);
 		
 		
 	protected:

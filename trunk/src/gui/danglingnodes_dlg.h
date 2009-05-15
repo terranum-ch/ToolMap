@@ -29,17 +29,17 @@
     #include <wx/wx.h>
 #endif
 
-#define ID_DLGDN_CLEAR 22200
-#define ID_DLGDN_SEARCH 22201
 
+const int ID_DLGDN_CLEAR = 22210;
 
 class DanglingNode_DLG : public wxDialog 
 	{
 	private:
 		wxChoice* m_LayerChoice;
-		
 		void CreateControls();
-		
+
+		int m_SelectedLayer;
+
 	protected:
 		
 		
@@ -50,6 +50,11 @@ class DanglingNode_DLG : public wxDialog
 						 const wxSize& size = wxDefaultSize,
 						 long style = wxDEFAULT_DIALOG_STYLE); //|wxRESIZE_BORDER );
 		~DanglingNode_DLG();
+		
+		void InitDialog (const wxArrayString & layers, int selected = wxNOT_FOUND);
+		virtual bool TransferDataFromWindow();
+		int GetSelectedLayer(){return m_SelectedLayer;}	
+		
 		
 	};
 
