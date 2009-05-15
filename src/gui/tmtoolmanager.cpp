@@ -57,15 +57,109 @@ tmToolManager::~tmToolManager()
 
 
 
-bool tmToolManager::FindDanglingNodes()
+bool tmToolManager::TMGetLayers(wxArrayString & layersname)
 {
 	if (TMIsOk()==false)
 		return false;
-
-	DanglingNode_DLG myDlg(m_Parent);
-	myDlg.ShowModal();
 	
+	layersname = m_pDB->GetLayerNameByType(LAYER_SPATIAL_POLYGON);
+	if (layersname.GetCount() == 0)
+	{
+		wxLogDebug(_T("No polygons layer defined"));
+		return false;
+	}
 	return true;
+}
+
+
+
+bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
+										  const wxArrayString & layersname)
+{
+	wxASSERT(selectedlayer != wxNOT_FOUND);
+	wxASSERT(m_pDB);
+	
+	
+	// get real layer ids
+	wxArrayLong myLayersID;
+	TMGetLayersIDs(myLayersID,  layersname);
+	
+	
+	// search dangling nodes
+	
+	/*
+	// search all polygons layers
+	if (selectedlayer == 0)
+	{
+		//ToolDanglingNodes myDN(m_pDB);
+		//if (myDN.SearchInit(<#long layerid#>)
+	}*/
+	
+	return true;	
+}
+
+
+void tmToolManager::TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname)
+{
+	wxASSERT(m_pDB);
+	wxArrayString mySearchedLayers(layersname);
+	mySearchedLayers.RemoveAt(0);
+	
+	ProjectDefMemoryLayers myActualLayer;
+	int iFirst = m_pDB->GetNextLayer(&myActualLayer);
+	wxASSERT(iFirst == 0);
+	while (m_pDB->GetNextLayer(&myActualLayer) != -1)
+	{
+		for(unsigned int i = 0; i<mySearchedLayers.GetCount();i++)
+			if (mySearchedLayers.Item(i) == myActualLayer.m_LayerName)
+			{
+				layersid.Add(myActualLayer.m_LayerID);
+				break;
+			}
+	}
+	
+	wxASSERT(layersid.GetCount() == mySearchedLayers.GetCount());
+}
+
+
+bool tmToolManager::FindDanglingNodes()
+{
+	// check DB pointer
+	if (TMIsOk()==false)
+		return false;
+
+	// get polygons layers
+	wxArrayString myLayers;
+	if(TMGetLayers(myLayers)==false)
+		return false;
+	
+	myLayers.Insert(_("All polygon layers"), 0);
+	
+	
+	DanglingNode_DLG myDlg(m_Parent);
+	myDlg.InitDialog(myLayers, wxNOT_FOUND);
+	int iReturn = myDlg.ShowModal();
+	
+	bool bReturn = true;
+	switch (iReturn)
+	{
+		case wxID_OK:
+			// compute dangling nodes vertex
+			bReturn = TMSearchDanglingNodes(myDlg.GetSelectedLayer(),
+								  myLayers);
+			
+			break;
+			
+		case ID_DLGDN_CLEAR:
+			// clear dangling nodes message
+			break;
+			
+		default:
+			bReturn = false;
+			break;
+	}
+	
+	return bReturn;
 }
 
 
