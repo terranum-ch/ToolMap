@@ -53,7 +53,7 @@ void ToolDanglingNodes::DNInitValues()
 	m_pDB = NULL;
 	m_bSearchInited = false;
 	m_bSearchRun = false;
-	m_LoopNum = wxNOT_FOUND;
+	m_LoopNum = 0;
 	m_pDlg = NULL;
 	m_GeomFrame = NULL;
 	m_LayerID = wxNOT_FOUND;
@@ -282,9 +282,10 @@ ToolDanglingNodes::~ToolDanglingNodes()
 
 
 
-void ToolDanglingNodes::DNFlagNodes ()
+bool ToolDanglingNodes::DNFlagNodes ()
 {	
 	wxASSERT(m_PtsToCheck.GetCount() > 0);
+	bool bReturn = true;
 	
 	long myOid = 0;
 	while (1)
@@ -299,9 +300,15 @@ void ToolDanglingNodes::DNFlagNodes ()
 		
 		myLineToCheck->StartPoint(&p1);
 		myLineToCheck->EndPoint(&p2);
+
 		
 		for (unsigned int i = 0; i<m_PtsToCheck.GetCount();i++)
 		{
+			if(DNUpdateProgress(m_PtsToCheck.GetCount(), i)==false)
+			{
+				bReturn = false;
+				break;
+			}
 			
 			if (m_PtsToCheck.Item(i).m_LineOID != myOid)
 			{
@@ -315,19 +322,57 @@ void ToolDanglingNodes::DNFlagNodes ()
 			}
 		}
 		OGRGeometryFactory::destroyGeometry(myLineToCheck);
+		
+		if (bReturn == false)
+			break;
 	}
 	
+	return bReturn;
+}
+
+
+
+bool ToolDanglingNodes::DNUpdateProgress(unsigned int ptstocheck,unsigned int iloop)
+{
+	if (m_pDlg == NULL)
+		return true;
+	
+	wxASSERT(iloop <= ptstocheck);
+	
+	int iStep = 1;
+	bool bSkip = false;
+	if (ptstocheck >= 100)
+	{
+		iStep = int(ptstocheck / 100);
+		if (iloop % iStep == 0)
+			m_pDlg->Update(DNCheckProgressMargin(iStep, iloop, ptstocheck), wxEmptyString, &bSkip);
+	}
+	else
+	{
+		iStep = int(100 / ptstocheck);
+		m_pDlg->Update(DNCheckProgressMargin(iStep, iloop, ptstocheck), wxEmptyString, &bSkip);
+	}
+
+	
+	if (bSkip == true)
+	{
+		wxLogDebug(_T("Searching dangling nodes stoped by user"));
+		return false;
+	}
+		
+	return true;
 }
 
 
 
 void ToolDanglingNodes::DNParseFlagedPts (wxArrayRealPoints & dpts)
+
 {
-	dpts.Clear();
+	//dpts.Clear();
 	for (unsigned int i = 0; i<m_PtsToCheck.GetCount();i++)
 	{
-		wxLogDebug(_T("Checking pts : node : %d has %d flags"),
-				   i,m_PtsToCheck.Item(i).m_Flaged);
+		//wxLogDebug(_T("Checking pts : node : %d has %d flags"),
+		//		   i,m_PtsToCheck.Item(i).m_Flaged);
 		
 		if (m_PtsToCheck.Item(i).m_Flaged == 0)
 			dpts.Add(m_PtsToCheck.Item(i).m_Pt);
@@ -335,6 +380,22 @@ void ToolDanglingNodes::DNParseFlagedPts (wxArrayRealPoints & dpts)
 	
 }
 
+
+
+int	ToolDanglingNodes::DNCheckProgressMargin (unsigned int iStep, unsigned int iloop, unsigned int ptstocheck)
+{
+	int iMax = m_LoopNum * 100;
+	
+	if (iloop == ptstocheck)
+		return iMax;
+	
+	int iReturn = iStep * iloop;
+	
+	if (iReturn > iMax)
+		return iMax;
+		
+	return iReturn;
+}
 
 
 /***************************************************************************//**
@@ -397,6 +458,7 @@ bool ToolDanglingNodes::SearchInit (long layerid)
 		return false;
 	
 	m_LayerID = layerid;
+	m_LoopNum ++; 
 	return true;
 }
 
@@ -439,7 +501,8 @@ bool ToolDanglingNodes::SearchRun (wxProgressDialog * myProgDlg)
 	if (DNGetAllLines(m_LayerID)==false)
 		return false;
 	
-	DNFlagNodes();
+	if(DNFlagNodes()==false)
+	   return false;
 
 	m_LayerID = wxNOT_FOUND;
 	m_bSearchRun = true;
