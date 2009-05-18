@@ -105,7 +105,6 @@ class ToolDanglingNodes : public wxObject
 		
 		// update
 		bool DNUpdateProgress(unsigned int ptstocheck, unsigned int iloop);
-		int	 DNCheckProgressMargin (unsigned int iStep, unsigned int iloop, unsigned int ptstocheck);
 		
 	protected:
 	public:

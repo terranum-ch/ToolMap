@@ -347,23 +347,17 @@ bool ToolDanglingNodes::DNUpdateProgress(unsigned int ptstocheck,unsigned int il
 		return true;
 	
 	wxASSERT(iloop <= ptstocheck);
+		
 	
-	int iStep = 1;
-	bool bSkip = false;
-	if (ptstocheck >= 100)
-	{
-		iStep = int(ptstocheck / 100);
-		if (iloop % iStep == 0)
-			m_pDlg->Update(DNCheckProgressMargin(iStep, iloop, ptstocheck), wxEmptyString, &bSkip);
-	}
-	else
-	{
-		iStep = int(100 / ptstocheck);
-		m_pDlg->Update(DNCheckProgressMargin(iStep, iloop, ptstocheck), wxEmptyString, &bSkip);
-	}
-
+	// computing percent
+	double dloop = iloop;
+	double dTotal = ptstocheck;
+	double dVal = dloop / dTotal * 100.0;
 	
-	if (bSkip == true)
+	if (iloop == ptstocheck)
+		m_pDlg->Update(m_LoopNum * 100);
+	
+	if(m_pDlg->Update(int(dVal) + ((m_LoopNum -1) * 100))==false)
 	{
 		wxLogDebug(_T("Searching dangling nodes stoped by user"));
 		return false;
@@ -389,24 +383,6 @@ void ToolDanglingNodes::DNParseFlagedPts (wxArrayRealPoints & dpts)
 	
 }
 
-
-
-int	ToolDanglingNodes::DNCheckProgressMargin (unsigned int iStep, unsigned int iloop, unsigned int ptstocheck)
-{
-	wxASSERT(m_LoopNum > 0);
-	int iMax = m_LoopNum * 100;
-	
-	
-	if (iloop == ptstocheck)
-		return iMax;
-	
-	int iReturn = (iStep * iloop) + ((m_LoopNum- 1) * 100);
-	
-	if (iReturn > iMax)
-		return iMax;
-		
-	return iReturn;
-}
 
 
 /***************************************************************************//**
