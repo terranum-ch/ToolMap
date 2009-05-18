@@ -287,9 +287,25 @@ bool ToolDanglingNodes::DNFlagNodes ()
 	wxASSERT(m_PtsToCheck.GetCount() > 0);
 	bool bReturn = true;
 	
+	
+	
+	long iNumberLines = wxNOT_FOUND;
+	if(m_pDB->DataBaseGetResultSize(NULL, &iNumberLines)==false)
+		return false;
+	
+	
 	long myOid = 0;
+	int iLoop = 0;
 	while (1)
 	{
+		
+		if(DNUpdateProgress(iNumberLines, iLoop)==false)
+		{
+			bReturn = false;
+			break;
+		}
+		iLoop++;
+		
 		OGRLineString * myLineToCheck = (OGRLineString*) m_GisData.GetNextDataLine(myOid);	
 		if (myLineToCheck == NULL)
 			break;
@@ -304,12 +320,7 @@ bool ToolDanglingNodes::DNFlagNodes ()
 		
 		for (unsigned int i = 0; i<m_PtsToCheck.GetCount();i++)
 		{
-			if(DNUpdateProgress(m_PtsToCheck.GetCount(), i)==false)
-			{
-				bReturn = false;
-				break;
-			}
-			
+				
 			if (m_PtsToCheck.Item(i).m_LineOID != myOid)
 			{
 				if (m_PtsToCheck.Item(i).m_Pt.x == p1.getX())
@@ -322,9 +333,7 @@ bool ToolDanglingNodes::DNFlagNodes ()
 			}
 		}
 		OGRGeometryFactory::destroyGeometry(myLineToCheck);
-		
-		if (bReturn == false)
-			break;
+
 	}
 	
 	return bReturn;
@@ -384,12 +393,14 @@ void ToolDanglingNodes::DNParseFlagedPts (wxArrayRealPoints & dpts)
 
 int	ToolDanglingNodes::DNCheckProgressMargin (unsigned int iStep, unsigned int iloop, unsigned int ptstocheck)
 {
+	wxASSERT(m_LoopNum > 0);
 	int iMax = m_LoopNum * 100;
+	
 	
 	if (iloop == ptstocheck)
 		return iMax;
 	
-	int iReturn = iStep * iloop;
+	int iReturn = (iStep * iloop) + ((m_LoopNum- 1) * 100);
 	
 	if (iReturn > iMax)
 		return iMax;
