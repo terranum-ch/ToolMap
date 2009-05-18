@@ -175,19 +175,24 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 	DisplayRendererSnappingTolerence();
 	wxLogDebug(_T("View updated"));
 	
-	if (IsDrawingAllowed()==false)
-		return;
-	
-	wxRealPoint myRPT;
-	if (m_GISMemory->GetVertex(myRPT, -1))
+	if (IsDrawingAllowed()==true)
 	{
-		wxPoint myPt = m_Scale->RealToPixel(myRPT);
-		m_DrawLine.CreateVertex(myPt);
+	
+		wxRealPoint myRPT;
+		if (m_GISMemory->GetVertex(myRPT, -1))
+		{
+			wxPoint myPt = m_Scale->RealToPixel(myRPT);
+			m_DrawLine.CreateVertex(myPt);
+		}
+		
+		
+		// draw memory line
+		DrawMemoryData();
 	}
 	
-	
-	// draw memory line
-	DrawMemoryData();
+	// update tools view
+	wxCommandEvent evt(tmEVT_TM_UPDATE_TOOL_VIEW, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
