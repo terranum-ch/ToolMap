@@ -38,6 +38,9 @@
 #include "../gis/tooldanglingnodes.h"		// for computing dangling nodes (engine class)
 
 
+const int tmDANGLING_NODE_DRAW_SIZE = 4;
+const wxColour tmDANGLING_NODE_DRAW_COLOUR = wxColour(*wxRED);
+
 
 class tmToolManager : public wxEvtHandler
 	{
@@ -65,6 +68,14 @@ class tmToolManager : public wxEvtHandler
 		bool TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname);
 		void TMClearDangling(){m_DanglingPts.Clear();}
 		
+		// drawing dangling nodes
+		bool TMDrawDanglingNodes();
+		
+		
+		// event function
+		void OnViewUpdated (wxCommandEvent & event);
+		
+		DECLARE_EVENT_TABLE();
 	protected:
 	public:
 		tmToolManager(wxWindow * parent,

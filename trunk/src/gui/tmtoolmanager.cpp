@@ -20,6 +20,12 @@
 #include "tmtoolmanager.h"
 
 
+BEGIN_EVENT_TABLE(tmToolManager, wxEvtHandler)
+	EVT_COMMAND (wxID_ANY, tmEVT_TM_UPDATE_TOOL_VIEW, tmToolManager::OnViewUpdated)
+END_EVENT_TABLE()
+
+
+
 
 void tmToolManager::InitMemberValues()
 {
@@ -45,13 +51,18 @@ tmToolManager::tmToolManager(wxWindow * parent,
 	m_Selected = seldata;
 	m_Renderer = renderer;
 	m_Scale = scale;
+	
+	
+	m_Parent->PushEventHandler(this);
+	
 }
 
 
 
 tmToolManager::~tmToolManager()
 {
-
+	m_Parent->PopEventHandler(false);
+	m_Parent->SetEventHandler(m_Parent);
 
 }
 
@@ -174,6 +185,8 @@ bool tmToolManager::FindDanglingNodes()
 	myDlg.InitDialog(myLayers, wxNOT_FOUND);
 	int iReturn = myDlg.ShowModal();
 	
+	wxCommandEvent myUnusedEvent;
+	
 	bool bReturn = true;
 	switch (iReturn)
 	{
@@ -181,6 +194,8 @@ bool tmToolManager::FindDanglingNodes()
 			// compute dangling nodes vertex
 			bReturn = TMSearchDanglingNodes(myDlg.GetSelectedLayer(),
 								  myLayers);
+			
+			OnViewUpdated(myUnusedEvent);
 			
 			break;
 			
@@ -209,3 +224,42 @@ bool tmToolManager::TMIsOk()
 	return true;
 	
 }
+
+
+
+void tmToolManager::OnViewUpdated (wxCommandEvent & event)
+{
+	if(TMDrawDanglingNodes()==true)
+	{
+		wxLogDebug(_T("Dangling nodes drawed"));
+	}
+	
+}
+
+
+bool tmToolManager::TMDrawDanglingNodes()
+{
+	m_Renderer->Refresh();
+	m_Renderer->Update();
+	
+	if (m_DanglingPts.GetCount() == 0)
+		return false;
+	
+	wxASSERT(m_Renderer != NULL);
+	wxClientDC dc (m_Renderer);
+	wxPen myPen (*wxRED_PEN);
+	dc.SetPen(myPen);
+			 
+	
+	for (unsigned int i = 0; i< m_DanglingPts.GetCount() ;i ++)
+	{
+		wxPoint myPt = m_Scale->RealToPixel(m_DanglingPts.Item(i));
+		dc.DrawCircle(myPt, tmDANGLING_NODE_DRAW_SIZE);
+	}
+		
+
+	return true;
+}
+
+
+
