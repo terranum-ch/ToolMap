@@ -48,6 +48,7 @@ class tmToolManager : public wxEvtHandler
 		tmSelectedDataMemory * m_Selected;
 		tmRenderer * m_Renderer;
 		tmGISScale * m_Scale;
+		wxArrayRealPoints m_DanglingPts;
 		
 		
 		// defined by function or event.
@@ -61,8 +62,8 @@ class tmToolManager : public wxEvtHandler
 		bool TMGetLayers(wxArrayString & layersname);
 		bool TMSearchDanglingNodes(int selectedlayer, 
 								   const wxArrayString & layersname);
-		void TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname);
-		
+		bool TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname);
+		void TMClearDangling(){m_DanglingPts.Clear();}
 		
 	protected:
 	public:

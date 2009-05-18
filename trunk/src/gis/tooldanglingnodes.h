@@ -97,11 +97,15 @@ class ToolDanglingNodes : public wxObject
 		// private search part
 		bool DNGetAllLines(long layerid);
 		bool DNSearchValidVertex();
-		void DNFlagNodes ();
+		bool DNFlagNodes ();
 		bool DNIsPointInside(OGRPoint * pt);
 		void DNSearchCleanUp ();
 		bool DNGetFrameGeometry();
 		void DNParseFlagedPts (wxArrayRealPoints & dpts);
+		
+		// update
+		bool DNUpdateProgress(unsigned int ptstocheck, unsigned int iloop);
+		int	 DNCheckProgressMargin (unsigned int iStep, unsigned int iloop, unsigned int ptstocheck);
 		
 	protected:
 	public:

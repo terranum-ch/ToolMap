@@ -78,28 +78,57 @@ bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
 {
 	wxASSERT(selectedlayer != wxNOT_FOUND);
 	wxASSERT(m_pDB);
-	
+	TMClearDangling();
 	
 	// get real layer ids
 	wxArrayLong myLayersID;
-	TMGetLayersIDs(myLayersID,  layersname);
+	if(TMGetLayersIDs(myLayersID,  layersname)==false)
+		return false;
+	if (selectedlayer != 0)
+	{
+		long myLayer = myLayersID.Item(selectedlayer -1);
+		myLayersID.Clear();
+		myLayersID.Add(myLayer);
+	}
 	
+
+	
+	unsigned int iLayersCount = myLayersID.GetCount();
+	wxLogDebug(_T("%d layers to check"), iLayersCount);
+	
+	wxString smsg = wxString::Format(_("Searching dangling nodes on %d layer(s)"),iLayersCount);
+	wxProgressDialog myDlg(_("Searching dangling nodes"), smsg, iLayersCount * 100, m_Parent,wxPD_AUTO_HIDE| wxPD_CAN_ABORT); 
 	
 	// search dangling nodes
-	
-	/*
-	// search all polygons layers
-	if (selectedlayer == 0)
+	ToolDanglingNodes myTool (m_pDB);
+	bool bStoped = false;
+	for (unsigned int i = 0; i< iLayersCount; i++)
 	{
-		//ToolDanglingNodes myDN(m_pDB);
-		//if (myDN.SearchInit(<#long layerid#>)
-	}*/
+		myTool.SearchInit(myLayersID.Item(i));
+		if(myTool.SearchRun(&myDlg)==false)
+		{
+			bStoped = true;
+			break;
+		}
+		wxLogDebug(_T("Dangling nodes searched for layers : %d"), i);
+		
+		myTool.GetDanglingNodes(m_DanglingPts);
+	}
 	
+	if (bStoped==true)
+	{
+		TMClearDangling();
+		return false;
+	}
+	
+	wxLogDebug(_T("%d dangling nodes found"), m_DanglingPts.GetCount());
+	
+
 	return true;	
 }
 
 
-void tmToolManager::TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname)
+bool tmToolManager::TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname)
 {
 	wxASSERT(m_pDB);
 	wxArrayString mySearchedLayers(layersname);
@@ -119,6 +148,11 @@ void tmToolManager::TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString 
 	}
 	
 	wxASSERT(layersid.GetCount() == mySearchedLayers.GetCount());
+	if (layersid.GetCount() > 0)
+		return true;
+	
+	wxLogDebug(_T("No ID found for layers"));
+	return false;
 }
 
 
