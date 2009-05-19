@@ -71,11 +71,12 @@ void ToolMapApp::OnFatalException()
 void ToolMapApp::TAWindowsException()
 {
 	wxDateTime dt = wxDateTime::Now();
-	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%d-%d%d%d-%d%d%d"),
-											SVN_VERSION,
+	wxString mysvn (SVN_VERSION);
+	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%s-%d%d%d-%d%d%d"),
+											mysvn.c_str(),
 											dt.GetYear(),dt.GetMonth(), dt.GetDay(),
 											dt.GetHour(),dt.GetMinute(),dt.GetSecond());
-	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName,_T(".txt"));
+	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName,_T("zip"));
 	
 	wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
 				 _T("Please send the file : ") + myCrashFile.GetFullPath() +
@@ -83,13 +84,14 @@ void ToolMapApp::TAWindowsException()
 				 _T("of what you where doing"), _T("Fatal exception"),
 				 wxOK | wxICON_ERROR);
 	
+	myCrashFile.SetExt(_T("dmp"));
 	
 #if wxUSE_CRASHREPORT
 	wxCrashReport::SetFileName(myCrashFile.GetFullPath());											
 	wxCrashReport::Generate();
 #endif //USE CRASHREPORT								
 	
-	myCrashFile.SetExt(_T(".zip"));
+	myCrashFile.SetExt(_T("zip"));
 	TAWindowCreateZip(myCrashFile.GetFullPath());
 	
 }
@@ -103,23 +105,48 @@ bool ToolMapApp::TAWindowCreateZip(const wxString & crashname)
 	wxZipOutputStream outzip(outf);
 	
 	wxFileName fcrash (crashname);
-	fcrash.SetExt(_T(".txt"));
+	fcrash.SetExt(_T("dmp"));
+	if (wxFileExists(fcrash.GetFullPath())==true)
+	{
 	wxFileInputStream fcrashstream(fcrash.GetFullPath());
 	outzip.PutNextEntry(fcrash.GetFullName());
 	outzip << fcrashstream;
+	}
+	
 	
 	wxFileName flog (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
+	if (wxFileExists(flog.GetFullPath())==true)
+	{
 	wxFileInputStream flogstream (flog.GetFullPath());
 	outzip.PutNextEntry(flog.GetFullName());
 	outzip << flogstream;
-		
+	}	
 	outzip.Close();
 	outf.Close();
+
+	// remove files
+	TAWindowRemoveFile(crashname);
 		
 	return true;
 }
 
 
+bool ToolMapApp::TAWindowRemoveFile(const wxString & crashname)
+{
+	wxFileName fcrash (crashname);
+	fcrash.SetExt(_T("dmp"));
+	if(wxFileExists(fcrash.GetFullPath())==true)
+	{
+		wxRemoveFile(fcrash.GetFullPath());
+	}
+
+	wxFileName flog (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
+	if (wxFileExists(flog.GetFullPath())==true)
+	{
+		wxRemoveFile(flog.GetFullPath());
+	}
+	return true;
+}
 
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 

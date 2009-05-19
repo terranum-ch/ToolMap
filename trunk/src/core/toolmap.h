@@ -228,6 +228,7 @@ class ToolMapApp : public wxApp
 private:
 	void TAWindowsException();
 	bool TAWindowCreateZip(const wxString & crashname);
+	bool TAWindowRemoveFile(const wxString & crashname);
 	
 public:
 	virtual bool OnInit();
