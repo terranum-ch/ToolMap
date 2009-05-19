@@ -62,25 +62,63 @@ bool ToolMapApp::OnInit()
 
 void ToolMapApp::OnFatalException()
 {	
+#if wxUSE_CRASHREPORT
+	TAWindowsException();
+#endif //USE CRASHREPORT												
+}
+
+
+void ToolMapApp::TAWindowsException()
+{
 	wxDateTime dt = wxDateTime::Now();
-	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%d%d%d-%d%d%d.txt"),
-		dt.GetYear(),dt.GetMonth(), dt.GetDay(),
-		dt.GetHour(),dt.GetMinute(),dt.GetSecond());
-	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName);
-		
+	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%d-%d%d%d-%d%d%d"),
+											SVN_VERSION,
+											dt.GetYear(),dt.GetMonth(), dt.GetDay(),
+											dt.GetHour(),dt.GetMinute(),dt.GetSecond());
+	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName,_T(".txt"));
+	
 	wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
 				 _T("Please send the file : ") + myCrashFile.GetFullPath() +
 				 _T("\nto lucien.schreiber@crealp.vs.ch with a small description\n")
-					_T("of what you where doing"), _T("Fatal exception"),
+				 _T("of what you where doing"), _T("Fatal exception"),
 				 wxOK | wxICON_ERROR);
 	
 	
 #if wxUSE_CRASHREPORT
 	wxCrashReport::SetFileName(myCrashFile.GetFullPath());											
 	wxCrashReport::Generate();
-#endif //USE CRASHREPORT												
+#endif //USE CRASHREPORT								
+	
+	myCrashFile.SetExt(_T(".zip"));
+	TAWindowCreateZip(myCrashFile.GetFullPath());
 	
 }
+
+bool ToolMapApp::TAWindowCreateZip(const wxString & crashname)
+{
+	// copy log and crash to zip file
+	wxFFileOutputStream outf(crashname);
+	if (outf.IsOk()==false)
+		return false;
+	wxZipOutputStream outzip(outf);
+	
+	wxFileName fcrash (crashname);
+	fcrash.SetExt(_T(".txt"));
+	wxFileInputStream fcrashstream(fcrash.GetFullPath());
+	outzip.PutNextEntry(fcrash.GetFullName());
+	outzip << fcrashstream;
+	
+	wxFileName flog (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
+	wxFileInputStream flogstream (flog.GetFullPath());
+	outzip.PutNextEntry(flog.GetFullName());
+	outzip << flogstream;
+		
+	outzip.Close();
+	outf.Close();
+		
+	return true;
+}
+
 
 
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
