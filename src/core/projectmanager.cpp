@@ -352,7 +352,7 @@ int ProjectManager::OpenProject(const wxString & path)
 	// close any existing project
 	CloseProject();
 	m_DB = new DataBaseTM();
-	tmDB_OPEN_STATUS mystatus = m_DB->OpenTMDatabase(path);
+	int mystatus = m_DB->OpenTMDatabase(path);
 	
 	if (mystatus == tmDB_OPEN_OK)
 	{

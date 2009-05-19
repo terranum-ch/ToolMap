@@ -105,7 +105,7 @@ class DataBaseTM : public DataBase
 		
 		// database operations
 		bool TableExist (const wxString & tablename);										//[TESTED]
-		tmDB_OPEN_STATUS OpenTMDatabase(const wxString & pathname);							//[TESTED]
+		int OpenTMDatabase(const wxString & pathname);										//[TESTED]
 		bool CreateTMDatabase (PrjDefMemManage * pPrjDefinition);							//[TESTED]
 		
 		

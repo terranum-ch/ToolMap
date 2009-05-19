@@ -89,9 +89,10 @@ public:
 	void TESTOpenTMDatabase()
 	{
 		CPPUNIT_ASSERT(m_DB->OpenTMDatabase(_T("/Users/Lucien/Downloads/testedit"))==tmDB_OPEN_OK);
-		CPPUNIT_ASSERT(m_DB->OpenTMDatabase(_T("/Users/Lucien/Downloads/mytest1"))==tmDB_OPEN_FAILED_NOT_TM_DB);
-		tmDB_OPEN_STATUS myStatus = m_DB->OpenTMDatabase(_T("/Users/Lucien/DATA/SIG/LUGANO/TM_Project/luganoTM"));
-		CPPUNIT_ASSERT(myStatus == tmDB_OPEN_FAILED_WRONG_VERSION);
+		CPPUNIT_ASSERT(m_DB->OpenTMDatabase(_T("/Users/Lucien/Downloads/mytest1"))>=tmDB_OPEN_FAILED_NOT_TM_DB);
+		int myStatus = m_DB->OpenTMDatabase(_T("/Users/Lucien/DATA/SIG/LUGANO/TM_Project/luganoTM"));
+		CPPUNIT_ASSERT(myStatus >= tmDB_OPEN_FAILED_WRONG_VERSION);
+		wxLogDebug(_T("/Users/Lucien/DATA/SIG/LUGANO/TM_Project/luganoTM is version %d"), myStatus);
 		CPPUNIT_ASSERT(m_DB->GetDatabaseToolMapVersion() != TM_DATABASE_VERSION);
 	}
 	
