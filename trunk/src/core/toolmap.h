@@ -225,6 +225,10 @@ const wxString g_ProgName = _T("ToolMap 2.0.");
  *******************************************************************************/
 class ToolMapApp : public wxApp
 {
+private:
+	void TAWindowsException();
+	bool TAWindowCreateZip(const wxString & crashname);
+	
 public:
 	virtual bool OnInit();
 	virtual void OnFatalException();
