@@ -33,7 +33,7 @@ DataBaseTM::~DataBaseTM()
 }
 
 
-tmDB_OPEN_STATUS DataBaseTM::OpenTMDatabase(const wxString & pathname)
+int DataBaseTM::OpenTMDatabase(const wxString & pathname)
 {
 	wxFileName myPath (pathname, _T(""));
 	if (myPath.IsOk()==false)
@@ -50,8 +50,12 @@ tmDB_OPEN_STATUS DataBaseTM::OpenTMDatabase(const wxString & pathname)
 	if (TableExist(TABLE_NAME_PRJ_SETTINGS)==false)
 		return tmDB_OPEN_FAILED_NOT_TM_DB;
 	
-	if (GetDatabaseToolMapVersion() != TM_DATABASE_VERSION)
-		return tmDB_OPEN_FAILED_WRONG_VERSION;
+	int iToolMapVersion = GetDatabaseToolMapVersion();
+	if (iToolMapVersion != TM_DATABASE_VERSION)
+		if (iToolMapVersion >= tmDB_OPEN_FAILED_WRONG_VERSION)
+			return iToolMapVersion;
+		else
+			return tmDB_OPEN_FAILED_WRONG_VERSION;
 	
 	
 	wxLogDebug(_T("%s is a ToolMap database version : %d"),
