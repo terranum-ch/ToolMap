@@ -201,6 +201,8 @@ bool tmToolManager::FindDanglingNodes()
 			
 		case ID_DLGDN_CLEAR:
 			// clear dangling nodes message
+			TMClearDangling();
+			OnViewUpdated(myUnusedEvent);
 			break;
 			
 		default:

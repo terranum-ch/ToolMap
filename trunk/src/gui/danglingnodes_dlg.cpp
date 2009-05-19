@@ -20,6 +20,10 @@
 #include "danglingnodes_dlg.h"
 
 
+BEGIN_EVENT_TABLE(DanglingNode_DLG, wxDialog)
+	EVT_BUTTON(ID_DLGDN_CLEAR,  DanglingNode_DLG::OnClearDangling) 
+END_EVENT_TABLE()
+
 
 DanglingNode_DLG::DanglingNode_DLG( wxWindow* parent, wxWindowID id,
 								   const wxString& title, const wxPoint& pos,
@@ -106,3 +110,12 @@ bool DanglingNode_DLG::TransferDataFromWindow()
 	m_SelectedLayer = m_LayerChoice->GetSelection();
 	return true;
 }
+
+void DanglingNode_DLG::OnClearDangling(wxCommandEvent & event)
+{
+	EndModal(ID_DLGDN_CLEAR);
+}
+
+
+
+
