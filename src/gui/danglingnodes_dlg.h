@@ -40,6 +40,11 @@ class DanglingNode_DLG : public wxDialog
 
 		int m_SelectedLayer;
 
+		
+		// private event
+		void OnClearDangling(wxCommandEvent & event);
+		
+		DECLARE_EVENT_TABLE();
 	protected:
 		
 		

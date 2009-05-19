@@ -405,9 +405,9 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcuts..."), _T(""), wxITEM_CHECK);
     menuBar->Append(itemMenu55, _("Attribution"));
     wxMenu* itemMenu63 = new wxMenu;
-    itemMenu63->Append(ID_MENU_CHECK_GEOM, _("Check Geometry..."), _T(""), wxITEM_CHECK);
-    itemMenu63->Check(ID_MENU_CHECK_GEOM, true);
-    itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Search dangling nodes"), _T(""), wxITEM_NORMAL);
+   // itemMenu63->Append(ID_MENU_CHECK_GEOM, _("Check Geometry..."), _T(""), wxITEM_CHECK);
+    //itemMenu63->Check(ID_MENU_CHECK_GEOM, true);
+    itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Search dangling nodes..."), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu63, _("Tools"));
     wxMenu* itemMenu66 = new wxMenu;
     itemMenu66->Append(ID_MENU_SELECT, _("Select\tS"), _T(""), wxITEM_NORMAL);
