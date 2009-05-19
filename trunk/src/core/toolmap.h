@@ -282,7 +282,8 @@ private:
 	tmToolManager * m_ToolManager;
 	
 	
-	void OnQuit(wxCloseEvent & event);
+	void OnQuit(wxCommandEvent & event);
+	void OnClose(wxCloseEvent & event);
 	//void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
 	void OnOpenProject (wxCommandEvent & event);

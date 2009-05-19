@@ -54,14 +54,8 @@ bool ToolMapApp::OnInit()
 	wxImage::AddHandler(new wxPNGHandler);
 	wxHandleFatalExceptions();
 
-	
-	//wxString myFrameName = _T("ToolMap 2.0.");
-	// myFrameName.Append(SVN_VERSION);
 	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(900,500));
-	
-	
 	frame->Show(true);
-	
 	return true;
 }
 
@@ -106,7 +100,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
 	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
-	
+	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
+
 	// TOOL EVENT
 	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
@@ -151,7 +146,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	// AUI EVENT WHEN PANE CLOSED
 	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
 
-	EVT_CLOSE(ToolMapFrame::OnQuit)
+	EVT_CLOSE(ToolMapFrame::OnClose)
 	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 
 	// NOTIFICATION EVENT
@@ -321,11 +316,18 @@ ToolMapFrame::~ToolMapFrame()
 }
 
 
-void ToolMapFrame::OnQuit(wxCloseEvent & event)
+
+void ToolMapFrame::OnQuit(wxCommandEvent & event)
 {
-	
+	//this->Destroy();
+	Close(true);
+}
+
+
+void ToolMapFrame::OnClose(wxCloseEvent & event)
+{
 	wxLog::SetActiveTarget (NULL);
-	this->Destroy();
+	event.Skip();
 }
 
 wxMenuBar* ToolMapFrame::CreateToolMapMenu()
