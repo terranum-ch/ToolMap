@@ -780,6 +780,7 @@ bool tmGISDataVectorMemory::GetPointFromDatabase (DataBaseTM * database,
 	if (myOGRPoint == NULL)
 		return false;
 	
+	wxASSERT (m_Feature);
 	m_Feature->SetGeometry(myOGRPoint);
 	OGRGeometryFactory::destroyGeometry(myOGRPoint);
 	
