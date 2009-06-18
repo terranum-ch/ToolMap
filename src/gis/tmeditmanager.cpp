@@ -516,6 +516,7 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	
 	// draw the selected in normal colour (blue)
 	tmGISDataVectorMemory myGISMem;
+	myGISMem.CreateFeature();
 	wxArrayLong * mySelArray = m_SelectedData->GetSelectedValues();
 	if (mySelArray != NULL)
 	{
