@@ -247,7 +247,7 @@ bool EditVertexDLG::TransferDataFromWindow()
 bool EditVertexDLG::GridInsertLine (int iIndex, wxRealPoint * pt)
 {
 	if (iIndex == -1)
-		iIndex == m_VertexGrid->GetNumberRows();
+		iIndex = m_VertexGrid->GetNumberRows();
 	
 	wxASSERT (iIndex <= m_VertexGrid->GetNumberRows());
 	
