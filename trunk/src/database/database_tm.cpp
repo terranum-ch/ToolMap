@@ -856,6 +856,10 @@ int DataBaseTM::GetNextLayer (ProjectDefMemoryLayers * myLayer)
 	{
 		bool bQuery = DataBaseQuery(sSentence);
 		wxASSERT (bQuery);
+		
+		// check that result != 0
+		if (DataBaseHasResults() == false)
+			return -1;
 	}
 	return 0;
 }
