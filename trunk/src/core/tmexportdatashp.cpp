@@ -587,8 +587,11 @@ bool tmExportDataSHP::AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer)
 	bool bSetFieldValue = true;
 	
 	if(m_Shp.SetNextFeature(true)==false)
+	{
+		m_pDB->DataBaseClearResults();
 		return false;
-		
+	}
+	
 	while (m_pDB->DataBaseGetNextResult(myResults)) 
 	{
 

@@ -50,6 +50,9 @@ IMPLEMENT_APP(ToolMapApp);
 bool ToolMapApp::OnInit()
 /* APPLICATION INITIALISATION */
 {
+	// clear log if exists
+	TAWindowRemoveFile(wxEmptyString);
+	
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
 	wxHandleFatalExceptions();
@@ -133,16 +136,20 @@ bool ToolMapApp::TAWindowCreateZip(const wxString & crashname)
 
 bool ToolMapApp::TAWindowRemoveFile(const wxString & crashname)
 {
-	wxFileName fcrash (crashname);
-	fcrash.SetExt(_T("dmp"));
-	if(wxFileExists(fcrash.GetFullPath())==true)
+	if(crashname != wxEmptyString)
 	{
-		wxRemoveFile(fcrash.GetFullPath());
+		wxFileName fcrash (crashname);
+		fcrash.SetExt(_T("dmp"));
+		if(wxFileExists(fcrash.GetFullPath())==true)
+		{
+			wxRemoveFile(fcrash.GetFullPath());
+		}
 	}
-
+	
 	wxFileName flog (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
 	if (wxFileExists(flog.GetFullPath())==true)
 	{
+		wxLogDebug(_T("Removing MySQL Log file"));
 		wxRemoveFile(flog.GetFullPath());
 	}
 	return true;

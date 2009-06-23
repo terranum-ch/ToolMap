@@ -1169,7 +1169,7 @@ int DataBaseTM::DeleteMultipleObjects (PrjDefMemManage * pProjet)
 	}
 	
 	// execute statement
-	if(DataBaseQueryNoResults(sSentence))
+	if(sSentence.IsEmpty() == false && DataBaseQueryNoResults(sSentence))
 		return pProjet->m_StoreDeleteIDObj.GetCount();
 	
 	return -1;
@@ -1927,7 +1927,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 	
 		
 		// execute the sentence for layers.
-		if (!DataBaseQueryNoResults(sSentence))
+		if (sSentence.IsEmpty() ==false && DataBaseQueryNoResults(sSentence)== false)
 		{
 			wxLogError(_T("Error updating project in the database"));
 			bReturn = false;
