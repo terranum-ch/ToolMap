@@ -328,7 +328,7 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 	}
 	else
 	{
-		wxLogDebug(_T("Exporting layers : %s ... FAILED"),
+		wxLogDebug(_T("Exporting layers : %s ... FAILED / NO DATA"),
 				   layer->m_LayerName.c_str());
 	}
 	
