@@ -206,20 +206,10 @@ GEOSGeom  tmGISDataVector::CreateGEOSGeometry (const tmRealRect & rect)
 									  rect.x_max, rect.y_max,
 									  rect.x_min, rect.y_max,
 									  rect.x_min, rect.y_min);
-	// conversion Unicode wxString -> const char *
-	//char * buffer = new char [sRect.Length()+2];
-	//strcpy(buffer, (const char*)sRect.mb_str(wxConvUTF8));
-	//GEOSGeom  grect = GEOSGeomFromWKT(buffer);
-	
-
-	//initGEOS(NULL,NULL);
-	
 	GEOSWKTReader * myReader = GEOSWKTReader_create();
 	GEOSGeom grect = GEOSWKTReader_read(myReader, sRect.mb_str(wxConvUTF8));
 	GEOSWKTReader_destroy(myReader);
 	wxASSERT(grect);
-	
-		
 	return grect;
 }
 
