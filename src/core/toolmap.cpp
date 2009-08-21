@@ -383,8 +383,11 @@ ToolMapFrame::~ToolMapFrame()
 	
 	
 	// delete the config file
-	
 	delete m_pConfig;
+	
+	// finish the GEOS library
+	wxLogDebug(_T("Clearing GEOS library"));
+	finishGEOS();
 }
 
 

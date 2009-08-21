@@ -45,7 +45,7 @@ tmGISData::tmGISData()
  *******************************************************************************/
 tmGISData::~tmGISData()
 {
-
+	
 }
 
 
@@ -83,6 +83,7 @@ void tmGISData::InitGISDrivers (bool bRaster, bool bVector)
 	if (bVector)
 	{
 		tmGISDataVector::InitGISDriversVector();
+		initGEOS(NULL,NULL);
 		wxLogDebug(_T("GIS Vector drivers loaded"));
 	}
 	
