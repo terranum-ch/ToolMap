@@ -255,21 +255,6 @@ void MenuManager::EditingStatus(bool started)
 }
 
 
-/***************************************************************************//**
- @brief Update the menu when a seletion is done
- @param iNbSelected Number of selected objects
- @author Lucien Schreiber (c) CREALP 2009
- @date 18 February 2009
- *******************************************************************************/
-void MenuManager::UpdateSelection (int iNbSelected)
-{
-	wxString sNumber = wxString::Format( _("Delete (%d) selected objects\tDel"),
-										iNbSelected);
-	m_MenuBar->SetLabel(ID_MENU_DELETE_OBJ, sNumber);
-	
-}
-
-
 
 
 /********************************* TOOLBAR MANAGER ********************************/

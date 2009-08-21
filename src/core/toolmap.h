@@ -265,7 +265,6 @@ public:
 	
 private:
 	wxFileConfig * m_pConfig;
-	bool	m_MenuForDeletePressed;
 	
 	wxAuiManager * m_AuiManager;
 	AttribObjType_PANEL * m_AttribObjPanel;
@@ -317,8 +316,8 @@ private:
 	void OnMergeSelectedLines (wxCommandEvent & event);
 	void OnShowAAttributionWindow (wxCommandEvent & event);
 	void OnShowInformationDialog (wxCommandEvent & event);
-	void OnMenuHighlightOn (wxMenuEvent & event);
-	void OnMenuHighligntOff(wxMenuEvent & event);
+	//void OnMenuHighlightOn (wxMenuEvent & event);
+	//void OnMenuHighligntOff(wxMenuEvent & event);
 	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);

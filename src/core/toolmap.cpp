@@ -184,8 +184,6 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
 
 	//EDIT MENU
-	EVT_MENU_HIGHLIGHT(ID_MENU_DELETE_OBJ, ToolMapFrame::OnMenuHighlightOn)
-	EVT_MENU_HIGHLIGHT_ALL( ToolMapFrame::OnMenuHighligntOff)
 	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
 	EVT_MENU (ID_MENU_UNDO, ToolMapFrame::OnEditUndo)
 	EVT_MENU (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnCreateIntersections)
@@ -343,7 +341,6 @@ void ToolMapFrame::PostInit()
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);
 	wxLogMessage(_("Running under : %s"), wxGetOsDescription().c_str());
 	
-	m_MenuForDeletePressed = false;
 	
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
@@ -885,34 +882,20 @@ void ToolMapFrame::OnEditSwitch (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnEditDeleteSelected (wxCommandEvent & event)
 {
-	/*wxString myStatus = _T("false");
-	if (m_MenuForDeletePressed == true)
-		myStatus = _T("true");
-	
-		wxLogDebug(_T("Menu is pressed : ") + myStatus);*/
-	
-	bool myMenuPressed = m_MenuForDeletePressed;
-	m_MenuForDeletePressed = false;
-
 	
 	if (m_EditManager->IsDrawingAllowed()==false)
 	{
 		return;
 	}
 	
-	// display dialog if user use shortcut	
-	if(myMenuPressed == false)
-	{
-		int iSelNum = m_EditManager->GetSelectionCount();
-		if (iSelNum > 1)
+	int iSelNum = m_EditManager->GetSelectionCount();
+	if (iSelNum > 1)
 			
-			if (wxMessageBox(wxString::Format(_("%d Objects selected ! Confirm deleting ?"), iSelNum),
+		if (wxMessageBox(wxString::Format(_("%d Objects selected ! Confirm deleting ?"), iSelNum),
 							 wxString::Format(_("Deleting %d objects"), iSelNum),
 							 wxICON_WARNING | wxYES_NO, this) ==wxNO)
-				return;
+			return;
 		
-	}
-	
 	
 	m_EditManager->DeleteSelected(true);
 }
@@ -992,35 +975,6 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 }
 
 
-/***************************************************************************//**
- @brief Called when menu Delete is highlited
- @author Lucien Schreiber (c) CREALP 2009
- @date 12 May 2009
- *******************************************************************************/
-void ToolMapFrame::OnMenuHighlightOn (wxMenuEvent & event)
-{
-	m_MenuForDeletePressed = true;
-	event.Skip();
-}
-
-
-/***************************************************************************//**
- @brief Called when menu are closed
- @author Lucien Schreiber (c) CREALP 2009
- @date 12 May 2009
- *******************************************************************************/
-void ToolMapFrame::OnMenuHighligntOff(wxMenuEvent & event)
-{
-
-	if (m_MenuForDeletePressed == true && 
-		event.GetMenuId() != ID_MENU_DELETE_OBJ &&
-		event.GetMenuId() != wxNOT_FOUND)
-	{
-		m_MenuForDeletePressed = false;
-	}
-	event.Skip();
-}
-
 
 
 /***************************************************************************//**
@@ -1054,7 +1008,9 @@ void ToolMapFrame::OnSelectInvert (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 {
-	m_MManager->UpdateSelection(m_AttribManager->GetSelectionCount());
+	SetStatusText(wxString::Format(_T("%d Selected features"), 
+								   m_AttribManager->GetSelectionCount()),
+				  2);
 	event.Skip();
 }
 
