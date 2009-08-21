@@ -284,7 +284,7 @@ public:
 	
 	void TESTVersion()
 	{
-		CPPUNIT_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.35"));
+		CPPUNIT_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.37"));
 	}
 	
 	
