@@ -133,7 +133,7 @@ INCLUDE ("cmake/useMySQLEmbedded.cmake")
 # UNIT TEST PROGRAM
 SET (USE_UNITTEST CACHE BOOL "Sould we Create the Unit Test (XP) for ${PROGNAME}")
 IF (USE_UNITTEST)
-	ADD_SUBDIRECTORY("../test/build" ${PROJECT_BINARY_DIR})
+	ADD_SUBDIRECTORY("../test/build" "${PROJECT_BINARY_DIR}/test")
 ENDIF (USE_UNITTEST)
 
 

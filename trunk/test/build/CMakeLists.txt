@@ -4,6 +4,9 @@
 # (c) LUCIEN SCHREIBER CREALP 2009
 cmake_minimum_required(VERSION 2.4)
 
+MESSAGE ("DBG : USING UNIT TESTING")
+
+
 ## POLICY FOR WINDOWS ONLY ???
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -56,3 +59,4 @@ ENDIF (WIN32)
 IF (WIN32)
 	INCLUDE ("cmake/Use_visualstudioMT.cmake")
 ENDIF (WIN32)
+
