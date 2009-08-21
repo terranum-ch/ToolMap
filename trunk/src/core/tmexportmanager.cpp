@@ -210,18 +210,14 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 	}
 	
 	
-	
-	
-	CreateProgress(layers->GetCount(),
-				   layers->Item(0).m_LayerName);
-	
-	
-	
 	// get frame
 	int iFrameVertex = 0;
 	wxRealPoint * pFrame = GetFrame(iFrameVertex);
 	if (!pFrame)
 		return false;
+	
+	CreateProgress(layers->GetCount(),
+				   layers->Item(0).m_LayerName);
 	
 	bool bExportResult = true;
 	// for each layer
@@ -655,8 +651,18 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
  *******************************************************************************/
 wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 {
+	wxString myErr0 =	_("No Frame present, please create a frame for exporting data.\n");
+	myErr0.Append(_("Note : Frame must be one closed line."));
+	
+	wxString myErr2 = _("Frame is incorrect. More than one line detected\n");
+	myErr2.Append(_T("Note : Frame must be one closed line."));
+	
+	wxString myCaptErr = _T("Frame error");
+	
+	
 	wxASSERT(m_pDB);
 	wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_GIS_GENERIC[4];
+	
 	
 	if (m_pDB->DataBaseQuery(sSentence)==false)
 	{
@@ -664,15 +670,29 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 		return NULL;
 	}
 	
+		
 	tmGISDataVectorMYSQL myFrameDB;
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+
 	long loid = 0;
-	
 	long myRows = 0;
-	if(m_pDB->DataBaseGetResultSize(NULL, &myRows)==true)
+	
+	bool bGetRowSize = m_pDB->DataBaseGetResultSize(NULL, &myRows);
+	wxASSERT(bGetRowSize);
+	
+	wxString myMessage = wxEmptyString;
+	// only one frame present
+	if (myRows != 1)
 	{
-		if (myRows > 1)
-			wxFAIL_MSG(_T("Too many frame results"));
+		if (myRows == 0)
+			myMessage = myErr0;
+		else
+			myMessage = myErr2;
+	
+		wxMessageBox(myMessage, myCaptErr, wxICON_ERROR | wxOK  | wxCENTRE, m_Parent);
+		m_pDB->DataBaseClearResults();
+		nbvertex = 0;
+		return NULL;
 	}
 	
 	
