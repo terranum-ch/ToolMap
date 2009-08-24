@@ -344,6 +344,10 @@ void ToolMapFrame::PostInit()
 	
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
+	
+	//TODO: Testing update
+	tmUpdate tm;
+	tm.IsServerResponding();
 
 }
 
