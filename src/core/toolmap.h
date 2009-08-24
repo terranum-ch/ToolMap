@@ -119,12 +119,15 @@
 #include "../gui/shortcut_panel.h"			// for shortcut panel
 #include "../gui/snapping_panel.h"			// for snapping panel
 #include "../gis/tmeditmanager.h"			// for editing manager
-#include "../gui/tmtoolmanager.h"			// for tools 
+#include "../gui/tmtoolmanager.h"			// for tools
 
 
 //// temp for testing 
+#include "../components/tmupdate/tmupdate.h"
 #include "diroperation.h"
 //// end of testing
+
+
 
 class MenuManager;
 class ToolbarManager;
