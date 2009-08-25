@@ -29,7 +29,7 @@
     #include <wx/wx.h>
 #endif
 
-#include <curl.h>
+#include <curl/curl.h>
 #include <wx/sstream.h>
 
 // comment to avoid verbose mode
