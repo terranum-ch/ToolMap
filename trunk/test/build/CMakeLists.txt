@@ -40,6 +40,10 @@ INCLUDE ("cmake/findMySQLEmbedded.cmake")
 #UNIT TESTING LIBRARY
 INCLUDE ("cmake/findcppunit.cmake")
 
+#CURL
+INCLUDE ("cmake/FindCURL.cmake")
+
+
  
 # ADD ALSO HEADERS NOT REALY NEEDED JUST FOR VS
 # COMPILING

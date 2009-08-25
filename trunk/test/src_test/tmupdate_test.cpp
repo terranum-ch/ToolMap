@@ -49,9 +49,11 @@ public:
 	
 	void TESTConnection()
 	{
-				
+			
 		tmUpdate tm;
-		CPPUNIT_ASSERT(tm.IsServerResponding(NULL));
+		CPPUNIT_ASSERT(tm.GetErrorMessage() == 0);	
+		CPPUNIT_ASSERT(tm.IsServerResponding()==true);
+		wxLogDebug(_T("Connection status : %d"), tm.GetErrorMessage());
 	}
 	
 	
@@ -61,7 +63,7 @@ public:
 		wxLogDebug(_T("Checking new version"));
 		tmUpdate tm;
 		wxString myVersionLabel;
-		CPPUNIT_ASSERT(tm.IsNewVersionAvaillable(myVersionLabel));
+		CPPUNIT_ASSERT(tm.IsNewVersionAvaillable());
 	}
 	
 

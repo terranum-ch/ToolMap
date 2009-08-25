@@ -53,6 +53,13 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
  
 
+#CURL
+FIND_PACKAGE ("Curl")
+IF (CURL_FOUND)
+	INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIRS})
+	LINK_LIBRARIES(${CURL_LIBRARIES})
+ENDIF (CURL_FOUND)
+	
 
 
 IF( APPLE )

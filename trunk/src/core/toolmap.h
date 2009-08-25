@@ -123,7 +123,7 @@
 
 
 //// temp for testing 
-#include "../components/tmupdate/tmupdate.h"
+//#include "../components/tmupdate/tmupdate.h"
 #include "diroperation.h"
 //// end of testing
 
