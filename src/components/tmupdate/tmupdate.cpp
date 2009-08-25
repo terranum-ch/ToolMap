@@ -36,18 +36,27 @@ void tmUpdate::UPInit()
 	wxASSERT(m_UPCurlHandle);
 	
 	m_UPConnectimeout = 1000;
+	m_UPServerInfo = "http://10.211.55.2/~Lucien/statistics/tmlatestversion.txt";
+	m_UPServerBin = _T("http://www.crealp.ch/down/toolmap/");
+	
 	m_UPActualVersion = wxNOT_FOUND;
 	m_UPLatestVersion = wxEmptyString;
-	m_UPServer = "http://10.211.55.2/~Lucien/statistics/tmlatestversion.txt";
+	
+	m_UPShouldSaveParameters = false;
 	m_UPCheckOnStart = true;
 	m_UPProxyUse = false;
 	m_UPProxyDefinition = wxEmptyString;
+	
+	// load parameters
+	UPLoadParameters();
 }
 
 
 tmUpdate::~tmUpdate()
 {
 	curl_easy_cleanup(m_UPCurlHandle);
+	if (m_UPShouldSaveParameters == true)
+		UPSaveParameters();
 }
 
 
@@ -57,7 +66,7 @@ bool tmUpdate::UPPrepareConnection()
 	wxASSERT(m_UPCurlHandle);
 	wxString sErr = _("Error preparing connection");
 	
-	CURLcode  m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_URL,m_UPServer);
+	CURLcode  m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_URL,m_UPServerInfo);
 	if(m_UPCurlError != CURLE_OK)
 	{
 		wxLogDebug(sErr);
@@ -173,10 +182,12 @@ bool tmUpdate::IsServerResponding ()
 
 void tmUpdate::UPGetErrorVerbose()
 {
+#ifdef __WXDEBUG__
 #ifdef __UP_VERBOSE__
 	wxASSERT(m_UPCurlHandle);
 	m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_VERBOSE, true);
 #endif	
+#endif
 }
 
 
@@ -215,7 +226,7 @@ int tmUpdate::UPExtractSVNNumber(const wxString & textversion)
 		return wxNOT_FOUND;
 	
 	long mySvnNumber = 0;
-	textversion.Mid(myPos).ToLong(&mySvnNumber);
+	textversion.Mid(textversion.Len() -myPos).ToLong(&mySvnNumber);
 	return (int) mySvnNumber;
 }
 
@@ -229,11 +240,115 @@ bool tmUpdate::IsNewVersionAvaillable()
 	if (iNewVersion == wxNOT_FOUND)
 		return false;
 	
+	
 	if (m_UPActualVersion >= iNewVersion)
 		return false;
-		
+	
+	wxLogDebug(_T("New version availlable : actual : %d, new : %d"), m_UPActualVersion, iNewVersion);
 	return true;
 }
+
+
+wxString tmUpdate::GetDownloadLink ()
+{
+	if (m_UPLatestVersion == wxEmptyString)
+		return wxEmptyString;
+	
+
+	//TODO: Add installer for linux
+	// link is based on plateform specific name
+	// actually only for mac / windows 
+	
+	wxString myInstName = wxEmptyString;
+	wxString myVersionType = _T("r");
+	
+#ifdef __WXMSW__
+	myInstName = _T("InstallToolMap_%s%d.exe");
+#endif
+#ifdef __WXOSX__
+	myInstName = _T("ToolMap2_%s%d.dmg");
+#endif
+	
+#ifdef __WXDEBUG__
+	myVersionType = _T("d");
+#endif
+	
+	int iNewVersionNumber = UPExtractSVNNumber(m_UPLatestVersion);
+	
+						  
+	wxString myInstallerName = wxString::Format(myInstName, myVersionType.c_str(), iNewVersionNumber);
+	wxString myInstallerFullPath = m_UPServerBin + myInstallerName;
+	wxLogDebug(myInstallerFullPath);
+	return myInstallerFullPath;
+}
+
+
+bool tmUpdate::UPLoadParameters()
+{
+	wxFileConfig * myConfig = new wxFileConfig();
+	
+	if(myConfig->Exists(_T("UPDATE"))==false)
+	{
+		wxLogDebug(_T("No config file found"));
+		delete myConfig;
+		return false;
+	}
+		
+	myConfig->SetPath(_T("UPDATE"));
+	myConfig->Read(_T("check_on_start"), &m_UPCheckOnStart);
+	myConfig->Read(_T("proxy_use"), &m_UPProxyUse);
+	myConfig->Read(_T("proxy_info"), &m_UPProxyDefinition);
+	delete myConfig;
+	return true;
+}
+
+
+bool tmUpdate::UPSaveParameters()
+{
+	
+	if (m_UPShouldSaveParameters == false)
+		return false;
+			
+	wxFileConfig * myConfig = new wxFileConfig();
+	wxLogDebug(_T("Saving parameters into config file : %s"),
+			   myConfig->GetAppName().c_str());
+
+	myConfig->SetPath(_T("UPDATE"));
+	myConfig->Write(_T("check_on_start"), m_UPCheckOnStart);
+	myConfig->Write(_T("proxy_use"), m_UPProxyUse);
+	myConfig->Write(_T("proxy_info"), m_UPProxyDefinition);
+	myConfig->Flush();
+	
+	m_UPShouldSaveParameters = false;
+	delete myConfig;
+	return true;
+}
+
+
+void tmUpdate::SetParameters (bool checkonstart, bool useproxy, const wxString & proxyinfo)
+{
+	m_UPCheckOnStart = checkonstart;
+	m_UPProxyUse = useproxy;
+	m_UPProxyDefinition = proxyinfo;
+	
+	// when params are changed, need save...
+	m_UPShouldSaveParameters = true;
+}
+
+void tmUpdate::GetParameters (bool & checkonstart,bool & useproxy,wxString & proxyinfo)
+{
+	checkonstart = m_UPCheckOnStart;
+	useproxy = m_UPProxyUse;
+	proxyinfo = m_UPProxyDefinition;
+}
+
+
+bool tmUpdate::IsCheckOnStart()
+{
+	return m_UPCheckOnStart;
+}
+
+
 
 
 size_t wxcurl_str_write(void* ptr, size_t size, size_t nmemb, void* stream)
