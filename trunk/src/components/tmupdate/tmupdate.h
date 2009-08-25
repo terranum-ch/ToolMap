@@ -29,11 +29,13 @@
     #include <wx/wx.h>
 #endif
 
-#include <curl/curl.h>
+#include <curl/curl.h>		// for web acces
 #include <wx/sstream.h>
+#include <wx/fileconf.h>	// for file configuration
 
 // comment to avoid verbose mode
-#define __UP_VERBOSE__ 
+// works only in debug mode
+//#define __UP_VERBOSE__ 
 
 
 // CALLBACK FOR CURL
@@ -47,10 +49,16 @@ class tmUpdate : public wxObject
 		CURL * m_UPCurlHandle;
 		CURLcode m_UPCurlError;
 		
-		// parameters 
+		// fixed parameters 
 		long m_UPConnectimeout;
-		const char * m_UPServer;
+		const char * m_UPServerInfo;
+		wxString m_UPServerBin;
+		
+		
 		long m_UPActualVersion;
+		
+		// config parameters
+		bool m_UPShouldSaveParameters;
 		bool m_UPCheckOnStart;
 		bool m_UPProxyUse;
 		wxString m_UPProxyDefinition;
@@ -72,6 +80,9 @@ class tmUpdate : public wxObject
 		int		UPExtractSVNNumber(const wxString & textversion);
 		void	UPGetErrorVerbose();
 		
+		bool    UPLoadParameters();
+		bool	UPSaveParameters();
+		
 	public:
 		tmUpdate();
 		~tmUpdate();
@@ -82,6 +93,21 @@ class tmUpdate : public wxObject
 		
 		int GetErrorMessage();
 		
+		// setter & getter
+		void SetActualVersion (long myVersion){m_UPActualVersion = myVersion;}
+		wxString GetNewVersionName (){return m_UPLatestVersion;}
+		wxString GetDownloadLink ();
+		
+		// saving & getting parameters
+		void SetParameters (bool checkonstart = true,
+							bool useproxy = false,
+							const wxString & proxyinfo = wxEmptyString);
+		void GetParameters (bool & checkonstart,
+							bool & useproxy,
+							wxString & proxyinfo);
+		
+		
+		bool IsCheckOnStart();
 		
 	};
 
