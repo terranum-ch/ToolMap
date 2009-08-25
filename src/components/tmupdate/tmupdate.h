@@ -29,18 +29,59 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/protocol/http.h>
+#include <curl.h>
+#include <wx/sstream.h>
+
+// comment to avoid verbose mode
+#define __UP_VERBOSE__ 
+
+
+// CALLBACK FOR CURL
+size_t wxcurl_str_write(void* ptr, size_t size, size_t nmemb, void* stream);
 
 
 class tmUpdate : public wxObject
 	{
 	private:
+		// curl member data
+		CURL * m_UPCurlHandle;
+		CURLcode m_UPCurlError;
+		
+		// parameters 
+		long m_UPConnectimeout;
+		const char * m_UPServer;
+		long m_UPActualVersion;
+		bool m_UPCheckOnStart;
+		bool m_UPProxyUse;
+		wxString m_UPProxyDefinition;
+		
+		
+		// results
+		wxString m_UPLatestVersion;
+		
+		
+		// functions
+		void	UPInit();
+		bool	UPPrepareConnection();
+		bool	UPPrepareProxy();
+
+		bool	UPPerform();
+		bool	UPPerformReceiveData(wxString & data);
+		
+		bool	UPGetLatestVersion();
+		int		UPExtractSVNNumber(const wxString & textversion);
+		void	UPGetErrorVerbose();
+		
 	public:
 		tmUpdate();
 		~tmUpdate();
 		
-		bool IsNewVersionAvaillable(wxString & versionName);
-		bool IsServerResponding (int * errorcode = NULL);
+		
+		bool IsNewVersionAvaillable();
+		bool IsServerResponding ();
+		
+		int GetErrorMessage();
+		
 		
 	};
 

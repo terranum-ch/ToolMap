@@ -19,63 +19,237 @@
 
 #include "tmupdate.h"
 
+
 tmUpdate::tmUpdate()
 {
+
+	UPInit();
+}
+
+
+
+void tmUpdate::UPInit()
+{	
+	//INIT CURL
+	m_UPCurlError = curl_global_init(CURL_GLOBAL_ALL);
+	m_UPCurlHandle = curl_easy_init();
+	wxASSERT(m_UPCurlHandle);
 	
+	m_UPConnectimeout = 1000;
+	m_UPActualVersion = wxNOT_FOUND;
+	m_UPLatestVersion = wxEmptyString;
+	m_UPServer = "http://10.211.55.2/~Lucien/statistics/tmlatestversion.txt";
+	m_UPCheckOnStart = true;
+	m_UPProxyUse = false;
+	m_UPProxyDefinition = wxEmptyString;
 }
 
 
 tmUpdate::~tmUpdate()
 {
-	
+	curl_easy_cleanup(m_UPCurlHandle);
 }
 
 
-bool tmUpdate::IsServerResponding (int * errorcode)
+
+bool tmUpdate::UPPrepareConnection()
 {
+	wxASSERT(m_UPCurlHandle);
+	wxString sErr = _("Error preparing connection");
 	
-	wxHTTP myHttp;
-	
-	myHttp.SetTimeout(10);
-	bool bConnecStatus = myHttp.Connect(_T("www.crealp.ch"));
-	
-	if (bConnecStatus == false)
+	CURLcode  m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_URL,m_UPServer);
+	if(m_UPCurlError != CURLE_OK)
 	{
-		wxLogError(_T("Error, server responded : %d"), myHttp.GetResponse());
+		wxLogDebug(sErr);
 		return false;
 	}
 	
-	//if (wxApp::IsMainLoopRunning() == false)
-	//	return false;
-	
-	wxInputStream *stream = myHttp.GetInputStream(_T("/down/toolmap/tmlatestversion.txt"));
-	if (stream == NULL)
+	m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_TIMEOUT_MS, m_UPConnectimeout);
+	if(m_UPCurlError != CURLE_OK)
 	{
-		wxLogError(_T("Unable to get the steam"));
+		wxLogDebug(sErr);
 		return false;
 	}
 	
-	char szBuff[1025];
-	wxString data=_T("");
-	// On lit une partie des données disponibles
-	stream->Read(szBuff,1024);
-	while (stream->LastRead())
-	{
-		// On s'assure que le texte téléchargé se termine bien
-		// par un caratère zéro
-		szBuff[stream->LastRead()]='\0';
-		// On fait la conversion si nécessaire
-		data+= wxString::FromAscii(szBuff);
-		// Et on essaie de lire la partie suivante
-		stream->Read(szBuff,1024);
-	}
-	delete stream;
-	wxLogDebug(data);
+	if (UPPrepareProxy() == false)
+		return false;
+	
 	
 	return true;
 }
 
-bool tmUpdate::IsNewVersionAvaillable(wxString & versionName)
+
+
+bool tmUpdate::UPPrepareProxy()
 {
-	return false;
+	wxASSERT(m_UPCurlHandle);
+	wxString sErr = wxString::Format(_("Error with following proxy : %s"), 
+									 m_UPProxyDefinition.c_str());
+	
+	// not using a proxy
+	if (m_UPProxyUse == false)
+		return true;
+	
+	if (m_UPProxyDefinition == wxEmptyString)
+	{
+		wxLogError(sErr);
+		return false;
+	}
+	
+	char cproxy[1024];
+	strcpy(cproxy, (const char*)m_UPProxyDefinition.mb_str(wxConvUTF8));
+	m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_PROXY, cproxy);
+	if (m_UPCurlError != CURLE_OK)
+	{
+		wxLogError(sErr);
+		return false;
+	}
+	return true;
 }
+
+
+bool tmUpdate::UPPerformReceiveData(wxString & data)
+{
+	wxASSERT(m_UPCurlHandle);
+	wxString sErr = _("Error preparing reception of data : %d");
+
+	m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_WRITEFUNCTION, wxcurl_str_write); 
+	
+	if(m_UPCurlError != CURLE_OK)
+	{
+		wxLogError(wxString::Format(sErr, GetErrorMessage()));
+		return false;
+	}
+	
+	
+	wxStringOutputStream  buffer;
+	m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_WRITEDATA,(void*)& buffer); 
+	if(m_UPCurlError != CURLE_OK)
+	{
+		wxLogError(wxString::Format(sErr, GetErrorMessage()));
+		return false;
+	}
+
+	if (UPPerform() == false)
+		return false;
+	
+	data = buffer.GetString();	
+	wxLogDebug(data);	
+	return true;
+}
+
+
+bool tmUpdate::UPPerform()
+{
+	wxASSERT(m_UPCurlHandle);
+	
+	
+	UPGetErrorVerbose(); 
+	
+	m_UPCurlError = curl_easy_perform(m_UPCurlHandle);
+	
+	if (m_UPCurlError != CURLE_OK)
+	{
+		wxLogError(_("Error performing connection : %d"));
+		return false;
+	}
+	return true;
+}
+
+
+
+bool tmUpdate::IsServerResponding ()
+{
+	if (UPPrepareConnection() == false)
+		return false;
+	
+	if (UPPerform() == false)
+		return false;
+	
+	return true;
+}
+
+
+
+void tmUpdate::UPGetErrorVerbose()
+{
+#ifdef __UP_VERBOSE__
+	wxASSERT(m_UPCurlHandle);
+	m_UPCurlError = curl_easy_setopt(m_UPCurlHandle, CURLOPT_VERBOSE, true);
+#endif	
+}
+
+
+int tmUpdate::GetErrorMessage()
+{
+	return (int) m_UPCurlError;
+}
+
+
+
+
+bool tmUpdate::UPGetLatestVersion()
+{
+	if (UPPrepareConnection() == false)
+		return false;
+	
+	if (UPPrepareProxy() == false)
+		return false;
+	
+	wxString myLatestNum = wxEmptyString;
+	if (UPPerformReceiveData(myLatestNum) == false)
+		return false;
+	
+	m_UPLatestVersion = myLatestNum;
+	return true;
+}
+
+
+int tmUpdate::UPExtractSVNNumber(const wxString & textversion)
+{
+	if (textversion.IsEmpty())
+		return wxNOT_FOUND;
+	
+	int myPos = textversion.Find('.', true);
+	if (myPos == wxNOT_FOUND)
+		return wxNOT_FOUND;
+	
+	long mySvnNumber = 0;
+	textversion.Mid(myPos).ToLong(&mySvnNumber);
+	return (int) mySvnNumber;
+}
+
+
+bool tmUpdate::IsNewVersionAvaillable()
+{
+	if (UPGetLatestVersion() == false)
+		return false;
+	
+	int iNewVersion = UPExtractSVNNumber(m_UPLatestVersion);
+	if (iNewVersion == wxNOT_FOUND)
+		return false;
+	
+	if (m_UPActualVersion >= iNewVersion)
+		return false;
+		
+	return true;
+}
+
+
+size_t wxcurl_str_write(void* ptr, size_t size, size_t nmemb, void* stream)
+{
+	size_t iRealSize = size * nmemb;
+	
+	wxOutputStream* pBuf = (wxOutputStream*)stream;
+	
+	if(pBuf)
+	{
+		pBuf->Write(ptr, iRealSize);
+		
+		return pBuf->LastWrite();
+	}
+	
+	return 0;
+	
+}
+
