@@ -29,10 +29,15 @@ END_EVENT_TABLE()
 
 
 
-tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id, 
+tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, tmUpdate * pupdate, wxWindowID id, 
 						   const wxString& title, const wxPoint& pos,
 						   const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+	m_Update = pupdate;
+	m_ParamStart = true;
+	m_ParamProxy = false;
+	m_ParamProxyInfo = wxEmptyString;
+	
 	//this->SetSizeHints( wxSize( 320,200 ), wxDefaultSize );
 	
 	m_MainSizer = new wxBoxSizer( wxVERTICAL );
@@ -67,7 +72,6 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id,
 	wxBoxSizer* bSizer30;
 	bSizer30 = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxButton* m_DownLoadBtn;
 	m_DownLoadBtn = new wxButton( tmUpdate_Panel_Sucess, ID_DLGUP_DOWNLOAD, _("Download"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer30->Add( m_DownLoadBtn, 0, wxALL, 5 );
 	
@@ -170,6 +174,9 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id,
 	UPDLGUpdateLayout();
 	CenterOnParent(wxBOTH);
 	
+	// load parameters
+	UPDLGGetUpdateParam();
+	
 }
 
 void tmUpdate_DLG::UPDLGUpdateLayout()
@@ -182,6 +189,7 @@ void tmUpdate_DLG::UPDLGUpdateLayout()
 
 tmUpdate_DLG::~tmUpdate_DLG()
 {
+	UPDLGSaveParam();
 }
 
 
@@ -199,13 +207,13 @@ void tmUpdate_DLG::SetNoNewVersion()
 	UPDLGUpdateLayout();
 }
 
-void tmUpdate_DLG::SetNewVersion(tmUpdate * pupdate)
+void tmUpdate_DLG::SetNewVersion()
 {
 	tmUpdate_Panel_Failure->Hide();
 	UPDLGUpdateLayout();
-	m_Update = pupdate;
 	m_DownLoadBtn->SetDefault(); 
 }
+
 
 
 void tmUpdate_DLG::OnShowOptions (wxCommandEvent & event)
@@ -227,6 +235,8 @@ void tmUpdate_DLG::OnShowOptions (wxCommandEvent & event)
 	event.Skip();
 }
 
+
+
 void tmUpdate_DLG::OnShowProxy (wxCommandEvent & event)
 {
 	
@@ -237,11 +247,18 @@ void tmUpdate_DLG::OnShowProxy (wxCommandEvent & event)
 	
 }
 
+
+
 void tmUpdate_DLG::UPDLGCheckProxy (bool bEnable)
 {
 	m_ProxyText1->Enable(bEnable);
 	m_ProxyTextCtrl->Enable(bEnable) ;
     m_ProxyText2->Enable(bEnable);
+	
+	if (bEnable)
+		m_ProxyTextCtrl->SetValue(m_ParamProxyInfo);
+	else
+		m_ProxyTextCtrl->SetValue(wxEmptyString);
 }
 
 
@@ -250,3 +267,37 @@ void tmUpdate_DLG::OnButtonClose (wxCommandEvent & event)
 	Close(wxID_CANCEL);
 }
 
+
+void tmUpdate_DLG::UPDLGGetUpdateParam ()
+{
+	wxASSERT(m_Update);
+	m_Update->GetParameters(m_ParamStart, m_ParamProxy, m_ParamProxyInfo);
+	
+	m_UpdateCheckbox->SetValue(m_ParamStart);
+	m_ProxyCheckbox->SetValue(m_ParamProxy);
+	UPDLGCheckProxy(m_ParamProxy);
+}
+
+
+void tmUpdate_DLG::UPDLGSaveParam ()
+{
+	wxASSERT(m_Update);
+	
+	bool bSave = false;
+	if (m_ParamStart != m_UpdateCheckbox->IsChecked())
+		bSave = bSave | true;
+
+	if (m_ParamProxy != m_ProxyCheckbox->IsChecked())
+		bSave = bSave | true;
+	
+	if (m_ParamProxyInfo != m_ProxyTextCtrl->GetValue())
+		bSave = bSave | true;
+	
+	if (bSave == true)
+		m_Update->SetParameters(m_UpdateCheckbox->IsChecked(),
+								m_ProxyCheckbox->IsChecked(),
+								m_ProxyTextCtrl->GetValue());
+	
+		
+	
+}
