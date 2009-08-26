@@ -70,8 +70,7 @@ class MenuManager : public wxObject
 		
 		// members for recent files
 		wxFileHistory * m_pFilesHistory;
-		wxFileConfig * m_pConfig;
-
+		
 		
 		// functions used internally for uptading menus items
 		void UpdateMenuProject();
@@ -81,7 +80,7 @@ class MenuManager : public wxObject
 		DECLARE_CLASS(MenuManager);
 		
 	public:
-		MenuManager(wxMenuBar * menubar, wxFileConfig * configfile);
+		MenuManager(wxMenuBar * menubar);
 		~MenuManager();
 		
 		void SetStatus(MENUSTATUS flags);
