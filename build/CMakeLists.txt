@@ -54,7 +54,7 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  
 
 #CURL
-INCLUDE ("cmake/findCURL.cmake")
+INCLUDE ("cmake/FindCURL.cmake")
 	
 
 
