@@ -213,6 +213,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	//TODO: Temp function for testing purpose, remove.
 	EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnTempBlockRefresh)
 
+
+	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
+
 	// AUI EVENT WHEN PANE CLOSED
 	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
 
@@ -976,6 +979,33 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 	*pi = 12;*/
 	
 	m_AttribManager->DisplayInformationsWnd();
+}
+
+
+
+void ToolMapFrame::OnCheckUpdates (wxCommandEvent & event)
+{
+	CheckUpdates(false);
+}
+
+
+void ToolMapFrame::CheckUpdates(bool silent)
+{
+	wxString myVersion = SVN_VERSION;
+	if (myVersion.Right(1)==_T("M"))
+		myVersion.RemoveLast(1);
+	long myLVersion = 0;
+	myVersion.ToLong(&myLVersion);
+	
+	tmUpdate tm;
+	tm.SetActualVersion(myLVersion);
+	
+	//if(tm.IsServerResponding()==false)
+		// show error dlg
+	
+	tmUpdate_DLG myDlg (this);
+	myDlg.ShowModal();
+	
 }
 
 
