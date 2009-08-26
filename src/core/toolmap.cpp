@@ -1003,8 +1003,8 @@ void ToolMapFrame::CheckUpdates(bool silent)
 	//if(tm.IsServerResponding()==false)
 		// show error dlg
 	
-	tmUpdate_DLG myDlg (this);
-	myDlg.SetNewVersion(&tm);
+	tmUpdate_DLG myDlg (this, &tm);
+	myDlg.SetNewVersion();
 	//myDlg.SetNoConnection();
 	myDlg.ShowModal();
 	

@@ -69,6 +69,13 @@ class tmUpdate_DLG : public wxDialog
 		tmUpdate * m_Update;
 		void UPDLGCheckProxy (bool bEnable = true);
 		
+		bool m_ParamStart;
+		bool m_ParamProxy;
+		wxString m_ParamProxyInfo;
+		
+		void UPDLGGetUpdateParam ();
+		void UPDLGSaveParam ();
+		
 		// event function
 		void OnShowOptions (wxCommandEvent & event);
 		void OnShowProxy (wxCommandEvent & event);
@@ -79,16 +86,17 @@ class tmUpdate_DLG : public wxDialog
 		
 		
 	public:
-		tmUpdate_DLG(wxWindow* parent, wxWindowID id = wxID_ANY, 
+		tmUpdate_DLG(wxWindow* parent, tmUpdate * pupdate, wxWindowID id = wxID_ANY, 
 					 const wxString& title = _("Updates"), 
 					 const wxPoint& pos = wxDefaultPosition,
 					 const wxSize& size = wxDefaultSize,
-					 long style = wxDEFAULT_DIALOG_STYLE); //|wxRESIZE_BORDER );
+					 long style = wxDEFAULT_DIALOG_STYLE |wxRESIZE_BORDER );
+		
 		~tmUpdate_DLG();
 		
 		void SetNoConnection();
 		void SetNoNewVersion();
-		void SetNewVersion(tmUpdate * pupdate);
+		void SetNewVersion();
 
 		
 	};
