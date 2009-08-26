@@ -1004,6 +1004,8 @@ void ToolMapFrame::CheckUpdates(bool silent)
 		// show error dlg
 	
 	tmUpdate_DLG myDlg (this);
+	myDlg.SetNewVersion(&tm);
+	//myDlg.SetNoConnection();
 	myDlg.ShowModal();
 	
 }

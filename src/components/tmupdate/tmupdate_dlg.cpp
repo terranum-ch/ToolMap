@@ -21,14 +21,21 @@
 
 
 
+BEGIN_EVENT_TABLE(tmUpdate_DLG, wxDialog)
+	EVT_BUTTON(ID_DLGUP_OPTIONS1, tmUpdate_DLG::OnShowOptions)
+	EVT_CHECKBOX(ID_DLGUP_OPT_PROXY, tmUpdate_DLG::OnShowProxy)
+	EVT_BUTTON (wxID_CLOSE, tmUpdate_DLG::OnButtonClose)
+END_EVENT_TABLE()
+
+
+
 tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id, 
 						   const wxString& title, const wxPoint& pos,
 						   const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	//this->SetSizeHints( wxSize( 320,200 ), wxDefaultSize );
 	
-	wxBoxSizer* bSizer28;
-	bSizer28 = new wxBoxSizer( wxVERTICAL );
+	m_MainSizer = new wxBoxSizer( wxVERTICAL );
 	
 	tmUpdate_Panel_Sucess = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer29;
@@ -60,10 +67,9 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id,
 	wxBoxSizer* bSizer30;
 	bSizer30 = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxButton* m_button25;
-	m_button25 = new wxButton( tmUpdate_Panel_Sucess, ID_DLGUP_DOWNLOAD, _("Download"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button25->SetDefault(); 
-	bSizer30->Add( m_button25, 0, wxALL, 5 );
+	wxButton* m_DownLoadBtn;
+	m_DownLoadBtn = new wxButton( tmUpdate_Panel_Sucess, ID_DLGUP_DOWNLOAD, _("Download"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer30->Add( m_DownLoadBtn, 0, wxALL, 5 );
 	
 	wxButton* m_button26;
 	m_button26 = new wxButton( tmUpdate_Panel_Sucess, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -72,17 +78,57 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id,
 	
 	bSizer30->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	wxButton* m_button27;
-	m_button27 = new wxButton( tmUpdate_Panel_Sucess, ID_DLGUP_OPTIONS1, _("Options >>"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer30->Add( m_button27, 0, wxALL, 5 );
+	//wxButton* m_button27;
+	m_OptionBtn1 = new wxButton( tmUpdate_Panel_Sucess, ID_DLGUP_OPTIONS1, _("Options >>"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer30->Add( m_OptionBtn1, 0, wxALL, 5 );
 	
 	bSizer29->Add( bSizer30, 0, wxEXPAND, 5 );
 	
 	tmUpdate_Panel_Sucess->SetSizer( bSizer29 );
 	tmUpdate_Panel_Sucess->Layout();
 	bSizer29->Fit( tmUpdate_Panel_Sucess );
-	bSizer28->Add( tmUpdate_Panel_Sucess, 1, wxEXPAND|wxALL, 5 );
+	m_MainSizer->Add( tmUpdate_Panel_Sucess, 1, wxEXPAND|wxALL, 5 );
 	
+	// FAILURE PANEL
+	tmUpdate_Panel_Failure = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer301;
+	bSizer301 = new wxBoxSizer( wxVERTICAL );
+	
+	m_ErrorText = new wxStaticText( tmUpdate_Panel_Failure, wxID_ANY, _("Internet problem. ToolMap wasn't able to connect to the web. Please use the options button bellow if you are behind a proxy."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ErrorText->Wrap( 350 );
+	bSizer301->Add( m_ErrorText, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	bSizer301->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	wxStaticLine* m_staticline4;
+	m_staticline4 = new wxStaticLine( tmUpdate_Panel_Failure, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	bSizer301->Add( m_staticline4, 0, wxEXPAND | wxALL, 5 );
+	
+	
+	wxBoxSizer* bSizer311;
+	bSizer311 = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxButton* m_button261;
+	m_button261 = new wxButton( tmUpdate_Panel_Failure, wxID_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button261->SetDefault(); 
+	bSizer311->Add( m_button261, 0, wxALL, 5 );
+	
+	
+	bSizer311->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	//wxButton* m_OptionBtn;
+	m_OptionBtn2 = new wxButton( tmUpdate_Panel_Failure, ID_DLGUP_OPTIONS1, _("Options >>"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer311->Add( m_OptionBtn2, 0, wxALL, 5 );
+	
+	bSizer301->Add( bSizer311, 0, wxEXPAND, 5 );
+	
+	tmUpdate_Panel_Failure->SetSizer( bSizer301 );
+	tmUpdate_Panel_Failure->Layout();
+	bSizer301->Fit( tmUpdate_Panel_Failure );
+	m_MainSizer->Add( tmUpdate_Panel_Failure, 0, wxEXPAND | wxALL, 5 );
+	
+	// OPTION PANEL
 	tmUpdate_Panel_Option = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer( wxVERTICAL );
@@ -114,48 +160,93 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, wxWindowID id,
 	tmUpdate_Panel_Option->SetSizer( bSizer31 );
 	tmUpdate_Panel_Option->Layout();
 	bSizer31->Fit( tmUpdate_Panel_Option );
-	bSizer28->Add( tmUpdate_Panel_Option, 0, wxEXPAND | wxALL, 5 );
-	
-	tmUpdate_Panel_Failure = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer301;
-	bSizer301 = new wxBoxSizer( wxVERTICAL );
-	
-	m_ErrorText = new wxStaticText( tmUpdate_Panel_Failure, wxID_ANY, _("Internet problem. ToolMap wasn't able to connect to the web. Please use the options button bellow if you are behind a proxy."), wxDefaultPosition, wxDefaultSize, 0 );
-	m_ErrorText->Wrap( 350 );
-	bSizer301->Add( m_ErrorText, 0, wxALL|wxEXPAND, 5 );
+	m_MainSizer->Add( tmUpdate_Panel_Option, 0, wxEXPAND | wxALL, 5 );
 	
 	
-	bSizer301->Add( 0, 0, 1, wxEXPAND, 5 );
 	
-	wxBoxSizer* bSizer311;
-	bSizer311 = new wxBoxSizer( wxHORIZONTAL );
+	tmUpdate_Panel_Option->Hide();
 	
-	wxButton* m_button261;
-	m_button261 = new wxButton( tmUpdate_Panel_Failure, ID_DLGUP_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button261->SetDefault(); 
-	bSizer311->Add( m_button261, 0, wxALL, 5 );
+	this->SetSizer( m_MainSizer );
+	UPDLGUpdateLayout();
+	CenterOnParent(wxBOTH);
 	
-	
-	bSizer311->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	wxButton* m_button271;
-	m_button271 = new wxButton( tmUpdate_Panel_Failure, ID_DLGUP_OPTIONS2, _("Options >>"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer311->Add( m_button271, 0, wxALL, 5 );
-	
-	bSizer301->Add( bSizer311, 0, wxEXPAND, 5 );
-	
-	tmUpdate_Panel_Failure->SetSizer( bSizer301 );
-	tmUpdate_Panel_Failure->Layout();
-	bSizer301->Fit( tmUpdate_Panel_Failure );
-	bSizer28->Add( tmUpdate_Panel_Failure, 0, wxEXPAND | wxALL, 5 );
-	
-	//tmUpdate_Panel_Failure->Hide();
-	
-	this->SetSizer( bSizer28 );
-	this->Layout();
-	bSizer28->Fit( this );
 }
+
+void tmUpdate_DLG::UPDLGUpdateLayout()
+{
+	this->Layout();
+	m_MainSizer->Fit( this );
+	
+}
+
 
 tmUpdate_DLG::~tmUpdate_DLG()
 {
 }
+
+
+void tmUpdate_DLG::SetNoConnection()
+{
+	tmUpdate_Panel_Sucess->Hide();
+	UPDLGUpdateLayout();
+	
+}
+
+void tmUpdate_DLG::SetNoNewVersion()
+{
+	tmUpdate_Panel_Sucess->Hide();
+	m_ErrorText->SetLabel(_("No new version available, you are running the latest version"));
+	UPDLGUpdateLayout();
+}
+
+void tmUpdate_DLG::SetNewVersion(tmUpdate * pupdate)
+{
+	tmUpdate_Panel_Failure->Hide();
+	UPDLGUpdateLayout();
+	m_Update = pupdate;
+	m_DownLoadBtn->SetDefault(); 
+}
+
+
+void tmUpdate_DLG::OnShowOptions (wxCommandEvent & event)
+{
+	if (tmUpdate_Panel_Option->IsShown()==true)
+	{
+		tmUpdate_Panel_Option->Hide();
+		m_OptionBtn1->SetLabel(m_OptionBtn1->GetLabel().RemoveLast(2).Append(_T(">>")));
+		m_OptionBtn2->SetLabel(m_OptionBtn2->GetLabel().RemoveLast(2).Append(_T(">>")));
+	}
+	else
+	{
+		tmUpdate_Panel_Option->Show();
+		m_OptionBtn1->SetLabel(m_OptionBtn1->GetLabel().RemoveLast(2).Append(_T("<<")));
+		m_OptionBtn2->SetLabel(m_OptionBtn2->GetLabel().RemoveLast(2).Append(_T("<<")));
+	}
+	
+	UPDLGUpdateLayout();
+	event.Skip();
+}
+
+void tmUpdate_DLG::OnShowProxy (wxCommandEvent & event)
+{
+	
+	if (m_ProxyCheckbox->IsChecked()==false)
+		UPDLGCheckProxy(false);
+	else
+		UPDLGCheckProxy();
+	
+}
+
+void tmUpdate_DLG::UPDLGCheckProxy (bool bEnable)
+{
+	m_ProxyText1->Enable(bEnable);
+	m_ProxyTextCtrl->Enable(bEnable) ;
+    m_ProxyText2->Enable(bEnable);
+}
+
+
+void tmUpdate_DLG::OnButtonClose (wxCommandEvent & event)
+{
+	Close(wxID_CANCEL);
+}
+
