@@ -25,6 +25,7 @@ BEGIN_EVENT_TABLE(tmUpdate_DLG, wxDialog)
 	EVT_BUTTON(ID_DLGUP_OPTIONS1, tmUpdate_DLG::OnShowOptions)
 	EVT_CHECKBOX(ID_DLGUP_OPT_PROXY, tmUpdate_DLG::OnShowProxy)
 	EVT_BUTTON (wxID_CLOSE, tmUpdate_DLG::OnButtonClose)
+	EVT_BUTTON (ID_DLGUP_DOWNLOAD, tmUpdate_DLG::OnButtonDownload)
 END_EVENT_TABLE()
 
 
@@ -62,7 +63,7 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, tmUpdate * pupdate, wxWindowID id,
 	m_staticText10->Wrap( 300 );
 	bSizer29->Add( m_staticText10, 0, wxALL|wxEXPAND, 5 );
 	
-	m_ChangesHyperlink = new wxHyperlinkCtrl( tmUpdate_Panel_Sucess, wxID_ANY, _("See what has changes"), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_ChangesHyperlink = new wxHyperlinkCtrl( tmUpdate_Panel_Sucess, wxID_ANY, _("See what's new"), wxT("http://www.crealp.ch/index.php?option=com_content&task=blogcategory&id=159&Itemid=312"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	bSizer29->Add( m_ChangesHyperlink, 0, wxALL, 5 );
 	
 	wxStaticLine* m_staticline3;
@@ -209,9 +210,16 @@ void tmUpdate_DLG::SetNoNewVersion()
 
 void tmUpdate_DLG::SetNewVersion()
 {
+	wxASSERT(m_Update);
 	tmUpdate_Panel_Failure->Hide();
-	UPDLGUpdateLayout();
+	
 	m_DownLoadBtn->SetDefault(); 
+	
+	// set informations
+	m_TextVersion->SetLabel(m_Update->GetNewVersionName());
+	
+	
+	UPDLGUpdateLayout();
 }
 
 
@@ -301,3 +309,19 @@ void tmUpdate_DLG::UPDLGSaveParam ()
 		
 	
 }
+
+
+void tmUpdate_DLG::OnButtonDownload (wxCommandEvent & event)
+{
+	wxASSERT(m_Update);
+	
+	
+	
+	wxString myAdress = m_Update->GetDownloadLink();
+	if (myAdress == wxEmptyString)
+		myAdress = _T("www.toolmap.ch");
+	
+	wxLaunchDefaultBrowser(myAdress);
+}
+
+

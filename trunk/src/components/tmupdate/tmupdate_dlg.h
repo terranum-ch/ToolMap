@@ -80,6 +80,7 @@ class tmUpdate_DLG : public wxDialog
 		void OnShowOptions (wxCommandEvent & event);
 		void OnShowProxy (wxCommandEvent & event);
 		void OnButtonClose (wxCommandEvent & event);
+		void OnButtonDownload (wxCommandEvent & event);
 		
 				
 		DECLARE_EVENT_TABLE();
