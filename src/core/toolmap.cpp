@@ -347,9 +347,8 @@ void ToolMapFrame::PostInit()
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
 	
-	//TODO: Testing update
-	//tmUpdate tm;
-	//tm.IsServerResponding();
+	
+	m_CheckedUpdates = false;
 
 }
 
@@ -776,6 +775,14 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 void ToolMapFrame::OnIdleTimeUpdate(wxIdleEvent & event)
 {
 	m_MManager->UpdateMenusStatus();
+	
+	if (m_CheckedUpdates == false)
+	{
+		m_CheckedUpdates = true;
+		tmUpdate tm;
+		if(tm.IsCheckOnStart()==true)
+			CheckUpdates(true);
+	}
 }
 
 
