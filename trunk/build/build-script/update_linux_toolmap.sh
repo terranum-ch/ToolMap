@@ -31,7 +31,7 @@ echo $VARLINE
 
 #update cmake project file
 echo "2) Updating cmake file..."
-cmake $VARBINDIR 
+/opt/cmake-2.6.4-Linux-i386/bin/cmake $VARBINDIR 
 echo "2) Updating cmake file... DONE"
 echo $VARLINE
 
