@@ -287,6 +287,7 @@ private:
 	
 	tmEditManager * m_EditManager;
 	tmToolManager * m_ToolManager;
+	bool m_CheckedUpdates;
 	
 	
 	void OnQuit(wxCommandEvent & event);
