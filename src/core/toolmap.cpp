@@ -985,6 +985,7 @@ void ToolMapFrame::OnCheckUpdates (wxCommandEvent & event)
 }
 
 
+
 void ToolMapFrame::CheckUpdates(bool silent)
 {
 	wxString myVersion = SVN_VERSION;
@@ -995,15 +996,30 @@ void ToolMapFrame::CheckUpdates(bool silent)
 	
 	tmUpdate tm;
 	tm.SetActualVersion(myLVersion);
-	
-	//if(tm.IsServerResponding()==false)
-		// show error dlg
-	
 	tmUpdate_DLG myDlg (this, &tm);
-	myDlg.SetNewVersion();
-	//myDlg.SetNoConnection();
-	myDlg.ShowModal();
 	
+	if(tm.IsServerResponding()==false)
+	{
+		if (silent)
+			return;
+		
+		myDlg.SetNoConnection();
+		myDlg.ShowModal();
+		return;
+	}	
+	
+	if (tm.IsNewVersionAvaillable()==false)
+	{
+		if (silent)
+			return;
+		
+		myDlg.SetNoNewVersion();
+	}
+	else
+		myDlg.SetNewVersion();
+	
+	
+	myDlg.ShowModal();
 }
 
 
