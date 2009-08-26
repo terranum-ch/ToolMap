@@ -33,14 +33,13 @@ IMPLEMENT_CLASS(MenuManager, wxObject);
  @author Lucien Schreiber (c) CREALP 2007
  @date 12 March 2008
  *******************************************************************************/
-MenuManager::MenuManager(wxMenuBar * menubar, wxFileConfig * configfile)
+MenuManager::MenuManager(wxMenuBar * menubar)
 {
 	m_MenuStatus = MENU_DB_CLOSED;
 	m_MenuBar = menubar;
 	bMenu_DB_IsOpen = FALSE;
 	m_pFilesHistory = NULL;
-	m_pConfig = configfile;
-	
+		
 	// prepare for recent documents
 	InitializeRecentFilesHistory();
 }
@@ -129,6 +128,8 @@ void MenuManager::UpdateMenuView ()
 void MenuManager::InitializeRecentFilesHistory()
 {
 	TerminateRecentFilesHistory();
+	wxFileConfig myConfigFile;
+	myConfigFile.SetPath(_T("RECENT_PRJ"));
 	
 	if (m_MenuBar)
 	{
@@ -139,7 +140,7 @@ void MenuManager::InitializeRecentFilesHistory()
 			if (menu)
 			{
 				m_pFilesHistory = new wxFileHistory(5);
-				m_pFilesHistory->Load(*m_pConfig);
+				m_pFilesHistory->Load(myConfigFile);
 				m_pFilesHistory->UseMenu(menu);
 				m_pFilesHistory->AddFilesToMenu();
 	
@@ -163,11 +164,13 @@ void MenuManager::TerminateRecentFilesHistory()
 {
 	// save the recent to the config file and delete 
 	// the object.
+	wxFileConfig myConfigFile;
+	myConfigFile.SetPath(_T("RECENT_PRJ"));
 	
 	if (m_pFilesHistory)
     {
 
-		m_pFilesHistory->Save(*m_pConfig);
+		m_pFilesHistory->Save(myConfigFile);
 
 		delete m_pFilesHistory;
 		m_pFilesHistory = 0;

@@ -319,9 +319,8 @@ void ToolMapFrame::PostInit()
 									  m_LayerManager->GetScale());
 									   
 
-	m_pConfig = new wxFileConfig();
 	// init the menu manager 
-	m_MManager = new MenuManager(GetMenuBar(), m_pConfig);
+	m_MManager = new MenuManager(GetMenuBar());
 	m_TManager = new ToolbarManager (GetToolBar());
 		
 	m_PManager = new ProjectManager(this);
@@ -385,9 +384,6 @@ ToolMapFrame::~ToolMapFrame()
 	// delete toolmanager
 	delete m_ToolManager;
 	
-	
-	// delete the config file
-	delete m_pConfig;
 	
 	// finish the GEOS library
 	wxLogDebug(_T("Clearing GEOS library"));

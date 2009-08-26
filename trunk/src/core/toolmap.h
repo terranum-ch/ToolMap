@@ -268,7 +268,6 @@ public:
 	
 	
 private:
-	wxFileConfig * m_pConfig;
 	
 	wxAuiManager * m_AuiManager;
 	AttribObjType_PANEL * m_AttribObjPanel;
