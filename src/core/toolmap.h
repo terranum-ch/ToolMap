@@ -121,9 +121,10 @@
 #include "../gis/tmeditmanager.h"			// for editing manager
 #include "../gui/tmtoolmanager.h"			// for tools
 
+#include "../components/tmupdate/tmupdate.h" // updates
+#include "../components/tmupdate/tmupdate_dlg.h"
 
 //// temp for testing 
-//#include "../components/tmupdate/tmupdate.h"
 #include "diroperation.h"
 //// end of testing
 
@@ -321,6 +322,8 @@ private:
 	void OnShowInformationDialog (wxCommandEvent & event);
 	//void OnMenuHighlightOn (wxMenuEvent & event);
 	//void OnMenuHighligntOff(wxMenuEvent & event);
+	void OnCheckUpdates (wxCommandEvent & event);
+	void CheckUpdates(bool silent = false);
 	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);

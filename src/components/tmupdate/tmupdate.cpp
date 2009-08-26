@@ -285,20 +285,18 @@ wxString tmUpdate::GetDownloadLink ()
 
 bool tmUpdate::UPLoadParameters()
 {
-	wxFileConfig * myConfig = new wxFileConfig();
+	wxFileConfig myConfig;
 	
-	if(myConfig->Exists(_T("UPDATE"))==false)
+	if(myConfig.Exists(_T("UPDATE"))==false)
 	{
 		wxLogDebug(_T("No config file found"));
-		delete myConfig;
 		return false;
 	}
 		
-	myConfig->SetPath(_T("UPDATE"));
-	myConfig->Read(_T("check_on_start"), &m_UPCheckOnStart);
-	myConfig->Read(_T("proxy_use"), &m_UPProxyUse);
-	myConfig->Read(_T("proxy_info"), &m_UPProxyDefinition);
-	delete myConfig;
+	myConfig.SetPath(_T("UPDATE"));
+	myConfig.Read(_T("check_on_start"), &m_UPCheckOnStart);
+	myConfig.Read(_T("proxy_use"), &m_UPProxyUse);
+	myConfig.Read(_T("proxy_info"), &m_UPProxyDefinition);
 	return true;
 }
 
@@ -309,18 +307,17 @@ bool tmUpdate::UPSaveParameters()
 	if (m_UPShouldSaveParameters == false)
 		return false;
 			
-	wxFileConfig * myConfig = new wxFileConfig();
+	wxFileConfig  myConfig;
 	wxLogDebug(_T("Saving parameters into config file : %s"),
-			   myConfig->GetAppName().c_str());
+			   myConfig.GetAppName().c_str());
 
-	myConfig->SetPath(_T("UPDATE"));
-	myConfig->Write(_T("check_on_start"), m_UPCheckOnStart);
-	myConfig->Write(_T("proxy_use"), m_UPProxyUse);
-	myConfig->Write(_T("proxy_info"), m_UPProxyDefinition);
-	myConfig->Flush();
+	myConfig.SetPath(_T("UPDATE"));
+	myConfig.Write(_T("check_on_start"), m_UPCheckOnStart);
+	myConfig.Write(_T("proxy_use"), m_UPProxyUse);
+	myConfig.Write(_T("proxy_info"), m_UPProxyDefinition);
+	myConfig.Flush();
 	
 	m_UPShouldSaveParameters = false;
-	delete myConfig;
 	return true;
 }
 
