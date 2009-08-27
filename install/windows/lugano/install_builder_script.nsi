@@ -85,11 +85,13 @@ SectionEnd
 
 
 Function un.onUninstSuccess
+  IfSilent +3
   HideWindow
   MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) a été désinstallé avec succès de votre ordinateur."
 FunctionEnd
 
 Function un.onInit
+  IfSilent +3
   MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Êtes-vous certains de vouloir désinstaller totalement $(^Name) et tous ses composants ?" IDYES +2
   Abort
 FunctionEnd
