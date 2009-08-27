@@ -11,15 +11,17 @@ SET (SEARCH_CURL_LIB_PATH CACHE PATH "Path to the CURL libs (empty for unix syst
 
 IF (SEARCH_CURL)
 
+	# if windows
 	IF (WIN32)
 		FIND_PATH(CURL_INCLUDE_DIRS curl/curl.h
   				${SEARCH_CURL_LIB_PATH}/include 
   				${SEARCH_CURL_LIB_PATH}
   				NO_DEFAULT_PATH)
   		
-   		FIND_LIBRARY(CURL_LIBRARIES
-	  		libcurl.lib
-	  		PATH ${SEARCH_CURL_LIB_PATH} ${SEARCH_CURL_LIB_PATH} NO_DEFAULT_PATH)
+   		
+		SET(CURL_LIBRARIES ${CURL_LIBRARIES}
+		           debug "${SEARCH_CURL_LIB_PATH}/lib/DLL-Debug/libcurld_imp.lib"   optimized "${SEARCH_CURL_LIB_PATH}/lib/DLL-Release/libcurl.lib")
+
 	
 	# if unix / mac and search geos
 	ELSE (WIN32)
