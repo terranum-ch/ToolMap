@@ -13,7 +13,7 @@ REM 6) Upload installer to ftp (open firewall for curl)
 @SET BINDIR=D:\LS\PRJ\TOOLMAP2\bin\win32_VS2008
 @SET VSDIR=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
 @SET INSTPROG="C:\Program Files\NSIS\makensis.exe"
-@SET FTPPROG="C:\Program Files\curl-7.19.2\bin\curl.exe"
+@SET FTPPROG="C:\Program Files\curl-7.19.6\curl.exe"
 
 
 
