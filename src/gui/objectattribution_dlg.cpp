@@ -88,15 +88,12 @@ void ProjectEditObjectDefinitionDLG::OnAddObject (wxCommandEvent & event)
 	switch (iSelectedPage)
 	{
 		case LAYER_POINT:
-			m_DLGPEO_List_Point->SetListSpatialType(LAYER_POINT);
 			m_DLGPEO_List_Point->AddItem();
 			break;
 		case LAYER_POLYGON:
-			m_DLGPEO_List_Poly->SetListSpatialType(LAYER_POLYGON);
 			m_DLGPEO_List_Poly->AddItem();
 			break;
 		default:
-			m_DLGPEO_List_Line->SetListSpatialType(LAYER_LINE);
 			m_DLGPEO_List_Line->AddItem();
 			break;
 	}
@@ -375,6 +372,11 @@ void ProjectEditObjectDefinitionDLG::PostInit()
 	
 	// display number of items for line list 
 	m_DLGPEO_List_Line->UpdateStatus(STATUS_FIELD_ITEM_COUNT);
+	
+	// set type to the list
+	m_DLGPEO_List_Line->SetListSpatialType(LAYER_LINE);
+	m_DLGPEO_List_Point->SetListSpatialType(LAYER_POINT);
+	m_DLGPEO_List_Poly->SetListSpatialType(LAYER_POLYGON);
 	
 		
 }
