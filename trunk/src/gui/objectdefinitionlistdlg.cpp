@@ -731,6 +731,7 @@ void ObjectDefinitionList::BeforeEditing ()
 	{
 		// create an empty object and fill it with actual selection values
 		m_ObjectObj = m_MemoryObject->AddObject();
+		m_ObjectObj->m_ObjectType = m_ListSpatType;
 		
 		
 		// fill the Object with list values 
