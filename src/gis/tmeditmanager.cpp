@@ -235,6 +235,19 @@ bool tmEditManager::IsCorrectLayerSelected()
 		wxLogMessage(_("No layer selected, select a layer for drawing"));
 		return false;
 	}
+	
+	
+	// ensure no selection from external layer
+	if (m_SelectedData->GetCount() > 0)
+	{
+		if (m_TOC->GetEditLayer()->m_LayerID != m_SelectedData->GetSelectedLayer())
+		{
+			m_SelectedData->Clear();
+			wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+			m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+		}
+		
+	}
 		
 	return true;
 }
@@ -736,7 +749,7 @@ void tmEditManager::DrawMemoryData()
 void tmEditManager::OnEditStart (wxCommandEvent & event)
 {
 	m_GISMemory->CreateFeature();
-	m_EditStarted = true;
+	m_EditStarted = true;	
 	event.Skip();
 }
 
