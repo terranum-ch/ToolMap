@@ -343,10 +343,17 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	m_Panel->SetVisibleNotebook(mySelType);
 	
 	// if auto display attribute is checked 
-	if (m_Panel->IsAutoDisplayAttributeChecked() && iSelFeatureCount == 1)
+	if (m_Panel->IsAutoDisplayAttributeChecked())
 	{
-		wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
-		m_Parent->GetEventHandler()->AddPendingEvent(evt);
+		if(iSelFeatureCount == 1)
+		{
+			wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
+			m_Parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+		else
+		{
+			m_Panel->EmptyListValues();
+		}
 	}
 	
 	// propagate to menu
