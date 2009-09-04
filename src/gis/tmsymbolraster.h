@@ -49,6 +49,7 @@ class tmSymbolRaster : public tmSymbol
 		
 		
 		virtual bool Serialize(tmSerialize &s);
+		virtual int GetTransparency(){return m_RasterData.m_GlobalTransparency;}
 
 	};
 

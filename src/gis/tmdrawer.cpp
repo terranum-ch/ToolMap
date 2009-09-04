@@ -498,6 +498,16 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 		return false;
 	}
 	
+	unsigned char * myAlphaBuffer;
+	if (pRaster->GetImageTranslucency(wxSize(myClippedCoordPx.GetWidth(),myClippedCoordPx.GetHeight()),
+									  itemProp->m_LayerSymbol->GetTransparency(),
+									  &myAlphaBuffer)==false)
+		
+	{
+		if (myAlphaBuffer)
+			CPLFree(myAlphaBuffer);
+	}
+	
 	// data loaded successfully, draw image on display now
 	// device context for drawing
 	wxMemoryDC dc;
@@ -507,6 +517,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	myRaster->SetData(imgbuf, true);
+	myRaster->SetAlpha(myAlphaBuffer, true);
 
 	dc.DrawBitmap(*myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()),true);
 	dc.SelectObject(wxNullBitmap);
@@ -523,6 +534,11 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	{
 		CPLFree(maskbuf);
 		maskbuf = NULL;
+	}
+	
+	if (myAlphaBuffer)
+	{
+		CPLFree(myAlphaBuffer);
 	}
 	
 	return TRUE;	

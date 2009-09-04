@@ -119,6 +119,8 @@ class tmGISDataRaster : public tmGISData
 		CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
 							unsigned char **maskbuf, unsigned int   *masklen,
 							wxSize imgSize);
+		bool GetImageTranslucency (wxSize imgSize, int translucencypercent,
+								   unsigned char **alphachn); 
 		tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
 		
 		
