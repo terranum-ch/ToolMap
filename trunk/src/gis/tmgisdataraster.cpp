@@ -707,6 +707,43 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 }
 
 
+/***************************************************************************//**
+ @brief Return the buffer corresponding to an alpha channel with specified
+ translucency
+ @details This function is made for use with wxImage::SetAlpha()
+ @param imgSize the size of the raster
+ @param translucencypercent percent of translucency desired
+ @param alphachn a buffer containing the raster's alpha chanel
+ @return  true if success, false otherwise
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 04 September 2009
+ *******************************************************************************/
+bool tmGISDataRaster::GetImageTranslucency (wxSize imgSize, int translucencypercent,
+						   unsigned char **alphachn)
+{
+	// checks
+	wxASSERT(translucencypercent >= 0 && translucencypercent <= 100);
+	unsigned int myimglen = imgSize.GetWidth() * imgSize.GetHeight();
+	*alphachn= (unsigned char*)CPLMalloc(myimglen);
+	if (*alphachn == NULL)
+	{
+		wxLogError(_T("Error creating translucency"));
+		return false;
+	}
+	
+	// convert percent to 0-255 and invert 
+	int myTransValue = translucencypercent * 255 / 100;
+	myTransValue = 255 - myTransValue;
+	
+	unsigned char * pData = *alphachn;
+	for (unsigned int i = 0; i < myimglen;i ++)
+	{
+		*(pData + i) =  (char) myTransValue;
+	}
+	return true;
+}
+
+
 
 /***************************************************************************//**
  @brief Reading image data based on GDAL type
@@ -740,7 +777,9 @@ void *tmGISDataRaster::ReadImageData ( GDALRasterBand *gdalBand, const wxRect & 
 									   imgSize.GetWidth(),
 									   imgSize.GetHeight(),
 									   type, 0, 0 );
-	
+	if (myErr != CE_None)
+		wxLogError(_T("Error Reading image"));
+		
 	return data;
 }
 
