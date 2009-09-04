@@ -378,14 +378,16 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	//		Selected notebook page is same type as
 	//		selected layer in TOC
 	wxASSERT(m_pLayerProperties);
+	wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
+	
 	if (m_pLayerProperties->m_LayerType != m_Panel->GetVisibleNotebook())
 	{
-		wxLogDebug(_("Something incorrect, selected panel doesn't correspond to the selected layer"));
+		wxMessageBox(myMsg,
+					 _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
 		return;
 	}
 	
 	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
-	//int myLayerIndex = m_SelData->GetSelectedLayer();
 	
 	// create attribution object based on type
 	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->m_LayerType);
