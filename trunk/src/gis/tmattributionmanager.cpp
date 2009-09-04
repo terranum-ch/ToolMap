@@ -332,8 +332,12 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	
 	if(m_pLayerProperties->m_LayerType >= TOC_NAME_FRAME)
 		return;
+	bool bEditMode = false;
+	if (m_TOC->GetEditLayer() != NULL)
+		bEditMode = true;
+	m_Panel->SetAttributeBtn(iSelFeatureCount, bEditMode);
 	
-	m_Panel->SetAttributeBtn(iSelFeatureCount);
+	
 	m_Panel->SetInfoBtn(iSelFeatureCount);
 	TOC_GENERIC_NAME mySelType = static_cast<TOC_GENERIC_NAME> (m_pLayerProperties->m_LayerType);
 	m_Panel->SetVisibleNotebook(mySelType);
