@@ -27,6 +27,8 @@ BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
 	EVT_MENU (ID_CTXT_AUTODISPLAY_ATTRIB, AttribObjType_PANEL::OnDisplayAttributesAuto)
 	EVT_MENU (ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,  AttribObjType_PANEL::OnEmptyListAffterAttributes)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, AttribObjType_PANEL::OnEditStart)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, AttribObjType_PANEL::OnEditStop)
 END_EVENT_TABLE()
 
 
@@ -37,6 +39,7 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiMa
 	m_EmptyListAfterAttributes = true;
 	m_ParentEvt = parent;
 	m_ParentEvt->PushEventHandler(this);
+	m_NbFeaturesSelected = 0;
 	
 	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
 	CreateControls(ContentFrame);
@@ -319,6 +322,21 @@ void AttribObjType_PANEL::OnEmptyListAffterAttributes (wxCommandEvent & event)
 }
 
 
+void AttribObjType_PANEL::OnEditStart(wxCommandEvent & event)
+{
+	SetAttributeBtn(m_NbFeaturesSelected, true);
+	event.Skip();
+}
+
+
+void AttribObjType_PANEL::OnEditStop (wxCommandEvent & event)
+{
+	SetAttributeBtn(m_NbFeaturesSelected, false);
+	event.Skip();
+}
+
+
+
 /***************************************************************************//**
  @brief Clear all attributes set when called
  @author Lucien Schreiber (c) CREALP 2009
@@ -488,23 +506,29 @@ void AttribObjType_PANEL::SetDataBaseToList (DataBaseTM * pDB)
  - 1 : Button is normal
  - 1+ : Button is bold and number of features are specified next to the label
  @param nbfeatures Number of features selected
+ @param editmode set to true if we are in edit mode
  @author Lucien Schreiber (c) CREALP 2008
  @date 04 November 2008
  *******************************************************************************/
-void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures)
+void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures,  bool editmode)
 {
 	wxString myButtonLabel = m_AttribBtnLabel;
 	bool myEnable = true;
 	wxFont myBtnFont (*wxNORMAL_FONT);
+	m_NbFeaturesSelected = nbfeatures;
 	
-	
-	if (nbfeatures == 0) // 0 item selected
+	if (editmode == false)
 		myEnable = false;
-	
-	if (nbfeatures > 1) // more than one feature selected
+	else
 	{
-		myButtonLabel.Append(wxString::Format(_T(" (%d)"),nbfeatures));
-		myBtnFont.SetWeight(wxFONTWEIGHT_BOLD);
+		if (nbfeatures == 0) // 0 item selected
+			myEnable = false;
+		
+		if (nbfeatures > 1) // more than one feature selected
+		{
+			myButtonLabel.Append(wxString::Format(_T(" (%d)"),nbfeatures));
+			myBtnFont.SetWeight(wxFONTWEIGHT_BOLD);
+		}
 	}
 	
 	m_AttribBtn->SetLabel(myButtonLabel);

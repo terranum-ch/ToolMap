@@ -93,6 +93,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		bool UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pList,
 							  int type, short frequency = 2);
 		wxWindow * m_ParentEvt;
+		int m_NbFeaturesSelected;
 		
 		wxString m_AttribBtnLabel;
 		wxFlatButton * m_AttribBtn;
@@ -111,6 +112,8 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		void OnDisplayAttributesAuto(wxCommandEvent & event);
 		void OnEmptyListAffterAttributes (wxCommandEvent & event);
 		
+		void OnEditStart(wxCommandEvent & event);
+		void OnEditStop (wxCommandEvent & event);
 		
 				
 		DECLARE_EVENT_TABLE()
@@ -127,7 +130,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		void SetDataBaseToList (DataBaseTM * pDB);
 		
 		// update  btn
-		void SetAttributeBtn (int nbfeatures);
+		void SetAttributeBtn (int nbfeatures, bool editmode);
 		void SetInfoBtn (int nbfeatures);
 		
 		// select correct panel
