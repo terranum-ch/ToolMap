@@ -120,6 +120,8 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 	// 1) init Database
 	m_DB = db;
 	
+	// clear selected data
+	m_SelectedData.Clear();
 	
 	// 2) Init TOCCtrl
 	m_TOCCtrl->InsertProjectName(m_DB->DataBaseGetName());
