@@ -80,6 +80,7 @@
 #include "../../src/gis/tmgisdataraster.cpp"
 #include "../../src/gis/tmgisdatarasteregrid.cpp"
 #include "../../src/gis/tmgisdatarastertiff.cpp"
+#include "../../src/gis/tmgisdatarasterjpeg.cpp"
 #include "../../src/gis/tmgisscale.cpp"
 #include "tooldanglingnodes_test.cpp"
 #include "../../src/gis/tooldanglingnodes.cpp"
@@ -87,6 +88,10 @@
 //UPDATE
 #include "../../src/components/tmupdate/tmupdate.cpp"
 #include "tmupdate_test.cpp"
+
+// IMPORT GIS DATA
+#include "tmgisimport_test.cpp"
+#include "../../src/gis/tmgisimport.cpp"
 
 int main (int argc, char * const argv[])
 {
@@ -96,7 +101,8 @@ int main (int argc, char * const argv[])
 	//runner.addTest( DataBaseTMTEST::suite() );
 	//runner.addTest( tmDrawerEditLineTEST::suite() );
 	//runner.addTest( tmToolDanglingNodesTEST::suite() );
-	runner.addTest( tmUpdateTEST::suite());
+	//runner.addTest( tmUpdateTEST::suite());
+	runner.addTest(tmGISImportTEST::suite());
 	runner.run();
 	return 0;
 }
