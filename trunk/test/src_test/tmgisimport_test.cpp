@@ -32,17 +32,21 @@ class tmGISImportTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST( TESTOpenDatabaseImport );
 	CPPUNIT_TEST( TESTOpen );
 	CPPUNIT_TEST (TESTFileSpatialType );
+	CPPUNIT_TEST ( TESTFeatureCount );
+	CPPUNIT_TEST ( TESTIsAllowed );
+	CPPUNIT_TEST ( TESTImportInto );
+	CPPUNIT_TEST ( TESTImport );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
-	DataBase * m_DB;
+	DataBaseTM * m_DB;
 	tmGISImport * m_Import;
 	
 public: 
 	void setUp()
 	{
 		tmGISData::InitGISDrivers(true,true);
-		m_DB = new DataBase();
+		m_DB = new DataBaseTM();
 		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),
 										  _T("testfields")) == true);
 		m_Import = new tmGISImport;
@@ -83,6 +87,37 @@ public:
 		
 	}
 	
+	void TESTFeatureCount ()
+	{
+		CPPUNIT_ASSERT (m_Import->GetFeatureCount() == -1);
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/DATA/CH/cantonsuisse.shp"))==true);
+		CPPUNIT_ASSERT (m_Import->GetFeatureCount() == 26);
+	}
+	
+	void TESTIsAllowed ()
+	{
+		CPPUNIT_ASSERT (m_Import->IsImportAllowed()==false);
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/DATA/CH/cantonsuisse.shp"))==true);
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/TOOLMAP/VECT/arcgis_line_test.shp"))==true);
+		CPPUNIT_ASSERT (m_Import->IsImportAllowed()==true);
+		
+	}
+	
+	void TESTImportInto()
+	{
+		CPPUNIT_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LINES)==false);
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/TOOLMAP/VECT/arcgis_line_test.shp"))==true);
+		CPPUNIT_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LINES)==true);
+		CPPUNIT_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_FRAME)==true);
+		CPPUNIT_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LABELS)==false);
+	}
+	
+	void TESTImport ()
+	{
+		CPPUNIT_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==false);
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/TOOLMAP/VECT/arcgis_line_test.shp"))==true);
+		CPPUNIT_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==true);
+	}
 	
 };
 	
