@@ -30,6 +30,7 @@
 #endif
 
 #include "tmgisdatavector.h"
+#include "../database/database_tm.h"
 
 class tmGISImport : public wxObject
 	{
@@ -46,8 +47,13 @@ class tmGISImport : public wxObject
 		
 		bool Open (const wxString & filename);
 		bool IsOpen ();
+		
 		TM_GIS_SPATIAL_TYPES GetSpatialType ();
-	
+		long GetFeatureCount();
+		bool IsImportAllowed();
+		bool IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype);	
+		
+		bool Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype);
 	};
 
 
