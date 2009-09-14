@@ -215,6 +215,28 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex, long & oid)
 
 
 
+OGRGeometry *  tmGISDataVectorSHP::GetNextGeometry (long & oid)
+{
+	wxASSERT (m_Layer);
+	OGRFeature * poFeature = m_Layer->GetNextFeature();
+	
+	// nothing more to read
+	if (poFeature == NULL)
+	{
+		oid = wxNOT_FOUND;
+		return NULL;		
+	}
+	
+	OGRGeometry * myGeom = poFeature->GetGeometryRef();
+	wxASSERT(myGeom);
+	oid = poFeature->GetFID();
+	
+	return myGeom;
+	//TODO: delete returned value after use
+}
+
+
+
 wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
 {
 	wxASSERT(m_Layer);
@@ -757,11 +779,12 @@ bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
  @brief Add a geometry in the shapefile
  @param Geom a OGRGeometry
  @param oid the oid of the new geometry added
+ @param layertype Not used for shapefiles
  @return  true if geometry added, false otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid)
+long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid, int layertype)
 {
 	wxASSERT(Geom);
 	wxASSERT (m_Layer);

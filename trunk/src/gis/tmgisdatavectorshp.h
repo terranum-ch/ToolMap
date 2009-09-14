@@ -59,6 +59,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual int GetNextDataPolygonInfo (long & oid);
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
 		virtual OGRPolygon * GetNextDataOGRPolygon (long & oid);
+		virtual OGRGeometry * GetNextGeometry (long & oid);
 		
 		// virtual function for metadata
 		virtual wxString GetMetaDataAsHtml ();
@@ -83,7 +84,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
 		virtual bool AddFieldDate (const wxString & fieldname);
 		
-		virtual long AddGeometry (OGRGeometry * Geom, const long & oid);
+		virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND);
 		virtual bool SetNextFeature (bool resetreading = false);
 		virtual bool SetFieldValue (const wxString & value, 
 									int fieldtype, int iindex);

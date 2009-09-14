@@ -97,11 +97,11 @@ int main (int argc, char * const argv[])
 {
 
 	CppUnit::TextUi::TestRunner runner;
-	//runner.addTest( DataBaseTEST::suite() );
-	//runner.addTest( DataBaseTMTEST::suite() );
-	//runner.addTest( tmDrawerEditLineTEST::suite() );
-	//runner.addTest( tmToolDanglingNodesTEST::suite() );
-	//runner.addTest( tmUpdateTEST::suite());
+	runner.addTest( DataBaseTEST::suite() );
+	runner.addTest( DataBaseTMTEST::suite() );
+	runner.addTest( tmDrawerEditLineTEST::suite() );
+	runner.addTest( tmToolDanglingNodesTEST::suite() );
+	runner.addTest( tmUpdateTEST::suite());
 	runner.addTest(tmGISImportTEST::suite());
 	runner.run();
 	return 0;

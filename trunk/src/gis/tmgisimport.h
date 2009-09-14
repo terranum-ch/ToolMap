@@ -36,6 +36,7 @@ class tmGISImport : public wxObject
 	{
 	private:
 		tmGISDataVector * m_Vector;
+		long m_Time;
 		
 		void InitMember();
 		
@@ -54,6 +55,8 @@ class tmGISImport : public wxObject
 		bool IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype);	
 		
 		bool Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype);
+		
+		long GetElapsedTime();
 	};
 
 

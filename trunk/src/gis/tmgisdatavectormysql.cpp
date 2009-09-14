@@ -843,27 +843,30 @@ OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
  @brief Add geometry into database
  @param Geom The Geometry to Add
  @param oid No oid may be specified for MySQL, it's auto-incremented
+ @param layertype One of the #TOC_GENERIC_NAME
  @return  OID of last inserted item or -1 if an errror occur
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
-long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid)
+long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid, int layertype)
 {
-	//long lReturn = -1;
 	char * myCharGeom = NULL;
 	Geom->setCoordinateDimension(2);
 	Geom->exportToWkt(&myCharGeom);
 	if (!myCharGeom)
-		return -1;
+		return wxNOT_FOUND; 
 	
 	wxString mySGeom = wxString::FromAscii(myCharGeom);
 	OGRFree(myCharGeom);
 
 	
+	if (layertype == wxNOT_FOUND)
+		return wxNOT_FOUND;
+	
 	
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
 										  _T(" VALUES (GeomFromText('%s'));"),
-										  GetShortFileName().c_str(),
+										  TABLE_NAME_GIS_GENERIC[layertype].c_str(),
 										  mySGeom.c_str());
 	if (m_DB->DataBaseQueryNoResults(sSentence)==false)
 	{

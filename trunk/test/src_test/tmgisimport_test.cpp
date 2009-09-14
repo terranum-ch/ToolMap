@@ -36,6 +36,7 @@ class tmGISImportTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST ( TESTIsAllowed );
 	CPPUNIT_TEST ( TESTImportInto );
 	CPPUNIT_TEST ( TESTImport );
+	CPPUNIT_TEST ( TESTElapsedTime );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -48,7 +49,7 @@ public:
 		tmGISData::InitGISDrivers(true,true);
 		m_DB = new DataBaseTM();
 		CPPUNIT_ASSERT(m_DB->DataBaseOpen(_T("/Users/Lucien/Downloads/"),
-										  _T("testfields")) == true);
+										  _T("testimport")) == true);
 		m_Import = new tmGISImport;
 		
 	}
@@ -117,6 +118,18 @@ public:
 		CPPUNIT_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==false);
 		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/TOOLMAP/VECT/arcgis_line_test.shp"))==true);
 		CPPUNIT_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==true);
+	}
+	
+	void TESTElapsedTime()
+	{
+		CPPUNIT_ASSERT (m_Import->GetElapsedTime()== 0);
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/TOOLMAP/VECT/arcgis_line_test.shp"))==true);
+		CPPUNIT_ASSERT (m_Import->GetElapsedTime()== 0);
+		CPPUNIT_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==true);
+		long myTime = m_Import->GetElapsedTime();
+		CPPUNIT_ASSERT (myTime > 0);
+		wxLogDebug(_T("Import done in %u [ms]"), myTime);
+		
 	}
 	
 };
