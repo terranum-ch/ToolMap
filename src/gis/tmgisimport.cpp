@@ -186,7 +186,8 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 		tpercent.SetValue(iCount);
 		if (tpercent.IsNewStep())
 			if (progress)
-				progress->Update(tpercent.GetPercent(), wxEmptyString, &bStop);
+				if(progress->Update(tpercent.GetPercent(), wxEmptyString)==false)
+					bStop=true;
 		
 		if (bStop)
 		{

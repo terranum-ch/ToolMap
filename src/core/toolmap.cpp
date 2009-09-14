@@ -1043,7 +1043,8 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	wxProgressDialog myProgress(_("Importing GIS data progress"),
 								_T("Importing data in progress, please wait"),
 								100,
-								this);
+								this,
+								wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL);
 	
 	// importing
 	wxASSERT(m_PManager->GetDatabase());
