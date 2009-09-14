@@ -37,6 +37,7 @@ class tmGISImportTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST ( TESTImportInto );
 	CPPUNIT_TEST ( TESTImport );
 	CPPUNIT_TEST ( TESTElapsedTime );
+	CPPUNIT_TEST ( TESTImportOneLine );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -101,7 +102,13 @@ public:
 		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/DATA/CH/cantonsuisse.shp"))==true);
 		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/TOOLMAP/VECT/arcgis_line_test.shp"))==true);
 		CPPUNIT_ASSERT (m_Import->IsImportAllowed()==true);
-		
+	}
+	
+	void TESTImportOneLine()
+	{
+		CPPUNIT_ASSERT (m_Import->Open(_T("/Users/Lucien/DATA/SIG/DATA/GEOL/DIABLERETS/VECT/CADRE/DIABLERETS_FRONTIERE.shp"))==true);
+		CPPUNIT_ASSERT (m_Import->IsImportAllowed()==true);
+		CPPUNIT_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LINES)==true);
 	}
 	
 	void TESTImportInto()

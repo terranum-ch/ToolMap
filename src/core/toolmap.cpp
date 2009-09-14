@@ -1034,7 +1034,9 @@ void ToolMapFrame::CheckUpdates(bool silent)
 
 void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 {
-	tmGISImport_DLG myDlg (this);
+	tmGISImport myImport;
+	
+	tmGISImport_DLG myDlg (this, &myImport);
 	myDlg.ShowModal();
 }
 

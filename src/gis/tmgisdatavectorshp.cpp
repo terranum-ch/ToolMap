@@ -110,6 +110,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 	}
 	
 	// computing layer type (point, line, polygon or unknown)
+	m_Layer->ResetReading();
 	if ((poFeature = m_Layer->GetNextFeature()) == NULL)
 	{
 		if (IsLoggingEnabled())
