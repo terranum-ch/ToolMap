@@ -45,12 +45,21 @@ class tmGISImport_DLG : public wxDialog
 		wxChoice* m_ImportChoice;
 		wxButton* m_Btn_Import;
 		
+		tmGISImport * m_Import;
+		
 		void CreateCtrls (wxWindow * parent);
+		
+		void OnChangeFile (wxFileDirPickerEvent & event);
+		void GI_Enable(bool enable=true);
+		void GI_SetCtrlInfo (bool enable=true);
+		
+		DECLARE_EVENT_TABLE();
 		
 	protected:
 		
 	public:
-		tmGISImport_DLG( wxWindow* parent, wxWindowID id = wxID_ANY,
+		tmGISImport_DLG( wxWindow* parent,
+						tmGISImport * import, wxWindowID id = wxID_ANY,
 						const wxString& title = _("Import GIS data"),
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,

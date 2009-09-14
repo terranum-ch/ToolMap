@@ -20,15 +20,100 @@
 #include "tmgisimport_dlg.h"
 
 
+BEGIN_EVENT_TABLE(tmGISImport_DLG, wxDialog)
+	EVT_FILEPICKER_CHANGED(ID_DLGIG_IMPORT_BTN, tmGISImport_DLG::OnChangeFile)
+END_EVENT_TABLE()
 
-tmGISImport_DLG::tmGISImport_DLG( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+
+tmGISImport_DLG::tmGISImport_DLG( wxWindow* parent, tmGISImport * import, wxWindowID id, 
+								 const wxString& title, const wxPoint& pos,
+								 const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+	m_Import = import;
+	wxASSERT(m_Import);
+	
 	CreateCtrls(parent);
+	GI_Enable(false);
 }
+
+
 
 tmGISImport_DLG::~tmGISImport_DLG()
 {
 }
+
+
+void tmGISImport_DLG::GI_Enable(bool enable)
+{
+	m_ImportChoice->Enable(enable);
+	m_Btn_Import->Enable(enable);
+}
+
+
+void tmGISImport_DLG::GI_SetCtrlInfo (bool enable)
+{
+	wxString myPolyText = TM_GIS_SPATIAL_TYPES_STRING[LAYER_SPATIAL_POLYGON];
+	myPolyText.Append(_(", importing not allowed"));
+	
+	wxString label[] = {TM_GIS_SPATIAL_TYPES_STRING[LAYER_SPATIAL_LINE],
+	TM_GIS_SPATIAL_TYPES_STRING[LAYER_SPATIAL_POINT],
+	myPolyText, _("Unable to acces file")};
+	
+	// cleaning
+	m_ImportChoice->Clear();
+	m_Type_Value->SetForegroundColour(wxNullColour);
+	
+	
+	// error with file, file not open
+	if (enable == false)
+	{
+		m_Type_Value->SetForegroundColour(*wxRED);
+		m_Type_Value->SetLabel(label[3]);
+		m_FeatureCount_Type->SetLabel(_T("0"));
+		return;
+	}
+	
+	
+	TM_GIS_SPATIAL_TYPES myType = m_Import->GetSpatialType();
+	wxASSERT(myType != LAYER_SPATIAL_UNKNOWN);
+	
+	
+	m_Type_Value->SetLabel(label[myType]);
+	m_FeatureCount_Type->SetLabel(wxString::Format(_T("%d"), m_Import->GetFeatureCount()));
+	
+	// import not allowed (polygons)
+	if (m_Import->IsImportAllowed() == false)
+	{
+		m_Type_Value->SetForegroundColour(*wxRED);
+		GI_Enable(false);
+		return;
+	}
+		
+	for (int i = 0; i<= (int) TOC_NAME_FRAME; i++)
+	{
+		if (m_Import->IsImportIntoAllowed((TOC_GENERIC_NAME)i))
+			m_ImportChoice->Append(TOC_GENERIC_NAME_STRING[i]);
+	}
+	m_ImportChoice->Select(0);
+	
+}
+
+
+void tmGISImport_DLG::OnChangeFile (wxFileDirPickerEvent & event)
+{
+	wxASSERT(m_Import);
+	bool bIsOpen = m_Import->Open(event.GetPath());
+	
+	GI_Enable(bIsOpen);
+	GI_SetCtrlInfo(bIsOpen);
+	
+	   
+	   
+	wxLogDebug(event.GetPath());
+	
+	
+}
+
 
 void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 {
@@ -47,7 +132,9 @@ void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 	bSizer33->Add( m_staticText13, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxFilePickerCtrl* m_filePicker1;
-	m_filePicker1 = new wxFilePickerCtrl( this, ID_DLGIG_IMPORT_BTN, wxEmptyString, _("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_OPEN|wxFLP_USE_TEXTCTRL );
+	m_filePicker1 = new wxFilePickerCtrl( this, ID_DLGIG_IMPORT_BTN, wxEmptyString, _("Select a file"),
+										 tmGISDATA_VECTOR_TYPE_WILDCARDS[0], wxDefaultPosition, wxDefaultSize,
+										 wxFLP_OPEN|wxFLP_USE_TEXTCTRL );
 	bSizer33->Add( m_filePicker1, 1, wxALL, 5 );
 	
 	bSizer32->Add( bSizer33, 0, wxEXPAND, 5 );
@@ -65,7 +152,7 @@ void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 	m_Type_Label->Wrap( -1 );
 	fgSizer2->Add( m_Type_Label, 0, wxALL, 5 );
 	
-	m_Type_Value = new wxStaticText( this, wxID_ANY, _("Unable to acces file"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_Type_Value = new wxStaticText( this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
 	m_Type_Value->Wrap( -1 );
 	//m_Type_Value->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
 	m_Type_Value->SetForegroundColour(*wxRED);
@@ -77,13 +164,13 @@ void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 	m_FeatureCount_Label->Wrap( -1 );
 	fgSizer2->Add( m_FeatureCount_Label, 0, wxALL, 5 );
 	
-	m_FeatureCount_Type = new wxStaticText( this, wxID_ANY, _("0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_FeatureCount_Type = new wxStaticText( this, wxID_ANY, _(""), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FeatureCount_Type->Wrap( -1 );
 	fgSizer2->Add( m_FeatureCount_Type, 0, wxALL, 5 );
 	
 	staticsizer->Add( fgSizer2, 1, wxEXPAND, 5 );
 	
-	bSizer32->Add( staticsizer, 1, wxEXPAND, 5 );
+	bSizer32->Add( staticsizer, 1,  wxLEFT | wxRIGHT | wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer34;
 	bSizer34 = new wxBoxSizer( wxHORIZONTAL );
@@ -120,5 +207,6 @@ void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 	this->SetSizer( bSizer32 );
 	this->Layout();
 	bSizer32->Fit( this );
+	CenterOnParent(wxBOTH);
 }
 

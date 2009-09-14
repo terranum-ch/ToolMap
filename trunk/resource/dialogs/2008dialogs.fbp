@@ -8,7 +8,7 @@
         <property name="encoding">UTF-8</property>
         <property name="event_generation">table</property>
         <property name="file">generated_temp</property>
-        <property name="first_id">22300</property>
+        <property name="first_id">22400</property>
         <property name="help_provider">none</property>
         <property name="internationalize">1</property>
         <property name="name">Dialogs</property>
