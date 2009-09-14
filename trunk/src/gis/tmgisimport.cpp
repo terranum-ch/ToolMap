@@ -140,7 +140,7 @@ bool tmGISImport::IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype)
 }
 
 
-bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype)
+bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype, wxProgressDialog * progress=NULL)
 {
 	m_Time = 0;
 	
@@ -164,6 +164,7 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 	
 	wxStopWatch sv;
 	
+
 	while (1)
 	{
 		myGeom = m_Vector->GetNextGeometry(oid);

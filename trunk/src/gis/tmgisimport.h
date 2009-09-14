@@ -31,6 +31,7 @@
 
 #include "tmgisdatavector.h"
 #include "../database/database_tm.h"
+#include <wx/progdlg.h>
 
 class tmGISImport : public wxObject
 	{
@@ -54,7 +55,7 @@ class tmGISImport : public wxObject
 		bool IsImportAllowed();
 		bool IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype);	
 		
-		bool Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype);
+		bool Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype, wxProgressDialog * progress=NULL);
 		
 		long GetElapsedTime();
 	};
