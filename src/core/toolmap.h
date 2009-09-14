@@ -124,6 +124,8 @@
 #include "../components/tmupdate/tmupdate.h" // updates
 #include "../components/tmupdate/tmupdate_dlg.h"
 
+#include "../gui/tmgisimport_dlg.h"		// for importing data
+
 //// temp for testing 
 #include "diroperation.h"
 //// end of testing
@@ -324,6 +326,7 @@ private:
 	//void OnMenuHighligntOff(wxMenuEvent & event);
 	void OnCheckUpdates (wxCommandEvent & event);
 	void CheckUpdates(bool silent = false);
+	void OnImportGISData (wxCommandEvent & event);
 	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);
