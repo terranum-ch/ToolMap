@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisimport.h
-						Import data into project
+								tmpercent.h
+                    For computing percent value (progress dialog)
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2007 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -18,8 +18,8 @@
 // comment doxygen
 
 
-#ifndef _TM_GISDATA_IMPORT_H_ 
-#define _TM_GISDATA_IMPORT_H_
+#ifndef _TM_PERCENT_H_
+#define _TM_PERCENT_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,37 +29,31 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmgisdatavector.h"
-#include "../database/database_tm.h"
-#include <wx/progdlg.h>
-#include "../core/tmpercent.h"
-
-class tmGISImport : public wxObject
+class tmPercent : public wxObject
 	{
 	private:
-		tmGISDataVector * m_Vector;
-		long m_Time;
+		bool m_inited;
+		long m_TotalValue;
+		double m_Increment;
+		int m_PreviousPercent;
+		long m_ActualValue;
 		
-		void InitMember();
-		
+		void InitMemberValue();
 		
 	protected:
 	public:
-		tmGISImport();
-		~tmGISImport();
+		// ctor - dtor
+		tmPercent();
+		tmPercent(long value);
+		void Create(long value);
+		~tmPercent();
 		
-		bool Open (const wxString & filename);
-		bool IsOpen ();
+		void SetValue (long actualvalue);
+		bool IsNewStep();
+		int GetPercent();
 		
-		TM_GIS_SPATIAL_TYPES GetSpatialType ();
-		long GetFeatureCount();
-		bool IsImportAllowed();
-		bool IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype);	
-		
-		bool Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype, wxProgressDialog * progress=NULL);
-		
-		long GetElapsedTime();
-	};
+};
+
 
 
 

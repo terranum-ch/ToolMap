@@ -93,6 +93,10 @@
 #include "tmgisimport_test.cpp"
 #include "../../src/gis/tmgisimport.cpp"
 
+// PERCENT TEST
+#include "tmpercent_test.cpp"
+#include "../../src/core/tmpercent.cpp"
+
 int main (int argc, char * const argv[])
 {
 
@@ -102,7 +106,8 @@ int main (int argc, char * const argv[])
 	//runner.addTest( tmDrawerEditLineTEST::suite() );
 	//runner.addTest( tmToolDanglingNodesTEST::suite() );
 	//runner.addTest( tmUpdateTEST::suite());
-	runner.addTest(tmGISImportTEST::suite());
+	//runner.addTest(tmGISImportTEST::suite());
+	runner.addTest(tmPercentTEST::suite());
 	runner.run();
 	return 0;
 }
