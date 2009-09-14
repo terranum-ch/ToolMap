@@ -48,10 +48,13 @@ class tmGISImport_DLG : public wxDialog
 		tmGISImport * m_Import;
 		
 		void CreateCtrls (wxWindow * parent);
-		
-		void OnChangeFile (wxFileDirPickerEvent & event);
 		void GI_Enable(bool enable=true);
-		void GI_SetCtrlInfo (bool enable=true);
+		void GI_SetInfo (TM_GIS_SPATIAL_TYPES type);
+		void GI_SetRedColor (bool red = true);
+		void GI_SetChoice (bool clear = false);
+		
+		// event function
+		void OnChangeFile (wxFileDirPickerEvent & event);
 		
 		DECLARE_EVENT_TABLE();
 		
@@ -65,7 +68,8 @@ class tmGISImport_DLG : public wxDialog
 						const wxSize& size = wxDefaultSize,
 						long style = wxDEFAULT_DIALOG_STYLE );
 		~tmGISImport_DLG();
-		
+		TOC_GENERIC_NAME GetImportLayer();
+
 	};
 
 

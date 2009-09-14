@@ -50,7 +50,8 @@ void tmGISImport_DLG::GI_Enable(bool enable)
 }
 
 
-void tmGISImport_DLG::GI_SetCtrlInfo (bool enable)
+
+void tmGISImport_DLG::GI_SetInfo (TM_GIS_SPATIAL_TYPES type)
 {
 	wxString myPolyText = TM_GIS_SPATIAL_TYPES_STRING[LAYER_SPATIAL_POLYGON];
 	myPolyText.Append(_(", importing not allowed"));
@@ -59,36 +60,39 @@ void tmGISImport_DLG::GI_SetCtrlInfo (bool enable)
 	TM_GIS_SPATIAL_TYPES_STRING[LAYER_SPATIAL_POINT],
 	myPolyText, _("Unable to acces file")};
 	
-	// cleaning
-	m_ImportChoice->Clear();
-	m_Type_Value->SetForegroundColour(wxNullColour);
-	
 	
 	// error with file, file not open
-	if (enable == false)
+	if (type == LAYER_SPATIAL_UNKNOWN)
 	{
-		m_Type_Value->SetForegroundColour(*wxRED);
 		m_Type_Value->SetLabel(label[3]);
 		m_FeatureCount_Type->SetLabel(_T("0"));
 		return;
 	}
-	
-	
-	TM_GIS_SPATIAL_TYPES myType = m_Import->GetSpatialType();
-	wxASSERT(myType != LAYER_SPATIAL_UNKNOWN);
-	
-	
-	m_Type_Value->SetLabel(label[myType]);
-	m_FeatureCount_Type->SetLabel(wxString::Format(_T("%d"), m_Import->GetFeatureCount()));
-	
-	// import not allowed (polygons)
-	if (m_Import->IsImportAllowed() == false)
+	else
 	{
-		m_Type_Value->SetForegroundColour(*wxRED);
-		GI_Enable(false);
-		return;
+		m_Type_Value->SetLabel(label[type]);
+		m_FeatureCount_Type->SetLabel(wxString::Format(_T("%d"), m_Import->GetFeatureCount()));
 	}
-		
+}
+
+
+
+void tmGISImport_DLG::GI_SetRedColor (bool red)
+{
+	if (red)
+		m_Type_Value->SetForegroundColour(*wxRED);
+	else
+		m_Type_Value->SetForegroundColour(wxNullColour);
+}
+
+
+void tmGISImport_DLG::GI_SetChoice (bool clear)
+{
+	m_ImportChoice->Clear();
+	if (clear)
+		return;
+	
+	
 	for (int i = 0; i<= (int) TOC_NAME_FRAME; i++)
 	{
 		if (m_Import->IsImportIntoAllowed((TOC_GENERIC_NAME)i))
@@ -102,16 +106,49 @@ void tmGISImport_DLG::GI_SetCtrlInfo (bool enable)
 void tmGISImport_DLG::OnChangeFile (wxFileDirPickerEvent & event)
 {
 	wxASSERT(m_Import);
+	
+	// getting import info
 	bool bIsOpen = m_Import->Open(event.GetPath());
+	TM_GIS_SPATIAL_TYPES type = LAYER_SPATIAL_UNKNOWN;
+	bool bIsImportAllowed = false;
 	
-	GI_Enable(bIsOpen);
-	GI_SetCtrlInfo(bIsOpen);
+	if (bIsOpen)
+	{
+		bIsImportAllowed = m_Import->IsImportAllowed();
+		type = m_Import->GetSpatialType();
+	}
 	
-	   
-	   
+	// updating dialog
+	if (bIsOpen && bIsImportAllowed)
+	{
+		GI_Enable(true);
+		GI_SetRedColor(false);
+		GI_SetChoice(false);
+	}
+	else
+	{
+		GI_Enable(false);
+		GI_SetRedColor(true);
+		GI_SetChoice(true);
+	}
+	GI_SetInfo(type);
+
 	wxLogDebug(event.GetPath());
 	
 	
+}
+
+
+TOC_GENERIC_NAME tmGISImport_DLG::GetImportLayer()
+{
+	wxString myChoice = m_ImportChoice->GetString(m_ImportChoice->GetSelection());
+	for (int i = 0; i<= (int) TOC_NAME_FRAME;i++)
+	{
+		if (myChoice == TOC_GENERIC_NAME_STRING[i])
+			return (TOC_GENERIC_NAME) i;
+	}
+	
+	return TOC_NAME_UNKNOWN;
 }
 
 
@@ -154,8 +191,6 @@ void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 	
 	m_Type_Value = new wxStaticText( this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
 	m_Type_Value->Wrap( -1 );
-	//m_Type_Value->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 90, false, wxEmptyString ) );
-	m_Type_Value->SetForegroundColour(*wxRED);
 	
 	fgSizer2->Add( m_Type_Value, 0, wxALL, 5 );
 	

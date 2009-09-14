@@ -148,7 +148,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 			wxLogDebug(_T("Error getting spatial layer type for : %s"), 
 					   GetShortFileName().c_str());
 	}
-	
+	m_Layer->ResetReading();
 	return retvalue;
 }
 
@@ -428,6 +428,7 @@ wxString tmGISDataVectorSHP::GetMetaDataAsHtml ()
 	
 	return myResult;
 }
+
 
 
 

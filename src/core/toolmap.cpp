@@ -1037,7 +1037,15 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	tmGISImport myImport;
 	
 	tmGISImport_DLG myDlg (this, &myImport);
-	myDlg.ShowModal();
+	if(myDlg.ShowModal() != wxID_OK)
+		return;
+	
+	// importing
+	wxASSERT(m_PManager->GetDatabase());
+	myImport.Import(m_PManager->GetDatabase(), myDlg.GetImportLayer());
+	wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
+	
+	m_LayerManager->ViewUpdated();
 }
 
 

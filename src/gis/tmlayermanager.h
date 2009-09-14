@@ -101,7 +101,7 @@ class tmLayerManager : public wxEvtHandler
 		bool IsOK ();
 		
 		// function called when view is updated
-		void ViewUpdated();
+		//void ViewUpdated();
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -125,6 +125,10 @@ class tmLayerManager : public wxEvtHandler
 		tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, tmRenderer * renderer,
 					   wxStatusBar * status, tmScaleCtrlCombo * scalectrl);
 		~tmLayerManager();
+		
+		// function called when view is updated
+		void ViewUpdated();
+
 		
 		// scale ctrl functions
 		void InitScaleCtrlList ();

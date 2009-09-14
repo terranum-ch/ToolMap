@@ -51,6 +51,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
 		virtual tmRealRect GetMinimalBoundingRectangle();
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
+
 		
 		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type);
