@@ -86,10 +86,10 @@ public:
 	{
 		CPPUNIT_ASSERT(tm.GetNewVersionName() == wxEmptyString);
 		CPPUNIT_ASSERT(tm.IsNewVersionAvaillable()==true);
-		CPPUNIT_ASSERT(tm.GetNewVersionName() == _T("2.0.279"));
-		tm.SetActualVersion(290);
+		CPPUNIT_ASSERT(tm.GetNewVersionName() == _T("2.0.660"));
+		tm.SetActualVersion(700);
 		CPPUNIT_ASSERT(tm.IsNewVersionAvaillable()==false);
-		CPPUNIT_ASSERT(tm.GetNewVersionName() == _T("2.0.279"));
+		CPPUNIT_ASSERT(tm.GetNewVersionName() == _T("2.0.660"));
 	
 	}
 	
@@ -97,7 +97,7 @@ public:
 	{
 		CPPUNIT_ASSERT(tm.GetDownloadLink() == wxEmptyString);
 		CPPUNIT_ASSERT(tm.IsNewVersionAvaillable()==true);
-		CPPUNIT_ASSERT(tm.GetDownloadLink() == wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d279.dmg")));
+		CPPUNIT_ASSERT(tm.GetDownloadLink() == wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d660.dmg")));
 	}
 
 	void TESTSettingParameters ()

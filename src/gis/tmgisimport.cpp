@@ -34,6 +34,7 @@ tmGISImport::~tmGISImport()
 void tmGISImport::InitMember()
 {
 	m_Vector = NULL;
+	m_Time = 0;
 }
 
 bool tmGISImport::IsOpen ()
@@ -45,8 +46,10 @@ bool tmGISImport::IsOpen ()
 
 bool tmGISImport::Open (const wxString & filename)
 {
-	// check if file exists
 	m_Vector = NULL;
+	m_Time = 0;
+	
+	// check if file exists
 	wxFileName myFileName = filename;
 	if(myFileName.FileExists() == false)
 	{
@@ -139,6 +142,8 @@ bool tmGISImport::IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype)
 
 bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype)
 {
+	m_Time = 0;
+	
 	if (IsImportIntoAllowed(importintotype)==false)
 	{
 		wxLogDebug(_T("Importing into %s not possible"), 
@@ -153,13 +158,41 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 	tmGISDataVectorMYSQL * myGeomDB = new tmGISDataVectorMYSQL();
 	tmGISDataVectorMYSQL::SetDataBaseHandle(projectdb);
 	
-	// modify add geometry...
+	OGRGeometry * myGeom = NULL;
+	long oid = wxNOT_FOUND;
+	long iCount = 0;
 	
-	//myGeomDB->AddGeometry(<#OGRGeometry * Geom#>, <#const long oid#>)
+	wxStopWatch sv;
 	
+	while (1)
+	{
+		myGeom = m_Vector->GetNextGeometry(oid);
+		if (myGeom == NULL)
+		{
+			break; 
+		}
+		
+		if (myGeomDB->AddGeometry(myGeom, -1, importintotype) == wxNOT_FOUND)
+		{
+			OGRGeometryFactory::destroyGeometry(myGeom);
+			wxLogError(_T("Error adding geometry into project"));
+			break;
+		}
+		iCount ++;
+		OGRGeometryFactory::destroyGeometry(myGeom);
+	}
 	
+	sv.Pause();
+	m_Time = sv.Time();
 	
+	wxLogDebug(_T("%d feature added"), iCount);
 	return true;
 	
+}
+
+
+long tmGISImport::GetElapsedTime()
+{
+	return m_Time;
 }
 

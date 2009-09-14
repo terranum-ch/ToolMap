@@ -120,11 +120,12 @@ class tmGISDataVector : public tmGISData
 		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex, long & oid){return NULL;}
+		virtual OGRGeometry * GetNextGeometry (long & oid){return NULL;}
 		virtual wxRealPoint * GetNextDataPoint (long & oid){return NULL;}
 		virtual int GetNextDataPolygonInfo (long & oid){return -1;}
 		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex){return NULL;}
 		virtual OGRGeometry * GetGeometryByOID (long oid){ return NULL;}
-		virtual long AddGeometry (OGRGeometry * Geom, const long & oid){return -1;}
+		virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND){return -1;}
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid){return false;}
 		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid, 
 									wxArrayLong & AddedIds);
