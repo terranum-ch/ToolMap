@@ -140,7 +140,7 @@ bool tmGISImport::IsImportIntoAllowed (const TOC_GENERIC_NAME & importintotype)
 }
 
 
-bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype, wxProgressDialog * progress=NULL)
+bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & importintotype, wxProgressDialog * progress)
 {
 	m_Time = 0;
 	
@@ -163,7 +163,7 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 	long iCount = 0;
 	
 	wxStopWatch sv;
-	
+	tmPercent tpercent(GetFeatureCount());
 
 	while (1)
 	{
@@ -181,6 +181,18 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 		}
 		iCount ++;
 		OGRGeometryFactory::destroyGeometry(myGeom);
+		
+		bool bStop = false;
+		tpercent.SetValue(iCount);
+		if (tpercent.IsNewStep())
+			if (progress)
+				progress->Update(tpercent.GetPercent(), wxEmptyString, &bStop);
+		
+		if (bStop)
+		{
+			wxLogMessage(_("Adding gis data into project stopped by user."));
+			break;
+		}
 	}
 	
 	sv.Pause();

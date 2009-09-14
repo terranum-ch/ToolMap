@@ -1040,12 +1040,18 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	if(myDlg.ShowModal() != wxID_OK)
 		return;
 	
+	wxProgressDialog myProgress(_("Importing GIS data progress"),
+								_T("Importing data in progress, please wait"),
+								100,
+								this);
+	
 	// importing
 	wxASSERT(m_PManager->GetDatabase());
-	myImport.Import(m_PManager->GetDatabase(), myDlg.GetImportLayer());
+	myImport.Import(m_PManager->GetDatabase(), myDlg.GetImportLayer(), &myProgress);
 	wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
 	
-	m_LayerManager->ViewUpdated();
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt2);
 }
 
 
