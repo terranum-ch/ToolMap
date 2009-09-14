@@ -4996,7 +4996,7 @@
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
                                 <property name="name">m_staticText13</property>
-                                <property name="permission">protected</property>
+                                <property name="permission">none</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
                                 <property name="style"></property>
@@ -5129,8 +5129,8 @@
                                         <property name="label">Geometry type :</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">m_staticText14</property>
-                                        <property name="permission">protected</property>
+                                        <property name="name">m_Type_Label</property>
+                                        <property name="permission">none</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>
                                         <property name="style"></property>
@@ -5173,15 +5173,15 @@
                                         <property name="bg"></property>
                                         <property name="context_help"></property>
                                         <property name="enabled">1</property>
-                                        <property name="fg"></property>
-                                        <property name="font"></property>
+                                        <property name="fg">255,0,0</property>
+                                        <property name="font">,90,90,-1,70,0</property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">MyLabel</property>
+                                        <property name="label">Unable to acces file</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">m_staticText15</property>
-                                        <property name="permission">protected</property>
+                                        <property name="name">m_Type_Value</property>
+                                        <property name="permission">private</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>
                                         <property name="style"></property>
@@ -5231,8 +5231,8 @@
                                         <property name="label">Number of features :</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">m_staticText16</property>
-                                        <property name="permission">protected</property>
+                                        <property name="name">m_FeatureCount_Label</property>
+                                        <property name="permission">none</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>
                                         <property name="style"></property>
@@ -5279,11 +5279,11 @@
                                         <property name="font"></property>
                                         <property name="hidden">0</property>
                                         <property name="id">wxID_ANY</property>
-                                        <property name="label">MyLabel</property>
+                                        <property name="label">0</property>
                                         <property name="maximum_size"></property>
                                         <property name="minimum_size"></property>
-                                        <property name="name">m_staticText17</property>
-                                        <property name="permission">protected</property>
+                                        <property name="name">m_FeatureCount_Type</property>
+                                        <property name="permission">private</property>
                                         <property name="pos"></property>
                                         <property name="size"></property>
                                         <property name="style"></property>
@@ -5333,7 +5333,7 @@
                         <property name="permission">none</property>
                         <object class="sizeritem" expanded="1">
                             <property name="border">5</property>
-                            <property name="flag">wxALL</property>
+                            <property name="flag">wxALL|wxALIGN_CENTER_VERTICAL</property>
                             <property name="proportion">0</property>
                             <object class="wxStaticText" expanded="1">
                                 <property name="bg"></property>
@@ -5347,7 +5347,7 @@
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
                                 <property name="name">m_staticText18</property>
-                                <property name="permission">protected</property>
+                                <property name="permission">none</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
                                 <property name="style"></property>
@@ -5397,8 +5397,8 @@
                                 <property name="id">wxID_ANY</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_choice4</property>
-                                <property name="permission">protected</property>
+                                <property name="name">m_ImportChoice</property>
+                                <property name="permission">private</property>
                                 <property name="pos"></property>
                                 <property name="selection">0</property>
                                 <property name="size"></property>
@@ -5450,7 +5450,7 @@
                         <property name="maximum_size"></property>
                         <property name="minimum_size"></property>
                         <property name="name">m_staticline4</property>
-                        <property name="permission">protected</property>
+                        <property name="permission">none</property>
                         <property name="pos"></property>
                         <property name="size"></property>
                         <property name="style">wxLI_HORIZONTAL</property>
@@ -5486,28 +5486,117 @@
                 </object>
                 <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
-                    <property name="flag">wxALIGN_CENTER_HORIZONTAL|wxEXPAND|wxTOP|wxBOTTOM</property>
+                    <property name="flag">wxALIGN_RIGHT</property>
                     <property name="proportion">0</property>
-                    <object class="wxStdDialogButtonSizer" expanded="1">
-                        <property name="Apply">0</property>
-                        <property name="Cancel">1</property>
-                        <property name="ContextHelp">0</property>
-                        <property name="Help">0</property>
-                        <property name="No">0</property>
-                        <property name="OK">1</property>
-                        <property name="Save">0</property>
-                        <property name="Yes">0</property>
+                    <object class="wxBoxSizer" expanded="1">
                         <property name="minimum_size"></property>
-                        <property name="name">m_sdbSizer1</property>
-                        <property name="permission">protected</property>
-                        <event name="OnApplyButtonClick"></event>
-                        <event name="OnCancelButtonClick"></event>
-                        <event name="OnContextHelpButtonClick"></event>
-                        <event name="OnHelpButtonClick"></event>
-                        <event name="OnNoButtonClick"></event>
-                        <event name="OnOKButtonClick"></event>
-                        <event name="OnSaveButtonClick"></event>
-                        <event name="OnYesButtonClick"></event>
+                        <property name="name">bSizer35</property>
+                        <property name="orient">wxHORIZONTAL</property>
+                        <property name="permission">none</property>
+                        <object class="sizeritem" expanded="1">
+                            <property name="border">5</property>
+                            <property name="flag">wxALL</property>
+                            <property name="proportion">0</property>
+                            <object class="wxButton" expanded="1">
+                                <property name="bg"></property>
+                                <property name="context_help"></property>
+                                <property name="default">0</property>
+                                <property name="enabled">1</property>
+                                <property name="fg"></property>
+                                <property name="font"></property>
+                                <property name="hidden">0</property>
+                                <property name="id">wxID_CANCEL</property>
+                                <property name="label">&amp;Cancel</property>
+                                <property name="maximum_size"></property>
+                                <property name="minimum_size"></property>
+                                <property name="name">m_button28</property>
+                                <property name="permission">none</property>
+                                <property name="pos"></property>
+                                <property name="size"></property>
+                                <property name="style"></property>
+                                <property name="subclass"></property>
+                                <property name="tooltip"></property>
+                                <property name="window_extra_style"></property>
+                                <property name="window_name"></property>
+                                <property name="window_style"></property>
+                                <event name="OnButtonClick"></event>
+                                <event name="OnChar"></event>
+                                <event name="OnEnterWindow"></event>
+                                <event name="OnEraseBackground"></event>
+                                <event name="OnKeyDown"></event>
+                                <event name="OnKeyUp"></event>
+                                <event name="OnKillFocus"></event>
+                                <event name="OnLeaveWindow"></event>
+                                <event name="OnLeftDClick"></event>
+                                <event name="OnLeftDown"></event>
+                                <event name="OnLeftUp"></event>
+                                <event name="OnMiddleDClick"></event>
+                                <event name="OnMiddleDown"></event>
+                                <event name="OnMiddleUp"></event>
+                                <event name="OnMotion"></event>
+                                <event name="OnMouseEvents"></event>
+                                <event name="OnMouseWheel"></event>
+                                <event name="OnPaint"></event>
+                                <event name="OnRightDClick"></event>
+                                <event name="OnRightDown"></event>
+                                <event name="OnRightUp"></event>
+                                <event name="OnSetFocus"></event>
+                                <event name="OnSize"></event>
+                                <event name="OnUpdateUI"></event>
+                            </object>
+                        </object>
+                        <object class="sizeritem" expanded="1">
+                            <property name="border">5</property>
+                            <property name="flag">wxALL</property>
+                            <property name="proportion">0</property>
+                            <object class="wxButton" expanded="1">
+                                <property name="bg"></property>
+                                <property name="context_help"></property>
+                                <property name="default">1</property>
+                                <property name="enabled">1</property>
+                                <property name="fg"></property>
+                                <property name="font"></property>
+                                <property name="hidden">0</property>
+                                <property name="id">wxID_OK</property>
+                                <property name="label">&amp;Import</property>
+                                <property name="maximum_size"></property>
+                                <property name="minimum_size"></property>
+                                <property name="name">m_Btn_Import</property>
+                                <property name="permission">private</property>
+                                <property name="pos"></property>
+                                <property name="size"></property>
+                                <property name="style"></property>
+                                <property name="subclass"></property>
+                                <property name="tooltip"></property>
+                                <property name="window_extra_style"></property>
+                                <property name="window_name"></property>
+                                <property name="window_style"></property>
+                                <event name="OnButtonClick"></event>
+                                <event name="OnChar"></event>
+                                <event name="OnEnterWindow"></event>
+                                <event name="OnEraseBackground"></event>
+                                <event name="OnKeyDown"></event>
+                                <event name="OnKeyUp"></event>
+                                <event name="OnKillFocus"></event>
+                                <event name="OnLeaveWindow"></event>
+                                <event name="OnLeftDClick"></event>
+                                <event name="OnLeftDown"></event>
+                                <event name="OnLeftUp"></event>
+                                <event name="OnMiddleDClick"></event>
+                                <event name="OnMiddleDown"></event>
+                                <event name="OnMiddleUp"></event>
+                                <event name="OnMotion"></event>
+                                <event name="OnMouseEvents"></event>
+                                <event name="OnMouseWheel"></event>
+                                <event name="OnPaint"></event>
+                                <event name="OnRightDClick"></event>
+                                <event name="OnRightDown"></event>
+                                <event name="OnRightUp"></event>
+                                <event name="OnSetFocus"></event>
+                                <event name="OnSize"></event>
+                                <event name="OnUpdateUI"></event>
+                            </object>
+                        </object>
                     </object>
                 </object>
             </object>

@@ -170,6 +170,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
+	EVT_MENU (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
 	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
@@ -1026,6 +1027,14 @@ void ToolMapFrame::CheckUpdates(bool silent)
 		myDlg.SetNewVersion();
 	
 	
+	myDlg.ShowModal();
+}
+
+
+
+void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
+{
+	tmGISImport_DLG myDlg (this);
 	myDlg.ShowModal();
 }
 
