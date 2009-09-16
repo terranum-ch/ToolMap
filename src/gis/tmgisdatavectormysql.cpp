@@ -136,6 +136,9 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 	poGeometry->getEnvelope(&oEnv);
 	psExtent->MinX = oEnv.MinX;
 	psExtent->MinY = oEnv.MinY;
+	psExtent->MaxX = oEnv.MaxX;
+	psExtent->MaxY = oEnv.MaxY;
+	
 	OGRGeometryFactory::destroyGeometry(poGeometry);
 	
 	// loop all lines
