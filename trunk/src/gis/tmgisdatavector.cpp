@@ -900,19 +900,20 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
  @param gCol the collection of geometries to update
  @param oid the oid
  @param AddedIds All IDs added.
+ @param layertype one of the TOC_GENERIC_NAME values
  @return  true if all operations are successfull
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 February 2009
  *******************************************************************************/
 bool tmGISDataVector::SplitGeometry (OGRGeometryCollection * gCol, const long & oid,
-									 wxArrayLong & AddedIds)
+									 wxArrayLong & AddedIds, int layertype)
 {
 	if (UpdateGeometry(gCol->getGeometryRef(0), oid) == false)
 		return false;
 	long lAdded = -1;
 	for (int i = 1;i < gCol->getNumGeometries(); i++)
 	{
-		lAdded = AddGeometry(gCol->getGeometryRef(i), -1);
+		lAdded = AddGeometry(gCol->getGeometryRef(i), -1, layertype);
 		if (lAdded == -1)
 			return false;
 		AddedIds.Add(lAdded);

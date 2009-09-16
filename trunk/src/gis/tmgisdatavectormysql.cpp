@@ -850,6 +850,9 @@ OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
  *******************************************************************************/
 long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid, int layertype)
 {
+	// check that function was used correctly
+	wxASSERT(layertype != wxNOT_FOUND);
+	
 	char * myCharGeom = NULL;
 	Geom->setCoordinateDimension(2);
 	Geom->exportToWkt(&myCharGeom);
@@ -866,7 +869,7 @@ long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid, in
 	
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
 										  _T(" VALUES (GeomFromText('%s'));"),
-										  TABLE_NAME_GIS_GENERIC[layertype].c_str(),
+										  GetTableName(layertype).c_str(),
 										  mySGeom.c_str());
 	if (m_DB->DataBaseQueryNoResults(sSentence)==false)
 	{

@@ -1529,7 +1529,7 @@ bool tmEditManager::CreateIntersections ()
 	OGRMultiLineString selectedsegments;
 	mySelLayer->CutLineMultiple(myOGRSelLine, &LinesCrossing, selectedsegments);
 	mySelLayer->SplitGeometry (&selectedsegments, m_SelectedData->GetSelectedUnique(),
-							   myInsertedIDs1);
+							   myInsertedIDs1, m_TOC->GetEditLayer()->m_LayerType);
 	
 	
 	
@@ -1561,7 +1561,7 @@ bool tmEditManager::CreateIntersections ()
 			mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
 										myRes1,	myRes2);
 			mySelLayer->SplitGeometry(&myRes2, myLinesCrossing->Item(i),
-									  myInsertedIDs2);
+									  myInsertedIDs2,  m_TOC->GetEditLayer()->m_LayerType);
 			myRes1.empty();
 			myRes2.empty();
 			
