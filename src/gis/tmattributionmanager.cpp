@@ -612,27 +612,24 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 		return;
 	}
 	
+	// clear selection only if query is correct
+	m_SelData->Clear();
+	
 	// query succeed, getting results
 	wxArrayLong myResults;
-	if (m_pDB->DataBaseGetResults(myResults)==false)
-		return;
-	
-	// clear selection
-	m_SelData->Clear();
-	m_SelData->SetLayerID(myLayerID);
-	m_SelData->AddSelected(&myResults);
+	if (m_pDB->DataBaseGetResults(myResults)==true)
+	{
+		m_SelData->SetLayerID(myLayerID);
+		m_SelData->AddSelected(&myResults);
+	}
 	
 	// update display
 	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	
-	// update attribution panel
+	// update selecction / attribution panel
 	wxCommandEvent evt2(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt2);
-	
-	//wxCommandEvent tmpevt;
-	//OnSelection(tmpevt);
-	
 }
 
 
