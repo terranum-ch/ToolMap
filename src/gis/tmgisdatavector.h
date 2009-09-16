@@ -129,7 +129,7 @@ class tmGISDataVector : public tmGISData
 		virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND){return -1;}
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid){return false;}
 		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid, 
-									wxArrayLong & AddedIds);
+									wxArrayLong & AddedIds, int layertype);
 		virtual OGRGeometryCollection * GetGeometryColByOID(wxArrayLong * OIDs){return NULL;}
 		
 		// counting
