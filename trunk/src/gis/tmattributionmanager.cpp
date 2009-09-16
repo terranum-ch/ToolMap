@@ -627,8 +627,11 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	
 	// update attribution panel
-	wxCommandEvent tmpevt;
-	OnSelection(tmpevt);
+	wxCommandEvent evt2(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt2);
+	
+	//wxCommandEvent tmpevt;
+	//OnSelection(tmpevt);
 	
 }
 
