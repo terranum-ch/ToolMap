@@ -428,6 +428,9 @@ void QueriesList::AfterEditing (bool bRealyEdited)
 	// if save pressed, update the DB
 	if (bRealyEdited)
 	{
+		// update the query name
+		SetItemText(mySelected.Item(0),0, myName);
+		
 		if(!m_pDB->EditQueries(myQTarget, myName, myQuery, myQid))
 			wxLogDebug(_T("Error modifying the query"));
 		
