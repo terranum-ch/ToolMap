@@ -428,6 +428,7 @@ void ToolMapFrame::OnClose(wxCloseEvent & event)
 	tmWindowPosition myPos;
 	myPos.SavePosition(GetName(), GetRect());
 	myPos.SavePosition(_T("AUI_PANES"), m_AuiManager->SavePerspective());
+	myPos.SaveScreenPosition();
 	
 	wxLog::SetActiveTarget (NULL);
 	event.Skip();
