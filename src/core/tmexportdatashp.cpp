@@ -505,7 +505,9 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		OGRPoint * myPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
 		myFrame->getPoint(p,myPoint);
 		myLineString->addPoint(myPoint);
+		OGRGeometryFactory::destroyGeometry(myPoint);
 	}
+	
 	
 	// create frame polygon
 	
@@ -514,12 +516,12 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
     GEOSGeom myGeosFramePoly = GEOSPolygonize( myGeomFrameLine, 1);
 	OGRPolygon * myOGRFramePoly = (OGRPolygon*) SafeCreateFromGEOS(myGeosFramePoly);
 	GEOSGeom_destroy(myGeomFrameLine[0]);
-	//pfree(myGeomFrameLine);
+	CPLFree(myGeomFrameLine);
 	GEOSGeom_destroy(myGeosFramePoly);
 	wxASSERT(myOGRFramePoly);
 
 	OGRGeometry * myOGRBufferedFrame = SafeBuffer( myOGRFramePoly, 2);
-
+	OGRGeometryFactory::destroyGeometry(myOGRFramePoly);
 	
 	// loop for all lines 
 	OGRMultiLineString * myTempNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
@@ -532,6 +534,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		if (myLine->Intersects(myOGRBufferedFrame))
 		{
 			myCropLine = SafeIntersection(myLine, myOGRBufferedFrame);
+			OGRGeometryFactory::destroyGeometry(myLine);
 			if (myCropLine->IsEmpty()==false)
 			{
 				myTempNodedLines->addGeometry(myCropLine);
@@ -543,6 +546,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 
 	
 	}
+	OGRGeometryFactory::destroyGeometry(myOGRBufferedFrame);
 	
 
 	// union with frame
@@ -550,24 +554,31 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	OGRGeometryFactory::destroyGeometry(myLineString);
 	OGRGeometryFactory::destroyGeometry(myTempNodedLines);
 	
-
-	int myTempNumber = myTotalLines->getNumGeometries();
 	
 	/*
 	// test export all lines
+	int myTempNumber = myTotalLines->getNumGeometries();
 	tmGISDataVectorSHP myShp;
 	myShp.CreateFile(wxFileName(_T("C:\\Documents and Settings\\LUCSCH\\Bureau\\exported_data\\test_exportedL.shp")), LAYER_SPATIAL_LINE);
-	//int myGeomCount = ((OGRGeometryCollection *)myTempNodedLines)->getNumGeometries();
 	for (int v = 0; v<myTempNumber;v++)
 		myShp.AddGeometry(myTotalLines->getGeometryRef(v), -1);*/
 
-
-	GEOSGeom * ahInGeoms = (GEOSGeom *) CPLCalloc(sizeof(void*),myTotalLines->getNumGeometries());
-	for(int i = 0; i < myTotalLines->getNumGeometries(); i++ )
+	int iTotalLines = myTotalLines->getNumGeometries();
+	GEOSGeom * ahInGeoms = (GEOSGeom *) CPLCalloc(sizeof(void*),iTotalLines);
+	for(int i = 0; i < iTotalLines; i++ )
 		ahInGeoms[i] = myTotalLines->getGeometryRef(i)->exportToGEOS();
     
-    GEOSGeom hResultGeom = GEOSPolygonize( ahInGeoms, 
-										myTotalLines->getNumGeometries() );
+	
+    GEOSGeom hResultGeom = GEOSPolygonize( ahInGeoms, iTotalLines );
+	
+	// cleaning
+	for (int h = 0; h< iTotalLines; h++)
+		GEOSGeom_destroy(ahInGeoms[h]);
+	CPLFree(ahInGeoms);
+	OGRGeometryFactory::destroyGeometry(myTotalLines);
+	
+	
+	
 
 	int myNbPoly = GEOSGetNumGeometries(hResultGeom);
 
