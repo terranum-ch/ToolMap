@@ -57,7 +57,18 @@ bool ToolMapApp::OnInit()
 	wxImage::AddHandler(new wxPNGHandler);
 	wxHandleFatalExceptions();
 
-	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,wxDefaultPosition, wxSize(900,500));
+	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,
+										   wxDefaultPosition, wxSize(900,500),
+										   _T("MAIN_WINDOW"));
+	tmWindowPosition myPos;
+	wxRect myWndPos;
+	if (myPos.LoadPosition(frame->GetName(), myWndPos)==true)
+	{
+		frame->SetPosition(wxPoint(myWndPos.GetX(), myWndPos.GetY()));
+		frame->SetSize(wxSize(myWndPos.GetWidth(), myWndPos.GetHeight()));
+	}
+	
+	
 	frame->Show(true);
 	return true;
 }
@@ -240,8 +251,8 @@ ToolMapFrame::ToolMapFrame()
 
 
 /* Frame initialisation */
-ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wxSize size)
-			: wxFrame(frame, wxID_ANY, title,pos,size)
+ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wxSize size, const wxString & name)
+			: wxFrame(frame, wxID_ANY, title,pos,size, wxDEFAULT_FRAME_STYLE, name)
 {
     // Generic list settings for using generic list under Mac
 	// otherwise some problem may occur with dnd and inserting
@@ -292,6 +303,18 @@ void ToolMapFrame::PostInit()
 	m_QueriesPanel = new Queries_PANEL(this,wxID_ANY, m_AuiManager);
 	m_ShortCutPanel = new Shortcuts_PANEL(this, wxID_ANY, m_AuiManager);
 	m_SnappingPanel = new Snapping_PANEL(this, wxID_ANY, m_AuiManager);
+	
+	
+	// loading position
+	wxString myPosText = wxEmptyString;
+	tmWindowPosition myPos;
+	if(myPos.LoadPosition(_T("AUI_PANES"), myPosText)==true)
+	{
+		if (myPos.HasScreenChanged()==false)
+			m_AuiManager->LoadPerspective(myPosText, true);
+	}
+	
+	
 	
 	
 	// create layer manager object
@@ -401,6 +424,11 @@ void ToolMapFrame::OnQuit(wxCommandEvent & event)
 
 void ToolMapFrame::OnClose(wxCloseEvent & event)
 {
+	// saving window postion
+	tmWindowPosition myPos;
+	myPos.SavePosition(GetName(), GetRect());
+	myPos.SavePosition(_T("AUI_PANES"), m_AuiManager->SavePerspective());
+	
 	wxLog::SetActiveTarget (NULL);
 	event.Skip();
 }
