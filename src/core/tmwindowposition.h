@@ -30,6 +30,7 @@
 #endif
 
 #include <wx/fileconf.h>
+#include <wx/tokenzr.h>
 
 
 
@@ -56,7 +57,9 @@ class tmWindowPosition : public wxObject
 		~tmWindowPosition();
 		
 		bool LoadPosition(const wxString & wndname, wxRect & pos);
-		bool SavePosition(const wxString & wndname, wxRect pos); 
+		bool SavePosition(const wxString & wndname, wxRect pos);
+		bool SavePosition(const wxString & wndname, const wxString & postext);
+		bool LoadPosition(const wxString & wndname, wxString & postext);
 		
 		bool HasScreenChanged();
 		bool Intersects (wxRect wndpos, wxSize screensize);

@@ -125,6 +125,7 @@
 #include "../components/tmupdate/tmupdate_dlg.h"
 
 #include "../gui/tmgisimport_dlg.h"		// for importing data
+#include "tmwindowposition.h"			// saving window position
 
 //// temp for testing 
 #include "diroperation.h"
@@ -259,7 +260,8 @@ class ToolMapFrame: public wxFrame
 public:
 	ToolMapFrame();
 	ToolMapFrame(wxFrame *frame, const wxString& title,
-			 wxPoint  pos,  wxSize  size);
+			 wxPoint  pos,  wxSize  size,
+				 const wxString & name);
 	~ToolMapFrame();
 	void PostInit();
 	

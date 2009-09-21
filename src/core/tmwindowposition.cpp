@@ -66,26 +66,9 @@ tmWindowPosition::~tmWindowPosition()
 
 bool tmWindowPosition::LoadPosition(const wxString & wndname, wxRect & pos)
 {
-	//if (WP_IsInited()==false)
-	//	return false;
-	
-	wxString myMainPosition = wxEmptyString;
-	
-	wxFileConfig myConfig;
-	myConfig.SetPath(_T("WINDOW_POSITION"));
-	uint myNumberOfWindows = myConfig.GetNumberOfEntries();
-	if (myNumberOfWindows == 0)
-	{
-		wxLogDebug(_T("No position stored"));
-		return false;
-	}
-	
 	wxString readedpos = wxEmptyString;
-	if (myConfig.Read(wndname, &readedpos)==false)
-	{
-		wxLogError(_("No position stored for windows %s"), wndname.c_str());
+	if (LoadPosition(wndname, readedpos)==false)
 		return false;
-	}
 	
 	pos =  WP_StringToPosition(readedpos);
 	
@@ -98,6 +81,20 @@ bool tmWindowPosition::LoadPosition(const wxString & wndname, wxRect & pos)
 			return false;
 		}
 	}
+	return true;
+}
+
+
+bool tmWindowPosition::LoadPosition(const wxString & wndname, wxString & postext)
+{	
+	wxFileConfig myConfig;
+	myConfig.SetPath(_T("WINDOW_POSITION"));	
+	if (myConfig.Read(wndname, &postext)==false)
+	{
+		wxLogError(_("No position stored for windows %s"), wndname.c_str());
+		return false;
+	}
+	
 	return true;
 }
 
@@ -141,11 +138,17 @@ wxRect tmWindowPosition::WP_StringToPosition(const wxString & posstring)
 
 bool tmWindowPosition::SavePosition(const wxString & wndname, wxRect pos)
 {
+	return SavePosition(wndname, WP_PositionToString(pos));
+}
+
+
+bool tmWindowPosition::SavePosition(const wxString & wndname, const wxString & postext)
+{
 	wxString myStringPosition = wxEmptyString;
 	wxFileConfig myConfig;
 	
 	myConfig.SetPath(_T("WINDOW_POSITION"));
-	if (myConfig.Write(wndname, WP_PositionToString(pos))==false)
+	if (myConfig.Write(wndname, postext)==false)
 	{
 		wxLogDebug(_T("Unable to write to config file"));
 		return false;
@@ -205,7 +208,7 @@ wxRect tmWindowPosition::WP_GetActualScreenSize()
 bool tmWindowPosition::Intersects (wxRect wndpos, wxSize screensize)
 {
 	wxRect myScreenSize = wxRect(wxPoint(0,0),screensize);
-	return myScreenSize.Intersects(wndpos);
+	return myScreenSize.Contains(wndpos);
 }
 
 

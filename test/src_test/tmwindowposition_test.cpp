@@ -35,6 +35,8 @@ class tmWindowPositionTEST : public CppUnit::TestFixture
 		CPPUNIT_TEST ( TESTLoadPosition );
 		CPPUNIT_TEST ( TESTHasChanged );
 		CPPUNIT_TEST ( TESTIntersect );
+		CPPUNIT_TEST ( TESTSavePosition2 );
+		CPPUNIT_TEST ( TESTLoadPosition2 );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -81,6 +83,25 @@ public:
 	
 		
 	}
+	
+	
+	void TESTSavePosition2()
+	{
+		tmWindowPosition wnd;
+		CPPUNIT_ASSERT(wnd.SavePosition(_T("TESTWND"), _T("coucou123"))==true);
+	}
+	
+	void TESTLoadPosition2()
+	{
+		tmWindowPosition wnd;
+		wxString myPostext = wxEmptyString;
+		CPPUNIT_ASSERT(wnd.LoadPosition(_T("NO_EXISTING"), myPostext)==false);
+		CPPUNIT_ASSERT(myPostext.IsEmpty() == true);
+		CPPUNIT_ASSERT(wnd.LoadPosition(_T("TESTWND"), myPostext)==true);
+		CPPUNIT_ASSERT( myPostext == _T("coucou123"));
+
+	}
+	
 	
 	
 };
