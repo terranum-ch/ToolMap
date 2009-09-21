@@ -49,7 +49,7 @@ tmWindowPosition::tmWindowPosition()
 
 tmWindowPosition::~tmWindowPosition()
 {
-	WP_SaveScreenSize();
+	//WP_SaveScreenSize();
 }
 
 
@@ -63,6 +63,10 @@ tmWindowPosition::~tmWindowPosition()
 	return false;
 }*/
 
+bool tmWindowPosition::SaveScreenPosition()
+{
+	return WP_SaveScreenSize();
+}
 
 bool tmWindowPosition::LoadPosition(const wxString & wndname, wxRect & pos)
 {

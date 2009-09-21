@@ -61,6 +61,8 @@ class tmWindowPosition : public wxObject
 		bool SavePosition(const wxString & wndname, const wxString & postext);
 		bool LoadPosition(const wxString & wndname, wxString & postext);
 		
+		bool SaveScreenPosition();
+		
 		bool HasScreenChanged();
 		bool Intersects (wxRect wndpos, wxSize screensize);
 };
