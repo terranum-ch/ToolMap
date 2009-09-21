@@ -46,6 +46,7 @@ class tmExportDataSHP : public tmExportData
 		OGRGeometry * SafeIntersection(OGRGeometry * line, OGRGeometry * frame);
 		OGRGeometry * SafeUnion (OGRGeometry * union1, OGRGeometry * line);
 		OGRGeometry * SafeCreateFromGEOS (GEOSGeom geosGeom);
+		OGRGeometry * SafeBuffer (OGRGeometry * ogrgeom,  int size);
 		
 		// multiple fields
 		bool SetMultipleFields (ProjectDefMemoryLayers * layer,
