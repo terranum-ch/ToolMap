@@ -241,6 +241,9 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM * pDb,
 	if (bIsReady)
 		ConnectShortcutEvent();
 	
+	// disable info button 
+	//m_Panel->SetInfoBtn(1);
+
 	return bIsReady;
 }
 
@@ -258,6 +261,7 @@ void tmAttributionManager::UnInitAttributionManager()
 	m_pLayerProperties = NULL;
 	
 	DisconnectShortcutEvent();
+	m_Panel->SetInfoBtn(0);
 }
 
 

@@ -231,6 +231,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	m_ButtonSizer = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_InfoBtn = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"), wxDefaultSize);
+	m_InfoBtn->Enable(false);
 	m_ButtonSizer->Add( m_InfoBtn, 0, wxEXPAND, 5 );
 	
 	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
