@@ -78,7 +78,7 @@ enum tmGIS_CURSOR
 
 // parameter : size of selection in pixels
 // sould be able to divide it by two
-const int tmSELECTION_DIAMETER = 4;
+const int tmSELECTION_DIAMETER = 10;
 
 
 class tmRenderer : public wxScrolledWindow
