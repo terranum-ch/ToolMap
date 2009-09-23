@@ -101,6 +101,14 @@
 #include "tmwindowposition_test.cpp"
 #include "../../src/core/tmwindowposition.cpp"
 
+// POINT ORIENTATION
+#include "tmpointorient_test.cpp"
+#include "../../src/gis/tmpointorient.cpp"
+#include "../../src/gis/tmpointorientattrib.cpp"
+
+#include "tmpointorientattrib_test.cpp"
+
+
 int main (int argc, char * const argv[])
 {
 
@@ -111,8 +119,10 @@ int main (int argc, char * const argv[])
 	runner.addTest( tmToolDanglingNodesTEST::suite() );
 	runner.addTest( tmUpdateTEST::suite());
 	runner.addTest(tmGISImportTEST::suite());
-	runner.addTest(tmPercentTEST::suite());*/
-	runner.addTest(tmWindowPositionTEST::suite());
+	runner.addTest(tmPercentTEST::suite());
+	runner.addTest(tmWindowPositionTEST::suite());*/
+	runner.addTest(tmPointOrienTEST::suite());
+	runner.addTest(tmPointOrientAttribTEST::suite());
 	runner.run();
 	return 0;
 }
