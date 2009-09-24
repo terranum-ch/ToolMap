@@ -66,6 +66,7 @@ public:
 		CPPUNIT_ASSERT(myRect == wxRect(wxDefaultPosition, wxDefaultSize));
 		CPPUNIT_ASSERT(wnd.LoadPosition(_T("MyWindow"), myRect)==true);
 		CPPUNIT_ASSERT(myRect == wxRect(10,10,300,300));
+		wnd.SaveScreenPosition();
 	}
 	
 	void TESTHasChanged ()

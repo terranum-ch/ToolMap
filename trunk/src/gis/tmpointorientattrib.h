@@ -37,6 +37,7 @@ class tmPointOrientAttrib : public tmPointOrient
 	{
 	private:
 		long m_Oid;
+		long m_LayerId;
 		DataBaseTM * m_DB;
 		ProjectDefMemoryFields m_OrientField;
 		
@@ -52,6 +53,7 @@ class tmPointOrientAttrib : public tmPointOrient
 		~tmPointOrientAttrib();
 		
 		virtual bool IsValid();
+		bool Update ();
 };
 
 
