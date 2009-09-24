@@ -181,6 +181,7 @@ class ProjectManager;
 #define ID_MENU_CREATE_INTERSECTIONS 10174
 #define ID_MENU_FLIP_LINE 10004
 #define ID_MENU_DELETE_OBJ 10122
+#define ID_MENU_ORIENT_POINT 10190
 #define ID_MENU_ADJUST_SNAPPING 10001
 #define ID_MENU_ATTRIB_TYPES 10166
 #define ID_MENU_ATTRIB_ATTRIBUTES 10175
@@ -200,6 +201,8 @@ class ProjectManager;
 #define ID_MENU_INFO_WINDOW 10140
 #define ID_MENU_LOG_WINDOW 10207
 #define ID_MENU_CHECK_UPDATE 10125
+#define ID_MENU_REPORT_BUG 10128
+#define ID_MENU_ASK_NEW_FEATURE 10129
 #define ID_MENUITEM17 10077
 #define ID_MENUITEM14 10072
 #define ID_MENUITEM20 10111
@@ -327,6 +330,7 @@ private:
 	//void OnMenuHighlightOn (wxMenuEvent & event);
 	//void OnMenuHighligntOff(wxMenuEvent & event);
 	void OnCheckUpdates (wxCommandEvent & event);
+	void OnReportBug (wxCommandEvent & event);
 	void CheckUpdates(bool silent = false);
 	void OnImportGISData (wxCommandEvent & event);
 	

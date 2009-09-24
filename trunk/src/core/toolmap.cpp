@@ -223,10 +223,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 
 	//TODO: Temp function for testing purpose, remove.
-	EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnTempBlockRefresh)
-
-
+	//EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnTempBlockRefresh)
+	
 	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
+	EVT_MENU (ID_MENU_REPORT_BUG, ToolMapFrame::OnReportBug)
+	EVT_MENU (ID_MENU_ASK_NEW_FEATURE, ToolMapFrame::OnReportBug)
+	
 
 	// AUI EVENT WHEN PANE CLOSED
 	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
@@ -492,13 +494,16 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
 	itemMenu41->Enable(ID_MENU_DRAW, false);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify\tM"), _T(""), wxITEM_NORMAL);
 	itemMenu41->Enable(ID_MENU_MODIFY, false);
-    itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut lines\tCtrl+X"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex position\tCtrl+V"), _T(""), wxITEM_NORMAL);
+	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected objects\tDel"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
-    itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge selected lines\tCtrl+M"), _T(""), wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut lines\tCtrl+X"), _T(""), wxITEM_NORMAL);
+	itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge selected lines\tCtrl+M"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersections\tCtrl+I"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+F"), _T(""), wxITEM_NORMAL);
-    itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected objects\tDel"), _T(""), wxITEM_NORMAL);
+	itemMenu41->AppendSeparator();
+	itemMenu41->Append(ID_MENU_ORIENT_POINT, _("Point orientation tool\tCtrl+Y"), _T(""), wxITEM_NORMAL);
+	itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Adjust snapping...\tCtrl+S"), _T(""), wxITEM_CHECK);
     menuBar->Append(itemMenu41, _("Edition"));
     wxMenu* itemMenu55 = new wxMenu;
@@ -538,6 +543,9 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), _T(""), wxITEM_NORMAL);
     itemMenu81->Append(ID_MENU_CHECK_UPDATE, _("Check for updates..."), _T(""), wxITEM_NORMAL);
+	itemMenu81->AppendSeparator();
+	itemMenu81->Append(ID_MENU_REPORT_BUG, _("Report a bug..."), _T(""), wxITEM_NORMAL);
+	itemMenu81->Append(ID_MENU_ASK_NEW_FEATURE, _("Ask for a new feature..."), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu81, _("&Help"));
     return menuBar;
 }
@@ -1019,6 +1027,13 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 void ToolMapFrame::OnCheckUpdates (wxCommandEvent & event)
 {
 	CheckUpdates(false);
+}
+
+
+
+void ToolMapFrame::OnReportBug (wxCommandEvent & event)
+{
+	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
 }
 
 
