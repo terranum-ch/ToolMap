@@ -31,6 +31,7 @@ void tmPointOrientAttrib::InitMemberValues()
 {
 	m_Oid = wxNOT_FOUND;
 	m_DB = NULL;
+	m_LayerId = wxNOT_FOUND;
 }
 
 
@@ -107,20 +108,20 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 	if (m_DB->DataBaseQuery(sSentence)==false)
 		return false;
 	
-	long layerid = wxNOT_FOUND;
-	if(m_DB->DataBaseGetNextResult(layerid)==false)
+	m_LayerId = wxNOT_FOUND;
+	if(m_DB->DataBaseGetNextResult(m_LayerId)==false)
 	{
 		wxLogError(_("No layer found, object not attributed ?"));
 		return false;
 	}
-	wxLogDebug(_T("Layer found is : %d"), layerid);
+	wxLogDebug(_T("Layer found is : %d"), m_LayerId);
 	m_DB->DataBaseClearResults();
-	wxASSERT(layerid != wxNOT_FOUND);
+	wxASSERT(m_LayerId != wxNOT_FOUND);
 	
 	// get field info 
 	PrjMemFieldArray myFields;
 	ProjectDefMemoryLayers myActualLayer;
-	myActualLayer.m_LayerID = layerid;
+	myActualLayer.m_LayerID = m_LayerId;
 	
 	if (m_DB->GetFields(myFields, &myActualLayer)==false)
 	{
@@ -140,6 +141,7 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 		}
 	}
 	
+		
 	if (bFound == false)
 	{
 		wxLogError(_("No orientation field found"));
@@ -169,3 +171,59 @@ bool tmPointOrientAttrib::IsValid()
 	// checks for 
 	return true;
 }
+
+
+bool tmPointOrientAttrib::Update()
+{
+	if (POA_IsOIDInited()==false)
+		return false;
+	
+	if (m_LayerId == wxNOT_FOUND)
+	{		
+		wxLogDebug(_T("Use IsValid() first data"));
+		return false;
+	}
+	
+	int myOrientI = GetOrientationInt();
+	double myOrientD = GetOrientationDouble();
+	if (myOrientD == wxNOT_FOUND)
+	{
+		wxLogError(_T("Unable to update orientation, no orientation computed"));
+		return false;
+	}
+	
+	
+	wxString sSentence = wxString::Format(_T("INSERT INTO %s%d (OBJECT_ID, %s) VALUES (%d, "),
+										  TABLE_NAME_LAYER_AT.c_str(), 
+										  m_LayerId,
+										  m_OrientField.m_Fieldname.c_str(),
+										  m_Oid);
+	
+	switch (m_OrientField.m_FieldType)
+	{
+		case TM_FIELD_INTEGER:
+			sSentence.Append(wxString::Format(_T("%d) ON DUPLICATE KEY UPDATE %s=%d;"),
+											  myOrientI,
+											  m_OrientField.m_Fieldname.c_str(),
+											  myOrientI));
+			break;
+		case TM_FIELD_FLOAT:
+			sSentence.Append(wxString::Format(_T("%f) ON DUPLICATE KEY UPDATE %s=%f;"),
+											  myOrientD,
+											  m_OrientField.m_Fieldname.c_str(),
+											  myOrientD));
+			break;
+			
+			
+		default:
+			wxASSERT_MSG(1, _T("Incorrect field stored, something wrong"));
+			break;
+	};
+	
+	
+	if (m_DB->DataBaseQueryNoResults(sSentence)==false)
+		return false;
+	
+	return true;
+}
+

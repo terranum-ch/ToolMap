@@ -29,6 +29,8 @@ class tmPointOrientAttribTEST : public CppUnit::TestFixture
 { 
 	CPPUNIT_TEST_SUITE( tmPointOrientAttribTEST );
 	CPPUNIT_TEST ( TESTValid );
+	CPPUNIT_TEST ( TESTUpdateOrient );
+	CPPUNIT_TEST ( TESTUpdateOrient2 );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -72,8 +74,33 @@ public:
 		myPtA.Create(m_DB, 5);
 		CPPUNIT_ASSERT(myPtA.IsValid()==true);
 		
+		// no field pt
+		myPtA.Create(m_DB, 6);
+		CPPUNIT_ASSERT(myPtA.IsValid()==false);
 		
+		// no orient field pt
+		myPtA.Create(m_DB, 7);
+		CPPUNIT_ASSERT(myPtA.IsValid()==false);
 		
+	}
+	
+	void TESTUpdateOrient()
+	{
+		myPtA.Create(m_DB, 5);
+		myPtA.SetStartPoint(myPt1);
+		myPtA.SetEndPoint(myPt45);
+		CPPUNIT_ASSERT(myPtA.Update()==false);
+		CPPUNIT_ASSERT(myPtA.IsValid()==true);
+		CPPUNIT_ASSERT(myPtA.Update()==true);
+	}
+	
+	void TESTUpdateOrient2()
+	{
+		myPtA.Create(m_DB, 1);
+		myPtA.SetStartPoint(myPt1);
+		myPtA.SetEndPoint(myPt235);
+		CPPUNIT_ASSERT(myPtA.IsValid()==true);
+		CPPUNIT_ASSERT(myPtA.Update()==true);
 	}
 	
 	
