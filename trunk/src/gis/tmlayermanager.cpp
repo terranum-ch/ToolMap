@@ -467,8 +467,7 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
 	}
 	
 	
-	wxString myAngleText = wxString::Format(_T("Angle : %d"), myAngle);
-	myAngleText.Append(wxT("°"));
+	wxString myAngleText = wxString::Format(_T("Angle : %d\u00B0"), myAngle);
 	m_StatusBar->SetStatusText(myAngleText, 3);
 }
 
