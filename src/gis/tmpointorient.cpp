@@ -86,11 +86,19 @@ double tmPointOrient::GetOrientationDouble()
 	wxPoint2DDouble myVectorVert = wxPoint2DDouble (0, -1);
 	
 	// vector length for normalize
-	double myLength1 = myVector1.GetVectorLength();
-	myVector1 = myVector1 / myLength1;
+	myVector1.Normalize();
 	
-	double myRadialVal = atan2(myVector1.m_y, myVector1.m_x) - atan2(myVectorVert.m_y, myVectorVert.m_x);
-	return 180 * myRadialVal / M_PI;
+	double myDotProduct = myVectorVert.GetDotProduct(myVector1);
+	double myCrossProduct = myVectorVert.GetCrossProduct(myVector1);
+	
+	double myCosRadVal = acos(myDotProduct);
+	double mySinRadVal = asin(myCrossProduct);
+	if (mySinRadVal < 0)
+		myCosRadVal = 2 * M_PI - myCosRadVal;
+	
+	
+	//double myRadialVal = atan2(myVector1.m_y, myVector1.m_x) - atan2(myVectorVert.m_y, myVectorVert.m_x);
+	return 180 * myCosRadVal / M_PI;
 }
 
 

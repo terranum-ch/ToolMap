@@ -268,7 +268,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	SetIcon(icon);
 	
     // adding status bar
-	CreateStatusBar(3,0,wxID_ANY);
+	CreateStatusBar(4,0,wxID_ANY);
 	
 	// adding menubar
 	SetMenuBar(CreateToolMapMenu());
@@ -503,8 +503,6 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersections\tCtrl+I"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+F"), _T(""), wxITEM_NORMAL);
 	itemMenu41->AppendSeparator();
-	itemMenu41->Append(ID_MENU_ORIENT_POINT, _("Point orientation tool\tCtrl+Y"), _T(""), wxITEM_NORMAL);
-	itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Adjust snapping...\tCtrl+S"), _T(""), wxITEM_CHECK);
     menuBar->Append(itemMenu41, _("Edition"));
     wxMenu* itemMenu55 = new wxMenu;
@@ -512,6 +510,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu55->Append(ID_MENU_ATTRIB_ATTRIBUTES, _("Object attributes...\tCtrl+A"), _T(""), wxITEM_NORMAL);
     itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object attribute (batch)..."), _T(""), wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
+	itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Attribute orientation to points\tCtrl+Y"), _T(""), wxITEM_NORMAL);
     itemMenu55->Append(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-Paste Attribution\tCtrl+B"), _T(""), wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcuts..."), _T(""), wxITEM_CHECK);

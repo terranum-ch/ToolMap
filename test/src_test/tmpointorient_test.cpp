@@ -34,7 +34,7 @@ class tmPointOrienTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
-	wxPoint myPt1, myPt90, myPt180, myPt270, myPt45, myPt235, myPtd0;
+	wxPoint myPt1, myPt90, myPt180, myPt270, myPt45, myPt235, myPtd0, myPt315;
 	tmPointOrient myPtO;
 
 	
@@ -47,6 +47,7 @@ public:
 		myPt270 = wxPoint (10,20);
 		myPt45 = wxPoint(40,0);
 		myPt235 = wxPoint(0,40);
+		myPt315 = wxPoint(0,0);
 		myPtd0 = wxPoint(20,0);
 	}
 	
@@ -110,6 +111,12 @@ public:
 		wxLogDebug(_T("orient 270 = %d"), myOrient);
 		
 		CPPUNIT_ASSERT(myPtO.GetOrientationInt() == 270);
+		
+		myPtO.SetEndPoint(myPt315);
+		myOrient = myPtO.GetOrientationInt();
+		wxLogDebug(_T("orient 315 = %d"), myOrient);
+		
+		CPPUNIT_ASSERT(myPtO.GetOrientationInt() == 315);
 		
 	}
 	

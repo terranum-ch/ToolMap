@@ -462,13 +462,13 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
 	
 	if (myAngle == wxNOT_FOUND)
 	{
-		m_StatusBar->SetStatusText(_T(""), 2);
+		m_StatusBar->SetStatusText(_T(""), 3);
 		return;
 	}
 	
 	
 	wxString myAngleText = wxString::Format(_T("Angle : %d°"), myAngle);
-	m_StatusBar->SetStatusText(myAngleText, 2);
+	m_StatusBar->SetStatusText(myAngleText, 3);
 }
 
 
