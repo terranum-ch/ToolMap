@@ -41,6 +41,7 @@
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
 #include <wx/list.h>						// for iterating lists
+#include "../gis/tmpointorientattrib.h"		// for oriented points
 
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT =	22200;
@@ -68,6 +69,7 @@ class tmEditManager : public wxEvtHandler
 		tmDrawerEditLine m_DrawLine;
 		int m_INSDELVertex;
 		wxRealPoint m_INSVertexPos;
+		tmPointOrientAttrib m_OrientedPt;
 		
 		
 		// defined by function or event.
@@ -95,6 +97,10 @@ class tmEditManager : public wxEvtHandler
 		void OnModifyMove (wxCommandEvent & event);
 		void OnModifyUp (wxCommandEvent & event);
 		void OnModifyMenu (wxCommandEvent & event);
+		
+		void OnOrientedPtsDown(wxCommandEvent & event);
+		void OnOrientedPtsMove (wxCommandEvent & event);
+		void OnOrientedPtsUp (wxCommandEvent & event);
 		
 		// menu event
 		void OnMenuInsertVertex(wxCommandEvent & event);
@@ -163,6 +169,7 @@ class tmEditManager : public wxEvtHandler
 		void OnToolEdit ();
 		void OnToolModify ();
 		void OnToolCutLines();
+		void OnToolOrientedPoint();
 		
 		// validiting editing / modfication
 		bool IsDrawingAllowed();

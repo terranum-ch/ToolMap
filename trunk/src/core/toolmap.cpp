@@ -194,6 +194,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_ORIENT_POINT, ToolMapFrame::OnToolChanged)
 
 	//EDIT MENU
 	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
@@ -1229,6 +1230,10 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 			
 		case ID_MENU_CUT_LINES:
 			m_EditManager->OnToolCutLines();
+			break;
+			
+		case ID_MENU_ORIENT_POINT:
+			m_EditManager->OnToolOrientedPoint();
 			break;
 			
 		default:

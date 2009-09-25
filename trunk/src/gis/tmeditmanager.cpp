@@ -37,6 +37,11 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
 
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_DOWN,tmEditManager::OnOrientedPtsDown)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_MOVE,tmEditManager::OnOrientedPtsMove)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_UP,tmEditManager::OnOrientedPtsUp)
+
+
 	EVT_MENU (tmEM_CONTEXTMENU_LINE_CANCEL,tmEditManager::OnDrawFeatureEscape)
 	EVT_MENU (tmEM_CONTEXTMENU_LINE_SAVE, tmEditManager::OnDrawFeatureValidate)
 	EVT_MENU (tmEM_CONTEXTMENU_VERTEX_INSERT,tmEditManager::OnMenuInsertVertex)
@@ -145,6 +150,31 @@ void tmEditManager::OnToolCutLines ()
 {
 	wxASSERT(m_Renderer);
 	m_Renderer->SetTool(tmTOOL_CUT_LINES);
+}
+
+
+
+/***************************************************************************//**
+ @brief Set oriented point tool
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 24 September 2009
+ *******************************************************************************/
+void tmEditManager::OnToolOrientedPoint()
+{
+	wxASSERT(m_Renderer);
+	
+	if (IsModifictionAllowed()==false)
+		return;
+	
+	if (IsLayerTypeSelected(TOC_NAME_POINTS)==false)
+		return;
+	
+	m_OrientedPt.Create(m_pDB, m_SelectedData->GetSelectedUnique());
+	if (m_OrientedPt.IsCorrectType()==false)
+		return;
+	
+	m_Renderer->SetTool(tmTOOL_ORIENTED_POINTS);
+	
 }
 
 
@@ -478,6 +508,83 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
 	delete myPt;
 }
 
+
+void tmEditManager::OnOrientedPtsDown(wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	
+	m_OrientedPt.SetStartPoint(*myPt);
+	m_DrawLine.CreateVertex(*myPt);
+	
+	delete myPt;
+}
+
+
+void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	
+	if (m_DrawLine.IsOK() == false)
+	{
+		delete myPt;
+		return; 
+	}
+	
+	wxClientDC dc (m_Renderer);
+	bool BDraw = m_DrawLine.DrawEditPart(&dc);
+	wxASSERT(BDraw);
+	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
+	wxASSERT(bSetVertex);
+	
+	
+	// display angle
+	m_OrientedPt.SetEndPoint(*myPt);
+	int myOrient = m_OrientedPt.GetOrientationInt();
+	if (myOrient != wxNOT_FOUND)
+	{
+		wxCommandEvent evt2(tmEVT_LM_ANGLE_CHANGED, wxID_ANY);
+		evt2.SetInt(myOrient);
+		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	}
+	
+	
+	BDraw = m_DrawLine.DrawEditPart(&dc);
+	wxASSERT(BDraw);
+	
+	delete myPt;
+}
+
+
+void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
+{
+	wxPoint * myPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myPt);
+	
+	if(m_DrawLine.IsOK() == false)
+	{
+		delete myPt;
+		return;
+	}
+	
+	m_OrientedPt.SetEndPoint(*myPt);
+	bool bUpdate = m_OrientedPt.Update();
+	wxASSERT(bUpdate);	
+	
+	// clearing status bar
+	wxCommandEvent evt2(tmEVT_LM_ANGLE_CHANGED, wxID_ANY);
+	evt2.SetInt(wxNOT_FOUND);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	
+	m_DrawLine.ClearVertex();
+	
+	m_Renderer->Refresh(false);
+	m_Renderer->Update();
+	
+	delete myPt;
+}
 
 
 /***************************************************************************//**

@@ -54,7 +54,9 @@ DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_DOWN, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ESC, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_MENU, -1)
 DECLARE_EVENT_TYPE(tmEVT_TM_UPDATE_TOOL_VIEW, -1)
-
+DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_DOWN, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_MOVE, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_UP, -1)
 
 enum tmGIS_TOOL
 {
@@ -65,6 +67,7 @@ enum tmGIS_TOOL
 	tmTOOL_DRAW,
 	tmTOOL_MODIFY,
 	tmTOOL_CUT_LINES,
+	tmTOOL_ORIENTED_POINTS,
 	tmTOOL_ZOOM_RECTANGLE = tmTOOL_ZOOM_RECTANGLE_IN
 };
 
@@ -73,7 +76,8 @@ enum tmGIS_CURSOR
 	tmCURSOR_ZOOM_IN,
 	tmCURSOR_ZOOM_OUT,
 	tmCURSOR_HAND,
-	tmCURSOR_EDIT
+	tmCURSOR_EDIT,
+	tmCURSOR_ORIENTED
 };
 
 // parameter : size of selection in pixels
@@ -150,6 +154,11 @@ class tmRenderer : public wxScrolledWindow
 		void DrawStart (const wxPoint & mousepos);
 		void DrawMove (const wxPoint & mousepos);
 		void DrawStop  (const wxPoint & mousepos);
+		
+		// oriented pts functions
+		void OrientedPtsStart(const wxPoint & mousepos);
+		void OrientedPtsMove (const wxPoint & mousepos);
+		void OrientedPtsStop (const wxPoint & mousepos);
 		
 		// modify functions
 		void ModifyStart (const wxPoint & mousepos);

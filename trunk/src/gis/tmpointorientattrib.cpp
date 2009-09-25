@@ -153,10 +153,10 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 }
 
 
-bool tmPointOrientAttrib::IsValid()
+bool tmPointOrientAttrib::IsCorrectType()
 {
-	if (tmPointOrient::IsValid()==false)
-		return false;
+	//if (tmPointOrient::IsValid()==false)
+	//	return false;
 	
 	if (POA_IsOIDInited()==false)
 		return false;
@@ -180,7 +180,7 @@ bool tmPointOrientAttrib::Update()
 	
 	if (m_LayerId == wxNOT_FOUND)
 	{		
-		wxLogDebug(_T("Use IsValid() first data"));
+		wxLogDebug(_T("Use IsCorrectType() first"));
 		return false;
 	}
 	

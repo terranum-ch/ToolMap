@@ -52,7 +52,7 @@ class tmPointOrientAttrib : public tmPointOrient
 		void Create (DataBaseTM * database,  long oid);
 		~tmPointOrientAttrib();
 		
-		virtual bool IsValid();
+		bool IsCorrectType();
 		bool Update ();
 };
 
