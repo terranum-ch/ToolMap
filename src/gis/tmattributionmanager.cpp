@@ -799,3 +799,10 @@ bool tmAttributionManager::UpdateInfoMetadata()
 	return true;
 }
 
+
+
+/*void tmAttributionManager::EditOrientedPoint()
+{
+	
+}*/
+

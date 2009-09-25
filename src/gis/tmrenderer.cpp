@@ -25,6 +25,7 @@
 #include "../img/cursor_zoom_out.cpp"
 #include "../img/cursor_hand.cpp"
 #include "../img/cursor_editing.cpp"
+#include "../img/cursor_oriented1.cpp"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -45,6 +46,9 @@ DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_DOWN)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ESC)
 DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_MENU)
 DEFINE_EVENT_TYPE(tmEVT_TM_UPDATE_TOOL_VIEW)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_DOWN)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_MOVE)
+DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_UP)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -222,6 +226,10 @@ wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
 			myCursorBmp = wxGetBitmapFromMemory(cursor_editing);
 			break;
 			
+		case tmCURSOR_ORIENTED:
+			myCursorBmp = wxGetBitmapFromMemory(cursor_oriented1);
+			break;
+			
 		default:
 			return wxCursor (wxCURSOR_ARROW);
 			break;
@@ -229,8 +237,8 @@ wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
 	m_ActualNotStockCursor = cursor;
 	
 	wxImage mycursor (myCursorBmp.ConvertToImage()); 
-	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_X,6);
-	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_Y,6);
+	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_X,8);
+	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_Y,8);
 	return wxCursor(mycursor);
 	
 }
@@ -264,6 +272,10 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			
 		case tmTOOL_CUT_LINES:
 			this->SetCursor(wxCursor(wxCURSOR_BULLSEYE));
+			break;
+			
+		case tmTOOL_ORIENTED_POINTS:
+			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_ORIENTED));
 			break;
 		
 		default:
@@ -328,6 +340,11 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyStart(event.GetPosition());
 	
+	// oriented pts
+	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
+		OrientedPtsStart(event.GetPosition());
+	
+	
 	event.Skip();
 }
 
@@ -359,7 +376,8 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyUpdate(event.GetPosition());
 	
-	
+	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
+		OrientedPtsMove(event.GetPosition());
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -392,6 +410,9 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyStop(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
+		OrientedPtsStop(event.GetPosition());
 	
 }
 
@@ -819,6 +840,41 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	
 	wxASSERT(m_DrawCalled);
 	m_DrawCalled = false;
+}
+
+
+void tmRenderer::OrientedPtsStart(const wxPoint & mousepos)
+{
+	wxCommandEvent evt(tmEVT_EM_DRAW_ORIENT_DOWN, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+}
+
+
+
+void tmRenderer::OrientedPtsMove (const wxPoint & mousepos)
+{
+	wxCommandEvent evt(tmEVT_EM_DRAW_ORIENT_MOVE, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+}
+
+
+
+void tmRenderer:: OrientedPtsStop (const wxPoint & mousepos)
+{
+	wxCommandEvent evt(tmEVT_EM_DRAW_ORIENT_UP, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+	
 }
 
 

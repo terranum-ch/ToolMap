@@ -68,19 +68,19 @@ public:
 		myPtA.SetStartPoint(myPt1);
 		CPPUNIT_ASSERT(myPtA.IsValid()==false);
 		myPtA.SetEndPoint(myPt90);
-		CPPUNIT_ASSERT(myPtA.IsValid()==false);
-		myPtA.Create(m_DB, 2);
-		CPPUNIT_ASSERT(myPtA.IsValid()==false);
-		myPtA.Create(m_DB, 5);
 		CPPUNIT_ASSERT(myPtA.IsValid()==true);
+		myPtA.Create(m_DB, 2);
+		CPPUNIT_ASSERT(myPtA.IsCorrectType()==false);
+		myPtA.Create(m_DB, 5);
+		CPPUNIT_ASSERT(myPtA.IsCorrectType()==true);
 		
 		// no field pt
 		myPtA.Create(m_DB, 6);
-		CPPUNIT_ASSERT(myPtA.IsValid()==false);
+		CPPUNIT_ASSERT(myPtA.IsCorrectType()==false);
 		
 		// no orient field pt
 		myPtA.Create(m_DB, 7);
-		CPPUNIT_ASSERT(myPtA.IsValid()==false);
+		CPPUNIT_ASSERT(myPtA.IsCorrectType()==false);
 		
 	}
 	
@@ -90,7 +90,9 @@ public:
 		myPtA.SetStartPoint(myPt1);
 		myPtA.SetEndPoint(myPt45);
 		CPPUNIT_ASSERT(myPtA.Update()==false);
+		CPPUNIT_ASSERT(myPtA.IsCorrectType()==true);
 		CPPUNIT_ASSERT(myPtA.IsValid()==true);
+		
 		CPPUNIT_ASSERT(myPtA.Update()==true);
 	}
 	
@@ -99,7 +101,7 @@ public:
 		myPtA.Create(m_DB, 1);
 		myPtA.SetStartPoint(myPt1);
 		myPtA.SetEndPoint(myPt235);
-		CPPUNIT_ASSERT(myPtA.IsValid()==true);
+		CPPUNIT_ASSERT(myPtA.IsCorrectType()==true);
 		CPPUNIT_ASSERT(myPtA.Update()==true);
 	}
 	

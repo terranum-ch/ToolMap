@@ -23,6 +23,7 @@
 DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED)
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE)
 DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED)
+DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED)
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
@@ -38,6 +39,8 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	//EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
+	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
+
 END_EVENT_TABLE()
 
 
@@ -448,6 +451,25 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 	m_StatusBar->SetStatusText(sCoord, 1);
 }
 
+
+
+void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
+{
+	if (!m_StatusBar)
+		return;
+	
+	int myAngle = event.GetInt();
+	
+	if (myAngle == wxNOT_FOUND)
+	{
+		m_StatusBar->SetStatusText(_T(""), 2);
+		return;
+	}
+	
+	
+	wxString myAngleText = wxString::Format(_T("Angle : %d°"), myAngle);
+	m_StatusBar->SetStatusText(myAngleText, 2);
+}
 
 
 /***************************************************************************//**

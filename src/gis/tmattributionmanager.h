@@ -133,6 +133,10 @@ class tmAttributionManager : public wxEvtHandler
 		void DisplayInformationsWnd();
 		bool UpdateInfoMetadata();
 		
+		// orientedpoints
+		//void OrientedPointEdit();
+		//void OrientedPointDraw();
+		
 	
 	};
 

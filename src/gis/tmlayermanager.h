@@ -143,6 +143,7 @@ class tmLayerManager : public wxEvtHandler
 		// event operations
 		void OnSizeChange (wxCommandEvent & event);
 		void OnUpdateCoordinates (wxCommandEvent &event);
+		void OnUpdateAngle(wxCommandEvent & event);
 		void OnShowLayer (wxCommandEvent & event);
 		void OnScaleChanged (wxCommandEvent & event);
 		void OnDisplayProperties(wxCommandEvent & event);
