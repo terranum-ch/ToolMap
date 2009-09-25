@@ -96,7 +96,8 @@ void MenuManager::UpdateMenuProject()
 {
 	for (int i = ID_MENU_BACKUP_PRJ; i <= ID_MENU_PRJ_SETTINGS ; i++)
 	{
-		m_MenuBar->Enable(i, bMenu_DB_IsOpen);
+		if (m_MenuBar->FindItem(i) != NULL)
+			m_MenuBar->Enable(i, bMenu_DB_IsOpen);
 	}
 
 }
@@ -113,7 +114,8 @@ void MenuManager::UpdateMenuView ()
 {
 	for (int i = ID_MENU_ZOOM_PREVIOUS_EXTEND; i <= ID_MENU_SELECTED_LAYER ; i++)
 	{
-		m_MenuBar->Enable(i, bMenu_DB_IsOpen);
+		if (m_MenuBar->FindItem(i) != NULL)
+			m_MenuBar->Enable(i, bMenu_DB_IsOpen);
 	}
 }
 

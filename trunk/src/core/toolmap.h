@@ -155,6 +155,8 @@ class ProjectManager;
 #define ID_MENU_OBJ_DEF				10311
 #define ID_MENU_PRJ_SETTINGS		10312
 
+
+
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
 
