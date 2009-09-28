@@ -856,6 +856,7 @@ long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid, in
 	// check that function was used correctly
 	wxASSERT(layertype != wxNOT_FOUND);
 	
+	
 	char * myCharGeom = NULL;
 	Geom->setCoordinateDimension(2);
 	Geom->exportToWkt(&myCharGeom);

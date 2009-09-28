@@ -558,7 +558,7 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry(const wxRealPoint & pt)
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
-bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius)
+bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius, int layertype)
 /*(OGRLineString * line1, OGRGeometry * pointbuffer,
 									   wxRealPoint ptclicked,
 									   OGRLineString & lineresult1,
@@ -638,7 +638,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	
 	// update geometry
 	bool bupd = UpdateGeometry(&myLine1, oid);
-	bool bAdd = AddGeometry(&myLine2, oid);
+	bool bAdd = AddGeometry(&myLine2, oid, layertype);
 	wxASSERT(bupd);
 	wxASSERT(bAdd);
 

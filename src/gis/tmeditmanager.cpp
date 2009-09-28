@@ -1000,7 +1000,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	
 	bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(),
 											m_Scale->PixelToReal(myCutPos),
-											tmSELECTION_DIAMETER);	
+											tmSELECTION_DIAMETER, m_TOC->GetEditLayer()->m_LayerType);	
 	if (bCut == false)
 		return;
 	
