@@ -143,7 +143,7 @@ class tmGISDataVector : public tmGISData
 		wxString GetFieldsMetadata ();
 		
 		// transformations
-		bool CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius);
+		bool CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius, int layertype);
 		//OGRLineString * line1, OGRGeometry * pointbuffer,
 		//					  wxRealPoint ptclicked, OGRLineString & lineresult1,
 		//					  OGRLineString & lineresult2);
