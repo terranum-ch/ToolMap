@@ -131,6 +131,8 @@
 #include "diroperation.h"
 //// end of testing
 
+#include <wx/aboutdlg.h>				// for about box
+
 
 
 class MenuManager;
@@ -301,7 +303,7 @@ private:
 	
 	void OnQuit(wxCommandEvent & event);
 	void OnClose(wxCloseEvent & event);
-	//void OnAbout(wxCommandEvent& event);
+	void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
 	void OnOpenProject (wxCommandEvent & event);
 	void OnOpenRecentProject (wxCommandEvent & event);
