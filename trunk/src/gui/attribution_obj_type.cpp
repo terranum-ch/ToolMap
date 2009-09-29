@@ -83,7 +83,7 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemPanel4->SetSizer(itemBoxSizer5);
 	
     wxAuiNotebook* itemNotebook6 = new wxAuiNotebook( itemPanel4, ID_NOTEBOOK3, 
-													 wxDefaultPosition, wxDefaultSize, wxAUI_NB_WINDOWLIST_BUTTON );
+													 wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP); //|wxAUI_NB_WINDOWLIST_BUTTON );
 	
     wxPanel* itemPanel7 = new wxPanel( itemNotebook6, ID_PANEL5, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
