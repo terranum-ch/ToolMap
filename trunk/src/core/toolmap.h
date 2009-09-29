@@ -131,7 +131,7 @@
 #include "diroperation.h"
 //// end of testing
 
-#include <wx/aboutdlg.h>				// for about box
+#include "../gui/tmabout_dlg.h"
 
 
 
