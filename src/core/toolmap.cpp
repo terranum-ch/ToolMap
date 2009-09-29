@@ -1316,27 +1316,7 @@ void ToolMapFrame::OnDanglingNodes(wxCommandEvent & event)
 
 void ToolMapFrame::OnAbout(wxCommandEvent& event)
 {
-	wxAboutDialogInfo info;
-	//info.SetName(_("ToolMap"));
-	wxString myVersion = _T("2.0.");
-	myVersion.Append( SVN_VERSION);
-	myVersion.Append(_(" - Codename : Wabern"));
-	info.SetVersion(myVersion);
-	info.SetDescription(_("Creating complex geological GIS made simple."));
-	info.SetCopyright(_T("(c) 2009 CREALP"));
-	info.SetWebSite(_T("www.toolmap.ch"));
-	
-	/*wxString myDescript = _("Main developper\n");
-	myDescript.Append(_T("Lucien Schreiber - lucien.schreiber@crealp.vs.ch\n\n"));
-	myDescript.Append(_("Concept and Design\n"));
-	myDescript.Append(_T("Pascal Ornstein - pascal.ornstein@crealp.vs.ch\n"));
-	myDescript.Append(_T("Mario Sartori - mario.sartori@unige.ch"));
-	
-	info.SetDescription(myDescript);*/
-	
-	//info.AddDeveloper(_T("Chantal Bloch"));
-	//info.AddDeveloper(_T("Lucien Schreiber"));
-	
-	wxAboutBox(info);
+	tmAboutDLG myDlg(this,wxID_ANY, _("About"));
+	myDlg.ShowModal();
 }
 
