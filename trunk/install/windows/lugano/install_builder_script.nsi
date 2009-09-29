@@ -40,6 +40,24 @@
 
 ; MUI end ------
 
+ 
+ Function .onInit
+	Call CheckToolMapRuning
+ FunctionEnd
+ 
+ 
+Function CheckToolMapRuning
+   
+  StrCpy $0 "${PRODUCT_NAME}2.exe"
+  KillProc::FindProcesses
+  IntCmp $0 1 0 notruning 
+	IfSilent +2
+	MessageBox MB_ICONSTOP|MB_RETRYCANCEL "Toolmap is running. Close it and try again." IDRETRY -4
+	Abort
+  
+  notruning: 
+FunctionEnd
+
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "InstallToolMap.exe"
 InstallDir "$PROGRAMFILES\ToolMap2"
@@ -48,6 +66,7 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "SectionPrincipale" SEC01
+  Call CheckToolMapRuning
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "..\..\..\..\bin\win32_VS2008\Debug\ToolMap2.exe"
@@ -67,8 +86,9 @@ Section "SectionPrincipale" SEC01
 SectionEnd
 
 Section -AdditionalIcons
-  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\ToolMap 2\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  WriteIniStr "$SMPROGRAMS\ToolMap 2\Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+  ;WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+  ;CreateShortCut "$SMPROGRAMS\ToolMap 2\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 
@@ -105,12 +125,12 @@ Section Uninstall
   Delete "$INSTDIR\libcurld.dll"
   Delete "$INSTDIR\ToolMap2.exe"
   Delete "$INSTDIR\ToolMap2.pdb"
-  Delete "$INSTDIR\ToolMap.url"
+  ;Delete "$INSTDIR\ToolMap.url"
   Delete "$INSTDIR\ToolBasView.exe"
 
   Delete "$SMPROGRAMS\ToolMap 2\Uninstall.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk"
-  Delete "$SMPROGRAMS\ToolMap 2\Website.lnk"
+  Delete "$SMPROGRAMS\ToolMap 2\Website.url"
   Delete "$DESKTOP\ToolMap 2.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk"
 
