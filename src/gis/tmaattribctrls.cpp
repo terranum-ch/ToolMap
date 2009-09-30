@@ -46,6 +46,129 @@ void tmAAttribCtrl::SetPanelColour ()
 }
 
 
+////////////////////////////////////////////////////////////////
+////////////      FULL SELECT TEXT  CONTROL ////////////////////
+//////////////////////////////////////////////////////////////
+BEGIN_EVENT_TABLE(tmFullSelectTextCtrl, wxTextCtrl)
+EVT_SET_FOCUS(tmFullSelectTextCtrl::OnFocus)
+EVT_IDLE(tmFullSelectTextCtrl::OnIdle)
+END_EVENT_TABLE()
+
+tmFullSelectTextCtrl::tmFullSelectTextCtrl()
+{
+	m_bDoSelectAll = false;
+}
+
+
+
+tmFullSelectTextCtrl:: tmFullSelectTextCtrl (wxWindow* parent, wxWindowID id, const wxString& value, 
+						 const wxPoint& pos, const wxSize& size, 
+						 long style, const wxValidator& validator, 
+						 const wxString& name)
+//: wxTextCtrl(parent, id, value, pos, size, style, validator, name)
+{
+	m_bDoSelectAll = false;
+	Create(parent, id, value, pos, size, style, validator, name);
+}
+
+
+void tmFullSelectTextCtrl::Create(wxWindow* parent, wxWindowID id, const wxString& value, 
+								  const wxPoint& pos, const wxSize& size, 
+								  long style, const wxValidator& validator, 
+								  const wxString& name)
+{
+	wxTextCtrl::Create(parent, id, value, pos, size, style, validator, name);
+}
+
+
+tmFullSelectTextCtrl::~tmFullSelectTextCtrl()
+{
+}
+
+
+
+void tmFullSelectTextCtrl::OnFocus( wxFocusEvent &event )
+{
+	m_bDoSelectAll = true;
+}
+
+
+
+void tmFullSelectTextCtrl::OnIdle( wxIdleEvent &event )
+{
+	if(m_bDoSelectAll)
+	{
+		// Needs to be delayed until after all other mouse-down
+		// related events have been processed
+		SetSelection(-1,-1);
+		m_bDoSelectAll = false;
+	}
+}
+
+
+
+
+
+////////////////////////////////////////////////////////////////
+////////////      FULL SELECT SPIN  CONTROL ////////////////////
+//////////////////////////////////////////////////////////////
+BEGIN_EVENT_TABLE(tmFullSelectSpinCtrl, wxSpinCtrl)
+EVT_SET_FOCUS(tmFullSelectSpinCtrl::OnFocus)
+EVT_IDLE(tmFullSelectSpinCtrl::OnIdle)
+END_EVENT_TABLE()
+
+tmFullSelectSpinCtrl::tmFullSelectSpinCtrl()
+{
+	m_bDoSelectAll = false;
+}
+
+
+
+tmFullSelectSpinCtrl:: tmFullSelectSpinCtrl (wxWindow* parent, wxWindowID id, const wxString& value, 
+											 const wxPoint& pos, const wxSize& size, 
+											 long style, int min, int max, int initial, 
+											 const wxString& name)
+{
+	m_bDoSelectAll = false;
+	Create(parent, id, value, pos, size, style, min, max, initial, name);
+}
+
+
+void tmFullSelectSpinCtrl::Create(wxWindow* parent, wxWindowID id, const wxString& value, 
+								  const wxPoint& pos, const wxSize& size, 
+								  long style, int min, int max, int initial, 
+								  const wxString& name)
+{
+	wxSpinCtrl::Create(parent, id, value, pos, size, style, min, max, initial, name);
+}
+
+
+tmFullSelectSpinCtrl::~tmFullSelectSpinCtrl()
+{
+}
+
+
+
+void tmFullSelectSpinCtrl::OnFocus( wxFocusEvent &event )
+{
+	m_bDoSelectAll = true;
+}
+
+
+
+void tmFullSelectSpinCtrl::OnIdle( wxIdleEvent &event )
+{
+	if(m_bDoSelectAll)
+	{
+		// Needs to be delayed until after all other mouse-down
+		// related events have been processed
+		SetSelection(-1,-1);
+		m_bDoSelectAll = false;
+	}
+}
+
+
+
 
 
 ////////////////////////////////////////////////////////////////
@@ -92,8 +215,8 @@ void tmAAttribCtrlText::Create (wxWindow * parent,
 	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5); 
 	
 	wxBoxSizer * bSizer25 = new wxBoxSizer(wxHORIZONTAL);
-	m_Control = new wxTextCtrl( this, wxID_ANY, wxEmptyString,
-							   wxDefaultPosition, wxSize( 200,-1 ), 0 );
+	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
+										 wxDefaultPosition, wxSize( 200,-1 ), 0 );
 	
 	m_ControlInfo = new wxStaticText(this, wxID_ANY, _T("Label"));
 		
@@ -191,7 +314,7 @@ void tmAAttribCtrlInteger::Create (wxWindow * parent,
 	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5); 
 	
 	
-	m_Control = new wxSpinCtrl( this, wxID_ANY, wxEmptyString,
+	m_Control = new tmFullSelectSpinCtrl( this, wxID_ANY, wxEmptyString,
 							   wxDefaultPosition, wxSize( 120,-1 ));
 	SetProperties(fieldinfo);
 	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 2 );
@@ -282,8 +405,8 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 	wxBoxSizer* bSizer25;
 	 bSizer25 = new wxBoxSizer( wxVERTICAL );
 	
-	m_Control = new wxTextCtrl( this, wxID_ANY, wxEmptyString,
-							   wxDefaultPosition, wxSize( 120,-1 ),0,
+	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
+										 wxDefaultPosition, wxSize( 120,-1 ),0,
 	wxTextValidator(wxFILTER_NUMERIC));
 	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
@@ -635,8 +758,7 @@ tmAAttribCtrlSafeDate::tmAAttribCtrlSafeDate(wxWindow * parent,
 {
 	tmAAttribCtrlSafeDate::Create(parent,fieldinfo, id,pos,size,style,name);
 }
-
-
+			  
 
 void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 								 const ProjectDefMemoryFields & fieldinfo,
@@ -662,9 +784,9 @@ void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 	wxBoxSizer* bSizer25;
 	bSizer25 = new wxBoxSizer( wxVERTICAL );
 	
-	m_Control = new wxTextCtrl( this, wxID_ANY, wxEmptyString,
-							   wxDefaultPosition, wxSize( 120,-1 ),0,
-							   wxTextValidator(wxFILTER_NUMERIC));
+	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
+										 wxDefaultPosition, wxSize( 120,-1 ),0,
+										 wxTextValidator(wxFILTER_NUMERIC));
 	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
 	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER, 5); 
