@@ -392,10 +392,11 @@ void ShortcutList::BeforeEditing ()
 	
 	
 	wxArrayString myUnusedKeys;
-	// add actual selected key
-	myUnusedKeys.Add(myActualKey);
+
 	// get unused key (all non assigned keys)
-	bool bGetKeys = m_pDB->GetAllUnusedShortcuts(myUnusedKeys);
+	bool bGetKeys = m_pDB->GetAllUnusedShortcuts(myUnusedKeys);	
+	// add actual selected key
+	myUnusedKeys.Insert(myActualKey,0);
 	wxASSERT (bGetKeys);
 	
 	// convert key to integer
