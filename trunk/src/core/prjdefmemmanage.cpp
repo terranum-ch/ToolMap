@@ -648,6 +648,11 @@ PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
 		//m_PrjLayerArray->Add(myLayer);
 	}
 	
+	// log
+	wxLogDebug(_T("Active layername = %s, active field = %s"), source.m_pActiveLayer->m_LayerName.c_str(),
+			   source.m_pActiveField->m_Fieldname.c_str());
+	
+	
 	// private members
 	m_pActiveLayer = NULL;
 	if (source.m_pActiveLayer != NULL)
@@ -660,12 +665,11 @@ PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
 	m_pActiveField = NULL;
 	if (source.m_pActiveField != NULL)
 	{
-		//wxLogDebug();
 		m_pActiveField = FindField(source.m_pActiveField->m_Fieldname);
-		wxASSERT_MSG (m_pActiveField,
+		/*wxASSERT_MSG (m_pActiveField,
 					  wxString::Format(_T("Finding Field Error %s in active layer : %s"), 
 									   source.m_pActiveField->m_Fieldname.c_str(),
-									   m_pActiveLayer->m_LayerName.c_str()));
+									   m_pActiveLayer->m_LayerName.c_str()));*/
 	}
 	
 	m_iActualObj = source.m_iActualObj;
