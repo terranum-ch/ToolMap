@@ -239,6 +239,10 @@ bool ProjectManager::EditProject ()
 	}
 	delete myNewProjDlg;
 	
+	wxASSERT(m_PrjMem);
+	m_AttribManager->InitAttributionManager(m_DB, m_PrjMem);
+	
+	
 	return bReturn;
 }
 
@@ -622,7 +626,7 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 	if (wait)
 		delete wait;
 	
-	wxLogMessage(_T("Project Data loaded in : %d [ms]"),sw.Time());	
+	wxLogMessage(_T("Project Data loaded in : %d [ms]"),sw.Time());
 	
 	wxASSERT (m_PrjMem);
 	if (m_PrjMem == NULL)
