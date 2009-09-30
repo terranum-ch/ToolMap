@@ -657,6 +657,8 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	wxString myErr2 = _("Frame is incorrect. More than one line detected\n");
 	myErr2.Append(_T("Note : Frame must be one closed line."));
 	
+	wxString myErr3 = _("Frame isn't closed. Please close the frame");
+		
 	wxString myCaptErr = _T("Frame error");
 	
 	
@@ -697,6 +699,17 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	
 	
 	wxRealPoint * myPt = myFrameDB.GetNextDataLine(nbvertex, loid);
+	
+	// check for closed frame
+	wxASSERT(myPt);
+	if (myPt[0].x != myPt[nbvertex-1].x || myPt[0].y != myPt[nbvertex-1].y)
+	{
+		wxMessageBox(myErr3, myCaptErr, wxICON_ERROR | wxOK | wxCENTRE, m_Parent);
+		m_pDB->DataBaseClearResults();
+		return NULL;
+	}
+	
+	
 	m_pDB->DataBaseClearResults();
 	return myPt;
 }
