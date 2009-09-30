@@ -73,7 +73,8 @@ const int tmSYMBOLFILLSTYLES[] =
 	wxBDIAGONAL_HATCH,
 	wxFDIAGONAL_HATCH,
 	wxCROSS_HATCH,
-	wxVERTICAL_HATCH
+	wxVERTICAL_HATCH,
+	wxTRANSPARENT
 };
 
 
@@ -90,7 +91,8 @@ const wxString tmSYMBOLFILLSTYLES_NAME[] =
 	_("Backward Diagonal hatch"),
 	_("Forward Diagonal hatch"),
 	_("Cross hatch"),
-	_("Vertical hatch")
+	_("Vertical hatch"),
+	_("No Fill")
 };
 
 
