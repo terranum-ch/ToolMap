@@ -97,6 +97,57 @@ class tmAAttribCtrlStruct : public wxObject
 WX_DECLARE_OBJARRAY(tmAAttribCtrlStruct, tmAAttribCtrlArray);
 
 
+
+
+class tmFullSelectTextCtrl : public wxTextCtrl
+	{
+	private:
+		bool m_bDoSelectAll;
+		
+		void OnFocus(wxFocusEvent & event);
+		void OnIdle (wxIdleEvent & event);
+		DECLARE_EVENT_TABLE();
+	protected:
+	public:
+		tmFullSelectTextCtrl();
+		tmFullSelectTextCtrl(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& value = wxEmptyString, 
+							 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, 
+							 long style = 0, const wxValidator& validator =wxDefaultValidator, 
+							 const wxString& name = wxTextCtrlNameStr);
+		void Create (wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& value = wxEmptyString, 
+					 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, 
+					 long style = 0, const wxValidator& validator =wxDefaultValidator, 
+					 const wxString& name = wxTextCtrlNameStr);
+		~tmFullSelectTextCtrl();
+	};
+
+
+
+
+class tmFullSelectSpinCtrl : public wxSpinCtrl
+	{
+	private:
+		bool m_bDoSelectAll;
+		
+		void OnFocus(wxFocusEvent & event);
+		void OnIdle (wxIdleEvent & event);
+		DECLARE_EVENT_TABLE();
+	protected:
+	public:
+		tmFullSelectSpinCtrl();
+		tmFullSelectSpinCtrl(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& value = wxEmptyString, 
+							 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, 
+							 long style = wxSP_ARROW_KEYS, int min = 0, int max = 100, int initial = 0, 
+							 const wxString& name = _T("tmFullSelectSpinCtrl"));
+		void Create (wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& value = wxEmptyString, 
+					 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, 
+					 long style = wxSP_ARROW_KEYS, int min = 0, int max = 100, int initial = 0, 
+					 const wxString& name = _T("tmFullSelectSpinCtrl"));
+		~tmFullSelectSpinCtrl();
+	};
+
+
+
 /***************************************************************************//**
  @brief tmAAttribTree item of type TextCtrl
  @details This control define a panel with a static text SetLabel(), GetLabel()
@@ -108,7 +159,7 @@ WX_DECLARE_OBJARRAY(tmAAttribCtrlStruct, tmAAttribCtrlArray);
 class tmAAttribCtrlText : public tmAAttribCtrl
 	{
 	private:
-		wxTextCtrl* m_Control;
+		tmFullSelectTextCtrl * m_Control;
 		wxStaticText * m_ControlInfo;
 		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
 
@@ -143,7 +194,7 @@ class tmAAttribCtrlText : public tmAAttribCtrl
 class tmAAttribCtrlInteger : public tmAAttribCtrl
 	{
 	private:
-		wxSpinCtrl * m_Control;
+		tmFullSelectSpinCtrl * m_Control;
 		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
 		
 	protected:
@@ -177,7 +228,7 @@ class tmAAttribCtrlInteger : public tmAAttribCtrl
 class tmAAttribCtrlFloat : public tmAAttribCtrl
 	{
 	private:
-		wxTextCtrl * m_Control;
+		tmFullSelectTextCtrl * m_Control;
 		wxStaticText * m_ControlInfo;
 		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
 		
@@ -290,10 +341,11 @@ class tmAAttribCtrlDate : public tmAAttribCtrl
 class tmAAttribCtrlSafeDate : public tmAAttribCtrl
 	{
 	private:
-		wxTextCtrl * m_Control;
+		tmFullSelectTextCtrl * m_Control;
 		wxStaticText * m_ControlInfo;
 		void SetProperties (const ProjectDefMemoryFields & fieldinfo);
 		
+
 	protected:
 	public:
 		tmAAttribCtrlSafeDate();
