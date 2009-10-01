@@ -648,7 +648,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 {
 	wxASSERT (layersid.GetCount() == 0);
 	wxASSERT (!tablename.IsEmpty());
-	wxASSERT (layertype >= LAYER_SPATIAL_LINE && layertype < LAYER_SPATIAL_POLYGON);
+	wxASSERT (layertype >= LAYER_SPATIAL_LINE && layertype <= LAYER_SPATIAL_POLYGON);
 	
 	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX FROM %s l LEFT")
 					_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")

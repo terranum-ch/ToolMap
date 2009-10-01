@@ -234,7 +234,7 @@ int tmAAttribWindow::GetNumberControls ()
 	
 	if (iNumControl == 0)
 	{
-		wxLogError(_T("No control returned, there is an error, quit toolmap"));
+		wxLogError(_T("No control returned, maybe no fields for advanced attribution"));
 	}
 	
 	return iNumControl;
@@ -254,7 +254,7 @@ bool tmAAttribWindow::TransferDataToWindow()
 	wxASSERT (m_Layers);
 	wxASSERT (m_Values);
 	wxASSERT (m_AAttribTree);
-	wxASSERT (m_iTotalControls > 0);
+	//wxASSERT (m_iTotalControls > 0);
 	
 	tmAAttribCtrl * mypCtrl = NULL;
 	PrjMemFieldArray * m_Fields = NULL;
