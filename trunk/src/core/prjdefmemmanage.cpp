@@ -647,12 +647,7 @@ PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
 		//*myLayer = source.m_PrjLayerArray->Item(j);
 		//m_PrjLayerArray->Add(myLayer);
 	}
-	
-	// log
-	wxLogDebug(_T("Active layername = %s, active field = %s"), source.m_pActiveLayer->m_LayerName.c_str(),
-			   source.m_pActiveField->m_Fieldname.c_str());
-	
-	
+		
 	// private members
 	m_pActiveLayer = NULL;
 	if (source.m_pActiveLayer != NULL)
