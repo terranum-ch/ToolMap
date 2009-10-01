@@ -27,6 +27,7 @@ BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
 	EVT_MENU (ID_CTXT_AUTODISPLAY_ATTRIB, AttribObjType_PANEL::OnDisplayAttributesAuto)
 	EVT_MENU (ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,  AttribObjType_PANEL::OnEmptyListAffterAttributes)
+	EVT_MENU (ID_CTXT_FULL_ATTRIB, AttribObjType_PANEL::OnFullAttribution)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, AttribObjType_PANEL::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, AttribObjType_PANEL::OnEditStop)
 END_EVENT_TABLE()
@@ -37,13 +38,13 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiMa
 	m_AttribBtnLabel = _("Attribute");
 	m_AutoDisplayAttributes = false;
 	m_EmptyListAfterAttributes = true;
+	m_EnableFullAttribution = false;
 	m_ParentEvt = parent;
 	m_ParentEvt->PushEventHandler(this);
 	m_NbFeaturesSelected = 0;
 	
 	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
 	CreateControls(ContentFrame);
-	
 	
 	
 	// define properties of Panel.
@@ -58,8 +59,6 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiMa
 	
 	// pass panel name to parent class.
 	m_AuiPanelName = SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE;
-	
-	//wxLogDebug(_T("m_auiMgr (child) %p"), AuiManager);
 	
 	// add the panel
 	AddManagedPane(ContentFrame, mPaneInfo);
@@ -205,16 +204,18 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	wxMenuItem* m_fullatrib;
 	m_fullatrib = new wxMenuItem( opt_menu, ID_CTXT_FULL_ATTRIB, wxString( _("Enable Full attribution") ) , wxEmptyString, wxITEM_CHECK );
 	opt_menu->Append( m_fullatrib );
+	m_fullatrib->Check(m_EnableFullAttribution);
 	
 	wxMenuItem* m_clearvalueatrib;
 	m_clearvalueatrib = new wxMenuItem( opt_menu, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,
 									   wxString( _("Empty list after attribution")) , wxEmptyString, wxITEM_CHECK );
 	opt_menu->Append( m_clearvalueatrib );
-	m_clearvalueatrib->Check(true);
+	m_clearvalueatrib->Check(m_EmptyListAfterAttributes);
 	
 	wxMenuItem* m_AutoDisplayAttrib;
 	m_AutoDisplayAttrib = new wxMenuItem( opt_menu, ID_CTXT_AUTODISPLAY_ATTRIB, wxString( _("Enable auto display attributes") ) , wxEmptyString, wxITEM_CHECK );
 	opt_menu->Append( m_AutoDisplayAttrib );
+	m_AutoDisplayAttrib->Check(m_AutoDisplayAttributes);
 	
 	//opt_menu->AppendSeparator();
 	
@@ -321,6 +322,13 @@ void AttribObjType_PANEL::OnEmptyListAffterAttributes (wxCommandEvent & event)
 		m_EmptyListAfterAttributes = true;
 	
 }
+
+
+void AttribObjType_PANEL::OnFullAttribution (wxCommandEvent & event)
+{
+	m_EnableFullAttribution = !m_EnableFullAttribution;	
+}
+
 
 
 void AttribObjType_PANEL::OnEditStart(wxCommandEvent & event)
