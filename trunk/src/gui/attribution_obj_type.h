@@ -101,6 +101,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxChoicebook * m_AttribNotebook;
 		bool m_AutoDisplayAttributes;
 		bool m_EmptyListAfterAttributes;
+		bool m_EnableFullAttribution;
 		wxBoxSizer* m_ButtonSizer;
 		wxBoxSizer* m_AttribSizer;
 		
@@ -111,6 +112,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		// option menu event function
 		void OnDisplayAttributesAuto(wxCommandEvent & event);
 		void OnEmptyListAffterAttributes (wxCommandEvent & event);
+		void OnFullAttribution (wxCommandEvent & event);
 		
 		void OnEditStart(wxCommandEvent & event);
 		void OnEditStop (wxCommandEvent & event);
@@ -146,7 +148,8 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 								bool panel_freq = false);
 		
 		bool IsAutoDisplayAttributeChecked();
-		bool IsEmptyListValuesRequired(){return m_EmptyListAfterAttributes;}						
+		bool IsEmptyListValuesRequired(){return m_EmptyListAfterAttributes;}
+		bool IsFullAttributionEnabled(){return m_EnableFullAttribution;}
 		
 		void EmptyListValues();
 		

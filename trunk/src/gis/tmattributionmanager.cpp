@@ -407,6 +407,10 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	if (m_Panel->IsEmptyListValuesRequired())
 		m_Panel->EmptyListValues();
 	
+	// if full attribution enabled
+	if (m_Panel->IsFullAttributionEnabled()==true)
+		AAttributionButtonShow();
+	
 }
 
 
