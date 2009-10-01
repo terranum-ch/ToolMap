@@ -84,7 +84,8 @@ void tmCrash_DLG::CreateControls(wxWindow * parent)
 	
 	wxButton* m_button32;
 	m_button32 = new wxButton( this, wxID_OK, _("Report"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button32->SetDefault(); 
+	m_button32->SetDefault();
+	m_button32->SetFocus();
 	bSizer44->Add( m_button32, 0, wxALL, 5 );
 	
 	bSizer43->Add( bSizer44, 0, wxALIGN_RIGHT, 5 );

@@ -111,9 +111,9 @@ void ToolMapApp::TAWindowsException()
 	myCrashFile.SetExt(_T("zip"));
 	TAWindowCreateZip(myCrashFile.GetFullPath());
 	
-	myCrashFile.SetExt(_T(".zip"));
+	myCrashFile.SetExt(_T("zip"));
 	tmCrash_DLG myDlg (GetTopWindow(), myCrashFile.GetFullPath());
-	if (myDlg.ShowModal() == wxOK)
+	if (myDlg.ShowModal() == wxID_OK)
 		wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
 
 }
@@ -1324,10 +1324,7 @@ void ToolMapFrame::OnDanglingNodes(wxCommandEvent & event)
 
 void ToolMapFrame::OnAbout(wxCommandEvent& event)
 {
-	wxString * myTest = NULL;
-	myTest->Append(_T("crash"));
-	
-	/*tmAboutDLG myDlg(this,wxID_ANY, _("About"));
-	myDlg.ShowModal();*/
+	tmAboutDLG myDlg(this,wxID_ANY, _("About"));
+	myDlg.ShowModal();
 }
 

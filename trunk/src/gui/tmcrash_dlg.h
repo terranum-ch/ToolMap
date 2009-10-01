@@ -36,7 +36,6 @@ class tmCrash_DLG : public wxDialog
 	{
 	private:
 		wxTextCtrl* m_CrashFile;
-		
 		void CreateControls(wxWindow * parent);
 		
 	protected:
