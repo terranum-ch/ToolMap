@@ -643,10 +643,11 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 
 //TODO: Add comment here
 int tmAttributionManager::DisplayAAttributionWindow (wxArrayString * values,
-													 PrjMemLayersArray * layers)
+													 PrjMemLayersArray * layers,
+													 const tmLayerValueArray & arrayidname)
 {
 	
-	tmAAttribWindow myAADlg (m_Parent, layers, values, wxID_ANY);
+	tmAAttribWindow myAADlg (m_Parent, layers, values, arrayidname, wxID_ANY);
 	return myAADlg.ShowModal();
 							 
 }
@@ -687,7 +688,8 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	myAttribObj->Create(m_SelData->GetSelectedValues(), m_pDB);
 	
 	// attributed layers
-	wxArrayLong myLayersID;
+	//wxArrayLong myLayersID;
+	tmLayerValueArray myLayersID;
 	if (myAttribObj->GetAttributionLayersID(m_SelData->GetSelectedUnique(),
 											myLayersID)==false)
 		return false;
@@ -700,16 +702,16 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	PrjMemLayersArray myLayersInfoArray;
 	for (unsigned int i = 0; i<myLayersID.GetCount();i++)
 	{
-		wxLogDebug(_T("layer %d searched"), myLayersID.Item(i));
+		wxLogDebug(_T("layer %d searched"), myLayersID.Item(i).m_Oid);
 		
-		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i));
+		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i).m_Oid);
 		if (myActualLayer)
 		{
 			myLayersInfoArray.Add(new ProjectDefMemoryLayers());
 			myLayersInfoArray.Item(myLayersInfoArray.GetCount()-1) = *myActualLayer; 
 		}
 		else
-			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i));
+			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i).m_Oid);
 	}
 		
 	// get advanced attribution values (if existing)
@@ -720,7 +722,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	
 	
 	
-	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray)==wxID_OK)
+	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray, myLayersID)==wxID_OK)
 	{
 		bool bClean = myAttribObj->CleanAttributesAdvanced(m_pPrjMem, myLayersInfoArray.Item(0).m_LayerType);
 		bool bAttrib = myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);

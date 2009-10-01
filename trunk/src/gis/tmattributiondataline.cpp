@@ -198,7 +198,7 @@ void tmAttributionDataLine::SetPanelValues (AttribObjType_PANEL * panel,
  @date 16 March 2009
  *******************************************************************************/
 bool tmAttributionDataLine::GetAttributionLayersID (const long & geomid,
-													 wxArrayLong & layersid)
+													 tmLayerValueArray & layersid)
 {
 	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
 															layersid,

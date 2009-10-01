@@ -42,3 +42,26 @@ void tmAttributionBasic::InitMemberValues()
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmAttributionBasicArray);
 
+
+
+tmLayerValue::tmLayerValue()
+{
+	InitMemberValues();
+}
+
+tmLayerValue::~tmLayerValue()
+{
+	
+}
+
+
+void tmLayerValue::InitMemberValues()
+{
+	m_Oid = wxNOT_FOUND;
+	m_Value = wxEmptyString;
+}
+
+
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY (tmLayerValueArray);

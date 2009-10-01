@@ -40,10 +40,6 @@ class tmAAttribTree : public wxTreeMultiCtrl
 		// member
 		wxTreeMultiItem m_ActualNode;
 			
-		// control template
-		
-		
-		bool CreateRoot();
 	protected:
 	public:
 		tmAAttribTree();

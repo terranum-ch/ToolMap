@@ -102,7 +102,8 @@ class tmAttributionManager : public wxEvtHandler
 		
 		// advanced attribution
 		int DisplayAAttributionWindow (wxArrayString * values,
-									    PrjMemLayersArray * layers);
+									    PrjMemLayersArray * layers,
+									   const tmLayerValueArray & arrayidname);
 				
 		// verification 
 		bool IsAttributionManagerReady();

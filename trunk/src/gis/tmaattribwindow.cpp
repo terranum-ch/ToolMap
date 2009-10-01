@@ -29,7 +29,9 @@ wxRect tmAAttribWindow::m_WndPos = wxRect(wxDefaultPosition, wxDefaultSize);
  @date 05 March 2009
  *******************************************************************************/
 tmAAttribWindow::tmAAttribWindow( wxWindow* parent, PrjMemLayersArray * layers,
-								 wxArrayString * values, wxWindowID id, 
+								 wxArrayString * values,
+								  const tmLayerValueArray & arrayidname,
+								 wxWindowID id, 
 								 const wxString& title, const wxPoint& pos,
 								 const wxSize& size, long style ) :
 wxDialog( parent, id, title, pos, size, style )
@@ -37,6 +39,7 @@ wxDialog( parent, id, title, pos, size, style )
 	InitMemberValue();
 	CreateControls();
 
+	m_LayerNameID = arrayidname;
 	m_Layers = layers;
 	m_Values = values;
 	m_iTotalControls = GetNumberControls();
@@ -264,7 +267,12 @@ bool tmAAttribWindow::TransferDataToWindow()
 	
 	for (unsigned int i = 0; i< m_Layers->GetCount();i++)
 	{
-		m_AAttribTree->AddLayerNode(m_Layers->Item(i).m_LayerName);
+		wxString myName = m_LayerNameID.Item(i).m_Value;
+		myName.Append(_T(" - ("));
+		myName.Append(m_Layers->Item(i).m_LayerName);
+		myName.Append(_T(")"));
+		
+		m_AAttribTree->AddLayerNode(myName);
 		m_Fields = m_Layers->Item(i).m_pLayerFieldArray;
 		wxASSERT (m_Fields);
 		for (unsigned int j = 0; j< m_Fields->GetCount();j++)

@@ -31,7 +31,7 @@
 
 #include <wx/treectrl.h>
 #include "tmaattribtree.h"	// for Adavanced attribution tree
-
+#include "../gis/tmattributionbasicarray.h"
 
 
 
@@ -57,6 +57,7 @@ class tmAAttribWindow : public wxDialog
 		// member initialized by ctor
 		PrjMemLayersArray * m_Layers;
 		wxArrayString * m_Values;
+		tmLayerValueArray m_LayerNameID;
 		
 		// member
 		int m_iTotalControls;
@@ -76,6 +77,7 @@ class tmAAttribWindow : public wxDialog
 		tmAAttribWindow( wxWindow* parent,
 						PrjMemLayersArray * layers,
 						wxArrayString * values,
+						const tmLayerValueArray & arrayidname,
 						wxWindowID id = wxID_ANY,
 						const wxString& title = _("Advanced attribution"),
 						const wxPoint& pos = wxDefaultPosition,
