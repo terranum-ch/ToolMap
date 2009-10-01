@@ -126,7 +126,12 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 	wxStaticText* m_staticText22;
 	m_staticText22 = new wxStaticText( m_PanelLicence, wxID_ANY, _(" Copyright (C) 2009  CREALP\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText22->Wrap( -1 );
-	m_staticText22->SetFont( wxFont( 10, 70, 90, 90, false, wxEmptyString ) );
+	wxFont myOrgFont = m_staticText22->GetFont();
+	int mySize = myOrgFont.GetPointSize();
+#ifdef __WINDOWS__
+	mySize++;
+#endif
+	m_staticText22->SetFont( wxFont( mySize-1, 70, 90, 90, false, wxEmptyString ) );
 
 	bSizer40->Add( m_staticText22, 0, wxALL, 5 );
 
