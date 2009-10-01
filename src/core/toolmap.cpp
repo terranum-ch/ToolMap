@@ -92,11 +92,14 @@ void ToolMapApp::TAWindowsException()
 											dt.GetHour(),dt.GetMinute(),dt.GetSecond());
 	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName,_T("zip"));
 	
-	wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
+	
+		
+	
+	/*wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
 				 _T("Please send the file : ") + myCrashFile.GetFullPath() +
 				 _T("\nto lucien.schreiber@crealp.vs.ch with a small description\n")
 				 _T("of what you where doing"), _T("Fatal exception"),
-				 wxOK | wxICON_ERROR);
+				 wxOK | wxICON_ERROR);*/
 	
 	myCrashFile.SetExt(_T("dmp"));
 	
@@ -108,6 +111,11 @@ void ToolMapApp::TAWindowsException()
 	myCrashFile.SetExt(_T("zip"));
 	TAWindowCreateZip(myCrashFile.GetFullPath());
 	
+	myCrashFile.SetExt(_T(".zip"));
+	tmCrash_DLG myDlg (GetTopWindow(), myCrashFile.GetFullPath());
+	if (myDlg.ShowModal() == wxOK)
+		wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
+
 }
 
 bool ToolMapApp::TAWindowCreateZip(const wxString & crashname)
@@ -1316,7 +1324,10 @@ void ToolMapFrame::OnDanglingNodes(wxCommandEvent & event)
 
 void ToolMapFrame::OnAbout(wxCommandEvent& event)
 {
-	tmAboutDLG myDlg(this,wxID_ANY, _("About"));
-	myDlg.ShowModal();
+	wxString * myTest = NULL;
+	myTest->Append(_T("crash"));
+	
+	/*tmAboutDLG myDlg(this,wxID_ANY, _("About"));
+	myDlg.ShowModal();*/
 }
 

@@ -132,7 +132,7 @@
 //// end of testing
 
 #include "../gui/tmabout_dlg.h"
-
+#include "../gui/tmcrash_dlg.h"
 
 
 class MenuManager;
