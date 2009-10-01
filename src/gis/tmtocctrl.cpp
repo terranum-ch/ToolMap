@@ -497,11 +497,11 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 											  newpos, 
 											  item1_text,
 											  item1_image,
-											  item1_image,
+											  -1,
 											  newinserteditemData);
 	SetItemBold(newinserteditem, item1_bold);
-	SelectItem(newinserteditem, true);
 	SetItemFont(newinserteditem, item1_font);
+	SelectItem(newinserteditem, true);
 	
 	Delete(item);
 	
