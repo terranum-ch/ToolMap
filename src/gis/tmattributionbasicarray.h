@@ -47,5 +47,19 @@ class tmAttributionBasic  : public wxObject
 WX_DECLARE_OBJARRAY(tmAttributionBasic, tmAttributionBasicArray);
 
 
+class tmLayerValue : public wxObject
+	{
+	private:
+		void InitMemberValues();
+		
+	public:
+		tmLayerValue();
+		~tmLayerValue();
+		
+		long m_Oid;
+		wxString m_Value;
+	};
+
+WX_DECLARE_OBJARRAY(tmLayerValue, tmLayerValueArray);
 
 #endif

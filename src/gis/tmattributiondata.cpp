@@ -642,7 +642,7 @@ bool tmAttributionData::GetConcatenedBasicName (const tmAttributionBasicArray & 
  @date 16 March 2009
  *******************************************************************************/
 bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid, 
-													   wxArrayLong & layersid,
+													   tmLayerValueArray & layersid,
 													   const wxString & tablename,
 													   int layertype )
 {
@@ -650,7 +650,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 	wxASSERT (!tablename.IsEmpty());
 	wxASSERT (layertype >= LAYER_SPATIAL_LINE && layertype <= LAYER_SPATIAL_POLYGON);
 	
-	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX FROM %s l LEFT")
+	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX, l.OBJECT_DESC FROM %s l LEFT")
 					_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")
 					_T("AND t.LAYER_INDEX=l.THEMATIC_LAYERS_LAYER_INDEX) WHERE")
 					_T(" a.OBJECT_GEOM_ID = %d AND t.TYPE_CD=%d ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;");
@@ -661,14 +661,29 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 										  TABLE_NAME_LAYERS.c_str(),
 										  geomid,
 										  layertype);
-	wxASSERT (m_pDB);
+	
 	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return false;
 	
+	
+	wxASSERT (m_pDB);
+	wxArrayString myResults;
+	tmLayerValue myValue;
+	while (1)
+	{
+		if (m_pDB->DataBaseGetNextResult(myResults)==false)
+			break;
+		myResults.Item(0).ToLong(&(myValue.m_Oid));
+		myValue.m_Value = myResults.Item(1);
+		layersid.Add(myValue);
+	}
+	m_pDB->DataBaseClearResults();
+	
+	
 	//long myLayerTemp = wxNOT_FOUND;
 	
-	if (m_pDB->DataBaseGetResults(layersid)==false)
-		return false;
+	//if (m_pDB->DataBaseGetResults(layersid)==false)
+	//	return false;
 	
 	if (layersid.GetCount() > 0)
 		return true;

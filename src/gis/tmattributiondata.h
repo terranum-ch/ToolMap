@@ -64,7 +64,7 @@ class tmAttributionData : public wxObject
 		void PrepareCleaningStatement (wxString & statement, const wxString & tablename);
 		void PrepareGetInfoStatement (wxString & statement, const wxString & tablename);
 		void PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename);
-		bool PrepareGetAttributionLayersID (const long & geomid, wxArrayLong & layersid,
+		bool PrepareGetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid,
 											const wxString & tablename, int layertype);
 		int PrepareAAttribStatement (wxString & statement,
 									 ProjectDefMemoryLayers * layer,
@@ -111,7 +111,7 @@ class tmAttributionData : public wxObject
 		virtual bool GetAttributesAdvanced (PrjMemLayersArray * layers,
 											wxArrayString & values);
 		
-		virtual bool GetAttributionLayersID (const long & geomid, wxArrayLong & layersid){return false;}
+		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid){return false;}
 	};
 
 
