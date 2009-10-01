@@ -702,7 +702,7 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	
 	// check for closed frame
 	wxASSERT(myPt);
-	if (myPt[0].x != myPt[nbvertex-1].x || myPt[0].y != myPt[nbvertex-1].y)
+	if ( !wxIsSameDouble(myPt[0].x,myPt[nbvertex-1].x) || !wxIsSameDouble( myPt[0].y, myPt[nbvertex-1].y))
 	{
 		wxMessageBox(myErr3, myCaptErr, wxICON_ERROR | wxOK | wxCENTRE, m_Parent);
 		m_pDB->DataBaseClearResults();
