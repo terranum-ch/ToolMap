@@ -90,6 +90,7 @@ class ProjectManager : public wxObject
 		DECLARE_CLASS(ProjectManager)
 		
 		bool IsDataBasePath(const wxString & path);
+		bool PMAddDefaultQueries();
 		
 	public:
 		ProjectManager(wxWindow * parent);

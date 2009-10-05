@@ -122,6 +122,12 @@ bool ProjectManager::CreateNewProject()
 	delete myNewProjDlg;
 	
 	
+	// add default queries
+	if (PMAddDefaultQueries()==false)
+		return false;
+	
+	
+	
 	// open the newly created project
 	if (OpenProject(PrjDefinition.m_PrjPath + 
 					wxFileName::GetPathSeparator() + 
@@ -131,7 +137,13 @@ bool ProjectManager::CreateNewProject()
 		CloseProject();
 		return false;
 	}
+	
+
+	
+	
 	return true;
+	
+	
 
 	/*DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
 	myNewPrjDB->SetPrjDefMemory(&PrjDefinition);
@@ -196,6 +208,48 @@ bool ProjectManager::CreateNewProject()
 
 	
 	return TRUE;*/
+}
+
+
+bool ProjectManager::PMAddDefaultQueries()
+{
+	wxASSERT(m_DB);
+	
+	wxString myQueryTemplate = _T("SELECT o.OBJECT_ID FROM %s AS o ")
+	_T("WHERE o.OBJECT_ID NOT IN (SELECT a.OBJECT_GEOM_ID FROM %s AS a)");
+	
+	
+	
+	bool breturn = m_DB->EditQueries(TOC_NAME_LINES, _("Lines without attribution"),
+						  wxString::Format(myQueryTemplate, 
+										   TABLE_NAME_GIS_GENERIC[TOC_NAME_LINES].c_str(),
+										   TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LINES].c_str()));
+	if (breturn == false)
+	{
+		wxLogError(_("Error adding default query [LINES]"));
+		return false;
+	}
+	
+	breturn = m_DB->EditQueries(TOC_NAME_POINTS, _("Points without attribution"),
+						  wxString::Format(myQueryTemplate, 
+										   TABLE_NAME_GIS_GENERIC[TOC_NAME_POINTS].c_str(),
+										   TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS].c_str()));
+	if (breturn == false)
+	{
+		wxLogError(_("Error adding default query [POINTS]"));
+		return false;
+	}
+	
+	breturn = m_DB->EditQueries(TOC_NAME_LABELS, _("Labels without attribution"),
+						  wxString::Format(myQueryTemplate, 
+										   TABLE_NAME_GIS_GENERIC[TOC_NAME_LABELS].c_str(),
+										   TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LABELS].c_str()));
+	if (breturn == false)
+	{
+		wxLogError(_("Error adding default query [LABELS]"));
+		return false;
+	}
+	return true;	
 }
 
 
