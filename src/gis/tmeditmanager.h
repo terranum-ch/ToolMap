@@ -33,7 +33,7 @@
 #include "tmtocctrl.h"						// for TOC ctrl 
 #include "tmselecteddatamemory.h"			// for selection data
 #include "../database/database_tm.h"		// for database
-//#include "tmmanagerevent.h"				// for shared event with other manager
+#include "tmmanagerevent.h"				// for shared event with other manager
 #include "tmrenderer.h"						// for GIS rendering
 #include "../core/tmsnappingmemory.h"		// for snapping 
 #include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
@@ -97,6 +97,7 @@ class tmEditManager : public wxEvtHandler
 		void OnModifyMove (wxCommandEvent & event);
 		void OnModifyUp (wxCommandEvent & event);
 		void OnModifyMenu (wxCommandEvent & event);
+		void OnSetRenderFocus (wxCommandEvent & event);
 		
 		void OnOrientedPtsDown(wxCommandEvent & event);
 		void OnOrientedPtsMove (wxCommandEvent & event);

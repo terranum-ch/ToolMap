@@ -23,6 +23,8 @@
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
 DEFINE_EVENT_TYPE(tmEVT_AM_COPY_ATTRIBUTION);
 
+
+
 BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
@@ -410,6 +412,10 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	// if full attribution enabled
 	if (m_Panel->IsFullAttributionEnabled()==true)
 		AAttributionButtonShow();
+	
+	// focus to the renderer
+	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	
 }
 

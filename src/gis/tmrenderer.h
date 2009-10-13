@@ -58,6 +58,7 @@ DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_DOWN, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_MOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_UP, -1)
 
+
 enum tmGIS_TOOL
 {
 	tmTOOL_SELECT = 0,
@@ -122,7 +123,6 @@ class tmRenderer : public wxScrolledWindow
 		void OnShiftDown	(wxKeyEvent & event);
 		void OnShiftUp		(wxKeyEvent & event);
 		void OnKey			(wxKeyEvent & event);
-		
 		
 		// bitmap functions
 		bool BitmapUpdateSize();

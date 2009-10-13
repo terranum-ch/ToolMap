@@ -338,6 +338,7 @@ private:
 	void CheckUpdates(bool silent = false);
 	void OnImportGISData (wxCommandEvent & event);
 	
+	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);
 	void OnSelectInvert (wxCommandEvent & event);
