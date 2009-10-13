@@ -6,12 +6,23 @@
 !define PRODUCT_VERSION_LONG "2.0 Codename `Geneva`"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.crealp.ch"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\ToolMap2.exe"
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
+!define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY "Software\ToolMap2"
+!define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME "Install_Mode"
+!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY "Software\ToolMap2"
+!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "Install_Dir"
+!define MULTIUSER_INSTALLMODE_INSTDIR "ToolMap2"
+
 
 ; MUI 1.67 compatible ------
-!include "MUI.nsh"
+!define MULTIUSER_EXECUTIONLEVEL Highest
+!define MULTIUSER_MUI
+!define MULTIUSER_INSTALLMODE_COMMANDLINE
+!include MultiUser.nsh
+;!include MUI2.nsh
+
+
+
+;!include "MUI.nsh"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -23,6 +34,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
+!insertmacro MULTIUSER_PAGE_INSTALLMODE
 ;!insertmacro MUI_PAGE_LICENSE "c:\dossier\vers\license\VotreLicenseLogicielle.txt"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
@@ -40,9 +52,24 @@
 
 ; MUI end ------
 
+!insertmacro GetParameters
+!insertmacro GetOptions
+Var cmdLineInstallDir
  
  Function .onInit
 	Call CheckToolMapRuning
+	
+  ${GetParameters} $0
+  ClearErrors
+  ${GetOptions} '$0' "/INSTDIR=" $1
+  IfErrors +2
+  StrCpy $cmdLineInstallDir $1
+  ClearErrors
+
+ !insertmacro MULTIUSER_INIT
+
+  StrCmp $cmdLineInstallDir "" +2
+  StrCpy $INSTDIR $cmdLineInstallDir
  FunctionEnd
  
  
@@ -60,10 +87,8 @@ FunctionEnd
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "InstallToolMap.exe"
-InstallDir "$PROGRAMFILES\ToolMap2"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
-ShowUnInstDetails show
+ShowUninstDetails hide
 
 Section "SectionPrincipale" SEC01
   Call CheckToolMapRuning
@@ -87,20 +112,28 @@ SectionEnd
 
 Section -AdditionalIcons
   WriteIniStr "$SMPROGRAMS\ToolMap 2\Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  ;WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  ;CreateShortCut "$SMPROGRAMS\ToolMap 2\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\ToolMap2.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\ToolMap2.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr SHCTX "Software\ToolMap2" ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME}  "$INSTDIR"
+  WriteRegStr SHCTX "Software\ToolMap2" ${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}  "$MultiUser.InstallMode"
+ 
+ ; Write the uninstall keys for Windows
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "DisplayName" "$(^Name)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "DisplayIcon" "$INSTDIR\ToolMap2.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "UninstallString" "$INSTDIR\uninst.exe"
+
+  ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
+  ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\ToolMap2.exe"
+  ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
 
@@ -111,12 +144,17 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function un.onInit
+  !insertmacro MULTIUSER_UNINIT
   IfSilent +3
   MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Êtes-vous certains de vouloir désinstaller totalement $(^Name) et tous ses composants ?" IDYES +2
   Abort
 FunctionEnd
 
 Section Uninstall
+  ; Remove registry keys
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2"
+  DeleteRegKey SHCTX "Software\ToolMap2"
+  
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\mysql\errmsg.sys"
   Delete "$INSTDIR\libmysqld.dll"
@@ -125,7 +163,6 @@ Section Uninstall
   Delete "$INSTDIR\libcurld.dll"
   Delete "$INSTDIR\ToolMap2.exe"
   Delete "$INSTDIR\ToolMap2.pdb"
-  ;Delete "$INSTDIR\ToolMap.url"
   Delete "$INSTDIR\ToolBasView.exe"
 
   Delete "$SMPROGRAMS\ToolMap 2\Uninstall.lnk"
@@ -138,7 +175,6 @@ Section Uninstall
   RMDir "$INSTDIR\mysql"
   RMDir "$INSTDIR"
 
-  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-  DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  
   SetAutoClose true
 SectionEnd
