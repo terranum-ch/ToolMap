@@ -47,6 +47,7 @@
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 
 
+
 /***************************************************************************//**
  @brief Central point for object attribution
  @details This class deals with the attribution process and should know

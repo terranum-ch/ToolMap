@@ -486,7 +486,6 @@ void tmRenderer::OnKey	(wxKeyEvent & event)
 
 
 
-
 void tmRenderer::RubberBandStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;

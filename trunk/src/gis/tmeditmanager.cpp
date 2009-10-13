@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmeditmanager.h"
+DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
@@ -36,6 +37,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
+	EVT_COMMAND (wxID_ANY, tmEVT_FOCUS_RENDERER, tmEditManager::OnSetRenderFocus)
 
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_DOWN,tmEditManager::OnOrientedPtsDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_MOVE,tmEditManager::OnOrientedPtsMove)
@@ -1891,6 +1893,12 @@ bool tmEditManager::MergeSelectedLines ()
 	return true;
 }
 
+
+void tmEditManager::OnSetRenderFocus (wxCommandEvent & event)
+{
+	wxASSERT(m_Renderer);
+	m_Renderer->SetFocus();
+}
 
 
 
