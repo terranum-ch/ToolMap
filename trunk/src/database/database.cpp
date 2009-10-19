@@ -675,6 +675,12 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 		return false;
 	}
 
+	if (query.IsEmpty())
+	{
+		wxLogError (_T("Trying to run empty query"));
+		return false;
+	}
+
 	char * buf = new char[query.Len() * sizeof(wxString)];
 	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
 	if (mysql_query(m_MySQL, buf) != 0)
