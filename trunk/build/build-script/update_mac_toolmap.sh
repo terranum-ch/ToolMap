@@ -9,9 +9,9 @@
 # 4) create dmg 
 
 #PARAMETERS
-VARBINDIR="/Users/Lucien/DATA/PRJ/TOOLMAP2/bin/mac_cmake_release"
-VARTRUNKDIR="/Users/Lucien/DATA/PRJ/TOOLMAP2/trunk"
-VARINSTALLERDIR="/Users/Lucien/DATA/PRJ/TOOLMAP2/bin"
+VARBINDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin/32_rel"
+VARTRUNKDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/trunk"
+VARINSTALLERDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin"
 VARLINE="----------------------------------"
 
 #title
