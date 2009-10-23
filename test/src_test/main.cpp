@@ -108,6 +108,10 @@
 
 #include "tmpointorientattrib_test.cpp"
 
+// MEMORY ZOOM 
+#include "tmmemoryzoom_test.cpp"
+#include "../../src/gis/tmmemoryzoom.cpp"
+
 
 int main (int argc, char * const argv[])
 {
@@ -121,8 +125,9 @@ int main (int argc, char * const argv[])
 	runner.addTest(tmGISImportTEST::suite());
 	runner.addTest(tmPercentTEST::suite());
 	runner.addTest(tmWindowPositionTEST::suite());*/
-	runner.addTest(tmPointOrienTEST::suite());
+	//runner.addTest(tmPointOrienTEST::suite());
 	//runner.addTest(tmPointOrientAttribTEST::suite());
+	runner.addTest(tmMemoryZoomTEST::suite());
 	runner.run();
 	return 0;
 }
