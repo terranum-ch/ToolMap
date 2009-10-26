@@ -28,9 +28,12 @@
 
 
 
-
-
-
+/***************************************************************************//**
+@brief tmZoomExtent
+@details Contain a zoom level
+@author Lucien Schreiber (c) CREALP 2009
+@date 26 octobre 2009
+ *******************************************************************************/
 class tmZoomExtent 
 {
   public:
@@ -40,12 +43,19 @@ class tmZoomExtent
     tmZoomExtent();
 	tmZoomExtent(double top, double left, double pixelsize);
     ~tmZoomExtent();
-
+	
+	bool operator==(const tmZoomExtent & zoom ) const;
 };
-// Creating a list of MemoryFields
 WX_DECLARE_OBJARRAY(tmZoomExtent, tmArrayZoomExtent);
 
 
+
+/***************************************************************************//**
+@brief tmMemoryZoomManager
+@details Manage previous zoom level
+@author Lucien Schreiber (c) CREALP 2009
+@date 26 octobre 2009
+ *******************************************************************************/
 class tmMemoryZoomManager : public wxEvtHandler 
 {
 private:
@@ -62,7 +72,7 @@ private:
 
     int GetCount();
 
-    tmZoomExtent GetPrevious();
+    bool GetPrevious(tmZoomExtent & extent);
 
 
 
