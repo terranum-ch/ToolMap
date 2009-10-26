@@ -20,6 +20,10 @@
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmArrayZoomExtent);
 
+
+/***************************************************************************//**
+ tmZoomExtent
+*******************************************************************************/
 tmZoomExtent::tmZoomExtent() 
 {
 	m_TopLeftPosition = wxPoint2DDouble(0.0,0.0);
@@ -38,6 +42,23 @@ tmZoomExtent::tmZoomExtent(double top, double left, double pixelsize)
 }
 
 
+bool tmZoomExtent::operator==(const tmZoomExtent & zoom ) const
+{
+	if (m_TopLeftPosition != zoom.m_TopLeftPosition)
+		return false;
+	
+	if (wxIsSameDouble(m_ZoomFactor, zoom.m_ZoomFactor)==false)
+		return false;
+	
+	return true;
+}
+
+
+
+
+/***************************************************************************//**
+ tmMemoryZoomManager
+*******************************************************************************/
 tmMemoryZoomManager::tmMemoryZoomManager(int maxsize)
 {
 	m_MaxSize = maxsize;
@@ -51,11 +72,22 @@ tmMemoryZoomManager::~tmMemoryZoomManager()
 	m_ZoomExtents.Clear();
 }
 
+
+
 bool tmMemoryZoomManager::Add(const tmZoomExtent & value) 
 {
 	m_ZoomExtents.Add(value);
+	
+	// only m_Maxsize item are allowed
+	int myDiff = GetCount() - m_MaxSize;
+	if (myDiff > 0)
+	{
+		m_ZoomExtents.RemoveAt(0, myDiff);
+	}
 	return true;
 }
+
+
 
 bool tmMemoryZoomManager::Add(double top, double left, double zoomfactor) 
 {
@@ -63,13 +95,34 @@ bool tmMemoryZoomManager::Add(double top, double left, double zoomfactor)
 	return Add(myExtent);
 }
 
+
+
 int tmMemoryZoomManager::GetCount() 
 {
 	return m_ZoomExtents.GetCount();
 }
 
-tmZoomExtent tmMemoryZoomManager::GetPrevious() {
+
+/***************************************************************************//**
+@brief Return previous zoom level
+@details This function return the previous zoom level, once returned the zoom
+ level isn't anymore accessible
+@param extent will be filled with the previous zoom level if true is returned
+@return  true if there is some zoom level availlable
+@author Lucien Schreiber (c) CREALP 2009
+@date 26 octobre 2009
+*******************************************************************************/
+bool tmMemoryZoomManager::GetPrevious(tmZoomExtent & extent)
+{
+	if(GetCount() == 0)
+		return false;
+	
+	extent = m_ZoomExtents.Last();
+	m_ZoomExtents.RemoveAt(GetCount()-1, 1);
+	return true;
 }
+
+
 
 /*
 void tmLayerManager::_ZoomChanged() {

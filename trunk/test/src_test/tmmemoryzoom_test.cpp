@@ -32,6 +32,8 @@ class tmMemoryZoomTEST : public CppUnit::TestFixture
 { 
 	CPPUNIT_TEST_SUITE( tmMemoryZoomTEST );
 	CPPUNIT_TEST ( TESTAdd );
+	CPPUNIT_TEST ( TESTAddMax );
+	CPPUNIT_TEST ( TESTGetPrevious );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -57,6 +59,37 @@ public:
 		
 		CPPUNIT_ASSERT(myManager.Add(m_Z1)==true);
 		CPPUNIT_ASSERT(myManager.GetCount()==2);
+	}
+	
+	void TESTAddMax()
+	{
+		tmMemoryZoomManager myManager;
+		int i = 0;
+		myManager.Add(25.0,12.0,1.6666);
+		for (i = 0; i< 49; i++)
+		{
+			myManager.Add(m_Z1);
+		}
+		CPPUNIT_ASSERT(myManager.GetCount() == 50);
+		myManager.Add(m_Z1);
+		CPPUNIT_ASSERT(myManager.GetCount() == 50);
+	}
+	
+	void TESTGetPrevious()
+	{
+		tmMemoryZoomManager myManager;
+		myManager.Add(25.0,12.0,1.6666);
+		CPPUNIT_ASSERT(myManager.GetCount() == 1);
+		myManager.Add(m_Z1);
+		CPPUNIT_ASSERT(myManager.GetCount() == 2);
+		
+		tmZoomExtent myRetExtent;
+		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
+		CPPUNIT_ASSERT (myRetExtent == m_Z1);
+		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
+		CPPUNIT_ASSERT (myRetExtent == tmZoomExtent(25.0,12.0,1.6666));
+		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent) == false);
+		
 	}
 	
 	
