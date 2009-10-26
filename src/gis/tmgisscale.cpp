@@ -377,6 +377,21 @@ void tmGISScale::ComputeNewRealZoomExtent (const wxRect & calc_wnd_extent, const
 }
 
 
+void tmGISScale::ComputePrevZoomExtent (double pixelsize,const wxPoint2DDouble & topleft)
+{
+	
+	m_PixelSize = pixelsize;
+	m_ExtentWndReal.x_min = topleft.m_x;
+	m_ExtentWndReal.y_max = topleft.m_y;
+	
+	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_min, m_PixelSize * m_ExtentWnd.GetWidth());
+	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max, m_PixelSize * m_ExtentWnd.GetHeight());
+	
+	ComputeUnitScale();	
+}
+
+
+
 void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 {
 	double dmovex = ((double)offsetxtop.x) * m_PixelSize;

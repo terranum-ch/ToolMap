@@ -162,7 +162,7 @@ class ProjectManager;
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
 
-#define ID_MENU_ZOOM_PREVIOUS_EXTEND 10313
+//#define ID_MENU_ZOOM_PREVIOUS 10313
 #define ID_MENU_ZOOM 10314
 #define ID_MENU_PAN 10315
 #define ID_MENU_ZOOM_FIT 10316
@@ -301,6 +301,7 @@ private:
 	bool m_CheckedUpdates;
 	
 	
+	
 	void OnQuit(wxCommandEvent & event);
 	void OnClose(wxCloseEvent & event);
 	void OnAbout(wxCommandEvent& event);
@@ -319,6 +320,7 @@ private:
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);
+	void OnZoomPrevious(wxCommandEvent & event);
 	void OnExportSelected (wxCommandEvent & event);
 	void OnExportAll (wxCommandEvent & event);
 	void OnShowShortcutWindow (wxCommandEvent & event);
@@ -372,6 +374,9 @@ private:
 		
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
+	
+	// child event function
+	void OnMenuZoomPreviousChange(wxCommandEvent & event);
 	
 	
 	ImportLogDLG * m_LogWindow;

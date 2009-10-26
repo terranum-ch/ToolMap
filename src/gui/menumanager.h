@@ -96,6 +96,9 @@ class MenuManager : public wxObject
 		// Editing 
 		void EditingStatus(bool started);
 		
+		// Zoom
+		void ZoomStatus (bool enabled);
+		
 	};
 
 

@@ -53,6 +53,17 @@ bool tmZoomExtent::operator==(const tmZoomExtent & zoom ) const
 	return true;
 }
 
+bool tmZoomExtent::IsOk()
+{
+	if (m_TopLeftPosition == wxPoint2DDouble(0.0,0.0))
+		return false;
+	
+	if (m_ZoomFactor == wxNOT_FOUND)
+		return false;
+	
+	return true;
+}
+
 
 
 
@@ -99,7 +110,11 @@ bool tmMemoryZoomManager::Add(double top, double left, double zoomfactor)
 
 int tmMemoryZoomManager::GetCount() 
 {
-	return m_ZoomExtents.GetCount();
+	int iUsableNumer = m_ZoomExtents.GetCount() -1;
+	if (iUsableNumer < 0)
+		iUsableNumer = 0;
+
+	return iUsableNumer;
 }
 
 
@@ -114,14 +129,19 @@ int tmMemoryZoomManager::GetCount()
 *******************************************************************************/
 bool tmMemoryZoomManager::GetPrevious(tmZoomExtent & extent)
 {
-	if(GetCount() == 0)
+	if(GetCount() < 1)
 		return false;
 	
-	extent = m_ZoomExtents.Last();
-	m_ZoomExtents.RemoveAt(GetCount()-1, 1);
+	extent = m_ZoomExtents.Item(m_ZoomExtents.GetCount()-2);
+	m_ZoomExtents.RemoveAt(m_ZoomExtents.GetCount()-1, 1);
 	return true;
 }
 
+
+void tmMemoryZoomManager::Clear()
+{
+	m_ZoomExtents.Clear();
+}
 
 
 /*
