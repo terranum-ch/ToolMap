@@ -449,7 +449,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 		int iBuffSize = 0;
         void * myGdalScanData = NULL;
 		unsigned char *data = NULL;
-		char Resultat = '\n';
+		//char Resultat = '\n';
 		GDALDataType myDataType;
 		
         switch (band->GetColorInterpretation())

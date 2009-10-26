@@ -39,6 +39,7 @@
 #include "tmscalectrl.h"				// for combo box scale control
 #include "tmselecteddatamemory.h"		// for storing selected data into memory
 #include "tmmanagerevent.h"				// for shared event with other manager
+#include "tmmemoryzoom.h"				// for storing previous zoom in memory.
 
 // forward declaration
 class tmGISLoadingDataThread;
@@ -46,6 +47,7 @@ class tmScaleCtrlCombo;
 //class tmDrawer;
 
 DECLARE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED, -1)
+DECLARE_EVENT_TYPE(tmEVT_LM_ZOOMPREVIOUS_ENABLE, -1)
 
 enum tmTHREAD_STATUS 
 {
@@ -83,6 +85,7 @@ class tmLayerManager : public wxEvtHandler
 		static bool	m_LogOn;
 		tmSelectedDataMemory m_SelectedData;
 		bool m_BlockRefresh;
+		tmMemoryZoomManager m_ZoomManager;
 		
 		// shared member data with thread
 		 
@@ -102,6 +105,7 @@ class tmLayerManager : public wxEvtHandler
 		
 		// function called when view is updated
 		void ViewUpdated();
+		void _ZoomChanged();
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -158,6 +162,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnZoomRectangle();
 		void OnPan ();
 		void OnSelect();
+		bool ZoomPrevious();
 		
 		// selection function
 		bool SelectedSearch (const wxRect & rect, bool shiftdown = false);

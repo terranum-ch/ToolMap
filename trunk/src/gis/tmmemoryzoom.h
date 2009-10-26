@@ -45,6 +45,7 @@ class tmZoomExtent
     ~tmZoomExtent();
 	
 	bool operator==(const tmZoomExtent & zoom ) const;
+	bool IsOk();
 };
 WX_DECLARE_OBJARRAY(tmZoomExtent, tmArrayZoomExtent);
 
@@ -71,11 +72,8 @@ private:
     bool Add(double top, double left, double zoomfactor);
 
     int GetCount();
-
     bool GetPrevious(tmZoomExtent & extent);
-
-
-
+	void Clear();
 
 };
 

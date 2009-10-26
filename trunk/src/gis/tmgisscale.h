@@ -121,6 +121,8 @@ class tmGISScale : public wxObject
 		tmRealRect GetMaxLayersExtent(){ return m_ExtentMaxLayers;}
 		double GetLayersExtentWidth();
 		double GetLayersExtentHeight();
+		double GetPixelSize(){return m_PixelSize;}
+		wxPoint2DDouble GetTopLeftValue(){return wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);}
 		
 		// setter and getters for windows 
 		void SetWindowExtent (const wxRect & extent){m_ExtentWnd = extent;}
@@ -152,6 +154,7 @@ class tmGISScale : public wxObject
 		// zoom functions
 		double GetBestDivFactor (const wxRect & selected_rect);
 		void ComputeNewRealZoomExtent (const wxRect & calc_wnd_extent, const wxPoint & top_left);
+		void ComputePrevZoomExtent (double pixelsize,const wxPoint2DDouble & topleft); 
 		
 		// pan functions
 		void ComputeNewRealPanExtent (const wxPoint & offsetxtop);

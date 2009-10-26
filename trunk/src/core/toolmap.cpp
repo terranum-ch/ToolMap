@@ -195,6 +195,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
 
 	// TOOL EVENT
+	EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
 	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
@@ -251,6 +252,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
+	EVT_COMMAND (wxID_ANY, tmEVT_LM_ZOOMPREVIOUS_ENABLE, ToolMapFrame::OnMenuZoomPreviousChange)
 	
 END_EVENT_TABLE()
 
@@ -482,8 +484,9 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import GIS data to project..."), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
     wxMenu* itemMenu28 = new wxMenu;
-    //itemMenu28->Append(ID_MENU_ZOOM_PREVIOUS_EXTEND, _("Zoom to previous extend"), _T(""), wxITEM_NORMAL);
-	//itemMenu28->AppendSeparator();
+    itemMenu28->Append(wxID_BACKWARD, _("Zoom to previous extend\tAlt+Left"), _T(""), wxITEM_NORMAL);
+	itemMenu28->Enable(wxID_BACKWARD, false);
+	itemMenu28->AppendSeparator();
     itemMenu28->Append(ID_MENU_ZOOM, _("Zoom by rectangle\tZ"), _T(""), wxITEM_NORMAL);
     itemMenu28->Append(ID_MENU_PAN, _("Pan\tP"), _T(""), wxITEM_NORMAL);
     itemMenu28->Append(ID_MENU_ZOOM_FIT, _("Zoom to full extend"), _T(""), wxITEM_NORMAL);
@@ -1205,6 +1208,13 @@ void ToolMapFrame::OnCloseManagedPane(wxAuiManagerEvent & event)
 
 
 
+void ToolMapFrame::OnMenuZoomPreviousChange(wxCommandEvent & event)
+{
+	bool bStatus = static_cast<bool>(event.GetInt()); 
+	m_MManager->ZoomStatus(bStatus);
+}
+
+
 
 void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 {
@@ -1256,6 +1266,12 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 	
 }
 
+
+
+void ToolMapFrame::OnZoomPrevious (wxCommandEvent & event)
+{
+	m_LayerManager->ZoomPrevious();
+}
 
 /***************************************************************************//**
  @brief Called when export selected is pressed

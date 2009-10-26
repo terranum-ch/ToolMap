@@ -112,7 +112,9 @@ void MenuManager::UpdateMenuData ()
 
 void MenuManager::UpdateMenuView ()
 {
-	for (int i = ID_MENU_ZOOM_PREVIOUS_EXTEND; i <= ID_MENU_SELECTED_LAYER ; i++)
+	//m_MenuBar->Enable(wxID_BACKWARD, bMenu_DB_IsOpen);
+	
+	for (int i = ID_MENU_ZOOM; i <= ID_MENU_SELECTED_LAYER ; i++)
 	{
 		if (m_MenuBar->FindItem(i) != NULL)
 			m_MenuBar->Enable(i, bMenu_DB_IsOpen);
@@ -259,6 +261,11 @@ void MenuManager::EditingStatus(bool started)
 	
 }
 
+
+void MenuManager::ZoomStatus (bool enabled)
+{
+	m_MenuBar->Enable(wxID_BACKWARD, enabled);
+}
 
 
 

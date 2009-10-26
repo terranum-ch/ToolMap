@@ -24,6 +24,7 @@ DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED)
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE)
 DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED)
 DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED)
+DEFINE_EVENT_TYPE(tmEVT_LM_ZOOMPREVIOUS_ENABLE)
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
@@ -511,7 +512,7 @@ void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
 	//double dNewScaleDist = m_Scale.DistanceFromScale(event.GetExtraLong());
 	ReloadProjectLayersThreadStart(FALSE);
 	
-	
+	_ZoomChanged();
 }
 
 
@@ -566,6 +567,8 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 void tmLayerManager::OnZoomToFit ()
 {
 	ReloadProjectLayersThreadStart();
+	
+	_ZoomChanged();
 }
 
 
@@ -788,6 +791,8 @@ void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 	// reload data
 	ReloadProjectLayersThreadStart(FALSE);
 	delete mySelectedRect;
+	
+	_ZoomChanged();
 }
 
 
@@ -816,6 +821,7 @@ void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 	// reload data
 	ReloadProjectLayersThreadStart(FALSE);
 	delete mySelectedRect;
+	_ZoomChanged();
 }
 
 
@@ -830,6 +836,8 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 	
 	
 	delete myNewPosPx;
+	
+	_ZoomChanged();
 }
 
 
@@ -944,6 +952,14 @@ bool tmLayerManager::LoadProjectLayers()
 	}
 		
 	m_GISRenderer->Refresh();
+	
+	// previous zoom
+	m_ZoomManager.Clear();
+	wxCommandEvent evt(tmEVT_LM_ZOOMPREVIOUS_ENABLE, wxID_ANY);
+	evt.SetInt(static_cast<int> (false));
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	_ZoomChanged();
+	
 	return TRUE;
 }
 
@@ -1346,6 +1362,57 @@ void tmLayerManager::InitScaleCtrlList ()
 
 
 
+void tmLayerManager::_ZoomChanged()
+{
+	
+	tmZoomExtent myActualExtent;
+	myActualExtent.m_ZoomFactor = m_Scale.GetPixelSize();
+	myActualExtent.m_TopLeftPosition = m_Scale.GetTopLeftValue();
+	if (myActualExtent.IsOk()==false)
+	{
+		wxLogError(_("Incorrect zoom extent set, unable to pass this value to the zoom manager"));
+		return; 
+	}
+	m_ZoomManager.Add(myActualExtent);
+	
+	// activate the zoom previous menu
+	if (m_ZoomManager.GetCount() >=1)
+	{
+		wxCommandEvent evt(tmEVT_LM_ZOOMPREVIOUS_ENABLE, wxID_ANY);
+		evt.SetInt(static_cast<int> (true));
+		m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	
+}
+
+
+bool tmLayerManager::ZoomPrevious()
+{
+	tmZoomExtent myPrevExtent;
+	if (m_ZoomManager.GetPrevious(myPrevExtent)==false)
+	{
+		return false;
+	}
+	
+	wxASSERT(myPrevExtent.IsOk());
+	
+	
+	m_Scale.ComputePrevZoomExtent(myPrevExtent.m_ZoomFactor, myPrevExtent.m_TopLeftPosition);
+	ReloadProjectLayersThreadStart(false, false);
+	
+	if(m_ZoomManager.GetCount()<1)
+	{
+		wxCommandEvent evt(tmEVT_LM_ZOOMPREVIOUS_ENABLE, wxID_ANY);
+		evt.SetInt(static_cast<int> (false));
+		m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	return true;
+}
+
+
+
+
+
 /****************************** THREAD CLASS FUNCTION BELOW ***********************/
 
 /***************************************************************************//**
@@ -1657,5 +1724,4 @@ bool tmGISLoadingDataThread::TestDestroyThread()
 	}*/
 	return false;
 }
-
 

@@ -34,6 +34,7 @@ class tmMemoryZoomTEST : public CppUnit::TestFixture
 	CPPUNIT_TEST ( TESTAdd );
 	CPPUNIT_TEST ( TESTAddMax );
 	CPPUNIT_TEST ( TESTGetPrevious );
+	CPPUNIT_TEST ( TESTIsOk );
 	CPPUNIT_TEST_SUITE_END();
 	
 private:
@@ -55,10 +56,10 @@ public:
 	{
 		tmMemoryZoomManager myManager;
 		CPPUNIT_ASSERT(myManager.Add(25.0, 12.0, 1.6666)==true);
-		CPPUNIT_ASSERT(myManager.GetCount()==1);
+		CPPUNIT_ASSERT(myManager.GetCount()==0);
 		
 		CPPUNIT_ASSERT(myManager.Add(m_Z1)==true);
-		CPPUNIT_ASSERT(myManager.GetCount()==2);
+		CPPUNIT_ASSERT(myManager.GetCount()==1);
 	}
 	
 	void TESTAddMax()
@@ -66,7 +67,7 @@ public:
 		tmMemoryZoomManager myManager;
 		int i = 0;
 		myManager.Add(25.0,12.0,1.6666);
-		for (i = 0; i< 49; i++)
+		for (i = 0; i< 50; i++)
 		{
 			myManager.Add(m_Z1);
 		}
@@ -78,21 +79,50 @@ public:
 	void TESTGetPrevious()
 	{
 		tmMemoryZoomManager myManager;
+		myManager.Add(m_Z1);
+		CPPUNIT_ASSERT(myManager.GetCount() == 0);
 		myManager.Add(25.0,12.0,1.6666);
 		CPPUNIT_ASSERT(myManager.GetCount() == 1);
 		myManager.Add(m_Z1);
 		CPPUNIT_ASSERT(myManager.GetCount() == 2);
 		
+
+		
 		tmZoomExtent myRetExtent;
 		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
-		CPPUNIT_ASSERT (myRetExtent == m_Z1);
-		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
+		//CPPUNIT_ASSERT (myRetExtent == m_Z1);
 		CPPUNIT_ASSERT (myRetExtent == tmZoomExtent(25.0,12.0,1.6666));
+		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
+		CPPUNIT_ASSERT (myRetExtent == m_Z1);
+		
+		CPPUNIT_ASSERT(myManager.GetCount() == 0);
+		myManager.Add(25.0,12.0,1.6666);
+		CPPUNIT_ASSERT(myManager.GetCount() == 1);
+		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
+		//CPPUNIT_ASSERT (myRetExtent == m_Z1);
+		CPPUNIT_ASSERT (myRetExtent == m_Z1);
+		CPPUNIT_ASSERT(myManager.GetCount() == 0);
+		
+		/*myManager.Add(m_Z1);
+		CPPUNIT_ASSERT(myManager.GetCount() == 2);
+		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
+		CPPUNIT_ASSERT (myRetExtent == m_Z1);*/
+
+		
+		//CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent)==true);
 		CPPUNIT_ASSERT (myManager.GetPrevious(myRetExtent) == false);
 		
 	}
 	
-	
+	void TESTIsOk()
+	{
+		tmZoomExtent myExtent;
+		CPPUNIT_ASSERT(myExtent.IsOk() == false);
+		myExtent.m_ZoomFactor = 1.2;
+		CPPUNIT_ASSERT(myExtent.IsOk() == false);
+		myExtent.m_TopLeftPosition = wxPoint2DDouble(12.3,1.7);
+		CPPUNIT_ASSERT(myExtent.IsOk() == true);
+	}
 	
 		
 	
