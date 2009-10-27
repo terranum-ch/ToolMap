@@ -289,3 +289,8 @@ void ToolbarManager::EditingStatus(bool started)
 	m_TBar->EnableTool(ID_MENU_MODIFY, started);
 }
 
+
+void ToolbarManager::ZoomStatus (bool enabled)
+{
+	m_TBar->EnableTool(wxID_BACKWARD, enabled);
+}
