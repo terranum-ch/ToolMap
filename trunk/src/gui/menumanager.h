@@ -116,6 +116,8 @@ class ToolbarManager : public wxObject
 		// editing 
 		void EditingStatus(bool started);
 		
+		// zoom
+		void ZoomStatus (bool enabled);
 	};
 
 

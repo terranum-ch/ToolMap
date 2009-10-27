@@ -39,6 +39,7 @@
 #include "../img/img_tool8.cpp"
 #include "../img/img_tool9.cpp"
 #include "../img/img_tool10.cpp"
+#include "../img/img_tool11.cpp"
 // icon image
 #include "../img/img_icon32.cpp"
 
@@ -484,7 +485,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import GIS data to project..."), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
     wxMenu* itemMenu28 = new wxMenu;
-    itemMenu28->Append(wxID_BACKWARD, _("Zoom to previous extend\tAlt+Left"), _T(""), wxITEM_NORMAL);
+    itemMenu28->Append(wxID_BACKWARD, _("Previous Zoom\tAlt+Left"), _T(""), wxITEM_NORMAL);
 	itemMenu28->Enable(wxID_BACKWARD, false);
 	itemMenu28->AppendSeparator();
     itemMenu28->Append(ID_MENU_ZOOM, _("Zoom by rectangle\tZ"), _T(""), wxITEM_NORMAL);
@@ -587,7 +588,12 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     wxBitmap itemtool7Bitmap(wxGetBitmapFromMemory(tool4));
     wxBitmap itemtool7BitmapDisabled;
     itemToolBar3->AddTool(ID_MENU_PAN, _("Pan"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Pan"), wxEmptyString);
-    wxArrayString itemComboBox8Strings;
+    wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool11));
+	wxBitmap itemtool11BitmapDisabled;
+    itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Previous Zoom"), wxEmptyString);
+    itemToolBar3->EnableTool(wxID_BACKWARD, false);
+	
+	wxArrayString itemComboBox8Strings;
     m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize );
 	itemToolBar3->AddControl(m_ScaleCombo);
     wxBitmap itemtool9Bitmap(wxGetBitmapFromMemory(tool5));
@@ -597,11 +603,11 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     wxBitmap itemtool10BitmapDisabled;
 	itemToolBar3->EnableTool (ID_MENU_DRAW, false);
     itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Modify"), wxEmptyString);
-    wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
-    wxBitmap itemtool11BitmapDisabled;
+    //wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
+    //wxBitmap itemtool11BitmapDisabled;
 	itemToolBar3->EnableTool(ID_MENU_MODIFY, false);
-    itemToolBar3->AddTool(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Copy-paste attribution"), wxEmptyString);
-	itemToolBar3->EnableTool(ID_MENU_COPY_PASTE_ATTRIB, false);
+    //itemToolBar3->AddTool(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Copy-paste attribution"), wxEmptyString);
+	//itemToolBar3->EnableTool(ID_MENU_COPY_PASTE_ATTRIB, false);
 	
 	itemToolBar3->AddSeparator();
     wxBitmap itemtool13Bitmap(wxGetBitmapFromMemory(tool8));
@@ -1212,6 +1218,7 @@ void ToolMapFrame::OnMenuZoomPreviousChange(wxCommandEvent & event)
 {
 	bool bStatus = static_cast<bool>(event.GetInt()); 
 	m_MManager->ZoomStatus(bStatus);
+	m_TManager->ZoomStatus(bStatus);
 }
 
 
