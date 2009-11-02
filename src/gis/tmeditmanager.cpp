@@ -1054,6 +1054,7 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	wxASSERT (myTempPt);
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
 
+	m_Renderer->DrawCircleVideoInverse(*myTempPt, tmSELECTION_DIAMETER);
 	
 	bool bSearch = false;
 	
@@ -1124,10 +1125,21 @@ bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
 	}
 	
 	
+	wxRealPoint topleft, bottomright;
+	
 	// searching vertex
 	int iIndex = wxNOT_FOUND;
-	if (m_GISMemory->SearchVertex(pt, iIndex, tmSELECTION_DIAMETER)==false)
+	if (m_GISMemory->SearchVertex(pt, iIndex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize(), topleft, bottomright)==false)
 		return false;
+	
+	
+	
+	wxLogDebug(_T("Vertex found : %d"), iIndex);
+	wxRect myRect (m_Scale->RealToPixel(topleft), m_Scale->RealToPixel(bottomright));
+	wxPoint myCenter;
+	myCenter.x = myRect.GetLeft() + (myRect.GetWidth() / 2);
+	myCenter.y = myRect.GetTop() + (myRect.GetHeight() / 2);
+	m_Renderer->DrawCircleVideoInverse(myCenter, myRect.GetWidth());
 	
 	
 	// creating invert-video drawing
@@ -1323,6 +1335,8 @@ void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 		return;
 	}
 	
+	wxRealPoint topleft, bottomright;
+	
 	wxMenu myPopupMenu;
 	m_INSDELVertex = wxNOT_FOUND;
 	m_INSVertexPos = wxRealPoint(-1,-1);
@@ -1331,7 +1345,7 @@ void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 		m_INSVertexPos = myRPT;
 		EMGetMenuLine(myPopupMenu);
 		
-		if (m_GISMemory->SearchVertex(myRPT, m_INSDELVertex, tmSELECTION_DIAMETER)==true)
+		if (m_GISMemory->SearchVertex(myRPT, m_INSDELVertex, tmSELECTION_DIAMETER, 0, topleft, bottomright)==true)
 		{
 			EMGetMenuVertex(myPopupMenu);
 		}
