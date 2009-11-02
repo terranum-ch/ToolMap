@@ -74,7 +74,8 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		bool GetVertexAll (wxArrayRealPoints & myPts);
 		wxRealPoint * GetVertexAll (int & number);
 		
-		bool SearchVertex (const wxRealPoint & ptsearched, int & index, int ibuffsize);
+		bool SearchVertex (const wxRealPoint & ptsearched, int & index, int ibuffsize, double pixelsize, 
+						   wxRealPoint & topleft, wxRealPoint & bottomright);
 		bool SearchPoint (const wxRealPoint & ptsearched, int ibuffsize);
 		bool IsIntersectingGeometry (const wxRealPoint & ptsearched,int & index,
 									 int ibuffsize);
