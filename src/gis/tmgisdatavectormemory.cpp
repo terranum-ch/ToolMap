@@ -421,27 +421,16 @@ wxRealPoint * tmGISDataVectorMemory::GetVertexAll (int & number)
  @date 29 April 2009
  *******************************************************************************/
 bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched, 
-										  int & index, int ibuffsize, double pixelsize, 
-										  wxRealPoint & topleft, wxRealPoint & bottomright)
+										  int & index, int ibuffsize, double pixelsize)
 {
 	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
 	wxASSERT (myptClicked);
 	int dynbuffsize = ibuffsize * pixelsize;
 	if (dynbuffsize < 1) 
 		dynbuffsize = 1;
-	wxLogDebug(_T("Buffsize = %d"),dynbuffsize);
 	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, dynbuffsize);
 	wxASSERT(myBuffClicked);
 	OGRGeometryFactory::destroyGeometry(myptClicked);
-	
-	
-	//TODO: Remove this temp code used only for drawing selection buffer
-	OGREnvelope * myEnv = new OGREnvelope();
-	myBuffClicked->getEnvelope(myEnv);
-	topleft.x = myEnv->MinX;
-	topleft.y = myEnv->MaxY;
-	bottomright.x = myEnv->MaxX;
-	bottomright.y = myEnv->MinY;
 	
 	
 	wxArrayRealPoints myPts;
@@ -470,13 +459,16 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 
 
 
-bool tmGISDataVectorMemory::SearchPoint (const wxRealPoint & ptsearched, int ibuffsize)
+bool tmGISDataVectorMemory::SearchPoint (const wxRealPoint & ptsearched, int ibuffsize, double pixelsize)
 {
 	wxASSERT(GetVertexCount() == 1);
 	
 	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
 	wxASSERT (myptClicked);
-	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, ibuffsize);
+	int dynbuffsize = ibuffsize * pixelsize;
+	if (dynbuffsize < 1) 
+		dynbuffsize = 1;
+	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, dynbuffsize);
 	wxASSERT(myBuffClicked);
 	OGRGeometryFactory::destroyGeometry(myptClicked);
 	
@@ -495,11 +487,14 @@ bool tmGISDataVectorMemory::SearchPoint (const wxRealPoint & ptsearched, int ibu
 
 
 bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearched, int & index,
-													int ibuffsize)
+													int ibuffsize, double pixelsize)
 {
 	OGRGeometry * myptClicked = CreateOGRGeometry(ptsearched);
 	wxASSERT (myptClicked);
-	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, ibuffsize);
+	int dynbuffsize = ibuffsize * pixelsize;
+	if (dynbuffsize < 1) 
+		dynbuffsize = 1;
+	OGRGeometry * myBuffClicked = SafeBuffer(myptClicked, dynbuffsize);
 	wxASSERT(myBuffClicked);
 	OGRGeometryFactory::destroyGeometry(myptClicked);
 	

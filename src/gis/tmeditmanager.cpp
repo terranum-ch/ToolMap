@@ -1054,8 +1054,6 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 	wxASSERT (myTempPt);
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
 
-	m_Renderer->DrawCircleVideoInverse(*myTempPt, tmSELECTION_DIAMETER);
-	
 	bool bSearch = false;
 	
 	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
@@ -1094,7 +1092,7 @@ bool tmEditManager::EMModifySearchPoint(const wxRealPoint & pt)
 	}
 		
 	// searching if point was correctly clicked
-	if (m_GISMemory->SearchPoint(pt, tmSELECTION_DIAMETER)==false)
+	if (m_GISMemory->SearchPoint(pt, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==false)
 		return false;
 	
 	wxRealPoint myStoredRPt;
@@ -1129,18 +1127,8 @@ bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
 	
 	// searching vertex
 	int iIndex = wxNOT_FOUND;
-	if (m_GISMemory->SearchVertex(pt, iIndex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize(), topleft, bottomright)==false)
+	if (m_GISMemory->SearchVertex(pt, iIndex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==false)
 		return false;
-	
-	
-	
-	wxLogDebug(_T("Vertex found : %d"), iIndex);
-	wxRect myRect (m_Scale->RealToPixel(topleft), m_Scale->RealToPixel(bottomright));
-	wxPoint myCenter;
-	myCenter.x = myRect.GetLeft() + (myRect.GetWidth() / 2);
-	myCenter.y = myRect.GetTop() + (myRect.GetHeight() / 2);
-	m_Renderer->DrawCircleVideoInverse(myCenter, myRect.GetWidth());
-	
 	
 	// creating invert-video drawing
 	wxPoint * myLeft = NULL;
@@ -1340,12 +1328,12 @@ void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 	wxMenu myPopupMenu;
 	m_INSDELVertex = wxNOT_FOUND;
 	m_INSVertexPos = wxRealPoint(-1,-1);
-	if (m_GISMemory->IsIntersectingGeometry(myRPT,m_INSDELVertex, tmSELECTION_DIAMETER)==true)
+	if (m_GISMemory->IsIntersectingGeometry(myRPT,m_INSDELVertex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==true)
 	{
 		m_INSVertexPos = myRPT;
 		EMGetMenuLine(myPopupMenu);
 		
-		if (m_GISMemory->SearchVertex(myRPT, m_INSDELVertex, tmSELECTION_DIAMETER, 0, topleft, bottomright)==true)
+		if (m_GISMemory->SearchVertex(myRPT, m_INSDELVertex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==true)
 		{
 			EMGetMenuVertex(myPopupMenu);
 		}
