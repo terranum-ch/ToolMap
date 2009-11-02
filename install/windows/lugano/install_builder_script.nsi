@@ -5,7 +5,7 @@
 ;!define PRODUCT_VERSION '2.0.475' (removed for batch script)
 !define PRODUCT_VERSION_LONG "2.0 Codename `Geneva`"
 !define PRODUCT_PUBLISHER "CREALP"
-!define PRODUCT_WEB_SITE "http://www.crealp.ch"
+!define PRODUCT_WEB_SITE "http://www.toolmap.ch"
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY "Software\ToolMap2"
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME "Install_Mode"
 !define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY "Software\ToolMap2"
