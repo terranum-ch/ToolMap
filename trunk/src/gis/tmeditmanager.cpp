@@ -1006,6 +1006,16 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	if (bCut == false)
 		return;
 	
+	
+	// copy attribution
+	wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
+	attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
+	wxArrayLong * myTempArray = new wxArrayLong(); 
+	myTempArray->Add(m_pDB->DataBaseGetLastInsertedID());
+	attribevt1.SetClientData(myTempArray);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
+	
+	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
