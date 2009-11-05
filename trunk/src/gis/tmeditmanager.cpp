@@ -1893,6 +1893,12 @@ bool tmEditManager::MergeSelectedLines ()
 	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->m_LayerType);
 	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->m_LayerType);
 
+	// update number of selected features
+	m_SelectedData->Clear();
+	m_SelectedData->SetSelected(myAttributions.Item(iLineToKeep).m_Oid);
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	
 	// update geometry
 	wxASSERT (myMergeGeom);
 	myLayer->UpdateGeometry(myMergeGeom, myAttributions.Item(iLineToKeep).m_Oid);
