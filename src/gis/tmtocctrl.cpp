@@ -862,8 +862,17 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 	// get selected item
 	wxArrayTreeItemIds selection;
 	GetSelections(selection);
+
+	// check for item != root
+	wxTreeItemId myID = selection.Item(0);
+	if (myID == GetRootItem())
+	{
+		wxLogError(_("Properties not availlable for project, select a layer."));
+		return;
+	}
+
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
-	
+
 	wxASSERT(item->m_LayerSymbol);
 	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
 	Evt.SetClientData(item);
