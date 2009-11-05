@@ -356,7 +356,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 									 wxSize imgSize)
 {
     // my definitions 
-	int             bEnablem_DataSettAlpha = FALSE, bEnableSrcAlpha = FALSE;
+	int             bEnablem_DataSettAlpha = FALSE; //, bEnableSrcAlpha = FALSE;
 	int             bMakeMask = false, bMakeAlpha = false, bInvertMask = false;
 	wxRect imgfilter = m_PxImgFilter;
 	
@@ -863,6 +863,12 @@ bool tmGISDataRaster::GetStatMinMaxNoDataValue (double & dmin, double & dmax,
 		dmin = dtempmin;
 		bReturn = true;
 	}
+	else 
+	{
+		dmin = 0;
+		bReturn = false;
+	}
+
 	
 	double dtempmax = m_RasterBand->GetMaximum(&bResult);
 	if (bResult)
@@ -870,6 +876,12 @@ bool tmGISDataRaster::GetStatMinMaxNoDataValue (double & dmin, double & dmax,
 		dmax = dtempmax;
 		bReturn = true;
 	}
+	else 
+	{
+		dmax = 255;
+		bReturn = false;
+	}
+
 	
 	double dtempnodata = m_RasterBand->GetNoDataValue(&bResult);
 	if (bResult)
