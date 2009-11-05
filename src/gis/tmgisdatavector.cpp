@@ -549,20 +549,15 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry(const wxRealPoint & pt)
 
 /***************************************************************************//**
  @brief Cut line in two at specified point
- @param line1 The original line to cut
- @param pointbuffer the point
- @param ptclicked the coordinate of the clicked point
- @param lineresult1 the resulting line 1
- @param lineresult2 the resulting line 2
+ @param oid OID of the line to cut
+ @param clickedpt the coordinate of the clicked point (real)
+ @param searchradius Serching vertex in this radius
+ @param layertype Type of the layer.
  @return true if succeed, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
 bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius, int layertype)
-/*(OGRLineString * line1, OGRGeometry * pointbuffer,
-									   wxRealPoint ptclicked,
-									   OGRLineString & lineresult1,
-									   OGRLineString & lineresult2)*/
 {
 	// get the line
 	OGRLineString * myLine = (OGRLineString*) GetGeometryByOID(oid);
@@ -635,12 +630,11 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	}
 	OGRGeometryFactory::destroyGeometry(myLine);
 	
-	
+		
 	// update geometry
 	bool bupd = UpdateGeometry(&myLine1, oid);
-	bool bAdd = AddGeometry(&myLine2, oid, layertype);
+	AddGeometry(&myLine2, oid, layertype);
 	wxASSERT(bupd);
-	wxASSERT(bAdd);
 
 	return true;
 }
