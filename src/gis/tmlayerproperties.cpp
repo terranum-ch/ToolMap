@@ -135,10 +135,11 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 	
 	// init extension based on supported extension, TOC_NAME_UNKNOWN otherwise
 	wxFileName myfileName (nameext);
-	wxString myExt = myfileName.GetExt();
+	wxString myExt = myfileName.GetExt().MakeLower();
 	
 	for (unsigned int i= 0; i<supportedext.GetCount(); i++)
 	{
+		//wxLogDebug(_T("supported extension : %s"), supportedext.Item(i).c_str());
 		if (supportedext.Item(i).Contains(myExt))
 		{
 			m_LayerType = TOC_NAME_NOT_GENERIC + i + 1;

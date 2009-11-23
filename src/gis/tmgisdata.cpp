@@ -276,7 +276,7 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_EGRID:
 		case TOC_NAME_JPEG:
 		case TOC_NAME_SHP:
-			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetFileExtension());
+			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetFileExtension().MakeLower());
 			myFileName = layerfullname.GetFullPath();
 			myErrMsg = myFileName;
 			break;
