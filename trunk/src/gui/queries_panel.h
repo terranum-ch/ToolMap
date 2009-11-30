@@ -30,6 +30,7 @@
 #include "../gis/tmmanagerevent.h"		// for manager event
 
 
+
 #define ID_QUERIESEDITOR 10049
 #define ID_QUERIES_LIST 10051
 #define ID_QUERIES_ADD 10052
