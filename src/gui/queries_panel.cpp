@@ -27,6 +27,7 @@
 #endif
 
 #include "queries_panel.h"
+#include "querieswizard.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_QUERY_RUN)
@@ -226,8 +227,12 @@ void Queries_PANEL::EnableQueriesPanel (bool projectopen)
  *******************************************************************************/
 void Queries_PANEL::OnAddQueries (wxCommandEvent & event)
 {
-	if (m_IsProjectOpen)
-		m_QueriesList->AddItem();
+	//if (m_IsProjectOpen){
+		QueriesWizard myWizard (m_ParentEvt, m_pDB, wxID_ANY);
+		myWizard.ShowWizard();
+	//}
+		
+		//m_QueriesList->AddItem();
 }
 
 
