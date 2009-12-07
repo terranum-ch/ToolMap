@@ -24,13 +24,14 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent) : wxWizardPage(parent
 	m_Parent = parent;
 	CreateControls();
 	
+	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, NULL, NULL);
+	m_PageExpertSQL = new QueriesPageSQL(m_Parent);
+	
 	m_PageName = new QueriesPageName(m_Parent, this, NULL);
 	m_PageLayer = new QueriesPageLayer(m_Parent, this,m_PageName);
 	m_PageGeneric = new QueriesPageGeneric(m_Parent,this,m_PageName);
 	m_PageSelection = new QueriesPageSelection(m_Parent,this,m_PageSelectionAttribut);
-	m_PageExpert = new QueriesPageExpert(m_Parent,this,m_PageName);
-	
-	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent,m_PageSelection, m_PageName);
+	m_PageExpert = new QueriesPageExpert(m_Parent,this,m_PageExpertSQL);
 	
 }
 
@@ -44,6 +45,7 @@ QueriesPageIntro::~QueriesPageIntro() {
 	delete m_PageExpert;
 	
 	delete m_PageSelectionAttribut;
+	delete m_PageExpertSQL;
 	
 }
 
@@ -70,11 +72,15 @@ wxWizardPage* QueriesPageIntro::GetNext() const {
 			
 			case QUERY_SELECTED:
 			m_PageName->SetPrev(m_PageSelectionAttribut);
+			wxWizardPageSimple::Chain(m_PageSelection, m_PageSelectionAttribut);
+			wxWizardPageSimple::Chain(m_PageSelectionAttribut, m_PageName);
 			return m_PageSelection;
 			break;
 			
 			case QUERY_SQL:
-			m_PageName->SetPrev(m_PageExpert);
+			m_PageName->SetPrev(m_PageExpertSQL);
+			wxWizardPageSimple::Chain(m_PageExpert, m_PageExpertSQL);
+			wxWizardPageSimple::Chain(m_PageExpertSQL, m_PageName);
 			return m_PageExpert;
 			break;
 
@@ -199,7 +205,7 @@ void QueriesPageSelection::_CreateControls() {
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText7;
-	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Add a query for selecting all objects having the following value"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Add a query for selecting all objects\nhaving the following value"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	bSizer10->Add( m_staticText7, 0, wxALL, 5 );
 	
@@ -328,7 +334,7 @@ void QueriesPageExpert::_CreateControls() {
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText8;
-	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Choose on which build-up layer the query\n will apply"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Choose on which build-up layer the query\nwill apply"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( -1 );
 	bSizer11->Add( m_staticText8, 0, wxALL, 5 );
 	
@@ -362,6 +368,41 @@ bool QueriesPageExpert::TransferDataFromWindow() {
 }
 
 
+
+
+void QueriesPageSQL::_CreateControls() {
+	wxBoxSizer* bSizer9;
+	bSizer9 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticText* m_staticText8;
+	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("SQL code for the query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8->Wrap( -1 );
+	bSizer9->Add( m_staticText8, 0, wxALL, 5 );
+	
+	m_SQLText = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
+	bSizer9->Add( m_SQLText, 1, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( bSizer9 );
+	bSizer9->Fit(this);
+}
+
+QueriesPageSQL::QueriesPageSQL(QueriesWizard * parent, wxWizardPageSimple * prev,
+							   wxWizardPageSimple * next) :
+wxWizardPageSimple(parent, prev, next){
+	m_Parent = parent;
+	_CreateControls();
+}
+
+QueriesPageSQL::~QueriesPageSQL() {
+}
+
+bool QueriesPageSQL::TransferDataToWindow() {
+	return true;
+}
+
+bool QueriesPageSQL::TransferDataFromWindow() {
+	return true;
+}
 
 
 

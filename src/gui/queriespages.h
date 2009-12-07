@@ -34,6 +34,7 @@ class QueriesPageGeneric;
 class QueriesPageSelection;
 class QueriesPageExpert;
 class QueriesPageAttribut;
+class QueriesPageSQL;
 
 
 class QueriesGeneric {
@@ -57,6 +58,7 @@ private:
 	QueriesPageSelection * m_PageSelection;
 	QueriesPageExpert * m_PageExpert;
 	QueriesPageAttribut * m_PageSelectionAttribut;
+	QueriesPageSQL * m_PageExpertSQL;
 	
 	
 	// event function
@@ -175,6 +177,28 @@ public:
     QueriesPageExpert(QueriesWizard * parent, wxWizardPage * prev, wxWizardPageSimple * next);
     ~QueriesPageExpert();
     virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+
+class QueriesPageSQL : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+	wxTextCtrl * m_SQLText;
+    void _CreateControls();
+	
+	
+public:
+	QueriesPageSQL(QueriesWizard * parent, wxWizardPageSimple * prev = NULL,
+				   wxWizardPageSimple * next = NULL);
+	
+    ~QueriesPageSQL();
+	
+    virtual bool TransferDataToWindow();
+	
     virtual bool TransferDataFromWindow();
 	
 };
