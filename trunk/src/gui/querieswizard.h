@@ -38,7 +38,7 @@ class QueriesPageLayer;
 
 
 enum tmQUERIES_TYPE {
-	QUERY_LAYERS,
+	QUERY_LAYERS = 0,
 	QUERY_SELECTED,
 	QUERY_GENERIC,
 	QUERY_SQL	

@@ -29,6 +29,11 @@
 
 class QueriesWizard;
 class QueriesPageLayer;
+class QueriesPageName;
+class QueriesPageGeneric;
+class QueriesPageSelection;
+class QueriesPageExpert;
+class QueriesPageAttribut;
 
 
 class QueriesGeneric {
@@ -47,8 +52,16 @@ private:
 	wxRadioBox* m_radiobtn;
 	
 	QueriesPageLayer * m_PageLayer;
-
-		
+	QueriesPageName * m_PageName;
+	QueriesPageGeneric * m_PageGeneric;
+	QueriesPageSelection * m_PageSelection;
+	QueriesPageExpert * m_PageExpert;
+	QueriesPageAttribut * m_PageSelectionAttribut;
+	
+	
+	// event function
+	void OnPageChanging(wxWizardEvent & event);
+	
 public:
     QueriesPageIntro(QueriesWizard * parent);
 	
@@ -63,6 +76,10 @@ public:
     virtual bool TransferDataFromWindow();
 	
 };
+
+
+
+
 
 
 class QueriesPageLayer : public wxWizardPageSimple {
@@ -81,6 +98,110 @@ public:
 	
     void CreateControls();
 };
+
+
+
+
+class QueriesPageSelection : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+	wxChoice * m_SelTypeList;
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageSelection(QueriesWizard * parent, wxWizardPage * prev, wxWizardPageSimple * next);
+	~QueriesPageSelection();
+	virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+class QueriesPageAttribut : public wxWizardPageSimple {
+private:
+    void _CreateControls();
+	QueriesWizard * m_Parent;
+	
+	wxCheckBox * m_CheckAdvAttrib;
+	wxStaticBoxSizer* m_AdvSizer;
+	wxStaticText* m_AdvText;
+	wxListBox* m_AdvAttributs;
+	
+	
+public:
+    QueriesPageAttribut(QueriesWizard * parent, wxWizardPageSimple * prev, wxWizardPageSimple * next);
+	
+    ~QueriesPageAttribut();
+	
+    virtual bool TransferDataToWindow();
+	
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+class QueriesPageGeneric : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+	wxListBox* m_ListGeneric;
+	
+protected:
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageGeneric(QueriesWizard * parent, wxWizardPage * prev = NULL, wxWizardPage * next = NULL);
+    ~QueriesPageGeneric();
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+
+class QueriesPageExpert : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+	wxRadioBox * m_LayerType;
+	
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageExpert(QueriesWizard * parent, wxWizardPage * prev, wxWizardPageSimple * next);
+    ~QueriesPageExpert();
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+
+class QueriesPageName : public wxWizardPageSimple {
+private:
+	wxTextCtrl* m_TextName;
+
+	
+    void _CreateControls();
+	
+public:
+    QueriesPageName(QueriesWizard * parent, wxWizardPage * prev, wxWizardPage * next);
+	
+    ~QueriesPageName();
+	
+    virtual bool TransferDataToWindow();
+	
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
 
 
 #endif
