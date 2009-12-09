@@ -13,7 +13,21 @@ PROJECT (${PROGNAME})
 
 #search all source files
 FILE (GLOB_RECURSE SRC_FILES ../src/*.cpp)
-SOURCE_GROUP (source FILES ${SRC_FILES})
+#SOURCE_GROUP (source FILES ${SRC_FILES})
+# GET MAIN SOURCE FILE
+SET(MY_SEARCHED_FILE "../src/core/toolmap.cpp")
+FILE(GLOB MAIN_SRC_FILE "${MY_SEARCHED_FILE}")
+#MESSAGE("Main file is : ${MAIN_SRC_FILE}")
+LIST(LENGTH SRC_FILES MYLENGTH)
+MESSAGE("Number of source files is : ${MYLENGTH}")
+LIST(FIND SRC_FILES "${MAIN_SRC_FILE}" MYFOUND)
+MESSAGE("Main src file is found : ${MYFOUND}")
+#REMOVE MAIN FROM SRC_FILES
+IF(MYFOUND EQUAL -1)
+	MESSAGE(FATAL_ERROR "Following file not found : ${MY_SEARCHED_FILE}")
+ENDIF(MYFOUND EQUAL -1)
+LIST(REMOVE_AT SRC_FILES ${MYFOUND})
+
 
 # search all headers files
 FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
@@ -22,23 +36,11 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 
 MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 
-#IF (CMAKE_BUILD_TYPE STREQUAL "Release")
-#	SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=no" )
-#	MESSAGE ("Build type is release"  ${WX_CONFIG_ARGS_LIBS})
-#ELSE (CMAKE_BUILD_TYPE STREQUAL "Release")
-#	SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=no" )
-#	MESSAGE ("Build type is debug")
-#ENDIF (CMAKE_BUILD_TYPE STREQUAL "Release")
-
 
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON
  SET(WXWINDOWS_USE_GL 0)
- 
  INCLUDE ("cmake/Use_wxWindows.cmake")
- #INCLUDE ("cmake/UsewxWidgets.cmake")
- 
- 
  
  
  #MYSQL EMBEDDED
@@ -49,13 +51,17 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  INCLUDE ("cmake/findGISLib.cmake")
  
  
- #wxTreeMultiCtrl
- INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
- 
+#wxTreeMultiCtrl
+INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
+
 
 #CURL
 INCLUDE ("cmake/FindCURL.cmake")
 	
+
+# CREATE A LIBRARY WITH ALL SRC
+ADD_LIBRARY("${PROGNAME}_lib" STATIC ${SRC_FILES} ${HEAD_FILES})
+
 
 
 IF( APPLE )
@@ -74,12 +80,6 @@ IF( APPLE )
 	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
 	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../art/${APP_ICON} ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
 	
-	# Copy errmsg.sys into file
-	#EXECUTE_PROCESS(
-	#	COMMAND sh copy_mysql_errmsg_mac.sh "${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app"
-	#	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/../build/
-	#	)
-	
 ENDIF (APPLE)
 
 
@@ -88,14 +88,13 @@ ENDIF (APPLE)
 IF (WIN32)
 
 	SOURCE_GROUP (resource FILES ../src/resource.rc)
- 	ADD_EXECUTABLE (ToolMap2 WIN32 ${SRC_FILES} ${HEAD_FILES} ../src/gui/resource.rc)
- 	TARGET_LINK_LIBRARIES (ToolMap2 ${WXWINDOWS_LIBS})
+ 	ADD_EXECUTABLE ("${PROGNAME}" WIN32 ${MAIN_SRC_FILE} ../src/gui/resource.rc)
+ 	TARGET_LINK_LIBRARIES ("${PROGNAME}" ${WXWINDOWS_LIBS})
 
 ELSE (WIN32)
  	
- 	ADD_EXECUTABLE (ToolMap2 MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES} )
- 	#SET_TARGET_PROPERTIES(ToolMap2 LINK_FLAGS_ RELEASE)
- 	#TARGET_LINK_LIBRARIES (ToolMap2)
+ 	ADD_EXECUTABLE (${PROGNAME} MACOSX_BUNDLE ${MAIN_SRC_FILE} ${HEAD_FILES})
+	TARGET_LINK_LIBRARIES ("${PROGNAME}" "${PROGNAME}_lib")
 
 ENDIF (WIN32)
 
@@ -134,7 +133,7 @@ INCLUDE ("cmake/useMySQLEmbedded.cmake")
 
 
 # UNIT TEST PROGRAM
-SET (USE_UNITTEST CACHE BOOL "Sould we Create the Unit Test (XP) for ${PROGNAME}")
+SET (USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${PROGNAME}")
 IF (USE_UNITTEST)
 	ADD_SUBDIRECTORY("../test/build" "${PROJECT_BINARY_DIR}/test")
 ENDIF (USE_UNITTEST)
