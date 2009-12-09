@@ -38,7 +38,8 @@ public:
 	void setUp()
 	{
 		m_DB = new DataBaseTM();
-		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
+		//TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
+
 	}
 	
 	void tearDown() 
@@ -48,6 +49,12 @@ public:
 	
 	void testTableExist()
 	{
+		wxLogError(wxT("Test text"));
+		wxLogError(_("Test text1"));
+		//wxLogError(L("Test text2"));
+		
+		
+		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
 		TS_ASSERT(m_DB->TableExist(_T("generic_lines")));
 		TS_ASSERT_EQUALS(m_DB->TableExist(_T("generic_linesss")),false);
 		TS_ASSERT(m_DB->TableExist(_T("dmn_layer_object")));
@@ -56,15 +63,17 @@ public:
 	
 	void testToolMapVersion()
 	{
+		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
 		TS_ASSERT_EQUALS(m_DB->GetDatabaseToolMapVersion(),220);
 	}
 	
 	void testCreateNewTMDatabase()
 	{
+		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
 		// deleting if existing
 		if(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit13))
 		{	
-			wxLogDebug(_T("Deleting database : %s"), m_DB->DataBaseGetName().c_str());
+			wxLogDebug(wxT("Deleting database : %s"), m_DB->DataBaseGetName().c_str());
 			TS_ASSERT(m_DB->DataBaseDelete()==true);
 		}
 		
@@ -87,19 +96,24 @@ public:
 		TS_ASSERT(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Edit)==tmDB_OPEN_OK);
 		TS_ASSERT(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_MyTest)>=tmDB_OPEN_FAILED_NOT_TM_DB);
 		int myStatus = m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_LuganoTM);
-		TS_ASSERT(myStatus >= tmDB_OPEN_FAILED_WRONG_VERSION);
-		wxLogDebug(_T("%s is wrong version %d"),g_TestPrj_LuganoTM.c_str(), myStatus);
+		TS_ASSERT_LESS_THAN_EQUALS(tmDB_OPEN_FAILED_WRONG_VERSION, myStatus);
+		wxLogError(_("%s is wrong version %d"),g_TestPrj_LuganoTM.c_str(), myStatus);
 		TS_ASSERT(m_DB->GetDatabaseToolMapVersion() != TM_DATABASE_VERSION);
 	}
 	
 	void testConvertPath()
 	{
+		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
 		wxString myPath = _T("C:\\Test\\");
 		wxString myUnixPath = _T("User/share/test");
 		wxString myConvertedPath = _T("C:\\\\Test\\\\");
-		
+#ifdef __WINDOWS__
+		TS_ASSERT_EQUALS(DataBaseTM::ConvertPath(myPath),true);
+		TS_ASSERT_EQUALS(DataBaseTM::ConvertPath(myUnixPath),true);
+#else
 		TS_ASSERT_EQUALS(DataBaseTM::ConvertPath(myPath),false);
 		TS_ASSERT_EQUALS(DataBaseTM::ConvertPath(myUnixPath),false);
+#endif
 	}
 	
 	

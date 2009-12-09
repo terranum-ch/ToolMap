@@ -38,6 +38,7 @@ public:
 	void setUp()
 	{
 		m_DB = new DataBase();		
+		
 	}
 	
 	void tearDown() 
@@ -49,7 +50,9 @@ public:
 	void testOutputToWindows()
 	{
 		wxLog::SetActiveTarget(new wxLogStderr());
-		wxLogError(_("My super error"));
+		//elete wxLog::SetActiveTarget(new wxLogStderr(NULL));
+		//wxLog::SetActiveTarget(new wxLogStderr());
+		//wxLogError(_("My super error"));
 	}
 
 	void testOpenDatabase()
@@ -141,7 +144,6 @@ public:
 		TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, &myRows));
 		TS_ASSERT_EQUALS(myRows, 1);
 		TS_ASSERT_EQUALS(myCols, 9);
-		
 	}
 	
 	void testResultLong()
