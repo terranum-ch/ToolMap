@@ -49,6 +49,7 @@ public:
 	void testOutputToWindows()
 	{
 		wxLog::SetActiveTarget(new wxLogStderr());
+		wxLogError(_("My super error"));
 	}
 
 	void testOpenDatabase()
@@ -86,12 +87,12 @@ public:
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
 		wxString myReturnedString =  wxEmptyString;
-		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 16")));
 		// second query should fail, must delete results first.
 		m_DB->DataBaseClearResults();
-		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 17"))==true);
+		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 16"))==true);
 		TS_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==true);
-		TS_ASSERT_EQUALS(myReturnedString, _T("bord d'érosion")); // oid = 17
+		TS_ASSERT_EQUALS(myReturnedString, _T("delimitation tassement")); // oid = 17
 		TS_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString)==false);
 		TS_ASSERT(myReturnedString == wxEmptyString);
 		m_DB->DataBaseClearResults();
@@ -105,12 +106,12 @@ public:
 	void testResultArrayString()
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
-		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 17")));
+		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 16")));
 		wxArrayString myResults;
 		
 		TS_ASSERT(m_DB->DataBaseGetNextResult(myResults));
 		TS_ASSERT_EQUALS(myResults.GetCount(), 9); // 9 cols in dmn_layer_object
-		TS_ASSERT_EQUALS(myResults.Item(4), _T("bord d'érosion"));
+		TS_ASSERT_EQUALS(myResults.Item(4), _T("delimitation tassement"));
 		m_DB->DataBaseClearResults();
 		// limit tests
 		
@@ -127,7 +128,7 @@ public:
 	void testCountResults()
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
-		uint myCols = 0;
+		unsigned int myCols = 0;
 		long myRows = 0;
 		TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, &myRows)==false);
 		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 17")));
@@ -157,7 +158,7 @@ public:
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
 		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID, OBJECT_CD FROM dmn_layer_object WHERE OBJECT_ID <= 17")));
 		
-		uint myCols = 0;
+		unsigned int myCols = 0;
 		long myRows = 0;
 		
 		TS_ASSERT (m_DB->DataBaseGetResultSize(&myCols, &myRows));
@@ -334,7 +335,7 @@ public:
 		TS_ASSERT(m_DB->DataBaseDelete()==false);
 		TS_ASSERT(m_DB->DataBaseCreateNew(g_TestPathPRJ,_T("testedit_12"))==true);
 		TS_ASSERT(m_DB->DataBaseDelete()==true);
-		wxLogMessage(_T("End of database tests"));
+		wxLogError(_("End of database Tests"));
 	}
 	
 	
