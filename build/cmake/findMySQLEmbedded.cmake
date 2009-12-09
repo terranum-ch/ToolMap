@@ -99,6 +99,7 @@ ENDIF (MYSQL_INCLUDE_DIR)
 
 ## DEFINE LOGGING OR NOT
 SET (MYSQL_IS_LOGGING CACHE BOOL "Should MySQL log all commands to a text file in the document folder ?")
+SET (MYSQL_UNIT_TESTING CACHE BOOL "Is MySQL part of the unit testing process, if not sure set to true")
 
 FIND_PATH(DATABASE_PROJ_SOURCE_DIR database-config.h.in
   ${PROJECT_SOURCE_DIR}/../src/database/

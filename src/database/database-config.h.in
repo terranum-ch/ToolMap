@@ -1,3 +1,4 @@
 /* DEFINITION FOR MYSQL */
 
 #cmakedefine MYSQL_IS_LOGGING 1
+#cmakedefine MYSQL_UNIT_TESTING 0
