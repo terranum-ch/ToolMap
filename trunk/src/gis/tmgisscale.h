@@ -29,6 +29,7 @@
     #include <wx/wx.h>
 #endif
 
+#include <wx/graphics.h>
 
 const int tmSCALE_MARGIN = 10; // margin between image and border in full screen mode
 

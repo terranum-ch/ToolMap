@@ -29,6 +29,8 @@
     #include <wx/wx.h>
 #endif
 
+#include <wx/graphics.h>
+
 class tmPointOrient : public wxObject 
 	{
 	private:
