@@ -93,7 +93,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	char * bufDataDir = new char[myDatadir.Len() * sizeof(wxString)];
 	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
 	
-#ifndef UNIT_TESTING	
+#ifndef MYSQL_UNIT_TESTING	
 	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
 	wxString myLogDirString = _T("--log=");
 	myLogDirString.Append(myLogDirName.GetFullPath());
@@ -126,7 +126,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		bufDataDir,
 		mylanguagedir,
 		"--port=3309"
-#ifndef UNIT_TESTING
+#ifndef MYSQL_UNIT_TESTING
 #if defined (MYSQL_IS_LOGGING)
 		, bufLogPath
 #endif
@@ -146,7 +146,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
-#ifndef UNIT_TESTING	
+#ifndef MYSQL_UNIT_TESTING	
 #if defined (MYSQL_IS_LOGGING)
 	delete [] bufLogPath; 
 #endif

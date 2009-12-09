@@ -28,6 +28,7 @@
 #include "../../src/database/database.h"
 
 
+
 class TEST_Database : public CxxTest::TestSuite
 {
 private:
@@ -50,7 +51,7 @@ public:
 		wxLog::SetActiveTarget(new wxLogStderr());
 	}
 
-	void TESTOpenDatabase()
+	void testOpenDatabase()
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
 		wxString myFalsePath = g_TestPathPRJ + _T("JJJ");
@@ -59,9 +60,6 @@ public:
 	}
 	
 };
-
-
-
 
 
 
