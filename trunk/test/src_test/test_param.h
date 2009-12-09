@@ -27,9 +27,9 @@
 
 
 static const wxString g_TestPath = _T("/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing");
-static const wxString g_TestPathSHP = g_TestPath + _T("/shp");
-static const wxString g_TestPathMISC = g_TestPath + _T("/misc");
-static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj");
+static const wxString g_TestPathSHP = g_TestPath + _T("/shp/");
+static const wxString g_TestPathMISC = g_TestPath + _T("/misc/");
+static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj/");
 
 
 static const wxString g_TestFileMisc = _T("gpl.txt");
@@ -48,6 +48,8 @@ static const wxString g_TestPrj_Edit13 = _T("testedit_13");
 static const wxString g_TestPrj_Export = _T("testexport");
 static const wxString g_TestPrj_Fields = _T("testfields");
 static const wxString g_TestPrj_Import = _T("testimport");
+static const wxString g_TestPrj_LuganoTM = _T("luganoTM");
+
 
 
 
