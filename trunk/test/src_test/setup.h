@@ -39,7 +39,7 @@ class Fixture1 : public CxxTest::GlobalFixture
 
 public:
 	bool setUpWorld(){
-		wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");	
+		wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
 		wxInitializer initializer;
 		if ( !initializer )
 		{
