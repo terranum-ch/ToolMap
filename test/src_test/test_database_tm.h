@@ -24,21 +24,21 @@
     #include <wx/wx.h>
 #endif
 
-#include "test_param.h"	//for test parameters
+#include <cxxtest/TestSuite.h>
+
+#include "test_param.h"
 #include "../../src/database/database_tm.h"
 
 
 
 class TEST_DatabaseTM : public CxxTest::TestSuite
 {
-private:
-	DataBaseTM * m_DB;	
-	
 public:
+	DataBaseTM * m_DB;	
+
 	void setUp()
 	{
 		m_DB = new DataBaseTM();
-		//TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
 
 	}
 	
@@ -47,13 +47,14 @@ public:
 		delete m_DB;
 	}
 	
+	void testName(){
+		wxLogMessage(_T("------------------------------------"));
+		wxLogMessage(_T("-------- TESTING DATABASE_TM -------"));
+		wxLogMessage(_T("------------------------------------"));
+	}
+	
 	void testTableExist()
 	{
-		wxLogError(wxT("Test text"));
-		wxLogError(_("Test text1"));
-		//wxLogError(L("Test text2"));
-		
-		
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
 		TS_ASSERT(m_DB->TableExist(_T("generic_lines")));
 		TS_ASSERT_EQUALS(m_DB->TableExist(_T("generic_linesss")),false);
