@@ -24,17 +24,18 @@
     #include <wx/wx.h>
 #endif
 
-#include "test_param.h"	//for test parameters
+#include <cxxtest/TestSuite.h>
+
+#include "test_param.h"
 #include "../../src/database/database.h"
 
 
 
 class TEST_Database : public CxxTest::TestSuite
 {
-private:
-	DataBase * m_DB;	
-	
 public:
+	DataBase * m_DB;	
+
 	void setUp()
 	{
 		m_DB = new DataBase();		
@@ -45,16 +46,13 @@ public:
 	{
 		delete m_DB;
 	}
-	
-	// setting output to the std err (otherwise log into windows)
-	void testOutputToWindows()
-	{
-		wxLog::SetActiveTarget(new wxLogStderr());
-		//elete wxLog::SetActiveTarget(new wxLogStderr(NULL));
-		//wxLog::SetActiveTarget(new wxLogStderr());
-		//wxLogError(_("My super error"));
-	}
 
+	void testName(){
+		wxLogMessage(_T("------------------------------------"));
+		wxLogMessage(_T("-------- TESTING DATABASE ----------"));
+		wxLogMessage(_T("------------------------------------"));
+	}
+	
 	void testOpenDatabase()
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
