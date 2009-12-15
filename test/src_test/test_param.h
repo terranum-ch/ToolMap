@@ -50,6 +50,12 @@ static const wxString g_TestPrj_Fields = _T("testfields");
 static const wxString g_TestPrj_Import = _T("testimport");
 static const wxString g_TestPrj_LuganoTM = _T("luganoTM");
 
+// internet
+static const bool g_UseProxy = false;
+static const wxString g_ProxyName = _T("vs.proxy.ch:8080");
+static const int g_ToolMapInternetVersion = 717;
+static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d%d.dmg"),
+													g_ToolMapInternetVersion);
 
 
 
