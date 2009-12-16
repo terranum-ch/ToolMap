@@ -68,7 +68,8 @@ class QueriesList : public ListGenReportWithDialog
 		
 		// setter
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
-		
+		virtual void AddItem ();
+
 	};
 
 

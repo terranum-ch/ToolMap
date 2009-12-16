@@ -291,6 +291,35 @@ bool QueriesPageAttribut::TransferDataFromWindow() {
 
 
 
+void QueriesPageGenericData::_Add(int layertarger, const wxString & description, const wxString & sql) {
+	m_TargetLayer.Add(layertarger);
+	m_Description.Add(description);
+	m_SQL.Add(sql);
+}
+
+
+QueriesPageGenericData::QueriesPageGenericData() {
+	_Add(TOC_NAME_LINES, _("Line(s) without attributions"),
+		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE l.OBJECT_ID NOT IN (SELECT generic_aat.OBJECT_GEOM_ID FROM generic_aat)"));
+	_Add(TOC_NAME_LINES, _("Line(s) with more than one attribut"),
+		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_aat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
+}
+
+QueriesPageGenericData::~QueriesPageGenericData() {
+}
+
+void QueriesPageGenericData::GetData(int index, int & layertarget, wxString & description, wxString & sql) {
+	layertarget = m_TargetLayer.Item(index);
+	description = m_Description.Item(index);
+	sql = m_Description.Item(index);
+}
+
+wxArrayString QueriesPageGenericData::GetDescription(){
+	return m_Description;
+}
+
+
+
 
 void QueriesPageGeneric::_CreateControls() {
 	wxBoxSizer* bSizer3;
@@ -310,17 +339,46 @@ void QueriesPageGeneric::_CreateControls() {
 
 QueriesPageGeneric::QueriesPageGeneric(QueriesWizard * parent, wxWizardPage * prev, wxWizardPage * next):
 wxWizardPageSimple(parent, prev, next){
+	m_GenericData = NULL;
 	_CreateControls();
+	m_Parent = parent;
 }
 
 QueriesPageGeneric::~QueriesPageGeneric() {
 }
 
 bool QueriesPageGeneric::TransferDataToWindow() {
+	m_GenericData = new QueriesPageGenericData();
+	m_ListGeneric->Clear();
+	m_ListGeneric->Append(m_GenericData->GetDescription());
+	m_ListGeneric->SetSelection(0);
+	m_ListGeneric->SetFocus();
+	
 	return true;
 }
 
 bool QueriesPageGeneric::TransferDataFromWindow() {
+	
+	// get data back from generic list
+	int iTarget = wxNOT_FOUND;
+	wxString myDesc = wxEmptyString;
+	wxString mySQL = wxEmptyString;
+	
+	int iSelected = m_ListGeneric->GetSelection();
+	m_GenericData->GetData(iSelected, iTarget, myDesc, mySQL);
+	
+	// set data to the parent
+	m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) iTarget;
+	m_Parent->GetData()->m_QuerySQL = mySQL;
+	
+	// propose a name if name is empty
+	if (m_Parent->GetData()->m_QueryName.IsEmpty()) {
+		m_Parent->GetData()->m_QueryName = myDesc;
+	}
+		
+	
+	delete m_GenericData;
+	m_GenericData = NULL;
 	return true;
 }
 
@@ -409,6 +467,7 @@ bool QueriesPageSQL::TransferDataFromWindow() {
 QueriesPageName::QueriesPageName(QueriesWizard * parent, wxWizardPage * prev, wxWizardPage * next) :
 wxWizardPageSimple(parent, prev, next){
 	_CreateControls();
+	m_Parent = parent;
 }
 
 QueriesPageName::~QueriesPageName() {
@@ -433,10 +492,12 @@ void QueriesPageName::_CreateControls() {
 
 
 bool QueriesPageName::TransferDataToWindow() {
+	m_TextName->SetValue(m_Parent->GetData()->m_QueryName);
 	return true;
 }
 
 bool QueriesPageName::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QueryName = m_TextName->GetValue();
 	return true;
 }
 

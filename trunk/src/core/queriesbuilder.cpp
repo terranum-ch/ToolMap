@@ -166,7 +166,12 @@ bool QueriesBuilder::Save(DataBaseTM * database) {
 	if (_IsCreated()==false){
 		return false;
 	}
-	return true;
+	
+	
+	return database->EditQueries((int) m_QueryData->m_QueryLayerType,
+						  m_QueryData->m_QueryName,
+						  m_QueryData->m_QuerySQL,
+						  -1);
 }
 
 
@@ -177,7 +182,7 @@ bool QueriesBuilder::Create(DataBaseTM * database) {
 	
 	switch (m_QueryData->m_QueryType) {
 		case QUERY_GENERIC:
-			return true;
+			m_IsCreated = true;
 			break;
 			
 		default:
@@ -185,7 +190,7 @@ bool QueriesBuilder::Create(DataBaseTM * database) {
 			break;
 	}
 	
-	return false;
+	return m_IsCreated;
 }
 
 
