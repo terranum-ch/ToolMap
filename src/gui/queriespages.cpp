@@ -128,7 +128,7 @@ void QueriesPageIntro::CreateControls() {
 
 
 bool QueriesPageIntro::TransferDataToWindow() {
-	m_radiobtn->SetSelection(m_Parent->m_QueryType);
+	//m_radiobtn->SetSelection(m_Parent->m_QueryType);
 	
 	//if (m_Parent->m_QueryObjectGeomID == wxNOT_FOUND){
 	//	m_radiobtn->Enable(QUERY_SELECTED, false);
@@ -139,7 +139,7 @@ bool QueriesPageIntro::TransferDataToWindow() {
 
 
 bool QueriesPageIntro::TransferDataFromWindow() {
-	m_Parent->m_QueryType = (tmQUERIES_TYPE) m_radiobtn->GetSelection();
+	//m_Parent->m_QueryType = (tmQUERIES_TYPE) m_radiobtn->GetSelection();
 	return true;
 }
 

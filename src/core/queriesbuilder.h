@@ -1,6 +1,6 @@
 /***************************************************************************
-								querieswizard.cpp
-                    Main part of the new query system
+								queriesbuilder.h
+                   
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,40 +15,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "querieswizard.h"
+#ifndef _QUERIESBUILDER_H
+#define _QUERIESBUILDER_H
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
+#endif
 
 
+#include "../database/database_tm.h"
+#include "queriesdata.h"
 
 
-
-
-
-
-int QueriesWizard::ShowWizard() {
-	if (RunWizard(m_PageIntro)==true){
-		return wxOK;
-	}
-	else {
-		return wxCANCEL;
-	}
-
-}
-
-
-
-QueriesWizard::QueriesWizard(wxWindow * parent, DataBaseTM * database, int id) :
-wxWizard(parent, id, _("Add query Wizard"), wxNullBitmap, wxDefaultPosition){
-	m_pDB = database;
-	//wxASSERT(m_pDB);
-	m_PageIntro = new QueriesPageIntro(this);
+class QueriesBuilder {
+  private:
+    QueriesData * m_QueryData;
+	bool m_IsCreated;
 	
-	GetPageAreaSizer()->Add(m_PageIntro);
-	wxSize mySize = GetPageAreaSizer()->CalcMin();
-	SetMinSize(mySize);
-	SetPageSize(mySize);
-}
+    bool _IsQueryNull();
+    bool _IsQueryLayersCorrect();
+    bool _IsQuerySelectedCorrect();
+    bool _IsQueryGenericCorrect();
+    bool _IsQuerySQLCorrect();
+	
+	bool _IsCreated();
 
 
-QueriesWizard::~QueriesWizard() {
-	this->Destroy();
-}
+  public:
+    QueriesBuilder(QueriesData * query);
+
+    ~QueriesBuilder();
+
+    bool IsOk();
+
+    bool Save(DataBaseTM * database);
+	bool Create(DataBaseTM * database);
+};
+#endif
