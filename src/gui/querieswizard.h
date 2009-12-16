@@ -42,10 +42,8 @@ class QueriesPageLayer;
 
 class QueriesWizard : public wxWizard {
 private:
-    
-	QueriesData * m_QueryData;
 	DataBaseTM * m_pDB;
-	
+	QueriesData * m_QueryData;
 	// Wizard's page
 	QueriesPageIntro * m_PageIntro;
 	
@@ -54,6 +52,7 @@ public:
 	//Used by first panel
     tmQUERIES_TYPE m_QueryType;
 	long m_QueryObjectGeomID;
+	
 
 public:
 	
@@ -61,7 +60,14 @@ public:
     ~QueriesWizard();
 	virtual int ShowWizard();
 	
-	
+	inline QueriesData * GetData();
 	
 };
+
+
+inline QueriesData * QueriesWizard::GetData(){
+	return m_QueryData;
+}
+
+
 #endif

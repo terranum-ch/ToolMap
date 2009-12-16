@@ -145,10 +145,37 @@ public:
 
 
 
+
+class QueriesPageGenericData {
+private:
+    wxArrayInt m_TargetLayer;
+	
+    wxArrayString m_Description;
+	
+    wxArrayString m_SQL;
+	
+    void _Add(int layertarger, const wxString & description, const wxString & sql);
+	
+	
+public:
+    QueriesPageGenericData();
+	
+    ~QueriesPageGenericData();
+	
+	void GetData(int index, int & layertarget, wxString & description, wxString & sql);
+	wxArrayString GetDescription();
+};
+
+
+
+
+
+
 class QueriesPageGeneric : public wxWizardPageSimple {
 private:
     QueriesWizard * m_Parent;
 	wxListBox* m_ListGeneric;
+	QueriesPageGenericData * m_GenericData;
 	
 protected:
     void _CreateControls();
@@ -209,7 +236,7 @@ public:
 class QueriesPageName : public wxWizardPageSimple {
 private:
 	wxTextCtrl* m_TextName;
-
+	QueriesWizard * m_Parent;
 	
     void _CreateControls();
 	

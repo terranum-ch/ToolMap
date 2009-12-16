@@ -39,8 +39,10 @@ int QueriesWizard::ShowWizard() {
 QueriesWizard::QueriesWizard(wxWindow * parent, DataBaseTM * database, int id) :
 wxWizard(parent, id, _("Add query Wizard"), wxNullBitmap, wxDefaultPosition){
 	m_pDB = database;
-	//wxASSERT(m_pDB);
+	wxASSERT(m_pDB);
 	m_PageIntro = new QueriesPageIntro(this);
+	
+	m_QueryData = new QueriesData();
 	
 	GetPageAreaSizer()->Add(m_PageIntro);
 	wxSize mySize = GetPageAreaSizer()->CalcMin();
@@ -50,5 +52,6 @@ wxWizard(parent, id, _("Add query Wizard"), wxNullBitmap, wxDefaultPosition){
 
 
 QueriesWizard::~QueriesWizard() {
+	delete m_QueryData;
 	this->Destroy();
 }

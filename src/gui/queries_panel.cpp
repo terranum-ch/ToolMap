@@ -227,12 +227,13 @@ void Queries_PANEL::EnableQueriesPanel (bool projectopen)
  *******************************************************************************/
 void Queries_PANEL::OnAddQueries (wxCommandEvent & event)
 {
-	//if (m_IsProjectOpen){
-		QueriesWizard myWizard (m_ParentEvt, m_pDB, wxID_ANY);
-		myWizard.ShowWizard();
-	//}
+	if (m_IsProjectOpen){
+		m_QueriesList->AddItem();
+		//QueriesWizard myWizard (m_ParentEvt, m_pDB, wxID_ANY);
+		//myWizard.ShowWizard();
+	}
 		
-		//m_QueriesList->AddItem();
+		//
 }
 
 
@@ -314,6 +315,22 @@ QueriesList::~QueriesList()
 
 
 
+void QueriesList::AddItem()
+{	
+	BeforeAdding();
+	wxASSERT(m_pDialog);
+	if (((QueriesWizard*) m_pDialog)->ShowWizard()==wxID_OK)
+	{
+		AfterAdding(TRUE);
+	}
+	else
+		AfterAdding(FALSE);
+	
+	
+}
+
+
+
 /***************************************************************************//**
  @brief Called by AddItem just before dispalying the dialog
  @author Lucien Schreiber (c) CREALP 2008
@@ -321,8 +338,8 @@ QueriesList::~QueriesList()
  *******************************************************************************/
 void QueriesList::BeforeAdding()
 {
-	QueriesListDLG * myQueriesDlg = new QueriesListDLG (this);
-	SetDialog(myQueriesDlg);
+	QueriesWizard * myQueriesWzd = new QueriesWizard(this, m_pDB, wxID_ANY);
+	SetDialog(myQueriesWzd);
 														
 }
 
@@ -334,13 +351,14 @@ void QueriesList::BeforeAdding()
  *******************************************************************************/
 void QueriesList::AfterAdding (bool bRealyAddItem)
 {
-	wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
-	wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
-	int myQTarget = ((QueriesListDLG*)m_pDialog)->GetQueriesTarget();
-	long myID = -1;
+	//wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
+	//wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
+	//int myQTarget = ((QueriesListDLG*)m_pDialog)->GetQueriesTarget();
+	//long myID = -1;
 	
 	if (bRealyAddItem)
 	{
+		/*
 		// try to add the query into database
 		if (m_pDB->EditQueries(myQTarget, myName, myQuery, -1))
 		{
@@ -353,7 +371,7 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 				// set the queries id to the item_data
 				SetItemData(GetItemCount()-1, myID);
 			}
-		}
+		}*/
 	}
 	
 	delete m_pDialog;

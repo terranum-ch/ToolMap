@@ -75,6 +75,7 @@ public:
 		m_DataGeneric = new QueriesData();
 		m_DataGeneric->m_QueryType = QUERY_GENERIC;
 		m_DataGeneric->m_QueryName = _T("Test generic");
+		m_DataGeneric->m_QueryLayerType = TOC_NAME_LINES;
 		// query for selecting all lines wo attribution.
 		m_DataGeneric->m_QuerySQL = _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE l.OBJECT_ID NOT IN (SELECT generic_aat.OBJECT_GEOM_ID FROM generic_aat)"); // Faille
 		
@@ -149,7 +150,14 @@ public:
 	{
 		QueriesBuilder myBuilder(m_DataGeneric);
 		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving queries into database"));
 		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
 	}
 	
 		
