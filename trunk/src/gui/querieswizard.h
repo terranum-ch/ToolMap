@@ -31,42 +31,24 @@
 #include "../gis/tmlayerpropertiesdef.h"
 #include "../core/projectdefmemory.h"
 #include "../database/database_tm.h"
+#include "../core/queriesdata.h"
 
 
 class QueriesPageIntro;
 class QueriesPageLayer;
 
 
-enum tmQUERIES_TYPE {
-	QUERY_LAYERS = 0,
-	QUERY_SELECTED,
-	QUERY_GENERIC,
-	QUERY_SQL	
-};
-
 
 
 class QueriesWizard : public wxWizard {
 private:
     
-    //Used by all panels
-    wxString m_QueryName;
-    //Used by all panels
-    wxString m_QuerySQL;
-    //Layers Based panel only
-    long m_QueryLayerID;
-    //Expert panel only
-    TOC_GENERIC_NAME m_QueryLayerType;
-    long m_QueryObjectID;
-    
-    PrjMemLayersArray m_QueryFieldsLayers;
-    wxArrayString m_QueryFieldsValues;
+	QueriesData * m_QueryData;
 	DataBaseTM * m_pDB;
 	
 	// Wizard's page
 	QueriesPageIntro * m_PageIntro;
 	
-	void _Init();
 	
 public:
 	//Used by first panel

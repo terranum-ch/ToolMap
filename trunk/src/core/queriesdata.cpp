@@ -1,6 +1,6 @@
 /***************************************************************************
-								querieswizard.cpp
-                    Main part of the new query system
+								queriesdata.h
+                   
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,40 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "querieswizard.h"
+#include "queriesdata.h"
 
-
-
-
-
-
-
-
-int QueriesWizard::ShowWizard() {
-	if (RunWizard(m_PageIntro)==true){
-		return wxOK;
-	}
-	else {
-		return wxCANCEL;
-	}
-
+QueriesData::QueriesData() {
+	m_QueryName = wxEmptyString;
+	m_QueryType = QUERY_LAYERS;
+	m_QuerySQL = wxEmptyString;
+	m_QueryLayerID = wxNOT_FOUND;
+	m_QueryLayerType = TOC_NAME_LINES;
+	m_QueryObjectID = wxNOT_FOUND;
+	m_QueryObjectGeomID = wxNOT_FOUND;
+	//m_QueryFieldsLayers
+	//m_QueryFieldsValues
 }
 
-
-
-QueriesWizard::QueriesWizard(wxWindow * parent, DataBaseTM * database, int id) :
-wxWizard(parent, id, _("Add query Wizard"), wxNullBitmap, wxDefaultPosition){
-	m_pDB = database;
-	//wxASSERT(m_pDB);
-	m_PageIntro = new QueriesPageIntro(this);
-	
-	GetPageAreaSizer()->Add(m_PageIntro);
-	wxSize mySize = GetPageAreaSizer()->CalcMin();
-	SetMinSize(mySize);
-	SetPageSize(mySize);
+QueriesData::~QueriesData() {
 }
 
-
-QueriesWizard::~QueriesWizard() {
-	this->Destroy();
-}

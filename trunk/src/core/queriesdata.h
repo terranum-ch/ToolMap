@@ -1,6 +1,6 @@
 /***************************************************************************
-								querieswizard.cpp
-                    Main part of the new query system
+								queriesdata.h
+                   
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,40 +15,52 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "querieswizard.h"
+#ifndef _QUERIESDATA_H
+#define _QUERIESDATA_H
 
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
+#endif
 
+#include "../database/database_tm.h"
 
+enum tmQUERIES_TYPE {
+  QUERY_LAYERS,
+  QUERY_SELECTED,
+  QUERY_GENERIC,
+  QUERY_SQL
 
+};
+struct QueriesData {
+  public:
+    tmQUERIES_TYPE m_QueryType;
 
+    //Used by all panels
+    wxString m_QueryName;
 
+    //Used by all panels
+    wxString m_QuerySQL;
 
+    //Layers Based panel only
+    long m_QueryLayerID;
 
-int QueriesWizard::ShowWizard() {
-	if (RunWizard(m_PageIntro)==true){
-		return wxOK;
-	}
-	else {
-		return wxCANCEL;
-	}
+    long m_QueryObjectID;
 
-}
+    long m_QueryObjectGeomID;
 
+    //wxArrayString m_QueryFieldsValues;
 
+    //PrjMemLayersArray m_QueryFieldsLayers;
 
-QueriesWizard::QueriesWizard(wxWindow * parent, DataBaseTM * database, int id) :
-wxWizard(parent, id, _("Add query Wizard"), wxNullBitmap, wxDefaultPosition){
-	m_pDB = database;
-	//wxASSERT(m_pDB);
-	m_PageIntro = new QueriesPageIntro(this);
-	
-	GetPageAreaSizer()->Add(m_PageIntro);
-	wxSize mySize = GetPageAreaSizer()->CalcMin();
-	SetMinSize(mySize);
-	SetPageSize(mySize);
-}
+    //Expert panel only
+    TOC_GENERIC_NAME m_QueryLayerType;
 
+    QueriesData();
 
-QueriesWizard::~QueriesWizard() {
-	this->Destroy();
-}
+    ~QueriesData();
+
+};
+#endif
