@@ -931,7 +931,6 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	unsigned int iNbSelectedItems = 0;
 	
 	iNbSelectedItems = GetSelections(selectedarray);
-	UnselectAll();
 	
 	// only one item actually, the first item from array
 	if(iNbSelectedItems == 0)
@@ -942,6 +941,12 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	
 	// not able to remove generic layers
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selectedarray.Item(0));
+	if (item == NULL)
+	{
+		wxLogError(_("Unable to remove the project. Select a layer"));
+		return;
+	}
+
 	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
 	{
 		wxLogMessage(_("Not allowed to remove generic layers from project"));
@@ -950,7 +955,7 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	
 	wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
 	evt.SetExtraLong(item->m_LayerID);
-	
+	UnselectAll();
 	// only delete the first selected layer 
 	if (RemoveLayer(selectedarray.Item(0), TRUE))
 	{
