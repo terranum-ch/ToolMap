@@ -26,14 +26,13 @@
 #endif
 
 #include <cxxtest/TestSuite.h>
-
+#include "test_param.h"
 #include "../../src/gis/tmpointorientattrib.h"
 
 class TEST_tmPointOrientAttrib : public CxxTest::TestSuite
 {
 public:
 	wxPoint myPt1, myPt90, myPt180, myPt270, myPt45, myPt235, myPtd0;
-	tmPointOrientAttrib myPtA;
 	DataBaseTM * m_DB;
 	
 	void setUp()
@@ -65,6 +64,7 @@ public:
 	
 	void testValid()
 	{
+		tmPointOrientAttrib myPtA;
 		TS_ASSERT(myPtA.IsValid()==false);
 		myPtA.SetStartPoint(myPt1);
 		TS_ASSERT(myPtA.IsValid()==false);
@@ -87,6 +87,7 @@ public:
 	
 	void testUpdateOrient()
 	{
+		tmPointOrientAttrib myPtA;
 		myPtA.Create(m_DB, 5);
 		myPtA.SetStartPoint(myPt1);
 		myPtA.SetEndPoint(myPt45);
@@ -99,6 +100,7 @@ public:
 	
 	void testUpdateOrient2()
 	{
+		tmPointOrientAttrib myPtA;
 		myPtA.Create(m_DB, 1);
 		myPtA.SetStartPoint(myPt1);
 		myPtA.SetEndPoint(myPt235);
