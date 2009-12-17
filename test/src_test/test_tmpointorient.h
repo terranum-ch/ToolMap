@@ -33,7 +33,6 @@ class TEST_tmPointOrient : public CxxTest::TestSuite
 {
 public:
 	wxPoint myPt1, myPt90, myPt180, myPt270, myPt45, myPt235, myPtd0, myPt315;
-	tmPointOrient myPtO;
 	
 	void setUp()
 	{
@@ -60,6 +59,7 @@ public:
 	
 	void testValid()
 	{
+		tmPointOrient myPtO;
 		TS_ASSERT(myPtO.IsValid()==false);
 		myPtO.SetStartPoint(myPt1);
 		TS_ASSERT(myPtO.IsValid()==false);
@@ -71,6 +71,7 @@ public:
 	
 	void testGetOrientInt()
 	{
+		tmPointOrient myPtO;
 		TS_ASSERT(myPtO.GetOrientationInt() == wxNOT_FOUND);
 		
 		myPtO.SetStartPoint(myPt1);
@@ -125,7 +126,7 @@ public:
 	
 	void testGetOrientDouble()
 	{
-		myPtO = tmPointOrient();
+		tmPointOrient myPtO;
 		double dOrient = 0.0;
 		dOrient = myPtO.GetOrientationDouble();
 		TS_ASSERT_EQUALS(dOrient , wxNOT_FOUND);

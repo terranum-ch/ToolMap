@@ -27,6 +27,7 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include "test_param.h"
 #include "../../src/components/tmupdate/tmupdate.h"
 
 class TEST_tmUpdate : public CxxTest::TestSuite
@@ -54,16 +55,36 @@ public:
 	void testConnection()
 	{
 		tmUpdate tm;
+		if(g_UseProxy == true)
+			tm.SetParameters(true, true, g_ProxyName);
+
+
 		TS_ASSERT(tm.GetErrorMessage() == 0);	
 		TS_ASSERT(tm.IsServerResponding()==true);
 		wxLogDebug(_T("Connection status : %d"), tm.GetErrorMessage());
 	}
 	
+	void testErrorProxy()
+	{
+		tmUpdate tm;
+		// wrong proxy
+		tm.SetParameters(true, true, _T("wrongproxy.vs.ch:8080"));
+		TS_ASSERT_EQUALS( tm.GetErrorMessage(),0);
+		TS_ASSERT(tm.IsServerResponding()==false);
+		// Error connecting proxy : CURLE_COULDNT_RESOLVE_PROXY (5)
+		// see error list here : http://curl.haxx.se/libcurl/c/libcurl-errors.html
+		TS_ASSERT_EQUALS( tm.GetErrorMessage(), 5);
+
+	}
+
 	
 	
 	void testCheckNewVersion()
 	{
 		tmUpdate tm;
+		if(g_UseProxy == true)
+			tm.SetParameters(true, true, g_ProxyName);
+
 		wxLogDebug(_T("Checking new version"));
 		wxString myVersionLabel;
 		TS_ASSERT(tm.IsNewVersionAvaillable());
@@ -73,6 +94,9 @@ public:
 	{
 		tmUpdate tm;
 		tm.SetActualVersion(222);
+		if(g_UseProxy == true)
+			tm.SetParameters(true, true, g_ProxyName);
+
 		TS_ASSERT(tm.IsNewVersionAvaillable() == true);
 		tm.SetActualVersion(29000);
 		TS_ASSERT(tm.IsNewVersionAvaillable() == false);
@@ -81,6 +105,9 @@ public:
 	void testGetNewVersionName()
 	{
 		tmUpdate tm;
+		if(g_UseProxy == true)
+			tm.SetParameters(true, true, g_ProxyName);
+
 		TS_ASSERT(tm.GetNewVersionName() == wxEmptyString);
 		TS_ASSERT(tm.IsNewVersionAvaillable()==true);
 		TS_ASSERT(tm.GetNewVersionName() == wxString::Format(_T("2.0.%d"), g_ToolMapInternetVersion));
@@ -93,9 +120,13 @@ public:
 	void testGetDownloadLinkAdress ()
 	{
 		tmUpdate tm;
+		if(g_UseProxy == true)
+			tm.SetParameters(true, true, g_ProxyName);
+
 		TS_ASSERT(tm.GetDownloadLink() == wxEmptyString);
 		TS_ASSERT(tm.IsNewVersionAvaillable()==true);
-		TS_ASSERT(tm.GetDownloadLink() == g_InternetVName);
+		wxString myDownloadName = tm.GetDownloadLink();
+		TS_ASSERT(myDownloadName == g_InternetVName);
 	}
 	
 	void testSettingParameters ()
