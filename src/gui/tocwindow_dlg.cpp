@@ -46,7 +46,7 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
 {    
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE | wxTR_MULTIPLE);
+    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE);// | wxTR_MULTIPLE);
     itemBoxSizer2->Add(m_TOCCtrl, 1, wxGROW|wxALL, 0);
 
 
