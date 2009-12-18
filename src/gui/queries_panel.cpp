@@ -351,27 +351,48 @@ void QueriesList::BeforeAdding()
  *******************************************************************************/
 void QueriesList::AfterAdding (bool bRealyAddItem)
 {
-	//wxString myName = ((QueriesListDLG*)m_pDialog)->GetQueriesName();
-	//wxString myQuery = ((QueriesListDLG*)m_pDialog)->GetQueriesDescription();
-	//int myQTarget = ((QueriesListDLG*)m_pDialog)->GetQueriesTarget();
-	//long myID = -1;
+	long myID = -1;
 	
-	if (bRealyAddItem)
+	QueriesWizard * pWizard = (QueriesWizard*) m_pDialog;
+	wxASSERT(pWizard);
+	QueriesBuilder myBuilder(pWizard->GetData());
+	
+		if (bRealyAddItem)
 	{
-		/*
-		// try to add the query into database
-		if (m_pDB->EditQueries(myQTarget, myName, myQuery, -1))
-		{
-			myID = m_pDB->DataBaseGetLastInsertedID();
-			if (myID != wxNOT_FOUND)
-			{
-				// add the item to the list
-				AddItemToList(myName, -1);
-				
-				// set the queries id to the item_data
-				SetItemData(GetItemCount()-1, myID);
-			}
-		}*/
+		
+		// Validate the query data
+		if (myBuilder.IsOk()==false) {
+			wxMessageBox(_("Error with the query. Please see Log for more informations"),
+						 _("Query error"), wxOK | wxICON_ERROR);
+			delete m_pDialog;
+			return;
+		}
+		
+		// try creating the query
+		wxASSERT(m_pDB);
+		if (myBuilder.Create(m_pDB)==false){
+			wxMessageBox(_("Error creating the query. Please see Log for more informations"),
+						 _("Query error"), wxOK | wxICON_ERROR);
+			delete m_pDialog;
+			return;
+		}
+		
+		// try saving the query
+		if (myBuilder.Save(m_pDB)==false) {
+			wxMessageBox(_("Error saving the query. Please see Log for more informations"),
+						 _("Query error"), wxOK | wxICON_ERROR);
+			delete m_pDialog;
+			return;
+			
+		}
+	
+	
+		// add query to the list.
+		myID = m_pDB->DataBaseGetLastInsertedID();
+		if (myID != wxNOT_FOUND) {
+			AddItemToList(pWizard->GetData()->m_QueryName, -1);
+			SetItemData(GetItemCount()-1, myID);
+		}
 	}
 	
 	delete m_pDialog;

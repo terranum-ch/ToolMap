@@ -35,6 +35,13 @@ enum tmQUERIES_TYPE {
 
 };
 struct QueriesData {
+private:
+    bool _IsQueryLayersCorrect();
+    bool _IsQuerySelectedCorrect();
+    bool _IsQueryGenericCorrect();
+    bool _IsQuerySQLCorrect();
+	
+	
   public:
     tmQUERIES_TYPE m_QueryType;
 
@@ -61,6 +68,8 @@ struct QueriesData {
     QueriesData();
 
     ~QueriesData();
+	
+	bool IsOk();
 
 };
 #endif

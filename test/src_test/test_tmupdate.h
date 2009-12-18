@@ -82,6 +82,7 @@ public:
 	void testCheckNewVersion()
 	{
 		tmUpdate tm;
+		tm.SetParameters();
 		if(g_UseProxy == true)
 			tm.SetParameters(true, true, g_ProxyName);
 

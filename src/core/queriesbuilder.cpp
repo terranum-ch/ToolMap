@@ -28,89 +28,6 @@ bool QueriesBuilder::_IsQueryNull() {
 
 
 
-bool QueriesBuilder::_IsQueryLayersCorrect() {
-	wxASSERT(m_QueryData->m_QueryType == QUERY_LAYERS);
-	
-	if (m_QueryData->m_QueryName.IsEmpty()) {
-		wxLogError(_T("No name specified for the query"));
-		return false;
-	}
-	
-	if (m_QueryData->m_QueryLayerID == wxNOT_FOUND) {
-		wxLogError(_T("No layer ID specified for the query"));
-		return false;
-	}
-			
-	return true;
-}
-
-bool QueriesBuilder::_IsQuerySelectedCorrect() {
-	wxASSERT(m_QueryData->m_QueryType == QUERY_SELECTED);
-	
-	if (m_QueryData->m_QueryName.IsEmpty()) {
-		wxLogError(_T("No name specified for the query"));
-		return false;
-	}
-	
-	if (m_QueryData->m_QueryObjectID == wxNOT_FOUND) {
-		wxLogError(_T("No object ID specified for the query"));
-		return false;
-	}
-	
-	if (m_QueryData->m_QueryObjectGeomID == wxNOT_FOUND) {
-		wxLogError(_T("No object geometry ID specified for the query"));
-		return false;
-	}
-	
-	return true;
-}
-
-bool QueriesBuilder::_IsQueryGenericCorrect() {
-	wxASSERT(m_QueryData->m_QueryType == QUERY_GENERIC);
-	
-	if (m_QueryData->m_QueryName.IsEmpty()) {
-		wxLogError(_T("No name specified for the query"));
-		return false;
-	}
-	
-	if (m_QueryData->m_QueryLayerType > TOC_NAME_NOT_GENERIC || 
-		m_QueryData->m_QueryLayerType < TOC_NAME_LINES) {
-		wxLogError(_T("Wrong layer target selected."));
-		return false;
-	}
-	
-	if (m_QueryData->m_QuerySQL.IsEmpty()) {
-		wxLogError(_T("No SQL code specified for the query"));
-		return false;
-	}
-	
-	return true;
-}
-
-bool QueriesBuilder::_IsQuerySQLCorrect() {
-	wxASSERT(m_QueryData->m_QueryType == QUERY_SQL);
-	
-	if (m_QueryData->m_QueryName.IsEmpty()) {
-		wxLogError(_T("No name specified for the query"));
-		return false;
-	}
-	
-	if (m_QueryData->m_QueryLayerType > TOC_NAME_NOT_GENERIC || 
-		m_QueryData->m_QueryLayerType < TOC_NAME_LINES) {
-		wxLogError(_T("Wrong layer target selected."));
-		return false;
-	}
-	
-	if (m_QueryData->m_QuerySQL.IsEmpty()) {
-		wxLogError(_T("No SQL code specified for the query"));
-		return false;
-	}
-	
-	
-	return true;
-}
-
-
 bool QueriesBuilder::_IsCreated() {
 	if (m_IsCreated == false){
 		wxLogError(_T("Query not created, call Create() first"));
@@ -134,28 +51,7 @@ bool QueriesBuilder::IsOk() {
 	if (_IsQueryNull())
 		return false;
 	
-	switch (m_QueryData->m_QueryType) {
-		case QUERY_LAYERS:
-			return _IsQueryLayersCorrect();
-			break;
-			
-		case QUERY_SELECTED:
-			return _IsQuerySelectedCorrect();
-			break;
-			
-		case QUERY_GENERIC:
-			return _IsQueryGenericCorrect();
-			break;
-			
-		case QUERY_SQL:
-			return _IsQuerySQLCorrect();
-			break;
-				
-		default:
-			wxLogError(_T("Query Type not supported !"));
-			break;
-	}
-	return false;
+	return m_QueryData->IsOk();
 }
 
 

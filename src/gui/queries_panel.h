@@ -28,6 +28,7 @@
 #include "../database/database_tm.h"	// for database support
 #include "queries_panel_dlg.h"			// for the queries edition dialog
 #include "../gis/tmmanagerevent.h"		// for manager event
+#include "../core/queriesbuilder.h"		// for query builder
 
 
 

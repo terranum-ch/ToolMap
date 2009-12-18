@@ -128,7 +128,7 @@ void QueriesPageIntro::CreateControls() {
 
 
 bool QueriesPageIntro::TransferDataToWindow() {
-	//m_radiobtn->SetSelection(m_Parent->m_QueryType);
+	m_radiobtn->SetSelection(m_Parent->GetData()->m_QueryType);
 	
 	//if (m_Parent->m_QueryObjectGeomID == wxNOT_FOUND){
 	//	m_radiobtn->Enable(QUERY_SELECTED, false);
@@ -139,7 +139,8 @@ bool QueriesPageIntro::TransferDataToWindow() {
 
 
 bool QueriesPageIntro::TransferDataFromWindow() {
-	//m_Parent->m_QueryType = (tmQUERIES_TYPE) m_radiobtn->GetSelection();
+	m_Parent->GetData()->m_QueryType = 
+	(tmQUERIES_TYPE) m_radiobtn->GetSelection();
 	return true;
 }
 
@@ -311,7 +312,7 @@ QueriesPageGenericData::~QueriesPageGenericData() {
 void QueriesPageGenericData::GetData(int index, int & layertarget, wxString & description, wxString & sql) {
 	layertarget = m_TargetLayer.Item(index);
 	description = m_Description.Item(index);
-	sql = m_Description.Item(index);
+	sql = m_SQL.Item(index);
 }
 
 wxArrayString QueriesPageGenericData::GetDescription(){
@@ -349,9 +350,15 @@ QueriesPageGeneric::~QueriesPageGeneric() {
 
 bool QueriesPageGeneric::TransferDataToWindow() {
 	m_GenericData = new QueriesPageGenericData();
-	m_ListGeneric->Clear();
-	m_ListGeneric->Append(m_GenericData->GetDescription());
-	m_ListGeneric->SetSelection(0);
+	
+	
+	if (m_ListGeneric->IsEmpty()){
+		m_ListGeneric->Append(m_GenericData->GetDescription());
+	}
+	
+	if (m_ListGeneric->GetSelection() == wxNOT_FOUND ) {
+		m_ListGeneric->SetSelection(0);
+	}
 	m_ListGeneric->SetFocus();
 	
 	return true;

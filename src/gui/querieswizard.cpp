@@ -26,10 +26,10 @@
 
 int QueriesWizard::ShowWizard() {
 	if (RunWizard(m_PageIntro)==true){
-		return wxOK;
+		return wxID_OK;
 	}
 	else {
-		return wxCANCEL;
+		return wxID_CANCEL;
 	}
 
 }
