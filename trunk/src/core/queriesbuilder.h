@@ -35,13 +35,8 @@ class QueriesBuilder {
     QueriesData * m_QueryData;
 	bool m_IsCreated;
 	
-    bool _IsQueryNull();
-    bool _IsQueryLayersCorrect();
-    bool _IsQuerySelectedCorrect();
-    bool _IsQueryGenericCorrect();
-    bool _IsQuerySQLCorrect();
-	
-	bool _IsCreated();
+	bool _IsQueryNull();
+  	bool _IsCreated();
 
 
   public:

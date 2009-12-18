@@ -17,6 +17,91 @@
 
 #include "queriesdata.h"
 
+
+bool QueriesData::_IsQueryLayersCorrect() {
+	wxASSERT(m_QueryType == QUERY_LAYERS);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryLayerID == wxNOT_FOUND) {
+		wxLogError(_T("No layer ID specified for the query"));
+		return false;
+	}
+	
+	return true;
+}
+
+bool QueriesData::_IsQuerySelectedCorrect() {
+	wxASSERT(m_QueryType == QUERY_SELECTED);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryObjectID == wxNOT_FOUND) {
+		wxLogError(_T("No object ID specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryObjectGeomID == wxNOT_FOUND) {
+		wxLogError(_T("No object geometry ID specified for the query"));
+		return false;
+	}
+	
+	return true;
+}
+
+bool QueriesData::_IsQueryGenericCorrect() {
+	wxASSERT(m_QueryType == QUERY_GENERIC);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryLayerType > TOC_NAME_NOT_GENERIC || 
+		m_QueryLayerType < TOC_NAME_LINES) {
+		wxLogError(_T("Wrong layer target selected."));
+		return false;
+	}
+	
+	if (m_QuerySQL.IsEmpty()) {
+		wxLogError(_T("No SQL code specified for the query"));
+		return false;
+	}
+	
+	return true;
+}
+
+bool QueriesData::_IsQuerySQLCorrect() {
+	wxASSERT(m_QueryType == QUERY_SQL);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryLayerType > TOC_NAME_NOT_GENERIC || 
+		m_QueryLayerType < TOC_NAME_LINES) {
+		wxLogError(_T("Wrong layer target selected."));
+		return false;
+	}
+	
+	if (m_QuerySQL.IsEmpty()) {
+		wxLogError(_T("No SQL code specified for the query"));
+		return false;
+	}
+	
+	
+	return true;
+}
+
+
+
 QueriesData::QueriesData() {
 	m_QueryName = wxEmptyString;
 	m_QueryType = QUERY_LAYERS;
@@ -32,3 +117,28 @@ QueriesData::QueriesData() {
 QueriesData::~QueriesData() {
 }
 
+
+bool QueriesData::IsOk() {
+	switch (m_QueryType) {
+		case QUERY_LAYERS:
+			return _IsQueryLayersCorrect();
+			break;
+			
+		case QUERY_SELECTED:
+			return _IsQuerySelectedCorrect();
+			break;
+			
+		case QUERY_GENERIC:
+			return _IsQueryGenericCorrect();
+			break;
+			
+		case QUERY_SQL:
+			return _IsQuerySQLCorrect();
+			break;
+			
+		default:
+			wxLogError(_T("Query Type not supported !"));
+			break;
+	}
+	return false;
+}
