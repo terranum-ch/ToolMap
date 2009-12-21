@@ -113,11 +113,13 @@ class QueriesPageSelection : public wxWizardPageSimple {
 private:
     QueriesWizard * m_Parent;
 	wxChoice * m_SelTypeList;
+	DataBaseTM * m_pDB;
+	
     void _CreateControls();
 	
 	
 public:
-    QueriesPageSelection(QueriesWizard * parent, wxWizardPage * prev, wxWizardPageSimple * next);
+     QueriesPageSelection(QueriesWizard * parent, DataBaseTM * database, wxWizardPage * prev, wxWizardPageSimple * next);
 	~QueriesPageSelection();
 	virtual bool TransferDataToWindow();
     virtual bool TransferDataFromWindow();

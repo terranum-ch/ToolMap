@@ -375,7 +375,7 @@ void ToolMapFrame::PostInit()
 	m_PManager->SetToolManager(m_ToolManager);
 	
 	
-	
+	m_QueriesPanel->SetSelectedData(m_LayerManager->GetSelectedDataMemory());
 		
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DataBaseGetVersion().c_str());

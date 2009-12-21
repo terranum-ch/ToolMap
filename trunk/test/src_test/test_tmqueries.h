@@ -69,7 +69,7 @@ public:
 		m_DataSelected->m_QueryType = QUERY_SELECTED;
 		m_DataSelected->m_QueryName = _T("Test selected");
 		m_DataSelected->m_QueryObjectID = 32; // Faille
-		m_DataSelected->m_QueryObjectGeomID = 79; // ligne attribuée à une faille
+		m_DataSelected->m_QueryObjectGeomID = 231; // ligne attribuée à une faille + Border of rocks
 		
 		// set up query for generic
 		m_DataGeneric = new QueriesData();
@@ -197,6 +197,38 @@ public:
 		for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
 			wxLogMessage(_T("%d Layers name : %s"),i,myLayers.Item(i).m_LayerName.c_str());
 		}
+	}
+	
+	void testListObjectValue()
+	{
+		PrjMemObjectsArray myTypes;
+		
+		// lignes n.231 (Faille et Border of Rocks_PLG)
+		TS_ASSERT(m_DataSelected->GetTypes(m_pDB, myTypes));
+		TS_ASSERT_EQUALS(myTypes.GetCount(),2);
+		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectName, _T("faille"));
+		
+	}
+	
+	void testIsGenericLayer()
+	{
+		wxLogMessage(_T("Testing genric layer"));
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 0)==false);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 1)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 2)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_POINTS);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 3)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LABELS);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 4)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_ANNOTATIONS);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 5)==false);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 31)==false);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
+		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 161)==false);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
 	}
 	
 		

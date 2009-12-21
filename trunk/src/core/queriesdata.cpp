@@ -144,6 +144,40 @@ bool QueriesData::IsOk() {
 }
 
 
+bool QueriesData::IsGenericLayer(DataBaseTM * database, long dblayerID) {
+	wxASSERT(database);
+	
+	m_QueryLayerType = TOC_NAME_LINES;
+	
+	wxString myPrepQuery = _T("SELECT GENERIC_LAYERS FROM %s WHERE CONTENT_ID=%d");
+	wxString myQuery = wxString::Format(myPrepQuery, 
+										TABLE_NAME_TOC.c_str(),
+										dblayerID);
+	if (database->DataBaseQuery(myQuery)==false) {
+		database->DataBaseClearResults();
+		return false;
+	}
+	
+	long iLayerType = TOC_NAME_LINES;
+	if (database->DataBaseGetNextResult(iLayerType)==false) {
+		database->DataBaseClearResults();
+		return false;
+	}
+	database->DataBaseClearResults();
+	m_QueryLayerType = (TOC_GENERIC_NAME) iLayerType;
+	
+	if (m_QueryLayerType < TOC_NAME_FRAME){
+		
+		return true;
+	}
+	
+	m_QueryLayerType = TOC_NAME_LINES;
+	return false;
+}
+
+
+
+
 bool QueriesData::GetLayers(DataBaseTM * database, PrjMemLayersArray & layers) {
 	wxASSERT(database);
 	wxASSERT(layers.GetCount() == 0);
@@ -173,6 +207,53 @@ bool QueriesData::GetLayers(DataBaseTM * database, PrjMemLayersArray & layers) {
 	}
 	
 	
+	return false;
+}
+
+
+bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
+	wxASSERT(database);
+	wxASSERT(types.GetCount() == 0);
+	
+	// get generic layer type
+	
+	
+	
+	// get object types
+	wxString myPrepQuery = _T("SELECT o.OBJECT_ID, o.OBJECT_DESC, l.LAYER_NAME FROM")
+	_T(" %s o LEFT JOIN (%s l, %s a)")
+	_T(" ON l.LAYER_INDEX = o.THEMATIC_LAYERS_LAYER_INDEX AND")
+	_T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %d");
+	wxString myQuery = wxString::Format(myPrepQuery,	
+										TABLE_NAME_OBJECTS.c_str(),
+										TABLE_NAME_LAYERS.c_str(),
+										TABLE_NAME_GIS_ATTRIBUTION[m_QueryLayerType].c_str(),
+										m_QueryObjectGeomID);
+	
+	if (database->DataBaseQuery(myQuery)==false){
+		return false;
+	}
+	
+	long myRow = 0;
+	if(database->DataBaseGetResultSize(NULL, &myRow)==false){
+		return false;
+	}
+	
+	for (int i = 0; i<myRow; i++){
+		ProjectDefMemoryObjects * myObj = new ProjectDefMemoryObjects();
+		if (database->DataBaseGetNextResultAsObject(myObj, -1)==false){
+			database->DataBaseClearResults();
+			delete myObj;
+			return false;
+		}
+		types.Add(myObj);
+	}
+	database->DataBaseClearResults();
+	
+	if (types.GetCount() > 0) {
+		return true;
+	}
+
 	return false;
 }
 

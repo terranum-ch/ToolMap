@@ -51,6 +51,7 @@ class QueriesList : public ListGenReportWithDialog
 	{
 	private:
 		DataBaseTM * m_pDB;
+		tmSelectedDataMemory * m_Selected;
 		
 		virtual void BeforeAdding();
 		virtual void AfterAdding (bool bRealyAddItem);
@@ -69,6 +70,7 @@ class QueriesList : public ListGenReportWithDialog
 		
 		// setter
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+		void SetSelected (tmSelectedDataMemory * selected) {m_Selected = selected;}
 		virtual void AddItem ();
 
 	};
@@ -89,6 +91,7 @@ private:
 	QueriesList* m_QueriesList;
 	wxWindow * m_ParentEvt;
 	bool m_IsProjectOpen;
+	
 	
 	/// Initialises member variables
     void InitMemberValues();
@@ -117,7 +120,8 @@ public:
 							 bool call_fit = true,
 							 bool set_sizer = true);
 	
-	void SetDataBase (DataBaseTM * database); 
+	void SetDataBase (DataBaseTM * database);
+	void SetSelectedData (tmSelectedDataMemory * selected);
 	
 	bool LoadQueries (DataBaseTM * database);
 	void EnableQueriesPanel (bool projectopen = true);

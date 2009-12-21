@@ -165,6 +165,14 @@ void Queries_PANEL::SetDataBase (DataBaseTM * database)
 
 
 
+void Queries_PANEL::SetSelectedData (tmSelectedDataMemory * selected)
+{
+	wxASSERT(selected);
+	m_QueriesList->SetSelected(selected);
+}
+
+
+
 /***************************************************************************//**
  @brief Load the queries from the database
  @details Don't need to callQueries_PANEL::SetDataBase(), call is done internaly
@@ -298,7 +306,8 @@ QueriesList::QueriesList (wxWindow * parent,
 						  wxSize size) :
 ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
-	
+	m_Selected = NULL;
+	m_pDB = NULL;
 }
 
 
@@ -339,6 +348,17 @@ void QueriesList::AddItem()
 void QueriesList::BeforeAdding()
 {
 	QueriesWizard * myQueriesWzd = new QueriesWizard(this, m_pDB, wxID_ANY);
+	wxASSERT(m_Selected);
+	if (m_Selected->GetCount() == 1){
+		if (myQueriesWzd->GetData()->IsGenericLayer(m_pDB, m_Selected->GetSelectedLayer())){
+			if (myQueriesWzd->GetData()->m_QueryLayerType == TOC_NAME_ANNOTATIONS){
+				wxLogError(_T("Annotations queries not supported now"));
+			}
+			else {
+				myQueriesWzd->GetData()->m_QueryObjectGeomID = m_Selected->GetSelectedUnique();
+			}
+		}
+	}
 	SetDialog(myQueriesWzd);
 														
 }
