@@ -39,10 +39,13 @@ bool QueriesBuilder::_IsCreated() {
 
 
 bool QueriesBuilder::_CreateLayersQuery() {
-	wxString myBaseQuery(_T("SELECT OBJECT_GEOM_ID FROM %s INNER JOIN %s ON OBJECT_VAL_ID = OBJECT_ID WHERE THEMATIC_LAYERS_LAYER_INDEX=%d"));
+	wxString myBaseQuery(_T("SELECT OBJECT_GEOM_ID FROM %s INNER JOIN %s ON")
+						 _T(" OBJECT_VAL_ID = OBJECT_ID WHERE THEMATIC_LAYERS_LAYER_INDEX=%d"));
 	wxString myAtribTable = TABLE_NAME_GIS_ATTRIBUTION[m_QueryData->m_QueryLayerType];
-	m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery, myAtribTable.c_str(), TABLE_NAME_OBJECTS.c_str(),
-										m_QueryData->m_QueryLayerID);
+	m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery, 
+											   myAtribTable.c_str(),
+											   TABLE_NAME_OBJECTS.c_str(),
+											   m_QueryData->m_QueryLayerID);
 	return true;
 }
 

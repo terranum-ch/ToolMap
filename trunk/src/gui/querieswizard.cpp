@@ -40,7 +40,7 @@ QueriesWizard::QueriesWizard(wxWindow * parent, DataBaseTM * database, int id) :
 wxWizard(parent, id, _("Add query Wizard"), wxNullBitmap, wxDefaultPosition){
 	m_pDB = database;
 	wxASSERT(m_pDB);
-	m_PageIntro = new QueriesPageIntro(this);
+	m_PageIntro = new QueriesPageIntro(this, m_pDB);
 	
 	m_QueryData = new QueriesData();
 	
