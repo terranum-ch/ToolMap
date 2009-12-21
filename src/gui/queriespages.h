@@ -26,6 +26,7 @@
 #endif
 
 #include "querieswizard.h"
+#include "../database/database_tm.h"
 
 class QueriesWizard;
 class QueriesPageLayer;
@@ -50,7 +51,8 @@ private:
 class QueriesPageIntro : public wxWizardPage {
 private:
     QueriesWizard * m_Parent;
-	wxRadioBox* m_radiobtn;
+	wxRadioBox* m_radiobtn; 
+	DataBaseTM * m_pDB;
 	
 	QueriesPageLayer * m_PageLayer;
 	QueriesPageName * m_PageName;
@@ -65,7 +67,7 @@ private:
 	void OnPageChanging(wxWizardEvent & event);
 	
 public:
-    QueriesPageIntro(QueriesWizard * parent);
+     QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database);
 	
     ~QueriesPageIntro();
 	
@@ -88,9 +90,12 @@ class QueriesPageLayer : public wxWizardPageSimple {
 private:
 	QueriesWizard * m_Parent;
 	wxListBox * m_ListLayers;
+	DataBaseTM * m_pDB;
+	
+	PrjMemLayersArray m_Layers;
 
 public:
-    QueriesPageLayer(QueriesWizard * parent, wxWizardPage * prev, wxWizardPage * next);
+     QueriesPageLayer(QueriesWizard * parent, DataBaseTM * database, wxWizardPage * prev, wxWizardPage * next);
 	
     ~QueriesPageLayer();
 	

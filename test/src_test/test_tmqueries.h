@@ -157,7 +157,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Generic queries n.%d from database"), myLastId);
 	}
 	
 	void testCreateSQL()
@@ -170,7 +170,33 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Expert queries n.%d from database"), myLastId);
+	}
+	
+	void testCreateLayers()
+	{
+		QueriesBuilder myBuilder(m_DataLayer);
+		TS_ASSERT(myBuilder.Create(m_pDB));
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting layers queries n.%d from database"), myLastId);
+		
+	}
+	
+	void testListLayers()
+	{
+		PrjMemLayersArray myLayers;
+		
+		TS_ASSERT(m_DataLayer->GetLayers(m_pDB, myLayers));
+		TS_ASSERT_EQUALS(myLayers.GetCount(),9);
+		
+		for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
+			wxLogMessage(_T("%d Layers name : %s"),i,myLayers.Item(i).m_LayerName.c_str());
+		}
 	}
 	
 		

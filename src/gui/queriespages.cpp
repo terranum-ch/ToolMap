@@ -20,15 +20,17 @@
 
 
 
-QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent) : wxWizardPage(parent) {
+QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database) : wxWizardPage(parent) {
+	wxASSERT(database);
 	m_Parent = parent;
+	m_pDB = database;
 	CreateControls();
 	
 	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, NULL, NULL);
 	m_PageExpertSQL = new QueriesPageSQL(m_Parent);
 	
 	m_PageName = new QueriesPageName(m_Parent, this, NULL);
-	m_PageLayer = new QueriesPageLayer(m_Parent, this,m_PageName);
+	m_PageLayer = new QueriesPageLayer(m_Parent,m_pDB, this,m_PageName);
 	m_PageGeneric = new QueriesPageGeneric(m_Parent,this,m_PageName);
 	m_PageSelection = new QueriesPageSelection(m_Parent,this,m_PageSelectionAttribut);
 	m_PageExpert = new QueriesPageExpert(m_Parent,this,m_PageExpertSQL);
@@ -150,10 +152,13 @@ bool QueriesPageIntro::TransferDataFromWindow() {
 
 
 QueriesPageLayer::QueriesPageLayer(QueriesWizard * parent, 
+								   DataBaseTM * database,
 								   wxWizardPage * prev,
 								   wxWizardPage * next) : 
 wxWizardPageSimple(parent, prev, next)
 {
+	wxASSERT(database);
+	m_pDB = database;
 	m_Parent = parent;
 	wxASSERT(next);
 	CreateControls();
@@ -167,12 +172,36 @@ QueriesPageLayer::~QueriesPageLayer() {
 
 
 bool QueriesPageLayer::TransferDataToWindow() {
+	
+	if (m_ListLayers->IsEmpty()) {
+		m_Layers.Clear();
+		if(m_Parent->GetData()->GetLayers(m_pDB, m_Layers)==true)
+		{
+			m_ListLayers->Freeze();
+			for (unsigned int i = 0; i<m_Layers.GetCount(); i++) {
+				m_ListLayers->Append(m_Layers.Item(i).m_LayerName);
+			}	
+			m_ListLayers->SetSelection(0);
+			m_ListLayers->Thaw();
+		}
+		else{
+			wxLogError(_T("Unable to get the layers list"));
+		}
+	}
+
+	m_ListLayers->SetFocus();
 	return true;
 }
 
 
 
 bool QueriesPageLayer::TransferDataFromWindow() {
+	int iNum = m_ListLayers->GetSelection();
+	if (m_Layers.GetCount() > 0) {
+		
+		m_Parent->GetData()->m_QueryLayerID =  m_Layers.Item(iNum).m_LayerID;
+		m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_Layers.Item(iNum).m_LayerType;
+	}
 	return true;
 }
 
@@ -429,6 +458,7 @@ bool QueriesPageExpert::TransferDataToWindow() {
 }
 
 bool QueriesPageExpert::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_LayerType->GetSelection();
 	return true;
 }
 
@@ -466,6 +496,7 @@ bool QueriesPageSQL::TransferDataToWindow() {
 }
 
 bool QueriesPageSQL::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QuerySQL = m_SQLText->GetValue();
 	return true;
 }
 

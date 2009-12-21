@@ -356,6 +356,8 @@ ProjectDefMemoryLayers::ProjectDefMemoryLayers()
 ProjectDefMemoryLayers::~ProjectDefMemoryLayers()
 {
 	/// todo implement way of clearing the array contained inside
+	delete m_pLayerFieldArray;
+	delete m_pLayerObjectArray;
 }
 
 
