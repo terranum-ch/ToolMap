@@ -160,6 +160,19 @@ public:
 		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
 	}
 	
+	void testCreateSQL()
+	{
+		QueriesBuilder myBuilder(m_DataSQL);
+		TS_ASSERT(myBuilder.Create(m_pDB));
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+	}
+	
 		
 };
 
