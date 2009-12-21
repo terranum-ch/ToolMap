@@ -28,6 +28,7 @@
 #include "../database/database_tm.h"
 #include "../core/projectdefmemory.h"
 
+
 enum tmQUERIES_TYPE {
   QUERY_LAYERS,
   QUERY_SELECTED,
@@ -71,8 +72,11 @@ private:
     ~QueriesData();
 	
 	bool IsOk();
+	bool IsGenericLayer(DataBaseTM * database, long dblayerID);
 	
 	bool GetLayers(DataBaseTM * database, PrjMemLayersArray & layers);
+	bool GetTypes(DataBaseTM * database, PrjMemObjectsArray & types);
+	
 
 };
 #endif

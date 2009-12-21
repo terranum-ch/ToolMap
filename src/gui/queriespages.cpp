@@ -32,7 +32,7 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database
 	m_PageName = new QueriesPageName(m_Parent, this, NULL);
 	m_PageLayer = new QueriesPageLayer(m_Parent,m_pDB, this,m_PageName);
 	m_PageGeneric = new QueriesPageGeneric(m_Parent,this,m_PageName);
-	m_PageSelection = new QueriesPageSelection(m_Parent,this,m_PageSelectionAttribut);
+	m_PageSelection = new QueriesPageSelection(m_Parent, m_pDB, this, m_PageSelectionAttribut);
 	m_PageExpert = new QueriesPageExpert(m_Parent,this,m_PageExpertSQL);
 	
 }
@@ -132,9 +132,9 @@ void QueriesPageIntro::CreateControls() {
 bool QueriesPageIntro::TransferDataToWindow() {
 	m_radiobtn->SetSelection(m_Parent->GetData()->m_QueryType);
 	
-	//if (m_Parent->m_QueryObjectGeomID == wxNOT_FOUND){
-	//	m_radiobtn->Enable(QUERY_SELECTED, false);
-	//}
+	if (m_Parent->GetData()->m_QueryObjectGeomID == wxNOT_FOUND){
+		m_radiobtn->Enable(QUERY_SELECTED, false);
+	}
 	return true;
 }
 
@@ -250,11 +250,15 @@ void QueriesPageSelection::_CreateControls() {
 
 
 
-QueriesPageSelection::QueriesPageSelection(QueriesWizard * parent, wxWizardPage * prev,
+QueriesPageSelection::QueriesPageSelection(QueriesWizard * parent,
+										   DataBaseTM * database,
+										   wxWizardPage * prev,
 										   wxWizardPageSimple * next) :
 wxWizardPageSimple(parent,prev,next){
+	wxASSERT(database);
 	_CreateControls();
 	m_Parent = parent;
+	m_pDB = database;
 }
 
 
@@ -265,6 +269,18 @@ QueriesPageSelection::~QueriesPageSelection() {
 
 
 bool QueriesPageSelection::TransferDataToWindow() {
+	PrjMemObjectsArray myTypes;
+	if (m_SelTypeList->IsEmpty()) {
+		if(m_Parent->GetData()->GetTypes(m_pDB, myTypes)){
+			m_SelTypeList->Freeze();
+			for (unsigned int i = 0; i< myTypes.GetCount(); i++) {
+				m_SelTypeList->Append(myTypes.Item(i).m_ObjectName);
+			}
+			m_SelTypeList->SetSelection(0);
+			m_SelTypeList->Thaw();
+		}
+	}
+	m_SelTypeList->SetFocus();
 	return true;
 }
 
