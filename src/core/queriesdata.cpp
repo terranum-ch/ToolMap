@@ -218,7 +218,7 @@ bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
 	
 	
 	// get object types
-	wxString myPrepQuery = _T("SELECT o.OBJECT_ID, o.OBJECT_DESC, l.LAYER_NAME FROM")
+	wxString myPrepQuery = _T("SELECT o.OBJECT_TYPE_CD, o.OBJECT_DESC, l.LAYER_NAME, o.OBJECT_ID FROM")
 	_T(" %s o LEFT JOIN (%s l, %s a)")
 	_T(" ON l.LAYER_INDEX = o.THEMATIC_LAYERS_LAYER_INDEX AND")
 	_T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %d");
