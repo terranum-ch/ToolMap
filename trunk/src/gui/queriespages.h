@@ -114,6 +114,7 @@ private:
     QueriesWizard * m_Parent;
 	wxChoice * m_SelTypeList;
 	DataBaseTM * m_pDB;
+	PrjMemObjectsArray m_Types;
 	
     void _CreateControls();
 	
@@ -133,10 +134,14 @@ private:
     void _CreateControls();
 	QueriesWizard * m_Parent;
 	
+	
 	wxCheckBox * m_CheckAdvAttrib;
 	wxStaticBoxSizer* m_AdvSizer;
 	wxStaticText* m_AdvText;
 	wxListBox* m_AdvAttributs;
+	wxFlatButton * m_ReloadButton;
+	
+	void OnReloadAttributs(wxCommandEvent & event );
 	
 	
 public:

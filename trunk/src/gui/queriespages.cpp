@@ -259,6 +259,7 @@ wxWizardPageSimple(parent,prev,next){
 	_CreateControls();
 	m_Parent = parent;
 	m_pDB = database;
+	
 }
 
 
@@ -269,12 +270,12 @@ QueriesPageSelection::~QueriesPageSelection() {
 
 
 bool QueriesPageSelection::TransferDataToWindow() {
-	PrjMemObjectsArray myTypes;
+	
 	if (m_SelTypeList->IsEmpty()) {
-		if(m_Parent->GetData()->GetTypes(m_pDB, myTypes)){
+		if(m_Parent->GetData()->GetTypes(m_pDB, m_Types)){
 			m_SelTypeList->Freeze();
-			for (unsigned int i = 0; i< myTypes.GetCount(); i++) {
-				m_SelTypeList->Append(myTypes.Item(i).m_ObjectName);
+			for (unsigned int i = 0; i< m_Types.GetCount(); i++) {
+				m_SelTypeList->Append(m_Types.Item(i).m_ObjectName);
 			}
 			m_SelTypeList->SetSelection(0);
 			m_SelTypeList->Thaw();
@@ -287,6 +288,14 @@ bool QueriesPageSelection::TransferDataToWindow() {
 
 
 bool QueriesPageSelection::TransferDataFromWindow() {
+	unsigned int mySel = m_SelTypeList->GetSelection();
+	
+	if (m_Types.GetCount() > 0) {
+		wxASSERT(mySel < m_Types.GetCount());
+		
+		m_Parent->GetData()->m_QueryObjectID = m_Types.Item(mySel).m_ObjectID;
+	}
+	
 	return true;
 }
 
@@ -297,33 +306,56 @@ void QueriesPageAttribut::_CreateControls() {
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 	
-	m_CheckAdvAttrib = new wxCheckBox( this, wxID_ANY, wxT("Use advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_CheckAdvAttrib = new wxCheckBox( this, wxID_ANY, _("Use advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
 	
 	bSizer12->Add( m_CheckAdvAttrib, 0, wxALL, 5 );
 	
-	m_AdvSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Advanced attributs") ), wxVERTICAL );
+	m_AdvSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Advanced attributs") ), wxVERTICAL );
 	
-	m_AdvText = new wxStaticText( this, wxID_ANY, wxT("Delete any unneeded attribute"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_AdvText = new wxStaticText( this, wxID_ANY, _("Delete any unneeded attribute"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_AdvText->Wrap( -1 );
 	m_AdvSizer->Add( m_AdvText, 0, wxALL, 5 );
 	
 	m_AdvAttributs = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
 	m_AdvSizer->Add( m_AdvAttributs, 1, wxALL|wxEXPAND, 5 );
 	
+	m_ReloadButton = new wxFlatButton( this, wxID_ANY, _("Reload attributs"), wxDefaultSize );
+	m_AdvSizer->Add( m_ReloadButton, 0, wxALL|wxALIGN_RIGHT, 5 );
+	
 	bSizer12->Add( m_AdvSizer, 1, wxEXPAND|wxALL, 5 );
 	
 	this->SetSizer( bSizer12 );
 	bSizer12->Fit(this);
+		
 }
+
+
+
+void QueriesPageAttribut::OnReloadAttributs(wxCommandEvent & event ){
+	wxLogError(_T("Reload message sent"));
+	event.Skip();
+}
+
+
 
 QueriesPageAttribut::QueriesPageAttribut(QueriesWizard * parent, wxWizardPageSimple * prev,
 										 wxWizardPageSimple * next) :
 wxWizardPageSimple(parent, prev, next){
 	m_Parent = parent;
 	_CreateControls();
+	
+	// Connect Events
+	m_ReloadButton->Connect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+							wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs ),
+							NULL, this );
+
 }
 
 QueriesPageAttribut::~QueriesPageAttribut() {
+	// Disconnect Events
+	m_ReloadButton->Disconnect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+							   wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs),
+							   NULL, this );
 }
 
 bool QueriesPageAttribut::TransferDataToWindow() {
