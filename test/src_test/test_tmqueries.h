@@ -70,6 +70,7 @@ public:
 		m_DataSelected->m_QueryName = _T("Test selected");
 		m_DataSelected->m_QueryObjectID = 32; // Faille
 		m_DataSelected->m_QueryObjectGeomID = 231; // ligne attribuée à une faille + Border of rocks
+		m_DataSelected->m_QueryLayerType = TOC_NAME_LINES;
 		
 		// set up query for generic
 		m_DataGeneric = new QueriesData();
@@ -207,12 +208,12 @@ public:
 		TS_ASSERT(m_DataSelected->GetTypes(m_pDB, myTypes));
 		TS_ASSERT_EQUALS(myTypes.GetCount(),2);
 		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectName, _T("faille"));
+		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectID, 32);
 		
 	}
 	
 	void testIsGenericLayer()
 	{
-		wxLogMessage(_T("Testing genric layer"));
 		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 0)==false);
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
 		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 1)==true);
@@ -229,6 +230,22 @@ public:
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
 		TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 161)==false);
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
+	}
+	
+	void testCreateSelectedNoAttribs(){
+		wxLogMessage(_T("Testing selected layer"));
+		
+		
+		QueriesBuilder myBuilder(m_DataSelected);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
 	}
 	
 		

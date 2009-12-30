@@ -215,8 +215,6 @@ bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
 	wxASSERT(database);
 	wxASSERT(types.GetCount() == 0);
 	
-	// get generic layer type
-	
 	
 	
 	// get object types
