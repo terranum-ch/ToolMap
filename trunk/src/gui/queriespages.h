@@ -142,6 +142,7 @@ private:
 	wxFlatButton * m_ReloadButton;
 	
 	void OnReloadAttributs(wxCommandEvent & event );
+	void OnUseAdvancedAttributs(wxCommandEvent& event);
 	
 	
 public:
