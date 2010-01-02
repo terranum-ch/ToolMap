@@ -1,5 +1,5 @@
 /***************************************************************************
-								queriesdata.h
+								queriesdata.cpp
                    
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
@@ -110,8 +110,9 @@ QueriesData::QueriesData() {
 	m_QueryLayerType = TOC_NAME_LINES;
 	m_QueryObjectID = wxNOT_FOUND;
 	m_QueryObjectGeomID = wxNOT_FOUND;
-	//m_QueryFieldsLayers
-	//m_QueryFieldsValues
+	m_QueryFields.Clear();
+	m_QueryFieldsValues.Clear();
+	m_QueryUseFields = true;
 }
 
 QueriesData::~QueriesData() {
@@ -252,6 +253,33 @@ bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
 	}
 
 	return false;
+}
+
+
+bool QueriesData::GetParentLayer(DataBaseTM * database, long & layerid){
+	layerid = wxNOT_FOUND;
+	
+	if (m_QueryObjectID == wxNOT_FOUND) {
+		wxLogError(_("No object specified"));
+		return false;
+	}
+	
+	wxString myPreparedQuery(_T("SELECT THEMATIC_LAYERS_LAYER_INDEX FROM %s WHERE OBJECT_ID = %d"));
+	wxString mySentence = wxString::Format(myPreparedQuery, 
+										   TABLE_NAME_OBJECTS.c_str(),
+										   m_QueryObjectID);
+	if (database->DataBaseQuery(mySentence)==false) {
+		wxLogError(_("Error getting parent layer for object : %d"), m_QueryObjectID);
+		return false;
+	}
+	
+	bool bReturn = true;
+	if (database->DataBaseGetNextResult(layerid)==false) {
+		wxLogError(_("Error getting results for object : %d"), m_QueryObjectID);
+		bReturn = false;
+	}
+	database->DataBaseClearResults();
+	return bReturn;
 }
 
 

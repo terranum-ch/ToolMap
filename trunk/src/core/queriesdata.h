@@ -61,9 +61,10 @@ private:
 
     long m_QueryObjectGeomID;
 
-    //wxArrayString m_QueryFieldsValues;
-
-    //PrjMemLayersArray m_QueryFieldsLayers;
+    
+	bool m_QueryUseFields;
+    PrjMemFieldArray m_QueryFields;
+	wxArrayString m_QueryFieldsValues;
 
     //Expert panel only
     TOC_GENERIC_NAME m_QueryLayerType;
@@ -77,6 +78,7 @@ private:
 	
 	bool GetLayers(DataBaseTM * database, PrjMemLayersArray & layers);
 	bool GetTypes(DataBaseTM * database, PrjMemObjectsArray & types);
+	bool GetParentLayer(DataBaseTM * database, long & layerid);
 	bool GetFieldsValues(DataBaseTM * database, long layerid,
 						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);
 
