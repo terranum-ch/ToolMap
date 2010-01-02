@@ -167,7 +167,6 @@ bool QueriesData::IsGenericLayer(DataBaseTM * database, long dblayerID) {
 	m_QueryLayerType = (TOC_GENERIC_NAME) iLayerType;
 	
 	if (m_QueryLayerType < TOC_NAME_FRAME){
-		
 		return true;
 	}
 	
@@ -253,5 +252,74 @@ bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
 	}
 
 	return false;
+}
+
+
+
+bool QueriesData::GetFieldsValues(DataBaseTM * database,
+								  long layerid,
+								  PrjMemFieldArray & fieldsdef,
+								  wxArrayString & fieldsvalue) {
+	wxASSERT(database);
+	wxASSERT(layerid > 0);
+	fieldsdef.Clear();
+	fieldsvalue.Clear();
+	
+	
+	ProjectDefMemoryLayers * myTempLayer = new ProjectDefMemoryLayers();
+	myTempLayer->m_LayerID = layerid;
+	
+	
+	// get fields for specified layer;
+	if (database->GetFields(fieldsdef, myTempLayer)==false) {
+		wxLogError(_("Error getting fields for layer %d"), layerid);
+		return false;
+	}
+	
+	if (fieldsdef.GetCount() == 0) {
+		wxLogError(_("No fields availlable for layer %d"), layerid);
+		return false;
+	}
+	
+	wxASSERT(fieldsdef.GetCount() > 0);
+	
+	// copy fields to temp layer
+	for (unsigned int i = 0; i< fieldsdef.GetCount(); i++) {
+		myTempLayer->m_pLayerFieldArray->Add(new ProjectDefMemoryFields());
+		myTempLayer->m_pLayerFieldArray->Item(i) = fieldsdef.Item(i);
+	}
+	
+	
+	
+	// get values
+	wxArrayLong mySelectedId;
+	mySelectedId.Add(m_QueryObjectGeomID);
+	tmAttributionData * myAttribObj = tmAttributionManager::CreateAttributionData(m_QueryLayerType);
+	if (myAttribObj == NULL) {
+		wxLogError(_T("Unable to create attribution object"));
+		return false;
+	}
+	
+	
+	
+	myAttribObj->Create(&mySelectedId, database);
+	bool bReturn = true;
+	if(myAttribObj->GetAdvancedAttribution(myTempLayer, 
+										fieldsvalue,
+										   m_QueryObjectGeomID)==false){
+		wxLogError(_("Error getting attribution values"));
+		bReturn = false;
+	}
+	else {
+		wxASSERT(fieldsvalue.GetCount() == fieldsdef.GetCount());
+	}
+
+	
+	// cleaning
+	if (myAttribObj) {
+		delete myAttribObj;
+	}
+	
+	return bReturn;
 }
 

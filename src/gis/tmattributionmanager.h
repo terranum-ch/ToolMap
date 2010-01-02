@@ -95,8 +95,7 @@ class tmAttributionManager : public wxEvtHandler
 		// query function
 		void OnRunQuery (wxCommandEvent & event);
 		
-		// Attribution data creation
-		tmAttributionData * CreateAttributionData (int type);
+
 		
 		// copy attribution function
 		void OnCopyAttribution (wxCommandEvent & event);
@@ -135,6 +134,9 @@ class tmAttributionManager : public wxEvtHandler
 		void DisplayInformationsWnd();
 		bool UpdateInfoMetadata();
 		
+		
+		// Attribution data creation
+		static tmAttributionData * CreateAttributionData (int type);
 		// orientedpoints
 		//void OrientedPointEdit();
 		//void OrientedPointDraw();

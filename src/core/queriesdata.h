@@ -27,6 +27,7 @@
 
 #include "../database/database_tm.h"
 #include "../core/projectdefmemory.h"
+#include "../gis/tmattributionmanager.h"
 
 
 enum tmQUERIES_TYPE {
@@ -76,7 +77,8 @@ private:
 	
 	bool GetLayers(DataBaseTM * database, PrjMemLayersArray & layers);
 	bool GetTypes(DataBaseTM * database, PrjMemObjectsArray & types);
-	
+	bool GetFieldsValues(DataBaseTM * database, long layerid,
+						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);
 
 };
 #endif

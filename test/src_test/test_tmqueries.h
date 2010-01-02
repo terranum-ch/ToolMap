@@ -233,9 +233,6 @@ public:
 	}
 	
 	void testCreateSelectedNoAttribs(){
-		wxLogMessage(_T("Testing selected layer"));
-		
-		
 		QueriesBuilder myBuilder(m_DataSelected);
 		TS_ASSERT(myBuilder.Create(m_pDB)==true);
 		TS_ASSERT(myBuilder.Save(m_pDB));
@@ -246,6 +243,53 @@ public:
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
 		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+	}
+	
+	
+	void testGetValues(){
+		wxArrayString myValues;
+		long myLayerID = 7; // Tectobound_L pour faille.
+		long myLayerID2 = 4; // GlacStruct, pas de champs
+		PrjMemFieldArray myFields;
+		
+		// no fields availlable
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,myLayerID2, 
+												  myFields, myValues)==false);
+		TS_ASSERT_EQUALS(myFields.GetCount(), 0);
+		TS_ASSERT_EQUALS(myValues.GetCount(), 0);
+		
+		
+		
+		// getting fields and values
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,myLayerID,myFields, myValues)==true);
+		TS_ASSERT_EQUALS(myFields.GetCount(), 4);
+		TS_ASSERT_EQUALS(myValues.GetCount(), 4);
+		TS_ASSERT_EQUALS(myValues.Item(3), wxEmptyString);
+		
+	}
+	
+	
+	void testGetAttribValues(){
+		wxLogMessage(_T("Testing Getting values"));
+		
+		
+		m_DataSelected->m_QueryObjectGeomID = 140; // faille avec attrib avancés
+		
+		wxArrayString myValues;
+		PrjMemFieldArray myFields;
+		
+		// no fields availlable
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
+												  myFields, myValues)==true);
+		TS_ASSERT_EQUALS(myFields.GetCount(), 4);
+		TS_ASSERT_EQUALS(myValues.GetCount(), 4);
+		TS_ASSERT_DIFFERS(myValues.Item(0), wxEmptyString);
+		TS_ASSERT_EQUALS(myValues.Item(0), _T("probable"));
+		
+		for (unsigned int i = 0; i< myValues.GetCount(); i++) {
+			wxLogDebug(myValues.Item(i));
+		}
+		
 	}
 	
 		

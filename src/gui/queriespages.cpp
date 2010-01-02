@@ -307,6 +307,7 @@ void QueriesPageAttribut::_CreateControls() {
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 	
 	m_CheckAdvAttrib = new wxCheckBox( this, wxID_ANY, _("Use advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_CheckAdvAttrib->Enable(true);
 	
 	bSizer12->Add( m_CheckAdvAttrib, 0, wxALL, 5 );
 	
@@ -337,6 +338,16 @@ void QueriesPageAttribut::OnReloadAttributs(wxCommandEvent & event ){
 }
 
 
+void QueriesPageAttribut::OnUseAdvancedAttributs(wxCommandEvent& event){
+	//m_AdvSizer->Enable(event.IsChecked());
+	m_AdvText->Enable(event.IsChecked());
+	m_AdvAttributs->Enable(event.IsChecked());
+	m_ReloadButton->Enable(event.IsChecked());
+	event.Skip();
+}
+
+
+
 
 QueriesPageAttribut::QueriesPageAttribut(QueriesWizard * parent, wxWizardPageSimple * prev,
 										 wxWizardPageSimple * next) :
@@ -345,7 +356,10 @@ wxWizardPageSimple(parent, prev, next){
 	_CreateControls();
 	
 	// Connect Events
-	m_ReloadButton->Connect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+	m_CheckAdvAttrib->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
+							  wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
+							  NULL, this );
+	m_ReloadButton->Connect(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
 							wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs ),
 							NULL, this );
 
@@ -353,6 +367,9 @@ wxWizardPageSimple(parent, prev, next){
 
 QueriesPageAttribut::~QueriesPageAttribut() {
 	// Disconnect Events
+	m_CheckAdvAttrib->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
+								 wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
+								 NULL, this );
 	m_ReloadButton->Disconnect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
 							   wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs),
 							   NULL, this );

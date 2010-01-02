@@ -71,9 +71,7 @@ class tmAttributionData : public wxObject
 									 const wxArrayString & values,
 									 int startvalues,
 									 long selected);
-		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
-									wxArrayString & values,
-									long selected);
+		
 		
 		
 		
@@ -110,6 +108,10 @@ class tmAttributionData : public wxObject
 									 wxArrayString & concatenedattrib);
 		virtual bool GetAttributesAdvanced (PrjMemLayersArray * layers,
 											wxArrayString & values);
+		// only for one layer
+		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
+									wxArrayString & values,
+									long selected);
 		
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid){return false;}
 	};
