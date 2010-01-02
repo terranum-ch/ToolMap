@@ -270,7 +270,7 @@ public:
 	
 	
 	void testGetAttribValues(){
-		wxLogMessage(_T("Testing Getting values"));
+		
 		
 		
 		m_DataSelected->m_QueryObjectGeomID = 140; // faille avec attrib avancés
@@ -292,6 +292,21 @@ public:
 		
 	}
 	
+	
+	void testGetParentLayer(){
+		wxLogMessage(_T("Testing Getting Parent layer values"));
+		
+		long layerid = 0;
+		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid));
+		TS_ASSERT_EQUALS(layerid, 7);
+		m_DataSelected->m_QueryObjectID = 50; // n'existe pas
+		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid)==false);
+		TS_ASSERT_EQUALS(layerid, wxNOT_FOUND);
+		
+		m_DataSelected->m_QueryObjectID = 41; // moraine -> layer 8
+		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid));
+		TS_ASSERT_EQUALS(layerid, 8);
+	}
 		
 };
 

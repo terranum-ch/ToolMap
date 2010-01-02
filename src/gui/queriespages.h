@@ -131,8 +131,12 @@ public:
 
 class QueriesPageAttribut : public wxWizardPageSimple {
 private:
-    void _CreateControls();
 	QueriesWizard * m_Parent;
+	DataBaseTM* m_pDB;
+	
+    void _CreateControls();
+	void _LoadAttributs();
+
 	
 	
 	wxCheckBox * m_CheckAdvAttrib;
@@ -146,7 +150,8 @@ private:
 	
 	
 public:
-    QueriesPageAttribut(QueriesWizard * parent, wxWizardPageSimple * prev, wxWizardPageSimple * next);
+	QueriesPageAttribut(QueriesWizard * parent, DataBaseTM * database,
+						wxWizardPageSimple * prev, wxWizardPageSimple * next);
 	
     ~QueriesPageAttribut();
 	

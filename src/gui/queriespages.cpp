@@ -26,7 +26,7 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database
 	m_pDB = database;
 	CreateControls();
 	
-	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, NULL, NULL);
+	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, m_pDB, NULL, NULL);
 	m_PageExpertSQL = new QueriesPageSQL(m_Parent);
 	
 	m_PageName = new QueriesPageName(m_Parent, this, NULL);
@@ -346,13 +346,58 @@ void QueriesPageAttribut::OnUseAdvancedAttributs(wxCommandEvent& event){
 	event.Skip();
 }
 
+void QueriesPageAttribut::_LoadAttributs() {
+	wxASSERT(m_Parent);
+	wxASSERT(m_pDB);
+	
+	m_AdvAttributs->Freeze();
+	m_AdvAttributs->Clear();
+	
+	long myLayerID = wxNOT_FOUND;
+	
+	if(m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID)==false){
+		m_AdvAttributs->Thaw();
+		return;
+	}
+	
+	if (m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, 
+											 m_Parent->GetData()->m_QueryFields,
+											 m_Parent->GetData()->m_QueryFieldsValues)==false) 
+	{
+		m_AdvAttributs->Thaw();
+		return;
+	}
+	
+	// adding to list
+	QueriesData * myData = m_Parent->GetData();
+	wxASSERT(myData);
+	wxString myText = wxEmptyString;
+	
+	for (unsigned int i = 0; i<myData->m_QueryFields.GetCount() ; i++){
+		myText.Clear();
+		myText.Append(myData->m_QueryFields.Item(i).m_Fieldname);
+		myText.Append(_T(" = "));
+		if (myData->m_QueryFieldsValues.Item(i) == wxEmptyString) {
+			myText.Append(_("Empty"));
+		}
+		else {
+			myText.Append(myData->m_QueryFieldsValues.Item(i));
+		}
+		
+		m_AdvAttributs->Append(myText);
+		
+	}
+	
+	m_AdvAttributs->Thaw();
+}
 
 
-
-QueriesPageAttribut::QueriesPageAttribut(QueriesWizard * parent, wxWizardPageSimple * prev,
-										 wxWizardPageSimple * next) :
+QueriesPageAttribut::QueriesPageAttribut(QueriesWizard * parent, DataBaseTM * database,
+										 wxWizardPageSimple * prev, wxWizardPageSimple * next):
 wxWizardPageSimple(parent, prev, next){
 	m_Parent = parent;
+	m_pDB = database;
+	
 	_CreateControls();
 	
 	// Connect Events
@@ -376,6 +421,12 @@ QueriesPageAttribut::~QueriesPageAttribut() {
 }
 
 bool QueriesPageAttribut::TransferDataToWindow() {
+	// add fields value if empty
+	if (m_AdvAttributs->IsEmpty()) {
+		_LoadAttributs();
+	}
+	
+	
 	return true;
 }
 
