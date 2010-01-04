@@ -307,7 +307,7 @@ void QueriesPageAttribut::_CreateControls() {
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 	
 	m_CheckAdvAttrib = new wxCheckBox( this, wxID_ANY, _("Use advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_CheckAdvAttrib->Enable(true);
+	m_CheckAdvAttrib->SetValue(true);
 	
 	bSizer12->Add( m_CheckAdvAttrib, 0, wxALL, 5 );
 	
@@ -333,13 +333,12 @@ void QueriesPageAttribut::_CreateControls() {
 
 
 void QueriesPageAttribut::OnReloadAttributs(wxCommandEvent & event ){
-	wxLogError(_T("Reload message sent"));
+	_LoadAttributs();
 	event.Skip();
 }
 
 
 void QueriesPageAttribut::OnUseAdvancedAttributs(wxCommandEvent& event){
-	//m_AdvSizer->Enable(event.IsChecked());
 	m_AdvText->Enable(event.IsChecked());
 	m_AdvAttributs->Enable(event.IsChecked());
 	m_ReloadButton->Enable(event.IsChecked());
@@ -392,6 +391,31 @@ void QueriesPageAttribut::_LoadAttributs() {
 }
 
 
+
+void QueriesPageAttribut::OnDeleteAttribut( wxKeyEvent& event ){ 
+	if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_DELETE)
+	{
+		if (m_AdvAttributs->GetSelection() == wxNOT_FOUND) {
+			event.Skip();
+			return;
+		}
+		
+		if (m_Parent->GetData()->DeleteFieldsValue(m_AdvAttributs->GetSelection())==false){
+			event.Skip();
+			return;
+		}
+		
+		m_AdvAttributs->Delete(m_AdvAttributs->GetSelection());
+		
+		if (m_AdvAttributs->GetCount() == 0) {
+			m_CheckAdvAttrib->SetValue(false);
+		}
+		
+	}
+	event.Skip(); 
+}
+
+
 QueriesPageAttribut::QueriesPageAttribut(QueriesWizard * parent, DataBaseTM * database,
 										 wxWizardPageSimple * prev, wxWizardPageSimple * next):
 wxWizardPageSimple(parent, prev, next){
@@ -401,6 +425,8 @@ wxWizardPageSimple(parent, prev, next){
 	_CreateControls();
 	
 	// Connect Events
+	m_AdvAttributs->Connect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut::OnDeleteAttribut ),
+							NULL, this );
 	m_CheckAdvAttrib->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
 							  wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
 							  NULL, this );
@@ -412,6 +438,8 @@ wxWizardPageSimple(parent, prev, next){
 
 QueriesPageAttribut::~QueriesPageAttribut() {
 	// Disconnect Events
+	m_AdvAttributs->Disconnect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut::OnDeleteAttribut ),
+							   NULL, this );
 	m_CheckAdvAttrib->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
 								 wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
 								 NULL, this );
@@ -431,6 +459,7 @@ bool QueriesPageAttribut::TransferDataToWindow() {
 }
 
 bool QueriesPageAttribut::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QueryUseFields = m_CheckAdvAttrib->IsChecked();
 	return true;
 }
 
