@@ -132,7 +132,7 @@ IF (SEARCH_GDAL)
   ENDIF(GDAL_LIBRARIES)
 	
 	#debug message
-	MESSAGE ("DBG : GDAL lis is ${GDAL_LIBRARIES}")
+	MESSAGE ("DBG : GDAL lib is ${GDAL_LIBRARIES}")
 	MESSAGE ("DBG : GDAL include is ${GDAL_INCLUDE_DIR}")
 
 
