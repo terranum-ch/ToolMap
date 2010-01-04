@@ -52,6 +52,21 @@ bool QueriesData::_IsQuerySelectedCorrect() {
 		return false;
 	}
 	
+	// using advanced attribution
+	if (m_QueryUseFields) {
+		if (m_QueryLayerID == wxNOT_FOUND) {
+			wxLogError(_T("No layer ID specified"));
+			return false;
+		}
+		
+		
+		wxASSERT(m_QueryFields.GetCount() == m_QueryFieldsValues.GetCount());
+		if (m_QueryFields.GetCount() == 0) {
+			wxLogError(_T("No advanced values for selected query"));
+			return false;
+		}
+	}
+	
 	return true;
 }
 
@@ -112,7 +127,7 @@ QueriesData::QueriesData() {
 	m_QueryObjectGeomID = wxNOT_FOUND;
 	m_QueryFields.Clear();
 	m_QueryFieldsValues.Clear();
-	m_QueryUseFields = true;
+	m_QueryUseFields = false;
 }
 
 QueriesData::~QueriesData() {
@@ -293,13 +308,14 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	fieldsdef.Clear();
 	fieldsvalue.Clear();
 	
+	m_QueryLayerID = layerid;
 	
-	ProjectDefMemoryLayers * myTempLayer = new ProjectDefMemoryLayers();
-	myTempLayer->m_LayerID = layerid;
+	ProjectDefMemoryLayers myTempLayer;
+	myTempLayer.m_LayerID = layerid;
 	
 	
 	// get fields for specified layer;
-	if (database->GetFields(fieldsdef, myTempLayer)==false) {
+	if (database->GetFields(fieldsdef, &myTempLayer)==false) {
 		wxLogError(_("Error getting fields for layer %d"), layerid);
 		return false;
 	}
@@ -313,8 +329,8 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	
 	// copy fields to temp layer
 	for (unsigned int i = 0; i< fieldsdef.GetCount(); i++) {
-		myTempLayer->m_pLayerFieldArray->Add(new ProjectDefMemoryFields());
-		myTempLayer->m_pLayerFieldArray->Item(i) = fieldsdef.Item(i);
+		myTempLayer.m_pLayerFieldArray->Add(new ProjectDefMemoryFields());
+		myTempLayer.m_pLayerFieldArray->Item(i) = fieldsdef.Item(i);
 	}
 	
 	
@@ -332,7 +348,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	
 	myAttribObj->Create(&mySelectedId, database);
 	bool bReturn = true;
-	if(myAttribObj->GetAdvancedAttribution(myTempLayer, 
+	if(myAttribObj->GetAdvancedAttribution(&myTempLayer, 
 										fieldsvalue,
 										   m_QueryObjectGeomID)==false){
 		wxLogError(_("Error getting attribution values"));
@@ -349,5 +365,19 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	}
 	
 	return bReturn;
+}
+
+
+bool QueriesData::DeleteFieldsValue(int index) {
+	wxASSERT(m_QueryFields.GetCount() == m_QueryFieldsValues.GetCount());
+	if (index >= m_QueryFields.GetCount()) {
+		wxLogError(_T("Trying to delete out of bounds"));
+		return false;
+	}
+	
+	m_QueryFields.RemoveAt(index);
+	m_QueryFieldsValues.RemoveAt(index);
+	
+	return true;
 }
 

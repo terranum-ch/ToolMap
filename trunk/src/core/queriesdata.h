@@ -81,6 +81,7 @@ private:
 	bool GetParentLayer(DataBaseTM * database, long & layerid);
 	bool GetFieldsValues(DataBaseTM * database, long layerid,
 						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);
+	bool DeleteFieldsValue(int index);
 
 };
 #endif

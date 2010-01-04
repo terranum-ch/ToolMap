@@ -278,7 +278,7 @@ public:
 		wxArrayString myValues;
 		PrjMemFieldArray myFields;
 		
-		// no fields availlable
+		// fields availlable
 		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
 												  myFields, myValues)==true);
 		TS_ASSERT_EQUALS(myFields.GetCount(), 4);
@@ -290,11 +290,21 @@ public:
 			wxLogDebug(myValues.Item(i));
 		}
 		
+		// deuxième fois 
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
+												  myFields, myValues)==true);
+		TS_ASSERT_EQUALS(myFields.GetCount(), 4);
+		TS_ASSERT_EQUALS(myValues.GetCount(), 4);
+		TS_ASSERT_DIFFERS(myValues.Item(0), wxEmptyString);
+		TS_ASSERT_EQUALS(myValues.Item(0), _T("probable"));
+		
+		
 	}
 	
 	
+	
 	void testGetParentLayer(){
-		wxLogMessage(_T("Testing Getting Parent layer values"));
+		
 		
 		long layerid = 0;
 		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid));
@@ -306,6 +316,57 @@ public:
 		m_DataSelected->m_QueryObjectID = 41; // moraine -> layer 8
 		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid));
 		TS_ASSERT_EQUALS(layerid, 8);
+	}
+	
+	
+	
+	void testDeleteFields(){
+				
+		// no fields
+		TS_ASSERT(m_DataSelected->DeleteFieldsValue(2)==false);
+		
+		// load fields
+		m_DataSelected->m_QueryObjectGeomID = 140; // faille avec attrib avancés
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
+												  m_DataSelected->m_QueryFields,
+												  m_DataSelected->m_QueryFieldsValues)==true);
+		
+		TS_ASSERT(m_DataSelected->DeleteFieldsValue(2)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.GetCount(), 3);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.GetCount(), 3);
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.Item(2), _T("1"));
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.Item(2).m_Fieldname, _T("Thrust_class"));
+		
+		for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
+			wxLogDebug(m_DataSelected->m_QueryFieldsValues.Item(i));
+		}
+		
+		
+	}
+	
+	
+	
+	void testCreateSelectionQueryAttribut(){
+		wxLogMessage(_T("Testing IsOk for query with attributs"));
+		QueriesBuilder myBuilder(m_DataSelected);
+		m_DataSelected->m_QueryUseFields = true;
+		
+		TS_ASSERT(myBuilder.IsOk()==false);
+		
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
+												  m_DataSelected->m_QueryFields,
+												  m_DataSelected->m_QueryFieldsValues)==true);
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving  selected queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		
 	}
 		
 };

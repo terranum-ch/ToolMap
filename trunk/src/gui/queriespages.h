@@ -147,6 +147,7 @@ private:
 	
 	void OnReloadAttributs(wxCommandEvent & event );
 	void OnUseAdvancedAttributs(wxCommandEvent& event);
+	void OnDeleteAttribut( wxKeyEvent& event );
 	
 	
 public:

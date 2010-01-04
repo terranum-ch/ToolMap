@@ -2244,18 +2244,25 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 bool DataBaseTM::EditQueries (int target, const wxString & name, 
 				  const wxString & description, long qid)
 {
+	wxString myConvertedDescription;
+	if (DataBaseStringEscapeQuery(description, myConvertedDescription)==false) {
+		wxLogError(_("Unable to convert the SQL statement"));
+		return false;
+	}
+	
+	
 	wxString sAddStatement =  wxString::Format(_T("INSERT INTO ") + TABLE_NAME_QUERIES +
 											   _T(" (QUERIES_TARGET, QUERIES_NAME, QUERIES_CODE)")
 											   _T(" VALUES (%d,\"%s\", \"%s\")"),
 											   target,
 											   name.c_str(),
-											   description.c_str());
+											   myConvertedDescription.c_str());
 	wxString sUpdStatement = wxString::Format(_T("UPDATE ") + TABLE_NAME_QUERIES +
 											  _T(" SET QUERIES_NAME=\"%s\", ")
 											  _T(" QUERIES_CODE=\"%s\", QUERIES_TARGET=%d ")
 											  _T(" WHERE QUERIES_ID=%d"),
 											  name.c_str(),
-											  description.c_str(),
+											  myConvertedDescription.c_str(),
 											  target,
 											  qid);
 	wxString sStatement = wxEmptyString;

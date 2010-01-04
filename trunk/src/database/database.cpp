@@ -744,6 +744,34 @@ long DataBase::DataBaseGetLastInsertedID()
 }
 
 
+
+bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & results)
+{
+	wxASSERT(m_MySQL);
+	results.Clear();
+	
+	if (query.IsEmpty()) {
+		wxLogError(_("Trying to escape an empty query !"));
+		return false;
+	}
+		
+	char * buf = new char[query.Len() * sizeof(wxString) * 2 + sizeof(wxString)];
+	
+	unsigned long myInsertedVal = mysql_real_escape_string(m_MySQL, buf, query.mb_str(wxConvUTF8), query.Len());
+	
+	if(myInsertedVal == 0){
+		DBLogLastError();
+		delete[] buf;
+		return false;
+	}
+	
+	results = wxString::FromAscii(buf);
+	delete [] buf;
+	
+	return true;
+}
+
+
 bool DataBase::DBIsDataBaseReady ()
 {
 	if (m_IsLibraryStarted == false)

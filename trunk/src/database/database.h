@@ -94,6 +94,9 @@ class DataBase
 		int DataBaseQueriesNumber (const wxString & query);
 		long DataBaseGetLastInsertedID();
 		
+		// query transformations
+		bool DataBaseStringEscapeQuery (const wxString & query, wxString & results);
+		
 		// results operations
 		bool DataBaseHasResults();
 		void DataBaseClearResults();

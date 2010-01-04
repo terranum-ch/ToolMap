@@ -339,6 +339,20 @@ public:
 	}
 	
 	
+	void testEscapeString(){
+		wxLogDebug(_T("Escaping special character"));
+		wxString myBefore = _T("SELECT coucou'toi");
+		wxString myAfter = wxEmptyString;
+		
+		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields)==true);
+		TS_ASSERT(m_DB->DataBaseStringEscapeQuery(myBefore, myAfter)==true);
+		wxLogDebug(_T("before : %s - after : %s"), 
+				   myBefore.c_str(),
+				   myAfter.c_str());
+		TS_ASSERT_EQUALS(myAfter, _T("SELECT coucou\\'toi"));
+		
+	}
+	
 	
 	
 };
