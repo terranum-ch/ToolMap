@@ -64,6 +64,25 @@ ENDIF(NOT PROGNAME)
 SET (PROGNAMETEST ${PROGNAME}_test)
 
 
+#prepare parameters file
+SET (UNIT_TESTING_PATH CACHE PATH "Path where are located the projects for unit testing")
+SET (UNIT_TESTING_USE_PROXY CACHE BOOL "Do we use a proxy for connecting to the web ?")
+FIND_PATH(PARAM_SOURCE_DIR test_param.h.in
+  ${PROJECT_SOURCE_DIR}/../src_test/
+  ${PROJECT_SOURCE_DIR}/../test/src_test/
+  ${PROJECT_SOURCE_DIR}
+)
+
+IF (PARAM_SOURCE_DIR)
+	CONFIGURE_FILE(${PARAM_SOURCE_DIR}/test_param.h.in ${PARAM_SOURCE_DIR}/test_param.h)
+
+ELSE(PARAM_SOURCE_DIR)
+	MESSAGE("test_param.h.in not found, unit testing not availlable")
+	MESSAGE( ${PROJECT_SOURCE_DIR})
+	MESSAGE (FATAL_ERROR "unit testing not availlable")
+ENDIF(PARAM_SOURCE_DIR)
+
+
 #search all source files
 FILE (GLOB SRC_FILES ../src_test/*.cpp)
 SOURCE_GROUP (source FILES ${SRC_FILES})

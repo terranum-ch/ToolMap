@@ -1,6 +1,8 @@
 /***************************************************************************
-								test_param.h
-					Manage parameters for the tests.
+								test_param.h.in
+					Manage parameters for the tests using cmake.
+					DO NOT EDIT THE TEST_PARAM.H DIRECTLY, USE THE
+					TEST_PARAM.H.IN FILE INSTEAD
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -24,9 +26,12 @@
     #include <wx/wx.h>
 #endif
 
+// DEFINITION UPDATED BY CMAKE
+#cmakedefine UNIT_TESTING_PATH "/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing"
+#cmakedefine UNIT_TESTING_USE_PROXY 1
+// END OF DEFINITION UPDATED BY CMAKE
 
-
-static const wxString g_TestPath = _T("/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing");
+static const wxString g_TestPath = wxString::FromAscii(UNIT_TESTING_PATH);
 static const wxString g_TestPathSHP = g_TestPath + _T("/shp/");
 static const wxString g_TestPathMISC = g_TestPath + _T("/misc/");
 static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj/");
@@ -51,7 +56,11 @@ static const wxString g_TestPrj_Import = _T("testimport");
 static const wxString g_TestPrj_LuganoTM = _T("luganoTM");
 
 // internet
+#ifdef UNIT_TESTING_USE_PROXY
+static const bool g_UseProxy = true;
+#else
 static const bool g_UseProxy = false;
+#endif
 static const wxString g_ProxyName = _T("vs.proxy.ch:8080");
 static const int g_ToolMapInternetVersion = 717;
 static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d%d.dmg"),
