@@ -46,6 +46,8 @@
 #define SYMBOL_QUERIES_PANEL_POSITION wxDefaultPosition
 
 
+DECLARE_EVENT_TYPE(tmEVT_QUERY_MENU,-1)
+
 
 class QueriesList : public ListGenReportWithDialog
 	{
@@ -100,6 +102,7 @@ private:
 	void OnAddQueries (wxCommandEvent & event);
 	void OnRemoveQueries (wxCommandEvent & event);
 	void OnRunQueries (wxCommandEvent & event);
+	void OnPressQueryMenu (wxCommandEvent & event);
 	
 	
     DECLARE_EVENT_TABLE()

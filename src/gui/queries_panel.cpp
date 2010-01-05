@@ -31,9 +31,11 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_QUERY_RUN)
+DEFINE_EVENT_TYPE(tmEVT_QUERY_MENU)
 
 
 BEGIN_EVENT_TABLE( Queries_PANEL, ManagedAuiWnd )
+	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_MENU, Queries_PANEL::OnPressQueryMenu)
 	EVT_FLATBUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
 	EVT_FLATBUTTON(ID_QUERIES_REMOVE,Queries_PANEL::OnRemoveQueries)
 	EVT_FLATBUTTON(ID_QUERIES_RUN, Queries_PANEL::OnRunQueries)
@@ -289,6 +291,12 @@ void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 		evt.SetInt(myQTarget);
 		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 	}
+}
+
+				 
+void Queries_PANEL::OnPressQueryMenu (wxCommandEvent & event){
+	wxCommandEvent myEmptyEvent;
+	OnRunQueries(myEmptyEvent);
 }
 
 
