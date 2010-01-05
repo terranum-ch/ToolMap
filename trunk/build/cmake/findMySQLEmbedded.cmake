@@ -98,22 +98,23 @@ ENDIF (MYSQL_INCLUDE_DIR)
 
 
 ## DEFINE LOGGING OR NOT
-SET (MYSQL_IS_LOGGING CACHE BOOL "Should MySQL log all commands to a text file in the document folder ?")
-SET (MYSQL_UNIT_TESTING CACHE BOOL "Is MySQL part of the unit testing process, if not sure set to true")
+SET (MYSQL_IS_LOGGING CACHE BOOL "Should MySQL log all commands to a text file in the document folder ?, not compatible with unit testing")
 
 FIND_PATH(DATABASE_PROJ_SOURCE_DIR database-config.h.in
   ${PROJECT_SOURCE_DIR}/../src/database/
-  ${PROJECT_SOURCE_DIR}/../src
+  ${PROJECT_SOURCE_DIR}/../../src/database/
   ${PROJECT_SOURCE_DIR}/../include
   ${PROJECT_SOURCE_DIR}
 )
 
 IF (DATABASE_PROJ_SOURCE_DIR)
-	CONFIGURE_FILE(${DATABASE_PROJ_SOURCE_DIR}/database-config.h.in ${DATABASE_PROJ_SOURCE_DIR}/database-config.h)
+	CONFIGURE_FILE("${DATABASE_PROJ_SOURCE_DIR}/database-config.h.in" 
+		"${PROJECT_BINARY_DIR}/database-config.h")
+		
 
 
 ELSE(DATABASE_PROJ_SOURCE_DIR)
-	MESSAGE("database-config.h.in not found, logging will not be defined")
+	MESSAGE(FATAL_ERROR "database-config.h.in not found, logging will not be defined")
 	MESSAGE( ${PROJECT_SOURCE_DIR})
 ENDIF(DATABASE_PROJ_SOURCE_DIR)
 
@@ -128,6 +129,7 @@ MARK_AS_ADVANCED(
   ## IF PARAMETERS ARE DEFINED, USE THEM
    IF(MYSQL_INCLUDE_DIR)
     INCLUDE_DIRECTORIES(${MYSQL_INCLUDE_DIR})
+	INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
   ENDIF(MYSQL_INCLUDE_DIR)
  
   ###IF(WXWINDOWS_LINK_DIRECTORIES)
