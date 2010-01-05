@@ -45,6 +45,7 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
  
  #MYSQL EMBEDDED
  INCLUDE ("cmake/findMySQLEmbedded.cmake")
+ LIST(APPEND HEAD_FILES "database-config.h")
 
 
 #GEOS - GDAL libs
