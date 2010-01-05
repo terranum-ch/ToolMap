@@ -199,6 +199,7 @@ class ProjectManager;
 #define ID_MENU_SELECT_NONE 10160
 #define ID_MENU_SELECT_INVERSE 10161
 #define ID_MENU_QUERIES 10019
+#define ID_MENU_QUERIES_RUN 10020
 #define ID_MENUITEM11 10046
 #define ID_MENUITEM12 10047
 #define ID_MENU_TOC_WINDOW 10037
@@ -317,6 +318,7 @@ private:
 	void OnIdleTimeUpdate(wxIdleEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	void OnShowQueriesWindow (wxCommandEvent & event);
+	void OnQueriesRun (wxCommandEvent & event);
 	void OnBackupProject (wxCommandEvent & event);
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);

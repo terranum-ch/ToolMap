@@ -22,6 +22,7 @@
 #include "toolmap.h"
 #include "svn_version.h" // version number definition
 
+
 #if wxUSE_CRASHREPORT
 	#include <wx/msw/crashrpt.h>
 #endif
@@ -232,6 +233,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
+	EVT_MENU (ID_MENU_QUERIES_RUN, ToolMapFrame::OnQueriesRun)
 
 	//TODO: Temp function for testing purpose, remove.
 	//EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnTempBlockRefresh)
@@ -544,7 +546,8 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu66, _("Selection"));
     wxMenu* itemMenu72 = new wxMenu;
     itemMenu72->Append(ID_MENU_QUERIES, _("Queries editor"), _T(""), wxITEM_CHECK);
-    //itemMenu72->AppendSeparator();
+    itemMenu72->AppendSeparator();
+	itemMenu72->Append(ID_MENU_QUERIES_RUN, _("Run selected query\tCtrl+Alt+R"), _T(""), wxITEM_NORMAL);
     //itemMenu72->Append(ID_MENUITEM11, _("User query 1"), _T(""), wxITEM_NORMAL);
     //itemMenu72->Append(ID_MENUITEM12, _("User query 2"), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu72, _("Queries"));
@@ -879,6 +882,15 @@ void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
 		GetMenuBar()->Check(ID_MENU_QUERIES, true);
 	}
 	
+}
+
+
+
+void ToolMapFrame::OnQueriesRun (wxCommandEvent & event){
+	// sent event to the queries manager
+	wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt2);
+
 }
 
 
