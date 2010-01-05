@@ -51,10 +51,18 @@ cp Applications $VARBINDIR/Release
 cp InstallDS_Store $VARBINDIR/Release/.DS_Store
 echo "4a) Copy files for installer... DONE"
 
+#move buggy files  out from folder
+echo "4b) Move static library out of folder"
+cd $VARBINDIR/Release
+mv libToolMap2_lib.a $VARBINDIR/libToolMap2_lib.a
+
 #creating installer
 echo "4) Creating installer..."
 cd $VARINSTALLERDIR
 hdiutil create -volname "ToolMap" -srcfolder $VARBINDIR/Release ToolMap2_r$VARSVNNUMBER.dmg
 echo "4) Creating installer... DONE"
 
-
+#move buggy files back into folder
+echo "5) Move static library back into folder"
+cd $VARBINDIR
+mv libToolMap2_lib.a $VARBINDIR/Release/libToolMap2_lib.a
