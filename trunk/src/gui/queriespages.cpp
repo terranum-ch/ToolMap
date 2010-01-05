@@ -331,6 +331,12 @@ void QueriesPageAttribut::_CreateControls() {
 }
 
 
+void QueriesPageAttribut::_EnableCtrls(bool enable){
+	m_AdvText->Enable(enable);
+	m_AdvAttributs->Enable(enable);
+	m_ReloadButton->Enable(enable);
+}
+
 
 void QueriesPageAttribut::OnReloadAttributs(wxCommandEvent & event ){
 	_LoadAttributs();
@@ -339,9 +345,7 @@ void QueriesPageAttribut::OnReloadAttributs(wxCommandEvent & event ){
 
 
 void QueriesPageAttribut::OnUseAdvancedAttributs(wxCommandEvent& event){
-	m_AdvText->Enable(event.IsChecked());
-	m_AdvAttributs->Enable(event.IsChecked());
-	m_ReloadButton->Enable(event.IsChecked());
+	_EnableCtrls(event.IsChecked());
 	event.Skip();
 }
 
@@ -436,6 +440,8 @@ wxWizardPageSimple(parent, prev, next){
 
 }
 
+
+
 QueriesPageAttribut::~QueriesPageAttribut() {
 	// Disconnect Events
 	m_AdvAttributs->Disconnect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut::OnDeleteAttribut ),
@@ -448,15 +454,20 @@ QueriesPageAttribut::~QueriesPageAttribut() {
 							   NULL, this );
 }
 
+
+
 bool QueriesPageAttribut::TransferDataToWindow() {
-	// add fields value if empty
-	if (m_AdvAttributs->IsEmpty()) {
-		_LoadAttributs();
+	// add fields in every case
+	_LoadAttributs();
+	if (m_AdvAttributs->IsEmpty() || m_Parent->GetData()->HasFieldsValues() == false){
+		_EnableCtrls(false);
+		m_CheckAdvAttrib->SetValue(false);
+		m_CheckAdvAttrib->Enable(false);
 	}
-	
-	
 	return true;
 }
+
+
 
 bool QueriesPageAttribut::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QueryUseFields = m_CheckAdvAttrib->IsChecked();

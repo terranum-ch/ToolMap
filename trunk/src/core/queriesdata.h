@@ -82,6 +82,7 @@ private:
 	bool GetFieldsValues(DataBaseTM * database, long layerid,
 						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);
 	bool DeleteFieldsValue(int index);
+	bool HasFieldsValues();
 
 };
 #endif

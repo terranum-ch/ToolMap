@@ -347,7 +347,7 @@ public:
 	
 	
 	void testCreateSelectionQueryAttribut(){
-		wxLogMessage(_T("Testing IsOk for query with attributs"));
+
 		QueriesBuilder myBuilder(m_DataSelected);
 		m_DataSelected->m_QueryUseFields = true;
 		
@@ -367,9 +367,36 @@ public:
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
 		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
 		
+		
+	}
+	
+	
+	void testAllAttribsEmpty(){
+		wxLogMessage(_T("Testing all attributs empty"));
+		
+		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),false);
+
+		// all fields empty
+		m_DataSelected->m_QueryUseFields = true;
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
+												  m_DataSelected->m_QueryFields,
+												  m_DataSelected->m_QueryFieldsValues)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),false);
+		for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
+			wxLogDebug(m_DataSelected->m_QueryFieldsValues.Item(i));
+		}
+		
+		
+		
+		m_DataSelected->m_QueryObjectGeomID = 140; // faille avec attrib avancés
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
+												  m_DataSelected->m_QueryFields,
+												  m_DataSelected->m_QueryFieldsValues)==true);
+		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),true);
 	}
 		
 };
+
 
 
 

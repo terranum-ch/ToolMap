@@ -136,7 +136,7 @@ private:
 	
     void _CreateControls();
 	void _LoadAttributs();
-
+	void _EnableCtrls(bool enable);
 	
 	
 	wxCheckBox * m_CheckAdvAttrib;
