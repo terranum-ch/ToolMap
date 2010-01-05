@@ -40,12 +40,11 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON
  SET(WXWINDOWS_USE_GL 0)
- INCLUDE ("cmake/Use_wxWindows.cmake")
+ INCLUDE ("cmake/FindwxWidgets.cmake")
  
  
  #MYSQL EMBEDDED
  INCLUDE ("cmake/findMySQLEmbedded.cmake")
- LIST(APPEND HEAD_FILES "database-config.h")
 
 
 #GEOS - GDAL libs
