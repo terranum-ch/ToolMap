@@ -77,7 +77,9 @@ FIND_PATH(PARAM_SOURCE_DIR test_param.h.in
 )
 
 IF (PARAM_SOURCE_DIR)
-	CONFIGURE_FILE(${PARAM_SOURCE_DIR}/test_param.h.in ${PARAM_SOURCE_DIR}/test_param.h)
+	CONFIGURE_FILE(${PARAM_SOURCE_DIR}/test_param.h.in 
+	"${PROJECT_BINARY_DIR}/test_param.h")
+	INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}£)
 
 ELSE(PARAM_SOURCE_DIR)
 	MESSAGE("test_param.h.in not found, unit testing not availlable")

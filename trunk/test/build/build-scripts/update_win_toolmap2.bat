@@ -9,10 +9,8 @@ REM 4) Launch the tests
 
 
 @SET TRUNKDIR=D:\LS\PRJ\TOOLMAP2\trunk\
-@SET BINDIR=D:\LS\PRJ\TOOLMAP2\bin\win32_test
+@SET BINDIR=D:\LS\PRJ\TOOLMAP2\bin\test
 @SET VSDIR=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
-@SET INSTPROG="C:\Program Files\NSIS\makensis.exe"
-@SET FTPPROG="C:\Program Files\curl-7.19.6\curl.exe"
 
 
 ECHO ----------------------------------------
@@ -51,8 +49,10 @@ echo %ERRORLEVEL%
 IF ERRORLEVEL 1 goto QuitErrorBuildScript
 ECHO 3) BUILDING TOOLMAP2 DONE
 
-cd %bindir%\Debug
-ToolMap_test.exe
+cd %bindir%
+ctest.exe
+"C:\Program Files\Notepad++\notepad++.exe" %bindir%\Testing\Temporary\LastTest.log
+REM notepad.exe %bindir%\Testing\Temporary\LastTest.log
 goto :WaitForEnter
 
 

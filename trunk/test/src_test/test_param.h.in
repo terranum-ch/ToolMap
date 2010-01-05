@@ -28,7 +28,7 @@
 
 // DEFINITION UPDATED BY CMAKE
 #cmakedefine UNIT_TESTING_PATH "@UNIT_TESTING_PATH@"
-#cmakedefine UNIT_TESTING_USE_PROXY 1
+#cmakedefine UNIT_TESTING_USE_PROXY 
 // END OF DEFINITION UPDATED BY CMAKE
 
 static const wxString g_TestPath = wxString::FromAscii(UNIT_TESTING_PATH);
@@ -61,10 +61,19 @@ static const bool g_UseProxy = true;
 #else
 static const bool g_UseProxy = false;
 #endif
-static const wxString g_ProxyName = _T("vs.proxy.ch:8080");
+static const wxString g_ProxyName = _T("proxy.vs.ch:8080");
 static const int g_ToolMapInternetVersion = 717;
+
+#if defined (__WINDOWS__)
+static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/InstallToolMap_d%d.exe"),
+													g_ToolMapInternetVersion);
+#elif defined (__WXMAC__)
 static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d%d.dmg"),
 													g_ToolMapInternetVersion);
+#else
+static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d%d.deb"),
+													g_ToolMapInternetVersion);
+#endif
 
 
 
