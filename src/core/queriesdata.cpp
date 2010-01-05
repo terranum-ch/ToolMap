@@ -381,3 +381,19 @@ bool QueriesData::DeleteFieldsValue(int index) {
 	return true;
 }
 
+
+bool QueriesData::HasFieldsValues(){
+	wxASSERT(m_QueryFields.GetCount() == m_QueryFieldsValues.GetCount());
+	if (m_QueryFields.GetCount() == 0) {
+		return false;
+	}
+	
+	for (unsigned int i = 0; i< m_QueryFieldsValues.GetCount(); i++) {
+		if (m_QueryFieldsValues.Item(i).IsEmpty()==false) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
