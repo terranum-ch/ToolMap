@@ -131,7 +131,7 @@ public:
 		TS_ASSERT (m_Import->GetElapsedTime()== 0);
 		TS_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==true);
 		long myTime = m_Import->GetElapsedTime();
-		TS_ASSERT_LESS_THAN (0, myTime);
+		TS_ASSERT_LESS_THAN (myTime, 30);
 		wxLogMessage(_T("Import done in %u [ms]"), myTime);
 		
 	}

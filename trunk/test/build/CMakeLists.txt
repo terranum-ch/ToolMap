@@ -66,6 +66,9 @@ SET (PROGNAMETEST ${PROGNAME}_test)
 
 #prepare parameters file
 SET (UNIT_TESTING_PATH CACHE PATH "Path where are located the projects for unit testing")
+IF (NOT UNIT_TESTING_PATH)
+	MESSAGE(FATAL_ERROR "Unable to locate the test files such as test projects")
+ENDIF (NOT UNIT_TESTING_PATH)
 SET (UNIT_TESTING_USE_PROXY CACHE BOOL "Do we use a proxy for connecting to the web ?")
 FIND_PATH(PARAM_SOURCE_DIR test_param.h.in
   ${PROJECT_SOURCE_DIR}/../src_test/
