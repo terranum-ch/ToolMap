@@ -405,21 +405,22 @@ void tmTOCCtrl::SetSelectedLayer (int layerID)
 	tmLayerProperties * itemprop = NULL;
 	bool bFirstLoop = true;
 	
+	Freeze();
+	UnselectAll();
 	while (1)
 	{
 		itemprop = IterateLayers(bFirstLoop);
 		bFirstLoop = false;
-		if (!itemprop)
+		if (!itemprop){
 			break;
-		
-		if (itemprop->m_LayerID == layerID)
-		{
-			if (!IsSelected(m_ActualItemID))
-				SelectItem(m_ActualItemID, true);
 		}
-		else
-			SelectItem(m_ActualItemID, false);
+		
+		if (itemprop->m_LayerID == layerID){
+			SelectItem(m_ActualItemID, true);
+		}
+	
 	}
+	Thaw();
 	
 }
 
