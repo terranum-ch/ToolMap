@@ -57,7 +57,7 @@ bool ToolMapApp::OnInit()
 	
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
-	//wxHandleFatalExceptions();
+	wxHandleFatalExceptions();
 
 	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,
 										   wxDefaultPosition, wxSize(900,500),

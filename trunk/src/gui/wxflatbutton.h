@@ -42,6 +42,7 @@
 
 #if (__WXMAC__)
 #define EVT_FLATBUTTON EVT_TOGGLEBUTTON
+#define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_TOGGLEBUTTON_CLICKED
 
 class wxFlatButton : public wxToggleButton
 	{		
@@ -63,6 +64,8 @@ class wxFlatButton : public wxToggleButton
 	};
 #else
 #define EVT_FLATBUTTON EVT_BUTTON
+#define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_BUTTON_CLICKED
+
 class wxFlatButton : public wxButton
 	{
 	private:

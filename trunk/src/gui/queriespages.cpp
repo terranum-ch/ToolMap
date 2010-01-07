@@ -434,7 +434,7 @@ wxWizardPageSimple(parent, prev, next){
 	m_CheckAdvAttrib->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
 							  wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
 							  NULL, this );
-	m_ReloadButton->Connect(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+	m_ReloadButton->Connect(EVT_FLATBUTTON_CLICKED,
 							wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs ),
 							NULL, this );
 
@@ -449,7 +449,7 @@ QueriesPageAttribut::~QueriesPageAttribut() {
 	m_CheckAdvAttrib->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
 								 wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
 								 NULL, this );
-	m_ReloadButton->Disconnect( wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+	m_ReloadButton->Disconnect( EVT_FLATBUTTON_CLICKED,
 							   wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs),
 							   NULL, this );
 }

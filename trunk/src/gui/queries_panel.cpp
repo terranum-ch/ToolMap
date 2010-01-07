@@ -269,13 +269,15 @@ void Queries_PANEL::OnRemoveQueries (wxCommandEvent & event)
  *******************************************************************************/
 void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 {
-	if (!m_IsProjectOpen)
+	if (!m_IsProjectOpen){
 		return;
+	}
 	
 	wxArrayLong myResutls;
 	m_QueriesList->GetAllSelectedItem(myResutls);
-	if (myResutls.GetCount() == 0)
+	if (myResutls.GetCount() == 0){
 		return;
+	}
 		
 	int myQid = m_QueriesList->GetItemData(myResutls.Item(0));
 	wxString myQName = wxEmptyString;
@@ -283,14 +285,14 @@ void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 	int myQTarget = 0;
 	
 	
-	if (m_pDB->GetQueriesById(myQid, myQTarget, myQName, myQCode))
-	{
+	if (m_pDB->GetQueriesById(myQid, myQTarget, myQName, myQCode)){
 		// sending event to the tmAttributionManager
 		wxCommandEvent evt (tmEVT_QUERY_RUN, wxID_ANY);
 		evt.SetString(myQCode);
 		evt.SetInt(myQTarget);
 		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 	}
+
 }
 
 				 
