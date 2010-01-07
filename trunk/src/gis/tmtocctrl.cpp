@@ -352,11 +352,12 @@ unsigned int tmTOCCtrl::GetCountLayers()
  *******************************************************************************/
 tmLayerProperties * tmTOCCtrl::GetSelectionLayer ()
 {
-	wxArrayTreeItemIds selecteds;
-	if (GetSelections(selecteds) < 1)
+	wxTreeItemId selected = GetSelection();
+	if (selected.IsOk()==false){
 		return NULL;
-	
-	tmLayerProperties * itemprop = (tmLayerProperties*)	GetItemData(selecteds.Item(0));
+	}
+
+	tmLayerProperties * itemprop = (tmLayerProperties*)	GetItemData(selected);
 	if (!itemprop)
 		return NULL;
 	
@@ -441,28 +442,24 @@ int tmTOCCtrl::GetSelectedPosition ()
 		return -1;
 	}
 	
-	wxArrayTreeItemIds mySelecteds;
-	GetSelections(mySelecteds);
-	
+	wxTreeItemId selected = GetSelection();
 	wxTreeItemIdValue cookie;
 	
 	int iTotalLayers = GetCountLayers();
-	if (iTotalLayers == 0)
-	{
+	if (iTotalLayers == 0){
 		wxLogDebug(_T("Not able to count layers or layers count = 0"));
 		return -1;
 	}
 	
 	
 	wxTreeItemId child; 
-	for (int i = 0; i < iTotalLayers; i++)
-	{
+	for (int i = 0; i < iTotalLayers; i++){
 		if (i == 0)
 			child = GetFirstChild(m_root, cookie);
 		else
 			child = GetNextChild(m_root, cookie);
 		
-		if (child == mySelecteds.Item(0))
+		if (child == selected)
 			return i;
 		
 	}
@@ -494,6 +491,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 	tmLayerProperties * newinserteditemData = new tmLayerProperties (*item1_data);
 	
 	// inserting item to the new position
+	Freeze();
 	wxTreeItemId newinserteditem = InsertItem(m_root,
 											  newpos, 
 											  item1_text,
@@ -505,7 +503,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 	SelectItem(newinserteditem, true);
 	
 	Delete(item);
-	
+	Thaw();
 	return true;
 }
 
@@ -555,12 +553,13 @@ bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
 	wxFont item2_font = GetItemFont(item2);
 	
 	// swapping items
+	Freeze();
 	SetItemBold(item, item2_bold);
 	SetItemImage(item, item2_image);
 	SetItemText(item, item2_text);
 	SetItemData(item, item2_data);
 	SetItemFont(item, item2_font);
-	SelectItem(item, false);
+	//SelectItem(item, false);
 	
 	
 	SetItemBold(item2, item1_bold);
@@ -569,7 +568,8 @@ bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
 	SetItemData(item2, item1_data);
 	SetItemFont(item2, item1_font);
 	SelectItem(item2, true);
-	
+	Thaw();
+
 	
 	return true;
 }
@@ -616,17 +616,19 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 {
 	wxTreeItemId itemid = event.GetItem();
+	if(itemid.IsOk()==false){
+		return;
+	}
+
+	// select item where right click occur
+	Freeze();
+	UnselectAll();
+	SelectItem(itemid,true);
+	Thaw();
+
 	if (GetItemParent(itemid) != m_root)
 	{
 		wxLogDebug(_T("No menu for this item : Maybe the parent item ?"));
-		return;
-	}
-	
-	// only one item selected in the TOC ctrl otherwise no contextual menu
-	wxArrayTreeItemIds selection;
-	if (GetSelections(selection) != 1)
-	{
-		wxLogDebug(_T("No contextual menu allowed for more than one item"));
 		return;
 	}
 	
@@ -669,26 +671,23 @@ void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
 {
 	wxLogDebug(_T("Moving layers..."));
 	
-	wxArrayTreeItemIds mySelecteds;
-	GetSelections(mySelecteds);
+	wxTreeItemId selected = GetSelection();
 	
-	
-	switch (event.GetId())
-	{
+	switch (event.GetId()){
 		case ID_TOCMENU_MOVE_TOP:
-			MoveLayers(mySelecteds.Item(0), 0);
+			MoveLayers(selected, 0);
 			break;
 			
 		case ID_TOCMENU_MOVE_UP:
-			SwapLayers(mySelecteds.Item(0), GetSelectedPosition() -1);
+			SwapLayers(selected, GetSelectedPosition() -1);
 			break;
 			
 		case ID_TOCMENU_MOVE_DOWN:
-			SwapLayers(mySelecteds.Item(0), GetSelectedPosition() + 1);
+			SwapLayers(selected, GetSelectedPosition() + 1);
 			break;
 			
 		default:
-			MoveLayers(mySelecteds.Item(0), GetCountLayers());
+			MoveLayers(selected, GetCountLayers());
 			break;
 	}
 	
@@ -712,34 +711,33 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 {
 	if (event.CmdDown() && IsTOCReady())
 	{
-		wxArrayTreeItemIds selected;
+		wxTreeItemId itemid = GetSelection();
+		if(itemid.IsOk()==false){
+			return;
+		}
+		
 		wxCommandEvent evt (wxEVT_COMMAND_MENU_SELECTED);
 		int eventid = wxID_ANY;
-		if(GetSelections(selected) == 1)
-		{
-			switch (event.GetKeyCode())
-			{
-				case  WXK_HOME: // move layers to top
-					eventid =ID_TOCMENU_MOVE_TOP;
-					break;
-					
-				case WXK_PAGEUP: // move layers up
-					eventid = ID_TOCMENU_MOVE_UP;
-					break;
-					
-				case WXK_PAGEDOWN: // move layers down
-					eventid = ID_TOCMENU_MOVE_DOWN;
-					break;
+		switch (event.GetKeyCode()){
+			case  WXK_HOME: // move layers to top
+				eventid =ID_TOCMENU_MOVE_TOP;
+				break;
 
-				case WXK_END: // move layers to the bottom
-					eventid = ID_TOCMENU_MOVE_BOTTOM;
-					break;
-			}
+			case WXK_PAGEUP: // move layers up
+				eventid = ID_TOCMENU_MOVE_UP;
+				break;
+
+			case WXK_PAGEDOWN: // move layers down
+				eventid = ID_TOCMENU_MOVE_DOWN;
+				break;
+
+			case WXK_END: // move layers to the bottom
+				eventid = ID_TOCMENU_MOVE_BOTTOM;
+				break;
 		}
 		
 		if (eventid != wxID_ANY)
 		{
-			//wxCommandEvent evt2 (, ID_TOCMENU_MOVE_UP);
 			evt.SetId(eventid);
 			GetEventHandler()->AddPendingEvent(evt);
 			return; // do not propagate event.
@@ -792,13 +790,14 @@ void tmTOCCtrl::StartEditing ()
 		StopEditing(); // no message sent
 	
 	// get selected item
-	wxArrayTreeItemIds selection;
-	GetSelections(selection);
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
+	tmLayerProperties * item = GetSelectionLayer();
+	wxASSERT(item);
 	SetEditLayer(item);
+
+	
 	
 	//SwitchVisualEditingStyle(selection.Item(0), true);
-	SetItemStyle(selection.Item(0), item);
+	SetItemStyle(GetSelection(), item);
 	
 	m_ContextMenu->Check(ID_TOCMENU_EDIT_LAYER, true);
 	
@@ -861,18 +860,16 @@ void tmTOCCtrl::StopEditing (bool bSentmessage)
 void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 {
 	// get selected item
-	wxArrayTreeItemIds selection;
-	GetSelections(selection);
+	wxTreeItemId selected = GetSelection();
 
 	// check for item != root
-	wxTreeItemId myID = selection.Item(0);
-	if (myID == GetRootItem())
-	{
+	wxTreeItemId myID = selected;
+	if (myID == GetRootItem()){
 		wxLogError(_("Properties not availlable for project, select a layer."));
 		return;
 	}
 
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
 
 	wxASSERT(item->m_LayerSymbol);
 	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
@@ -889,11 +886,9 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
  *******************************************************************************/
 void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
 {
-	// get selected item
-	wxArrayTreeItemIds selection;
-	GetSelections(selection);
+	tmLayerProperties * item = GetSelectionLayer();
+	wxASSERT(item);
 	
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selection.Item(0));
 	// keep old value to avoid drawing if value not changed
 	int oldflags = item->m_DrawFlags;
 	
@@ -928,25 +923,15 @@ void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
  *******************************************************************************/
 void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 {
-	wxArrayTreeItemIds selectedarray;
-	unsigned int iNbSelectedItems = 0;
-	
-	iNbSelectedItems = GetSelections(selectedarray);
-	
-	// only one item actually, the first item from array
-	if(iNbSelectedItems == 0)
-	{
-		wxLogMessage(_("No layer selected, select a layer first"));
+	wxTreeItemId selected = GetSelection();
+	if(selected.IsOk() == false || selected == m_root){
+		wxLogMessage(_("No layer selected, or unable to delete selected layer"));
 		return;
 	}
 	
 	// not able to remove generic layers
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selectedarray.Item(0));
-	if (item == NULL)
-	{
-		wxLogError(_("Unable to remove the project. Select a layer"));
-		return;
-	}
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
+	wxASSERT(item);
 
 	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
 	{
@@ -957,8 +942,9 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
 	evt.SetExtraLong(item->m_LayerID);
 	UnselectAll();
-	// only delete the first selected layer 
-	if (RemoveLayer(selectedarray.Item(0), TRUE))
+
+
+	if (RemoveLayer(selected, TRUE))
 	{
 		GetEventHandler()->AddPendingEvent(evt);
 	}
