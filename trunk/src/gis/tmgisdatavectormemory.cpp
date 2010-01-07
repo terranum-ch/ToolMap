@@ -752,6 +752,7 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 	
 	if(database->DataBaseGetNextRowResult(row, row_length)==false)
 	{
+		database->DataBaseClearResults();
 		wxLogDebug(_T("No geometry found for id : %d"), oid);
 		return NULL;
 	}
