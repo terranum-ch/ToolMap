@@ -439,7 +439,7 @@ void tmEditManager::OnDrawDown(wxCommandEvent & event)
 void tmEditManager::OnDrawUp (wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
-	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
+    wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
 	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
 	
 	
@@ -1550,8 +1550,10 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
 	
 	// delete ids from database
 	wxArrayLong * mySelectedIds = m_SelectedData->GetSelectedValues();
-	if (mySelectedIds == NULL)
+	if (mySelectedIds == NULL){
 		return false;
+	}
+
 	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->m_LayerType);
 	m_pDB->DeleteAttribution(mySelectedIds, m_TOC->GetEditLayer()->m_LayerType);
 	delete mySelectedIds;

@@ -803,8 +803,9 @@ bool DataBase::DBGetNextRecord (MYSQL_ROW & record)
 
 bool DataBase::DBResultsNotNull ()
 {
-	if (m_MySQLRes == NULL)
+	if (m_MySQLRes == NULL){
 		return false;
+	}
 
 	return true;
 }
