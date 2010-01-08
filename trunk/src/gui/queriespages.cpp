@@ -489,6 +489,21 @@ QueriesPageGenericData::QueriesPageGenericData() {
 		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE l.OBJECT_ID NOT IN (SELECT generic_aat.OBJECT_GEOM_ID FROM generic_aat)"));
 	_Add(TOC_NAME_LINES, _("Line(s) with more than one attribut"),
 		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_aat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
+	_Add(TOC_NAME_LINES, _("Line(s) with one attribut"),
+		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_aat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) = 1)"));
+	_Add(TOC_NAME_POINTS, _("Point(s) without attributions"),
+		 _T("SELECT l.OBJECT_ID FROM generic_points l WHERE l.OBJECT_ID NOT IN (SELECT generic_pat.OBJECT_GEOM_ID FROM generic_pat)"));
+	_Add(TOC_NAME_POINTS, _("Point(s) with more than one attribut"),
+		 _T("SELECT l.OBJECT_ID FROM generic_points l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_pat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
+	_Add(TOC_NAME_POINTS, _("Point(s) with one attribut"),
+		 _T("SELECT l.OBJECT_ID FROM generic_points l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_pat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) = 1)"));
+	_Add(TOC_NAME_LABELS, _("Label(s) without attributions"),
+		 _T("SELECT l.OBJECT_ID FROM generic_labels l WHERE l.OBJECT_ID NOT IN (SELECT generic_lat.OBJECT_GEOM_ID FROM generic_lat)"));
+	_Add(TOC_NAME_LABELS, _("Label(s) with more than one attribut"),
+		 _T("SELECT l.OBJECT_ID FROM generic_labels l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_lat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
+	_Add(TOC_NAME_LABELS, _("Label(s) with one attribut"),
+		 _T("SELECT l.OBJECT_ID FROM generic_labels l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_lat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) = 1)"));
+	
 }
 
 QueriesPageGenericData::~QueriesPageGenericData() {
