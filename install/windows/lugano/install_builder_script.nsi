@@ -94,20 +94,20 @@ Section "SectionPrincipale" SEC01
   Call CheckToolMapRuning
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "..\..\..\..\bin\win32_VS2008\Debug\ToolMap2.exe"
-  File "..\..\..\..\bin\win32_VS2008\Debug\ToolMap2.pdb"
+  File "..\..\..\..\bin\prod\Debug\ToolMap2.exe"
+  File "..\..\..\..\bin\prod\Debug\ToolMap2.pdb"
   File "D:\LS\PROGRAMATION\ToolBasView\bin\Debug\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap 2"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  File "..\..\..\..\bin\win32_VS2008\Debug\gdal16.dll"
-  File "..\..\..\..\bin\win32_VS2008\Debug\geos_c.dll"
-  File "..\..\..\..\bin\win32_VS2008\Debug\libmysqld.dll"
-  File "..\..\..\..\bin\win32_VS2008\Debug\libcurld.dll"
+  File "..\..\..\..\bin\prod\Debug\gdal16.dll"
+  File "..\..\..\..\bin\prod\Debug\geos_c.dll"
+  File "..\..\..\..\bin\prod\Debug\libmysqld.dll"
+  File "..\..\..\..\bin\prod\Debug\libcurld.dll"
   CreateDirectory "$INSTDIR\mysql"
   SetOutPath "$INSTDIR\mysql"
-  File "..\..\..\..\bin\win32_VS2008\Debug\mysql\errmsg.sys"
+  File "..\..\..\..\bin\prod\Debug\mysql\errmsg.sys"
 SectionEnd
 
 Section -AdditionalIcons
