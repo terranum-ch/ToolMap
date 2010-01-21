@@ -156,6 +156,7 @@ private:
     DataBaseTM * m_pDB;
 	wxListBox* m_ListType;
 
+	PrjMemObjectsArray m_Objects;
 	
     void _CreateControls();
 	

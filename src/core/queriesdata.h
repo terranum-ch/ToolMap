@@ -39,13 +39,14 @@ enum tmQUERIES_TYPE {
 };
 
 
-struct QueriesData {
+class QueriesData {
 private:
     bool _IsQueryLayersCorrect();
     bool _IsQuerySelectedCorrect();
     bool _IsQueryGenericCorrect();
     bool _IsQuerySQLCorrect();
-	
+	bool _IsQueryObjectCorrect();
+
 	
   public:
     tmQUERIES_TYPE m_QueryType;
@@ -79,7 +80,8 @@ private:
 	bool IsGenericLayer(DataBaseTM * database, long dblayerID);
 	
 	bool GetLayers(DataBaseTM * database, PrjMemLayersArray & layers);
-	bool GetTypes(DataBaseTM * database, PrjMemObjectsArray & types);
+	bool GetObjectsForSelection(DataBaseTM * database, PrjMemObjectsArray & objects);
+	bool GetObjectsForTypes(DataBaseTM * database, PrjMemObjectsArray & objects);
 	bool GetParentLayer(DataBaseTM * database, long & layerid);
 	bool GetFieldsValues(DataBaseTM * database, long layerid,
 						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);

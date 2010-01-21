@@ -1483,10 +1483,10 @@ bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 	
 	if (DataBaseQuery(sSentence))
 	{
-		return TRUE;
+		return true;
 	}
-	wxLogDebug(_T("Error getting the list of object by layertype : %s"), sSentence.c_str());
-	return FALSE;
+	wxLogError(_T("Error getting the list of object by layertype : %s"), sSentence.c_str());
+	return false;
 	
 }
 

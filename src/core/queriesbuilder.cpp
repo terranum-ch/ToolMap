@@ -102,6 +102,17 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 
 
 
+
+bool QueriesBuilder::_CreateObjectQuery() {
+	wxString myBaseQuery = wxString::Format(_T("SELECT OBJECT_GEOM_ID from %s WHERE OBJECT_VAL_ID = %d"),
+											TABLE_NAME_GIS_ATTRIBUTION[m_QueryData->m_QueryLayerType].c_str(),
+											m_QueryData->m_QueryObjectID);
+	m_QueryData->m_QuerySQL = myBaseQuery;
+	return true;
+}
+
+
+
 QueriesBuilder::QueriesBuilder(QueriesData * query) {
 	wxASSERT(query);
 	m_QueryData = query;
@@ -158,6 +169,13 @@ bool QueriesBuilder::Create(DataBaseTM * database) {
 			_CreateSelectionQuery();
 			m_IsCreated = true;
 			break;
+			
+			
+		case QUERY_OBJECTS:
+			_CreateObjectQuery();
+			m_IsCreated = true;
+			break;
+
 			
 		default:
 			wxLogError(_T("Unsupported query type"));

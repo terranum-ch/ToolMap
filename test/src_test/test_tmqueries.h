@@ -39,6 +39,7 @@ public:
 	QueriesData * m_DataSelected;
 	QueriesData * m_DataGeneric;
 	QueriesData * m_DataSQL;
+	QueriesData * m_DataObjects;
 	
 	DataBaseTM * m_pDB;
 	
@@ -88,6 +89,14 @@ public:
 		// query for selecting all lines wo attribution.
 		m_DataSQL->m_QueryLayerType = TOC_NAME_LINES;
 		m_DataSQL->m_QuerySQL = _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE l.OBJECT_ID NOT IN (SELECT generic_aat.OBJECT_GEOM_ID FROM generic_aat)"); // Faille
+		
+		
+		// setup for object data
+		m_DataObjects = new QueriesData();
+		m_DataObjects->m_QueryType = QUERY_OBJECTS;
+		m_DataObjects->m_QueryName = _T("Test Object Query");
+		m_DataObjects->m_QueryLayerType = TOC_NAME_LINES;
+		
 		
 		
 	}
@@ -205,7 +214,7 @@ public:
 		PrjMemObjectsArray myTypes;
 		
 		// lignes n.231 (Faille et Border of Rocks_PLG)
-		TS_ASSERT(m_DataSelected->GetTypes(m_pDB, myTypes));
+		TS_ASSERT(m_DataSelected->GetObjectsForSelection(m_pDB, myTypes));
 		TS_ASSERT_EQUALS(myTypes.GetCount(),2);
 		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectName, _T("faille"));
 		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectID, 32);
@@ -372,7 +381,6 @@ public:
 	
 	
 	void testAllAttribsEmpty(){
-		wxLogMessage(_T("Testing all attributs empty"));
 		
 		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),false);
 
@@ -393,6 +401,61 @@ public:
 												  m_DataSelected->m_QueryFields,
 												  m_DataSelected->m_QueryFieldsValues)==true);
 		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),true);
+	}
+	
+	
+	void testGetObjForTypes(){
+		
+		PrjMemObjectsArray myObjects;
+		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
+		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
+		wxLogMessage(_T("%d objects returned for types : %s"),
+					 myObjects.GetCount(),
+					 PRJDEF_LAYERS_TYPE_STRING[m_DataSelected->m_QueryLayerType].c_str());
+		
+		
+		m_DataObjects->m_QueryLayerType = TOC_NAME_POINTS;
+		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
+		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
+		wxLogMessage(_T("%d objects returned for types : %s"),
+					 myObjects.GetCount(),
+					 PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
+		
+		m_DataObjects->m_QueryLayerType = TOC_NAME_LABELS;
+		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
+		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
+		wxLogMessage(_T("%d objects returned for types : %s"),
+					 myObjects.GetCount(),
+					 PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
+		
+		
+	}
+	
+	
+	void testQueryObjectOk(){
+		wxLogMessage(_T("Testing objects Query OK"));
+		
+		TS_ASSERT_EQUALS(m_DataObjects->IsOk(),false);
+		m_DataObjects->m_QueryObjectID = 32;
+		TS_ASSERT_EQUALS(m_DataObjects->IsOk(),true);
+	}
+	
+	
+	void testQueryObjectSave(){
+		
+		m_DataObjects->m_QueryObjectID = 32;
+		QueriesBuilder myBuilder(m_DataObjects);
+		
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving  Object queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
 	}
 		
 };

@@ -41,7 +41,8 @@ class QueriesBuilder {
 	// private creating function
 	bool _CreateLayersQuery();
     bool _CreateSelectionQuery();
-	
+	bool _CreateObjectQuery();
+
 
 
   public:
