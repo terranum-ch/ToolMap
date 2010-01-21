@@ -36,6 +36,11 @@ class QueriesPageSelection;
 class QueriesPageExpert;
 class QueriesPageAttribut;
 class QueriesPageSQL;
+class QueriesPageObject;
+class QueriesPageObjectType;
+
+
+const int QUERIES_MARGIN_SIZE = 20;
 
 
 class QueriesGeneric {
@@ -61,6 +66,8 @@ private:
 	QueriesPageExpert * m_PageExpert;
 	QueriesPageAttribut * m_PageSelectionAttribut;
 	QueriesPageSQL * m_PageExpertSQL;
+	QueriesPageObject * m_PageObject;
+	QueriesPageObjectType * m_PageObjectType;
 	
 	
 	// event function
@@ -94,6 +101,8 @@ private:
 	
 	PrjMemLayersArray m_Layers;
 
+	void _CreateControls();
+
 public:
      QueriesPageLayer(QueriesWizard * parent, DataBaseTM * database, wxWizardPage * prev, wxWizardPage * next);
 	
@@ -103,8 +112,66 @@ public:
 	
     virtual bool TransferDataFromWindow();
 	
-    void CreateControls();
+    
 };
+
+
+
+
+/***************************************************************************//**
+Choose spatial type of Objects
+Lucien Schreiber (c) CREALP 2010
+21 janvier 2010
+*******************************************************************************/
+class QueriesPageObjectType : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+    DataBaseTM * m_pDB;
+	wxRadioBox* m_LayerType;
+	
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageObjectType(QueriesWizard * parent, DataBaseTM * database,
+						  wxWizardPage * prev, wxWizardPage * next);
+    ~QueriesPageObjectType();
+	
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+
+/***************************************************************************//**
+Choose object value
+Lucien Schreiber (c) CREALP 2010
+21 janvier 2010
+*******************************************************************************/
+class QueriesPageObject : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+    DataBaseTM * m_pDB;
+	wxListBox* m_ListType;
+
+	
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageObject(QueriesWizard * parent, DataBaseTM * database, wxWizardPage * prev, wxWizardPage * next);
+    ~QueriesPageObject();
+	
+    virtual bool TransferDataToWindow();
+	
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
 
 
 
@@ -255,6 +322,7 @@ public:
 class QueriesPageName : public wxWizardPageSimple {
 private:
 	wxTextCtrl* m_TextName;
+	wxCheckBox* m_RunQueryBox;
 	QueriesWizard * m_Parent;
 	
     void _CreateControls();
