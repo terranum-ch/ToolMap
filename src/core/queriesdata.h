@@ -31,12 +31,14 @@
 
 
 enum tmQUERIES_TYPE {
-  QUERY_LAYERS,
-  QUERY_SELECTED,
-  QUERY_GENERIC,
-  QUERY_SQL
-
+	QUERY_LAYERS,
+	QUERY_OBJECTS,
+	QUERY_SELECTED,
+	QUERY_GENERIC,
+	QUERY_SQL
 };
+
+
 struct QueriesData {
 private:
     bool _IsQueryLayersCorrect();
