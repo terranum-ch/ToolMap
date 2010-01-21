@@ -116,6 +116,29 @@ bool QueriesData::_IsQuerySQLCorrect() {
 }
 
 
+bool QueriesData::_IsQueryObjectCorrect() {
+	wxASSERT(m_QueryType == QUERY_OBJECTS);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryObjectID == wxNOT_FOUND) {
+		wxLogError(_T("No object ID specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryLayerType < TOC_NAME_LINES || m_QueryLayerType > TOC_NAME_LABELS) {
+		wxLogError(_T("No layer ID specified"));
+		return false;
+	}
+	
+	return true;
+}
+
+
+
 
 QueriesData::QueriesData() {
 	m_QueryName = wxEmptyString;
@@ -151,6 +174,11 @@ bool QueriesData::IsOk() {
 		case QUERY_SQL:
 			return _IsQuerySQLCorrect();
 			break;
+			
+		case QUERY_OBJECTS:
+			return _IsQueryObjectCorrect();
+			break;
+
 			
 		default:
 			wxLogError(_T("Query Type not supported !"));
@@ -226,9 +254,9 @@ bool QueriesData::GetLayers(DataBaseTM * database, PrjMemLayersArray & layers) {
 }
 
 
-bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
+bool QueriesData::GetObjectsForSelection(DataBaseTM * database, PrjMemObjectsArray & objects) {
 	wxASSERT(database);
-	wxASSERT(types.GetCount() == 0);
+	wxASSERT(objects.GetCount() == 0);
 	
 	
 	
@@ -259,16 +287,60 @@ bool QueriesData::GetTypes(DataBaseTM * database, PrjMemObjectsArray & types) {
 			delete myObj;
 			return false;
 		}
-		types.Add(myObj);
+		objects.Add(myObj);
 	}
 	database->DataBaseClearResults();
 	
-	if (types.GetCount() > 0) {
+	if (objects.GetCount() > 0) {
 		return true;
 	}
 
 	return false;
 }
+
+
+
+bool QueriesData::GetObjectsForTypes(DataBaseTM * database, PrjMemObjectsArray & objects) {
+	wxASSERT(database);
+	wxASSERT(m_QueryLayerType >= TOC_NAME_LINES && m_QueryLayerType <= TOC_NAME_LABELS);
+	objects.Clear();
+	
+
+	if (database->GetObjectListByLayerType(m_QueryLayerType, true)==false) {
+		wxASSERT(database->DataBaseHasResults()==false);
+		return false;
+	}
+	
+	// process results
+	long myRow = 0;
+	if(database->DataBaseGetResultSize(NULL, &myRow)==false){
+		wxLogError(_T("No results returned for %s"), PRJDEF_LAYERS_TYPE_STRING[m_QueryLayerType].c_str());
+		return false;
+	}
+	
+	
+	for (int i = 0; i<myRow; i++){
+		ProjectDefMemoryObjects * myObj = new ProjectDefMemoryObjects();
+		if (database->DataBaseGetNextResultAsObject(myObj, -1)==false){
+			database->DataBaseClearResults();
+			delete myObj;
+			return false;
+		}
+		objects.Add(myObj);
+	}
+	database->DataBaseClearResults();
+	
+	if (objects.GetCount() > 0) {
+		return true;
+	}
+	
+	return false;
+
+}
+
+
+
+
 
 
 bool QueriesData::GetParentLayer(DataBaseTM * database, long & layerid){

@@ -281,10 +281,14 @@ QueriesPageObjectType::~QueriesPageObjectType() {
 }
 
 bool QueriesPageObjectType::TransferDataToWindow() {
+	m_LayerType->SetSelection(m_Parent->GetData()->m_QueryLayerType);
 	return true;
 }
 
 bool QueriesPageObjectType::TransferDataFromWindow() {
+	int mySelection = m_LayerType->GetSelection();
+	wxASSERT(mySelection >= TOC_NAME_LINES && mySelection <= TOC_NAME_LABELS);
+	m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) mySelection;
 	return true;
 }
 
@@ -331,11 +335,35 @@ QueriesPageObject::~QueriesPageObject() {
 
 
 bool QueriesPageObject::TransferDataToWindow() {
+	m_ListType->Freeze();
+	m_ListType->Clear();
+	
+	if (m_Parent->GetData()->GetObjectsForTypes(m_pDB, m_Objects)==false) {
+		m_ListType->Thaw();
+		return true;
+	}
+	
+	for (unsigned int i = 0; i< m_Objects.GetCount(); i++) {
+		m_ListType->Append(m_Objects.Item(i).m_ObjectName);
+	}
+	
+	m_ListType->SetSelection(0);
+	m_ListType->Thaw();
 	return true;
 }
 
 
 bool QueriesPageObject::TransferDataFromWindow() {
+	
+	if (m_ListType->GetCount() == 0) {
+		return true;
+	}
+	
+	
+	int myIndex = m_ListType->GetSelection();
+	wxASSERT(myIndex != wxNOT_FOUND);
+	wxASSERT(m_Objects.GetCount() > 0);
+	m_Parent->GetData()->m_QueryObjectID = m_Objects.Item(myIndex).m_ObjectID;
 	return true;
 }
 
@@ -388,7 +416,7 @@ QueriesPageSelection::~QueriesPageSelection() {
 bool QueriesPageSelection::TransferDataToWindow() {
 	
 	if (m_SelTypeList->IsEmpty()) {
-		if(m_Parent->GetData()->GetTypes(m_pDB, m_Types)){
+		if(m_Parent->GetData()->GetObjectsForSelection(m_pDB, m_Types)){
 			m_SelTypeList->Freeze();
 			for (unsigned int i = 0; i< m_Types.GetCount(); i++) {
 				m_SelTypeList->Append(m_Types.Item(i).m_ObjectName);
