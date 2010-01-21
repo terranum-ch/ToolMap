@@ -10,6 +10,7 @@
 
 #PARAMETERS
 VARBINDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin/32_rel"
+VARBINDIR_DBG="/Users/lucien/DATA/PRJ/TOOLMAP2/bin/32_dbg"
 VARTRUNKDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/trunk"
 VARINSTALLERDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin"
 VARLINE="----------------------------------"
@@ -29,6 +30,37 @@ echo '1) Getting last SVN version... DONE (\c'
 echo  $VARSVNNUMBER ')'	
 echo $VARLINE
 
+
+# DEBUG VERSION
+#update cmake project file
+echo "2) Updating cmake file...(DEBUG)"
+cmake $VARBINDIR_DBG
+echo "2) Updating cmake file... DONE"
+echo $VARLINE
+
+#compiling project
+echo "3)Building project..."
+cd $VARBINDIR_DBG
+xcodebuild -configuration Debug
+echo "3)Building project... DONE"
+echo $VARLINE
+
+
+echo -n "Build release version and installer (y/n) ?"
+read value
+
+if (("$value" == "n")) 
+then 
+exit 0 
+fi
+
+
+
+
+
+
+
+#RELEASE VERSION
 #update cmake project file
 echo "2) Updating cmake file..."
 cmake $VARBINDIR
