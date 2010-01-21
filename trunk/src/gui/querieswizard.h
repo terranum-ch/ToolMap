@@ -57,7 +57,7 @@ public:
 public:
 	
     QueriesWizard(wxWindow * parent, DataBaseTM * database, int id = wxID_ANY);
-    ~QueriesWizard();
+    virtual ~QueriesWizard();
 	virtual int ShowWizard();
 	
 	inline QueriesData * GetData();

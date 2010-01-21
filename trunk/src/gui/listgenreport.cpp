@@ -626,7 +626,7 @@ ListGenReport(parent, id, size)
 
 ListGenReportWithDialog::~ListGenReportWithDialog()
 {
-	
+	wxASSERT(m_pDialog == NULL);
 }
 
 
@@ -913,6 +913,11 @@ void ListGenReportWithDialog::AddItem()
 		AfterAdding(FALSE);
 	
 	
+	// delete dialog after use
+	wxASSERT(m_pDialog);
+	delete m_pDialog;
+	m_pDialog = NULL;
+	
 }
 
 
@@ -936,6 +941,11 @@ void ListGenReportWithDialog::EditItem()
 	else
 		AfterEditing(FALSE);
 	
+	
+	// delete dialog after use
+	wxASSERT(m_pDialog);
+	delete m_pDialog;
+	m_pDialog = NULL;
 	
 	
 }
