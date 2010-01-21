@@ -49,7 +49,7 @@ echo $VARLINE
 echo -n "Build release version and installer (y/n) ?"
 read value
 
-if (("$value" == "n")) 
+if [ "$value" == "n" ]  
 then 
 exit 0 
 fi
