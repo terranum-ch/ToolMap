@@ -345,6 +345,10 @@ void QueriesList::AddItem()
 	else
 		AfterAdding(FALSE);
 	
+	// delete dialog after use
+	wxASSERT(m_pDialog);
+	delete m_pDialog;
+	m_pDialog = NULL;
 	
 }
 
@@ -394,7 +398,7 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 		if (myBuilder.IsOk()==false) {
 			wxMessageBox(_("Error with the query. Please see Log for more informations"),
 						 _("Query error"), wxOK | wxICON_ERROR);
-			delete m_pDialog;
+			//delete m_pDialog;
 			return;
 		}
 		
@@ -403,7 +407,7 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 		if (myBuilder.Create(m_pDB)==false){
 			wxMessageBox(_("Error creating the query. Please see Log for more informations"),
 						 _("Query error"), wxOK | wxICON_ERROR);
-			delete m_pDialog;
+			//delete m_pDialog;
 			return;
 		}
 		
@@ -411,7 +415,7 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 		if (myBuilder.Save(m_pDB)==false) {
 			wxMessageBox(_("Error saving the query. Please see Log for more informations"),
 						 _("Query error"), wxOK | wxICON_ERROR);
-			delete m_pDialog;
+			//delete m_pDialog;
 			return;
 			
 		}
@@ -425,7 +429,8 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 		}
 	}
 	
-	delete m_pDialog;
+	// dialog deleted by base class
+	//delete m_pDialog;
 	
 }
 
