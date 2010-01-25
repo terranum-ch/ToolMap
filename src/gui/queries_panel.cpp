@@ -426,6 +426,23 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 		if (myID != wxNOT_FOUND) {
 			AddItemToList(pWizard->GetData()->m_QueryName, -1);
 			SetItemData(GetItemCount()-1, myID);
+			
+			if (pWizard->GetData()->m_QueryRun == true) {
+				
+				// unselecting all
+				Freeze();
+				for (int i = 0; i<GetItemCount(); i++) {
+					SetItemState(i, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
+				}
+				
+				// selecting query
+				SetItemState(GetItemCount()-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+				Thaw();
+				
+				// running
+				wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
+				GetEventHandler()->AddPendingEvent(evt2);
+			}
 		}
 	}
 	

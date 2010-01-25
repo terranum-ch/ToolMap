@@ -72,6 +72,9 @@ private:
     //Expert panel only
     TOC_GENERIC_NAME m_QueryLayerType;
 
+	bool m_QueryRun;
+
+
     QueriesData();
 
     ~QueriesData();

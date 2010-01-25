@@ -851,11 +851,13 @@ void QueriesPageName::_CreateControls() {
 
 bool QueriesPageName::TransferDataToWindow() {
 	m_TextName->SetValue(m_Parent->GetData()->m_QueryName);
+	m_RunQueryBox->SetValue(m_Parent->GetData()->m_QueryRun);
 	return true;
 }
 
 bool QueriesPageName::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QueryName = m_TextName->GetValue();
+	m_Parent->GetData()->m_QueryRun = m_RunQueryBox->IsChecked();
 	return true;
 }
 

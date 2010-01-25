@@ -50,32 +50,32 @@ DECLARE_EVENT_TYPE(tmEVT_QUERY_MENU,-1)
 
 
 class QueriesList : public ListGenReportWithDialog
-	{
-	private:
-		DataBaseTM * m_pDB;
-		tmSelectedDataMemory * m_Selected;
-		
-		virtual void BeforeAdding();
-		virtual void AfterAdding (bool bRealyAddItem);
-		virtual void BeforeDeleting ();
-		virtual void BeforeEditing ();
-		virtual void AfterEditing (bool bRealyEdited);
-		
-	protected:
-	public:
-		QueriesList (wxWindow * parent,
-					 wxWindowID id,
-					 wxArrayString * pColsName, 
-					 wxArrayInt * pColsSize=NULL,
-					 wxSize size = wxDefaultSize);
-		~QueriesList();
-		
-		// setter
-		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
-		void SetSelected (tmSelectedDataMemory * selected) {m_Selected = selected;}
-		virtual void AddItem ();
-
-	};
+{
+private:
+	DataBaseTM * m_pDB;
+	tmSelectedDataMemory * m_Selected;
+	
+	virtual void BeforeAdding();
+	virtual void AfterAdding (bool bRealyAddItem);
+	virtual void BeforeDeleting ();
+	virtual void BeforeEditing ();
+	virtual void AfterEditing (bool bRealyEdited);
+	
+protected:
+public:
+	QueriesList (wxWindow * parent,
+				 wxWindowID id,
+				 wxArrayString * pColsName, 
+				 wxArrayInt * pColsSize=NULL,
+				 wxSize size = wxDefaultSize);
+	~QueriesList();
+	
+	// setter
+	void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+	void SetSelected (tmSelectedDataMemory * selected) {m_Selected = selected;}
+	virtual void AddItem ();
+	
+};
 
 
 

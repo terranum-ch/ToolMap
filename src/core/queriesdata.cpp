@@ -151,6 +151,7 @@ QueriesData::QueriesData() {
 	m_QueryFields.Clear();
 	m_QueryFieldsValues.Clear();
 	m_QueryUseFields = false;
+	m_QueryRun = true;
 }
 
 QueriesData::~QueriesData() {
