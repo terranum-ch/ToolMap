@@ -216,6 +216,9 @@ bool QueriesPageLayer::TransferDataFromWindow() {
 		
 		m_Parent->GetData()->m_QueryLayerID =  m_Layers.Item(iNum).m_LayerID;
 		m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_Layers.Item(iNum).m_LayerType;
+		
+		m_Parent->GetData()->m_QueryName = _("Layer - ") +  m_Layers.Item(iNum).m_LayerName;
+		
 	}
 	return true;
 }
@@ -364,6 +367,9 @@ bool QueriesPageObject::TransferDataFromWindow() {
 	wxASSERT(myIndex != wxNOT_FOUND);
 	wxASSERT(m_Objects.GetCount() > 0);
 	m_Parent->GetData()->m_QueryObjectID = m_Objects.Item(myIndex).m_ObjectID;
+	
+	m_Parent->GetData()->m_QueryName = _("Type - ") + m_Objects.Item(myIndex).m_ObjectName;
+	
 	return true;
 }
 
