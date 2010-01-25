@@ -39,6 +39,8 @@ class QueriesPageSQL;
 class QueriesPageObject;
 class QueriesPageObjectType;
 
+class ListGenReport;
+
 
 const int QUERIES_MARGIN_SIZE = 20;
 
@@ -93,10 +95,24 @@ public:
 
 
 
+class QueriesLayerList : public ListGenReport {
+public:
+    QueriesLayerList(wxWindow * parent, wxWindowID id, wxSize size = wxDefaultSize);
+    virtual ~QueriesLayerList();
+	
+	void SetSelection(long index, bool selected = true);
+
+};
+
+
+
+
+
+
 class QueriesPageLayer : public wxWizardPageSimple {
 private:
 	QueriesWizard * m_Parent;
-	wxListBox * m_ListLayers;
+	QueriesLayerList * m_ListLayers;
 	DataBaseTM * m_pDB;
 	
 	PrjMemLayersArray m_Layers;

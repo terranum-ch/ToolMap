@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "queriespages.h"
+#include "listgenreport.h"
 
 
 
@@ -165,6 +166,43 @@ bool QueriesPageIntro::TransferDataFromWindow() {
 
 
 
+QueriesLayerList::QueriesLayerList(wxWindow * parent, wxWindowID id, wxSize size) :
+ListGenReport(parent, id, size){
+	
+	wxArrayString myColNames;
+	wxArrayInt myColsWidths;
+	
+	myColNames.Add(_("Name"));
+	myColNames.Add(_("Type"));
+	
+	myColsWidths.Add(200);
+	myColsWidths.Add(90);
+	
+	CreateColumns(&myColNames, &myColsWidths);
+	
+}
+
+
+QueriesLayerList::~QueriesLayerList() {
+}
+
+void QueriesLayerList::SetSelection(long index, bool selected) {
+	if (selected == true) {
+		SetItemState(index, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+	}	
+	else {
+		SetItemState(index, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
+	}
+}
+
+
+
+
+
+
+
+
+
 
 QueriesPageLayer::QueriesPageLayer(QueriesWizard * parent, 
 								   DataBaseTM * database,
@@ -188,15 +226,37 @@ QueriesPageLayer::~QueriesPageLayer() {
 
 bool QueriesPageLayer::TransferDataToWindow() {
 	
-	if (m_ListLayers->IsEmpty()) {
+	if (m_ListLayers->GetItemCount() == 0) {
 		m_Layers.Clear();
 		if(m_Parent->GetData()->GetLayers(m_pDB, m_Layers)==true)
 		{
+			// create lines layers for all polygons layers
+			// those layers are only used for creating queries
+			unsigned int j = 0;
+			while (1) {
+				if (j >= m_Layers.GetCount()) {
+					break;
+				}
+				if(m_Layers.Item(j).m_LayerType == LAYER_POLYGON){
+					ProjectDefMemoryLayers myLayer;
+					myLayer = m_Layers.Item(j);
+					myLayer.m_LayerType = LAYER_LINE;
+					j++;
+					m_Layers.Insert(myLayer, j);
+				}
+				
+				j++;
+			}
+			
+
 			m_ListLayers->Freeze();
+			
 			for (unsigned int i = 0; i<m_Layers.GetCount(); i++) {
-				m_ListLayers->Append(m_Layers.Item(i).m_LayerName);
-			}	
-			m_ListLayers->SetSelection(0);
+				m_ListLayers->AddItemToList(m_Layers.Item(i).m_LayerName);
+				m_ListLayers->SetItemText(i, 1, TOC_GENERIC_NAME_STRING[m_Layers.Item(i).m_LayerType]);
+			}
+			
+			m_ListLayers->SetSelection(0, true);
 			m_ListLayers->Thaw();
 		}
 		else{
@@ -210,18 +270,21 @@ bool QueriesPageLayer::TransferDataToWindow() {
 
 
 
+
 bool QueriesPageLayer::TransferDataFromWindow() {
-	int iNum = m_ListLayers->GetSelection();
+	long iNum = m_ListLayers->GetSelectedItem();
+	wxASSERT(iNum != wxNOT_FOUND);
 	if (m_Layers.GetCount() > 0) {
 		
 		m_Parent->GetData()->m_QueryLayerID =  m_Layers.Item(iNum).m_LayerID;
 		m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_Layers.Item(iNum).m_LayerType;
-		
+	
 		m_Parent->GetData()->m_QueryName = _("Layer - ") +  m_Layers.Item(iNum).m_LayerName;
 		
 	}
 	return true;
 }
+
 
 
 
@@ -237,7 +300,7 @@ void QueriesPageLayer::_CreateControls() {
 	m_staticText2->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer3->Add( m_staticText2, 0, wxALL, 5 );
 	
-	m_ListLayers = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SINGLE ); 
+	m_ListLayers = new QueriesLayerList(this, wxID_ANY, wxDefaultSize);
 	bSizer3->Add( m_ListLayers, 1, wxALL|wxEXPAND, 5 );
 	
 	SetSizer(bSizer3);
