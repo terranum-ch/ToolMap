@@ -40,6 +40,8 @@ public:
 	QueriesData * m_DataGeneric;
 	QueriesData * m_DataSQL;
 	QueriesData * m_DataObjects;
+	QueriesData * m_DataGeomLine;
+	QueriesData * m_DataGeomNode;
 	
 	DataBaseTM * m_pDB;
 	
@@ -97,6 +99,15 @@ public:
 		m_DataObjects->m_QueryName = _T("Test Object Query");
 		m_DataObjects->m_QueryLayerType = TOC_NAME_LINES;
 		
+		// setup for geom queries
+		m_DataGeomLine = new QueriesData();
+		m_DataGeomLine->m_QueryType = QUERY_LINES;
+		m_DataGeomLine->m_QueryName = _T("Test Line Query");
+		//m_DataGeomLine->m_QueryLineSize = 10; // all lines smaller than this value
+		
+		m_DataGeomNode = new QueriesData();
+		m_DataGeomNode->m_QueryType = QUERY_NODES;
+		m_DataGeomNode->m_QueryName = _T("Test node query");
 		
 		
 	}
@@ -107,6 +118,9 @@ public:
 		delete m_DataSelected;
 		delete m_DataGeneric;
 		delete m_DataSQL;
+		delete m_DataObjects;
+		delete m_DataGeomLine;
+		delete m_DataGeomNode;
 	}
 
 		
@@ -432,9 +446,7 @@ public:
 	}
 	
 	
-	void testQueryObjectOk(){
-		wxLogMessage(_T("Testing objects Query OK"));
-		
+	void testQueryObjectOk(){		
 		TS_ASSERT_EQUALS(m_DataObjects->IsOk(),false);
 		m_DataObjects->m_QueryObjectID = 32;
 		TS_ASSERT_EQUALS(m_DataObjects->IsOk(),true);
@@ -458,6 +470,55 @@ public:
 		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
 	}
 		
+	void testQueryGeomOk(){
+		
+		TS_ASSERT(m_DataGeomLine->IsOk()==true);
+		TS_ASSERT(m_DataGeomNode->IsOk()==true);
+	}
+	
+	void testQueryLineBuild(){
+		wxLogMessage(_T("Testing Geometry Query OK"));
+		
+		QueriesBuilder myBuilder(m_DataGeomLine);
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+	}
+	
+	void testQueryLineSizeSave(){
+		
+		QueriesBuilder myBuilder(m_DataGeomLine);
+		
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving  Line Size queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+	}
+	
+	
+	void testQueryNodeNumberSave(){
+		
+		QueriesBuilder myBuilder(m_DataGeomNode);
+		
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving  Node number queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+	}
+	
+	
+	
 };
 
 

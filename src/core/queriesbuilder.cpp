@@ -113,6 +113,25 @@ bool QueriesBuilder::_CreateObjectQuery() {
 
 
 
+bool QueriesBuilder::_CreateGeomLineQuery() {
+	wxString myQuery = wxString::Format(_T("SELECT geom.OBJECT_ID  FROM %s geom WHERE GLength(OBJECT_GEOMETRY) < %d"),
+										TABLE_NAME_GIS_GENERIC[0].c_str(), // allways lines
+										m_QueryData->m_QueryLineSize);
+	m_QueryData->m_QuerySQL = myQuery;
+	return true;
+}
+
+bool QueriesBuilder::_CreateGeomNodeQuery() {
+	wxString myQuery = wxString::Format(_T("SELECT geom.OBJECT_ID  FROM %s geom WHERE NumPoints(OBJECT_GEOMETRY) < %d"),
+										TABLE_NAME_GIS_GENERIC[0].c_str(),
+										m_QueryData->m_QueryNodeNumber);
+	m_QueryData->m_QuerySQL = myQuery;
+	return true;
+}
+
+
+
+
 QueriesBuilder::QueriesBuilder(QueriesData * query) {
 	wxASSERT(query);
 	m_QueryData = query;
@@ -173,6 +192,16 @@ bool QueriesBuilder::Create(DataBaseTM * database) {
 			
 		case QUERY_OBJECTS:
 			_CreateObjectQuery();
+			m_IsCreated = true;
+			break;
+			
+		case QUERY_LINES:
+			_CreateGeomLineQuery();
+			m_IsCreated = true;
+			break;
+			
+		case QUERY_NODES:
+			_CreateGeomNodeQuery();
 			m_IsCreated = true;
 			break;
 

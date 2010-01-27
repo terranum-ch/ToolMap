@@ -980,10 +980,17 @@ QueriesPageGeomLine::~QueriesPageGeomLine() {
 }
 
 bool QueriesPageGeomLine::TransferDataToWindow() {
+	m_SpinLineSize->SetValue(m_Parent->GetData()->m_QueryLineSize);
+	m_SpinLineSize->SetFocus();
 	return true;
 }
 
 bool QueriesPageGeomLine::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QueryLineSize = m_SpinLineSize->GetValue();
+	
+	// offer a name
+	m_Parent->GetData()->m_QueryName = wxString::Format(_("Geom - Lines smaller than %d"),
+														m_SpinLineSize->GetValue());
 	return true;
 }
 
@@ -1021,14 +1028,20 @@ QueriesPageGeomNodes::~QueriesPageGeomNodes() {
 }
 
 bool QueriesPageGeomNodes::TransferDataToWindow() {
+	m_SpinFewNodes->SetValue(m_Parent->GetData()->m_QueryNodeNumber);
+	m_SpinFewNodes->SetFocus();
 	return true;
 }
 
 bool QueriesPageGeomNodes::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QueryNodeNumber = m_SpinFewNodes->GetValue();
+	
+	// offer a name
+	m_Parent->GetData()->m_QueryName = wxString::Format(_("Geom - Lines with less nodes than %d"),
+														m_SpinFewNodes->GetValue());
+	
 	return true;
 }
-
-
 
 
 

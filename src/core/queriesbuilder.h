@@ -42,7 +42,8 @@ class QueriesBuilder {
 	bool _CreateLayersQuery();
     bool _CreateSelectionQuery();
 	bool _CreateObjectQuery();
-
+    bool _CreateGeomLineQuery();
+    bool _CreateGeomNodeQuery();
 
 
   public:

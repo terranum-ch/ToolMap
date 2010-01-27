@@ -49,7 +49,9 @@ private:
     bool _IsQueryGenericCorrect();
     bool _IsQuerySQLCorrect();
 	bool _IsQueryObjectCorrect();
-
+    bool _IsQueryLineSizeCorrect();
+    bool _IsQueryNodeNumberCorrect();
+	
 	
   public:
     tmQUERIES_TYPE m_QueryType;
@@ -75,6 +77,11 @@ private:
     //Expert panel only
     TOC_GENERIC_NAME m_QueryLayerType;
 
+    int m_QueryLineSize;
+	
+    int m_QueryNodeNumber;
+	
+	
 	bool m_QueryRun;
 
 

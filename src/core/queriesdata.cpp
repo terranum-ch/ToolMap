@@ -139,6 +139,38 @@ bool QueriesData::_IsQueryObjectCorrect() {
 
 
 
+bool QueriesData::_IsQueryLineSizeCorrect() {
+	wxASSERT(m_QueryType == QUERY_LINES);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryLineSize <= 0) {
+		wxLogError(_T("Specified size for line is too small %d"), m_QueryLineSize);
+		return false;
+	}
+	return true;
+}
+
+bool QueriesData::_IsQueryNodeNumberCorrect() {
+	wxASSERT(m_QueryType == QUERY_NODES);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryNodeNumber <= 1) {
+		wxLogError(_T("Number of nodes specified isn't supported : %d"), m_QueryNodeNumber);
+		return false;
+	}
+	
+	return true;
+}
+
+
 
 QueriesData::QueriesData() {
 	m_QueryName = wxEmptyString;
@@ -151,6 +183,8 @@ QueriesData::QueriesData() {
 	m_QueryFields.Clear();
 	m_QueryFieldsValues.Clear();
 	m_QueryUseFields = false;
+	m_QueryLineSize = 10;
+	m_QueryNodeNumber = 3;
 	m_QueryRun = true;
 }
 
@@ -178,6 +212,14 @@ bool QueriesData::IsOk() {
 			
 		case QUERY_OBJECTS:
 			return _IsQueryObjectCorrect();
+			break;
+			
+		case QUERY_LINES:
+			return _IsQueryLineSizeCorrect();
+			break;
+			
+		case QUERY_NODES:
+			return _IsQueryNodeNumberCorrect();
 			break;
 
 			
