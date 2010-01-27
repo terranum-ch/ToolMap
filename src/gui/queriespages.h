@@ -33,8 +33,9 @@ class QueriesPageLayer;
 class QueriesPageName;
 class QueriesPageGeneric;
 class QueriesPageSelection;
+class QueriesPageAttribut1;
 class QueriesPageExpert;
-class QueriesPageAttribut;
+class QueriesPageAttribut2;
 class QueriesPageSQL;
 class QueriesPageObject;
 class QueriesPageObjectType;
@@ -67,8 +68,8 @@ private:
 	QueriesPageName * m_PageName;
 	QueriesPageGeneric * m_PageGeneric;
 	QueriesPageSelection * m_PageSelection;
+	QueriesPageAttribut1 * m_PageSelectionAttribut1;
 	QueriesPageExpert * m_PageExpert;
-	QueriesPageAttribut * m_PageSelectionAttribut;
 	QueriesPageSQL * m_PageExpertSQL;
 	QueriesPageObject * m_PageObject;
 	QueriesPageObjectType * m_PageObjectType;
@@ -223,7 +224,38 @@ public:
 
 
 
-class QueriesPageAttribut : public wxWizardPageSimple {
+ /***************************************************************************//**
+Select advanced attribution type
+Lucien Schreiber (c) CREALP 2010
+27 janvier 2010
+ *******************************************************************************/
+class QueriesPageAttribut1 : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+    DataBaseTM * m_pDB;
+	wxWizardPageSimple *m_PageName;
+	wxRadioBox* m_AdvAttribRadio;
+
+	QueriesPageAttribut2 * m_QueryPageAttribut2;
+	
+	
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageAttribut1(QueriesWizard * parent, DataBaseTM * database, wxWizardPage * prev, wxWizardPage * next);
+    ~QueriesPageAttribut1();
+	
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+
+
+
+class QueriesPageAttribut2 : public wxWizardPageSimple {
 private:
 	QueriesWizard * m_Parent;
 	DataBaseTM* m_pDB;
@@ -245,10 +277,10 @@ private:
 	
 	
 public:
-	QueriesPageAttribut(QueriesWizard * parent, DataBaseTM * database,
+	QueriesPageAttribut2(QueriesWizard * parent, DataBaseTM * database,
 						wxWizardPageSimple * prev, wxWizardPageSimple * next);
 	
-    ~QueriesPageAttribut();
+    ~QueriesPageAttribut2();
 	
     virtual bool TransferDataToWindow();
 	

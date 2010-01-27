@@ -29,15 +29,16 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database
 	m_pDB = database;
 	CreateControls();
 
-	
-	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, m_pDB, NULL, NULL);
+	m_PageName = new QueriesPageName(m_Parent, this, NULL);
+	m_PageSelectionAttribut1 = new QueriesPageAttribut1(m_Parent, m_pDB, NULL,m_PageName);
+	//m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, m_pDB, NULL, NULL);
 	m_PageExpertSQL = new QueriesPageSQL(m_Parent);
 	m_PageObject = new QueriesPageObject(m_Parent,m_pDB, NULL, NULL);
 	
-	m_PageName = new QueriesPageName(m_Parent, this, NULL);
+	
 	m_PageLayer = new QueriesPageLayer(m_Parent,m_pDB, this,m_PageName);
 	m_PageGeneric = new QueriesPageGeneric(m_Parent,this,m_PageName);
-	m_PageSelection = new QueriesPageSelection(m_Parent, m_pDB, this, m_PageSelectionAttribut);
+	m_PageSelection = new QueriesPageSelection(m_Parent, m_pDB, this, m_PageSelectionAttribut1);
 	m_PageExpert = new QueriesPageExpert(m_Parent,this,m_PageExpertSQL);
 	m_PageObjectType = new QueriesPageObjectType(m_Parent, m_pDB, this, m_PageObject);
 	
@@ -52,10 +53,11 @@ QueriesPageIntro::~QueriesPageIntro() {
 	delete m_PageName;
 	delete m_PageGeneric;
 	delete m_PageSelection;
+	delete m_PageSelectionAttribut1;
 	delete m_PageExpert;
 	delete m_PageObject;
 	
-	delete m_PageSelectionAttribut;
+	//delete m_PageSelectionAttribut;
 	delete m_PageExpertSQL;
 	delete m_PageObjectType;
 	delete m_PageGeomLine;
@@ -115,9 +117,9 @@ wxWizardPage* QueriesPageIntro::GetNext() const {
 			
 			
 		case QUERY_SELECTED:
-			m_PageName->SetPrev(m_PageSelectionAttribut);
-			wxWizardPageSimple::Chain(m_PageSelection, m_PageSelectionAttribut);
-			wxWizardPageSimple::Chain(m_PageSelectionAttribut, m_PageName);
+			m_PageName->SetPrev(m_PageSelectionAttribut1);
+			wxWizardPageSimple::Chain(m_PageSelection, m_PageSelectionAttribut1);
+			wxWizardPageSimple::Chain(m_PageSelectionAttribut1, m_PageName);
 			return m_PageSelection;
 			break;
 			
@@ -575,8 +577,77 @@ bool QueriesPageSelection::TransferDataFromWindow() {
 
 
 
+ /***************************************************************************//**
+Select advanced attribution type
+Lucien Schreiber (c) CREALP 2010
+27 janvier 2010
+ *******************************************************************************/
+void QueriesPageAttribut1::_CreateControls() {
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticText* m_staticText7;
+	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
+	bSizer10->Add( m_staticText7, 0, wxALL, 5 );
+	
+	wxString m_AdvAttribRadioChoices[] = { 
+		wxT("Don't use advanced attribution"),
+		wxT("Select object without advanced attribution"),
+		wxT("Select object with following advanced attribution")
+	};
+	int m_AdvAttribRadioNChoices = sizeof( m_AdvAttribRadioChoices ) / sizeof( wxString );
+	m_AdvAttribRadio = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_AdvAttribRadioNChoices, m_AdvAttribRadioChoices, 1, wxRA_SPECIFY_COLS );
+	m_AdvAttribRadio->SetSelection( 0 );
+	bSizer10->Add( m_AdvAttribRadio, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	this->SetSizer( bSizer10 );
+	bSizer10->Fit(this);
+}
 
-void QueriesPageAttribut::_CreateControls() {
+
+QueriesPageAttribut1::QueriesPageAttribut1(QueriesWizard * parent, DataBaseTM * database,
+										   wxWizardPage * prev, wxWizardPage * next) : wxWizardPageSimple(parent, prev, next){
+	m_Parent = parent;
+	m_pDB = database;
+	m_PageName = (wxWizardPageSimple*)  next;
+	m_QueryPageAttribut2 = new QueriesPageAttribut2(parent,database, NULL, NULL);
+	
+	_CreateControls();
+	
+	
+}
+
+
+QueriesPageAttribut1::~QueriesPageAttribut1() {
+}
+
+
+bool QueriesPageAttribut1::TransferDataToWindow() {
+	return true;
+}
+
+
+bool QueriesPageAttribut1::TransferDataFromWindow() {
+	if (m_AdvAttribRadio->GetSelection() == 2) { // advanced attribution
+		m_PageName->SetPrev(m_QueryPageAttribut2);
+		wxWizardPageSimple::Chain(this, m_QueryPageAttribut2);
+		wxWizardPageSimple::Chain(m_QueryPageAttribut2, m_PageName);
+	}
+	else {
+		m_PageName->SetPrev(this);
+		wxWizardPageSimple::Chain(this, m_PageName);
+	}
+
+	return true;
+}
+
+
+
+
+
+
+void QueriesPageAttribut2::_CreateControls() {
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 	
@@ -605,25 +676,25 @@ void QueriesPageAttribut::_CreateControls() {
 }
 
 
-void QueriesPageAttribut::_EnableCtrls(bool enable){
+void QueriesPageAttribut2::_EnableCtrls(bool enable){
 	m_AdvText->Enable(enable);
 	m_AdvAttributs->Enable(enable);
 	m_ReloadButton->Enable(enable);
 }
 
 
-void QueriesPageAttribut::OnReloadAttributs(wxCommandEvent & event ){
+void QueriesPageAttribut2::OnReloadAttributs(wxCommandEvent & event ){
 	_LoadAttributs();
 	event.Skip();
 }
 
 
-void QueriesPageAttribut::OnUseAdvancedAttributs(wxCommandEvent& event){
+void QueriesPageAttribut2::OnUseAdvancedAttributs(wxCommandEvent& event){
 	_EnableCtrls(event.IsChecked());
 	event.Skip();
 }
 
-void QueriesPageAttribut::_LoadAttributs() {
+void QueriesPageAttribut2::_LoadAttributs() {
 	wxASSERT(m_Parent);
 	wxASSERT(m_pDB);
 	
@@ -670,7 +741,7 @@ void QueriesPageAttribut::_LoadAttributs() {
 
 
 
-void QueriesPageAttribut::OnDeleteAttribut( wxKeyEvent& event ){ 
+void QueriesPageAttribut2::OnDeleteAttribut( wxKeyEvent& event ){ 
 	if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_DELETE)
 	{
 		if (m_AdvAttributs->GetSelection() == wxNOT_FOUND) {
@@ -694,7 +765,7 @@ void QueriesPageAttribut::OnDeleteAttribut( wxKeyEvent& event ){
 }
 
 
-QueriesPageAttribut::QueriesPageAttribut(QueriesWizard * parent, DataBaseTM * database,
+QueriesPageAttribut2::QueriesPageAttribut2(QueriesWizard * parent, DataBaseTM * database,
 										 wxWizardPageSimple * prev, wxWizardPageSimple * next):
 wxWizardPageSimple(parent, prev, next){
 	m_Parent = parent;
@@ -703,34 +774,34 @@ wxWizardPageSimple(parent, prev, next){
 	_CreateControls();
 	
 	// Connect Events
-	m_AdvAttributs->Connect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut::OnDeleteAttribut ),
+	m_AdvAttributs->Connect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut2::OnDeleteAttribut ),
 							NULL, this );
 	m_CheckAdvAttrib->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-							  wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
+							  wxCommandEventHandler( QueriesPageAttribut2::OnUseAdvancedAttributs ),
 							  NULL, this );
 	m_ReloadButton->Connect(EVT_FLATBUTTON_CLICKED,
-							wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs ),
+							wxCommandEventHandler( QueriesPageAttribut2::OnReloadAttributs ),
 							NULL, this );
 
 }
 
 
 
-QueriesPageAttribut::~QueriesPageAttribut() {
+QueriesPageAttribut2::~QueriesPageAttribut2() {
 	// Disconnect Events
-	m_AdvAttributs->Disconnect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut::OnDeleteAttribut ),
+	m_AdvAttributs->Disconnect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut2::OnDeleteAttribut ),
 							   NULL, this );
 	m_CheckAdvAttrib->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-								 wxCommandEventHandler( QueriesPageAttribut::OnUseAdvancedAttributs ),
+								 wxCommandEventHandler( QueriesPageAttribut2::OnUseAdvancedAttributs ),
 								 NULL, this );
 	m_ReloadButton->Disconnect( EVT_FLATBUTTON_CLICKED,
-							   wxCommandEventHandler( QueriesPageAttribut::OnReloadAttributs),
+							   wxCommandEventHandler( QueriesPageAttribut2::OnReloadAttributs),
 							   NULL, this );
 }
 
 
 
-bool QueriesPageAttribut::TransferDataToWindow() {
+bool QueriesPageAttribut2::TransferDataToWindow() {
 	// add fields in every case
 	_LoadAttributs();
 	if (m_AdvAttributs->IsEmpty() || m_Parent->GetData()->HasFieldsValues() == false){
@@ -743,7 +814,7 @@ bool QueriesPageAttribut::TransferDataToWindow() {
 
 
 
-bool QueriesPageAttribut::TransferDataFromWindow() {
+bool QueriesPageAttribut2::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QueryUseFields = m_CheckAdvAttrib->IsChecked();
 	return true;
 }
