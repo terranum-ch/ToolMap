@@ -38,6 +38,8 @@ class QueriesPageAttribut;
 class QueriesPageSQL;
 class QueriesPageObject;
 class QueriesPageObjectType;
+class QueriesPageGeomLine;
+class QueriesPageGeomNodes;
 
 class ListGenReport;
 
@@ -58,9 +60,9 @@ private:
 class QueriesPageIntro : public wxWizardPage {
 private:
     QueriesWizard * m_Parent;
-	wxRadioBox* m_radiobtn; 
+	wxRadioButton ** m_RadioBtn; 
 	DataBaseTM * m_pDB;
-	
+		
 	QueriesPageLayer * m_PageLayer;
 	QueriesPageName * m_PageName;
 	QueriesPageGeneric * m_PageGeneric;
@@ -70,10 +72,18 @@ private:
 	QueriesPageSQL * m_PageExpertSQL;
 	QueriesPageObject * m_PageObject;
 	QueriesPageObjectType * m_PageObjectType;
+	QueriesPageGeomLine * m_PageGeomLine;
+	QueriesPageGeomNodes * m_PageGeomNode;
 	
+	
+	int _GetRadioBoxSelection() const;
+
 	
 	// event function
-	void OnPageChanging(wxWizardEvent & event);
+	//void OnPageChanging(wxWizardEvent & event);
+	//void OnRadioButtonChange( wxCommandEvent& event );
+	//DECLARE_EVENT_TABLE();
+	
 	
 public:
      QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database);
@@ -333,6 +343,57 @@ public:
 	
 };
 
+
+
+
+/***************************************************************************//**
+Selecting small lines
+Lucien Schreiber (c) CREALP 2010
+27 janvier 2010
+*******************************************************************************/
+class QueriesPageGeomLine : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+    wxSpinCtrl* m_SpinLineSize;
+	DataBaseTM * m_pDB;
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageGeomLine(QueriesWizard * parent, DataBaseTM * database,
+						wxWizardPage * prev, wxWizardPage * next);
+    ~QueriesPageGeomLine();
+	
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+	
+};
+
+
+/***************************************************************************//**
+Selecting lines with few nodes
+Lucien Schreiber (c) CREALP 2010
+27 janvier 2010
+*******************************************************************************/
+class QueriesPageGeomNodes : public wxWizardPageSimple {
+private:
+    QueriesWizard * m_Parent;
+	wxSpinCtrl* m_SpinFewNodes;
+    DataBaseTM * m_pDB;
+    void _CreateControls();
+	
+	
+public:
+    QueriesPageGeomNodes(QueriesWizard * parent, DataBaseTM * database,
+						 wxWizardPage * prev, wxWizardPage * next);
+	
+    ~QueriesPageGeomNodes();
+	
+    virtual bool TransferDataToWindow();
+	
+    virtual bool TransferDataFromWindow();
+};
+	
 
 
 

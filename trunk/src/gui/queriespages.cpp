@@ -21,11 +21,14 @@
 
 
 
+
+
 QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database) : wxWizardPage(parent) {
 	wxASSERT(database);
 	m_Parent = parent;
 	m_pDB = database;
 	CreateControls();
+
 	
 	m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, m_pDB, NULL, NULL);
 	m_PageExpertSQL = new QueriesPageSQL(m_Parent);
@@ -38,7 +41,8 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database
 	m_PageExpert = new QueriesPageExpert(m_Parent,this,m_PageExpertSQL);
 	m_PageObjectType = new QueriesPageObjectType(m_Parent, m_pDB, this, m_PageObject);
 	
-	
+	m_PageGeomLine = new QueriesPageGeomLine(m_Parent,m_pDB, this, m_PageName);
+	m_PageGeomNode = new QueriesPageGeomNodes(m_Parent, m_pDB, this, m_PageName);
 }
 
 
@@ -54,6 +58,14 @@ QueriesPageIntro::~QueriesPageIntro() {
 	delete m_PageSelectionAttribut;
 	delete m_PageExpertSQL;
 	delete m_PageObjectType;
+	delete m_PageGeomLine;
+	delete m_PageGeomNode;
+	
+	// delete array of radiobutton
+	for (int i = 0; i<QUERY_NUMBER; i++) {
+		delete m_RadioBtn[i];
+	}
+	delete [] m_RadioBtn;
 	
 }
 
@@ -65,8 +77,24 @@ wxWizardPage* QueriesPageIntro::GetPrev() const {
 
 
 
+int QueriesPageIntro::_GetRadioBoxSelection() const {
+	wxASSERT(m_RadioBtn);
+	int iReturn = wxNOT_FOUND;
+	for (int i = 0; i<QUERY_NUMBER; i++) {
+		if (m_RadioBtn[i]->GetValue() == true) {
+			iReturn = i;
+			break;
+		}
+	}
+	// ensure that a seletion is valid.
+	//wxASSERT(iReturn != wxNOT_FOUND);
+	return iReturn;
+}
+
+
+
 wxWizardPage* QueriesPageIntro::GetNext() const {
-	switch (m_radiobtn->GetSelection())
+	switch ((tmQUERIES_TYPE) _GetRadioBoxSelection())
 	{
 		case QUERY_LAYERS:
 			m_PageName->SetPrev(m_PageLayer);
@@ -100,6 +128,18 @@ wxWizardPage* QueriesPageIntro::GetNext() const {
 			return m_PageExpert;
 			break;
 			
+		case QUERY_LINES:
+			m_PageName->SetPrev(m_PageGeomLine);
+			return m_PageGeomLine;
+			break;
+			
+		case QUERY_NODES:
+			m_PageName->SetPrev(m_PageGeomNode);
+			return m_PageGeomNode;
+			break;
+			
+		default:
+			break;
 		
 	}
 	return m_PageName;
@@ -109,32 +149,53 @@ wxWizardPage* QueriesPageIntro::GetNext() const {
 
 void QueriesPageIntro::CreateControls() {
 	
+	m_RadioBtn = new wxRadioButton * [QUERY_NUMBER-1];
+	
+	
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText1;
-	m_staticText1 = new wxStaticText( this, wxID_ANY, 
-									 _("Choose which type of query you want to add"),
-									 wxDefaultPosition, wxDefaultSize, 0 );
-	
-	m_staticText1->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
+	m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("Choose which type of query you want to add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1->Wrap( -1 );
 	bSizer1->Add( m_staticText1, 0, wxALL, 5 );
 	
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 	
-	wxString m_radiobtnChoices[] = { 
-		_("Layers query"),
-		_("Object type"),
-		_("From selected feature"), 
-		_("Generic query"), 
-		_("Hand made using SQL (expert)") };
-	int m_radiobtnNChoices = sizeof( m_radiobtnChoices ) / sizeof( wxString );
-	m_radiobtn = new wxRadioBox( this, wxID_ANY,
-								wxEmptyString, wxDefaultPosition,
-								wxDefaultSize, m_radiobtnNChoices,
-								m_radiobtnChoices, 1, wxRA_SPECIFY_COLS );
-	bSizer2->Add( m_radiobtn, 0, wxALIGN_CENTER|wxALL, 5);
+	wxStaticBoxSizer* sbSizer2;
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Attribution based query") ), wxVERTICAL );
+	
+	m_RadioBtn[QUERY_LAYERS] = new wxRadioButton( this, wxID_ANY, wxT("Layer query"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer2->Add( m_RadioBtn[QUERY_LAYERS], 0, wxALL, 5 );
+	
+	m_RadioBtn[QUERY_OBJECTS] = new wxRadioButton( this, wxID_ANY, wxT("Object query"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer2->Add( m_RadioBtn[QUERY_OBJECTS], 0, wxALL, 5 );
+	
+	m_RadioBtn[QUERY_SELECTED] = new wxRadioButton( this, wxID_ANY, wxT("From selected feature"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer2->Add( m_RadioBtn[QUERY_SELECTED] , 0, wxALL, 5 );
+	
+	m_RadioBtn[QUERY_GENERIC] = new wxRadioButton( this, wxID_ANY, wxT("Generic query"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer2->Add( m_RadioBtn[QUERY_GENERIC], 0, wxALL, 5 );
+	
+	m_RadioBtn[QUERY_SQL] = new wxRadioButton( this, wxID_ANY, wxT("SQL query (expert)"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer2->Add( m_RadioBtn[QUERY_SQL], 0, wxALL, 5 );
+	
+	bSizer2->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
+	
+	
+	bSizer2->Add( 0, 5, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer3;
+	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Geometry based query") ), wxVERTICAL );
+	
+	m_RadioBtn[QUERY_LINES] = new wxRadioButton( this, wxID_ANY, wxT("Small lines"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer3->Add( m_RadioBtn[QUERY_LINES], 0, wxALL, 5 );
+	
+	m_RadioBtn[QUERY_NODES] = new wxRadioButton( this, wxID_ANY, wxT("Lines with few nodes"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer3->Add( m_RadioBtn[QUERY_NODES], 0, wxALL, 5 );
+	
+	bSizer2->Add( sbSizer3, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( bSizer2, 1, wxEXPAND, 10 );
 	
@@ -145,11 +206,12 @@ void QueriesPageIntro::CreateControls() {
 
 
 
+
 bool QueriesPageIntro::TransferDataToWindow() {
-	m_radiobtn->SetSelection(m_Parent->GetData()->m_QueryType);
 	
+	m_RadioBtn[m_Parent->GetData()->m_QueryType]->SetValue(true);
 	if (m_Parent->GetData()->m_QueryObjectGeomID == wxNOT_FOUND){
-		m_radiobtn->Enable(QUERY_SELECTED, false);
+		m_RadioBtn[QUERY_SELECTED]->Enable(false);
 	}
 	return true;
 }
@@ -157,8 +219,7 @@ bool QueriesPageIntro::TransferDataToWindow() {
 
 
 bool QueriesPageIntro::TransferDataFromWindow() {
-	m_Parent->GetData()->m_QueryType = 
-	(tmQUERIES_TYPE) m_radiobtn->GetSelection();
+	m_Parent->GetData()->m_QueryType = (tmQUERIES_TYPE) _GetRadioBoxSelection();
 	return true;
 }
 
@@ -883,6 +944,93 @@ bool QueriesPageSQL::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QuerySQL = m_SQLText->GetValue();
 	return true;
 }
+
+
+
+
+/***************************************************************************//**
+Selecting small lines
+Lucien Schreiber (c) CREALP 2010
+27 janvier 2010
+*******************************************************************************/
+void QueriesPageGeomLine::_CreateControls() {
+	wxBoxSizer* bSizer15;
+	bSizer15 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticText* m_staticText13;
+	m_staticText13 = new wxStaticText( this, wxID_ANY, wxT("Select lines smaller than (map units)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText13->Wrap(m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
+	bSizer15->Add( m_staticText13, 0, wxALL, 5 );
+	
+	m_SpinLineSize = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 10000, 10 );
+	bSizer15->Add( m_SpinLineSize, 0, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( bSizer15 );
+	bSizer15->Fit(this);
+}
+
+QueriesPageGeomLine::QueriesPageGeomLine(QueriesWizard * parent, DataBaseTM * database,
+										 wxWizardPage * prev, wxWizardPage * next) : wxWizardPageSimple (parent, prev, next) {
+	m_Parent = parent;
+	m_pDB = database;
+	_CreateControls();
+}
+
+QueriesPageGeomLine::~QueriesPageGeomLine() {
+}
+
+bool QueriesPageGeomLine::TransferDataToWindow() {
+	return true;
+}
+
+bool QueriesPageGeomLine::TransferDataFromWindow() {
+	return true;
+}
+
+
+
+/***************************************************************************//**
+Selecting lines with few nodes
+Lucien Schreiber (c) CREALP 2010
+27 janvier 2010
+*******************************************************************************/
+void QueriesPageGeomNodes::_CreateControls() {
+	wxBoxSizer* bSizer16;
+	bSizer16 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticText* m_staticText14;
+	m_staticText14 = new wxStaticText( this, wxID_ANY, wxT("Select lines with less nodes than"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14->Wrap( -1 );
+	bSizer16->Add( m_staticText14, 0, wxALL, 5 );
+	
+	m_SpinFewNodes = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 2, 10000, 2 );
+	bSizer16->Add( m_SpinFewNodes, 0, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( bSizer16 );
+	bSizer16->Fit(this);
+}
+
+QueriesPageGeomNodes::QueriesPageGeomNodes(QueriesWizard * parent, DataBaseTM * database,
+										   wxWizardPage * prev, wxWizardPage * next): wxWizardPageSimple (parent, prev, next) {
+	m_Parent = parent;
+	m_pDB = database;
+	_CreateControls();
+}
+
+QueriesPageGeomNodes::~QueriesPageGeomNodes() {
+}
+
+bool QueriesPageGeomNodes::TransferDataToWindow() {
+	return true;
+}
+
+bool QueriesPageGeomNodes::TransferDataFromWindow() {
+	return true;
+}
+
+
+
+
 
 
 
