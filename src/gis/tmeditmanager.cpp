@@ -491,6 +491,7 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
 {
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
+	m_LastMousePos = *myPt;
 	
 	if (m_DrawLine.IsOK() == false)
 	{
@@ -832,11 +833,14 @@ void tmEditManager::DrawMemoryData()
 {
 	// check edit memory data for drawing
 	int iNbVertexMemory = m_GISMemory->GetVertexCount();
-	if (iNbVertexMemory <= 1)
-		return;
+
 	
 	m_Renderer->Refresh();
 	m_Renderer->Update();
+	
+	if (iNbVertexMemory <= 1){
+		return;
+	}
 	
 	// init a drawer 
 	tmDrawer myEditDrawer;
@@ -1577,19 +1581,37 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
  *******************************************************************************/
 bool tmEditManager::UndoLastVertex ()
 {
-	// some checks
+	// zero vertex or not in drawing mode
 	if (!IsDrawingAllowed() || m_GISMemory->GetVertexCount() == 0)
 		return false;
 	
+	// one vertex, destroying feature 
+	if (m_GISMemory->GetVertexCount() == 1) {
+		wxCommandEvent evt;
+		OnDrawFeatureEscape(evt);
+		return true;
+	}
+	
+	
 	// remove last vertex
 	m_GISMemory->RemoveVertex(-1);
+	
+	//FIXME: There is a bug here with getting first vertex 
 	wxRealPoint myPreviousRPT;
 	bool bGet = m_GISMemory->GetVertex(myPreviousRPT, -1);
 	wxASSERT(bGet);
 	wxPoint myPreviousPT = m_Scale->RealToPixel(myPreviousRPT);
 	m_DrawLine.CreateVertex(myPreviousPT);
 	
+	
 	DrawMemoryData();
+
+	// display last segment (in video inverse)
+	wxCommandEvent evt(tmEVT_EM_DRAW_MOVE, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(m_LastMousePos.x,
+										 m_LastMousePos.y);
+	evt.SetClientData(myClickedPos);
+	OnDrawMove(evt);
 	return true;
 }
 
