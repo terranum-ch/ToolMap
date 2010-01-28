@@ -524,7 +524,7 @@ int tmGISDataVectorMYSQL::GetCount ()
 								 GetFullFileName().c_str());
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting number of features for %s, error was : %s"),
+		wxLogDebug(_T("Error getting number of features for %s"),
 				   GetFullFileName().c_str());
 		return 0;
 	}
