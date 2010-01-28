@@ -386,7 +386,7 @@ void ProjectDefList::AfterAdding(bool bRealyAddItem)
 	
 	// delete the dialog here
     //wxLogDebug(_T("Destroying Thematic Layer Dialog"));
-	delete m_pDialog;
+	//delete m_pDialog;
 	
 }
 
@@ -434,7 +434,7 @@ void ProjectDefList::AfterEditing (bool bRealyEdited)
 
 	// delete dialog
     //wxLogDebug(_T("Destroying Thematic Layer Dialog"));
-	delete m_LayersDialog;	
+	//delete m_LayersDialog;	
 }
 
 

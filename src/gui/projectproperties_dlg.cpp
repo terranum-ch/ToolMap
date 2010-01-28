@@ -427,7 +427,7 @@ void ScaleList::AfterAdding (bool bRealyAddItem)
 	wxLogDebug(_T("Size of the scale array is : %d"), 
 			   m_pPrjDefinition->m_ScaleArray.GetCount());
 
-	delete m_pDialog;
+	//delete m_pDialog;
 	
 }
 
@@ -485,7 +485,7 @@ void ScaleList::AfterEditing (bool bRealyEdited)
 	wxLogDebug(_T("Size of the scale array is : %d"), 
 			   m_pPrjDefinition->m_ScaleArray.GetCount());
 	
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 

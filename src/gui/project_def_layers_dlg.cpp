@@ -86,7 +86,7 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 	
 	// delete the dialog
 	//wxLogDebug(_T("Deleting Object description Dialog"));
-	delete m_pDialog;
+	//delete m_pDialog;
 	
 }
 
@@ -165,7 +165,7 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 		
 	// delete dialog
     //wxLogDebug(_T("Deleting Object description Dialog"));
-	delete m_pDialog;
+	//delete m_pDialog;
 
 }
 
@@ -293,7 +293,7 @@ void ProjectDefLayersFieldsList::AfterAdding (bool bRealyAddItem)
 	
 	// delete the dialog
 	//wxLogDebug(_T("Deleting Field Dialog"));
-	delete m_pDialog;	
+	//delete m_pDialog;	
 }
 
 
@@ -374,7 +374,7 @@ void ProjectDefLayersFieldsList::AfterEditing (bool bRealyEdited)
 	
 	// delete dialog
     //wxLogDebug(_T("Deleting Field Dialog"));
-	delete m_pDialog;
+	//delete m_pDialog;
 	
 }
 

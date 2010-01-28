@@ -534,7 +534,7 @@ void QueriesList::AfterEditing (bool bRealyEdited)
 	
 	
 	
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 

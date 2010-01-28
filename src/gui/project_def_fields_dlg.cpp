@@ -93,7 +93,7 @@ void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
 	
 	// delete the dialog
 	//wxLogDebug(_T("Deleting Coded Value Dialog"));
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 
@@ -140,7 +140,7 @@ void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
 	
 	// delete dialog
     //wxLogDebug(_T("Deleting Coded value Dialog"));
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 
