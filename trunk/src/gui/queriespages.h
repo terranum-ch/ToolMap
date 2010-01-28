@@ -259,20 +259,13 @@ class QueriesPageAttribut2 : public wxWizardPageSimple {
 private:
 	QueriesWizard * m_Parent;
 	DataBaseTM* m_pDB;
-	
-    void _CreateControls();
-	void _LoadAttributs();
-	void _EnableCtrls(bool enable);
-	
-	
-	wxCheckBox * m_CheckAdvAttrib;
-	wxStaticBoxSizer* m_AdvSizer;
-	wxStaticText* m_AdvText;
 	wxListBox* m_AdvAttributs;
 	wxFlatButton * m_ReloadButton;
 	
+    void _CreateControls();
+	void _LoadAttributs();
+	
 	void OnReloadAttributs(wxCommandEvent & event );
-	void OnUseAdvancedAttributs(wxCommandEvent& event);
 	void OnDeleteAttribut( wxKeyEvent& event );
 	
 	
@@ -282,8 +275,7 @@ public:
 	
     ~QueriesPageAttribut2();
 	
-    virtual bool TransferDataToWindow();
-	
+    virtual bool TransferDataToWindow();	
     virtual bool TransferDataFromWindow();
 	
 };

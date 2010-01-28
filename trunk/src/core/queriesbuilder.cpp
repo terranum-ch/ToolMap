@@ -51,10 +51,75 @@ bool QueriesBuilder::_CreateLayersQuery() {
 
 bool QueriesBuilder::_CreateSelectionQuery() {
 	wxString myAtribTable = TABLE_NAME_GIS_ATTRIBUTION[m_QueryData->m_QueryLayerType];
+	wxString myBaseQuery = wxEmptyString;
+	wxString myQueryAdd = wxEmptyString;
 	
+	switch (m_QueryData->m_QueryFieldsStatus) {
+		case AATTRIBUTION_NO:
+			myBaseQuery =  _T("SELECT attrib.OBJECT_GEOM_ID from %s")
+			_T(" attrib WHERE attrib.OBJECT_VAL_ID = %d");
+			
+			m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery,
+													   myAtribTable.c_str(),
+													   m_QueryData->m_QueryObjectID);
+			break;
+			
+			
+			
+		case AATTRIBUTION_EMPTY:
+			myBaseQuery = _T("SELECT DISTINCT attrib.OBJECT_GEOM_ID from %s attrib LEFT JOIN (%s%d layer)")
+			_T(" ON (attrib.OBJECT_GEOM_ID = layer.OBJECT_ID) WHERE attrib.OBJECT_VAL_ID = %d AND layer.OBJECT_ID IS NULL");
+			m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery,
+													   myAtribTable.c_str(),
+													   TABLE_NAME_LAYER_AT.c_str(),
+													   m_QueryData->m_QueryLayerID,
+													   m_QueryData->m_QueryObjectID);
+			break;
+			
+		
+			
+		case AATTRIBUTION_YES:
+			myBaseQuery = wxString::Format(_T("SELECT DISTINCT  type.OBJECT_GEOM_ID  FROM %s type")
+												 _T("  LEFT JOIN (%s%d layer) ON (type.OBJECT_GEOM_ID ")
+												 _T("= layer.OBJECT_ID) WHERE type.OBJECT_VAL_ID =%d AND"),
+												 myAtribTable.c_str(),
+												 TABLE_NAME_LAYER_AT.c_str(),
+												 m_QueryData->m_QueryLayerID,
+												 m_QueryData->m_QueryObjectID);
+			myQueryAdd = _T(" layer.%s = %s AND");
+			for (unsigned int i = 0; i< m_QueryData->m_QueryFields.GetCount(); i++) {
+				switch ( m_QueryData->m_QueryFields.Item(i).m_FieldType) {
+					case TM_FIELD_INTEGER:
+					case TM_FIELD_FLOAT:
+						myBaseQuery.Append(wxString::Format(_T(" layer.%s = %s AND"),
+														 m_QueryData->m_QueryFields.Item(i).m_Fieldname.c_str(),
+														 m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
+						break;
+						
+						
+					default:
+						myBaseQuery.Append(wxString::Format(_T(" layer.%s = \"%s\" AND"),
+														 m_QueryData->m_QueryFields.Item(i).m_Fieldname.c_str(),
+														 m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
+						
+						break;
+				}
+				
+			}
+			myBaseQuery.RemoveLast(3);
+			m_QueryData->m_QuerySQL = myBaseQuery;
+			break;
+			
+			
+			
+			
+		default:
+			wxLogError(_T("Unsupported case"));
+			break;
+	}
 	
 	// building query with attributs
-	if (m_QueryData->m_QueryUseFields) {
+	/*if (m_QueryData->m_QueryUseFields) {
 		wxString myQuery1 = wxString::Format(_T("SELECT DISTINCT  type.OBJECT_GEOM_ID  FROM %s type")
 											 _T("  LEFT JOIN (%s%d layer) ON (type.OBJECT_GEOM_ID ")
 											 _T("= layer.OBJECT_ID) WHERE type.OBJECT_VAL_ID =%d AND"),
@@ -96,7 +161,7 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 												   myAtribTable.c_str(),
 												   m_QueryData->m_QueryObjectID);
 		
-	}
+	}*/
 	return true;
 }
 

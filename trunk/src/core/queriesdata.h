@@ -42,6 +42,15 @@ enum tmQUERIES_TYPE {
 };
 
 
+enum tmQUERIES_AATTRIBUTION_TYPE {
+	AATTRIBUTION_NO,
+	AATTRIBUTION_EMPTY,
+	AATTRIBUTION_YES
+	
+};
+
+
+
 class QueriesData {
 private:
     bool _IsQueryLayersCorrect();
@@ -70,7 +79,8 @@ private:
     long m_QueryObjectGeomID;
 
     
-	bool m_QueryUseFields;
+	//bool m_QueryUseFields;
+	tmQUERIES_AATTRIBUTION_TYPE m_QueryFieldsStatus;
     PrjMemFieldArray m_QueryFields;
 	wxArrayString m_QueryFieldsValues;
 
@@ -100,6 +110,7 @@ private:
 						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);
 	bool DeleteFieldsValue(int index);
 	bool HasFieldsValues();
+
 
 };
 #endif
