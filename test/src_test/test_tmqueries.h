@@ -72,7 +72,7 @@ public:
 		m_DataSelected->m_QueryType = QUERY_SELECTED;
 		m_DataSelected->m_QueryName = _T("Test selected");
 		m_DataSelected->m_QueryObjectID = 32; // Faille
-		m_DataSelected->m_QueryObjectGeomID = 231; // ligne attribuée à une faille + Border of rocks
+		m_DataSelected->m_QueryObjectGeomID = 231; // ligne attribuée à une faille + Border of rocks, attribution avancée vide
 		m_DataSelected->m_QueryLayerType = TOC_NAME_LINES;
 		
 		// set up query for generic
@@ -269,13 +269,67 @@ public:
 	}
 	
 	
+	void testCreateSelectionWithoutAttribution(){
+		QueriesBuilder myBuilder(m_DataSelected);
+		m_DataSelected->m_QueryFieldsStatus = AATTRIBUTION_EMPTY;
+		
+		TS_ASSERT(myBuilder.IsOk()==false);
+		long myLayerID = wxNOT_FOUND;
+		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
+		TS_ASSERT_DIFFERS(myLayerID, -1);
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,myLayerID, 
+												  m_DataSelected->m_QueryFields,
+												  m_DataSelected->m_QueryFieldsValues)==true);
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving  selected queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		
+	}
+	
+	
+	void testCreateSelectionQueryAttribut(){
+		
+		QueriesBuilder myBuilder(m_DataSelected);
+		m_DataSelected->m_QueryFieldsStatus = AATTRIBUTION_YES;
+		m_DataSelected->m_QueryObjectGeomID = 140;
+		
+		TS_ASSERT(myBuilder.IsOk()==false);
+		
+		long myLayerID = wxNOT_FOUND;
+		TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
+		TS_ASSERT_DIFFERS(myLayerID, -1);
+		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,myLayerID, 
+												  m_DataSelected->m_QueryFields,
+												  m_DataSelected->m_QueryFieldsValues)==true);
+		TS_ASSERT(myBuilder.IsOk()==true);
+		TS_ASSERT(myBuilder.Create(m_pDB)==true);
+		TS_ASSERT(myBuilder.Save(m_pDB));
+		wxLogMessage(_T("Saving  selected queries into database"));
+		
+		// delete last added query
+		long myLastId = m_pDB->DataBaseGetLastInsertedID();
+		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
+		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
+		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		
+		
+	}
+	
+	
 	void testGetValues(){
 		wxArrayString myValues;
 		long myLayerID = 7; // Tectobound_L pour faille.
 		long myLayerID2 = 4; // GlacStruct, pas de champs
 		PrjMemFieldArray myFields;
 		
-		// no fields availlable
+		
 		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,myLayerID2, 
 												  myFields, myValues)==false);
 		TS_ASSERT_EQUALS(myFields.GetCount(), 0);
@@ -369,37 +423,12 @@ public:
 	
 	
 	
-	void testCreateSelectionQueryAttribut(){
-
-		QueriesBuilder myBuilder(m_DataSelected);
-		m_DataSelected->m_QueryUseFields = true;
-		
-		TS_ASSERT(myBuilder.IsOk()==false);
-		
-		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
-												  m_DataSelected->m_QueryFields,
-												  m_DataSelected->m_QueryFieldsValues)==true);
-		TS_ASSERT(myBuilder.IsOk()==true);
-		TS_ASSERT(myBuilder.Create(m_pDB)==true);
-		TS_ASSERT(myBuilder.Save(m_pDB));
-		wxLogMessage(_T("Saving  selected queries into database"));
-		
-		// delete last added query
-		long myLastId = m_pDB->DataBaseGetLastInsertedID();
-		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
-		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
-		
-		
-	}
-	
-	
 	void testAllAttribsEmpty(){
 		
 		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),false);
 
 		// all fields empty
-		m_DataSelected->m_QueryUseFields = true;
+		//m_DataSelected->m_QueryUseFields = true;
 		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
 												  m_DataSelected->m_QueryFields,
 												  m_DataSelected->m_QueryFieldsValues)==true);

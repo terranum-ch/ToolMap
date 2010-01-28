@@ -34,6 +34,7 @@ bool QueriesData::_IsQueryLayersCorrect() {
 	return true;
 }
 
+
 bool QueriesData::_IsQuerySelectedCorrect() {
 	wxASSERT(m_QueryType == QUERY_SELECTED);
 	
@@ -52,19 +53,43 @@ bool QueriesData::_IsQuerySelectedCorrect() {
 		return false;
 	}
 	
-	// using advanced attribution
-	if (m_QueryUseFields) {
-		if (m_QueryLayerID == wxNOT_FOUND) {
-			wxLogError(_T("No layer ID specified"));
+	switch (m_QueryFieldsStatus) {
+		case AATTRIBUTION_NO:
+			// no special check
+			break;
+			
+		case AATTRIBUTION_EMPTY:
+			if (m_QueryLayerID == wxNOT_FOUND) {
+				wxLogError(_T("No layer ID specified"));
+				return false;
+			}
+			
+			break;
+			
+		case AATTRIBUTION_YES:
+			if (HasFieldsValues() == false) {
+				wxLogError(_T("No fields value. This mode isn't allowed"));
+				return false;
+			}
+			
+			
+			if (m_QueryLayerID == wxNOT_FOUND) {
+				wxLogError(_T("No layer ID specified"));
+				return false;
+			}
+			
+			wxASSERT(m_QueryFields.GetCount() == m_QueryFieldsValues.GetCount());
+			if (m_QueryFields.GetCount() == 0) {
+				wxLogError(_T("No advanced values for selected query"));
+				return false;
+			}
+			break;
+			
+			
+		default:
+			wxLogError(_T("This case isn't supported"));
 			return false;
-		}
-		
-		
-		wxASSERT(m_QueryFields.GetCount() == m_QueryFieldsValues.GetCount());
-		if (m_QueryFields.GetCount() == 0) {
-			wxLogError(_T("No advanced values for selected query"));
-			return false;
-		}
+			break;
 	}
 	
 	return true;
@@ -182,7 +207,7 @@ QueriesData::QueriesData() {
 	m_QueryObjectGeomID = wxNOT_FOUND;
 	m_QueryFields.Clear();
 	m_QueryFieldsValues.Clear();
-	m_QueryUseFields = false;
+	m_QueryFieldsStatus = AATTRIBUTION_NO;
 	m_QueryLineSize = 10;
 	m_QueryNodeNumber = 3;
 	m_QueryRun = true;
@@ -388,6 +413,7 @@ bool QueriesData::GetObjectsForTypes(DataBaseTM * database, PrjMemObjectsArray &
 
 bool QueriesData::GetParentLayer(DataBaseTM * database, long & layerid){
 	layerid = wxNOT_FOUND;
+	m_QueryLayerID = wxNOT_FOUND;
 	
 	if (m_QueryObjectID == wxNOT_FOUND) {
 		wxLogError(_("No object specified"));
@@ -409,6 +435,11 @@ bool QueriesData::GetParentLayer(DataBaseTM * database, long & layerid){
 		bReturn = false;
 	}
 	database->DataBaseClearResults();
+	
+	if (bReturn == true) {
+		m_QueryLayerID = layerid;
+	}
+	
 	return bReturn;
 }
 
@@ -423,7 +454,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	fieldsdef.Clear();
 	fieldsvalue.Clear();
 	
-	m_QueryLayerID = layerid;
+	//m_QueryLayerID = layerid;
 	
 	ProjectDefMemoryLayers myTempLayer;
 	myTempLayer.m_LayerID = layerid;

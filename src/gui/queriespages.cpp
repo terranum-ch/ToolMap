@@ -31,7 +31,6 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard * parent, DataBaseTM * database
 
 	m_PageName = new QueriesPageName(m_Parent, this, NULL);
 	m_PageSelectionAttribut1 = new QueriesPageAttribut1(m_Parent, m_pDB, NULL,m_PageName);
-	//m_PageSelectionAttribut = new QueriesPageAttribut(m_Parent, m_pDB, NULL, NULL);
 	m_PageExpertSQL = new QueriesPageSQL(m_Parent);
 	m_PageObject = new QueriesPageObject(m_Parent,m_pDB, NULL, NULL);
 	
@@ -57,7 +56,6 @@ QueriesPageIntro::~QueriesPageIntro() {
 	delete m_PageExpert;
 	delete m_PageObject;
 	
-	//delete m_PageSelectionAttribut;
 	delete m_PageExpertSQL;
 	delete m_PageObjectType;
 	delete m_PageGeomLine;
@@ -620,15 +618,47 @@ QueriesPageAttribut1::QueriesPageAttribut1(QueriesWizard * parent, DataBaseTM * 
 
 
 QueriesPageAttribut1::~QueriesPageAttribut1() {
+	delete m_QueryPageAttribut2;
 }
 
 
 bool QueriesPageAttribut1::TransferDataToWindow() {
+	
+	m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, true);
+	m_AdvAttribRadio->Enable(AATTRIBUTION_YES, true);
+
+	
+	// check if fields are present
+	long myLayerID = wxNOT_FOUND;
+	if(m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID)==false){
+		m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, false);
+		m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
+		return true;
+	}
+	
+	if (m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, 
+											 m_Parent->GetData()->m_QueryFields,
+											 m_Parent->GetData()->m_QueryFieldsValues)==false) 
+	{
+		// disabling for security
+		wxLogError(_T("Problem getting fields value for query"));
+		m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, false);
+		m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
+		return true;
+	}
+	
+	if (m_Parent->GetData()->HasFieldsValues()==false) {
+		m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
+	}
+	
+	
 	return true;
 }
 
 
 bool QueriesPageAttribut1::TransferDataFromWindow() {
+	m_Parent->GetData()->m_QueryFieldsStatus = (tmQUERIES_AATTRIBUTION_TYPE) m_AdvAttribRadio->GetSelection();
+	
 	if (m_AdvAttribRadio->GetSelection() == 2) { // advanced attribution
 		m_PageName->SetPrev(m_QueryPageAttribut2);
 		wxWizardPageSimple::Chain(this, m_QueryPageAttribut2);
@@ -651,36 +681,29 @@ void QueriesPageAttribut2::_CreateControls() {
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 	
-	m_CheckAdvAttrib = new wxCheckBox( this, wxID_ANY, _("Use advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_CheckAdvAttrib->SetValue(true);
+	wxStaticText* m_AdvText;
+	m_AdvText = new wxStaticText( this, wxID_ANY, wxT("Delete any unneeded attribution field"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_AdvText->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE  );
+	bSizer12->Add( m_AdvText, 0, wxALL, 5 );
 	
-	bSizer12->Add( m_CheckAdvAttrib, 0, wxALL, 5 );
-	
-	m_AdvSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Advanced attributs") ), wxVERTICAL );
-	
-	m_AdvText = new wxStaticText( this, wxID_ANY, _("Delete any unneeded attribute"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_AdvText->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
-	m_AdvSizer->Add( m_AdvText, 0, wxALL, 5 );
+	wxStaticBoxSizer* m_AdvSizer;
+	m_AdvSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Advanced attribution") ), wxVERTICAL );
 	
 	m_AdvAttributs = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
 	m_AdvSizer->Add( m_AdvAttributs, 1, wxALL|wxEXPAND, 5 );
 	
-	m_ReloadButton = new wxFlatButton( this, wxID_ANY, _("Reload attributs"), wxDefaultSize );
+	m_ReloadButton = new wxFlatButton( this, wxID_ANY, wxT("Reload"), wxDefaultSize);
 	m_AdvSizer->Add( m_ReloadButton, 0, wxALL|wxALIGN_RIGHT, 5 );
 	
 	bSizer12->Add( m_AdvSizer, 1, wxEXPAND|wxALL, 5 );
 	
 	this->SetSizer( bSizer12 );
+	
 	bSizer12->Fit(this);
 		
 }
 
 
-void QueriesPageAttribut2::_EnableCtrls(bool enable){
-	m_AdvText->Enable(enable);
-	m_AdvAttributs->Enable(enable);
-	m_ReloadButton->Enable(enable);
-}
 
 
 void QueriesPageAttribut2::OnReloadAttributs(wxCommandEvent & event ){
@@ -689,10 +712,7 @@ void QueriesPageAttribut2::OnReloadAttributs(wxCommandEvent & event ){
 }
 
 
-void QueriesPageAttribut2::OnUseAdvancedAttributs(wxCommandEvent& event){
-	_EnableCtrls(event.IsChecked());
-	event.Skip();
-}
+
 
 void QueriesPageAttribut2::_LoadAttributs() {
 	wxASSERT(m_Parent);
@@ -701,14 +721,9 @@ void QueriesPageAttribut2::_LoadAttributs() {
 	m_AdvAttributs->Freeze();
 	m_AdvAttributs->Clear();
 	
-	long myLayerID = wxNOT_FOUND;
 	
-	if(m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID)==false){
-		m_AdvAttributs->Thaw();
-		return;
-	}
-	
-	if (m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, 
+	wxASSERT(m_Parent->GetData()->m_QueryLayerID != wxNOT_FOUND);
+	if (m_Parent->GetData()->GetFieldsValues(m_pDB, m_Parent->GetData()->m_QueryLayerID, 
 											 m_Parent->GetData()->m_QueryFields,
 											 m_Parent->GetData()->m_QueryFieldsValues)==false) 
 	{
@@ -755,11 +770,7 @@ void QueriesPageAttribut2::OnDeleteAttribut( wxKeyEvent& event ){
 		}
 		
 		m_AdvAttributs->Delete(m_AdvAttributs->GetSelection());
-		
-		if (m_AdvAttributs->GetCount() == 0) {
-			m_CheckAdvAttrib->SetValue(false);
-		}
-		
+				
 	}
 	event.Skip(); 
 }
@@ -776,9 +787,6 @@ wxWizardPageSimple(parent, prev, next){
 	// Connect Events
 	m_AdvAttributs->Connect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut2::OnDeleteAttribut ),
 							NULL, this );
-	m_CheckAdvAttrib->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-							  wxCommandEventHandler( QueriesPageAttribut2::OnUseAdvancedAttributs ),
-							  NULL, this );
 	m_ReloadButton->Connect(EVT_FLATBUTTON_CLICKED,
 							wxCommandEventHandler( QueriesPageAttribut2::OnReloadAttributs ),
 							NULL, this );
@@ -791,9 +799,6 @@ QueriesPageAttribut2::~QueriesPageAttribut2() {
 	// Disconnect Events
 	m_AdvAttributs->Disconnect( wxEVT_KEY_DOWN, wxKeyEventHandler( QueriesPageAttribut2::OnDeleteAttribut ),
 							   NULL, this );
-	m_CheckAdvAttrib->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-								 wxCommandEventHandler( QueriesPageAttribut2::OnUseAdvancedAttributs ),
-								 NULL, this );
 	m_ReloadButton->Disconnect( EVT_FLATBUTTON_CLICKED,
 							   wxCommandEventHandler( QueriesPageAttribut2::OnReloadAttributs),
 							   NULL, this );
@@ -802,20 +807,16 @@ QueriesPageAttribut2::~QueriesPageAttribut2() {
 
 
 bool QueriesPageAttribut2::TransferDataToWindow() {
-	// add fields in every case
 	_LoadAttributs();
-	if (m_AdvAttributs->IsEmpty() || m_Parent->GetData()->HasFieldsValues() == false){
-		_EnableCtrls(false);
-		m_CheckAdvAttrib->SetValue(false);
-		m_CheckAdvAttrib->Enable(false);
-	}
 	return true;
 }
 
 
 
 bool QueriesPageAttribut2::TransferDataFromWindow() {
-	m_Parent->GetData()->m_QueryUseFields = m_CheckAdvAttrib->IsChecked();
+	if (m_AdvAttributs->IsEmpty() == true) {
+		m_Parent->GetData()->m_QueryFieldsStatus = AATTRIBUTION_EMPTY;
+	}
 	return true;
 }
 
