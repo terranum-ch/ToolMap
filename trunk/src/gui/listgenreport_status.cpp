@@ -164,7 +164,9 @@ void ListGenReportWithStatus::AddItem()
 	else
 		AfterAdding(FALSE);
 	
-	
+	wxASSERT(m_pDialog);
+	delete m_pDialog;
+	m_pDialog = NULL;
 }
 
 

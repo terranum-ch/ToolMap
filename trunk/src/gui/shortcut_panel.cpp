@@ -374,7 +374,7 @@ void ShortcutList::AfterAdding (bool bRealyAddItem)
 	}
 	
 	
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 
@@ -439,7 +439,7 @@ void ShortcutList::AfterEditing (bool bRealyEdited)
 	}
 	
 	
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 

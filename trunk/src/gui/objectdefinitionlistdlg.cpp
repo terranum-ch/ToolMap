@@ -673,7 +673,7 @@ void ObjectDefinitionList::AfterAdding (bool bRealyAddItem)
 	}
 
 	
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 
@@ -756,7 +756,7 @@ void ObjectDefinitionList::AfterEditing (bool bRealyEdited)
 	else
 		m_MemoryObject->RemoveObject();
 	
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 

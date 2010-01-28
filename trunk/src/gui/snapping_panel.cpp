@@ -491,7 +491,7 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		SnappingUpdate();
 		
 	}
-	delete m_pDialog;
+	//delete m_pDialog;
 }
 
 
