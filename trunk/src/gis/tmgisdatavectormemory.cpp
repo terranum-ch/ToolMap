@@ -136,10 +136,10 @@ bool tmGISDataVectorMemory::DestroyFeature()
  *******************************************************************************/
 bool tmGISDataVectorMemory::InsertVertex (const wxRealPoint & pt, int index)
 {
-	wxASSERT(m_Feature);
 	if (m_Feature == NULL)
 		return false;
 	
+	wxASSERT(m_Feature);
 	OGRLineString * myMemLine = NULL;
 	if (GetVertexCount() == 0)
 	{
@@ -202,7 +202,12 @@ bool tmGISDataVectorMemory::RemoveVertex (int index)
 	
 	// getting line points 
 	int numPoints = myMemLine->getNumPoints();
+	if (numPoints <= 0) {
+		wxLogDebug(_T("Trying to remove non existing vertex"));
+		return false;
+	}
 	wxASSERT(numPoints > 0);
+	
 	OGRRawPoint * myRawPoints = new OGRRawPoint[sizeof(OGRRawPoint*) * numPoints];
 	myMemLine->getPoints(myRawPoints, NULL);
 	

@@ -54,6 +54,8 @@ static const wxString g_TestPrj_Export = _T("testexport");
 static const wxString g_TestPrj_Fields = _T("testfields");
 static const wxString g_TestPrj_Import = _T("testimport");
 static const wxString g_TestPrj_LuganoTM = _T("luganoTM");
+static const wxString g_TestPrj_Boltigen = _T("Boltigen09");
+static const wxString g_TestPrj_Ricken = _T("Ricken09");
 
 // internet
 #ifdef UNIT_TESTING_USE_PROXY

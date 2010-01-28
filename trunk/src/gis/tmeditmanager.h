@@ -70,6 +70,7 @@ class tmEditManager : public wxEvtHandler
 		int m_INSDELVertex;
 		wxRealPoint m_INSVertexPos;
 		tmPointOrientAttrib m_OrientedPt;
+		wxPoint m_LastMousePos;
 		
 		
 		// defined by function or event.
