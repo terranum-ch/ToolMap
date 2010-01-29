@@ -221,7 +221,6 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 		// draw memory line
 		DrawMemoryData();
 	}
-	
 	// update tools view
 	wxCommandEvent evt(tmEVT_TM_UPDATE_TOOL_VIEW, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
@@ -1595,8 +1594,6 @@ bool tmEditManager::UndoLastVertex ()
 	
 	// remove last vertex
 	m_GISMemory->RemoveVertex(-1);
-	
-	//FIXME: There is a bug here with getting first vertex 
 	wxRealPoint myPreviousRPT;
 	bool bGet = m_GISMemory->GetVertex(myPreviousRPT, -1);
 	wxASSERT(bGet);

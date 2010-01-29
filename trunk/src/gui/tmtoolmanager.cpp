@@ -233,7 +233,7 @@ bool tmToolManager::TMIsOk()
 
 void tmToolManager::OnViewUpdated (wxCommandEvent & event)
 {
-	if(TMDrawDanglingNodes()==true)
+	if(TMDrawDanglingNodes(false)==true)
 	{
 		wxLogDebug(_T("Dangling nodes drawed"));
 	}
@@ -241,13 +241,16 @@ void tmToolManager::OnViewUpdated (wxCommandEvent & event)
 }
 
 
-bool tmToolManager::TMDrawDanglingNodes()
-{
-	m_Renderer->Refresh();
-	m_Renderer->Update();
-	
+bool tmToolManager::TMDrawDanglingNodes(bool refresh)
+{	
 	if (m_DanglingPts.GetCount() == 0)
 		return false;
+
+	if(refresh==true){
+		m_Renderer->Refresh();
+		m_Renderer->Update();
+	}
+	
 	
 	wxASSERT(m_Renderer != NULL);
 	wxClientDC dc (m_Renderer);
