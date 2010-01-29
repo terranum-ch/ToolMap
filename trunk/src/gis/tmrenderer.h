@@ -124,6 +124,9 @@ class tmRenderer : public wxScrolledWindow
 		void OnShiftUp		(wxKeyEvent & event);
 		void OnKey			(wxKeyEvent & event);
 		
+		// avoid flickering
+		void OnAvoidFlickering(wxEraseEvent & event);
+		
 		// bitmap functions
 		bool BitmapUpdateSize();
 		bool BitmapSetToWhite();
