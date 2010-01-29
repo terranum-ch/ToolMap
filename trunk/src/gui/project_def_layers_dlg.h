@@ -164,8 +164,6 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 	{    
 		void OnTextChange(wxCommandEvent & event);
 		
-		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg );
-		DECLARE_EVENT_TABLE();
 		
 		/// pointer to an "object" object, use
 		/// the SetMemoryObjectObject() function to fill it
@@ -175,6 +173,9 @@ class ProjectDefLayersEditObjectDlg: public wxDialog
 		ProjectDefMemoryFieldsCodedVal * m_CodedValObj;
 		
 		void SetValidator();
+		
+		DECLARE_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg );
+		DECLARE_EVENT_TABLE();
 		
 	public:
 		/// Constructors
