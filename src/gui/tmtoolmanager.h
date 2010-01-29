@@ -69,7 +69,7 @@ class tmToolManager : public wxEvtHandler
 		void TMClearDangling(){m_DanglingPts.Clear();}
 		
 		// drawing dangling nodes
-		bool TMDrawDanglingNodes();
+		bool TMDrawDanglingNodes(bool refresh=true);
 		
 		
 		// event function
