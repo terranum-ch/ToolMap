@@ -447,7 +447,7 @@ bool ProjectDefLayersFieldsList::IsOrientationAllowed(int index)
 /******************************  Add object Dialog Class *************************/
 IMPLEMENT_DYNAMIC_CLASS( ProjectDefLayersEditObjectDlg, wxDialog )
 
-BEGIN_EVENT_TABLE (ProjectDefLayersEditObjectDlg, ListGenDialog)
+BEGIN_EVENT_TABLE (ProjectDefLayersEditObjectDlg, wxDialog)
 	EVT_TEXT (ID_DLGEO_CODE, ProjectDefLayersEditObjectDlg::OnTextChange)
 	EVT_TEXT (ID_DLGEO_VALUE, ProjectDefLayersEditObjectDlg::OnTextChange)
 END_EVENT_TABLE ()
