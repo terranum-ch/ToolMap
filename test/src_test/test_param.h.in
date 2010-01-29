@@ -35,7 +35,7 @@ static const wxString g_TestPath = wxString::FromAscii(UNIT_TESTING_PATH);
 static const wxString g_TestPathSHP = g_TestPath + _T("/shp/");
 static const wxString g_TestPathMISC = g_TestPath + _T("/misc/");
 static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj/");
-
+static const wxString g_TestPathEXPORT = g_TestPath +  _T("/export/");
 
 static const wxString g_TestFileMisc = _T("gpl.txt");
 static const wxString g_TestFileSHP_L = _T("arcgis_line_test.shp");
@@ -56,6 +56,7 @@ static const wxString g_TestPrj_Import = _T("testimport");
 static const wxString g_TestPrj_LuganoTM = _T("luganoTM");
 static const wxString g_TestPrj_Boltigen = _T("Boltigen09");
 static const wxString g_TestPrj_Ricken = _T("Ricken09");
+static const wxString g_TestPrj_Ambri = _T("ambri_saisie_v2");
 
 // internet
 #ifdef UNIT_TESTING_USE_PROXY

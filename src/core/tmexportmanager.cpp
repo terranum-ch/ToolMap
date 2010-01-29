@@ -76,7 +76,7 @@ tmExportManager::~tmExportManager()
 void tmExportManager::Create(wxWindow * parent, DataBaseTM * database)
 {
 	wxASSERT (database);
-	wxASSERT (parent);
+	//wxASSERT (parent);
 	m_pDB = database;
 	m_Parent = parent;
 }
