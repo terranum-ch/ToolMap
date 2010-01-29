@@ -54,6 +54,7 @@ DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_UP)
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_SIZE(tmRenderer::OnSizeChange)
 	EVT_PAINT ( tmRenderer::OnPaint)
+	EVT_ERASE_BACKGROUND(tmRenderer::OnAvoidFlickering)
 	EVT_MOTION (tmRenderer::OnMouseMove)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
 	EVT_RIGHT_DOWN (tmRenderer::OnMouseRightDown)
@@ -304,6 +305,13 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	}
 	
 }
+
+
+// do nothing but don't propagate event 
+void tmRenderer::OnAvoidFlickering(wxEraseEvent & event){
+	
+}
+
 
 
 void tmRenderer::SetBitmapStatus(wxBitmap * bmp)
