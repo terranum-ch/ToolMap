@@ -1246,28 +1246,32 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 		if (!pLayerProp)
 			break;
 		
-		// loading data
-		tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
 		
-		// processing and deleting data
-		if (layerData && pLayerProp->m_LayerVisible)
-		{
-			myExtent = layerData->GetMinimalBoundingRectangle();
-			m_Scale.SetMaxLayersExtentAsExisting(myExtent);
-			iReaded ++;
+		if (pLayerProp->m_LayerVisible == true) {
 			
-			// show some logging info, not working
-			// in thread mode
-			if (loginfo)
+			// loading data
+			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
+			
+			// processing and deleting data
+			if (layerData)
 			{
-				wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
-						   2,myExtent.x_min, 2, myExtent.y_min,
-						   2, myExtent.x_max, 2, myExtent.y_max);
+				myExtent = layerData->GetMinimalBoundingRectangle();
+				m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+				iReaded ++;
+				
+				// show some logging info, not working
+				// in thread mode
+				if (loginfo)
+				{
+					wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
+							   2,myExtent.x_min, 2, myExtent.y_min,
+							   2, myExtent.x_max, 2, myExtent.y_max);
+				}
 			}
+			
+			if (layerData != NULL)
+				delete layerData;
 		}
-		
-		if (layerData != NULL)
-			delete layerData;
 		
 		
 		iRank ++;
@@ -1308,20 +1312,21 @@ int tmLayerManager::ReadLayerDraw ()
 		if (!pLayerProp)
 			break;
 		
-		// loading data
-		tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
-		
-		// processing and deleting data
-		if (layerData && pLayerProp->m_LayerVisible)
-		{
-			// draw layer data
-			m_Drawer.Draw(pLayerProp, layerData);
-			iReaded ++;
+		if (pLayerProp->m_LayerVisible == true) {
+			// loading data
+			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
+			
+			// processing and deleting data
+			if (layerData && pLayerProp->m_LayerVisible)
+			{
+				// draw layer data
+				m_Drawer.Draw(pLayerProp, layerData);
+				iReaded ++;
+			}
+			
+			if (layerData != NULL)
+				delete layerData;
 		}
-		
-		if (layerData != NULL)
-			delete layerData;
-		
 		
 		iRank ++;
 	}
