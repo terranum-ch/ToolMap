@@ -100,9 +100,30 @@ public:
 		TS_ASSERT(myPrj.RemoveLayer(_T("Exploitation_Empty_PLG")));
 		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), 3);
 		
+		wxLogMessage(_T("Initing all OGR drivers"));
+		OGRRegisterAll();
 		tmExportManager myManager( NULL, m_pDB);
-		//TODO: Add export here
+		TS_ASSERT(myManager.ExportAll(&myPrj));
 		
+	}
+	
+	
+	
+	void testExportEmptyLayers(){
+		
+		wxLogMessage(_T("Removing not empty layers"));
+		int iLayerCount = m_PrjDef->GetCountLayers();
+		PrjDefMemManage myPrj;
+		myPrj = *m_PrjDef;
+		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), iLayerCount);
+		TS_ASSERT(myPrj.RemoveLayer(_T("KarsticStruct_PT")));
+		TS_ASSERT(myPrj.RemoveLayer(_T("TectoBound_L")));
+		TS_ASSERT(myPrj.RemoveLayer(_T("Rocks_PLG")));
+		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), 3);
+		
+		
+		tmExportManager myManager( NULL, m_pDB);
+		TS_ASSERT(myManager.ExportAll(&myPrj));
 	}
 	
 	
