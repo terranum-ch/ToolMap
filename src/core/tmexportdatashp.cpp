@@ -238,6 +238,10 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 	OGRGeometry * myCropLine = NULL;
 	long myOid = 0;
 	
+	if (m_pDB->DataBaseHasResults()==false) {
+		wxLogMessage(_("Exporting %s : NO GEOMETRY DATA"), myLayer->m_LayerName.c_str());
+	}
+	
 	while (1)
 	{
 		myLine = myDBData.GetNextDataLine(myOid);
@@ -451,6 +455,10 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 	OGRPoint * myPoint = NULL;
 	long myOid = 0;
 	
+	if (m_pDB->DataBaseHasResults()==false) {
+		wxLogMessage(_("Exporting %s : NO GEOMETRY DATA"), myLayer->m_LayerName.c_str());
+	}
+	
 	while (1)
 	{
 		myPoint = myDBData.GetOGRNextDataPoint(myOid);
@@ -492,8 +500,14 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	//int iValidLines = 0;
 	
 	long myNbResuts = 0;
-	if (m_pDB->DataBaseGetResultSize(NULL, &myNbResuts)==false)
+	if (m_pDB->DataBaseGetResultSize(NULL, &myNbResuts)==false){
 		return false;
+	}
+	
+	if (myNbResuts == 0) {
+		wxLogMessage(_("Exporting %s : NO GEOMETRY DATA"), myLayer->m_LayerName.c_str());
+		return true;
+	}
 	
 		
 	// transform non standard OGRLinearRing -> OGRLineString
@@ -650,8 +664,10 @@ bool tmExportDataSHP::AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer)
 	
 	if(m_Shp.SetNextFeature(true)==false)
 	{
-		m_pDB->DataBaseClearResults();
-		return false;
+		if (m_pDB->DataBaseHasResults()) {
+			m_pDB->DataBaseClearResults();
+		}
+		return true;
 	}
 	
 	while (m_pDB->DataBaseGetNextResult(myResults)) 
@@ -787,7 +803,7 @@ bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
 	{
 		wxLogDebug(_T("No advanced attribution informations for layer %s"),
 				   layer->m_LayerName.c_str());
-		return false;
+		return true;
 	}
 
 	

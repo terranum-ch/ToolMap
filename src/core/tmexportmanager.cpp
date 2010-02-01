@@ -170,7 +170,7 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 {
 	wxASSERT(m_pDB);
-	wxASSERT(m_Parent);
+	//wxASSERT(m_Parent);
 	wxASSERT (localprojdef);
 	m_ProjMem = localprojdef;
 	
@@ -234,44 +234,6 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		if (!ExportLayer(&myLayer, pFrame, iFrameVertex))
 			bExportResult = false;
 		
-		/*
-		// check for file name 
-		
-		
-		
-		m_ExportData = CreateExportData();
-		m_ExportData->SetFrame(pFrame, iFrameVertex);
-		
-		// create SIG layer
-		ProjectDefMemoryLayers myLayer = layers->Item(i);
-		
-		if (CreateExportLayer(&myLayer))
-		{
-			// export data to layer
-			if (ExportGISData(&myLayer))
-				if (AddAttributionSimpleData(&myLayer))
-					if (AddAttributionAdvanced(&myLayer))
-						bExportResult = true;
-		}
-		
-		// logging
-		if (bExportResult == true)
-		{
-			wxLogDebug(_T("Exporting layers : %s - OK-"),
-					   layers->Item(i).m_LayerName.c_str());
-		}
-		else
-		{
-			wxLogDebug(_T("Exporting layers : %s - FAILED -"),
-					   layers->Item(i).m_LayerName.c_str());
-			break;
-		}
-			
-		delete m_ExportData;
-		m_ExportData = NULL;*/
-		
-
-			
 	}
 	
 	DeleteProgress();
@@ -348,6 +310,14 @@ void tmExportManager::CreateProgress(int iNbLayers, const wxString & layername)
 {
 	m_ProgressDlg = NULL;
 	m_ProgressBusy = NULL;
+	
+	// to allow unit testing without GUI
+	if (m_Parent == NULL) {
+		wxLogMessage(_T("No parent window specified, running console ?"));
+		return;
+	}
+	
+
 	m_ProgressText = _("Exporting  Layers    :    ");
 	
 	if (iNbLayers > 1)
@@ -364,6 +334,7 @@ void tmExportManager::CreateProgress(int iNbLayers, const wxString & layername)
 		m_ProgressBusy = new wxBusyInfo(_("Please wait, exporting : ") + layername,
 										m_Parent);
 	}
+		
 	
 }
 
@@ -376,6 +347,11 @@ void tmExportManager::CreateProgress(int iNbLayers, const wxString & layername)
  *******************************************************************************/
 bool tmExportManager::UpdateProgress(int iActualLayer, const wxString & layername)
 {
+	// if no parent specified.
+	if (m_Parent == NULL) {
+		return false;
+	}
+	
 	bool bSkip = false; 
 	if (m_ProgressDlg)
 	{
@@ -393,11 +369,13 @@ bool tmExportManager::UpdateProgress(int iActualLayer, const wxString & layernam
  *******************************************************************************/
 void tmExportManager::DeleteProgress()
 {
-	if (m_ProgressDlg)
+	if (m_ProgressDlg){
 		delete m_ProgressDlg;
+	}
 	
-	if (m_ProgressBusy)
+	if (m_ProgressBusy){
 		delete m_ProgressBusy;
+	}
 }
 
 
@@ -633,9 +611,10 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 		default:
 			break;
 	}
-	
-	m_pDB->DataBaseClearResults();
-	
+
+	if (m_pDB->DataBaseHasResults()) {
+		m_pDB->DataBaseClearResults();
+	}
 	return bReturn;
 }
 
