@@ -986,7 +986,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 
 	
 	int iRead = ReadLayerExtent(true);
-	wxLogDebug(_T("%d layer(s) read"),iRead);
+	//wxLogDebug(_T("%d layer(s) read"),iRead);
 	if (iRead == -1)
 		return false;
 	
@@ -1261,12 +1261,12 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 				
 				// show some logging info, not working
 				// in thread mode
-				if (loginfo)
+				/*if (loginfo)
 				{
 					wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
 							   2,myExtent.x_min, 2, myExtent.y_min,
 							   2, myExtent.x_max, 2, myExtent.y_max);
-				}
+				}*/
 			}
 			
 			if (layerData != NULL)

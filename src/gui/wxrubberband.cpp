@@ -193,8 +193,8 @@ bool wxRubberBand::IsSelectedRectangleValid()
 	// empty values
 	if (m_OldPosStart == wxPoint (-1,-1) || m_OldPosEnd == wxPoint(-1,-1))
 	{
-		wxLogDebug(_T("Rubber band isn't valid : Start or stop position are empty"));
-		return FALSE;
+		//wxLogDebug(_T("Rubber band isn't valid : Start or stop position are empty"));
+		return false;
 	}
 	
 	// minimum one pixels width

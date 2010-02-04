@@ -205,7 +205,7 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 {
 	
 	DisplayRendererSnappingTolerence();
-	wxLogDebug(_T("View updated"));
+	//wxLogDebug(_T("View updated"));
 	
 	if (IsDrawingAllowed()==true)
 	{
@@ -245,8 +245,8 @@ void tmEditManager::DisplayRendererSnappingTolerence()
 		}
 		m_Renderer->ToogleSnapping(iSnapRadius);
 	}
-	else
-		wxLogDebug(_T("Snapping memory or scale not defined"));
+	//else
+	//	wxLogDebug(_T("Snapping memory or scale not defined"));
 }
 
 
@@ -263,7 +263,10 @@ bool tmEditManager::IsCorrectLayerSelected()
 	wxASSERT(m_TOC);
 	if (!m_TOC->GetEditLayer())
 	{
-		wxLogMessage(_("No layer selected, select a layer for drawing"));
+		if (m_Renderer->GetTool() == tmTOOL_DRAW) {
+			wxLogMessage(_("No layer selected, select a layer for drawing"));
+		}
+		
 		return false;
 	}
 	

@@ -1780,8 +1780,8 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 		
 		int iNumFieldAdded = GetFieldsFromDB(myPrjDef);
 		
-		wxLogDebug(_T("Number of fields parsed %d"), iNumFieldAdded);
-		wxLogDebug(_T("Nb of layers found in db : %d"), iLayerAdded);
+		//wxLogDebug(_T("Number of fields parsed %d"), iNumFieldAdded);
+		//wxLogDebug(_T("Nb of layers found in db : %d"), iLayerAdded);
 		
 		return myPrjDef;
 	}

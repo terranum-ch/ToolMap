@@ -157,7 +157,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	delete [] bufDataDir;
 	m_MySQL = mysql_init(NULL);
 	mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
-	wxLogDebug(_T("Initing MySQL library..."));
+	//wxLogDebug(_T("Initing MySQL library..."));
 	return true;
 }
 
@@ -578,8 +578,8 @@ bool DataBase::DataBaseGetResults(wxArrayString & results)
 			break;
 
 		case 1:
-			wxLogDebug(_T("Only one value returned, maybe should use the")
-					   _T(" DataBaseGetNextResult(wxString) function instead ?"));
+			//wxLogDebug(_T("Only one value returned, maybe should use the")
+			//		   _T(" DataBaseGetNextResult(wxString) function instead ?"));
 			break;
 
 		default:
@@ -612,8 +612,8 @@ bool DataBase::DataBaseGetResults(wxArrayLong & results)
 			break;
 
 		case 1:
-			wxLogDebug(_T("Only one value returned, maybe should use the")
-					   _T(" DataBaseGetNextResult(long) function instead ?"));
+			//wxLogDebug(_T("Only one value returned, maybe should use the")
+			//		   _T(" DataBaseGetNextResult(long) function instead ?"));
 			break;
 
 		default:
@@ -646,8 +646,8 @@ bool DataBase::DataBaseGetResults(wxArrayDouble & results)
 			break;
 
 		case 1:
-			wxLogDebug(_T("Only one value returned, maybe should use the")
-					   _T(" DataBaseGetNextResult(double) function instead ?"));
+			//wxLogDebug(_T("Only one value returned, maybe should use the")
+			//		   _T(" DataBaseGetNextResult(double) function instead ?"));
 			break;
 
 		default:

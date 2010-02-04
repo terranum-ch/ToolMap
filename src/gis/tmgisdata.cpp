@@ -77,14 +77,14 @@ void tmGISData::InitGISDrivers (bool bRaster, bool bVector)
 	if (bRaster)
 	{
 		tmGISDataRaster::InitGISDriversRaster();
-		wxLogDebug(_T("GIS Raster drivers loaded"));
+		//wxLogDebug(_T("GIS Raster drivers loaded"));
 	}
 	
 	if (bVector)
 	{
 		tmGISDataVector::InitGISDriversVector();
 		initGEOS(NULL,NULL);
-		wxLogDebug(_T("GIS Vector drivers loaded"));
+		//wxLogDebug(_T("GIS Vector drivers loaded"));
 	}
 	
 	
