@@ -1016,7 +1016,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	// update scrollbars
 	//UpdateScrollBars();
 	
-	ViewUpdated();
+	
 	
 	
 	// set active bitmap	
@@ -1028,6 +1028,8 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	}
 	
 	m_GISRenderer->Refresh();
+	
+	ViewUpdated();
 	return true;
 }
 
@@ -1104,6 +1106,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 
 void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 {
+	wxFAIL;
 	// enable logging
 	tmGISData::EnableLogging(true);
 	tmDrawer::EnableLogging(true);
@@ -1153,13 +1156,16 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 		// update scrollbars
 		//UpdateScrollBars();
 		
-		ViewUpdated();
+		
 		
 	}
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
 	m_GISRenderer->Refresh();
+	
+	ViewUpdated();
+	
 	return;
 	
 }

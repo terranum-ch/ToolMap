@@ -1529,7 +1529,7 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 	{
 		DataBaseGetResults(myThematicResult);
 	}
-	wxLogDebug(_T("Number of results found : %d"), myThematicResult.GetCount());
+	//wxLogDebug(_T("Number of results found : %d"), myThematicResult.GetCount());
 	return myThematicResult;
 }
 
