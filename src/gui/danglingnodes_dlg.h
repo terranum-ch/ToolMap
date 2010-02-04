@@ -35,7 +35,7 @@ const int ID_DLGDN_CLEAR = 22210;
 class DanglingNode_DLG : public wxDialog 
 	{
 	private:
-		wxChoice* m_LayerChoice;
+		wxListBox * m_LayerChoice;
 		void CreateControls();
 
 		int m_SelectedLayer;
