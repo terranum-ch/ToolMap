@@ -37,9 +37,9 @@
 //TODO: Change this for using wxGenericStaticBitmap (2.9.0)
 //#include <wx/generic/statbmpg.h>	// for big static bitmap
 
-#include "../core/svn_version.h"	// for latest svn version
 
-const wxString g_CodeName = _("WABERN");
+
+const wxString g_CodeName = _("NEUCH\u00C2TEL");
 
 
 
