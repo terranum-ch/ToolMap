@@ -47,10 +47,11 @@ public:
 	
     ~tmDataIntegrity();
 	
-	bool CheckType(const TOC_GENERIC_NAME & layertype);
-    bool CheckAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype);
 	
-    bool CorrectType(long layerindex, const TOC_GENERIC_NAME & layertype);
+    bool HasErrorType(const TOC_GENERIC_NAME & layertype);
+    bool HasErrorAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype);
+	
+    bool CorrectType(const TOC_GENERIC_NAME & layertype);
     bool CorrectAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype);
 	
     wxString GetLastError();

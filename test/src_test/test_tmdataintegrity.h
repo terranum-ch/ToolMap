@@ -61,29 +61,70 @@ public:
 		TS_ASSERT(di.GetLastError()==wxEmptyString);
 	}
 	
-	void testCheckAAttrib(){
+	void testHasErrorAAttrib(){
+			
 		tmDataIntegrity di(m_pDB);
-		TS_ASSERT_EQUALS(di.CheckAAttrib(19, TOC_NAME_POINTS),false); // WatOutflow_PT with one error
+		TS_ASSERT_EQUALS(di.HasErrorAAttrib(19, TOC_NAME_POINTS),true); // WatOutflow_PT with one error
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()!=wxEmptyString);
 		
 		
-		TS_ASSERT_EQUALS(di.CheckAAttrib(12, TOC_NAME_LINES),true); // Gravifeat_L with no error
+		TS_ASSERT_EQUALS(di.HasErrorAAttrib(12, TOC_NAME_LINES),false); // Gravifeat_L with no error
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()==wxEmptyString);
 
 	}
 	
 	
-	void testCheckType(){
+	void testHasErrorType(){
 		tmDataIntegrity di(m_pDB);
 
 		
-		TS_ASSERT_EQUALS(di.CheckType(TOC_NAME_LINES),false); // Error in lines 
+		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_LINES),true); // Error in lines 
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()!=wxEmptyString);
+		
+		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_LABELS),false); // no error in labels
+		wxLogMessage(di.GetLastError());
+		TS_ASSERT(di.GetLastError()==wxEmptyString);
+		
+		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_POINTS),false); // no error in points
+		wxLogMessage(di.GetLastError());
+		TS_ASSERT(di.GetLastError()==wxEmptyString);
 	}
 	
+	
+	void testCorrectType()
+	{
+		tmDataIntegrity di(m_pDB);
+		TS_ASSERT(di.CorrectType(TOC_NAME_LINES));
+		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_LINES), false);
+
+	}
+	
+	void testCorrectAAttrib(){
+		
+		tmDataIntegrity di(m_pDB);
+		TS_ASSERT(di.CorrectAAttrib(19, TOC_NAME_POINTS));
+		TS_ASSERT_EQUALS(di.HasErrorAAttrib(19, TOC_NAME_POINTS), false);
+		
+		
+	}
+	
+	
+	
+	void testAddErrorIntoDatabase(){
+		
+		// inserting one error into DB (will be corrected later)
+		wxString myQuery = _T("INSERT INTO layer_at19 VALUES (92, 'gefasst')");
+		TS_ASSERT(m_pDB->DataBaseQueryNoResults(myQuery));
+		
+		
+		wxString myQuery2 = _T("INSERT INTO generic_aat VALUES (93, 2)");
+		TS_ASSERT(m_pDB->DataBaseQueryNoResults(myQuery2));
+	}
+				  
+				  
 	
 	
 };
