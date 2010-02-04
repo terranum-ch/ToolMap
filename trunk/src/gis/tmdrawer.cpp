@@ -202,8 +202,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		// line must have more than one vertex
 		if (iNbVertex <= 1) 
 		{
-			if (IsLoggingEnabled())
-				wxLogDebug(_T("No vertex returned @loop = %d"),iLoop);
+			/*if (IsLoggingEnabled())
+				wxLogDebug(_T("No vertex returned @loop = %d, oid = %d"),iLoop, myOid);*/
 			bReturn = false;
 			break;
 		}
@@ -228,8 +228,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	}
 	
-	if (IsLoggingEnabled())
-		wxLogDebug(_T("%d Lines drawn"), iLoop);
+	/*if (IsLoggingEnabled())
+		wxLogDebug(_T("%d Lines drawn"), iLoop);*/
 	
 	
 	temp_dc.SelectObject(wxNullBitmap);

@@ -301,7 +301,6 @@ void ToolMapFrame::PostInit()
 	m_LogWindow = new ImportLogDLG (this);
 	wxTextCtrl * myLogTextCtrl = (wxTextCtrl *) m_LogWindow->FindWindow(ID_DLGLOG_TXT);
 	wxLog::SetActiveTarget (new wxLogTextCtrl (myLogTextCtrl));
-	wxLogMessage(_("Program started"));
 	wxLogDebug(_("Debug mode enabled"));
 	
 	// create the Aui manager

@@ -184,6 +184,7 @@ class tmRenderer : public wxScrolledWindow
 		void SetBitmapStatus(wxBitmap * bmp = NULL);//{m_bmp = bmp;}
 		
 		void SetTool (tmGIS_TOOL selected_tool);
+		tmGIS_TOOL GetTool () {return m_ActualTool;}
 		
 		// edit snapping event
 		void ToogleSnapping (int snapradius);
