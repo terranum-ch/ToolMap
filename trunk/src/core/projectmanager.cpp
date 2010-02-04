@@ -358,7 +358,7 @@ void ProjectManager::CloseProject()
 	
 	if (m_DB != NULL)
 	{
-		wxLogDebug(_T("Deleting the database object"));
+		//wxLogDebug(_T("Deleting the database object"));
 		delete m_DB;
 		m_DB = NULL;
 	}

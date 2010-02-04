@@ -199,7 +199,7 @@ void DataBase::DBLibraryEnd ()
 	m_DBName = wxEmptyString;
 	m_DBPath = wxEmptyString;
 
-	wxLogDebug(_T("Ending MySQL library..."));
+	//wxLogDebug(_T("Ending MySQL library..."));
 	mysql_close(m_MySQL);
 	mysql_library_end();
 }

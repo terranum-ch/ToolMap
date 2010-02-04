@@ -68,8 +68,8 @@ void DanglingNode_DLG::CreateControls()
 	bSizer25 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxButton* m_button21;
-	m_button21 = new wxButton( this, ID_DLGDN_CLEAR, _("Clear"), wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	bSizer25->Add( m_button21, 2, wxALL, 5 );
+	m_button21 = new wxButton( this, ID_DLGDN_CLEAR, _("Clear"), wxDefaultPosition, wxDefaultSize, 0); //  wxSize( 100,-1 ), 0 );
+	bSizer25->Add( m_button21, 1, wxALL, 5 );
 	
 	wxButton* m_button22;
 	m_button22 = new wxButton( this, wxID_OK, _("Search"), wxDefaultPosition, wxDefaultSize, 0 );
