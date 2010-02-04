@@ -119,8 +119,8 @@ bool ToolDanglingNodes::DNGetAllLines(long layerid)
 	if (m_pDB->DataBaseHasResults()==false)
 	{
 		wxLogDebug(_T("No object for searching dangling nodes"));
-		DNSearchCleanUp();
-		return false;
+		//DNSearchCleanUp();
+		//return false;
 	}
 	
 	m_bSearchInited = true;
@@ -132,7 +132,7 @@ bool ToolDanglingNodes::DNGetAllLines(long layerid)
 bool ToolDanglingNodes::DNSearchValidVertex()
 {
 	wxASSERT(IsOk());
-	wxASSERT(m_pDB->DataBaseHasResults());
+	//wxASSERT(m_pDB->DataBaseHasResults());
 	wxASSERT(m_GeomFrame);
 	wxASSERT(m_PtsToCheck.IsEmpty());
 
@@ -481,12 +481,16 @@ bool ToolDanglingNodes::SearchRun (wxProgressDialog * myProgDlg)
 	
 	m_pDlg = myProgDlg;
 	m_PtsToCheck.Clear();
-	if (DNSearchValidVertex()==false)
-		return false;
+	if (DNSearchValidVertex()==false){
+		// if no vertex, we return true for continuing
+		return true;
+	}
 	
 	wxASSERT(m_LayerID != wxNOT_FOUND);
 	if (DNGetAllLines(m_LayerID)==false)
+	{
 		return false;
+	}
 	
 	if(DNFlagNodes()==false)
 	   return false;
