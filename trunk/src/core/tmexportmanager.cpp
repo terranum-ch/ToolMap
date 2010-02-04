@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmexportmanager.h"
+#include "tmdataintegrity.h"
 
 
 
@@ -154,6 +155,11 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 		bRemove = true;
 	}
 	
+	
+	// integrity check
+	_CorrectIntegrity(myLayers);
+	
+	
 	bool bReturn = ExportLayers(myLayers);
 	return bReturn;
 }
@@ -179,7 +185,12 @@ bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 	{
 		return false;
 	}
+	
+	// correcting integrity
+	_CorrectIntegrity(myLayers);
+	
 	return ExportLayers(myLayers);
+
 }
 
 
@@ -510,6 +521,43 @@ bool tmExportManager::GetAvailableFileName (ProjectDefMemoryLayers * layer)
 	wxASSERT_MSG(0, _T("500 files searched for export name...."));
 	return false;
 }
+
+
+
+void tmExportManager::_CorrectIntegrity(PrjMemLayersArray * layers){
+	wxASSERT(layers);
+	wxASSERT(m_pDB);
+	
+	
+	if (layers->GetCount() == 0) {
+		wxLogError(_("Correcting integrity isn't possible without layers"));
+		return;
+	}
+	
+	
+	// integrity type checks
+	
+	tmDataIntegrity di(m_pDB);
+	if (layers->GetCount() == 1) {
+		di.CorrectType(layers->Item(0).m_LayerType);
+	}
+	else {
+		di.CorrectType(LAYER_LINE);
+		di.CorrectType(LAYER_POINT);
+		di.CorrectType(LAYER_POLYGON);
+	}
+	
+		
+	// integrity advanced attribution checks
+	for (unsigned int i = 0; i< layers->GetCount(); i++) {
+		if (layers->Item(i).m_pLayerFieldArray->GetCount() > 0) {
+			di.CorrectAAttrib(layers->Item(i).m_LayerID,
+							  layers->Item(i).m_LayerType);
+		}
+	}
+	
+}
+
 
 
 

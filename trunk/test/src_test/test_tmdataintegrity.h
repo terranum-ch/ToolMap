@@ -64,12 +64,12 @@ public:
 	void testHasErrorAAttrib(){
 			
 		tmDataIntegrity di(m_pDB);
-		TS_ASSERT_EQUALS(di.HasErrorAAttrib(19, TOC_NAME_POINTS),true); // WatOutflow_PT with one error
+		TS_ASSERT_EQUALS(di.HasErrorAAttrib(19, LAYER_POINT),true); // WatOutflow_PT with one error
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()!=wxEmptyString);
 		
 		
-		TS_ASSERT_EQUALS(di.HasErrorAAttrib(12, TOC_NAME_LINES),false); // Gravifeat_L with no error
+		TS_ASSERT_EQUALS(di.HasErrorAAttrib(12, LAYER_LINE),false); // Gravifeat_L with no error
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()==wxEmptyString);
 
@@ -80,15 +80,15 @@ public:
 		tmDataIntegrity di(m_pDB);
 
 		
-		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_LINES),true); // Error in lines 
+		TS_ASSERT_EQUALS(di.HasErrorType(LAYER_LINE),true); // Error in lines 
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()!=wxEmptyString);
 		
-		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_LABELS),false); // no error in labels
+		TS_ASSERT_EQUALS(di.HasErrorType(LAYER_POLYGON),false); // no error in labels
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()==wxEmptyString);
 		
-		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_POINTS),false); // no error in points
+		TS_ASSERT_EQUALS(di.HasErrorType(LAYER_POINT),false); // no error in points
 		wxLogMessage(di.GetLastError());
 		TS_ASSERT(di.GetLastError()==wxEmptyString);
 	}
@@ -97,16 +97,16 @@ public:
 	void testCorrectType()
 	{
 		tmDataIntegrity di(m_pDB);
-		TS_ASSERT(di.CorrectType(TOC_NAME_LINES));
-		TS_ASSERT_EQUALS(di.HasErrorType(TOC_NAME_LINES), false);
+		TS_ASSERT(di.CorrectType(LAYER_LINE));
+		TS_ASSERT_EQUALS(di.HasErrorType(LAYER_LINE), false);
 
 	}
 	
 	void testCorrectAAttrib(){
 		
 		tmDataIntegrity di(m_pDB);
-		TS_ASSERT(di.CorrectAAttrib(19, TOC_NAME_POINTS));
-		TS_ASSERT_EQUALS(di.HasErrorAAttrib(19, TOC_NAME_POINTS), false);
+		TS_ASSERT(di.CorrectAAttrib(19, LAYER_POINT));
+		TS_ASSERT_EQUALS(di.HasErrorAAttrib(19, LAYER_POINT), false);
 		
 		
 	}

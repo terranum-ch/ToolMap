@@ -68,6 +68,9 @@ class tmExportManager : public wxObject
 		bool IsExportPathValid();
 		bool GetAvailableFileName (ProjectDefMemoryLayers * layer);
 		
+		// check integrity
+		void _CorrectIntegrity(PrjMemLayersArray * layers);
+		
 		// create tmExportData object
 		tmExportData * CreateExportData ();
 		

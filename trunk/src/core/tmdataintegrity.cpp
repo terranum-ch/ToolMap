@@ -37,7 +37,7 @@ tmDataIntegrity::~tmDataIntegrity() {
 }
 
 
-bool tmDataIntegrity::HasErrorType(const TOC_GENERIC_NAME & layertype) {
+bool tmDataIntegrity::HasErrorType(const PRJDEF_LAYERS_TYPE & layertype) {
 	wxASSERT(m_pDB);
 	m_ErrorType = wxNOT_FOUND;
 	m_ErrorAAttrib = wxNOT_FOUND;
@@ -69,7 +69,7 @@ bool tmDataIntegrity::HasErrorType(const TOC_GENERIC_NAME & layertype) {
 
 
 
-bool tmDataIntegrity::HasErrorAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype) {
+bool tmDataIntegrity::HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE & layertype) {
 	wxASSERT(m_pDB);
 	m_ErrorType = wxNOT_FOUND;
 	m_ErrorAAttrib = wxNOT_FOUND;
@@ -100,7 +100,7 @@ bool tmDataIntegrity::HasErrorAAttrib(long layerindex, const TOC_GENERIC_NAME & 
 }
 
 
-bool tmDataIntegrity::CorrectType(const TOC_GENERIC_NAME & layertype) {
+bool tmDataIntegrity::CorrectType(const PRJDEF_LAYERS_TYPE & layertype) {
 	wxASSERT(m_pDB);
 	
 	// preparing queries
@@ -118,7 +118,7 @@ bool tmDataIntegrity::CorrectType(const TOC_GENERIC_NAME & layertype) {
 }
 
 
-bool tmDataIntegrity::CorrectAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype) {
+bool tmDataIntegrity::CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE & layertype) {
 	wxASSERT(m_pDB);
 
 	wxString myQueryAAttrib = _T("DELETE ");
