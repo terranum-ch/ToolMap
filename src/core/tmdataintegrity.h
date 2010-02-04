@@ -26,7 +26,7 @@
 #include <wx/wx.h>
 #endif
 
-#include "../gis/tmlayerproperties.h"
+#include "projectdefmemory.h"
 
 class DataBaseTM;
 
@@ -48,11 +48,11 @@ public:
     ~tmDataIntegrity();
 	
 	
-    bool HasErrorType(const TOC_GENERIC_NAME & layertype);
-    bool HasErrorAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype);
+    bool HasErrorType(const PRJDEF_LAYERS_TYPE & layertype);
+    bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE & layertype);
 	
-    bool CorrectType(const TOC_GENERIC_NAME & layertype);
-    bool CorrectAAttrib(long layerindex, const TOC_GENERIC_NAME & layertype);
+    bool CorrectType(const PRJDEF_LAYERS_TYPE & layertype);
+    bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE & layertype);
 	
     wxString GetLastError();
 	
