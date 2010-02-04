@@ -57,9 +57,9 @@ void DanglingNode_DLG::CreateControls()
 	bSizer24->Add( m_staticText6, 0, wxTOP|wxRIGHT|wxLEFT, 10 );
 	
 	wxArrayString m_LayerChoiceChoices;
-	m_LayerChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), m_LayerChoiceChoices, 0 );
-	m_LayerChoice->SetSelection( 0 );
-	bSizer24->Add( m_LayerChoice, 0, wxALL|wxEXPAND, 5 );
+	m_LayerChoice = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ), m_LayerChoiceChoices, 0 );
+	//m_LayerChoice->SetSelection( 0 );
+	bSizer24->Add( m_LayerChoice, 1, wxALL|wxEXPAND, 5 );
 	
 	
 	//bSizer24->Add( 0, 20, 1, wxEXPAND, 0 );
@@ -69,12 +69,12 @@ void DanglingNode_DLG::CreateControls()
 	
 	wxButton* m_button21;
 	m_button21 = new wxButton( this, ID_DLGDN_CLEAR, _("Clear"), wxDefaultPosition, wxDefaultSize, 0); //  wxSize( 100,-1 ), 0 );
-	bSizer25->Add( m_button21, 1, wxALL, 5 );
+	bSizer25->Add( m_button21, 0, wxALL, 5 );
 	
 	wxButton* m_button22;
 	m_button22 = new wxButton( this, wxID_OK, _("Search"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_button22->SetDefault(); 
-	bSizer25->Add( m_button22, 1, wxALL, 5 );
+	bSizer25->Add( m_button22, 0, wxALL, 5 );
 	
 	bSizer24->Add( bSizer25, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM, 5 );
 	
