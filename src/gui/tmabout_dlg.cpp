@@ -23,6 +23,7 @@
 // image
 #include "../img/tmimgfunc.h"
 #include "../img/toolmap_big.cpp"
+#include "../core/svn_version.h"	// for latest svn version
 
 
 BEGIN_EVENT_TABLE( tmAboutDLG, wxDialog )
