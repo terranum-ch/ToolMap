@@ -381,7 +381,7 @@ private:
 	void OnMenuZoomPreviousChange(wxCommandEvent & event);
 	
 	
-	ImportLogDLG * m_LogWindow;
+	wxLogWindow * m_LogWindow;
 //#if (__WXMAC__)
 //	TocWindowDlgMac * m_TocWindow;
 //#else

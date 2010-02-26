@@ -21,6 +21,7 @@
 
 #include "toolmap.h"
 #include "svn_version.h" // version number definition
+#include "tmlog.h"
 
 
 #if wxUSE_CRASHREPORT
@@ -298,9 +299,14 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 
 void ToolMapFrame::PostInit()
 {
-	m_LogWindow = new ImportLogDLG (this);
-	wxTextCtrl * myLogTextCtrl = (wxTextCtrl *) m_LogWindow->FindWindow(ID_DLGLOG_TXT);
-	wxLog::SetActiveTarget (new wxLogTextCtrl (myLogTextCtrl));
+	wxString myProgName = g_ProgName;
+	myProgName = myProgName.RemoveLast(5);
+
+	
+	wxLog * myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
+	delete wxLog::SetActiveTarget(myDlgLog);
+	m_LogWindow = new wxLogWindow(this, myProgName + _(" Log"), false);
+	
 	wxLogDebug(_("Debug mode enabled"));
 	
 	// create the Aui manager
@@ -802,18 +808,7 @@ void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
 
 void ToolMapFrame::OnLogWindow(wxCommandEvent & event)
 {
-	///@bug the Check methode won't work under mac os X in the window menu.
-	if (m_LogWindow->IsShown())
-	{
-		
-		GetMenuBar()->Check(ID_MENU_LOG_WINDOW, FALSE);
-		m_LogWindow->Hide();
-	}
-	else
-	{
 		m_LogWindow->Show();
-		GetMenuBar()->Check(ID_MENU_LOG_WINDOW, TRUE);
-	}
 }
 
 void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
