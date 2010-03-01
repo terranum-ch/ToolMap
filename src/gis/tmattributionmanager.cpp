@@ -33,7 +33,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_SHORTCUT_PRESSED, tmAttributionManager::OnShortcutPressed)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_COPY_ATTRIBUTION, tmAttributionManager::OnCopyAttribution)
-	EVT_COMMAND (wxID_ANY, tmEVT_TOC_SELECTION_CHANGED,tmAttributionManager::OnLayerChanged)
+	//EVT_COMMAND (wxID_ANY, tmEVT_TOC_SELECTION_CHANGED,tmAttributionManager::OnLayerChanged)
 END_EVENT_TABLE()
 
 
@@ -56,7 +56,8 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
 	m_Panel = panel;
 	m_SelData = selection;
 	m_pPrjMem = NULL;
-	m_InfoDLG = new InformationDLG(parent);
+	m_InfoDLG = NULL;
+	//m_InfoDLG = new InformationDLG(parent);
 	
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
@@ -214,7 +215,7 @@ tmAttributionManager::~tmAttributionManager()
 	UnInitAttributionManager();
 	m_Parent->PopEventHandler(false);
 	m_Parent->SetEventHandler(m_Parent);
-	delete  m_InfoDLG;
+	//delete  m_InfoDLG;
 }
 
 
@@ -751,6 +752,14 @@ bool tmAttributionManager::AAttributionButtonShow ()
  *******************************************************************************/
 void tmAttributionManager::DisplayInformationsWnd()
 {
+	// search info dialog
+	m_InfoDLG = (InformationDLG*) wxWindow::FindWindowById(ID_INFORMATION_DLG);
+	if (m_InfoDLG==NULL) {
+		m_InfoDLG = new InformationDLG(m_Parent, m_TOC, m_SelData, ID_INFORMATION_DLG);
+		m_InfoDLG->Show();
+	}
+	
+	/*
 	// show information window if not visible
 	if (!m_InfoDLG->IsShown())
 	{
@@ -759,7 +768,7 @@ void tmAttributionManager::DisplayInformationsWnd()
 		// update metadata and feature
 		UpdateInfoMetadata();
 		
-	}
+	}*/
 	
 }
 
@@ -773,10 +782,10 @@ void tmAttributionManager::DisplayInformationsWnd()
  *******************************************************************************/
 void tmAttributionManager::OnLayerChanged (wxCommandEvent & event)
 {
-	if (!m_InfoDLG->IsShown())
-		return;
+	//if (!m_InfoDLG->IsShown())
+	//	return;
 	
-	UpdateInfoMetadata();
+	//UpdateInfoMetadata();
 		
 }
 
@@ -807,7 +816,7 @@ bool tmAttributionManager::UpdateInfoMetadata()
 		return false;
 	}
 	wxString myMetaData = myData->GetMetaDataAsHtml();
-	m_InfoDLG->SetMetaData(myMetaData);
+	//m_InfoDLG->SetMetaData(myMetaData);
 	return true;
 }
 
