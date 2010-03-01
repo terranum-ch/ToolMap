@@ -33,29 +33,60 @@
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
 
+class tmTOCCtrl;
+class tmSelectedDataMemory;
+//class tmSelectionInfoCtrl;
+class tmLayerInfoCtrl;
 
-class InformationDLG : public wxDialog
-	{
-	private:
-		// controls
-		wxNotebook* m_notebook;
-		wxHtmlWindow* m_LayerInfo;
-		wxButton* m_CloseBtn;
-		
-		void CreateControls();
-		void InitMembersValue();
-		
-	protected:
-	public:
-		InformationDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-						const wxString& title = _("Informations"),
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
-						long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSTAY_ON_TOP );
-		~InformationDLG();
-		void SetMetaData (const wxString & metadata);
 
-	};
+const int ID_INFORMATION_DLG = 22401;
+
+
+class InformationDLG : public wxDialog {
+private:
+    tmTOCCtrl * m_TOC;
+    tmSelectedDataMemory * m_Selected;
+//    tmSelectionInfoCtrl * m_SelCtrl;
+    tmLayerInfoCtrl * m_LayerCtrl;
+	
+	void _CreateControls();
+	
+    void OnSelectionChanged(wxCommandEvent & event);
+    void OnLayerChanged(wxCommandEvent & event);
+	void OnCloseDlg(wxCloseEvent & event);
+
+	
+	//DECLARE_EVENT_TABLE();
+public:
+    InformationDLG(wxWindow * parent, tmTOCCtrl * toc,
+				   tmSelectedDataMemory * sel, wxWindowID id,
+				   const wxString & title = _("Informations"), 
+				   const wxPoint & pos = wxDefaultPosition,
+				   const wxSize & size = wxDefaultSize,
+				   long style = wxDEFAULT_DIALOG_STYLE| wxRESIZE_BORDER | wxSTAY_ON_TOP);
+    virtual ~InformationDLG();
+
+    virtual bool TransferDataToWindow();
+	
+};
+
+
+
+
+/***************************************************************************//**
+Layer informations (wxHtmlWindow)
+author Lucien Schreiber (c) CREALP 2010
+date 01 mars 2010
+*******************************************************************************/
+class tmLayerInfoCtrl : public wxHtmlWindow {
+public:
+	
+    tmLayerInfoCtrl(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size);
+    virtual ~tmLayerInfoCtrl();
+
+    void Update(tmTOCCtrl * toc);
+	
+};
 
 
 
