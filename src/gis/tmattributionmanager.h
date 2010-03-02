@@ -132,7 +132,7 @@ class tmAttributionManager : public wxEvtHandler
 		
 		// informations
 		void DisplayInformationsWnd();
-		bool UpdateInfoMetadata();
+		
 		
 		
 		// Attribution data creation
