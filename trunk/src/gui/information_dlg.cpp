@@ -25,6 +25,7 @@
 
 
 
+
 BEGIN_EVENT_TABLE(InformationDLG, wxDialog)
 	EVT_CLOSE(InformationDLG::OnCloseDlg)
 END_EVENT_TABLE();
@@ -42,7 +43,20 @@ void InformationDLG::_CreateControls() {
 	wxPanel* m_panel5;
 	m_panel5 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition,
 						   wxDefaultSize, wxTAB_TRAVERSAL );
+	
+	wxBoxSizer* bSizer26;
+	bSizer26 = new wxBoxSizer( wxVERTICAL );
+	
+	m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY);
+	bSizer26->Add( m_SelCtrl, 1, wxEXPAND, 5 );
+	
+	m_panel5->SetSizer( bSizer26 );
+	m_panel5->Layout();
+	bSizer26->Fit( m_panel5 );
+
+	
 	m_notebook->AddPage( m_panel5, _("Feature"), false );
+	
 	
 	
 	wxPanel* m_panel4;
@@ -104,6 +118,7 @@ InformationDLG::~InformationDLG() {
 
 bool InformationDLG::TransferDataToWindow() {
 	UpdateLayer();
+	UpdateSelection();
 	
 	return true;
 }
@@ -118,6 +133,8 @@ void InformationDLG::UpdateLayer() {
 
 
 void InformationDLG::UpdateSelection() {
+	wxASSERT(m_Selected);
+	m_SelCtrl->Update(m_Selected);
 	
 }
 
@@ -162,4 +179,47 @@ void tmLayerInfoCtrl::Update(tmTOCCtrl * toc) {
 	SetPage(myMetaData);
 }
 
+
+
+/***************************************************************************//**
+Selection Control
+author Lucien Schreiber (c) CREALP 2010
+date 02 mars 2010
+*******************************************************************************/
+tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
+										 const wxPoint & pos, const wxSize & size, long style):
+wxTreeMultiCtrl(window, id, pos, size, style){
+	SetBackgroundColour(*wxWHITE);
+	m_ParentItem = AddRoot(_("Selected features"), _("Selected features"));
+	//AppendNode(m_ParentItem, _("Test"), _("Salut"));
+	//Collapse(m_ParentItem, true);
+	
+}
+
+
+
+tmSelectionInfoCtrl::~tmSelectionInfoCtrl() {
+	
+}
+
+
+
+void tmSelectionInfoCtrl::Update(tmSelectedDataMemory * sel) {
+	wxASSERT(sel);
+	Freeze();
+	
+	wxArrayLong * mySelVal = sel->GetSelectedValues();
+	if (mySelVal == NULL){
+		Thaw();
+		return;
+	}
+	
+	
+	
+	for (unsigned int i = 0; i<sel->GetCount(); i++) {
+		Collapse(AppendNode(m_ParentItem, wxString() << mySelVal->Item(i)), false);
+	}
+	Thaw();
+	
+}
 
