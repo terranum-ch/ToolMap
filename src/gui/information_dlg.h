@@ -32,10 +32,12 @@
 
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
+#include "../components/wxtreemultictrl/wxTreeMultiCtrl.h"	// for wxTreeMultiCtrl
+#include "../components/wxtreemultictrl/TreeMultiItemWindow.h"
 
 class tmTOCCtrl;
 class tmSelectedDataMemory;
-//class tmSelectionInfoCtrl;
+class tmSelectionInfoCtrl;
 class tmLayerInfoCtrl;
 
 
@@ -46,7 +48,7 @@ class InformationDLG : public wxDialog {
 private:
     tmTOCCtrl * m_TOC;
     tmSelectedDataMemory * m_Selected;
-//    tmSelectionInfoCtrl * m_SelCtrl;
+    tmSelectionInfoCtrl * m_SelCtrl;
     tmLayerInfoCtrl * m_LayerCtrl;
 	
 	void _CreateControls();
@@ -91,6 +93,28 @@ public:
 	
 };
 
+
+
+/***************************************************************************//**
+Selection Control
+author Lucien Schreiber (c) CREALP 2010
+date 02 mars 2010
+*******************************************************************************/
+class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
+private:
+    wxTreeMultiItem m_ParentItem;
+
+	
+public:
+    tmSelectionInfoCtrl(wxWindow * window, wxWindowID id, 
+						const wxPoint & pos = wxDefaultPosition,
+						const wxSize & size = wxDefaultSize,
+						long style = wxTMC_DEFAULT_STYLE);
+    ~tmSelectionInfoCtrl();
+	
+    void Update(tmSelectedDataMemory * sel);
+	
+};
 
 
 
