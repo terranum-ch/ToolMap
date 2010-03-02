@@ -33,7 +33,7 @@ BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_SHORTCUT_PRESSED, tmAttributionManager::OnShortcutPressed)
 	EVT_COMMAND (wxID_ANY, tmEVT_AM_COPY_ATTRIBUTION, tmAttributionManager::OnCopyAttribution)
-	//EVT_COMMAND (wxID_ANY, tmEVT_TOC_SELECTION_CHANGED,tmAttributionManager::OnLayerChanged)
+	EVT_COMMAND (wxID_ANY, tmEVT_TOC_SELECTION_CHANGED,tmAttributionManager::OnLayerChanged)
 END_EVENT_TABLE()
 
 
@@ -759,17 +759,6 @@ void tmAttributionManager::DisplayInformationsWnd()
 		m_InfoDLG->Show();
 	}
 	
-	/*
-	// show information window if not visible
-	if (!m_InfoDLG->IsShown())
-	{
-		m_InfoDLG->Show(true);
-		
-		// update metadata and feature
-		UpdateInfoMetadata();
-		
-	}*/
-	
 }
 
 
@@ -782,48 +771,11 @@ void tmAttributionManager::DisplayInformationsWnd()
  *******************************************************************************/
 void tmAttributionManager::OnLayerChanged (wxCommandEvent & event)
 {
-	//if (!m_InfoDLG->IsShown())
-	//	return;
-	
-	//UpdateInfoMetadata();
-		
+	m_InfoDLG = (InformationDLG*) wxWindow::FindWindowById(ID_INFORMATION_DLG);
+	if (m_InfoDLG != NULL) {
+		m_InfoDLG->UpdateLayer();
+	}
 }
 
 
-/***************************************************************************//**
- @brief Update informations dialog with layer metadata
- @details To avoid loosing performence only call this function if the dialog is
- visible
- @return true if Update was successfull
- @author Lucien Schreiber (c) CREALP 2009
- @date 07 April 2009
- *******************************************************************************/
-bool tmAttributionManager::UpdateInfoMetadata()
-{
-	// load layer informations only if dialog is visible
-	tmLayerProperties * itemProp = m_TOC->GetSelectionLayer();
-	if (!itemProp)
-	{
-		wxLogDebug(_T("No layer selected, select a layer"));
-		return false;
-	}
-	
-	
-	tmGISData * myData = tmGISData::LoadLayer(itemProp);
-	if (!myData)
-	{
-		wxLogError(_("Error loading GIS data for metadata"));
-		return false;
-	}
-	wxString myMetaData = myData->GetMetaDataAsHtml();
-	//m_InfoDLG->SetMetaData(myMetaData);
-	return true;
-}
-
-
-
-/*void tmAttributionManager::EditOrientedPoint()
-{
-	
-}*/
 

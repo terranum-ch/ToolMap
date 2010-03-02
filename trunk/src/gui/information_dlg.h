@@ -51,12 +51,11 @@ private:
 	
 	void _CreateControls();
 	
-    void OnSelectionChanged(wxCommandEvent & event);
-    void OnLayerChanged(wxCommandEvent & event);
 	void OnCloseDlg(wxCloseEvent & event);
 
+
 	
-	//DECLARE_EVENT_TABLE();
+	DECLARE_EVENT_TABLE();
 public:
     InformationDLG(wxWindow * parent, tmTOCCtrl * toc,
 				   tmSelectedDataMemory * sel, wxWindowID id,
@@ -67,6 +66,10 @@ public:
     virtual ~InformationDLG();
 
     virtual bool TransferDataToWindow();
+	
+	void UpdateLayer();	
+    void UpdateSelection();
+	
 	
 };
 
