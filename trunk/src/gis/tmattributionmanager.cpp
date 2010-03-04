@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmattributionmanager.h"
+#include "../gui/information_dlg.h"				// for informations window
 
 
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
@@ -328,6 +329,13 @@ bool tmAttributionManager::IsOnlyOneObjSelected ()
  *******************************************************************************/
 void tmAttributionManager::OnSelection (wxCommandEvent & event)
 {
+	// update info dlg
+	m_InfoDLG = (InformationDLG*) wxWindow::FindWindowById(ID_INFORMATION_DLG);
+	if (m_InfoDLG != NULL) {
+		m_InfoDLG->UpdateSelection();
+	}
+	
+	
 	int iSelFeatureCount = m_SelData->GetCount();
 	
 	// some verifications :
@@ -362,6 +370,9 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 			m_Panel->EmptyListValues();
 		}
 	}
+	
+	
+	
 	
 	// propagate to menu
 	event.Skip();
@@ -777,5 +788,13 @@ void tmAttributionManager::OnLayerChanged (wxCommandEvent & event)
 	}
 }
 
+
+
+void tmAttributionManager::OnSelectionChanged (wxCommandEvent & event){
+	m_InfoDLG = (InformationDLG*) wxWindow::FindWindowById(ID_INFORMATION_DLG);
+	if (m_InfoDLG != NULL) {
+		m_InfoDLG->UpdateSelection();
+	}
+}
 
 
