@@ -42,7 +42,10 @@
 #include "../core/tmshortcutmemory.h"		// for shortcuts in memory
 
 #include "tmaattribwindow.h"				// for advanced attribution
-#include "../gui/information_dlg.h"				// for informations window
+
+
+class InformationDLG;
+
 
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 
@@ -82,6 +85,8 @@ class tmAttributionManager : public wxEvtHandler
 		
 		// message event functions
 		void OnLayerChanged (wxCommandEvent & event);
+		void OnSelectionChanged (wxCommandEvent & event);
+
 		
 		// shortcut function
 		void OnRefreshShortcut (wxCommandEvent & event);

@@ -191,7 +191,6 @@ tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
 wxTreeMultiCtrl(window, id, pos, size, style){
 	SetBackgroundColour(*wxWHITE);
 	m_ParentItem = AddRoot(_("Selected features"), _("Selected features"));
-	//AppendNode(m_ParentItem, _("Test"), _("Salut"));
 	//Collapse(m_ParentItem, true);
 	
 }
@@ -207,14 +206,13 @@ tmSelectionInfoCtrl::~tmSelectionInfoCtrl() {
 void tmSelectionInfoCtrl::Update(tmSelectedDataMemory * sel) {
 	wxASSERT(sel);
 	Freeze();
+	DeleteChildren(m_ParentItem);
 	
 	wxArrayLong * mySelVal = sel->GetSelectedValues();
 	if (mySelVal == NULL){
 		Thaw();
 		return;
 	}
-	
-	
 	
 	for (unsigned int i = 0; i<sel->GetCount(); i++) {
 		Collapse(AppendNode(m_ParentItem, wxString() << mySelVal->Item(i)), false);

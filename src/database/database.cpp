@@ -127,8 +127,11 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 #if defined (MYSQL_IS_LOGGING)
 		, bufLogPath
 #endif
-		//"--character-sets-dir=./share/charsets",
-		//"--default-character-set=utf8"
+		
+		//"--character-set-server=utf8",
+		//"--character-sets-dir=./charsets",
+		//"--collation-server=utf8_general_ci"
+		
 	};
 
 	char *server_groups[] =
@@ -948,6 +951,11 @@ int DataBase::DataBaseInitLibrary (const wxString & path)
 
 bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 {
+	wxLogMessage(_T("----- DATABASE is open status = %d"), DataBaseIsOpen());
+	if (DataBaseIsOpen()==true) {
+		DataBaseClose();
+	}
+	
 	bool Bsucces = FALSE;
 	if(DataBaseInitLibrary(path)==0)
 	{
@@ -981,7 +989,7 @@ bool DataBase::DataBaseOpen (wxString path, enum Lang_Flag flag)
 
 bool DataBase::DataBaseClose()
 {
-	wxLogDebug(_T("Closing database"));
+	wxLogWarning(_T("Closing database"));
 	DataBaseCloseLibrary();
 
 	pMySQL = NULL;
@@ -999,6 +1007,7 @@ bool DataBase::DataBaseClose()
  *******************************************************************************/
 void DataBase::DataBaseCloseLibrary()
 {
+	
 	// close the library if the lib was used
 	// then we must quit the program.
 	if (bIsLibInit)

@@ -109,12 +109,13 @@ public:
     tmSelectionInfoCtrl(wxWindow * window, wxWindowID id, 
 						const wxPoint & pos = wxDefaultPosition,
 						const wxSize & size = wxDefaultSize,
-						long style = wxTMC_DEFAULT_STYLE);
+						long style = wxTMC_BG_ADJUST_ALL | wxTMC_SPAN_WIDTH);
     ~tmSelectionInfoCtrl();
 	
     void Update(tmSelectedDataMemory * sel);
 	
 };
+
 
 
 
