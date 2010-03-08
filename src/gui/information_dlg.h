@@ -104,7 +104,7 @@ class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
 private:
     wxTreeMultiItem m_ParentItem;
 
-	void _DeleteAllInfos();
+    void _DeleteAllInfos(const wxTreeMultiItem & dontdelete);
 
 
     // event function

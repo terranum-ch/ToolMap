@@ -208,29 +208,28 @@ tmSelectionInfoCtrl::~tmSelectionInfoCtrl() {
 
 
 
-void tmSelectionInfoCtrl::_DeleteAllInfos() {
+void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem & dontdelete) {
 	Freeze();
 	int myFirstChildCookie = 0;
 	int myIterateChildCookie = 0;
 	wxTreeMultiItem myParent = GetFirstChild(m_ParentItem, myFirstChildCookie);
 	wxTreeMultiItem myChild;
 	
-	int iloop = 0;
-	
 	while (1) {
 		if (myParent.IsOk() == false) {
 			break;
 		}
 		
-		myChild = GetFirstChild(myParent, myIterateChildCookie);
-		if (myChild.IsOk() == true){
-			CollapseAndReset(myParent);
+		if (myParent != dontdelete) {
+			myChild = GetFirstChild(myParent, myIterateChildCookie);
+			if (myChild.IsOk() == true){
+				DeleteChildren(myParent);
+			}
+			
+			Collapse(myParent, false);
 		}
 		myParent = GetNextChild(m_ParentItem, myFirstChildCookie);
-		
-		
-		iloop++;
-		
+			
 	}
 	Thaw();
 }
@@ -240,9 +239,22 @@ void tmSelectionInfoCtrl::_DeleteAllInfos() {
 
 void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 	
+	wxPoint myRealPosition = event.GetPosition();
+	
+	int xViewScrolled = 0, yViewScrolled = 0;
+	GetViewStart(&xViewScrolled, &yViewScrolled);
+	
+	int xUnitScroll = 0, yUnitScroll = 0;
+	GetScrollPixelsPerUnit(&xUnitScroll, &yUnitScroll);
+	
+	
+	
+	myRealPosition.x = myRealPosition.x + xViewScrolled * xUnitScroll;
+	myRealPosition.y = myRealPosition.y + yViewScrolled * yUnitScroll;
+
 	
 	int myFlags = 0;
-	wxTreeMultiItem clickeditem = HitTest(event.GetPosition(), myFlags);
+	wxTreeMultiItem clickeditem = HitTest(myRealPosition, myFlags);
 	
 	if (clickeditem.IsOk() == false) {
 		return;
@@ -265,9 +277,12 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 	}
 	
 	// remove all control with windows
-	_DeleteAllInfos();
+	
 	AppendWindow(clickeditem, new wxButton(this, -1, _T("Press this")));
-
+	_DeleteAllInfos(clickeditem);
+	//Expand(clickeditem, false);
+	
+	
 	//event.Skip();
 }
 
