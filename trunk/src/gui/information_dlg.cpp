@@ -186,6 +186,11 @@ Selection Control
 author Lucien Schreiber (c) CREALP 2010
 date 02 mars 2010
 *******************************************************************************/
+BEGIN_EVENT_TABLE(tmSelectionInfoCtrl, wxTreeMultiCtrl)
+	EVT_LEFT_UP(tmSelectionInfoCtrl::OnItemLeftClick)
+END_EVENT_TABLE()
+
+
 tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
 										 const wxPoint & pos, const wxSize & size, long style):
 wxTreeMultiCtrl(window, id, pos, size, style){
@@ -201,6 +206,70 @@ tmSelectionInfoCtrl::~tmSelectionInfoCtrl() {
 	
 }
 
+
+
+void tmSelectionInfoCtrl::_DeleteAllInfos() {
+	Freeze();
+	int myFirstChildCookie = 0;
+	int myIterateChildCookie = 0;
+	wxTreeMultiItem myParent = GetFirstChild(m_ParentItem, myFirstChildCookie);
+	wxTreeMultiItem myChild;
+	
+	int iloop = 0;
+	
+	while (1) {
+		if (myParent.IsOk() == false) {
+			break;
+		}
+		
+		myChild = GetFirstChild(myParent, myIterateChildCookie);
+		if (myChild.IsOk() == true){
+			CollapseAndReset(myParent);
+		}
+		myParent = GetNextChild(m_ParentItem, myFirstChildCookie);
+		
+		
+		iloop++;
+		
+	}
+	Thaw();
+}
+
+
+
+
+void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
+	
+	
+	int myFlags = 0;
+	wxTreeMultiItem clickeditem = HitTest(event.GetPosition(), myFlags);
+	
+	if (clickeditem.IsOk() == false) {
+		return;
+	}
+	
+	if (myFlags == wxTMC_HITTEST_WINDOW) {
+		return;
+	}
+	
+	if (clickeditem == m_ParentItem) {
+		return;
+	}
+	
+	int myCookie = 0;
+	wxTreeMultiItem myCtrl = GetFirstChild(clickeditem, myCookie);
+	if (myCtrl.IsOk() == true) {
+		wxLogMessage(_T("Contain a child"));
+		
+		return;
+	}
+	
+	// remove all control with windows
+	_DeleteAllInfos();
+	AppendWindow(clickeditem, new wxButton(this, -1, _T("Press this")));
+
+	//event.Skip();
+}
 
 
 void tmSelectionInfoCtrl::Update(tmSelectedDataMemory * sel) {

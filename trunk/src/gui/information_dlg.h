@@ -104,6 +104,14 @@ class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
 private:
     wxTreeMultiItem m_ParentItem;
 
+	void _DeleteAllInfos();
+
+
+    // event function
+	void OnItemLeftClick(wxMouseEvent & event);
+
+	
+	DECLARE_EVENT_TABLE();
 	
 public:
     tmSelectionInfoCtrl(wxWindow * window, wxWindowID id, 
