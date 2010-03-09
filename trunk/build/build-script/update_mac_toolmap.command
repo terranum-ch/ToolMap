@@ -9,11 +9,19 @@
 # 4) create dmg 
 
 #PARAMETERS
-VARBINDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin/32_rel"
-VARBINDIR_DBG="/Users/lucien/DATA/PRJ/TOOLMAP2/bin/32_dbg"
+VARBINDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin"
 VARTRUNKDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/trunk"
 VARINSTALLERDIR="/Users/lucien/DATA/PRJ/TOOLMAP2/bin"
 VARLINE="----------------------------------"
+
+# PARAMETERS
+PARAMGISPATH=/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBGIS
+PARAMWXPATH=/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBWX
+PARAMMYSQLPATH=/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBMYSQL
+PARAMUNITTEST=1
+PARAMUNITESTLIB=/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest
+PARAMCURLLIBSEARCH=1
+PARAMUNIT_TESTING_PATH=/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing
 
 #title
 echo $VARLINE
@@ -34,19 +42,58 @@ echo $VARLINE
 # DEBUG VERSION
 #update cmake project file
 echo "2) Updating cmake file...(DEBUG)"
-cmake $VARBINDIR_DBG
+
+cd $VARBINDIR
+[ -d 32-dbg ] || mkdir 32-dbg
+cd $VARBINDIR/32-dbg
+
+cmake -GXcode $VARTRUNKDIR/build -DCMAKE_OSX_ARCHITECTURES:TEXT="i386" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=$PARAMGISPATH -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="$PARAMWXPATH/bin/wx-config" -DMYSQL_MAIN_DIR:PATH=$PARAMMYSQLPATH -DMYSQL_IS_LOGGING:BOOL=0 -DSVN_DURING_BUILD:BOOL=1 -DCMAKE_BUILD_TYPE:TEXT="Debug" -DSEARCH_CURL:BOOL=$PARAMCURLLIBSEARCH -DUSE_UNITTEST:BOOL=$PARAMUNITTEST -DUNIT_TESTING_PATH=$PARAMUNIT_TESTING_PATH -DCXXTEST_DIRECTORY=$PARAMUNITESTLIB
+
 echo "2) Updating cmake file... DONE"
 echo $VARLINE
 
 #compiling project
 echo "3)Building project..."
-cd $VARBINDIR_DBG
+cd $VARBINDIR/32-dbg
 xcodebuild -configuration Debug
 echo "3)Building project... DONE"
 echo $VARLINE
 
 
-echo -n "Build release version and installer (y/n) ?"
+
+
+#RELEASE VERSION
+echo -n "Build release version (y/n)"
+read value
+
+if [ "$value" == "n" ]  
+then 
+exit 0 
+fi
+
+cd $VARBINDIR
+[ -d 32-rel ] || mkdir 32-rel
+cd $VARBINDIR/32-rel
+
+
+
+#update cmake project file
+echo "2) Updating cmake file..."
+
+cmake -GXcode $VARTRUNKDIR/build -DCMAKE_OSX_ARCHITECTURES:TEXT="i386" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=$PARAMGISPATH -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="$PARAMWXPATH/bin/wx-config" -DMYSQL_MAIN_DIR:PATH=$PARAMMYSQLPATH -DMYSQL_IS_LOGGING:BOOL=1 -DSVN_DURING_BUILD:BOOL=1 -DCMAKE_BUILD_TYPE:TEXT="Release" -DSEARCH_CURL:BOOL=$PARAMCURLLIBSEARCH
+
+
+echo "2) Updating cmake file... DONE"
+echo $VARLINE
+
+#compiling project
+echo "3)Building project..."
+cd $VARBINDIR/32-rel
+xcodebuild -configuration Release
+echo "3)Building project... DONE"
+echo $VARLINE
+
+echo -n "Build installer (y/n) ?"
 read value
 
 if [ "$value" == "n" ]  
@@ -56,45 +103,27 @@ fi
 
 
 
-
-
-
-
-#RELEASE VERSION
-#update cmake project file
-echo "2) Updating cmake file..."
-cmake $VARBINDIR
-echo "2) Updating cmake file... DONE"
-echo $VARLINE
-
-#compiling project
-echo "3)Building project..."
-cd $VARBINDIR
-xcodebuild -configuration Release
-echo "3)Building project... DONE"
-echo $VARLINE
-
 #copying file for installer
 echo "4a) Copy files for installer"
 cd $VARTRUNKDIR/install/mac/background/
-mkdir $VARBINDIR/Release/.background
-cp tm_dmg_background.jpg $VARBINDIR/Release/.background
-cp Applications $VARBINDIR/Release
-cp InstallDS_Store $VARBINDIR/Release/.DS_Store
+mkdir $VARBINDIR/32-rel/Release/.background
+cp tm_dmg_background.jpg $VARBINDIR/32-rel//Release/.background
+cp Applications $VARBINDIR/32-rel//Release
+cp InstallDS_Store $VARBINDIR/32-rel//Release/.DS_Store
 echo "4a) Copy files for installer... DONE"
 
 #move buggy files  out from folder
 echo "4b) Move static library out of folder"
-cd $VARBINDIR/Release
-mv libToolMap2_lib.a $VARBINDIR/libToolMap2_lib.a
+cd $VARBINDIR/32-rel//Release
+mv libToolMap2_lib.a $VARBINDIR/32-rel/libToolMap2_lib.a
 
 #creating installer
 echo "4) Creating installer..."
 cd $VARINSTALLERDIR
-hdiutil create -volname "ToolMap" -srcfolder $VARBINDIR/Release ToolMap2_r$VARSVNNUMBER.dmg
+hdiutil create -volname "ToolMap" -srcfolder $VARBINDIR/32-rel/Release ToolMap2_r$VARSVNNUMBER.dmg
 echo "4) Creating installer... DONE"
 
 #move buggy files back into folder
 echo "5) Move static library back into folder"
-cd $VARBINDIR
-mv libToolMap2_lib.a $VARBINDIR/Release/libToolMap2_lib.a
+cd $VARBINDIR/32-rel
+mv libToolMap2_lib.a $VARBINDIR/32-rel/Release/libToolMap2_lib.a
