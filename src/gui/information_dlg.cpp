@@ -50,7 +50,7 @@ void InformationDLG::_CreateControls() {
 	wxBoxSizer* bSizer26;
 	bSizer26 = new wxBoxSizer( wxVERTICAL );
 	
-	m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY);
+	m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected);
 	bSizer26->Add( m_SelCtrl, 1, wxEXPAND, 5 );
 	
 	m_panel5->SetSizer( bSizer26 );
@@ -136,8 +136,7 @@ void InformationDLG::UpdateLayer() {
 
 
 void InformationDLG::UpdateSelection() {
-	wxASSERT(m_Selected);
-	m_SelCtrl->Update(m_Selected);
+	m_SelCtrl->Update();
 	
 }
 
@@ -191,16 +190,18 @@ date 02 mars 2010
 *******************************************************************************/
 BEGIN_EVENT_TABLE(tmSelectionInfoCtrl, wxTreeMultiCtrl)
 	EVT_LEFT_UP(tmSelectionInfoCtrl::OnItemLeftClick)
+	EVT_RIGHT_UP(tmSelectionInfoCtrl::OnItemRightClick)
 END_EVENT_TABLE()
 
 
 tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
-										 const wxPoint & pos, const wxSize & size, long style):
+										 tmSelectedDataMemory * sel,
+										 const wxPoint & pos, const wxSize & size, long style) : 
 wxTreeMultiCtrl(window, id, pos, size, style){
+	wxASSERT(sel);
+	m_Selected = sel;
 	SetBackgroundColour(*wxWHITE);
 	m_ParentItem = AddRoot(_("Selected features"), _("Selected features"));
-	//Collapse(m_ParentItem, true);
-	
 }
 
 
@@ -238,36 +239,76 @@ void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem & dontdelete) {
 }
 
 
+wxMenu * tmSelectionInfoCtrl::_CreatePopupMenu() {
+
+	wxMenu* myMenu = new wxMenu();
+	wxMenuItem* m_menuItem61;
+	m_menuItem61 = new wxMenuItem( myMenu, ID_POPUP_MOVE_TO, wxString( wxT("Move to") ) , wxEmptyString, wxITEM_NORMAL );
+	myMenu->Append( m_menuItem61 );
+	
+	wxMenuItem* m_menuItem7;
+	m_menuItem7 = new wxMenuItem( myMenu, ID_POPUP_ZOOM_TO, wxString( wxT("Zoom to") ) , wxEmptyString, wxITEM_NORMAL );
+	myMenu->Append( m_menuItem7 );
+	
+	myMenu->AppendSeparator();
+	
+	wxMenuItem* m_menuItem9;
+	m_menuItem9 = new wxMenuItem( myMenu, ID_POPUP_REMOVE_FROM_SEL, wxString( wxT("Remove from selection") ) , wxEmptyString, wxITEM_NORMAL );
+	myMenu->Append( m_menuItem9 );
+	
+	wxMenuItem* m_menuItem10;
+	m_menuItem10 = new wxMenuItem( myMenu, ID_POPUP_ONLY_THIS_OBJ, wxString( wxT("Select this object only") ) , wxEmptyString, wxITEM_NORMAL );
+	myMenu->Append( m_menuItem10 );
+	
+	myMenu->AppendSeparator();
+	
+	wxMenuItem* m_menuItem11;
+	m_menuItem11 = new wxMenuItem( myMenu, wxID_COPY, wxString( wxT("Copy data to clipboard") ) , wxEmptyString, wxITEM_NORMAL );
+	myMenu->Append( m_menuItem11 );
+	
+	return myMenu;
+}
 
 
-void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
-	
-	wxPoint myRealPosition = event.GetPosition();
-	
+
+bool tmSelectionInfoCtrl::_GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position) {
 	int xViewScrolled = 0, yViewScrolled = 0;
 	GetViewStart(&xViewScrolled, &yViewScrolled);
 	
 	int xUnitScroll = 0, yUnitScroll = 0;
 	GetScrollPixelsPerUnit(&xUnitScroll, &yUnitScroll);
 	
+	wxPoint myPosition;	
+	myPosition.x = position.x + xViewScrolled * xUnitScroll;
+	myPosition.y = position.y + yViewScrolled * yUnitScroll;
 	
-	
-	myRealPosition.x = myRealPosition.x + xViewScrolled * xUnitScroll;
-	myRealPosition.y = myRealPosition.y + yViewScrolled * yUnitScroll;
-
 	
 	int myFlags = 0;
-	wxTreeMultiItem clickeditem = HitTest(myRealPosition, myFlags);
+	item = HitTest(myPosition, myFlags);
 	
-	if (clickeditem.IsOk() == false) {
-		return;
+	if (item.IsOk() == false) {
+		return false;
 	}
 	
 	if (myFlags == wxTMC_HITTEST_WINDOW) {
-		return;
+		return false;
 	}
 	
-	if (clickeditem == m_ParentItem) {
+	if (item == m_ParentItem) {
+		return false;
+	}
+	
+	return true;
+}
+
+
+
+void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
+	
+	wxPoint myRealPosition = event.GetPosition();
+	
+	wxTreeMultiItem clickeditem;
+	if (_GetItemByMousePos(clickeditem, myRealPosition) == false) {
 		return;
 	}
 	
@@ -279,6 +320,7 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 		return;
 	}
 	
+	// TODO: this is temp code.
 	wxGrid * myGrid  = new wxGrid(this, -1);
 	myGrid->CreateGrid(1,10);
 	myGrid->SetRowLabelValue(0, _T(""));
@@ -290,23 +332,38 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 	// remove all control with windows
 	_DeleteAllInfos(clickeditem);
 	
-	
-	//event.Skip();
+	event.Skip();
 }
 
 
-void tmSelectionInfoCtrl::Update(tmSelectedDataMemory * sel) {
-	wxASSERT(sel);
+void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
+	
+	wxTreeMultiItem myClickedItem;
+	if (_GetItemByMousePos(myClickedItem, event.GetPosition()) == false) {
+		return;
+	}
+	
+	wxLogMessage(_T("Display popup menu here"));
+	
+	PopupMenu(_CreatePopupMenu(), event.GetPosition().x, event.GetPosition().y);
+	event.Skip();
+}
+
+	
+
+
+void tmSelectionInfoCtrl::Update() {
+	wxASSERT(m_Selected);
 	Freeze();
 	DeleteChildren(m_ParentItem);
 	
-	wxArrayLong * mySelVal = sel->GetSelectedValues();
+	wxArrayLong * mySelVal = m_Selected->GetSelectedValues();
 	if (mySelVal == NULL){
 		Thaw();
 		return;
 	}
 	
-	for (unsigned int i = 0; i<sel->GetCount(); i++) {
+	for (unsigned int i = 0; i<m_Selected->GetCount(); i++) {
 		Collapse(AppendNode(m_ParentItem, wxString() << mySelVal->Item(i)), false);
 	}
 	Thaw();
