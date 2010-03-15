@@ -22,6 +22,9 @@
 #include "../gis/tmselecteddatamemory.h"
 
 #include "../gis/tmgisdata.h"
+#include <wx/grid.h>
+
+
 
 
 
@@ -276,11 +279,16 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 		return;
 	}
 	
-	// remove all control with windows
+	wxGrid * myGrid  = new wxGrid(this, -1);
+	myGrid->CreateGrid(1,10);
+	myGrid->SetRowLabelValue(0, _T(""));
+	myGrid->SetRowLabelSize(1);
+	myGrid->AutoSize();
 	
-	AppendWindow(clickeditem, new wxButton(this, -1, _T("Press this")));
+	
+	AppendWindow(clickeditem, myGrid);
+	// remove all control with windows
 	_DeleteAllInfos(clickeditem);
-	//Expand(clickeditem, false);
 	
 	
 	//event.Skip();
