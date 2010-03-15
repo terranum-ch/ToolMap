@@ -100,27 +100,39 @@ Selection Control
 author Lucien Schreiber (c) CREALP 2010
 date 02 mars 2010
 *******************************************************************************/
+const int ID_POPUP_MOVE_TO = 18500;
+const int ID_POPUP_ZOOM_TO = 18501;
+const int ID_POPUP_REMOVE_FROM_SEL = 18502;
+const int ID_POPUP_ONLY_THIS_OBJ = 18503;
+
+
 class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
 private:
     wxTreeMultiItem m_ParentItem;
+	tmSelectedDataMemory * m_Selected;
 
+	bool _GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position);
     void _DeleteAllInfos(const wxTreeMultiItem & dontdelete);
+    wxMenu * _CreatePopupMenu();
 
+	
 
     // event function
 	void OnItemLeftClick(wxMouseEvent & event);
+	void OnItemRightClick(wxMouseEvent & event);
 
 	
 	DECLARE_EVENT_TABLE();
 	
 public:
-    tmSelectionInfoCtrl(wxWindow * window, wxWindowID id, 
+	tmSelectionInfoCtrl(wxWindow * window, wxWindowID id, tmSelectedDataMemory * sel,
 						const wxPoint & pos = wxDefaultPosition,
 						const wxSize & size = wxDefaultSize,
 						long style = wxTMC_BG_ADJUST_ALL | wxTMC_SPAN_WIDTH);
+	
     ~tmSelectionInfoCtrl();
 	
-    void Update(tmSelectedDataMemory * sel);
+    void Update();
 	
 };
 
