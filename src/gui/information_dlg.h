@@ -110,16 +110,27 @@ class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
 private:
     wxTreeMultiItem m_ParentItem;
 	tmSelectedDataMemory * m_Selected;
+	long m_ClickedItemID;
 
 	bool _GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position);
     void _DeleteAllInfos(const wxTreeMultiItem & dontdelete);
     wxMenu * _CreatePopupMenu();
+	void _UpdateSelection();
+
 
 	
 
     // event function
 	void OnItemLeftClick(wxMouseEvent & event);
 	void OnItemRightClick(wxMouseEvent & event);
+	
+	void OnPopupSelectionThis(wxCommandEvent & event);
+	void OnPopupSelectionRemove(wxCommandEvent & event);
+    void OnPopupMove(wxCommandEvent & event);
+    void OnPopupZoom(wxCommandEvent & event);
+    void OnPopupCopy(wxCommandEvent & event);
+	
+	
 
 	
 	DECLARE_EVENT_TABLE();

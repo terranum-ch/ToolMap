@@ -20,6 +20,7 @@
 #include "information_dlg.h"
 #include "../gis/tmtocctrl.h"
 #include "../gis/tmselecteddatamemory.h"
+#include "../gis/tmmanagerevent.h"
 
 #include "../gis/tmgisdata.h"
 #include <wx/grid.h>
@@ -191,6 +192,11 @@ date 02 mars 2010
 BEGIN_EVENT_TABLE(tmSelectionInfoCtrl, wxTreeMultiCtrl)
 	EVT_LEFT_UP(tmSelectionInfoCtrl::OnItemLeftClick)
 	EVT_RIGHT_UP(tmSelectionInfoCtrl::OnItemRightClick)
+	EVT_MENU(ID_POPUP_ONLY_THIS_OBJ, tmSelectionInfoCtrl::OnPopupSelectionThis)
+	EVT_MENU(ID_POPUP_REMOVE_FROM_SEL, tmSelectionInfoCtrl::OnPopupSelectionRemove)
+	EVT_MENU(ID_POPUP_MOVE_TO, tmSelectionInfoCtrl::OnPopupMove)
+	EVT_MENU(ID_POPUP_ZOOM_TO, tmSelectionInfoCtrl::OnPopupZoom)
+	EVT_MENU(wxID_COPY, tmSelectionInfoCtrl::OnPopupCopy)
 END_EVENT_TABLE()
 
 
@@ -200,6 +206,7 @@ tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
 wxTreeMultiCtrl(window, id, pos, size, style){
 	wxASSERT(sel);
 	m_Selected = sel;
+	m_ClickedItemID = wxNOT_FOUND;
 	SetBackgroundColour(*wxWHITE);
 	m_ParentItem = AddRoot(_("Selected features"), _("Selected features"));
 }
@@ -270,6 +277,18 @@ wxMenu * tmSelectionInfoCtrl::_CreatePopupMenu() {
 }
 
 
+void tmSelectionInfoCtrl::_UpdateSelection() {
+	// send event to parent
+	
+	// update display
+	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt);
+	
+	// update selecction / attribution panel
+	wxCommandEvent evt2(tmEVT_SELECTION_DONE, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt2);
+}
+
 
 bool tmSelectionInfoCtrl::_GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position) {
 	int xViewScrolled = 0, yViewScrolled = 0;
@@ -304,8 +323,8 @@ bool tmSelectionInfoCtrl::_GetItemByMousePos(wxTreeMultiItem & item, const wxPoi
 
 
 void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
-	
 	wxPoint myRealPosition = event.GetPosition();
+	m_ClickedItemID = wxNOT_FOUND;
 	
 	wxTreeMultiItem clickeditem;
 	if (_GetItemByMousePos(clickeditem, myRealPosition) == false) {
@@ -337,9 +356,17 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 
 
 void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
+	m_ClickedItemID = wxNOT_FOUND;
 	
 	wxTreeMultiItem myClickedItem;
 	if (_GetItemByMousePos(myClickedItem, event.GetPosition()) == false) {
+		return;
+	}
+	
+	
+	wxLogMessage(myClickedItem.GetName());
+	if (myClickedItem.GetName().ToLong(&m_ClickedItemID) == false) {
+		wxFAIL;
 		return;
 	}
 	
@@ -348,6 +375,38 @@ void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
 	PopupMenu(_CreatePopupMenu(), event.GetPosition().x, event.GetPosition().y);
 	event.Skip();
 }
+
+
+
+
+void tmSelectionInfoCtrl::OnPopupSelectionThis(wxCommandEvent & event) {
+	wxLogMessage(_("Select this item"));
+	wxASSERT(m_Selected);
+	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
+	
+	m_Selected->SetSelected(m_ClickedItemID);
+	
+	_UpdateSelection();
+	
+	//event.Skip();
+}
+
+void tmSelectionInfoCtrl::OnPopupSelectionRemove(wxCommandEvent & event) {
+	event.Skip();
+}
+
+void tmSelectionInfoCtrl::OnPopupMove(wxCommandEvent & event) {
+	event.Skip();
+}
+
+void tmSelectionInfoCtrl::OnPopupZoom(wxCommandEvent & event) {
+	event.Skip();
+}
+
+void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent & event) {
+	event.Skip();
+}
+
 
 	
 
@@ -364,7 +423,8 @@ void tmSelectionInfoCtrl::Update() {
 	}
 	
 	for (unsigned int i = 0; i<m_Selected->GetCount(); i++) {
-		Collapse(AppendNode(m_ParentItem, wxString() << mySelVal->Item(i)), false);
+		Collapse(AppendNode(m_ParentItem, wxString() << mySelVal->Item(i),
+							wxString() << mySelVal->Item(i)), false);
 	}
 	Thaw();
 	
