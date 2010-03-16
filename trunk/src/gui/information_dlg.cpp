@@ -278,15 +278,16 @@ wxMenu * tmSelectionInfoCtrl::_CreatePopupMenu() {
 
 
 void tmSelectionInfoCtrl::_UpdateSelection() {
-	// send event to parent
+	wxWindow * myWindow = wxTheApp->GetTopWindow();
+	wxASSERT(myWindow);
 	
 	// update display
 	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt);
+	myWindow->GetEventHandler()->AddPendingEvent(evt);
 	
 	// update selecction / attribution panel
 	wxCommandEvent evt2(tmEVT_SELECTION_DONE, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt2);
+	myWindow->GetEventHandler()->AddPendingEvent(evt2);
 }
 
 
@@ -370,8 +371,6 @@ void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
 		return;
 	}
 	
-	wxLogMessage(_T("Display popup menu here"));
-	
 	PopupMenu(_CreatePopupMenu(), event.GetPosition().x, event.GetPosition().y);
 	event.Skip();
 }
@@ -380,19 +379,28 @@ void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
 
 
 void tmSelectionInfoCtrl::OnPopupSelectionThis(wxCommandEvent & event) {
-	wxLogMessage(_("Select this item"));
 	wxASSERT(m_Selected);
 	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
+	wxLogMessage(_("Selecting item %d"), m_ClickedItemID);
 	
 	m_Selected->SetSelected(m_ClickedItemID);
 	
 	_UpdateSelection();
-	
-	//event.Skip();
+
 }
 
+
+
 void tmSelectionInfoCtrl::OnPopupSelectionRemove(wxCommandEvent & event) {
-	event.Skip();
+	wxASSERT(m_Selected);
+	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
+	wxLogMessage(_("Removing item %d from selection"), m_ClickedItemID);
+	
+	wxArrayLong myRemoveArray;
+	myRemoveArray.Add(m_ClickedItemID);
+	m_Selected->Remove(&myRemoveArray);
+	
+	_UpdateSelection();
 }
 
 void tmSelectionInfoCtrl::OnPopupMove(wxCommandEvent & event) {
