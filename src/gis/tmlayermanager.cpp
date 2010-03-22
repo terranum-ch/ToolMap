@@ -377,6 +377,62 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 }
 
 
+void tmLayerManager::ZoomToSelectedLayer(){
+	
+	tmLayerProperties * myLayerProp = m_TOCCtrl->GetSelectionLayer();
+	if (myLayerProp == NULL) {
+		wxLogError(_("No layer or incorrect layer selected"));
+		return;
+	}
+	
+	ZoomToLayer( myLayerProp->m_LayerID );
+}
+
+
+
+bool tmLayerManager::ZoomToLayer(long layerid){
+
+	tmLayerProperties * myLayerProp = m_TOCCtrl->GetLayerById(layerid);
+	if (myLayerProp == NULL) {
+		wxLogError(_("Layer with specified id doesn't exists (ID = %d)"), layerid);
+		return false;
+	}
+	
+	tmGISData * myGISData = tmGISData::LoadLayer(myLayerProp);
+	if (myGISData == NULL) {
+		wxLogError(_("Unable to get data for layer %s"),
+				   myLayerProp->m_LayerNameExt.c_str());
+		return false;
+	}
+	
+	wxASSERT(myGISData);
+	tmRealRect myRealRect = myGISData->GetMinimalBoundingRectangle();
+	vrRealRect myRRect;
+	myRRect.SetLeftTop(wxPoint2DDouble(myRealRect.x_min, myRealRect.y_max));
+	myRRect.SetRightBottom(wxPoint2DDouble(myRealRect.x_max, myRealRect.y_min));
+	wxDELETE(myGISData);
+	
+	// layer extent seems correct
+	if (myRRect.IsOk() == false) {
+		wxLogError(_T("Layer extent isn't correct : %.3f, *.3f | %.3f, %.3f"),
+				   myRRect.GetLeft(), myRRect.GetTop(), 
+				   myRRect.GetRight(), myRRect.GetBottom());
+		return false;
+	}
+	
+	
+	if (m_Scale.ZoomViewTo(myRRect)==false) {
+		wxLogError(_T("Zooming to layer n\u00B0%d failed"), layerid);
+		return false;
+	}
+	
+	ReloadProjectLayersThreadStart(FALSE);
+	_ZoomChanged();
+
+	return true;
+}
+
+
 
 /***************************************************************************//**
  @brief Called when windows size change
