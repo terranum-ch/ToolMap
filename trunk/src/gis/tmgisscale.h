@@ -29,6 +29,8 @@
     #include <wx/wx.h>
 #endif
 
+
+#include "../core/vrrealrect.h"
 #include <wx/graphics.h>
 
 const int tmSCALE_MARGIN = 10; // margin between image and border in full screen mode
@@ -159,6 +161,12 @@ class tmGISScale : public wxObject
 		
 		// pan functions
 		void ComputeNewRealPanExtent (const wxPoint & offsetxtop);
+		
+		
+		// moving, zooming display
+		bool MoveViewTo (const vrRealRect & rect);
+		bool ZoomViewTo (const vrRealRect & rect);
+		
 		
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)

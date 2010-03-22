@@ -20,11 +20,14 @@
 #include "tmlayermanager.h"
 
 
-DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED)
-DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE)
-DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED)
-DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED)
-DEFINE_EVENT_TYPE(tmEVT_LM_ZOOMPREVIOUS_ENABLE)
+DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED);
+DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
+DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED);
+DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED);
+DEFINE_EVENT_TYPE(tmEVT_LM_ZOOMPREVIOUS_ENABLE);
+
+DEFINE_EVENT_TYPE(tmEVT_LM_MOVE_TO_FEATURE);
+DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE);
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
@@ -35,6 +38,8 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_UPDATE, tmLayerManager::OnShowLayer)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_TO_FEATURE,  tmLayerManager::OnZoomToFeature)
+	EVT_COMMAND(wxID_ANY, tmEVT_LM_MOVE_TO_FEATURE,tmLayerManager::OnMoveToFeature)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
 	//EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
@@ -826,6 +831,46 @@ void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 
 
 
+void tmLayerManager::OnZoomToFeature (wxCommandEvent & event){
+	long myOid = event.GetExtraLong();
+	wxLogMessage(_T("Zooming to feature %d"), myOid);
+	
+	
+	
+}
+
+
+void tmLayerManager::OnMoveToFeature (wxCommandEvent & event){
+	long myOid = event.GetExtraLong();
+	
+	// getting geometry
+	long myLayerID = m_SelectedData.GetSelectedLayer();
+	tmLayerProperties * myLayerProp = m_TOCCtrl->GetLayerById(myLayerID);
+	
+	tmGISDataVector * myVectorData = (tmGISDataVector*) tmGISData::LoadLayer(myLayerProp);
+	wxASSERT(myVectorData);
+	
+	OGRGeometry * myGeom = myVectorData->GetGeometryByOID(myOid);
+	wxASSERT(myGeom);
+	delete myVectorData;
+	
+	OGREnvelope myEnveloppe;
+	myGeom->getEnvelope(&myEnveloppe);
+	
+	//moving
+	vrRealRect myRect;
+	myRect.SetLeftTop(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MaxY));
+	myRect.SetRightBottom(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MinY));
+	if (m_Scale.MoveViewTo(myRect) == false){
+		wxLogError(_T("Error moving to feature %d"), myOid);
+		return;
+	}
+	
+	ReloadProjectLayersThreadStart(FALSE);
+}
+
+
+
 void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 {
 	wxPoint * myNewPosPx = (wxPoint*) event.GetClientData();
@@ -1395,6 +1440,8 @@ void tmLayerManager::_ZoomChanged()
 	}
 	
 }
+
+
 
 
 bool tmLayerManager::ZoomPrevious()

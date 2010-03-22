@@ -27,9 +27,6 @@
 
 
 
-
-
-
 BEGIN_EVENT_TABLE(InformationDLG, wxDialog)
 	EVT_CLOSE(InformationDLG::OnCloseDlg)
 END_EVENT_TABLE();
@@ -403,13 +400,34 @@ void tmSelectionInfoCtrl::OnPopupSelectionRemove(wxCommandEvent & event) {
 	_UpdateSelection();
 }
 
+
 void tmSelectionInfoCtrl::OnPopupMove(wxCommandEvent & event) {
-	event.Skip();
+	wxASSERT(m_Selected);
+	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
+	
+	// Send event to layermanager
+	wxWindow * myWindow = wxTheApp->GetTopWindow();
+	wxASSERT(myWindow);
+	
+	wxCommandEvent evt(tmEVT_LM_MOVE_TO_FEATURE, wxID_ANY);
+	evt.SetExtraLong(m_ClickedItemID);
+	myWindow->GetEventHandler()->AddPendingEvent(evt);
 }
 
+
 void tmSelectionInfoCtrl::OnPopupZoom(wxCommandEvent & event) {
-	event.Skip();
+	wxASSERT(m_Selected);
+	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
+	
+	// Send event to layermanager
+	wxWindow * myWindow = wxTheApp->GetTopWindow();
+	wxASSERT(myWindow);
+	
+	wxCommandEvent evt(tmEVT_LM_ZOOM_TO_FEATURE, wxID_ANY);
+	evt.SetExtraLong(m_ClickedItemID);
+	myWindow->GetEventHandler()->AddPendingEvent(evt);
 }
+
 
 void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent & event) {
 	event.Skip();

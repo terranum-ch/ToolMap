@@ -64,7 +64,7 @@ public:
 				   const wxString & title = _("Informations"), 
 				   const wxPoint & pos = wxDefaultPosition,
 				   const wxSize & size = wxDefaultSize,
-				   long style = wxDEFAULT_DIALOG_STYLE| wxRESIZE_BORDER | wxSTAY_ON_TOP);
+				   long style = wxDEFAULT_DIALOG_STYLE| wxRESIZE_BORDER); // | wxSTAY_ON_TOP);
     virtual ~InformationDLG();
 
     virtual bool TransferDataToWindow();

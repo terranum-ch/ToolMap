@@ -110,6 +110,8 @@ class tmLayerManager : public wxEvtHandler
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
 		void OnZoomRectangleOut (wxCommandEvent & event);
+		void OnZoomToFeature (wxCommandEvent & event);
+		void OnMoveToFeature (wxCommandEvent & event);
 		void OnPanFinished (wxCommandEvent & event);
 		void OnScrolled (wxCommandEvent & event);
 		void OnSelection (wxCommandEvent & event);

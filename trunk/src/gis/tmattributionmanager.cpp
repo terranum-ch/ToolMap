@@ -769,7 +769,9 @@ void tmAttributionManager::DisplayInformationsWnd()
 		m_InfoDLG = new InformationDLG(m_Parent, m_TOC, m_SelData, ID_INFORMATION_DLG);
 		m_InfoDLG->Show();
 	}
-	
+	else {
+		m_InfoDLG->Raise();
+	}
 }
 
 
