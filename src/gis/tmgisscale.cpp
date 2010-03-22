@@ -406,6 +406,38 @@ void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 
 
 
+// moving, zooming display
+bool tmGISScale::MoveViewTo (const vrRealRect & rect){
+	vrRealRect myWndExtent;
+	myWndExtent.SetLeftTop(wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max));
+	myWndExtent.SetRightBottom(wxPoint2DDouble(m_ExtentWndReal.x_max, m_ExtentWndReal.y_min));
+	wxASSERT(myWndExtent.IsOk());
+	
+	wxPoint2DDouble myCenter = rect.GetCentre();
+	myWndExtent.SetCentre(myCenter);
+	
+	if (myWndExtent.IsOk() == false){
+		wxLogError(_T("Error moving display to %.2f, %.2f"), myCenter.m_x, myCenter.m_y);
+		return false;
+	}
+	
+	m_ExtentWndReal.x_min = myWndExtent.GetLeft();
+	m_ExtentWndReal.y_max = myWndExtent.GetTop();
+	m_ExtentWndReal.x_max = myWndExtent.GetRight();
+	m_ExtentWndReal.y_min = myWndExtent.GetBottom();
+	return true;	
+}
+
+
+bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
+
+	
+	return false;
+}
+
+
+
+
 /***************************************************************************//**
  @brief Convert pixel rectange to real units
  @param rectpx pixels values rectangle to convert
