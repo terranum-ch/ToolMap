@@ -833,10 +833,32 @@ void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 
 void tmLayerManager::OnZoomToFeature (wxCommandEvent & event){
 	long myOid = event.GetExtraLong();
-	wxLogMessage(_T("Zooming to feature %d"), myOid);
 	
+	// getting geometry
+	long myLayerID = m_SelectedData.GetSelectedLayer();
+	tmLayerProperties * myLayerProp = m_TOCCtrl->GetLayerById(myLayerID);
 	
+	tmGISDataVector * myVectorData = (tmGISDataVector*) tmGISData::LoadLayer(myLayerProp);
+	wxASSERT(myVectorData);
 	
+	OGRGeometry * myGeom = myVectorData->GetGeometryByOID(myOid);
+	wxASSERT(myGeom);
+	delete myVectorData;
+	
+	OGREnvelope myEnveloppe;
+	myGeom->getEnvelope(&myEnveloppe);
+	
+	//zooming
+	vrRealRect myRect;
+	myRect.SetLeftTop(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MaxY));
+	myRect.SetRightBottom(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MinY));
+	if (m_Scale.ZoomViewTo(myRect) == false){
+		wxLogError(_T("Error zooming to feature n\u00B0%d"), myOid);
+		return;
+	}
+	
+	ReloadProjectLayersThreadStart(FALSE);
+	_ZoomChanged();
 }
 
 

@@ -256,78 +256,6 @@ bool tmGISScale::ComputeMaxExtentReal (wxSize wnd_offset)
 }
 
 
-/***************************************************************************//**
- @brief Compute the new pixel size
- @return  false if an error occur
- @author Lucien Schreiber (c) CREALP 2009
- @date 20 February 2009
- *******************************************************************************/
-/*bool tmGISScale::ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize)
-{
-	double myPixelx = 0, myPixely=0;
-	int mydiffxpx = 0, mydiffypx = 0;
-	double myOldPxSize = m_PixelSize;
-	
-	wxASSERT (oldsize != wxSize(0,0));
-	wxASSERT (newsize != wxSize(0,0));
-	wxASSERT (newsize == wxSize(m_ExtentWnd.GetWidth(), m_ExtentWnd.GetHeight()));
-
-	
-	// check data
-	if (m_ExtentWnd == wxSize(0,0) || m_ExtentMaxLayers == tmRealRect(0,0,0,0))
-		return false;
-	
-	
-	//TODO: Remove, for debug only
-	wxString sSentence = wxEmptyString;
-	if (newsize.GetWidth() != oldsize.GetWidth())
-		sSentence.Append(wxString::Format(_T("X has changed %d px "),
-										  newsize.GetWidth() - oldsize.GetWidth()));
-	if (newsize.GetHeight() != oldsize.GetHeight())
-		sSentence.Append(wxString::Format(_T("Y has changed %d px "),
-										  newsize.GetHeight() - oldsize.GetHeight()));
-	wxLogDebug(sSentence);
-	// END
-	
-	 
-	// compute x, y reduction
-	int redxpx = newsize.GetWidth() - oldsize.GetWidth();
-	int redypx = newsize.GetHeight() - oldsize.GetHeight();
-	int yNewComputedSize = 0;
-	int xNewComputedSize = 0;
-	double yRealDiff = 0;
-	double xRealDiff = 0;
-	
-	// Y movement greather than x
-	if (abs(redypx) > abs(redxpx))
-	{
-		m_PixelSize = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) / 
-		(m_ExtentWnd.GetHeight());
-		
-		xNewComputedSize = newsize.GetHeight() * oldsize.GetWidth() / oldsize.GetHeight();
-		xRealDiff = (xNewComputedSize - oldsize.GetWidth() - 
-					 (oldsize.GetWidth() - newsize.GetWidth())) / 2 * m_PixelSize;
-		
-		m_ExtentWndReal.x_min = AppendToCoord(m_ExtentWndReal.x_min, xRealDiff);
-		m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, xRealDiff);
-
-	}
-	else // X Movement greather or = Y
-	{
-		// compute new pixel size
-		m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
-					(m_ExtentWnd.GetWidth());
-		
-		yNewComputedSize = newsize.GetWidth() * oldsize.GetHeight() / oldsize.GetWidth();
-		yRealDiff = (yNewComputedSize - oldsize.GetHeight() - 
-				 (newsize.GetHeight() - oldsize.GetHeight())) / 2 * m_PixelSize;
-	
-		m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, yRealDiff);
-		m_ExtentWndReal.y_max = RemoveFromCoord(m_ExtentWndReal.y_max, yRealDiff);
-
-	}
-	return true;
-}*/
 
 
 /***************************************************************************//**
@@ -431,8 +359,68 @@ bool tmGISScale::MoveViewTo (const vrRealRect & rect){
 
 bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 
+	vrRealRect myWndExtent;
+	myWndExtent.SetLeftTop(wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max));
+	myWndExtent.SetRightBottom(wxPoint2DDouble(m_ExtentWndReal.x_max, m_ExtentWndReal.y_min));
+	wxASSERT(myWndExtent.IsOk());
 	
-	return false;
+	// check for size too small
+	if (fabs(rect.m_width) <= 1 && fabs(rect.m_height) <= 1) {
+		wxLogError(_("Object size is too small for zooming\n width = %.f, height = %.f"),
+				   fabs(rect.m_width), fabs(rect.m_height));
+		return false;
+	}
+	
+	double dWndwidth = m_ExtentWnd.GetWidth() - tmSCALE_MARGIN;
+	double dWndheight = m_ExtentWnd.GetHeight()  - tmSCALE_MARGIN;
+
+	// compute shape 
+	double dpixelx = rect.m_width / dWndwidth;
+	double dpixely = rect.m_height / dWndheight;
+	
+	// computedivfactor
+	double myDivFactor = 0.0;
+	if (fabs(dpixelx) >= fabs(dpixely)) {
+		myDivFactor = dpixelx;
+	}
+	else {
+		myDivFactor = dpixely;
+	}
+	
+	double myDivFactorX = fabs(myDivFactor);
+	double myDivFactorY = fabs(myDivFactor);
+	
+	if (dpixelx <= 0) {
+		myDivFactorX = myDivFactorX * -1;
+	}
+	
+	if (dpixely <= 0) {
+		myDivFactorY = myDivFactorY * -1;
+	}
+	
+	vrRealRect myNewWndExtent;
+	myNewWndExtent.m_width = m_ExtentWnd.GetWidth();
+	myNewWndExtent.m_height = m_ExtentWnd.GetHeight();
+	
+	// scale
+	myNewWndExtent.m_width *= myDivFactorX;
+	myNewWndExtent.m_height *= myDivFactorY;
+	
+	
+	// center rect
+	wxPoint2DDouble myCenter = rect.GetCentre();
+	myNewWndExtent.SetCentre(myCenter);
+	
+	
+	m_ExtentWndReal.x_min = myNewWndExtent.GetLeft();
+	m_ExtentWndReal.y_max = myNewWndExtent.GetTop();
+	m_ExtentWndReal.x_max = myNewWndExtent.GetRight();
+	m_ExtentWndReal.y_min = myNewWndExtent.GetBottom();
+	m_PixelSize = fabs(myDivFactor);
+	
+	ComputeUnitScale();
+	
+	return true;
 }
 
 
