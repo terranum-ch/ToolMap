@@ -202,6 +202,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnZoomToSelectedLayer)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
@@ -502,10 +503,10 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     //itemMenu28->Append(ID_MENU_ZOOM_COORDINATE, _("Zoom to coordinates..."), _T(""), wxITEM_NORMAL);
     //itemMenu28->Append(ID_MENU_ZOOM_NEXT_SCALE, _("Zoom to next defined scale\t+"), _T(""), wxITEM_NORMAL);
     //itemMenu28->Append(ID_MENU_PREVIOUS_SCALE, _("Zoom to previous defined scale\t-"), _T(""), wxITEM_NORMAL);
-    //itemMenu28->AppendSeparator();
+    itemMenu28->AppendSeparator();
     //itemMenu28->Append(ID_MENU_SELECTION, _("Zoom to selection"), _T(""), wxITEM_NORMAL);
     //itemMenu28->Enable(ID_MENU_SELECTION, false);
-    //itemMenu28->Append(ID_MENU_SELECTED_LAYER, _("Zoom to selected layer"), _T(""), wxITEM_NORMAL);
+    itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to selected layer"), _T(""), wxITEM_NORMAL);
     menuBar->Append(itemMenu28, _("View"));
     wxMenu* itemMenu41 = new wxMenu;
     itemMenu41->Append(ID_MENU_UNDO, _("Undo\tCtrl+Z"), _T(""), wxITEM_NORMAL);
@@ -1285,6 +1286,14 @@ void ToolMapFrame::OnZoomPrevious (wxCommandEvent & event)
 {
 	m_LayerManager->ZoomPrevious();
 }
+
+
+void ToolMapFrame::OnZoomToSelectedLayer(wxCommandEvent & event){
+	wxLogMessage(_T("Zoom to selected layer"));
+	m_LayerManager->ZoomToSelectedLayer();
+	
+}
+
 
 /***************************************************************************//**
  @brief Called when export selected is pressed

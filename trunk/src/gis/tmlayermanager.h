@@ -145,6 +145,8 @@ class tmLayerManager : public wxEvtHandler
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
 		tmGISScale * GetScale (){return &m_Scale;}
+		bool ZoomToLayer(long layerid);
+		void ZoomToSelectedLayer();
 		
 		// event operations
 		void OnSizeChange (wxCommandEvent & event);

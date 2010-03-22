@@ -170,7 +170,7 @@ class ProjectManager;
 #define ID_MENU_ZOOM_COORDINATE 10318
 #define ID_MENU_ZOOM_NEXT_SCALE 10319
 #define ID_MENU_PREVIOUS_SCALE 10320
-#define ID_MENU_SELECTED_LAYER 10321
+#define ID_MENU_ZOOM_SELECTED_LAYER 10321
 
 #define ID_MENU_SELECTION 10322
 
@@ -323,6 +323,7 @@ private:
 	void OnUpdateAttributionObjects(wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);
 	void OnZoomPrevious(wxCommandEvent & event);
+	void OnZoomToSelectedLayer(wxCommandEvent & event);
 	void OnExportSelected (wxCommandEvent & event);
 	void OnExportAll (wxCommandEvent & event);
 	void OnShowShortcutWindow (wxCommandEvent & event);
