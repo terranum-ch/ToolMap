@@ -72,6 +72,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		// fields functions
 		virtual int GetFieldsCount();
 		virtual bool GetFieldsName (wxArrayString & Fields);
+		virtual bool GetFieldsValue (wxArrayString & values, long oid);
 		
 		// searching data
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
