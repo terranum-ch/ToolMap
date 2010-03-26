@@ -496,6 +496,7 @@ int tmGISDataVectorSHP::GetFieldsCount()
  *******************************************************************************/
 bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields)
 {
+	Fields.Clear();
 	if (!m_Layer)
 		return false;
 	
@@ -510,6 +511,35 @@ bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields)
 	
 	return true;
 }
+
+
+bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
+	values.Clear();
+	
+	if (m_Layer == NULL) {
+		wxLogError(_T("No layer defined, unable to get fields value"));
+		return false;
+	}
+	
+	OGRFeature * myFeature = m_Layer->GetFeature(oid);
+	if (myFeature == NULL) {
+		wxLogError(_T("No feature with id n\u00B0%d in layer. Reading fields value not possible"),oid);
+		return false;
+	}
+	
+	int iTotFields = GetFieldsCount();
+	for (int i = 0; i < iTotFields; i++) {
+		wxString myVal = wxString::FromAscii(myFeature->GetFieldAsString(i));
+		values.Add(myVal);
+	}
+	
+	OGRFeature::DestroyFeature(myFeature);
+	return true;
+}
+
+		
+		
+
 
 
 /***************************************************************************//**
