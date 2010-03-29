@@ -89,6 +89,12 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual wxString GetMetaDataAsHtml ();
 		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 		
+		// fields functions
+		virtual int GetFieldsCount();
+		virtual bool GetFieldsName (wxArrayString & Fields);
+		virtual bool GetFieldsValue (wxArrayString & values, long oid);
+		
+		
 		// count
 		virtual int GetCount ();
 		

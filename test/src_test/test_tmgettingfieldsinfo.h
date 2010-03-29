@@ -99,6 +99,25 @@ public:
 		wxDELETE(myVect);
 	}
 	
+	
+	void testGettingFieldsNameForMySQL(){
+		//define type here
+		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
+								  g_TestPrj_Ricken, _T("generic_lines.MYD"));
+		TS_ASSERT(mySQLFileName.FileExists()==true);
+		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		
+		TS_ASSERT(m_pDB);
+		tmGISDataVector * myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
+		TS_ASSERT(myVect != NULL);
+		tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
+		
+		
+		
+		
+	}
+	
 };
 
 
