@@ -569,6 +569,23 @@ wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
 
 
 
+int tmGISDataVectorMYSQL::GetFieldsCount() {
+	return wxNOT_FOUND;
+}
+
+
+bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields){
+	return false;
+}
+
+
+
+bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
+	return false;
+}
+
+
+
 /***************************************************************************//**
  @brief Search spatial data
  @param rect Real rectangle for searching data
