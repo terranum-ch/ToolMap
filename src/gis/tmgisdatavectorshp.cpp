@@ -494,8 +494,9 @@ int tmGISDataVectorSHP::GetFieldsCount()
  @author Lucien Schreiber (c) CREALP 2008
  @date 23 October 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields)
+bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields, long oid)
 {
+	wxASSERT(oid == wxNOT_FOUND);
 	Fields.Clear();
 	if (!m_Layer)
 		return false;

@@ -19,10 +19,14 @@
 
 #include "tmgisdatavectormysql.h"
 
+#include "tmattributiondataline.h"
+#include "tmattributiondatapoint.h"
+#include "tmattributiondatalabel.h"
+
 
 // init static member
 DataBaseTM * tmGISDataVectorMYSQL::m_DB = NULL;
-
+//PrjDefMemManage * tmGISDataVectorMYSQL::m_ProjDef = NULL;
 
 tmGISDataVectorMYSQL::tmGISDataVectorMYSQL()
 {
@@ -570,17 +574,122 @@ wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml (int iPrecision)
 
 
 int tmGISDataVectorMYSQL::GetFieldsCount() {
+	// this function isn't working for MySQL layers because number
+	// of fields is linked to the oid !!! Use GetFieldsName();
 	return wxNOT_FOUND;
 }
 
+tmAttributionData * tmGISDataVectorMYSQL::_CreateAttributionObject(int & layertype){
+	// getting layer type (line, point, poly)
+	wxASSERT(m_DB);
+	wxFileName myTable (GetShortFileName());
+	if (myTable.IsOk() == false) {
+		wxLogError(_T("Layer : %s wasn't open correctly"), GetShortFileName().c_str());
+		return NULL;
+	}
+	
+	layertype = wxNOT_FOUND;
+	int iTableSize = sizeof(TABLE_NAME_GIS_GENERIC) / sizeof (wxString);
+	for (int i = 0; i< iTableSize; i++){
+		if (myTable.GetName() == TABLE_NAME_GIS_GENERIC[i]){
+			layertype = i;
+			break;
+		}
+	}
+	
+	if (layertype == wxNOT_FOUND){
+		wxLogError(_T("Layer type : %d isn't found"), layertype);
+		return NULL;
+	}
+	
+	// creating tmAttributionData object
+	tmAttributionData * myAttribData = NULL;
+	switch (layertype) {
+		case LAYER_SPATIAL_LINE: 
+			myAttribData = new tmAttributionDataLine();
+			break;
+			
+		case LAYER_SPATIAL_POINT:
+			myAttribData = new tmAttributionDataPoint();
+			break;
+			
+		case LAYER_SPATIAL_POLYGON:
+			myAttribData = new tmAttributionDataLabel();
+			break;
+			
+		default:
+			break;
+	}
+	
+	if (myAttribData == NULL) {
+		wxLogError(_T("Layer type %d isn't supported actually"), layertype);
+		return NULL;
+	}
+	return myAttribData;
+}
 
-bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields){
-	return false;
+
+bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
+	
+	// basic initialisation and checks
+	Fields.Clear();
+	if (oid == wxNOT_FOUND) {
+		wxLogError(_T("OID specified is not valid (%d)"), oid);
+		return false;
+	}
+	
+	int iTableType = wxNOT_FOUND;
+	tmAttributionData * myAttribData = _CreateAttributionObject(iTableType);
+	if (myAttribData == NULL) {
+		return false;
+	}
+	
+	// passing info to attribution data
+	wxArrayLong myOid;
+	myOid.Add(oid);
+	myAttribData->Create(&myOid, m_DB);
+
+	// gettting basic attribution
+	tmAttributionBasicArray myValues;
+	myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
+	myAttribData->GetInfoBasicArray(myValues);
+	wxDELETE(myAttribData);
+	
+	wxASSERT(myValues.GetCount() <= 1);
+
+	// put all together into array
+	wxArrayString myAdvancedFieldsValue;
+	if (myValues.GetCount() == 1) {
+		for (unsigned int i = 0; i< myValues.Item(0).m_Values.GetCount(); i++) {
+			Fields.Add(_T("OBJ_CD"));
+			Fields.Add(_T("OBJ_DESC"));
+			
+			if (m_DB->GetFieldsFromObjectID(myValues.Item(0).m_Values.Item(i),
+											myAdvancedFieldsValue)==true) {
+				for (unsigned int j = 0; j < myAdvancedFieldsValue.GetCount(); j++) {
+					Fields.Add(myAdvancedFieldsValue.Item(j));
+				}
+			}
+			Fields.Add(_T("##<BREAK HERE>##"));
+			}
+		if (Fields.GetCount() > 0) {
+			Fields.RemoveAt(Fields.GetCount()-1);
+		}
+		
+	}
+	return true;
 }
 
 
 
 bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
+	values.Clear();
+	if (oid == wxNOT_FOUND) {
+		wxLogError(_T("OID specified is not valid (%d)"), oid);
+		return false;
+	}
+	
+	
 	return false;
 }
 

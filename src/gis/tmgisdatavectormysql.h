@@ -34,6 +34,7 @@
 #include "../database/database_tm.h"
 
 
+class tmAttributionData;
 
 const wxString tmGISMYSQL_FIELD1 = _T("OBJECT_ID");
 const wxString tmGISMYSQL_FIELD2 = _T("OBJECT_GEOMETRY");
@@ -46,7 +47,9 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 	{
 	private:
 		static DataBaseTM * m_DB;
+		//static PrjDefMemManage * m_ProjDef;
 		
+		tmAttributionData * _CreateAttributionObject(int & layertype);
 
 	protected:
 		// checking db fields
@@ -67,6 +70,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		
 		// special function for DB, use it first.
 		static void SetDataBaseHandle(DataBaseTM * db) {m_DB = db;}
+		
 		
 		// implementing virtual function
 		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
@@ -90,8 +94,9 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 		
 		// fields functions
+		//static void SetProjectDefinition(PrjDefMemManage * project){m_ProjDef = project;}
 		virtual int GetFieldsCount();
-		virtual bool GetFieldsName (wxArrayString & Fields);
+		virtual bool GetFieldsName (wxArrayString & Fields, long oid = wxNOT_FOUND);
 		virtual bool GetFieldsValue (wxArrayString & values, long oid);
 		
 		

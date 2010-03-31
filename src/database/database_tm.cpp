@@ -1327,6 +1327,31 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 }
 
 
+bool DataBaseTM::GetFieldsFromObjectID (long objectid, wxArrayString & fields){
+	fields.Clear();
+	
+	wxString myTmpTxt = _T("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS")
+	_T(" WHERE TABLE_NAME = (SELECT CONCAT(\"%s\", THEMATIC_LAYERS_LAYER_INDEX)")
+	_T(" FROM %s WHERE OBJECT_ID=%d) AND table_schema =")
+	_T(" \"testadvattribution\" AND COLUMN_NAME NOT IN ('OBJECT_ID', 'LAYER_AT_ID')");
+	
+	wxString mySentence = wxString::Format(myTmpTxt,
+										   TABLE_NAME_LAYER_AT.c_str(),
+										   TABLE_NAME_OBJECTS.c_str(),
+										   objectid);
+	if (DataBaseQuery(mySentence)==false) {
+		return false;
+	}
+	
+	if (DataBaseGetResults(fields)==false) {
+		wxLogError(_T("Error getting fields info"));
+		return false;
+	}
+	return true;
+	
+}
+
+
 
 /***************************************************************************//**
  @brief Get all fields for specified layer
