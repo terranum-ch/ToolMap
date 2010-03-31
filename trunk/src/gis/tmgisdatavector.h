@@ -137,7 +137,7 @@ class tmGISDataVector : public tmGISData
 		
 		// fields functions
 		virtual int GetFieldsCount() {return -1;}
-		virtual bool GetFieldsName (wxArrayString & Fields){return false;}
+		virtual bool GetFieldsName (wxArrayString & Fields, long oid = wxNOT_FOUND){return false;}
 		virtual bool GetFieldsValue (wxArrayString & values, long oid){return false;}
 		
 		// Metadata
