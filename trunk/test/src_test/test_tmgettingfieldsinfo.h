@@ -141,7 +141,7 @@ public:
 	void testGettingFieldsValueForMySQL(){
 		// MySQL layer to open
 		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
-								  g_TestPrj_AdvAttribution, _T("generic_labels.MYD"));
+								  g_TestPrj_AdvAttribution, _T("generic_lines.MYD"));
 		TS_ASSERT(mySQLFileName.FileExists()==true);
 		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 		
@@ -154,6 +154,15 @@ public:
 		
 		// getting fields value
 		// TODO: Append code for getting fields value for MySQL data
+		wxArrayString myFieldsValue;
+		TS_ASSERT_EQUALS(myFieldsValue.GetCount(),0);
+		TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 9)==true);
+		
+		int iTotVal = myFieldsValue.GetCount();
+		for (int i = 0; i< iTotVal; i++) {
+			wxLogMessage(_T("Fields value %d = %s"), i, myFieldsValue.Item(i).c_str());
+		}
+		TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 8);
 		
 		
 		wxDELETE(myVect);

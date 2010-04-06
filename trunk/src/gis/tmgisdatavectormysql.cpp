@@ -689,8 +689,46 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 		return false;
 	}
 	
+	int iTableType = wxNOT_FOUND;
+	tmAttributionData * myAttribData = _CreateAttributionObject(iTableType);
+	if (myAttribData == NULL) {
+		return false;
+	}
 	
-	return false;
+	// passing info to attribution data
+	wxArrayLong myOid;
+	myOid.Add(oid);
+	myAttribData->Create(&myOid, m_DB);
+	
+	// gettting basic attribution
+	tmAttributionBasicArray myValues;
+	myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
+	
+	
+	wxArrayLong myObjCode;
+	wxArrayString myObjVal;
+	if (myAttribData->GetInfoBasic(oid, myObjCode, myObjVal)==false) {
+		wxLogError(_T("Error getting basic informations for object OID : %d"), oid);
+		return false;
+	}
+	
+	wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
+	for (unsigned int i = 0; i< myObjCode.GetCount(); i++) {
+		
+		
+		values.Add(wxString::Format(_T("%d"), myObjCode.Item(i)));
+		values.Add(myObjVal.Item(i));
+		values.Add(_T("##<BREAK HERE>##"));
+	}
+	
+	// remove last BREAK
+	if (values.GetCount() > 0) {
+		values.RemoveAt(values.GetCount()-1);
+	}
+	
+	wxDELETE(myAttribData);
+	
+	return true;
 }
 
 

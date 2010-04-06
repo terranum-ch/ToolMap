@@ -729,6 +729,43 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 
 
 
+bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objcode,
+									   wxArrayString & objname, int layertype){
+	
+	objcode.Clear();
+	objname.Clear();
+	
+	wxString myText = _T("SELECT o.OBJECT_CD, o. OBJECT_DESC FROM %s o")
+	_T(" LEFT JOIN %s m ON o.OBJECT_ID = m.OBJECT_VAL_ID WHERE m.OBJECT_GEOM_ID = %d")
+	_T(" ORDER BY o.OBJECT_ID");
+	
+	wxString mySQL = wxString::Format(myText,	
+									  TABLE_NAME_OBJECTS.c_str(),
+									  TABLE_NAME_GIS_ATTRIBUTION[layertype].c_str(),
+									  oid);
+	if (m_pDB->DataBaseQuery(mySQL) == false) {
+		return false;
+	}
+	
+	wxArrayString myValues;
+	while (1) {
+		if(m_pDB->DataBaseGetNextResult(myValues)==false)
+		{
+			break;
+		}
+		
+		wxASSERT(myValues.GetCount()==2);
+		
+		long myObjCode = 0;
+		myValues.Item(0).ToLong(&myObjCode);
+		objcode.Add(myObjCode);
+		objname.Add(myValues.Item(1));
+	}
+	
+	return true;
+}
+
+
 /***************************************************************************//**
  @brief Get advanced attribution for a layer
  @param layer Adress of a valid layer

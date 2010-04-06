@@ -174,6 +174,13 @@ bool tmAttributionDataLabel::GetInfoBasic (AttribObjType_PANEL * panel)
 
 
 
+bool tmAttributionDataLabel::GetInfoBasic (long oid, wxArrayLong & objcode, wxArrayString & objname){
+	
+	return _GetInfoBasic(oid, objcode, objname, 2);
+}
+
+
+
 /***************************************************************************//**
  @brief Set Panel values
  @details 
