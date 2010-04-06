@@ -71,7 +71,7 @@ class tmAttributionData : public wxObject
 									 const wxArrayString & values,
 									 int startvalues,
 									 long selected);
-		
+		bool _GetInfoBasic (long oid, wxArrayLong & objcode, wxArrayString & objname, int layertype);
 		
 		
 		
@@ -98,6 +98,7 @@ class tmAttributionData : public wxObject
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
+		virtual bool GetInfoBasic (long oid, wxArrayLong & objcode, wxArrayString & objname){return false;}
 		virtual bool GetInfoBasicValues (const long & selected, 
 										 wxArrayLong & values);
 		virtual bool GetInfoBasicArray(tmAttributionBasicArray & values);
