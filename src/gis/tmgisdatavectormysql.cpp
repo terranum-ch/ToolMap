@@ -665,7 +665,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 			Fields.Add(_T("OBJ_DESC"));
 			
 			if (m_DB->GetFieldsFromObjectID(myValues.Item(0).m_Values.Item(i),
-											myAdvancedFieldsValue)==true) {
+											myAdvancedFieldsValue, iTableType)==true) {
 				for (unsigned int j = 0; j < myAdvancedFieldsValue.GetCount(); j++) {
 					Fields.Add(myAdvancedFieldsValue.Item(j));
 				}
