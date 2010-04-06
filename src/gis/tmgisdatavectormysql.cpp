@@ -704,20 +704,32 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	tmAttributionBasicArray myValues;
 	myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
 	
-	
+	wxArrayLong myObjID;
 	wxArrayLong myObjCode;
 	wxArrayString myObjVal;
-	if (myAttribData->GetInfoBasic(oid, myObjCode, myObjVal)==false) {
+	if (myAttribData->GetInfoBasic(oid, myObjID, myObjCode, myObjVal)==false) {
 		wxLogError(_T("Error getting basic informations for object OID : %d"), oid);
 		return false;
 	}
 	
 	wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
 	for (unsigned int i = 0; i< myObjCode.GetCount(); i++) {
-		
-		
 		values.Add(wxString::Format(_T("%d"), myObjCode.Item(i)));
 		values.Add(myObjVal.Item(i));
+		
+		
+		// getting advanced attribution
+		long myLayerID = myAttribData->GetLayerID(myObjID.Item(i));
+		if (myLayerID != wxNOT_FOUND) {
+			wxArrayString myAdvValues;
+			if (myAttribData->GetAdvancedAttribution(myLayerID, oid, myAdvValues)==true) {
+				for (unsigned int j = 1; j< myAdvValues.GetCount(); j++) {
+					values.Add(myAdvValues.Item(j));
+				}
+			}
+		}
+			
+		
 		values.Add(_T("##<BREAK HERE>##"));
 	}
 	

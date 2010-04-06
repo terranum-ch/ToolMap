@@ -153,7 +153,6 @@ public:
 		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
 		
 		// getting fields value
-		// TODO: Append code for getting fields value for MySQL data
 		wxArrayString myFieldsValue;
 		TS_ASSERT_EQUALS(myFieldsValue.GetCount(),0);
 		TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 9)==true);
@@ -162,7 +161,7 @@ public:
 		for (int i = 0; i< iTotVal; i++) {
 			wxLogMessage(_T("Fields value %d = %s"), i, myFieldsValue.Item(i).c_str());
 		}
-		TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 8);
+		TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 10);
 		
 		
 		wxDELETE(myVect);

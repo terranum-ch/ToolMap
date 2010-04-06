@@ -173,12 +173,16 @@ bool tmAttributionDataPoint::GetInfoBasic (AttribObjType_PANEL * panel)
 }
 
 
-bool tmAttributionDataPoint::GetInfoBasic (long oid, wxArrayLong & objcode, wxArrayString & objname){
+bool tmAttributionDataPoint::GetInfoBasic (long oid,  wxArrayLong & objid,
+										   wxArrayLong & objcode, wxArrayString & objname){
 	
-	return _GetInfoBasic(oid, objcode, objname, 1);
+	return _GetInfoBasic(oid, objid, objcode, objname, 1);
 }
 
 
+long tmAttributionDataPoint::GetLayerID(long objectcode){
+	return _GetLayerID(objectcode, 1);
+}
 
 /***************************************************************************//**
  @brief Set Panel values
