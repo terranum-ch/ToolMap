@@ -729,13 +729,13 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 
 
 
-bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objcode,
+bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLong & objcode, 
 									   wxArrayString & objname, int layertype){
-	
+	objid.Clear();
 	objcode.Clear();
 	objname.Clear();
 	
-	wxString myText = _T("SELECT o.OBJECT_CD, o. OBJECT_DESC FROM %s o")
+	wxString myText = _T("SELECT o.OBJECT_ID, o.OBJECT_CD, o. OBJECT_DESC FROM %s o")
 	_T(" LEFT JOIN %s m ON o.OBJECT_ID = m.OBJECT_VAL_ID WHERE m.OBJECT_GEOM_ID = %d")
 	_T(" ORDER BY o.OBJECT_ID");
 	
@@ -754,15 +754,43 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objcode,
 			break;
 		}
 		
-		wxASSERT(myValues.GetCount()==2);
-		
+		wxASSERT(myValues.GetCount()==3);
+	
+		long myObjID = 0;
 		long myObjCode = 0;
-		myValues.Item(0).ToLong(&myObjCode);
+		myValues.Item(0).ToLong(&myObjID);
+		objid.Add(myObjID);
+		myValues.Item(1).ToLong(&myObjCode);
 		objcode.Add(myObjCode);
-		objname.Add(myValues.Item(1));
+		objname.Add(myValues.Item(2));
+	}
+	m_pDB->DataBaseClearResults();
+	return true;
+}
+
+
+long tmAttributionData::_GetLayerID (long objectcode, int layertype){
+	wxString myText = _T("SELECT o.THEMATIC_LAYERS_LAYER_INDEX FROM %s o LEFT JOIN %s t")
+	_T(" ON o.THEMATIC_LAYERS_LAYER_INDEX = t.LAYER_INDEX WHERE o.OBJECT_ID=%d AND t.TYPE_CD=%d");
+	
+	wxString mySQL = wxString::Format(myText,
+									  TABLE_NAME_OBJECTS.c_str(),
+									  TABLE_NAME_LAYERS.c_str(),
+									  objectcode,
+									  layertype);
+	
+	
+	if (m_pDB->DataBaseQuery(mySQL)==false){
+		return wxNOT_FOUND;
 	}
 	
-	return true;
+	long layerid = wxNOT_FOUND;
+	if (m_pDB->DataBaseGetNextResult(layerid)==false) {
+		m_pDB->DataBaseClearResults();
+		return wxNOT_FOUND;
+	}
+	m_pDB->DataBaseClearResults();
+	return layerid;
 }
 
 
@@ -807,5 +835,21 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 	return true;
 }
 
+
+
+bool tmAttributionData::GetAdvancedAttribution (int layerid, long geomoid, wxArrayString & values){
+	
+	values.Clear();
+	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%d"),
+									   layerid, geomoid);
+	
+	if (m_pDB->DataBaseQuery(sQuery)==false){
+		return false;
+	}
+	
+	m_pDB->DataBaseGetNextResult(values);
+	m_pDB->DataBaseClearResults();
+	return true;
+}
 
 

@@ -71,8 +71,9 @@ class tmAttributionData : public wxObject
 									 const wxArrayString & values,
 									 int startvalues,
 									 long selected);
-		bool _GetInfoBasic (long oid, wxArrayLong & objcode, wxArrayString & objname, int layertype);
-		
+		bool _GetInfoBasic (long oid, wxArrayLong & objid,
+							wxArrayLong & objcode, wxArrayString & objname, int layertype);
+		long _GetLayerID (long objectcode, int layertype);
 		
 		
 	public:
@@ -92,13 +93,17 @@ class tmAttributionData : public wxObject
 		virtual bool SetAttributesAdvanced(PrjMemLayersArray * layers,
 										   const wxArrayString & values);
 		
+		// layer id
+		virtual long GetLayerID(long objectcode){wxFAIL; return wxNOT_FOUND;}
+		
 		
 		// copy attribution
 		virtual bool CopyAttributesBasic (const long & copyfrom);
 		
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
-		virtual bool GetInfoBasic (long oid, wxArrayLong & objcode, wxArrayString & objname){return false;}
+		virtual bool GetInfoBasic (long oid, wxArrayLong & objid,
+								   wxArrayLong & objcode, wxArrayString & objname){return false;}
 		virtual bool GetInfoBasicValues (const long & selected, 
 										 wxArrayLong & values);
 		virtual bool GetInfoBasicArray(tmAttributionBasicArray & values);
@@ -113,6 +118,7 @@ class tmAttributionData : public wxObject
 		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 									wxArrayString & values,
 									long selected);
+		bool GetAdvancedAttribution (int layerid, long geomoid, wxArrayString & values);
 		
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid){return false;}
 	};
