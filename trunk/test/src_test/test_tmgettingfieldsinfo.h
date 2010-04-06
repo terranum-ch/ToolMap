@@ -123,7 +123,7 @@ public:
 		for (int i = 0; i< iTotVal; i++) {
 			wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
 		}
-		TS_ASSERT_EQUALS(myFieldsName.GetCount(), 12);
+		TS_ASSERT_EQUALS(myFieldsName.GetCount(), 10);
 		
 		
 		// getting fields name for line with 0 attributions

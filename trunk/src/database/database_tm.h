@@ -142,7 +142,7 @@ class DataBaseTM : public DataBase
 		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
 		bool GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayers * actuallayer);
 		int GetFieldsFromDB (PrjDefMemManage * myPrj);
-		bool GetFieldsFromObjectID (long objectid, wxArrayString & fields);
+		bool GetFieldsFromObjectID (long objectid, wxArrayString & fields, int layertype);
 		bool UpdateField(ProjectDefMemoryFields * myField, int iLayer, wxString & sSqlSentence);
 		bool DeleteField (wxArrayString & myFields, int iLayer, wxString & sSqlSentence);
 		
