@@ -213,3 +213,13 @@ bool tmAttributionDataPoint::GetAttributionLayersID (const long & geomid,
 															TABLE_NAME_GIS_ATTRIBUTION[1],
 															LAYER_SPATIAL_POINT);	
 }
+
+bool tmAttributionDataPoint::GetAttributionLayersIDFull (const long & geomid,
+													 tmLayerValueArray & layersid)
+{
+	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
+															layersid,
+															TABLE_NAME_GIS_ATTRIBUTION[1],
+															wxNOT_FOUND);	
+}
+

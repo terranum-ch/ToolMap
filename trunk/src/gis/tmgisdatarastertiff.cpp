@@ -23,6 +23,7 @@
 tmGISDataRasterTIFF::tmGISDataRasterTIFF()
 {
 	m_FileType = _T("GDAL TIFF Raster");
+	m_ClassType = tmGIS_RASTER_TIFF;
 }
 
 tmGISDataRasterTIFF::~tmGISDataRasterTIFF()

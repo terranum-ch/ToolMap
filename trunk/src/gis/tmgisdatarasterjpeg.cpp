@@ -23,6 +23,7 @@
 tmGISDataRasterJPEG::tmGISDataRasterJPEG()
 {
 	m_FileType = _T("GDAL JPEG Raster");
+	m_ClassType = tmGIS_RASTER_JPEG;
 }
 
 tmGISDataRasterJPEG::~tmGISDataRasterJPEG()

@@ -648,12 +648,19 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 {
 	wxASSERT (layersid.GetCount() == 0);
 	wxASSERT (!tablename.IsEmpty());
-	wxASSERT (layertype >= LAYER_SPATIAL_LINE && layertype <= LAYER_SPATIAL_POLYGON);
+	wxASSERT (layertype >= LAYER_SPATIAL_LINE && 
+			  layertype <= LAYER_SPATIAL_POLYGON ||
+			  layertype == wxNOT_FOUND);
 	
 	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX, l.OBJECT_DESC FROM %s l LEFT")
-					_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")
-					_T("AND t.LAYER_INDEX=l.THEMATIC_LAYERS_LAYER_INDEX) WHERE")
-					_T(" a.OBJECT_GEOM_ID = %d AND t.TYPE_CD=%d ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;");
+	_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")
+	_T("AND t.LAYER_INDEX=l.THEMATIC_LAYERS_LAYER_INDEX) WHERE")
+	_T(" a.OBJECT_GEOM_ID = %d ");
+	
+	if (layertype != wxNOT_FOUND) {
+		sTmp.Append(_T(" AND t.TYPE_CD=%d "));
+	}
+	sTmp.Append(_T("ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;"));
 	
 	wxString sSentence = wxString::Format(sTmp,
 										  TABLE_NAME_OBJECTS.c_str(),

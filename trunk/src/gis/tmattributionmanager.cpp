@@ -684,18 +684,18 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	// validating
 	if (IsAttributionManagerReady() == false)
 	{
-		wxLogDebug(_T("Project isn't ready, open a project or define a Edit Layer"));
+		wxLogError(_("Project isn't ready, open a project or define a Edit Layer"));
 		return false;
 	}
 	if (IsOnlyOneObjSelected() == false)
 	{
-		wxLogDebug(_T("This works only if one object is selected, select only one object"));
+		wxLogError(_("This works only if one object is selected, select only one object"));
 		return false;
 	}
 	tmLayerProperties * myEditLayer = m_TOC->GetEditLayer();
 	if (myEditLayer == NULL)
 	{
-		wxLogDebug(_T("You aren't in edit mode, please start editing one layer first"));
+		wxLogError(_("You aren't in edit mode, please start editing"));
 		return false;
 	} 
 	

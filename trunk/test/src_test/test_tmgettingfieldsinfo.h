@@ -34,16 +34,23 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite
 {
 public:
 	DataBaseTM * m_pDB;
+	PrjDefMemManage * m_Proj;
 	
 	TEST_GettingFieldsInfo (bool bTest){
 		m_pDB = new DataBaseTM();
 		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
 		tmGISData::InitGISDrivers(true,true);
+		
+		// open project for all tests
+		m_Proj = m_pDB->GetProjectDataFromDB();
+		TS_ASSERT(m_Proj);
+		
 
 	}
 	
 	virtual ~TEST_GettingFieldsInfo(){
 		delete m_pDB;
+		delete m_Proj;
 	}
 	
 	static TEST_GettingFieldsInfo *createSuite() { return new TEST_GettingFieldsInfo(true);}
@@ -100,8 +107,42 @@ public:
 	}
 	
 	
+	void testGettingFieldsName2ForMySQL(){
+		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
+								  g_TestPrj_AdvAttribution, _T("generic_lines.MYD"));
+		TS_ASSERT(mySQLFileName.FileExists()==true);
+		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		
+		// opening layer
+		TS_ASSERT(m_pDB);
+		tmGISDataVector * myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
+		TS_ASSERT(myVect != NULL);
+		TS_ASSERT(myVect->GetDataType()==tmGIS_VECTOR_MYSQL);
+		
+		tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
+		
+		// getting fields failed because no project specified
+		wxArrayString myFieldsName;
+		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9)==false);
+		
+		// specifiy project object
+		((tmGISDataVectorMYSQL *)myVect)->SetProject(m_Proj);
+		
+		// getting fields ok because project specified
+		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9)==true);
+		int iTotVal = myFieldsName.GetCount();
+		for (int i = 0; i< iTotVal; i++) {
+			wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
+		}
+		TS_ASSERT_EQUALS(iTotVal, 10);
+		wxDELETE(myVect);
+		
+		
+	}
+	
 	void testGettingFieldsNameForMySQL(){
-		// MySQL layer to open
+		/*// MySQL layer to open
 		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
 								  g_TestPrj_AdvAttribution, _T("generic_lines.MYD"));
 		TS_ASSERT(mySQLFileName.FileExists()==true);
@@ -134,7 +175,7 @@ public:
 			wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
 		}
 		TS_ASSERT_EQUALS(myFieldsName.GetCount(), 0);
-		wxDELETE(myVect);
+		wxDELETE(myVect);*/
 	}
 	
 	

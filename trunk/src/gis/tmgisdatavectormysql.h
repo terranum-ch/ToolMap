@@ -50,6 +50,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		//static PrjDefMemManage * m_ProjDef;
 		
 		tmAttributionData * _CreateAttributionObject(int & layertype);
+		PrjDefMemManage * m_PrjDef;
 
 	protected:
 		// checking db fields
@@ -70,6 +71,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		
 		// special function for DB, use it first.
 		static void SetDataBaseHandle(DataBaseTM * db) {m_DB = db;}
+		void SetProject (PrjDefMemManage * prj){m_PrjDef = prj;}
 		
 		
 		// implementing virtual function
