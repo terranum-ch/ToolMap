@@ -173,6 +173,64 @@ public:
 		wxDELETE(myVect);
 	}
 	
+	void testGettingFieldsValueForMySQLLabels(){
+		// MySQL layer to open
+		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
+								  g_TestPrj_AdvAttribution, _T("generic_labels.MYD"));
+		TS_ASSERT(mySQLFileName.FileExists()==true);
+		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		
+		// opening layer
+		TS_ASSERT(m_pDB);
+		tmGISDataVector * myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
+		TS_ASSERT(myVect != NULL);
+		tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
+		TS_ASSERT(myVect->GetDataType()==tmGIS_VECTOR_MYSQL);
+		((tmGISDataVectorMYSQL *)myVect)->SetProject(m_Proj);
+		
+		// getting fields value
+		wxArrayString myFieldsValue;
+		TS_ASSERT_EQUALS(myFieldsValue.GetCount(),0);
+		TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 3)==true);
+		
+		TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 4);
+		TS_ASSERT (myFieldsValue.Item(myFieldsValue.GetCount()-1)== _T("L. Schreiber"));
+		wxDELETE(myVect);
+	}
+	
+	void testGettingFieldsName2ForMySQLLabels(){
+		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
+								  g_TestPrj_AdvAttribution, _T("generic_labels.MYD"));
+		TS_ASSERT(mySQLFileName.FileExists()==true);
+		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		
+		// opening layer
+		TS_ASSERT(m_pDB);
+		tmGISDataVector * myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
+		TS_ASSERT(myVect != NULL);
+		TS_ASSERT(myVect->GetDataType()==tmGIS_VECTOR_MYSQL);
+		
+		tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
+		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
+		
+		// getting fields failed because no project specified
+		wxArrayString myFieldsName;
+		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 3)==false);
+		
+		// specifiy project object
+		((tmGISDataVectorMYSQL *)myVect)->SetProject(m_Proj);
+		
+		// getting fields ok because project specified
+		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 3)==true);
+		int iTotVal = myFieldsName.GetCount();
+		TS_ASSERT_EQUALS(iTotVal, 4);
+		TS_ASSERT (myFieldsName.Item(3) == _T("update_author"));
+		wxDELETE(myVect);
+	}
+	
+	
+	
 	
 };
 

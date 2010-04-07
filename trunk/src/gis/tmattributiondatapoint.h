@@ -61,11 +61,6 @@ class tmAttributionDataPoint : public tmAttributionData
 		
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid);
 		virtual bool GetAttributionLayersIDFull (const long & geomid, tmLayerValueArray & layersid);
-
-		
-		virtual long GetLayerID(long objectcode);
-
-
 	};
 
 
