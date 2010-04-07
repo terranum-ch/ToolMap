@@ -22,7 +22,8 @@
 
 tmGISDataRasterEGRID::tmGISDataRasterEGRID()
 {
-	m_FileType = _T("GDAL ESRI's GRID");	
+	m_FileType = _T("GDAL ESRI's GRID");
+	m_ClassType = tmGIS_RASTER_BINGRID;
 }
 
 

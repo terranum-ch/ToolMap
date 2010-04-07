@@ -217,3 +217,10 @@ bool tmAttributionDataLabel::GetAttributionLayersID (const long & geomid,
 }
 
 
+bool tmAttributionDataLabel::GetAttributionLayersIDFull (const long & geomid,
+													 tmLayerValueArray & layersid){
+	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
+															layersid,
+															TABLE_NAME_GIS_ATTRIBUTION[2],
+															wxNOT_FOUND);	
+}

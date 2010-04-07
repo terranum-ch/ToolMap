@@ -29,6 +29,7 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
 	m_Layer = NULL;
 	m_Feature = NULL;
 	m_polyTotalRings = 0;
+	m_ClassType = tmGIS_VECTOR_SHAPEFILE;
 }
 
 

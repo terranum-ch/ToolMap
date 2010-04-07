@@ -30,7 +30,8 @@ DataBaseTM * tmGISDataVectorMYSQL::m_DB = NULL;
 
 tmGISDataVectorMYSQL::tmGISDataVectorMYSQL()
 {
-
+	m_PrjDef = NULL;
+	m_ClassType = tmGIS_VECTOR_MYSQL;
 }
 
 
@@ -628,8 +629,10 @@ tmAttributionData * tmGISDataVectorMYSQL::_CreateAttributionObject(int & layerty
 	return myAttribData;
 }
 
-
+/*
 bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
+	
+	wxStopWatch sw;
 	
 	// basic initialisation and checks
 	Fields.Clear();
@@ -677,12 +680,94 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 		}
 		
 	}
+	wxLogMessage(_T("Time elapsed : %ld"), sw.Time());
+ 
+	return true;
+}*/
+
+bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
+	
+	wxStopWatch sw;
+	
+	// basic initialisation and checks
+	Fields.Clear();
+	if (oid == wxNOT_FOUND) {
+		wxLogError(_T("OID specified is not valid (%d)"), oid);
+		return false;
+	}
+	
+	
+	if (m_PrjDef == NULL) {
+		wxLogError(_T("Project object not specified, use SetProject() first"));
+		return false;
+	}
+	
+	int iTableType = wxNOT_FOUND;
+	tmAttributionData * myAttribData = _CreateAttributionObject(iTableType);
+	if (myAttribData == NULL) {
+		return false;
+	}
+	
+	// passing info to attribution data
+	wxArrayLong myOid;
+	myOid.Add(oid);
+	myAttribData->Create(&myOid, m_DB);
+	
+	tmLayerValueArray myLayerValues;
+	if(myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)==false){
+		wxDELETE(myAttribData);
+		wxLogError(_T("Error getting attribution layers for oid %d"), oid);
+		return false;
+	}
+	
+	// iterate project for getting fields 
+	PrjMemLayersArray myLayers;
+	for (unsigned int i = 0; i< myLayerValues.GetCount(); i++) {
+		ProjectDefMemoryLayers * myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
+		if (myLayer == NULL) {
+			wxLogWarning(_T("Layer with ID : %d wasn't found in project"), myLayerValues.Item(i).m_Oid);
+		}
+		else {
+			myLayers.Add(new ProjectDefMemoryLayers());
+			myLayers.Item(myLayers.GetCount()-1) = *myLayer;
+		}
+		
+	}
+	
+	// preparing results
+	for (unsigned int j = 0; j < myLayers.GetCount(); j++) {
+		Fields.Add(_T("OBJ_CD"));
+		Fields.Add(_T("OBJ_DESC"));
+		
+		PrjMemFieldArray * myFields = myLayers.Item(j).m_pLayerFieldArray;
+		// adding fields only for object of correct type (case of line / poly)
+		if (myLayers.Item(j).m_LayerType == iTableType) {
+			wxASSERT(myFields);
+			for (unsigned int i = 0; i < myFields->GetCount(); i++) {
+				Fields.Add(myFields->Item(i).m_Fieldname);
+			}
+		}
+		
+		Fields.Add(_T("##<BREAK HERE>##"));
+	
+	}
+	
+	if (Fields.GetCount() > 0) {
+		Fields.RemoveAt(Fields.GetCount()-1);
+	}
+	
+	wxDELETE (myAttribData);
+	
+	wxLogMessage(_T("Time elapsed for getting fields name : %ld"), sw.Time());
+	
 	return true;
 }
 
 
 
 bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
+	wxStopWatch sw;
+	
 	values.Clear();
 	if (oid == wxNOT_FOUND) {
 		wxLogError(_T("OID specified is not valid (%d)"), oid);
@@ -739,7 +824,9 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	}
 	
 	wxDELETE(myAttribData);
-	
+
+	wxLogMessage(_T("Time elapsed for getting values : %ld"), sw.Time());
+
 	return true;
 }
 

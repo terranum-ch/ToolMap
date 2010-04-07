@@ -64,6 +64,8 @@ class tmAttributionDataLine : public tmAttributionData
 		//virtual bool GetInfoBasicValues (const long & selected, 
 		//								 wxArrayLong & values);
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid);
+		virtual bool GetAttributionLayersIDFull (const long & geomid, tmLayerValueArray & layersid);
+
 
 		
 		virtual long GetLayerID(long objectcode);

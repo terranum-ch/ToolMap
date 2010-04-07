@@ -218,3 +218,13 @@ bool tmAttributionDataLine::GetAttributionLayersID (const long & geomid,
 															TABLE_NAME_GIS_ATTRIBUTION[0],
 															LAYER_SPATIAL_LINE);	
 }
+
+
+bool tmAttributionDataLine::GetAttributionLayersIDFull (const long & geomid,
+													tmLayerValueArray & layersid){
+	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
+															layersid,
+															TABLE_NAME_GIS_ATTRIBUTION[0],
+															wxNOT_FOUND);	
+}
+

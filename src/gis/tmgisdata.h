@@ -60,12 +60,16 @@ class tmGISData : public wxObject
 	
 	protected:
 		wxString GetMinimalBoundingRectangleAsHtml (int iprecision = 2);
+		int m_ClassType;
 		
 	public:
 		
 		// ctor and dtor
 		tmGISData();
 		~tmGISData();
+		
+		// get type of class
+		int GetDataType(){return m_ClassType;}
 		
 		// static functions for init
 		static void InitGISDrivers (bool bRaster = TRUE, bool bVector = TRUE);

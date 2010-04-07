@@ -60,6 +60,8 @@ class tmAttributionDataPoint : public tmAttributionData
 								   wxArrayLong & objcode, wxArrayString & objname);
 		
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid);
+		virtual bool GetAttributionLayersIDFull (const long & geomid, tmLayerValueArray & layersid);
+
 		
 		virtual long GetLayerID(long objectcode);
 

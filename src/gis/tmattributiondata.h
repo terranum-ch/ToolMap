@@ -121,6 +121,7 @@ class tmAttributionData : public wxObject
 		bool GetAdvancedAttribution (int layerid, long geomoid, wxArrayString & values);
 		
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid){return false;}
+		virtual bool GetAttributionLayersIDFull (const long & geomid, tmLayerValueArray & layersid){return false;}
 	};
 
 

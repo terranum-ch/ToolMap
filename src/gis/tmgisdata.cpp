@@ -59,6 +59,7 @@ void tmGISData::InitMemberValue()
 {
 	m_ShortFileName = _T("");
 	m_FullFileName = _T("");
+	m_ClassType = wxNOT_FOUND;
 }
 
 
