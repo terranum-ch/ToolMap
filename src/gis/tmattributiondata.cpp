@@ -776,29 +776,6 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
 }
 
 
-long tmAttributionData::_GetLayerID (long objectcode, int layertype){
-	wxString myText = _T("SELECT o.THEMATIC_LAYERS_LAYER_INDEX FROM %s o LEFT JOIN %s t")
-	_T(" ON o.THEMATIC_LAYERS_LAYER_INDEX = t.LAYER_INDEX WHERE o.OBJECT_ID=%d AND t.TYPE_CD=%d");
-	
-	wxString mySQL = wxString::Format(myText,
-									  TABLE_NAME_OBJECTS.c_str(),
-									  TABLE_NAME_LAYERS.c_str(),
-									  objectcode,
-									  layertype);
-	
-	
-	if (m_pDB->DataBaseQuery(mySQL)==false){
-		return wxNOT_FOUND;
-	}
-	
-	long layerid = wxNOT_FOUND;
-	if (m_pDB->DataBaseGetNextResult(layerid)==false) {
-		m_pDB->DataBaseClearResults();
-		return wxNOT_FOUND;
-	}
-	m_pDB->DataBaseClearResults();
-	return layerid;
-}
 
 
 /***************************************************************************//**

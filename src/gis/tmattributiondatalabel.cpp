@@ -181,9 +181,6 @@ bool tmAttributionDataLabel::GetInfoBasic (long oid,  wxArrayLong & objid,
 }
 
 
-long tmAttributionDataLabel::GetLayerID(long objectcode){
-	return _GetLayerID(objectcode, 2);
-}
 
 /***************************************************************************//**
  @brief Set Panel values

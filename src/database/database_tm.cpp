@@ -1327,35 +1327,6 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 }
 
 
-bool DataBaseTM::GetFieldsFromObjectID (long objectid, wxArrayString & fields, int layertype){
-	fields.Clear();
-	
-	wxString myTmpTxt = _T("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS")
-	_T(" WHERE TABLE_NAME = (SELECT CONCAT(\"%s\", THEMATIC_LAYERS_LAYER_INDEX)")
-	_T(" FROM %s o LEFT JOIN %s t ON o.THEMATIC_LAYERS_LAYER_INDEX = t.LAYER_INDEX")
-	_T("  WHERE o.OBJECT_ID=%d AND t.TYPE_CD=%d) AND table_schema =")
-	_T(" \"%s\" AND COLUMN_NAME NOT IN ('OBJECT_ID', 'LAYER_AT_ID')");
-	
-	wxString mySentence = wxString::Format(myTmpTxt,
-										   TABLE_NAME_LAYER_AT.c_str(),
-										   TABLE_NAME_OBJECTS.c_str(),
-										   TABLE_NAME_LAYERS.c_str(),
-										   objectid,
-										   layertype,
-										   DataBaseGetName().c_str());
-	if (DataBaseQuery(mySentence)==false) {
-		return false;
-	}
-	
-	if (DataBaseGetResults(fields)==false) {
-		wxLogError(_T("Error getting fields info"));
-		return false;
-	}
-	return true;
-	
-}
-
-
 
 /***************************************************************************//**
  @brief Get all fields for specified layer
@@ -1807,7 +1778,7 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 		}
 		
 		
-		int iNumFieldAdded = GetFieldsFromDB(myPrjDef);
+		GetFieldsFromDB(myPrjDef);
 		
 		//wxLogDebug(_T("Number of fields parsed %d"), iNumFieldAdded);
 		//wxLogDebug(_T("Nb of layers found in db : %d"), iLayerAdded);

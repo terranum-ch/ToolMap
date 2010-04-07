@@ -73,9 +73,6 @@ class tmAttributionData : public wxObject
 									 long selected);
 		bool _GetInfoBasic (long oid, wxArrayLong & objid,
 							wxArrayLong & objcode, wxArrayString & objname, int layertype);
-		long _GetLayerID (long objectcode, int layertype);
-		
-		
 	public:
 		// ctor - dtor
 		tmAttributionData();
@@ -92,10 +89,6 @@ class tmAttributionData : public wxObject
 		virtual bool CleanAttributesAdvanced (PrjDefMemManage * prjdef, PRJDEF_LAYERS_TYPE layertype);
 		virtual bool SetAttributesAdvanced(PrjMemLayersArray * layers,
 										   const wxArrayString & values);
-		
-		// layer id
-		virtual long GetLayerID(long objectcode){wxFAIL; return wxNOT_FOUND;}
-		
 		
 		// copy attribution
 		virtual bool CopyAttributesBasic (const long & copyfrom);

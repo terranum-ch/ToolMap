@@ -180,10 +180,6 @@ bool tmAttributionDataPoint::GetInfoBasic (long oid,  wxArrayLong & objid,
 }
 
 
-long tmAttributionDataPoint::GetLayerID(long objectcode){
-	return _GetLayerID(objectcode, 1);
-}
-
 /***************************************************************************//**
  @brief Set Panel values
  @details 

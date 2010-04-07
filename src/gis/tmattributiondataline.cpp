@@ -182,9 +182,7 @@ bool tmAttributionDataLine::GetInfoBasic (long oid, wxArrayLong & objid,
 
 
 
-long tmAttributionDataLine::GetLayerID(long objectcode){
-	return _GetLayerID(objectcode, 0);
-}
+
 
 
 
