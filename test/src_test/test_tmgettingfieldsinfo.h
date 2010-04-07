@@ -141,43 +141,6 @@ public:
 		
 	}
 	
-	void testGettingFieldsNameForMySQL(){
-		/*// MySQL layer to open
-		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
-								  g_TestPrj_AdvAttribution, _T("generic_lines.MYD"));
-		TS_ASSERT(mySQLFileName.FileExists()==true);
-		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
-		
-		// opening layer
-		TS_ASSERT(m_pDB);
-		tmGISDataVector * myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-		TS_ASSERT(myVect != NULL);
-		tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
-		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
-		
-		// getting fields name for line with 3 attributions
-		wxArrayString myFieldsName;
-		TS_ASSERT_EQUALS(myFieldsName.GetCount(),0);
-		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9)==true);
-		
-		int iTotVal = myFieldsName.GetCount();
-		for (int i = 0; i< iTotVal; i++) {
-			wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
-		}
-		TS_ASSERT_EQUALS(myFieldsName.GetCount(), 10);
-		
-		
-		// getting fields name for line with 0 attributions
-		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 12)==true);
-		
-		iTotVal = myFieldsName.GetCount();
-		for (int i = 0; i< iTotVal; i++) {
-			wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
-		}
-		TS_ASSERT_EQUALS(myFieldsName.GetCount(), 0);
-		wxDELETE(myVect);*/
-	}
-	
 	
 	void testGettingFieldsValueForMySQL(){
 		// MySQL layer to open
@@ -192,6 +155,8 @@ public:
 		TS_ASSERT(myVect != NULL);
 		tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
 		TS_ASSERT_EQUALS (myVect->Open(mySQLFileName.GetFullPath(), true),true);
+		TS_ASSERT(myVect->GetDataType()==tmGIS_VECTOR_MYSQL);
+		((tmGISDataVectorMYSQL *)myVect)->SetProject(m_Proj);
 		
 		// getting fields value
 		wxArrayString myFieldsValue;

@@ -629,66 +629,8 @@ tmAttributionData * tmGISDataVectorMYSQL::_CreateAttributionObject(int & layerty
 	return myAttribData;
 }
 
-/*
-bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
-	
-	wxStopWatch sw;
-	
-	// basic initialisation and checks
-	Fields.Clear();
-	if (oid == wxNOT_FOUND) {
-		wxLogError(_T("OID specified is not valid (%d)"), oid);
-		return false;
-	}
-	
-	int iTableType = wxNOT_FOUND;
-	tmAttributionData * myAttribData = _CreateAttributionObject(iTableType);
-	if (myAttribData == NULL) {
-		return false;
-	}
-	
-	// passing info to attribution data
-	wxArrayLong myOid;
-	myOid.Add(oid);
-	myAttribData->Create(&myOid, m_DB);
-
-	// gettting basic attribution
-	tmAttributionBasicArray myValues;
-	myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
-	myAttribData->GetInfoBasicArray(myValues);
-	wxDELETE(myAttribData);
-	
-	wxASSERT(myValues.GetCount() <= 1);
-
-	// put all together into array
-	wxArrayString myAdvancedFieldsValue;
-	if (myValues.GetCount() == 1) {
-		for (unsigned int i = 0; i< myValues.Item(0).m_Values.GetCount(); i++) {
-			Fields.Add(_T("OBJ_CD"));
-			Fields.Add(_T("OBJ_DESC"));
-			
-			if (m_DB->GetFieldsFromObjectID(myValues.Item(0).m_Values.Item(i),
-											myAdvancedFieldsValue, iTableType)==true) {
-				for (unsigned int j = 0; j < myAdvancedFieldsValue.GetCount(); j++) {
-					Fields.Add(myAdvancedFieldsValue.Item(j));
-				}
-			}
-			Fields.Add(_T("##<BREAK HERE>##"));
-			}
-		if (Fields.GetCount() > 0) {
-			Fields.RemoveAt(Fields.GetCount()-1);
-		}
-		
-	}
-	wxLogMessage(_T("Time elapsed : %ld"), sw.Time());
- 
-	return true;
-}*/
 
 bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
-	
-	wxStopWatch sw;
-	
 	// basic initialisation and checks
 	Fields.Clear();
 	if (oid == wxNOT_FOUND) {
@@ -757,20 +699,23 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 	}
 	
 	wxDELETE (myAttribData);
-	
-	wxLogMessage(_T("Time elapsed for getting fields name : %ld"), sw.Time());
-	
 	return true;
 }
 
 
 
+
+
+
 bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
-	wxStopWatch sw;
-	
 	values.Clear();
 	if (oid == wxNOT_FOUND) {
 		wxLogError(_T("OID specified is not valid (%d)"), oid);
+		return false;
+	}
+	
+	if (m_PrjDef == NULL) {
+		wxLogError(_T("Project object not specified, use SetProject() first"));
 		return false;
 	}
 	
@@ -785,6 +730,29 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	myOid.Add(oid);
 	myAttribData->Create(&myOid, m_DB);
 	
+	
+	// isolating layers used for attribution
+	tmLayerValueArray myLayerValues;
+	if(myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)==false){
+		wxDELETE(myAttribData);
+		wxLogError(_T("Error getting attribution layers for oid %d"), oid);
+		return false;
+	}
+	
+	PrjMemLayersArray myLayers;
+	for (unsigned int i = 0; i< myLayerValues.GetCount(); i++) {
+		ProjectDefMemoryLayers * myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
+		if (myLayer == NULL) {
+			wxLogWarning(_T("Layer with ID : %d wasn't found in project"), myLayerValues.Item(i).m_Oid);
+		}
+		else {
+			myLayers.Add(new ProjectDefMemoryLayers());
+			myLayers.Item(myLayers.GetCount()-1) = *myLayer;
+		}
+		
+	}
+
+	
 	// gettting basic attribution
 	tmAttributionBasicArray myValues;
 	myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
@@ -796,24 +764,27 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 		wxLogError(_T("Error getting basic informations for object OID : %d"), oid);
 		return false;
 	}
-	
 	wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
+	wxASSERT(myObjVal.GetCount() == myLayers.GetCount());
+	
+		
 	for (unsigned int i = 0; i< myObjCode.GetCount(); i++) {
 		values.Add(wxString::Format(_T("%d"), myObjCode.Item(i)));
 		values.Add(myObjVal.Item(i));
 		
-		
+		ProjectDefMemoryLayers * myLayer = & (myLayers.Item(i));
+		wxASSERT(myLayer);
+		wxASSERT(myLayer->m_LayerID != wxNOT_FOUND);
 		// getting advanced attribution
-		long myLayerID = myAttribData->GetLayerID(myObjID.Item(i));
-		if (myLayerID != wxNOT_FOUND) {
+		if (myLayer->m_LayerType == iTableType) {
 			wxArrayString myAdvValues;
-			if (myAttribData->GetAdvancedAttribution(myLayerID, oid, myAdvValues)==true) {
-				for (unsigned int j = 1; j< myAdvValues.GetCount(); j++) {
+			if (myAttribData->GetAdvancedAttribution(myLayer,myAdvValues, oid)==true) {
+				for (unsigned int j = 0; j< myAdvValues.GetCount(); j++) {
 					values.Add(myAdvValues.Item(j));
 				}
 			}
 		}
-			
+		
 		
 		values.Add(_T("##<BREAK HERE>##"));
 	}
@@ -824,9 +795,6 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	}
 	
 	wxDELETE(myAttribData);
-
-	wxLogMessage(_T("Time elapsed for getting values : %ld"), sw.Time());
-
 	return true;
 }
 

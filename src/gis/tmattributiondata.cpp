@@ -744,7 +744,7 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
 	
 	wxString myText = _T("SELECT o.OBJECT_ID, o.OBJECT_CD, o. OBJECT_DESC FROM %s o")
 	_T(" LEFT JOIN %s m ON o.OBJECT_ID = m.OBJECT_VAL_ID WHERE m.OBJECT_GEOM_ID = %d")
-	_T(" ORDER BY o.OBJECT_ID");
+	_T(" ORDER BY o.THEMATIC_LAYERS_LAYER_INDEX, o.OBJECT_ID");
 	
 	wxString mySQL = wxString::Format(myText,	
 									  TABLE_NAME_OBJECTS.c_str(),
