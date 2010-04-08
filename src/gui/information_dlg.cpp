@@ -21,9 +21,12 @@
 #include "../gis/tmtocctrl.h"
 #include "../gis/tmselecteddatamemory.h"
 #include "../gis/tmmanagerevent.h"
+#include "../core/prjdefmemmanage.h"
 
-#include "../gis/tmgisdata.h"
+//#include "../gis/tmgisdata.h"
+#include "../gis/tmgisdatavectormysql.h"
 #include <wx/grid.h>
+#include <wx/clipbrd.h>
 
 
 
@@ -48,7 +51,7 @@ void InformationDLG::_CreateControls() {
 	wxBoxSizer* bSizer26;
 	bSizer26 = new wxBoxSizer( wxVERTICAL );
 	
-	m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected);
+	m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_TOC);
 	bSizer26->Add( m_SelCtrl, 1, wxEXPAND, 5 );
 	
 	m_panel5->SetSizer( bSizer26 );
@@ -139,6 +142,11 @@ void InformationDLG::UpdateSelection() {
 }
 
 
+void InformationDLG::SetProject(PrjDefMemManage * project) {
+	wxASSERT(m_SelCtrl);
+	m_SelCtrl->SetProject(project);
+}
+
 
 
 
@@ -198,11 +206,13 @@ END_EVENT_TABLE()
 
 
 tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
-										 tmSelectedDataMemory * sel,
+										 tmSelectedDataMemory * sel, tmTOCCtrl * toc,
 										 const wxPoint & pos, const wxSize & size, long style) : 
 wxTreeMultiCtrl(window, id, pos, size, style){
 	wxASSERT(sel);
+	wxASSERT(toc);
 	m_Selected = sel;
+	m_Toc = toc;
 	m_ClickedItemID = wxNOT_FOUND;
 	SetBackgroundColour(*wxWHITE);
 	m_ParentItem = AddRoot(_("Selected features"), _("Selected features"));
@@ -353,6 +363,56 @@ void tmSelectionInfoCtrl::_UpdateSelection() {
 }
 
 
+
+bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString & header, wxArrayString & values) {
+	header.Clear();
+	values.Clear();
+	
+	wxASSERT(m_Project);
+	wxASSERT(m_Toc);
+	wxASSERT(oid != wxNOT_FOUND);
+	
+	tmLayerProperties * itemProp = m_Toc->GetSelectionLayer();
+	if (!itemProp)
+	{
+		wxLogError(_T("No layer selected, select a layer"));
+		return false;
+	}
+	
+	
+	tmGISData * myData = tmGISData::LoadLayer(itemProp);
+	if (!myData)
+	{
+		wxLogError(_("Error loading GIS data for selected layer"));
+		return false;
+	}
+	
+	// don't do anything if layer aren't vector
+	bool bReturn = true;
+	switch (myData->GetDataType()) {
+		case tmGIS_VECTOR_MYSQL:
+			((tmGISDataVectorMYSQL*)myData)->SetProject(m_Project);
+		case tmGIS_VECTOR_SHAPEFILE:
+			bReturn = ((tmGISDataVector*)myData)->GetFieldsName(header, oid);
+			if (bReturn == false) {
+				break;
+			}
+			bReturn = ((tmGISDataVector*)myData)->GetFieldsValue(values, oid);
+			break;
+
+		default:
+			break;
+	}
+
+	wxDELETE(myData);
+	if (bReturn == false) {
+		wxLogError(_T("Error getting informations for oid : %d"), oid);
+	}
+	return bReturn;
+}
+
+
+
 bool tmSelectionInfoCtrl::_GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position) {
 	int xViewScrolled = 0, yViewScrolled = 0;
 	GetViewStart(&xViewScrolled, &yViewScrolled);
@@ -394,37 +454,27 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 		return;
 	}
 	
-	int myCookie = 0;
-	wxTreeMultiItem myCtrl = GetFirstChild(clickeditem, myCookie);
-	if (myCtrl.IsOk() == true) {
-		wxLogMessage(_T("Contain a child"));
-		
+	if (clickeditem.GetName().ToLong(&m_ClickedItemID) == false) {
+		wxFAIL;
 		return;
 	}
 	
-	
+	int myCookie = 0;
+	wxTreeMultiItem myCtrl = GetFirstChild(clickeditem, myCookie);
+	if (myCtrl.IsOk() == true) {
+		return;
+	}
+		
 	wxArrayString myHeader;
 	wxArrayString myValues;
 	
-	myHeader.Add(_T("Col1"));
-	myHeader.Add(_T("##<BREAK HERE>##"));
-	myHeader.Add(_T("Col2"));
-	myHeader.Add(_T("##<BREAK HERE>##"));
-	myHeader.Add(_T("Col3"));
-	
-	myValues.Add(_T("Valeur une"));
-	myValues.Add(_T("##<BREAK HERE>##"));
-	myValues.Add(_T("Valeur deux"));
-	myValues.Add(_T("##<BREAK HERE>##"));
-	myValues.Add(_T("Valeur trois"));
-	
-	
+	_GetData(m_ClickedItemID, myHeader, myValues);
 	_CreateInfoControl(clickeditem, myHeader, myValues);
 	
 	// remove all control with windows
 	_DeleteAllInfos(clickeditem);
 	
-	event.Skip();
+	//event.Skip();
 }
 
 
@@ -444,7 +494,7 @@ void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
 	}
 	
 	PopupMenu(_CreatePopupMenu(), event.GetPosition().x, event.GetPosition().y);
-	event.Skip();
+	//event.Skip();
 }
 
 
@@ -505,7 +555,47 @@ void tmSelectionInfoCtrl::OnPopupZoom(wxCommandEvent & event) {
 
 
 void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent & event) {
-	event.Skip();
+	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
+
+	wxArrayString myHeader;
+	wxArrayString myValues;
+	if (_GetData(m_ClickedItemID,myHeader, myValues)==false){
+		wxLogWarning(_("Unable to retrieve data ! Data not copied to clipboard"));
+		return;
+	}
+	
+	// prepare data
+	wxString myConcatInfo;
+	wxString mySeparatorText = _T("##<BREAK HERE>##");
+	for (unsigned int i = 0; i< myHeader.GetCount(); i++) {
+		if (myHeader.Item(i) != mySeparatorText) {
+			myConcatInfo.Append(myHeader.Item(i));
+		}
+		myConcatInfo.Append(_T("\t"));
+	}
+	myConcatInfo.Append(_T("\n"));	
+	for (unsigned int i = 0; i< myValues.GetCount(); i++) {
+		if (myHeader.Item(i) != mySeparatorText) {
+			myConcatInfo.Append(myValues.Item(i));;
+		}
+		
+		myConcatInfo.Append(_T("\t"));
+	}
+	
+	
+	// copy data
+	if (wxTheClipboard->Open()==false)
+	{
+		wxLogError(_("Unable to open the clipboard"));
+		return;
+	}
+		
+    // This data objects are held by the clipboard,
+    // so do not delete them in the app.
+	wxTheClipboard->SetData( new wxTextDataObject(myConcatInfo) );
+	wxTheClipboard->Close();
+  	wxLogStatus(_("Data copied to clipboard"));
+
 }
 
 
@@ -529,5 +619,10 @@ void tmSelectionInfoCtrl::Update() {
 	}
 	Thaw();
 	
+}
+
+
+void tmSelectionInfoCtrl::SetProject(PrjDefMemManage * project) {
+	m_Project = project;
 }
 
