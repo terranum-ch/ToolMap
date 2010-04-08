@@ -115,6 +115,9 @@ private:
 	bool _GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position);
     void _DeleteAllInfos(const wxTreeMultiItem & dontdelete);
     wxMenu * _CreatePopupMenu();
+	void _CreateInfoControl(const wxTreeMultiItem & item, 
+							const wxArrayString & header, 
+							const wxArrayString & values);	
 	void _UpdateSelection();
 
 
