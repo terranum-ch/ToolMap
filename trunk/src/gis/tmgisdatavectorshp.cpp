@@ -455,7 +455,7 @@ wxString tmGISDataVectorSHP::GetDataSizeAsHtml (int iPrecision)
 		if (myTempSize != wxInvalidSize)
 			myFilesSize += myTempSize;
 		else
-			wxLogDebug(_T("Unable to compute %s%s file size, maybe dosen't exists"),
+			wxLogWarning(_T("Unable to compute %s%s file size, maybe dosen't exists"),
 					   myFileWoutExt.c_str(), myShpExt[i].c_str());
 	}
 		
@@ -497,7 +497,6 @@ int tmGISDataVectorSHP::GetFieldsCount()
  *******************************************************************************/
 bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields, long oid)
 {
-	wxASSERT(oid == wxNOT_FOUND);
 	Fields.Clear();
 	if (!m_Layer)
 		return false;

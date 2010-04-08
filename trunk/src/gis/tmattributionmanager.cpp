@@ -240,6 +240,12 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM * pDb,
 	
 	m_pLayerProperties = NULL;
 	
+	m_InfoDLG = (InformationDLG*) wxWindow::FindWindowById(ID_INFORMATION_DLG);
+	if (m_InfoDLG != NULL) {
+		m_InfoDLG->SetProject(m_pPrjMem);
+	}
+	
+	
 	// check validity for all objects
 	bool bIsReady = IsAttributionManagerReady();
 	if (bIsReady)
@@ -767,6 +773,7 @@ void tmAttributionManager::DisplayInformationsWnd()
 	m_InfoDLG = (InformationDLG*) wxWindow::FindWindowById(ID_INFORMATION_DLG);
 	if (m_InfoDLG==NULL) {
 		m_InfoDLG = new InformationDLG(m_Parent, m_TOC, m_SelData, ID_INFORMATION_DLG);
+		m_InfoDLG->SetProject(m_pPrjMem);
 		m_InfoDLG->Show();
 	}
 	else {

@@ -39,6 +39,7 @@ class tmTOCCtrl;
 class tmSelectedDataMemory;
 class tmSelectionInfoCtrl;
 class tmLayerInfoCtrl;
+class PrjDefMemManage;
 
 
 const int ID_INFORMATION_DLG = 22401;
@@ -50,6 +51,7 @@ private:
     tmSelectedDataMemory * m_Selected;
     tmSelectionInfoCtrl * m_SelCtrl;
     tmLayerInfoCtrl * m_LayerCtrl;
+
 	
 	void _CreateControls();
 	
@@ -72,6 +74,7 @@ public:
 	void UpdateLayer();	
     void UpdateSelection();
 	
+	void SetProject(PrjDefMemManage * project);
 	
 };
 
@@ -111,6 +114,9 @@ private:
 	wxTreeMultiItem m_ParentItem;
 	tmSelectedDataMemory * m_Selected;
 	long m_ClickedItemID;
+	PrjDefMemManage * m_Project;
+	tmTOCCtrl * m_Toc;
+
 
 	bool _GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position);
     void _DeleteAllInfos(const wxTreeMultiItem & dontdelete);
@@ -119,8 +125,7 @@ private:
 							const wxArrayString & header, 
 							const wxArrayString & values);	
 	void _UpdateSelection();
-
-
+    bool _GetData(long oid, wxArrayString & header, wxArrayString & values);
 	
 
     // event function
@@ -139,14 +144,18 @@ private:
 	DECLARE_EVENT_TABLE();
 	
 public:
-	tmSelectionInfoCtrl(wxWindow * window, wxWindowID id, tmSelectedDataMemory * sel,
+	tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
+						tmSelectedDataMemory * sel, tmTOCCtrl * toc,
 						const wxPoint & pos = wxDefaultPosition,
-						const wxSize & size = wxDefaultSize,
+						const wxSize & size = wxDefaultSize, 
 						long style = wxTMC_BG_ADJUST_ALL | wxTMC_SPAN_WIDTH);
+
 	
     ~tmSelectionInfoCtrl();
 	
     void Update();
+	void SetProject(PrjDefMemManage * project);
+
 	
 };
 
