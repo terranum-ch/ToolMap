@@ -274,6 +274,71 @@ wxMenu * tmSelectionInfoCtrl::_CreatePopupMenu() {
 }
 
 
+/***************************************************************************//**
+@brief Create grid controls for displaying informations
+@details This function may do the following : if both array are empty a static
+ text ctrl will be added containing the following sentence : 'No data
+ retreived'. Array values' are then parsed for building one or more grids
+ depending if the break sentence (##<BREAK HERE>##) is encontred
+@author Lucien Schreiber (c) CREALP 2010
+@date 08 avril 2010
+*******************************************************************************/
+void tmSelectionInfoCtrl::_CreateInfoControl(const wxTreeMultiItem & item,
+											 const wxArrayString & header,
+											 const wxArrayString & values) {
+	wxASSERT(header.GetCount() == values.GetCount());
+	
+	// no data, create a static text ctrl
+	if (header.GetCount() == 0) {
+		wxStaticText * myText = new wxStaticText(this, wxID_ANY,
+											   _("No data to display"));
+		AppendWindow(item, myText);
+		return;
+	}
+	
+	// search for separator
+	wxArrayInt mySeparatorPosition;
+	wxString mySeparatorText = _T("##<BREAK HERE>##");
+	for (unsigned int i = 0; i < header.GetCount(); i++) {
+		if (header.Item(i) == mySeparatorText) {
+			wxASSERT(values.Item(i) == mySeparatorText);
+			mySeparatorPosition.Add(i);
+		}
+	}
+	mySeparatorPosition.Add(header.GetCount());
+		
+	// complex case, multiple information table
+	Freeze();
+	for (unsigned int i = 0; i<mySeparatorPosition.GetCount(); i++) {
+		wxGrid * myGrid = new wxGrid(this, wxID_ANY);
+		myGrid->EnableEditing(false);
+		int iNumCol = mySeparatorPosition.Item(i);
+		if (i > 0) {
+			iNumCol -= mySeparatorPosition.Item(i-1);
+			iNumCol--;
+		}
+		myGrid->CreateGrid(1, iNumCol);
+		myGrid->SetRowLabelValue(0, _T(""));
+		myGrid->SetRowLabelSize(1);
+		
+		// add values
+		int iStartPos = 0;
+		if (i > 0) {
+			iStartPos = mySeparatorPosition.Item(i-1) + 1;
+		}
+		for (int j = 0; j< iNumCol; j++) {
+			myGrid->SetColLabelValue(j, header.Item(j+iStartPos));
+			myGrid->SetCellValue(0, j, values.Item(j+iStartPos));
+		}
+		
+		myGrid->AutoSize();
+		AppendWindow(item, myGrid);
+	}
+	Thaw();	
+}
+
+
+
 void tmSelectionInfoCtrl::_UpdateSelection() {
 	wxWindow * myWindow = wxTheApp->GetTopWindow();
 	wxASSERT(myWindow);
@@ -337,15 +402,25 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent & event) {
 		return;
 	}
 	
-	// TODO: this is temp code.
-	wxGrid * myGrid  = new wxGrid(this, -1);
-	myGrid->CreateGrid(1,10);
-	myGrid->SetRowLabelValue(0, _T(""));
-	myGrid->SetRowLabelSize(1);
-	myGrid->AutoSize();
+	
+	wxArrayString myHeader;
+	wxArrayString myValues;
+	
+	myHeader.Add(_T("Col1"));
+	myHeader.Add(_T("##<BREAK HERE>##"));
+	myHeader.Add(_T("Col2"));
+	myHeader.Add(_T("##<BREAK HERE>##"));
+	myHeader.Add(_T("Col3"));
+	
+	myValues.Add(_T("Valeur une"));
+	myValues.Add(_T("##<BREAK HERE>##"));
+	myValues.Add(_T("Valeur deux"));
+	myValues.Add(_T("##<BREAK HERE>##"));
+	myValues.Add(_T("Valeur trois"));
 	
 	
-	AppendWindow(clickeditem, myGrid);
+	_CreateInfoControl(clickeditem, myHeader, myValues);
+	
 	// remove all control with windows
 	_DeleteAllInfos(clickeditem);
 	
