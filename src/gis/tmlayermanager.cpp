@@ -897,12 +897,13 @@ void tmLayerManager::OnZoomToFeature (wxCommandEvent & event){
 	tmGISDataVector * myVectorData = (tmGISDataVector*) tmGISData::LoadLayer(myLayerProp);
 	wxASSERT(myVectorData);
 	
-	OGRGeometry * myGeom = myVectorData->GetGeometryByOID(myOid);
-	wxASSERT(myGeom);
+	OGRFeature * myFeature = myVectorData->GetFeatureByOID(myOid);
+	wxASSERT(myFeature);
 	delete myVectorData;
 	
 	OGREnvelope myEnveloppe;
-	myGeom->getEnvelope(&myEnveloppe);
+	myFeature->GetGeometryRef()->getEnvelope(&myEnveloppe);
+	OGRFeature::DestroyFeature(myFeature);
 	
 	//zooming
 	vrRealRect myRect;
@@ -928,12 +929,13 @@ void tmLayerManager::OnMoveToFeature (wxCommandEvent & event){
 	tmGISDataVector * myVectorData = (tmGISDataVector*) tmGISData::LoadLayer(myLayerProp);
 	wxASSERT(myVectorData);
 	
-	OGRGeometry * myGeom = myVectorData->GetGeometryByOID(myOid);
-	wxASSERT(myGeom);
+	OGRFeature * myFeature = myVectorData->GetFeatureByOID(myOid);
+	wxASSERT(myFeature);
 	delete myVectorData;
 	
 	OGREnvelope myEnveloppe;
-	myGeom->getEnvelope(&myEnveloppe);
+	myFeature->GetGeometryRef()->getEnvelope(&myEnveloppe);
+	OGRFeature::DestroyFeature(myFeature);
 	
 	//moving
 	vrRealRect myRect;

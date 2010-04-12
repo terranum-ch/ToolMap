@@ -560,12 +560,10 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry(const wxRealPoint & pt)
 bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, int searchRadius, int layertype)
 {
 	// get the line
-	OGRLineString * myLine = (OGRLineString*) GetGeometryByOID(oid);
-	if (myLine == NULL)
-	{
-		wxLogDebug(_T("%d line not found !"), oid);
-		return false;
-	}
+	OGRFeature * myFeature = GetFeatureByOID(oid);
+	wxASSERT(myFeature);
+	OGRLineString * myLine = (OGRLineString*) myFeature->GetGeometryRef();
+
 	
 	// create search buffer
 	OGRPoint myClickPt;
@@ -596,15 +594,15 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	// checks for boundary
 	if (iIntersectVertex == 0 || iIntersectVertex == iNumVertex-1)
 	{
-		wxLogDebug(_T("Unable to cut at first or last vertex, try again"));
-		OGRGeometryFactory::destroyGeometry(myLine);
+		wxLogWarning(_T("Unable to cut at first or last vertex, try again"));
+		OGRFeature::DestroyFeature(myFeature);
 		return false;
 	}
 
 	
 	if (iIntersectVertex == wxNOT_FOUND)
 	{
-		OGRGeometryFactory::destroyGeometry(myLine);
+		OGRFeature::DestroyFeature(myFeature);
 		return false;	
 	}
 	
@@ -628,7 +626,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 			}
 		}
 	}
-	OGRGeometryFactory::destroyGeometry(myLine);
+	OGRFeature::DestroyFeature(myFeature);
 	
 		
 	// update geometry

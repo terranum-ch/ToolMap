@@ -239,7 +239,8 @@ OGRGeometry *  tmGISDataVectorSHP::GetNextGeometry (long & oid)
 
 
 
-OGRGeometry * tmGISDataVectorSHP::GetGeometryByOID (long oid){
+//OGRGeometry * tmGISDataVectorSHP::GetGeometryByOID (long oid){
+OGRFeature * tmGISDataVectorSHP::GetFeatureByOID (long oid){	
 	wxASSERT (m_Layer);
 	wxASSERT (oid != wxNOT_FOUND);
 	
@@ -249,11 +250,7 @@ OGRGeometry * tmGISDataVectorSHP::GetGeometryByOID (long oid){
 		return NULL;
 	}
 	
-	OGRGeometry * myGeom = myFeature->GetGeometryRef();
-	wxASSERT(myGeom);
-	
-	//OGRFeature::DestroyFeature(myFeature);
-	return myGeom;
+	return myFeature;
 }
 
 

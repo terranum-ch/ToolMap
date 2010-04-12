@@ -199,7 +199,7 @@ void tmGISImport_DLG::CreateCtrls (wxWindow * parent)
 	m_FeatureCount_Label->Wrap( -1 );
 	fgSizer2->Add( m_FeatureCount_Label, 0, wxALL, 5 );
 	
-	m_FeatureCount_Type = new wxStaticText( this, wxID_ANY, _(""), wxDefaultPosition, wxDefaultSize, 0 );
+	m_FeatureCount_Type = new wxStaticText( this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FeatureCount_Type->Wrap( -1 );
 	fgSizer2->Add( m_FeatureCount_Type, 0, wxALL, 5 );
 	
