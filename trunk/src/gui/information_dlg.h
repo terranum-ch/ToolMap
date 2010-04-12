@@ -111,7 +111,6 @@ const int ID_POPUP_ONLY_THIS_OBJ = 18503;
 
 class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
 private:
-	wxTreeMultiItem m_ParentItem;
 	tmSelectedDataMemory * m_Selected;
 	long m_ClickedItemID;
 	PrjDefMemManage * m_Project;
