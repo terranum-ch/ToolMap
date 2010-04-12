@@ -131,13 +131,13 @@ bool InformationDLG::TransferDataToWindow() {
 
 void InformationDLG::UpdateLayer() {
 	wxASSERT(m_TOC);
-	m_LayerCtrl->Update(m_TOC);
+	m_LayerCtrl->UpdateLayer(m_TOC);
 }
 
 
 
 void InformationDLG::UpdateSelection() {
-	m_SelCtrl->Update();
+	m_SelCtrl->UpdateSelection();
 	
 }
 
@@ -168,7 +168,7 @@ tmLayerInfoCtrl::~tmLayerInfoCtrl() {
 
 
 
-void tmLayerInfoCtrl::Update(tmTOCCtrl * toc) {
+void tmLayerInfoCtrl::UpdateLayer(tmTOCCtrl * toc) {
 	tmLayerProperties * itemProp = toc->GetSelectionLayer();
 	if (!itemProp)
 	{
@@ -602,7 +602,7 @@ void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent & event) {
 	
 
 
-void tmSelectionInfoCtrl::Update() {
+void tmSelectionInfoCtrl::UpdateSelection() {
 	wxASSERT(m_Selected);
 	Freeze();
 	DeleteChildren(GetFirstRoot());
