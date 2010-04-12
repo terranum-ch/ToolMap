@@ -215,7 +215,7 @@ wxTreeMultiCtrl(window, id, pos, size, style){
 	m_Toc = toc;
 	m_ClickedItemID = wxNOT_FOUND;
 	SetBackgroundColour(*wxWHITE);
-	m_ParentItem = AddRoot(_("Selected features"), _("Selected features"));
+	AddRoot(_("Selected features"), _("Selected features"));
 }
 
 
@@ -230,7 +230,7 @@ void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem & dontdelete) {
 	Freeze();
 	int myFirstChildCookie = 0;
 	int myIterateChildCookie = 0;
-	wxTreeMultiItem myParent = GetFirstChild(m_ParentItem, myFirstChildCookie);
+	wxTreeMultiItem myParent = GetFirstChild(GetFirstRoot(), myFirstChildCookie);
 	wxTreeMultiItem myChild;
 	
 	while (1) {
@@ -246,7 +246,7 @@ void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem & dontdelete) {
 			
 			Collapse(myParent, false);
 		}
-		myParent = GetNextChild(m_ParentItem, myFirstChildCookie);
+		myParent = GetNextChild(GetFirstRoot(), myFirstChildCookie);
 			
 	}
 	Thaw();
@@ -436,7 +436,7 @@ bool tmSelectionInfoCtrl::_GetItemByMousePos(wxTreeMultiItem & item, const wxPoi
 		return false;
 	}
 	
-	if (item == m_ParentItem) {
+	if (item == GetFirstRoot()) {
 		return false;
 	}
 	
@@ -605,7 +605,7 @@ void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent & event) {
 void tmSelectionInfoCtrl::Update() {
 	wxASSERT(m_Selected);
 	Freeze();
-	DeleteChildren(m_ParentItem);
+	DeleteChildren(GetFirstRoot());
 	
 	wxArrayLong * mySelVal = m_Selected->GetSelectedValues();
 	if (mySelVal == NULL){
@@ -614,7 +614,7 @@ void tmSelectionInfoCtrl::Update() {
 	}
 	
 	for (unsigned int i = 0; i<m_Selected->GetCount(); i++) {
-		Collapse(AppendNode(m_ParentItem, wxString() << mySelVal->Item(i),
+		Collapse(AppendNode(GetFirstRoot(), wxString() << mySelVal->Item(i),
 							wxString() << mySelVal->Item(i)), false);
 	}
 	Thaw();
