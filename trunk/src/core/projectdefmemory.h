@@ -153,7 +153,7 @@ static const int PRJDEF_LAYERS_TYPE_NUMBER = 3; // only takes the 3 first
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_OBJECTS_FREQ_STRING[] = 
 {
-	_(""),
+	_T(""),
 	_("Frequent")
 };
 enum PRJDEF_OBJECTS_FREQ

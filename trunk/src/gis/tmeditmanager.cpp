@@ -1647,25 +1647,30 @@ bool tmEditManager::CreateIntersections ()
 	if (!mySelLayer)
 		return false;
 	
-	OGRLineString * myOGRSelLine = (OGRLineString*) mySelLayer->GetGeometryByOID(m_SelectedData->GetSelectedUnique());
-	if (!myOGRSelLine)
-		return false;
+	
+	OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SelectedData->GetSelectedUnique());
+	wxASSERT(myFeature);
+	
+	
+	OGRLineString * myOGRSelLine = (OGRLineString*) myFeature->GetGeometryRef();
+	wxASSERT(myOGRSelLine);
 	
 	// Get all line crossing
 	wxArrayLong * myLinesCrossing = mySelLayer->SearchIntersectingGeometry(myOGRSelLine);
 	if (myLinesCrossing == NULL)
 	{
-		OGRGeometryFactory::destroyGeometry(myOGRSelLine);
-		wxLogDebug(_T("No intersections found"));
+		OGRFeature::DestroyFeature(myFeature);
+		wxLogWarning(_T("No intersections found"));
 		return false;
 	}
+	
 	OGRMultiLineString LinesCrossing;
 	for (unsigned int j = 0; j<myLinesCrossing->GetCount();j++)
 	{
-		OGRGeometry * myLine = mySelLayer->GetGeometryByOID(myLinesCrossing->Item(j));
-		wxASSERT(myLine);
-		LinesCrossing.addGeometry(myLine);
-		OGRGeometryFactory::destroyGeometry(myLine);
+		OGRFeature * myTempFeature = mySelLayer->GetFeatureByOID(myLinesCrossing->Item(j));
+		wxASSERT(myTempFeature);
+		LinesCrossing.addGeometry(myTempFeature->GetGeometryRef());
+		OGRFeature::DestroyFeature(myTempFeature);
 	}
 	
 		
@@ -1718,7 +1723,7 @@ bool tmEditManager::CreateIntersections ()
 			myInsertedIDs2.Clear();
 		}
 	}
-	OGRGeometryFactory::destroyGeometry(myOGRSelLine);
+	OGRFeature::DestroyFeature(myFeature);
 	delete myLinesCrossing;
 	
 	// add segment to selection
@@ -1758,9 +1763,10 @@ bool tmEditManager::EditVertexPosition ()
 	
 	// getting geometry info
 	long lSelectedOID = m_SelectedData->GetSelectedUnique();
-	OGRGeometry * myGeom = mySelLayer->GetGeometryByOID(lSelectedOID);
-	if (!myGeom)
-		return false;
+	OGRFeature * myFeature = mySelLayer->GetFeatureByOID(lSelectedOID);
+	wxASSERT(myFeature);
+	OGRGeometry * myGeom = myFeature->GetGeometryRef(); 
+	wxASSERT(myGeom);
 	OGRwkbGeometryType myType =  wkbFlatten ( myGeom->getGeometryType());
 	
 	// preparing dialog and dialog data
@@ -1784,7 +1790,7 @@ bool tmEditManager::EditVertexPosition ()
 			break;
 		
 		default:
-			OGRGeometryFactory::destroyGeometry(myGeom);
+			OGRFeature::DestroyFeature(myFeature);
 			return false;
 			break;
 	}
@@ -1810,7 +1816,7 @@ bool tmEditManager::EditVertexPosition ()
 		}
 		mySelLayer->UpdateGeometry(myGeom, myDlg.m_SelectedOID);
 	}
-	OGRGeometryFactory::destroyGeometry(myGeom);
+	OGRFeature::DestroyFeature(myFeature);
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);

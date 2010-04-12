@@ -1053,7 +1053,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
  *******************************************************************************/
-OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
+OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 {
 	wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
 										  _T("OBJECT_ID = %d;"),
@@ -1067,8 +1067,34 @@ OGRGeometry * tmGISDataVectorMYSQL::GetGeometryByOID (long oid)
 	}
 	
 	OGRGeometry * myGeom = GetNextDataLine(myUnusedOid);
+	wxASSERT(myGeom);
+	
+	// create feature from geometry
+	OGRFeatureDefn * myFeatDef = new OGRFeatureDefn(GetShortFileName().mb_str());
+	
+	if (TABLE_NAME_GIS_GENERIC[0] == GetShortFileName()) {
+		myFeatDef->SetGeomType(wkbLineString);
+	}
+	else if (TABLE_NAME_GIS_GENERIC[1] == GetShortFileName()){
+		myFeatDef->SetGeomType(wkbPoint);
+	}
+	else if (TABLE_NAME_GIS_GENERIC[2] == GetShortFileName()){
+		myFeatDef->SetGeomType(wkbPoint);
+	}
+	else if (TABLE_NAME_GIS_GENERIC[3] == GetShortFileName()){
+		myFeatDef->SetGeomType(wkbPoint);
+	}
+	else if (TABLE_NAME_GIS_GENERIC[4] == GetShortFileName()){
+		myFeatDef->SetGeomType(wkbLineString);
+	}
+
+	
+	OGRFeature * myFeature = OGRFeature::CreateFeature(myFeatDef);
+	myFeature->SetGeometryDirectly(myGeom);
+	myFeature->SetFID(oid);
+	
 	m_DB->DataBaseClearResults();
-	return myGeom;
+	return myFeature;
 }
 
 

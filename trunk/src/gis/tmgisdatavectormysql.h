@@ -86,7 +86,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		OGRPoint * GetNextDataPointWithAttrib (long & oid, wxArrayString & values);
 		virtual OGRLineString * GetNextDataLine (long & oid); 
 		virtual OGRPoint * GetOGRNextDataPoint (long & oid);
-		virtual OGRGeometry * GetGeometryByOID (long oid);
+		virtual OGRFeature * GetFeatureByOID (long oid);
 		virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND);
 		virtual bool UpdateGeometry (OGRGeometry * geom, const long & oid);
 		virtual OGRGeometryCollection * GetGeometryColByOID(wxArrayLong * OIDs);

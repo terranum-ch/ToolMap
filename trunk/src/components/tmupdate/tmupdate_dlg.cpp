@@ -52,7 +52,7 @@ tmUpdate_DLG::tmUpdate_DLG( wxWindow* parent, tmUpdate * pupdate, wxWindowID id,
 	m_staticText8->Wrap( -1 );
 	bSizer29->Add( m_staticText8, 0, wxALL, 5 );
 	
-	m_TextVersion = new wxStaticText( tmUpdate_Panel_Sucess, wxID_ANY, _("2.0.700"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxRAISED_BORDER );
+	m_TextVersion = new wxStaticText( tmUpdate_Panel_Sucess, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE|wxRAISED_BORDER );
 	m_TextVersion->Wrap( -1 );
 	m_TextVersion->SetFont( wxFont( 20, 70, 90, 92, false, wxEmptyString ) );
 	
