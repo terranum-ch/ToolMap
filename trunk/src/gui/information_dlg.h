@@ -92,7 +92,7 @@ public:
     tmLayerInfoCtrl(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size);
     virtual ~tmLayerInfoCtrl();
 
-    void Update(tmTOCCtrl * toc);
+    void UpdateLayer(tmTOCCtrl * toc);
 	
 };
 
@@ -152,7 +152,7 @@ public:
 	
     ~tmSelectionInfoCtrl();
 	
-    void Update();
+    void UpdateSelection();
 	void SetProject(PrjDefMemManage * project);
 
 	
