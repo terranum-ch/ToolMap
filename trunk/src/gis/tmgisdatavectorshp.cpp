@@ -239,6 +239,25 @@ OGRGeometry *  tmGISDataVectorSHP::GetNextGeometry (long & oid)
 
 
 
+OGRGeometry * tmGISDataVectorSHP::GetGeometryByOID (long oid){
+	wxASSERT (m_Layer);
+	wxASSERT (oid != wxNOT_FOUND);
+	
+	OGRFeature * myFeature = m_Layer->GetFeature(oid);
+	if (myFeature == NULL) {
+		wxLogError(_T("Error getting feature number : %d"), oid);
+		return NULL;
+	}
+	
+	OGRGeometry * myGeom = myFeature->GetGeometryRef();
+	wxASSERT(myGeom);
+	
+	//OGRFeature::DestroyFeature(myFeature);
+	return myGeom;
+}
+
+
+
 wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
 {
 	wxASSERT(m_Layer);
