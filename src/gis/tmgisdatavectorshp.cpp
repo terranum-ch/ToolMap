@@ -217,24 +217,13 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex, long & oid)
 
 
 
-OGRGeometry *  tmGISDataVectorSHP::GetNextGeometry (long & oid)
+OGRFeature *  tmGISDataVectorSHP::GetNextFeature ()
 {
 	wxASSERT (m_Layer);
 	OGRFeature * poFeature = m_Layer->GetNextFeature();
 	
-	// nothing more to read
-	if (poFeature == NULL)
-	{
-		oid = wxNOT_FOUND;
-		return NULL;		
-	}
-	
-	OGRGeometry * myGeom = poFeature->GetGeometryRef();
-	wxASSERT(myGeom);
-	oid = poFeature->GetFID();
-	
-	return myGeom;
-	//TODO: delete returned value after use
+	return poFeature;
+	// delete returned value after use
 }
 
 

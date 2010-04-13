@@ -158,29 +158,27 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 	tmGISDataVectorMYSQL * myGeomDB = new tmGISDataVectorMYSQL();
 	tmGISDataVectorMYSQL::SetDataBaseHandle(projectdb);
 	
-	OGRGeometry * myGeom = NULL;
-	long oid = wxNOT_FOUND;
 	long iCount = 0;
-	
 	wxStopWatch sv;
 	tmPercent tpercent(GetFeatureCount());
 
 	while (1)
 	{
-		myGeom = m_Vector->GetNextGeometry(oid);
-		if (myGeom == NULL)
-		{
+		OGRFeature * myFeature = m_Vector->GetNextFeature();
+		if (myFeature == NULL){
 			break; 
 		}
+		OGRGeometry * myGeom = myFeature->GetGeometryRef();
+		wxASSERT(myGeom);
 		
 		if (myGeomDB->AddGeometry(myGeom, -1, importintotype) == wxNOT_FOUND)
 		{
-			OGRGeometryFactory::destroyGeometry(myGeom);
-			wxLogError(_T("Error adding geometry into project"));
+			OGRFeature::DestroyFeature(myFeature);
+			wxLogError(_("Error importing geometry into the project"));
 			break;
 		}
 		iCount ++;
-		OGRGeometryFactory::destroyGeometry(myGeom);
+		OGRFeature::DestroyFeature(myFeature);
 		
 		bool bStop = false;
 		tpercent.SetValue(iCount);
@@ -199,7 +197,7 @@ bool tmGISImport::Import(DataBaseTM * projectdb, const TOC_GENERIC_NAME & import
 	sv.Pause();
 	m_Time = sv.Time();
 	
-	wxLogDebug(_T("%d feature added"), iCount);
+	wxLogMessage (_("%d feature added"), iCount);
 	return true;
 	
 }
