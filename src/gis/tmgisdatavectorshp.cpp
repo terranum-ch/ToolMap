@@ -656,7 +656,8 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	
 	if( m_Datasource == NULL )
     {
-        wxASSERT_MSG(0, _T("Creation of output file failed."));
+        wxLogError(_("Creation of output file '%s' failed."), 
+					 filename.GetFullName().c_str());
         return false;
     }
 	

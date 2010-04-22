@@ -105,17 +105,15 @@ bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
 	wxFileName * myShpFileName = GetFileName(myLayer, path);
 	if (!myShpFileName)
 	{
-		wxASSERT_MSG(0, _T("Unable to create the file name"));
+		wxLogError(_("Unable to get the file name !"));
 		return false;
 	}
 	
 	
 	
-	if(!m_Shp.CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType))
+	if(!m_Shp.CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType)){
 		bReturn =  false;
-	
-	// create the shp
-	//TODO: Add error to report indicating that export file wasn't created
+	}
 	
 	delete myShpFileName;
 	return bReturn;
@@ -189,13 +187,13 @@ bool tmExportDataSHP::AddOptFields (PrjMemFieldArray * myfields)
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::AddGenericFields (int iObjeDescSize)
-{
+bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
 	wxASSERT (iObjeDescSize);
 	
 	if (m_Shp.AddFieldNumeric(_T("OBJ_CD")) &&
-		m_Shp.AddFieldText(_T("OBJ_DESC"), iObjeDescSize))
+		m_Shp.AddFieldText(_T("OBJ_DESC"), iObjeDescSize)){
 		return true;
+	}
 	
 	return false;
 	
@@ -213,8 +211,10 @@ bool tmExportDataSHP::AddGenericFields (int iObjeDescSize)
  *******************************************************************************/
 bool tmExportDataSHP::AddFIDField ()
 {
-	if(m_Shp.AddFieldNumeric(_T("TM_OID"), false))
+	if(m_Shp.AddFieldNumeric(_T("TM_OID"), false)){
+		wxLogError(_("Adding OID field failed"));
 		return true;
+	}
 	
 	return false;
 }
