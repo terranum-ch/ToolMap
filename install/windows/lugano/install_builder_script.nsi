@@ -21,6 +21,10 @@
 ;!include MUI2.nsh
 
 
+#installing desktop icon only when using GUIs
+Function finishpageaction
+CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "$instdir\${PRODUCT_NAME}2.exe"
+FunctionEnd
 
 ;!include "MUI.nsh"
 
@@ -28,8 +32,8 @@
 !define MUI_ABORTWARNING
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\box-install.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\box-uninstall.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange-uninstall.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\art\install_banner.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\art\install_banner.bmp"
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
@@ -42,6 +46,12 @@
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
 ;!define MUI_FINISHPAGE_RUN "$INSTDIR\ToolMap2.exe"
+
+!define MUI_FINISHPAGE_SHOWREADME ""
+;!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "Create Desktop Shortcut"
+!define MUI_FINISHPAGE_SHOWREADME_FUNCTION finishpageaction
+
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -51,6 +61,8 @@
 !insertmacro MUI_LANGUAGE "English"
 
 ; MUI end ------
+
+
 
 !insertmacro GetParameters
 !insertmacro GetOptions
@@ -100,7 +112,7 @@ Section "SectionPrincipale" SEC01
   CreateDirectory "$SMPROGRAMS\ToolMap 2"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
-  CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
+  ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
   File "..\..\..\..\bin\prod\Debug\gdal17.dll"
   File "..\..\..\..\bin\prod\Debug\geos_c.dll"
   File "..\..\..\..\bin\prod\Debug\libmysqld.dll"
@@ -168,7 +180,7 @@ Section Uninstall
   Delete "$SMPROGRAMS\ToolMap 2\Uninstall.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\Website.url"
-  Delete "$DESKTOP\ToolMap 2.lnk"
+  Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
   Delete "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk"
 
   RMDir "$SMPROGRAMS\ToolMap 2"
