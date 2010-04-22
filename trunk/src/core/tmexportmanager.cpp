@@ -268,20 +268,23 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 {
 	
 	// check for file name 
-	if (GetAvailableFileName(layer) == false)
+	if (GetAvailableFileName(layer) == false){
 		return false;
-	
+	}
 	
 	// EXPORT
 	bool bReturn = false;
 	m_ExportData = CreateExportData();
+	wxASSERT(m_ExportData);
 	m_ExportData->SetFrame(frame, framevertex);
 	
-	// create SIG layer
-	//ProjectDefMemoryLayers myLayer = layers->Item(i);
 	
-	if (CreateExportLayer(layer))
-	{
+	if (_CreateExportLayer(layer) == false){
+		return false;
+	}
+	
+	// TODO: Modify code bellow
+	else{
 		// export data to layer
 		if (ExportGISData(layer))
 			if (AddAttributionSimpleData(layer))
@@ -399,11 +402,11 @@ void tmExportManager::DeleteProgress()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
+bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer)
 {
 	wxASSERT(layer);
 	wxASSERT (m_ExportData);
-	bool bReturn = true;
+
 	
 	// get size of object_description
 	int iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
@@ -412,36 +415,27 @@ bool tmExportManager::CreateExportLayer (ProjectDefMemoryLayers * layer)
 	// create SIG layer
 	if (m_ExportData->
 		CreateEmptyExportFile(layer,
-							  m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)))
-	{
-		
-		// add toolmap field
-		if (!m_ExportData->AddFIDField())
-			bReturn = false;
-		
-		// add obligatory fields
-		if (!m_ExportData->AddGenericFields(iSizeOfObjCol))
-			bReturn = false;
-		else
-		{
-		
-			// add optionnal fields
-			PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
-			if (myFields) // ok we have advanced fields
-			{
-				
-				m_ExportData->AddOptFields(myFields);
-			}
-		
+							  m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR))==false){
+			return false;
 		}
-		
+
+	// add toolmap's id field
+	if (m_ExportData->AddFIDField()==false){
+		return false;
 	}
-	else
-		bReturn = false;
-			
-	
-	
-	return bReturn;
+		
+	// add obligatory (basic) fields
+	if (m_ExportData->AddGenericFields(iSizeOfObjCol)==false){
+		return false;
+	}
+		
+	// add optionnal fields
+	PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
+	if (myFields){ // ok we have advanced fields
+		m_ExportData->AddOptFields(myFields);
+	}
+		
+	return true;
 }
 
 
@@ -518,7 +512,8 @@ bool tmExportManager::GetAvailableFileName (ProjectDefMemoryLayers * layer)
 	}
 	
 	
-	wxASSERT_MSG(0, _T("500 files searched for export name...."));
+	wxLogError( _("%d files searched for export name, no name available remove files"),
+			   tmFILENAME_MAX_SEARCH);
 	return false;
 }
 
