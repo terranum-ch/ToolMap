@@ -306,6 +306,10 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 			break;
 	}
 	
+	// TODO : Remove this temp code
+	m_pDB->DataBaseClearResults();
+	
+	
 	wxDELETE(m_ExportData);
 	return true;
 	
@@ -516,12 +520,40 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	}
 	
 	
-	
+	// 
+	// Message if some layers are exported empty
+	//
+	if (m_pDB->DataBaseHasResults() == false) {
+		wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+		return true;
+	}
 
 	
-	
+	switch (layer->m_LayerType)
+	{
+		case LAYER_LINE:
+			if (m_ExportData->WriteLines(layer)==false){
+				return false;	
+			}
+			break;
+			
+		/*case LAYER_POINT:
+			if (m_ExportData->WritePoints(layer))
+				bReturn = true;
+			break;
+			
+		case LAYER_POLYGON:
+			if (m_ExportData->WritePolygons(layer))
+				bReturn = true;
+			break;*/
+			
+		default:
+			wxLogError(_("This type of data isn't supported for now"));
+			break;
+	}
+		
 
-	return false;
+	return true;
 }
 
 

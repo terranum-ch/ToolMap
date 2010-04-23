@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmexportdatashp.h"
+#include "../database/databaseresult.h"
 
 
 
@@ -211,12 +212,12 @@ bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
  *******************************************************************************/
 bool tmExportDataSHP::AddFIDField ()
 {
-	if(m_Shp.AddFieldNumeric(_T("TM_OID"), false)){
+	if(m_Shp.AddFieldNumeric(_T("TM_OID"), false)==false){
 		wxLogError(_("Adding OID field failed"));
-		return true;
+		return false;
 	}
 	
-	return false;
+	return true;
 }
 
 
@@ -231,7 +232,65 @@ bool tmExportDataSHP::AddFIDField ()
  *******************************************************************************/
 bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 {
-	wxASSERT (m_Frame);
+	wxASSERT(m_Frame);
+	wxASSERT(m_pDB);
+	wxASSERT(m_pDB->DataBaseHasResults() == true);
+	
+	// get row of data
+	DataBaseResult myResult;
+	m_pDB->DataBaseGetResults(&myResult);
+	wxASSERT(myResult.HasResults()==true);
+	
+	for (long i = 0; i < myResult.GetRowCount(); i++) {
+		myResult.NextRow();
+		
+		//
+		// Is geometry inside the frame ?
+		//
+		OGRGeometry * myGeom = NULL;
+		if ( myResult.GetValue(1, &myGeom) == false){
+			wxASSERT(myGeom == NULL);
+			wxLogError(_T("No geometry returned for '%s' in loop %d"),
+					   myLayer->m_LayerName.c_str(), i);
+			continue;
+		}
+		
+		if (myGeom == NULL) {
+			wxLogError(_("No geometry returned at iteration %d"), i);
+			continue;
+		}
+		
+		
+		OGRGeometry * myCropLine = SafeIntersection(myGeom, m_Frame);
+		OGRGeometryFactory::destroyGeometry(myGeom);
+		
+		if (myCropLine == NULL) {
+			continue;
+		}
+		
+		if (myCropLine->IsEmpty() == true) {
+			wxLogError(_("Empty geometry returned for layer '%s' at iteration %d"),
+					   myLayer->m_LayerName.c_str(), i);
+			OGRGeometryFactory::destroyGeometry(myCropLine);
+			continue;
+		}
+		
+		//
+		// Add geometry first and then values
+		//
+		long myOid = wxNOT_FOUND;
+		myResult.GetValue(0, myOid);
+		wxASSERT(myOid != wxNOT_FOUND);
+		
+		m_Shp.AddGeometry(myCropLine, myOid);
+		
+		// TODO: Add fields value here
+		
+	}
+	return true;
+	
+	
+	/*wxASSERT (m_Frame);
 	tmGISDataVectorMYSQL myDBData;
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
 	OGRLineString * myLine = NULL;
@@ -266,7 +325,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 	}
 	
 	
-	return true;
+	return true;*/
 }
 
 
