@@ -288,7 +288,11 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 	switch (layer->m_LayerType) {
 		case LAYER_LINE:
 		case LAYER_POINT:
-			
+			if(_ExportSimple(layer)==false){
+				wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
+				wxDELETE(m_ExportData);
+				return false;
+			}
 			break;
 			
 		case LAYER_POLYGON:

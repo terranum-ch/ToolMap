@@ -46,6 +46,9 @@
 #include <wx/tokenzr.h> // tokenizer of string
 #include <wx/dir.h> // directory operation (size)
 
+
+class DataBaseResult;
+
 //WX_DEFINE_ARRAY_(int, ArrayOfInts);
 WX_DEFINE_ARRAY_LONG(unsigned long, tmArrayULong);
 
@@ -115,7 +118,7 @@ class DataBase
 		bool DataBaseGetResults(wxArrayLong & results);
 		bool DataBaseGetResults(wxArrayDouble & results);
 		
-		
+		bool DataBaseGetResults(DataBaseResult * results);
 };
 
 
