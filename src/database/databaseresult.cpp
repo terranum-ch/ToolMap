@@ -21,6 +21,7 @@
 DataBaseResult::DataBaseResult() {
 	m_ResultSet = NULL;
 	m_RowIndex = wxNOT_FOUND;
+	m_RowLengths.Clear();
 }
 
 
@@ -30,13 +31,13 @@ DataBaseResult::DataBaseResult(MYSQL_RES ** results) {
 
 void DataBaseResult::Create(MYSQL_RES ** results) {
 	m_RowIndex = wxNOT_FOUND;
+	m_RowLengths.Clear();
 	m_ResultSet = results;
 }
 
 
 DataBaseResult::~DataBaseResult() {
 	if (m_ResultSet != NULL) {
-		wxLogMessage(_T("Cleaning result set"));
 		mysql_free_result(*m_ResultSet);
 		*m_ResultSet = NULL;
 		m_ResultSet = NULL;
@@ -123,6 +124,52 @@ bool DataBaseResult::GetValue(int col, long & value) {
 		wxLogError(_("Error converting '%s' to long"), myValue.c_str());
 		return false;
 	}
+	
+	return true;
+}
+
+
+bool DataBaseResult::_GetRowLength() {
+	wxASSERT(m_ResultSet);
+	
+	// if length was allready computed
+	if (m_RowLengths.GetCount() > 0) {
+		return true;
+	}
+	
+	
+	// if length wasn't computed
+	unsigned long * myLengths = mysql_fetch_lengths(*m_ResultSet);
+	wxASSERT(myLengths != NULL);
+	
+	for (int i = 0; i< GetColCount(); i++) {
+		m_RowLengths.Add(myLengths[i]);
+	}
+	return true;
+}
+
+
+bool DataBaseResult::GetValue(int col, OGRGeometry * * geometry) {
+	if (m_ResultSet == NULL) {
+		wxLogError(_("Result set not inited or not valid"));
+		return false;
+	}
+	
+	if (IsRowOk() == false) {
+		wxLogError(_("No data to retrive"));
+		return false;
+	}
+	
+	// compute lengths
+	_GetRowLength();
+	wxASSERT(m_RowLengths.GetCount() > 0);
+		
+	
+	// Geometry columns will have the first 4 bytes contain the SRID.
+	OGRGeometryFactory::createFromWkb(((unsigned char *)m_Row[col]) + 4, 
+									  NULL,
+									  geometry,
+									  m_RowLengths.Item(col) - 4 );
 	
 	return true;
 }

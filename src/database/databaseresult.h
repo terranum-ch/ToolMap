@@ -26,29 +26,36 @@
 #endif
 
 #include "mysql.h"
+#include "ogrsf_frmts.h"		// OGR accessing
+#include "database.h"
 
 class DataBaseResult {
 private:
     MYSQL_RES ** m_ResultSet;
 	MYSQL_ROW m_Row;
 	long m_RowIndex;
-
-
+    tmArrayULong m_RowLengths;
 	
-  public:
+protected:
+    bool _GetRowLength();
+	
+	
+public:
 	DataBaseResult();
     DataBaseResult(MYSQL_RES ** results);
 	void Create(MYSQL_RES ** results);
     ~DataBaseResult();
-
+	
 	bool HasResults();
     int GetColCount();
     long GetRowCount();
-
+	
     bool GetColName(wxArrayString & fields);
     bool GetValue(int col, wxString & value);
     bool GetValue(int col, long & value);
-
+	bool GetValue(int col, OGRGeometry ** geometry);
+	
+	
     bool NextRow();
     bool IsRowOk();
 

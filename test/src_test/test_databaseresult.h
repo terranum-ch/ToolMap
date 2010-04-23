@@ -92,7 +92,7 @@ public:
 		DataBaseResult myRes;
 		TS_ASSERT(m_pDB->DataBaseGetResults(&myRes)==true);
 		wxArrayString myColName;
-		TS_ASSERT(myRes.GetColName(myColName)==true);
+	 	TS_ASSERT(myRes.GetColName(myColName)==true);
 		TS_ASSERT_EQUALS(myColName.GetCount(), 3);
 		for (unsigned int i = 0; i< myColName.GetCount(); i++) {
 			wxLogMessage(_T("Col name : ") + myColName.Item(i));
@@ -129,6 +129,42 @@ public:
 		TS_ASSERT(myRes.NextRow()==true);	
 		TS_ASSERT(myRes.NextRow()==true);
 		TS_ASSERT(myRes.NextRow()==false);
+		
+	}
+	
+	void testGetValueLong(){
+		TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM thematic_layers WHERE LAYER_INDEX = 1"))==true);
+		DataBaseResult myRes;
+		TS_ASSERT(m_pDB->DataBaseGetResults(&myRes)==true);
+		TS_ASSERT(myRes.NextRow() == true);
+		
+		long myValueLong;
+		TS_ASSERT(myRes.GetValue(0, myValueLong)==true);
+		TS_ASSERT_EQUALS(myValueLong, 1);
+
+		wxString myValueStr = wxEmptyString;
+		TS_ASSERT(myRes.GetValue(2, myValueStr)==true);
+		TS_ASSERT(myValueStr == _T("TectoBound_L"));
+		
+		// trying to get string to long
+		TS_ASSERT(myRes.GetValue(2, myValueLong)==false)
+
+	}
+	
+	
+	void testGetValueGeom(){
+		TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM generic_lines WHERE OBJECT_ID = 13"))==true);
+		DataBaseResult myRes;
+		TS_ASSERT(m_pDB->DataBaseGetResults(&myRes)==true);
+		TS_ASSERT(myRes.NextRow() == true);
+		
+		OGRGeometry * myGeom = NULL;
+		TS_ASSERT(myRes.GetValue(1, &myGeom)==true);
+		TS_ASSERT(myGeom != NULL);
+		TS_ASSERT(wkbFlatten(myGeom->getGeometryType()) == wkbLineString);
+		wxLogMessage(_T("Returned line has %d vertex"), 
+					 ((OGRLineString*) myGeom)->getNumPoints());
+		OGRGeometryFactory::destroyGeometry (myGeom);
 		
 		
 	}
