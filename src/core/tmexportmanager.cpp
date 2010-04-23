@@ -273,15 +273,40 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 	}
 	
 	// EXPORT
-	bool bReturn = false;
 	m_ExportData = CreateExportData();
 	wxASSERT(m_ExportData);
 	m_ExportData->SetFrame(frame, framevertex);
 	
 	
 	if (_CreateExportLayer(layer) == false){
+		wxDELETE(m_ExportData);
 		return false;
 	}
+	
+	// in simple case we could do the job in one pass
+	// but for polygons two pass are needed 
+	switch (layer->m_LayerType) {
+		case LAYER_LINE:
+		case LAYER_POINT:
+			
+			break;
+			
+		case LAYER_POLYGON:
+			break;
+			
+		default:
+			wxLogError(_("Layer type not supported for export (%d)"),
+					   layer->m_LayerType);
+			wxDELETE(m_ExportData);
+			return false;
+			break;
+	}
+	
+	wxDELETE(m_ExportData);
+	return true;
+	
+	/*
+	
 	
 	// TODO: Modify code bellow
 	else{
@@ -306,7 +331,7 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 	
 	delete m_ExportData;
 	m_ExportData = NULL;
-	return bReturn;	
+	return bReturn;	*/
 }
 
 
@@ -439,6 +464,61 @@ bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer)
 }
 
 
+
+bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
+	wxASSERT (m_ExportData);
+	wxASSERT (layer->m_LayerType == LAYER_LINE || 
+			  layer->m_LayerType == LAYER_POINT);
+	
+	//
+	// build different query if layer has advanced fields or not
+	//
+	wxString myQuery = wxEmptyString;
+	if (layer->m_pLayerFieldArray != NULL) {
+		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY,")
+								   _T(" o.OBJECT_CD, o.OBJECT_DESC FROM %s")
+								   _T(" l LEFT JOIN (%s la, %s o) ON (la.OBJECT_GEOM_ID")
+								   _T(" = l.OBJECT_ID AND o.OBJECT_ID = la.OBJECT_VAL_ID)")
+								   _T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY l.OBJECT_ID"),
+								   TABLE_NAME_GIS_GENERIC[layer->m_LayerType].c_str(),
+								   TABLE_NAME_GIS_ATTRIBUTION[layer->m_LayerType].c_str(),
+								   TABLE_NAME_OBJECTS.c_str(),
+								   layer->m_LayerID);
+	}
+	else {
+		myQuery = _T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY, o.OBJECT_CD, o.OBJECT_DESC, ");
+		PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
+		wxASSERT(myFields);
+		for (unsigned int i = 0; i< myFields->GetCount(); i++) {
+			myQuery.Append(myFields->Item(i).m_Fieldname);
+			myQuery.Append(_T(", "));
+		}
+		myQuery.RemoveLast(2);
+		myQuery.Append(wxString::Format(_T(" FROM (%s l  LEFT OUTER JOIN (layer_at%d laa)")
+										_T(" ON (l.OBJECT_ID = laa.OBJECT_ID)) LEFT OUTER")
+										_T(" JOIN (%s la, %s o) ON (l.OBJECT_ID = la.OBJECT_GEOM_ID")
+										_T(" AND la.OBJECT_VAL_ID = o.OBJECT_ID) WHERE")
+										_T(" o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY l.OBJECT_ID"),
+										TABLE_NAME_GIS_GENERIC[layer->m_LayerType].c_str(),
+										layer->m_LayerID,
+										TABLE_NAME_GIS_ATTRIBUTION[layer->m_LayerType].c_str(),
+										TABLE_NAME_OBJECTS.c_str(),
+										layer->m_LayerID));
+	}
+	
+	wxASSERT(m_pDB);
+	if (m_pDB->DataBaseQuery(myQuery)==false) {
+		return false;
+	}
+	
+	
+	
+
+	
+	
+
+	return false;
+}
 
 
 
