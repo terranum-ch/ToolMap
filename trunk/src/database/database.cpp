@@ -37,6 +37,7 @@
 #endif
 
 #include "database.h"
+#include "databaseresult.h"
 
 
 #include <wx/filename.h> // to create the database path and name.
@@ -658,6 +659,23 @@ bool DataBase::DataBaseGetResults(wxArrayDouble & results)
 	}
 	return true;
 }
+
+
+
+bool DataBase::DataBaseGetResults(DataBaseResult * results){
+	
+	if (DBIsDataBaseReady()==false)
+		return false;
+	
+	if (DBResultsNotNull()==false)
+		return false;
+	
+	wxASSERT(results);
+	wxASSERT(m_MySQLRes);
+	results->Create(&m_MySQLRes);
+	return true;
+}
+
 
 
 
