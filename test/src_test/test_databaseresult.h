@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TEST_VR_DRIVER_H_
-#define _TEST_VR_DRIVER_H_
+#ifndef _TEST_DATABASE_RESULTS_H_
+#define _TEST_DATABASE_RESULTS_H_
 
 
 #include "wx/wxprec.h"

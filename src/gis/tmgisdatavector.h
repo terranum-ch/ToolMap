@@ -131,6 +131,7 @@ class tmGISDataVector : public tmGISData
 		virtual bool SplitGeometry (OGRGeometryCollection * gCol, const long & oid, 
 									wxArrayLong & AddedIds, int layertype);
 		virtual OGRGeometryCollection * GetGeometryColByOID(wxArrayLong * OIDs){return NULL;}
+		virtual void CloseGeometry(){;}
 		
 		// counting
 		virtual int GetCount (){return -1;}

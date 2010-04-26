@@ -76,10 +76,15 @@ class tmExportData : public wxObject
 		virtual bool AddGenericFields (int iSize){return false;}
 		virtual bool AddFIDField (){return false;}
 		
+		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
+		
 		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
+		
+		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
+		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
+		
 		
 		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer){return false;}

@@ -823,31 +823,31 @@ bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid, int layertype)
-{
+long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid, int layertype) {
 	wxASSERT(Geom);
 	wxASSERT (m_Layer);
+	wxASSERT (m_Feature == NULL);
 	
+	//OGRFeature * poFeature;
+	m_Feature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
+	wxASSERT(m_Feature);
 	
-	OGRFeature * poFeature;
-	poFeature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
-	
-	poFeature->SetGeometry(Geom);
+	m_Feature->SetGeometry(Geom);
 	if (oid != -1)
 	{
-		poFeature->SetFID(oid);	
+		m_Feature->SetFID(oid);	
 		
 		// add FID into special column
-		poFeature->SetField(0, (int) oid);
+		m_Feature->SetField(0, (int) oid);
 	}
 	
-	OGRErr myErr = m_Layer->CreateFeature(poFeature);
+	OGRErr myErr = m_Layer->CreateFeature(m_Feature);
 	if (myErr != OGRERR_NONE)
 		return -1;
 	
 	
-	long lRetVal = poFeature->GetFID();
-	OGRFeature::DestroyFeature(poFeature);
+	long lRetVal = m_Feature->GetFID();
+	//OGRFeature::DestroyFeature(m_Feature);
 	return lRetVal;
 	
 }
@@ -1018,6 +1018,17 @@ bool tmGISDataVectorSHP::UpdateFeature ()
 	return true;
 }
 
+
+
+void tmGISDataVectorSHP::CloseGeometry(){
+	wxASSERT(m_Feature);
+	wxASSERT(m_Layer);
+	
+	UpdateFeature();
+	
+	OGRFeature::DestroyFeature(m_Feature);
+	m_Feature = NULL;
+}
 
 
 /***************************************************************************//**
