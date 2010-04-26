@@ -60,7 +60,7 @@ class tmExportManager : public wxObject
 						  wxRealPoint * frame, const int & framevertex);
 		bool _CreateExportLayer (ProjectDefMemoryLayers * layer);
 		bool _ExportSimple (ProjectDefMemoryLayers * layer);
-		bool _ExportPolyGIS (ProjectDefMemoryLayers * layer){return false;}
+		bool _ExportPolyGIS (ProjectDefMemoryLayers * layer);
 		bool _ExportPolyLabels (ProjectDefMemoryLayers * layer){return false;}
 		
 		bool ExportGISData (ProjectDefMemoryLayers * layer);
