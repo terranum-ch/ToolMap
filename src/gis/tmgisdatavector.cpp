@@ -232,13 +232,12 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
 									  rect.x_min, rect.y_max,
 									  rect.x_min, rect.y_min);
 	// conversion Unicode wxString -> const char *
-	char * buffer = new char [sRect.Length()+2];
+	char * buffer = new char [sRect.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)sRect.mb_str(wxConvUTF8));
-	
 	
 	OGRGeometry * geom = NULL;
 	OGRGeometryFactory::createFromWkt(&buffer, NULL, &geom);
-	
+	// dont delete buffer, used by OGR
 	return geom;
 }
 

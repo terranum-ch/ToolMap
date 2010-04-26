@@ -50,23 +50,23 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	
 	// convert utf wxString into char *
 	//const char* ascii_str = 
-	char * buffer = new char [filename.Length()+2];
+	char * buffer = new char [filename.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
 	
 	// open the shapefile and return true if success
 	m_Datasource = OGRSFDriverRegistrar::Open(buffer, FALSE );
-	if( m_Datasource==NULL)
-	{
-		if (IsLoggingEnabled())
+	wxDELETEA(buffer);
+	
+	if( m_Datasource==NULL){
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Unable to open shp : %s"), filename.c_str());
-		return FALSE;
+		}
+		return false;
 	}
 	
 	m_Layer = m_Datasource->GetLayer(0);
 	wxASSERT (m_Layer);
-	
-	delete buffer;
-	return TRUE;
+	return true;
 }
 
 
@@ -641,26 +641,18 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 		return false;
     }
 	
-   
-	
 	// creating the file
 	wxString mysFileName = filename.GetFullPath();
-	char * buffer = new char [mysFileName.Length()+2];
+	char * buffer = new char [mysFileName.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)mysFileName.mb_str(wxConvUTF8));
-	
 	m_Datasource = poDriver->CreateDataSource( buffer, NULL );
-    
-#ifndef  __WXMSW__ 
-	delete [] buffer;
-#endif
+	wxDELETEA(buffer);
 	
-	if( m_Datasource == NULL )
-    {
+	if( m_Datasource == NULL ){
         wxLogError(_("Creation of output file '%s' failed."), 
 					 filename.GetFullName().c_str());
         return false;
     }
-	
 	
 	OGRwkbGeometryType myGeomType = wkbUnknown;
 	switch (type)
@@ -688,14 +680,10 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	
 	// creating the layer
 	wxString myFileNameWOExt = filename.GetName();
-	char * buffer2 = new char [myFileNameWOExt.Length()+2];
+	char * buffer2 = new char [myFileNameWOExt.Length() * sizeof(wxString)];
 	strcpy(buffer2, (const char*)myFileNameWOExt.mb_str(wxConvUTF8));
-	
 	m_Layer = m_Datasource->CreateLayer( buffer2, NULL, myGeomType, NULL );
-	
-#ifndef  __WXMSW__ 
-	delete [] buffer2;
-#endif
+	wxDELETEA(buffer);
 	
     if( m_Layer == NULL )
     {
@@ -704,8 +692,7 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
     }
 	
 	
-	return true;	
-	
+	return true;		
 }
 
 
@@ -723,10 +710,11 @@ bool tmGISDataVectorSHP::AddFieldText (const wxString & fieldname, int size)
 	wxASSERT (m_Layer);
 	bool bReturn = true;
 	
-	char * buffer = new char [fieldname.Length()+2];
+	char * buffer = new char [fieldname.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
 	OGRFieldDefn oField( buffer, OFTString );
-	
+	wxDELETEA(buffer);
+
     oField.SetWidth(size);
 	
     if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
@@ -734,13 +722,7 @@ bool tmGISDataVectorSHP::AddFieldText (const wxString & fieldname, int size)
         wxASSERT_MSG(0,_T("Creating text field failed."));
         bReturn = false;
     }
-	
-#ifndef  __WXMSW__ 
-	delete [] buffer;
-#endif
-	
-	return bReturn;
-	
+	return bReturn;	
 }
 
 
@@ -758,25 +740,20 @@ bool tmGISDataVectorSHP::AddFieldNumeric (const wxString & fieldname, bool isflo
 	wxASSERT (m_Layer);
 	bool bReturn = true;
 	
-	char * buffer = new char [fieldname.Length()+2];
+	char * buffer = new char [fieldname.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
-	
 	OGRFieldType myFieldType = OFTInteger;
 	if (isfloat)
 		myFieldType = OFTReal;
 		
 	OGRFieldDefn oField( buffer, myFieldType);	
+	wxDELETEA(buffer);
 	
     if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
     {
         wxASSERT_MSG(0,_T("Creating int field failed."));
 		bReturn = false;
     }
-	
-#ifndef  __WXMSW__ 
-	delete [] buffer;
-#endif
-	
 	return bReturn;	
 }
 
@@ -793,22 +770,16 @@ bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
 	wxASSERT (m_Layer);
 	bool bReturn = true;
 	
-	char * buffer = new char [fieldname.Length()+2];
+	char * buffer = new char [fieldname.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
-	
-		
 	OGRFieldDefn oField( buffer, OFTDateTime);	
+	wxDELETEA(buffer);
 	
     if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
     {
         wxASSERT_MSG(0,_T("Creating int field failed."));
         bReturn = false;
     }
-	
-#ifndef  __WXMSW__ 
-	delete [] buffer;
-#endif
-	
 	return bReturn;	
 }
 
@@ -952,14 +923,12 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 	{
 		case 4: // enumeration
 		case 0: // TEXT
-			buffer = new char [value.Length()+2];
-			strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
-			m_Feature->SetField(iindex, buffer);
-			
-			// crash under windows ??? why
-#ifndef  __WXMSW__ 
-			delete [] buffer;
-#endif			
+			if (value.Len() > 0){
+				buffer = new char [value.Length() * sizeof(wxString)];
+				strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
+				m_Feature->SetField(iindex, buffer);
+				wxDELETEA(buffer);
+			}
 			break;
 			
 		case 1: // INTEGER
