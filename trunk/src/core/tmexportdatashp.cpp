@@ -284,6 +284,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		// Add geometry first and then values
 		//
 		m_Shp.AddGeometry(myCropLine, myOid);
+		OGRGeometryFactory::destroyGeometry(myCropLine);
 		
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
@@ -304,6 +305,86 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 	}
 	return true;
 }
+
+
+
+
+/***************************************************************************//**
+ @brief Write all geometrics points to the shp
+ @param myLayer object containing info on the actual layer, such as layer_ID or
+ layer_Name
+ @return  false if write failled, true otherwise
+ @author Lucien Schreiber (c) CREALP 2008
+ @date 16 November 2008
+ *******************************************************************************/
+bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
+{
+	wxASSERT(m_Frame);
+	wxASSERT(m_pDB);
+	wxASSERT(m_pDB->DataBaseHasResults() == true);
+	
+	// get row of data
+	DataBaseResult myResult;
+	m_pDB->DataBaseGetResults(&myResult);
+	wxASSERT(myResult.HasResults()==true);
+	
+	for (long i = 0; i < myResult.GetRowCount(); i++) {
+		myResult.NextRow();
+		
+		//
+		// Is geometry inside the frame ?
+		//
+		OGRGeometry * myGeom = NULL;
+		if ( myResult.GetValue(1, &myGeom) == false){
+			wxASSERT(myGeom == NULL);
+			wxLogError(_T("No geometry returned for '%s' in loop %d"),
+					   myLayer->m_LayerName.c_str(), i);
+			continue;
+		}
+		
+		long myOid = wxNOT_FOUND;
+		myResult.GetValue(0, myOid);
+		wxASSERT(myOid != wxNOT_FOUND);
+		
+		
+		if (myGeom == NULL) {
+			wxLogError(_("No geometry returned for OID : %d (iteration %d)"),myOid, i);
+			continue;
+		}
+		
+		if (myGeom->Intersect(m_Frame)==false) {
+			OGRGeometryFactory::destroyGeometry(myGeom);
+			continue;
+		}
+		
+		//
+		// Add geometry first and then values
+		//
+		m_Shp.AddGeometry(myGeom, myOid);
+		OGRGeometryFactory::destroyGeometry(myGeom);
+		
+		// basic attribution
+		if(SetAttributsBasic(myResult)==false){
+			m_Shp.CloseGeometry();
+			wxLogError(_("Unable to set basic attribution for OID : %d"), myOid);
+			continue;
+		}
+		
+		
+		// advanced attribution
+		if (SetAttributsAdvanced(myResult, myLayer)==false) {
+			m_Shp.CloseGeometry();
+			wxLogError(_("Unable to set advanced attribution for OID : %d"), myOid);
+			continue;
+		}
+		
+		m_Shp.CloseGeometry();
+	}
+	return true;
+}
+
+
+
 
 
 bool tmExportDataSHP::SetAttributsBasic(DataBaseResult & results){
@@ -528,47 +609,6 @@ OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, int size)
 	return returnbuffer;
 }
 
-
-
-/***************************************************************************//**
- @brief Write all geometrics points to the shp
- @param myLayer object containing info on the actual layer, such as layer_ID or
- layer_Name
- @return  false if write failled, true otherwise
- @author Lucien Schreiber (c) CREALP 2008
- @date 16 November 2008
- *******************************************************************************/
-bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
-{
-	wxASSERT (m_Frame);
-	tmGISDataVectorMYSQL myDBData;
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
-	OGRPoint * myPoint = NULL;
-	long myOid = 0;
-	
-	if (m_pDB->DataBaseHasResults()==false) {
-		wxLogMessage(_("Exporting %s : NO GEOMETRY DATA"), myLayer->m_LayerName.c_str());
-	}
-	
-	while (1)
-	{
-		myPoint = myDBData.GetOGRNextDataPoint(myOid);
-		if (!myPoint)
-			break;
-		
-		// intersects with the frame
-		if( myPoint->Intersect((OGRGeometry*)m_Frame))
-		{
-			m_Shp.AddGeometry((OGRGeometry*)myPoint, myOid);
-		}
-		
-		OGRGeometryFactory::destroyGeometry(myPoint);
-	}
-	
-	
-	return true;
-	
-}
 
 
 

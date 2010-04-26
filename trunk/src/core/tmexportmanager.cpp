@@ -538,12 +538,13 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 			}
 			break;
 			
-		/*case LAYER_POINT:
-			if (m_ExportData->WritePoints(layer))
-				bReturn = true;
+		case LAYER_POINT:
+			if (m_ExportData->WritePoints(layer)==false){
+				return false;
+			}
 			break;
 			
-		case LAYER_POLYGON:
+		/*case LAYER_POLYGON:
 			if (m_ExportData->WritePolygons(layer))
 				bReturn = true;
 			break;*/

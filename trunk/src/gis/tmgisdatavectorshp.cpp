@@ -912,23 +912,27 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 		wxASSERT_MSG(0, _T("Trying to set value to a field that doesn't exists"));
 		return false;
 	}
-	
-	bool bReturn = true;
-	char * buffer = NULL;
 
+	// Value is empty, don't try to pass it to the fields
+	// let the default null value.
+	if (value.Len() == 0) {
+		return true;
+	}
+	wxASSERT(value.Len() > 0);
+	
+	
+	char * buffer = NULL;
 	wxStringTokenizer myTok;
 	int myYear = 0, myMonth = 0, myDay = 0;
-	
+
 	switch (fieldtype)
 	{
 		case 4: // enumeration
 		case 0: // TEXT
-			if (value.Len() > 0){
-				buffer = new char [value.Length() * sizeof(wxString)];
-				strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
-				m_Feature->SetField(iindex, buffer);
-				wxDELETEA(buffer);
-			}
+			buffer = new char [value.Length() * sizeof(wxString)];
+			strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
+			m_Feature->SetField(iindex, buffer);
+			wxDELETEA(buffer);
 			break;
 			
 		case 1: // INTEGER
@@ -938,30 +942,31 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 		case 2: // FLOAT
 			m_Feature->SetField(iindex, wxAtof(value));
 			break;
-		
+			
 		case 3: //DATE
-			myTok.SetString(value, _T("-"), wxTOKEN_DEFAULT);
-			wxASSERT(myTok.CountTokens() == 3);
-			myYear = wxAtoi(myTok.GetNextToken());
-			myMonth = wxAtoi(myTok.GetNextToken());
-			wxASSERT (myMonth >= 1 && myMonth <=12);
-			myDay = wxAtoi (myTok.GetNextToken());
-			wxASSERT (myDay >= 1 && myDay <= 31);
-			wxLogDebug(_T("Date computed is : %d / %d / %d"),
+				myTok.SetString(value, _T("-"), wxTOKEN_DEFAULT);
+				wxASSERT(myTok.CountTokens() == 3);
+				
+				myYear = wxAtoi(myTok.GetNextToken());
+				myMonth = wxAtoi(myTok.GetNextToken());
+				wxASSERT (myMonth >= 1 && myMonth <=12);
+				myDay = wxAtoi (myTok.GetNextToken());
+				wxASSERT (myDay >= 1 && myDay <= 31);
+				wxLogDebug(_T("Date computed is : %d / %d / %d"),
 						   myYear,
 						   myMonth,
 						   myDay);
-			m_Feature->SetField(iindex, myYear, myMonth, myDay, 0, 0, 0, 1);
-			break;
-
+				m_Feature->SetField(iindex, myYear, myMonth, myDay, 0, 0, 0, 1);
+				break;
+			
 			
 		default:
-			wxLogDebug(_T("Not implemented now, sorrry...."));
-			bReturn = false;
+			wxLogError(_("Field type not supported now, sorrry...."));
+			return false;
 			break;
 	}
-
-	return bReturn;
+	
+	return true;
 }
 
 
