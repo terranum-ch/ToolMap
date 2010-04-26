@@ -296,6 +296,12 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 			break;
 			
 		case LAYER_POLYGON:
+			if(_ExportPolyGIS(layer)==false){
+				wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
+				wxDELETE(m_ExportData);
+				return false;
+			}
+			// TODO: Add Exportpolylabels here
 			break;
 			
 		default:
@@ -307,7 +313,7 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 	}
 	
 	// TODO : Remove this temp code
-	m_pDB->DataBaseClearResults();
+	//m_pDB->DataBaseClearResults();
 	
 	
 	wxDELETE(m_ExportData);
@@ -520,7 +526,6 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 		return false;
 	}
 	
-	
 	// 
 	// Message if some layers are exported empty
 	//
@@ -529,7 +534,6 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 		return true;
 	}
 
-	
 	switch (layer->m_LayerType)
 	{
 		case LAYER_LINE:
@@ -553,8 +557,44 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 			wxLogError(_("This type of data isn't supported for now"));
 			break;
 	}
-		
+	return true;
+}
 
+
+
+
+bool tmExportManager::_ExportPolyGIS (ProjectDefMemoryLayers * layer){
+	wxASSERT(layer);
+	wxASSERT(layer->m_LayerType == LAYER_POLYGON);
+	
+	//
+	// get all lines constructing polygon layer 
+	//
+	wxString myLQuery = wxString::Format(_T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY FROM")
+										 _T(" %s l LEFT JOIN (%s la, %s o) ON ")
+										 _T("(la.OBJECT_GEOM_ID = l.OBJECT_ID AND")
+										 _T(" o.OBJECT_ID = la.OBJECT_VAL_ID) WHERE")
+										 _T(" o.THEMATIC_LAYERS_LAYER_INDEX = %d"),
+										 TABLE_NAME_GIS_GENERIC[LAYER_LINE].c_str(),
+										 TABLE_NAME_GIS_ATTRIBUTION[LAYER_LINE].c_str(),
+										 TABLE_NAME_OBJECTS.c_str(),
+										 layer->m_LayerID);
+	wxASSERT(m_pDB);
+	if (m_pDB->DataBaseQuery(myLQuery)==false) {
+		return false;
+	}
+	
+	// 
+	// Message if some layers are exported empty
+	//
+	if (m_pDB->DataBaseHasResults() == false) {
+		wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+		return true;
+	}
+	
+	if (m_ExportData->WritePolygons(layer)==false) {
+		return false;
+	}
 	return true;
 }
 
