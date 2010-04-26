@@ -482,7 +482,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	// build different query if layer has advanced fields or not
 	//
 	wxString myQuery = wxEmptyString;
-	if (layer->m_pLayerFieldArray != NULL) {
+	if (layer->m_pLayerFieldArray == NULL) {
 		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY,")
 								   _T(" o.OBJECT_CD, o.OBJECT_DESC FROM %s")
 								   _T(" l LEFT JOIN (%s la, %s o) ON (la.OBJECT_GEOM_ID")
@@ -498,6 +498,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 		PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
 		wxASSERT(myFields);
 		for (unsigned int i = 0; i< myFields->GetCount(); i++) {
+			myQuery.Append(_T("laa."));
 			myQuery.Append(myFields->Item(i).m_Fieldname);
 			myQuery.Append(_T(", "));
 		}

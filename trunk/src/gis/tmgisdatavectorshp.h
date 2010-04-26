@@ -94,6 +94,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual long GetActualOID ();
 		virtual void SetActualOID (long oid);
 		virtual bool UpdateFeature ();
+		virtual void CloseGeometry();
 		
 	};
 

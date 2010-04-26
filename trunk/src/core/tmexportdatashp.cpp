@@ -255,8 +255,13 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 			continue;
 		}
 		
+		long myOid = wxNOT_FOUND;
+		myResult.GetValue(0, myOid);
+		wxASSERT(myOid != wxNOT_FOUND);
+		
+		
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry returned at iteration %d"), i);
+			wxLogError(_("No geometry returned for OID : %d (iteration %d)"),myOid, i);
 			continue;
 		}
 		
@@ -278,55 +283,82 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		//
 		// Add geometry first and then values
 		//
-		long myOid = wxNOT_FOUND;
-		myResult.GetValue(0, myOid);
-		wxASSERT(myOid != wxNOT_FOUND);
-		
 		m_Shp.AddGeometry(myCropLine, myOid);
 		
-		// TODO: Add fields value here
-		
-	}
-	return true;
-	
-	
-	/*wxASSERT (m_Frame);
-	tmGISDataVectorMYSQL myDBData;
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
-	OGRLineString * myLine = NULL;
-	OGRGeometry * myCropLine = NULL;
-	long myOid = 0;
-	
-	if (m_pDB->DataBaseHasResults()==false) {
-		wxLogMessage(_("Exporting %s : NO GEOMETRY DATA"), myLayer->m_LayerName.c_str());
-	}
-	
-	while (1)
-	{
-		myLine = myDBData.GetNextDataLine(myOid);
-		if (!myLine)
-			break;
-		
-		myCropLine = SafeIntersection(myLine, m_Frame);
-		if (myCropLine)
-		{
-			if (!myCropLine->IsEmpty())
-			{
-				//long myAddedOID = 
-				m_Shp.AddGeometry(myCropLine, myOid);
-			}
-		
-			OGRGeometryFactory::destroyGeometry(myCropLine);
+		// basic attribution
+		if(SetAttributsBasic(myResult)==false){
+			m_Shp.CloseGeometry();
+			wxLogError(_("Unable to set basic attribution for OID : %d"), myOid);
+			continue;
 		}
 		
 		
-		OGRGeometryFactory::destroyGeometry(myLine);
+		// advanced attribution
+		if (SetAttributsAdvanced(myResult, myLayer)==false) {
+			m_Shp.CloseGeometry();
+			wxLogError(_("Unable to set advanced attribution for OID : %d"), myOid);
+			continue;
+		}
 		
+		m_Shp.CloseGeometry();
+	}
+	return true;
+}
+
+
+bool tmExportDataSHP::SetAttributsBasic(DataBaseResult & results){
+	
+	if (results.HasResults() == false || results.IsRowOk() == false) {
+		return false;
+	}
+	
+	// get results
+	wxString myObjectCD = wxEmptyString;
+	wxString myObjectDesc = wxEmptyString;
+	
+	if (results.GetValue(2, myObjectCD)==false) {
+		wxLogError(_("Unable to get the Object Code"));
+		return false;
+	}
+	
+	if (results.GetValue(3, myObjectDesc)==false) {
+		wxLogError(_("Unable to get the object Description"));
+		return false;
+	}
+	
+	m_Shp.SetFieldValue(myObjectCD, TM_FIELD_INTEGER, 1);
+	m_Shp.SetFieldValue(myObjectDesc, TM_FIELD_TEXT, 2);
+	return true;
+}
+
+
+bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results, 
+										   ProjectDefMemoryLayers * layer){
+	wxASSERT(layer);
+	if (layer->m_pLayerFieldArray == NULL) {
+		// no advanced attribution
+		return true;
 	}
 	
 	
-	return true;*/
+	if (results.HasResults() == false || results.IsRowOk() == false) {
+		return false;
+	}
+	
+	
+	for (unsigned int i = 0; i<layer->m_pLayerFieldArray->GetCount(); i++) {
+		wxString myValue = wxEmptyString;
+		if (results.GetValue(i + 4, myValue) == false) {
+			continue;
+		}
+		
+		m_Shp.SetFieldValue(myValue ,
+							layer->m_pLayerFieldArray->Item(i).m_FieldType,
+							i+3);
+	}
+	return true;
 }
+
 
 
 /***************************************************************************//**
