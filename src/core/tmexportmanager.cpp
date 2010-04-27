@@ -497,7 +497,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	//
 	wxString myQuery = wxEmptyString;
 	if (layer->m_pLayerFieldArray == NULL || layer->m_pLayerFieldArray->GetCount()== 0) {
-		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY,")
+		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY),")
 								   _T(" o.OBJECT_CD, o.OBJECT_DESC FROM %s")
 								   _T(" l LEFT JOIN (%s la, %s o) ON (la.OBJECT_GEOM_ID")
 								   _T(" = l.OBJECT_ID AND o.OBJECT_ID = la.OBJECT_VAL_ID)")
@@ -508,7 +508,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 								   layer->m_LayerID);
 	}
 	else {
-		myQuery = _T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY, o.OBJECT_CD, o.OBJECT_DESC, ");
+		myQuery = _T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY), o.OBJECT_CD, o.OBJECT_DESC, ");
 		PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
 		wxASSERT(myFields);
 		for (unsigned int i = 0; i< myFields->GetCount(); i++) {
@@ -579,7 +579,7 @@ bool tmExportManager::_ExportPolyGIS (ProjectDefMemoryLayers * layer){
 	//
 	// get all lines constructing polygon layer 
 	//
-	wxString myLQuery = wxString::Format(_T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY FROM")
+	wxString myLQuery = wxString::Format(_T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY) FROM")
 										 _T(" %s l LEFT JOIN (%s la, %s o) ON ")
 										 _T("(la.OBJECT_GEOM_ID = l.OBJECT_ID AND")
 										 _T(" o.OBJECT_ID = la.OBJECT_VAL_ID) WHERE")
@@ -609,11 +609,7 @@ bool tmExportManager::_ExportPolyGIS (ProjectDefMemoryLayers * layer){
 
 
 
-bool tmExportManager::_ExportPolyLabels (ProjectDefMemoryLayers * layer){
-	
-	
-	return false;
-}
+
 
 
 
@@ -766,7 +762,7 @@ tmExportData * tmExportManager::CreateExportData ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
+/*bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 {
 	wxASSERT (m_ExportData);
 	
@@ -834,7 +830,7 @@ bool tmExportManager::ExportGISData (ProjectDefMemoryLayers * layer)
 	}
 	return bReturn;
 }
-
+*/
 
 
 /***************************************************************************//**
@@ -919,7 +915,7 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
+/*bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
 {
 	switch (layer->m_LayerType)
 	{
@@ -943,7 +939,7 @@ bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
 	}
 	
 	return false;
-}
+}*/
 
 
 
@@ -954,7 +950,7 @@ bool tmExportManager::AddAttributionSimpleData (ProjectDefMemoryLayers * layer)
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 March 2009
  *******************************************************************************/
-bool tmExportManager::AddAttributionAdvanced (ProjectDefMemoryLayers * layer)
+/*bool tmExportManager::AddAttributionAdvanced (ProjectDefMemoryLayers * layer)
 {
 	switch (layer->m_LayerType)
 	{
@@ -980,4 +976,4 @@ bool tmExportManager::AddAttributionAdvanced (ProjectDefMemoryLayers * layer)
 	
 	return false;
 	
-}
+}*/
