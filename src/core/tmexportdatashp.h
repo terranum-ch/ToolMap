@@ -82,17 +82,7 @@ class tmExportDataSHP : public tmExportData
 		virtual bool SetAttributsBasic(DataBaseResult & results);
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, 
 										  ProjectDefMemoryLayers * layer);
-		
-		// adding field data
-		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer);
-		virtual bool AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer);
-		virtual bool AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer);
-		
-		// advanced attribution
-		virtual bool AddAdvancedDataToLine (ProjectDefMemoryLayers * layer);
-		virtual bool AddAdvancedDataToPoint (ProjectDefMemoryLayers * layer);
-		virtual bool AddAdvancedDataToPolygon (ProjectDefMemoryLayers * layer);
-		
+
 	};
 
 

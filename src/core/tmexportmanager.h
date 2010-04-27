@@ -62,10 +62,7 @@ class tmExportManager : public wxObject
 		bool _ExportSimple (ProjectDefMemoryLayers * layer);
 		bool _ExportPolyGIS (ProjectDefMemoryLayers * layer);
 		
-		//bool ExportGISData (ProjectDefMemoryLayers * layer);
 		wxRealPoint * GetFrame (int & nbvertex);
-		//bool AddAttributionSimpleData (ProjectDefMemoryLayers * layer);
-		//bool AddAttributionAdvanced (ProjectDefMemoryLayers * layer);
 		
 		// check path & file name
 		bool IsExportPathValid();
