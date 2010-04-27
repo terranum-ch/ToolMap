@@ -295,14 +295,21 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 			}
 			break;
 			
+			
 		case LAYER_POLYGON:
 			if(_ExportPolyGIS(layer)==false){
 				wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
 				wxDELETE(m_ExportData);
 				return false;
 			}
-			// TODO: Add Exportpolylabels here
+			if (_ExportSimple(layer)==false) {
+				wxLogError(_("Error exporting labels to polygon layer '%s'"),
+						   layer->m_LayerName.c_str());
+				wxDELETE(m_ExportData);
+				return false;
+			}
 			break;
+
 			
 		default:
 			wxLogError(_("Layer type not supported for export (%d)"),
@@ -482,13 +489,14 @@ bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer)
 bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	wxASSERT (m_ExportData);
 	wxASSERT (layer->m_LayerType == LAYER_LINE || 
-			  layer->m_LayerType == LAYER_POINT);
+			  layer->m_LayerType == LAYER_POINT||
+			  layer->m_LayerType == LAYER_POLYGON);
 	
 	//
 	// build different query if layer has advanced fields or not
 	//
 	wxString myQuery = wxEmptyString;
-	if (layer->m_pLayerFieldArray == NULL) {
+	if (layer->m_pLayerFieldArray == NULL || layer->m_pLayerFieldArray->GetCount()== 0) {
 		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, l.OBJECT_GEOMETRY,")
 								   _T(" o.OBJECT_CD, o.OBJECT_DESC FROM %s")
 								   _T(" l LEFT JOIN (%s la, %s o) ON (la.OBJECT_GEOM_ID")
@@ -548,10 +556,11 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 			}
 			break;
 			
-		/*case LAYER_POLYGON:
-			if (m_ExportData->WritePolygons(layer))
-				bReturn = true;
-			break;*/
+		case LAYER_POLYGON:
+			if (m_ExportData->WriteLabels(layer)==false){
+				return false;
+			}
+			break;
 			
 		default:
 			wxLogError(_("This type of data isn't supported for now"));
@@ -598,6 +607,13 @@ bool tmExportManager::_ExportPolyGIS (ProjectDefMemoryLayers * layer){
 	return true;
 }
 
+
+
+bool tmExportManager::_ExportPolyLabels (ProjectDefMemoryLayers * layer){
+	
+	
+	return false;
+}
 
 
 
