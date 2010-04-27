@@ -387,6 +387,106 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 
 
 
+bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
+	wxASSERT(m_Frame);
+	wxASSERT(m_pDB);
+	wxASSERT(m_pDB->DataBaseHasResults() == true);
+	
+	// get row of data
+	DataBaseResult myResult;
+	m_pDB->DataBaseGetResults(&myResult);
+	wxASSERT(myResult.HasResults()==true);
+	
+	for (long i = 0; i < myResult.GetRowCount(); i++) {
+		myResult.NextRow();
+		
+		//
+		// Is geometry inside the frame ?
+		//
+		OGRGeometry * myGeom = NULL;
+		if ( myResult.GetValue(1, &myGeom) == false){
+			wxASSERT(myGeom == NULL);
+			wxLogError(_T("No geometry returned for '%s' in loop %d"),
+					   myLayer->m_LayerName.c_str(), i);
+			continue;
+		}
+		
+		long myOid = wxNOT_FOUND;
+		myResult.GetValue(0, myOid);
+		wxASSERT(myOid != wxNOT_FOUND);
+		
+		
+		if (myGeom == NULL) {
+			wxLogError(_("No geometry returned for OID : %d (iteration %d) - Layer : '%s'"),
+					   myOid, i, myLayer->m_LayerName.c_str());
+			continue;
+		}
+		
+		if (myGeom->Intersect(m_Frame)==false) {
+			OGRGeometryFactory::destroyGeometry(myGeom);
+			continue;
+		}
+		
+		
+		//
+		// Search intersection with polygons
+		//
+		bool bFirstLoop = true;
+		bool bFound = false;
+		while (1) {
+			if (m_Shp.SetNextFeature(bFirstLoop) == false) {
+				break;
+			}
+			bFirstLoop = false;
+			
+			long myPolyOid = wxNOT_FOUND;
+			// don't delete myPoly !
+			OGRPolygon * myPoly = m_Shp.GetNextDataOGRPolygon(myPolyOid);
+			if (myPoly == NULL) {
+				wxLogError(_("Empty polyon returned for OID %d"), myPolyOid);
+				continue;
+			}
+			
+			if (myGeom->Intersect(myPoly)==true) {
+				bFound = true;
+				break;
+			}
+		}
+		OGRGeometryFactory::destroyGeometry(myGeom);
+		
+		//
+		// Passing attribution to polygon if found
+		//
+		if (bFound == false) {
+			wxLogError(_("Label %d is inside the frame but doesn't belong to any polygon ?"),
+					   myOid);
+			
+			continue;
+		}
+		
+		// basic attribution
+		if(SetAttributsBasic(myResult)==false){
+			m_Shp.CloseGeometry();
+			wxLogError(_("Unable to set basic attribution for OID : %d"), myOid);
+			continue;
+		}
+		
+		
+		// advanced attribution
+		if (SetAttributsAdvanced(myResult, myLayer)==false) {
+			m_Shp.CloseGeometry();
+			wxLogError(_("Unable to set advanced attribution for OID : %d"), myOid);
+			continue;
+		}
+		
+		m_Shp.CloseGeometry();
+	}
+	return true;
+}
+
+
+
+
 /***************************************************************************//**
  @brief Compute polygons from lines
  @details This function uses GEOS for computing polygon from lines

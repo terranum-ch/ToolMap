@@ -61,7 +61,7 @@ class tmExportManager : public wxObject
 		bool _CreateExportLayer (ProjectDefMemoryLayers * layer);
 		bool _ExportSimple (ProjectDefMemoryLayers * layer);
 		bool _ExportPolyGIS (ProjectDefMemoryLayers * layer);
-		bool _ExportPolyLabels (ProjectDefMemoryLayers * layer){return false;}
+		bool _ExportPolyLabels (ProjectDefMemoryLayers * layer);
 		
 		bool ExportGISData (ProjectDefMemoryLayers * layer);
 		wxRealPoint * GetFrame (int & nbvertex);

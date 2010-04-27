@@ -81,6 +81,7 @@ class tmExportData : public wxObject
 		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
+		virtual bool WriteLabels (ProjectDefMemoryLayers * myLayer){return false;}
 		
 		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
