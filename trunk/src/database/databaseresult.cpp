@@ -159,17 +159,33 @@ bool DataBaseResult::GetValue(int col, OGRGeometry * * geometry) {
 		wxLogError(_("No data to retrive"));
 		return false;
 	}
+
+	// compute lengths is buggy
+	//_GetRowLength();
+	//wxASSERT(m_RowLengths.GetCount() > 0);
 	
-	// compute lengths
-	_GetRowLength();
-	wxASSERT(m_RowLengths.GetCount() > 0);
-		
-	
-	// Geometry columns will have the first 4 bytes contain the SRID.
-	OGRGeometryFactory::createFromWkb(((unsigned char *)m_Row[col]) + 4, 
-									  NULL,
-									  geometry,
-									  m_RowLengths.Item(col) - 4 );
+	// Use SELECT AsWKB(OBJECT_GEOMETRY) queries
+	unsigned char * myChar = ((unsigned char *)m_Row[col]);
+	OGRErr myError = OGRGeometryFactory::createFromWkb(myChar, 
+													   NULL,
+													   geometry,
+													   -1 );
+	switch (myError) {
+		case OGRERR_NOT_ENOUGH_DATA:
+			wxLogMessage(_("Not enough data for creating geometry"));
+			break;
+			
+		case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+			wxLogMessage(_("Unsupported geometry"));
+			break;
+			
+		case OGRERR_CORRUPT_DATA:
+			wxLogMessage(_("Corrupted data returned"));
+			break;
+			
+		default:
+			break;
+	}
 	
 	return true;
 }
