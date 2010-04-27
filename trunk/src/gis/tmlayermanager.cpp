@@ -767,6 +767,9 @@ bool tmLayerManager::SelectedClear ()
 	
 	m_SelectedData.Clear();
 	ReloadProjectLayersThreadStart(false, true);
+	
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	return bReturn;
 }
 
@@ -823,6 +826,49 @@ bool tmLayerManager::SelectedInvert ()
 	delete myActualSelVal;
 	
 	ReloadProjectLayersThreadStart(false, true);
+	
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	return true;
+}
+
+
+bool tmLayerManager::SelectByOid (){
+	//	
+	// Some checks for 
+	// - Project open
+	// - Layer selected
+	//
+	if (!m_TOCCtrl->IsTOCReady()){
+		wxLogError(_("No project opened, open a project first"));
+		return false;
+	}
+	tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
+	if (!layerprop){
+		wxLogMessage(_("No layer selected, select a layer first in the Table of content"));
+		return false;
+	}
+	
+	wxASSERT(m_Parent);
+	long myOid = wxGetNumberFromUser (_("Set the object id to select"),
+						 _("Object ID: "),
+						 _("Select object by ID"),
+						 1, 0, 1000000,
+						 m_Parent);
+	
+	if (myOid == wxNOT_FOUND) {
+		return false;
+	}
+	
+	wxArrayLong mySel;
+	mySel.Add(myOid);
+	m_SelectedData.Clear();
+	m_SelectedData.AddSelected(&mySel);
+	
+	ReloadProjectLayersThreadStart(false, true);
+	
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	return true;
 }
 
