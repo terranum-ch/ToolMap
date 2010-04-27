@@ -85,17 +85,6 @@ class tmExportData : public wxObject
 		
 		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
-		
-		
-		virtual bool AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual bool AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual bool AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer){return false;}
-		
-		virtual bool AddAdvancedDataToLine (ProjectDefMemoryLayers * layer){return false;}
-		virtual bool AddAdvancedDataToPoint (ProjectDefMemoryLayers * layer){return false;}
-		virtual bool AddAdvancedDataToPolygon (ProjectDefMemoryLayers * layer){return false;}
-
-		
 	
 	};
 

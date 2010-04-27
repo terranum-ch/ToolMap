@@ -261,8 +261,8 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		
 		
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry returned for OID : %d (iteration %d) - Layer : '%s'"),
-					   myOid, i, myLayer->m_LayerName.c_str());
+			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+					   myOid, myLayer->m_LayerName.c_str());
 			continue;
 		}
 		
@@ -275,8 +275,6 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		}
 		
 		if (myCropLine->IsEmpty() == true) {
-			wxLogError(_("Empty geometry returned for layer '%s' at iteration %d"),
-					   myLayer->m_LayerName.c_str(), i);
 			OGRGeometryFactory::destroyGeometry(myCropLine);
 			continue;
 		}
@@ -349,8 +347,8 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 		
 		
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry returned for OID : %d (iteration %d) - Layer : '%s'"),
-					   myOid, i, myLayer->m_LayerName.c_str());
+			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+					   myOid, myLayer->m_LayerName.c_str());
 			continue;
 		}
 		
@@ -417,8 +415,8 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		
 		
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry returned for OID : %d (iteration %d) - Layer : '%s'"),
-					   myOid, i, myLayer->m_LayerName.c_str());
+			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+					   myOid, myLayer->m_LayerName.c_str());
 			continue;
 		}
 		
@@ -528,8 +526,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		
 		
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry returned for OID : %d (iteration %d) - Layer : '%s'"),
-					   myOid,i,myLayer->m_LayerName.c_str());
+			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+					   myOid,myLayer->m_LayerName.c_str());
 			continue;
 		}
 		
@@ -543,8 +541,6 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		
 		
 		if (myCropLine->IsEmpty() == true) {
-			wxLogError(_("Empty geometry returned for layer '%s' at iteration %d"),
-					   myLayer->m_LayerName.c_str(), i);
 			OGRGeometryFactory::destroyGeometry(myCropLine);
 			continue;
 		}
@@ -614,126 +610,6 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	}
 	GEOSGeom_destroy(hResultGeom);
 	return true;
-	
-	
-	/*wxASSERT (m_Frame);
-	tmGISDataVectorMYSQL myDBData;
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
-	OGRLineString * myLine = NULL;
-	OGRGeometry * myCropLine = NULL;
-	long myOid = 0;
-	//int iValidLines = 0;
-	
-	long myNbResuts = 0;
-	if (m_pDB->DataBaseGetResultSize(NULL, &myNbResuts)==false){
-		return false;
-	}
-	
-	if (myNbResuts == 0) {
-		wxLogMessage(_("Exporting %s : NO GEOMETRY DATA"), myLayer->m_LayerName.c_str());
-		return true;
-	}
-	
-		
-	// transform non standard OGRLinearRing -> OGRLineString
-	OGRLinearRing * myFrame = m_Frame->getExteriorRing();
-	OGRLineString * myLineString = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
-	myLineString->setCoordinateDimension(2);
-	for (int p= 0; p<myFrame->getNumPoints();p++)
-	{
-		OGRPoint * myPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
-		myFrame->getPoint(p,myPoint);
-		myLineString->addPoint(myPoint);
-		OGRGeometryFactory::destroyGeometry(myPoint);
-	}
-	
-	
-	// create frame polygon
-	
-	GEOSGeom * myGeomFrameLine = (GEOSGeom *) CPLCalloc(sizeof(void*),1);
-	myGeomFrameLine[0] = myLineString->exportToGEOS();
-    GEOSGeom myGeosFramePoly = GEOSPolygonize( myGeomFrameLine, 1);
-	OGRPolygon * myOGRFramePoly = (OGRPolygon*) SafeCreateFromGEOS(myGeosFramePoly);
-	GEOSGeom_destroy(myGeomFrameLine[0]);
-	CPLFree(myGeomFrameLine);
-	GEOSGeom_destroy(myGeosFramePoly);
-	wxASSERT(myOGRFramePoly);
-
-	OGRGeometry * myOGRBufferedFrame = SafeBuffer( myOGRFramePoly, 2);
-	OGRGeometryFactory::destroyGeometry(myOGRFramePoly);
-	
-	// loop for all lines 
-	OGRMultiLineString * myTempNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
-	for (int i = 0; i < myNbResuts ; i++)
-	{
-		myLine = myDBData.GetNextDataLine(myOid);
-		if (!myLine)
-			break;
-		
-		if (myLine->Intersects(myOGRBufferedFrame))
-		{
-			myCropLine = SafeIntersection(myLine, myOGRBufferedFrame);
-			OGRGeometryFactory::destroyGeometry(myLine);
-			if (myCropLine->IsEmpty()==false)
-			{
-				myTempNodedLines->addGeometry(myCropLine);
-			}
-			OGRGeometryFactory::destroyGeometry(myCropLine);
-
-		}
-			
-
-	
-	}
-	OGRGeometryFactory::destroyGeometry(myOGRBufferedFrame);
-	
-
-	// union with frame
-	OGRMultiLineString * myTotalLines = (OGRMultiLineString*) SafeUnion(myTempNodedLines, myLineString);
-	OGRGeometryFactory::destroyGeometry(myLineString);
-	OGRGeometryFactory::destroyGeometry(myTempNodedLines);
-	
-	
-	/*
-	// test export all lines
-	int myTempNumber = myTotalLines->getNumGeometries();
-	tmGISDataVectorSHP myShp;
-	myShp.CreateFile(wxFileName(_T("C:\\Documents and Settings\\LUCSCH\\Bureau\\exported_data\\test_exportedL.shp")), LAYER_SPATIAL_LINE);
-	for (int v = 0; v<myTempNumber;v++)
-		myShp.AddGeometry(myTotalLines->getGeometryRef(v), -1);*/
-
-	/*int iTotalLines = myTotalLines->getNumGeometries();
-	GEOSGeom * ahInGeoms = (GEOSGeom *) CPLCalloc(sizeof(void*),iTotalLines);
-	for(int i = 0; i < iTotalLines; i++ )
-		ahInGeoms[i] = myTotalLines->getGeometryRef(i)->exportToGEOS();
-    
-	
-    GEOSGeom hResultGeom = GEOSPolygonize( ahInGeoms, iTotalLines );
-	
-	// cleaning
-	for (int h = 0; h< iTotalLines; h++)
-		GEOSGeom_destroy(ahInGeoms[h]);
-	CPLFree(ahInGeoms);
-	OGRGeometryFactory::destroyGeometry(myTotalLines);
-	
-	
-	
-
-	int myNbPoly = GEOSGetNumGeometries(hResultGeom);
-
-	
-	// save polygon to shp
-	for (int j = 0; j < myNbPoly;j++)
-	{
-		const GEOSGeometry * myActualPoly = GEOSGetGeometryN(hResultGeom, j);
-		GEOSGeom myActualPolyClone = GEOSGeom_clone(myActualPoly);
-		OGRGeometry * myPoly = SafeCreateFromGEOS(myActualPolyClone);
-		GEOSGeom_destroy(myActualPolyClone);
-		m_Shp.AddGeometry(myPoly, -1);
-		OGRGeometryFactory::destroyGeometry(myPoly);
-	}
-	GEOSGeom_destroy(hResultGeom);
-	return true;*/
 }
 
 
@@ -815,13 +691,6 @@ OGRGeometry * tmExportDataSHP::SafeIntersection(OGRGeometry * line, OGRGeometry 
 	GEOSGeom  geosintersect = NULL;
 	OGRGeometry * returncrop = NULL;
 	
-	
-	/* convert to GEOS
-#ifdef __WXOSX__
-	return (OGRLineString*) line->Intersection(frame);
-	
-#else*/
-	
 	geosline = line->exportToGEOS();
 	geosframe = frame->exportToGEOS();
 	
@@ -866,13 +735,6 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 	GEOSGeom  geosresult = NULL;
 	OGRGeometry * returnunion = NULL;
 	
-	
-	// convert to GEOS
-//#ifdef __WXOSX__
-//	return union1->Union(line);
-	
-//#else
-	
 	geosline = line->exportToGEOS();
 	geosunion = union1->exportToGEOS();
 	if (geosline != NULL && union1 != NULL)
@@ -890,9 +752,6 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 	}
 	
 	return returnunion;
-
-	
-//#endif
 }
 
 
@@ -925,17 +784,7 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
     }
 	
 	GEOSFree(pabyBuf);
-	
-/*    if( pabyBuf != NULL )
-    {
-#ifndef  __WXMSW__    
-		delete [] pabyBuf;
-#endif
-		//delete( pabyBuf );
-    }*/
-	
     return poGeometry;
-
 }
 
 
@@ -995,242 +844,6 @@ void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
 }
 
 
-
-/***************************************************************************//**
- @brief Setting simple attributs into SHP for lines
- @param myLayer informations about the current layer
- @return  true if data passed successfully to the SHP
- @author Lucien Schreiber (c) CREALP 2008
- @date 17 November 2008
- *******************************************************************************/
-bool tmExportDataSHP::AddSimpleDataToLine (ProjectDefMemoryLayers * myLayer)
-{
-	wxASSERT(m_pDB);
-	
-	if (!GetSimpleAttribData(myLayer->m_LayerType, myLayer->m_LayerID))
-	{	
-		wxLogDebug(_T("Unable to get layer attribution information"));
-		return false;
-	}
-	
-	//bool bFirstLoop = true;
-	wxArrayString myResults;
-	bool bSetFieldValue = true;
-	
-	if(m_Shp.SetNextFeature(true)==false)
-	{
-		if (m_pDB->DataBaseHasResults()) {
-			m_pDB->DataBaseClearResults();
-		}
-		return true;
-	}
-	
-	while (m_pDB->DataBaseGetNextResult(myResults)) 
-	{
-
-		wxASSERT(myResults.GetCount() == 2);
-		
-		if(!m_Shp.SetFieldValue(myResults.Item(0), TM_FIELD_INTEGER, 1))
-		{
-			bSetFieldValue = false;
-			break;
-		}
-		
-		if(!m_Shp.SetFieldValue(myResults.Item(1), TM_FIELD_TEXT, 2))
-		{
-			bSetFieldValue = false;
-			break;
-		}
-		
-		m_Shp.UpdateFeature();
-		
-		
-		if(m_Shp.SetNextFeature(false)==false)
-			break;
-
-	}
-	
-	
-	m_pDB->DataBaseClearResults();
-	return bSetFieldValue;
-	
-}
-
-
-/***************************************************************************//**
- @brief Setting simple attributs into SHP for points
- @details Actually this is exactly the same as calling 
- tmExportDataSHP::AddSimpleDataToLine() but is kept for clarity.
- @param myLayer informations about the current layer
- @return  true if data passed successfully to the SHP
- @author Lucien Schreiber (c) CREALP 2008
- @date 17 November 2008
- *******************************************************************************/
-bool tmExportDataSHP::AddSimpleDataToPoint (ProjectDefMemoryLayers * myLayer)
-{
-	return AddSimpleDataToLine(myLayer);	
-}
-
-
-/***************************************************************************//**
- @brief Setting simple attributs into SHP for polygons
- @param myLayer informations about the current layer
- @return  true if data passed successfully to the SHP
- @author Lucien Schreiber (c) CREALP 2008
- @date 17 November 2008
- *******************************************************************************/
-bool tmExportDataSHP::AddSimpleDataToPolygon (ProjectDefMemoryLayers * myLayer)
-{
-	wxASSERT(m_pDB);
-	
-	// process request 
-	if (!GetSimpleAttribDataWithSpatial (myLayer->m_LayerType, myLayer->m_LayerID))
-	{	
-		wxLogDebug(_T("Unable to get layer attribution information"));
-		return false;
-	}
-	
-	tmGISDataVectorMYSQL mySQLData;
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
-	
-	long myOidPT = 0;
-	wxArrayString myAttribVal;
-	bool bFirstLoop = true;
-	//OGRPolygon * myPolygon;
-	long myOidPLG = 0;
-	
-	// loop for all labels and search polygons
-	while (1)
-	{
-
-		OGRPoint * myPoint = mySQLData.GetNextDataPointWithAttrib(myOidPT, myAttribVal);
-		if (myPoint)
-		{
-			
-			// loop for all polygons
-			while (1)
-			{
-				if(!m_Shp.SetNextFeature(bFirstLoop))
-					break;
-				
-				OGRPolygon * myPolygon = m_Shp.GetNextDataOGRPolygon(myOidPLG);
-				if (myPolygon)
-				{
-					if (myPoint->Intersect(myPolygon))
-					{
-						m_Shp.SetActualOID(myOidPT);
-						m_Shp.SetFieldValue(myAttribVal.Item(0), TM_FIELD_INTEGER, 1);
-						m_Shp.SetFieldValue(myAttribVal.Item(1), TM_FIELD_TEXT, 2);
-						m_Shp.UpdateFeature();
-					}				
-					// do not destroy geometry, will be destroyed 
-					// when feature is destroyed.
-					//OGRGeometryFactory::destroyGeometry(myPolygon);	
-				}
-				bFirstLoop = false;
-			
-			}
-			
-			
-			bFirstLoop = true;
-			OGRGeometryFactory::destroyGeometry(myPoint);
-		}
-		else
-			break;
-	}	
-	
-
-	return true;
-}
-
-
-/***************************************************************************//**
- @brief Set Advanced values into SHP columns
- @param layer information about the current layer
- @return  true if data passed succesfully to the shapefile
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 March 2009
- *******************************************************************************/
-bool tmExportDataSHP::AddAdvancedDataToLine (ProjectDefMemoryLayers * layer)
-{
-	// process request
-	if (!GetAdvancedAttribution(layer))
-	{
-		wxLogDebug(_T("No advanced attribution informations for layer %s"),
-				   layer->m_LayerName.c_str());
-		return true;
-	}
-
-	
-	bool bFirstLoop = true;
-	bool bReturn = true;
-	bool bGetNextResult = true;
-	wxArrayString myResults;
-	//bool bSetFieldValue = true;
-	
-	while (1) 
-	{
-		// loop shapefile
-		if(!m_Shp.SetNextFeature(bFirstLoop))
-			break;
-		bFirstLoop = false;
-		
-		
-		// get advanced attribution
-		if (bGetNextResult)
-		{
-			if (m_pDB->DataBaseGetNextResult(myResults)==false)
-			{
-				wxLogDebug(_T("No more advanced attribution found"));
-				break;
-			}
-			
-			
-			if (myResults.GetCount() == 1)
-			{
-				wxLogDebug(_T("No advanced attribution for layer : %d"), 
-						   layer->m_LayerName.c_str());
-				bReturn = false;
-				break;
-			}
-		}
-		
-		// compare to OID
-		long lAAOid = wxNOT_FOUND;
-		myResults.Item(0).ToLong(&lAAOid);
-		if (m_Shp.GetActualOID() == lAAOid)
-		{
-			if (!SetMultipleFields(layer, myResults))
-			{
-				wxLogError(_("Error exporting advanced attribution for layer : %s, OID : %d"),
-						   layer->m_LayerName.c_str(), lAAOid);
-			}
-			bGetNextResult = true;
-		}
-		else
-		{
-			bGetNextResult = false;
-		}
-		
-	}
-	m_pDB->DataBaseClearResults();
-	return bReturn;
-}
-
-
-
-bool tmExportDataSHP::AddAdvancedDataToPoint (ProjectDefMemoryLayers * layer)
-{
-	return AddAdvancedDataToLine(layer);
-}
-
-
-bool tmExportDataSHP::AddAdvancedDataToPolygon (ProjectDefMemoryLayers * layer)
-{
-	return AddAdvancedDataToLine(layer);
-}
-
-
 /***************************************************************************//**
  @brief Set value for multiple fields
  @details Loop in all layer's field and set value for all of them
@@ -1245,7 +858,6 @@ bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
 										 const wxArrayString & values)
 {
 	PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
-	//unsigned int nbField = myFields->GetCount();
 	wxASSERT (myFields);
 	wxASSERT (values.GetCount()-1 == myFields->GetCount());
 	
@@ -1259,6 +871,9 @@ bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
 	
 	return true;
 }
+
+
+
 
 
 
