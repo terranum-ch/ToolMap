@@ -226,6 +226,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	//SELECTION MENU
 	EVT_MENU (ID_MENU_SELECT_NONE, ToolMapFrame::OnSelectNone)
+	EVT_MENU (ID_MENU_SELECT_BY_OID, ToolMapFrame::OnSelectByOid )
 	EVT_MENU (ID_MENU_SELECT_INVERSE, ToolMapFrame::OnSelectInvert)
 
 	EVT_MENU (ID_MENU_INFO_WINDOW, ToolMapFrame::OnShowInformationDialog)
@@ -544,6 +545,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu63, _("Tools"));
     wxMenu* itemMenu66 = new wxMenu;
     itemMenu66->Append(ID_MENU_SELECT, _("Select\tS"), _T(""), wxITEM_NORMAL);
+	itemMenu66->Append(ID_MENU_SELECT_BY_OID, _("Select by object ID..."), _T(""), wxITEM_NORMAL);
     //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Select none"), _T(""), wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
@@ -722,11 +724,12 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 			// updates the menu using the menu manager
 			m_MManager->SetStatus(MENU_DB_OPENED);
 		}
-		else
-		{
+		else if (iActError != OPEN_DB_FAILED){
 			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myPath);
 			dlg.ShowModal();
-			
+		}
+		
+		if (iActError != OPEN_OK) {
 			// If we can't open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName + SVN_VERSION;
 			SetTitle(myProgName);
@@ -1138,6 +1141,12 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 void ToolMapFrame::OnSelectNone (wxCommandEvent & event)
 {
 	m_LayerManager->SelectedClear();
+}
+
+
+
+void ToolMapFrame::OnSelectByOid (wxCommandEvent & event){
+	m_LayerManager->SelectByOid();
 }
 
 

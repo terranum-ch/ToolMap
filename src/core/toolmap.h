@@ -195,7 +195,7 @@ class ProjectManager;
 #define ID_MENU_CHECK_GEOM 10123
 #define ID_MENU_TOOL_DANGLING 10048
 #define ID_MENU_SELECT 10163
-#define ID_MENU_SELECT_ALL 10162
+#define ID_MENU_SELECT_BY_OID 10162
 #define ID_MENU_SELECT_NONE 10160
 #define ID_MENU_SELECT_INVERSE 10161
 #define ID_MENU_QUERIES 10019
@@ -346,6 +346,7 @@ private:
 	
 	// selection
 	void OnSelectNone (wxCommandEvent & event);
+	void OnSelectByOid (wxCommandEvent & event);
 	void OnSelectInvert (wxCommandEvent & event);
 	
 	// changing status function
