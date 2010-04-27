@@ -153,7 +153,7 @@ public:
 	
 	
 	void testGetValueGeom(){
-		TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM generic_lines WHERE OBJECT_ID = 13"))==true);
+		TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT OBJECT_ID, AsWKB(OBJECT_GEOMETRY) FROM generic_lines WHERE OBJECT_ID = 13"))==true);
 		DataBaseResult myRes;
 		TS_ASSERT(m_pDB->DataBaseGetResults(&myRes)==true);
 		TS_ASSERT(myRes.NextRow() == true);
