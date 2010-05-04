@@ -23,6 +23,7 @@
 
 #installing desktop icon only when using GUIs
 Function finishpageaction
+SetOutPath "$INSTDIR"
 CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "$instdir\${PRODUCT_NAME}2.exe"
 FunctionEnd
 
