@@ -695,7 +695,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 	if (layersid.GetCount() > 0)
 		return true;
 	
-	wxLogError(_("No basic attribution, advanced attribution not availlable"));
+	//wxLogError(_("No basic attribution, advanced attribution not availlable"));
 	return false;
 }
 

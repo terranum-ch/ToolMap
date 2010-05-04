@@ -658,7 +658,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 	tmLayerValueArray myLayerValues;
 	if(myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)==false){
 		wxDELETE(myAttribData);
-		wxLogError(_T("Error getting attribution layers for oid %d"), oid);
+		//wxLogError(_T("Error getting attribution layers for oid %d"), oid);
 		return false;
 	}
 	
@@ -735,7 +735,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	tmLayerValueArray myLayerValues;
 	if(myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)==false){
 		wxDELETE(myAttribData);
-		wxLogError(_T("Error getting attribution layers for oid %d"), oid);
+		//wxLogError(_T("Error getting attribution layers for oid %d"), oid);
 		return false;
 	}
 	
