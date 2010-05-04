@@ -406,7 +406,7 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString & header, wxArrayStri
 
 	wxDELETE(myData);
 	if (bReturn == false) {
-		wxLogError(_T("Error getting informations for oid : %d"), oid);
+		wxLogDebug(_T("Error getting informations for oid : %d"), oid);
 	}
 	return bReturn;
 }
