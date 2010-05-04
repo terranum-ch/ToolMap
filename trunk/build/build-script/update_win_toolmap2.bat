@@ -15,6 +15,12 @@ REM 6) Upload installer to ftp (open firewall for curl)
 @SET INSTPROG="C:\Program Files\NSIS\makensis.exe"
 @SET FTPPROG="C:\Program Files\curl-7.19.6\curl.exe"
 
+@SET MYSQLPATH=D:/LS/PROGRAMATION/LIB/mysql-5.1.46-VS2008
+@SET CURLPATH=D:/LS/PROGRAMATION/LIB/LIB_CURL
+@SET GEOSPATH=D:/LS/PROGRAMATION/LIB/geos-3.2.2
+@SET GDALPATH=D:/LS/PROGRAMATION/LIB/LIB_GDAL
+@SET PARAMWXWIN=D:/LS/PROGRAMATION/LIB/wxMSW-2.8.11
+
 
 
 ECHO ----------------------------------------
@@ -35,7 +41,11 @@ ECHO 1) Updating repositories ... DONE (version is : %REV%)
 
 ECHO 2) Making Visual studio solution...
 cd %bindir%
-cmake %trunkdir%\build
+
+SET WXWIN=%PARAMWXWIN%
+echo %WXWIN%
+
+cmake %trunkdir%\build -G"Visual Studio 9 2008" -DMYSQL_IS_LOGGING:BOOL=1 -DMYSQL_MAIN_DIR:PATH=%MYSQLPATH% -DSEARCH_CURL:BOOL=1 -DSEARCH_CURL_LIB_PATH:PATH=%CURLPATH% -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=%GDALPATH%  -DSEARCH_GEOS_LIB_PATH:PATH=%GEOSPATH% -DSVN_DURING_BUILD:BOOL=1 -DSVN_DURING_CMAKE:BOOL=1 -DUSE_GDIPLUS_LIBRARY:BOOL=1 -DUSE_MT_LIBRARY:BOOL=1
 ECHO 2) Making Visual studio solution... DONE
 
 ECHO -----------------------------------------------
@@ -48,6 +58,8 @@ echo %ERRORLEVEL%
 IF ERRORLEVEL 1 goto QuitErrorBuild
 ECHO 3) BUILDING TOOLMAP2 DONE
 
+
+IF "%1"=="NOINSTALLER" goto WaitForEnter
 
 ECHO 4) MAKING INSTALLER (NSIS)...
 d:
