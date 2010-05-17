@@ -335,6 +335,7 @@ private:
 	void OnEditVertexPosition (wxCommandEvent & event);
 	void OnMergeSelectedLines (wxCommandEvent & event);
 	void OnShowAAttributionWindow (wxCommandEvent & event);
+	void OnAAttributionBatchWindow (wxCommandEvent & event);
 	void OnShowInformationDialog (wxCommandEvent & event);
 	//void OnMenuHighlightOn (wxMenuEvent & event);
 	//void OnMenuHighligntOff(wxMenuEvent & event);

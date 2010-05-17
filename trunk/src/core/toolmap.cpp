@@ -219,6 +219,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	//ATTRIBUTION MENU
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
 	EVT_MENU (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnShowAAttributionWindow)
+	EVT_MENU (ID_MENU_ATTRIB_BATCH, ToolMapFrame::OnAAttributionBatchWindow)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
@@ -530,7 +531,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu55 = new wxMenu;
     itemMenu55->Append(ID_MENU_ATTRIB_TYPES, _("Object types..."), _T(""), wxITEM_CHECK);
     itemMenu55->Append(ID_MENU_ATTRIB_ATTRIBUTES, _("Object attributes...\tCtrl+A"), _T(""), wxITEM_NORMAL);
-    //itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object attribute (batch)..."), _T(""), wxITEM_NORMAL);
+    itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object attribute (batch)...\tCtrl+Shift+A"), _T(""), wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
 	itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Attribute orientation to points\tCtrl+Y"), _T(""), wxITEM_NORMAL);
     //itemMenu55->Append(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-Paste Attribution\tCtrl+B"), _T(""), wxITEM_NORMAL);
@@ -1036,6 +1037,11 @@ void ToolMapFrame::OnMergeSelectedLines (wxCommandEvent & event)
 void ToolMapFrame::OnShowAAttributionWindow (wxCommandEvent & event)
 {
 	m_AttribManager->AAttributionButtonShow();
+}
+
+
+void ToolMapFrame::OnAAttributionBatchWindow (wxCommandEvent & event){
+	m_AttribManager->AAttributionBatchShow();
 }
 
 
