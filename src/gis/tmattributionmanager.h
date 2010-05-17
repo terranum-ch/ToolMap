@@ -134,6 +134,7 @@ class tmAttributionManager : public wxEvtHandler
 		
 		// advanced attribution
 		bool AAttributionButtonShow ();
+		void AAttributionBatchShow ();
 		
 		// informations
 		void DisplayInformationsWnd();

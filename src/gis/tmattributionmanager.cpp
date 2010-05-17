@@ -19,6 +19,7 @@
 
 #include "tmattributionmanager.h"
 #include "../gui/information_dlg.h"				// for informations window
+#include "../gui/aattribbatch_dlg.h"			// batch attribution window
 
 
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
@@ -756,6 +757,14 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	}
 		
 	return true;
+}
+
+
+
+void tmAttributionManager::AAttributionBatchShow (){
+
+	AAttribBatch_DLG myDlg (m_Parent);
+	myDlg.ShowModal();
 }
 
 
