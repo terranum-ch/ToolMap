@@ -52,7 +52,7 @@ class tmAAttribBatchManager {
 
     bool GetTypes(PrjMemObjectsArray & objects, wxArrayInt & number, wxArrayLong & layerid);
     bool GetFields(long layerid, PrjMemFieldArray & fields);
-    tmAAttribCtrl * GetValueControl(const ProjectDefMemoryFields & field);
+    tmAAttribCtrl * GetValueControl(const ProjectDefMemoryFields & field, wxWindow * wnd);
 
     bool IsOk();
 

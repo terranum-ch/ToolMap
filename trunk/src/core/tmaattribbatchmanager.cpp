@@ -61,7 +61,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 	wxString mySentence = wxString::Format(_T("SELECT a.OBJECT_VAL_ID, o.OBJECT_DESC, COUNT(*), o.THEMATIC_LAYERS_LAYER_INDEX FROM ")
 										   _T("%s a LEFT JOIN %s  o ON a.OBJECT_VAL_ID = o.OBJECT_ID")
 										   _T("  WHERE a.OBJECT_GEOM_ID IN (%s) GROUP BY a.OBJECT_VAL_ID"),
-										   TABLE_NAME_GIS_ATTRIBUTION[m_Selected->GetSelectedLayer()].c_str(),
+										   TABLE_NAME_GIS_ATTRIBUTION[(int) m_SelLayerType].c_str(),
 										   TABLE_NAME_OBJECTS.c_str(),
 										   myIdsText.c_str());
 	wxLogMessage(mySentence);
@@ -138,8 +138,58 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 
 
 
-tmAAttribCtrl * tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFields & field) {
-	return false;
+tmAAttribCtrl * tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFields & field, wxWindow * wnd) {
+	
+	if (IsOk()==false) {
+		return NULL;
+	}
+	
+	
+	tmAAttribCtrl * mypControl = NULL;
+	tmAAttribCtrlInteger * mypControlInt;
+	tmAAttribCtrlFloat * mypControlFloat;
+	tmAAttribCtrlEnum * mypControlEnum;
+	tmAAttribCtrlText * mypControlText;
+#ifdef __WXOSX__
+	tmAAttribCtrlSafeDate * mypControlSafeDate;
+#else
+	tmAAttribCtrlDate * mypControlDate;
+#endif
+	
+	switch (field.m_FieldType)
+	{
+		case TM_FIELD_INTEGER:
+			mypControlInt = new tmAAttribCtrlInteger(wnd, field);
+			mypControl = mypControlInt;
+			break;
+			
+		case TM_FIELD_FLOAT:
+			mypControlFloat = new tmAAttribCtrlFloat(wnd, field);
+			mypControl = mypControlFloat;
+			break;
+			
+		case TM_FIELD_ENUMERATION:
+			mypControlEnum = new tmAAttribCtrlEnum(wnd, field);
+			mypControl = mypControlEnum;
+			break;
+			
+		case TM_FIELD_DATE:
+#ifdef __WXOSX__
+			mypControlSafeDate = new tmAAttribCtrlSafeDate(wnd, field);
+			mypControl = mypControlSafeDate;
+#else
+			mypControlDate = new tmAAttribCtrlDate(this, field);
+			mypControl = mypControlDate;
+#endif
+			
+			break;
+			
+		default: // tmfieldText
+			mypControlText = new tmAAttribCtrlText(wnd, field);
+			mypControl = mypControlText;
+			break;
+	}
+	return mypControl;
 }
 
 

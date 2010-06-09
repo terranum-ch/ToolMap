@@ -28,9 +28,14 @@ END_EVENT_TABLE()
 
 
 
-AAttribBatch_DLG::AAttribBatch_DLG( wxWindow* parent, wxWindowID id, const wxString& title,
+AAttribBatch_DLG::AAttribBatch_DLG( wxWindow* parent,
+								   tmAAttribBatchManager * manager,
+								   wxWindowID id, const wxString& title,
 								   const wxPoint& pos, const wxSize& size, long style ) :
 wxDialog( parent, id, title, pos, size, style ){
+	wxASSERT(manager);
+	m_pBatchManager = manager;	
+	
 	this->SetSizeHints( wxSize( 360,200 ), wxDefaultSize );
 	
 	wxBoxSizer* bSizer1;
@@ -117,4 +122,29 @@ wxDialog( parent, id, title, pos, size, style ){
 
 AAttribBatch_DLG::~AAttribBatch_DLG()
 {
+}
+
+
+bool AAttribBatch_DLG::TransferDataToWindow(){
+	wxASSERT(m_pBatchManager);
+	
+	PrjMemObjectsArray myObjets;
+	wxArrayInt myNumber;
+	wxArrayLong myLayerid;
+	if(m_pBatchManager->GetTypes(myObjets, myNumber, myLayerid)==false){
+		wxLogError(_("Getting Types failed for batch attribution"));
+		return true;
+	}
+	
+	m_ListType->Freeze();
+	for (unsigned int i = 0; i < myObjets.GetCount(); i++) {
+		wxString myText;
+		myText.Append(myObjets.Item(i).m_ObjectName);
+		myText.Append(wxString::Format(_T(" (%d)"), myNumber.Item(i)));
+		m_ListType->Append(myText);
+	}
+	m_ListType->Thaw();
+	
+	
+	return true;
 }
