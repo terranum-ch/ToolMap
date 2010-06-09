@@ -73,7 +73,7 @@ public:
 		mySelected->Add(10);
 		mySelData.AddSelected(mySelected);
 		
-		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData);
+		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData, LAYER_LINE);
 		TS_ASSERT(myManager.IsOk()==true);
 	}
 	
@@ -88,17 +88,53 @@ public:
 		mySelected->Add(10);
 		mySelData.AddSelected(mySelected);
 		
-		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData);	
+		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData, LAYER_LINE);	
 		PrjMemObjectsArray myObjects;
 		wxArrayInt myNumber;
-		TS_ASSERT(myManager.GetTypes(myObjects, myNumber));
+		wxArrayLong myLayerId;
+		TS_ASSERT(myManager.GetTypes(myObjects, myNumber, myLayerId));
 		TS_ASSERT(myObjects.GetCount() == myNumber.GetCount());
+		TS_ASSERT(myNumber.GetCount() == myLayerId.GetCount());
 		for (unsigned int i = 0; i< myObjects.GetCount(); i++) {
-			wxLogMessage(_T("%d - %s (%d)"),
+			wxLogMessage(_T("%d - %s (%d) - %d"),
 						 myObjects.Item(i).m_ObjectID,
 						 myObjects.Item(i).m_ObjectName.c_str(),
-						 myNumber.Item(i));
+						 myNumber.Item(i),
+						 myLayerId.Item(i));
 		}
+		
+	}
+	
+	
+	void testGettingFields(){
+		tmSelectedDataMemory mySelData;
+		mySelData.SetLayerID(0);
+		wxArrayLong * mySelected = new wxArrayLong;
+		mySelected->Add(1);
+		mySelected->Add(2);
+		mySelected->Add(3);
+		mySelected->Add(10);
+		mySelData.AddSelected(mySelected);
+		
+		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData, LAYER_LINE);	
+		
+		// Field 1 is TectoBound_L
+		PrjMemFieldArray myFields;
+		TS_ASSERT(myManager.GetFields(1, myFields));
+		
+		for (unsigned int i = 0; i< myFields.GetCount(); i++) {
+			wxLogMessage(_T("%d - %s"),
+						 myFields.Item(i).m_FieldID,
+						 myFields.Item(i).m_Fieldname.c_str());
+		}
+		
+		
+		// layer 2 is Border of Rocks (no field should be returned
+		// because of different spatial type
+		TS_ASSERT(myManager.GetFields(2, myFields)==false);
+		TS_ASSERT(myFields.GetCount() == 0);
+		
+		
 		
 	}
 		
