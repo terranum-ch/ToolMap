@@ -26,7 +26,7 @@
     #include <wx/wx.h>
 #endif
 #include <wx/statline.h>
-
+#include "../core/tmaattribbatchmanager.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +47,8 @@ private:
 	wxButton* m_BtnSave;
 	wxButton* m_BtnApply;
 	wxButton* m_BtnCancel;
+	
+	tmAAttribBatchManager * m_pBatchManager;
 
 	void OnTypeChange( wxCommandEvent& event ) { event.Skip(); }
 	void OnFieldsChange( wxCommandEvent& event ) { event.Skip(); }
@@ -56,12 +58,15 @@ private:
 
 public:
 
-	AAttribBatch_DLG( wxWindow* parent, wxWindowID id = wxID_ANY, 
-		const wxString& title = wxT("Advanced batch attribution"), 
-		const wxPoint& pos = wxDefaultPosition, 
-		const wxSize& size = wxSize( 400,260 ),
-		long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+	AAttribBatch_DLG( wxWindow* parent, tmAAttribBatchManager * manager,
+					 wxWindowID id = wxID_ANY, 
+					 const wxString& title = wxT("Advanced batch attribution"), 
+					 const wxPoint& pos = wxDefaultPosition, 
+					 const wxSize& size = wxSize( 400,260 ),
+					 long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 	~AAttribBatch_DLG();
+	
+	virtual bool TransferDataToWindow();
 
 };
 

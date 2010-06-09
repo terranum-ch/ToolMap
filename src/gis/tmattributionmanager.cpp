@@ -763,7 +763,30 @@ bool tmAttributionManager::AAttributionButtonShow ()
 
 void tmAttributionManager::AAttributionBatchShow (){
 
-	AAttribBatch_DLG myDlg (m_Parent);
+	// validating
+	if (IsAttributionManagerReady() == false)
+	{
+		wxLogError(_("Project isn't ready, open a project or define a Edit Layer"));
+		return;
+	}
+
+	tmLayerProperties * myEditLayer = m_TOC->GetEditLayer();
+	if (myEditLayer == NULL)
+	{
+		wxLogError(_("You aren't in edit mode, please start editing"));
+		return;
+	} 
+	
+	wxASSERT(m_pPrjMem);
+	wxASSERT(m_SelData);
+	tmAAttribBatchManager myBatchManager(m_pPrjMem, m_pDB, m_SelData,
+										 (PRJDEF_LAYERS_TYPE) myEditLayer->m_LayerType);
+	if (myBatchManager.IsOk() == false) {
+		wxLogError(_("Batch attribution isn't possible"));
+		return;
+	}
+	
+	AAttribBatch_DLG myDlg (m_Parent, &myBatchManager);
 	myDlg.ShowModal();
 }
 
