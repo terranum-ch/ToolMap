@@ -25,10 +25,12 @@
 
 tmAAttribBatchManager::tmAAttribBatchManager(PrjDefMemManage * project,
 											 DataBaseTM * database,
-											 tmSelectedDataMemory * selected) {
+											 tmSelectedDataMemory * selected,
+											 PRJDEF_LAYERS_TYPE sellayertype) {
 	m_Project = project;
 	m_DB = database;
 	m_Selected = selected;
+	m_SelLayerType = sellayertype;
 }
 
 
@@ -36,9 +38,10 @@ tmAAttribBatchManager::~tmAAttribBatchManager() {
 }
 
 
-bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & number) {
+bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & number, wxArrayLong & layerid) {
 	objects.Clear();
 	number.Clear();
+	layerid.Clear();
 	
 	if (IsOk() == false) {
 		return false;
@@ -55,7 +58,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 	myIdsText.RemoveLast(1);
 	
 	// create query
-	wxString mySentence = wxString::Format(_T("SELECT a.OBJECT_VAL_ID, o.OBJECT_DESC, COUNT(*) FROM ")
+	wxString mySentence = wxString::Format(_T("SELECT a.OBJECT_VAL_ID, o.OBJECT_DESC, COUNT(*), o.THEMATIC_LAYERS_LAYER_INDEX FROM ")
 										   _T("%s a LEFT JOIN %s  o ON a.OBJECT_VAL_ID = o.OBJECT_ID")
 										   _T("  WHERE a.OBJECT_GEOM_ID IN (%s) GROUP BY a.OBJECT_VAL_ID"),
 										   TABLE_NAME_GIS_ATTRIBUTION[m_Selected->GetSelectedLayer()].c_str(),
@@ -79,6 +82,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 	for (int j = 0; j < myResults.GetRowCount(); j++) {
 		ProjectDefMemoryObjects myObj;
 		long myCount = 0;
+		long myLayerid = 0;
 		if(myResults.NextRow()==false){
 			break;
 		}
@@ -87,14 +91,52 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 		objects.Add(myObj);
 		myResults.GetValue(2, myCount);
 		number.Add(myCount);
+		myResults.GetValue(3, myLayerid);
+		layerid.Add(myLayerid);
 	}
 	return true;
 }
 
 
-bool tmAAttribBatchManager::GetFields(const ProjectDefMemoryObjects & object, PrjMemFieldArray & fields) {
-	return false;
+bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
+	
+	fields.Clear();
+	
+	if (IsOk() == false) {
+		return false;
+	}
+	
+	if (layerid == wxNOT_FOUND) {
+		wxLogError(_("Invalid layer ID (%d)"), layerid);
+		return false;
+	}
+	
+	
+	ProjectDefMemoryLayers * myLayer = m_Project->FindLayerByRealID(layerid);
+	if (myLayer == NULL) {
+		wxLogError(_("No layer found with %d ID"), layerid);
+		return false;
+	}
+	
+	// check that layers are of similar spatial type
+	if (m_SelLayerType != myLayer->m_LayerType) {
+		return false;
+	}
+	
+	for (int i = 0; i< m_Project->GetCountFields(); i++) {
+		ProjectDefMemoryFields * mypField = m_Project->GetNextField();
+		if (mypField == NULL) {
+			wxLogError(_("Field %d returned NULL"), i);
+			continue;
+		}
+		ProjectDefMemoryFields myField;
+		myField = *mypField;
+		fields.Add(myField);
+	}
+	return true;
 }
+
+
 
 tmAAttribCtrl * tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFields & field) {
 	return false;

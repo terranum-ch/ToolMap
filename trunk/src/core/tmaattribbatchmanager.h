@@ -40,16 +40,18 @@ class tmAAttribBatchManager {
     PrjDefMemManage * m_Project;
     DataBaseTM * m_DB;
     tmSelectedDataMemory * m_Selected;
+	PRJDEF_LAYERS_TYPE m_SelLayerType;
 
 
   public:
     tmAAttribBatchManager(PrjDefMemManage * project,
 						  DataBaseTM * database,
-						  tmSelectedDataMemory * selected);
+						  tmSelectedDataMemory * selected, 
+						  PRJDEF_LAYERS_TYPE sellayertype);
     virtual ~tmAAttribBatchManager();
 
-    bool GetTypes(PrjMemObjectsArray & objects, wxArrayInt & number);
-    bool GetFields(const ProjectDefMemoryObjects & object, PrjMemFieldArray & fields);
+    bool GetTypes(PrjMemObjectsArray & objects, wxArrayInt & number, wxArrayLong & layerid);
+    bool GetFields(long layerid, PrjMemFieldArray & fields);
     tmAAttribCtrl * GetValueControl(const ProjectDefMemoryFields & field);
 
     bool IsOk();
