@@ -74,35 +74,17 @@ wxDialog( parent, id, title, pos, size, style ){
 	
 	bSizer2->Add( bSizer3, 1, wxEXPAND, 5 );
 	
-	wxStaticLine* m_staticline3;
-	m_staticline3 = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-	bSizer2->Add( m_staticline3, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
-	
-	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxVERTICAL );
-	
-	wxStaticText* m_staticText4;
-	m_staticText4 = new wxStaticText( this, wxID_ANY, wxT("Set Value:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText4->Wrap( -1 );
-	bSizer6->Add( m_staticText4, 0, wxALL, 5 );
-	
-	m_PanelValue = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer7;
-	bSizer7 = new wxBoxSizer( wxVERTICAL );
-	
-	wxStaticText* m_staticText5;
-	m_staticText5 = new wxStaticText( m_PanelValue, wxID_ANY, wxT("Hint: Select an object type then a field to be able to set value to selected objects "), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText5->Wrap( 100 );
-	bSizer7->Add( m_staticText5, 0, wxALL, 5 );
-	
-	m_PanelValue->SetSizer( bSizer7 );
-	m_PanelValue->Layout();
-	bSizer7->Fit( m_PanelValue );
-	bSizer6->Add( m_PanelValue, 1, wxEXPAND | wxALL, 5 );
-	
-	bSizer2->Add( bSizer6, 1, wxEXPAND, 5 );
 	
 	bSizer1->Add( bSizer2, 1, wxEXPAND, 5 );
+	
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Value") ), wxVERTICAL );
+	m_CtrlSizer = new wxBoxSizer( wxVERTICAL );
+	sbSizer1->Add( m_CtrlSizer, 0, wxALL|wxEXPAND, 5 );
+	
+	_SetControl(NULL);
+	
+	bSizer1->Add( sbSizer1, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 	
 	m_Btn = new wxStdDialogButtonSizer();
 	m_BtnSave = new wxButton( this, wxID_SAVE );
@@ -130,8 +112,7 @@ bool AAttribBatch_DLG::TransferDataToWindow(){
 	
 	PrjMemObjectsArray myObjets;
 	wxArrayInt myNumber;
-	wxArrayLong myLayerid;
-	if(m_pBatchManager->GetTypes(myObjets, myNumber, myLayerid)==false){
+	if(m_pBatchManager->GetTypes(myObjets, myNumber, m_ArrayIds)==false){
 		wxLogError(_("Getting Types failed for batch attribution"));
 		return true;
 	}
@@ -148,3 +129,87 @@ bool AAttribBatch_DLG::TransferDataToWindow(){
 	
 	return true;
 }
+
+
+
+void AAttribBatch_DLG::OnTypeChange( wxCommandEvent& event ){
+	if (m_ArrayIds.IsEmpty() == true) {
+		wxLogWarning(_("Types are empty, getting fields isn't possible"));
+		return;
+	}
+	
+	wxLogMessage(_T("Selected type item index : %d"), event.GetSelection());
+	if (event.GetSelection() >= (signed int) m_ArrayIds.GetCount()) {
+		wxLogError(_("Error getting field for item %d!"), event.GetSelection());
+		return;
+	}
+	
+	if (m_pBatchManager->GetFields(m_ArrayIds.Item(event.GetSelection()), m_Fields)==false) {
+		wxLogError(_("Getting fields for item %d failed"), event.GetSelection());
+		return;
+	}
+	
+	m_ListFields->Freeze();
+	m_ListFields->Clear();
+	for (unsigned int i = 0; i< m_Fields.GetCount(); i++) {
+		m_ListFields->Append(m_Fields.Item(i).m_Fieldname);
+	}
+	m_ListFields->Thaw();
+}
+
+
+
+void AAttribBatch_DLG::OnFieldsChange( wxCommandEvent& event ){
+	if (m_Fields.IsEmpty() == true) {
+		wxLogWarning(_("Fields are empty, Advanced batch attribution isn't possible"));
+		return;
+	}
+	
+	wxLogMessage(_T("Selected field item index : %d"), event.GetSelection());
+	if (event.GetSelection() >= (signed int) m_Fields.GetCount()) {
+		wxLogError(_("Error showing field for item %d!"), event.GetSelection());
+		return;
+	}
+	
+	tmAAttribCtrl * myCtrl = m_pBatchManager->GetValueControl(m_Fields.Item(event.GetSelection()),this);
+	if (myCtrl == NULL) {
+		wxLogError(_("Getting Control for Field %d failed"), event.GetSelection());
+		return;
+	}
+	
+	// setting control
+	_SetControl(myCtrl);
+}
+
+
+void AAttribBatch_DLG::_SetControl(tmAAttribCtrl * ctrl){
+	// setting default ctrl
+	if (ctrl == NULL) {
+		ProjectDefMemoryFields myUnusedField;
+		ctrl = new tmAAttribInfoPanel(this, myUnusedField);
+		wxASSERT(ctrl);
+	}
+	
+	wxASSERT(m_CtrlSizer);
+	wxSizerItemList myItemList = m_CtrlSizer->GetChildren();
+	if (myItemList.IsEmpty() == false) {
+		wxSizerItemList::iterator iter;
+		iter = myItemList.begin();
+		wxSizerItem * myItem = *iter;
+		wxASSERT(myItem);
+		myItem->DeleteWindows();
+	}
+	m_CtrlSizer->Add( ctrl, 1, wxEXPAND | wxALL, 5);
+	this->Layout();
+	
+	/*if (m_CtrlSizer->GetContainingWindow() == NULL) {
+		
+	}
+	else {
+		m_CtrlSizer->Replace(0, ctrl);
+	}*/
+
+	
+	
+}
+
