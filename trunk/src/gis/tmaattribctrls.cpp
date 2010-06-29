@@ -410,7 +410,7 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 	wxTextValidator(wxFILTER_NUMERIC));
 	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
-	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER, 5); 
+	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5); 
 	SetProperties(fieldinfo);
 	
 	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );
@@ -789,7 +789,7 @@ void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 										 wxTextValidator(wxFILTER_NUMERIC));
 	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
-	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_CENTER, 5); 
+	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5); 
 	SetProperties(fieldinfo);
 	
 	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );
