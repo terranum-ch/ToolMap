@@ -64,7 +64,6 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 										   TABLE_NAME_GIS_ATTRIBUTION[(int) m_SelLayerType].c_str(),
 										   TABLE_NAME_OBJECTS.c_str(),
 										   myIdsText.c_str());
-	wxLogMessage(mySentence);
 	wxASSERT(m_DB);
 	if (m_DB->DataBaseQuery(mySentence)==false) {
 		return false;
