@@ -71,7 +71,7 @@ class tmAAttribInfoPanel : public tmAAttribCtrl
 			wxBoxSizer* bSizer24;
 			bSizer24 = new wxBoxSizer( wxHORIZONTAL );
 			m_Label = new wxStaticText( this, wxID_ANY,
-									   _("Hint"),
+									   _("Hint: "),
 									   wxDefaultPosition,
 									   wxDefaultSize, 0 );
 			m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
@@ -80,6 +80,7 @@ class tmAAttribInfoPanel : public tmAAttribCtrl
 			wxBoxSizer * bSizer25 = new wxBoxSizer(wxHORIZONTAL);
 			
 			m_ControlInfo = new wxStaticText(this, wxID_ANY, _("Select an object type then a field to be able to set value to selected objects"));
+			m_ControlInfo->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 			bSizer25->Add(m_ControlInfo,0,wxLEFT |wxALIGN_CENTER_VERTICAL,5);
 			bSizer24->Add( bSizer25, 1, wxALL | wxALIGN_CENTER_VERTICAL, 2);
 			
@@ -133,7 +134,7 @@ public:
 					 wxWindowID id = wxID_ANY, 
 					 const wxString& title = wxT("Advanced batch attribution"), 
 					 const wxPoint& pos = wxDefaultPosition, 
-					 const wxSize& size = wxSize( 400,260 ),
+					 const wxSize& size = wxSize( 550,350 ),
 					 long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 	~AAttribBatch_DLG();
 	

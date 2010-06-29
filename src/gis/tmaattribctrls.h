@@ -56,8 +56,7 @@ class tmAAttribCtrl  : public wxPanel
 	protected:
 		wxStaticText* m_Label;
 		
-		// panel control
-		void SetPanelColour ();
+		
 		
 	public:
 		tmAAttribCtrl(){;}
@@ -84,6 +83,9 @@ class tmAAttribCtrl  : public wxPanel
 		// control operations
 		virtual void SetControlValue(const wxString & value) = 0;
 		virtual wxString GetControlValue () = 0;
+		
+		// panel control
+		void SetPanelColour (const wxColour & colour = *wxWHITE);
 	};
 
 // Creating a list of Ctrls

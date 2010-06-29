@@ -49,6 +49,7 @@ wxDialog( parent, id, title, pos, size, style ){
 	
 	wxStaticText* m_staticText1;
 	m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("Type:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 	m_staticText1->Wrap( -1 );
 	bSizer4->Add( m_staticText1, 0, wxALL, 5 );
 	
@@ -66,6 +67,7 @@ wxDialog( parent, id, title, pos, size, style ){
 	
 	wxStaticText* statictext;
 	statictext = new wxStaticText( this, wxID_ANY, wxT("Fields:"), wxDefaultPosition, wxDefaultSize, 0 );
+	statictext->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 	statictext->Wrap( -1 );
 	bSizer3->Add( statictext, 0, wxALL, 5 );
 	
@@ -80,7 +82,7 @@ wxDialog( parent, id, title, pos, size, style ){
 	wxStaticBoxSizer* sbSizer1;
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Value") ), wxVERTICAL );
 	m_CtrlSizer = new wxBoxSizer( wxVERTICAL );
-	sbSizer1->Add( m_CtrlSizer, 0, wxALL|wxEXPAND, 5 );
+	sbSizer1->Add( m_CtrlSizer, 0, wxALL|wxEXPAND, 0 );
 	
 	_SetControl(NULL);
 	
@@ -155,6 +157,7 @@ void AAttribBatch_DLG::OnTypeChange( wxCommandEvent& event ){
 		m_ListFields->Append(m_Fields.Item(i).m_Fieldname);
 	}
 	m_ListFields->Thaw();
+	_SetControl(NULL);
 }
 
 
@@ -190,6 +193,13 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl * ctrl){
 		wxASSERT(ctrl);
 	}
 	
+#ifdef __WXOSX__
+	ctrl->SetPanelColour(wxColour(222,222,222));
+#else
+	wxStaticBox myBox;
+	ctrl->SetPanelColour(myBox.GetBackgroundColour());
+#endif
+	
 	wxASSERT(m_CtrlSizer);
 	wxSizerItemList myItemList = m_CtrlSizer->GetChildren();
 	if (myItemList.IsEmpty() == false) {
@@ -198,18 +208,10 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl * ctrl){
 		wxSizerItem * myItem = *iter;
 		wxASSERT(myItem);
 		myItem->DeleteWindows();
+		m_CtrlSizer->Remove(0);
 	}
 	m_CtrlSizer->Add( ctrl, 1, wxEXPAND | wxALL, 5);
 	this->Layout();
-	
-	/*if (m_CtrlSizer->GetContainingWindow() == NULL) {
-		
-	}
-	else {
-		m_CtrlSizer->Replace(0, ctrl);
-	}*/
 
-	
-	
 }
 
