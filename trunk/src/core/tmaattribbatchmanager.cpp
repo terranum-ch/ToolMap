@@ -214,7 +214,7 @@ bool tmAAttribBatchManager::IsOk() {
 		return false;
 	}
 	
-	if (m_Selected->GetSelectedLayer() > TOC_NAME_LABELS) {
+	if (m_Selected->GetSelectedLayer() > TOC_NAME_LABELS + 1) {
 		wxLogError(_("Batch advanced attribution isn't availlable for selected layer (%d)"),
 				   m_Selected->GetSelectedLayer());
 		return false;
