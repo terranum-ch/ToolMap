@@ -177,7 +177,7 @@ tmAAttribCtrl * tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFie
 			mypControlSafeDate = new tmAAttribCtrlSafeDate(wnd, field);
 			mypControl = mypControlSafeDate;
 #else
-			mypControlDate = new tmAAttribCtrlDate(this, field);
+			mypControlDate = new tmAAttribCtrlDate(wnd, field);
 			mypControl = mypControlDate;
 #endif
 			
