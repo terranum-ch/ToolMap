@@ -40,9 +40,9 @@ wxString tmAAttribCtrl::GetLabel ()
 }
 
 
-void tmAAttribCtrl::SetPanelColour ()
+void tmAAttribCtrl::SetPanelColour (const wxColour & colour)
 {
-	this->SetBackgroundColour(*wxWHITE);
+	this->SetBackgroundColour(colour);
 }
 
 
