@@ -135,6 +135,9 @@ bool AAttribBatch_DLG::TransferDataToWindow(){
 
 
 void AAttribBatch_DLG::OnTypeChange( wxCommandEvent& event ){
+	m_ListFields->Clear();
+	_SetControl(NULL);
+	
 	if (m_ArrayIds.IsEmpty() == true) {
 		wxLogWarning(_("Types are empty, getting fields isn't possible"));
 		return;
@@ -152,12 +155,11 @@ void AAttribBatch_DLG::OnTypeChange( wxCommandEvent& event ){
 	}
 	
 	m_ListFields->Freeze();
-	m_ListFields->Clear();
 	for (unsigned int i = 0; i< m_Fields.GetCount(); i++) {
 		m_ListFields->Append(m_Fields.Item(i).m_Fieldname);
 	}
 	m_ListFields->Thaw();
-	_SetControl(NULL);
+	
 }
 
 

@@ -531,7 +531,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu55 = new wxMenu;
     itemMenu55->Append(ID_MENU_ATTRIB_TYPES, _("Object types..."), _T(""), wxITEM_CHECK);
     itemMenu55->Append(ID_MENU_ATTRIB_ATTRIBUTES, _("Object attributes...\tCtrl+A"), _T(""), wxITEM_NORMAL);
-    itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object attribute (batch)...\tCtrl+Shift+A"), _T(""), wxITEM_NORMAL);
+    itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object attribute (batch)...\tCtrl+Alt+A"), _T(""), wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
 	itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Attribute orientation to points\tCtrl+Y"), _T(""), wxITEM_NORMAL);
     //itemMenu55->Append(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-Paste Attribution\tCtrl+B"), _T(""), wxITEM_NORMAL);
