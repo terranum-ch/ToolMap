@@ -274,13 +274,13 @@ wxString tmAAttribBatchManager::_CreateListOfIds(const wxArrayLong * ids) {
 										
 
 
-bool tmAAttribBatchManager::Attribute(long layerid,
+int tmAAttribBatchManager::Attribute(long layerid,
 									  const ProjectDefMemoryFields & field,
 									  const wxString & value) {
 	
 	wxArrayLong mySubSet;
 	if (_GetSelectionSubset(layerid, mySubSet)==false) {
-		return false;
+		return wxNOT_FOUND;
 	}
 	
 	// correct value for errors 
@@ -303,8 +303,8 @@ bool tmAAttribBatchManager::Attribute(long layerid,
 
 	
 	if (m_DB->DataBaseQueryNoResults(myQuery)==false) {
-		return false;
+		return wxNOT_FOUND;
 	}
-	return true;
+	return (int) mySubSet.GetCount();
 }
 
