@@ -59,7 +59,7 @@ class tmAAttribBatchManager {
 
     bool IsOk();
 	
-	bool Attribute(long layerid,
+	int Attribute(long layerid,
 				   const ProjectDefMemoryFields & field,
 				   const wxString & value);
 

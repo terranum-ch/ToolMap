@@ -158,7 +158,8 @@ public:
 		TS_ASSERT(myTestField.m_Fieldname == _T("TYPE"));
 		
 		// try attribution
-		TS_ASSERT(myManager.Attribute(1, myTestField, _T("Secondary")));
+		int attributedObjects = myManager.Attribute(1, myTestField, _T("Secondary"));
+		TS_ASSERT_EQUALS(attributedObjects, 2);
 	}
 		
 };

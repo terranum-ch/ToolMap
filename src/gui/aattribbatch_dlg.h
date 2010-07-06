@@ -115,17 +115,19 @@ private:
 	wxButton* m_BtnApply;
 	wxButton* m_BtnCancel;
 	wxBoxSizer * m_CtrlSizer;
+	tmAAttribCtrl * m_ValueCtrl;
 	
 	wxArrayLong m_ArrayIds;
 	PrjMemFieldArray m_Fields;
 	tmAAttribBatchManager * m_pBatchManager;
-
+	
+	
 	void _SetControl(tmAAttribCtrl * ctrl);
 	
 	void OnTypeChange( wxCommandEvent& event );
 	void OnFieldsChange( wxCommandEvent& event );
-	void OnApply( wxCommandEvent& event ) { event.Skip(); }
-	void OnSave( wxCommandEvent& event ) { event.Skip(); }
+	void OnApply( wxCommandEvent& event );
+	void OnSave( wxCommandEvent& event );
 
 
 public:

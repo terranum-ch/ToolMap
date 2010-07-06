@@ -188,12 +188,14 @@ void AAttribBatch_DLG::OnFieldsChange( wxCommandEvent& event ){
 
 
 void AAttribBatch_DLG::_SetControl(tmAAttribCtrl * ctrl){
+	m_ValueCtrl = NULL;
 	// setting default ctrl
 	if (ctrl == NULL) {
 		ProjectDefMemoryFields myUnusedField;
 		ctrl = new tmAAttribInfoPanel(this, myUnusedField);
 		wxASSERT(ctrl);
 	}
+	
 	
 #ifdef __WXOSX__
 	ctrl->SetPanelColour(wxColour(222,222,222));
@@ -212,8 +214,67 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl * ctrl){
 		myItem->DeleteWindows();
 		m_CtrlSizer->Remove(0);
 	}
-	m_CtrlSizer->Add( ctrl, 1, wxEXPAND | wxALL, 5);
+	
+	m_ValueCtrl = ctrl;
+	m_CtrlSizer->Add( m_ValueCtrl, 1, wxEXPAND | wxALL, 5);
 	this->Layout();
-
 }
+
+
+void AAttribBatch_DLG::OnSave( wxCommandEvent& event ) {
+	wxASSERT(m_ValueCtrl);
+	wxString myValue = m_ValueCtrl->GetControlValue();
+	if (myValue.IsEmpty() == true || myValue.IsNull()) {
+		wxLogError(_("Attribution failed, please select a Type, a Field and then set a Value!"));
+		return;
+	}
+	
+	wxWindowDisabler mydisabler;
+	int myNumber = wxNOT_FOUND;
+	// to delete the busy cursor
+	{
+		wxBusyCursor myBusyCursor;
+		myNumber = m_pBatchManager->Attribute(m_ArrayIds.Item(m_ListType->GetSelection()),
+											  m_Fields.Item(m_ListFields->GetSelection()),
+											  myValue);
+		if (myNumber == wxNOT_FOUND) {
+			wxLogError(_("Batch attribution Failed"));
+			return;
+		}
+	}
+
+	Close();
+}
+
+void AAttribBatch_DLG::OnApply( wxCommandEvent& event ) {
+	wxASSERT(m_ValueCtrl);
+	wxString myValue = m_ValueCtrl->GetControlValue();
+	if (myValue.IsEmpty() == true || myValue.IsNull()) {
+		wxLogError(_("Attribution failed, please select a Type, a Field and then set a Value!"));
+		return;
+	}
+	
+	wxWindowDisabler mydisabler;
+	int myNumber = wxNOT_FOUND;
+	// to delete the busy cursor
+	{
+		wxBusyCursor myBusyCursor;
+		myNumber = m_pBatchManager->Attribute(m_ArrayIds.Item(m_ListType->GetSelection()),
+												  m_Fields.Item(m_ListFields->GetSelection()),
+												  myValue);
+		if (myNumber == wxNOT_FOUND) {
+			wxLogError(_("Batch attribution Failed"));
+			return;
+		}
+	}
+		
+	wxMessageBox(wxString::Format(_("%s = %s set for %d features"),
+								  m_Fields.Item(m_ListFields->GetSelection()).m_Fieldname.c_str(),
+								  myValue.c_str(),
+								  myNumber),
+				 _("Batch attribution succeed"),
+				 wxICON_INFORMATION | wxOK, this);
+}
+
+
 
