@@ -42,6 +42,9 @@ class tmAAttribBatchManager {
     tmSelectedDataMemory * m_Selected;
 	PRJDEF_LAYERS_TYPE m_SelLayerType;
 
+	bool _GetSelectionSubset(long layerid, wxArrayLong & subselected);
+    wxString _CreateListOfIds(const wxArrayLong * ids);
+
 
   public:
     tmAAttribBatchManager(PrjDefMemManage * project,
@@ -55,6 +58,11 @@ class tmAAttribBatchManager {
     tmAAttribCtrl * GetValueControl(const ProjectDefMemoryFields & field, wxWindow * wnd);
 
     bool IsOk();
+	
+	bool Attribute(long layerid,
+				   const ProjectDefMemoryFields & field,
+				   const wxString & value);
+
 
 };
 #endif

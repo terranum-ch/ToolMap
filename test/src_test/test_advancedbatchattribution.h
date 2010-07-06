@@ -137,6 +137,29 @@ public:
 		
 		
 	}
+	
+	
+	void testAttribute(){
+		wxLogMessage(_T("Testing attribute from Advanced batch attribution"));
+		
+		tmSelectedDataMemory mySelData;
+		mySelData.SetLayerID(0);	// line ??
+		wxArrayLong * mySelected = new wxArrayLong;
+		mySelected->Add(8); // faille
+		mySelected->Add(9); // faille, border of hazards_plg, campaign_10
+		mySelected->Add(10); // border of hazards_plg
+		mySelData.AddSelected(mySelected);
+		
+		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData, LAYER_LINE);
+		
+		PrjMemFieldArray myFields;
+		TS_ASSERT(myManager.GetFields(1, myFields));
+		ProjectDefMemoryFields myTestField = myFields.Item(0);
+		TS_ASSERT(myTestField.m_Fieldname == _T("TYPE"));
+		
+		// try attribution
+		TS_ASSERT(myManager.Attribute(1, myTestField, _T("Secondary")));
+	}
 		
 };
 

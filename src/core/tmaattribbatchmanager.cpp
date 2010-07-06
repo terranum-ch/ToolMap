@@ -23,6 +23,8 @@
 #include "../gis/tmaattribctrls.h"
 
 
+
+
 tmAAttribBatchManager::tmAAttribBatchManager(PrjDefMemManage * project,
 											 DataBaseTM * database,
 											 tmSelectedDataMemory * selected,
@@ -48,14 +50,8 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 	}
 	
 	// create list of ids
-	wxString myIdsText = wxEmptyString;
-	wxArrayLong * mySelValues = m_Selected->GetSelectedValues();
-	wxASSERT(mySelValues);
-	for (unsigned int i = 0; i<m_Selected->GetCount(); i++) {
-		myIdsText.Append(wxString::Format(_T("%d,"),
-										  mySelValues->Item(i)));
-	}
-	myIdsText.RemoveLast(1);
+	wxString myIdsText = _CreateListOfIds(m_Selected->GetSelectedValues());
+	
 	
 	// create query
 	wxString mySentence = wxString::Format(_T("SELECT a.OBJECT_VAL_ID, o.OBJECT_DESC, COUNT(*), o.THEMATIC_LAYERS_LAYER_INDEX FROM ")
@@ -97,6 +93,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 }
 
 
+
 bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 	
 	fields.Clear();
@@ -134,6 +131,7 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 	}
 	return true;
 }
+
 
 
 
@@ -220,6 +218,93 @@ bool tmAAttribBatchManager::IsOk() {
 		return false;
 	}
 	
+	return true;
+}
+
+
+bool tmAAttribBatchManager::_GetSelectionSubset(long layerid, wxArrayLong & subselected) {
+	wxASSERT(m_Selected);
+	wxASSERT(m_DB);
+	subselected.Clear();
+	
+	
+	wxString myIds = _CreateListOfIds(m_Selected->GetSelectedValues());
+	if (myIds.IsEmpty()) {
+		return false;
+	}
+	
+	
+	wxString myQuery = wxString::Format(_T("SELECT a.OBJECT_GEOM_ID FROM %s a LEFT JOIN %s o")
+										_T(" ON a.OBJECT_VAL_ID = o.OBJECT_ID WHERE a.OBJECT_GEOM_ID IN")
+										_T(" (%s) AND o.THEMATIC_LAYERS_LAYER_INDEX = %d"),
+										TABLE_NAME_GIS_ATTRIBUTION[(int) m_SelLayerType].c_str(),
+										TABLE_NAME_OBJECTS.c_str(),
+										myIds.c_str(),
+										layerid);
+	if (m_DB->DataBaseQuery(myQuery)==false) {
+		return false;
+	}
+	
+	if (m_DB->DataBaseHasResults() == false) {
+		wxLogError(_("Getting subset of selected data failed, no results!"));
+		return false;
+	}
+	
+	m_DB->DataBaseGetResults(subselected);
+	return true;
+}
+
+
+
+wxString tmAAttribBatchManager::_CreateListOfIds(const wxArrayLong * ids) {
+	if (ids == NULL) {
+		wxLogError(_("Failed to create list of Ids, nothing selected!"));
+		return wxEmptyString;
+	}
+	
+	wxString myIdsText = wxEmptyString;
+	for (unsigned int i = 0; i<ids->GetCount(); i++) {
+		myIdsText.Append(wxString::Format(_T("%d,"),
+										  ids->Item(i)));
+	}
+	myIdsText.RemoveLast(1);
+	return myIdsText;
+}
+				
+										
+
+
+bool tmAAttribBatchManager::Attribute(long layerid,
+									  const ProjectDefMemoryFields & field,
+									  const wxString & value) {
+	
+	wxArrayLong mySubSet;
+	if (_GetSelectionSubset(layerid, mySubSet)==false) {
+		return false;
+	}
+	
+	// correct value for errors 
+	wxString myValueCleaned = wxEmptyString;
+	m_DB->DataBaseStringEscapeQuery(value, myValueCleaned);
+	
+	
+	wxString myQuery = wxEmptyString;
+	for (unsigned int i = 0; i<mySubSet.GetCount(); i++) {
+		myQuery.Append(wxString::Format(_T("INSERT INTO %s%d (OBJECT_ID, %s) VALUES (%ld, \"%s\")")
+										_T(" ON DUPLICATE KEY UPDATE %s=\"%s\";"),
+										TABLE_NAME_LAYER_AT.c_str(),
+										layerid,
+										field.m_Fieldname.c_str(),
+										mySubSet.Item(i),
+										myValueCleaned.c_str(),
+										field.m_Fieldname.c_str(),
+										myValueCleaned.c_str()));
+	}
+
+	
+	if (m_DB->DataBaseQueryNoResults(myQuery)==false) {
+		return false;
+	}
 	return true;
 }
 
