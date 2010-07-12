@@ -837,8 +837,9 @@ void tmEditManager::DrawMemoryData()
 	int iNbVertexMemory = m_GISMemory->GetVertexCount();
 
 	
-	m_Renderer->Refresh();
-	m_Renderer->Update();
+	// Removed because flickering under Windows 
+	//m_Renderer->Refresh();
+	//m_Renderer->Update();
 	
 	if (iNbVertexMemory <= 1){
 		return;
