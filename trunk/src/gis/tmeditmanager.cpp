@@ -219,7 +219,7 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 		
 		
 		// draw memory line
-		DrawMemoryData();
+		DrawMemoryData(true);
 	}
 	// update tools view
 	wxCommandEvent evt(tmEVT_TM_UPDATE_TOOL_VIEW, wxID_ANY);
@@ -473,7 +473,7 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		wxASSERT(bCreate);
 
 		AddLineVertex(myRealCoord);
-		DrawMemoryData();
+		DrawMemoryData(false);
 	}
 	else // add point 
 	{
@@ -831,15 +831,18 @@ void tmEditManager::DrawEditBitmapLine ()
 }
 
 
-void tmEditManager::DrawMemoryData()
+void tmEditManager::DrawMemoryData(bool refresh)
 {
 	// check edit memory data for drawing
 	int iNbVertexMemory = m_GISMemory->GetVertexCount();
 
 	
-	// Removed because flickering under Windows 
-	//m_Renderer->Refresh();
-	//m_Renderer->Update();
+	// Removed because flickering under Windows
+	if (refresh == true) {
+		m_Renderer->Refresh();
+		m_Renderer->Update();
+	}
+
 	
 	if (iNbVertexMemory <= 1){
 		return;
@@ -1235,9 +1238,8 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 		bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
 		wxASSERT(BSave);
 		
-		//	m_Renderer->Refresh();
-		//	m_Renderer->Update();
-		DrawMemoryData();
+
+		DrawMemoryData(true);
 		if (bSnappingFound)
 			EMDrawSnappingStatus(*myPt);
 	}
@@ -1371,7 +1373,7 @@ void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event)
 	
 	wxLogDebug(_T("Inserting vertex after %d"), m_INSDELVertex);
 	m_GISMemory->InsertVertex(m_INSVertexPos, m_INSDELVertex+1);
-	DrawMemoryData();
+	DrawMemoryData(true);
 }
 
 
@@ -1385,7 +1387,7 @@ void tmEditManager::OnMenuDeleteVertex(wxCommandEvent & event)
 	wxLogDebug(_T("Deleting vertex @ %d"), m_INSDELVertex);
 	
 	m_GISMemory->RemoveVertex(m_INSDELVertex);
-	DrawMemoryData();
+	DrawMemoryData(true);
 }
 
 
@@ -1605,7 +1607,7 @@ bool tmEditManager::UndoLastVertex ()
 	m_DrawLine.CreateVertex(myPreviousPT);
 	
 	
-	DrawMemoryData();
+	DrawMemoryData(true);
 
 	// display last segment (in video inverse)
 	wxCommandEvent evt(tmEVT_EM_DRAW_MOVE, wxID_ANY);

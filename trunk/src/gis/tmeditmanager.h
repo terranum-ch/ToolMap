@@ -146,7 +146,7 @@ class tmEditManager : public wxEvtHandler
 		// drawing editing object
 		void DrawLastSegment ();
 		void DrawEditBitmapLine ();
-		void DrawMemoryData();
+		void DrawMemoryData(bool refresh);
 		
 		
 		
