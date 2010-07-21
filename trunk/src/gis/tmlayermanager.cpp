@@ -323,7 +323,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 
 	
-	wxFileDialog * m_dlg = new wxFileDialog(m_Parent, _("Add GIS layer to the project"),
+	wxFileDialog * m_dlg = new wxFileDialog(m_Parent, _("Link Data"),
 											_T(""), _T(""),
 											tmGISData::GetAllSupportedGISFormatsWildcards());
 	if(m_dlg->ShowModal() == wxID_CANCEL)

@@ -63,7 +63,7 @@ class tmGISImport_DLG : public wxDialog
 	public:
 		tmGISImport_DLG( wxWindow* parent,
 						tmGISImport * import, wxWindowID id = wxID_ANY,
-						const wxString& title = _("Import GIS data"),
+						const wxString& title = _("Import data"),
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
 						long style = wxDEFAULT_DIALOG_STYLE );
