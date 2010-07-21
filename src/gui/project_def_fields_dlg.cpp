@@ -654,6 +654,52 @@ void ProjectDefFieldDlg::CreateControls()
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
 	
+	
+	
+	m_panel9 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer6211;
+	bSizer6211 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer2211;
+	sbSizer2211 = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("Allowed values") ), wxVERTICAL );
+	
+	
+	
+	
+	
+	m_DlgAFD_Coded_Val_List = new ProjectDefFieldList( m_panel9, ID_DLGAFD_CODED_VAL_LIST,  wxSize(100, 200));
+	sbSizer2211->Add(m_DlgAFD_Coded_Val_List, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+	
+	wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
+	sbSizer2211->Add(itemBoxSizer21, 0, wxGROW|wxALL, 5);
+	
+	wxFlatButton* itemFlatButton22 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_ADD, wxFLATBUTTON_TEXT_ADD );
+	itemBoxSizer21->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+	wxFlatButton* itemFlatButton23 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_REMOVE, wxFLATBUTTON_TEXT_REMOVE );
+	itemBoxSizer21->Add(itemFlatButton23, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+	wxFlatButton* itemFlatButton24 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_IMPORT, _("Import..."), wxDefaultSize);
+	itemBoxSizer21->Add(itemFlatButton24, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+	wxFlatButton* itemFlatButton25 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_EXPORT, _("Export..."), wxDefaultSize);
+	itemBoxSizer21->Add(itemFlatButton25, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+	
+	
+	bSizer6211->Add( sbSizer2211, 1, wxEXPAND, 5 );
+	
+	m_panel9->SetSizer( bSizer6211 );
+	m_panel9->Layout();
+	bSizer6211->Fit( m_panel9 );
+	m_DlgAFD_Choicebook->AddPage( m_panel9, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION], false );
+	
+	
+	
+	
+	
+	
+	
+	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_panel5, wxID_ANY, _("Options") ), wxVERTICAL );
 	
@@ -751,39 +797,7 @@ void ProjectDefFieldDlg::CreateControls()
 	m_panel8->Layout();
 	bSizer621->Fit( m_panel8 );
 	m_DlgAFD_Choicebook->AddPage( m_panel8, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_DATE], false );
-	m_panel9 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer6211;
-	bSizer6211 = new wxBoxSizer( wxVERTICAL );
 	
-	wxStaticBoxSizer* sbSizer2211;
-	sbSizer2211 = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("Allowed values") ), wxVERTICAL );
-	
-	
-	 m_DlgAFD_Coded_Val_List = new ProjectDefFieldList( m_panel9, ID_DLGAFD_CODED_VAL_LIST,  wxSize(100, 200));
-	 sbSizer2211->Add(m_DlgAFD_Coded_Val_List, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-	 
-	 wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
-	 sbSizer2211->Add(itemBoxSizer21, 0, wxGROW|wxALL, 5);
-	 
-	 wxFlatButton* itemFlatButton22 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_ADD, wxFLATBUTTON_TEXT_ADD );
-	 itemBoxSizer21->Add(itemFlatButton22, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	 
-	 wxFlatButton* itemFlatButton23 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_REMOVE, wxFLATBUTTON_TEXT_REMOVE );
-	 itemBoxSizer21->Add(itemFlatButton23, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	 
-	 wxFlatButton* itemFlatButton24 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_IMPORT, _("Import..."), wxDefaultSize);
-	 itemBoxSizer21->Add(itemFlatButton24, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	 
-	 wxFlatButton* itemFlatButton25 = new wxFlatButton( m_panel9, ID_DLGAFD_VAL_EXPORT, _("Export..."), wxDefaultSize);
-	 itemBoxSizer21->Add(itemFlatButton25, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
-	
-	
-	bSizer6211->Add( sbSizer2211, 1, wxEXPAND, 5 );
-	
-	m_panel9->SetSizer( bSizer6211 );
-	m_panel9->Layout();
-	bSizer6211->Fit( m_panel9 );
-	m_DlgAFD_Choicebook->AddPage( m_panel9, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION], false );
 	sbSizer12->Add( m_DlgAFD_Choicebook, 1, wxALL|wxGROW, 5 );
 	
 	bSizer2->Add( sbSizer12, 1, wxALL|wxEXPAND, 5 );

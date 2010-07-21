@@ -457,22 +457,23 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     itemBoxSizer5->Add(m_DLGPEO_List_Line, 1, wxGROW|wxALL, 5);
 
     
-	wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
-    itemFlexGridSizer7->AddGrowableCol(1);
-    itemBoxSizer5->Add(itemFlexGridSizer7, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText8 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+	//wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
+    //itemFlexGridSizer7->AddGrowableCol(1);
+    //itemBoxSizer5->Add(itemFlexGridSizer7, 0, wxGROW|wxALL, 5);
+    //wxStaticText* itemStaticText8 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
+    //itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     //wxArrayString m_DLGPEO_Choice_Lyr_Line_NameStrings;
     //m_DLGPEO_Choice_Lyr_Line_NameStrings.Add(_("Polygons_TS"));
-    m_DLGPEO_Choice_Lyr_Line_Name = new wxChoice( m_DLGPEO_Panel_Line, ID_DLGPEO_LYR_NAME_LINE, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Line_NameStrings, 0 );
+	m_DLGPEO_Choice_Lyr_Line_Name = NULL;
+    //m_DLGPEO_Choice_Lyr_Line_Name = new wxChoice( m_DLGPEO_Panel_Line, ID_DLGPEO_LYR_NAME_LINE, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Line_NameStrings, 0 );
    // m_DLGPEO_Choice_Lyr_Line_Name->SetStringSelection(_("Polygons_TS"));
-    itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    //itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-	
-    m_DLGPEO_Choice_Lyr_Line_Freq = new wxCheckBox( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, _("This object is frequently used"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE);
-    m_DLGPEO_Choice_Lyr_Line_Freq->SetValue(false);
-    itemBoxSizer5->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALL, 5);
+	m_DLGPEO_Choice_Lyr_Line_Freq = NULL;
+    //m_DLGPEO_Choice_Lyr_Line_Freq = new wxCheckBox( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, _("This object is frequently used"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE);
+    //m_DLGPEO_Choice_Lyr_Line_Freq->SetValue(false);
+    //itemBoxSizer5->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALL, 5);
 	
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Line, _("Lines"));
 	
@@ -488,17 +489,18 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     itemBoxSizer13->Add(m_DLGPEO_List_Point, 1, wxGROW|wxALL, 5);
 
     
-	wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer(1, 2, 0, 0);
-    itemFlexGridSizer15->AddGrowableCol(1);
-    itemBoxSizer13->Add(itemFlexGridSizer15, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText16 = new wxStaticText( m_DLGPEO_Panel_Point, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+	//wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer(1, 2, 0, 0);
+    //itemFlexGridSizer15->AddGrowableCol(1);
+    //itemBoxSizer13->Add(itemFlexGridSizer15, 0, wxGROW|wxALL, 5);
+    //wxStaticText* itemStaticText16 = new wxStaticText( m_DLGPEO_Panel_Point, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
+    //itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
    // wxArrayString m_DLGPEO_Choice_Lyr_Point_NameStrings;
    // m_DLGPEO_Choice_Lyr_Point_NameStrings.Add(_("Polygons_TS"));
-    m_DLGPEO_Choice_Lyr_Point_Name = new wxChoice( m_DLGPEO_Panel_Point, ID_DLGPEO_LYR_NAME_POINT, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Point_NameStrings, 0 );
-    m_DLGPEO_Choice_Lyr_Point_Name->SetStringSelection(_("Polygons_TS"));
-    itemFlexGridSizer15->Add(m_DLGPEO_Choice_Lyr_Point_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+	m_DLGPEO_Choice_Lyr_Point_Name = NULL;
+    //m_DLGPEO_Choice_Lyr_Point_Name = new wxChoice( m_DLGPEO_Panel_Point, ID_DLGPEO_LYR_NAME_POINT, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Point_NameStrings, 0 );
+    //m_DLGPEO_Choice_Lyr_Point_Name->SetStringSelection(_("Polygons_TS"));
+    //itemFlexGridSizer15->Add(m_DLGPEO_Choice_Lyr_Point_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Point, _("Points"));
 
@@ -512,17 +514,18 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 										   &mylistcolname2, & mylistWidth2);
     itemBoxSizer19->Add(m_DLGPEO_List_Poly, 1, wxGROW|wxALL, 5);
 
-    wxFlexGridSizer* itemFlexGridSizer21 = new wxFlexGridSizer(1, 2, 0, 0);
-    itemFlexGridSizer21->AddGrowableCol(1);
-    itemBoxSizer19->Add(itemFlexGridSizer21, 0, wxGROW|wxALL, 5);
-    wxStaticText* itemStaticText22 = new wxStaticText( m_DLGPEO_Panel_Poly, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer21->Add(itemStaticText22, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+    //wxFlexGridSizer* itemFlexGridSizer21 = new wxFlexGridSizer(1, 2, 0, 0);
+    //itemFlexGridSizer21->AddGrowableCol(1);
+    //itemBoxSizer19->Add(itemFlexGridSizer21, 0, wxGROW|wxALL, 5);
+    //wxStaticText* itemStaticText22 = new wxStaticText( m_DLGPEO_Panel_Poly, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
+    //itemFlexGridSizer21->Add(itemStaticText22, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
     //wxArrayString m_DLGPEO_Choice_Lyr_Poly_NameStrings;
     //m_DLGPEO_Choice_Lyr_Poly_NameStrings.Add(_("Polygons_TS"));
-    m_DLGPEO_Choice_Lyr_Poly_Name = new wxChoice( m_DLGPEO_Panel_Poly, ID_DLGPEO_LYR_NAME_POLY, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Poly_NameStrings, 0 );
-    m_DLGPEO_Choice_Lyr_Poly_Name->SetStringSelection(_("Polygons_TS"));
-    itemFlexGridSizer21->Add(m_DLGPEO_Choice_Lyr_Poly_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+	m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
+    //m_DLGPEO_Choice_Lyr_Poly_Name = new wxChoice( m_DLGPEO_Panel_Poly, ID_DLGPEO_LYR_NAME_POLY, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Poly_NameStrings, 0 );
+    //m_DLGPEO_Choice_Lyr_Poly_Name->SetStringSelection(_("Polygons_TS"));
+    //itemFlexGridSizer21->Add(m_DLGPEO_Choice_Lyr_Poly_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Poly, _("Polygons"));
 
@@ -578,21 +581,17 @@ bool  ProjectEditObjectDefinitionDLG::SetChoiceListText (wxChoice * choice,
 														 int listtype)
 {
 	wxArrayString myThematicResult; 
-//	wxString sSentence = wxString::Format(_T("SELECT (LAYER_NAME) FROM %s WHERE TYPE_CD = %d"),
-//										  table.c_str(), listtype);
-//	if (m_DB->DataBaseQuery(sSentence))
-//	{
-//		myThematicResult = m_DB->DataBaseGetNextResult();
-//		
-		myThematicResult = m_DB->GetLayerNameByType(listtype);
-		// append item only if they are items !
-		if (myThematicResult.GetCount() > 0)
-		{
-			choice->Append(myThematicResult);
-			return TRUE;
-		}
-		return FALSE;
+	myThematicResult = m_DB->GetLayerNameByType(listtype);
+	if (myThematicResult.GetCount() == 0) {
+		return false;
+	}
 		
+	// append item only if they are items !
+	if (choice != NULL)
+	{
+		choice->Append(myThematicResult);
+	}
+	return true;	
 }
 
 

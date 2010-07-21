@@ -1025,7 +1025,7 @@ void ProjectDefLayersDlg::CreateControls()
 	if (m_bIsModeEditing == FALSE)
 	{
 		m_DlgPDL_Panel_Obj = new wxPanel( itemNotebook9, ID_DLGPDL_PANEL_OBJ, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-		wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(m_DlgPDL_Panel_Obj, wxID_ANY, _("Objects description"));
+		wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(m_DlgPDL_Panel_Obj, wxID_ANY, _("Object Kind"));
 		wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxVERTICAL);
 		m_DlgPDL_Panel_Obj->SetSizer(itemStaticBoxSizer11);
 		
@@ -1043,11 +1043,11 @@ void ProjectDefLayersDlg::CreateControls()
 		wxFlatButton* itemFlatButton16 = new wxFlatButton( m_DlgPDL_Panel_Obj, ID_DLGPDL_OBJECT_IMPORT, _("Import"), wxDefaultSize);
 		itemBoxSizer13->Add(itemFlatButton16, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 		
-		itemNotebook9->AddPage(m_DlgPDL_Panel_Obj, _("Objects"));
+		itemNotebook9->AddPage(m_DlgPDL_Panel_Obj, _("Object Kind"));
 	}
 
     m_DlgPDL_Panel_Fields = new wxPanel( itemNotebook9, ID_DLGPDL_PANEL_FIELDS, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxStaticBox* itemStaticBoxSizer18Static = new wxStaticBox(m_DlgPDL_Panel_Fields, wxID_ANY, _("Optional layer attributes"));
+    wxStaticBox* itemStaticBoxSizer18Static = new wxStaticBox(m_DlgPDL_Panel_Fields, wxID_ANY, _("Object Attribute"));
     wxStaticBoxSizer* itemStaticBoxSizer18 = new wxStaticBoxSizer(itemStaticBoxSizer18Static, wxVERTICAL);
     m_DlgPDL_Panel_Fields->SetSizer(itemStaticBoxSizer18);
 
@@ -1069,7 +1069,7 @@ void ProjectDefLayersDlg::CreateControls()
 										 _("Orientation field"));
 	itemBoxSizer20->Add(m_DlgPDL_Orientation_FLD,0,wxALIGN_CENTER_VERTICAL | wxALL,5);
 	
-    itemNotebook9->AddPage(m_DlgPDL_Panel_Fields, _("Attributes"));
+    itemNotebook9->AddPage(m_DlgPDL_Panel_Fields, _("Object Attribute"));
 
     itemBoxSizer2->Add(itemNotebook9, 1, wxGROW|wxALL, 5);
 	
