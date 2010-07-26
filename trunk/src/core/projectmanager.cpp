@@ -263,7 +263,7 @@ bool ProjectManager::PMAddDefaultQueries()
  @author Lucien Schreiber (c) CREALP 2007
  @date 10 April 2008
  *******************************************************************************/
-bool ProjectManager::EditProject ()
+bool ProjectManager::EditProject (int notebooknumber)
 {
 	wxASSERT (m_PrjMem);
 	bool bReturn = true;
@@ -274,6 +274,7 @@ bool ProjectManager::EditProject ()
 	
 	
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &myPrjDef, TRUE);
+	myNewProjDlg->SetNotebook(notebooknumber);
 	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
 		

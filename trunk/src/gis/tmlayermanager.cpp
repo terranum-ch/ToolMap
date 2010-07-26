@@ -346,17 +346,7 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 		return;
 	}
 	
-	/*for (unsigned int i = 0; i<myLayerToRemoveIndex.GetCount(); i++) {
-		wxLogMessage(_("index to remove : %d"), myLayerToRemoveIndex.Item(i));
-	}
-	for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
-		wxLogMessage(_("Layer to remove : %d - %s"), 
-					 myLayers.Item(i).m_LayerID,
-					 myLayers.Item(i).m_LayerName.c_str());
-	};*/
-	
-	
-	// removing
+ 	// removing
 	wxTreeItemId myItemId;
 	for (unsigned int i = 0; i<myLayerToRemoveIndex.GetCount(); i++) {
 		if (m_TOCCtrl->GetItemByID(myItemId,

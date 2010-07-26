@@ -155,7 +155,8 @@ class ProjectManager;
 #define ID_MENU_PRJ_EDIT		10309
 #define ID_MENU_PRJ_DEF				10310
 #define ID_MENU_OBJ_DEF				10311
-#define ID_MENU_PRJ_SETTINGS		10312
+#define ID_MENU_OBJ_ATTRIB_DEF		10312
+#define ID_MENU_PRJ_SETTINGS		10313
 
 
 
@@ -312,6 +313,7 @@ private:
 	void OnOpenRecentProject (wxCommandEvent & event);
 	void OnEditProjectObjects (wxCommandEvent & event);
 	void OnEditProjectSettings (wxCommandEvent & event);
+	void OnEditObjectAttributes (wxCommandEvent & event);
 	void OnEditProject (wxCommandEvent & event);
 	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);

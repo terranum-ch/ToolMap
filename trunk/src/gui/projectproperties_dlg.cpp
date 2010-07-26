@@ -182,6 +182,7 @@ void ProjectPropertiesDLG::Init()
     m_DLGPS_Scale_Order_Choice = NULL;
 }
 
+
 void ProjectPropertiesDLG::CreateControls()
 {    
     ProjectPropertiesDLG* itemDialog1 = this;

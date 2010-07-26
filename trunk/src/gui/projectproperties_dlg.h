@@ -117,8 +117,8 @@ public:
     ~ProjectPropertiesDLG();
 
     void Init();
-
     void CreateControls();
+	
 	
 	virtual bool TransferDataToWindow();
 	void SetScaleListFocus();

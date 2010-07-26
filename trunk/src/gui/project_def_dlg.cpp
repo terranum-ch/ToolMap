@@ -256,6 +256,12 @@ void ProjectDefDLG::CreateControls()
 }
 
 
+void ProjectDefDLG::SetNotebook (int notebooknumber){
+	wxNotebook * myNotebook = (wxNotebook*) FindWindowById(ID_DLGPD_NOTEBOOK, this);
+	wxASSERT(myNotebook);
+	myNotebook->SetSelection(notebooknumber);
+}
+
 
 bool ProjectDefDLG::TransferDataFromWindow()
 {
