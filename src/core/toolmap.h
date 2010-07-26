@@ -208,6 +208,7 @@ class ProjectManager;
 #define ID_MENU_CHECK_UPDATE 10125
 #define ID_MENU_REPORT_BUG 10128
 #define ID_MENU_ASK_NEW_FEATURE 10129
+#define ID_MENU_USER_MANUAL 10130
 #define ID_MENUITEM17 10077
 #define ID_MENUITEM14 10072
 #define ID_MENUITEM20 10111
@@ -343,6 +344,7 @@ private:
 	void OnReportBug (wxCommandEvent & event);
 	void CheckUpdates(bool silent = false);
 	void OnImportGISData (wxCommandEvent & event);
+	void OnUserManual(wxCommandEvent & event);
 	
 	
 	// selection
