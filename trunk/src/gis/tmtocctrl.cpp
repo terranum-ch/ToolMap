@@ -280,6 +280,25 @@ tmLayerProperties * tmTOCCtrl::IterateLayers (bool ResetToLast)
 
 
 
+bool tmTOCCtrl::GetItemByID (wxTreeItemId & position,long searchedid){
+	
+	bool bStart = true;
+	while (1){
+		tmLayerProperties * myProp = IterateLayers(bStart);
+		bStart = false;
+		if (myProp == NULL) {
+			break;
+		}
+		
+		if (myProp->m_LayerID == searchedid) {
+			position = m_ActualItemID;
+			return true;
+		}
+	}
+	return false;
+}
+
+
 /***************************************************************************//**
  @brief Remove all layers from tree ctrl
  @author Lucien Schreiber (c) CREALP 2008

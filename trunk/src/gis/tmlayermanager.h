@@ -41,10 +41,14 @@
 #include "tmmanagerevent.h"				// for shared event with other manager
 #include "tmmemoryzoom.h"				// for storing previous zoom in memory.
 
+
+#define ID_MENU_UNLINK_SPATIAL_DATA 10023
+
 // forward declaration
 class tmGISLoadingDataThread;
 class tmScaleCtrlCombo;
 //class tmDrawer;
+
 
 DECLARE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ZOOMPREVIOUS_ENABLE, -1)
@@ -116,6 +120,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnPanFinished (wxCommandEvent & event);
 		void OnScrolled (wxCommandEvent & event);
 		void OnSelection (wxCommandEvent & event);
+		void OnRemoveLayers(wxCommandEvent & event);
 		
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size);
