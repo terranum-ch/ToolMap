@@ -35,6 +35,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE);
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE,tmLayerManager::RemoveLayer)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD,  tmLayerManager::AddLayer)
+	EVT_MENU (ID_MENU_UNLINK_SPATIAL_DATA, tmLayerManager::OnRemoveLayers)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_SIZE_CHANGED,   tmLayerManager::OnSizeChange)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
 	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_GISDATALOADED, tmLayerManager::OnReloadProjectLayersDone)
@@ -308,6 +309,75 @@ void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 
 
 
+// removing multiple layers with a dialog
+void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
+	// list support layers
+	wxASSERT(m_TOCCtrl);
+	bool bStart = true;
+	PrjMemLayersArray myLayers;
+	wxArrayString myLayersName;
+	while (1) {
+		tmLayerProperties * myLayerProp = m_TOCCtrl->IterateLayers(bStart);
+		bStart = false;
+		if (myLayerProp == NULL) {
+			break;
+		}
+		if (myLayerProp->m_LayerType > TOC_NAME_NOT_GENERIC) {
+			ProjectDefMemoryLayers myLayer;
+			myLayer.m_LayerID = myLayerProp->m_LayerID;
+			myLayer.m_LayerName = myLayerProp->GetDisplayName();
+			myLayer.m_LayerType = (PRJDEF_LAYERS_TYPE) myLayerProp->m_LayerType;
+			myLayers.Insert(myLayer, 0);
+			myLayersName.Insert(myLayerProp->GetDisplayName(), 0);
+		}
+	}
+	
+	// display dialog
+	wxMultiChoiceDialog myChoiceDlg (m_Parent, _("Select Layer(s) to close"),
+									 _("Unlink layer(s)"),
+									 myLayersName);
+	if (myChoiceDlg.ShowModal() != wxID_OK) {
+		return;
+	}
+	
+	wxArrayInt myLayerToRemoveIndex = myChoiceDlg.GetSelections();
+	if (myLayerToRemoveIndex.IsEmpty()) {
+		wxLogWarning(_("Nothing selected, no layer will be closed"));
+		return;
+	}
+	
+	/*for (unsigned int i = 0; i<myLayerToRemoveIndex.GetCount(); i++) {
+		wxLogMessage(_("index to remove : %d"), myLayerToRemoveIndex.Item(i));
+	}
+	for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
+		wxLogMessage(_("Layer to remove : %d - %s"), 
+					 myLayers.Item(i).m_LayerID,
+					 myLayers.Item(i).m_LayerName.c_str());
+	};*/
+	
+	
+	// removing
+	wxTreeItemId myItemId;
+	for (unsigned int i = 0; i<myLayerToRemoveIndex.GetCount(); i++) {
+		if (m_TOCCtrl->GetItemByID(myItemId,
+									myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerID)==false){
+			wxLogError(_("Item with layer id : %d not found in the TOC"),
+					   myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerID);
+			continue;
+		}
+		m_TOCCtrl->RemoveLayer(myItemId, true);
+		
+		if (m_DB->RemoveTOCLayer(myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerID)==false) {
+			wxLogError(_("Unable to remove layer : '%s'"),
+					   myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerName.c_str());
+		}
+	}
+	
+	LoadProjectLayers();
+}
+
+
+
 /***************************************************************************//**
  @brief Response to the event sent by the "Add Gis Data" menu
  @details This function is doing following operations :
@@ -336,7 +406,6 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	myExt.RemoveLast();
 	myExt.Append(_T("|"));
 	myExt.Append(tmGISData::GetAllSupportedGISFormatsWildcards());
-	wxLogMessage(myExt);
 	
 	if (m_LastOpenedPath == wxEmptyString) {
 		m_LastOpenedPath = wxStandardPaths::Get().GetDocumentsDir();
@@ -351,7 +420,6 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	}
 	
 	m_LastOpenedPath = myDlg->GetDirectory();
-	wxLogMessage(m_LastOpenedPath);
 	wxFileName myFilename (myDlg->GetPath());
 	tmLayerProperties * item = new tmLayerProperties();
 	item->InitFromPathAndName(myFilename.GetPath(),

@@ -492,6 +492,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu2, _("&Project"));
     wxMenu* itemMenu24 = new wxMenu;
     itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
