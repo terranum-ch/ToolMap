@@ -49,9 +49,9 @@ _("Jpeg raster file (*.jpg, *.jpeg)|*.jpg;*.jpeg")};
 
 static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 {
-	_T("tif,tiff"),
-	_T("adf"),
-	_T("jpg,jpeg")
+	_T("*.tif;*.tiff"),
+	_T("*.adf"),
+	_T("*.jpg;*.jpeg")
 };
 
 

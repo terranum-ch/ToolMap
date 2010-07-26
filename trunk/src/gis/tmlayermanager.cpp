@@ -18,6 +18,9 @@
 // comment doxygen
 
 #include "tmlayermanager.h"
+#include <wx/stdpaths.h>
+
+
 
 
 DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED);
@@ -107,6 +110,7 @@ void tmLayerManager::InitMemberValue()
 	// init selected data structure
 	m_Drawer.SetSelectedData(&m_SelectedData);
 	m_BlockRefresh = false;
+	m_LastOpenedPath = wxEmptyString;
 }
 
 
@@ -322,28 +326,44 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	if (!IsOK())
 		return;
 
+	// create All supported extension
+	wxString myExt = _("All supported formats|"); 
+	wxArrayString myExts = tmGISData::GetAllSupportedGISFormatsExtensions();
+	for (unsigned int i = 0; i<myExts.GetCount(); i++) {
+		myExt.Append(myExts.Item(i));
+		myExt.Append(_T(";"));
+	}
+	myExt.RemoveLast();
+	myExt.Append(_T("|"));
+	myExt.Append(tmGISData::GetAllSupportedGISFormatsWildcards());
+	wxLogMessage(myExt);
 	
-	wxFileDialog * m_dlg = new wxFileDialog(m_Parent, _("Link Data"),
-											_T(""), _T(""),
-											tmGISData::GetAllSupportedGISFormatsWildcards());
-	if(m_dlg->ShowModal() == wxID_CANCEL)
+	if (m_LastOpenedPath == wxEmptyString) {
+		m_LastOpenedPath = wxStandardPaths::Get().GetDocumentsDir();
+	}
+	
+	wxFileDialog * myDlg = new wxFileDialog(m_Parent, _("Link Data"),
+											m_LastOpenedPath, _T(""),myExt);
+	if(myDlg->ShowModal() == wxID_CANCEL)
 	{
-		delete m_dlg;
+		wxDELETE(myDlg);
 		return;
 	}
 	
-	wxFileName myFilename (m_dlg->GetPath());
+	m_LastOpenedPath = myDlg->GetDirectory();
+	wxLogMessage(m_LastOpenedPath);
+	wxFileName myFilename (myDlg->GetPath());
 	tmLayerProperties * item = new tmLayerProperties();
 	item->InitFromPathAndName(myFilename.GetPath(),
 							  myFilename.GetFullName(),
 							  tmGISData::GetAllSupportedGISFormatsExtensions());
-	delete m_dlg;
+	wxDELETE(myDlg);
 	
 	// try to open the file for getting the spatial type
 	tmGISData * myLayer = tmGISData::LoadLayer(item);
 	if (!myLayer)
 	{
-		wxLogDebug(_T("Not able to open the layer : %s"), item->GetDisplayName().c_str());
+		wxLogError(_("Not able to open the layer : %s"), item->GetDisplayName().c_str());
 		return;
 	}
 	item->m_LayerSpatialType = myLayer->GetSpatialType();

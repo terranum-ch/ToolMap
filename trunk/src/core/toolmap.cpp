@@ -468,7 +468,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu2->Append(ID_MENU_NEW_PRJ_EMPTY, _("&New...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu3->Append(ID_MENU_NEW_PRJ_EXISTING, _("From existing..."), _T(""), wxITEM_NORMAL);
     //itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
-    itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open..."), wxEmptyString, wxITEM_NORMAL);
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
@@ -491,7 +491,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu2, _("&Project"));
     wxMenu* itemMenu24 = new wxMenu;
-    itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data..."), wxEmptyString, wxITEM_NORMAL);
+    itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
