@@ -245,6 +245,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
 	EVT_MENU (ID_MENU_REPORT_BUG, ToolMapFrame::OnReportBug)
 	EVT_MENU (ID_MENU_ASK_NEW_FEATURE, ToolMapFrame::OnReportBug)
+	EVT_MENU (ID_MENU_USER_MANUAL, ToolMapFrame::OnUserManual)
 	
 	EVT_MENU (wxID_ABOUT, ToolMapFrame::OnAbout)
 
@@ -568,6 +569,8 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu81->Append(ID_MENU_CHECK_UPDATE, _("Check for updates..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu81->AppendSeparator();
+	itemMenu81->Append(ID_MENU_USER_MANUAL, _("User Manual..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu81->AppendSeparator();
 	itemMenu81->Append(ID_MENU_REPORT_BUG, _("Report a bug..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu81->Append(ID_MENU_ASK_NEW_FEATURE, _("Ask for a new feature..."), wxEmptyString, wxITEM_NORMAL);
@@ -1072,6 +1075,13 @@ void ToolMapFrame::OnReportBug (wxCommandEvent & event)
 {
 	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
 }
+
+
+
+void ToolMapFrame::OnUserManual(wxCommandEvent & event){
+	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/toolmap/documentation/doku.php"));
+}
+
 
 
 
