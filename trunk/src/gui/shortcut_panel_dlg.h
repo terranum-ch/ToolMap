@@ -55,7 +55,7 @@ class Shortcut_Panel_DLG : public wxDialog
 		
 	public:
 		Shortcut_Panel_DLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-						   const wxString& title = _("Edit Shortcuts"),
+						   const wxString& title = _("Edit Shortcut"),
 						   const wxPoint& pos = wxDefaultPosition,
 						   const wxSize& size = wxDefaultSize,
 						   long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );

@@ -106,7 +106,7 @@ void ProjectDefMemoryFields::InitMemberValues()
 	m_FieldID = 0;
 	m_Fieldname = _T("");
 	m_FieldOldName = _T("");
-	m_FieldType = TM_FIELD_TEXT;
+	m_FieldType = TM_FIELD_ENUMERATION;
 	m_FieldPrecision = 0;
 	m_FieldScale = 0;
 	m_FieldOrientation = FALSE;

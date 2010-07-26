@@ -665,8 +665,6 @@ void ProjectDefFieldDlg::CreateControls()
 	
 	
 	
-	
-	
 	m_DlgAFD_Coded_Val_List = new ProjectDefFieldList( m_panel9, ID_DLGAFD_CODED_VAL_LIST,  wxSize(100, 200));
 	sbSizer2211->Add(m_DlgAFD_Coded_Val_List, 1, wxGROW|wxLEFT|wxRIGHT, 5);
 	
@@ -691,10 +689,9 @@ void ProjectDefFieldDlg::CreateControls()
 	m_panel9->SetSizer( bSizer6211 );
 	m_panel9->Layout();
 	bSizer6211->Fit( m_panel9 );
-	m_DlgAFD_Choicebook->AddPage( m_panel9, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION], false );
+	m_DlgAFD_Choicebook->AddPage( m_panel9, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION], true );
 	
-	
-	
+		
 	
 	
 	
@@ -779,7 +776,7 @@ void ProjectDefFieldDlg::CreateControls()
 	m_panel7->SetSizer( bSizer61 );
 	m_panel7->Layout();
 	bSizer61->Fit( m_panel7 );
-	m_DlgAFD_Choicebook->AddPage( m_panel7, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT], true );
+	m_DlgAFD_Choicebook->AddPage( m_panel7, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT], false );
 	m_panel8 = new wxPanel( m_DlgAFD_Choicebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer621;
 	bSizer621 = new wxBoxSizer( wxVERTICAL );
@@ -792,7 +789,6 @@ void ProjectDefFieldDlg::CreateControls()
 	sbSizer221->Add( m_staticText111, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
 	
 	bSizer621->Add( sbSizer221, 1, wxEXPAND, 5 );
-	
 	m_panel8->SetSizer( bSizer621 );
 	m_panel8->Layout();
 	bSizer621->Fit( m_panel8 );
@@ -800,8 +796,12 @@ void ProjectDefFieldDlg::CreateControls()
 	
 	sbSizer12->Add( m_DlgAFD_Choicebook, 1, wxALL|wxGROW, 5 );
 	
-	bSizer2->Add( sbSizer12, 1, wxALL|wxEXPAND, 5 );
 	
+	
+
+		
+	
+	bSizer2->Add( sbSizer12, 1, wxALL|wxEXPAND, 5 );
 	
 	m_DlgAFD_Choicebook->SetSelection(0);
 	

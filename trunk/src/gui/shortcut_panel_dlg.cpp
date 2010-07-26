@@ -49,7 +49,7 @@ void Shortcut_Panel_DLG::CreateControls()
 	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	wxStaticText* m_staticText2;
-	m_staticText2 = new wxStaticText( this, wxID_ANY, _("Key :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2 = new wxStaticText( this, wxID_ANY, _("Function Key :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	fgSizer1->Add( m_staticText2, 0, wxALL, 5 );
 	

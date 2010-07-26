@@ -112,7 +112,7 @@ class EditVertexDLG : public wxDialog
 	public:
 		// ctor and dtor
 		EditVertexDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-					  const wxString& title = _("Edit Vertex Position"),
+					  const wxString& title = _("Edit Vertex"),
 					  const wxPoint& pos = wxDefaultPosition,
 					  const wxSize& size = wxDefaultSize,
 					  long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );

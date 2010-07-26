@@ -165,21 +165,21 @@ void QueriesPageIntro::CreateControls() {
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Attribution based query") ), wxVERTICAL );
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Attribution based query") ), wxVERTICAL );
 	
-	m_RadioBtn[QUERY_LAYERS] = new wxRadioButton( this, wxID_ANY, wxT("Layer query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_LAYERS] = new wxRadioButton( this, wxID_ANY, _("by Layer"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_RadioBtn[QUERY_LAYERS], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_OBJECTS] = new wxRadioButton( this, wxID_ANY, wxT("Object query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_OBJECTS] = new wxRadioButton( this, wxID_ANY, _("by Object Kind"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_RadioBtn[QUERY_OBJECTS], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_SELECTED] = new wxRadioButton( this, wxID_ANY, wxT("From selected feature"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_SELECTED] = new wxRadioButton( this, wxID_ANY, _("From selected feature"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_RadioBtn[QUERY_SELECTED] , 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_GENERIC] = new wxRadioButton( this, wxID_ANY, wxT("Generic query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_GENERIC] = new wxRadioButton( this, wxID_ANY, _("Generic query"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_RadioBtn[QUERY_GENERIC], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_SQL] = new wxRadioButton( this, wxID_ANY, wxT("SQL query (expert)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_SQL] = new wxRadioButton( this, wxID_ANY, _("SQL query (expert)"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_RadioBtn[QUERY_SQL], 0, wxALL, 5 );
 	
 	bSizer2->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
@@ -188,12 +188,12 @@ void QueriesPageIntro::CreateControls() {
 	bSizer2->Add( 0, 5, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer3;
-	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Geometry based query") ), wxVERTICAL );
+	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Geometry based query") ), wxVERTICAL );
 	
-	m_RadioBtn[QUERY_LINES] = new wxRadioButton( this, wxID_ANY, wxT("Small lines"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_LINES] = new wxRadioButton( this, wxID_ANY, _("by Length"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer3->Add( m_RadioBtn[QUERY_LINES], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_NODES] = new wxRadioButton( this, wxID_ANY, wxT("Lines with few nodes"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn[QUERY_NODES] = new wxRadioButton( this, wxID_ANY, _("by number of nodes"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer3->Add( m_RadioBtn[QUERY_NODES], 0, wxALL, 5 );
 	
 	bSizer2->Add( sbSizer3, 0, wxALL|wxEXPAND, 5 );
@@ -356,8 +356,7 @@ void QueriesPageLayer::_CreateControls() {
 	
 	wxStaticText* m_staticText2;
 	m_staticText2 = new wxStaticText( this, wxID_ANY, 
-									 wxT("Add a query for selecting all objects belonging ")
-									 wxT("to the following layer"),
+									 _("Select all features from "),
 									 wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer3->Add( m_staticText2, 0, wxALL, 5 );
@@ -381,11 +380,11 @@ void QueriesPageObjectType::_CreateControls() {
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText8;
-	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Choose the type of objects you want to select"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8 = new wxStaticText( this, wxID_ANY, _("Choose the feature's type you want to select"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE);
 	bSizer11->Add( m_staticText8, 0, wxALL, 5 );
 	
-	wxString m_LayerTypeChoices[] = { wxT("Lines"), wxT("Points"), wxT("Labels") };
+	wxString m_LayerTypeChoices[] = { _("Lines"), _("Points"), _("Labels") };
 	int m_LayerTypeNChoices = sizeof( m_LayerTypeChoices ) / sizeof( wxString );
 	m_LayerType = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), m_LayerTypeNChoices, m_LayerTypeChoices, 1, wxRA_SPECIFY_COLS );
 	m_LayerType->SetSelection( 0 );
@@ -434,7 +433,7 @@ void QueriesPageObject::_CreateControls() {
 	
 	wxStaticText* m_staticText8;
 	m_staticText8 = new wxStaticText( this, wxID_ANY, 
-									 _("Add a query for selecting objects with following values"),
+									 _("Select object Kind"),
 									 wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer11->Add( m_staticText8, 0, wxALL, 5 );
@@ -493,7 +492,7 @@ bool QueriesPageObject::TransferDataFromWindow() {
 	wxASSERT(m_Objects.GetCount() > 0);
 	m_Parent->GetData()->m_QueryObjectID = m_Objects.Item(myIndex).m_ObjectID;
 	
-	m_Parent->GetData()->m_QueryName = _("Type - ") + m_Objects.Item(myIndex).m_ObjectName;
+	m_Parent->GetData()->m_QueryName = _("Kind - ") + m_Objects.Item(myIndex).m_ObjectName;
 	
 	return true;
 }
@@ -510,7 +509,7 @@ void QueriesPageSelection::_CreateControls() {
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText7;
-	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Add a query for selecting all objects having the following value"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( this, wxID_ANY, _("Select feature by object Kind"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer10->Add( m_staticText7, 0, wxALL, 5 );
 	
@@ -586,14 +585,14 @@ void QueriesPageAttribut1::_CreateControls() {
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText7;
-	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Advanced attribution"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( this, wxID_ANY, _("Object attribute options"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer10->Add( m_staticText7, 0, wxALL, 5 );
 	
 	wxString m_AdvAttribRadioChoices[] = { 
-		wxT("Don't use advanced attribution"),
-		wxT("Select object without advanced attribution"),
-		wxT("Select object with following advanced attribution")
+		_("Don't use object attribute"),
+		_("Select object with no object attribute"),
+		_("Select object with object attribute")
 	};
 	int m_AdvAttribRadioNChoices = sizeof( m_AdvAttribRadioChoices ) / sizeof( wxString );
 	m_AdvAttribRadio = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_AdvAttribRadioNChoices, m_AdvAttribRadioChoices, 1, wxRA_SPECIFY_COLS );
@@ -683,17 +682,17 @@ void QueriesPageAttribut2::_CreateControls() {
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_AdvText;
-	m_AdvText = new wxStaticText( this, wxID_ANY, wxT("Delete any unneeded attribution field"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_AdvText = new wxStaticText( this, wxID_ANY, _("If needed, delete unwanted criteria"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_AdvText->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE  );
 	bSizer12->Add( m_AdvText, 0, wxALL, 5 );
 	
 	wxStaticBoxSizer* m_AdvSizer;
-	m_AdvSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Advanced attribution") ), wxVERTICAL );
+	m_AdvSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Object attribute") ), wxVERTICAL );
 	
 	m_AdvAttributs = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 ); 
 	m_AdvSizer->Add( m_AdvAttributs, 1, wxALL|wxEXPAND, 5 );
 	
-	m_ReloadButton = new wxFlatButton( this, wxID_ANY, wxT("Reload"), wxDefaultSize);
+	m_ReloadButton = new wxFlatButton( this, wxID_ANY, _("Reload"), wxDefaultSize);
 	m_AdvSizer->Add( m_ReloadButton, 0, wxALL|wxALIGN_RIGHT, 5 );
 	
 	bSizer12->Add( m_AdvSizer, 1, wxEXPAND|wxALL, 5 );
@@ -832,23 +831,23 @@ void QueriesPageGenericData::_Add(int layertarger, const wxString & description,
 
 
 QueriesPageGenericData::QueriesPageGenericData() {
-	_Add(TOC_NAME_LINES, _("Line(s) without attributions"),
+	_Add(TOC_NAME_LINES, _("Line(s) with no attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE l.OBJECT_ID NOT IN (SELECT generic_aat.OBJECT_GEOM_ID FROM generic_aat)"));
-	_Add(TOC_NAME_LINES, _("Line(s) with more than one attribut"),
+	_Add(TOC_NAME_LINES, _("Line(s) with more than one attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_aat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
-	_Add(TOC_NAME_LINES, _("Line(s) with one attribut"),
+	_Add(TOC_NAME_LINES, _("Line(s) with one attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_lines l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_aat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) = 1)"));
-	_Add(TOC_NAME_POINTS, _("Point(s) without attributions"),
+	_Add(TOC_NAME_POINTS, _("Point(s) with no attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_points l WHERE l.OBJECT_ID NOT IN (SELECT generic_pat.OBJECT_GEOM_ID FROM generic_pat)"));
-	_Add(TOC_NAME_POINTS, _("Point(s) with more than one attribut"),
+	_Add(TOC_NAME_POINTS, _("Point(s) with more than one attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_points l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_pat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
-	_Add(TOC_NAME_POINTS, _("Point(s) with one attribut"),
+	_Add(TOC_NAME_POINTS, _("Point(s) with one attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_points l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_pat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) = 1)"));
-	_Add(TOC_NAME_LABELS, _("Label(s) without attributions"),
+	_Add(TOC_NAME_LABELS, _("Label(s) with no attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_labels l WHERE l.OBJECT_ID NOT IN (SELECT generic_lat.OBJECT_GEOM_ID FROM generic_lat)"));
-	_Add(TOC_NAME_LABELS, _("Label(s) with more than one attribut"),
+	_Add(TOC_NAME_LABELS, _("Label(s) with more than one attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_labels l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_lat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)"));
-	_Add(TOC_NAME_LABELS, _("Label(s) with one attribut"),
+	_Add(TOC_NAME_LABELS, _("Label(s) with one attribution"),
 		 _T("SELECT l.OBJECT_ID FROM generic_labels l WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_lat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) = 1)"));
 	
 }
@@ -874,7 +873,7 @@ void QueriesPageGeneric::_CreateControls() {
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText2;
-	m_staticText2 = new wxStaticText( this, wxID_ANY, wxT("Choose the generic query you want to add"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2 = new wxStaticText( this, wxID_ANY, _("Choose the generic query you want to add"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer3->Add( m_staticText2, 0, wxALL, 5 );
 	
@@ -946,11 +945,11 @@ void QueriesPageExpert::_CreateControls() {
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText8;
-	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("Choose on which build-up layer the query will apply"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8 = new wxStaticText( this, wxID_ANY, _("Choose on which build-up layer the query\nwill apply"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer11->Add( m_staticText8, 0, wxALL, 5 );
 	
-	wxString m_LayerTypeChoices[] = { wxT("Lines"), wxT("Points"), wxT("Labels"), wxT("Notes") };
+	wxString m_LayerTypeChoices[] = { _("Lines"), _("Points"), _("Labels"), _("Notes") };
 	int m_LayerTypeNChoices = sizeof( m_LayerTypeChoices ) / sizeof( wxString );
 	m_LayerType = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), m_LayerTypeNChoices, m_LayerTypeChoices, 1, wxRA_SPECIFY_COLS );
 	m_LayerType->SetSelection( 0 );
@@ -988,7 +987,7 @@ void QueriesPageSQL::_CreateControls() {
 	bSizer9 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText8;
-	m_staticText8 = new wxStaticText( this, wxID_ANY, wxT("SQL code for the query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8 = new wxStaticText( this, wxID_ANY, _("Edit SQL code"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer9->Add( m_staticText8, 0, wxALL, 5 );
 	
@@ -1031,7 +1030,7 @@ void QueriesPageGeomLine::_CreateControls() {
 	bSizer15 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText13;
-	m_staticText13 = new wxStaticText( this, wxID_ANY, wxT("Select lines smaller than (map units)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText13 = new wxStaticText( this, wxID_ANY, _("Select lines shorter than (map units)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText13->Wrap(m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer15->Add( m_staticText13, 0, wxALL, 5 );
 	
@@ -1062,7 +1061,7 @@ bool QueriesPageGeomLine::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QueryLineSize = m_SpinLineSize->GetValue();
 	
 	// offer a name
-	m_Parent->GetData()->m_QueryName = wxString::Format(_("Geom - Lines smaller than %d"),
+	m_Parent->GetData()->m_QueryName = wxString::Format(_("Geom - Lines shorter than %d"),
 														m_SpinLineSize->GetValue());
 	return true;
 }
@@ -1079,7 +1078,7 @@ void QueriesPageGeomNodes::_CreateControls() {
 	bSizer16 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText14;
-	m_staticText14 = new wxStaticText( this, wxID_ANY, wxT("Select lines with less nodes than"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14 = new wxStaticText( this, wxID_ANY, _("Select lines with number of nodes less than"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText14->Wrap( -1 );
 	bSizer16->Add( m_staticText14, 0, wxALL, 5 );
 	
@@ -1110,7 +1109,7 @@ bool QueriesPageGeomNodes::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QueryNodeNumber = m_SpinFewNodes->GetValue();
 	
 	// offer a name
-	m_Parent->GetData()->m_QueryName = wxString::Format(_("Geom - Lines with less nodes than %d"),
+	m_Parent->GetData()->m_QueryName = wxString::Format(_("Geom - Lines with number of nodes less than %d"),
 														m_SpinFewNodes->GetValue());
 	
 	return true;
@@ -1134,7 +1133,7 @@ void QueriesPageName::_CreateControls() {
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText3;
-	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("Name of the query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText3 = new wxStaticText( this, wxID_ANY, _("Query name"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText3->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer4->Add( m_staticText3, 0, wxALL, 5 );
 	
@@ -1142,7 +1141,7 @@ void QueriesPageName::_CreateControls() {
 	m_TextName->SetMaxLength( 200 ); 
 	bSizer4->Add( m_TextName, 0, wxALL|wxEXPAND, 5 );
 	
-	m_RunQueryBox = new wxCheckBox( this, wxID_ANY, wxT("Run Query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RunQueryBox = new wxCheckBox( this, wxID_ANY, _("Run Query after Finish"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_RunQueryBox->SetValue(true);
 	
 	bSizer4->Add( m_RunQueryBox, 0, wxALL, 5 );

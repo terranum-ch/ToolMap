@@ -79,7 +79,7 @@ class tmAAttribWindow : public wxDialog
 						wxArrayString * values,
 						const tmLayerValueArray & arrayidname,
 						wxWindowID id = wxID_ANY,
-						const wxString& title = _("Advanced attribution"),
+						const wxString& title = _("Object attribute (single feature)"),
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
 						long style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );

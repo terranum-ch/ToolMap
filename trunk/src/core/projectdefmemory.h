@@ -95,19 +95,19 @@ static const int PRJDEF_PROJ_TYPE_NUMBER = 2;
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_FIELD_TYPE_STRING[] = 
 {
+	_("Enumeration"),
 	_("Text"),
 	_("Integer"),
 	_("Float"),
-	_("Date"),
-	_("Enumeration")
+	_("Date")
 };
 enum PRJDEF_FIELD_TYPE
 {	
-	TM_FIELD_TEXT = 0,
+	TM_FIELD_ENUMERATION = 0,
+	TM_FIELD_TEXT,
 	TM_FIELD_INTEGER,
 	TM_FIELD_FLOAT,
-	TM_FIELD_DATE,
-	TM_FIELD_ENUMERATION
+	TM_FIELD_DATE
 };
 static const int PRJDEF_FIELD_TYPE_NUMBER = 5;
 

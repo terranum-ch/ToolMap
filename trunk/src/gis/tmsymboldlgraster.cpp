@@ -86,7 +86,7 @@ void tmSymbolDLGRaster::CreateControls()
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     m_SymbolPanel->SetSizer(itemBoxSizer8);
 	
-    wxStaticBox* itemStaticBoxSizer9Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Color transparency"));
+    /*wxStaticBox* itemStaticBoxSizer9Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Color transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer9 = new wxStaticBoxSizer(itemStaticBoxSizer9Static, wxVERTICAL);
     itemBoxSizer8->Add(itemStaticBoxSizer9, 1, wxGROW|wxALL, 5);
     m_UseTransparencyColourCtrl = new wxCheckBox( m_SymbolPanel, 
@@ -97,7 +97,7 @@ void tmSymbolDLGRaster::CreateControls()
     itemStaticBoxSizer9->Add(m_UseTransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 	
     m_TransparencyColourCtrl = new tmColourPickerCtrl( m_SymbolPanel, ID_SYMDLGRASTER_TRANSPARENCY_COLOR);
-    itemStaticBoxSizer9->Add(m_TransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    itemStaticBoxSizer9->Add(m_TransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);*/
 	
     wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer12 = new wxStaticBoxSizer(itemStaticBoxSizer12Static, wxHORIZONTAL);
@@ -114,8 +114,8 @@ void tmSymbolDLGRaster::CreateControls()
 
 bool tmSymbolDLGRaster::TransferDataToWindow()
 {
-	m_UseTransparencyColourCtrl->SetValue(m_DlgData.m_bUseColorTransparency);
-	m_TransparencyColourCtrl->SetColour(m_DlgData.m_TransparencyColour);
+	//m_UseTransparencyColourCtrl->SetValue(m_DlgData.m_bUseColorTransparency);
+	//m_TransparencyColourCtrl->SetColour(m_DlgData.m_TransparencyColour);
 	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
 	
 	return TRUE;
@@ -125,8 +125,8 @@ bool tmSymbolDLGRaster::TransferDataToWindow()
 
 bool tmSymbolDLGRaster::TransferDataFromWindow()
 {
-	m_DlgData.m_bUseColorTransparency = m_UseTransparencyColourCtrl->GetValue();
-	m_DlgData.m_TransparencyColour = m_TransparencyColourCtrl->GetColour();
+	//m_DlgData.m_bUseColorTransparency = m_UseTransparencyColourCtrl->GetValue();
+	//m_DlgData.m_TransparencyColour = m_TransparencyColourCtrl->GetColour();
 	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
 	
 	return TRUE;

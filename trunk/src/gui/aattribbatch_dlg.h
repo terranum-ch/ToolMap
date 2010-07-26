@@ -134,7 +134,7 @@ public:
 
 	AAttribBatch_DLG( wxWindow* parent, tmAAttribBatchManager * manager,
 					 wxWindowID id = wxID_ANY, 
-					 const wxString& title = wxT("Advanced batch attribution"), 
+					 const wxString& title = _("Object attribute (multiple features)"), 
 					 const wxPoint& pos = wxDefaultPosition, 
 					 const wxSize& size = wxSize( 550,350 ),
 					 long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
