@@ -186,6 +186,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_TOC_WINDOW, ToolMapFrame::OnTocWindow)
 	EVT_MENU (ID_MENU_OPEN_PRJ, ToolMapFrame::OnOpenProject)
 	EVT_MENU (ID_MENU_OBJ_DEF, ToolMapFrame::OnEditProjectObjects)
+	EVT_MENU (ID_MENU_OBJ_ATTRIB_DEF, ToolMapFrame::OnEditObjectAttributes)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
 	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
 	EVT_MENU (ID_MENU_BACKUP_PRJ, ToolMapFrame::OnBackupProject)
@@ -483,6 +484,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu16 = new wxMenu;
     itemMenu16->Append(ID_MENU_PRJ_DEF, _("Project definition..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu16->Append(ID_MENU_OBJ_DEF, _("Object Kind..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu16->Append(ID_MENU_OBJ_ATTRIB_DEF, _("Object Attribute..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu16->Append(ID_MENU_PRJ_SETTINGS, _("Settings..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit"), itemMenu16);
     //itemMenu2->AppendSeparator();
@@ -765,12 +767,17 @@ void ToolMapFrame::OnEditProjectSettings (wxCommandEvent & event)
 }
 
 
-
 void ToolMapFrame::OnEditProject (wxCommandEvent & event)
 {
 	// call the project manager
-	m_PManager->EditProject();
+	m_PManager->EditProject(0);
 	
+}
+
+void ToolMapFrame::OnEditObjectAttributes (wxCommandEvent & event)
+{
+	// call the project manager.
+	m_PManager->EditProject(1);
 }
 
 

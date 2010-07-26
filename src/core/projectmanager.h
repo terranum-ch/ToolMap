@@ -102,7 +102,7 @@ class ProjectManager : public wxObject
 		int OpenProject(const wxString & path);
 		bool EditProjectObjectDefinition ();
 		bool EditProjectSettings ();
-		bool EditProject ();
+		bool EditProject (int notebooknumber);
 		bool BackupProject ();
 		
 		bool TempTempInitTOC ();

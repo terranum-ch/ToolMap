@@ -140,6 +140,7 @@ class ProjectDefDLG: public wxDialog
 		
 		/// Creates the controls and sizers
 		void CreateControls();
+		void SetNotebook (int notebooknumber);
 		
 		//void RemoveObjFromArray();
 		virtual bool TransferDataFromWindow();
