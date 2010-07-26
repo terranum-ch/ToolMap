@@ -135,8 +135,9 @@ wxArrayString tmGISData::GetAllSupportedGISFormatsExtensions()
 	
 	
 	// adding rasters
-	for (int r = 0; r< iNbRaster; r++)
+	for (int r = 0; r< iNbRaster; r++){
 		myExtensions.Add(tmGISDATA_RASTER_TYPE_EXTENSION[r]);
+	}
 	
 	// adding vectors
 	for (int v = 0; v< iNbVector; v++)

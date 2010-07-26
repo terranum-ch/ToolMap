@@ -47,8 +47,8 @@ _("MySQL geometric table (*.MYD)|*.MYD")};
 
 static wxString tmGISDATA_VECTOR_TYPE_EXTENSION[] =
 {
-	_T("shp"),
-	_T("mysql"),
+	_T("*.shp"),
+	_T("*.mysql"),
 };
 
 
