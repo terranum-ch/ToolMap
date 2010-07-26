@@ -100,7 +100,7 @@ void tmSymbolDLGLine::CreateControlsLine()
 	itemFlexGridSizer11->Add(m_LineColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);													   
 	
 	
-    wxStaticText* itemStaticText14 = new wxStaticText( itemPanel10, wxID_STATIC, _("Shape :"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText14 = new wxStaticText( itemPanel10, wxID_STATIC, _("Symbol :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     m_LinePatternCtrl = new wxChoice( itemPanel10, ID_SYMDLGL_PATTERN, wxDefaultPosition, wxDefaultSize,

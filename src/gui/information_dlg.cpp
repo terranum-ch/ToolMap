@@ -271,7 +271,7 @@ wxMenu * tmSelectionInfoCtrl::_CreatePopupMenu() {
 	myMenu->Append( m_menuItem9 );
 	
 	wxMenuItem* m_menuItem10;
-	m_menuItem10 = new wxMenuItem( myMenu, ID_POPUP_ONLY_THIS_OBJ, wxString( wxT("Select this object only") ) , wxEmptyString, wxITEM_NORMAL );
+	m_menuItem10 = new wxMenuItem( myMenu, ID_POPUP_ONLY_THIS_OBJ, wxString( wxT("Select this feature only") ) , wxEmptyString, wxITEM_NORMAL );
 	myMenu->Append( m_menuItem10 );
 	
 	myMenu->AppendSeparator();

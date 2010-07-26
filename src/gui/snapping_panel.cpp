@@ -99,9 +99,9 @@ wxSizer * Snapping_PANEL::CreateControls(wxWindow * parent,
 	bSizer14 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxStaticText* m_staticText5;
-	m_staticText5 = new wxStaticText( parent, wxID_ANY, _("Tolerence (map unit) :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5 = new wxStaticText( parent, wxID_ANY, _("Tolerance (map unit) :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText5->Wrap( -1 );
-	bSizer14->Add( m_staticText5, 0, wxALL, 5 );
+	bSizer14->Add( m_staticText5, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_Tolerence = new wxSpinCtrl( parent, ID_SNAP_TOLERENCE_TXT,
 								 _T("10"), 
@@ -445,8 +445,8 @@ void SnappingList::BeforeAdding()
 	m_LayersID.Clear();
 	m_LayersName.Clear();
 	
-	wxString myDlgMessage = _("Select one or more layer to add to the snapping list");
-	wxString myDlgCaption = _("Add one or more snapping layer(s)");
+	wxString myDlgMessage = _("Select one or more layer(s) to add to the snapping list");
+	wxString myDlgCaption = _("Snapping layers");
 	
 	m_pDB->GetValidLayersForSnapping(m_LayersID, m_LayersName);
 	wxMultiChoiceDialog * myDlg = new wxMultiChoiceDialog(this,

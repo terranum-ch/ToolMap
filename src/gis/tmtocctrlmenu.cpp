@@ -77,7 +77,7 @@ void tmTOCCtrlMenu::CreateTOCBasic ()
 	}
 	else 
 	{
-		AppendCheckItem(ID_TOCMENU_EDIT_LAYER, _("Edit this layer"));
+		AppendCheckItem(ID_TOCMENU_EDIT_LAYER, _("Edit layer"));
 		if (m_bEditLayer)
 			Check(ID_TOCMENU_EDIT_LAYER, true);
 	}

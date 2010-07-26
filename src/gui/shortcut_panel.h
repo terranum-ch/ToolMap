@@ -40,7 +40,7 @@
 #define IDDLG_SHORT_ADD_BTN 21002
 #define IDDLG_SHORT_DEL_BTN 21003
 //#define IDDLG_SHORT_EDIT_BTN 21004
-#define SHORTCUT_PANEL_TITLE _("Shortcuts")
+#define SHORTCUT_PANEL_TITLE _("Shortcut")
 #define SHORTCUT_PANEL_SIZE wxSize(250, 200)
 
 

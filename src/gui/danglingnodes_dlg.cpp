@@ -51,7 +51,7 @@ void DanglingNode_DLG::CreateControls()
 	
 	wxStaticText* m_staticText6;
 	m_staticText6 = new wxStaticText( this, wxID_ANY,
-									 _("Search dangling nodes on:"),
+									 _("Search for dangling nodes on:"),
 									 wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer24->Add( m_staticText6, 0, wxTOP|wxRIGHT|wxLEFT, 10 );

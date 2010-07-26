@@ -126,7 +126,7 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
 	wxArrayString myColName;
-	myColName.Add(_("Key"));
+	myColName.Add(_("Function Key"));
 	myColName.Add(_("Description"));
 	
 	wxArrayInt myColWidth;

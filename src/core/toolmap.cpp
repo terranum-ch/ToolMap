@@ -511,7 +511,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to layer"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu28, _("View"));
     wxMenu* itemMenu41 = new wxMenu;
-    itemMenu41->Append(ID_MENU_UNDO, _("Undo\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL); 
@@ -519,7 +519,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Enable(ID_MENU_MODIFY, false);
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected features\tDel"), wxEmptyString, wxITEM_NORMAL);
+	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected feature\tDel"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut line\tCtrl+X"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge line\tCtrl+M"), wxEmptyString, wxITEM_NORMAL);

@@ -845,14 +845,14 @@ bool tmLayerManager::SelectByOid (){
 	}
 	tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
 	if (!layerprop){
-		wxLogMessage(_("No layer selected, select a layer first in the Table of content"));
+		wxLogError(_("No layer selected, select a layer in the Table of content"));
 		return false;
 	}
 	
 	wxASSERT(m_Parent);
-	long myOid = wxGetNumberFromUser (_("Set the object id to select"),
-						 _("Object ID: "),
-						 _("Select object by ID"),
+	long myOid = wxGetNumberFromUser (wxEmptyString,
+						 _("Feature ID: "),
+						 _("Select by feature ID"),
 						 1, 0, 1000000,
 						 m_Parent);
 	
