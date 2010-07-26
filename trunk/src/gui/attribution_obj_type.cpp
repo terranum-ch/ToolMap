@@ -231,17 +231,16 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	
 	m_ButtonSizer = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_InfoBtn = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"), wxDefaultSize);
-	m_InfoBtn->Enable(false);
-	m_ButtonSizer->Add( m_InfoBtn, 0, wxEXPAND, 5 );
-	
+
 	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
 									m_AttribBtnLabel, wxDefaultSize);
-/*	wxSize myBtnSize = m_AttribBtn->GetSize();
-	myBtnSize.x += 100;
-	m_AttribBtn->SetSize(myBtnSize);*/
 	m_AttribBtn->Enable(false);
-	m_ButtonSizer->Add( m_AttribBtn, 0, wxEXPAND|wxLEFT, 5 );
+	m_ButtonSizer->Add( m_AttribBtn, 0, wxEXPAND, 5 );
+	
+	
+	m_InfoBtn = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"), wxDefaultSize);
+	m_InfoBtn->Enable(false);
+	m_ButtonSizer->Add( m_InfoBtn, 0, wxEXPAND|wxLEFT, 5 );
 	
 	
 	m_ButtonSizer->Add( 0, 0, 2, 0, 5 );
