@@ -26,6 +26,7 @@
 #include "../img/cursor_hand.cpp"
 #include "../img/cursor_editing.cpp"
 #include "../img/cursor_oriented1.cpp"
+#include "tmmanagerevent.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -301,7 +302,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 				
 		//dc.SetPen(*wxBLACK_PEN);
 		dc.DrawBitmap (*m_bmp,wxPoint(0,0),false);
-
+		
 	}
 	
 }

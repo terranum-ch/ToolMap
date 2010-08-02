@@ -424,7 +424,7 @@ int ProjectManager::OpenProject(const wxString & path)
 	if (mystatus == tmDB_OPEN_OK)
 	{
 		// updates the menu using the menu manager
-		m_pMManager->SetStatus(MENU_DB_OPENED);
+		///m_pMManager->SetStatus(MENU_DB_OPENED);
 		m_pMManager->AddFileToRecent(path);
 		
 		// update objects to lists
@@ -468,7 +468,7 @@ int ProjectManager::OpenProject(const wxString & path)
 	}
 	else
 	{
-		m_pMManager->SetStatus(MENU_DB_CLOSED);
+		///m_pMManager->SetStatus(MENU_DB_CLOSED);
 		CloseProject();
 	}
 	
