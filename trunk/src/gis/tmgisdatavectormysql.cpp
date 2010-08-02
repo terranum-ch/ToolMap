@@ -1071,6 +1071,10 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 	
 	// create feature from geometry
 	OGRFeatureDefn * myFeatDef = new OGRFeatureDefn(GetShortFileName().mb_str());
+	OGRFieldDefn * myFieldDef = new OGRFieldDefn(wxString(_T("test")).mb_str(), OFTInteger);
+	myFeatDef->AddFieldDefn(myFieldDef);
+	myFeatDef->Reference();
+
 	
 	if (TABLE_NAME_GIS_GENERIC[0] == GetShortFileName()) {
 		myFeatDef->SetGeomType(wkbLineString);
@@ -1093,6 +1097,8 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 	myFeature->SetGeometryDirectly(myGeom);
 	myFeature->SetFID(oid);
 	
+
+	wxDELETE(myFieldDef);
 	m_DB->DataBaseClearResults();
 	return myFeature;
 }
