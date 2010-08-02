@@ -1190,7 +1190,7 @@ bool tmLayerManager::LoadProjectLayers()
 	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
 	
 	// send view updated message 
-	ViewUpdated();
+	//ViewUpdated();
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -1208,6 +1208,10 @@ bool tmLayerManager::LoadProjectLayers()
 	evt.SetInt(static_cast<int> (false));
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	_ZoomChanged();
+	
+	// send view updated message 
+	ViewUpdated();
+
 	
 	return TRUE;
 }
@@ -1265,9 +1269,6 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	// update scrollbars
 	//UpdateScrollBars();
 	
-	
-	
-	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
 	if (m_Bitmap)
@@ -1277,6 +1278,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	}
 	
 	m_GISRenderer->Refresh();
+	m_GISRenderer->Update();
 	
 	ViewUpdated();
 	return true;
@@ -1670,6 +1672,9 @@ bool tmLayerManager::ZoomPrevious()
 	}
 	return true;
 }
+
+
+bool HasZoomPrevious();
 
 
 

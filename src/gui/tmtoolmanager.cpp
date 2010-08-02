@@ -233,7 +233,7 @@ bool tmToolManager::TMIsOk()
 
 void tmToolManager::OnViewUpdated (wxCommandEvent & event)
 {
-	if(TMDrawDanglingNodes(true)==true)
+	if(TMDrawDanglingNodes(false)==true)
 	{
 		wxLogDebug(_T("Dangling nodes drawed"));
 	}

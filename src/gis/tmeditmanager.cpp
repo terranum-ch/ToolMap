@@ -217,7 +217,6 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 			m_DrawLine.CreateVertex(myPt);
 		}
 		
-		
 		// draw memory line
 		DrawMemoryData(true);
 	}
@@ -450,6 +449,12 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	{
 		delete myPxCoord;
 		return;
+	}
+	
+	// remove last segment
+	if (m_DrawLine.IsOK() == true) {
+		wxClientDC dc (m_Renderer);
+		m_DrawLine.DrawEditPart(&dc);
 	}
 	
 	//bool bCreate = m_DrawLine.CreateVertex(*myPxCoord);

@@ -148,7 +148,7 @@ class ProjectManager;
 #define ID_MENU_OPEN_PRJ			10302
 #define ID_MENU_RECENT				10303
 #define ID_MENU_BACKUP_PRJ			10304
-#define ID_MENU_RESTORE_PRJ			10305
+//#define ID_MENU_RESTORE_PRJ			10305
 #define ID_MENU_EXPORT			10306
 #define ID_MENU_EXPORT_LAYER		10307
 #define ID_MENU_EXPORT_FULL			10308
@@ -365,27 +365,15 @@ private:
 	// ToolsFunction
 	void OnDanglingNodes(wxCommandEvent & event);
 	
-	
-	//TODO: Remove this temp function
-	void OnTempBlockRefresh( wxCommandEvent & event)
-	{
-		if(m_LayerManager->GetRefreshBlocked())
-		{
-			m_LayerManager->BlockRefreshProcess(false);
-			wxLogDebug(_T("Refresh blocked"));
-		}
-		else
-		{
-			m_LayerManager->BlockRefreshProcess(true);
-			wxLogDebug(_T("Refresh unblocked"));
-		}
-	}
-		
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
-	
 	
 	// child event function
 	void OnMenuZoomPreviousChange(wxCommandEvent & event);
+	
+	
+	// update menu functions
+	void OnUpdateMenuProject(wxUpdateUIEvent & event);
+	
 	
 	
 	wxLogWindow * m_LogWindow;

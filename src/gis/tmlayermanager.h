@@ -173,6 +173,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnPan ();
 		void OnSelect();
 		bool ZoomPrevious();
+		bool HasZoomPrevious();
 		
 		// selection function
 		bool SelectedSearch (const wxRect & rect, bool shiftdown = false);

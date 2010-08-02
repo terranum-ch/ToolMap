@@ -239,9 +239,6 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 	EVT_MENU (ID_MENU_QUERIES_RUN, ToolMapFrame::OnQueriesRun)
-
-	//TODO: Temp function for testing purpose, remove.
-	//EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnTempBlockRefresh)
 	
 	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
 	EVT_MENU (ID_MENU_REPORT_BUG, ToolMapFrame::OnReportBug)
@@ -262,6 +259,23 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ZOOMPREVIOUS_ENABLE, ToolMapFrame::OnMenuZoomPreviousChange)
+
+
+	// UPDATE UI EVENT
+	EVT_UPDATE_UI_RANGE(ID_MENU_BACKUP_PRJ, ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnUpdateMenuProject)
+	
+	EVT_UPDATE_UI (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI (ID_MENU_UNLINK_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
+	
+	EVT_UPDATE_UI_RANGE(ID_MENU_ZOOM, ID_MENU_ZOOM_FIT, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI (wxID_BACKWARD, ToolMapFrame::OnUpdateMenuProject)
+
+
+	//EVT_UPDATE_UI(ID_MENU_EXPORT_LAYER, ToolMapFrame::OnUpdateMenuProject)
+	//EVT_UPDATE_UI(ID_MENU_EXPORT_FULL, ToolMapFrame::OnUpdateMenuProject)
+
 	
 END_EVENT_TABLE()
 
@@ -500,7 +514,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     menuBar->Append(itemMenu24, _("Data"));
     wxMenu* itemMenu28 = new wxMenu;
     itemMenu28->Append(wxID_BACKWARD, _("Previous Zoom\tAlt+Left"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu28->Enable(wxID_BACKWARD, false);
+	//itemMenu28->Enable(wxID_BACKWARD, false);
 	itemMenu28->AppendSeparator();
     itemMenu28->Append(ID_MENU_ZOOM, _("Zoom by rectangle\tZ"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->Append(ID_MENU_PAN, _("Pan\tP"), _T(""), wxITEM_NORMAL);
@@ -519,14 +533,14 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL); 
-	itemMenu41->Enable(ID_MENU_DRAW, false);
+	//itemMenu41->Enable(ID_MENU_DRAW, false);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu41->Enable(ID_MENU_MODIFY, false);
+	//itemMenu41->Enable(ID_MENU_MODIFY, false);
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected feature\tDel"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut line\tCtrl+X"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge line\tCtrl+M"), wxEmptyString, wxITEM_NORMAL);
+	itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge line\tCtrl+F"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersection\tCtrl+I"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+F"), _T(""), wxITEM_NORMAL);
 	itemMenu41->AppendSeparator();
@@ -566,7 +580,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     wxMenu* itemMenu77 = new wxMenu;
     itemMenu77->Append(ID_MENU_TOC_WINDOW, _("Table of content"), wxEmptyString, wxITEM_CHECK);
     itemMenu77->Check(ID_MENU_TOC_WINDOW, true);
-    itemMenu77->Append(ID_MENU_INFO_WINDOW, _("Information Window\tCtrl+I"), wxEmptyString, wxITEM_CHECK);
+    itemMenu77->Append(ID_MENU_INFO_WINDOW, _("Information Window\tCtrl+Alt+I"), wxEmptyString, wxITEM_CHECK);
     itemMenu77->Append(ID_MENU_LOG_WINDOW, _("Log Window\tCtrl+L"), wxEmptyString, wxITEM_CHECK);
     menuBar->Append(itemMenu77, _("Window"));
     wxMenu* itemMenu81 = new wxMenu;
@@ -728,7 +742,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 			SetTitle(myProgName);
 			
 			// updates the menu using the menu manager
-			m_MManager->SetStatus(MENU_DB_OPENED);
+			///m_MManager->SetStatus(MENU_DB_OPENED);
 		}
 		else if (iActError != OPEN_DB_FAILED){
 			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myPath);
@@ -744,7 +758,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 			m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
 			
 			// updates the menu using the menu manager
-			m_MManager->SetStatus(MENU_DB_CLOSED);
+			///m_MManager->SetStatus(MENU_DB_CLOSED);
 		}
 	}
 	
@@ -846,7 +860,7 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 
 void ToolMapFrame::OnIdleTimeUpdate(wxIdleEvent & event)
 {
-	m_MManager->UpdateMenusStatus();
+	//m_MManager->UpdateMenusStatus();
 	
 	if (m_CheckedUpdates == false)
 	{
@@ -1398,4 +1412,12 @@ void ToolMapFrame::OnAbout(wxCommandEvent& event)
 	tmAboutDLG myDlg(this,wxID_ANY, _("About"));
 	myDlg.ShowModal();
 }
+
+
+
+void ToolMapFrame::OnUpdateMenuProject(wxUpdateUIEvent & event){
+	wxASSERT(m_PManager);
+	event.Enable(m_PManager->IsProjectOpen());
+}
+
 

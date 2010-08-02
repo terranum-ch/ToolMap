@@ -258,7 +258,7 @@ bool tmDrawerEditLine::DrawEditPart(wxClientDC * pdc)
 	wxPoint * myPts = DLGetPoints();
 	wxASSERT (myPts);
 	pdc->DrawLines(iNumPts, myPts);
-	
+	wxDELETEA(myPts);
 	
 	return true;
 }
