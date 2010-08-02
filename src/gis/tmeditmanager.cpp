@@ -1660,7 +1660,7 @@ bool tmEditManager::CreateIntersections ()
 	
 	// Get all line crossing
 	wxArrayLong * myLinesCrossing = mySelLayer->SearchIntersectingGeometry(myOGRSelLine);
-	if (myLinesCrossing == NULL)
+	if (myLinesCrossing == NULL || myLinesCrossing->GetCount() == 0)
 	{
 		OGRFeature::DestroyFeature(myFeature);
 		wxLogWarning(_T("No intersections found"));
