@@ -303,15 +303,15 @@ bool tmEditManager::IsLayerTypeSelected (int layertype)
 	tmLayerProperties * myEditLayer = m_TOC->GetEditLayer();
 	if (myEditLayer == NULL)
 	{
-		wxLogMessage(_("No editing layer selected. Define an edit layer"));
+		wxLogWarning(_("No editing layer selected. Define an edit layer"));
 		return false;
 	}
 	
 	
 	if (m_TOC->GetEditLayer()->m_LayerType != layertype)
 	{
-		wxLogMessage(_("Layer isn't of correct type.") + 
-					 wxString::Format(_("Please select a layer of type %s"),
+		wxLogWarning(_("Layer isn't of correct type.") + 
+					 wxString::Format(_("Please select a layer of type '%s'"),
 					 TM_GIS_SPATIAL_TYPES_STRING[layertype].c_str()));
 		return false;
 	}
@@ -337,7 +337,7 @@ bool tmEditManager::IsObjectSelected()
 	if (mySelCount == 1)
 		return true;
 	
-	wxLogMessage(_("%d object(s) selected, expected 1"), mySelCount);
+	wxLogWarning(_("%d object(s) selected, expected only one"), mySelCount);
 	return false;
 }
 
@@ -1642,7 +1642,7 @@ int tmEditManager::GetSelectionCount()
 bool tmEditManager::CreateIntersections ()
 {
 	// checks (editing mode and 1 line selected)
-	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectMinNumberSelected(1))
+	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectSelected())
 		return false;
 
 	// Get the Layer (Line MySQL) 
