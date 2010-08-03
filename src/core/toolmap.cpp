@@ -44,7 +44,7 @@
 #include "../img/img_tool11.cpp"
 // icon image
 #include "../img/img_icon32.cpp"
-
+#include "../gui/information_dlg.h"
 
 
 
@@ -279,9 +279,13 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnUpdateMenuEditModify)
 	EVT_UPDATE_UI (ID_MENU_DELETE_OBJ, ToolMapFrame::OnUpdateMenuEditDelete)
 	EVT_UPDATE_UI (ID_MENU_MERGE_LINES, ToolMapFrame::OnUpdateMenuEditMerge)
+	EVT_UPDATE_UI (ID_MENU_SHORTCUTS, ToolMapFrame::OnUpdateMenuShowShortcuts)
+
 
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_BATCH, ToolMapFrame::OnUpdateMenuEditDelete)
+	EVT_UPDATE_UI (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnUpdateMenuShowSnapping)
+
 
 	EVT_UPDATE_UI (ID_MENU_TOOL_DANGLING, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_ORIENT_POINT, ToolMapFrame::OnUpdateMenuEditPointOrient)
@@ -289,7 +293,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_BY_OID, ID_MENU_SELECT,ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_NONE, ID_MENU_SELECT_INVERSE, ToolMapFrame::OnUpdateMenuEditClearSelection)
 
+	EVT_UPDATE_UI (ID_MENU_QUERIES, ToolMapFrame::OnUpdateMenuShowQuery)
 	EVT_UPDATE_UI (ID_MENU_QUERIES_RUN, ToolMapFrame::OnUpdateMenuEditQueryRun)
+
+	EVT_UPDATE_UI (ID_MENU_TOC_WINDOW, ToolMapFrame::OnUpdateMenuShowTOC)
+	EVT_UPDATE_UI (ID_MENU_LOG_WINDOW, ToolMapFrame::OnUpdateMenuShowLog)
+	EVT_UPDATE_UI (ID_MENU_INFO_WINDOW, ToolMapFrame::OnUpdateMenuShowInfo)
 END_EVENT_TABLE()
 
 
@@ -850,8 +859,13 @@ void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
 
 void ToolMapFrame::OnLogWindow(wxCommandEvent & event)
 {
-	m_LogWindow->Show();
-	m_LogWindow->GetFrame()->Raise();
+	if (m_LogWindow->GetFrame()->IsShown()) {
+		m_LogWindow->GetFrame()->Hide();
+	}
+	else {
+		m_LogWindow->Show();
+		m_LogWindow->GetFrame()->Raise();
+	}
 }
 
 void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
@@ -859,13 +873,10 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 	if (m_TocWindow->IsShown())
 	{
 		m_TocWindow->Hide();
-		GetMenuBar()->Check(ID_MENU_TOC_WINDOW, FALSE);
 	}
 	else 
 	{
 		m_TocWindow->Show();
-		GetMenuBar()->Check(ID_MENU_TOC_WINDOW, TRUE);
-
 	}
 
 }
@@ -873,8 +884,6 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 
 void ToolMapFrame::OnIdleTimeUpdate(wxIdleEvent & event)
 {
-	//m_MManager->UpdateMenusStatus();
-	
 	if (m_CheckedUpdates == false)
 	{
 		m_CheckedUpdates = true;
@@ -908,15 +917,11 @@ void ToolMapFrame::OnShowObjectAttributionWindow (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
 {
-	if (m_QueriesPanel->IsPanelShown())
-	{
+	if (m_QueriesPanel->IsPanelShown()){
 		m_QueriesPanel->HidePanel();
-		GetMenuBar()->Check(ID_MENU_QUERIES, false);
 	}
-	else
-	{
+	else{
 		m_QueriesPanel->ShowPanel();
-		GetMenuBar()->Check(ID_MENU_QUERIES, true);
 	}
 	
 }
@@ -942,12 +947,10 @@ void ToolMapFrame::OnShowShortcutWindow (wxCommandEvent & event)
 	if (m_ShortCutPanel->IsPanelShown())
 	{
 		m_ShortCutPanel->HidePanel();
-		GetMenuBar()->Check(ID_MENU_SHORTCUTS, false);
 	}
 	else
 	{
 		m_ShortCutPanel->ShowPanel();
-		GetMenuBar()->Check(ID_MENU_SHORTCUTS, true);
 	}
 	
 }
@@ -964,12 +967,10 @@ void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
 	if (m_SnappingPanel->IsPanelShown())
 	{
 		m_SnappingPanel->HidePanel();
-		GetMenuBar()->Check(ID_MENU_ADJUST_SNAPPING, false);
 	}
 	else
 	{
 		m_SnappingPanel->ShowPanel();
-		GetMenuBar()->Check(ID_MENU_ADJUST_SNAPPING, true);
 	}
 	
 }
@@ -1449,7 +1450,14 @@ void ToolMapFrame::OnUpdateMenuEditDraw (wxUpdateUIEvent & event){
 
 void ToolMapFrame::OnUpdateMenuEditModify (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
-	event.Enable(m_EditManager->IsModifictionAllowed());
+	tmRenderer * myRenderer = m_MainPanel->GetGISRenderer();
+	wxASSERT(myRenderer);
+	wxASSERT(m_LayerManager);
+	bool bEnabled = m_EditManager->IsModifictionAllowed();
+	if (bEnabled == false && myRenderer->GetTool() == tmTOOL_MODIFY) {
+		m_LayerManager->OnSelect();
+	}
+	event.Enable(bEnabled);
 }
 
 
@@ -1503,6 +1511,44 @@ void ToolMapFrame::OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event){
 	event.Enable(m_QueriesPanel->IsQuerySelected());
 }
 
+
+void ToolMapFrame::OnUpdateMenuShowSnapping (wxUpdateUIEvent & event){
+	wxASSERT(m_SnappingPanel);
+	event.Check(m_SnappingPanel->IsPanelShown());
+}
+
+
+void ToolMapFrame::OnUpdateMenuShowShortcuts (wxUpdateUIEvent & event){
+	wxASSERT(m_ShortCutPanel);
+	event.Check(m_ShortCutPanel->IsPanelShown());
+}
+
+
+void ToolMapFrame::OnUpdateMenuShowQuery (wxUpdateUIEvent & event){
+	wxASSERT(m_QueriesPanel);
+	event.Check(m_QueriesPanel->IsPanelShown());
+}
+
+void ToolMapFrame::OnUpdateMenuShowTOC (wxUpdateUIEvent & event){
+	wxASSERT(m_TocWindow);
+	event.Check(m_TocWindow->IsShown());
+}
+
+
+void ToolMapFrame::OnUpdateMenuShowLog (wxUpdateUIEvent & event){
+	wxASSERT(m_LogWindow);
+	event.Check(m_LogWindow->GetFrame()->IsShown());
+}
+
+
+void ToolMapFrame::OnUpdateMenuShowInfo (wxUpdateUIEvent & event){
+	wxWindow * myInfoWnd = wxWindow::FindWindowById(ID_INFORMATION_DLG);
+	bool bCheck = false;
+	if (myInfoWnd != NULL && myInfoWnd->IsShown()) {
+		bCheck = true;
+	}
+	event.Check(bCheck);
+}
 
 
 
