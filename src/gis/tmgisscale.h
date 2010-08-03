@@ -104,6 +104,7 @@ class tmGISScale : public wxObject
 		double m_PixelSize;
 		wxSize m_ExtentWndMM;
 		long m_UnitScale;
+		wxSize m_PPI;
 		
 		void InitMemberValues();
 		
@@ -117,6 +118,7 @@ class tmGISScale : public wxObject
 		// static functions
 		static tmRealRect ComputeMaxCoord (const tmRealRect & r1, const tmRealRect & r2);
 		
+		void SetPPI (const wxSize & ppi){m_PPI = ppi;}
 		
 		// setter and getter for layers
 		void SetMaxLayersExtentAsExisting (const tmRealRect & r);

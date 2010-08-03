@@ -143,6 +143,8 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 	// 3) Init scale from database
 	InitScaleCtrlList();
 	
+	wxClientDC dc (m_GISRenderer);
+	m_Scale.SetPPI(dc.GetPPI());
 	
 	// 4) Load Data (not threaded)
 	if(!LoadProjectLayers())
