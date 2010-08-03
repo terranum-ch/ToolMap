@@ -46,17 +46,17 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
 {    
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE);// | wxTR_MULTIPLE);
+    m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200,-1), wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);// | wxTR_MULTIPLE);
     itemBoxSizer2->Add(m_TOCCtrl, 1, wxGROW|wxALL, 0);
 
 
-    wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    /*wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer2->Add(itemBoxSizer4, 0, wxALIGN_LEFT|wxALL, 0);
    wxFlatButton * itemToggleButton5 = new wxFlatButton (parent, ID_DLGTOC_ADD, wxFLATBUTTON_TEXT_ADD);
    itemBoxSizer4->Add(itemToggleButton5, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5);
 
     wxFlatButton * itemToggleButton6 = new wxFlatButton( parent, ID_DLGTOC_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
-    itemBoxSizer4->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemBoxSizer4->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
 
 	if (set_sizer)
     {
@@ -194,7 +194,7 @@ bool TocWindowDlgGen::IsShown()
 }
 
 
-BEGIN_EVENT_TABLE(TocWindowDlgGen, TocWindowContent)
+/*BEGIN_EVENT_TABLE(TocWindowDlgGen, TocWindowContent)
 	EVT_FLATBUTTON(ID_DLGTOC_REMOVE, TocWindowDlgGen::OnPressRemoveLayers)
 	EVT_FLATBUTTON(ID_DLGTOC_ADD, TocWindowDlgGen::OnPressAddLayers)
 END_EVENT_TABLE()
@@ -211,5 +211,5 @@ void TocWindowDlgGen::OnPressAddLayers(wxCommandEvent & event)
 {	
 	wxCommandEvent evt(tmEVT_LM_ADD, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-}
+}*/
 
