@@ -27,7 +27,6 @@ DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED);
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
 DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED);
 DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED);
-DEFINE_EVENT_TYPE(tmEVT_LM_ZOOMPREVIOUS_ENABLE);
 
 DEFINE_EVENT_TYPE(tmEVT_LM_MOVE_TO_FEATURE);
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE);
@@ -1204,9 +1203,6 @@ bool tmLayerManager::LoadProjectLayers()
 	
 	// previous zoom
 	m_ZoomManager.Clear();
-	wxCommandEvent evt(tmEVT_LM_ZOOMPREVIOUS_ENABLE, wxID_ANY);
-	evt.SetInt(static_cast<int> (false));
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	_ZoomChanged();
 	
 	// send view updated message 
@@ -1636,15 +1632,6 @@ void tmLayerManager::_ZoomChanged()
 		return; 
 	}
 	m_ZoomManager.Add(myActualExtent);
-	
-	// activate the zoom previous menu
-	if (m_ZoomManager.GetCount() >=1)
-	{
-		wxCommandEvent evt(tmEVT_LM_ZOOMPREVIOUS_ENABLE, wxID_ANY);
-		evt.SetInt(static_cast<int> (true));
-		m_Parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-	
 }
 
 
@@ -1662,19 +1649,18 @@ bool tmLayerManager::ZoomPrevious()
 	
 	
 	m_Scale.ComputePrevZoomExtent(myPrevExtent.m_ZoomFactor, myPrevExtent.m_TopLeftPosition);
-	ReloadProjectLayersThreadStart(false, false);
-	
-	if(m_ZoomManager.GetCount()<1)
-	{
-		wxCommandEvent evt(tmEVT_LM_ZOOMPREVIOUS_ENABLE, wxID_ANY);
-		evt.SetInt(static_cast<int> (false));
-		m_Parent->GetEventHandler()->AddPendingEvent(evt);
-	}
+	ReloadProjectLayersThreadStart(false, false);	
 	return true;
 }
 
 
-bool HasZoomPrevious();
+bool tmLayerManager::HasZoomPrevious(){
+	bool bReturn = false;
+	if (m_ZoomManager.GetCount() > 0) {
+		bReturn = true;
+	}
+	return bReturn;
+}
 
 
 

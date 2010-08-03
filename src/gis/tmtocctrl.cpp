@@ -812,7 +812,6 @@ void tmTOCCtrl::StartEditing ()
 	tmLayerProperties * item = GetSelectionLayer();
 	wxASSERT(item);
 	SetEditLayer(item);
-
 	
 	
 	//SwitchVisualEditingStyle(selection.Item(0), true);

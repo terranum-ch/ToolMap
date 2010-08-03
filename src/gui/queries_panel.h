@@ -128,7 +128,7 @@ public:
 	
 	bool LoadQueries (DataBaseTM * database);
 	void EnableQueriesPanel (bool projectopen = true);
-	
+	bool IsQuerySelected();
 	
 	
 

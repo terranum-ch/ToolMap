@@ -172,9 +172,10 @@ void tmEditManager::OnToolOrientedPoint()
 		return;
 	
 	m_OrientedPt.Create(m_pDB, m_SelectedData->GetSelectedUnique());
-	if (m_OrientedPt.IsCorrectType()==false)
+	if (m_OrientedPt.IsCorrectType()==false){
+		wxLogWarning(_("No orientation attributes found, or point hasn't any kind"));	
 		return;
-	
+	}
 	m_Renderer->SetTool(tmTOOL_ORIENTED_POINTS);
 	
 }
@@ -330,13 +331,10 @@ bool tmEditManager::IsLayerTypeSelected (int layertype)
  @date 28 January 2009
  *******************************************************************************/
 bool tmEditManager::IsObjectSelected()
-{
-	unsigned int mySelCount = m_SelectedData->GetCount();
-	
-	if (mySelCount == 1)
-		return true;
-	
-	wxLogWarning(_("%d object(s) selected, expected only one"), mySelCount);
+{	
+	if (m_SelectedData->GetCount() == 1){
+		return true;	
+	}
 	return false;
 }
 
@@ -394,14 +392,27 @@ bool tmEditManager::IsModifictionAllowed()
 	if ( IsObjectSelected() == false)
 		return false;
 	
-	if (m_GISMemory->GetVertexCount()!= 0)
+	if (m_GISMemory->GetVertexCount() != 0)
 	{
-		wxLogDebug(_T("Not empty..."));
-		/*	return false;*/
+		wxFAIL;
 	}
 	
 	return true;
 }
+
+
+bool tmEditManager::IsLayerType(int layertype){
+	wxASSERT(m_TOC);
+	if (m_TOC->GetEditLayer() == NULL){
+		return false;
+	}
+	
+	if (m_TOC->GetEditLayer()->m_LayerType != layertype) {
+		return false;
+	}
+	return true;
+}
+
 
 
 /***************************************************************************//**
@@ -1621,6 +1632,15 @@ bool tmEditManager::UndoLastVertex ()
 	evt.SetClientData(myClickedPos);
 	OnDrawMove(evt);
 	return true;
+}
+
+
+bool tmEditManager::HasLastVertex(){
+	wxASSERT(m_GISMemory);
+	if (m_GISMemory->GetVertexCount() > 0) {
+		return true;
+	}
+	return false;
 }
 
 
