@@ -171,14 +171,14 @@ class tmGISScale : public wxObject
 		// converting pixels - real (with inverting y axis)
 		inline wxRealPoint PixelToReal (wxPoint pt)
 		{
-			return (wxRealPoint( m_ExtentWndReal.x_min + (pt.x * m_PixelSize),
-								m_ExtentWndReal.y_max - (pt.y * m_PixelSize)));
+			return (wxRealPoint( m_ExtentWndReal.x_min + (((double) pt.x) * m_PixelSize),
+								m_ExtentWndReal.y_max - (((double) pt.y)* m_PixelSize)));
 		}
 		
 		inline wxPoint RealToPixel (wxRealPoint realpt)
 		{
-			return (wxPoint((realpt.x - m_ExtentWndReal.x_min) / m_PixelSize,
-				m_ExtentWnd.height - ((realpt.y - m_ExtentWndReal.y_min) / m_PixelSize)));
+			return (wxPoint(wxRound((realpt.x - m_ExtentWndReal.x_min) / m_PixelSize),
+							wxRound(((double) m_ExtentWnd.height) - ((realpt.y - m_ExtentWndReal.y_min) / m_PixelSize))));
 			
 		}
 		tmRealRect PixelsToReal (const wxRect & rectpx);
