@@ -482,8 +482,16 @@ bool tmGISScale::IsLayerExtentValid()
 
 void tmGISScale::DistanceFromScale (const long & scale, double & xdist, double & ydist)
 {
-	xdist = ((double)m_ExtentWndMM.GetWidth()) / 1000.0 * (double) scale;
-	ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000.0 * (double) scale;
+	wxASSERT(m_PPI.x = m_PPI.y);
+	double dInchPx = 1.0 / 0.0254 * 96; //((double)m_PPI.x);
+	double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx; 
+	double dSizeMV = ((double) m_ExtentWnd.height) / dInchPx; 
+
+	xdist = dSizeMH * ((double) scale);
+	ydist = dSizeMV * ((double) scale);
+	
+	//xdist = ((double)m_ExtentWndMM.GetWidth()) / 1000.0 * (double) scale;
+	//ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000.0 * (double) scale;
 	m_UnitScale = scale;
 }
 
