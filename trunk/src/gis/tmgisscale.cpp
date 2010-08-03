@@ -499,13 +499,13 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale)
 	double dActDistX = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
 	double dActDistY = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
 	
-	double dDiffX = (dNewDistX - dActDistX) / 2.0;
-	double dDiffY = (dNewDistY - dActDistY) / 2.0;
+	double dDiffX = (dNewDistX - dActDistX); // / 2.0;
+	double dDiffY = (dNewDistY - dActDistY); // / 2.0;
 	
-	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dDiffX);
+	//m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dDiffX);
 	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dDiffY);
 	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dDiffX);
-	m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dDiffY);
+	//m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dDiffY);
 	
 	// change pixels size too :-)
 	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
