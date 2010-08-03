@@ -386,17 +386,13 @@ bool tmEditManager::IsDrawingAllowed()
  *******************************************************************************/
 bool tmEditManager::IsModifictionAllowed()
 {
-	if (IsCorrectLayerSelected() == false)
+	if (IsCorrectLayerSelected() == false){
 		return false;
-	
-	if ( IsObjectSelected() == false)
-		return false;
-	
-	if (m_GISMemory->GetVertexCount() != 0)
-	{
-		wxFAIL;
 	}
 	
+	if ( IsObjectSelected() == false){
+		return false;
+	}
 	return true;
 }
 

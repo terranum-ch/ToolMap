@@ -382,6 +382,13 @@ private:
 	void OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event);
+	void OnUpdateMenuShowSnapping (wxUpdateUIEvent & event);
+	void OnUpdateMenuShowShortcuts (wxUpdateUIEvent & event);
+	void OnUpdateMenuShowQuery (wxUpdateUIEvent & event);
+	void OnUpdateMenuShowTOC (wxUpdateUIEvent & event);
+	void OnUpdateMenuShowLog (wxUpdateUIEvent & event);
+	void OnUpdateMenuShowInfo (wxUpdateUIEvent & event);
+
 	
 	wxLogWindow * m_LogWindow;
 //#if (__WXMAC__)
