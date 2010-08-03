@@ -108,7 +108,7 @@ class TocWindowDlgGen : public TocWindowContent
 		wxPanel * m_ContentFrame;
 		wxWindow * m_ParentEvt;
 		
-		DECLARE_EVENT_TABLE();
+		//DECLARE_EVENT_TABLE();
 
 		
 	public:	
@@ -123,8 +123,8 @@ class TocWindowDlgGen : public TocWindowContent
 		
 
 		
-		void OnPressRemoveLayers(wxCommandEvent & event);
-		void OnPressAddLayers(wxCommandEvent & event);
+		/*void OnPressRemoveLayers(wxCommandEvent & event);
+		void OnPressAddLayers(wxCommandEvent & event);*/
 		
 	};
 
