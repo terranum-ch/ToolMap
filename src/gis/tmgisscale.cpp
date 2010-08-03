@@ -450,7 +450,7 @@ tmRealRect tmGISScale::PixelsToReal (const wxRect & rectpx)
 
 long tmGISScale::ComputeUnitScale ()
 {
-	int MMtoM = 1000;
+	//int MMtoM = 1000;
 	double ddistance = 0.0;
 	if (m_ExtentWndReal.x_max != 0)
 	{
@@ -465,7 +465,7 @@ long tmGISScale::ComputeUnitScale ()
 		
 	// send message to scale control
 		
-	m_UnitScale =  ddistance / (((double)m_ExtentWndMM.GetWidth()) / MMtoM);	
+	m_UnitScale = wxRound( ddistance / (((double)m_ExtentWndMM.GetWidth()) / 1000.0));	
 		return m_UnitScale;
 	}
 	return 0;
@@ -482,8 +482,8 @@ bool tmGISScale::IsLayerExtentValid()
 
 void tmGISScale::DistanceFromScale (const long & scale, double & xdist, double & ydist)
 {
-	xdist = ((double)m_ExtentWndMM.GetWidth()) / 1000 * scale;
-	ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000 * scale;
+	xdist = ((double)m_ExtentWndMM.GetWidth()) / 1000.0 * (double) scale;
+	ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000.0 * (double) scale;
 	m_UnitScale = scale;
 }
 
@@ -499,8 +499,8 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale)
 	double dActDistX = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
 	double dActDistY = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
 	
-	double dDiffX = (dNewDistX - dActDistX) / 2;
-	double dDiffY = (dNewDistY - dActDistY) / 2;
+	double dDiffX = (dNewDistX - dActDistX) / 2.0;
+	double dDiffY = (dNewDistY - dActDistY) / 2.0;
 	
 	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dDiffX);
 	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dDiffY);

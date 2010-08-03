@@ -961,11 +961,11 @@ void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 	// calcul the new reduced window size (px)
 	wxRect myActualExtent = m_Scale.GetWindowExtent();
 	wxRect myNewWndExtent (0,0,0,0);
-	double dwidth = ((double) myActualExtent.GetWidth()) / dSmaller;
-	double dheight = ((double) myActualExtent.GetHeight()) / dSmaller;
+	double dwidth = ( 1.0 * myActualExtent.GetWidth()) / dSmaller;
+	double dheight = (1.0 * myActualExtent.GetHeight()) / dSmaller;
 	
-	myNewWndExtent.SetWidth((int) dwidth);
-	myNewWndExtent.SetHeight((int) dheight);
+	myNewWndExtent.SetWidth(wxRound(dwidth));
+	myNewWndExtent.SetHeight(wxRound(dheight));
 	
 	// modify the real window extent
 	m_Scale.ComputeNewRealZoomExtent(myNewWndExtent, 
@@ -994,8 +994,8 @@ void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 	double dwidth = ((double) myActualExtent.GetWidth()) * dBigger;
 	double dheight = ((double) myActualExtent.GetHeight()) * dBigger;
 	
-	myNewWndExtent.SetWidth((int) dwidth);
-	myNewWndExtent.SetHeight((int) dheight);
+	myNewWndExtent.SetWidth(wxRound(dwidth));
+	myNewWndExtent.SetHeight(wxRound(dheight));
 	
 	// modify the real window extent
 	m_Scale.ComputeNewRealZoomExtent(myNewWndExtent, 
