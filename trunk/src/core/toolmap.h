@@ -368,13 +368,20 @@ private:
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
 	// child event function
-	void OnMenuZoomPreviousChange(wxCommandEvent & event);
+	//void OnMenuZoomPreviousChange(wxCommandEvent & event);
 	
 	
 	// update menu functions
 	void OnUpdateMenuProject(wxUpdateUIEvent & event);
-	
-	
+	void OnUpdateMenuPreviousZoom (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditUndo (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditDraw (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditModify (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditDelete (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditMerge (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event);
 	
 	wxLogWindow * m_LogWindow;
 //#if (__WXMAC__)

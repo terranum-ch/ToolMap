@@ -258,7 +258,6 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
-	EVT_COMMAND (wxID_ANY, tmEVT_LM_ZOOMPREVIOUS_ENABLE, ToolMapFrame::OnMenuZoomPreviousChange)
 
 
 	// UPDATE UI EVENT
@@ -270,13 +269,27 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	
 	EVT_UPDATE_UI_RANGE(ID_MENU_ZOOM, ID_MENU_ZOOM_FIT, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnUpdateMenuProject)
-	EVT_UPDATE_UI (wxID_BACKWARD, ToolMapFrame::OnUpdateMenuProject)
-
-
-	//EVT_UPDATE_UI(ID_MENU_EXPORT_LAYER, ToolMapFrame::OnUpdateMenuProject)
-	//EVT_UPDATE_UI(ID_MENU_EXPORT_FULL, ToolMapFrame::OnUpdateMenuProject)
-
+	EVT_UPDATE_UI (wxID_BACKWARD, ToolMapFrame::OnUpdateMenuPreviousZoom)
 	
+	EVT_UPDATE_UI (ID_MENU_UNDO, ToolMapFrame::OnUpdateMenuEditUndo)
+	EVT_UPDATE_UI (ID_MENU_DRAW, ToolMapFrame::OnUpdateMenuEditDraw)
+	EVT_UPDATE_UI (ID_MENU_MODIFY, ToolMapFrame::OnUpdateMenuEditModify)
+	EVT_UPDATE_UI (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnUpdateMenuEditModify)
+	EVT_UPDATE_UI (ID_MENU_CUT_LINES, ToolMapFrame::OnUpdateMenuEditModify)
+	EVT_UPDATE_UI (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnUpdateMenuEditModify)
+	EVT_UPDATE_UI (ID_MENU_DELETE_OBJ, ToolMapFrame::OnUpdateMenuEditDelete)
+	EVT_UPDATE_UI (ID_MENU_MERGE_LINES, ToolMapFrame::OnUpdateMenuEditMerge)
+
+	EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
+	EVT_UPDATE_UI (ID_MENU_ATTRIB_BATCH, ToolMapFrame::OnUpdateMenuEditDelete)
+
+	EVT_UPDATE_UI (ID_MENU_TOOL_DANGLING, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI (ID_MENU_ORIENT_POINT, ToolMapFrame::OnUpdateMenuEditPointOrient)
+	
+	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_BY_OID, ID_MENU_SELECT,ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_NONE, ID_MENU_SELECT_INVERSE, ToolMapFrame::OnUpdateMenuEditClearSelection)
+
+	EVT_UPDATE_UI (ID_MENU_QUERIES_RUN, ToolMapFrame::OnUpdateMenuEditQueryRun)
 END_EVENT_TABLE()
 
 
@@ -971,11 +984,6 @@ void ToolMapFrame::OnEditSwitch (wxCommandEvent & event)
 		bEditStart = true;
 	else
 		m_LayerManager->OnSelect(); // set the select cursor
-	
-	m_MManager->EditingStatus(bEditStart);
-	m_TManager->EditingStatus(bEditStart);
-
-	
 }
 
 
@@ -1268,12 +1276,12 @@ void ToolMapFrame::OnCloseManagedPane(wxAuiManagerEvent & event)
 
 
 
-void ToolMapFrame::OnMenuZoomPreviousChange(wxCommandEvent & event)
+/*void ToolMapFrame::OnMenuZoomPreviousChange(wxCommandEvent & event)
 {
 	bool bStatus = static_cast<bool>(event.GetInt()); 
 	m_MManager->ZoomStatus(bStatus);
 	m_TManager->ZoomStatus(bStatus);
-}
+}*/
 
 
 
@@ -1419,5 +1427,83 @@ void ToolMapFrame::OnUpdateMenuProject(wxUpdateUIEvent & event){
 	wxASSERT(m_PManager);
 	event.Enable(m_PManager->IsProjectOpen());
 }
+
+
+
+void ToolMapFrame::OnUpdateMenuPreviousZoom(wxUpdateUIEvent & event){
+	wxASSERT(m_LayerManager);
+	event.Enable(m_LayerManager->HasZoomPrevious());
+	
+}
+
+
+void ToolMapFrame::OnUpdateMenuEditUndo (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	event.Enable(m_EditManager->HasLastVertex());
+}
+
+void ToolMapFrame::OnUpdateMenuEditDraw (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	event.Enable( m_EditManager->IsDrawingAllowed());
+}
+
+void ToolMapFrame::OnUpdateMenuEditModify (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	event.Enable(m_EditManager->IsModifictionAllowed());
+}
+
+
+void ToolMapFrame::OnUpdateMenuEditDelete (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	bool bEnable = false;
+	if (m_EditManager->IsDrawingAllowed()==true) {
+		if (m_EditManager->GetSelectionCount() >= 1) {
+			bEnable = true;
+		}
+	}
+	event.Enable(bEnable);
+}
+
+
+void ToolMapFrame::OnUpdateMenuEditMerge (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	bool bEnable = false;
+	if (m_EditManager->IsDrawingAllowed()==true) {
+		if (m_EditManager->GetSelectionCount() > 1) {
+			bEnable = true;
+		}
+	}
+	event.Enable(bEnable);	
+}
+
+
+void ToolMapFrame::OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	bool bEnable = false;
+	if (m_EditManager->IsModifictionAllowed() == true) {
+		if (m_EditManager->IsLayerType(LAYER_SPATIAL_POINT)) {
+			bEnable = true;
+		}
+	}
+	event.Enable(bEnable);
+}
+ 
+
+void ToolMapFrame::OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	bool bReturn = false;
+	if (m_EditManager->GetSelectionCount() >= 1) {
+		bReturn = true;
+	}
+	event.Enable(bReturn);
+}
+
+void ToolMapFrame::OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event){
+	wxASSERT(m_QueriesPanel);
+	event.Enable(m_QueriesPanel->IsQuerySelected());
+}
+
+
+
 
 

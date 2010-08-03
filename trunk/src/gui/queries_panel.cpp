@@ -230,6 +230,16 @@ void Queries_PANEL::EnableQueriesPanel (bool projectopen)
 }
 
 
+bool Queries_PANEL::IsQuerySelected(){
+	wxASSERT(m_QueriesList);
+	if (m_QueriesList->GetSelectedItem() == -1) {
+		return false;
+	}
+	return true;
+}
+
+
+
 /***************************************************************************//**
  @brief User press the Add queries button
  @author Lucien Schreiber (c) CREALP 2008

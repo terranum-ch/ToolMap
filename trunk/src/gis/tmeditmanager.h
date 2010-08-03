@@ -176,10 +176,12 @@ class tmEditManager : public wxEvtHandler
 		// validiting editing / modfication
 		bool IsDrawingAllowed();
 		bool IsModifictionAllowed();
+		bool IsLayerType(int layertype = LAYER_SPATIAL_LINE);
 		
 		// deleting selected
 		bool DeleteSelected(bool Clearselection = true);
 		bool UndoLastVertex ();
+		bool HasLastVertex();
 		int GetSelectionCount();
 		
 		// search function (from tmLayerManager)
