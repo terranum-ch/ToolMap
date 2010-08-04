@@ -108,7 +108,8 @@ echo "4a) Copy files for installer"
 cd $VARTRUNKDIR/install/mac/background/
 mkdir $VARBINDIR/32-rel/Release/.background
 cp tm_dmg_background.jpg $VARBINDIR/32-rel//Release/.background
-cp Applications $VARBINDIR/32-rel//Release
+ln -s /Applications $VARBINDIR/32-rel/Release/Applications
+#cp Applications $VARBINDIR/32-rel//Release
 cp InstallDS_Store $VARBINDIR/32-rel//Release/.DS_Store
 echo "4a) Copy files for installer... DONE"
 
