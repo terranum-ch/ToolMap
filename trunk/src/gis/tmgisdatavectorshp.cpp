@@ -21,6 +21,7 @@
 
 // for snapping constants
 #include "../core/tmsnappingmemory.h"
+#include "../core/projectdefmemory.h"
 
 
 tmGISDataVectorSHP::tmGISDataVectorSHP()
@@ -927,23 +928,23 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 
 	switch (fieldtype)
 	{
-		case 4: // enumeration
-		case 0: // TEXT
+		case TM_FIELD_ENUMERATION: // enumeration
+		case TM_FIELD_TEXT: // TEXT
 			buffer = new char [value.Length() * sizeof(wxString)];
 			strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
 			m_Feature->SetField(iindex, buffer);
 			wxDELETEA(buffer);
 			break;
 			
-		case 1: // INTEGER
+		case TM_FIELD_INTEGER: // INTEGER
 			m_Feature->SetField(iindex, wxAtoi(value));
 			break;
 			
-		case 2: // FLOAT
+		case TM_FIELD_FLOAT: // FLOAT
 			m_Feature->SetField(iindex, wxAtof(value));
 			break;
 			
-		case 3: //DATE
+		case TM_FIELD_DATE: //DATE
 				myTok.SetString(value, _T("-"), wxTOKEN_DEFAULT);
 				wxASSERT(myTok.CountTokens() == 3);
 				
