@@ -93,34 +93,35 @@ public:
 		TS_ASSERT (myImport.Import(m_DB, NULL)==false);
 		myImport.SetTarget(TOC_NAME_LINES);
 		TS_ASSERT (myImport.Import(m_DB, NULL)==true);
-		
-		/*TS_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LINES)==false);
-		TS_ASSERT (m_Import->Open(g_TestPathSHP + g_TestFileSHP_L)==true);
-		TS_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LINES)==true);
-		TS_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_FRAME)==true);
-		TS_ASSERT(m_Import->IsImportIntoAllowed (TOC_NAME_LABELS)==false);*/
-	}
-	
-	void testImport ()
-	{
-		/*TS_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==false);
-		TS_ASSERT (m_Import->Open(g_TestPathSHP + g_TestFileSHP_L)==true);
-		TS_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==true);*/
-	}
-	
-	void testElapsedTime()
-	{
-		/*TS_ASSERT (m_Import->GetElapsedTime()== 0);
-		TS_ASSERT (m_Import->Open(g_TestPathSHP + g_TestFileSHP_L)==true);
-		TS_ASSERT (m_Import->GetElapsedTime()== 0);
-		TS_ASSERT (m_Import->Import(m_DB, TOC_NAME_LINES)==true);
-		long myTime = m_Import->GetElapsedTime();
-		TS_ASSERT_LESS_THAN (0, myTime);
-		wxLogMessage(_T("Import done in %ld [ms]"), myTime);*/
-		
 	}
 	
 	
+	// importing CSV
+	void testOpenCSV(){
+		tmImportCSV myImport;
+		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
+	}
+	
+	
+	void testGettingColumns(){
+		tmImportCSV myImport;
+		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
+		wxArrayString myCols = myImport.ListColumns();
+		wxASSERT(myCols.GetCount() > 0);
+		for (unsigned int i = 0; i<myCols.GetCount(); i++) {
+			wxLogMessage(_T("Column %d - '%s'"), i, myCols.Item(i).c_str());
+		}
+	}
+	
+	
+	void testImportCSV(){
+		tmImportCSV myImport;
+		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
+		myImport.SetColumn(0, 1);
+		myImport.SetTarget(TOC_NAME_LINES);
+		TS_ASSERT(myImport.Import(m_DB, NULL));
+
+	}
 	
 		
 };

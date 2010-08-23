@@ -38,6 +38,7 @@ static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj/");
 static const wxString g_TestPathEXPORT = g_TestPath +  _T("/export/");
 
 static const wxString g_TestFileMisc = _T("gpl.txt");
+static const wxString g_TestFileCSV = _T("profil_sml.csv");
 static const wxString g_TestFileSHP_L = _T("arcgis_line_test.shp");
 static const wxString g_TestFileSHP_LCadre = _T("DIABLERETS_FRONTIERE.shp");
 static const wxString g_TestFileSHP_PLG = _T("cantonsuisse.shp");
