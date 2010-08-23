@@ -270,7 +270,7 @@ public:
 	
 	void testVersion()
 	{
-		TS_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.48"));
+		TS_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.50"));
 	}
 	
 	
