@@ -27,6 +27,7 @@ tmImportGIS::tmImportGIS() {
 }
 
 tmImportGIS::~tmImportGIS() {
+	wxDELETE(m_Vector);
 }
 
 bool tmImportGIS::Open(const wxFileName & filename) {
@@ -103,6 +104,7 @@ bool tmImportGIS::Import(DataBaseTM * database, wxProgressDialog * progress) {
 	
 	sv.Pause();
 	wxLogMessage (_("%ld feature added in %ld [ms]"), iCount, sv.Time());
+	wxDELETE(myGeomDB);
 	return true;
 }
 

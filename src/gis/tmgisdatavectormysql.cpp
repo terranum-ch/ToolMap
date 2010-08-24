@@ -126,12 +126,14 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 	
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
+		wxDELETE(psExtent);
 		return tmRealRect(0,0,0,0);
 	}
 	
 	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false)
 	{
 		m_DB->DataBaseClearResults();
+		wxDELETE(psExtent);
 		return tmRealRect(0,0,0,0);
 	}
 	
@@ -166,8 +168,10 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle()
 		OGRGeometryFactory::destroyGeometry(poGeometry);
 	}
 	m_DB->DataBaseClearResults();
-	return tmRealRect(psExtent->MinX,psExtent->MinY,
+	tmRealRect myRect(psExtent->MinX,psExtent->MinY,
 					  psExtent->MaxX,psExtent->MaxY);
+	wxDELETE(psExtent);
+	return myRect;
 	
 }
 

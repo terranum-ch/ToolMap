@@ -95,7 +95,8 @@ ProjectDefMemoryFields::ProjectDefMemoryFields()
 
 ProjectDefMemoryFields::~ProjectDefMemoryFields()
 {
-	///@todo implement way of clearing the array contained inside
+	m_pCodedValueArray->Clear();
+	wxDELETE(m_pCodedValueArray);
 }
 
 
@@ -113,7 +114,6 @@ void ProjectDefMemoryFields::InitMemberValues()
 	m_FieldConstrain = FALSE;
 	
 	m_pCodedValueArray = new PrjMemFieldCodedValArray();
-	
 }
 
 
