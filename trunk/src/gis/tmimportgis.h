@@ -38,5 +38,6 @@ class tmImportGIS : public tmImport {
     virtual bool Open(const wxFileName & filename);
     virtual bool Import(DataBaseTM * database, wxProgressDialog * progress = NULL);
 
+	virtual wxArrayInt GetTargetSupported();	
 };
 #endif

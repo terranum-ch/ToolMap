@@ -62,6 +62,8 @@ class tmImport {
     inline const int GetFieldCount() const;
     inline const TOC_GENERIC_NAME GetTarget() const;
     void SetTarget(TOC_GENERIC_NAME value);
+	virtual wxArrayInt GetTargetSupported(){return wxArrayInt();}
+    virtual wxArrayString GetTargetSupportedName();
 };
 
 

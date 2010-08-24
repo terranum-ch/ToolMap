@@ -296,3 +296,13 @@ bool tmImportCSV::Import(DataBaseTM * database, wxProgressDialog * progress) {
 	return bReturn;
 }
 
+
+wxArrayInt tmImportCSV::GetTargetSupported() {
+	wxArrayInt mySupportedTargets;
+	mySupportedTargets.Add((int) TOC_NAME_LINES);
+	mySupportedTargets.Add((int) TOC_NAME_POINTS);
+	mySupportedTargets.Add((int) TOC_NAME_LABELS);
+	mySupportedTargets.Add((int) TOC_NAME_FRAME);
+	return mySupportedTargets;
+}
+

@@ -106,3 +106,25 @@ bool tmImportGIS::Import(DataBaseTM * database, wxProgressDialog * progress) {
 	return true;
 }
 
+
+wxArrayInt tmImportGIS::GetTargetSupported() {
+	wxArrayInt mySupportedTargets;
+	switch (GetGeometryType()) {
+		case LAYER_SPATIAL_LINE:
+			mySupportedTargets.Add((int) TOC_NAME_LINES);
+			mySupportedTargets.Add((int) TOC_NAME_FRAME);
+			break;
+			
+		case LAYER_SPATIAL_POINT:
+			mySupportedTargets.Add((int) TOC_NAME_POINTS);
+			mySupportedTargets.Add((int) TOC_NAME_LABELS);
+			break;
+		default:
+			break;
+	}
+	return mySupportedTargets;
+}
+
+
+
+

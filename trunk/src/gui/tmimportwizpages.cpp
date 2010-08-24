@@ -145,6 +145,14 @@ void ImportWizInfo::OnOpenFile(wxFileDirPickerEvent & event) {
 		wxFAIL;
 	}
 	
+	if (myImport->GetFileType() == tmIMPORT_TYPE_SHP) {
+		if (myImport->GetGeometryType() > LAYER_SPATIAL_POINT) {
+			wxLogError(_("Unable to import shapefiles of type : '%s'"),
+					   TM_GIS_SPATIAL_TYPES_STRING[myImport->GetGeometryType()].c_str());
+			return;
+		}
+	}
+	
 	m_Parent->SetEnableControl(wxID_FORWARD, true);
 }
 
@@ -349,20 +357,40 @@ void ImportWizTarget::_CreateControls() {
 	bSizer6->Fit(this);
 }
 
+
+
 ImportWizTarget::ImportWizTarget(ImportWizard * parent, wxWizardPage * prev, wxWizardPage * next) :
 wxWizardPageSimple(parent, prev, next){
 	m_Parent = parent;
 	_CreateControls();
 }
 
+
+
 ImportWizTarget::~ImportWizTarget() {
 }
 
+
+
 bool ImportWizTarget::TransferDataToWindow() {
+	tmImport * myImport = m_Parent->GetImport();
+	wxASSERT(myImport);
+	wxArrayString mySupportedTargetsName = myImport->GetTargetSupportedName();
+	m_TargetCtrl->Clear();
+	m_TargetCtrl->Append(mySupportedTargetsName);
+	m_TargetCtrl->SetSelection(0);
 	return true;
 }
 
+
+
 bool ImportWizTarget::TransferDataFromWindow() {
+	tmImport * myImport = m_Parent->GetImport();
+	wxASSERT(myImport);
+	wxArrayInt mySupportedTargets = myImport->GetTargetSupported();
+	wxASSERT(mySupportedTargets.GetCount() == m_TargetCtrl->GetCount());
+	int myTarget = mySupportedTargets.Item(m_TargetCtrl->GetSelection());
+	myImport->SetTarget((TOC_GENERIC_NAME) myTarget);
 	return true;
 }
 
