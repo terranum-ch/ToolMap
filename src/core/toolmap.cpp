@@ -23,6 +23,7 @@
 #include "svn_version.h" // version number definition
 #include "tmlog.h"
 #include "../gui/tmimportwiz.h"
+#include "../gis/tmimport.h"
 
 
 #if wxUSE_CRASHREPORT
@@ -1158,7 +1159,23 @@ void ToolMapFrame::CheckUpdates(bool silent)
 void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 {
 	ImportWizard myWizard (this, wxID_ANY);
-	myWizard.ShowWizard();
+	if(myWizard.ShowWizard() != wxID_OK){
+		return;
+	}
+	
+	tmImport * myImport = myWizard.GetImport();
+	wxASSERT(myImport);
+	
+	wxProgressDialog myProgress(_("Importing data progress"),
+								_T("Importing data in progress, please wait"),
+								100,
+								this,
+								wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL);
+	wxASSERT(m_PManager->GetDatabase());
+	myImport->Import(m_PManager->GetDatabase(), &myProgress);
+	
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt2);
 	
 	
 	/*tmGISImport myImport;
