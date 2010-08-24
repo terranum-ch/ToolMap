@@ -48,7 +48,7 @@ bool tmImportCSV::_GetNextData(double & x, double & y) {
 	
 	wxArrayString myTokenArray;
 	wxStringTokenizer myTokenizer(myLine, _T(";"));
-		for (unsigned int i = 0; i< myTokenizer.CountTokens(); i++) {
+	while ( myTokenizer.HasMoreTokens() ){
 		myTokenArray.Add( myTokenizer.GetNextToken());
 	}
 	
@@ -167,6 +167,7 @@ bool tmImportCSV::IsOk(){
 }
 
 
+
 bool tmImportCSV::_ImportToPointLayer(DataBaseTM * database, wxProgressDialog * progress) {
 	tmGISDataVectorMYSQL * myGeomDB = new tmGISDataVectorMYSQL();
 	tmGISDataVectorMYSQL::SetDataBaseHandle(database);
@@ -211,6 +212,8 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM * database, wxProgressDialog * 
 	wxLogMessage (_("%ld feature added in %ld [ms]"), iCount, sv.Time());
 	return true;
 }
+
+
 
 bool tmImportCSV::_ImportToLineLayer(DataBaseTM * database, wxProgressDialog * progress) {
 	tmGISDataVectorMYSQL * myGeomDB = new tmGISDataVectorMYSQL();

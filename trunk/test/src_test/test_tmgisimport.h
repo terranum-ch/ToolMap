@@ -120,7 +120,14 @@ public:
 		myImport.SetColumn(0, 1);
 		myImport.SetTarget(TOC_NAME_LINES);
 		TS_ASSERT(myImport.Import(m_DB, NULL));
-
+	}
+	
+	void testImportCSV2(){
+		tmImportCSV myImport;
+		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
+		myImport.SetColumn(0, 2);
+		myImport.SetTarget(TOC_NAME_POINTS);
+		TS_ASSERT(myImport.Import(m_DB, NULL));
 	}
 	
 		
