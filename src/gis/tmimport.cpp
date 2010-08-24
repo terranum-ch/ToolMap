@@ -75,5 +75,15 @@ void tmImport::SetTarget(TOC_GENERIC_NAME value) {
 }
 
 
+wxArrayString tmImport::GetTargetSupportedName() {
+	wxArrayInt mySupportedTargets = GetTargetSupported();
+	wxArrayString mySupportedTargetsName;
+	for (unsigned int i = 0; i< mySupportedTargets.GetCount(); i++) {
+		mySupportedTargetsName.Add(TOC_GENERIC_NAME_STRING[mySupportedTargets.Item(i)]);
+	}
+	return mySupportedTargetsName;
+}
+
+
 
 

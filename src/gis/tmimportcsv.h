@@ -54,5 +54,6 @@ class tmImportCSV : public tmImport {
 	int GetColumnX(){return m_Xcolumn;}
 	int GetColumnY(){return m_Ycolumn;}
     void SetColumn(int x, int y);
+	virtual wxArrayInt GetTargetSupported();
 };
 #endif
