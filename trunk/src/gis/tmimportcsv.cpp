@@ -121,8 +121,14 @@ bool tmImportCSV::Open(const wxFileName & filename) {
 		}
 		iCount++;
 	}
-	_ResetReading();
 	m_FeatureCount = iCount;
+	_ResetReading();
+	// counting fields
+	if (iCount > 0) {
+		wxStringTokenizer myTokenizer (m_TextStream->ReadLine(), _T(";"));
+		m_FieldsCount = myTokenizer.CountTokens();
+		_ResetReading();
+	}
 	return true;
 }
 

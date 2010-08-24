@@ -46,6 +46,7 @@ class ImportWizard : public wxWizard {
     int ShowWizard();
     inline  tmImport * GetImport() const;
     void SetImport(tmImport * value);
+	void SetEnableControl(wxWindowID id, bool status);
 
 };
 

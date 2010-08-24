@@ -106,7 +106,7 @@ void ImportWizInfo::_CreateControls() {
 	m_InfoLabelCtrl1->Wrap( -1 );
 	fgSizer1->Add( m_InfoLabelCtrl1, 0, wxALL, 5 );
 	
-	m_InfoValueCtrl1 = new wxStaticText( this, wxID_ANY, _("14"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_InfoValueCtrl1 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_InfoValueCtrl1->Wrap( -1 );
 	fgSizer1->Add( m_InfoValueCtrl1, 0, wxALL, 5 );
 	
@@ -114,7 +114,7 @@ void ImportWizInfo::_CreateControls() {
 	m_InfoLabelCtrl2->Wrap( -1 );
 	fgSizer1->Add( m_InfoLabelCtrl2, 0, wxALL, 5 );
 	
-	m_InfoValueCtrl2 = new wxStaticText( this, wxID_ANY, _("15"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_InfoValueCtrl2 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_InfoValueCtrl2->Wrap( -1 );
 	fgSizer1->Add( m_InfoValueCtrl2, 0, wxALL, 5 );
 	
@@ -145,8 +145,12 @@ void ImportWizInfo::OnOpenFile(wxFileDirPickerEvent & event) {
 		wxFAIL;
 	}
 	
-	
+	m_Parent->SetEnableControl(wxID_FORWARD, true);
 }
+
+
+
+
 
 ImportWizInfo::ImportWizInfo(ImportWizard * parent) : wxWizardPage(parent) {
 	m_Parent = parent;
@@ -168,11 +172,23 @@ wxWizardPage * ImportWizInfo::GetPrev() const {
 }
 
 wxWizardPage * ImportWizInfo::GetNext() const {
+	if (m_Parent->GetImport()->GetFileType() == tmIMPORT_TYPE_SHP) {
+		m_PageTarget->SetPrev(m_PageCSVOptions->GetPrev());
+		return m_PageTarget;
+	}
+	m_PageTarget->SetPrev(m_PageCSVOptions);
 	return m_PageCSVOptions;
 }
 
+
+
 bool ImportWizInfo::TransferDataToWindow() {
 	wxFilePickerCtrl * myPicker = NULL;
+	m_InfoValueCtrl1->SetLabel(wxEmptyString);
+	m_InfoValueCtrl2->SetLabel(wxEmptyString);
+	
+	m_Parent->SetEnableControl(wxID_FORWARD, false);
+
 	if (m_Parent->GetImport()->GetFileType() == tmIMPORT_TYPE_SHP) {
 		myPicker = new wxFilePickerCtrl( this, wxID_OPEN, wxEmptyString, _("Select a SHP file"), _("ESRI's shapefile (*.shp)|*.shp"));
 		m_InfoLabelCtrl1->SetLabel(_("Geometry type:"));
@@ -190,14 +206,13 @@ bool ImportWizInfo::TransferDataToWindow() {
 	wxDELETE(m_FileCtrl);
 	m_FileCtrl = myPicker;
 	Layout();
-	
-	
-	
-	
 	return true;
 }
 
+
+
 bool ImportWizInfo::TransferDataFromWindow() {
+	m_Parent->SetEnableControl(wxID_FORWARD, true);
 	return true;
 }
 
@@ -227,8 +242,7 @@ void ImportWizCSVOptions::_CreateControls() {
 	m_staticText8->Wrap( -1 );
 	fgSizer2->Add( m_staticText8, 0, wxALL, 5 );
 	
-	wxArrayString m_XColCtrlChoices;
-	m_XColCtrl = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_XColCtrlChoices, 0 );
+	m_XColCtrl = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize );
 	m_XColCtrl->SetSelection( 0 );
 	fgSizer2->Add( m_XColCtrl, 0, wxALL|wxEXPAND, 5 );
 	
@@ -237,8 +251,7 @@ void ImportWizCSVOptions::_CreateControls() {
 	m_staticText10->Wrap( -1 );
 	fgSizer2->Add( m_staticText10, 0, wxALL, 5 );
 	
-	wxArrayString m_YColCtrlChoices;
-	m_YColCtrl = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_YColCtrlChoices, 0 );
+	m_YColCtrl = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	m_YColCtrl->SetSelection( 0 );
 	fgSizer2->Add( m_YColCtrl, 0, wxALL|wxEXPAND, 5 );
 	
@@ -248,20 +261,57 @@ void ImportWizCSVOptions::_CreateControls() {
 	bSizer5->Fit(this);
 }
 
+
+
 ImportWizCSVOptions::ImportWizCSVOptions(ImportWizard * parent,wxWizardPage * prev, wxWizardPage * next) : 
 wxWizardPageSimple(parent, prev, next){
 	m_Parent = parent;
 	_CreateControls();
 }
 
+
+
 ImportWizCSVOptions::~ImportWizCSVOptions() {
 }
 
+
+
 bool ImportWizCSVOptions::TransferDataToWindow() {
+	wxASSERT(m_Parent->GetImport()->GetFileType() == tmIMPORT_TYPE_CSV);
+	tmImportCSV * myImport = (tmImportCSV*) m_Parent->GetImport();
+	wxArrayString myCols = myImport->ListColumns();
+	for (unsigned int i = 0; i<myCols.GetCount(); i++) {
+		wxString myText = wxString::Format(_("Column: %d, %s"),i+1,
+										   myCols.Item(i).c_str());
+		myCols.Item(i) = myText;
+	}
+	
+	m_XColCtrl->Clear();
+	m_YColCtrl->Clear();
+	m_XColCtrl->Append(myCols);
+	m_YColCtrl->Append(myCols);
+	
+	int myXsel = 0;
+	int myYsel = 0;
+	if (myImport->GetColumnX() != wxNOT_FOUND && myImport->GetColumnY() != wxNOT_FOUND) {
+		myXsel = myImport->GetColumnX();
+		myYsel = myImport->GetColumnY();
+	}
+	m_XColCtrl->SetSelection(myXsel);
+	m_YColCtrl->SetSelection(myYsel);
 	return true;
 }
 
+
+
 bool ImportWizCSVOptions::TransferDataFromWindow() {
+	tmImportCSV * myImport = (tmImportCSV*) m_Parent->GetImport();
+	if (m_XColCtrl->GetCount() > 0 && m_YColCtrl->GetCount() > 0) {
+		myImport->SetColumn(m_XColCtrl->GetSelection(), m_YColCtrl->GetSelection());
+	}
+	else {
+		myImport->SetColumn(wxNOT_FOUND, wxNOT_FOUND);
+	}
 	return true;
 }
 

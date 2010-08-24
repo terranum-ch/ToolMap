@@ -52,6 +52,13 @@ int ImportWizard::ShowWizard() {
 }
 
 
+void ImportWizard::SetEnableControl(wxWindowID id, bool status) {
+	wxWindow * myWnd = FindWindowById(id);
+	if (myWnd) {
+		myWnd->Enable(status);
+	}
+}
+
 
 void ImportWizard::SetImport(tmImport * value) {
   m_Import = value;
