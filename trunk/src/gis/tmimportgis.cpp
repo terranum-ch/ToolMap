@@ -23,6 +23,7 @@
 
 tmImportGIS::tmImportGIS() {
 	m_Vector = NULL;
+	m_FileType = tmIMPORT_TYPE_SHP;
 }
 
 tmImportGIS::~tmImportGIS() {
@@ -46,7 +47,6 @@ bool tmImportGIS::Open(const wxFileName & filename) {
 		return false;
 	}
 	
-	m_FileType = tmIMPORT_TYPE_SHP;
 	m_GeometryType = m_Vector->GetSpatialType();
 	m_FeatureCount = m_Vector->GetCount();
 	

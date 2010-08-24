@@ -22,6 +22,7 @@
 #include "toolmap.h"
 #include "svn_version.h" // version number definition
 #include "tmlog.h"
+#include "../gui/tmimportwiz.h"
 
 
 #if wxUSE_CRASHREPORT
@@ -1156,7 +1157,11 @@ void ToolMapFrame::CheckUpdates(bool silent)
 
 void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 {
-	tmGISImport myImport;
+	ImportWizard myWizard (this, wxID_ANY);
+	myWizard.ShowWizard();
+	
+	
+	/*tmGISImport myImport;
 	
 	tmGISImport_DLG myDlg (this, &myImport);
 	if(myDlg.ShowModal() != wxID_OK)
@@ -1174,7 +1179,7 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
 	
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt2);
+	GetEventHandler()->AddPendingEvent(evt2);*/
 }
 
 
