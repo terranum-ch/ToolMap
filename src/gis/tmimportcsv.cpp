@@ -82,6 +82,7 @@ tmImportCSV::tmImportCSV() {
 	m_Ycolumn = wxNOT_FOUND;
 	m_TextStream = NULL;
 	m_FileStream = NULL;
+	m_FileType = tmIMPORT_TYPE_CSV;
 }
 
 
@@ -110,7 +111,6 @@ bool tmImportCSV::Open(const wxFileName & filename) {
 	m_TextStream = new wxTextInputStream(*m_FileStream);
 	wxASSERT(m_TextStream);
 	
-	m_FileType = tmIMPORT_TYPE_CSV;
 	m_GeometryType = LAYER_SPATIAL_POINT; // CSV are always points.
 	
 	// counting features
