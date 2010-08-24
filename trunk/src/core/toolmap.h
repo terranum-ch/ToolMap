@@ -124,7 +124,6 @@
 #include "../components/tmupdate/tmupdate.h" // updates
 #include "../components/tmupdate/tmupdate_dlg.h"
 
-#include "../gui/tmgisimport_dlg.h"		// for importing data
 #include "tmwindowposition.h"			// saving window position
 
 //// temp for testing 

@@ -216,6 +216,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM * database, wxProgressDialog * 
 	
 	sv.Pause();
 	wxLogMessage (_("%ld feature added in %ld [ms]"), iCount, sv.Time());
+	wxDELETE(myGeomDB);
 	return true;
 }
 
@@ -256,10 +257,11 @@ bool tmImportCSV::_ImportToLineLayer(DataBaseTM * database, wxProgressDialog * p
 	if (myGeomDB->AddGeometry(myOGRLine, -1, GetTarget()) == wxNOT_FOUND){
 		OGRGeometryFactory::destroyGeometry(myOGRLine);
 		wxLogError(_("Error importing geometry into the project"));
+		wxDELETE(myGeomDB);
 		return false;
 	}
 	OGRGeometryFactory::destroyGeometry(myOGRLine);
-	
+	wxDELETE(myGeomDB);
 	sv.Pause();
 	wxLogMessage (_("%ld feature added in %ld [ms]"), iCount, sv.Time());
 	return true;

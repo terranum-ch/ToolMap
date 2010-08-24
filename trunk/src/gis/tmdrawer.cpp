@@ -162,10 +162,6 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
  *******************************************************************************/
 bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
-	wxMemoryDC temp_dc;
-	temp_dc.SelectObject(*m_bmp);
-	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
-	
 	// create pen based on symbology
 	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
@@ -180,10 +176,16 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
 	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
+		}
+		wxDELETE(myVPen);
 		return false;
 	}
+	
+	wxMemoryDC temp_dc;
+	temp_dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
 	
 	// iterate for all lines, will not work on a threaded version
 	// because of all wxLogDebug commands
@@ -233,7 +235,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	temp_dc.SelectObject(wxNullBitmap);
-	delete myVPen;
+	wxDELETE( myVPen);
+	wxDELETE(pgdc);
 	return bReturn;
 }
 
@@ -253,15 +256,6 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
  *******************************************************************************/
 bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 {
-	wxMemoryDC dc;
-	dc.SelectObject(*m_bmp);
-	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
-
-	// create pen based on symbology
-	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
-	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
-	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
-	pgdc->SetPen(myPen);
 	
 	// define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
@@ -271,6 +265,16 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 			wxLogDebug(_T("Error setting spatial filter"));
 		return false;
 	}
+	
+	wxMemoryDC dc;
+	dc.SelectObject(*m_bmp);
+	wxGraphicsContext * pgdc = wxGraphicsContext::Create( dc); 
+	
+	// create pen based on symbology
+	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
+	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
+	pgdc->SetPen(myPen);
 	
 	// iterate for all points, will not work on a threaded version
 	// because of all wxLogDebug commands
@@ -325,7 +329,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		wxLogDebug(_T("%d Points drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
-	
+	wxDELETE(pgdc);
 	return TRUE;
 }
 
@@ -361,8 +365,11 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
 	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
+		}
+		dc.SelectObject(wxNullBitmap);
+		wxDELETE(pgdc);
 		return false;
 	}
 	
@@ -443,8 +450,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		wxLogDebug(_T("%d Polygons drawn"), iLoop);
 	
 	dc.SelectObject(wxNullBitmap);
-	
-	
+	wxDELETE(pgdc);
 	return bReturn;
 }
 
@@ -628,8 +634,9 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 	int i=0;
 	
 	// check if this function must run
-	if (itemProp->m_DrawFlags == tmDRAW_VERTEX_NONE)
+	if (itemProp->m_DrawFlags == tmDRAW_VERTEX_NONE){
 		return false;
+	}
 	
 	// device context for drawing
 	dc.SelectObject(*m_bmp);
@@ -644,8 +651,10 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
 	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
+		}
+		wxDELETE(myVPen);
 		return false;
 	}
 	
@@ -690,7 +699,7 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 		iLoop ++;
 		
 	}
-	delete myVPen;
+	wxDELETE(myVPen);
 	dc.SelectObject(wxNullBitmap);
 	return bReturn;
 	
@@ -939,7 +948,7 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth());//, pSymbol->GetShape());
 	
 	// pen for vertex
-	wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
+	//wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
 	
 	dc->SetPen(myPen);
 		
@@ -962,7 +971,7 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	
 	delete [] myPxPts;
 	delete [] pptsReal;
-	delete myVPen;
+	//delete myVPen;
 }
 
 
