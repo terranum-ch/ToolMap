@@ -301,8 +301,10 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 	
 	if (!m_Data->Open(myFileName, TRUE))
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_("Error opening : %s"), myErrMsg.c_str());
+		}
+		wxDELETE(m_Data);
 		return NULL;
 	}
 	

@@ -1004,12 +1004,14 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
 		wxLogError(_T("Error getting snapping info"));
+		OGRGeometryFactory::destroyGeometry(myBufferClick);
 		return false;
 	}
 	
 	// no results found
 	if (m_DB->DataBaseHasResults()==false)
 	{
+		OGRGeometryFactory::destroyGeometry(myBufferClick);
 		return false;
 	}
 		

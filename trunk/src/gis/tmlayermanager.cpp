@@ -384,8 +384,9 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 {
 	// check that the a project was opened !
 	// normal project contain 4 layers minimum
-	if (!IsOK())
+	if (IsOK() == false){
 		return;
+	}
 
 	// create All supported extension
 	wxString myExt = _("All supported formats|"); 
@@ -402,21 +403,17 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		m_LastOpenedPath = wxStandardPaths::Get().GetDocumentsDir();
 	}
 	
-	wxFileDialog * myDlg = new wxFileDialog(m_Parent, _("Link Data"),
-											m_LastOpenedPath, _T(""),myExt);
-	if(myDlg->ShowModal() == wxID_CANCEL)
-	{
-		wxDELETE(myDlg);
+	wxFileDialog myDlg (m_Parent, _("Link Data"),m_LastOpenedPath, _T(""),myExt);
+	if(myDlg.ShowModal() == wxID_CANCEL){
 		return;
 	}
 	
-	m_LastOpenedPath = myDlg->GetDirectory();
-	wxFileName myFilename (myDlg->GetPath());
+	m_LastOpenedPath = myDlg.GetDirectory();
+	wxFileName myFilename (myDlg.GetPath());
 	tmLayerProperties * item = new tmLayerProperties();
 	item->InitFromPathAndName(myFilename.GetPath(),
 							  myFilename.GetFullName(),
 							  tmGISData::GetAllSupportedGISFormatsExtensions());
-	wxDELETE(myDlg);
 	
 	// try to open the file for getting the spatial type
 	tmGISData * myLayer = tmGISData::LoadLayer(item);
@@ -426,7 +423,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 	}
 	item->m_LayerSpatialType = myLayer->GetSpatialType();
-	delete myLayer;
+	wxDELETE( myLayer);
 	if (item->m_LayerSpatialType == LAYER_ERR || 
 		item->m_LayerSpatialType == LAYER_SPATIAL_UNKNOWN)
 	{
@@ -783,16 +780,15 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	
 	// searching for data
 	wxArrayLong * myArray = myLayerData->SearchData(mySelReal, layerprop->m_LayerType);
-	if (!myArray)
+	if (myArray == NULL){
 		myArray = new wxArrayLong();
-		
+	}
 	int myArrayCount = myArray->GetCount();
-	
-	
+		
 	// are we in the same layer ?
 	m_SelectedData.SetLayerID(layerprop->m_LayerID);
 	
-	if (IsLoggingEnabled())
+	if (IsLoggingEnabled()){
 		wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
 	
 		for (int i = 0; i < myArrayCount; i++)
@@ -804,8 +800,8 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 			}
 			wxLogMessage(_T(" - Selected Features ID : %d"), myArray->Item(i));
 		}
-	
-	
+	}
+		
 	
 	// add, remove or clear selection depending on :
 	// - number of items selected
@@ -823,8 +819,8 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	}
 	
 	myArray->Clear();
-	delete myArray;
-	
+	wxDELETE(myArray);
+	wxDELETE(myLayerData);
 	//wxLogDebug(_T("Number of features flaged as selected : %d"),
 	//		   m_SelectedData.GetCount());
 	
