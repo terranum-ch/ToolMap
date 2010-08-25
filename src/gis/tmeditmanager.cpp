@@ -1500,9 +1500,10 @@ bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt)
 	{
 		pt.x = mySnapCoord->x;
 		pt.y = mySnapCoord->y;
-		delete mySnapCoord;
+		wxDELETE(mySnapCoord);
 		return true;
 	}
+	wxDELETE(mySnapCoord);
 	return false;
 }
 	

@@ -464,9 +464,8 @@ void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
 		wxLogError(_("Error getting informations for objects"));
 	}
 	
-	delete myAttrib;
-	
-	
+	wxDELETE(myAttrib);
+	wxDELETE(mySelObjArray);
 }
 
 
