@@ -12,13 +12,13 @@
 
 #define what we search
 
-SET (SEARCH_GDAL CACHE BOOL "Sould we search for GDAL ?" )
-SET (SEARCH_GEOS CACHE BOOL "Sould we search for GEOS ?" )
+SET (SEARCH_GDAL CACHE BOOL TRUE "Sould we search for GDAL ?" )
+SET (SEARCH_GEOS CACHE BOOL TRUE "Sould we search for GEOS ?" )
 SET (SEARCH_GIS_LIB_PATH CACHE PATH "Path to the GIS libs")
 
 # we search for geos lib
 IF (SEARCH_GEOS)
-	
+	MESSAGE("Searching GEOS")
 	# if windows and search geos
 	IF (WIN32)
 		SET (SEARCH_GEOS_LIB_PATH CACHE PATH "Path to the GEOS libs if not with GDAL")
@@ -26,11 +26,11 @@ IF (SEARCH_GEOS)
 		FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
   				${SEARCH_GEOS_LIB_PATH}/capi
   				${SEARCH_GEOS_LIB_PATH}
-  				NO_DEFAULT_PATH)
+  				)
   		
   		FIND_LIBRARY(GEOS_LIBRARIES
 	  		geos_c_i
-	  		PATH ${SEARCH_GEOS_LIB_PATH}/source	${SEARCH_GEOS_LIB_PATH} NO_DEFAULT_PATH)
+	  		PATH ${SEARCH_GEOS_LIB_PATH}/source	${SEARCH_GEOS_LIB_PATH} )
 	
 	# if unix / mac and search geos
 	ELSE (WIN32)
@@ -38,11 +38,11 @@ IF (SEARCH_GEOS)
 		FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
   				${SEARCH_GIS_LIB_PATH}/include
   				${SEARCH_GIS_LIB_PATH}
-  				NO_DEFAULT_PATH)
+  				)
   		
   		FIND_LIBRARY(GEOS_LIBRARIES
 	  		geos_c
-	  		PATH ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} NO_DEFAULT_PATH)
+	  		PATH ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} )
   		  		  			
 	ENDIF (WIN32)
 	
@@ -90,27 +90,27 @@ IF (SEARCH_GDAL)
 		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
   				${SEARCH_GIS_LIB_PATH}/include
   				${SEARCH_GIS_LIB_PATH}
-  				NO_DEFAULT_PATH)
+  				)
   		
   		FIND_LIBRARY(GDAL_LIBRARIES
 	  		gdal_i
 	  		PATH ${SEARCH_GIS_LIB_PATH}/lib
   			${SEARCH_GIS_LIB_PATH}
-  			NO_DEFAULT_PATH)
+  			)
 	
 	# if unix / mac and search geos
 	ELSE (WIN32)
 		
 		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
-  				${SEARCH_GIS_LIB_PATH}/include
+  				HINTS ${SEARCH_GIS_LIB_PATH}/include
   				${SEARCH_GIS_LIB_PATH}
-  				NO_DEFAULT_PATH)
+  				PATH_SUFFIXES gdal)
   		
   		FIND_LIBRARY(GDAL_LIBRARIES
-	  		gdal
-	  		PATH ${SEARCH_GIS_LIB_PATH}/lib
+	  		gdal NAMES gdal1 gdal1.6.0 
+	  		HINTS ${SEARCH_GIS_LIB_PATH}/lib
   			${SEARCH_GIS_LIB_PATH}
-  			NO_DEFAULT_PATH)
+  			PATH_SUFFIXES gdal)
   		  		  			
 	ENDIF (WIN32)
 	

@@ -87,18 +87,18 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		wxLogError(_("Directory : %s doesn't exists or isn't readable"),datadir.c_str());
 		return false;
 	}
-	
+
 
 	//init library
 	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
 	char * bufDataDir = new char[myDatadir.Len() * sizeof(wxString)];
 	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
-	
-#ifdef MYSQL_IS_LOGGING	
+
+#ifdef MYSQL_IS_LOGGING
 	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
 	wxString myLogDirString = _T("--log=");
 	myLogDirString.Append(myLogDirName.GetFullPath());
-	
+
 
 	char * bufLogPath = new char[myLogDirString.Len() * sizeof(wxString)];
 	strcpy(bufLogPath, (const char*)myLogDirString.mb_str(wxConvUTF8));
@@ -109,30 +109,23 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	char * mylanguagedir = "--language=./mysql";
 #elif defined(__WXMAC__)
 	char * mylanguagedir =	"--language=./ToolMap2.app/Contents/mysql";
-#elif defined(__WXGTK20__)
-	char * mylanguagedir = "--language=./mysql";
+//#elif defined(__WXGTK20__)
+	//char * mylanguagedir = "--language=./mysql";
 #else
-	wxASSERT_MSG (0, _T("Check compilation option for MySQL"));
-	char * mylanguagedir = "";
+    // Linux standard with MySQL installed with package manager.
+	char * mylanguagedir = "--skip-grant-tables";
 #endif
-
-
-
 
 	char *server_args[] =
 	{
-		"this_program",       /* this string is not used */
+		"this_program",       /* this string is not used*/
 		bufDataDir,
 		mylanguagedir,
-		"--port=3309"
+		"--port=3309",
 #if defined (MYSQL_IS_LOGGING)
-		, bufLogPath
+        bufLogPath,
 #endif
-		
-		//"--character-set-server=utf8",
-		//"--character-sets-dir=./charsets",
-		//"--collation-server=utf8_general_ci"
-		
+        NULL
 	};
 
 	char *server_groups[] =
@@ -143,14 +136,13 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		(char *)NULL
 	};
 
-
-	int num_elements = (sizeof(server_args) / sizeof(char *));
+	int num_elements = (sizeof(server_args) / sizeof(char *)) -1;
 	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
 
 #if defined (MYSQL_IS_LOGGING)
-	delete [] bufLogPath; 
+	delete [] bufLogPath;
 #endif
-	
+
 	if (myReturn != 0)
 	{
 		delete [] bufDataDir;
@@ -161,7 +153,6 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	delete [] bufDataDir;
 	m_MySQL = mysql_init(NULL);
 	mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
-	//wxLogDebug(_T("Initing MySQL library..."));
 	return true;
 }
 
@@ -542,19 +533,19 @@ bool DataBase::DataBaseGetNextRowResult(MYSQL_ROW & row, tmArrayULong & lengths)
 	lengths.Clear();
 
 
-	
+
 	if (DBGetNextRecord(row)==false)
 		return false;
 
 	unsigned int myNumFields = mysql_field_count(m_MySQL);
 	wxASSERT(myNumFields > 0);
-	
+
 	unsigned long * myTempLength = mysql_fetch_lengths(m_MySQLRes);
 	wxASSERT(*myTempLength != 0);
-	
+
 	for (unsigned int i =  0; i<myNumFields;i++)
 		lengths.Add(myTempLength[i]);
-	
+
 	//delete [] myTempLength; (not needed ?)
 	return true;
 }
@@ -663,13 +654,13 @@ bool DataBase::DataBaseGetResults(wxArrayDouble & results)
 
 
 bool DataBase::DataBaseGetResults(DataBaseResult * results){
-	
+
 	if (DBIsDataBaseReady()==false)
 		return false;
-	
+
 	if (DBResultsNotNull()==false)
 		return false;
-	
+
 	wxASSERT(results);
 	wxASSERT(m_MySQLRes);
 	results->Create(&m_MySQLRes);
@@ -765,25 +756,25 @@ bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & res
 {
 	wxASSERT(m_MySQL);
 	results.Clear();
-	
+
 	if (query.IsEmpty()) {
 		wxLogError(_("Trying to escape an empty query !"));
 		return false;
 	}
-		
+
 	char * buf = new char[query.Len() * sizeof(wxString) * 2 + sizeof(wxString)];
-	
+
 	unsigned long myInsertedVal = mysql_real_escape_string(m_MySQL, buf, query.mb_str(wxConvUTF8), query.Len());
-	
+
 	if(myInsertedVal == 0){
 		DBLogLastError();
 		delete[] buf;
 		return false;
 	}
-	
+
 	results = wxString::FromAscii(buf);
 	delete [] buf;
-	
+
 	return true;
 }
 

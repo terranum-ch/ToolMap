@@ -6,7 +6,7 @@
 #  CURL_FOUND        - True if curl found.
 
 
-SET (SEARCH_CURL CACHE BOOL "Sould we search for Curl ?" )
+SET (SEARCH_CURL TRUE CACHE BOOL "Sould we search for Curl ?" )
 SET (SEARCH_CURL_LIB_PATH CACHE PATH "Path to the CURL libs (empty for unix systems)")
 
 IF (SEARCH_CURL)
