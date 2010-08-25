@@ -139,3 +139,8 @@ IF (USE_UNITTEST)
 ENDIF (USE_UNITTEST)
 
 
+INSTALL(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION /usr/bin)
+INSTALL(FILES "../art/toolmap32.png" DESTINATION "/usr/share/pixmaps")
+INSTALL(FILES "../install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+
+
