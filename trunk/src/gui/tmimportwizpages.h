@@ -62,7 +62,6 @@ class ImportWizInfo : public wxWizardPage {
 
     void _CreateControls();
     void OnOpenFile(wxFileDirPickerEvent & event);
-	DECLARE_EVENT_TABLE();
   public:
     ImportWizInfo(ImportWizard * parent);
     virtual ~ImportWizInfo();

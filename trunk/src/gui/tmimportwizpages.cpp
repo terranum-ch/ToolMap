@@ -78,9 +78,9 @@ bool ImportWizIntro::TransferDataFromWindow() {
 //
 ////////////// INFO WIZARD PAGE ////////////////
 //
-BEGIN_EVENT_TABLE(ImportWizInfo, wxWizardPageSimple)
+/*BEGIN_EVENT_TABLE(ImportWizInfo, wxWizardPageSimple)
 EVT_FILEPICKER_CHANGED(wxID_OPEN, ImportWizInfo::OnOpenFile)
-END_EVENT_TABLE()
+END_EVENT_TABLE()*/
 
 void ImportWizInfo::_CreateControls() {
 	wxBoxSizer* bSizer3;
@@ -168,11 +168,15 @@ ImportWizInfo::ImportWizInfo(ImportWizard * parent) : wxWizardPage(parent) {
 	m_PageCSVOptions = new ImportWizCSVOptions (parent, this, m_PageTarget);
 	m_PageTarget->SetPrev(m_PageCSVOptions);
 	_CreateControls();
+	
+	this->Connect(wxID_OPEN, wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(ImportWizInfo::OnOpenFile));
 }
 
 ImportWizInfo::~ImportWizInfo() {
 	wxDELETE(m_PageTarget);
 	wxDELETE(m_PageCSVOptions);
+	this->Disconnect(wxID_OPEN, wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(ImportWizInfo::OnOpenFile));
+
 }
 
 wxWizardPage * ImportWizInfo::GetPrev() const {
