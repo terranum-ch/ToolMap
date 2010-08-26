@@ -951,10 +951,6 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	// create pen based on symbology
 	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) layerprop->m_LayerSymbol;
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth());//, pSymbol->GetShape());
-	
-	// pen for vertex
-	//wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
-	
 	dc->SetPen(myPen);
 		
 	int iVertexNumber = 0;
@@ -966,17 +962,22 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	for (int i = 0; i< iVertexNumber; i++)
 		myPxPts[i] = m_scale.RealToPixel(pptsReal[i]);
 	
-	
 	// creating path
 	dc->DrawLines(iVertexNumber, myPxPts);
 	
-	
-	// drawing vertex
-	//DrawVertexLine(pgdc, pptsReal, iVertexNumber, layerprop, myVPen);
-	
+	// draw vertex
+	wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
+	dc->SetPen(*myVPen);
+	for (int i = 0; i< iVertexNumber; i++) {
+#ifdef __WXMSW__
+		dc->DrawLine(myPxPts[i].x, myPxPts[i].y, myPxPts[i].x + 0.1, myPxPts[i].y + 0.1);
+#else
+		dc->DrawLine (myPxPts[i].x, myPxPts[i].y, myPxPts[i].x, myPxPts[i].y);
+#endif
+	}
+	wxDELETE(myVPen);
 	delete [] myPxPts;
 	delete [] pptsReal;
-	//delete myVPen;
 }
 
 
