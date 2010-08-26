@@ -680,7 +680,7 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 		return;
 	}
 	wxString myMetaData = myData->GetMetaDataAsHtml();
-	
+	wxDELETE(myData);
 	
 	if (itemProp->m_LayerSymbol->ShowSymbologyDialog(m_TOCCtrl,
 													 myMetaData,
