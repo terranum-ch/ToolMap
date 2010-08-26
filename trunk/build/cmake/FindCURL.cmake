@@ -20,7 +20,7 @@ IF (SEARCH_CURL)
   		
    		
 		SET(CURL_LIBRARIES ${CURL_LIBRARIES}
-		           debug "${SEARCH_CURL_LIB_PATH}/lib/DLL-Debug/libcurld_imp.lib"   optimized "${SEARCH_CURL_LIB_PATH}/lib/DLL-Release/libcurl.lib")
+		           debug "${SEARCH_CURL_LIB_PATH}/lib/DLL-Debug/libcurld_imp.lib"   optimized "${SEARCH_CURL_LIB_PATH}/lib/DLL-Release/libcurl_imp.lib")
 
 	
 	# if unix / mac and search geos
