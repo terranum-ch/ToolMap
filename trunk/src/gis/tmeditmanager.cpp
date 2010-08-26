@@ -1025,6 +1025,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(),
 											m_Scale->PixelToReal(myCutPos),
 											tmSELECTION_DIAMETER, m_TOC->GetEditLayer()->m_LayerType);	
+	wxDELETE(mySelLayer);
 	if (bCut == false)
 		return;
 	
@@ -1669,10 +1670,10 @@ bool tmEditManager::CreateIntersections ()
 
 	// Get the Layer (Line MySQL) 
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
-	if (!mySelLayer)
+	if (!mySelLayer){
 		return false;
-	
-	
+	}
+		
 	OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SelectedData->GetSelectedUnique());
 	wxASSERT(myFeature);
 	
@@ -1697,31 +1698,26 @@ bool tmEditManager::CreateIntersections ()
 		LinesCrossing.addGeometry(myTempFeature->GetGeometryRef());
 		OGRFeature::DestroyFeature(myTempFeature);
 	}
-	
-		
+			
 	// for selected lines, compute all intersections (with all lines)
 	wxArrayLong myInsertedIDs1;
 	OGRMultiLineString selectedsegments;
 	mySelLayer->CutLineMultiple(myOGRSelLine, &LinesCrossing, selectedsegments);
 	mySelLayer->SplitGeometry (&selectedsegments, m_SelectedData->GetSelectedUnique(),
 							   myInsertedIDs1, m_TOC->GetEditLayer()->m_LayerType);
-	
-	
-	
+		
 	// add attributions for new segment of selected line
 	wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
 	attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
 	wxArrayLong * myTempArray = new wxArrayLong(myInsertedIDs1); 
 	attribevt1.SetClientData(myTempArray);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
-	
-	
+		
 	//TODO: temp code, remove me
 	//for (unsigned int w = 0; w < myInsertedIDs1.GetCount();w++)
 	//	wxLogDebug(_T("ID inserted : %d"), myInsertedIDs1.Item(w));
 	// end of temp code
-	
-	
+		
 	// compute intersections for other lines
 	OGRMultiLineString myRes1;
 	OGRMultiLineString myRes2;
@@ -1749,7 +1745,8 @@ bool tmEditManager::CreateIntersections ()
 		}
 	}
 	OGRFeature::DestroyFeature(myFeature);
-	delete myLinesCrossing;
+	wxDELETE(myLinesCrossing);
+	wxDELETE(mySelLayer);
 	
 	// add segment to selection
 	m_SelectedData->AddSelected(&myInsertedIDs1);
@@ -1842,7 +1839,7 @@ bool tmEditManager::EditVertexPosition ()
 		mySelLayer->UpdateGeometry(myGeom, myDlg.m_SelectedOID);
 	}
 	OGRFeature::DestroyFeature(myFeature);
-	
+	wxDELETE(mySelLayer);
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
@@ -1974,4 +1971,46 @@ void tmEditManager::OnSetRenderFocus (wxCommandEvent & event)
 }
 
 
+
+bool tmEditManager::FlipLine(){
+	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectSelected()){
+		return false;
+	}
+	
+	// Get the Layer (Line MySQL) 
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (mySelLayer == NULL){
+		return false;
+	}
+	
+	OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SelectedData->GetSelectedUnique());
+	wxASSERT(myFeature);
+	
+	// temp
+	//OGRFeature::DestroyFeature(myFeature);
+	//wxDELETE(mySelLayer);
+	
+	
+	// don't delete, internally geometry.
+	OGRLineString * myOGRSelLine = (OGRLineString*) myFeature->GetGeometryRef();
+	wxASSERT(myOGRSelLine);
+	
+	OGRLineString * myTmpLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	wxASSERT(myTmpLine);
+	for (int i = myOGRSelLine->getNumPoints()-1; i >= 0; i--) {
+		OGRPoint myPoint;
+		myOGRSelLine->getPoint(i, &myPoint);
+		myTmpLine->addPoint(&myPoint);
+	}
+	wxLogMessage(_("Line  %d flipped"), myFeature->GetFID());
+	mySelLayer->UpdateGeometry(myTmpLine, myFeature->GetFID());
+	OGRGeometryFactory::destroyGeometry(myTmpLine);
+	OGRFeature::DestroyFeature(myFeature);
+	wxDELETE(mySelLayer);
+	
+	// update display
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	return true;
+}
 

@@ -78,10 +78,6 @@ bool ImportWizIntro::TransferDataFromWindow() {
 //
 ////////////// INFO WIZARD PAGE ////////////////
 //
-/*BEGIN_EVENT_TABLE(ImportWizInfo, wxWizardPageSimple)
-EVT_FILEPICKER_CHANGED(wxID_OPEN, ImportWizInfo::OnOpenFile)
-END_EVENT_TABLE()*/
-
 void ImportWizInfo::_CreateControls() {
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxVERTICAL );

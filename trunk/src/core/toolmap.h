@@ -346,6 +346,7 @@ private:
 	void CheckUpdates(bool silent = false);
 	void OnImportGISData (wxCommandEvent & event);
 	void OnUserManual(wxCommandEvent & event);
+	void OnFlipLine (wxCommandEvent & event);
 	
 	
 	// selection
@@ -387,6 +388,7 @@ private:
 	void OnUpdateMenuShowTOC (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowLog (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowInfo (wxUpdateUIEvent & event);
+	void OnUpdateMenuFlipLine (wxUpdateUIEvent & event);
 
 	
 	wxLogWindow * m_LogWindow;

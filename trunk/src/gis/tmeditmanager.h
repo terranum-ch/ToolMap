@@ -195,6 +195,7 @@ class tmEditManager : public wxEvtHandler
 		
 		// merging lines
 		bool MergeSelectedLines ();
+		bool FlipLine();
 		
 	};
 
