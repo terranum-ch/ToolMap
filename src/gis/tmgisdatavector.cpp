@@ -412,8 +412,10 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
     {
 //#ifndef  __WXMSW__    
 //		delete pabyBuf;
+//		OGRFree(pabyBuf);
 //#endif
-		OGRFree(pabyBuf);
+		GEOSFree(pabyBuf);
+		
     }
     return poGeometry;
 	

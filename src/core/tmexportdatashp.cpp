@@ -783,8 +783,8 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
         poGeometry = NULL;
     }
 
-	delete pabyBuf;
-	//GEOSFree(pabyBuf);
+	//delete pabyBuf;
+	GEOSFree(pabyBuf);
     return poGeometry;
 }
 
