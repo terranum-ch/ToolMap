@@ -810,6 +810,7 @@ void tmTOCCtrl::StartEditing ()
 	
 	// get selected item
 	tmLayerProperties * item = GetSelectionLayer();
+	item->m_IsEditing = true;
 	wxASSERT(item);
 	SetEditLayer(item);
 	
@@ -851,6 +852,7 @@ void tmTOCCtrl::StopEditing (bool bSentmessage)
 		
 		if (iterlayer == GetEditLayer())
 		{
+			iterlayer->m_IsEditing = false;
 			SetEditLayer(NULL);
 			SetItemStyle(m_ActualItemID, 
 						 (tmLayerProperties*) GetItemData(m_ActualItemID));

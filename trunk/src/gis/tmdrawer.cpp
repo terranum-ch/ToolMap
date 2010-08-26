@@ -148,7 +148,6 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 }
 
 
-
 /***************************************************************************//**
  @brief Draw all lines
  @details This  function uses the symbology (#tmSymbol) and the GIS data
@@ -210,9 +209,11 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		}
 		
-		if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
-			if (m_SelMem->IsSelected(myOid))
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+			if (m_SelMem->IsSelected(myOid)){
 				pgdc->SetPen(mySPen);
+			}
+		}
 		
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
@@ -222,18 +223,22 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		pgdc->StrokePath(myPath);
 		
+		tmLayerProperties myProperty (*itemProp);
+		
+		// drawing all vertex for in edition line
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer() &&
+			myProperty.m_IsEditing == true &&
+			m_SelMem->GetCount() == 1 &&
+			m_SelMem->IsSelected(myOid)){
+			myProperty.m_DrawFlags = tmDRAW_VERTEX_ALL;
+		}
+		
 		// drawing vertex
-		DrawVertexLine(pgdc, pptsReal, iNbVertex, itemProp, myVPen);
-				
+		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, myVPen);
 		delete [] pptsReal;
 		iLoop++;
 		
 	}
-	
-	/*if (IsLoggingEnabled())
-		wxLogDebug(_T("%d Lines drawn"), iLoop);*/
-	
-	
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE( myVPen);
 	wxDELETE(pgdc);
