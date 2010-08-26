@@ -35,6 +35,7 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerType = TOC_NAME_NOT_GENERIC;
 	m_LayerSymbol = NULL;
 	m_DrawFlags = 0;
+	m_IsEditing = false;
 }
 
 
@@ -219,6 +220,7 @@ tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
 	
 	
 	m_DrawFlags = layerprop.m_DrawFlags;
+	m_IsEditing = layerprop.m_IsEditing;
 	
 }
 
