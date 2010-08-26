@@ -218,6 +218,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnCreateIntersections)
 	EVT_MENU (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnEditVertexPosition)
 	EVT_MENU (ID_MENU_MERGE_LINES, ToolMapFrame::OnMergeSelectedLines)
+	EVT_MENU (ID_MENU_FLIP_LINE,ToolMapFrame::OnFlipLine)
 
 	//ATTRIBUTION MENU
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
@@ -282,6 +283,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_DELETE_OBJ, ToolMapFrame::OnUpdateMenuEditDelete)
 	EVT_UPDATE_UI (ID_MENU_MERGE_LINES, ToolMapFrame::OnUpdateMenuEditMerge)
 	EVT_UPDATE_UI (ID_MENU_SHORTCUTS, ToolMapFrame::OnUpdateMenuShowShortcuts)
+	EVT_UPDATE_UI (ID_MENU_FLIP_LINE, ToolMapFrame::OnUpdateMenuFlipLine)
 
 
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
@@ -566,7 +568,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
     itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut line\tCtrl+X"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge line\tCtrl+F"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersection\tCtrl+I"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+F"), _T(""), wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+Alt+F"), _T(""), wxITEM_NORMAL);
 	itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping...\tCtrl+S"), wxEmptyString, wxITEM_CHECK);
     menuBar->Append(itemMenu41, _("Edition"));
@@ -1116,6 +1118,12 @@ void ToolMapFrame::OnUserManual(wxCommandEvent & event){
 }
 
 
+void ToolMapFrame::OnFlipLine (wxCommandEvent & event){
+	m_EditManager->FlipLine();
+}
+
+
+
 
 
 void ToolMapFrame::CheckUpdates(bool silent)
@@ -1571,6 +1579,19 @@ void ToolMapFrame::OnUpdateMenuShowInfo (wxUpdateUIEvent & event){
 	}
 	event.Check(bCheck);
 }
+
+
+void ToolMapFrame::OnUpdateMenuFlipLine (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	bool bEnable = false;
+	if (m_EditManager->IsModifictionAllowed() == true) {
+		if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE)) {
+			bEnable = true;
+		}
+	}
+	event.Enable(bEnable);
+}
+
 
 
 
