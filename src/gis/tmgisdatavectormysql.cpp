@@ -1079,9 +1079,11 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 	OGRFeatureDefn * myFeatDef = new OGRFeatureDefn(GetShortFileName().mb_str());
 	OGRFieldDefn myFieldDef (wxString(_T("test")).mb_str(), OFTInteger);
 	myFeatDef->AddFieldDefn(&myFieldDef);
+#if (defined(__WXMSW__)  && defined(__WXDEBUG__))
+	// this is needed for windows but generate a memory leak under other plateforms
+	wxLogMessage(_("Memory leak"));
 	myFeatDef->Reference();
-
-	
+#endif
 	if (TABLE_NAME_GIS_GENERIC[0] == GetShortFileName()) {
 		myFeatDef->SetGeomType(wkbLineString);
 	}
