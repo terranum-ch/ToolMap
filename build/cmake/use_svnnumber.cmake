@@ -19,7 +19,7 @@ ENDIF (WIN32)
  
 
 #OPTIONS
-SET (SVN_DURING_CMAKE TRUE CACHE BOOL "Get svn number during cmake process")
+SET (SVN_DURING_CMAKE FALSE CACHE BOOL "Get svn number during cmake process")
 SET (SVN_DURING_BUILD FALSE CACHE BOOL "Get svn number when project during compilation") 
   
   
