@@ -139,6 +139,13 @@ wxWizardPage* QueriesPageIntro::GetNext() const {
 			return m_PageGeomNode;
 			break;
 			
+		case QUERY_DUPLICATE:
+			m_PageName->SetPrev(m_PageExpert);
+			wxWizardPageSimple::Chain(m_PageExpert, m_PageName);
+			return m_PageExpert;
+			break;
+			
+			
 		default:
 			break;
 		
@@ -195,6 +202,9 @@ void QueriesPageIntro::CreateControls() {
 	
 	m_RadioBtn[QUERY_NODES] = new wxRadioButton( this, wxID_ANY, _("by number of nodes"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer3->Add( m_RadioBtn[QUERY_NODES], 0, wxALL, 5 );
+	
+	m_RadioBtn[QUERY_DUPLICATE] = new wxRadioButton( this, wxID_ANY, _("Duplicated Geometries"));
+	sbSizer3->Add(m_RadioBtn[QUERY_DUPLICATE], 0, wxALL, 5);
 	
 	bSizer2->Add( sbSizer3, 0, wxALL|wxEXPAND, 5 );
 	
@@ -976,6 +986,12 @@ bool QueriesPageExpert::TransferDataToWindow() {
 
 bool QueriesPageExpert::TransferDataFromWindow() {
 	m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_LayerType->GetSelection();
+	
+	if (m_Parent->GetData()->m_QueryType == QUERY_DUPLICATE) {
+		m_Parent->GetData()->m_QueryName = wxString::Format(_("(duplicate) -  %s"),
+															TOC_GENERIC_NAME_STRING[m_LayerType->GetSelection()].c_str());
+	}
+	
 	return true;
 }
 

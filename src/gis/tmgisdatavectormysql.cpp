@@ -1081,7 +1081,6 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 	myFeatDef->AddFieldDefn(&myFieldDef);
 #if (defined(__WXMSW__)  && defined(__WXDEBUG__))
 	// this is needed for windows but generate a memory leak under other plateforms
-	wxLogMessage(_("Memory leak"));
 	myFeatDef->Reference();
 #endif
 	if (TABLE_NAME_GIS_GENERIC[0] == GetShortFileName()) {
