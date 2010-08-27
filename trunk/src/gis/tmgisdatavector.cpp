@@ -2,7 +2,7 @@
 								tmgisdatavector.cpp
                    Super class for dealing with vector GIS data
                              -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+    copyright            : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -39,7 +39,7 @@ wxString tmGISDataVector::GetAllVectorGISFormatsWildcards()
 {
 	// Don't return mysql wildcard, used only internally
 	wxString myWildcards = _T("");
-	
+
 	myWildcards.Append(tmGISDATA_VECTOR_TYPE_WILDCARDS[tmGIS_VECTOR_SHAPEFILE - tmGISVECTOR_OFFSET]);
 	return myWildcards;
 }
@@ -97,24 +97,24 @@ wxString tmGISDataVector::GetFieldsMetadata ()
 		myResult.Append(_("Error getting fields info<BR>"));
 		return myResult;
 	}
-	
+
 	myResult.Append(wxString::Format(_("Number of field(s) : %d<BR>"), iNbFields));
-	
+
 	wxArrayString myFieldName;
 	if (GetFieldsName(myFieldName)==false)
 	{
 		myResult.Append(_("Error getting fields name<BR>"));
 		return myResult;
 	}
-	
+
 	myResult.Append(_T("<OL>"));
-	
+
 	for (unsigned int i =0; i<myFieldName.GetCount();i++)
 		myResult.Append(_T("<LI>") + myFieldName.Item(i) + _T("</LI>"));
-	
+
 	myResult.Append(_T("</OL><BR>"));
 
-	
+
 	return myResult;
 }
 
@@ -157,7 +157,7 @@ bool tmGISDataVector::CheckGEOSCrosses (GEOSGeom * g1, GEOSGeom * g2)
 	char result = GEOSCrosses(*g1, *g2);
 	if (result == 1)
 		return true;
-	
+
 	return false;
 }
 
@@ -224,7 +224,7 @@ GEOSGeom  tmGISDataVector::CreateGEOSGeometry (const tmRealRect & rect)
  *******************************************************************************/
 OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
 {
-	
+
 	wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
 									  rect.x_min, rect.y_min,
 									  rect.x_max, rect.y_min,
@@ -234,7 +234,7 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
 	// conversion Unicode wxString -> const char *
 	char * buffer = new char [sRect.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)sRect.mb_str(wxConvUTF8));
-	
+
 	OGRGeometry * geom = NULL;
 	OGRGeometryFactory::createFromWkt(&buffer, NULL, &geom);
 	// dont delete buffer, used by OGR
@@ -253,20 +253,20 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, 
+wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 													 OGRGeometry * buffer)
 {
 	OGRPoint * myPointLine = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
-	
+
 	// should not be deleted, belong to OGR
 	OGRLineString * myLineLine = NULL;
 	OGRPolygon * myPoly = NULL;
 	OGRPoint * myPoint = NULL;
-	
+
 	int i = 0;
 	wxRealPoint * ptReturn = NULL;
 	//bool bBreak = false;
-	
+
 	switch (wkbFlatten(geometry->getGeometryType()))
 	{
 		case wkbLineString:
@@ -280,14 +280,14 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 											   myPointLine->getY());
 					break;
 				}
-				
+
 			}
 			OGRGeometryFactory::destroyGeometry(myPointLine);
 			break;
-		
-			
-			
-			
+
+
+
+
 		case wkbPoint:
 			myPoint = (OGRPoint*) geometry;
 			if (myPoint && myPoint->Intersect(buffer))
@@ -297,15 +297,15 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 			}
 			break;
 
-			
-			
-			
+
+
+
 		case wkbPolygon:
 			myPoly = (OGRPolygon*) geometry;
 			// exterior ring
 			myLineLine = (OGRLineString*) myPoly->getExteriorRing();
 			ptReturn = GetVertexIntersection(myLineLine, buffer);
-			
+
 			// interior ring if needed
 			if (!ptReturn)
 			{
@@ -314,19 +314,19 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 					myLineLine = (OGRLineString*) myPoly->getInteriorRing(i);
 					if (!myLineLine)
 						break;
-					
+
 					ptReturn = GetVertexIntersection(myLineLine, buffer);
 					if (ptReturn)
 						break;
 				}
 			}
 			break;
-		
-		
+
+
 		default:
 			break;
 	}
-	
+
 	return ptReturn;
 }
 
@@ -334,50 +334,50 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
 
 /***************************************************************************//**
  @brief Search if a Begin/End vertex intersect the passed geometry
- @details This function is very close to the 
+ @details This function is very close to the
  tmGISDataVector::GetVertexIntersection but search only for begin / end vertex.
  So it works only for lines
  @param geometry A valid geometry (line ONLY)
  @param buffer The buffer for intersection
- @return  the vertex intersecting the geometry (dont forget to delete) or null 
+ @return  the vertex intersecting the geometry (dont forget to delete) or null
  if nothing found
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, 
+wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry,
 														OGRGeometry * buffer)
 {
 	wxRealPoint * ptReturn = NULL;
-	
+
 	if (wkbFlatten(geometry->getGeometryType()) == wkbLineString)
 	{
 		OGRLineString *	myLine = (OGRLineString*) geometry;
 		int iPointLine = myLine->getNumPoints();
-		
-		
+
+
 		OGRPoint * myPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
 		OGRPoint * myPoint2 = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
-		
+
 		myLine->getPoint(0, myPoint);
 		myLine->getPoint(iPointLine-1, myPoint2);
-		
+
 		if (myPoint->Intersect(buffer))
 		{
 			ptReturn = new wxRealPoint(myPoint->getX(),
 									   myPoint->getY());
-			
+
 		}
 		else if (myPoint2->Intersect(buffer))
 		{
 			ptReturn = new wxRealPoint(myPoint2->getX(),
 									   myPoint2->getY());
 		}
-		
+
 		OGRGeometryFactory::destroyGeometry(myPoint);
 		OGRGeometryFactory::destroyGeometry(myPoint2);
-		
+
 	}
-	
+
 	return ptReturn;
 }
 
@@ -394,31 +394,35 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 	size_t nSize = 0;
     unsigned char *pabyBuf = NULL;
     OGRGeometry *poGeometry = NULL;
-	
+
     pabyBuf = GEOSGeomToWKB_buf( geosGeom, &nSize );
     if( pabyBuf == NULL || nSize == 0 )
     {
         return NULL;
     }
-	
-    if( OGRGeometryFactory::createFromWkb( (unsigned char *) pabyBuf, 
+
+    if( OGRGeometryFactory::createFromWkb( (unsigned char *) pabyBuf,
 										  NULL, &poGeometry, (int) nSize )
 	   != OGRERR_NONE )
     {
         poGeometry = NULL;
     }
-	
+
     if( pabyBuf != NULL )
     {
-//#ifndef  __WXMSW__    
+//#ifndef  __WXMSW__
 //		delete pabyBuf;
 //		OGRFree(pabyBuf);
 //#endif
+#if (GEOS_VERSION_MAJOR >= 3 && GEOS_VERSION_MINOR >= 1 && GEOS_VERSION_PATH >= 1)
 		GEOSFree(pabyBuf);
-		
+#else
+		free(pabyBuf);
+#endif
+
     }
     return poGeometry;
-	
+
 }
 
 
@@ -431,19 +435,19 @@ OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
 	GEOSGeom geom = ogrgeom->exportToGEOS();
 	GEOSGeom geombuffer;
 	OGRGeometry * returnbuffer = NULL;
-	
+
 	if (geom != NULL)
 	{
 		geombuffer = GEOSBuffer(geom, size, 30);
 		GEOSGeom_destroy(geom);
-		
+
 		if (geombuffer != NULL)
 		{
 			returnbuffer = tmGISDataVector::SafeCreateFromGEOS(geombuffer);
 			GEOSGeom_destroy(geombuffer);
 		}
 	}
-	
+
 	return returnbuffer;
 }
 
@@ -461,16 +465,16 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
 {
 	wxASSERT(geom1);
 	wxASSERT(geom2);
-	
+
 	GEOSGeom  geosline = NULL;
 	GEOSGeom  geosframe = NULL;
 	GEOSGeom  geosintersect = NULL;
 	OGRGeometry * returncrop = NULL;
-	
-	
+
+
 	geosline = geom1->exportToGEOS();
 	geosframe = geom2->exportToGEOS();
-	
+
 	wxASSERT(geosline);
 	wxASSERT(geosframe);
 	if (geosline != NULL && geosframe != NULL)
@@ -478,16 +482,16 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
 		geosintersect = GEOSIntersection(geosline, geosframe);
 		GEOSGeom_destroy(geosline);
 		GEOSGeom_destroy(geosframe);
-		
+
 		if (geosintersect != NULL)
 		{
 			returncrop = SafeCreateFromGEOS(geosintersect);
 			GEOSGeom_destroy(geosintersect);
 		}
-		
-		
+
+
 	}
-	
+
 	return returncrop;
 }
 
@@ -496,7 +500,7 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
  @brief Compute Union
  @details This function try to bypass the Union() bug of GDAL by using
  GEOS directly
- @param union1 The multi-line string 
+ @param union1 The multi-line string
  @param line The line to intersect
  @return  A valid OGRLineString or NULL
  @author Lucien Schreiber (c) CREALP 2008
@@ -506,14 +510,14 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 {
 	wxASSERT(union1);
 	wxASSERT(line);
-	
+
 	GEOSGeom  geosline = NULL;
 	GEOSGeom  geosunion = NULL;
 	GEOSGeom  geosresult = NULL;
 	OGRGeometry * returnunion = NULL;
-	
-	
-	
+
+
+
 	geosline = line->exportToGEOS();
 	geosunion = union1->exportToGEOS();
 	if (geosline != NULL && union1 != NULL)
@@ -521,15 +525,15 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 		geosresult = GEOSUnion(geosunion, geosline);
 		GEOSGeom_destroy(geosline);
 		GEOSGeom_destroy(geosunion);
-		
+
 		if (geosresult != NULL)
 		{
 			returnunion = SafeCreateFromGEOS(geosresult);
 			GEOSGeom_destroy(geosresult);
 		}
-		
+
 	}
-	
+
 	return returnunion;
 }
 
@@ -542,7 +546,7 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry(const wxRealPoint & pt)
 	wxASSERT (pPt);
 	mypPt->setX(pt.x);
 	mypPt->setY(pt.y);
-	
+
 	return pPt;
 }
 
@@ -564,14 +568,14 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	wxASSERT(myFeature);
 	OGRLineString * myLine = (OGRLineString*) myFeature->GetGeometryRef();
 
-	
+
 	// create search buffer
 	OGRPoint myClickPt;
 	myClickPt.setX(clickedpt.x);
 	myClickPt.setY(clickedpt.y);
 	OGRGeometry * myClickBuffer = SafeBuffer(&myClickPt, searchRadius);
 	wxASSERT(myClickBuffer);
-	
+
 	// iterate all vertex
 	int iNumVertex = myLine->getNumPoints();
 	OGRPoint myActualVertex;
@@ -580,7 +584,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	{
 		myActualVertex.setX(myLine->getX(i));
 		myActualVertex.setY(myLine->getY(i));
-		
+
 		if (myActualVertex.Intersect(myClickBuffer))
 		{
 			iIntersectVertex = i;
@@ -589,8 +593,8 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myClickBuffer);
-		
-	
+
+
 	// checks for boundary
 	if (iIntersectVertex == 0 || iIntersectVertex == iNumVertex-1)
 	{
@@ -599,14 +603,14 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 		return false;
 	}
 
-	
+
 	if (iIntersectVertex == wxNOT_FOUND)
 	{
 		OGRFeature::DestroyFeature(myFeature);
-		return false;	
+		return false;
 	}
-	
-	
+
+
 	OGRLineString myLine1;
 	OGRLineString myLine2;
 	// intersection @ vertex
@@ -619,7 +623,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 			{
 				myLine1.addPoint(myLine->getX(j), myLine->getY(j), myLine->getZ(j));
 			}
-			
+
 			if (j >= iIntersectVertex)
 			{
 				myLine2.addPoint(myLine->getX(j), myLine->getY(j), myLine->getZ(j));
@@ -627,8 +631,8 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 		}
 	}
 	OGRFeature::DestroyFeature(myFeature);
-	
-		
+
+
 	// update geometry
 	bool bupd = UpdateGeometry(&myLine1, oid);
 	AddGeometry(&myLine2, oid, layertype);
@@ -650,13 +654,13 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
  @date 10 February 2009
  *******************************************************************************/
 bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * line2,
-									   OGRMultiLineString & res1, 
+									   OGRMultiLineString & res1,
 									   OGRMultiLineString & res2)
 {
 	// get vertex position
 	wxArrayInt myLine1VertexPos;
 	wxArrayInt myLine2VertexPos;
-	
+
 	OGRLineString * myLine1WVertex;
 	OGRLineString * myLine2WVertex;
 	myLine1WVertex = GetLineWithIntersection(line1, line2, myLine1VertexPos);
@@ -671,16 +675,16 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * lin
 		wxLogDebug(_T("Error inserting vertex"));
 		return false;
 	}
-	
-	// LOG 
+
+	// LOG
 	for (unsigned int i = 0; i< myLine1VertexPos.GetCount(); i++)
 		wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
 	// END LOG
-	
-	// cut lines @ specified vertex 
+
+	// cut lines @ specified vertex
 	SplitLinesAtVertex(myLine1WVertex, myLine1VertexPos , res1);
 	SplitLinesAtVertex(myLine2WVertex, myLine2VertexPos, res2);
-	
+
 	OGRGeometryFactory::destroyGeometry(myLine1WVertex);
 	OGRGeometryFactory::destroyGeometry(myLine2WVertex);
 
@@ -697,7 +701,7 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString * line1, OGRLineString * lin
  @author Lucien Schreiber (c) CREALP 2009
  @date 12 February 2009
  *******************************************************************************/
-bool tmGISDataVector::CutLineMultiple (OGRLineString * linetocut, 
+bool tmGISDataVector::CutLineMultiple (OGRLineString * linetocut,
 									   OGRMultiLineString * cutlines,
 									   OGRMultiLineString & results)
 {
@@ -711,16 +715,16 @@ bool tmGISDataVector::CutLineMultiple (OGRLineString * linetocut,
 		wxLogDebug(_T("Error inserting vertex"));
 		return false;
 	}
-	
-	// LOG 
+
+	// LOG
 	//for (unsigned int i = 0; i< myLine1VertexPos.GetCount(); i++)
 	//	wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
 	// END LOG
-	
-	// cut lines @ specified vertex 
+
+	// cut lines @ specified vertex
 	//results.addGeometry(myLine1WVertex);
 	SplitLinesAtVertex(myLine1WVertex, myLine1VertexPos , results);
-	
+
 	OGRGeometryFactory::destroyGeometry(myLine1WVertex);
 	return true;
 }
@@ -736,32 +740,32 @@ bool tmGISDataVector::CutLineMultiple (OGRLineString * linetocut,
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 February 2009
  *******************************************************************************/
-OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line, 
+OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
 														  OGRLineString * intersection,
 														  wxArrayInt & insertedvertex)
-{	
+{
 	OGRPoint p1;
 	OGRPoint p2;
 	OGRLineString segment;
 	OGRLineString * myResLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 	int iNumLineVertex = line->getNumPoints();
 
-	
+
 	for (int i = 0; i< iNumLineVertex; i++)
 	{
 		line->getPoint(i, &p1);
 		myResLine->addPoint(&p1);
-		
+
 		if (i+1 < iNumLineVertex)
 		{
 			line->getPoint(i+1, &p2);
 			segment.addPoint(&p1);
 			segment.addPoint(&p2);
-			
+
 			// intersection found
 			if (segment.Intersect(intersection))
 			{
-				OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection); 
+				OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection);
 				wxASSERT (myGeomIntersection);
 				// simple intersection
 				if (wkbFlatten(myGeomIntersection->getGeometryType()) == wkbPoint)
@@ -785,19 +789,19 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
 					wxASSERT_MSG (0, _T("This case isn't taken into account"));
 					return NULL;
 				}
-				
-				
-				
+
+
+
 				OGRGeometryFactory::destroyGeometry(myGeomIntersection);
 			}
 
 			segment.empty();
 		}
-		
+
 	}
-	
+
 	return myResLine;
-	
+
 }
 
 
@@ -811,7 +815,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
  @author Lucien Schreiber (c) CREALP 2009
  @date 12 February 2009
  *******************************************************************************/
-OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line, 
+OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 										OGRMultiLineString * multiline,
 										wxArrayInt & intertedvertex)
 {
@@ -820,20 +824,20 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 	OGRLineString segment;
 	OGRLineString * myResLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 	int iNumLineVertex = line->getNumPoints();
-	
-	
+
+
 	for (int i = 0; i< iNumLineVertex; i++)
 	{
 		line->getPoint(i, &p1);
 		myResLine->addPoint(&p1);
 		wxLogDebug(_T("Adding base point %d"), i);
-		
+
 		if (i+1 < iNumLineVertex)
 		{
 			line->getPoint(i+1, &p2);
 			segment.addPoint(&p1);
 			segment.addPoint(&p2);
-			
+
 			// loop for all lines
 			for (int l = 0; l < multiline->getNumGeometries(); l++)
 			{
@@ -843,7 +847,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 				if (segment.Intersect(intersection))
 				{
 					//TODO : Order vertex by distance
-					OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection); 
+					OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection);
 					wxASSERT (myGeomIntersection);
 					// simple intersection
 					if (wkbFlatten(myGeomIntersection->getGeometryType()) == wkbPoint)
@@ -869,20 +873,20 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 						wxASSERT_MSG (0, _T("This case isn't taken into account"));
 						return NULL;
 					}
-					
-					
-					
+
+
+
 					OGRGeometryFactory::destroyGeometry(myGeomIntersection);
 				}
-				
+
 			}
 			segment.empty();
 		}
-		
+
 	}
-	
+
 	return myResLine;
-	
+
 }
 
 
@@ -910,7 +914,7 @@ bool tmGISDataVector::SplitGeometry (OGRGeometryCollection * gCol, const long & 
 			return false;
 		AddedIds.Add(lAdded);
 	}
-		
+
 	return true;
 }
 
@@ -932,17 +936,17 @@ bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
 	OGRPoint pt;
 	//int lastpos = 0;
 	int splititem = 0;
-	
+
 	// security
 	if (splitpos.GetCount() == 0)
 		return false;
-		
-	
+
+
 	for (int i = 0 ; i< line->getNumPoints(); i++)
 	{
 		line->getPoint(i, &pt);
 		myLine.addPoint(&pt);
-		
+
 		if (i == splitpos.Item(splititem))
 		{
 			wxLogDebug(_T("Cutting @ %d - Position : %.*f / %.*f"), splitpos.Item(splititem), 2,
@@ -954,15 +958,15 @@ bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
 			if (splititem >= (signed) splitpos.GetCount())
 				splititem = 0;
 		}
-		
+
 	}
-	
+
 	if (myLine.getNumPoints() >= 2)
 		splitedline.addGeometry(&myLine);
-	
-	
+
+
 	return true;
-	
+
 }
 
 
@@ -981,7 +985,7 @@ bool tmGISDataVector::SplitLinesAtVertex (OGRLineString * line,
  @author Lucien Schreiber (c) CREALP 2009
  @date 11 February 2009
  *******************************************************************************/
-bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line, 
+bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
 												   OGRLineString * intersection,
 												   const wxArrayInt & vertexindex,
 												   OGRMultiPoint & resultpos)
@@ -991,14 +995,14 @@ bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
 	OGRPoint p1;
 	OGRPoint p2;
 	bool bReturn = true;
-	
+
 	for (unsigned int i = 0; i< vertexindex.GetCount();i++)
 	{
 		line->getPoint(vertexindex.Item(i) -1,&p1);
 		line->getPoint(vertexindex.Item(i), &p2);
 		segment.addPoint(&p1);
 		segment.addPoint(&p2);
-		
+
 		OGRGeometry * myIntersectionPoint = SafeIntersection(&segment, intersection);
 		if (myIntersectionPoint)
 		{
@@ -1012,7 +1016,7 @@ bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
 				wxLogError(_T("Result of intersection isn't a point !"));
 				bReturn = false;
 			}
-			
+
 			//OGRGeometryFactory::destroyGeometry(myIntersectionPoint);
 		}
 		segment.empty();
@@ -1027,7 +1031,7 @@ bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
  @param ptclicked the coordinate of the clicked point
  @param line the line
  @param inseredvertex return the number of the inserted vertex
- @return  The new line with the inserted vertex (caller should delete the 
+ @return  The new line with the inserted vertex (caller should delete the
  returned Geometry)
  @author Lucien Schreiber (c) CREALP 2009
  @date 06 February 2009
@@ -1035,58 +1039,58 @@ bool tmGISDataVector::ComputeLineLineIntersection (OGRLineString * line,
 OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer, wxRealPoint ptclicked,
 								   OGRLineString * line, int & inseredvertex)
 {
-	
+
 	// check segment by segment
 	OGRPoint p1;
 	OGRPoint p2;
 	OGRLineString segment;
 	OGRLineString * returnedLine = NULL;
 	inseredvertex = -1;
-	
-	
+
+
 	for (int i = 0;i < line->getNumPoints(); i++)
 	{
 		line->getPoint(i, &p1);
-		
+
 		if (i+1 < line->getNumPoints())
 		{
 			line->getPoint(i+1, &p2);
 			segment.addPoint(&p1);
 			segment.addPoint(&p2);
-			
+
 			// intersection found
 			if (segment.Intersect(pointbuffer))
 			{
 				inseredvertex = i+1;
 				wxLogDebug(_T("Intersection between vertex %d - %d"), i, inseredvertex);
 			}
-			
+
 			segment.empty();
 		}
-		
+
 		// end the loop when intersection found
 		if (inseredvertex != -1)
 			break;
-		
+
 	}
-	
-	
+
+
 	// if intersection found, add vertex
 	returnedLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 	for (int j = 0; j < line->getNumPoints(); j++)
 	{
 		line->getPoint(j, &p1);
 		returnedLine->addPoint(&p1);
-		
+
 		if (j == inseredvertex-1)
 		{
 			p2.setX(ptclicked.x);
 			p2.setY(ptclicked.y);
 			returnedLine->addPoint(&p2);
 		}
-		
+
 	}
-	
+
 	return returnedLine;
 }
 
@@ -1103,8 +1107,8 @@ OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer, wxReal
  @author Lucien Schreiber (c) CREALP 2009
  @date 10 February 2009
  *******************************************************************************/
-OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line, 
-													   OGRMultiPoint * vertex, 
+OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
+													   OGRMultiPoint * vertex,
 													   const wxArrayInt & point_pos)
 {
 	// if intersection found, add multiple vertex
@@ -1114,12 +1118,12 @@ OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
 	returnedLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 	int PointTruePos = 0;
 	int RealIndex = 0;
-	
+
 	for (int k = 0; k < line->getNumPoints(); k++)
 	{
 		line->getPoint(k, &p1);
 		returnedLine->addPoint(&p1);
-		
+
 		for (unsigned int l = 0; l<point_pos.GetCount();l++)
 		{
 			PointTruePos = point_pos.Item(l) -1 ; //+ (signed) l;
@@ -1134,11 +1138,11 @@ OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
 			}
 		}
 		RealIndex++;
-		
+
 	}
-	
+
 	return returnedLine;
-	
+
 }
 
 
@@ -1146,7 +1150,7 @@ OGRLineString * tmGISDataVector::InsertVertexMultiple (OGRLineString * line,
 /***************************************************************************//**
  @brief Merge lines
  @param linetomerge lines to merge
- @param linemerged the resulting geometry if function return true. 
+ @param linemerged the resulting geometry if function return true.
  @return true if merging was successfull, false otherwise
  @author Lucien Schreiber (c) CREALP 2009
  @date 27 February 2009
@@ -1160,19 +1164,19 @@ bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
 	GEOSGeom_destroy(myLinesToMerge);
 	if (!myResult)
 		return false;
-	
+
 	*(linemerged) = SafeCreateFromGEOS(myResult);
 	OGRGeometry * myMerge = *(linemerged);
 	if (myMerge == NULL)
 		return false;
-	
+
 	OGRwkbGeometryType myType = wkbFlatten(myMerge->getGeometryType());
 	if (myType != wkbLineString)
 	{
 		wxLogDebug(_T("Unable to merge lines, they aren't adjacent."));
 		return false;
 	}
-			
+
 	return true;
 }
 

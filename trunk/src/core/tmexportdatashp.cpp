@@ -784,7 +784,11 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
     }
 
 	//delete pabyBuf;
+#if (GEOS_VERSION_MAJOR >= 3 && GEOS_VERSION_MINOR >= 1 && GEOS_VERSION_PATH >= 1)
 	GEOSFree(pabyBuf);
+#else
+	free(pabyBuf);
+#endif
     return poGeometry;
 }
 
