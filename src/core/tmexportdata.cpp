@@ -119,14 +119,13 @@ wxFileName * tmExportData::GetFileName (ProjectDefMemoryLayers * myLayer,  const
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-int tmExportData::GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal)
+int tmExportData::GetSizeOfEnum (const PrjMemFieldCodedValArray & mCodedVal)
 {
-	wxASSERT (mCodedVal);
 	int iRetour = 0;
 	int iTemp = 0;
-	for (unsigned int i = 0; i<mCodedVal->GetCount();i++)
+	for (unsigned int i = 0; i<mCodedVal.GetCount();i++)
 	{
-		iTemp = mCodedVal->Item(i).m_ValueName.Len();
+		iTemp = mCodedVal.Item(i)->m_ValueName.Len();
 		if (iTemp > iRetour)
 			iRetour = iTemp;
 	}

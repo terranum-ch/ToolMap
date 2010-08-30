@@ -469,7 +469,7 @@ ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::AddCodedValue()
 	field = GetActiveField();
 	if (field != NULL)
 	{
-		field->m_pCodedValueArray->Add(myNewCodedValObj);	
+		field->m_pCodedValueArray.Add(myNewCodedValObj);	
 		//wxLogDebug(_T("Array Size : Coded Value = %d"),field->m_pCodedValueArray->GetCount());
 		
 		return myNewCodedValObj; // pointer to the added field.
@@ -485,14 +485,16 @@ int	PrjDefMemManage::RemoveCodedValue (int iIndex)
 	ProjectDefMemoryFields * field = GetActiveField();
 	
 	if (iIndex == -1)
-		iIndex = field->m_pCodedValueArray->GetCount() - 1;
+		iIndex = field->m_pCodedValueArray.GetCount() - 1;
 	
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
-	field->m_pCodedValueArray->RemoveAt(iIndex);
+	ProjectDefMemoryFieldsCodedVal * myVal = field->m_pCodedValueArray.Item(iIndex);
+	field->m_pCodedValueArray.Detach(iIndex);
+	wxDELETE(myVal);
 		
-	return field->m_pCodedValueArray->GetCount(); // number of coded values
+	return field->m_pCodedValueArray.GetCount(); // number of coded values
 }
 
 
@@ -502,13 +504,13 @@ bool PrjDefMemManage::RemoveCodedValue (const wxString & ValueName)
 	ProjectDefMemoryFields * field = GetActiveField();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < field->m_pCodedValueArray->GetCount(); i++)
+	for (unsigned int i=0; i < field->m_pCodedValueArray.GetCount(); i++)
 	{
-		if (field->m_pCodedValueArray->Item(i).m_ValueName == ValueName)
+		if (field->m_pCodedValueArray.Item(i)->m_ValueName == ValueName)
 		{
 			wxLogDebug(_T("Coded Value found in array in position : %d"), i);
-			field->m_pCodedValueArray->RemoveAt(i);
-			return TRUE;
+			RemoveCodedValue(i);
+			return true;
 		}
 	}
 	
@@ -522,13 +524,13 @@ ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::FindCodedValue(const wxString 
 	ProjectDefMemoryFields * field = GetActiveField();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < field->m_pCodedValueArray->GetCount(); i++)
+	for (unsigned int i=0; i < field->m_pCodedValueArray.GetCount(); i++)
 	{
-		if (field->m_pCodedValueArray->Item(i).m_ValueName == ValueName)
+		if (field->m_pCodedValueArray.Item(i)->m_ValueName == ValueName)
 		{
 			wxLogDebug(_T("Coded Value found in array in position : %d"), i);
 			IndexPos = i;
-			return &(field->m_pCodedValueArray->Item(i));
+			return field->m_pCodedValueArray.Item(i);
 		}
 	}
 	
@@ -547,7 +549,7 @@ ProjectDefMemoryFieldsCodedVal *PrjDefMemManage::GetNextCodedValue()
 		m_iActualCodedVal = 0;
 	}
 	
-	ProjectDefMemoryFieldsCodedVal * CodedVal = &(field->m_pCodedValueArray->Item(m_iActualCodedVal));
+	ProjectDefMemoryFieldsCodedVal * CodedVal = field->m_pCodedValueArray.Item(m_iActualCodedVal);
 	
 	// increment the object returned
 	m_iActualCodedVal ++;
@@ -561,7 +563,7 @@ int	PrjDefMemManage::GetCountCodedValue()
 	// get the active field
 	ProjectDefMemoryFields * field = GetActiveField();
 	
-	return field->m_pCodedValueArray->GetCount();
+	return field->m_pCodedValueArray.GetCount();
 }
 
 

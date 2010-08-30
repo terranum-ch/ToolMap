@@ -195,7 +195,7 @@ class ProjectDefMemoryFieldsCodedVal
 	};
 
 // Creating a list of MemoryObjects
-WX_DECLARE_OBJARRAY(ProjectDefMemoryFieldsCodedVal, PrjMemFieldCodedValArray);
+WX_DECLARE_OBJARRAY(ProjectDefMemoryFieldsCodedVal*, PrjMemFieldCodedValArray);
 
 /***************************************************************************//**
  @brief Storing object properties in memory
@@ -257,7 +257,7 @@ class ProjectDefMemoryFields
 		bool m_FieldConstrain;
 				
 		// for storing coded values
-		PrjMemFieldCodedValArray * m_pCodedValueArray; 
+		PrjMemFieldCodedValArray m_pCodedValueArray; 
 		
 		
 		ProjectDefMemoryFields();

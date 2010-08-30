@@ -522,20 +522,19 @@ void tmAAttribCtrlEnum::Create (wxWindow * parent,
 }
 
 
-wxSizer * tmAAttribCtrlEnum::CreateChoiceControl (PrjMemFieldCodedValArray * valarray)
+wxSizer * tmAAttribCtrlEnum::CreateChoiceControl (const PrjMemFieldCodedValArray & valarray)
 {
-	wxASSERT (valarray);
-	wxASSERT (valarray->GetCount() > 0);
+	wxASSERT (valarray.GetCount() > 0);
 	wxBoxSizer * bSizer25 = new wxBoxSizer(wxHORIZONTAL);
 	
 	// 3 radio controls
-	if (valarray->GetCount() <= AATTRIB_ENUM_RADIO_NUMBER)
+	if (valarray.GetCount() <= AATTRIB_ENUM_RADIO_NUMBER)
 	{
 		m_iNumRadios = 0;
-		for (unsigned int i = 0; i< valarray->GetCount();i++)
+		for (unsigned int i = 0; i< valarray.GetCount();i++)
 		{
 			m_ControlRadios[i] = new wxRadioButton(this,wxID_ANY,
-												   valarray->Item(i).m_ValueName);
+												   valarray.Item(i)->m_ValueName);
 			m_iNumRadios++;
 			bSizer25->Add(m_ControlRadios[i], 0, wxALL, 5 );
 			
@@ -547,8 +546,8 @@ wxSizer * tmAAttribCtrlEnum::CreateChoiceControl (PrjMemFieldCodedValArray * val
 	else // choice control
 	{
 		wxArrayString myValues;
-		for (unsigned int i = 0; i< valarray->GetCount();i++)
-			myValues.Add(valarray->Item(i).m_ValueName);
+		for (unsigned int i = 0; i< valarray.GetCount();i++)
+			myValues.Add(valarray.Item(i)->m_ValueName);
 			
 		m_ControlChoice = new wxChoice(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,
 									   myValues);

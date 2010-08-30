@@ -95,9 +95,14 @@ ProjectDefMemoryFields::ProjectDefMemoryFields()
 
 ProjectDefMemoryFields::~ProjectDefMemoryFields()
 {
-	m_pCodedValueArray->Clear();
-	// crash in tests 
-	//wxDELETE(m_pCodedValueArray);
+	unsigned int iCount = m_pCodedValueArray.GetCount();
+	for (unsigned int i = 0; i< iCount; i++)
+	{
+		ProjectDefMemoryFieldsCodedVal * myVal = m_pCodedValueArray.Item(0);
+		m_pCodedValueArray.Detach(0);
+		wxDELETE(myVal);
+	}
+	wxASSERT(m_pCodedValueArray.GetCount()==0);
 }
 
 
@@ -114,7 +119,6 @@ void ProjectDefMemoryFields::InitMemberValues()
 	m_FieldOrientation = FALSE;
 	m_FieldConstrain = FALSE;
 	
-	m_pCodedValueArray = new PrjMemFieldCodedValArray();
 }
 
 
@@ -137,12 +141,18 @@ ProjectDefMemoryFields & ProjectDefMemoryFields::operator = (const ProjectDefMem
 	m_FieldConstrain = source.m_FieldConstrain;
 	
 	// copy enum values if existing
-	m_pCodedValueArray->Clear();
-	wxASSERT (source.m_pCodedValueArray);
-	for (unsigned int i = 0; i< source.m_pCodedValueArray->GetCount();i++)
+	for (unsigned int j = 0; j< m_pCodedValueArray.GetCount(); j++) {
+		ProjectDefMemoryFieldsCodedVal * myVal = m_pCodedValueArray.Item(0);
+		m_pCodedValueArray.Detach(0);
+		wxDELETE(myVal);
+	}
+	
+	for (unsigned int i = 0; i< source.m_pCodedValueArray.GetCount();i++)
 	{
-		ProjectDefMemoryFieldsCodedVal CVal = source.m_pCodedValueArray->Item(i);
-		m_pCodedValueArray->Add(CVal);
+		ProjectDefMemoryFieldsCodedVal * CVal = source.m_pCodedValueArray.Item(i);
+		ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
+		myVal->CopyFieldCodedVal(*CVal);
+		m_pCodedValueArray.Add(myVal);
 	}
 			
 	return *this;
@@ -222,7 +232,7 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 					ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
 					myVal->m_ValueCode = i+1;
 					myVal->m_ValueName = myCodedValResults.Item(i);
-					m_pCodedValueArray->Add(myVal);
+					m_pCodedValueArray.Add(myVal);
 				}
 			}
 			
@@ -303,9 +313,9 @@ bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 	{
 		case TM_FIELD_ENUMERATION:
 			// get all coded values from array and concatenate them
-			for (unsigned int i = 0; i< m_pCodedValueArray->GetCount(); i++)
+			for (unsigned int i = 0; i< m_pCodedValueArray.GetCount(); i++)
 			{
-				sValuesConcatTemp = m_pCodedValueArray->Item(i).m_ValueName;
+				sValuesConcatTemp = m_pCodedValueArray.Item(i)->m_ValueName;
 				sValuesConcat.Append(wxString::Format(_T("\"%s\","), sValuesConcatTemp.c_str()));
 			}
 			// remove last comma

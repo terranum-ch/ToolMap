@@ -96,7 +96,8 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 
 bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 	
-	fields.Clear();
+	// TODO: Clear fields from all values
+	//fields.Empty();
 	
 	if (IsOk() == false) {
 		return false;
