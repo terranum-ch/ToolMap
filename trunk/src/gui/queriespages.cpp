@@ -734,7 +734,7 @@ void QueriesPageAttribut2::_LoadAttributs() {
 	
 	for (unsigned int i = 0; i<myData->m_QueryFields.GetCount() ; i++){
 		myText.Clear();
-		myText.Append(myData->m_QueryFields.Item(i).m_Fieldname);
+		myText.Append(myData->m_QueryFields.Item(i)->m_Fieldname);
 		myText.Append(_T(" = "));
 		if (myData->m_QueryFieldsValues.Item(i) == wxEmptyString) {
 			myText.Append(_("Empty"));

@@ -376,12 +376,11 @@ void ProjectDefMemoryLayers::InitMemberValues()
 {
 	m_LayerID = 0;
 	m_LayerType = LAYER_LINE;
-	m_pLayerFieldArray = NULL;
 	m_pLayerObjectArray = NULL;
 	m_LayerName = _T("");
 	m_LayerPolygonDefaultValue = wxEmptyString;
 	
-	m_pLayerFieldArray = new PrjMemFieldArray();
+	//m_pLayerFieldArray = new PrjMemFieldArray();
 	m_pLayerObjectArray = new PrjMemObjectsArray();
 	m_StoreDeleteFields.Clear();
 }
@@ -400,14 +399,24 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 	m_LayerName = source.m_LayerName;
 	m_LayerPolygonDefaultValue = source.m_LayerName;
 	
-	m_pLayerFieldArray->Clear();
+	// clear fieldarray
+	unsigned int fCount = m_pLayerFieldArray.GetCount();
+	for (unsigned int i = 0; i<fCount; i++) {
+		ProjectDefMemoryFields * myField = m_pLayerFieldArray.Item(0);
+		m_pLayerFieldArray.Detach(0);
+		wxDELETE(myField);
+	}
+	
 	m_pLayerObjectArray->Clear();
 	
 	// copy field
-	for (unsigned int i = 0; i< source.m_pLayerFieldArray->GetCount();i++)
+	for (unsigned int i = 0; i< source.m_pLayerFieldArray.GetCount();i++)
 	{
-		m_pLayerFieldArray->Add(new ProjectDefMemoryFields());
-		m_pLayerFieldArray->Item(i) = source.m_pLayerFieldArray->Item(i);
+		ProjectDefMemoryFields * myField = new ProjectDefMemoryFields();
+		ProjectDefMemoryFields * sourceField = source.m_pLayerFieldArray.Item(i);
+		wxASSERT(sourceField);
+		*myField = *sourceField;
+		m_pLayerFieldArray.Add(myField);
 	}
 	
 	

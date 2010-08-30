@@ -412,7 +412,7 @@ public:
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.GetCount(), 3);
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.GetCount(), 3);
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.Item(2), _T("1"));
-		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.Item(2).m_Fieldname, _T("Thrust_class"));
+		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.Item(2)->m_Fieldname, _T("Thrust_class"));
 		
 		for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
 			wxLogDebug(m_DataSelected->m_QueryFieldsValues.Item(i));

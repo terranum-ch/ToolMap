@@ -134,10 +134,10 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 	bool bFound = false;
 	for (unsigned int i = 0; i< myFields.GetCount();i++)
 	{
-		if (myFields.Item(i).m_FieldOrientation == true)
+		if (myFields.Item(i)->m_FieldOrientation == true)
 		{
 			bFound = true;
-			m_OrientField = myFields.Item(i);
+			m_OrientField = *(myFields.Item(i));
 		}
 	}
 	

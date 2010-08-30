@@ -594,7 +594,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage * pPrjDefinition)
 				}
 				
 				// adding fields
-				for (indexField = 0; indexField < myMemLayers->m_pLayerFieldArray->GetCount(); indexField++)
+				for (indexField = 0; indexField < myMemLayers->m_pLayerFieldArray.GetCount(); indexField++)
 				{
 					ProjectDefMemoryFields * myMemField = pPrjDefinition->FindField(indexField);
 					if (myMemField != NULL)

@@ -274,7 +274,7 @@ class ProjectDefMemoryFields
 	};
 
 // Creating a list of MemoryFields
-WX_DECLARE_OBJARRAY(ProjectDefMemoryFields, PrjMemFieldArray);
+WX_DECLARE_OBJARRAY(ProjectDefMemoryFields*, PrjMemFieldArray);
 
 
 /***************************************************************************//**
@@ -297,7 +297,7 @@ class ProjectDefMemoryLayers
 		wxString m_LayerPolygonDefaultValue;
 		
 		/// list of fields related to a layer
-		PrjMemFieldArray * m_pLayerFieldArray;
+		PrjMemFieldArray m_pLayerFieldArray;
 		/// list of objects related to a layer
 		PrjMemObjectsArray * m_pLayerObjectArray;
 		

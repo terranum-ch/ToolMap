@@ -88,18 +88,18 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 												 m_QueryData->m_QueryObjectID);
 			myQueryAdd = _T(" layer.%s = %s AND");
 			for (unsigned int i = 0; i< m_QueryData->m_QueryFields.GetCount(); i++) {
-				switch ( m_QueryData->m_QueryFields.Item(i).m_FieldType) {
+				switch ( m_QueryData->m_QueryFields.Item(i)->m_FieldType) {
 					case TM_FIELD_INTEGER:
 					case TM_FIELD_FLOAT:
 						myBaseQuery.Append(wxString::Format(_T(" layer.%s = %s AND"),
-														 m_QueryData->m_QueryFields.Item(i).m_Fieldname.c_str(),
+														 m_QueryData->m_QueryFields.Item(i)->m_Fieldname.c_str(),
 														 m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
 						break;
 						
 						
 					default:
 						myBaseQuery.Append(wxString::Format(_T(" layer.%s = \"%s\" AND"),
-														 m_QueryData->m_QueryFields.Item(i).m_Fieldname.c_str(),
+														 m_QueryData->m_QueryFields.Item(i)->m_Fieldname.c_str(),
 														 m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
 						
 						break;

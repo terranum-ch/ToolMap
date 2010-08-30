@@ -685,12 +685,12 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 		Fields.Add(_T("OBJ_CD"));
 		Fields.Add(_T("OBJ_DESC"));
 		
-		PrjMemFieldArray * myFields = myLayers.Item(j).m_pLayerFieldArray;
+		PrjMemFieldArray * myFields = &(myLayers.Item(j).m_pLayerFieldArray);
 		// adding fields only for object of correct type (case of line / poly)
 		if (myLayers.Item(j).m_LayerType == iTableType) {
 			wxASSERT(myFields);
 			for (unsigned int i = 0; i < myFields->GetCount(); i++) {
-				Fields.Add(myFields->Item(i).m_Fieldname);
+				Fields.Add(myFields->Item(i)->m_Fieldname);
 			}
 		}
 		

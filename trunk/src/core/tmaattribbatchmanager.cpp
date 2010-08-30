@@ -126,8 +126,8 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 			wxLogError(_("Field %d returned NULL"), i);
 			continue;
 		}
-		ProjectDefMemoryFields myField;
-		myField = *mypField;
+		ProjectDefMemoryFields * myField = new ProjectDefMemoryFields();
+		*myField = *mypField;
 		fields.Add(myField);
 	}
 	return true;
