@@ -117,51 +117,6 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 			wxLogError(_T("Unsupported case"));
 			break;
 	}
-	
-	// building query with attributs
-	/*if (m_QueryData->m_QueryUseFields) {
-		wxString myQuery1 = wxString::Format(_T("SELECT DISTINCT  type.OBJECT_GEOM_ID  FROM %s type")
-											 _T("  LEFT JOIN (%s%d layer) ON (type.OBJECT_GEOM_ID ")
-											 _T("= layer.OBJECT_ID) WHERE type.OBJECT_VAL_ID =%d AND"),
-											 myAtribTable.c_str(),
-											 TABLE_NAME_LAYER_AT.c_str(),
-											 m_QueryData->m_QueryLayerID,
-											 m_QueryData->m_QueryObjectID);
-		wxString myQueryAdd (_T(" layer.%s = %s AND"));
-		for (unsigned int i = 0; i< m_QueryData->m_QueryFields.GetCount(); i++) {
-			switch ( m_QueryData->m_QueryFields.Item(i).m_FieldType) {
-				case TM_FIELD_INTEGER:
-				case TM_FIELD_FLOAT:
-					myQuery1.Append(wxString::Format(_T(" layer.%s = %s AND"),
-													 m_QueryData->m_QueryFields.Item(i).m_Fieldname.c_str(),
-													 m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
-					break;
-					
-					
-				default:
-					myQuery1.Append(wxString::Format(_T(" layer.%s = \"%s\" AND"),
-													 m_QueryData->m_QueryFields.Item(i).m_Fieldname.c_str(),
-													  m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
-									
-					break;
-			}
-			
-		}
-		myQuery1.RemoveLast(3);
-		m_QueryData->m_QuerySQL = myQuery1;
-
-	}
-	
-	
-	// building query without attributs
-	else {
-		wxString myBaseQuery (_T("SELECT attrib.OBJECT_GEOM_ID from %s")
-							  _T(" attrib WHERE attrib.OBJECT_VAL_ID = %d"));
-		m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery,
-												   myAtribTable.c_str(),
-												   m_QueryData->m_QueryObjectID);
-		
-	}*/
 	return true;
 }
 
@@ -190,6 +145,15 @@ bool QueriesBuilder::_CreateGeomNodeQuery() {
 	wxString myQuery = wxString::Format(_T("SELECT geom.OBJECT_ID  FROM %s geom WHERE NumPoints(OBJECT_GEOMETRY) < %d"),
 										TABLE_NAME_GIS_GENERIC[0].c_str(),
 										m_QueryData->m_QueryNodeNumber);
+	m_QueryData->m_QuerySQL = myQuery;
+	return true;
+}
+
+
+bool QueriesBuilder::_CreateDuplicateQuery() {
+	wxString myQuery = wxString::Format(_T("SELECT OBJECT_ID FROM %s GROUP by OBJECT_GEOMETRY")
+										_T(" having COUNT(OBJECT_GEOMETRY) > 1 ORDER BY OBJECT_ID"),
+										TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str());
 	m_QueryData->m_QuerySQL = myQuery;
 	return true;
 }
@@ -269,8 +233,12 @@ bool QueriesBuilder::Create(DataBaseTM * database) {
 			_CreateGeomNodeQuery();
 			m_IsCreated = true;
 			break;
-
 			
+		case QUERY_DUPLICATE:
+			_CreateDuplicateQuery();
+			m_IsCreated = true;
+			break;
+
 		default:
 			wxLogError(_T("Unsupported query type"));
 			break;
