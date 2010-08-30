@@ -51,7 +51,7 @@ class tmExportData : public wxObject
 		
 		// protected functions
 		wxFileName * GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path);
-		int GetSizeOfEnum (PrjMemFieldCodedValArray * mCodedVal);
+		int GetSizeOfEnum (const PrjMemFieldCodedValArray & mCodedVal);
 		bool GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex);
 		bool GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype, long layerindex);
 		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer);

@@ -275,7 +275,7 @@ class tmAAttribCtrlEnum : public tmAAttribCtrl
 		bool IsChoiceList();
 		
 		// control creating
-		wxSizer * CreateChoiceControl (PrjMemFieldCodedValArray * valarray);
+		wxSizer * CreateChoiceControl (const PrjMemFieldCodedValArray & valarray);
 		
 		
 		
