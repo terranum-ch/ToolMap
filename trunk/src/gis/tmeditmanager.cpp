@@ -473,6 +473,8 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
 		//m_Renderer->Update();
 	}
+	wxDELETE(myPxCoord);
+	
 	
 	// snapping
 	EMGetSnappingCoord(myRealCoord);
@@ -483,7 +485,17 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
 		bool bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
 		wxASSERT(bCreate);
-
+		
+		// ensure vertex isn't already present (double insert);
+		wxRealPoint myLastVertex;
+		bool bReturn = m_GISMemory->GetVertex(myLastVertex);
+		if (bReturn == true && myLastVertex == myRealCoord) {
+			wxLogMessage(_("Vertex : %.2f, %.2f not added, already existing!"),
+						 myRealCoord.x, myRealCoord.y);
+			DrawMemoryData(false);
+			return;
+		}
+		
 		AddLineVertex(myRealCoord);
 		DrawMemoryData(false);
 	}
@@ -492,7 +504,7 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		AddPointVertex(myRealCoord);
 	}
 	
-	delete myPxCoord;
+	//delete myPxCoord;
 }
 
 

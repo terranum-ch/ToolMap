@@ -60,14 +60,7 @@ QueriesPageIntro::~QueriesPageIntro() {
 	delete m_PageObjectType;
 	delete m_PageGeomLine;
 	delete m_PageGeomNode;
-	
-	// delete array of radiobutton
-	for (int i = 0; i<QUERY_NUMBER; i++) {
-		delete m_RadioBtn[i];
-		m_RadioBtn[i] = NULL;
-	}
-	//delete [] m_RadioBtn;
-	m_RadioBtn = NULL;
+	wxDELETEA(m_RadioBtn);
 }
 
 
