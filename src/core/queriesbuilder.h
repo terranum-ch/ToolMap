@@ -44,7 +44,7 @@ class QueriesBuilder {
 	bool _CreateObjectQuery();
     bool _CreateGeomLineQuery();
     bool _CreateGeomNodeQuery();
-
+    bool _CreateDuplicateQuery();
 
   public:
     QueriesBuilder(QueriesData * query);

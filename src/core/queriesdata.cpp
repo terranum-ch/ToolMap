@@ -196,6 +196,23 @@ bool QueriesData::_IsQueryNodeNumberCorrect() {
 }
 
 
+bool QueriesData::_IsQueryDuplicateCorrect(){
+	wxASSERT(m_QueryType == QUERY_DUPLICATE);
+	
+	if (m_QueryName.IsEmpty()) {
+		wxLogError(_T("No name specified for the query"));
+		return false;
+	}
+	
+	if (m_QueryLayerType < TOC_NAME_LINES || m_QueryLayerType > TOC_NAME_ANNOTATIONS) {
+		wxLogError(_T("No layer ID specified"));
+		return false;
+	}
+	return true;
+}
+
+
+
 
 QueriesData::QueriesData() {
 	m_QueryName = wxEmptyString;
@@ -246,7 +263,10 @@ bool QueriesData::IsOk() {
 		case QUERY_NODES:
 			return _IsQueryNodeNumberCorrect();
 			break;
-
+		
+		case QUERY_DUPLICATE:
+			return _IsQueryDuplicateCorrect();
+			break;
 			
 		default:
 			wxLogError(_T("Query Type not supported !"));

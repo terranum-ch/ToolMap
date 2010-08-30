@@ -203,7 +203,7 @@ void QueriesPageIntro::CreateControls() {
 	m_RadioBtn[QUERY_NODES] = new wxRadioButton( this, wxID_ANY, _("by number of nodes"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer3->Add( m_RadioBtn[QUERY_NODES], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_DUPLICATE] = new wxRadioButton( this, wxID_ANY, _("Duplicated Geometries"));
+	m_RadioBtn[QUERY_DUPLICATE] = new wxRadioButton( this, wxID_ANY, _("Look for Duplicates"));
 	sbSizer3->Add(m_RadioBtn[QUERY_DUPLICATE], 0, wxALL, 5);
 	
 	bSizer2->Add( sbSizer3, 0, wxALL|wxEXPAND, 5 );

@@ -61,6 +61,7 @@ private:
 	bool _IsQueryObjectCorrect();
     bool _IsQueryLineSizeCorrect();
     bool _IsQueryNodeNumberCorrect();
+	bool _IsQueryDuplicateCorrect();
 	
 	
   public:
