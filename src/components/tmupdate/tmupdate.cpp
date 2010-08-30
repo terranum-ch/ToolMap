@@ -152,14 +152,13 @@ bool tmUpdate::UPPerform()
 {
 	wxASSERT(m_UPCurlHandle);
 
-
 	UPGetErrorVerbose();
 
 	m_UPCurlError = curl_easy_perform(m_UPCurlHandle);
 
 	if (m_UPCurlError != CURLE_OK)
 	{
-		wxLogError(_("Error performing connection : %d"));
+		wxLogWarning(_("ToolMap wasn't able to check for updates.\nMake sure your computer is connected\nto the Internet and try again."));
 		return false;
 	}
 	return true;
