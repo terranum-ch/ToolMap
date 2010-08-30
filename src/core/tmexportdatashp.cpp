@@ -130,38 +130,38 @@ bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::AddOptFields (PrjMemFieldArray * myfields)
+bool tmExportDataSHP::AddOptFields (const PrjMemFieldArray & myfields)
 {
-	wxASSERT (myfields);
 
 	bool bReturn = true; // if adding fields failed, stop
-	for (unsigned int i = 0; i< myfields->GetCount(); i++)
+	for (unsigned int i = 0; i< myfields.GetCount(); i++)
 	{
-		ProjectDefMemoryFields field = myfields->Item(i);
+		ProjectDefMemoryFields * field = myfields.Item(i);
+		wxASSERT(field);
 		int iSize = 0;
 
-		switch (field.m_FieldType)
+		switch (field->m_FieldType)
 		{
 			case TM_FIELD_TEXT:
-				bReturn = m_Shp.AddFieldText(field.m_Fieldname, field.m_FieldPrecision);
+				bReturn = m_Shp.AddFieldText(field->m_Fieldname, field->m_FieldPrecision);
 				break;
 
 			case TM_FIELD_INTEGER:
-				bReturn = m_Shp.AddFieldNumeric(field.m_Fieldname, false);
+				bReturn = m_Shp.AddFieldNumeric(field->m_Fieldname, false);
 				break;
 
 			case TM_FIELD_FLOAT:
-				bReturn = m_Shp.AddFieldNumeric(field.m_Fieldname, true);
+				bReturn = m_Shp.AddFieldNumeric(field->m_Fieldname, true);
 				break;
 
 			case TM_FIELD_ENUMERATION:
 				// compute max size for enum
-				iSize = GetSizeOfEnum(field.m_pCodedValueArray);
-				bReturn = m_Shp.AddFieldText(field.m_Fieldname, iSize);
+				iSize = GetSizeOfEnum(field->m_pCodedValueArray);
+				bReturn = m_Shp.AddFieldText(field->m_Fieldname, iSize);
 				break;
 
 			case TM_FIELD_DATE:
-				bReturn = m_Shp.AddFieldDate(field.m_Fieldname);
+				bReturn = m_Shp.AddFieldDate(field->m_Fieldname);
 				break;
 
 			default:
@@ -645,7 +645,7 @@ bool tmExportDataSHP::SetAttributsBasic(DataBaseResult & results){
 bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
 										   ProjectDefMemoryLayers * layer){
 	wxASSERT(layer);
-	if (layer->m_pLayerFieldArray == NULL) {
+	if (layer->m_pLayerFieldArray.GetCount() == 0) {
 		// no advanced attribution
 		return true;
 	}
@@ -656,14 +656,14 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
 	}
 
 
-	for (unsigned int i = 0; i<layer->m_pLayerFieldArray->GetCount(); i++) {
+	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount(); i++) {
 		wxString myValue = wxEmptyString;
 		if (results.GetValue(i + 4, myValue) == false) {
 			continue;
 		}
 
 		m_Shp.SetFieldValue(myValue ,
-							layer->m_pLayerFieldArray->Item(i).m_FieldType,
+							layer->m_pLayerFieldArray.Item(i)->m_FieldType,
 							i+3);
 	}
 	return true;
@@ -862,13 +862,11 @@ void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
 bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
 										 const wxArrayString & values)
 {
-	PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
-	wxASSERT (myFields);
-	wxASSERT (values.GetCount()-1 == myFields->GetCount());
+	wxASSERT (values.GetCount()-1 == layer->m_pLayerFieldArray.GetCount());
 
-	for (unsigned int i = 0; i<myFields->GetCount();i++)
+	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++)
 	{
-		if(!m_Shp.SetFieldValue(values.Item(i+1), myFields->Item(i).m_FieldType, i+3))
+		if(!m_Shp.SetFieldValue(values.Item(i+1), layer->m_pLayerFieldArray.Item(i)->m_FieldType, i+3))
 			return false;
 		else
 			m_Shp.UpdateFeature();

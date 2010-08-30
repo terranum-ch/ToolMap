@@ -302,7 +302,7 @@ bool tmExportData::GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype,
 bool tmExportData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer)
 {
 	// first check, do we have advanced attributes
-	if (layer->m_pLayerFieldArray->GetCount() == 0)
+	if (layer->m_pLayerFieldArray.GetCount() == 0)
 		return false;
 	
 	wxASSERT (layer);

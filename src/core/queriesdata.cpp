@@ -491,8 +491,9 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	
 	// copy fields to temp layer
 	for (unsigned int i = 0; i< fieldsdef.GetCount(); i++) {
-		myTempLayer.m_pLayerFieldArray->Add(new ProjectDefMemoryFields());
-		myTempLayer.m_pLayerFieldArray->Item(i) = fieldsdef.Item(i);
+		ProjectDefMemoryFields * myField = new ProjectDefMemoryFields();
+		*myField = *(fieldsdef.Item(i));
+		myTempLayer.m_pLayerFieldArray.Add(myField);
 	}
 	
 	
@@ -532,7 +533,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 
 bool QueriesData::DeleteFieldsValue(int index) {
 	wxASSERT(m_QueryFields.GetCount() == m_QueryFieldsValues.GetCount());
-	if (index >= m_QueryFields.GetCount()) {
+	if (index >= (signed) m_QueryFields.GetCount()) {
 		wxLogError(_T("Trying to delete out of bounds"));
 		return false;
 	}

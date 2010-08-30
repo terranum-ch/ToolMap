@@ -444,9 +444,8 @@ bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer)
 	}
 		
 	// add optionnal fields
-	PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
-	if (myFields){ // ok we have advanced fields
-		m_ExportData->AddOptFields(myFields);
+	if (layer->m_pLayerFieldArray.GetCount() > 0){ // ok we have advanced fields
+		m_ExportData->AddOptFields(layer->m_pLayerFieldArray);
 	}
 		
 	return true;
@@ -464,7 +463,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	// build different query if layer has advanced fields or not
 	//
 	wxString myQuery = wxEmptyString;
-	if (layer->m_pLayerFieldArray == NULL || layer->m_pLayerFieldArray->GetCount()== 0) {
+	if (layer->m_pLayerFieldArray.GetCount()== 0) {
 		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY),")
 								   _T(" o.OBJECT_CD, o.OBJECT_DESC FROM %s")
 								   _T(" l LEFT JOIN (%s la, %s o) ON (la.OBJECT_GEOM_ID")
@@ -477,11 +476,9 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	}
 	else {
 		myQuery = _T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY), o.OBJECT_CD, o.OBJECT_DESC, ");
-		PrjMemFieldArray * myFields = layer->m_pLayerFieldArray;
-		wxASSERT(myFields);
-		for (unsigned int i = 0; i< myFields->GetCount(); i++) {
+		for (unsigned int i = 0; i< layer->m_pLayerFieldArray.GetCount(); i++) {
 			myQuery.Append(_T("laa."));
-			myQuery.Append(myFields->Item(i).m_Fieldname);
+			myQuery.Append(layer->m_pLayerFieldArray.Item(i)->m_Fieldname);
 			myQuery.Append(_T(", "));
 		}
 		myQuery.RemoveLast(2);
@@ -683,7 +680,7 @@ void tmExportManager::_CorrectIntegrity(PrjMemLayersArray * layers){
 		
 	// integrity advanced attribution checks
 	for (unsigned int i = 0; i< layers->GetCount(); i++) {
-		if (layers->Item(i).m_pLayerFieldArray->GetCount() > 0) {
+		if (layers->Item(i).m_pLayerFieldArray.GetCount() > 0) {
 			di.CorrectAAttrib(layers->Item(i).m_LayerID,
 							  layers->Item(i).m_LayerType);
 		}

@@ -327,7 +327,7 @@ ProjectDefMemoryFields * PrjDefMemManage::AddField ()
 	if (layer != NULL)
 	{
 		
-		layer->m_pLayerFieldArray->Add(myNewFieldObj);
+		layer->m_pLayerFieldArray.Add(myNewFieldObj);
 		//wxLogDebug(_T("Array Size : Field = %d"),layer->m_pLayerFieldArray->GetCount());
 		
 		// set the active field
@@ -346,17 +346,19 @@ int	PrjDefMemManage::RemoveField (int iIndex)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	if (iIndex == -1)
-		iIndex = layer->m_pLayerFieldArray->GetCount() - 1;
+		iIndex = layer->m_pLayerFieldArray.GetCount() - 1;
 	
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
-	layer->m_pLayerFieldArray->RemoveAt(iIndex);
+	ProjectDefMemoryFields * myField = layer->m_pLayerFieldArray.Item(iIndex);
+	layer->m_pLayerFieldArray.Detach(iIndex);
+	wxDELETE(myField);
 	
 	// set null for active field
 	SetActiveField(NULL);
 		
-	return layer->m_pLayerFieldArray->GetCount(); // number of objects	
+	return layer->m_pLayerFieldArray.GetCount(); // number of objects	
 }
 
 
@@ -367,20 +369,18 @@ bool PrjDefMemManage::RemoveField(const wxString & FieldName)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < layer->m_pLayerFieldArray->GetCount(); i++)
+	for (unsigned int i=0; i < layer->m_pLayerFieldArray.GetCount(); i++)
 	{
-		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
+		if (layer->m_pLayerFieldArray.Item(i)->m_Fieldname == FieldName)
 		{
 			//wxLogDebug(_T("Object found in Field array in position : %d"), i);
-			layer->m_pLayerFieldArray->RemoveAt(i);
-			// set null for active field
-			SetActiveField(NULL);
-			return TRUE;
+			RemoveField(i);
+			return true;
 		}
 	}
 	
 	wxLogDebug(_T("Object not found in Field array"));
-	return FALSE; // nothing deleted.
+	return false; // nothing deleted.
 }
 
 
@@ -390,18 +390,17 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < layer->m_pLayerFieldArray->GetCount(); i++)
+	for (unsigned int i=0; i < layer->m_pLayerFieldArray.GetCount(); i++)
 	{
-		if (layer->m_pLayerFieldArray->Item(i).m_Fieldname == FieldName)
+		if (layer->m_pLayerFieldArray.Item(i)->m_Fieldname == FieldName)
 		{
 			//wxLogDebug(_T("Object found in Field array in position : %d"), i);
-			SetActiveField(&(layer->m_pLayerFieldArray->Item(i)));
-			return &(layer->m_pLayerFieldArray->Item(i));
+			SetActiveField(layer->m_pLayerFieldArray.Item(i));
+			return layer->m_pLayerFieldArray.Item(i);
 		}
 	}
 	
 	return NULL; // nothing found, return null pointer.
-
 }
 
 
@@ -414,10 +413,10 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(unsigned int iIndex)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	
-	if (iIndex <= layer->m_pLayerFieldArray->GetCount())
+	if (iIndex <= layer->m_pLayerFieldArray.GetCount())
 	{
-		SetActiveField(&(layer->m_pLayerFieldArray->Item(iIndex)));
-		return &(layer->m_pLayerFieldArray->Item(iIndex));
+		SetActiveField(layer->m_pLayerFieldArray.Item(iIndex));
+		return layer->m_pLayerFieldArray.Item(iIndex);
 	}
 	
 	
@@ -437,7 +436,7 @@ ProjectDefMemoryFields *PrjDefMemManage::GetNextField()
 		m_iActualField = 0;
 	}
 	
-	ProjectDefMemoryFields * field = &(layer->m_pLayerFieldArray->Item(m_iActualField));
+	ProjectDefMemoryFields * field = layer->m_pLayerFieldArray.Item(m_iActualField);
 	
 	// increment the object returned
 	m_iActualField ++;
@@ -453,7 +452,7 @@ int	PrjDefMemManage::GetCountFields()
 	// get the active layer
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
-	return layer->m_pLayerFieldArray->GetCount();
+	return layer->m_pLayerFieldArray.GetCount();
 }
 
 

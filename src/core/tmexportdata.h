@@ -72,7 +72,7 @@ class tmExportData : public wxObject
 		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
 											const wxString & path){return false;}
 		
-		virtual bool AddOptFields (PrjMemFieldArray * myfields){return false;}
+		virtual bool AddOptFields (const PrjMemFieldArray & myfields){return false;}
 		virtual bool AddGenericFields (int iSize){return false;}
 		virtual bool AddFIDField (){return false;}
 		

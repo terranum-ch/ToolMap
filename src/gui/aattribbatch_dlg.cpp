@@ -156,7 +156,7 @@ void AAttribBatch_DLG::OnTypeChange( wxCommandEvent& event ){
 	
 	m_ListFields->Freeze();
 	for (unsigned int i = 0; i< m_Fields.GetCount(); i++) {
-		m_ListFields->Append(m_Fields.Item(i).m_Fieldname);
+		m_ListFields->Append(m_Fields.Item(i)->m_Fieldname);
 	}
 	m_ListFields->Thaw();
 	
@@ -176,7 +176,7 @@ void AAttribBatch_DLG::OnFieldsChange( wxCommandEvent& event ){
 		return;
 	}
 	
-	tmAAttribCtrl * myCtrl = m_pBatchManager->GetValueControl(m_Fields.Item(event.GetSelection()),this);
+	tmAAttribCtrl * myCtrl = m_pBatchManager->GetValueControl(*(m_Fields.Item(event.GetSelection())),this);
 	if (myCtrl == NULL) {
 		wxLogError(_("Getting Control for Field %d failed"), event.GetSelection());
 		return;
@@ -235,7 +235,7 @@ void AAttribBatch_DLG::OnSave( wxCommandEvent& event ) {
 	{
 		wxBusyCursor myBusyCursor;
 		myNumber = m_pBatchManager->Attribute(m_ArrayIds.Item(m_ListType->GetSelection()),
-											  m_Fields.Item(m_ListFields->GetSelection()),
+											  *(m_Fields.Item(m_ListFields->GetSelection())),
 											  myValue);
 		if (myNumber == wxNOT_FOUND) {
 			wxLogError(_("Batch attribution Failed"));
@@ -260,7 +260,7 @@ void AAttribBatch_DLG::OnApply( wxCommandEvent& event ) {
 	{
 		wxBusyCursor myBusyCursor;
 		myNumber = m_pBatchManager->Attribute(m_ArrayIds.Item(m_ListType->GetSelection()),
-												  m_Fields.Item(m_ListFields->GetSelection()),
+												  *(m_Fields.Item(m_ListFields->GetSelection())),
 												  myValue);
 		if (myNumber == wxNOT_FOUND) {
 			wxLogError(_("Batch attribution Failed"));
@@ -269,7 +269,7 @@ void AAttribBatch_DLG::OnApply( wxCommandEvent& event ) {
 	}
 		
 	wxMessageBox(wxString::Format(_("%s = %s set for %d features"),
-								  m_Fields.Item(m_ListFields->GetSelection()).m_Fieldname.c_str(),
+								  m_Fields.Item(m_ListFields->GetSelection())->m_Fieldname.c_str(),
 								  myValue.c_str(),
 								  myNumber),
 				 _("Batch attribution succeed"),

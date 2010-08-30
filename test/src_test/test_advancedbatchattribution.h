@@ -124,8 +124,8 @@ public:
 		
 		for (unsigned int i = 0; i< myFields.GetCount(); i++) {
 			wxLogMessage(_T("%d - %s"),
-						 myFields.Item(i).m_FieldID,
-						 myFields.Item(i).m_Fieldname.c_str());
+						 myFields.Item(i)->m_FieldID,
+						 myFields.Item(i)->m_Fieldname.c_str());
 		}
 		
 		
@@ -154,7 +154,7 @@ public:
 		
 		PrjMemFieldArray myFields;
 		TS_ASSERT(myManager.GetFields(1, myFields));
-		ProjectDefMemoryFields myTestField = myFields.Item(0);
+		ProjectDefMemoryFields myTestField = *(myFields.Item(0));
 		TS_ASSERT(myTestField.m_Fieldname == _T("TYPE"));
 		
 		// try attribution

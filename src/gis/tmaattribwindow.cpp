@@ -225,14 +225,8 @@ int tmAAttribWindow::GetNumberControls ()
 	wxASSERT (m_Layers);
 
 	int iNumControl = 0;
-	PrjMemFieldArray * m_Fields = NULL;
-	
-	for (unsigned int i = 0; i< m_Layers->GetCount();i++)
-	{
-		
-		m_Fields = m_Layers->Item(i).m_pLayerFieldArray;
-		wxASSERT (m_Fields);
-		iNumControl += m_Fields->GetCount();
+	for (unsigned int i = 0; i< m_Layers->GetCount();i++){
+		iNumControl +=  m_Layers->Item(i).m_pLayerFieldArray.GetCount();
 	}
 	
 	if (iNumControl == 0)
@@ -260,7 +254,6 @@ bool tmAAttribWindow::TransferDataToWindow()
 	//wxASSERT (m_iTotalControls > 0);
 	
 	tmAAttribCtrl * mypCtrl = NULL;
-	PrjMemFieldArray * m_Fields = NULL;
 	tmAAttribCtrlStruct myCtrl;
 	int iCtrlPos = 0;
 	
@@ -273,11 +266,10 @@ bool tmAAttribWindow::TransferDataToWindow()
 		myName.Append(_T(")"));
 		
 		m_AAttribTree->AddLayerNode(myName);
-		m_Fields = m_Layers->Item(i).m_pLayerFieldArray;
-		wxASSERT (m_Fields);
-		for (unsigned int j = 0; j< m_Fields->GetCount();j++)
+		for (unsigned int j = 0; j< m_Layers->Item(i).m_pLayerFieldArray.GetCount();j++)
 		{
-			mypCtrl = m_AAttribTree->AddControl(m_Fields->Item(j));
+			ProjectDefMemoryFields myField = *(m_Layers->Item(i).m_pLayerFieldArray.Item(j));
+			mypCtrl = m_AAttribTree->AddControl(myField);
 			myCtrl.m_Ctrl = mypCtrl;
 			m_Ctrls.Add(myCtrl);
 			SetValue(iCtrlPos, mypCtrl);

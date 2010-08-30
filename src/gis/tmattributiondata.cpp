@@ -299,7 +299,7 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
 	{
 		if (prjdef->m_PrjLayerArray->Item(i).m_LayerType == layertype)
 		{
-			if (prjdef->m_PrjLayerArray->Item(i).m_pLayerFieldArray->GetCount() > 0)
+			if (prjdef->m_PrjLayerArray->Item(i).m_pLayerFieldArray.GetCount() > 0)
 			{
 				sSentence.Append(wxString::Format(sDel,
 												  prjdef->m_PrjLayerArray->Item(i).m_LayerID,
@@ -721,8 +721,8 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%d,"),
 									 layer->m_LayerID, selected);
 	
-	wxASSERT (layer->m_pLayerFieldArray->GetCount() + startvalues <= values.GetCount());
-	unsigned int iTotField = layer->m_pLayerFieldArray->GetCount();
+	wxASSERT (layer->m_pLayerFieldArray.GetCount() + startvalues <= values.GetCount());
+	unsigned int iTotField = layer->m_pLayerFieldArray.GetCount();
 	for (unsigned int i = 0; i< iTotField;  i++)
 	{
 		sAdd.Append(wxString::Format(_T("\"%s\","), values.Item(i+startvalues).c_str()));
@@ -800,7 +800,7 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 	// no results, fill array with empty strings
 	if (m_pDB->DataBaseHasResults()==false)
 	{
-		for (unsigned int i = 0; i<layer->m_pLayerFieldArray->GetCount();i++)
+		for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++)
 		{
 			values.Add(wxEmptyString);
 		}

@@ -65,7 +65,7 @@ class tmExportDataSHP : public tmExportData
 		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
 											const wxString & path);
 		
-		virtual bool AddOptFields (PrjMemFieldArray * myfields);
+		virtual bool AddOptFields (const PrjMemFieldArray & myfields);
 		virtual bool AddGenericFields (int iSize);
 		virtual bool AddFIDField ();
 		
