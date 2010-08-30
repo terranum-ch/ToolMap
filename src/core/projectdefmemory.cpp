@@ -96,7 +96,8 @@ ProjectDefMemoryFields::ProjectDefMemoryFields()
 ProjectDefMemoryFields::~ProjectDefMemoryFields()
 {
 	m_pCodedValueArray->Clear();
-	wxDELETE(m_pCodedValueArray);
+	// crash in tests 
+	//wxDELETE(m_pCodedValueArray);
 }
 
 
