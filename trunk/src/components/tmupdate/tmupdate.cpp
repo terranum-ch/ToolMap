@@ -288,7 +288,7 @@ bool tmUpdate::UPLoadParameters()
 
 	if(myConfig.Exists(_T("UPDATE"))==false)
 	{
-		wxLogDebug(_T("No config file found"));
+		//wxLogDebug(_T("No config file found"));
 		return false;
 	}
 
