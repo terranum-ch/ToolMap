@@ -57,11 +57,13 @@ private:
 };
 
 
+WX_DECLARE_OBJARRAY(wxRadioButton*, wxArrayRadioButton);
+
 
 class QueriesPageIntro : public wxWizardPage {
 private:
     QueriesWizard * m_Parent;
-	wxRadioButton ** m_RadioBtn; 
+	wxArrayRadioButton m_RadioBtn; 
 	DataBaseTM * m_pDB;
 		
 	QueriesPageLayer * m_PageLayer;

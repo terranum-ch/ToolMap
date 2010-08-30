@@ -19,7 +19,8 @@
 #include "listgenreport.h"
 
 
-
+#include <wx/arrimpl.cpp> // This is a magic incantation which must be done!
+WX_DEFINE_OBJARRAY(wxArrayRadioButton);
 
 
 
@@ -60,7 +61,6 @@ QueriesPageIntro::~QueriesPageIntro() {
 	delete m_PageObjectType;
 	delete m_PageGeomLine;
 	delete m_PageGeomNode;
-	wxDELETEA(m_RadioBtn);
 }
 
 
@@ -72,7 +72,6 @@ wxWizardPage* QueriesPageIntro::GetPrev() const {
 
 
 int QueriesPageIntro::_GetRadioBoxSelection() const {
-	wxASSERT(m_RadioBtn);
 	int iReturn = wxNOT_FOUND;
 	for (int i = 0; i<QUERY_NUMBER; i++) {
 		if (m_RadioBtn[i]->GetValue() == true) {
@@ -80,8 +79,6 @@ int QueriesPageIntro::_GetRadioBoxSelection() const {
 			break;
 		}
 	}
-	// ensure that a seletion is valid.
-	//wxASSERT(iReturn != wxNOT_FOUND);
 	return iReturn;
 }
 
@@ -149,10 +146,6 @@ wxWizardPage* QueriesPageIntro::GetNext() const {
 
 
 void QueriesPageIntro::CreateControls() {
-	
-	m_RadioBtn = new wxRadioButton * [QUERY_NUMBER-1];
-	
-	
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
@@ -167,19 +160,19 @@ void QueriesPageIntro::CreateControls() {
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Attribution based query") ), wxVERTICAL );
 	
-	m_RadioBtn[QUERY_LAYERS] = new wxRadioButton( this, wxID_ANY, _("by Layer"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("by Layer"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer2->Add( m_RadioBtn[QUERY_LAYERS], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_OBJECTS] = new wxRadioButton( this, wxID_ANY, _("by Object Kind"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("by Object Kind"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer2->Add( m_RadioBtn[QUERY_OBJECTS], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_SELECTED] = new wxRadioButton( this, wxID_ANY, _("From selected feature"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("From selected feature"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer2->Add( m_RadioBtn[QUERY_SELECTED] , 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_GENERIC] = new wxRadioButton( this, wxID_ANY, _("Generic query"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("Generic query"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer2->Add( m_RadioBtn[QUERY_GENERIC], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_SQL] = new wxRadioButton( this, wxID_ANY, _("SQL query (expert)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("SQL query (expert)"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer2->Add( m_RadioBtn[QUERY_SQL], 0, wxALL, 5 );
 	
 	bSizer2->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
@@ -190,13 +183,13 @@ void QueriesPageIntro::CreateControls() {
 	wxStaticBoxSizer* sbSizer3;
 	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Geometry based query") ), wxVERTICAL );
 	
-	m_RadioBtn[QUERY_LINES] = new wxRadioButton( this, wxID_ANY, _("by Length"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("by Length"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer3->Add( m_RadioBtn[QUERY_LINES], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_NODES] = new wxRadioButton( this, wxID_ANY, _("by number of nodes"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("by number of nodes"), wxDefaultPosition, wxDefaultSize, 0 ));
 	sbSizer3->Add( m_RadioBtn[QUERY_NODES], 0, wxALL, 5 );
 	
-	m_RadioBtn[QUERY_DUPLICATE] = new wxRadioButton( this, wxID_ANY, _("Look for Duplicates"));
+	m_RadioBtn.Add(new wxRadioButton( this, wxID_ANY, _("Look for Duplicates")));
 	sbSizer3->Add(m_RadioBtn[QUERY_DUPLICATE], 0, wxALL, 5);
 	
 	bSizer2->Add( sbSizer3, 0, wxALL|wxEXPAND, 5 );
