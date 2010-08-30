@@ -95,7 +95,7 @@ bool tmWindowPosition::LoadPosition(const wxString & wndname, wxString & postext
 	myConfig.SetPath(_T("WINDOW_POSITION"));	
 	if (myConfig.Read(wndname, &postext)==false)
 	{
-		wxLogError(_("No position stored for windows %s"), wndname.c_str());
+		wxLogMessage(_("No position stored for windows %s"), wndname.c_str());
 		return false;
 	}
 	
