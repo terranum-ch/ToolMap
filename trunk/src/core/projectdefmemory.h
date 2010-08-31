@@ -229,7 +229,7 @@ class ProjectDefMemoryObjects
 	};
 
 // Creating a list of MemoryObjects
-WX_DECLARE_OBJARRAY(ProjectDefMemoryObjects, PrjMemObjectsArray);
+WX_DECLARE_OBJARRAY(ProjectDefMemoryObjects*, PrjMemObjectsArray);
 
 /***************************************************************************//**
  @brief Storing Fields property in memory
@@ -299,7 +299,7 @@ class ProjectDefMemoryLayers
 		/// list of fields related to a layer
 		PrjMemFieldArray m_pLayerFieldArray;
 		/// list of objects related to a layer
-		PrjMemObjectsArray * m_pLayerObjectArray;
+		PrjMemObjectsArray m_pLayerObjectArray;
 		
 		// for storing layers to delete
 		wxArrayString m_StoreDeleteFields;

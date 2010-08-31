@@ -376,12 +376,8 @@ void ProjectDefMemoryLayers::InitMemberValues()
 {
 	m_LayerID = 0;
 	m_LayerType = LAYER_LINE;
-	m_pLayerObjectArray = NULL;
 	m_LayerName = _T("");
 	m_LayerPolygonDefaultValue = wxEmptyString;
-	
-	//m_pLayerFieldArray = new PrjMemFieldArray();
-	m_pLayerObjectArray = new PrjMemObjectsArray();
 	m_StoreDeleteFields.Clear();
 }
 
@@ -406,9 +402,15 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 		m_pLayerFieldArray.Detach(0);
 		wxDELETE(myField);
 	}
-	
-	m_pLayerObjectArray->Clear();
-	
+
+	// clear objarray
+	unsigned int oCount = m_pLayerObjectArray.GetCount();
+	for (unsigned int i = 0; i<oCount; i++) {
+		ProjectDefMemoryObjects * myObj = m_pLayerObjectArray.Item(0);
+		m_pLayerObjectArray.Detach(0);
+		wxDELETE(myObj);
+	}
+		
 	// copy field
 	for (unsigned int i = 0; i< source.m_pLayerFieldArray.GetCount();i++)
 	{
@@ -421,10 +423,13 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 	
 	
 	// copy objects
-	for (unsigned int j=0; j<source.m_pLayerObjectArray->GetCount();j++)
+	for (unsigned int j=0; j<source.m_pLayerObjectArray.GetCount();j++)
 	{
-		m_pLayerObjectArray->Add(new ProjectDefMemoryObjects());
-		m_pLayerObjectArray->Item(j) = source.m_pLayerObjectArray->Item(j);
+		ProjectDefMemoryObjects * myObj = new ProjectDefMemoryObjects();
+		ProjectDefMemoryObjects * mySourceObj = source.m_pLayerObjectArray.Item(j);
+		wxASSERT(mySourceObj);
+		myObj->CopyObject( *mySourceObj);		
+		m_pLayerObjectArray.Add(myObj);
 	}
 	
 	return *this;

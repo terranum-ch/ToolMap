@@ -467,7 +467,7 @@ bool QueriesPageObject::TransferDataToWindow() {
 	}
 	
 	for (unsigned int i = 0; i< m_Objects.GetCount(); i++) {
-		m_ListType->Append(m_Objects.Item(i).m_ObjectName);
+		m_ListType->Append(m_Objects.Item(i)->m_ObjectName);
 	}
 	
 	m_ListType->SetSelection(0);
@@ -486,9 +486,9 @@ bool QueriesPageObject::TransferDataFromWindow() {
 	int myIndex = m_ListType->GetSelection();
 	wxASSERT(myIndex != wxNOT_FOUND);
 	wxASSERT(m_Objects.GetCount() > 0);
-	m_Parent->GetData()->m_QueryObjectID = m_Objects.Item(myIndex).m_ObjectID;
+	m_Parent->GetData()->m_QueryObjectID = m_Objects.Item(myIndex)->m_ObjectID;
 	
-	m_Parent->GetData()->m_QueryName = _("Kind - ") + m_Objects.Item(myIndex).m_ObjectName;
+	m_Parent->GetData()->m_QueryName = _("Kind - ") + m_Objects.Item(myIndex)->m_ObjectName;
 	
 	return true;
 }
@@ -545,7 +545,7 @@ bool QueriesPageSelection::TransferDataToWindow() {
 		if(m_Parent->GetData()->GetObjectsForSelection(m_pDB, m_Types)){
 			m_SelTypeList->Freeze();
 			for (unsigned int i = 0; i< m_Types.GetCount(); i++) {
-				m_SelTypeList->Append(m_Types.Item(i).m_ObjectName);
+				m_SelTypeList->Append(m_Types.Item(i)->m_ObjectName);
 			}
 			m_SelTypeList->SetSelection(0);
 			m_SelTypeList->Thaw();
@@ -563,7 +563,7 @@ bool QueriesPageSelection::TransferDataFromWindow() {
 	if (m_Types.GetCount() > 0) {
 		wxASSERT(mySel < m_Types.GetCount());
 		
-		m_Parent->GetData()->m_QueryObjectID = m_Types.Item(mySel).m_ObjectID;
+		m_Parent->GetData()->m_QueryObjectID = m_Types.Item(mySel)->m_ObjectID;
 	}
 	
 	return true;

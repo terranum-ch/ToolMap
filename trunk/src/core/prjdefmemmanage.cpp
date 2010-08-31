@@ -203,7 +203,7 @@ ProjectDefMemoryObjects * PrjDefMemManage::AddObject()
 	if (layer != NULL)
 	{
 		
-		layer->m_pLayerObjectArray->Add(myNewObjectObj);
+		layer->m_pLayerObjectArray.Add(myNewObjectObj);
 		//wxLogDebug(_T("Array Size : Object = %d"),layer->m_pLayerObjectArray->GetCount());
 		
 		return myNewObjectObj; // pointer to the added object.
@@ -218,15 +218,16 @@ int	PrjDefMemManage::RemoveObject (int iIndex)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	if (iIndex == -1)
-		iIndex = layer->m_pLayerObjectArray->GetCount() - 1;
+		iIndex = layer->m_pLayerObjectArray.GetCount() - 1;
 	
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
-	layer->m_pLayerObjectArray->RemoveAt(iIndex);
+	ProjectDefMemoryObjects * myLayer =  layer->m_pLayerObjectArray.Item(iIndex);
+	layer->m_pLayerObjectArray.Detach(iIndex);
+	wxDELETE(myLayer);
 	
-	
-	return layer->m_pLayerObjectArray->GetCount(); // number of objects
+	return layer->m_pLayerObjectArray.GetCount(); // number of objects
 	
 }
 
@@ -237,17 +238,17 @@ bool PrjDefMemManage::RemoveObject(const wxString & ObjectName)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < layer->m_pLayerObjectArray->GetCount(); i++)
+	for (unsigned int i=0; i < layer->m_pLayerObjectArray.GetCount(); i++)
 	{
-		if (layer->m_pLayerObjectArray->Item(i).m_ObjectName == ObjectName)
+		if (layer->m_pLayerObjectArray.Item(i)->m_ObjectName == ObjectName)
 		{
 			//wxLogDebug(_T("Object found in object array in position : %d"), i);
-			layer->m_pLayerObjectArray->RemoveAt(i);
-			return TRUE;
+			RemoveObject(i);
+			return true;
 		}
 	}
 	wxLogDebug(_T("Object not found in object array"));
-	return FALSE; // nothing deleted.
+	return false; // nothing deleted.
 }
 
 
@@ -257,12 +258,12 @@ ProjectDefMemoryObjects *	PrjDefMemManage::FindObject(const wxString & ObjectNam
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < layer->m_pLayerObjectArray->GetCount(); i++)
+	for (unsigned int i=0; i < layer->m_pLayerObjectArray.GetCount(); i++)
 	{
-		if (layer->m_pLayerObjectArray->Item(i).m_ObjectName == ObjectName)
+		if (layer->m_pLayerObjectArray.Item(i)->m_ObjectName == ObjectName)
 		{
 			//wxLogDebug(_T("Object found in object array in position : %d"), i);
-			return &(layer->m_pLayerObjectArray->Item(i));
+			return layer->m_pLayerObjectArray.Item(i);
 		}
 	}
 	
@@ -275,9 +276,9 @@ ProjectDefMemoryObjects *	PrjDefMemManage::FindObject(unsigned int iIndex)
 	// get the active layer
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
-	if (iIndex <= layer->m_pLayerObjectArray->GetCount())
+	if (iIndex <= layer->m_pLayerObjectArray.GetCount())
 	{
-		return &(layer->m_pLayerObjectArray->Item(iIndex));
+		return layer->m_pLayerObjectArray.Item(iIndex);
 	}
 
 	return NULL; // nothing found... check for null pointer
@@ -296,11 +297,10 @@ ProjectDefMemoryObjects * PrjDefMemManage::GetNextObjects()
 		m_iActualObj = 0;
 	}
 	
-	ProjectDefMemoryObjects * object = &(layer->m_pLayerObjectArray->Item(m_iActualObj));
+	ProjectDefMemoryObjects * object = layer->m_pLayerObjectArray.Item(m_iActualObj);
 	
 	// increment the object returned
 	m_iActualObj ++;
-	
 	return object;
 }
 
@@ -310,7 +310,7 @@ int	PrjDefMemManage::GetCountObject()
 	// get the active layer
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
-	return layer->m_pLayerObjectArray->GetCount();
+	return layer->m_pLayerObjectArray.GetCount();
 }
 
 

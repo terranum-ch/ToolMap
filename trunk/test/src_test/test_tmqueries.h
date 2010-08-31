@@ -230,8 +230,8 @@ public:
 		// lignes n.231 (Faille et Border of Rocks_PLG)
 		TS_ASSERT(m_DataSelected->GetObjectsForSelection(m_pDB, myTypes));
 		TS_ASSERT_EQUALS(myTypes.GetCount(),2);
-		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectName, _T("faille"));
-		TS_ASSERT_EQUALS(myTypes.Item(1).m_ObjectID, 32);
+		TS_ASSERT_EQUALS(myTypes.Item(1)->m_ObjectName, _T("faille"));
+		TS_ASSERT_EQUALS(myTypes.Item(1)->m_ObjectID, 32);
 		
 	}
 	
