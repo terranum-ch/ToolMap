@@ -75,14 +75,14 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 	DataBaseResult myResults;
 	m_DB->DataBaseGetResults(&myResults);
 	for (int j = 0; j < myResults.GetRowCount(); j++) {
-		ProjectDefMemoryObjects myObj;
+		ProjectDefMemoryObjects * myObj = new ProjectDefMemoryObjects();
 		long myCount = 0;
 		long myLayerid = 0;
 		if(myResults.NextRow()==false){
 			break;
 		}
-		myResults.GetValue(0, myObj.m_ObjectID);
-		myResults.GetValue(1, myObj.m_ObjectName);
+		myResults.GetValue(0, myObj->m_ObjectID);
+		myResults.GetValue(1, myObj->m_ObjectName);
 		objects.Add(myObj);
 		myResults.GetValue(2, myCount);
 		number.Add(myCount);
@@ -97,7 +97,10 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 	
 	// TODO: Clear fields from all values
-	//fields.Empty();
+	ProjectDefMemoryFields myFieldEmpty;
+	for (unsigned int i = 0; i<fields.GetCount(); i++) {
+		*(fields.Item(i)) = myFieldEmpty;
+	}
 	
 	if (IsOk() == false) {
 		return false;

@@ -583,7 +583,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage * pPrjDefinition)
 				AddLayerPolygonDefaultBorder(myMemLayers);
 				
 				// Adding Objects 
-				for (indexObject = 0;indexObject < myMemLayers->m_pLayerObjectArray->GetCount(); indexObject++)
+				for (indexObject = 0;indexObject < myMemLayers->m_pLayerObjectArray.GetCount(); indexObject++)
 				{
 					ProjectDefMemoryObjects * myMemObj = pPrjDefinition->FindObject(indexObject);
 					if (myMemObj != NULL)

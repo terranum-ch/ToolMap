@@ -122,7 +122,7 @@ bool AAttribBatch_DLG::TransferDataToWindow(){
 	m_ListType->Freeze();
 	for (unsigned int i = 0; i < myObjets.GetCount(); i++) {
 		wxString myText;
-		myText.Append(myObjets.Item(i).m_ObjectName);
+		myText.Append(myObjets.Item(i)->m_ObjectName);
 		myText.Append(wxString::Format(_T(" (%d)"), myNumber.Item(i)));
 		m_ListType->Append(myText);
 	}
