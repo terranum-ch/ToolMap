@@ -508,6 +508,11 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	//
 	// Is geometry inside the frame ?
 	//
+	
+	// Crop with a bigger frame to ensure all intersections will be created
+	OGRGeometry * myBigFrame =  m_Frame->Buffer(1);
+	wxASSERT(myBigFrame);
+	
 	OGRMultiLineString * myNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
 	for (long i = 0; i < myResult.GetRowCount(); i++) {
 		myResult.NextRow();
@@ -532,7 +537,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		}
 
 
-		OGRGeometry * myCropLine = SafeIntersection(myGeom, m_Frame);
+		OGRGeometry * myCropLine = SafeIntersection(myGeom, myBigFrame);
 		OGRGeometryFactory::destroyGeometry(myGeom);
 
 		if (myCropLine == NULL) {
@@ -548,9 +553,9 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 
 		myNodedLines->addGeometry(myCropLine);
 		OGRGeometryFactory::destroyGeometry(myCropLine);
-
 	}
 
+	OGRGeometryFactory::destroyGeometry(myBigFrame);
 
 	//
 	// Union frame with cropped lines
@@ -575,8 +580,9 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	OGRGeometryFactory::destroyGeometry(myLineString);
 
 	int iTotalLines = ((OGRMultiLineString *) myLines)->getNumGeometries();
+	wxLogMessage(_("%d lines for creating polygons"), iTotalLines);
 
-
+	
 	//
 	// Create polygons
 	//
