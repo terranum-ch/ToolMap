@@ -72,7 +72,7 @@ ProjectDefMemoryLayers * PrjDefMemManage::AddLayer()
 	// set the active layer
 	SetActiveLayer(myNewLayerObj);
 	
-	return myNewLayerObj; // number of layers
+	return m_PrjLayerArray.Item(m_PrjLayerArray.GetCount()-1); // number of layers
 }
 
 
@@ -88,8 +88,9 @@ int PrjDefMemManage::RemoveLayer(int iIndex)
 	//delete item;
 	ProjectDefMemoryLayers * myLayer = m_PrjLayerArray.Item(iIndex);
 	wxASSERT (myLayer);
-	m_PrjLayerArray.Detach(iIndex);
 	wxDELETE(myLayer);
+	m_PrjLayerArray.RemoveAt(iIndex);
+	
 	
 	// set null for active layer
 	SetActiveLayer(NULL);
@@ -108,8 +109,9 @@ bool PrjDefMemManage::RemoveLayer(const wxString & layerName)
 		{
 			//item found, delete item;
 			ProjectDefMemoryLayers * myLayer = m_PrjLayerArray.Item(i);
-			m_PrjLayerArray.Detach(i);
 			wxDELETE(myLayer);
+			m_PrjLayerArray.RemoveAt(i);
+			
 			// set null for active layer
 			SetActiveLayer(NULL);
 			return TRUE;
