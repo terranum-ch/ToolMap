@@ -50,16 +50,15 @@ ProjectManager::ProjectManager(wxWindow * parent)
  *******************************************************************************/
 ProjectManager::~ProjectManager()
 {
-	if (m_PrjMem)
-		delete m_PrjMem;
-	
+	wxDELETE(m_PrjMem);
+	wxDELETE(m_DB);
 	
 	// closing database only at the program end.
-	if (m_DB != NULL)
+	/*if (m_DB != NULL)
 	{
 		delete m_DB;
 		m_DB = NULL;
-	}
+	}*/
 }
 
 
@@ -661,8 +660,8 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 	
 	if (m_PrjMem)
 	{
-		delete m_PrjMem;
-		m_PrjMem = new PrjDefMemManage();
+		wxDELETE(m_PrjMem);
+		//m_PrjMem = new PrjDefMemManage();
 	}
 	
 	wxStopWatch sw;

@@ -1745,22 +1745,18 @@ bool DataBaseTM::SetScaleRank (ScaleList * list, int icol,
 PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 {
 	PrjDefMemManage * myPrjDef = new PrjDefMemManage();
-	ProjectDefMemoryLayers * mypLayer = NULL;
-
-	
 	int iLayerAdded = 0, iReturnValue = 0; 
 	
 	// Load General project data (path, name,...)
 	if (GetProjectData(myPrjDef))
 	{
-		
 		// STEP 1
 		// get all layers 
 		while (1)
 		{
-			mypLayer = myPrjDef->AddLayer();
+			ProjectDefMemoryLayers * mypLayer = myPrjDef->AddLayer();
 			iReturnValue = GetNextLayer(mypLayer);
-	
+						
 			// item not found 
 			if (iReturnValue != 1)
 			{
@@ -1772,11 +1768,11 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			iLayerAdded++;
 			
 			// no more results 
-			if (iReturnValue == -1)
+			if (iReturnValue == -1){
 				break;
+			}
 			
 		}
-		
 		
 		GetFieldsFromDB(myPrjDef);
 		
