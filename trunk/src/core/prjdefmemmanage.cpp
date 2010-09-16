@@ -31,8 +31,8 @@ PrjDefMemManage::~PrjDefMemManage()
 	unsigned int iLayers = m_PrjLayerArray.GetCount();
 	for (unsigned int i = 0; i<iLayers; i++) {
 		ProjectDefMemoryLayers * myLayer = m_PrjLayerArray.Item(0);
-		m_PrjLayerArray.Detach(0);
 		wxDELETE(myLayer);
+		m_PrjLayerArray.RemoveAt(0);
 	}
 }
 
@@ -230,9 +230,9 @@ int	PrjDefMemManage::RemoveObject (int iIndex)
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
-	ProjectDefMemoryObjects * myLayer =  layer->m_pLayerObjectArray.Item(iIndex);
-	layer->m_pLayerObjectArray.Detach(iIndex);
-	wxDELETE(myLayer);
+	ProjectDefMemoryObjects * myObj =  layer->m_pLayerObjectArray.Item(iIndex);
+	wxDELETE(myObj);
+	layer->m_pLayerObjectArray.RemoveAt(iIndex);
 	
 	return layer->m_pLayerObjectArray.GetCount(); // number of objects
 	
@@ -359,8 +359,9 @@ int	PrjDefMemManage::RemoveField (int iIndex)
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
 	ProjectDefMemoryFields * myField = layer->m_pLayerFieldArray.Item(iIndex);
-	layer->m_pLayerFieldArray.Detach(iIndex);
 	wxDELETE(myField);
+	layer->m_pLayerFieldArray.RemoveAt(iIndex);
+	
 	
 	// set null for active field
 	SetActiveField(NULL);
@@ -497,8 +498,9 @@ int	PrjDefMemManage::RemoveCodedValue (int iIndex)
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
 	ProjectDefMemoryFieldsCodedVal * myVal = field->m_pCodedValueArray.Item(iIndex);
-	field->m_pCodedValueArray.Detach(iIndex);
 	wxDELETE(myVal);
+	field->m_pCodedValueArray.RemoveAt(iIndex);
+	
 		
 	return field->m_pCodedValueArray.GetCount(); // number of coded values
 }
@@ -645,17 +647,16 @@ PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
 		m_ScaleArray.Add(source.m_ScaleArray.Item(i));
 	
 	// copy layers
-	ProjectDefMemoryLayers * myLayer = NULL;
 	unsigned int iLayer = m_PrjLayerArray.GetCount();
 	for (unsigned int i = 0; i<iLayer; i++) {
 		ProjectDefMemoryLayers * myTempLayer = m_PrjLayerArray.Item(0);
-		m_PrjLayerArray.Detach(0);
 		wxDELETE(myTempLayer);
+		m_PrjLayerArray.RemoveAt(0);
 	}
 	
 	for (unsigned int j = 0; j<source.m_PrjLayerArray.GetCount();j++)
 	{
-		myLayer = AddLayer();
+		ProjectDefMemoryLayers * myLayer = AddLayer();
 		*myLayer = *source.m_PrjLayerArray.Item(j);
 		
 		//*myLayer = source.m_PrjLayerArray->Item(j);

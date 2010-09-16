@@ -288,8 +288,8 @@ bool QueriesPageLayer::TransferDataToWindow() {
 		unsigned int iLayer = m_Layers.GetCount();
 		for (unsigned int i = 0; i<iLayer; i++) {
 			ProjectDefMemoryLayers * myLayer = m_Layers.Item(0);
-			m_Layers.Detach(0);
 			wxDELETE(myLayer);
+			m_Layers.RemoveAt(0);
 		}
 		
 		if(m_Parent->GetData()->GetLayers(m_pDB, m_Layers)==true)
