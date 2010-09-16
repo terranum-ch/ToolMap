@@ -571,7 +571,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage * pPrjDefinition)
 	
 	
 	/// adding layers, and for each layer add object and fields related to this layer
-	for (indexLayer = 0; indexLayer<pPrjDefinition->m_PrjLayerArray->GetCount();indexLayer++)
+	for (indexLayer = 0; indexLayer<pPrjDefinition->m_PrjLayerArray.GetCount();indexLayer++)
 	{
 		ProjectDefMemoryLayers * myMemLayers = 	pPrjDefinition->FindLayer(indexLayer);
 		if (myMemLayers != NULL)

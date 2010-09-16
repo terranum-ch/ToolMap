@@ -113,7 +113,7 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 	m_ProjMem = localprojdef;
 	
 	// get all layers from memory
-	PrjMemLayersArray * myLayers = m_ProjMem->m_PrjLayerArray;
+	PrjMemLayersArray * myLayers = &(m_ProjMem->m_PrjLayerArray);
 	if (!myLayers)
 	{
 		return false;
@@ -122,7 +122,7 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 	// choose layer(s) to export
 	wxArrayString myNames;
 	for (unsigned int i = 0; i<myLayers->GetCount();i++)
-		myNames.Add(myLayers->Item(i).m_LayerName);
+		myNames.Add(myLayers->Item(i)->m_LayerName);
 	wxString sMsg = _("Select layer(s) to export");
 	
 	wxMultiChoiceDialog myDlg (m_Parent,sMsg, _T("Export layer"),myNames);
@@ -180,7 +180,7 @@ bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 	wxASSERT (localprojdef);
 	m_ProjMem = localprojdef;
 	
-	PrjMemLayersArray * myLayers = m_ProjMem->m_PrjLayerArray ;
+	PrjMemLayersArray * myLayers = &(m_ProjMem->m_PrjLayerArray) ;
 	if (!myLayers)
 	{
 		return false;
@@ -228,21 +228,21 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
 		return false;
 	
 	CreateProgress(layers->GetCount(),
-				   layers->Item(0).m_LayerName);
+				   layers->Item(0)->m_LayerName);
 	
 	bool bExportResult = true;
 	// for each layer
 	for (unsigned int i = 0; i<layers->GetCount();i++)
 	{
 		// update progress dialog
-		ProjectDefMemoryLayers myLayer = layers->Item(i);
-		if(UpdateProgress(i, myLayer.m_LayerName))
+		ProjectDefMemoryLayers * myLayer = layers->Item(i);
+		if(UpdateProgress(i, myLayer->m_LayerName))
 		{
 			wxLogMessage(_("Export cancelled by user."));
 			break;
 		}
 		
-		if (!ExportLayer(&myLayer, pFrame, iFrameVertex))
+		if (!ExportLayer(myLayer, pFrame, iFrameVertex))
 			bExportResult = false;
 		
 	}
@@ -669,7 +669,7 @@ void tmExportManager::_CorrectIntegrity(PrjMemLayersArray * layers){
 	
 	tmDataIntegrity di(m_pDB);
 	if (layers->GetCount() == 1) {
-		di.CorrectType(layers->Item(0).m_LayerType);
+		di.CorrectType(layers->Item(0)->m_LayerType);
 	}
 	else {
 		di.CorrectType(LAYER_LINE);
@@ -680,9 +680,9 @@ void tmExportManager::_CorrectIntegrity(PrjMemLayersArray * layers){
 		
 	// integrity advanced attribution checks
 	for (unsigned int i = 0; i< layers->GetCount(); i++) {
-		if (layers->Item(i).m_pLayerFieldArray.GetCount() > 0) {
-			di.CorrectAAttrib(layers->Item(i).m_LayerID,
-							  layers->Item(i).m_LayerType);
+		if (layers->Item(i)->m_pLayerFieldArray.GetCount() > 0) {
+			di.CorrectAAttrib(layers->Item(i)->m_LayerID,
+							  layers->Item(i)->m_LayerType);
 		}
 	}
 	

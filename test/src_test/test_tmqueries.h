@@ -219,7 +219,7 @@ public:
 		TS_ASSERT_EQUALS(myLayers.GetCount(),9);
 		
 		for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
-			wxLogMessage(_T("%d Layers name : %s"),i,myLayers.Item(i).m_LayerName.c_str());
+			wxLogMessage(_T("%d Layers name : %s"),i,myLayers.Item(i)->m_LayerName.c_str());
 		}
 	}
 	

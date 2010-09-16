@@ -312,7 +312,7 @@ class ProjectDefMemoryLayers
 	};
 
 // Creating a list of MemoryLayers
-WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers, PrjMemLayersArray);
+WX_DECLARE_OBJARRAY(ProjectDefMemoryLayers*, PrjMemLayersArray);
 
 
 

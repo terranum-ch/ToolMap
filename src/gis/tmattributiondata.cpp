@@ -261,8 +261,8 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
 	int iStep = 0;
 	for (unsigned int i = 0; i<layers->GetCount(); i++)
 	{
-		ProjectDefMemoryLayers myLayer = layers->Item(i);
-		iStep = PrepareAAttribStatement(sSentence,&myLayer, values, iStep, m_SelIDs->Item(0));
+		ProjectDefMemoryLayers * myLayer = layers->Item(i);
+		iStep = PrepareAAttribStatement(sSentence,myLayer, values, iStep, m_SelIDs->Item(0));
 	}
 	
 	if (m_pDB->DataBaseQueryNoResults(sSentence)==false)
@@ -295,14 +295,14 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
 	// search layer for same spatial type
 	unsigned int i = 0;
 	wxArrayInt myLayerIDs;
-	for (i = 0; i< prjdef->m_PrjLayerArray->GetCount();i++)
+	for (i = 0; i< prjdef->m_PrjLayerArray.GetCount();i++)
 	{
-		if (prjdef->m_PrjLayerArray->Item(i).m_LayerType == layertype)
+		if (prjdef->m_PrjLayerArray.Item(i)->m_LayerType == layertype)
 		{
-			if (prjdef->m_PrjLayerArray->Item(i).m_pLayerFieldArray.GetCount() > 0)
+			if (prjdef->m_PrjLayerArray.Item(i)->m_pLayerFieldArray.GetCount() > 0)
 			{
 				sSentence.Append(wxString::Format(sDel,
-												  prjdef->m_PrjLayerArray->Item(i).m_LayerID,
+												  prjdef->m_PrjLayerArray.Item(i)->m_LayerID,
 												  m_SelIDs->Item(0)));
 			}
 		}
@@ -337,8 +337,8 @@ bool tmAttributionData::GetAttributesAdvanced (PrjMemLayersArray * layers,
 	values.Clear();
 	for (unsigned int i = 0; i< layers->GetCount(); i++)
 	{
-		ProjectDefMemoryLayers  myLayer = layers->Item(i);
-		if (GetAdvancedAttribution(&myLayer, values, m_SelIDs->Item(0))==false)
+		ProjectDefMemoryLayers  * myLayer = layers->Item(i);
+		if (GetAdvancedAttribution(myLayer, values, m_SelIDs->Item(0))==false)
 		{
 			bReturn = false;
 			break;
