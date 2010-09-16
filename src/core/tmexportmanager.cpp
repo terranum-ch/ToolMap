@@ -150,8 +150,12 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 		}
 		
 		if (bRemove)
+		{
+			ProjectDefMemoryLayers * myLayer = myLayers->Item(j);
+			wxDELETE(myLayer);
 			myLayers->RemoveAt(j);
-		
+		}
+			
 		bRemove = true;
 	}
 	

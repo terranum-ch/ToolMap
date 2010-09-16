@@ -99,8 +99,9 @@ ProjectDefMemoryFields::~ProjectDefMemoryFields()
 	for (unsigned int i = 0; i< iCount; i++)
 	{
 		ProjectDefMemoryFieldsCodedVal * myVal = m_pCodedValueArray.Item(0);
-		m_pCodedValueArray.Detach(0);
 		wxDELETE(myVal);
+		m_pCodedValueArray.RemoveAt(0);
+		
 	}
 	wxASSERT(m_pCodedValueArray.GetCount()==0);
 }
@@ -143,8 +144,8 @@ ProjectDefMemoryFields & ProjectDefMemoryFields::operator = (const ProjectDefMem
 	// copy enum values if existing
 	for (unsigned int j = 0; j< m_pCodedValueArray.GetCount(); j++) {
 		ProjectDefMemoryFieldsCodedVal * myVal = m_pCodedValueArray.Item(0);
-		m_pCodedValueArray.Detach(0);
 		wxDELETE(myVal);
+		m_pCodedValueArray.RemoveAt(0);
 	}
 	
 	for (unsigned int i = 0; i< source.m_pCodedValueArray.GetCount();i++)
@@ -370,16 +371,16 @@ ProjectDefMemoryLayers::~ProjectDefMemoryLayers()
 	unsigned int fCount = m_pLayerFieldArray.GetCount();
 	for (unsigned int i = 0; i<fCount; i++) {
 		ProjectDefMemoryFields * myField = m_pLayerFieldArray.Item(0);
-		m_pLayerFieldArray.Detach(0);
 		wxDELETE(myField);
+		m_pLayerFieldArray.RemoveAt(0);
 	}
 	wxASSERT(m_pLayerFieldArray.GetCount() == 0);
 	
 	unsigned int oCount = m_pLayerObjectArray.GetCount();
 	for (unsigned int i = 0; i<oCount; i++) {
 		ProjectDefMemoryObjects * myObj = m_pLayerObjectArray.Item(0);
-		m_pLayerObjectArray.Detach(0);
 		wxDELETE(myObj);
+		m_pLayerObjectArray.RemoveAt(0);
 	}
 	wxASSERT(m_pLayerObjectArray.GetCount() == 0);
 }
@@ -412,16 +413,16 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 	unsigned int fCount = m_pLayerFieldArray.GetCount();
 	for (unsigned int i = 0; i<fCount; i++) {
 		ProjectDefMemoryFields * myField = m_pLayerFieldArray.Item(0);
-		m_pLayerFieldArray.Detach(0);
 		wxDELETE(myField);
+		m_pLayerFieldArray.RemoveAt(0);
 	}
 
 	// clear objarray
 	unsigned int oCount = m_pLayerObjectArray.GetCount();
 	for (unsigned int i = 0; i<oCount; i++) {
 		ProjectDefMemoryObjects * myObj = m_pLayerObjectArray.Item(0);
-		m_pLayerObjectArray.Detach(0);
 		wxDELETE(myObj);
+		m_pLayerObjectArray.RemoveAt(0);
 	}
 		
 	// copy field
