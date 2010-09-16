@@ -79,7 +79,7 @@ class PrjDefMemManage
 		wxString m_PrjSummary;
 		PRJDEF_UNIT_TYPE m_PrjUnitType;
 		PRJDEF_PROJ_TYPE m_PrjProjType;
-		PrjMemLayersArray * m_PrjLayerArray;
+		PrjMemLayersArray m_PrjLayerArray;
 		PrjMemScaleArray m_ScaleArray;
 		
 		wxArrayLong m_StoreDeleteIDObj;
@@ -102,7 +102,7 @@ class PrjDefMemManage
 		void							SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
 													{m_pActiveLayer = ActiveLayer;}
 		ProjectDefMemoryLayers *		GetActiveLayer(){return m_pActiveLayer;}
-		int								GetCountLayers(){return m_PrjLayerArray->GetCount();}
+		int								GetCountLayers(){return m_PrjLayerArray.GetCount();}
 		ProjectDefMemoryLayers *		GetNextLayer ();
 	
 		// object members functions

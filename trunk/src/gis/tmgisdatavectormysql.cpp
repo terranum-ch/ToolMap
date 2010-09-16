@@ -675,7 +675,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 		}
 		else {
 			myLayers.Add(new ProjectDefMemoryLayers());
-			myLayers.Item(myLayers.GetCount()-1) = *myLayer;
+			*(myLayers.Item(myLayers.GetCount()-1)) = *myLayer;
 		}
 		
 	}
@@ -685,9 +685,9 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 		Fields.Add(_T("OBJ_CD"));
 		Fields.Add(_T("OBJ_DESC"));
 		
-		PrjMemFieldArray * myFields = &(myLayers.Item(j).m_pLayerFieldArray);
+		PrjMemFieldArray * myFields = &(myLayers.Item(j)->m_pLayerFieldArray);
 		// adding fields only for object of correct type (case of line / poly)
-		if (myLayers.Item(j).m_LayerType == iTableType) {
+		if (myLayers.Item(j)->m_LayerType == iTableType) {
 			wxASSERT(myFields);
 			for (unsigned int i = 0; i < myFields->GetCount(); i++) {
 				Fields.Add(myFields->Item(i)->m_Fieldname);
@@ -751,7 +751,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 		}
 		else {
 			myLayers.Add(new ProjectDefMemoryLayers());
-			myLayers.Item(myLayers.GetCount()-1) = *myLayer;
+			*(myLayers.Item(myLayers.GetCount()-1)) = *myLayer;
 		}
 		
 	}
@@ -776,7 +776,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 		values.Add(wxString::Format(_T("%d"), myObjCode.Item(i)));
 		values.Add(myObjVal.Item(i));
 		
-		ProjectDefMemoryLayers * myLayer = & (myLayers.Item(i));
+		ProjectDefMemoryLayers * myLayer = myLayers.Item(i);
 		wxASSERT(myLayer);
 		wxASSERT(myLayer->m_LayerID != wxNOT_FOUND);
 		// getting advanced attribution

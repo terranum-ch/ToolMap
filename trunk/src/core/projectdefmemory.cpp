@@ -367,8 +367,21 @@ ProjectDefMemoryLayers::ProjectDefMemoryLayers()
 ProjectDefMemoryLayers::~ProjectDefMemoryLayers()
 {
 	/// todo implement way of clearing the array contained inside
-	//delete m_pLayerFieldArray;
-	//delete m_pLayerObjectArray;
+	unsigned int fCount = m_pLayerFieldArray.GetCount();
+	for (unsigned int i = 0; i<fCount; i++) {
+		ProjectDefMemoryFields * myField = m_pLayerFieldArray.Item(0);
+		m_pLayerFieldArray.Detach(0);
+		wxDELETE(myField);
+	}
+	wxASSERT(m_pLayerFieldArray.GetCount() == 0);
+	
+	unsigned int oCount = m_pLayerObjectArray.GetCount();
+	for (unsigned int i = 0; i<oCount; i++) {
+		ProjectDefMemoryObjects * myObj = m_pLayerObjectArray.Item(0);
+		m_pLayerObjectArray.Detach(0);
+		wxDELETE(myObj);
+	}
+	wxASSERT(m_pLayerObjectArray.GetCount() == 0);
 }
 
 

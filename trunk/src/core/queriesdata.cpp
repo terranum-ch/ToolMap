@@ -314,9 +314,9 @@ bool QueriesData::GetLayers(DataBaseTM * database, PrjMemLayersArray & layers) {
 	wxASSERT(layers.GetCount() == 0);
 	
 	while (1){
-		ProjectDefMemoryLayers myLayer; // = new ProjectDefMemoryLayers();
+		ProjectDefMemoryLayers * myLayer = new ProjectDefMemoryLayers();
 
-		int iRet = database->GetNextLayer(&myLayer);
+		int iRet = database->GetNextLayer(myLayer);
 		if(iRet == 1){
 			layers.Add(myLayer);
 		}

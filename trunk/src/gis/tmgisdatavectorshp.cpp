@@ -684,7 +684,7 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	char * buffer2 = new char [myFileNameWOExt.Length() * sizeof(wxString)];
 	strcpy(buffer2, (const char*)myFileNameWOExt.mb_str(wxConvUTF8));
 	m_Layer = m_Datasource->CreateLayer( buffer2, NULL, myGeomType, NULL );
-	wxDELETEA(buffer);
+	wxDELETEA(buffer2);
 	
     if( m_Layer == NULL )
     {

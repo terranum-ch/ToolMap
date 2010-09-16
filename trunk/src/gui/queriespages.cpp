@@ -285,7 +285,13 @@ QueriesPageLayer::~QueriesPageLayer() {
 bool QueriesPageLayer::TransferDataToWindow() {
 	
 	if (m_ListLayers->GetItemCount() == 0) {
-		m_Layers.Clear();
+		unsigned int iLayer = m_Layers.GetCount();
+		for (unsigned int i = 0; i<iLayer; i++) {
+			ProjectDefMemoryLayers * myLayer = m_Layers.Item(0);
+			m_Layers.Detach(0);
+			wxDELETE(myLayer);
+		}
+		
 		if(m_Parent->GetData()->GetLayers(m_pDB, m_Layers)==true)
 		{
 			// create lines layers for all polygons layers
@@ -295,10 +301,10 @@ bool QueriesPageLayer::TransferDataToWindow() {
 				if (j >= m_Layers.GetCount()) {
 					break;
 				}
-				if(m_Layers.Item(j).m_LayerType == LAYER_POLYGON){
-					ProjectDefMemoryLayers myLayer;
-					myLayer = m_Layers.Item(j);
-					myLayer.m_LayerType = LAYER_LINE;
+				if(m_Layers.Item(j)->m_LayerType == LAYER_POLYGON){
+					ProjectDefMemoryLayers * myLayer = new ProjectDefMemoryLayers();
+					*myLayer = *(m_Layers.Item(j));
+					myLayer->m_LayerType = LAYER_LINE;
 					j++;
 					m_Layers.Insert(myLayer, j);
 				}
@@ -310,8 +316,8 @@ bool QueriesPageLayer::TransferDataToWindow() {
 			m_ListLayers->Freeze();
 			
 			for (unsigned int i = 0; i<m_Layers.GetCount(); i++) {
-				m_ListLayers->AddItemToList(m_Layers.Item(i).m_LayerName);
-				m_ListLayers->SetItemText(i, 1, TOC_GENERIC_NAME_STRING[m_Layers.Item(i).m_LayerType]);
+				m_ListLayers->AddItemToList(m_Layers.Item(i)->m_LayerName);
+				m_ListLayers->SetItemText(i, 1, TOC_GENERIC_NAME_STRING[m_Layers.Item(i)->m_LayerType]);
 			}
 			
 			m_ListLayers->SetSelection(0, true);
@@ -334,10 +340,10 @@ bool QueriesPageLayer::TransferDataFromWindow() {
 	wxASSERT(iNum != wxNOT_FOUND);
 	if (m_Layers.GetCount() > 0) {
 		
-		m_Parent->GetData()->m_QueryLayerID =  m_Layers.Item(iNum).m_LayerID;
-		m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_Layers.Item(iNum).m_LayerType;
+		m_Parent->GetData()->m_QueryLayerID =  m_Layers.Item(iNum)->m_LayerID;
+		m_Parent->GetData()->m_QueryLayerType = (TOC_GENERIC_NAME) m_Layers.Item(iNum)->m_LayerType;
 	
-		m_Parent->GetData()->m_QueryName = _("Layer - ") +  m_Layers.Item(iNum).m_LayerName;
+		m_Parent->GetData()->m_QueryName = _("Layer - ") +  m_Layers.Item(iNum)->m_LayerName;
 		
 	}
 	return true;

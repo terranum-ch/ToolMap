@@ -226,7 +226,7 @@ int tmAAttribWindow::GetNumberControls ()
 
 	int iNumControl = 0;
 	for (unsigned int i = 0; i< m_Layers->GetCount();i++){
-		iNumControl +=  m_Layers->Item(i).m_pLayerFieldArray.GetCount();
+		iNumControl +=  m_Layers->Item(i)->m_pLayerFieldArray.GetCount();
 	}
 	
 	if (iNumControl == 0)
@@ -262,13 +262,13 @@ bool tmAAttribWindow::TransferDataToWindow()
 	{
 		wxString myName = m_LayerNameID.Item(i).m_Value;
 		myName.Append(_T(" - ("));
-		myName.Append(m_Layers->Item(i).m_LayerName);
+		myName.Append(m_Layers->Item(i)->m_LayerName);
 		myName.Append(_T(")"));
 		
 		m_AAttribTree->AddLayerNode(myName);
-		for (unsigned int j = 0; j< m_Layers->Item(i).m_pLayerFieldArray.GetCount();j++)
+		for (unsigned int j = 0; j< m_Layers->Item(i)->m_pLayerFieldArray.GetCount();j++)
 		{
-			ProjectDefMemoryFields myField = *(m_Layers->Item(i).m_pLayerFieldArray.Item(j));
+			ProjectDefMemoryFields myField = *(m_Layers->Item(i)->m_pLayerFieldArray.Item(j));
 			mypCtrl = m_AAttribTree->AddControl(myField);
 			myCtrl.m_Ctrl = mypCtrl;
 			m_Ctrls.Add(myCtrl);

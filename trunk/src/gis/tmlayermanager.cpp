@@ -324,11 +324,11 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 			break;
 		}
 		if (myLayerProp->m_LayerType > TOC_NAME_NOT_GENERIC) {
-			ProjectDefMemoryLayers myLayer;
-			myLayer.m_LayerID = myLayerProp->m_LayerID;
-			myLayer.m_LayerName = myLayerProp->GetDisplayName();
-			myLayer.m_LayerType = (PRJDEF_LAYERS_TYPE) myLayerProp->m_LayerType;
-			myLayers.Insert(myLayer, 0);
+			ProjectDefMemoryLayers * myLayer = new ProjectDefMemoryLayers;
+			myLayer->m_LayerID = myLayerProp->m_LayerID;
+			myLayer->m_LayerName = myLayerProp->GetDisplayName();
+			myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) myLayerProp->m_LayerType;
+			myLayers.Insert(myLayer,0);
 			myLayersName.Insert(myLayerProp->GetDisplayName(), 0);
 		}
 	}
@@ -351,16 +351,16 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 	wxTreeItemId myItemId;
 	for (unsigned int i = 0; i<myLayerToRemoveIndex.GetCount(); i++) {
 		if (m_TOCCtrl->GetItemByID(myItemId,
-									myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerID)==false){
+									myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)==false){
 			wxLogError(_("Item with layer id : %d not found in the TOC"),
-					   myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerID);
+					   myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID);
 			continue;
 		}
 		m_TOCCtrl->RemoveLayer(myItemId, true);
 		
-		if (m_DB->RemoveTOCLayer(myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerID)==false) {
+		if (m_DB->RemoveTOCLayer(myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)==false) {
 			wxLogError(_("Unable to remove layer : '%s'"),
-					   myLayers.Item(myLayerToRemoveIndex.Item(i)).m_LayerName.c_str());
+					   myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerName.c_str());
 		}
 	}
 	

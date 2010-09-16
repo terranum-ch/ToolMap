@@ -732,7 +732,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		if (myActualLayer)
 		{
 			myLayersInfoArray.Add(new ProjectDefMemoryLayers());
-			myLayersInfoArray.Item(myLayersInfoArray.GetCount()-1) = *myActualLayer; 
+			*(myLayersInfoArray.Item(myLayersInfoArray.GetCount()-1)) = *myActualLayer; 
 		}
 		else
 			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i).m_Oid);
@@ -748,7 +748,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	
 	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray, myLayersID)==wxID_OK)
 	{
-		bool bClean = myAttribObj->CleanAttributesAdvanced(m_pPrjMem, myLayersInfoArray.Item(0).m_LayerType);
+		bool bClean = myAttribObj->CleanAttributesAdvanced(m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
 		bool bAttrib = myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);
 		if (bClean && bAttrib)
 			return true;

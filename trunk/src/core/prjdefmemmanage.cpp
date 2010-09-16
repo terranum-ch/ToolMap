@@ -28,12 +28,12 @@ PrjDefMemManage::PrjDefMemManage()
 PrjDefMemManage::~PrjDefMemManage()
 {
 	// destroy the array and free all memory
-	if (m_PrjLayerArray->GetCount())
-	{
-		m_PrjLayerArray->Clear();
-		wxLogDebug(_T("Clearing LayerArray of all data"));
+	unsigned int iLayers = m_PrjLayerArray.GetCount();
+	for (unsigned int i = 0; i<iLayers; i++) {
+		ProjectDefMemoryLayers * myLayer = m_PrjLayerArray.Item(0);
+		m_PrjLayerArray.Detach(0);
+		wxDELETE(myLayer);
 	}
-	delete m_PrjLayerArray;
 }
 
 
@@ -45,7 +45,7 @@ void PrjDefMemManage::InitDefaultValues()
 	m_PrjSummary	= _T("");
 	m_PrjUnitType	= UNIT_METERS;
 	m_PrjProjType	= PROJ_NOPROJ;
-	m_PrjLayerArray = new PrjMemLayersArray();
+	
 	
 	m_pActiveLayer = NULL;
 	m_pActiveField = NULL;
@@ -66,7 +66,7 @@ ProjectDefMemoryLayers * PrjDefMemManage::AddLayer()
 	
 	// attach it, don't delete this myNewLayerObj, it is now part of the
 	// array and will only be deleted if not used in the RemoveLayer method.
-	m_PrjLayerArray->Add(myNewLayerObj);
+	m_PrjLayerArray.Add(myNewLayerObj);
 	//wxLogDebug(_T("Array Size : Layer = %d"),m_PrjLayerArray->GetCount());
 	
 	// set the active layer
@@ -79,19 +79,22 @@ ProjectDefMemoryLayers * PrjDefMemManage::AddLayer()
 int PrjDefMemManage::RemoveLayer(int iIndex)
 {
 	if (iIndex == -1)
-		iIndex = m_PrjLayerArray->GetCount() - 1;
+		iIndex = m_PrjLayerArray.GetCount() - 1;
 	
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
 	
 	//ProjectDefMemoryLayers * item = m_PrjLayerArray[iIndex];
 	//delete item;
-	m_PrjLayerArray->RemoveAt(iIndex);
+	ProjectDefMemoryLayers * myLayer = m_PrjLayerArray.Item(iIndex);
+	wxASSERT (myLayer);
+	m_PrjLayerArray.Detach(iIndex);
+	wxDELETE(myLayer);
 	
 	// set null for active layer
 	SetActiveLayer(NULL);
 	
-	return m_PrjLayerArray->GetCount(); // number of layers
+	return m_PrjLayerArray.GetCount(); // number of layers
 }
 
 
@@ -99,12 +102,14 @@ int PrjDefMemManage::RemoveLayer(int iIndex)
 bool PrjDefMemManage::RemoveLayer(const wxString & layerName)
 {
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < m_PrjLayerArray->GetCount(); i++)
+	for (unsigned int i=0; i < m_PrjLayerArray.GetCount(); i++)
 	{
-		if (m_PrjLayerArray->Item(i).m_LayerName == layerName)
+		if (m_PrjLayerArray.Item(i)->m_LayerName == layerName)
 		{
 			//item found, delete item;
-			m_PrjLayerArray->RemoveAt(i);
+			ProjectDefMemoryLayers * myLayer = m_PrjLayerArray.Item(i);
+			m_PrjLayerArray.Detach(i);
+			wxDELETE(myLayer);
 			// set null for active layer
 			SetActiveLayer(NULL);
 			return TRUE;
@@ -118,14 +123,14 @@ bool PrjDefMemManage::RemoveLayer(const wxString & layerName)
 ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(const wxString  & layerName)
 {
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < m_PrjLayerArray->GetCount(); i++)
+	for (unsigned int i=0; i < m_PrjLayerArray.GetCount(); i++)
 	{
-		if (m_PrjLayerArray->Item(i).m_LayerName == layerName)
+		if (m_PrjLayerArray.Item(i)->m_LayerName == layerName)
 		{
 			//wxLogDebug(_T("Object found in Layer array in position : %d"), i);
 			// set active layer
-			SetActiveLayer(&(m_PrjLayerArray->Item(i)));
-			return &(m_PrjLayerArray->Item(i));
+			SetActiveLayer(m_PrjLayerArray.Item(i));
+			return m_PrjLayerArray.Item(i);
 		}
 	}
 	wxLogDebug(_T("Object not found in Layer array"));
@@ -135,10 +140,10 @@ ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(const wxString  & layerName)
 
 ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(unsigned int iIndex)
 {
-	if (iIndex <= m_PrjLayerArray->GetCount())
+	if (iIndex <= m_PrjLayerArray.GetCount())
 	{
-		SetActiveLayer(&(m_PrjLayerArray->Item(iIndex)));
-		return &(m_PrjLayerArray->Item(iIndex));
+		SetActiveLayer(m_PrjLayerArray.Item(iIndex));
+		return m_PrjLayerArray.Item(iIndex);
 	}
 	
 	return NULL; // out of the bound
@@ -155,14 +160,14 @@ ProjectDefMemoryLayers * PrjDefMemManage::FindLayer(unsigned int iIndex)
 ProjectDefMemoryLayers * PrjDefMemManage::FindLayerByRealID (unsigned int iIndex)
 {
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < m_PrjLayerArray->GetCount(); i++)
+	for (unsigned int i=0; i < m_PrjLayerArray.GetCount(); i++)
 	{
-		if (m_PrjLayerArray->Item(i).m_LayerID == (signed int) iIndex)
+		if (m_PrjLayerArray.Item(i)->m_LayerID == (signed int) iIndex)
 		{
 			//wxLogDebug(_T("Object found in Layer array in position : %d"), i);
 			// set active layer
-			SetActiveLayer(&(m_PrjLayerArray->Item(i)));
-			return &(m_PrjLayerArray->Item(i));
+			SetActiveLayer (m_PrjLayerArray.Item(i));
+			return m_PrjLayerArray.Item(i);
 		}
 	}
 	wxLogDebug(_T("Object not found in Layer array"));
@@ -180,7 +185,7 @@ ProjectDefMemoryLayers * PrjDefMemManage::GetNextLayer()
 		m_iActualLayers = 0;
 	}
 	
-	ProjectDefMemoryLayers * layer = &(m_PrjLayerArray->Item(m_iActualLayers));
+	ProjectDefMemoryLayers * layer = m_PrjLayerArray.Item(m_iActualLayers);
 	
 	// set the active layer
 	SetActiveLayer(layer);
@@ -639,11 +644,17 @@ PrjDefMemManage & PrjDefMemManage::operator=(const PrjDefMemManage & source)
 	
 	// copy layers
 	ProjectDefMemoryLayers * myLayer = NULL;
-	m_PrjLayerArray->Clear();
-	for (unsigned int j = 0; j<source.m_PrjLayerArray->GetCount();j++)
+	unsigned int iLayer = m_PrjLayerArray.GetCount();
+	for (unsigned int i = 0; i<iLayer; i++) {
+		ProjectDefMemoryLayers * myTempLayer = m_PrjLayerArray.Item(0);
+		m_PrjLayerArray.Detach(0);
+		wxDELETE(myTempLayer);
+	}
+	
+	for (unsigned int j = 0; j<source.m_PrjLayerArray.GetCount();j++)
 	{
 		myLayer = AddLayer();
-		*myLayer = source.m_PrjLayerArray->Item(j);
+		*myLayer = *source.m_PrjLayerArray.Item(j);
 		
 		//*myLayer = source.m_PrjLayerArray->Item(j);
 		//m_PrjLayerArray->Add(myLayer);

@@ -510,7 +510,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	//
 	
 	// Crop with a bigger frame to ensure all intersections will be created
-	OGRGeometry * myBigFrame =  m_Frame->Buffer(1);
+	// Bug #140
+	OGRGeometry * myBigFrame =  SafeBuffer(m_Frame, 1);
 	wxASSERT(myBigFrame);
 	
 	OGRMultiLineString * myNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
@@ -779,13 +780,15 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
 
     if( pabyBuf == NULL || nSize == 0 )
     {
-        return NULL;
+        GEOSWKBWriter_destroy(myWKBWriter);
+		return NULL;
     }
 
     if( OGRGeometryFactory::createFromWkb( (unsigned char *) pabyBuf,
 										  NULL, &poGeometry, (int) nSize )
 	   != OGRERR_NONE )
     {
+		GEOSWKBWriter_destroy(myWKBWriter);
         poGeometry = NULL;
     }
 
@@ -795,6 +798,7 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
 #else
 	free(pabyBuf);
 #endif
+	GEOSWKBWriter_destroy(myWKBWriter);
     return poGeometry;
 }
 
