@@ -44,6 +44,7 @@
 #include "../img/img_tool9.cpp"
 #include "../img/img_tool10.cpp"
 #include "../img/img_tool11.cpp"
+#include "../img/img_tool_mvertex.h"
 // icon image
 #include "../img/img_icon32.cpp"
 #include "../gui/information_dlg.h"
@@ -322,6 +323,9 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	// item
 	wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
 	
+	// initing bitmap
+	initialize_image_mvertex();
+	
 	// Loading icon
 	wxIcon icon;
 	icon.CopyFromBitmap(wxGetBitmapFromMemory(toolmap32));
@@ -474,6 +478,7 @@ ToolMapFrame::~ToolMapFrame()
 	// delete toolmanager
 	delete m_ToolManager;
 	
+	uninitialize_image_mvertex();
 	
 	// finish the GEOS library
 	wxLogDebug(_T("Clearing GEOS library"));
@@ -562,6 +567,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
 	//itemMenu41->Enable(ID_MENU_DRAW, false);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu41->Enable(ID_MENU_MODIFY, false);
+	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Modify multiple nodes"));
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected feature\tDel"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
@@ -648,7 +654,7 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool11));
 	wxBitmap itemtool11BitmapDisabled;
     itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Previous Zoom"), wxEmptyString);
-    itemToolBar3->EnableTool(wxID_BACKWARD, false);
+    //itemToolBar3->EnableTool(wxID_BACKWARD, false);
 	
 	wxArrayString itemComboBox8Strings;
     m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize );
@@ -658,13 +664,16 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _("Draw"), wxEmptyString);
     wxBitmap itemtool10Bitmap(wxGetBitmapFromMemory(tool6));
     wxBitmap itemtool10BitmapDisabled;
-	itemToolBar3->EnableTool (ID_MENU_DRAW, false);
+	//itemToolBar3->EnableTool (ID_MENU_DRAW, false);
     itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Modify"), wxEmptyString);
     //wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
     //wxBitmap itemtool11BitmapDisabled;
-	itemToolBar3->EnableTool(ID_MENU_MODIFY, false);
+	//itemToolBar3->EnableTool(ID_MENU_MODIFY, false);
     //itemToolBar3->AddTool(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Copy-paste attribution"), wxEmptyString);
 	//itemToolBar3->EnableTool(ID_MENU_COPY_PASTE_ATTRIB, false);
+	
+	itemToolBar3->AddTool(ID_MENU_MODIFY_SHARED, _("Multiple nodes"), wxBitmap(*_img_tool_mvertex), wxNullBitmap, wxITEM_NORMAL, _("Edit multiple nodes"));
+	
 	
 	itemToolBar3->AddSeparator();
     wxBitmap itemtool13Bitmap(wxGetBitmapFromMemory(tool8));
