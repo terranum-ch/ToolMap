@@ -49,6 +49,8 @@ const int tmEM_CONTEXTMENU_VERTEX_DELETE =	22201;
 const int tmEM_CONTEXTMENU_LINE_SAVE =		22202;
 const int tmEM_CONTEXTMENU_LINE_CANCEL =	22203;
 
+class ToolMapFrame;
+
 /***************************************************************************//**
  @brief Deals with editing data
  @details This class is in charge of all stuff related to the editing process
@@ -60,7 +62,7 @@ class tmEditManager : public wxEvtHandler
 	{
 	private:
 		// defined by ctor
-		wxWindow * m_ParentEvt;
+		ToolMapFrame * m_ParentEvt;
 		tmTOCCtrl * m_TOC;
 		tmSelectedDataMemory * m_SelectedData;
 		tmRenderer * m_Renderer;
@@ -99,6 +101,9 @@ class tmEditManager : public wxEvtHandler
 		void OnModifyUp (wxCommandEvent & event);
 		void OnModifyMenu (wxCommandEvent & event);
 		void OnSetRenderFocus (wxCommandEvent & event);
+		void OnEditSharedDown (wxCommandEvent & event);
+		void OnEditSharedUp (wxCommandEvent & event);
+		void OnEditSharedMove(wxCommandEvent & event);
 		
 		void OnOrientedPtsDown(wxCommandEvent & event);
 		void OnOrientedPtsMove (wxCommandEvent & event);
@@ -155,7 +160,7 @@ class tmEditManager : public wxEvtHandler
 		
 	public:
 		// ctor - dtor
-		tmEditManager(wxWindow * parent,
+		tmEditManager(ToolMapFrame * parent,
 					  tmTOCCtrl * toc,
 					  tmSelectedDataMemory * seldata,
 					  tmRenderer * renderer,
@@ -170,6 +175,7 @@ class tmEditManager : public wxEvtHandler
 		//change tool functions
 		void OnToolEdit ();
 		void OnToolModify ();
+		void OnToolEditShared();
 		void OnToolCutLines();
 		void OnToolOrientedPoint();
 		
