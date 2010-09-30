@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmeditmanager.h"
+#include "../core/toolmap.h"
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 
@@ -43,6 +44,9 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_MOVE,tmEditManager::OnOrientedPtsMove)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_UP,tmEditManager::OnOrientedPtsUp)
 
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_SHARED_DOWN, tmEditManager::OnEditSharedDown)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_SHARED_UP, tmEditManager::OnEditSharedUp)
+	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_SHARED_MOVE, tmEditManager::OnEditSharedMove)
 
 	EVT_MENU (tmEM_CONTEXTMENU_LINE_CANCEL,tmEditManager::OnDrawFeatureEscape)
 	EVT_MENU (tmEM_CONTEXTMENU_LINE_SAVE, tmEditManager::OnDrawFeatureValidate)
@@ -58,7 +62,7 @@ END_EVENT_TABLE()
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-tmEditManager::tmEditManager(wxWindow * parent,tmTOCCtrl * toc,
+tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 							 tmSelectedDataMemory * seldata,
 							 tmRenderer * renderer,
 							 tmGISScale * scale)
@@ -141,6 +145,12 @@ void tmEditManager::OnToolModify ()
 	
 }
 
+
+
+void tmEditManager::OnToolEditShared(){
+	wxASSERT(m_Renderer);
+	m_Renderer->SetTool(tmTOOL_MODIFY_SHARED);
+}
 
 
 /***************************************************************************//**
@@ -1981,6 +1991,44 @@ void tmEditManager::OnSetRenderFocus (wxCommandEvent & event)
 	wxASSERT(m_Renderer);
 	m_Renderer->SetFocus();
 }
+
+
+
+void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
+	wxLogMessage(_("Searching shared node"));
+	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myTempPt);
+	wxPoint myLocalPt = *myTempPt;
+	wxDELETE(myTempPt);
+	
+	if (SelectedSearch(myLocalPt) == false) {
+		return;
+	}
+	
+	// update display with msg
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	// update display imediatly
+	//m_ParentEvt->ReloadLayerNow();
+}
+
+
+
+void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
+	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myTempPt);
+	wxDELETE(myTempPt);
+}
+
+
+
+void tmEditManager::OnEditSharedMove(wxCommandEvent & event){
+	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
+	wxASSERT (myTempPt);
+	wxDELETE(myTempPt);
+}
+
 
 
 

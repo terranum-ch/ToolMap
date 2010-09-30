@@ -278,6 +278,7 @@ public:
 	static wxMenuBar* CreateToolMapMenu();
 	wxToolBar * CreateToolMapToolBar(wxWindow * parent);
 	
+	void ReloadLayerNow();
 	
 	
 	

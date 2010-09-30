@@ -60,6 +60,7 @@ enum tmTHREAD_STATUS
 
 static wxMutex s_SharedDataCritical;
 
+
 /***************************************************************************//**
  @brief GIS class for dealing with layers
  @details This is the super class for dealing with GIS. This class is the

@@ -50,6 +50,9 @@ DEFINE_EVENT_TYPE(tmEVT_TM_UPDATE_TOOL_VIEW)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_DOWN)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_MOVE)
 DEFINE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_UP)
+DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_DOWN)
+DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_UP)
+DEFINE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_MOVE)
 
 
 BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
@@ -203,7 +206,6 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 void tmRenderer::SetTool (tmGIS_TOOL selected_tool)
 {
 	m_ActualTool = selected_tool;
-	
 	ChangeCursor(selected_tool);
 }
 
@@ -279,6 +281,11 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 		case tmTOOL_ORIENTED_POINTS:
 			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_ORIENTED));
 			break;
+			
+		case tmTOOL_MODIFY_SHARED:
+			this->SetCursor(wxCursor(wxCURSOR_RIGHT_ARROW));
+			break;
+
 		
 		default:
 			this->SetCursor(wxCursor(wxCURSOR_ARROW));
@@ -353,6 +360,10 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
 		OrientedPtsStart(event.GetPosition());
 	
+	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
+		ModifySharedStart(event.GetPosition());
+	}
+	
 	
 	event.Skip();
 }
@@ -387,6 +398,10 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
 		OrientedPtsMove(event.GetPosition());
+	
+	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
+		ModifySharedUpdate(event.GetPosition());
+	}
 	
 	// new point object, will be deleted in the layer
 	// manager
@@ -423,6 +438,9 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
 		OrientedPtsStop(event.GetPosition());
 	
+	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
+		ModifySharedStop(event.GetPosition());
+	}
 }
 
 
@@ -965,6 +983,41 @@ void tmRenderer::ModifyMenu (const wxPoint & mousepos)
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);	
 }
+
+
+
+
+void tmRenderer::ModifySharedStart(const wxPoint & mousepos){
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_MODIFY_SHARED_DOWN, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);	
+}
+
+
+
+void tmRenderer::ModifySharedStop(const wxPoint & mousepos){
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_MODIFY_SHARED_UP, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+}
+
+
+
+void tmRenderer::ModifySharedUpdate(const wxPoint & mousepos){
+	// sent message to edit manager
+	wxCommandEvent evt(tmEVT_EM_MODIFY_SHARED_MOVE, wxID_ANY);
+	wxPoint * myClickedPos = new wxPoint(mousepos.x,
+										 mousepos.y);
+	evt.SetClientData(myClickedPos);
+	GetEventHandler()->AddPendingEvent(evt);
+}
+
 
 
 

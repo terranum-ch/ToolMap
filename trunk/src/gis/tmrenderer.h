@@ -57,6 +57,9 @@ DECLARE_EVENT_TYPE(tmEVT_TM_UPDATE_TOOL_VIEW, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_DOWN, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_MOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_DRAW_ORIENT_UP, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_DOWN, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_UP, -1)
+DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_MOVE, -1)
 
 
 enum tmGIS_TOOL
@@ -69,6 +72,7 @@ enum tmGIS_TOOL
 	tmTOOL_MODIFY,
 	tmTOOL_CUT_LINES,
 	tmTOOL_ORIENTED_POINTS,
+	tmTOOL_MODIFY_SHARED,
 	tmTOOL_ZOOM_RECTANGLE = tmTOOL_ZOOM_RECTANGLE_IN
 };
 
@@ -168,6 +172,12 @@ class tmRenderer : public wxScrolledWindow
 		void ModifyUpdate (const wxPoint & mousepos);
 		void ModifyStop (const wxPoint & mousepos);
 		void ModifyMenu (const wxPoint & mousepos);
+		
+		// modify shared function
+		void ModifySharedStart(const wxPoint & mousepos);
+		void ModifySharedStop(const wxPoint & mousepos);
+		void ModifySharedUpdate(const wxPoint & mousepos);
+
 		
 	
 		void CutLineClick (const wxPoint & mousepos);

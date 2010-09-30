@@ -212,6 +212,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ORIENT_POINT, ToolMapFrame::OnToolChanged)
+	EVT_MENU (ID_MENU_MODIFY_SHARED, ToolMapFrame::OnToolChanged)
+
 
 	//EDIT MENU
 	EVT_MENU (ID_MENU_DELETE_OBJ, ToolMapFrame::OnEditDeleteSelected)
@@ -753,6 +755,17 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 	delete testtm;
 
 }
+
+
+
+
+
+void ToolMapFrame::ReloadLayerNow(){
+	wxASSERT(m_LayerManager);
+	m_LayerManager->ReloadProjectLayersThreadStart(false);	
+}
+
+
 
 
 /***************************************************************************//**
@@ -1365,6 +1378,11 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 		case ID_MENU_ORIENT_POINT:
 			m_EditManager->OnToolOrientedPoint();
 			break;
+			
+		case ID_MENU_MODIFY_SHARED:
+			m_EditManager->OnToolEditShared();
+			break;
+
 			
 		default:
 			m_LayerManager->OnSelect();
