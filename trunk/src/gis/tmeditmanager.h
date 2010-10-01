@@ -51,6 +51,32 @@ const int tmEM_CONTEXTMENU_LINE_CANCEL =	22203;
 
 class ToolMapFrame;
 
+
+
+
+class tmSharedNodeEdit {
+private:
+    long m_LineID;
+    int m_VertexID;
+    wxPoint m_CoordVertexPrevious;
+    wxPoint m_CoordVertex;
+	
+	
+public:
+    tmSharedNodeEdit(long lineid, int vertexid, const wxPoint & coord, const wxPoint & coordprevious);
+    virtual ~tmSharedNodeEdit();
+
+    void DrawLine(wxClientDC * dc, wxPoint * point = NULL);
+	
+    long GetLineID (){return m_LineID;}
+    int GetVertexID(){return m_VertexID;}
+	void SetCoordVertex (const wxPoint & point){m_CoordVertex = point;}
+};
+WX_DECLARE_OBJARRAY(tmSharedNodeEdit, tmArraySharedNodes);
+
+
+
+
 /***************************************************************************//**
  @brief Deals with editing data
  @details This class is in charge of all stuff related to the editing process
@@ -73,7 +99,7 @@ class tmEditManager : public wxEvtHandler
 		wxRealPoint m_INSVertexPos;
 		tmPointOrientAttrib m_OrientedPt;
 		wxPoint m_LastMousePos;
-		
+		tmArraySharedNodes m_SharedNodes;
 		
 		// defined by function or event.
 		DataBaseTM * m_pDB;
