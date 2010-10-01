@@ -2019,6 +2019,11 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 	OGRGeometry * myRect = myPt.Buffer(tmSELECTION_DIAMETER / 2.0);
 	wxASSERT(myRect);
 	
+	
+	// clear shared nodes
+	m_SharedNodes.Clear();
+	
+	
 	// search end nodes
 	wxArrayLong * mySelIds = m_SelectedData->GetSelectedValues();
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
@@ -2035,53 +2040,38 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 		OGRPoint myNode;
 		int myTotalPoints = myLine->getNumPoints();
 		myLine->getPoint(0, &myNode);
+		int myNodeID = wxNOT_FOUND;
+		int myNodePreviousID = wxNOT_FOUND;
+		
 		if (myNode.Within(myRect)) {
 			wxLogMessage(_("Found node : 1"));
-			OGRFeature::DestroyFeature(myFeature);
-			continue;
+			myNodeID = 0;
+			myNodePreviousID = 1;
 		}
 		
 		myLine->getPoint(myTotalPoints -1, &myNode);
 		if (myNode.Within(myRect)) {
 			wxLogMessage(_("Found node : %d"), myTotalPoints -2);
+			myNodeID = myTotalPoints -1;
+			myNodePreviousID = myTotalPoints -2;
+		}
+		
+		if (myNodeID == wxNOT_FOUND || myNodePreviousID == wxNOT_FOUND) {
 			OGRFeature::DestroyFeature(myFeature);
+			wxLogError(_("No Node found for line : %ld"), mySelIds->Item(i));
 			continue;
 		}
 		
+		wxRealPoint myCoord (myLine->getX(myNodeID), myLine->getY(myNodeID));
+		wxRealPoint myPreviousCoord (myLine->getX(myNodePreviousID), myLine->getY(myNodePreviousID));
+		tmSharedNodeEdit mySharedNode (mySelIds->Item(i),
+								 myNodeID,
+								 m_Scale->RealToPixel(myCoord),
+								 m_Scale->RealToPixel(myPreviousCoord));
+		m_SharedNodes.Add(mySharedNode);
 		OGRFeature::DestroyFeature(myFeature);
 	}
 	OGRGeometryFactory::destroyGeometry(myRect);
-	
-	
-	/*// preparing dialog and dialog data
-	EditVertexDLG myDlg (m_Renderer);
-	myDlg.m_SelectedOID = lSelectedOID;
-	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerSpatialType;
-	OGRLineString * myLine = NULL;
-	OGRPoint * myPt = NULL;
-	
-	switch (myType)
-	{
-		case wkbPoint:
-			myPt = (OGRPoint*) myGeom;
-			myDlg.m_VertexPts.Add(wxRealPoint(myPt->getX(), myPt->getY()));
-			break;
-			
-		case wkbLineString:
-			myLine = (OGRLineString*) myGeom;
-			for (int i = 0; i< myLine->getNumPoints();i++)
-				myDlg.m_VertexPts.Add(wxRealPoint(myLine->getX(i), myLine->getY(i)));
-			break;
-			
-		default:
-			OGRFeature::DestroyFeature(myFeature);
-			return false;
-			break;
-	}*/
-	
-	
-	
-	
 }
 
 
@@ -2089,7 +2079,33 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
 	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myTempPt);
+	
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (mySelLayer == NULL){
+		m_SharedNodes.Clear();
+		wxDELETE(myTempPt);
+		return;
+	}
+	
+	
+	wxRealPoint myNewCoord = m_Scale->PixelToReal(*myTempPt);
+	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
+		OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SharedNodes.Item(i).GetLineID());
+		wxASSERT(myFeature);
+		OGRLineString * myLine = (OGRLineString*) myFeature->GetGeometryRef(); 
+		wxASSERT(myLine);
+		
+		myLine->setPoint(m_SharedNodes.Item(i).GetVertexID(), myNewCoord.x, myNewCoord.y, 0);
+		mySelLayer->UpdateGeometry(myLine, m_SharedNodes.Item(i).GetLineID());
+		OGRFeature::DestroyFeature(myFeature);
+	}
+		
+	m_SharedNodes.Clear();
 	wxDELETE(myTempPt);
+	
+	// update display with msg
+	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);	
 }
 
 
@@ -2097,6 +2113,20 @@ void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
 void tmEditManager::OnEditSharedMove(wxCommandEvent & event){
 	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myTempPt);
+	
+	wxClientDC myDC (m_Renderer);
+	
+	myDC.SetLogicalFunction(wxINVERT);
+	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
+		m_SharedNodes.Item(i).DrawLine(&myDC);
+	}
+	
+	myDC.SetLogicalFunction(wxINVERT);
+	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
+		m_SharedNodes.Item(i).SetCoordVertex(*myTempPt);
+		m_SharedNodes.Item(i).DrawLine(&myDC);
+	}
+	
 	wxDELETE(myTempPt);
 }
 
@@ -2144,4 +2174,48 @@ bool tmEditManager::FlipLine(){
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+tmSharedNodeEdit::tmSharedNodeEdit(long lineid, int vertexid, 
+								   const wxPoint & coord,
+								   const wxPoint & coordprevious) {
+	m_LineID = lineid;
+	m_VertexID = vertexid;
+	m_CoordVertex = coord;
+	m_CoordVertexPrevious = coordprevious;
+}
+
+tmSharedNodeEdit::~tmSharedNodeEdit() {
+}
+
+
+void tmSharedNodeEdit::DrawLine(wxClientDC * dc, wxPoint * point) {
+	wxASSERT(dc);
+	wxPoint myTempPoint = m_CoordVertex;
+	if (point) {
+		myTempPoint = *point;
+	}
+	dc->DrawLine(m_CoordVertexPrevious, myTempPoint);	
+}
+
+
+#include <wx/arrimpl.cpp> // This is a magic incantation which must be done!
+WX_DEFINE_OBJARRAY(tmArraySharedNodes);
+
+
+
+
+
+
 
