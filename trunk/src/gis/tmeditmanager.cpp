@@ -2011,6 +2011,77 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 	
 	// update display imediatly
 	//m_ParentEvt->ReloadLayerNow();
+
+	OGRPoint myPt;
+	wxRealPoint myRealPt = m_Scale->PixelToReal(myLocalPt);
+	myPt.setX(myRealPt.x);
+	myPt.setY(myRealPt.y);
+	OGRGeometry * myRect = myPt.Buffer(tmSELECTION_DIAMETER / 2.0);
+	wxASSERT(myRect);
+	
+	// search end nodes
+	wxArrayLong * mySelIds = m_SelectedData->GetSelectedValues();
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (mySelLayer == NULL){
+		return;
+	}
+	
+	for (unsigned int i = 0; i<mySelIds->GetCount(); i++) 
+	{
+		OGRFeature * myFeature = mySelLayer->GetFeatureByOID(mySelIds->Item(i));
+		wxASSERT(myFeature);
+		OGRLineString * myLine = (OGRLineString*) myFeature->GetGeometryRef(); 
+		wxASSERT(myLine);
+		OGRPoint myNode;
+		int myTotalPoints = myLine->getNumPoints();
+		myLine->getPoint(0, &myNode);
+		if (myNode.Within(myRect)) {
+			wxLogMessage(_("Found node : 1"));
+			OGRFeature::DestroyFeature(myFeature);
+			continue;
+		}
+		
+		myLine->getPoint(myTotalPoints -1, &myNode);
+		if (myNode.Within(myRect)) {
+			wxLogMessage(_("Found node : %d"), myTotalPoints -2);
+			OGRFeature::DestroyFeature(myFeature);
+			continue;
+		}
+		
+		OGRFeature::DestroyFeature(myFeature);
+	}
+	OGRGeometryFactory::destroyGeometry(myRect);
+	
+	
+	/*// preparing dialog and dialog data
+	EditVertexDLG myDlg (m_Renderer);
+	myDlg.m_SelectedOID = lSelectedOID;
+	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerSpatialType;
+	OGRLineString * myLine = NULL;
+	OGRPoint * myPt = NULL;
+	
+	switch (myType)
+	{
+		case wkbPoint:
+			myPt = (OGRPoint*) myGeom;
+			myDlg.m_VertexPts.Add(wxRealPoint(myPt->getX(), myPt->getY()));
+			break;
+			
+		case wkbLineString:
+			myLine = (OGRLineString*) myGeom;
+			for (int i = 0; i< myLine->getNumPoints();i++)
+				myDlg.m_VertexPts.Add(wxRealPoint(myLine->getX(i), myLine->getY(i)));
+			break;
+			
+		default:
+			OGRFeature::DestroyFeature(myFeature);
+			return false;
+			break;
+	}*/
+	
+	
+	
+	
 }
 
 
