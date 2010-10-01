@@ -2080,6 +2080,13 @@ void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
 	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myTempPt);
 	
+	
+	if (m_SharedNodes.GetCount() == 0) {
+		wxDELETE(myTempPt);
+		return;
+	}
+	
+	
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
 	if (mySelLayer == NULL){
 		m_SharedNodes.Clear();

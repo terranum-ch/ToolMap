@@ -287,6 +287,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_MERGE_LINES, ToolMapFrame::OnUpdateMenuEditMerge)
 	EVT_UPDATE_UI (ID_MENU_SHORTCUTS, ToolMapFrame::OnUpdateMenuShowShortcuts)
 	EVT_UPDATE_UI (ID_MENU_FLIP_LINE, ToolMapFrame::OnUpdateMenuFlipLine)
+	EVT_UPDATE_UI (ID_MENU_MODIFY_SHARED, ToolMapFrame::OnUpdateMenuEditSharedNode)
 
 
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
@@ -1615,6 +1616,17 @@ void ToolMapFrame::OnUpdateMenuFlipLine (wxUpdateUIEvent & event){
 		if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE)) {
 			bEnable = true;
 		}
+	}
+	event.Enable(bEnable);
+}
+
+
+void ToolMapFrame::OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event){
+	wxASSERT(m_EditManager);
+	bool bEnable = false;
+	if (m_TocWindow->GetTOCCtrl()->GetEditLayer() && 
+		m_TocWindow->GetTOCCtrl()->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE) {
+		bEnable = true;
 	}
 	event.Enable(bEnable);
 }
