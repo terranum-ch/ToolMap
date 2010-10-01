@@ -391,6 +391,7 @@ private:
 	void OnUpdateMenuShowLog (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowInfo (wxUpdateUIEvent & event);
 	void OnUpdateMenuFlipLine (wxUpdateUIEvent & event);
+	void OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event);
 
 	
 	wxLogWindow * m_LogWindow;
