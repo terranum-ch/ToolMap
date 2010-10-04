@@ -572,7 +572,8 @@ void ObjectDefinitionList::GetObjectFromList (ProjectDefMemoryObjects * object, 
 	GetItemColText(iIndex, 0).ToLong(&(object->m_ObjectCode));
 	object->m_ObjectName = GetItemColText(iIndex, 1);
 	object->m_ParentLayerName = GetItemColText(iIndex, 2);
-	
+	object->m_ObjectType = m_layertype;
+
 	// if we use the frequency control
 	if (m_layertype == LAYER_LINE)
 	{
