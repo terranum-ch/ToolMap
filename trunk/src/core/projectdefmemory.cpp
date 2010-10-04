@@ -52,11 +52,16 @@ void ProjectDefMemoryFieldsCodedVal::InitMemberValues()
 int ProjectDefMemoryFieldsCodedVal::ExtractCodedValuesFromString (const wxString & codedvalue, 
 								  wxArrayString & results)
 {
-	wxStringTokenizer tkz(codedvalue, wxT(",")); 
+	results.Clear();
+	
+	wxString myTempText = codedvalue.Mid(1, codedvalue.Len() -2);
+	myTempText.Replace(_T("','"), _T("\t"));
+
+	wxStringTokenizer tkz(myTempText, wxT("\t")); 
 	while ( tkz.HasMoreTokens()) 
 	{ 
 		wxString token = tkz.GetNextToken(); 
-		token = token.Mid(1, token.Length()-2);
+		//token = token.Mid(1, token.Length()-2);
 		results.Add(token);
 	}
 	
