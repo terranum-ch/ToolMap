@@ -414,7 +414,7 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 //		delete pabyBuf;
 //		OGRFree(pabyBuf);
 //#endif
-#if (GEOS_VERSION_MAJOR >= 3 && GEOS_VERSION_MINOR >= 1 && GEOS_VERSION_PATH >= 1)
+#if (GEOS_VERSION_MAJOR >= 3 && GEOS_VERSION_MINOR >= 1 && GEOS_VERSION_PATCH >= 1)
 		GEOSFree(pabyBuf);
 #else
 		free(pabyBuf);
