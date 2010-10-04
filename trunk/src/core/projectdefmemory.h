@@ -190,8 +190,7 @@ class ProjectDefMemoryFieldsCodedVal
 		static int ExtractCodedValuesFromString (const wxString & codedvalue, 
 										  wxArrayString & results);
 		// copy 
-		bool CopyFieldCodedVal (ProjectDefMemoryFieldsCodedVal & fieldcodedval);
-		
+		ProjectDefMemoryFieldsCodedVal & operator=(const ProjectDefMemoryFieldsCodedVal & source);
 	};
 
 // Creating a list of MemoryObjects

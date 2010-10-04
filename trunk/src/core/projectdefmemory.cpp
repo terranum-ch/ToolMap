@@ -71,12 +71,11 @@ int ProjectDefMemoryFieldsCodedVal::ExtractCodedValuesFromString (const wxString
  @author Lucien Schreiber (c) CREALP 2009
  @date 17 March 2009
  *******************************************************************************/
-bool ProjectDefMemoryFieldsCodedVal::CopyFieldCodedVal (ProjectDefMemoryFieldsCodedVal & fieldcodedval)
-{
-	fieldcodedval.m_ValueID = m_ValueID;
-	fieldcodedval.m_ValueCode = m_ValueCode;
-	fieldcodedval.m_ValueName = m_ValueName;
-	return true;
+ProjectDefMemoryFieldsCodedVal & ProjectDefMemoryFieldsCodedVal::operator=(const ProjectDefMemoryFieldsCodedVal & source){
+	m_ValueID = source.m_ValueID;
+	m_ValueCode = source.m_ValueCode;
+	m_ValueName = source.m_ValueName;
+	return * this;
 }
 
 
@@ -152,7 +151,7 @@ ProjectDefMemoryFields & ProjectDefMemoryFields::operator = (const ProjectDefMem
 	{
 		ProjectDefMemoryFieldsCodedVal * CVal = source.m_pCodedValueArray.Item(i);
 		ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
-		myVal->CopyFieldCodedVal(*CVal);
+		*myVal = *CVal;
 		m_pCodedValueArray.Add(myVal);
 	}
 			
@@ -228,6 +227,7 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 				myTempConvert = ExtractValuesFromString(fielddef.Item(2));
 				iCountCodedVal = ProjectDefMemoryFieldsCodedVal::
 					ExtractCodedValuesFromString(myTempConvert, myCodedValResults);
+				
 				for (int i = 0; i < iCountCodedVal ; i++)
 				{
 					ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
