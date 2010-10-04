@@ -460,8 +460,8 @@ void ProjectDefFieldDlg::TransfertEnumValues(bool bSendDataToDlg)
 		// fill the list
 		for (int i = 0; i< m_pPrjDefinition->GetCountCodedValue(); i++)
 		{
-			ProjectDefMemoryFieldsCodedVal * myCodedValObj = m_pPrjDefinition->
-												GetNextCodedValue();
+			ProjectDefMemoryFieldsCodedVal * myCodedValObj = m_pPrjDefinition->GetActiveField()->m_pCodedValueArray.Item(i);
+												//GetNextCodedValue();
 			
 			// fit things returned in the list
 			myListValues.Add(wxString::Format(_T("%d"), myCodedValObj->m_ValueCode));
