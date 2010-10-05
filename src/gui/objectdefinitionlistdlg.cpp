@@ -190,7 +190,8 @@ void ObjectDefinitionListDlg::CreateControls()
  *******************************************************************************/
 void ObjectDefinitionListDlg::SetValidator()
 {
-	 m_DLGODD_Code->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
+	m_DLGODD_Code->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
+	m_DLGODD_Description->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));
 }
 
 

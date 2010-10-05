@@ -561,6 +561,7 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
 void ProjectDefLayersEditObjectDlg::SetValidator()
 {
 	m_DlgEO_Code->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
+	m_DlgEO_Value->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));
 }
 
 

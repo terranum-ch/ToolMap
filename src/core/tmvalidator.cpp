@@ -129,6 +129,14 @@ bool tmValidator::SetEnhancedStyle (long style)
 		return TRUE;
 	}
 	
+	if (style & tmFILTER_EXCLUDE_CHAR_COMPLEX) {
+		wxArrayString myList;
+		GetExcludeChars(myList);
+		SetStyle(wxFILTER_EXCLUDE_CHAR_LIST);
+		SetExcludes(myList);
+		return true;
+	}
+	
 	return FALSE;
 }
 
@@ -187,3 +195,25 @@ void tmValidator::GetAlphaList (wxArrayString & mylist)
 	mylist.Add(_T("y")); mylist.Add(_T("Y"));
 	mylist.Add(_T("z")); mylist.Add(_T("Z"));
 }
+
+
+void tmValidator::GetComplexList (wxArrayString & mylist){
+	mylist.Add(_T("´")); mylist.Add(_T("`"));
+	mylist.Add(_T("ê")); mylist.Add(_T("^"));
+	mylist.Add(_T("â")); mylist.Add(_T("ç"));
+	mylist.Add(_T("ä")); mylist.Add(_T("ö"));
+	mylist.Add(_T("ô")); mylist.Add(_T("+"));
+	mylist.Add(_T("ü")); mylist.Add(_T(" "));
+	mylist.Add(_T("_")); mylist.Add(_T("-"));
+	mylist.Add(_T(",")); mylist.Add(_T("."));
+	mylist.Add(_T("'")); mylist.Add(_T("ï"));
+	mylist.Add(_T("\x00E9"));
+}
+
+void tmValidator::GetExcludeChars (wxArrayString & mylist){
+	mylist.Add(_T("\x0091")); mylist.Add(_T("\x0092"));
+	mylist.Add(_T("\x0093")); mylist.Add(_T("\x0094"));
+	mylist.Add(_T("\x0023")); mylist.Add(_T("\x0025"));
+	mylist.Add(_T("\x002f")); mylist.Add(_T("\x0026"));	
+}
+
