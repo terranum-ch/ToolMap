@@ -762,6 +762,11 @@ bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & res
 		return false;
 	}
 
+	results = query;
+	results.Replace(_T("'"), _T("\\'"));
+	results.Replace(_T("\""), _T("\\\""));
+	return true;
+
 	char * buf = new char[query.Len() * sizeof(wxString) * 2 + sizeof(wxString)];
 
 	unsigned long myInsertedVal = mysql_real_escape_string(m_MySQL, buf, query.mb_str(wxConvUTF8), query.Len());
