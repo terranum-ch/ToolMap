@@ -118,6 +118,7 @@ Section "SectionPrincipale" SEC01
   File "..\..\..\..\bin\prod\Debug\geos_c.dll"
   File "..\..\..\..\bin\prod\Debug\libmysqld.dll"
   File "..\..\..\..\bin\prod\Debug\libcurld.dll"
+  File "..\..\..\..\bin\prod\Debug\sqlite3.dll"
   CreateDirectory "$INSTDIR\mysql"
   SetOutPath "$INSTDIR\mysql"
   File "..\..\..\..\bin\prod\Debug\mysql\errmsg.sys"
@@ -173,6 +174,8 @@ Section Uninstall
   Delete "$INSTDIR\libmysqld.dll"
   Delete "$INSTDIR\gdal17.dll"
   Delete "$INSTDIR\geos_c.dll"
+  Delete "$INSTDIR\sqlite3.dll"
+  
   Delete "$INSTDIR\libcurld.dll"
   Delete "$INSTDIR\ToolMap2.exe"
   Delete "$INSTDIR\ToolMap2.pdb"
