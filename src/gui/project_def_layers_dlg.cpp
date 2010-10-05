@@ -571,7 +571,9 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow()
 	long lCode = 0;
 	m_DlgEO_Code->GetValue().ToLong(&lCode);
 	wxString sValue = m_DlgEO_Value->GetValue();
+#ifdef __WXMSW__
 	sValue.Replace(_T("’"), _T("'"));
+#endif
 	// passing values to the corresponding obj.
 	if (m_ObjectObj != NULL)
 	{
