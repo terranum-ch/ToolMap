@@ -224,6 +224,7 @@ bool ObjectDefinitionListDlg::TransferDataFromWindow()
 	// fill ProjectDefMemoryObject with list values
 	(m_DLGODD_Code->GetValue()).ToLong (&(m_ObjectObj->m_ObjectCode));
 	m_ObjectObj->m_ObjectName = m_DLGODD_Description->GetValue();
+	m_ObjectObj->m_ObjectName.Replace(_T("’"), _T("'"));
 	m_ObjectObj->m_ParentLayerName = m_DLGODD_List_Lyr_Name->GetStringSelection();
 	// get the frequency item (FREQUENT must be 0)
 	if (m_ParentListType == LAYER_LINE)

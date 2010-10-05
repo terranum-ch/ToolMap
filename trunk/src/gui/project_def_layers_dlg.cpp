@@ -571,7 +571,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow()
 	long lCode = 0;
 	m_DlgEO_Code->GetValue().ToLong(&lCode);
 	wxString sValue = m_DlgEO_Value->GetValue();
-	
+	sValue.Replace(_T("’"), _T("'"));
 	// passing values to the corresponding obj.
 	if (m_ObjectObj != NULL)
 	{
@@ -585,6 +585,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow()
 		m_CodedValObj->m_ValueName = sValue;
 	}
 	
+
 	//m_DlgEO_Code->GetValue().ToLong(&(m_ObjectObj->m_ObjectCode));
 	//m_ObjectObj->m_ObjectName = m_DlgEO_Value->GetValue();
 	
