@@ -214,6 +214,7 @@ void tmValidator::GetExcludeChars (wxArrayString & mylist){
 	mylist.Add(_T("\x0091")); mylist.Add(_T("\x0092"));
 	mylist.Add(_T("\x0093")); mylist.Add(_T("\x0094"));
 	mylist.Add(_T("\x0023")); mylist.Add(_T("\x0025"));
-	mylist.Add(_T("\x002f")); mylist.Add(_T("\x0026"));	
+	mylist.Add(_T("\x002f")); mylist.Add(_T("\x0026"));
+	mylist.Add(_T("\x05f3")); mylist.Add(_T("’"));
 }
 
