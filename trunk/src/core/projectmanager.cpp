@@ -582,17 +582,17 @@ bool ProjectManager::EditProjectSettings ()
 	
 	// display the dialogs for editing the project's object definition.
 	// DO NOT CALL THIS BEFORE OPENING A DB
-	ProjectPropertiesDLG * myDLG = new ProjectPropertiesDLG(m_Parent, m_DB);
-	if(myDLG->ShowModal() == wxID_SAVE)
+	ProjectPropertiesDLG myDLG (m_Parent, m_DB);
+	if(myDLG.ShowModal() == wxID_SAVE)
 	{
 		m_LayerManager->InitScaleCtrlList();
 		wxLogDebug(_T("Changes applied into database"));
 		bReturn = TRUE;
 	}
 	//BUG: bug #23 Workaround for mac
-	myDLG->SetScaleListFocus();
+	myDLG.SetScaleListFocus();
 	
-	delete myDLG;
+	//delete myDLG;
 	return bReturn;
 }
 
