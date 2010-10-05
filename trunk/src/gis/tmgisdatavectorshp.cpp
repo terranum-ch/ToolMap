@@ -930,10 +930,11 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 	{
 		case TM_FIELD_ENUMERATION: // enumeration
 		case TM_FIELD_TEXT: // TEXT
-			buffer = new char [value.Length() * sizeof(wxString)];
-			strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
-			m_Feature->SetField(iindex, buffer);
-			wxDELETEA(buffer);
+			//buffer = new char [value.Length() * sizeof(wxString)];
+			//strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
+			//m_Feature->SetField(iindex, buffer);
+			m_Feature->SetField(iindex, value.mb_str(*wxConvCurrent));
+			//wxDELETEA(buffer);
 			break;
 			
 		case TM_FIELD_INTEGER: // INTEGER
