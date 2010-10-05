@@ -122,6 +122,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 		bufDataDir,
 		mylanguagedir,
 		"--port=3309",
+		"--character-set-server=utf8",
 #if defined (MYSQL_IS_LOGGING)
         bufLogPath,
 #endif
@@ -153,6 +154,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 	delete [] bufDataDir;
 	m_MySQL = mysql_init(NULL);
 	mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
+	mysql_options(m_MySQL, MYSQL_SET_CHARSET_NAME, "utf8");
 	return true;
 }
 
@@ -179,7 +181,7 @@ bool DataBase::DBUseDataBase(const wxString & dbname)
 		DBLogLastError();
 		return false;
 	}
-
+	
 	delete[] buf;
 	if (dbname != wxEmptyString)
 		wxLogMessage(_("Opening database : ") + dbname);
