@@ -33,6 +33,7 @@
 #define tmFILTER_EXCLUDE_CHAR_RESTRICTED		0x0100
 #define tmFILTER_EXCLUDE_CHAR_DATABASE			0x0200
 #define tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT	0x0400
+#define tmFILTER_EXCLUDE_CHAR_COMPLEX			0x0800
 
 
 /***************************************************************************//**
@@ -55,9 +56,12 @@ class tmValidator : public wxTextValidator
 		void SetCharDataBase (); 
 		void SetCharNumericStric();
 		
+		
 		void GetAlphaList (wxArrayString & mylist);
 		void GetStrictNumList (wxArrayString & mylist);
+		void GetComplexList (wxArrayString & mylist);
 		bool SetEnhancedStyle (long style);
+		void GetExcludeChars (wxArrayString & mylist);
 		
 	public:
 		tmValidator(long style = wxFILTER_NONE);
