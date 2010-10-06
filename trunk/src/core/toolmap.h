@@ -231,7 +231,7 @@ class ProjectManager;
 #define ID_TOOL8 10256
 #define ID_TOOL9 10257
 #define ID_TOOL10 10258
-const wxString g_ProgName = _T("ToolMap 2.0.");
+const wxString g_ProgName = _T("ToolMap 2.1.");
 
 
 
