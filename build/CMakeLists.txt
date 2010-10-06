@@ -148,9 +148,10 @@ IF (USE_UNITTEST)
 	ADD_SUBDIRECTORY("../test/build" "${PROJECT_BINARY_DIR}/test")
 ENDIF (USE_UNITTEST)
 
-
-INSTALL(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION /usr/bin)
-INSTALL(FILES "../art/toolmap32.png" DESTINATION "/usr/share/pixmaps")
-INSTALL(FILES "../install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+IF (NOT APPLE AND NOT WIN32)
+  INSTALL(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION /usr/bin)
+  INSTALL(FILES "../art/toolmap32.png" DESTINATION "/usr/share/pixmaps")
+  INSTALL(FILES "../install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+ENDIF(NOT APPLE AND NOT WIN32)
 
 
