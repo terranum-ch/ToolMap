@@ -922,7 +922,6 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 	wxASSERT(value.Len() > 0);
 	
 	
-	char * buffer = NULL;
 	wxStringTokenizer myTok;
 	int myYear = 0, myMonth = 0, myDay = 0;
 
@@ -930,11 +929,7 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 	{
 		case TM_FIELD_ENUMERATION: // enumeration
 		case TM_FIELD_TEXT: // TEXT
-			//buffer = new char [value.Length() * sizeof(wxString)];
-			//strcpy(buffer, (const char*)value.mb_str(wxConvUTF8));
-			//m_Feature->SetField(iindex, buffer);
-			m_Feature->SetField(iindex, value.mb_str(*wxConvCurrent));
-			//wxDELETEA(buffer);
+			m_Feature->SetField(iindex, value.mb_str( wxCSConv(wxFONTENCODING_ISO8859_1)));
 			break;
 			
 		case TM_FIELD_INTEGER: // INTEGER
