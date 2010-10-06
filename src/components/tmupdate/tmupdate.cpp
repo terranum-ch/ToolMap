@@ -37,7 +37,7 @@ void tmUpdate::UPInit()
 
 	m_UPConnectimeout = 1000;
 	m_UPServerInfo = "http://www.crealp.ch/down/toolmap/tmlatestversion.txt";
-	m_UPServerBin = _T("http://www.crealp.ch/down/toolmap/");
+	m_UPServerBin = _T("http://www.crealp.ch/index.php?option=com_content&task=view&id=342&Itemid=311");
 
 	m_UPActualVersion = wxNOT_FOUND;
 	m_UPLatestVersion = wxEmptyString;
@@ -253,32 +253,7 @@ wxString tmUpdate::GetDownloadLink ()
 	if (m_UPLatestVersion == wxEmptyString)
 		return wxEmptyString;
 
-
-	//TODO: Add installer for linux
-	// link is based on plateform specific name
-	// actually only for mac / windows
-
-	wxString myInstName = wxEmptyString;
-	wxString myVersionType = _T("r");
-
-#ifdef __WXMSW__
-	myInstName = _T("InstallToolMap_%s%d.exe");
-#endif
-#ifdef __WXOSX__
-	myInstName = _T("ToolMap2_%s%d.dmg");
-#endif
-
-#ifdef __WXDEBUG__
-	myVersionType = _T("d");
-#endif
-
-	int iNewVersionNumber = UPExtractSVNNumber(m_UPLatestVersion);
-
-
-	wxString myInstallerName = wxString::Format(myInstName, myVersionType.c_str(), iNewVersionNumber);
-	wxString myInstallerFullPath = m_UPServerBin + myInstallerName;
-	wxLogDebug(myInstallerFullPath);
-	return myInstallerFullPath;
+	return m_UPServerBin;
 }
 
 

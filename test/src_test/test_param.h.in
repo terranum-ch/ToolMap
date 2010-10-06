@@ -69,24 +69,8 @@ static const bool g_UseProxy = false;
 static const wxString g_ProxyName = _T("proxy.vs.ch:8080");
 static const int g_ToolMapInternetVersion = 900;
 
-#if defined (__WINDOWS__)
-static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/InstallToolMap_d%d.exe"),
-													g_ToolMapInternetVersion);
-#elif defined (__WXMAC__)
-static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d%d.dmg"),
-													g_ToolMapInternetVersion);
-#else
-static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/down/toolmap/ToolMap2_d%d.deb"),
-													g_ToolMapInternetVersion);
-#endif
 
-
-
-
-
-
-
-
+static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/index.php?option=com_content&task=view&id=342&Itemid=311"));
 
 
 #endif

@@ -97,9 +97,11 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 	
 	// TODO: Clear fields from all values
-	ProjectDefMemoryFields myFieldEmpty;
-	for (unsigned int i = 0; i<fields.GetCount(); i++) {
-		*(fields.Item(i)) = myFieldEmpty;
+	unsigned int fCount = fields.GetCount();
+	for (unsigned int i = 0; i<fCount; i++) {
+		ProjectDefMemoryFields * myField = fields.Item(0);
+		wxDELETE(myField);
+		fields.RemoveAt(0);
 	}
 	
 	if (IsOk() == false) {
