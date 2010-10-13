@@ -570,7 +570,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
 	//itemMenu41->Enable(ID_MENU_DRAW, false);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu41->Enable(ID_MENU_MODIFY, false);
-	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Modify multiple nodes"));
+	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected feature\tDel"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
@@ -675,7 +675,7 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     //itemToolBar3->AddTool(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Copy-paste attribution"), wxEmptyString);
 	//itemToolBar3->EnableTool(ID_MENU_COPY_PASTE_ATTRIB, false);
 	
-	itemToolBar3->AddTool(ID_MENU_MODIFY_SHARED, _("Multiple nodes"), wxBitmap(*_img_tool_mvertex), wxNullBitmap, wxITEM_NORMAL, _("Edit multiple nodes"));
+	itemToolBar3->AddTool(ID_MENU_MODIFY_SHARED, _("Move shared Node"), wxBitmap(*_img_tool_mvertex), wxNullBitmap, wxITEM_NORMAL, _("Move shared Node"));
 	
 	
 	itemToolBar3->AddSeparator();
