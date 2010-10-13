@@ -2071,6 +2071,10 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 		m_SharedNodes.Add(mySharedNode);
 		OGRFeature::DestroyFeature(myFeature);
 	}
+    
+    if (m_SharedNodes.GetCount() < 2) {
+        m_SharedNodes.Clear();
+    }
 	OGRGeometryFactory::destroyGeometry(myRect);
 }
 
