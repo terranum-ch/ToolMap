@@ -25,5 +25,5 @@ gBuildRelease = ['xcodebuild', '-configuration', 'Release']
 #TEST SPECIFIC
 def runBeforeTest():
     "Run this function before test for settings some parameters. Actually only coping ToolMap.app"
-    exception = shutil.copy(gDirBin + os.sep + "Debug/ToolMap2", gDirBin + os.sep + "test/Debug/ToolMap2")
-    print("copy result: ", exception)
+    if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap2.app") == False):
+        exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap2.app", gDirBin + os.sep + "test/ToolMap2.app")
