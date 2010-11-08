@@ -16,8 +16,8 @@ IF (WIN32)
 	SET (USE_GDIPLUS_LIBRARY CACHE BOOL "Should we use the GDIPLUS.dll (better drawing)")
 
 	IF (USE_GDIPLUS_LIBRARY)
-		MESSAGE ("Using gdiplus.dll for better drawings")
-		TARGET_LINK_LIBRARIES (${PROGNAME} "gdiplus")
+		MESSAGE ("Using gdiplus.dll for better drawings in ${PROGNAME}")
+		TARGET_LINK_LIBRARIES (${PROGNAME} "GdiPlus")
 	ENDIF (USE_GDIPLUS_LIBRARY)
 
 

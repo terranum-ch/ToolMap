@@ -18,8 +18,11 @@ IF (USE_MT_LIBRARY)
     STRING(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG_INIT     ${CMAKE_CXX_FLAGS_DEBUG_INIT})
 
     # Disable automatic manifest generation.
+    STRING(REGEX MATCH "MANIFEST:NO" ismanifestdefined ${CMAKE_EXE_LINKER_FLAGS})
+    IF(NOT ismanifestdefined)
     STRING(REPLACE "/MANIFEST" "/MANIFEST:NO" CMAKE_EXE_LINKER_FLAGS 
     	   ${CMAKE_EXE_LINKER_FLAGS})
+    ENDIF(NOT ismanifestdefined)
     # Explicitly disable it since it is the default for newer versions of VS
     STRING(REGEX MATCH "MANIFEST:NO" tmp_manifest ${CMAKE_EXE_LINKER_FLAGS})
     IF(NOT tmp_manifest)
