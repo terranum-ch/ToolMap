@@ -3,6 +3,7 @@
 # (c) Lucien Schreiber 2010
 import shutil
 import os.path
+import sys
 
 
 # script info
@@ -249,14 +250,15 @@ class ProgressFile(object):
         
     def read(self, size=None):
         data = self.file.read(size)
-        print ('.' % len(data), end='')
+        print ('.', end='')
+        sys.stdout.flush()
         return data
 
 
 import ftplib as ftp
 if (doUpload != '' and doInstall == 'Y'):
     myHost = "www2.crealp.ch"
-    myPath = "/htdocs/down/toolmap2"
+    myPath = "/htdocs/down/toolmap"
     myUser = "wwwcrealp"
     myConnection = ftp.FTP(myHost, myUser, doUpload)
     myConnection.cwd(myPath)
