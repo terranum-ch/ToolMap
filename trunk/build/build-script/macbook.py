@@ -63,4 +63,4 @@ def gCreateInstaller(svnnumner):
     os.unlink(myReleasePath + os.sep + "Applications")
     shutil.move(gDirBin + os.sep + "libToolMap2_lib.a", gDirBin + os.sep +  "Release" + os.sep + "libToolMap2_lib.a")
     print ("Creating installer finished")
-    return "ColtopGIS_r"+svnnumner+".dmg"
+    return "ToolMap2_r"+svnnumner+".dmg"
