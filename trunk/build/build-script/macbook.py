@@ -1,8 +1,4 @@
 # VARIABLES FOR BUILDING TOOLMAP ON OSX 
-import os.path
-import shutil
-
-
 gwxWidgets = "/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBWX/bin/wx-config" #wxWIDGETS config
 gDirTrunk = "/Users/lucien/DATA/PRJ/TOOLMAP2/trunk"
 gDirBin = "/Users/lucien/DATA/PRJ/TOOLMAP2/bin"
@@ -18,9 +14,19 @@ gCmakeEnv = "Xcode" #result of cmake --help
 gCmakeSpecific = ['-DCMAKE_OSX_ARCHITECTURES:TEXT=i386']
 gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets)
 
+
+#CONFIG SPECIFIC
+def gBeforeConfig():
+    print ("No special configurations")
+
+
 # BUILD SPECIFIC
-gBuildDebug = ['xcodebuild', '-configuration', 'Debug'] 
-gBuildRelease = ['xcodebuild', '-configuration', 'Release']
+def gBuildCommand(buildtype="Debug", directory = ""):
+    if (buildtype == "Release"):
+        return ['xcodebuild', '-configuration', 'Release']
+    return ['xcodebuild', '-configuration', 'Debug']
+
+
 
 #TEST SPECIFIC
 def runBeforeTest():

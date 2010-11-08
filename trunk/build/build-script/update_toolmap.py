@@ -29,7 +29,7 @@ def runTests (msg, directory):
     print ("Running " + msg + " TEST in " + directory)
     myRetcode = 0
     try:
-        myProcess = subprocess.Popen(['ctest'], 0, None, None, None,  None, None, False, False, directory)
+        myProcess = subprocess.Popen(['ctest', '--build-config', 'Debug'], 0, None, None, None,  None, None, False, False, directory)
         myRetcode = myProcess.wait()
     except:
         print ("Running "+ msg +" TEST  FAILED")
@@ -97,7 +97,7 @@ doClean = askUserWithCheck("Clean directory before building ? (Y / N): ").upper(
 doRelease = askUserWithCheck("Build release version ? (Y / N): ").upper()
 doRunTests = askUserWithCheck("Run tests after build ? (Y/N): ").upper()
 doInstall = askUserWithCheck("Create installer ? (not valid for Linux) (Y / N): ").upper()
-doUploadInstaller = input("Upload Installer to FTP ? (Set password for Yes and leave empty for No) ")
+doUpload = input("Upload Installer to FTP ? (Set password for Yes and leave empty for No) ")
 print ("----------------------------------------------------------\n")
 
 #
@@ -145,7 +145,8 @@ if (doClean == 'Y' and gDirBin != ''):
     except:
         print("Unable to remove directory :", gDirBin)
 
-
+        
+gBeforeConfig()
 
 #
 # Configure using CMAKE
@@ -154,13 +155,21 @@ mycmakeCommandLine = ['cmake']
 mycmakeCommandLine.append("-G" + gCmakeEnv)
 mycmakeCommandLine.append(gDirTrunk + os.sep + "build")
 mycmakeCommandLine = mycmakeCommandLine + gCmakeSpecific
+mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
+mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
+mycmakeCommandLine.append("-DSVN_DURING_BUILD:BOOL=1")
+mycmakeCommandLine.append("-DSVN_DURING_CMAKE:BOOL=1")
+mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
 mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
 mycmakeCommandLine.append("-DMYSQL_MAIN_DIR:PATH=" + gDirSQL)
 if (gDirCurl):
     mycmakeCommandLine.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
 if (gDirGeos):
     mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
-mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=1")
+if (doRunTests == 'Y'):
+    mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=1")
+else:
+    mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=0")
 mycmakeCommandLine.append("-DUNIT_TESTING_PATH:PATH=" + gDirUnitTest)
 mycmakeCommandLine.append("-DCXXTEST_DIRECTORY:PATH=" + gDirCxx)
 
@@ -168,6 +177,10 @@ print (" ".join(mycmakeCommandLine))
 try:
     myProcess = subprocess.Popen(mycmakeCommandLine, 0, None, None, None,  None, None, False, False, gDirBin)
     myProcess.wait()
+    if (doClean == 'Y'):
+        print ("\n****Configuring again to be sure after a clean****")
+        myProcess2 = subprocess.Popen(mycmakeCommandLine, 0, None, None, None,  None, None, False, False, gDirBin)
+        myProcess2.wait()
 except:
     print("Configuring project FAILED!")
     exit()
@@ -182,7 +195,7 @@ print ("----------------------------------------------------------\n")
 
 print ("Building DEBUG ")
 try:
-    myProcess = subprocess.Popen(gBuildDebug, 0, None, None, None,  None, None, False, False, gDirBin)
+    myProcess = subprocess.Popen(gBuildCommand("Debug",gDirBin), 0, None, None, None,  None, None, False, False, gDirBin)
     myProcess.wait()
 except:
     print ("Building DEBUG version FAILED")
@@ -192,10 +205,10 @@ print ("----------------------------------------------------------\n")
 
 
 
-if (doRelease == 'Y' and len(gBuildRelease) > 0):
+if (doRelease == 'Y'):
     print ("Building RELEASE ")
     try:
-        myProcess = subprocess.Popen(gBuildRelease, 0, None, None, None,  None, None, False, False, gDirBin)
+        myProcess = subprocess.Popen(gBuildCommand("Release", gDirBin), 0, None, None, None,  None, None, False, False, gDirBin)
         myProcess.wait()
     except:
         print ("Building RELEASE version FAILED")
@@ -206,7 +219,7 @@ if (doRelease == 'Y' and len(gBuildRelease) > 0):
 
 
 #
-# configuring and building all tests
+# running all tests
 #
 if (doRunTests == 'Y'):
     runBeforeTest()
@@ -214,8 +227,44 @@ if (doRunTests == 'Y'):
         exit()
 
    
+# Getting SVN number and creating installer
+if (doInstall == 'Y'):
+    with open(gDirTrunk + os.sep + "src" + os.sep + "core" + os.sep + "svn_version.h",  encoding='utf-8') as fileversion:
+        for line in fileversion:
+            if (line.find("SVN_VERSION") > 0):
+                mySVNValue = line[line.find("\"")+1:line.rfind("\"")]
+                print (mySVNValue)
+                global installName
+                installName = gCreateInstaller(mySVNValue)
+                break;
 
+
+#
+# Upload to FTP
+#
+
+class ProgressFile(object):
+    def __init__(self, file):
+        self.file = file
         
+    def read(self, size=None):
+        data = self.file.read(size)
+        print ('.' % len(data), end='')
+        return data
+
+
+import ftplib as ftp
+if (doUpload != '' and doInstall == 'Y'):
+    myHost = "www2.crealp.ch"
+    myPath = "/htdocs/down/toolmap2"
+    myUser = "wwwcrealp"
+    myConnection = ftp.FTP(myHost, myUser, doUpload)
+    myConnection.cwd(myPath)
+    myFileName = gDirInstall + os.sep + installName
+    myConnection.storbinary('STOR '+installName, ProgressFile(open(myFileName, 'rb')), 4096)
+    myConnection.quit()
+    print ("transfering install " + installName + "Success!")
+                    
 
         
     
