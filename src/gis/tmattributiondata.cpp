@@ -658,7 +658,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 	_T(" a.OBJECT_GEOM_ID = %d ");
 	
 	if (layertype != wxNOT_FOUND) {
-		sTmp.Append(_T(" AND t.TYPE_CD=%d "));
+		sTmp.Append(wxString::Format(_T(" AND t.TYPE_CD=%d "), layertype));
 	}
 	sTmp.Append(_T("ORDER BY l.THEMATIC_LAYERS_LAYER_INDEX;"));
 	
@@ -666,8 +666,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 										  TABLE_NAME_OBJECTS.c_str(),
 										  tablename.c_str(),
 										  TABLE_NAME_LAYERS.c_str(),
-										  geomid,
-										  layertype);
+										  geomid);
 	
 	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return false;

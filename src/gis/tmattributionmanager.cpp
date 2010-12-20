@@ -215,8 +215,8 @@ bool tmAttributionManager::ShortcutAttributionChecking (int iCount, int shortcut
 tmAttributionManager::~tmAttributionManager()
 {
 	UnInitAttributionManager();
-	m_Parent->PopEventHandler(false);
-	m_Parent->SetEventHandler(m_Parent);
+	//m_Parent->PopEventHandler(false);
+//	m_Parent->SetEventHandler(m_Parent);
 	//delete  m_InfoDLG;
 }
 
