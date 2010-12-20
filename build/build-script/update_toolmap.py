@@ -56,7 +56,16 @@ def runTests (msg, directory):
     print ("----------------------------------------------------------\n")
     return True
 
+def CountProcessor():
+    "Return the number of processor"
+    import multiprocessing
+    myNumberofProc = multiprocessing.cpu_count()
+    return myNumberofProc
+    
 
+global NumberOfProc
+NumberOfProc = CountProcessor()
+    
 
 #
 # load variables possible variable files
@@ -90,7 +99,6 @@ except:
     print (myScriptPathName[0] + os.sep + mySelectedVar)
     exit(); 
 
-
 #
 # generic questions
 #
@@ -111,6 +119,8 @@ print ("Trunk     :", gDirTrunk)
 print ("GIS       :", gDirGis)
 print ("Unit test :", gDirUnitTest)
 print ("CXX       :", gDirCxx)
+print ("----------------------------------------------------------\n")
+print ("Using ", NumberOfProc, " Processor(s)")
 print ("----------------------------------------------------------\n")
 
 
