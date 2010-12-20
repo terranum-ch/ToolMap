@@ -86,8 +86,8 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl,
 tmLayerManager::~tmLayerManager()
 {
 	UnInitLayerManager();
-	m_Parent->PopEventHandler(false);
-	m_Parent->SetEventHandler(m_Parent);
+	//m_Parent->PopEventHandler(false);
+	//m_Parent->SetEventHandler(m_Parent);
 }
 
 
