@@ -16,7 +16,10 @@ IF (USE_MT_LIBRARY)
     STRING(REPLACE "/MD"  "/MT"  CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
     STRING(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG          ${CMAKE_CXX_FLAGS_DEBUG})
     STRING(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG_INIT     ${CMAKE_CXX_FLAGS_DEBUG_INIT})
-
+    
+    # adding multi-core support
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    
     # Disable automatic manifest generation.
     STRING(REGEX MATCH "MANIFEST:NO" ismanifestdefined ${CMAKE_EXE_LINKER_FLAGS})
     IF(NOT ismanifestdefined)
