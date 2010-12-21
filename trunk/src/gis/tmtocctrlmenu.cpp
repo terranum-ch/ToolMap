@@ -24,7 +24,7 @@
 
 tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems,
 							 tmLayerProperties * editlayer) :
-							wxMenu(item->GetDisplayName(), 0)
+							wxMenu(item->GetNameDisplay(), 0)
 {
 	m_flags = (tmDRAWING_FLAGS) item->m_DrawFlags;
 	m_spattypes = item->m_LayerSpatialType;

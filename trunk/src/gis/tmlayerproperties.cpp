@@ -29,8 +29,6 @@ void tmLayerProperties::InitMemberValues()
 {
 	m_LayerID = 0;
 	m_LayerSpatialType = LAYER_SPATIAL_LINE;
-	m_LayerPathOnly = wxEmptyString;
-	m_LayerNameExt = wxEmptyString;
 	m_LayerVisible = TRUE;
 	m_LayerType = TOC_NAME_NOT_GENERIC;
 	m_LayerSymbol = NULL;
@@ -58,8 +56,7 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	array.Item(1).ToLong(&temptype);
 	m_LayerSpatialType = (TM_GIS_SPATIAL_TYPES) temptype;
 	
-	m_LayerPathOnly = array.Item(2);
-	m_LayerNameExt = array.Item(3);
+	m_LayerName.Assign(array.Item(2), array.Item(3));
 	
 	array.Item(4).ToLong(&tempstatus);
 	m_LayerVisible = (bool) tempstatus;
@@ -130,10 +127,8 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 	if (nameext.IsEmpty() || path.IsEmpty())
 		return FALSE;
 	
-	m_LayerNameExt = nameext;
-	m_LayerPathOnly = path;
-	
-	
+    m_LayerName.Assign(path, nameext);
+    
 	// init extension based on supported extension, TOC_NAME_UNKNOWN otherwise
 	wxFileName myfileName (nameext);
 	wxString myExt = myfileName.GetExt().MakeLower();
@@ -163,11 +158,11 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 
 
 
-wxString tmLayerProperties::GetFileExtension()
+/*wxString tmLayerProperties::GetFileExtension()
 {
-	wxFileName filename (m_LayerNameExt);
+	
 	return filename.GetExt();
-}
+}*/
 
 
 
@@ -179,21 +174,34 @@ wxString tmLayerProperties::GetFileExtension()
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 August 2008
  *******************************************************************************/
-wxString tmLayerProperties::GetDisplayName ()
+wxString tmLayerProperties::GetNameDisplay ()
 {
-	wxFileName myDirName (m_LayerPathOnly, m_LayerNameExt);
+    wxASSERT(m_LayerName.IsOk());
 	
 	// special behaviour for ESRI grid.
-	if (m_LayerType == TOC_NAME_EGRID)
-	{
-		if (myDirName.IsOk())
-		{
-			return myDirName.GetDirs().Last();
-		}
-		
-		return _T("DIR_NAME_ERROR");
-	}
-	return m_LayerNameExt;
+    switch (m_LayerType) {
+        case TOC_NAME_EGRID:
+            return m_LayerName.GetDirs().Last();
+            break;
+            
+        case TOC_NAME_LINES:
+        case TOC_NAME_POINTS:
+        case TOC_NAME_LABELS:
+        case TOC_NAME_ANNOTATIONS:
+        case TOC_NAME_FRAME:
+            return TOC_GENERIC_NAME_STRING[m_LayerType];
+            break;
+            
+        default:
+            break;
+    }
+	return m_LayerName.GetFullName();
+}
+
+
+
+wxFileName tmLayerProperties::GetName(){
+    return m_LayerName;   
 }
 
 
@@ -210,8 +218,7 @@ tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
 	
 	m_LayerID = layerprop.m_LayerID;
 	m_LayerSpatialType = layerprop.m_LayerSpatialType;
-	m_LayerPathOnly = layerprop.m_LayerPathOnly;
-	m_LayerNameExt = layerprop.m_LayerNameExt;
+	m_LayerName = layerprop.m_LayerName;
 	m_LayerVisible = layerprop.m_LayerVisible;
 	m_LayerType = layerprop.m_LayerType;
 	

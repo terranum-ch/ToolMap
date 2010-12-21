@@ -326,10 +326,10 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 		if (myLayerProp->m_LayerType > TOC_NAME_NOT_GENERIC) {
 			ProjectDefMemoryLayers * myLayer = new ProjectDefMemoryLayers;
 			myLayer->m_LayerID = myLayerProp->m_LayerID;
-			myLayer->m_LayerName = myLayerProp->GetDisplayName();
+			myLayer->m_LayerName = myLayerProp->GetNameDisplay();
 			myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) myLayerProp->m_LayerType;
 			myLayers.Insert(myLayer,0);
-			myLayersName.Insert(myLayerProp->GetDisplayName(), 0);
+			myLayersName.Insert(myLayerProp->GetNameDisplay(), 0);
 		}
 	}
 	
@@ -419,7 +419,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	tmGISData * myLayer = tmGISData::LoadLayer(item);
 	if (!myLayer)
 	{
-		wxLogError(_("Not able to open the layer : %s"), item->GetDisplayName().c_str());
+		wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
 		return;
 	}
 	item->m_LayerSpatialType = myLayer->GetSpatialType();
@@ -477,7 +477,7 @@ bool tmLayerManager::ZoomToLayer(long layerid){
 	tmGISData * myGISData = tmGISData::LoadLayer(myLayerProp);
 	if (myGISData == NULL) {
 		wxLogError(_("Unable to get data for layer %s"),
-				   myLayerProp->m_LayerNameExt.c_str());
+				   myLayerProp->GetNameDisplay().c_str());
 		return false;
 	}
 	
