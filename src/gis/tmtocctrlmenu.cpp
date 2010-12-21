@@ -26,9 +26,9 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems,
 							 tmLayerProperties * editlayer) :
 							wxMenu(item->GetNameDisplay(), 0)
 {
-	m_flags = (tmDRAWING_FLAGS) item->m_DrawFlags;
-	m_spattypes = item->m_LayerSpatialType;
-	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
+	m_flags = (tmDRAWING_FLAGS) item->GetVertexFlags();
+	m_spattypes = item->GetSpatialType();
+	if (item->GetType() < TOC_NAME_NOT_GENERIC)
 		m_Generic = true;
 	else
 		m_Generic = false;

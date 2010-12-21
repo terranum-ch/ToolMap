@@ -173,7 +173,7 @@ void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event)
 bool tmAttributionManager::ShortcutAttributionChecking (int iCount, int shortcutlayer_type)
 {
 	wxASSERT(m_pLayerProperties);
-	if (m_pLayerProperties->m_LayerType != shortcutlayer_type)
+	if (m_pLayerProperties->GetType() != shortcutlayer_type)
 	{
 		wxLogDebug(_T("Something incorrect, selected shortcut")
 				   _T(" doesn't correspond to the selected layer"));
@@ -352,7 +352,7 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	if (!m_pLayerProperties)
 		return;
 	
-	if(m_pLayerProperties->m_LayerType >= TOC_NAME_FRAME)
+	if(m_pLayerProperties->GetType() >= TOC_NAME_FRAME)
 		return;
 	bool bEditMode = false;
 	if (m_TOC->GetEditLayer() != NULL)
@@ -361,7 +361,7 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	
 	
 	m_Panel->SetInfoBtn(iSelFeatureCount);
-	TOC_GENERIC_NAME mySelType = static_cast<TOC_GENERIC_NAME> (m_pLayerProperties->m_LayerType);
+	TOC_GENERIC_NAME mySelType = m_pLayerProperties->GetType();
 	m_Panel->SetVisibleNotebook(mySelType);
 	
 	// if auto display attribute is checked 
@@ -405,7 +405,7 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	wxASSERT(m_pLayerProperties);
 	wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
 	
-	if (m_pLayerProperties->m_LayerType != m_Panel->GetVisibleNotebook())
+	if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook())
 	{
 		wxMessageBox(myMsg,
 					 _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
@@ -415,7 +415,7 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
 	
 	// create attribution object based on type
-	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->m_LayerType);
+	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->GetType());
 	myAttrib->Create(mySelObjArray, m_pDB);
 	if(!myAttrib->SetAttributeBasic(m_Panel))
 	{
@@ -456,7 +456,7 @@ void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
 	
 	// create attribution object based on type
 	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
-	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->m_LayerType);
+	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->GetType());
 	
 	myAttrib->Create(mySelObjArray, m_pDB);
 	if (!myAttrib->GetInfoBasic(m_Panel))
@@ -581,16 +581,14 @@ tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
  *******************************************************************************/
 void tmAttributionManager::OnCopyAttribution (wxCommandEvent & event)
 {
-	tmAttributionData * myAttrib = CreateAttributionData(m_TOC->GetEditLayer()->
-														 m_LayerType);
+	tmAttributionData * myAttrib = CreateAttributionData(m_TOC->GetEditLayer()->GetType());
 	if (myAttrib == NULL)
 		return;
 	
 	// init 
 	wxArrayLong * mySelectedValues = (wxArrayLong*) event.GetClientData();
 	myAttrib->Create(mySelectedValues, m_pDB);
-	myAttrib->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[m_TOC->GetEditLayer()->
-														  m_LayerType]);
+	myAttrib->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[m_TOC->GetEditLayer()->GetType()]);
 	
 	// copy attribution
 	myAttrib->CopyAttributesBasic(event.GetExtraLong());
@@ -706,7 +704,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	} 
 	
 	
-	tmAttributionData * myAttribObj = CreateAttributionData(myEditLayer->m_LayerType);
+	tmAttributionData * myAttribObj = CreateAttributionData(myEditLayer->GetType());
 	if (myAttribObj == NULL)
 		return false;
 	myAttribObj->Create(m_SelData->GetSelectedValues(), m_pDB);
@@ -779,7 +777,7 @@ void tmAttributionManager::AAttributionBatchShow (){
 	wxASSERT(m_pPrjMem);
 	wxASSERT(m_SelData);
 	tmAAttribBatchManager myBatchManager(m_pPrjMem, m_pDB, m_SelData,
-										 (PRJDEF_LAYERS_TYPE) myEditLayer->m_LayerType);
+										 (PRJDEF_LAYERS_TYPE) myEditLayer->GetType());
 	if (myBatchManager.IsOk() == false) {
 		wxLogError(_("Batch attribution isn't possible"));
 		return;
