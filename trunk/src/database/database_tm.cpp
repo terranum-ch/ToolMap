@@ -2049,11 +2049,11 @@ long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
 										  _T("CONTENT_STATUS, GENERIC_LAYERS) ") +
 										  _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d ); "),
-										  item->m_LayerSpatialType,
+										  item->GetSpatialType(),
 										  item->GetName().GetPath().c_str(),
 										  item->GetName().GetFullName().c_str(),
-										  item->m_LayerVisible,
-										  item->m_LayerType);
+										  item->IsVisible(),
+										  item->GetType());
 		
 	if(DataBaseQueryNoResults(sSentence)==false)
 	{
@@ -2117,11 +2117,11 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
 									 _T(" VERTEX_FLAGS = %d ")
 									 _T("WHERE CONTENT_ID = %d; "),
-									 item->m_LayerVisible,
+									 item->IsVisible(),
 									 itemRank,
 									 symbology.c_str(),
-									 item->m_DrawFlags,
-									 item->m_LayerID));
+									 item->GetVertexFlags(),
+									 item->GetID()));
 	
 }
 

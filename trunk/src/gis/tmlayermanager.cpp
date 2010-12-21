@@ -262,7 +262,7 @@ bool tmLayerManager::SaveTOCStatus()
 		
 		// serialize symbology //
 		tmSerialize out;
-		itemProp->m_LayerSymbol->Serialize(out);
+		itemProp->GetSymbolRef()->Serialize(out);
 		
 		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, out.GetString());
 		iRank --;
@@ -323,11 +323,11 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 		if (myLayerProp == NULL) {
 			break;
 		}
-		if (myLayerProp->m_LayerType > TOC_NAME_NOT_GENERIC) {
+		if (myLayerProp->GetType() > TOC_NAME_NOT_GENERIC) {
 			ProjectDefMemoryLayers * myLayer = new ProjectDefMemoryLayers;
-			myLayer->m_LayerID = myLayerProp->m_LayerID;
+			myLayer->m_LayerID = myLayerProp->GetID();
 			myLayer->m_LayerName = myLayerProp->GetNameDisplay();
-			myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) myLayerProp->m_LayerType;
+			myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE) myLayerProp->GetType();
 			myLayers.Insert(myLayer,0);
 			myLayersName.Insert(myLayerProp->GetNameDisplay(), 0);
 		}
@@ -422,10 +422,10 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
 		return;
 	}
-	item->m_LayerSpatialType = myLayer->GetSpatialType();
+	item->SetSpatialType(myLayer->GetSpatialType());
 	wxDELETE( myLayer);
-	if (item->m_LayerSpatialType == LAYER_ERR || 
-		item->m_LayerSpatialType == LAYER_SPATIAL_UNKNOWN)
+	if (item->GetSpatialType() == LAYER_ERR || 
+		item->GetSpatialType() == LAYER_SPATIAL_UNKNOWN)
 	{
 		return;
 	}
@@ -439,7 +439,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	if (lastinsertedID < 0)
 		return;
 	
-	item->m_LayerID = lastinsertedID;
+	item->SetID(lastinsertedID);
 	wxLogDebug(_T("Last inserted item id is : %d"),lastinsertedID);
 	
 	// adding entry to TOC
@@ -461,7 +461,7 @@ void tmLayerManager::ZoomToSelectedLayer(){
 		return;
 	}
 	
-	ZoomToLayer( myLayerProp->m_LayerID );
+	ZoomToLayer( myLayerProp->GetID());
 }
 
 
@@ -682,7 +682,7 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 	wxString myMetaData = myData->GetMetaDataAsHtml();
 	wxDELETE(myData);
 	
-	if (itemProp->m_LayerSymbol->ShowSymbologyDialog(m_TOCCtrl,
+	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,
 													 myMetaData,
 													 wxGetMousePosition())==wxID_OK)
 	{
@@ -779,14 +779,14 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	
 	
 	// searching for data
-	wxArrayLong * myArray = myLayerData->SearchData(mySelReal, layerprop->m_LayerType);
+	wxArrayLong * myArray = myLayerData->SearchData(mySelReal, layerprop->GetType());
 	if (myArray == NULL){
 		myArray = new wxArrayLong();
 	}
 	int myArrayCount = myArray->GetCount();
 		
 	// are we in the same layer ?
-	m_SelectedData.SetLayerID(layerprop->m_LayerID);
+	m_SelectedData.SetLayerID(layerprop->GetID());
 	
 	if (IsLoggingEnabled()){
 		wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
@@ -1500,7 +1500,7 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 			break;
 		
 		
-		if (pLayerProp->m_LayerVisible == true) {
+		if (pLayerProp->IsVisible() == true) {
 			
 			// loading data
 			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
@@ -1565,12 +1565,12 @@ int tmLayerManager::ReadLayerDraw ()
 		if (!pLayerProp)
 			break;
 		
-		if (pLayerProp->m_LayerVisible == true) {
+		if (pLayerProp->IsVisible() == true) {
 			// loading data
 			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
 			
 			// processing and deleting data
-			if (layerData && pLayerProp->m_LayerVisible)
+			if (layerData && pLayerProp->IsVisible())
 			{
 				// draw layer data
 				m_Drawer.Draw(pLayerProp, layerData);

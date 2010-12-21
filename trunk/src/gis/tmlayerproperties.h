@@ -46,18 +46,17 @@ class tmLayerProperties : public wxTreeItemData
 	{
 	private:
         wxFileName m_LayerName;
+        long m_LayerID;
+		TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
+ 		bool m_LayerVisible;
+		TOC_GENERIC_NAME m_LayerType;
+		tmSymbol * m_LayerSymbol;
+		int m_LayerVertexFlags;
+		bool m_LayerEditing;
 		
         void InitMemberValues();
 		
 	public:
-		long m_LayerID;
-		TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
- 		bool m_LayerVisible;
-		int m_LayerType;
-		tmSymbol * m_LayerSymbol;
-		int m_DrawFlags;
-		bool m_IsEditing;
-		
 		// init from string array
 		bool InitFromArray(const wxArrayString & array);
 		void InitSymbology (const wxString & itemBinSymbology);
@@ -66,6 +65,24 @@ class tmLayerProperties : public wxTreeItemData
 		
         wxString GetNameDisplay();
         wxFileName GetName();
+        inline const long GetID() const;
+        void SetID(long value);
+        inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
+        void SetSpatialType(TM_GIS_SPATIAL_TYPES value);
+        inline const bool IsVisible() const;
+        void SetVisible(bool value);
+        inline const TOC_GENERIC_NAME GetType() const;
+        void SetType(TOC_GENERIC_NAME value);
+        inline const int GetVertexFlags() const;
+        void SetVertexFlags(int value);
+        inline const bool IsEditing() const;
+        void SetEditing(bool value);
+       
+        tmSymbol * GetSymbolRef();
+        void SetSymbolDirectly(tmSymbol * value);
+        
+
+        
 		
 		
 		// constructor
@@ -75,6 +92,30 @@ class tmLayerProperties : public wxTreeItemData
 		~tmLayerProperties();
 		
 	};
+
+inline const long tmLayerProperties::GetID() const {
+    return m_LayerID;
+}
+
+inline const TM_GIS_SPATIAL_TYPES tmLayerProperties::GetSpatialType() const {
+    return m_LayerSpatialType;
+}
+
+inline const bool tmLayerProperties::IsVisible() const {
+    return m_LayerVisible;
+}
+
+inline const TOC_GENERIC_NAME tmLayerProperties::GetType() const {
+    return m_LayerType;
+}
+
+inline const int tmLayerProperties::GetVertexFlags() const {
+    return m_LayerVertexFlags;
+}
+
+inline const bool tmLayerProperties::IsEditing() const {
+    return m_LayerEditing;
+}
 
 
 

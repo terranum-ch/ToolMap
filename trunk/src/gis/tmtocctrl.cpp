@@ -164,12 +164,12 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 	// appending item
 	if (!position.IsOk())
 	{
-		itemid = AppendItem(m_root, myDisplayName, item->m_LayerVisible, -1, item);
+		itemid = AppendItem(m_root, myDisplayName, item->IsVisible(), -1, item);
 	}
 	else
 	{
 		// inserting item
-		itemid = InsertItem(m_root, position, myDisplayName, item->m_LayerVisible, -1, item);
+		itemid = InsertItem(m_root, position, myDisplayName, item->IsVisible(), -1, item);
 		wxLogDebug(_T("Inserting item"));
 	}
 	
@@ -233,7 +233,7 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 	}
 	
 	SetItemText(position, newitemdata->GetNameDisplay());
-	SetItemImage(position, newitemdata->m_LayerVisible);
+	SetItemImage(position, newitemdata->IsVisible());
 	SetItemStyle(position, newitemdata);
 	
 	return TRUE;
@@ -290,7 +290,7 @@ bool tmTOCCtrl::GetItemByID (wxTreeItemId & position,long searchedid){
 			break;
 		}
 		
-		if (myProp->m_LayerID == searchedid) {
+		if (myProp->GetID() == searchedid) {
 			position = m_ActualItemID;
 			return true;
 		}
@@ -327,7 +327,7 @@ void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
 	wxFont myFont = wxFont(*wxNORMAL_FONT);
 	
 	// change style to bold if generic layer
-	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
+	if (item->GetType() < TOC_NAME_NOT_GENERIC)
 	{
 		myFont.SetWeight(wxFONTWEIGHT_BOLD);
 		
@@ -402,7 +402,7 @@ tmLayerProperties * tmTOCCtrl::GetLayerById (long layerid)
 	for (unsigned int i = 0; i<GetCountLayers();i++)
 	{
 		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
-		if (myIteratedLayer && myIteratedLayer->m_LayerID == layerid)
+		if (myIteratedLayer && myIteratedLayer->GetID() == layerid)
 			myReturnedLayer = myIteratedLayer;
 		
 		bReset = false;
@@ -435,7 +435,7 @@ void tmTOCCtrl::SetSelectedLayer (int layerID)
 			break;
 		}
 		
-		if (itemprop->m_LayerID == layerID){
+		if (itemprop->GetID() == layerID){
 			SelectItem(m_ActualItemID, true);
 		}
 	
@@ -609,14 +609,19 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 	if (flags & wxTREE_HITTEST_ONITEMICON)
 	{
 		tmLayerProperties * itemdata = (tmLayerProperties*) GetItemData(clickedid);
-		itemdata->m_LayerVisible == TRUE ? itemdata->m_LayerVisible = FALSE : itemdata->m_LayerVisible = TRUE; 
+		if(itemdata->IsVisible() == true){
+            itemdata->SetVisible(false);
+        }
+        else {
+            itemdata->SetVisible(true);
+        }
 				
 		// change item image
 		EditLayer(itemdata, clickedid);
 		
 		// Send message show/hide to layermanager
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		evt.SetInt((int) itemdata->m_LayerVisible);
+		evt.SetInt((int) itemdata->IsVisible());
 		GetEventHandler()->AddPendingEvent(evt);
 	}
 	
@@ -810,7 +815,7 @@ void tmTOCCtrl::StartEditing ()
 	
 	// get selected item
 	tmLayerProperties * item = GetSelectionLayer();
-	item->m_IsEditing = true;
+	item->SetEditing(true);
 	wxASSERT(item);
 	SetEditLayer(item);
 	
@@ -852,7 +857,7 @@ void tmTOCCtrl::StopEditing (bool bSentmessage)
 		
 		if (iterlayer == GetEditLayer())
 		{
-			iterlayer->m_IsEditing = false;
+			iterlayer->SetEditing(false);
 			SetEditLayer(NULL);
 			SetItemStyle(m_ActualItemID, 
 						 (tmLayerProperties*) GetItemData(m_ActualItemID));
@@ -891,7 +896,7 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
 
-	wxASSERT(item->m_LayerSymbol);
+	wxASSERT(item->GetSymbolRef());
 	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
 	Evt.SetClientData(item);
 	GetEventHandler()->AddPendingEvent(Evt);
@@ -910,22 +915,22 @@ void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
 	wxASSERT(item);
 	
 	// keep old value to avoid drawing if value not changed
-	int oldflags = item->m_DrawFlags;
+	int oldflags = item->GetVertexFlags();
 	
 	switch (event.GetId())
 	{
 		case ID_TOCMENU_SHOW_VERTEX_ALL:
-			item->m_DrawFlags = tmDRAW_VERTEX_ALL;
+			item->SetVertexFlags(tmDRAW_VERTEX_ALL);
 			break;
 		case ID_TOCMENU_SHOW_VERTEX_BEGIN_END:
-			item->m_DrawFlags = tmDRAW_VERTEX_BEGIN_END;
+			item->SetVertexFlags(tmDRAW_VERTEX_BEGIN_END);
 			break;
 		default:
-			item->m_DrawFlags = tmDRAW_VERTEX_NONE;
+			item->SetVertexFlags(tmDRAW_VERTEX_NONE);
 			break;
 	}
 	
-	if (item->m_DrawFlags != oldflags)
+	if (item->GetVertexFlags() != oldflags)
 	{
 		// send event to the layer manager for updating display
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
@@ -953,14 +958,14 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
 	wxASSERT(item);
 
-	if (item->m_LayerType < TOC_NAME_NOT_GENERIC)
+	if (item->GetType() < TOC_NAME_NOT_GENERIC)
 	{
 		wxLogMessage(_("Not allowed to remove generic layers from project"));
 		return;
 	}
 	
 	wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
-	evt.SetExtraLong(item->m_LayerID);
+	evt.SetExtraLong(item->GetID());
 	UnselectAll();
 
 

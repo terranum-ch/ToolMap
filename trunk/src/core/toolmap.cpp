@@ -1626,7 +1626,7 @@ void ToolMapFrame::OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
 	bool bEnable = false;
 	if (m_TocWindow->GetTOCCtrl()->GetEditLayer() && 
-		m_TocWindow->GetTOCCtrl()->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE) {
+		m_TocWindow->GetTOCCtrl()->GetEditLayer()->GetType() == TOC_NAME_LINES) {
 		bEnable = true;
 	}
 	event.Enable(bEnable);

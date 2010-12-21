@@ -284,7 +284,7 @@ bool tmEditManager::IsCorrectLayerSelected()
 	// ensure no selection from external layer
 	if (m_SelectedData->GetCount() > 0)
 	{
-		if (m_TOC->GetEditLayer()->m_LayerID != m_SelectedData->GetSelectedLayer())
+		if (m_TOC->GetEditLayer()->GetID() != m_SelectedData->GetSelectedLayer())
 		{
 			m_SelectedData->Clear();
 			wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
@@ -318,7 +318,7 @@ bool tmEditManager::IsLayerTypeSelected (int layertype)
 	}
 	
 	
-	if (m_TOC->GetEditLayer()->m_LayerType != layertype)
+	if (m_TOC->GetEditLayer()->GetType() != layertype)
 	{
 		wxLogWarning(_("Layer isn't of correct type.") + 
 					 wxString::Format(_("Please select a layer of type '%s'"),
@@ -413,7 +413,7 @@ bool tmEditManager::IsLayerType(int layertype){
 		return false;
 	}
 	
-	if (m_TOC->GetEditLayer()->m_LayerType != layertype) {
+	if (m_TOC->GetEditLayer()->GetType() != layertype) {
 		return false;
 	}
 	return true;
@@ -490,7 +490,7 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	EMGetSnappingCoord(myRealCoord);
 	
 	// add  line vertex
-	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE)
 	{	
 		wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
 		bool bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
@@ -659,7 +659,7 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 							*m_Scale, m_Scale->GetWindowExtentReal());
 	
 	// get the symbology
-	tmSymbolVectorPoint * mySymbol = (tmSymbolVectorPoint*) m_TOC->GetEditLayer()->m_LayerSymbol;
+	tmSymbolVectorPoint * mySymbol = (tmSymbolVectorPoint*) m_TOC->GetEditLayer()->GetSymbolRef();
 	
 	// draw the vertex in selected colour
 	myEditDrawer.DrawEditVertex(pt, mySymbol->GetRadius(),
@@ -684,7 +684,7 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 			
 			wxRealPoint myRealPt;
 			if(myGISMem.GetPointFromDatabase(m_pDB, mySelArray->Item(k),
-											 m_TOC->GetEditLayer()->m_LayerType)==false)
+											 m_TOC->GetEditLayer()->GetType())==false)
 				break;
 			
 			bool bGet = myGISMem.GetVertex(myRealPt);
@@ -698,7 +698,7 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	
 	
 	// select the last inserted oid
-	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
+	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
 	m_SelectedData->SetSelected(lpOid);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
@@ -731,7 +731,7 @@ long tmEditManager::StorePoint (const wxRealPoint & pt)
 	tmGISDataVectorMemory myTempPoint;
 	myTempPoint.CreateFeature();
 	myTempPoint.InsertVertex(pt);
-	long lid = myTempPoint.SavePointToDatabase(m_pDB, layerprop->m_LayerType);
+	long lid = myTempPoint.SavePointToDatabase(m_pDB, layerprop->GetType());
 	
 	return lid;
 }
@@ -751,7 +751,7 @@ long tmEditManager::StoreLine ()
 	if (layerprop == NULL)
 		return -1;
 	
-	return m_GISMemory->SaveLineToDatabase(m_pDB, layerprop->m_LayerType);
+	return m_GISMemory->SaveLineToDatabase(m_pDB, layerprop->GetType());
 }
 
 
@@ -776,7 +776,7 @@ bool tmEditManager::UpdateLine()
 	if (bContainOID == false)
 		return false;
 	
-	return m_GISMemory->UpdateLineToDatabase(m_pDB, layerprop->m_LayerType);
+	return m_GISMemory->UpdateLineToDatabase(m_pDB, layerprop->GetType());
 }
 
 
@@ -792,7 +792,7 @@ bool tmEditManager::UpdatePoint()
 	if (bContainOID == false)
 		return false;
 	
-	return m_GISMemory->UpdatePointToDatabase(m_pDB, layerprop->m_LayerType);
+	return m_GISMemory->UpdatePointToDatabase(m_pDB, layerprop->GetType());
 }
 
 
@@ -811,7 +811,7 @@ void tmEditManager::DrawLastSegment ()
 							*m_Scale, m_Scale->GetWindowExtentReal());
 	
 	// get the symbology
-	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->GetSymbolRef();
 	
 	// get two last vertex 
 	m_GISMemory->GetVertex(LastRealPt, -1);
@@ -843,7 +843,7 @@ void tmEditManager::DrawEditBitmapLine ()
 	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
 							*m_Scale, m_Scale->GetWindowExtentReal());
 	// get the symbology
-	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->m_LayerSymbol;
+	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->GetSymbolRef();
 
 	
 	
@@ -967,7 +967,7 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 	m_GISMemory->CreateFeature();
 	
 	// set selection
-	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->m_LayerID);
+	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
 	m_SelectedData->SetSelected(lid);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
@@ -1019,7 +1019,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 		wxLogDebug(_T("Unable to cut line, select a line first"));
 		return;
 	}
-	if (m_TOC->GetEditLayer()->m_LayerSpatialType != LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->GetSpatialType() != LAYER_SPATIAL_LINE)
 		return;
 	
 		
@@ -1046,7 +1046,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	
 	bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(),
 											m_Scale->PixelToReal(myCutPos),
-											tmSELECTION_DIAMETER, m_TOC->GetEditLayer()->m_LayerType);	
+											tmSELECTION_DIAMETER, m_TOC->GetEditLayer()->GetType());	
 	wxDELETE(mySelLayer);
 	if (bCut == false)
 		return;
@@ -1111,7 +1111,7 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 
 	bool bSearch = false;
 	
-	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE)
 	{
 		bSearch = EMModifySearchLine(myRPt);
 	}
@@ -1141,7 +1141,7 @@ bool tmEditManager::EMModifySearchPoint(const wxRealPoint & pt)
 		wxASSERT(myActualSel != wxNOT_FOUND);
 		wxASSERT(mypLayerProp);
 		bool bCopy = m_GISMemory->GetPointFromDatabase(m_pDB, myActualSel,
-													   mypLayerProp->m_LayerType);
+													   mypLayerProp->GetType());
 		wxASSERT(bCopy);
 		m_GISMemory->SetOID(myActualSel);
 	}
@@ -1172,7 +1172,7 @@ bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
 		wxASSERT(myActualSel != wxNOT_FOUND);
 		wxASSERT(mypLayerProp);
 		bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
-													  mypLayerProp->m_LayerType);
+													  mypLayerProp->GetType());
 		wxASSERT(bCopy);
 		m_GISMemory->SetOID(myActualSel);
 	}
@@ -1265,7 +1265,7 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
 	bool bSnappingFound = EMGetSnappingCoord(myRPt);
 	
-	if (m_TOC->GetEditLayer()->m_LayerSpatialType == LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE)
 	{
 		bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 		wxASSERT(bSetVertex);
@@ -1356,7 +1356,7 @@ bool tmEditManager::EMLoadModifyData()
 		wxASSERT(myActualSel != wxNOT_FOUND);
 		wxASSERT(mypLayerProp);
 		bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
-													  mypLayerProp->m_LayerType);
+													  mypLayerProp->GetType());
 		wxASSERT(bCopy);
 		m_GISMemory->SetOID(myActualSel);
 	}
@@ -1469,7 +1469,7 @@ bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
 	
 	
 	
-	wxArrayLong * myArray = myLayerData->SearchData(myClickReal, pLayerprop->m_LayerType);
+	wxArrayLong * myArray = myLayerData->SearchData(myClickReal, pLayerprop->GetType());
 	if (!myArray)
 		return false;
 	
@@ -1482,7 +1482,7 @@ bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
 	wxLogDebug(_T("Number of features selected : %d"), myArrayCount);
 	
 	
-	m_SelectedData->SetLayerID(pLayerprop->m_LayerID);
+	m_SelectedData->SetLayerID(pLayerprop->GetID());
 	m_SelectedData->Clear();
 	m_SelectedData->AddSelected(myArray);
 	myArray->Clear();
@@ -1599,8 +1599,8 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
 		return false;
 	}
 
-	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->m_LayerType);
-	m_pDB->DeleteAttribution(mySelectedIds, m_TOC->GetEditLayer()->m_LayerType);
+	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->GetType());
+	m_pDB->DeleteAttribution(mySelectedIds, m_TOC->GetEditLayer()->GetType());
 	delete mySelectedIds;
 	
 	// update display
@@ -1726,7 +1726,7 @@ bool tmEditManager::CreateIntersections ()
 	OGRMultiLineString selectedsegments;
 	mySelLayer->CutLineMultiple(myOGRSelLine, &LinesCrossing, selectedsegments);
 	mySelLayer->SplitGeometry (&selectedsegments, m_SelectedData->GetSelectedUnique(),
-							   myInsertedIDs1, m_TOC->GetEditLayer()->m_LayerType);
+							   myInsertedIDs1, m_TOC->GetEditLayer()->GetType());
 		
 	// add attributions for new segment of selected line
 	wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
@@ -1754,7 +1754,7 @@ bool tmEditManager::CreateIntersections ()
 			mySelLayer->CutLineGeometry(myOGRSelLine, myCrossedL, 
 										myRes1,	myRes2);
 			mySelLayer->SplitGeometry(&myRes2, myLinesCrossing->Item(i),
-									  myInsertedIDs2,  m_TOC->GetEditLayer()->m_LayerType);
+									  myInsertedIDs2,  m_TOC->GetEditLayer()->GetType());
 			myRes1.empty();
 			myRes2.empty();
 			
@@ -1816,7 +1816,7 @@ bool tmEditManager::EditVertexPosition ()
 	// preparing dialog and dialog data
 	EditVertexDLG myDlg (m_Renderer);
 	myDlg.m_SelectedOID = lSelectedOID;
-	myDlg.m_LayerType = m_TOC->GetEditLayer()->m_LayerSpatialType;
+	myDlg.m_LayerType = m_TOC->GetEditLayer()->GetSpatialType();
 	OGRLineString * myLine = NULL;
 	OGRPoint * myPt = NULL;
 	
@@ -1964,8 +1964,8 @@ bool tmEditManager::MergeSelectedLines ()
 	// remove lines
 	wxLogDebug(_T("We keep : OID %d"), myAttributions.Item(iLineToKeep).m_Oid);
 	mySelectedIDs->RemoveAt(iLineToKeep);
-	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->m_LayerType);
-	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->m_LayerType);
+	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
+	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
 
 	// update number of selected features
 	m_SelectedData->Clear();

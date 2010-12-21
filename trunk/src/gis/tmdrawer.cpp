@@ -121,8 +121,8 @@ bool tmDrawer::DrawExtentIntoBitmap (int width, const wxColour & col)
 
 bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 {
-	m_ActuallayerID = itemProp->m_LayerID;
-	switch (itemProp->m_LayerSpatialType)
+	m_ActuallayerID = itemProp->GetID();
+	switch (itemProp->GetType())
 	{
 		case LAYER_SPATIAL_LINE:
 			DrawLines(itemProp, pdata);
@@ -162,7 +162,7 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	// create pen based on symbology
-	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->m_LayerSymbol;
+	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->GetSymbolRef();
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
 	
 	// pen for selection
@@ -173,7 +173,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
-	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
 		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
@@ -227,10 +227,10 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		// drawing all vertex for in edition line
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer() &&
-			myProperty.m_IsEditing == true &&
+			myProperty.IsEditing() == true &&
 			m_SelMem->GetCount() == 1 &&
 			m_SelMem->IsSelected(myOid)){
-			myProperty.m_DrawFlags = tmDRAW_VERTEX_ALL;
+			myProperty.SetVertexFlags(tmDRAW_VERTEX_ALL);
 		}
 		
 		// drawing vertex
@@ -264,7 +264,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
-	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
 		if (IsLoggingEnabled())
 			wxLogDebug(_T("Error setting spatial filter"));
@@ -276,7 +276,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	wxGraphicsContext * pgdc = wxGraphicsContext::Create( dc); 
 	
 	// create pen based on symbology
-	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->m_LayerSymbol;
+	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->GetSymbolRef();
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
 	pgdc->SetPen(myPen);
@@ -356,7 +356,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	// create pen and brush based on symbology
-	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
+	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->GetSymbolRef();
 	wxPen myPen (pSymbol->GetBorderColour(), pSymbol->GetBorderWidth());
 	wxBrush myBrush (pSymbol->GetFillColour(),pSymbol->GetFillStyle());
 	
@@ -368,7 +368,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	// define spatial filter
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
-	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
 		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
@@ -465,7 +465,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	
 	tmGISDataRaster * pRaster = (tmGISDataRaster*) pdata;
-	if(!pRaster->SetSpatialFilter(m_spatFilter, itemProp->m_LayerType))
+	if(!pRaster->SetSpatialFilter(m_spatFilter, itemProp->GetType()))
 	{
 		return false;
 	}
@@ -511,7 +511,7 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	unsigned char * myAlphaBuffer;
 	if (pRaster->GetImageTranslucency(wxSize(myClippedCoordPx.GetWidth(),myClippedCoordPx.GetHeight()),
-									  itemProp->m_LayerSymbol->GetTransparency(),
+									  itemProp->GetSymbolRef()->GetTransparency(),
 									  &myAlphaBuffer)==false)
 		
 	{
@@ -583,7 +583,7 @@ bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int n
 		pgdc->SetPen(*pen);
 	
 	
-	switch (itemProp->m_DrawFlags)
+	switch (itemProp->GetVertexFlags())
 	{
 		case tmDRAW_VERTEX_ALL: // ALL VERTEX
 			for (i = 0;i<nb_pts; i++)
@@ -639,7 +639,7 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 	int i=0;
 	
 	// check if this function must run
-	if (itemProp->m_DrawFlags == tmDRAW_VERTEX_NONE){
+	if (itemProp->GetVertexFlags() == tmDRAW_VERTEX_NONE){
 		return false;
 	}
 	
@@ -649,12 +649,12 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	
 	// create pen for vertex
-	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->m_LayerSymbol;
+	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemProp->GetSymbolRef();
 	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetBorderWidth());
 	
 	// define spatial filter
 	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
-	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->m_LayerType))
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
 		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
@@ -911,7 +911,7 @@ void tmDrawer::DrawMemoryData (tmGISData * data,
 	wxASSERT (layerprop);
 	wxASSERT (data);
 	//m_ActuallayerID = layerprop->m_LayerID;
-	switch (layerprop->m_LayerSpatialType)
+	switch (layerprop->GetSpatialType())
 	{
 		case LAYER_SPATIAL_LINE:
 			DrawMemoryDataLine(data, layerprop, dc);
@@ -949,7 +949,7 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	//wxGraphicsContext* pgdc = wxGraphicsContext::Create(dc);
 	
 	// create pen based on symbology
-	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) layerprop->m_LayerSymbol;
+	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) layerprop->GetSymbolRef();
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth());//, pSymbol->GetShape());
 	dc->SetPen(myPen);
 		

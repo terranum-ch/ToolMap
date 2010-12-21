@@ -260,7 +260,7 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 	wxString myFileName = _T("");
 	wxString myErrMsg = _T("");
 	
-	switch (layerProp->m_LayerType)
+	switch (layerProp->GetType())
 	{
 		case TOC_NAME_LINES:
 		case TOC_NAME_POINTS:
@@ -268,7 +268,7 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_LABELS:
 		case TOC_NAME_FRAME:
 			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
-			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->m_LayerType];
+			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->GetType()];
 			myErrMsg = layerProp->GetNameDisplay();
 			break;
 			

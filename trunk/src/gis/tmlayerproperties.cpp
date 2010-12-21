@@ -32,8 +32,8 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerVisible = TRUE;
 	m_LayerType = TOC_NAME_NOT_GENERIC;
 	m_LayerSymbol = NULL;
-	m_DrawFlags = 0;
-	m_IsEditing = false;
+	m_LayerVertexFlags = 0;
+	m_LayerEditing = false;
 }
 
 
@@ -62,12 +62,12 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	m_LayerVisible = (bool) tempstatus;
 	
 	array.Item(5).ToLong(&tempgeneric);
-	m_LayerType = (int) tempgeneric;
+	m_LayerType = static_cast<TOC_GENERIC_NAME> (tempgeneric);
 	
 	InitSymbology(array.Item(6));
 	
 	wxString myVFlags = array.Item(7);
-	m_DrawFlags = wxAtoi(myVFlags.c_str());
+	m_LayerVertexFlags = wxAtoi(myVFlags.c_str());
 	
 	
 	return TRUE;
@@ -138,7 +138,8 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 		//wxLogDebug(_T("supported extension : %s"), supportedext.Item(i).c_str());
 		if (supportedext.Item(i).Contains(myExt))
 		{
-			m_LayerType = TOC_NAME_NOT_GENERIC + i + 1;
+			int myTempType = TOC_NAME_NOT_GENERIC + i + 1;
+            m_LayerType = static_cast<TOC_GENERIC_NAME> (myTempType);
 			break;
 		}
 		
@@ -205,6 +206,40 @@ wxFileName tmLayerProperties::GetName(){
 }
 
 
+void tmLayerProperties::SetID(long value) {
+    m_LayerID = value;
+}
+
+void tmLayerProperties::SetSpatialType(TM_GIS_SPATIAL_TYPES value) {
+    m_LayerSpatialType = value;
+}
+
+void tmLayerProperties::SetVisible(bool value) {
+    m_LayerVisible = value;
+}
+
+void tmLayerProperties::SetType(TOC_GENERIC_NAME value) {
+    m_LayerType = value;
+}
+
+tmSymbol * tmLayerProperties::GetSymbolRef() {
+    return m_LayerSymbol;
+}
+
+void tmLayerProperties::SetSymbolDirectly(tmSymbol * value) {
+    m_LayerSymbol = value;
+}
+
+void tmLayerProperties::SetVertexFlags(int value) {
+    m_LayerVertexFlags = value;
+}
+
+void tmLayerProperties::SetEditing(bool value) {
+    m_LayerEditing = value;
+}
+
+
+
 
 /***************************************************************************//**
  @brief Copy constructor
@@ -226,8 +261,8 @@ tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
 														  layerprop.m_LayerSymbol);
 	
 	
-	m_DrawFlags = layerprop.m_DrawFlags;
-	m_IsEditing = layerprop.m_IsEditing;
+	m_LayerVertexFlags = layerprop.m_LayerVertexFlags;
+	m_LayerEditing = layerprop.m_LayerEditing;
 	
 }
 
