@@ -29,7 +29,8 @@ tmGISDataRaster::tmGISDataRaster()
 	m_RasterBand = NULL;
 	m_FileType = _T("Generic GDAL Raster");
 	m_PxImgFilter = wxRect(0,0,-1,-1);
-	m_ClippedCoord = tmRealRect (0,0,0,0);
+	m_RasterExtent = tmRealRect (0,0,0,0);
+    m_ClippedCoord = tmRealRect (0,0,0,0);
 }
 
 
@@ -81,24 +82,37 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 										sFunctionLineError.c_str());
 	wxASSERT_MSG(m_DataSet,sErrMsg);
 	
+    // if extent exists, don't compute again
+    if (m_RasterExtent != tmRealRect(0,0,0,0)) {
+        return m_RasterExtent;
+    }
+    
+    
 	// getting bounding box
 	double dCoord[6];
-	if (m_DataSet->GetGeoTransform(dCoord) != CE_None)
+	if (m_DataSet->GetGeoTransform(dCoord) != CE_None){
 		return tmRealRect(0,0,0,0);
+    }
 	
 	// selecting band 1
 	m_RasterBand = m_DataSet->GetRasterBand(1);
 	
 	// computing bounding box
+	m_RasterExtent.x_min = dCoord[0];
+	m_RasterExtent.y_max = dCoord[3];
+	m_RasterExtent.y_min = m_RasterExtent.y_max + (m_DataSet->GetRasterYSize() * dCoord[5]);
+	m_RasterExtent.x_max = m_RasterExtent.x_min + (m_DataSet->GetRasterXSize() * dCoord[1]);
+    
+    // send warning if rotation information is found
+    if (dCoord[2] != 0 || dCoord[4] != 0) {
+		wxLogWarning(_("Layer %s contain following rotation informations (%.4f, %.4f).\n It may not be displayed correctly"),
+					 GetShortFileName().c_str(),
+					 dCoord[2],
+					 dCoord[4]);
+	}
+    
 	
-	tmRealRect myCoord (0,0,0,0);
-	
-	myCoord.x_min = dCoord[0];
-	myCoord.y_max = dCoord[3];
-	myCoord.y_min = myCoord.y_max + (m_DataSet->GetRasterYSize() * dCoord[5]);
-	myCoord.x_max = myCoord.x_min + (m_DataSet->GetRasterXSize() * dCoord[1]);
-	
-	return myCoord;
+	return m_RasterExtent;
 	
 }
 
@@ -293,7 +307,6 @@ bool tmGISDataRaster::SetSpatialFilter (tmRealRect filter, int type)
 	tmRealRect myImgCoord = GetMinimalBoundingRectangle();
 	if (myImgCoord == tmRealRect(0,0,0,0))
 		return FALSE;
-	
 	
 	if(myImgCoord.Clip(filter, m_ClippedCoord))
 	{

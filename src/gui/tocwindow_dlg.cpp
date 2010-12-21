@@ -71,57 +71,6 @@ wxSizer * TocWindowContent::CreateControls(wxWindow * parent, bool call_fit, boo
 
 
 
-
-
-/*************************** TOC WINDOW DLG MAC *********************************/
-
-#if ( __WXMAC__ )
-TocWindowDlgMac::TocWindowDlgMac(wxWindow * parent, wxWindowID id, const wxString & title) 
-	//: wxDrawerWindow(parent,id,title,SYMBOL_TOCWINDOW_DLG_SIZE)
-{
-	Init();
-	m_DrawerWindow = new wxDrawerWindow(parent,id,title,SYMBOL_TOCWINDOW_DLG_SIZE);
-	CreateControls(m_DrawerWindow);
-}
-
-TocWindowDlgMac::TocWindowDlgMac()
-{
-	Init();
-}
-
-TocWindowDlgMac::~TocWindowDlgMac()
-{
-	delete m_DrawerWindow;
-}
-
-IMPLEMENT_DYNAMIC_CLASS( TocWindowDlgMac, TocWindowContent)
-
-/*!
- * Member initialisation
- */
-
-void TocWindowDlgMac::Init()
-{
-	m_DrawerWindow = NULL;
-}
-
-void TocWindowDlgMac::Show()
-{
-	m_DrawerWindow->Open();
-}
-
-void TocWindowDlgMac::Hide()
-{
-	m_DrawerWindow->Close();
-}
-
-bool TocWindowDlgMac::IsShown()
-{
-	return m_DrawerWindow->IsOpen();
-}
-#endif
-
-
 /*************************** TOC WINDOW DLG GEN *********************************/
 TocWindowDlgGen::TocWindowDlgGen()
 {

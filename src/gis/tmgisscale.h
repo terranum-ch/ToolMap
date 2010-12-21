@@ -86,6 +86,23 @@ class tmRealRect
 			return wxIsSameDouble(x_min, pt.x_min) && wxIsSameDouble(y_min, pt.y_min)
 			&& wxIsSameDouble(x_max, pt.x_max) && wxIsSameDouble(y_max, pt.y_max);
 		}
+        
+        bool operator!=(const tmRealRect& pt) const
+		{
+			if (wxIsSameDouble(x_min, pt.x_min)==false){
+                return true;
+            }
+            if (wxIsSameDouble(y_min, pt.y_min)==false) {
+                return true;
+            }
+            if (wxIsSameDouble(x_max, pt.x_max)==false) {
+                return true;
+            }
+            if (wxIsSameDouble(y_max, pt.y_max)==false) {
+                return true;
+            }
+            return false;
+		}
 		
 		double GetWidth () {return GetDifferences(x_min, x_max);}
 		double GetHeight () {return GetDifferences(y_min, y_max);}

@@ -81,7 +81,9 @@ class tmGISDataRaster : public tmGISData
 		GDALRasterBand *m_RasterBand;
 		wxString		m_FileType;
 		wxRect			m_PxImgFilter;
+		tmRealRect		m_RasterExtent;
 		tmRealRect		m_ClippedCoord;
+
 		
 		wxSize GetImagePxDim ();
 		bool GetImagePxSize (double & pxsizeX, double & pxsizeY, 

@@ -325,6 +325,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	// otherwise some problem may occur with dnd and inserting
 	// item
 	wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
+    setlocale(LC_NUMERIC, "C");
 	
 	// initing bitmap
 	initialize_image_mvertex();

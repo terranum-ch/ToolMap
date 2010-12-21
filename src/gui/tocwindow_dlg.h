@@ -32,7 +32,13 @@
 
 
 
-#include <wx/aui/aui.h>
+//#include <wx/aui/aui.h>
+#include <wx/aui/framemanager.h>
+#include <wx/aui/dockart.h>
+
+
+
+
 //#include "wx/treectrl.h"
 #include "../gis/tmtocctrl.h"
 #include "wx/tglbtn.h"
@@ -74,29 +80,7 @@ class TocWindowContent : public wxEvtHandler
 	};
 
 
-#if (__WXMAC__)
-#include <wx/mac/carbon/drawer.h>
 
-class TocWindowDlgMac : public TocWindowContent
-	{
-	private:
-		DECLARE_DYNAMIC_CLASS( TocWindowDlgMac );
-		wxDrawerWindow * m_DrawerWindow;
-		
-	public:
-		TocWindowDlgMac();
-		TocWindowDlgMac(wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
-						const wxString & title=SYMBOL_TOCWINDOW_DLG_TITLE);
-		~TocWindowDlgMac(); 
-		
-		virtual void Show();
-		virtual void Hide();
-		virtual bool IsShown();
-		
-	private:
-		void Init();
-	};
-#endif
 
 class TocWindowDlgGen : public TocWindowContent 
 	{
