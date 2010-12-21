@@ -45,14 +45,14 @@
 class tmLayerProperties : public wxTreeItemData
 	{
 	private:
-		void InitMemberValues();
+        wxFileName m_LayerName;
+		
+        void InitMemberValues();
 		
 	public:
 		long m_LayerID;
 		TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
-		wxString m_LayerPathOnly;
-		wxString m_LayerNameExt;
-		bool m_LayerVisible;
+ 		bool m_LayerVisible;
 		int m_LayerType;
 		tmSymbol * m_LayerSymbol;
 		int m_DrawFlags;
@@ -63,8 +63,9 @@ class tmLayerProperties : public wxTreeItemData
 		void InitSymbology (const wxString & itemBinSymbology);
 		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
 								  const wxArrayString & supportedext);
-		wxString GetFileExtension ();
-		wxString GetDisplayName ();
+		
+        wxString GetNameDisplay();
+        wxFileName GetName();
 		
 		
 		// constructor

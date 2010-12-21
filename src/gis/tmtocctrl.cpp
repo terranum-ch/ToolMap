@@ -158,7 +158,7 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 		return FALSE;
 	}
 	
-	wxString myDisplayName = item->GetDisplayName();
+	wxString myDisplayName = item->GetNameDisplay();
 	
 	wxTreeItemId itemid;
 	// appending item
@@ -232,7 +232,7 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
 		return FALSE;
 	}
 	
-	SetItemText(position, newitemdata->GetDisplayName());
+	SetItemText(position, newitemdata->GetNameDisplay());
 	SetItemImage(position, newitemdata->m_LayerVisible);
 	SetItemStyle(position, newitemdata);
 	

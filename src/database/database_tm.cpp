@@ -2039,19 +2039,19 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
  *******************************************************************************/
 long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 {
-	wxString myPath = item->m_LayerPathOnly;
+	//wxString myPath = item->m_LayerName.GetFullPath();
 
 	// converting path to windows path
 	// do nothing if not a windows path.
-	DataBaseTM::ConvertPath(myPath);
+	//DataBaseTM::ConvertPath(myPath);
 
 	wxString sSentence = wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
 										  _T("CONTENT_STATUS, GENERIC_LAYERS) ") +
 										  _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d ); "),
 										  item->m_LayerSpatialType,
-										  myPath.c_str(),
-										  item->m_LayerNameExt.c_str(),
+										  item->GetName().GetPath().c_str(),
+										  item->GetName().GetFullName().c_str(),
 										  item->m_LayerVisible,
 										  item->m_LayerType);
 		

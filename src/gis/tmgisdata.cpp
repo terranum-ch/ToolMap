@@ -259,8 +259,6 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 	tmGISData * m_Data = NULL;
 	wxString myFileName = _T("");
 	wxString myErrMsg = _T("");
-	// only used if not generic layers
-	wxFileName layerfullname (layerProp->m_LayerPathOnly, layerProp->m_LayerNameExt);
 	
 	switch (layerProp->m_LayerType)
 	{
@@ -271,22 +269,22 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_FRAME:
 			m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
 			myFileName = TABLE_NAME_GIS_GENERIC[layerProp->m_LayerType];
-			myErrMsg = layerProp->m_LayerNameExt;
+			myErrMsg = layerProp->GetNameDisplay();
 			break;
 			
 		case TOC_NAME_TIFF:
 		case TOC_NAME_EGRID:
 		case TOC_NAME_JPEG:
 		case TOC_NAME_SHP:
-			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetFileExtension().MakeLower());
-			myFileName = layerfullname.GetFullPath();
-			myErrMsg = myFileName;
+			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
+			myFileName = layerProp->GetName().GetFullPath();
+			myErrMsg = layerProp->GetNameDisplay();
 			break;
 			
 		default:
 			if (IsLoggingEnabled())
 				wxLogDebug(_T("%s file format not supported yet \n "),
-						   layerProp->m_LayerNameExt.c_str());
+						   layerProp->GetNameDisplay().c_str());
 			return NULL;
 			break;
 	}
