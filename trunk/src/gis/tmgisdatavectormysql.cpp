@@ -245,7 +245,6 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 										  tmGISMYSQL_FIELD1.c_str(),
 										  tmGISMYSQL_FIELD2.c_str(),
 										  table.c_str(), sFilter.c_str());
-	
 	if (m_DB->DataBaseQuery(sSentence))
 	{
 		bool bResult = m_DB->DataBaseHasResults();
@@ -253,8 +252,10 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 		//return TRUE;
 	}
 	
-	if (IsLoggingEnabled())
+	if (IsLoggingEnabled()){
 		wxLogDebug(wxString::Format(_T("Error setting spatial filter")));
+        
+    }
 	
 	return FALSE;
 }
