@@ -343,7 +343,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	
 	// adding toolbar
-	SetToolBar(CreateToolMapToolBar(this));
+	_CreateToolBar();
 	
 	// dessin de l'interface
 	PostInit();
@@ -632,7 +632,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
 }
 
 
-wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
+void ToolMapFrame::_CreateToolBar()
 {
 	long style = wxTB_FLAT | wxTB_HORIZONTAL;
 
@@ -641,7 +641,8 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
 	style += wxTB_TEXT;
 #endif
 
-	wxToolBar* itemToolBar3 = new wxToolBar( parent, ID_TOOLBAR1, wxDefaultPosition, wxDefaultSize, style );
+	wxToolBar* itemToolBar3 = this->CreateToolBar(style, wxID_ANY); 
+    // = new wxToolBar( parent, ID_TOOLBAR1, wxDefaultPosition, wxDefaultSize, style );
     itemToolBar3->SetToolBitmapSize(wxSize(32, 32));
     wxBitmap itemtool4Bitmap (wxGetBitmapFromMemory(tool1));
     wxBitmap itemtool4BitmapDisabled;
@@ -691,8 +692,6 @@ wxToolBar * ToolMapFrame::CreateToolMapToolBar(wxWindow * parent)
     wxBitmap itemtool16BitmapDisabled;
     itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _("Information"), wxEmptyString);
     itemToolBar3->Realize();
-	
-	return itemToolBar3;
 }
 
 

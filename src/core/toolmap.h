@@ -276,7 +276,7 @@ public:
 	void PostInit();
 	
 	static wxMenuBar* CreateToolMapMenu();
-	wxToolBar * CreateToolMapToolBar(wxWindow * parent);
+	void _CreateToolBar();
 	
 	void ReloadLayerNow();
 	
