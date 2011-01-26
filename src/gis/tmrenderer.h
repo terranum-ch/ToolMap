@@ -34,6 +34,8 @@
 #include "tmgisscale.h"				// for number of division;
 #include "../core/tmarraysize.h"	// for array of wxSize items
 
+class vrRubberBand;
+
 
 // EVENT FOR GIS RENDERER CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED, -1)
@@ -104,6 +106,7 @@ class tmRenderer : public wxScrolledWindow
 		wxRubberBand * m_SelectRect;
 		wxPoint m_StartCoord;
 		wxBitmap * m_PanBmp;
+        vrRubberBand * m_Rubber;
 		
 		// status of shift key
 		bool m_ShiftDown;
@@ -143,13 +146,13 @@ class tmRenderer : public wxScrolledWindow
 	protected:
 		
 		// rubber band functions
-		void RubberBandStart (const wxPoint & mousepos);
-		void RubberBandUpdate(const wxPoint & mousepos);
-		void RubberBandStop();
+		void ZoomStart (const wxPoint & mousepos);
+		void ZoomUpdate(wxMouseEvent & event);
+		void ZoomStop(const wxPoint & mousepos);
 		
 		// selecting function
 		void SelectStart (const wxPoint & mousepos);
-		void SelectUpdate (const wxPoint & mousepos);
+		void SelectUpdate (wxMouseEvent & event);
 		void SelectStop (const wxPoint & mousepos);
 		
 		// panning function
