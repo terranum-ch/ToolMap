@@ -125,7 +125,8 @@ class tmRenderer : public wxScrolledWindow
 		void OnMouseDown	(wxMouseEvent & event);
 		void OnMouseRightDown (wxMouseEvent & event);
 		void OnMouseMove	(wxMouseEvent & event);
-		void OnMouseUp		(wxMouseEvent & event);	
+		void OnMouseUp		(wxMouseEvent & event);
+        void OnMouseDClick  (wxMouseEvent & event);
 		//void OnMouseWheel	(wxMouseEvent & event);
 		void OnShiftDown	(wxKeyEvent & event);
 		void OnShiftUp		(wxKeyEvent & event);
@@ -159,6 +160,7 @@ class tmRenderer : public wxScrolledWindow
 		void PanStart (const wxPoint & mousepos);
 		void PanUpdate (const wxPoint & mousepos);
 		void PanStop (const wxPoint & mousepos);
+        void PanDClick (wxMouseEvent & event);
 		
 		// drawing functions
 		void DrawStart (const wxPoint & mousepos);
