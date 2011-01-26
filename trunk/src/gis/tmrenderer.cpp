@@ -27,6 +27,7 @@
 #include "../img/cursor_editing.cpp"
 #include "../img/cursor_oriented1.cpp"
 #include "tmmanagerevent.h"
+#include "../core/vrrubberband.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -91,6 +92,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_ShiftDown = false;
 	m_SnappingRadius = 0;
 	m_OldSize = wxSize(0,0);
+    m_Rubber = NULL;
 	
 	BitmapUpdateSize();
 	bool bWhite = BitmapSetToWhite();
@@ -339,7 +341,7 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 {
 	// rectangle zoom
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
-		RubberBandStart(event.GetPosition());
+		ZoomStart(event.GetPosition());
 	
 	// pan
 	if (m_ActualTool == tmTOOL_PAN)
@@ -382,13 +384,13 @@ void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
 void tmRenderer::OnMouseMove (wxMouseEvent & event)
 {
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
-		RubberBandUpdate(event.GetPosition());
+		ZoomUpdate(event);
 	
 	if (m_ActualTool == tmTOOL_PAN)
 		PanUpdate(event.GetPosition());
 	
 	if (m_ActualTool == tmTOOL_SELECT)
-		SelectUpdate(event.GetPosition());
+		SelectUpdate(event);
 	
 	if (m_ActualTool == tmTOOL_DRAW)
 		DrawMove(event.GetPosition());
@@ -417,7 +419,7 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 void tmRenderer::OnMouseUp(wxMouseEvent & event)
 {
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
-		RubberBandStop();
+		ZoomStop(event.GetPosition());
 	
 	if (m_ActualTool == tmTOOL_PAN)
 		PanStop(event.GetPosition());
@@ -513,71 +515,69 @@ void tmRenderer::OnKey	(wxKeyEvent & event)
 
 
 
-void tmRenderer::RubberBandStart (const wxPoint & mousepos)
+void tmRenderer::ZoomStart (const wxPoint & mousepos)
 {
-	m_StartCoord = mousepos;
-	m_SelectRect->SetPen(); // default pen
+    wxASSERT(m_Rubber == NULL);
+	m_Rubber = new vrRubberBand(this);
+	wxASSERT(m_Rubber);
+	m_Rubber->SetPointFirst(mousepos);
 }
 
 
-void tmRenderer::RubberBandUpdate(const wxPoint & mousepos)
+void tmRenderer::ZoomUpdate(wxMouseEvent & event)
 {
-	if (m_StartCoord == wxPoint (-1,-1))
-		return;
-	
-	m_SelectRect->SetGeometry(m_StartCoord, mousepos);
+    if (m_Rubber == NULL) {
+        return;
+    }
+    
+	if (event.Dragging()==true) {
+        m_Rubber->SetPointLast(event.GetPosition());
+        m_Rubber->Update();
+    }
 	
 	// change cursor if needed
-	if (m_SelectRect->IsSelectedRectanglePositive() && 
-		m_ActualNotStockCursor != tmCURSOR_ZOOM_IN)
-	{
+	if (m_Rubber->IsPositive() && m_ActualNotStockCursor != tmCURSOR_ZOOM_IN){
 		ChangeCursor(tmTOOL_ZOOM_RECTANGLE_IN);
 	}
 	
-	if (!m_SelectRect->IsSelectedRectanglePositive() && 
-		m_ActualNotStockCursor != tmCURSOR_ZOOM_OUT)
-	{
+	if (m_Rubber->IsPositive() == false && m_ActualNotStockCursor != tmCURSOR_ZOOM_OUT){
 		ChangeCursor(tmTOOL_ZOOM_RECTANGLE_OUT);
 	}
-
-
 }
 
 
 
-void tmRenderer::RubberBandStop()
+void tmRenderer::ZoomStop(const wxPoint & mousepos)
 {
-	wxRect * mySelectedRect = NULL;
-	wxCommandEvent evt;
-	evt.SetId(wxID_ANY);
-	
-	
-	if (m_StartCoord == wxPoint(-1,-1))
+    if (m_Rubber == NULL) {
+        return;
+    }
+        
+    m_Rubber->SetPointLast(mousepos);
+	if (m_Rubber->IsValid()==false) {
+		wxDELETE(m_Rubber);
 		return;
-	
-	// get selected values if selection is valid
-	// and send it to the layermanager
-	if(m_SelectRect->IsSelectedRectangleValid())
-	{
-		if(m_SelectRect->IsSelectedRectanglePositive())
-		{
-			evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_IN);
-			mySelectedRect = new wxRect(m_SelectRect->GetSelectedRectangle());
-			evt.SetClientData(mySelectedRect);
-			
-		}
-		else
-		{
-			evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_OUT);
-			mySelectedRect = new wxRect(m_SelectRect->GetSelectedRectangle());
-			evt.SetClientData(mySelectedRect);
-		}
-		
-		GetEventHandler()->AddPendingEvent(evt);
 	}
-	
-	m_SelectRect->ClearOldRubberRect();
-	m_StartCoord = wxPoint(-1,-1);
+	bool isPositive = m_Rubber->IsPositive();
+	wxRect * mypRect = new wxRect(m_Rubber->GetRect());
+	wxDELETE(m_Rubber);
+    
+    if (mypRect->IsEmpty() == true) {
+        wxDELETE(mypRect);
+        return;
+    }
+    
+    // send event
+    wxCommandEvent evt;
+	evt.SetId(wxID_ANY);
+    evt.SetClientData(mypRect);
+    if (isPositive == true) {
+        evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_IN);
+    }
+    else {
+        evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_OUT);
+    }
+    GetEventHandler()->AddPendingEvent(evt);    
 }
 
 
@@ -589,9 +589,10 @@ void tmRenderer::RubberBandStop()
  *******************************************************************************/
 void tmRenderer::SelectStart (const wxPoint & mousepos)
 {
-	m_StartCoord = mousepos;
-	m_SelectRect->SetPen(*wxBLACK_PEN);
-	
+    wxASSERT(m_Rubber == NULL);
+	m_Rubber = new vrRubberBand(this);
+	wxASSERT(m_Rubber);
+	m_Rubber->SetPointFirst(mousepos);
 }
 
 
@@ -602,14 +603,16 @@ void tmRenderer::SelectStart (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-void tmRenderer::SelectUpdate (const wxPoint & mousepos)
+void tmRenderer::SelectUpdate (wxMouseEvent & event)
 {
-	// avoid drawing all the times when mouse wasen't down first.
-	if (m_StartCoord == wxPoint(-1,-1))
-		return;
-	
-	
-	m_SelectRect->SetGeometry(m_StartCoord, mousepos);
+    if (m_Rubber == NULL) {
+        return;
+    }
+    
+	if (event.Dragging()==true) {
+        m_Rubber->SetPointLast(event.GetPosition());
+        m_Rubber->Update();
+    }
 }
 
 
@@ -622,36 +625,28 @@ void tmRenderer::SelectUpdate (const wxPoint & mousepos)
  *******************************************************************************/
 void tmRenderer::SelectStop (const wxPoint & mousepos)
 {
-	bool myShiftDown = m_ShiftDown;
-	
-	// if no rectangle is selected, select data by point
-	// we make a small rectangle around the curent point
-	wxRect * mySelectionRect = new wxRect(0,0,0,0);
-	if(m_SelectRect->IsSelectedRectangleValid() == false)
-	{
-		int myRadius = tmSELECTION_DIAMETER / 2;
-		*mySelectionRect = wxRect (mousepos.x - myRadius,
-								  mousepos.y - myRadius,
-								  tmSELECTION_DIAMETER,
-								  tmSELECTION_DIAMETER);
-	}
-	else // if selection was done by rectangle
-	{
-		*mySelectionRect = m_SelectRect->GetSelectedRectangle();
-	}
-	
-	// send event to the layermanager
-	wxCommandEvent evt(tmEVT_LM_SELECTION, wxID_ANY);
+	if (m_Rubber == NULL) {
+        return;
+    }
+    
+    bool myShiftDown = m_ShiftDown;
+    m_Rubber->SetPointLast(mousepos);
+    wxRect * mypRect = NULL;
+	if (m_Rubber->IsValid() == false) {
+        mypRect = new wxRect(mousepos.x - tmSELECTION_DIAMETER / 2.0,
+                             mousepos.y - tmSELECTION_DIAMETER / 2.0,
+                             tmSELECTION_DIAMETER,
+                             tmSELECTION_DIAMETER);
+    }else {
+        mypRect = new wxRect(m_Rubber->GetRect());
+    }
+    wxDELETE(m_Rubber);
+    
+    wxCommandEvent evt(tmEVT_LM_SELECTION, wxID_ANY);
 	evt.SetInt(static_cast<int> (myShiftDown));
-	// do not delete mySelection Rect, will be deleted in the layer
-	// manager
-	evt.SetClientData(mySelectionRect);
+	// do not delete mySelection Rect, will be deleted in the layer manager
+	evt.SetClientData(mypRect);
 	GetEventHandler()->AddPendingEvent(evt);
-	
-	
-	// cleaning stuff
-	m_SelectRect->ClearOldRubberRect();
-	m_StartCoord = wxPoint(-1,-1);
 }
 
 
