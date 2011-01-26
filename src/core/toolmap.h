@@ -276,6 +276,7 @@ public:
 	
 	void _CreateMenu();
 	void _CreateToolBar();
+    void _CreateAccelerators();
 	
 	void ReloadLayerNow();
 	

@@ -340,6 +340,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	_CreateMenu();
 	_CreateToolBar();
+    _CreateAccelerators();
 	
 	
     wxString myProgName = g_ProgName;
@@ -537,12 +538,12 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
     wxMenu* itemMenu28 = new wxMenu;
-    itemMenu28->Append(wxID_BACKWARD, _("Previous Zoom\tAlt+Left"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu28->Append(wxID_BACKWARD, _("Previous Zoom\t<"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu28->Enable(wxID_BACKWARD, false);
 	itemMenu28->AppendSeparator();
     itemMenu28->Append(ID_MENU_ZOOM, _("Zoom by rectangle\tZ"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu28->Append(ID_MENU_PAN, _("Pan\tP"), _T(""), wxITEM_NORMAL);
-    itemMenu28->Append(ID_MENU_ZOOM_FIT, _("Zoom to full extent"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu28->Append(ID_MENU_PAN, _("Pan\tH"), _T(""), wxITEM_NORMAL);
+    itemMenu28->Append(ID_MENU_ZOOM_FIT, _("Zoom to full extent\tCtrl+0"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu28->Append(ID_MENU_ZOOM_GIVEN_SCALE, _("Zoom to a given scale..."), _T(""), wxITEM_NORMAL);
     //itemMenu28->Append(ID_MENU_ZOOM_COORDINATE, _("Zoom to coordinates..."), _T(""), wxITEM_NORMAL);
     //itemMenu28->Append(ID_MENU_ZOOM_NEXT_SCALE, _("Zoom to next defined scale\t+"), _T(""), wxITEM_NORMAL);
@@ -562,7 +563,13 @@ void ToolMapFrame::_CreateMenu()
 	//itemMenu41->Enable(ID_MENU_MODIFY, false);
 	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu41->Append(ID_MENU_DELETE_OBJ, _("Delete selected feature\tDel"), wxEmptyString, wxITEM_NORMAL);
+	wxString myDeleteText = _("Delete selected feature");
+#ifdef __WXMAC__
+    myDeleteText.Append(_T("\tBack"));
+#else
+     myDeleteText.Append(_T("\tDel"));
+#endif
+    itemMenu41->Append(ID_MENU_DELETE_OBJ, myDeleteText, wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut line\tCtrl+X"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge line\tCtrl+F"), wxEmptyString, wxITEM_NORMAL);
@@ -587,7 +594,7 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu63->Append(ID_MENU_ORIENT_POINT, _("Set Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
 	menuBar->Append(itemMenu63, _("Tools"));
     wxMenu* itemMenu66 = new wxMenu;
-    itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tS"), _T(""), wxITEM_NORMAL);
+    itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tV"), _T(""), wxITEM_NORMAL);
 	itemMenu66->Append(ID_MENU_SELECT_BY_OID, _("Select by Feature ID..."), wxEmptyString, wxITEM_NORMAL);
     //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
@@ -682,6 +689,24 @@ void ToolMapFrame::_CreateToolBar()
     itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _("Information"), wxEmptyString);
     itemToolBar3->Realize();
 }
+
+
+
+void ToolMapFrame::_CreateAccelerators() {
+    wxAcceleratorEntry entries[8];
+    entries[0].Set(wxACCEL_NORMAL, (int) 'V', ID_MENU_SELECT);
+    entries[1].Set(wxACCEL_NORMAL, (int) 'Z', ID_MENU_ZOOM);
+    entries[2].Set(wxACCEL_NORMAL, (int) 'H', ID_MENU_PAN);
+    entries[3].Set(wxACCEL_NORMAL, (int) 'D', ID_MENU_DRAW);
+    entries[4].Set(wxACCEL_NORMAL, (int) 'M', ID_MENU_MODIFY);
+    entries[5].Set(wxACCEL_NORMAL, (int) '<', wxID_BACKWARD);
+    entries[6].Set(wxACCEL_NORMAL, WXK_BACK, ID_MENU_DELETE_OBJ);
+    entries[7].Set(wxACCEL_NORMAL, WXK_DELETE, ID_MENU_DELETE_OBJ);
+    
+    wxAcceleratorTable accel(8, entries);
+    SetAcceleratorTable(accel);
+}
+
 
 
 void ToolMapFrame::OnNewProject(wxCommandEvent & event)
