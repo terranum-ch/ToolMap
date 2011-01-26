@@ -273,9 +273,8 @@ public:
 			 wxPoint  pos,  wxSize  size,
 				 const wxString & name);
 	~ToolMapFrame();
-	void PostInit();
 	
-	static wxMenuBar* CreateToolMapMenu();
+	void _CreateMenu();
 	void _CreateToolBar();
 	
 	void ReloadLayerNow();

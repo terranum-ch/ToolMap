@@ -31,22 +31,16 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
+#include <wx/filename.h>    // to create the database path and name.
+#include <wx/stdpaths.h>	// std path for logging too.
 
 #include "database.h"
 #include "databaseresult.h"
+#include "database-config.h" // for logging
 
-
-#include <wx/filename.h> // to create the database path and name.
-
-
-#include <database-config.h> // for logging
-#ifdef MYSQL_IS_LOGGING
-	#include <wx/stdpaths.h>	// std path for logging too.
-#endif
 
 
 DataBase::DataBase()
@@ -76,82 +70,62 @@ DataBase::~DataBase()
 
 
 
-bool DataBase::DBLibraryInit (const wxString & datadir)
-{
-
-
+bool DataBase::DBLibraryInit (const wxString & datadir){
 	// path validity
 	wxFileName myValidPath (datadir, _T(""));
-	if (myValidPath.IsDirReadable()==false)
-	{
+	if (myValidPath.IsDirReadable()==false){
 		wxLogError(_("Directory : %s doesn't exists or isn't readable"),datadir.c_str());
 		return false;
 	}
 
-
 	//init library
 	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
-	char * bufDataDir = new char[myDatadir.Len() * sizeof(wxString)];
-	strcpy( bufDataDir, (const char*)myDatadir.mb_str(wxConvUTF8));
-
 #ifdef MYSQL_IS_LOGGING
 	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
 	wxString myLogDirString = _T("--log=");
 	myLogDirString.Append(myLogDirName.GetFullPath());
-
-
-	char * bufLogPath = new char[myLogDirString.Len() * sizeof(wxString)];
-	strcpy(bufLogPath, (const char*)myLogDirString.mb_str(wxConvUTF8));
 #endif
 
-
 #if defined(__WINDOWS__)
-	char * mylanguagedir = "--language=./mysql";
+	wxString mylanguagedir = "--language=./mysql";
 #elif defined(__WXMAC__)
-	char * mylanguagedir =	"--language=./ToolMap2.app/Contents/mysql";
+	wxString mylanguagedir = "--language=./ToolMap2.app/Contents/mysql";
 //#elif defined(__WXGTK20__)
 	//char * mylanguagedir = "--language=./mysql";
 #else
     // Linux standard with MySQL installed with package manager.
-	char * mylanguagedir = "--skip-grant-tables";
+	wxString mylanguagedir = "--skip-grant-tables";
 #endif
 
-	char *server_args[] =
+	char const *server_args[] =
 	{
 		"this_program",       /* this string is not used*/
-		bufDataDir,
-		mylanguagedir,
+		myDatadir.mb_str(wxConvUTF8),
+		mylanguagedir.mb_str(wxConvUTF8),
 		"--port=3309",
 		"--character-set-server=utf8",
+        "--default-storage-engine=MyISAM",
+        "--ignore-builtin-innodb"
 #if defined (MYSQL_IS_LOGGING)
-        bufLogPath,
+        ,myLogDirString.mb_str(wxConvUTF8)
 #endif
-        NULL
 	};
 
-	char *server_groups[] =
-	{
+    
+	char const *server_groups[] ={
 		"embedded",
 		"server",
 		"this_program_SERVER",
 		(char *)NULL
 	};
 
-	int num_elements = (sizeof(server_args) / sizeof(char *)) -1;
-	int myReturn = mysql_library_init(num_elements, server_args, server_groups);
-
-#if defined (MYSQL_IS_LOGGING)
-	delete [] bufLogPath;
-#endif
-
-	if (myReturn != 0)
-	{
-		delete [] bufDataDir;
+	int num_elements = (sizeof(server_args) / sizeof(char *));
+	int myReturn = mysql_library_init(num_elements, const_cast<char**>(server_args), const_cast<char**>(server_groups));
+	if (myReturn != 0){
 		DBLogLastError();
 		return false;
 	}
 
-	delete [] bufDataDir;
 	m_MySQL = mysql_init(NULL);
 	mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
 	mysql_options(m_MySQL, MYSQL_SET_CHARSET_NAME, "utf8");
@@ -160,32 +134,16 @@ bool DataBase::DBLibraryInit (const wxString & datadir)
 
 
 
-bool DataBase::DBUseDataBase(const wxString & dbname)
-{
-	char * buf = NULL;
-	if (dbname.IsEmpty())
-	{
-		buf = new char [3];
-		strcpy(buf, "");
-	}
-	else
-	{
-		buf = new char [dbname.Len() * sizeof(wxString)];
-		strcpy( buf, (const char*)dbname.mb_str(wxConvUTF8));
-	}
-
-	if(mysql_real_connect(m_MySQL,NULL,NULL,NULL,buf,
-						  3309,NULL,CLIENT_MULTI_STATEMENTS) == NULL)
-	{
-		delete [] buf;
+bool DataBase::DBUseDataBase(const wxString & dbname){
+    if(mysql_real_connect(m_MySQL,NULL,NULL,NULL,(const char *) dbname.mb_str(wxConvUTF8),
+						  3309,NULL,CLIENT_MULTI_STATEMENTS) == NULL){
 		DBLogLastError();
 		return false;
 	}
-	
-	delete[] buf;
-	if (dbname != wxEmptyString)
+    
+	if (dbname != wxEmptyString){
 		wxLogMessage(_("Opening database : ") + dbname);
-
+    }
 	return true;
 }
 
@@ -196,7 +154,6 @@ void DataBase::DBLibraryEnd ()
 	m_DBName = wxEmptyString;
 	m_DBPath = wxEmptyString;
 
-	//wxLogDebug(_T("Ending MySQL library..."));
 	mysql_close(m_MySQL);
 	mysql_library_end();
 }
@@ -680,26 +637,21 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 	if (DBResultsNotNull())
 	{
 		wxASSERT_MSG(0, _T("Not able to run query, results were not cleared"));
-		wxLogDebug(_T("Not able to run query, results were not cleared"));
+		wxLogError(_("Not able to run query, results were not cleared"));
 		return false;
 	}
 
-	if (query.IsEmpty())
-	{
-		wxLogError (_T("Trying to run empty query"));
+	if (query.IsEmpty()){
+		wxLogError (_("Trying to run empty query"));
 		return false;
 	}
 
-	char * buf = new char[query.Len() * sizeof(wxString)];
-	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
-	if (mysql_query(m_MySQL, buf) != 0)
+	if (mysql_query(m_MySQL, query.mb_str(wxConvUTF8)) != 0)
 	{
-		delete [] buf;
 		DBLogLastError();
 		return false;
 	}
 
-	delete [] buf;
 	m_MySQLRes = mysql_store_result(m_MySQL);
 	DataBaseClearResults();
 	return true;
@@ -715,22 +667,19 @@ bool DataBase::DataBaseQuery (const wxString & query)
 	if (DBResultsNotNull())
 	{
 		wxASSERT_MSG(0, _T("Not able to run query, results were not cleared"));
-		wxLogDebug(_T("Not able to run query, results were not cleared"));
+		wxLogError(_("Not able to run query, results were not cleared"));
 		return false;
 	}
 
-	char * buf = new char[query.Len() * sizeof(wxString)];
-	strcpy( buf, (const char*)query.mb_str(wxConvUTF8));
-	if (mysql_query(m_MySQL, buf) != 0)
+	if (mysql_query(m_MySQL, query.mb_str(wxConvUTF8)) != 0)
 	{
-		delete [] buf;
 		DBLogLastError();
 		return false;
 	}
-	delete [] buf;
 	m_MySQLRes = mysql_store_result(m_MySQL);
 	return true;
 }
+
 
 
 int DataBase::DataBaseQueriesNumber (const wxString & query)
@@ -738,6 +687,8 @@ int DataBase::DataBaseQueriesNumber (const wxString & query)
 	wxStringTokenizer tokenizer(query, _T(";"), wxTOKEN_DEFAULT);
 	return tokenizer.CountTokens();
 }
+
+
 
 long DataBase::DataBaseGetLastInsertedID()
 {
@@ -779,7 +730,7 @@ bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & res
 		return false;
 	}
 
-	results = wxString::FromAscii(buf);
+	results = wxString::FromUTF8(buf);
 	delete [] buf;
 
 	return true;

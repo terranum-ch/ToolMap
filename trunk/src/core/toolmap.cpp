@@ -338,23 +338,13 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
     // adding status bar
 	CreateStatusBar(4,0,wxID_ANY);
 	
-	// adding menubar
-	SetMenuBar(CreateToolMapMenu());
-	
-	
-	// adding toolbar
+	_CreateMenu();
 	_CreateToolBar();
 	
-	// dessin de l'interface
-	PostInit();
 	
-}
-
-void ToolMapFrame::PostInit()
-{
-	wxString myProgName = g_ProgName;
+    wxString myProgName = g_ProgName;
 	myProgName = myProgName.RemoveLast(5);
-
+    
 	
 	wxLog * myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
 	delete wxLog::SetActiveTarget(myDlgLog);
@@ -366,11 +356,11 @@ void ToolMapFrame::PostInit()
 	m_AuiManager = new wxAuiManager(this);
 	
 	
-//#if (__WXMAC__)
-//	m_TocWindow = new TocWindowDlgMac (this);
-//#else
+    //#if (__WXMAC__)
+    //	m_TocWindow = new TocWindowDlgMac (this);
+    //#else
 	m_TocWindow = new TocWindowDlgGen(m_AuiManager, this);
-//#endif
+    //#endif
 	
 	// init object attribution panel
 	m_MainPanel = new Main_PANEL(this, m_AuiManager);	
@@ -402,7 +392,7 @@ void ToolMapFrame::PostInit()
 											   m_TocWindow->GetTOCCtrl(),
 											   m_AttribObjPanel,
 											   m_LayerManager->GetSelectedDataMemory());
-											   
+    
 	
 	m_EditManager = new tmEditManager (this,
 									   m_TocWindow->GetTOCCtrl(),
@@ -416,12 +406,12 @@ void ToolMapFrame::PostInit()
 									  m_LayerManager->GetSelectedDataMemory(),
 									  m_MainPanel->GetGISRenderer(),
 									  m_LayerManager->GetScale());
-									   
-
+    
+    
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar());
 	m_TManager = new ToolbarManager (GetToolBar());
-		
+    
 	m_PManager = new ProjectManager(this);
 	m_PManager->SetMenuManager(m_MManager);
 	m_PManager->GetObjectManager()->SetPanel(m_AttribObjPanel);
@@ -436,7 +426,7 @@ void ToolMapFrame::PostInit()
 	
 	
 	m_QueriesPanel->SetSelectedData(m_LayerManager->GetSelectedDataMemory());
-		
+    
 	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DataBaseGetVersion().c_str());
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);
@@ -448,7 +438,6 @@ void ToolMapFrame::PostInit()
 	
 	
 	m_CheckedUpdates = false;
-
 }
 
 
@@ -510,9 +499,9 @@ void ToolMapFrame::OnClose(wxCloseEvent & event)
 	event.Skip();
 }
 
-wxMenuBar* ToolMapFrame::CreateToolMapMenu()
+void ToolMapFrame::_CreateMenu()
 {
- wxMenuBar* menuBar = new wxMenuBar;
+    wxMenuBar* menuBar = new wxMenuBar;
     wxMenu* itemMenu2 = new wxMenu;
     //wxMenu* itemMenu3 = new wxMenu;
     itemMenu2->Append(ID_MENU_NEW_PRJ_EMPTY, _("&New...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
@@ -628,7 +617,7 @@ wxMenuBar* ToolMapFrame::CreateToolMapMenu()
 	itemMenu81->Append(ID_MENU_REPORT_BUG, _("Report a bug..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu81->Append(ID_MENU_ASK_NEW_FEATURE, _("Ask for a new feature..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu81, _("&Help"));
-    return menuBar;
+    this->SetMenuBar(menuBar);
 }
 
 
