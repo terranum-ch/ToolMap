@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_ERASE_BACKGROUND(tmRenderer::OnAvoidFlickering)
 	EVT_MOTION (tmRenderer::OnMouseMove)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
+    EVT_LEFT_DCLICK(tmRenderer::OnMouseDClick)
 	EVT_RIGHT_DOWN (tmRenderer::OnMouseRightDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
@@ -446,6 +447,12 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 }
 
 
+void tmRenderer::OnMouseDClick  (wxMouseEvent & event){
+    if (m_ActualTool == tmTOOL_PAN){
+        PanDClick(event);
+    }
+}
+
 
 
 /***************************************************************************//**
@@ -665,7 +672,6 @@ void tmRenderer::SelectStop (const wxPoint & mousepos)
 void tmRenderer::PanStart (const wxPoint & mousepos)
 {
 	m_StartCoord = mousepos;
-	
 	// capture the dc in a bitmap
 	wxClientDC dc (this);
 	
@@ -745,10 +751,22 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
  *******************************************************************************/
 void tmRenderer::PanStop (const wxPoint & mousepos)
 {
-	// compute the new raster origin
+	if (m_StartCoord == wxPoint(-1,-1)) {
+        wxDELETE(m_PanBmp);
+        return;
+    }
+    
+    // compute the new raster origin
 	// myNewPos will be deleted in the layermanager
 	wxPoint * myNewPos = new wxPoint(mousepos.x - m_StartCoord.x,
 									 mousepos.y - m_StartCoord.y);
+    if (myNewPos->x == 0 && myNewPos->y == 0) {
+        wxDELETE(myNewPos);
+        wxDELETE(m_PanBmp);
+        m_StartCoord = wxPoint(-1,-1);
+        wxLogMessage("Deleted");
+        return;
+    }
 	
 	// send message to renderer with 
 	// displacement done.
@@ -758,12 +776,28 @@ void tmRenderer::PanStop (const wxPoint & mousepos)
 	
 	SetBitmapStatus();
 
-	if (m_PanBmp)
-	{
-		delete m_PanBmp;
-		m_PanBmp = NULL;
-	}
+	wxDELETE(m_PanBmp);
 	m_StartCoord = wxPoint(-1,-1);
+}
+
+
+
+void tmRenderer::PanDClick (wxMouseEvent & event){
+    // compute middle pixel
+    wxSize myDisplaySize = GetSize();
+    if (myDisplaySize.IsFullySpecified() == false || myDisplaySize == wxSize(0,0)) {
+        wxLogError("Error getting display size!");
+        return;
+    }
+    
+    wxPoint myMiddlePoint(wxRound(myDisplaySize.GetWidth() / 2.0),
+                          wxRound(myDisplaySize.GetHeight() / 2.0));
+    // computing moved point
+    wxPoint myMovedPoint (myMiddlePoint - event.GetPosition());
+    
+    wxCommandEvent evt(tmEVT_LM_PAN_ENDED, wxID_ANY);
+	evt.SetClientData(new wxPoint(myMovedPoint));
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
