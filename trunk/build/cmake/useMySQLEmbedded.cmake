@@ -28,7 +28,8 @@ ELSEIF (WIN32)
     	-E make_directory "${PROJECT_BINARY_DIR}/$(OutDir)/mysql")
 		
 	SET (MYSQL_ERRSQL_FROM_PATH "${MYSQL_INCLUDE_DIR}../share/english")
-	SET (MYSQL_ERRSQL_TO_PATH "${PROJECT_BINARY_DIR}/$(OutDir)/mysql")
+	SET (MYSQL_ERRSQL_TO_PATH "$(OutDir)mysql")
+	MESSAGE (${MYSQL_ERRSQL_TO_PATH})
 ELSE (APPLE)
 	# LINUX 
 	# don't copy anything!
