@@ -24,6 +24,9 @@
 #include "tmlog.h"
 #include "../gui/tmimportwiz.h"
 #include "../gis/tmimport.h"
+#include "backupmanager.h"
+#include <wx/textdlg.h>
+
 
 
 #if wxUSE_CRASHREPORT
@@ -192,8 +195,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_OBJ_ATTRIB_DEF, ToolMapFrame::OnEditObjectAttributes)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
 	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
-	EVT_MENU (ID_MENU_BACKUP_PRJ, ToolMapFrame::OnBackupProject)
-	//EVT_MENU (ID_MENU_COPY_PASTE_ATTRIB, ToolMapFrame::OnUpdateAttributionObjects)
+	EVT_MENU (ID_MENU_PRJ_BACKUP, ToolMapFrame::OnProjectBackup)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 	EVT_MENU (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
@@ -267,7 +269,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 
 	// UPDATE UI EVENT
-	EVT_UPDATE_UI_RANGE(ID_MENU_BACKUP_PRJ, ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI_RANGE(ID_MENU_PRJ_BACKUP, ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnUpdateMenuProject)
 	
 	EVT_UPDATE_UI (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnUpdateMenuProject)
@@ -411,8 +413,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
     
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar());
-	m_TManager = new ToolbarManager (GetToolBar());
-    
 	m_PManager = new ProjectManager(this);
 	m_PManager->SetMenuManager(m_MManager);
 	m_PManager->GetObjectManager()->SetPanel(m_AttribObjPanel);
@@ -467,7 +467,6 @@ ToolMapFrame::~ToolMapFrame()
 	
 	// delete the menu manager
 	delete m_MManager;
-	delete m_TManager;
 	
 	// delete toolmanager
 	delete m_ToolManager;
@@ -512,7 +511,7 @@ void ToolMapFrame::_CreateMenu()
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
-    itemMenu2->Append(ID_MENU_BACKUP_PRJ, _("Bac&kup"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu2->Append(ID_MENU_RESTORE_PRJ, _("Restore project..."), _T(""), wxITEM_NORMAL);
     wxMenu* itemMenu11 = new wxMenu;
     itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
@@ -1291,17 +1290,41 @@ void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 }
 
 
-void ToolMapFrame::OnBackupProject (wxCommandEvent & event)
+void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
 {
-	m_PManager->BackupProject();
+    //m_PManager->BackupProject();
+    
+    wxASSERT(m_PManager);
+    wxASSERT(m_PManager->GetDatabase());
+   
+    // backup path exists ?
+    wxString myBackupPath = wxEmptyString;
+    if(m_PManager->GetDatabase()->GetProjectBackupPath(myBackupPath) != PATH_OK){
+        wxString sErrMsg =	_("No path specified or path invalid \n"); 
+        sErrMsg.Append(		_("for backups or restore operations,\n\n"));
+        sErrMsg.Append(		_("Please go to Project->Edit Project->Settings...\n")); 
+        sErrMsg.Append(		_("and specify a valid path."));
+        wxMessageBox(sErrMsg,_("No valid path found"),wxICON_ERROR | wxOK);
+        return;
+    }
+    
+    // create backup file
+    BackupFile myBckFile;
+    myBckFile.SetInputDirectory(myBackupPath);
+    myBckFile.SetDate(wxDateTime::Now());
+    wxString myOutputfileName = m_PManager->GetDatabase()->DataBaseGetName();
+    myOutputfileName.Append("-" + myBckFile.GetDate().FormatISOCombined());
+    myBckFile.SetOutputName(wxFileName(myBackupPath, myOutputfileName, "tmbk"));
+    
+    // ask for comment 
+    wxTextEntryDialog myDlg (this, _("Backup comment:"), _("Backup"));
+    if (myDlg.ShowModal() == wxOK) {
+        myBckFile.SetComment(myDlg.GetValue());
+    }
+    
+    wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
 }
 
-
-void ToolMapFrame::OnUpdateAttributionObjects(wxCommandEvent & event)
-{
-	//m_AttribObjPanel->UpdateObjectPointList(m_Database);
-	//m_AttribObjPanel->m_pObjList_PT->AddItem(-1, -1, _T("coucou"));
-}
 
 
 void ToolMapFrame::OnAddGisData (wxCommandEvent & event)

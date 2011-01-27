@@ -146,7 +146,7 @@ class ProjectManager;
 #define ID_MENU_NEW_PRJ_EXISTING	10301
 #define ID_MENU_OPEN_PRJ			10302
 #define ID_MENU_RECENT				10303
-#define ID_MENU_BACKUP_PRJ			10304
+#define ID_MENU_PRJ_BACKUP          10304
 //#define ID_MENU_RESTORE_PRJ			10305
 #define ID_MENU_EXPORT			10306
 #define ID_MENU_EXPORT_LAYER		10307
@@ -293,7 +293,6 @@ private:
 	
 	ProjectManager * m_PManager;
 	MenuManager * m_MManager;
-	ToolbarManager * m_TManager;
 	
 	tmLayerManager * m_LayerManager;
 	tmScaleCtrlCombo * m_ScaleCombo;
@@ -323,8 +322,7 @@ private:
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	void OnShowQueriesWindow (wxCommandEvent & event);
 	void OnQueriesRun (wxCommandEvent & event);
-	void OnBackupProject (wxCommandEvent & event);
-	void OnUpdateAttributionObjects(wxCommandEvent & event);
+	void OnProjectBackup (wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);
 	void OnZoomPrevious(wxCommandEvent & event);
 	void OnZoomToSelectedLayer(wxCommandEvent & event);

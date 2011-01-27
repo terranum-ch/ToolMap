@@ -352,19 +352,11 @@ void ProjectManager::CloseProject()
 	m_SnappingPanel->SaveSnappingStatus();
 	
 	m_EditManager->SetDatabase(NULL);
-	
 	m_LayerManager->UnInitLayerManager();
 	m_AttribManager->UnInitAttributionManager();
 	
-	if (m_DB != NULL)
-	{
-		//wxLogDebug(_T("Deleting the database object"));
-		delete m_DB;
-		m_DB = NULL;
-	}
-	
+	wxDELETE(m_DB);	
 	bProjectIsOpen = FALSE;
-	
 }
 
 
