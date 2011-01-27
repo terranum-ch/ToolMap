@@ -35,9 +35,7 @@ IMPLEMENT_CLASS(MenuManager, wxObject);
  *******************************************************************************/
 MenuManager::MenuManager(wxMenuBar * menubar)
 {
-	m_MenuStatus = MENU_DB_CLOSED;
 	m_MenuBar = menubar;
-	bMenu_DB_IsOpen = FALSE;
 	m_pFilesHistory = NULL;
 		
 	// prepare for recent documents
@@ -54,72 +52,6 @@ MenuManager::~MenuManager()
 	TerminateRecentFilesHistory();
 }
 
-
-/***************************************************************************//**
- @brief Change status of menus
- @details Call this function for changing status of menu in response of event.
- @param flags a #MENUSTATUS item reflecting the change to take into account
- @author Lucien Schreiber (c) CREALP 2007
- @date 12 March 2008
- *******************************************************************************/
-void MenuManager::SetStatus(MENUSTATUS flags)
-{
-	m_MenuStatus = flags; //m_MenuStatus ^ flags; //XOR
-	
-	// change status for database opened
-	bMenu_DB_IsOpen = m_MenuStatus & MENU_DB_OPENED;
-}
-
-
-/***************************************************************************//**
- @brief Update menu 
- @details Call this function during idle time for updating menu items. The
- updated items are linked to the SetStatus() function
- @author Lucien Schreiber (c) CREALP 2007
- @date 12 March 2008
- *******************************************************************************/
-void MenuManager::UpdateMenusStatus()
-{
-	UpdateMenuProject();
-	UpdateMenuData();
-	UpdateMenuView();
-}
-
-
-
-/***************************************************************************//**
- @brief Update project menu
- @author Lucien Schreiber (c) CREALP 2007
- @date 12 March 2008
- *******************************************************************************/
-void MenuManager::UpdateMenuProject()
-{
-	for (int i = ID_MENU_BACKUP_PRJ; i <= ID_MENU_PRJ_SETTINGS ; i++)
-	{
-		if (m_MenuBar->FindItem(i) != NULL)
-			m_MenuBar->Enable(i, bMenu_DB_IsOpen);
-	}
-
-}
-
-
-void MenuManager::UpdateMenuData ()
-{
-	m_MenuBar->Enable(ID_MENU_ADD_SPATIAL_DATA, bMenu_DB_IsOpen);
-	m_MenuBar->Enable(ID_MENU_IMPORT_GIS_DATA, bMenu_DB_IsOpen);
-}
-
-
-void MenuManager::UpdateMenuView ()
-{
-	//m_MenuBar->Enable(wxID_BACKWARD, bMenu_DB_IsOpen);
-	
-	for (int i = ID_MENU_ZOOM; i <= ID_MENU_ZOOM_SELECTED_LAYER ; i++)
-	{
-		if (m_MenuBar->FindItem(i) != NULL)
-			m_MenuBar->Enable(i, bMenu_DB_IsOpen);
-	}
-}
 
 
 /***************************************************************************//**
@@ -252,45 +184,3 @@ bool MenuManager::GetRecentFile (wxString & filepath, int fileid)
 }
 
 
-
-void MenuManager::EditingStatus(bool started)
-{
-	m_MenuBar->Enable(ID_MENU_DRAW, started);
-	//m_MenuBar->Enable(ID_MENU_EDIT_VERTEX_POS, started);
-	m_MenuBar->Enable(ID_MENU_MODIFY,started);
-	
-}
-
-
-void MenuManager::ZoomStatus (bool enabled)
-{
-	m_MenuBar->Enable(wxID_BACKWARD, enabled);
-}
-
-
-
-/********************************* TOOLBAR MANAGER ********************************/
-ToolbarManager::ToolbarManager(wxToolBar * toolbar)
-{
-	wxASSERT(toolbar);
-	m_TBar = toolbar;
-}
-
-
-ToolbarManager::~ToolbarManager()
-{
-	
-}
-
-
-void ToolbarManager::EditingStatus(bool started)
-{
-	m_TBar->EnableTool(ID_MENU_DRAW, started);
-	m_TBar->EnableTool(ID_MENU_MODIFY, started);
-}
-
-
-void ToolbarManager::ZoomStatus (bool enabled)
-{
-	m_TBar->EnableTool(wxID_BACKWARD, enabled);
-}

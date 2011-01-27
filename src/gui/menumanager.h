@@ -34,7 +34,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "../core/toolmap.h"
@@ -42,14 +42,7 @@
 #include <wx/fileconf.h>		// for using file config even on windows 
 
 
-enum MENUSTATUS
-{
-	MENU_DB_OPENED		=		1,
-	MENU_DB_CLOSED		=		0,
-	MENU_DB_SWITCH  =			MENU_DB_OPENED,
-};
-
-
+// TODO: Not needed anymore, keep only the recent files functions !!!
 /***************************************************************************//**
  @brief Deals with menu activation
  @details This class is the main point for enabling / disabling menu based on
@@ -60,65 +53,28 @@ enum MENUSTATUS
  @date 12 March 2008
 *******************************************************************************/
 class MenuManager : public wxObject
-	{
-	private:
-		int m_MenuStatus;
-		wxMenuBar * m_MenuBar;
-				
-		// store internally the status of each option
-		bool bMenu_DB_IsOpen;
-		
-		// members for recent files
-		wxFileHistory * m_pFilesHistory;
-		
-		
-		// functions used internally for uptading menus items
-		void UpdateMenuProject();
-		void UpdateMenuData ();
-		void UpdateMenuView ();
-		
-		DECLARE_CLASS(MenuManager);
-		
-	public:
-		MenuManager(wxMenuBar * menubar);
-		~MenuManager();
-		
-		void SetStatus(MENUSTATUS flags);
-		void UpdateMenusStatus();
-		
-		// deals with recent files
-		void InitializeRecentFilesHistory();
-		void TerminateRecentFilesHistory();
-		void AddFileToRecent (const wxString & spath);
-		void RemoveFileFromRecent (int fileid);
-		bool GetRecentFile (wxString & filepath, int fileid);
-		
-		// Editing 
-		void EditingStatus(bool started);
-		
-		// Zoom
-		void ZoomStatus (bool enabled);
-		
-	};
+{
+private:
+    wxMenuBar * m_MenuBar;
+    
+    // members for recent files
+    wxFileHistory * m_pFilesHistory;
+    DECLARE_CLASS(MenuManager);
+    
+public:
+    MenuManager(wxMenuBar * menubar);
+    ~MenuManager();
+    
+    // deals with recent files
+    void InitializeRecentFilesHistory();
+    void TerminateRecentFilesHistory();
+    void AddFileToRecent (const wxString & spath);
+    void RemoveFileFromRecent (int fileid);
+    bool GetRecentFile (wxString & filepath, int fileid);
+};
 
 
 
-
-class ToolbarManager : public wxObject
-	{
-	private:
-		wxToolBar * m_TBar;
-	protected:
-	public:
-		ToolbarManager(wxToolBar * toolbar);
-		~ToolbarManager();
-		
-		// editing 
-		void EditingStatus(bool started);
-		
-		// zoom
-		void ZoomStatus (bool enabled);
-	};
 
 
 
