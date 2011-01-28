@@ -33,8 +33,13 @@ class BackupManagerDLG : public wxDialog {
     wxButton* m_BtnRestore;
     wxStatusBar* m_StatusBar;
     BackupManager * m_BackupManager;
+    wxString m_BackupPath;
+
     
     void _CreateControls();
+    bool _LoadData();
+    void _UpdateStatusbar(const unsigned int & bcknumber);
+
 
     void OnButtonClose(wxCommandEvent & event);
     void OnButtonRestore(wxCommandEvent & event);

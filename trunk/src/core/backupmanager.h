@@ -110,7 +110,16 @@ public:
     bool GetFileInfo(const wxFileName & file, BackupFile & fileinfo);
     bool SetMetadata(const BackupFile & fileinfo, wxZipOutputStream * zip);
 
+    inline ProjectManager * GetProjectManager() ;
     
 };
+
+
+
+inline ProjectManager * BackupManager::GetProjectManager() {
+    return m_ProjectManager;
+}
+
+    
 
 #endif

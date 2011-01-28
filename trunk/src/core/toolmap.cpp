@@ -1340,8 +1340,19 @@ void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
 
 void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
     wxASSERT(m_PManager);
-    BackupManager myBckManager(m_PManager);
     
+    // backup path exists ?
+    wxString myBackupPath = wxEmptyString;
+    if(m_PManager->GetDatabase()->GetProjectBackupPath(myBackupPath) != PATH_OK){
+        wxString sErrMsg =	_("No path specified or path invalid \n"); 
+        sErrMsg.Append(		_("for backups or restore operations,\n\n"));
+        sErrMsg.Append(		_("Please go to Project->Edit Project->Settings...\n")); 
+        sErrMsg.Append(		_("and specify a valid path."));
+        wxMessageBox(sErrMsg,_("No valid path found"),wxICON_ERROR | wxOK);
+        return;
+    }
+
+    BackupManager myBckManager(m_PManager);
     BackupManagerDLG myDlg (this, wxID_ANY, _("Manage Backup"), &myBckManager);
     myDlg.ShowModal();
 }
