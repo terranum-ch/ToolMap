@@ -35,7 +35,7 @@ BackupFile::~BackupFile() {
 
 
 
-bool BackupFile::IsValid() {
+bool BackupFile::IsValid() const{
     if (m_OutFileName.IsOk() == false) {
         return false;
     }
@@ -87,17 +87,143 @@ void BackupFile::SetDate(wxDateTime value) {
 
 /***************** BACKUP MANAGER **********************/
 BackupManager::BackupManager(ProjectManager * prjmanager) {
+    wxASSERT(prjmanager);
+    m_ProjectManager = prjmanager;
 }
+
+
 
 BackupManager::~BackupManager() {
 }
 
-bool BackupManager::Backup(const BackupFile & fileinfo) {
+
+
+void BackupManager::_ListMySQLFiles(const wxString & directory, wxArrayString & files) {
+    wxDir myDir (directory);	
+	wxRegEx FileSpec(wxT(".opt|.frm|.MYD|.MYI|.xml"));
+	wxString myActualFileName;
+    // iterates all files in directory
+	bool cont = myDir.GetFirst(&myActualFileName, wxEmptyString, wxDIR_FILES);
+	while (cont)
+	{
+		if (FileSpec.Matches(myActualFileName)){
+			files.Add(myActualFileName);
+		}
+		else {
+			wxLogError(_T("File '%s' will not be backuped"), myActualFileName);
+		}		
+		cont = myDir.GetNext(&myActualFileName);
+	}	
 }
+
+
+
+bool BackupManager::Backup(const BackupFile & fileinfo) {
+    // some checks
+    if (fileinfo.IsValid() == false) {
+        return false;
+    }
+    
+    if (wxDirExists(fileinfo.GetOutputName().GetPath()) == false ||
+        wxDirExists(fileinfo.GetInputDirectory().GetFullPath()) == false) {
+        wxLogError(_("Backup directory doesn't exists!"));
+        return false;
+    }
+    
+    // getting list of files to backup !
+    wxArrayString myFilesToBackup;
+    _ListMySQLFiles(fileinfo.GetInputDirectory().GetFullPath(), myFilesToBackup);
+    
+    
+	wxFFileOutputStream outf(fileinfo.GetOutputName().GetFullPath());
+	if (!outf.Ok()){
+		wxLogError(_("Could not open file: '%s'"), fileinfo.GetOutputName().GetFullName());
+		return false;
+	}
+	wxZipOutputStream outzip(outf);
+	outzip.PutNextDirEntry(m_ProjectManager->GetDatabase()->DataBaseGetName());
+	
+	// loop for adding all files
+	for (unsigned int i = 0; i<myFilesToBackup.GetCount(); i++){
+		wxFileName fn1 (fileinfo.GetInputDirectory().GetFullPath(), myFilesToBackup.Item(i));
+		wxFileInputStream f1stream(fn1.GetFullPath());
+		if (!f1stream.Ok()){
+			wxLogError(wxT("Error opening file: '%s'"), myFilesToBackup.Item(i));
+			return false;
+		}
+		
+        /*
+		// incrementing progress dialog
+		if (!ProgDlg.Update(dIncrement))
+		{
+			bCompleted = FALSE;
+			wxLogMessage(_("Backup into %s cancelled by user"), dbkfilename.GetFullName().c_str());
+			break;
+		}
+		dIncrement  = dIncrement + dStep;
+		if (dIncrement > 50)
+			dIncrement = 50;*/
+		
+		
+		// realy adding files into zip
+		outzip.PutNextEntry(m_ProjectManager->GetDatabase()->DataBaseGetName() +
+                            wxFileName::GetPathSeparator() +
+                            myFilesToBackup.Item(i));
+		outzip << f1stream;
+	}
+	
+    SetMetadata(fileinfo, &outzip);
+
+	if (outzip.Close() == false){
+		wxLogError(_("Error Closing file"));
+		return false;
+	}
+	outf.Close();
+	wxLogMessage(_("Database backuped into : '%s'"), fileinfo.GetOutputName().GetFullName());
+    
+    
+    return true;
+}
+
+
 
 bool BackupManager::Restore(const BackupFile & fileinfo) {
+    return false;
 }
 
+
+
 bool BackupManager::GetFileInfo(const wxFileName & file, BackupFile & fileinfo) {
+    return false;
+}
+
+
+bool BackupManager::SetMetadata(const BackupFile & fileinfo, wxZipOutputStream * zip) {
+    if (fileinfo.IsValid() == false || zip == NULL) {
+        return false;
+    }
+    
+    // prepare XML document into a wxString
+    wxXmlDocument myXMLDoc;
+    wxXmlNode * root = new wxXmlNode(wxXML_ELEMENT_NODE, wxT("metadata_backup"));
+    myXMLDoc.SetRoot(root);
+     
+    wxXmlNode * node;
+    node = new wxXmlNode(wxXML_ELEMENT_NODE, wxT("Author"));
+    node->AddAttribute(_T("Name"), fileinfo.GetAuthor());
+    root->AddChild(node);
+    
+    node = new wxXmlNode(wxXML_ELEMENT_NODE, wxT("Comment"));
+    node->AddAttribute(_T("Text"), fileinfo.GetComment());
+    root->AddChild(node);
+    wxStringOutputStream myStringStream;
+    myXMLDoc.Save(myStringStream);
+    
+    wxLogMessage(myStringStream.GetString());
+ 
+    // open bakcup and replace XML file 
+ 
+    zip->SetComment(myStringStream.GetString());
+    return true;
 }
 
