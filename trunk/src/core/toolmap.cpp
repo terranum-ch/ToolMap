@@ -24,6 +24,7 @@
 #include "tmlog.h"
 #include "../gui/tmimportwiz.h"
 #include "../gis/tmimport.h"
+#include "../gui/backupmanager_dlg.h"
 #include "backupmanager.h"
 #include <wx/textdlg.h>
 
@@ -196,6 +197,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnEditProjectSettings )
 	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
 	EVT_MENU (ID_MENU_PRJ_BACKUP, ToolMapFrame::OnProjectBackup)
+    EVT_MENU (ID_MENU_PRJ_BACKUP_MANAGER, ToolMapFrame::OnProjectBackupManage)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 	EVT_MENU (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
@@ -512,7 +514,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu2->Append(ID_MENU_RESTORE_PRJ, _("Restore project..."), _T(""), wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->AppendSeparator();
     wxMenu* itemMenu11 = new wxMenu;
     itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu11->AppendSeparator();
@@ -1331,6 +1334,16 @@ void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
         wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     }
     
+}
+
+
+
+void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
+    wxASSERT(m_PManager);
+    BackupManager myBckManager(m_PManager);
+    
+    BackupManagerDLG myDlg (this, wxID_ANY, _("Manage Backup"), &myBckManager);
+    myDlg.ShowModal();
 }
 
 

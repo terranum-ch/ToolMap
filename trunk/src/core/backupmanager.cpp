@@ -198,6 +198,7 @@ bool BackupManager::GetFileInfo(const wxFileName & file, BackupFile & fileinfo) 
 }
 
 
+
 bool BackupManager::SetMetadata(const BackupFile & fileinfo, wxZipOutputStream * zip) {
     if (fileinfo.IsValid() == false || zip == NULL) {
         return false;
@@ -219,10 +220,6 @@ bool BackupManager::SetMetadata(const BackupFile & fileinfo, wxZipOutputStream *
     wxStringOutputStream myStringStream;
     myXMLDoc.Save(myStringStream);
     
-    wxLogMessage(myStringStream.GetString());
- 
-    // open bakcup and replace XML file 
- 
     zip->SetComment(myStringStream.GetString());
     return true;
 }

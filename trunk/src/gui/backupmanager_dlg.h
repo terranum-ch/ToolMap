@@ -24,8 +24,16 @@
 
 class BackupManager;
 
+const int ID_BTN_RESTORE = wxID_HIGHEST + 1;
+
 class BackupManagerDLG : public wxDialog {
   private:
+    DataListReportCtrl * m_ListBackup;
+    wxButton* m_BtnDelete;
+    wxButton* m_BtnRestore;
+    wxStatusBar* m_StatusBar;
+    BackupManager * m_BackupManager;
+    
     void _CreateControls();
 
     void OnButtonClose(wxCommandEvent & event);
