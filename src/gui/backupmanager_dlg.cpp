@@ -17,6 +17,7 @@
 
 #include "backupmanager_dlg.h"
 #include "../core/backupmanager.h"
+#include "../core/projectmanager.h"
 
 void BackupManagerDLG::_CreateControls() {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -72,6 +73,51 @@ void BackupManagerDLG::_CreateControls() {
 
 
 
+bool BackupManagerDLG::_LoadData() {
+    wxString myDBName = m_BackupManager->GetProjectManager()->GetDatabase()->DataBaseGetName();
+    
+    int myResult = m_BackupManager->GetProjectManager()->GetDatabase()->GetProjectBackupPath(m_BackupPath);
+    wxASSERT(myResult == PATH_OK);
+    wxDir myBckDir (m_BackupPath);
+    
+    // list supported files based on extension and file name.
+    wxArrayString mySupportedFiles;
+    wxString myFileNameText = wxEmptyString;
+    wxRegEx mySupportedExt (_T(".zip|.tmbk"));
+    wxRegEx mySupportedName (myDBName);
+    bool cont = myBckDir.GetFirst(&myFileNameText, wxEmptyString, wxDIR_FILES);
+    while ( cont ){        
+        if (mySupportedExt.Matches(myFileNameText)){
+            if (mySupportedName.Matches(myFileNameText)) {
+                
+            }
+			mySupportedFiles.Add(myFileNameText);
+		}
+        cont = myBckDir.GetNext(&myFileNameText);
+    }
+    
+    if (mySupportedFiles.GetCount() == 0) {
+        return false;
+    }
+    
+    // for every supported file, get info and populate the list.
+    
+    
+    
+    // inform the status bar
+    _UpdateStatusbar(mySupportedFiles.GetCount());
+    return true;
+}
+
+
+void BackupManagerDLG::_UpdateStatusbar(const unsigned int & bcknumber) {
+    m_StatusBar->SetStatusText(wxString::Format(_("%ld backup(s) in '%s'"),
+                                                bcknumber,
+                                                m_BackupPath),0);
+
+}
+
+
 void BackupManagerDLG::OnButtonClose(wxCommandEvent & event) {
 }
 
@@ -96,7 +142,9 @@ BackupManagerDLG::BackupManagerDLG(wxWindow * parent, wxWindowID id, const wxStr
 wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER){
     wxASSERT(bckmanager);
     m_BackupManager = bckmanager;
+    m_BackupPath = wxEmptyString;
     _CreateControls();
+    _LoadData();
 }
 
 
