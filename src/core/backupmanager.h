@@ -22,6 +22,11 @@
 #include <wx/wx.h>
 #endif
 #include <wx/filename.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/zipstrm.h>
+
+
+
 
 class ProjectManager;
 
@@ -38,7 +43,7 @@ public:
     BackupFile();
     virtual ~BackupFile();
     
-    bool IsValid();
+    bool IsValid() const;
     
     inline const wxFileName GetOutputName() const;
      void SetOutputName(wxFileName value);
@@ -94,6 +99,8 @@ class BackupManager {
 private:
     ProjectManager * m_ProjectManager;
     
+    void _ListMySQLFiles(const wxString & directory, wxArrayString & files);
+    
 public:
     BackupManager(ProjectManager * prjmanager);
     virtual ~BackupManager();
@@ -101,6 +108,8 @@ public:
     bool Backup(const BackupFile & fileinfo);
     bool Restore(const BackupFile & fileinfo);
     bool GetFileInfo(const wxFileName & file, BackupFile & fileinfo);
+    bool SetMetadata(const BackupFile & fileinfo, wxZipOutputStream * zip);
+
     
 };
 
