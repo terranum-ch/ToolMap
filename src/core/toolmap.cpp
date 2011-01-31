@@ -1323,7 +1323,7 @@ void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
     myBckFile.SetOutputName(wxFileName(myBackupPath, myOutputfileName, "tmbk"));
     
     // ask for comment 
-    wxTextEntryDialog myDlg (this, _("Backup comment:"), _("Backup"));
+    wxTextEntryDialog myDlg (this, _("Backup comment:"), _("Backup"), wxEmptyString, wxOK | wxCENTRE);
     if (myDlg.ShowModal() == wxID_OK) {
         myBckFile.SetComment(myDlg.GetValue());
     }

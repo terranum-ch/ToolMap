@@ -46,10 +46,13 @@ class BackupManagerDLG : public wxDialog {
     bool _LoadData();
     void _UpdateStatusbar(const unsigned int & bcknumber);
 
-
     void OnButtonRestore(wxCommandEvent & event);
     void OnButtonDelete(wxCommandEvent & event);
     void OnListColumnClick(wxListEvent & event);
+    
+    void OnUpdateUIDelete(wxUpdateUIEvent & event);
+    void OnUpdateUIRestore(wxUpdateUIEvent & event);
+    
     DECLARE_EVENT_TABLE();
 
   public:
