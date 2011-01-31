@@ -156,6 +156,8 @@ IF(WIN32_STYLE_FIND)
       "${WXWINDOWS_ROOT_DIR}/lib/vc_dll"
       ${WXWINDOWS_POSSIBLE_LIB_PATHS} 
       DOC "wxWindows shared debug build library " )
+	  
+	
 
 
     ##
@@ -246,8 +248,22 @@ IF(WIN32_STYLE_FIND)
       "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
       ${WXWINDOWS_POSSIBLE_LIB_PATHS} 
       DOC "wxWindows static regex library" )
-    
-    
+ 
+	
+	FIND_LIBRARY (WXWINDOWS_STATIC_DEBUG_LIBRARY_EXPAT
+		NAMES wxexpatd wxexpatud
+		PATHS
+		"${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+		${WXWINDOWS_POSSIBLE_LIB_PATHS} 
+		DOC "wxWindows expat (XML) library" )
+	
+	FIND_LIBRARY (WXWINDOWS_STATIC_LIBRARY_EXPAT
+		NAMES wxexpat wxexpatu
+		PATHS
+		"${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+		${WXWINDOWS_POSSIBLE_LIB_PATHS} 
+		DOC "wxWindows expat XML library" )
+
     
     ## untested:
     FIND_LIBRARY(WXWINDOWS_SHARED_LIBRARY_GL
@@ -264,8 +280,8 @@ IF(WIN32_STYLE_FIND)
       ${WXWINDOWS_POSSIBLE_LIB_PATHS} 
       DOC "wxWindows shared debug build GL library" )            
     
-    
-  ELSE (WXWINDOWS_USE_MONOLITHIC)
+ 
+    ELSE (WXWINDOWS_USE_MONOLITHIC)
     ## WX is built as multiple small pieces libraries instead of monolithic
     
     ## DEPECATED (jw) replaced by more general WXWINDOWS_USE_MONOLITHIC ON/OFF
@@ -358,6 +374,7 @@ IF(WIN32_STYLE_FIND)
       #   ctl3d32
       debug ${WXWINDOWS_STATIC_DEBUG_LIBRARY_ZLIB}   optimized ${WXWINDOWS_STATIC_LIBRARY_ZLIB}
       debug ${WXWINDOWS_STATIC_DEBUG_LIBRARY_REGEX}  optimized ${WXWINDOWS_STATIC_LIBRARY_REGEX}
+	  debug ${WXWINDOWS_STATIC_DEBUG_LIBRARY_EXPAT}  optimized ${WXWINDOWS_STATIC_LIBRARY_EXPAT}
       debug ${WXWINDOWS_STATIC_DEBUG_LIBRARY_PNG}    optimized ${WXWINDOWS_STATIC_LIBRARY_PNG}
       debug ${WXWINDOWS_STATIC_DEBUG_LIBRARY_JPEG}   optimized ${WXWINDOWS_STATIC_LIBRARY_JPEG}
       debug ${WXWINDOWS_STATIC_DEBUG_LIBRARY_TIFF}   optimized ${WXWINDOWS_STATIC_LIBRARY_TIFF}
@@ -380,7 +397,7 @@ IF(WIN32_STYLE_FIND)
   ## 
   ## then add the build specific include dir for wx/setup.h
   ## 
-  
+ 
   IF(WXWINDOWS_USE_SHARED_LIBS)
     ##MESSAGE("DBG wxWindows use shared lib selected.")
     ## assume that both builds use the same setup(.h) for simplicity
@@ -535,7 +552,6 @@ IF(WIN32_STYLE_FIND)
   ENDIF (WXWINDOWS_INCLUDE_DIR_SETUPH)
   
   
-  
   MARK_AS_ADVANCED(
     WXWINDOWS_ROOT_DIR
     WXWINDOWS_INCLUDE_DIR
@@ -548,6 +564,8 @@ IF(WIN32_STYLE_FIND)
     WXWINDOWS_STATIC_DEBUG_LIBRARY_ZLIB
     WXWINDOWS_STATIC_LIBRARY_REGEX
     WXWINDOWS_STATIC_DEBUG_LIBRARY_REGEX
+	WXWINDOWS_STATIC_LIBRARY_EXPAT
+	WXWINDOWS_STATIC_DEBUG_LIBRARY_EXPAT
     WXWINDOWS_STATIC_LIBRARY_PNG
     WXWINDOWS_STATIC_DEBUG_LIBRARY_PNG
     WXWINDOWS_STATIC_LIBRARY_JPEG
