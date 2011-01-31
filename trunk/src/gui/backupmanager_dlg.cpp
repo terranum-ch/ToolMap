@@ -23,6 +23,9 @@
 
 BEGIN_EVENT_TABLE(BackupManagerDLG, wxDialog)
     EVT_LIST_COL_CLICK(ID_LIST_BACKUPS, BackupManagerDLG::OnListColumnClick)
+    EVT_BUTTON(wxID_DELETE, BackupManagerDLG::OnButtonDelete)
+    EVT_UPDATE_UI(wxID_DELETE, BackupManagerDLG::OnUpdateUIDelete)
+    EVT_UPDATE_UI(ID_BTN_RESTORE, BackupManagerDLG::OnUpdateUIRestore)
 END_EVENT_TABLE()
 
 
@@ -164,6 +167,57 @@ void BackupManagerDLG::OnButtonRestore(wxCommandEvent & event) {
 
 
 void BackupManagerDLG::OnButtonDelete(wxCommandEvent & event) {
+    if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() == 0) {
+        return;
+    }
+    
+    // ask confirmation
+    wxString myMessage = _("Confirm deleting ");
+    if (m_ListBackup->GetSelectedItemCount()  == 1) {
+        myMessage.Append(_T("'") + m_ListBackup->GetText(m_ListBackup->GetSelectedFirst(), 1) + _T("'"));
+    }
+    else {
+        myMessage.Append(wxString::Format(_("%d backups"), m_ListBackup->GetSelectedItemCount()));
+    }
+    int myAnswer = wxMessageBox(myMessage, _("Delete backup"), wxYES_NO | wxNO_DEFAULT, this);
+    if (myAnswer == wxNO) {
+        return;
+    }
+    
+    // delete
+    wxWindowUpdateLocker noUpdates(m_ListBackup);
+    for (int i = m_ListBackup->GetItemCount() -1; i>=0; i--) {
+        if (m_ListBackup->GetItemState(i, wxLIST_STATE_SELECTED) == wxLIST_STATE_SELECTED) {
+            wxFileName myFile (m_BackupPath, m_ListBackup->GetText(i, 1));
+            if (wxRemoveFile(myFile.GetFullPath()) == false) {
+                wxLogError(_("Removing file : '%s' failed!"), myFile.GetFullName());
+            }
+            else {
+                m_ListBackup->DeleteItem(i);
+            }
+        }
+    }
+    _UpdateStatusbar(m_ListBackup->GetItemCount());
+}
+
+
+    
+void BackupManagerDLG::OnUpdateUIDelete(wxUpdateUIEvent & event) {
+    if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() == 0) {
+        event.Enable(false);
+        return;
+    }
+    event.Enable(true);
+}
+
+
+
+void BackupManagerDLG::OnUpdateUIRestore(wxUpdateUIEvent & event) {
+    if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() != 1) {
+        event.Enable(false);
+        return;
+    }
+    event.Enable(true);
 }
 
 
