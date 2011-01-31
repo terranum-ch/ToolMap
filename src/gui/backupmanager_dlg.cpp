@@ -18,6 +18,14 @@
 #include "backupmanager_dlg.h"
 #include "../core/backupmanager.h"
 #include "../core/projectmanager.h"
+#include "../img/backup_bmp.h"
+
+
+BEGIN_EVENT_TABLE(BackupManagerDLG, wxDialog)
+    EVT_LIST_COL_CLICK(ID_LIST_BACKUPS, BackupManagerDLG::OnListColumnClick)
+END_EVENT_TABLE()
+
+
 
 void BackupManagerDLG::_CreateControls() {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -27,7 +35,7 @@ void BackupManagerDLG::_CreateControls() {
 	
     int myListWidth = 650;
     int myBigColSize = wxRound((myListWidth - 26) / 3.0);
-    m_ListBackup = new DataListReportCtrl( this, wxID_ANY, wxDefaultPosition, wxSize( myListWidth,300 ));
+    m_ListBackup = new DataListReportCtrl( this, ID_LIST_BACKUPS, wxDefaultPosition, wxSize( myListWidth,300 ));
 	
     // insert columns
 	m_ListBackup->InsertColumn(0, "");
@@ -44,6 +52,15 @@ void BackupManagerDLG::_CreateControls() {
 	m_ListBackup->SetColumnWidth(4, myBigColSize);
     bSizer3->Add( m_ListBackup, 1, wxEXPAND, 5 );
 	
+    
+    m_ImgList= new wxImageList(16,16);
+    m_ListBackup->SetImageList(m_ImgList, wxIMAGE_LIST_SMALL);
+    m_ImgList->Add(m_ListBackup->CreateArrowDown(wxSize(16,16)));
+    m_ImgList->Add(m_ListBackup->CreateArrowUp(wxSize(16,16)));
+    m_ImgList->Add(*_img_img_backup_tm);
+    m_ImgList->Add(*_img_img_backup_zip);
+    
+    
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
@@ -89,9 +106,8 @@ bool BackupManagerDLG::_LoadData() {
     while ( cont ){        
         if (mySupportedExt.Matches(myFileNameText)){
             if (mySupportedName.Matches(myFileNameText)) {
-                
+                mySupportedFiles.Add(myFileNameText);
             }
-			mySupportedFiles.Add(myFileNameText);
 		}
         cont = myBckDir.GetNext(&myFileNameText);
     }
@@ -111,6 +127,12 @@ bool BackupManagerDLG::_LoadData() {
         m_BackupManager->GetFileInfo(wxFileName(m_BackupPath, mySupportedFiles.Item(i)), myFile);
  
         long myIndex = m_ListBackup->InsertItem(m_ListBackup->GetItemCount(), wxEmptyString);
+        m_ListBackup->SetItemImage(myIndex, 3);
+        wxFileName mySupportedFileFile (mySupportedFiles.Item(i));
+        if (mySupportedFileFile.GetExt() == _T("tmbk")) {
+            m_ListBackup->SetItemImage(myIndex, 2);
+        }
+        
         m_ListBackup->SetText(myIndex, mySupportedFiles.Item(i), 1);  
         if (myFile.GetDate().IsValid() == true) {
             m_ListBackup->SetText(myIndex, myFile.GetDate().Format(_T("%d %b %Y")), 2);
@@ -125,6 +147,7 @@ bool BackupManagerDLG::_LoadData() {
 }
 
 
+
 void BackupManagerDLG::_UpdateStatusbar(const unsigned int & bcknumber) {
     m_StatusBar->SetStatusText(wxString::Format(_("%ld backup(s) in '%s'"),
                                                 bcknumber,
@@ -132,9 +155,6 @@ void BackupManagerDLG::_UpdateStatusbar(const unsigned int & bcknumber) {
 
 }
 
-
-void BackupManagerDLG::OnButtonClose(wxCommandEvent & event) {
-}
 
 
 
@@ -149,6 +169,57 @@ void BackupManagerDLG::OnButtonDelete(wxCommandEvent & event) {
 
 
 void BackupManagerDLG::OnListColumnClick(wxListEvent & event) {
+    int myCol = event.GetColumn();
+	if (myCol == wxNOT_FOUND) {
+		return;
+	}
+    
+	// invert order
+	if (myCol == m_ClassedCol) {
+		if (m_AscendingOrder == true) {
+			m_AscendingOrder = false;
+		}
+		else {
+			m_AscendingOrder = true;
+		}
+	}
+	else {
+		m_AscendingOrder = true;
+	}
+	
+	wxWindowUpdateLocker noUpdates(m_ListBackup);
+	// remove triangle from last colum
+	if (m_ClassedCol != wxNOT_FOUND) {
+		m_ListBackup->SetColumnImage(wxNOT_FOUND, m_ClassedCol);
+	}
+	int myImageindex = 0;
+	if (m_AscendingOrder == true) {
+		myImageindex = 1;
+	}
+	m_ListBackup->SetColumnImage(myImageindex, myCol);
+	
+    switch (myCol) {
+        case 1:
+        case 4:
+            m_ListBackup->SortList(myCol, 0, -1, DATALIST_COLTYPE_TEXT, m_AscendingOrder);
+			break;
+            
+        case 2:
+            m_ListBackup->SortList(myCol, 0, -1, DATALIST_COLTYPE_DATE, m_AscendingOrder);
+			break;
+            
+		case 3:
+            m_ListBackup->SortList(myCol, 0, -1, DATALIST_COLTYPE_TIME, m_AscendingOrder);
+			break;
+			
+        default:
+			m_AscendingOrder = true;
+			m_ClassedCol = wxNOT_FOUND;
+			return;
+            break;
+    }
+	m_ClassedCol = myCol;
+	event.Skip();    
 }
 
 
@@ -156,8 +227,13 @@ void BackupManagerDLG::OnListColumnClick(wxListEvent & event) {
 BackupManagerDLG::BackupManagerDLG(wxWindow * parent, wxWindowID id, const wxString & title, BackupManager * bckmanager): 
 wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER){
     wxASSERT(bckmanager);
+    initialize_images_backup();
     m_BackupManager = bckmanager;
+    m_ClassedCol = wxNOT_FOUND;
+    m_AscendingOrder = true;
+    m_ImgList = NULL;
     m_BackupPath = wxEmptyString;
+    
     _CreateControls();
     _LoadData();
 }
@@ -165,6 +241,8 @@ wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_S
 
 
 BackupManagerDLG::~BackupManagerDLG() {
+    wxDELETE(m_ImgList);
+    uninitialize_images_backup();
 }
 
 
