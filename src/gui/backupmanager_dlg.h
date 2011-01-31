@@ -20,6 +20,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/wupdlock.h>
 #include "../core/datalistreportctrl.h"
 
 class BackupManager;

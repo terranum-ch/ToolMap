@@ -194,7 +194,69 @@ bool BackupManager::Restore(const BackupFile & fileinfo) {
 
 
 bool BackupManager::GetFileInfo(const wxFileName & file, BackupFile & fileinfo) {
-    return false;
+    fileinfo.SetOutputName(file);
+    
+    // read comment and author
+    wxFFileInputStream outf(file.GetFullPath());
+	if (outf.IsOk() == false){
+		wxLogError(_("Could not open file: '%s'"), file.GetFullName());
+		return false;
+	}
+	
+    { 
+        wxZipInputStream inzip(outf);
+        wxString myXMLcomment = inzip.GetComment();
+        wxLogMessage(myXMLcomment);
+        if (myXMLcomment.IsEmpty() == false) {
+            wxStringInputStream myXMLStream (myXMLcomment);
+            wxXmlDocument doc;
+            if (doc.Load(myXMLStream) != false) {
+                wxXmlNode *child = doc.GetRoot()->GetChildren();
+                while (child) {
+                    if (child->GetName() == _T("Author")) {
+                        fileinfo.SetAuthor(child->GetAttribute(_T("Name"), wxEmptyString));
+                    }
+                    else if (child->GetName() == _T("Comment")) {
+                        fileinfo.SetComment(child->GetAttribute(_T("Text"), wxEmptyString));
+                    }
+                    child = child->GetNext();
+                }
+            }
+        }
+    }
+    
+    // read date
+    wxString myFileName = file.GetName();
+    wxString myDateTimeString = myFileName.AfterFirst('-');
+    if (myDateTimeString.IsEmpty()) {
+        return false;
+    }
+    
+    // old date format
+    if (myDateTimeString.Len() == 15) {
+        wxString myTemp = myDateTimeString.Mid(0, 4);
+        myTemp.Append(_T("-"));
+        myTemp.Append(myDateTimeString.Mid(4,2));
+        myTemp.Append(_T("-"));
+        myTemp.Append(myDateTimeString.Mid(6));
+        wxLogMessage("Modified date is : " + myTemp);
+        myDateTimeString = myTemp;
+    }
+    
+    if (myDateTimeString.Len() != 17) {
+        return false;
+    }
+
+    wxDateTime myDate;
+    wxString::const_iterator end;
+    bool bSuccess = myDate.ParseFormat(myDateTimeString, _T("%Y-%m-%d-%H%M%S"), &end);
+    
+    if (bSuccess == false) {
+        wxLogMessage(_("Error parsing date : '%s'"), myDateTimeString);
+        return false;
+    }
+    fileinfo.SetDate(myDate);
+    return true;
 }
 
 
