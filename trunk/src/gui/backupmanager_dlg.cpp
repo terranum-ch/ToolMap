@@ -100,9 +100,24 @@ bool BackupManagerDLG::_LoadData() {
         return false;
     }
     
+    wxWindowUpdateLocker noUpdates(m_ListBackup);
+    wxFileName myRestoreName (m_BackupManager->GetProjectManager()->GetDatabase()->DataBaseGetPath(),
+                              myDBName);
     // for every supported file, get info and populate the list.
-    
-    
+    for (unsigned int i = 0 ; i<mySupportedFiles.GetCount(); i++) {
+        BackupFile myFile;
+        myFile.SetInputDirectory(myRestoreName);
+        
+        m_BackupManager->GetFileInfo(wxFileName(m_BackupPath, mySupportedFiles.Item(i)), myFile);
+ 
+        long myIndex = m_ListBackup->InsertItem(m_ListBackup->GetItemCount(), wxEmptyString);
+        m_ListBackup->SetText(myIndex, mySupportedFiles.Item(i), 1);  
+        if (myFile.GetDate().IsValid() == true) {
+            m_ListBackup->SetText(myIndex, myFile.GetDate().Format(_T("%d %b %Y")), 2);
+            m_ListBackup->SetText(myIndex, myFile.GetDate().FormatISOTime(), 3);
+        }
+        m_ListBackup->SetText(myIndex, myFile.GetComment(), 4);
+    }
     
     // inform the status bar
     _UpdateStatusbar(mySupportedFiles.GetCount());
