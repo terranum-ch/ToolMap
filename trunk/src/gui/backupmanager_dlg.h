@@ -26,10 +26,15 @@
 class BackupManager;
 
 const int ID_BTN_RESTORE = wxID_HIGHEST + 1;
+const int ID_LIST_BACKUPS = wxID_HIGHEST + 2;
 
 class BackupManagerDLG : public wxDialog {
   private:
+    wxImageList * m_ImgList;
     DataListReportCtrl * m_ListBackup;
+    bool m_AscendingOrder;
+	int m_ClassedCol;
+    
     wxButton* m_BtnDelete;
     wxButton* m_BtnRestore;
     wxStatusBar* m_StatusBar;
@@ -42,10 +47,10 @@ class BackupManagerDLG : public wxDialog {
     void _UpdateStatusbar(const unsigned int & bcknumber);
 
 
-    void OnButtonClose(wxCommandEvent & event);
     void OnButtonRestore(wxCommandEvent & event);
     void OnButtonDelete(wxCommandEvent & event);
     void OnListColumnClick(wxListEvent & event);
+    DECLARE_EVENT_TABLE();
 
   public:
     BackupManagerDLG(wxWindow * parent, wxWindowID id, const wxString & title, BackupManager * bckmanager);

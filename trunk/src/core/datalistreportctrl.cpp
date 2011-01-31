@@ -31,6 +31,44 @@ int DataListReportCtrl::_Compare( DATALIST_COLTYPE coltype, const wxString & tex
                     return 0;
                 break;
                 
+            case DATALIST_COLTYPE_DATE:
+            {
+                wxDateTime dt = wxDateTime::Now();
+                wxDateTime myDate1;
+                wxDateTime myDate2;
+                wxString::const_iterator end;
+                myDate1.ParseFormat(text1, _T("%d %b %Y"), dt, &end);
+                myDate2.ParseFormat(text2, _T("%d %b %Y"), dt, &end);
+                if (myDate1.IsLaterThan(myDate2)) {
+                    return 1;
+                }else if (myDate1.IsEarlierThan(myDate2)) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+                break;
+                
+                
+            case DATALIST_COLTYPE_TIME:
+            {
+                wxDateTime dt = wxDateTime::Now();
+                wxDateTime myTime1;
+                wxDateTime myTime2;
+                wxString::const_iterator end;
+                myTime1.ParseTime(text1, &end);
+                myTime2.ParseTime(text2, &end);
+                if (myTime1.IsLaterThan(myTime2)) {
+                    return 1;
+                }else if (myTime1.IsEarlierThan(myTime2)) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+                break;
+
+                
                 
             case DATALIST_COLTYPE_COLOUR:
                 {
@@ -122,6 +160,44 @@ int DataListReportCtrl::_Compare( DATALIST_COLTYPE coltype, const wxString & tex
                     return 0;
                 }
                 break;
+                
+            case DATALIST_COLTYPE_DATE:
+            {
+                wxDateTime dt = wxDateTime::Now();
+                wxDateTime myDate1;
+                wxDateTime myDate2;
+                wxString::const_iterator end;
+                myDate1.ParseFormat(text1, _T("%d %b %Y"), dt, &end);
+                myDate2.ParseFormat(text2, _T("%d %b %Y"), dt, &end);
+                if (myDate1.IsLaterThan(myDate2)) {
+                    return -1;
+                }else if (myDate1.IsEarlierThan(myDate2)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+                break;
+                
+                
+            case DATALIST_COLTYPE_TIME:
+            {
+                wxDateTime dt = wxDateTime::Now();
+                wxDateTime myTime1;
+                wxDateTime myTime2;
+                wxString::const_iterator end;
+                myTime1.ParseTime(text1, &end);
+                myTime2.ParseTime(text2, &end);
+                if (myTime1.IsLaterThan(myTime2)) {
+                    return -1;
+                }else if (myTime1.IsEarlierThan(myTime2)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+                break;
+                
                 
                 
             default:
