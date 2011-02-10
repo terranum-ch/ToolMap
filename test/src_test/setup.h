@@ -39,13 +39,14 @@ class Fixture1 : public CxxTest::GlobalFixture
 
 public:
 	bool setUpWorld(){
-		wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
-		wxInitializer initializer;
-		if ( !initializer )
-		{
-			fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
-			TS_FAIL(_T("Unable to init the wxWigets library"));
-		}
+		wxApp::SetInstance(new wxAppConsole());
+		int argc=0;
+		char **argv=NULL;
+		wxEntryStart(argc, argv);
+		//wxInitialize();
+		wxTheColourDatabase = new wxColourDatabase();
+		wxInitAllImageHandlers();
+		wxLogMessage(_T("Initing test application"));
 
 #ifdef __LINUX__
 		TS_ASSERT(gtk_init_check(NULL,NULL));
@@ -53,7 +54,13 @@ public:
 
 		return true;
 	}	
-
+    
+    bool tearDownWorld() {
+		wxLogMessage(_T("Cleaning test application"));
+		//wxUninitialize();
+		wxEntryCleanup(); 
+		return true; 
+	}
 
 };
 

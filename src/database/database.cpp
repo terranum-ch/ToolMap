@@ -186,7 +186,7 @@ bool DataBase::DataBaseCreateNew(const wxString & datadir, const wxString & name
 	wxString myDBNewQuery (name);
 	myDBNewQuery.Prepend(_T("CREATE DATABASE "));
 	myDBNewQuery.Append (_T(" DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"));
-	if(DataBaseQueryNoResults(myDBNewQuery)==false)
+    if(DataBaseQueryNoResults(myDBNewQuery)==false)
 	{
 		wxLogError(_("Error creating database : ") + name);
 		return false;
@@ -229,7 +229,7 @@ bool DataBase::DataBaseDelete()
 {
 	if (DBIsDataBaseReady() == false)
 		return false;
-
+    wxLogMessage(_T("DROP DATABASE ") + DataBaseGetName());
 	if (DataBaseQuery(_T("DROP DATABASE ") + DataBaseGetName())==false)
 		return false;
 
@@ -446,15 +446,15 @@ bool DataBase::DataBaseGetNextResult(wxArrayLong & results)
 }
 
 
-bool DataBase::DataBaseGetNextResult(double & result)
+bool DataBase::DataBaseGetNextResult(wxDouble & result)
 {
-	result = 0;
+	result = 0.0;
 
 	MYSQL_ROW record = NULL;
 	if (DBGetNextRecord(record)==false)
 		return false;
-
-	result = atof(record[0]);
+    wxString myStringDouble (record[0]);
+    myStringDouble.ToCDouble(&result);
 	return true;
 }
 
@@ -478,7 +478,10 @@ bool DataBase::DataBaseGetNextResult(wxArrayDouble & results)
 
 	for (unsigned int i = 0; i< myCols; i++)
 	{
-		results.Add(atof(record[i]));
+		wxDouble myDouble = 0.0;
+        wxString myDoubleString (record[i]);
+        myDoubleString.ToCDouble(&myDouble);
+        results.Add(myDouble);
 	}
 	return true;
 }
