@@ -28,11 +28,14 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/treectrl.h>
+#include <wx/imaglist.h>
+#include <wx/renderer.h>
+#include <wx/dcgraph.h>
 
 
 //#include "../core/projectdefmemory.h"	for PRJDEF_LAYERS_TYPE
-#include <wx/treectrl.h>
-#include "wx/imaglist.h"			// for image list for toc
+			// for image list for toc
 #include "tmtocctrlmenu.h"			// for contextual menu
 #include "tmsymbol.h"				// for symbology
 
@@ -69,6 +72,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		tmTOCCtrlMenu * m_ContextMenu;
 		wxTreeItemId m_ActualItemID;
 		tmLayerProperties * m_EditingLayer;
+        bool m_IsImageInited;
 		
 		// private functions
 		void InitTocMemberValues();
@@ -89,7 +93,8 @@ class tmTOCCtrl  : public wxTreeCtrl
 		void OnMoveLayers (wxCommandEvent & event);
 		void OnShortcutKey (wxKeyEvent & event);
 		void OnLayerSelected (wxTreeEvent & event);
-		
+        
+        void OnPaint(wxPaintEvent & event);
 		
 		// contextual menu event functions
 		void OnShowProperties (wxCommandEvent & event);

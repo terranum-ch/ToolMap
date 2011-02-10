@@ -20,12 +20,6 @@
 #include "tmtocctrl.h"
 
 
-// Tree ctrl images (checked, unchecked)
-
-#include "../img/tmimgfunc.h"	// for image processing
-#include "../img/img_tree_unchecked.cpp"
-#include "../img/img_tree_checked.cpp"
-
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
@@ -55,6 +49,7 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
+    EVT_PAINT(tmTOCCtrl::OnPaint)
 	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
 END_EVENT_TABLE()
 
@@ -83,15 +78,45 @@ void tmTOCCtrl::InitTocMemberValues()
  *******************************************************************************/
 void tmTOCCtrl::LoadImageList()
 {
-	 wxImageList *images = new wxImageList(16, 16, true);
-	
-	wxBitmap img_treectrl1 (wxGetBitmapFromMemory(unchecked_tree_sml));
-	images->Add(img_treectrl1);
-	wxBitmap img_treectrl2 (wxGetBitmapFromMemory(checked_tree_sml));
-	images->Add(img_treectrl2);
-	
-	AssignImageList(images);
+    wxImageList *images = new wxImageList(16, 16, true);
+	wxBitmap myUncheckedbmp (16,16);
+    wxBitmap myCheckedbmp (16,16);
+    m_IsImageInited = false;
+    images->Add(myUncheckedbmp);
+    images->Add(myCheckedbmp);
+    AssignImageList(images);
+}
 
+
+
+// used mainly to init listbitmap
+void tmTOCCtrl::OnPaint(wxPaintEvent & event){
+    wxPaintDC myUnusedPaintDC (this);
+    
+    if (m_IsImageInited == false) { 
+        
+        // unchecked
+        wxBitmap myTempBmp (16,16);
+        wxMemoryDC myDC;
+        myDC.SelectObject(myTempBmp);
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxSOLID));
+        myDC.Clear();
+        wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), 0);
+        
+        // checked
+        wxBitmap myTempBmp2 (16,16);
+        myDC.SelectObject(myTempBmp2);
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxSOLID));
+        myDC.Clear();
+        wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), wxCONTROL_CURRENT | wxCONTROL_CHECKED);
+        myDC.SelectObject(wxNullBitmap);
+       
+        GetImageList()->Replace(0, myTempBmp);
+        GetImageList()->Replace(1, myTempBmp2);
+        m_IsImageInited = true;
+    }
+    event.Skip();
+    
 }
 
 
