@@ -28,31 +28,14 @@
 #include "backupmanager.h"
 #include <wx/textdlg.h>
 
-
-
 #if wxUSE_CRASHREPORT
 	#include <wx/msw/crashrpt.h>
 #endif
-	#include <wx/stdpaths.h>
+#include <wx/stdpaths.h>
 
-// toolbar images
-#include "../img/tmimgfunc.h"	// for image processing
-#include "../img/img_tool1.cpp"
-#include "../img/img_tool2.cpp"
-#include "../img/img_tool3.cpp"
-#include "../img/img_tool4.cpp"
-#include "../img/img_tool5.cpp"
-#include "../img/img_tool6.cpp"
-#include "../img/img_tool7.cpp"
-#include "../img/img_tool8.cpp"
-#include "../img/img_tool9.cpp"
-#include "../img/img_tool10.cpp"
-#include "../img/img_tool11.cpp"
-#include "../img/img_tool_mvertex.h"
-// icon image
-#include "../img/img_icon32.cpp"
+#include "../img/misc_bmp.h"
+#include "../img/toolbar_bmp.h"
 #include "../gui/information_dlg.h"
-
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -66,7 +49,6 @@ bool ToolMapApp::OnInit()
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
 	wxHandleFatalExceptions();
-
 	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,
 										   wxDefaultPosition, wxSize(900,500),
 										   _T("MAIN_WINDOW"));
@@ -332,11 +314,12 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
     setlocale(LC_NUMERIC, "C");
 	
 	// initing bitmap
-	initialize_image_mvertex();
+	images_misc_init();
+    images_toolbar_init();
 	
 	// Loading icon
 	wxIcon icon;
-	icon.CopyFromBitmap(wxGetBitmapFromMemory(toolmap32));
+	icon.CopyFromBitmap(*_img_icon_toolmap);
 	SetIcon(icon);
 	
     // adding status bar
@@ -346,11 +329,9 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	_CreateToolBar();
     _CreateAccelerators();
 	
-	
     wxString myProgName = g_ProgName;
 	myProgName = myProgName.RemoveLast(5);
     
-	
 	wxLog * myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
 	delete wxLog::SetActiveTarget(myDlgLog);
 	m_LogWindow = new wxLogWindow(this, myProgName + _(" Log"), false);
@@ -359,21 +340,13 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	// create the Aui manager
 	m_AuiManager = new wxAuiManager(this);
-	
-	
-    //#if (__WXMAC__)
-    //	m_TocWindow = new TocWindowDlgMac (this);
-    //#else
 	m_TocWindow = new TocWindowDlgGen(m_AuiManager, this);
-    //#endif
-	
 	// init object attribution panel
 	m_MainPanel = new Main_PANEL(this, m_AuiManager);	
 	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
 	m_QueriesPanel = new Queries_PANEL(this,wxID_ANY, m_AuiManager);
 	m_ShortCutPanel = new Shortcuts_PANEL(this, wxID_ANY, m_AuiManager);
 	m_SnappingPanel = new Snapping_PANEL(this, wxID_ANY, m_AuiManager);
-	
 	
 	// loading position
 	wxString myPosText = wxEmptyString;
@@ -383,9 +356,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 		if (myPos.HasScreenChanged()==false)
 			m_AuiManager->LoadPerspective(myPosText, true);
 	}
-	
-	
-	
 	
 	// create layer manager object
 	m_LayerManager = new tmLayerManager(this, m_TocWindow->GetTOCCtrl(),
@@ -398,20 +368,17 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 											   m_AttribObjPanel,
 											   m_LayerManager->GetSelectedDataMemory());
     
-	
 	m_EditManager = new tmEditManager (this,
 									   m_TocWindow->GetTOCCtrl(),
 									   m_LayerManager->GetSelectedDataMemory(),
 									   m_MainPanel->GetGISRenderer(),
 									   m_LayerManager->GetScale());
 	
-	
 	m_ToolManager = new tmToolManager(this,
 									  m_TocWindow->GetTOCCtrl(),
 									  m_LayerManager->GetSelectedDataMemory(),
 									  m_MainPanel->GetGISRenderer(),
 									  m_LayerManager->GetScale());
-    
     
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar());
@@ -427,18 +394,14 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	m_PManager->SetEditManager(m_EditManager);
 	m_PManager->SetToolManager(m_ToolManager);
 	
-	
 	m_QueriesPanel->SetSelectedData(m_LayerManager->GetSelectedDataMemory());
     
-	
 	wxLogMessage(_T("MySQL embedded version is : %s"),DataBase::DataBaseGetVersion().c_str());
 	wxLogMessage(_("wxWidgets version is : %s"), wxVERSION_STRING);
 	wxLogMessage(_("Running under : %s"), wxGetOsDescription().c_str());
 	
-	
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
-	
 	
 	m_CheckedUpdates = false;
 }
@@ -449,7 +412,6 @@ ToolMapFrame::~ToolMapFrame()
 {
 	// close project
 	m_PManager->CloseProject();
-	
 	
 	m_AuiManager->UnInit();
 	// don't delete managed windows but check for 
@@ -462,8 +424,6 @@ ToolMapFrame::~ToolMapFrame()
 	delete m_AttribManager;
 	delete m_LayerManager;
 	
-	
-	
 	// delete the project Manager
 	delete m_PManager;
 	
@@ -473,7 +433,8 @@ ToolMapFrame::~ToolMapFrame()
 	// delete toolmanager
 	delete m_ToolManager;
 	
-	uninitialize_image_mvertex();
+	images_misc_clean();
+    images_toolbar_clean();
 	
 	// finish the GEOS library
 	wxLogDebug(_T("Clearing GEOS library"));
@@ -633,62 +594,31 @@ void ToolMapFrame::_CreateMenu()
 void ToolMapFrame::_CreateToolBar()
 {
 	long style = wxTB_FLAT | wxTB_HORIZONTAL;
-
 	// conditionnal compilation for better look under win32
 #ifndef __WXMSW__
 	style += wxTB_TEXT;
 #endif
 
 	wxToolBar* itemToolBar3 = this->CreateToolBar(style, wxID_ANY); 
-    // = new wxToolBar( parent, ID_TOOLBAR1, wxDefaultPosition, wxDefaultSize, style );
     itemToolBar3->SetToolBitmapSize(wxSize(32, 32));
-    wxBitmap itemtool4Bitmap (wxGetBitmapFromMemory(tool1));
-    wxBitmap itemtool4BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_SELECT, _("Select"), itemtool4Bitmap, wxNullBitmap, wxITEM_NORMAL, _("Select"), wxEmptyString);
-	wxBitmap itemtool5Bitmap(wxGetBitmapFromMemory(tool2));
-    wxBitmap itemtool5BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _("Fit"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _("Zoom to full extent"), wxEmptyString);
-    wxBitmap itemtool6Bitmap(wxGetBitmapFromMemory(tool3));
-    wxBitmap itemtool6BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_ZOOM, _("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_NORMAL, _("Zoom by rectangle"), wxEmptyString);
-    wxBitmap itemtool7Bitmap(wxGetBitmapFromMemory(tool4));
-    wxBitmap itemtool7BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_PAN, _("Pan"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Pan"), wxEmptyString);
-    wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool11));
-	wxBitmap itemtool11BitmapDisabled;
-    itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Previous Zoom"), wxEmptyString);
-    //itemToolBar3->EnableTool(wxID_BACKWARD, false);
+    itemToolBar3->AddTool(ID_MENU_SELECT, _("Select"), *_img_toolbar_select, wxNullBitmap, wxITEM_NORMAL, _("Select"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _("Fit"), *_img_toolbar_zoom_fit, wxNullBitmap, wxITEM_NORMAL, _("Zoom to full extent"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ZOOM, _("Zoom"),*_img_toolbar_zoom, wxNullBitmap, wxITEM_NORMAL, _("Zoom by rectangle"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_PAN, _("Pan"), *_img_toolbar_pan, wxNullBitmap, wxITEM_NORMAL, _("Pan"), wxEmptyString);
+    itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), *_img_toolbar_previous, wxNullBitmap, wxITEM_NORMAL, _("Previous Zoom"), wxEmptyString);
 	
 	wxArrayString itemComboBox8Strings;
     m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize );
 	itemToolBar3->AddControl(m_ScaleCombo);
-    wxBitmap itemtool9Bitmap(wxGetBitmapFromMemory(tool5));
-    wxBitmap itemtool9BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _("Draw"), wxEmptyString);
-    wxBitmap itemtool10Bitmap(wxGetBitmapFromMemory(tool6));
-    wxBitmap itemtool10BitmapDisabled;
-	//itemToolBar3->EnableTool (ID_MENU_DRAW, false);
-    itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Modify"), wxEmptyString);
-    //wxBitmap itemtool11Bitmap(wxGetBitmapFromMemory(tool7));
-    //wxBitmap itemtool11BitmapDisabled;
-	//itemToolBar3->EnableTool(ID_MENU_MODIFY, false);
-    //itemToolBar3->AddTool(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-paste attribution"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Copy-paste attribution"), wxEmptyString);
-	//itemToolBar3->EnableTool(ID_MENU_COPY_PASTE_ATTRIB, false);
-	
-	itemToolBar3->AddTool(ID_MENU_MODIFY_SHARED, _("Move shared Node"), wxBitmap(*_img_tool_mvertex), wxNullBitmap, wxITEM_NORMAL, _("Move shared Node"));
-	
+    itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), *_img_toolbar_edit, wxNullBitmap, wxITEM_NORMAL, _("Draw"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), *_img_toolbar_modify, wxNullBitmap, wxITEM_NORMAL, _("Modify"), wxEmptyString);
+	itemToolBar3->AddTool(ID_MENU_MODIFY_SHARED, _("Move shared Node"), *_img_toolbar_vertex_move, wxNullBitmap, wxITEM_NORMAL, _("Move shared Node"));
 	
 	itemToolBar3->AddSeparator();
-    wxBitmap itemtool13Bitmap(wxGetBitmapFromMemory(tool8));
-    wxBitmap itemtool13BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _("Object Kind"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_NORMAL, _("Object Kind"), wxEmptyString);
-    wxBitmap itemtool14Bitmap(wxGetBitmapFromMemory(tool9));
-    wxBitmap itemtool14BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_NORMAL, _("Object Attribute"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _("Object Kind"), *_img_toolbar_attribute, wxNullBitmap, wxITEM_NORMAL, _("Object Kind"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute"), *_img_toolbar_attribute_extend, wxNullBitmap, wxITEM_NORMAL, _("Object Attribute"), wxEmptyString);
     itemToolBar3->AddSeparator();
-    wxBitmap itemtool16Bitmap(wxGetBitmapFromMemory(tool10));
-    wxBitmap itemtool16BitmapDisabled;
-    itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _("Information"), wxEmptyString);
+    itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), *_img_toolbar_info, wxNullBitmap, wxITEM_NORMAL, _("Information"), wxEmptyString);
     itemToolBar3->Realize();
 }
 
