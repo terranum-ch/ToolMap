@@ -23,6 +23,8 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/filename.h>
+
 
 #include <cxxtest/TestSuite.h>
 
@@ -195,10 +197,9 @@ public:
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields)==true);
 		TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 WHERE OBJECT_ID = 1")));
-		double value = 0;
-		TS_ASSERT(m_DB->DataBaseGetNextResult(value));
-		//TS_ASSERT_EQUALS(8.99, value);
-		TS_ASSERT_EQUALS(value , 8.99);
+		wxDouble myValue = 0;
+		TS_ASSERT(m_DB->DataBaseGetNextResult(myValue));
+		TS_ASSERT_EQUALS(myValue , 8.99);
 	}
 	
 	void testResultArrayDouble()
@@ -270,7 +271,7 @@ public:
 	
 	void testVersion()
 	{
-		TS_ASSERT(DataBase::DataBaseGetVersion() == _T("5.1.51"));
+		TS_ASSERT(DataBase::DataBaseGetVersion() == _T("5.5.8"));
 	}
 	
 	
@@ -331,11 +332,16 @@ public:
 	
 	
 	void testDeleteDB()
-	{
+	{   
+        // ensure database testedit_12 didn't exists
+        wxLogMessage(_T("Removing : " + g_TestPathPRJ + _T("testedit_12")));
+        if(wxFileName::Rmdir(g_TestPathPRJ + _T("testedit_12"), wxPATH_RMDIR_RECURSIVE)){
+            wxLogMessage(_T("Removed testedit_12 allready existing"));
+        }
+        
 		TS_ASSERT(m_DB->DataBaseDelete()==false);
 		TS_ASSERT(m_DB->DataBaseCreateNew(g_TestPathPRJ,_T("testedit_12"))==true);
 		TS_ASSERT(m_DB->DataBaseDelete()==true);
-		wxLogError(_("End of database Tests"));
 	}
 	
 	

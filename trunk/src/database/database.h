@@ -109,7 +109,7 @@ class DataBase
 		bool DataBaseGetNextResult(wxArrayString & results);
 		bool DataBaseGetNextResult(long & result);
 		bool DataBaseGetNextResult(wxArrayLong & results);
-		bool DataBaseGetNextResult(double & result);
+		bool DataBaseGetNextResult(wxDouble & result);
 		bool DataBaseGetNextResult(wxArrayDouble & results);
 		bool DataBaseGetNextRowResult(MYSQL_ROW & row, tmArrayULong & lengths);
 		
