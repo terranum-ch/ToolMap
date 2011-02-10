@@ -91,7 +91,7 @@ void tmTOCCtrl::LoadImageList()
 
 // used mainly to init listbitmap
 void tmTOCCtrl::OnPaint(wxPaintEvent & event){
-    wxPaintDC myUnusedPaintDC (this);
+    //wxPaintDC myUnusedPaintDC (this);
     
     if (m_IsImageInited == false) { 
         
@@ -108,15 +108,15 @@ void tmTOCCtrl::OnPaint(wxPaintEvent & event){
         myDC.SelectObject(myTempBmp2);
         myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxSOLID));
         myDC.Clear();
-        wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), wxCONTROL_CURRENT | wxCONTROL_CHECKED);
+        wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
         myDC.SelectObject(wxNullBitmap);
        
         GetImageList()->Replace(0, myTempBmp);
         GetImageList()->Replace(1, myTempBmp2);
         m_IsImageInited = true;
     }
+
     event.Skip();
-    
 }
 
 
