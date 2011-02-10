@@ -60,12 +60,12 @@ bool tmImportCSV::_GetNextData(double & x, double & y) {
 	double myX = 0.0;
 	double myY = 0.0;
 	
-	if (myTokenArray.Item(m_Xcolumn).ToDouble(&myX)==false) {
+	if (myTokenArray.Item(m_Xcolumn).ToCDouble(&myX)==false) {
 		wxLogMessage(myTokenArray.Item(m_Xcolumn));
 		return false;
 	}
 	
-	if (myTokenArray.Item(m_Ycolumn).ToDouble(&myY)==false) {
+	if (myTokenArray.Item(m_Ycolumn).ToCDouble(&myY)==false) {
 		wxLogMessage(myTokenArray.Item(m_Ycolumn));
 		return false;
 	}

@@ -208,7 +208,7 @@ bool tmPointOrientAttrib::Update()
 											  myOrientI));
 			break;
 		case TM_FIELD_FLOAT:
-			sSentence.Append(wxString::Format(_T("%f) ON DUPLICATE KEY UPDATE %s=%f;"),
+			sSentence.Append(wxString::Format(_T("%g) ON DUPLICATE KEY UPDATE %s=%g;"),
 											  myOrientD,
 											  m_OrientField.m_Fieldname.c_str(),
 											  myOrientD));
@@ -219,7 +219,6 @@ bool tmPointOrientAttrib::Update()
 			wxASSERT_MSG(1, _T("Incorrect field stored, something wrong"));
 			break;
 	};
-	
 	
 	if (m_DB->DataBaseQueryNoResults(sSentence)==false)
 		return false;

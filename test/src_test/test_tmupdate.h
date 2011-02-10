@@ -111,10 +111,10 @@ public:
 
 		TS_ASSERT(tm.GetNewVersionName() == wxEmptyString);
 		TS_ASSERT(tm.IsNewVersionAvaillable()==true);
-		TS_ASSERT(tm.GetNewVersionName() == wxString::Format(_T("2.0.%d"), g_ToolMapInternetVersion));
+		TS_ASSERT(tm.GetNewVersionName() == wxString::Format(_T("2.1.%d"), g_ToolMapInternetVersion));
 		tm.SetActualVersion(g_ToolMapInternetVersion);
 		TS_ASSERT(tm.IsNewVersionAvaillable()==false);
-		TS_ASSERT(tm.GetNewVersionName() == wxString::Format(_T("2.0.%d"), g_ToolMapInternetVersion));
+		TS_ASSERT(tm.GetNewVersionName() == wxString::Format(_T("2.1.%d"), g_ToolMapInternetVersion));
 		
 	}
 	
