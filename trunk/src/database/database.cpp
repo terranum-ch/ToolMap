@@ -192,13 +192,7 @@ bool DataBase::DataBaseCreateNew(const wxString & datadir, const wxString & name
 		return false;
 	}
 
-	m_IsDatabaseOpened = DBUseDataBase(name);
-	if (m_IsDatabaseOpened == false)
-		return false;
-
-	m_DBName = name;
-	m_DBPath = datadir;
-	return true;
+    return DataBaseOpen(datadir, name);
 }
 
 

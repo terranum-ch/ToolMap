@@ -67,7 +67,7 @@ static const bool g_UseProxy = true;
 static const bool g_UseProxy = false;
 #endif
 static const wxString g_ProxyName = _T("proxy.vs.ch:8080");
-static const int g_ToolMapInternetVersion = 900;
+static const int g_ToolMapInternetVersion = 967;
 
 
 static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/index.php?option=com_content&task=view&id=342&Itemid=311"));

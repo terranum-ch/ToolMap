@@ -46,6 +46,7 @@ public:
 		//wxInitialize();
 		wxTheColourDatabase = new wxColourDatabase();
 		wxInitAllImageHandlers();
+        setlocale(LC_NUMERIC, "C");
 		wxLogMessage(_T("Initing test application"));
 
 #ifdef __LINUX__
