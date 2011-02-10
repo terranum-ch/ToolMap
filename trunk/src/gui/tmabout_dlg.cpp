@@ -21,8 +21,7 @@
 
 
 // image
-#include "../img/tmimgfunc.h"
-#include "../img/toolmap_big.cpp"
+#include "../img/misc_bmp.h"
 #include "../core/svn_version.h"	// for latest svn version
 
 
@@ -88,11 +87,7 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 	wxBoxSizer* bSizer37;
 	bSizer37 = new wxBoxSizer( wxVERTICAL );
 
-	//wxGenericStaticBitmap m_bitmap1;
-	wxStaticBitmap* m_bitmap1;
-	wxBitmap myBmp( wxGetBitmapFromMemory(toolmap_big));
-
-	m_bitmap1 = new wxStaticBitmap( myPanelImg, wxID_ANY, myBmp, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	wxStaticBitmap * m_bitmap1 = new wxStaticBitmap( myPanelImg, wxID_ANY, *_img_icon_toolmap_about, wxDefaultPosition, wxSize( -1,-1 ), 0 );
 	bSizer37->Add( m_bitmap1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 
@@ -125,7 +120,7 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 	bSizer40 = new wxBoxSizer( wxVERTICAL );
 
 	wxStaticText* m_staticText22;
-	m_staticText22 = new wxStaticText( m_PanelLicence, wxID_ANY, _(" Copyright \u00A9 2009  CREALP \nCopyright \u00A9 2009 SWISSTOPO\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	m_staticText22 = new wxStaticText( m_PanelLicence, wxID_ANY, _(" Copyright \u00A9 2011  CREALP \nCopyright \u00A9 2011 SWISSTOPO\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText22->Wrap( -1 );
 	wxFont myOrgFont = m_staticText22->GetFont();
 	int mySize = myOrgFont.GetPointSize();

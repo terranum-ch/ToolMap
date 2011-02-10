@@ -18,14 +18,7 @@
 // comment doxygen
 
 #include "tmrenderer.h"
-
-// cursor images
-#include "../img/tmimgfunc.h"	// for image processing
-#include "../img/cursor_zoom_in.cpp"
-#include "../img/cursor_zoom_out.cpp"
-#include "../img/cursor_hand.cpp"
-#include "../img/cursor_editing.cpp"
-#include "../img/cursor_oriented1.cpp"
+#include "../img/cursor_bmp.h"
 #include "tmmanagerevent.h"
 #include "../core/vrrubberband.h"
 
@@ -95,6 +88,8 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_OldSize = wxSize(0,0);
     m_Rubber = NULL;
 	
+    images_cursor_init();
+    
 	BitmapUpdateSize();
 	bool bWhite = BitmapSetToWhite();
 	wxASSERT(bWhite);
@@ -158,10 +153,10 @@ bool tmRenderer::BitmapCopyInto(wxBitmap * bmp)
  *******************************************************************************/
 tmRenderer::~tmRenderer()
 {
-	if (m_bmp)
-		delete m_bmp;
-	
-	delete m_SelectRect;
+    wxDELETE(m_bmp);
+	wxDELETE(m_SelectRect);
+    
+    images_cursor_clean();
 }
 
 
@@ -221,20 +216,20 @@ wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
 	switch (cursor)
 	{
 		case tmCURSOR_ZOOM_IN:
-			myCursorBmp = wxGetBitmapFromMemory(cursor_zoom_in);
+			myCursorBmp = *_img_cursor_zoom_in;
 			break;
 		case tmCURSOR_ZOOM_OUT:
-			myCursorBmp = wxGetBitmapFromMemory(cursor_zoom_out);
+			myCursorBmp = *_img_cursor_zoom_out;
 			break;
 		case tmCURSOR_HAND:
-			myCursorBmp = wxGetBitmapFromMemory(cursor_hand);
+			myCursorBmp = *_img_cursor_hand;
 			break;
 		case tmCURSOR_EDIT:
-			myCursorBmp = wxGetBitmapFromMemory(cursor_editing);
+			myCursorBmp = *_img_cursor_editing;
 			break;
 			
 		case tmCURSOR_ORIENTED:
-			myCursorBmp = wxGetBitmapFromMemory(cursor_oriented1);
+			myCursorBmp = *_img_cursor_oriented;
 			break;
 			
 		default:

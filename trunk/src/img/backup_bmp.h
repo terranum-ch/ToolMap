@@ -7,10 +7,10 @@
 #	include <wx/wx.h>
 #endif
 
-extern void initialize_images_backup(void);
-extern void uninitialize_images_backup(void);
+extern void images_backup_init(void);
+extern void images_backup_clean(void);
 
-extern wxBitmap *_img_img_backup_tm;
-extern wxBitmap *_img_img_backup_zip;
+extern wxBitmap *_img_backup_tm;
+extern wxBitmap *_img_backup_zip;
 
 #endif /* _BACKUP_BMP_ */

@@ -39,7 +39,7 @@
 
 
 
-const wxString g_CodeName = _("MISERY");
+const wxString g_CodeName = _("NEUWILEN");
 
 
 
