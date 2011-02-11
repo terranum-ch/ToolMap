@@ -21,6 +21,8 @@ def askUserWithCheck (msg, allowedval=['Y', 'y', 'N', 'n'], errormsg = "Unsuppor
         if (myValue.isdigit()):
             myValue = int(myValue)
         if (myValue in allowedval):
+            if(type(myValue) != type(int())):
+                return myValue.upper()
             return myValue
         print (errormsg)
 
@@ -124,9 +126,8 @@ print ("Using ", NumberOfProc, " Processor(s)")
 print ("----------------------------------------------------------\n")
 
 
-doGo = askUserWithCheck ("Build project with thoses variables ? (Y / N): ")
-if (not doGo):
-    exit()
+doGo = askUserWithCheck ("Do the build ? (Y / N): ")
+
 
 #
 # get latest version
@@ -200,6 +201,8 @@ print ("Configuration DONE")
 print ("----------------------------------------------------------\n")
 
 
+if (doGo == 'N'):
+    exit()
 #
 #building
 #

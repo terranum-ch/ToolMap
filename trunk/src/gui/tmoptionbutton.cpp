@@ -20,8 +20,7 @@
 #include "tmoptionbutton.h"
 
 // include option bitmap
-#include "../img/tmimgfunc.h"	// for image processing
-#include "../img/img_option_button.cpp"
+#include "../img/misc_bmp.h"
 
 
 /***************************************************************************//**
@@ -72,8 +71,7 @@ bool tmOptionButton::Create(wxWindow * parent, wxWindowID id, wxMenu * menu)
 {
 	wxASSERT(menu);
 	m_Menu = menu;
-	wxBitmap optionbitmap (wxGetBitmapFromMemory(option_button));
-	wxBitmapButton::Create(parent, id, optionbitmap);
+	wxBitmapButton::Create(parent, id, *_img_btn_option);
 	
 	Connect(id, wxEVT_COMMAND_BUTTON_CLICKED,
 			wxCommandEventHandler(tmOptionButton::OnPressButton));

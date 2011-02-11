@@ -1,10 +1,10 @@
 # VARIABLES FOR BUILDING TOOLMAP ON OSX 
-gwxWidgets = "/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBWX2.9/bin/wx-config" #wxWIDGETS config
+gwxWidgets = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWX/bin/wx-config" #wxWIDGETS config
 gDirTrunk = "/Users/lucien/DATA/PRJ/TOOLMAP2/trunk"
 gDirBin = "/Users/lucien/DATA/PRJ/TOOLMAP2/bin2.9"
 gDirInstall = "/Users/lucien/DATA/PRJ/TOOLMAP2/install"
-gDirGis = "/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBGIS"
-gDirSQL = "/Users/lucien/DATA/PROGRAMATION/_LIB/32/_LIBMYSQL"
+gDirGis = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBGIS"
+gDirSQL = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBMYSQL "
 gDirUnitTest = "/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing"
 gDirCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest"
 gDirCurl = "" 
@@ -12,7 +12,9 @@ gDirGeos = ""
 
 # CMAKE SPECIFIC
 gCmakeEnv = "Xcode" #result of cmake --help
-gCmakeSpecific = ['-DCMAKE_OSX_ARCHITECTURES:TEXT=i386']
+gCmakeSpecific = ['-DCMAKE_OSX_ARCHITECTURES:TEXT=x86_64']
+gCmakeSpecific.append("-DCMAKE_OSX_SYSROOT:PATH=/Developer/SDKs/MacOSX10.5.sdk")
+gCmakeSpecific.append("-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5")
 gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets)
 
 

@@ -424,6 +424,10 @@ int ProjectManager::OpenProject(const wxString & path)
 		// activate project opening
 		m_QueriesPanel->LoadQueries(m_DB);
 		
+        // attribution manager
+        LoadProjectDefintion(1);
+		m_AttribManager->InitAttributionManager(m_DB,GetMemoryProjectDefinition());
+        
 		// load shortcuts
 		m_ShortcutPanel->SetDataBase(m_DB); 
 		// load shortcuts for lines by default
@@ -439,16 +443,6 @@ int ProjectManager::OpenProject(const wxString & path)
 		
 		// edition manager
 		m_EditManager->SetDatabase(m_DB);
-		
-		// load project definition
-		bool bLoaded = LoadProjectDefintion(1);
-		wxASSERT (bLoaded);	
-		
-		// attribution manager
-		bool bReady = m_AttribManager->
-		InitAttributionManager(m_DB,
-							   GetMemoryProjectDefinition());
-		wxASSERT(bReady);
 		
 		m_ToolManager->SetDatabase(m_DB);
 		
@@ -680,7 +674,7 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 	if (wait)
 		delete wait;
 	
-	wxLogMessage(_T("Project Data loaded in : %d [ms]"),sw.Time());
+	wxLogMessage(_T("Project Data loaded in : %ld [ms]"),sw.Time());
 	
 	wxASSERT (m_PrjMem);
 	if (m_PrjMem == NULL)

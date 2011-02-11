@@ -18,9 +18,7 @@
 // comment doxygen
 
 #include "tmcrash_dlg.h"
-
-#include "../img/tmimgfunc.h"
-#include "../img/bug_sml.cpp"
+#include "../img/misc_bmp.h"
 
 
 tmCrash_DLG::tmCrash_DLG( wxWindow* parent, const wxString & crashfilename,
@@ -44,8 +42,7 @@ void tmCrash_DLG::CreateControls(wxWindow * parent)
 	bSizer43 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBitmap* m_bitmap2;
-	wxBitmap myBugBmp = wxGetBitmapFromMemory(bug_sml);
-	m_bitmap2 = new wxStaticBitmap( this, wxID_ANY, myBugBmp, wxDefaultPosition, wxDefaultSize, 0 );
+	m_bitmap2 = new wxStaticBitmap( this, wxID_ANY, *_img_icon_bug, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer43->Add( m_bitmap2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxBoxSizer* bSizer45;
