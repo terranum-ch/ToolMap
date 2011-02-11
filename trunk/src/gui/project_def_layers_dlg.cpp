@@ -76,7 +76,7 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 		m_ObjectObj->m_ObjectType = m_SpatialType;
 		
 		// add item to the list
-		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+		myListValues.Add(wxString::Format(_T("%ld"), m_ObjectObj->m_ObjectCode));
 		myListValues.Add(m_ObjectObj->m_ObjectName);
 		EditDataToList(myListValues);
 		
@@ -156,7 +156,7 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 		// data modified is allready stored in the project definition
 		
 		// prepare data for list representation
-		myListValues.Add(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+		myListValues.Add(wxString::Format(_T("%ld"), m_ObjectObj->m_ObjectCode));
 		myListValues.Add(m_ObjectObj->m_ObjectName);
 		EditDataToList(myListValues, GetSelectedItem());
 		
@@ -602,7 +602,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 		// check that the numeric value is not null (-9999)
 		if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
 		{
-			m_DlgEO_Code->SetValue(wxString::Format(_T("%d"), m_ObjectObj->m_ObjectCode));
+			m_DlgEO_Code->SetValue(wxString::Format(_T("%ld"), m_ObjectObj->m_ObjectCode));
 		}
 		m_DlgEO_Value->SetValue(m_ObjectObj->m_ObjectName);
 	}
@@ -613,7 +613,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 		// check that the numeric value is not null (-9999)
 		if (m_CodedValObj->m_ValueCode != NULL_LONG_VALUE)
 		{
-			m_DlgEO_Code->SetValue(wxString::Format(_T("%d"), m_CodedValObj->m_ValueCode));
+			m_DlgEO_Code->SetValue(wxString::Format(_T("%ld"), m_CodedValObj->m_ValueCode));
 		}
 		m_DlgEO_Value->SetValue(m_CodedValObj->m_ValueName);
 		
@@ -867,7 +867,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 				ProjectDefMemoryObjects * myObjectObj = m_pPrjDefinition->GetNextObjects();
 				
 				// fit things returned in the list
-				myObjListValues.Add(wxString::Format(_T("%d"), myObjectObj->m_ObjectCode));
+				myObjListValues.Add(wxString::Format(_T("%ld"), myObjectObj->m_ObjectCode));
 				myObjListValues.Add(myObjectObj->m_ObjectName);
 				m_DlgPDL_Object_List->EditDataToList(myObjListValues);
 				myObjListValues.Clear();

@@ -711,7 +711,7 @@ bool tmGISDataVectorMemory::UpdateDatabaseGeometry(OGRGeometry * geom,
 	OGRFree(myCharGeom);
 	
 	wxString sSentence = wxString::Format(_T("UPDATE %s SET OBJECT_GEOMETRY=")
-										  _T("GeomFromText('%s') WHERE OBJECT_ID=%d"),
+										  _T("GeomFromText('%s') WHERE OBJECT_ID=%ld"),
 										  TABLE_NAME_GIS_GENERIC[layertype].c_str(),
 										  mySGeom.c_str(),
 										  m_OID);
@@ -742,12 +742,12 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 									DataBaseTM * database)
 {
 	wxString sSentence = wxString::Format(_T("SELECT (OBJECT_GEOMETRY)")
-										  _T(" FROM %s WHERE OBJECT_ID=%d;"),
+										  _T(" FROM %s WHERE OBJECT_ID=%ld;"),
 										  TABLE_NAME_GIS_GENERIC[ilayertype].c_str(),
 										  oid);
 	if (database->DataBaseQuery(sSentence)==false)
 	{
-		wxLogDebug(_T("Error getting geometry for id %d"),oid);
+		wxLogDebug(_T("Error getting geometry for id %ld"),oid);
 		return NULL;
 	}
 	
@@ -758,7 +758,7 @@ OGRGeometry * tmGISDataVectorMemory::LoadDatabaseGeometry (long oid,
 	if(database->DataBaseGetNextRowResult(row, row_length)==false)
 	{
 		database->DataBaseClearResults();
-		wxLogDebug(_T("No geometry found for id : %d"), oid);
+		wxLogDebug(_T("No geometry found for id : %ld"), oid);
 		return NULL;
 	}
 	

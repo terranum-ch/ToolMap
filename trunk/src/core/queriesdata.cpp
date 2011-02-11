@@ -281,7 +281,7 @@ bool QueriesData::IsGenericLayer(DataBaseTM * database, long dblayerID) {
 	
 	m_QueryLayerType = TOC_NAME_LINES;
 	
-	wxString myPrepQuery = _T("SELECT GENERIC_LAYERS FROM %s WHERE CONTENT_ID=%d");
+	wxString myPrepQuery = _T("SELECT GENERIC_LAYERS FROM %s WHERE CONTENT_ID=%ld");
 	wxString myQuery = wxString::Format(myPrepQuery, 
 										TABLE_NAME_TOC.c_str(),
 										dblayerID);
@@ -348,7 +348,7 @@ bool QueriesData::GetObjectsForSelection(DataBaseTM * database, PrjMemObjectsArr
 	wxString myPrepQuery = _T("SELECT o.OBJECT_TYPE_CD, o.OBJECT_DESC, l.LAYER_NAME, o.OBJECT_ID FROM")
 	_T(" %s o LEFT JOIN (%s l, %s a)")
 	_T(" ON l.LAYER_INDEX = o.THEMATIC_LAYERS_LAYER_INDEX AND")
-	_T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %d");
+	_T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %ld");
 	wxString myQuery = wxString::Format(myPrepQuery,	
 										TABLE_NAME_OBJECTS.c_str(),
 										TABLE_NAME_LAYERS.c_str(),
@@ -436,18 +436,18 @@ bool QueriesData::GetParentLayer(DataBaseTM * database, long & layerid){
 		return false;
 	}
 	
-	wxString myPreparedQuery(_T("SELECT THEMATIC_LAYERS_LAYER_INDEX FROM %s WHERE OBJECT_ID = %d"));
+	wxString myPreparedQuery(_T("SELECT THEMATIC_LAYERS_LAYER_INDEX FROM %s WHERE OBJECT_ID = %ld"));
 	wxString mySentence = wxString::Format(myPreparedQuery, 
 										   TABLE_NAME_OBJECTS.c_str(),
 										   m_QueryObjectID);
 	if (database->DataBaseQuery(mySentence)==false) {
-		wxLogError(_("Error getting parent layer for object : %d"), m_QueryObjectID);
+		wxLogError(_("Error getting parent layer for object : %ld"), m_QueryObjectID);
 		return false;
 	}
 	
 	bool bReturn = true;
 	if (database->DataBaseGetNextResult(layerid)==false) {
-		wxLogError(_("Error getting results for object : %d"), m_QueryObjectID);
+		wxLogError(_("Error getting results for object : %ld"), m_QueryObjectID);
 		bReturn = false;
 	}
 	database->DataBaseClearResults();
@@ -478,12 +478,12 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	
 	// get fields for specified layer;
 	if (database->GetFields(fieldsdef, &myTempLayer)==false) {
-		wxLogError(_("Error getting fields for layer %d"), layerid);
+		wxLogError(_("Error getting fields for layer %ld"), layerid);
 		return false;
 	}
 	
 	if (fieldsdef.GetCount() == 0) {
-		wxLogError(_("No fields availlable for layer %d"), layerid);
+		wxLogError(_("No fields availlable for layer %ld"), layerid);
 		return false;
 	}
 	

@@ -479,8 +479,7 @@ void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
 void tmAttributionManager::OnRefreshShortcut (wxCommandEvent & event)
 {
 	
-	wxLogDebug(_T("%d : shortcuts loaded into memory"),
-			   LoadShortcutIntoMemory());
+	wxLogMessage(_T("%d : shortcuts loaded into memory"),LoadShortcutIntoMemory());
 }
 
 
@@ -724,7 +723,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	PrjMemLayersArray myLayersInfoArray;
 	for (unsigned int i = 0; i<myLayersID.GetCount();i++)
 	{
-		wxLogDebug(_T("layer %d searched"), myLayersID.Item(i).m_Oid);
+		wxLogDebug(_T("layer %ld searched"), myLayersID.Item(i).m_Oid);
 		
 		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i).m_Oid);
 		if (myActualLayer)
@@ -733,7 +732,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 			*(myLayersInfoArray.Item(myLayersInfoArray.GetCount()-1)) = *myActualLayer; 
 		}
 		else
-			wxLogDebug(_T("Layers %d not found "), myLayersID.Item(i).m_Oid);
+			wxLogDebug(_T("Layers %ld not found "), myLayersID.Item(i).m_Oid);
 	}
 		
 	// get advanced attribution values (if existing)

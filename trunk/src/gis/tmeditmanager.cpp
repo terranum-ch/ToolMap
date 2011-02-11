@@ -704,7 +704,7 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 	
 	//TODO: Remove this temp code
-	wxLogDebug(_T("Selected OID = %d"), lpOid);
+	wxLogDebug(_T("Selected OID = %ld"), lpOid);
 	
 	
 	m_Renderer->Refresh();
@@ -960,7 +960,7 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 		
 	}
 
-	wxLogDebug(_T("Line saved : OID = %d"), lid);
+	wxLogDebug(_T("Line saved : OID = %ld"), lid);
 	
 	// Clear memory
 	m_GISMemory->DestroyFeature();
@@ -1926,11 +1926,11 @@ bool tmEditManager::MergeSelectedLines ()
 	//FIXME: remove, this is temp logging code
 	for (unsigned int k = 0; k<myAttributions.GetCount();k++)
 	{
-		wxString sTmp = wxString::Format(_T("Values for OID : %d are : "), 
+		wxString sTmp = wxString::Format(_T("Values for OID : %ld are : "), 
 										 myAttributions.Item(k).m_Oid);
 		for (unsigned int m = 0; m< myAttributions.Item(k).m_Values.GetCount() ;m++)
 		{
-			sTmp.Append(wxString::Format(_T("%d, "), myAttributions.Item(k).m_Values.Item(m)));
+			sTmp.Append(wxString::Format(_T("%ld, "), myAttributions.Item(k).m_Values.Item(m)));
 		}
 		
 		wxLogDebug(sTmp);
@@ -1962,7 +1962,7 @@ bool tmEditManager::MergeSelectedLines ()
 	}
 	
 	// remove lines
-	wxLogDebug(_T("We keep : OID %d"), myAttributions.Item(iLineToKeep).m_Oid);
+	wxLogDebug(_T("We keep : OID %ld"), myAttributions.Item(iLineToKeep).m_Oid);
 	mySelectedIDs->RemoveAt(iLineToKeep);
 	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
 	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
@@ -2174,7 +2174,7 @@ bool tmEditManager::FlipLine(){
 		myOGRSelLine->getPoint(i, &myPoint);
 		myTmpLine->addPoint(&myPoint);
 	}
-	wxLogMessage(_("Line  %d flipped"), myFeature->GetFID());
+	wxLogMessage(_("Line  %ld flipped"), myFeature->GetFID());
 	mySelLayer->UpdateGeometry(myTmpLine, myFeature->GetFID());
 	OGRGeometryFactory::destroyGeometry(myTmpLine);
 	OGRFeature::DestroyFeature(myFeature);

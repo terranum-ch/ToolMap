@@ -639,7 +639,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 	// basic initialisation and checks
 	Fields.Clear();
 	if (oid == wxNOT_FOUND) {
-		wxLogError(_T("OID specified is not valid (%d)"), oid);
+		wxLogError(_T("OID specified is not valid (%ld)"), oid);
 		return false;
 	}
 	
@@ -672,7 +672,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 	for (unsigned int i = 0; i< myLayerValues.GetCount(); i++) {
 		ProjectDefMemoryLayers * myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
 		if (myLayer == NULL) {
-			wxLogWarning(_T("Layer with ID : %d wasn't found in project"), myLayerValues.Item(i).m_Oid);
+			wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
 		}
 		else {
 			myLayers.Add(new ProjectDefMemoryLayers());
@@ -715,7 +715,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName (wxArrayString & Fields, long oid){
 bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	values.Clear();
 	if (oid == wxNOT_FOUND) {
-		wxLogError(_T("OID specified is not valid (%d)"), oid);
+		wxLogError(_T("OID specified is not valid (%ld)"), oid);
 		return false;
 	}
 	
@@ -748,7 +748,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	for (unsigned int i = 0; i< myLayerValues.GetCount(); i++) {
 		ProjectDefMemoryLayers * myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
 		if (myLayer == NULL) {
-			wxLogWarning(_T("Layer with ID : %d wasn't found in project"), myLayerValues.Item(i).m_Oid);
+			wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
 		}
 		else {
 			myLayers.Add(new ProjectDefMemoryLayers());
@@ -766,7 +766,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	wxArrayLong myObjCode;
 	wxArrayString myObjVal;
 	if (myAttribData->GetInfoBasic(oid, myObjID, myObjCode, myObjVal)==false) {
-		wxLogError(_T("Error getting basic informations for object OID : %d"), oid);
+		wxLogError(_T("Error getting basic informations for object OID : %ld"), oid);
 		return false;
 	}
 	wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
@@ -774,7 +774,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	
 		
 	for (unsigned int i = 0; i< myObjCode.GetCount(); i++) {
-		values.Add(wxString::Format(_T("%d"), myObjCode.Item(i)));
+		values.Add(wxString::Format(_T("%ld"), myObjCode.Item(i)));
 		values.Add(myObjVal.Item(i));
 		
 		ProjectDefMemoryLayers * myLayer = myLayers.Item(i);
@@ -1063,13 +1063,13 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 {
 	wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-										  _T("OBJECT_ID = %d;"),
+										  _T("OBJECT_ID = %ld;"),
 										  GetShortFileName().c_str(),
 										  oid);
 	long myUnusedOid = 0;
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
-		wxLogError(_T("Error getting geometry for oid = %d"),oid);
+		wxLogError(_T("Error getting geometry for oid = %ld"),oid);
 		return false;
 	}
 	
@@ -1177,7 +1177,7 @@ bool tmGISDataVectorMYSQL::UpdateGeometry (OGRGeometry * geom, const long & oid)
 	
 	
 	wxString sSentence = wxString::Format(_T("UPDATE  %s SET OBJECT_GEOMETRY=")
-										  _T("(GeomFromText('%s')) WHERE OBJECT_ID=%d;"),
+										  _T("(GeomFromText('%s')) WHERE OBJECT_ID=%ld;"),
 										  GetShortFileName().c_str(),
 										  mySGeom.c_str(), 
 										  oid);
@@ -1209,7 +1209,7 @@ OGRGeometryCollection * tmGISDataVectorMYSQL::
 	unsigned int i = 0;
 	for (i = 0; i< OIDs->GetCount();i++)
 	{
-		sSentence.Append(wxString::Format(_T("%d,"), OIDs->Item(i)));
+		sSentence.Append(wxString::Format(_T("%ld,"), OIDs->Item(i)));
 	}
 	sSentence.RemoveLast(1);
 	sSentence.Append(_T(");"));

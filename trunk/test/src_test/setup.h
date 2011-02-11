@@ -33,6 +33,9 @@
 #include "gtk/gtk.h"	
 #endif
 
+static void myAssertHandler(const wxString &file, int line, const wxString &func, const wxString &cond, const wxString &msg) {
+	wxTrap();
+}
 
 class Fixture1 : public CxxTest::GlobalFixture
 {
@@ -48,6 +51,7 @@ public:
 		wxInitAllImageHandlers();
         setlocale(LC_NUMERIC, "C");
 		wxLogMessage(_T("Initing test application"));
+        wxSetAssertHandler(myAssertHandler);
 
 #ifdef __LINUX__
 		TS_ASSERT(gtk_init_check(NULL,NULL));

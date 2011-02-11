@@ -124,7 +124,7 @@ void tmAttributionData::PrepareAttributionStatement (wxString & statement,
 	// clean before inserting
 	PrepareCleaningStatement(statement, tablename);
 	
-	wxString sTmp = _T("INSERT INTO ") + tablename + _T(" VALUES (%d, %d); ");
+	wxString sTmp = _T("INSERT INTO ") + tablename + _T(" VALUES (%ld, %ld); ");
 	
 	unsigned int geomNumber = m_SelIDs->GetCount();
 	unsigned int valNumber = checkedVal->GetCount();
@@ -157,7 +157,7 @@ void tmAttributionData::PrepareCleaningStatement (wxString & statement,
 												  const wxString & tablename)
 {
 	statement.Clear();
-	wxString sTmp = _T("DELETE FROM ") + tablename + _T(" WHERE OBJECT_GEOM_ID=%d; "); 
+	wxString sTmp = _T("DELETE FROM ") + tablename + _T(" WHERE OBJECT_GEOM_ID=%ld; "); 
 	
 	for (unsigned int i = 0; i<m_SelIDs->GetCount(); i++)
 		statement.Append(wxString::Format(sTmp, m_SelIDs->Item(i)));
@@ -179,7 +179,7 @@ void tmAttributionData::PrepareGetInfoStatement (wxString & statement, const wxS
 {
 	statement.Clear();
 	wxString sTmp = _T("SELECT OBJECT_VAL_ID FROM ") + tablename + 
-					_T(" WHERE OBJECT_GEOM_ID=%d; ");
+					_T(" WHERE OBJECT_GEOM_ID=%ld; ");
 	
 	statement.Append(wxString::Format(sTmp, m_SelIDs->Item(0)));
 }
@@ -203,7 +203,7 @@ void tmAttributionData::PrepareGetInfoMultipleStatement (wxString & statement, c
 	
 	for(unsigned int i = 0; i< m_SelIDs->GetCount();i++)
 	{
-		statement.Append(wxString::Format(_T("%d,"), m_SelIDs->Item(i)));
+		statement.Append(wxString::Format(_T("%ld,"), m_SelIDs->Item(i)));
 	}
 	statement.RemoveLast(1);
 	statement.Append(_T(") ORDER BY OBJECT_GEOM_ID, OBJECT_VAL_ID;"));
@@ -290,7 +290,7 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
 	wxASSERT (m_pDB);
 	
 	wxString sSentence = wxEmptyString;
-	wxString sDel = _T("DELETE FROM layer_at%d WHERE OBJECT_ID=%d; "); 
+	wxString sDel = _T("DELETE FROM layer_at%ld WHERE OBJECT_ID=%ld; "); 
 		
 	// search layer for same spatial type
 	unsigned int i = 0;
@@ -559,7 +559,7 @@ bool tmAttributionData::GetBasicNameFromID (const tmAttributionBasic & myAttribO
 	
 	for (unsigned int i = 0; i< myAttribObj.m_Values.GetCount();i++)
 	{
-		sSentence.Append(wxString::Format(_T("%d,"), myAttribObj.m_Values.Item(i)));
+		sSentence.Append(wxString::Format(_T("%ld,"), myAttribObj.m_Values.Item(i)));
 	}
 	sSentence.RemoveLast(1);
 	sSentence.Append(_T(");"));
@@ -655,7 +655,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX, l.OBJECT_DESC FROM %s l LEFT")
 	_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")
 	_T("AND t.LAYER_INDEX=l.THEMATIC_LAYERS_LAYER_INDEX) WHERE")
-	_T(" a.OBJECT_GEOM_ID = %d ");
+	_T(" a.OBJECT_GEOM_ID = %ld ");
 	
 	if (layertype != wxNOT_FOUND) {
 		sTmp.Append(wxString::Format(_T(" AND t.TYPE_CD=%d "), layertype));
@@ -717,7 +717,7 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 												int startvalues,
 												long selected)
 {
-	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%d,"),
+	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%ld VALUES (%ld,"),
 									 layer->m_LayerID, selected);
 	
 	wxASSERT (layer->m_pLayerFieldArray.GetCount() + startvalues <= values.GetCount());
@@ -742,7 +742,7 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
 	objname.Clear();
 	
 	wxString myText = _T("SELECT o.OBJECT_ID, o.OBJECT_CD, o. OBJECT_DESC FROM %s o")
-	_T(" LEFT JOIN %s m ON o.OBJECT_ID = m.OBJECT_VAL_ID WHERE m.OBJECT_GEOM_ID = %d")
+	_T(" LEFT JOIN %s m ON o.OBJECT_ID = m.OBJECT_VAL_ID WHERE m.OBJECT_GEOM_ID = %ld")
 	_T(" ORDER BY o.THEMATIC_LAYERS_LAYER_INDEX, o.OBJECT_ID");
 	
 	wxString mySQL = wxString::Format(myText,	
@@ -791,7 +791,7 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 											   long selected)
 {
 	//m_pDB->DataBaseDestroyResults();
-	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%d"),
+	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"),
 									   layer->m_LayerID, selected);
 	if (m_pDB->DataBaseQuery(sQuery)==false)
 		return false;
@@ -823,7 +823,7 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 bool tmAttributionData::GetAdvancedAttribution (int layerid, long geomoid, wxArrayString & values){
 	
 	values.Clear();
-	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%d"),
+	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"),
 									   layerid, geomoid);
 	
 	if (m_pDB->DataBaseQuery(sQuery)==false){

@@ -299,7 +299,7 @@ bool tmCheckListBox::EditItem (long index, long id,
 	// check item exists
 	if (index >= (signed) GetCount())
 	{
-		wxLogError(_T("Trying to edit item out of bounds, item number : %d"), index);
+		wxLogError(_T("Trying to edit item out of bounds, item number : %ld"), index);
 		return FALSE;
 	}
 	
@@ -344,7 +344,7 @@ bool tmCheckListBox::SwapItem (long index1, long index2)
 	
 	if (index1 < 0 && index1 >= (signed) GetCount())
 	{
-		wxLogError(_T("Trying to move item out of bounds, item number : %d"), index1);
+		wxLogError(_T("Trying to move item out of bounds, item number : %ld"), index1);
 		return FALSE;
 	}
 	
@@ -413,13 +413,13 @@ bool tmCheckListBox::GetItem (long index, long & id, wxString & name, bool & bch
 	// check that we aren't outside the limits
 	if (index > (signed) GetCount() - 1)
 	{
-		wxLogDebug(_T("Index : %d is outside the limits"), index);
+		wxLogDebug(_T("Index : %ld is outside the limits"), index);
 		return FALSE;
 	}
 	
 	if (index > (signed) m_ids.GetCount() - 1)
 	{
-		wxLogDebug(_T("Index %d is greather than the wxArrayLong"), index);
+		wxLogDebug(_T("Index %ld is greather than the wxArrayLong"), index);
 		return FALSE;
 	}
 	

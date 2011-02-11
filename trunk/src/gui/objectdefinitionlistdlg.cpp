@@ -202,7 +202,7 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 	m_DLGODD_List_Lyr_Name->Append(m_pDatabase->GetLayerNameByType(m_ParentListType));
 	
 	if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
-		m_DLGODD_Code->SetValue(wxString::Format(_T("%d"),m_ObjectObj->m_ObjectCode));
+		m_DLGODD_Code->SetValue(wxString::Format(_T("%ld"),m_ObjectObj->m_ObjectCode));
 	
 	m_DLGODD_Description->SetValue(m_ObjectObj->m_ObjectName);
 	
@@ -533,11 +533,11 @@ void ObjectDefinitionList::SetObjectToList (ProjectDefMemoryObjects * object, in
 	// if we want to add an item
 	if (iIndex == -1)
 	{
-		AddItemToList(wxString::Format(_T("%d"), object->m_ObjectCode));
+		AddItemToList(wxString::Format(_T("%ld"), object->m_ObjectCode));
 		iIndex = GetItemCount()-1;
 	}
 	else
-		SetItemText(iIndex, 0, wxString::Format(_T("%d"), object->m_ObjectCode));
+		SetItemText(iIndex, 0, wxString::Format(_T("%ld"), object->m_ObjectCode));
 	
 	
 	// normal operations for others columns

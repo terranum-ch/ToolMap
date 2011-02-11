@@ -271,7 +271,7 @@ public:
 	
 	void testVersion()
 	{
-		TS_ASSERT(DataBase::DataBaseGetVersion() == _T("5.5.8"));
+		TS_ASSERT(DataBase::DataBaseGetVersion() == _T("5.5.9"));
 	}
 	
 	
@@ -307,7 +307,7 @@ public:
 		
 		myIID = m_DB->DataBaseGetLastInsertedID();
 		TS_ASSERT(myIID != wxNOT_FOUND);
-		wxLogDebug(_T("Last inserted ID = %d"), myIID);
+		wxLogDebug(_T("Last inserted ID = %ld"), myIID);
 		
 		myIID = m_DB->DataBaseGetLastInsertedID();
 		TS_ASSERT(myIID != wxNOT_FOUND);

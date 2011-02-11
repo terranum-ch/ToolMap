@@ -891,7 +891,7 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 	if (myLayer->m_LayerID > 0)
 	{
 		sSqlSentence.Append(wxString::Format(_T(" UPDATE %s SET TYPE_CD = %d, LAYER_NAME = \"%s\"")
-										  _T(" WHERE LAYER_INDEX = %d; "), TABLE_NAME_LAYERS.c_str(), 
+										  _T(" WHERE LAYER_INDEX = %ld; "), TABLE_NAME_LAYERS.c_str(), 
 										  myLayer->m_LayerType, 
 										  myLayer->m_LayerName.c_str(),
 										  myLayer->m_LayerID));
@@ -916,7 +916,7 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 				myLayer->m_LayerID = myLastInsertedId;
 			}
 			else
-				wxLogError(_T("Error, last inserted ID not found : %d"),
+				wxLogError(_T("Error, last inserted ID not found : %ld"),
 						   myLastInsertedId);
 		}
 		else
@@ -947,15 +947,15 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
 	
 	for (unsigned int i= 0; i<deletelist.GetCount();i++)
 	{
-		sSqlSentence.Append(wxString::Format(_T(" DELETE FROM %s WHERE LAYER_INDEX = %d; "),
+		sSqlSentence.Append(wxString::Format(_T(" DELETE FROM %s WHERE LAYER_INDEX = %ld; "),
 											 TABLE_NAME_LAYERS.c_str(),
 											 deletelist.Item(i)));
 		
 		// delete associated field table (if existing)
-		if(!DeleteTableIfExist(TABLE_NAME_LAYER_AT + wxString::Format(_T("%d"),
+		if(!DeleteTableIfExist(TABLE_NAME_LAYER_AT + wxString::Format(_T("%ld"),
 																	  deletelist.Item(i))))
 		{
-			wxLogError(_T("Error deleting table : %s%d"),
+			wxLogError(_T("Error deleting table : %s%ld"),
 					   TABLE_NAME_LAYER_AT.c_str(),
 					   deletelist.Item(i));
 		}
@@ -1163,7 +1163,7 @@ int DataBaseTM::DeleteMultipleObjects (PrjDefMemManage * pProjet)
 	// prepare statement for multiple delete
 	for (unsigned int i=0; i< pProjet->m_StoreDeleteIDObj.GetCount(); i++)
 	{
-		sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE OBJECT_ID = %d; "),
+		sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE OBJECT_ID = %ld; "),
 										  TABLE_NAME_OBJECTS.c_str(),
 										  pProjet->m_StoreDeleteIDObj.Item(i)));
 	}
@@ -1312,7 +1312,7 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 		myLayer = myPrj->FindLayerByRealID(iRealLayerID);
 		if (!myLayer)
 		{
-			wxLogDebug(_T("Layer error, layer %d not found"), iRealLayerID);
+			wxLogDebug(_T("Layer error, layer %ld not found"), iRealLayerID);
 			break;
 		}
 		
@@ -1575,13 +1575,13 @@ bool DataBaseTM::EditScale (ProjectDefMemoryScale * myScaleObj)
 	//sentence for insert
 	wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
 										_T("(SCALE_VALUE) ")
-										_T("VALUES (%d)"),
+										_T("VALUES (%ld)"),
 										TABLE_NAME_SCALE.c_str(),
 										myScaleObj->m_ScaleValue);
 	// sentence for update
 	wxString sUpdate = wxString::Format(_T("UPDATE %s ")
-										_T("SET SCALE_VALUE = %d ")
-										_T("WHERE ZOOM_ID = %d"),
+										_T("SET SCALE_VALUE = %ld ")
+										_T("WHERE ZOOM_ID = %ld"),
 										TABLE_NAME_SCALE.c_str(),
 										myScaleObj->m_ScaleValue,
 										myScaleObj->m_DBScaleID);
@@ -1614,7 +1614,7 @@ int DataBaseTM::DeleteMultipleScales (PrjDefMemManage * pProjet)
 	// prepare statement for multiple delete
 	for (unsigned int i=0; i< pProjet->m_StoreDeleteScale.GetCount(); i++)
 	{
-		sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE ZOOM_ID = %d; "),
+		sSentence.Append(wxString::Format(_T("DELETE FROM %s WHERE ZOOM_ID = %ld; "),
 										  TABLE_NAME_SCALE.c_str(),
 										  pProjet->m_StoreDeleteScale.Item(i)));
 	}
@@ -1721,7 +1721,7 @@ bool DataBaseTM::SetScaleRank (ScaleList * list, int icol,
 		myScale = list->GetScaleFromList(i);
 		
 		// prepare the sentence
-		sSentence.Append(wxString::Format(_T("UPDATE %s SET %s = %d WHERE %s = %d; "),
+		sSentence.Append(wxString::Format(_T("UPDATE %s SET %s = %d WHERE %s = %ld; "),
 										  stable.c_str(),
 										  rankfield.c_str(),
 										  i,
@@ -1836,7 +1836,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 			UpdateLayer(pLayers, sSentence);
 			
 			// check if a table exists for fields 
-			if(TableExist(wxString::Format(_T("%s%d"),
+			if(TableExist(wxString::Format(_T("%s%ld"),
 										   TABLE_NAME_LAYER_AT.c_str(),
 										   pLayers->m_LayerID)) )
 			{
@@ -1872,7 +1872,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					
 					if(!DataBaseQueryNoResults(sDeleteString))
 					{
-						wxLogError(_T("Unable to delete Fields from table : %s%d, %s"),
+						wxLogError(_T("Unable to delete Fields from table : %s%ld, %s"),
 								   TABLE_NAME_LAYER_AT.c_str(),
 								   pLayers->m_LayerID,
 								   sDeleteString.c_str());
@@ -1888,10 +1888,10 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 				if (pProjDef->GetCountFields() > 0)
 				{
 					// create the table 
-					if(!AddTableIfNotExist(wxString::Format(TABLE_NAME_LAYER_AT + _T("%d"),
+					if(!AddTableIfNotExist(wxString::Format(TABLE_NAME_LAYER_AT + _T("%ld"),
 															pLayers->m_LayerID)))
 					{
-						wxLogError(_T("Unable to create the Field's table : %d"),
+						wxLogError(_T("Unable to create the Field's table : %ld"),
 								   pLayers->m_LayerID);
 						bReturn = false;
 						break;
@@ -2097,7 +2097,7 @@ long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 {
 	wxString sSentence = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_TOC +
-										  _T(" WHERE CONTENT_ID = %d"), itemid);
+										  _T(" WHERE CONTENT_ID = %ld"), itemid);
 	if (!DataBaseQueryNoResults(sSentence))
 	{
 		wxLogDebug(_T("Not able to remove item from DB : %s"), sSentence.c_str());
@@ -2116,7 +2116,7 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
 									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
 									 _T(" VERTEX_FLAGS = %d ")
-									 _T("WHERE CONTENT_ID = %d; "),
+									 _T("WHERE CONTENT_ID = %ld; "),
 									 item->IsVisible(),
 									 itemRank,
 									 symbology.c_str(),
@@ -2202,7 +2202,7 @@ bool DataBaseTM::GetQueriesById (const long & qid,  int & target,
 {
 	wxString sStatement = wxString::Format(_T("SELECT QUERIES_NAME, QUERIES_CODE, QUERIES_TARGET from ") + 
 										   TABLE_NAME_QUERIES +
-										   _T(" WHERE QUERIES_ID=%d;"),
+										   _T(" WHERE QUERIES_ID=%ld;"),
 										   qid);
 	if(DataBaseQuery(sStatement)==false)
 	{
@@ -2256,7 +2256,7 @@ bool DataBaseTM::EditQueries (int target, const wxString & name,
 	wxString sUpdStatement = wxString::Format(_T("UPDATE ") + TABLE_NAME_QUERIES +
 											  _T(" SET QUERIES_NAME=\"%s\", ")
 											  _T(" QUERIES_CODE=\"%s\", QUERIES_TARGET=%d ")
-											  _T(" WHERE QUERIES_ID=%d"),
+											  _T(" WHERE QUERIES_ID=%ld"),
 											  name.c_str(),
 											  myConvertedDescription.c_str(),
 											  target,
@@ -2289,7 +2289,7 @@ bool DataBaseTM::EditQueries (int target, const wxString & name,
 bool DataBaseTM::DeleteQuery (long qid)
 {
 	wxString sStatement = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_QUERIES +
-										   _T(" WHERE QUERIES_ID=%d"), qid);
+										   _T(" WHERE QUERIES_ID=%ld"), qid);
 	if (DataBaseQueryNoResults(sStatement)==false)
 	{
 		return false;
@@ -2465,7 +2465,7 @@ bool DataBaseTM::EditShortcut (int shortcutkey, const wxString & description,
 									  shortcutkey));
 	
 	for (unsigned int i = 0; i<types.GetCount();i++)
-		sSentence.Append(wxString::Format(_T("INSERT INTO %s VALUES (%d,%d); "),
+		sSentence.Append(wxString::Format(_T("INSERT INTO %s VALUES (%ld,%d); "),
 										  TABLE_NAME_SHORTCUT_LIST.c_str(),
 										  types.Item(i),
 										  shortcutkey));
@@ -2630,7 +2630,7 @@ bool DataBaseTM::GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & 
  *******************************************************************************/
 bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
 {
-	wxString sSentence = _T("INSERT INTO %s VALUES (%d, 0); ");
+	wxString sSentence = _T("INSERT INTO %s VALUES (%ld, 0); ");
 	wxString sFullSentence = wxEmptyString;
 	
 	for (unsigned int i = 0; i<lids.GetCount(); i++)
@@ -2657,7 +2657,7 @@ bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
  *******************************************************************************/
 bool DataBaseTM::DeleteLayerSnapping (int layersid)
 {
-	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE TOC_ID = %d; "),
+	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE TOC_ID = %ld; "),
 										  TABLE_NAME_SNAPPING.c_str(),
 										  layersid);
 	return DataBaseQueryNoResults(sSentence);
@@ -2766,7 +2766,7 @@ bool DataBaseTM::DeleteGeometry (wxArrayLong * selected, int layertype)
 										  TABLE_NAME_GIS_GENERIC[layertype].c_str());
 	for (unsigned int i = 0; i<selected->GetCount(); i++)
 	{
-		sSentence.Append(wxString::Format(_T("%d,"),selected->Item(i)));
+		sSentence.Append(wxString::Format(_T("%ld,"),selected->Item(i)));
 	}
 	sSentence.RemoveLast(1);
 	sSentence.Append(_T(");"));
@@ -2800,7 +2800,7 @@ bool DataBaseTM::DeleteAttribution (wxArrayLong * selected, int layertype)
 	
 	for (unsigned int i = 0; i<selected->GetCount(); i++)
 	{
-		sSentence.Append(wxString::Format(_T("%d,"),selected->Item(i)));
+		sSentence.Append(wxString::Format(_T("%ld,"),selected->Item(i)));
 	}
 	sSentence.RemoveLast(1);
 	sSentence.Append(_T(");"));

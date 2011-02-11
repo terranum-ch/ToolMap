@@ -236,7 +236,7 @@ OGRFeature * tmGISDataVectorSHP::GetFeatureByOID (long oid){
 	
 	OGRFeature * myFeature = m_Layer->GetFeature(oid);
 	if (myFeature == NULL) {
-		wxLogError(_T("Error getting feature number : %d"), oid);
+		wxLogError(_T("Error getting feature number : %ld"), oid);
 		return NULL;
 	}
 	
@@ -303,7 +303,7 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo (long & oid)
 	if(!plgon->IsValid())
 	{
 		if (IsLoggingEnabled())
-			wxLogDebug(_T("Polygon not valid @ FID : %d"), m_Feature->GetFID());
+			wxLogDebug(_T("Polygon not valid @ FID : %ld"), m_Feature->GetFID());
 	}
 	
 	// count rings + 1 (exterior ring)
@@ -530,7 +530,7 @@ bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
 	
 	OGRFeature * myFeature = m_Layer->GetFeature(oid);
 	if (myFeature == NULL) {
-		wxLogError(_T("No feature with id n\u00B0%d in layer. Reading fields value not possible"),oid);
+		wxLogError(_T("No feature with id n\u00B0%ld in layer. Reading fields value not possible"),oid);
 		return false;
 	}
 	

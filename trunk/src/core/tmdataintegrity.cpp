@@ -28,7 +28,7 @@ tmDataIntegrity::tmDataIntegrity(DataBaseTM * database) {
 	
 	m_QueryTemplateType = _T(" FROM %s WHERE OBJECT_GEOM_ID NOT IN (SELECT OBJECT_ID FROM %s)");
 	m_QueryTemplateAAttrib = _T(" FROM ") + TABLE_NAME_LAYER_AT +
-	_T("%d WHERE OBJECT_ID NOT IN (SELECT OBJECT_GEOM_ID FROM %s)");
+	_T("%ld WHERE OBJECT_ID NOT IN (SELECT OBJECT_GEOM_ID FROM %s)");
 }
 
 
@@ -150,12 +150,12 @@ wxString tmDataIntegrity::GetLastError() {
 	}
 	
 	if (m_ErrorType != wxNOT_FOUND) {
-		myReturn.Append(wxString::Format(_("%d Type problem "),
+		myReturn.Append(wxString::Format(_("%ld Type problem "),
 										 m_ErrorType));
 	}
 	
 	if (m_ErrorAAttrib != wxNOT_FOUND) {
-		myReturn.Append(wxString::Format(_("%d Advanced attribution problem"),
+		myReturn.Append(wxString::Format(_("%ld Advanced attribution problem"),
 										 m_ErrorAAttrib));
 	}
 	

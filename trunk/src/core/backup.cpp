@@ -149,7 +149,7 @@ long BackupRestore::ListDirFiles (const wxString & sDir, wxArrayString & files)
 		cont = listdir.GetNext(&filename);
 	}
 	
-	wxLogDebug(_T("Number of files for backup : %d"),iCountFiles);
+	wxLogDebug(_T("Number of files for backup : %ld"),iCountFiles);
 	return iCountFiles;
 }
 

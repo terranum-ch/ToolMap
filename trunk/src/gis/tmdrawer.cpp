@@ -61,7 +61,7 @@ void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRec
 	{
 		m_IsInitialised = FALSE;
 		if (IsLoggingEnabled())
-			wxLogDebug(_T("%s line %d : Error initing drawer \n"));
+			wxLogDebug(_T("Error initing drawer \n"));
 	}
 }
 
