@@ -798,7 +798,7 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 				wxLogDebug(_T("- More selected features selected .... "));
 				break;
 			}
-			wxLogMessage(_T(" - Selected Features ID : %d"), myArray->Item(i));
+			wxLogMessage(_T(" - Selected Features ID : %ld"), myArray->Item(i));
 		}
 	}
 		

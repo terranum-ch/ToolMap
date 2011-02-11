@@ -22,7 +22,7 @@
 
 bool ScaleTM::GetScaleFromLong(const long & scale, wxString & stringscale)
 {
-	stringscale = wxString::Format( _T("1:%d"),scale);
+	stringscale = wxString::Format( _T("1:%ld"),scale);
 	if (stringscale.Len() > 2)
 	{
 		return TRUE;

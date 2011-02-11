@@ -2674,7 +2674,7 @@ bool DataBaseTM::DeleteLayerSnapping (int layersid)
  *******************************************************************************/
 bool DataBaseTM::SaveSnappingAllStatus (tmSnappingMemory * snapmemory)
 {
-	wxString sSentence = _T(" UPDATE %s SET SNAPPING_TYPE=%d WHERE TOC_ID=%d; ");
+	wxString sSentence = _T(" UPDATE %s SET SNAPPING_TYPE=%d WHERE TOC_ID=%ld; ");
 	wxString sFullSentence = wxEmptyString;
 	
 	long myLayerindex = 0;
