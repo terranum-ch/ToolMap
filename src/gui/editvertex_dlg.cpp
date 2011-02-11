@@ -170,7 +170,7 @@ void EditVertexDLG::CreateControls()
  *******************************************************************************/
 void EditVertexDLG::SetStatusSelectedID (long oid)
 {
-	wxString myStatText = wxString::Format(_("Object ID : %d"), oid);
+	wxString myStatText = wxString::Format(_("Object ID : %ld"), oid);
 	m_Status->SetStatusText(myStatText, 0);
 }
 

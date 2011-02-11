@@ -96,7 +96,7 @@ public:
 		TS_ASSERT(myObjects.GetCount() == myNumber.GetCount());
 		TS_ASSERT(myNumber.GetCount() == myLayerId.GetCount());
 		for (unsigned int i = 0; i< myObjects.GetCount(); i++) {
-			wxLogMessage(_T("%d - %s (%d) - %d"),
+			wxLogMessage(_T("%ld - %s (%d) - %ld"),
 						 myObjects.Item(i)->m_ObjectID,
 						 myObjects.Item(i)->m_ObjectName.c_str(),
 						 myNumber.Item(i),

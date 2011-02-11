@@ -91,7 +91,7 @@ bool tmSelectedDataMemory::AddSelected (wxArrayLong * selected)
 		if (iIndex != wxNOT_FOUND)
 		{
 			m_SelectedIDs->RemoveAt(iIndex, 1);
-			wxLogDebug(_T("Item %d removed from index because it exsit allready"));
+			wxLogMessage(_T("Item %d removed from index because it exsit allready"), iIndex);
 			return true;
 		}
 	}

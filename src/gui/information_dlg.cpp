@@ -406,7 +406,7 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString & header, wxArrayStri
 
 	wxDELETE(myData);
 	if (bReturn == false) {
-		wxLogDebug(_T("Error getting informations for oid : %d"), oid);
+		wxLogDebug(_T("Error getting informations for oid : %ld"), oid);
 	}
 	return bReturn;
 }
@@ -503,7 +503,7 @@ void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent & event) {
 void tmSelectionInfoCtrl::OnPopupSelectionThis(wxCommandEvent & event) {
 	wxASSERT(m_Selected);
 	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
-	wxLogMessage(_("Selecting item %d"), m_ClickedItemID);
+	wxLogMessage(_("Selecting item %ld"), m_ClickedItemID);
 	
 	m_Selected->SetSelected(m_ClickedItemID);
 	
@@ -516,7 +516,7 @@ void tmSelectionInfoCtrl::OnPopupSelectionThis(wxCommandEvent & event) {
 void tmSelectionInfoCtrl::OnPopupSelectionRemove(wxCommandEvent & event) {
 	wxASSERT(m_Selected);
 	wxASSERT(m_ClickedItemID != wxNOT_FOUND);
-	wxLogMessage(_("Removing item %d from selection"), m_ClickedItemID);
+	wxLogMessage(_("Removing item %ld from selection"), m_ClickedItemID);
 	
 	wxArrayLong myRemoveArray;
 	myRemoveArray.Add(m_ClickedItemID);

@@ -120,7 +120,7 @@ public:
 		bool bGet = m_DN->GetDanglingNodes(myPts)==true;
 		TS_ASSERT(bGet);
 		if (bGet)
-			wxLogDebug(_T("%d dangling nodes "), myPts.GetCount());
+			wxLogDebug(_T("%ld dangling nodes "), myPts.GetCount());
 		
 		for (unsigned int i = 0; i<myPts.GetCount();i++)
 			wxLogDebug(_T("--- dangling node : %.*f, %.*f"), 2,myPts.Item(i).x, 2, myPts.Item(i).y);

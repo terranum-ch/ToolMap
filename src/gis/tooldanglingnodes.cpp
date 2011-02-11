@@ -66,7 +66,7 @@ bool ToolDanglingNodes::DNIsLayerCorrect(long layerid)
 	wxASSERT(IsOk());
 	
 	wxString mySentence = wxString::Format(_T("SELECT TYPE_CD FROM %s")
-										   _T(" WHERE LAYER_INDEX = %d"),
+										   _T(" WHERE LAYER_INDEX = %ld"),
 										   TABLE_NAME_LAYERS.c_str(),
 										   layerid);
 	if(m_pDB->DataBaseQuery(mySentence)==false)
@@ -79,7 +79,7 @@ bool ToolDanglingNodes::DNIsLayerCorrect(long layerid)
 	if (m_pDB->DataBaseGetNextResult(myLayerType)==false)
 	{
 		m_pDB->DataBaseClearResults();
-		wxLogDebug(_T("Layer with index %d doesn't exist"), layerid);
+		wxLogDebug(_T("Layer with index %ld doesn't exist"), layerid);
 		return false;
 	}
 	m_pDB->DataBaseClearResults();
@@ -101,7 +101,7 @@ bool ToolDanglingNodes::DNGetAllLines(long layerid)
 	wxString sTemp = _T("SELECT g.OBJECT_ID, g.OBJECT_GEOMETRY")
 	_T(" FROM  %s g LEFT JOIN %s a ON (g.OBJECT_ID")
 	_T(" = a.OBJECT_GEOM_ID) LEFT JOIN %s o ON a.OBJECT_VAL_ID =")
-	_T(" o.OBJECT_ID WHERE o.THEMATIC_LAYERS_LAYER_INDEX =%d ORDER BY g.OBJECT_ID ");
+	_T(" o.OBJECT_ID WHERE o.THEMATIC_LAYERS_LAYER_INDEX =%ld ORDER BY g.OBJECT_ID ");
 	
 	wxString sSentence = wxString::Format(sTemp,
 										  TABLE_NAME_GIS_GENERIC[0].c_str(), // lines
@@ -165,7 +165,7 @@ bool ToolDanglingNodes::DNSearchValidVertex()
 		OGRGeometryFactory::destroyGeometry(myLineToCheck);
 	}
 	
-	wxLogDebug(_T("%d nodes to check"), m_PtsToCheck.GetCount());
+	wxLogDebug(_T("%ld nodes to check"), m_PtsToCheck.GetCount());
 	DNSearchCleanUp();
 	
 	if (m_PtsToCheck.IsEmpty()==true)

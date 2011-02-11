@@ -40,7 +40,7 @@ bool QueriesBuilder::_IsCreated() {
 
 bool QueriesBuilder::_CreateLayersQuery() {
 	wxString myBaseQuery(_T("SELECT OBJECT_GEOM_ID FROM %s INNER JOIN %s ON")
-						 _T(" OBJECT_VAL_ID = OBJECT_ID WHERE THEMATIC_LAYERS_LAYER_INDEX=%d"));
+						 _T(" OBJECT_VAL_ID = OBJECT_ID WHERE THEMATIC_LAYERS_LAYER_INDEX=%ld"));
 	wxString myAtribTable = TABLE_NAME_GIS_ATTRIBUTION[m_QueryData->m_QueryLayerType];
 	m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery, 
 											   myAtribTable.c_str(),
@@ -57,7 +57,7 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 	switch (m_QueryData->m_QueryFieldsStatus) {
 		case AATTRIBUTION_NO:
 			myBaseQuery =  _T("SELECT attrib.OBJECT_GEOM_ID from %s")
-			_T(" attrib WHERE attrib.OBJECT_VAL_ID = %d");
+			_T(" attrib WHERE attrib.OBJECT_VAL_ID = %ld");
 			
 			m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery,
 													   myAtribTable.c_str(),
@@ -67,8 +67,8 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 			
 			
 		case AATTRIBUTION_EMPTY:
-			myBaseQuery = _T("SELECT DISTINCT attrib.OBJECT_GEOM_ID from %s attrib LEFT JOIN (%s%d layer)")
-			_T(" ON (attrib.OBJECT_GEOM_ID = layer.OBJECT_ID) WHERE attrib.OBJECT_VAL_ID = %d AND layer.OBJECT_ID IS NULL");
+			myBaseQuery = _T("SELECT DISTINCT attrib.OBJECT_GEOM_ID from %s attrib LEFT JOIN (%s%ld layer)")
+			_T(" ON (attrib.OBJECT_GEOM_ID = layer.OBJECT_ID) WHERE attrib.OBJECT_VAL_ID = %ld AND layer.OBJECT_ID IS NULL");
 			m_QueryData->m_QuerySQL = wxString::Format(myBaseQuery,
 													   myAtribTable.c_str(),
 													   TABLE_NAME_LAYER_AT.c_str(),
@@ -80,8 +80,8 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 			
 		case AATTRIBUTION_YES:
 			myBaseQuery = wxString::Format(_T("SELECT DISTINCT  type.OBJECT_GEOM_ID  FROM %s type")
-												 _T("  LEFT JOIN (%s%d layer) ON (type.OBJECT_GEOM_ID ")
-												 _T("= layer.OBJECT_ID) WHERE type.OBJECT_VAL_ID =%d AND"),
+												 _T("  LEFT JOIN (%s%ld layer) ON (type.OBJECT_GEOM_ID ")
+												 _T("= layer.OBJECT_ID) WHERE type.OBJECT_VAL_ID =%ld AND"),
 												 myAtribTable.c_str(),
 												 TABLE_NAME_LAYER_AT.c_str(),
 												 m_QueryData->m_QueryLayerID,
@@ -124,7 +124,7 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 
 
 bool QueriesBuilder::_CreateObjectQuery() {
-	wxString myBaseQuery = wxString::Format(_T("SELECT OBJECT_GEOM_ID from %s WHERE OBJECT_VAL_ID = %d"),
+	wxString myBaseQuery = wxString::Format(_T("SELECT OBJECT_GEOM_ID from %s WHERE OBJECT_VAL_ID = %ld"),
 											TABLE_NAME_GIS_ATTRIBUTION[m_QueryData->m_QueryLayerType].c_str(),
 											m_QueryData->m_QueryObjectID);
 	m_QueryData->m_QuerySQL = myBaseQuery;

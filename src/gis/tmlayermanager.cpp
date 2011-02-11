@@ -302,7 +302,7 @@ void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 	if (!m_DB->RemoveTOCLayer(litemID))
 		return;
 	
-	wxLogDebug(_T("tmLayerManager : removing layer %d"), litemID);
+	wxLogDebug(_T("tmLayerManager : removing layer %ld"), litemID);
 	
 	
 	LoadProjectLayers();
@@ -352,7 +352,7 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 	for (unsigned int i = 0; i<myLayerToRemoveIndex.GetCount(); i++) {
 		if (m_TOCCtrl->GetItemByID(myItemId,
 									myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)==false){
-			wxLogError(_("Item with layer id : %d not found in the TOC"),
+			wxLogError(_("Item with layer id : %ld not found in the TOC"),
 					   myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID);
 			continue;
 		}
@@ -440,7 +440,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 		return;
 	
 	item->SetID(lastinsertedID);
-	wxLogDebug(_T("Last inserted item id is : %d"),lastinsertedID);
+	wxLogDebug(_T("Last inserted item id is : %ld"),lastinsertedID);
 	
 	// adding entry to TOC
 	if(!m_TOCCtrl->InsertLayer(item))
@@ -470,7 +470,7 @@ bool tmLayerManager::ZoomToLayer(long layerid){
 
 	tmLayerProperties * myLayerProp = m_TOCCtrl->GetLayerById(layerid);
 	if (myLayerProp == NULL) {
-		wxLogError(_("Layer with specified id doesn't exists (ID = %d)"), layerid);
+		wxLogError(_("Layer with specified id doesn't exists (ID = %ld)"), layerid);
 		return false;
 	}
 	
@@ -498,7 +498,7 @@ bool tmLayerManager::ZoomToLayer(long layerid){
 	
 	
 	if (m_Scale.ZoomViewTo(myRRect)==false) {
-		wxLogError(_T("Zooming to layer n\u00B0%d failed"), layerid);
+		wxLogError(_T("Zooming to layer n\u00B0%ld failed"), layerid);
 		return false;
 	}
 	
@@ -1033,7 +1033,7 @@ void tmLayerManager::OnZoomToFeature (wxCommandEvent & event){
 	myRect.SetLeftTop(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MaxY));
 	myRect.SetRightBottom(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MinY));
 	if (m_Scale.ZoomViewTo(myRect) == false){
-		wxLogError(_T("Error zooming to feature n\u00B0%d"), myOid);
+		wxLogError(_T("Error zooming to feature n\u00B0%ld"), myOid);
 		return;
 	}
 	
@@ -1065,7 +1065,7 @@ void tmLayerManager::OnMoveToFeature (wxCommandEvent & event){
 	myRect.SetLeftTop(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MaxY));
 	myRect.SetRightBottom(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MinY));
 	if (m_Scale.MoveViewTo(myRect) == false){
-		wxLogError(_T("Error moving to feature %d"), myOid);
+		wxLogError(_T("Error moving to feature %ld"), myOid);
 		return;
 	}
 	

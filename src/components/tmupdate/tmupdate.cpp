@@ -243,7 +243,7 @@ bool tmUpdate::IsNewVersionAvaillable()
 	if (m_UPActualVersion >= iNewVersion)
 		return false;
 
-	wxLogDebug(_T("New version availlable : actual : %d, new : %d"), m_UPActualVersion, iNewVersion);
+	wxLogDebug(_T("New version availlable : actual : %ld, new : %d"), m_UPActualVersion, iNewVersion);
 	return true;
 }
 

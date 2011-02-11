@@ -109,14 +109,14 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray & fields) {
 	}
 	
 	if (layerid == wxNOT_FOUND) {
-		wxLogError(_("Invalid layer ID (%d)"), layerid);
+		wxLogError(_("Invalid layer ID (%ld)"), layerid);
 		return false;
 	}
 	
 	
 	ProjectDefMemoryLayers * myLayer = m_Project->FindLayerByRealID(layerid);
 	if (myLayer == NULL) {
-		wxLogError(_("No layer found with %d ID"), layerid);
+		wxLogError(_("No layer found with %ld ID"), layerid);
 		return false;
 	}
 	
@@ -219,7 +219,7 @@ bool tmAAttribBatchManager::IsOk() {
 	}
 	
 	if (m_Selected->GetSelectedLayer() > TOC_NAME_LABELS + 1) {
-		wxLogError(_("Batch advanced attribution isn't availlable for selected layer (%d)"),
+		wxLogError(_("Batch advanced attribution isn't availlable for selected layer (%ld)"),
 				   m_Selected->GetSelectedLayer());
 		return false;
 	}
@@ -242,7 +242,7 @@ bool tmAAttribBatchManager::_GetSelectionSubset(long layerid, wxArrayLong & subs
 	
 	wxString myQuery = wxString::Format(_T("SELECT a.OBJECT_GEOM_ID FROM %s a LEFT JOIN %s o")
 										_T(" ON a.OBJECT_VAL_ID = o.OBJECT_ID WHERE a.OBJECT_GEOM_ID IN")
-										_T(" (%s) AND o.THEMATIC_LAYERS_LAYER_INDEX = %d"),
+										_T(" (%s) AND o.THEMATIC_LAYERS_LAYER_INDEX = %ld"),
 										TABLE_NAME_GIS_ATTRIBUTION[(int) m_SelLayerType].c_str(),
 										TABLE_NAME_OBJECTS.c_str(),
 										myIds.c_str(),
@@ -270,7 +270,7 @@ wxString tmAAttribBatchManager::_CreateListOfIds(const wxArrayLong * ids) {
 	
 	wxString myIdsText = wxEmptyString;
 	for (unsigned int i = 0; i<ids->GetCount(); i++) {
-		myIdsText.Append(wxString::Format(_T("%d,"),
+		myIdsText.Append(wxString::Format(_T("%ld,"),
 										  ids->Item(i)));
 	}
 	myIdsText.RemoveLast(1);
@@ -296,7 +296,7 @@ int tmAAttribBatchManager::Attribute(long layerid,
 	
 	wxString myQuery = wxEmptyString;
 	for (unsigned int i = 0; i<mySubSet.GetCount(); i++) {
-		myQuery.Append(wxString::Format(_T("INSERT INTO %s%d (OBJECT_ID, %s) VALUES (%ld, \"%s\")")
+		myQuery.Append(wxString::Format(_T("INSERT INTO %s%ld (OBJECT_ID, %s) VALUES (%ld, \"%s\")")
 										_T(" ON DUPLICATE KEY UPDATE %s=\"%s\";"),
 										TABLE_NAME_LAYER_AT.c_str(),
 										layerid,

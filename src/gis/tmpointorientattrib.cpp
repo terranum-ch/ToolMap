@@ -70,7 +70,7 @@ bool tmPointOrientAttrib::POA_IsAttributed(long & attributedvalue)
 	wxString sSentence = _T("SELECT OBJECT_VAL_ID FROM ") + 
 		TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS] + 
 		_T(" WHERE OBJECT_GEOM_ID=") + 
-		wxString::Format(_T("%d"),m_Oid);
+		wxString::Format(_T("%ld"),m_Oid);
 	
 	if (m_DB->DataBaseQuery(sSentence)==false)
 		return false;
@@ -101,7 +101,7 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 	// get layer id;
 	wxString sSentence = wxString::Format(_T("SELECT o.THEMATIC_LAYERS_LAYER_INDEX FROM ")
 										  _T("%s o LEFT JOIN %s p ON (o.OBJECT_ID = p.OBJECT_VAL_ID) ")
-										  _T("WHERE p.OBJECT_GEOM_ID=%d"),
+										  _T("WHERE p.OBJECT_GEOM_ID=%ld"),
 										  TABLE_NAME_OBJECTS.c_str(),
 										  TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS].c_str(),
 										  m_Oid);
@@ -114,7 +114,7 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 		wxLogError(_("No layer found, object not attributed ?"));
 		return false;
 	}
-	wxLogDebug(_T("Layer found is : %d"), m_LayerId);
+	wxLogDebug(_T("Layer found is : %ld"), m_LayerId);
 	m_DB->DataBaseClearResults();
 	wxASSERT(m_LayerId != wxNOT_FOUND);
 	
@@ -193,7 +193,7 @@ bool tmPointOrientAttrib::Update()
 	}
 	
 	
-	wxString sSentence = wxString::Format(_T("INSERT INTO %s%d (OBJECT_ID, %s) VALUES (%d, "),
+	wxString sSentence = wxString::Format(_T("INSERT INTO %s%ld (OBJECT_ID, %s) VALUES (%ld, "),
 										  TABLE_NAME_LAYER_AT.c_str(), 
 										  m_LayerId,
 										  m_OrientField.m_Fieldname.c_str(),

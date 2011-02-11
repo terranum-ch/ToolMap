@@ -248,7 +248,7 @@ bool tmCheckListBoxRank::PrepareOrderStatement (wxString & sqlstatement)
 			return FALSE;
 		}
 		
-		sqlstatement.Append(wxString::Format(_T("UPDATE %s SET %s=%d WHERE %s=%d; "),
+		sqlstatement.Append(wxString::Format(_T("UPDATE %s SET %s=%d WHERE %s=%ld; "),
 											 GetTableName().c_str(),
 											 GetRankColName().c_str(),
 											 i,

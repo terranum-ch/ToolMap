@@ -261,7 +261,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
 					   myOid, myLayer->m_LayerName.c_str());
 			continue;
 		}
@@ -288,7 +288,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
 			m_Shp.CloseGeometry();
-			wxLogError(_("Unable to set basic attribution for OID : %d"), myOid);
+			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
 
@@ -296,7 +296,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		// advanced attribution
 		if (SetAttributsAdvanced(myResult, myLayer)==false) {
 			m_Shp.CloseGeometry();
-			wxLogError(_("Unable to set advanced attribution for OID : %d"), myOid);
+			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
 		}
 
@@ -336,7 +336,7 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 		OGRGeometry * myGeom = NULL;
 		if ( myResult.GetValue(1, &myGeom) == false){
 			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %d"),
+			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
 					   myLayer->m_LayerName.c_str(), i);
 			continue;
 		}
@@ -347,7 +347,7 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 
 
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
 					   myOid, myLayer->m_LayerName.c_str());
 			continue;
 		}
@@ -366,7 +366,7 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
 			m_Shp.CloseGeometry();
-			wxLogError(_("Unable to set basic attribution for OID : %d"), myOid);
+			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
 
@@ -374,7 +374,7 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 		// advanced attribution
 		if (SetAttributsAdvanced(myResult, myLayer)==false) {
 			m_Shp.CloseGeometry();
-			wxLogError(_("Unable to set advanced attribution for OID : %d"), myOid);
+			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
 		}
 
@@ -404,7 +404,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		OGRGeometry * myGeom = NULL;
 		if ( myResult.GetValue(1, &myGeom) == false){
 			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %d"),
+			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
 					   myLayer->m_LayerName.c_str(), i);
 			continue;
 		}
@@ -415,7 +415,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 
 
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
 					   myOid, myLayer->m_LayerName.c_str());
 			continue;
 		}
@@ -441,7 +441,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 			// don't delete myPoly !
 			OGRPolygon * myPoly = m_Shp.GetNextDataOGRPolygon(myPolyOid);
 			if (myPoly == NULL) {
-				wxLogError(_("Empty polyon returned for OID %d"), myPolyOid);
+				wxLogError(_("Empty polyon returned for OID %ld"), myPolyOid);
 				continue;
 			}
 
@@ -456,7 +456,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		// Passing attribution to polygon if found
 		//
 		if (bFound == false) {
-			wxLogError(_("Label %d is inside the frame but doesn't belong to any polygon ?"),
+			wxLogError(_("Label %ld is inside the frame but doesn't belong to any polygon ?"),
 					   myOid);
 
 			continue;
@@ -465,7 +465,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
 			m_Shp.CloseGeometry();
-			wxLogError(_("Unable to set basic attribution for OID : %d"), myOid);
+			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
 
@@ -473,7 +473,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		// advanced attribution
 		if (SetAttributsAdvanced(myResult, myLayer)==false) {
 			m_Shp.CloseGeometry();
-			wxLogError(_("Unable to set advanced attribution for OID : %d"), myOid);
+			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
 		}
 
@@ -521,7 +521,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		OGRGeometry * myGeom = NULL;
 		if ( myResult.GetValue(1, &myGeom) == false){
 			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %d"),
+			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
 					   myLayer->m_LayerName.c_str(),i);
 			continue;
 		}
@@ -532,7 +532,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 
 
 		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %d - Layer : '%s'"),
+			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
 					   myOid,myLayer->m_LayerName.c_str());
 			continue;
 		}

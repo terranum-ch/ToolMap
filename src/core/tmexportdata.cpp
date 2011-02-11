@@ -222,7 +222,7 @@ bool tmExportData::GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layer
 	wxString sTemp = _T("SELECT o.OBJECT_CD, o.OBJECT_DESC FROM %s")
 	_T(" g LEFT JOIN %s a ON (g.OBJECT_ID = a.OBJECT_GEOM_ID)")
 	_T(" LEFT JOIN %s o ON (a.OBJECT_VAL_ID = o.OBJECT_ID)")
-	_T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY g.OBJECT_ID");
+	_T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID");
 	wxString sSentence = wxString::Format(sTemp, 
 										  sGeomTable.c_str(),
 										  sValTable.c_str(),
@@ -276,7 +276,7 @@ bool tmExportData::GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype,
 	_T(" o.OBJECT_DESC FROM %s g LEFT JOIN %s a ON")
 	_T(" (g.OBJECT_ID = a.OBJECT_GEOM_ID) LEFT JOIN %s o")
 	_T(" ON (a.OBJECT_VAL_ID = o.OBJECT_ID) WHERE")
-	_T(" o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY g.OBJECT_ID;");	
+	_T(" o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID;");	
 	wxString sSentence = wxString::Format(sTemp, 
 										  sGeomTable.c_str(),
 										  sValTable.c_str(),
@@ -306,7 +306,7 @@ bool tmExportData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer)
 		return false;
 	
 	wxASSERT (layer);
-	wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%d ORDER BY OBJECT_ID"),
+	wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%ld ORDER BY OBJECT_ID"),
 										  layer->m_LayerID);
 	if (m_pDB->DataBaseQuery(sSentence)==false)
 		return false;

@@ -808,7 +808,7 @@ void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
 		wxArrayString myFiles;
 		long NumOfFileToCopy = mydirOp.GetAllDirectoryFiles(myFiles);
 		
-		wxLogDebug(_T("Number of files to copy : %d"),NumOfFileToCopy);
+		wxLogDebug(_T("Number of files to copy : %ld"),NumOfFileToCopy);
 		
 		// create the destination path
 		if (mydirOp.IsPathWritable(DIROP_PATH_DESTINATION))

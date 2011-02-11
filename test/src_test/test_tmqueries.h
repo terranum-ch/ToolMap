@@ -181,7 +181,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Generic queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Generic queries n.%ld from database"), myLastId);
 	}
 	
 	void testCreateSQL()
@@ -194,7 +194,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Expert queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Expert queries n.%ld from database"), myLastId);
 	}
 	
 	void testCreateLayers()
@@ -207,7 +207,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting layers queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting layers queries n.%ld from database"), myLastId);
 		
 	}
 	
@@ -265,7 +265,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Selected queries n.%ld from database"), myLastId);
 	}
 	
 	
@@ -289,7 +289,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Selected queries n.%ld from database"), myLastId);
 		
 	}
 	
@@ -317,7 +317,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Selected queries n.%ld from database"), myLastId);
 		
 		
 	}
@@ -452,7 +452,7 @@ public:
 		PrjMemObjectsArray myObjects;
 		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
 		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
-		wxLogMessage(_T("%d objects returned for types : %s"),
+		wxLogMessage(_T("%ld objects returned for types : %s"),
 					 myObjects.GetCount(),
 					 PRJDEF_LAYERS_TYPE_STRING[m_DataSelected->m_QueryLayerType].c_str());
 		
@@ -460,14 +460,14 @@ public:
 		m_DataObjects->m_QueryLayerType = TOC_NAME_POINTS;
 		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
 		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
-		wxLogMessage(_T("%d objects returned for types : %s"),
+		wxLogMessage(_T("%ld objects returned for types : %s"),
 					 myObjects.GetCount(),
 					 PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
 		
 		m_DataObjects->m_QueryLayerType = TOC_NAME_LABELS;
 		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
 		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
-		wxLogMessage(_T("%d objects returned for types : %s"),
+		wxLogMessage(_T("%ld objects returned for types : %s"),
 					 myObjects.GetCount(),
 					 PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
 		
@@ -496,7 +496,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting Selected queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting Selected queries n.%ld from database"), myLastId);
 	}
 		
 	void testQueryGeomOk(){
@@ -526,7 +526,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting queries n.%ld from database"), myLastId);
 	}
 	
 	
@@ -543,7 +543,7 @@ public:
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
 		TS_ASSERT_DIFFERS(myLastId, wxNOT_FOUND);
 		TS_ASSERT (m_pDB->DeleteQuery(myLastId));
-		wxLogMessage(_T("Deleting queries n.%d from database"), myLastId);
+		wxLogMessage(_T("Deleting queries n.%ld from database"), myLastId);
 	}
 	
 	
