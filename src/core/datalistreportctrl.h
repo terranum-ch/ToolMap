@@ -15,6 +15,9 @@
 #endif
 #include <wx/listctrl.h>
 #include <wx/dcgraph.h>
+#include <wx/renderer.h>
+
+
 
 enum DATALIST_COLTYPE {
     DATALIST_COLTYPE_TEXT = 0,

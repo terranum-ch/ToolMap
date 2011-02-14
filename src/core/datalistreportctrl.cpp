@@ -408,14 +408,12 @@ wxBitmap DataListReportCtrl::CreateArrowDown(const wxSize & size){
 		wxGCDC dc(memdc);
 		dc.SetBackground(*wxTRANSPARENT_BRUSH);
 		dc.Clear();
-		dc.SetPen(*wxGREY_PEN);
-		dc.SetBrush(*wxGREY_BRUSH);
-		dc.DrawPolygon(&myPoints,
-					   (size.GetWidth() - myHSize)/2.0,
-					   (size.GetHeight() - myVSize)/ 2.0);
+		wxRendererNative::Get().DrawHeaderButtonContents(this, dc, wxRect(0, 0, 16, 16), 0, wxHDR_SORT_ICON_DOWN);
 	}
 	return myBmp;
 }
+
+
 
 wxBitmap DataListReportCtrl::CreateArrowUp(const wxSize & size){
 	wxPointList myPoints;
@@ -435,11 +433,7 @@ wxBitmap DataListReportCtrl::CreateArrowUp(const wxSize & size){
 		wxGCDC dc(memdc);
 		dc.SetBackground(*wxTRANSPARENT_BRUSH);
 		dc.Clear();
-		dc.SetPen(*wxGREY_PEN);
-		dc.SetBrush(*wxGREY_BRUSH);
-		dc.DrawPolygon(&myPoints,
-					   (size.GetWidth() - myHSize)/2.0,
-					   (size.GetHeight() - myVSize)/ 2.0);
+		wxRendererNative::Get().DrawHeaderButtonContents(this, dc, wxRect(0, 0, 16, 16), 0, wxHDR_SORT_ICON_UP);
 	}
 	return myBmp;
 }

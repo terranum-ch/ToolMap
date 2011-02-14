@@ -273,7 +273,6 @@ bool BackupManager::GetFileInfo(const wxFileName & file, BackupFile & fileinfo) 
     { 
         wxZipInputStream inzip(outf);
         wxString myXMLcomment = inzip.GetComment();
-        wxLogMessage(myXMLcomment);
         if (myXMLcomment.IsEmpty() == false) {
             wxStringInputStream myXMLStream (myXMLcomment);
             wxXmlDocument doc;
