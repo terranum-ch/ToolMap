@@ -301,39 +301,6 @@ bool ProjectManager::EditProject (int notebooknumber)
 }
 
 
-/***************************************************************************//**
- @brief Backup the project
- @return  TRUE if the backup was succes
- @author Lucien Schreiber (c) CREALP 2007
- @date 05 May 2008
- *******************************************************************************/
-bool ProjectManager::BackupProject ()
-{
-	Backup myBackup (m_DB);
-	wxArrayString myFiles;
-	long lTotfiles = 0;
-	wxString dlgmsg = _("Some files weren't backuped. More informations\n");
-	dlgmsg += _("may be found in the log window.\n\n");
-	dlgmsg += _("To show the log window : Window -> Log Window...");
-	
-	if(myBackup.IsPathsSpecified())
-	{
-		
-		lTotfiles = myBackup.ListDirFiles(myBackup.GetDirOrigin(), myFiles);
-		myBackup.Save(myFiles);
-		
-		// show message if some files aren't backuped
-		if (lTotfiles > (signed) myFiles.Count())
-		{
-			wxMessageBox(dlgmsg, _("Some files not backuped"), 
-						 wxICON_INFORMATION | wxOK);
-		}
-		return TRUE;
-	}
-	return FALSE;
-}
-
-
 
 /***************************************************************************//**
  @brief Close the active database

@@ -46,7 +46,6 @@
 #include "../gui/objectattribution_dlg.h"	// for displaying object definition dlg.
 #include "../gui/projectproperties_dlg.h"	// for displaying project properties dlg.
 #include "../gui/projectdefnew_dlg.h"		// for the first dialog (creating the db)
-#include "backup.h"							// for backup and restore operations
 #include "../gui/menumanager.h"				// for menu management (recent, greyed,...)
 #include <wx/busyinfo.h>					// informations message for busy time
 #include "../gis/tmprogress.h"				// progress indicator
@@ -103,7 +102,6 @@ class ProjectManager : public wxObject
 		bool EditProjectObjectDefinition ();
 		bool EditProjectSettings ();
 		bool EditProject (int notebooknumber);
-		bool BackupProject ();
 		
 		bool TempTempInitTOC ();
 		
