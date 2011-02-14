@@ -16,7 +16,9 @@
 
 
 #include "backupmanager.h"
-#include "projectmanager.h"
+#include "../database/database_tm.h"
+
+
 
 BackupFile::BackupFile() {
     m_OutFileName.Clear();
@@ -86,9 +88,9 @@ void BackupFile::SetDate(wxDateTime value) {
 
 
 /***************** BACKUP MANAGER **********************/
-BackupManager::BackupManager(ProjectManager * prjmanager) {
-    wxASSERT(prjmanager);
-    m_ProjectManager = prjmanager;
+BackupManager::BackupManager(DataBaseTM * database) {
+    wxASSERT(database);
+    m_Database = database;
 }
 
 
@@ -134,14 +136,18 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
     wxArrayString myFilesToBackup;
     _ListMySQLFiles(fileinfo.GetInputDirectory().GetFullPath(), myFilesToBackup);
     
+    wxFileName myFileOut (fileinfo.GetOutputName());
+    myFileOut.SetName(myFileOut.GetName() + "-" + fileinfo.GetDate().FormatISODate() +
+                      "-" + fileinfo.GetDate().Format(_T("%H%M%S")));
     
-	wxFFileOutputStream outf(fileinfo.GetOutputName().GetFullPath());
+    
+	wxFFileOutputStream outf(myFileOut.GetFullPath());
 	if (!outf.Ok()){
-		wxLogError(_("Could not open file: '%s'"), fileinfo.GetOutputName().GetFullName());
+		wxLogError(_("Could not open file: '%s'"), myFileOut.GetFullName());
 		return false;
 	}
 	wxZipOutputStream outzip(outf);
-	outzip.PutNextDirEntry(m_ProjectManager->GetDatabase()->DataBaseGetName());
+	outzip.PutNextDirEntry(m_Database->DataBaseGetName());
 	
 	// loop for adding all files
 	for (unsigned int i = 0; i<myFilesToBackup.GetCount(); i++){
@@ -166,7 +172,7 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
 		
 		
 		// realy adding files into zip
-		outzip.PutNextEntry(m_ProjectManager->GetDatabase()->DataBaseGetName() +
+		outzip.PutNextEntry(m_Database->DataBaseGetName() +
                             wxFileName::GetPathSeparator() +
                             myFilesToBackup.Item(i));
 		outzip << f1stream;
@@ -179,7 +185,7 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
 		return false;
 	}
 	outf.Close();
-	wxLogMessage(_("Database backuped into : '%s'"), fileinfo.GetOutputName().GetFullName());
+	wxLogMessage(_("Database backuped into: '%s'"), myFileOut.GetFullName());
     
     
     return true;
@@ -188,7 +194,68 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
 
 
 bool BackupManager::Restore(const BackupFile & fileinfo) {
-    return false;
+    // some checks
+    if (fileinfo.IsValid() == false) {
+        return false;
+    }
+    
+    // ensure file exists
+    if (wxFileExists(fileinfo.GetOutputName().GetFullPath())==false) {
+        wxLogError(_("Backup file: '%s' doesn't exists!"),
+                   fileinfo.GetOutputName().GetFullPath());
+        return false;
+    }
+    
+    // remove directory if existing!
+    if (wxDirExists(fileinfo.GetInputDirectory().GetFullPath()) == true) {
+        wxLogMessage(_("Directory: '%s' exists and will be removed"),
+                     fileinfo.GetInputDirectory().GetFullPath());
+        if (wxFileName::Rmdir(fileinfo.GetInputDirectory().GetFullPath(),
+                              wxPATH_RMDIR_RECURSIVE) == false) {
+            wxLogError(_("'%s' could not be removed!"),
+                       fileinfo.GetInputDirectory().GetFullPath()); 
+            return false;
+        } 
+    }
+    
+    // create directory
+    if(wxFileName::Mkdir(fileinfo.GetInputDirectory().GetFullPath())==false){
+        wxLogError(_("Creating: '%s' failed!"), fileinfo.GetInputDirectory().GetFullPath());
+        return false;
+    }
+    
+    // extract from backup
+    wxScopedPtr<wxZipEntry> entry;
+    wxFFileInputStream in(fileinfo.GetOutputName().GetFullPath());
+    wxZipInputStream zip(in);
+    int myCount = 0;
+    while (entry.reset(zip.GetNextEntry()), entry.get() != NULL)
+    {
+        if (entry->IsDir() == true) {
+            continue;
+        }
+        // access meta-data
+        wxString name = entry->GetName();
+        wxFileName myZipNameOnly (name);
+        wxFileName myZipName (fileinfo.GetInputDirectory().GetFullPath(),
+                              myZipNameOnly.GetFullName());
+		
+		zip.OpenEntry(*entry.get());
+        if (zip.CanRead() == false) {
+			wxLogError(_T("Can not read zip entry '") + entry->GetName() + _T("'."));
+			return false;
+        }
+		
+		wxFileOutputStream myOut(myZipName.GetFullPath());
+		if (myOut.IsOk() == false) {
+			wxLogError(_("Error writing: '%s'"), myZipName.GetFullName());
+			return false;
+		}
+        zip.Read(myOut);
+        myCount++;
+    }
+	wxLogMessage(_("%d file(s) restored!"), myCount);
+	return true;
 }
 
 

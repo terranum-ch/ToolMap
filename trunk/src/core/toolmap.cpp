@@ -1246,11 +1246,9 @@ void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
     myBckFile.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
                                            m_PManager->GetDatabase()->DataBaseGetName()));
     myBckFile.SetDate(wxDateTime::Now());
-    wxString myOutputfileName = m_PManager->GetDatabase()->DataBaseGetName();
-    myOutputfileName.Append("-" + myBckFile.GetDate().FormatISODate());
-    myOutputfileName.Append("-" + myBckFile.GetDate().Format(_T("%H%M%S")));
-    
-    myBckFile.SetOutputName(wxFileName(myBackupPath, myOutputfileName, "tmbk"));
+    myBckFile.SetOutputName(wxFileName(myBackupPath,
+									   m_PManager->GetDatabase()->DataBaseGetName(),
+									   "tmbk"));
     
     // ask for comment 
     wxTextEntryDialog myDlg (this, _("Backup comment:"), _("Backup"), wxEmptyString, wxOK | wxCENTRE);
@@ -1259,7 +1257,7 @@ void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
     }
     
     wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
-    BackupManager myBckManager (m_PManager);
+    BackupManager myBckManager (m_PManager->GetDatabase());
     if (myBckManager.Backup(myBckFile) == false) {
         wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     }
@@ -1282,7 +1280,7 @@ void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
         return;
     }
 
-    BackupManager myBckManager(m_PManager);
+    BackupManager myBckManager(m_PManager->GetDatabase());
     BackupManagerDLG myDlg (this, wxID_ANY, _("Manage Backup"), &myBckManager);
     myDlg.ShowModal();
 }

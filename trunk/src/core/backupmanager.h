@@ -24,11 +24,12 @@
 #include <wx/filename.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/zipstrm.h>
+#include <wx/regex.h>
+#include <wx/wfstream.h>
+#include <wx/sstream.h>
 
 
-
-
-class ProjectManager;
+class DataBaseTM;
 
 class BackupFile {
 private:
@@ -97,12 +98,12 @@ inline const wxDateTime BackupFile::GetDate() const {
 /***************** BACKUP MANAGER **********************/
 class BackupManager {
 private:
-    ProjectManager * m_ProjectManager;
+    DataBaseTM * m_Database;
     
     void _ListMySQLFiles(const wxString & directory, wxArrayString & files);
     
 public:
-    BackupManager(ProjectManager * prjmanager);
+    BackupManager(DataBaseTM * database);
     virtual ~BackupManager();
     
     bool Backup(const BackupFile & fileinfo);
@@ -110,14 +111,14 @@ public:
     bool GetFileInfo(const wxFileName & file, BackupFile & fileinfo);
     bool SetMetadata(const BackupFile & fileinfo, wxZipOutputStream * zip);
 
-    inline ProjectManager * GetProjectManager() ;
+    inline DataBaseTM * GetDatabase() ;
     
 };
 
 
 
-inline ProjectManager * BackupManager::GetProjectManager() {
-    return m_ProjectManager;
+inline DataBaseTM * BackupManager::GetDatabase() {
+    return m_Database;
 }
 
     
