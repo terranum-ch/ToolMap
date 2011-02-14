@@ -1225,8 +1225,6 @@ void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 
 void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
 {
-    //m_PManager->BackupProject();
-    
     wxASSERT(m_PManager);
     wxASSERT(m_PManager->GetDatabase());
    
@@ -1286,6 +1284,7 @@ void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
 		return;
 	}
 	
+	wxBeginBusyCursor();
 	wxString myRestoreName = myDlg.GetRestoreFileName();
 	wxASSERT(myRestoreName != wxEmptyString);
 	
@@ -1305,7 +1304,7 @@ void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
 		wxLogError(_("Error restoring project: '%s'"), myRestoreName);
 		return;
 	}
-	
+	wxEndBusyCursor();
 	m_PManager->OpenProject(myRestoreInfo.GetInputDirectory().GetFullPath());
 }
 
