@@ -1282,7 +1282,31 @@ void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
 
     BackupManager myBckManager(m_PManager->GetDatabase());
     BackupManagerDLG myDlg (this, wxID_ANY, _("Manage Backup"), &myBckManager);
-    myDlg.ShowModal();
+    if(myDlg.ShowModal() != wxID_OK){
+		return;
+	}
+	
+	wxString myRestoreName = myDlg.GetRestoreFileName();
+	wxASSERT(myRestoreName != wxEmptyString);
+	
+	BackupFile myRestoreInfo;
+	myRestoreInfo.SetOutputName(wxFileName(myBackupPath, myRestoreName));
+	myRestoreInfo.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
+											   m_PManager->GetDatabase()->DataBaseGetName()));
+	// unused but needed for structure validity!
+	myRestoreInfo.SetDate(wxDateTime::Now());
+	wxASSERT(myRestoreInfo.IsValid());
+	
+	// close project now
+	m_PManager->CloseProject();
+	
+	// restore
+	if(myBckManager.Restore(myRestoreInfo)==false){
+		wxLogError(_("Error restoring project: '%s'"), myRestoreName);
+		return;
+	}
+	
+	m_PManager->OpenProject(myRestoreInfo.GetInputDirectory().GetFullPath());
 }
 
 

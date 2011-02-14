@@ -16,14 +16,15 @@
 
 
 #include "backupmanager_dlg.h"
-#include "../core/backupmanager.h"
 #include "../core/projectmanager.h"
+#include "../core/backupmanager.h"
 #include "../img/backup_bmp.h"
 
 
 BEGIN_EVENT_TABLE(BackupManagerDLG, wxDialog)
     EVT_LIST_COL_CLICK(ID_LIST_BACKUPS, BackupManagerDLG::OnListColumnClick)
     EVT_BUTTON(wxID_DELETE, BackupManagerDLG::OnButtonDelete)
+	EVT_BUTTON(ID_BTN_RESTORE,BackupManagerDLG::OnButtonRestore)
     EVT_UPDATE_UI(wxID_DELETE, BackupManagerDLG::OnUpdateUIDelete)
     EVT_UPDATE_UI(ID_BTN_RESTORE, BackupManagerDLG::OnUpdateUIRestore)
 END_EVENT_TABLE()
@@ -152,7 +153,7 @@ bool BackupManagerDLG::_LoadData() {
 
 
 void BackupManagerDLG::_UpdateStatusbar(const unsigned int & bcknumber) {
-    m_StatusBar->SetStatusText(wxString::Format(_("%ld backup(s) in '%s'"),
+    m_StatusBar->SetStatusText(wxString::Format(_("%d backup(s) in '%s'"),
                                                 bcknumber,
                                                 m_BackupPath),0);
 
@@ -162,6 +163,16 @@ void BackupManagerDLG::_UpdateStatusbar(const unsigned int & bcknumber) {
 
 
 void BackupManagerDLG::OnButtonRestore(wxCommandEvent & event) {
+	wxString myMsg = wxString::Format(_("Are you sure you want to restore backup: '%s'?"),
+									  m_ListBackup->GetText(m_ListBackup->GetSelectedFirst(), 1));
+	myMsg.Append(_("\nThis will erase your actual project!"));
+	int mySecurityAnswer = wxMessageBox(myMsg, _("Confirm restoring project"), wxYES_NO | wxNO_DEFAULT, this);
+	if (mySecurityAnswer != wxYES) {
+		return;
+	}
+	
+	m_RestoreFileName = m_ListBackup->GetText(m_ListBackup->GetSelectedFirst(), 1);
+	EndModal(wxID_OK);
 }
 
 
@@ -287,6 +298,7 @@ wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_S
     m_AscendingOrder = true;
     m_ImgList = NULL;
     m_BackupPath = wxEmptyString;
+	m_RestoreFileName = wxEmptyString;
     
     _CreateControls();
     _LoadData();
@@ -297,6 +309,11 @@ wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_S
 BackupManagerDLG::~BackupManagerDLG() {
     wxDELETE(m_ImgList);
     images_backup_clean();
+}
+
+
+wxString BackupManagerDLG::GetRestoreFileName (){
+	return m_RestoreFileName;
 }
 
 
