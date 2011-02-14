@@ -1254,12 +1254,20 @@ void ToolMapFrame::OnProjectBackup (wxCommandEvent & event)
         myBckFile.SetComment(myDlg.GetValue());
     }
     
+	wxBeginBusyCursor();
     wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
     BackupManager myBckManager (m_PManager->GetDatabase());
-    if (myBckManager.Backup(myBckFile) == false) {
+
+	// Don't display progress dialog under Mac... Toooo slow!
+	wxWindow * myWnd = NULL;
+#ifndef __WXMAC__
+	myWnd = this;
+#endif
+	
+    if (myBckManager.Backup(myBckFile,myWnd) == false) {
         wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     }
-    
+	wxEndBusyCursor();
 }
 
 
