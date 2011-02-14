@@ -40,6 +40,7 @@ class BackupManagerDLG : public wxDialog {
     wxStatusBar* m_StatusBar;
     BackupManager * m_BackupManager;
     wxString m_BackupPath;
+	wxString m_RestoreFileName;
 
     
     void _CreateControls();
@@ -58,6 +59,7 @@ class BackupManagerDLG : public wxDialog {
   public:
     BackupManagerDLG(wxWindow * parent, wxWindowID id, const wxString & title, BackupManager * bckmanager);
     virtual ~BackupManagerDLG();
-
+	
+	wxString GetRestoreFileName ();
 };
 #endif
