@@ -94,9 +94,9 @@ void BackupManagerDLG::_CreateControls() {
 
 
 bool BackupManagerDLG::_LoadData() {
-    wxString myDBName = m_BackupManager->GetProjectManager()->GetDatabase()->DataBaseGetName();
+    wxString myDBName = m_BackupManager->GetDatabase()->DataBaseGetName();
     
-    int myResult = m_BackupManager->GetProjectManager()->GetDatabase()->GetProjectBackupPath(m_BackupPath);
+    int myResult = m_BackupManager->GetDatabase()->GetProjectBackupPath(m_BackupPath);
     wxASSERT(myResult == PATH_OK);
     wxDir myBckDir (m_BackupPath);
     
@@ -120,7 +120,7 @@ bool BackupManagerDLG::_LoadData() {
     }
     
     wxWindowUpdateLocker noUpdates(m_ListBackup);
-    wxFileName myRestoreName (m_BackupManager->GetProjectManager()->GetDatabase()->DataBaseGetPath(),
+    wxFileName myRestoreName (m_BackupManager->GetDatabase()->DataBaseGetPath(),
                               myDBName);
     // for every supported file, get info and populate the list.
     for (unsigned int i = 0 ; i<mySupportedFiles.GetCount(); i++) {

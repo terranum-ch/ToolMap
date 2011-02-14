@@ -36,6 +36,7 @@ static const wxString g_TestPathSHP = g_TestPath + _T("/shp/");
 static const wxString g_TestPathMISC = g_TestPath + _T("/misc/");
 static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj/");
 static const wxString g_TestPathEXPORT = g_TestPath +  _T("/export/");
+static const wxString g_TestPathBackup = g_TestPath + _T("/backup/");
 
 static const wxString g_TestFileMisc = _T("gpl.txt");
 static const wxString g_TestFileCSV = _T("profil_sml.csv");
