@@ -27,6 +27,9 @@
 #include <wx/regex.h>
 #include <wx/wfstream.h>
 #include <wx/sstream.h>
+#include <wx/progdlg.h>
+
+
 
 
 class DataBaseTM;
@@ -106,8 +109,8 @@ public:
     BackupManager(DataBaseTM * database);
     virtual ~BackupManager();
     
-    bool Backup(const BackupFile & fileinfo);
-    bool Restore(const BackupFile & fileinfo);
+    bool Backup(const BackupFile & fileinfo, wxWindow * progressparent = NULL);
+    bool Restore(const BackupFile & fileinfo, wxWindow * progressparent = NULL);
     bool GetFileInfo(const wxFileName & file, BackupFile & fileinfo);
     bool SetMetadata(const BackupFile & fileinfo, wxZipOutputStream * zip);
 

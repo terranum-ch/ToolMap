@@ -17,6 +17,7 @@
 
 #include "backupmanager.h"
 #include "../database/database_tm.h"
+#include "tmpercent.h"
 
 
 
@@ -120,7 +121,7 @@ void BackupManager::_ListMySQLFiles(const wxString & directory, wxArrayString & 
 
 
 
-bool BackupManager::Backup(const BackupFile & fileinfo) {
+bool BackupManager::Backup(const BackupFile & fileinfo, wxWindow * progressparent) {
     // some checks
     if (fileinfo.IsValid() == false) {
         return false;
@@ -149,6 +150,13 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
 	wxZipOutputStream outzip(outf);
 	outzip.PutNextDirEntry(m_Database->DataBaseGetName());
 	
+	// progress window
+	wxProgressDialog * myProgressDialog = NULL;
+	if (progressparent != NULL) {
+		myProgressDialog = new wxProgressDialog(_("Backup project"), wxEmptyString);
+	}
+	tmPercent myPercent(myFilesToBackup.GetCount());
+	
 	// loop for adding all files
 	for (unsigned int i = 0; i<myFilesToBackup.GetCount(); i++){
 		wxFileName fn1 (fileinfo.GetInputDirectory().GetFullPath(), myFilesToBackup.Item(i));
@@ -158,18 +166,12 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
 			return false;
 		}
 		
-        /*
-		// incrementing progress dialog
-		if (!ProgDlg.Update(dIncrement))
-		{
-			bCompleted = FALSE;
-			wxLogMessage(_("Backup into %s cancelled by user"), dbkfilename.GetFullName().c_str());
-			break;
+		// increment progress
+		myPercent.SetValue(i);
+		if (myProgressDialog != NULL && myPercent.IsNewStep()) {
+			myProgressDialog->Update(myPercent.GetPercent());
+			//wxLogMessage("update : %d", myPercent.GetPercent());
 		}
-		dIncrement  = dIncrement + dStep;
-		if (dIncrement > 50)
-			dIncrement = 50;*/
-		
 		
 		// realy adding files into zip
 		outzip.PutNextEntry(m_Database->DataBaseGetName() +
@@ -177,6 +179,7 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
                             myFilesToBackup.Item(i));
 		outzip << f1stream;
 	}
+	wxDELETE(myProgressDialog);
 	
     SetMetadata(fileinfo, &outzip);
 
@@ -193,7 +196,7 @@ bool BackupManager::Backup(const BackupFile & fileinfo) {
 
 
 
-bool BackupManager::Restore(const BackupFile & fileinfo) {
+bool BackupManager::Restore(const BackupFile & fileinfo, wxWindow * progressparent) {
     // some checks
     if (fileinfo.IsValid() == false) {
         return false;
