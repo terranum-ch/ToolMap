@@ -28,18 +28,31 @@
 ////////////// INTRODUCTION WIZARD PAGE ////////////////
 //
 void ImportWizIntro::_CreateControls() {
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxVERTICAL );
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
-	wxString m_FileTypeCtrlChoices[] = { _("ESRI's shapefiles"), _("CSV files (semi-colon separated)") };
-	int m_FileTypeCtrlNChoices = sizeof( m_FileTypeCtrlChoices ) / sizeof( wxString );
-	m_FileTypeCtrl = new wxRadioBox( this, wxID_ANY, _("File type:"), wxDefaultPosition, wxSize(250, -1), m_FileTypeCtrlNChoices, m_FileTypeCtrlChoices, 1, wxRA_SPECIFY_COLS );
-	bSizer2->Add( m_FileTypeCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
-	SetSizer( bSizer2 );
-	GetSizer()->Fit(this);
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("File type:") ), wxVERTICAL );
+	
+	m_radioBtn1 = new wxRadioButton( this, wxID_ANY, _("ESRI's shapefiles"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioBtn1->SetValue( true ); 
+	sbSizer1->Add( m_radioBtn1, 0, wxALL, 5 );
+	
+	m_radioBtn2 = new wxRadioButton( this, wxID_ANY, _("CSV files (semi-colon separated)"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer1->Add( m_radioBtn2, 0, wxALL, 5 );
+	
+	bSizer1->Add( sbSizer1, 0, wxALL|wxEXPAND, 5 );
+	
+	//this->SetSizer( bSizer1 );
+	//this->Layout();
+	//bSizer1->Fit( this );
+	SetSizerAndFit(bSizer1);
+	this->Centre( wxBOTH );
+	
 }
-
+ 
 ImportWizIntro::ImportWizIntro(ImportWizard * parent, wxWizardPage * next) : 
 wxWizardPageSimple(parent, NULL, next){
 	m_Parent = parent;
@@ -52,7 +65,12 @@ ImportWizIntro::~ImportWizIntro() {
 
 
 bool ImportWizIntro::TransferDataToWindow() {
-	m_FileTypeCtrl->SetSelection(m_Parent->GetImport()->GetFileType());
+	if (m_Parent->GetImport()->GetFileType() == tmIMPORT_TYPE_SHP) {
+		m_radioBtn1->SetValue(true);
+	}
+	else {
+		m_radioBtn2->SetValue(true);
+	}	
 	return true;
 }
 
@@ -60,14 +78,14 @@ bool ImportWizIntro::TransferDataToWindow() {
 bool ImportWizIntro::TransferDataFromWindow() {
 	tmImport * myImport = m_Parent->GetImport();
 	wxDELETE(myImport);
-	if (m_FileTypeCtrl->GetSelection() == (int) tmIMPORT_TYPE_SHP) {
+	wxASSERT(m_radioBtn1->GetValue() != m_radioBtn2->GetValue());
+	
+	if (m_radioBtn1->GetValue() == true) {
 		m_Parent->SetImport(new tmImportGIS());
 	}
-	else if(m_FileTypeCtrl->GetSelection() == (int) tmIMPORT_TYPE_CSV){
+	
+	if (m_radioBtn2->GetValue() == true) {
 		m_Parent->SetImport(new tmImportCSV());
-	}
-	else {
-		wxFAIL;
 	}
 	return true;
 }
@@ -135,7 +153,7 @@ void ImportWizInfo::OnOpenFile(wxFileDirPickerEvent & event) {
 	if (myImport->GetFileType() == tmIMPORT_TYPE_SHP) {
 		m_InfoValueCtrl1->SetLabel(TM_GIS_SPATIAL_TYPES_STRING[myImport->GetGeometryType()]);
 	}else if (myImport->GetFileType() == tmIMPORT_TYPE_CSV) {
-		m_InfoValueCtrl1->SetLabel(wxString::Format(_T("%ld"), myImport->GetFieldCount()));
+		m_InfoValueCtrl1->SetLabel(wxString::Format(_T("%d"), myImport->GetFieldCount()));
 	}
 	else {
 		wxFAIL;

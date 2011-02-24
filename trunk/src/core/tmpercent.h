@@ -29,6 +29,13 @@
     #include <wx/wx.h>
 #endif
 
+
+#ifdef __WXMAC__
+const int tmPERCENT = 10;
+#else
+const int tmPERCENT = 100;
+#endif
+
 class tmPercent : public wxObject
 	{
 	private:

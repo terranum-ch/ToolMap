@@ -153,7 +153,7 @@ bool BackupManager::Backup(const BackupFile & fileinfo, wxWindow * progressparen
 	// progress window
 	wxProgressDialog * myProgressDialog = NULL;
 	if (progressparent != NULL) {
-		myProgressDialog = new wxProgressDialog(_("Backup project"), wxEmptyString);
+		myProgressDialog = new wxProgressDialog(_("Backup project"), wxEmptyString, tmPERCENT);
 	}
 	tmPercent myPercent(myFilesToBackup.GetCount());
 	
@@ -170,7 +170,6 @@ bool BackupManager::Backup(const BackupFile & fileinfo, wxWindow * progressparen
 		myPercent.SetValue(i);
 		if (myProgressDialog != NULL && myPercent.IsNewStep()) {
 			myProgressDialog->Update(myPercent.GetPercent());
-			//wxLogMessage("update : %d", myPercent.GetPercent());
 		}
 		
 		// realy adding files into zip

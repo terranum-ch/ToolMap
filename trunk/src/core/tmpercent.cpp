@@ -40,7 +40,7 @@ tmPercent::tmPercent(long value)
 void tmPercent::Create(long value)
 {
 	m_TotalValue = value;
-	m_Increment = m_TotalValue / 100;
+	m_Increment = m_TotalValue / tmPERCENT;
 }
 
 
@@ -73,7 +73,7 @@ bool tmPercent::IsNewStep()
 int tmPercent::GetPercent()
 {
 	if (m_ActualValue > m_TotalValue)
-		return 100;
+		return tmPERCENT;
 	
-	return (int) m_ActualValue * 100 / m_TotalValue;
+	return (int) m_ActualValue * tmPERCENT / m_TotalValue;
 }

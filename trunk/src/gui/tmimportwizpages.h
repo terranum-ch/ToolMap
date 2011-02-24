@@ -32,7 +32,8 @@ class ImportWizTarget;
 class ImportWizIntro : public wxWizardPageSimple {
   private:
     ImportWizard * m_Parent;
-	wxRadioBox* m_FileTypeCtrl;
+	wxRadioButton* m_radioBtn1;
+	wxRadioButton* m_radioBtn2;
     void _CreateControls();
 
 
