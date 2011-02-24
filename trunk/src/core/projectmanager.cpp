@@ -17,6 +17,9 @@
 
 
 #include "projectmanager.h"
+#include "svn_version.h"
+#include "toolmap.h"
+
 IMPLEMENT_CLASS(ProjectManager, wxObject);
 
 /***************************************************************************//**
@@ -24,7 +27,7 @@ IMPLEMENT_CLASS(ProjectManager, wxObject);
  @author Lucien Schreiber (c) CREALP 2007
  @date 10 March 2008
  *******************************************************************************/
-ProjectManager::ProjectManager(wxWindow * parent)
+ProjectManager::ProjectManager(wxFrame * parent)
 {
 	bProjectIsOpen = FALSE;
 	m_DB = NULL;
@@ -416,6 +419,9 @@ int ProjectManager::OpenProject(const wxString & path)
 		// project is now open !
 		bProjectIsOpen = TRUE;
 		//myReturnVal = OPEN_OK;
+		
+		wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + GetProjectName();
+		m_Parent->SetTitle(myProgName);
 		
 	}
 	else

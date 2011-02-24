@@ -73,7 +73,7 @@ class ProjectManager : public wxObject
 	private:
 		bool bProjectIsOpen;
 		DataBaseTM * m_DB;
-		wxWindow * m_Parent;
+		wxFrame * m_Parent;
 		MenuManager * m_pMManager;
 		ObjectManager * m_Obj;
 		wxStatusBar * m_ParentStatus;
@@ -92,7 +92,7 @@ class ProjectManager : public wxObject
 		bool PMAddDefaultQueries();
 		
 	public:
-		ProjectManager(wxWindow * parent);
+		ProjectManager(wxFrame * parent);
 		~ProjectManager();
 		
 		// project operations 

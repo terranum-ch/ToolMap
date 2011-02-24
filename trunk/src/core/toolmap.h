@@ -105,7 +105,6 @@
 #include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
 #include "../gui/queries_panel.h"		// for queries panel
-#include "../gui/projectnewexist_dlg.h"
 #include "projectmanager.h"
 #include <wx/fileconf.h>		// for using file configuration even on windows
 
@@ -309,13 +308,13 @@ private:
 	void OnClose(wxCloseEvent & event);
 	void OnAbout(wxCommandEvent& event);
 	void OnNewProject(wxCommandEvent & event);
+	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnOpenProject (wxCommandEvent & event);
 	void OnOpenRecentProject (wxCommandEvent & event);
 	void OnEditProjectObjects (wxCommandEvent & event);
 	void OnEditProjectSettings (wxCommandEvent & event);
 	void OnEditObjectAttributes (wxCommandEvent & event);
 	void OnEditProject (wxCommandEvent & event);
-	void OnNewProjectExisting (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
 	void OnIdleTimeUpdate(wxIdleEvent & event);
