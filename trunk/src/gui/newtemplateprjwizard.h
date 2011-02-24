@@ -45,10 +45,13 @@ private:
     wxFilePickerCtrl * m_SourceFileCtrl;
     wxDirPickerCtrl * m_DestDirCtrl;
     wxTextCtrl * m_DestNameCtrl;
+	wxStaticText* m_DateCtrl;
+	wxStaticText* m_CommentCtrl;
 	
     BackupFile * m_BackupFileData;
 	
     void OnUpdateNextBtn(wxIdleEvent & event);
+	void OnSourceDirChanged(wxFileDirPickerEvent & event);
  
     void _CreateControls();
 	DECLARE_EVENT_TABLE();
