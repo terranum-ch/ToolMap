@@ -36,6 +36,7 @@
 #include "../img/misc_bmp.h"
 #include "../img/toolbar_bmp.h"
 #include "../gui/information_dlg.h"
+#include "../gui/newtemplateprjwizard.h"
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -466,11 +467,13 @@ void ToolMapFrame::_CreateMenu()
 {
     wxMenuBar* menuBar = new wxMenuBar;
     wxMenu* itemMenu2 = new wxMenu;
-    //wxMenu* itemMenu3 = new wxMenu;
-    itemMenu2->Append(ID_MENU_NEW_PRJ_EMPTY, _("&New...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu3->Append(ID_MENU_NEW_PRJ_EXISTING, _("From existing..."), _T(""), wxITEM_NORMAL);
-    //itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
-    itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open..."), wxEmptyString, wxITEM_NORMAL);
+    
+	wxMenu* itemMenu3 = new wxMenu;
+    itemMenu3->Append(ID_MENU_NEW_PRJ_EMPTY, _("Empty...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu3->Append(ID_MENU_NEW_PRJ_EXISTING, _("From template...\tCtrl+Alt+N"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
+    
+	itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open..."), wxEmptyString, wxITEM_NORMAL);
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
@@ -657,6 +660,8 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 }
 
 
+
+
 void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 {
 	
@@ -678,8 +683,8 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		if (iActError == OPEN_OK)
 		{
 			// If we can open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
-			SetTitle(myProgName);
+			//wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+			//SetTitle(myProgName);
 			
 		}
 		else
@@ -793,40 +798,26 @@ void ToolMapFrame::OnEditObjectAttributes (wxCommandEvent & event)
 
 void ToolMapFrame::OnNewProjectExisting (wxCommandEvent & event)
 {
-	ProjectNewExistDLG * myNewPrjExistDLG = new ProjectNewExistDLG(this);
-	if (myNewPrjExistDLG->ShowModal() == wxID_OK)
-	{
-		wxLogDebug(myNewPrjExistDLG->m_New_Prj_Name);
-		
-		//// temp for testing 
-		
-		
-		 DirOperation mydirOp (myNewPrjExistDLG->m_Old_Prj_Name, myNewPrjExistDLG->m_New_Prj_Name);
-		double myPrjSize = mydirOp.GetDirectorySize();
-		wxLogDebug(_T("%.*f [MB]"),3,myPrjSize);
-		
-		wxArrayString myFiles;
-		long NumOfFileToCopy = mydirOp.GetAllDirectoryFiles(myFiles);
-		
-		wxLogDebug(_T("Number of files to copy : %ld"),NumOfFileToCopy);
-		
-		// create the destination path
-		if (mydirOp.IsPathWritable(DIROP_PATH_DESTINATION))
-		{
-			mydirOp.HasEnoughFreeSpace(myPrjSize, DIROP_PATH_DESTINATION);
-		}
-		
-		// copy the files 
-		if (mydirOp.CopyDirectory(myFiles,TRUE))
-			wxLogDebug(_T("Directory copy finished..."));
-		
-		
-		//// end of testing
-		
-		
-		
+	NewTemplatePrjWizard myWizard (this, wxID_ANY, _("New project from template file"));
+	if(myWizard.ShowWizard() != wxID_OK){
+		return;
 	}
-	delete myNewPrjExistDLG;
+
+	wxBeginBusyCursor();
+	wxASSERT(myWizard.GetBackupFileData()->IsValid());
+	BackupManager myBckManager(NULL);
+	
+	// close project now
+	m_PManager->CloseProject();
+	
+	// restore
+	if(myBckManager.Restore(*(myWizard.GetBackupFileData()))==false){
+		wxLogError(_("Error Creating project from template"));
+		return;
+	}
+	wxEndBusyCursor();
+	
+	m_PManager->OpenProject(myWizard.GetBackupFileData()->GetInputDirectory().GetFullPath());
 }
 
 

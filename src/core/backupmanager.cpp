@@ -90,7 +90,6 @@ void BackupFile::SetDate(wxDateTime value) {
 
 /***************** BACKUP MANAGER **********************/
 BackupManager::BackupManager(DataBaseTM * database) {
-    wxASSERT(database);
     m_Database = database;
 }
 
