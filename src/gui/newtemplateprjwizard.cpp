@@ -20,6 +20,7 @@
 
 BEGIN_EVENT_TABLE(NewTemplatePrjWizard, wxWizard)
 	EVT_IDLE(NewTemplatePrjWizard::OnUpdateNextBtn)
+	EVT_FILEPICKER_CHANGED(ID_NEWPRJ_SOURCEDIRCTRL,NewTemplatePrjWizard::OnSourceDirChanged)
 END_EVENT_TABLE()
 
 
@@ -55,6 +56,23 @@ void NewTemplatePrjWizard::OnUpdateNextBtn(wxIdleEvent & event) {
 }
 
 
+void NewTemplatePrjWizard::OnSourceDirChanged(wxFileDirPickerEvent & event) {
+	m_DateCtrl->SetLabel(wxEmptyString);
+	m_CommentCtrl->SetLabel(wxEmptyString);
+	
+	BackupFile myFileInfo;
+	BackupManager myBkpManager (NULL);
+	if(myBkpManager.GetFileInfo(m_SourceFileCtrl->GetFileName(), myFileInfo) == false){
+		return;
+	}
+	
+	m_DateCtrl->SetLabel(myFileInfo.GetDate().Format(_T("%d %b %Y")) + _T(" ") + 
+						 myFileInfo.GetDate().FormatISOTime());
+	m_CommentCtrl->SetLabel(myFileInfo.GetComment());
+	
+}
+
+
 
 void NewTemplatePrjWizard::_CreateControls() {
 	// Source Page
@@ -71,6 +89,36 @@ void NewTemplatePrjWizard::_CreateControls() {
 											_("Toolmap backup files (*.tmbk)|*.tmbk"),
 											wxDefaultPosition, wxSize( 200,-1 ), wxFLP_DEFAULT_STYLE);
 	bSizer1->Add( m_SourceFileCtrl, 0, wxEXPAND|wxBOTTOM, 5 );
+	
+	wxStaticBoxSizer* sbSizer2;
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_SourcePage,
+													 wxID_ANY, _("Template information") ), wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer2;
+	fgSizer2 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer2->AddGrowableCol( 1 );
+	fgSizer2->SetFlexibleDirection( wxBOTH );
+	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticText * m_staticText5 = new wxStaticText( m_SourcePage, wxID_ANY, _("Date:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5->Wrap( -1 );
+	fgSizer2->Add( m_staticText5, 0, wxALL, 5 );
+	
+	m_DateCtrl = new wxStaticText( m_SourcePage, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_DateCtrl->Wrap( -1 );
+	fgSizer2->Add( m_DateCtrl, 0, wxALL, 5 );
+	
+	wxStaticText * m_staticText4 = new wxStaticText( m_SourcePage, wxID_ANY, _("Comment:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText4->Wrap( -1 );
+	fgSizer2->Add( m_staticText4, 0, wxALL, 5 );
+	
+	m_CommentCtrl = new wxStaticText( m_SourcePage, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_CommentCtrl->Wrap( -1 );
+	fgSizer2->Add( m_CommentCtrl, 0, wxALL, 5 );
+	
+	sbSizer2->Add( fgSizer2, 1, wxEXPAND, 5 );
+	
+	bSizer1->Add( sbSizer2, 0, wxEXPAND|wxALL, 5 );
 	
 	m_SourcePage->SetSizer( bSizer1 );
 	m_SourcePage->Layout();
