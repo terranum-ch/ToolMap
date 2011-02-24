@@ -122,7 +122,7 @@ bool tmDrawer::DrawExtentIntoBitmap (int width, const wxColour & col)
 bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 {
 	m_ActuallayerID = itemProp->GetID();
-	switch (itemProp->GetType())
+	switch (itemProp->GetSpatialType())
 	{
 		case LAYER_SPATIAL_LINE:
 			DrawLines(itemProp, pdata);
