@@ -48,14 +48,17 @@ const int ID_SYMDLGPLG_PANEL4 = 10088;
 const int ID_SYMDLGPLG_TRANSPARENCY = 10086;
 
 
-struct tmSymbolDataPolygonUnique
+class tmSymbolDataPolygonUnique
 {
+public:
 	int m_PanelNo;
 	wxColour m_bColour;
 	int m_bWidth;
 	wxColour m_fColour;
 	int m_fStyle;
 	int m_GlobalTransparency;
+
+	tmSymbolDataPolygonUnique();
 };
 
 
