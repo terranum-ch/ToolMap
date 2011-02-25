@@ -55,16 +55,11 @@ bool tmSymbolDLG::Create( wxWindow* parent, wxWindowID id, const wxString& capti
 }
 
 
-void tmSymbolDLG::SetSizeHint ()
-{
-	wxSize mySize =  m_SymbolPanel->GetBestSize();
-	wxSize myDlgSize = GetSizer()->ComputeFittingWindowSize(this);
-	wxSize myTotSize;
-	myTotSize.SetWidth(mySize.GetWidth());
-	myTotSize.SetHeight(mySize.GetHeight() + myDlgSize.GetHeight());
-	SetMinSize(myTotSize);
-	SetSize(myTotSize);
+
+void tmSymbolDLG::SetSizeHint (){
+	GetSizer()->SetSizeHints(this);
 }
+
 
 
 tmSymbolDLG::~tmSymbolDLG()
