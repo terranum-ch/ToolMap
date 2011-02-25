@@ -26,9 +26,9 @@
 #endif
 
 
-#include "../database/database_tm.h"
 #include "queriesdata.h"
 
+class DataBaseTM;
 
 class QueriesBuilder {
   private:

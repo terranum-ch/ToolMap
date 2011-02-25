@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "queriesbuilder.h"
+#include "../database/database_tm.h"
 
 
 bool QueriesBuilder::_IsQueryNull() {

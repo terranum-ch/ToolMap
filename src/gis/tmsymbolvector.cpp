@@ -19,6 +19,7 @@
 
 #include "tmsymbolvector.h"
 #include "tmsymbolvectorline.h"
+#include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
 
@@ -64,12 +65,17 @@ wxColour tmSymbolVector::GetColourWithTransparency (const wxColour & col, int tr
 
  
 
-tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES spattype)
+tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname)
 {
 	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
-			return new tmSymbolVectorLine();
+			if (tocname == TOC_NAME_LINES) {
+				return new tmSymbolVectorLineMultiple();
+			}
+			else {
+				return new tmSymbolVectorLine();
+			}
 			break;
 		case LAYER_SPATIAL_POINT:
 			return new tmSymbolVectorPoint();

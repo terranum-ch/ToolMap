@@ -18,6 +18,8 @@
 // comment doxygen
 
 #include "tmlayerproperties.h"
+#include "tmsymbol.h"
+
 
 
 /***************************************************************************//**
@@ -84,7 +86,7 @@ void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 		return;
 	}
 	
-	m_LayerSymbol = tmSymbol::CreateSymbolBasedOnType(m_LayerSpatialType);
+	m_LayerSymbol = tmSymbol::CreateSymbolBasedOnType(GetSpatialType(), GetType());
 	
 	// unserialize object
 	if (m_LayerSymbol && !itemBinSymbology.IsEmpty())

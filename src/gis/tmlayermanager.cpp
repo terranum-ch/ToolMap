@@ -672,7 +672,8 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 		return;
 	}
 	
-	
+	wxASSERT(m_DB);
+	itemProp->GetSymbolRef()->SetDatabase(m_DB);
 	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,wxGetMousePosition())==wxID_OK){
 		ReloadProjectLayersThreadStart(false);
 	}

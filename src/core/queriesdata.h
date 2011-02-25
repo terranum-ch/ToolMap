@@ -25,10 +25,10 @@
     #include <wx/wx.h>
 #endif
 
-#include "../database/database_tm.h"
 #include "../core/projectdefmemory.h"
 #include "../gis/tmattributionmanager.h"
 
+class DataBaseTM;
 
 enum tmQUERIES_TYPE {
 	QUERY_LAYERS = 0,

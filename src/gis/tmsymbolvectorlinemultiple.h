@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmsymbolvector.h
-				Deals with GIS vector symbology and associed dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsymbolvectorlinemultiple.h
+ -------------------
+ copyright            : (C) 2011 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,11 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
 
 
-#ifndef _TM_SYMBOLVECTOR_H_
-#define _TM_SYMBOLVECTOR_H_
+#ifndef _TM_SYMBOLVECTORLINE_MULTIPLE_H_
+#define _TM_SYMBOLVECTORLINE_MULTIPLE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -29,23 +27,28 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmsymbol.h"	// tmSymbol class definition
-#include "tmsymboldlg.h" 
+#include "tmsymbolvector.h"	// tmSymbol class definition
+#include "tmsymboldlgline.h"
+#include "tmsymboldlglinemultiple.h"
 
-class tmSymbolVector : public tmSymbol
+class tmSymbolVectorLineMultiple : public tmSymbolVector
 	{
 	private:
+		tmSymbolDataLineUnique m_lSymUnique;
+		
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
+		virtual bool GetDialogData(tmSymbolDLG * dlg);
 	protected:
-		wxColour GetColourWithTransparency (const wxColour & col, int trans);
-		
 	public:
-		tmSymbolVector();
-		~tmSymbolVector();
+		tmSymbolVectorLineMultiple();
+		tmSymbolVectorLineMultiple(const tmSymbolVectorLineMultiple & origin);
+		~tmSymbolVectorLineMultiple();
 		
-		static tmSymbolVector * CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname);
-		static tmSymbolVector * CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, 
-																   tmSymbol * origin);
+		virtual bool Serialize(tmSerialize &s);
+		wxColour GetColour();
+		int GetWidth() {return m_lSymUnique.m_Width;}
+		int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
+		virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
 	};
 
 
