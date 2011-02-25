@@ -673,20 +673,8 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 	}
 	
 	
-	tmGISData * myData = tmGISData::LoadLayer(itemProp);
-	if (!myData)
-	{
-		wxLogError(_("Error loading GIS data for metadata"));
-		return;
-	}
-	wxString myMetaData = myData->GetMetaDataAsHtml();
-	wxDELETE(myData);
-	
-	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,
-													 myMetaData,
-													 wxGetMousePosition())==wxID_OK)
-	{
-		ReloadProjectLayersThreadStart(FALSE);
+	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,wxGetMousePosition())==wxID_OK){
+		ReloadProjectLayersThreadStart(false);
 	}
 	
 }

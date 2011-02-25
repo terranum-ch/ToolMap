@@ -79,22 +79,17 @@ tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlg
  @date 15 October 2008
  *******************************************************************************/
 int tmSymbol::ShowSymbologyDialog (wxWindow * parent, 
-								   const wxString & metadata,
 								   const wxPoint & dlgpos)
 {
 	tmSymbolDLG * mydlg = GetSymbolDialog(parent,dlgpos);
-	//mydlg->SetMetaData(metadata);
 	int iRetVal = wxID_CANCEL;
 	
-	
-	if (mydlg->ShowModal() == wxID_OK)
-	{
+	if (mydlg->ShowModal() == wxID_OK){
 		GetDialogData(mydlg);
 		iRetVal = wxID_OK;
 	}
 		
-	delete mydlg;
-	
+	wxDELETE(mydlg);
 	return iRetVal;
 }
 
