@@ -47,7 +47,8 @@ tmSymbolVectorLineMultiple::~tmSymbolVectorLineMultiple()
 
 tmSymbolDLG * tmSymbolVectorLineMultiple::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
-	tmSymbolDLGLineMultiple * dlg = new tmSymbolDLGLineMultiple(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+	wxASSERT(GetDatabase());
+	tmSymbolDLGLineMultiple * dlg = new tmSymbolDLGLineMultiple(parent, GetDatabase(), SYMBOL_TMSYMBOLDLG_IDNAME,
 																SYMBOL_TMSYMBOLDLG_TITLE,
 																dlgpos);
 	//dlg->SetDialogData(m_lSymUnique);

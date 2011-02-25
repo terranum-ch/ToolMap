@@ -27,19 +27,21 @@ tmSymbolDLGLineMultiple::tmSymbolDLGLineMultiple()
 
 
 
-tmSymbolDLGLineMultiple::tmSymbolDLGLineMultiple( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+tmSymbolDLGLineMultiple::tmSymbolDLGLineMultiple( wxWindow* parent, DataBaseTM * database, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
     _Init();
-    Create(parent, id, caption, pos, size, style);
+    Create(parent, database, id, caption, pos, size, style);
 }
 
 
 
-bool tmSymbolDLGLineMultiple::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool tmSymbolDLGLineMultiple::Create( wxWindow* parent, DataBaseTM * database, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
-	    
+	m_pDB = database;
+	wxASSERT(m_pDB);
+    
 	CreateControlsLine();
 	return true;
 }
@@ -56,6 +58,7 @@ tmSymbolDLGLineMultiple::~tmSymbolDLGLineMultiple()
 
 void tmSymbolDLGLineMultiple::_Init()
 {
+	m_pDB = NULL;
 	m_LineColourCtrl		= NULL;
 	m_LineWidthCtrl			= NULL;
 	m_LinePatternCtrl		= NULL;
