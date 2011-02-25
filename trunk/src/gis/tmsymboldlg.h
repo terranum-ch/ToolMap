@@ -56,7 +56,7 @@ const int ID_SYMDLG_PANEL = 10159;
 class tmSymbolDLG: public wxDialog
 	{    
 	private:
-		void Init();
+		void _Init();
 		void CreateControlsBasic();
 		
 		DECLARE_DYNAMIC_CLASS( tmSymbolDLG )

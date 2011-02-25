@@ -58,13 +58,13 @@ struct tmSymbolDataPointUnique
 class tmSymbolDLGPoint : public tmSymbolDLG
 	{    
 	private:
-		tmColourPickerCtrl * m_PointColourCtrl;
+		wxColourPickerCtrl * m_PointColourCtrl;
 		wxSpinCtrl* m_PointWidthCtrl;
 		tmSliderWithText * m_TransparencySlider;
 		
 		tmSymbolDataPointUnique m_DlgData;
 		
-		void Init();
+		void _Init();
 		void CreateControlsPoint();
 		
 		virtual bool TransferDataToWindow();
