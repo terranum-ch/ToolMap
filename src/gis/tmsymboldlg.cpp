@@ -18,14 +18,13 @@
 // comment doxygen
 
 #include "tmsymboldlg.h"
+#include "../database/database_tm.h"
+#include "../database/databaseresult.h"
+
 
 
 IMPLEMENT_DYNAMIC_CLASS( tmSymbolDLG, wxDialog )
 
-
-
-BEGIN_EVENT_TABLE( tmSymbolDLG, wxDialog )
-END_EVENT_TABLE()
 
 
 tmSymbolDLG::tmSymbolDLG()
@@ -61,6 +60,48 @@ void tmSymbolDLG::SetSizeHint (){
 }
 
 
+void tmSymbolDLG::_LoadQueries(wxChoice * choicectrl, TOC_GENERIC_NAME toctarget){
+	wxASSERT(choicectrl);
+	wxASSERT(m_pDB);
+	choicectrl->Clear();
+	m_QueriesId.Clear();
+	
+	wxString myQuery = wxString::Format(_T("SELECT QUERIES_ID, QUERIES_NAME FROM %s WHERE QUERIES_TARGET= %d"),
+										TABLE_NAME_QUERIES,
+										static_cast<int>(toctarget));
+	
+	
+	if(m_pDB->DataBaseQuery(myQuery)==false){
+		wxLogError(_T("Error running query: ") + myQuery);
+		return;
+	}
+	
+	DataBaseResult * myResults = new DataBaseResult(); 
+	m_pDB->DataBaseGetResults(myResults);
+	if (myResults->GetRowCount() == 0) {
+		choicectrl->Append(_("NO QUERIES FOUND!"));
+		m_QueriesId.Add(wxNOT_FOUND);
+		wxDELETE(myResults);
+		return;
+	}
+	
+	wxASSERT(myResults->GetColCount() == 2);
+	for (unsigned int i = 0 ; i< myResults->GetRowCount(); i++) {
+		myResults->NextRow();
+		wxString myQueryValue = wxEmptyString;
+		long myQueryId = wxNOT_FOUND;
+		myResults->GetValue(0, myQueryId);
+		myResults->GetValue(1, myQueryValue);
+		
+		m_QueriesId.Add(myQueryId);
+		choicectrl->Append(myQueryValue);
+	}
+	
+	wxDELETE(myResults);
+	wxASSERT(m_pDB->DataBaseHasResults() == false);
+}
+
+
 
 tmSymbolDLG::~tmSymbolDLG()
 {
@@ -71,6 +112,7 @@ tmSymbolDLG::~tmSymbolDLG()
 void tmSymbolDLG::_Init()
 {
 	m_SymbolPanel = NULL;
+	m_pDB = NULL;
 }
 
 
