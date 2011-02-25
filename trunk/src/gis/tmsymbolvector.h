@@ -44,7 +44,7 @@ class tmSymbolVector : public tmSymbol
 		~tmSymbolVector();
 		
 		static tmSymbolVector * CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname);
-		static tmSymbolVector * CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, 
+		static tmSymbolVector * CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname,
 																   tmSymbol * origin);
 	};
 

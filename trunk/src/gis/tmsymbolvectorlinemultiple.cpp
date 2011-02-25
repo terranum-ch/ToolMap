@@ -40,8 +40,6 @@ tmSymbolVectorLineMultiple::tmSymbolVectorLineMultiple()
 
 tmSymbolVectorLineMultiple::tmSymbolVectorLineMultiple(const tmSymbolVectorLineMultiple & origin)
 {
-	
-	
 	m_lSymMultiple.m_PanelNo = origin.m_lSymMultiple.m_PanelNo;
 	m_lSymMultiple.m_ColourUnique = origin.m_lSymMultiple.m_ColourUnique;
 	m_lSymMultiple.m_ShapeUnique = origin.m_lSymMultiple.m_ShapeUnique;
@@ -81,6 +79,10 @@ tmSymbolDLG * tmSymbolVectorLineMultiple::GetSymbolDialog (wxWindow * parent, co
 bool tmSymbolVectorLineMultiple::GetDialogData(tmSymbolDLG * dlg)
 {
 	m_lSymMultiple = ((tmSymbolDLGLineMultiple *) dlg)->GetDialogData();
+	m_lSymUnique.m_Colour = m_lSymMultiple.m_ColourUnique;
+	m_lSymUnique.m_Shape = m_lSymMultiple.m_ShapeUnique;
+	m_lSymUnique.m_Width = m_lSymMultiple.m_WidthUnique;
+	m_lSymUnique.m_GlobalTransparency = m_lSymMultiple.m_GlobalTransparency;
 	return true;
 }
 

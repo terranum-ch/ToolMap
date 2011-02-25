@@ -49,7 +49,6 @@ const int ID_SYMDLGL_TRANSPARENCY = 10086;
 
 struct tmSymbolDataLineUnique
 {
-	int m_PanelNo;
 	wxColour m_Colour;
 	int m_Shape;
 	int m_Width;

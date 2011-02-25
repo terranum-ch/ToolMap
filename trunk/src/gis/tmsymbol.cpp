@@ -116,14 +116,14 @@ tmSymbol * tmSymbol::CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES spattype, TOC
 }
 
 
-tmSymbol * tmSymbol::CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, tmSymbol * origin)
+tmSymbol * tmSymbol::CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname, tmSymbol * origin)
 {
 	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
 		case LAYER_SPATIAL_POINT:
 		case LAYER_SPATIAL_POLYGON:
-			return tmSymbolVector::CreateCopySymbolVectorBasedOnType(spattype, origin);
+			return tmSymbolVector::CreateCopySymbolVectorBasedOnType(spattype, tocname, origin);
 			break;
 			
 		case LAYER_SPATIAL_RASTER:
