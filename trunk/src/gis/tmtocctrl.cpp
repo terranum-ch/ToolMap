@@ -18,6 +18,8 @@
 // comment doxygen
 
 #include "tmtocctrl.h"
+#include "tmsymbol.h"				// for symbology
+
 
 
 

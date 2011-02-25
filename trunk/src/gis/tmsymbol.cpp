@@ -20,11 +20,11 @@
 #include "tmsymbol.h"
 #include "tmsymbolvector.h"
 #include "tmsymbolraster.h"
+#include "../database/database_tm.h"
 
 tmSymbol::tmSymbol()
 {
-	
-	
+	m_pDB = NULL;
 }
 
 
@@ -94,14 +94,14 @@ int tmSymbol::ShowSymbologyDialog (wxWindow * parent,
 }
 
 
-tmSymbol * tmSymbol::CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES spattype)
+tmSymbol * tmSymbol::CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname)
 {
 	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
 		case LAYER_SPATIAL_POINT:
 		case LAYER_SPATIAL_POLYGON:
-			return tmSymbolVector::CreateSymbolVectorBasedOnType(spattype);
+			return tmSymbolVector::CreateSymbolVectorBasedOnType(spattype, tocname);
 			break;
 			
 		case LAYER_SPATIAL_RASTER:

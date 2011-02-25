@@ -37,10 +37,6 @@
 //#include "../core/projectdefmemory.h"	for PRJDEF_LAYERS_TYPE
 			// for image list for toc
 #include "tmtocctrlmenu.h"			// for contextual menu
-#include "tmsymbol.h"				// for symbology
-
-
-
 
 
 // EVENT FOR TOC CTRL

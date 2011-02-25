@@ -33,28 +33,33 @@
 #include "../components/wxserialize/tmserialize.h"		// for object serialization
 #include "tmlayerpropertiesdef.h"						// for tmLayerProperties definition
 
+class DataBaseTM;
 
 class tmSymbol : public wxObject
 	{
 	private:
+		DataBaseTM * m_pDB;
+		
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos); 
 		virtual bool GetDialogData(tmSymbolDLG * dlg);
 		
 	protected:
 		int m_LayerTransparency;
 		char ConvertTransparency (int itransparency);
+		DataBaseTM * GetDatabase(){return m_pDB;}
 		
 	public:
 		tmSymbol();
 		~tmSymbol();
 		
-		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype);
+		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname);
 		static tmSymbol * CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, tmSymbol * origin);
 		
 		int ShowSymbologyDialog (wxWindow * parent,
 								 const wxPoint & dlgpos = wxDefaultPosition);
 		virtual bool Serialize(tmSerialize &s);
 		virtual int GetTransparency(){return 0;}
+		void SetDatabase (DataBaseTM * database){m_pDB = database;}
 		
 	};
 

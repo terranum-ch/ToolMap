@@ -32,10 +32,9 @@
 #include <wx/treectrl.h>
 #include <wx/filename.h>
 #include "tmlayerpropertiesdef.h"
-#include "tmsymbol.h"
-
 #include <wx/mstream.h>
 
+class tmSymbol;
 
 /***************************************************************************//**
  @brief Storing object of layer type
