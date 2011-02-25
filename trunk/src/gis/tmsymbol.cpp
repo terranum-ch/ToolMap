@@ -81,7 +81,7 @@ tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlg
 int tmSymbol::ShowSymbologyDialog (wxWindow * parent, 
 								   const wxPoint & dlgpos)
 {
-	tmSymbolDLG * mydlg = GetSymbolDialog(parent,dlgpos);
+	tmSymbolDLG * mydlg = GetSymbolDialog(parent, dlgpos);
 	int iRetVal = wxID_CANCEL;
 	
 	if (mydlg->ShowModal() == wxID_OK){

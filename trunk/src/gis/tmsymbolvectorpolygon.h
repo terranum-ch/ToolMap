@@ -32,6 +32,7 @@
 #include "tmsymbolvector.h"	// tmSymbol class definition
 #include "tmsymboldlgpolygon.h" 
 
+
 class tmSymbolVectorPolygon : public tmSymbolVector
 	{
 	private:
