@@ -30,14 +30,14 @@ END_EVENT_TABLE()
 
 tmSymbolDLGRaster::tmSymbolDLGRaster()
 {
-    Init();
+    _Init();
 }
 
 
 
 tmSymbolDLGRaster::tmSymbolDLGRaster( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-    Init();
+    _Init();
     Create(parent, id, caption, pos, size, style);
 }
 
@@ -63,7 +63,7 @@ tmSymbolDLGRaster::~tmSymbolDLGRaster()
 
 
 
-void tmSymbolDLGRaster::Init()
+void tmSymbolDLGRaster::_Init()
 {
 	m_UseTransparencyColourCtrl	= NULL;
 	m_TransparencyColourCtrl	= NULL;
@@ -74,30 +74,8 @@ void tmSymbolDLGRaster::Init()
 
 void tmSymbolDLGRaster::CreateControls()
 {
-	wxString sFunction = wxString::FromAscii(__FUNCTION__);
-	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
-												   sFunction.c_str(), __LINE__); 
-	wxString sErrMsg = wxString::Format(_T("%s Undefined m_Notebook"), sFunctionLineError.c_str());
-	wxASSERT_MSG(m_SymbolPanel,sErrMsg);
-
-	
-	
-	//wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGRASTER_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     m_SymbolPanel->SetSizer(itemBoxSizer8);
-	
-    /*wxStaticBox* itemStaticBoxSizer9Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Color transparency"));
-    wxStaticBoxSizer* itemStaticBoxSizer9 = new wxStaticBoxSizer(itemStaticBoxSizer9Static, wxVERTICAL);
-    itemBoxSizer8->Add(itemStaticBoxSizer9, 1, wxGROW|wxALL, 5);
-    m_UseTransparencyColourCtrl = new wxCheckBox( m_SymbolPanel, 
-												 ID_SYMDLGRASTER_USE_TRANSPARENCY_COLOR, 
-												 _("Use color transparency"), 
-												 wxDefaultPosition, wxDefaultSize, 0 );
-    m_UseTransparencyColourCtrl->SetValue(false);
-    itemStaticBoxSizer9->Add(m_UseTransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-	
-    m_TransparencyColourCtrl = new tmColourPickerCtrl( m_SymbolPanel, ID_SYMDLGRASTER_TRANSPARENCY_COLOR);
-    itemStaticBoxSizer9->Add(m_TransparencyColourCtrl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);*/
 	
     wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer12 = new wxStaticBoxSizer(itemStaticBoxSizer12Static, wxHORIZONTAL);
@@ -114,10 +92,7 @@ void tmSymbolDLGRaster::CreateControls()
 
 bool tmSymbolDLGRaster::TransferDataToWindow()
 {
-	//m_UseTransparencyColourCtrl->SetValue(m_DlgData.m_bUseColorTransparency);
-	//m_TransparencyColourCtrl->SetColour(m_DlgData.m_TransparencyColour);
 	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
-	
 	return TRUE;
 }
 
@@ -125,10 +100,7 @@ bool tmSymbolDLGRaster::TransferDataToWindow()
 
 bool tmSymbolDLGRaster::TransferDataFromWindow()
 {
-	//m_DlgData.m_bUseColorTransparency = m_UseTransparencyColourCtrl->GetValue();
-	//m_DlgData.m_TransparencyColour = m_TransparencyColourCtrl->GetColour();
 	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
-	
 	return TRUE;
 }
 

@@ -30,14 +30,14 @@ END_EVENT_TABLE()
 
 tmSymbolDLG::tmSymbolDLG()
 {
-    Init();
+    _Init();
 }
 
 
 
 tmSymbolDLG::tmSymbolDLG( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-    Init();
+    _Init();
     Create(parent, id, caption, pos, size, style);
 }
 
@@ -68,7 +68,7 @@ tmSymbolDLG::~tmSymbolDLG()
 }
 
 
-void tmSymbolDLG::Init()
+void tmSymbolDLG::_Init()
 {
 	m_SymbolPanel = NULL;
 }

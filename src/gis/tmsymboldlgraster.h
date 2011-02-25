@@ -60,7 +60,7 @@ class tmSymbolDLGRaster : public tmSymbolDLG
 		tmSymbolDataRaster m_DlgData;
 		
 				
-		void Init();
+		void _Init();
 		void CreateControls();
 		
 		virtual bool TransferDataToWindow();

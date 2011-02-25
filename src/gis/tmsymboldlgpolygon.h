@@ -65,15 +65,15 @@ public:
 class tmSymbolDLGPolygon : public tmSymbolDLG
 	{    
 	private:
-		tmColourPickerCtrl * m_PolygonBorderColourCtrl;
-		tmColourPickerCtrl * m_PolygonFillColourCtrl;
+		wxColourPickerCtrl * m_PolygonBorderColourCtrl;
+		wxColourPickerCtrl * m_PolygonFillColourCtrl;
 		wxSpinCtrl* m_PolygonBorderWidthCtrl;
 		wxChoice* m_PolygonFillPattern;
 		tmSliderWithText * m_TransparencySlider;
 		
 		tmSymbolDataPolygonUnique m_DlgData;
 		
-		void Init();
+		void _Init();
 		void CreateControlsPoly();
 		
 		virtual bool TransferDataToWindow();

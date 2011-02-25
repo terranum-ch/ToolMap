@@ -61,14 +61,14 @@ struct tmSymbolDataLineUnique
 class tmSymbolDLGLine : public tmSymbolDLG
 	{    
 	private:
-		tmColourPickerCtrl * m_LineColourCtrl;
+		wxColourPickerCtrl * m_LineColourCtrl;
 		wxSpinCtrl* m_LineWidthCtrl;
 		wxChoice* m_LinePatternCtrl;
 		tmSliderWithText * m_TransparencySlider;
 		
 		tmSymbolDataLineUnique m_DlgData;
 		
-		void Init();
+		void _Init();
 		void CreateControlsLine();
 		
 		virtual bool TransferDataToWindow();

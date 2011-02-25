@@ -30,14 +30,14 @@ END_EVENT_TABLE()
 
 tmSymbolDLGPoint::tmSymbolDLGPoint()
 {
-    Init();
+    _Init();
 }
 
 
 
 tmSymbolDLGPoint::tmSymbolDLGPoint( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-    Init();
+    _Init();
     Create(parent, id, caption, pos, size, style);
 }
 
@@ -49,7 +49,6 @@ bool tmSymbolDLGPoint::Create( wxWindow* parent, wxWindowID id, const wxString& 
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	    
 	CreateControlsPoint();
-	
 	return true;
 }
 
@@ -63,7 +62,7 @@ tmSymbolDLGPoint::~tmSymbolDLGPoint()
 
 
 
-void tmSymbolDLGPoint::Init()
+void tmSymbolDLGPoint::_Init()
 {
 	m_PointColourCtrl		= NULL;
 	m_PointWidthCtrl		= NULL;
@@ -74,57 +73,25 @@ void tmSymbolDLGPoint::Init()
 
 void tmSymbolDLGPoint::CreateControlsPoint()
 {
-	wxString sFunction = wxString::FromAscii(__FUNCTION__);
-	wxString sFunctionLineError = wxString::Format( _T("%s line %d : "),
-												   sFunction.c_str(), __LINE__); 
-	wxString sErrMsg = wxString::Format(_T("%s Undefined m_Notebook"), sFunctionLineError.c_str());
-	wxASSERT_MSG(m_SymbolPanel,sErrMsg);
-	
-	
-	//wxPanel* itemPanel7 = new wxPanel( m_NoteBook, ID_SYMDLGP_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     m_SymbolPanel->SetSizer(itemBoxSizer8);
 	
-    wxNotebook* itemNotebook9 = new wxNotebook( m_SymbolPanel, ID_SYMDLGP_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
-	
-    wxPanel* itemPanel10 = new wxPanel( itemNotebook9, ID_SYMDLGP_PANEL2, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxFlexGridSizer* itemFlexGridSizer11 = new wxFlexGridSizer(2, 2, 0, 0);
     itemFlexGridSizer11->AddGrowableCol(1);
-    itemPanel10->SetSizer(itemFlexGridSizer11);
 	
-    wxStaticText* itemStaticText12 = new wxStaticText( itemPanel10, wxID_STATIC, _("Color :"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText12 = new wxStaticText( m_SymbolPanel, wxID_STATIC, _("Color :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    m_PointColourCtrl = new tmColourPickerCtrl(itemPanel10, ID_SYMDLGP_COLOR);
+    m_PointColourCtrl = new wxColourPickerCtrl(m_SymbolPanel, ID_SYMDLGP_COLOR);
     itemFlexGridSizer11->Add(m_PointColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    wxStaticText* itemStaticText14 = new wxStaticText( itemPanel10, wxID_STATIC, _("Radius :"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText14 = new wxStaticText( m_SymbolPanel, wxID_STATIC, _("Radius :"), wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    m_PointWidthCtrl = new wxSpinCtrl( itemPanel10, ID_SYMDLGP_WIDTH, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+    m_PointWidthCtrl = new wxSpinCtrl( m_SymbolPanel, ID_SYMDLGP_WIDTH, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
     itemFlexGridSizer11->Add(m_PointWidthCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
-    itemNotebook9->AddPage(itemPanel10, _("Unique"));
-	
-    wxPanel* itemPanel16 = new wxPanel( itemNotebook9, ID_SYMDLGP_PANEL3, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxVERTICAL);
-    itemPanel16->SetSizer(itemBoxSizer17);
-	
-    wxStaticText* itemStaticText18 = new wxStaticText( itemPanel16, wxID_STATIC, _("NOT IMPLEMENTED NOW"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer17->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-	
-    itemNotebook9->AddPage(itemPanel16, _("Discrete"));
-	
-    wxPanel* itemPanel19 = new wxPanel( itemNotebook9, ID_SYMDLGP_PANEL4, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-    wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxVERTICAL);
-    itemPanel19->SetSizer(itemBoxSizer20);
-	
-    wxStaticText* itemStaticText21 = new wxStaticText( itemPanel19, wxID_STATIC, _("NOT IMPLEMENTED NOW"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer20->Add(itemStaticText21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-	
-    itemNotebook9->AddPage(itemPanel19, _("Continuous"));
-	
-    itemBoxSizer8->Add(itemNotebook9, 1, wxGROW|wxALL, 5);
+    itemBoxSizer8->Add(itemFlexGridSizer11, 1, wxGROW|wxALL, 5);
 	
     wxStaticBox* itemStaticBoxSizer22Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
     wxStaticBoxSizer* itemStaticBoxSizer22 = new wxStaticBoxSizer(itemStaticBoxSizer22Static, wxHORIZONTAL);
@@ -134,7 +101,6 @@ void tmSymbolDLGPoint::CreateControlsPoint()
 												wxDefaultPosition, wxDefaultSize, 0);
     itemStaticBoxSizer22->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
 	
- 	
 	// adapt dialog size to new controls added
 	SetSizeHint();
 }
@@ -155,7 +121,6 @@ bool tmSymbolDLGPoint::TransferDataFromWindow()
 	m_DlgData.m_Colour = m_PointColourCtrl->GetColour();
 	m_DlgData.m_Radius = m_PointWidthCtrl->GetValue();
 	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
-	
 	return TRUE;
 }
 
