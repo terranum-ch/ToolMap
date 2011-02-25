@@ -128,7 +128,7 @@ bool tmSymbolVectorLineMultiple::Serialize(tmSerialize &s)
 
 
 
-wxColour tmSymbolVectorLineMultiple::GetColourUnique()
+wxColour tmSymbolVectorLineMultiple::GetColour()
 {
 	return GetColourWithTransparency(m_lSymMultiple.m_ColourUnique,
 									 m_lSymMultiple.m_GlobalTransparency);

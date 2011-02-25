@@ -27,11 +27,11 @@
     #include <wx/wx.h>
 #endif
 
-#include "tmsymbolvector.h"	// tmSymbol class definition
+#include "tmsymbolvectorline.h"	// tmSymbol class definition
 #include "tmsymboldlgline.h"
 #include "tmsymboldlglinemultiple.h"
 
-class tmSymbolVectorLineMultiple : public tmSymbolVector
+class tmSymbolVectorLineMultiple : public tmSymbolVectorLine
 	{
 	private:
 		tmSymbolDataLineMultiple m_lSymMultiple;
@@ -45,10 +45,12 @@ class tmSymbolVectorLineMultiple : public tmSymbolVector
 		~tmSymbolVectorLineMultiple();
 		
 		virtual bool Serialize(tmSerialize &s);
-		wxColour GetColourUnique();
-		//int GetWidth() {return m_lSymUnique.m_Width;}
-		//int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
+		virtual wxColour GetColour();
+		virtual int GetWidth() {return m_lSymMultiple.m_WidthUnique;}
+		virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymMultiple.m_ShapeUnique];}
 		virtual int GetTransparency(){return m_lSymMultiple.m_GlobalTransparency;}
+		
+		int GetSelectedSymbology(){return m_lSymMultiple.m_PanelNo;}
 	};
 
 

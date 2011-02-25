@@ -19,6 +19,10 @@
 
 #include "tmlayermanager.h"
 #include <wx/stdpaths.h>
+#include "tmsymbolvectorline.h"
+#include "tmsymbolvectorlinemultiple.h"
+#include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpolygon.h"
 
 
 
