@@ -34,7 +34,7 @@
 class tmSymbolVectorLineMultiple : public tmSymbolVector
 	{
 	private:
-		tmSymbolDataLineUnique m_lSymUnique;
+		tmSymbolDataLineMultiple m_lSymMultiple;
 		
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
 		virtual bool GetDialogData(tmSymbolDLG * dlg);
@@ -45,10 +45,10 @@ class tmSymbolVectorLineMultiple : public tmSymbolVector
 		~tmSymbolVectorLineMultiple();
 		
 		virtual bool Serialize(tmSerialize &s);
-		wxColour GetColour();
-		int GetWidth() {return m_lSymUnique.m_Width;}
-		int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
-		virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
+		wxColour GetColourUnique();
+		//int GetWidth() {return m_lSymUnique.m_Width;}
+		//int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
+		virtual int GetTransparency(){return m_lSymMultiple.m_GlobalTransparency;}
 	};
 
 
