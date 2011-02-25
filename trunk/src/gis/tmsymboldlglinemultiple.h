@@ -35,14 +35,27 @@
 #include "tmsymboldlg.h" // tmSymbolDlg declaration
 
 
-/*struct tmSymbolDataLineUnique
+struct tmSymbolDataLineMultiple
 {
 	int m_PanelNo;
-	wxColour m_Colour;
-	int m_Shape;
-	int m_Width;
+	
+	// unique symbology
+	wxColour m_ColourUnique;
+	int m_ShapeUnique;
+	int m_WidthUnique;
+	
+	// multiple symbology
+	long m_QueryID;
+	wxColour m_SelColourMultiple;
+	int m_SelShapeMultiple;
+	int m_SelWidthMultiple;
+	
+	wxColour m_UnSelColourMultiple;
+	int m_UnSelShapeMultiple;
+	int m_UnSelWidthMultiple;
+	
 	int m_GlobalTransparency;
-};*/
+};
 
 
 
@@ -64,7 +77,7 @@ class tmSymbolDLGLineMultiple : public tmSymbolDLG
 		wxSpinCtrl* m_MUnSelWidthCtrl;
 		
 		
-		//tmSymbolDataLineUnique m_DlgData;
+		tmSymbolDataLineMultiple m_DlgData;
 		
 		void _Init();
 		void CreateControlsLine();
@@ -88,8 +101,8 @@ class tmSymbolDLGLineMultiple : public tmSymbolDLG
 					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
 		
-		//void SetDialogData ( const tmSymbolDataLineUnique & data) {m_DlgData = data;}
-		//tmSymbolDataLineUnique GetDialogData () {return m_DlgData;}
+		void SetDialogData ( const tmSymbolDataLineMultiple & data) {m_DlgData = data;}
+		tmSymbolDataLineMultiple GetDialogData () {return m_DlgData;}
 
 	};
 

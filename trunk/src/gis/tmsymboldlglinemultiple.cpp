@@ -60,6 +60,24 @@ void tmSymbolDLGLineMultiple::_Init()
 	m_LineWidthCtrl			= NULL;
 	m_LinePatternCtrl		= NULL;
 	m_TransparencySlider	= NULL;
+	
+	m_DlgData.m_PanelNo = 0;
+	m_DlgData.m_ColourUnique = *wxBLACK;
+	m_DlgData.m_ShapeUnique = 0;
+	m_DlgData.m_WidthUnique = 1;
+	
+	// multiple symbology
+	m_DlgData.m_QueryID = wxNOT_FOUND;
+	m_DlgData.m_SelColourMultiple = *wxBLUE;
+	m_DlgData.m_SelShapeMultiple = 0;
+	m_DlgData.m_SelWidthMultiple = 1;
+	
+	m_DlgData.m_UnSelColourMultiple = *wxGREEN;
+	m_DlgData.m_UnSelShapeMultiple = 0;
+	m_DlgData.m_UnSelWidthMultiple = 1;
+	
+	m_DlgData.m_GlobalTransparency = 0;
+	
 }
 
 
@@ -117,9 +135,8 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	wxStaticBoxSizer* sbSizer10;
 	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( m_panel1, wxID_ANY, _("Query:") ), wxVERTICAL );
 	
-	wxArrayString m_MQueryCtrlChoices;
-	m_MQueryCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_MQueryCtrlChoices, 0 );
-	m_MQueryCtrl->SetSelection( 0 );
+	wxArrayString myNullValues;
+	m_MQueryCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, myNullValues);
 	sbSizer10->Add( m_MQueryCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer2->Add( sbSizer10, 0, wxEXPAND|wxALL, 5 );
@@ -149,9 +166,9 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	m_staticText2->Wrap( -1 );
 	fgSizer10->Add( m_staticText2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_MSelSymbolCtrlChoices;
-	m_MSelSymbolCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_MSelSymbolCtrlChoices, 0 );
-	m_MSelSymbolCtrl->SetSelection( 0 );
+	m_MSelSymbolCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+									(sizeof(tmSYMBOLPENSTYLES_NAME) / sizeof(wxString)),
+									tmSYMBOLPENSTYLES_NAME, 0 );
 	fgSizer10->Add( m_MSelSymbolCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxStaticText* m_staticText3;
@@ -159,7 +176,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	m_staticText3->Wrap( -1 );
 	fgSizer10->Add( m_staticText3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_MSelWidthCtrl = new wxSpinCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_MSelWidthCtrl = new wxSpinCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 1);
 	fgSizer10->Add( m_MSelWidthCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	sbSizer3->Add( fgSizer10, 1, wxEXPAND, 5 );
@@ -188,9 +205,9 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	m_staticText21->Wrap( -1 );
 	fgSizer101->Add( m_staticText21, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	wxArrayString m_MUnSelSymbolCtrlChoices;
-	m_MUnSelSymbolCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_MUnSelSymbolCtrlChoices, 0 );
-	m_MUnSelSymbolCtrl->SetSelection( 0 );
+	m_MUnSelSymbolCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+									  (sizeof(tmSYMBOLPENSTYLES_NAME) / sizeof(wxString)),
+									  tmSYMBOLPENSTYLES_NAME, 0 );
 	fgSizer101->Add( m_MUnSelSymbolCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxStaticText* m_staticText31;
@@ -198,7 +215,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	m_staticText31->Wrap( -1 );
 	fgSizer101->Add( m_staticText31, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_MUnSelWidthCtrl = new wxSpinCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 0 );
+	m_MUnSelWidthCtrl = new wxSpinCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 1);
 	fgSizer101->Add( m_MUnSelWidthCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	sbSizer31->Add( fgSizer101, 1, wxEXPAND, 5 );
@@ -236,10 +253,39 @@ bool tmSymbolDLGLineMultiple::TransferDataToWindow()
 {
 	_LoadQueries(m_MQueryCtrl, TOC_NAME_LINES);
 	
-	/*m_LineColourCtrl->SetColour(m_DlgData.m_Colour);
-	m_LinePatternCtrl->SetSelection(m_DlgData.m_Shape);
-	m_LineWidthCtrl->SetValue(m_DlgData.m_Width);
-	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);*/
+	m_SymbologyTypeCtrl->SetSelection(m_DlgData.m_PanelNo);
+	
+	// Set Unique Symbology
+	m_LineColourCtrl->SetColour(m_DlgData.m_ColourUnique);
+	m_LinePatternCtrl->SetSelection(m_DlgData.m_ShapeUnique);
+	m_LineWidthCtrl->SetValue(m_DlgData.m_WidthUnique);
+	
+	
+	// Set Multiple Symbology
+	int myQueryIndex = wxNOT_FOUND;
+	for (unsigned int i = 0; i<m_QueriesId.GetCount(); i++) {
+		if (m_DlgData.m_QueryID == m_QueriesId.Item(i)) {
+			myQueryIndex = i;
+			break;
+		}
+	}
+	if (myQueryIndex == wxNOT_FOUND) {
+		// Query was removed...
+		m_MQueryCtrl->Append(_("SELECT A QUERY!"));
+		m_MQueryCtrl->Select(m_MQueryCtrl->GetCount()-1);
+		m_QueriesId.Add(wxNOT_FOUND);
+	}
+	else {
+		m_MQueryCtrl->Select(myQueryIndex);
+	}
+	m_MSelColourCtrl->SetColour(m_DlgData.m_SelColourMultiple);
+	m_MSelSymbolCtrl->SetSelection(m_DlgData.m_SelShapeMultiple);
+	m_MSelWidthCtrl->SetValue(m_DlgData.m_SelWidthMultiple);
+	m_MUnSelColourCtrl->SetColour(m_DlgData.m_UnSelColourMultiple);
+	m_MUnSelSymbolCtrl->SetSelection(m_DlgData.m_UnSelShapeMultiple);
+	m_MUnSelWidthCtrl->SetValue(m_DlgData.m_UnSelWidthMultiple);
+	
+	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
 	return true;
 }
 
@@ -247,10 +293,26 @@ bool tmSymbolDLGLineMultiple::TransferDataToWindow()
 
 bool tmSymbolDLGLineMultiple::TransferDataFromWindow()
 {
-	/*m_DlgData.m_Colour = m_LineColourCtrl->GetColour();
-	m_DlgData.m_Shape = m_LinePatternCtrl->GetSelection();
-	m_DlgData.m_Width = m_LineWidthCtrl->GetValue();
-	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();*/
+	m_DlgData.m_PanelNo = m_SymbologyTypeCtrl->GetSelection();
+	m_DlgData.m_ColourUnique = m_LineColourCtrl->GetColour();
+	m_DlgData.m_ShapeUnique = m_LinePatternCtrl->GetSelection();
+	m_DlgData.m_WidthUnique = m_LineWidthCtrl->GetValue();
+	
+	// get query id
+	m_DlgData.m_QueryID = m_QueriesId.Item(m_MQueryCtrl->GetSelection());
+	if (m_DlgData.m_QueryID == wxNOT_FOUND) {
+		m_DlgData.m_PanelNo = 0;
+	}
+	
+	m_DlgData.m_SelColourMultiple = m_MSelColourCtrl->GetColour();
+	m_DlgData.m_SelShapeMultiple= m_MSelSymbolCtrl->GetSelection();
+	m_DlgData.m_SelWidthMultiple = m_MSelWidthCtrl->GetValue();
+	
+	m_DlgData.m_UnSelColourMultiple = m_MUnSelColourCtrl->GetColour();
+	m_DlgData.m_UnSelShapeMultiple = m_MUnSelSymbolCtrl->GetSelection();
+	m_DlgData.m_UnSelWidthMultiple = m_MUnSelWidthCtrl->GetValue();
+
+	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
 	return true;
 }
 
