@@ -93,13 +93,17 @@ tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_T
 
 
 
-tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,
+tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname,
 																	tmSymbol * origin)
 {
 	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
-			return new tmSymbolVectorLine(*((tmSymbolVectorLine*)origin));
+			if (tocname == TOC_NAME_LINES) {
+				return new tmSymbolVectorLineMultiple(*((tmSymbolVectorLineMultiple*)origin));
+			}else {
+				return new tmSymbolVectorLine(*((tmSymbolVectorLine*)origin));
+			}
 			break;
 		case LAYER_SPATIAL_POINT:
 			return new tmSymbolVectorPoint(*((tmSymbolVectorPoint*)origin));

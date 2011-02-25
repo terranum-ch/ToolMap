@@ -259,7 +259,7 @@ tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
 	m_LayerVisible = layerprop.m_LayerVisible;
 	m_LayerType = layerprop.m_LayerType;
 	
-	m_LayerSymbol = tmSymbol::CreateCopySymbolBasedOnType(m_LayerSpatialType,
+	m_LayerSymbol = tmSymbol::CreateCopySymbolBasedOnType(m_LayerSpatialType, GetType(),
 														  layerprop.m_LayerSymbol);
 	
 	

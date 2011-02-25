@@ -53,7 +53,7 @@ class tmSymbol : public wxObject
 		~tmSymbol();
 		
 		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname);
-		static tmSymbol * CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, tmSymbol * origin);
+		static tmSymbol * CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname, tmSymbol * origin);
 		
 		int ShowSymbologyDialog (wxWindow * parent,
 								 const wxPoint & dlgpos = wxDefaultPosition);
