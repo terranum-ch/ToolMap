@@ -34,7 +34,6 @@
 #include "wx/spinctrl.h"
 #include "tmsymboldlg.h" // tmSymbolDlg declaration
 
-class DataBaseTM; 
 
 /*struct tmSymbolDataLineUnique
 {
@@ -64,7 +63,6 @@ class tmSymbolDLGLineMultiple : public tmSymbolDLG
 		wxChoice* m_MUnSelSymbolCtrl;
 		wxSpinCtrl* m_MUnSelWidthCtrl;
 		
-		DataBaseTM * m_pDB;
 		
 		//tmSymbolDataLineUnique m_DlgData;
 		
@@ -79,12 +77,12 @@ class tmSymbolDLGLineMultiple : public tmSymbolDLG
 		/// Constructors
 		tmSymbolDLGLineMultiple();
 		~tmSymbolDLGLineMultiple();
-		tmSymbolDLGLineMultiple( wxWindow* parent, DataBaseTM * database, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+		tmSymbolDLGLineMultiple( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
 					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, 
 					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
 					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
 					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		bool Create( wxWindow* parent, DataBaseTM * database, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
 					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE,
 					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
 					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
