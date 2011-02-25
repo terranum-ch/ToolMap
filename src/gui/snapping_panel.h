@@ -29,6 +29,8 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/spinctrl.h>
+
 
 #include "managed_aui_wnd.h"
 #include "wxflatbutton.h"				// for flat button

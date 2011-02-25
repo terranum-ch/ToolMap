@@ -19,6 +19,11 @@
 
 #include "tmeditmanager.h"
 #include "../core/toolmap.h"
+#include "tmsymbolvectorline.h"
+#include "tmsymbolvectorlinemultiple.h"
+#include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpolygon.h"
+
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 

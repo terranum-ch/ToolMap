@@ -33,9 +33,7 @@
 #include "tmlayerproperties.h"
 #include "tmgisdata.h"
 
-#include "tmsymbolvectorline.h"
-#include "tmsymbolvectorpoint.h"
-#include "tmsymbolvectorpolygon.h"
+
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
 #include "tmselecteddatamemory.h"	// for stroing selected data into memory
@@ -73,6 +71,7 @@ class tmDrawer : public wxObject
 		
 		// drawing functions
 		bool DrawLines(tmLayerProperties * itemProp, tmGISData * pdata);
+		bool DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);

@@ -19,6 +19,11 @@
 
 #include "tmdrawer.h"
 #include "tmgisdatavectormemory.h"
+#include "tmsymbolvectorline.h"
+#include "tmsymbolvectorlinemultiple.h"
+#include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpolygon.h"
+
 
 
 bool tmDrawer::m_LogOn = true;
@@ -125,7 +130,11 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 	switch (itemProp->GetSpatialType())
 	{
 		case LAYER_SPATIAL_LINE:
-			DrawLines(itemProp, pdata);
+			if (itemProp->GetType() == TOC_NAME_LINES) {
+				DrawLinesEnhanced(itemProp, pdata);
+			}else {
+				DrawLines(itemProp, pdata);
+			}
 			break;
 		case LAYER_SPATIAL_POINT:
 			DrawPoints(itemProp, pdata);
@@ -161,8 +170,9 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
  *******************************************************************************/
 bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
-	// create pen based on symbology
 	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->GetSymbolRef();
+	
+	// create pen based on symbology
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
 	
 	// pen for selection
@@ -244,6 +254,97 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	wxDELETE(pgdc);
 	return bReturn;
 }
+
+
+
+bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata){
+	tmSymbolVectorLineMultiple * pSymbol = (tmSymbolVectorLineMultiple*) itemProp->GetSymbolRef();
+	
+	if (pSymbol->GetSelectedSymbology() == 0) { // simple symbology
+		return DrawLines(itemProp, pdata);
+	}
+	
+	/*
+	// create pens
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
+	
+	
+	wxPen mySelectionPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
+	wxPen * myVertexPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
+	
+	// define spatial filter
+	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
+	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
+	{
+		if (IsLoggingEnabled()){
+			wxLogDebug(_T("Error setting spatial filter"));
+		}
+		wxDELETE(myVPen);
+		return false;
+	}
+	
+	wxMemoryDC temp_dc;
+	temp_dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
+	
+	// iterate for all lines, will not work on a threaded version
+	// because of all wxLogDebug commands
+	int iNbVertex = 0;
+	bool bReturn = true;
+	//bool bSelected = false;
+	int iLoop = 0;
+	while (1)
+	{
+		pgdc->SetPen(myPen);
+		
+		iNbVertex = 0;
+		long myOid = 0;
+		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
+		
+		// line must have more than one vertex
+		if (iNbVertex <= 1) 
+		{
+			bReturn = false;
+			break;
+		}
+		
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+			if (m_SelMem->IsSelected(myOid)){
+				pgdc->SetPen(mySPen);
+			}
+		}
+		
+		// creating path
+		wxGraphicsPath myPath = pgdc->CreatePath();
+		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+		for (int i = 1; i< iNbVertex; i++)
+			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+		
+		pgdc->StrokePath(myPath);
+		
+		tmLayerProperties myProperty (*itemProp);
+		
+		// drawing all vertex for in edition line
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer() &&
+			myProperty.IsEditing() == true &&
+			m_SelMem->GetCount() == 1 &&
+			m_SelMem->IsSelected(myOid)){
+			myProperty.SetVertexFlags(tmDRAW_VERTEX_ALL);
+		}
+		
+		// drawing vertex
+		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, myVPen);
+		delete [] pptsReal;
+		iLoop++;
+		
+	}
+	temp_dc.SelectObject(wxNullBitmap);
+	wxDELETE( myVPen);
+	wxDELETE(pgdc);
+	return bReturn;*/
+	return true;
+}
+
 
 
 
