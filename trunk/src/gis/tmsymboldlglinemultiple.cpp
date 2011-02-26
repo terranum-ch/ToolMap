@@ -59,25 +59,7 @@ void tmSymbolDLGLineMultiple::_Init()
 	m_LineColourCtrl		= NULL;
 	m_LineWidthCtrl			= NULL;
 	m_LinePatternCtrl		= NULL;
-	m_TransparencySlider	= NULL;
-	
-	m_DlgData.m_PanelNo = 0;
-	m_DlgData.m_ColourUnique = *wxBLACK;
-	m_DlgData.m_ShapeUnique = 0;
-	m_DlgData.m_WidthUnique = 1;
-	
-	// multiple symbology
-	m_DlgData.m_QueryID = wxNOT_FOUND;
-	m_DlgData.m_SelColourMultiple = *wxBLUE;
-	m_DlgData.m_SelShapeMultiple = 0;
-	m_DlgData.m_SelWidthMultiple = 1;
-	
-	m_DlgData.m_UnSelColourMultiple = *wxGREEN;
-	m_DlgData.m_UnSelShapeMultiple = 0;
-	m_DlgData.m_UnSelWidthMultiple = 1;
-	
-	m_DlgData.m_GlobalTransparency = 0;
-	
+	m_TransparencySlider	= NULL;	
 }
 
 
@@ -256,9 +238,9 @@ bool tmSymbolDLGLineMultiple::TransferDataToWindow()
 	m_SymbologyTypeCtrl->SetSelection(m_DlgData.m_PanelNo);
 	
 	// Set Unique Symbology
-	m_LineColourCtrl->SetColour(m_DlgData.m_ColourUnique);
-	m_LinePatternCtrl->SetSelection(m_DlgData.m_ShapeUnique);
-	m_LineWidthCtrl->SetValue(m_DlgData.m_WidthUnique);
+	m_LineColourCtrl->SetColour(m_DlgData.m_Colour);
+	m_LinePatternCtrl->SetSelection(m_DlgData.m_Shape);
+	m_LineWidthCtrl->SetValue(m_DlgData.m_Width);
 	
 	
 	// Set Multiple Symbology
@@ -294,9 +276,9 @@ bool tmSymbolDLGLineMultiple::TransferDataToWindow()
 bool tmSymbolDLGLineMultiple::TransferDataFromWindow()
 {
 	m_DlgData.m_PanelNo = m_SymbologyTypeCtrl->GetSelection();
-	m_DlgData.m_ColourUnique = m_LineColourCtrl->GetColour();
-	m_DlgData.m_ShapeUnique = m_LinePatternCtrl->GetSelection();
-	m_DlgData.m_WidthUnique = m_LineWidthCtrl->GetValue();
+	m_DlgData.m_Colour = m_LineColourCtrl->GetColour();
+	m_DlgData.m_Shape = m_LinePatternCtrl->GetSelection();
+	m_DlgData.m_Width = m_LineWidthCtrl->GetValue();
 	
 	// get query id
 	m_DlgData.m_QueryID = m_QueriesId.Item(m_MQueryCtrl->GetSelection());

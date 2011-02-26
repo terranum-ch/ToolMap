@@ -32,18 +32,13 @@
 
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
-#include "tmsymboldlg.h" // tmSymbolDlg declaration
+#include "tmsymboldlgline.h" // tmSymbolDlg declaration
 
 
-struct tmSymbolDataLineMultiple
-{
+class tmSymbolDataLineMultiple : public tmSymbolDataLineUnique {
+public:
 	int m_PanelNo;
-	
-	// unique symbology
-	wxColour m_ColourUnique;
-	int m_ShapeUnique;
-	int m_WidthUnique;
-	
+		
 	// multiple symbology
 	long m_QueryID;
 	wxColour m_SelColourMultiple;
@@ -54,7 +49,16 @@ struct tmSymbolDataLineMultiple
 	int m_UnSelShapeMultiple;
 	int m_UnSelWidthMultiple;
 	
-	int m_GlobalTransparency;
+	tmSymbolDataLineMultiple(){
+		m_PanelNo = 0;
+		m_QueryID = wxNOT_FOUND;
+		m_SelColourMultiple = *wxGREEN;
+		m_SelShapeMultiple = 0;
+		m_SelWidthMultiple = 1;
+		m_UnSelColourMultiple = *wxBLUE;
+		m_UnSelShapeMultiple = 0;
+		m_UnSelWidthMultiple = 1;
+	}
 };
 
 

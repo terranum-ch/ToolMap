@@ -47,12 +47,20 @@ const int ID_SYMDLGL_PANEL4 = 10088;
 const int ID_SYMDLGL_TRANSPARENCY = 10086;
 
 
-struct tmSymbolDataLineUnique
+class tmSymbolDataLineUnique
 {
+public:
 	wxColour m_Colour;
 	int m_Shape;
 	int m_Width;
 	int m_GlobalTransparency;
+	
+	tmSymbolDataLineUnique(){
+		m_Colour = *wxBLACK;
+		m_Shape = 0;
+		m_Width = 1;
+		m_GlobalTransparency = 0;
+	}
 };
 
 

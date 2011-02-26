@@ -38,7 +38,6 @@ class tmSymbolVectorLine : public tmSymbolVector
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
 		virtual bool GetDialogData(tmSymbolDLG * dlg);
 	
-	protected:
 		tmSymbolDataLineUnique m_lSymUnique;
 
 	public:

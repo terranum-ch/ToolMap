@@ -20,30 +20,16 @@
 
 tmSymbolVectorLineMultiple::tmSymbolVectorLineMultiple()
 {
-	m_lSymMultiple.m_PanelNo = 0;
-	m_lSymMultiple.m_ColourUnique = *wxBLACK;
-	m_lSymMultiple.m_ShapeUnique = 0;
-	m_lSymMultiple.m_WidthUnique = 1;
-	m_lSymMultiple.m_GlobalTransparency = 0;
-		
-	// multiple symbology
-	m_lSymMultiple.m_QueryID = wxNOT_FOUND;
-	m_lSymMultiple.m_SelColourMultiple = *wxBLUE;
-	m_lSymMultiple.m_SelShapeMultiple = 0;
-	m_lSymMultiple.m_SelWidthMultiple = 1;
-	
-	m_lSymMultiple.m_UnSelColourMultiple = *wxGREEN;
-	m_lSymMultiple.m_UnSelShapeMultiple = 0;
-	m_lSymMultiple.m_UnSelWidthMultiple = 1;
+
 }
 
 
 tmSymbolVectorLineMultiple::tmSymbolVectorLineMultiple(const tmSymbolVectorLineMultiple & origin)
 {
 	m_lSymMultiple.m_PanelNo = origin.m_lSymMultiple.m_PanelNo;
-	m_lSymMultiple.m_ColourUnique = origin.m_lSymMultiple.m_ColourUnique;
-	m_lSymMultiple.m_ShapeUnique = origin.m_lSymMultiple.m_ShapeUnique;
-	m_lSymMultiple.m_WidthUnique = origin.m_lSymMultiple.m_WidthUnique;
+	m_lSymMultiple.m_Colour = origin.m_lSymMultiple.m_Colour;
+	m_lSymMultiple.m_Shape = origin.m_lSymMultiple.m_Shape;
+	m_lSymMultiple.m_Width = origin.m_lSymMultiple.m_Width;
 	
 	m_lSymMultiple.m_QueryID = origin.m_lSymMultiple.m_QueryID;
 	m_lSymMultiple.m_SelColourMultiple = origin.m_lSymMultiple.m_SelColourMultiple;
@@ -79,10 +65,6 @@ tmSymbolDLG * tmSymbolVectorLineMultiple::GetSymbolDialog (wxWindow * parent, co
 bool tmSymbolVectorLineMultiple::GetDialogData(tmSymbolDLG * dlg)
 {
 	m_lSymMultiple = ((tmSymbolDLGLineMultiple *) dlg)->GetDialogData();
-	m_lSymUnique.m_Colour = m_lSymMultiple.m_ColourUnique;
-	m_lSymUnique.m_Shape = m_lSymMultiple.m_ShapeUnique;
-	m_lSymUnique.m_Width = m_lSymMultiple.m_WidthUnique;
-	m_lSymUnique.m_GlobalTransparency = m_lSymMultiple.m_GlobalTransparency;
 	return true;
 }
 
@@ -93,9 +75,9 @@ bool tmSymbolVectorLineMultiple::Serialize(tmSerialize &s)
 	if(s.IsStoring())
 	{
 		s << m_lSymMultiple.m_PanelNo;
-		s << m_lSymMultiple.m_ColourUnique;
-		s << m_lSymMultiple.m_ShapeUnique;
-		s << m_lSymMultiple.m_WidthUnique;
+		s << m_lSymMultiple.m_Colour;
+		s << m_lSymMultiple.m_Shape;
+		s << m_lSymMultiple.m_Width;
 		
 		s << m_lSymMultiple.m_SelColourMultiple;
 		s << m_lSymMultiple.m_SelShapeMultiple;
@@ -109,9 +91,9 @@ bool tmSymbolVectorLineMultiple::Serialize(tmSerialize &s)
 	else
 	{
 		s >> m_lSymMultiple.m_PanelNo;
-		s >> m_lSymMultiple.m_ColourUnique;
-		s >> m_lSymMultiple.m_ShapeUnique;
-		s >> m_lSymMultiple.m_WidthUnique;
+		s >> m_lSymMultiple.m_Colour;
+		s >> m_lSymMultiple.m_Shape;
+		s >> m_lSymMultiple.m_Width;
 		
 		s >> m_lSymMultiple.m_SelColourMultiple;
 		s >> m_lSymMultiple.m_SelShapeMultiple;
@@ -132,7 +114,7 @@ bool tmSymbolVectorLineMultiple::Serialize(tmSerialize &s)
 
 wxColour tmSymbolVectorLineMultiple::GetColour()
 {
-	return GetColourWithTransparency(m_lSymMultiple.m_ColourUnique,
+	return GetColourWithTransparency(m_lSymMultiple.m_Colour,
 									 m_lSymMultiple.m_GlobalTransparency);
 }
 
