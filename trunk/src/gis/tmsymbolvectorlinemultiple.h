@@ -51,6 +51,7 @@ class tmSymbolVectorLineMultiple : public tmSymbolVectorLine
 		virtual int GetTransparency(){return m_lSymMultiple.m_GlobalTransparency;}
 		
 		int GetSelectedSymbology(){return m_lSymMultiple.m_PanelNo;}
+		tmSymbolDataLineMultiple * GetSymbology(){return &m_lSymMultiple;}
 	};
 
 

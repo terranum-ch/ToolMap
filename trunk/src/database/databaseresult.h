@@ -58,6 +58,7 @@ public:
 	
     bool NextRow();
     bool IsRowOk();
+	bool GotoRow (long row);
 
 };
 #endif

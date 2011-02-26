@@ -160,6 +160,17 @@ tmSerialize & tmSerialize::operator <<(int value)
 		AddSeparator();
 	}
 	return * this;
+}
+
+
+tmSerialize & tmSerialize::operator <<(long value)
+{
+	if (CanStore())
+	{
+		m_stream.Append(wxString::Format(_T("%ld"),value));
+		AddSeparator();
+	}
+	return * this;
 	
 }
 
@@ -206,6 +217,16 @@ tmSerialize & tmSerialize::operator >> (int & value)
 	if (ReadStream(partstream))
 	{
 		value = ReadInt(partstream);
+	}
+	return * this;
+}
+
+tmSerialize & tmSerialize::operator >> (long & value)
+{
+	wxString partstream = wxEmptyString;
+	if (ReadStream(partstream))
+	{
+		partstream.ToLong(&value);
 	}
 	return * this;
 }

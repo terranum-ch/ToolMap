@@ -43,7 +43,8 @@
 //#include "../database/database_tm.h"
 //class tmGISDataVectorMemory;
 
-
+class DataBaseTM;
+class DataBaseResult;
 
 /***************************************************************************//**
  @brief In charge of all the drawing into bitmaps
@@ -91,6 +92,9 @@ class tmDrawer : public wxObject
 		
 		static void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
 		static void DrawPoint (const wxPoint & pt, wxClientDC * pcdc);
+		
+		bool _SelectFeatureByQuery (long myQueryID, DataBaseTM * database, wxArrayLong & results);
+		bool _ExistsinResults (long Oid, const wxArrayLong & results);
 		
 	protected:
 	public:

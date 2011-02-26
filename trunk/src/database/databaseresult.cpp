@@ -222,3 +222,15 @@ bool DataBaseResult::IsRowOk() {
 	return true;
 }
 
+
+bool DataBaseResult::GotoRow (long row){
+	if (row >= (signed) mysql_num_rows(*m_ResultSet)) {
+		wxLogError(_("Row: %ld is outside the resultset!"), row);
+		return false;
+	}
+	
+	mysql_data_seek(*m_ResultSet, row);
+	return true;
+}
+
+
