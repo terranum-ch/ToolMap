@@ -36,8 +36,6 @@ class tmSymbolVector : public tmSymbol
 	{
 	private:
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-	protected:
-		wxColour GetColourWithTransparency (const wxColour & col, int trans);
 		
 	public:
 		tmSymbolVector();
@@ -45,7 +43,9 @@ class tmSymbolVector : public tmSymbol
 		
 		static tmSymbolVector * CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname);
 		static tmSymbolVector * CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname,
-																   tmSymbol * origin);
+																   tmSymbol * origin);		
+		wxColour GetColourWithTransparency (const wxColour & col, int trans);
+
 	};
 
 

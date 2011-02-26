@@ -87,6 +87,7 @@ bool tmSymbolVectorLineMultiple::Serialize(tmSerialize &s)
 		s << m_lSymMultiple.m_UnSelWidthMultiple;
 		
 		s << m_lSymMultiple.m_GlobalTransparency;
+		s << m_lSymMultiple.m_QueryID;
 	}
 	else
 	{
@@ -103,6 +104,7 @@ bool tmSymbolVectorLineMultiple::Serialize(tmSerialize &s)
 		s >> m_lSymMultiple.m_UnSelWidthMultiple;
 		
 		s >> m_lSymMultiple.m_GlobalTransparency;
+		s >> m_lSymMultiple.m_QueryID;
 	}
 	s.LeaveObject();
 	

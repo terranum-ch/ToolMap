@@ -24,6 +24,8 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
 
+#include "../database/database_tm.h"
+#include "../database/databaseresult.h"
 
 
 bool tmDrawer::m_LogOn = true;
@@ -256,13 +258,159 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 }
 
 
+bool tmDrawer::_SelectFeatureByQuery (long myQueryID, DataBaseTM * database, wxArrayLong & results){
+	// get query
+	int myTarget = wxNOT_FOUND;
+	results.Clear();
+	
+	wxString myName = wxEmptyString;
+	wxString myQueryCode = wxEmptyString;
+	if (database->GetQueriesById(myQueryID, myTarget, myName, myQueryCode)==false) {
+		wxLogError(_("Unable to get complex symbology (Query id: %ld)"),myQueryID);
+		return false;
+	}
+	
+	// run query
+	if (database->DataBaseQuery(myQueryCode)==false) {
+		wxLogError(_("Unable to load complex symbology (Query id: %ld)"),myQueryID);
+		return false;
+	}
+	
+	database->DataBaseGetResults(results);
+	database->DataBaseClearResults();
+	return true;
+}
+
+
+bool tmDrawer::_ExistsinResults (long Oid, const wxArrayLong & results){
+	
+	for (unsigned int i = 0; i<results.GetCount(); i++) {
+		if (Oid == results.Item(i)) {
+			return true;
+		}
+		
+		/*if (results.Item(i) > Oid) {
+			break;
+		}*/
+	}
+	return false;
+}
+
+
 
 bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata){
 	tmSymbolVectorLineMultiple * pSymbol = (tmSymbolVectorLineMultiple*) itemProp->GetSymbolRef();
 	
-	if (pSymbol->GetSelectedSymbology() == 0) { // simple symbology
+	// simple symbology
+	if (pSymbol->GetSelectedSymbology() == 0) { 
 		return DrawLines(itemProp, pdata);
 	}
+	
+	// complex symbology
+	tmSymbolDataLineMultiple * mySymbology = pSymbol->GetSymbology();
+	wxASSERT(mySymbology);
+	DataBaseTM * myDB = ((tmGISDataVectorMYSQL*) pdata)->GetDataBaseHandle();
+	wxASSERT(myDB);
+	wxArrayLong myResult;
+	if (_SelectFeatureByQuery(mySymbology->m_QueryID,myDB, myResult)==false) {
+		return DrawLines(itemProp, pdata);
+	}
+	
+	// create pens
+	wxPen myValidPen (pSymbol->GetColourWithTransparency(mySymbology->m_SelColourMultiple,
+														 mySymbology->m_GlobalTransparency),
+					  mySymbology->m_SelWidthMultiple,
+					  tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
+	wxPen myUnValidPen (pSymbol->GetColourWithTransparency(mySymbology->m_UnSelColourMultiple,
+														   mySymbology->m_GlobalTransparency),
+						mySymbology->m_UnSelWidthMultiple,
+						tmSYMBOLPENSYLES[mySymbology->m_UnSelShapeMultiple]);
+	wxPen mySelectionValidPen (m_SelMem->GetSelectionColour(),  mySymbology->m_SelWidthMultiple);
+	wxPen mySelectionUnValidPen (m_SelMem->GetSelectionColour(), mySymbology->m_UnSelWidthMultiple);
+	
+	wxPen myVertexValidPen (*CreateVertexUniquePen(itemProp, mySymbology->m_SelWidthMultiple));
+	wxPen myVertexUnValidPen (*CreateVertexUniquePen(itemProp, mySymbology->m_UnSelWidthMultiple));
+
+	// spatial filter
+	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
+	if(pVectLine->SetSpatialFilter(m_spatFilter,itemProp->GetType()) == false){
+		return false;
+	}
+	
+	// drawing
+	wxMemoryDC temp_dc;
+	temp_dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
+	
+	while (1)
+	{
+		int iNbVertex = wxNOT_FOUND;
+		long myOid = wxNOT_FOUND;
+		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
+		if (iNbVertex <= 1) {
+			wxDELETEA(pptsReal);
+			break;
+		}
+		
+		bool IsSelected = false;
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+			if (m_SelMem->IsSelected(myOid)){
+				IsSelected = true;
+			}
+		}
+
+		// search id into results
+		wxPen myVertexPen;
+		if (_ExistsinResults(myOid, myResult)==true) {
+			myVertexPen = myVertexValidPen;
+			if (IsSelected) {
+				pgdc->SetPen(mySelectionValidPen);
+			}
+			else {
+				pgdc->SetPen(myValidPen);
+			}
+		}
+		else {
+			myVertexPen = myVertexUnValidPen;
+			if (IsSelected) {
+				pgdc->SetPen(mySelectionUnValidPen);
+			}
+			else {
+				pgdc->SetPen(myUnValidPen);
+			}
+		}
+
+		
+		// creating path
+		wxGraphicsPath myPath = pgdc->CreatePath();
+		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+		for (int i = 1; i< iNbVertex; i++){
+			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+		}
+		pgdc->StrokePath(myPath);
+		
+		
+		tmLayerProperties myProperty (*itemProp);
+		// drawing all vertex for in edition line
+		if (m_ActuallayerID == m_SelMem->GetSelectedLayer() &&
+			myProperty.IsEditing() == true &&
+			m_SelMem->GetCount() == 1 &&
+			m_SelMem->IsSelected(myOid)){
+			myProperty.SetVertexFlags(tmDRAW_VERTEX_ALL);
+		}
+		
+		// drawing vertex
+		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, &myVertexPen);
+		wxDELETEA(pptsReal);
+	}
+	temp_dc.SelectObject(wxNullBitmap);
+	wxDELETE(pgdc);
+	return true;	
+	
+	
+	
+	
+	
 	
 	/*
 	// create pens
@@ -342,7 +490,6 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	wxDELETE( myVPen);
 	wxDELETE(pgdc);
 	return bReturn;*/
-	return true;
 }
 
 

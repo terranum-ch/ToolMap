@@ -71,6 +71,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		
 		// special function for DB, use it first.
 		static void SetDataBaseHandle(DataBaseTM * db) {m_DB = db;}
+		static DataBaseTM * GetDataBaseHandle() {return m_DB;}
 		void SetProject (PrjDefMemManage * prj){m_PrjDef = prj;}
 		
 		
