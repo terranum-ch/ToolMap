@@ -46,9 +46,9 @@ class tmSymbolVectorLineMultiple : public tmSymbolVectorLine
 		
 		virtual bool Serialize(tmSerialize &s);
 		virtual wxColour GetColour();
-		virtual int GetWidth() {return m_lSymUnique.m_Width;}
-		virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
-		virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
+		virtual int GetWidth() {return m_lSymMultiple.m_Width;}
+		virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymMultiple.m_Shape];}
+		virtual int GetTransparency(){return m_lSymMultiple.m_GlobalTransparency;}
 		
 		int GetSelectedSymbology(){return m_lSymMultiple.m_PanelNo;}
 	};
