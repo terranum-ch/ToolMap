@@ -57,7 +57,7 @@ def gCreateInstaller(svnnumner):
     myCmdInstaller.append("/XSetCompressor /FINAL lzma")
     myCmdInstaller.append("/X!define PRODUCT_VERSION '2.1." + svnnumner + "'")
     myCmdInstaller.append("/XOutFile " + gDirInstall + os.sep + "InstallToolMap_d" + svnnumner + ".exe") 
-    myCmdInstaller.append(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "lugano" + os.sep + "install_builder_script.nsi")
+    myCmdInstaller.append(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "install_script.nsi")
     try:
         myProcess = subprocess.Popen(myCmdInstaller, 0, None, None, None,  None, None, False, False, gDirInstall)
         myProcess.wait()
