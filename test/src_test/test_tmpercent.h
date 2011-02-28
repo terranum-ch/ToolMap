@@ -54,11 +54,11 @@ public:
 	{
 		tmPercent tper(1000);
 		tper.SetValue(150);
-		TS_ASSERT(tper.GetPercent() == 15);
+		TS_ASSERT_EQUALS(tper.GetPercent(), 15);
 		tper.SetValue(153);
-		TS_ASSERT(tper.GetPercent() == 15);
+		TS_ASSERT_EQUALS(tper.GetPercent(), 15);
 		tper.SetValue(157);
-		TS_ASSERT(tper.GetPercent() == 15);
+		TS_ASSERT_EQUALS(tper.GetPercent(), 15);
 		tper.SetValue(160);
 		TS_ASSERT(tper.GetPercent() == 16);
 	}

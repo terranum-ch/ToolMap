@@ -30,11 +30,11 @@
 #endif
 
 
-#ifdef __WXMAC__
-const int tmPERCENT = 10;
-#else
+//#ifdef __WXMAC__
+//const int tmPERCENT = 10;
+//#else
 const int tmPERCENT = 100;
-#endif
+//#endif
 
 class tmPercent : public wxObject
 	{

@@ -35,7 +35,10 @@ def gBuildCommand(buildtype="Debug", directory = ""):
 def runBeforeTest():
     "Run this function before test for settings some parameters. Actually only coping ToolMap.app"
     if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap2.app") == False):
+        if(os.path.exists(gDirBin + os.sep + "test/ToolMap2.app") == True):
+            exception = shutil.rmtree(gDirBin + os.sep + "test/ToolMap2.app")
         exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap2.app", gDirBin + os.sep + "test/ToolMap2.app")
+        
 
 def gCreateInstaller(svnnumner):
     "Create installer for mac"
