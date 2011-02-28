@@ -60,9 +60,5 @@ def gCreateInstaller(svnnumner):
     myCmdInstaller.append(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "install_script.nsi")
     myProcess = subprocess.Popen(myCmdInstaller, 0, None, None, None,  None, None, False, False, gDirInstall)
     myProcess.wait()
-    print (myProcess)
-    if (myProcess != 0):
-        print ("Error creating installer with command :", myCmdInstaller)
-        exit()
     print ("Renaming installer")
-    shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "lugano" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + "InstallToolMap_d" + svnnumner + ".exe")
+    shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + "InstallToolMap_d" + svnnumner + ".exe")
