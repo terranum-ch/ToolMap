@@ -69,7 +69,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     m_SymbolPanel->SetSizer(itemBoxSizer8);
 	
-	m_SymbologyTypeCtrl = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_SymbologyTypeCtrl = new wxNotebook( m_SymbolPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	
 	// UNIQUE SYMBOLOGY
 	wxPanel* m_panel2;
