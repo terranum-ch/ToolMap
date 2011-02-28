@@ -84,7 +84,10 @@ bool tmSerialize::ReadStream (wxString & part)
 	{
 		if (m_divStream.HasMoreTokens())
 		{ 
-			part = m_divStream.GetNextToken();
+			wxString myPart = m_divStream.GetNextToken();
+			if (myPart.IsEmpty() == false) {
+				part = myPart;
+			}
 			return true;
 		}
 	}
