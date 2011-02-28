@@ -107,21 +107,21 @@ Section "SectionPrincipale" SEC01
   Call CheckToolMapRuning
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "..\..\..\..\bin\Debug\ToolMap2.exe"
-  File "..\..\..\..\bin\Debug\ToolMap2.pdb"
-  File "D:\LS\PROGRAMATION\ToolBasView\bin\Debug\ToolBasView.exe"
+  File "..\..\..\bin\Debug\ToolMap2.exe"
+  File "..\..\..\bin\Debug\ToolMap2.pdb"
+  File "D:\PROGRAMMATION\ToolBasView\bin\Debug\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap 2"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  File "..\..\..\..\bin\Debug\gdal17.dll"
-  File "..\..\..\..\bin\Debug\geos_c.dll"
-  File "..\..\..\..\bin\Debug\libmysqld.dll"
-  File "..\..\..\..\bin\Debug\libcurld.dll"
-  File "..\..\..\..\bin\Debug\sqlite3.dll"
+  File "..\..\..\bin\Debug\gdal17.dll"
+  File "..\..\..\bin\Debug\geos_c.dll"
+  File "..\..\..\bin\Debug\libmysqld.dll"
+  File "..\..\..\bin\Debug\libcurld.dll"
+  File "..\..\..\bin\Debug\sqlite3.dll"
   CreateDirectory "$INSTDIR\mysql"
   SetOutPath "$INSTDIR\mysql"
-  File "..\..\..\..\bin\Debug\mysql\errmsg.sys"
+  File "..\..\..\bin\Debug\mysql\errmsg.sys"
 SectionEnd
 
 Section -AdditionalIcons
