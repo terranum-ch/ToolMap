@@ -96,15 +96,16 @@ bool ProjectManager::CreateNewProject()
 	m_DB = new DataBaseTM();
 	
 	// Create new empty project
-	wxBusyInfo  wait(_("Please wait, creating empty project..."), m_Parent);
-	
-	if(m_DB->CreateTMDatabase(&PrjDefinition)==false)
 	{
-		CloseProject();
-		//delete wait;
-		return false;
+		wxBusyInfo  wait(_("Please wait, creating empty project..."), m_Parent);
+
+		if(m_DB->CreateTMDatabase(&PrjDefinition)==false)
+		{
+			CloseProject();
+			//delete wait;
+			return false;
+		}
 	}
-	
 	
 	// fill the project
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
