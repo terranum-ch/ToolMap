@@ -25,6 +25,7 @@ tmSerialize::tmSerialize()
 {
 	m_outdirection = TRUE;
 	m_stream = _T("");
+	m_divStream.SetString(wxEmptyString, tmSERIAL_MAINSEP);
 }
 
 
@@ -84,10 +85,7 @@ bool tmSerialize::ReadStream (wxString & part)
 	{
 		if (m_divStream.HasMoreTokens())
 		{ 
-			wxString myPart = m_divStream.GetNextToken();
-			if (myPart.IsEmpty() == false) {
-				part = myPart;
-			}
+			part = m_divStream.GetNextToken();
 			return true;
 		}
 	}
