@@ -28,6 +28,8 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include "wx/overlay.h"
+
 
 #include "../core/tmarraysize.h"
 
@@ -40,6 +42,7 @@ class tmDrawerEditLine : public wxObject
 		int		m_Index;
 		
 		wxPen m_EditPen;
+		wxOverlay m_Overlay;
 	
 		
 		void DLVertexDelete();
@@ -67,8 +70,7 @@ class tmDrawerEditLine : public wxObject
 		// Drawing functions
 		void SetSymbology (wxColour col, int width);
 		bool DrawEditPart(wxClientDC * pdc);
-		//bool DrawEditedLine (wxClientDC * pdc, tmGISDataVectorMemory * memory);
-		//bool DrawFinishPart (wxClientDC * pdc, tmSymbolVectorLine & symbology);
+		void DrawEditReset(){m_Overlay.Reset();};
 		
 	};
 
