@@ -290,7 +290,7 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
 	wxASSERT (m_pDB);
 	
 	wxString sSentence = wxEmptyString;
-	wxString sDel = _T("DELETE FROM layer_at%ld WHERE OBJECT_ID=%ld; "); 
+	wxString sDel = _T("DELETE FROM layer_at%d WHERE OBJECT_ID=%ld; "); 
 		
 	// search layer for same spatial type
 	unsigned int i = 0;
@@ -717,7 +717,7 @@ int tmAttributionData::PrepareAAttribStatement (wxString & statement,
 												int startvalues,
 												long selected)
 {
-	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%ld VALUES (%ld,"),
+	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%ld,"),
 									 layer->m_LayerID, selected);
 	
 	wxASSERT (layer->m_pLayerFieldArray.GetCount() + startvalues <= values.GetCount());

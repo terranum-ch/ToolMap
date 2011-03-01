@@ -44,8 +44,10 @@ class tmScaleCtrlCombo : public wxComboBox
 	protected:
 	public:
 		tmScaleCtrlCombo();
-		tmScaleCtrlCombo (wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition,
-						  const wxSize & size = wxDefaultSize);
+		tmScaleCtrlCombo (wxWindow * parent, wxWindowID id, 
+						  const wxPoint & pos,
+						  const wxSize & size,
+						  const wxArrayString & arraystring);
 		~tmScaleCtrlCombo(){;}
 		
 		void InitScaleFromDatabase (const wxArrayLong & scale_values);
