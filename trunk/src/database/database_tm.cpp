@@ -1072,7 +1072,7 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		//sentence for insert
 		wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
 											_T("(OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC, OBJECT_ISFREQ) ")
-											_T("VALUES (%d, %d, %d, \"%s\", %d)"),
+											_T("VALUES (%ld, %d, %d, \"%s\", %d)"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
 											myObject->m_ObjectType,
@@ -1081,9 +1081,9 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 											(int) myObject->m_ObjectFreq);
 		// sentence for update
 		wxString sUpdate = wxString::Format(_T("UPDATE %s ")
-											_T("SET OBJECT_CD = %d, OBJECT_TYPE_CD=%d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
+											_T("SET OBJECT_CD = %ld, OBJECT_TYPE_CD=%d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
 											_T("OBJECT_DESC = \"%s\", OBJECT_ISFREQ = %d ")
-											_T("WHERE OBJECT_ID = %d"),
+											_T("WHERE OBJECT_ID = %ld"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
 											myObject->m_ObjectType,
