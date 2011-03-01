@@ -250,8 +250,18 @@ bool tmDrawerEditLine::DrawEditPart(wxClientDC * pdc)
 	
 	wxASSERT(pdc != NULL);
 	
-	pdc->SetLogicalFunction(wxINVERT);
-	pdc->SetPen(m_EditPen);
+	wxDCOverlay myOverlayDC (m_Overlay, pdc);
+	myOverlayDC.Clear();
+#ifdef __WXMAC__
+	pdc->SetPen( *wxGREY_PEN );
+#else
+	pdc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+#endif
+	
+	
+	//pdc->SetLogicalFunction(wxINVERT);
+	//pdc->SetPen(m_EditPen);
+	//pdc->SetPen(*wxBLACK_PEN);
 	
 	int iNumPts = DLGetCountPoints();
 	wxASSERT (iNumPts >= 2 && iNumPts <=3);

@@ -79,6 +79,8 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 	m_Renderer = renderer;
 	m_Scale = scale;
 	m_EditStarted = false;
+	m_DrawLine.SetSymbology(*wxBLACK, 1);
+	
 
 	m_ParentEvt->PushEventHandler(this);
 
@@ -442,8 +444,8 @@ void tmEditManager::OnDrawDown(wxCommandEvent & event)
 		delete myPxCoord;
 		return;
 	}
-
 	
+	m_DrawLine.DrawEditReset();
 	if (m_SnapMem->IsSnappingEnabled()==true)
 	{
 		double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
@@ -472,15 +474,6 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		delete myPxCoord;
 		return;
 	}
-	
-	// remove last segment
-	if (m_DrawLine.IsOK() == true) {
-		wxClientDC dc (m_Renderer);
-		m_DrawLine.DrawEditPart(&dc);
-	}
-	
-	//bool bCreate = m_DrawLine.CreateVertex(*myPxCoord);
-	//wxASSERT(bCreate);
 		
 	if (m_SnapMem->IsSnappingEnabled()==true)
 	{
@@ -536,20 +529,16 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
 	
 	if (m_DrawLine.IsOK() == false)
 	{
-		delete myPt;
+		wxDELETE(myPt);
 		return; 
 	}
-	
+	wxLogMessage("Mypoint = %d, %d", myPt->x, myPt->y);
 	wxClientDC dc (m_Renderer);
 	bool BDraw = m_DrawLine.DrawEditPart(&dc);
 	wxASSERT(BDraw);
 	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
-	wxASSERT(bSetVertex);
-	
-	BDraw = m_DrawLine.DrawEditPart(&dc);
-	wxASSERT(BDraw);
-	
-	delete myPt;
+	wxASSERT(bSetVertex);	
+	wxDELETE(myPt);
 }
 
 
@@ -593,10 +582,6 @@ void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event)
 		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 	}
 	
-	
-	BDraw = m_DrawLine.DrawEditPart(&dc);
-	wxASSERT(BDraw);
-	
 	delete myPt;
 }
 
@@ -611,6 +596,8 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
 		delete myPt;
 		return;
 	}
+	
+	m_DrawLine.DrawEditReset();
 	
 	m_OrientedPt.SetEndPoint(*myPt);
 	bool bUpdate = m_OrientedPt.Update();
@@ -1240,8 +1227,8 @@ void tmEditManager::OnModifyMove (wxCommandEvent & event)
 	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 	wxASSERT(bSetVertex);
 	
-	BDraw = m_DrawLine.DrawEditPart(&dc);
-	wxASSERT(BDraw);
+	//BDraw = m_DrawLine.DrawEditPart(&dc);
+	//wxASSERT(BDraw);
 	/*}
 	else
 	{
@@ -1257,7 +1244,7 @@ void tmEditManager::OnModifyMove (wxCommandEvent & event)
 		dc.DrawCircle(*myPt,iRadius );
 	}*/
 	
-	delete myPt;
+	wxDELETE(myPt);
 }
 
 
@@ -1266,6 +1253,7 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
+	m_DrawLine.DrawEditReset();
 	//check snapping
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
 	bool bSnappingFound = EMGetSnappingCoord(myRPt);
