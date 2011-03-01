@@ -31,8 +31,8 @@ END_EVENT_TABLE()
 
 tmScaleCtrlCombo::tmScaleCtrlCombo (wxWindow * parent, wxWindowID id, 
 									const wxPoint & pos,
-									const wxSize & size) :
-wxComboBox (parent, id, _T(""), pos, size)
+									const wxSize & size, const wxArrayString & arraystring) :
+wxComboBox (parent, id, _T(""), pos, size, arraystring, wxCB_DROPDOWN | wxTE_PROCESS_ENTER)
 {
 	m_ParentEvent = parent;
 	

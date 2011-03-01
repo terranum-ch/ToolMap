@@ -611,7 +611,7 @@ void ToolMapFrame::_CreateToolBar()
     itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), *_img_toolbar_previous, wxNullBitmap, wxITEM_NORMAL, _("Previous Zoom"), wxEmptyString);
 	
 	wxArrayString itemComboBox8Strings;
-    m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize );
+    m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize, itemComboBox8Strings );
 	itemToolBar3->AddControl(m_ScaleCombo);
     itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), *_img_toolbar_edit, wxNullBitmap, wxITEM_NORMAL, _("Draw"), wxEmptyString);
     itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), *_img_toolbar_modify, wxNullBitmap, wxITEM_NORMAL, _("Modify"), wxEmptyString);
