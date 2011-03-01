@@ -100,6 +100,7 @@ class tmEditManager : public wxEvtHandler
 		tmPointOrientAttrib m_OrientedPt;
 		wxPoint m_LastMousePos;
 		tmArraySharedNodes m_SharedNodes;
+		wxOverlay m_OverlaySharedNodes;
 		
 		// defined by function or event.
 		DataBaseTM * m_pDB;

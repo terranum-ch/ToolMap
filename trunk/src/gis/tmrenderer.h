@@ -28,9 +28,9 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/overlay.h>
 
 #include <wx/scrolwin.h>			// for scrolled window base
-#include "../gui/wxrubberband.h"	// for selection rubber band
 #include "tmgisscale.h"				// for number of division;
 #include "../core/tmarraysize.h"	// for array of wxSize items
 
@@ -103,10 +103,11 @@ class tmRenderer : public wxScrolledWindow
 		wxSize m_OldSize;
 				
 		// rubber band
-		wxRubberBand * m_SelectRect;
 		wxPoint m_StartCoord;
 		wxBitmap * m_PanBmp;
         vrRubberBand * m_Rubber;
+		
+		wxOverlay m_Overlay;
 		
 		// status of shift key
 		bool m_ShiftDown;
@@ -209,6 +210,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		// drawing
 		void DrawCircleVideoInverse (wxPoint pt, int radius);
+		void DrawCircleVideoInverseClean();
 		
 		// editing 
 		void StopModifyEvent (){m_ModifyCalled = false;}

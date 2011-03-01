@@ -78,7 +78,6 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_bmp = NULL;
 	m_ModifyCalled = false;
 	m_DrawCalled = false;
-	m_SelectRect = new wxRubberBand(this);
 	m_StartCoord = wxPoint(-1,-1);
 	m_ActualTool = tmTOOL_SELECT;
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
@@ -154,8 +153,6 @@ bool tmRenderer::BitmapCopyInto(wxBitmap * bmp)
 tmRenderer::~tmRenderer()
 {
     wxDELETE(m_bmp);
-	wxDELETE(m_SelectRect);
-    
     images_cursor_clean();
 }
 
@@ -836,12 +833,6 @@ void tmRenderer::DrawStart (const wxPoint & mousepos)
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);
 	
-	/*wxClientDC myDC (this);
-	myDC.SetLogicalFunction (wxINVERT);
-	
-	if (m_SnappingRadius > 0)
-		myDC.DrawCircle(mousepos.x, mousepos.y, m_SnappingRadius);*/
-	
 }
 
 /***************************************************************************//**
@@ -871,14 +862,7 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 {
 	if (m_DrawCalled == false)
 		return;
-	
-	/*wxClientDC myDC (this);
-	myDC.SetLogicalFunction(wxINVERT);
-	if (m_SnappingRadius > 0 && m_StartCoord != wxPoint(-1,-1))
-	{
-		myDC.DrawCircle(m_StartCoord.x, m_StartCoord.y, m_SnappingRadius);
-	}*/
-	
+		
 	// sent message to edit manager
 	wxCommandEvent evt(tmEVT_EM_DRAW_CLICK, wxID_ANY);
 	wxPoint * myClickedPos = new wxPoint(m_StartCoord.x,
@@ -1071,9 +1055,20 @@ void tmRenderer::CutLineClick (const wxPoint & mousepos)
 void tmRenderer::DrawCircleVideoInverse (wxPoint pt, int radius)
 {
 	wxClientDC dc(this);
-	dc.SetLogicalFunction(wxINVERT);
+	wxDCOverlay myOverlayDC(m_Overlay, &dc);
+	myOverlayDC.Clear();
 	
+	dc.SetPen( *wxGREY_PEN );
+	dc.SetBrush( wxColour( 192,192,192,64 ) );
+
 	dc.DrawCircle(pt, radius);
 }
 
-
+void tmRenderer::DrawCircleVideoInverseClean(){
+	{
+		wxClientDC dc( this );
+		wxDCOverlay overlaydc( m_Overlay, &dc );
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+}
