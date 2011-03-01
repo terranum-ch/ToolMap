@@ -477,9 +477,10 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		
 	if (m_SnapMem->IsSnappingEnabled()==true)
 	{
-		double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
-		m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
-		//m_Renderer->Update();
+		//double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
+		m_Renderer->DrawCircleVideoInverseClean();
+		//m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
+		m_Renderer->Update();
 	}
 	wxDELETE(myPxCoord);
 	
@@ -1033,7 +1034,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	m_Renderer->DrawCircleVideoInverse(myCutPos, icutRadius);
 	m_Renderer->Update();
 	wxMilliSleep(200);
-	m_Renderer->DrawCircleVideoInverse(myCutPos, icutRadius);
+	m_Renderer->DrawCircleVideoInverseClean();
 	
 	
 	bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(),
@@ -1085,6 +1086,8 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
 	m_Renderer->Update();
 		
 	m_Renderer->DrawCircleVideoInverse(myPxPt, 7);
+	wxMilliSleep(200);
+	m_Renderer->DrawCircleVideoInverseClean();
 }
 
 
@@ -1428,7 +1431,7 @@ void tmEditManager::EMDrawSnappingStatus (const wxPoint & pt)
 	m_Renderer->DrawCircleVideoInverse(pt, iSnapRadius);
 	m_Renderer->Update();
 	wxMilliSleep(150);
-	m_Renderer->DrawCircleVideoInverse(pt, iSnapRadius);
+	m_Renderer->DrawCircleVideoInverseClean();
 }
 
 
@@ -2091,7 +2094,7 @@ void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
 		return;
 	}
 	
-	
+	m_OverlaySharedNodes.Reset();
 	wxRealPoint myNewCoord = m_Scale->PixelToReal(*myTempPt);
 	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
 		OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SharedNodes.Item(i).GetLineID());
@@ -2119,19 +2122,20 @@ void tmEditManager::OnEditSharedMove(wxCommandEvent & event){
 	wxASSERT (myTempPt);
 	
 	wxClientDC myDC (m_Renderer);
-	
-	myDC.SetLogicalFunction(wxINVERT);
-	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
-		m_SharedNodes.Item(i).DrawLine(&myDC);
-	}
-	
-	myDC.SetLogicalFunction(wxINVERT);
+	wxDCOverlay myOverlayDC (m_OverlaySharedNodes, &myDC);
+	myOverlayDC.Clear();
+#ifdef __WXMAC__
+	myDC.SetPen( *wxGREY_PEN );
+#else
+	myDC.SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+#endif
+		
 	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
 		m_SharedNodes.Item(i).SetCoordVertex(*myTempPt);
 		m_SharedNodes.Item(i).DrawLine(&myDC);
 	}
-	
 	wxDELETE(myTempPt);
+	
 }
 
 

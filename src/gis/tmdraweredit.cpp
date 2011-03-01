@@ -258,11 +258,6 @@ bool tmDrawerEditLine::DrawEditPart(wxClientDC * pdc)
 	pdc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
 #endif
 	
-	
-	//pdc->SetLogicalFunction(wxINVERT);
-	//pdc->SetPen(m_EditPen);
-	//pdc->SetPen(*wxBLACK_PEN);
-	
 	int iNumPts = DLGetCountPoints();
 	wxASSERT (iNumPts >= 2 && iNumPts <=3);
 	wxPoint * myPts = DLGetPoints();
@@ -287,41 +282,5 @@ bool tmDrawerEditLine::ClearVertex()
 	return true;
 }
 
-
-/*bool tmDrawerEditLine::DrawEditedLine (wxClientDC * pdc, tmGISDataVectorMemory * memory)
-{
-	if (IsOK()==false)
-	{
-		wxLogDebug(_T("Error CreateVertex() first"));
-		return false;
-	}
-	wxASSERT(pdc != NULL);
-	wxASSERT(memory != NULL);
-	wxASSERT(memory->GetVertexCount() > 1);
-	
-	
-	return true;
-}*/
-
-
-/*
-bool tmDrawerEditLine::DrawFinishPart(wxClientDC * pdc, tmSymbolVectorLine & symbology)
-{
-	if (IsOK()==false)
-	{
-		wxLogDebug(_T("Error CreateVertex() first"));
-		return false;
-	}
-	
-	wxASSERT(pdc != NULL);
-	
-	//TODO: Set Pen here
-	int iNumPts = DLGetCountPoints();
-	wxASSERT (iNumPts >= 2 && iNumPts <=3);
-	wxPoint * myPts = DLGetPoints();
-	wxASSERT (myPts);
-	pdc->DrawLines(iNumPts, myPts);
-	return true;
-}*/
 
 
