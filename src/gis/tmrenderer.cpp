@@ -1058,11 +1058,17 @@ void tmRenderer::DrawCircleVideoInverse (wxPoint pt, int radius)
 	wxDCOverlay myOverlayDC(m_Overlay, &dc);
 	myOverlayDC.Clear();
 	
+#ifdef __WXMAC__
 	dc.SetPen( *wxGREY_PEN );
 	dc.SetBrush( wxColour( 192,192,192,64 ) );
-
+#else
+	dc.SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+	dc.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
 	dc.DrawCircle(pt, radius);
 }
+
+
 
 void tmRenderer::DrawCircleVideoInverseClean(){
 	{

@@ -2639,7 +2639,7 @@ bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
  *******************************************************************************/
 bool DataBaseTM::DeleteLayerSnapping (int layersid)
 {
-	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE TOC_ID = %ld; "),
+	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE TOC_ID = %d; "),
 										  TABLE_NAME_SNAPPING.c_str(),
 										  layersid);
 	return DataBaseQueryNoResults(sSentence);
