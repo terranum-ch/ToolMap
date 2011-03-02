@@ -70,7 +70,7 @@ class tmDrawerEditLine : public wxObject
 		// Drawing functions
 		void SetSymbology (wxColour col, int width);
 		bool DrawEditPart(wxClientDC * pdc);
-		void DrawEditReset(){m_Overlay.Reset();};
+		void DrawEditReset(wxClientDC * pdc);
 		
 	};
 
