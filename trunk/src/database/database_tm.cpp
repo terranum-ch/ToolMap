@@ -2039,46 +2039,28 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
  *******************************************************************************/
 long DataBaseTM::AddTOCLayer (tmLayerProperties * item)
 {
-	//wxString myPath = item->m_LayerName.GetFullPath();
+	wxString myPath = item->GetName().GetPath();
 
 	// converting path to windows path
 	// do nothing if not a windows path.
-	//DataBaseTM::ConvertPath(myPath);
+	DataBaseTM::ConvertPath(myPath);
 
 	wxString sSentence = wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
 										  _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
 										  _T("CONTENT_STATUS, GENERIC_LAYERS) ") +
 										  _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d ); "),
 										  item->GetSpatialType(),
-										  item->GetName().GetPath().c_str(),
+										  myPath,
 										  item->GetName().GetFullName().c_str(),
 										  item->IsVisible(),
 										  item->GetType());
-		
+	
 	if(DataBaseQueryNoResults(sSentence)==false)
 	{
-		wxLogDebug(_T("Error inserting layer into database : %s"), sSentence.c_str());
+		wxLogError(_T("Error inserting layer into database : %s"), sSentence.c_str());
 		return -1;
 	}
 	
-	/* getting ID back
-	sSentence = (_T("SELECT CONTENT_ID FROM ") + TABLE_NAME_TOC +
-				 _T(" ORDER BY CONTENT_ID DESC LIMIT 1; "));
-	
-	if (!DataBaseQuery(sSentence))
-	{
-		wxLogDebug(_T("Error getting the last layer id"));
-		return -1;
-		
-	}		
-	if(!DataBaseHasResult())
-	{
-		wxLogDebug(_T("Error no results returned, not able to know the layer ID"));
-		return -1;
-	}
-	
-	long lRetVal = DataBaseGetNextResultAsLong();
-	DataBaseDestroyResults();*/
 	long myLID = DataBaseGetLastInsertedID();
 	wxASSERT(myLID != wxNOT_FOUND);
 	
