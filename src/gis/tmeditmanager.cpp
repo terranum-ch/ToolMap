@@ -445,7 +445,6 @@ void tmEditManager::OnDrawDown(wxCommandEvent & event)
 		return;
 	}
 	
-	m_DrawLine.DrawEditReset();
 	if (m_SnapMem->IsSnappingEnabled()==true)
 	{
 		double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
@@ -474,7 +473,9 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 		delete myPxCoord;
 		return;
 	}
-		
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
+	
 	if (m_SnapMem->IsSnappingEnabled()==true)
 	{
 		//double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
@@ -597,8 +598,8 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
 		delete myPt;
 		return;
 	}
-	
-	m_DrawLine.DrawEditReset();
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
 	
 	m_OrientedPt.SetEndPoint(*myPt);
 	bool bUpdate = m_OrientedPt.Update();
@@ -1256,7 +1257,9 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
-	m_DrawLine.DrawEditReset();
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
+	
 	//check snapping
 	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
 	bool bSnappingFound = EMGetSnappingCoord(myRPt);

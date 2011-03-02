@@ -268,6 +268,13 @@ bool tmDrawerEditLine::DrawEditPart(wxClientDC * pdc)
 	return true;
 }
 
+void tmDrawerEditLine::DrawEditReset(wxClientDC * pdc){
+	{
+		wxDCOverlay overlaydc( m_Overlay, pdc );
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+}
 
 
 bool tmDrawerEditLine::ClearVertex()
