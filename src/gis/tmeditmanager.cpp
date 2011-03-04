@@ -132,8 +132,6 @@ void tmEditManager::OnToolEdit ()
 {
 	wxASSERT (m_Renderer);
 	m_Renderer->SetTool(tmTOOL_DRAW);
-	wxClientDC myDC (m_Renderer);
-	m_DrawLine.DrawEditReset(&myDC);
 }
 
 
@@ -226,6 +224,9 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 	
 	DisplayRendererSnappingTolerence();
 	//wxLogDebug(_T("View updated"));
+	
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
 	
 	if (IsDrawingAllowed()==true)
 	{
