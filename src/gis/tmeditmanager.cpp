@@ -132,6 +132,8 @@ void tmEditManager::OnToolEdit ()
 {
 	wxASSERT (m_Renderer);
 	m_Renderer->SetTool(tmTOOL_DRAW);
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
 }
 
 
@@ -925,6 +927,9 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 	if (IsDrawingAllowed() == false)
 		return;
 	
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
+	
 	// minimum 2 vertex for saving line into database
 	if (m_GISMemory->GetVertexCount() < 2) 
 	{
@@ -982,6 +987,9 @@ void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event)
 {
 	if (IsDrawingAllowed() == false)
 		return;
+	
+	wxClientDC myDC (m_Renderer);
+	m_DrawLine.DrawEditReset(&myDC);
 	
 	m_DrawLine.ClearVertex();
 	
