@@ -816,12 +816,12 @@ int ListGenReport::Compare( int iColumnCompareType, const wxString
 		{
 			wxDateTime dt1;
 			//int d=0, m=0 , y=0;
-			if (dt1.ParseDate(x_strValue1)== NULL)
+			if (dt1.ParseDate(x_strValue1)== false)
 			{
 				dt1 = wxInvalidDateTime;
 			}
 			wxDateTime dt2;
-			if (dt2.ParseDate(x_strValue2)== NULL)
+			if (dt2.ParseDate(x_strValue2)== false)
 			{
 				dt2 = wxInvalidDateTime;
 			}
@@ -864,14 +864,14 @@ int ListGenReport::Compare( int iColumnCompareType, const wxString
 		{
 			wxDateTime dt1;
 			//int d=0, m=0 , y=0;
-			if (dt1.ParseDate(x_strValue1)== NULL)
+			if (dt1.ParseDate(x_strValue1)== false)
 			{
 				dt1 = wxInvalidDateTime;
 			}
 
 			wxDateTime dt2;
 			
-			if(dt2.ParseDate(x_strValue2)==NULL)
+			if(dt2.ParseDate(x_strValue2)== false)
 			{
 				dt2 = wxInvalidDateTime;
 			}

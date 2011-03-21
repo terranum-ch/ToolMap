@@ -142,8 +142,6 @@ tmAAttribCtrl * tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldi
 	tmAAttribCtrlFloat * mypControlFloat;
 	tmAAttribCtrlEnum * mypControlEnum;
 	tmAAttribCtrlText * mypControlText;
-	tmAAttribCtrlDate * mypControlDate;
-	tmAAttribCtrlSafeDate * mypControlSafeDate;
 	
 	switch (fieldinfo.m_FieldType)
 	{
@@ -164,13 +162,10 @@ tmAAttribCtrl * tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldi
 			
 		case TM_FIELD_DATE:
 #ifdef __WXOSX__
-			mypControlSafeDate = new tmAAttribCtrlSafeDate(this, fieldinfo);
-			mypControl = mypControlSafeDate;
+			mypControl =  (tmAAttribCtrlSafeDate *) new tmAAttribCtrlSafeDate(this, fieldinfo); 
 #else
-			mypControlDate = new tmAAttribCtrlDate(this, fieldinfo);
-			mypControl = mypControlDate;
-#endif
-			
+			mypControl =  (tmAAttribCtrlDate *) new tmAAttribCtrlDate(this, fieldinfo);
+#endif			
 			break;
 			
 		default: // tmfieldText
@@ -178,11 +173,9 @@ tmAAttribCtrl * tmAAttribTree::AddControl (const ProjectDefMemoryFields & fieldi
 			mypControl = mypControlText;
 			break;
 	}
-
+	
 	wxASSERT (mypControl);
-	
 	wxTreeMultiWindowInfo wndinfo (0,0,0);
-	
 	
 	// add subitem to root
     AppendWindow(m_ActualNode, mypControl, _T(""), wndinfo);

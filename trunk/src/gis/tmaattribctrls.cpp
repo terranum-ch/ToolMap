@@ -715,12 +715,14 @@ void tmAAttribCtrlDate::SetControlValue(const wxString & value)
 	
 	
 	wxDateTime myDate;
-	if (myDate.ParseDate(value)!=NULL)
+	if (myDate.ParseDate(value)== true)
 	{
 		m_Control->SetValue(myDate);
 	}
 	else
+	{
 		wxLogError(_T("Error parsing date in %s"), value.c_str());
+	}
 	
 }
 
