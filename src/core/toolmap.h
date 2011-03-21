@@ -347,6 +347,7 @@ private:
 	void OnImportGISData (wxCommandEvent & event);
 	void OnUserManual(wxCommandEvent & event);
 	void OnFlipLine (wxCommandEvent & event);
+	void OnPreferences(wxCommandEvent & event);
 	
 	
 	// selection

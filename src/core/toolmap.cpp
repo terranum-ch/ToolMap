@@ -37,6 +37,7 @@
 #include "../img/toolbar_bmp.h"
 #include "../gui/information_dlg.h"
 #include "../gui/newtemplateprjwizard.h"
+#include "../gui/preference_dlg.h"
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -187,6 +188,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
 	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
+	EVT_MENU (wxID_PREFERENCES, ToolMapFrame::OnPreferences)
 
 	// TOOL EVENT
 	EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
@@ -580,6 +582,11 @@ void ToolMapFrame::_CreateMenu()
     itemMenu77->Check(ID_MENU_TOC_WINDOW, true);
     itemMenu77->Append(ID_MENU_INFO_WINDOW, _("Information Window\tCtrl+Alt+I"), wxEmptyString, wxITEM_CHECK);
     itemMenu77->Append(ID_MENU_LOG_WINDOW, _("Log Window\tCtrl+L"), wxEmptyString, wxITEM_CHECK);
+#ifndef __WXMAC__
+	itemMenu77->AppendSeparator();
+#endif
+	itemMenu77->Append(wxID_PREFERENCES, _("Preferences..."), wxEmptyString);
+
     menuBar->Append(itemMenu77, _("Window"));
     wxMenu* itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), wxEmptyString, wxITEM_NORMAL);
@@ -1080,6 +1087,15 @@ void ToolMapFrame::OnUserManual(wxCommandEvent & event){
 
 void ToolMapFrame::OnFlipLine (wxCommandEvent & event){
 	m_EditManager->FlipLine();
+}
+
+
+
+void ToolMapFrame::OnPreferences(wxCommandEvent & event){
+	PreferenceDLG myDlg(this, wxID_ANY);
+	if (myDlg.ShowModal() != wxID_OK) {
+		return;
+	}
 }
 
 
