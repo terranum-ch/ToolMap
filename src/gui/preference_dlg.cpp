@@ -79,7 +79,7 @@ void PreferenceDLG::_CreateControls(){
 	m_sdbSizer2Cancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
 	m_sdbSizer2->Realize();
-	bSizer5->Add( m_sdbSizer2, 0, wxEXPAND, 5 );
+	bSizer5->Add( m_sdbSizer2, 0, wxEXPAND|wxALL, 5 );
 	
 	this->SetSizer( bSizer5 );
 	this->Layout();
