@@ -90,7 +90,7 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl,
 tmLayerManager::~tmLayerManager()
 {
 	UnInitLayerManager();
-	//m_Parent->PopEventHandler(false);
+	m_Parent->PopEventHandler(false);
 	//m_Parent->SetEventHandler(m_Parent);
 }
 
@@ -109,7 +109,6 @@ void tmLayerManager::InitMemberValue()
 	m_Bitmap = NULL;
 	m_StatusBar = NULL;
 	m_Thread = NULL;
-	m_Progress = NULL;
 	m_ThreadBitmap = NULL;
 	// init selected data structure
 	m_Drawer.SetSelectedData(&m_SelectedData);
@@ -1354,14 +1353,6 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 	
 	wxLogDebug(_T("GIS thread finished without interuption"));
 	m_Thread = NULL; // thread finished
-	
-	// stoping progress display
-	if (m_Progress)
-	{
-		m_Progress->StopProgress();
-		m_Progress = NULL;
-	}
-	
 	
 	// test validity of layers extent. If no extent is 
 	// specified (like no data displayed)  

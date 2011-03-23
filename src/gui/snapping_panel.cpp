@@ -167,6 +167,7 @@ wxSizer * Snapping_PANEL::CreateControls(wxWindow * parent,
 
 Snapping_PANEL::~Snapping_PANEL()
 {
+	m_ParentEvt->PopEventHandler(false);
 }
 
 

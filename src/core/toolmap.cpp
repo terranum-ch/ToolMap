@@ -38,6 +38,7 @@
 #include "../gui/information_dlg.h"
 #include "../gui/newtemplateprjwizard.h"
 #include "../gui/preference_dlg.h"
+#include "../components/tmupdate/update.h"
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -246,7 +247,6 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
 
 	EVT_CLOSE(ToolMapFrame::OnClose)
-	EVT_IDLE (ToolMapFrame::OnIdleTimeUpdate)
 
 	// NOTIFICATION EVENT
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_ATTRIBUTION_DONE, ToolMapFrame::OnShortcutAttributionDone)
@@ -341,15 +341,20 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	wxLogDebug(_("Debug mode enabled"));
 	
-	// create the Aui manager
-	m_AuiManager = new wxAuiManager(this);
-	m_TocWindow = new TocWindowDlgGen(m_AuiManager, this);
+	// create the UI
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxVERTICAL );
+	wxPanel * mypanel2 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	bSizer2->Add( mypanel2, 1, wxEXPAND, 5 );
+	
+	m_AuiManager = new wxAuiManager(mypanel2);
+	m_TocWindow = new TocWindowDlgGen(m_AuiManager, mypanel2);
 	// init object attribution panel
-	m_MainPanel = new Main_PANEL(this, m_AuiManager);	
-	m_AttribObjPanel = new AttribObjType_PANEL(this, m_AuiManager);
-	m_QueriesPanel = new Queries_PANEL(this,wxID_ANY, m_AuiManager);
-	m_ShortCutPanel = new Shortcuts_PANEL(this, wxID_ANY, m_AuiManager);
-	m_SnappingPanel = new Snapping_PANEL(this, wxID_ANY, m_AuiManager);
+	m_MainPanel = new Main_PANEL(mypanel2, m_AuiManager);	
+	m_AttribObjPanel = new AttribObjType_PANEL(mypanel2, m_AuiManager);
+	m_QueriesPanel = new Queries_PANEL(mypanel2,wxID_ANY, m_AuiManager);
+	m_ShortCutPanel = new Shortcuts_PANEL(mypanel2, wxID_ANY, m_AuiManager);
+	m_SnappingPanel = new Snapping_PANEL(mypanel2, wxID_ANY, m_AuiManager);
 	
 	// loading position
 	wxString myPosText = wxEmptyString;
@@ -359,6 +364,11 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 		if (myPos.HasScreenChanged()==false)
 			m_AuiManager->LoadPerspective(myPosText, true);
 	}
+	
+	m_InfoBar = new WebUpdateInformationBar(this);
+	bSizer2->Add(m_InfoBar, wxSizerFlags().Expand());
+	this->SetSizer( bSizer2 );
+	this->Layout();	
 	
 	// create layer manager object
 	m_LayerManager = new tmLayerManager(this, m_TocWindow->GetTOCCtrl(),
@@ -404,9 +414,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	wxLogMessage(_("Running under : %s"), wxGetOsDescription().c_str());
 	
 	// loading GIS drivers
-	tmGISData::InitGISDrivers(TRUE, TRUE);
-	
-	m_CheckedUpdates = false;
+	tmGISData::InitGISDrivers(TRUE, TRUE);	
 }
 
 
@@ -415,26 +423,24 @@ ToolMapFrame::~ToolMapFrame()
 {
 	// close project
 	m_PManager->CloseProject();
-	
+		
 	m_AuiManager->UnInit();
-	// don't delete managed windows but check for 
-	// memory leak.
+	
+	wxDELETE(m_ToolManager);
+	wxDELETE(m_EditManager);
+	wxDELETE(m_AttribManager);
+	wxDELETE(m_LayerManager);	
+	
+	wxDELETE(m_SnappingPanel);
+	wxDELETE(m_ShortCutPanel);
+	wxDELETE(m_QueriesPanel);
+	wxDELETE(m_AttribObjPanel);
+	wxDELETE(m_TocWindow);
 	
 	delete m_LogWindow;
 	delete m_AuiManager;
-	
-	delete m_EditManager;
-	delete m_AttribManager;
-	delete m_LayerManager;
-	
-	// delete the project Manager
-	delete m_PManager;
-	
-	// delete the menu manager
 	delete m_MManager;
-	
-	// delete toolmanager
-	delete m_ToolManager;
+	delete m_PManager;
 	
 	images_misc_clean();
     images_toolbar_clean();
@@ -448,7 +454,6 @@ ToolMapFrame::~ToolMapFrame()
 
 void ToolMapFrame::OnQuit(wxCommandEvent & event)
 {
-	//this->Destroy();
 	Close(true);
 }
 
@@ -671,14 +676,6 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 
 void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 {
-	
-	
-	
-	tmProgressIndicator * testtm = new tmProgressIndicator(this, GetStatusBar());
-	testtm->DisplayProgress();
-		
-	
-	
 	// display a dir dialog for selecting the project to open
 	wxDirDialog * myDirDLG = new wxDirDialog(this, _("Choose a ToolMap project"),
 											 _T(""), wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
@@ -710,9 +707,6 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		}
 	}
 	delete myDirDLG;
-	
-	delete testtm;
-
 }
 
 
@@ -852,17 +846,6 @@ void ToolMapFrame::OnTocWindow (wxCommandEvent & event)
 
 }
 
-
-void ToolMapFrame::OnIdleTimeUpdate(wxIdleEvent & event)
-{
-	if (m_CheckedUpdates == false)
-	{
-		m_CheckedUpdates = true;
-		tmUpdate tm;
-		if(tm.IsCheckOnStart()==true)
-			CheckUpdates(true);
-	}
-}
 
 
 void ToolMapFrame::OnShowObjectAttributionWindow (wxCommandEvent & event)
@@ -1104,7 +1087,9 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 
 void ToolMapFrame::CheckUpdates(bool silent)
 {
-	wxString myVersion = SVN_VERSION;
+	wxLogMessage("coucou");
+	m_InfoBar->ShowMessage("coucou");
+	/*wxString myVersion = SVN_VERSION;
 	if (myVersion.Right(1)==_T("M"))
 		myVersion.RemoveLast(1);
 	long myLVersion = 0;
@@ -1135,7 +1120,7 @@ void ToolMapFrame::CheckUpdates(bool silent)
 		myDlg.SetNewVersion();
 	
 	
-	myDlg.ShowModal();
+	myDlg.ShowModal();*/
 }
 
 

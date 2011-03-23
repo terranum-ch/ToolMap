@@ -48,7 +48,6 @@
 #include "../gui/projectdefnew_dlg.h"		// for the first dialog (creating the db)
 #include "../gui/menumanager.h"				// for menu management (recent, greyed,...)
 #include <wx/busyinfo.h>					// informations message for busy time
-#include "../gis/tmprogress.h"				// progress indicator
 #include "../gis/tmattributionmanager.h"	// for attribution manager
 #include "../gui/queries_panel.h"			// for queries panel
 #include "../gui/shortcut_panel.h"			// for shortcut panel

@@ -52,18 +52,14 @@ tmToolManager::tmToolManager(wxWindow * parent,
 	m_Renderer = renderer;
 	m_Scale = scale;
 	
-	
 	m_Parent->PushEventHandler(this);
-	
 }
 
 
 
 tmToolManager::~tmToolManager()
 {
-	//m_Parent->PopEventHandler(false);
-	//m_Parent->SetEventHandler(m_Parent);
-
+	m_Parent->PopEventHandler(false);
 }
 
 

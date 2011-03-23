@@ -134,15 +134,12 @@ tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) 
 	InitTocMemberValues();
 	LoadImageList();
 	m_ParentEvt = parent;
-	//m_ParentEvt->PushEventHandler(this)
 }
 
 
 tmTOCCtrl::~tmTOCCtrl()
 {
-	if(m_ContextMenu)
-		delete m_ContextMenu;
-	
+	wxDELETE(m_ContextMenu);	
 }
 
 
