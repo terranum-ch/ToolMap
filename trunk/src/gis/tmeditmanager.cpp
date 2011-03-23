@@ -97,7 +97,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 tmEditManager::~tmEditManager()
 {
 	m_ParentEvt->PopEventHandler(false);
-	m_ParentEvt->SetEventHandler(m_ParentEvt);
+	//m_ParentEvt->SetEventHandler(m_ParentEvt);
 	
 	delete m_GISMemory;
 }

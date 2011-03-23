@@ -120,8 +120,6 @@
 #include "../gis/tmeditmanager.h"			// for editing manager
 #include "../gui/tmtoolmanager.h"			// for tools
 
-#include "../components/tmupdate/tmupdate.h" // updates
-#include "../components/tmupdate/tmupdate_dlg.h"
 
 #include "tmwindowposition.h"			// saving window position
 
@@ -136,6 +134,7 @@
 class MenuManager;
 class ToolbarManager;
 class ProjectManager;
+class WebUpdateInformationBar;
 
 #include <wx/mstream.h>
 
@@ -300,7 +299,7 @@ private:
 	
 	tmEditManager * m_EditManager;
 	tmToolManager * m_ToolManager;
-	bool m_CheckedUpdates;
+	WebUpdateInformationBar * m_InfoBar;
 	
 	
 	
@@ -317,7 +316,6 @@ private:
 	void OnEditProject (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
-	void OnIdleTimeUpdate(wxIdleEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	void OnShowQueriesWindow (wxCommandEvent & event);
 	void OnQueriesRun (wxCommandEvent & event);

@@ -59,7 +59,6 @@ tmAttributionManager::tmAttributionManager(wxWindow * parent,
 	m_SelData = selection;
 	m_pPrjMem = NULL;
 	m_InfoDLG = NULL;
-	//m_InfoDLG = new InformationDLG(parent);
 	
 	m_pDB = NULL;
 	m_pLayerProperties = NULL;
@@ -215,9 +214,8 @@ bool tmAttributionManager::ShortcutAttributionChecking (int iCount, int shortcut
 tmAttributionManager::~tmAttributionManager()
 {
 	UnInitAttributionManager();
-	//m_Parent->PopEventHandler(false);
-//	m_Parent->SetEventHandler(m_Parent);
-	//delete  m_InfoDLG;
+	m_Parent->PopEventHandler(false);
+	//m_Parent->SetEventHandler(m_Parent);
 }
 
 

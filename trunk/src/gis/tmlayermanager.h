@@ -35,7 +35,6 @@
 #include "tmgisdata.h"					// for GISdata
 #include "tmgisdatavectormysql.h"		// for direct access to GIS mysql
 #include "tmrenderer.h"					// for GIS rendering
-#include "tmprogress.h"					// for displaying progress during load
 #include "tmscalectrl.h"				// for combo box scale control
 #include "tmselecteddatamemory.h"		// for storing selected data into memory
 #include "tmmanagerevent.h"				// for shared event with other manager
@@ -82,7 +81,6 @@ class tmLayerManager : public wxEvtHandler
 		tmGISScale m_Scale;
 		tmDrawer m_Drawer;
 		tmGISLoadingDataThread * m_Thread;
-		tmProgressIndicator * m_Progress;
 		wxBitmap * m_Bitmap;
 		wxStatusBar * m_StatusBar;
 		tmScaleCtrlCombo * m_ScaleCtrl;

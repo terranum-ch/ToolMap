@@ -81,7 +81,6 @@ TocWindowDlgGen::TocWindowDlgGen(wxAuiManager * myAuiManager,wxWindow * parent, 
 {
 	Init();
 
-	//m_TocAui = new wxAuiManager(parent);
 	m_TocAui = myAuiManager;
 	
 	m_ParentEvt = parent;
@@ -108,12 +107,9 @@ TocWindowDlgGen::TocWindowDlgGen(wxAuiManager * myAuiManager,wxWindow * parent, 
 
 TocWindowDlgGen::~TocWindowDlgGen()
 {
-	delete m_TocAui;
-	delete m_ContentFrame;
-	
+	//delete m_TocAui;
+	//delete m_ContentFrame;
 	m_ParentEvt->PopEventHandler(FALSE);
-	
-	m_TocAui->UnInit();
 }
 
 void TocWindowDlgGen::Init()
