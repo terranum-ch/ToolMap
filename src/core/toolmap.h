@@ -229,7 +229,8 @@ class WebUpdateInformationBar;
 #define ID_TOOL8 10256
 #define ID_TOOL9 10257
 #define ID_TOOL10 10258
-const wxString g_ProgName = _T("ToolMap 2.1.");
+const wxString g_ProgName = _T("ToolMap");
+const wxString g_ProgMajorVersion = _T("2.2");
 
 
 
@@ -341,7 +342,7 @@ private:
 	//void OnMenuHighligntOff(wxMenuEvent & event);
 	void OnCheckUpdates (wxCommandEvent & event);
 	void OnReportBug (wxCommandEvent & event);
-	void CheckUpdates(bool silent = false);
+	
 	void OnImportGISData (wxCommandEvent & event);
 	void OnUserManual(wxCommandEvent & event);
 	void OnFlipLine (wxCommandEvent & event);
@@ -368,7 +369,7 @@ private:
 	
 	// child event function
 	//void OnMenuZoomPreviousChange(wxCommandEvent & event);
-	
+	void _CheckUpdates(bool ismanual = false);
 	
 	// update menu functions
 	void OnUpdateMenuProject(wxUpdateUIEvent & event);

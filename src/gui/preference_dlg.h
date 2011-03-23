@@ -27,6 +27,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/notebook.h>
+#include <wx/config.h>
 
 
 class PreferenceDLG : public wxDialog 
@@ -45,6 +46,10 @@ public:
 				  const wxSize& size = wxDefaultSize,
 				  long style = wxDEFAULT_DIALOG_STYLE );
 	~PreferenceDLG();
+	
+	virtual bool TransferDataToWindow();
+	virtual bool TransferDataFromWindow();
+
 	
 };
 
