@@ -88,3 +88,28 @@ void PreferenceDLG::_CreateControls(){
 	this->Centre( wxBOTH );
 }
 
+
+bool PreferenceDLG::TransferDataToWindow(){
+	wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("UPDATE");
+	bool bCheckStartup = myConfig->ReadBool("check_on_start", true);
+    wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
+    myConfig->SetPath("..");
+	
+	m_UpdateCheckCtrl->SetValue(bCheckStartup);
+	m_ProxyInfoCtrl->SetValue(myProxyInfo);
+	return true;
+}
+
+
+
+bool PreferenceDLG::TransferDataFromWindow(){
+	wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("UPDATE");
+	myConfig->Write("check_on_start", m_UpdateCheckCtrl->GetValue());
+    myConfig->Read("proxy_info", m_ProxyInfoCtrl->GetValue());
+    myConfig->SetPath("..");
+	return true;
+}

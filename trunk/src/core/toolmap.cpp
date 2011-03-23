@@ -52,7 +52,7 @@ bool ToolMapApp::OnInit()
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
 	wxHandleFatalExceptions();
-	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + SVN_VERSION,
+	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION,
 										   wxDefaultPosition, wxSize(900,500),
 										   _T("MAIN_WINDOW"));
 	tmWindowPosition myPos;
@@ -332,14 +332,13 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	_CreateToolBar();
     _CreateAccelerators();
 	
-    wxString myProgName = g_ProgName;
-	myProgName = myProgName.RemoveLast(5);
-    
 	wxLog * myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
 	delete wxLog::SetActiveTarget(myDlgLog);
-	m_LogWindow = new wxLogWindow(this, myProgName + _(" Log"), false);
+	m_LogWindow = new wxLogWindow(this, g_ProgName + _(" Log"), false);
 	
 	wxLogDebug(_("Debug mode enabled"));
+	
+	wxConfigBase::Set(new wxFileConfig(g_ProgName));
 	
 	// create the UI
 	wxBoxSizer* bSizer2;
@@ -415,6 +414,8 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);	
+	
+	_CheckUpdates(false);
 }
 
 
@@ -663,7 +664,7 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	if (m_PManager->CreateNewProject())
 	{
 	// add name to the program bar
-	wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+	wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 	SetTitle(myProgName);
 	
 
@@ -684,24 +685,13 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		// call the project manager and ask to open an
 		// existing project. 
 		int iActError = m_PManager->OpenProject(myDirDLG->GetPath());
-		if (iActError == OPEN_OK)
-		{
-			// If we can open the project,set the name in the program bar.
-			//wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
-			//SetTitle(myProgName);
-			
-		}
-		else
+		if (iActError != OPEN_OK)
 		{
 			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myDirDLG->GetPath());
 			dlg.ShowModal();
 			
-			/*wxMessageBox(_("The selected folder is not a ToolMap project,\nplease select a ToolMap project."),
-						 _("Opening project error"), wxICON_ERROR | wxOK,
-						 this);*/
-		
-			// If we can open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + SVN_VERSION;
+				// If we can open the project,set the name in the program bar.
+			wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION;
 			SetTitle(myProgName);
 			
 		}
@@ -739,7 +729,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		if (iActError == OPEN_OK)
 		{
 			// If we can open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+			wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
 			SetTitle(myProgName);
 			
 			// updates the menu using the menu manager
@@ -752,7 +742,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		
 		if (iActError != OPEN_OK) {
 			// If we can't open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + SVN_VERSION;
+			wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION;
 			SetTitle(myProgName);
 			
 			// remove the non valid history from the recent
@@ -1051,7 +1041,7 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 
 void ToolMapFrame::OnCheckUpdates (wxCommandEvent & event)
 {
-	CheckUpdates(false);
+	_CheckUpdates(true);
 }
 
 
@@ -1085,42 +1075,37 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 
 
 
-void ToolMapFrame::CheckUpdates(bool silent)
-{
-	wxLogMessage("coucou");
-	m_InfoBar->ShowMessage("coucou");
-	/*wxString myVersion = SVN_VERSION;
-	if (myVersion.Right(1)==_T("M"))
-		myVersion.RemoveLast(1);
-	long myLVersion = 0;
-	myVersion.ToLong(&myLVersion);
+void ToolMapFrame::_CheckUpdates(bool ismanual){
+	wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("UPDATE");
+	bool bCheckStartup = myConfig->ReadBool("check_on_start", true);
+    wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
+    myConfig->SetPath("..");
+    
+	if (bCheckStartup == false && ismanual == false) {
+        return;
+    }
 	
-	tmUpdate tm;
-	tm.SetActualVersion(myLVersion);
-	tmUpdate_DLG myDlg (this, &tm);
-	
-	if(tm.IsServerResponding()==false)
-	{
-		if (silent)
-			return;
-		
-		myDlg.SetNoConnection();
-		myDlg.ShowModal();
-		return;
-	}	
-	
-	if (tm.IsNewVersionAvaillable()==false)
-	{
-		if (silent)
-			return;
-		
-		myDlg.SetNoNewVersion();
+	// clean svn number. may be 
+	// 1234 or 1234:1245 or 1234M or 1234S or event 1234:1245MS
+	long mySvnVersion = 0;
+	wxString mySvnText(SVN_VERSION);
+	while (wxStrpbrk(mySvnText, _T("MS")) != NULL) {
+		mySvnText.RemoveLast();
 	}
-	else
-		myDlg.SetNewVersion();
 	
+	int mySeparatorPos = mySvnText.Find(":");
+	if (mySeparatorPos != wxNOT_FOUND) {
+		mySvnText = mySvnText.Mid(mySeparatorPos);
+	}
+		   
+	if(mySvnText.ToLong(&mySvnVersion)==false){
+		wxFAIL;
+	}
 	
-	myDlg.ShowModal();*/
+    WebUpdateThread * myUpdate = new WebUpdateThread(m_InfoBar, myProxyInfo);
+    myUpdate->CheckNewVersion(mySvnVersion, true, ismanual, true);
 }
 
 

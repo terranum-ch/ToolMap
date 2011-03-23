@@ -421,8 +421,8 @@ int ProjectManager::OpenProject(const wxString & path)
 		bProjectIsOpen = TRUE;
 		//myReturnVal = OPEN_OK;
 		
-		wxString myProgName = g_ProgName + SVN_VERSION + _T(" - ") + GetProjectName();
-		m_Parent->SetTitle(myProgName);
+		wxString myTitleBarText = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + GetProjectName();
+		m_Parent->SetTitle(myTitleBarText);
 		
 	}
 	else
