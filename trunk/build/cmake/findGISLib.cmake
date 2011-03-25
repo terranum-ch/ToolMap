@@ -34,15 +34,27 @@ IF (SEARCH_GEOS)
 	
 	# if unix / mac and search geos
 	ELSE (WIN32)
-		
-		FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
-  				${SEARCH_GIS_LIB_PATH}/include
-  				${SEARCH_GIS_LIB_PATH}
-  				)
-  		
-  		FIND_LIBRARY(GEOS_LIBRARIES
-	  		geos_c
-	  		PATH ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} )
+		IF(SEARCH_GIS_LIB_PATH)
+				FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
+		  				${SEARCH_GIS_LIB_PATH}/include
+		  				${SEARCH_GIS_LIB_PATH}
+						NO_DEFAULT_PATH
+		  				)
+
+		  		FIND_LIBRARY(GEOS_LIBRARIES
+			  		geos_c
+			  		PATH ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} NO_DEFAULT_PATH)
+		ELSE(SEARCH_GIS_LIB_PATH)
+				FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
+		  				${SEARCH_GIS_LIB_PATH}/include
+		  				${SEARCH_GIS_LIB_PATH}
+		  				)
+
+		  		FIND_LIBRARY(GEOS_LIBRARIES
+			  		geos_c
+			  		PATH ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} )
+		ENDIF(SEARCH_GIS_LIB_PATH)
+	
   		  		  			
 	ENDIF (WIN32)
 	
@@ -100,18 +112,29 @@ IF (SEARCH_GDAL)
 	
 	# if unix / mac and search geos
 	ELSE (WIN32)
-		
-		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
-  				HINTS ${SEARCH_GIS_LIB_PATH}/include
-  				${SEARCH_GIS_LIB_PATH}
-  				PATH_SUFFIXES gdal)
-  		
-  		FIND_LIBRARY(GDAL_LIBRARIES
-	  		gdal NAMES gdal1 gdal1.6.0 
-	  		HINTS ${SEARCH_GIS_LIB_PATH}/lib
-  			${SEARCH_GIS_LIB_PATH}
-  			PATH_SUFFIXES gdal)
-  		  		  			
+		IF(SEARCH_GIS_LIB_PATH)
+			FIND_PATH(GDAL_INCLUDE_DIR gdal.h
+	  				HINTS ${SEARCH_GIS_LIB_PATH}/include
+	  				${SEARCH_GIS_LIB_PATH}
+	  				PATH_SUFFIXES gdal NO_DEFAULT_PATH)
+
+	  		FIND_LIBRARY(GDAL_LIBRARIES
+		  		gdal NAMES gdal1 gdal1.6.0 
+		  		HINTS ${SEARCH_GIS_LIB_PATH}/lib
+	  			${SEARCH_GIS_LIB_PATH}
+	  			PATH_SUFFIXES gdal NO_DEFAULT_PATH)
+		ELSE(SEARCH_GIS_LIB_PATH)
+			FIND_PATH(GDAL_INCLUDE_DIR gdal.h
+	  				HINTS ${SEARCH_GIS_LIB_PATH}/include
+	  				${SEARCH_GIS_LIB_PATH}
+	  				PATH_SUFFIXES gdal)
+
+	  		FIND_LIBRARY(GDAL_LIBRARIES
+		  		gdal NAMES gdal1 gdal1.6.0 
+		  		HINTS ${SEARCH_GIS_LIB_PATH}/lib
+	  			${SEARCH_GIS_LIB_PATH}
+	  			PATH_SUFFIXES gdal)
+		ENDIF(SEARCH_GIS_LIB_PATH)
 	ENDIF (WIN32)
 	
 	
