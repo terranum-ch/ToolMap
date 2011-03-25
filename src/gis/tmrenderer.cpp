@@ -376,32 +376,33 @@ void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
 
 void tmRenderer::OnMouseMove (wxMouseEvent & event)
 {
-	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
-		ZoomUpdate(event);
-	
-	if (m_ActualTool == tmTOOL_PAN)
-		PanUpdate(event.GetPosition());
-	
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectUpdate(event);
 	
 	if (m_ActualTool == tmTOOL_DRAW)
 		DrawMove(event.GetPosition());
 	
-	if (m_ActualTool == tmTOOL_MODIFY)
-		ModifyUpdate(event.GetPosition());
-	
-	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
-		OrientedPtsMove(event.GetPosition());
-	
-	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
-		ModifySharedUpdate(event.GetPosition());
+	if (event.Dragging() == true) {
+		if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
+			ZoomUpdate(event);
+		
+		if (m_ActualTool == tmTOOL_PAN)
+			PanUpdate(event.GetPosition());
+		
+		if (m_ActualTool == tmTOOL_MODIFY)
+			ModifyUpdate(event.GetPosition());
+		
+		if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
+			OrientedPtsMove(event.GetPosition());
+		
+		if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
+			ModifySharedUpdate(event.GetPosition());
+		}
 	}
 	
 	// new point object, will be deleted in the layer
 	// manager
 	wxPoint * myPoint = new wxPoint(event.GetPosition());
-	
 	wxCommandEvent evt(tmEVT_LM_MOUSE_MOVED, wxID_ANY);
 	evt.SetClientData(myPoint);
 	GetEventHandler()->AddPendingEvent(evt);

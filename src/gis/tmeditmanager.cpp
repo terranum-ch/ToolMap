@@ -2013,10 +2013,12 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 		return;
 	}
 	
-	// update display with msg
+	// update display and selection
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
-	
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+
 	// update display imediatly
 	//m_ParentEvt->ReloadLayerNow();
 
@@ -2027,10 +2029,8 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 	OGRGeometry * myRect = myPt.Buffer(tmSELECTION_DIAMETER / 2.0);
 	wxASSERT(myRect);
 	
-	
 	// clear shared nodes
 	m_SharedNodes.Clear();
-	
 	
 	// search end nodes
 	wxArrayLong * mySelIds = m_SelectedData->GetSelectedValues();
@@ -2050,34 +2050,43 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 		myLine->getPoint(0, &myNode);
 		int myNodeID = wxNOT_FOUND;
 		int myNodePreviousID = wxNOT_FOUND;
+		bool bFoundNode = false;
 		
+		// search start node
 		if (myNode.Within(myRect)) {
 			wxLogMessage(_("Found node : 1"));
 			myNodeID = 0;
 			myNodePreviousID = 1;
+			wxRealPoint myCoord (myLine->getX(myNodeID), myLine->getY(myNodeID));
+			wxRealPoint myPreviousCoord (myLine->getX(myNodePreviousID), myLine->getY(myNodePreviousID));
+			tmSharedNodeEdit mySharedNode (mySelIds->Item(i),
+										   myNodeID,
+										   m_Scale->RealToPixel(myCoord),
+										   m_Scale->RealToPixel(myPreviousCoord));
+			m_SharedNodes.Add(mySharedNode);
+			bFoundNode = true;
 		}
 		
+		// search end node
 		myLine->getPoint(myTotalPoints -1, &myNode);
 		if (myNode.Within(myRect)) {
 			wxLogMessage(_("Found node : %d"), myTotalPoints -2);
 			myNodeID = myTotalPoints -1;
 			myNodePreviousID = myTotalPoints -2;
+			wxRealPoint myCoord (myLine->getX(myNodeID), myLine->getY(myNodeID));
+			wxRealPoint myPreviousCoord (myLine->getX(myNodePreviousID), myLine->getY(myNodePreviousID));
+			tmSharedNodeEdit mySharedNode (mySelIds->Item(i),
+										   myNodeID,
+										   m_Scale->RealToPixel(myCoord),
+										   m_Scale->RealToPixel(myPreviousCoord));
+			m_SharedNodes.Add(mySharedNode);
+			bFoundNode = true;
 		}
-		
-		if (myNodeID == wxNOT_FOUND || myNodePreviousID == wxNOT_FOUND) {
-			OGRFeature::DestroyFeature(myFeature);
-			wxLogError(_("No Node found for line : %ld"), mySelIds->Item(i));
-			continue;
-		}
-		
-		wxRealPoint myCoord (myLine->getX(myNodeID), myLine->getY(myNodeID));
-		wxRealPoint myPreviousCoord (myLine->getX(myNodePreviousID), myLine->getY(myNodePreviousID));
-		tmSharedNodeEdit mySharedNode (mySelIds->Item(i),
-								 myNodeID,
-								 m_Scale->RealToPixel(myCoord),
-								 m_Scale->RealToPixel(myPreviousCoord));
-		m_SharedNodes.Add(mySharedNode);
 		OGRFeature::DestroyFeature(myFeature);
+		
+		if (bFoundNode == false) {
+			wxLogError(_("No Node found for line : %ld"), mySelIds->Item(i));
+		}
 	}
     
     if (m_SharedNodes.GetCount() < 2) {
@@ -2106,7 +2115,15 @@ void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
 		return;
 	}
 	
+	// clear DC
+	{
+		wxClientDC dc( m_Renderer );
+		wxDCOverlay overlaydc(m_OverlaySharedNodes, &dc );
+		overlaydc.Clear();
+	}
 	m_OverlaySharedNodes.Reset();
+	
+	
 	wxRealPoint myNewCoord = m_Scale->PixelToReal(*myTempPt);
 	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {
 		OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SharedNodes.Item(i).GetLineID());
