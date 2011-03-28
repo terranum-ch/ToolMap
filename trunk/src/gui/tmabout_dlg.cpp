@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmabout_dlg.h"
+#include "../core/toolmap.h"
 
 
 // image
@@ -43,7 +44,7 @@ tmAboutDLG::~tmAboutDLG()
 
 wxString tmAboutDLG::GetVersionText()
 {
-	wxString myVersion = _("version 2.1.");
+	wxString myVersion = _("version ") + g_ProgMajorVersion + ".";
 	myVersion.Append(SVN_VERSION);
 	myVersion.Append(_T(" - "));
 	myVersion.Append(g_CodeName);
