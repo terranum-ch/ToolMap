@@ -452,15 +452,17 @@ void tmRenderer::OnMouseDClick  (wxMouseEvent & event){
 
 
 void tmRenderer::OnMouseWheel (wxMouseEvent & event){
-	m_WheelRotation += event.GetWheelRotation();
-	int myLines = event.GetWheelRotation() / event.GetWheelDelta();
-	m_WheelRotation -= myLines * event.GetWheelDelta();
+	if(event.GetWheelRotation() >= 0){
+		m_WheelRotation += 1;
+	}
+	else{
+		m_WheelRotation -= 1;
+	}
 	m_WheelPosition = event.GetPosition();
 	if (m_WheelTimer.IsRunning() == true){		
 		return;
 	}
 	m_WheelTimer.Start(100, true);
-	//event.Skip();
 }
 
 
@@ -535,15 +537,14 @@ void tmRenderer::OnKey	(wxKeyEvent & event)
 void tmRenderer::OnWheelTimer (wxTimerEvent & event){
 	int myWheelRotation = m_WheelRotation;
 	m_WheelRotation = 0;
-	wxLogMessage("Wheel Message: %d", myWheelRotation);
 	
 	wxRect myBaseRect (wxPoint(0,0), this->GetSize());
-	int myWheelPercent = 100 - myWheelRotation * 3.0;
+	int myWheelPercent = 10 - myWheelRotation;
 	if (myWheelPercent < 1 ) {
 		myWheelPercent = 1;
 	}
-	myBaseRect.SetWidth(wxRound(myBaseRect.GetWidth() * myWheelPercent / 100.0));
-	myBaseRect.SetHeight(wxRound(myBaseRect.GetHeight() * myWheelPercent / 100.0));
+	myBaseRect.SetWidth(wxRound(myBaseRect.GetWidth() * myWheelPercent / 10.0));
+	myBaseRect.SetHeight(wxRound(myBaseRect.GetHeight() * myWheelPercent / 10.0));
 	wxRect myCenterRect(m_WheelPosition, wxSize(1,1));
 	myBaseRect = myBaseRect.CenterIn(myCenterRect, wxBOTH);
 	
