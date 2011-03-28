@@ -56,11 +56,13 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_MOTION (tmRenderer::OnMouseMove)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
     EVT_LEFT_DCLICK(tmRenderer::OnMouseDClick)
+	EVT_MOUSEWHEEL(tmRenderer::OnMouseWheel)
 	EVT_RIGHT_DOWN (tmRenderer::OnMouseRightDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
 	EVT_KEY_DOWN (tmRenderer::OnKey)
+	EVT_TIMER(wxID_ANY, tmRenderer::OnWheelTimer)
 END_EVENT_TABLE()
 
 
@@ -86,6 +88,9 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_SnappingRadius = 0;
 	m_OldSize = wxSize(0,0);
     m_Rubber = NULL;
+	m_WheelRotation = 0;
+	m_WheelTimer.SetOwner(this, wxID_ANY);
+	m_WheelPosition = wxDefaultPosition;
 	
     images_cursor_init();
     
@@ -186,7 +191,6 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 	mySizes->Add(m_OldSize);
 	mySizes->Add(myActualSize);
 		
-	
 	m_OldSize = myActualSize;
 	
 	// send size to the layermanager
@@ -447,6 +451,19 @@ void tmRenderer::OnMouseDClick  (wxMouseEvent & event){
 }
 
 
+void tmRenderer::OnMouseWheel (wxMouseEvent & event){
+	m_WheelRotation += event.GetWheelRotation();
+	int myLines = event.GetWheelRotation() / event.GetWheelDelta();
+	m_WheelRotation -= myLines * event.GetWheelDelta();
+	m_WheelPosition = event.GetPosition();
+	if (m_WheelTimer.IsRunning() == true){		
+		return;
+	}
+	m_WheelTimer.Start(100, true);
+	//event.Skip();
+}
+
+
 
 /***************************************************************************//**
  @brief Called when a key is pressed
@@ -515,6 +532,36 @@ void tmRenderer::OnKey	(wxKeyEvent & event)
 
 
 
+void tmRenderer::OnWheelTimer (wxTimerEvent & event){
+	int myWheelRotation = m_WheelRotation;
+	m_WheelRotation = 0;
+	wxLogMessage("Wheel Message: %d", myWheelRotation);
+	
+	wxRect myBaseRect (wxPoint(0,0), this->GetSize());
+	int myWheelPercent = 100 - myWheelRotation * 3.0;
+	if (myWheelPercent < 1 ) {
+		myWheelPercent = 1;
+	}
+	myBaseRect.SetWidth(wxRound(myBaseRect.GetWidth() * myWheelPercent / 100.0));
+	myBaseRect.SetHeight(wxRound(myBaseRect.GetHeight() * myWheelPercent / 100.0));
+	wxRect myCenterRect(m_WheelPosition, wxSize(1,1));
+	myBaseRect = myBaseRect.CenterIn(myCenterRect, wxBOTH);
+	
+	if (myBaseRect.GetSize() == this->GetSize()) {
+		// no changes, return
+		return;
+	}
+
+    // send event
+    wxCommandEvent evt;
+	evt.SetId(wxID_ANY);
+    evt.SetClientData(new wxRect(myBaseRect));
+	evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_IN);
+    GetEventHandler()->AddPendingEvent(evt);
+}
+
+
+
 void tmRenderer::ZoomStart (const wxPoint & mousepos)
 {
     wxASSERT(m_Rubber == NULL);
@@ -579,6 +626,8 @@ void tmRenderer::ZoomStop(const wxPoint & mousepos)
     }
     GetEventHandler()->AddPendingEvent(evt);    
 }
+
+
 
 
 /***************************************************************************//**
