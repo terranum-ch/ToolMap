@@ -117,6 +117,9 @@ class tmRenderer : public wxScrolledWindow
 		
 		// snapping
 		int m_SnappingRadius;
+		int m_WheelRotation;
+		wxPoint m_WheelPosition;
+		wxTimer m_WheelTimer;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
@@ -128,10 +131,11 @@ class tmRenderer : public wxScrolledWindow
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);
         void OnMouseDClick  (wxMouseEvent & event);
-		//void OnMouseWheel	(wxMouseEvent & event);
+		void OnMouseWheel	(wxMouseEvent & event);
 		void OnShiftDown	(wxKeyEvent & event);
 		void OnShiftUp		(wxKeyEvent & event);
 		void OnKey			(wxKeyEvent & event);
+		void OnWheelTimer	(wxTimerEvent & event);
 		
 		// avoid flickering
 		void OnAvoidFlickering(wxEraseEvent & event);
