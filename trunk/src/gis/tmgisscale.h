@@ -249,10 +249,10 @@ class tmGISScale : public wxObject
 		
 		static inline double AppendToCoord (const double & coord1, const double & value)
 		{
-			if (coord1 > 0)
+			//if (coord1 > 0)
 				return coord1 + value;
-			else
-				return coord1 - value;
+			//else
+			//	return coord1 - value;
 		}
 		
 		// extent validity
