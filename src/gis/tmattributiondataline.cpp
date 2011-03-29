@@ -105,7 +105,6 @@ bool tmAttributionDataLine::SetAttributeBasic (AttribObjType_PANEL * panel)
 								 TABLE_NAME_GIS_ATTRIBUTION[0]);
 	}
 		
-	
 	if (m_pDB->DataBaseQueryNoResults(myStatement)==false)
 	{
 		wxLogDebug(_T("Error attributing data"));
