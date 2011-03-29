@@ -130,7 +130,6 @@ bool tmAttributionDataPoint::GetPanelValues (AttribObjType_PANEL * panel,
 											wxArrayLong & valueids)
 {
 	panel->GetSelectedValues(TOC_NAME_POINTS, valueids);
-	
 	if (valueids.GetCount() > 0)
 		return true;
 	

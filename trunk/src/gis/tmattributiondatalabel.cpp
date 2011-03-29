@@ -105,7 +105,7 @@ bool tmAttributionDataLabel::SetAttributeBasic (AttribObjType_PANEL * panel)
 								 TABLE_NAME_GIS_ATTRIBUTION[2]);
 	}
 		
-	
+	wxLogMessage(myStatement);
 	if (m_pDB->DataBaseQueryNoResults(myStatement)==false)
 	{
 		wxLogDebug(_T("Error attributing data "));
@@ -129,10 +129,7 @@ bool tmAttributionDataLabel::SetAttributeBasic (AttribObjType_PANEL * panel)
 bool tmAttributionDataLabel::GetPanelValues (AttribObjType_PANEL * panel, 
 											wxArrayLong & valueids)
 {
-	// get values for frequent lines and less frequent
-	panel->GetSelectedValues(TOC_NAME_LABELS, valueids, false);
-	panel->GetSelectedValues(TOC_NAME_LABELS, valueids, true);
-	
+	panel->GetSelectedValues(TOC_NAME_LABELS, valueids);
 	if (valueids.GetCount() > 0)
 		return true;
 	
