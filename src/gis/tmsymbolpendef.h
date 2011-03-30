@@ -43,6 +43,7 @@ const int tmSYMBOLPENSYLES[] =
 	wxDOT,
 	wxLONG_DASH,
 	wxDOT_DASH,
+	wxTRANSPARENT
 };
 
 /***************************************************************************//**
@@ -54,10 +55,11 @@ const int tmSYMBOLPENSYLES[] =
  *******************************************************************************/
 const wxString tmSYMBOLPENSTYLES_NAME[] =
 {
-_("Solid line"),
-_("Dotted line"),
-_("Dashed line"),
-_("Dot-dashed line")
+	_("Solid line"),
+	_("Dotted line"),
+	_("Dashed line"),
+	_("Dot-dashed line"),
+	_("Transparent line")
 };
 
 
