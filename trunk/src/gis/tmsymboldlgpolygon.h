@@ -58,8 +58,16 @@ public:
 	int m_fStyle;
 	int m_GlobalTransparency;
 
-	tmSymbolDataPolygonUnique();
+	tmSymbolDataPolygonUnique(){
+		m_PanelNo = 0;
+		m_bColour = *wxBLACK;
+		m_bWidth = 1;
+		m_fColour = *wxBLACK;
+		m_fStyle = 0;
+		m_GlobalTransparency = 0;
+	}
 };
+
 
 
 class tmSymbolDLGPolygon : public tmSymbolDLG
@@ -80,9 +88,7 @@ class tmSymbolDLGPolygon : public tmSymbolDLG
 		virtual bool TransferDataFromWindow();
 
 				
-		DECLARE_DYNAMIC_CLASS( tmSymbolDLGPolygon )
-		DECLARE_EVENT_TABLE()
-		
+		DECLARE_DYNAMIC_CLASS( tmSymbolDLGPolygon )		
 	public:
 		/// Constructors
 		tmSymbolDLGPolygon();

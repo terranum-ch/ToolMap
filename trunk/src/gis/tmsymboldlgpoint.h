@@ -46,13 +46,20 @@ const int ID_SYMDLGP_PANEL4 = 10088;
 const int ID_SYMDLGP_TRANSPARENCY = 10086;
 
 
-struct tmSymbolDataPointUnique
+class tmSymbolDataPointUnique
 {
-	int m_PanelNo;
+public:
 	wxColour m_Colour;
 	int m_Radius;
 	int m_GlobalTransparency;
+	
+	tmSymbolDataPointUnique(){
+		m_Colour = *wxBLACK;
+		m_Radius = 1;
+		m_GlobalTransparency = 0;
+	}
 };
+
 
 
 class tmSymbolDLGPoint : public tmSymbolDLG

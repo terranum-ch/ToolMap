@@ -52,10 +52,10 @@ public:
 	tmSymbolDataLineMultiple(){
 		m_PanelNo = 0;
 		m_QueryID = wxNOT_FOUND;
-		m_SelColourMultiple = *wxGREEN;
+		m_SelColourMultiple = *wxBLUE;
 		m_SelShapeMultiple = 0;
 		m_SelWidthMultiple = 1;
-		m_UnSelColourMultiple = *wxBLUE;
+		m_UnSelColourMultiple = *wxGREEN;
 		m_UnSelShapeMultiple = 0;
 		m_UnSelWidthMultiple = 1;
 	}

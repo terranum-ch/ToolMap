@@ -21,12 +21,7 @@
 
 
 tmSymbolVectorLine::tmSymbolVectorLine()
-{
-	m_lSymUnique.m_Colour = wxColour(*wxBLACK);
-	m_lSymUnique.m_Shape = 0;
-	m_lSymUnique.m_Width = 1;
-	m_lSymUnique.m_GlobalTransparency = 0;
-	
+{	
 }
 
 
