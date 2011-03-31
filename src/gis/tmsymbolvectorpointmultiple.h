@@ -25,29 +25,30 @@
 #endif
 
 
-#include "tmSymbolVectorpoint.h"	// tmSymbol class definition
-#include "tmsymboldlgpoint.h" 
+#include "tmsymboldlgpointmultiple.h"	// tmSymbol class definition
+#include "tmsymbolvectorpoint.h" 
 
 class tmSymbolVectorPointMultiple : public tmSymbolVectorPoint
-	{
-	private:
-		tmSymbolDataPointUnique m_ptUniqueSymbol;
-		
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-	protected:
-	public:
-		tmSymbolVectorPoint();
-		tmSymbolVectorPoint(const tmSymbolVectorPoint & origin);
-		~tmSymbolVectorPoint();
-		
-		wxColour GetColour();
-		int GetRadius(){return m_ptUniqueSymbol.m_Radius;}
-		virtual int GetTransparency(){return m_ptUniqueSymbol.m_GlobalTransparency;}
-		
-		
-		virtual bool Serialize(tmSerialize &s);
-	};
+{
+private:
+	tmSymbolDataPointMultiple m_ptMultipleSymbol;
+	
+	virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
+	virtual bool GetDialogData(tmSymbolDLG * dlg);
+
+public:
+	tmSymbolVectorPointMultiple();
+	tmSymbolVectorPointMultiple(const tmSymbolVectorPointMultiple & origin);
+	~tmSymbolVectorPointMultiple();
+	
+	wxColour GetColour();
+	int GetRadius(){return m_ptMultipleSymbol.m_Radius;}
+	virtual int GetTransparency(){return m_ptMultipleSymbol.m_GlobalTransparency;}
+	virtual bool Serialize(tmSerialize &s);
+	
+	int GetSelectedSymbology(){return m_ptMultipleSymbol.m_PanelNo;}
+	tmSymbolDataPointMultiple * GetSymbology(){return &m_ptMultipleSymbol;}
+};
 
 
 
