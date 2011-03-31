@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmsymbolvectorpoint.cpp
-				Deals with GIS point vector symbology and associed dialog
-								-------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsymbolvectorpointmultiple.cpp
+ Deals with GIS point vector symbology and associed dialog
+ -------------------
+ copyright            : (C) 2011 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,18 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
 
 #include "tmsymbolvectorpoint.h"
 
-
+/*
 tmSymbolVectorPoint::tmSymbolVectorPoint()
 {
+	m_ptUniqueSymbol.m_PanelNo = 0;
+	m_ptUniqueSymbol.m_Colour = wxColour(*wxBLACK);
+	m_ptUniqueSymbol.m_Radius = 1;
+	m_ptUniqueSymbol.m_GlobalTransparency = 0;
 }
 
 
 tmSymbolVectorPoint::tmSymbolVectorPoint(const tmSymbolVectorPoint & origin)
 {
+	m_ptUniqueSymbol.m_PanelNo = origin.m_ptUniqueSymbol.m_PanelNo;
 	m_ptUniqueSymbol.m_Colour = origin.m_ptUniqueSymbol.m_Colour;
 	m_ptUniqueSymbol.m_Radius = origin.m_ptUniqueSymbol.m_Radius;
 	m_ptUniqueSymbol.m_GlobalTransparency = origin.m_ptUniqueSymbol.m_GlobalTransparency;
@@ -62,12 +66,14 @@ bool tmSymbolVectorPoint::Serialize(tmSerialize &s)
 	s.EnterObject();
 	if(s.IsStoring())
 	{
+		s << m_ptUniqueSymbol.m_PanelNo;
 		s << m_ptUniqueSymbol.m_Colour;
 		s << m_ptUniqueSymbol.m_Radius;
 		s << m_ptUniqueSymbol.m_GlobalTransparency;
 	}
 	else
 	{
+		s >> m_ptUniqueSymbol.m_PanelNo;
 		s >> m_ptUniqueSymbol.m_Colour;
 		s >> m_ptUniqueSymbol.m_Radius;
 		s >> m_ptUniqueSymbol.m_GlobalTransparency;
@@ -84,4 +90,4 @@ wxColour tmSymbolVectorPoint::GetColour()
 
 		return GetColourWithTransparency(m_ptUniqueSymbol.m_Colour,
 										 m_ptUniqueSymbol.m_GlobalTransparency);	
-}
+}*/

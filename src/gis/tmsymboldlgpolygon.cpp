@@ -20,23 +20,8 @@
 #include "tmsymboldlgpolygon.h"
 
 
-tmSymbolDataPolygonUnique::tmSymbolDataPolygonUnique(){
-	m_PanelNo = 0;
-	m_bColour = *wxBLACK;
-	m_bWidth = 1;
-	m_fColour = *wxBLACK;
-	m_fStyle = 0;
-	m_GlobalTransparency = 0;
-}
-
-
-
 IMPLEMENT_DYNAMIC_CLASS( tmSymbolDLGPolygon, tmSymbolDLG )
 
-
-
-BEGIN_EVENT_TABLE( tmSymbolDLGPolygon, tmSymbolDLG )
-END_EVENT_TABLE()
 
 
 tmSymbolDLGPolygon::tmSymbolDLGPolygon()
