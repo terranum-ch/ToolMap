@@ -39,6 +39,7 @@ class tmSymbol : public wxObject
 	{
 	private:
 		DataBaseTM * m_pDB;
+		TOC_GENERIC_NAME m_TocName;
 		
 		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos); 
 		virtual bool GetDialogData(tmSymbolDLG * dlg);
@@ -47,6 +48,7 @@ class tmSymbol : public wxObject
 		int m_LayerTransparency;
 		char ConvertTransparency (int itransparency);
 		DataBaseTM * GetDatabase(){return m_pDB;}
+		TOC_GENERIC_NAME GetTocName() {return m_TocName;}
 		
 	public:
 		tmSymbol();
@@ -60,6 +62,7 @@ class tmSymbol : public wxObject
 		virtual bool Serialize(tmSerialize &s);
 		virtual int GetTransparency(){return 0;}
 		void SetDatabase (DataBaseTM * database){m_pDB = database;}
+		void SetTocName (TOC_GENERIC_NAME tocname){m_TocName = tocname;}
 		
 	};
 

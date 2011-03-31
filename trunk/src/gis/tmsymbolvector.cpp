@@ -21,6 +21,7 @@
 #include "tmsymbolvectorline.h"
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
 
 
@@ -77,9 +78,17 @@ tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_T
 				return new tmSymbolVectorLine();
 			}
 			break;
+			
+			
 		case LAYER_SPATIAL_POINT:
-			return new tmSymbolVectorPoint();
+			if (tocname == TOC_NAME_LABELS || tocname == TOC_NAME_POINTS) {
+				return new tmSymbolVectorPointMultiple();
+			}
+			else {
+				return new tmSymbolVectorPoint();
+			}
 			break;
+			
 		case LAYER_SPATIAL_POLYGON:
 			return new tmSymbolVectorPolygon();
 			break;
@@ -105,8 +114,17 @@ tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATI
 				return new tmSymbolVectorLine(*((tmSymbolVectorLine*)origin));
 			}
 			break;
+			
 		case LAYER_SPATIAL_POINT:
-			return new tmSymbolVectorPoint(*((tmSymbolVectorPoint*)origin));
+			if (tocname == TOC_NAME_LABELS || tocname == TOC_NAME_POINTS) {
+				return new tmSymbolVectorPointMultiple(*((tmSymbolVectorPointMultiple*)origin));
+			}
+			else {
+				return new tmSymbolVectorPoint(*((tmSymbolVectorPoint*)origin));
+			}
+			break;
+			
+			
 			break;
 		case LAYER_SPATIAL_POLYGON:
 			return new tmSymbolVectorPolygon(*((tmSymbolVectorPolygon*) origin));

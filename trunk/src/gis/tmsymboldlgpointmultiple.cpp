@@ -62,18 +62,28 @@ void tmSymbolDLGPointMultiple::_Init()
 	m_PointColourCtrl		= NULL;
 	m_PointWidthCtrl		= NULL;
 	m_TransparencySlider	= NULL;
+	
+	m_SymbologyTypeCtrl		= NULL;
+	m_MQueryCtrl			= NULL;
+	m_MSelColourCtrl		= NULL;
+	m_MSelWidthCtrl			= NULL;
+	m_MSelVisibleCtrl		= NULL;
+	m_MUnSelColourCtrl		= NULL;
+	m_MUnSelWidthCtrl		= NULL;
+	m_MUnSelVisibleCtrl		= NULL;
 }
 
 
 
 void tmSymbolDLGPointMultiple::CreateControlsPoint()
 {
-    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+    //this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
-	wxBoxSizer* itemBoxSizer8;
-	itemBoxSizer8 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* itemBoxSizer8 = new wxBoxSizer( wxVERTICAL );
+	m_SymbolPanel->SetSizer(itemBoxSizer8);
+
 	
-	m_SymbologyTypeCtrl = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_SymbologyTypeCtrl = new wxNotebook( m_SymbolPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	
 	
 	// UNIQUE SYMBOLOGY
@@ -102,8 +112,6 @@ void tmSymbolDLGPointMultiple::CreateControlsPoint()
 	
 	
 	m_panel2->SetSizer( bSizer4 );
-	m_panel2->Layout();
-	bSizer4->Fit( m_panel2 );
 	m_SymbologyTypeCtrl->AddPage( m_panel2, _("Unique"), false );
 	
 	
@@ -224,56 +232,72 @@ void tmSymbolDLGPointMultiple::CreateControlsPoint()
 	
 	// adapt dialog size to new controls added
 	SetSizeHint();
-	
-	/*wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
-    m_SymbolPanel->SetSizer(itemBoxSizer8);
-	
-    wxFlexGridSizer* itemFlexGridSizer11 = new wxFlexGridSizer(2, 2, 0, 0);
-    itemFlexGridSizer11->AddGrowableCol(1);
-	
-    wxStaticText* itemStaticText12 = new wxStaticText( m_SymbolPanel, wxID_STATIC, _("Color :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_PointColourCtrl = new wxColourPickerCtrl(m_SymbolPanel, ID_SYMDLGP_COLOR);
-    itemFlexGridSizer11->Add(m_PointColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxStaticText* itemStaticText14 = new wxStaticText( m_SymbolPanel, wxID_STATIC, _("Radius :"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_PointWidthCtrl = new wxSpinCtrl( m_SymbolPanel, ID_SYMDLGP_WIDTH, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-    itemFlexGridSizer11->Add(m_PointWidthCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    itemBoxSizer8->Add(itemFlexGridSizer11, 1, wxGROW|wxALL, 5);
-	
-    wxStaticBox* itemStaticBoxSizer22Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
-    wxStaticBoxSizer* itemStaticBoxSizer22 = new wxStaticBoxSizer(itemStaticBoxSizer22Static, wxHORIZONTAL);
-    itemBoxSizer8->Add(itemStaticBoxSizer22, 0, wxGROW|wxALL, 5);
-   
-	m_TransparencySlider = new tmSliderWithText(m_SymbolPanel, ID_SYMDLGP_TRANSPARENCY,0,0,100,_T("%"),
-												wxDefaultPosition, wxDefaultSize, 0);
-    itemStaticBoxSizer22->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
-	
-	// adapt dialog size to new controls added
-	SetSizeHint();*/
 }
+
 
 
 bool tmSymbolDLGPointMultiple::TransferDataToWindow()
 {
-	/*m_PointColourCtrl->SetColour(m_DlgData.m_Colour);
+	wxASSERT(m_TocType == TOC_NAME_POINTS || m_TocType == TOC_NAME_LABELS);
+	_LoadQueries(m_MQueryCtrl, m_TocType);
+	
+	m_SymbologyTypeCtrl->SetSelection(m_DlgData.m_PanelNo);
+	
+	// set unique symbology
+	m_PointColourCtrl->SetColour(m_DlgData.m_Colour);
 	m_PointWidthCtrl->SetValue(m_DlgData.m_Radius);
-	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);*/
-	return TRUE;
+	m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
+	
+	// set multiple symbology
+	int myQueryIndex = wxNOT_FOUND;
+	for (unsigned int i = 0; i<m_QueriesId.GetCount(); i++) {
+		if (m_DlgData.m_QueryID == m_QueriesId.Item(i)) {
+			myQueryIndex = i;
+			break;
+		}
+	}
+	if (myQueryIndex == wxNOT_FOUND) {
+		// Query was removed...
+		m_MQueryCtrl->Append(_("SELECT A QUERY!"));
+		m_MQueryCtrl->Select(m_MQueryCtrl->GetCount()-1);
+		m_QueriesId.Add(wxNOT_FOUND);
+	}
+	else {
+		m_MQueryCtrl->Select(myQueryIndex);
+	}
+	m_MSelColourCtrl->SetColour(m_DlgData.m_SelColourMultiple);
+	m_MSelWidthCtrl->SetValue(m_DlgData.m_SelRadiusMultiple);
+	m_MSelVisibleCtrl->SetValue(m_DlgData.m_SelVisible);
+
+	m_MUnSelColourCtrl->SetColour(m_DlgData.m_UnSelColourMultiple);
+	m_MUnSelWidthCtrl->SetValue(m_DlgData.m_UnSelRadiusMultiple);
+	m_MUnSelVisibleCtrl->SetValue(m_DlgData.m_UnSelVisible);
+	return true;
 }
 
 
 
 bool tmSymbolDLGPointMultiple::TransferDataFromWindow()
 {
-	/*m_DlgData.m_Colour = m_PointColourCtrl->GetColour();
+	m_DlgData.m_PanelNo = m_SymbologyTypeCtrl->GetSelection();
+	m_DlgData.m_Colour = m_PointColourCtrl->GetColour();
 	m_DlgData.m_Radius = m_PointWidthCtrl->GetValue();
-	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();*/
-	return TRUE;
+	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
+	
+	// get query id
+	m_DlgData.m_QueryID = m_QueriesId.Item(m_MQueryCtrl->GetSelection());
+	if (m_DlgData.m_QueryID == wxNOT_FOUND) {
+		m_DlgData.m_PanelNo = 0;
+	}
+	
+	m_DlgData.m_SelColourMultiple = m_MSelColourCtrl->GetColour();
+	m_DlgData.m_SelRadiusMultiple = m_MSelWidthCtrl->GetValue();
+	m_DlgData.m_SelVisible = m_MSelVisibleCtrl->GetValue();
+	
+	m_DlgData.m_UnSelColourMultiple = m_MUnSelColourCtrl->GetColour();
+	m_DlgData.m_UnSelRadiusMultiple = m_MUnSelWidthCtrl->GetValue();
+	m_DlgData.m_UnSelVisible = m_MUnSelVisibleCtrl->GetValue();
+	return true;
 }
 
 

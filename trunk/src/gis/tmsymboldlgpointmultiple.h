@@ -79,6 +79,7 @@ private:
 	wxCheckBox* m_MUnSelVisibleCtrl;
 	
 	tmSymbolDataPointMultiple m_DlgData;
+	TOC_GENERIC_NAME m_TocType;
 	
 	void _Init();
 	void CreateControlsPoint();
@@ -106,6 +107,7 @@ public:
 	void SetDialogData ( const tmSymbolDataPointMultiple & data) {m_DlgData = data;}
 	tmSymbolDataPointMultiple GetDialogData () {return m_DlgData;}
 	
+	void SetTocType (TOC_GENERIC_NAME toctype){m_TocType = toctype;}
 	
 	
 };

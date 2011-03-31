@@ -16,67 +16,93 @@
  ***************************************************************************/
 
 
-#include "tmsymbolvectorpoint.h"
+#include "tmsymbolvectorpointmultiple.h"
 
-/*
-tmSymbolVectorPoint::tmSymbolVectorPoint()
+
+tmSymbolVectorPointMultiple::tmSymbolVectorPointMultiple()
 {
-	m_ptUniqueSymbol.m_PanelNo = 0;
-	m_ptUniqueSymbol.m_Colour = wxColour(*wxBLACK);
-	m_ptUniqueSymbol.m_Radius = 1;
-	m_ptUniqueSymbol.m_GlobalTransparency = 0;
+	
 }
 
 
-tmSymbolVectorPoint::tmSymbolVectorPoint(const tmSymbolVectorPoint & origin)
+tmSymbolVectorPointMultiple::tmSymbolVectorPointMultiple(const tmSymbolVectorPointMultiple & origin)
 {
-	m_ptUniqueSymbol.m_PanelNo = origin.m_ptUniqueSymbol.m_PanelNo;
-	m_ptUniqueSymbol.m_Colour = origin.m_ptUniqueSymbol.m_Colour;
-	m_ptUniqueSymbol.m_Radius = origin.m_ptUniqueSymbol.m_Radius;
-	m_ptUniqueSymbol.m_GlobalTransparency = origin.m_ptUniqueSymbol.m_GlobalTransparency;
+	m_ptMultipleSymbol.m_PanelNo = origin.m_ptMultipleSymbol.m_PanelNo;
+	m_ptMultipleSymbol.m_Colour = origin.m_ptMultipleSymbol.m_Colour;
+	m_ptMultipleSymbol.m_Radius = origin.m_ptMultipleSymbol.m_Radius;
+	m_ptMultipleSymbol.m_GlobalTransparency = origin.m_ptMultipleSymbol.m_GlobalTransparency;
+	
+	m_ptMultipleSymbol.m_QueryID = origin.m_ptMultipleSymbol.m_QueryID;
+	m_ptMultipleSymbol.m_SelColourMultiple = origin.m_ptMultipleSymbol.m_SelColourMultiple;
+	m_ptMultipleSymbol.m_SelRadiusMultiple = origin.m_ptMultipleSymbol.m_SelRadiusMultiple;
+	m_ptMultipleSymbol.m_SelVisible = origin.m_ptMultipleSymbol.m_SelVisible;
+	m_ptMultipleSymbol.m_UnSelColourMultiple = origin.m_ptMultipleSymbol.m_UnSelColourMultiple;
+	m_ptMultipleSymbol.m_UnSelRadiusMultiple = origin.m_ptMultipleSymbol.m_UnSelRadiusMultiple;
+	m_ptMultipleSymbol.m_UnSelVisible = origin.m_ptMultipleSymbol.m_UnSelVisible;	
 }
 
 
-tmSymbolVectorPoint::~tmSymbolVectorPoint()
+tmSymbolVectorPointMultiple::~tmSymbolVectorPointMultiple()
 {
 	
 }
 
 
 
-tmSymbolDLG * tmSymbolVectorPoint::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+tmSymbolDLG * tmSymbolVectorPointMultiple::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
 {
-	tmSymbolDLGPoint * dlg =  new tmSymbolDLGPoint(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
-							   SYMBOL_TMSYMBOLDLG_TITLE,
-							   dlgpos);
-	dlg->SetDialogData(m_ptUniqueSymbol);
+	wxASSERT(GetDatabase());
+	tmSymbolDLGPointMultiple * dlg =  new tmSymbolDLGPointMultiple(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+																   SYMBOL_TMSYMBOLDLG_TITLE,
+																   dlgpos);
+	dlg->SetDatabase(GetDatabase());
+	dlg->SetTocType(GetTocName());
+	dlg->SetDialogData(m_ptMultipleSymbol);
 	return dlg;
 }
 
 
-bool tmSymbolVectorPoint::GetDialogData(tmSymbolDLG * dlg)
+
+bool tmSymbolVectorPointMultiple::GetDialogData(tmSymbolDLG * dlg)
 {
-	m_ptUniqueSymbol = ((tmSymbolDLGPoint *) dlg)->GetDialogData();
-	return TRUE;
+	m_ptMultipleSymbol = ((tmSymbolDLGPointMultiple *) dlg)->GetDialogData();
+	return true;
 }
 
 
-bool tmSymbolVectorPoint::Serialize(tmSerialize &s)
+
+bool tmSymbolVectorPointMultiple::Serialize(tmSerialize &s)
 {
 	s.EnterObject();
 	if(s.IsStoring())
 	{
-		s << m_ptUniqueSymbol.m_PanelNo;
-		s << m_ptUniqueSymbol.m_Colour;
-		s << m_ptUniqueSymbol.m_Radius;
-		s << m_ptUniqueSymbol.m_GlobalTransparency;
+		s << m_ptMultipleSymbol.m_PanelNo;
+		s << m_ptMultipleSymbol.m_Colour;
+		s << m_ptMultipleSymbol.m_Radius;
+		s << m_ptMultipleSymbol.m_GlobalTransparency;
+		
+		s << m_ptMultipleSymbol.m_QueryID;
+		s << m_ptMultipleSymbol.m_SelColourMultiple;
+		s << m_ptMultipleSymbol.m_SelRadiusMultiple;
+		s << m_ptMultipleSymbol.m_SelVisible;
+		s << m_ptMultipleSymbol.m_UnSelColourMultiple;
+		s << m_ptMultipleSymbol.m_UnSelRadiusMultiple;
+		s << m_ptMultipleSymbol.m_UnSelVisible;
 	}
 	else
 	{
-		s >> m_ptUniqueSymbol.m_PanelNo;
-		s >> m_ptUniqueSymbol.m_Colour;
-		s >> m_ptUniqueSymbol.m_Radius;
-		s >> m_ptUniqueSymbol.m_GlobalTransparency;
+		s >> m_ptMultipleSymbol.m_PanelNo;
+		s >> m_ptMultipleSymbol.m_Colour;
+		s >> m_ptMultipleSymbol.m_Radius;
+		s >> m_ptMultipleSymbol.m_GlobalTransparency;
+		
+		s >> m_ptMultipleSymbol.m_QueryID;
+		s >> m_ptMultipleSymbol.m_SelColourMultiple;
+		s >> m_ptMultipleSymbol.m_SelRadiusMultiple;
+		s >> m_ptMultipleSymbol.m_SelVisible;
+		s >> m_ptMultipleSymbol.m_UnSelColourMultiple;
+		s >> m_ptMultipleSymbol.m_UnSelRadiusMultiple;
+		s >> m_ptMultipleSymbol.m_UnSelVisible;
 	}
 	s.LeaveObject();
 	
@@ -85,9 +111,8 @@ bool tmSymbolVectorPoint::Serialize(tmSerialize &s)
 }
 
 
-wxColour tmSymbolVectorPoint::GetColour()
+wxColour tmSymbolVectorPointMultiple::GetColour()
 {
-
-		return GetColourWithTransparency(m_ptUniqueSymbol.m_Colour,
-										 m_ptUniqueSymbol.m_GlobalTransparency);	
-}*/
+		return GetColourWithTransparency(m_ptMultipleSymbol.m_Colour,
+										 m_ptMultipleSymbol.m_GlobalTransparency);	
+}
