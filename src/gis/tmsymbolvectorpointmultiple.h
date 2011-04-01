@@ -41,8 +41,8 @@ public:
 	tmSymbolVectorPointMultiple(const tmSymbolVectorPointMultiple & origin);
 	~tmSymbolVectorPointMultiple();
 	
-	wxColour GetColour();
-	int GetRadius(){return m_ptMultipleSymbol.m_Radius;}
+	virtual wxColour GetColour();
+	virtual int GetRadius(){return m_ptMultipleSymbol.m_Radius;}
 	virtual int GetTransparency(){return m_ptMultipleSymbol.m_GlobalTransparency;}
 	virtual bool Serialize(tmSerialize &s);
 	
