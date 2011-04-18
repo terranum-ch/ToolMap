@@ -612,9 +612,9 @@ ELSE(WIN32_STYLE_FIND)
       # remember: always link shared to use systems GL etc. libs (no static
         # linking, just link *against* static .a libs)
       IF(WXWINDOWS_USE_SHARED_LIBS)
-        SET(WX_CONFIG_ARGS_LIBS "--libs")
+        SET(WX_CONFIG_ARGS_LIBS "--libs all")
       ELSE(WXWINDOWS_USE_SHARED_LIBS)
-        SET(WX_CONFIG_ARGS_LIBS "--static --libs")
+        SET(WX_CONFIG_ARGS_LIBS "--static --libs all")
       ENDIF(WXWINDOWS_USE_SHARED_LIBS)
       
       # do we need additionial wx GL stuff like GLCanvas ?

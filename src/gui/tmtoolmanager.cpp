@@ -128,7 +128,7 @@ bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
 		return false;
 	}
 	
-	wxString myMsg = wxString::Format(_T("%d dangling nodes found"), m_DanglingPts.GetCount());
+	wxString myMsg = wxString::Format(_T("%ld dangling nodes found"), m_DanglingPts.GetCount());
 	wxLogDebug(myMsg);
 	wxMessageBox(myMsg, _("Searching dangling nodes done"), wxICON_INFORMATION | wxOK, m_Parent);
 	
