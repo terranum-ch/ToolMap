@@ -1460,11 +1460,13 @@ void wxTreeMultiCtrl::SetWindowBackgroundColour(wxWindow *wnd, const wxColour &c
 			wnd->SetBackgroundColour(col);
 
 		// get every window, and make the background equal to the given one
-		wxWindowListNode *node = wnd->GetChildren().GetFirst();
-		while (node)
-		{
-			SetWindowBackgroundColour(node->GetData(), col, flags);
-			node = node->GetNext();
+		const wxWindowList & children = wnd->GetChildren();
+		for (wxWindowList::const_iterator it = children.begin(); it != children.end(); ++it) {	
+			wxWindow * myChild = dynamic_cast<wxWindow*> (*it);
+			if (myChild) {
+				SetWindowBackgroundColour(myChild, col, flags);
+			}
+			
 		}
 	}
 }
