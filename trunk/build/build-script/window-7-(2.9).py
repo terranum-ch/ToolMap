@@ -1,6 +1,6 @@
 # VARIABLES FOR BUILDING ON WINDOWS (CREALP) 
-
-gwxWidgets = "D:\\LIB\\wxWidgets-2.9.1" #wxWIDGETS config
+gwxWidgets = "D:\\LIB\\wxWIDGETS-SVN" #wxWIDGETS config
+gwxWidgetsVersion = "D:\\LIB\\wxWIDGETS-SVN"
 gDirTrunk = "D:\\PRJ\\TOOLMAP2\\trunk"
 gDirBin = "D:\\PRJ\\TOOLMAP2\\bin"
 gDirInstall = "D:\\PRJ\\TOOLMAP2\\install"
@@ -18,7 +18,7 @@ gCmakeSpecific.append("-DUSE_GDIPLUS_LIBRARY:BOOL=1")
 gCmakeSpecific.append("-DWXWINDOWS_USE_GL:BOOL=0")
 gCmakeSpecific.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
 gCmakeSpecific.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
-gCmakeSpecific.append("-DPROXY_PARAM:TEXT=proxy.vs.ch:8080")
+#gCmakeSpecific.append("-DPROXY_PARAM:TEXT=proxy.vs.ch:8080")
 
 # PLATEFORM SPECIFIC FUNCTION
 # CONFIG SPECIFIC
@@ -55,7 +55,7 @@ def gCreateInstaller(svnnumner):
     print ("Creating Windows installer")
     myCmdInstaller = ["C:\\Program Files (x86)\\NSIS\\makensis.exe"]
     myCmdInstaller.append("/XSetCompressor /FINAL lzma")
-    myCmdInstaller.append("/X!define PRODUCT_VERSION '2.1." + svnnumner + "'")
+    myCmdInstaller.append("/X!define PRODUCT_VERSION '2.2." + svnnumner + "'")
     myCmdInstaller.append("/XOutFile " + gDirInstall + os.sep + "InstallToolMap_d" + svnnumner + ".exe") 
     myCmdInstaller.append(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "install_script.nsi")
     myProcess = subprocess.Popen(myCmdInstaller, 0, None, None, None,  None, None, False, False, gDirInstall)
