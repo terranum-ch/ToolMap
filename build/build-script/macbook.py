@@ -2,7 +2,7 @@
 gwxWidgets = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN/bin/wx-config" #wxWIDGETS config
 gwxWidgetsVersion = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/wxWidgets-svn/"
 gDirTrunk = "/Users/lucien/DATA/PRJ/TOOLMAP2/trunk"
-gDirBin = "/Users/lucien/DATA/PRJ/TOOLMAP2/bin2.9"
+gDirBin = "/Users/lucien/DATA/PRJ/TOOLMAP2/bin"
 gDirInstall = "/Users/lucien/DATA/PRJ/TOOLMAP2/install"
 gDirGis = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBGIS"
 gDirSQL = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBMYSQL "
