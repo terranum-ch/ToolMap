@@ -28,6 +28,8 @@
 #endif
 #include <wx/notebook.h>
 #include <wx/config.h>
+#include <wx/clrpicker.h>
+
 
 
 class PreferenceDLG : public wxDialog 
@@ -35,6 +37,8 @@ class PreferenceDLG : public wxDialog
 private:
 	wxCheckBox* m_UpdateCheckCtrl;
 	wxTextCtrl* m_ProxyInfoCtrl;
+	wxColourPickerCtrl* m_SelColourCtrl;
+	wxCheckBox* m_SelOutlineCtrl;
 	
 	void _CreateControls();
 	
