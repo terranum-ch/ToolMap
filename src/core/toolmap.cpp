@@ -39,6 +39,7 @@
 #include "../gui/newtemplateprjwizard.h"
 #include "../gui/preference_dlg.h"
 #include "../components/tmupdate/update.h"
+#include "lsversion_dlg.h"
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -52,7 +53,7 @@ bool ToolMapApp::OnInit()
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
 	wxHandleFatalExceptions();
-	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION,
+	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName, // + " " + g_ProgMajorVersion + "." + SVN_VERSION,
 										   wxDefaultPosition, wxSize(900,500),
 										   _T("MAIN_WINDOW"));
 	tmWindowPosition myPos;
@@ -242,6 +243,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_USER_MANUAL, ToolMapFrame::OnUserManual)
 	
 	EVT_MENU (wxID_ABOUT, ToolMapFrame::OnAbout)
+	EVT_MENU (ID_MENU_COMPONENTS, ToolMapFrame::OnComponentsInfo)
 
 	// AUI EVENT WHEN PANE CLOSED
 	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
@@ -596,6 +598,8 @@ void ToolMapFrame::_CreateMenu()
     menuBar->Append(itemMenu77, _("Window"));
     wxMenu* itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu81->Append(ID_MENU_COMPONENTS, _("Components informations..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu81->AppendSeparator();
     itemMenu81->Append(ID_MENU_CHECK_UPDATE, _("Check for updates..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu81->AppendSeparator();
 	itemMenu81->Append(ID_MENU_USER_MANUAL, _("User Manual..."), wxEmptyString, wxITEM_NORMAL);
@@ -664,7 +668,8 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	if (m_PManager->CreateNewProject())
 	{
 	// add name to the program bar
-	wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+	wxString myProgName = g_ProgName + //" " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+		_T(" - ") + m_PManager->GetProjectName();
 	SetTitle(myProgName);
 	
 
@@ -691,7 +696,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			dlg.ShowModal();
 			
 				// If we can open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION;
+			wxString myProgName = g_ProgName; // + " " + g_ProgMajorVersion + "." + SVN_VERSION;
 			SetTitle(myProgName);
 			
 		}
@@ -729,7 +734,9 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		if (iActError == OPEN_OK)
 		{
 			// If we can open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+			wxString myProgName = g_ProgName +  //" " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + m_PManager->GetProjectName();
+									_T(" - ") + m_PManager->GetProjectName();
+
 			SetTitle(myProgName);
 			
 			// updates the menu using the menu manager
@@ -742,7 +749,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		
 		if (iActError != OPEN_OK) {
 			// If we can't open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION;
+			wxString myProgName = g_ProgName; // + " " + g_ProgMajorVersion + "." + SVN_VERSION;
 			SetTitle(myProgName);
 			
 			// remove the non valid history from the recent
@@ -1049,6 +1056,15 @@ void ToolMapFrame::OnCheckUpdates (wxCommandEvent & event)
 void ToolMapFrame::OnReportBug (wxCommandEvent & event)
 {
 	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
+}
+
+
+
+void ToolMapFrame::OnComponentsInfo (wxCommandEvent & event){
+	lsVersionDlg myDlg (this, wxID_ANY, _("Components"));
+	myDlg.SetBitmapLogo(*_img_icon_toolmap);
+	myDlg.SetCopyright(wxString::Format("\u00A9 CREALP, \u00A9 SWISSTOPO, %d",wxDateTime::Now().GetYear()));
+	myDlg.ShowModal();
 }
 
 

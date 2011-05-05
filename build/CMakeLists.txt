@@ -57,6 +57,9 @@ INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrlopti
 
 #CURL
 INCLUDE ("cmake/FindCURL.cmake")
+
+# LSVERSION COMMPONENT
+INCLUDE("../plugins/lsversion/build/use_lsversion.cmake")
 	
 
 # CREATE A LIBRARY WITH ALL SRC
@@ -84,7 +87,7 @@ IF( APPLE )
 ENDIF (APPLE)
 
 
- 
+TARGET_LINK_LIBRARIES("${PROGNAME}_lib" ${LSVERSION_NAME}) 
 # conditionnal compilation if windows needs ressource
 IF (WIN32)
 
@@ -98,6 +101,7 @@ ELSE (WIN32)
 	TARGET_LINK_LIBRARIES ("${PROGNAME}" "${PROGNAME}_lib")
 
 ENDIF (WIN32)
+
 
 # copy libs to bundle if we are under mac...
 # check is done internally.
