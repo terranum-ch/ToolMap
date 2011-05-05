@@ -99,21 +99,6 @@ ENDIF (WIN32)
 INCLUDE ("cmake/installMacGISLIB.cmake")
 
 
-#SVN NUMBERING
-# SVN is now done by lsVersion Components during configure stage!
-#INCLUDE ("cmake/use_svnnumber.cmake")
-
-# CHECK FOR SVN FILE
-UNSET(MYSVN_VERSION CACHE)
-FIND_FILE(MYSVN_VERSION svn_version.h
-	HINTS ../src/core/
-	NO_DEFAULT_PATH)
-IF(NOT MYSVN_VERSION)
-	MESSAGE(FATAL_ERROR "Unable to found svn_version.h")
-ELSE(NOT MYSVN_VERSION)
-	MESSAGE("Found svn_version.h : ${MYSVN_VERSION}")
-ENDIF (NOT MYSVN_VERSION)
-
 #SOULD WE ADD THE LIBTIFF INTO BUNDLE
 # ONLY FOR CERTAIN MAC WITH PPC 
 # CHECK ARE DONE INTERNALLY YOU 
