@@ -184,6 +184,13 @@ else:
     mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=0")
 mycmakeCommandLine.append("-DUNIT_TESTING_PATH:PATH=" + gDirUnitTest)
 mycmakeCommandLine.append("-DCXXTEST_DIRECTORY:PATH=" + gDirCxx)
+if(gwxWidgetsVersion):
+	mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
+else:
+	mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=0")
+mycmakeCommandLine.append("-DwxWIDGETS_PATH_SVN:PATH=" + gwxWidgetsVersion)
+	
+	
 
 print (" ".join(mycmakeCommandLine))
 try:
