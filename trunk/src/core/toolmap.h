@@ -205,6 +205,7 @@ class WebUpdateInformationBar;
 #define ID_MENU_INFO_WINDOW 10140
 #define ID_MENU_LOG_WINDOW 10207
 #define ID_MENU_CHECK_UPDATE 10125
+#define ID_MENU_COMPONENTS 10126
 #define ID_MENU_REPORT_BUG 10128
 #define ID_MENU_ASK_NEW_FEATURE 10129
 #define ID_MENU_USER_MANUAL 10130
@@ -342,6 +343,7 @@ private:
 	//void OnMenuHighligntOff(wxMenuEvent & event);
 	void OnCheckUpdates (wxCommandEvent & event);
 	void OnReportBug (wxCommandEvent & event);
+	void OnComponentsInfo (wxCommandEvent & event);
 	
 	void OnImportGISData (wxCommandEvent & event);
 	void OnUserManual(wxCommandEvent & event);
