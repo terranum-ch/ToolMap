@@ -78,19 +78,13 @@ void tmGISData::InitGISDrivers (bool bRaster, bool bVector)
 	if (bRaster)
 	{
 		tmGISDataRaster::InitGISDriversRaster();
-		//wxLogDebug(_T("GIS Raster drivers loaded"));
 	}
 	
 	if (bVector)
 	{
 		tmGISDataVector::InitGISDriversVector();
 		initGEOS(NULL,NULL);
-		//wxLogDebug(_T("GIS Vector drivers loaded"));
-	}
-	
-	
-	wxLogMessage(_("loaded GDAL version : %s"), wxString::FromAscii(GDAL_RELEASE_NAME).c_str());
-	wxLogMessage(_("loaded GEOS version : %s"), wxString::FromAscii(GEOS_VERSION).c_str());
+	}	
 }
 
 
