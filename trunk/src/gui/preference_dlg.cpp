@@ -41,6 +41,37 @@ void PreferenceDLG::_CreateControls(){
 	
 	wxNotebook* m_notebook2;
 	m_notebook2 = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	wxPanel* m_panel2;
+	m_panel2 = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxVERTICAL );
+	
+	wxFlexGridSizer* fgSizer2;
+	fgSizer2 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer2->AddGrowableCol( 1 );
+	fgSizer2->SetFlexibleDirection( wxBOTH );
+	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticText* m_staticText5;
+	m_staticText5 = new wxStaticText( m_panel2, wxID_ANY, _("Selection color:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5->Wrap( -1 );
+	fgSizer2->Add( m_staticText5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_SelColourCtrl = new wxColourPickerCtrl( m_panel2, wxID_ANY, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );
+	fgSizer2->Add( m_SelColourCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	
+	fgSizer2->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_SelOutlineCtrl = new wxCheckBox( m_panel2, wxID_ANY, _("Display outline"), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer2->Add( m_SelOutlineCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	bSizer3->Add( fgSizer2, 1, wxEXPAND, 5 );
+	
+	m_panel2->SetSizer( bSizer3 );
+	m_panel2->Layout();
+	bSizer3->Fit( m_panel2 );
+	m_notebook2->AddPage( m_panel2, _("General"), false );
 	wxPanel* m_panel3;
 	m_panel3 = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer6;
@@ -97,6 +128,19 @@ bool PreferenceDLG::TransferDataToWindow(){
     wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
     myConfig->SetPath("..");
 	
+	myConfig->SetPath("GENERAL");
+	wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
+	bool mySelHalo = myConfig->ReadBool("selection_halo", false);
+    myConfig->SetPath("..");
+	
+	wxColour mySelColor = *wxRED;
+	if (mySelColorText != wxEmptyString) {
+		mySelColor.Set(mySelColorText);
+	}
+	
+	m_SelColourCtrl->SetColour(mySelColor);
+	m_SelOutlineCtrl->SetValue(mySelHalo);
+	
 	m_UpdateCheckCtrl->SetValue(bCheckStartup);
 	m_ProxyInfoCtrl->SetValue(myProxyInfo);
 	return true;
@@ -110,6 +154,11 @@ bool PreferenceDLG::TransferDataFromWindow(){
     myConfig->SetPath("UPDATE");
 	myConfig->Write("check_on_start", m_UpdateCheckCtrl->GetValue());
     myConfig->Read("proxy_info", m_ProxyInfoCtrl->GetValue());
+    myConfig->SetPath("..");
+	
+	myConfig->SetPath("GENERAL");
+	myConfig->Write("selection_color", m_SelColourCtrl->GetColour().GetAsString());
+	myConfig->Write("selection_halo", m_SelOutlineCtrl->GetValue());
     myConfig->SetPath("..");
 	return true;
 }
