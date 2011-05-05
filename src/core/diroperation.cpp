@@ -124,17 +124,16 @@ bool DirOperation::IsPathWritable (DIROP_SELECTDIR dirselection)
 
 bool DirOperation::CopyDirectory(const wxArrayString & filesNames, bool showprogress)
 {
-	wxBusyCursor * wait;
-	//wxString myFileOrigin = m_Path[DIROP_PATH_ORIGIN].Append(wxFileName::GetPathSeparator());
-	//wxString myFileDestination = m_Path[DIROP_PATH_DESTINATION].Append(wxFileName::GetPathSeparator());
+	wxBusyCursor * wait = NULL;
 	wxString myfileName = _T("");
 	wxFileName myFileDestinationPathName;
 	wxString myFileDestinationName;
 	
 	bool bResult = TRUE;
 	
-	if (showprogress)
+	if (showprogress){
 		wait = new wxBusyCursor();
+	}
 	
 	long lNumOfFiles = filesNames.GetCount();
 	
@@ -149,10 +148,7 @@ bool DirOperation::CopyDirectory(const wxArrayString & filesNames, bool showprog
 		bResult = bResult && wxCopyFile(myfileName, myFileDestinationPathName.GetFullPath());
 	}
 	
-	
-	if (showprogress)
-		delete wait;
-	
+	wxDELETE(wait);
 	return bResult;
 }
 

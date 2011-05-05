@@ -23,7 +23,7 @@
 
 // image
 #include "../img/misc_bmp.h"
-#include "../core/svn_version.h"	// for latest svn version
+#include "lsversion_param.h"
 
 
 BEGIN_EVENT_TABLE( tmAboutDLG, wxDialog )
@@ -37,20 +37,24 @@ tmAboutDLG::tmAboutDLG( wxWindow* parent, wxWindowID id, const wxString& title, 
 	CreateControls(parent);
 }
 
+
+
 tmAboutDLG::~tmAboutDLG()
 {
 }
 
 
+
 wxString tmAboutDLG::GetVersionText()
 {
 	wxString myVersion = _("version ") + g_ProgMajorVersion + ".";
-	myVersion.Append(SVN_VERSION);
+	myVersion.Append(lsVERSION_SOFT_VERSION);
 	myVersion.Append(_T(" - "));
 	myVersion.Append(g_CodeName);
 	return myVersion;
 
 }
+
 
 
 wxString tmAboutDLG::GetAuthorsText()

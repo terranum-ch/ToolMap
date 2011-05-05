@@ -13,15 +13,16 @@ PROJECT (${PROGNAME})
 
 #search all source files
 FILE (GLOB_RECURSE SRC_FILES ../src/*.cpp)
-#SOURCE_GROUP (source FILES ${SRC_FILES})
+
 # GET MAIN SOURCE FILE
 SET(MY_SEARCHED_FILE "../src/core/toolmap.cpp")
 FILE(GLOB MAIN_SRC_FILE "${MY_SEARCHED_FILE}")
-#MESSAGE("Main file is : ${MAIN_SRC_FILE}")
+
 LIST(LENGTH SRC_FILES MYLENGTH)
 MESSAGE("Number of source files is : ${MYLENGTH}")
 LIST(FIND SRC_FILES "${MAIN_SRC_FILE}" MYFOUND)
 MESSAGE("Main src file is found : ${MYFOUND}")
+
 #REMOVE MAIN FROM SRC_FILES
 IF(MYFOUND EQUAL -1)
 	MESSAGE(FATAL_ERROR "Following file not found : ${MY_SEARCHED_FILE}")
@@ -39,33 +40,26 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON
- SET(WXWINDOWS_USE_GL 0)
- INCLUDE ("cmake/FindwxWidgets.cmake")
+SET(WXWINDOWS_USE_GL 0)
+INCLUDE ("cmake/FindwxWidgets.cmake")
  
- 
- #MYSQL EMBEDDED
- INCLUDE ("cmake/findMySQLEmbedded.cmake")
-
+#MYSQL EMBEDDED
+INCLUDE ("cmake/findMySQLEmbedded.cmake")
 
 #GEOS - GDAL libs
- INCLUDE ("cmake/findGISLib.cmake")
- 
+INCLUDE ("cmake/findGISLib.cmake")
  
 #wxTreeMultiCtrl
 INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
-
 
 #CURL
 INCLUDE ("cmake/FindCURL.cmake")
 
 # LSVERSION COMMPONENT
 INCLUDE("../plugins/lsversion/build/use_lsversion.cmake")
-	
 
 # CREATE A LIBRARY WITH ALL SRC
 ADD_LIBRARY("${PROGNAME}_lib" STATIC ${SRC_FILES} ${HEAD_FILES})
-
-
 
 IF( APPLE )
 	SET (APP_ICON "toolmap2.icns")
@@ -75,15 +69,13 @@ IF( APPLE )
 	#MACOSX_BUNDLE_GUI_IDENTIFIER
 	#MACOSX_BUNDLE_LONG_VERSION_STRING
 	SET(MACOSX_BUNDLE_BUNDLE_NAME "${PROGNAME}")
-	SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "MISERY")
-	SET(MACOSX_BUNDLE_BUNDLE_VERSION "2.1")
-	SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) CREALP 2010")
+	SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "NEUWILEN")
+	SET(MACOSX_BUNDLE_BUNDLE_VERSION "2.2")
+	SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) CREALP 2011")
 	
 	# copy icon
 	SET_SOURCE_FILES_PROPERTIES("../art/toolmap2.icns" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-	SET(MAIN_SRC_FILE ${MAIN_SRC_FILE} "../art/toolmap2.icns")
-
-	
+	SET(MAIN_SRC_FILE ${MAIN_SRC_FILE} "../art/toolmap2.icns")	
 ENDIF (APPLE)
 
 
@@ -102,14 +94,14 @@ ELSE (WIN32)
 
 ENDIF (WIN32)
 
-
 # copy libs to bundle if we are under mac...
 # check is done internally.
 INCLUDE ("cmake/installMacGISLIB.cmake")
 
 
 #SVN NUMBERING
- INCLUDE ("cmake/use_svnnumber.cmake")
+# SVN is now done by lsVersion Components during configure stage!
+#INCLUDE ("cmake/use_svnnumber.cmake")
 
 # CHECK FOR SVN FILE
 UNSET(MYSVN_VERSION CACHE)
@@ -122,13 +114,11 @@ ELSE(NOT MYSVN_VERSION)
 	MESSAGE("Found svn_version.h : ${MYSVN_VERSION}")
 ENDIF (NOT MYSVN_VERSION)
 
-
 #SOULD WE ADD THE LIBTIFF INTO BUNDLE
 # ONLY FOR CERTAIN MAC WITH PPC 
 # CHECK ARE DONE INTERNALLY YOU 
 # CAN CALL THIS WITHOUT FEAR...
 INCLUDE ("cmake/installMacLibTiff.cmake")
-
 
 #SOULD WE ADD THE GDIPLUS.dll INTO project
 # ONLY FOR Windows, do nothing under other 
@@ -145,7 +135,6 @@ ENDIF (WIN32)
 
 #Copy errmsg.sys to correct path
 INCLUDE ("cmake/useMySQLEmbedded.cmake")
-
 
 # UNIT TEST PROGRAM
 SET (USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${PROGNAME}")
