@@ -11,10 +11,14 @@ IF (MYSQL_INCLUDE_DIR)
   SET(MYSQL_FIND_QUIETLY TRUE)
 ENDIF (MYSQL_INCLUDE_DIR)
 
-FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
-  /usr/local/include/mysql
-  /usr/include/mysql
-)
+IF(NOT MYSQL_MAIN_DIR)
+	
+	FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
+  		/usr/local/include/mysql
+  		/usr/include/mysql)
+
+ENDIF(NOT MYSQL_MAIN_DIR)
+
 
 
 # if mysql is installed in a normal directory
