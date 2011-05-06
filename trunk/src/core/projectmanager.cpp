@@ -2,7 +2,7 @@
 								projectmanager.h
 			Class used for opening, closing, backuping the project
                              -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+    copyright            : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -17,13 +17,12 @@
 
 
 #include "projectmanager.h"
-#include "svn_version.h"
 #include "toolmap.h"
 
 IMPLEMENT_CLASS(ProjectManager, wxObject);
 
 /***************************************************************************//**
- @brief Constructor 
+ @brief Constructor
  @author Lucien Schreiber (c) CREALP 2007
  @date 10 March 2008
  *******************************************************************************/
@@ -41,13 +40,13 @@ ProjectManager::ProjectManager(wxFrame * parent)
 	m_EditManager = NULL;
 	m_PrjMem = NULL;
 	m_ToolManager = NULL;
-	
+
 	m_Obj = new ObjectManager();
 }
 
 
 /***************************************************************************//**
- @brief Destructor 
+ @brief Destructor
  @author Lucien Schreiber (c) CREALP 2007
  @date 10 March 2008
  *******************************************************************************/
@@ -55,7 +54,7 @@ ProjectManager::~ProjectManager()
 {
 	wxDELETE(m_PrjMem);
 	wxDELETE(m_DB);
-	
+
 	// closing database only at the program end.
 	/*if (m_DB != NULL)
 	{
@@ -77,8 +76,8 @@ bool ProjectManager::CreateNewProject()
 {
 	PrjDefMemManage PrjDefinition;
 	//bool bReturn = FALSE;
-	
-	
+
+
 	// first step, displaying the new project dialog
 	ProjectDefNew * myNewDBDlg = new ProjectDefNew(m_Parent, &PrjDefinition);
 	if (myNewDBDlg->ShowModal() != wxID_OK)
@@ -90,11 +89,11 @@ bool ProjectManager::CreateNewProject()
 		return FALSE;
 	}
 	delete myNewDBDlg;
-	
+
 	// close
 	CloseProject();
 	m_DB = new DataBaseTM();
-	
+
 	// Create new empty project
 	{
 		wxBusyInfo  wait(_("Please wait, creating empty project..."), m_Parent);
@@ -106,12 +105,12 @@ bool ProjectManager::CreateNewProject()
 			return false;
 		}
 	}
-	
+
 	// fill the project
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
 	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
-		
+
 		if(m_DB->InitProjectWithStartingWizard(&PrjDefinition)==false)
 		{
 			delete myNewProjDlg;
@@ -123,34 +122,34 @@ bool ProjectManager::CreateNewProject()
 		}
 	}
 	delete myNewProjDlg;
-	
-	
+
+
 	// add default queries
 	if (PMAddDefaultQueries()==false)
 		return false;
-	
-	
-	
+
+
+
 	// open the newly created project
-	if (OpenProject(PrjDefinition.m_PrjPath + 
-					wxFileName::GetPathSeparator() + 
+	if (OpenProject(PrjDefinition.m_PrjPath +
+					wxFileName::GetPathSeparator() +
 					PrjDefinition.m_PrjName) != OPEN_OK)
 	{
 		//m_pMManager->SetStatus(MENU_DB_CLOSED);
 		CloseProject();
 		return false;
 	}
-	
 
-	
-	
+
+
+
 	return true;
-	
-	
+
+
 
 	/*DatabaseNewPrj * myNewPrjDB = new DatabaseNewPrj();
 	myNewPrjDB->SetPrjDefMemory(&PrjDefinition);
-	
+
 	if (!myNewPrjDB->CreateEmptyProject())
 	{
 		wxLogError(_("Database name and / or path are invalid"));
@@ -159,33 +158,33 @@ bool ProjectManager::CreateNewProject()
 		return FALSE;
 	}
 	delete wait;
-	
+
 	// passing basic data (validity of the database)
 	if (!myNewPrjDB->SetProjectData(&PrjDefinition))
 	{
 		wxLogError(_T("Error passing basic data to the database, database is unvalid !"));
 		return FALSE;
 	}
-	
-	
+
+
 	// update menu status
 	m_DB = myNewPrjDB;
-	m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() + 
+	m_pMManager->AddFileToRecent(myNewPrjDB->DataBaseGetPath() +
 								 wxFileName::GetPathSeparator() +
 								 myNewPrjDB->DataBaseGetName());
 	m_pMManager->SetStatus(MENU_DB_OPENED);
 	m_pMManager->UpdateMenusStatus();
-	
-	
+
+
 	// create TOC toolmap layers tables entry
 	m_DB->InitTOCGenericLayers();
-	
-	
+
+
 	// fill the project
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
 	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
-		
+
 		if(!myNewPrjDB->PassProjectDataToDB())
 		{
 			delete myNewProjDlg;
@@ -197,11 +196,11 @@ bool ProjectManager::CreateNewProject()
 		}
 	}
 	delete myNewProjDlg;
-	
+
 
 	// open the newly created project
-	if (OpenProject(PrjDefinition.m_PrjPath + 
-					wxFileName::GetPathSeparator() + 
+	if (OpenProject(PrjDefinition.m_PrjPath +
+					wxFileName::GetPathSeparator() +
 					PrjDefinition.m_PrjName) != OPEN_OK)
 	{
 		m_pMManager->SetStatus(MENU_DB_CLOSED);
@@ -209,7 +208,7 @@ bool ProjectManager::CreateNewProject()
 		return FALSE;
 	}
 
-	
+
 	return TRUE;*/
 }
 
@@ -217,14 +216,14 @@ bool ProjectManager::CreateNewProject()
 bool ProjectManager::PMAddDefaultQueries()
 {
 	wxASSERT(m_DB);
-	
+
 	wxString myQueryTemplate = _T("SELECT o.OBJECT_ID FROM %s AS o ")
 	_T("WHERE o.OBJECT_ID NOT IN (SELECT a.OBJECT_GEOM_ID FROM %s AS a)");
-	
-	
-	
+
+
+
 	bool breturn = m_DB->EditQueries(TOC_NAME_LINES, _("Lines without attribution"),
-						  wxString::Format(myQueryTemplate, 
+						  wxString::Format(myQueryTemplate,
 										   TABLE_NAME_GIS_GENERIC[TOC_NAME_LINES].c_str(),
 										   TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LINES].c_str()));
 	if (breturn == false)
@@ -232,9 +231,9 @@ bool ProjectManager::PMAddDefaultQueries()
 		wxLogError(_("Error adding default query [LINES]"));
 		return false;
 	}
-	
+
 	breturn = m_DB->EditQueries(TOC_NAME_POINTS, _("Points without attribution"),
-						  wxString::Format(myQueryTemplate, 
+						  wxString::Format(myQueryTemplate,
 										   TABLE_NAME_GIS_GENERIC[TOC_NAME_POINTS].c_str(),
 										   TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS].c_str()));
 	if (breturn == false)
@@ -242,9 +241,9 @@ bool ProjectManager::PMAddDefaultQueries()
 		wxLogError(_("Error adding default query [POINTS]"));
 		return false;
 	}
-	
+
 	breturn = m_DB->EditQueries(TOC_NAME_LABELS, _("Labels without attribution"),
-						  wxString::Format(myQueryTemplate, 
+						  wxString::Format(myQueryTemplate,
 										   TABLE_NAME_GIS_GENERIC[TOC_NAME_LABELS].c_str(),
 										   TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LABELS].c_str()));
 	if (breturn == false)
@@ -252,7 +251,7 @@ bool ProjectManager::PMAddDefaultQueries()
 		wxLogError(_("Error adding default query [LABELS]"));
 		return false;
 	}
-	return true;	
+	return true;
 }
 
 
@@ -270,18 +269,18 @@ bool ProjectManager::EditProject (int notebooknumber)
 {
 	wxASSERT (m_PrjMem);
 	bool bReturn = true;
-	
+
 	// copy project definition
 	PrjDefMemManage myPrjDef;
 	myPrjDef = *m_PrjMem;
-	
-	
+
+
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &myPrjDef, TRUE);
 	myNewProjDlg->SetNotebook(notebooknumber);
 	if(myNewProjDlg->ShowModal() == wxID_OK)
 	{
-		
-		// modify data 
+
+		// modify data
 		if (m_DB->UpdateDataBaseProject(&myPrjDef))
 		{
 			wxLogDebug(_T("Database modified"));
@@ -296,11 +295,11 @@ bool ProjectManager::EditProject (int notebooknumber)
 		}
 	}
 	delete myNewProjDlg;
-	
+
 	wxASSERT(m_PrjMem);
 	m_AttribManager->InitAttributionManager(m_DB, m_PrjMem);
-	
-	
+
+
 	return bReturn;
 }
 
@@ -309,7 +308,7 @@ bool ProjectManager::EditProject (int notebooknumber)
 /***************************************************************************//**
  @brief Close the active database
  @details This function may be called as often as you want, check is made and
- database is closed only if previously opened. 
+ database is closed only if previously opened.
  @note All internal functions should work event if database is empty
  @author Lucien Schreiber (c) CREALP 2007
  @date 11 March 2008
@@ -317,16 +316,16 @@ bool ProjectManager::EditProject (int notebooknumber)
 void ProjectManager::CloseProject()
 {
 	wxASSERT (m_EditManager);
-	
+
 	// save the snapping informations
 	m_SnappingPanel->SetDataBase(m_DB);
 	m_SnappingPanel->SaveSnappingStatus();
-	
+
 	m_EditManager->SetDatabase(NULL);
 	m_LayerManager->UnInitLayerManager();
 	m_AttribManager->UnInitAttributionManager();
-	
-	wxDELETE(m_DB);	
+
+	wxDELETE(m_DB);
 	bProjectIsOpen = FALSE;
 }
 
@@ -346,7 +345,7 @@ bool ProjectManager::IsDataBasePath(const wxString & path)
 	// upper case
 	if (!wxDir::FindFirst(path, TABLE_NAME_PRJ_SETTINGS + _T(".MYD"), wxDIR_FILES).IsEmpty())
 		return TRUE;
-	
+
 	// lower case
 	if (!wxDir::FindFirst(path, TABLE_NAME_PRJ_SETTINGS.Lower() + _T(".MYD"), wxDIR_FILES).IsEmpty())
 		return TRUE;
@@ -372,70 +371,70 @@ int ProjectManager::OpenProject(const wxString & path)
 {
 	// close any existing project
 	CloseProject();
-	
+
 	// ensure path exists
 	if (wxFileName::DirExists(path)==false){
 		wxLogError(_("Project '%s' doesn't exist."), path.c_str());
 		return tmDB_OPEN_FAILED;
 	}
-	
-	
+
+
 	m_DB = new DataBaseTM();
 	int mystatus = m_DB->OpenTMDatabase(path);
-	
+
 	if (mystatus == tmDB_OPEN_OK)
 	{
 		// updates the menu using the menu manager
 		///m_pMManager->SetStatus(MENU_DB_OPENED);
 		m_pMManager->AddFileToRecent(path);
-		
+
 		// update objects to lists
 		m_Obj->UpdateObjectLists(m_DB);
-		
+
 		// activate project opening
 		m_QueriesPanel->LoadQueries(m_DB);
-		
+
         // attribution manager
         LoadProjectDefintion(1);
 		m_AttribManager->InitAttributionManager(m_DB,GetMemoryProjectDefinition());
-        
+
 		// load shortcuts
-		m_ShortcutPanel->SetDataBase(m_DB); 
+		m_ShortcutPanel->SetDataBase(m_DB);
 		// load shortcuts for lines by default
 		m_ShortcutPanel->LoadShortcutList(true);
 		m_ShortcutPanel->SetProjectOpen(true);
-		
+
 		// load snapping
 		m_SnappingPanel->SetDataBase(m_DB);
 		m_SnappingPanel->LoadSnappingStatus();
-		
+
 		// LayerManager Job
 		m_LayerManager->InitLayerManager(m_DB);
-		
+
 		// edition manager
 		m_EditManager->SetDatabase(m_DB);
-		
+
 		m_ToolManager->SetDatabase(m_DB);
-		
+
 		// project is now open !
 		bProjectIsOpen = TRUE;
 		//myReturnVal = OPEN_OK;
-		
-		wxString myTitleBarText = g_ProgName + " " + g_ProgMajorVersion + "." + SVN_VERSION + _T(" - ") + GetProjectName();
+
+		wxString myTitleBarText = g_ProgName + _T(" - ") + GetProjectName();
 		m_Parent->SetTitle(myTitleBarText);
-		
+
 	}
 	else
 	{
 		///m_pMManager->SetStatus(MENU_DB_CLOSED);
 		CloseProject();
 	}
-	
+
 	/*
 	// 0 check if the folder contain something like a database file
 	if (IsDataBasePath(path))
 	{
-		// 1 check, is connection with library ok on specified path 
+		// 1 check, is connection with library ok on specified path
 		m_DB = new DataBaseTM();
 		if (m_DB->DataBaseOpen(path,LANG_UTF8))
 		{
@@ -450,39 +449,39 @@ int ProjectManager::OpenProject(const wxString & path)
 					// updates the menu using the menu manager
 					m_pMManager->SetStatus(MENU_DB_OPENED);
 					m_pMManager->AddFileToRecent(path);
-					
+
 					// update objects to lists
 					m_Obj->UpdateObjectLists(m_DB);
-					
+
 					// activate project opening
 					m_QueriesPanel->LoadQueries(m_DB);
-					
+
 					// load shortcuts
-					m_ShortcutPanel->SetDataBase(m_DB); 
+					m_ShortcutPanel->SetDataBase(m_DB);
 					// load shortcuts for lines by default
 					m_ShortcutPanel->LoadShortcutList(true);
 					m_ShortcutPanel->SetProjectOpen(true);
-					
+
 					// load snapping
 					m_SnappingPanel->SetDataBase(m_DB);
 					m_SnappingPanel->LoadSnappingStatus();
-					
+
 					// LayerManager Job
 					m_LayerManager->InitLayerManager(m_DB);
-				
+
 					// edition manager
 					m_EditManager->SetDatabase(m_DB);
-						
+
 					// load project definition
 					bool bLoaded = LoadProjectDefintion(1);
-					wxASSERT (bLoaded);	
-					
+					wxASSERT (bLoaded);
+
 					// attribution manager
 					bool bReady = m_AttribManager->
 						InitAttributionManager(m_DB,
 											   GetMemoryProjectDefinition());
 					wxASSERT(bReady);
-					
+
 					// project is now open !
 					bProjectIsOpen = TRUE;
 					myReturnVal = OPEN_OK;
@@ -492,8 +491,8 @@ int ProjectManager::OpenProject(const wxString & path)
 			}
 			else
 				myReturnVal = OPEN_NOT_TM_DB;
-			
-			
+
+
 			// check the tables for cbReturn = TRUE;
 		}
 		else
@@ -505,7 +504,7 @@ int ProjectManager::OpenProject(const wxString & path)
 	}
 	*/
 
-	
+
 	return (int) mystatus;
 }
 
@@ -516,20 +515,20 @@ int ProjectManager::OpenProject(const wxString & path)
 bool ProjectManager::EditProjectObjectDefinition ()
 {
 	bool bReturn = FALSE;
-	
+
 	// display the dialogs for editing the project's object definition.
 	// DO NOT CALL THIS BEFORE OPENING A DB
 	ProjectEditObjectDefinitionDLG * myDlg = new ProjectEditObjectDefinitionDLG(m_Parent, m_DB);
 	if (myDlg->ShowModal() == wxID_SAVE)
 	{
 		wxLogDebug(_T("Object definition saved into the DB"));
-		
+
 		// update objects to lists
 		m_Obj->UpdateObjectLists(m_DB);
-		
+
 		bReturn = TRUE;
 	}
-	
+
 	delete myDlg;
 	return bReturn;
 }
@@ -539,7 +538,7 @@ bool ProjectManager::EditProjectObjectDefinition ()
 bool ProjectManager::EditProjectSettings ()
 {
 	bool bReturn = FALSE;
-	
+
 	// display the dialogs for editing the project's object definition.
 	// DO NOT CALL THIS BEFORE OPENING A DB
 	ProjectPropertiesDLG myDLG (m_Parent, m_DB);
@@ -551,7 +550,7 @@ bool ProjectManager::EditProjectSettings ()
 	}
 	//BUG: bug #23 Workaround for mac
 	myDLG.SetScaleListFocus();
-	
+
 	//delete myDLG;
 	return bReturn;
 }
@@ -567,7 +566,7 @@ wxString ProjectManager::GetProjectName()
 {
 	if (m_DB != NULL)
 		return m_DB->DataBaseGetName();
-	else 
+	else
 	{
 		wxLogDebug(_T("Database pointer is null"));
 	}
@@ -585,12 +584,12 @@ bool ProjectManager::TempTempInitTOC ()
 		wxLogDebug(_T("No database started, start a database first"));
 		return FALSE;
 	}
-	
+
 	if (wxMessageBox(_T("Add default layers in project TOC ?"),
 				 _T("Temporary Functions"),  wxYES_NO, m_Parent) != wxYES)
 		return FALSE;
-	
-	
+
+
 	m_DB->InitTOCGenericLayers();
 	return TRUE;
 }
@@ -600,10 +599,10 @@ bool ProjectManager::TempTempInitTOC ()
 /***************************************************************************//**
  @brief Load project defintion from database to memory
  @details Project defintion is used for :
- - Editing project 
+ - Editing project
  - Advanced
  attribution
- @param message Message displayed during project loading : 
+ @param message Message displayed during project loading :
  - 0 = No Message
  - 1= Loading project in progress
  - 2 = Cancelling in progress
@@ -617,13 +616,13 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 	wxASSERT (m_DB);
 	wxASSERT (message >= 0 && message <= 2);
 	wxASSERT (m_Parent);
-	
+
 	if (m_PrjMem)
 	{
 		wxDELETE(m_PrjMem);
 		//m_PrjMem = new PrjDefMemManage();
 	}
-	
+
 	wxStopWatch sw;
 	wxString myWaitString = wxEmptyString;
 	switch (message)
@@ -634,7 +633,7 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 		case 2:
 			myWaitString = _("Please wait, cancelling in progress...");
 			break;
-			
+
 		default:
 			break;
 	}
@@ -644,17 +643,17 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 
 	// load data from DB --> PrjDefMemManage
 	m_PrjMem = m_DB->GetProjectDataFromDB();
-	
+
 	if (wait)
 		delete wait;
-	
+
 	wxLogMessage(_T("Project Data loaded in : %ld [ms]"),sw.Time());
-	
+
 	wxASSERT (m_PrjMem);
 	if (m_PrjMem == NULL)
 		return false;
-	
-	
+
+
 	return true;
 }
 
@@ -711,20 +710,20 @@ bool ObjectManager::UpdateObjectLists(DataBaseTM * pDB)
 		wxLogDebug(_T("Unable to update the Point list"));
 		return FALSE;
 	}
-	
+
 	if (!m_panel->UpdateObjectPolyList(pDB))
 	{
 		wxLogDebug(_T("Unable to update the polygon list"));
 		return FALSE;
 	}
-	
+
 	if (!m_panel->UpdateObjectLineList(pDB))
 	{
 		wxLogDebug(_T("Unable to update the Line list"));
 		return FALSE;
 	}
-		
-	
+
+
 	return TRUE;
 }
 
