@@ -89,7 +89,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 #if defined(__WINDOWS__)
 	wxString mylanguagedir = "--language=./mysql";
 #elif defined(__WXMAC__)
-	wxString mylanguagedir = "--language=./ToolMap2.app/Contents/mysql";
+	wxString mylanguagedir = "--language=./ToolMap.app/Contents/mysql";
 //#elif defined(__WXGTK20__)
 	//char * mylanguagedir = "--language=./mysql";
 #else

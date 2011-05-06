@@ -413,6 +413,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	tmGISData::InitGISDrivers(TRUE, TRUE);	
 	
 	_CheckUpdates(false);
+	_LoadPreference(false);
 }
 
 
@@ -697,16 +698,6 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 	}
 	delete myDirDLG;
 }
-
-
-
-
-
-void ToolMapFrame::ReloadLayerNow(){
-	wxASSERT(m_LayerManager);
-	m_LayerManager->ReloadProjectLayersThreadStart(false);	
-}
-
 
 
 
@@ -1072,8 +1063,34 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 	if (myDlg.ShowModal() != wxID_OK) {
 		return;
 	}
+	
+	_LoadPreference(true);
 }
 
+
+void ToolMapFrame::_LoadPreference(bool reload){
+	wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+	
+	myConfig->SetPath("GENERAL");
+	wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
+	bool mySelHalo = myConfig->ReadBool("selection_halo", false);
+    myConfig->SetPath("..");
+	
+	wxColour mySelColor = *wxRED;
+	if (mySelColorText != wxEmptyString) {
+		mySelColor.Set(mySelColorText);
+	}
+	
+	wxASSERT(m_LayerManager);
+	m_LayerManager->SetSelectionColour(mySelColor);
+	
+	if (reload == true) {
+		//m_LayerManager->ReloadProjectLayersThreadStart(false);
+		wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt2);
+	}
+}
 
 
 

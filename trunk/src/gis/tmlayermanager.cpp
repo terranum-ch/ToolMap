@@ -1404,6 +1404,8 @@ void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
 
 
 
+
+
 /***************************************************************************//**
  @brief Sent a message when view is updated
  @author Lucien Schreiber (c) CREALP 2009

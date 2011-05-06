@@ -277,10 +277,7 @@ public:
 	void _CreateMenu();
 	void _CreateToolBar();
     void _CreateAccelerators();
-	
-	void ReloadLayerNow();
-	
-	
+	void _LoadPreference(bool reload);
 	
 private:
 	
