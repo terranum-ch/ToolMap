@@ -1084,6 +1084,7 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	
 	wxASSERT(m_LayerManager);
 	m_LayerManager->SetSelectionColour(mySelColor);
+	m_LayerManager->SetSelectionHalo(mySelHalo);
 	
 	if (reload == true) {
 		//m_LayerManager->ReloadProjectLayersThreadStart(false);

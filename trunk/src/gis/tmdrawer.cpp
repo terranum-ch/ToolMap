@@ -183,6 +183,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// pen for selection
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
+	wxPen mySHaloPen (*wxWHITE, pSymbol->GetWidth() + 2);
 	
 	// pen for vertex
 	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
@@ -227,6 +228,16 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
 			if (m_SelMem->IsSelected(myOid)){
+				
+				// drawing halo
+				if (m_SelMem->GetSelectionHalo() == true) {
+					pgdc->SetPen(mySHaloPen);
+					wxGraphicsPath myPath = pgdc->CreatePath();
+					myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+					for (int i = 1; i< iNbVertex; i++)
+						myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+					pgdc->StrokePath(myPath);
+				}
 				pgdc->SetPen(mySPen);
 			}
 		}
@@ -331,6 +342,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 						tmSYMBOLPENSYLES[mySymbology->m_UnSelShapeMultiple]);
 	wxPen mySelectionValidPen (m_SelMem->GetSelectionColour(),  mySymbology->m_SelWidthMultiple);
 	wxPen mySelectionUnValidPen (m_SelMem->GetSelectionColour(), mySymbology->m_UnSelWidthMultiple);
+
+	wxPen mySelectionValidHaloPen (*wxWHITE,  mySymbology->m_SelWidthMultiple + 2);
+	wxPen mySelectionUnValidHaloPen (*wxWHITE,  mySymbology->m_UnSelWidthMultiple + 2);
 	
 	wxPen myVertexValidPen (*CreateVertexUniquePen(itemProp, mySymbology->m_SelWidthMultiple));
 	wxPen myVertexUnValidPen (*CreateVertexUniquePen(itemProp, mySymbology->m_UnSelWidthMultiple));
@@ -364,8 +378,30 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 		}
 
 		// search id into results
+		bool IsValid = false;
+		if (_ExistsinResults(myOid, myResult) == true) {
+			IsValid = true;
+		}
+		
+		// drawing halo
+		if (IsSelected == true && m_SelMem->GetSelectionHalo() == true) {
+			if (IsValid) {
+				pgdc->SetPen(mySelectionValidHaloPen);
+			}
+			else {
+				pgdc->SetPen(mySelectionUnValidHaloPen);
+			}
+			wxGraphicsPath myPath = pgdc->CreatePath();
+			myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+			for (int i = 1; i< iNbVertex; i++){
+				myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+			}
+			pgdc->StrokePath(myPath);			
+		}
+		
+		// choosing correct pen
 		wxPen myVertexPen;
-		if (_ExistsinResults(myOid, myResult)==true) {
+		if (IsValid==true) {
 			myVertexPen = myVertexValidPen;
 			if (IsSelected) {
 				pgdc->SetPen(mySelectionValidPen);
@@ -383,7 +419,6 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 				pgdc->SetPen(myUnValidPen);
 			}
 		}
-
 		
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
@@ -531,6 +566,9 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->GetSymbolRef();
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
+	wxPen mySHaloPen (*wxWHITE, pSymbol->GetRadius() + 2);
+
+	
 	pgdc->SetPen(myPen);
 	
 	// iterate for all points, will not work on a threaded version
@@ -553,17 +591,26 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		}
 		
+		// convert from real coordinates to screen coordinates
+		Intpts = m_scale.RealToPixel(*pptsReal);
+		
 		// changing pen for selected data
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
 			if (m_SelMem->IsSelected(myOid))
 			{
+				if (m_SelMem->GetSelectionHalo() == true) {
+					pgdc->SetPen(mySHaloPen);
+#ifdef __WXMSW__
+					pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+#else
+					pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+#endif
+				}
+				
 				pgdc->SetPen(mySPen);
 				bAsSelection = true;
 			}
-		
-		// convert from real coordinates to screen coordinates
-		Intpts = m_scale.RealToPixel(*pptsReal);
-	
+			
 #ifdef __WXMSW__
 		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
 #else
@@ -621,6 +668,11 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 						mySymbology->m_UnSelRadiusMultiple);
 	wxPen mySelectionValidPen (m_SelMem->GetSelectionColour(),  mySymbology->m_SelRadiusMultiple);
 	wxPen mySelectionUnValidPen (m_SelMem->GetSelectionColour(), mySymbology->m_UnSelRadiusMultiple);
+	
+	wxPen mySelectionValidHaloPen (*wxWHITE,  mySymbology->m_SelRadiusMultiple + 2);
+	wxPen mySelectionUnValidHaloPen (*wxWHITE, mySymbology->m_UnSelRadiusMultiple + 2);
+	
+	
 	bool myValidVisible = mySymbology->m_SelVisible;
 	bool myUnValidVisible = mySymbology->m_UnSelVisible;
 	
@@ -648,26 +700,53 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 			}
 		}
 		
+		bool IsValid = false;
 		if (_ExistsinResults(myOid, myResult)==true) {
-			if (myValidVisible == false) {
-				wxDELETE(pptsReal);
-				continue;
+			IsValid = true;
+		}
+		
+		// unvisible pen
+		if (IsValid == true && myValidVisible ==false) {
+			wxDELETE(pptsReal);
+			continue;
+		}
+		
+		if (IsValid == false && myUnValidVisible == false) {
+			wxDELETE(pptsReal);
+			continue;
+		}
+		
+		// convert from real coordinates to screen coordinates
+		wxPoint Intpts (0,0);
+		Intpts = m_scale.RealToPixel(*pptsReal);
+		
+		if (IsSelected == true) {
+			if (m_SelMem->GetSelectionHalo() == true) {
+				
+				
+				if (IsValid == true) {
+					pgdc->SetPen(mySelectionValidHaloPen);
+				}
+				else {
+					pgdc->SetPen(mySelectionUnValidHaloPen);
+				}
+#ifdef __WXMSW__
+				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+#else
+				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+#endif
 			}
-			
+		}
+		
+		if (IsValid==true) {
 			if (IsSelected == true) {
 				pgdc->SetPen(mySelectionValidPen);
 			}
 			else {
 				pgdc->SetPen(myValidPen);
 			}
-			
 		}
 		else {
-			if (myUnValidVisible == false) {
-				wxDELETE(pptsReal);
-				continue;
-			}
-			
 			if (IsSelected == true) {
 				pgdc->SetPen(mySelectionUnValidPen);
 			}
@@ -677,9 +756,6 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 		}
 		
 		
-		// convert from real coordinates to screen coordinates
-		wxPoint Intpts (0,0);
-		Intpts = m_scale.RealToPixel(*pptsReal);
 #ifdef __WXMSW__
 		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
 #else
@@ -692,87 +768,6 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return true;
-	
-
-		
-		
-		
-	
-	/*
-	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
-	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
-	{
-		if (IsLoggingEnabled())
-			wxLogDebug(_T("Error setting spatial filter"));
-		return false;
-	}
-	
-	wxMemoryDC dc;
-	dc.SelectObject(*m_bmp);
-	wxGraphicsContext * pgdc = wxGraphicsContext::Create( dc); 
-	
-	// create pen based on symbology
-	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemProp->GetSymbolRef();
-	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
-	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
-	pgdc->SetPen(myPen);
-	
-	// iterate for all points, will not work on a threaded version
-	// because of all wxLogDebug commands
-	bool bReturn = true;
-	int iLoop = 0;
-	long myOid = 0;
-	wxPoint Intpts (0,0);
-	bool bAsSelection = false;
-	
-	while (1)
-	{
-		wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint(myOid);
-		
-		if(pptsReal == NULL)
-		{
-			if (IsLoggingEnabled())
-				wxLogDebug(_T("No point returned @loop : %d"), iLoop);
-			bReturn = FALSE;
-			break;
-		}
-		
-		// changing pen for selected data
-		if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
-			if (m_SelMem->IsSelected(myOid))
-			{
-				pgdc->SetPen(mySPen);
-				bAsSelection = true;
-			}
-		
-		// convert from real coordinates to screen coordinates
-		Intpts = m_scale.RealToPixel(*pptsReal);
-		
-#ifdef __WXMSW__
-		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
-#else
-		pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
-#endif
-		
-		delete pptsReal;
-		iLoop++;
-		
-		// returning to basic pen
-		if (bAsSelection)
-		{
-			bAsSelection = false;
-			pgdc->SetPen(myPen);
-		}
-		
-	}
-	
-	if (IsLoggingEnabled())
-		wxLogDebug(_T("%d Points drawn"), iLoop);
-	
-	dc.SelectObject(wxNullBitmap);
-	wxDELETE(pgdc);
-	return true;
-	*/
 }
 
 
@@ -799,7 +794,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	wxBrush myBrush (pSymbol->GetFillColour(),pSymbol->GetFillStyle());
 	
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetBorderWidth());
-	wxBrush mySBrush (m_SelMem->GetSelectionColour2(), pSymbol->GetFillStyle());
+	wxBrush mySBrush (m_SelMem->GetSelectionColour(), pSymbol->GetFillStyle());
 	
 	pgdc->SetBrush(myBrush);
 	pgdc->SetPen(myPen);

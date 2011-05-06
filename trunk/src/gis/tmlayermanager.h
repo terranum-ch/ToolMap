@@ -190,6 +190,7 @@ class tmLayerManager : public wxEvtHandler
 		bool GetRefreshBlocked () {return m_BlockRefresh;}
 		
 		void SetSelectionColour(const wxColour & col){m_SelectedData.SetSelectionColour(col);}
+		void SetSelectionHalo (bool hashalo) {m_SelectedData.SetSelectionHalo(hashalo);}
 	};
 
 

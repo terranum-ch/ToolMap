@@ -49,6 +49,7 @@ class tmSelectedDataMemory : public wxObject
 		long m_LayerID;
 		tmArraySortedLong * m_SelectedIDs;
 		wxColour m_Colour;
+		bool m_HasHalo;
 		
 		void InitMemberValues ();
 		
@@ -74,7 +75,8 @@ class tmSelectedDataMemory : public wxObject
 		void Clear() {m_SelectedIDs->Clear();}
 		wxColour GetSelectionColour(){return m_Colour;}
 		void SetSelectionColour(const wxColour & col){m_Colour = col;}
-		wxColour GetSelectionColour2() {return *wxGREEN;}
+		void SetSelectionHalo (bool hashalo){m_HasHalo = hashalo;}
+		bool GetSelectionHalo() {return m_HasHalo;}
 		long GetSelectedLayer () {return m_LayerID;}
 		wxArrayLong * GetSelectedValues ();
 		long GetSelectedUnique();
