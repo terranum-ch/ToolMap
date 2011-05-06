@@ -64,6 +64,7 @@ void tmSelectedDataMemory::InitMemberValues()
 	m_LayerID = -1;
 	m_SelectedIDs = new tmArraySortedLong(CompareLongs);
 	m_Colour = wxColour(*wxRED);
+	m_HasHalo = false;
 }
 
 
