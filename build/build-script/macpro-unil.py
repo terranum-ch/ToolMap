@@ -1,14 +1,15 @@
 # VARIABLES FOR BUILDING TOOLMAP ON OSX 
 gwxWidgets = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBWX29/bin/wx-config" #wxWIDGETS config
+gwxWidgetsVersion = ""
 gDirTrunk = "/Users/lucien/Documents/PRJ/TOOLMAP2/trunk"
 gDirBin = "/Users/lucien/Documents/PRJ/TOOLMAP2/bin"
 gDirInstall = "/Users/lucien/Documents/PRJ/TOOLMAP2/install"
-gDirGis = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS"
+gDirGdal = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS"
 gDirSQL = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBMYSQL"
 gDirUnitTest = "/Users/lucien/Documents/PRJ/TOOLMAP2/unit_testing"
 gDirCxx = "/Users/lucien/Documents/PROGRAMMATION/cxxtest"
 gDirCurl = "" 
-gDirGeos = ""
+gDirGeos = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS"
 
 # CMAKE SPECIFIC
 gCmakeEnv = "Xcode" #result of cmake --help
@@ -34,16 +35,16 @@ def gBuildCommand(buildtype="Debug", directory = ""):
 #TEST SPECIFIC
 def runBeforeTest():
     "Run this function before test for settings some parameters. Actually only coping ToolMap.app"
-    if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap2.app") == False):
-        if(os.path.exists(gDirBin + os.sep + "test/ToolMap2.app") == True):
-            exception = shutil.rmtree(gDirBin + os.sep + "test/ToolMap2.app")
-        exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap2.app", gDirBin + os.sep + "test/ToolMap2.app")
+    if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap.app") == False):
+        if(os.path.exists(gDirBin + os.sep + "test/ToolMap.app") == True):
+            exception = shutil.rmtree(gDirBin + os.sep + "test/ToolMap.app")
+        exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap.app", gDirBin + os.sep + "test/ToolMap2.app")
         
 
 def gCreateInstaller(svnnumner):
     "Create installer for mac"
     print ("Copying files out of Release folder")
-    shutil.move(gDirBin + os.sep + "Release" + os.sep + "libToolMap2_lib.a", gDirBin + os.sep + "libToolMap2_lib.a")
+    shutil.move(gDirBin + os.sep + "Release" + os.sep + "libToolMap_lib.a", gDirBin + os.sep + "libToolMap_lib.a")
     
     print ("Copying background files...")
     myReleasePath = gDirBin + os.sep + "Release"
@@ -66,6 +67,6 @@ def gCreateInstaller(svnnumner):
     
     shutil.rmtree(myReleasePath + os.sep + ".background")
     os.unlink(myReleasePath + os.sep + "Applications")
-    shutil.move(gDirBin + os.sep + "libToolMap2_lib.a", gDirBin + os.sep +  "Release" + os.sep + "libToolMap2_lib.a")
+    shutil.move(gDirBin + os.sep + "libToolMap_lib.a", gDirBin + os.sep +  "Release" + os.sep + "libToolMap_lib.a")
     print ("Creating installer finished")
     return "ToolMap2_r"+svnnumner+".dmg"

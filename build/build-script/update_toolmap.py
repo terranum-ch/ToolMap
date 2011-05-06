@@ -118,7 +118,8 @@ print ("Using variables from :", mySelectedVar)
 print ("wxWidgets :", gwxWidgets)
 print ("Bin       :", gDirBin)
 print ("Trunk     :", gDirTrunk)
-print ("GIS       :", gDirGis)
+print ("GDAL      :", gDirGdal)
+print ("GEOS      :", gDirGeos)
 print ("Unit test :", gDirUnitTest)
 print ("CXX       :", gDirCxx)
 print ("----------------------------------------------------------\n")
@@ -171,13 +172,12 @@ mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
 mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
 mycmakeCommandLine.append("-DSVN_DURING_BUILD:BOOL=1")
 mycmakeCommandLine.append("-DSVN_DURING_CMAKE:BOOL=1")
-mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
-mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
+mycmakeCommandLine.append("-DSEARCH_GDAL_LIB_PATH:PATH=" + gDirGdal)
+mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
+
 mycmakeCommandLine.append("-DMYSQL_MAIN_DIR:PATH=" + gDirSQL)
 if (gDirCurl):
     mycmakeCommandLine.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
-if (gDirGeos):
-    mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
 if (doRunTests == 'Y'):
     mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=1")
 else:
