@@ -73,6 +73,7 @@ class tmSelectedDataMemory : public wxObject
 		void SetLayerID (long layerID);
 		void Clear() {m_SelectedIDs->Clear();}
 		wxColour GetSelectionColour(){return m_Colour;}
+		void SetSelectionColour(const wxColour & col){m_Colour = col;}
 		wxColour GetSelectionColour2() {return *wxGREEN;}
 		long GetSelectedLayer () {return m_LayerID;}
 		wxArrayLong * GetSelectedValues ();

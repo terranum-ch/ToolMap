@@ -189,6 +189,7 @@ class tmLayerManager : public wxEvtHandler
 		void BlockRefreshProcess(bool block = true){m_BlockRefresh = block;}
 		bool GetRefreshBlocked () {return m_BlockRefresh;}
 		
+		void SetSelectionColour(const wxColour & col){m_SelectedData.SetSelectionColour(col);}
 	};
 
 

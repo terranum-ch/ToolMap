@@ -45,18 +45,18 @@ IF (APPLE)
 	
 		IF (SEARCH_GEOS)
 			# copy all GEOS libs to the bundle 
-			EXEC_PROGRAM( "cp ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}")
-			EXEC_PROGRAM( "cp ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}")
+			EXEC_PROGRAM( "cp ${SEARCH_GEOS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}")
+			EXEC_PROGRAM( "cp ${SEARCH_GEOS_LIB_PATH}/lib/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}")
 		
 			# change install_name from GEOS libs into the bundle 
 			EXEC_PROGRAM("install_name_tool -id  @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgeos-${GEOS_VERSION}.dylib") 
 			EXEC_PROGRAM("install_name_tool -id  @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}/libgeos_c.${GEOS_C_VERSION}.dylib") 
-			EXEC_PROGRAM("install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgeos_c.${GEOS_C_VERSION}.dylib") 
+			EXEC_PROGRAM("install_name_tool -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgeos_c.${GEOS_C_VERSION}.dylib") 
 		   
 			# we have to change the programm (but only after build...)
 			#GET_TARGET_PROPERTY (PROG_LOCATION ${CMAKE_PROJECT_NAME} LOCATION)
 			ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-	       COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+	       COMMAND install_name_tool  ARGS -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	       COMMENT "Updating program GEOS libs")
 	
 	
@@ -65,24 +65,19 @@ IF (APPLE)
 	
 		IF(SEARCH_GDAL)
 		# copy GDAL lib to the bundle 
-		EXEC_PROGRAM( "cp ${SEARCH_GIS_LIB_PATH}/lib/libgdal.1.dylib ${BUNDLELIBPATH}")
+		EXEC_PROGRAM( "cp ${SEARCH_GDAL_LIB_PATH}/lib/libgdal.1.dylib ${BUNDLELIBPATH}")
 
 
 		# change install_name from GEOS libs into the bundle 
 		EXEC_PROGRAM("install_name_tool -id  @executable_path/../${LIBNAME}/libgdal.1.dylib ${BUNDLELIBPATH}/libgdal.1.dylib") 
-		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
-		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
+		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
+		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
 
 		
 		# we have to change the programm for GDAL (but only after build...)
 		ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-	    COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgdal.1.dylib @executable_path/../${LIBNAME}/libgdal.1.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+	    COMMAND install_name_tool  ARGS -change ${SEARCH_GDAL_LIB_PATH}/lib/libgdal.1.dylib @executable_path/../${LIBNAME}/libgdal.1.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	    COMMENT "Updating program GDAL libs")
-	
-	
-
-	
-	
 	
 		ENDIF (SEARCH_GDAL)
 		
@@ -107,18 +102,18 @@ IF (APPLE)
 	
 		IF (SEARCH_GEOS)
 			# copy all GEOS libs to the bundle 
-			EXEC_PROGRAM( "cp ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}")
-			EXEC_PROGRAM( "cp ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}")
+			EXEC_PROGRAM( "cp ${SEARCH_GEOS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}")
+			EXEC_PROGRAM( "cp ${SEARCH_GEOS_LIB_PATH}/lib/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}")
 		
 			# change install_name from GEOS libs into the bundle 
 			EXEC_PROGRAM("install_name_tool -id  @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgeos-${GEOS_VERSION}.dylib") 
 			EXEC_PROGRAM("install_name_tool -id  @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}/libgeos_c.${GEOS_C_VERSION}.dylib") 
-			EXEC_PROGRAM("install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgeos_c.${GEOS_C_VERSION}.dylib") 
+			EXEC_PROGRAM("install_name_tool -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgeos_c.${GEOS_C_VERSION}.dylib") 
 		   
 			# we have to change the programm (but only after build...)
 			#GET_TARGET_PROPERTY (PROG_LOCATION ${CMAKE_PROJECT_NAME} LOCATION)
 			ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-	       COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+	       COMMAND install_name_tool  ARGS -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	       COMMENT "Updating program GEOS libs")
 	
 	
@@ -127,22 +122,20 @@ IF (APPLE)
 	
 		IF(SEARCH_GDAL)
 		# copy GDAL lib to the bundle 
-		EXEC_PROGRAM( "cp ${SEARCH_GIS_LIB_PATH}/lib/libgdal.1.dylib ${BUNDLELIBPATH}")
+		EXEC_PROGRAM( "cp ${SEARCH_GDAL_LIB_PATH}/lib/libgdal.1.dylib ${BUNDLELIBPATH}")
 
 
 
 		# change install_name from GEOS libs into the bundle 
 		EXEC_PROGRAM("install_name_tool -id  @executable_path/../${LIBNAME}/libgdal.1.dylib ${BUNDLELIBPATH}/libgdal.1.dylib") 
-		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
-		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
+		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos-${GEOS_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
+		EXEC_PROGRAM("install_name_tool -change ${SEARCH_GEOS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLELIBPATH}/libgdal.1.dylib")
 
 	
 		# we have to change the programm for GDAL (but only after build...)
 		ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-	    COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgdal.1.dylib @executable_path/../${LIBNAME}/libgdal.1.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+	    COMMAND install_name_tool  ARGS -change ${SEARCH_GDAL_LIB_PATH}/lib/libgdal.1.dylib @executable_path/../${LIBNAME}/libgdal.1.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	    COMMENT "Updating program GDAL libs")
-	
-	
 	
 	
 		ENDIF (SEARCH_GDAL)
