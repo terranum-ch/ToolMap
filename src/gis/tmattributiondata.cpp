@@ -251,10 +251,9 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
  @author Lucien Schreiber (c) CREALP 2009
  @date 24 March 2009
  *******************************************************************************/
-bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
+bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * layers,
 												  const wxArrayString & values)
 {
-	wxASSERT (m_SelIDs);
 	wxASSERT (m_pDB);
 	
 	wxString sSentence = wxEmptyString;
@@ -262,11 +261,12 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
 	for (unsigned int i = 0; i<layers->GetCount(); i++)
 	{
 		ProjectDefMemoryLayers * myLayer = layers->Item(i);
-		iStep = PrepareAAttribStatement(sSentence,myLayer, values, iStep, m_SelIDs->Item(0));
+		iStep = PrepareAAttribStatement(sSentence,myLayer, values, iStep, objid);
 	}
 	
-	if (m_pDB->DataBaseQueryNoResults(sSentence)==false)
+	if (m_pDB->DataBaseQueryNoResults(sSentence)==false){
 		return false;
+	}
 	
 	return true;
 }
@@ -283,7 +283,8 @@ bool tmAttributionData::SetAttributesAdvanced(PrjMemLayersArray * layers,
  @author Lucien Schreiber (c) CREALP 2009
  @date 30 March 2009
  *******************************************************************************/
-bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
+bool tmAttributionData::CleanAttributesAdvanced (long objectid, 
+												 PrjDefMemManage * prjdef,
 												 PRJDEF_LAYERS_TYPE layertype)
 {
 	wxASSERT (m_SelIDs);
@@ -303,16 +304,16 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
 			{
 				sSentence.Append(wxString::Format(sDel,
 												  prjdef->m_PrjLayerArray.Item(i)->m_LayerID,
-												  m_SelIDs->Item(0)));
+												  objectid));
 			}
 		}
 	}
 	
-	wxLogDebug(_T("Layers found with spatial type : %d -- %s"),
-			   layertype, sSentence.c_str());
-	
-	if (m_pDB->DataBaseQueryNoResults(sSentence)==false)
+	if (m_pDB->DataBaseQueryNoResults(sSentence)==false){
+		wxLogMessage(_T("Layers found with spatial type : %d -- %s"),
+					 layertype, sSentence.c_str());
 		return false;
+	}
 
 	return true;
 }
@@ -327,18 +328,17 @@ bool tmAttributionData::CleanAttributesAdvanced (PrjDefMemManage * prjdef,
  @author Lucien Schreiber (c) CREALP 2009
  @date 25 March 2009
  *******************************************************************************/
-bool tmAttributionData::GetAttributesAdvanced (PrjMemLayersArray * layers,
+bool tmAttributionData::GetAttributesAdvanced (long objectid,
+											   PrjMemLayersArray * layers,
 											   wxArrayString & values)
 {
-	wxASSERT (m_SelIDs);
-	wxASSERT (m_SelIDs->GetCount() == 1);
 	wxASSERT (m_pDB);
 	bool bReturn = true;
 	values.Clear();
 	for (unsigned int i = 0; i< layers->GetCount(); i++)
 	{
 		ProjectDefMemoryLayers  * myLayer = layers->Item(i);
-		if (GetAdvancedAttribution(myLayer, values, m_SelIDs->Item(0))==false)
+		if (GetAdvancedAttribution(myLayer, values, objectid)==false)
 		{
 			bReturn = false;
 			break;
@@ -383,6 +383,8 @@ bool tmAttributionData::CopyAttributesBasic (const long & copyfrom)
 	
 	return true;
 }
+
+
 
 
 /***************************************************************************//**

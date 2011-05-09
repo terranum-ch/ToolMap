@@ -587,11 +587,52 @@ void tmAttributionManager::OnCopyAttribution (wxCommandEvent & event)
 	myAttrib->Create(mySelectedValues, m_pDB);
 	myAttrib->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[m_TOC->GetEditLayer()->GetType()]);
 	
-	// copy attribution
+	// copy attribution basic
 	myAttrib->CopyAttributesBasic(event.GetExtraLong());
 	
-	delete mySelectedValues;
-	delete myAttrib;
+	// copy attribution advanced
+	tmLayerValueArray myLayersID;
+	if (myAttrib->GetAttributionLayersID(event.GetExtraLong(), myLayersID)==false){
+		return;
+	}
+		
+	wxASSERT (m_pPrjMem);
+	PrjMemLayersArray myLayersInfoArray;
+	for (unsigned int i = 0; i<myLayersID.GetCount();i++)
+	{
+		wxLogDebug(_T("layer %ld searched"), myLayersID.Item(i).m_Oid);
+		ProjectDefMemoryLayers * myActualLayer = m_pPrjMem->FindLayerByRealID(myLayersID.Item(i).m_Oid);
+		if (myActualLayer)
+		{
+			myLayersInfoArray.Add(new ProjectDefMemoryLayers());
+			*(myLayersInfoArray.Item(myLayersInfoArray.GetCount()-1)) = *myActualLayer; 
+		}
+		else
+			wxLogDebug(_T("Layers %ld not found "), myLayersID.Item(i).m_Oid);
+	}
+	
+	// get advanced attribution values (if existing)
+	wxArrayString myValues;
+	bool bGetAAttrib = myAttrib->GetAttributesAdvanced(event.GetExtraLong(), &myLayersInfoArray, myValues);
+	if (bGetAAttrib == false){
+		wxLogError(_T("Problem getting advanced attribution values"));
+	}
+	
+	wxLogMessage ("Getting values for item : %ld", event.GetExtraLong());
+	for (unsigned int i = 0; i< myValues.GetCount(); i++) {
+		wxLogMessage(myValues.Item(i));
+	}
+	
+	for (unsigned int i = 0; i<mySelectedValues->GetCount(); i++) {
+		bool bClean = myAttrib->CleanAttributesAdvanced(mySelectedValues->Item(i), m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
+		bool bAttrib = myAttrib->SetAttributesAdvanced(mySelectedValues->Item(i), &myLayersInfoArray, myValues);
+		if (bClean == false || bAttrib == false){
+			wxLogError("Error setting advanced attribution for object id: %ld!", mySelectedValues->Item(i));
+		}
+	}
+	
+	wxDELETE(mySelectedValues);
+	wxDELETE(myAttrib);
 }
 
 
@@ -735,7 +776,8 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		
 	// get advanced attribution values (if existing)
 	wxArrayString myValues;
-	bool bGetAAttrib = myAttribObj->GetAttributesAdvanced(&myLayersInfoArray, myValues);
+	bool bGetAAttrib = myAttribObj->GetAttributesAdvanced(m_SelData->GetSelectedUnique(),
+														  &myLayersInfoArray, myValues);
 	if (bGetAAttrib == false)
 		wxLogDebug(_T("Problem getting advanced attribution values"));
 	
@@ -743,8 +785,8 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	
 	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray, myLayersID)==wxID_OK)
 	{
-		bool bClean = myAttribObj->CleanAttributesAdvanced(m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
-		bool bAttrib = myAttribObj->SetAttributesAdvanced(&myLayersInfoArray, myValues);
+		bool bClean = myAttribObj->CleanAttributesAdvanced(m_SelData->GetSelectedUnique(),m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
+		bool bAttrib = myAttribObj->SetAttributesAdvanced(m_SelData->GetSelectedUnique(), &myLayersInfoArray, myValues);
 		if (bClean && bAttrib)
 			return true;
 		return false;

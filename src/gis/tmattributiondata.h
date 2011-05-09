@@ -86,9 +86,8 @@ class tmAttributionData : public wxObject
 		// attribution
 		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool SetAttributeBasicValues(wxArrayLong * values);
-		virtual bool CleanAttributesAdvanced (PrjDefMemManage * prjdef, PRJDEF_LAYERS_TYPE layertype);
-		virtual bool SetAttributesAdvanced(PrjMemLayersArray * layers,
-										   const wxArrayString & values);
+		virtual bool CleanAttributesAdvanced (long objectid, PrjDefMemManage * prjdef, PRJDEF_LAYERS_TYPE layertype);
+		virtual bool SetAttributesAdvanced(long objectid, PrjMemLayersArray * layers, const wxArrayString & values);
 		
 		// copy attribution
 		virtual bool CopyAttributesBasic (const long & copyfrom);
@@ -105,7 +104,8 @@ class tmAttributionData : public wxObject
 								 wxArrayString & txtvalues);
 		bool GetConcatenedBasicName (const tmAttributionBasicArray & myAttrib,
 									 wxArrayString & concatenedattrib);
-		virtual bool GetAttributesAdvanced (PrjMemLayersArray * layers,
+		virtual bool GetAttributesAdvanced (long objectid,
+											PrjMemLayersArray * layers,
 											wxArrayString & values);
 		// only for one layer
 		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
