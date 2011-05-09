@@ -126,16 +126,14 @@ void tmCheckListBoxRank::Init()
  *******************************************************************************/
 bool tmCheckListBoxRank::AddToMenu()
 {
-	wxMenu * popupmenu = GetPopupMenu();
-	
-	if (popupmenu==NULL)
-	{
-		wxLogDebug(_T("Error : Pointer to the popup menu is NULL"));
-		return FALSE;
+	if (GetPopupMenu() == NULL){
+		wxFAIL;
+		wxLogError(_T("Pointer to the popup menu is NULL"));
+		return false;
 	}
 	
-	popupmenu->AppendSeparator();
-	popupmenu->Append(tmCHECK_MENU_SAVE_RANK, _("Save order"), wxEmptyString);
+	GetPopupMenu()->AppendSeparator();
+	GetPopupMenu()->Append(tmCHECK_MENU_SAVE_RANK, _("Save order"));
 	return TRUE;
 }
 
