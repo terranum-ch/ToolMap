@@ -1,21 +1,21 @@
 # VARIABLES FOR BUILDING TOOLMAP ON OSX 
-gwxWidgets = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBWX29/bin/wx-config" #wxWIDGETS config
-gwxWidgetsVersion = ""
+gwxWidgets = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN/bin/wx-config" #wxWIDGETS config
+gwxWidgetsVersion = "/Users/lucien/Documents/PROGRAMMATION/64/wxWidgets-svn"
 gDirTrunk = "/Users/lucien/Documents/PRJ/TOOLMAP2/trunk"
 gDirBin = "/Users/lucien/Documents/PRJ/TOOLMAP2/bin"
 gDirInstall = "/Users/lucien/Documents/PRJ/TOOLMAP2/install"
 gDirGdal = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS"
+gDirGeos = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS"
 gDirSQL = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBMYSQL"
 gDirUnitTest = "/Users/lucien/Documents/PRJ/TOOLMAP2/unit_testing"
 gDirCxx = "/Users/lucien/Documents/PROGRAMMATION/cxxtest"
 gDirCurl = "" 
-gDirGeos = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS"
 
 # CMAKE SPECIFIC
 gCmakeEnv = "Xcode" #result of cmake --help
 gCmakeSpecific = ['-DCMAKE_OSX_ARCHITECTURES:TEXT=x86_64']
-gCmakeSpecific.append("-DCMAKE_OSX_SYSROOT:PATH=/Developer/SDKs/MacOSX10.5.sdk")
-gCmakeSpecific.append("-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5")
+gCmakeSpecific.append("-DCMAKE_OSX_SYSROOT:PATH=/Developer/SDKs/MacOSX10.6.sdk")
+gCmakeSpecific.append("-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6")
 gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets)
 
 
@@ -38,7 +38,7 @@ def runBeforeTest():
     if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap.app") == False):
         if(os.path.exists(gDirBin + os.sep + "test/ToolMap.app") == True):
             exception = shutil.rmtree(gDirBin + os.sep + "test/ToolMap.app")
-        exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap.app", gDirBin + os.sep + "test/ToolMap2.app")
+        exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap.app", gDirBin + os.sep + "test/ToolMap.app")
         
 
 def gCreateInstaller(svnnumner):
