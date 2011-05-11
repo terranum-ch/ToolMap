@@ -111,7 +111,8 @@ class ProjectDefFieldDlg: public wxDialog
 		void OnImportAllowedValue (wxCommandEvent & event);
 		void OnRemoveAllowedValue (wxCommandEvent & event);
 		void OnExportAllowedValue (wxCommandEvent & event);
-		void OnFieldNameChange (wxCommandEvent & event);
+		//void OnFieldNameChange (wxCommandEvent & event);
+		void OnIdleValidateDlg (wxIdleEvent & event);
 	
 		// transfering data private function.
 		void TransfertTextValues(bool bSendDataToDlg = FALSE);
