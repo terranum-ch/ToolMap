@@ -192,11 +192,12 @@ BEGIN_EVENT_TABLE( ProjectDefFieldDlg, wxDialog )
 	EVT_TEXT(ID_DLGAFD_FIELD_SCALE, ProjectDefFieldDlg::OnShowLiveResults)
 	EVT_TEXT(ID_DLGAFD_FIELD_PRECISION, ProjectDefFieldDlg::OnShowLiveResults)
 	//EVT_CHOICE (ID_DLGAFD_DATA_TYPE, ProjectDefFieldDlg::OnChangeFieldType)
-	EVT_TEXT(ID_DLGAFD_FIELD_DEF,ProjectDefFieldDlg::OnFieldNameChange)
+	//EVT_TEXT(ID_DLGAFD_FIELD_DEF,ProjectDefFieldDlg::OnFieldNameChange)
+	EVT_IDLE(ProjectDefFieldDlg::OnIdleValidateDlg)
 END_EVENT_TABLE()
 
 
-void ProjectDefFieldDlg::OnFieldNameChange (wxCommandEvent & event)
+/*void ProjectDefFieldDlg::OnFieldNameChange (wxCommandEvent & event)
 {
 	if (m_DlgAFD_Field_Def->GetValue().IsEmpty())
 	{
@@ -205,7 +206,30 @@ void ProjectDefFieldDlg::OnFieldNameChange (wxCommandEvent & event)
 	else
 		m_DlgAFD_Button_OK->Enable(TRUE);
 	
+}*/
+
+
+void ProjectDefFieldDlg::OnIdleValidateDlg (wxIdleEvent & event){
+	wxString myPanelTxt = m_DlgAFD_Choicebook->GetPageText(m_DlgAFD_Choicebook->GetSelection());
+	if (myPanelTxt == PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION]){
+		wxASSERT(m_DlgAFD_Coded_Val_List);
+		if (m_DlgAFD_Coded_Val_List->GetItemCount() == 0) {
+			m_DlgAFD_Button_OK->Enable(false);
+			event.Skip();
+			return;
+		}
+	}
+	
+	if (m_DlgAFD_Field_Def->IsEmpty() == true) {
+		m_DlgAFD_Button_OK->Enable(false);
+		event.Skip();
+		return;
+	}
+	
+	m_DlgAFD_Button_OK->Enable(true);
+	event.Skip();
 }
+
 
 
 
