@@ -23,6 +23,9 @@
 #include "tmgisdatarasterjpeg.h"
 
 
+DEFINE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING);
+
+
 tmGISDataRaster::tmGISDataRaster()
 {
 	m_DataSet = NULL;
@@ -105,15 +108,21 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
     
     // send warning if rotation information is found
     if (dCoord[2] != 0 || dCoord[4] != 0) {
+		wxWindow * myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
+		wxASSERT(myMainWnd);
+
+		wxCommandEvent evt(tmEVT_LM_ROTATION_WARNING, wxID_ANY);
+		evt.SetString(GetShortFileName().c_str());
+		wxRealPoint * myPt = new wxRealPoint(dCoord[2], dCoord[4]);
+		evt.SetClientData(myPt);
+		myMainWnd->GetEventHandler()->AddPendingEvent(evt);		
+		/*
 		wxLogWarning(_("Layer %s contain following rotation informations (%.4f, %.4f).\n It may not be displayed correctly"),
 					 GetShortFileName().c_str(),
 					 dCoord[2],
-					 dCoord[4]);
+					 dCoord[4]);*/
 	}
-    
-	
 	return m_RasterExtent;
-	
 }
 
 
@@ -908,6 +917,9 @@ bool tmGISDataRaster::GetStatMinMaxNoDataValue (double & dmin, double & dmax,
 
 
 
+
+
+
 /***************************************************************************//**
  @brief Get Metadata information well formated
  @return  An html string to be displayed in the properties dialog
@@ -1084,4 +1096,134 @@ wxString tmGISDataRaster::GetImagePxSizeMetadata ()
 	return wxString::Format(_("Raster width : %d (pixels)<BR>Raster height : %d (pixels)"),
 							myRasterSize.GetWidth(), myRasterSize.GetHeight());
 }
+
+
+
+
+
+
+
+
+
+void tmRotationWarning_DLG::_CreateControls() {
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
+	
+	m_TextLayerCtrl = new wxStaticText( this, wxID_ANY, m_TxtTemplate, wxDefaultPosition, wxDefaultSize, 0 );
+	m_TextLayerCtrl->Wrap( -1 );
+	bSizer1->Add( m_TextLayerCtrl, 0, wxALL, 5 );
+	
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Rotation:") ), wxVERTICAL );
+	
+	m_TextRotationCtrl = new wxStaticText( this, wxID_ANY, _("0.00012\n0.12000"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_TextRotationCtrl->Wrap( -1 );
+	sbSizer1->Add( m_TextRotationCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
+	
+	bSizer1->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
+	
+	
+	//bSizer1->Add( 0, 20, 1, wxEXPAND, 5 );
+	
+	m_HideCtrl = new wxCheckBox( this, wxID_ANY, _("Hide warnings for this layer"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1->Add( m_HideCtrl, 0, wxALL, 5 );
+	
+	m_BtnSizerCtrl = new wxStdDialogButtonSizer();
+	m_BtnSizerCtrlOK = new wxButton( this, wxID_OK );
+	m_BtnSizerCtrl->AddButton( m_BtnSizerCtrlOK );
+	m_BtnSizerCtrlHelp = new wxButton( this, wxID_HELP );
+	m_BtnSizerCtrl->AddButton( m_BtnSizerCtrlHelp );
+	m_BtnSizerCtrl->Realize();
+	bSizer1->Add( m_BtnSizerCtrl, 0, wxEXPAND|wxALL, 5 );
+	
+	this->SetSizer( bSizer1 );
+	//this->Layout();
+	//bSizer1->Fit( this );
+	
+	this->Centre( wxBOTH );
+}
+
+
+
+void tmRotationWarning_DLG::OnHelp(wxCommandEvent & event) {
+}
+
+
+
+tmRotationWarning_DLG::tmRotationWarning_DLG(wxWindow * parent, wxWindowID id, const wxString & title):
+wxDialog(parent, id, title){
+	m_Hide = false;
+    m_Rotation1 = 0.0;
+    m_Rotation2 = 0.0;
+    m_Layer = wxEmptyString;
+	m_TxtTemplate = _("Layer: '%s' contain rotation information!\nIt may no be displayed correctly!");
+	
+	_CreateControls();
+	m_BtnSizerCtrlHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmRotationWarning_DLG::OnHelp ), NULL, this );
+}
+
+
+
+tmRotationWarning_DLG::~tmRotationWarning_DLG() {
+	m_BtnSizerCtrlHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmRotationWarning_DLG::OnHelp ), NULL, this );
+}
+
+
+
+bool tmRotationWarning_DLG::TransferDataFromWindow() {
+	SetHide(m_HideCtrl->IsChecked());
+	return true;
+}
+
+
+
+bool tmRotationWarning_DLG::TransferDataToWindow() {
+	m_TextLayerCtrl->SetLabel(wxString::Format(m_TxtTemplate, GetLayerName()));
+	m_TextRotationCtrl->SetLabel(wxString::Format(_T("%.4f\n%.4f"), GetRotation1(), GetRotation2()));
+	m_HideCtrl->SetValue(GetHide());
+	this->Layout();
+	this->GetSizer()->Fit(this);
+	
+	return true;
+}
+
+
+
+void tmRotationWarning_DLG::SetHide(bool value) {
+	m_Hide = value;
+}
+
+
+
+void tmRotationWarning_DLG::SetRotation1(double value) {
+	m_Rotation1 = value;
+}
+
+
+
+void tmRotationWarning_DLG::SetRotation2(double value) {
+	m_Rotation2 = value;
+}
+
+
+
+void tmRotationWarning_DLG::SetLayerName(wxString value) {
+	m_Layer = value;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

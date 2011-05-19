@@ -1836,7 +1836,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 			UpdateLayer(pLayers, sSentence);
 			
 			// check if a table exists for fields 
-			if(TableExist(wxString::Format(_T("%s%ld"),
+			if(TableExist(wxString::Format(_T("%s%d"),
 										   TABLE_NAME_LAYER_AT.c_str(),
 										   pLayers->m_LayerID)) )
 			{

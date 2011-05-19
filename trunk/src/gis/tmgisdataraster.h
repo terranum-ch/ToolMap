@@ -32,6 +32,8 @@
 #include "tmgisdata.h"
 #include <wx/dir.h>	// for computing dir size
 
+DECLARE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING, -1)
+
 
 // if you add some raster format, don't forget
 // to update the tmGISVECTOR_OFFSET
@@ -74,71 +76,135 @@ const wxString tmRASTER_DATATYPES[] = {
 
 
 class tmGISDataRaster : public tmGISData
-	{
-	private:
-	protected:
-		GDALDataset *	m_DataSet;
-		GDALRasterBand *m_RasterBand;
-		wxString		m_FileType;
-		wxRect			m_PxImgFilter;
-		tmRealRect		m_RasterExtent;
-		tmRealRect		m_ClippedCoord;
+{
+private:
+protected:
+	GDALDataset *	m_DataSet;
+	GDALRasterBand *m_RasterBand;
+	wxString		m_FileType;
+	wxRect			m_PxImgFilter;
+	tmRealRect		m_RasterExtent;
+	tmRealRect		m_ClippedCoord;
+	
+	wxArrayString	m_RotationName;
+	wxArrayShort	m_RotationStatus;
+	
+	wxSize GetImagePxDim ();
+	bool GetImagePxSize (double & pxsizeX, double & pxsizeY, 
+						 const tmRealRect & imgrealcoord = tmRealRect(0,0,0,0));
+	wxRect ConvertClipedImage (const tmRealRect & origin, const tmRealRect & clipped);
+	
+	// reading image (DTM)
+	void * ReadImageData ( GDALRasterBand *gdalBand, const wxRect & imgfilter,
+						  const wxSize & imgSize, int & buffsize);
+	double ReadGDALValueToDouble ( void *data, GDALDataType type, int index );
+	
+	// statistics function
+	bool GetStatMinMaxNoDataValue (double & dmin, double & dmax, double & dnodata);
+		
+public:
+	tmGISDataRaster();
+	~tmGISDataRaster();
+	
+	// standard GDAL functions
+	virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
+	virtual tmRealRect GetMinimalBoundingRectangle();
+	
+	// static functions
+	static void InitGISDriversRaster();
+	static wxString GetAllRasterGISFormatsWildcards();
+	static tmGISDataRaster * CreateGISRasterBasedOnType (const int & gis_format_index);
+	static tmGISDataRaster * CreateGISRasterBasedOnExt (const wxString & extension);
+	
+	// gis functions
+	virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_RASTER;}
+	
+	// reading functions
+	virtual bool SetSpatialFilter (tmRealRect filter, int type);
+	bool IsImageInsideVisibleArea ();
+	CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
+						unsigned char **maskbuf, unsigned int   *masklen,
+						wxSize imgSize);
+	bool GetImageTranslucency (wxSize imgSize, int translucencypercent,
+							   unsigned char **alphachn); 
+	tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
+	
+	
+	virtual int GetBandCount ();
+	virtual int GetPyramidsInfo (wxArrayString * pyramids = NULL);
+	
+	// virtual function for metadata
+	virtual wxString GetMetaDataAsHtml ();
+	wxString GetBandMetaData ();
+	wxString GetUnitMetaData ();
+	wxString GetPyramidsMetadata();
+	wxString GetImagePxSizeMetadata ();
+	
+	
+	
+};
 
-		
-		wxSize GetImagePxDim ();
-		bool GetImagePxSize (double & pxsizeX, double & pxsizeY, 
-							 const tmRealRect & imgrealcoord = tmRealRect(0,0,0,0));
-		wxRect ConvertClipedImage (const tmRealRect & origin, const tmRealRect & clipped);
-		
-		// reading image (DTM)
-		void * ReadImageData ( GDALRasterBand *gdalBand, const wxRect & imgfilter,
-							  const wxSize & imgSize, int & buffsize);
-		double ReadGDALValueToDouble ( void *data, GDALDataType type, int index );
-		
-		// statistics function
-		bool GetStatMinMaxNoDataValue (double & dmin, double & dmax, double & dnodata);
-		
-	public:
-		tmGISDataRaster();
-		~tmGISDataRaster();
-		
-		// standard GDAL functions
-		virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
-		virtual tmRealRect GetMinimalBoundingRectangle();
-		
-		// static functions
-		static void InitGISDriversRaster();
-		static wxString GetAllRasterGISFormatsWildcards();
-		static tmGISDataRaster * CreateGISRasterBasedOnType (const int & gis_format_index);
-		static tmGISDataRaster * CreateGISRasterBasedOnExt (const wxString & extension);
-		
-		// gis functions
-		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_SPATIAL_RASTER;}
-		
-		// reading functions
-		virtual bool SetSpatialFilter (tmRealRect filter, int type);
-		bool IsImageInsideVisibleArea ();
-		CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
-							unsigned char **maskbuf, unsigned int   *masklen,
-							wxSize imgSize);
-		bool GetImageTranslucency (wxSize imgSize, int translucencypercent,
-								   unsigned char **alphachn); 
-		tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
-		
-		
-		virtual int GetBandCount ();
-		virtual int GetPyramidsInfo (wxArrayString * pyramids = NULL);
-		
-		// virtual function for metadata
-		virtual wxString GetMetaDataAsHtml ();
-		wxString GetBandMetaData ();
-		wxString GetUnitMetaData ();
-		wxString GetPyramidsMetadata();
-		wxString GetImagePxSizeMetadata ();
-		
-		
-		
-	};
+
+
+
+
+class tmRotationWarning_DLG : public wxDialog {
+private:
+    bool m_Hide;
+    double m_Rotation1;
+    double m_Rotation2;
+    wxString m_Layer;
+	
+	wxString m_TxtTemplate;
+	
+	wxStaticText* m_TextLayerCtrl;
+	wxStaticText* m_TextRotationCtrl;
+	wxCheckBox* m_HideCtrl;
+	wxStdDialogButtonSizer* m_BtnSizerCtrl;
+	wxButton* m_BtnSizerCtrlOK;
+	wxButton* m_BtnSizerCtrlHelp;
+
+    void _CreateControls();
+    void OnHelp(wxCommandEvent & event);
+	
+public:
+    tmRotationWarning_DLG(wxWindow * parent, wxWindowID id, const wxString & title);
+    virtual ~tmRotationWarning_DLG();
+	
+    virtual bool TransferDataFromWindow();
+    virtual bool TransferDataToWindow();
+	
+    inline const bool GetHide() const;
+    void SetHide(bool value);
+	
+    inline const double GetRotation1() const;
+    void SetRotation1(double value);
+	
+    inline const double GetRotation2() const;
+    void SetRotation2(double value);
+	
+    inline const wxString GetLayerName() const;
+    void SetLayerName(wxString value);
+	
+};
+
+
+
+inline const bool tmRotationWarning_DLG::GetHide() const {
+	return m_Hide;
+}
+
+inline const double tmRotationWarning_DLG::GetRotation1() const {
+	return m_Rotation1;
+}
+
+inline const double tmRotationWarning_DLG::GetRotation2() const {
+	return m_Rotation2;
+}
+
+inline const wxString tmRotationWarning_DLG::GetLayerName() const {
+	return m_Layer;
+}
 
 
 
