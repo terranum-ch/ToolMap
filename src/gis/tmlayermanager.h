@@ -91,7 +91,6 @@ class tmLayerManager : public wxEvtHandler
 		wxString m_LastOpenedPath;
 		
 		// shared member data with thread
-		 
 		tmTHREAD_STATUS m_Shared_ThreadStatus;
 		wxBitmap * m_ThreadBitmap;
 		
@@ -106,6 +105,11 @@ class tmLayerManager : public wxEvtHandler
 		bool SaveTOCStatus();
 		bool IsOK ();
 		
+		// rotation warning function
+		wxArrayString	m_RotationName;
+		wxArrayShort	m_RotationStatus;
+		wxArrayString	m_RotationLayerNames;
+		
 		// function called when view is updated
 		void ViewUpdated();
 		void _ZoomChanged();
@@ -119,6 +123,7 @@ class tmLayerManager : public wxEvtHandler
 		void OnScrolled (wxCommandEvent & event);
 		void OnSelection (wxCommandEvent & event);
 		void OnRemoveLayers(wxCommandEvent & event);
+		void OnRotationWarning (wxCommandEvent & event);
 		
 		// bitmap specific functions
 		void CreateEmptyBitmap (const wxSize & size);

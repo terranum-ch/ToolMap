@@ -53,6 +53,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
+	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
 
 END_EVENT_TABLE()
 
@@ -368,6 +369,60 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 	}
 	
 	LoadProjectLayers();
+}
+
+
+
+void tmLayerManager::OnRotationWarning (wxCommandEvent & event){
+	wxASSERT(m_RotationName.GetCount() == m_RotationStatus.GetCount());
+	
+	wxRealPoint * myPt = (wxRealPoint*) event.GetClientData();
+	wxASSERT(myPt);
+	double rx = myPt->x;
+	double ry = myPt->y;
+	wxDELETE(myPt);
+	
+	// avoid 2 times the same rotation dialog
+	for (unsigned int i = 0; i<m_RotationLayerNames.GetCount(); i++) {
+		if (m_RotationLayerNames.Item(i) == event.GetString()) {
+			return;
+		}
+	}
+	m_RotationLayerNames.Add(event.GetString());
+	
+	bool bShouldAdd = true;
+	bool bShouldDisplay = true;
+	for (unsigned int i = 0; i< m_RotationName.GetCount(); i++) {
+		if (m_RotationName.Item(i) == event.GetString()) {
+			bShouldAdd = false;
+			if (m_RotationStatus.Item(i) == 1) { // hide message
+				bShouldDisplay = false;
+			}
+			break;
+		}
+	}
+	
+	// display dialog
+	if (bShouldDisplay == true) {
+		tmRotationWarning_DLG myDlg (NULL, wxID_ANY, _("Rotation Warning"));
+		myDlg.SetLayerName(event.GetString());
+		myDlg.SetRotation1(rx);
+		myDlg.SetRotation2(ry);
+		myDlg.ShowModal();
+		
+		
+		if (bShouldAdd == true) {
+			m_RotationName.Add(event.GetString());
+			m_RotationStatus.Add((short) myDlg.GetHide());
+		}
+		
+		// update hide information
+		for (unsigned int i = 0; i<m_RotationName.GetCount(); i++) {
+			if (m_RotationName.Item(i) == event.GetString()) {
+				m_RotationStatus.Item(i) = (short) myDlg.GetHide();
+			}
+		}
+	}
 }
 
 
@@ -1145,6 +1200,8 @@ bool tmLayerManager::IsOK()
  *******************************************************************************/
 bool tmLayerManager::LoadProjectLayers()
 {
+	m_RotationLayerNames.Clear();
+	
 	// enable logging
 	tmGISData::EnableLogging(true);
 	tmDrawer::EnableLogging(true);
@@ -1216,6 +1273,8 @@ bool tmLayerManager::LoadProjectLayers()
 //FIXME: Convert to threaded version when stable
 bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
 {
+	m_RotationLayerNames.Clear();
+
 	// invalidate bitmap
 	m_GISRenderer->SetBitmapStatus();
 	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
