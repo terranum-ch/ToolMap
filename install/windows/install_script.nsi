@@ -3,14 +3,14 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ToolMap"
 ;!define PRODUCT_VERSION '2.0.475' (removed for batch script)
-!define PRODUCT_VERSION_LONG "2.1"
+!define PRODUCT_VERSION_LONG "2.2"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.toolmap.ch"
-!define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY "Software\ToolMap2"
+!define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY "Software\ToolMap"
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME "Install_Mode"
-!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY "Software\ToolMap2"
+!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY "Software\ToolMap"
 !define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "Install_Dir"
-!define MULTIUSER_INSTALLMODE_INSTDIR "ToolMap2"
+!define MULTIUSER_INSTALLMODE_INSTDIR "ToolMap"
 
 
 ; MUI 1.67 compatible ------
@@ -24,7 +24,7 @@
 #installing desktop icon only when using GUIs
 Function finishpageaction
 SetOutPath "$INSTDIR"
-CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "$instdir\${PRODUCT_NAME}2.exe"
+CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "$instdir\${PRODUCT_NAME}.exe"
 FunctionEnd
 
 ;!include "MUI.nsh"
@@ -88,7 +88,7 @@ Var cmdLineInstallDir
  
 Function CheckToolMapRuning
    
-  StrCpy $0 "${PRODUCT_NAME}2.exe"
+  StrCpy $0 "${PRODUCT_NAME}.exe"
   KillProc::FindProcesses
   IntCmp $0 1 0 notruning 
 	IfSilent +2
@@ -107,14 +107,14 @@ Section "SectionPrincipale" SEC01
   Call CheckToolMapRuning
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "..\..\..\bin\Debug\ToolMap2.exe"
-  File "..\..\..\bin\Debug\ToolMap2.pdb"
+  File "..\..\..\bin\Debug\ToolMap.exe"
+  File "..\..\..\bin\Debug\ToolMap.pdb"
   File "D:\PROGRAMMATION\ToolBasView\bin\Debug\ToolBasView.exe"
-  CreateDirectory "$SMPROGRAMS\ToolMap 2"
-  CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  CreateShortCut "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
+  CreateDirectory "$SMPROGRAMS\ToolMap"
+  CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
+  CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  File "..\..\..\bin\Debug\gdal17.dll"
+  File "..\..\..\bin\Debug\gdal18.dll"
   File "..\..\..\bin\Debug\geos_c.dll"
   File "..\..\..\bin\Debug\libmysqld.dll"
   File "..\..\..\bin\Debug\libcurld.dll"
@@ -125,22 +125,22 @@ Section "SectionPrincipale" SEC01
 SectionEnd
 
 Section -AdditionalIcons
-  WriteIniStr "$SMPROGRAMS\ToolMap 2\Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\ToolMap 2\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  WriteIniStr "$SMPROGRAMS\ToolMap\Website.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
+  CreateShortCut "$SMPROGRAMS\ToolMap\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr SHCTX "Software\ToolMap2" ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME}  "$INSTDIR"
-  WriteRegStr SHCTX "Software\ToolMap2" ${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}  "$MultiUser.InstallMode"
+  WriteRegStr SHCTX "Software\ToolMap" ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME}  "$INSTDIR"
+  WriteRegStr SHCTX "Software\ToolMap" ${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}  "$MultiUser.InstallMode"
  
  ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "DisplayName" "$(^Name)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "DisplayIcon" "$INSTDIR\ToolMap2.exe"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "Publisher" "${PRODUCT_PUBLISHER}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap" "DisplayName" "$(^Name)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap" "DisplayIcon" "$INSTDIR\ToolMap2.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap" "UninstallString" "$INSTDIR\uninst.exe"
 
   ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   ;WriteRegStr ${MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
@@ -166,28 +166,28 @@ FunctionEnd
 
 Section Uninstall
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap2"
-  DeleteRegKey SHCTX "Software\ToolMap2"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ToolMap"
+  DeleteRegKey SHCTX "Software\ToolMap"
   
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\mysql\errmsg.sys"
   Delete "$INSTDIR\libmysqld.dll"
-  Delete "$INSTDIR\gdal17.dll"
+  Delete "$INSTDIR\gdal18.dll"
   Delete "$INSTDIR\geos_c.dll"
   Delete "$INSTDIR\sqlite3.dll"
   
   Delete "$INSTDIR\libcurld.dll"
-  Delete "$INSTDIR\ToolMap2.exe"
-  Delete "$INSTDIR\ToolMap2.pdb"
+  Delete "$INSTDIR\ToolMap.exe"
+  Delete "$INSTDIR\ToolMap.pdb"
   Delete "$INSTDIR\ToolBasView.exe"
 
-  Delete "$SMPROGRAMS\ToolMap 2\Uninstall.lnk"
-  Delete "$SMPROGRAMS\ToolMap 2\ToolBasView.lnk"
-  Delete "$SMPROGRAMS\ToolMap 2\Website.url"
+  Delete "$SMPROGRAMS\ToolMap\Uninstall.lnk"
+  Delete "$SMPROGRAMS\ToolMap\ToolBasView.lnk"
+  Delete "$SMPROGRAMS\ToolMap\Website.url"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
-  Delete "$SMPROGRAMS\ToolMap 2\ToolMap 2.lnk"
+  Delete "$SMPROGRAMS\ToolMap\ToolMap.lnk"
 
-  RMDir "$SMPROGRAMS\ToolMap 2"
+  RMDir "$SMPROGRAMS\ToolMap"
   RMDir "$INSTDIR\mysql"
   RMDir "$INSTDIR"
 
