@@ -1148,6 +1148,7 @@ void tmRotationWarning_DLG::_CreateControls() {
 
 
 void tmRotationWarning_DLG::OnHelp(wxCommandEvent & event) {
+	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/toolmap/documentation/doku.php?id=faq:rotation"));
 }
 
 
