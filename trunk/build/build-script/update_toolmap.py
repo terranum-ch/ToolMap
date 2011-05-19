@@ -250,9 +250,9 @@ if (doRunTests == 'Y'):
    
 # Getting SVN number and creating installer
 if (doInstall == 'Y'):
-    with open(gDirTrunk + os.sep + "src" + os.sep + "core" + os.sep + "svn_version.h",  encoding='utf-8') as fileversion:
+    with open(gDirBin + os.sep + "lsversion_param.h",  encoding='utf-8') as fileversion:
         for line in fileversion:
-            if (line.find("SVN_VERSION") > 0):
+            if (line.find("lsVERSION_SOFT_VERSION") > 0):
                 mySVNValue = line[line.find("\"")+1:line.rfind("\"")]
                 print (mySVNValue)
                 global installName
