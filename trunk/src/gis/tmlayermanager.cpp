@@ -1219,24 +1219,21 @@ bool tmLayerManager::LoadProjectLayers()
 	wxLogDebug(_T("%d layer(s) read"),iRead);
 	
 	
-	m_Scale.ComputeMaxExtent();
+	
 	// test validity of layers extent. If no extent is 
 	// specified (like no data displayed) return 
-	if (!m_Scale.IsLayerExtentValid())
-		return FALSE;
-	
-	
-	m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
-	
-	
-	// iterate for drawing layers
-	ReadLayerDraw();
-	
-	
-	// update scale
-	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
-	
-	m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
+	if (m_Scale.IsLayerExtentValid()==true){
+		m_Scale.ComputeMaxExtent();
+		m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
+		
+		// iterate for drawing layers
+		ReadLayerDraw();
+		
+		// update scale
+		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+		
+		m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
+	}
 	
 	// send view updated message 
 	//ViewUpdated();
@@ -1292,38 +1289,29 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		return false;
 	
 		
-	if (m_Scale.IsLayerExtentValid()==false)
+	if (m_Scale.IsLayerExtentValid()==true)
 	{
-		wxLogError(_T("Extend not valid"));
-		//wxASSERT_MSG(0,_T("Failed computing"));
-		return false;
-	}
+		// compute max extent if required by option
+		if (bFullExtent)
+			m_Scale.ComputeMaxExtent();
 		
-
-	// compute max extent if required by option
-	if (bFullExtent)
-		m_Scale.ComputeMaxExtent();
-	
-	
-	// read layers for drawing
-	m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
-	int iNbLayersDraw = ReadLayerDraw();
-	if (iNbLayersDraw == -1)
-		return false;
-	
-	// update scale
-	m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
-	
+		
+		// read layers for drawing
+		m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
+		int iNbLayersDraw = ReadLayerDraw();
+		if (iNbLayersDraw == -1)
+			return false;
+		
+		// update scale
+		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+		
+	}
 	// update scrollbars
 	//UpdateScrollBars();
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
-	if (m_Bitmap)
-	{
-		delete m_Bitmap;
-		m_Bitmap = NULL;
-	}
+	wxDELETE(m_Bitmap);
 	
 	m_GISRenderer->Refresh();
 	m_GISRenderer->Update();
