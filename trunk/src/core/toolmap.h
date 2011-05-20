@@ -146,14 +146,15 @@ class WebUpdateInformationBar;
 #define ID_MENU_RECENT				10303
 #define ID_MENU_PRJ_BACKUP          10304
 #define ID_MENU_PRJ_BACKUP_MANAGER  10305
-#define ID_MENU_EXPORT              10306
-#define ID_MENU_EXPORT_LAYER		10307
-#define ID_MENU_EXPORT_FULL			10308
-#define ID_MENU_PRJ_EDIT            10309
-#define ID_MENU_PRJ_DEF				10310
-#define ID_MENU_OBJ_DEF				10311
-#define ID_MENU_OBJ_ATTRIB_DEF		10312
-#define ID_MENU_PRJ_SETTINGS		10313
+#define ID_MENU_PRJ_SAVE_TEMPLATE	10306
+#define ID_MENU_EXPORT              10307
+#define ID_MENU_EXPORT_LAYER		10308
+#define ID_MENU_EXPORT_FULL			10309
+#define ID_MENU_PRJ_EDIT            10310
+#define ID_MENU_PRJ_DEF				10311
+#define ID_MENU_OBJ_DEF				10312
+#define ID_MENU_OBJ_ATTRIB_DEF		10313
+#define ID_MENU_PRJ_SETTINGS		10314
 
 
 
@@ -161,16 +162,16 @@ class WebUpdateInformationBar;
 #define ID_MENU_IMPORT_GIS_DATA 10112
 
 //#define ID_MENU_ZOOM_PREVIOUS 10313
-#define ID_MENU_ZOOM 10314
-#define ID_MENU_PAN 10315
-#define ID_MENU_ZOOM_FIT 10316
-#define ID_MENU_ZOOM_GIVEN_SCALE 10317
-#define ID_MENU_ZOOM_COORDINATE 10318
-#define ID_MENU_ZOOM_NEXT_SCALE 10319
-#define ID_MENU_PREVIOUS_SCALE 10320
-#define ID_MENU_ZOOM_SELECTED_LAYER 10321
+#define ID_MENU_ZOOM 10315
+#define ID_MENU_PAN 10316
+#define ID_MENU_ZOOM_FIT 10317
+#define ID_MENU_ZOOM_GIVEN_SCALE 10318
+#define ID_MENU_ZOOM_COORDINATE 10319
+#define ID_MENU_ZOOM_NEXT_SCALE 10320
+#define ID_MENU_PREVIOUS_SCALE 10321
+#define ID_MENU_ZOOM_SELECTED_LAYER 10322
 
-#define ID_MENU_SELECTION 10322
+#define ID_MENU_SELECTION 10323
 
 
 #define ID_MENU_UNDO 10179
@@ -320,6 +321,7 @@ private:
 	void OnQueriesRun (wxCommandEvent & event);
 	void OnProjectBackup (wxCommandEvent & event);
     void OnProjectBackupManage (wxCommandEvent & event);
+	void OnProjectSaveTemplate (wxCommandEvent & event);
 	void OnToolChanged (wxCommandEvent & event);
 	void OnZoomPrevious(wxCommandEvent & event);
 	void OnZoomToSelectedLayer(wxCommandEvent & event);

@@ -183,6 +183,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_PRJ_DEF, ToolMapFrame::OnEditProject)
 	EVT_MENU (ID_MENU_PRJ_BACKUP, ToolMapFrame::OnProjectBackup)
     EVT_MENU (ID_MENU_PRJ_BACKUP_MANAGER, ToolMapFrame::OnProjectBackupManage)
+	EVT_MENU (ID_MENU_PRJ_SAVE_TEMPLATE, ToolMapFrame::OnProjectSaveTemplate)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 	EVT_MENU (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
@@ -485,6 +486,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu11 = new wxMenu;
     itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
@@ -1312,6 +1314,11 @@ void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
 	}
 	wxEndBusyCursor();
 	m_PManager->OpenProject(myRestoreInfo.GetInputDirectory().GetFullPath());
+}
+
+
+void ToolMapFrame::OnProjectSaveTemplate (wxCommandEvent & event){
+	wxLogError("Save template not implemented!");
 }
 
 
