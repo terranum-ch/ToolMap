@@ -649,7 +649,7 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 		GetEventHandler()->AddPendingEvent(evt);
 	}
 	
-	event.Skip();
+	//event.Skip();
 }
 
 
