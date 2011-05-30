@@ -1159,7 +1159,7 @@ wxDialog(parent, id, title){
     m_Rotation1 = 0.0;
     m_Rotation2 = 0.0;
     m_Layer = wxEmptyString;
-	m_TxtTemplate = _("Layer: '%s' contain rotation information!\nIt may no be displayed correctly!");
+	m_TxtTemplate = _("Layer: '%s' contains rotation information!\nIt may not be displayed correctly!");
 	
 	_CreateControls();
 	m_BtnSizerCtrlHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmRotationWarning_DLG::OnHelp ), NULL, this );
