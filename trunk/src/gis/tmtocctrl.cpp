@@ -629,6 +629,7 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 	wxTreeItemId clickedid = 0;
 	int flags = 0;
 	
+	
 	clickedid = HitTest(event.GetPosition(), flags);
 	if (flags & wxTREE_HITTEST_ONITEMICON)
 	{
@@ -649,6 +650,9 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 		GetEventHandler()->AddPendingEvent(evt);
 	}
 	
+	if (clickedid.IsOk()== true){
+		SelectItem(clickedid);
+	}
 	//event.Skip();
 }
 
@@ -703,8 +707,10 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
  *******************************************************************************/
 void tmTOCCtrl::OnMouseItemDoubleClick (wxTreeEvent & event)
 {
-	wxCommandEvent evt;
-	OnShowProperties(evt);
+	if(event.GetItem().IsOk() == true){
+		wxCommandEvent evt;
+		OnShowProperties(evt);
+	}
 	event.Skip();
 }
 
