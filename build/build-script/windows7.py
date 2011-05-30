@@ -61,4 +61,6 @@ def gCreateInstaller(svnnumner):
     myProcess = subprocess.Popen(myCmdInstaller, 0, None, None, None,  None, None, False, False, gDirInstall)
     myProcess.wait()
     print ("Renaming installer")
-    shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + "InstallToolMap_d" + svnnumner + ".exe")
+	installname = "InstallToolMap_d" + svnnumner + ".exe"
+    shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + installname)
+	return installname
