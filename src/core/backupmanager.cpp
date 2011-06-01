@@ -27,6 +27,7 @@ BackupFile::BackupFile() {
     m_Comment = wxEmptyString;
     m_Author = wxEmptyString;
     m_Date = wxDateTime();
+	m_UseDate = true;
     wxASSERT(m_Date.IsValid() == false);
 }
 
@@ -84,6 +85,9 @@ void BackupFile::SetDate(wxDateTime value) {
 }
 
 
+void BackupFile::SetUseDate(bool value) {
+	m_UseDate = value;
+}
 
 
 
@@ -136,10 +140,12 @@ bool BackupManager::Backup(const BackupFile & fileinfo, wxWindow * progressparen
     wxArrayString myFilesToBackup;
     _ListMySQLFiles(fileinfo.GetInputDirectory().GetFullPath(), myFilesToBackup);
     
-    wxFileName myFileOut (fileinfo.GetOutputName());
-    myFileOut.SetName(myFileOut.GetName() + "-" + fileinfo.GetDate().FormatISODate() +
-                      "-" + fileinfo.GetDate().Format(_T("%H%M%S")));
-    
+	// Append date to filename if required
+	wxFileName myFileOut (fileinfo.GetOutputName());
+    if (fileinfo.IsUsingDate() == true) {
+		myFileOut.SetName(myFileOut.GetName() + "-" + fileinfo.GetDate().FormatISODate() +
+						  "-" + fileinfo.GetDate().Format(_T("%H%M%S")));		
+	}
     
 	wxFFileOutputStream outf(myFileOut.GetFullPath());
 	if (!outf.Ok()){

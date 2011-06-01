@@ -69,10 +69,10 @@ void BackupManagerDLG::_CreateControls() {
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_BtnDelete = new wxButton( this, wxID_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer4->Add( m_BtnDelete, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer4->Add( m_BtnDelete, 0, wxALL|wxALIGN_CENTER_VERTICAL, 10 );
 	
 	m_BtnRestore = new wxButton( this, ID_BTN_RESTORE, _("Restore"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer4->Add( m_BtnRestore, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer4->Add( m_BtnRestore, 0, wxALL|wxALIGN_CENTER_VERTICAL, 10 );
 	
 	
 	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -80,7 +80,7 @@ void BackupManagerDLG::_CreateControls() {
 	wxButton* myButton;
 	myButton = new wxButton( this, wxID_CANCEL, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
 	myButton->SetDefault(); 
-	bSizer4->Add( myButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer4->Add( myButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 10 );
 	bSizer3->Add( bSizer4, 0, wxEXPAND, 5 );	
     
     m_StatusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP | wxNO_BORDER);
