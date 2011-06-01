@@ -1329,10 +1329,14 @@ void ToolMapFrame::OnProjectSaveTemplate (wxCommandEvent & event){
 		return;
 	}
 	
-	wxString myTemplateFileName = myTemplateFileDlg.GetPath();
-	if (myTemplateFileName.IsEmpty() == true) {
-		wxLogError(_("Template name is empty!"));
+	wxFileName myTemplateFileName = wxFileName(myTemplateFileDlg.GetPath());
+	if (myTemplateFileName.IsOk() == false) {
+		wxLogError(_("Template name is Incorrect!"));
 		return;
+	}
+	
+	if (myTemplateFileName.GetExt() != _T("tmtp")) {
+		myTemplateFileName.SetExt(_T("tmtp"));
 	}
 	
     // create backup file
@@ -1340,7 +1344,7 @@ void ToolMapFrame::OnProjectSaveTemplate (wxCommandEvent & event){
     myBckFile.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
                                            m_PManager->GetDatabase()->DataBaseGetName()));
     myBckFile.SetDate(wxDateTime::Now());
-    myBckFile.SetOutputName(wxFileName(myTemplateFileName));
+    myBckFile.SetOutputName(myTemplateFileName);
 	myBckFile.SetUseDate(false);
     
     // ask for comment 

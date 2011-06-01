@@ -302,7 +302,8 @@ bool BackupManager::GetFileInfo(const wxFileName & file, BackupFile & fileinfo) 
     wxString myFileName = file.GetName();
     wxString myDateTimeString = myFileName.AfterFirst('-');
     if (myDateTimeString.IsEmpty()) {
-        return false;
+        fileinfo.SetUseDate(false);
+		return true;
     }
     
     // old date format
