@@ -66,8 +66,10 @@ void NewTemplatePrjWizard::OnSourceDirChanged(wxFileDirPickerEvent & event) {
 		return;
 	}
 	
-	m_DateCtrl->SetLabel(myFileInfo.GetDate().Format(_T("%d %b %Y")) + _T(" ") + 
-						 myFileInfo.GetDate().FormatISOTime());
+	if (myFileInfo.IsUsingDate() == true) {
+		m_DateCtrl->SetLabel(myFileInfo.GetDate().Format(_T("%d %b %Y")) + _T(" ") + 
+							 myFileInfo.GetDate().FormatISOTime());
+	}
 	m_CommentCtrl->SetLabel(myFileInfo.GetComment());
 	
 }
