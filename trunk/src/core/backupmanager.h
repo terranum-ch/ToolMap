@@ -41,7 +41,7 @@ private:
     wxString m_Comment;
     wxString m_Author;
     wxDateTime m_Date;
- 
+	bool m_UseDate;	
     
 public:
     BackupFile();
@@ -63,7 +63,9 @@ public:
     
     inline const wxDateTime GetDate() const;
     void SetDate(wxDateTime value);
-    
+	
+	inline const bool IsUsingDate() const;
+    void SetUseDate(bool value);
 };
 
 
@@ -96,6 +98,10 @@ inline const wxDateTime BackupFile::GetDate() const {
     return m_Date;
 }
 
+
+inline const bool BackupFile::IsUsingDate() const {
+	return m_UseDate;
+}
 
 
 /***************** BACKUP MANAGER **********************/

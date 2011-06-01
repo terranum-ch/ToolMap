@@ -1317,8 +1317,52 @@ void ToolMapFrame::OnProjectBackupManage (wxCommandEvent & event){
 }
 
 
+
 void ToolMapFrame::OnProjectSaveTemplate (wxCommandEvent & event){
-	wxLogError("Save template not implemented!");
+	wxASSERT(m_PManager);
+    wxASSERT(m_PManager->GetDatabase());
+	
+	// get template directory
+	wxFileDialog myTemplateFileDlg (this, _("Save template"), "","", _("template files (*.tmtp)|*.tmtp"),
+									wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (myTemplateFileDlg.ShowModal() == wxID_CANCEL) {
+		return;
+	}
+	
+	wxString myTemplateFileName = myTemplateFileDlg.GetPath();
+	if (myTemplateFileName.IsEmpty() == true) {
+		wxLogError(_("Template name is empty!"));
+		return;
+	}
+	
+    // create backup file
+    BackupFile myBckFile;
+    myBckFile.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
+                                           m_PManager->GetDatabase()->DataBaseGetName()));
+    myBckFile.SetDate(wxDateTime::Now());
+    myBckFile.SetOutputName(wxFileName(myTemplateFileName));
+	myBckFile.SetUseDate(false);
+    
+    // ask for comment 
+    wxTextEntryDialog myDlg (this, _("Template comment:"), _("Save Template"), wxEmptyString, wxOK | wxCENTRE);
+    if (myDlg.ShowModal() == wxID_OK) {
+        myBckFile.SetComment(myDlg.GetValue());
+    }
+    
+	wxBeginBusyCursor();
+    wxLogMessage("filename for template will be : " + myBckFile.GetOutputName().GetFullPath());
+    BackupManager myBckManager (m_PManager->GetDatabase());
+	
+	// Don't display progress dialog under Mac... Toooo slow!
+	wxWindow * myWnd = NULL;
+#ifndef __WXMAC__
+	myWnd = this;
+#endif
+	
+    if (myBckManager.Backup(myBckFile,myWnd) == false) {
+        wxLogError(_("Template : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
+    }
+	wxEndBusyCursor();
 }
 
 

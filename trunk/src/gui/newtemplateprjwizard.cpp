@@ -86,7 +86,7 @@ void NewTemplatePrjWizard::_CreateControls() {
 	
 	m_SourceFileCtrl = new wxFilePickerCtrl( m_SourcePage, ID_NEWPRJ_SOURCEDIRCTRL, wxEmptyString,
 											_("Select a template file"),
-											_("Toolmap backup files (*.tmbk)|*.tmbk"),
+											_("ToolMap template files(*.tmtp)|*.tmtp|ToolMap backup files (*.tmbk)|*.tmbk"),
 											wxDefaultPosition, wxSize( 200,-1 ), wxFLP_DEFAULT_STYLE);
 	bSizer1->Add( m_SourceFileCtrl, 0, wxEXPAND|wxBOTTOM, 5 );
 	
