@@ -19,30 +19,38 @@
 
 #include "tmarraysize.h"
 
-
-/*tmSize::tmSize()
-{
-	InitMemberValues();
+tmRealPointDist::tmRealPointDist(double xx, double yy, const wxRealPoint & originorigin){
+	coordinate = wxRealPoint(xx,yy);
+	origin = originorigin; 
 }
 
 
 
-tmSize::~tmSize()
-{
+tmRealPointDist::tmRealPointDist(const tmRealPointDist& pt){
+	coordinate = pt.GetCoordinate();
+	origin = pt.GetOrigin();
+}
+
+
+double tmRealPointDist::GetDistFromOrigin() const{
+	double distance1_x = coordinate.x - origin.x;
+	double distance1_y = coordinate.y - origin.y;
+	double dist1 = sqrt((distance1_x * distance1_x) + (distance1_y * distance1_y));
+	return dist1;
 }
 
 
 
-void tmSize::InitMemberValues()
-{
-	m_Size = wxSize(0,0);
-}*/
+tmRealPointDist & tmRealPointDist::operator = (const tmRealPointDist & source){
+	coordinate = source.GetCoordinate();
+	origin = source.GetOrigin();
+	return * this;
+}
+
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmArraySize);
-
-//#include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (wxArrayRealPoints);
-
+WX_DEFINE_OBJARRAY (wxArrayRealPointsDist);
 WX_DEFINE_OBJARRAY (wxArrayPoints);
 

@@ -806,6 +806,22 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
 
 
 
+int CompareRealPoint (tmRealPointDist** pitem1, tmRealPointDist** pitem2){
+	double dist1 =  (*pitem1)->GetDistFromOrigin();
+	double dist2 = (*pitem2)->GetDistFromOrigin();
+	
+	if (wxIsSameDouble(dist1, dist2)) {
+		return 0;
+	}
+	else if (dist1 < dist2) {
+		return -1;
+	}
+	else {
+		return 1;
+	}
+}
+
+
 /***************************************************************************//**
  @brief Get a line with intersection vertex insered.
  @param line the line to intersect
@@ -819,74 +835,93 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 										OGRMultiLineString * multiline,
 										wxArrayInt & intertedvertex)
 {
-	OGRPoint p1;
-	OGRPoint p2;
-	OGRLineString segment;
-	OGRLineString * myResLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
-	int iNumLineVertex = line->getNumPoints();
-
-
-	for (int i = 0; i< iNumLineVertex; i++)
-	{
-		line->getPoint(i, &p1);
-		myResLine->addPoint(&p1);
-		wxLogDebug(_T("Adding base point %d"), i);
-
-		if (i+1 < iNumLineVertex)
-		{
-			line->getPoint(i+1, &p2);
-			segment.addPoint(&p1);
-			segment.addPoint(&p2);
-
-			// loop for all lines
-			for (int l = 0; l < multiline->getNumGeometries(); l++)
-			{
-				OGRLineString * intersection = (OGRLineString*) multiline->getGeometryRef(l);
-				wxASSERT (intersection);
-				// intersection found
-				if (segment.Intersect(intersection))
-				{
-					//TODO : Order vertex by distance
-					OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection);
-					wxASSERT (myGeomIntersection);
-					// simple intersection
-					if (wkbFlatten(myGeomIntersection->getGeometryType()) == wkbPoint)
-					{
-						myResLine->addPoint(((OGRPoint*) myGeomIntersection));
-						intertedvertex.Add(myResLine->getNumPoints()-1);
-						wxLogDebug(_T("Adding intersection point %d"), myResLine->getNumPoints()-1);
-					}
-					// multiple intersections
-					else if (wkbFlatten(myGeomIntersection->getGeometryType()) == wkbMultiPoint)
-					{
-						OGRMultiPoint * myPts = (OGRMultiPoint*) myGeomIntersection;
-						for (int j = 0; j< myPts->getNumGeometries();j++)
-						{
-							myResLine->addPoint((OGRPoint*)myPts->getGeometryRef(j));
-							intertedvertex.Add(myResLine->getNumPoints()-1);
-							wxLogDebug(_T("Adding intersection (multi) point %d"), myResLine->getNumPoints()-1);
-						}
-					}
-					// error
-					else
-					{
-						wxASSERT_MSG (0, _T("This case isn't taken into account"));
-						return NULL;
-					}
-
-
-
-					OGRGeometryFactory::destroyGeometry(myGeomIntersection);
-				}
-
+	wxASSERT(line);
+	wxASSERT(multiline);
+	intertedvertex.Clear();
+	
+	// get all line points
+	wxArrayRealPoints myPts;
+	for (int i = 0; i< line->getNumPoints(); i++) {
+		OGRPoint myOGRPt;
+		line->getPoint(i, &myOGRPt);
+		wxRealPoint  myPt (myOGRPt.getX(), myOGRPt.getY());
+		myPts.Add(myPt);
+	}
+	wxASSERT((signed) myPts.GetCount() == line->getNumPoints());
+	
+	
+	// iterate segment by segment
+	int iNumberSegment = line->getNumPoints() -1;
+	for (int i = 0; i<iNumberSegment; i++) {
+		OGRLineString mySegment;
+		OGRPoint myPt1;
+		OGRPoint myPt2;
+		line->getPoint(i, &myPt1);
+		line->getPoint(i+1, &myPt2);
+		mySegment.addPoint(&myPt1);
+		mySegment.addPoint(&myPt2);
+		wxLogMessage("Creating segment %d", i);
+		wxRealPoint myOriginPt (myPt1.getX(), myPt1.getY());
+		
+		wxArrayRealPointsDist myPointToOrder;
+		for (int l = 0; l<multiline->getNumGeometries(); l++) {
+			OGRLineString * myLine = (OGRLineString*) multiline->getGeometryRef(l);
+			wxASSERT(myLine);
+			if (mySegment.Intersects(myLine)==false) {
+				continue;
 			}
-			segment.empty();
+			
+			OGRGeometry * myIntersection = SafeIntersection(&mySegment, myLine);
+			wxASSERT (myIntersection);
+			// simple intersection
+			if (wkbFlatten(myIntersection->getGeometryType()) == wkbPoint){
+				OGRPoint * myIntersectionPt = (OGRPoint*) myIntersection;
+				tmRealPointDist myAddPt (myIntersectionPt->getX(), myIntersectionPt->getY(), myOriginPt);
+				myPointToOrder.Add(myAddPt);
+			}
+			// multiple intersection
+			else if (wkbFlatten(myIntersection->getGeometryType()) == wkbMultiPoint) {
+				OGRMultiPoint * myIntersectionPts = (OGRMultiPoint*) myIntersection;
+				for (int j = 0; j< myIntersectionPts->getNumGeometries();j++){
+					OGRPoint * myTempPt = (OGRPoint*)myIntersectionPts->getGeometryRef(j);
+					tmRealPointDist myAddPt (myTempPt->getX(), myTempPt->getY(), myOriginPt);
+					myPointToOrder.Add(myAddPt);
+				}
+			}
+			else {
+				wxFAIL;
+			}
+
+		}
+		
+		if (myPointToOrder.GetCount() == 0) {
+			continue;
+		}
+		
+		for (unsigned int m = 0; m<myPointToOrder.GetCount(); m++) {
+			wxLogMessage("point: %d pt.x = %f", m, myPointToOrder.Item(m).GetCoordinate().x);
+		}
+		
+		// sorting points for segment i
+		myPointToOrder.Sort(CompareRealPoint);
+
+		// inserting sorted points
+		int myPos = i+1;
+		for (int k = (signed) myPointToOrder.GetCount() -1; k >= 0 ;k--) {
+			tmRealPointDist myInsertPt = myPointToOrder.Item(k);
+			myPts.Insert(myInsertPt.GetCoordinate(), i+1);
+			intertedvertex.Add(myPos);
+			myPos++;
 		}
 
 	}
-
+	
+	// create the new line
+	OGRLineString * myResLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	for (unsigned int i = 0; i<myPts.GetCount(); i++) {
+		myResLine->addPoint(myPts.Item(i).x, myPts.Item(i).y);
+	}
 	return myResLine;
-
 }
 
 

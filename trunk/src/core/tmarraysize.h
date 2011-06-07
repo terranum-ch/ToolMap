@@ -30,22 +30,27 @@
 #endif
 
 
-/*class tmSize
-	{
-	private:
-		void InitMemberValues();
-		
-		
-	public:
-		tmSize();
-		~tmSize();
-		
-		wxSize m_Size;
-	};*/
+class tmRealPointDist{
+private:
+	wxRealPoint coordinate;
+    wxRealPoint origin;
+	
+public:
+    tmRealPointDist() : coordinate(), origin() { }
+    tmRealPointDist(double xx, double yy, const wxRealPoint & originorigin);
+    tmRealPointDist(const tmRealPointDist& pt);
+	
+	double GetDistFromOrigin() const;
+	wxRealPoint GetOrigin() const {return origin;}
+	wxRealPoint GetCoordinate() const {return coordinate;}
+	
+	// copy function
+	tmRealPointDist &operator = (const tmRealPointDist & source);
+};
+
+WX_DECLARE_OBJARRAY(tmRealPointDist, wxArrayRealPointsDist);
 WX_DECLARE_OBJARRAY(wxSize, tmArraySize);	
-
 WX_DECLARE_OBJARRAY(wxRealPoint, wxArrayRealPoints);
-
 WX_DECLARE_OBJARRAY(wxPoint, wxArrayPoints);
 
 
