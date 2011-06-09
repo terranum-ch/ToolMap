@@ -97,6 +97,12 @@ class tmTOCCtrl  : public wxTreeCtrl
 		void OnVertexMenu (wxCommandEvent & event);
 		void OnEditingChange (wxCommandEvent & event);
 		
+		// dragging functions
+		wxTreeItemId m_DragItemID;
+		void OnDragStart(wxTreeEvent & event);
+		void OnDragStop(wxTreeEvent & event);
+		
+		
 		DECLARE_EVENT_TABLE()
 		
 		
