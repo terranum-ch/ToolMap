@@ -53,6 +53,8 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
     EVT_PAINT(tmTOCCtrl::OnPaint)
 	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
+	EVT_TREE_BEGIN_DRAG(wxID_ANY, tmTOCCtrl::OnDragStart)
+	EVT_TREE_END_DRAG (wxID_ANY, tmTOCCtrl::OnDragStop)
 END_EVENT_TABLE()
 
 
@@ -829,6 +831,88 @@ void tmTOCCtrl::OnEditingChange (wxCommandEvent & event)
 	else
 		StopEditing(true);
 }
+
+
+
+void tmTOCCtrl::OnDragStart(wxTreeEvent & event){
+	m_DragItemID = wxTreeItemId();
+	wxASSERT(m_DragItemID.IsOk() == false);
+	
+	if ( event.GetItem() != GetRootItem() ){
+		event.Allow();
+		m_DragItemID = event.GetItem();
+	}
+	else {
+		wxLogWarning("This can't be dragged!");
+	}
+}
+
+
+
+void tmTOCCtrl::OnDragStop(wxTreeEvent & event){
+	wxLogMessage("Dragging stopped!");
+	
+	wxTreeItemId myItemStart = m_DragItemID;
+	wxTreeItemId myItemStop = event.GetItem();
+	
+	m_DragItemID = wxTreeItemId();
+	wxASSERT(m_DragItemID.IsOk() == false);
+	
+	if (myItemStop == myItemStart) {
+		return;
+	}
+	
+	if (myItemStop.IsOk()) {
+		int myItemStartPos = wxNOT_FOUND;
+		int myItemStopPos = wxNOT_FOUND;
+		
+		wxASSERT(m_root.IsOk());
+		wxTreeItemIdValue myCookie;
+		wxTreeItemId myFirstLayer = GetFirstChild(m_root, myCookie);
+		wxASSERT(myFirstLayer.IsOk());
+		if (myFirstLayer == myItemStart) {
+			myItemStartPos = 0;
+		}
+		if (myFirstLayer == myItemStop) {
+			myItemStopPos = 0;
+		}
+		
+		int myIterPosition = 1;
+		while (1) {
+			wxTreeItemId myIterLayer = GetNextChild(m_root, myCookie);
+			if (myIterLayer.IsOk() == false) {
+				break;
+			}
+			if (myIterLayer == myItemStart) {
+				myItemStartPos = myIterPosition;
+			}
+			if (myIterLayer == myItemStop) {
+				myItemStopPos = myIterPosition;
+			}
+			myIterPosition++;
+		}
+		
+		wxLogMessage("Item %d moved to %d", myItemStartPos, myItemStopPos);
+		
+		// move items
+		if (abs(myItemStopPos - myItemStartPos) == 1) {
+			SwapLayers(myItemStart, myItemStopPos);
+		}
+		else {
+			if (myItemStopPos == 0) {
+				MoveLayers(myItemStart, 0);
+			}
+			else {
+				MoveLayers(myItemStart, myItemStopPos+1);
+			}
+		}
+		
+		// update display
+		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 
 
 /***************************************************************************//**
