@@ -88,7 +88,6 @@ class tmLayerManager : public wxEvtHandler
 		tmSelectedDataMemory m_SelectedData;
 		bool m_BlockRefresh;
 		tmMemoryZoomManager m_ZoomManager;
-		wxString m_LastOpenedPath;
 		
 		// shared member data with thread
 		tmTHREAD_STATUS m_Shared_ThreadStatus;

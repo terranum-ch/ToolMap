@@ -114,7 +114,6 @@ void tmLayerManager::InitMemberValue()
 	// init selected data structure
 	m_Drawer.SetSelectedData(&m_SelectedData);
 	m_BlockRefresh = false;
-	m_LastOpenedPath = wxEmptyString;
 }
 
 
@@ -457,58 +456,63 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	myExt.Append(_T("|"));
 	myExt.Append(tmGISData::GetAllSupportedGISFormatsWildcards());
 	
-	if (m_LastOpenedPath == wxEmptyString) {
-		m_LastOpenedPath = wxStandardPaths::Get().GetDocumentsDir();
-	}
-	
-	wxFileDialog myDlg (m_Parent, _("Link Data"),m_LastOpenedPath, _T(""),myExt);
+	wxFileDialog myDlg (m_Parent, _("Link Data"),wxEmptyString, _T(""),myExt, wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR );
 	if(myDlg.ShowModal() == wxID_CANCEL){
 		return;
 	}
 	
-	m_LastOpenedPath = myDlg.GetDirectory();
-	wxFileName myFilename (myDlg.GetPath());
-	tmLayerProperties * item = new tmLayerProperties();
-	item->InitFromPathAndName(myFilename.GetPath(),
-							  myFilename.GetFullName(),
-							  tmGISData::GetAllSupportedGISFormatsExtensions());
+	wxString myLastOpenedPath = myDlg.GetDirectory();
+	wxArrayString myFilesNames; 
+	myDlg.GetPaths(myFilesNames);
 	
-	// try to open the file for getting the spatial type
-	tmGISData * myLayer = tmGISData::LoadLayer(item);
-	if (!myLayer)
-	{
-		wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
-		return;
-	}
-	item->SetSpatialType(myLayer->GetSpatialType());
-	wxDELETE( myLayer);
-	if (item->GetSpatialType() == LAYER_ERR || 
-		item->GetSpatialType() == LAYER_SPATIAL_UNKNOWN)
-	{
-		return;
-	}
-	
-	// init the symbology
-	item->InitSymbology(wxEmptyString);
+	for (unsigned int i = 0; i< myFilesNames.GetCount(); i++) {
+		wxFileName myFilename (myFilesNames.Item(i));
+		tmLayerProperties * item = new tmLayerProperties();
+		item->InitFromPathAndName(myFilename.GetPath(),
+								  myFilename.GetFullName(),
+								  tmGISData::GetAllSupportedGISFormatsExtensions());
 		
-	
-	// saving to the database and getting the last ID
-	long lastinsertedID = m_DB->AddTOCLayer(item);
-	if (lastinsertedID < 0)
-		return;
-	
-	item->SetID(lastinsertedID);
-	wxLogDebug(_T("Last inserted item id is : %ld"),lastinsertedID);
-	
-	// adding entry to TOC
-	if(!m_TOCCtrl->InsertLayer(item))
-		return;
-	
+		// try to open the file for getting the spatial type
+		tmGISData * myLayer = tmGISData::LoadLayer(item);
+		if (myLayer == NULL){
+			wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
+			wxDELETE(item);
+			continue;
+		}
+		
+		item->SetSpatialType(myLayer->GetSpatialType());
+		wxDELETE(myLayer);
+		if (item->GetSpatialType() == LAYER_ERR || 
+			item->GetSpatialType() == LAYER_SPATIAL_UNKNOWN)
+		{
+			wxLogError(_("Spatial type of layer '%s' unknown or not supported!"), item->GetNameDisplay());
+			wxDELETE(item);
+			continue;
+		}
+		item->InitSymbology(wxEmptyString);
+		
+		// saving to the database and getting the last ID
+		long lastinsertedID = m_DB->AddTOCLayer(item);
+		if (lastinsertedID < 0){
+			wxLogError(_("Error Adding layer: '%s'"), item->GetNameDisplay());
+			wxDELETE(item);
+			continue;
+		}
+		
+		item->SetID(lastinsertedID);
+		wxLogDebug(_T("Last inserted item id is : %ld"),lastinsertedID);
+		
+		// adding entry to TOC
+		if(m_TOCCtrl->InsertLayer(item) ==false){
+			wxLogError(_("Error adding layer: '%s' into TOC"), item->GetNameDisplay());
+			wxDELETE(item);
+			continue;
+		}
+	}
 	// re-load project
 	LoadProjectLayers();
-
-
 }
+
 
 
 void tmLayerManager::ZoomToSelectedLayer(){
