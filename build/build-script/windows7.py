@@ -56,11 +56,11 @@ def gCreateInstaller(svnnumner):
     myCmdInstaller = ["C:\\Program Files (x86)\\NSIS\\makensis.exe"]
     myCmdInstaller.append("/XSetCompressor /FINAL lzma")
     myCmdInstaller.append("/X!define PRODUCT_VERSION '2.2." + svnnumner + "'")
-    myCmdInstaller.append("/XOutFile " + gDirInstall + os.sep + "InstallToolMap_d" + svnnumner + ".exe") 
-    myCmdInstaller.append(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "install_script.nsi")
+    myCmdInstaller.append("/XOutFile " + gDirInstall + os.sep + "InstallToolMap_r" + svnnumner + ".exe") 
+    myCmdInstaller.append(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "install_script-release.nsi")
     myProcess = subprocess.Popen(myCmdInstaller, 0, None, None, None,  None, None, False, False, gDirInstall)
     myProcess.wait()
     print ("Renaming installer")
-    installname = "InstallToolMap_d" + svnnumner + ".exe"
+    installname = "InstallToolMap_r" + svnnumner + ".exe"
     shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + installname)
     return installname
