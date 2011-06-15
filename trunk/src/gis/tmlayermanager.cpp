@@ -174,7 +174,6 @@ bool tmLayerManager::UnInitLayerManager()
 	if (m_TOCCtrl->IsTOCReady())
 		SaveTOCStatus();
 	
-	wxLogDebug(_T("Clearing TOC"));
 	m_DB = NULL;
 	
 	// delete bitmap if existing 

@@ -851,6 +851,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 	
 	
 	// iterate segment by segment
+	int myInsertPos = 0;
 	int iNumberSegment = line->getNumPoints() -1;
 	for (int i = 0; i<iNumberSegment; i++) {
 		OGRLineString mySegment;
@@ -860,7 +861,6 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 		line->getPoint(i+1, &myPt2);
 		mySegment.addPoint(&myPt1);
 		mySegment.addPoint(&myPt2);
-		wxLogMessage("Creating segment %d", i);
 		wxRealPoint myOriginPt (myPt1.getX(), myPt1.getY());
 		
 		wxArrayRealPointsDist myPointToOrder;
@@ -893,27 +893,22 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 			}
 
 		}
-		
+		myInsertPos ++;
 		if (myPointToOrder.GetCount() == 0) {
 			continue;
-		}
-		
-		for (unsigned int m = 0; m<myPointToOrder.GetCount(); m++) {
-			wxLogMessage("point: %d pt.x = %f", m, myPointToOrder.Item(m).GetCoordinate().x);
 		}
 		
 		// sorting points for segment i
 		myPointToOrder.Sort(CompareRealPoint);
 
 		// inserting sorted points
-		int myPos = i+1;
+		int myInsertVertexPos = myInsertPos;
 		for (int k = (signed) myPointToOrder.GetCount() -1; k >= 0 ;k--) {
 			tmRealPointDist myInsertPt = myPointToOrder.Item(k);
-			myPts.Insert(myInsertPt.GetCoordinate(), i+1);
-			intertedvertex.Add(myPos);
-			myPos++;
+			myPts.Insert(myInsertPt.GetCoordinate(), myInsertVertexPos);
+			intertedvertex.Add(myInsertPos);
+			myInsertPos++;
 		}
-
 	}
 	
 	// create the new line
