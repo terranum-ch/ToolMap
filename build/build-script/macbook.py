@@ -46,6 +46,7 @@ def gCreateInstaller(svnnumner):
     "Create installer for mac"
     print ("Copying files out of Release folder")
     shutil.move(gDirBin + os.sep + "Release" + os.sep + "libToolMap_lib.a", gDirBin + os.sep + "libToolMap_lib.a")
+    shutil.move(gDirBin + os.sep + "Release" + os.sep + "liblsVersion.a", gDirBin + os.sep + "liblsVersion.a")
     
     print ("Copying background files...")
     myReleasePath = gDirBin + os.sep + "Release"
@@ -69,5 +70,6 @@ def gCreateInstaller(svnnumner):
     shutil.rmtree(myReleasePath + os.sep + ".background")
     os.unlink(myReleasePath + os.sep + "Applications")
     shutil.move(gDirBin + os.sep + "libToolMap_lib.a", gDirBin + os.sep +  "Release" + os.sep + "libToolMap_lib.a")
+    shutil.move(gDirBin + os.sep + "liblsVersion.a", gDirBin + os.sep +  "Release" + os.sep + "liblsVersion.a")
     print ("Creating installer finished")
     return "ToolMap2_r"+svnnumner+".dmg"
