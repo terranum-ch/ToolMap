@@ -283,9 +283,8 @@ bool tmEditManager::IsCorrectLayerSelected()
 	wxASSERT(m_TOC);
 	if (!m_TOC->GetEditLayer())
 	{
-		if (m_Renderer->GetTool() == tmTOOL_DRAW) {
-			wxLogMessage(_("No layer selected, select a layer for drawing"));
-		}
+		//if (m_Renderer->GetTool() == tmTOOL_DRAW) {
+		//}
 		
 		return false;
 	}
@@ -537,7 +536,6 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
 		wxDELETE(myPt);
 		return; 
 	}
-	wxLogMessage("Mypoint = %d, %d", myPt->x, myPt->y);
 	wxClientDC dc (m_Renderer);
 	bool BDraw = m_DrawLine.DrawEditPart(&dc);
 	wxASSERT(BDraw);
@@ -634,8 +632,7 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
 bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
 {
 	bool bReturn = m_GISMemory->InsertVertex(pt, -1);
-	wxLogDebug(_T("Number of stored vertex : %d"), m_GISMemory->GetVertexCount());
-
+	//wxLogDebug(_T("Number of stored vertex : %d"), m_GISMemory->GetVertexCount());
 	return bReturn;
 }
 
@@ -1520,10 +1517,6 @@ bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt)
 				   2, mySnapCoord->x, 
 				   2, mySnapCoord->y);
 	}	
-	else
-	{
-		wxLogDebug(_T("No snapping found"));
-	}
 	// END of temp logging code
 		
 	
