@@ -277,7 +277,7 @@ class ProgressFile(object):
 
 import ftplib as ftp
 if (doUpload != '' and doInstall == 'Y'):
-    myHost = "www2.crealp.ch"
+    myHost = "www.crealp.ch"
     myPath = "/htdocs/down/toolmap"
     myUser = "wwwcrealp"
     myConnection = ftp.FTP(myHost, myUser, doUpload)
