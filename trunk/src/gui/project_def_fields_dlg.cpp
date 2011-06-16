@@ -271,6 +271,9 @@ void ProjectDefFieldDlg::OnRemoveAllowedValue (wxCommandEvent & event)
 
 void ProjectDefFieldDlg::OnShowLiveResults (wxCommandEvent & event)
 {
+	if (m_DlgAFD_Field_Scale == NULL || m_DlgAFD_Field_Precision == NULL || m_DlgAFD_Result == NULL) {
+		return;
+	}
 	/// called when scale or precision controls changes
 	wxString myTempResultString = _T(""); 
 	int iPrecision = m_DlgAFD_Field_Precision->GetValue();
