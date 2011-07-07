@@ -27,16 +27,27 @@
 #include "../database/database_tm.h"
 
 
+enum tmPRJ_UPD_ERROR {
+	tmPRJ_UPD_ERROR_OK = 1,		// No update error
+	tmPRJ_UPD_ERROR_PROJECT,	// Error during updating project
+	tmPRJ_UPD_ERROR_TM			// Error ToolMap is too old
+	
+};
+
+
 class tmProjectUpdater {
 private:
     DataBaseTM * m_pDB;
+	
+	bool _SetVersion(int versionnumber);
+    bool _220to221();
 	
 public:
     tmProjectUpdater(DataBaseTM * database);
     virtual ~tmProjectUpdater();
 	
-    bool IsUpdateNeeded();
-    bool DoUpdate();
-	
+    bool IsCorrectVersion();
+    tmPRJ_UPD_ERROR DoUpdate();
 };
+
 #endif

@@ -1,4 +1,0 @@
-Changelog ToolMap 2
-- Version 2.0 Alpha
-	- Adding controls
-	- Adding coucou

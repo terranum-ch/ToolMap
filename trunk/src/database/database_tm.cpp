@@ -49,14 +49,14 @@ int DataBaseTM::OpenTMDatabase(const wxString & pathname)
 	
 	if (TableExist(TABLE_NAME_PRJ_SETTINGS)==false)
 		return tmDB_OPEN_FAILED_NOT_TM_DB;
-	
+	/*
 	int iToolMapVersion = GetDatabaseToolMapVersion();
 	if (iToolMapVersion != TM_DATABASE_VERSION)
 		if (iToolMapVersion >= tmDB_OPEN_FAILED_WRONG_VERSION)
 			return iToolMapVersion;
 		else
 			return tmDB_OPEN_FAILED_WRONG_VERSION;
-	
+	*/
 	
 	wxLogDebug(_T("%s is a ToolMap database version : %d"),
 			   DataBaseGetName().c_str(),
@@ -269,9 +269,13 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T(" `SNAPPING_TYPE` INTEGER NOT NULL,")
 	_T("  PRIMARY KEY (`TOC_ID`),")
 	_T("CONSTRAINT `Rel_30`")
-	_T("  FOREIGN KEY (`TOC_ID`) REFERENCES `prj_toc` (`CONTENT_ID`));");
+	_T("  FOREIGN KEY (`TOC_ID`) REFERENCES `prj_toc` (`CONTENT_ID`));")
 
-	
+	_T("CREATE  TABLE `prj_stats` (")
+	_T("`STAT_ID` INT NOT NULL AUTO_INCREMENT ,")  
+	_T("`DATE` TIMESTAMP NOT NULL ,`CLICK` BIGINT UNSIGNED NULL DEFAULT 0 ,")  
+	_T("`ATTRIBUTION` BIGINT UNSIGNED NULL DEFAULT 0 , `INTERSECTION` BIGINT UNSIGNED NULL DEFAULT 0 ,")
+	_T(" `ELAPSED_TIME` DATETIME NULL , PRIMARY KEY (`STAT_ID`) );");
 	
 	//wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	if (DataBaseQueryNoResults(myNewPrjSentence)==false)
