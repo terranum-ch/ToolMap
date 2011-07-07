@@ -1,0 +1,8 @@
+lignes non attribuées
+SELECT generic_lines.OBJECT_ID FROM generic_lines WHERE generic_lines.OBJECT_ID NOT IN (SELECT generic_aat.OBJECT_GEOM_ID FROM generic_aat)
+
+Lignes construisant les polygones Drifts_PLG
+SELECT OBJECT_GEOM_ID FROM generic_aat INNER JOIN dmn_layer_object ON OBJECT_VAL_ID = OBJECT_ID WHERE THEMATIC_LAYERS_LAYER_INDEX=8
+
+Lignes avec +1 attributs
+SELECT generic_lines.OBJECT_ID FROM generic_lines WHERE OBJECT_ID IN (SELECT OBJECT_GEOM_ID  FROM generic_aat GROUP BY OBJECT_GEOM_ID HAVING COUNT(*) > 1)
