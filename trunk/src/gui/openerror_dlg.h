@@ -28,6 +28,8 @@
 
 #include <wx/statline.h>
 #include <wx/artprov.h>
+#include <wx/valgen.h>
+
 
 #define ID_OPENERROR_DLG 1000
 #define ID_OPENERROR_BMP 1001
@@ -62,5 +64,34 @@ class OpenErrorDlg : public wxDialog
 		~OpenErrorDlg();
 	
 };
+
+
+
+
+class tmOpenRecentError_DLG : public wxDialog {
+private:
+	wxStaticText* m_ErrorMsgCtrl;
+	wxCheckBox* m_RemoveCheckCtrl;
+	bool m_RemoveCheck;
+	
+    void _CreateControls(const wxString & prjname);
+	
+public:
+    tmOpenRecentError_DLG(wxWindow * parent, wxWindowID id, 
+						  const wxString & title,
+						  const wxString & prjname,
+						  const wxPoint & pos = wxDefaultPosition,
+						  const wxSize & size = wxDefaultSize,
+						  long style = wxDEFAULT_DIALOG_STYLE);
+    virtual ~tmOpenRecentError_DLG();
+
+	inline const bool GetRemoveFromRecent() const;
+};
+
+
+
+inline const bool tmOpenRecentError_DLG::GetRemoveFromRecent() const {
+	return m_RemoveCheck;
+}
 
 #endif

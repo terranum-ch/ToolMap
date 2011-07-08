@@ -87,3 +87,63 @@ OpenErrorDlg::OpenErrorDlg( wxWindow* parent,
 OpenErrorDlg::~OpenErrorDlg()
 {
 }
+
+
+
+
+
+
+
+
+void tmOpenRecentError_DLG::_CreateControls(const wxString & prjname) {
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
+	
+	wxString myMessage = wxString::Format(_("The project '%s' was not found!\nIt was maybe moved or deleted. \nPlease try opening another project"),
+										  prjname);
+	
+	m_ErrorMsgCtrl = new wxStaticText( this, wxID_ANY, myMessage, wxDefaultPosition, wxDefaultSize, 0 );
+	m_ErrorMsgCtrl->Wrap( -1 );
+	bSizer4->Add( m_ErrorMsgCtrl, 0, wxALL|wxEXPAND, 5 );
+	
+	m_RemoveCheckCtrl = new wxCheckBox( this, wxID_ANY, _("Remove this project from recent projects"),
+									   wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_RemoveCheck));
+	m_RemoveCheckCtrl->SetValue(m_RemoveCheck); 
+	bSizer4->Add( m_RemoveCheckCtrl, 0, wxALL|wxEXPAND, 5 );
+	
+	bSizer4->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	
+	wxStdDialogButtonSizer* m_sdbSizer1;
+	wxButton* m_sdbSizer1OK;
+	m_sdbSizer1 = new wxStdDialogButtonSizer();
+	m_sdbSizer1OK = new wxButton( this, wxID_OK );
+	m_sdbSizer1->AddButton( m_sdbSizer1OK );
+	m_sdbSizer1->Realize();
+	bSizer4->Add( m_sdbSizer1, 0, wxEXPAND|wxALL, 5 );
+	
+	this->SetSizer( bSizer4 );
+	this->Layout();
+	bSizer4->Fit( this );
+	
+	this->Centre( wxBOTH );
+}
+
+
+
+
+tmOpenRecentError_DLG::tmOpenRecentError_DLG(wxWindow * parent, wxWindowID id, const wxString & title,
+											 const wxString & prjname,
+											 const wxPoint & pos, const wxSize & size, long style) :
+wxDialog(parent, id, title, pos, size,style) {
+	m_RemoveCheck = true;
+	_CreateControls(prjname);
+}
+
+
+tmOpenRecentError_DLG::~tmOpenRecentError_DLG(){
+}
+
+
