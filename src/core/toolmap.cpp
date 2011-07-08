@@ -718,6 +718,30 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 	if (m_MManager->GetRecentFile(myPath, event.GetId() - wxID_FILE1))
 	{
 		int iActError = m_PManager->OpenProject(myPath);
+		if (iActError == tmDB_OPEN_OK) {
+			wxString myProgName = g_ProgName +  _T(" - ") + m_PManager->GetProjectName();			
+			SetTitle(myProgName);
+			return;
+		}
+		
+		if (iActError == tmDB_OPEN_ERR_NOT_FOUND ) {
+			wxFileName myName (myPath, _T(""));
+			wxArrayString myPathNames = myName.GetDirs();
+			tmOpenRecentError_DLG myDlg(this, wxID_ANY, _("Open failed"), myPathNames.Item(myPathNames.GetCount() -1));
+			myDlg.ShowModal();
+			
+			if (myDlg.GetRemoveFromRecent() == true) {
+				m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
+			}
+		}
+		
+		// opening failed ! Correct Programe name
+		wxString myProgName = g_ProgName;
+		SetTitle(myProgName);
+		
+		
+		
+		/*
 		if (iActError == OPEN_OK)
 		{
 			// If we can open the project,set the name in the program bar.
@@ -738,6 +762,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 			// remove the non valid history from the recent
 			m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
 		}
+		 */
 	}
 	
 }

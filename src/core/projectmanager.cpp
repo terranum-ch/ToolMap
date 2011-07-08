@@ -374,8 +374,8 @@ int ProjectManager::OpenProject(const wxString & path)
 
 	// ensure path exists
 	if (wxFileName::DirExists(path)==false){
-		wxLogError(_("Project '%s' doesn't exist."), path.c_str());
-		return tmDB_OPEN_FAILED;
+		wxLogMessage(_("Project '%s' doesn't exist."), path.c_str());
+		return tmDB_OPEN_ERR_NOT_FOUND;
 	}
 
 
