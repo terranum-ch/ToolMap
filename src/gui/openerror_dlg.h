@@ -43,25 +43,22 @@ enum tmPROJECT_OPEN_ERROR
 };
 
 
-class OpenErrorDlg : public wxDialog 
+class tmOpenError_DLG : public wxDialog 
 {
-	private:
-	
 	protected:
 		wxStaticBitmap* m_dlgbmp;
 		wxStaticText* m_ErrorTxt;
 		wxButton* m_OkBtn;
 	
 	public:
-		OpenErrorDlg( wxWindow* parent, 
+		tmOpenError_DLG( wxWindow* parent, 
 					 int iActDBVersion,
-					 int iNeededDBVersion,
 					 const wxString& title,
 					 wxWindowID id = ID_OPENERROR_DLG,
 					 const wxPoint& pos = wxDefaultPosition,
 					 const wxSize& size = wxDefaultSize,
 					 long style = wxDEFAULT_DIALOG_STYLE);
-		~OpenErrorDlg();
+		~tmOpenError_DLG();
 	
 };
 
