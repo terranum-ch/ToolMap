@@ -26,40 +26,39 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/statline.h>
-#include <wx/artprov.h>
 #include <wx/valgen.h>
 
 
-#define ID_OPENERROR_DLG 1000
-#define ID_OPENERROR_BMP 1001
 
-enum tmPROJECT_OPEN_ERROR
-{
-	OPEN_DB_FAILED = 0,
-	OPEN_OK = 1,
-	OPEN_NOT_TM_DB = 2,
-	OPEN_NOT_GOOD_VERSION = 100
-};
-
-
+class DataBaseTM;
 class tmOpenError_DLG : public wxDialog 
 {
-	protected:
-		wxStaticBitmap* m_dlgbmp;
-		wxStaticText* m_ErrorTxt;
-		wxButton* m_OkBtn;
+private:
+	wxPanel* m_ErrPanelDB;
+	wxStaticText* m_ErrDBTextCtrl;
+	wxTextCtrl* m_ErrDBLogCtrl;
+	wxPanel* m_ErrPanelProjVersion;
+	wxStaticText* m_ErrVerTextCtrl;
+	wxButton* m_ErrVerBackupConvertCtrl;
+	wxButton* m_ErrVerConvertCtrl;
+	wxPanel* m_ErrPanelTMVersion;
+	wxStaticText* m_ErrTMTextCtrl;
+	wxButton* m_ErrTMDownloadCtrl;
 	
-	public:
-		tmOpenError_DLG( wxWindow* parent, 
-					 int iActDBVersion,
-					 const wxString& title,
-					 wxWindowID id = ID_OPENERROR_DLG,
-					 const wxPoint& pos = wxDefaultPosition,
-					 const wxSize& size = wxDefaultSize,
-					 long style = wxDEFAULT_DIALOG_STYLE);
-		~tmOpenError_DLG();
+	DataBaseTM * m_pDB;
 	
+	void _CreateControls(const wxString & projname, int iActDBVersion);
+	
+public:
+	tmOpenError_DLG( wxWindow* parent, 
+					int iActDBVersion,
+					const wxString& projname,
+					DataBaseTM * database,
+					wxWindowID id = wxID_ANY,
+					const wxPoint& pos = wxDefaultPosition,
+					const wxSize& size = wxDefaultSize,
+					long style = wxDEFAULT_DIALOG_STYLE);
+	~tmOpenError_DLG();
 };
 
 

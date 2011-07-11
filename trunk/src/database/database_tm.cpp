@@ -49,14 +49,11 @@ int DataBaseTM::OpenTMDatabase(const wxString & pathname)
 	
 	if (TableExist(TABLE_NAME_PRJ_SETTINGS)==false)
 		return tmDB_OPEN_FAILED_NOT_TM_DB;
-	/*
+	
 	int iToolMapVersion = GetDatabaseToolMapVersion();
-	if (iToolMapVersion != TM_DATABASE_VERSION)
-		if (iToolMapVersion >= tmDB_OPEN_FAILED_WRONG_VERSION)
-			return iToolMapVersion;
-		else
-			return tmDB_OPEN_FAILED_WRONG_VERSION;
-	*/
+	if (iToolMapVersion != TM_DATABASE_VERSION){
+		return iToolMapVersion;
+	}
 	
 	wxLogDebug(_T("%s is a ToolMap database version : %d"),
 			   DataBaseGetName().c_str(),
