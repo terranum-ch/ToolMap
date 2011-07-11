@@ -65,7 +65,7 @@ public:
 	void testToolMapVersion()
 	{
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
-		TS_ASSERT_EQUALS(m_DB->GetDatabaseToolMapVersion(),220);
+		TS_ASSERT_EQUALS(m_DB->GetDatabaseToolMapVersion(),TM_DATABASE_VERSION);
 	}
 	
 	void testCreateNewTMDatabase()
