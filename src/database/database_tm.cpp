@@ -2698,9 +2698,9 @@ bool DataBaseTM::SetSnappingTolerence(int iTolerence)
 	wxString sSentence = wxString::Format(_T(" UPDATE %s SET PRJ_SNAP_TOLERENCE = %d;"),
 										  TABLE_NAME_PRJ_SETTINGS.c_str(),
 										  iTolerence);
-	if (DataBaseQueryNoResults(sSentence)==false)
+	if (DataBaseQueryNoResults(sSentence, false)==false)
 	{
-		wxLogError(_("Error saving snapping tolerence"));
+		wxLogMessage(_("Error saving snapping tolerence"));
 		return false;
 	}
 	return true;

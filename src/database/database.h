@@ -66,7 +66,6 @@ class DataBase
 		// functions
 		bool DBLibraryInit (const wxString & datadir);
 		void DBLibraryEnd ();
-		void DBLogLastError ();
 		bool DBUseDataBase(const wxString & dbname);
 		bool DBIsDataBaseReady ();
 		bool DBGetNextRecord (MYSQL_ROW & record);
@@ -85,6 +84,7 @@ class DataBase
 		wxString DataBaseGetPath ();
 		wxString DataBaseGetSize (int precision = 2, const wxString & failmsg = _("Not available"));
 		static wxString DataBaseGetVersion ();
+		wxString DataBaseGetLastError();
 		
 		// thread operations
 		bool DataBaseThreadInit();
@@ -92,7 +92,7 @@ class DataBase
 		
 		
 		// query operations
-		bool DataBaseQueryNoResults(const wxString & query);
+		bool DataBaseQueryNoResults(const wxString & query, bool logerror = true);
 		bool DataBaseQuery (const wxString & query); 
 		int DataBaseQueriesNumber (const wxString & query);
 		long DataBaseGetLastInsertedID();

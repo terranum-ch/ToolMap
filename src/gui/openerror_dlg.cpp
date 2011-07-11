@@ -39,13 +39,13 @@ void tmOpenError_DLG::_CreateControls(const wxString & projname, int iActDBVersi
 	m_ErrDBTextCtrl->Wrap( -1 );
 	bSizer6->Add( m_ErrDBTextCtrl, 0, wxALL, 5 );
 	
-	/*wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_ErrPanelDB, wxID_ANY, _("MySQL error:") ), wxVERTICAL );
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_ErrPanelDB, wxID_ANY, _("Error:") ), wxVERTICAL );
 	
 	m_ErrDBLogCtrl = new wxTextCtrl( m_ErrPanelDB, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 300,50 ), 0 );
 	sbSizer1->Add( m_ErrDBLogCtrl, 1, wxEXPAND, 5 );
 	
-	bSizer6->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );*/
+	bSizer6->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
 	
 	m_ErrPanelDB->SetSizer( bSizer6 );
 	m_ErrPanelDB->Layout();
@@ -149,6 +149,12 @@ wxDialog( parent, id, _("Open failed"), pos, size, style ){
 	else {
 		m_ErrPanelProjVersion->Hide();
 		m_ErrPanelTMVersion->Hide();
+		if (iActDBVersion == tmDB_OPEN_FAILED_NOT_TM_DB) {
+			m_ErrDBLogCtrl->SetValue(wxString::Format(_("'%s' isn't a ToolMap project!"),projname));
+		}else {
+			m_ErrDBLogCtrl->SetValue(_("Project is corrupted or MySQL encounter an error!\n") +
+									 m_pDB->DataBaseGetLastError());
+		}
 	}
 	
 	this->Layout();
