@@ -387,10 +387,10 @@ int ProjectManager::OpenProject(const wxString & path)
 		wxASSERT(m_DB);
 		tmOpenError_DLG myDlg (m_Parent, mystatus, myNames.Item(myNames.GetCount() -1), m_DB);
 		if(myDlg.ShowModal() == wxID_CANCEL){
-			wxLogError("Ok cancel!!!");
+			CloseProject();
+			return mystatus;
 		}
-		CloseProject();
-		return mystatus;
+		return OpenProject(path);
 	}
 	
 	// all is OK

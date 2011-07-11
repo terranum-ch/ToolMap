@@ -17,6 +17,9 @@
 
 #include "openerror_dlg.h"
 #include "../database/database_tm.h"
+#include "../components/tmupdate/update.h"
+#include "../core/backupmanager.h"
+#include "../core/tmprojectupdater.h"
 
 
 
@@ -147,20 +150,80 @@ wxDialog( parent, id, _("Open failed"), pos, size, style ){
 		m_ErrPanelProjVersion->Hide();
 		m_ErrPanelTMVersion->Hide();
 	}
-
-	
-	
 	
 	this->Layout();
 	GetSizer()->Fit( this );
 	this->Centre( wxBOTH );
+	
+	m_ErrVerBackupConvertCtrl->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmOpenError_DLG::OnConvertBackup ), NULL, this );
+	m_ErrVerConvertCtrl->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmOpenError_DLG::OnConvert ), NULL, this );
+	m_ErrTMDownloadCtrl->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmOpenError_DLG::OnDownload ), NULL, this );
 }
 
 
 
 tmOpenError_DLG::~tmOpenError_DLG()
 {
+	m_ErrVerBackupConvertCtrl->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmOpenError_DLG::OnConvertBackup ), NULL, this );
+	m_ErrVerConvertCtrl->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmOpenError_DLG::OnConvert ), NULL, this );
+	m_ErrTMDownloadCtrl->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmOpenError_DLG::OnDownload ), NULL, this );	
 }
+
+
+void tmOpenError_DLG::OnConvertBackup( wxCommandEvent& event ){
+	//1. Get backup path
+	wxString myBkpPath = wxEmptyString;
+	if(m_pDB->GetProjectBackupPath(myBkpPath)!= PATH_OK){
+		// backup path not specified, choose one now
+		wxDirDialog myPathDlg (this, _("Select a Backup Path"), "",wxDD_DEFAULT_STYLE);
+		if (myPathDlg.ShowModal() == wxID_CANCEL) {
+			return;
+		}
+		myBkpPath = myPathDlg.GetPath();
+	}
+	
+	//2. Try backuping
+	BackupFile myBckFile;
+    myBckFile.SetInputDirectory(wxFileName(m_pDB->DataBaseGetPath(),
+                                           m_pDB->DataBaseGetName()));
+    myBckFile.SetDate(wxDateTime::Now());
+    myBckFile.SetOutputName(wxFileName(myBkpPath,
+									   m_pDB->DataBaseGetName(),
+									   "tmbk"));
+	myBckFile.SetComment(wxString::Format(_("Automatic backup before converting project to version %d"), 
+										  TM_DATABASE_VERSION));
+	wxBeginBusyCursor();
+	BackupManager  myBM (m_pDB);
+	if (myBM.Backup(myBckFile) == false) {
+		wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
+		wxEndBusyCursor();
+		return;
+	}
+	wxEndBusyCursor();
+	
+	// 3. convert
+	wxCommandEvent myUnusedEvent;
+	OnConvert(myUnusedEvent);
+}
+
+
+
+void tmOpenError_DLG::OnConvert( wxCommandEvent& event ){
+	tmProjectUpdater myPrjUpd (m_pDB);
+	if (myPrjUpd.DoUpdate() != tmPRJ_UPD_ERROR_OK) {
+		wxLogError(_("Converting project '%s' failed!"), m_pDB->DataBaseGetName());
+		return;
+	}
+	
+	// converting done! quit the dialog
+	EndModal(wxID_OK);
+}
+
+
+void tmOpenError_DLG::OnDownload( wxCommandEvent& event ){
+	wxLaunchDefaultBrowser(WEBUPDATE_SERVER_DOWNLOAD);	
+}
+
 
 
 
