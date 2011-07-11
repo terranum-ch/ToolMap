@@ -46,6 +46,9 @@ bool tmProjectUpdater::IsCorrectVersion() {
 tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
 	int myActualDBVersion = m_pDB->GetDatabaseToolMapVersion();
 	wxASSERT(myActualDBVersion != wxNOT_FOUND);
+	if (myActualDBVersion == TM_DATABASE_VERSION) {
+		return tmPRJ_UPD_ERROR_OK;
+	}
 	
 	// security check
 	if (myActualDBVersion < 220) {

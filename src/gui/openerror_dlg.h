@@ -49,6 +49,11 @@ private:
 	
 	void _CreateControls(const wxString & projname, int iActDBVersion);
 	
+	void OnConvertBackup( wxCommandEvent& event );
+	void OnConvert( wxCommandEvent& event );
+	void OnDownload( wxCommandEvent& event );
+	
+	
 public:
 	tmOpenError_DLG( wxWindow* parent, 
 					int iActDBVersion,
@@ -59,6 +64,7 @@ public:
 					const wxSize& size = wxDefaultSize,
 					long style = wxDEFAULT_DIALOG_STYLE);
 	~tmOpenError_DLG();
+	
 };
 
 
