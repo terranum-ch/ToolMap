@@ -326,7 +326,7 @@ void ProjectManager::CloseProject()
 	m_AttribManager->UnInitAttributionManager();
 
 	wxDELETE(m_DB);
-	bProjectIsOpen = FALSE;
+	bProjectIsOpen = false;
 }
 
 

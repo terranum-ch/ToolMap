@@ -480,7 +480,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu3->Append(ID_MENU_NEW_PRJ_EXISTING, _("From template...\tCtrl+Alt+N"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
     
-	itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open...\tCtrl+Alt+O"), wxEmptyString, wxITEM_NORMAL);
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
@@ -687,15 +687,10 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		// call the project manager and ask to open an
 		// existing project. 
 		int iActError = m_PManager->OpenProject(myDirDLG->GetPath());
-		if (iActError != tmDB_OPEN_OK)
-		{
-			//OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myDirDLG->GetPath());
-			//dlg.ShowModal();
-			
-				// If we can open the project,set the name in the program bar.
+		if (iActError != tmDB_OPEN_OK){
+			// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName; 
 			SetTitle(myProgName);
-			
 		}
 	}
 	wxDELETE(myDirDLG);
@@ -733,7 +728,6 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event){
 				m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
 			}
 		}
-		
 		// opening failed ! Correct Programe name
 		wxString myProgName = g_ProgName;
 		SetTitle(myProgName);

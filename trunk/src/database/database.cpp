@@ -122,7 +122,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 	int num_elements = (sizeof(server_args) / sizeof(char *));
 	int myReturn = mysql_library_init(num_elements, const_cast<char**>(server_args), const_cast<char**>(server_groups));
 	if (myReturn != 0){
-		DBLogLastError();
+		wxLogError(DataBaseGetLastError());
 		return false;
 	}
 
@@ -137,7 +137,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 bool DataBase::DBUseDataBase(const wxString & dbname){
     if(mysql_real_connect(m_MySQL,NULL,NULL,NULL,(const char *) dbname.mb_str(wxConvUTF8),
 						  3309,NULL,CLIENT_MULTI_STATEMENTS) == NULL){
-		DBLogLastError();
+		wxLogError(DataBaseGetLastError());
 		return false;
 	}
     
@@ -160,10 +160,8 @@ void DataBase::DBLibraryEnd ()
 
 
 
-void DataBase::DBLogLastError ()
-{
-	wxString myTextError = wxString::FromAscii(mysql_error(m_MySQL));
-	wxLogError(_("MySQL Error : %s"), myTextError.c_str());
+wxString DataBase::DataBaseGetLastError (){
+	return wxString::Format(_("MySQL Error : %s"), wxString::FromAscii(mysql_error(m_MySQL)));
 }
 
 
@@ -294,7 +292,7 @@ bool DataBase::DataBaseThreadInit()
 	else
 	{
 		// try to get the last error
-		DBLogLastError();
+		wxLogError(DataBaseGetLastError());
 		return false;
 	}
 }
@@ -626,7 +624,7 @@ bool DataBase::DataBaseGetResults(DataBaseResult * results){
 
 
 
-bool DataBase::DataBaseQueryNoResults(const wxString & query)
+bool DataBase::DataBaseQueryNoResults(const wxString & query, bool logerror)
 {
 	if (DBIsDataBaseReady() == false)
 		return false;
@@ -645,7 +643,12 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query)
 
 	if (mysql_query(m_MySQL, query.mb_str(wxConvUTF8)) != 0)
 	{
-		DBLogLastError();
+		if (logerror == true) {
+			wxLogError(DataBaseGetLastError());
+		}
+		else {
+			wxLogMessage(DataBaseGetLastError());
+		}
 		return false;
 	}
 
@@ -670,7 +673,7 @@ bool DataBase::DataBaseQuery (const wxString & query)
 
 	if (mysql_query(m_MySQL, query.mb_str(wxConvUTF8)) != 0)
 	{
-		DBLogLastError();
+		wxLogError(DataBaseGetLastError());
 		return false;
 	}
 	m_MySQLRes = mysql_store_result(m_MySQL);
@@ -722,7 +725,7 @@ bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & res
 	unsigned long myInsertedVal = mysql_real_escape_string(m_MySQL, buf, query.mb_str(wxConvUTF8), query.Len());
 
 	if(myInsertedVal == 0){
-		DBLogLastError();
+		wxLogError(DataBaseGetLastError());
 		delete[] buf;
 		return false;
 	}

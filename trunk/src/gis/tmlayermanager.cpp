@@ -155,8 +155,7 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
 		wxLogDebug(_T("Layers don't contains any spatial informations yet."));
 	}	
 	
-	
-	return TRUE;
+	return true;
 }
 
 
@@ -176,24 +175,16 @@ bool tmLayerManager::UnInitLayerManager()
 	
 	m_DB = NULL;
 	
-	// delete bitmap if existing 
-	if(m_Bitmap != NULL)
-	{
-		//wxASSERT_MSG(0, _T("Bitmap should be allready deleted ?"));
-		wxLogDebug(_T("deleting bitmap"));
-		delete m_Bitmap;
-		m_Bitmap = NULL;
-	}
+	wxDELETE(m_Bitmap);
 	m_GISRenderer->SetBitmapStatus();
 	
 	// clear the scale too
 	m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
 	
-	
 	// clear the ctrl
 	m_TOCCtrl->ClearAllLayers();
 	
-	return TRUE;
+	return true;
 }
 
 
