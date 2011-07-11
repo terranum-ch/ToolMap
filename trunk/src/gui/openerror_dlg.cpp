@@ -18,15 +18,16 @@
 #include "openerror_dlg.h"
 
 
-OpenErrorDlg::OpenErrorDlg( wxWindow* parent, 
+tmOpenError_DLG::tmOpenError_DLG( wxWindow* parent, 
 						   int iActDBVersion,
-						   int iNeededDBVersion,
 						   const wxString& title,
 						   wxWindowID id,
 						   const wxPoint& pos,
 						   const wxSize& size, long style ) : 
 							wxDialog( parent, id, _("Error opening project"), pos, size, style )
 {
+	// TODO: Set new code for dialog here
+	int iNeededDBVersion = 220;
 	wxString szErrorMsg2 = _("Project isn't a ToolMap project.\nPlease select a ToolMap project");
 	if (iActDBVersion < iNeededDBVersion && iActDBVersion > OPEN_NOT_GOOD_VERSION)
 	{
@@ -84,7 +85,7 @@ OpenErrorDlg::OpenErrorDlg( wxWindow* parent,
 	this->Centre( wxBOTH );
 }
 
-OpenErrorDlg::~OpenErrorDlg()
+tmOpenError_DLG::~tmOpenError_DLG()
 {
 }
 

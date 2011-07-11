@@ -689,8 +689,8 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		int iActError = m_PManager->OpenProject(myDirDLG->GetPath());
 		if (iActError != OPEN_OK)
 		{
-			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myDirDLG->GetPath());
-			dlg.ShowModal();
+			//OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myDirDLG->GetPath());
+			//dlg.ShowModal();
 			
 				// If we can open the project,set the name in the program bar.
 			wxString myProgName = g_ProgName; 
@@ -698,7 +698,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 			
 		}
 	}
-	delete myDirDLG;
+	wxDELETE(myDirDLG);
 }
 
 
@@ -710,8 +710,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2007
  @date 07 April 2008
  *******************************************************************************/
-void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
-{
+void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event){
 	wxString myPath = _T("");
 	
 	// get the file to open (the one clicked...)
@@ -738,33 +737,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event)
 		// opening failed ! Correct Programe name
 		wxString myProgName = g_ProgName;
 		SetTitle(myProgName);
-		
-		
-		
-		/*
-		if (iActError == OPEN_OK)
-		{
-			// If we can open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName +  _T(" - ") + m_PManager->GetProjectName();
-
-			SetTitle(myProgName);
-		}
-		else if (iActError != OPEN_DB_FAILED){
-			OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myPath);
-			dlg.ShowModal();
-		}
-		
-		if (iActError != OPEN_OK) {
-			// If we can't open the project,set the name in the program bar.
-			wxString myProgName = g_ProgName;
-			SetTitle(myProgName);
-			
-			// remove the non valid history from the recent
-			m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
-		}
-		 */
 	}
-	
 }
 
 

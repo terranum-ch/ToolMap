@@ -378,9 +378,23 @@ int ProjectManager::OpenProject(const wxString & path)
 		return tmDB_OPEN_ERR_NOT_FOUND;
 	}
 
-
 	m_DB = new DataBaseTM();
 	int mystatus = m_DB->OpenTMDatabase(path);
+	
+	// TODO: remove this temp code for testing
+	tmOpenError_DLG myDlg (m_Parent, mystatus, _("Open failed"));
+	myDlg.ShowModal();
+	CloseProject();
+	return mystatus;
+	//
+	
+	
+	if (mystatus != tmDB_OPEN_OK) {
+		CloseProject();
+	}
+	
+	
+	
 
 	if (mystatus == tmDB_OPEN_OK)
 	{
