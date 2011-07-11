@@ -687,7 +687,7 @@ void ToolMapFrame::OnOpenProject (wxCommandEvent & event)
 		// call the project manager and ask to open an
 		// existing project. 
 		int iActError = m_PManager->OpenProject(myDirDLG->GetPath());
-		if (iActError != OPEN_OK)
+		if (iActError != tmDB_OPEN_OK)
 		{
 			//OpenErrorDlg dlg (this, iActError, TM_DATABASE_VERSION, myDirDLG->GetPath());
 			//dlg.ShowModal();
