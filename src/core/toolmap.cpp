@@ -40,6 +40,7 @@
 #include "../components/tmupdate/update.h"
 #include "lsversion_dlg.h"
 #include "lsversion_param.h"
+#include "tmstats.h";
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -394,6 +395,8 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 									  m_MainPanel->GetGISRenderer(),
 									  m_LayerManager->GetScale());
     
+	m_StatManager = new tmStatsManager();
+	
 	// init the menu manager 
 	m_MManager = new MenuManager(GetMenuBar());
 	m_PManager = new ProjectManager(this);
@@ -407,6 +410,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	m_PManager->SetSnappingPanel(m_SnappingPanel);
 	m_PManager->SetEditManager(m_EditManager);
 	m_PManager->SetToolManager(m_ToolManager);
+	m_PManager->SetStatManager(m_StatManager);
 	
 	m_QueriesPanel->SetSelectedData(m_LayerManager->GetSelectedDataMemory());
     
@@ -426,6 +430,7 @@ ToolMapFrame::~ToolMapFrame()
 		
 	m_AuiManager->UnInit();
 	
+	
 	wxDELETE(m_ToolManager);
 	wxDELETE(m_EditManager);
 	wxDELETE(m_AttribManager);
@@ -441,6 +446,7 @@ ToolMapFrame::~ToolMapFrame()
 	delete m_AuiManager;
 	delete m_MManager;
 	delete m_PManager;
+	wxDELETE(m_StatManager);
 	
 	images_misc_clean();
     images_toolbar_clean();

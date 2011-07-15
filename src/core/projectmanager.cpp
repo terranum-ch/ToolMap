@@ -18,6 +18,7 @@
 
 #include "projectmanager.h"
 #include "toolmap.h"
+#include "tmstats.h"
 
 IMPLEMENT_CLASS(ProjectManager, wxObject);
 
@@ -40,6 +41,7 @@ ProjectManager::ProjectManager(wxFrame * parent)
 	m_EditManager = NULL;
 	m_PrjMem = NULL;
 	m_ToolManager = NULL;
+	m_StatManager = NULL;
 
 	m_Obj = new ObjectManager();
 }
@@ -321,6 +323,8 @@ void ProjectManager::CloseProject()
 	m_SnappingPanel->SetDataBase(m_DB);
 	m_SnappingPanel->SaveSnappingStatus();
 
+	m_StatManager->Create(NULL);
+	
 	m_EditManager->SetDatabase(NULL);
 	m_LayerManager->UnInitLayerManager();
 	m_AttribManager->UnInitAttributionManager();
@@ -425,6 +429,8 @@ int ProjectManager::OpenProject(const wxString & path)
 	m_EditManager->SetDatabase(m_DB);
 	
 	m_ToolManager->SetDatabase(m_DB);
+	
+	m_StatManager->Create(m_DB);
 	
 	// project is now open !
 	bProjectIsOpen = TRUE;
