@@ -38,6 +38,12 @@ tmStatsData::~tmStatsData() {
 void tmStatsData::Reset() {
 	m_Id = wxNOT_FOUND;
 	m_TimeStart = wxInvalidDateTime;
+	ResetPartial();
+}
+
+
+void tmStatsData::ResetPartial(){
+	// don't clean Id and start time!
 	m_NbClick = 0;
 	m_NbAttribution = 0;
 	m_NbIntersection = 0;
@@ -47,7 +53,7 @@ void tmStatsData::Reset() {
 
 
 bool tmStatsData::IsOk() {
-	if (m_TimeStart == wxInvalidDateTime) {
+	if (m_TimeStart.IsValid() == false) {
 		return false;
 	}
 	
@@ -66,7 +72,9 @@ bool tmStatsData::IsOk() {
 
 
 
-void tmStatsManager::_AppendToBuffer(long click, long attrib, long intersection) {
+void tmStatsManager::AppendToBuffer(long click, long attrib, long intersection) {
+	// TODO: Check that statistics is started here!
+	
 	m_StatBufferData.m_NbClick = m_StatBufferData.m_NbClick + click;
 	m_StatBufferData.m_NbAttribution = m_StatBufferData.m_NbAttribution + attrib;
 	m_StatBufferData.m_NbIntersection = m_StatBufferData.m_NbIntersection + intersection;
@@ -83,6 +91,7 @@ void tmStatsManager::_AppendToBuffer(long click, long attrib, long intersection)
 void tmStatsManager::_FlushBuffer() {
 	// TODO: Append actual data to the actual record (record created during StartRecord)
 	
+	m_StatBufferData.ResetPartial();
 }
 
 
@@ -96,9 +105,8 @@ void tmStatsManager::_StopRecord() {
 }
 
 
-
+/*
 void tmStatsManager::OnGetStatsMessage(wxCommandEvent & event) {
-	// TODO: Check that statistics is started here!
 	
 	int myClick = 0;
 	int myAttrib = 0;
@@ -123,7 +131,7 @@ void tmStatsManager::OnGetStatsMessage(wxCommandEvent & event) {
 	
 	_AppendToBuffer(myClick, myAttrib, myIntersection);
 }
-
+*/
 
 
 tmStatsManager::tmStatsManager() {

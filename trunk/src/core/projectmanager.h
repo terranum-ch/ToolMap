@@ -57,7 +57,7 @@
 
 class MenuManager;
 class ObjectManager;
-
+class tmStatsManager;
 
 
 /***************************************************************************//**
@@ -84,6 +84,7 @@ class ProjectManager : public wxObject
 		tmEditManager * m_EditManager;
 		PrjDefMemManage * m_PrjMem;
 		tmToolManager * m_ToolManager;
+		tmStatsManager * m_StatManager;
 		
 		DECLARE_CLASS(ProjectManager)
 		
@@ -119,6 +120,7 @@ class ProjectManager : public wxObject
 		void SetEditManager (tmEditManager * editmanager) {m_EditManager = editmanager;}
 		DataBaseTM * GetDatabase() {return m_DB;}
 		void SetToolManager (tmToolManager * tm){m_ToolManager = tm;}
+		void SetStatManager (tmStatsManager * statmanager){m_StatManager = statmanager;}
 		
 		void SetLayerManager(tmLayerManager * layermanager){m_LayerManager = layermanager;}
 		bool IsProjectOpen () {return bProjectIsOpen;}

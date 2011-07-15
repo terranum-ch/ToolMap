@@ -45,6 +45,7 @@ public:
     virtual ~tmStatsData();
 	
     void Reset();
+	void ResetPartial();
     bool IsOk();
 };
 
@@ -58,25 +59,26 @@ public:
 @author Lucien Schreiber (c) CREALP
 @date 15 juillet 2011
 *******************************************************************************/
-class tmStatsManager : public wxEvtHandler {
+class tmStatsManager{
 private:
     tmStatsData m_StatBufferData;
     DataBaseTM * m_Database;
     bool m_IsStarted;
     static const int m_BufferSize = 50;
 	
-    void _AppendToBuffer(long click, long attrib, long intersection);
+    
     void _FlushBuffer();
     void _StartRecord();
     void _StopRecord();
 	
-    void OnGetStatsMessage(wxCommandEvent & event);
+    //void OnGetStatsMessage(wxCommandEvent & event);
 	
 public:
     tmStatsManager();
     virtual ~tmStatsManager();
     void Create(DataBaseTM * database);
 	
+	void AppendToBuffer(long click, long attrib, long intersection);
     void ShowStatsDialog();
 };
 

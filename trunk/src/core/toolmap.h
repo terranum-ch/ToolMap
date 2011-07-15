@@ -135,6 +135,7 @@ class MenuManager;
 class ToolbarManager;
 class ProjectManager;
 class WebUpdateInformationBar;
+class tmStatsManager;
 
 #include <wx/mstream.h>
 
@@ -301,7 +302,7 @@ private:
 	tmToolManager * m_ToolManager;
 	WebUpdateInformationBar * m_InfoBar;
 	
-	
+	tmStatsManager * m_StatManager;
 	
 	void OnQuit(wxCommandEvent & event);
 	void OnClose(wxCloseEvent & event);
