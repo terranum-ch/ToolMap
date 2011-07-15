@@ -17,16 +17,79 @@
 #ifndef _TMSTATS_H
 #define _TMSTATS_H
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
 
+class DataBaseTM;
 
+
+/***************************************************************************//**
+@brief Statistics data class
+@author Lucien Schreiber (c) CREALP
+@date 15 juillet 2011
+*******************************************************************************/
+class tmStatsData {
+public:
+    long m_Id;
+    wxDateTime m_TimeStart;
+    long m_NbClick;
+    long m_NbAttribution;
+    long m_NbIntersection;
+    wxTimeSpan m_TimeElapsed;
+	
+	
+	tmStatsData();
+    virtual ~tmStatsData();
+	
+    void Reset();
+    bool IsOk();
+};
+
+
+
+
+
+
+/***************************************************************************//**
+@brief Statistics manager, link event to data and database records
+@author Lucien Schreiber (c) CREALP
+@date 15 juillet 2011
+*******************************************************************************/
+class tmStatsManager : public wxEvtHandler {
+private:
+    tmStatsData m_StatBufferData;
+    DataBaseTM * m_Database;
+    bool m_IsStarted;
+    static const int m_BufferSize = 50;
+	
+    void _AppendToBuffer(long click, long attrib, long intersection);
+    void _FlushBuffer();
+    void _StartRecord();
+    void _StopRecord();
+	
+    void OnGetStatsMessage(wxCommandEvent & event);
+	
+public:
+    tmStatsManager();
+    virtual ~tmStatsManager();
+    void Create(DataBaseTM * database);
+	
+    void ShowStatsDialog();
+};
+
+
+
+
+
+
+/***************************************************************************//**
+@brief Statistics dialog
+@author Lucien Schreiber (c) CREALP
+@date 15 juillet 2011
+*******************************************************************************/
 class tmStats_DLG : public wxDialog {
   private:
 	// controls

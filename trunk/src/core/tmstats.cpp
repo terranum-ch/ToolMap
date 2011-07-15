@@ -15,6 +15,157 @@
  ***************************************************************************/
 
 #include "tmstats.h"
+#include "tmstatsevent.h"
+#include "../database/database_tm.h"
+
+// event declared in tmstatsevent.h
+DEFINE_EVENT_TYPE(tmEVT_STAT_CLICK);
+DEFINE_EVENT_TYPE(tmEVT_STAT_ATTRIB);
+DEFINE_EVENT_TYPE(tmEVT_STAT_INTERSECTION);
+
+
+tmStatsData::tmStatsData() {
+	Reset();
+}
+
+
+
+tmStatsData::~tmStatsData() {
+}
+
+
+
+void tmStatsData::Reset() {
+	m_Id = wxNOT_FOUND;
+	m_TimeStart = wxInvalidDateTime;
+	m_NbClick = 0;
+	m_NbAttribution = 0;
+	m_NbIntersection = 0;
+	m_TimeElapsed = wxTimeSpan();
+}
+
+
+
+bool tmStatsData::IsOk() {
+	if (m_TimeStart == wxInvalidDateTime) {
+		return false;
+	}
+	
+	if (m_TimeElapsed.IsNull() == true) {
+		return false;
+	}
+	return true;
+}
+
+
+
+
+
+
+
+
+
+
+void tmStatsManager::_AppendToBuffer(long click, long attrib, long intersection) {
+	m_StatBufferData.m_NbClick = m_StatBufferData.m_NbClick + click;
+	m_StatBufferData.m_NbAttribution = m_StatBufferData.m_NbAttribution + attrib;
+	m_StatBufferData.m_NbIntersection = m_StatBufferData.m_NbIntersection + intersection;
+	
+	if (m_StatBufferData.m_NbClick >= m_BufferSize ||
+		m_StatBufferData.m_NbAttribution >= m_BufferSize ||
+		m_StatBufferData.m_NbIntersection >= m_BufferSize) {
+		_FlushBuffer();
+	}
+}
+
+
+
+void tmStatsManager::_FlushBuffer() {
+	// TODO: Append actual data to the actual record (record created during StartRecord)
+	
+}
+
+
+
+void tmStatsManager::_StartRecord() {
+}
+
+
+
+void tmStatsManager::_StopRecord() {
+}
+
+
+
+void tmStatsManager::OnGetStatsMessage(wxCommandEvent & event) {
+	// TODO: Check that statistics is started here!
+	
+	int myClick = 0;
+	int myAttrib = 0;
+	int myIntersection = 0;
+	
+	wxLogMessage("Event received!!!");
+	wxEventType myEvtType = event.GetEventType();
+	
+	// switch isn't working here because EVT aren't const!
+	if(myEvtType == tmEVT_STAT_CLICK){
+		myClick = 1;
+	} 
+	else if (myEvtType == tmEVT_STAT_ATTRIB) {
+		myAttrib = 1;
+	} 
+	else if (myEvtType == tmEVT_STAT_INTERSECTION) {
+		myIntersection = 1;
+	}
+	else {
+		wxFAIL;
+	}
+	
+	_AppendToBuffer(myClick, myAttrib, myIntersection);
+}
+
+
+
+tmStatsManager::tmStatsManager() {
+	Create(NULL);
+}
+
+
+
+tmStatsManager::~tmStatsManager() {
+}
+
+
+
+void tmStatsManager::Create(DataBaseTM * database) {
+	m_Database = database;
+	m_StatBufferData.Reset();
+	wxASSERT(m_StatBufferData.IsOk() == false);
+	m_IsStarted = false;
+}
+
+
+
+void tmStatsManager::ShowStatsDialog() {
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void tmStats_DLG::OnRecordStart(wxCommandEvent & event) {
 }
