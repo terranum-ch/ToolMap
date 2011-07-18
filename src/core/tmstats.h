@@ -80,7 +80,7 @@ public:
 	bool IsReady();
 	
 	void AppendToBuffer(long click, long attrib, long intersection);
-    void ShowStatsDialog();
+    void ShowStatsDialog(wxWindow * parent);
 };
 
 
@@ -116,14 +116,16 @@ class tmStats_DLG : public wxDialog {
     void OnExport(wxCommandEvent & event);
 
     void _CreateControls();
-
+	DECLARE_EVENT_TABLE();
   public:
-    tmStats_DLG(wxWindow * parent, wxWindowID id, const wxString & title, 
+    tmStats_DLG(wxWindow * parent, wxWindowID id = wxID_ANY,
+				const wxString & title = _("Statistics"), 
 				const wxPoint & pos = wxDefaultPosition, 
 				const wxSize & size = wxDefaultSize, 
 				long style = wxDEFAULT_DIALOG_STYLE);
     virtual ~tmStats_DLG();
 
+	void SetStarted(bool recordstarted);
     virtual bool TransferDataToWindow();
     virtual bool TransferDataFromWindow();
 };

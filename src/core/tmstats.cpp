@@ -102,6 +102,7 @@ void tmStatsManager::_FlushBuffer() {
 
 
 void tmStatsManager::_StartRecord() {
+	wxLogMessage("Starting to record!");
 	wxASSERT(m_Database);
 	
 	// TODO: Create record here
@@ -112,38 +113,11 @@ void tmStatsManager::_StartRecord() {
 
 
 void tmStatsManager::_StopRecord() {
+	wxLogMessage("Stoping to record!");
 	m_IsStarted = false;
 	_FlushBuffer();
 }
 
-
-/*
-void tmStatsManager::OnGetStatsMessage(wxCommandEvent & event) {
-	
-	int myClick = 0;
-	int myAttrib = 0;
-	int myIntersection = 0;
-	
-	wxLogMessage("Event received!!!");
-	wxEventType myEvtType = event.GetEventType();
-	
-	// switch isn't working here because EVT aren't const!
-	if(myEvtType == tmEVT_STAT_CLICK){
-		myClick = 1;
-	} 
-	else if (myEvtType == tmEVT_STAT_ATTRIB) {
-		myAttrib = 1;
-	} 
-	else if (myEvtType == tmEVT_STAT_INTERSECTION) {
-		myIntersection = 1;
-	}
-	else {
-		wxFAIL;
-	}
-	
-	_AppendToBuffer(myClick, myAttrib, myIntersection);
-}
-*/
 
 
 tmStatsManager::tmStatsManager() {
@@ -174,7 +148,34 @@ bool tmStatsManager::IsReady(){
 
 
 
-void tmStatsManager::ShowStatsDialog() {
+void tmStatsManager::ShowStatsDialog(wxWindow * parent) {
+	if (IsReady() == false) {
+		wxLogError(_("No project open! Statistics unavaillable"));
+		return;
+	}
+	
+	wxASSERT(parent);
+	
+	tmStats_DLG myDlg (parent);
+	myDlg.SetStarted(m_IsStarted);
+	
+	int myReturnCode = myDlg.ShowModal();
+	switch (myReturnCode) {
+		case wxID_CANCEL:
+			break;
+			
+		case wxID_EXECUTE:
+			_StartRecord();
+			break;
+			
+		case wxID_STOP:
+			_StopRecord();
+			break;
+			
+		default:
+			wxLogError("Unsupported return code from Statistics dialog!");
+			break;
+	}
 }
 
 
@@ -190,22 +191,27 @@ void tmStatsManager::ShowStatsDialog() {
 
 
 
-
-
-
+BEGIN_EVENT_TABLE(tmStats_DLG, wxDialog)
+	EVT_BUTTON (wxID_EXECUTE, tmStats_DLG::OnRecordStart)
+	EVT_BUTTON (wxID_STOP, tmStats_DLG::OnRecordStop)
+	EVT_BUTTON (wxID_SAVE, tmStats_DLG::OnExport)
+END_EVENT_TABLE()
 
 
 void tmStats_DLG::OnRecordStart(wxCommandEvent & event) {
+	EndModal(wxID_EXECUTE);
 }
 
 
 
 void tmStats_DLG::OnRecordStop(wxCommandEvent & event) {
+	EndModal(wxID_STOP);
 }
 
 
 
 void tmStats_DLG::OnExport(wxCommandEvent & event) {
+	wxLogError("Not implemented now!");
 }
 
 
@@ -364,6 +370,16 @@ wxDialog(parent, id, title, pos, size,style) {
 
 
 tmStats_DLG::~tmStats_DLG(){
+}
+
+
+void tmStats_DLG::SetStarted(bool recordstarted){
+	if (recordstarted == true) {
+		m_BtnStartCtrl->Enable(false);
+	}
+	else {
+		m_BtnStopCtrl->Enable(false);
+	}
 }
 
 
