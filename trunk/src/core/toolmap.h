@@ -157,7 +157,7 @@ class tmStatsManager;
 #define ID_MENU_OBJ_ATTRIB_DEF		10313
 #define ID_MENU_PRJ_SETTINGS		10314
 
-
+#define ID_MENU_STATISTICS			10350
 
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
@@ -370,6 +370,7 @@ private:
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
 	void OnStatisticsUpdate(wxCommandEvent & event);
+	void OnStatisticsDialog(wxCommandEvent & event);
 	// child event function
 	//void OnMenuZoomPreviousChange(wxCommandEvent & event);
 	void _CheckUpdates(bool ismanual = false);
@@ -393,6 +394,7 @@ private:
 	void OnUpdateMenuShowInfo (wxUpdateUIEvent & event);
 	void OnUpdateMenuFlipLine (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event);
+	void OnUpdateStatisticsDialog (wxUpdateUIEvent & event);
 
 	
 	wxLogWindow * m_LogWindow;

@@ -234,7 +234,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	//TOOL MENU
 	EVT_MENU (ID_MENU_TOOL_DANGLING, ToolMapFrame::OnDanglingNodes)
-
+	EVT_MENU (ID_MENU_STATISTICS, ToolMapFrame::OnStatisticsDialog)
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
 	EVT_MENU (ID_MENU_QUERIES_RUN, ToolMapFrame::OnQueriesRun)
@@ -295,6 +295,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_UPDATE_UI (ID_MENU_TOOL_DANGLING, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_ORIENT_POINT, ToolMapFrame::OnUpdateMenuEditPointOrient)
+	EVT_UPDATE_UI (ID_MENU_STATISTICS, ToolMapFrame::OnUpdateStatisticsDialog)
 	
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_BY_OID, ID_MENU_SELECT,ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_NONE, ID_MENU_SELECT_INVERSE, ToolMapFrame::OnUpdateMenuEditClearSelection)
@@ -578,6 +579,8 @@ void ToolMapFrame::_CreateMenu()
     //itemMenu63->Check(ID_MENU_CHECK_GEOM, true);
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
 	itemMenu63->Append(ID_MENU_ORIENT_POINT, _("Set Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
+	itemMenu63->AppendSeparator();
+	itemMenu63->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
 	menuBar->Append(itemMenu63, _("Tools"));
     wxMenu* itemMenu66 = new wxMenu;
     itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tV"), _T(""), wxITEM_NORMAL);
@@ -1436,6 +1439,13 @@ void ToolMapFrame::OnStatisticsUpdate(wxCommandEvent & event){
 
 
 
+void ToolMapFrame::OnStatisticsDialog(wxCommandEvent & event){
+	wxASSERT(m_StatManager);
+	m_StatManager->ShowStatsDialog(this);
+}
+
+
+
 /*void ToolMapFrame::OnMenuZoomPreviousChange(wxCommandEvent & event)
 {
 	bool bStatus = static_cast<bool>(event.GetInt()); 
@@ -1735,6 +1745,12 @@ void ToolMapFrame::OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event){
 		bEnable = true;
 	}
 	event.Enable(bEnable);
+}
+
+
+void ToolMapFrame::OnUpdateStatisticsDialog (wxUpdateUIEvent & event){
+	wxASSERT(m_StatManager);
+	event.Enable(m_StatManager->IsReady());
 }
 
 
