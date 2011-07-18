@@ -20,6 +20,7 @@
 #include "tmattributionmanager.h"
 #include "../gui/information_dlg.h"				// for informations window
 #include "../gui/aattribbatch_dlg.h"			// batch attribution window
+#include "../core/tmstatsevent.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
@@ -434,6 +435,9 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	
+	// send statistics
+	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(statevt);	
 }
 
 

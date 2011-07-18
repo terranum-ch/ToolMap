@@ -3,7 +3,7 @@
 				Deals with editing data in construction layers
                              -------------------
     copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+    email                : lucien.schreiber a"t crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,6 +23,7 @@
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
+#include "../core/tmstatsevent.h"
 
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
@@ -1780,6 +1781,10 @@ bool tmEditManager::CreateIntersections ()
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	
+	// send statistics
+	wxCommandEvent statevt(tmEVT_STAT_INTERSECTION, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(statevt);
 	
 	return true;	
 }

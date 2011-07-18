@@ -21,6 +21,7 @@
 #include "../img/cursor_bmp.h"
 #include "tmmanagerevent.h"
 #include "../core/vrrubberband.h"
+#include "../core/tmstatsevent.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -441,6 +442,10 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
 		ModifySharedStop(event.GetPosition());
 	}
+	
+	// send statistics
+	wxCommandEvent evt(tmEVT_STAT_CLICK, wxID_ANY);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 

@@ -73,7 +73,12 @@ bool tmStatsData::IsOk() {
 
 
 void tmStatsManager::AppendToBuffer(long click, long attrib, long intersection) {
-	// TODO: Check that statistics is started here!
+	wxLogMessage("Received statistics (C/A/I): %ld, %ld, %ld",click,attrib,intersection);
+	
+	// Check that statistics is started here!
+	if (m_IsStarted == false) {
+		return;
+	}
 	
 	m_StatBufferData.m_NbClick = m_StatBufferData.m_NbClick + click;
 	m_StatBufferData.m_NbAttribution = m_StatBufferData.m_NbAttribution + attrib;
@@ -97,11 +102,18 @@ void tmStatsManager::_FlushBuffer() {
 
 
 void tmStatsManager::_StartRecord() {
+	wxASSERT(m_Database);
+	
+	// TODO: Create record here
+	
+	m_IsStarted = true;
 }
 
 
 
 void tmStatsManager::_StopRecord() {
+	m_IsStarted = false;
+	_FlushBuffer();
 }
 
 
@@ -150,6 +162,14 @@ void tmStatsManager::Create(DataBaseTM * database) {
 	m_StatBufferData.Reset();
 	wxASSERT(m_StatBufferData.IsOk() == false);
 	m_IsStarted = false;
+}
+
+
+bool tmStatsManager::IsReady(){
+	if (m_Database == NULL) {
+		return false;
+	}
+	return true;
 }
 
 
