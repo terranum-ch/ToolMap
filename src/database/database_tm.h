@@ -51,6 +51,7 @@ const wxString TABLE_NAME_QUERIES	= _T("prj_queries");
 const wxString TABLE_NAME_SHORTCUT_DMN = _T("dmn_shortcut_key");
 const wxString TABLE_NAME_SHORTCUT_LIST = _T("shortcut_list");
 const wxString TABLE_NAME_SNAPPING = _T("prj_snapping");
+const wxString TABLE_NAME_STAT = _T("prj_stats");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
