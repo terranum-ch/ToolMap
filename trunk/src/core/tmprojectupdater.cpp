@@ -84,8 +84,8 @@ bool tmProjectUpdater::_SetVersion(int versionnumber) {
 bool tmProjectUpdater::_220to221() {
 	// adding statistics table
 	wxString myQuery = _T("CREATE  TABLE IF NOT EXISTS `prj_stats` (`STAT_ID` INT NOT NULL AUTO_INCREMENT ,")  
-	_T("`DATE` TIMESTAMP NOT NULL ,`CLICK` BIGINT UNSIGNED NULL DEFAULT 0 ,")  
+	_T("`DATE_START` DATETIME NOT NULL ,`CLICK` BIGINT UNSIGNED NULL DEFAULT 0 ,")  
 	_T("`ATTRIBUTION` BIGINT UNSIGNED NULL DEFAULT 0 , `INTERSECTION` BIGINT UNSIGNED NULL DEFAULT 0 ,")
-	_T(" `ELAPSED_TIME` DATETIME NULL , PRIMARY KEY (`STAT_ID`) );");
+	_T(" `DATE_END` TIMESTAMP NOT NULL default current_timestamp on update current_timestamp, PRIMARY KEY (`STAT_ID`) );");
 	return m_pDB->DataBaseQueryNoResults(myQuery);
 }

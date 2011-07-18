@@ -270,9 +270,9 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 
 	_T("CREATE  TABLE `prj_stats` (")
 	_T("`STAT_ID` INT NOT NULL AUTO_INCREMENT ,")  
-	_T("`DATE` TIMESTAMP NOT NULL ,`CLICK` BIGINT UNSIGNED NULL DEFAULT 0 ,")  
+	_T("DATE_START` DATETIME NOT NULL ,`CLICK` BIGINT UNSIGNED NULL DEFAULT 0 ,")  
 	_T("`ATTRIBUTION` BIGINT UNSIGNED NULL DEFAULT 0 , `INTERSECTION` BIGINT UNSIGNED NULL DEFAULT 0 ,")
-	_T(" `ELAPSED_TIME` DATETIME NULL , PRIMARY KEY (`STAT_ID`) );");
+	_T(" `DATE_END` TIMESTAMP NOT NULL default current_timestamp on update current_timestamp , PRIMARY KEY (`STAT_ID`) );");
 	
 	//wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	if (DataBaseQueryNoResults(myNewPrjSentence)==false)
