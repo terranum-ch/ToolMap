@@ -41,6 +41,7 @@
 #include "lsversion_dlg.h"
 #include "lsversion_param.h"
 #include "tmstats.h";
+#include "tmstatsevent.h";
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -256,6 +257,11 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
+
+	// STATISTICS EVENT
+	EVT_COMMAND (wxID_ANY, tmEVT_STAT_CLICK, ToolMapFrame::OnStatisticsUpdate)
+	EVT_COMMAND (wxID_ANY, tmEVT_STAT_ATTRIB, ToolMapFrame::OnStatisticsUpdate)
+	EVT_COMMAND (wxID_ANY, tmEVT_STAT_INTERSECTION, ToolMapFrame::OnStatisticsUpdate)
 
 
 	// UPDATE UI EVENT
@@ -1406,6 +1412,27 @@ void ToolMapFrame::OnCloseManagedPane(wxAuiManagerEvent & event)
 	if (iId != wxNOT_FOUND)
 		GetMenuBar()->Check(iId, false);
 }
+
+
+
+
+void ToolMapFrame::OnStatisticsUpdate(wxCommandEvent & event){
+	wxASSERT(m_StatManager);
+	if (m_StatManager->IsReady() == false) {
+		return;
+	}
+	
+	if (event.GetEventType() == tmEVT_STAT_CLICK) {
+		m_StatManager->AppendToBuffer(1, 0, 0);
+	}
+	else if (event.GetEventType() == tmEVT_STAT_ATTRIB) {
+		m_StatManager->AppendToBuffer(0, 1, 0);
+	}
+	else if (event.GetEventType() == tmEVT_STAT_INTERSECTION) {
+		m_StatManager->AppendToBuffer(0, 0, 1);
+	}
+}
+
 
 
 

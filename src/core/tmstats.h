@@ -77,6 +77,7 @@ public:
     tmStatsManager();
     virtual ~tmStatsManager();
     void Create(DataBaseTM * database);
+	bool IsReady();
 	
 	void AppendToBuffer(long click, long attrib, long intersection);
     void ShowStatsDialog();

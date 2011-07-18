@@ -366,9 +366,10 @@ private:
 	
 	// ToolsFunction
 	void OnDanglingNodes(wxCommandEvent & event);
-	
+
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
+	void OnStatisticsUpdate(wxCommandEvent & event);
 	// child event function
 	//void OnMenuZoomPreviousChange(wxCommandEvent & event);
 	void _CheckUpdates(bool ismanual = false);
