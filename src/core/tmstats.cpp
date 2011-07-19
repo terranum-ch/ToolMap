@@ -17,6 +17,7 @@
 #include "tmstats.h"
 #include "tmstatsevent.h"
 #include "../database/database_tm.h"
+#include "tmstatsrecord.h"
 
 // event declared in tmstatsevent.h
 DEFINE_EVENT_TYPE(tmEVT_STAT_CLICK);
@@ -52,7 +53,7 @@ void tmStatsData::ResetPartial(){
 
 
 
-bool tmStatsData::IsOk() {
+bool tmStatsData::IsOk() const {
 	if (m_TimeStart.IsValid() == false) {
 		return false;
 	}
@@ -94,8 +95,11 @@ void tmStatsManager::AppendToBuffer(long click, long attrib, long intersection) 
 
 
 void tmStatsManager::_FlushBuffer() {
-	// TODO: Append actual data to the actual record (record created during StartRecord)
-	
+	wxASSERT(m_Database);	
+	tmStatsRecords myRecord (m_Database);
+	if(myRecord.Add(m_StatBufferData.m_Id, m_StatBufferData)==false){
+		wxLogError(_("Error adding data to statistics!"));
+	}
 	m_StatBufferData.ResetPartial();
 }
 
@@ -105,14 +109,26 @@ void tmStatsManager::_StartRecord() {
 	wxLogMessage("Starting to record!");
 	wxASSERT(m_Database);
 	
-	// TODO: Create record here
-	
+	// Create record here
+	tmStatsRecords myRecord (m_Database);
+	m_StatBufferData.Reset();
+	m_StatBufferData.m_TimeStart = wxDateTime::Now();
+	long myRecordId = myRecord.Create(m_StatBufferData);
+	if (myRecordId == wxNOT_FOUND) {
+		wxLogError(_("Error starting statistics!"));
+		m_IsStarted = false;
+		return;
+	}
+	m_StatBufferData.m_Id = myRecordId;
 	m_IsStarted = true;
 }
 
 
-
 void tmStatsManager::_StopRecord() {
+	if (m_IsStarted == false) {
+		return;
+	}
+	
 	wxLogMessage("Stoping to record!");
 	m_IsStarted = false;
 	_FlushBuffer();
@@ -127,6 +143,7 @@ tmStatsManager::tmStatsManager() {
 
 
 tmStatsManager::~tmStatsManager() {
+	_StopRecord();
 }
 
 
@@ -154,9 +171,28 @@ void tmStatsManager::ShowStatsDialog(wxWindow * parent) {
 		return;
 	}
 	
-	wxASSERT(parent);
+	if (m_IsStarted == true) {
+		_FlushBuffer();
+	}
 	
-	tmStats_DLG myDlg (parent);
+	wxASSERT(parent);
+	wxASSERT(m_Database);
+	tmStatsRecords myRecord (m_Database);
+	long myRecordNb = myRecord.GetCount();
+	tmStatsData myDataTotal;
+	myDataTotal.m_TimeElapsed = wxTimeSpan(0,0,0);
+	if (myRecordNb > 0) {
+		if (myRecord.LoadTotal(myDataTotal) == false) {
+			wxLogError(_("Error loading statistics total!"));
+		}
+	}
+	
+	tmStatsData myDataActual;
+	if (m_IsStarted==true) {
+		myRecord.Load(m_StatBufferData.m_Id, myDataActual);
+	}
+	
+	tmStats_DLG myDlg (parent, &myDataActual, &myDataTotal, myRecordNb);
 	myDlg.SetStarted(m_IsStarted);
 	
 	int myReturnCode = myDlg.ShowModal();
@@ -225,7 +261,7 @@ void tmStats_DLG::_CreateControls() {
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_SessionSizerCtrl = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Last session (date)") ), wxVERTICAL );
+	m_SessionSizerCtrl = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Actual session") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer1;
 	fgSizer1 = new wxFlexGridSizer( 4, 2, 0, 0 );
@@ -272,7 +308,7 @@ void tmStats_DLG::_CreateControls() {
 	
 	bSizer2->Add( m_SessionSizerCtrl, 1, wxALL, 5 );
 	
-	m_TotalSizerCtrl = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Total (2 sessions)") ), wxVERTICAL );
+	m_TotalSizerCtrl = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, "" ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer11;
 	fgSizer11 = new wxFlexGridSizer( 4, 2, 0, 0 );
@@ -353,18 +389,24 @@ void tmStats_DLG::_CreateControls() {
 	this->SetSizer( bSizer1 );
 	this->Layout();
 	bSizer1->Fit( this );
-	
 	this->Centre( wxBOTH );
 }
 
 
 
 
-tmStats_DLG::tmStats_DLG(wxWindow * parent, wxWindowID id, const wxString & title,
+tmStats_DLG::tmStats_DLG(wxWindow * parent,
+						 const tmStatsData * actual,
+						 const tmStatsData * total,
+						 long nbrecords,
+						 wxWindowID id, const wxString & title,
 						 const wxPoint & pos, const wxSize & size, long style) :
 wxDialog(parent, id, title, pos, size,style) {
+	m_DataActual = actual;
+	m_DataTotal = total;
+	m_DataTotalRecord = nbrecords;
 	_CreateControls();
-
+	_UpdateControls();
 }
 
 
@@ -384,13 +426,24 @@ void tmStats_DLG::SetStarted(bool recordstarted){
 
 
 
-bool tmStats_DLG::TransferDataToWindow() {
-	return true;
-}
-
-
-
-bool tmStats_DLG::TransferDataFromWindow() {
-	return true;
+void tmStats_DLG::_UpdateControls() {
+	if (m_DataActual != NULL && m_DataActual->IsOk()) {
+		m_SessionClickCtrl->SetLabel(wxString::Format(_T("%ld"),m_DataActual->m_NbClick));
+		m_SessionAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbAttribution));
+		m_SessionIntersectCtrl->SetLabel(wxString::Format(_T("%ld"),m_DataActual->m_NbIntersection));
+		m_SessionElapsedTimeCtrl->SetLabel(m_DataActual->m_TimeElapsed.Format());
+	}
+	
+	m_TotalSizerCtrl->GetStaticBox()->SetLabel(wxString::Format(_("Total (%ld sessions)"),m_DataTotalRecord));
+	if (m_DataTotal != NULL) {
+		m_TotalClickCtrl->SetLabel(wxString::Format(_T("%ld"),m_DataTotal->m_NbClick));
+		m_TotalAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbAttribution));
+		m_TotalIntersectCtrl->SetLabel(wxString::Format(_T("%ld"),m_DataTotal->m_NbIntersection));
+		m_TotalElapsedTimeCtrl->SetLabel(m_DataTotal->m_TimeElapsed.Format());
+	}
+	
+	this->Layout();
+	GetSizer()->Fit( this );
+	this->Centre( wxBOTH );
 }
 

@@ -46,7 +46,7 @@ public:
 	
     void Reset();
 	void ResetPartial();
-    bool IsOk();
+    bool IsOk() const;
 };
 
 
@@ -111,14 +111,24 @@ class tmStats_DLG : public wxDialog {
 	wxButton* m_BtnExportCtrl;
 	wxButton* m_BtnCloseCtrl;
 	
+	const tmStatsData * m_DataActual;
+    const tmStatsData * m_DataTotal;
+	long m_DataTotalRecord;
+	
+	
     void OnRecordStart(wxCommandEvent & event);
     void OnRecordStop(wxCommandEvent & event);
     void OnExport(wxCommandEvent & event);
 
     void _CreateControls();
+	void _UpdateControls();
 	DECLARE_EVENT_TABLE();
   public:
-    tmStats_DLG(wxWindow * parent, wxWindowID id = wxID_ANY,
+    tmStats_DLG(wxWindow * parent, 
+				const tmStatsData * actual,
+				const tmStatsData * total,
+				long nbrecords,
+				wxWindowID id = wxID_ANY,
 				const wxString & title = _("Statistics"), 
 				const wxPoint & pos = wxDefaultPosition, 
 				const wxSize & size = wxDefaultSize, 
@@ -126,7 +136,6 @@ class tmStats_DLG : public wxDialog {
     virtual ~tmStats_DLG();
 
 	void SetStarted(bool recordstarted);
-    virtual bool TransferDataToWindow();
-    virtual bool TransferDataFromWindow();
+ 	
 };
 #endif
