@@ -99,6 +99,31 @@ public:
 		TS_ASSERT_EQUALS(myRecord.Load(1, myData),true);
 		wxLogMessage("time elapsed is: %s", myData.m_TimeElapsed.Format());
 		
+		TS_ASSERT_EQUALS(myData.m_NbClick, 2);
+		TS_ASSERT_EQUALS(myData.m_NbIntersection,0);
+		TS_ASSERT_EQUALS(myData.m_NbAttribution,2);
+	}
+	
+	void testGetCount(){
+		tmStatsRecords myRecord(m_pDB);
+		long myNbRecords = myRecord.GetCount();
+		TS_ASSERT_LESS_THAN(2, myNbRecords);
+		wxLogMessage("%ld statistics records!", myNbRecords);
+	}
+	
+	void testLoadTotal(){
+		tmStatsRecords myRecord(m_pDB);
+		tmStatsData myData;
+		TS_ASSERT(myRecord.LoadTotal(myData));
+		
+		TS_ASSERT_LESS_THAN(2, myData.m_NbClick);
+		TS_ASSERT_LESS_THAN(1, myData.m_NbAttribution);
+		
+		wxLogMessage("Total (Click, attribution, intersection, time): %ld, %ld, %ld, %s",
+					 myData.m_NbClick,
+					 myData.m_NbAttribution,
+					 myData.m_NbIntersection,
+					 myData.m_TimeElapsed.Format());
 	}
 	
 	

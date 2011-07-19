@@ -114,8 +114,44 @@ bool tmStatsRecords::Load(long recordid, tmStatsData & data) {
 
 
 bool tmStatsRecords::LoadTotal(tmStatsData & data) {
-	return false;
+	wxASSERT(m_pDB);
+	wxString myQuery = wxString::Format(_T("SELECT SUM(CLICK), SUM(ATTRIBUTION), SUM(INTERSECTION),")
+										_T("SUM(HOUR(TIMEDIFF(DATE_END, DATE_START))), ")
+										_T("SUM(MINUTE(TIMEDIFF(DATE_END, DATE_START))), ")
+										_T("SUM(SECOND(TIMEDIFF(DATE_END, DATE_START))) FROM %s"),
+										TABLE_NAME_STAT);
+	data.Reset();
+	if (m_pDB->DataBaseQuery(myQuery) == false) {
+		return false;
+	}
+	
+	DataBaseResult myResults;
+	if(m_pDB->DataBaseGetResults(&myResults)==false){
+		return false;
+	}
+
+	long myClick = wxNOT_FOUND;
+	long myAttrib = wxNOT_FOUND;
+	long myIntersect = wxNOT_FOUND;
+	long myHour = wxNOT_FOUND;
+	long myMin = wxNOT_FOUND;
+	long mySec = wxNOT_FOUND;
+	
+	myResults.NextRow();
+	myResults.GetValue(0, myClick);
+	myResults.GetValue(1, myAttrib);
+	myResults.GetValue(2, myIntersect);
+	myResults.GetValue(3, myHour);
+	myResults.GetValue(4, myMin);
+	myResults.GetValue(5, mySec);
+
+	data.m_NbClick = myClick;
+	data.m_NbAttribution = myAttrib;
+	data.m_NbIntersection = myIntersect;
+	data.m_TimeElapsed = wxTimeSpan(myHour, myMin, mySec);
+	return true;
 }
+
 
 
 bool tmStatsRecords::Delete(long recordid) {
@@ -134,7 +170,19 @@ bool tmStatsRecords::ExportAll(const wxFileName & filename) {
 	return false;
 }
 
+
 long tmStatsRecords::GetCount() {
-	return wxNOT_FOUND;
+	wxASSERT(m_pDB);
+	wxString myQuery = wxString::Format(_T("SELECT COUNT(*) FROM %s"), TABLE_NAME_STAT);
+	if (m_pDB->DataBaseQuery(myQuery) == false) {
+		return wxNOT_FOUND;
+	}
+	
+	long myNbRecords = wxNOT_FOUND;
+	if( m_pDB->DataBaseGetNextResult(myNbRecords)==false){
+		myNbRecords = wxNOT_FOUND;
+	}
+	m_pDB->DataBaseClearResults();
+	return myNbRecords;
 }
 
