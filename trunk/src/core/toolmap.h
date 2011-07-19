@@ -233,7 +233,7 @@ class tmStatsManager;
 #define ID_TOOL9 10257
 #define ID_TOOL10 10258
 const wxString g_ProgName = _T("ToolMap");
-const wxString g_ProgMajorVersion = _T("2.2");
+const wxString g_ProgMajorVersion = _T("2.3");
 
 
 
