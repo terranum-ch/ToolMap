@@ -98,6 +98,7 @@ bool tmStatsRecords::Load(long recordid, tmStatsData & data) {
 	myResult.GetValue(3, myIntersect);
 	myResult.GetValue(4, myIntervalTxt);
 	
+	data.m_Id = recordid;
 	data.m_TimeStart.ParseISOCombined(myDateValueTxt, ' ');
 	data.m_NbClick = myClick;
 	data.m_NbIntersection = myIntersect;
