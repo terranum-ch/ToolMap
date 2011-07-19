@@ -72,5 +72,5 @@ def gCreateInstaller(svnnumner):
     shutil.move(gDirBin + os.sep + "libToolMap_lib.a", gDirBin + os.sep +  "Release" + os.sep + "libToolMap_lib.a")
     shutil.move(gDirBin + os.sep + "liblsVersion.a", gDirBin + os.sep +  "Release" + os.sep + "liblsVersion.a")
    
-	print ("Creating installer finished")
+    print ("Creating installer finished")
     return "ToolMap2_r"+svnnumner+".dmg"
