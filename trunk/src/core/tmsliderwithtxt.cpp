@@ -57,10 +57,8 @@ bool tmSliderWithText::Create( wxWindow* parent, wxWindowID id,
 	CreateControls(ivalue, imin, imax, unitvalue);
 	
 	// connect event
-	Connect(ID_TMSLIDER_TEXT, wxEVT_COMMAND_TEXT_UPDATED, 
-			wxCommandEventHandler(tmSliderWithText::OnTextUpdated));
-	Connect(ID_TMSLIDER_SLIDER, wxEVT_SCROLL_THUMBTRACK, 
-			wxScrollEventHandler(tmSliderWithText::OnSliderUpdated));
+	m_Text->Bind(wxEVT_COMMAND_TEXT_UPDATED, &tmSliderWithText::OnTextUpdated, this);
+	m_Slider->Bind(wxEVT_SCROLL_THUMBTRACK, &tmSliderWithText::OnSliderUpdated, this);
 	
     if (GetSizer())
     {
@@ -72,8 +70,10 @@ bool tmSliderWithText::Create( wxWindow* parent, wxWindowID id,
 
 
 
-tmSliderWithText::~tmSliderWithText()
-{
+tmSliderWithText::~tmSliderWithText(){
+	m_Text->Unbind(wxEVT_COMMAND_TEXT_UPDATED, &tmSliderWithText::OnTextUpdated, this);
+	m_Slider->Unbind(wxEVT_SCROLL_THUMBTRACK, &tmSliderWithText::OnSliderUpdated, this);
+
 }
 
 
@@ -98,11 +98,11 @@ void tmSliderWithText::CreateControls(int ivalue, int imin,int imax,
     wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     itemPanel1->SetSizer(itemBoxSizer2);
 	
-    m_Slider = new wxSlider( itemPanel1, ID_TMSLIDER_SLIDER, ivalue, imin, imax,
+    m_Slider = new wxSlider( itemPanel1, wxID_ANY, ivalue, imin, imax,
 							wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
     itemBoxSizer2->Add(m_Slider, 1, wxGROW|wxALL, 5);
 	
-    m_Text = new wxTextCtrl( itemPanel1, ID_TMSLIDER_TEXT, wxString::Format(_T("%d"),ivalue),
+    m_Text = new wxTextCtrl( itemPanel1, wxID_ANY, wxString::Format(_T("%d"),ivalue),
 							wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer2->Add(m_Text, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	

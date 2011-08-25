@@ -225,7 +225,7 @@ bool tmTOCCtrl::RemoveLayer (wxTreeItemId position, bool bRemoveChild)
 	}
 	
 	// delete only if first level item
-	if(!GetItemParent(position) == m_root || position == m_root)
+	if(GetItemParent(position) != m_root || position == m_root)
 	{
 		wxLogDebug(_T("Only layers could be deleted, don't select legend or project name"));
 		return FALSE;
