@@ -174,7 +174,6 @@ class tmStatsManager;
 
 #define ID_MENU_SELECTION 10323
 
-
 #define ID_MENU_UNDO 10179
 //#define ID_MENU_REDO 10180
 #define ID_MENU_DRAW 10176
@@ -211,27 +210,11 @@ class tmStatsManager;
 #define ID_MENU_REPORT_BUG 10128
 #define ID_MENU_ASK_NEW_FEATURE 10129
 #define ID_MENU_USER_MANUAL 10130
-#define ID_MENUITEM17 10077
-#define ID_MENUITEM14 10072
-#define ID_MENUITEM20 10111
-#define ID_MENU6 10075
-#define ID_MENUITEM16 10076
-#define ID_MENUITEM45 10181
-#define ID_MENUITEM46 10182
-#define ID_MENUITEM18 10078
+#define ID_MENU_EXPORT_MODEL 10077
 
-#define ID_TOOLBAR1 10038
-#define ID_TOOL1 10071
-#define ID_TOOL2 10073
-#define ID_TOOL3 10074
-#define ID_TOOL4 10193
-#define ID_COMBOBOX2 10252
-#define ID_TOOL5 10253
-#define ID_TOOL6 10254
-#define ID_TOOL7 10255
-#define ID_TOOL8 10256
-#define ID_TOOL9 10257
-#define ID_TOOL10 10258
+#define ID_TOOLBAR_ZOOM 10252
+
+
 const wxString g_ProgName = _T("ToolMap");
 const wxString g_ProgMajorVersion = _T("2.3");
 
@@ -315,6 +298,7 @@ private:
 	void OnEditProjectSettings (wxCommandEvent & event);
 	void OnEditObjectAttributes (wxCommandEvent & event);
 	void OnEditProject (wxCommandEvent & event);
+	void OnExportProjectModel (wxCommandEvent & event);
 	void OnLogWindow(wxCommandEvent & event);
 	void OnTocWindow (wxCommandEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);

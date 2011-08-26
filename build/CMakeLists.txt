@@ -65,6 +65,9 @@ INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrlopti
 #CURL
 INCLUDE ("cmake/FindCURL.cmake")
 
+#wxPDFDocument
+INCLUDE ("cmake/findwxpdfdocument.cmake")
+
 # LSVERSION COMMPONENT
 INCLUDE("../plugins/lsversion/build/use_lsversion.cmake")
 

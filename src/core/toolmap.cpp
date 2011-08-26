@@ -43,6 +43,8 @@
 #include "tmstats.h";
 #include "tmstatsevent.h";
 
+#include <wx/pdfdocument.h>
+
 
 IMPLEMENT_APP(ToolMapApp);
  
@@ -193,6 +195,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
 	EVT_MENU (wxID_PREFERENCES, ToolMapFrame::OnPreferences)
+	EVT_MENU (ID_MENU_EXPORT_MODEL, ToolMapFrame::OnExportProjectModel)
+	
 
 	// TOOL EVENT
 	EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
@@ -503,8 +507,9 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu11 = new wxMenu;
     itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
-    itemMenu11->AppendSeparator();
     itemMenu11->Append(ID_MENU_EXPORT_FULL, _("Export project"), wxEmptyString, wxITEM_NORMAL);
+	itemMenu11->AppendSeparator();
+	itemMenu11->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_EXPORT, _("Export"), itemMenu11);
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
@@ -514,7 +519,6 @@ void ToolMapFrame::_CreateMenu()
     itemMenu16->Append(ID_MENU_PRJ_SETTINGS, _("Settings..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit"), itemMenu16);
     //itemMenu2->AppendSeparator();
-    //itemMenu2->Append(wxID_PRINT, _("Print view...\tCtrl+P"), _T(""), wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu2, _("&Project"));
@@ -641,7 +645,7 @@ void ToolMapFrame::_CreateToolBar()
     itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), *_img_toolbar_previous, wxNullBitmap, wxITEM_NORMAL, _("Previous Zoom"), wxEmptyString);
 	
 	wxArrayString itemComboBox8Strings;
-    m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_COMBOBOX2, wxDefaultPosition, wxDefaultSize, itemComboBox8Strings );
+    m_ScaleCombo = new tmScaleCtrlCombo ( itemToolBar3, ID_TOOLBAR_ZOOM, wxDefaultPosition, wxDefaultSize, itemComboBox8Strings );
 	itemToolBar3->AddControl(m_ScaleCombo);
     itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), *_img_toolbar_edit, wxNullBitmap, wxITEM_NORMAL, _("Draw"), wxEmptyString);
     itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), *_img_toolbar_modify, wxNullBitmap, wxITEM_NORMAL, _("Modify"), wxEmptyString);
@@ -1075,6 +1079,16 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 	
 	_LoadPreference(true);
 }
+
+
+
+void ToolMapFrame::OnExportProjectModel (wxCommandEvent & event){
+	// TODO: Test code for printing project model as PDF
+	wxLogMessage("Exporting model");
+	
+}
+
+
 
 
 void ToolMapFrame::_LoadPreference(bool reload){
