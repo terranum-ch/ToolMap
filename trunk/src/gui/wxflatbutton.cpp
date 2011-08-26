@@ -26,16 +26,16 @@
 
 wxFlatButton::wxFlatButton()
 {
-	InitwxFlatButton();
+	//InitwxFlatButton();
 }
 
 
 wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
-: wxToggleButton(parent,id,label,wxDefaultPosition, size)
+: wxButton(parent,id,label,wxDefaultPosition, size, wxBORDER_SIMPLE)
 {
-	InitwxFlatButton(id);
+	/*InitwxFlatButton(id);
 	Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, 
-			(wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);
+			(wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
 }
 
 
@@ -44,13 +44,16 @@ wxFlatButton::~wxFlatButton()
 }
 
 
-IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxToggleButton)
+IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxButton)
 
+
+/*
 void wxFlatButton::InitwxFlatButton(wxWindowID id)
 {
 	
 
 }
+
 
 
 void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
@@ -67,20 +70,20 @@ void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 		wxLogDebug(_T("Event FlatButton not skipped..."));
 	}
 }
-
+*/
 
 /******************************  wxFlatButton (win and linux)**********************/
 #else 
 wxFlatButton::wxFlatButton()
 {
-	InitwxFlatButton();
+	//InitwxFlatButton();
 }
 
 
 wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
 : wxButton(parent,id,label,wxDefaultPosition, size, wxFLATBUTTON_STYLE )
 {
-	InitwxFlatButton();
+	//InitwxFlatButton();
 	
 }
 
@@ -92,10 +95,11 @@ wxFlatButton::~wxFlatButton()
 
 IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxButton)
 
+/*
 void wxFlatButton::InitwxFlatButton()
 {
 	
 }
-
+*/
 
 #endif

@@ -38,7 +38,6 @@
 #include "../database/database_tm.h"	// for database acces (updating lists)
 #include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
 #include <wx/choicebk.h>				// for choicebook
-#include "../gui/tmoptionbutton.h"		// for option button
 
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
 DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
@@ -78,10 +77,6 @@ DECLARE_EVENT_TYPE(tmEVT_INFO_BTN_PRESSED, -1)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE wxSize(250, 150)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION wxDefaultPosition
 
-#define ID_CTXT_FULL_ATTRIB 21000
-#define ID_CTXT_FILTER 21001
-#define ID_CTXT_AUTODISPLAY_ATTRIB 21002
-#define ID_CTXT_EMPTY_LIST_AFTER_ATTRIB 21003
 
 class AttribObjType_PANEL: public ManagedAuiWnd
 	{
@@ -108,11 +103,6 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		// event function
 		void OnAttributeBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
-		
-		// option menu event function
-		void OnDisplayAttributesAuto(wxCommandEvent & event);
-		void OnEmptyListAffterAttributes (wxCommandEvent & event);
-		void OnFullAttribution (wxCommandEvent & event);
 		
 		void OnEditStart(wxCommandEvent & event);
 		void OnEditStop (wxCommandEvent & event);
@@ -153,6 +143,10 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		
 		void EmptyListValues();
 		
+		//  menu event function
+		void OnDisplayAttributesAuto(wxCommandEvent & event);
+		void OnEmptyListAffterAttributes (wxCommandEvent & event);
+		void OnFullAttribution (wxCommandEvent & event);
 		
 		// controls
 		tmCheckListBoxRank * m_pObjList_PT;

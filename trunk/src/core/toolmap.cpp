@@ -42,6 +42,7 @@
 #include "lsversion_param.h"
 #include "tmstats.h";
 #include "tmstatsevent.h";
+#include "../gui/attribution_obj_type.h"
 
 #include <wx/pdfdocument.h>
 
@@ -430,12 +431,26 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	
 	_CheckUpdates(false);
 	_LoadPreference(false);
+	
+	
+	// connecting menu to object kind panel
+	wxASSERT(m_AttribObjPanel);
+	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnDisplayAttributesAuto, m_AttribObjPanel, ID_CTXT_AUTODISPLAY_ATTRIB);
+	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnEmptyListAffterAttributes, m_AttribObjPanel, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB);
+	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnFullAttribution, m_AttribObjPanel, ID_CTXT_FULL_ATTRIB);
+	
 }
 
 
 /* Frame destruction */
 ToolMapFrame::~ToolMapFrame()
 {
+	this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnDisplayAttributesAuto, m_AttribObjPanel, ID_CTXT_AUTODISPLAY_ATTRIB);
+	this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnEmptyListAffterAttributes, m_AttribObjPanel, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB);
+	this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnFullAttribution, m_AttribObjPanel, ID_CTXT_FULL_ATTRIB);
+	
+	
+	
 	// close project
 	m_PManager->CloseProject();
 		
@@ -575,6 +590,15 @@ void ToolMapFrame::_CreateMenu()
     itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object Attribute (multiple features)...\tCtrl+Alt+A"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu55->Append(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-Paste Attribution\tCtrl+B"), _T(""), wxITEM_NORMAL);
     //itemMenu55->Enable(ID_MENU_COPY_PASTE_ATTRIB, false);
+	itemMenu55->AppendSeparator();
+	wxMenu* itemMenu56 = new wxMenu();
+	
+	itemMenu56->Append(ID_CTXT_FULL_ATTRIB,  _("Full attribution") , wxEmptyString, wxITEM_CHECK);
+	itemMenu56->Append(ID_CTXT_EMPTY_LIST_AFTER_ATTRIB, _("Empty list after attribution") , wxEmptyString, wxITEM_CHECK );
+	itemMenu56->Check(ID_CTXT_EMPTY_LIST_AFTER_ATTRIB, true);
+	itemMenu56->Append(ID_CTXT_AUTODISPLAY_ATTRIB,  _("Auto display attributes") , wxEmptyString, wxITEM_CHECK);
+	
+	itemMenu55->Append(wxID_ANY, _("Object Kind Panel"), itemMenu56);
 	itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcut..."), wxEmptyString, wxITEM_CHECK);
     menuBar->Append(itemMenu55, _("Attribution"));

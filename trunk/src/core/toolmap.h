@@ -102,7 +102,7 @@
 // GIS Includes
 #include "../gis/tmlayermanager.h"		// gis central manager
 
-#include "../gui/attribution_obj_type.h"
+//#include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
 #include "../gui/queries_panel.h"		// for queries panel
 #include "projectmanager.h"
@@ -136,6 +136,7 @@ class ToolbarManager;
 class ProjectManager;
 class WebUpdateInformationBar;
 class tmStatsManager;
+class AttribObjType_PANEL;
 
 #include <wx/mstream.h>
 
@@ -214,6 +215,11 @@ class tmStatsManager;
 
 #define ID_TOOLBAR_ZOOM 10252
 
+
+#define ID_CTXT_FULL_ATTRIB 21000
+#define ID_CTXT_FILTER 21001
+#define ID_CTXT_AUTODISPLAY_ATTRIB 21002
+#define ID_CTXT_EMPTY_LIST_AFTER_ATTRIB 21003
 
 const wxString g_ProgName = _T("ToolMap");
 const wxString g_ProgMajorVersion = _T("2.3");

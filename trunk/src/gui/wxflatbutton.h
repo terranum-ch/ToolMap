@@ -34,18 +34,19 @@
 
 
 #define wxFLATBUTTON_STYLE wxBORDER_NONE 
-#define wxFLATBUTTON_SIZE wxSize(30,-1)
+#define wxFLATBUTTON_SIZE wxSize(35,-1)
 #define wxFLATBUTTON_TEXT_ADD _T("+")
 #define wxFLATBUTTON_TEXT_REMOVE _T("-")
 
-//#define ID_WXFLATBUTTON 10219
 
 #if (__WXMAC__)
 #define EVT_FLATBUTTON EVT_TOGGLEBUTTON
 #define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_TOGGLEBUTTON_CLICKED
 
-class wxFlatButton : public wxToggleButton
+class wxFlatButton : public wxButton
 	{		
+	private:
+		DECLARE_DYNAMIC_CLASS(wxFlatButton)
 		
 	public:
 		
@@ -55,10 +56,10 @@ class wxFlatButton : public wxToggleButton
 					 wxSize size = wxFLATBUTTON_SIZE);
 		~wxFlatButton();
 		
-	private:
+	/*private:
 		void OnClickToggleButton(wxCommandEvent & event);
 		void InitwxFlatButton(wxWindowID id= wxID_ANY);
-		DECLARE_DYNAMIC_CLASS(wxFlatButton)
+		DECLARE_DYNAMIC_CLASS(wxFlatButton)*/
 		
 		
 	};
@@ -70,7 +71,7 @@ class wxFlatButton : public wxButton
 	{
 	private:
 		DECLARE_DYNAMIC_CLASS(wxFlatButton)
-		void InitwxFlatButton();
+		//void InitwxFlatButton();
 		
 	public:
 		wxFlatButton();
