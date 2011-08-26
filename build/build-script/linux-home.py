@@ -11,6 +11,8 @@ gDirUnitTest = ""
 gDirCxx = "/home/lucien/programmation/LIB/cxxtest"
 gDirCurl = "" 
 gDirGeos = ""
+gDirWXPDF = ""
+
 
 # CMAKE SPECIFIC
 gCmakeEnv = "CodeBlocks - Unix Makefiles" #result of cmake --help

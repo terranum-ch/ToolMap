@@ -25,9 +25,6 @@ DEFINE_EVENT_TYPE (tmEVT_INFO_BTN_PRESSED)
 BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
-	EVT_MENU (ID_CTXT_AUTODISPLAY_ATTRIB, AttribObjType_PANEL::OnDisplayAttributesAuto)
-	EVT_MENU (ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,  AttribObjType_PANEL::OnEmptyListAffterAttributes)
-	EVT_MENU (ID_CTXT_FULL_ATTRIB, AttribObjType_PANEL::OnFullAttribution)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, AttribObjType_PANEL::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, AttribObjType_PANEL::OnEditStop)
 END_EVENT_TABLE()
@@ -196,90 +193,20 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     m_AttribNotebook->AddPage(itemPanel24, _("Notes"));
 	
     m_AttribSizer->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
-	
     
-	
-	/* options menu */
-	wxMenu* opt_menu = new wxMenu();
-	wxMenuItem* m_fullatrib;
-	m_fullatrib = new wxMenuItem( opt_menu, ID_CTXT_FULL_ATTRIB, wxString( _("Enable Full attribution") ) , wxEmptyString, wxITEM_CHECK );
-	opt_menu->Append( m_fullatrib );
-	m_fullatrib->Check(m_EnableFullAttribution);
-	
-	wxMenuItem* m_clearvalueatrib;
-	m_clearvalueatrib = new wxMenuItem( opt_menu, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB,
-									   wxString( _("Empty list after attribution")) , wxEmptyString, wxITEM_CHECK );
-	opt_menu->Append( m_clearvalueatrib );
-	m_clearvalueatrib->Check(m_EmptyListAfterAttributes);
-	
-	wxMenuItem* m_AutoDisplayAttrib;
-	m_AutoDisplayAttrib = new wxMenuItem( opt_menu, ID_CTXT_AUTODISPLAY_ATTRIB, wxString( _("Enable auto display attributes") ) , wxEmptyString, wxITEM_CHECK );
-	opt_menu->Append( m_AutoDisplayAttrib );
-	m_AutoDisplayAttrib->Check(m_AutoDisplayAttributes);
-	
-	//opt_menu->AppendSeparator();
-	
-	//wxMenuItem* m_Filter;
-	//m_Filter = new wxMenuItem( opt_menu, ID_CTXT_FILTER, wxString( _("Filter list...") ) , wxEmptyString, wxITEM_NORMAL );
-	//opt_menu->Append( m_Filter );
-	
-	//m_menubar2->Append( opt_menu, _("Options") );
-	
-	
-	
-	
-	
 	m_ButtonSizer = new wxBoxSizer( wxHORIZONTAL );
-	
 
-	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
-									m_AttribBtnLabel, wxDefaultSize);
+	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,m_AttribBtnLabel, wxDefaultSize);
 	m_AttribBtn->Enable(false);
 	m_ButtonSizer->Add( m_AttribBtn, 0, wxEXPAND, 5 );
-	
 	
 	m_InfoBtn = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"), wxDefaultSize);
 	m_InfoBtn->Enable(false);
 	m_ButtonSizer->Add( m_InfoBtn, 0, wxEXPAND|wxLEFT, 5 );
 	
 	
-	m_ButtonSizer->Add( 0, 0, 2, 0, 5 );
-	
-	tmOptionButton * m_button7 = new tmOptionButton( parent, wxID_ANY, opt_menu);
-	m_ButtonSizer->Add( m_button7, 0, wxLEFT|wxRIGHT, 5 );
-	
+	m_ButtonSizer->Add( 0, 0, 2, 0, 5 );	
 	m_AttribSizer->Add( m_ButtonSizer, 0, wxALL|wxEXPAND, 5 );
-	
-	
-	
-	
-	/*wxGridSizer* itemGridSizer38 = new wxGridSizer(2, 2, 0, 0);
-    itemBoxSizer2->Add(itemGridSizer38, 0, wxGROW|wxALL, 5);
-	
-    wxSearchCtrl* itemSearchCtrl39 = new wxSearchCtrl( parent, ID_SEARCHCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-    itemSearchCtrl39->ShowCancelButton(TRUE);
-	itemGridSizer38->Add(itemSearchCtrl39, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    wxCheckBox* itemCheckBox40 = new wxCheckBox( parent, ID_CHECKBOX9, _("full attribution"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemCheckBox40->SetValue(true);
-    itemGridSizer38->Add(itemCheckBox40, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_InfoBtn = new wxButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"),
-							 wxDefaultPosition, wxDefaultSize, 0 );
-    m_InfoBtn->Enable(false);
-	itemGridSizer38->Add(m_InfoBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
-    m_AttribBtn = new wxButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,
-							   m_AttribBtnLabel, wxDefaultPosition, wxDefaultSize, 0 );
-    m_AttribBtn->Enable(false); // disable by default
-	
-	itemGridSizer38->Add(m_AttribBtn, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-		
-    m_AutoDisplayAttributes = new wxCheckBox( parent, ID_CHECKBOX5, _("Auto display attributes"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_AutoDisplayAttributes->SetValue(false);
-    itemBoxSizer2->Add(m_AutoDisplayAttributes, 0, wxGROW|wxALL, 5);*/
-	
-	
 	
 	if (set_sizer)
     {

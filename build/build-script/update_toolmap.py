@@ -174,8 +174,9 @@ mycmakeCommandLine.append("-DSVN_DURING_BUILD:BOOL=1")
 mycmakeCommandLine.append("-DSVN_DURING_CMAKE:BOOL=1")
 mycmakeCommandLine.append("-DSEARCH_GDAL_LIB_PATH:PATH=" + gDirGdal)
 mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
-
 mycmakeCommandLine.append("-DMYSQL_MAIN_DIR:PATH=" + gDirSQL)
+mycmakeCommandLine.append("-DSEARCH_WXPDFDOCUMENT_PATH=" + gDirWXPDF)
+
 if (gDirCurl):
     mycmakeCommandLine.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
 if (doRunTests == 'Y'):

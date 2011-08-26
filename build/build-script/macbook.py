@@ -10,7 +10,7 @@ gDirSQL = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBMYSQL "
 gDirUnitTest = "/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing"
 gDirCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest"
 gDirCurl = "" 
-
+gDirWXPDF = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBPDF"
 
 # CMAKE SPECIFIC
 gCmakeEnv = "Xcode" #result of cmake --help
