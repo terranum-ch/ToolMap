@@ -10,7 +10,7 @@ gDirUnitTest = "D:\\PRJ\\TOOLMAP2\\unit_testing"
 gDirCxx = "D:\\LIB\\cxxtest"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
 gDirGeos = "D:\\LIB\\geos-3.2.2"
-gDirWXPDF = ""
+gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.1"
 
 
 gCmakeEnv = "Visual Studio 10" #result of cmake --help
