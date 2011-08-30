@@ -10,7 +10,7 @@ gDirSQL = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBMYSQL"
 gDirUnitTest = "/Users/lucien/Documents/PRJ/TOOLMAP2/unit_testing"
 gDirCxx = "/Users/lucien/Documents/PROGRAMMATION/cxxtest"
 gDirCurl = "" 
-gDirWXPDF = ""
+gDirWXPDF = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBPDF"
 
 
 # CMAKE SPECIFIC
