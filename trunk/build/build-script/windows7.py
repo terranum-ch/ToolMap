@@ -9,7 +9,7 @@ gDirSQL = "D:\\LIB\\LIB_MYSQL"
 gDirUnitTest = "D:\\PRJ\\TOOLMAP2\\unit_testing"
 gDirCxx = "D:\\LIB\\cxxtest"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
-gDirGeos = "D:\\LIB\\geos-3.2.2"
+gDirGeos = "D:\\LIB\\geos-3.3.0"
 gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.1"
 
 
