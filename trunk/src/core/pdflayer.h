@@ -1,5 +1,5 @@
 /***************************************************************************
- pdfdocument.h
+ pdflayer.h
  -------------------
  copyright            : (C) 2011 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -13,58 +13,42 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _PDFDOCUMENT_H_
-#define _PDFDOCUMENT_H_
+#ifndef _PDFLAYER_H_
+#define _PDFLAYER_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
-#include <wx/filename.h>
 #include <wx/pdfdocument.h>
-#include "pdflayer.h"
 
 
-class PrjDefMemManage;
+class ProjectDefMemoryLayers;
+class PdfDocument;
 
-class PdfDocument {
+class PdfLayer {
   private:
-    ArrayPdfLayer m_pdfLayers;
+    //PdfObjects * m_pdfObjects;
+    //PdfAttributs * m_pdfAttributs;
+    PdfDocument * m_pdfDocumentParent;
 
-    wxString m_prjName;
-    wxPdfDocument m_pdf;
-    wxPaperSize m_PaperSize;
-    wxPrintOrientation m_PaperOrientation;
-    int m_FontSize;
-	double m_LineSpacing;
-
-    bool _GenerateTitle();
-
+    ProjectDefMemoryLayers * m_prjLayer;
 
   public:
-    PdfDocument(PrjDefMemManage * project);
-    virtual ~PdfDocument();
-
-    bool Generate(const wxFileName & filename);
-
-	inline const int GetFontSize() const;	
-    void SetFontSize(int value);
-	inline const double GetLineSpacing() const;
-    void SetLineSpacing(double value);	
+    PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer);
+    virtual ~PdfLayer();
+    
+	bool Generate(wxPdfDocument * pdf);
+	
+	inline const PdfDocument * GetDocumentParent() const;
 };
 
 
-inline const int PdfDocument::GetFontSize() const {
-	return m_FontSize;
+inline const PdfDocument * PdfLayer::GetDocumentParent() const {
+  return m_pdfDocumentParent;
 }
 
 
-
-inline const double PdfDocument::GetLineSpacing() const {
-	return m_LineSpacing;
-}
-	
-
+WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
 #endif
