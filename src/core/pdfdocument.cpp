@@ -40,11 +40,28 @@ PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	m_PaperOrientation = wxPORTRAIT;
 	m_FontSize = 12; 
 	m_LineSpacing = 8;
+	
+	// adding layers (copy of them)
+	for (int i = 0; i< project->GetCountLayers(); i++) {
+		PdfLayer * myLayer = new PdfLayer(this, project->m_PrjLayerArray.Item(i));
+		wxASSERT(myLayer);
+		m_pdfLayers.Add(myLayer);
+	}
+	wxLogDebug("%ld PDF Layers added", m_pdfLayers.GetCount());
 }
 
 
 
 PdfDocument::~PdfDocument() {
+	// manually clearing array of layers, Clear() or Empty() didn't work
+	unsigned int iCount = m_pdfLayers.GetCount();
+	for (unsigned int i = 0; i<iCount; i++)
+	{
+		PdfLayer * myLayer = m_pdfLayers.Item(0);
+		wxDELETE(myLayer);
+		m_pdfLayers.RemoveAt(0);
+	}
+	wxASSERT(m_pdfLayers.GetCount()==0);
 }
 
 
@@ -52,9 +69,23 @@ PdfDocument::~PdfDocument() {
 bool PdfDocument::Generate(const wxFileName & filename) {
 	m_pdf.AddPage(m_PaperOrientation, m_PaperSize);
 	_GenerateTitle();
+	m_pdf.Ln();
+	for (unsigned int i = 0; i<m_pdfLayers.GetCount(); i++) {
+		m_pdfLayers.Item(i)->Generate(&m_pdf);
+	}
 	m_pdf.SaveAsFile(filename.GetFullPath());
 	wxLogMessage(_("Data model exported to: '%s'"), filename.GetFullName());
 	return true;
 }
 
 
+
+void PdfDocument::SetFontSize(int value) {
+	m_FontSize = value;
+}
+
+
+
+void PdfDocument::SetLineSpacing(double value) {
+	m_LineSpacing = value;
+}
