@@ -42,7 +42,7 @@ PdfLayer::~PdfLayer() {
 bool PdfLayer::Generate(wxPdfDocument * pdf) {
 	wxASSERT(pdf);
 	pdf->SetFont(pdf->GetFontFamily(), "B", GetDocumentParent()->GetFontSize());
-	pdf->Cell(60, GetDocumentParent()->GetLineSpacing(),
+	pdf->Cell(0, GetDocumentParent()->GetLineSpacing(),
 			  wxString::Format("%s (%s)",
 							   m_prjLayer->m_LayerName,
 							   PRJDEF_LAYERS_TYPE_STRING[m_prjLayer->m_LayerType]),
@@ -94,6 +94,10 @@ bool PdfObjects::Generate(wxPdfDocument * pdf) {
 	double linespace = m_pdfLayerParent->GetDocumentParent()->GetLineSpacing() / 3 * 2;
 	
 	// header
+	pdf->Ln();
+	
+	pdf->Cell((colw[0] + colw[1]), m_pdfLayerParent->GetDocumentParent()->GetLineSpacing(),
+			  _("Objects"), wxPDF_BORDER_FRAME, 1, wxPDF_ALIGN_CENTER);
 	pdf->Cell(colw[0],m_pdfLayerParent->GetDocumentParent()->GetLineSpacing(),
 			  _("Code"), wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER);
 	pdf->Cell(colw[1],m_pdfLayerParent->GetDocumentParent()->GetLineSpacing(),
