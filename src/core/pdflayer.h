@@ -27,11 +27,12 @@
 class ProjectDefMemoryLayers;
 class PdfDocument;
 class PdfObjects;
+class PdfAttributs;
 
 class PdfLayer {
 private:
     PdfObjects * m_pdfObjects;
-    //PdfAttributs * m_pdfAttributs;
+    PdfAttributs * m_pdfAttributs;
     PdfDocument * m_pdfDocumentParent;
 	
     ProjectDefMemoryLayers * m_prjLayer;
@@ -60,6 +61,11 @@ WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
 
 
 
+
+
+
+
+
 class PdfObjects {
 private:
     PdfLayer * m_pdfLayerParent;
@@ -71,4 +77,23 @@ public:
     bool Generate(wxPdfDocument * pdf);
 	
 };
+
+
+
+
+
+
+
+class PdfAttributs {
+private:
+    PdfLayer * m_pdfLayerParent;
+	
+	
+public:
+    PdfAttributs(PdfLayer * parentlayer);
+    virtual ~PdfAttributs();
+	
+    bool Generate(wxPdfDocument * pdf);
+};
+
 #endif

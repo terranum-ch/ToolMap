@@ -28,12 +28,14 @@ PdfLayer::PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer) {
 	wxASSERT(m_prjLayer);
 	
 	m_pdfObjects = new PdfObjects(this);
+	m_pdfAttributs = new PdfAttributs(this);
 }
 
 
 
 PdfLayer::~PdfLayer() {
 	wxDELETE(m_pdfObjects);
+	wxDELETE(m_pdfAttributs);
 	wxDELETE(m_prjLayer);
 }
 
@@ -52,6 +54,7 @@ bool PdfLayer::Generate(wxPdfDocument * pdf) {
 	wxASSERT(m_pdfObjects);
 	m_pdfObjects->Generate(pdf);
 	pdf->Ln(GetDocumentParent()->GetLineSpacing());
+	m_pdfAttributs->Generate(pdf);
 	return true;
 }
 
@@ -121,4 +124,51 @@ bool PdfObjects::Generate(wxPdfDocument * pdf) {
 	
 	return true;
 }
+
+
+
+
+
+
+
+
+PdfAttributs::PdfAttributs(PdfLayer * parentlayer) {
+	m_pdfLayerParent = parentlayer;
+	wxASSERT(m_pdfLayerParent);
+}
+
+
+
+PdfAttributs::~PdfAttributs() {
+}
+
+
+
+bool PdfAttributs::Generate(wxPdfDocument * pdf) {
+	double linenormal = m_pdfLayerParent->GetDocumentParent()->GetLineSpacing();
+	double linesmall = linenormal / 3.0 * 2.0;
+	bool bHasAttributs = false;
+	const ProjectDefMemoryLayers * layer = m_pdfLayerParent->GetPrjLayer();
+	wxASSERT(layer);
+
+	
+	pdf->Ln();
+	pdf->Cell(100, linenormal, _("Attributs"), wxPDF_BORDER_FRAME, 1, wxPDF_ALIGN_CENTER);
+	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount(); i++) {
+		bHasAttributs = true;
+		pdf->Cell(100, linesmall, layer->m_pLayerFieldArray.Item(i)->m_Fieldname,
+				  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 1);
+	}
+	
+	if (bHasAttributs == true) {
+		pdf->Cell(100, 0, "", wxPDF_BORDER_TOP);
+	}
+	
+	pdf->Ln();
+	
+	return true;
+}
+
+
+
 
