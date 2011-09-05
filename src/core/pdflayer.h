@@ -26,29 +26,49 @@
 
 class ProjectDefMemoryLayers;
 class PdfDocument;
+class PdfObjects;
 
 class PdfLayer {
-  private:
-    //PdfObjects * m_pdfObjects;
+private:
+    PdfObjects * m_pdfObjects;
     //PdfAttributs * m_pdfAttributs;
     PdfDocument * m_pdfDocumentParent;
-
+	
     ProjectDefMemoryLayers * m_prjLayer;
-
-  public:
+	
+public:
     PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer);
     virtual ~PdfLayer();
     
 	bool Generate(wxPdfDocument * pdf);
 	
 	inline const PdfDocument * GetDocumentParent() const;
+	inline const ProjectDefMemoryLayers * GetPrjLayer() const;
 };
 
 
 inline const PdfDocument * PdfLayer::GetDocumentParent() const {
-  return m_pdfDocumentParent;
+	return m_pdfDocumentParent;
 }
 
 
+
+inline const ProjectDefMemoryLayers * PdfLayer::GetPrjLayer() const {
+	return m_prjLayer;
+}
 WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
+
+
+
+class PdfObjects {
+private:
+    PdfLayer * m_pdfLayerParent;
+	
+public:
+    PdfObjects(PdfLayer * parentlayer);
+    virtual ~PdfObjects();
+	
+    bool Generate(wxPdfDocument * pdf);
+	
+};
 #endif

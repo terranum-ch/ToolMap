@@ -1194,6 +1194,51 @@ void DataBaseTM::DeleteLayersObjects (int iLayer, wxString & sSqlSentence)
 										 TABLE_NAME_OBJECTS.c_str(), iLayer));
 }
 
+
+
+bool DataBaseTM::LoadLayerObjects(ProjectDefMemoryLayers * layer){
+	wxASSERT(layer->m_LayerID != wxNOT_FOUND);
+	wxString myFrequencyTxt = "";
+	if (layer->m_LayerType == LAYER_LINE) {
+		myFrequencyTxt = "o.OBJECT_ISFREQ,";
+	}
+	
+	wxString myQuery = wxString::Format("SELECT o.OBJECT_CD, o.OBJECT_DESC, l.LAYER_NAME, %s o.OBJECT_ID "
+										"FROM %s AS o LEFT JOIN %s as l ON "
+										"(l.LAYER_INDEX=o.THEMATIC_LAYERS_LAYER_INDEX) "
+										"WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY o.OBJECT_CD",
+										myFrequencyTxt,
+										TABLE_NAME_OBJECTS,
+										TABLE_NAME_LAYERS,
+										layer->m_LayerID);
+	if (DataBaseQuery(myQuery) == false) {
+		wxLogDebug(myQuery);
+		return false;
+	}
+	
+	// clear existing objects
+	unsigned int oCount = layer->m_pLayerObjectArray.GetCount();
+	for (unsigned int i = 0; i<oCount; i++) {
+		ProjectDefMemoryObjects * myObj = layer->m_pLayerObjectArray.Item(0);
+		wxDELETE(myObj);
+		layer->m_pLayerObjectArray.RemoveAt(0);
+	}
+	
+	
+	while (1) {
+		ProjectDefMemoryObjects * myObj = new ProjectDefMemoryObjects();
+		if (DataBaseGetNextResultAsObject(myObj, layer->m_LayerType) == false) {
+			wxDELETE(myObj);
+			break;
+		}
+		wxASSERT(myObj);
+		layer->m_pLayerObjectArray.Add(myObj);
+	}
+	return true;
+}
+
+
+
 /***************************************************************************//**
  @brief Delete a Table
  @details Delete a table if this table exists
@@ -1758,23 +1803,28 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 			ProjectDefMemoryLayers * mypLayer = myPrjDef->AddLayer();
 			iReturnValue = GetNextLayer(mypLayer);
 						
-			// item not found 
+			// first turn return 0, then -1 if an error occur 
 			if (iReturnValue != 1)
 			{
 				// remove last layer
 				myPrjDef->RemoveLayer();
-				iLayerAdded--;
+				if (iReturnValue != 0) {
+					break;
+				}
+			}else {
+				iLayerAdded++;
 			}
-			
-			iLayerAdded++;
-			
-			// no more results 
-			if (iReturnValue == -1){
-				break;
-			}
-			
 		}
 		
+		// load objects for all layers
+		for (unsigned int i = 0; i<myPrjDef->m_PrjLayerArray.GetCount(); i++) {
+			ProjectDefMemoryLayers * myLayer = myPrjDef->m_PrjLayerArray.Item(i);
+			wxASSERT(myLayer);
+			LoadLayerObjects(myLayer);
+		}
+				
+		
+		// load fields
 		GetFieldsFromDB(myPrjDef);
 		
 		//wxLogDebug(_T("Number of fields parsed %d"), iNumFieldAdded);

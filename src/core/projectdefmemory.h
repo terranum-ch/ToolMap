@@ -222,9 +222,7 @@ class ProjectDefMemoryObjects
 		
 		void InitMemberValues();
 		
-		// copy operations
-		bool CopyObject (ProjectDefMemoryObjects & object);
-		
+		ProjectDefMemoryObjects & operator=(const ProjectDefMemoryObjects & source);
 	};
 
 // Creating a list of MemoryObjects

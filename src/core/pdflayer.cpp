@@ -26,11 +26,14 @@ PdfLayer::PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer) {
 	*m_prjLayer = *layer;
 	wxASSERT(GetDocumentParent());
 	wxASSERT(m_prjLayer);
+	
+	m_pdfObjects = new PdfObjects(this);
 }
 
 
 
 PdfLayer::~PdfLayer() {
+	wxDELETE(m_pdfObjects);
 	wxDELETE(m_prjLayer);
 }
 
@@ -38,13 +41,17 @@ PdfLayer::~PdfLayer() {
 
 bool PdfLayer::Generate(wxPdfDocument * pdf) {
 	wxASSERT(pdf);
-	pdf->SetFont(pdf->GetFontFamily(), "", GetDocumentParent()->GetFontSize());
+	pdf->SetFont(pdf->GetFontFamily(), "B", GetDocumentParent()->GetFontSize());
 	pdf->Cell(60, GetDocumentParent()->GetLineSpacing(),
 			  wxString::Format("%s (%s)",
 							   m_prjLayer->m_LayerName,
 							   PRJDEF_LAYERS_TYPE_STRING[m_prjLayer->m_LayerType]),
 			  wxPDF_BORDER_FRAME);
 	pdf->Ln();
+	// write objects
+	wxASSERT(m_pdfObjects);
+	m_pdfObjects->Generate(pdf);
+	pdf->Ln(GetDocumentParent()->GetLineSpacing());
 	return true;
 }
 
@@ -52,3 +59,62 @@ bool PdfLayer::Generate(wxPdfDocument * pdf) {
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ArrayPdfLayer);
+
+
+
+
+
+
+
+
+
+
+
+PdfObjects::PdfObjects(PdfLayer * parentlayer) {
+	m_pdfLayerParent = parentlayer;
+	wxASSERT(m_pdfLayerParent);
+}
+
+
+
+PdfObjects::~PdfObjects() {
+}
+
+
+
+bool PdfObjects::Generate(wxPdfDocument * pdf) {
+	wxASSERT(m_pdfLayerParent);
+	const ProjectDefMemoryLayers * layer = m_pdfLayerParent->GetPrjLayer();
+	wxASSERT(layer);
+	
+	pdf->SetFont(pdf->GetFontFamily(), "I", 
+				 m_pdfLayerParent->GetDocumentParent()->GetFontSize());
+	// Column widths
+    double colw[2] = {20,80};
+	double linespace = m_pdfLayerParent->GetDocumentParent()->GetLineSpacing() / 3 * 2;
+	
+	// header
+	pdf->Cell(colw[0],m_pdfLayerParent->GetDocumentParent()->GetLineSpacing(),
+			  _("Code"), wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER);
+	pdf->Cell(colw[1],m_pdfLayerParent->GetDocumentParent()->GetLineSpacing(),
+			  _("Description"), wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER);
+	pdf->Ln();
+	
+	pdf->SetFont(pdf->GetFontFamily(), "", 
+				 m_pdfLayerParent->GetDocumentParent()->GetFontSize());
+
+	for (unsigned int i = 0; i<layer->m_pLayerObjectArray.GetCount(); i++) {
+		pdf->Cell(colw[0], linespace,
+				  wxString::Format("%ld",layer->m_pLayerObjectArray.Item(i)->m_ObjectCode),
+				  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER);
+		pdf->Cell(colw[1], linespace,
+				  wxString::Format("%s", layer->m_pLayerObjectArray.Item(i)->m_ObjectName),
+				  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+		pdf->Ln(linespace);
+	}
+	pdf->Cell((colw[0]+colw[1]),0,"",wxPDF_BORDER_TOP);
+	
+	
+	return true;
+}
+
