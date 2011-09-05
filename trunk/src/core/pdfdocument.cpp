@@ -38,8 +38,8 @@ PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	m_prjName = project->m_PrjName;
 	m_PaperSize = wxPAPER_A4;
 	m_PaperOrientation = wxPORTRAIT;
-	m_FontSize = 12; 
-	m_LineSpacing = 8;
+	m_FontSize = 10; 
+	m_LineSpacing = 6;
 	
 	// adding layers (copy of them)
 	for (int i = 0; i< project->GetCountLayers(); i++) {

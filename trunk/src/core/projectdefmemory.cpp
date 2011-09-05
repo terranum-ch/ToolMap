@@ -414,7 +414,7 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 	m_LayerName = source.m_LayerName;
 	m_LayerPolygonDefaultValue = source.m_LayerName;
 	
-	// clear fieldarray
+	/* clear fieldarray
 	unsigned int fCount = m_pLayerFieldArray.GetCount();
 	for (unsigned int i = 0; i<fCount; i++) {
 		ProjectDefMemoryFields * myField = m_pLayerFieldArray.Item(0);
@@ -428,7 +428,7 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 		ProjectDefMemoryObjects * myObj = m_pLayerObjectArray.Item(0);
 		wxDELETE(myObj);
 		m_pLayerObjectArray.RemoveAt(0);
-	}
+	}*/
 		
 	// copy field
 	for (unsigned int i = 0; i< source.m_pLayerFieldArray.GetCount();i++)
@@ -447,10 +447,9 @@ ProjectDefMemoryLayers & ProjectDefMemoryLayers::operator = (const ProjectDefMem
 		ProjectDefMemoryObjects * myObj = new ProjectDefMemoryObjects();
 		ProjectDefMemoryObjects * mySourceObj = source.m_pLayerObjectArray.Item(j);
 		wxASSERT(mySourceObj);
-		myObj->CopyObject( *mySourceObj);		
+		*myObj = *mySourceObj;		
 		m_pLayerObjectArray.Add(myObj);
 	}
-	
 	return *this;
 }
 
@@ -482,22 +481,17 @@ void ProjectDefMemoryObjects::InitMemberValues()
 }
 
 
-/***************************************************************************//**
- @brief Copy object values
- @return  always true
- @author Lucien Schreiber (c) CREALP 2009
- @date 17 March 2009
- *******************************************************************************/
-bool ProjectDefMemoryObjects::CopyObject (ProjectDefMemoryObjects & object)
-{
-	object.m_ObjectID = m_ObjectID;
-	object.m_ObjectCode = m_ObjectCode;
-	object.m_ObjectType = m_ObjectType;
-	object.m_ObjectName = m_ObjectName;
-	object.m_ObjectFreq = m_ObjectFreq;
-	object.m_ParentLayerName = m_ParentLayerName;
-	return true;
+
+ProjectDefMemoryObjects & ProjectDefMemoryObjects::operator=(const ProjectDefMemoryObjects & source){
+	m_ObjectID = source.m_ObjectID;
+	m_ObjectCode = source.m_ObjectCode;
+	m_ObjectType = source.m_ObjectType;
+	m_ObjectName = source.m_ObjectName;
+	m_ObjectFreq = source.m_ObjectFreq;
+	m_ParentLayerName = source.m_ParentLayerName;
+	return * this;
 }
+
 
 
 WX_DEFINE_OBJARRAY (PrjMemObjectsArray);
