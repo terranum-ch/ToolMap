@@ -25,9 +25,11 @@
 
 
 class ProjectDefMemoryLayers;
+class ProjectDefMemoryFields;
 class PdfDocument;
 class PdfObjects;
 class PdfAttributs;
+
 
 class PdfLayer {
 private:
@@ -88,6 +90,8 @@ class PdfAttributs {
 private:
     PdfLayer * m_pdfLayerParent;
 	
+	void _GenerateFieldDef (wxPdfDocument * pdf, ProjectDefMemoryFields * field, double colwidth);
+
 	
 public:
     PdfAttributs(PdfLayer * parentlayer);

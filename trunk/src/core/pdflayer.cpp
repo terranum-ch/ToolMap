@@ -144,6 +144,37 @@ PdfAttributs::~PdfAttributs() {
 
 
 
+void PdfAttributs::_GenerateFieldDef (wxPdfDocument * pdf, ProjectDefMemoryFields * field, double colwidth){
+	double linenormal = m_pdfLayerParent->GetDocumentParent()->GetLineSpacing();
+	double linesmall = linenormal / 3.0 * 2.0;
+	
+	switch (field->m_FieldType) {
+		case TM_FIELD_TEXT:
+			pdf->Cell(colwidth, linesmall, wxString::Format(_("Text Field : (max: %ld character)"),
+															field->m_FieldPrecision),
+					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+			break;
+			
+		case TM_FIELD_ENUMERATION:
+			for (unsigned int i = 0; i<field->m_pCodedValueArray.GetCount(); i++) {
+				if (i != 0) {
+					pdf->Ln();
+					pdf->Cell(colwidth, linesmall, "",wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+				}
+				pdf->Cell(colwidth, linesmall, field->m_pCodedValueArray.Item(i)->m_ValueName, wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+			}
+			break;
+			
+			
+		default:
+			pdf->Cell(colwidth, linesmall, "NOT SUPPORTED NOW!", wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+			break;
+	}
+	
+}
+
+
+
 bool PdfAttributs::Generate(wxPdfDocument * pdf) {
 	double linenormal = m_pdfLayerParent->GetDocumentParent()->GetLineSpacing();
 	double linesmall = linenormal / 3.0 * 2.0;
@@ -151,17 +182,24 @@ bool PdfAttributs::Generate(wxPdfDocument * pdf) {
 	const ProjectDefMemoryLayers * layer = m_pdfLayerParent->GetPrjLayer();
 	wxASSERT(layer);
 
+	wxArrayDouble myColsWidth;
+	double HalfUsablePageWidth = (pdf->GetPageWidth() / 2.0) - pdf->GetLeftMargin() - pdf->GetRightMargin();
+	myColsWidth.Add(HalfUsablePageWidth / 2.0);
+	myColsWidth.Add(HalfUsablePageWidth / 2.0);
+	
 	
 	pdf->Ln();
-	pdf->Cell(100, linenormal, _("Attributs"), wxPDF_BORDER_FRAME, 1, wxPDF_ALIGN_CENTER);
+	pdf->Cell(myColsWidth.Item(0) + myColsWidth.Item(1), linenormal, _("Attributs"), wxPDF_BORDER_FRAME, 1, wxPDF_ALIGN_CENTER);
 	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount(); i++) {
 		bHasAttributs = true;
-		pdf->Cell(100, linesmall, layer->m_pLayerFieldArray.Item(i)->m_Fieldname,
-				  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 1);
+		pdf->Cell(myColsWidth.Item(0), linesmall, layer->m_pLayerFieldArray.Item(i)->m_Fieldname,
+				  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+		_GenerateFieldDef(pdf, layer->m_pLayerFieldArray.Item(i), myColsWidth.Item(1));
+		pdf->Ln();
 	}
 	
 	if (bHasAttributs == true) {
-		pdf->Cell(100, 0, "", wxPDF_BORDER_TOP);
+		pdf->Cell(myColsWidth.Item(0) + myColsWidth.Item(1), 0, "", wxPDF_BORDER_TOP);
 	}
 	
 	pdf->Ln();
