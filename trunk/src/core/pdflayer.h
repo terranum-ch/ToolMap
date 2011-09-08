@@ -36,8 +36,10 @@ private:
     PdfObjects * m_pdfObjects;
     PdfAttributs * m_pdfAttributs;
     PdfDocument * m_pdfDocumentParent;
-	
     ProjectDefMemoryLayers * m_prjLayer;
+	wxArrayDouble m_ColumnWidth;
+	
+	void _UpdateColumnWidth();
 	
 public:
     PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer);
@@ -45,12 +47,12 @@ public:
     
 	bool Generate(wxPdfDocument * pdf);
 	
-	inline const PdfDocument * GetDocumentParent() const;
+	inline PdfDocument * GetDocumentParent() const;
 	inline const ProjectDefMemoryLayers * GetPrjLayer() const;
 };
 
 
-inline const PdfDocument * PdfLayer::GetDocumentParent() const {
+inline PdfDocument * PdfLayer::GetDocumentParent() const{
 	return m_pdfDocumentParent;
 }
 
@@ -71,6 +73,8 @@ WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
 class PdfObjects {
 private:
     PdfLayer * m_pdfLayerParent;
+    wxArrayDouble m_ColumnWidth;
+	void _UpdateColumnWidth();
 	
 public:
     PdfObjects(PdfLayer * parentlayer);
@@ -89,8 +93,10 @@ public:
 class PdfAttributs {
 private:
     PdfLayer * m_pdfLayerParent;
+	wxArrayDouble m_ColumnWidth;
 	
-	void _GenerateFieldDef (wxPdfDocument * pdf, ProjectDefMemoryFields * field, double colwidth);
+	void _UpdateColumnWidth();
+	void _GenerateFieldDef (wxPdfDocument * pdf, ProjectDefMemoryFields * field);
 
 	
 public:

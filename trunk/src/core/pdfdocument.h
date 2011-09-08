@@ -30,29 +30,36 @@
 class PrjDefMemManage;
 
 class PdfDocument {
-  private:
+private:
     ArrayPdfLayer m_pdfLayers;
-
+	
     wxString m_prjName;
     wxPdfDocument m_pdf;
     wxPaperSize m_PaperSize;
     wxPrintOrientation m_PaperOrientation;
     int m_FontSize;
 	double m_LineSpacing;
-
+	double m_UsablePageWidth;
+	
     bool _GenerateTitle();
-
-
-  public:
+	void _UpdatePageWidth();
+	
+public:
     PdfDocument(PrjDefMemManage * project);
     virtual ~PdfDocument();
-
+	
     bool Generate(const wxFileName & filename);
-
+	
 	inline const int GetFontSize() const;	
-    void SetFontSize(int value);
 	inline const double GetLineSpacing() const;
-    void SetLineSpacing(double value);	
+    
+	void SetLineSpacing(double value);	
+	void SetFontSize(int value);
+	void SetPaperSize(wxPaperSize value);
+    void SetPaperOrientation(wxPrintOrientation value);
+	
+    double GetUsablePageWidth();
+	bool IsLandscape();
 };
 
 
@@ -65,6 +72,6 @@ inline const int PdfDocument::GetFontSize() const {
 inline const double PdfDocument::GetLineSpacing() const {
 	return m_LineSpacing;
 }
-	
+
 
 #endif
