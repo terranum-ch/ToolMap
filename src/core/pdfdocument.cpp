@@ -49,6 +49,7 @@ PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	m_PaperOrientation = wxPORTRAIT;
 	m_FontSize = 10; 
 	m_LineSpacing = 6;
+	_UpdatePageWidth();
 	
 	// adding layers (copy of them)
 	for (int i = 0; i< project->GetCountLayers(); i++) {
@@ -84,10 +85,17 @@ bool PdfDocument::Generate(const wxFileName & filename) {
 		_GenerateTitle();
 		m_pdf.Ln();
 		m_pdfLayers.Item(i)->Generate(&m_pdf);
+		//m_pdf.Ln(GetLineSpacing());
 	}
 	m_pdf.SaveAsFile(filename.GetFullPath());
 	wxLogMessage(_("Data model exported to: '%s'"), filename.GetFullName());
 	return true;
+}
+
+
+void PdfDocument::_UpdatePageWidth(){
+	wxPdfDocument myTempDoc (m_PaperOrientation, "mm", m_PaperSize);
+	m_UsablePageWidth = myTempDoc.GetPageWidth() - myTempDoc.GetLeftMargin() - myTempDoc.GetRightMargin();
 }
 
 
@@ -101,3 +109,33 @@ void PdfDocument::SetFontSize(int value) {
 void PdfDocument::SetLineSpacing(double value) {
 	m_LineSpacing = value;
 }
+
+
+
+void PdfDocument::SetPaperSize(wxPaperSize value) {
+	m_PaperSize = value;
+	_UpdatePageWidth();
+}
+
+
+
+void PdfDocument::SetPaperOrientation(wxPrintOrientation value) {
+	m_PaperOrientation = value;
+	_UpdatePageWidth();
+}
+
+
+
+double PdfDocument::GetUsablePageWidth(){
+	return m_UsablePageWidth;
+}
+
+
+
+bool PdfDocument::IsLandscape() {
+	if (m_PaperOrientation == wxLANDSCAPE) {
+		return true;
+	}
+	return false;
+}
+

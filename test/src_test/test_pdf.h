@@ -38,7 +38,7 @@ public:
 
 	TEST_PDF (bool bTest){
 		m_pDB = new DataBaseTM();
-		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Fields_221));
+		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_221));
 		// load project Data
 		m_PrjDef = m_pDB->GetProjectDataFromDB() ;
 		TS_ASSERT(m_PrjDef != NULL);
@@ -74,8 +74,16 @@ public:
 	
 	void testGenerate1(){
 		PdfDocument myPdf (m_PrjDef);
-		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-test1.pdf"));
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A4-portrait.pdf"));
 	}
+	
+	void testGenerate2(){
+		PdfDocument myPdf (m_PrjDef);
+		myPdf.SetPaperOrientation(wxLANDSCAPE);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A4-landscape.pdf"));
+	}
+		
+		
 	
 		
 };
