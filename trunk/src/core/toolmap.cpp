@@ -354,6 +354,8 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	wxLogDebug(_("Debug mode enabled"));
 	
 	wxConfigBase::Set(new wxFileConfig(g_ProgName));
+	wxLogDebug("Config file : %s", wxFileConfig::GetLocalFile(g_ProgName).GetFullPath());
+
 	
 	// create the UI
 	wxBoxSizer* bSizer2;

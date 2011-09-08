@@ -63,6 +63,7 @@ static const wxString g_TestPrj_AdvAttribution = _T("testadvattribution");
 static const wxString g_TestPrj_PrjUpdate =_T("testprjupdate");
 static const wxString g_TestPrj_Stats =_T("teststats");
 static const wxString g_TestPrj_221 = _T("combioula221");
+static const wxString g_TestPrj_Fields_221  = _T("testfields221");
 
 
 // internet

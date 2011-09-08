@@ -38,7 +38,7 @@ public:
 
 	TEST_PDF (bool bTest){
 		m_pDB = new DataBaseTM();
-		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_221));
+		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Fields_221));
 		// load project Data
 		m_PrjDef = m_pDB->GetProjectDataFromDB() ;
 		TS_ASSERT(m_PrjDef != NULL);

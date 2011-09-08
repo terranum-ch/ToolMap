@@ -41,14 +41,22 @@ PdfLayer::~PdfLayer() {
 
 
 
-bool PdfLayer::Generate(wxPdfDocument * pdf) {
+bool PdfLayer::Generate(wxPdfDocument * pdf) {	
+	wxArrayDouble myColsWidth;
+	double UsablePageWidth = pdf->GetPageWidth() - pdf->GetLeftMargin() - pdf->GetRightMargin();
+	myColsWidth.Add(UsablePageWidth * 0.8);
+	myColsWidth.Add(UsablePageWidth * 0.2);
+	
+	
 	wxASSERT(pdf);
 	pdf->SetFont(pdf->GetFontFamily(), "B", GetDocumentParent()->GetFontSize());
-	pdf->Cell(0, GetDocumentParent()->GetLineSpacing(),
-			  wxString::Format("%s (%s)",
-							   m_prjLayer->m_LayerName,
-							   PRJDEF_LAYERS_TYPE_STRING[m_prjLayer->m_LayerType]),
-			  wxPDF_BORDER_FRAME);
+	pdf->Cell(myColsWidth.Item(0), GetDocumentParent()->GetLineSpacing(),
+			  m_prjLayer->m_LayerName,
+			  wxPDF_BORDER_TOP |wxPDF_BORDER_LEFT | wxPDF_BORDER_BOTTOM, 0);
+	pdf->Cell(myColsWidth.Item(1), GetDocumentParent()->GetLineSpacing(),
+			  PRJDEF_LAYERS_TYPE_STRING[m_prjLayer->m_LayerType],
+			  wxPDF_BORDER_TOP | wxPDF_BORDER_RIGHT | wxPDF_BORDER_BOTTOM, 0,
+			  wxPDF_ALIGN_RIGHT);
 	pdf->Ln();
 	// write objects
 	wxASSERT(m_pdfObjects);
@@ -150,7 +158,8 @@ void PdfAttributs::_GenerateFieldDef (wxPdfDocument * pdf, ProjectDefMemoryField
 	
 	switch (field->m_FieldType) {
 		case TM_FIELD_TEXT:
-			pdf->Cell(colwidth, linesmall, wxString::Format(_("Text Field : (max: %ld character)"),
+			pdf->Cell(colwidth, linesmall, wxString::Format(_("%s (max: %d characters)"),
+															PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],
 															field->m_FieldPrecision),
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
 			break;
@@ -164,6 +173,39 @@ void PdfAttributs::_GenerateFieldDef (wxPdfDocument * pdf, ProjectDefMemoryField
 				pdf->Cell(colwidth, linesmall, field->m_pCodedValueArray.Item(i)->m_ValueName, wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
 			}
 			break;
+			
+		case TM_FIELD_INTEGER:
+			pdf->Cell(colwidth, linesmall, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER],
+					  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+			break;
+			
+			
+		case TM_FIELD_DATE:
+			pdf->Cell(colwidth, linesmall, PRJDEF_FIELD_TYPE_STRING[TM_FIELD_DATE],
+					  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+			break;
+			
+			
+		case TM_FIELD_FLOAT:
+		{
+			wxString myPrecisionScale = wxEmptyString;
+			for (int i = 0; i< field->m_FieldPrecision; i++) {
+				myPrecisionScale.Append("9");
+			}
+			myPrecisionScale.Append(".");
+			for (int i = 0; i< field->m_FieldScale; i++) {
+				myPrecisionScale.Append ("9");
+			}
+			
+			pdf->Cell(colwidth, linesmall, 
+					  wxString::Format(_("%s (max: %s)"),
+									   PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT],
+									   myPrecisionScale),
+					  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
+		}
+			break;
+			
+			
 			
 			
 		default:
