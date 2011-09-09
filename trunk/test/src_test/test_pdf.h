@@ -88,7 +88,7 @@ public:
 		PdfDocument myPdf (m_PrjDef);
 		myPdf.SetPaperOrientation(wxPORTRAIT);
 		myPdf.SetTwoColsLayout(true);
-		myPdf.SetPaperSize(wxPAPER_A3);
+		myPdf.SetPaperFormat(wxPAPER_A3);
 		myPdf.SetPageBreak(false);
 		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A3-portraittwo.pdf"));
 	}
@@ -96,7 +96,7 @@ public:
 	void testGenerate4(){
 		PdfDocument myPdf (m_PrjDef);
 		myPdf.SetTwoColsLayout(true);
-		myPdf.SetPaperSize(wxPAPER_A2);
+		myPdf.SetPaperFormat(wxPAPER_A2);
 		myPdf.SetPageBreak(false);
 		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A2-portraittwo.pdf"));
 	}
@@ -104,10 +104,28 @@ public:
 	void testGenerate5(){
 		PdfDocument myPdf (m_PrjDef);
 		myPdf.SetTwoColsLayout(true);
-		myPdf.SetPaperSize(wxPAPER_A3);
+		myPdf.SetPaperFormat(wxPAPER_A3);
 		myPdf.SetPageBreak(false);
 		myPdf.SetDecorate(false);
 		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A3-portraittwo_nodecoration.pdf"));
+	}
+	
+	void testGenerate6(){
+		PdfDocument myPdf (m_PrjDef);
+		myPdf.SetTwoColsLayout(true);
+		myPdf.SetPaperFormat(wxPAPER_A4);
+		myPdf.SetPageBreak(false);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A4-portraittwo_nobreak.pdf"));
+	}
+		
+	void testGenerate7(){
+		PdfDocument myPdf (m_PrjDef);
+		//myPdf.SetTwoColsLayout(true);
+		//myPdf.SetPaperFormat(wxPAPER_A4);
+		myPdf.SetPageBreak(false);
+		myPdf.SetOnePage(true);
+		myPdf.SetPaperSize(148, 2000);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-onepage.pdf"));		
 	}
 	
 	

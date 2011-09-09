@@ -41,11 +41,44 @@ bool PdfDocument::_GenerateTitle() {
 }
 
 
+void PdfDocument::_ComputeOnePageSize() {
+	/*int maxlayerchar = 0; 
+	for (unsigned int i = 0; i< m_pdfLayers.GetCount(); i++) {
+		int layerchar = m_pdfLayers.Item(i)->GetName().Len();
+		if (layerchar > maxlayerchar) {
+			maxlayerchar = layerchar;
+		}
+	}
+	maxlayerchar = maxlayerchar + PRJDEF_LAYERS_TYPE_STRING[LAYER_POLYGON].Len();
+	wxLogDebug("Maxlayer char is : %d", maxlayerchar);*/
+	
+	wxPdfDocument myTempDoc (m_PaperOrientation, "mm", m_PaperFormat);
+	myTempDoc.SetFont("Helvetica", "", m_FontSize);
+	
+	double maxobjectswidth = 0;
+	
+	for (unsigned int i = 0; i< m_pdfLayers.GetCount(); i++) {
+		double objectwidth = m_pdfLayers.Item(i)->GetObjectsMaxWidth(&myTempDoc);
+		maxobjectswidth = MAX(maxobjectswidth, objectwidth);
+	}
+	
+	wxLogDebug("MaxObjectsSize : %f",maxobjectswidth);
+
+	
+	
+	
+}
+
+
+
 
 PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	wxASSERT(project);
 	m_prjName = project->m_PrjName;
-	m_PaperSize = wxPAPER_A4;
+	m_PaperFormat = wxPAPER_A4;
+	m_PaperWidth = wxNOT_FOUND;
+	m_PaperHeight = wxNOT_FOUND;
+	
 	m_PaperOrientation = wxPORTRAIT;
 	m_FontSize = 10; 
 	m_LineSpacing = 6;
@@ -83,18 +116,26 @@ PdfDocument::~PdfDocument() {
 
 bool PdfDocument::Generate(const wxFileName & filename) {
 
-	// create pdf object
-	m_pdf = new wxPdfDocument (m_PaperOrientation, "mm", m_PaperSize);
+	_ComputeOnePageSize();
 	
+	// create pdf object
+	if (m_PaperWidth == wxNOT_FOUND || m_PaperHeight == wxNOT_FOUND) {
+		m_pdf = new wxPdfDocument(m_PaperOrientation, "mm", m_PaperFormat);
+	}
+	else {
+		m_pdf = new wxPdfDocument(m_PaperOrientation, m_PaperWidth, m_PaperHeight, "mm");
+	}
+	wxASSERT(m_pdf);
+
 	m_pdf->AliasNbPages();
-	m_pdf->AddPage(m_PaperOrientation, m_PaperSize);
+	m_pdf->AddPage(m_PaperOrientation);
 	_GenerateTitle();
 	m_pdf->Ln();
 	
 	for (unsigned int i = 0; i<m_pdfLayers.GetCount(); i++) {
 		if (HasPageBreak()) {
 			if (i != 0) {
-				m_pdf->AddPage(m_PaperOrientation, m_PaperSize);
+				m_pdf->AddPage(m_PaperOrientation);
 				_GenerateTitle();
 				m_pdf->Ln();
 			}
@@ -112,8 +153,16 @@ bool PdfDocument::Generate(const wxFileName & filename) {
 
 
 void PdfDocument::_UpdatePageWidth(){
-	wxPdfDocument myTempDoc (m_PaperOrientation, "mm", m_PaperSize);
-	m_UsablePageWidth = myTempDoc.GetPageWidth() - myTempDoc.GetLeftMargin() - myTempDoc.GetRightMargin();
+	wxPdfDocument * myTempDoc = NULL;
+	if (m_PaperWidth == wxNOT_FOUND || m_PaperHeight == wxNOT_FOUND) {
+		myTempDoc = new wxPdfDocument(m_PaperOrientation, "mm", m_PaperFormat);
+	}
+	else {
+		myTempDoc = new wxPdfDocument(m_PaperOrientation, m_PaperWidth, m_PaperHeight, "mm");
+	}
+	wxASSERT(myTempDoc);	
+	m_UsablePageWidth = myTempDoc->GetPageWidth() - myTempDoc->GetLeftMargin() - myTempDoc->GetRightMargin();
+	wxDELETE(myTempDoc);
 }
 
 
@@ -130,8 +179,10 @@ void PdfDocument::SetLineSpacing(double value) {
 
 
 
-void PdfDocument::SetPaperSize(wxPaperSize value) {
-	m_PaperSize = value;
+void PdfDocument::SetPaperFormat(wxPaperSize value) {
+	m_PaperFormat = value;
+	m_PaperHeight = wxNOT_FOUND;
+	m_PaperWidth = wxNOT_FOUND;
 	_UpdatePageWidth();
 }
 
@@ -178,4 +229,15 @@ void PdfDocument::SetPageBreak(bool value) {
 	m_PageBreak = value;
 }
 
+
+void PdfDocument::SetOnePage(bool value) {
+	m_OnePage = value;
+}
+
+void PdfDocument::SetPaperSize(double width, double height) {
+	m_PaperWidth = width;
+	m_PaperHeight = height;
+	_UpdatePageWidth();
+
+}
 

@@ -284,8 +284,9 @@ bool PdfLayer::Generate() {
 	
 	// write objects
 	_GenerateObjects();
-	double myYPosStop = mypPdf->GetY();
-	
+	double myYPosStopObj = mypPdf->GetY();
+	double myYPosStopAttrib = myYPosStopObj;
+
 	// write attributs
 	if (m_prjLayer->m_pLayerFieldArray.GetCount() > 0) {
 		if (m_pdfDocumentParent->IsTwoColsLayout() == true) {
@@ -294,12 +295,29 @@ bool PdfLayer::Generate() {
 			mypPdf->SetY(myYPosStart);
 		}
 		_GenerateAttributs();
+		myYPosStopAttrib = mypPdf->GetY();
 	}
 	
-	if (myYPosStop > mypPdf->GetY()) {
-		mypPdf->SetY(myYPosStop);
+	if (myYPosStopObj > myYPosStopAttrib && myYPosStopAttrib > myYPosStart) {
+		wxLogDebug("Object greater than attributs");
+		mypPdf->SetY(myYPosStopObj);
 	}
 	
+	// page break
+	//if (myYPosStopAttrib > myYPosStart) {
+		
+//	}
+	
+	// indicate a page break!
+	/*if (mypPdf->GetY() < myYPosStart) {
+		wxLogDebug ("position y :%f position y start: %f", mypPdf->GetY(), myYPosStart);
+		mypPdf->SetY(0);
+	}
+	else if (myYPosStopObj > mypPdf->GetY()) {
+		wxLogDebug ("position stop y :%f position y : %f", myYPosStopObj, mypPdf->GetY());
+		mypPdf->SetY(myYPosStopObj);
+	}*/
+		
 	mypPdf->Ln(m_pdfDocumentParent->GetLineSpacing());
 
 	
@@ -308,6 +326,34 @@ bool PdfLayer::Generate() {
 	return true;
 }
 
+
+wxString PdfLayer::GetName() {
+	wxASSERT(m_prjLayer);
+	return m_prjLayer->m_LayerName;
+}
+
+
+
+double PdfLayer::GetObjectsMaxWidth(wxPdfDocument * pdf) {
+	wxASSERT(pdf);
+	wxASSERT(m_prjLayer);
+	
+	double maxcodewidth = 0;
+	double maxdescwidth = 0;
+	for (unsigned int i = 0; i< m_prjLayer->m_pLayerObjectArray.GetCount(); i++) {
+		wxString myCodeAsTxt = wxString::Format("%ld", m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode);
+		double codewidth = pdf->GetStringWidth(myCodeAsTxt);
+		double descwidth = pdf->GetStringWidth(m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectName);
+		maxcodewidth = MAX(maxcodewidth, codewidth);
+		maxdescwidth = MAX(maxdescwidth, descwidth);
+	}
+	
+	// code is only 20% of total size ! Check that description is greater
+	if (maxdescwidth * 0.2 > maxcodewidth) {
+		return maxdescwidth + (maxdescwidth * 100.0 / 80.0);
+	}
+	return maxcodewidth + (maxcodewidth * 100.0 / 20.0);
+}
 
 
 #include <wx/arrimpl.cpp>

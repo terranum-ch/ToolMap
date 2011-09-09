@@ -49,6 +49,8 @@ public:
     PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer);
     virtual ~PdfLayer();
     bool Generate();
+	wxString GetName();
+	double GetObjectsMaxWidth(wxPdfDocument * pdf);
 	
 };
 WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);

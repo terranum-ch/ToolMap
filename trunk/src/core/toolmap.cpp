@@ -1120,6 +1120,9 @@ void ToolMapFrame::OnExportProjectModel (wxCommandEvent & event){
 	
 	wxASSERT(m_PManager->GetMemoryProjectDefinition());
 	PdfDocument myPdf (m_PManager->GetMemoryProjectDefinition());
+	myPdf.SetTwoColsLayout(true);
+	myPdf.SetPaperFormat(wxPAPER_A0);
+	myPdf.SetPageBreak(false);
 	myPdf.Generate(wxFileName(myFileTxtName));
 
 	/*
