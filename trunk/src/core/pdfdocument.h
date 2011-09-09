@@ -34,12 +34,15 @@ private:
     ArrayPdfLayer m_pdfLayers;
 	
     wxString m_prjName;
-    wxPdfDocument m_pdf;
+    wxPdfDocument * m_pdf;
     wxPaperSize m_PaperSize;
     wxPrintOrientation m_PaperOrientation;
     int m_FontSize;
 	double m_LineSpacing;
 	double m_UsablePageWidth;
+	bool m_Decorate;
+	bool m_TwoCols;
+    bool m_PageBreak;
 	
     bool _GenerateTitle();
 	void _UpdatePageWidth();
@@ -52,7 +55,9 @@ public:
 	
 	inline const int GetFontSize() const;	
 	inline const double GetLineSpacing() const;
-    
+	inline const bool IsDecorated() const;
+	
+    void SetDecorate(bool value);
 	void SetLineSpacing(double value);	
 	void SetFontSize(int value);
 	void SetPaperSize(wxPaperSize value);
@@ -60,6 +65,14 @@ public:
 	
     double GetUsablePageWidth();
 	bool IsLandscape();
+	wxPdfDocument * GetPdfRef();
+	
+	inline const bool IsTwoColsLayout() const;
+    void SetTwoColsLayout(bool value);
+	
+    inline const bool HasPageBreak() const;
+    void SetPageBreak(bool value);
+
 };
 
 
@@ -71,6 +84,23 @@ inline const int PdfDocument::GetFontSize() const {
 
 inline const double PdfDocument::GetLineSpacing() const {
 	return m_LineSpacing;
+}
+
+
+inline const bool PdfDocument::IsDecorated() const {
+	return m_Decorate;
+}
+
+
+
+inline const bool PdfDocument::IsTwoColsLayout() const {
+	return m_TwoCols;
+}
+
+
+
+inline const bool PdfDocument::HasPageBreak() const {
+	return m_PageBreak;
 }
 
 
