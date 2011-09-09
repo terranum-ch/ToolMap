@@ -27,6 +27,12 @@
 #include "pdflayer.h"
 
 
+#ifndef MAX
+#  define MIN(a,b)      ((a<b) ? a : b)
+#  define MAX(a,b)      ((a>b) ? a : b)
+#endif
+
+
 class PrjDefMemManage;
 
 class PdfDocument {
@@ -35,7 +41,10 @@ private:
 	
     wxString m_prjName;
     wxPdfDocument * m_pdf;
-    wxPaperSize m_PaperSize;
+    wxPaperSize m_PaperFormat;
+	double m_PaperWidth;
+    double m_PaperHeight;
+	
     wxPrintOrientation m_PaperOrientation;
     int m_FontSize;
 	double m_LineSpacing;
@@ -43,9 +52,11 @@ private:
 	bool m_Decorate;
 	bool m_TwoCols;
     bool m_PageBreak;
+	bool m_OnePage;
 	
     bool _GenerateTitle();
 	void _UpdatePageWidth();
+	void _ComputeOnePageSize();
 	
 public:
     PdfDocument(PrjDefMemManage * project);
@@ -60,7 +71,8 @@ public:
     void SetDecorate(bool value);
 	void SetLineSpacing(double value);	
 	void SetFontSize(int value);
-	void SetPaperSize(wxPaperSize value);
+	void SetPaperFormat(wxPaperSize value);
+	void SetPaperSize(double width, double height);
     void SetPaperOrientation(wxPrintOrientation value);
 	
     double GetUsablePageWidth();
@@ -72,7 +84,8 @@ public:
 	
     inline const bool HasPageBreak() const;
     void SetPageBreak(bool value);
-
+	
+	 void SetOnePage(bool value);
 };
 
 
