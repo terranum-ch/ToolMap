@@ -80,10 +80,36 @@ public:
 	void testGenerate2(){
 		PdfDocument myPdf (m_PrjDef);
 		myPdf.SetPaperOrientation(wxLANDSCAPE);
+		myPdf.SetTwoColsLayout(true);
 		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A4-landscape.pdf"));
 	}
 		
-		
+	void testGenerate3(){
+		PdfDocument myPdf (m_PrjDef);
+		myPdf.SetPaperOrientation(wxPORTRAIT);
+		myPdf.SetTwoColsLayout(true);
+		myPdf.SetPaperSize(wxPAPER_A3);
+		myPdf.SetPageBreak(false);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A3-portraittwo.pdf"));
+	}
+
+	void testGenerate4(){
+		PdfDocument myPdf (m_PrjDef);
+		myPdf.SetTwoColsLayout(true);
+		myPdf.SetPaperSize(wxPAPER_A2);
+		myPdf.SetPageBreak(false);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A2-portraittwo.pdf"));
+	}
+
+	void testGenerate5(){
+		PdfDocument myPdf (m_PrjDef);
+		myPdf.SetTwoColsLayout(true);
+		myPdf.SetPaperSize(wxPAPER_A3);
+		myPdf.SetPageBreak(false);
+		myPdf.SetDecorate(false);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A3-portraittwo_nodecoration.pdf"));
+	}
+	
 	
 		
 };
