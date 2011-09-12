@@ -50,7 +50,10 @@ public:
     virtual ~PdfLayer();
     bool Generate();
 	wxString GetName();
-	double GetObjectsMaxWidth(wxPdfDocument * pdf);
+    double GetObjectsWidth(wxPdfDocument * pdf);
+    double GetAttributsWidth(wxPdfDocument * pdf);
+    double GetObjectsHeight(wxPdfDocument * pdf);
+    double GetAttributsHeight(wxPdfDocument * pdf);
 	
 };
 WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
