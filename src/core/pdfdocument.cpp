@@ -41,32 +41,57 @@ bool PdfDocument::_GenerateTitle() {
 }
 
 
-void PdfDocument::_ComputeOnePageSize() {
-	/*int maxlayerchar = 0; 
-	for (unsigned int i = 0; i< m_pdfLayers.GetCount(); i++) {
-		int layerchar = m_pdfLayers.Item(i)->GetName().Len();
-		if (layerchar > maxlayerchar) {
-			maxlayerchar = layerchar;
-		}
-	}
-	maxlayerchar = maxlayerchar + PRJDEF_LAYERS_TYPE_STRING[LAYER_POLYGON].Len();
-	wxLogDebug("Maxlayer char is : %d", maxlayerchar);*/
+void PdfDocument::_ComputeOnePageSize(double & width, double & height) {
+	width = wxNOT_FOUND;
+	height = wxNOT_FOUND;
 	
 	wxPdfDocument myTempDoc (m_PaperOrientation, "mm", m_PaperFormat);
 	myTempDoc.SetFont("Helvetica", "", m_FontSize);
 	
-	double maxobjectswidth = 0;
 	
+	// width
+	double maxobjectswidth = 0;
+	double maxattribswidth = 0;
 	for (unsigned int i = 0; i< m_pdfLayers.GetCount(); i++) {
-		double objectwidth = m_pdfLayers.Item(i)->GetObjectsMaxWidth(&myTempDoc);
+		double objectwidth = m_pdfLayers.Item(i)->GetObjectsWidth(&myTempDoc);
 		maxobjectswidth = MAX(maxobjectswidth, objectwidth);
+		
+		double attribswidth = m_pdfLayers.Item(i)->GetAttributsWidth(&myTempDoc);
+		maxattribswidth = MAX(maxattribswidth, attribswidth);
+		//wxLogDebug("Layer: %s, obj: %f, attrib: %f",m_pdfLayers.Item(i)->GetName(),
+		//		   objectwidth, attribswidth);		
 	}
 	
-	wxLogDebug("MaxObjectsSize : %f",maxobjectswidth);
-
+	if (wxIsSameDouble(maxattribswidth, 0) && wxIsSameDouble(maxobjectswidth, 0)) {
+		return;
+	}
 	
+	width = MAX(maxattribswidth, maxobjectswidth);
+	if (IsTwoColsLayout() == true) {
+		width = width * 2.0;
+	}
 	
+	// height
+	// title
+	height += 10; // margins
+	height += m_FontSize + 4;
+	height += m_FontSize * 2.0;
 	
+	// layers
+	for (unsigned int i = 0; i< m_pdfLayers.GetCount(); i++) {
+		height += (m_FontSize + 2) * 2.0;
+		
+		double objectheight = m_pdfLayers.Item(i)->GetObjectsHeight(&myTempDoc);
+		double attribheight = m_pdfLayers.Item(i)->GetAttributsHeight(&myTempDoc);
+		
+		
+		if (IsTwoColsLayout() == true) {
+			height += MAX(objectheight, attribheight);
+		}
+		else {
+			height = height + objectheight + attribheight;
+		}
+	}
 }
 
 
@@ -85,6 +110,7 @@ PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	m_Decorate = true;
 	m_PageBreak = true;
 	m_TwoCols = false;
+	m_OnePage = false;
 	_UpdatePageWidth();
 	m_pdf = NULL;
 	
@@ -116,7 +142,14 @@ PdfDocument::~PdfDocument() {
 
 bool PdfDocument::Generate(const wxFileName & filename) {
 
-	_ComputeOnePageSize();
+	// one page layout
+	if (m_OnePage == true) {
+		double myWidth = wxNOT_FOUND;
+		double myHeight = wxNOT_FOUND;
+		_ComputeOnePageSize(myWidth, myHeight);
+		wxLogDebug("Paper width is: %f, height: %f", myWidth, myHeight);
+		SetPaperSize(myWidth, myHeight);
+	}
 	
 	// create pdf object
 	if (m_PaperWidth == wxNOT_FOUND || m_PaperHeight == wxNOT_FOUND) {
@@ -232,6 +265,7 @@ void PdfDocument::SetPageBreak(bool value) {
 
 void PdfDocument::SetOnePage(bool value) {
 	m_OnePage = value;
+	SetPageBreak(false);
 }
 
 void PdfDocument::SetPaperSize(double width, double height) {

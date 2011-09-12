@@ -334,7 +334,7 @@ wxString PdfLayer::GetName() {
 
 
 
-double PdfLayer::GetObjectsMaxWidth(wxPdfDocument * pdf) {
+double PdfLayer::GetObjectsWidth(wxPdfDocument * pdf) {
 	wxASSERT(pdf);
 	wxASSERT(m_prjLayer);
 	
@@ -353,6 +353,93 @@ double PdfLayer::GetObjectsMaxWidth(wxPdfDocument * pdf) {
 		return maxdescwidth + (maxdescwidth * 100.0 / 80.0);
 	}
 	return maxcodewidth + (maxcodewidth * 100.0 / 20.0);
+}
+
+
+double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
+	wxASSERT(pdf);
+	wxASSERT(m_prjLayer);
+	
+	double maxFieldNameWidth = 0;
+	double maxFieldContentWidth = 0;
+	for (unsigned int f = 0; f< m_prjLayer->m_pLayerFieldArray.GetCount(); f++) {
+		ProjectDefMemoryFields * myField = m_prjLayer->m_pLayerFieldArray.Item(f);
+		wxASSERT(myField);
+		
+		// field name
+		double myFieldWidth = pdf->GetStringWidth(myField->m_Fieldname);
+		maxFieldNameWidth = MAX(maxFieldNameWidth, myFieldWidth);
+		
+		// field content
+		double maxFieldContentWidth = 0;
+		switch (myField->m_FieldType) {
+			case TM_FIELD_ENUMERATION:
+			{
+				for (unsigned i = 0; i< myField->m_pCodedValueArray.GetCount(); i++) {
+					double myTempWidth = pdf->GetStringWidth(myField->m_pCodedValueArray.Item(i)->m_ValueName);
+					maxFieldContentWidth = MAX(maxFieldContentWidth, myTempWidth);
+				}
+			}
+				break;
+				
+			default:
+			{
+				wxString myDummyText = wxString::Format(_("%s (max: %d characters)"),
+														PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],
+														10000);
+				maxFieldContentWidth = pdf->GetStringWidth(myDummyText);
+			}
+				break;
+		}
+		
+		maxFieldContentWidth = MAX(maxFieldContentWidth, maxFieldContentWidth);
+	}
+	
+	// field name is only 40% of total size ! Check that content is greater
+	if (maxFieldContentWidth * 0.4 > maxFieldNameWidth) {
+		return maxFieldContentWidth + (maxFieldContentWidth * 100.0 / 60.0);
+	}
+	return maxFieldNameWidth + (maxFieldNameWidth * 100.0 / 40.0);
+}
+
+
+
+double PdfLayer::GetObjectsHeight(wxPdfDocument * pdf) {
+	wxASSERT(pdf);
+	wxASSERT(m_prjLayer);
+	wxASSERT(m_pdfDocumentParent);
+	
+	double myLineHeight = m_pdfDocumentParent->GetLineSpacing();
+	double myLineHeightSml = myLineHeight * 2.0 / 3.0;
+	
+	double myHeight = 0;
+	myHeight += 2* myLineHeight; // Objects, Code - Descriptions lines (2)
+	myHeight += m_prjLayer->m_pLayerObjectArray.GetCount() * myLineHeightSml;
+		
+	return myHeight;
+}
+
+
+
+double PdfLayer::GetAttributsHeight(wxPdfDocument * pdf) {
+	wxASSERT(pdf);
+	wxASSERT(m_prjLayer);
+	wxASSERT(m_pdfDocumentParent);
+	
+	double myLineHeight = m_pdfDocumentParent->GetLineSpacing();
+	double myLineHeightSml = myLineHeight * 2.0 / 3.0;
+	
+	double myHeight = 0;
+	myHeight += myLineHeight; // Attributs
+	myHeight += m_prjLayer->m_pLayerFieldArray.GetCount() * myLineHeight; // Attributs name + Desc
+	for (unsigned int i = 0; i<m_prjLayer->m_pLayerFieldArray.GetCount(); i++) {
+		ProjectDefMemoryFields * myField = m_prjLayer->m_pLayerFieldArray.Item(i);
+		wxASSERT(myField);
+		if (myField->m_FieldType == TM_FIELD_ENUMERATION) {
+			myHeight += (myField->m_pCodedValueArray.GetCount() -1) * myLineHeightSml;
+		}
+	}
+	return myHeight;
 }
 
 

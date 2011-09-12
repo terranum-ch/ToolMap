@@ -96,9 +96,9 @@ public:
 	void testGenerate4(){
 		PdfDocument myPdf (m_PrjDef);
 		myPdf.SetTwoColsLayout(true);
-		myPdf.SetPaperFormat(wxPAPER_A2);
-		myPdf.SetPageBreak(false);
-		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-A2-portraittwo.pdf"));
+		myPdf.SetOnePage(true);
+		myPdf.SetPaperSize(296, 717);
+		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-onepage_two.pdf"));	
 	}
 
 	void testGenerate5(){
@@ -120,11 +120,9 @@ public:
 		
 	void testGenerate7(){
 		PdfDocument myPdf (m_PrjDef);
-		//myPdf.SetTwoColsLayout(true);
-		//myPdf.SetPaperFormat(wxPAPER_A4);
 		myPdf.SetPageBreak(false);
 		myPdf.SetOnePage(true);
-		myPdf.SetPaperSize(148, 2000);
+		myPdf.SetPaperSize(148, 881);
 		myPdf.Generate(wxFileName(g_TestPathEXPORT, "export-onepage.pdf"));		
 	}
 	
