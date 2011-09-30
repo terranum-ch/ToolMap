@@ -40,8 +40,8 @@
 #include "../components/tmupdate/update.h"
 #include "lsversion_dlg.h"
 #include "lsversion_param.h"
-#include "tmstats.h";
-#include "tmstatsevent.h";
+#include "tmstats.h"
+#include "tmstatsevent.h"
 #include "../gui/attribution_obj_type.h"
 
 #include "pdfdocument.h"

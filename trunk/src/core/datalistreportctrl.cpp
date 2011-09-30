@@ -340,7 +340,7 @@ void DataListReportCtrl::SortList(int col, int lowindex , int highindex , DATALI
 
 
 
-void DataListReportCtrl::SwapRow( int row1, int row2 )
+void DataListReportCtrl::SwapRow(int row1, int row2)
 {
 	// dont change Row A with Row A - its nonsense
 	if( row1 == row2 ){
