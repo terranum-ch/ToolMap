@@ -45,6 +45,7 @@
 #include "../gui/attribution_obj_type.h"
 
 #include "pdfdocument.h"
+#include "pdfexportwizard.h"
 
 
 IMPLEMENT_APP(ToolMapApp);
@@ -1109,8 +1110,16 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 
 
 void ToolMapFrame::OnExportProjectModel (wxCommandEvent & event){
-	// TODO: Test code for printing project model as PDF
-	wxLogMessage("Exporting model");
+	
+    PdfExportWizard myWizard(this);
+    if (myWizard.ShowWizard() == wxID_CANCEL){
+        return;
+    }
+    
+    wxLogMessage("Exporting model");
+    return;
+    
+    // TODO: Test code for printing project model as PDF
 	wxString myFileTxtName = wxFileSelector(_("Export Model as PDF"), wxEmptyString,
 											_("model-test"), "pdf", _("PDF files (*.pdf)|*.pdf"),
 											wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
