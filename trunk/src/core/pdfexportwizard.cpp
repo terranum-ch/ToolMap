@@ -102,16 +102,51 @@ void PdfExportWizard::_CreateControls() {
 
 
 
+void PdfExportWizard::OnRadioOnePageClick (wxCommandEvent & event){
+    wxLogMessage("One Radio Click");
+    wxWizardPageSimple::Chain(m_PageLayout, m_PageDecoration);
+    event.Skip();
+}
+
+
+
+void PdfExportWizard::OnRadioMultiplePageClick (wxCommandEvent & event){
+    wxLogMessage("Two Radio Click");
+    wxWizardPageSimple::Chain(m_PageLayout, m_PagePaper);
+    wxWizardPageSimple::Chain(m_PagePaper, m_PageDecoration);
+    event.Skip();
+}
+
+
+
+void PdfExportWizard::OnLastPage(wxWizardEvent & event){
+	if (event.GetPage() == m_PageDecoration && event.GetDirection() == true) {
+		wxButton * myFinishBtn = (wxButton*) FindWindowById(wxID_FORWARD);
+		if (m_TextBtnNext != NULL && myFinishBtn != NULL) {
+			myFinishBtn->SetLabel(*m_TextBtnNext);
+		}
+	}
+	event.Skip();
+}
+
+
+
 PdfExportWizard::PdfExportWizard(wxWindow * parent, wxWindowID id, const wxString & title)
 : wxWizard(parent, id,title){
     m_PageLayout = NULL;
     m_PagePaper = NULL;
     m_PageDecoration = NULL;
+    m_TextBtnNext = NULL;
     
     _CreateControls();
-    wxWizardPageSimple::Chain(m_PageLayout, m_PagePaper);
-    wxWizardPageSimple::Chain(m_PagePaper, m_PageDecoration);
+    wxWizardPageSimple::Chain(m_PageLayout, m_PageDecoration);
     
+    wxButton * myBtn = (wxButton*) FindWindowById(wxID_FORWARD);
+	if(myBtn != NULL){
+        m_TextBtnNext = new wxString(myBtn->GetLabel());
+	}
+
+        
     // specifiy size
 	GetPageAreaSizer()->Add(m_PageLayout);
 	GetPageAreaSizer()->Add(m_PagePaper);
@@ -119,11 +154,20 @@ PdfExportWizard::PdfExportWizard(wxWindow * parent, wxWindowID id, const wxStrin
 	wxSize mySize = GetPageAreaSizer()->CalcMin();
 	SetMinSize(mySize);
 	SetPageSize(mySize);
+    
+    // connect event
+    m_ExportOnePageCtrl->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &PdfExportWizard::OnRadioOnePageClick, this);
+    m_ExportMultiPageCtrl->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &PdfExportWizard::OnRadioMultiplePageClick, this);
+    this->Bind(wxEVT_WIZARD_PAGE_CHANGED, &PdfExportWizard::OnLastPage, this);
 }
 
 
 
 PdfExportWizard::~PdfExportWizard() {
+    m_ExportOnePageCtrl->Unbind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &PdfExportWizard::OnRadioOnePageClick, this);
+    m_ExportMultiPageCtrl->Unbind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &PdfExportWizard::OnRadioMultiplePageClick, this);
+    this->Unbind(wxEVT_WIZARD_PAGE_CHANGED, &PdfExportWizard::OnLastPage, this);
+    wxDELETE(m_TextBtnNext);
 }
 
 
@@ -136,8 +180,43 @@ int PdfExportWizard::ShowWizard() {
 }
 
 
-
 bool PdfExportWizard::GetWizardChoices(PdfDocument & document) {
-    return false;
+    document.SetOnePage(m_ExportOnePageCtrl->GetValue());
+    document.SetTwoColsLayout(m_ExportTwoColCtrl->GetValue());
+    if (m_ExportOnePageCtrl->GetValue() == false) {
+        wxPaperSize myPaper = wxPAPER_A4;
+        switch (m_PaperSizeCtrl->GetSelection()) {
+            case 1:
+                myPaper = wxPAPER_A3;
+                break;
+                
+            case 2:
+                myPaper = wxPAPER_A2;
+                break;
+  
+            case 3:
+                myPaper = wxPAPER_A1;
+                break;
+  
+            case 4:
+                myPaper = wxPAPER_A0;
+                break;
+                
+            default:
+                myPaper = wxPAPER_A4;
+                break;
+        }
+        document.SetPaperFormat(myPaper);
+        wxPrintOrientation myOrientation = wxPORTRAIT;
+        if (m_PaperLandscapeCtrl->GetValue() == true) {
+            myOrientation = wxLANDSCAPE;
+        }
+        document.SetPaperOrientation(myOrientation);
+    }
+
+    document.SetDecorate(!(m_DecorationSimpleCtrl->GetValue()));
+    return true;
 }
+
+
 
