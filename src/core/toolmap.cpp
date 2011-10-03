@@ -1110,14 +1110,27 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 
 
 void ToolMapFrame::OnExportProjectModel (wxCommandEvent & event){
-	
+    // wizard
     PdfExportWizard myWizard(this);
     if (myWizard.ShowWizard() == wxID_CANCEL){
         return;
     }
     
-    wxLogMessage("Exporting model");
-    return;
+    // select filename
+    wxString myFileTxtName = wxFileSelector(_("Export Model as PDF"), wxEmptyString,
+											_("model-test"), "pdf", _("PDF files (*.pdf)|*.pdf"),
+											wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
+	if (myFileTxtName.IsEmpty()) {
+		return;
+	}
+    
+    wxASSERT(m_PManager->GetMemoryProjectDefinition());
+	PdfDocument myPdf (m_PManager->GetMemoryProjectDefinition());
+    myWizard.GetWizardChoices(myPdf);
+    myPdf.Generate(wxFileName(myFileTxtName));
+
+
+    /*
     
     // TODO: Test code for printing project model as PDF
 	wxString myFileTxtName = wxFileSelector(_("Export Model as PDF"), wxEmptyString,
@@ -1134,7 +1147,7 @@ void ToolMapFrame::OnExportProjectModel (wxCommandEvent & event){
 	myPdf.SetPageBreak(false);
 	myPdf.Generate(wxFileName(myFileTxtName));
 
-	/*
+	
 	wxPdfDocument pdf;
 	pdf.AddPage(wxPORTRAIT,wxPAPER_A4);
 	pdf.SetFont(wxT("Helvetica"),wxT("B"),16);

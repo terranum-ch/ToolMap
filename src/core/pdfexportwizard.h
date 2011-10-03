@@ -46,7 +46,13 @@ private:
     // page decoration
     wxCheckBox* m_DecorationSimpleCtrl;
     
+     
     void _CreateControls();
+    
+    void OnRadioOnePageClick (wxCommandEvent & event);
+    void OnRadioMultiplePageClick (wxCommandEvent & event);
+    void OnLastPage(wxWizardEvent & event);
+    wxString * m_TextBtnNext;
     
     
 public:
