@@ -41,12 +41,12 @@ void PdfLayer::_UpdateColWidth() {
 	// attributs columns
 	m_ColWidthAttributs.Clear();
 	if (m_pdfDocumentParent->IsTwoColsLayout() == true) {
-		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.4 / 2.0) ;
-		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.6 / 2.0) ;
+		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.3 / 2.0) ;
+		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.7 / 2.0) ;
 	}
 	else {
-		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.4);
-		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.6);
+		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.3);
+		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.7);
 	}
 }
 
@@ -79,9 +79,9 @@ void PdfLayer::_GenerateObjects() {
 	
 	int fill = 0;
 	if (m_pdfDocumentParent->IsDecorated()) {
-		//mypPdf->SetFillColour(wxColour(224,235,255));
 		mypPdf->SetFillColour(220);
 	}
+    
 	// objects
 	for (unsigned int i = 0; i < m_prjLayer->m_pLayerObjectArray.GetCount(); i++) {
 		mypPdf->Cell(m_ColWidthObjects.Item(0), myLineSmall,
@@ -371,13 +371,12 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 		maxFieldNameWidth = MAX(maxFieldNameWidth, myFieldWidth);
 		
 		// field content
-		double maxFieldContentWidth = 0;
 		switch (myField->m_FieldType) {
 			case TM_FIELD_ENUMERATION:
 			{
 				for (unsigned i = 0; i< myField->m_pCodedValueArray.GetCount(); i++) {
 					double myTempWidth = pdf->GetStringWidth(myField->m_pCodedValueArray.Item(i)->m_ValueName);
-					maxFieldContentWidth = MAX(maxFieldContentWidth, myTempWidth);
+                    maxFieldContentWidth = MAX(maxFieldContentWidth, myTempWidth);
 				}
 			}
 				break;
@@ -393,13 +392,13 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 		}
 		
 		maxFieldContentWidth = MAX(maxFieldContentWidth, maxFieldContentWidth);
-	}
-	
+	}	
+    
 	// field name is only 40% of total size ! Check that content is greater
-	if (maxFieldContentWidth * 0.4 > maxFieldNameWidth) {
-		return maxFieldContentWidth + (maxFieldContentWidth * 100.0 / 60.0);
+	if (maxFieldContentWidth * 0.3 > maxFieldNameWidth) {
+		return maxFieldContentWidth + (maxFieldContentWidth * 100.0 / 70.0);
 	}
-	return maxFieldNameWidth + (maxFieldNameWidth * 100.0 / 40.0);
+	return maxFieldNameWidth + (maxFieldNameWidth * 100.0 / 30.0);
 }
 
 
