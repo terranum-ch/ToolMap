@@ -107,6 +107,7 @@ void PdfLayer::_GenerateAttributs() {
 	wxASSERT(m_prjLayer);
 	
 	double myLineNormal = m_pdfDocumentParent->GetLineSpacing();
+	double myLineSmall = myLineNormal * 2.0 / 3.0;
 
 	// header
 	mypPdf->Ln(myLineNormal);
@@ -122,7 +123,7 @@ void PdfLayer::_GenerateAttributs() {
 	bool bHasAttributs = false;	
 	for (unsigned int i = 0; i<m_prjLayer->m_pLayerFieldArray.GetCount(); i++) {
 		bHasAttributs = true;
-		mypPdf->Cell(m_ColWidthAttributs.Item(0), myLineNormal,
+		mypPdf->Cell(m_ColWidthAttributs.Item(0), myLineSmall,
 					 m_prjLayer->m_pLayerFieldArray.Item(i)->m_Fieldname,
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 		_GenerateAttributsDefinition(m_prjLayer->m_pLayerFieldArray.Item(i));
@@ -140,14 +141,13 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 	wxPdfDocument * mypPdf = m_pdfDocumentParent->GetPdfRef();
 	wxASSERT(mypPdf);
 	wxASSERT(field);
-	double myLineNormal = m_pdfDocumentParent->GetLineSpacing();
-	double myLineSmall = myLineNormal * 2.0 / 3.0;
+	double myLineSmall = m_pdfDocumentParent->GetLineSpacing() * 2.0 / 3.0;
 	
 	switch (field->m_FieldType) {
 		
 		case TM_FIELD_TEXT:
 			mypPdf->Cell(m_ColWidthAttributs.Item(1),
-						 myLineNormal,
+						 myLineSmall,
 						 wxString::Format(_("%s (max: %d characters)"),
 										  PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],
 										  field->m_FieldPrecision),
@@ -187,14 +187,14 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 			
 			
 		case TM_FIELD_INTEGER:
-			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineNormal,
+			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
 						 PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER],
 						 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 			break;
 			
 			
 		case TM_FIELD_DATE:
-			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineNormal,
+			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
 						 PRJDEF_FIELD_TYPE_STRING[TM_FIELD_DATE],
 						 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 			break;
@@ -211,7 +211,7 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 				myPrecisionScale.Append ("9");
 			}
 			
-			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineNormal, 
+			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall, 
 					  wxString::Format(_("%s (max: %s)"),
 									   PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT],
 									   myPrecisionScale),
@@ -221,7 +221,7 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 			
 			
 		default:
-			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineNormal,
+			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
 						 "NOT SUPPORTED NOW!", wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 			break;
 	}
