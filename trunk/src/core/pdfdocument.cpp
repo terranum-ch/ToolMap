@@ -58,8 +58,6 @@ void PdfDocument::_ComputeOnePageSize(double & width, double & height) {
 		
 		double attribswidth = m_pdfLayers.Item(i)->GetAttributsWidth(&myTempDoc);
 		maxattribswidth = MAX(maxattribswidth, attribswidth);
-		//wxLogDebug("Layer: %s, obj: %f, attrib: %f",m_pdfLayers.Item(i)->GetName(),
-		//		   objectwidth, attribswidth);		
 	}
 	
 	if (wxIsSameDouble(maxattribswidth, 0) && wxIsSameDouble(maxobjectswidth, 0)) {
