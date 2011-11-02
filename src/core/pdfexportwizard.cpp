@@ -23,24 +23,24 @@ void PdfExportWizard::_CreateControls() {
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Export type") ), wxVERTICAL );
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Type") ), wxVERTICAL );
 	
 	m_ExportOnePageCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("One Page"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
     m_ExportOnePageCtrl->SetValue(true);
 	sbSizer1->Add( m_ExportOnePageCtrl, 0, wxALL, 5 );
 	
-	m_ExportMultiPageCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("Multiple pages"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ExportMultiPageCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("One layer per page"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer1->Add( m_ExportMultiPageCtrl, 0, wxALL, 5 );
 	
 	bSizer1->Add( sbSizer1, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Export Layout") ), wxVERTICAL );
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Layout") ), wxVERTICAL );
 	
-	m_ExportOneColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("One column"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_ExportOneColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("Object Kind\nObject Attribute"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
 	sbSizer2->Add( m_ExportOneColCtrl, 0, wxALL, 5 );
 	
-	m_ExportTwoColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("Two Columns"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ExportTwoColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY,_("Object Kind / Object Attribute") , wxDefaultPosition, wxDefaultSize, 0 );
     m_ExportTwoColCtrl->SetValue(true);
 	sbSizer2->Add( m_ExportTwoColCtrl, 0, wxALL, 5 );
 	
@@ -103,7 +103,6 @@ void PdfExportWizard::_CreateControls() {
 
 
 void PdfExportWizard::OnRadioOnePageClick (wxCommandEvent & event){
-    wxLogMessage("One Radio Click");
     wxWizardPageSimple::Chain(m_PageLayout, m_PageDecoration);
     event.Skip();
 }
@@ -111,7 +110,6 @@ void PdfExportWizard::OnRadioOnePageClick (wxCommandEvent & event){
 
 
 void PdfExportWizard::OnRadioMultiplePageClick (wxCommandEvent & event){
-    wxLogMessage("Two Radio Click");
     wxWizardPageSimple::Chain(m_PageLayout, m_PagePaper);
     wxWizardPageSimple::Chain(m_PagePaper, m_PageDecoration);
     event.Skip();
@@ -207,6 +205,7 @@ bool PdfExportWizard::GetWizardChoices(PdfDocument & document) {
                 break;
         }
         document.SetPaperFormat(myPaper);
+        document.SetPageBreak(true);
         wxPrintOrientation myOrientation = wxPORTRAIT;
         if (m_PaperLandscapeCtrl->GetValue() == true) {
             myOrientation = wxLANDSCAPE;

@@ -56,7 +56,7 @@ private:
     
     
 public:
-    PdfExportWizard(wxWindow * parent, wxWindowID id = wxID_ANY, const wxString & title = _("Export Data Model"));
+    PdfExportWizard(wxWindow * parent, wxWindowID id = wxID_ANY, const wxString & title = _("Export Data Model Layout"));
     virtual ~PdfExportWizard();
     
     int ShowWizard();
