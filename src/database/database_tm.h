@@ -219,6 +219,9 @@ class DataBaseTM : public DataBase
 		
 		// attribution operations
 		bool DeleteAttribution (wxArrayLong * selected, int layertype);
+        wxArrayLong GetObjectsFromFeature (long selectedfeature, int layertype);
+        long GetSelectedLayerId (long ojectid);
+        bool DeleteAdvancedAttribution (long selectedobject, long selectedlayerid);
 		
 		// static path convertion
 		static bool ConvertPath(wxString & path);

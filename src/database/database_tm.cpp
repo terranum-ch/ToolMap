@@ -2848,6 +2848,63 @@ bool DataBaseTM::DeleteAttribution (wxArrayLong * selected, int layertype)
 
 
 
+wxArrayLong DataBaseTM::GetObjectsFromFeature (long selectedfeature, int layertype){
+    wxArrayLong myValues;
+    wxASSERT(myValues.GetCount() == 0);
+    if (selectedfeature == wxNOT_FOUND) {
+        return myValues;
+    }
+    
+    wxString myQuery = wxString::Format(_T("SELECT OBJECT_VAL_ID FROM %s WHERE OBJECT_GEOM_ID = %ld"),
+                                        TABLE_NAME_GIS_ATTRIBUTION[layertype],
+                                        selectedfeature);
+    if (DataBaseQuery(myQuery) == false) {
+        return myValues;
+    }
+    
+    DataBaseGetResults(myValues);
+    return myValues;
+}
+
+
+
+long DataBaseTM::GetSelectedLayerId (long objectid){
+    if (objectid == wxNOT_FOUND) {
+        return wxNOT_FOUND;
+    }
+    
+    wxString myQuery = wxString::Format(_T("SELECT THEMATIC_LAYERS_LAYER_INDEX FROM %s WHERE OBJECT_ID = %ld"), 
+                                        TABLE_NAME_OBJECTS,
+                                        objectid);
+    if (DataBaseQuery(myQuery) == false) {
+        return wxNOT_FOUND;
+    }
+    
+    long mylayerid = wxNOT_FOUND; 
+    DataBaseGetNextResult(mylayerid);
+    DataBaseClearResults();
+    return mylayerid;
+}
+
+
+
+bool DataBaseTM::DeleteAdvancedAttribution (long selectedobject, long selectedlayerid){
+    if (selectedobject == wxNOT_FOUND || selectedlayerid == wxNOT_FOUND) {
+        return false;
+    }
+    
+    wxString myQuery = wxString::Format(_T("DELETE FROM %s%ld WHERE OBJECT_ID = %ld"),
+                                        TABLE_NAME_LAYER_AT, 
+                                        selectedlayerid,
+                                        selectedobject);
+    if (DataBaseQueryNoResults(myQuery, false) == false) {
+        return false;
+    }
+    return true;
+}
+
+
+
 bool DataBaseTM::ConvertPath(wxString & path)
 {
 	wxArrayString myNewNameArray;

@@ -93,7 +93,7 @@ class DataBase
 		
 		// query operations
 		bool DataBaseQueryNoResults(const wxString & query, bool logerror = true);
-		bool DataBaseQuery (const wxString & query); 
+		bool DataBaseQuery (const wxString & query, bool logerror = true); 
 		int DataBaseQueriesNumber (const wxString & query);
 		long DataBaseGetLastInsertedID();
 		
