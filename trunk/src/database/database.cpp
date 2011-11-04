@@ -659,7 +659,7 @@ bool DataBase::DataBaseQueryNoResults(const wxString & query, bool logerror)
 
 
 
-bool DataBase::DataBaseQuery (const wxString & query)
+bool DataBase::DataBaseQuery (const wxString & query, bool logerror)
 {
 	if (DBIsDataBaseReady() == false)
 		return false;
@@ -673,7 +673,9 @@ bool DataBase::DataBaseQuery (const wxString & query)
 
 	if (mysql_query(m_MySQL, query.mb_str(wxConvUTF8)) != 0)
 	{
-		wxLogError(DataBaseGetLastError());
+        if (logerror == true){
+            wxLogError(DataBaseGetLastError());
+        }
 		return false;
 	}
 	m_MySQLRes = mysql_store_result(m_MySQL);

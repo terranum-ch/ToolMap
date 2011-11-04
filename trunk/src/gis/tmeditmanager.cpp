@@ -1601,14 +1601,22 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
 		return false;
 	}
 
-	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->GetType());
+    wxBusyCursor wait;
+    for (unsigned int i = 0; i< mySelectedIds->GetCount(); i++) {
+        wxArrayLong myFeatures = m_pDB->GetObjectsFromFeature(mySelectedIds->Item(i),
+                                                              m_TOC->GetEditLayer()->GetType());
+        for (unsigned int f = 0; f < myFeatures.GetCount(); f++) {
+            m_pDB->DeleteAdvancedAttribution(mySelectedIds->Item(i), 
+                                             m_pDB->GetSelectedLayerId(myFeatures.Item(f)));
+        }
+    }
 	m_pDB->DeleteAttribution(mySelectedIds, m_TOC->GetEditLayer()->GetType());
-	delete mySelectedIds;
+	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->GetType());
+    delete mySelectedIds;
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
-	
 	return true;
 }
 
