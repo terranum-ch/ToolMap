@@ -1549,13 +1549,9 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
 {
 	long myLayerId = 0;
 	int mySnapStatus = tmSNAPPING_OFF;
-	tmLayerProperties * myActualLayer = NULL;
-	
-	wxRealPoint * myReturnedSnappedPoint = NULL;
-	wxRealPoint mySnapPoint;
-	
-	for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++)
-	{
+	tmLayerProperties * myActualLayer = NULL;	
+    wxArrayRealPoints mySnapPts;
+	for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++){
 		m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
 		myActualLayer = m_TOC->GetLayerById(myLayerId);
 		if (!myActualLayer)
@@ -1563,20 +1559,41 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
 		
 		// search snapping for that layer
 		tmGISData * myActualGISData = tmGISData::LoadLayer(myActualLayer);
-		if (!myActualGISData)
+		if (!myActualGISData){
 			break;
+        }
 				
-		if (myActualGISData->GetSnapCoord(clickedpoint,
-									  m_SnapMem->GetTolerence(),
-									  mySnapPoint,mySnapStatus))
-		{
-			myReturnedSnappedPoint = new wxRealPoint(mySnapPoint);
-			delete myActualGISData;
-			break;
-		}
-		delete myActualGISData;
-	}
-	return myReturnedSnappedPoint;
+		myActualGISData->GetSnapCoord(clickedpoint, m_SnapMem->GetTolerence(), 
+                                      mySnapPts,mySnapStatus);
+		wxDELETE(myActualGISData);
+    }
+    
+    wxLogMessage("%ld snapping points found!", mySnapPts.GetCount());    
+    if (mySnapPts.GetCount() == 0) {
+        return NULL;
+    }
+    
+    if (mySnapPts.GetCount() == 1) {
+        return new wxRealPoint(mySnapPts.Item(0));
+    }
+    
+    // compute closest point!
+    int myMinItemIndex = 0;
+    double myMinDistance = 0;
+    for (unsigned int p = 0; p<mySnapPts.GetCount(); p++) {  
+        wxRealPoint mySubstrPtr = mySnapPts.Item(p) - clickedpoint;
+        double myDistance = fabs(sqrt((mySubstrPtr.x * mySubstrPtr.x) + (mySubstrPtr.y * mySubstrPtr.y)));
+        if (p == 0) {
+            myMinDistance = myDistance;
+        }
+        else{
+            if(myDistance < myMinDistance){
+                myMinDistance = myDistance;
+                myMinItemIndex = p;
+            }
+        }
+    }
+    return new wxRealPoint(mySnapPts.Item(myMinItemIndex));    
 }
 
 
@@ -1592,8 +1609,9 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
 bool tmEditManager::DeleteSelected(bool Clearselection)
 {
 	// make some checks 
-	if (!IsDrawingAllowed() || m_SelectedData->GetCount() <= 0)
+	if (!IsDrawingAllowed() || m_SelectedData->GetCount() <= 0){
 		return false;
+    }
 	
 	// delete ids from database
 	wxArrayLong * mySelectedIds = m_SelectedData->GetSelectedValues();

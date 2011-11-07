@@ -253,81 +253,66 @@ OGRGeometry * tmGISDataVector::CreateOGRGeometry (const tmRealRect & rect)
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
-													 OGRGeometry * buffer)
-{
+bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry * buffer,
+                                            wxArrayRealPoints & points){
 	OGRPoint * myPointLine = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
 
 	// should not be deleted, belong to OGR
 	OGRLineString * myLineLine = NULL;
 	OGRPolygon * myPoly = NULL;
 	OGRPoint * myPoint = NULL;
-
+    
+    unsigned int myCountPoints = points.GetCount();
 	int i = 0;
-	wxRealPoint * ptReturn = NULL;
-	//bool bBreak = false;
-
-	switch (wkbFlatten(geometry->getGeometryType()))
-	{
+	switch (wkbFlatten(geometry->getGeometryType())){
 		case wkbLineString:
 			myLineLine = (OGRLineString*) geometry;
 			for (i=0; i<myLineLine->getNumPoints();i++)
 			{
 				myLineLine->getPoint(i, myPointLine);
-				if (myPointLine && myPointLine->Intersect(buffer))
-				{
-					ptReturn = new wxRealPoint(myPointLine->getX(),
-											   myPointLine->getY());
+				if (myPointLine && myPointLine->Intersect(buffer)){
+                    points.Add(wxRealPoint(myPointLine->getX(), myPointLine->getY()));
 					break;
 				}
-
 			}
 			OGRGeometryFactory::destroyGeometry(myPointLine);
 			break;
 
 
-
-
 		case wkbPoint:
 			myPoint = (OGRPoint*) geometry;
-			if (myPoint && myPoint->Intersect(buffer))
-			{
-				ptReturn = new wxRealPoint(myPoint->getX(),
-										   myPoint->getY());
+			if (myPoint && myPoint->Intersect(buffer)){
+                points.Add(wxRealPoint(myPointLine->getX(), myPointLine->getY()));
 			}
 			break;
-
-
 
 
 		case wkbPolygon:
 			myPoly = (OGRPolygon*) geometry;
 			// exterior ring
 			myLineLine = (OGRLineString*) myPoly->getExteriorRing();
-			ptReturn = GetVertexIntersection(myLineLine, buffer);
+			GetVertexIntersection(myLineLine, buffer, points);
 
 			// interior ring if needed
-			if (!ptReturn)
-			{
-				for (i = 0; i<myPoly->getNumInteriorRings();i++)
-				{
-					myLineLine = (OGRLineString*) myPoly->getInteriorRing(i);
-					if (!myLineLine)
-						break;
-
-					ptReturn = GetVertexIntersection(myLineLine, buffer);
-					if (ptReturn)
-						break;
-				}
-			}
+            for (i = 0; i<myPoly->getNumInteriorRings();i++){
+                myLineLine = (OGRLineString*) myPoly->getInteriorRing(i);
+                if (!myLineLine){
+                    break;
+                }
+                
+                GetVertexIntersection(myLineLine, buffer, points);
+            }
 			break;
-
 
 		default:
 			break;
 	}
-
-	return ptReturn;
+    
+    // points where added
+    if (myCountPoints < points.GetCount()) {
+        return true;
+    }
+	return false;
 }
 
 
@@ -344,12 +329,10 @@ wxRealPoint * tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry,
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry,
-														OGRGeometry * buffer)
-{
-	wxRealPoint * ptReturn = NULL;
-
-	if (wkbFlatten(geometry->getGeometryType()) == wkbLineString)
+bool tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, OGRGeometry * buffer,
+                                               wxArrayRealPoints & points){
+    unsigned int myCountPoints = points.GetCount();
+    if (wkbFlatten(geometry->getGeometryType()) == wkbLineString)
 	{
 		OGRLineString *	myLine = (OGRLineString*) geometry;
 		int iPointLine = myLine->getNumPoints();
@@ -361,24 +344,25 @@ wxRealPoint * tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry,
 		myLine->getPoint(0, myPoint);
 		myLine->getPoint(iPointLine-1, myPoint2);
 
-		if (myPoint->Intersect(buffer))
-		{
-			ptReturn = new wxRealPoint(myPoint->getX(),
-									   myPoint->getY());
-
+		if (myPoint->Intersect(buffer)){
+            points.Add(wxRealPoint(myPoint->getX(), myPoint->getY()));
 		}
-		else if (myPoint2->Intersect(buffer))
-		{
-			ptReturn = new wxRealPoint(myPoint2->getX(),
-									   myPoint2->getY());
+		
+        
+        if (myPoint2->Intersect(buffer)){
+            points.Add(wxRealPoint(myPoint2->getX(), myPoint2->getY()));
 		}
 
 		OGRGeometryFactory::destroyGeometry(myPoint);
 		OGRGeometryFactory::destroyGeometry(myPoint2);
 
 	}
-
-	return ptReturn;
+    
+    // points where added
+    if (myCountPoints < points.GetCount()) {
+        return true;
+    }
+	return false;
 }
 
 

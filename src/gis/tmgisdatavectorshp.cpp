@@ -1014,7 +1014,7 @@ void tmGISDataVectorSHP::CloseGeometry(){
  @date 29 January 2009
  *******************************************************************************/
 bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-						   wxRealPoint & snappt, int snaptype)
+						   wxArrayRealPoints & snapppts, int snaptype)
 {
 	// create OGRpoint and buffer
 	OGRPoint myClickPoint;
@@ -1030,8 +1030,7 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 	m_Layer->ResetReading();
 	OGRGeometry * poGeometry;
 	OGRFeature * poFeature;
-	wxRealPoint * mySnapPoint = NULL;
-	bool bReturn = false;
+    unsigned int myPtsCount = snapppts.GetCount();
 	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
 	{
 		poGeometry = poFeature->GetGeometryRef();
@@ -1042,28 +1041,22 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 				
 				if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
 				{
-					mySnapPoint = GetVertexIntersection(poGeometry, myBufferClick);
+					GetVertexIntersection(poGeometry, myBufferClick, snapppts);
 				}
 				else if (snaptype == tmSNAPPING_BEGIN_END)
 				{
-					mySnapPoint = GetBeginEndInterseciton(poGeometry, myBufferClick);
+					GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
 				}
 				
 			}
 			
 			OGRFeature::DestroyFeature(poFeature);
-			
-			if (mySnapPoint)
-			{
-				snappt = wxRealPoint(mySnapPoint->x,mySnapPoint->y);
-				delete mySnapPoint;
-				bReturn = true;
-				break;
-			}
-			
-		}
+        }
 	}
 	OGRGeometryFactory::destroyGeometry(myBufferClick);
 
-	return bReturn;
+    if (myPtsCount < snapppts.GetCount()) {
+        return true;
+    }
+	return false;
 }
