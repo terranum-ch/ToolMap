@@ -28,7 +28,6 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
 #include "tmgisdata.h"
 
 // Number of formats reserved for rasters
@@ -81,10 +80,10 @@ class tmGISDataVector : public tmGISData
 	
 		
 		// Intersection for snapping
-		wxRealPoint * GetVertexIntersection(OGRGeometry * geometry,  
-											OGRGeometry * buffer);
-		wxRealPoint * GetBeginEndInterseciton (OGRGeometry * geometry,
-											   OGRGeometry * buffer);
+		bool GetVertexIntersection(OGRGeometry * geometry, OGRGeometry * buffer,
+                                   wxArrayRealPoints & points);
+		bool GetBeginEndInterseciton (OGRGeometry * geometry, OGRGeometry * buffer,
+                                      wxArrayRealPoints & points);
 		
 		
 		

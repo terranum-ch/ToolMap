@@ -36,6 +36,7 @@
 #include <wx/filename.h>		// for dealing with filename class
 #include "tmgisscale.h"			// for dealing with scale and real rectangle.
 #include "tmlayerproperties.h"	// for GIS spatial types and tmLayerProperties
+#include "../core/tmarraysize.h" // for wxArrayRealPoints
 
 
 
@@ -101,7 +102,7 @@ class tmGISData : public wxObject
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type){return NULL;}
 		virtual wxArrayLong * GetAllData (){return NULL;}
 		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-								   wxRealPoint & snappt, int snaptype) {return false;}
+								   wxArrayRealPoints & snapppts, int snaptype) {return false;}
 		
 		
 		

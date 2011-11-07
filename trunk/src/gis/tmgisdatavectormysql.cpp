@@ -973,7 +973,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchIntersectingGeometry (OGRGeometry * in
  @date 29 January 2009
  *******************************************************************************/
 bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-									   wxRealPoint & snappt, int snaptype)
+									   wxArrayRealPoints & snapppts, int snaptype)
 {
 	 //create OGRpoint and buffer
 	OGRPoint myClickPoint;
@@ -990,7 +990,6 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	wxASSERT(buffer);
 	wxString mySBuffer = wxString::FromAscii(buffer);
 	OGRFree(buffer);
-	
 	
 	
 	// search for intersecting features
@@ -1018,9 +1017,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 		
 	
 	// search into returned object for intersection
-	bool bReturn = false;
-	wxRealPoint * mySnapPoint = NULL;
-	
+    unsigned int myPtsCount = snapppts.GetCount();
 	while(m_DB->DataBaseGetNextRowResult(row, row_size))
 	{
 		OGRGeometry * poGeometry = CreateDataBaseGeometry(row, row_size, 1);
@@ -1028,26 +1025,22 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 		{
 			if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
 			{
-				mySnapPoint = GetVertexIntersection(poGeometry, myBufferClick);
+				GetVertexIntersection(poGeometry, myBufferClick, snapppts);
 			}
 			else if (snaptype == tmSNAPPING_BEGIN_END)
 			{
-				mySnapPoint = GetBeginEndInterseciton(poGeometry, myBufferClick);
+				GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
 			}
 		}
-		OGRGeometryFactory::destroyGeometry(poGeometry);
-		
-		if (mySnapPoint)
-		{
-			snappt = wxRealPoint(mySnapPoint->x,mySnapPoint->y);
-			delete mySnapPoint;
-			bReturn = true;
-			break;
-		}
+		OGRGeometryFactory::destroyGeometry(poGeometry);		
 	}
 	m_DB->DataBaseClearResults();
 	OGRGeometryFactory::destroyGeometry(myBufferClick);
-	return bReturn;
+    
+    if (myPtsCount < snapppts.GetCount()) {
+        return true;
+    }
+	return false;
 }
 
 
