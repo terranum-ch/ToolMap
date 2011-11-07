@@ -564,36 +564,45 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	int iNumVertex = myLine->getNumPoints();
 	OGRPoint myActualVertex;
 	int iIntersectVertex = wxNOT_FOUND;
-	for(int i = 0; i< iNumVertex;i++)
+    wxArrayRealPoints mySnapPts;
+    wxArrayInt mySnapIndex;
+	for(int i = 1; i< iNumVertex-1;i++)
 	{
-		myActualVertex.setX(myLine->getX(i));
+        myActualVertex.setX(myLine->getX(i));
 		myActualVertex.setY(myLine->getY(i));
 
 		if (myActualVertex.Intersect(myClickBuffer))
 		{
-			iIntersectVertex = i;
-			wxLogDebug(_T("Cutting @ vertex : %d"), iIntersectVertex);
-			break;
+            mySnapPts.Add(wxRealPoint(myActualVertex.getX(), myActualVertex.getY()));
+            mySnapIndex.Add(i);
 		}
 	}
 	OGRGeometryFactory::destroyGeometry(myClickBuffer);
+    wxASSERT(mySnapPts.GetCount() == mySnapIndex.GetCount());
+     
+    // search for closest vertex
+    double myMinDistance = 0;
+    int myMinIndex = 0;
+    for (unsigned int v = 0; v < mySnapPts.GetCount(); v++) {
+        wxRealPoint mySubstrPtr = mySnapPts.Item(v) - clickedpt;
+        double myDistance = fabs(sqrt((mySubstrPtr.x * mySubstrPtr.x) + (mySubstrPtr.y * mySubstrPtr.y)));
+        if (v == 0) {
+            myMinDistance = myDistance;
+        }
+        else{
+            if(myDistance < myMinDistance){
+                myMinDistance = myDistance;
+                myMinIndex = v;
+            }
+        }
 
-
-	// checks for boundary
-	if (iIntersectVertex == 0 || iIntersectVertex == iNumVertex-1)
-	{
-		wxLogWarning(_T("Unable to cut at first or last vertex, try again"));
-		OGRFeature::DestroyFeature(myFeature);
+    }
+    
+    if (mySnapIndex.GetCount() == 0) {
+        OGRFeature::DestroyFeature(myFeature);
 		return false;
-	}
-
-
-	if (iIntersectVertex == wxNOT_FOUND)
-	{
-		OGRFeature::DestroyFeature(myFeature);
-		return false;
-	}
-
+    }
+    iIntersectVertex = mySnapIndex.Item(myMinIndex);
 
 	OGRLineString myLine1;
 	OGRLineString myLine2;
@@ -616,12 +625,10 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	}
 	OGRFeature::DestroyFeature(myFeature);
 
-
 	// update geometry
 	bool bupd = UpdateGeometry(&myLine1, oid);
 	AddGeometry(&myLine2, oid, layertype);
 	wxASSERT(bupd);
-
 	return true;
 }
 
