@@ -793,9 +793,9 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
     }
 
 	//delete pabyBuf;
-#if (GEOS_VERSION_MAJOR >= 3 && GEOS_VERSION_MINOR >= 1 && GEOS_VERSION_PATCH >= 1)
-	GEOSFree(pabyBuf);
-#else
+#if GEOS_CAPI_VERSION_MAJOR >= 2 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 6) 
+		GEOSFree( pabyBuf ); 
+#elseq
 	free(pabyBuf);
 #endif
 	GEOSWKBWriter_destroy(myWKBWriter);
