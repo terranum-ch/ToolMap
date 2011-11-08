@@ -114,7 +114,7 @@ void PdfLayer::_GenerateAttributs() {
 	mypPdf->SetFont(mypPdf->GetFontFamily(), "BI", m_pdfDocumentParent->GetFontSize());
 	mypPdf->Cell(m_ColWidthAttributs.Item(0) + m_ColWidthAttributs.Item(1),
 				 myLineNormal,
-				 _("Attributs"),
+				 _("Attributes"),
 				 wxPDF_BORDER_FRAME, 1, wxPDF_ALIGN_CENTER);
 	mypPdf->SetFont(mypPdf->GetFontFamily(), "",  m_pdfDocumentParent->GetFontSize());
 	
@@ -299,7 +299,7 @@ bool PdfLayer::Generate() {
 	}
 	
 	if (myYPosStopObj > myYPosStopAttrib && myYPosStopAttrib > myYPosStart) {
-		wxLogDebug("Object greater than attributs");
+		wxLogDebug("Object greater than attributes");
 		mypPdf->SetY(myYPosStopObj);
 	}
 	
