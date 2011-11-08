@@ -36,9 +36,29 @@ void PdfExportWizard::_CreateControls() {
 	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Layout") ), wxVERTICAL );
+	    
+    wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_ExportOneColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("Object Kind\nObject Attribute"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	sbSizer2->Add( m_ExportOneColCtrl, 0, wxALL, 5 );
+	m_ExportOneColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	bSizer4->Add( m_ExportOneColCtrl, 0, wxTOP|wxBOTTOM|wxLEFT, 5 );
+	
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticText * m_staticText1 = new wxStaticText( m_PageLayout, wxID_ANY, _("Object Kind"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1->Wrap( -1 );
+	bSizer5->Add( m_staticText1, 0, wxTOP|wxRIGHT, 5 );
+	
+	wxStaticText * m_staticText2 = new wxStaticText( m_PageLayout, wxID_ANY, _("Object Attribute"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2->Wrap( -1 );
+	bSizer5->Add( m_staticText2, 0, wxBOTTOM|wxRIGHT, 5 );
+	
+	bSizer4->Add( bSizer5, 0, wxEXPAND, 5 );
+	
+	sbSizer2->Add( bSizer4, 1, wxEXPAND, 5 );
+    
+    
 	
 	m_ExportTwoColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY,_("Object Kind / Object Attribute") , wxDefaultPosition, wxDefaultSize, 0 );
     m_ExportTwoColCtrl->SetValue(true);
