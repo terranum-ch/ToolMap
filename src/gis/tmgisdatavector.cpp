@@ -394,17 +394,18 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 
     if( pabyBuf != NULL )
     {
+		//wxLogMessage ("GEOS Version: %d, %d, %d, %d", GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, GEOS_VERSION_PATCH, GEOS_VERSION_CONCATENATED);
 //#ifndef  __WXMSW__
 //		delete pabyBuf;
 //		OGRFree(pabyBuf);
 //#endif
-#if (GEOS_VERSION_MAJOR >= 3 && GEOS_VERSION_MINOR >= 1 && GEOS_VERSION_PATCH >= 1)
-		GEOSFree(pabyBuf);
-#else
+
+#if GEOS_CAPI_VERSION_MAJOR >= 2 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 6) 
+		GEOSFree( pabyBuf ); 
+#else 
 		free(pabyBuf);
 #endif
-
-    }
+}
     return poGeometry;
 
 }
