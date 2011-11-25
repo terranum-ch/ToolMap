@@ -2855,6 +2855,12 @@ wxArrayLong DataBaseTM::GetObjectsFromFeature (long selectedfeature, int layerty
         return myValues;
     }
     
+    // don't try to get objects if not basic layers
+    // (line, point, labels, notes)
+    if (layertype < TOC_NAME_LINES || layertype > TOC_NAME_ANNOTATIONS) {
+        return myValues;
+    }
+    
     wxString myQuery = wxString::Format(_T("SELECT OBJECT_VAL_ID FROM %s WHERE OBJECT_GEOM_ID = %ld"),
                                         TABLE_NAME_GIS_ATTRIBUTION[layertype],
                                         selectedfeature);
