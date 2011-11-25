@@ -1020,20 +1020,19 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 		wxLogDebug(_T("Unable to cut line, select a line first"));
 		return;
 	}
-	if (m_TOC->GetEditLayer()->GetSpatialType() != LAYER_SPATIAL_LINE)
+	if (m_TOC->GetEditLayer()->GetSpatialType() != LAYER_SPATIAL_LINE){
 		return;
-	
+    }
 		
 	// Get the selected layer 
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
-	if (!mySelLayer)
+	if (!mySelLayer){
 		return;
-	
+    }
 	
 	// display radius 
 	int icutRadius = tmSELECTION_DIAMETER;
-	if (m_SnapMem->IsSnappingEnabled())
-	{
+	if (m_SnapMem->IsSnappingEnabled()){
 		icutRadius = m_SnapMem->GetTolerence();
 		double dRadius = m_Scale->DistanceToReal(icutRadius);
 		icutRadius = int(dRadius + 0.5);
@@ -1044,23 +1043,23 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	wxMilliSleep(200);
 	m_Renderer->DrawCircleVideoInverseClean();
 	
-	
 	bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(),
 											m_Scale->PixelToReal(myCutPos),
 											tmSELECTION_DIAMETER, m_TOC->GetEditLayer()->GetType());	
 	wxDELETE(mySelLayer);
-	if (bCut == false)
+	if (bCut == false){
 		return;
+    }
 	
-	
-	// copy attribution
-	wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
-	attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
-	wxArrayLong * myTempArray = new wxArrayLong(); 
-	myTempArray->Add(m_pDB->DataBaseGetLastInsertedID());
-	attribevt1.SetClientData(myTempArray);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
-	
+	// copy attribution only if layer is lines (not frame!)
+    if (m_TOC->GetEditLayer()->GetType() == TOC_NAME_LINES) {        
+        wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
+        attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
+        wxArrayLong * myTempArray = new wxArrayLong(); 
+        myTempArray->Add(m_pDB->DataBaseGetLastInsertedID());
+        attribevt1.SetClientData(myTempArray);
+        m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
+	}
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
@@ -1920,8 +1919,13 @@ bool tmEditManager::EditVertexPosition ()
 bool tmEditManager::MergeSelectedLines ()
 {
 	//verifications
-	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectMinNumberSelected(2))
-		return false;
+    if (m_TOC->GetEditLayer()->GetType() != TOC_NAME_LINES && m_TOC->GetEditLayer()->GetType() != TOC_NAME_FRAME) {
+        return false;
+    }
+    
+    if (IsObjectMinNumberSelected(2) == false) {
+        return false;
+    }
 	
 	
 	// getting selections ids
@@ -1945,69 +1949,78 @@ bool tmEditManager::MergeSelectedLines ()
 		return false;
 	}
 	
-	
-	// get attributions
-	tmAttributionBasicArray myAttributions;
-	tmAttributionDataLine myAttrib (m_SelectedData->GetSelectedValues(), m_pDB);
-	if (myAttrib.GetInfoBasicArray(myAttributions) == false)
-	{
-		wxLogDebug(_T("Unable to get attributions from selected lines"));
-		return false;
-	}
-	
-	//FIXME: remove, this is temp logging code
-	for (unsigned int k = 0; k<myAttributions.GetCount();k++)
-	{
-		wxString sTmp = wxString::Format(_T("Values for OID : %ld are : "), 
-										 myAttributions.Item(k).m_Oid);
-		for (unsigned int m = 0; m< myAttributions.Item(k).m_Values.GetCount() ;m++)
-		{
-			sTmp.Append(wxString::Format(_T("%ld, "), myAttributions.Item(k).m_Values.Item(m)));
-		}
-		
-		wxLogDebug(sTmp);
-	}
-	//END 
-	
-	
-	// compare attributions
-	int iLineToKeep = 0;
-	wxArrayString myConcatenedAttrib;
-	if (tmAttributionData::IsAttributionSimilar(myAttributions) == false)
-	{
-		// get attribution name 
-		if (!myAttrib.GetConcatenedBasicName(myAttributions, myConcatenedAttrib))
-		{
-			wxLogError(_T("Error getting concatenated basic values"));
-			return false;
-		}
-		
-		// display dialog
-		wxSingleChoiceDialog myDlg (m_ParentEvt,
-									_("Select the attribution to be kept"),
-									_("Merge lines"),
-									myConcatenedAttrib);
-		if (myDlg.ShowModal()==wxID_CANCEL)
-			return false;
-		
-		iLineToKeep = myDlg.GetSelection();
-	}
-	
-	// remove lines
-	wxLogDebug(_T("We keep : OID %ld"), myAttributions.Item(iLineToKeep).m_Oid);
-	mySelectedIDs->RemoveAt(iLineToKeep);
+    // don't search attribution for frame.
+    long myKeptOid = wxNOT_FOUND;
+	if (m_TOC->GetEditLayer()->GetType() == TOC_NAME_LINES) {
+        // get attributions
+        tmAttributionBasicArray myAttributions;
+        tmAttributionDataLine myAttrib (m_SelectedData->GetSelectedValues(), m_pDB);
+        if (myAttrib.GetInfoBasicArray(myAttributions) == false)
+        {
+            wxLogDebug(_T("Unable to get attributions from selected lines"));
+            return false;
+        }
+        
+        //FIXME: remove, this is temp logging code
+        for (unsigned int k = 0; k<myAttributions.GetCount();k++)
+        {
+            wxString sTmp = wxString::Format(_T("Values for OID : %ld are : "), 
+                                             myAttributions.Item(k).m_Oid);
+            for (unsigned int m = 0; m< myAttributions.Item(k).m_Values.GetCount() ;m++)
+            {
+                sTmp.Append(wxString::Format(_T("%ld, "), myAttributions.Item(k).m_Values.Item(m)));
+            }
+            
+            wxLogDebug(sTmp);
+        }
+        //END 
+        
+        // compare attributions
+        int iLineToKeep = 0;
+        wxArrayString myConcatenedAttrib;
+        if (tmAttributionData::IsAttributionSimilar(myAttributions) == false)
+        {
+            // get attribution name 
+            if (!myAttrib.GetConcatenedBasicName(myAttributions, myConcatenedAttrib))
+            {
+                wxLogError(_T("Error getting concatenated basic values"));
+                return false;
+            }
+            
+            // display dialog
+            wxSingleChoiceDialog myDlg (m_ParentEvt,
+                                        _("Select the attribution to be kept"),
+                                        _("Merge lines"),
+                                        myConcatenedAttrib);
+            if (myDlg.ShowModal()==wxID_CANCEL)
+                return false;
+            
+            iLineToKeep = myDlg.GetSelection();
+        }
+        
+        // remove lines
+        myKeptOid = myAttributions.Item(iLineToKeep).m_Oid;
+        wxLogDebug(_T("We keep : OID %ld"), myKeptOid);
+        mySelectedIDs->RemoveAt(iLineToKeep);
+    }
+    else{
+        // arbitriary keep line 0!
+        myKeptOid = mySelectedIDs->Item(0);
+        mySelectedIDs->RemoveAt(0);
+    }
+    
 	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
 	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
 
 	// update number of selected features
 	m_SelectedData->Clear();
-	m_SelectedData->SetSelected(myAttributions.Item(iLineToKeep).m_Oid);
+	m_SelectedData->SetSelected(myKeptOid);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
     m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 	
 	// update geometry
 	wxASSERT (myMergeGeom);
-	myLayer->UpdateGeometry(myMergeGeom, myAttributions.Item(iLineToKeep).m_Oid);
+	myLayer->UpdateGeometry(myMergeGeom, myKeptOid);
 	OGRGeometryFactory::destroyGeometry(myMergeGeom);
 		
 	// update display
