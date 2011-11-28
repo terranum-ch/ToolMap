@@ -198,6 +198,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
 	EVT_MENU (wxID_PREFERENCES, ToolMapFrame::OnPreferences)
 	EVT_MENU (ID_MENU_EXPORT_MODEL, ToolMapFrame::OnExportProjectModel)
+    EVT_MENU(wxID_REFRESH, ToolMapFrame::OnRefreshView)
 	
 
 	// TOOL EVENT
@@ -561,6 +562,9 @@ void ToolMapFrame::_CreateMenu()
     //itemMenu28->Append(ID_MENU_SELECTION, _("Zoom to selection"), _T(""), wxITEM_NORMAL);
     //itemMenu28->Enable(ID_MENU_SELECTION, false);
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to layer"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu28->AppendSeparator();
+    itemMenu28->Append(wxID_REFRESH, _("Refresh\tCtrl+R"), wxEmptyString, wxITEM_NORMAL);
+
     menuBar->Append(itemMenu28, _("View"));
     wxMenu* itemMenu41 = new wxMenu;
     itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
@@ -1108,6 +1112,11 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 }
 
 
+void ToolMapFrame::OnRefreshView(wxCommandEvent & event){
+    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+    GetEventHandler()->AddPendingEvent(evt2);
+}
+
 
 void ToolMapFrame::OnExportProjectModel (wxCommandEvent & event){
     // wizard
@@ -1289,9 +1298,8 @@ void ToolMapFrame::OnSelectInvert (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 {
-	SetStatusText(wxString::Format(_T("%d Selected features"), 
-								   m_AttribManager->GetSelectionCount()),
-				  2);
+	SetStatusText(wxString::Format(_T("%d Selected features"),
+                                   m_LayerManager->GetSelectedDataMemory()->GetCount()),2);
 	event.Skip();
 }
 

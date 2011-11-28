@@ -339,6 +339,7 @@ private:
 	void OnUserManual(wxCommandEvent & event);
 	void OnFlipLine (wxCommandEvent & event);
 	void OnPreferences(wxCommandEvent & event);
+    void OnRefreshView(wxCommandEvent & event);
 	
 	
 	// selection
