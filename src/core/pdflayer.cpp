@@ -41,12 +41,14 @@ void PdfLayer::_UpdateColWidth() {
 	// attributs columns
 	m_ColWidthAttributs.Clear();
 	if (m_pdfDocumentParent->IsTwoColsLayout() == true) {
-		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.3 / 2.0) ;
-		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.7 / 2.0) ;
+		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.2 / 2.0) ;
+		m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.2 / 2.0) ;
+        m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.6 / 2.0) ;
 	}
 	else {
-		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.3);
-		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.7);
+		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.2);
+		m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.2);
+        m_ColWidthAttributs.Add(m_pdfDocumentParent->GetUsablePageWidth() * 0.6);
 	}
 }
 
@@ -112,12 +114,22 @@ void PdfLayer::_GenerateAttributs() {
 	// header
 	mypPdf->Ln(myLineNormal);
 	mypPdf->SetFont(mypPdf->GetFontFamily(), "BI", m_pdfDocumentParent->GetFontSize());
-	mypPdf->Cell(m_ColWidthAttributs.Item(0) + m_ColWidthAttributs.Item(1),
+	mypPdf->Cell(m_ColWidthAttributs.Item(0) + m_ColWidthAttributs.Item(1) + m_ColWidthAttributs.Item(2),
 				 myLineNormal,
 				 _("Attributes"),
 				 wxPDF_BORDER_FRAME, 1, wxPDF_ALIGN_CENTER);
-	mypPdf->SetFont(mypPdf->GetFontFamily(), "",  m_pdfDocumentParent->GetFontSize());
-	
+  
+	mypPdf->Cell(m_ColWidthAttributs.Item(0), myLineNormal,
+				 _("Name"),
+				 wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER);
+	mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineNormal,
+				 _("Type"),
+				 wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER);
+    mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineNormal,
+				 _("List of values"),
+				 wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER);
+	mypPdf->Ln();
+	mypPdf->SetFont(mypPdf->GetFontFamily(), "",  m_pdfDocumentParent->GetFontSize());	
 	
 	// fields
 	bool bHasAttributs = false;	
@@ -394,11 +406,11 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 		maxFieldContentWidth = MAX(maxFieldContentWidth, maxFieldContentWidth);
 	}	
     
-	// field name is only 40% of total size ! Check that content is greater
-	if (maxFieldContentWidth * 0.3 > maxFieldNameWidth) {
-		return maxFieldContentWidth + (maxFieldContentWidth * 100.0 / 70.0);
+	// field name is only 20% of total size ! Check that content is greater
+	if (maxFieldContentWidth * 0.2 > maxFieldNameWidth) {
+		return maxFieldContentWidth + (maxFieldContentWidth * 100.0 / 80.0);
 	}
-	return maxFieldNameWidth + (maxFieldNameWidth * 100.0 / 30.0);
+	return maxFieldNameWidth + (maxFieldNameWidth * 100.0 / 20.0);
 }
 
 
