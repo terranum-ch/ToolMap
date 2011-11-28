@@ -1714,9 +1714,14 @@ int tmEditManager::GetSelectionCount()
 bool tmEditManager::CreateIntersections ()
 {
 	// checks (editing mode and 1 line selected)
-	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectSelected())
-		return false;
-
+    if (IsObjectSelected() == false) {
+        return false;
+    }
+    
+    if (m_TOC->GetEditLayer()->GetSpatialType() != LAYER_SPATIAL_LINE) {
+        return false;
+    }
+ 
 	// Get the Layer (Line MySQL) 
 	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
 	if (!mySelLayer){
@@ -1756,16 +1761,14 @@ bool tmEditManager::CreateIntersections ()
 							   myInsertedIDs1, m_TOC->GetEditLayer()->GetType());
 		
 	// add attributions for new segment of selected line
-	wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
-	attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
-	wxArrayLong * myTempArray = new wxArrayLong(myInsertedIDs1); 
-	attribevt1.SetClientData(myTempArray);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
-		
-	//TODO: temp code, remove me
-	//for (unsigned int w = 0; w < myInsertedIDs1.GetCount();w++)
-	//	wxLogDebug(_T("ID inserted : %d"), myInsertedIDs1.Item(w));
-	// end of temp code
+    // only if lines (not frame)
+    if (m_TOC->GetEditLayer()->GetType() == TOC_NAME_LINES) {
+        wxCommandEvent attribevt1(tmEVT_AM_COPY_ATTRIBUTION, wxID_ANY);
+        attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
+        wxArrayLong * myTempArray = new wxArrayLong(myInsertedIDs1); 
+        attribevt1.SetClientData(myTempArray);
+        m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
+    }
 		
 	// compute intersections for other lines
 	OGRMultiLineString myRes1;
@@ -1786,11 +1789,14 @@ bool tmEditManager::CreateIntersections ()
 			myRes2.empty();
 			
 			// send attribution message
-			attribevt2.SetExtraLong(myLinesCrossing->Item(i));
-			wxArrayLong * myTempArray2 = new wxArrayLong(myInsertedIDs2); 
-			attribevt2.SetClientData(myTempArray2);
-			m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt2);
-			myInsertedIDs2.Clear();
+            if (m_TOC->GetEditLayer()->GetType() == TOC_NAME_LINES) {
+                attribevt2.SetExtraLong(myLinesCrossing->Item(i));
+                wxArrayLong * myTempArray2 = new wxArrayLong(myInsertedIDs2); 
+                attribevt2.SetClientData(myTempArray2);
+                m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt2);
+            }	
+            myInsertedIDs2.Clear();
+
 		}
 	}
 	OGRFeature::DestroyFeature(myFeature);
