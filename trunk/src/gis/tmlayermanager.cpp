@@ -235,7 +235,7 @@ bool tmLayerManager::SaveTOCStatus()
 	wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));
 	
 	tmLayerProperties * itemProp = NULL;
-	unsigned int iRank = m_TOCCtrl->GetCountLayers();
+	int iRank = m_TOCCtrl->GetCountLayers();
 	
 	wxString sSentence = _T("");
 	

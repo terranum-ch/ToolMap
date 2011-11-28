@@ -1023,7 +1023,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 		OGRGeometry * poGeometry = CreateDataBaseGeometry(row, row_size, 1);
 		if (poGeometry->Intersects(myBufferClick))
 		{
-			if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
+			if ((snaptype & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX)
 			{
 				GetVertexIntersection(poGeometry, myBufferClick, snapppts);
 			}
@@ -1063,7 +1063,7 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
 		wxLogError(_T("Error getting geometry for oid = %ld"),oid);
-		return false;
+		return NULL;
 	}
 	
 	OGRGeometry * myGeom = GetNextDataLine(myUnusedOid);

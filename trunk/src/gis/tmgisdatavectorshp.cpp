@@ -1039,7 +1039,7 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 			if (poGeometry->Intersect(myBufferClick))
 			{
 				
-				if (snaptype & tmSNAPPING_VERTEX == tmSNAPPING_VERTEX)
+				if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX)
 				{
 					GetVertexIntersection(poGeometry, myBufferClick, snapppts);
 				}
