@@ -193,7 +193,12 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex, long & oid)
 	
 	
 	OGRLineString * pline = (OGRLineString*) poFeature->GetGeometryRef();
-	wxASSERT(pline);
+	if (pline == NULL) {
+        wxLogWarning(_("Line %ld is corrupted in file: '%s'!"), poFeature->GetFID(),
+                     wxString(m_Datasource->GetName()));
+        return NULL;
+    }
+    
 	oid = poFeature->GetFID();
 	
 	// normal reading

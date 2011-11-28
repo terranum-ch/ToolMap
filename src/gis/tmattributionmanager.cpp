@@ -348,11 +348,16 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	//	A layer must be selected
 	//	A construction layer must be selected (< TOC_NAME_FRAME)
 	m_pLayerProperties = m_TOC->GetSelectionLayer();
-	if (!m_pLayerProperties)
+	if (!m_pLayerProperties){
+        event.Skip();
 		return;
+    }
 	
-	if(m_pLayerProperties->GetType() >= TOC_NAME_FRAME)
+	if(m_pLayerProperties->GetType() >= TOC_NAME_FRAME){
+        event.Skip();
 		return;
+    }
+    
 	bool bEditMode = false;
 	if (m_TOC->GetEditLayer() != NULL)
 		bEditMode = true;
@@ -377,13 +382,8 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 		}
 	}
 	
-	
-	
-	
 	// propagate to menu
 	event.Skip();
-	
-	
 }
 
 
