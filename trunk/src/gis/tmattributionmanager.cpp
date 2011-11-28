@@ -359,10 +359,10 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
     }
     
 	bool bEditMode = false;
-	if (m_TOC->GetEditLayer() != NULL)
+	if (m_TOC->GetEditLayer() != NULL){
 		bEditMode = true;
+    }
 	m_Panel->SetAttributeBtn(iSelFeatureCount, bEditMode);
-	
 	
 	m_Panel->SetInfoBtn(iSelFeatureCount);
 	TOC_GENERIC_NAME mySelType = m_pLayerProperties->GetType();
