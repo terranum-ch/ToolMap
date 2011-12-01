@@ -143,7 +143,8 @@ void PdfLayer::_GenerateAttributs() {
 	}
 	
 	if (bHasAttributs == true) {
-		mypPdf->Cell(m_ColWidthAttributs.Item(0) + m_ColWidthAttributs.Item(1), 0, "", wxPDF_BORDER_TOP);
+		mypPdf->Cell(m_ColWidthAttributs.Item(0) + m_ColWidthAttributs.Item(1)
+                     + m_ColWidthAttributs.Item(2), 0, "", wxPDF_BORDER_TOP);
 	}	
 }
 
@@ -164,6 +165,7 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 										  PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],
 										  field->m_FieldPrecision),
 						 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
+            mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, "",wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 			break;
 			
 			
@@ -181,11 +183,16 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 				}
 				
 				if (i == 0) {
-					mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall, 
+                    mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
+                                PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION],
+                                wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0, wxPDF_ALIGN_LEFT);
+                    mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, 
 								 field->m_pCodedValueArray.Item(i)->m_ValueName,
-								 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0, wxPDF_ALIGN_LEFT, fill);
+								 wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0, wxPDF_ALIGN_LEFT, fill);
+
 				}else {
-					mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall, 
+                    mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall, "",wxPDF_BORDER_LEFT, 0);
+					mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, 
 								 field->m_pCodedValueArray.Item(i)->m_ValueName,
 								 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_LEFT, fill);
 				}
@@ -202,6 +209,8 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
 						 PRJDEF_FIELD_TYPE_STRING[TM_FIELD_INTEGER],
 						 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
+            mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, "",wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
+
 			break;
 			
 			
@@ -209,6 +218,8 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
 						 PRJDEF_FIELD_TYPE_STRING[TM_FIELD_DATE],
 						 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
+            mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, "",wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
+
 			break;
 			
 			
@@ -228,12 +239,15 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 									   PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT],
 									   myPrecisionScale),
 					  wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
+            mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, "",wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 		}
 			break;
 			
 			
 		default:
 			mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
+						 "NOT SUPPORTED NOW!", wxPDF_BORDER_LEFT | wxPDF_BORDER_TOP, 0);
+			mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall,
 						 "NOT SUPPORTED NOW!", wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0);
 			break;
 	}
