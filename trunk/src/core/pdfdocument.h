@@ -57,6 +57,7 @@ private:
     bool _GenerateTitle();
 	void _UpdatePageWidth();
 	void _ComputeOnePageSize(double & width, double & height);
+    bool _OrderLayers();
 	
 public:
     PdfDocument(PrjDefMemManage * project);

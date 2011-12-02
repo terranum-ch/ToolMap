@@ -90,7 +90,7 @@ void PdfLayer::_GenerateObjects() {
 					 wxString::Format("%ld",m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode),
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
 		mypPdf->Cell(m_ColWidthObjects.Item(1), myLineSmall,
-					 wxString::Format("%s", m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectName),
+                     wxString::Format("%s", m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectName),
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_LEFT, fill);
 		mypPdf->Ln(myLineSmall);
 		
@@ -359,6 +359,25 @@ wxString PdfLayer::GetName() {
 }
 
 
+int PdfLayer::GetLayerTypeOrder(){
+    wxASSERT(m_prjLayer);
+    if (m_prjLayer->m_LayerType == LAYER_POINT){
+        return 0;
+    }
+    
+    if (m_prjLayer->m_LayerType == LAYER_LINE) {
+        return 1;
+    }
+    
+    if (m_prjLayer->m_LayerType == LAYER_POLYGON) {
+        return 2;
+    }
+    
+    wxFAIL;
+    return wxNOT_FOUND;
+}
+
+
 
 double PdfLayer::GetObjectsWidth(wxPdfDocument * pdf) {
 	wxASSERT(pdf);
@@ -438,7 +457,7 @@ double PdfLayer::GetObjectsHeight(wxPdfDocument * pdf) {
 	double myLineHeightSml = myLineHeight * 2.0 / 3.0;
 	
 	double myHeight = 0;
-	myHeight += 2* myLineHeight; // Objects, Code - Descriptions lines (2)
+	myHeight += 3* myLineHeight; // Objects, Code - Descriptions lines (2)
 	myHeight += m_prjLayer->m_pLayerObjectArray.GetCount() * myLineHeightSml;
 		
 	return myHeight;

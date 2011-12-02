@@ -18,6 +18,8 @@
 #include "pdfdocument.h"
 #include "prjdefmemmanage.h"
 
+
+
 bool PdfDocument::_GenerateTitle() {
 	m_pdf->SetFont("Helvetica", "B", m_FontSize + 4);
 	m_pdf->Cell(0, m_LineSpacing, 
@@ -39,6 +41,7 @@ bool PdfDocument::_GenerateTitle() {
 	m_pdf->Ln();
 	return true;
 }
+
 
 
 void PdfDocument::_ComputeOnePageSize(double & width, double & height) {
@@ -94,6 +97,48 @@ void PdfDocument::_ComputeOnePageSize(double & width, double & height) {
 
 
 
+bool PdfDocument::_OrderLayers(){
+    // bubble sort optimized    
+    unsigned int myLayerNumber = m_pdfLayers.GetCount();
+    long myCount = 0;
+    while (1) {
+        bool swaped = false;
+        for (unsigned int i = 1; i<= myLayerNumber-1; i++) {
+            wxString myItemText0 = m_pdfLayers.Item(i-1)->GetName();
+            wxString myItemText1 = m_pdfLayers.Item(i)->GetName();
+            int myOrder0 = m_pdfLayers.Item(i-1)->GetLayerTypeOrder();
+            int myOrder1 = m_pdfLayers.Item(i)->GetLayerTypeOrder();
+            
+            if(myOrder1 < myOrder0){
+                // swap 0 - 1
+                PdfLayer * myLayer1 = m_pdfLayers.Item(i);
+                wxASSERT(myLayer1);
+                m_pdfLayers.RemoveAt(i);
+                m_pdfLayers.Insert(myLayer1, i-1);
+                swaped = true;
+            }
+            
+            if (myOrder0 == myOrder1 &&
+                myItemText0.Cmp(myItemText1) > 0){
+                // swap 0 - 1
+                PdfLayer * myLayer1 = m_pdfLayers.Item(i);
+                wxASSERT(myLayer1);
+                m_pdfLayers.RemoveAt(i);
+                m_pdfLayers.Insert(myLayer1, i-1);
+                swaped = true;
+            }
+        }
+        myLayerNumber = myLayerNumber - 1;
+        if (swaped == false) {
+            break;
+        }
+        myCount++;
+    }
+    wxLogDebug(_("%ld iteration needed to class layers"),myCount);
+    return true;
+}
+
+
 
 PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	wxASSERT(project);
@@ -112,9 +157,9 @@ PdfDocument::PdfDocument(PrjDefMemManage * project) {
 	_UpdatePageWidth();
 	m_pdf = NULL;
 	
-	// adding layers (copy of them)
+	// adding layers // ordering by points, lines, polygons
 	for (int i = 0; i< project->GetCountLayers(); i++) {
-		PdfLayer * myLayer = new PdfLayer(this, project->m_PrjLayerArray.Item(i));
+ 		PdfLayer * myLayer = new PdfLayer(this, project->m_PrjLayerArray.Item(i));
 		wxASSERT(myLayer);
 		m_pdfLayers.Add(myLayer);
 	}
@@ -139,8 +184,10 @@ PdfDocument::~PdfDocument() {
 
 
 bool PdfDocument::Generate(const wxFileName & filename) {
-
-	// one page layout
+	// order layers
+    _OrderLayers();
+    
+    // one page layout
 	if (m_OnePage == true) {
 		double myWidth = wxNOT_FOUND;
 		double myHeight = wxNOT_FOUND;
@@ -181,6 +228,7 @@ bool PdfDocument::Generate(const wxFileName & filename) {
 	wxDELETE(m_pdf);
 	return true;
 }
+
 
 
 void PdfDocument::_UpdatePageWidth(){
