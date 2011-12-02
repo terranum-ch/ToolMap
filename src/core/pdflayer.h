@@ -29,7 +29,7 @@ class ProjectDefMemoryFields;
 class PdfDocument;
 
 
-class PdfLayer {
+class PdfLayer : wxObject {
 private:
     ProjectDefMemoryLayers * m_prjLayer;
     PdfDocument * m_pdfDocumentParent;
@@ -50,12 +50,13 @@ public:
     virtual ~PdfLayer();
     bool Generate();
 	wxString GetName();
+    int GetLayerTypeOrder();
     double GetObjectsWidth(wxPdfDocument * pdf);
     double GetAttributsWidth(wxPdfDocument * pdf);
     double GetObjectsHeight(wxPdfDocument * pdf);
     double GetAttributsHeight(wxPdfDocument * pdf);
 	
 };
-WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
 
+WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
 #endif
