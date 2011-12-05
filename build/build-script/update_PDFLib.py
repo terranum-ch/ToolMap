@@ -39,6 +39,16 @@ def createEmptyDirs(bindir):
 
 
 
+def Windows():
+	"""docstring for Windows"""
+	print ("Building for Windows 7")
+	libpath = "D:\\LIB\\"
+	libname = "wxpdfdoc-0.9.2.1"
+	libprefix = ""
+	libwx = "D:\\LIB\\wxWIDGETS-SVN"
+	return libpath, libname, libprefix, libwx
+
+	
 def MacBook():
 	"""docstring for MacBook"""
 	print ("Building for MacBook")
@@ -47,8 +57,8 @@ def MacBook():
 	libprefix = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBPDF"
 	libwx = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN"
 	return libpath, libname, libprefix, libwx
-
-
+	
+	
 	
 def MacBookConfigure(libpath, libprefix, libwx):
 	"""docstring for MacBookConfigure"""
@@ -133,9 +143,12 @@ if __name__ == '__main__':
 	# GETTING VARIABLE NAMES
 	if(plateforms[int(myValue)] == 'MacBook'):
 		ns.libpath, ns.libname, ns.libprefix, ns.libwx = MacBook()
+	elif (plateforms[int(myValue)] == 'Window 7'):
+		ns.libpath, ns.libname, ns.libprefix, ns.libwx = Windows()
 	else:
 		print ("Unsupported plateform")
 		exit()
+	print (ns.libpath, ns.libname)
 	
 	
 	# REMOVING FOLDER AND EXTRACTING ZIP
@@ -153,6 +166,8 @@ if __name__ == '__main__':
 	# PERFORMING CONFIGURE
 	if(plateforms[int(myValue)] == 'MacBook'):
 		MacBookConfigure(ns.libpath+ns.libname, ns.libprefix, ns.libwx)
+	elif (plateforms[int(myValue)] == 'Window 7'):
+		print ("No configuration needed!")
 	else:
 		print ("Unsupported plateform")
 	
