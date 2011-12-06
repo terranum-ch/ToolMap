@@ -78,7 +78,7 @@ myVarsFile = os.listdir(myScriptPathName[0])
 # copy the list before iterating... otherwise side effects.
 myIterateList = myVarsFile[:]
 for myFile in myIterateList:
-    if (myFile.find(".py") <= 0 or myFile == myScriptPathName[1]):
+    if (myFile.find(".py") <= 0 or myFile.find("update") != -1):
         myVarsFile.remove (myFile)
 icount = 1
 for myFile in myVarsFile:

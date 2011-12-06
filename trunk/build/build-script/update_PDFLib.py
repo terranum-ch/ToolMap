@@ -57,10 +57,20 @@ def MacBook():
 	libprefix = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBPDF"
 	libwx = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN"
 	return libpath, libname, libprefix, libwx
-	
-	
-	
-def MacBookConfigure(libpath, libprefix, libwx):
+
+
+
+def MacPro():
+	"""docstring for MacPro"""
+	print ("Building for MacPro")
+	libpath = "/Users/lucien/Documents/PROGRAMMATION/64/"
+	libname = "wxpdfdoc-0.9.2.1"
+	libprefix = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBPDF"
+	libwx = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN"
+	return libpath, libname, libprefix, libwx	
+
+
+def MacConfigure(libpath, libprefix, libwx):
 	"""docstring for MacBookConfigure"""
 	try:
 		os.rename(libpath+os.sep+"configure29", libpath+os.sep+"configure")
@@ -92,7 +102,7 @@ def MacBookConfigure(libpath, libprefix, libwx):
 	
 	
 	
-def MacBookBuild(libpath, libprefix, cpunumber):
+def MacBuild(libpath, libprefix, cpunumber):
 	"""docstring for MacBookBuild"""
 	# CLEAN libprefix
 	try:
@@ -117,7 +127,7 @@ def MacBookBuild(libpath, libprefix, cpunumber):
 	
 	# INSTALL
 	try:
-		myProcess = subprocess.Popen(['make install'], 0, None, None, None,  None, None, False, False, libpath+os.sep)
+		myProcess = subprocess.Popen(['make', 'install'], 0, None, None, None,  None, None, False, False, libpath+os.sep)
 		myProcess.wait()
 	except:
 		print ("Error installing!")
@@ -145,6 +155,8 @@ if __name__ == '__main__':
 		ns.libpath, ns.libname, ns.libprefix, ns.libwx = MacBook()
 	elif (plateforms[int(myValue)] == 'Window 7'):
 		ns.libpath, ns.libname, ns.libprefix, ns.libwx = Windows()
+	elif (plateforms[int(myValue)] == 'MacPro'):
+		ns.libpath, ns.libname, ns.libprefix, ns.libwx = MacPro()
 	else:
 		print ("Unsupported plateform")
 		exit()
@@ -164,8 +176,8 @@ if __name__ == '__main__':
 	
 	
 	# PERFORMING CONFIGURE
-	if(plateforms[int(myValue)] == 'MacBook'):
-		MacBookConfigure(ns.libpath+ns.libname, ns.libprefix, ns.libwx)
+	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
+		MacConfigure(ns.libpath+ns.libname, ns.libprefix, ns.libwx)
 	elif (plateforms[int(myValue)] == 'Window 7'):
 		print ("No configuration needed!")
 	else:
@@ -174,8 +186,8 @@ if __name__ == '__main__':
 	
 	# PERFORMING BUILD
 	myNumberofProc = multiprocessing.cpu_count()
-	if(plateforms[int(myValue)] == 'MacBook'):
-		MacBookBuild(ns.libpath+ns.libname, ns.libprefix, myNumberofProc)
+	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
+		MacBuild(ns.libpath+ns.libname, ns.libprefix, myNumberofProc)
 	else:
 		print ("Unsupported plateform")
 	
