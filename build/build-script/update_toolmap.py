@@ -152,12 +152,14 @@ if (doClean == 'Y' and gDirBin != ''):
     print ("Cleaning directory")
     try:
         shutil.rmtree(gDirBin)
-        os.mkdir(gDirBin)
         print ("Cleaning directory DONE")
         print ("----------------------------------------------------------\n")
     except:
         print("Unable to remove directory :", gDirBin)
-
+    try:
+        os.mkdir(gDirBin)
+    except:
+        print("Unable to create directory")
         
 gBeforeConfig()
 
