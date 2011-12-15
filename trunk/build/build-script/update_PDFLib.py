@@ -134,6 +134,43 @@ def MacBuild(libpath, libprefix, cpunumber):
 		exit()
 
 
+def WindowBuild (libpath, libprefix, cpunumber):
+	print("building on Windows")
+	print (libpath, libprefix, cpunumber)
+	mycommand = ['nmake']
+	mycommand.append("-f")
+	mycommand.append("makefile.vc")
+	mycommand.append("WX_DIR={}".format(libprefix))
+	mycommand.append("WX_MONOLITHIC=1")
+	
+	mycmddebug  = mycommand[:]
+	mycmddebug.append("LDFLAGS=/debug")
+	mycmddebug.append("WX_DEBUG=1")
+	mycmddebug.append('CPPFLAGS=/nologo /MTd /MP /EHsc /Zi /W4 /DDEBUG')
+	
+	mycmdrel  = mycommand[:]
+	mycmdrel.append("WX_DEBUG=0")
+	mycmdrel.append('CPPFLAGS=/nologo /MT /MP /EHsc /Ox /W3')
+	print (" ".join(mycmddebug))
+	print ("Compiling debug version")
+	
+	try:
+		p = subprocess.Popen(mycmddebug, shell=False, cwd=libpath+os.sep+"build29")
+		p.wait()
+	except:
+		print ("Error creating debug version")
+		exit()
+	
+	try:
+		p = subprocess.Popen(mycmdrel, shell=False, cwd=libpath+os.sep+"build29")
+		p.wait()
+	except:
+		print ("Error building release version")
+		exit()
+	
+
+	
+		
 
 if __name__ == '__main__':
 	class Namespace: pass
@@ -188,6 +225,8 @@ if __name__ == '__main__':
 	myNumberofProc = multiprocessing.cpu_count()
 	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
 		MacBuild(ns.libpath+ns.libname, ns.libprefix, myNumberofProc)
+	elif(plateforms[int(myValue)] == 'Window 7'):
+		WindowBuild(ns.libpath+ns.libname, ns.libwx, myNumberofProc)
 	else:
 		print ("Unsupported plateform")
 	
