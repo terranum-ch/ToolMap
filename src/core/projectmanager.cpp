@@ -448,7 +448,7 @@ int ProjectManager::OpenProject(const wxString & path)
 
 bool ProjectManager::EditProjectObjectDefinition ()
 {
-	bool bReturn = FALSE;
+	bool bReturn = false;
 
 	// display the dialogs for editing the project's object definition.
 	// DO NOT CALL THIS BEFORE OPENING A DB
@@ -459,11 +459,11 @@ bool ProjectManager::EditProjectObjectDefinition ()
 
 		// update objects to lists
 		m_Obj->UpdateObjectLists(m_DB);
-
-		bReturn = TRUE;
+        LoadProjectDefintion(1);
+		bReturn = true;
 	}
 
-	delete myDlg;
+	wxDELETE(myDlg);
 	return bReturn;
 }
 
