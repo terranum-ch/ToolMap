@@ -158,6 +158,7 @@ class tmEditManager : public wxEvtHandler
 		bool EMGetSnappingCoord (wxRealPoint & pt);
 		wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
 		void EMDrawSnappingStatus (const wxPoint & pt);
+        wxRealPoint * EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint);
 		
 		// menu functions
 		void EMCreateMenu(wxMenu & menu);

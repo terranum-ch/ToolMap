@@ -95,6 +95,9 @@ class tmGISDataVectorMemory : public tmGISDataVector
 		// OID related functions.
 		void SetOID (long oid){m_OID = oid;}
 		bool IsUpdating ();
+        
+        virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+								   wxArrayRealPoints & snapppts, int snaptype);
 		
 	};
 

@@ -849,6 +849,38 @@ bool tmGISDataVectorMemory::IsUpdating ()
 
 
 
+bool tmGISDataVectorMemory::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+                                          wxArrayRealPoints & snapppts, int snaptype){
+    // create OGRpoint and buffer
+	OGRPoint myClickPoint;
+	myClickPoint.setX(clickpt.x);
+	myClickPoint.setY(clickpt.y);
+	
+	OGRGeometry * myBufferClick = tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
+	wxASSERT (myBufferClick);
+	wxASSERT (m_Layer);
+	//OGRGeometryFactory::destroyGeometry(myClickPoint);
+	
+	// searching features
+    unsigned int myPtsCount = snapppts.GetCount();
+    OGRGeometry * poGeometry = m_Feature->GetGeometryRef();
+    if (poGeometry){
+        if (poGeometry->Intersect(myBufferClick)){
+            if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX){
+                GetVertexIntersection(poGeometry, myBufferClick, snapppts);
+            }
+            else if (snaptype == tmSNAPPING_BEGIN_END){
+                GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
+            }
+        }
+	}
+	OGRGeometryFactory::destroyGeometry(myBufferClick);
+
+    if (myPtsCount < snapppts.GetCount()) {
+        return true;
+    }
+	return false;    
+}
 
 
 

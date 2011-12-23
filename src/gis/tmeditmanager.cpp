@@ -490,12 +490,22 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	
 	
 	// snapping
-	EMGetSnappingCoord(myRealCoord);
+	bool bSnapFound = EMGetSnappingCoord(myRealCoord);
 	
 	// add  line vertex
-	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE)
-	{	
-		wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
+	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){	
+		
+        // feature #180 if snap isn't found, try to snap on line in edition
+        if (bSnapFound == false) {
+            wxRealPoint * myTempSnap = EMSearchLineMemorySnapping(myRealCoord);
+            if (myTempSnap != NULL) {
+                myRealCoord = *myTempSnap;
+                wxLogMessage("Snapping found locally!");
+            }
+            wxDELETE(myTempSnap);
+        }
+        
+        wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
 		bool bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
 		wxASSERT(bCreate);
 		
@@ -1593,6 +1603,51 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
         }
     }
     return new wxRealPoint(mySnapPts.Item(myMinItemIndex));    
+}
+
+
+
+wxRealPoint * tmEditManager::EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint){
+    // get snapping info for layer in edition (line or frame)
+    long myLayerId = 0;
+    int mySnapStatus = tmSNAPPING_OFF;
+    bool bFoundLayer = false;
+    for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++){
+        m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
+        if (m_TOC->GetEditLayer()->GetID() == myLayerId) {
+            bFoundLayer = true;
+            break;
+        }
+    }
+    
+    if (bFoundLayer == false) {
+        return NULL;
+    }
+    
+    // check all possible points in memory data
+    wxArrayRealPoints mySnapPts;
+    m_GISMemory->GetSnapCoord(clickedpoint, m_SnapMem->GetTolerence(), mySnapPts, mySnapStatus);
+    if (mySnapPts.GetCount() == 0) {
+        return NULL;
+    }
+    
+    // compute closest point!
+    int myMinItemIndex = 0;
+    double myMinDistance = 0;
+    for (unsigned int p = 0; p<mySnapPts.GetCount(); p++) {  
+        wxRealPoint mySubstrPtr = mySnapPts.Item(p) - clickedpoint;
+        double myDistance = fabs(sqrt((mySubstrPtr.x * mySubstrPtr.x) + (mySubstrPtr.y * mySubstrPtr.y)));
+        if (p == 0) {
+            myMinDistance = myDistance;
+        }
+        else{
+            if(myDistance < myMinDistance){
+                myMinDistance = myDistance;
+                myMinItemIndex = p;
+            }
+        }
+    }
+    return new wxRealPoint(mySnapPts.Item(myMinItemIndex));
 }
 
 
