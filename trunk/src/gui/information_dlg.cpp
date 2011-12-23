@@ -613,10 +613,29 @@ void tmSelectionInfoCtrl::UpdateSelection() {
 		return;
 	}
 	
+    wxTreeMultiItem myItem;
 	for (unsigned int i = 0; i<m_Selected->GetCount(); i++) {
-		Collapse(AppendNode(GetFirstRoot(), wxString() << mySelVal->Item(i),
-							wxString() << mySelVal->Item(i)), false);
+		myItem = AppendNode(GetFirstRoot(), wxString() << mySelVal->Item(i),
+							wxString() << mySelVal->Item(i));
+        Collapse(myItem, false);
 	}
+    
+    // feature #189 display information automatically if only one feature selected
+    if (m_Selected->GetCount() == 1) {
+        if (myItem.IsOk() == true) {
+            wxArrayString myHeader;
+            wxArrayString myValues;
+            
+            if (myItem.GetName().ToLong(&m_ClickedItemID) != false) {
+                _GetData(m_ClickedItemID, myHeader, myValues);
+                _CreateInfoControl(myItem, myHeader, myValues);
+                
+                // remove all control with windows
+                _DeleteAllInfos(myItem);
+                Expand(myItem, false);
+            }
+        }
+    }
 	Thaw();
 	
 }
