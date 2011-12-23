@@ -56,8 +56,7 @@ void tmOpenError_DLG::_CreateControls(const wxString & projname, int iActDBVersi
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
 	
-	wxString myErrTxt2 = wxString::Format(_("The project '%s' is no longer supported (version %d).\nWould you like to convert it to the newer version (version %d)?\n\nConverted projects can no longer be loaded by previous versions of ToolMap."),
-										  projname,
+	wxString myErrTxt2 = wxString::Format(_("This project was created with an older version of ToolMap. It must be updated before use.\nUpdated projects can no longer be loaded by previous versions of ToolMap.\n\nYour project version: %d, required project version: %d"),
 										  iActDBVersion,
 										  TM_DATABASE_VERSION);
 										  
@@ -68,11 +67,11 @@ void tmOpenError_DLG::_CreateControls(const wxString & projname, int iActDBVersi
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_ErrPanelProjVersion, wxID_ANY, _("Operations") ), wxVERTICAL );
 	
-	m_ErrVerBackupConvertCtrl = new wxButton( m_ErrPanelProjVersion, wxID_ANY, _("Backup and convert..."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ErrVerBackupConvertCtrl = new wxButton( m_ErrPanelProjVersion, wxID_ANY, _("Backup, convert and open..."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_ErrVerBackupConvertCtrl->SetDefault(); 
 	sbSizer2->Add( m_ErrVerBackupConvertCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_ErrVerConvertCtrl = new wxButton( m_ErrPanelProjVersion, wxID_ANY, _("Convert only..."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ErrVerConvertCtrl = new wxButton( m_ErrPanelProjVersion, wxID_ANY, _("Convert and open..."), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_ErrVerConvertCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	bSizer7->Add( sbSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
@@ -86,15 +85,13 @@ void tmOpenError_DLG::_CreateControls(const wxString & projname, int iActDBVersi
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 	
-	wxString myErrTxt3 = wxString::Format(_("The project '%s' is not supported by this version of ToolMap! (project version: %d)\nPlease consider upgrading ToolMap to a newer version."),
-										  projname,
-										  iActDBVersion);
+	wxString myErrTxt3 = _("This project was created with a newer version of ToolMap. It is not supported by the installed version of ToolMap.\nPlease consider updating ToolMap to a newer version.");
 	m_ErrTMTextCtrl = new wxStaticText( m_ErrPanelTMVersion, wxID_ANY, myErrTxt3, wxDefaultPosition, wxDefaultSize, 0 );
 	m_ErrTMTextCtrl->Wrap( -1 );
 	bSizer8->Add( m_ErrTMTextCtrl, 0, wxALL, 5 );
 	
 	wxStaticBoxSizer* sbSizer3;
-	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_ErrPanelTMVersion, wxID_ANY, _("Upgrade") ), wxVERTICAL );
+	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( m_ErrPanelTMVersion, wxID_ANY, _("Update") ), wxVERTICAL );
 	
 	m_ErrTMDownloadCtrl = new wxButton( m_ErrPanelTMVersion, wxID_ANY, _("Download new version of ToolMap..."), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer3->Add( m_ErrTMDownloadCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
@@ -135,11 +132,13 @@ wxDialog( parent, id, _("Open failed"), pos, size, style ){
 	if (iActDBVersion > tmDB_OPEN_FAILED_WRONG_VERSION) {
 		// Project Need Update
 		if (iActDBVersion < TM_DATABASE_VERSION) {
+            SetTitle(wxString::Format(_("Opening '%s' Warning!"), projname));
 			m_ErrPanelDB->Hide();
 			m_ErrPanelTMVersion->Hide();
 		}
 		// ToolMap Need Update
 		else {
+            SetTitle(wxString::Format(_("Opening '%s' Failed!"), projname));
 			m_ErrPanelDB->Hide();
 			m_ErrPanelProjVersion->Hide();
 		}
