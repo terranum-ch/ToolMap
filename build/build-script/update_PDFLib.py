@@ -29,6 +29,37 @@ def askUserWithCheck (msg, allowedval=['Y', 'y', 'N', 'n'], errormsg = "Unsuppor
 		print (errormsg)
 
 
+def patchFileMac(libdir):
+	"""patch wxpdfdoc for mac unicode support"""
+	myFile = libdir + os.sep + "src" + os.sep + "pdffontdatacore.cpp"
+	print ("Patching file:", myFile)
+	
+	with open (myFile, "r") as rf:
+		lines = rf.readlines()
+		
+		# small verification
+		mycheckline = "      wxUint32 cc = (unsigned char) (*ch);\n"
+		if (lines[186-1] == mycheckline):
+			print ("Ok line correct... patching")
+		else:
+			print ("Error patching, line 186 should be:\n{}\nbut is instead\n{}".format(mycheckline, lines[186-1]))
+			exit()
+		
+		with open(myFile, "w") as wf:
+			# patch definition
+			patchdict = {185 : "      // wxUint32 cc = (unsigned char) (*ch);\n", 186 : "      charIter = (*convMap).find(*ch);\n"}
+		
+			#patching
+			for index, line in enumerate(lines):
+				if index in patchdict:
+					linepatched = patchdict[index]
+					print (index, "-", linepatched[:-1])
+					wf.write(linepatched)
+				else:
+					wf.write(lines[index])
+	pass
+
+
 
 def createEmptyDirs(bindir):
 	"""Creating vroomtwin, vroomloader, vroomgistests if not existing"""
@@ -210,6 +241,11 @@ if __name__ == '__main__':
 	print ("Extracting ZIP file to {}".format(ns.libpath+ns.libname))
 	myzipfile = zipfile.ZipFile(ns.libpath+ns.libname+".zip")
 	myzipfile.extractall(ns.libpath)
+	
+	# PERFORMING PATCH
+	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
+		patchFileMac(ns.libpath+ns.libname)
+
 	
 	
 	# PERFORMING CONFIGURE
