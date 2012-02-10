@@ -520,9 +520,9 @@ void ToolMapFrame::_CreateMenu()
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
     itemMenu2->AppendSeparator();
-    itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup\tCtrl+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
-	itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu11 = new wxMenu;
     itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
@@ -589,7 +589,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersection\tCtrl+I"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+Alt+F"), _T(""), wxITEM_NORMAL);
 	itemMenu41->AppendSeparator();
-    itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping...\tCtrl+S"), wxEmptyString, wxITEM_CHECK);
+    itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping...\tCtrl+G"), wxEmptyString, wxITEM_CHECK);
     menuBar->Append(itemMenu41, _("Edition"));
     wxMenu* itemMenu55 = new wxMenu;
     itemMenu55->Append(ID_MENU_ATTRIB_TYPES, _("Object Kind..."), _T(""), wxITEM_CHECK);
@@ -621,7 +621,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tV"), _T(""), wxITEM_NORMAL);
 	itemMenu66->Append(ID_MENU_SELECT_BY_OID, _("Select by Feature ID..."), wxEmptyString, wxITEM_NORMAL);
     //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
-    itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
     itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
