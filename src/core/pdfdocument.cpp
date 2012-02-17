@@ -75,6 +75,7 @@ void PdfDocument::_ComputeOnePageSize(double & width, double & height) {
 	// height
 	// title
 	height += 10; // margins
+    height += 10; // two lines bottom for polygons notes
 	height += m_FontSize + 4;
 	height += m_FontSize * 2.0;
 	
@@ -223,6 +224,16 @@ bool PdfDocument::Generate(const wxFileName & filename) {
 		}
 		m_pdfLayers.Item(i)->Generate();
 	}
+    
+    // add polygon note
+    m_pdf->SetFont("Helvetica", "", m_FontSize);
+    m_pdf->MultiCell(0, 5, 
+                _("* These objects have not to be declared by users, they are automatically" \
+                 " added to the object kinds list each time a polygon layer is created into" \
+                " the spatial model. These geometric features are used to delineate real" \
+                " world objects occurring as polygons. "),
+                wxPDF_BORDER_TOP, wxPDF_ALIGN_JUSTIFY);
+    
 	m_pdf->SaveAsFile(filename.GetFullPath());
 	wxLogMessage(_("Data model exported to: '%s'"), filename.GetFullName());
 	wxDELETE(m_pdf);
