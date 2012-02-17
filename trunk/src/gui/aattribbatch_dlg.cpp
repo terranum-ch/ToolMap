@@ -229,20 +229,22 @@ void AAttribBatch_DLG::OnSave( wxCommandEvent& event ) {
 		return;
 	}
 	
-	wxWindowDisabler mydisabler;
-	int myNumber = wxNOT_FOUND;
-	// to delete the busy cursor
-	{
-		wxBusyCursor myBusyCursor;
-		myNumber = m_pBatchManager->Attribute(m_ArrayIds.Item(m_ListType->GetSelection()),
-											  *(m_Fields.Item(m_ListFields->GetSelection())),
-											  myValue);
-		if (myNumber == wxNOT_FOUND) {
-			wxLogError(_("Batch attribution Failed"));
-			return;
-		}
-	}
-
+    // bug #204 to delete the disabler before killing the dialog
+    {
+        wxWindowDisabler mydisabler;
+        int myNumber = wxNOT_FOUND;
+        // to delete the busy cursor
+        {
+            wxBusyCursor myBusyCursor;
+            myNumber = m_pBatchManager->Attribute(m_ArrayIds.Item(m_ListType->GetSelection()),
+                                                  *(m_Fields.Item(m_ListFields->GetSelection())),
+                                                  myValue);
+            if (myNumber == wxNOT_FOUND) {
+                wxLogError(_("Batch attribution Failed"));
+                return;
+            }
+        }
+    }
 	Close();
 }
 
