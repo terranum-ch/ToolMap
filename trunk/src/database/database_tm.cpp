@@ -1026,15 +1026,12 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 	
 	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_OBJECTS +
 	_T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES ");
-	wxString sValues = wxString::Format(_T("(%d, %d, %d,\"%s\")"),
+	wxString sValues = wxString::Format(_T("(%ld, %d, %d,\"%s\")"),
 										myObject->m_ObjectCode,
 										myObject->m_ObjectType,										
 										DBlayerIndex, 
 										myObject->m_ObjectName.c_str());
 	sSentence.Append(sValues);
-	
-	//wxLogDebug(sSentence);
-	
 	if (DataBaseQueryNoResults(sSentence))
 	{
 		return true;

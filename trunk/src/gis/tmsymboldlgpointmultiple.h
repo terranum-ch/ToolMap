@@ -52,10 +52,10 @@ public:
 		m_PanelNo = 0;
 		m_QueryID = wxNOT_FOUND;
 		m_SelColourMultiple = *wxBLUE;
-		m_SelRadiusMultiple = 2;
+		m_SelRadiusMultiple = 5;
 		m_SelVisible = true;
 		m_UnSelColourMultiple = *wxGREEN;
-		m_UnSelRadiusMultiple = 2;
+		m_UnSelRadiusMultiple = 5;
 		m_UnSelVisible = true;
 	}
 };

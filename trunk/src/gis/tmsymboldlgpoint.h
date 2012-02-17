@@ -55,7 +55,7 @@ public:
 	
 	tmSymbolDataPointUnique(){
 		m_Colour = *wxBLACK;
-		m_Radius = 1;
+		m_Radius = 5;
 		m_GlobalTransparency = 0;
 	}
 };
