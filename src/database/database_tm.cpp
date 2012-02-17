@@ -1117,39 +1117,33 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 
 
 
-bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,  int ilayertype)
-{
+bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,  int ilayertype){
 	wxASSERT (object);
 	
 	wxArrayString myRowResults;
-	if (DataBaseHasResults()==false)
-	{
-		return false;
+	if (DataBaseHasResults()==false){
+        return false;
 	}
-
 	
-	if(DataBaseGetNextResult(myRowResults)==false)
-	{
+	if(DataBaseGetNextResult(myRowResults)==false){
 		DataBaseClearResults();
 		return false;
 	}
-		
-	wxASSERT (myRowResults.GetCount() >= 3); 
-	myRowResults.Item(0).ToLong(&(object->m_ObjectCode));
+    
+    wxASSERT(myRowResults.GetCount() == 6);
+    myRowResults.Item(0).ToLong(&(object->m_ObjectCode));
 	object->m_ObjectName = myRowResults.Item(1);
-	object->m_ParentLayerName = myRowResults.Item(2);
-	
-	
-	// if we search the frequency
-	if (ilayertype == LAYER_LINE)
-	{
-		long lFreq = 0;
-		myRowResults.Item(3).ToLong(&lFreq);
-		object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;
-	}
-	
-	// get the id
-	myRowResults.Last().ToLong(&(object->m_ObjectID));
+    long myType = 0;
+    myRowResults.Item(2).ToLong(&myType);
+    object->m_ObjectType = (short) myType;
+    object->m_ParentLayerName = myRowResults.Item(3);
+   
+    // frequency will be used only for lines
+    long lFreq = 0;
+    myRowResults.Item(4).ToLong(&lFreq);
+    object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;
+    myRowResults.Item(5).ToLong(&(object->m_ObjectID));
+ 
 	return true;
 }
 
@@ -1197,17 +1191,11 @@ void DataBaseTM::DeleteLayersObjects (int iLayer, wxString & sSqlSentence)
 
 
 bool DataBaseTM::LoadLayerObjects(ProjectDefMemoryLayers * layer){
-	wxASSERT(layer->m_LayerID != wxNOT_FOUND);
-	wxString myFrequencyTxt = "";
-	if (layer->m_LayerType == LAYER_LINE) {
-		myFrequencyTxt = "o.OBJECT_ISFREQ,";
-	}
-	
-	wxString myQuery = wxString::Format("SELECT o.OBJECT_CD, o.OBJECT_DESC, l.LAYER_NAME, %s o.OBJECT_ID "
+	wxASSERT(layer->m_LayerID != wxNOT_FOUND);	
+	wxString myQuery = wxString::Format("SELECT o.OBJECT_CD, o.OBJECT_DESC, OBJECT_TYPE_CD, l.LAYER_NAME, o.OBJECT_ISFREQ, o.OBJECT_ID "
 										"FROM %s AS o LEFT JOIN %s as l ON "
 										"(l.LAYER_INDEX=o.THEMATIC_LAYERS_LAYER_INDEX) "
 										"WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY o.OBJECT_CD",
-										myFrequencyTxt,
 										TABLE_NAME_OBJECTS,
 										TABLE_NAME_LAYERS,
 										layer->m_LayerID);
@@ -1502,28 +1490,13 @@ bool DataBaseTM::DeleteField (wxArrayString & myFields, int iLayer, wxString & s
  *******************************************************************************/
 bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 {
-	// different request based on the ilayertype (4 fields for LAYER_LINE and
-	// 3 fields in other cases
-	wxString sWantFrequencyField = _T("");
-	if (ilayertype == LAYER_LINE)
-		 sWantFrequencyField = _T("OBJECT_ISFREQ, ");
-	
-	
 	wxString sSentence =  wxString::Format(
-										   _T("SELECT OBJECT_CD, OBJECT_DESC, thematic_layers.LAYER_NAME, %s OBJECT_ID ")
+										   _T("SELECT OBJECT_CD, OBJECT_DESC, OBJECT_TYPE_CD, thematic_layers.LAYER_NAME, OBJECT_ISFREQ, OBJECT_ID ")
 										   _T("FROM dmn_layer_object LEFT JOIN (thematic_layers) ")
 										   _T("ON (thematic_layers.LAYER_INDEX=dmn_layer_object.THEMATIC_LAYERS_LAYER_INDEX)")
 										   _T("WHERE OBJECT_TYPE_CD = %d"),
-										   sWantFrequencyField.c_str(),
 										   ilayertype);
-	/*wxString sSentence =  wxString::Format(
-										   _T("SELECT OBJECT_CD, OBJECT_DESC, thematic_layers.LAYER_NAME, %s OBJECT_ID ")
-										   _T("FROM dmn_layer_object LEFT JOIN (thematic_layers) ")
-										   _T("ON (thematic_layers.LAYER_INDEX=dmn_layer_object.THEMATIC_LAYERS_LAYER_INDEX)")
-										   _T("WHERE thematic_layers.TYPE_CD = %d"),
-										   sWantFrequencyField.c_str(),
-										   ilayertype);*/
-	
+
 	if (bOrder)
 		sSentence.Append(_T(" ORDER BY RANK "));
 	

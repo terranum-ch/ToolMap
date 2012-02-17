@@ -83,16 +83,24 @@ void PdfLayer::_GenerateObjects() {
 	if (m_pdfDocumentParent->IsDecorated()) {
 		mypPdf->SetFillColour(220);
 	}
-    
+        
 	// objects
 	for (unsigned int i = 0; i < m_prjLayer->m_pLayerObjectArray.GetCount(); i++) {
 		mypPdf->Cell(m_ColWidthObjects.Item(0), myLineSmall,
 					 wxString::Format("%ld",m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode),
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
-		mypPdf->Cell(m_ColWidthObjects.Item(1), myLineSmall,
-                     wxString::Format("%s", m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectName),
+		
+        // special case for lines building polygons
+        wxString myAsterisk = wxEmptyString;
+        if (m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectType == LAYER_LINE && m_prjLayer->m_LayerType == LAYER_POLYGON) {
+            myAsterisk = "*";
+        }
+        
+        mypPdf->Cell(m_ColWidthObjects.Item(1), myLineSmall,
+                     wxString::Format("%s%s", m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectName, myAsterisk),
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_LEFT, fill);
-		mypPdf->Ln(myLineSmall);
+		
+        mypPdf->Ln(myLineSmall);
 		
 		if (m_pdfDocumentParent->IsDecorated()) {
 			fill = 1 - fill;
