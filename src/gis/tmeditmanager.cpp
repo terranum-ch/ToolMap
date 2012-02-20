@@ -1858,6 +1858,19 @@ bool tmEditManager::CreateIntersections ()
 	wxDELETE(myLinesCrossing);
 	wxDELETE(mySelLayer);
 	
+    // Check lines for error (two vertex overlapping)
+    wxArrayLong myErrLines;
+    myErrLines = _GetErrorLines(myInsertedIDs1);
+    if (myErrLines.GetCount() > 0) {
+        wxLogDebug("Incorrect lines found, removing them!");
+        m_SelectedData->Clear();
+        m_SelectedData->AddSelected(&myErrLines);
+        DeleteSelected();
+        for (unsigned int i = 0; i< myErrLines.GetCount(); i++) {
+            myInsertedIDs1.Remove(myErrLines.Item(i));
+        }
+    }
+    
 	// add segment to selection
 	m_SelectedData->AddSelected(&myInsertedIDs1);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
@@ -1874,6 +1887,52 @@ bool tmEditManager::CreateIntersections ()
 	
 	return true;	
 }
+
+
+
+wxArrayLong tmEditManager::_GetErrorLines(wxArrayLong linetocheck){
+    wxArrayLong myResults;
+    wxASSERT(myResults.GetCount() == 0);
+    
+    // Get the Layer (Line MySQL) 
+	tmGISDataVector * mySelLayer = (tmGISDataVector*) tmGISData::LoadLayer(m_TOC->GetEditLayer());
+	if (!mySelLayer){
+        wxLogError(_("Checking intersected lines failed! Unable to get the 'in edition' layer!"));
+		return myResults;
+	}
+    
+    for (long i = 0; i < linetocheck.GetCount(); i++) {
+        OGRFeature * myFeature = mySelLayer->GetFeatureByOID(linetocheck.Item(i));
+        if (myFeature == NULL) {
+            wxLogError(_("Unable to get feature : %ld! Checking intersected lines failed"), linetocheck.Item(i));
+            continue;
+        }
+        OGRLineString * myOGRSelLine = (OGRLineString*) myFeature->GetGeometryRef();
+        wxASSERT(myOGRSelLine);
+        
+        // line error, only one vertex!
+        if (myOGRSelLine->getNumPoints() == 1) {
+            myResults.Add(linetocheck.Item(i));
+            OGRFeature::DestroyFeature(myFeature);
+            continue;
+        }
+        
+        OGRPoint p1;
+        OGRPoint p2;
+        
+        myOGRSelLine->getPoint(0, &p1);
+        myOGRSelLine->getPoint(1, &p2);
+        
+        // line error 2 vertex overlapping
+        if (p1.Equals(&p2) && myOGRSelLine->getNumPoints() == 2) {
+            myResults.Add(linetocheck.Item(i));
+        }
+        
+        OGRFeature::DestroyFeature(myFeature);
+    }
+    return myResults;
+}
+
 
 
 

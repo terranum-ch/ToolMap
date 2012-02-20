@@ -220,8 +220,13 @@ bool tmSnappingMemory::IsSnappingEnabled ()
 {
 	
 	bool bSnappingIsOn = false;
-	if (wxGetKeyState(WXK_SPACE)==true)
+	if (wxGetKeyState(WXK_SPACE)==true){
 		return bSnappingIsOn;
+    }
+    
+    if (wxGetKeyState(WXK_SHIFT)==true) {
+        return bSnappingIsOn;
+    }
 	
 	for (unsigned int i = 0; i<m_Snapping.GetCount(); i++)
 	{

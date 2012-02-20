@@ -22,7 +22,7 @@
 
 Main_PANEL::Main_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAuiWnd(AuiManager)
 {
-	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
+	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxWANTS_CHARS);
 	CreateControls(ContentFrame);
 	
 	

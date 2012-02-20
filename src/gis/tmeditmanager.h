@@ -181,6 +181,8 @@ class tmEditManager : public wxEvtHandler
 		void DrawEditBitmapLine ();
 		void DrawMemoryData(bool refresh);
 		
+        // checking
+        wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
 		
 		
 		DECLARE_EVENT_TABLE()
