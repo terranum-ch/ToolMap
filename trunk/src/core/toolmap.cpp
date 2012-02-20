@@ -896,7 +896,8 @@ void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
 	else{
 		m_QueriesPanel->ShowPanel();
 	}
-	
+    wxCommandEvent evt;
+    OnRefreshView(evt);
 }
 
 
@@ -917,15 +918,14 @@ void ToolMapFrame::OnQueriesRun (wxCommandEvent & event){
  *******************************************************************************/
 void ToolMapFrame::OnShowShortcutWindow (wxCommandEvent & event)
 {
-	if (m_ShortCutPanel->IsPanelShown())
-	{
+	if (m_ShortCutPanel->IsPanelShown()){
 		m_ShortCutPanel->HidePanel();
 	}
-	else
-	{
+	else{
 		m_ShortCutPanel->ShowPanel();
 	}
-	
+    wxCommandEvent evt;
+    OnRefreshView(evt);
 }
 
 
@@ -945,7 +945,8 @@ void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
 	{
 		m_SnappingPanel->ShowPanel();
 	}
-	
+	wxCommandEvent evt;
+    OnRefreshView(evt);
 }
 
 
