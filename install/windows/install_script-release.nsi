@@ -114,7 +114,7 @@ Section "SectionPrincipale" SEC01
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  File "..\..\..\bin\Release\gdal18.dll"
+  File "..\..\..\bin\Release\gdal19.dll"
   File "..\..\..\bin\Release\geos_c.dll"
   File "..\..\..\bin\Release\libmysqld.dll"
   File "..\..\..\bin\Release\libcurl.dll"
@@ -172,7 +172,7 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\mysql\errmsg.sys"
   Delete "$INSTDIR\libmysqld.dll"
-  Delete "$INSTDIR\gdal18.dll"
+  Delete "$INSTDIR\gdal19.dll"
   Delete "$INSTDIR\geos_c.dll"
   Delete "$INSTDIR\sqlite3.dll"
   
