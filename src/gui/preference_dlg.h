@@ -39,6 +39,8 @@ private:
 	wxTextCtrl* m_ProxyInfoCtrl;
 	wxColourPickerCtrl* m_SelColourCtrl;
 	wxCheckBox* m_SelOutlineCtrl;
+    wxCheckBox* m_RelPathCtrl;
+
 	
 	void _CreateControls();
 	

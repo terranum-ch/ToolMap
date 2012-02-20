@@ -31,7 +31,7 @@ void tmLayerProperties::InitMemberValues()
 {
 	m_LayerID = 0;
 	m_LayerSpatialType = LAYER_SPATIAL_LINE;
-	m_LayerVisible = TRUE;
+	m_LayerVisible = true;
 	m_LayerType = TOC_NAME_NOT_GENERIC;
 	m_LayerSymbol = NULL;
 	m_LayerVertexFlags = 0;
@@ -48,8 +48,7 @@ void tmLayerProperties::InitMemberValues()
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-bool tmLayerProperties::InitFromArray(const wxArrayString & array)
-{
+bool tmLayerProperties::InitFromArray(const wxArrayString & array, bool userelativepath, const wxString & prjpath){
 	long temptype = 0;
 	long tempstatus = 0;
 	long tempgeneric = 0;
@@ -59,7 +58,7 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	m_LayerSpatialType = (TM_GIS_SPATIAL_TYPES) temptype;
 	
 	m_LayerName.Assign(array.Item(2), array.Item(3));
-	
+    
 	array.Item(4).ToLong(&tempstatus);
 	m_LayerVisible = (bool) tempstatus;
 	
@@ -71,8 +70,35 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array)
 	wxString myVFlags = array.Item(7);
 	m_LayerVertexFlags = wxAtoi(myVFlags.c_str());
 	
-	
-	return TRUE;
+    // relative path stuff only for support layer
+    if (m_LayerType < TOC_NAME_NOT_GENERIC){
+        return true;
+    }
+    
+    // try to find support file
+    // 1. check if file exists
+    // 2. Try to convert to absolute
+    // 3. check if converted exists
+    // if all fails revert to saved data.
+    wxFileName myTempFile (m_LayerName);
+    if (myTempFile.Exists() == true) {
+        return true;
+    }
+    
+    if (myTempFile.MakeAbsolute(prjpath) == false) {
+		wxLogMessage(_T("Converting '%' to absolute path isn't possible"),
+					 myTempFile.GetFullPath());
+	}
+    else {
+        if (myTempFile.Exists() == true) {
+            m_LayerName.Assign(myTempFile);            
+        }
+        else{
+            wxLogMessage(_("%s not found (relative or absolute!)"), myTempFile.GetFullPath()); 
+        }
+    }
+	return true;
+    
 }
 
 

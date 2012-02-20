@@ -2016,7 +2016,7 @@ bool DataBaseTM::InitTOCGenericLayers()
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-tmLayerProperties * DataBaseTM::GetNextTOCEntry()
+tmLayerProperties * DataBaseTM::GetNextTOCEntry(bool userelativepath)
 {
 	wxArrayString myTempResults;
 	
@@ -2042,7 +2042,7 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry()
 	wxASSERT (myTempResults.GetCount() == 8);
 	// parsing results
 	tmLayerProperties * myLayerProp = new tmLayerProperties();
-	myLayerProp->InitFromArray(myTempResults);
+	myLayerProp->InitFromArray(myTempResults, userelativepath, DataBaseGetPath());
 	myTempResults.Clear();
 	
 	return myLayerProp;
@@ -2118,12 +2118,13 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 {
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
 									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
-									 _T(" VERTEX_FLAGS = %d ")
+									 _T(" VERTEX_FLAGS = %d, CONTENT_PATH=\"%s\" ")
 									 _T("WHERE CONTENT_ID = %ld; "),
 									 item->IsVisible(),
 									 itemRank,
 									 symbology.c_str(),
 									 item->GetVertexFlags(),
+                                     item->GetName().GetPath(),
 									 item->GetID()));
 	
 }
