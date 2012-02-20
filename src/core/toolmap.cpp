@@ -508,14 +508,13 @@ void ToolMapFrame::OnClose(wxCloseEvent & event)
 
 void ToolMapFrame::_CreateMenu()
 {
+    // PROJECT
     wxMenuBar* menuBar = new wxMenuBar;
     wxMenu* itemMenu2 = new wxMenu;
-    
 	wxMenu* itemMenu3 = new wxMenu;
     itemMenu3->Append(ID_MENU_NEW_PRJ_EMPTY, _("Empty...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
     itemMenu3->Append(ID_MENU_NEW_PRJ_EXISTING, _("From template...\tCtrl+Alt+N"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(wxID_ANY, _("New Project"), itemMenu3);
-    
 	itemMenu2->Append(ID_MENU_OPEN_PRJ, _("&Open...\tCtrl+Alt+O"), wxEmptyString, wxITEM_NORMAL);
     wxMenu* itemMenu7 = new wxMenu;
     itemMenu2->Append(ID_MENU_RECENT, _("Recent"), itemMenu7);
@@ -541,12 +540,18 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu2, _("&Project"));
+    
+    
+    // DATA
     wxMenu* itemMenu24 = new wxMenu;
     itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
+    
+    
+    // VIEW
     wxMenu* itemMenu28 = new wxMenu;
     itemMenu28->Append(wxID_BACKWARD, _("Previous Zoom\t<"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu28->Enable(wxID_BACKWARD, false);
@@ -564,8 +569,21 @@ void ToolMapFrame::_CreateMenu()
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to layer"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
     itemMenu28->Append(wxID_REFRESH, _("Refresh\tCtrl+R"), wxEmptyString, wxITEM_NORMAL);
-
     menuBar->Append(itemMenu28, _("View"));
+    
+    // SELECTION
+    wxMenu* itemMenu66 = new wxMenu;
+    itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tV"), _T(""), wxITEM_NORMAL);
+	itemMenu66->Append(ID_MENU_SELECT_BY_OID, _("Select by Feature ID..."), wxEmptyString, wxITEM_NORMAL);
+    //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
+    itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu66->AppendSeparator();
+    itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
+    //itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
+    menuBar->Append(itemMenu66, _("Selection"));
+    
+    
+    // EDITION
     wxMenu* itemMenu41 = new wxMenu;
     itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
@@ -591,6 +609,8 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping...\tCtrl+G"), wxEmptyString, wxITEM_CHECK);
     menuBar->Append(itemMenu41, _("Edition"));
+    
+    // ATTRIBUTION
     wxMenu* itemMenu55 = new wxMenu;
     itemMenu55->Append(ID_MENU_ATTRIB_TYPES, _("Object Kind..."), _T(""), wxITEM_CHECK);
     itemMenu55->Append(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute (single feature)...\tCtrl+A"), wxEmptyString, wxITEM_NORMAL);
@@ -607,32 +627,26 @@ void ToolMapFrame::_CreateMenu()
 	
 	itemMenu55->Append(wxID_ANY, _("Object Kind Panel"), itemMenu56);
 	itemMenu55->AppendSeparator();
+    itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
+	itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcut..."), wxEmptyString, wxITEM_CHECK);
     menuBar->Append(itemMenu55, _("Attribution"));
+    
+    
+    // VALIDATION
     wxMenu* itemMenu63 = new wxMenu;
-   // itemMenu63->Append(ID_MENU_CHECK_GEOM, _("Check Geometry..."), _T(""), wxITEM_CHECK);
-    //itemMenu63->Check(ID_MENU_CHECK_GEOM, true);
-    itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
-	itemMenu63->Append(ID_MENU_ORIENT_POINT, _("Set Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu63->AppendSeparator();
-	itemMenu63->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
-	menuBar->Append(itemMenu63, _("Tools"));
-    wxMenu* itemMenu66 = new wxMenu;
-    itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tV"), _T(""), wxITEM_NORMAL);
-	itemMenu66->Append(ID_MENU_SELECT_BY_OID, _("Select by Feature ID..."), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
-    itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu66->AppendSeparator();
-    itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
-    menuBar->Append(itemMenu66, _("Selection"));
     wxMenu* itemMenu72 = new wxMenu;
     itemMenu72->Append(ID_MENU_QUERIES, _("Edit..."), wxEmptyString, wxITEM_CHECK);
     itemMenu72->AppendSeparator();
 	itemMenu72->Append(ID_MENU_QUERIES_RUN, _("Run\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu72->Append(ID_MENUITEM11, _("User query 1"), _T(""), wxITEM_NORMAL);
-    //itemMenu72->Append(ID_MENUITEM12, _("User query 2"), _T(""), wxITEM_NORMAL);
-    menuBar->Append(itemMenu72, _("Queries"));
+    itemMenu63->Append(wxID_ANY, _("Queries"), itemMenu72);
+    itemMenu63->AppendSeparator();
+    itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
+	itemMenu63->AppendSeparator();
+	itemMenu63->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
+	menuBar->Append(itemMenu63, _("Validation"));
+    
+    
     wxMenu* itemMenu77 = new wxMenu;
     itemMenu77->Append(ID_MENU_TOC_WINDOW, _("Table of content"), wxEmptyString, wxITEM_CHECK);
     itemMenu77->Check(ID_MENU_TOC_WINDOW, true);
