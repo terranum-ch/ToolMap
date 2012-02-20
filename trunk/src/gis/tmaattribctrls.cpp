@@ -90,6 +90,7 @@ tmFullSelectTextCtrl::~tmFullSelectTextCtrl()
 void tmFullSelectTextCtrl::OnFocus( wxFocusEvent &event )
 {
 	m_bDoSelectAll = true;
+	event.Skip();
 }
 
 
@@ -152,6 +153,7 @@ tmFullSelectSpinCtrl::~tmFullSelectSpinCtrl()
 void tmFullSelectSpinCtrl::OnFocus( wxFocusEvent &event )
 {
 	m_bDoSelectAll = true;
+	event.Skip();
 }
 
 
