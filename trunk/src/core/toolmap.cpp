@@ -655,7 +655,7 @@ void ToolMapFrame::_CreateMenu()
 #ifndef __WXMAC__
 	itemMenu77->AppendSeparator();
 #endif
-	itemMenu77->Append(wxID_PREFERENCES, _("Preferences..."), wxEmptyString);
+	itemMenu77->Append(wxID_PREFERENCES);
 
     menuBar->Append(itemMenu77, _("Window"));
     wxMenu* itemMenu81 = new wxMenu;

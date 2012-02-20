@@ -57,13 +57,14 @@ class tmLayerProperties : public wxTreeItemData
 		
 	public:
 		// init from string array
-		bool InitFromArray(const wxArrayString & array);
+		bool InitFromArray(const wxArrayString & array, bool userelativepath, const wxString & prjpath);
 		void InitSymbology (const wxString & itemBinSymbology);
 		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
 								  const wxArrayString & supportedext);
 		
         wxString GetNameDisplay();
         wxFileName GetName();
+        void SetName(const wxFileName & filename){m_LayerName = filename;}
         inline const long GetID() const;
         void SetID(long value);
         inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;

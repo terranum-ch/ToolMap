@@ -197,13 +197,18 @@ void tmLayerManager::FillTOCArray()
 {
 	wxASSERT_MSG (m_DB != NULL, _T("Database pointer is empty... error"));
 	
-	
+	// load preference 
+    wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+	myConfig->SetPath("GENERAL");
+    bool myRelativePath = myConfig->ReadBool("relative_path", true);
+    myConfig->SetPath("..");
+    
+    
 	tmLayerProperties * lyrproptemp = NULL;
-	//int iNumberAdded = 0;
-	
 	while (1)
 	{
-		lyrproptemp = m_DB->GetNextTOCEntry();
+		lyrproptemp = m_DB->GetNextTOCEntry(myRelativePath);
 		
 		if(lyrproptemp ==NULL)
 		{
@@ -237,8 +242,15 @@ bool tmLayerManager::SaveTOCStatus()
 	tmLayerProperties * itemProp = NULL;
 	int iRank = m_TOCCtrl->GetCountLayers();
 	
+    // load preference 
+    wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+	myConfig->SetPath("GENERAL");
+    bool myRelativePath = myConfig->ReadBool("relative_path", true);
+    myConfig->SetPath("..");
+    
+    
 	wxString sSentence = _T("");
-	
 	while (1)
 	{
 		if (iRank == m_TOCCtrl->GetCountLayers())
@@ -253,6 +265,21 @@ bool tmLayerManager::SaveTOCStatus()
 		if (!itemProp)
 			break;
 		
+        // make path relative if file is valid!
+        // only for support files
+        if (itemProp->GetType() > TOC_NAME_NOT_GENERIC) {
+            wxFileName myLayerName (itemProp->GetName());
+            if (myLayerName.Exists() == true && myRelativePath == true) {
+                if (myLayerName.MakeRelativeTo(m_DB->DataBaseGetPath()) == true) {
+                    itemProp->SetName(myLayerName);
+                    //wxLogMessage(_("Relative path created: '%s'"), itemProp->GetName().GetFullPath());
+                }
+                else{
+                    //wxLogMessage(_T("Converting '%s' to relative path isn't possible"), myLayerName.GetFullPath());
+                }
+            }
+        }
+        
 		// serialize symbology //
 		tmSerialize out;
 		itemProp->GetSymbolRef()->Serialize(out);
