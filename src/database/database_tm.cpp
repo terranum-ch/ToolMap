@@ -2116,6 +2116,11 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 										int itemRank,
 										const wxString & symbology)
 {
+    wxString myPath = item->GetName().GetPath();
+	// converting path to windows path
+	// do nothing if not a windows path.
+	DataBaseTM::ConvertPath(myPath);
+
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
 									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
 									 _T(" VERTEX_FLAGS = %d, CONTENT_PATH=\"%s\" ")
@@ -2124,7 +2129,7 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties *
 									 itemRank,
 									 symbology.c_str(),
 									 item->GetVertexFlags(),
-                                     item->GetName().GetPath(),
+                                     myPath,
 									 item->GetID()));
 	
 }
