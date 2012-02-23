@@ -17,7 +17,9 @@
 #include "tmstats.h"
 #include "tmstatsevent.h"
 #include "../database/database_tm.h"
+#include "../database/tableexport.h"
 #include "tmstatsrecord.h"
+
 
 // event declared in tmstatsevent.h
 DEFINE_EVENT_TYPE(tmEVT_STAT_CLICK);
@@ -192,7 +194,7 @@ void tmStatsManager::ShowStatsDialog(wxWindow * parent) {
 		myRecord.Load(m_StatBufferData.m_Id, myDataActual);
 	}
 	
-	tmStats_DLG myDlg (parent, &myDataActual, &myDataTotal, myRecordNb);
+	tmStats_DLG myDlg (parent, &myDataActual, &myDataTotal, myRecordNb, m_Database);
 	myDlg.SetStarted(m_IsStarted);
 	
 	int myReturnCode = myDlg.ShowModal();
@@ -247,7 +249,29 @@ void tmStats_DLG::OnRecordStop(wxCommandEvent & event) {
 
 
 void tmStats_DLG::OnExport(wxCommandEvent & event) {
-	wxLogError("Not implemented now!");
+    // select export folder
+    wxFileDialog saveFileDialog(this, _("Export Statistics data"), wxEmptyString, wxEmptyString,
+                                _("CSV files (*.csv)|*.csv"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxFileName myPath(saveFileDialog.GetPath());
+    
+    // export
+    bool myExportSucess = false;
+   {
+        wxWindowDisabler disableAll;
+        wxBusyInfo wait("Please wait, exporting ...");
+        TableExport myExport(m_Database); 
+        myExportSucess = myExport.ExportCSV(TABLE_NAME_STAT, myPath);
+    }
+        
+    if (myExportSucess == false){
+        wxLogError(_("Exporting statistics failed!"));
+    }
+    else{
+        wxMessageBox(wxString::Format(_("Exporting statistics to '%s' succeed!"),myPath.GetFullPath()));
+    }
 }
 
 
@@ -398,13 +422,15 @@ void tmStats_DLG::_CreateControls() {
 tmStats_DLG::tmStats_DLG(wxWindow * parent,
 						 const tmStatsData * actual,
 						 const tmStatsData * total,
-						 long nbrecords,
+						 long nbrecords,DataBaseTM * database, 
 						 wxWindowID id, const wxString & title,
 						 const wxPoint & pos, const wxSize & size, long style) :
 wxDialog(parent, id, title, pos, size,style) {
 	m_DataActual = actual;
 	m_DataTotal = total;
 	m_DataTotalRecord = nbrecords;
+    m_Database = database;
+    wxASSERT(m_Database);
 	_CreateControls();
 	_UpdateControls();
 }

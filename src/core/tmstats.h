@@ -21,6 +21,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/wupdlock.h>
+#include <wx/busyinfo.h>
 
 
 class DataBaseTM;
@@ -114,7 +116,8 @@ class tmStats_DLG : public wxDialog {
 	const tmStatsData * m_DataActual;
     const tmStatsData * m_DataTotal;
 	long m_DataTotalRecord;
-	
+    DataBaseTM * m_Database;
+
 	
     void OnRecordStart(wxCommandEvent & event);
     void OnRecordStop(wxCommandEvent & event);
@@ -127,9 +130,9 @@ class tmStats_DLG : public wxDialog {
     tmStats_DLG(wxWindow * parent, 
 				const tmStatsData * actual,
 				const tmStatsData * total,
-				long nbrecords,
+				long nbrecords, DataBaseTM * database,
 				wxWindowID id = wxID_ANY,
-				const wxString & title = _("Statistics"), 
+				const wxString & title = _("Statistics"),  
 				const wxPoint & pos = wxDefaultPosition, 
 				const wxSize & size = wxDefaultSize, 
 				long style = wxDEFAULT_DIALOG_STYLE);
