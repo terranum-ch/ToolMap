@@ -112,7 +112,6 @@ void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event)
 	int myKeyCode = event.GetInt();
 	
 	wxLogDebug(_T("Key pressed : value %d"),myKeyCode);
-	
 	if (myKeyCode >= WXK_F1 && myKeyCode <= WXK_F12)
 	{
 		// get the key index : 
@@ -133,18 +132,19 @@ void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event)
 				// create attribution object based on type
 				tmAttributionData * myAttrib = CreateAttributionData(myLayerType);
 				myAttrib->Create(mySelObjArray, m_pDB);
-				if(!myAttrib->SetAttributeBasicValues(&myValues))
-				{
+				if(!myAttrib->SetAttributeBasicValues(&myValues)){
 					wxLogMessage(_("Unable to attribute those data"));
 				}
-				
-				delete myAttrib;
+				wxDELETE(myAttrib);
 				
 				// send notification to frame
 				wxCommandEvent evt(tmEVT_SHORTCUT_ATTRIBUTION_DONE, wxID_ANY);
 				evt.SetString(myDescription);
 				m_Parent->GetEventHandler()->AddPendingEvent(evt);
 				
+                // send statistics
+                wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
+                m_Parent->GetEventHandler()->AddPendingEvent(statevt);	
 			}
 		}
 		
