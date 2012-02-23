@@ -44,9 +44,9 @@ bool TableExport::ExportCSV(const wxString & tablename, const wxFileName & path,
     
     wxString filetext = tablename;
     if (path.HasName() == true) {
-        filetext = path.GetFullName(); 
+        filetext = path.GetName(); 
     }
-    
+  
     // open file for export
     wxFileName myFileName (path.GetPath(), filetext, "csv");
     wxLogMessage(_("Exporting to '%s'"), myFileName.GetFullPath());
