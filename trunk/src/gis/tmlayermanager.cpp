@@ -1681,9 +1681,8 @@ void tmLayerManager::_ZoomChanged()
 	tmZoomExtent myActualExtent;
 	myActualExtent.m_ZoomFactor = m_Scale.GetPixelSize();
 	myActualExtent.m_TopLeftPosition = m_Scale.GetTopLeftValue();
-	if (myActualExtent.IsOk()==false)
-	{
-		wxLogError(_("Incorrect zoom extent set, unable to pass this value to the zoom manager"));
+	if (myActualExtent.IsOk()==false){
+		wxLogMessage(_("Incorrect zoom extent set!"));
 		return; 
 	}
 	m_ZoomManager.Add(myActualExtent);
