@@ -4,7 +4,7 @@
 import shutil
 import os.path
 import sys
-
+from datetime import datetime
 
 # script info
 print ("\n----------------------------------------------------------")
@@ -101,6 +101,8 @@ except:
     print (myScriptPathName[0] + os.sep + mySelectedVar)
     exit(); 
 
+
+
 #
 # generic questions
 #
@@ -128,7 +130,6 @@ print ("----------------------------------------------------------\n")
 
 
 doGo = askUserWithCheck ("Do the build ? (Y / N): ")
-
 
 #
 # get latest version
@@ -287,9 +288,42 @@ if (doUpload != '' and doInstall == 'Y'):
     myConnection.cwd(myPath)
     myFileName = gDirInstall + os.sep + installName
     myConnection.storbinary('STOR '+installName, ProgressFile(open(myFileName, 'rb')), 4096)
-    myConnection.quit()
     print ("transfering install " + installName + "Success!")
-                    
+
+    today = datetime.now()
+    contentText = '''
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>ToolMap</title>
+	<link href="release_status.css" rel="stylesheet" type="text/css" />
+	<style type="text/css"></style>
+	</head>
+
+	<body>
+	<h1>ToolMap - development release </h1>
+	<h2>{}</h2>
+	<p>The latest toolmap development release  could be downloaded from here: <a   href="http://www.crealp.ch/down/toolmap/{}">http://www.crealp.ch/down/toolmap/{}</a><a href="http://www.crealp.ch/down/toolmap/{}"></a></p>
+	<ul>
+		<li>Version number: <span class="version">{}</span></li>
+	  	<li>Date: <span class="version">{}</span></li>
+	</ul>
+	<p>[<a href="release_status.html">home</a>]</p>
+	</body>
+	</html>    
+	'''
+    
+    
+    if (".dmg" in installName):
+        #OSX
+        with open("release_status_osx.html","w") as webpage:
+            webpage.write(contentText.format("OSX",installName, installName, installName, mySVNValue, today.strftime("%A %d. %B %Y  %H:%M:%S")))
+        myConnection.storbinary('STOR release_status_osx.html', ProgressFile(open("release_status_osx.html", 'rb')), 4096)
+    print ("Web page : http://www.crealp.ch/down/toolmap/release_status.html udated!")
+    myConnection.quit()
+	
+		
 
         
     
