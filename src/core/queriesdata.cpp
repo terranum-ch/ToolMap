@@ -343,19 +343,16 @@ bool QueriesData::GetObjectsForSelection(DataBaseTM * database, PrjMemObjectsArr
 	wxASSERT(database);
 	wxASSERT(objects.GetCount() == 0);
 	
-	
-	
 	// get object types
-	wxString myPrepQuery = _T("SELECT o.OBJECT_TYPE_CD, o.OBJECT_DESC, l.LAYER_NAME, o.OBJECT_ID FROM")
-	_T(" %s o LEFT JOIN (%s l, %s a)")
-	_T(" ON l.LAYER_INDEX = o.THEMATIC_LAYERS_LAYER_INDEX AND")
-	_T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %ld");
-	wxString myQuery = wxString::Format(myPrepQuery,	
-										TABLE_NAME_OBJECTS.c_str(),
-										TABLE_NAME_LAYERS.c_str(),
-										TABLE_NAME_GIS_ATTRIBUTION[m_QueryLayerType].c_str(),
-										m_QueryObjectGeomID);
-	
+   wxString myPrepQuery = _T("SELECT OBJECT_CD, o.OBJECT_DESC, o.OBJECT_TYPE_CD, l.LAYER_NAME, o.OBJECT_ISFREQ, o.OBJECT_ID ")
+    _T("FROM %s o LEFT JOIN (%s l, %s a) ON l.LAYER_INDEX=o.THEMATIC_LAYERS_LAYER_INDEX AND")
+    _T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %ld");
+   wxString myQuery = wxString::Format(myPrepQuery,	
+                                       TABLE_NAME_OBJECTS.c_str(),
+                                       TABLE_NAME_LAYERS.c_str(),
+                                       TABLE_NAME_GIS_ATTRIBUTION[m_QueryLayerType].c_str(),
+                                       m_QueryObjectGeomID);
+    
 	if (database->DataBaseQuery(myQuery)==false){
 		return false;
 	}
