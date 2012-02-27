@@ -320,15 +320,17 @@ if (doUpload != '' and doInstall == 'Y'):
         with open("release_status_osx.html","w") as webpage:
             webpage.write(contentText.format("OSX",installName, installName, installName, mySVNValue, today.strftime("%A %d. %B %Y  %H:%M:%S")))
         myConnection.storbinary('STOR release_status_osx.html', ProgressFile(open("release_status_osx.html", 'rb')), 4096)
+    os.remove("release_status_osx.html")
     elif (".exe" in installName):
         # WINDOWS
         with open("release_status_windows.html","w") as webpage:
             webpage.write(contentText.format("WINDOWS",installName, installName, installName, mySVNValue, today.strftime("%A %d. %B %Y  %H:%M:%S")))
         myConnection.storbinary('STOR release_status_windows.html', ProgressFile(open("release_status_windows.html", 'rb')), 4096)
+    os.remove("release_status_windows.html")	
 
     print ("Web page : http://www.crealp.ch/down/toolmap/release_status.html udated!")
     myConnection.quit()
-	
+    
 		
 
         
