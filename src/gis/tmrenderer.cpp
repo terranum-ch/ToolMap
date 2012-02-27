@@ -330,13 +330,14 @@ void tmRenderer::SetBitmapStatus(wxBitmap * bmp)
 		return;
 	}
 	
-	
 	BitmapCopyInto(bmp);
 }
 
 
-void tmRenderer::OnMouseDown(wxMouseEvent & event)
-{
+void tmRenderer::OnMouseDown(wxMouseEvent & event){
+    SetFocus();
+	CaptureMouse();
+
 	// rectangle zoom
 	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		ZoomStart(event.GetPosition());
@@ -364,8 +365,7 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event)
 		ModifySharedStart(event.GetPosition());
 	}
 	
-	
-	event.Skip();
+	//event.Skip();
 }
 
 
@@ -375,7 +375,7 @@ void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyMenu(event.GetPosition());
 	
-	event.Skip();
+	//event.Skip();
 }
 
 
@@ -417,7 +417,11 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 
 void tmRenderer::OnMouseUp(wxMouseEvent & event)
 {
-	if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
+	if (HasCapture() == true) {
+		ReleaseMouse();
+	}
+    
+    if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		ZoomStop(event.GetPosition());
 	
 	if (m_ActualTool == tmTOOL_PAN)
@@ -447,6 +451,15 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	wxCommandEvent evt(tmEVT_STAT_CLICK, wxID_ANY);
 	GetEventHandler()->AddPendingEvent(evt);
 }
+
+
+void tmRenderer::OnMouseCaptureLost(wxMouseEvent & event){
+    // Only used under Windows. Mouse capture is lost when a dialog is displayed.
+	if (HasCapture() == true){
+		ReleaseMouse();
+	}
+}
+
 
 
 void tmRenderer::OnMouseDClick  (wxMouseEvent & event){
