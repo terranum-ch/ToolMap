@@ -254,9 +254,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (wxID_ABOUT, ToolMapFrame::OnAbout)
 	EVT_MENU (ID_MENU_COMPONENTS, ToolMapFrame::OnComponentsInfo)
 
+    EVT_MENU(ID_MENU_LAYOUT_DEFAULT, ToolMapFrame::OnLayoutDefault)
+    EVT_MENU(ID_MENU_LAYOUT_VERTICAL, ToolMapFrame::OnLayoutVertical)
+    EVT_MENU(ID_MENU_LAYOUT_HORIZONTAL, ToolMapFrame::OnLayoutHorizontal)
+
 	// AUI EVENT WHEN PANE CLOSED
 	EVT_AUI_PANE_CLOSE (ToolMapFrame::OnCloseManagedPane)
-
 	EVT_CLOSE(ToolMapFrame::OnClose)
 
 	// NOTIFICATION EVENT
@@ -374,6 +377,8 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	m_ShortCutPanel = new Shortcuts_PANEL(mypanel2, wxID_ANY, m_AuiManager);
 	m_SnappingPanel = new Snapping_PANEL(mypanel2, wxID_ANY, m_AuiManager);
 	
+    _CreatePerspectives();
+    
 	// loading position
 	wxString myPosText = wxEmptyString;
 	tmWindowPosition myPos;
@@ -646,7 +651,7 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu63->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
 	menuBar->Append(itemMenu63, _("Validation"));
     
-    
+    // WINDOW
     wxMenu* itemMenu77 = new wxMenu;
     itemMenu77->Append(ID_MENU_TOC_WINDOW, _("Table of content"), wxEmptyString, wxITEM_CHECK);
     itemMenu77->Check(ID_MENU_TOC_WINDOW, true);
@@ -656,8 +661,15 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu77->AppendSeparator();
 #endif
 	itemMenu77->Append(wxID_PREFERENCES);
-
+    itemMenu77->AppendSeparator();
+    wxMenu * myLayoutMenu = new wxMenu;
+    myLayoutMenu->Append(ID_MENU_LAYOUT_DEFAULT, _("Default"));
+    myLayoutMenu->Append(ID_MENU_LAYOUT_VERTICAL, _("Vertical"));
+    myLayoutMenu->Append(ID_MENU_LAYOUT_HORIZONTAL, _("Horizontal"));
+    itemMenu77->AppendSubMenu(myLayoutMenu, _("Layout"));
     menuBar->Append(itemMenu77, _("Window"));
+    
+    // HELP
     wxMenu* itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu81->Append(ID_MENU_COMPONENTS, _("Components informations..."), wxEmptyString, wxITEM_NORMAL);
@@ -1192,6 +1204,54 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	}
 }
 
+
+
+void ToolMapFrame::_CreatePerspectives(){
+    wxASSERT(m_AuiManager);
+    m_Perspectives.Clear();
+    
+    // default perspective
+    wxAuiPaneInfoArray myPanels = m_AuiManager->GetAllPanes();
+    for (unsigned int i = 0; i< myPanels.GetCount(); i++) {
+        myPanels.Item(i).Hide();
+    }
+    m_AuiManager->GetPane(SYMBOL_MAIN_PANEL_TITLE).Show();
+    m_Perspectives.Add(m_AuiManager->SavePerspective());
+    
+    // vertical perspective
+    m_AuiManager->GetPane(SNAPPING_PANEL_TITLE).Show().Left().Dock().Layer(1);
+    m_AuiManager->GetPane(SHORTCUT_PANEL_TITLE).Show().Left().Dock().Layer(1);
+    m_AuiManager->GetPane(SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE).Show().Right().Dock().Layer(1);
+    m_AuiManager->GetPane(SYMBOL_QUERIES_PANEL_TITLE).Show().Right().Dock().Layer(1);
+    m_Perspectives.Add(m_AuiManager->SavePerspective());
+    
+    // horizontal perspective
+    m_AuiManager->GetPane(SYMBOL_ATTRIBOBJTYPE_PANEL_TITLE).Show().Left().Dock().Layer(1);
+    m_AuiManager->GetPane(SYMBOL_QUERIES_PANEL_TITLE).Show().Bottom().Dock().Layer(2);
+    m_AuiManager->GetPane(SHORTCUT_PANEL_TITLE).Show().Bottom().Dock().Layer(2).Position(1);
+    m_AuiManager->GetPane(SNAPPING_PANEL_TITLE).Show().Bottom().Dock().Layer(2).Position(0);
+    m_Perspectives.Add(m_AuiManager->SavePerspective());
+}
+
+
+void ToolMapFrame::OnLayoutDefault (wxCommandEvent & event){
+    wxASSERT(m_AuiManager);
+    m_AuiManager->LoadPerspective(m_Perspectives.Item(tmPERSPECTIVE_MODE_DEFAULT));
+}
+
+
+
+void ToolMapFrame::OnLayoutVertical (wxCommandEvent & event){
+    wxASSERT(m_AuiManager);
+    m_AuiManager->LoadPerspective(m_Perspectives.Item(tmPERSPECTIVE_MODE_VERTICAL));
+}
+
+
+
+void ToolMapFrame::OnLayoutHorizontal (wxCommandEvent & event){
+    wxASSERT(m_AuiManager);
+    m_AuiManager->LoadPerspective(m_Perspectives.Item(tmPERSPECTIVE_MODE_HORIZONTAL));    
+}
 
 
 
