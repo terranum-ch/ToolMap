@@ -36,10 +36,10 @@ def gBuildCommand(buildtype="Debug", directory = ""):
 #TEST SPECIFIC
 def runBeforeTest():
     "Run this function before test for settings some parameters. Actually only coping ToolMap.app"
-    if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap.app") == False):
-        if(os.path.exists(gDirBin + os.sep + "test/ToolMap.app") == True):
-            exception = shutil.rmtree(gDirBin + os.sep + "test/ToolMap.app")
-        exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap.app", gDirBin + os.sep + "test/ToolMap.app")
+    # if(os.path.exists(gDirBin + os.sep + "test/Debug/ToolMap.app") == False):
+     #   if(os.path.exists(gDirBin + os.sep + "test/ToolMap.app") == True):
+      #      exception = shutil.rmtree(gDirBin + os.sep + "test/ToolMap.app")
+       # exception = shutil.copytree(gDirBin + os.sep + "Debug/ToolMap.app", gDirBin + os.sep + "test/ToolMap.app")
         
 
 def gCreateInstaller(svnnumner):
