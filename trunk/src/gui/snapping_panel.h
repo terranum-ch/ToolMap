@@ -45,7 +45,7 @@
 #define ID_SNAP_REMOVE 22003
 #define ID_SNAP_CLEAR 22004
 #define SNAPPING_PANEL_TITLE _("Snapping")
-#define SNAPPING_PANEL_SIZE wxSize(300, 200)
+#define SNAPPING_PANEL_SIZE wxSize(230, 150)
 
 
 
