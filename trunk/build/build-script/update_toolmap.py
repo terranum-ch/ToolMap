@@ -173,10 +173,10 @@ mycmakeCommandLine.append(gDirTrunk + os.sep + "build")
 mycmakeCommandLine = mycmakeCommandLine + gCmakeSpecific
 mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
 mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
-mycmakeCommandLine.append("-DSVN_DURING_BUILD:BOOL=1")
-mycmakeCommandLine.append("-DSVN_DURING_CMAKE:BOOL=1")
-mycmakeCommandLine.append("-DSEARCH_GDAL_LIB_PATH:PATH=" + gDirGdal)
-mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
+#mycmakeCommandLine.append("-DSVN_DURING_BUILD:BOOL=1")
+#mycmakeCommandLine.append("-DSVN_DURING_CMAKE:BOOL=1")
+mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGdal)
+#mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
 mycmakeCommandLine.append("-DMYSQL_MAIN_DIR:PATH=" + gDirSQL)
 mycmakeCommandLine.append("-DSEARCH_WXPDFDOCUMENT_PATH=" + gDirWXPDF)
 
@@ -184,10 +184,10 @@ if (gDirCurl):
     mycmakeCommandLine.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
 if (doRunTests == 'Y'):
     mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=1")
+    mycmakeCommandLine.append("-DUNIT_TESTING_PATH:PATH=" + gDirUnitTest)
+    mycmakeCommandLine.append("-DCXXTEST_DIRECTORY:PATH=" + gDirCxx)
 else:
     mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=0")
-mycmakeCommandLine.append("-DUNIT_TESTING_PATH:PATH=" + gDirUnitTest)
-mycmakeCommandLine.append("-DCXXTEST_DIRECTORY:PATH=" + gDirCxx)
 if(gwxWidgetsVersion):
 	mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
 else:

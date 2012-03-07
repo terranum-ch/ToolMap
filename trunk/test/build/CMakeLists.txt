@@ -13,62 +13,14 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 
-# SWITCH FOR BUILDING TEST ALONE
-# IF PROGNAME ISN'T DEFINED, WE 
-# SHOULD CREATE A LIB WITH TOOLMAP CODE
-IF(NOT PROGNAME)
-	SET(PROGNAME "ToolMap")
-	SET(PROGNAME_DEFINED_INTERNALLY TRUE)
-	
-	# WXWIDGETS
-	# DEFINE ALL INCLUDES AND SO ON
-	 SET(WXWINDOWS_USE_GL 0) 
-	 INCLUDE ("../../build/cmake/FindwxWidgets.cmake")
-
-	#MYSQL EMBEDDED
-	INCLUDE ("../../build/cmake/findMySQLEmbedded.cmake")
-
-	#GEOS - GDAL libs
-	 INCLUDE ("../../build/cmake/findGISLib.cmake")
-
-	#CURL
-	INCLUDE ("../../build/cmake/FindCURL.cmake")
-
-	## CREATE THE LIB IF NEEDED
-	#CREATE LIB WITH ALL MAIN PROJECT CLASS
-	#search all source files
-	FILE (GLOB_RECURSE LIB_SRC_FILES "../../src/*.cpp")
-	SOURCE_GROUP(source FILES ${LIB_SRC_FILES})
-	#search all source files
-	# GET MAIN SOURCE FILE
-	SET(MY_SEARCHED_FILE "../../src/core/toolmap.cpp")
-	FILE(GLOB MAIN_SRC_FILE "${MY_SEARCHED_FILE}")
-	#MESSAGE("Main file is : ${MAIN_SRC_FILE}")
-	LIST(LENGTH LIB_SRC_FILES MYLENGTH)
-	MESSAGE("Number of source files is : ${MYLENGTH}")
-	LIST(FIND LIB_SRC_FILES "${MAIN_SRC_FILE}" MYFOUND)
-	MESSAGE("Main src file is found : ${MYFOUND}")
-	#REMOVE MAIN FROM SRC_FILES
-	IF(MYFOUND EQUAL -1)
-		MESSAGE(FATAL_ERROR "Following file not found : ${MY_SEARCHED_FILE}")
-	ENDIF(MYFOUND EQUAL -1)
-	LIST(REMOVE_AT LIB_SRC_FILES ${MYFOUND})
-
-	# search all headers files
-	FILE (GLOB_RECURSE LIB_HEAD_FILES "../../../src/*.h")
-	SOURCE_GROUP(header FILES ${LIB_HEAD_FILES})
-	INCLUDE_DIRECTORIES("../../../src")
-
-	ADD_LIBRARY("${PROGNAME}_lib" STATIC ${LIB_SRC_FILES} ${LIB_HEAD_FILES})
-ENDIF(NOT PROGNAME)
-SET (PROGNAMETEST ${PROGNAME}_test)
-
+SET (PROGNAMETEST ${CMAKE_PROJECT_NAME}_test)
 
 #prepare parameters file
 SET (UNIT_TESTING_PATH CACHE PATH "Path where are located the projects for unit testing")
 IF (NOT UNIT_TESTING_PATH)
 	MESSAGE(FATAL_ERROR "Unable to locate the test files such as test projects")
 ENDIF (NOT UNIT_TESTING_PATH)
+
 SET (UNIT_TESTING_USE_PROXY CACHE BOOL "Do we use a proxy for connecting to the web ?")
 FIND_PATH(PARAM_SOURCE_DIR test_param.h.in
   ${PROJECT_SOURCE_DIR}/../src_test/
@@ -76,11 +28,11 @@ FIND_PATH(PARAM_SOURCE_DIR test_param.h.in
   ${PROJECT_SOURCE_DIR}
 )
 
+
 IF (PARAM_SOURCE_DIR)
 	CONFIGURE_FILE(${PARAM_SOURCE_DIR}/test_param.h.in 
 	"${PROJECT_BINARY_DIR}/test_param.h")
 	INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
-
 ELSE(PARAM_SOURCE_DIR)
 	MESSAGE("test_param.h.in not found, unit testing not availlable")
 	MESSAGE( ${PROJECT_SOURCE_DIR})
@@ -89,17 +41,8 @@ ENDIF(PARAM_SOURCE_DIR)
 
 
 #search all source files
-FILE (GLOB SRC_FILES ../src_test/*.cpp)
-SOURCE_GROUP (source FILES ${SRC_FILES})
-
-# search all headers files
-FILE (GLOB HEAD_FILES "../src_test/*.h")
-SOURCE_GROUP ("test-files" FILES ${HEAD_FILES})
-
-
-MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
-
-
+FILE (GLOB TEST_SRC_FILES ../src_test/*.cpp)
+FILE (GLOB TEST_HEAD_FILES ../src_test/*.h)
 
 
 ## CXXTEST LIBRARY STUFF
@@ -111,12 +54,34 @@ SET(CXXTEST_USE_PYTHON 1)
 INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR})
 ENABLE_TESTING()
 
-CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${HEAD_FILES})
-TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${PROGNAME}_lib")
+CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
+SOURCE_GROUP ("test-source" FILES ${TEST_SRC_FILES} ${TEST_HEAD_FILES})
+
+TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib")
 
 #ONLY USED FOR ADDING HEADERS TO PROJECT
 IF(APPLE)
-ADD_LIBRARY("dummy_files" SHARED EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
+	ADD_LIBRARY("dummy_files" MODULE EXCLUDE_FROM_ALL main.cpp ${TEST_HEAD_FILES} ${TEST_SRC_FILES})
+ENDIF(APPLE)
+
+
+# COPY ERRMSG.SYS TO EXPECTED DIRECTORY!
+IF(APPLE)
+	SET (TEST_BINARY_DIR ${PROJECT_BINARY_DIR}/test/)
+	#MESSAGE("Test directory:  ${TEST_BINARY_DIR}")
+	#MESSAGE("programme test: ${PROJECT_BINARY_DIR} - ${PROGNAMETEST}")
+	ADD_CUSTOM_COMMAND(TARGET ${PROGNAMETEST} POST_BUILD
+		COMMAND mkdir -p
+		${TEST_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql
+		COMMAND mkdir -p
+		${TEST_BINARY_DIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql
+		
+		COMMAND cp ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys 
+		${TEST_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql/errmsg.sys
+		COMMAND cp ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys 
+		${TEST_BINARY_DIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql/errmsg.sys
+		COMMENT "Copying errmsg.sys for Unit tests"
+		)
 ENDIF(APPLE)
 
 
@@ -130,7 +95,7 @@ ENDIF(APPLE)
 # OS. 
 # CHECK ARE DONE INTERNALLY YOU 
 # CAN CALL THIS WITHOUT FEAR...
-SET (MYPROGNAME ${PROGNAME})
+SET (MYPROGNAME ${CMAKE_PROJECT_NAME})
 SET (PROGNAME ${PROGNAMETEST})
 INCLUDE ("../../build/cmake/Use_wingdiplus.cmake")
 
