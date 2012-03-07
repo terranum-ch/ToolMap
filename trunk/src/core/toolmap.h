@@ -221,10 +221,20 @@ class AttribObjType_PANEL;
 #define ID_CTXT_AUTODISPLAY_ATTRIB 21002
 #define ID_CTXT_EMPTY_LIST_AFTER_ATTRIB 21003
 
+const int ID_MENU_LAYOUT_DEFAULT = 15201;
+const int ID_MENU_LAYOUT_VERTICAL = 15202;
+const int ID_MENU_LAYOUT_HORIZONTAL = 15203;
+
+
 const wxString g_ProgName = _T("ToolMap");
 const wxString g_ProgMajorVersion = _T("2.3");
 
-
+// define perspectives for auimanager
+enum tmPERSPECTIVE_MODE {
+    tmPERSPECTIVE_MODE_DEFAULT = 0,
+    tmPERSPECTIVE_MODE_VERTICAL,
+    tmPERSPECTIVE_MODE_HORIZONTAL
+};
 
 /***************************************************************************//**
  @brief Implement the Application
@@ -258,20 +268,7 @@ DECLARE_APP(ToolMapApp);
  *******************************************************************************/
 class ToolMapFrame: public wxFrame
 {
-public:
-	ToolMapFrame();
-	ToolMapFrame(wxFrame *frame, const wxString& title,
-			 wxPoint  pos,  wxSize  size,
-				 const wxString & name);
-	~ToolMapFrame();
-	
-	void _CreateMenu();
-	void _CreateToolBar();
-    void _CreateAccelerators();
-	void _LoadPreference(bool reload);
-	
 private:
-	
 	wxAuiManager * m_AuiManager;
 	AttribObjType_PANEL * m_AttribObjPanel;
 	Main_PANEL * m_MainPanel;
@@ -292,6 +289,10 @@ private:
 	WebUpdateInformationBar * m_InfoBar;
 	
 	tmStatsManager * m_StatManager;
+    
+    wxLogWindow * m_LogWindow;
+	TocWindowDlgGen * m_TocWindow;
+    wxArrayString m_Perspectives;
 	
 	void OnQuit(wxCommandEvent & event);
 	void OnClose(wxCloseEvent & event);
@@ -349,7 +350,7 @@ private:
 	
 	// changing status function
 	void OnUpdateSelection (wxCommandEvent & event);
-		
+    
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
 	
@@ -357,7 +358,7 @@ private:
 	
 	// ToolsFunction
 	void OnDanglingNodes(wxCommandEvent & event);
-
+    
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
 	void OnStatisticsUpdate(wxCommandEvent & event);
@@ -365,7 +366,12 @@ private:
 	// child event function
 	//void OnMenuZoomPreviousChange(wxCommandEvent & event);
 	void _CheckUpdates(bool ismanual = false);
-	
+    
+    // view layout
+    void OnLayoutDefault (wxCommandEvent & event);
+    void OnLayoutVertical (wxCommandEvent & event);
+    void OnLayoutHorizontal (wxCommandEvent & event);
+    
 	// update menu functions
 	void OnUpdateMenuProject(wxUpdateUIEvent & event);
 	void OnUpdateMenuPreviousZoom (wxUpdateUIEvent & event);
@@ -386,17 +392,23 @@ private:
 	void OnUpdateMenuFlipLine (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event);
 	void OnUpdateStatisticsDialog (wxUpdateUIEvent & event);
-
-	
-	wxLogWindow * m_LogWindow;
-//#if (__WXMAC__)
-//	TocWindowDlgMac * m_TocWindow;
-//#else
-	TocWindowDlgGen * m_TocWindow;
-//#endif
-	
+    
+    void _CreateMenu();
+	void _CreateToolBar();
+    void _CreateAccelerators();
+	void _LoadPreference(bool reload);
+    void _CreatePerspectives();
+    
 	DECLARE_EVENT_TABLE();
 	DECLARE_DYNAMIC_CLASS(ToolMapFrame)
+    
+    
+public:
+	ToolMapFrame();
+	ToolMapFrame(wxFrame *frame, const wxString& title,
+			 wxPoint  pos,  wxSize  size,
+				 const wxString & name);
+	~ToolMapFrame();
 };
 
 
