@@ -20,6 +20,10 @@ gCmakeSpecific.append("-DUSE_GDIPLUS_LIBRARY:BOOL=1")
 gCmakeSpecific.append("-DWXWINDOWS_USE_GL:BOOL=0")
 gCmakeSpecific.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
 gCmakeSpecific.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
+gCmakeSpecific.append("-DCXXTEST_INCLUDE_DIR:PATH=D:\\LIB\\cxxtest")
+gCmakeSpecific.append("-DCXXTEST_PYTHON_TESTGEN_EXECUTABLE:PATH=D:\\LIB\\cxxtest\\bin\\cxxtestgen")
+
+
 #gCmakeSpecific.append("-DPROXY_PARAM:TEXT=proxy.vs.ch:8080")
 
 # PLATEFORM SPECIFIC FUNCTION
