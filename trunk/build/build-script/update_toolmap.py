@@ -296,6 +296,8 @@ if (doUpload != '' and doInstall == 'Y'):
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+	<meta http-equiv="EXPIRES" content="Mon, 22 Jul 2002 11:12:01 GMT" />
 	<title>ToolMap</title>
 	<link href="release_status.css" rel="stylesheet" type="text/css" />
 	<style type="text/css"></style>
