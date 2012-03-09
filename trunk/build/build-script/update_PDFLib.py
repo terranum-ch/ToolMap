@@ -89,6 +89,14 @@ def MacBook():
 	libwx = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN"
 	return libpath, libname, libprefix, libwx
 
+def LinuxHome():
+	"""docstring for Linux Home"""
+	print ("Building for Linux Home")
+	libpath = "/home/lucien/programmation/LIB/"
+	libname = "wxpdfdoc-0.9.2.1"
+	libprefix = "/home/lucien/programmation/LIB/_LIBPDF"
+	libwx = "/home/lucien/programmation/LIB/_LIBWX"
+	return libpath, libname, libprefix, libwx
 
 
 def MacPro():
@@ -104,8 +112,18 @@ def MacPro():
 def MacConfigure(libpath, libprefix, libwx):
 	"""docstring for MacBookConfigure"""
 	try:
+		os.remove(libpath+os.sep+"configure")
+		os.remove(libpath+os.sep+"Makefile.in")
 		os.rename(libpath+os.sep+"configure29", libpath+os.sep+"configure")
-		os.lchmod(libpath+os.sep+"configure", 0o777)
+		try:
+			os.lchmod(libpath+os.sep+"configure", 0o777)
+		except:
+			try:
+				mymode = stat.S_IWRITE | stat.S_IREAD | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH
+				os.chmod(libpath+os.sep+"configure", mymode)
+			except:
+				print("Unable to change file rights! configure will not work!")
+				exit()
 		os.rename(libpath+os.sep+"Makefile29.in", libpath+os.sep+"Makefile.in")
 	except:
 		print ("Error renaming file!")
@@ -207,7 +225,7 @@ if __name__ == '__main__':
 	class Namespace: pass
 	print ("Build wxPDFDocument library")
 	print ("---------------------------")
-	plateforms = ('MacBook','MacPro', 'Window 7')
+	plateforms = ('MacBook','MacPro', 'Window 7', 'linux home')
 	ns = Namespace()
 	ns.libpath = ""
 	ns.libname = ""
@@ -225,6 +243,8 @@ if __name__ == '__main__':
 		ns.libpath, ns.libname, ns.libprefix, ns.libwx = Windows()
 	elif (plateforms[int(myValue)] == 'MacPro'):
 		ns.libpath, ns.libname, ns.libprefix, ns.libwx = MacPro()
+	elif (plateforms[int(myValue)] == 'linux home'):
+		ns.libpath, ns.libname, ns.libprefix, ns.libwx = LinuxHome()
 	else:
 		print ("Unsupported plateform")
 		exit()
@@ -251,6 +271,8 @@ if __name__ == '__main__':
 	# PERFORMING CONFIGURE
 	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
 		MacConfigure(ns.libpath+ns.libname, ns.libprefix, ns.libwx)
+	elif  (plateforms[int(myValue)] == 'linux home'):
+		MacConfigure(ns.libpath+ns.libname, ns.libprefix, ns.libwx)
 	elif (plateforms[int(myValue)] == 'Window 7'):
 		print ("No configuration needed!")
 	else:
@@ -260,6 +282,8 @@ if __name__ == '__main__':
 	# PERFORMING BUILD
 	myNumberofProc = multiprocessing.cpu_count()
 	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
+		MacBuild(ns.libpath+ns.libname, ns.libprefix, myNumberofProc)
+	elif  (plateforms[int(myValue)] == 'linux home'):
 		MacBuild(ns.libpath+ns.libname, ns.libprefix, myNumberofProc)
 	elif(plateforms[int(myValue)] == 'Window 7'):
 		WindowBuild(ns.libpath+ns.libname, ns.libwx, myNumberofProc)
