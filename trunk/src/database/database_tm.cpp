@@ -892,7 +892,7 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
 	if (myLayer->m_LayerID > 0)
 	{
 		sSqlSentence.Append(wxString::Format(_T(" UPDATE %s SET TYPE_CD = %d, LAYER_NAME = \"%s\"")
-										  _T(" WHERE LAYER_INDEX = %ld; "), TABLE_NAME_LAYERS.c_str(), 
+										  _T(" WHERE LAYER_INDEX = %d; "), TABLE_NAME_LAYERS.c_str(), 
 										  myLayer->m_LayerType, 
 										  myLayer->m_LayerName.c_str(),
 										  myLayer->m_LayerID));

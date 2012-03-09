@@ -468,7 +468,7 @@ void ProjectDefList::BeforeDeleting()
 			layer = m_pPrjDefinition->FindLayer(myLayerName);
 			if (layer && layer->m_LayerID > 0)
 			{
-				wxLogDebug(_T("Marqued layer for deleting : %ld"), layer->m_LayerID);
+				wxLogDebug(_T("Marqued layer for deleting : %d"), layer->m_LayerID);
 				m_pPrjDefinition->m_StoreDeleteLayers.Add(layer->m_LayerID);
 			}
 		}

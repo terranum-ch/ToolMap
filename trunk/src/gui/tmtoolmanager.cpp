@@ -109,17 +109,23 @@ bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
 	// search dangling nodes
 	ToolDanglingNodes myTool (m_pDB);
 	bool bStoped = false;
+    unsigned int iLoop = 0;
 	for (unsigned int i = 0; i< iLayersCount; i++)
 	{
-		myTool.SearchInit(myLayersID.Item(i));
-		if(myTool.SearchRun(&myDlg)==false)
-		{
+		wxString myLayerName = layersname.Item(i+1);
+        if (iLayersCount == 1) {
+            myLayerName = layersname.Item(selectedlayer);
+        }
+        if(myTool.SearchInit(myLayersID.Item(i), myLayerName)==false){
+            continue;
+        }
+		if(myTool.SearchRun(&myDlg)==false){
 			bStoped = true;
 			break;
 		}
 		wxLogDebug(_T("Dangling nodes searched for layers : %d"), i);
-		
 		myTool.GetDanglingNodes(m_DanglingPts);
+        iLoop++;
 	}
 	
 	if (bStoped==true)
@@ -128,6 +134,11 @@ bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
 		return false;
 	}
 	
+    // all searched layers are empty !! no message
+    if (iLoop == 0) {
+        return true;
+    }
+    
 	wxString myMsg = wxString::Format(_T("%ld dangling nodes found"), m_DanglingPts.GetCount());
 	wxLogDebug(myMsg);
 	wxMessageBox(myMsg, _("Searching dangling nodes done"), wxICON_INFORMATION | wxOK, m_Parent);

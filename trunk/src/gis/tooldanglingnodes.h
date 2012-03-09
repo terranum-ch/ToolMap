@@ -116,7 +116,7 @@ class ToolDanglingNodes : public wxObject
 		bool IsOk();
 		bool GetDanglingNodes(wxArrayRealPoints & pts);
 		
-		bool SearchInit (long layerid);
+		bool SearchInit (long layerid, const wxString & layername);
 		bool SearchInfo (int & numberlines);
 		bool SearchRun (wxProgressDialog * myProgDlg = NULL);
 		
