@@ -8,9 +8,11 @@ gDirGdal = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBGIS"
 gDirGeos = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBGIS"
 gDirSQL = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBMYSQL "
 gDirUnitTest = "/Users/lucien/DATA/PRJ/TOOLMAP2/unit_testing"
-gDirCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest"
 gDirCurl = "" 
 gDirWXPDF = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBPDF"
+gDirIncludeCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest"
+gDirPythonCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest/bin/cxxtestgen"
+
 
 # CMAKE SPECIFIC
 gCmakeEnv = "Xcode" #result of cmake --help

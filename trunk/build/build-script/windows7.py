@@ -7,7 +7,8 @@ gDirInstall = "D:\\PRJ\\TOOLMAP2\\install"
 gDirGdal = "D:\\LIB\\LIB_GDAL"
 gDirSQL = "D:\\LIB\\LIB_MYSQL"
 gDirUnitTest = "D:\\PRJ\\TOOLMAP2\\unit_testing"
-gDirCxx = "D:\\LIB\\cxxtest"
+gDirIncludeCxx = "D:\\LIB\\cxxtest"
+gDirPythonCxx = "D:\\LIB\\cxxtest\\bin\\cxxtestgen"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
 gDirGeos = "D:\\LIB\\geos-20120220"
 gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.2.1"
@@ -20,9 +21,6 @@ gCmakeSpecific.append("-DUSE_GDIPLUS_LIBRARY:BOOL=1")
 gCmakeSpecific.append("-DWXWINDOWS_USE_GL:BOOL=0")
 gCmakeSpecific.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
 gCmakeSpecific.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
-gCmakeSpecific.append("-DCXXTEST_INCLUDE_DIR:PATH=D:\\LIB\\cxxtest")
-gCmakeSpecific.append("-DCXXTEST_PYTHON_TESTGEN_EXECUTABLE:PATH=D:\\LIB\\cxxtest\\bin\\cxxtestgen")
-
 
 #gCmakeSpecific.append("-DPROXY_PARAM:TEXT=proxy.vs.ch:8080")
 
