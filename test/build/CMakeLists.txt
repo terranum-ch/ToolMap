@@ -44,14 +44,15 @@ ENDIF(PARAM_SOURCE_DIR)
 FILE (GLOB TEST_SRC_FILES ../src_test/*.cpp)
 FILE (GLOB TEST_HEAD_FILES ../src_test/*.h)
 
- find_package(CxxTest)
-          if(CXXTEST_FOUND)
-               include_directories(${CXXTEST_INCLUDE_DIR})
-               enable_testing()
-
-               CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
-               TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib")
-           endif(CXXTEST_FOUND)
+SET(CXXTEST_USE_PYTHON 1)
+find_package(CxxTest)
+if(CXXTEST_FOUND)
+	MESSAGE("Adding test: ${PROGNAMETEST}")
+	include_directories(${CXXTEST_INCLUDE_DIR}) 
+	enable_testing()
+	CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
+	TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib") 
+endif(CXXTEST_FOUND)
 
 
 # COPY ERRMSG.SYS TO EXPECTED DIRECTORY!

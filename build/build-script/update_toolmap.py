@@ -123,7 +123,7 @@ print ("Trunk     :", gDirTrunk)
 print ("GDAL      :", gDirGdal)
 print ("GEOS      :", gDirGeos)
 print ("Unit test :", gDirUnitTest)
-print ("CXX       :", gDirCxx)
+print ("CXX       :", gDirIncludeCxx)
 print ("----------------------------------------------------------\n")
 print ("Using ", NumberOfProc, " Processor(s)")
 print ("----------------------------------------------------------\n")
@@ -173,10 +173,7 @@ mycmakeCommandLine.append(gDirTrunk + os.sep + "build")
 mycmakeCommandLine = mycmakeCommandLine + gCmakeSpecific
 mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
 mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
-#mycmakeCommandLine.append("-DSVN_DURING_BUILD:BOOL=1")
-#mycmakeCommandLine.append("-DSVN_DURING_CMAKE:BOOL=1")
 mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGdal)
-#mycmakeCommandLine.append("-DSEARCH_GEOS_LIB_PATH:PATH=" + gDirGeos)
 mycmakeCommandLine.append("-DMYSQL_MAIN_DIR:PATH=" + gDirSQL)
 mycmakeCommandLine.append("-DSEARCH_WXPDFDOCUMENT_PATH=" + gDirWXPDF)
 
@@ -185,7 +182,8 @@ if (gDirCurl):
 if (doRunTests == 'Y'):
     mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=1")
     mycmakeCommandLine.append("-DUNIT_TESTING_PATH:PATH=" + gDirUnitTest)
-    mycmakeCommandLine.append("-DCXXTEST_DIRECTORY:PATH=" + gDirCxx)
+    mycmakeCommandLine.append("-DCXXTEST_INCLUDE_DIR:PATH=" + gDirIncludeCxx)
+    mycmakeCommandLine.append("-DCXXTEST_PYTHON_TESTGEN_EXECUTABLE:PATH=" + gDirPythonCxx)
 else:
     mycmakeCommandLine.append("-DUSE_UNITTEST:BOOL=0")
 if(gwxWidgetsVersion):

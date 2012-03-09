@@ -8,11 +8,11 @@ gDirInstall = ""
 gDirGdal = "/home/lucien/programmation/LIB/_LIBGIS"
 gDirSQL = "/home/lucien/programmation/LIB/_LIBMYSQL"
 gDirUnitTest = ""
-gDirCxx = "/home/lucien/programmation/LIB/cxxtest"
 gDirCurl = "" 
 gDirGeos = ""
 gDirWXPDF = ""
-
+gDirIncludeCxx = "/home/lucien/programmation/LIB/cxxtest"
+gDirPythonCxx = "/home/lucien/programmation/LIB/cxxtest/bin/cxxtestgen"
 
 # CMAKE SPECIFIC
 gCmakeEnv = "CodeBlocks - Unix Makefiles" #result of cmake --help
