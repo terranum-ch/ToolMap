@@ -118,9 +118,8 @@ bool ToolDanglingNodes::DNGetAllLines(long layerid)
 	
 	if (m_pDB->DataBaseHasResults()==false)
 	{
-		wxLogDebug(_T("No object for searching dangling nodes"));
-		//DNSearchCleanUp();
-		//return false;
+		DNSearchCleanUp();
+		return false;
 	}
 	
 	m_bSearchInited = true;
@@ -423,7 +422,7 @@ bool ToolDanglingNodes::IsOk()
 
 
 
-bool ToolDanglingNodes::SearchInit (long layerid)
+bool ToolDanglingNodes::SearchInit (long layerid, const wxString & layername)
 {
 	// ready ?
 	if (IsOk() == false)
@@ -440,9 +439,11 @@ bool ToolDanglingNodes::SearchInit (long layerid)
 	if (DNGetFrameGeometry()==false)
 		return false;
 	
-	// search
-	if (DNGetAllLines(layerid)==false)
-		return false;
+	// get all lines
+	if (DNGetAllLines(layerid)==false){
+        wxLogWarning(_("No object in: '%s' searching for danglings nodes in this layer is impossible"), layername);
+        return false;
+    }
 	
 	m_LayerID = layerid;
 	m_LoopNum ++; 
