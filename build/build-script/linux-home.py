@@ -10,7 +10,7 @@ gDirSQL = "/home/lucien/programmation/LIB/_LIBMYSQL"
 gDirUnitTest = ""
 gDirCurl = "" 
 gDirGeos = ""
-gDirWXPDF = ""
+gDirWXPDF = "/home/lucien/programmation/LIB/_LIBPDF"
 gDirIncludeCxx = "/home/lucien/programmation/LIB/cxxtest"
 gDirPythonCxx = "/home/lucien/programmation/LIB/cxxtest/bin/cxxtestgen"
 
