@@ -265,6 +265,8 @@ if __name__ == '__main__':
 	# PERFORMING PATCH
 	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
 		patchFileMac(ns.libpath+ns.libname)
+	elif(plateforms[int (myValue)] == 'linux home'):
+		patchFileMac(ns.libpath+ns.libname)
 
 	
 	
