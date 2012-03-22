@@ -6,6 +6,7 @@ redirect_prefix=/home/lucien/programmation
 redirect_prefix=/lib
 redirect_prefix=/lib64
 redirect_prefix=/usr
+redirect_prefix=/home/lucien/.ToolMap
 
 # un-comment the entries below if you think they might help your app:
 #ignore_exact=/etc/ld.so.cache

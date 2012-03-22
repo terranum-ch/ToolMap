@@ -1,0 +1,10 @@
+[WINDOW_POSITION]
+MAIN_WINDOW=66;24;900;500
+AUI_PANES=layout2|name=Table of content;caption=Table of content;state=2044;dir=4;layer=1;row=0;pos=0;prop=100000;bestw=220;besth=150;minw=220;minh=150;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=Main Panel;caption=;state=768;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=1;besth=1;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=Object Kind;caption=Object Kind;state=2044;dir=4;layer=1;row=0;pos=2;prop=100000;bestw=300;besth=255;minw=230;minh=150;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=Query Editor;caption=Query Editor;state=2044;dir=3;layer=2;row=0;pos=3;prop=100000;bestw=200;besth=139;minw=200;minh=100;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=Shortcut;caption=Shortcut;state=2099196;dir=3;layer=2;row=0;pos=1;prop=100000;bestw=230;besth=180;minw=230;minh=150;maxw=-1;maxh=-1;floatx=100;floaty=150;floatw=330;floath=250|name=Snapping;caption=Snapping;state=2099196;dir=3;layer=2;row=0;pos=0;prop=100000;bestw=260;besth=176;minw=230;minh=150;maxw=-1;maxh=-1;floatx=100;floaty=150;floatw=330;floath=250|dock_size(4,1,0)=222|dock_size(5,0,0)=10|
+SCREEN=0;0;1280;920
+[RECENT_PRJ]
+file1=
+file2=
+file3=
+file4=
+file5=
