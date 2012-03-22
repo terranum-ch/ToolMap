@@ -28,8 +28,8 @@ import shutil
 
 def LocateCDE ():
 	""" Function search CDE bin"""
-	#CDEPath = input("CDE path: ")
-	CDEPath = "/home/lucien/programmation/CDE"
+	CDEPath = input("CDE path: ")
+	#CDEPath = "/home/lucien/programmation/CDE"
 	if (CDEPath == ""):
 		print("CDE Path is empty")
 		exit()
@@ -61,10 +61,13 @@ if __name__ == '__main__':
 	myCDEPath = LocateCDE()
 	myPackagePath=myCDEPath+os.sep+"ToolMap.Package"
 	
-	#myVersiontxt = input ("Version number (format 2.3.1199): ")
-	myVersiontxt = "2.1.1199"
-	myPlateform="amd64"
+	myVersiontxt = input("Version number (format 2.3.1199): ")
+	#myVersiontxt = "2.1.1199"
+	myPlateform = input("Plateform: (amd64 or i386): ")
+	#myPlateform="amd64"
 	
+	#myInstallDirectory = input("Install directory (where to put result file): ")
+	myTrunkDirectory = input("ToolMap Trunk directory: ")
 
 	# RUN CDE to create ToolMap package only if not exists
 	if (os.path.exists(myPackagePath)==True):
@@ -86,11 +89,30 @@ if __name__ == '__main__':
 	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Documents")
 	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Public")
 	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Téléchargements")
+	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Desktop")
+	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Downloads")
+	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Music")
+	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Pictures")
+	CleanDirectory(myPackagePath+os.sep+"cde-root/home/lucien/Videos")
+	
+	# adding icon into package
+	shutil.copyfile(myTrunkDirectory+os.sep+"art"+os.sep+"toolmap.png",myPackagePath+os.sep+"toolmap.png") 
+
+	# copy install and readme file locally for archive
+	shutil.copyfile(myTrunkDirectory+os.sep+"install"+os.sep+"linux"+os.sep+"readme.txt", myCDEPath+os.sep+"readme.txt")
+	shutil.copyfile(myTrunkDirectory+os.sep+"install"+os.sep+"linux"+os.sep+"install-toolmap.py", myCDEPath+os.sep+"install-toolmap.py")
+	
 
 	# compressing package
 	try:
-		p = subprocess.Popen("tar -Jcvf {} {}".format("toolmap-package" + "_" + myVersiontxt + "_" + myPlateform + ".tar.lzma", "ToolMap.Package"), shell=True, cwd=myCDEPath)
+		p=subprocess.Popen("tar -Jcvf {0} {1} {2} {3}".format("toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.lzma","ToolMap.Package", "readme.txt", "install-toolmap.py"),shell=True,cwd=myCDEPath)
 		p.wait()
 	except:
 		print("Failed to compress :", myPackagePath)
 		exit() 
+	
+	myInstallDirectory =os.path.dirname(myTrunkDirectory)+os.sep+"install"
+	# moving package to install directory
+	shutil.move(myCDEPath+os.sep+"toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.lzma",myInstallDirectory+os.sep+"toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.lzma")
+	
+	
