@@ -97,11 +97,13 @@ if __name__ == '__main__':
 	
 	# adding icon into package
 	shutil.copyfile(myTrunkDirectory+os.sep+"art"+os.sep+"toolmap.png",myPackagePath+os.sep+"toolmap.png") 
+	
+	# adding default preferences into package
+	shutil.copyfile(myTrunkDirectory+os.sep+"install"+os.sep+"linux"+os.sep+"ToolMap.pref",myPackagePath+os.sep+"cde-root/home/lucien/.ToolMap") 
 
 	# copy install and readme file locally for archive
 	shutil.copyfile(myTrunkDirectory+os.sep+"install"+os.sep+"linux"+os.sep+"readme.txt", myCDEPath+os.sep+"readme.txt")
 	shutil.copyfile(myTrunkDirectory+os.sep+"install"+os.sep+"linux"+os.sep+"install-toolmap.py", myCDEPath+os.sep+"install-toolmap.py")
-	
 
 	# compressing package
 	try:

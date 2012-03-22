@@ -69,6 +69,14 @@ if __name__ == '__main__':
 		exit()
 	print ("ToolMap copied OK!")
 	
+	# allow acces to any user
+	try:
+		myProcess = subprocess.Popen("sudo chmod -R \"{0}\"".format(myInstalName))
+		myProcess.wait()
+	except:
+		print ("Error setting access to all user!")
+		
+	
 	# make and install shortcut
 	myDestopContent = ("[Desktop Entry]",
 	"Encoding=UTF-8", "Version=2.3", "Name=ToolMap", 
