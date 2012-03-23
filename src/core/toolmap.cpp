@@ -640,11 +640,8 @@ void ToolMapFrame::_CreateMenu()
 
     // VALIDATION
     wxMenu* itemMenu63 = new wxMenu;
-    wxMenu* itemMenu72 = new wxMenu;
-    itemMenu72->Append(ID_MENU_QUERIES, _("Edit..."), wxEmptyString, wxITEM_CHECK);
-    itemMenu72->AppendSeparator();
-	itemMenu72->Append(ID_MENU_QUERIES_RUN, _("Run\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu63->Append(wxID_ANY, _("Queries"), itemMenu72);
+    itemMenu63->Append(ID_MENU_QUERIES, _("Edit queries..."), wxEmptyString, wxITEM_CHECK);
+	itemMenu63->Append(ID_MENU_QUERIES_RUN, _("Run selected query\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
 	itemMenu63->AppendSeparator();
@@ -666,7 +663,7 @@ void ToolMapFrame::_CreateMenu()
     myLayoutMenu->Append(ID_MENU_LAYOUT_DEFAULT, _("Default"));
     myLayoutMenu->Append(ID_MENU_LAYOUT_VERTICAL, _("Vertical"));
     myLayoutMenu->Append(ID_MENU_LAYOUT_HORIZONTAL, _("Horizontal"));
-    itemMenu77->AppendSubMenu(myLayoutMenu, _("Layout"));
+    itemMenu77->AppendSubMenu(myLayoutMenu, _("Workspace"));
     menuBar->Append(itemMenu77, _("Window"));
 
     // HELP
@@ -1231,6 +1228,9 @@ void ToolMapFrame::_CreatePerspectives(){
     m_AuiManager->GetPane(SHORTCUT_PANEL_TITLE).Show().Bottom().Dock().Layer(2).Position(1);
     m_AuiManager->GetPane(SNAPPING_PANEL_TITLE).Show().Bottom().Dock().Layer(2).Position(0);
     m_Perspectives.Add(m_AuiManager->SavePerspective());
+    
+    m_AuiManager->LoadPerspective(m_Perspectives.Item(tmPERSPECTIVE_MODE_DEFAULT));
+    m_AuiManager->Update();
 }
 
 
