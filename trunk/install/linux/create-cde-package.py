@@ -115,6 +115,6 @@ if __name__ == '__main__':
 	
 	myInstallDirectory =os.path.dirname(myTrunkDirectory)+os.sep+"install"
 	# moving package to install directory
-	shutil.move(myCDEPath+os.sep+"toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.lzma",myInstallDirectory+os.sep+"toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.lzma")
+	shutil.move(myCDEPath+os.sep+"toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.xz",myInstallDirectory+os.sep+"toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.xz")
 	
 	
