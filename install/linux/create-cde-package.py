@@ -68,11 +68,25 @@ if __name__ == '__main__':
 	
 	#myInstallDirectory = input("Install directory (where to put result file): ")
 	myTrunkDirectory = input("ToolMap Trunk directory: ")
-
+	
+	# copy toolmap binary to /usr/bin
+	myBinDir=os.path.join(os.path.dirname(myTrunkDirectory),"bin")
+	print(myBinDir)
+	try:
+		myProcess = subprocess.Popen("sudo cp {0} {1}".format(os.path.join(myBinDir, "ToolMap"), "/usr/bin/ToolMap"),shell=True)
+		myProcess.wait()
+	except:
+		print ("Error copying ToolMap to /usr/bin")
+		exit()
+		
+		
 	# RUN CDE to create ToolMap package only if not exists
 	if (os.path.exists(myPackagePath)==True):
 		print("Package exists : ", myPackagePath)
-		exit()
+		doClean=input("Remove existing package [Y/N]: ")
+		if (doClean.lower() != "y"):
+			exit()
+		CleanDirectory(myPackagePath)
 	try:
 		p = subprocess.Popen("./cde -o ToolMap.Package ToolMap", shell=True, cwd=myCDEPath)
 		p.wait()

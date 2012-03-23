@@ -36,7 +36,7 @@ if __name__ == '__main__':
 	myInstallDir = raw_input("(default is /opt): /opt" + chr(8)*4)
 	if not myInstallDir:
 		myInstallDir = "/opt"
-	myInstalName = myInstallDir+os.sep+"ToolMap.Package" 
+	myInstalName = os.path.join(myInstallDir,"ToolMap.Package") 
 	print("Will install ToolMap in '{0}'".format(myInstalName))
 	myContinue = raw_input("Continue ? [Y/N]: ")
 	if (myContinue.lower() != "y"):
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 	
 	# allow acces to any user
 	try:
-		myProcess = subprocess.Popen("sudo chmod -R \"{0}\"".format(myInstalName))
+		myProcess = subprocess.Popen("sudo chmod -R 777 \"{0}\"".format(myInstalName),shell=True)
 		myProcess.wait()
 	except:
 		print ("Error setting access to all user!")
