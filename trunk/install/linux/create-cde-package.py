@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
 	# compressing package
 	try:
-		p=subprocess.Popen("tar -Jcvf {0} {1} {2} {3}".format("toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.lzma","ToolMap.Package", "readme.txt", "install-toolmap.py"),shell=True,cwd=myCDEPath)
+		p=subprocess.Popen("tar -acvf {0} {1} {2} {3}".format("toolmap-package"+"_"+myVersiontxt+"_"+myPlateform+".tar.xz","ToolMap.Package", "readme.txt", "install-toolmap.py"),shell=True,cwd=myCDEPath)
 		p.wait()
 	except:
 		print("Failed to compress :", myPackagePath)
