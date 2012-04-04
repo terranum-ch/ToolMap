@@ -216,26 +216,20 @@ void tmSnappingMemory::ClearSnappingStatus ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-bool tmSnappingMemory::IsSnappingEnabled ()
-{
-	
-	bool bSnappingIsOn = false;
-	if (wxGetKeyState(WXK_SPACE)==true){
-		return bSnappingIsOn;
+bool tmSnappingMemory::IsSnappingEnabled (){
+    if (wxGetKeyState(WXK_SPACE)==true){
+		return false;
     }
     
     if (wxGetKeyState(WXK_SHIFT)==true) {
-        return bSnappingIsOn;
+        return false;
     }
 	
-	for (unsigned int i = 0; i<m_Snapping.GetCount(); i++)
-	{
-		if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF)
-		{
-			bSnappingIsOn = true;
-			break;
+	for (unsigned int i = 0; i<m_Snapping.GetCount(); i++){
+		if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF){
+			return true;
 		}
 	}
 		
-	return bSnappingIsOn;
+    return false;
 }

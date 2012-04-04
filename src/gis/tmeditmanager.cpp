@@ -469,7 +469,6 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
     wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
 	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
 	
-	
 	// check drawing allowed
 	if (!IsDrawingAllowed())
 	{
@@ -488,19 +487,17 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	}
 	wxDELETE(myPxCoord);
 	
-	
 	// snapping
 	bool bSnapFound = EMGetSnappingCoord(myRealCoord);
 	
 	// add  line vertex
 	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){	
-		
+    
         // feature #180 if snap isn't found, try to snap on line in edition
-        if (bSnapFound == false) {
+        if (bSnapFound == false && m_SnapMem->IsSnappingEnabled() == true) {
             wxRealPoint * myTempSnap = EMSearchLineMemorySnapping(myRealCoord);
             if (myTempSnap != NULL) {
                 myRealCoord = *myTempSnap;
-                wxLogMessage("Snapping found locally!");
             }
             wxDELETE(myTempSnap);
         }
@@ -526,7 +523,6 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	{
 		AddPointVertex(myRealCoord);
 	}
-	
 	//delete myPxCoord;
 }
 
