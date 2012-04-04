@@ -78,11 +78,12 @@ class tmAAttribCtrl  : public wxPanel
 		
 		// label operations
 		virtual void SetLabel(const wxString & labeltext);
-		virtual wxString GetLabel ();
+		virtual wxString GetLabel () const;
 		
 		// control operations
 		virtual void SetControlValue(const wxString & value) = 0;
 		virtual wxString GetControlValue () = 0;
+        virtual void SetEmptyValue () {;}
 		
 		// panel control
 		void SetPanelColour (const wxColour & colour = *wxWHITE);
@@ -222,6 +223,8 @@ class tmAAttribCtrlInteger : public tmAAttribCtrl
 		// control operations
 		virtual void SetControlValue(const wxString & value);
 		virtual wxString GetControlValue ();
+        virtual void SetEmptyValue ();
+
 	};
 
 
@@ -257,6 +260,7 @@ class tmAAttribCtrlFloat : public tmAAttribCtrl
 		// control operations
 		virtual void SetControlValue(const wxString & value);
 		virtual wxString GetControlValue ();
+        virtual void SetEmptyValue ();
 
 	};
 
@@ -302,7 +306,8 @@ class tmAAttribCtrlEnum : public tmAAttribCtrl
 		// control operations
 		virtual void SetControlValue(const wxString & value);
 		virtual wxString GetControlValue ();
-		
+        virtual void SetEmptyValue ();
+
 	};
 
 
@@ -335,7 +340,7 @@ class tmAAttribCtrlDate : public tmAAttribCtrl
 		// control operations
 		virtual void SetControlValue(const wxString & value);
 		virtual wxString GetControlValue ();
-		
+
 	};
 
 
@@ -371,6 +376,8 @@ class tmAAttribCtrlSafeDate : public tmAAttribCtrl
 		// control operations
 		virtual void SetControlValue(const wxString & value);
 		virtual wxString GetControlValue ();
+        virtual void SetEmptyValue ();
+
 		
 	};
 

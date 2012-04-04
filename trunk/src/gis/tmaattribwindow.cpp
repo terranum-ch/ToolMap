@@ -333,16 +333,14 @@ bool tmAAttribWindow::SetValue (unsigned int pos, tmAAttribCtrl * ctrl)
 {
 	wxASSERT (m_Values);
 	wxASSERT (ctrl);
-	if (pos >= m_Values->GetCount())
-	{
+	if (pos >= m_Values->GetCount()){
 		wxLogDebug(_T("Value for control @ position %d doesn't exist !"), pos);
 		return false;
 	}
 	
 	wxString mySetVal = m_Values->Item(pos);
-	if (mySetVal.IsEmpty())
-	{
-		wxLogDebug(_T("Empty string detected for item @ position : %d"), pos);
+	if (mySetVal.IsEmpty()){
+        ctrl->SetEmptyValue();
 		return false;
 	}
 	

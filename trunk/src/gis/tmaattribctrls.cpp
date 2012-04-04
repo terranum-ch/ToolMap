@@ -33,7 +33,7 @@ void tmAAttribCtrl::SetLabel(const wxString & labeltext)
 }
 
 
-wxString tmAAttribCtrl::GetLabel ()
+wxString tmAAttribCtrl::GetLabel () const
 {
 	wxASSERT (m_Label);
 	return m_Label->GetLabel();
@@ -349,6 +349,12 @@ wxString tmAAttribCtrlInteger::GetControlValue ()
 }
 
 
+void tmAAttribCtrlInteger::SetEmptyValue (){
+    m_Control->SetValue("");
+}
+
+
+
 void tmAAttribCtrlInteger::SetProperties (const ProjectDefMemoryFields & fieldinfo)
 {
 	// MAX INT for 32 bits system is : 4294967296, to allow
@@ -442,6 +448,12 @@ wxString tmAAttribCtrlFloat::GetControlValue ()
 {
 	return m_Control->GetValue();
 }
+
+
+void tmAAttribCtrlFloat::SetEmptyValue (){
+    m_Control->SetValue("");
+}
+
 
 
 void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo)
@@ -647,10 +659,18 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 }
 
 
+void tmAAttribCtrlEnum::SetEmptyValue(){
+    if (IsChoiceList()) {
+        m_ControlChoice->SetSelection(wxNOT_FOUND);
+    }else {
+        m_ControlRadios[0]->SetValue(false);
+    }
+}
+
 
 
 ///////////////////////////////////////////////////////
-//////////// FLOAT NUMBER  CONTROL ///////////////////
+//////////// DATE  CONTROL ///////////////////
 //////////////////////////////////////////////////////
 tmAAttribCtrlDate::tmAAttribCtrlDate()
 {
@@ -825,6 +845,11 @@ void tmAAttribCtrlSafeDate::SetControlValue(const wxString & value)
 wxString tmAAttribCtrlSafeDate::GetControlValue ()
 {
 	return m_Control->GetValue();
+}
+
+
+void tmAAttribCtrlSafeDate::SetEmptyValue(){
+    m_Control->SetValue("");
 }
 
 
