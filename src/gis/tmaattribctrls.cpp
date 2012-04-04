@@ -1,8 +1,8 @@
 /***************************************************************************
 								tmaattribctrls.cpp
-							Controls for the tmAAttribTree 
+							Controls for the tmAAttribTree
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -61,9 +61,9 @@ tmFullSelectTextCtrl::tmFullSelectTextCtrl()
 
 
 
-tmFullSelectTextCtrl:: tmFullSelectTextCtrl (wxWindow* parent, wxWindowID id, const wxString& value, 
-						 const wxPoint& pos, const wxSize& size, 
-						 long style, const wxValidator& validator, 
+tmFullSelectTextCtrl:: tmFullSelectTextCtrl (wxWindow* parent, wxWindowID id, const wxString& value,
+						 const wxPoint& pos, const wxSize& size,
+						 long style, const wxValidator& validator,
 						 const wxString& name)
 //: wxTextCtrl(parent, id, value, pos, size, style, validator, name)
 {
@@ -72,9 +72,9 @@ tmFullSelectTextCtrl:: tmFullSelectTextCtrl (wxWindow* parent, wxWindowID id, co
 }
 
 
-void tmFullSelectTextCtrl::Create(wxWindow* parent, wxWindowID id, const wxString& value, 
-								  const wxPoint& pos, const wxSize& size, 
-								  long style, const wxValidator& validator, 
+void tmFullSelectTextCtrl::Create(wxWindow* parent, wxWindowID id, const wxString& value,
+								  const wxPoint& pos, const wxSize& size,
+								  long style, const wxValidator& validator,
 								  const wxString& name)
 {
 	wxTextCtrl::Create(parent, id, value, pos, size, style, validator, name);
@@ -125,9 +125,9 @@ tmFullSelectSpinCtrl::tmFullSelectSpinCtrl()
 
 
 
-tmFullSelectSpinCtrl:: tmFullSelectSpinCtrl (wxWindow* parent, wxWindowID id, const wxString& value, 
-											 const wxPoint& pos, const wxSize& size, 
-											 long style, int min, int max, int initial, 
+tmFullSelectSpinCtrl:: tmFullSelectSpinCtrl (wxWindow* parent, wxWindowID id, const wxString& value,
+											 const wxPoint& pos, const wxSize& size,
+											 long style, int min, int max, int initial,
 											 const wxString& name)
 {
 	m_bDoSelectAll = false;
@@ -135,9 +135,9 @@ tmFullSelectSpinCtrl:: tmFullSelectSpinCtrl (wxWindow* parent, wxWindowID id, co
 }
 
 
-void tmFullSelectSpinCtrl::Create(wxWindow* parent, wxWindowID id, const wxString& value, 
-								  const wxPoint& pos, const wxSize& size, 
-								  long style, int min, int max, int initial, 
+void tmFullSelectSpinCtrl::Create(wxWindow* parent, wxWindowID id, const wxString& value,
+								  const wxPoint& pos, const wxSize& size,
+								  long style, int min, int max, int initial,
 								  const wxString& name)
 {
 	wxSpinCtrl::Create(parent, id, value, pos, size, style, min, max, initial, name);
@@ -178,7 +178,7 @@ void tmFullSelectSpinCtrl::OnIdle( wxIdleEvent &event )
 //////////////////////////////////////////////////////////////
 tmAAttribCtrlText::tmAAttribCtrlText()
 {
-	
+
 }
 
 
@@ -214,26 +214,26 @@ void tmAAttribCtrlText::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5); 
-	
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5);
+
 	wxBoxSizer * bSizer25 = new wxBoxSizer(wxHORIZONTAL);
 	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
 										 wxDefaultPosition, wxSize( 200,-1 ), 0 );
-	
+
 	m_ControlInfo = new wxStaticText(this, wxID_ANY, _T("Label"));
-		
+
 	SetProperties(fieldinfo);
 	bSizer25->Add( m_Control, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0 );
 	bSizer25->Add(m_ControlInfo,0,wxLEFT |wxALIGN_CENTER_VERTICAL,5);
-	
-	
+
+
 	bSizer24->Add( bSizer25, 1, wxALL | wxALIGN_CENTER_VERTICAL, 2);
-	
+
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-	
-	
+
+
 }
 
 
@@ -262,7 +262,7 @@ void tmAAttribCtrlText::SetProperties (const ProjectDefMemoryFields & fieldinfo)
 	//Set max Length of wxTextCtrl
 	wxASSERT (fieldinfo.m_FieldPrecision != 0);
 	m_Control->SetMaxLength(fieldinfo.m_FieldPrecision);
-	
+
 	m_ControlInfo->SetLabel(wxString::Format(_T("(%d)"),
 											 fieldinfo.m_FieldPrecision));
 }
@@ -277,7 +277,7 @@ void tmAAttribCtrlText::SetProperties (const ProjectDefMemoryFields & fieldinfo)
 //////////////////////////////////////////////////////////////
 tmAAttribCtrlInteger::tmAAttribCtrlInteger()
 {
-	
+
 }
 
 
@@ -313,27 +313,27 @@ void tmAAttribCtrlInteger::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5); 
-	
-	
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5);
+
+
 	m_Control = new tmFullSelectSpinCtrl( this, wxID_ANY, wxEmptyString,
 							   wxDefaultPosition, wxSize( 120,-1 ));
 	SetProperties(fieldinfo);
 	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 2 );
-	
-	
+
+
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-	
-	
+
+
 }
 
 
 
 tmAAttribCtrlInteger::~tmAAttribCtrlInteger()
 {
-	
+
 }
 
 
@@ -365,7 +365,7 @@ void tmAAttribCtrlInteger::SetProperties (const ProjectDefMemoryFields & fieldin
 //////////////////////////////////////////////////////
 tmAAttribCtrlFloat::tmAAttribCtrlFloat()
 {
-	
+
 }
 
 
@@ -401,34 +401,34 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5); 
-	
-	
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5);
+
+
 	wxBoxSizer* bSizer25;
 	 bSizer25 = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
 										 wxDefaultPosition, wxSize( 120,-1 ),0,
 	wxTextValidator(wxFILTER_NUMERIC));
 	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
-	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5); 
+	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5);
 	SetProperties(fieldinfo);
-	
+
 	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );
-	
+
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-	
-	
+
+
 }
 
 
 
 tmAAttribCtrlFloat::~tmAAttribCtrlFloat()
 {
-	
+
 }
 
 
@@ -447,14 +447,14 @@ wxString tmAAttribCtrlFloat::GetControlValue ()
 void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo)
 {
 	//SetLabel(fieldinfo.m_Fieldname);
-	
+
 	wxASSERT (fieldinfo.m_FieldPrecision != 0);
 	wxASSERT (fieldinfo.m_FieldScale != 0);
-	
+
 	wxString myExemple = wxEmptyString;
 	for (int i = 0; i< fieldinfo.m_FieldPrecision; i++)
 		myExemple.Append(_T("9"));
-	
+
 	myExemple.insert(fieldinfo.m_FieldPrecision - fieldinfo.m_FieldScale,
 					 _T("."));
 	myExemple.Prepend(_("Max : "));
@@ -462,8 +462,8 @@ void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo
 	wxFont myFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	myFont.SetStyle(wxFONTSTYLE_ITALIC);
 	m_ControlInfo->SetFont(myFont);
-		
-	
+
+
 }
 
 
@@ -472,7 +472,7 @@ void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo
 //////////////////////////////////////////////////////
 tmAAttribCtrlEnum::tmAAttribCtrlEnum()
 {
-	
+
 }
 
 
@@ -510,17 +510,17 @@ void tmAAttribCtrlEnum::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL , 5); 
-	
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL , 5);
+
 	wxSizer * mySizer = CreateChoiceControl(fieldinfo.m_pCodedValueArray);
 	wxASSERT (mySizer);
 	bSizer24->Add( mySizer, 1, wxEXPAND, 2 );
-		
+
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-	
-	
+
+
 }
 
 
@@ -528,35 +528,39 @@ wxSizer * tmAAttribCtrlEnum::CreateChoiceControl (const PrjMemFieldCodedValArray
 {
 	wxASSERT (valarray.GetCount() > 0);
 	wxBoxSizer * bSizer25 = new wxBoxSizer(wxHORIZONTAL);
-	
+
 	// 3 radio controls
 	if (valarray.GetCount() <= AATTRIB_ENUM_RADIO_NUMBER)
 	{
 		m_iNumRadios = 0;
 		for (unsigned int i = 0; i< valarray.GetCount();i++)
 		{
-			m_ControlRadios[i] = new wxRadioButton(this,wxID_ANY,
-												   valarray.Item(i)->m_ValueName);
-			m_iNumRadios++;
+            // set first radio as new group
+		    if (i == 0){
+                m_ControlRadios[i] = new wxRadioButton(this,wxID_ANY,valarray.Item(i)->m_ValueName, wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+		    }
+		    else{
+                m_ControlRadios[i] = new wxRadioButton(this,wxID_ANY,valarray.Item(i)->m_ValueName);
+		    }
+            m_iNumRadios++;
 			bSizer25->Add(m_ControlRadios[i], 0, wxALL, 5 );
-			
+
 		}
 		// default true
 		m_ControlRadios[0]->SetValue(true);
-			
 	}
 	else // choice control
 	{
 		wxArrayString myValues;
 		for (unsigned int i = 0; i< valarray.GetCount();i++)
 			myValues.Add(valarray.Item(i)->m_ValueName);
-			
+
 		m_ControlChoice = new wxChoice(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,
 									   myValues);
 		bSizer25->Add(m_ControlChoice, 0, wxALL, 5);
 		m_ControlChoice->SetSelection(0);
 	}
-	
+
 	return bSizer25;
 }
 
@@ -567,7 +571,7 @@ void tmAAttribCtrlEnum::InitMemberValues ()
 	m_ControlChoice = NULL;
 	for (unsigned int i = 0; i< AATTRIB_ENUM_RADIO_NUMBER;i ++)
 		m_ControlRadios[i] = NULL;
-	
+
 	m_iNumRadios = 0;
 }
 
@@ -584,7 +588,7 @@ bool tmAAttribCtrlEnum::IsChoiceList()
 
 tmAAttribCtrlEnum::~tmAAttribCtrlEnum()
 {
-	
+
 }
 
 
@@ -595,7 +599,7 @@ void tmAAttribCtrlEnum::SetControlValue(const wxString & value)
 		if (m_ControlChoice->SetStringSelection(value)==false)
 		{
 			wxLogError(_T("Value %s not found in RadioBox"), value.c_str());
-		}			
+		}
 	}
 	else // RADIO BUTTON
 	{
@@ -633,7 +637,7 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 				break;
 			}
 		}
-		
+
 		if (myRetVal.IsEmpty())
 		{
 			wxLogError(_T("No value returned by radio button, check an item"));
@@ -650,7 +654,7 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 //////////////////////////////////////////////////////
 tmAAttribCtrlDate::tmAAttribCtrlDate()
 {
-	
+
 }
 
 
@@ -686,18 +690,18 @@ void tmAAttribCtrlDate::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5); 
-	
-	
-	
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5);
+
+
+
 	m_Control = new wxDatePickerCtrl ( this, wxID_ANY);
 	bSizer24->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 2 );
-	
+
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-	
-	
+
+
 }
 
 
@@ -713,9 +717,9 @@ void tmAAttribCtrlDate::SetControlValue(const wxString & value)
 {
 	// only date passed as : YYYY-MM-DD
 	wxASSERT(value.GetChar(4) == '-');
-	
-	
-	
+
+
+
 	wxDateTime myDate;
 	if (myDate.ParseDate(value)== true)
 	{
@@ -725,7 +729,7 @@ void tmAAttribCtrlDate::SetControlValue(const wxString & value)
 	{
 		wxLogError(_T("Error parsing date in %s"), value.c_str());
 	}
-	
+
 }
 
 
@@ -746,7 +750,7 @@ wxString tmAAttribCtrlDate::GetControlValue ()
 //////////////////////////////////////////////////////
 tmAAttribCtrlSafeDate::tmAAttribCtrlSafeDate()
 {
-	
+
 }
 
 
@@ -761,7 +765,7 @@ tmAAttribCtrlSafeDate::tmAAttribCtrlSafeDate(wxWindow * parent,
 {
 	tmAAttribCtrlSafeDate::Create(parent,fieldinfo, id,pos,size,style,name);
 }
-			  
+
 
 void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 								 const ProjectDefMemoryFields & fieldinfo,
@@ -781,34 +785,34 @@ void tmAAttribCtrlSafeDate::Create (wxWindow * parent,
 							   wxDefaultSize, 0 );
 	SetLabel(fieldinfo.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5); 
-	
-	
+	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM , 5);
+
+
 	wxBoxSizer* bSizer25;
 	bSizer25 = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
 										 wxDefaultPosition, wxSize( 120,-1 ),0,
 										 wxTextValidator(wxFILTER_NUMERIC));
 	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
-	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5); 
+	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5);
 	SetProperties(fieldinfo);
-	
+
 	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );
-	
+
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-	
-	
+
+
 }
 
 
 
 tmAAttribCtrlSafeDate::~tmAAttribCtrlSafeDate()
 {
-	
+
 }
 
 
