@@ -133,6 +133,7 @@ class tmFullSelectSpinCtrl : public wxSpinCtrl
 		bool m_bDoSelectAll;
 		
 		void OnFocus(wxFocusEvent & event);
+		void OnLooseFocus (wxFocusEvent & event);
 		void OnIdle (wxIdleEvent & event);
 		DECLARE_EVENT_TABLE();
 	protected:

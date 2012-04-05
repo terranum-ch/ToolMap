@@ -128,9 +128,8 @@ void tmAAttribWindow::CreateControls ()
 	wxBoxSizer* bSizer21;
 	bSizer21 = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxButton* m_button18;
-	m_button18 = new wxButton( this, wxID_CANCEL, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer21->Add( m_button18, 0, wxBOTTOM | wxLEFT | wxRIGHT, 5 );
+	m_CancelBtn = new wxButton( this, wxID_CANCEL, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer21->Add( m_CancelBtn, 0, wxBOTTOM | wxLEFT | wxRIGHT, 5 );
 	
 	wxButton* m_button19;
 	m_button19 = new wxButton( this, wxID_OK, _("&Attribute"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -144,10 +143,9 @@ void tmAAttribWindow::CreateControls ()
 	
 	
 	this->SetSizer( bSizer20 );
-	this->Layout();
-	bSizer20->Fit( this );
+	//this->Layout();
+	//bSizer20->Fit( this );
 
-	
 	SetWindowPosition();
 }
 
@@ -186,24 +184,18 @@ void tmAAttribWindow::GetWindowPosition()
  *******************************************************************************/
 void tmAAttribWindow::SetWindowPosition()
 {
-	if (m_WndPos.IsEmpty())
-	{
-		wxSize myCurrentSize = this->GetSize();
-		if (myCurrentSize.GetWidth() < 200 || myCurrentSize.GetHeight() < 200)
-			this->SetSize(300, 200);
-		this->Center(wxVERTICAL | wxHORIZONTAL);
+	if (m_WndPos.IsEmpty()){
+		this->SetSize(400,300);
+		this->CenterOnParent();
 	}
-	else
-	{
+	else{
 		// check that we are inside the screen
 		wxSize myScreenSize = wxGetDisplaySize();
 		wxRect myScreenRect (wxPoint (0,0), myScreenSize);
-		if (myScreenRect.Contains(m_WndPos))
-		{
+		if (myScreenRect.Contains(m_WndPos)){
 			this->SetSize(m_WndPos);
 		}
-		else
-		{
+		else{
 			this->Center(wxVERTICAL | wxHORIZONTAL);
 		}
 	}
@@ -257,7 +249,7 @@ bool tmAAttribWindow::TransferDataToWindow()
 	tmAAttribCtrlStruct myCtrl;
 	int iCtrlPos = 0;
 	
-	
+	m_CancelBtn->SetFocus();
 	for (unsigned int i = 0; i< m_Layers->GetCount();i++)
 	{
 		wxString myName = m_LayerNameID.Item(i).m_Value;
@@ -277,6 +269,7 @@ bool tmAAttribWindow::TransferDataToWindow()
 		}
 	}
 	
+
 	return true;
 }
 
@@ -304,14 +297,7 @@ bool tmAAttribWindow::TransferDataFromWindow()
 		}
 		
 		m_Values->Item(i) = myCtrl->GetControlValue().c_str();
-		//TODO: Remove this temp code
-		wxLogDebug(_T("Value : %s"), myCtrl->GetControlValue().c_str());
 	}
-	
-	
-	
-	
-	
 	return true;
 }
 
