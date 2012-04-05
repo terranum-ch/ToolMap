@@ -53,6 +53,7 @@ class tmAAttribWindow : public wxDialog
 		// member controls
 		tmAAttribTree * m_AAttribTree;
 		wxStatusBar * m_Status;
+		wxButton* m_CancelBtn;
 		
 		// member initialized by ctor
 		PrjMemLayersArray * m_Layers;

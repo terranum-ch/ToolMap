@@ -116,6 +116,7 @@ void tmFullSelectTextCtrl::OnIdle( wxIdleEvent &event )
 BEGIN_EVENT_TABLE(tmFullSelectSpinCtrl, wxSpinCtrl)
 EVT_SET_FOCUS(tmFullSelectSpinCtrl::OnFocus)
 EVT_IDLE(tmFullSelectSpinCtrl::OnIdle)
+EVT_KILL_FOCUS(tmFullSelectSpinCtrl::OnLooseFocus)
 END_EVENT_TABLE()
 
 tmFullSelectSpinCtrl::tmFullSelectSpinCtrl()
@@ -156,6 +157,14 @@ void tmFullSelectSpinCtrl::OnFocus( wxFocusEvent &event )
 	event.Skip();
 }
 
+
+void tmFullSelectSpinCtrl::OnLooseFocus (wxFocusEvent & event){
+	int myValue = GetValue();
+	if (myValue == GetMin()){
+		SetValue(0);
+	}
+	event.Skip();
+}
 
 
 void tmFullSelectSpinCtrl::OnIdle( wxIdleEvent &event )
@@ -350,7 +359,8 @@ wxString tmAAttribCtrlInteger::GetControlValue ()
 
 
 void tmAAttribCtrlInteger::SetEmptyValue (){
-    m_Control->SetValue("");
+	m_Control->SetValue(0);
+	m_Control->SetValue("");
 }
 
 
@@ -556,10 +566,7 @@ wxSizer * tmAAttribCtrlEnum::CreateChoiceControl (const PrjMemFieldCodedValArray
 		    }
             m_iNumRadios++;
 			bSizer25->Add(m_ControlRadios[i], 0, wxALL, 5 );
-
 		}
-		// default true
-		m_ControlRadios[0]->SetValue(true);
 	}
 	else // choice control
 	{
@@ -663,7 +670,9 @@ void tmAAttribCtrlEnum::SetEmptyValue(){
     if (IsChoiceList()) {
         m_ControlChoice->SetSelection(wxNOT_FOUND);
     }else {
-        m_ControlRadios[0]->SetValue(false);
+		for(int i = 0;i<m_iNumRadios;i++){
+			m_ControlRadios[i]->SetValue(false);
+		}
     }
 }
 
