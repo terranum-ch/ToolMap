@@ -484,6 +484,21 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 
 
 
+void tmExportDataSHP::_AppendValidToCollection(OGRGeometry * geometry, OGRGeometryCollection * collection){
+    if (geometry == NULL) {
+        return;
+    }
+    
+    if (geometry->IsEmpty() == true) {
+        OGRGeometryFactory::destroyGeometry(geometry);
+        return;
+    }
+    
+    collection->addGeometry(geometry);
+    OGRGeometryFactory::destroyGeometry(geometry);
+}
+
+
 
 /***************************************************************************//**
  @brief Compute polygons from lines
@@ -537,23 +552,24 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 			continue;
 		}
 
-
-		OGRGeometry * myCropLine = SafeIntersection(myGeom, myBigFrame);
+        OGRGeometry * myCropLine = SafeIntersection(myGeom, myBigFrame);
+		//OGRGeometry * myCropLine = myGeom->Intersection(myBigFrame);
+        OGRwkbGeometryType myType = wkbFlatten( myCropLine->getGeometryType());
+        if (myType == wkbMultiLineString) {
+            wxLogDebug(_("Multi lines encountered for OID : %ld"), myOid);
+            OGRMultiLineString * myCropedLines = (OGRMultiLineString*) myCropLine;
+            for (int f = 0; f< myCropedLines->getNumGeometries(); f++) {
+                OGRGeometry * myfLine = myCropedLines->getGeometryRef(f)->clone();
+                _AppendValidToCollection(myfLine, myNodedLines);
+            }
+            
+        }
+        else {
+            _AppendValidToCollection(myCropLine, myNodedLines);
+        }
 		OGRGeometryFactory::destroyGeometry(myGeom);
 
-		if (myCropLine == NULL) {
-			continue;
-		}
-
-
-		if (myCropLine->IsEmpty() == true) {
-			OGRGeometryFactory::destroyGeometry(myCropLine);
-			continue;
-		}
-
-
-		myNodedLines->addGeometry(myCropLine);
-		OGRGeometryFactory::destroyGeometry(myCropLine);
+		
 	}
 
 	OGRGeometryFactory::destroyGeometry(myBigFrame);
@@ -583,6 +599,19 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	int iTotalLines = ((OGRMultiLineString *) myLines)->getNumGeometries();
 	wxLogMessage(_("%d lines for creating polygons"), iTotalLines);
 
+    
+    /* temp code for exporting lines
+    not working !!! 
+    tmGISDataVectorSHP myLineShp;
+    wxFileName myLineFileName (m_Shp.GetFullFileName());
+    myLineFileName.SetName(myLineFileName.GetName() + _T("-line"));
+    wxString myLineFileNameTxt = myLineFileName.GetFullPath();
+    myLineShp.CreateFile(myLineFileName, wkbLineString);
+    for (int l = 0; l< iTotalLines; l++) {
+        OGRMultiLineString * myLinesCollection = (OGRMultiLineString*) myLines;
+        myLineShp.AddGeometry(myLinesCollection->getGeometryRef(l), l);
+    }*/
+    
 	
 	//
 	// Create polygons
