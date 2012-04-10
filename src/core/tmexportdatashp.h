@@ -51,6 +51,8 @@ class tmExportDataSHP : public tmExportData
 		// multiple fields
 		bool SetMultipleFields (ProjectDefMemoryLayers * layer,
 								const wxArrayString & values);
+        
+        void _AppendValidToCollection(OGRGeometry * geometry, OGRGeometryCollection * collection);
 		
 	protected:
 	public:
