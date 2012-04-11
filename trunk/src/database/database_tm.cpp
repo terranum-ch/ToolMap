@@ -1428,13 +1428,13 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields * myField,int iLayer, wxStri
 
 		default: // modifiy the field
 			myField->GetStringTypeFromValues(myTypeFieldTemp);
-			sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d CHANGE COLUMN %s %s %s; "),
-												 TABLE_NAME_LAYER_AT.c_str(),
-												 iLayer,
-												 myField->m_FieldOldName.c_str(),
-												 myField->m_Fieldname.c_str(),
-												 myTypeFieldTemp.c_str()));
-			
+            wxString myQuery = wxString::Format(_T("ALTER TABLE %s%d CHANGE COLUMN %s %s %s; "),
+                                                TABLE_NAME_LAYER_AT.c_str(),
+                                                iLayer,
+                                                myField->m_FieldOldName.c_str(),
+                                                myField->m_Fieldname.c_str(),
+                                                myTypeFieldTemp.c_str());
+ 			sSqlSentence.Append(myQuery);
 			break;
 	}
 	return TRUE;
