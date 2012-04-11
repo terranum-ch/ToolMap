@@ -61,7 +61,11 @@ int ProjectDefMemoryFieldsCodedVal::ExtractCodedValuesFromString (const wxString
 	while ( tkz.HasMoreTokens()) 
 	{ 
 		wxString token = tkz.GetNextToken(); 
-		//token = token.Mid(1, token.Length()-2);
+        // Bug #260 Apostrophes
+        // Strange Behavior in MySQL Enum
+        // single quotes are returned double!
+        token.Replace(_T("''"), _T("'"));
+                
 		results.Add(token);
 	}
 	
@@ -322,7 +326,7 @@ bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 			for (unsigned int i = 0; i< m_pCodedValueArray.GetCount(); i++)
 			{
 				sValuesConcatTemp = m_pCodedValueArray.Item(i)->m_ValueName;
-				sValuesConcat.Append(wxString::Format(_T("\"%s\","), sValuesConcatTemp.c_str()));
+  				sValuesConcat.Append(wxString::Format(_T("\"%s\","), sValuesConcatTemp.c_str()));
 			}
 			// remove last comma
 			sValuesConcat = sValuesConcat.BeforeLast(',');
@@ -351,7 +355,7 @@ bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 	if (m_FieldOrientation)
 		sResult.Append(_T(" COMMENT \"") + GetOrientationName() + _T("\""));
 	else
-		sResult.Append(_T(" COMMENT ''"));
+		sResult.Append(_T(" COMMENT \"\""));
 
 	return TRUE;
 }
