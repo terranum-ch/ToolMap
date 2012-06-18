@@ -62,7 +62,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 											 int geometry_col=0);
 		long GetOid (MYSQL_ROW & row, const int & col);
 
-		virtual wxString GetTableName (int type);
+		virtual wxString GetTableName (TOC_GENERIC_NAME type);
 		
 		
 	public:

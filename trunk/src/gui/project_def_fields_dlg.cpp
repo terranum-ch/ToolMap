@@ -849,7 +849,7 @@ void ProjectDefFieldDlg::CreateControls()
 	bSizer2->Fit( this );
 	
 	// validators
-	SetValidator();
+	_SetValidator();
 	
 	
 	
@@ -860,7 +860,7 @@ void ProjectDefFieldDlg::CreateControls()
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-void ProjectDefFieldDlg::SetValidator()
+void ProjectDefFieldDlg::_SetValidator()
 {
 	m_DlgAFD_Field_Def->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_DATABASE));
 }

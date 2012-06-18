@@ -1,9 +1,9 @@
 /***************************************************************************
-							danglingnodes_dlg.cpp
-						Display Dangling nodes Dialog
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ danglingnodes_dlg.cpp
+ Display Dangling nodes Dialog
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,7 +21,7 @@
 
 
 BEGIN_EVENT_TABLE(DanglingNode_DLG, wxDialog)
-	EVT_BUTTON(ID_DLGDN_CLEAR,  DanglingNode_DLG::OnClearDangling) 
+EVT_BUTTON(ID_DLGDN_CLEAR,  DanglingNode_DLG::OnClearDangling) 
 END_EVENT_TABLE()
 
 
@@ -83,22 +83,21 @@ void DanglingNode_DLG::CreateControls()
 	bSizer24->Fit( this );
 	
 	this->CenterOnParent(wxBOTH);
-
+    
 }
 
 
-void DanglingNode_DLG::InitDialog (const wxArrayString & layers,
-								   int selected)
-{
+void DanglingNode_DLG::SetLayers (const wxArrayString & layers,
+								   int selected){
 	m_SelectedLayer = selected;
 	
 	wxASSERT(layers.GetCount() > 1);
 	m_LayerChoice->Append(layers);
 	
-	if (selected == wxNOT_FOUND)
+	if (selected == wxNOT_FOUND){
 		m_LayerChoice->SetSelection(0);
-	else
-	{
+    }
+	else{
 		m_LayerChoice->SetSelection(selected);
 	}
 }

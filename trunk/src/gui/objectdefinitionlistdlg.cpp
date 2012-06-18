@@ -179,7 +179,7 @@ void ObjectDefinitionListDlg::CreateControls()
     itemStdDialogButtonSizer14->Realize();
 
     // Set validators
-	SetValidator();
+	_SetValidator();
 }
 
 
@@ -188,7 +188,7 @@ void ObjectDefinitionListDlg::CreateControls()
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-void ObjectDefinitionListDlg::SetValidator()
+void ObjectDefinitionListDlg::_SetValidator()
 {
 	m_DLGODD_Code->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
 	m_DLGODD_Description->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));

@@ -191,7 +191,7 @@ bool tmToolManager::FindDanglingNodes()
 	
 	
 	DanglingNode_DLG myDlg(m_Parent);
-	myDlg.InitDialog(myLayers, wxNOT_FOUND);
+	myDlg.SetLayers(myLayers, wxNOT_FOUND);
 	int iReturn = myDlg.ShowModal();
 	
 	wxCommandEvent myUnusedEvent;

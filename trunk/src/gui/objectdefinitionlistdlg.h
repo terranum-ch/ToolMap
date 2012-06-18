@@ -1,7 +1,7 @@
 /***************************************************************************
-						objectdefinitionlistdlg.h
-	Contain description of class used for ProjectEditObjectDefinitionDLG
-							-------------------
+ objectdefinitionlistdlg.h
+ Contain description of class used for ProjectEditObjectDefinitionDLG
+ -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
@@ -39,6 +39,7 @@
 /******************************** EDIT OBJECT DEFINITION DLG ************************/ 
 class ObjectDefinitionListDlg: public wxDialog
 {
+private:
 	int m_ParentListType;
 	DataBaseTM * m_pDatabase;
 	
@@ -55,16 +56,16 @@ class ObjectDefinitionListDlg: public wxDialog
 	virtual bool TransferDataToWindow();
 	virtual bool TransferDataFromWindow();
 	
-	void SetValidator();
+	void _SetValidator();
 	
 	// used for data transfert
 	ProjectDefMemoryObjects * m_ObjectObj;
 	
     DECLARE_DYNAMIC_CLASS( ObjectDefinitionListDlg )
     DECLARE_EVENT_TABLE()
-
+    
 public:
-
+    
 	ObjectDefinitionListDlg();
     ObjectDefinitionListDlg( wxWindow* parent,
 							int iListlayerType,
@@ -75,17 +76,17 @@ public:
 							const wxSize& size = SYMBOL_OBJECTDEFINITIONLISTDLG_SIZE,
 							long style = SYMBOL_OBJECTDEFINITIONLISTDLG_STYLE );
 	~ObjectDefinitionListDlg();
-
-   
+    
+    
 	bool Create( wxWindow* parent,
 				wxWindowID id = SYMBOL_OBJECTDEFINITIONLISTDLG_IDNAME,
 				const wxString& caption = SYMBOL_OBJECTDEFINITIONLISTDLG_TITLE,
 				const wxPoint& pos = SYMBOL_OBJECTDEFINITIONLISTDLG_POSITION,
 				const wxSize& size = SYMBOL_OBJECTDEFINITIONLISTDLG_SIZE,
 				long style = SYMBOL_OBJECTDEFINITIONLISTDLG_STYLE );
-
+    
     void Init();
-
+    
     void CreateControls();
 	
 	void SetMemoryObjectObject(ProjectDefMemoryObjects * myObjectObj){m_ObjectObj = myObjectObj;}
@@ -95,72 +96,72 @@ public:
 
 /******************************** LIST OF OBJECT DEFINITION  ************************/
 class ObjectDefinitionList : public ListGenReportWithStatus
-	{
-	private:
-		PRJDEF_LAYERS_TYPE m_layertype;
-		DataBaseTM * m_DBHandler;
-		wxCheckBox * m_CheckBox;
-		wxChoice   * m_ChoiceLayer;
-		int m_ListSpatType;
-		
-		// get a memory layer object for storing changes 
-		PrjDefMemManage * m_MemoryObject;
-		ProjectDefMemoryObjects * m_ObjectObj;
-		
-		// index for adding items
-		static int iAddItems;
-		
-		// init list with database values
-		bool SetListText (int ilayertype);
-		wxCheckBoxState GetFreqStatus (int iIndex = -1);
-		wxString	GetLayerStatus (int iIndex = -1);
-		
-		
-		// derived functions to implement 
-		virtual void BeforeAdding();
-		virtual void AfterAdding (bool bRealyAddItem);
-		virtual void BeforeDeleting ();
-		virtual void BeforeEditing ();
-		virtual void AfterEditing (bool bRealyEdited);
-		
-		bool m_bAscending [4];
-		virtual void OnSortColumns(wxListEvent & event);
-		
-		
-		// event functions
-		void OnItemSelectChange (wxListEvent & event);
-		 DECLARE_EVENT_TABLE()
-		
-	public:
-		/// Constructor
-		ObjectDefinitionList(wxWindow * parent,
-							 wxWindowID id,
-							 PrjDefMemManage * memory,
-							 PRJDEF_LAYERS_TYPE paneltype,
-							 DataBaseTM * database,
-							 wxArrayString * pColsName, 
-							 wxArrayInt * pColsSize=NULL,
-							 wxSize size = wxDefaultSize);
-		
-		/// Destructor
-		~ObjectDefinitionList(); 
-		
-		void SetObjectToList (ProjectDefMemoryObjects * object, int iIndex = -1);
-		void GetObjectFromList (ProjectDefMemoryObjects * object, int iIndex);
-		
-		void SetListSpatialType (int iSpatialType) {m_ListSpatType = iSpatialType;}
-		
-		//virtual int ImportParsedFileToListCtrl(const wxString & filename, 
-		//									   const int & FilterIndex);
-		
-		// pass pointer to ctrls to the list
-		void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);
-		
-		void SetFreqStatus (int frequency, wxArrayLong * iIndexes);
-		void SetLayerStatus (const wxString & layer, wxArrayLong * iIndexes);
-		
-		
-	};
+{
+private:
+    PRJDEF_LAYERS_TYPE m_layertype;
+    DataBaseTM * m_DBHandler;
+    wxCheckBox * m_CheckBox;
+    wxChoice   * m_ChoiceLayer;
+    int m_ListSpatType;
+    
+    // get a memory layer object for storing changes 
+    PrjDefMemManage * m_MemoryObject;
+    ProjectDefMemoryObjects * m_ObjectObj;
+    
+    // index for adding items
+    static int iAddItems;
+    
+    // init list with database values
+    bool SetListText (int ilayertype);
+    wxCheckBoxState GetFreqStatus (int iIndex = -1);
+    wxString	GetLayerStatus (int iIndex = -1);
+    
+    
+    // derived functions to implement 
+    virtual void BeforeAdding();
+    virtual void AfterAdding (bool bRealyAddItem);
+    virtual void BeforeDeleting ();
+    virtual void BeforeEditing ();
+    virtual void AfterEditing (bool bRealyEdited);
+    
+    bool m_bAscending [4];
+    virtual void OnSortColumns(wxListEvent & event);
+    
+    
+    // event functions
+    void OnItemSelectChange (wxListEvent & event);
+    DECLARE_EVENT_TABLE()
+    
+public:
+    /// Constructor
+    ObjectDefinitionList(wxWindow * parent,
+                         wxWindowID id,
+                         PrjDefMemManage * memory,
+                         PRJDEF_LAYERS_TYPE paneltype,
+                         DataBaseTM * database,
+                         wxArrayString * pColsName, 
+                         wxArrayInt * pColsSize=NULL,
+                         wxSize size = wxDefaultSize);
+    
+    /// Destructor
+    ~ObjectDefinitionList(); 
+    
+    void SetObjectToList (ProjectDefMemoryObjects * object, int iIndex = -1);
+    void GetObjectFromList (ProjectDefMemoryObjects * object, int iIndex);
+    
+    void SetListSpatialType (int iSpatialType) {m_ListSpatType = iSpatialType;}
+    
+    //virtual int ImportParsedFileToListCtrl(const wxString & filename, 
+    //									   const int & FilterIndex);
+    
+    // pass pointer to ctrls to the list
+    void SetListCtrls (wxChoice * layerchoice ,wxCheckBox * checkboxfreq = NULL);
+    
+    void SetFreqStatus (int frequency, wxArrayLong * iIndexes);
+    void SetLayerStatus (const wxString & layer, wxArrayLong * iIndexes);
+    
+    
+};
 
 
 #endif
