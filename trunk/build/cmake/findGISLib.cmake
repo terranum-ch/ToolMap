@@ -37,10 +37,11 @@ IF (SEARCH_GEOS)
   			NO_DEFAULT_PATH)
 		
   		FIND_LIBRARY(GEOS_LIBRARIES
-	  		geos_c_i
+	  		geos_c_i NAMES geos_c
 	  		HINTS ${SEARCH_GEOS_LIB_PATH}/source
 			${SEARCH_GEOS_LIB_PATH}/src
 			${SEARCH_GEOS_LIB_PATH}
+			${SEARCH_GEOS_LIB_PATH}/lib/Release
 			NO_DEFAULT_PATH)
 	
 	# if unix / mac and search geos
