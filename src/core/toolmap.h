@@ -227,7 +227,7 @@ const int ID_MENU_LAYOUT_HORIZONTAL = 15203;
 
 
 const wxString g_ProgName = _T("ToolMap");
-const wxString g_ProgMajorVersion = _T("2.3");
+const wxString g_ProgMajorVersion = _T("2.4");
 
 // define perspectives for auimanager
 enum tmPERSPECTIVE_MODE {
