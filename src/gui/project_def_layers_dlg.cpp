@@ -550,7 +550,7 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
     itemStdDialogButtonSizer9->Realize();
 	
 	// set the validator for the controls
-	SetValidator();
+	_SetValidator();
 }
 
 /***************************************************************************//**
@@ -558,7 +558,7 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-void ProjectDefLayersEditObjectDlg::SetValidator()
+void ProjectDefLayersEditObjectDlg::_SetValidator()
 {
 	m_DlgEO_Code->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
 	m_DlgEO_Value->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));

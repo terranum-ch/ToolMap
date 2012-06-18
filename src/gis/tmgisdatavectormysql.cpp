@@ -225,7 +225,7 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 {
 	//m_DB->DataBaseDestroyResults();
 	
-	wxString table = GetTableName(type);	
+	wxString table = GetTableName((TOC_GENERIC_NAME) type);	
 	// check that a table is specified.
 	if (table.IsEmpty())
 	{
@@ -262,7 +262,7 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 
 
 
-wxString tmGISDataVectorMYSQL::GetTableName (int type)
+wxString tmGISDataVectorMYSQL::GetTableName (TOC_GENERIC_NAME type)
 {
 	if (type < TOC_GENERIC_NAME_NUMBER)
 	{
@@ -1135,7 +1135,7 @@ long tmGISDataVectorMYSQL::AddGeometry (OGRGeometry * Geom, const long & oid, in
 	
 	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
 										  _T(" VALUES (GeomFromText('%s'));"),
-										  GetTableName(layertype).c_str(),
+										  GetTableName((TOC_GENERIC_NAME) layertype).c_str(),
 										  mySGeom.c_str());
 	if (m_DB->DataBaseQueryNoResults(sSentence)==false)
 	{
