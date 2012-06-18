@@ -52,6 +52,7 @@ const wxString TABLE_NAME_SHORTCUT_DMN = _T("dmn_shortcut_key");
 const wxString TABLE_NAME_SHORTCUT_LIST = _T("shortcut_list");
 const wxString TABLE_NAME_SNAPPING = _T("prj_snapping");
 const wxString TABLE_NAME_STAT = _T("prj_stats");
+const wxString TABLE_NAME_LANG_DEF = _T("lang_def");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -71,7 +72,7 @@ _T("generic_notes")
 };
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 221;
+const int TM_DATABASE_VERSION = 222;
 
 
 enum tmDB_OPEN_STATUS
@@ -98,6 +99,7 @@ class DataBaseTM : public DataBase
 		bool FillLayerTableTypeData ();
 		bool FillDefaultScaleData ();
 		bool FillShortCutTable ();
+        bool _CreateLangDefData();
 		//bool TableEmpty (const wxString & tablename);
 		bool CreateEmptyTMDatabase();
 		
