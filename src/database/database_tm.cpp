@@ -65,17 +65,25 @@ int DataBaseTM::OpenTMDatabase(const wxString & pathname)
 
 bool DataBaseTM::CreateTMDatabase (PrjDefMemManage * pPrjDefinition)
 {
-	if (DataBaseCreateNew(pPrjDefinition->m_PrjPath, pPrjDefinition->m_PrjName)==false)
+	if (DataBaseCreateNew(pPrjDefinition->m_PrjPath, pPrjDefinition->m_PrjName)==false){
 		return false;
+    }
 	
-	if (CreateEmptyTMDatabase()==false)
+	if (CreateEmptyTMDatabase()==false){
 		return false;
+    }
+    
+    if (_CreateLangDefData() == false) {
+        return false;
+    }
 	
-	if (SetProjectData(pPrjDefinition)==false)
+	if (SetProjectData(pPrjDefinition)==false){
 		return false;
+    }
 	
-	if (InitTOCGenericLayers()==false)
+	if (InitTOCGenericLayers()==false){
 		return false;
+    }
 	
 	return true;
 }
@@ -110,7 +118,13 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  `OBJECT_CD` INT UNSIGNED NOT NULL COMMENT 'Feature code' ,")
 	_T("  `OBJECT_TYPE_CD` INT UNSIGNED NOT NULL COMMENT 'Spatial object code' ,")	
 	_T("  `THEMATIC_LAYERS_LAYER_INDEX` INT UNSIGNED NOT NULL COMMENT 'Associated thematic layer' ,")
-	_T("  `OBJECT_DESC` VARCHAR(100) NOT NULL COMMENT 'Feature description' ,")
+    _T("`OBJECT_DESC_0` VARCHAR(255) NOT NULL COMMENT 'Feature description' ,")
+    _T("`OBJECT_DESC_1` VARCHAR(255) NULL ,")
+    _T("`OBJECT_DESC_2` VARCHAR(255) NULL ,")
+    _T("`OBJECT_DESC_3` VARCHAR(255) NULL ,")
+    _T("`OBJECT_DESC_4` VARCHAR(255) NULL ,")
+    
+    
 	_T("  `OBJECT_ISFREQ` BOOLEAN NOT NULL DEFAULT FALSE ,")
 	_T("  `SYMBOL_CD` VARCHAR(20) NULL COMMENT 'Feature symbology' ,")
 	_T("  `RANK` INT NULL ,")
@@ -240,6 +254,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  `PRJ_AUTHORS` VARCHAR(255) NULL ,")
 	_T("  `PRJ_SUMMARY` TEXT NULL ,")
 	_T("  `PRJ_SNAP_TOLERENCE` INT NOT NULL DEFAULT 10 ,")
+    _T("  `PRJ_LANG_ACTIVE` INT NOT NULL DEFAULT 0 ,")
 	_T("  PRIMARY KEY (`SETTING_DBK`) );")
 	
 	_T("CREATE  TABLE `generic_notes` (")
@@ -272,7 +287,36 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("`STAT_ID` INT NOT NULL AUTO_INCREMENT ,")  
 	_T("`DATE_START` DATETIME NOT NULL ,`CLICK` BIGINT UNSIGNED NULL DEFAULT 0 ,")  
 	_T("`ATTRIBUTION` BIGINT UNSIGNED NULL DEFAULT 0 , `INTERSECTION` BIGINT UNSIGNED NULL DEFAULT 0 ,")
-	_T(" `DATE_END` TIMESTAMP NOT NULL default current_timestamp on update current_timestamp , PRIMARY KEY (`STAT_ID`) );");
+	_T(" `DATE_END` TIMESTAMP NOT NULL default current_timestamp on update current_timestamp , PRIMARY KEY (`STAT_ID`) );")
+    
+    _T("CREATE  TABLE IF NOT EXISTS `lang_def` (")
+    _T("`LANG_ID` INT NOT NULL,")
+    _T("`LANG_NAME` VARCHAR(50) NULL ,")
+    _T("PRIMARY KEY (`LANG_ID`) );")
+    
+    
+    _T("CREATE  TABLE IF NOT EXISTS `dmn_layer_attribut` (")
+    _T("`ATTRIBUT_ID` INT NOT NULL AUTO_INCREMENT ,")
+    _T("`LAYER_INDEX` INT NOT NULL ,")
+    _T("`ATTRIBUT_NAME` VARCHAR(100) NULL ,")
+    _T("PRIMARY KEY (`ATTRIBUT_ID`, `LAYER_INDEX`) );")
+    
+    
+    _T("CREATE  TABLE IF NOT EXISTS `dmn_catalog` (")
+    _T("`CATALOG_ID` INT NOT NULL AUTO_INCREMENT ,")
+    _T("`CODE` VARCHAR(50) NULL ,")
+    _T("`DESCRIPTION_0` VARCHAR(255) NULL ,")
+    _T("`DESCRIPTION_1` VARCHAR(255) NULL ,")
+    _T("`DESCRIPTION_2` VARCHAR(255) NULL ,")
+    _T("`DESCRIPTION_3` VARCHAR(255) NULL ,")
+    _T("`DESCRIPTION_4` VARCHAR(255) NULL ,")
+    _T("PRIMARY KEY (`CATALOG_ID`) );")
+    
+    
+    _T("CREATE  TABLE IF NOT EXISTS `dmn_attribut_value` (")
+    _T("`ATTRIBUT_ID` INT NOT NULL ,")
+    _T("`CATALOG_ID` INT NOT NULL ,")
+    _T("PRIMARY KEY (`ATTRIBUT_ID`, `CATALOG_ID`) );");
 	
 	//wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	if (DataBaseQueryNoResults(myNewPrjSentence)==false)
@@ -280,18 +324,20 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	
 	
 	// pass field data to the database
-	if (FillLayerTableTypeData()==false)
+	if (FillLayerTableTypeData()==false){
 		return false;
+    }
 	
 	// pass scale data into the database
-	if (FillDefaultScaleData()==false)
+	if (FillDefaultScaleData()==false){
 		return false;
+    }
 	
-	if (FillShortCutTable()==false)
+	if (FillShortCutTable()==false){
 		return false;
+    }
 	
 	return true;	
-	
 }
 
 
@@ -422,6 +468,18 @@ bool DataBaseTM::FillShortCutTable ()
 	}
 	
 	return true;
+}
+
+
+
+bool DataBaseTM::_CreateLangDefData(){
+    wxString myTxtTemplate = _T("INSERT INTO %s VALUES (%d, \"%s\"); ");
+    wxString myLangues [] = {wxT("Undefined"), wxT("Undefined"), wxT("Undefined"), wxT("Undefined")};
+    wxString myQuery = wxEmptyString;
+    for (int i = 0; i< (sizeof(myLangues) / sizeof(wxString)); i++) {
+        myQuery.append(wxString::Format(myTxtTemplate, TABLE_NAME_LANG_DEF, i, myLangues[i]));
+    }
+    return DataBaseQueryNoResults(myQuery);    
 }
 
 
