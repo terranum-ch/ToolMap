@@ -26,6 +26,8 @@
 #endif
 
 #include "objectdefinitionlistdlg.h"
+#include "../database/database_tm.h"	// for database manipulation
+
 
 
 /******************************** EDIT OBJECT DEFINITION DLG ************************/

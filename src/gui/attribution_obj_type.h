@@ -35,9 +35,11 @@
 #include "wx/dateevt.h"
 #include <wx/srchctrl.h>
 #include "tmchecklistboxrank.h"			// for advanced checklistbox
-#include "../database/database_tm.h"	// for database acces (updating lists)
 #include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
 #include <wx/choicebk.h>				// for choicebook
+
+class DataBaseTM;
+class wxFlatButton;
 
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
 DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)

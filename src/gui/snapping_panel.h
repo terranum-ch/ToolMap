@@ -34,10 +34,10 @@
 
 #include "managed_aui_wnd.h"
 #include "wxflatbutton.h"				// for flat button
-#include "../database/database_tm.h"	// for database support
 #include "listgenreport.h"				// listgenreport support
 #include "../core/tmsnappingmemory.h"	// store snapping status into memory
 
+class DataBaseTM;
 
 #define ID_SNAP_TOLERENCE_TXT 22000
 #define ID_SNAP_LIST 22001

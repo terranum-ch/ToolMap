@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "shortcut_panel_dlg.h"
+#include "../database/database_tm.h"	// for databse acces 
 
 
 

@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmexportdata.h"
+#include "../database/database_tm.h"	// for database access
 
 
 /***************************************************************************//**

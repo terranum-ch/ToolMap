@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmattributiondata.h"
+#include "../database/database_tm.h"	// for database objects
 
 
 

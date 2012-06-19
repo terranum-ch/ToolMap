@@ -29,11 +29,10 @@
     #include <wx/wx.h>
 #endif
 
-#include "../database/database_tm.h"	// for database objects
 #include "../gui/attribution_obj_type.h" // attribution panel
 #include "tmattributionbasicarray.h"	// for storing attribution into array
 
-
+class DataBaseTM;
 
 /***************************************************************************//**
  @brief Class for attributing data

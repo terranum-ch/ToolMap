@@ -29,6 +29,7 @@
 
 
 #include "projectproperties_dlg.h"
+#include "../database/database_tm.h"	// for database manipulation
 
 
 /************************************* PROJECT PROPERTIES DIALOG***********************************/

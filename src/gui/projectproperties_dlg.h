@@ -29,12 +29,12 @@ class DataBaseTM;
 #include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
 #include "wxflatbutton.h"
 #include "listgenreport.h"				// for base listgenreport definition
-#include "../database/database_tm.h"	// for database manipulation
 #include "../core/scale.h"				// for scale static conversion
 #include "wx/numdlg.h"					// for Number entry dialog
+#include "../core/prjdefmemmanage.h"
 
 //class wxNotebook;
-
+class DataBaseTM;
 
 #define ID_PROJECTPROPERTIES 10132
 #define ID_DLGPS_NOTEBOOK 10141

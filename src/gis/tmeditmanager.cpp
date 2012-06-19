@@ -24,6 +24,8 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
 #include "../core/tmstatsevent.h"
+#include "../database/database_tm.h"		// for database
+
 
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 

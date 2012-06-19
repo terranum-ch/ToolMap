@@ -40,7 +40,6 @@
 #include "tmrenderer.h"				// for drawing directly (edition mode)
 //#include "tmgisdatavectormemory.h"	// for drawing memory data
 
-//#include "../database/database_tm.h"
 //class tmGISDataVectorMemory;
 
 class DataBaseTM;

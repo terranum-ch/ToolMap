@@ -24,6 +24,7 @@
 #include "wx/tglbtn.h"
 #include "wx/statline.h"
 #include "objectdefinitionlistdlg.h" // For list and edition dialog definition
+#include "../core/prjdefmemmanage.h"
 #include "wxflatbutton.h"
 class wxNotebook;
 

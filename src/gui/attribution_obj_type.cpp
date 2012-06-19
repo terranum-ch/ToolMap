@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-
+#include "../database/database_tm.h"	// for database acces (updating lists)
 #include "attribution_obj_type.h"
+#include "wxflatbutton.h"
 
 
 DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)

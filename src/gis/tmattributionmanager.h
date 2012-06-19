@@ -33,7 +33,6 @@
 #include "tmtocctrl.h"						// for TOC ctrl 
 #include "tmselecteddatamemory.h"			// for selection data
 #include "../gui/attribution_obj_type.h"	// for attribution PANEL 
-#include "../database/database_tm.h"		// for database
 #include "tmmanagerevent.h"					// for shared event with other manager
 
 #include "tmattributiondataline.h"			// for line attribution
@@ -45,7 +44,7 @@
 
 
 class InformationDLG;
-
+class DataBaseTM;
 
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
 

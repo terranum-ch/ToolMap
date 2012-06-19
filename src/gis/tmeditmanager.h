@@ -32,7 +32,6 @@
 
 #include "tmtocctrl.h"						// for TOC ctrl 
 #include "tmselecteddatamemory.h"			// for selection data
-#include "../database/database_tm.h"		// for database
 #include "tmmanagerevent.h"				// for shared event with other manager
 #include "tmrenderer.h"						// for GIS rendering
 #include "../core/tmsnappingmemory.h"		// for snapping 
@@ -50,7 +49,7 @@ const int tmEM_CONTEXTMENU_LINE_SAVE =		22202;
 const int tmEM_CONTEXTMENU_LINE_CANCEL =	22203;
 
 class ToolMapFrame;
-
+class DataBaseTM;
 
 
 

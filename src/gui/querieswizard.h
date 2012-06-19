@@ -30,13 +30,12 @@
 #include "queriespages.h"
 #include "../gis/tmlayerpropertiesdef.h"
 #include "../core/projectdefmemory.h"
-#include "../database/database_tm.h"
 #include "../core/queriesdata.h"
 
 
 class QueriesPageIntro;
 class QueriesPageLayer;
-
+class DataBaseTM;
 
 
 
