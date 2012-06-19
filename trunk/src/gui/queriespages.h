@@ -24,9 +24,11 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
+#include <wx/spinctrl.h>
 #include "querieswizard.h"
-#include "../database/database_tm.h"
+#include "listgenreport.h"
+#include "../core/prjdefmemmanage.h"
+
 
 class QueriesWizard;
 class QueriesPageLayer;
@@ -42,8 +44,8 @@ class QueriesPageObjectType;
 class QueriesPageGeomLine;
 class QueriesPageGeomNodes;
 
-class ListGenReport;
-
+class DataBaseTM;
+class wxFlatButton;
 
 const int QUERIES_MARGIN_SIZE = 20;
 

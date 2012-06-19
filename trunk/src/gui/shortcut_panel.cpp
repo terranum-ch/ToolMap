@@ -18,6 +18,8 @@
 // comment doxygen
 
 #include "shortcut_panel.h"
+#include "../database/database_tm.h"
+
 
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_REFRESH)
 

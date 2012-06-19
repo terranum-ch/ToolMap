@@ -18,6 +18,7 @@
 // comment doxygen
 
 #include "tmgisdatavectormemory.h"
+#include "../database/database_tm.h"	// for database support
 
 
 /***************************************************************************//**

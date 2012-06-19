@@ -32,11 +32,10 @@
 #include "tmchecklistbox.h"		// check list box
 #include <wx/statline.h>		// static line
 #include "shortcut_defs.h"		// for key definitions (F1,...)
-#include "../database/database_tm.h"	// for databse acces 
 
 #define ID_DLG_SHORTCUT_LIST 21000
 
-
+class DataBaseTM;
 
 class Shortcut_Panel_DLG : public wxDialog 
 	{

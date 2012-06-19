@@ -19,6 +19,8 @@
 #include "projectmanager.h"
 #include "toolmap.h"
 #include "tmstats.h"
+#include "../database/database_tm.h"		// for database and TM database operations
+
 
 IMPLEMENT_CLASS(ProjectManager, wxObject);
 

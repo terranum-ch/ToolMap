@@ -22,9 +22,11 @@
 #include "wx/statline.h"
 //#include "listgenreport.h"				// for base listgenreport definition
 #include "listgenreport_status.h"		// for list with status 
-#include "../database/database_tm.h"	// for database manipulation
 #include "../core/tmvalidator.h"		// for controls validation
+#include "../core/projectdefmemory.h"
+#include "../core/prjdefmemmanage.h"
 
+class DataBaseTM;
 
 #define ID_OBJECTDEFINITIONLISTDLG 10030
 #define ID_DLGODD_LIST_LYR_NAME 10265

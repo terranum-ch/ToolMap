@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "queriespages.h"
-#include "listgenreport.h"
+#include "../database/database_tm.h"
+#include "../gui/wxflatbutton.h"
+
 
 
 #include <wx/arrimpl.cpp> // This is a magic incantation which must be done!

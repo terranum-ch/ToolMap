@@ -18,7 +18,7 @@
 // comment doxygen
 
 #include "tmexportdatashp.h"
-#include "../database/databaseresult.h"
+#include "../database/database_tm.h"
 
 
 

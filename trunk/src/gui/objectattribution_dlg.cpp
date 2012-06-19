@@ -63,6 +63,7 @@ ProjectDefMemoryObjects::m_ObjectID >= 0, or we INSERT them if ProjectDefMemoryO
 #endif
 
 #include "objectattribution_dlg.h"
+#include "../database/database_tm.h"
 
 IMPLEMENT_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG, wxDialog )
 

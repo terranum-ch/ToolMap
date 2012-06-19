@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "querieswizard.h"
+#include "../database/database_tm.h"
 
 
 

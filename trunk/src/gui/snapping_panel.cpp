@@ -19,6 +19,7 @@
 // comment doxygen
 
 #include "snapping_panel.h"
+#include "../database/database_tm.h"	// for database support
 
 
 

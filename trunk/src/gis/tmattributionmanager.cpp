@@ -21,6 +21,8 @@
 #include "../gui/information_dlg.h"				// for informations window
 #include "../gui/aattribbatch_dlg.h"			// batch attribution window
 #include "../core/tmstatsevent.h"
+#include "../database/database_tm.h"		// for database
+
 
 
 DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);

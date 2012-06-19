@@ -29,9 +29,10 @@
     #include <wx/wx.h>
 #endif
 
-#include "../database/database_tm.h"	// for database access
 #include "projectdefmemory.h"			// for ProjectDefMemoryLayers definition
+#include "../database/databaseresult.h"
 
+class DataBaseTM;
 
 /***************************************************************************//**
  @brief Parent class for exporting data

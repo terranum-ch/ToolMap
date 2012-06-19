@@ -32,7 +32,8 @@
 
 #include "tmgisdatavector.h"
 #include "ogrsf_frmts.h"
-#include "../database/database_tm.h"	// for database support
+
+class DataBaseTM;
 
 class tmGISDataVectorMemory : public tmGISDataVector
 	{

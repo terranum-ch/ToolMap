@@ -31,9 +31,9 @@
 #include "managed_aui_wnd.h"
 #include "listgenreport.h"
 #include "wxflatbutton.h"
-#include "../database/database_tm.h"
 #include "shortcut_panel_dlg.h"		// dialog for adding shortcuts
 
+class DataBaseTM;
 
 #define IDDLG_SHORT_TARGET 21000
 #define IDDLG_SHORT_LIST 21001

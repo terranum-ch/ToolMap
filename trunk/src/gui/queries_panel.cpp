@@ -28,6 +28,8 @@
 
 #include "queries_panel.h"
 #include "querieswizard.h"
+#include "../database/database_tm.h"	// for database support
+
 
 
 DEFINE_EVENT_TYPE(tmEVT_QUERY_RUN)
