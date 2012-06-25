@@ -53,6 +53,9 @@ const wxString TABLE_NAME_SHORTCUT_LIST = _T("shortcut_list");
 const wxString TABLE_NAME_SNAPPING = _T("prj_snapping");
 const wxString TABLE_NAME_STAT = _T("prj_stats");
 const wxString TABLE_NAME_LANG_DEF = _T("lang_def");
+const wxString TABLE_NAME_AT_LIST = _T("dmn_layer_attribut");
+const wxString TABLE_NAME_AT_MIX = _T("dmn_attribut_value");
+const wxString TABLE_NAME_AT_CATALOG = _T("dmn_catalog");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -70,6 +73,8 @@ _T("generic_pat"),
 _T("generic_lat"),
 _T("generic_notes")
 };
+
+const wxString TABLE_COMMENT_ENUMERATION = _T("ENUMERATION");
 
 // DATABASE VERSION IS
 const int TM_DATABASE_VERSION = 222;
@@ -102,6 +107,7 @@ class DataBaseTM : public DataBase
         bool _CreateLangDefData();
 		//bool TableEmpty (const wxString & tablename);
 		bool CreateEmptyTMDatabase();
+        //bool _AddEnumField(ProjectDefMemoryFields * field, int layerindex);
 		
 	public:
 		DataBaseTM();

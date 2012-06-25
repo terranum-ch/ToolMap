@@ -89,6 +89,8 @@ public:
         myField1.m_pCodedValueArray.Add(new ProjectDefMemoryFieldsCodedVal("2", "inactif"));        
         // adding attributs
         
+        TS_ASSERT(m_DB->AddField(&myField1));
+        
     }
 	
 	
