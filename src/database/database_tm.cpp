@@ -474,7 +474,8 @@ bool DataBaseTM::FillShortCutTable ()
 
 bool DataBaseTM::_CreateLangDefData(){
     wxString myTxtTemplate = _T("INSERT INTO %s VALUES (%d, \"%s\"); ");
-    wxString myLangues [] = {wxT("Undefined"), wxT("Undefined"), wxT("Undefined"), wxT("Undefined")};
+    wxString myLangues [] = {wxT("Undefined"), wxT("Undefined"), 
+        wxT("Undefined"), wxT("Undefined"), wxT("Undefined")};
     wxString myQuery = wxEmptyString;
     for (int i = 0; i< (sizeof(myLangues) / sizeof(wxString)); i++) {
         myQuery.append(wxString::Format(myTxtTemplate, TABLE_NAME_LANG_DEF, i, myLangues[i]));

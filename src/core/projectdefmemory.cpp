@@ -27,6 +27,13 @@ ProjectDefMemoryFieldsCodedVal::ProjectDefMemoryFieldsCodedVal()
 	InitMemberValues();
 }
 
+ProjectDefMemoryFieldsCodedVal::ProjectDefMemoryFieldsCodedVal(const wxString & code, const wxString & desc){
+	InitMemberValues();
+    m_ValueCode = code;
+    m_ValueName = desc;
+}
+
+
 ProjectDefMemoryFieldsCodedVal::~ProjectDefMemoryFieldsCodedVal()
 {
 	
@@ -35,7 +42,7 @@ ProjectDefMemoryFieldsCodedVal::~ProjectDefMemoryFieldsCodedVal()
 void ProjectDefMemoryFieldsCodedVal::InitMemberValues()
 {
 	m_ValueID = 0;
-	m_ValueCode = NULL_LONG_VALUE;
+	m_ValueCode = NULL_LONG_STRING_VALUE;
 	m_ValueName = _T("");	
 }
 
@@ -240,7 +247,7 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
 				for (int i = 0; i < iCountCodedVal ; i++)
 				{
 					ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
-					myVal->m_ValueCode = i+1;
+					myVal->m_ValueCode = "BUG";
 					myVal->m_ValueName = myCodedValResults.Item(i);
 					m_pCodedValueArray.Add(myVal);
 				}

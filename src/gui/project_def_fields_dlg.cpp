@@ -170,7 +170,7 @@ void ProjectDefFieldList::AddingValueToArray (wxArrayString & myImportedValues)
 	m_CodedValueObj = m_pPrjDefinition->AddCodedValue();
 	
 	// pass value to this object
-	myImportedValues.Item(0).ToLong(&(m_CodedValueObj->m_ValueCode));
+	m_CodedValueObj->m_ValueCode = myImportedValues.Item(0);
 	m_CodedValueObj->m_ValueName = myImportedValues.Item(1);
 	
 }

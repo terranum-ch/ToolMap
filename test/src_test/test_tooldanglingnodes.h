@@ -81,16 +81,16 @@ public:
 	
 	void testSearch1()
 	{
-		TS_ASSERT(m_DN->SearchInit(2)==false);
-		TS_ASSERT(m_DN->SearchInit(1)==true);
-		TS_ASSERT(m_DN->SearchInit(100)==false);
+		TS_ASSERT(m_DN->SearchInit(2, "no layer name")==false);
+		TS_ASSERT(m_DN->SearchInit(1,  "no layer name")==true);
+		TS_ASSERT(m_DN->SearchInit(100,  "no layer name")==false);
 	}
 	
 	void testSearch2 ()
 	{
 		int iFeatureSearched = 0;
 		TS_ASSERT(m_DN->SearchInfo(iFeatureSearched)==false);
-		TS_ASSERT(m_DN->SearchInit(1)==true);
+		TS_ASSERT(m_DN->SearchInit(1,  "no layer name")==true);
 		
 		TS_ASSERT(m_DN->SearchInfo(iFeatureSearched));
 		TS_ASSERT(iFeatureSearched > 0);
@@ -105,7 +105,7 @@ public:
 	void testSearchRun2()
 	{
 		int iNum = 0;
-		TS_ASSERT(m_DN->SearchInit(1)==true);
+		TS_ASSERT(m_DN->SearchInit(1,  "no layer name")==true);
 		TS_ASSERT(m_DN->SearchRun()==true);
 		TS_ASSERT(m_DN->SearchRun()==false);
 		TS_ASSERT(m_DN->SearchInfo(iNum)==false);
@@ -114,7 +114,7 @@ public:
 	void testSearchRun3()
 	{
 		//int iNum = 0;
-		TS_ASSERT(m_DN->SearchInit(1)==true);
+		TS_ASSERT(m_DN->SearchInit(1,  "no layer name")==true);
 		TS_ASSERT(m_DN->SearchRun()==true);
 		wxArrayRealPoints myPts;
 		bool bGet = m_DN->GetDanglingNodes(myPts)==true;
