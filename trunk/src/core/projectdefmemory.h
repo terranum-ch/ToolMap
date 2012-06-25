@@ -164,6 +164,7 @@ enum PRJDEF_OBJECTS_FREQ
 static const int PRJDEF_OBJECTSS_FREQ_NUMBER = 2;
 
 static const long NULL_LONG_VALUE = -9999;
+static const wxString NULL_LONG_STRING_VALUE = _T("-9999");
 
 
 
@@ -181,10 +182,11 @@ class ProjectDefMemoryFieldsCodedVal
 		
 	public:
 		long m_ValueID;
-		long m_ValueCode;
+		wxString m_ValueCode;
 		wxString m_ValueName;
 		
 		ProjectDefMemoryFieldsCodedVal();
+        ProjectDefMemoryFieldsCodedVal(const wxString & code, const wxString & desc);
 		~ProjectDefMemoryFieldsCodedVal();
 		
 		static int ExtractCodedValuesFromString (const wxString & codedvalue, 

@@ -565,35 +565,31 @@ void ProjectDefLayersEditObjectDlg::_SetValidator()
 }
 
 
-bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow()
-{
+bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow(){
 	// getting values
-	long lCode = 0;
-	m_DlgEO_Code->GetValue().ToLong(&lCode);
+    wxString sCode = m_DlgEO_Code->GetValue();
 	wxString sValue = m_DlgEO_Value->GetValue();
+
 #ifdef __WXMSW__
 	sValue.Replace(_T("’"), _T("'"));
 #endif
 	// passing values to the corresponding obj.
 	if (m_ObjectObj != NULL)
 	{
-		m_ObjectObj->m_ObjectCode = lCode;
+        long myCode = 0;
+        sCode.ToLong(&myCode);
+		m_ObjectObj->m_ObjectCode = myCode;
 		m_ObjectObj->m_ObjectName = sValue;
 	}
 	
 	if (m_CodedValObj != NULL)
 	{
-		m_CodedValObj->m_ValueCode = lCode;
+		m_CodedValObj->m_ValueCode = sCode;
 		m_CodedValObj->m_ValueName = sValue;
 	}
-	
-
-	//m_DlgEO_Code->GetValue().ToLong(&(m_ObjectObj->m_ObjectCode));
-	//m_ObjectObj->m_ObjectName = m_DlgEO_Value->GetValue();
-	
-	
-	return TRUE;
+	return true;
 }
+
 
 bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 {
@@ -611,7 +607,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 	if (m_CodedValObj != NULL)
 	{
 		// check that the numeric value is not null (-9999)
-		if (m_CodedValObj->m_ValueCode != NULL_LONG_VALUE)
+		if (m_CodedValObj->m_ValueCode != NULL_LONG_STRING_VALUE)
 		{
 			m_DlgEO_Code->SetValue(wxString::Format(_T("%ld"), m_CodedValObj->m_ValueCode));
 		}
