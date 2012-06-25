@@ -1325,13 +1325,9 @@ bool DataBaseTM::AddTableIfNotExist (const wxString & TableName)
 
 
 /*************************** FIELD DATABASE FUNCTION ****************************/
-bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
-{
-	wxString sSentence = _T("");
-	
+bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex){
 	// get the selected layer of take the actual one
-	if (DBlayerIndex == -1)
-	{
+	if (DBlayerIndex == -1){
 		DBlayerIndex = GetActiveLayerId(); 
 	}
 	
@@ -1342,9 +1338,52 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	bool bAdded = AddTableIfNotExist(sTableName);
 	wxASSERT (bAdded);
 	
+    
+    // special case for enumeration
+    if (myField->m_FieldType == TM_FIELD_ENUMERATION) {
+        // add into dmn_layer_attribut (attributs list).
+        wxString myQuery = wxString::Format(_T("INSERT INTO %s (LAYER_INDEX, ATTRIBUT_NAME) VALUES (%d, \"%s\")"), TABLE_NAME_AT_LIST,DBlayerIndex,myField->m_Fieldname);
+        if (DataBaseQueryNoResults(myQuery) == false) {
+            return false;
+        }
+        
+        long myFieldID = DataBaseGetLastInsertedID();
+        wxASSERT(myFieldID != wxNOT_FOUND);
+        
+        // add every values into catalog
+        for (unsigned int i = 0; i< myField->m_pCodedValueArray.GetCount(); i++) {
+            ProjectDefMemoryFieldsCodedVal * myFieldVal = myField->m_pCodedValueArray.Item(i);
+            wxASSERT(myFieldVal);
+            wxString myQ = wxString::Format(_T("INSERT INTO %s (CODE, DESCRIPTION_0) VALUES (\"%s\", \"%s\")"), TABLE_NAME_AT_CATALOG, myFieldVal->m_ValueCode, myFieldVal->m_ValueName);
+            if (DataBaseQueryNoResults(myQ) == false) {
+                continue;
+            }
+            myFieldVal->m_ValueID = DataBaseGetLastInsertedID();
+        }
+        
+        // add into mix table
+        for (unsigned int i = 0; i< myField->m_pCodedValueArray.GetCount(); i++) {
+            ProjectDefMemoryFieldsCodedVal * myFieldVal = myField->m_pCodedValueArray.Item(i);
+            wxASSERT(myFieldVal);
+            if (myFieldVal->m_ValueID == wxNOT_FOUND) {
+                continue;
+            }
+            wxString myQ = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld)"), TABLE_NAME_AT_MIX, myFieldID,myFieldVal->m_ValueID);
+            if (DataBaseQueryNoResults(myQ) == false) {
+                return false;
+            }
+        }
+         
+        // add field into layer_at
+        wxString myQ = wxString::Format(_T("ALTER TABLE %s%d ADD COLUMN %s INTEGER COMMENT \"%s\";"),
+                                        TABLE_NAME_LAYER_AT, DBlayerIndex, myField->m_Fieldname, TABLE_COMMENT_ENUMERATION);
+        return DataBaseQueryNoResults(myQ);
+    }
+    
 	
 	// then create the fields based upon the fields type
 	// use the same function for updating 
+    wxString sSentence = _T("");
 	UpdateField(myField, DBlayerIndex, sSentence);
 	if (DataBaseQueryNoResults(sSentence)==false)
 	{
@@ -1354,6 +1393,10 @@ bool DataBaseTM::AddField (ProjectDefMemoryFields * myField, int DBlayerIndex)
 	
 	return true;
 }
+
+
+//bool _AddEnumField(ProjectDefMemoryFields * field, int layerindex);
+
 
 
 /***************************************************************************//**
