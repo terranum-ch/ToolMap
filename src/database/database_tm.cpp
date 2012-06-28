@@ -1248,7 +1248,7 @@ void DataBaseTM::DeleteLayersObjects (int iLayer, wxString & sSqlSentence)
 
 bool DataBaseTM::LoadLayerObjects(ProjectDefMemoryLayers * layer){
 	wxASSERT(layer->m_LayerID != wxNOT_FOUND);	
-	wxString myQuery = wxString::Format("SELECT o.OBJECT_CD, o.OBJECT_DESC, OBJECT_TYPE_CD, l.LAYER_NAME, o.OBJECT_ISFREQ, o.OBJECT_ID "
+	wxString myQuery = wxString::Format("SELECT o.OBJECT_CD, o.OBJECT_DESC_0, OBJECT_TYPE_CD, l.LAYER_NAME, o.OBJECT_ISFREQ, o.OBJECT_ID "
 										"FROM %s AS o LEFT JOIN %s as l ON "
 										"(l.LAYER_INDEX=o.THEMATIC_LAYERS_LAYER_INDEX) "
 										"WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY o.OBJECT_CD",
@@ -1455,8 +1455,41 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 		myField->SetValues(myResults);
 	}
 	DataBaseClearResults();
+    
+    //TODO: load field data from here!
+    // get field list (enumeration)
+    wxString myQ = wxString::Format(_T("select l.ATTRIBUT_ID, l.LAYER_INDEX, l.ATTRIBUT_NAME, c.CATALOG_ID, c.CODE, c.DESCRIPTION_0  FROM %s l LEFT JOIN  (%s c, %s m) ON (l.ATTRIBUT_ID = m.ATTRIBUT_ID AND m.CATALOG_ID = c.CATALOG_ID) ORDER BY l.LAYER_INDEX"), TABLE_NAME_AT_LIST, TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX);
+    if (DataBaseQuery(myQ) == false) {
+        return iNbFields;
+    }
+    
+    wxArrayString myFResults;
+    while (DataBaseGetResults(myFResults)) {
+        long myFieldID = wxNOT_FOUND;
+        long myLayerIndex = wxNOT_FOUND;
+        wxString myFieldName;
+        long myEnumID = wxNOT_FOUND;
+        wxString myEnumCode;
+        wxString myEnumName;
+        
+        wxASSERT(myFResults.GetCount() == 6);
+        myFResults.Item(0).ToLong(&myFieldID);
+        myResults.Item(1).ToLong(&myLayerIndex);
+        myFieldName = myFResults.Item(2);
+        myFResults.Item(3).ToLong(&myEnumID);
+        myEnumCode = myFResults.Item(4);
+        myEnumName = myFResults.Item(5);
+        
+        ProjectDefMemoryLayers * myLayer = myPrj->FindLayerByRealID(myLayerIndex);
+        wxASSERT(myLayer);
+        ProjectDefMemoryFieldsCodedVal * myCVal = new ProjectDefMemoryFieldsCodedVal();
+        myCVal->m_ValueID = myEnumID;
+        myCVal->m_ValueCode = myEnumCode;
+        myCVal->m_ValueName = myEnumName;
+        myLayer->m_pLayerFieldArray.Add(myCVal);
+    }
+    DataBaseClearResults();
 	return iNbFields; 
-
 }
 
 

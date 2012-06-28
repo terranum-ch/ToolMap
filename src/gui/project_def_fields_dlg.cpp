@@ -83,7 +83,7 @@ void ProjectDefFieldList::AfterAdding (bool bRealyAddItem)
 	
 		
 		// add item to the list
-		myListValues.Add(wxString::Format(_T("%ld"), m_CodedValueObj->m_ValueCode));
+		myListValues.Add(wxString::Format(_T("%s"), m_CodedValueObj->m_ValueCode));
 		myListValues.Add( m_CodedValueObj->m_ValueName);
 		EditDataToList(myListValues);
 		
@@ -132,7 +132,7 @@ void ProjectDefFieldList::AfterEditing (bool bRealyEdited)
 		// data modified is allready stored in the project definition
 		
 		// prepare data for list representation
-		myListValues.Add(wxString::Format(_T("%ld"), m_CodedValueObj->m_ValueCode));
+		myListValues.Add(wxString::Format(_T("%s"), m_CodedValueObj->m_ValueCode));
 		myListValues.Add( m_CodedValueObj->m_ValueName);
 		EditDataToList(myListValues, GetSelectedItem());
 		
@@ -491,7 +491,7 @@ void ProjectDefFieldDlg::TransfertEnumValues(bool bSendDataToDlg)
 												//GetNextCodedValue();
 			
 			// fit things returned in the list
-			myListValues.Add(wxString::Format(_T("%ld"), myCodedValObj->m_ValueCode));
+			myListValues.Add(wxString::Format(_T("%s"), myCodedValObj->m_ValueCode));
 			myListValues.Add(myCodedValObj->m_ValueName);
 			m_DlgAFD_Coded_Val_List->EditDataToList(myListValues);
 			myListValues.Clear();

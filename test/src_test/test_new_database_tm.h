@@ -86,11 +86,26 @@ public:
         
         
         myField1.m_pCodedValueArray.Add(new ProjectDefMemoryFieldsCodedVal("1", "actif"));
-        myField1.m_pCodedValueArray.Add(new ProjectDefMemoryFieldsCodedVal("2", "inactif"));        
+        myField1.m_pCodedValueArray.Add(new ProjectDefMemoryFieldsCodedVal("2a", "inactif"));        
         // adding attributs
         
         TS_ASSERT(m_DB->AddField(&myField1));
+    }
+    
+    
+    
+    void testGetProjectInMemory(){
+        TS_ASSERT(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_222));
+        PrjDefMemManage * myPrjMem = m_DB->GetProjectDataFromDB();
+        TS_ASSERT(myPrjMem != NULL);
         
+        ProjectDefMemoryLayers * myLayer = myPrjMem->FindLayer(_T("Tectonic_Boundaries_L"));
+        TS_ASSERT(myLayer != NULL);
+        
+        ProjectDefMemoryFieldsCodedVal * myVal = myLayer->m_pLayerFieldArray.Item(0)->m_pCodedValueArray.Item(1);
+        TS_ASSERT(myVal != NULL)
+        TS_ASSERT(myVal->m_ValueCode == _T("2a") );
+        TS_ASSERT(myVal->m_ValueName == _T("inactif"));
     }
 	
 	
