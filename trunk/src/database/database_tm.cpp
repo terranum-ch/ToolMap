@@ -17,6 +17,7 @@
 
 
 #include "database_tm.h"
+#include "databaseresult.h"
 
 
 DataBaseTM::DataBaseTM()
@@ -1463,8 +1464,10 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
         return iNbFields;
     }
     
-    wxArrayString myFResults;
-    while (DataBaseGetResults(myFResults)) {
+    DataBaseResult myResult;
+    DataBaseGetResults(&myResult);
+    
+    while (myResult.NextRow()) {
         long myFieldID = wxNOT_FOUND;
         long myLayerIndex = wxNOT_FOUND;
         wxString myFieldName;
@@ -1472,23 +1475,31 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
         wxString myEnumCode;
         wxString myEnumName;
         
-        wxASSERT(myFResults.GetCount() == 6);
-        myFResults.Item(0).ToLong(&myFieldID);
-        myResults.Item(1).ToLong(&myLayerIndex);
-        myFieldName = myFResults.Item(2);
-        myFResults.Item(3).ToLong(&myEnumID);
-        myEnumCode = myFResults.Item(4);
-        myEnumName = myFResults.Item(5);
+        wxASSERT(myResult.GetColCount() == 6);
+        myResult.GetValue(0, myFieldID);
+        myResult.GetValue(1, myLayerIndex);
+        myResult.GetValue(2, myFieldName);
+        myResult.GetValue(3, myEnumID);
+        myResult.GetValue(4, myEnumCode);
+        myResult.GetValue(5, myEnumName);
         
         ProjectDefMemoryLayers * myLayer = myPrj->FindLayerByRealID(myLayerIndex);
         wxASSERT(myLayer);
+        if (myLayer == NULL) {
+            continue;
+        }
+        ProjectDefMemoryFields * myField = myPrj->FindField(myFieldName);
+        wxASSERT(myField);
+        if (myField == NULL) {
+            continue;
+        }
+        
         ProjectDefMemoryFieldsCodedVal * myCVal = new ProjectDefMemoryFieldsCodedVal();
         myCVal->m_ValueID = myEnumID;
         myCVal->m_ValueCode = myEnumCode;
         myCVal->m_ValueName = myEnumName;
-        myLayer->m_pLayerFieldArray.Add(myCVal);
+        myField->m_pCodedValueArray.Add(myCVal);
     }
-    DataBaseClearResults();
 	return iNbFields; 
 }
 

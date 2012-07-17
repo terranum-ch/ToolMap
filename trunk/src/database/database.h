@@ -46,11 +46,12 @@
 #include <wx/tokenzr.h> // tokenizer of string
 #include <wx/dir.h> // directory operation (size)
 
+WX_DEFINE_ARRAY_LONG(unsigned long, tmArrayULong);
 
 class DataBaseResult;
 
 //WX_DEFINE_ARRAY_(int, ArrayOfInts);
-WX_DEFINE_ARRAY_LONG(unsigned long, tmArrayULong);
+
 
 class DataBase
 	{
