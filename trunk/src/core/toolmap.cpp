@@ -53,6 +53,13 @@ IMPLEMENT_APP(ToolMapApp);
 bool ToolMapApp::OnInit()
 /* APPLICATION INITIALISATION */
 {
+#ifdef __WXDEBUG__
+    // debugging string for OSX
+    // this is needed for viewing string content with Xcode !!
+    wxString myTest = _T("Test debugging");
+    myTest.ToUTF8().data();
+#endif
+    
 	// clear log if exists
 	TAWindowRemoveFile(wxEmptyString);
 

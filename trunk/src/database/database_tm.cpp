@@ -1457,8 +1457,8 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 	}
 	DataBaseClearResults();
     
-    //TODO: load field data from here!
-    // get field list (enumeration)
+    
+    // get enumeration for all fields list (enumeration)
     wxString myQ = wxString::Format(_T("select l.ATTRIBUT_ID, l.LAYER_INDEX, l.ATTRIBUT_NAME, c.CATALOG_ID, c.CODE, c.DESCRIPTION_0  FROM %s l LEFT JOIN  (%s c, %s m) ON (l.ATTRIBUT_ID = m.ATTRIBUT_ID AND m.CATALOG_ID = c.CATALOG_ID) ORDER BY l.LAYER_INDEX"), TABLE_NAME_AT_LIST, TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX);
     if (DataBaseQuery(myQ) == false) {
         return iNbFields;
@@ -1493,6 +1493,8 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
         if (myField == NULL) {
             continue;
         }
+        // change field from default integer to enum
+        myField->m_FieldType = TM_FIELD_ENUMERATION;
         
         ProjectDefMemoryFieldsCodedVal * myCVal = new ProjectDefMemoryFieldsCodedVal();
         myCVal->m_ValueID = myEnumID;
@@ -1559,8 +1561,7 @@ bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayer
  *******************************************************************************/
 bool DataBaseTM::UpdateField(ProjectDefMemoryFields * myField,int iLayer, wxString & sSqlSentence)
 {
-	wxString myTypeFieldTemp = _T("");
-	
+	wxString myTypeFieldTemp = _T("");	
 	switch (myField->m_FieldID)
 	{
 		case 0: // we insert

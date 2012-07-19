@@ -75,6 +75,7 @@ enum PRJDEF_UNIT_TYPE
 };
 static const int PRJDEF_UNIT_TYPE_NUMBER = 3;
 
+const wxString TABLE_COMMENT_ENUMERATION = _T("ENUMERATION");
 
 // Definitions for the Projection  type, we define the text and  the id of 
 // each string. The number of items in the list is also defined here.

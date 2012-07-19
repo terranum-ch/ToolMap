@@ -74,7 +74,6 @@ _T("generic_lat"),
 _T("generic_notes")
 };
 
-const wxString TABLE_COMMENT_ENUMERATION = _T("ENUMERATION");
 
 // DATABASE VERSION IS
 const int TM_DATABASE_VERSION = 222;
