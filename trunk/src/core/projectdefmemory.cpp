@@ -323,24 +323,14 @@ bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
  *******************************************************************************/
 bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 {
-	wxString sValuesConcatTemp = _T("");
-	wxString sValuesConcat = _T("");
+	wxString sValuesConcatTemp = wxEmptyString;
+	wxString sValuesConcat = wxEmptyString;
+    wxString myComment = wxEmptyString;
 	
-	switch (m_FieldType)
-	{
+	switch (m_FieldType){
 		case TM_FIELD_ENUMERATION:
-			// get all coded values from array and concatenate them
-			for (unsigned int i = 0; i< m_pCodedValueArray.GetCount(); i++)
-			{
-				sValuesConcatTemp = m_pCodedValueArray.Item(i)->m_ValueName;
-  				sValuesConcat.Append(wxString::Format(_T("\"%s\","), sValuesConcatTemp.c_str()));
-			}
-			// remove last comma
-			sValuesConcat = sValuesConcat.BeforeLast(',');
-			if (!sValuesConcat.IsEmpty())
-			{
-				sResult=wxString::Format(_T("ENUM(%s)"),sValuesConcat.c_str());
-			}
+			sResult = _T("INT NULL");
+            myComment = TABLE_COMMENT_ENUMERATION;
 			break;
 		case TM_FIELD_DATE:
 			sResult = _T("DATE NULL"); // column date with null values
@@ -359,12 +349,12 @@ bool ProjectDefMemoryFields::GetStringTypeFromValues (wxString & sResult)
 	}
 	
 	// deals with orientation :
-	if (m_FieldOrientation)
-		sResult.Append(_T(" COMMENT \"") + GetOrientationName() + _T("\""));
-	else
-		sResult.Append(_T(" COMMENT \"\""));
+	if (m_FieldOrientation){
+		myComment = GetOrientationName();
+    }
 
-	return TRUE;
+    sResult.Append(wxString::Format(_T(" COMMENT \"%s\""),myComment));
+	return true;
 }
 
 
