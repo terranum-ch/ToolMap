@@ -126,16 +126,25 @@ public:
         TS_ASSERT(myVal->m_ValueCode == _T("2a") );
         TS_ASSERT(myVal->m_ValueName == _T("inactif"));
         
-        
-        // change values
+        // change values for item 1
         myVal->m_ValueCode = _T("3b");
         myVal->m_ValueName = _T("inactiff");
+        
+        // TODO: remove item 0
+        myPrjMem->RemoveCodedValue(0);
+        
+        
+        // Add new item
+        ProjectDefMemoryFieldsCodedVal * myNewCodedValue = myPrjMem->AddCodedValue();
+        TS_ASSERT(myNewCodedValue);
+        myNewCodedValue->m_ValueCode = _T("12");
+        myNewCodedValue->m_ValueName = _T("Inconnu");
 
         // update project
         TS_ASSERT(m_DB->UpdateDataBaseProject(myPrjMem));
         
         // TODO: Destroy and reload project
-        
+
     }
 	
 };

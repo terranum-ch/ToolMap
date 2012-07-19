@@ -491,17 +491,22 @@ int	PrjDefMemManage::RemoveCodedValue (int iIndex)
 	// get the active field
 	ProjectDefMemoryFields * field = GetActiveField();
 	
-	if (iIndex == -1)
+	if (iIndex == -1){
 		iIndex = field->m_pCodedValueArray.GetCount() - 1;
+    }
 	
 	// be sure that iIndex isn't smaller than 0
 	wxASSERT_MSG (iIndex >= 0, _T("Array index smaller than 0"));
-	
+    
+    	
 	ProjectDefMemoryFieldsCodedVal * myVal = field->m_pCodedValueArray.Item(iIndex);
+    // add to remove array 
+    wxASSERT(myVal);
+    field->m_StoreDeleteCodedValues.Add(myVal->m_ValueID);
+    
 	wxDELETE(myVal);
 	field->m_pCodedValueArray.RemoveAt(iIndex);
 	
-		
 	return field->m_pCodedValueArray.GetCount(); // number of coded values
 }
 

@@ -41,7 +41,7 @@ ProjectDefMemoryFieldsCodedVal::~ProjectDefMemoryFieldsCodedVal()
 
 void ProjectDefMemoryFieldsCodedVal::InitMemberValues()
 {
-	m_ValueID = 0;
+	m_ValueID = wxNOT_FOUND;
 	m_ValueCode = NULL_LONG_STRING_VALUE;
 	m_ValueName = _T("");	
 }
@@ -126,7 +126,7 @@ ProjectDefMemoryFields::~ProjectDefMemoryFields()
 
 void ProjectDefMemoryFields::InitMemberValues()
 {
-	m_FieldID = 0;
+	m_FieldID = wxNOT_FOUND;
 	m_Fieldname = _T("");
 	m_FieldOldName = _T("");
 	m_FieldType = TM_FIELD_ENUMERATION;

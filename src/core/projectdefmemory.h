@@ -255,7 +255,10 @@ class ProjectDefMemoryFields
 		int m_FieldScale;
 		bool m_FieldOrientation;
 		bool m_FieldConstrain;
-				
+        
+        // for storing layers to delete
+		wxArrayLong m_StoreDeleteCodedValues;
+        
 		// for storing coded values
 		PrjMemFieldCodedValArray m_pCodedValueArray; 
 		
