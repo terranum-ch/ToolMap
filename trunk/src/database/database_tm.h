@@ -149,7 +149,7 @@ class DataBaseTM : public DataBase
 		bool LoadLayerObjects(ProjectDefMemoryLayers * layer);
 		
 		// field operations
-		bool AddField (ProjectDefMemoryFields * myField, int DBlayerIndex = -1);
+		bool AddField (ProjectDefMemoryFields * myField);
 		bool GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayers * actuallayer);
 		int GetFieldsFromDB (PrjDefMemManage * myPrj);
 		bool UpdateField(ProjectDefMemoryFields * myField, int iLayer, wxString & sSqlSentence);
