@@ -53,6 +53,13 @@ public:
 		wxLogMessage(_T("Initing test application"));
         wxSetAssertHandler(myAssertHandler);
 
+        // debugging string for OSX
+        // needed otherwise function ToUTF8 isn't found !!
+        wxString myTest = _T("Test debugging");
+        myTest.ToUTF8().data();
+        
+
+
 #ifdef __LINUX__
 		TS_ASSERT(gtk_init_check(NULL,NULL));
 #endif
