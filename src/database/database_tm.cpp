@@ -2026,14 +2026,24 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					}
 				}
 				
-				
-                // deleting fields coded values if needed
-                sDeleteString.Clear();
-                for (int j = 0; j < pProjDef->GetCountFields(); j++){
-                    // iterate layers for coded values to delete
-                    // TODO: remove values from dmn_catalog and dmn_attribut_value when deleting coded values
+
+                // remove coded values if needed from everywhere
+                for (int f = 0; f < pProjDef->GetCountFields(); f++){
+                    ProjectDefMemoryFields * myField = pProjDef->FindField(f);
+                    
+                    // delete coded values from field before deleting the coded values themself.
+                    for (unsigned int c = 0; c < myField->m_StoreDeleteCodedValues.GetCount(); c++) {
+                        long myIdToDelete = myField->m_StoreDeleteCodedValues.Item(c);
+                        wxString myQuery = wxString::Format(_T("UPDATE %s%d SET %s = NULL WHERE %s=%ld; "), TABLE_NAME_LAYER_AT, pLayers->m_LayerID, myField->m_Fieldname, myField->m_Fieldname, myIdToDelete);
+                        
+                        myQuery.Append(wxString::Format(_T("DELETE FROM %s WHERE CATALOG_ID=%ld; DELETE FROM %s WHERE CATALOG_ID=%ld;"), TABLE_NAME_AT_CATALOG, myIdToDelete, TABLE_NAME_AT_MIX, myIdToDelete));
+                        
+                        if (DataBaseQueryNoResults(myQuery) == false) {
+                            continue;
+                        }
+                    }
                 }
-                
+                                
                 
 				// process for deleting fields // normally the table should exists 
 				sDeleteString.Clear();
