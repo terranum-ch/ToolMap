@@ -344,7 +344,7 @@ bool QueriesData::GetObjectsForSelection(DataBaseTM * database, PrjMemObjectsArr
 	wxASSERT(objects.GetCount() == 0);
 	
 	// get object types
-   wxString myPrepQuery = _T("SELECT OBJECT_CD, o.OBJECT_DESC, o.OBJECT_TYPE_CD, l.LAYER_NAME, o.OBJECT_ISFREQ, o.OBJECT_ID ")
+   wxString myPrepQuery = _T("SELECT OBJECT_CD, o.OBJECT_DESC_0, o.OBJECT_TYPE_CD, l.LAYER_NAME, o.OBJECT_ISFREQ, o.OBJECT_ID ")
     _T("FROM %s o LEFT JOIN (%s l, %s a) ON l.LAYER_INDEX=o.THEMATIC_LAYERS_LAYER_INDEX AND")
     _T(" o.OBJECT_ID = a.OBJECT_VAL_ID WHERE a.OBJECT_GEOM_ID = %ld");
    wxString myQuery = wxString::Format(myPrepQuery,	

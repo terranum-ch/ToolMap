@@ -469,7 +469,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 	wxString myQuery = wxEmptyString;
 	if (layer->m_pLayerFieldArray.GetCount()== 0) {
 		myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY),")
-								   _T(" o.OBJECT_CD, o.OBJECT_DESC FROM %s")
+								   _T(" o.OBJECT_CD, o.OBJECT_DESC_0 FROM %s")
 								   _T(" l LEFT JOIN (%s la, %s o) ON (la.OBJECT_GEOM_ID")
 								   _T(" = l.OBJECT_ID AND o.OBJECT_ID = la.OBJECT_VAL_ID)")
 								   _T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY l.OBJECT_ID"),
@@ -479,7 +479,7 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 								   layer->m_LayerID);
 	}
 	else {
-		myQuery = _T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY), o.OBJECT_CD, o.OBJECT_DESC, ");
+		myQuery = _T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY), o.OBJECT_CD, o.OBJECT_DESC_0, ");
 		for (unsigned int i = 0; i< layer->m_pLayerFieldArray.GetCount(); i++) {
 			myQuery.Append(_T("laa."));
 			myQuery.Append(layer->m_pLayerFieldArray.Item(i)->m_Fieldname);

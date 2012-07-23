@@ -54,7 +54,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray & objects, wxArrayInt & 
 	
 	
 	// create query
-	wxString mySentence = wxString::Format(_T("SELECT a.OBJECT_VAL_ID, o.OBJECT_DESC, COUNT(*), o.THEMATIC_LAYERS_LAYER_INDEX FROM ")
+	wxString mySentence = wxString::Format(_T("SELECT a.OBJECT_VAL_ID, o.OBJECT_DESC_0, COUNT(*), o.THEMATIC_LAYERS_LAYER_INDEX FROM ")
 										   _T("%s a LEFT JOIN %s  o ON a.OBJECT_VAL_ID = o.OBJECT_ID")
 										   _T("  WHERE a.OBJECT_GEOM_ID IN (%s) GROUP BY a.OBJECT_VAL_ID"),
 										   TABLE_NAME_GIS_ATTRIBUTION[(int) m_SelLayerType].c_str(),

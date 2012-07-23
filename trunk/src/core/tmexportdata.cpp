@@ -150,7 +150,7 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
 {
 	wxASSERT(m_pDB);
 	
-	wxString sStemp = _T("SELECT OBJECT_DESC FROM ") +
+	wxString sStemp = _T("SELECT OBJECT_DESC_0 FROM ") +
 	TABLE_NAME_OBJECTS + _T(" WHERE THEMATIC_LAYERS_LAYER_INDEX = %d;");
 	wxString sSentence = wxString::Format(sStemp, layerindex);
 	
@@ -220,7 +220,7 @@ bool tmExportData::GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layer
 			break;
 	}
 	
-	wxString sTemp = _T("SELECT o.OBJECT_CD, o.OBJECT_DESC FROM %s")
+	wxString sTemp = _T("SELECT o.OBJECT_CD, o.OBJECT_DESC_0 FROM %s")
 	_T(" g LEFT JOIN %s a ON (g.OBJECT_ID = a.OBJECT_GEOM_ID)")
 	_T(" LEFT JOIN %s o ON (a.OBJECT_VAL_ID = o.OBJECT_ID)")
 	_T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID");
@@ -274,7 +274,7 @@ bool tmExportData::GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype,
 	}
 	
 	wxString sTemp = _T("SELECT g.OBJECT_ID, g.OBJECT_GEOMETRY, o.OBJECT_CD,")
-	_T(" o.OBJECT_DESC FROM %s g LEFT JOIN %s a ON")
+	_T(" o.OBJECT_DESC_0 FROM %s g LEFT JOIN %s a ON")
 	_T(" (g.OBJECT_ID = a.OBJECT_GEOM_ID) LEFT JOIN %s o")
 	_T(" ON (a.OBJECT_VAL_ID = o.OBJECT_ID) WHERE")
 	_T(" o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID;");	
