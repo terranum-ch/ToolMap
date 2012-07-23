@@ -133,7 +133,6 @@ public:
         // TODO: remove item 0
         myPrjMem->RemoveCodedValue(0);
         
-        
         // Add new item
         ProjectDefMemoryFieldsCodedVal * myNewCodedValue = myPrjMem->AddCodedValue();
         TS_ASSERT(myNewCodedValue);
@@ -142,9 +141,6 @@ public:
 
         // update project
         TS_ASSERT(m_DB->UpdateDataBaseProject(myPrjMem));
-        
-        // TODO: Destroy and reload project
-
     }
 	
 };
