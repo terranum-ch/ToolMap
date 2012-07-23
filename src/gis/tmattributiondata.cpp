@@ -557,7 +557,7 @@ bool tmAttributionData::GetBasicNameFromID (const tmAttributionBasic & myAttribO
 		return true;
 	}
 	
-	wxString sSentence = _T("SELECT OBJECT_DESC FROM ") + TABLE_NAME_OBJECTS +
+	wxString sSentence = _T("SELECT OBJECT_DESC_0 FROM ") + TABLE_NAME_OBJECTS +
 	_T(" WHERE OBJECT_ID IN (");
 	
 	for (unsigned int i = 0; i< myAttribObj.m_Values.GetCount();i++)
@@ -655,7 +655,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 			  layertype <= LAYER_SPATIAL_POLYGON ||
 			  layertype == wxNOT_FOUND);
 	
-	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX, l.OBJECT_DESC FROM %s l LEFT")
+	wxString sTmp = _T("SELECT l.THEMATIC_LAYERS_LAYER_INDEX, l.OBJECT_DESC_0 FROM %s l LEFT")
 	_T(" JOIN (%s a, %s t) ON (l.OBJECT_ID = a.OBJECT_VAL_ID ")
 	_T("AND t.LAYER_INDEX=l.THEMATIC_LAYERS_LAYER_INDEX) WHERE")
 	_T(" a.OBJECT_GEOM_ID = %ld ");
@@ -744,7 +744,7 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
 	objcode.Clear();
 	objname.Clear();
 	
-	wxString myText = _T("SELECT o.OBJECT_ID, o.OBJECT_CD, o. OBJECT_DESC FROM %s o")
+	wxString myText = _T("SELECT o.OBJECT_ID, o.OBJECT_CD, o. OBJECT_DESC_0 FROM %s o")
 	_T(" LEFT JOIN %s m ON o.OBJECT_ID = m.OBJECT_VAL_ID WHERE m.OBJECT_GEOM_ID = %ld")
 	_T(" ORDER BY o.THEMATIC_LAYERS_LAYER_INDEX, o.OBJECT_ID");
 	

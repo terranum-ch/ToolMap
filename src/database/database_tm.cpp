@@ -853,7 +853,7 @@ bool DataBaseTM::AddLayerPolygonDefaultBorder (ProjectDefMemoryLayers * myLayer)
 		return false;
 	
 	wxString sSentence = wxString::Format( _T("INSERT INTO ") + TABLE_NAME_OBJECTS + 
-										  _T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES ")
+										  _T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC_0) VALUES ")
 										  _T("(%d, %d, %d, \"%s\")"),
 										  GetActiveLayerId() * 1000, LAYER_LINE, GetActiveLayerId(),
 										  myLayer->m_LayerPolygonDefaultValue.c_str());
@@ -1081,7 +1081,7 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 	}
 	
 	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_OBJECTS +
-	_T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES ");
+	_T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC_0) VALUES ");
 	wxString sValues = wxString::Format(_T("(%ld, %d, %d,\"%s\")"),
 										myObject->m_ObjectCode,
 										myObject->m_ObjectType,										
@@ -1125,7 +1125,7 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		// prepare the sentence for insert or update
 		//sentence for insert
 		wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
-											_T("(OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC, OBJECT_ISFREQ) ")
+											_T("(OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC_0, OBJECT_ISFREQ) ")
 											_T("VALUES (%ld, %d, %d, \"%s\", %d)"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
@@ -1136,7 +1136,7 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		// sentence for update
 		wxString sUpdate = wxString::Format(_T("UPDATE %s ")
 											_T("SET OBJECT_CD = %ld, OBJECT_TYPE_CD=%d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
-											_T("OBJECT_DESC = \"%s\", OBJECT_ISFREQ = %d ")
+											_T("OBJECT_DESC_0 = \"%s\", OBJECT_ISFREQ = %d ")
 											_T("WHERE OBJECT_ID = %ld"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
@@ -1632,7 +1632,7 @@ bool DataBaseTM::DeleteField (wxArrayString & myFields, int iLayer, wxString & s
 bool DataBaseTM::GetObjectListByLayerType(int ilayertype, bool bOrder)
 {
 	wxString sSentence =  wxString::Format(
-										   _T("SELECT OBJECT_CD, OBJECT_DESC, OBJECT_TYPE_CD, thematic_layers.LAYER_NAME, OBJECT_ISFREQ, OBJECT_ID ")
+										   _T("SELECT OBJECT_CD, OBJECT_DESC_0, OBJECT_TYPE_CD, thematic_layers.LAYER_NAME, OBJECT_ISFREQ, OBJECT_ID ")
 										   _T("FROM dmn_layer_object LEFT JOIN (thematic_layers) ")
 										   _T("ON (thematic_layers.LAYER_INDEX=dmn_layer_object.THEMATIC_LAYERS_LAYER_INDEX)")
 										   _T("WHERE OBJECT_TYPE_CD = %d"),
