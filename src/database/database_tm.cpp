@@ -2027,6 +2027,14 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 				}
 				
 				
+                // deleting fields coded values if needed
+                sDeleteString.Clear();
+                for (int j = 0; j < pProjDef->GetCountFields(); j++){
+                    // iterate layers for coded values to delete
+                    // TODO: remove values from dmn_catalog and dmn_attribut_value when deleting coded values
+                }
+                
+                
 				// process for deleting fields // normally the table should exists 
 				sDeleteString.Clear();
 				if (pLayers->m_StoreDeleteFields.GetCount() > 0)
@@ -2045,8 +2053,6 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 					}
 				}
                 
-                // deleting fields coded values if needed
-                // TODO: remove values from dmn_catalog and dmn_attribut_value when deleting coded values
                 
 				
 				
