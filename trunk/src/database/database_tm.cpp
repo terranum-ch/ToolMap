@@ -2025,7 +2025,6 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 						break;
 					}
 				}
-				
 
                 // remove coded values if needed from everywhere
                 for (int f = 0; f < pProjDef->GetCountFields(); f++){
@@ -2043,8 +2042,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
                         }
                     }
                 }
-                                
-                
+                 
 				// process for deleting fields // normally the table should exists 
 				sDeleteString.Clear();
 				if (pLayers->m_StoreDeleteFields.GetCount() > 0)
