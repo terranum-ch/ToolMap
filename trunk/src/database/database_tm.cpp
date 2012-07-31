@@ -430,8 +430,9 @@ bool DataBaseTM::FillDefaultScaleData ()
 	}
 	
 	
-	if (bReturnValue == FALSE)
+	if (bReturnValue == FALSE){
 		wxLogError(_T("Error filling scale table. Already filled of request error ?"));
+    }
 	
 	return bReturnValue;
 }
@@ -1025,9 +1026,10 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
 		
 		
 		// execute prepared statement
-		if(!DataBaseQueryNoResults(sDeleteSentence))
+		if(!DataBaseQueryNoResults(sDeleteSentence)){
 			wxLogError(_T("Error deleting objects (GIS or attribution) : %s"),
 					   sDeleteSentence.c_str());
+        }
 		
 	}
 	return TRUE;

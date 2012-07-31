@@ -287,8 +287,9 @@ bool tmLayerManager::SaveTOCStatus()
 		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, out.GetString());
 		iRank --;
 		
-		if (iRank < 0)
+		if (iRank < 0){
 			wxLogDebug(_T("Getting rank for layers seem wrong : %d"), iRank);
+        }
 		
 	}
 	
@@ -817,8 +818,9 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	// is a project open
 	if (!m_TOCCtrl->IsTOCReady())
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogMessage(_("Open a project first"));
+        }
 		return false;
 	}
 	
@@ -826,8 +828,9 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
 	if (!layerprop)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogMessage(_("Select a layer first in the TOC"));
+        }
 		return false;
 	}
 	
@@ -836,8 +839,9 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	tmGISData * myLayerData = tmGISData::LoadLayer(layerprop);
 	if (!myLayerData)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Unable to get data for the layer"));
+        }
 		return false;
 	}
 	
@@ -932,8 +936,9 @@ bool tmLayerManager::SelectedInvert ()
 	// selection have value ?
 	if (m_SelectedData.GetCount() == 0)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("No value selected, select object(s) first"));
+        }
 		return false;
 	}
 	
@@ -942,16 +947,18 @@ bool tmLayerManager::SelectedInvert ()
 	tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
 	if (!layerprop)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogMessage(_("Select a layer first in the TOC"));
+        }
 		return false;
 	}
 
 	tmGISData * myLayerData = tmGISData::LoadLayer(layerprop);
 	if (!myLayerData)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Unable to get data for the layer"));
+        }
 		return false;
 	}
 	

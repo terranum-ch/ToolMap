@@ -66,8 +66,9 @@ void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRec
 	else
 	{
 		m_IsInitialised = FALSE;
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error initing drawer \n"));
+        }
 	}
 }
 
@@ -553,8 +554,9 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
 	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error setting spatial filter"));
+        }
 		return false;
 	}
 	
@@ -585,8 +587,9 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		if(pptsReal == NULL)
 		{
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("No point returned @loop : %d"), iLoop);
+            }
 			bReturn = FALSE;
 			break;
 		}
@@ -629,8 +632,9 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	}
 	
-	if (IsLoggingEnabled())
+	if (IsLoggingEnabled()){
 		wxLogDebug(_T("%d Points drawn"), iLoop);
+    }
 	
 	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
@@ -820,16 +824,18 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		int iPolyRings = pVectPoly->GetNextDataPolygonInfo(myOid);
 		if (iPolyRings <= 0)
 		{
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
+            }
 			break;
 		}
 		
 		//TODO: Temp code, for debuging remove after
 		if (iPolyRings > 1)
 		{
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
+            }
 		}
 			
 		wxGraphicsPath myPolygonPath = pgdc->CreatePath();
@@ -840,8 +846,9 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 			
 			if(pptsReal == NULL)
 			{
-				if (IsLoggingEnabled())
+				if (IsLoggingEnabled()){
 					wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
+                }
 				bReturn = FALSE;
 				break;
 			}
@@ -884,8 +891,9 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 		
 	}
 
-	if (IsLoggingEnabled())
+	if (IsLoggingEnabled()){
 		wxLogDebug(_T("%d Polygons drawn"), iLoop);
+    }
 	
 	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
@@ -1104,15 +1112,17 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 		int iPolyRings = pVectPoly->GetNextDataPolygonInfo(myOid);
 		if (iPolyRings <= 0)
 		{
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("Error getting info about polygons, return value is : %d"), iPolyRings);
+            }
 			break;
 		}
 		
 		if (iPolyRings > 1)
 		{
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
+            }
 		}
 		
 		// get polygons data, loop all rings into polygons
@@ -1122,8 +1132,9 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 			
 			if(pptsReal == NULL)
 			{
-				if (IsLoggingEnabled())
+				if (IsLoggingEnabled()){
 					wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
+                }
 				bReturn = FALSE;
 				break;
 			}

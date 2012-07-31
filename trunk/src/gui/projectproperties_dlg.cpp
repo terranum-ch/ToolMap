@@ -538,8 +538,9 @@ void ScaleList::BeforeDeleting ()
 void ScaleList::SetScaleToList (long lscale, int index)
 {
 	wxString myScaleText = _T("");
-	if(!ScaleTM::GetScaleFromLong(lscale, myScaleText))
+	if(!ScaleTM::GetScaleFromLong(lscale, myScaleText)){
 		wxLogDebug(_T("Error converting scale"));
+    }
 	
 	// if index == -1 then we add otherwise we insert
 	if (index == -1)

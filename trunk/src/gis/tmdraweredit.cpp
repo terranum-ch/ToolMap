@@ -187,7 +187,7 @@ bool tmDrawerEditLine::CreateVertex(const wxPoint & pt, wxPoint * left, wxPoint 
 	if (right != NULL)
 		m_RightPT = new wxPoint(*right);
 
-	bool DLReorderVertex();
+    DLReorderVertex();
 	return true;
 }
 

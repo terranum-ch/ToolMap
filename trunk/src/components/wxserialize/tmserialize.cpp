@@ -71,8 +71,9 @@ void tmSerialize::WriteInt (int value)
 int tmSerialize::ReadInt (const wxString & part)
 {
 	long lvalue = 0;
-	if(!part.ToLong(&lvalue))
+	if(!part.ToLong(&lvalue)){
 		wxLogDebug(_T("Error trying to convert string to integer"));
+    }
 	
 	return lvalue;
 }

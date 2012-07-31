@@ -66,6 +66,12 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
 			return tmPRJ_UPD_ERROR_PROJECT;
 		}
 	}
+    
+    // 221 -> 222
+    // TODO: Implement database migration
+    if (myActualDBVersion == 221) {
+        return tmPRJ_UPD_ERROR_PROJECT;
+    }
 	
 	_SetVersion(TM_DATABASE_VERSION);
 	return tmPRJ_UPD_ERROR_OK;

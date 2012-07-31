@@ -35,12 +35,10 @@
 TreeMultiItemRoot::TreeMultiItemRoot()
 	: TreeMultiItemNode(0, _T(""), _T(""))
 {
-    // TODO: Enter your constructor code here
 }
 
 TreeMultiItemRoot::~TreeMultiItemRoot()
 {
-    // TODO: Enter your destructor code here
 }
 
 

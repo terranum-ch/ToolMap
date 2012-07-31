@@ -39,7 +39,6 @@ TreeMultiItemWindow::TreeMultiItemWindow(TreeMultiItemNode *parent, const wxStri
 {
     _name = name;
 
-	// TODO: Enter your constructor code here
 }
 
 TreeMultiItemWindow::~TreeMultiItemWindow()

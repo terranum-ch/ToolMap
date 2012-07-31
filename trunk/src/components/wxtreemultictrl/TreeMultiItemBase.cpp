@@ -46,12 +46,10 @@ TreeMultiItemBase::TreeMultiItemBase(TreeMultiItemNode *parent)
     , _parent(parent)
     , m_Selected(false)
 {
-    // TODO: Enter your constructor code here
 }
 
 TreeMultiItemBase::~TreeMultiItemBase()
 {
-    // TODO: Enter your destructor code here
 }
 
 bool TreeMultiItemBase::IsVisible()

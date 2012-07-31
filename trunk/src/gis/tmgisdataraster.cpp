@@ -65,8 +65,9 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 	delete [] buffer;
 	if (m_DataSet == NULL)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
+        }
 		return FALSE;
 	}
 	
@@ -399,9 +400,10 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
     int nRasterYSize = imgfilter.GetHeight();	//m_DataSet->GetRasterYSize();
     if ( ! (nRasterXSize > 0 && nRasterYSize > 0 ))
     {
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogMessage(_("The dimensions (%ix%i) are invalid"), 
 						 nRasterXSize, nRasterYSize);
+        }
         return CE_Failure;
     }
 	
@@ -412,8 +414,9 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
     *imgbuf = (unsigned char*)CPLMalloc(*imglen);
     if ( *imgbuf == NULL)
     {
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogMessage(_("The system does not have enough memory to project"));
+        }
         return CE_Failure;
     }
 	
@@ -451,8 +454,9 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
                                      GDT_Byte, 3, 0);
                 if (ret == CE_Failure)
                 {
-					if (IsLoggingEnabled())
+					if (IsLoggingEnabled()){
 						wxLogError(_T( "An unknown error occured while reading band %i"),i);
+                    }
                     break;
                 }
             }
@@ -482,8 +486,9 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 				
                 if (pal == NULL)
                 {
-					if (IsLoggingEnabled())
-						wxLogError(_T( "Couldn't find a palette for palette-based image") );                  
+					if (IsLoggingEnabled()){
+						wxLogError(_T( "Couldn't find a palette for palette-based image") );
+                    }
 					ret = CE_Failure;
                 }
                 else
@@ -503,8 +508,9 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 					
                     if (ret == CE_Failure)
                     {
-						if (IsLoggingEnabled())
+						if (IsLoggingEnabled()){
 							wxLogError(_T("An unknown error occured while reading band 1"));
+                        }
                         break;
                     }
 					
@@ -567,20 +573,20 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 		        break;
 				
             default:
-				if (IsLoggingEnabled())
+				if (IsLoggingEnabled()){
 					wxLogError(_T("Unsupported color interpretation '%s'"),
 							   GDALGetColorInterpretationName(band->GetColorInterpretation()));
-				
+                }
                 ret = CE_Failure;
                 break;
         }
     }
     else
     {
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Unsupported number of raster banm_DataSet (%i) in image"),
 				   rasterCount);
-		
+        }
         ret = CE_Failure;
     }
 	
@@ -799,9 +805,9 @@ void *tmGISDataRaster::ReadImageData ( GDALRasterBand *gdalBand, const wxRect & 
 									   imgSize.GetWidth(),
 									   imgSize.GetHeight(),
 									   type, 0, 0 );
-	if (myErr != CE_None)
+	if (myErr != CE_None){
 		wxLogError(_T("Error Reading image"));
-		
+    }
 	return data;
 }
 
@@ -848,8 +854,9 @@ double tmGISDataRaster::ReadGDALValueToDouble ( void *data, GDALDataType type, i
 			return (double) ((double *)data)[index];
 			break;
 		default:
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("GDAL data type is not supported"));
+            }
 	}
 	return 0.0;
 }
