@@ -711,7 +711,8 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 void tmTOCCtrl::OnMouseItemDoubleClick (wxTreeEvent & event)
 {
 	int flags = 0;
-	wxTreeItemId clickedid = HitTest(event.GetPoint(), flags);
+	//wxTreeItemId clickedid = HitTest(event.GetPoint(), flags);
+    HitTest(event.GetPoint(), flags);
 	if (flags & wxTREE_HITTEST_ONITEMICON){
 		event.Skip();
 		return;

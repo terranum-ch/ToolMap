@@ -226,8 +226,9 @@ bool DataBase::DataBaseDelete()
 		return false;
 
 	long ldeltables = wxNOT_FOUND;
-	if (DataBaseGetNextResult(ldeltables)==true)
+	if (DataBaseGetNextResult(ldeltables)==true){
 		wxLogDebug(_T("%ld tables deleted"), ldeltables);
+    }
 
 	DataBaseClearResults();
 	return true;
@@ -259,8 +260,9 @@ wxString DataBase::DataBaseGetSize (int precision, const wxString & failmsg)
 
 	wxArrayString mySkipedFiles;
 	wxULongLong myDBDirSize = wxDir::GetTotalSize(myDBFileName.GetFullPath(), &mySkipedFiles);
-	if (mySkipedFiles.GetCount() > 0)
+	if (mySkipedFiles.GetCount() > 0){
 		wxLogMessage(_T("%d files skipped, size may not be 100% accurate"), mySkipedFiles.GetCount());
+    }
 
 
 	wxString myDBStringSize = wxFileName::GetHumanReadableSize(myDBDirSize, failmsg);

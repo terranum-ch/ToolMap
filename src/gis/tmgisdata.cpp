@@ -177,8 +177,9 @@ tmGISData * tmGISData::CreateGISBasedOnExt (const wxString & extension)
 		return myDataObj;
 	
 	// if all failed then return null.
-	if (IsLoggingEnabled())
+	if (IsLoggingEnabled()){
 		wxLogDebug(_T("No format handler found for extension : %s"), extension.c_str());
+    }
 	return NULL;
 	
 }
@@ -276,9 +277,10 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 			break;
 			
 		default:
-			if (IsLoggingEnabled())
+			if (IsLoggingEnabled()){
 				wxLogDebug(_T("%s file format not supported yet \n "),
 						   layerProp->GetNameDisplay().c_str());
+            }
 			return NULL;
 			break;
 	}
@@ -286,8 +288,9 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 	// here load data
 	if (!m_Data)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_("Error loading : %s"), myErrMsg.c_str());
+        }
 		return NULL;
 	}
 	

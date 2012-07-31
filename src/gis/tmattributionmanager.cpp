@@ -565,8 +565,9 @@ tmAttributionData * tmAttributionManager::CreateAttributionData (int type)
 			break;
 	}
 	
-	if (myAttrib == NULL)
+	if (myAttrib == NULL){
 		wxLogDebug(_T("Error creating attribution object"));
+    }
 	
 	return myAttrib;
 }
@@ -784,8 +785,9 @@ bool tmAttributionManager::AAttributionButtonShow ()
 	wxArrayString myValues;
 	bool bGetAAttrib = myAttribObj->GetAttributesAdvanced(m_SelData->GetSelectedUnique(),
 														  &myLayersInfoArray, myValues);
-	if (bGetAAttrib == false)
+	if (bGetAAttrib == false){
 		wxLogDebug(_T("Problem getting advanced attribution values"));
+    }
 	
 	
 	

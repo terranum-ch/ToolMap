@@ -56,8 +56,9 @@ bool tmGISDataVectorMYSQL:: CheckGeometryFields(const wxString & tablename)
 	
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error checking geometry fields : %s"), sSentence.c_str());
+        }
 		return false;
 	}
 	long myRows = 0;
@@ -89,8 +90,9 @@ bool tmGISDataVectorMYSQL::Open (const wxString & filename, bool bReadWrite)
 	wxASSERT(m_DB);
 	if (!m_DB)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Pointer to database invalid, open database first"));
+        }
 		return FALSE;
 	}
 	
@@ -229,8 +231,9 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 	// check that a table is specified.
 	if (table.IsEmpty())
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("No database table specified"));
+        }
 		return false;
 	}
 	
@@ -282,8 +285,9 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Database should have results..."));
+        }
 		nbvertex = 0;
 		return NULL;
 	}
@@ -301,8 +305,9 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)
 	nbvertex = pline->getNumPoints();
 	if (nbvertex <= 1)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Only one vertex or less in this line ???"));
+        }
 		OGRGeometryFactory::destroyGeometry	(pline);
 		return NULL;
 	}
@@ -328,8 +333,9 @@ OGRLineString * tmGISDataVectorMYSQL::GetNextDataLine (long & oid)
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Database should have results..."));
+        }
 		return NULL;
 	}
 	
@@ -355,8 +361,9 @@ OGRPoint * tmGISDataVectorMYSQL::GetOGRNextDataPoint (long & oid)
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Database should have results..."));
+        }
 		return NULL;
 	}
 	
@@ -384,8 +391,9 @@ OGRPoint * tmGISDataVectorMYSQL::GetNextDataPointWithAttrib (long & oid,
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Database should have results..."));
+        }
 		return NULL;
 	}
 	
@@ -419,8 +427,9 @@ wxRealPoint * tmGISDataVectorMYSQL::GetNextDataPoint (long & oid)
 	// security check
 	if(m_DB->DataBaseHasResults()==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Database should have results..."));
+        }
 		return NULL;
 	}
 	
@@ -1210,8 +1219,9 @@ OGRGeometryCollection * tmGISDataVectorMYSQL::
 	// run query
 	if (m_DB->DataBaseQuery(sSentence)==false)
 	{
-		if (IsLoggingEnabled())
+		if (IsLoggingEnabled()){
 			wxLogError(_T("Error getting geometry for multiple oid"));
+        }
 		return NULL;
 	}
 	

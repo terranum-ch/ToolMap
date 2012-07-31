@@ -130,7 +130,6 @@ public:
         myVal->m_ValueCode = _T("3b");
         myVal->m_ValueName = _T("inactiff");
         
-        // TODO: remove item 0
         myPrjMem->RemoveCodedValue(0);
         
         // Add new item

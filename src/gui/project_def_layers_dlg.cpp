@@ -609,7 +609,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 		// check that the numeric value is not null (-9999)
 		if (m_CodedValObj->m_ValueCode != NULL_LONG_STRING_VALUE)
 		{
-			m_DlgEO_Code->SetValue(wxString::Format(_T("%ld"), m_CodedValObj->m_ValueCode));
+			m_DlgEO_Code->SetValue(m_CodedValObj->m_ValueCode);
 		}
 		m_DlgEO_Value->SetValue(m_CodedValObj->m_ValueName);
 		

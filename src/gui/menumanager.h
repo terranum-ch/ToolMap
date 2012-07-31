@@ -1,9 +1,9 @@
 /***************************************************************************
-								menumanager.h
-                    Deals with menu activities (enable / disable)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ menumanager.h
+ Deals with menu activities (enable / disable)
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -39,16 +39,10 @@
 
 #include "../core/toolmap.h"
 #include <wx/docview.h>			// for recent documents
-#include <wx/fileconf.h>		// for using file config even on windows 
+#include <wx/fileconf.h>		// for using file config even on windows
 
-
-// TODO: Not needed anymore, keep only the recent files functions !!!
 /***************************************************************************//**
- @brief Deals with menu activation
- @details This class is the main point for enabling / disabling menu based on
- events. Basic workflow is use SetStatus() function for passing one of the
- MENUSTATUS item and then in the main idle function call UpdateMenus() for
- enabling and disabling menu
+ @brief Deals with Recent files
  @author Lucien Schreiber (c) CREALP 2007
  @date 12 March 2008
 *******************************************************************************/
@@ -56,8 +50,6 @@ class MenuManager : public wxObject
 {
 private:
     wxMenuBar * m_MenuBar;
-    
-    // members for recent files
     wxFileHistory * m_pFilesHistory;
     DECLARE_CLASS(MenuManager);
     

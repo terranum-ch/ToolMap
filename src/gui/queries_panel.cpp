@@ -503,8 +503,9 @@ void QueriesList::BeforeEditing ()
 	int myQTarget = 0;
 	
 	int iIndex = mySelected.Item(0);
-	if (!m_pDB->GetQueriesById(GetItemData(iIndex), myQTarget, myName, myQuery))
+	if (!m_pDB->GetQueriesById(GetItemData(iIndex), myQTarget, myName, myQuery)){
 		wxLogDebug(_T("Error getting the query"));
+    }
 	
 	QueriesListDLG * myQueriesDlg = new QueriesListDLG (this);
 	myQueriesDlg->SetQueriesName(myName);
@@ -539,8 +540,9 @@ void QueriesList::AfterEditing (bool bRealyEdited)
 		// update the query name
 		SetItemText(mySelected.Item(0),0, myName);
 		
-		if(!m_pDB->EditQueries(myQTarget, myName, myQuery, myQid))
+		if(!m_pDB->EditQueries(myQTarget, myName, myQuery, myQid)){
 			wxLogDebug(_T("Error modifying the query"));
+        }
 		
 	}
 	

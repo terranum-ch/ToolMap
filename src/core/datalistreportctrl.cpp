@@ -52,7 +52,7 @@ int DataListReportCtrl::_Compare( DATALIST_COLTYPE coltype, const wxString & tex
                 
             case DATALIST_COLTYPE_TIME:
             {
-                wxDateTime dt = wxDateTime::Now();
+                //wxDateTime dt = wxDateTime::Now();
                 wxDateTime myTime1;
                 wxDateTime myTime2;
                 wxString::const_iterator end;
@@ -182,7 +182,7 @@ int DataListReportCtrl::_Compare( DATALIST_COLTYPE coltype, const wxString & tex
                 
             case DATALIST_COLTYPE_TIME:
             {
-                wxDateTime dt = wxDateTime::Now();
+                //wxDateTime dt = wxDateTime::Now();
                 wxDateTime myTime1;
                 wxDateTime myTime2;
                 wxString::const_iterator end;
