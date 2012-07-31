@@ -103,7 +103,7 @@ class DataBaseTM : public DataBase
 		bool FillLayerTableTypeData ();
 		bool FillDefaultScaleData ();
 		bool FillShortCutTable ();
-        bool _CreateLangDefData();
+        
 		//bool TableEmpty (const wxString & tablename);
 		bool CreateEmptyTMDatabase();
         //bool _AddEnumField(ProjectDefMemoryFields * field, int layerindex);
@@ -111,6 +111,9 @@ class DataBaseTM : public DataBase
 	public:
 		DataBaseTM();
 		~DataBaseTM();
+        
+        // utility function
+        bool CreateLangDefData();        
 		
 		// database operations
 		bool TableExist (const wxString & tablename);										//[TESTED]

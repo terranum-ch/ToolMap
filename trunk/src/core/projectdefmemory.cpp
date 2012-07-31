@@ -213,96 +213,88 @@ wxString ProjectDefMemoryFields::ExtractValuesFromString(const wxString & fieldd
  @author Lucien Schreiber (c) CREALP 2007
  @date 17 April 2008
  *******************************************************************************/
-bool ProjectDefMemoryFields::SetValues(const wxArrayString & fielddef)
-{
+bool ProjectDefMemoryFields::SetValues(const wxString & fieldname, const wxString & fielddef, const wxString & fieldcomment){
 	wxString myFieldType = _T("");
 	wxString myValues = _T("");
 	wxString myTempConvert = _T("");
 	wxArrayString myCodedValResults;
 	int iCountCodedVal = 0;
 	
-	if(fielddef.GetCount() != 3)
-	{
-		// assign a field id greather than 0
-		m_FieldID = 1;
-		
-		// get the field name
-		m_Fieldname = fielddef.Item(1);
-		m_FieldOldName = fielddef.Item(1);
-		
-		// get the field type
-		myFieldType = fielddef.Item(2).BeforeFirst('(');
-		if (!myFieldType.IsEmpty())
-		{
-			// ENUMERATION //
-			if(myFieldType == _T("enum"))
-			{
-				m_FieldType = TM_FIELD_ENUMERATION;
-				
-				// compute the enumerations values
-				myTempConvert = ExtractValuesFromString(fielddef.Item(2));
-				iCountCodedVal = ProjectDefMemoryFieldsCodedVal::
-					ExtractCodedValuesFromString(myTempConvert, myCodedValResults);
-				
-				for (int i = 0; i < iCountCodedVal ; i++)
-				{
-					ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
-					myVal->m_ValueCode = "BUG";
-					myVal->m_ValueName = myCodedValResults.Item(i);
-					m_pCodedValueArray.Add(myVal);
-				}
-			}
-			
-			
-			// INTEGER //
-			else if (myFieldType == _T("int"))
-			{
-				m_FieldType = TM_FIELD_INTEGER;
-				// compute nothing... :-) we know
-				// that integer is 10 decimals 
-				// storing value up to 2147483648
-			}
-			
-			
-			// FLOAT //
-			else if (myFieldType == _T("decimal"))
-			{
-				m_FieldType = TM_FIELD_FLOAT;
-				// compute precision and scale
-				myTempConvert = ExtractValuesFromString(fielddef.Item(2));
-				m_FieldPrecision	= wxAtoi(myTempConvert.BeforeFirst(','));
-				m_FieldScale		= wxAtoi(myTempConvert.AfterFirst(','));
-			}
-			
-			
-			// DATE //
-			else if (myFieldType == _T("date"))
-			{
-				m_FieldType = TM_FIELD_DATE;
-			}
-			
-			
-			// TEXT //
-			else if (myFieldType == _T("varchar"))
-			{
-				m_FieldType = TM_FIELD_TEXT;
-				// compute size (precision)
-				m_FieldPrecision = wxAtoi(ExtractValuesFromString(fielddef.Item(2)));
-			}
-
-		}
-		
-		// get orientation (item number 8)
-		if (fielddef.Item(3) == ProjectDefMemoryFields::GetOrientationName())
-			m_FieldOrientation = TRUE;
-		// otherwise, field orientation is false :-)
-			
-			
-		return TRUE;
-	}
-	
-	wxLogError(_T("Text passed for field conversion seems to be false..."));
-	return FALSE;
+    // assign a field id greather than 0
+    m_FieldID = 1;
+    
+    // get the field name
+    m_Fieldname = fieldname;
+    m_FieldOldName = fieldname;
+    
+    // get the field type
+    myFieldType = fielddef.BeforeFirst('(');
+    if (!myFieldType.IsEmpty())
+    {
+        // ENUMERATION //
+        if(myFieldType == _T("enum")){
+            m_FieldType = TM_FIELD_ENUMERATION;
+            
+            // compute the enumerations values
+            myTempConvert = ExtractValuesFromString(fielddef);
+            iCountCodedVal = ProjectDefMemoryFieldsCodedVal::
+            ExtractCodedValuesFromString(myTempConvert, myCodedValResults);
+            
+            for (int i = 0; i < iCountCodedVal ; i++){
+                ProjectDefMemoryFieldsCodedVal * myVal = new ProjectDefMemoryFieldsCodedVal();
+                myVal->m_ValueCode = wxString::Format(_T("%d"), i+1);
+                myVal->m_ValueName = myCodedValResults.Item(i);
+                m_pCodedValueArray.Add(myVal);
+            }
+        }
+        
+        
+        // INTEGER //
+        else if (myFieldType == _T("int"))
+        {
+            m_FieldType = TM_FIELD_INTEGER;
+            // compute nothing... :-) we know
+            // that integer is 10 decimals
+            // storing value up to 2147483648
+        }
+        
+        
+        // FLOAT //
+        else if (myFieldType == _T("decimal"))
+        {
+            m_FieldType = TM_FIELD_FLOAT;
+            // compute precision and scale
+            myTempConvert = ExtractValuesFromString(fielddef);
+            m_FieldPrecision	= wxAtoi(myTempConvert.BeforeFirst(','));
+            m_FieldScale		= wxAtoi(myTempConvert.AfterFirst(','));
+        }
+        
+        
+        // DATE //
+        else if (myFieldType == _T("date"))
+        {
+            m_FieldType = TM_FIELD_DATE;
+        }
+        
+        
+        // TEXT //
+        else if (myFieldType == _T("varchar"))
+        {
+            m_FieldType = TM_FIELD_TEXT;
+            // compute size (precision)
+            m_FieldPrecision = wxAtoi(ExtractValuesFromString(fielddef));
+        }
+        
+    }
+    
+    // get orientation (item number 8)
+    if (fieldcomment == ProjectDefMemoryFields::GetOrientationName())
+        m_FieldOrientation = TRUE;
+    // otherwise, field orientation is false :-)
+    
+    
+    return TRUE;
+    
 }
 
 
