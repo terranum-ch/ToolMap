@@ -266,7 +266,7 @@ class ProjectDefMemoryFields
 		ProjectDefMemoryFields();
 		~ProjectDefMemoryFields();
 		
-		bool SetValues(const wxArrayString & fielddef);
+		bool SetValues(const wxString & fieldname, const wxString & fielddef, const wxString & fieldcomment = _T(""));
 		bool GetStringTypeFromValues (wxString & sResult);
 		static wxString GetOrientationName(){return _T("ORIENTATION");}
 		

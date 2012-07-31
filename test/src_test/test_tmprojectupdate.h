@@ -129,44 +129,13 @@ public:
 	TEST_tmProjectUpdater (bool bTest){
 		// copy project 
 		CopyDir(g_TestPathPRJ + g_TestPrj_PrjUpdate, g_TestPathPRJ + _T("tmp_testprjupdate"));
-		
-		// open original and copy
-		//m_OriginalDB = new DataBaseTM();
 		m_CopyDB = new DataBaseTM();
-		//TS_ASSERT(m_OriginalDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_PrjUpdate));
 		TS_ASSERT(m_CopyDB->OpenTMDatabase(g_TestPathPRJ +  _T("tmp_testprjupdate")));
-		
-
-		
-		/*m_pDB = new DataBaseTM();
-		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ambri));
-		// load project Data
-		m_PrjDef = m_pDB->GetProjectDataFromDB() ;
-		TS_ASSERT(m_PrjDef != NULL);
-		TS_ASSERT_DIFFERS(m_PrjDef->GetCountLayers(), 0);
-		int iExportType = 0;
-		wxString myTempString = wxEmptyString;
-		TS_ASSERT_DIFFERS(m_pDB->GetProjectExportData(iExportType, myTempString), PATH_DATABASE_ERROR);
-		m_RealExportPath = new wxString(myTempString);
-		
-		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, g_TestPathEXPORT));*/
-		
 	}
+
 	
 	virtual ~TEST_tmProjectUpdater(){
-		
-		// reset path to old value
-		/*TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
-		
-		delete m_pDB;
-		if (m_PrjDef != NULL) {
-			delete m_PrjDef;
-		}
-		delete m_RealExportPath;*/
-		
-		//wxDELETE(m_OriginalDB);
-		wxDELETE(m_CopyDB);
-		
+		wxDELETE(m_CopyDB);		
 		wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
 		myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
 	}

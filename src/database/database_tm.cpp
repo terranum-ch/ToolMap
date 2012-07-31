@@ -74,7 +74,7 @@ bool DataBaseTM::CreateTMDatabase (PrjDefMemManage * pPrjDefinition)
 		return false;
     }
     
-    if (_CreateLangDefData() == false) {
+    if (CreateLangDefData() == false) {
         return false;
     }
 	
@@ -474,7 +474,7 @@ bool DataBaseTM::FillShortCutTable ()
 
 
 
-bool DataBaseTM::_CreateLangDefData(){
+bool DataBaseTM::CreateLangDefData(){
     wxString myTxtTemplate = _T("INSERT INTO %s VALUES (%d, \"%s\"); ");
     wxString myLangues [] = {wxT("Undefined"), wxT("Undefined"), 
         wxT("Undefined"), wxT("Undefined"), wxT("Undefined")};
@@ -1396,7 +1396,7 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 		// add field and set values to this field
 		iNbFields ++;
 		myField = myPrj->AddField();
-		myField->SetValues(myResults);
+		myField->SetValues(myResults.Item(1), myResults.Item(2));
 	}
 	DataBaseClearResults();
     
@@ -1481,7 +1481,11 @@ bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayer
 	while (DataBaseGetNextResult(myResults))
 	{
 		myField = new ProjectDefMemoryFields();
-		myField->SetValues(myResults);
+        wxString myFieldName = myResults.Item(1);
+        wxString myFieldDesc = myResults.Item(2);
+        wxString myFieldComment = myResults.Item(3);
+        
+		myField->SetValues(myFieldName, myFieldDesc, myFieldComment);
 		fieldarray.Add(myField);
 	}
 	DataBaseClearResults();

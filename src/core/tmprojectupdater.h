@@ -41,6 +41,7 @@ private:
 	
 	bool _SetVersion(int versionnumber);
     bool _220to221();
+    bool _221to222();
 	
 public:
     tmProjectUpdater(DataBaseTM * database);
