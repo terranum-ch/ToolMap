@@ -205,14 +205,74 @@ bool tmProjectUpdater::_221to222(){
     // process every enumeration fields
     wxASSERT(myLayerIndex.GetCount() == myFields.GetCount());
     for (unsigned int f = 0; f< myFields.GetCount(); f++) {
-        if (myFields.Item(f)->m_FieldType != TM_FIELD_ENUMERATION) {
+        ProjectDefMemoryFields * myF = myFields.Item(f);
+        if (myF->m_FieldType != TM_FIELD_ENUMERATION) {
             continue;
         }
         
-        // add field
+        // add field to dmn_layer_attribut
+        myQuery = _T("INSERT INTO %s (LAYER_INDEX, ATTRIBUT_NAME) VALUES (%ld, \"%s\");");
+        if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_AT_LIST, myLayerIndex.Item(f), myF->m_Fieldname)) == false) {
+            wxLogError(_("Error converting field: '%s', project will be incomplete"), myF->m_Fieldname);
+            continue;
+        }
+        myF->m_FieldID = m_pDB->DataBaseGetLastInsertedID();
+        if (myF->m_FieldID == wxNOT_FOUND) {
+            wxLogError(_("Unable to get ID for newly inserted field '%s', failed to convert project"), myF->m_Fieldname);
+            continue;
+        }
         
+        // add enumeration into dmn_catalog
+        for (unsigned int e = 0; e < myF->m_pCodedValueArray.GetCount(); e++) {
+            myQuery = _T("INSERT INTO %s (CODE, DESCRIPTION_0) VALUES (\"%s\",\"%s\")");
+            ProjectDefMemoryFieldsCodedVal * myCVal = myF->m_pCodedValueArray.Item(e);
+            wxASSERT(myCVal);
+            if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_AT_CATALOG, myCVal->m_ValueCode, myCVal->m_ValueName))==false) {
+                wxLogError(_("Adding ennumeration: '%s' from layer '%s' failed"), myCVal->m_ValueName, myF->m_Fieldname);
+                continue;
+            }
+            myCVal->m_ValueID = m_pDB->DataBaseGetLastInsertedID();
+            
+            if (myCVal->m_ValueID == wxNOT_FOUND) {
+                wxLogError(_("Unable to get ID for newly inserted enumeration '%s' from layer '%s'"), myCVal->m_ValueName, myF->m_Fieldname);
+                continue;
+            }
+            // add enumeration into dmn_attribut_value
+            myQuery = _T("INSERT INTO %s (ATTRIBUT_ID, CATALOG_ID) VALUES (%d,%ld)");
+            if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_AT_MIX, myF->m_FieldID, myCVal->m_ValueID))==false) {
+                wxLogError(_("Inserting enumeration '%s' into mix table failed!"), myCVal->m_ValueName);
+                continue;
+            }
+        }
+    }
+    
+    
+    // STEP 3. change existing attribution
+    for (unsigned int f = 0; f< myFields.GetCount(); f++) {
+        ProjectDefMemoryFields * myF = myFields.Item(f);
+        if (myF->m_FieldType != TM_FIELD_ENUMERATION) {
+            continue;
+        }
+        
+        // convert columns from enumeration to string
+        myQuery = _T("ALTER TABLE %s%ld MODIFY %s VARCHAR(500) NULL");
+        if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_LAYER_AT, myLayerIndex.Item(f), myF->m_Fieldname))==false) {
+            wxLogError(_("Unable to convert '%s' field"), myF->m_Fieldname);
+            continue;
+        }
+        
+        
+        // change all ennumeration into id (stored as string)
+        // UPDATE layer_at1 SET Type="3" WHERE Type="dans quaternaire"
+        for (unsigned int e = 0; e < myF->m_pCodedValueArray.GetCount(); e++) {
+            
+        }
+        
+        // convert columns from string to integer
+        // ALTER TABLE layer_at1 MODIFY Type INT NULL
         
     }
+
     
     
     
