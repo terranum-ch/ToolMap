@@ -127,7 +127,15 @@ public:
 	DataBaseTM * m_CopyDB;
 
 	TEST_tmProjectUpdater (bool bTest){
-		// copy project 
+		// remove if exists
+        wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
+        if (wxDir::Exists(myDir.GetFullPath())==true) {
+            wxLogMessage(_T("Removing tempory project: '%s'"), myDir.GetFullPath());
+            myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
+        }
+        TS_ASSERT(wxDir::Exists(myDir.GetFullPath()) == false);
+        
+        // copy project
 		CopyDir(g_TestPathPRJ + g_TestPrj_PrjUpdate, g_TestPathPRJ + _T("tmp_testprjupdate"));
 		m_CopyDB = new DataBaseTM();
 		TS_ASSERT(m_CopyDB->OpenTMDatabase(g_TestPathPRJ +  _T("tmp_testprjupdate")));
@@ -135,9 +143,10 @@ public:
 
 	
 	virtual ~TEST_tmProjectUpdater(){
-		wxDELETE(m_CopyDB);		
-		wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
-		myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
+		wxDELETE(m_CopyDB);
+		//wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
+		// TODO: uncomment bellow to remove directory
+        //myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
 	}
 	
 	static TEST_tmProjectUpdater *createSuite() { return new TEST_tmProjectUpdater(true);}
