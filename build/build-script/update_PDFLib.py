@@ -103,7 +103,7 @@ def MacPro():
 	"""docstring for MacPro"""
 	print ("Building for MacPro")
 	libpath = "/Users/lucien/Documents/PROGRAMMATION/64/"
-	libname = "wxpdfdoc-0.9.2.1"
+	libname = "wxpdfdoc-0.9.3"
 	libprefix = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBPDF"
 	libwx = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN"
 	return libpath, libname, libprefix, libwx	
@@ -263,10 +263,10 @@ if __name__ == '__main__':
 	myzipfile.extractall(ns.libpath)
 	
 	# PERFORMING PATCH
-	if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
-		patchFileMac(ns.libpath+ns.libname)
-	elif(plateforms[int (myValue)] == 'linux home'):
-		patchFileMac(ns.libpath+ns.libname)
+	#if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
+	#	patchFileMac(ns.libpath+ns.libname)
+	#elif(plateforms[int (myValue)] == 'linux home'):
+	#	patchFileMac(ns.libpath+ns.libname)
 
 	
 	
