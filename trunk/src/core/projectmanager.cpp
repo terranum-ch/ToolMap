@@ -441,6 +441,11 @@ int ProjectManager::OpenProject(const wxString & path)
 	wxString myTitleBarText = g_ProgName + _T(" - ") + GetProjectName();
 	m_Parent->SetTitle(myTitleBarText);
 	
+    // optimize project
+    if(m_DB->Optimize()==false){
+        wxLogWarning(_("Project optimization failed!"));
+    }
+    
 	return (int) mystatus;
 }
 
