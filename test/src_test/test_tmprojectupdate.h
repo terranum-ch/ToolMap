@@ -144,9 +144,6 @@ public:
 	
 	virtual ~TEST_tmProjectUpdater(){
 		wxDELETE(m_CopyDB);
-		//wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
-		// TODO: uncomment bellow to remove directory
-        //myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
 	}
 	
 	static TEST_tmProjectUpdater *createSuite() { return new TEST_tmProjectUpdater(true);}
@@ -178,6 +175,11 @@ public:
 		TS_ASSERT_EQUALS(myPrjUpd.DoUpdate(), tmPRJ_UPD_ERROR_OK);
 		TS_ASSERT(myPrjUpd.IsCorrectVersion() == true);
 	}
+    
+    void testProjectOptimize(){
+        TS_ASSERT(m_CopyDB->Optimize());
+    }
+    
 };
 
 

@@ -119,7 +119,7 @@ class DataBaseTM : public DataBase
 		bool TableExist (const wxString & tablename);										//[TESTED]
 		int OpenTMDatabase(const wxString & pathname);										//[TESTED]
 		bool CreateTMDatabase (PrjDefMemManage * pPrjDefinition);							//[TESTED]
-		
+		bool Optimize();
 		
 		// Database project operations
 		bool IsProjectDataDefined ();

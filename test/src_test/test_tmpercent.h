@@ -89,8 +89,9 @@ public:
 		for (int i=1; i<=iTotal;i++)
 		{
 			tper.SetValue(i);
-			if (tper.IsNewStep())
+			if (tper.IsNewStep()){
 				wxLogDebug(_T("Percent : %d"), tper.GetPercent());
+            }
 		}
 	}
 	
@@ -104,8 +105,9 @@ public:
 		for (int i=1; i<=iTotal;i++)
 		{
 			tper.SetValue(i);
-			if (tper.IsNewStep())
+			if (tper.IsNewStep()){
 				wxLogDebug(_T("Percent : %d"), tper.GetPercent());
+            }
 		}
 	}
 	
