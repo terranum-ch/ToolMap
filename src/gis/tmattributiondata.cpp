@@ -790,9 +790,8 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
  @date 25 March 2009
  *******************************************************************************/
 bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
-											   wxArrayString & values,
-											   long selected)
-{
+                                                wxArrayString & values,
+                                                long selected){
 	//m_pDB->DataBaseDestroyResults();
 	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"),
 									   layer->m_LayerID, selected);
@@ -800,23 +799,40 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 		return false;
 	
 	// no results, fill array with empty strings
-	if (m_pDB->DataBaseHasResults()==false)
-	{
+	if (m_pDB->DataBaseHasResults()==false){
 		for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++)
 		{
 			values.Add(wxEmptyString);
 		}
 	}
-	else // if results, parse them
-	{
-		wxArrayString myResults;
-		bool bResult = m_pDB->DataBaseGetNextResult(myResults);
-		wxASSERT (bResult);
-		m_pDB->DataBaseClearResults();
-		
-		for (unsigned int j = 1 ; j< myResults.GetCount();j++)
-			values.Add(myResults.Item(j));
-	
+	else {
+        // if results, parse them
+        // we get only ID, needs now to convert them into code and description
+		wxArrayLong myCatalogIDs;
+        bool bResult = m_pDB->DataBaseGetNextResult(myCatalogIDs);
+        wxASSERT(bResult);
+        m_pDB->DataBaseClearResults();
+        wxString myQuery = wxString::Format(_T("SELECT CODE, DESCRIPTION_0 FROM %s WHERE CATALOG_ID IN ("), TABLE_NAME_AT_CATALOG);
+        for (unsigned int i = 1; i< myCatalogIDs.GetCount(); i++) {
+            myQuery.Append(wxString::Format(_T("%ld,"),myCatalogIDs.Item(i)));
+        }
+        myQuery.RemoveLast();
+        myQuery.Append(_T(")"));
+        
+        values.Clear();
+        if (m_pDB->DataBaseQuery(myQuery)==false) {
+            for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++){
+                values.Add(wxEmptyString);
+            }
+            return false;
+        }
+        
+        wxArrayString myResults;
+        while (m_pDB->DataBaseGetNextResult(myResults)==true) {
+            wxASSERT(myResults.GetCount() == 2);
+            values.Add(wxString::Format(_T("%s | %s"), myResults.Item(0), myResults.Item(1)));
+        }
+        m_pDB->DataBaseClearResults();
 	}
 	return true;
 }
