@@ -214,12 +214,14 @@ void tmOpenError_DLG::OnConvertBackup( wxCommandEvent& event ){
 
 
 void tmOpenError_DLG::OnConvert( wxCommandEvent& event ){
-	tmProjectUpdater myPrjUpd (m_pDB);
+	wxBeginBusyCursor();
+    tmProjectUpdater myPrjUpd (m_pDB);
 	if (myPrjUpd.DoUpdate() != tmPRJ_UPD_ERROR_OK) {
 		wxLogError(_("Converting project '%s' failed!"), m_pDB->DataBaseGetName());
-		return;
+		wxEndBusyCursor();
+        return;
 	}
-	
+	wxEndBusyCursor();
 	// converting done! quit the dialog
 	EndModal(wxID_OK);
 }
