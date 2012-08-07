@@ -265,7 +265,7 @@ wxString DataBase::DataBaseGetSize (int precision, const wxString & failmsg)
     }
 
 
-	wxString myDBStringSize = wxFileName::GetHumanReadableSize(myDBDirSize, failmsg);
+	wxString myDBStringSize = wxFileName::GetHumanReadableSize(myDBDirSize, failmsg, precision);
 	return 	myDBStringSize;
 }
 

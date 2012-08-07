@@ -91,6 +91,40 @@ bool DataBaseTM::CreateTMDatabase (PrjDefMemManage * pPrjDefinition)
 
 
 
+bool DataBaseTM::Optimize(){
+    wxString myBeforeSize = DataBaseGetSize();
+    wxStopWatch sw;
+    if (DataBaseQuery(_T("SHOW TABLES"))==false) {
+        return false;
+    }
+    
+    DataBaseResult * myResults = new DataBaseResult();
+    if(DataBaseGetResults(myResults)==false){
+        return false;
+    }
+    
+    int iNumResults = myResults->GetRowCount();
+    wxString myQuery = wxEmptyString;
+    wxString myQueryTemplate = _T("OPTIMIZE TABLE %s; ");
+    for (int i = 0; i<iNumResults; i++) {
+        myResults->NextRow();
+        wxString myTableName = wxEmptyString;
+        if (myResults->GetValue(0, myTableName)==false) {
+            continue;
+        }
+        myQuery.Append(wxString::Format(myQueryTemplate, myTableName));
+    }
+    wxDELETE(myResults);
+
+    if (DataBaseQueryNoResults(myQuery)==false) {
+        return false;
+    }
+    wxLogMessage(_("%d Project tables optimized in %ld [ms]"), iNumResults, sw.Time());
+    wxLogMessage(_("Size changed from '%s' to '%s'"), myBeforeSize, DataBaseGetSize());
+    return true;
+}
+
+
 
 /*************************** GENERAL DATABASE FUNCTION ****************************/
 bool DataBaseTM::CreateEmptyTMDatabase()
