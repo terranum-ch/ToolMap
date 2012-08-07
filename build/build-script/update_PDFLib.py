@@ -84,7 +84,7 @@ def MacBook():
 	"""docstring for MacBook"""
 	print ("Building for MacBook")
 	libpath = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/"
-	libname = "wxpdfdoc-0.9.2.1"
+	libname = "wxpdfdoc-0.9.3"
 	libprefix = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBPDF"
 	libwx = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN"
 	return libpath, libname, libprefix, libwx

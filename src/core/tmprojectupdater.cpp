@@ -72,7 +72,6 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
 	}
     
     // 221 -> 222
-    // TODO: Implement database migration
     if (myActualDBVersion == 221) {
         if(_221to222()==false){
 			_SetVersion(221);
@@ -111,6 +110,8 @@ bool tmProjectUpdater::_220to221() {
 bool tmProjectUpdater::_221to222(){
     // STEP 1. modify database
     // add tables
+    wxStopWatch sw;
+    
     wxString myQuery =
     _T("CREATE  TABLE IF NOT EXISTS `lang_def` (")
     _T("`LANG_ID` INT NOT NULL,")
@@ -261,22 +262,24 @@ bool tmProjectUpdater::_221to222(){
             continue;
         }
         
-        
         // change all ennumeration into id (stored as string)
-        // UPDATE layer_at1 SET Type="3" WHERE Type="dans quaternaire"
         for (unsigned int e = 0; e < myF->m_pCodedValueArray.GetCount(); e++) {
-            
+            ProjectDefMemoryFieldsCodedVal * myCVal = myF->m_pCodedValueArray.Item(e);
+            wxASSERT(myCVal);
+            myQuery = _T("UPDATE %s%ld SET %s=\"%ld\" WHERE %s=\"%s\"");
+            if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery,TABLE_NAME_LAYER_AT,  myLayerIndex.Item(f), myF->m_Fieldname, myCVal->m_ValueID, myF->m_Fieldname, myCVal->m_ValueName))==false) {
+                wxLogError(_("Error setting enumeration value from '%s' to '%ld'"), myCVal->m_ValueName, myCVal->m_ValueID);
+                continue;
+            }
         }
         
         // convert columns from string to integer
-        // ALTER TABLE layer_at1 MODIFY Type INT NULL
-        
+        myQuery = _T("ALTER TABLE %s%ld MODIFY %s INT NULL COMMENT \"%s\"");
+        if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_LAYER_AT, myLayerIndex.Item(f), myF->m_Fieldname, TABLE_COMMENT_ENUMERATION))==false) {
+            wxLogError(_("Converting %s to integer failed!"), myF->m_Fieldname);
+            continue;
+        }
     }
-
-    
-    
-    
-    
     
     // clean field array
     unsigned int fCount = myFields.GetCount();
@@ -286,6 +289,7 @@ bool tmProjectUpdater::_221to222(){
 		myFields.RemoveAt(0);
 	}
 	wxASSERT(myFields.GetCount() == 0);
+    wxLogMessage(_("Database updated in %ld [ms]"), sw.Time());
     return true;
 }
 
