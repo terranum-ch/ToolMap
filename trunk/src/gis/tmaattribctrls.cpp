@@ -523,27 +523,27 @@ void tmAAttribCtrlEnum::Create (wxWindow * parent,
 	wxPanel::Create(parent,id,pos,size,style,name);
 	InitMemberValues();
 	SetPanelColour();
-	// creating label
+	
+    // copy field locally
+    m_Field = fieldinfo;
+    
+    // creating label
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer( wxHORIZONTAL );
-	m_Label = new wxStaticText( this, wxID_ANY,
-							   LABELDEFAULT,
-							   wxDefaultPosition,
-							   wxDefaultSize, 0 );
-	SetLabel(fieldinfo.m_Fieldname);
+	m_Label = new wxStaticText( this, wxID_ANY, LABELDEFAULT,wxDefaultPosition, wxDefaultSize, 0 );
+	SetLabel(m_Field.m_Fieldname);
 	m_Label->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 	bSizer24->Add( m_Label, 0, wxRIGHT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL , 5);
 
-	wxSizer * mySizer = CreateChoiceControl(fieldinfo.m_pCodedValueArray);
+	wxSizer * mySizer = CreateChoiceControl(m_Field.m_pCodedValueArray);
 	wxASSERT (mySizer);
 	bSizer24->Add( mySizer, 1, wxEXPAND, 2 );
 
 	SetSizer( bSizer24 );
 	Layout();
 	bSizer24->Fit( this );
-
-
 }
+
 
 
 wxSizer * tmAAttribCtrlEnum::CreateChoiceControl (const PrjMemFieldCodedValArray & valarray)
@@ -607,8 +607,8 @@ bool tmAAttribCtrlEnum::IsChoiceList()
 
 tmAAttribCtrlEnum::~tmAAttribCtrlEnum()
 {
-
 }
+
 
 
 void tmAAttribCtrlEnum::SetControlValue(const wxString & value)
@@ -643,7 +643,11 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 {
 	if (IsChoiceList()) // CHOICE
 	{
-		return m_ControlChoice->GetStringSelection();
+		//return m_ControlChoice->GetStringSelection();
+        int mySelection = m_ControlChoice->GetSelection();
+        wxString myValue;
+        myValue << m_Field.m_pCodedValueArray.Item(mySelection)->m_ValueID;
+        return myValue;
 	}
 	else // RADIO BUTTON
 	{
@@ -652,7 +656,8 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 		{
 			if (m_ControlRadios[i]->GetValue() == true)
 			{
-				myRetVal = m_ControlRadios[i]->GetLabelText();
+				myRetVal << m_Field.m_pCodedValueArray.Item(i)->m_ValueID;
+                //myRetVal = m_ControlRadios[i]->GetLabelText();
 				break;
 			}
 		}

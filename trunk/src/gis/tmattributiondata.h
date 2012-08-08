@@ -65,11 +65,7 @@ class tmAttributionData : public wxObject
 		void PrepareGetInfoMultipleStatement (wxString & statement, const wxString & tablename);
 		bool PrepareGetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid,
 											const wxString & tablename, int layertype);
-		int PrepareAAttribStatement (wxString & statement,
-									 ProjectDefMemoryLayers * layer,
-									 const wxArrayString & values,
-									 int startvalues,
-									 long selected);
+
 		bool _GetInfoBasic (long oid, wxArrayLong & objid,
 							wxArrayLong & objcode, wxArrayString & objname, int layertype);
 	public:
@@ -109,6 +105,7 @@ class tmAttributionData : public wxObject
 		// only for one layer
 		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
 									wxArrayString & values,
+                                    wxArrayString & codes,
 									long selected);
 		bool GetAdvancedAttribution (int layerid, long geomoid, wxArrayString & values);
 		

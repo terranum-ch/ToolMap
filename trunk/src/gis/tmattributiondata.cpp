@@ -253,18 +253,21 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
  @date 24 March 2009
  *******************************************************************************/
 bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * layers,
-												  const wxArrayString & values)
-{
+												  const wxArrayString & values){
 	wxASSERT (m_pDB);
 	
 	wxString sSentence = wxEmptyString;
-	int iStep = 0;
-	for (unsigned int i = 0; i<layers->GetCount(); i++)
-	{
+	for (unsigned int i = 0; i<layers->GetCount(); i++){
 		ProjectDefMemoryLayers * myLayer = layers->Item(i);
-		iStep = PrepareAAttribStatement(sSentence,myLayer, values, iStep, objid);
+        wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%ld,"),myLayer->m_LayerID, objid);
+        for (unsigned int v = 0; v < values.GetCount(); v++) {
+            sAdd.Append(wxString::Format(_T("\"%s\","), values.Item(v)));
+        }
+        sAdd.RemoveLast();
+        sAdd.Append(_T("); "));
+        sSentence.Append(sAdd);
 	}
-	
+    
 	if (m_pDB->DataBaseQueryNoResults(sSentence)==false){
 		return false;
 	}
@@ -329,17 +332,15 @@ bool tmAttributionData::CleanAttributesAdvanced (long objectid,
  @author Lucien Schreiber (c) CREALP 2009
  @date 25 March 2009
  *******************************************************************************/
-bool tmAttributionData::GetAttributesAdvanced (long objectid,
-											   PrjMemLayersArray * layers,
-											   wxArrayString & values)
-{
+bool tmAttributionData::GetAttributesAdvanced (long objectid, PrjMemLayersArray * layers,wxArrayString & values){
 	wxASSERT (m_pDB);
 	bool bReturn = true;
 	values.Clear();
+    wxArrayString myAACodes;
 	for (unsigned int i = 0; i< layers->GetCount(); i++)
 	{
 		ProjectDefMemoryLayers  * myLayer = layers->Item(i);
-		if (GetAdvancedAttribution(myLayer, values, objectid)==false)
+		if (GetAdvancedAttribution(myLayer, values, myAACodes, objectid)==false)
 		{
 			bReturn = false;
 			break;
@@ -703,41 +704,6 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 
 
 
-/***************************************************************************//**
- @brief Prepare advanced attribution statement
- @param statement adress of the statement to fill
- @param layer pointer to a valid ProjectDefMemoryLayer (don't destroy)
- @param values Array of string (not all values will be used)
- @param startvalues Where to start in the values array.
- @param selected The Object ID of the selected value.
- @return  the number of fields used (used for recursivity)
- @author Lucien Schreiber (c) CREALP 2009
- @date 24 March 2009
- *******************************************************************************/
-int tmAttributionData::PrepareAAttribStatement (wxString & statement,
-												ProjectDefMemoryLayers * layer,
-												const wxArrayString & values,
-												int startvalues,
-												long selected)
-{
-	wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%ld,"),
-									 layer->m_LayerID, selected);
-	
-	wxASSERT (layer->m_pLayerFieldArray.GetCount() + startvalues <= values.GetCount());
-	unsigned int iTotField = layer->m_pLayerFieldArray.GetCount();
-	for (unsigned int i = 0; i< iTotField;  i++)
-	{
-		sAdd.Append(wxString::Format(_T("\"%s\","), values.Item(i+startvalues).c_str()));
-	}
-	sAdd.RemoveLast(1);
-	sAdd.Append(_T(");"));
-	
-	statement.Append(sAdd);
-	return iTotField;
-}
-
-
-
 bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLong & objcode, 
 									   wxArrayString & objname, int layertype){
 	objid.Clear();
@@ -789,20 +755,20 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
  @author Lucien Schreiber (c) CREALP 2009
  @date 25 March 2009
  *******************************************************************************/
-bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
-                                                wxArrayString & values,
-                                                long selected){
-	//m_pDB->DataBaseDestroyResults();
-	wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"),
+bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer, wxArrayString & values, wxArrayString & codes, long selected){
+    
+    values.Clear();
+    codes.Clear();
+    wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"),
 									   layer->m_LayerID, selected);
 	if (m_pDB->DataBaseQuery(sQuery)==false)
 		return false;
 	
 	// no results, fill array with empty strings
 	if (m_pDB->DataBaseHasResults()==false){
-		for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++)
-		{
+		for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++){
 			values.Add(wxEmptyString);
+            codes.Add(wxEmptyString);
 		}
 	}
 	else {
@@ -819,10 +785,10 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
         myQuery.RemoveLast();
         myQuery.Append(_T(")"));
         
-        values.Clear();
         if (m_pDB->DataBaseQuery(myQuery)==false) {
             for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++){
                 values.Add(wxEmptyString);
+                codes.Add(wxEmptyString);
             }
             return false;
         }
@@ -830,7 +796,8 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer,
         wxArrayString myResults;
         while (m_pDB->DataBaseGetNextResult(myResults)==true) {
             wxASSERT(myResults.GetCount() == 2);
-            values.Add(wxString::Format(_T("%s | %s"), myResults.Item(0), myResults.Item(1)));
+            codes.Add(myResults.Item(0));
+            values.Add(myResults.Item(1));
         }
         m_pDB->DataBaseClearResults();
 	}
