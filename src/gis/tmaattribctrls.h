@@ -274,6 +274,7 @@ class tmAAttribCtrlEnum : public tmAAttribCtrl
 		wxChoice * m_ControlChoice;
 		wxRadioButton * m_ControlRadios[AATTRIB_ENUM_RADIO_NUMBER];
 		int m_iNumRadios;
+        ProjectDefMemoryFields m_Field;
 		
 		// private init function
 		void InitMemberValues ();

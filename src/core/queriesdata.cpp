@@ -509,9 +509,8 @@ bool QueriesData::GetFieldsValues(DataBaseTM * database,
 	
 	myAttribObj->Create(&mySelectedId, database);
 	bool bReturn = true;
-	if(myAttribObj->GetAdvancedAttribution(&myTempLayer, 
-										fieldsvalue,
-										   m_QueryObjectGeomID)==false){
+    wxArrayString myFieldsCode;
+	if(myAttribObj->GetAdvancedAttribution(&myTempLayer, fieldsvalue, myFieldsCode,m_QueryObjectGeomID)==false){
 		wxLogError(_("Error getting attribution values"));
 		bReturn = false;
 	}
