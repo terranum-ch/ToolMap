@@ -121,6 +121,8 @@ FIND_PATH(DATABASE_PROJ_SOURCE_DIR database-config.h.in
   ${PROJECT_SOURCE_DIR}/../../src/database/
   ${PROJECT_SOURCE_DIR}/../include
   ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}../../../src/database/
+  ${PROJECT_SOURCE_DIR}../../../../src/database/
 )
 
 IF (DATABASE_PROJ_SOURCE_DIR)
