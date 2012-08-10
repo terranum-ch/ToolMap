@@ -63,6 +63,7 @@ class DataBase
 		MYSQL_RES *	m_MySQLRes;
 		wxString	m_DBName;
 		wxString	m_DBPath;
+        wxString    m_ErrMsgPath;
 		
 		// functions
 		bool DBLibraryInit (const wxString & datadir);
@@ -74,7 +75,7 @@ class DataBase
 		
 	protected:
 	public:
-		DataBase();
+		DataBase(const wxString & errmsgpath = wxEmptyString);
 		~DataBase();
 		
 		// database operations

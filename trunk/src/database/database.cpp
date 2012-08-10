@@ -43,7 +43,7 @@
 
 
 
-DataBase::DataBase()
+DataBase::DataBase(const wxString & errmsgpath)
 {
 	m_IsDatabaseOpened		= false;
 	m_IsLibraryStarted		= false;
@@ -51,6 +51,7 @@ DataBase::DataBase()
 	m_MySQLRes				= NULL;
 	m_DBName				= wxEmptyString;
 	m_DBPath				= wxEmptyString;
+    m_ErrMsgPath            = errmsgpath;
 
 }
 
@@ -85,17 +86,24 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 	wxString myLogDirString = _T("--log=");
 	myLogDirString.Append(myLogDirName.GetFullPath());
 #endif
-
+    wxString mylanguagedir = wxEmptyString;
+    if (m_ErrMsgPath != wxEmptyString) {
+        mylanguagedir = _T("--language=") + m_ErrMsgPath;
+    }
+    else
+    {
+        
 #if defined(__WINDOWS__)
-	wxString mylanguagedir = "--language=./mysql";
+        mylanguagedir = "--language=./mysql";
 #elif defined(__WXMAC__)
-	wxString mylanguagedir = "--language=./ToolMap.app/Contents/mysql";
-//#elif defined(__WXGTK20__)
-	//char * mylanguagedir = "--language=./mysql";
+        mylanguagedir = "--language=./ToolMap.app/Contents/mysql";
+        //#elif defined(__WXGTK20__)
+        //char * mylanguagedir = "--language=./mysql";
 #else
-    // Linux standard with MySQL installed with package manager.
-	wxString mylanguagedir = "--skip-grant-tables";
+        // Linux standard with MySQL installed with package manager.
+        mylanguagedir = "--skip-grant-tables";
 #endif
+    }
 
 	char const *server_args[] =
 	{

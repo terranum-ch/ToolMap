@@ -8,11 +8,17 @@ PROJECT ("ToolMerge")
 #search all source files
 FILE (GLOB_RECURSE SRC_FILES "../src/*.cpp")
 FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
+SET (SRC_FILES ${SRC_FILES}
+	"../../../src/database/database.cpp"
+	"../../../src/database/databaseresult.cpp"
+	"../../../src/database/tmmergeprojects.cpp")
+SET (HEAD_FILES ${HEAD_FILES} 
+	"../../../src/database/database.h"
+	"../../../src/database/databaseresult.h"
+	"../../../src/database/tmmergeprojects.h")
+MESSAGE(${SRC_FILES})
 SOURCE_GROUP (source FILES ${SRC_FILES})
 SOURCE_GROUP (header FILES ${HEAD_FILES})
-SET (SRC_FILES ${SRC_FILES} "../../../src/database/database.cpp" "../../../src/database/databaseresult.cpp")
-SET (HEAD_FILES ${HEAD_FILES} "../../../src/database/database.h" "../../../src/database/databaseresult.h")
-MESSAGE(${SRC_FILES})
 
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON

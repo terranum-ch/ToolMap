@@ -9,8 +9,7 @@
 #include <wx/app.h>
 #include <wx/cmdline.h>
 
-#include <database.h>
-
+#include "tmmergeprojects.h"
 
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
@@ -52,10 +51,20 @@ int main(int argc, char **argv)
         wxPrintf(_("Master: '%s'\nSlave:  '%s'\n"), myMasterFileName, mySlaveFileName);
     }
     
-    DataBase myDB;
+    tmMergeProjects myCheckMerger(myMasterFileName, mySlaveFileName);
+    myCheckMerger.SetVerbose(beVerbose);
     // checking here
     if (beVerbose) {
         wxPrintf(_("CHECKING...\n"));
+        if(myCheckMerger.CheckSimilar()==true){
+            wxPrintf(_("OK projects are similar\n"));
+        }
+        else {
+            wxArrayString myErrors = myCheckMerger.GetErrors();
+            for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                wxPrintf(myErrors.Item(i) + _T("\n"));
+            }
+        }
     }
     
     
