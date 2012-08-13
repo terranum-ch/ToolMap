@@ -39,7 +39,12 @@ class tmMergeProjects {
     bool _HasSameNumberRecords(DataBase * db, const wxString & tablename);
     bool _HasDifferenceResults(DataBase * db, const wxString & query, long & errnumber);
     bool _HasSimilarResults(DataBase * db, const wxString & query, long & errnumber);
+    
+    bool _CopyUpdateTable(const wxString & tablename, const wxString & keycol ,wxArrayLong * oldids, wxArrayLong * newids);
+
+    
     bool _IsReady();
+
 
     
   public:
