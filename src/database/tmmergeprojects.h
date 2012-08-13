@@ -31,6 +31,7 @@ class tmMergeProjects {
   private:
     wxFileName m_MasterFileName;
     wxFileName m_SlaveFileName;
+    DataBase * m_DB;
 
     bool m_beVerbose;
     wxArrayString m_Errors;
@@ -38,6 +39,7 @@ class tmMergeProjects {
     bool _HasSameNumberRecords(DataBase * db, const wxString & tablename);
     bool _HasDifferenceResults(DataBase * db, const wxString & query, long & errnumber);
     bool _HasSimilarResults(DataBase * db, const wxString & query, long & errnumber);
+    bool _IsReady();
 
     
   public:
