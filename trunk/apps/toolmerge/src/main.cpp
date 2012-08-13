@@ -56,22 +56,40 @@ int main(int argc, char **argv)
     // checking here
     if (beVerbose) {
         wxPrintf(_("CHECKING...\n"));
-        if(myCheckMerger.CheckSimilar()==true){
-            wxPrintf(_("OK projects are similar\n"));
-        }
-        else {
-            wxArrayString myErrors = myCheckMerger.GetErrors();
-            for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                wxPrintf(myErrors.Item(i) + _T("\n"));
-            }
+    }
+    wxStopWatch sw;
+    if(myCheckMerger.CheckSimilar()==true){
+        wxPrintf(_("OK projects are similar\n"));
+    }
+    else {
+        wxPrintf(_("Checking FAILED! see bellow\n"));
+        wxArrayString myErrors = myCheckMerger.GetErrors();
+        for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+            wxPrintf(myErrors.Item(i) + _T("\n"));
         }
     }
+    
+    if (beVerbose) {
+        wxPrintf(_("Checking projects in %ld [ms]\n"), sw.Time());
+    }
+    
     
     
     if (parser.Found("merge")) {
         // merging here
         if (beVerbose) {
             wxPrintf(_("MERGING...\n"));
+        }
+        
+        if(myCheckMerger.MergeIntoMaster()==true){
+            wxPrintf(_("OK Project Merged into '%s' in %ld [ms]"), myMasterFileName, sw.Time());
+        }
+        else{
+            wxPrintf(_("Merge FAILED! see bellow\n"));
+            wxArrayString myErrors = myCheckMerger.GetErrors();
+            for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                wxPrintf(myErrors.Item(i) + _T("\n"));
+            }
         }
     }
     
