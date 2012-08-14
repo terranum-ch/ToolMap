@@ -51,6 +51,7 @@ int main(int argc, char **argv)
         wxPrintf(_("Master: '%s'\nSlave:  '%s'\n"), myMasterFileName, mySlaveFileName);
     }
     
+    bool bCheckOk = false;
     tmMergeProjects myCheckMerger(myMasterFileName, mySlaveFileName);
     myCheckMerger.SetVerbose(beVerbose);
     // checking here
@@ -60,6 +61,7 @@ int main(int argc, char **argv)
     wxStopWatch sw;
     if(myCheckMerger.CheckSimilar()==true){
         wxPrintf(_("OK projects are similar\n"));
+        bCheckOk = true;
     }
     else {
         wxPrintf(_("Checking FAILED! see bellow\n"));
@@ -71,6 +73,11 @@ int main(int argc, char **argv)
     
     if (beVerbose) {
         wxPrintf(_("Checking projects in %ld [ms]\n"), sw.Time());
+    }
+    
+    if (parser.Found("merge") && bCheckOk == false) {
+        wxPrintf(_("Merging not allowed, projects are different!\n"));
+        return 1;
     }
     
     
