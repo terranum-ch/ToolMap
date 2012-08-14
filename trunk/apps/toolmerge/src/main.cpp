@@ -10,7 +10,7 @@
 #include <wx/cmdline.h>
 #include <wx/dir.h>
 
-#include "tmmergeprojects.h"
+#include "tmProjectMerge.h"
 
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
@@ -171,11 +171,11 @@ int main(int argc, char **argv)
     
     
     bool bCheckOk = false;
-    tmMergeProjects myCheckMerger(myMasterFileNameBkp, mySlaveFileNameBkp);
+    tmProjectMerge myCheckMerger(myMasterFileNameBkp, mySlaveFileNameBkp);
     myCheckMerger.SetVerbose(beVerbose);
     // checking here
     if (beVerbose) {
-        wxPrintf(_("CHECKING...\n"));
+        wxPrintf(_("\nCHECKING...\n"));
     }
     wxStopWatch sw;
     if(myCheckMerger.CheckSimilar()==true){
@@ -200,11 +200,11 @@ int main(int argc, char **argv)
     }
     
     
-    
+    sw.Start(0);
     if (parser.Found("merge")) {
         // merging here
         if (beVerbose) {
-            wxPrintf(_("MERGING...\n"));
+            wxPrintf(_("\nMERGING...\n"));
         }
         
         if(myCheckMerger.MergeIntoMaster()==true){
