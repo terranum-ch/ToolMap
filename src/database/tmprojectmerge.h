@@ -1,5 +1,5 @@
 /***************************************************************************
- tmmergeprojects.h
+ tmprojectmerge.h
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _TMMERGEPROJECTS_H_
-#define _TMMERGEPROJECTS_H_
+#ifndef _tmProjectMerge_H_
+#define _tmProjectMerge_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -27,7 +27,7 @@
 
 class DataBase;
 
-class tmMergeProjects {
+class tmProjectMerge {
   private:
     wxFileName m_MasterFileName;
     wxFileName m_SlaveFileName;
@@ -41,6 +41,7 @@ class tmMergeProjects {
     bool _HasSimilarResults(DataBase * db, const wxString & query, long & errnumber);
     
     bool _CopyUpdateTable(const wxString & tablename, const wxString & keycol ,wxArrayLong * oldids, wxArrayLong * newids);
+     bool _MergeGeom (const wxString & geomtablename, const wxString & aatablename, int geomtype);
 
     
     bool _IsReady();
@@ -48,8 +49,8 @@ class tmMergeProjects {
 
     
   public:
-    tmMergeProjects(const wxString & masterprj, const wxString & slaveprj);
-    virtual ~tmMergeProjects();
+    tmProjectMerge(const wxString & masterprj, const wxString & slaveprj);
+    virtual ~tmProjectMerge();
 
     inline const bool IsVerbose() const;
     void SetVerbose(bool value);
@@ -64,13 +65,13 @@ class tmMergeProjects {
 
 
 
-inline const bool tmMergeProjects::IsVerbose() const {
+inline const bool tmProjectMerge::IsVerbose() const {
   return m_beVerbose;
 }
 
 
 
-inline const wxArrayString tmMergeProjects::GetErrors() const {
+inline const wxArrayString tmProjectMerge::GetErrors() const {
   return m_Errors;
 }
 

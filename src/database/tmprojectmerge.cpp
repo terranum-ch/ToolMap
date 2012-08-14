@@ -1,5 +1,5 @@
 /***************************************************************************
- tmmergeprojects.cpp
+ tmprojectmerge.cpp
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "tmmergeprojects.h"
+#include "tmprojectmerge.h"
 #include "database.h"
 #include "databaseresult.h"
 
-tmMergeProjects::tmMergeProjects(const wxString & masterprj, const wxString & slaveprj) {
+tmProjectMerge::tmProjectMerge(const wxString & masterprj, const wxString & slaveprj) {
     m_MasterFileName = wxFileName(masterprj);
     m_SlaveFileName = wxFileName(slaveprj);
     SetVerbose(false);
@@ -34,20 +34,20 @@ tmMergeProjects::tmMergeProjects(const wxString & masterprj, const wxString & sl
 
 
 
-tmMergeProjects::~tmMergeProjects() {
+tmProjectMerge::~tmProjectMerge() {
     wxDELETE(m_DB);
 }
 
 
 
 
-void tmMergeProjects::SetVerbose(bool value) {
+void tmProjectMerge::SetVerbose(bool value) {
   m_beVerbose = value;
 }
 
 
 
-wxString tmMergeProjects::GetLastError() {
+wxString tmProjectMerge::GetLastError() {
     if (m_Errors.GetCount() > 0) {
         return  m_Errors.Item(m_Errors.GetCount() -1);
     }
@@ -55,7 +55,7 @@ wxString tmMergeProjects::GetLastError() {
 }
 
 
-bool tmMergeProjects::_HasSameNumberRecords(DataBase * db, const wxString & tablename) {
+bool tmProjectMerge::_HasSameNumberRecords(DataBase * db, const wxString & tablename) {
     wxASSERT(db);
     long myNumMaster = wxNOT_FOUND;
     long myNumSlave = wxNOT_FOUND;
@@ -93,7 +93,7 @@ bool tmMergeProjects::_HasSameNumberRecords(DataBase * db, const wxString & tabl
 
 
 
-bool tmMergeProjects::_HasDifferenceResults(DataBase * db, const wxString & query, long & errnumber) {
+bool tmProjectMerge::_HasDifferenceResults(DataBase * db, const wxString & query, long & errnumber) {
     errnumber = 0;
     wxASSERT(db);
     
@@ -120,7 +120,7 @@ bool tmMergeProjects::_HasDifferenceResults(DataBase * db, const wxString & quer
 
 
 
-bool tmMergeProjects::_HasSimilarResults(DataBase * db, const wxString & query, long & errnumber) {
+bool tmProjectMerge::_HasSimilarResults(DataBase * db, const wxString & query, long & errnumber) {
     // run query twice and compare results
     wxArrayString myMasterResults;
     wxArrayString mySlaveResults;
@@ -178,7 +178,7 @@ bool tmMergeProjects::_HasSimilarResults(DataBase * db, const wxString & query, 
 
 
 
-bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxString & keycol, wxArrayLong * oldids, wxArrayLong * newids){
+bool tmProjectMerge::_CopyUpdateTable(const wxString & tablename, const wxString & keycol, wxArrayLong * oldids, wxArrayLong * newids){
     wxASSERT(m_DB);
     wxASSERT(oldids);
     wxASSERT(newids);
@@ -189,7 +189,7 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
     }
     if (m_DB->DataBaseHasResults() == false) {
         if (IsVerbose()) {
-            wxLogDebug(_("Table '%s' didn't exists and is ignored!"), tablename);
+            wxLogMessage(_("Table '%s' didn't exists and is ignored!"), tablename);
         }
         return true;
     }
@@ -227,10 +227,9 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
         return false;
     }
     
-    int iCounter = 0;
     for (int i = oldids->GetCount()-1; i >= 0; i--) {
         if (i<oldids->GetCount() - 1  && newids->Item(i) == newids->Item(i+1)) {
-            wxLogDebug(_("Ignoring new ID: %ld, duplicate!"), newids->Item(i));
+            wxLogMessage(_("Ignoring new ID: %ld, duplicate!"), newids->Item(i));
         }
         
         myQuery = wxString::Format(_T("UPDATE %s SET %s = %ld WHERE %s = %ld"), myTempTableName, keycol, newids->Item(i), keycol, oldids->Item(i));
@@ -238,14 +237,11 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
         if (m_DB->DataBaseQueryNoResults(myQuery,true)==false){
             return false;
         }
-        
-        iCounter++;
-        if (IsVerbose() && iCounter % 1000 == 0) {
-            wxLogDebug(_("%d records updated into '%s'"), iCounter, tablename);
-        }
     }
-    wxLogDebug(_("%ld records updated into '%s'"), oldids->GetCount(), tablename);
-    
+    if (IsVerbose()) {
+        wxLogMessage(_("%ld records updated into '%s'"), oldids->GetCount(), tablename);
+    }
+
     myQuery = _T("INSERT INTO %s SELECT * FROM %s");
     if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, tablename, myTempTableName), true)==false) {
         return false;
@@ -261,7 +257,112 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
 
 
 
-bool tmMergeProjects::_IsReady(){
+bool tmProjectMerge::_MergeGeom (const wxString & geomtablename, const wxString & aatablename, int geomtype){
+    // get old ID's
+    wxArrayLong myOldIds;
+    
+    wxString myQuery = _T("SELECT d.OBJECT_ID FROM %s.%s d ORDER BY d.OBJECT_ID");
+    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_SlaveFileName.GetFullName(), geomtablename), true)==false) {
+        return false;
+    }
+    
+    if(m_DB->DataBaseGetResults(myOldIds)==false){
+        m_Errors.Add(_("regaining Old ID Failed!"));
+        return false;
+    }
+    
+    if (IsVerbose()) {
+        wxLogMessage(_("%ld Old ID regained in '%s'"), myOldIds.GetCount(), geomtablename);
+    }
+    
+    // get highest ID in master
+    if (m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"), m_MasterFileName.GetFullName(), geomtablename),true)==false) {
+        return false;
+    }
+    
+    long myMaxSlaveID = myOldIds[myOldIds.GetCount()-1];
+    long myMaxMasterID = wxNOT_FOUND;
+    if (m_DB->DataBaseGetNextResult(myMaxMasterID)==false) {
+        m_DB->DataBaseClearResults();
+        m_Errors.Add(_("Unable to get max ID!"));
+        return false;
+    }
+    m_DB->DataBaseClearResults();
+    
+    
+    // if slave ID is > master, we need to change autoincrement
+    long myUsedMaxID = myMaxMasterID;
+    if (myMaxSlaveID > myMaxMasterID) {
+        myUsedMaxID = myMaxSlaveID;
+        if (m_DB->DataBaseQueryNoResults(wxString::Format(_T("ALTER TABLE %s AUTO_INCREMENT = %ld"), geomtablename, myUsedMaxID + 1),true)==false) {
+            return false;
+        }
+    }
+    if (IsVerbose()) {
+        wxLogMessage(_("Changing slave ID's starting from: %ld"), myUsedMaxID);
+    }
+    
+    // copy lines
+    myQuery = _T("INSERT INTO %s.%s (OBJECT_GEOMETRY) SELECT d.OBJECT_GEOMETRY FROM %s.%s d ORDER BY d.OBJECT_ID");
+    
+    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), geomtablename, m_SlaveFileName.GetFullName(), geomtablename), true)==false) {
+        return false;
+    }
+    
+    // get new IDS
+    wxArrayLong myNewIds;
+    myQuery = _T("SELECT OBJECT_ID FROM %s.%s WHERE OBJECT_ID > %ld ORDER BY OBJECT_ID");
+    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), geomtablename, myUsedMaxID),true)==false) {
+        return false;
+    }
+    if(m_DB->DataBaseGetResults(myNewIds)==false){
+        m_Errors.Add(_("regaining New ID Failed!"));
+        return false;
+    }
+    
+    if (myNewIds.GetCount() != myOldIds.GetCount()) {
+        m_Errors.Add(wxString::Format(_("ID number mismatch! (%ld vs %ld)"), myNewIds.GetCount(), myOldIds.GetCount()));
+        return false;
+    }
+    
+    
+    // copy object_kind from slave to temporary table into master
+    if (_CopyUpdateTable(aatablename, _T("OBJECT_GEOM_ID"), &myOldIds, &myNewIds)==false) {
+        m_Errors.Add(_("Copying object kind failed!"));
+        return false;
+    }
+    
+    // copy and update layer_at
+    myQuery = _T("SELECT LAYER_INDEX FROM thematic_layers WHERE TYPE_CD = %d ORDER BY LAYER_INDEX");
+    if (m_DB->DataBaseQuery(wxString::Format(myQuery, geomtype),true)==false) {
+        return false;
+    }
+    wxArrayLong myLayersIndexIDs;
+    if (m_DB->DataBaseGetResults(myLayersIndexIDs)==false) {
+        m_Errors.Add(_("Getting layer index Failed!"));
+        return false;
+    }
+    
+    bool hasError = false;
+    for (unsigned int i = 0; i< myLayersIndexIDs.GetCount(); i++) {
+        wxString myTableName = wxString::Format(_T("layer_at%ld"), myLayersIndexIDs[i]);
+        if(_CopyUpdateTable(myTableName, _T("OBJECT_ID"), &myOldIds, &myNewIds)==false){
+            m_Errors.Add(wxString::Format(_("Copying table: '%s' failed!"),myTableName));
+            hasError = true;
+            continue;
+        }
+    }
+    
+    if (hasError) {
+        return false;
+    }
+    return true;
+}
+
+
+
+
+bool tmProjectMerge::_IsReady(){
     // some generic checks
     if (m_MasterFileName.IsOk() == false || m_MasterFileName.GetFullName() == wxEmptyString) {
         m_Errors.Add(_("Master file name not correctely inited!"));
@@ -289,7 +390,7 @@ bool tmMergeProjects::_IsReady(){
 
 
 
-bool tmMergeProjects::CheckSimilar() {
+bool tmProjectMerge::CheckSimilar() {
     
     // some generic checks
     if (_IsReady() == false) {
@@ -298,8 +399,9 @@ bool tmMergeProjects::CheckSimilar() {
     
     wxASSERT(m_DB);
     m_Errors.Clear();
-    wxLogDebug("Checking projects: '%s' with '%s'", m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
-    
+    if (IsVerbose()){
+        wxLogMessage("Checking projects: '%s' with '%s'", m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
+    }
     // are layers similar ?
     if (_HasSameNumberRecords(m_DB, _T("thematic_layers"))==false) {
         return false;
@@ -342,7 +444,7 @@ bool tmMergeProjects::CheckSimilar() {
 
 
 
-bool tmMergeProjects::MergeIntoMaster() {    
+bool tmProjectMerge::MergeIntoMaster() {    
     // some generic checks
     if (_IsReady() == false) {
         return false;
@@ -350,104 +452,19 @@ bool tmMergeProjects::MergeIntoMaster() {
     wxASSERT(m_DB);
     m_Errors.Clear();
 
-    // get old ID's
-    wxArrayLong myOldIds;
+    wxString myGeomTables[] = {_T("generic_lines"), _T("generic_points"), _T("generic_labels")};
+    wxString myAATables[] = {_T("generic_aat"), _T("generic_pat"), _T("generic_lat")};
+    int myGeomType[] = {0, 1, 2};
+    wxString myDesc [] = {_("Lines"), _("Points"), _("Labels / Polygons")};
     
-    wxString myQuery = _T("SELECT d.OBJECT_ID FROM %s.generic_lines d ORDER BY d.OBJECT_ID");
-    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_SlaveFileName.GetFullName()), true)==false) {
-        return false;
-    }
-    
-    if(m_DB->DataBaseGetResults(myOldIds)==false){
-        m_Errors.Add(_("regaining Old ID Failed!"));
-        return false;
-    }
-    
-    if (IsVerbose()) {
-        wxLogDebug(_("%ld Old ID regained"), myOldIds.GetCount());
-    }
-    
-    // get highest ID in master
-    if (m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.generic_lines ORDER BY OBJECT_ID DESC LIMIT 1"), m_MasterFileName.GetFullName()),true)==false) {
-        return false;
-    }
-    
-    long myMaxSlaveID = myOldIds[myOldIds.GetCount()-1];
-    long myMaxMasterID = wxNOT_FOUND;
-    if (m_DB->DataBaseGetNextResult(myMaxMasterID)==false) {
-        m_DB->DataBaseClearResults();
-        m_Errors.Add(_("Unable to get max ID!"));
-        return false;
-    }
-    m_DB->DataBaseClearResults();
-    
-    
-    // if slave ID is > master, we need to change autoincrement
-    long myUsedMaxID = myMaxMasterID;
-    if (myMaxSlaveID > myMaxMasterID) {
-        myUsedMaxID = myMaxSlaveID;
-        if (m_DB->DataBaseQueryNoResults(wxString::Format(_T("ALTER TABLE generic_lines AUTO_INCREMENT = %ld"), myUsedMaxID + 1),true)==false) {
+    for (int i = 0; i<(sizeof(myGeomType) / sizeof(int)); i++) {
+        if (IsVerbose()) {
+            wxLogMessage(_("Merging data from: ") + myDesc[i]);
+        }
+        if(_MergeGeom(myGeomTables[i], myAATables[i], myGeomType[i]) == false){
             return false;
         }
     }
-    
-    // copy lines
-    myQuery = _T("INSERT INTO %s.generic_lines (OBJECT_GEOMETRY) SELECT d.OBJECT_GEOMETRY FROM %s.generic_lines d ORDER BY d.OBJECT_ID");
-    
-    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true)==false) {
-        return false;
-    }
-    
-    // get new IDS
-    wxArrayLong myNewIds;
-    myQuery = _T("SELECT OBJECT_ID FROM %s.generic_lines WHERE OBJECT_ID > %ld ORDER BY OBJECT_ID");
-    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), myUsedMaxID),true)==false) {
-        return false;
-    }
-    if(m_DB->DataBaseGetResults(myNewIds)==false){
-        m_Errors.Add(_("regaining New ID Failed!"));
-        return false;
-    }
-    
-    if (myNewIds.GetCount() != myOldIds.GetCount()) {
-        m_Errors.Add(wxString::Format(_("ID number mismatch! (%ld vs %ld)"), myNewIds.GetCount(), myOldIds.GetCount()));
-        return false;
-    }
-    
-    
-    // copy object_kind from slave to temporary table into master
-    if (_CopyUpdateTable(_T("generic_aat"), _T("OBJECT_GEOM_ID"), &myOldIds, &myNewIds)==false) {
-        m_Errors.Add(_("Copying object kind failed!"));
-        return false;
-    }
-    
-    // copy and update layer_at
-    myQuery = _T("SELECT LAYER_INDEX FROM thematic_layers WHERE TYPE_CD = 0 ORDER BY LAYER_INDEX");
-    if (m_DB->DataBaseQuery(myQuery,true)==false) {
-        return false;
-    }
-    wxArrayLong myLayersIndexIDs;
-    if (m_DB->DataBaseGetResults(myLayersIndexIDs)==false) {
-        m_Errors.Add(_("Getting layer index Failed!"));
-        return false;
-    }
-    
-    bool hasError = false;
-    for (unsigned int i = 0; i< myLayersIndexIDs.GetCount(); i++) {
-        wxString myTableName = wxString::Format(_T("layer_at%ld"), myLayersIndexIDs[i]);
-        if(_CopyUpdateTable(myTableName, _T("OBJECT_ID"), &myOldIds, &myNewIds)==false){
-            m_Errors.Add(wxString::Format(_("Copying table: '%s' failed!"),myTableName));
-            hasError = true;
-            continue;
-        }
-    }
-    
-    if (hasError) {
-        return false;
-    }
-    
-    
-    
     return true;
 }
 
