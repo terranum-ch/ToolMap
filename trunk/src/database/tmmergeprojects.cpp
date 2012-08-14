@@ -216,10 +216,11 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
     
     wxString myTempTableName = tablename + _T("_temp");
     myCreateStmt.Replace(tablename, myTempTableName);
-    if (m_DB->DataBaseQuery(myCreateStmt,true)==false) {
+    if (m_DB->DataBaseQueryNoResults(myCreateStmt,true)==false) {
         return false;
     }
     
+    wxSortedArrayString myUsedIds;
     // update object_kind (aka generic_aat)
     wxString myQuery = _T("INSERT INTO %s.%s SELECT * FROM %s.%s");
     if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(),myTempTableName, m_SlaveFileName.GetFullName(), tablename),true)==false) {
@@ -227,10 +228,16 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
     }
     
     for (unsigned int i = 0; i< oldids->GetCount(); i++) {
-        myQuery = _T("UPDATE %s SET %s = %ld WHERE %s = %ld");
-        if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, myTempTableName, keycol, newids->Item(i), keycol, oldids->Item(i)),true)==false){
+        if (i>0 && newids->Item(i) == newids->Item(i-1)) {
+            wxLogDebug(_("Ignoring new ID: %ld, duplicate!"), newids->Item(i));
+        }
+        
+        myQuery = wxString::Format(_T("UPDATE %s SET %s = %ld WHERE %s = %ld"), myTempTableName, keycol, newids->Item(i), keycol, oldids->Item(i));
+        wxLogDebug(myQuery);
+        if (m_DB->DataBaseQueryNoResults(myQuery,true)==false){
             return false;
         }
+        
         if (IsVerbose() && i % 1000 == 0) {
             wxLogDebug(_("%d records updated into '%s'"), i, tablename);
         }
