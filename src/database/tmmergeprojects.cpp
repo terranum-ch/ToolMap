@@ -189,7 +189,7 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
     }
     if (m_DB->DataBaseHasResults() == false) {
         if (IsVerbose()) {
-            wxLogDebug(_("Table '%s' didn't exists ans is ignored!"), tablename);
+            wxLogDebug(_("Table '%s' didn't exists and is ignored!"), tablename);
         }
         return true;
     }
@@ -227,19 +227,21 @@ bool tmMergeProjects::_CopyUpdateTable(const wxString & tablename, const wxStrin
         return false;
     }
     
-    for (unsigned int i = 0; i< oldids->GetCount(); i++) {
-        if (i>0 && newids->Item(i) == newids->Item(i-1)) {
+    int iCounter = 0;
+    for (int i = oldids->GetCount()-1; i >= 0; i--) {
+        if (i<oldids->GetCount() - 1  && newids->Item(i) == newids->Item(i+1)) {
             wxLogDebug(_("Ignoring new ID: %ld, duplicate!"), newids->Item(i));
         }
         
         myQuery = wxString::Format(_T("UPDATE %s SET %s = %ld WHERE %s = %ld"), myTempTableName, keycol, newids->Item(i), keycol, oldids->Item(i));
-        wxLogDebug(myQuery);
+        //wxLogDebug(myQuery);
         if (m_DB->DataBaseQueryNoResults(myQuery,true)==false){
             return false;
         }
         
-        if (IsVerbose() && i % 1000 == 0) {
-            wxLogDebug(_("%d records updated into '%s'"), i, tablename);
+        iCounter++;
+        if (IsVerbose() && iCounter % 1000 == 0) {
+            wxLogDebug(_("%d records updated into '%s'"), iCounter, tablename);
         }
     }
     wxLogDebug(_("%ld records updated into '%s'"), oldids->GetCount(), tablename);
@@ -370,6 +372,7 @@ bool tmMergeProjects::MergeIntoMaster() {
         return false;
     }
     
+    long myMaxSlaveID = myOldIds[myOldIds.GetCount()-1];
     long myMaxMasterID = wxNOT_FOUND;
     if (m_DB->DataBaseGetNextResult(myMaxMasterID)==false) {
         m_DB->DataBaseClearResults();
@@ -377,6 +380,16 @@ bool tmMergeProjects::MergeIntoMaster() {
         return false;
     }
     m_DB->DataBaseClearResults();
+    
+    
+    // if slave ID is > master, we need to change autoincrement
+    long myUsedMaxID = myMaxMasterID;
+    if (myMaxSlaveID > myMaxMasterID) {
+        myUsedMaxID = myMaxSlaveID;
+        if (m_DB->DataBaseQueryNoResults(wxString::Format(_T("ALTER TABLE generic_lines AUTO_INCREMENT = %ld"), myUsedMaxID + 1),true)==false) {
+            return false;
+        }
+    }
     
     // copy lines
     myQuery = _T("INSERT INTO %s.generic_lines (OBJECT_GEOMETRY) SELECT d.OBJECT_GEOMETRY FROM %s.generic_lines d ORDER BY d.OBJECT_ID");
@@ -388,7 +401,7 @@ bool tmMergeProjects::MergeIntoMaster() {
     // get new IDS
     wxArrayLong myNewIds;
     myQuery = _T("SELECT OBJECT_ID FROM %s.generic_lines WHERE OBJECT_ID > %ld ORDER BY OBJECT_ID");
-    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), myMaxMasterID),true)==false) {
+    if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), myUsedMaxID),true)==false) {
         return false;
     }
     if(m_DB->DataBaseGetResults(myNewIds)==false){
