@@ -10,12 +10,14 @@
 #include <wx/cmdline.h>
 #include <wx/dir.h>
 
-#include "tmProjectMerge.h"
+#include "tmprojectmerge.h"
+#include "tmprojectmaintenance.h"
 
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
     { wxCMD_LINE_SWITCH, "h", "help", "show this help message",
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_SWITCH, "o", "optimize", "Optimize, and clean orphans" },
     { wxCMD_LINE_SWITCH, "m", "merge", "Merge Slave into Master" },
     { wxCMD_LINE_SWITCH, "v", "verbose", "Be more verbose" },
     { wxCMD_LINE_NONE }
@@ -170,6 +172,70 @@ int main(int argc, char **argv)
     }
     
     
+    
+    if (parser.Found(_T("optimize"))) {
+        // OPTIMIZING AND CLEANING
+        if (beVerbose) {
+            wxPrintf(_("\nOPTIMIZING AND CLEANING\n"));
+        }
+        
+        {
+            tmProjectMaintenance myMaintenanceMaster (myMasterFileNameBkp);
+            if (myMaintenanceMaster.OptimizeTables() == false) {
+                wxPrintf(_("Optimize master FAILED! see bellow\n"));
+                wxArrayString myErrors = myMaintenanceMaster.GetErrors();
+                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                }
+            }
+            
+            if (myMaintenanceMaster.RepairTables() == false) {
+                wxPrintf(_("Repairing master FAILED! see bellow\n"));
+                wxArrayString myErrors = myMaintenanceMaster.GetErrors();
+                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                }
+            }
+            
+            if (myMaintenanceMaster.ClearOrphans() == false) {
+                wxPrintf(_("Cleaing master FAILED! see bellow\n"));
+                wxArrayString myErrors = myMaintenanceMaster.GetErrors();
+                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                }
+            }
+        }
+        
+        {
+            tmProjectMaintenance myMaintenanceSlave (mySlaveFileNameBkp, NULL);
+            if (myMaintenanceSlave.OptimizeTables() == false) {
+                wxPrintf(_("Optimize slave FAILED! see bellow\n"));
+                wxArrayString myErrors = myMaintenanceSlave.GetErrors();
+                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                }
+            }
+            
+            if (myMaintenanceSlave.RepairTables() == false) {
+                wxPrintf(_("Repairing slave FAILED! see bellow\n"));
+                wxArrayString myErrors = myMaintenanceSlave.GetErrors();
+                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                }
+            }
+            
+            if (myMaintenanceSlave.ClearOrphans() == false) {
+                wxPrintf(_("Cleaing slave FAILED! see bellow\n"));
+                wxArrayString myErrors = myMaintenanceSlave.GetErrors();
+                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
+                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                }
+            }
+        }
+        
+    }
+    
+    
     bool bCheckOk = false;
     tmProjectMerge myCheckMerger(myMasterFileNameBkp, mySlaveFileNameBkp);
     myCheckMerger.SetVerbose(beVerbose);
@@ -198,11 +264,11 @@ int main(int argc, char **argv)
         wxPrintf(_("Merging not allowed, projects are different!\n"));
         return 1;
     }
-    
+
     
     sw.Start(0);
     if (parser.Found("merge")) {
-        // merging here
+       // merging here
         if (beVerbose) {
             wxPrintf(_("\nMERGING...\n"));
         }

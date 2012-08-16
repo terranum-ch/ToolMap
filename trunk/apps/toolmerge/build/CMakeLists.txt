@@ -10,10 +10,12 @@ FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
 SET (SRC_FILES ${SRC_FILES}
 	"../../../src/database/database.cpp"
 	"../../../src/database/databaseresult.cpp"
-	"../../../src/database/tmprojectmerge.cpp")
-SET (HEAD_FILES ${HEAD_FILES} 
+	"../../../src/database/tmprojectmerge.cpp"
+	"../../../src/database/tmprojectmaintenance.cpp")
+	SET (HEAD_FILES ${HEAD_FILES} 
 	"../../../src/database/database.h"
 	"../../../src/database/databaseresult.h"
+	"../../../src/database/tmprojectmaintenance.h"
 	"../../../src/database/tmprojectmerge.h")
 MESSAGE(${SRC_FILES})
 SOURCE_GROUP (source FILES ${SRC_FILES})
