@@ -98,6 +98,7 @@ class DataBase
 		bool DataBaseQuery (const wxString & query, bool logerror = true); 
 		int DataBaseQueriesNumber (const wxString & query);
 		long DataBaseGetLastInsertedID();
+        long DataBaseGetAffectedRows();
 		
 		// query transformations
 		bool DataBaseStringEscapeQuery (const wxString & query, wxString & results);

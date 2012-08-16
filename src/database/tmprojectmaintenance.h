@@ -1,5 +1,5 @@
 /***************************************************************************
- tmprojectmerge.h
+ tmprojectmaintenance.h
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _tmProjectMerge_H_
-#define _tmProjectMerge_H_
+#ifndef _TMPROJECTMAINTENANCE_H_
+#define _TMPROJECTMAINTENANCE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -23,57 +23,57 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/filename.h>
 
 class DataBase;
 
-class tmProjectMerge {
+class tmProjectMaintenance {
   private:
-    wxFileName m_MasterFileName;
-    wxFileName m_SlaveFileName;
-    DataBase * m_DB;
-
-    bool m_beVerbose;
+    wxArrayString m_Messages;
     wxArrayString m_Errors;
 
-    bool _HasSameNumberRecords(DataBase * db, const wxString & tablename);
-    bool _HasDifferenceResults(DataBase * db, const wxString & query, long & errnumber);
-    bool _HasSimilarResults(DataBase * db, const wxString & query, long & errnumber);
-    
-    bool _CopyUpdateTable(const wxString & tablename, const wxString & keycol ,wxArrayLong * oldids, wxArrayLong * newids);
-     bool _MergeGeom (const wxString & geomtablename, const wxString & aatablename, int geomtype);
+    bool m_IsVerbose;
+    DataBase * m_DB;
+    bool m_DestroyDatabase;
 
-    
-    bool _IsReady();
+    wxArrayString _GetAllTables();
+    bool _DoCodeOnTables(const wxString & query, const wxString & errmsg);
+    bool _CleanLayerOrphansKind(const wxString & tablegeom, const wxString & tablekind);
+    bool _CleanLayerOrphansAttributes(int geomtype, const wxString & generictablename);
 
-
-    
   public:
-    tmProjectMerge(const wxString & masterprj, const wxString & slaveprj);
-    virtual ~tmProjectMerge();
+    tmProjectMaintenance(const wxString & databasename, DataBase * database = NULL);
+    virtual ~tmProjectMaintenance();
+
+    //bool CheckTables();
+    bool RepairTables();
+    bool OptimizeTables();
+    bool ClearOrphans();
 
     inline const bool IsVerbose() const;
     void SetVerbose(bool value);
 
     inline const wxArrayString GetErrors() const;
-    wxString GetLastError();
-
-    bool CheckSimilar();
-    bool MergeIntoMaster();
-
-    DataBase * GetDatabaseRef(){return m_DB;}
+    inline const wxArrayString GetMessages() const;
 };
 
 
 
-inline const bool tmProjectMerge::IsVerbose() const {
-  return m_beVerbose;
+inline const bool tmProjectMaintenance::IsVerbose() const {
+  return m_IsVerbose;
 }
 
 
 
-inline const wxArrayString tmProjectMerge::GetErrors() const {
+inline const wxArrayString tmProjectMaintenance::GetErrors() const {
   return m_Errors;
+}
+
+
+
+inline const wxArrayString tmProjectMaintenance::GetMessages() const {
+  return m_Messages;
 }
 
 #endif

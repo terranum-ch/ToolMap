@@ -705,14 +705,28 @@ int DataBase::DataBaseQueriesNumber (const wxString & query)
 long DataBase::DataBaseGetLastInsertedID()
 {
 	long myIID = wxNOT_FOUND;
-	if (DBIsDataBaseReady()==false)
+	if (DBIsDataBaseReady()==false){
 		return myIID;
+    }
 
 	myIID = mysql_insert_id(m_MySQL);
-	if (myIID == 0)
+	if (myIID == 0){
 		myIID = wxNOT_FOUND;
+    }
 
 	return myIID;
+}
+
+
+
+long DataBase::DataBaseGetAffectedRows(){
+    long myAffected = wxNOT_FOUND;
+    if (DBIsDataBaseReady() == false) {
+        return myAffected;
+    }
+    
+    myAffected = mysql_affected_rows(m_MySQL);
+    return myAffected;
 }
 
 
