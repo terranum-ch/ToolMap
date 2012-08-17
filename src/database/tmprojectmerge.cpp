@@ -465,6 +465,25 @@ bool tmProjectMerge::MergeIntoMaster() {
             return false;
         }
     }
+    
+    
+    // merge TOC
+    wxString myQuery = _T("INSERT INTO %s.prj_toc (TYPE_CD, CONTENT_PATH, CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, RANK, SYMBOLOGY, VERTEX_FLAGS) SELECT a.TYPE_CD, a.CONTENT_PATH, a.CONTENT_NAME, a.CONTENT_STATUS, a.GENERIC_LAYERS, a.RANK, a.SYMBOLOGY, a.VERTEX_FLAGS FROM %s.prj_toc a, %s.prj_toc b WHERE a.CONTENT_PATH <> b.CONTENT_PATH AND a.CONTENT_NAME <> b.CONTENT_NAME  AND a.CONTENT_ID > 5 GROUP BY a.CONTENT_ID ");
+    if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName(), m_MasterFileName.GetFullName()), true)==false) {
+        return false;
+    }
+    
+    // merge Frame
+    myQuery = _T("INSERT INTO %s.generic_frame (OBJECT_GEOMETRY) SELECT s.OBJECT_GEOMETRY FROM %s.generic_frame s");
+    if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true)==false) {
+        return false;
+    }
+    
+    // merge stats
+    myQuery = _T("INSERT INTO %s.prj_stats (DATE_START, CLICK, ATTRIBUTION, INTERSECTION, DATE_END) SELECT s.DATE_START, s.CLICK, s.ATTRIBUTION, s.INTERSECTION, s.DATE_END FROM %s.prj_stats s");
+    if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true)==false) {
+        return false;
+    }
     return true;
 }
 

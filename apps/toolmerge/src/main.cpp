@@ -113,6 +113,7 @@ bool CopyDir(wxString from, wxString to) {
 }
 
 
+
 void PrintArray(const wxArrayString & array, const wxString & msg){
     wxPrintf(msg + _T("\n"));
     for (unsigned int i = 0; i< array.GetCount(); i++) {
@@ -191,7 +192,7 @@ int main(int argc, char **argv)
             myMaintenanceMaster.SetVerbose(beVerbose);
             if (myMaintenanceMaster.OptimizeTables() == false) {
                 PrintArray(myMaintenanceMaster.GetErrors(), _("Optimize master FAILED! see bellow"));
-             }
+            }
             else{
                 if (beVerbose) {
                     PrintArray(myMaintenanceMaster.GetMessages(), _("Optimizing master SUCCEED!"));
@@ -266,11 +267,7 @@ int main(int argc, char **argv)
         bCheckOk = true;
     }
     else {
-        wxPrintf(_("Checking FAILED! see bellow\n"));
-        wxArrayString myErrors = myCheckMerger.GetErrors();
-        for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-            wxPrintf(myErrors.Item(i) + _T("\n"));
-        }
+        PrintArray(myCheckMerger.GetErrors(), _("Checking FAILED! see bellow\n"));
     }
     
     if (beVerbose) {
@@ -281,11 +278,11 @@ int main(int argc, char **argv)
         wxPrintf(_("Merging not allowed, projects are different!\n"));
         return 1;
     }
-
+    
     
     sw.Start(0);
     if (parser.Found("merge")) {
-       // merging here
+        // merging here
         if (beVerbose) {
             wxPrintf(_("\nMERGING...\n"));
         }
@@ -294,11 +291,7 @@ int main(int argc, char **argv)
             wxPrintf(_("OK Project Merged into '%s' in %ld [ms]"), myMasterFileNameBkp, sw.Time());
         }
         else{
-            wxPrintf(_("Merge FAILED! see bellow\n"));
-            wxArrayString myErrors = myCheckMerger.GetErrors();
-            for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                wxPrintf(myErrors.Item(i) + _T("\n"));
-            }
+            PrintArray(myCheckMerger.GetErrors(), _("Merge FAILED! see bellow\n"));
         }
     }
     
