@@ -113,6 +113,13 @@ bool CopyDir(wxString from, wxString to) {
 }
 
 
+void PrintArray(const wxArrayString & array, const wxString & msg){
+    wxPrintf(msg + _T("\n"));
+    for (unsigned int i = 0; i< array.GetCount(); i++) {
+        wxPrintf(array[i] + _T("\n"));
+    }
+}
+
 
 
 int main(int argc, char **argv)
@@ -172,7 +179,7 @@ int main(int argc, char **argv)
     }
     
     
-    
+    wxStopWatch sw;
     if (parser.Found(_T("optimize"))) {
         // OPTIMIZING AND CLEANING
         if (beVerbose) {
@@ -181,61 +188,72 @@ int main(int argc, char **argv)
         
         {
             tmProjectMaintenance myMaintenanceMaster (myMasterFileNameBkp);
+            myMaintenanceMaster.SetVerbose(beVerbose);
             if (myMaintenanceMaster.OptimizeTables() == false) {
-                wxPrintf(_("Optimize master FAILED! see bellow\n"));
-                wxArrayString myErrors = myMaintenanceMaster.GetErrors();
-                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                PrintArray(myMaintenanceMaster.GetErrors(), _("Optimize master FAILED! see bellow"));
+             }
+            else{
+                if (beVerbose) {
+                    PrintArray(myMaintenanceMaster.GetMessages(), _("Optimizing master SUCCEED!"));
                 }
             }
             
             if (myMaintenanceMaster.RepairTables() == false) {
-                wxPrintf(_("Repairing master FAILED! see bellow\n"));
-                wxArrayString myErrors = myMaintenanceMaster.GetErrors();
-                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                PrintArray(myMaintenanceMaster.GetErrors(), _("Repairing master FAILED! see bellow"));
+            }
+            else{
+                if (beVerbose) {
+                    PrintArray(myMaintenanceMaster.GetMessages(), _("Repairing master SUCCEED!"));
                 }
             }
             
             if (myMaintenanceMaster.ClearOrphans() == false) {
-                wxPrintf(_("Cleaing master FAILED! see bellow\n"));
-                wxArrayString myErrors = myMaintenanceMaster.GetErrors();
-                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                PrintArray(myMaintenanceMaster.GetErrors(),_("Cleaing master FAILED! see bellow\n"));
+            }
+            else{
+                if (beVerbose) {
+                    PrintArray(myMaintenanceMaster.GetMessages(), _("Cleaning master SUCCEED!"));
                 }
             }
         }
         
+        
         {
-            tmProjectMaintenance myMaintenanceSlave (mySlaveFileNameBkp, NULL);
+            tmProjectMaintenance myMaintenanceSlave (mySlaveFileNameBkp);
+            myMaintenanceSlave.SetVerbose(beVerbose);
             if (myMaintenanceSlave.OptimizeTables() == false) {
-                wxPrintf(_("Optimize slave FAILED! see bellow\n"));
-                wxArrayString myErrors = myMaintenanceSlave.GetErrors();
-                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                PrintArray(myMaintenanceSlave.GetErrors(), _("Optimize slave FAILED! see bellow"));
+            }
+            else{
+                if (beVerbose) {
+                    PrintArray(myMaintenanceSlave.GetMessages(), _("Optimizing slave SUCCEED!"));
                 }
             }
             
             if (myMaintenanceSlave.RepairTables() == false) {
-                wxPrintf(_("Repairing slave FAILED! see bellow\n"));
-                wxArrayString myErrors = myMaintenanceSlave.GetErrors();
-                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                PrintArray(myMaintenanceSlave.GetErrors(), _("Repairing slave FAILED! see bellow"));
+            }
+            else{
+                if (beVerbose) {
+                    PrintArray(myMaintenanceSlave.GetMessages(), _("Repairing slave SUCCEED!"));
                 }
             }
             
             if (myMaintenanceSlave.ClearOrphans() == false) {
-                wxPrintf(_("Cleaing slave FAILED! see bellow\n"));
-                wxArrayString myErrors = myMaintenanceSlave.GetErrors();
-                for (unsigned int i = 0; i< myErrors.GetCount(); i++) {
-                    wxPrintf(myErrors.Item(i) + _T("\n"));
+                PrintArray(myMaintenanceSlave.GetErrors(),_("Cleaing slave FAILED! see bellow\n"));
+            }
+            else{
+                if (beVerbose) {
+                    PrintArray(myMaintenanceSlave.GetMessages(), _("Cleaning slave SUCCEED!"));
                 }
             }
         }
-        
+        if (beVerbose) {
+            wxPrintf(_("Projects cleaned in %ld [ms]\n\n"), sw.Time());
+        }
     }
     
-    
+    sw.Start(0);
     bool bCheckOk = false;
     tmProjectMerge myCheckMerger(myMasterFileNameBkp, mySlaveFileNameBkp);
     myCheckMerger.SetVerbose(beVerbose);
@@ -243,7 +261,6 @@ int main(int argc, char **argv)
     if (beVerbose) {
         wxPrintf(_("\nCHECKING...\n"));
     }
-    wxStopWatch sw;
     if(myCheckMerger.CheckSimilar()==true){
         wxPrintf(_("OK projects are similar\n"));
         bCheckOk = true;

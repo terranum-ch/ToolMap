@@ -38,7 +38,7 @@ class tmProjectMaintenance {
     bool m_DestroyDatabase;
 
     wxArrayString _GetAllTables();
-    bool _DoCodeOnTables(const wxString & query, const wxString & errmsg);
+    bool _DoCodeOnTables(const wxString & query, const wxString & errmsg, const wxString & sucessmsg);
     bool _CleanLayerOrphansKind(const wxString & tablegeom, const wxString & tablekind);
     bool _CleanLayerOrphansAttributes(int geomtype, const wxString & generictablename);
 
