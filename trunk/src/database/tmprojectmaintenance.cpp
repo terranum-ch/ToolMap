@@ -32,7 +32,7 @@ wxArrayString tmProjectMaintenance::_GetAllTables() {
 }
 
 
-bool tmProjectMaintenance::_DoCodeOnTables(const wxString & query, const wxString & errmsg) {
+bool tmProjectMaintenance::_DoCodeOnTables(const wxString & query, const wxString & errmsg, const wxString & sucessmsg) {
     wxASSERT(m_DB);
     m_Errors.Clear();
     m_Messages.Clear();
@@ -47,6 +47,10 @@ bool tmProjectMaintenance::_DoCodeOnTables(const wxString & query, const wxStrin
     
     if (m_Errors.GetCount() > 0) {
         return false;
+    }
+    
+    if (IsVerbose()) {
+        m_Messages.Add(wxString::Format(sucessmsg, myTableNames.GetCount()));
     }
     
     return true;
@@ -133,13 +137,13 @@ tmProjectMaintenance::~tmProjectMaintenance() {
 
 
 bool tmProjectMaintenance::RepairTables() {
-    return _DoCodeOnTables(_T("REPAIR TABLE %s"), _("Repairing table '%s' failed"));
+    return _DoCodeOnTables(_T("REPAIR TABLE %s"), _("Repairing table '%s' failed"), _("Repairing %ld tables succeed!"));
 }
 
 
 
 bool tmProjectMaintenance::OptimizeTables() {
-    return _DoCodeOnTables(_T("OPTIMIZE TABLE %s"), _("Optimizing table '%s' failed!"));
+    return _DoCodeOnTables(_T("OPTIMIZE TABLE %s"), _("Optimizing table '%s' failed!"), _("Optimizing %ld tables succeed!"));
 }
 
 
