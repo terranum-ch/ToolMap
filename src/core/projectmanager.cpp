@@ -20,6 +20,7 @@
 #include "toolmap.h"
 #include "tmstats.h"
 #include "../database/database_tm.h"		// for database and TM database operations
+#include "../database/tmprojectmaintenance.h"
 
 
 IMPLEMENT_CLASS(ProjectManager, wxObject);
@@ -442,10 +443,26 @@ int ProjectManager::OpenProject(const wxString & path)
 	m_Parent->SetTitle(myTitleBarText);
 	
     // optimize project
-    if(m_DB->Optimize()==false){
+    wxString myDatabaseSizeBefore = m_DB->DataBaseGetSize();
+    tmProjectMaintenance myPrjMaintenance(wxEmptyString, m_DB);
+    if (myPrjMaintenance.OptimizeTables() == false) {
         wxLogWarning(_("Project optimization failed!"));
     }
     
+    if (myPrjMaintenance.ClearOrphans() == false) {
+        wxLogWarning(_("Cleaning orphans failed!"));
+    }
+    else{
+        wxArrayString myInfos = myPrjMaintenance.GetMessages();
+        for (unsigned int i = 0; i< myInfos.GetCount(); i++) {
+            wxLogDebug(myInfos[i]);
+        }
+    }
+    
+    wxString myDatabaseSizeActual = m_DB->DataBaseGetSize();
+    if (myDatabaseSizeBefore != myDatabaseSizeActual) {
+            wxLogMessage(_("Project size optimized from '%s' to '%s'"), myDatabaseSizeBefore, myDatabaseSizeActual);
+    }
 	return (int) mystatus;
 }
 
