@@ -74,7 +74,7 @@ def Windows():
 	"""docstring for Windows"""
 	print ("Building for Windows 7")
 	libpath = "D:\\LIB\\"
-	libname = "wxpdfdoc-0.9.2.1"
+	libname = "wxpdfdoc-0.9.3"
 	libprefix = ""
 	libwx = "D:\\LIB\\wxWIDGETS-SVN"
 	return libpath, libname, libprefix, libwx
