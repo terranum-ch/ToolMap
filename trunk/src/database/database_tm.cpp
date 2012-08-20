@@ -1428,14 +1428,17 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
         ProjectDefMemoryLayers * myLayer = myPrj->FindLayerByRealID(myLayerIndex);
         wxASSERT(myLayer);
         if (myLayer == NULL) {
+            wxLogError(_T("Layer %ld not found!"), myLayerIndex);
             continue;
         }
         ProjectDefMemoryFields * myField = myPrj->FindField(myFieldName);
         wxASSERT(myField);
         if (myField == NULL) {
+            wxLogError(_T("Field %s not found!"), myFieldName);
             continue;
         }
         // change field from default integer to enum
+        myField->m_FieldID = myFieldID;
         myField->m_FieldType = TM_FIELD_ENUMERATION;
         
         ProjectDefMemoryFieldsCodedVal * myCVal = new ProjectDefMemoryFieldsCodedVal();
@@ -1559,6 +1562,7 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields * myField,int iLayer, wxStri
             if (myFieldVal->m_ValueID == wxNOT_FOUND) {
                 continue;
             }
+            wxLogMessage(_T("Added to mix table: field: %d, value %ld, fieldname: %s "),myField->m_FieldID,myFieldVal->m_ValueID, myField->m_Fieldname);
             wxString myQ = wxString::Format(_T("REPLACE INTO %s VALUES (%d, %ld)"), TABLE_NAME_AT_MIX, myField->m_FieldID,myFieldVal->m_ValueID);
             if (DataBaseQueryNoResults(myQ) == false) {
                 return false;

@@ -1,8 +1,8 @@
 /***************************************************************************
- test_export.h
- UNIT TESTING for exporting data
+ test_tmprojectupdate2.cpp
+ UNIT TESTING for project update 
  -------------------
- copyright            : (C) 2009 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TM_TEST_PROJECT_UPDATE_H_
-#define _TM_TEST_PROJECT_UPDATE_H_
+#ifndef _TM_TEST_PROJECT_UPDATE2_H_
+#define _TM_TEST_PROJECT_UPDATE2_H_
 
 
 #include "wx/wxprec.h"
@@ -28,8 +28,9 @@
 #include "test_param.h"
 #include "../../src/core/tmprojectupdater.h"
 
+
 // =================================================================
-bool CopyDir(wxString from, wxString to) {
+bool CopyDir2(wxString from, wxString to) {
 	wxString SLASH = wxFILE_SEP_PATH;
 
 	// append a slash if there is not one (for easier parsing)
@@ -120,34 +121,34 @@ bool CopyDir(wxString from, wxString to) {
 
 
 
-class TEST_tmProjectUpdater : public CxxTest::TestSuite
+class TEST_tmProjectUpdater2 : public CxxTest::TestSuite
 {
 public:
 	//DataBaseTM * m_OriginalDB;
 	DataBaseTM * m_CopyDB;
 
-	TEST_tmProjectUpdater (bool bTest){
+	TEST_tmProjectUpdater2 (bool bTest){
 		// remove if exists
-        wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
-        if (wxDir::Exists(myDir.GetFullPath())==true) {
-            wxLogMessage(_T("Removing tempory project: '%s'"), myDir.GetFullPath());
-            myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
+        wxFileName myDir2 (g_TestPathPRJ + g_TestMigre222 + _T("_tmp"), _T(""));
+        if (wxDir::Exists(myDir2.GetFullPath())==true) {
+            wxLogMessage(_T("Removing temporary project '%s'"), myDir2.GetFullPath());
+            myDir2.Rmdir(wxPATH_RMDIR_RECURSIVE);
         }
-        TS_ASSERT(wxDir::Exists(myDir.GetFullPath()) == false);
+        TS_ASSERT(wxDir::Exists(myDir2.GetFullPath()) == false);
         
         // copy project
-		CopyDir(g_TestPathPRJ + g_TestPrj_PrjUpdate, g_TestPathPRJ + _T("tmp_testprjupdate"));
+        CopyDir2(g_TestPathPRJ + g_TestMigre222, g_TestPathPRJ + g_TestMigre222 + _T("_tmp"));
 		m_CopyDB = new DataBaseTM();
-		TS_ASSERT(m_CopyDB->OpenTMDatabase(g_TestPathPRJ +  _T("tmp_testprjupdate")));
+		TS_ASSERT(m_CopyDB->OpenTMDatabase(g_TestPathPRJ + g_TestMigre222 + _T("_tmp")));
 	}
 
 	
-	virtual ~TEST_tmProjectUpdater(){
+	virtual ~TEST_tmProjectUpdater2(){
 		wxDELETE(m_CopyDB);
 	}
 	
-	static TEST_tmProjectUpdater *createSuite() { return new TEST_tmProjectUpdater(true);}
-    static void destroySuite( TEST_tmProjectUpdater *suite ) { delete suite; }
+	static TEST_tmProjectUpdater2 *createSuite() { return new TEST_tmProjectUpdater2(true);}
+    static void destroySuite( TEST_tmProjectUpdater2 *suite ) { delete suite; }
 
 	
 	void setUp()
@@ -160,22 +161,50 @@ public:
 
 	void testName(){
 		wxLogMessage(_T("------------------------------------"));
-		wxLogMessage(_T("------- TESTING TMPROJECTUPDATER----"));
+		wxLogMessage(_T("------- TESTING TMPROJECTUPDATER2----"));
 		wxLogMessage(_T("------------------------------------"));
 	}
-	
-	void testIsUpdateNeeded1(){
-		tmProjectUpdater myPrjUpd(m_CopyDB);
-		TS_ASSERT(myPrjUpd.IsCorrectVersion() == false);
-	}
-	
-	void testUpdateOK(){
-		tmProjectUpdater myPrjUpd (m_CopyDB);
-		TS_ASSERT(myPrjUpd.IsCorrectVersion() == false);
-		TS_ASSERT_EQUALS(myPrjUpd.DoUpdate(), tmPRJ_UPD_ERROR_OK);
-		TS_ASSERT(myPrjUpd.IsCorrectVersion() == true);
-	}
     
+    
+    ProjectDefMemoryFieldsCodedVal * ReadProjectData(PrjDefMemManage * prjdef, const wxString & valuetoread){
+        TS_ASSERT(prjdef);
+        ProjectDefMemoryLayers * myLayer = prjdef->GetNextLayer();
+        TS_ASSERT (myLayer);
+        TS_ASSERT_EQUALS(myLayer->m_LayerName, _T("Boreholes_PT"));
+        
+        ProjectDefMemoryFields * myField = prjdef->GetNextField();
+        TS_ASSERT(myField);
+        TS_ASSERT_EQUALS(myField->m_Fieldname, _T("D_C_UNDERG"));
+        
+        ProjectDefMemoryFieldsCodedVal * myVal = myField->m_pCodedValueArray.Item(1);
+        TS_ASSERT(myVal);
+        TS_ASSERT_EQUALS(myVal->m_ValueCode, valuetoread);
+        TS_ASSERT_EQUALS(myVal->m_ValueName, _T("non"));
+        return myVal;
+    }
+    
+    void testUpdateMigreProject(){
+        PrjDefMemManage * myPrjDef = m_CopyDB->GetProjectDataFromDB();
+        
+        // read project
+        ProjectDefMemoryFieldsCodedVal * myVal = ReadProjectData(myPrjDef, _T("2"));
+        TS_ASSERT(myVal);
+        
+        // update val
+        myVal->m_ValueCode = _T("45a");
+        
+        // update project
+        m_CopyDB->UpdateDataBaseProject(myPrjDef);
+        wxDELETE(myPrjDef);
+        TS_ASSERT(myPrjDef==NULL);
+        
+        // reread project
+        wxLogMessage(_T("Re-reading project"));
+        myPrjDef = m_CopyDB->GetProjectDataFromDB();
+        TS_ASSERT(myPrjDef);
+        
+        ReadProjectData(myPrjDef, _T("45a"));
+   }
     
     
     
