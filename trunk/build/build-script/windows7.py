@@ -1,4 +1,9 @@
-# VARIABLES FOR BUILDING ON WINDOWS (CREALP) 
+import os
+import shutil
+
+# VARIABLES FOR BUILDING ON WINDOWS (CREALP)
+import subprocess
+
 gwxWidgets = "D:\\LIB\\wxWIDGETS-SVN" #wxWIDGETS config
 gwxWidgetsVersion = "D:\\LIB\\wxWIDGETS-SVN"
 gDirTrunk = "D:\\PRJ\\TOOLMAP2\\trunk"
@@ -11,7 +16,8 @@ gDirIncludeCxx = "D:\\LIB\\cxxtest"
 gDirPythonCxx = "D:\\LIB\\cxxtest\\bin\\cxxtestgen"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
 gDirGeos = "D:\\LIB\\geos-3.3.4"
-gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.2.1"
+gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.3"
+gDirSQLITE = "D:\\LIB\\LIB_SQLITE"
 
 
 gCmakeEnv = "Visual Studio 10" #result of cmake --help
@@ -68,3 +74,21 @@ def gCreateInstaller(svnnumner):
     installname = "InstallToolMap_r" + svnnumner + ".exe"
     shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + installname)
     return installname
+
+
+def DoPostBuildCommand():
+    """copy DLL to directories"""
+    myDll = (os.path.join(gDirGdal,"bin","gdal19.dll"), #,os.path.join(gDirGeos,"bin","Debug", "geos.dll"),
+             os.path.join(gDirGeos,"bin","Debug", "geos_c.dll"),
+             os.path.join(gDirSQL, "Embedded", "DLL", "release", "libmysqld.dll"),
+             os.path.join(gDirCurl, "lib", "DLL-Debug","libcurld.dll"),
+             os.path.join(gDirCurl, "lib", "DLL-Release","libcurl.dll"),
+             os.path.join(gDirSQLITE, "lib", "sqlite3.dll")
+        )
+
+    for dll in myDll:
+        shutil.copyfile(dll, os.path.join(gDirBin, "Debug", os.path.basename(dll)))
+        if (os.path.exists(os.path.join(gDirBin, "Release"))):
+            shutil.copyfile(dll, os.path.join(gDirBin, "Release", os.path.basename(dll)))
+
+        print ("copying: ", dll)
