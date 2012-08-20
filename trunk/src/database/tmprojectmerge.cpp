@@ -402,6 +402,22 @@ bool tmProjectMerge::CheckSimilar() {
     if (IsVerbose()){
         wxLogMessage("Checking projects: '%s' with '%s'", m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
     }
+    
+    // correct project version
+    if (m_DB->DataBaseQuery(_T("SELECT PRJ_VERSION FROM prj_settings"),true)==false) {
+        return false;
+    }
+    long myVersion = wxNOT_FOUND;
+    if (m_DB->DataBaseGetNextResult(myVersion)==false) {
+        return false;
+    }
+    m_DB->DataBaseClearResults();
+    if (myVersion != 221) {
+        m_Errors.Add(wxString::Format(_("Wrong Database version, works only for database: %d found (%ld)!"), 221, myVersion));
+        return false;
+    }
+    
+    
     // are layers similar ?
     if (_HasSameNumberRecords(m_DB, _T("thematic_layers"))==false) {
         return false;
