@@ -239,7 +239,10 @@ if (doRelease == 'Y'):
     print ("Building RELEASE DONE")
     print ("----------------------------------------------------------\n")
 
-
+try:
+    DoPostBuildCommand()
+except :
+    print("No Post Build command Available!")
 
 #
 # running all tests
