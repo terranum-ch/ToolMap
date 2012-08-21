@@ -248,12 +248,31 @@ bool tmProjectUpdater::_221to222(){
     }
     
     
+    // remove NULL values (Bug #263)
+    for (unsigned int f = 0; f< myFields.GetCount(); f++) {
+        ProjectDefMemoryFields * myF = myFields.Item(f);
+        if (myF->m_FieldType != TM_FIELD_ENUMERATION) {
+            continue;
+        }
+        
+        myQuery = _T("DELETE from %s%ld WHERE %s = \"\"");
+        if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_LAYER_AT, myLayerIndex[f], myF->m_Fieldname),true)==false) {
+            wxLogError(_("Unable to remove empty data from '%s' field"), myF->m_Fieldname);
+            continue;
+        }
+    }
+    
+    
     // STEP 3. change existing attribution
     for (unsigned int f = 0; f< myFields.GetCount(); f++) {
         ProjectDefMemoryFields * myF = myFields.Item(f);
         if (myF->m_FieldType != TM_FIELD_ENUMERATION) {
             continue;
         }
+        
+        
+        
+        
         
         // convert columns from enumeration to string
         myQuery = _T("ALTER TABLE %s%ld MODIFY %s VARCHAR(500) NULL");
