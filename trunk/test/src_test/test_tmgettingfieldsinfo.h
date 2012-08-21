@@ -99,10 +99,12 @@ public:
 		TS_ASSERT(myVect->GetFieldsValue(myValues, 1)==true);
 		TS_ASSERT_EQUALS(myValues.GetCount(),4);
 		int iTotVal = myValues.GetCount();
-		for (int i = 0; i< iTotVal; i++) {
+		/*for (int i = 0; i< iTotVal; i++) {
 			wxLogMessage(_T("Fields value %d = %s"), i, myValues.Item(i).c_str());
-		}
-		
+		}*/
+        
+        TS_ASSERT_EQUALS(myValues[1], _T("BE"));
+        TS_ASSERT_EQUALS(myValues[2], _T("Bern"));
 		wxDELETE(myVect);
 	}
 	
@@ -111,7 +113,7 @@ public:
 		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
 								  g_TestPrj_AdvAttribution, _T("generic_lines.MYD"));
 		TS_ASSERT(mySQLFileName.FileExists()==true);
-		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		//wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 		
 		// opening layer
 		TS_ASSERT(m_pDB);
@@ -132,9 +134,9 @@ public:
 		// getting fields ok because project specified
 		TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9)==true);
 		int iTotVal = myFieldsName.GetCount();
-		for (int i = 0; i< iTotVal; i++) {
+		/*for (int i = 0; i< iTotVal; i++) {
 			wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
-		}
+		}*/
 		TS_ASSERT_EQUALS(iTotVal, 10);
 		wxDELETE(myVect);
 		
@@ -147,7 +149,7 @@ public:
 		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
 								  g_TestPrj_AdvAttribution, _T("generic_lines.MYD"));
 		TS_ASSERT(mySQLFileName.FileExists()==true);
-		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		//wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 		
 		// opening layer
 		TS_ASSERT(m_pDB);
@@ -164,12 +166,18 @@ public:
 		TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 9)==true);
 		
 		int iTotVal = myFieldsValue.GetCount();
-		for (int i = 0; i< iTotVal; i++) {
-			wxLogMessage(_T("Fields value %d = %s"), i, myFieldsValue.Item(i).c_str());
-		}
-		TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 10);
-		
-		
+		/*for (int i = 0; i< iTotVal; i++) {
+		//	wxLogMessage(_T("Fields value %d = %s"), i, myFieldsValue.Item(i).c_str());
+		}*/
+        
+        TS_ASSERT_EQUALS(myFieldsValue[0], _T("1"));
+        TS_ASSERT_EQUALS(myFieldsValue[1], _T("Fault"));
+        TS_ASSERT_EQUALS(myFieldsValue[2], _T("2 | Secondary"));
+        
+        TS_ASSERT_EQUALS(myFieldsValue[7], _T("4"));
+        TS_ASSERT_EQUALS(myFieldsValue[8], _T("Campaign_10"));
+        TS_ASSERT_EQUALS(myFieldsValue[9], _T("1203"));
+ 		TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 10);
 		wxDELETE(myVect);
 	}
 	
@@ -178,7 +186,7 @@ public:
 		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
 								  g_TestPrj_AdvAttribution, _T("generic_labels.MYD"));
 		TS_ASSERT(mySQLFileName.FileExists()==true);
-		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		//wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 		
 		// opening layer
 		TS_ASSERT(m_pDB);
@@ -203,7 +211,7 @@ public:
 		wxFileName mySQLFileName (g_TestPathPRJ + wxFileName::GetPathSeparator() +
 								  g_TestPrj_AdvAttribution, _T("generic_labels.MYD"));
 		TS_ASSERT(mySQLFileName.FileExists()==true);
-		wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
+		//wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 		
 		// opening layer
 		TS_ASSERT(m_pDB);

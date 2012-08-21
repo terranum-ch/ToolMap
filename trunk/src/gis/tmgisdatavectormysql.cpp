@@ -794,6 +794,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 			wxArrayString myAdvValues;
             wxArrayString myAdvCodes;
 			if (myAttribData->GetAdvancedAttribution(myLayer,myAdvValues, myAdvCodes, oid)==true) {
+                wxASSERT(myAdvCodes.GetCount() == myAdvValues.GetCount());
 				for (unsigned int j = 0; j< myAdvValues.GetCount(); j++) {
 					if (myAdvCodes[j] != wxEmptyString) {
                         values.Add(myAdvCodes.Item(j) + _T(" | ") + myAdvValues.Item(j));
@@ -804,8 +805,6 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 				}
 			}
 		}
-		
-		
 		values.Add(_T("##<BREAK HERE>##"));
 	}
 	
