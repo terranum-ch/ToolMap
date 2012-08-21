@@ -218,9 +218,19 @@ public:
 		TS_ASSERT(m_DataLayer->GetLayers(m_pDB, myLayers));
 		TS_ASSERT_EQUALS(myLayers.GetCount(),9);
 		
-		for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
+        TS_ASSERT_EQUALS(myLayers[0]->m_LayerName,_T("Boreholes_PT"));
+        TS_ASSERT_EQUALS(myLayers[1]->m_LayerName,_T("WatOutflow_PT"));
+        TS_ASSERT_EQUALS(myLayers[2]->m_LayerName,_T("GravitFeat_PLG"));
+        TS_ASSERT_EQUALS(myLayers[3]->m_LayerName,_T("GravitFeat_L"));
+        TS_ASSERT_EQUALS(myLayers[4]->m_LayerName,_T("GlacStruct_L"));
+        TS_ASSERT_EQUALS(myLayers[5]->m_LayerName,_T("Schistosity_PT"));
+        TS_ASSERT_EQUALS(myLayers[6]->m_LayerName,_T("TectoBound_L"));
+        TS_ASSERT_EQUALS(myLayers[7]->m_LayerName,_T("Drifts_PLG"));
+        TS_ASSERT_EQUALS(myLayers[8]->m_LayerName,_T("Rocks_PLG"));
+        
+		/*for (unsigned int i = 0; i<myLayers.GetCount(); i++) {
 			wxLogMessage(_T("%d Layers name : %s"),i,myLayers.Item(i)->m_LayerName.c_str());
-		}
+		}*/
 	}
 	
 	void testListObjectValue()
@@ -283,7 +293,7 @@ public:
 		TS_ASSERT(myBuilder.IsOk()==true);
 		TS_ASSERT(myBuilder.Create(m_pDB)==true);
 		TS_ASSERT(myBuilder.Save(m_pDB));
-		wxLogMessage(_T("Saving  selected queries into database"));
+		//wxLogMessage(_T("Saving  selected queries into database"));
 		
 		// delete last added query
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
@@ -311,7 +321,7 @@ public:
 		TS_ASSERT(myBuilder.IsOk()==true);
 		TS_ASSERT(myBuilder.Create(m_pDB)==true);
 		TS_ASSERT(myBuilder.Save(m_pDB));
-		wxLogMessage(_T("Saving  selected queries into database"));
+		//wxLogMessage(_T("Saving  selected queries into database"));
 		
 		// delete last added query
 		long myLastId = m_pDB->DataBaseGetLastInsertedID();
@@ -347,9 +357,6 @@ public:
 	
 	
 	void testGetAttribValues(){
-		
-		
-		
 		m_DataSelected->m_QueryObjectGeomID = 140; // faille avec attrib avancés
 		
 		wxArrayString myValues;
@@ -360,23 +367,26 @@ public:
 												  myFields, myValues)==true);
 		TS_ASSERT_EQUALS(myFields.GetCount(), 4);
 		TS_ASSERT_EQUALS(myValues.GetCount(), 4);
-		TS_ASSERT_DIFFERS(myValues.Item(0), wxEmptyString);
-		TS_ASSERT_EQUALS(myValues.Item(0), _T("probable"));
+		TS_ASSERT_EQUALS(myValues.Item(0), _T("probable")); // probable
+        TS_ASSERT_EQUALS(myValues.Item(1), _T("majeure")); // majeure
+		TS_ASSERT_EQUALS(myValues.Item(2), _T("normale")); // normale
+		TS_ASSERT_EQUALS(myValues.Item(3), _T("1")); // 1
+
 		
-		for (unsigned int i = 0; i< myValues.GetCount(); i++) {
+		/*for (unsigned int i = 0; i< myValues.GetCount(); i++) {
 			wxLogDebug(myValues.Item(i));
-		}
+		}*/
 		
 		// deuxième fois 
 		TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB,7, 
 												  myFields, myValues)==true);
 		TS_ASSERT_EQUALS(myFields.GetCount(), 4);
 		TS_ASSERT_EQUALS(myValues.GetCount(), 4);
-		TS_ASSERT_DIFFERS(myValues.Item(0), wxEmptyString);
-		TS_ASSERT_EQUALS(myValues.Item(0), _T("probable"));
-		
-		
-	}
+        TS_ASSERT_EQUALS(myValues.Item(0), _T("probable")); // probable
+        TS_ASSERT_EQUALS(myValues.Item(1), _T("majeure")); // majeure
+		TS_ASSERT_EQUALS(myValues.Item(2), _T("normale")); // normale
+		TS_ASSERT_EQUALS(myValues.Item(3), _T("1")); // 1        
+}
 	
 	
 	
@@ -414,9 +424,9 @@ public:
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.Item(2), _T("1"));
 		TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.Item(2)->m_Fieldname, _T("Thrust_class"));
 		
-		for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
+		/*for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
 			wxLogDebug(m_DataSelected->m_QueryFieldsValues.Item(i));
-		}
+		}*/
 		
 		
 	}
@@ -433,10 +443,11 @@ public:
 												  m_DataSelected->m_QueryFields,
 												  m_DataSelected->m_QueryFieldsValues)==true);
 		TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(),false);
-		for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
+		/*
+        for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
 			wxLogDebug(m_DataSelected->m_QueryFieldsValues.Item(i));
 		}
-		
+		*/
 		
 		
 		m_DataSelected->m_QueryObjectGeomID = 140; // faille avec attrib avancés

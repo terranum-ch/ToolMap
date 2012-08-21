@@ -293,6 +293,23 @@ int tmAAttribBatchManager::Attribute(long layerid,
 	wxString myValueCleaned = wxEmptyString;
 	m_DB->DataBaseStringEscapeQuery(value, myValueCleaned);
 	
+    // if enumeration, insert ID instead of text value
+    if (field.m_FieldType == TM_FIELD_ENUMERATION) {
+        for (unsigned int i = 0; i< field.m_pCodedValueArray.GetCount(); i++) {
+            ProjectDefMemoryFieldsCodedVal * myVal = field.m_pCodedValueArray[i];
+            wxASSERT(myVal);
+            if (myVal->m_ValueName == value) {
+                myValueCleaned = wxEmptyString;
+                myValueCleaned << myVal->m_ValueID;
+                break;
+            }
+        }
+        if (myValueCleaned == wxEmptyString) {
+            wxLogError(_("Unable to found: '%s' value, attribution aborted!"), value);
+            return wxNOT_FOUND;
+        }
+    }
+    
 	
 	wxString myQuery = wxEmptyString;
 	for (unsigned int i = 0; i<mySubSet.GetCount(); i++) {

@@ -792,61 +792,24 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer, 
         myResults[f+1].ToLong(&myCatalogID);
         wxASSERT(myCatalogID != wxNOT_FOUND);
         
-        wxString myQuery = wxString::Format(_T("SELECT CODE, DESCRIPTION_0 FROM %s WHERE CATALOG_ID = %ld"), TABLE_NAME_AT_CATALOG, myCatalogID);
-        if (m_pDB->DataBaseQuery(myQuery)==false) {
-            codes.Add(wxString::Format(_T("%d"),wxNOT_FOUND));
-            values.Add(_("Error!"));
-            continue;
-        }
-        wxArrayString myCatalogResults;
-        if(m_pDB->DataBaseGetNextResult(myCatalogResults)==false){
-            codes.Add(wxString::Format(_T("%d"),wxNOT_FOUND));
-            values.Add(_("Error!"));
-            m_pDB->DataBaseClearResults();
-            continue;
-            
+        // get code and description from memory
+        wxString myCode = _T("-1");
+        wxString myValue = _T("Error!");
+        
+        for (unsigned int i = 0; i< myField->m_pCodedValueArray.GetCount(); i++) {
+            ProjectDefMemoryFieldsCodedVal * myVal = myField->m_pCodedValueArray[i];
+            wxASSERT(myVal);
+            if (myVal->m_ValueID == myCatalogID) {
+                myCode = myVal->m_ValueCode;
+                myValue = myVal->m_ValueName;
+                break;
+            }
         }
         
-        wxASSERT(myCatalogResults.GetCount() == 2);
-        codes.Add(myCatalogResults.Item(0));
-        values.Add(myCatalogResults.Item(1));
-        m_pDB->DataBaseClearResults();
+        codes.Add(myCode);
+        values.Add(myValue);
     }
-	
     return true;
-    
-    /*
-    
-    // if results, parse them. If fields is not enum: get value as string
-    // we get only ID, needs now to convert them into code and description
-    wxArrayLong myCatalogIDs;
-    bool bResult = m_pDB->DataBaseGetNextResult(myCatalogIDs);
-    wxASSERT(bResult);
-    m_pDB->DataBaseClearResults();
-    wxString myQuery = wxString::Format(_T("SELECT CODE, DESCRIPTION_0 FROM %s WHERE CATALOG_ID = %ld"), TABLE_NAME_AT_CATALOG, );
-    for (unsigned int i = 1; i< myCatalogIDs.GetCount(); i++) {
-        myQuery.Append(wxString::Format(_T("%ld,"),myCatalogIDs.Item(i)));
-    }
-    myQuery.RemoveLast();
-    myQuery.Append(_T(")"));
-    
-    if (m_pDB->DataBaseQuery(myQuery)==false) {
-        for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++){
-            values.Add(wxEmptyString);
-            codes.Add(wxEmptyString);
-        }
-        return false;
-    }
-    
-    wxArrayString myResults;
-    while (m_pDB->DataBaseGetNextResult(myResults)==true) {
-        wxASSERT(myResults.GetCount() == 2);
-        codes.Add(myResults.Item(0));
-        values.Add(myResults.Item(1));
-    }
-    m_pDB->DataBaseClearResults();
-	
-	return true;*/
 }
 
 
