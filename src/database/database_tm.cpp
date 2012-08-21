@@ -1491,7 +1491,50 @@ bool DataBaseTM::GetFields (PrjMemFieldArray & fieldarray, ProjectDefMemoryLayer
 		fieldarray.Add(myField);
 	}
 	DataBaseClearResults();
-	return true;
+   
+    // get enumeration for all fields list (enumeration)
+    wxASSERT(actuallayer);
+    wxString myQ = wxString::Format(_T("select l.ATTRIBUT_ID, l.LAYER_INDEX, l.ATTRIBUT_NAME, c.CATALOG_ID, c.CODE, c.DESCRIPTION_0  FROM %s l LEFT JOIN  (%s c, %s m) ON (l.ATTRIBUT_ID = m.ATTRIBUT_ID AND m.CATALOG_ID = c.CATALOG_ID) WHERE l.LAYER_INDEX=%d ORDER BY l.ATTRIBUT_ID"), TABLE_NAME_AT_LIST, TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX, actuallayer->m_LayerID);
+    if (DataBaseQuery(myQ) == false) {
+        return false;
+    }
+    
+    DataBaseResult myResult;
+    DataBaseGetResults(&myResult);
+    
+    while (myResult.NextRow()) {
+        long myFieldID = wxNOT_FOUND;
+        long myLayerIndex = wxNOT_FOUND;
+        wxString myFieldName;
+        long myEnumID = wxNOT_FOUND;
+        wxString myEnumCode;
+        wxString myEnumName;
+        
+        wxASSERT(myResult.GetColCount() == 6);
+        myResult.GetValue(0, myFieldID);
+        myResult.GetValue(1, myLayerIndex);
+        myResult.GetValue(2, myFieldName);
+        myResult.GetValue(3, myEnumID);
+        myResult.GetValue(4, myEnumCode);
+        myResult.GetValue(5, myEnumName);
+        
+        for (unsigned int f = 0; f < fieldarray.GetCount(); f++) {
+            ProjectDefMemoryFields * myField = fieldarray[f];
+            wxASSERT(myField);
+            if (myField->m_Fieldname == myFieldName) {
+                myField->m_FieldID = myFieldID;
+                myField->m_FieldType = TM_FIELD_ENUMERATION;
+                
+                ProjectDefMemoryFieldsCodedVal * myCVal = new ProjectDefMemoryFieldsCodedVal();
+                myCVal->m_ValueID = myEnumID;
+                myCVal->m_ValueCode = myEnumCode;
+                myCVal->m_ValueName = myEnumName;
+                myField->m_pCodedValueArray.Add(myCVal);
+                break;
+            }
+        }
+    }
+    return true;
 }
 
 

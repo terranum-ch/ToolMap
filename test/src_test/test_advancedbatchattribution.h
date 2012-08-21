@@ -95,13 +95,24 @@ public:
 		TS_ASSERT(myManager.GetTypes(myObjects, myNumber, myLayerId));
 		TS_ASSERT(myObjects.GetCount() == myNumber.GetCount());
 		TS_ASSERT(myNumber.GetCount() == myLayerId.GetCount());
-		for (unsigned int i = 0; i< myObjects.GetCount(); i++) {
+        
+        TS_ASSERT_EQUALS(myObjects[0]->m_ObjectID, 1);
+        TS_ASSERT_EQUALS(myObjects[0]->m_ObjectName, _T("Fault"));
+        TS_ASSERT_EQUALS(myNumber[0], 2);
+        TS_ASSERT_EQUALS(myLayerId[0], 1);
+        
+        TS_ASSERT_EQUALS(myObjects[1]->m_ObjectID, 3);
+        TS_ASSERT_EQUALS(myObjects[1]->m_ObjectName, _T("Border of Hazards_PLG"));
+        TS_ASSERT_EQUALS(myNumber[1], 3);
+        TS_ASSERT_EQUALS(myLayerId[1], 2);
+
+        /*for (unsigned int i = 0; i< myObjects.GetCount(); i++) {
 			wxLogMessage(_T("%ld - %s (%d) - %ld"),
 						 myObjects.Item(i)->m_ObjectID,
 						 myObjects.Item(i)->m_ObjectName.c_str(),
 						 myNumber.Item(i),
 						 myLayerId.Item(i));
-		}
+		}*/
 		
 	}
 	
@@ -115,32 +126,32 @@ public:
 		mySelected->Add(3);
 		mySelected->Add(10);
 		mySelData.AddSelected(mySelected);
-		
 		tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData, LAYER_LINE);	
 		
 		// Field 1 is TectoBound_L
 		PrjMemFieldArray myFields;
 		TS_ASSERT(myManager.GetFields(1, myFields));
 		
-		for (unsigned int i = 0; i< myFields.GetCount(); i++) {
+		/*for (unsigned int i = 0; i< myFields.GetCount(); i++) {
 			wxLogMessage(_T("%d - %s"),
 						 myFields.Item(i)->m_FieldID,
 						 myFields.Item(i)->m_Fieldname.c_str());
-		}
-		
+		}*/
+        
+        TS_ASSERT_EQUALS(myFields[0]->m_FieldID, 1);
+        TS_ASSERT_EQUALS(myFields[0]->m_Fieldname, _T("TYPE"));
+        TS_ASSERT_EQUALS(myFields.GetCount(), 1);
 		
 		// layer 2 is Border of Rocks (no field should be returned
 		// because of different spatial type
 		TS_ASSERT(myManager.GetFields(2, myFields)==false);
 		TS_ASSERT(myFields.GetCount() == 0);
-		
-		
-		
 	}
 	
+    
 	
 	void testAttribute(){
-		wxLogMessage(_T("Testing attribute from Advanced batch attribution"));
+		//wxLogMessage(_T("Testing attribute from Advanced batch attribution"));
 		
 		tmSelectedDataMemory mySelData;
 		mySelData.SetLayerID(0);	// line ??
@@ -157,9 +168,11 @@ public:
 		ProjectDefMemoryFields myTestField = *(myFields.Item(0));
 		TS_ASSERT(myTestField.m_Fieldname == _T("TYPE"));
 		
+        
 		// try attribution
 		int attributedObjects = myManager.Attribute(1, myTestField, _T("Secondary"));
 		TS_ASSERT_EQUALS(attributedObjects, 2);
+        
 	}
 		
 };

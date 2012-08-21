@@ -98,7 +98,7 @@ public:
 		wxArrayString myValues;
 		TS_ASSERT(myVect->GetFieldsValue(myValues, 1)==true);
 		TS_ASSERT_EQUALS(myValues.GetCount(),4);
-		int iTotVal = myValues.GetCount();
+		//int iTotVal = myValues.GetCount();
 		/*for (int i = 0; i< iTotVal; i++) {
 			wxLogMessage(_T("Fields value %d = %s"), i, myValues.Item(i).c_str());
 		}*/
@@ -165,7 +165,7 @@ public:
 		TS_ASSERT_EQUALS(myFieldsValue.GetCount(),0);
 		TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 9)==true);
 		
-		int iTotVal = myFieldsValue.GetCount();
+		//int iTotVal = myFieldsValue.GetCount();
 		/*for (int i = 0; i< iTotVal; i++) {
 		//	wxLogMessage(_T("Fields value %d = %s"), i, myFieldsValue.Item(i).c_str());
 		}*/
