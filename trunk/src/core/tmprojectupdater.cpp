@@ -271,9 +271,6 @@ bool tmProjectUpdater::_221to222(){
         }
         
         
-        
-        
-        
         // convert columns from enumeration to string
         myQuery = _T("ALTER TABLE %s%ld MODIFY %s VARCHAR(500) NULL");
         if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_LAYER_AT, myLayerIndex.Item(f), myF->m_Fieldname))==false) {

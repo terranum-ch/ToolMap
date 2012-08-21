@@ -96,6 +96,22 @@ bool QueriesBuilder::_CreateSelectionQuery() {
 														 m_QueryData->m_QueryFields.Item(i)->m_Fieldname.c_str(),
 														 m_QueryData->m_QueryFieldsValues.Item(i).c_str()));
 						break;
+                        
+                    case TM_FIELD_ENUMERATION:
+                    {
+                        long myValID = wxNOT_FOUND;
+                        for (unsigned int c = 0; c< m_QueryData->m_QueryFields[i]->m_pCodedValueArray.GetCount(); c++) {
+                            ProjectDefMemoryFieldsCodedVal * myCVal = m_QueryData->m_QueryFields[i]->m_pCodedValueArray[c];
+                            wxASSERT(myCVal);
+                            if (myCVal->m_ValueName == m_QueryData->m_QueryFieldsValues[i]) {
+                                myValID = myCVal->m_ValueID;
+                                break;
+                            }
+                        }
+                        myBaseQuery.Append(wxString::Format(_T(" layer.%s = %ld AND"), m_QueryData->m_QueryFields.Item(i)->m_Fieldname, myValID));
+                    }
+                        
+                        break;
 						
 						
 					default:
