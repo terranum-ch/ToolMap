@@ -761,8 +761,9 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer, 
     codes.Clear();
     wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"),
 									   layer->m_LayerID, selected);
-	if (m_pDB->DataBaseQuery(sQuery)==false)
+	if (m_pDB->DataBaseQuery(sQuery)==false){
 		return false;
+    }
 	
 	// no results, fill array with empty strings
 	if (m_pDB->DataBaseHasResults()==false){
@@ -770,23 +771,25 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer, 
 			values.Add(wxEmptyString);
             codes.Add(wxEmptyString);
 		}
-        return false;
+        return true;
 	}
     
     wxArrayString myResults;
-    m_pDB->DataBaseGetResults(myResults);
-    wxASSERT(myResults.GetCount() == layer->m_pLayerFieldArray.GetCount()+1);
+    m_pDB->DataBaseGetNextResult(myResults);
+    m_pDB->DataBaseClearResults();
+    wxASSERT(myResults.GetCount()-1 == layer->m_pLayerFieldArray.GetCount());
     
-    for (unsigned int f = 1; f < layer->m_pLayerFieldArray.GetCount(); f++) {
+    for (unsigned int f = 0; f < layer->m_pLayerFieldArray.GetCount(); f++) {
         ProjectDefMemoryFields * myField = layer->m_pLayerFieldArray[f];
         wxASSERT(myField);
         if (myField->m_FieldType != TM_FIELD_ENUMERATION) {
-            values.Add(myResults[f]);
+            values.Add(myResults[f+1]);
+            codes.Add(wxEmptyString);
             continue;
         }
         
         long myCatalogID = wxNOT_FOUND;
-        myResults[f].ToLong(&myCatalogID);
+        myResults[f+1].ToLong(&myCatalogID);
         wxASSERT(myCatalogID != wxNOT_FOUND);
         
         wxString myQuery = wxString::Format(_T("SELECT CODE, DESCRIPTION_0 FROM %s WHERE CATALOG_ID = %ld"), TABLE_NAME_AT_CATALOG, myCatalogID);
