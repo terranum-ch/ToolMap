@@ -73,7 +73,7 @@ class ListGenReport : public wxListCtrl
 		// events
 		virtual void OnDoubleClickItem (wxListEvent & event);
 		virtual void OnPressBackSpace (wxListEvent & event);
-		void OnContextMenu (wxListEvent & event);
+		virtual void OnContextMenu (wxListEvent & event);
 		void OnMoveItemInList (wxCommandEvent & event);
 		virtual void OnSortColumns (wxListEvent & event);
 		
@@ -188,6 +188,8 @@ class ListGenReport : public wxListCtrl
 		 @date 20 November 2007
 		 *************************************************/
 		long GetSelectedItem ();
+        
+        void SetSelectedItem (long index);
 		
 		/***************************************************************************//**
 		 @brief Get all selected item

@@ -251,7 +251,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_STATISTICS, ToolMapFrame::OnStatisticsDialog)
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
-	EVT_MENU (ID_MENU_QUERIES_RUN, ToolMapFrame::OnQueriesRun)
+	// queries event are binded :-)
 
 	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
 	EVT_MENU (ID_MENU_REPORT_BUG, ToolMapFrame::OnReportBug)
@@ -318,7 +318,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_NONE, ID_MENU_SELECT_INVERSE, ToolMapFrame::OnUpdateMenuEditClearSelection)
 
 	EVT_UPDATE_UI (ID_MENU_QUERIES, ToolMapFrame::OnUpdateMenuShowQuery)
-	EVT_UPDATE_UI (ID_MENU_QUERIES_RUN, ToolMapFrame::OnUpdateMenuEditQueryRun)
+	EVT_UPDATE_UI (ID_QUERIES_RUN, ToolMapFrame::OnUpdateMenuEditQueryRun)
+    EVT_UPDATE_UI (ID_QUERIES_REMOVE, ToolMapFrame::OnUpdateMenuEditQueryRun)
+    EVT_UPDATE_UI (ID_QUERIES_ADD, ToolMapFrame::OnUpdateMenuEditQueryAdd)
 
 	EVT_UPDATE_UI (ID_MENU_TOC_WINDOW, ToolMapFrame::OnUpdateMenuShowTOC)
 	EVT_UPDATE_UI (ID_MENU_LOG_WINDOW, ToolMapFrame::OnUpdateMenuShowLog)
@@ -441,6 +443,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	m_PManager->SetStatManager(m_StatManager);
 
 	m_QueriesPanel->SetSelectedData(m_LayerManager->GetSelectedDataMemory());
+    m_QueriesPanel->SetTOCCtrl(m_TocWindow->GetTOCCtrl());
 
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
@@ -454,6 +457,12 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnDisplayAttributesAuto, m_AttribObjPanel, ID_CTXT_AUTODISPLAY_ATTRIB);
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnEmptyListAffterAttributes, m_AttribObjPanel, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB);
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnFullAttribution, m_AttribObjPanel, ID_CTXT_FULL_ATTRIB);
+    
+    wxASSERT(m_QueriesPanel);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnAddQueries,m_QueriesPanel, ID_QUERIES_ADD);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRemoveQueries,m_QueriesPanel, ID_QUERIES_REMOVE);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRunQueries,m_QueriesPanel, ID_QUERIES_RUN);
+
 
 }
 
@@ -465,7 +474,12 @@ ToolMapFrame::~ToolMapFrame()
 	this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnEmptyListAffterAttributes, m_AttribObjPanel, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB);
 	this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnFullAttribution, m_AttribObjPanel, ID_CTXT_FULL_ATTRIB);
 
+    wxASSERT(m_QueriesPanel);
+    this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnAddQueries,m_QueriesPanel, ID_QUERIES_ADD);
+    this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRemoveQueries,m_QueriesPanel, ID_QUERIES_REMOVE);
+    this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRunQueries,m_QueriesPanel, ID_QUERIES_RUN);
 
+    
 
 	// close project
 	m_PManager->CloseProject();
@@ -647,8 +661,12 @@ void ToolMapFrame::_CreateMenu()
 
     // VALIDATION
     wxMenu* itemMenu63 = new wxMenu;
-    itemMenu63->Append(ID_MENU_QUERIES, _("Edit queries..."), wxEmptyString, wxITEM_CHECK);
-	itemMenu63->Append(ID_MENU_QUERIES_RUN, _("Run selected query\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu63->Append(ID_MENU_QUERIES, _("Queries Panel..."), wxEmptyString, wxITEM_CHECK);
+    itemMenu63->AppendSeparator();
+    itemMenu63->Append(ID_QUERIES_ADD, _("New query..."));
+    itemMenu63->Append(ID_QUERIES_REMOVE, _("Remove selected query..."));
+    itemMenu63->AppendSeparator();
+	itemMenu63->Append(ID_QUERIES_RUN, _("Run selected query\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
 	itemMenu63->AppendSeparator();
@@ -686,6 +704,7 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu81->Append(ID_MENU_ASK_NEW_FEATURE, _("Ask for a new feature..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu81, _("&Help"));
     this->SetMenuBar(menuBar);
+        
 }
 
 
@@ -931,14 +950,17 @@ void ToolMapFrame::OnShowQueriesWindow (wxCommandEvent & event)
 }
 
 
-
-void ToolMapFrame::OnQueriesRun (wxCommandEvent & event){
+/*
+void ToolMapFrame::OnQueriesAction (wxCommandEvent & event){
 	// sent event to the queries manager
-	wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt2);
-
+	if (m_QueriesPanel == NULL) {
+        return;
+    }
+    
+    wxASSERT(m_QueriesPanel);
+    m_QueriesPanel->ProcessEvent(event);
 }
-
+*/
 
 
 /***************************************************************************//**
@@ -1839,6 +1861,12 @@ void ToolMapFrame::OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event){
 void ToolMapFrame::OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event){
 	wxASSERT(m_QueriesPanel);
 	event.Enable(m_QueriesPanel->IsQuerySelected());
+}
+
+
+void ToolMapFrame::OnUpdateMenuEditQueryAdd (wxUpdateUIEvent & event){
+    wxASSERT(m_PManager);
+	event.Enable(m_PManager->IsProjectOpen());
 }
 
 
