@@ -200,7 +200,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_SELECT_NONE 10160
 #define ID_MENU_SELECT_INVERSE 10161
 #define ID_MENU_QUERIES 10019
-#define ID_MENU_QUERIES_RUN 10020
+//#define ID_MENU_QUERIES_RUN 10020
 #define ID_MENUITEM11 10046
 #define ID_MENUITEM12 10047
 #define ID_MENU_TOC_WINDOW 10037
@@ -310,7 +310,6 @@ private:
 	void OnTocWindow (wxCommandEvent & event);
 	void OnShowObjectAttributionWindow (wxCommandEvent & event);
 	void OnShowQueriesWindow (wxCommandEvent & event);
-	void OnQueriesRun (wxCommandEvent & event);
 	void OnProjectBackup (wxCommandEvent & event);
     void OnProjectBackupManage (wxCommandEvent & event);
 	void OnProjectSaveTemplate (wxCommandEvent & event);
@@ -383,6 +382,7 @@ private:
 	void OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event);
+    void OnUpdateMenuEditQueryAdd (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowSnapping (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowShortcuts (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowQuery (wxUpdateUIEvent & event);

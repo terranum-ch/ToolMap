@@ -30,20 +30,20 @@
 #include "../core/queriesbuilder.h"		// for query builder
 
 class DataBaseTM;
+class Queries_PANEL;
 
-#define ID_QUERIESEDITOR 10049
-#define ID_QUERIES_LIST 10051
-#define ID_QUERIES_ADD 10052
-#define ID_QUERIES_REMOVE 10064
-#define ID_QUERIES_RUN 10236
-#define ID_BUTTON 10000
-#define ID_STATUSBAR1 10065
+const int ID_QUERIESEDITOR = 10049;
+const int ID_QUERIES_LIST = 10051;
+const int ID_QUERIES_ADD = 10052;
+const int ID_QUERIES_REMOVE = 10064;
+const int ID_QUERIES_RUN = 10236;
+const int ID_QUERIES_APPLY_SYMBOLOGY = 10066;
+const int ID_QUERIES_EDIT = 10067;
 #define SYMBOL_QUERIES_PANEL_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
-#define SYMBOL_QUERIES_PANEL_TITLE _("Query Editor")
+#define SYMBOL_QUERIES_PANEL_TITLE _("Queries")
 #define SYMBOL_QUERIES_PANEL_IDNAME ID_QUERIESEDITOR
 #define SYMBOL_QUERIES_PANEL_SIZE wxSize(200, 100)
 #define SYMBOL_QUERIES_PANEL_POSITION wxDefaultPosition
-
 
 DECLARE_EVENT_TYPE(tmEVT_QUERY_MENU,-1)
 
@@ -53,20 +53,22 @@ class QueriesList : public ListGenReportWithDialog
 private:
 	DataBaseTM * m_pDB;
 	tmSelectedDataMemory * m_Selected;
+    Queries_PANEL * m_QueryPanel;
 	
 	virtual void BeforeAdding();
 	virtual void AfterAdding (bool bRealyAddItem);
 	virtual void BeforeDeleting ();
 	virtual void BeforeEditing ();
 	virtual void AfterEditing (bool bRealyEdited);
+    
+    virtual void OnDoubleClickItem (wxListEvent & event);
+    virtual void OnContextMenu (wxListEvent & event);
+    void OnQueryEdit (wxCommandEvent & event);
+    DECLARE_EVENT_TABLE();
 	
 protected:
 public:
-	QueriesList (wxWindow * parent,
-				 wxWindowID id,
-				 wxArrayString * pColsName, 
-				 wxArrayInt * pColsSize=NULL,
-				 wxSize size = wxDefaultSize);
+	QueriesList (wxWindow * parent, Queries_PANEL * queryparent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL,wxSize size = wxDefaultSize);
 	~QueriesList();
 	
 	// setter
@@ -92,17 +94,13 @@ private:
 	QueriesList* m_QueriesList;
 	wxWindow * m_ParentEvt;
 	bool m_IsProjectOpen;
-	
+	tmTOCCtrl * m_TOC;
 	
 	/// Initialises member variables
     void InitMemberValues();
 	
 	// event function
-	void OnAddQueries (wxCommandEvent & event);
-	void OnRemoveQueries (wxCommandEvent & event);
-	void OnRunQueries (wxCommandEvent & event);
 	void OnPressQueryMenu (wxCommandEvent & event);
-	
 	
     DECLARE_EVENT_TABLE()
 
@@ -110,8 +108,11 @@ public:
     /// Constructors
     Queries_PANEL(  wxWindow* parent, wxWindowID id, wxAuiManager * auimanager);
 
-    /// Creation
-   // bool Create( wxWindow* parent, wxWindowID id, wxAuiManager * auimanager);
+    // public event function
+    void OnAddQueries (wxCommandEvent & event);
+	void OnRemoveQueries (wxCommandEvent & event);
+	void OnRunQueries (wxCommandEvent & event);
+    void OnQueryApplySymbology (wxCommandEvent & event);
 
     /// Destructor
     ~Queries_PANEL();
@@ -124,6 +125,7 @@ public:
 	
 	void SetDataBase (DataBaseTM * database);
 	void SetSelectedData (tmSelectedDataMemory * selected);
+    void SetTOCCtrl (tmTOCCtrl * toc){m_TOC = toc;}
 	
 	bool LoadQueries (DataBaseTM * database);
 	void EnableQueriesPanel (bool projectopen = true);

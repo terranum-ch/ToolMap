@@ -428,12 +428,29 @@ tmLayerProperties * tmTOCCtrl::GetLayerById (long layerid)
 	for (unsigned int i = 0; i<GetCountLayers();i++)
 	{
 		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
-		if (myIteratedLayer && myIteratedLayer->GetID() == layerid)
+		if (myIteratedLayer && myIteratedLayer->GetID() == layerid){
 			myReturnedLayer = myIteratedLayer;
-		
+            break;
+        }
 		bReset = false;
 	}
-	
+	return myReturnedLayer;
+}
+
+
+
+tmLayerProperties * tmTOCCtrl::GetLayerByName (const wxString & layername){
+    bool bReset = true;
+	tmLayerProperties * myReturnedLayer = NULL;
+	for (unsigned int i = 0; i<GetCountLayers();i++)
+	{
+		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
+		if (myIteratedLayer && myIteratedLayer->GetName() == layername){
+			myReturnedLayer = myIteratedLayer;
+            break;
+        }
+		bReset = false;
+	}
 	return myReturnedLayer;
 }
 

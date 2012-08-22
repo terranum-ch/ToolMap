@@ -339,6 +339,22 @@ long ListGenReport::GetSelectedItem()
 }
 
 
+
+void ListGenReport::SetSelectedItem (long index){
+    // unselecting all
+    Freeze();
+    for (int i = 0; i<GetItemCount(); i++) {
+        SetItemState(i, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
+    }
+    
+    // selecting query
+    SetItemState(index, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    Thaw();
+
+}
+
+
+
 int ListGenReport::GetAllSelectedItem(wxArrayLong & results)
 {
 	

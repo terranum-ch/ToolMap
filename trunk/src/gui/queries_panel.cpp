@@ -29,6 +29,8 @@
 #include "queries_panel.h"
 #include "querieswizard.h"
 #include "../database/database_tm.h"	// for database support
+#include "../gis/tmsymbolvectorlinemultiple.h"
+#include "../gis/tmsymbolvectorpointmultiple.h"
 
 
 
@@ -38,9 +40,9 @@ DEFINE_EVENT_TYPE(tmEVT_QUERY_MENU)
 
 BEGIN_EVENT_TABLE( Queries_PANEL, ManagedAuiWnd )
 	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_MENU, Queries_PANEL::OnPressQueryMenu)
-	EVT_FLATBUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
-	EVT_FLATBUTTON(ID_QUERIES_REMOVE,Queries_PANEL::OnRemoveQueries)
-	EVT_FLATBUTTON(ID_QUERIES_RUN, Queries_PANEL::OnRunQueries)
+//	EVT_FLATBUTTON(ID_QUERIES_ADD, Queries_PANEL::OnAddQueries)
+//	EVT_FLATBUTTON(ID_QUERIES_REMOVE,Queries_PANEL::OnRemoveQueries)
+//	EVT_FLATBUTTON(ID_QUERIES_RUN, Queries_PANEL::OnRunQueries)
 END_EVENT_TABLE()
 
 
@@ -58,6 +60,7 @@ Queries_PANEL::Queries_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * au
 	
 	m_ParentEvt = parent;
 	m_ParentEvt->PushEventHandler(this);
+    m_TOC = NULL;
 	
 	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
 	CreateControls(ContentFrame);	
@@ -121,11 +124,10 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
 	wxArrayInt colsize;
 	colsize.Add(200);
 	
-    m_QueriesList = new QueriesList( parent, ID_QUERIES_LIST,
-												 &colname, & colsize,
-												 wxSize(100, 100));
+    m_QueriesList = new QueriesList( parent, this, ID_QUERIES_LIST, &colname, & colsize,wxSize(100, 100));
     itemBoxSizer2->Add(m_QueriesList, 1, wxGROW,0);//|wxTOP|wxBOTTOM, 5);
 
+    /*
     wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer2->Add(itemBoxSizer5, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
@@ -137,7 +139,7 @@ wxSizer * Queries_PANEL::CreateControls(wxWindow * parent,
 
     wxFlatButton* itemToggleButton8 = new wxFlatButton( parent, ID_QUERIES_RUN, _("Run"), wxDefaultSize);
     itemBoxSizer5->Add(itemToggleButton8, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
-
+*/
 	
 	if (set_sizer)
     {
@@ -307,6 +309,71 @@ void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 
 }
 
+
+
+void Queries_PANEL::OnQueryApplySymbology (wxCommandEvent & event){
+    // get queries info
+    int myQid = m_QueriesList->GetItemData(m_QueriesList->GetSelectedItem());
+	wxString myQName = wxEmptyString;
+	wxString myQCode =wxEmptyString;
+	int myQTarget = 0;
+	
+	if (m_pDB->GetQueriesById(myQid, myQTarget, myQName, myQCode) == false){
+        wxLogError(_("Getting info for query : %ld failed!"), myQid);
+        return;
+    }
+    
+    wxASSERT(m_TOC);
+    wxString myTargetLayerName = TOC_GENERIC_NAME_STRING[myQTarget];
+    tmLayerProperties * myLayerProperties = m_TOC->GetLayerByName(myTargetLayerName);
+    if (myLayerProperties == NULL) {
+        wxLogError(_("Layer '%s' not found"), myTargetLayerName);
+        return;
+    }
+    
+    switch (myQTarget) {
+        case 0: // lines
+        {
+            tmSymbolVectorLineMultiple * pSymbol = (tmSymbolVectorLineMultiple*) myLayerProperties->GetSymbolRef();
+            if(pSymbol->GetSelectedSymbology() == 0){
+                wxDELETE(pSymbol); // delete single symbology and replace it
+                tmSymbolVectorLineMultiple * mySymbol = new tmSymbolVectorLineMultiple();
+                mySymbol->GetSymbology()->m_QueryID = myQid;
+                mySymbol->GetSymbology()->m_PanelNo = 1;
+                myLayerProperties->SetSymbolDirectly(mySymbol);
+            }else {
+                pSymbol->GetSymbology()->m_QueryID = myQid;
+            }
+        }
+            break;
+            
+        case 1: // points
+        case 2: // labels
+        {
+            tmSymbolVectorPointMultiple * pSymbol = (tmSymbolVectorPointMultiple*) myLayerProperties->GetSymbolRef();
+            if(pSymbol->GetSelectedSymbology() == 0){
+                wxDELETE(pSymbol); // delete single symbology and replace it
+                tmSymbolVectorPointMultiple * mySymbol = new tmSymbolVectorPointMultiple();
+                mySymbol->GetSymbology()->m_QueryID = myQid;
+                mySymbol->GetSymbology()->m_PanelNo = 1;
+                myLayerProperties->SetSymbolDirectly(mySymbol);
+            }else {
+                pSymbol->GetSymbology()->m_QueryID = myQid;
+            }
+        }
+            break;
+            
+        default:
+            wxLogError(_("Aplying symbology for target : %d isn't supported!"), myQTarget);
+            break;
+    }
+    
+    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+    
+}
+
+
 				 
 void Queries_PANEL::OnPressQueryMenu (wxCommandEvent & event){
 	wxCommandEvent myEmptyEvent;
@@ -316,20 +383,25 @@ void Queries_PANEL::OnPressQueryMenu (wxCommandEvent & event){
 
 
 
+BEGIN_EVENT_TABLE(QueriesList, ListGenReportWithDialog)
+EVT_MENU(ID_QUERIES_EDIT, QueriesList::OnQueryEdit)
+END_EVENT_TABLE()
+
+
 /***************************************************************************//**
  @brief Constructor
  @author Lucien Schreiber (c) CREALP 2008
  @date 09 November 2008
  *******************************************************************************/
-QueriesList::QueriesList (wxWindow * parent,
-						  wxWindowID id,
-						  wxArrayString * pColsName, 
-						  wxArrayInt * pColsSize,
-						  wxSize size) :
-ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
+QueriesList::QueriesList (wxWindow * parent,Queries_PANEL * queryparent,wxWindowID id,wxArrayString * pColsName,wxArrayInt * pColsSize,wxSize size) : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
 	m_Selected = NULL;
 	m_pDB = NULL;
+    wxASSERT(queryparent);
+    m_QueryPanel = queryparent;
+    
+    // bind contextual menu
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnQueryApplySymbology, m_QueryPanel, ID_QUERIES_APPLY_SYMBOLOGY);
 }
 
 
@@ -339,9 +411,8 @@ ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
  @author Lucien Schreiber (c) CREALP 2008
  @date 09 November 2008
  *******************************************************************************/
-QueriesList::~QueriesList()
-{
-	
+QueriesList::~QueriesList(){
+    /*this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnQueryApplySymbology, m_QueryPanel, ID_QUERIES_APPLY_SYMBOLOGY);*/
 }
 
 
@@ -440,21 +511,10 @@ void QueriesList::AfterAdding (bool bRealyAddItem)
 			SetItemData(GetItemCount()-1, myID);
 			
 			if (pWizard->GetData()->m_QueryRun == true) {
-				
-				// unselecting all
-				Freeze();
-				for (int i = 0; i<GetItemCount(); i++) {
-					SetItemState(i, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
-				}
-				
-				// selecting query
-				SetItemState(GetItemCount()-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-				Thaw();
-				
-				// running
-				wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
-				GetEventHandler()->AddPendingEvent(evt2);
-			}
+                SetSelectedItem(GetItemCount()-1);
+ 				wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
+                GetEventHandler()->QueueEvent(evt2.Clone());
+            }
 		}
 	}
 	
@@ -545,10 +605,60 @@ void QueriesList::AfterEditing (bool bRealyEdited)
         }
 		
 	}
+}
+
+
+
+void QueriesList::OnDoubleClickItem (wxListEvent & event){
+    // Run selected query
+    //SetSelectedItem(event.GetIndex());
+    wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt2.Clone());
+    event.Skip();
+}
+
+
+void QueriesList::OnContextMenu (wxListEvent & event){
+    wxMenu* myPopupMenu = new wxMenu;
+    myPopupMenu->Append(ID_QUERIES_RUN, _("Run Query"));
+    myPopupMenu->Append(ID_QUERIES_APPLY_SYMBOLOGY, _("Use Query for symbology"));
+    myPopupMenu->AppendSeparator();
+    myPopupMenu->Append(ID_QUERIES_EDIT, _("Edit query SQL..."));
+    PopupMenu(myPopupMenu);
+    event.Skip();
+}
+
+
+
+void QueriesList::OnQueryEdit (wxCommandEvent & event){
+    wxString myName = wxEmptyString;
+	wxString myQuery = wxEmptyString;
+	int myQTarget = 0;
+
+    long iIndex = GetSelectedItem();
+	if (m_pDB->GetQueriesById(GetItemData(iIndex), myQTarget, myName, myQuery)){
+		wxLogDebug(_T("Error getting the query"));
+    }
 	
+	QueriesListDLG * myQueriesDlg = new QueriesListDLG (this);
+	myQueriesDlg->SetQueriesName(myName);
+	myQueriesDlg->SetQueriesDescription(myQuery);
+	myQueriesDlg->SetQueriesTarget(myQTarget);
+	if (myQueriesDlg->ShowModal() != wxID_OK) {
+        wxDELETE(myQueriesDlg);
+        return;
+    }
 	
-	
-	//delete m_pDialog;
+	myName = myQueriesDlg->GetQueriesName();
+	myQuery = myQueriesDlg->GetQueriesDescription();
+	myQTarget = myQueriesDlg->GetQueriesTarget();
+    long myQid = GetItemData(iIndex);
+
+    // update the query name
+    SetItemText(iIndex ,0, myName);
+    if(m_pDB->EditQueries(myQTarget, myName, myQuery, myQid)==false){
+        wxLogError(_T("Error modifying the query"));
+    }
 }
 
 
