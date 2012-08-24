@@ -269,7 +269,20 @@ void AAttribBatch_DLG::OnApply( wxCommandEvent& event ) {
 			return;
 		}
 	}
-		
+	
+	if (m_Fields[m_ListFields->GetSelection()]->m_FieldType == TM_FIELD_ENUMERATION) {
+        long myValueID = wxNOT_FOUND;
+        myValue.ToLong(&myValueID);
+        for (unsigned int c = 0; c < m_Fields[m_ListFields->GetSelection()]->m_pCodedValueArray.GetCount(); c++) {
+            ProjectDefMemoryFieldsCodedVal * myCVal = m_Fields[m_ListFields->GetSelection()]->m_pCodedValueArray[c];
+            wxASSERT(myCVal);
+            if (myCVal->m_ValueID == myValueID) {
+                myValue = myCVal->m_ValueName;
+                break;
+            }
+        }
+    }
+    
 	wxMessageBox(wxString::Format(_("%s = %s set for %d features"),
 								  m_Fields.Item(m_ListFields->GetSelection())->m_Fieldname.c_str(),
 								  myValue.c_str(),

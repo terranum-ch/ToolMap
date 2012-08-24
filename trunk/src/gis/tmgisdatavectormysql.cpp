@@ -790,7 +790,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 		wxASSERT(myLayer);
 		wxASSERT(myLayer->m_LayerID != wxNOT_FOUND);
 		// getting advanced attribution
-		if (myLayer->m_LayerType == iTableType) {
+		if (myLayer->m_LayerType == iTableType && myLayer->m_pLayerFieldArray.GetCount() > 0) {
 			wxArrayString myAdvValues;
             wxArrayString myAdvCodes;
 			if (myAttribData->GetAdvancedAttribution(myLayer,myAdvValues, myAdvCodes, oid)==true) {
