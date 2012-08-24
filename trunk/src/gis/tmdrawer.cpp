@@ -22,6 +22,7 @@
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
+#include "tmsymbolrule.h"
 
 #include "../database/database_tm.h"
 #include "../database/databaseresult.h"
@@ -780,6 +781,10 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 
 bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 {
+    if (itemProp->GetSymbolRuleArray()->GetCount() > 0) {
+        return DrawPolygonsRules(itemProp, pdata);
+    }
+    
 	// variables
 	wxMemoryDC dc;
 	bool bReturn = true;
@@ -898,6 +903,11 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return bReturn;
+}
+
+
+bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdata){
+    return true;
 }
 
 

@@ -45,6 +45,7 @@ class tmSymbolVector : public tmSymbol
 		static tmSymbolVector * CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname,
 																   tmSymbol * origin);		
 		wxColour GetColourWithTransparency (const wxColour & col, int trans);
+        virtual void SetColour (const wxColour & colour){;}
 
 	};
 

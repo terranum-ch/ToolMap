@@ -19,6 +19,8 @@
 
 #include "tmlayerproperties.h"
 #include "tmsymbol.h"
+#include "tmsymbolrule.h"
+
 
 
 
@@ -36,6 +38,7 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerSymbol = NULL;
 	m_LayerVertexFlags = 0;
 	m_LayerEditing = false;
+    m_SymbolRules = new tmSymbolRuleArray();
 }
 
 
@@ -127,8 +130,19 @@ void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 
 tmLayerProperties::~tmLayerProperties()
 {
-	if(m_LayerSymbol)
+	if(m_LayerSymbol){
 		delete m_LayerSymbol;
+    }
+    
+    unsigned int iCount = m_SymbolRules->GetCount();
+    for (unsigned int i = 0; i< iCount; i++) {
+        tmSymbolRule * myRule =  m_SymbolRules->Item(0);
+        wxDELETE(myRule);
+        m_SymbolRules->RemoveAt(0);
+    }
+    
+    wxDELETE(m_SymbolRules);
+    
 }
 
 
