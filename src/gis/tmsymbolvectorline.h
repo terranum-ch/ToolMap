@@ -50,6 +50,9 @@ class tmSymbolVectorLine : public tmSymbolVector
 		virtual int GetWidth() {return m_lSymUnique.m_Width;}
 		virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
 		virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
+        
+        virtual void SetColour (const wxColour & colour){m_lSymUnique.m_Colour = colour;}
+
 	};
 
 

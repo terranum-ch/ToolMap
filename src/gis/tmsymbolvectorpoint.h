@@ -49,7 +49,8 @@ class tmSymbolVectorPoint : public tmSymbolVector
 		virtual int GetRadius(){return m_ptUniqueSymbol.m_Radius;}
 		virtual int GetTransparency(){return m_ptUniqueSymbol.m_GlobalTransparency;}
 		
-		
+        virtual void SetColour (const wxColour & colour){m_ptUniqueSymbol.m_Colour = colour;}
+        
 		virtual bool Serialize(tmSerialize &s);
 	};
 
