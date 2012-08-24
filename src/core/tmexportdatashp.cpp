@@ -697,6 +697,19 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
 		if (results.GetValue(i + 4, myValue) == false) {
 			continue;
 		}
+        
+        // special case if field is enumeration
+        if (layer->m_pLayerFieldArray[i]->m_FieldType == TM_FIELD_ENUMERATION) {
+            long myValueID = wxNOT_FOUND;
+            myValue.ToLong(&myValueID);
+            for (unsigned int c = 0; c < layer->m_pLayerFieldArray[i]->m_pCodedValueArray.GetCount(); c++) {
+                ProjectDefMemoryFieldsCodedVal * myCVal = layer->m_pLayerFieldArray[i]->m_pCodedValueArray[c];
+                if (myCVal->m_ValueID == myValueID) {
+                    myValue = myCVal->m_ValueName;
+                    break;
+                }
+            }
+        }
 
 		m_Shp.SetFieldValue(myValue ,
 							layer->m_pLayerFieldArray.Item(i)->m_FieldType,

@@ -397,6 +397,7 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString & header, wxArrayStri
 			if (bReturn == false) {
 				break;
 			}
+            bReturn = false;
 			bReturn = ((tmGISDataVector*)myData)->GetFieldsValue(values, oid);
 			break;
 
