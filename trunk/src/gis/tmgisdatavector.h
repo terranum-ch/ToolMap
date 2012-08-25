@@ -119,6 +119,7 @@ class tmGISDataVector : public tmGISData
 		
 		// virtual function for getting data & drawing
 		virtual bool SetSpatialFilter (tmRealRect filter, int type){return FALSE;}
+		virtual bool SetAttributFilter (const wxString & query){return FALSE;}
 		virtual wxRealPoint * GetNextDataLine (int & nbvertex, long & oid){return NULL;}
 		virtual OGRFeature * GetNextFeature (){return NULL;}
 		virtual wxRealPoint * GetNextDataPoint (long & oid){return NULL;}
