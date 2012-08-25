@@ -177,7 +177,18 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 	}
 	*/
 	m_Layer->ResetReading();
-	return TRUE;
+	return true;
+}
+
+
+bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
+    wxASSERT(m_Layer);
+    m_Layer->ResetReading();
+    if (m_Layer->SetAttributeFilter((const char *) query.mb_str(wxConvUTF8)) != OGRERR_NONE) {
+        wxLogError(_("%s query fail on layer : '%s'"), query, wxString(m_Layer->GetLayerDefn()->GetName()));
+        return false;
+    }
+    return true;
 }
 
 

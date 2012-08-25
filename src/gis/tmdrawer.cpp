@@ -907,8 +907,103 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 
 
 bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdata){
-    return true;
+    wxASSERT(itemProp->GetSymbolRuleArray()->GetCount() > 0);
+	wxMemoryDC dc;
+    dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc);    
+    
+    // define spatial filter
+	tmGISDataVector * pVectPoly = (tmGISDataVector*) pdata;
+	if(!pVectPoly->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
+	{
+		if (IsLoggingEnabled()){
+			wxLogError(_T("Error setting spatial filter"));
+		}
+		dc.SelectObject(wxNullBitmap);
+		wxDELETE(pgdc);
+		return false;
+	}
+    
+    // process rules
+    int iLoop = 0;
+    for (unsigned int s = 0; s < itemProp->GetSymbolRuleArray()->GetCount(); s++) {
+        tmSymbolRule * myRule = itemProp->GetSymbolRuleArray()->Item(s);
+        wxASSERT(myRule);
+        if (myRule->GetAttributFilter() == wxEmptyString) {
+            continue;
+        }
+        
+        if(pVectPoly->SetAttributFilter(myRule->GetAttributFilter())==false){
+            continue;
+        }
+        
+        wxBrush myRuleBrush = myRule->GetBrush();
+        wxPen myRulePen = myRule->GetPen();
+        wxBrush mySelectBrush = myRuleBrush;
+        mySelectBrush.SetColour(m_SelMem->GetSelectionColour());
+        mySelectBrush.SetStyle(wxBRUSHSTYLE_BDIAGONAL_HATCH);
+        wxPen mySelectPen = myRulePen;
+        mySelectPen.SetColour(m_SelMem->GetSelectionColour());
+        mySelectPen.SetWidth(mySelectPen.GetWidth() + 1);
+      
+        pgdc->SetBrush(myRuleBrush);
+        pgdc->SetPen(myRulePen);
+        
+        while (1){
+            long myOid = wxNOT_FOUND;
+            int iPolyRings = pVectPoly->GetNextDataPolygonInfo(myOid);
+            if (iPolyRings <= 0){
+                break;
+            }
+            wxGraphicsPath myPolygonPath = pgdc->CreatePath();
+            for (int i = 0; i<iPolyRings; i++){
+                int iNbVertex = 0;
+                wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
+                
+                if(pptsReal == NULL){
+                    if (IsLoggingEnabled()){
+                        wxLogError(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
+                    }
+                    continue;
+                }
+                
+                // set brush
+                if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+                    if (m_SelMem->IsSelected(myOid)){
+                        pgdc->SetPen(mySelectPen);
+                        pgdc->SetBrush(mySelectBrush);
+                    }
+                }
+                else{
+                    pgdc->SetPen(myRulePen);
+                    pgdc->SetBrush(myRuleBrush);
+
+                }
+ 
+                wxGraphicsPath myPath = pgdc->CreatePath();
+                myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+                for (int i = 1; i< iNbVertex; i++){
+                    myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+                }
+                
+                myPath.CloseSubpath();
+                myPolygonPath.AddPath(myPath);
+                wxDELETEA(pptsReal);
+            }
+            pgdc->DrawPath(myPolygonPath);
+            iLoop ++;
+        }
+    }
+    
+    if (IsLoggingEnabled()){
+		wxLogDebug(_T("%d Polygons drawn"), iLoop);
+    }
+	
+	dc.SelectObject(wxNullBitmap);
+	wxDELETE(pgdc);
+	return true;
 }
+
 
 
 
