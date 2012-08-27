@@ -20,6 +20,7 @@
 #include "tmsymboldlgpolygon.h"
 #include "tmlayerproperties.h"
 #include "tmgisdatavectorshp.h"
+#include "../core/datalistreportctrl.h"
 
 
 IMPLEMENT_DYNAMIC_CLASS( tmSymbolDLGPolygon, tmSymbolDLG )
@@ -153,6 +154,15 @@ bool tmSymbolDLGPolygon::TransferDataFromWindow()
 /*************************************************************************************//**
 Symbology dialog supporting rules
 *****************************************************************************************/
+BEGIN_EVENT_TABLE(tmSymbolDLGPolyRule, tmSymbolDLG)
+EVT_BUTTON(ID_BTN_CLASSIFY, tmSymbolDLGPolyRule::OnBtnClassify)
+EVT_BUTTON(ID_BTN_ADD, tmSymbolDLGPolyRule::OnBtnAdd)
+EVT_BUTTON(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnBtnRemove)
+EVT_BUTTON(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnBtnRemoveAll)
+END_EVENT_TABLE()
+
+
+
 void tmSymbolDLGPolyRule::_CreateControls() {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
@@ -194,7 +204,8 @@ void tmSymbolDLGPolyRule::_CreateControls() {
 	
 	bSizer2->Add( sbSizer10, 0, wxEXPAND|wxALL, 5 );
 	
-	m_SymbolListCtrl = new wxListCtrl( m_panel1, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ), wxLC_REPORT );
+	//m_SymbolListCtrl = new wxListCtrl( m_panel1, wxID_ANY, wxDefaultPosition, , wxLC_REPORT );
+    m_SymbolListCtrl = new DataListReportCtrl(m_panel1, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ) ,wxLC_REPORT | wxLC_HRULES | wxLC_VRULES);
 	bSizer2->Add( m_SymbolListCtrl, 1, wxEXPAND|wxALL, 5 );
 	
 	wxBoxSizer* bSizer17;
@@ -224,20 +235,84 @@ void tmSymbolDLGPolyRule::_CreateControls() {
     m_SymbolPanel->SetSizer(itemBoxSizer8);
     SetSizeHint();
     
-    /*m_SymbolPanel->Layout();
+
+    // create table columns
+    m_SymbolListCtrl->InsertColumn(0, "");
+    m_SymbolListCtrl->InsertColumn(1, _("Name"));
+    m_SymbolListCtrl->InsertColumn(2, _("Query"));
     
-	this->SetSizer( itemBoxSizer8 );
-	this->Layout();
-	itemBoxSizer8->Fit( this );
-	
-	this->Centre( wxBOTH );*/
+    wxSize mySize = m_SymbolListCtrl->GetSize();
+    int myColSize = (mySize.GetWidth() -26) / 2.0;
+    if (myColSize < 50) {
+        myColSize = 50;
+    }
+    
+    m_SymbolListCtrl->SetColumnWidth(0, 26);
+    m_SymbolListCtrl->SetColumnWidth(1, myColSize);
+    m_SymbolListCtrl->SetColumnWidth(2, myColSize);
+}
+
+
+void tmSymbolDLGPolyRule::_LoadTableData() {
+    wxASSERT(m_SymbolListCtrl);
+    wxWindowUpdateLocker noUpdates(m_SymbolListCtrl);
+    m_SymbolListCtrl->DeleteAllItems();
+    
+    for (unsigned int i  = 0; i< m_Rules.GetCount(); i++) {
+        long myListIndex = m_SymbolListCtrl->InsertItem(m_SymbolListCtrl->GetItemCount(), _T(""));
+        m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetRuleName(), 1);
+        m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetAttributFilter(), 2);
+    }
 }
 
 
 
-bool tmSymbolDLGPolyRule::TransferDataToWindow() {
-   
+void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
+    // clear rules
+    tmSymbolRuleArrayClear(&m_Rules);
+
+    wxArrayString myFieldValues;
+    wxASSERT(m_GISData);
+    wxString myFieldName = m_CategoryColumnCtrl->GetString(m_CategoryColumnCtrl->GetSelection());
+    if (m_GISData->GetDistinctFieldsValue(myFieldName, myFieldValues)==false) {
+        wxLogError(_("Unable to get fields values for '%s'"), myFieldName);
+        return;
+    }
     
+    for (unsigned int i = 0; i< myFieldValues.GetCount(); i++) {
+        tmSymbolRule * myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+        myRule->SetRuleName(myFieldValues[i]);
+        myRule->SetAttributFilter(wxString::Format(_T("%s='%s'"),myFieldName, myFieldValues[i]));
+        // Todo set random color
+        
+        // using output = min + (rand() % (int)(max - min + 1)) - stdlib
+        
+        m_Rules.Add(myRule);
+    }
+    _LoadTableData();
+}
+
+
+
+void tmSymbolDLGPolyRule::OnBtnAdd(wxCommandEvent & event) {
+}
+
+
+
+void tmSymbolDLGPolyRule::OnBtnRemove(wxCommandEvent & event) {
+}
+
+
+
+void tmSymbolDLGPolyRule::OnBtnRemoveAll(wxCommandEvent & event) {
+}
+
+
+
+
+
+bool tmSymbolDLGPolyRule::TransferDataToWindow() {
+    _LoadTableData();
     return true;
 }
 

@@ -571,6 +571,30 @@ bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
 	return true;
 }
 
+
+
+bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxArrayString & values){
+    wxASSERT(m_Datasource);
+    values.Clear();
+    wxString myLayerName (m_Layer->GetName());
+    wxString myQuery = wxString::Format(_T("SELECT DISTINCT %s FROM %s"), fieldname, myLayerName);
+    OGRLayer * myResultLayer = m_Datasource->ExecuteSQL(myQuery, NULL, NULL);
+    if (myResultLayer == NULL) {
+        return false;
+    }
+    
+    // iterate results
+    myResultLayer->ResetReading();
+    OGRFeature * myFeature = NULL;
+    while ((myFeature = myResultLayer->GetNextFeature()) != NULL) {
+        wxString myValue (myFeature->GetFieldAsString(0));
+        values.Add(myValue);
+        OGRFeature::DestroyFeature(myFeature);
+    }
+    m_Datasource->ReleaseResultSet(myResultLayer);
+    return true;
+}
+
 		
 		
 

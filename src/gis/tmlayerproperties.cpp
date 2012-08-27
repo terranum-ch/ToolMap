@@ -131,13 +131,7 @@ void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 tmLayerProperties::~tmLayerProperties()
 {
 	wxDELETE(m_LayerSymbol);
-    unsigned int iCount = m_SymbolRules->GetCount();
-    for (unsigned int i = 0; i< iCount; i++) {
-        tmSymbolRule * myRule =  m_SymbolRules->Item(0);
-        wxDELETE(myRule);
-        m_SymbolRules->RemoveAt(0);
-    }
-    
+    tmSymbolRuleArrayClear(m_SymbolRules);
     wxDELETE(m_SymbolRules);
     
 }

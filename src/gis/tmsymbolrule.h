@@ -100,4 +100,10 @@ inline const tmSymbolVector * tmSymbolRule::GetSymbolData() const {
 
 WX_DECLARE_OBJARRAY(tmSymbolRule *, tmSymbolRuleArray);
 
+
+// utilities functions
+void tmSymbolRuleArrayClear (tmSymbolRuleArray * m_Rules);
+
+
+
 #endif

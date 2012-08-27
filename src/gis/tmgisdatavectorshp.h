@@ -75,6 +75,7 @@ class tmGISDataVectorSHP : public tmGISDataVector
 		virtual int GetFieldsCount();
 		virtual bool GetFieldsName (wxArrayString & Fields, long oid = wxNOT_FOUND);
 		virtual bool GetFieldsValue (wxArrayString & values, long oid);
+        bool GetDistinctFieldsValue (const wxString & fieldname, wxArrayString & values);
 		
 		// searching data
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);

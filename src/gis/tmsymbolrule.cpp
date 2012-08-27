@@ -203,5 +203,16 @@ void tmSymbolRule::SetRuleName(wxString value) {
 
 
 
+void tmSymbolRuleArrayClear (tmSymbolRuleArray * m_Rules){
+    wxASSERT(m_Rules);
+    unsigned int iCount = m_Rules->GetCount();
+    for (unsigned int i = 0; i< iCount; i++) {
+        tmSymbolRule * myRule =  m_Rules->Item(0);
+        wxDELETE(myRule);
+        m_Rules->RemoveAt(0);
+    }
+}
+
+
 
 
