@@ -27,6 +27,8 @@
 #include "tmlayerpropertiesdef.h"
 
 class tmSymbolVector;
+class tmSymbolDLG;
+class tmLayerProperties;
 
 class tmSymbolRule {
   private:
@@ -48,6 +50,8 @@ class tmSymbolRule {
 
     wxBrush GetBrush();
     wxPen GetPen();
+    
+    tmSymbolDLG * GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties);
 
     inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
 

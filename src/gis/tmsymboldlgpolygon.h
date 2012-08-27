@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmsymboldlgpolygon.h
-							Display Polygon Symbology dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsymboldlgpolygon.h
+ Display Polygon Symbology dialog
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,14 +26,13 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
-
-
-#include "wx/notebook.h"
-#include "wx/spinctrl.h"
+#include <wx/listctrl.h>
+#include <wx/notebook.h>
+#include <wx/spinctrl.h>
 #include "tmsymboldlg.h"		// tmSymbolDlg declaration
-
+#include "tmsymbolrule.h"
 
 
 const int ID_SYMDLGPLG_PANEL = 10216;
@@ -48,6 +47,14 @@ const int ID_SYMDLGPLG_PANEL4 = 10088;
 const int ID_SYMDLGPLG_TRANSPARENCY = 10086;
 
 
+const int ID_BTN_CLASSIFY = 10330;
+const int ID_BTN_ADD = 10331;
+const int ID_BTN_REMOVE = 10332;
+const int ID_BTN_REMOVEALL = 10333;
+
+class tmLayerProperties;
+class tmGISDataVectorSHP;
+
 class tmSymbolDataPolygonUnique
 {
 public:
@@ -57,7 +64,7 @@ public:
 	wxColour m_fColour;
 	int m_fStyle;
 	int m_GlobalTransparency;
-
+    
 	tmSymbolDataPolygonUnique(){
 		m_PanelNo = 0;
 		m_bColour = *wxBLACK;
@@ -71,48 +78,78 @@ public:
 
 
 class tmSymbolDLGPolygon : public tmSymbolDLG
-	{    
-	private:
-		wxColourPickerCtrl * m_PolygonBorderColourCtrl;
-		wxColourPickerCtrl * m_PolygonFillColourCtrl;
-		wxSpinCtrl* m_PolygonBorderWidthCtrl;
-		wxChoice* m_PolygonFillPattern;
-		tmSliderWithText * m_TransparencySlider;
-		
-		tmSymbolDataPolygonUnique m_DlgData;
-		
-		void _Init();
-		void CreateControlsPoly();
-		
-		virtual bool TransferDataToWindow();
-		virtual bool TransferDataFromWindow();
+{
+private:
+    wxColourPickerCtrl * m_PolygonBorderColourCtrl;
+    wxColourPickerCtrl * m_PolygonFillColourCtrl;
+    wxSpinCtrl* m_PolygonBorderWidthCtrl;
+    wxChoice* m_PolygonFillPattern;
+    tmSliderWithText * m_TransparencySlider;
+    
+    tmSymbolDataPolygonUnique m_DlgData;
+    
+    void _Init();
+    void CreateControlsPoly();
+    
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+    
+    
+    DECLARE_DYNAMIC_CLASS( tmSymbolDLGPolygon )
+public:
+    /// Constructors
+    tmSymbolDLGPolygon();
+    ~tmSymbolDLGPolygon();
+    tmSymbolDLGPolygon( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                       const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                       const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                       const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
+                       long style = SYMBOL_TMSYMBOLDLG_STYLE );
+    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
+                long style = SYMBOL_TMSYMBOLDLG_STYLE );
+    
+    void SetDialogData ( const tmSymbolDataPolygonUnique & data) {m_DlgData = data;}
+    tmSymbolDataPolygonUnique GetDialogData () {return m_DlgData;}
+};
 
-				
-		DECLARE_DYNAMIC_CLASS( tmSymbolDLGPolygon )		
-	public:
-		/// Constructors
-		tmSymbolDLGPolygon();
-		~tmSymbolDLGPolygon();
-		tmSymbolDLGPolygon( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, 
-					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
-					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
-					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE,
-					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
-					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
-					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		
-		void SetDialogData ( const tmSymbolDataPolygonUnique & data) {m_DlgData = data;}
-		tmSymbolDataPolygonUnique GetDialogData () {return m_DlgData;}
 
-		
-				
-		
-				
 
-	};
+
+
+/*************************************************************************************//**
+@brief Symbology dialog supporting rules
+@author Lucien Schreiber copyright CREALP
+@date 27 août 2012
+*****************************************************************************************/
+class tmSymbolDLGPolyRule : public tmSymbolDLG {
+private:
+    wxNotebook* m_SymbologyTypeCtrl;
+    wxChoice* m_CategoryColumnCtrl;
+    wxListCtrl* m_SymbolListCtrl;
+    wxButton* m_ClassifyBtn;
+    wxButton* m_AddBtn;
+    wxButton* m_RemoveBtn;
+    wxButton* m_RemoveAllBtn;
+    
+    tmSymbolRuleArray m_Rules;
+    tmLayerProperties * m_LayerProperties;
+    tmGISDataVectorSHP * m_GISData;
+    
+    void _CreateControls();
+    
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
+        
+public:
+    tmSymbolDLGPolyRule(wxWindow * parent, tmLayerProperties * layerproperties = NULL, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString & caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint & pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize & size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
+    virtual ~tmSymbolDLGPolyRule();
+    bool Create(wxWindow * parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString & caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint & pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize & size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE );
+    
+    
+};
 
 
 

@@ -19,6 +19,7 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorline.h"
 #include "tmsymbolvectorpolygon.h"
+#include "tmsymboldlg.h"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmSymbolRuleArray);
@@ -161,6 +162,26 @@ wxPen tmSymbolRule::GetPen() {
             break;
     }
     return myPen;
+}
+
+
+
+
+tmSymbolDLG * tmSymbolRule::GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties){
+    tmSymbolDLG * myDlg = NULL;
+    switch (GetSpatialType()) {
+        case LAYER_SPATIAL_POLYGON :
+        {
+            tmSymbolDLGPolyRule * pdlg = new tmSymbolDLGPolyRule(parent, layerproperties, SYMBOL_TMSYMBOLDLG_IDNAME,                                                                 SYMBOL_TMSYMBOLDLG_TITLE,                                                                 dlgpos);
+            myDlg = pdlg;
+        }
+            break;
+            
+        default:
+            wxLogError(_("Symbology dialog not implemented for this spatial type!"));
+            break;
+    }    
+	return myDlg;
 }
 
 
