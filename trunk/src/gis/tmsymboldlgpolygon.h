@@ -31,6 +31,9 @@
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
 #include <wx/spinctrl.h>
+#include <wx/imaglist.h>
+#include <wx/wupdlock.h>
+
 #include "tmsymboldlg.h"		// tmSymbolDlg declaration
 #include "tmsymbolrule.h"
 
@@ -54,6 +57,7 @@ const int ID_BTN_REMOVEALL = 10333;
 
 class tmLayerProperties;
 class tmGISDataVectorSHP;
+class DataListReportCtrl;
 
 class tmSymbolDataPolygonUnique
 {
@@ -128,7 +132,7 @@ class tmSymbolDLGPolyRule : public tmSymbolDLG {
 private:
     wxNotebook* m_SymbologyTypeCtrl;
     wxChoice* m_CategoryColumnCtrl;
-    wxListCtrl* m_SymbolListCtrl;
+    DataListReportCtrl * m_SymbolListCtrl;
     wxButton* m_ClassifyBtn;
     wxButton* m_AddBtn;
     wxButton* m_RemoveBtn;
@@ -139,9 +143,16 @@ private:
     tmGISDataVectorSHP * m_GISData;
     
     void _CreateControls();
+    void _LoadTableData();
+    
+    void OnBtnClassify(wxCommandEvent & event);
+    void OnBtnAdd(wxCommandEvent & event);
+    void OnBtnRemove(wxCommandEvent & event);
+    void OnBtnRemoveAll(wxCommandEvent & event);
     
     virtual bool TransferDataToWindow();
     virtual bool TransferDataFromWindow();
+    DECLARE_EVENT_TABLE();
         
 public:
     tmSymbolDLGPolyRule(wxWindow * parent, tmLayerProperties * layerproperties = NULL, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString & caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint & pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize & size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
