@@ -18,6 +18,8 @@
 // comment doxygen
 
 #include "tmsymboldlgpolygon.h"
+#include "tmlayerproperties.h"
+#include "tmgisdatavectorshp.h"
 
 
 IMPLEMENT_DYNAMIC_CLASS( tmSymbolDLGPolygon, tmSymbolDLG )
@@ -143,5 +145,136 @@ bool tmSymbolDLGPolygon::TransferDataFromWindow()
 	m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
 	return TRUE;
 }
+
+
+
+
+
+/*************************************************************************************//**
+Symbology dialog supporting rules
+*****************************************************************************************/
+void tmSymbolDLGPolyRule::_CreateControls() {
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* itemBoxSizer8;
+	itemBoxSizer8 = new wxBoxSizer( wxVERTICAL );
+	
+	m_SymbologyTypeCtrl = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	wxPanel* m_panel2;
+	m_panel2 = new wxPanel( m_SymbologyTypeCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
+	
+	m_panel2->SetSizer( bSizer4 );
+	m_panel2->Layout();
+	bSizer4->Fit( m_panel2 );
+	m_SymbologyTypeCtrl->AddPage( m_panel2, _("Unique"), false );
+	wxPanel* m_panel1;
+	m_panel1 = new wxPanel( m_SymbologyTypeCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer10;
+	sbSizer10 = new wxStaticBoxSizer( new wxStaticBox( m_panel1, wxID_ANY, _("Category:") ), wxHORIZONTAL );
+	
+	wxStaticText* m_staticText25;
+	m_staticText25 = new wxStaticText( m_panel1, wxID_ANY, _("Column:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText25->Wrap( -1 );
+	sbSizer10->Add( m_staticText25, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+    // get fields name
+    wxASSERT(m_GISData);
+    wxArrayString myFieldsName;
+    m_GISData->GetFieldsName(myFieldsName);
+    
+    
+	m_CategoryColumnCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, myFieldsName, 0 );
+	m_CategoryColumnCtrl->SetSelection( 0 );
+	sbSizer10->Add( m_CategoryColumnCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	bSizer2->Add( sbSizer10, 0, wxEXPAND|wxALL, 5 );
+	
+	m_SymbolListCtrl = new wxListCtrl( m_panel1, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ), wxLC_REPORT );
+	bSizer2->Add( m_SymbolListCtrl, 1, wxEXPAND|wxALL, 5 );
+	
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_ClassifyBtn = new wxButton( m_panel1, ID_BTN_CLASSIFY, _("Classify"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer17->Add( m_ClassifyBtn, 0, wxALL, 5 );
+	
+	m_AddBtn = new wxButton( m_panel1, ID_BTN_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer17->Add( m_AddBtn, 0, wxALL, 5 );
+	
+	m_RemoveBtn = new wxButton( m_panel1, ID_BTN_REMOVE, _("Remove"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer17->Add( m_RemoveBtn, 0, wxALL, 5 );
+	
+	m_RemoveAllBtn = new wxButton( m_panel1, ID_BTN_REMOVEALL, _("Remove all"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer17->Add( m_RemoveAllBtn, 0, wxALL, 5 );
+	
+	bSizer2->Add( bSizer17, 0, wxEXPAND, 5 );
+	
+	m_panel1->SetSizer( bSizer2 );
+	m_panel1->Layout();
+	bSizer2->Fit( m_panel1 );
+	m_SymbologyTypeCtrl->AddPage( m_panel1, _("Multiple"), false );
+	
+	itemBoxSizer8->Add( m_SymbologyTypeCtrl, 1, wxEXPAND | wxALL, 5 );
+	
+    m_SymbolPanel->SetSizer(itemBoxSizer8);
+    SetSizeHint();
+    
+    /*m_SymbolPanel->Layout();
+    
+	this->SetSizer( itemBoxSizer8 );
+	this->Layout();
+	itemBoxSizer8->Fit( this );
+	
+	this->Centre( wxBOTH );*/
+}
+
+
+
+bool tmSymbolDLGPolyRule::TransferDataToWindow() {
+   
+    
+    return true;
+}
+
+
+
+bool tmSymbolDLGPolyRule::TransferDataFromWindow() {
+    return true;
+}
+
+
+
+tmSymbolDLGPolyRule::tmSymbolDLGPolyRule(wxWindow * parent, tmLayerProperties * layerproperties, wxWindowID id, const wxString & caption, const wxPoint & pos, const wxSize & size, long style){
+    m_LayerProperties = layerproperties;
+    m_GISData = (tmGISDataVectorSHP*) tmGISData::LoadLayer(m_LayerProperties);
+    tmSymbolDLGPolyRule::Create(parent, id, caption, pos, size, style);
+}
+
+
+
+tmSymbolDLGPolyRule::~tmSymbolDLGPolyRule() {
+    unsigned int iCount = m_Rules.GetCount();
+    for (unsigned int i = 0; i< iCount; i++) {
+        tmSymbolRule * myRule =  m_Rules.Item(0);
+        wxDELETE(myRule);
+        m_Rules.RemoveAt(0);
+    }
+}
+
+
+
+bool tmSymbolDLGPolyRule::Create(wxWindow * parent, wxWindowID id, const wxString & caption, const wxPoint & pos, const wxSize & size, long style) {
+    SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
+    tmSymbolDLG::Create( parent, id, caption, pos, size, style );
+	_CreateControls();
+    return true;
+}
+
+
 
 

@@ -759,6 +759,7 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 	itemProp->GetSymbolRef()->SetDatabase(m_DB);
 	itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());
     
+    /*
     // TODO: Remove this temp code used for testing tmSymbolRule
     if (itemProp->GetNameDisplay() == _T("Bedrock_PLG.shp")){
         tmSymbolRuleArray * m_Rules = itemProp->GetSymbolRuleArray();
@@ -784,6 +785,22 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
         return;
     }
     // END
+    */
+    
+    if (itemProp->GetType() == TOC_NAME_SHP) {
+        tmSymbolRule * mySymbolRule = new  tmSymbolRule(itemProp->GetSpatialType(), NULL);
+        
+        tmSymbolDLG * myDlg = mySymbolRule->GetDialog(m_TOCCtrl, wxGetMousePosition(), itemProp);
+        wxASSERT(myDlg);
+        if (myDlg->ShowModal() == wxID_OK) {
+            wxLogMessage(_("OK Symbology closed !"));
+        }
+        wxDELETE(myDlg);
+        wxDELETE(mySymbolRule);
+        // TODO: Reload here
+        return;
+    }
+    
     
     
 	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,wxGetMousePosition())==wxID_OK){
