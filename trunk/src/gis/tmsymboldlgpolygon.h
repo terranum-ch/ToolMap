@@ -164,6 +164,9 @@ private:
     void OnBtnRemove(wxCommandEvent & event);
     void OnBtnRemoveAll(wxCommandEvent & event);
     
+    void OnUpdateUIBtnRemove(wxUpdateUIEvent & event);
+    void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent & event);
+    
     virtual bool TransferDataToWindow();
     virtual bool TransferDataFromWindow();
     DECLARE_EVENT_TABLE();

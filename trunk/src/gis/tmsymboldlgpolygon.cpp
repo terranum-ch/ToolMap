@@ -159,6 +159,8 @@ EVT_BUTTON(ID_BTN_CLASSIFY, tmSymbolDLGPolyRule::OnBtnClassify)
 EVT_BUTTON(ID_BTN_ADD, tmSymbolDLGPolyRule::OnBtnAdd)
 EVT_BUTTON(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnBtnRemove)
 EVT_BUTTON(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnBtnRemoveAll)
+EVT_UPDATE_UI(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnUpdateUIBtnRemove)
+EVT_UPDATE_UI(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnUpdateUIBtnRemoveAll)
 END_EVENT_TABLE()
 
 
@@ -377,6 +379,7 @@ void tmSymbolDLGPolyRule::OnBtnAdd(wxCommandEvent & event) {
 
 
 void tmSymbolDLGPolyRule::OnBtnRemove(wxCommandEvent & event) {
+    
 }
 
 
@@ -387,6 +390,24 @@ void tmSymbolDLGPolyRule::OnBtnRemoveAll(wxCommandEvent & event) {
 }
 
 
+
+void tmSymbolDLGPolyRule::OnUpdateUIBtnRemove(wxUpdateUIEvent & event) {
+    if (m_SymbolListCtrl && m_SymbolListCtrl->GetSelectedFirst() != wxNOT_FOUND) {
+        event.Enable(true);
+        return;
+    }
+    event.Enable(false);
+}
+
+
+
+void tmSymbolDLGPolyRule::OnUpdateUIBtnRemoveAll(wxUpdateUIEvent & event) {
+    if (m_SymbolListCtrl && m_SymbolListCtrl->GetItemCount() > 0) {
+        event.Enable(true);
+        return;
+    }
+    event.Enable(false);
+}
 
 
 
