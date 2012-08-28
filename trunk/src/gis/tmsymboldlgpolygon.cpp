@@ -250,7 +250,11 @@ void tmSymbolDLGPolyRule::_CreateControls() {
     m_SymbolListCtrl->SetColumnWidth(0, 26);
     m_SymbolListCtrl->SetColumnWidth(1, myColSize);
     m_SymbolListCtrl->SetColumnWidth(2, myColSize);
+    
+    m_ImgList= new wxImageList(16,16);
+    m_SymbolListCtrl->SetImageList(m_ImgList, wxIMAGE_LIST_SMALL);
 }
+
 
 
 void tmSymbolDLGPolyRule::_LoadTableData() {
@@ -260,6 +264,7 @@ void tmSymbolDLGPolyRule::_LoadTableData() {
     
     for (unsigned int i  = 0; i< m_Rules.GetCount(); i++) {
         long myListIndex = m_SymbolListCtrl->InsertItem(m_SymbolListCtrl->GetItemCount(), _T(""));
+        m_SymbolListCtrl->SetItemImage(myListIndex, i);
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetRuleName(), 1);
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetAttributFilter(), 2);
     }
@@ -267,9 +272,24 @@ void tmSymbolDLGPolyRule::_LoadTableData() {
 
 
 
+wxBitmap tmSymbolDLGPolyRule::_CreateColorBitmap(const wxBrush & brush, const wxPen & pen) {
+    wxBitmap myTestBmp (16,16);
+    {
+        wxMemoryDC renderer_dc;
+        renderer_dc.SelectObject(myTestBmp);
+        renderer_dc.SetPen(pen);
+        renderer_dc.SetBrush(brush);
+        renderer_dc.DrawRectangle(0,0,16,16);
+    }
+    return myTestBmp;
+}
+
+
+
 void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
     // clear rules
     tmSymbolRuleArrayClear(&m_Rules);
+    m_ImgList->RemoveAll();
 
     wxArrayString myFieldValues;
     wxASSERT(m_GISData);
@@ -283,10 +303,8 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
         tmSymbolRule * myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
         myRule->SetRuleName(myFieldValues[i]);
         myRule->SetAttributFilter(wxString::Format(_T("%s='%s'"),myFieldName, myFieldValues[i]));
-        // Todo set random color
-        
-        // using output = min + (rand() % (int)(max - min + 1)) - stdlib
-        
+        myRule->SetRandomColor();
+        m_ImgList->Add(_CreateColorBitmap(myRule->GetBrush(), myRule->GetPen()));
         m_Rules.Add(myRule);
     }
     _LoadTableData();
@@ -339,6 +357,7 @@ tmSymbolDLGPolyRule::~tmSymbolDLGPolyRule() {
         wxDELETE(myRule);
         m_Rules.RemoveAt(0);
     }
+    wxDELETE(m_ImgList);
 }
 
 

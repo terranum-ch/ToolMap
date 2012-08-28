@@ -202,16 +202,48 @@ void tmSymbolRule::SetRuleName(wxString value) {
 }
 
 
+int tmSymbolRule::_GetRandomNumberForColor(){
+    int output = 0 + (rand() % (int)(255 - 0 + 1));
+    return output;
+}
 
-void tmSymbolRuleArrayClear (tmSymbolRuleArray * m_Rules){
-    wxASSERT(m_Rules);
-    unsigned int iCount = m_Rules->GetCount();
+
+
+void tmSymbolRule::SetRandomColor(){
+    wxASSERT(m_SymbolData);
+    m_SymbolData->SetColour(wxColour(_GetRandomNumberForColor(),
+                                     _GetRandomNumberForColor(),
+                                     _GetRandomNumberForColor()));
+}
+
+
+void tmSymbolRuleArrayClear (tmSymbolRuleArray * rules){
+    wxASSERT(rules);
+    unsigned int iCount = rules->GetCount();
     for (unsigned int i = 0; i< iCount; i++) {
-        tmSymbolRule * myRule =  m_Rules->Item(0);
+        tmSymbolRule * myRule =  rules->Item(0);
         wxDELETE(myRule);
-        m_Rules->RemoveAt(0);
+        rules->RemoveAt(0);
     }
 }
+
+
+void tmSymbolRuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules){
+    wxASSERT(srcrules);
+    wxASSERT(dstrules);
+    tmSymbolRuleArrayClear(dstrules);
+    for (unsigned int i = 0; i< srcrules->GetCount(); i++) {
+        tmSymbolRule * myRule = new tmSymbolRule(srcrules->Item(i)->GetSpatialType(), NULL);
+        *myRule = *(srcrules->Item(i));
+        dstrules->Add(myRule);
+        wxLogMessage(_T("srccolor: %s, dstcolor: %s"),
+                     srcrules->Item(i)->GetBrush().GetColour().GetAsString(),
+                     myRule->GetBrush().GetColour().GetAsString());
+    }
+    wxASSERT(dstrules->GetCount() == srcrules->GetCount());
+    
+}
+
 
 
 

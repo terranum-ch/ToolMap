@@ -137,6 +137,7 @@ private:
     wxButton* m_AddBtn;
     wxButton* m_RemoveBtn;
     wxButton* m_RemoveAllBtn;
+    wxImageList * m_ImgList;
     
     tmSymbolRuleArray m_Rules;
     tmLayerProperties * m_LayerProperties;
@@ -144,6 +145,8 @@ private:
     
     void _CreateControls();
     void _LoadTableData();
+    wxBitmap _CreateColorBitmap(const wxBrush & brush, const wxPen & pen);
+
     
     void OnBtnClassify(wxCommandEvent & event);
     void OnBtnAdd(wxCommandEvent & event);
@@ -159,7 +162,7 @@ public:
     virtual ~tmSymbolDLGPolyRule();
     bool Create(wxWindow * parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString & caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint & pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize & size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE );
     
-    
+    tmSymbolRuleArray * GetRulesRef(){return &m_Rules;}
 };
 
 
