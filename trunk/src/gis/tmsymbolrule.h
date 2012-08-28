@@ -51,8 +51,6 @@ class tmSymbolRule {
     wxBrush GetBrush();
     wxPen GetPen();
     
-    //tmSymbolDLG * GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties);
-
     inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
 
     inline const bool IsActive() const;
@@ -103,9 +101,6 @@ inline const tmSymbolVector * tmSymbolRule::GetSymbolData() const {
 WX_DECLARE_OBJARRAY(tmSymbolRule *, tmSymbolRuleArray);
 
 
-// utilities functions
-void tmSymbolRuleArrayClear (tmSymbolRuleArray * rules);
-void tmSymbolRuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules);
 
 
 
@@ -129,6 +124,11 @@ public:
     inline  tmSymbolRuleArray * GetRulesRef();
     bool ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position);
     
+    bool IsUsingRules();
+    
+    // utilities functions
+    static void RuleArrayClear (tmSymbolRuleArray * rules);
+    static void RuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules);
 };
 
 

@@ -170,16 +170,74 @@ void tmSymbolDLGPolyRule::_CreateControls() {
 	itemBoxSizer8 = new wxBoxSizer( wxVERTICAL );
 	
 	m_SymbologyTypeCtrl = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	wxPanel* m_panel2;
+	
+    // UNIQUE
+    wxPanel* m_panel2;
 	m_panel2 = new wxPanel( m_SymbologyTypeCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 	
+    
+    
+ 	
+    wxFlexGridSizer* itemFlexGridSizer11 = new wxFlexGridSizer(4, 2, 0, 0);
+    itemFlexGridSizer11->AddGrowableCol(1);
+	
+    wxStaticText* itemStaticText12 = new wxStaticText( m_panel2, wxID_STATIC, _("Border Color :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_PolygonBorderColourCtrl = new wxColourPickerCtrl(m_panel2, ID_SYMDLGPLG_BORDER_COLOR);
+    itemFlexGridSizer11->Add(m_PolygonBorderColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText14 = new wxStaticText( m_panel2, wxID_STATIC, _("Border Width :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_PolygonBorderWidthCtrl = new wxSpinCtrl( m_panel2, ID_SYMDLGPLG_BORDER_WIDTH, _T("0"),
+											  wxDefaultPosition, wxDefaultSize,
+											  wxSP_ARROW_KEYS, 0, 100, 0 );
+    itemFlexGridSizer11->Add(m_PolygonBorderWidthCtrl, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText16 = new wxStaticText( m_panel2, wxID_STATIC, _("Fill Color :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer11->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    m_PolygonFillColourCtrl = new wxColourPickerCtrl( m_panel2, ID_SYMDLGPLG_FILL_COLOR);
+    itemFlexGridSizer11->Add(m_PolygonFillColourCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    wxStaticText* itemStaticText18 = new wxStaticText( m_panel2, wxID_STATIC, _("Fill style :"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer11->Add(itemStaticText18, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+	m_PolygonFillPattern = new wxChoice( m_panel2, ID_SYMDLGPLG_FILL_PATTERN,
+										wxDefaultPosition, wxDefaultSize,
+										(sizeof(tmSYMBOLFILLSTYLES_NAME) / sizeof (wxString)),
+										tmSYMBOLFILLSTYLES_NAME, 0 );
+    itemFlexGridSizer11->Add(m_PolygonFillPattern, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	
+    bSizer4->Add(itemFlexGridSizer11, 1, wxGROW|wxALL, 5);
+	
+    wxStaticBox* itemStaticBoxSizer26Static = new wxStaticBox(m_panel2, wxID_ANY, _("Transparency"));
+    wxStaticBoxSizer* itemStaticBoxSizer26 = new wxStaticBoxSizer(itemStaticBoxSizer26Static, wxHORIZONTAL);
+    bSizer4->Add(itemStaticBoxSizer26, 0, wxGROW|wxALL, 5);
+    
+	m_TransparencySlider = new tmSliderWithText(m_panel2, ID_SYMDLGPLG_TRANSPARENCY,
+												0,0,100, _T("%"));
+    itemStaticBoxSizer26->Add(m_TransparencySlider, 1, wxGROW|wxALL, 5);
+	
+	// adapt dialog size to new controls added
+	SetSizeHint();
+
+    
+    
+    
+    
+    
 	m_panel2->SetSizer( bSizer4 );
 	m_panel2->Layout();
 	bSizer4->Fit( m_panel2 );
 	m_SymbologyTypeCtrl->AddPage( m_panel2, _("Unique"), false );
-	wxPanel* m_panel1;
+	
+    
+    // MULTIPLE
+    wxPanel* m_panel1;
 	m_panel1 = new wxPanel( m_SymbologyTypeCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
@@ -291,7 +349,7 @@ wxBitmap tmSymbolDLGPolyRule::_CreateColorBitmap(const wxBrush & brush, const wx
 
 void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
     // clear rules
-    tmSymbolRuleArrayClear(&m_Rules);
+    tmSymbolRuleManager::RuleArrayClear(&m_Rules);
 
     wxArrayString myFieldValues;
     wxASSERT(m_GISData);
@@ -324,6 +382,8 @@ void tmSymbolDLGPolyRule::OnBtnRemove(wxCommandEvent & event) {
 
 
 void tmSymbolDLGPolyRule::OnBtnRemoveAll(wxCommandEvent & event) {
+    tmSymbolRuleManager::RuleArrayClear(GetRulesRef());
+    _LoadTableData();
 }
 
 
@@ -340,6 +400,13 @@ bool tmSymbolDLGPolyRule::TransferDataToWindow() {
             break;
         }
     }
+    
+    // transfert unique symbology
+    m_PolygonBorderColourCtrl->SetColour(m_PolyUniqueStyle.m_bColour);
+	m_PolygonBorderWidthCtrl->SetValue(m_PolyUniqueStyle.m_bWidth);
+	m_PolygonFillColourCtrl->SetColour(m_PolyUniqueStyle.m_fColour);
+	m_PolygonFillPattern->SetSelection(m_PolyUniqueStyle.m_fStyle);
+	m_TransparencySlider->SetValue(m_PolyUniqueStyle.m_GlobalTransparency);
     return true;
 }
 
@@ -348,6 +415,13 @@ bool tmSymbolDLGPolyRule::TransferDataToWindow() {
 bool tmSymbolDLGPolyRule::TransferDataFromWindow() {
     SetSelectedPanel(m_SymbologyTypeCtrl->GetSelection());
     SetSelectedField(m_CategoryColumnCtrl->GetString(m_CategoryColumnCtrl->GetSelection()));
+    
+    // transfert unique
+	m_PolyUniqueStyle.m_bColour = m_PolygonBorderColourCtrl->GetColour();
+	m_PolyUniqueStyle.m_bWidth = m_PolygonBorderWidthCtrl->GetValue();
+	m_PolyUniqueStyle.m_fColour = m_PolygonFillColourCtrl->GetColour();
+	m_PolyUniqueStyle.m_fStyle = m_PolygonFillPattern->GetSelection();
+	m_PolyUniqueStyle.m_GlobalTransparency = m_TransparencySlider->GetValue();
     return true;
 }
 

@@ -167,25 +167,6 @@ wxPen tmSymbolRule::GetPen() {
 
 
 
-/*
-tmSymbolDLG * tmSymbolRule::GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties){
-    tmSymbolDLG * myDlg = NULL;
-    switch (GetSpatialType()) {
-        case LAYER_SPATIAL_POLYGON :
-        {
-            tmSymbolDLGPolyRule * pdlg = new tmSymbolDLGPolyRule(parent, layerproperties, SYMBOL_TMSYMBOLDLG_IDNAME,                                                                 SYMBOL_TMSYMBOLDLG_TITLE,                                                                 dlgpos);
-            myDlg = pdlg;
-        }
-            break;
-            
-        default:
-            wxLogError(_("Symbology dialog not implemented for this spatial type!"));
-            break;
-    }    
-	return myDlg;
-}
-*/
-
 void tmSymbolRule::SetActive(bool value) {
   m_Active = value;
 }
@@ -218,33 +199,6 @@ void tmSymbolRule::SetRandomColor(){
 }
 
 
-void tmSymbolRuleArrayClear (tmSymbolRuleArray * rules){
-    wxASSERT(rules);
-    unsigned int iCount = rules->GetCount();
-    for (unsigned int i = 0; i< iCount; i++) {
-        tmSymbolRule * myRule =  rules->Item(0);
-        wxDELETE(myRule);
-        rules->RemoveAt(0);
-    }
-}
-
-
-void tmSymbolRuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules){
-    wxASSERT(srcrules);
-    wxASSERT(dstrules);
-    tmSymbolRuleArrayClear(dstrules);
-    for (unsigned int i = 0; i< srcrules->GetCount(); i++) {
-        tmSymbolRule * myRule = new tmSymbolRule(srcrules->Item(i)->GetSpatialType(), NULL);
-        *myRule = *(srcrules->Item(i));
-        dstrules->Add(myRule);
-        wxLogMessage(_T("srccolor: %s, dstcolor: %s"),
-                     srcrules->Item(i)->GetBrush().GetColour().GetAsString(),
-                     myRule->GetBrush().GetColour().GetAsString());
-    }
-    wxASSERT(dstrules->GetCount() == srcrules->GetCount());
-    
-}
-
 
 
 
@@ -261,7 +215,7 @@ tmSymbolRuleManager::tmSymbolRuleManager(tmLayerProperties * layerproperties) {
 
 
 tmSymbolRuleManager::~tmSymbolRuleManager() {
-    tmSymbolRuleArrayClear(GetRulesRef());
+    tmSymbolRuleManager::RuleArrayClear(GetRulesRef());
 }
 
 
@@ -272,17 +226,25 @@ bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & p
         case LAYER_SPATIAL_POLYGON :
         {
             tmSymbolDLGPolyRule * pdlg = new tmSymbolDLGPolyRule(parent, m_LayerProperties, SYMBOL_TMSYMBOLDLG_IDNAME,                                                                 SYMBOL_TMSYMBOLDLG_TITLE,                                                                 position);
-            tmSymbolRuleArrayCopy(GetRulesRef(), pdlg->GetRulesRef());
+            tmSymbolRuleManager::RuleArrayCopy(GetRulesRef(), pdlg->GetRulesRef());
             pdlg->SetSelectedPanel(m_DlgSelectedPanel);
             pdlg->SetSelectedField(m_DlgSelectedFieldname);
+            
+            tmSymbolVectorPolygon * mySymbolPoly = (tmSymbolVectorPolygon*) m_LayerProperties->GetSymbolRef();
+            wxASSERT(mySymbolPoly);
+            pdlg->SetPolyUniqueStyle( *(mySymbolPoly->GetSymbolData()));
             
             if (pdlg->ShowModal() != wxID_OK) {
                 wxDELETE(pdlg);
                 return false;
             }
-            tmSymbolRuleArrayCopy(pdlg->GetRulesRef(), GetRulesRef());
+            tmSymbolRuleManager::RuleArrayCopy(pdlg->GetRulesRef(), GetRulesRef());
             m_DlgSelectedPanel = pdlg->GetSelectedPanel();
             m_DlgSelectedFieldname = pdlg->GetSelectedField();
+            
+            wxASSERT(mySymbolPoly);
+            *(mySymbolPoly->GetSymbolData()) = pdlg->GetPolyUniqueStyle();
+
         }
             break;
             
@@ -293,6 +255,42 @@ bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & p
     return true;
 }
 
+
+
+bool tmSymbolRuleManager::IsUsingRules(){
+    if (m_DlgSelectedPanel == 1) {
+        return true;
+    }
+    return false;
+}
+
+
+void tmSymbolRuleManager::RuleArrayClear (tmSymbolRuleArray * rules){
+    wxASSERT(rules);
+    unsigned int iCount = rules->GetCount();
+    for (unsigned int i = 0; i< iCount; i++) {
+        tmSymbolRule * myRule =  rules->Item(0);
+        wxDELETE(myRule);
+        rules->RemoveAt(0);
+    }
+}
+
+
+void tmSymbolRuleManager::RuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules){
+    wxASSERT(srcrules);
+    wxASSERT(dstrules);
+    tmSymbolRuleManager::RuleArrayClear(dstrules);
+    for (unsigned int i = 0; i< srcrules->GetCount(); i++) {
+        tmSymbolRule * myRule = new tmSymbolRule(srcrules->Item(i)->GetSpatialType(), NULL);
+        *myRule = *(srcrules->Item(i));
+        dstrules->Add(myRule);
+        wxLogMessage(_T("srccolor: %s, dstcolor: %s"),
+                     srcrules->Item(i)->GetBrush().GetColour().GetAsString(),
+                     myRule->GetBrush().GetColour().GetAsString());
+    }
+    wxASSERT(dstrules->GetCount() == srcrules->GetCount());
+    
+}
 
 
 
