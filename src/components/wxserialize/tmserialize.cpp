@@ -108,7 +108,7 @@ tmSerialize & tmSerialize::operator << (bool value)
 	return *this;
 }
 
-
+/*
 tmSerialize & tmSerialize::operator << (wxString value)
 {
 	if (CanStore())
@@ -117,7 +117,7 @@ tmSerialize & tmSerialize::operator << (wxString value)
 		AddSeparator();
 	}
 	return *this;
-}
+}*/
 
 
 tmSerialize & tmSerialize::operator <<(const wxString& value)

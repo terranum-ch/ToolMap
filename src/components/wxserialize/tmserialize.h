@@ -61,7 +61,7 @@ class tmSerialize
 		
 		
 		virtual tmSerialize &operator << (bool value);
-		virtual tmSerialize &operator << (wxString value);
+		//virtual tmSerialize &operator << (wxString value);
 		virtual tmSerialize &operator <<(const wxString& value);	
 		virtual tmSerialize &operator <<(const wxChar* pvalue);
 		virtual tmSerialize &operator <<(wxColour value);
