@@ -82,6 +82,17 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
         }
         
     }
+    
+    // 222 -> 223
+    if (myActualDBVersion == 222) {
+        if (_222to223() == false) {
+            _SetVersion(222);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 223;
+        }
+    }
 	
 	_SetVersion(myActualDBVersion);
 	return tmPRJ_UPD_ERROR_OK;
@@ -309,4 +320,13 @@ bool tmProjectUpdater::_221to222(){
     return true;
 }
 
+
+
+bool tmProjectUpdater::_222to223(){
+    wxString myQuery = _T("ALTER TABLE %s MODIFY SYMBOLOGY VARCHAR(65535) NULL");
+    if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_TOC),true)==false) {
+        return false;
+    }
+    return true;
+}
 
