@@ -83,17 +83,8 @@ tmSymbolRule::tmSymbolRule(tmSymbolRule & source) {
 
 
 
-tmSymbolRule::tmSymbolRule(const tmSymbolRule & source) {
-    m_SpatialType = source.GetSpatialType();
-    SetAttributFilter(source.GetAttributFilter());
-    SetRuleName(source.GetRuleName());
-    SetActive(source.IsActive());
-    m_SymbolData = _NewSymbolVectorBasedOnSpatType(m_SpatialType);
-    *m_SymbolData = *(source.GetSymbolData());
-}
 
-
-tmSymbolRule & tmSymbolRule::operator = (const tmSymbolRule & source){
+tmSymbolRule & tmSymbolRule::operator = (tmSymbolRule & source){
     m_SpatialType = source.GetSpatialType();
     SetAttributFilter(source.GetAttributFilter());
     SetRuleName(source.GetRuleName());
@@ -262,6 +253,57 @@ bool tmSymbolRuleManager::IsUsingRules(){
         return true;
     }
     return false;
+}
+
+
+bool tmSymbolRuleManager::Serialize(tmSerialize & s) {    
+    // serialize basic symbology
+    bool bReturn = m_LayerProperties->GetSymbolRef()->Serialize(s);
+    if (m_LayerProperties->GetType() != TOC_NAME_SHP) {
+        return bReturn;
+    }
+    
+    
+    // if needed, serialize rules
+    if (bReturn == false) {
+        wxLogError(_("Error saving basic symbology"));
+        return bReturn;
+    }
+    
+    s.EnterObject();
+    if (s.IsStoring() == true) {
+        s << m_DlgSelectedPanel;
+        s <<  m_DlgSelectedFieldname;
+        s << (int) m_Rules.GetCount();
+        for (unsigned int i = 0; i< m_Rules.GetCount(); i++) {
+            s << m_Rules.Item(i)->GetRuleName();
+            s << m_Rules.Item(i)->GetAttributFilter();
+            s << m_Rules.Item(i)->IsActive();
+            m_Rules.Item(i)->GetSymbolData()->Serialize(s);
+        }
+    }
+    else{
+        s >> m_DlgSelectedPanel;
+        s >> m_DlgSelectedFieldname;
+        int myCount = 0;
+        s >> myCount;
+        for (int i = 0; i< myCount; i++) {
+            tmSymbolRule * myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+            wxString myRuleName;
+            wxString myRuleFilter;
+            bool myRuleActive;
+            s >> myRuleName;
+            s >> myRuleFilter;
+            s >> myRuleActive;
+            myRule->SetRuleName(myRuleName);
+            myRule->SetAttributFilter(myRuleFilter);
+            myRule->SetActive(myRuleActive);
+            myRule->GetSymbolData()->Serialize(s);
+            m_Rules.Add(myRule);
+        }
+    }
+    s.LeaveObject();
+    return s.IsOk();
 }
 
 

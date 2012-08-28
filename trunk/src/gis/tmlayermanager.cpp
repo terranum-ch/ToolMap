@@ -285,8 +285,9 @@ bool tmLayerManager::SaveTOCStatus()
         
 		// serialize symbology //
 		tmSerialize out;
-		itemProp->GetSymbolRef()->Serialize(out);
-		
+        
+		//itemProp->GetSymbolRef()->Serialize(out);
+        itemProp->GetSymbolRuleManagerRef()->Serialize(out);
 		m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, out.GetString());
 		iRank --;
 		

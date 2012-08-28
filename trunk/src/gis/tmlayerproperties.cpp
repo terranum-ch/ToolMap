@@ -122,7 +122,8 @@ void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 	{
 		//wxLogDebug(itemBinSymbology);
 		tmSerialize in(itemBinSymbology);
-		m_LayerSymbol->Serialize(in);
+		GetSymbolRuleManagerRef()->Serialize(in);
+        //m_LayerSymbol->Serialize(in);
 	}
 }
 

@@ -25,6 +25,7 @@
 #endif
 
 #include "tmlayerpropertiesdef.h"
+#include "../components/wxserialize/tmserialize.h"		// for object serialization
 
 class tmSymbolVector;
 class tmSymbolDLG;
@@ -46,7 +47,6 @@ class tmSymbolRule {
     virtual ~tmSymbolRule();
 
     tmSymbolRule(tmSymbolRule & source);
-    tmSymbolRule(const tmSymbolRule & source);
 
     wxBrush GetBrush();
     wxPen GetPen();
@@ -64,9 +64,9 @@ class tmSymbolRule {
     
     void SetRandomColor();
 
-    inline const tmSymbolVector * GetSymbolData() const;
+    inline  tmSymbolVector * GetSymbolData();
 
-    tmSymbolRule &operator = (const tmSymbolRule & source);
+    tmSymbolRule &operator = (tmSymbolRule & source);
 };
 
 
@@ -94,7 +94,7 @@ inline const wxString tmSymbolRule::GetRuleName() const {
 
 
 
-inline const tmSymbolVector * tmSymbolRule::GetSymbolData() const {
+inline  tmSymbolVector * tmSymbolRule::GetSymbolData()  {
   return m_SymbolData;
 }
 
@@ -125,6 +125,7 @@ public:
     bool ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position);
     
     bool IsUsingRules();
+    bool Serialize(tmSerialize & s);
     
     // utilities functions
     static void RuleArrayClear (tmSymbolRuleArray * rules);
