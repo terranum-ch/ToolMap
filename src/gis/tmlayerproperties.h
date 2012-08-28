@@ -35,7 +35,7 @@
 #include <wx/mstream.h>
 
 class tmSymbol;
-class tmSymbolRuleArray;
+class tmSymbolRuleManager;
 
 /***************************************************************************//**
  @brief Storing object of layer type
@@ -53,7 +53,7 @@ class tmLayerProperties : public wxTreeItemData
 		tmSymbol * m_LayerSymbol;
 		int m_LayerVertexFlags;
 		bool m_LayerEditing;
-		tmSymbolRuleArray * m_SymbolRules;
+		tmSymbolRuleManager * m_SymbolRulesManager;
         
         void InitMemberValues();
 		
@@ -83,7 +83,7 @@ class tmLayerProperties : public wxTreeItemData
         tmSymbol * GetSymbolRef();
         void SetSymbolDirectly(tmSymbol * value);
         
-        tmSymbolRuleArray * GetSymbolRuleArray(){return m_SymbolRules;}
+        tmSymbolRuleManager * GetSymbolRuleManagerRef(){return m_SymbolRulesManager;}
 		
 		// constructor
 		tmLayerProperties(){InitMemberValues();}

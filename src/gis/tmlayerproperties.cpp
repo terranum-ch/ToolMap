@@ -38,7 +38,7 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerSymbol = NULL;
 	m_LayerVertexFlags = 0;
 	m_LayerEditing = false;
-    m_SymbolRules = new tmSymbolRuleArray();
+    m_SymbolRulesManager = new tmSymbolRuleManager(this);
 }
 
 
@@ -131,9 +131,7 @@ void tmLayerProperties::InitSymbology (const wxString & itemBinSymbology)
 tmLayerProperties::~tmLayerProperties()
 {
 	wxDELETE(m_LayerSymbol);
-    tmSymbolRuleArrayClear(m_SymbolRules);
-    wxDELETE(m_SymbolRules);
-    
+    wxDELETE(m_SymbolRulesManager);
 }
 
 

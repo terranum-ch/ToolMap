@@ -781,7 +781,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 
 bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 {
-    if (itemProp->GetSymbolRuleArray()->GetCount() > 0) {
+    if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0) {
         return DrawPolygonsRules(itemProp, pdata);
     }
     
@@ -907,7 +907,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 
 
 bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdata){
-    wxASSERT(itemProp->GetSymbolRuleArray()->GetCount() > 0);
+    wxASSERT(itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0);
 	wxMemoryDC dc;
     dc.SelectObject(*m_bmp);
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc);    
@@ -926,8 +926,10 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
     
     // process rules
     int iLoop = 0;
-    for (unsigned int s = 0; s < itemProp->GetSymbolRuleArray()->GetCount(); s++) {
-        tmSymbolRule * myRule = itemProp->GetSymbolRuleArray()->Item(s);
+    tmSymbolRuleArray * myRulesArray = itemProp->GetSymbolRuleManagerRef()->GetRulesRef();
+    wxASSERT(myRulesArray);
+    for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
+        tmSymbolRule * myRule = myRulesArray->Item(s);
         wxASSERT(myRule);
         if (myRule->GetAttributFilter() == wxEmptyString) {
             continue;

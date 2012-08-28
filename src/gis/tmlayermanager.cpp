@@ -788,21 +788,9 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
     */
     
     if (itemProp->GetType() == TOC_NAME_SHP) {
-        tmSymbolRule * mySymbolRule = new  tmSymbolRule(itemProp->GetSpatialType(), NULL);
-        
-        tmSymbolDLG * myDlg = mySymbolRule->GetDialog(m_TOCCtrl, wxGetMousePosition(), itemProp);
-        wxASSERT(myDlg);
-        if (myDlg->ShowModal() != wxID_OK) {
-            wxDELETE(myDlg);
-            wxDELETE(mySymbolRule);
-            return;
+        if(itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_TOCCtrl, wxGetMousePosition())==true){;
+            ReloadProjectLayersThreadStart(false);
         }
-        
-        // TODO implement for points and lines
-        tmSymbolRuleArrayCopy(((tmSymbolDLGPolyRule*)myDlg)->GetRulesRef(), itemProp->GetSymbolRuleArray());
-        wxDELETE(myDlg);
-        wxDELETE(mySymbolRule);
-        ReloadProjectLayersThreadStart(false);
         return;
     }
     

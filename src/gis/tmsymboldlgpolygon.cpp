@@ -261,9 +261,12 @@ void tmSymbolDLGPolyRule::_LoadTableData() {
     wxASSERT(m_SymbolListCtrl);
     wxWindowUpdateLocker noUpdates(m_SymbolListCtrl);
     m_SymbolListCtrl->DeleteAllItems();
+    m_ImgList->RemoveAll();
+
     
     for (unsigned int i  = 0; i< m_Rules.GetCount(); i++) {
         long myListIndex = m_SymbolListCtrl->InsertItem(m_SymbolListCtrl->GetItemCount(), _T(""));
+        m_ImgList->Add(_CreateColorBitmap(m_Rules[i]->GetBrush(), m_Rules[i]->GetPen()));
         m_SymbolListCtrl->SetItemImage(myListIndex, i);
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetRuleName(), 1);
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetAttributFilter(), 2);
@@ -289,7 +292,6 @@ wxBitmap tmSymbolDLGPolyRule::_CreateColorBitmap(const wxBrush & brush, const wx
 void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
     // clear rules
     tmSymbolRuleArrayClear(&m_Rules);
-    m_ImgList->RemoveAll();
 
     wxArrayString myFieldValues;
     wxASSERT(m_GISData);
@@ -304,7 +306,6 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
         myRule->SetRuleName(myFieldValues[i]);
         myRule->SetAttributFilter(wxString::Format(_T("%s='%s'"),myFieldName, myFieldValues[i]));
         myRule->SetRandomColor();
-        m_ImgList->Add(_CreateColorBitmap(myRule->GetBrush(), myRule->GetPen()));
         m_Rules.Add(myRule);
     }
     _LoadTableData();
@@ -331,12 +332,22 @@ void tmSymbolDLGPolyRule::OnBtnRemoveAll(wxCommandEvent & event) {
 
 bool tmSymbolDLGPolyRule::TransferDataToWindow() {
     _LoadTableData();
+    m_SymbologyTypeCtrl->SetSelection(m_PolyUniqueStyle.m_PanelNo);
+    wxArrayString myFieldsString = m_CategoryColumnCtrl->GetStrings();
+    for (unsigned int i = 0; i< myFieldsString.GetCount(); i++) {
+        if (myFieldsString[i] == GetSelectedField()) {
+            m_CategoryColumnCtrl->SetSelection(i);
+            break;
+        }
+    }
     return true;
 }
 
 
 
 bool tmSymbolDLGPolyRule::TransferDataFromWindow() {
+    SetSelectedPanel(m_SymbologyTypeCtrl->GetSelection());
+    SetSelectedField(m_CategoryColumnCtrl->GetString(m_CategoryColumnCtrl->GetSelection()));
     return true;
 }
 
@@ -370,5 +381,26 @@ bool tmSymbolDLGPolyRule::Create(wxWindow * parent, wxWindowID id, const wxStrin
 }
 
 
+int tmSymbolDLGPolyRule::GetSelectedPanel() {
+    return m_PolyUniqueStyle.m_PanelNo;
+}
+
+
+
+void tmSymbolDLGPolyRule::SetPolyUniqueStyle(tmSymbolDataPolygonUnique value) {
+    m_PolyUniqueStyle = value;
+}
+
+
+
+void tmSymbolDLGPolyRule::SetSelectedField(wxString value) {
+    m_SelectedField = value;
+}
+
+
+
+void tmSymbolDLGPolyRule::SetSelectedPanel(int panelindex) {
+    m_PolyUniqueStyle.m_PanelNo = panelindex;
+}
 
 

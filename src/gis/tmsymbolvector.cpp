@@ -102,9 +102,7 @@ tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_T
 
 
 
-tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname,
-																	tmSymbol * origin)
-{
+tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname,tmSymbol * origin){
 	switch (spattype)
 	{
 		case LAYER_SPATIAL_LINE:
