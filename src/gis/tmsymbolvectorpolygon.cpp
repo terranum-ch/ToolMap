@@ -108,8 +108,4 @@ wxColour tmSymbolVectorPolygon::GetFillColour()
 }
 
 
-tmSymbolVectorPolygon & tmSymbolVectorPolygon::operator = (const tmSymbolVectorPolygon & source){
-    m_plgUniqueSymbol = source.m_plgUniqueSymbol;
-    return * this;
-}
 

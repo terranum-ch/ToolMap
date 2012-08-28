@@ -97,8 +97,8 @@ tmSymbolRule & tmSymbolRule::operator = (const tmSymbolRule & source){
     SetAttributFilter(source.GetAttributFilter());
     SetRuleName(source.GetRuleName());
     SetActive(source.IsActive());
-    m_SymbolData = _NewSymbolVectorBasedOnSpatType(m_SpatialType);
-    *m_SymbolData = *(source.GetSymbolData());
+    m_SymbolData = tmSymbolVector::CreateCopySymbolVectorBasedOnType(source.GetSpatialType(), TOC_NAME_NOT_GENERIC, (tmSymbol*) source.GetSymbolData());
+    wxASSERT(m_SymbolData);
     return * this;
 }
 
