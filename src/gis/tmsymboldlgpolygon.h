@@ -139,6 +139,13 @@ private:
     wxButton* m_RemoveAllBtn;
     wxImageList * m_ImgList;
     
+    // unique
+    wxColourPickerCtrl * m_PolygonBorderColourCtrl;
+    wxColourPickerCtrl * m_PolygonFillColourCtrl;
+    wxSpinCtrl* m_PolygonBorderWidthCtrl;
+    wxChoice* m_PolygonFillPattern;
+    tmSliderWithText * m_TransparencySlider;
+    
     tmSymbolRuleArray m_Rules;
     tmLayerProperties * m_LayerProperties;
     tmGISDataVectorSHP * m_GISData;

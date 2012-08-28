@@ -781,7 +781,8 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 
 bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 {
-    if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0) {
+    if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
+        itemProp->GetSymbolRuleManagerRef()->IsUsingRules()==true) {
         return DrawPolygonsRules(itemProp, pdata);
     }
     

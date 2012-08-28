@@ -55,6 +55,7 @@ class tmSymbolVectorPolygon : public tmSymbolVector
         virtual void SetColour (const wxColour & colour){m_plgUniqueSymbol.m_fColour = colour;}
 		
 		virtual bool Serialize(tmSerialize &s);
+        tmSymbolDataPolygonUnique * GetSymbolData(){return &m_plgUniqueSymbol;}
 	};
 
 
