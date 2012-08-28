@@ -20,6 +20,7 @@
 #include "tmsymbolvectorline.h"
 #include "tmsymbolvectorpolygon.h"
 #include "tmsymboldlg.h"
+#include "tmlayerproperties.h"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmSymbolRuleArray);
@@ -166,7 +167,7 @@ wxPen tmSymbolRule::GetPen() {
 
 
 
-
+/*
 tmSymbolDLG * tmSymbolRule::GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties){
     tmSymbolDLG * myDlg = NULL;
     switch (GetSpatialType()) {
@@ -183,7 +184,7 @@ tmSymbolDLG * tmSymbolRule::GetDialog (wxWindow * parent, const wxPoint & dlgpos
     }    
 	return myDlg;
 }
-
+*/
 
 void tmSymbolRule::SetActive(bool value) {
   m_Active = value;
@@ -242,6 +243,54 @@ void tmSymbolRuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * ds
     }
     wxASSERT(dstrules->GetCount() == srcrules->GetCount());
     
+}
+
+
+
+
+/***************************************************************************//**
+Symbol Rule manager
+*******************************************************************************/
+tmSymbolRuleManager::tmSymbolRuleManager(tmLayerProperties * layerproperties) {
+    m_DlgSelectedFieldname = wxEmptyString;
+    m_DlgSelectedPanel = 0 ;
+    m_LayerProperties = layerproperties;
+    wxASSERT(m_LayerProperties);
+}
+
+
+
+tmSymbolRuleManager::~tmSymbolRuleManager() {
+    tmSymbolRuleArrayClear(GetRulesRef());
+}
+
+
+
+
+bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position) {
+    switch (m_LayerProperties->GetSpatialType()) {
+        case LAYER_SPATIAL_POLYGON :
+        {
+            tmSymbolDLGPolyRule * pdlg = new tmSymbolDLGPolyRule(parent, m_LayerProperties, SYMBOL_TMSYMBOLDLG_IDNAME,                                                                 SYMBOL_TMSYMBOLDLG_TITLE,                                                                 position);
+            tmSymbolRuleArrayCopy(GetRulesRef(), pdlg->GetRulesRef());
+            pdlg->SetSelectedPanel(m_DlgSelectedPanel);
+            pdlg->SetSelectedField(m_DlgSelectedFieldname);
+            
+            if (pdlg->ShowModal() != wxID_OK) {
+                wxDELETE(pdlg);
+                return false;
+            }
+            tmSymbolRuleArrayCopy(pdlg->GetRulesRef(), GetRulesRef());
+            m_DlgSelectedPanel = pdlg->GetSelectedPanel();
+            m_DlgSelectedFieldname = pdlg->GetSelectedField();
+        }
+            break;
+            
+        default:
+            wxLogError(_("Symbology dialog not implemented for this spatial type!"));
+            break;
+    }
+    return true;
 }
 
 

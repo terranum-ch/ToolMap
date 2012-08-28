@@ -143,6 +143,10 @@ private:
     tmLayerProperties * m_LayerProperties;
     tmGISDataVectorSHP * m_GISData;
     
+    wxString m_SelectedField;    
+    tmSymbolDataPolygonUnique m_PolyUniqueStyle;
+
+    
     void _CreateControls();
     void _LoadTableData();
     wxBitmap _CreateColorBitmap(const wxBrush & brush, const wxPen & pen);
@@ -163,8 +167,23 @@ public:
     bool Create(wxWindow * parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString & caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint & pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize & size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE );
     
     tmSymbolRuleArray * GetRulesRef(){return &m_Rules;}
+    
+    int GetSelectedPanel();
+    inline const wxString GetSelectedField() const;
+    inline const tmSymbolDataPolygonUnique GetPolyUniqueStyle() const;
+    void SetPolyUniqueStyle(tmSymbolDataPolygonUnique value);
+    void SetSelectedField(wxString value);
+    void SetSelectedPanel(int panelindex);
 };
 
+
+inline const wxString tmSymbolDLGPolyRule::GetSelectedField() const {
+    return m_SelectedField;
+}
+
+inline const tmSymbolDataPolygonUnique tmSymbolDLGPolyRule::GetPolyUniqueStyle() const {
+    return m_PolyUniqueStyle;
+}
 
 
 

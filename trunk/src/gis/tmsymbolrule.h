@@ -51,7 +51,7 @@ class tmSymbolRule {
     wxBrush GetBrush();
     wxPen GetPen();
     
-    tmSymbolDLG * GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties);
+    //tmSymbolDLG * GetDialog (wxWindow * parent, const wxPoint & dlgpos, tmLayerProperties * layerproperties);
 
     inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
 
@@ -106,6 +106,38 @@ WX_DECLARE_OBJARRAY(tmSymbolRule *, tmSymbolRuleArray);
 // utilities functions
 void tmSymbolRuleArrayClear (tmSymbolRuleArray * rules);
 void tmSymbolRuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules);
+
+
+
+/***************************************************************************//**
+@brief Symbol Rule manager
+@author Lucien Schreiber (c) CREALP 2012
+@date 28 août 2012
+*******************************************************************************/
+class tmSymbolRuleManager {
+private:
+    tmSymbolRuleArray m_Rules;
+    
+    int m_DlgSelectedPanel;
+    wxString m_DlgSelectedFieldname;
+    tmLayerProperties * m_LayerProperties;
+    
+public:
+    tmSymbolRuleManager(tmLayerProperties * layerproperties);
+    virtual ~tmSymbolRuleManager();
+    
+    inline  tmSymbolRuleArray * GetRulesRef();
+    bool ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position);
+    
+};
+
+
+inline  tmSymbolRuleArray * tmSymbolRuleManager::GetRulesRef() {
+    return &m_Rules;
+}
+
+
+
 
 
 #endif
