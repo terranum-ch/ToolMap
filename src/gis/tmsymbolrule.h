@@ -38,7 +38,7 @@ class tmSymbolRule {
     wxString m_RuleName;
     bool m_Active;
 
-
+    int _GetRandomNumberForColor();
     tmSymbolVector  * _NewSymbolVectorBasedOnSpatType(TM_GIS_SPATIAL_TYPES spatialtype);
     
   public:
@@ -63,6 +63,8 @@ class tmSymbolRule {
 
     inline const wxString GetRuleName() const;
     void SetRuleName(wxString value);
+    
+    void SetRandomColor();
 
     inline const tmSymbolVector * GetSymbolData() const;
 
@@ -102,8 +104,8 @@ WX_DECLARE_OBJARRAY(tmSymbolRule *, tmSymbolRuleArray);
 
 
 // utilities functions
-void tmSymbolRuleArrayClear (tmSymbolRuleArray * m_Rules);
-
+void tmSymbolRuleArrayClear (tmSymbolRuleArray * rules);
+void tmSymbolRuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules);
 
 
 #endif

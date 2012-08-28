@@ -47,6 +47,7 @@ class tmSymbolVector : public tmSymbol
 		wxColour GetColourWithTransparency (const wxColour & col, int trans);
         virtual void SetColour (const wxColour & colour){;}
 
+        tmSymbolVector &operator = (const tmSymbolVector & source){return * this;}
 	};
 
 

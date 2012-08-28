@@ -104,6 +104,12 @@ wxColour tmSymbolVectorPolygon::GetBorderColour()
 wxColour tmSymbolVectorPolygon::GetFillColour()
 {
 	
-	return GetColourWithTransparency(m_plgUniqueSymbol.m_fColour,
-									 m_plgUniqueSymbol.m_GlobalTransparency);	
+	return GetColourWithTransparency(m_plgUniqueSymbol.m_fColour, m_plgUniqueSymbol.m_GlobalTransparency);
 }
+
+
+tmSymbolVectorPolygon & tmSymbolVectorPolygon::operator = (const tmSymbolVectorPolygon & source){
+    m_plgUniqueSymbol = source.m_plgUniqueSymbol;
+    return * this;
+}
+

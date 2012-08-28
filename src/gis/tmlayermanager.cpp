@@ -792,12 +792,17 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
         
         tmSymbolDLG * myDlg = mySymbolRule->GetDialog(m_TOCCtrl, wxGetMousePosition(), itemProp);
         wxASSERT(myDlg);
-        if (myDlg->ShowModal() == wxID_OK) {
-            wxLogMessage(_("OK Symbology closed !"));
+        if (myDlg->ShowModal() != wxID_OK) {
+            wxDELETE(myDlg);
+            wxDELETE(mySymbolRule);
+            return;
         }
+        
+        // TODO implement for points and lines
+        tmSymbolRuleArrayCopy(((tmSymbolDLGPolyRule*)myDlg)->GetRulesRef(), itemProp->GetSymbolRuleArray());
         wxDELETE(myDlg);
         wxDELETE(mySymbolRule);
-        // TODO: Reload here
+        ReloadProjectLayersThreadStart(false);
         return;
     }
     
