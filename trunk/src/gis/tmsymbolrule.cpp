@@ -191,6 +191,10 @@ void tmSymbolRule::SetRandomColor(){
 
 
 
+void  tmSymbolRule::InitRandomGenerator(){
+    srand(wxDateTime::Now().GetTicks());
+}
+
 
 
 /***************************************************************************//**
@@ -332,6 +336,113 @@ void tmSymbolRuleManager::RuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolR
     }
     wxASSERT(dstrules->GetCount() == srcrules->GetCount());
     
+}
+
+
+
+
+
+
+/*************************************************************************************//**
+ Edit rule symbology dialog
+*****************************************************************************************/
+BEGIN_EVENT_TABLE(tmSymbolRuleEdit_DLG, wxDialog)
+EVT_BUTTON(ID_SYMBOLEDIT_COLORCTRL, tmSymbolRuleEdit_DLG::OnSymbologyEdit)
+END_EVENT_TABLE()
+
+
+void tmSymbolRuleEdit_DLG::_CreateControls() {
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* bSizer15;
+	bSizer15 = new wxBoxSizer( wxHORIZONTAL );
+	
+	/*m_ColourCtrl = new wxColourPickerCtrl( this, ID_SYMBOLEDIT_COLORCTRL, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );*/
+    m_ColourCtrl = new wxButton(this, ID_SYMBOLEDIT_COLORCTRL, _("Edit symbology..."));
+	bSizer15->Add( m_ColourCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	wxFlexGridSizer* fgSizer5;
+	fgSizer5 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer5->AddGrowableCol( 1 );
+	fgSizer5->SetFlexibleDirection( wxBOTH );
+	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	wxStaticText* m_staticText14;
+	m_staticText14 = new wxStaticText( this, wxID_ANY, _("Name:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14->Wrap( -1 );
+	fgSizer5->Add( m_staticText14, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_NameCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_NameCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	
+	wxStaticText* m_staticText15;
+	m_staticText15 = new wxStaticText( this, wxID_ANY, _("Query:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText15->Wrap( -1 );
+	fgSizer5->Add( m_staticText15, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_AttributeCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 250,-1 ), 0 );
+	fgSizer5->Add( m_AttributeCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	
+	bSizer15->Add( fgSizer5, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	bSizer13->Add( bSizer15, 0, wxEXPAND, 5 );
+	
+	
+	bSizer13->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	wxStdDialogButtonSizer* m_sdbSizer2;
+	wxButton* m_sdbSizer2OK;
+	wxButton* m_sdbSizer2Cancel;
+	m_sdbSizer2 = new wxStdDialogButtonSizer();
+	m_sdbSizer2OK = new wxButton( this, wxID_OK );
+	m_sdbSizer2->AddButton( m_sdbSizer2OK );
+	m_sdbSizer2Cancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
+	m_sdbSizer2->Realize();
+	bSizer13->Add( m_sdbSizer2, 0, wxEXPAND|wxALL, 5 );
+	
+	this->SetSizer( bSizer13 );
+	this->Layout();
+	bSizer13->Fit( this );
+	
+	this->Centre( wxBOTH );
+}
+
+
+void tmSymbolRuleEdit_DLG::OnSymbologyEdit(wxCommandEvent & event) {
+    wxASSERT(m_Rule);
+    m_Rule->GetSymbolData()->ShowSymbologyDialog(this);
+}
+
+
+bool tmSymbolRuleEdit_DLG::TransferDataFromWindow() {
+    m_Rule->SetRuleName(m_NameCtrl->GetValue());
+    m_Rule->SetAttributFilter(m_AttributeCtrl->GetValue());
+    return true;
+}
+
+
+
+bool tmSymbolRuleEdit_DLG::TransferDataToWindow() {
+    m_NameCtrl->SetValue(m_Rule->GetRuleName());
+    m_AttributeCtrl->SetValue(m_Rule->GetAttributFilter());
+    return true;
+}
+
+
+
+tmSymbolRuleEdit_DLG::tmSymbolRuleEdit_DLG(wxWindow * parent, tmSymbolRule * rule, wxWindowID id, const wxString & caption, const wxPoint & pos, const wxSize & size) : wxDialog(parent, id, caption, pos, size) {
+    m_Rule = new tmSymbolRule(*rule);
+    _CreateControls();
+}
+
+
+
+tmSymbolRuleEdit_DLG::~tmSymbolRuleEdit_DLG() {
+    wxDELETE(m_Rule);
 }
 
 

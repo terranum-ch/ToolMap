@@ -374,12 +374,28 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
 
 
 void tmSymbolDLGPolyRule::OnBtnAdd(wxCommandEvent & event) {
+    tmSymbolRule * myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+    tmSymbolRuleEdit_DLG myDlg(this, myRule);
+    if (myDlg.ShowModal() != wxID_OK) {
+        wxDELETE(myRule);
+        return;
+    }
+    
+    *myRule = *(myDlg.GetRule());
+    m_Rules.Add(myRule);    
+    _LoadTableData();
 }
 
 
 
 void tmSymbolDLGPolyRule::OnBtnRemove(wxCommandEvent & event) {
-    
+    wxASSERT(m_SymbolListCtrl);
+    long myIndex = m_SymbolListCtrl->GetSelectedFirst();
+    wxASSERT(myIndex >= 0 && myIndex < m_Rules.GetCount());
+    tmSymbolRule * myRule = m_Rules[myIndex];
+    wxDELETE(myRule);
+    m_Rules.RemoveAt(myIndex);
+    m_SymbolListCtrl->DeleteItem(myIndex);
 }
 
 
@@ -472,6 +488,7 @@ bool tmSymbolDLGPolyRule::Create(wxWindow * parent, wxWindowID id, const wxStrin
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	_CreateControls();
+    tmSymbolRule::InitRandomGenerator();
     return true;
 }
 
