@@ -23,6 +23,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/clrpicker.h>
 
 #include "tmlayerpropertiesdef.h"
 #include "../components/wxserialize/tmserialize.h"		// for object serialization
@@ -30,6 +31,9 @@
 class tmSymbolVector;
 class tmSymbolDLG;
 class tmLayerProperties;
+
+const int ID_SYMBOLEDIT_COLORCTRL = 10370;
+
 
 class tmSymbolRule {
   private:
@@ -63,6 +67,7 @@ class tmSymbolRule {
     void SetRuleName(wxString value);
     
     void SetRandomColor();
+    static void InitRandomGenerator();
 
     inline  tmSymbolVector * GetSymbolData();
 
@@ -136,6 +141,47 @@ public:
 inline  tmSymbolRuleArray * tmSymbolRuleManager::GetRulesRef() {
     return &m_Rules;
 }
+
+
+
+
+/*************************************************************************************//**
+@brief Edit rule symbology dialog
+@author Lucien Schreiber copyright CREALP
+@date 29 août 2012
+*****************************************************************************************/
+class tmSymbolRuleEdit_DLG : public wxDialog {
+private:
+    tmSymbolRule * m_Rule;
+    
+    wxButton * m_ColourCtrl;
+    wxTextCtrl* m_NameCtrl;
+    wxTextCtrl* m_AttributeCtrl;
+    
+    void _CreateControls();
+    virtual bool TransferDataFromWindow();
+    virtual bool TransferDataToWindow();
+    
+    void OnSymbologyEdit(wxCommandEvent & event);
+    
+    DECLARE_EVENT_TABLE();
+    
+public:
+    tmSymbolRuleEdit_DLG(wxWindow * parent, tmSymbolRule * rule, wxWindowID id = wxID_ANY, const wxString & caption = _("Edit Symbology"), const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+    virtual ~tmSymbolRuleEdit_DLG();
+    
+    inline tmSymbolRule * GetRule() const;
+};
+
+
+
+inline tmSymbolRule * tmSymbolRuleEdit_DLG::GetRule() const{
+    return m_Rule;
+}
+
+
+
+
 
 
 
