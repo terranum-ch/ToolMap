@@ -382,6 +382,7 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
 
 void tmSymbolDLGPolyRule::OnBtnAdd(wxCommandEvent & event) {
     tmSymbolRule * myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+    myRule->SetRandomColor();
     tmSymbolRuleEdit_DLG myDlg(this, myRule);
     if (myDlg.ShowModal() != wxID_OK) {
         wxDELETE(myRule);
