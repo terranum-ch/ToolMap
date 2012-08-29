@@ -157,6 +157,7 @@ private:
     wxButton * m_ColourCtrl;
     wxTextCtrl* m_NameCtrl;
     wxTextCtrl* m_AttributeCtrl;
+    wxCheckBox* m_EnabledCtrl;
     
     void _CreateControls();
     virtual bool TransferDataFromWindow();

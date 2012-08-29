@@ -54,6 +54,7 @@ const int ID_BTN_CLASSIFY = 10330;
 const int ID_BTN_ADD = 10331;
 const int ID_BTN_REMOVE = 10332;
 const int ID_BTN_REMOVEALL = 10333;
+const int ID_LIST_SYMBOL = 10334;
 
 class tmLayerProperties;
 class tmGISDataVectorSHP;
@@ -163,7 +164,8 @@ private:
     void OnBtnAdd(wxCommandEvent & event);
     void OnBtnRemove(wxCommandEvent & event);
     void OnBtnRemoveAll(wxCommandEvent & event);
-    
+    void OnDoubleClick(wxListEvent & event);
+
     void OnUpdateUIBtnRemove(wxUpdateUIEvent & event);
     void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent & event);
     
