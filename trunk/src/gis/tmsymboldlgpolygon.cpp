@@ -161,6 +161,7 @@ EVT_BUTTON(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnBtnRemove)
 EVT_BUTTON(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnBtnRemoveAll)
 EVT_UPDATE_UI(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnUpdateUIBtnRemove)
 EVT_UPDATE_UI(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnUpdateUIBtnRemoveAll)
+EVT_LIST_ITEM_ACTIVATED(ID_LIST_SYMBOL, tmSymbolDLGPolyRule::OnDoubleClick)
 END_EVENT_TABLE()
 
 
@@ -265,7 +266,7 @@ void tmSymbolDLGPolyRule::_CreateControls() {
 	bSizer2->Add( sbSizer10, 0, wxEXPAND|wxALL, 5 );
 	
 	//m_SymbolListCtrl = new wxListCtrl( m_panel1, wxID_ANY, wxDefaultPosition, , wxLC_REPORT );
-    m_SymbolListCtrl = new DataListReportCtrl(m_panel1, wxID_ANY, wxDefaultPosition, wxSize( 300,200 ) ,wxLC_REPORT | wxLC_HRULES | wxLC_VRULES);
+    m_SymbolListCtrl = new DataListReportCtrl(m_panel1, ID_LIST_SYMBOL, wxDefaultPosition, wxSize( 300,200 ) ,wxLC_REPORT | wxLC_HRULES | wxLC_VRULES);
 	bSizer2->Add( m_SymbolListCtrl, 1, wxEXPAND|wxALL, 5 );
 	
 	wxBoxSizer* bSizer17;
@@ -328,6 +329,12 @@ void tmSymbolDLGPolyRule::_LoadTableData() {
         long myListIndex = m_SymbolListCtrl->InsertItem(m_SymbolListCtrl->GetItemCount(), _T(""));
         m_ImgList->Add(_CreateColorBitmap(m_Rules[i]->GetBrush(), m_Rules[i]->GetPen()));
         m_SymbolListCtrl->SetItemImage(myListIndex, i);
+        if (m_Rules[i]->IsActive() == false) {
+            m_SymbolListCtrl->SetItemTextColour(myListIndex, *wxLIGHT_GREY);
+        }
+        else{
+            m_SymbolListCtrl->SetItemTextColour(myListIndex, *wxBLACK);
+        }
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetRuleName(), 1);
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetAttributFilter(), 2);
     }
@@ -405,6 +412,19 @@ void tmSymbolDLGPolyRule::OnBtnRemoveAll(wxCommandEvent & event) {
     _LoadTableData();
 }
 
+
+void tmSymbolDLGPolyRule::OnDoubleClick(wxListEvent & event) {
+    long myItemIndex = event.GetIndex();
+    tmSymbolRule * myRule = m_Rules[myItemIndex];
+    wxASSERT(myRule);
+    tmSymbolRuleEdit_DLG myDlg(this, myRule);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    
+    *myRule = *(myDlg.GetRule());
+    _LoadTableData();    
+}
 
 
 void tmSymbolDLGPolyRule::OnUpdateUIBtnRemove(wxUpdateUIEvent & event) {

@@ -357,15 +357,8 @@ void tmSymbolRuleEdit_DLG::_CreateControls() {
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxVERTICAL );
 	
-	wxBoxSizer* bSizer15;
-	bSizer15 = new wxBoxSizer( wxHORIZONTAL );
-	
-	/*m_ColourCtrl = new wxColourPickerCtrl( this, ID_SYMBOLEDIT_COLORCTRL, *wxBLACK, wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE );*/
-    m_ColourCtrl = new wxButton(this, ID_SYMBOLEDIT_COLORCTRL, _("Edit symbology..."));
-	bSizer15->Add( m_ColourCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
 	wxFlexGridSizer* fgSizer5;
-	fgSizer5 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer5 = new wxFlexGridSizer( 4, 2, 0, 0 );
 	fgSizer5->AddGrowableCol( 1 );
 	fgSizer5->SetFlexibleDirection( wxBOTH );
 	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -386,12 +379,23 @@ void tmSymbolRuleEdit_DLG::_CreateControls() {
 	m_AttributeCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 250,-1 ), 0 );
 	fgSizer5->Add( m_AttributeCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 	
-	bSizer15->Add( fgSizer5, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	bSizer13->Add( bSizer15, 0, wxEXPAND, 5 );
+	fgSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_ColourCtrl = new wxButton( this, ID_SYMBOLEDIT_COLORCTRL, _("Edit Symbology..."), wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_ColourCtrl, 0, wxALL, 5 );
 	
 	
-	bSizer13->Add( 0, 0, 1, wxEXPAND, 5 );
+	fgSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
+	
+	m_EnabledCtrl = new wxCheckBox( this, wxID_ANY, _("Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
+	//m_EnabledCtrl->SetValue(true);
+	fgSizer5->Add( m_EnabledCtrl, 0, wxALL, 5 );
+	
+	bSizer13->Add( fgSizer5, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	
+	
+	bSizer13->Add( 0, 0, 0, wxEXPAND, 5 );
 	
 	wxStdDialogButtonSizer* m_sdbSizer2;
 	wxButton* m_sdbSizer2OK;
@@ -421,6 +425,7 @@ void tmSymbolRuleEdit_DLG::OnSymbologyEdit(wxCommandEvent & event) {
 bool tmSymbolRuleEdit_DLG::TransferDataFromWindow() {
     m_Rule->SetRuleName(m_NameCtrl->GetValue());
     m_Rule->SetAttributFilter(m_AttributeCtrl->GetValue());
+    m_Rule->SetActive(m_EnabledCtrl->GetValue());
     return true;
 }
 
@@ -429,6 +434,7 @@ bool tmSymbolRuleEdit_DLG::TransferDataFromWindow() {
 bool tmSymbolRuleEdit_DLG::TransferDataToWindow() {
     m_NameCtrl->SetValue(m_Rule->GetRuleName());
     m_AttributeCtrl->SetValue(m_Rule->GetAttributFilter());
+    m_EnabledCtrl->SetValue(m_Rule->IsActive());
     return true;
 }
 

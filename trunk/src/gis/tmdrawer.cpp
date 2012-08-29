@@ -932,7 +932,7 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
     for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
         tmSymbolRule * myRule = myRulesArray->Item(s);
         wxASSERT(myRule);
-        if (myRule->GetAttributFilter() == wxEmptyString) {
+        if (myRule->GetAttributFilter() == wxEmptyString || myRule->IsActive() == false) {
             continue;
         }
         
