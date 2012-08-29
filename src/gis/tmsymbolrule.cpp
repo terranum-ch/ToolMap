@@ -77,8 +77,9 @@ tmSymbolRule::tmSymbolRule(tmSymbolRule & source) {
     SetAttributFilter(source.GetAttributFilter());
     SetRuleName(source.GetRuleName());
     SetActive(source.IsActive());
-    m_SymbolData = _NewSymbolVectorBasedOnSpatType(m_SpatialType);
-    *m_SymbolData = *(source.GetSymbolData());
+    m_SymbolData = tmSymbolVector::CreateCopySymbolVectorBasedOnType(source.GetSpatialType(), TOC_NAME_NOT_GENERIC, (tmSymbol*) source.GetSymbolData());
+    wxASSERT(m_SymbolData);
+
 }
 
 
@@ -389,7 +390,6 @@ void tmSymbolRuleEdit_DLG::_CreateControls() {
 	fgSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
 	
 	m_EnabledCtrl = new wxCheckBox( this, wxID_ANY, _("Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
-	//m_EnabledCtrl->SetValue(true);
 	fgSizer5->Add( m_EnabledCtrl, 0, wxALL, 5 );
 	
 	bSizer13->Add( fgSizer5, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
