@@ -28,7 +28,7 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
+#include <wx/wupdlock.h>
 
 #include "../database/database_tm.h"	// for database access
 #include "projectdefmemory.h"			// for PojectDefMemoryLayers definition
@@ -39,6 +39,12 @@
 
 
 const int tmFILENAME_MAX_SEARCH = 500;	// number of search for a file name
+const int ID_EXPORTDLG_ALLBTN = 10375;
+const int ID_EXPORTDLG_NONEBTN = 10376;
+const int ID_EXPORTDLG_INVERTBTN = 10377;
+
+class tmTOCCtrl;
+
 
 class tmExportManager : public wxObject
 	{
@@ -93,7 +99,37 @@ class tmExportManager : public wxObject
 		
 		// Export public function
 		bool ExportAll (PrjDefMemManage * localprojdef);
-		bool ExportSelected (PrjDefMemManage * localprojdef);
+		bool ExportSelected (PrjDefMemManage * localprojdef, tmTOCCtrl * toc);
+};
+
+
+
+/*************************************************************************************//**
+@brief Export selected layer Dialog
+@author Lucien Schreiber copyright CREALP
+@date 30 aout 2012
+ *****************************************************************************************/
+class tmExportSelected_DLG : public wxDialog {
+private:
+    wxCheckListBox* m_ListLayersCtrl;
+    wxCheckBox* m_LayersAddCtrl;
+    wxCheckBox* m_LayersReplaceCtrl;
+    
+    void OnBtnAll(wxCommandEvent & event);    
+    void OnBtnNone(wxCommandEvent & event);
+    void OnBtnInvert(wxCommandEvent & event);
+    void OnUpdateUIBtnNone(wxUpdateUIEvent & event);
+    
+    void _CreateControls(const wxArrayString & layers);
+    DECLARE_EVENT_TABLE();
+    
+public:
+    tmExportSelected_DLG(wxWindow * parent, const wxArrayString & layers,  wxWindowID id = wxID_ANY, const wxString & caption = _("Export Layer"), const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    virtual ~tmExportSelected_DLG();
+    
+    wxArrayInt GetSelectedLayersID();
+    bool DoLayerAdd();
+    bool DoLayerReplace();
 };
 
 

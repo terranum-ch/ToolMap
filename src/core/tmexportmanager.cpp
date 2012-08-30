@@ -19,6 +19,7 @@
 
 #include "tmexportmanager.h"
 #include "tmdataintegrity.h"
+#include "../gis/tmtocctrl.h"
 
 
 
@@ -105,7 +106,7 @@ tmExportManager::tmExportManager(wxWindow * parent, DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
+bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmTOCCtrl * toc)
 {
 	wxASSERT(m_pDB);
 	wxASSERT(m_Parent);
@@ -114,57 +115,57 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef)
 	
 	// get all layers from memory
 	PrjMemLayersArray * myLayers = &(m_ProjMem->m_PrjLayerArray);
-	if (!myLayers)
-	{
+	if (!myLayers){
 		return false;
 	}
 	
 	// choose layer(s) to export
 	wxArrayString myNames;
-	for (unsigned int i = 0; i<myLayers->GetCount();i++)
+	for (unsigned int i = 0; i<myLayers->GetCount();i++){
 		myNames.Add(myLayers->Item(i)->m_LayerName);
+    }
 	wxString sMsg = _("Select layer(s) to export");
 	
-	wxMultiChoiceDialog myDlg (m_Parent,sMsg, _T("Export layer"),myNames);
-	if (myDlg.ShowModal() != wxID_OK)
-	// select layers dialog canceled
-	{
-		return false;
-	}
+	tmExportSelected_DLG myEDlg (m_Parent, myNames);
+    if (myEDlg.ShowModal() != wxID_OK) {
+        return false;
+    }
 	
-	wxArrayInt mySelectedLayersIndex = myDlg.GetSelections();
-	if (mySelectedLayersIndex.IsEmpty())
+    wxArrayInt mySelectedLayersIndex = myEDlg.GetSelectedLayersID();
+    if (mySelectedLayersIndex.IsEmpty()){
 		return false; // no layer selected
+    }
 	
 	// keep only selected layers in array
 	bool bRemove = true;
-	for(int j = (signed) myLayers->GetCount()-1; j >= 0; j--)
-	{
-		if (!mySelectedLayersIndex.IsEmpty())
-		{
-			if (j == mySelectedLayersIndex.Last())
-			{
+	for(int j = (signed) myLayers->GetCount()-1; j >= 0; j--){
+		if (!mySelectedLayersIndex.IsEmpty()){
+			if (j == mySelectedLayersIndex.Last()){
 				bRemove = false;
 				mySelectedLayersIndex.RemoveAt(mySelectedLayersIndex.GetCount()-1);
 			}
 		}
 		
-		if (bRemove)
-		{
+		if (bRemove){
 			ProjectDefMemoryLayers * myLayer = myLayers->Item(j);
 			wxDELETE(myLayer);
 			myLayers->RemoveAt(j);
 		}
-			
 		bRemove = true;
 	}
-	
 	
 	// integrity check
 	_CorrectIntegrity(myLayers);
 	
 	
 	bool bReturn = ExportLayers(myLayers);
+    
+    
+    // TODO: Add layer to display if required 
+    
+    
+    
+    
 	return bReturn;
 }
 
@@ -795,5 +796,162 @@ wxRealPoint *  tmExportManager::GetFrame (int & nbvertex)
 	m_pDB->DataBaseClearResults();
 	return myPt;
 }
+
+
+
+
+
+
+
+/*************************************************************************************//**
+Export selected layer Dialog
+*****************************************************************************************/
+BEGIN_EVENT_TABLE(tmExportSelected_DLG, wxDialog)
+EVT_BUTTON(ID_EXPORTDLG_ALLBTN, tmExportSelected_DLG::OnBtnAll)
+EVT_BUTTON(ID_EXPORTDLG_NONEBTN, tmExportSelected_DLG::OnBtnNone)
+EVT_BUTTON(ID_EXPORTDLG_INVERTBTN, tmExportSelected_DLG::OnBtnInvert)
+EVT_UPDATE_UI(ID_EXPORTDLG_NONEBTN, tmExportSelected_DLG::OnUpdateUIBtnNone)
+END_EVENT_TABLE()
+
+
+
+void tmExportSelected_DLG::OnBtnAll(wxCommandEvent & event) {
+    wxWindowUpdateLocker noUpdate(m_ListLayersCtrl);
+    for (unsigned int i = 0; i< m_ListLayersCtrl->GetCount(); i++) {
+        m_ListLayersCtrl->Check(i, true);
+    }
+}
+
+
+
+void tmExportSelected_DLG::OnBtnNone(wxCommandEvent & event) {
+    wxWindowUpdateLocker noUpdate(m_ListLayersCtrl);
+    for (unsigned int i = 0; i< m_ListLayersCtrl->GetCount(); i++) {
+        m_ListLayersCtrl->Check(i, false);
+    }
+}
+
+
+
+void tmExportSelected_DLG::OnBtnInvert(wxCommandEvent & event) {
+    wxWindowUpdateLocker noUpdate(m_ListLayersCtrl);
+    for (unsigned int i = 0; i< m_ListLayersCtrl->GetCount(); i++) {
+        m_ListLayersCtrl->Check(i, !m_ListLayersCtrl->IsChecked(i));
+    }
+}
+
+
+
+void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent & event) {
+    bool bHasCHecked = false;
+    for (unsigned int i = 0; i< m_ListLayersCtrl->GetCount(); i++) {
+        if (m_ListLayersCtrl->IsChecked(i)==true) {
+            bHasCHecked = true;
+            break;
+        }
+    }
+    event.Enable(bHasCHecked);
+}
+
+
+
+void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
+	
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Layers") ), wxVERTICAL );
+	
+	m_ListLayersCtrl = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxSize( 300,300 ), layers);
+	sbSizer1->Add( m_ListLayersCtrl, 1, wxEXPAND|wxBOTTOM, 5 );
+	
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxButton* m_button1;
+	m_button1 = new wxButton( this, ID_EXPORTDLG_ALLBTN, _("All"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_button1, 0, wxALL, 5 );
+	
+	wxButton* m_button2;
+	m_button2 = new wxButton( this, ID_EXPORTDLG_NONEBTN, _("None"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_button2, 0, wxALL, 5 );
+	
+	wxButton* m_button3;
+	m_button3 = new wxButton( this, ID_EXPORTDLG_INVERTBTN, _("Invert"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_button3, 0, wxALL, 5 );
+	
+	sbSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
+	
+	bSizer1->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
+	
+	wxStaticBoxSizer* sbSizer2;
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Settings") ), wxVERTICAL );
+	
+	m_LayersAddCtrl = new wxCheckBox( this, wxID_ANY, _("Add layers to the project"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_LayersAddCtrl->SetValue(true);
+	sbSizer2->Add( m_LayersAddCtrl, 0, wxALL, 5 );
+	
+	m_LayersReplaceCtrl = new wxCheckBox( this, wxID_ANY, _("Replace existing layers"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_LayersReplaceCtrl->SetValue(true);
+	sbSizer2->Add( m_LayersReplaceCtrl, 0, wxALL, 5 );
+	
+	bSizer1->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
+	
+	wxStdDialogButtonSizer* m_sdbSizer1;
+	wxButton* m_sdbSizer1OK;
+	wxButton* m_sdbSizer1Cancel;
+	m_sdbSizer1 = new wxStdDialogButtonSizer();
+	m_sdbSizer1OK = new wxButton( this, wxID_OK );
+	m_sdbSizer1->AddButton( m_sdbSizer1OK );
+	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
+	m_sdbSizer1->Realize();
+	bSizer1->Add( m_sdbSizer1, 0, wxEXPAND|wxALL, 5 );
+	
+	this->SetSizer( bSizer1 );
+	this->Layout();
+	bSizer1->Fit( this );
+	
+	this->Centre( wxBOTH );
+}
+
+
+
+tmExportSelected_DLG::tmExportSelected_DLG(wxWindow * parent, const wxArrayString & layers, wxWindowID id, const wxString & caption, const wxPoint & pos, const wxSize & size, long style) : wxDialog(parent, id, caption, pos, size, style) {
+    _CreateControls(layers);
+}
+
+
+
+tmExportSelected_DLG::~tmExportSelected_DLG() {
+}
+
+
+
+wxArrayInt tmExportSelected_DLG::GetSelectedLayersID() {
+    wxArrayInt mySelectedLayersId;
+    for (unsigned int i = 0; i< m_ListLayersCtrl->GetCount(); i++) {
+        if (m_ListLayersCtrl->IsChecked(i)==true) {
+            mySelectedLayersId.Add(i);
+        }
+    }
+    return mySelectedLayersId;
+}
+
+
+
+bool tmExportSelected_DLG::DoLayerAdd() {
+    return m_LayersAddCtrl->GetValue();
+}
+
+
+
+bool tmExportSelected_DLG::DoLayerReplace() {
+    return m_LayersReplaceCtrl->GetValue();
+}
+
+
 
 
