@@ -1709,23 +1709,24 @@ void ToolMapFrame::OnZoomToSelectedLayer(wxCommandEvent & event){
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-void ToolMapFrame::OnExportSelected (wxCommandEvent & event)
-{
-	if (m_PManager->IsProjectOpen())
-	{
-		// get project def from memory
-		PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
-		PrjDefMemManage myCopyProj;
-		myCopyProj = *memProj;
-
-
-		tmExportManager myExport(this, m_PManager->GetDatabase());
-		if (myExport.ExportSelected(&myCopyProj))
-			wxLogDebug(_T("Exporting layer(s) success"));
-		else
-			wxLogDebug(_T("Exporting layer(s) failed"));
-	}
-
+void ToolMapFrame::OnExportSelected (wxCommandEvent & event){
+	if (m_PManager->IsProjectOpen() == false){
+        return;
+    }
+    
+    // get project def from memory
+    PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
+    PrjDefMemManage myCopyProj;
+    myCopyProj = *memProj;
+    
+    tmExportManager myExport(this, m_PManager->GetDatabase());
+    if (myExport.ExportSelected(&myCopyProj, m_TocWindow->GetTOCCtrl())==true){
+        wxLogDebug(_T("Exporting layer(s) success"));
+    }
+    else {
+        wxLogDebug(_T("Exporting layer(s) failed"));
+    }
+	
 }
 
 
@@ -1738,20 +1739,24 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event)
  *******************************************************************************/
 void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 {
-	if (m_PManager->IsProjectOpen())
-	{
-		// get project def from memory
-		PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
-		PrjDefMemManage myCopyProj;
-		myCopyProj = *memProj;
-
-		tmExportManager myExport(this, m_PManager->GetDatabase());
-		if (myExport.ExportAll(&myCopyProj))
-			wxLogDebug(_T("Exporting all project success"));
-		else
-			wxLogDebug(_T("Exporting all project failed"));
-	}
-
+	if (m_PManager->IsProjectOpen() == false){
+        return;
+    }
+	
+    // get project def from memory
+    PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
+    PrjDefMemManage myCopyProj;
+    myCopyProj = *memProj;
+    
+    tmExportManager myExport(this, m_PManager->GetDatabase());
+    if (myExport.ExportAll(&myCopyProj)){
+        wxLogDebug(_T("Exporting all project success"));
+    }
+    else {
+        wxLogDebug(_T("Exporting all project failed"));
+    }
+	
+    
 }
 
 
