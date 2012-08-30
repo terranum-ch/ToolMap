@@ -237,7 +237,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
-	EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
+	//EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
 
 	//SELECTION MENU
 	EVT_MENU (ID_MENU_SELECT_NONE, ToolMapFrame::OnSelectNone)
@@ -283,6 +283,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	// UPDATE UI EVENT
 	EVT_UPDATE_UI_RANGE(ID_MENU_PRJ_BACKUP, ID_MENU_PRJ_SETTINGS, ToolMapFrame::OnUpdateMenuProject)
+    EVT_UPDATE_UI(ID_MENU_EXPORT_MODEL, ToolMapFrame::OnUpdateMenuProject)
 
 	EVT_UPDATE_UI (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnUpdateMenuProject)
@@ -549,12 +550,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
-    wxMenu* itemMenu11 = new wxMenu;
-    itemMenu11->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
-    itemMenu11->Append(ID_MENU_EXPORT_FULL, _("Export project"), wxEmptyString, wxITEM_NORMAL);
-	itemMenu11->AppendSeparator();
-	itemMenu11->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
-    itemMenu2->Append(ID_MENU_EXPORT, _("Export"), itemMenu11);
+    itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
     itemMenu16->Append(ID_MENU_PRJ_DEF, _("Project definition..."), wxEmptyString, wxITEM_NORMAL);
