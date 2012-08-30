@@ -172,7 +172,7 @@ void tmSymbolDLGPolyRule::_CreateControls() {
 	wxBoxSizer* itemBoxSizer8;
 	itemBoxSizer8 = new wxBoxSizer( wxVERTICAL );
 	
-	m_SymbologyTypeCtrl = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_SymbologyTypeCtrl = new wxNotebook( m_SymbolPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	
     // UNIQUE
     wxPanel* m_panel2;
