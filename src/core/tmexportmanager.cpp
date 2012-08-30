@@ -154,19 +154,34 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmTOCCtrl 
 		bRemove = true;
 	}
 	
+    // get original names
+    wxArrayString myOriginalLayerNames;
+    for (unsigned int i = 0; i< myLayers->GetCount(); i++) {
+        myOriginalLayerNames.Add(myLayers->Item(i)->m_LayerName);
+    }
+    wxASSERT(myOriginalLayerNames.GetCount() == myLayers->GetCount());
+    
 	// integrity check
 	_CorrectIntegrity(myLayers);
 	
 	
-	bool bReturn = ExportLayers(myLayers);
-    
-    
+	if(ExportLayers(myLayers)==false){
+        return false;
+    }
+     
+    // TODO: Remplace layer
+    if (myEDlg.DoLayerReplace() == true) {
+        for (unsigned int i = 0; i< myOriginalLayerNames.GetCount(); i++) {
+            wxLogMessage("Original name is %s", myOriginalLayerNames[i]);
+        }
+    }
+        
     // TODO: Add layer to display if required 
     
     
     
     
-	return bReturn;
+	return true;
 }
 
 
