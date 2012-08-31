@@ -42,6 +42,7 @@ const int tmFILENAME_MAX_SEARCH = 500;	// number of search for a file name
 const int ID_EXPORTDLG_ALLBTN = 10375;
 const int ID_EXPORTDLG_NONEBTN = 10376;
 const int ID_EXPORTDLG_INVERTBTN = 10377;
+const int ID_EXPORTDLG_REPLACELAYERCHECK = 10378;
 
 class tmTOCCtrl;
 
@@ -119,6 +120,7 @@ private:
     void OnBtnNone(wxCommandEvent & event);
     void OnBtnInvert(wxCommandEvent & event);
     void OnUpdateUIBtnNone(wxUpdateUIEvent & event);
+    void OnUpdateUICheckReplace(wxUpdateUIEvent & event);
     
     void _CreateControls(const wxArrayString & layers);
     DECLARE_EVENT_TABLE();
