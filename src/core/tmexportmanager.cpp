@@ -106,7 +106,7 @@ tmExportManager::tmExportManager(wxWindow * parent, DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmTOCCtrl * toc)
+bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager)
 {
 	wxASSERT(m_pDB);
 	wxASSERT(m_Parent);
@@ -164,22 +164,18 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmTOCCtrl 
 	// integrity check
 	_CorrectIntegrity(myLayers);
 	
-	
 	if(ExportLayers(myLayers)==false){
         return false;
     }
      
-    // TODO: Remplace layer
-    if (myEDlg.DoLayerReplace() == true) {
-        for (unsigned int i = 0; i< myOriginalLayerNames.GetCount(); i++) {
-            wxLogMessage("Original name is %s", myOriginalLayerNames[i]);
-        }
+    for (unsigned int i = 0; i< myLayers->GetCount(); i++) {
+        wxFileName myFileName (m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName);
+        layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
     }
-        
-    // TODO: Add layer to display if required 
     
-    
-    
+    if (myEDlg.DoLayerAdd() || myEDlg.DoLayerReplace()) {
+        layermanager->ReloadProjectLayersThreadStart(false, false);
+    }
     
 	return true;
 }

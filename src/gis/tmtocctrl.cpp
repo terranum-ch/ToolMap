@@ -206,6 +206,31 @@ bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
 }
 
 
+
+bool tmTOCCtrl::UpdateLayerName (tmLayerProperties * item, const wxString & newname){
+    if (!m_root.IsOk()){
+		wxLogError(_T("Root item not defined, define it first"));
+		return false;
+	}
+
+    wxTreeItemId myItemID;
+    myItemID = GetLastChild(m_root);
+    while (1) {
+        myItemID = GetPrevSibling (myItemID);
+        if (myItemID.IsOk() == false) {
+            return false;
+        }
+        
+        if (GetItemData(myItemID) == item) {
+            SetItemText(myItemID, newname);
+            break;
+        }
+    }
+    return true;
+}
+
+
+
 /***************************************************************************//**
  @brief Delete item (and all its children)
  @param position the item we want to delete

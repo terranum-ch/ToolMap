@@ -563,7 +563,8 @@ bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
 	
 	int iTotFields = GetFieldsCount();
 	for (int i = 0; i < iTotFields; i++) {
-		wxString myVal = wxString::FromAscii(myFeature->GetFieldAsString(i));
+		//wxString myVal = wxString::FromAscii(myFeature->GetFieldAsString(i));
+        wxString myVal (myFeature->GetFieldAsString(i)); //, wxCSConv(wxFONTENCODING_ISO8859_1));
 		values.Add(myVal);
 	}
 	

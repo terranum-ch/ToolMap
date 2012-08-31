@@ -28,6 +28,7 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/regex.h>
 
 #include "tmdrawer.h"					// for drawing into bitmaps
 #include "tmtocctrl.h"					// class TOC ctrl
@@ -112,6 +113,7 @@ class tmLayerManager : public wxEvtHandler
 		// function called when view is updated
 		void ViewUpdated();
 		void _ZoomChanged();
+        bool _ReplaceLayer(const wxFileName & filename, const wxString & originalname);
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -152,6 +154,7 @@ class tmLayerManager : public wxEvtHandler
 		// layers operations
 		void RemoveLayer (wxCommandEvent & event);
 		void AddLayer (wxCommandEvent & event);
+        bool OpenLayer(const wxFileName & filename, bool replace=false, const wxString & originalname = wxEmptyString);
 		tmGISScale * GetScale (){return &m_Scale;}
 		bool ZoomToLayer(long layerid);
 		void ZoomToSelectedLayer();
