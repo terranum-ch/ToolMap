@@ -60,8 +60,7 @@ tmExportManager::tmExportManager()
  *******************************************************************************/
 tmExportManager::~tmExportManager()
 {
-	if (m_ExportData)
-		delete m_ExportData;
+	wxDELETE(m_ExportData);
 }
 
 
@@ -106,8 +105,7 @@ tmExportManager::tmExportManager(wxWindow * parent, DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager)
-{
+bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager){
 	wxASSERT(m_pDB);
 	wxASSERT(m_Parent);
 	wxASSERT (localprojdef);
@@ -161,22 +159,22 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
     }
     wxASSERT(myOriginalLayerNames.GetCount() == myLayers->GetCount());
     
-	// integrity check
 	_CorrectIntegrity(myLayers);
 	
 	if(ExportLayers(myLayers)==false){
         return false;
     }
-     
+    
+    if (myEDlg.DoLayerAdd() == false) {
+        return true;
+    }
+    
+    wxString myExportExtension = _T("shp");
     for (unsigned int i = 0; i< myLayers->GetCount(); i++) {
-        wxFileName myFileName (m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName);
+        wxFileName myFileName (m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName, myExportExtension);
         layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
     }
-    
-    if (myEDlg.DoLayerAdd() || myEDlg.DoLayerReplace()) {
-        layermanager->ReloadProjectLayersThreadStart(false, false);
-    }
-    
+    layermanager->ReloadProjectLayersThreadStart(false, false);
 	return true;
 }
 
