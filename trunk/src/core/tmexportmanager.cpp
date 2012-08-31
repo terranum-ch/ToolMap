@@ -820,6 +820,7 @@ EVT_BUTTON(ID_EXPORTDLG_ALLBTN, tmExportSelected_DLG::OnBtnAll)
 EVT_BUTTON(ID_EXPORTDLG_NONEBTN, tmExportSelected_DLG::OnBtnNone)
 EVT_BUTTON(ID_EXPORTDLG_INVERTBTN, tmExportSelected_DLG::OnBtnInvert)
 EVT_UPDATE_UI(ID_EXPORTDLG_NONEBTN, tmExportSelected_DLG::OnUpdateUIBtnNone)
+EVT_UPDATE_UI(ID_EXPORTDLG_REPLACELAYERCHECK, tmExportSelected_DLG::OnUpdateUICheckReplace)
 END_EVENT_TABLE()
 
 
@@ -863,6 +864,11 @@ void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent & event) {
 }
 
 
+void tmExportSelected_DLG::OnUpdateUICheckReplace(wxUpdateUIEvent & event){
+    event.Enable(DoLayerAdd());
+}
+
+
 
 void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -898,11 +904,11 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Settings") ), wxVERTICAL );
 	
-	m_LayersAddCtrl = new wxCheckBox( this, wxID_ANY, _("Add layers to the project"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_LayersAddCtrl = new wxCheckBox( this, wxID_ANY , _("Add layers to the project"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_LayersAddCtrl->SetValue(true);
 	sbSizer2->Add( m_LayersAddCtrl, 0, wxALL, 5 );
 	
-	m_LayersReplaceCtrl = new wxCheckBox( this, wxID_ANY, _("Replace existing layers"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_LayersReplaceCtrl = new wxCheckBox( this, ID_EXPORTDLG_REPLACELAYERCHECK, _("Replace existing layers"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_LayersReplaceCtrl->SetValue(true);
 	sbSizer2->Add( m_LayersReplaceCtrl, 0, wxALL, 5 );
 	
