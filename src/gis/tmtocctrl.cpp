@@ -216,7 +216,6 @@ bool tmTOCCtrl::UpdateLayerName (tmLayerProperties * item, const wxString & newn
     wxTreeItemId myItemID;
     myItemID = GetLastChild(m_root);
     while (1) {
-        myItemID = GetPrevSibling (myItemID);
         if (myItemID.IsOk() == false) {
             return false;
         }
@@ -225,6 +224,7 @@ bool tmTOCCtrl::UpdateLayerName (tmLayerProperties * item, const wxString & newn
             SetItemText(myItemID, newname);
             break;
         }
+        myItemID = GetPrevSibling (myItemID);
     }
     return true;
 }

@@ -519,9 +519,6 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString &
         
         wxString myTOCLayerName = myLayer->GetName().GetName();
         wxString myReplaceNameOrigin = originalname;
-        //wxString myReplaceName = filename.GetName();
-                
-        wxLogDebug("%s | %s | %s", myTOCLayerName, myReplaceNameOrigin) ;//, myReplaceName);
             
         // is original filename
         if (myTOCLayerName == myReplaceNameOrigin) {
@@ -543,14 +540,18 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString &
         return false;
     }
     
-    wxString myExtension = _T("shp");
     wxFileName myCompleteName(filename);
-    myCompleteName.SetExt(myExtension);
-    m_TOCCtrl->UpdateLayerName(myLayerToReplace, myCompleteName.GetName());
+    //myCompleteName.SetExt(filename.GetExt());
+    m_TOCCtrl->UpdateLayerName(myLayerToReplace, myCompleteName.GetFullName());
     myLayerToReplace->SetName(myCompleteName);
     
     // Update database
-       
+    wxString myQuery = _T("UPDATE %s SET CONTENT_PATH=\"%s\", CONTENT_NAME=\"%s\" WHERE CONTENT_ID = %ld;");
+    wxString myPath = myCompleteName.GetPath();
+    DataBaseTM::ConvertPath(myPath);
+    if (m_DB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_TOC, myPath, myCompleteName.GetFullName(), myLayerToReplace->GetID()),true)==false) {
+        return false;
+    }
     return true;
 }
 
