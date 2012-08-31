@@ -114,6 +114,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		// adding, removing layers functions
 		void InsertProjectName (const wxString & prjname);
 		bool InsertLayer(tmLayerProperties * item, wxTreeItemId postion = 0);
+        bool UpdateLayerName (tmLayerProperties * item, const wxString & newname);
 		bool RemoveLayer (wxTreeItemId position, bool bRemoveChild = TRUE);
 		bool GetItemByID (wxTreeItemId & position,long searchedid);
 		void ClearAllLayers();

@@ -550,7 +550,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
-    itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer..."), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
@@ -1717,7 +1717,7 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event){
     myCopyProj = *memProj;
     
     tmExportManager myExport(this, m_PManager->GetDatabase());
-    if (myExport.ExportSelected(&myCopyProj, m_TocWindow->GetTOCCtrl())==true){
+    if (myExport.ExportSelected(&myCopyProj, m_LayerManager)==true){
         wxLogDebug(_T("Exporting layer(s) success"));
     }
     else {

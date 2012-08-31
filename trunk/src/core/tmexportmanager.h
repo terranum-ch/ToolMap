@@ -99,7 +99,7 @@ class tmExportManager : public wxObject
 		
 		// Export public function
 		bool ExportAll (PrjDefMemManage * localprojdef);
-		bool ExportSelected (PrjDefMemManage * localprojdef, tmTOCCtrl * toc);
+		bool ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager);
 };
 
 

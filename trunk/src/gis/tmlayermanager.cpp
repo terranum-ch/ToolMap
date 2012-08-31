@@ -489,50 +489,117 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	
 	for (unsigned int i = 0; i< myFilesNames.GetCount(); i++) {
 		wxFileName myFilename (myFilesNames.Item(i));
-		tmLayerProperties * item = new tmLayerProperties();
-		item->InitFromPathAndName(myFilename.GetPath(),
-								  myFilename.GetFullName(),
-								  tmGISData::GetAllSupportedGISFormatsExtensions());
-		
-		// try to open the file for getting the spatial type
-		tmGISData * myLayer = tmGISData::LoadLayer(item);
-		if (myLayer == NULL){
-			wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
-			wxDELETE(item);
-			continue;
-		}
-		
-		item->SetSpatialType(myLayer->GetSpatialType());
-		wxDELETE(myLayer);
-		if (item->GetSpatialType() == LAYER_ERR || 
-			item->GetSpatialType() == LAYER_SPATIAL_UNKNOWN)
-		{
-			wxLogError(_("Spatial type of layer '%s' unknown or not supported!"), item->GetNameDisplay());
-			wxDELETE(item);
-			continue;
-		}
-		item->InitSymbology(wxEmptyString);
-		
-		// saving to the database and getting the last ID
-		long lastinsertedID = m_DB->AddTOCLayer(item);
-		if (lastinsertedID < 0){
-			wxLogError(_("Error Adding layer: '%s'"), item->GetNameDisplay());
-			wxDELETE(item);
-			continue;
-		}
-		
-		item->SetID(lastinsertedID);
-		wxLogDebug(_T("Last inserted item id is : %ld"),lastinsertedID);
-		
-		// adding entry to TOC
-		if(m_TOCCtrl->InsertLayer(item) ==false){
-			wxLogError(_("Error adding layer: '%s' into TOC"), item->GetNameDisplay());
-			wxDELETE(item);
-			continue;
-		}
+        if (OpenLayer(myFilename,false)==false) {
+            continue;
+        }
 	}
-	// re-load project
 	LoadProjectLayers();
+}
+
+
+
+bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString & originalname){
+    if (originalname == wxEmptyString) {
+        return false;
+    }
+
+    wxRegEx myRegex(_T("-([0-9]{3})$"));
+    // check if layer exists
+    bool bReset = true;
+    tmLayerProperties * myLayerToReplace = NULL;
+    for (unsigned int i = 0; i< m_TOCCtrl->GetCount(); i++) {
+        tmLayerProperties * myLayer = m_TOCCtrl->IterateLayers(bReset);
+        bReset = false;
+        if (myLayer == NULL) {
+            continue;
+        }
+        if (myLayer->GetType() != TOC_NAME_SHP) {
+            continue;
+        }
+        
+        wxString myTOCLayerName = myLayer->GetName().GetName();
+        wxString myReplaceNameOrigin = originalname;
+        //wxString myReplaceName = filename.GetName();
+                
+        wxLogDebug("%s | %s | %s", myTOCLayerName, myReplaceNameOrigin) ;//, myReplaceName);
+            
+        // is original filename
+        if (myTOCLayerName == myReplaceNameOrigin) {
+            myLayerToReplace = myLayer;
+            break;
+        }
+        
+        // check for modified filename (-XXX)
+        if (myRegex.Matches(myTOCLayerName)==true) {
+            wxString myTocWithoutIncrement = myTOCLayerName.Left(myTOCLayerName.Len() - 4);
+            if (myTocWithoutIncrement == myReplaceNameOrigin) {
+                myLayerToReplace = myLayer;
+                break;
+            }
+        }
+     }
+    
+    if (myLayerToReplace == NULL) {
+        return false;
+    }
+    
+    wxString myExtension = _T("shp");
+    wxFileName myCompleteName(filename);
+    myCompleteName.SetExt(myExtension);
+    m_TOCCtrl->UpdateLayerName(myLayerToReplace, myCompleteName.GetName());
+    myLayerToReplace->SetName(myCompleteName);
+    
+    // Update database
+       
+    return true;
+}
+
+
+bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const wxString & originalname){
+    if (replace == true) {
+        if (_ReplaceLayer(filename, originalname)==true) {
+            return true;
+        }
+    }
+    
+    tmLayerProperties * item = new tmLayerProperties();
+    item->InitFromPathAndName(filename.GetPath(),filename.GetFullName(),tmGISData::GetAllSupportedGISFormatsExtensions());
+    
+    // try to open the file for getting the spatial type
+    tmGISData * myLayer = tmGISData::LoadLayer(item);
+    if (myLayer == NULL){
+        wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
+        wxDELETE(item);
+        return false;
+    }
+    
+    item->SetSpatialType(myLayer->GetSpatialType());
+    wxDELETE(myLayer);
+    if (item->GetSpatialType() == LAYER_ERR || item->GetSpatialType() == LAYER_SPATIAL_UNKNOWN){
+        wxLogError(_("Spatial type of layer '%s' unknown or not supported!"), item->GetNameDisplay());
+        wxDELETE(item);
+        return false;
+    }
+    
+    item->InitSymbology(wxEmptyString);
+    // saving to the database and getting the last ID
+    long lastinsertedID = m_DB->AddTOCLayer(item);
+    if (lastinsertedID < 0){
+        wxLogError(_("Error Adding layer: '%s'"), item->GetNameDisplay());
+        wxDELETE(item);
+        return false;
+    }
+    
+    item->SetID(lastinsertedID);
+    wxLogDebug(_T("Last inserted item id is : %ld"),lastinsertedID);
+    
+    // adding entry to TOC
+    if(m_TOCCtrl->InsertLayer(item) ==false){
+        wxLogError(_("Error adding layer: '%s' into TOC"), item->GetNameDisplay());
+        wxDELETE(item);
+        return false;
+    }
+    return true;
 }
 
 
