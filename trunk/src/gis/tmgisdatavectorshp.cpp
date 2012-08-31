@@ -482,8 +482,10 @@ wxString tmGISDataVectorSHP::GetDataSizeAsHtml (int iPrecision)
 							myFileName.GetName();
 	wxString myShpExt[] = {_T(".shp"), _T(".sbn"), _T(".shx"), _T(".dbf")};
 	
-	for (unsigned int i=0;i< (sizeof(myShpExt) / sizeof(wxString));i++)
-	{
+	for (unsigned int i=0;i< (sizeof(myShpExt) / sizeof(wxString));i++){
+        if (wxFileName::Exists(myFileWoutExt + myShpExt[i])==false) {
+            continue;
+        }
 		wxULongLong myTempSize = wxFileName::GetSize(myFileWoutExt + myShpExt[i]);
 		if (myTempSize != wxInvalidSize)
 			myFilesSize += myTempSize;
@@ -563,9 +565,13 @@ bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
 	
 	int iTotFields = GetFieldsCount();
 	for (int i = 0; i < iTotFields; i++) {
-		//wxString myVal = wxString::FromAscii(myFeature->GetFieldAsString(i));
-        wxString myVal (myFeature->GetFieldAsString(i)); //, wxCSConv(wxFONTENCODING_ISO8859_1));
+#ifdef __WXMSW__
+        wxString myVal (myFeature->GetFieldAsString(i), wxCSConv(wxFONTENCODING_ISO8859_1));
 		values.Add(myVal);
+#else
+        wxString myVal (myFeature->GetFieldAsString(i));
+		values.Add(myVal);
+#endif
 	}
 	
 	OGRFeature::DestroyFeature(myFeature);
@@ -578,7 +584,7 @@ bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxA
     wxASSERT(m_Datasource);
     values.Clear();
     wxString myLayerName (m_Layer->GetName());
-    wxString myQuery = wxString::Format(_T("SELECT DISTINCT %s FROM %s"), fieldname, myLayerName);
+    wxString myQuery = wxString::Format(_T("SELECT DISTINCT '%s' FROM '%s'"), fieldname, myLayerName);
     OGRLayer * myResultLayer = m_Datasource->ExecuteSQL(myQuery, NULL, NULL);
     if (myResultLayer == NULL) {
         return false;
@@ -588,8 +594,14 @@ bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxA
     myResultLayer->ResetReading();
     OGRFeature * myFeature = NULL;
     while ((myFeature = myResultLayer->GetNextFeature()) != NULL) {
+#ifdef __WXMSW__
+        wxString myValue (myFeature->GetFieldAsString(0), wxCSConv(wxFONTENCODING_ISO8859_1));
+        values.Add(myValue);
+#else
         wxString myValue (myFeature->GetFieldAsString(0));
         values.Add(myValue);
+#endif
+        
         OGRFeature::DestroyFeature(myFeature);
     }
     m_Datasource->ReleaseResultSet(myResultLayer);
