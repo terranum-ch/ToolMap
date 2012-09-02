@@ -178,16 +178,16 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
  *******************************************************************************/
 bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 {
-	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->GetSymbolRef();
+    if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
+        itemProp->GetSymbolRuleManagerRef()->IsUsingRules()==true) {
+        return DrawLinesRules(itemProp, pdata);
+    }
+    
+    tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->GetSymbolRef();
 	
-	// create pen based on symbology
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
-	
-	// pen for selection
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
 	wxPen mySHaloPen (*wxWHITE, pSymbol->GetWidth() + 2);
-	
-	// pen for vertex
 	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
 	
 	// define spatial filter
@@ -447,90 +447,93 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return true;	
-	
-	
-	
-	
-	
-	
-	/*
-	// create pens
-	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
-	
-	
-	wxPen mySelectionPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
-	wxPen * myVertexPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
-	
-	// define spatial filter
+}
+
+
+
+
+bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
+    wxASSERT(itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0);
+	wxMemoryDC dc;
+    dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc);
+    
+    // define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
 	if(!pVectLine->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
 		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Error setting spatial filter"));
+			wxLogError(_T("Error setting spatial filter"));
 		}
-		wxDELETE(myVPen);
+		dc.SelectObject(wxNullBitmap);
+		wxDELETE(pgdc);
 		return false;
 	}
+        
+    // process rules
+    int iLoop = 0;
+    tmSymbolRuleArray * myRulesArray = itemProp->GetSymbolRuleManagerRef()->GetRulesRef();
+    wxASSERT(myRulesArray);
+    for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
+        tmSymbolRule * myRule = myRulesArray->Item(s);
+        wxASSERT(myRule);
+        if (myRule->GetAttributFilter() == wxEmptyString || myRule->IsActive() == false) {
+            continue;
+        }
+        
+        if(pVectLine->SetAttributFilter(myRule->GetAttributFilter())==false){
+            continue;
+        }
+        
+        wxPen myRulePen = myRule->GetPen();
+        wxPen mySelectPen = myRulePen;
+        mySelectPen.SetColour(m_SelMem->GetSelectionColour());
+        mySelectPen.SetWidth(mySelectPen.GetWidth() + 1);
+        pgdc->SetPen(myRulePen);
+        wxPen myVertexPen (*CreateVertexUniquePen(itemProp, myRulePen.GetWidth()));
+        
+        while (1){
+            int iNbVertex = wxNOT_FOUND;
+            long myOid = wxNOT_FOUND;
+            wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
+            
+            if (pptsReal == NULL || iNbVertex <= 1){
+                wxDELETEA(pptsReal);
+                break;
+            }
+            
+            // set brush
+            pgdc->SetPen(myRulePen);
+            if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+                if (m_SelMem->IsSelected(myOid)){
+                    pgdc->SetPen(mySelectPen);
+                }
+            }
+            
+            // creating path
+            wxGraphicsPath myPath = pgdc->CreatePath();
+            myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+            for (int i = 1; i< iNbVertex; i++){
+                myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+            }
+            pgdc->StrokePath(myPath);
+            tmLayerProperties myProperty (*itemProp);
+            // drawing vertex
+            DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, &myVertexPen);
+            wxDELETEA(pptsReal);
+            iLoop++;
+        }
+    }
+    
+    if (IsLoggingEnabled()){
+		wxLogDebug(_T("%d Lines drawn"), iLoop);
+    }
 	
-	wxMemoryDC temp_dc;
-	temp_dc.SelectObject(*m_bmp);
-	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
-	
-	// iterate for all lines, will not work on a threaded version
-	// because of all wxLogDebug commands
-	int iNbVertex = 0;
-	bool bReturn = true;
-	//bool bSelected = false;
-	int iLoop = 0;
-	while (1)
-	{
-		pgdc->SetPen(myPen);
-		
-		iNbVertex = 0;
-		long myOid = 0;
-		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
-		
-		// line must have more than one vertex
-		if (iNbVertex <= 1) 
-		{
-			bReturn = false;
-			break;
-		}
-		
-		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
-			if (m_SelMem->IsSelected(myOid)){
-				pgdc->SetPen(mySPen);
-			}
-		}
-		
-		// creating path
-		wxGraphicsPath myPath = pgdc->CreatePath();
-		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
-		for (int i = 1; i< iNbVertex; i++)
-			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
-		
-		pgdc->StrokePath(myPath);
-		
-		tmLayerProperties myProperty (*itemProp);
-		
-		// drawing all vertex for in edition line
-		if (m_ActuallayerID == m_SelMem->GetSelectedLayer() &&
-			myProperty.IsEditing() == true &&
-			m_SelMem->GetCount() == 1 &&
-			m_SelMem->IsSelected(myOid)){
-			myProperty.SetVertexFlags(tmDRAW_VERTEX_ALL);
-		}
-		
-		// drawing vertex
-		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, myVPen);
-		delete [] pptsReal;
-		iLoop++;
-		
-	}
-	temp_dc.SelectObject(wxNullBitmap);
-	wxDELETE( myVPen);
+	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
-	return bReturn;*/
+	return true;
+
+    return true;
 }
 
 
@@ -549,8 +552,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
  @date 16 September 2008
  *******************************************************************************/
 bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
-{
-	
+{	
 	// define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
 	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
@@ -971,16 +973,13 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
                 }
                 
                 // set brush
+                pgdc->SetPen(myRulePen);
+                pgdc->SetBrush(myRuleBrush);
                 if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
                     if (m_SelMem->IsSelected(myOid)){
                         pgdc->SetPen(mySelectPen);
                         pgdc->SetBrush(mySelectBrush);
                     }
-                }
-                else{
-                    pgdc->SetPen(myRulePen);
-                    pgdc->SetBrush(myRuleBrush);
-
                 }
  
                 wxGraphicsPath myPath = pgdc->CreatePath();

@@ -164,7 +164,7 @@ private:
     
     virtual bool TransferDataToWindow();
     virtual bool TransferDataFromWindow();
-    
+    DECLARE_EVENT_TABLE();
     
 public:
     tmSymbolDLGLineRule(wxWindow * parent, tmLayerProperties * layerproperties = NULL, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString & caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint & pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize & size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);

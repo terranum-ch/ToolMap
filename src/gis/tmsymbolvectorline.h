@@ -52,7 +52,7 @@ class tmSymbolVectorLine : public tmSymbolVector
 		virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
         
         virtual void SetColour (const wxColour & colour){m_lSymUnique.m_Colour = colour;}
-
+        tmSymbolDataLineUnique * GetSymbolData(){return &m_lSymUnique;}
 	};
 
 

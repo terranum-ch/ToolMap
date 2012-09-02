@@ -72,6 +72,7 @@ class tmDrawer : public wxObject
 		// drawing functions
 		bool DrawLines(tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
+        bool DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);

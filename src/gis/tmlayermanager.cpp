@@ -818,8 +818,7 @@ void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
 void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 {
 	tmLayerProperties * itemProp = (tmLayerProperties*) event.GetClientData();
-	if (!itemProp)
-	{
+	if (!itemProp){
 		wxLogError(_("Problem during data transfert"));
 		return;
 	}
@@ -827,34 +826,6 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 	wxASSERT(m_DB);
 	itemProp->GetSymbolRef()->SetDatabase(m_DB);
 	itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());
-    
-    /*
-    // TODO: Remove this temp code used for testing tmSymbolRule
-    if (itemProp->GetNameDisplay() == _T("Bedrock_PLG.shp")){
-        tmSymbolRuleArray * m_Rules = itemProp->GetSymbolRuleArray();
-        wxASSERT(m_Rules);
-         
-        // Quartzite
-        tmSymbolVectorPolygon * mySPoly = new tmSymbolVectorPolygon();
-        mySPoly->SetColour(*wxRED);
-        tmSymbolRule * myRule = new tmSymbolRule(itemProp->GetSpatialType(), mySPoly);
-        myRule->SetRuleName(_T("Gypse-ZH"));
-        myRule->SetAttributFilter(_T("OBJ_DESC = 'gypse-ZH'"));
-        m_Rules->Add(myRule);
-        
-        // GYPSE
-        tmSymbolVectorPolygon * mySPoly2 = new tmSymbolVectorPolygon();
-        mySPoly2->SetColour(*wxBLUE);
-        tmSymbolRule * myRule2 = new tmSymbolRule(itemProp->GetSpatialType(), mySPoly2);
-        myRule2->SetRuleName(_T("Quartzite-SM"));
-        myRule2->SetAttributFilter(_T("OBJ_DESC = 'quartzite-SM'"));
-        m_Rules->Add(myRule2);
-        
-        ReloadProjectLayersThreadStart(false);
-        return;
-    }
-    // END
-    */
     
     if (itemProp->GetType() == TOC_NAME_SHP) {
         if(itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_TOCCtrl, wxGetMousePosition())==true){;
