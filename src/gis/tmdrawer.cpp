@@ -184,11 +184,12 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
     }
     
     tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->GetSymbolRef();
-	
 	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
 	wxPen mySHaloPen (*wxWHITE, pSymbol->GetWidth() + 2);
 	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
+    wxPen myOrientedPen (myPen);
+    myOrientedPen.SetStyle(wxPENSTYLE_DOT); 
 	
 	// define spatial filter
 	tmGISDataVector * pVectLine = (tmGISDataVector*) pdata;
@@ -204,34 +205,22 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	wxMemoryDC temp_dc;
 	temp_dc.SelectObject(*m_bmp);
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
-	
-	// iterate for all lines, will not work on a threaded version
-	// because of all wxLogDebug commands
+
 	int iNbVertex = 0;
-	bool bReturn = true;
-	//bool bSelected = false;
-	int iLoop = 0;
-	while (1)
-	{
-		pgdc->SetPen(myPen);
-		
+	while (1){
 		iNbVertex = 0;
 		long myOid = 0;
 		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
 		
-		// line must have more than one vertex
-		if (iNbVertex <= 1) 
-		{
-			/*if (IsLoggingEnabled())
-				wxLogDebug(_T("No vertex returned @loop = %d, oid = %d"),iLoop, myOid);*/
-			bReturn = false;
+		if (pptsReal == NULL){
 			break;
 		}
 		
-		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
-			if (m_SelMem->IsSelected(myOid)){
-				
-				// drawing halo
+        // set pen
+        pgdc->SetPen(myPen);
+        if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+            if (m_SelMem->IsSelected(myOid)){
+                // drawing halo
 				if (m_SelMem->GetSelectionHalo() == true) {
 					pgdc->SetPen(mySHaloPen);
 					wxGraphicsPath myPath = pgdc->CreatePath();
@@ -240,20 +229,37 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 						myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
 					pgdc->StrokePath(myPath);
 				}
-				pgdc->SetPen(mySPen);
-			}
-		}
-		
+                pgdc->SetPen(mySPen);
+            }
+        }
+
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
 		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
-		for (int i = 1; i< iNbVertex; i++)
+		for (int i = 1; i< iNbVertex; i++){
 			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
-		
+        }
 		pgdc->StrokePath(myPath);
-		
+        
+        /* if oriented lines
+        wxGraphicsPath myPath2 = pgdc->CreatePath();
+        wxPoint myPosOrigin (m_scale.RealToPixel(pptsReal[0]));
+        myPosOrigin.x = myPosOrigin.x - (myPen.GetWidth() + 1);
+        myPosOrigin.y = myPosOrigin.y - (myPen.GetWidth() + 1);
+		myPath2.MoveToPoint(myPosOrigin);
+        for (int i = 1; i< iNbVertex; i++){
+            wxPoint myPos (m_scale.RealToPixel(pptsReal[i]));
+            myPos.x = myPos.x - (myPen.GetWidth() + 1);
+            myPos.y = myPos.y - (myPen.GetWidth() + 1);
+			myPath2.AddLineToPoint(myPos);
+        }
+        
+        pgdc->SetPen(myOrientedPen);
+        pgdc->StrokePath(myPath2);*/
+
+        
+
 		tmLayerProperties myProperty (*itemProp);
-		
 		// drawing all vertex for in edition line
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer() &&
 			myProperty.IsEditing() == true &&
@@ -264,14 +270,12 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		
 		// drawing vertex
 		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, myVPen);
-		delete [] pptsReal;
-		iLoop++;
-		
+		wxDELETEA(pptsReal);
 	}
 	temp_dc.SelectObject(wxNullBitmap);
-	wxDELETE( myVPen);
+	wxDELETE(myVPen);
 	wxDELETE(pgdc);
-	return bReturn;
+	return true;
 }
 
 
