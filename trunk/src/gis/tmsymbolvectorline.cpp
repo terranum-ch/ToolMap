@@ -40,6 +40,23 @@ tmSymbolVectorLine::~tmSymbolVectorLine()
 }
 
 
+tmSymbolDLG * tmSymbolVectorLine::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+{
+	tmSymbolDLGLine * dlg = new tmSymbolDLGLine(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+												SYMBOL_TMSYMBOLDLG_TITLE,
+												dlgpos);
+	dlg->SetDialogData(m_lSymUnique);
+	return dlg;
+}
+
+
+bool tmSymbolVectorLine::GetDialogData(tmSymbolDLG * dlg)
+{
+	m_lSymUnique = ((tmSymbolDLGLine *) dlg)->GetDialogData();
+	return TRUE;
+}
+
+
 bool tmSymbolVectorLine::Serialize(tmSerialize &s)
 {
 	s.EnterObject();

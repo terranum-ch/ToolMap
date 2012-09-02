@@ -49,6 +49,23 @@ tmSymbolVectorPolygon::~tmSymbolVectorPolygon()
 }
 
 
+tmSymbolDLG * tmSymbolVectorPolygon::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+{
+	tmSymbolDLGPolygon * dlg = new tmSymbolDLGPolygon(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
+							   SYMBOL_TMSYMBOLDLG_TITLE,
+							   dlgpos);
+	dlg->SetDialogData(m_plgUniqueSymbol);
+	return dlg;
+}
+
+
+bool tmSymbolVectorPolygon::GetDialogData(tmSymbolDLG * dlg)
+{
+	m_plgUniqueSymbol = ((tmSymbolDLGPolygon *) dlg)->GetDialogData();
+	return TRUE;
+}
+
+
 bool tmSymbolVectorPolygon::Serialize(tmSerialize &s)
 {
 	s.EnterObject();
