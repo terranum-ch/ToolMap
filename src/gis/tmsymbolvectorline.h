@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmsymbolvectorline.h
-				Deals with GIS line vector symbology and associed dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsymbolvectorline.h
+ Deals with GIS line vector symbology and associed dialog
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,8 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
 
 
 #ifndef _TM_SYMBOLVECTORLINE_H_
@@ -33,27 +31,24 @@
 #include "tmsymboldlgline.h" 
 
 class tmSymbolVectorLine : public tmSymbolVector
-	{
-	private:
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-	
-		tmSymbolDataLineUnique m_lSymUnique;
-
-	public:
-		tmSymbolVectorLine();
-		tmSymbolVectorLine(const tmSymbolVectorLine & origin);
-		~tmSymbolVectorLine();
-		
-		virtual bool Serialize(tmSerialize &s);
-		virtual wxColour GetColour();
-		virtual int GetWidth() {return m_lSymUnique.m_Width;}
-		virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
-		virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
-        
-        virtual void SetColour (const wxColour & colour){m_lSymUnique.m_Colour = colour;}
-        tmSymbolDataLineUnique * GetSymbolData(){return &m_lSymUnique;}
-	};
+{
+private:
+    tmSymbolDataLineUnique m_lSymUnique;
+    
+public:
+    tmSymbolVectorLine();
+    tmSymbolVectorLine(const tmSymbolVectorLine & origin);
+    ~tmSymbolVectorLine();
+    
+    virtual bool Serialize(tmSerialize &s);
+    virtual wxColour GetColour();
+    virtual int GetWidth() {return m_lSymUnique.m_Width;}
+    virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
+    virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
+    
+    virtual void SetColour (const wxColour & colour){m_lSymUnique.m_Colour = colour;}
+    tmSymbolDataLineUnique * GetSymbolData(){return &m_lSymUnique;}
+};
 
 
 

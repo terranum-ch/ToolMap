@@ -169,7 +169,7 @@ void DataBase::DBLibraryEnd ()
 
 
 wxString DataBase::DataBaseGetLastError (){
-	return wxString::Format(_("MySQL Error : %s"), wxString::FromAscii(mysql_error(m_MySQL)));
+	return wxString::Format(_("MySQL Error : %s"), wxString(mysql_error(m_MySQL)));
 }
 
 
@@ -733,7 +733,6 @@ long DataBase::DataBaseGetAffectedRows(){
 
 bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & results)
 {
-	wxASSERT(m_MySQL);
 	results.Clear();
 
 	if (query.IsEmpty()) {
@@ -744,21 +743,6 @@ bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & res
 	results = query;
 	results.Replace(_T("'"), _T("\\'"));
 	results.Replace(_T("\""), _T("\\\""));
-	return true;
-
-	char * buf = new char[query.Len() * sizeof(wxString) * 2 + sizeof(wxString)];
-
-	unsigned long myInsertedVal = mysql_real_escape_string(m_MySQL, buf, query.mb_str(wxConvUTF8), query.Len());
-
-	if(myInsertedVal == 0){
-		wxLogError(DataBaseGetLastError());
-		delete[] buf;
-		return false;
-	}
-
-	results = wxString::FromUTF8(buf);
-	delete [] buf;
-
 	return true;
 }
 

@@ -270,6 +270,32 @@ bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & p
             
         }
             break;
+            
+            
+        case LAYER_SPATIAL_POINT:
+        {
+            tmSymbolDLGPointRule * pdlg = new tmSymbolDLGPointRule(parent, m_LayerProperties, SYMBOL_TMSYMBOLDLG_IDNAME,SYMBOL_TMSYMBOLDLG_TITLE,position);
+            tmSymbolRuleManager::RuleArrayCopy(GetRulesRef(), pdlg->GetRulesRef());
+            
+            tmSymbolVectorPoint * mySymbolPoint = (tmSymbolVectorPoint*) m_LayerProperties->GetSymbolRef();
+            wxASSERT(mySymbolPoint);
+            pdlg->SetPointUniqueStyle( *(mySymbolPoint->GetSymbolData()));
+            pdlg->SetSelectedPanel(m_DlgSelectedPanel);
+            pdlg->SetSelectedField(m_DlgSelectedFieldname);
+            
+            if (pdlg->ShowModal() != wxID_OK) {
+                wxDELETE(pdlg);
+                return false;
+            }
+            tmSymbolRuleManager::RuleArrayCopy(pdlg->GetRulesRef(), GetRulesRef());
+            m_DlgSelectedPanel = pdlg->GetSelectedPanel();
+            m_DlgSelectedFieldname = pdlg->GetSelectedField();
+            
+            wxASSERT(mySymbolPoint);
+            *(mySymbolPoint->GetSymbolData()) = pdlg->GetPointUniqueStyle();
+            
+        }
+            break;
 
             
         default:
@@ -310,7 +336,9 @@ bool tmSymbolRuleManager::Serialize(tmSerialize & s) {
         s << (int) m_Rules.GetCount();
         for (unsigned int i = 0; i< m_Rules.GetCount(); i++) {
             s << m_Rules.Item(i)->GetRuleName();
-            s << m_Rules.Item(i)->GetAttributFilter();
+            wxString myAttributFilter = m_Rules.Item(i)->GetAttributFilter();
+            myAttributFilter.Replace(_T("\""), _T("\\\""));
+            s << myAttributFilter;
             s << m_Rules.Item(i)->IsActive();
             m_Rules.Item(i)->GetSymbolData()->Serialize(s);
         }

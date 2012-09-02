@@ -52,6 +52,8 @@ class tmSymbolVectorPoint : public tmSymbolVector
         virtual void SetColour (const wxColour & colour){m_ptUniqueSymbol.m_Colour = colour;}
         
 		virtual bool Serialize(tmSerialize &s);
+        tmSymbolDataPointUnique * GetSymbolData(){return &m_ptUniqueSymbol;}
+
 	};
 
 

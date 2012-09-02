@@ -101,7 +101,7 @@ class DataBase
         long DataBaseGetAffectedRows();
 		
 		// query transformations
-		bool DataBaseStringEscapeQuery (const wxString & query, wxString & results);
+		static bool DataBaseStringEscapeQuery (const wxString & query, wxString & results);
 		
 		// results operations
 		bool DataBaseHasResults();
