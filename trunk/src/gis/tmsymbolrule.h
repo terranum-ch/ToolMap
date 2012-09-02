@@ -112,7 +112,7 @@ WX_DECLARE_OBJARRAY(tmSymbolRule *, tmSymbolRuleArray);
 /***************************************************************************//**
 @brief Symbol Rule manager
 @author Lucien Schreiber (c) CREALP 2012
-@date 28 août 2012
+@date 28 aout 2012
 *******************************************************************************/
 class tmSymbolRuleManager {
 private:
@@ -148,7 +148,7 @@ inline  tmSymbolRuleArray * tmSymbolRuleManager::GetRulesRef() {
 /*************************************************************************************//**
 @brief Edit rule symbology dialog
 @author Lucien Schreiber copyright CREALP
-@date 29 août 2012
+@date 29 aout 2012
 *****************************************************************************************/
 class tmSymbolRuleEdit_DLG : public wxDialog {
 private:
