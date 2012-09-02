@@ -249,7 +249,7 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent & event) {
     for (unsigned int i = 0; i< myFieldValues.GetCount(); i++) {
         tmSymbolRule * myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
         myRule->SetRuleName(myFieldValues[i]);
-        myRule->SetAttributFilter(wxString::Format(_T("%s='%s'"),myFieldName, myFieldValues[i]));
+        myRule->SetAttributFilter(wxString::Format(_T("%s=\"%s\""),myFieldName, myFieldValues[i]));
         myRule->SetRandomColor();
         m_Rules.Add(myRule);
     }

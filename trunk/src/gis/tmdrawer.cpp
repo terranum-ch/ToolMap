@@ -532,8 +532,6 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
 	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return true;
-
-    return true;
 }
 
 
@@ -553,7 +551,12 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
  *******************************************************************************/
 bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 {	
-	// define spatial filter
+    if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
+        itemProp->GetSymbolRuleManagerRef()->IsUsingRules()==true) {
+        return DrawPointsRules(itemProp, pdata);
+    }
+    
+    // define spatial filter
 	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
 	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
 	{
@@ -773,6 +776,83 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 	}
 	
 	temp_dc.SelectObject(wxNullBitmap);
+	wxDELETE(pgdc);
+	return true;
+}
+
+
+
+bool tmDrawer::DrawPointsRules (tmLayerProperties * itemProp, tmGISData * pdata){
+    wxASSERT(itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0);
+	wxMemoryDC dc;
+    dc.SelectObject(*m_bmp);
+	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc);
+    
+    // define spatial filter
+	tmGISDataVector * pVectPoint = (tmGISDataVector*) pdata;
+	if(!pVectPoint->SetSpatialFilter(m_spatFilter,itemProp->GetType()))
+	{
+		if (IsLoggingEnabled()){
+			wxLogError(_T("Error setting spatial filter"));
+		}
+		dc.SelectObject(wxNullBitmap);
+		wxDELETE(pgdc);
+		return false;
+	}
+    
+    // process rules
+    int iLoop = 0;
+    tmSymbolRuleArray * myRulesArray = itemProp->GetSymbolRuleManagerRef()->GetRulesRef();
+    wxASSERT(myRulesArray);
+    for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
+        tmSymbolRule * myRule = myRulesArray->Item(s);
+        wxASSERT(myRule);
+        if (myRule->GetAttributFilter() == wxEmptyString || myRule->IsActive() == false) {
+            continue;
+        }
+        
+        if(pVectPoint->SetAttributFilter(myRule->GetAttributFilter())==false){
+            continue;
+        }
+        
+        wxPen myRulePen = myRule->GetPen();
+        wxPen mySelectPen = myRulePen;
+        mySelectPen.SetColour(m_SelMem->GetSelectionColour());
+        mySelectPen.SetWidth(mySelectPen.GetWidth() + 1);
+        pgdc->SetPen(myRulePen);
+        
+        while (1){
+            long myOid = wxNOT_FOUND;
+            wxRealPoint * pptsReal = pVectPoint->GetNextDataPoint(myOid);
+            
+            if (pptsReal == NULL){
+                break;
+            }
+            
+            // set brush
+            pgdc->SetPen(myRulePen);
+            if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
+                if (m_SelMem->IsSelected(myOid)){
+                    pgdc->SetPen(mySelectPen);
+                }
+            }
+            
+            wxPoint Intpts = m_scale.RealToPixel(*pptsReal);
+#ifdef __WXMSW__
+            pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+#else
+            pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+#endif
+             wxDELETE(pptsReal);
+            iLoop++;
+        }
+    }
+    
+    if (IsLoggingEnabled()){
+		wxLogDebug(_T("%d Lines drawn"), iLoop);
+    }
+	
+	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return true;
 }

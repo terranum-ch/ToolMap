@@ -22,6 +22,7 @@
 // for snapping constants
 #include "../core/tmsnappingmemory.h"
 #include "../core/projectdefmemory.h"
+#include "../database/database.h"
 
 
 tmGISDataVectorSHP::tmGISDataVectorSHP()
@@ -182,10 +183,14 @@ bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 
 
 bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
+    // escape ' from query
+    wxString myQuery (query);
+    myQuery.Replace(_T("'"), _T("\\'"));
+    
     wxASSERT(m_Layer);
     m_Layer->ResetReading();
-    if (m_Layer->SetAttributeFilter((const char *) query.mb_str(wxConvUTF8)) != OGRERR_NONE) {
-        wxLogError(_("%s query fail on layer : '%s'"), query, wxString(m_Layer->GetLayerDefn()->GetName()));
+    if (m_Layer->SetAttributeFilter((const char *) myQuery.mb_str(wxConvUTF8)) != OGRERR_NONE) {
+        wxLogError(_("%s query fail on layer : '%s'"), myQuery, wxString(m_Layer->GetLayerDefn()->GetName()));
         return false;
     }
     return true;
