@@ -38,9 +38,6 @@ class tmSymbolVectorPolygon : public tmSymbolVector
 	private:
 		tmSymbolDataPolygonUnique m_plgUniqueSymbol;
 		
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-	protected:
 	public:
 		tmSymbolVectorPolygon();
 		tmSymbolVectorPolygon(const tmSymbolVectorPolygon & origin);
