@@ -218,17 +218,18 @@ tmSymbolRuleManager::~tmSymbolRuleManager() {
 
 
 bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position) {
+    tmSymbolRule::InitRandomGenerator();
     switch (m_LayerProperties->GetSpatialType()) {
         case LAYER_SPATIAL_POLYGON :
         {
-            tmSymbolDLGPolyRule * pdlg = new tmSymbolDLGPolyRule(parent, m_LayerProperties, SYMBOL_TMSYMBOLDLG_IDNAME,                                                                 SYMBOL_TMSYMBOLDLG_TITLE,                                                                 position);
+            tmSymbolDLGPolyRule * pdlg = new tmSymbolDLGPolyRule(parent, m_LayerProperties, SYMBOL_TMSYMBOLDLG_IDNAME,SYMBOL_TMSYMBOLDLG_TITLE,position);
             tmSymbolRuleManager::RuleArrayCopy(GetRulesRef(), pdlg->GetRulesRef());
-            pdlg->SetSelectedPanel(m_DlgSelectedPanel);
-            pdlg->SetSelectedField(m_DlgSelectedFieldname);
             
             tmSymbolVectorPolygon * mySymbolPoly = (tmSymbolVectorPolygon*) m_LayerProperties->GetSymbolRef();
             wxASSERT(mySymbolPoly);
             pdlg->SetPolyUniqueStyle( *(mySymbolPoly->GetSymbolData()));
+            pdlg->SetSelectedPanel(m_DlgSelectedPanel);
+            pdlg->SetSelectedField(m_DlgSelectedFieldname);
             
             if (pdlg->ShowModal() != wxID_OK) {
                 wxDELETE(pdlg);
@@ -243,6 +244,33 @@ bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & p
 
         }
             break;
+            
+            
+        case LAYER_SPATIAL_LINE :
+        {
+            tmSymbolDLGLineRule * pdlg = new tmSymbolDLGLineRule(parent, m_LayerProperties, SYMBOL_TMSYMBOLDLG_IDNAME,SYMBOL_TMSYMBOLDLG_TITLE,position);
+            tmSymbolRuleManager::RuleArrayCopy(GetRulesRef(), pdlg->GetRulesRef());
+            
+            tmSymbolVectorLine * mySymbolLine = (tmSymbolVectorLine*) m_LayerProperties->GetSymbolRef();
+            wxASSERT(mySymbolLine);
+            pdlg->SetLineUniqueStyle( *(mySymbolLine->GetSymbolData()));
+            pdlg->SetSelectedPanel(m_DlgSelectedPanel);
+            pdlg->SetSelectedField(m_DlgSelectedFieldname);
+            
+            if (pdlg->ShowModal() != wxID_OK) {
+                wxDELETE(pdlg);
+                return false;
+            }
+            tmSymbolRuleManager::RuleArrayCopy(pdlg->GetRulesRef(), GetRulesRef());
+            m_DlgSelectedPanel = pdlg->GetSelectedPanel();
+            m_DlgSelectedFieldname = pdlg->GetSelectedField();
+            
+            wxASSERT(mySymbolLine);
+            *(mySymbolLine->GetSymbolData()) = pdlg->GetLineUniqueStyle();
+            
+        }
+            break;
+
             
         default:
             wxLogError(_("Symbology dialog not implemented for this spatial type!"));

@@ -220,6 +220,11 @@ wxBitmap tmSymbolDLGPolyRule::_CreateColorBitmap(const wxBrush & brush, const wx
     {
         wxMemoryDC renderer_dc;
         renderer_dc.SelectObject(myTestBmp);
+        
+        wxBrush myBackBrush(m_SymbolListCtrl->GetBackgroundColour());
+        renderer_dc.SetBackground(myBackBrush);
+        renderer_dc.Clear();
+        
         renderer_dc.SetPen(pen);
         renderer_dc.SetBrush(brush);
         renderer_dc.DrawRectangle(0,0,16,16);
@@ -382,7 +387,6 @@ bool tmSymbolDLGPolyRule::Create(wxWindow * parent, wxWindowID id, const wxStrin
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	_CreateControls();
-    tmSymbolRule::InitRandomGenerator();
     return true;
 }
 

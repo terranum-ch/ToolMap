@@ -147,6 +147,16 @@ bool tmSymbolDLGLine::TransferDataFromWindow()
 /*************************************************************************************//**
 Symbology dialog for lines supporting rules
 *****************************************************************************************/
+BEGIN_EVENT_TABLE(tmSymbolDLGLineRule, tmSymbolDLG)
+EVT_BUTTON(ID_BTN_CLASSIFY_LINE, tmSymbolDLGLineRule::OnBtnClassify)
+EVT_BUTTON(ID_BTN_ADD_LINE, tmSymbolDLGLineRule::OnBtnAdd)
+EVT_BUTTON(ID_BTN_REMOVE_LINE, tmSymbolDLGLineRule::OnBtnRemove)
+EVT_BUTTON(ID_BTN_REMOVEALL_LINE, tmSymbolDLGLineRule::OnBtnRemoveAll)
+EVT_UPDATE_UI(ID_BTN_REMOVE_LINE, tmSymbolDLGLineRule::OnUpdateUIBtnRemove)
+EVT_UPDATE_UI(ID_BTN_REMOVEALL_LINE, tmSymbolDLGLineRule::OnUpdateUIBtnRemoveAll)
+EVT_LIST_ITEM_ACTIVATED(ID_LIST_SYMBOL_LINE, tmSymbolDLGLineRule::OnDoubleClick)
+END_EVENT_TABLE()
+
 
 void tmSymbolDLGLineRule::_CreateControls() {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -316,9 +326,14 @@ wxBitmap tmSymbolDLGLineRule::_CreateColorBitmap(const wxBrush & brush, const wx
     {
         wxMemoryDC renderer_dc;
         renderer_dc.SelectObject(myTestBmp);
-        renderer_dc.SetPen(pen);
-        renderer_dc.SetBrush(brush);
-        renderer_dc.DrawRectangle(0,0,16,16);
+        wxBrush myBackBrush(m_SymbolListCtrl->GetBackgroundColour());
+        renderer_dc.SetBackground(myBackBrush);
+        renderer_dc.Clear();
+        
+        wxPen myPen (pen);
+        myPen.SetWidth(3);
+        renderer_dc.SetPen(myPen);
+        renderer_dc.DrawLine(0, 8, 16, 8);
     }
     return myTestBmp;
 }
@@ -476,7 +491,6 @@ bool tmSymbolDLGLineRule::Create(wxWindow * parent, wxWindowID id, const wxStrin
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     tmSymbolDLG::Create( parent, id, caption, pos, size, style );
 	_CreateControls();
-    tmSymbolRule::InitRandomGenerator();
     return true;
 }
 
