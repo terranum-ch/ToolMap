@@ -445,9 +445,9 @@ int ProjectManager::OpenProject(const wxString & path)
     // optimize project
     wxString myDatabaseSizeBefore = m_DB->DataBaseGetSize();
     tmProjectMaintenance myPrjMaintenance(wxEmptyString, m_DB);
-    if (myPrjMaintenance.OptimizeTables() == false) {
+    /*if (myPrjMaintenance.OptimizeTables() == false) {
         wxLogWarning(_("Project optimization failed!"));
-    }
+    }*/
     
     if (myPrjMaintenance.ClearOrphans() == false) {
         wxLogWarning(_("Cleaning orphans failed!"));
