@@ -379,7 +379,7 @@ void tmSymbolRuleManager::RuleArrayClear (tmSymbolRuleArray * rules){
 }
 
 
-void tmSymbolRuleManager::RuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules){
+void tmSymbolRuleManager::RuleArrayCopy (const tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules){
     wxASSERT(srcrules);
     wxASSERT(dstrules);
     tmSymbolRuleManager::RuleArrayClear(dstrules);
@@ -397,6 +397,12 @@ void tmSymbolRuleManager::RuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolR
 
 
 
+tmSymbolRuleManager & tmSymbolRuleManager::operator=(const tmSymbolRuleManager & source){
+    m_DlgSelectedPanel = source.m_DlgSelectedPanel;
+    m_DlgSelectedFieldname = source.m_DlgSelectedFieldname;
+    tmSymbolRuleManager::RuleArrayCopy(&(source.m_Rules), &m_Rules);
+    return * this;
+}
 
 
 

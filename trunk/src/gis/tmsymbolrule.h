@@ -131,10 +131,10 @@ public:
     
     bool IsUsingRules();
     bool Serialize(tmSerialize & s);
-    
+    tmSymbolRuleManager & operator=(const tmSymbolRuleManager & source);
     // utilities functions
     static void RuleArrayClear (tmSymbolRuleArray * rules);
-    static void RuleArrayCopy (tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules);
+    static void RuleArrayCopy (const tmSymbolRuleArray * srcrules, tmSymbolRuleArray * dstrules);
 };
 
 
