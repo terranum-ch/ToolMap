@@ -278,7 +278,7 @@ void tmLayerProperties::SetEditing(bool value) {
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
+tmLayerProperties::tmLayerProperties (tmLayerProperties & layerprop)
 {
 	// just to be sure
 	InitMemberValues();
@@ -291,7 +291,8 @@ tmLayerProperties::tmLayerProperties (const tmLayerProperties & layerprop)
 	
 	m_LayerSymbol = tmSymbol::CreateCopySymbolBasedOnType(m_LayerSpatialType, GetType(),
 														  layerprop.m_LayerSymbol);
-	
+	wxASSERT(m_SymbolRulesManager);
+    *m_SymbolRulesManager = *(layerprop.GetSymbolRuleManagerRef());
 	
 	m_LayerVertexFlags = layerprop.m_LayerVertexFlags;
 	m_LayerEditing = layerprop.m_LayerEditing;
