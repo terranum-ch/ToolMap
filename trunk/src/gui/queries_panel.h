@@ -64,6 +64,8 @@ private:
     virtual void OnDoubleClickItem (wxListEvent & event);
     virtual void OnContextMenu (wxListEvent & event);
     void OnQueryEdit (wxCommandEvent & event);
+    
+    void OnQueryMenuUpdateUISelected(wxUpdateUIEvent & event);
     DECLARE_EVENT_TABLE();
 	
 protected:
