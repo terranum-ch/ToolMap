@@ -314,6 +314,10 @@ void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 void Queries_PANEL::OnQueryApplySymbology (wxCommandEvent & event){
     // get queries info
     int myQid = m_QueriesList->GetItemData(m_QueriesList->GetSelectedItem());
+    if (myQid == wxNOT_FOUND) {
+        return;
+    }
+    
 	wxString myQName = wxEmptyString;
 	wxString myQCode =wxEmptyString;
 	int myQTarget = 0;
@@ -385,6 +389,9 @@ void Queries_PANEL::OnPressQueryMenu (wxCommandEvent & event){
 
 BEGIN_EVENT_TABLE(QueriesList, ListGenReportWithDialog)
 EVT_MENU(ID_QUERIES_EDIT, QueriesList::OnQueryEdit)
+EVT_UPDATE_UI(ID_QUERIES_EDIT, QueriesList::OnQueryMenuUpdateUISelected)
+EVT_UPDATE_UI(ID_QUERIES_APPLY_SYMBOLOGY, QueriesList::OnQueryMenuUpdateUISelected)
+EVT_UPDATE_UI(ID_QUERIES_RUN, QueriesList::OnQueryMenuUpdateUISelected)
 END_EVENT_TABLE()
 
 
@@ -414,6 +421,19 @@ QueriesList::QueriesList (wxWindow * parent,Queries_PANEL * queryparent,wxWindow
 QueriesList::~QueriesList(){
     /*this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnQueryApplySymbology, m_QueryPanel, ID_QUERIES_APPLY_SYMBOLOGY);*/
 }
+
+
+
+void QueriesList::OnQueryMenuUpdateUISelected(wxUpdateUIEvent & event){
+    if(GetSelectedItem() != wxNOT_FOUND){
+        event.Enable(true);
+        return;
+    }
+    event.Enable(false);
+}
+
+
+
 
 
 
@@ -624,6 +644,8 @@ void QueriesList::OnContextMenu (wxListEvent & event){
     myPopupMenu->Append(ID_QUERIES_APPLY_SYMBOLOGY, _("Use Query for symbology"));
     myPopupMenu->AppendSeparator();
     myPopupMenu->Append(ID_QUERIES_EDIT, _("Edit query SQL..."));
+    myPopupMenu->AppendSeparator();
+    myPopupMenu->Append(ID_QUERIES_ADD, _("Add query..."));
     PopupMenu(myPopupMenu);
     event.Skip();
 }
@@ -636,6 +658,10 @@ void QueriesList::OnQueryEdit (wxCommandEvent & event){
 	int myQTarget = 0;
 
     long iIndex = GetSelectedItem();
+    if (iIndex == wxNOT_FOUND) {
+        return;
+    }
+    
 	if (m_pDB->GetQueriesById(GetItemData(iIndex), myQTarget, myName, myQuery)){
 		wxLogDebug(_T("Error getting the query"));
     }
