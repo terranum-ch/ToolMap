@@ -287,7 +287,7 @@ bool tmDrawer::_SelectFeatureByQuery (long myQueryID, DataBaseTM * database, wxA
 	wxString myName = wxEmptyString;
 	wxString myQueryCode = wxEmptyString;
 	if (database->GetQueriesById(myQueryID, myTarget, myName, myQueryCode)==false) {
-		wxLogError(_("Unable to get complex symbology (Query id: %ld)"),myQueryID);
+		wxLogWarning(_("Unable to get complex symbology.\nQuery chosen may have been deleted (Query id: %ld)\nSwitching to unique symbology!"),myQueryID);
 		return false;
 	}
 	
@@ -334,6 +334,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	wxASSERT(myDB);
 	wxArrayLong myResult;
 	if (_SelectFeatureByQuery(mySymbology->m_QueryID,myDB, myResult)==false) {
+        mySymbology->m_PanelNo = 0;
 		return DrawLines(itemProp, pdata);
 	}
 	
@@ -670,6 +671,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 	wxASSERT(myDB);
 	wxArrayLong myResult;
 	if (_SelectFeatureByQuery(mySymbology->m_QueryID,myDB, myResult)==false) {
+        mySymbology->m_PanelNo = 0;
 		return DrawPoints(itemProp, pdata);
 	}
 	
