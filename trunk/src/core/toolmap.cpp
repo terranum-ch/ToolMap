@@ -666,8 +666,6 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu63->Append(ID_QUERIES_RUN, _("Run selected query\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
-	itemMenu63->AppendSeparator();
-	itemMenu63->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
 	menuBar->Append(itemMenu63, _("Validation"));
 
     // WINDOW
@@ -686,6 +684,8 @@ void ToolMapFrame::_CreateMenu()
     myLayoutMenu->Append(ID_MENU_LAYOUT_VERTICAL, _("Vertical"));
     myLayoutMenu->Append(ID_MENU_LAYOUT_HORIZONTAL, _("Horizontal"));
     itemMenu77->AppendSubMenu(myLayoutMenu, _("Workspace"));
+	itemMenu77->AppendSeparator();
+	itemMenu77->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
     menuBar->Append(itemMenu77, _("Window"));
 
     // HELP

@@ -571,7 +571,8 @@ bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
 	int iTotFields = GetFieldsCount();
 	for (int i = 0; i < iTotFields; i++) {
 #ifdef __WXMSW__
-        wxString myVal (myFeature->GetFieldAsString(i), wxCSConv(wxFONTENCODING_ISO8859_1));
+		const char * myValue = myFeature->GetFieldAsString(i); 
+		wxString myVal (myValue, wxConvUTF8);
 		values.Add(myVal);
 #else
         wxString myVal (myFeature->GetFieldAsString(i));
@@ -600,8 +601,9 @@ bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxA
     OGRFeature * myFeature = NULL;
     while ((myFeature = myResultLayer->GetNextFeature()) != NULL) {
 #ifdef __WXMSW__
-        wxString myValue (myFeature->GetFieldAsString(0), wxCSConv(wxFONTENCODING_ISO8859_1));
-        values.Add(myValue);
+ 		const char * myValue = myFeature->GetFieldAsString(0); 
+		wxString myVal (myValue, wxConvUTF8);
+		values.Add(myVal);
 #else
         wxString myValue (myFeature->GetFieldAsString(0));
         values.Add(myValue);
