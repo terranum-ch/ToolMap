@@ -15,7 +15,7 @@ gDirUnitTest = "D:\\PRJ\\TOOLMAP2\\unit_testing"
 gDirIncludeCxx = "D:\\LIB\\cxxtest"
 gDirPythonCxx = "D:\\LIB\\cxxtest\\bin\\cxxtestgen"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
-gDirGeos = "D:\\LIB\\geos-3.3.4"
+gDirGeos = "D:\\LIB\\geos-3.3.5"
 gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.3"
 gDirSQLITE = "D:\\LIB\\LIB_SQLITE"
 
@@ -79,7 +79,7 @@ def gCreateInstaller(svnnumner):
 def DoPostBuildCommand():
     """copy DLL to directories"""
     myDll = (os.path.join(gDirGdal,"bin","gdal19.dll"), #,os.path.join(gDirGeos,"bin","Debug", "geos.dll"),
-             os.path.join(gDirGeos,"bin","Release", "geos_c.dll"),
+             os.path.join(gDirGeos,"src","geos_c.dll"),
              os.path.join(gDirSQL, "Embedded", "DLL", "release", "libmysqld.dll"),
              os.path.join(gDirCurl, "lib", "DLL-Debug","libcurld.dll"),
              os.path.join(gDirCurl, "lib", "DLL-Release","libcurl.dll"),
