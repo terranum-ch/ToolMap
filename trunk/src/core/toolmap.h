@@ -244,11 +244,12 @@ enum tmPERSPECTIVE_MODE {
 class ToolMapApp : public wxApp
 {
 private:
-	void TAWindowsException();
-	bool TAWindowCreateZip(const wxString & crashname);
-	bool TAWindowRemoveFile(const wxString & crashname);
+	//void TAWindowsException();
+	//bool TAWindowCreateZip(const wxString & crashname);
+	void _RemoveLogFile();
 	
 public:
+    ToolMapApp();
 	virtual bool OnInit();
 	virtual void OnFatalException();
 	

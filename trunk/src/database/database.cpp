@@ -82,7 +82,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 	//init library
 	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
 #ifdef MYSQL_IS_LOGGING
-	wxFileName myLogDirName (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
+	wxFileName myLogDirName (wxStandardPaths::Get().GetAppDocumentsDir(),_T("toolmap_mysql_log.sql"));
 	wxString myLogDirString = _T("--log=");
 	myLogDirString.Append(myLogDirName.GetFullPath());
 #endif

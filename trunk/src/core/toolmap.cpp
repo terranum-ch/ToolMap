@@ -46,13 +46,17 @@
 
 #include "pdfdocument.h"
 #include "pdfexportwizard.h"
+#include "lscrashreport.h"
 
 
 IMPLEMENT_APP(ToolMapApp);
 
-bool ToolMapApp::OnInit()
-/* APPLICATION INITIALISATION */
-{
+ToolMapApp::ToolMapApp(){
+    wxHandleFatalExceptions();
+}
+
+
+bool ToolMapApp::OnInit(){
 #ifdef __WXDEBUG__
     // debugging string for OSX
     // this is needed for viewing string content with Xcode !!
@@ -61,35 +65,46 @@ bool ToolMapApp::OnInit()
 #endif
     
 	// clear log if exists
-	TAWindowRemoveFile(wxEmptyString);
+	_RemoveLogFile();
 
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
-	wxHandleFatalExceptions();
-	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName, wxDefaultPosition, wxSize(900,500),
-										   _T("MAIN_WINDOW"));
+	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName, wxDefaultPosition, wxSize(900,500),_T("MAIN_WINDOW"));
 	tmWindowPosition myPos;
 	wxRect myWndPos;
-	if (myPos.LoadPosition(frame->GetName(), myWndPos)==true)
-	{
+	if (myPos.LoadPosition(frame->GetName(), myWndPos)==true){
 		frame->SetPosition(wxPoint(myWndPos.GetX(), myWndPos.GetY()));
 		frame->SetSize(wxSize(myWndPos.GetWidth(), myWndPos.GetHeight()));
 	}
-
 
 	frame->Show(true);
 	return true;
 }
 
 
-void ToolMapApp::OnFatalException()
-{
-#if wxUSE_CRASHREPORT
-	TAWindowsException();
-#endif //USE CRASHREPORT
+void ToolMapApp::OnFatalException(){
+    lsCrashReport myCrashReport (g_ProgName);
+    // add mysql report
+    wxFileName mySQLReport (wxStandardPaths::Get().GetAppDocumentsDir(),_T("toolmap_mysql_log.sql"));
+	if (wxFileExists(mySQLReport.GetFullPath())==true){
+        myCrashReport.AddFileToReport(mySQLReport.GetFullPath());
+    }
+    
+    if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
+        return;
+    }
+    
+    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"))==false){
+        wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
+        if(myCrashReport.SaveReportFile(myDocPath)==false){
+            wxLogError(_("Unable to save the crashreport!"));
+            return;
+        }
+        wxLogWarning(_("Connection problem! crashreport wasn't sent. crashreport was saved into '%s'\nplease send it manually to lucien.schreiber@crealp.vs.ch"), myDocPath);
+    }
 }
 
-
+/*
 void ToolMapApp::TAWindowsException()
 {
 	wxDateTime dt = wxDateTime::Now();
@@ -103,12 +118,7 @@ void ToolMapApp::TAWindowsException()
 
 
 
-	/*wxMessageBox(_T("Fatal exception, ToolMap is now generating log file.\n")
-				 _T("Please send the file : ") + myCrashFile.GetFullPath() +
-				 _T("\nto lucien.schreiber@crealp.vs.ch with a small description\n")
-				 _T("of what you where doing"), _T("Fatal exception"),
-				 wxOK | wxICON_ERROR);*/
-
+	
 	myCrashFile.SetExt(_T("dmp"));
 
 #if wxUSE_CRASHREPORT
@@ -159,27 +169,14 @@ bool ToolMapApp::TAWindowCreateZip(const wxString & crashname)
 
 	return true;
 }
+*/
 
-
-bool ToolMapApp::TAWindowRemoveFile(const wxString & crashname)
-{
-	if(crashname != wxEmptyString)
-	{
-		wxFileName fcrash (crashname);
-		fcrash.SetExt(_T("dmp"));
-		if(wxFileExists(fcrash.GetFullPath())==true)
-		{
-			wxRemoveFile(fcrash.GetFullPath());
-		}
-	}
-
-	wxFileName flog (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
-	if (wxFileExists(flog.GetFullPath())==true)
-	{
+void ToolMapApp::_RemoveLogFile(){
+	wxFileName flog (wxStandardPaths::Get().GetAppDocumentsDir(),_T("toolmap_mysql_log.sql"));
+	if (wxFileExists(flog.GetFullPath())==true){
 		wxLogDebug(_T("Removing MySQL Log file"));
 		wxRemoveFile(flog.GetFullPath());
 	}
-	return true;
 }
 
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
