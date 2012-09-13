@@ -65,6 +65,10 @@ INCLUDE ("cmake/findwxpdfdocument.cmake")
 # LSVERSION COMMPONENT
 INCLUDE("../plugins/lsversion/build/use_lsversion.cmake")
 
+# LSCRASHREPORT COMPONENT
+INCLUDE ("../plugins/lscrashreport/build/use_lscrashreport.cmake")
+
+
 # CREATE A LIBRARY WITH ALL SRC
 ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES} ${HEAD_FILES})
 
@@ -105,6 +109,11 @@ ELSE (WIN32)
 		TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "${CMAKE_PROJECT_NAME}_lib" fontconfig)
 	ENDIF(APPLE)
 ENDIF (WIN32)
+
+
+IF (USE_CRASHREPORT)
+	TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSCRASHREPORT_NAME})
+ENDIF(USE_CRASHREPORT)
 
 # copy libs to bundle if we are under mac...
 # check is done internally.
