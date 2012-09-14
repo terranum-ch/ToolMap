@@ -42,7 +42,6 @@
 const wxString g_CodeName = _("BOWIL");
 
 
-
 class tmAboutDLG : public wxDialog 
 	{
 	private:

@@ -94,7 +94,13 @@ void ToolMapApp::OnFatalException(){
         return;
     }
     
-    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"))==false){
+    wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("UPDATE");
+    wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
+    myConfig->SetPath("..");
+    
+    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"), myProxyInfo)==false){
         wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
         if(myCrashReport.SaveReportFile(myDocPath)==false){
             wxLogError(_("Unable to save the crashreport!"));
@@ -104,72 +110,6 @@ void ToolMapApp::OnFatalException(){
     }
 }
 
-/*
-void ToolMapApp::TAWindowsException()
-{
-	wxDateTime dt = wxDateTime::Now();
-	wxString mysvn (lsVERSION_SOFT_VERSION);
-	wxString myCrashName = wxString::Format(_T("ToolMapCrashInfo-%s-%d%d%d-%d%d%d"),
-											mysvn.c_str(),
-											dt.GetYear(),dt.GetMonth(), dt.GetDay(),
-											dt.GetHour(),dt.GetMinute(),dt.GetSecond());
-	wxFileName myCrashFile (wxStandardPaths::Get().GetDocumentsDir(),myCrashName,_T("zip"));
-
-
-
-
-	
-	myCrashFile.SetExt(_T("dmp"));
-
-#if wxUSE_CRASHREPORT
-	wxCrashReport::SetFileName(myCrashFile.GetFullPath());
-	wxCrashReport::Generate();
-#endif //USE CRASHREPORT
-
-	myCrashFile.SetExt(_T("zip"));
-	TAWindowCreateZip(myCrashFile.GetFullPath());
-
-	myCrashFile.SetExt(_T("zip"));
-	tmCrash_DLG myDlg (GetTopWindow(), myCrashFile.GetFullPath());
-	if (myDlg.ShowModal() == wxID_OK)
-		wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
-
-}
-
-bool ToolMapApp::TAWindowCreateZip(const wxString & crashname)
-{
-	// copy log and crash to zip file
-	wxFFileOutputStream outf(crashname);
-	if (outf.IsOk()==false)
-		return false;
-	wxZipOutputStream outzip(outf);
-
-	wxFileName fcrash (crashname);
-	fcrash.SetExt(_T("dmp"));
-	if (wxFileExists(fcrash.GetFullPath())==true)
-	{
-	wxFileInputStream fcrashstream(fcrash.GetFullPath());
-	outzip.PutNextEntry(fcrash.GetFullName());
-	outzip << fcrashstream;
-	}
-
-
-	wxFileName flog (wxStandardPaths::Get().GetDocumentsDir(),_T("toolmap_mysql_debug_log.txt"));
-	if (wxFileExists(flog.GetFullPath())==true)
-	{
-	wxFileInputStream flogstream (flog.GetFullPath());
-	outzip.PutNextEntry(flog.GetFullName());
-	outzip << flogstream;
-	}
-	outzip.Close();
-	outf.Close();
-
-	// remove files
-	TAWindowRemoveFile(crashname);
-
-	return true;
-}
-*/
 
 void ToolMapApp::_RemoveLogFile(){
 	wxFileName flog (wxStandardPaths::Get().GetAppDocumentsDir(),_T("toolmap_mysql_log.sql"));
