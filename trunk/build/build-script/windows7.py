@@ -73,6 +73,19 @@ def gCreateInstaller(svnnumner):
     print ("Renaming installer")
     installname = "InstallToolMap_r" + svnnumner + ".exe"
     shutil.move(gDirTrunk + os.sep + "install" + os.sep + "windows" + os.sep + "InstallToolMap.exe", gDirInstall + os.sep + installname)
+    # copy pdb file for debugging to directory
+    drive, tail = os.path.split(gDirBin)
+    myPDBBasePath = os.path.join(drive, "pdb")
+    myPDBPath = os.path.join(myPDBBasePath, str(svnnumner))
+    # pdb files
+    myPDBfiles = {"lscrashreport.pdb", "lsversion.pdb", "toolmap.pdb", "toolmap_lib.pdb"}
+    if (os.path.exists(myPDBPath)==True):
+        print("PDB files not copied, directory exists !!!!")
+        return installname
+
+    os.mkdir(myPDBPath)
+    for file in myPDBfiles:
+        shutil.copyfile(os.path.join(gDirBin, "Debug", file), os.path.join(myPDBPath, file))
     return installname
 
 
@@ -92,3 +105,6 @@ def DoPostBuildCommand():
             shutil.copyfile(dll, os.path.join(gDirBin, "Release", os.path.basename(dll)))
 
         print ("copying: ", dll)
+
+#if __name__ == '__main__':
+#    gCreateInstaller("1")
