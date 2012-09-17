@@ -78,7 +78,7 @@ def gCreateInstaller(svnnumner):
     myPDBBasePath = os.path.join(drive, "pdb")
     myPDBPath = os.path.join(myPDBBasePath, str(svnnumner))
     # pdb files
-    myPDBfiles = {"lscrashreport.pdb", "lsversion.pdb", "toolmap.pdb", "toolmap_lib.pdb"}
+    myPDBfiles = {"lscrashreport.pdb", "lsversion.pdb", "toolmap.pdb", "toolmap_lib.pdb", "ToolMap.exe"}
     if (os.path.exists(myPDBPath)==True):
         print("PDB files not copied, directory exists !!!!")
         return installname
