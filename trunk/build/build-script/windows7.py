@@ -44,6 +44,10 @@ def gBeforeConfig():
 
 # BUILD SPECIFIC
 def gBuildCommand(buildtype="Debug", directory = ""):
+    myBuildtype = buildtype
+    if (myBuildtype == "Release"):
+        myBuildtype = "RelWithDebInfo"
+
     myVarsFile = os.listdir(directory)
     myTarget = ""
     for file in myVarsFile:
@@ -51,7 +55,7 @@ def gBuildCommand(buildtype="Debug", directory = ""):
             myTarget = file
             break
     
-    myConfiguration = "/property:Configuration="+ buildtype
+    myConfiguration = "/property:Configuration="+ myBuildtype
     return ['msbuild', myTarget, myConfiguration]
 
 def runBeforeTest():
@@ -85,7 +89,7 @@ def gCreateInstaller(svnnumner):
 
     os.mkdir(myPDBPath)
     for file in myPDBfiles:
-        shutil.copyfile(os.path.join(gDirBin, "Debug", file), os.path.join(myPDBPath, file))
+        shutil.copyfile(os.path.join(gDirBin, "RelWithDebInfo", file), os.path.join(myPDBPath, file))
     return installname
 
 
@@ -101,8 +105,8 @@ def DoPostBuildCommand():
 
     for dll in myDll:
         shutil.copyfile(dll, os.path.join(gDirBin, "Debug", os.path.basename(dll)))
-        if (os.path.exists(os.path.join(gDirBin, "Release"))):
-            shutil.copyfile(dll, os.path.join(gDirBin, "Release", os.path.basename(dll)))
+        if (os.path.exists(os.path.join(gDirBin, "RelWithDebInfo"))):
+            shutil.copyfile(dll, os.path.join(gDirBin, "RelWithDebInfo", os.path.basename(dll)))
 
         print ("copying: ", dll)
 
