@@ -107,21 +107,21 @@ Section "SectionPrincipale" SEC01
   Call CheckToolMapRuning
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "..\..\..\bin\Release\ToolMap.exe"
-  #File "..\..\..\bin\Release\ToolMap.pdb"
+  File "..\..\..\bin\RelWithDebInfo\ToolMap.exe"
+  #File "..\..\..\bin\RelWithDebInfo\ToolMap.pdb"
   File "D:\PROGRAMMATION\ToolBasView\bin\Release\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  File "..\..\..\bin\Release\gdal19.dll"
-  File "..\..\..\bin\Release\geos_c.dll"
-  File "..\..\..\bin\Release\libmysqld.dll"
-  File "..\..\..\bin\Release\libcurl.dll"
-  File "..\..\..\bin\Release\sqlite3.dll"
+  File "..\..\..\bin\RelWithDebInfo\gdal19.dll"
+  File "..\..\..\bin\RelWithDebInfo\geos_c.dll"
+  File "..\..\..\bin\RelWithDebInfo\libmysqld.dll"
+  File "..\..\..\bin\RelWithDebInfo\libcurl.dll"
+  File "..\..\..\bin\RelWithDebInfo\sqlite3.dll"
   CreateDirectory "$INSTDIR\mysql"
   SetOutPath "$INSTDIR\mysql"
-  File "..\..\..\bin\Release\mysql\errmsg.sys"
+  File "..\..\..\bin\RelWithDebInfo\mysql\errmsg.sys"
 SectionEnd
 
 Section -AdditionalIcons
