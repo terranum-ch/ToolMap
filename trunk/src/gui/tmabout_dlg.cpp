@@ -40,12 +40,6 @@ tmAboutDLG::tmAboutDLG( wxWindow* parent, wxWindowID id, const wxString& title, 
 
 
 tmAboutDLG::~tmAboutDLG(){
-    // TODO: Remove this temp crash code
-    //wxLogWarning(_("generating a crash now!!!"));
-    
-    int * i = NULL;
-    *i = 12;
-    
 }
 
 
