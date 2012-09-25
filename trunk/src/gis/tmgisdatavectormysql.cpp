@@ -925,6 +925,9 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchIntersectingGeometry (OGRGeometry * in
 	
 	// create bounding box
 	wxASSERT (intersectinggeom);
+	if (intersectinggeom == NULL){
+		return NULL;
+	}
 	OGREnvelope myEnv;
 	intersectinggeom->getEnvelope(&myEnv);
 	
