@@ -64,7 +64,7 @@ bool tmProjectMaintenance::_CleanLayerOrphansKind(const wxString & tablegeom, co
     }
     long myDeletedRecords = m_DB->DataBaseGetAffectedRows();
     if (myDeletedRecords > 0) {
-        m_Messages.Add(wxString::Format(_("%ld Record deleted from '%s'"), tablekind));
+        m_Messages.Add(wxString::Format(_("%ld Record deleted from '%s'"), myDeletedRecords, tablekind));
     }
     return true;
 }
