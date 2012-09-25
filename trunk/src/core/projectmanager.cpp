@@ -450,7 +450,11 @@ int ProjectManager::OpenProject(const wxString & path)
     }*/
     
     if (myPrjMaintenance.ClearOrphans() == false) {
-        wxLogWarning(_("Cleaning orphans failed!"));
+		wxArrayString myErrors = myPrjMaintenance.GetErrors();
+		wxLogWarning(_("Cleaning orphans failed!"));
+		for (unsigned int i = 0; i< myErrors.GetCount();i++){
+			wxLogWarning(myErrors[i]);
+		}
     }
     else{
         wxArrayString myInfos = myPrjMaintenance.GetMessages();
