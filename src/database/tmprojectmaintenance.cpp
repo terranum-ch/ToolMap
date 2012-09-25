@@ -76,6 +76,12 @@ bool tmProjectMaintenance::_CleanLayerOrphansAttributes(int geomtype, const wxSt
     if (m_DB->DataBaseQuery(wxString::Format(myQuery, geomtype),true)==false) {
         return false;
     }
+
+	if (m_DB->DataBaseHasResults() == false){
+		m_Messages.Add(wxString::Format(_("Nothing to clean for type code: %d"), geomtype));
+		return true;
+	}
+
     wxArrayLong myLayersIndexIDs;
     if (m_DB->DataBaseGetResults(myLayersIndexIDs)==false) {
         m_Errors.Add(_("Getting layer index Failed!"));
@@ -149,13 +155,14 @@ bool tmProjectMaintenance::OptimizeTables() {
 
 
 bool tmProjectMaintenance::ClearOrphans() {
-    // cleaning in kind
+    bool bReturn = true;
+	// cleaning in kind
     wxString myTablesGeom[] = {_T("generic_lines"),_T("generic_points"),_T("generic_labels")};
     wxString myTablesKind[] = {_T("generic_aat"),_T("generic_pat"),_T("generic_lat")};
     for (int i = 0; i< (sizeof(myTablesGeom) / sizeof(wxString)); i++) {
         if(_CleanLayerOrphansKind(myTablesGeom[i], myTablesKind[i])==false){
-            m_Errors.Add(_("Error cleaning orphans (kind)!"));
-            return false;
+			m_Errors.Add(wxString::Format(_("Error cleaning orphans (kind, %s)!"),myTablesKind[i]));
+			bReturn = false;
         }
     }
     
@@ -164,12 +171,11 @@ bool tmProjectMaintenance::ClearOrphans() {
     wxString myGenericTables[] = {_T("generic_lines"), _T("generic_points"), _T("generic_labels")};
     for (int i = 0; i< (sizeof(myGenericTables) / sizeof(wxString)); i++) {
         if(_CleanLayerOrphansAttributes(myGeomtypes[i], myGenericTables[i])==false){
-            m_Errors.Add(_("Error cleaning orphans (attributs)!"));
-            return false;
+            m_Errors.Add(wxString::Format(_("Error cleaning orphans (attributs, %s)!"), myGenericTables[i]));
+            bReturn = false;
         }
     }
-    
-    return true;
+    return bReturn;
 }
 
 
