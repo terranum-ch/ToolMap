@@ -135,7 +135,7 @@ void ProjectPropertiesDLG::OnChooseScaleOrder (wxCommandEvent & event)
 /************************************ PROJECT PROPERTIES FUNCTION**********************************/
 ProjectPropertiesDLG::ProjectPropertiesDLG()
 {
-    Init();
+    _Init();
 }
 
 
@@ -144,12 +144,9 @@ ProjectPropertiesDLG::ProjectPropertiesDLG( wxWindow* parent,
 										   wxWindowID id, const wxString& caption,
 										   const wxPoint& pos, const wxSize& size, long style )
 {
-    Init();
+    _Init();
 	m_DBHandler = database;
     Create(parent, id, caption, pos, size, style);
-	
-	// init the list with scale
-	
 }
 
 
@@ -159,7 +156,7 @@ bool ProjectPropertiesDLG::Create( wxWindow* parent, wxWindowID id, const wxStri
     SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
     wxDialog::Create( parent, id, caption, pos, size, style );
 	
-    CreateControls();
+    _CreateControls();
     if (GetSizer())
     {
         GetSizer()->SetSizeHints(this);
@@ -173,7 +170,7 @@ ProjectPropertiesDLG::~ProjectPropertiesDLG()
 }
 
 
-void ProjectPropertiesDLG::Init()
+void ProjectPropertiesDLG::_Init()
 {
     m_DLGPS_Notebook = NULL;
     m_DLGPS_Export_Type_Choice = NULL;
@@ -184,7 +181,7 @@ void ProjectPropertiesDLG::Init()
 }
 
 
-void ProjectPropertiesDLG::CreateControls()
+void ProjectPropertiesDLG::_CreateControls()
 {    
     ProjectPropertiesDLG* itemDialog1 = this;
 	

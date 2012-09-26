@@ -14,36 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
-
 #ifndef _WX_DIRPICKERCTRL_BEST_
 #define _WX_DIRPICKERCTRL_BEST_
-
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
-
 #include <wx/filepicker.h>
 
-
-// conditional style different for unix... but not working
-// for the moment so aborted...
-// maybe later...
-//#if defined(__WXMSW__) || defined(__WXMAC__)
-const long PICKER_BEST_STYLE = wxDIRP_USE_TEXTCTRL; //| wxDIRP_DIR_MUST_EXIST;
-//#else
-//const long PICKER_BEST_STYLE = wxDIRP_DEFAULT_STYLE;	
-//#endif
-
-
-// enumeration for path
 /***************************************************************************//**
  @brief Enumeration for path
  @details Describe the type of path, mainly used as a return value
@@ -60,22 +38,14 @@ enum PATH_ERROR
 
 
 class wxDirPickerCtrlBest : public wxDirPickerCtrl
-	{
-	private:
-
-	public:
-		wxDirPickerCtrlBest(wxWindow * parent, wxWindowID id, const wxString & path = wxEmptyString,
-							const wxString & message = _("Select a folder"),
-							const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, 
-							long style = PICKER_BEST_STYLE);
-		~wxDirPickerCtrlBest();
-		
-		void SetPathWithError(PATH_ERROR flags, const wxString & spath);
-	};
-
-
-
-
-
-
+{   
+public:
+    wxDirPickerCtrlBest(wxWindow * parent, wxWindowID id, const wxString & path = wxEmptyString,
+                        const wxString & message = _("Select a folder"),
+                        const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize,
+                        long style = wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
+    ~wxDirPickerCtrlBest();
+    
+    void SetPathWithError(PATH_ERROR flags, const wxString & spath);
+};
 #endif

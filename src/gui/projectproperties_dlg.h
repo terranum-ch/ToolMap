@@ -92,7 +92,8 @@ class ProjectPropertiesDLG: public wxDialog
     ScaleList* m_DLGPS_Scale_List;
     wxChoice* m_DLGPS_Scale_Order_Choice;
 	
-	
+    void _Init();
+    void _CreateControls();
 	
     DECLARE_DYNAMIC_CLASS( ProjectPropertiesDLG );
     DECLARE_EVENT_TABLE();
@@ -115,10 +116,6 @@ public:
 				long style = SYMBOL_PROJECTPROPERTIESDLG_STYLE );
 
     ~ProjectPropertiesDLG();
-
-    void Init();
-    void CreateControls();
-	
 	
 	virtual bool TransferDataToWindow();
 	void SetScaleListFocus();
