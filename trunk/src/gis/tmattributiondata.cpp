@@ -257,16 +257,55 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * la
 	wxASSERT (m_pDB);
 	
 	wxString sSentence = wxEmptyString;
-	for (unsigned int i = 0; i<layers->GetCount(); i++){
-		ProjectDefMemoryLayers * myLayer = layers->Item(i);
+    bool bOnlyNullValues = true;
+	for (unsigned int i = 0; i<layers->GetCount(); i++){		ProjectDefMemoryLayers * myLayer = layers->Item(i);
         wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%ld,"),myLayer->m_LayerID, objid);
+        wxASSERT(myLayer->m_pLayerFieldArray.GetCount() == values.GetCount());
         for (unsigned int v = 0; v < values.GetCount(); v++) {
+            wxString myValue = values[v];
+            if (myValue == wxEmptyString) {
+                sAdd.Append(_T("NULL"));
+                continue;
+            }
+            
+            // convert text value to id for enumerations
+            ProjectDefMemoryFields * myField = myLayer->m_pLayerFieldArray.Item(v);
+            wxASSERT(myField);
+            if (myField->m_FieldType == TM_FIELD_ENUMERATION) {
+                bool bFoundEnum = false;
+                for (unsigned int e = 0; e < myField->m_pCodedValueArray.GetCount(); e++) {
+                    ProjectDefMemoryFieldsCodedVal * myEnumValue = myField->m_pCodedValueArray.Item(e);
+                    wxASSERT(myEnumValue);
+                    if (myEnumValue->m_ValueName == myValue) {
+                        sAdd.Append(wxString::Format(_T("%ld,"), myEnumValue->m_ValueID));
+                        bFoundEnum = true;
+                        bOnlyNullValues = false;
+                        break;
+                    }
+                }
+                
+                if (bFoundEnum == false) {
+                    sAdd.Append(_T("NULL"));
+                    wxLogError(_("Unable to set advanced attibution for value '%s'"), myValue);
+                }
+                continue;
+            }
+            
+            
+           // normal case
             sAdd.Append(wxString::Format(_T("\"%s\","), values.Item(v)));
+            bOnlyNullValues = false;
+
         }
         sAdd.RemoveLast();
         sAdd.Append(_T("); "));
         sSentence.Append(sAdd);
 	}
+    
+    // only null values, we don't insert!
+    if (bOnlyNullValues == true) {
+        return true;
+    }
     
 	if (m_pDB->DataBaseQueryNoResults(sSentence)==false){
 		return false;
@@ -784,6 +823,12 @@ bool tmAttributionData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer, 
         wxASSERT(myField);
         if (myField->m_FieldType != TM_FIELD_ENUMERATION) {
             values.Add(myResults[f+1]);
+            codes.Add(wxEmptyString);
+            continue;
+        }
+        
+        if (myResults[f+1] == wxEmptyString) {
+            values.Add(wxEmptyString);
             codes.Add(wxEmptyString);
             continue;
         }
