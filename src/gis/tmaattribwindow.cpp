@@ -248,7 +248,7 @@ bool tmAAttribWindow::TransferDataToWindow()
 	tmAAttribCtrl * mypCtrl = NULL;
 	tmAAttribCtrlStruct myCtrl;
 	int iCtrlPos = 0;
-	
+
 	m_CancelBtn->SetFocus();
 	for (unsigned int i = 0; i< m_Layers->GetCount();i++)
 	{
@@ -260,7 +260,10 @@ bool tmAAttribWindow::TransferDataToWindow()
 		m_AAttribTree->AddLayerNode(myName);
 		for (unsigned int j = 0; j< m_Layers->Item(i)->m_pLayerFieldArray.GetCount();j++)
 		{
-			ProjectDefMemoryFields myField = *(m_Layers->Item(i)->m_pLayerFieldArray.Item(j));
+            ProjectDefMemoryFields * mypField = m_Layers->Item(i)->m_pLayerFieldArray.Item(j);
+            wxASSERT(mypField);
+			ProjectDefMemoryFields myField;
+            myField = *mypField;
 			mypCtrl = m_AAttribTree->AddControl(myField);
 			myCtrl.m_Ctrl = mypCtrl;
 			m_Ctrls.Add(myCtrl);
@@ -268,8 +271,6 @@ bool tmAAttribWindow::TransferDataToWindow()
 			iCtrlPos++;
 		}
 	}
-	
-
 	return true;
 }
 

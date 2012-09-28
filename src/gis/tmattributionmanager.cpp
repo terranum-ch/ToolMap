@@ -780,7 +780,7 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		else
 			wxLogDebug(_T("Layers %ld not found "), myLayersID.Item(i).m_Oid);
 	}
-		
+    
 	// get advanced attribution values (if existing)
 	wxArrayString myValues;
 	bool bGetAAttrib = myAttribObj->GetAttributesAdvanced(m_SelData->GetSelectedUnique(),
@@ -789,12 +789,11 @@ bool tmAttributionManager::AAttributionButtonShow ()
 		wxLogDebug(_T("Problem getting advanced attribution values"));
     }
 	
-	
-	
+    
 	if (DisplayAAttributionWindow(&myValues, &myLayersInfoArray, myLayersID)==wxID_OK)
 	{
-		bool bClean = myAttribObj->CleanAttributesAdvanced(m_SelData->GetSelectedUnique(),m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
-		bool bAttrib = myAttribObj->SetAttributesAdvanced(m_SelData->GetSelectedUnique(), &myLayersInfoArray, myValues);
+        bool bClean = myAttribObj->CleanAttributesAdvanced(m_SelData->GetSelectedUnique(),m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
+        bool bAttrib = myAttribObj->SetAttributesAdvanced(m_SelData->GetSelectedUnique(), &myLayersInfoArray, myValues);
 		if (bClean && bAttrib)
 			return true;
 		return false;
