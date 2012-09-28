@@ -643,11 +643,11 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 {
 	if (IsChoiceList()) // CHOICE
 	{
-		//return m_ControlChoice->GetStringSelection();
-        int mySelection = m_ControlChoice->GetSelection();
+		return m_ControlChoice->GetStringSelection();
+        /*int mySelection = m_ControlChoice->GetSelection();
         wxString myValue;
         myValue << m_Field.m_pCodedValueArray.Item(mySelection)->m_ValueID;
-        return myValue;
+        return myValue;*/
 	}
 	else // RADIO BUTTON
 	{
@@ -656,8 +656,8 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 		{
 			if (m_ControlRadios[i]->GetValue() == true)
 			{
-				myRetVal << m_Field.m_pCodedValueArray.Item(i)->m_ValueID;
-                //myRetVal = m_ControlRadios[i]->GetLabelText();
+				//myRetVal << m_Field.m_pCodedValueArray.Item(i)->m_ValueID;
+                myRetVal = m_ControlRadios[i]->GetLabelText();
 				break;
 			}
 		}

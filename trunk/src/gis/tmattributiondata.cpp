@@ -258,13 +258,14 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * la
 	
 	wxString sSentence = wxEmptyString;
     bool bOnlyNullValues = true;
-	for (unsigned int i = 0; i<layers->GetCount(); i++){		ProjectDefMemoryLayers * myLayer = layers->Item(i);
+	for (unsigned int i = 0; i<layers->GetCount(); i++){
+        ProjectDefMemoryLayers * myLayer = layers->Item(i);
         wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%ld,"),myLayer->m_LayerID, objid);
         wxASSERT(myLayer->m_pLayerFieldArray.GetCount() == values.GetCount());
         for (unsigned int v = 0; v < values.GetCount(); v++) {
             wxString myValue = values[v];
             if (myValue == wxEmptyString) {
-                sAdd.Append(_T("NULL"));
+                sAdd.Append(_T("NULL,"));
                 continue;
             }
             
