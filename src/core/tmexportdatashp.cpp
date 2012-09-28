@@ -390,6 +390,9 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 	wxASSERT(m_pDB);
 	wxASSERT(m_pDB->DataBaseHasResults() == true);
 
+    // create spatial index
+    m_Shp.CreateSpatialIndex();
+    
 	// get row of data
 	DataBaseResult myResult;
 	m_pDB->DataBaseGetResults(&myResult);
@@ -425,42 +428,15 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 			continue;
 		}
 
-
 		//
 		// Search intersection with polygons
 		//
-		bool bFirstLoop = true;
-		bool bFound = false;
-		while (1) {
-			if (m_Shp.SetNextFeature(bFirstLoop) == false) {
-				break;
-			}
-			bFirstLoop = false;
-
-			long myPolyOid = wxNOT_FOUND;
-			// don't delete myPoly !
-			OGRPolygon * myPoly = m_Shp.GetNextDataOGRPolygon(myPolyOid);
-			if (myPoly == NULL) {
-				wxLogError(_("Empty polyon returned for OID %ld"), myPolyOid);
-				continue;
-			}
-
-			if (myGeom->Intersect(myPoly)==true) {
-				bFound = true;
-				break;
-			}
-		}
+        long myFid = m_Shp.GetFeatureIDIntersectedBy(myGeom);
+        if (myFid == wxNOT_FOUND) {
+            wxLogError(_("Label %ld is inside the frame but doesn't belong to any polygon ?"), myOid);
+            continue;
+        }
 		OGRGeometryFactory::destroyGeometry(myGeom);
-
-		//
-		// Passing attribution to polygon if found
-		//
-		if (bFound == false) {
-			wxLogError(_("Label %ld is inside the frame but doesn't belong to any polygon ?"),
-					   myOid);
-
-			continue;
-		}
 
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
