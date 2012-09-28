@@ -34,71 +34,73 @@
 
 
 class tmGISDataVectorSHP : public tmGISDataVector
-	{
-	private:
-		OGRDataSource       *m_Datasource;
-		OGRLayer			*m_Layer;
-		
-		OGRFeature			*m_Feature;
-		int					m_polyTotalRings;
+{
+private:
+    OGRDataSource       *m_Datasource;
+    OGRLayer			*m_Layer;
+    
+    OGRFeature			*m_Feature;
+    int					m_polyTotalRings;
 	
-	protected:
-	public:
-		tmGISDataVectorSHP();
-		~tmGISDataVectorSHP();
-		
-		// implementing virtual function
-		virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
-		virtual tmRealRect GetMinimalBoundingRectangle();
-		virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
-
-		
-		// virtual function for getting data & drawing
-		virtual bool SetSpatialFilter (tmRealRect filter, int type);
-        virtual bool SetAttributFilter (const wxString & query);
-		virtual wxRealPoint * GetNextDataLine (int & nbvertex,long & oid);
-		virtual wxRealPoint * GetNextDataPoint (long & oid);
-		virtual int GetNextDataPolygonInfo (long & oid);
-		virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
-		virtual OGRPolygon * GetNextDataOGRPolygon (long & oid);
-		virtual OGRFeature * GetNextFeature ();
-		virtual OGRFeature * GetFeatureByOID (long oid);
-		
-		// virtual function for metadata
-		virtual wxString GetMetaDataAsHtml ();
-		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
-		
-		// count
-		virtual int GetCount ();
-		
-		// fields functions
-		virtual int GetFieldsCount();
-		virtual bool GetFieldsName (wxArrayString & Fields, long oid = wxNOT_FOUND);
-		virtual bool GetFieldsValue (wxArrayString & values, long oid);
-        bool GetDistinctFieldsValue (const wxString & fieldname, wxArrayString & values);
-		
-		// searching data
-		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
-		virtual wxArrayLong * GetAllData ();
-		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-                                   wxArrayRealPoints & snapppts, int snaptype);
-		
-		// creating file & fields
-		virtual bool CreateFile (const wxFileName & filename, int type);
-		virtual bool AddFieldText (const wxString & fieldname, int size);
-		virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
-		virtual bool AddFieldDate (const wxString & fieldname);
-		
-		virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND);
-		virtual bool SetNextFeature (bool resetreading = false);
-		virtual bool SetFieldValue (const wxString & value, 
-									int fieldtype, int iindex);
-		virtual long GetActualOID ();
-		virtual void SetActualOID (long oid);
-		virtual bool UpdateFeature ();
-		virtual void CloseGeometry();
-		
-	};
+protected:
+public:
+    tmGISDataVectorSHP();
+    ~tmGISDataVectorSHP();
+    
+    // implementing virtual function
+    virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
+    virtual tmRealRect GetMinimalBoundingRectangle();
+    virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
+    
+    
+    // virtual function for getting data & drawing
+    virtual bool SetSpatialFilter (tmRealRect filter, int type);
+    virtual bool SetAttributFilter (const wxString & query);
+    virtual wxRealPoint * GetNextDataLine (int & nbvertex,long & oid);
+    virtual wxRealPoint * GetNextDataPoint (long & oid);
+    virtual int GetNextDataPolygonInfo (long & oid);
+    virtual wxRealPoint * GetNextDataPolygon (int currentring, int & nbvertex);
+    virtual OGRPolygon * GetNextDataOGRPolygon (long & oid);
+    virtual OGRFeature * GetNextFeature ();
+    virtual OGRFeature * GetFeatureByOID (long oid);
+    
+    // virtual function for metadata
+    virtual wxString GetMetaDataAsHtml ();
+    virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
+    
+    // count
+    virtual int GetCount ();
+    
+    // fields functions
+    virtual int GetFieldsCount();
+    virtual bool GetFieldsName (wxArrayString & Fields, long oid = wxNOT_FOUND);
+    virtual bool GetFieldsValue (wxArrayString & values, long oid);
+    bool GetDistinctFieldsValue (const wxString & fieldname, wxArrayString & values);
+    
+    // searching data
+    virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
+    virtual wxArrayLong * GetAllData ();
+    virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+                               wxArrayRealPoints & snapppts, int snaptype);
+    
+    // creating file & fields
+    virtual bool CreateFile (const wxFileName & filename, int type);
+    virtual bool AddFieldText (const wxString & fieldname, int size);
+    virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
+    virtual bool AddFieldDate (const wxString & fieldname);
+    
+    virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND);
+    virtual bool SetNextFeature (bool resetreading = false);
+    virtual bool SetFieldValue (const wxString & value,
+                                int fieldtype, int iindex);
+    virtual long GetActualOID ();
+    virtual void SetActualOID (long oid);
+    virtual bool UpdateFeature ();
+    virtual void CloseGeometry();
+    
+    bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
+    long GetFeatureIDIntersectedBy(OGRGeometry * geometry);
+};
 
 
 

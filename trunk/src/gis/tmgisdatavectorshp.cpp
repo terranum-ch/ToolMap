@@ -1132,3 +1132,38 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
     }
 	return false;
 }
+
+
+
+bool tmGISDataVectorSHP::CreateSpatialIndex(int indexdepth){
+    wxASSERT(m_Datasource);
+    wxFileName myLayerName(m_Datasource->GetName());
+    wxString myStmt = wxString::Format(_T("CREATE SPATIAL INDEX ON %s "), myLayerName.GetName());
+    if (indexdepth != wxNOT_FOUND) {
+        myStmt << _T("DEPTH ");
+        myStmt << indexdepth;
+    }
+    m_Datasource->ExecuteSQL((const char*) myStmt.mb_str(wxConvUTF8), NULL, "generic");
+    wxString myError (CPLGetLastErrorMsg());
+    wxLogMessage(_("Error: %s"), myError);
+    return true;
+}
+
+
+long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry * geometry){
+    wxASSERT(m_Layer);
+    m_Layer->ResetReading();
+    m_Layer->SetSpatialFilter(geometry);
+    long iLoop = 0;
+    while((m_Feature = m_Layer->GetNextFeature()) != NULL){
+        iLoop++;
+        if (geometry->Intersects(m_Feature->GetGeometryRef()) == true) {
+            long myID = m_Feature->GetFID();
+            return myID;
+        }
+    }
+    return wxNOT_FOUND;
+    // feature has to be destroyed with CloseGeometry() 
+}
+
+
