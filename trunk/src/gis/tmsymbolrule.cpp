@@ -387,12 +387,8 @@ void tmSymbolRuleManager::RuleArrayCopy (const tmSymbolRuleArray * srcrules, tmS
         tmSymbolRule * myRule = new tmSymbolRule(srcrules->Item(i)->GetSpatialType(), NULL);
         *myRule = *(srcrules->Item(i));
         dstrules->Add(myRule);
-        wxLogMessage(_T("srccolor: %s, dstcolor: %s"),
-                     srcrules->Item(i)->GetBrush().GetColour().GetAsString(),
-                     myRule->GetBrush().GetColour().GetAsString());
     }
     wxASSERT(dstrules->GetCount() == srcrules->GetCount());
-    
 }
 
 

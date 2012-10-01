@@ -306,22 +306,29 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 				wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
 				wxDELETE(m_ExportData);
 				return false;
-			}
+			}	
 			break;
 			
 			
 		case LAYER_POLYGON:
+        {
+            wxStopWatch sw;
 			if(_ExportPolyGIS(layer)==false){
 				wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
 				wxDELETE(m_ExportData);
 				return false;
 			}
+            wxLogMessage(_("Exporting polygon geometries took: %ld [ms]"), sw.Time());
+            sw.Start(0);
+            
 			if (_ExportSimple(layer)==false) {
 				wxLogError(_("Error exporting labels to polygon layer '%s'"),
 						   layer->m_LayerName.c_str());
 				wxDELETE(m_ExportData);
 				return false;
 			}
+            wxLogMessage(_("Exporting polygon attributs took: %ld [ms]"), sw.Time());
+        }
 			break;
 
 			
