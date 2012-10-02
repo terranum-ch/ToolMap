@@ -87,6 +87,7 @@ class tmGISData : public wxObject
 		
 		// gis function
 		virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
+        virtual bool Close (){return false;}
 		virtual tmRealRect GetMinimalBoundingRectangle(){return tmRealRect(0,0,0,0);}
 		virtual TM_GIS_SPATIAL_TYPES GetSpatialType (){ return LAYER_ERR;}
 		

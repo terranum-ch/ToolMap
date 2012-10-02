@@ -31,6 +31,7 @@ void tmExportDataSHP::InitMemberValues()
 {
 	m_Extension = _T(".shp");
 	m_Frame = NULL;
+    m_Shp = NULL;
 }
 
 
@@ -82,8 +83,10 @@ void tmExportDataSHP::Create (DataBaseTM * database)
  *******************************************************************************/
 tmExportDataSHP::~tmExportDataSHP()
 {
-	if (m_Frame)
+	if (m_Frame){
 		OGRGeometryFactory::destroyGeometry(m_Frame);
+    }
+    wxDELETE(m_Shp);
 }
 
 
@@ -103,6 +106,7 @@ bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
 {
 	bool bReturn = true;
 	wxASSERT(myLayer);
+    wxASSERT(m_Shp == NULL);
 	wxFileName * myShpFileName = GetFileName(myLayer, path);
 	if (!myShpFileName)
 	{
@@ -110,13 +114,18 @@ bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
 		return false;
 	}
 
+    if (myLayer->m_LayerType == LAYER_POLYGON) {
+        m_Shp = new tmGISDataVectorSHPMemory();
+    }
+    else{
+        m_Shp = new tmGISDataVectorSHP();
+    }
 
-
-	if(!m_Shp.CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType)){
+	if(m_Shp->CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType) == false){
 		bReturn =  false;
 	}
 
-	delete myShpFileName;
+	wxDELETE(myShpFileName);
 	return bReturn;
 
 }
@@ -143,25 +152,25 @@ bool tmExportDataSHP::AddOptFields (const PrjMemFieldArray & myfields)
 		switch (field->m_FieldType)
 		{
 			case TM_FIELD_TEXT:
-				bReturn = m_Shp.AddFieldText(field->m_Fieldname, field->m_FieldPrecision);
+				bReturn = m_Shp->AddFieldText(field->m_Fieldname, field->m_FieldPrecision);
 				break;
 
 			case TM_FIELD_INTEGER:
-				bReturn = m_Shp.AddFieldNumeric(field->m_Fieldname, false);
+				bReturn = m_Shp->AddFieldNumeric(field->m_Fieldname, false);
 				break;
 
 			case TM_FIELD_FLOAT:
-				bReturn = m_Shp.AddFieldNumeric(field->m_Fieldname, true);
+				bReturn = m_Shp->AddFieldNumeric(field->m_Fieldname, true);
 				break;
 
 			case TM_FIELD_ENUMERATION:
 				// compute max size for enum
 				iSize = GetSizeOfEnum(field->m_pCodedValueArray);
-				bReturn = m_Shp.AddFieldText(field->m_Fieldname, iSize);
+				bReturn = m_Shp->AddFieldText(field->m_Fieldname, iSize);
 				break;
 
 			case TM_FIELD_DATE:
-				bReturn = m_Shp.AddFieldDate(field->m_Fieldname);
+				bReturn = m_Shp->AddFieldDate(field->m_Fieldname);
 				break;
 
 			default:
@@ -191,8 +200,8 @@ bool tmExportDataSHP::AddOptFields (const PrjMemFieldArray & myfields)
 bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
 	wxASSERT (iObjeDescSize);
 
-	if (m_Shp.AddFieldNumeric(_T("OBJ_CD")) &&
-		m_Shp.AddFieldText(_T("OBJ_DESC"), iObjeDescSize)){
+	if (m_Shp->AddFieldNumeric(_T("OBJ_CD")) &&
+		m_Shp->AddFieldText(_T("OBJ_DESC"), iObjeDescSize)){
 		return true;
 	}
 
@@ -212,7 +221,7 @@ bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
  *******************************************************************************/
 bool tmExportDataSHP::AddFIDField ()
 {
-	if(m_Shp.AddFieldNumeric(_T("TM_OID"), false)==false){
+	if(m_Shp->AddFieldNumeric(_T("TM_OID"), false)==false){
 		wxLogError(_("Adding OID field failed"));
 		return false;
 	}
@@ -282,12 +291,12 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		//
 		// Add geometry first and then values
 		//
-		m_Shp.AddGeometry(myCropLine, myOid);
+		m_Shp->AddGeometry(myCropLine, myOid);
 		OGRGeometryFactory::destroyGeometry(myCropLine);
 
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
-			m_Shp.CloseGeometry();
+			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
@@ -295,12 +304,12 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 		// advanced attribution
 		if (SetAttributsAdvanced(myResult, myLayer)==false) {
-			m_Shp.CloseGeometry();
+			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
 		}
 
-		m_Shp.CloseGeometry();
+		m_Shp->CloseGeometry();
 	}
 	return true;
 }
@@ -360,12 +369,12 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 		//
 		// Add geometry first and then values
 		//
-		m_Shp.AddGeometry(myGeom, myOid);
+		m_Shp->AddGeometry(myGeom, myOid);
 		OGRGeometryFactory::destroyGeometry(myGeom);
 
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
-			m_Shp.CloseGeometry();
+			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
@@ -373,12 +382,12 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 
 		// advanced attribution
 		if (SetAttributsAdvanced(myResult, myLayer)==false) {
-			m_Shp.CloseGeometry();
+			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
 		}
 
-		m_Shp.CloseGeometry();
+		m_Shp->CloseGeometry();
 	}
 	return true;
 }
@@ -390,14 +399,27 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 	wxASSERT(m_pDB);
 	wxASSERT(m_pDB->DataBaseHasResults() == true);
 
-    // create spatial index
+    /* create spatial index
     m_Shp.CreateSpatialIndex();
+    wxFileName myName (m_Shp.GetFullFileName());
+    m_Shp.Close();
+    if (m_Shp.Open(myName.GetFullPath(), true)==false){
+        m_pDB->DataBaseClearResults();
+        return false;
+    }
+    */
+    
+    // rasterize polygons
+    if (m_Shp->Rasterize() == false) {
+        m_pDB->DataBaseClearResults();
+        return false;
+    }
     
 	// get row of data
 	DataBaseResult myResult;
 	m_pDB->DataBaseGetResults(&myResult);
 	wxASSERT(myResult.HasResults()==true);
-
+   
 	for (long i = 0; i < myResult.GetRowCount(); i++) {
 		myResult.NextRow();
 
@@ -427,34 +449,48 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 			OGRGeometryFactory::destroyGeometry(myGeom);
 			continue;
 		}
-
+        
 		//
 		// Search intersection with polygons
 		//
+        /*
         long myFid = m_Shp.GetFeatureIDIntersectedBy(myGeom);
         if (myFid == wxNOT_FOUND) {
             wxLogError(_("Label %ld is inside the frame but doesn't belong to any polygon ?"), myOid);
             continue;
+        }*/
+        
+        long myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom);
+        if (myFid == wxNOT_FOUND) {
+            // TODO: search using polygon.
+            wxLogMessage(_("Skipped point at index %i"), i);
+            OGRGeometryFactory::destroyGeometry(myGeom);
+            continue;
         }
+        m_Shp->SelectFeatureByOID(myFid);
 		OGRGeometryFactory::destroyGeometry(myGeom);
-
+        
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
-			m_Shp.CloseGeometry();
+			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
 
-
 		// advanced attribution
 		if (SetAttributsAdvanced(myResult, myLayer)==false) {
-			m_Shp.CloseGeometry();
+			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
 		}
-
-		m_Shp.CloseGeometry();
+		m_Shp->CloseGeometry();
 	}
+    
+    // copy from memory to SHP
+    m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
+    
+    // remove rasterized file
+    m_Shp->RemoveRasterizeFile();
 	return true;
 }
 
@@ -616,8 +652,8 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		GEOSGeom myActualPolyClone = GEOSGeom_clone(myActualPoly);
 		OGRGeometry * myPoly = SafeCreateFromGEOS(myActualPolyClone);
 		GEOSGeom_destroy(myActualPolyClone);
-		m_Shp.AddGeometry(myPoly, -1);
-		m_Shp.CloseGeometry();
+		m_Shp->AddGeometry(myPoly, -1);
+		m_Shp->CloseGeometry();
 		OGRGeometryFactory::destroyGeometry(myPoly);
 	}
 	GEOSGeom_destroy(hResultGeom);
@@ -648,8 +684,8 @@ bool tmExportDataSHP::SetAttributsBasic(DataBaseResult & results){
 		return false;
 	}
 
-	m_Shp.SetFieldValue(myObjectCD, TM_FIELD_INTEGER, 1);
-	m_Shp.SetFieldValue(myObjectDesc, TM_FIELD_TEXT, 2);
+	m_Shp->SetFieldValue(myObjectCD, TM_FIELD_INTEGER, 1);
+	m_Shp->SetFieldValue(myObjectDesc, TM_FIELD_TEXT, 2);
 	return true;
 }
 
@@ -687,7 +723,7 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
             }
         }
 
-		m_Shp.SetFieldValue(myValue ,
+		m_Shp->SetFieldValue(myValue ,
 							layer->m_pLayerFieldArray.Item(i)->m_FieldType,
 							i+3);
 	}
@@ -894,10 +930,10 @@ bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
 
 	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++)
 	{
-		if(!m_Shp.SetFieldValue(values.Item(i+1), layer->m_pLayerFieldArray.Item(i)->m_FieldType, i+3))
+		if(!m_Shp->SetFieldValue(values.Item(i+1), layer->m_pLayerFieldArray.Item(i)->m_FieldType, i+3))
 			return false;
 		else
-			m_Shp.UpdateFeature();
+			m_Shp->UpdateFeature();
 	}
 
 	return true;

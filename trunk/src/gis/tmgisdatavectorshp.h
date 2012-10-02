@@ -31,24 +31,29 @@
 
 #include "tmgisdatavector.h"
 #include "ogrsf_frmts.h"
+#include "ogr_api.h"
+#include "gdal_alg.h"
+#include "gdal_priv.h"
+
+
 
 
 class tmGISDataVectorSHP : public tmGISDataVector
-{
-private:
+{    
+protected:
     OGRDataSource       *m_Datasource;
     OGRLayer			*m_Layer;
-    
+    GDALDataset         *m_RasterizeDataset;
     OGRFeature			*m_Feature;
     int					m_polyTotalRings;
-	
-protected:
+
 public:
     tmGISDataVectorSHP();
     ~tmGISDataVectorSHP();
     
-    // implementing virtual function
+    // implementing vi±rtual function
     virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
+    virtual bool Close ();
     virtual tmRealRect GetMinimalBoundingRectangle();
     virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
     
@@ -63,6 +68,7 @@ public:
     virtual OGRPolygon * GetNextDataOGRPolygon (long & oid);
     virtual OGRFeature * GetNextFeature ();
     virtual OGRFeature * GetFeatureByOID (long oid);
+    bool SelectFeatureByOID (long oid);
     
     // virtual function for metadata
     virtual wxString GetMetaDataAsHtml ();
@@ -100,8 +106,27 @@ public:
     
     bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
     long GetFeatureIDIntersectedBy(OGRGeometry * geometry);
+    long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry);
+    bool Rasterize();
+    void RemoveRasterizeFile();
+    
+    virtual bool CopyToFile(const wxFileName & filename, const wxString & drivername);
 };
 
+
+
+
+
+
+class tmGISDataVectorSHPMemory : public tmGISDataVectorSHP
+{
+private:
+public:
+    tmGISDataVectorSHPMemory();
+    ~tmGISDataVectorSHPMemory();
+    
+    virtual bool CreateFile (const wxFileName & filename, int type);
+};
 
 
 #endif

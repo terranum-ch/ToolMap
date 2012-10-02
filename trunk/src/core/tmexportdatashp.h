@@ -37,7 +37,7 @@
 class tmExportDataSHP : public tmExportData
 	{
 	private:
-		tmGISDataVectorSHP  m_Shp;
+		tmGISDataVectorSHP * m_Shp;
 		OGRPolygon * m_Frame;
 		// private function
 		void InitMemberValues();

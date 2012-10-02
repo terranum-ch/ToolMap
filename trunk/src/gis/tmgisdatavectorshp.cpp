@@ -32,6 +32,7 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
 	m_Feature = NULL;
 	m_polyTotalRings = 0;
 	m_ClassType = tmGIS_VECTOR_SHAPEFILE;
+    m_RasterizeDataset = NULL;
 }
 
 
@@ -39,8 +40,13 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
 tmGISDataVectorSHP::~tmGISDataVectorSHP()
 {
 	// safe destroy the datasource if needed
-	if (m_Datasource)
+	if (m_Datasource){
 		OGRDataSource::DestroyDataSource(m_Datasource);
+    }
+    
+    if (m_RasterizeDataset) {
+        GDALClose(m_RasterizeDataset);
+    }
 }
 
 
@@ -56,7 +62,7 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
 	
 	// open the shapefile and return true if success
-	m_Datasource = OGRSFDriverRegistrar::Open(buffer, FALSE );
+	m_Datasource = OGRSFDriverRegistrar::Open(buffer, bReadWrite);
 	wxDELETEA(buffer);
 	
 	if( m_Datasource==NULL){
@@ -69,6 +75,19 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	m_Layer = m_Datasource->GetLayer(0);
 	wxASSERT (m_Layer);
 	return true;
+}
+
+
+
+bool tmGISDataVectorSHP::Close (){
+  	if (m_Datasource){
+		OGRDataSource::DestroyDataSource(m_Datasource);
+    }
+    m_Datasource = NULL;
+    m_Layer = NULL;
+    m_Feature = NULL;
+    m_polyTotalRings = 0;
+    return true;
 }
 
 
@@ -268,6 +287,18 @@ OGRFeature * tmGISDataVectorSHP::GetFeatureByOID (long oid){
 	
 	return myFeature;
 }
+
+
+bool tmGISDataVectorSHP::SelectFeatureByOID (long oid){
+    wxASSERT(m_Feature == NULL);
+    wxASSERT(m_Layer);
+    m_Feature = m_Layer->GetFeature(oid);
+    if (m_Feature != NULL) {
+        return true;
+    }
+    return false;
+}
+
 
 
 
@@ -764,7 +795,7 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
         return false;
     }
 	
-	
+    tmGISData::Open(filename.GetFullPath(), true);
 	return true;		
 }
 
@@ -1143,9 +1174,15 @@ bool tmGISDataVectorSHP::CreateSpatialIndex(int indexdepth){
         myStmt << _T("DEPTH ");
         myStmt << indexdepth;
     }
-    m_Datasource->ExecuteSQL((const char*) myStmt.mb_str(wxConvUTF8), NULL, "generic");
-    wxString myError (CPLGetLastErrorMsg());
-    wxLogMessage(_("Error: %s"), myError);
+    OGRLayer *poResultSet = NULL;
+    poResultSet = m_Datasource->ExecuteSQL((const char*) myStmt.mb_str(wxConvUTF8), NULL, "generic");
+    if (poResultSet != NULL) {
+        //wxLogMessage(_("Releasing result set"));
+        m_Datasource->ReleaseResultSet( poResultSet );
+    }
+    //wxString myError (CPLGetLastErrorMsg());
+    //wxLogMessage(_("Error: %s"), myError);
+    //wxLogMessage(myStmt);
     return true;
 }
 
@@ -1154,16 +1191,247 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry * geometry){
     wxASSERT(m_Layer);
     m_Layer->ResetReading();
     m_Layer->SetSpatialFilter(geometry);
-    long iLoop = 0;
-    while((m_Feature = m_Layer->GetNextFeature()) != NULL){
-        iLoop++;
-        if (geometry->Intersects(m_Feature->GetGeometryRef()) == true) {
-            long myID = m_Feature->GetFID();
-            return myID;
-        }
+    m_Feature = m_Layer->GetNextFeature();
+    if (m_Feature == NULL) {
+        return wxNOT_FOUND;
     }
-    return wxNOT_FOUND;
+    
+    long myID = m_Feature->GetFID();
+    return myID;
     // feature has to be destroyed with CloseGeometry() 
 }
+
+
+
+long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
+    if (m_RasterizeDataset == NULL){
+        wxLogError(_("Unable to get feature on raster, raster not open!"));
+        return wxNOT_FOUND;
+    }
+    
+    // convert real coord to pixel coord
+    double myGeoTransform[6];
+    m_RasterizeDataset->GetGeoTransform(&myGeoTransform[0]);
+    double myLeft = myGeoTransform[0];
+    double myTop = myGeoTransform[3];
+    double myPxWidth = myGeoTransform[1];
+    double myPxHeight = myGeoTransform[5];
+    //int myWidth = m_RasterizeDataset->GetRasterXSize();
+    int myHeight = m_RasterizeDataset->GetRasterYSize();
+    
+	double myMin = wxMin (myTop, myTop + myHeight);
+    double myCoordx = (geometry->getX() - myLeft) / fabs(myPxWidth);
+	double myCoordy = (geometry->getY() - myMin) / fabs(myPxHeight);
+    int pxcoordx = wxRound(myCoordx);
+	int pxcoordy = wxRound(myHeight - fabs(myCoordy)); // invert y axis
+
+    
+    void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * 1);
+	if (m_RasterizeDataset->RasterIO(GF_Read, pxcoordx, pxcoordy,1, 1,pData,1, 1,GDT_Float32,1, NULL, 0,0,0) != CE_None){
+		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
+		if (pData != NULL) {
+			CPLFree(pData);
+			pData = NULL;
+		}
+		return wxNOT_FOUND;
+	}
+    
+    long myValue = (long) ((float *)pData)[0];
+    return myValue;
+}
+
+
+
+bool tmGISDataVectorSHP::Rasterize(){
+    // get filename
+    wxFileName myRasterName (GetFullFileName());
+    myRasterName.SetExt(_T("tif"));
+    wxString myRasterNameTxt = myRasterName.GetFullPath();
+    
+    // get driver
+    GDALDriverH hDriver = GDALGetDriverByName("GTIFF");
+    if (hDriver == NULL) {
+        wxLogError(_("Driver 'GTIFF' not found"));
+        return false;
+    }
+    
+    // get shp dimensions
+    OGREnvelope myExtent;
+    m_Layer->GetExtent(&myExtent);
+    wxSize mySize(wxRound(fabs(myExtent.MaxX - myExtent.MinX)), wxRound(fabs(myExtent.MaxY - myExtent.MinY)));
+    
+    // create raster
+    GDALDatasetH hDstDS = NULL;
+    hDstDS = GDALCreate(hDriver, (const char *) myRasterNameTxt.mb_str(wxConvUTF8), mySize.GetWidth(), mySize.GetHeight(), 1, GDT_Float32, NULL);
+    if( hDstDS == NULL){
+        return false;
+    }
+    
+    // set projection
+    double adfProjection[6];
+    adfProjection[0] = myExtent.MinX;
+    adfProjection[1] = 1;
+    adfProjection[2] = 0;
+    adfProjection[3] = myExtent.MaxY;
+    adfProjection[4] = 0;
+    adfProjection[5] = -1;
+    GDALSetGeoTransform(hDstDS, adfProjection);
+    
+    // read shp features
+    std::vector<OGRGeometryH> ahGeometries;
+    std::vector<double> adfFullBurnValues;
+    m_Layer->ResetReading();
+    while ((m_Feature = m_Layer->GetNextFeature()) != NULL){
+        OGRGeometryH myGeom = m_Feature->GetGeometryRef()->clone();
+        ahGeometries.push_back(myGeom);
+        adfFullBurnValues.push_back(m_Feature->GetFID());
+        OGRFeature::DestroyFeature(m_Feature);
+    }
+    
+    std::vector<int> anBandList;
+    anBandList.push_back(1);
+    GDALRasterizeGeometries(hDstDS, anBandList.size(),&(anBandList[0]), ahGeometries.size(), &(ahGeometries[0]), NULL, NULL, &(adfFullBurnValues[0]), NULL, NULL, NULL);
+    
+    // clean
+    for(int iGeom = ahGeometries.size()-1; iGeom >= 0; iGeom-- ){
+        OGR_G_DestroyGeometry( ahGeometries[iGeom] );
+    }
+    GDALClose( hDstDS );
+    
+    m_RasterizeDataset = (GDALDataset *) GDALOpen((const char*)myRasterNameTxt.mb_str(wxConvUTF8), GA_ReadOnly);
+    if (m_RasterizeDataset == NULL) {
+        return false;
+    }
+    return true;
+}
+
+
+void tmGISDataVectorSHP::RemoveRasterizeFile(){
+    if (m_RasterizeDataset == NULL) {
+        return;
+    }
+    GDALClose(m_RasterizeDataset);
+    
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+    wxASSERT(poDriver);
+    if (poDriver == NULL) {
+        return;
+    }
+    
+    wxFileName myRasterName (GetFullFileName());
+    myRasterName.SetExt(_T("tif"));
+    wxString myRasterNameTxt = myRasterName.GetFullPath();
+    poDriver->Delete((const char*) myRasterNameTxt.mb_str(wxConvUTF8));
+    m_RasterizeDataset = NULL;
+}
+
+
+
+bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString & drivername){
+    if (filename.Exists() == true) {
+        wxLogError(_("File '%s' exists copy failed!"), filename.GetFullPath());
+        return false;
+    }
+    
+    wxASSERT(m_Datasource);
+    wxASSERT(m_Layer);
+    
+    // create file
+    OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName((const char*) drivername.mb_str(wxConvUTF8));
+    if( poDriver == NULL ){
+		wxASSERT_MSG(0, _T(" driver not available."));
+		return false;
+    }
+	
+    // creating the file
+	wxString mysFileName = filename.GetFullPath();
+    OGRDataSource * myNewDS = poDriver->CreateDataSource((const char*) mysFileName.mb_str(wxConvUTF8), NULL);
+	if( myNewDS == NULL ){
+        wxLogError(_("Creation of file '%s' failed."), filename.GetFullName().c_str());
+        return false;
+    }
+	
+    // copy fields definition and features
+    wxString myFileNameWOExt = filename.GetName();
+    myNewDS->CopyLayer(m_Layer, (const char*) myFileNameWOExt.mb_str(wxConvUTF8));
+     
+    // close new file
+    OGRDataSource::DestroyDataSource(myNewDS);
+    return true;
+}
+
+
+
+
+
+
+
+
+
+tmGISDataVectorSHPMemory::tmGISDataVectorSHPMemory(){
+    
+}
+
+
+tmGISDataVectorSHPMemory::~tmGISDataVectorSHPMemory(){
+    
+}
+
+
+bool tmGISDataVectorSHPMemory::CreateFile (const wxFileName & filename, int type){
+    OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName("Memory");
+    if( poDriver == NULL ){
+		wxASSERT_MSG(0, _T(" driver not available."));
+		return false;
+    }
+	
+	// creating the file
+	wxString mysFileName = filename.GetFullPath();
+    m_Datasource = poDriver->CreateDataSource((const char*) mysFileName.mb_str(wxConvUTF8), NULL);
+	if( m_Datasource == NULL ){
+        wxLogError(_("Creation of in memory file '%s' failed."), filename.GetFullName().c_str());
+        return false;
+    }
+	
+	OGRwkbGeometryType myGeomType = wkbUnknown;
+	switch (type)
+	{
+		case 0: // LINE
+			myGeomType = wkbLineString;
+			break;
+			
+		case 1: // POINT
+			myGeomType = wkbPoint;
+			break;
+			
+		case 2: // POLYGON
+			myGeomType = wkbPolygon;
+			break;
+			
+		default:
+			myGeomType = wkbUnknown;
+			break;
+	}
+	
+	if (myGeomType == wkbUnknown)
+		return false;
+	
+	
+	// creating the layer
+	wxString myFileNameWOExt = filename.GetName();
+	m_Layer = m_Datasource->CreateLayer((const char*) myFileNameWOExt.mb_str(wxConvUTF8), NULL, myGeomType,NULL );
+    if( m_Layer == NULL ){
+		wxASSERT_MSG(0 , _T("Layer creation failed."));
+        return false;
+    }
+	
+    tmGISData::Open(filename.GetFullPath(), true);
+	return true;		
+}
+
+
+
+
+
 
 
