@@ -410,16 +410,22 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     */
     
     // rasterize polygons
-    if (m_Shp->Rasterize() == false) {
+    double myRasterizeFactor = 1;
+    if (m_Shp->Rasterize(myRasterizeFactor) == false) {
         m_pDB->DataBaseClearResults();
         return false;
     }
+    
+    // create spatial join field
+    wxString mySpatialJoinFieldName = _T("NB_LABELS");
+    m_Shp->AddFieldNumeric(mySpatialJoinFieldName);
     
 	// get row of data
 	DataBaseResult myResult;
 	m_pDB->DataBaseGetResults(&myResult);
 	wxASSERT(myResult.HasResults()==true);
    
+    long mySkippedPoly = 0;
 	for (long i = 0; i < myResult.GetRowCount(); i++) {
 		myResult.NextRow();
 
@@ -450,25 +456,29 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 			continue;
 		}
         
-		//
-		// Search intersection with polygons
-		//
-        /*
-        long myFid = m_Shp.GetFeatureIDIntersectedBy(myGeom);
+		// Search intersection with polygons, using rasterization and fallback to rigorous method!
+        long myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom, myRasterizeFactor);
         if (myFid == wxNOT_FOUND) {
-            wxLogError(_("Label %ld is inside the frame but doesn't belong to any polygon ?"), myOid);
-            continue;
-        }*/
-        
-        long myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom);
-        if (myFid == wxNOT_FOUND) {
-            // TODO: search using polygon.
-            wxLogMessage(_("Skipped point at index %i"), i);
-            OGRGeometryFactory::destroyGeometry(myGeom);
-            continue;
+            mySkippedPoly++;
+            wxLogDebug(_("Skipped label with OID: %ld"), myOid);
+            // search using polygon.
+            myFid = m_Shp->GetFeatureIDIntersectedBy(myGeom);
+            if (myFid == wxNOT_FOUND) {
+                wxLogError(_("Label %ld is inside the frame but doesn't belong to any polygon: Ignored!"), myOid);
+                OGRGeometryFactory::destroyGeometry(myGeom);
+                continue;
+            }
         }
+        OGRGeometryFactory::destroyGeometry(myGeom);
+        wxASSERT(myFid != wxNOT_FOUND);
         m_Shp->SelectFeatureByOID(myFid);
-		OGRGeometryFactory::destroyGeometry(myGeom);
+        
+        // update spatial join (labels - polygons)
+        int mySpatialJoinValue = 1;
+        if (m_Shp->GetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue) == true) {
+            mySpatialJoinValue++;
+        }
+        m_Shp->SetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue);
         
 		// basic attribution
 		if(SetAttributsBasic(myResult)==false){
@@ -486,11 +496,12 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		m_Shp->CloseGeometry();
 	}
     
+    wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f\%)"), mySkippedPoly, myResult.GetRowCount(), (mySkippedPoly * 1.0 / myResult.GetRowCount()) * 100);
     // copy from memory to SHP
     m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
     
     // remove rasterized file
-    m_Shp->RemoveRasterizeFile();
+    //m_Shp->RemoveRasterizeFile();
 	return true;
 }
 
