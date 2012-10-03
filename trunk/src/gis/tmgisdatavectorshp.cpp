@@ -1105,6 +1105,39 @@ void tmGISDataVectorSHP::CloseGeometry(){
 }
 
 
+
+
+bool tmGISDataVectorSHP::GetFieldNumeric (const wxString & fieldname, int & fieldvalue){
+    wxASSERT(m_Feature);
+    wxASSERT(m_Layer);
+    int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char*) fieldname.mb_str(wxConvUTF8));
+    wxASSERT(myFieldIndex != -1);
+    
+    if (m_Feature == NULL || m_Feature->IsFieldSet(myFieldIndex) == false) {
+        return false;
+    }
+    fieldvalue = m_Feature->GetFieldAsInteger(myFieldIndex);
+    return true;
+}
+
+
+bool tmGISDataVectorSHP::SetFieldNumeric (const wxString & fieldname, int fieldvalue){
+    wxASSERT(m_Feature);
+    wxASSERT(m_Layer);
+    
+    int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char*) fieldname.mb_str(wxConvUTF8));
+    wxASSERT(myFieldIndex != -1);
+    if (myFieldIndex == -1) {
+        return false;
+    }
+    
+    m_Feature->SetField(myFieldIndex, fieldvalue);
+    return true;
+}
+
+
+
+
 /***************************************************************************//**
  @brief Get snapping coordinate
  @details Return, if found, the closest existing coordinate for snapping
@@ -1191,19 +1224,24 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry * geometry){
     wxASSERT(m_Layer);
     m_Layer->ResetReading();
     m_Layer->SetSpatialFilter(geometry);
-    m_Feature = m_Layer->GetNextFeature();
-    if (m_Feature == NULL) {
+    OGRFeature * myFeature = m_Layer->GetNextFeature();
+    m_Layer->SetSpatialFilter(NULL);
+    if (myFeature == NULL) {
         return wxNOT_FOUND;
     }
     
-    long myID = m_Feature->GetFID();
+    long myID = myFeature->GetFID();
+    OGRFeature::DestroyFeature(myFeature);
     return myID;
-    // feature has to be destroyed with CloseGeometry() 
 }
 
 
 
-long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
+long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry, double rasterizefactor){
+    if (rasterizefactor == 0) {
+        return wxNOT_FOUND;
+    }
+    
     if (m_RasterizeDataset == NULL){
         wxLogError(_("Unable to get feature on raster, raster not open!"));
         return wxNOT_FOUND;
@@ -1216,33 +1254,66 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
     double myTop = myGeoTransform[3];
     double myPxWidth = myGeoTransform[1];
     double myPxHeight = myGeoTransform[5];
-    //int myWidth = m_RasterizeDataset->GetRasterXSize();
+    int myWidth = m_RasterizeDataset->GetRasterXSize();
     int myHeight = m_RasterizeDataset->GetRasterYSize();
     
 	double myMin = wxMin (myTop, myTop + myHeight);
-    double myCoordx = (geometry->getX() - myLeft) / fabs(myPxWidth);
-	double myCoordy = (geometry->getY() - myMin) / fabs(myPxHeight);
+    double myCoordx = (geometry->getX() - myLeft) / rasterizefactor; // fabs(myPxWidth * 2);
+	double myCoordy = (geometry->getY() - myTop) / rasterizefactor; // fabs(myPxHeight * 2);
     int pxcoordx = wxRound(myCoordx);
 	int pxcoordy = wxRound(myHeight - fabs(myCoordy)); // invert y axis
-
     
-    void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * 1);
-	if (m_RasterizeDataset->RasterIO(GF_Read, pxcoordx, pxcoordy,1, 1,pData,1, 1,GDT_Float32,1, NULL, 0,0,0) != CE_None){
+    // create a rectangle centred on pxcoordx, pxcoordy
+    wxRect myPtRect (pxcoordx -1, pxcoordy -1, 3, 3);
+    wxRect myImgRect (0,0, myWidth, myHeight);
+    wxRect myIntersectRect = myImgRect.Intersect(myPtRect);
+    
+    /*void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * myIntersectRect.GetWidth() * myIntersectRect.GetHeight());
+	if (m_RasterizeDataset->RasterIO(GF_Read, myIntersectRect.GetLeft(), myIntersectRect.GetTop(), myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),pData, myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),GDT_Float32,1, NULL, 0,0,0) != CE_None){
 		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
 		if (pData != NULL) {
 			CPLFree(pData);
 			pData = NULL;
 		}
 		return wxNOT_FOUND;
-	}
+	}*/
     
-    long myValue = (long) ((float *)pData)[0];
-    return myValue;
+    float * pData = new float(255);
+    *pData = 255;
+    if (m_RasterizeDataset->RasterIO(GF_Write, pxcoordx, pxcoordy, 1, 1,pData, 1, 1,GDT_Float32,1, NULL, 0,0,0) != CE_None){
+		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
+		if (pData != NULL) {
+            wxDELETE(pData);
+			//CPLFree(pData);
+			pData = NULL;
+		}
+		return wxNOT_FOUND;
+	}
+    wxDELETE(pData);
+    //CPLFree(pData);
+    return wxNOT_FOUND;
+    
+    /*
+    
+    long myValue = (long) ((float *)pData)[0];    
+    for (int i = 0; i< myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
+        long myRectValue = (long) ((float *)pData)[i];
+        if (myRectValue != myValue) {
+            CPLFree(pData);
+            return wxNOT_FOUND;
+        }
+    }
+    CPLFree(pData);
+    return myValue;*/
 }
 
 
 
-bool tmGISDataVectorSHP::Rasterize(){
+bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
+    if (rasterizefactor == 0) {
+        return true;
+    }
+    
     // get filename
     wxFileName myRasterName (GetFullFileName());
     myRasterName.SetExt(_T("tif"));
@@ -1259,6 +1330,8 @@ bool tmGISDataVectorSHP::Rasterize(){
     OGREnvelope myExtent;
     m_Layer->GetExtent(&myExtent);
     wxSize mySize(wxRound(fabs(myExtent.MaxX - myExtent.MinX)), wxRound(fabs(myExtent.MaxY - myExtent.MinY)));
+    mySize.SetWidth(wxRound(mySize.GetWidth() / rasterizefactor));
+    mySize.SetHeight(wxRound(mySize.GetHeight() / rasterizefactor));
     
     // create raster
     GDALDatasetH hDstDS = NULL;
@@ -1270,13 +1343,13 @@ bool tmGISDataVectorSHP::Rasterize(){
     // set projection
     double adfProjection[6];
     adfProjection[0] = myExtent.MinX;
-    adfProjection[1] = 1;
+    adfProjection[1] = rasterizefactor;
     adfProjection[2] = 0;
     adfProjection[3] = myExtent.MaxY;
     adfProjection[4] = 0;
-    adfProjection[5] = -1;
+    adfProjection[5] = -1.0 * rasterizefactor;
     GDALSetGeoTransform(hDstDS, adfProjection);
-    
+    /*
     // read shp features
     std::vector<OGRGeometryH> ahGeometries;
     std::vector<double> adfFullBurnValues;
@@ -1295,10 +1368,10 @@ bool tmGISDataVectorSHP::Rasterize(){
     // clean
     for(int iGeom = ahGeometries.size()-1; iGeom >= 0; iGeom-- ){
         OGR_G_DestroyGeometry( ahGeometries[iGeom] );
-    }
+    }*/
     GDALClose( hDstDS );
     
-    m_RasterizeDataset = (GDALDataset *) GDALOpen((const char*)myRasterNameTxt.mb_str(wxConvUTF8), GA_ReadOnly);
+    m_RasterizeDataset = (GDALDataset *) GDALOpen((const char*)myRasterNameTxt.mb_str(wxConvUTF8), GA_Update);
     if (m_RasterizeDataset == NULL) {
         return false;
     }

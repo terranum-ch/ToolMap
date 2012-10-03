@@ -103,12 +103,15 @@ public:
     virtual void SetActualOID (long oid);
     virtual bool UpdateFeature ();
     virtual void CloseGeometry();
+    virtual bool GetFieldNumeric (const wxString & fieldname, int & fieldvalue);
+    virtual bool SetFieldNumeric (const wxString & fieldname, int fieldvalue);
     
     bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
     long GetFeatureIDIntersectedBy(OGRGeometry * geometry);
-    long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry);
-    bool Rasterize();
+    long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry, double rasterizefactor);
+    bool Rasterize(double rasterizefactor);
     void RemoveRasterizeFile();
+    
     
     virtual bool CopyToFile(const wxFileName & filename, const wxString & drivername);
 };
