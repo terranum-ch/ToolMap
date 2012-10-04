@@ -1253,8 +1253,8 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
     int myWidth = m_RasterizeDataset->GetRasterXSize();
     int myHeight = m_RasterizeDataset->GetRasterYSize();
     
-    double myCoordx = (geometry->getX() - myLeft) / myPxWidth;
-	double myCoordy = (geometry->getY() - myTop) / myPxHeight;
+    double myCoordx = ((geometry->getX() - myLeft) / myPxWidth) - (0.5 * myPxWidth);
+	double myCoordy = ((geometry->getY() - myTop) / myPxHeight) + (0.5 * myPxHeight);
     int pxcoordx = wxRound(myCoordx);
 	int pxcoordy = wxRound(fabs(myCoordy));
     
