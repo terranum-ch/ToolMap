@@ -1253,8 +1253,8 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
     int myWidth = m_RasterizeDataset->GetRasterXSize();
     int myHeight = m_RasterizeDataset->GetRasterYSize();
     
-    double myCoordx = ((geometry->getX() - myLeft) / myPxWidth) - (0.5 * myPxWidth);
-	double myCoordy = ((geometry->getY() - myTop) / myPxHeight) + (0.5 * myPxHeight);
+    double myCoordx = ((geometry->getX() - myLeft) / myPxWidth); // - (0.5 * myPxWidth);
+	double myCoordy = ((geometry->getY() - myTop) / myPxHeight); // + (0.5 * myPxHeight);
     int pxcoordx = wxRound(myCoordx);
 	int pxcoordy = wxRound(fabs(myCoordy));
     
@@ -1263,7 +1263,8 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
     wxRect myImgRect (0,0, myWidth, myHeight);
     wxRect myIntersectRect = myImgRect.Intersect(myPtRect);
     
-    /*void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * myIntersectRect.GetWidth() * myIntersectRect.GetHeight());
+    
+    void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * myIntersectRect.GetWidth() * myIntersectRect.GetHeight());
 	if (m_RasterizeDataset->RasterIO(GF_Read, myIntersectRect.GetLeft(), myIntersectRect.GetTop(), myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),pData, myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),GDT_Float32,1, NULL, 0,0,0) != CE_None){
 		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
 		if (pData != NULL) {
@@ -1271,9 +1272,22 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
 			pData = NULL;
 		}
 		return wxNOT_FOUND;
-	}*/
+	}
     
-    // code to export label to image
+    long myValue = (long) ((float *)pData)[5];
+    for (int i = 0; i< myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
+        long myRectValue = (long) ((float *)pData)[i];
+        if (myRectValue != myValue) {
+            CPLFree(pData);
+            return wxNOT_FOUND;
+        }
+    }
+    CPLFree(pData);
+    return myValue;
+    
+
+    // temp code to export label into image
+    /*
     float * pData = new float[myIntersectRect.GetWidth() * myIntersectRect.GetHeight()];
     for (int i = 0; i< myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
         *(pData+i) = 255;
@@ -1287,19 +1301,7 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
 	}
     wxDELETEA(pData);
     return wxNOT_FOUND;
-    
-    /*
-    
-    long myValue = (long) ((float *)pData)[0];    
-    for (int i = 0; i< myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
-        long myRectValue = (long) ((float *)pData)[i];
-        if (myRectValue != myValue) {
-            CPLFree(pData);
-            return wxNOT_FOUND;
-        }
-    }
-    CPLFree(pData);
-    return myValue;*/
+    */
 }
 
 
@@ -1344,7 +1346,7 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
     adfProjection[4] = 0;
     adfProjection[5] = -1.0 * rasterizefactor;
     GDALSetGeoTransform(hDstDS, adfProjection);
-    /*
+    
     // read shp features
     std::vector<OGRGeometryH> ahGeometries;
     std::vector<double> adfFullBurnValues;
@@ -1363,7 +1365,7 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
     // clean
     for(int iGeom = ahGeometries.size()-1; iGeom >= 0; iGeom-- ){
         OGR_G_DestroyGeometry( ahGeometries[iGeom] );
-    }*/
+    }
     GDALClose( hDstDS );
     
     m_RasterizeDataset = (GDALDataset *) GDALOpen((const char*)myRasterNameTxt.mb_str(wxConvUTF8), GA_Update);

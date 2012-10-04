@@ -410,7 +410,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     */
     
     // rasterize polygons
-    double myRasterizeFactor = 2;
+    double myRasterizeFactor = 8;
     if (m_Shp->Rasterize(myRasterizeFactor) == false) {
         m_pDB->DataBaseClearResults();
         return false;
