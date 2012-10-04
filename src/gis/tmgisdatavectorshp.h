@@ -108,7 +108,7 @@ public:
     
     bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
     long GetFeatureIDIntersectedBy(OGRGeometry * geometry);
-    long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry, double rasterizefactor);
+    long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry);
     bool Rasterize(double rasterizefactor);
     void RemoveRasterizeFile();
     
