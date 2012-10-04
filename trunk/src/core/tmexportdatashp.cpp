@@ -457,7 +457,11 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		}
         
 		// Search intersection with polygons, using rasterization and fallback to rigorous method!
-        long myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom, myRasterizeFactor);
+        long myFid = wxNOT_FOUND;
+        if (myRasterizeFactor != 0) {
+            myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom);
+
+        }
         if (myFid == wxNOT_FOUND) {
             mySkippedPoly++;
             wxLogDebug(_("Skipped label with OID: %ld"), myOid);

@@ -1237,11 +1237,7 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry * geometry){
 
 
 
-long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry, double rasterizefactor){
-    if (rasterizefactor == 0) {
-        return wxNOT_FOUND;
-    }
-    
+long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
     if (m_RasterizeDataset == NULL){
         wxLogError(_("Unable to get feature on raster, raster not open!"));
         return wxNOT_FOUND;
@@ -1257,11 +1253,10 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry, do
     int myWidth = m_RasterizeDataset->GetRasterXSize();
     int myHeight = m_RasterizeDataset->GetRasterYSize();
     
-	double myMin = wxMin (myTop, myTop + myHeight);
-    double myCoordx = (geometry->getX() - myLeft) / rasterizefactor; // fabs(myPxWidth * 2);
-	double myCoordy = (geometry->getY() - myTop) / rasterizefactor; // fabs(myPxHeight * 2);
+    double myCoordx = (geometry->getX() - myLeft) / myPxWidth;
+	double myCoordy = (geometry->getY() - myTop) / myPxHeight;
     int pxcoordx = wxRound(myCoordx);
-	int pxcoordy = wxRound(myHeight - fabs(myCoordy)); // invert y axis
+	int pxcoordy = wxRound(fabs(myCoordy));
     
     // create a rectangle centred on pxcoordx, pxcoordy
     wxRect myPtRect (pxcoordx -1, pxcoordy -1, 3, 3);
@@ -1278,19 +1273,19 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry, do
 		return wxNOT_FOUND;
 	}*/
     
-    float * pData = new float(255);
-    *pData = 255;
-    if (m_RasterizeDataset->RasterIO(GF_Write, pxcoordx, pxcoordy, 1, 1,pData, 1, 1,GDT_Float32,1, NULL, 0,0,0) != CE_None){
+    // code to export label to image
+    float * pData = new float[myIntersectRect.GetWidth() * myIntersectRect.GetHeight()];
+    for (int i = 0; i< myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
+        *(pData+i) = 255;
+    }
+    if (m_RasterizeDataset->RasterIO(GF_Write, myIntersectRect.GetLeft(), myIntersectRect.GetTop(), myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),pData, myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),GDT_Float32,1, NULL, 0,0,0) != CE_None){
 		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
 		if (pData != NULL) {
-            wxDELETE(pData);
-			//CPLFree(pData);
-			pData = NULL;
+            wxDELETEA(pData);
 		}
 		return wxNOT_FOUND;
 	}
-    wxDELETE(pData);
-    //CPLFree(pData);
+    wxDELETEA(pData);
     return wxNOT_FOUND;
     
     /*
