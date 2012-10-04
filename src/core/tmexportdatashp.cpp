@@ -410,7 +410,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     */
     
     // rasterize polygons
-    double myRasterizeFactor = 8;
+    double myRasterizeFactor = 4;
     if (m_Shp->Rasterize(myRasterizeFactor) == false) {
         m_pDB->DataBaseClearResults();
         return false;
@@ -426,7 +426,8 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 	wxASSERT(myResult.HasResults()==true);
    
     long mySkippedPoly = 0;
-	for (long i = 0; i < myResult.GetRowCount(); i++) {
+	long myResultCount = myResult.GetRowCount();
+	for (long i = 0; i < myResultCount; i++) {
 		myResult.NextRow();
 
 		//
@@ -500,7 +501,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		m_Shp->CloseGeometry();
 	}
     
-    wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f\%)"), mySkippedPoly, myResult.GetRowCount(), (mySkippedPoly * 1.0 / myResult.GetRowCount()) * 100);
+	wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f%%)"), mySkippedPoly, myResultCount, (mySkippedPoly * 1.0 /myResultCount) * 100);
     // copy from memory to SHP
     m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
     
