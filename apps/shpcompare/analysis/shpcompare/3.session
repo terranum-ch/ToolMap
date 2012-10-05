@@ -1,0 +1,14 @@
+window_sizes 1350 787 342 1002 594 136
+diagrams
+  active  classdiagram_ref 128003 // shpcompare
+    998 574 100 4 0 0
+end
+show_stereotypes
+selected 
+  package_ref 129 // shpcompare
+open
+  attribute_ref 128003 // m_ReferenceFileName
+  attribute_ref 128387 // m_Errors
+  operation_ref 128131 // ~ShpCompare
+end
+end
