@@ -433,7 +433,10 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
         if (m_ExportPolyPercentSkipped > 8) {
             myExportPolyFactor = myExportPolyFactor / 2.0;
         }
-        else{
+        
+        // if between 1 and 8 : optimal :-)
+        
+        if(m_ExportPolyPercentSkipped < 1){
             myExportPolyFactor = myExportPolyFactor * 2.0;
         }
     }
@@ -529,7 +532,6 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     
     // update poly export info
     m_ExportPolyNbIteration++;
-    m_ExportPolyPercentSkipped = 0;
     if (wxIsSameDouble(myExportPolyFactor, 0)==false) {
         m_ExportPolyPercentSkipped = mySkippedPoly * 1.0 / myResultCount * 100.0;
         m_ExportPolyRasterFactor = myExportPolyFactor;
