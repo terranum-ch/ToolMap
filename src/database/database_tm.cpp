@@ -316,8 +316,16 @@ bool DataBaseTM::CreateEmptyTMDatabase()
     _T("CREATE  TABLE IF NOT EXISTS `dmn_attribut_value` (")
     _T("`ATTRIBUT_ID` INT NOT NULL ,")
     _T("`CATALOG_ID` INT NOT NULL ,")
-    _T("PRIMARY KEY (`ATTRIBUT_ID`, `CATALOG_ID`) );");
-	
+    _T("PRIMARY KEY (`ATTRIBUT_ID`, `CATALOG_ID`) );")
+    
+    
+    _T("CREATE  TABLE IF NOT EXISTS `export_poly` (")
+    _T("   `LAYER_INDEX` INT NOT NULL ,")
+    _T("   `RASTER_FACTOR` DOUBLE NULL ,")
+    _T("   `NB_EXPORT` INT NULL ,")
+    _T("   `PERCENT_SKIPPED` DOUBLE NULL ,")
+    _T("   PRIMARY KEY (`LAYER_INDEX`));");
+    
 	//wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
 	if (DataBaseQueryNoResults(myNewPrjSentence)==false)
 		return false;

@@ -94,6 +94,17 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
         }
     }
 	
+    // 222 -> 223
+    if (myActualDBVersion == 223) {
+        if (_223to224() == false) {
+            _SetVersion(223);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 224;
+        }
+    }
+    
 	_SetVersion(myActualDBVersion);
 	return tmPRJ_UPD_ERROR_OK;
 }
@@ -325,6 +336,22 @@ bool tmProjectUpdater::_221to222(){
 bool tmProjectUpdater::_222to223(){
     wxString myQuery = _T("ALTER TABLE %s MODIFY SYMBOLOGY VARCHAR(65535) NULL");
     if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_TOC),true)==false) {
+        return false;
+    }
+    return true;
+}
+
+
+
+bool tmProjectUpdater::_223to224(){
+    wxString myQuery =
+    _T("CREATE  TABLE IF NOT EXISTS `export_poly` (")
+    _T("   `LAYER_INDEX` INT NOT NULL ,")
+    _T("   `RASTER_FACTOR` DOUBLE NULL ,")
+    _T("   `NB_EXPORT` INT NULL ,")
+    _T("   `PERCENT_SKIPPED` DOUBLE NULL ,")
+    _T("   PRIMARY KEY (`LAYER_INDEX`));");
+    if (m_pDB->DataBaseQueryNoResults(myQuery)==false) {
         return false;
     }
     return true;

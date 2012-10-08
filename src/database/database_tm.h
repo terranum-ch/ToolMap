@@ -56,6 +56,7 @@ const wxString TABLE_NAME_LANG_DEF = _T("lang_def");
 const wxString TABLE_NAME_AT_LIST = _T("dmn_layer_attribut");
 const wxString TABLE_NAME_AT_MIX = _T("dmn_attribut_value");
 const wxString TABLE_NAME_AT_CATALOG = _T("dmn_catalog");
+const wxString TABLE_NAME_EXPORT_POLY = _T("export_poly");
 
 const wxString TABLE_NAME_GIS_GENERIC[] = 
 {
@@ -76,7 +77,7 @@ _T("generic_notes")
 
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 223;
+const int TM_DATABASE_VERSION = 224;
 
 
 enum tmDB_OPEN_STATUS

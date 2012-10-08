@@ -35,6 +35,7 @@ void tmExportManager::InitMemberValues()
 	m_ExportType = EXPORT_SHAPEFILE;
 	m_ExportData = NULL;
 	m_ProjMem = NULL;
+    m_UseFastExport = true;
 }
 
 
@@ -129,6 +130,7 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
         return false;
     }
 	
+    m_UseFastExport = myEDlg.UseFastExport();
     wxArrayInt mySelectedLayersIndex = myEDlg.GetSelectedLayersID();
     if (mySelectedLayersIndex.IsEmpty()){
 		return false; // no layer selected
@@ -480,6 +482,11 @@ bool tmExportManager::_ExportSimple (ProjectDefMemoryLayers * layer){
 			  layer->m_LayerType == LAYER_POINT||
 			  layer->m_LayerType == LAYER_POLYGON);
 	
+    // get polygon export information
+    if (layer->m_LayerType == LAYER_POLYGON) {
+        m_ExportData->GetPolyExportInfo(layer, m_UseFastExport);
+    }
+    
 	//
 	// build different query if layer has advanced fields or not
 	//
@@ -882,6 +889,9 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
 	
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
+    
+    wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxStaticBoxSizer* sbSizer1;
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Layers") ), wxVERTICAL );
@@ -906,7 +916,7 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
 	
 	sbSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
-	bSizer1->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
+	bSizer3->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
 	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Settings") ), wxVERTICAL );
@@ -918,8 +928,14 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
 	m_LayersReplaceCtrl = new wxCheckBox( this, ID_EXPORTDLG_REPLACELAYERCHECK, _("Replace existing layers"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_LayersReplaceCtrl->SetValue(true);
 	sbSizer2->Add( m_LayersReplaceCtrl, 0, wxALL, 5 );
+    
+    m_FastPolyExportCtrl = new wxCheckBox( this, wxID_ANY, _("Use Fast Polygon export"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_FastPolyExportCtrl->SetValue(true);
+	sbSizer2->Add( m_FastPolyExportCtrl, 0, wxALL, 5 );
 	
-	bSizer1->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
+	bSizer3->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
+	
+	bSizer1->Add( bSizer3, 1, wxEXPAND, 5 );
 	
 	wxStdDialogButtonSizer* m_sdbSizer1;
 	wxButton* m_sdbSizer1OK;
@@ -975,5 +991,7 @@ bool tmExportSelected_DLG::DoLayerReplace() {
 }
 
 
-
+bool tmExportSelected_DLG::UseFastExport(){
+    return m_FastPolyExportCtrl->IsChecked();
+}
 
