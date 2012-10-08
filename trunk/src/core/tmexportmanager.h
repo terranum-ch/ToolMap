@@ -55,6 +55,7 @@ class tmExportManager : public wxObject
 		PRJDEF_EXPORT_TYPE m_ExportType;
 		wxFileName m_ExportPath;
 		tmExportData * m_ExportData;
+        bool m_UseFastExport;
 
 		PrjDefMemManage * m_ProjMem;
 		
@@ -115,6 +116,8 @@ private:
     wxCheckListBox* m_ListLayersCtrl;
     wxCheckBox* m_LayersAddCtrl;
     wxCheckBox* m_LayersReplaceCtrl;
+    wxCheckBox* m_FastPolyExportCtrl;
+
     
     void OnBtnAll(wxCommandEvent & event);    
     void OnBtnNone(wxCommandEvent & event);
@@ -132,6 +135,7 @@ public:
     wxArrayInt GetSelectedLayersID();
     bool DoLayerAdd();
     bool DoLayerReplace();
+    bool UseFastExport();
 };
 
 

@@ -56,6 +56,8 @@ class tmExportData : public wxObject
 		bool GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex);
 		bool GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype, long layerindex);
 		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer);
+        
+        virtual bool SetPolyExportInfo(ProjectDefMemoryLayers * layer){return false;}
 		
 	public:
 		// ctor
@@ -86,7 +88,8 @@ class tmExportData : public wxObject
 		
 		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
-	
+        
+        virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){return false;}
 	};
 
 

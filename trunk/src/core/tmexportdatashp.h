@@ -41,6 +41,13 @@ class tmExportDataSHP : public tmExportData
 		OGRPolygon * m_Frame;
 		// private function
 		void InitMemberValues();
+        
+        
+        int m_ExportPolyNbIteration;
+        double m_ExportPolyRasterFactor;
+        double m_ExportPolyPercentSkipped;
+        bool m_ExportPolyFast;
+        
 		
 		// for windows bug
 		OGRGeometry * SafeIntersection(OGRGeometry * line, OGRGeometry * frame);
@@ -53,6 +60,8 @@ class tmExportDataSHP : public tmExportData
 								const wxArrayString & values);
         
         void _AppendValidToCollection(OGRGeometry * geometry, OGRGeometryCollection * collection);
+        virtual bool SetPolyExportInfo(ProjectDefMemoryLayers * layer);
+
 		
 	protected:
 	public:
@@ -84,7 +93,7 @@ class tmExportDataSHP : public tmExportData
 		virtual bool SetAttributsBasic(DataBaseResult & results);
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, 
 										  ProjectDefMemoryLayers * layer);
-
+        virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport);
 	};
 
 

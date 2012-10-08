@@ -32,6 +32,11 @@ void tmExportDataSHP::InitMemberValues()
 	m_Extension = _T(".shp");
 	m_Frame = NULL;
     m_Shp = NULL;
+    
+    m_ExportPolyNbIteration = 0;
+    m_ExportPolyRasterFactor = 1.0;
+    m_ExportPolyPercentSkipped = 0.0;
+    m_ExportPolyFast = true;
 }
 
 
@@ -409,32 +414,45 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     }
     */
     
-    // rasterize polygons
-    double myRasterizeFactor = 4;
-    if (m_Shp->Rasterize(myRasterizeFactor) == false) {
-        m_pDB->DataBaseClearResults();
-        return false;
-    }
-    
     // create spatial join field
     wxString mySpatialJoinFieldName = _T("NB_LABELS");
     m_Shp->AddFieldNumeric(mySpatialJoinFieldName);
     
-	// get row of data
-	DataBaseResult myResult;
-	m_pDB->DataBaseGetResults(&myResult);
-	wxASSERT(myResult.HasResults()==true);
+	DataBaseResult * myResult = new DataBaseResult();
+	m_pDB->DataBaseGetResults(myResult);
+	wxASSERT(myResult->HasResults()==true);
+    long myResultCount = myResult->GetRowCount();
    
+    double myExportPolyFactor = m_ExportPolyRasterFactor;
+    if (m_ExportPolyFast == false || myResultCount <= 50) {
+        myExportPolyFactor = 0;
+    }
+     
+    // updating rasterization parameters based on skipped percentage (less than 8% is optimal)
+    if (wxIsSameDouble(myExportPolyFactor, 0)==false) {
+        if (m_ExportPolyPercentSkipped > 8) {
+            myExportPolyFactor = myExportPolyFactor / 2.0;
+        }
+        else{
+            myExportPolyFactor = myExportPolyFactor * 2.0;
+        }
+    }
+    
+    // rasterize polygons
+     if (m_Shp->Rasterize(myExportPolyFactor) == false) {
+        wxDELETE(myResult);
+        return false;
+    }
+    
     long mySkippedPoly = 0;
-	long myResultCount = myResult.GetRowCount();
 	for (long i = 0; i < myResultCount; i++) {
-		myResult.NextRow();
+		myResult->NextRow();
 
 		//
 		// Is geometry inside the frame ?
 		//
 		OGRGeometry * myGeom = NULL;
-		if ( myResult.GetValue(1, &myGeom) == false){
+		if ( myResult->GetValue(1, &myGeom) == false){
 			wxASSERT(myGeom == NULL);
 			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
 					   myLayer->m_LayerName.c_str(), i);
@@ -442,7 +460,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		}
 
 		long myOid = wxNOT_FOUND;
-		myResult.GetValue(0, myOid);
+		myResult->GetValue(0, myOid);
 		wxASSERT(myOid != wxNOT_FOUND);
 
 
@@ -459,13 +477,13 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
         
 		// Search intersection with polygons, using rasterization and fallback to rigorous method!
         long myFid = wxNOT_FOUND;
-        if (myRasterizeFactor != 0) {
+        if (myExportPolyFactor != 0) {
             myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom);
 
         }
         if (myFid == wxNOT_FOUND) {
             mySkippedPoly++;
-            wxLogDebug(_("Skipped label with OID: %ld"), myOid);
+            //wxLogDebug(_("Skipped label with OID: %ld"), myOid);
             // search using polygon.
             myFid = m_Shp->GetFeatureIDIntersectedBy(myGeom);
             if (myFid == wxNOT_FOUND) {
@@ -486,14 +504,14 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
         m_Shp->SetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue);
         
 		// basic attribution
-		if(SetAttributsBasic(myResult)==false){
+		if(SetAttributsBasic(*myResult)==false){
 			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
 			continue;
 		}
 
 		// advanced attribution
-		if (SetAttributsAdvanced(myResult, myLayer)==false) {
+		if (SetAttributsAdvanced(*myResult, myLayer)==false) {
 			m_Shp->CloseGeometry();
 			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
 			continue;
@@ -501,12 +519,28 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 		m_Shp->CloseGeometry();
 	}
     
-	wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f%%)"), mySkippedPoly, myResultCount, (mySkippedPoly * 1.0 /myResultCount) * 100);
     // copy from memory to SHP
     m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
     
     // remove rasterized file
-    //m_Shp->RemoveRasterizeFile();
+    m_Shp->RemoveRasterizeFile();
+    
+    wxDELETE(myResult);
+    
+    // update poly export info
+    m_ExportPolyNbIteration++;
+    m_ExportPolyPercentSkipped = 0;
+    if (wxIsSameDouble(myExportPolyFactor, 0)==false) {
+        m_ExportPolyPercentSkipped = mySkippedPoly * 1.0 / myResultCount * 100.0;
+        m_ExportPolyRasterFactor = myExportPolyFactor;
+        wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f%%)"), mySkippedPoly, myResultCount, m_ExportPolyPercentSkipped);
+    }
+    else{
+        wxLogMessage(_("Not using rasterization for polygons!"));
+    }
+    wxLogMessage(_("Layer %s exported %d times!"), myLayer->m_LayerName, m_ExportPolyNbIteration);
+    wxLogDebug(_("Used Raster factor = %.3f, Percent Skipped = %.3f"), myExportPolyFactor, m_ExportPolyPercentSkipped);
+    SetPolyExportInfo(myLayer);
 	return true;
 }
 
@@ -954,6 +988,51 @@ bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
 
 	return true;
 }
+
+
+bool tmExportDataSHP::SetPolyExportInfo(ProjectDefMemoryLayers * layer){
+    wxASSERT(m_pDB);
+    wxString myQuery = wxString::Format(_T("REPLACE INTO %s VALUES (%d,%f,%d,%f)"),
+                                        TABLE_NAME_EXPORT_POLY,
+                                        layer->m_LayerID,
+                                        m_ExportPolyRasterFactor,
+                                        m_ExportPolyNbIteration,
+                                        m_ExportPolyPercentSkipped);
+    if (m_pDB->DataBaseQueryNoResults(myQuery)==false) {
+        return false;
+    }
+    return true;
+}
+
+
+
+bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){
+    wxASSERT(m_pDB);
+    
+    m_ExportPolyRasterFactor = 0.5;
+    m_ExportPolyNbIteration = 0;
+    m_ExportPolyPercentSkipped = 0.0;
+    m_ExportPolyFast = usefastexport;
+    
+    wxString myQuery = _T("SELECT * from %s WHERE LAYER_INDEX = %d");
+    if (m_pDB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_EXPORT_POLY, layer->m_LayerID))==false) {
+        return false;
+    }
+    
+    if (m_pDB->DataBaseHasResults() == false) {
+        return true;
+    }
+    
+    wxArrayDouble myResults;
+    m_pDB->DataBaseGetNextResult(myResults);
+    wxASSERT(myResults.GetCount() == 4);
+    m_ExportPolyRasterFactor = myResults[1];
+    m_ExportPolyNbIteration = (int) myResults[2];
+    m_ExportPolyPercentSkipped = myResults[3];
+    m_pDB->DataBaseClearResults();
+    return true;
+}
+
 
 
 
