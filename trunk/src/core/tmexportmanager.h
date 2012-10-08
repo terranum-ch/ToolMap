@@ -117,13 +117,13 @@ private:
     wxCheckBox* m_LayersAddCtrl;
     wxCheckBox* m_LayersReplaceCtrl;
     wxCheckBox* m_FastPolyExportCtrl;
-
     
     void OnBtnAll(wxCommandEvent & event);    
     void OnBtnNone(wxCommandEvent & event);
     void OnBtnInvert(wxCommandEvent & event);
     void OnUpdateUIBtnNone(wxUpdateUIEvent & event);
     void OnUpdateUICheckReplace(wxUpdateUIEvent & event);
+    void OnUpdateUIOK (wxUpdateUIEvent & event);
     
     void _CreateControls(const wxArrayString & layers);
     DECLARE_EVENT_TABLE();
