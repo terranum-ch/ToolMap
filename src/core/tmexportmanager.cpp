@@ -835,6 +835,7 @@ EVT_BUTTON(ID_EXPORTDLG_NONEBTN, tmExportSelected_DLG::OnBtnNone)
 EVT_BUTTON(ID_EXPORTDLG_INVERTBTN, tmExportSelected_DLG::OnBtnInvert)
 EVT_UPDATE_UI(ID_EXPORTDLG_NONEBTN, tmExportSelected_DLG::OnUpdateUIBtnNone)
 EVT_UPDATE_UI(ID_EXPORTDLG_REPLACELAYERCHECK, tmExportSelected_DLG::OnUpdateUICheckReplace)
+EVT_UPDATE_UI(wxID_OK, tmExportSelected_DLG::OnUpdateUIOK)
 END_EVENT_TABLE()
 
 
@@ -876,6 +877,20 @@ void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent & event) {
     }
     event.Enable(bHasCHecked);
 }
+
+
+
+void tmExportSelected_DLG::OnUpdateUIOK (wxUpdateUIEvent & event){
+    bool bHasCHecked = false;
+    for (unsigned int i = 0; i< m_ListLayersCtrl->GetCount(); i++) {
+        if (m_ListLayersCtrl->IsChecked(i)==true) {
+            bHasCHecked = true;
+            break;
+        }
+    }
+    event.Enable(bHasCHecked);
+}
+
 
 
 void tmExportSelected_DLG::OnUpdateUICheckReplace(wxUpdateUIEvent & event){
@@ -933,16 +948,17 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
 	m_FastPolyExportCtrl->SetValue(true);
 	sbSizer2->Add( m_FastPolyExportCtrl, 0, wxALL, 5 );
 	
-	bSizer3->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
+	bSizer3->Add( sbSizer2, 0, wxALL, 5 );
 	
 	bSizer1->Add( bSizer3, 1, wxEXPAND, 5 );
 	
 	wxStdDialogButtonSizer* m_sdbSizer1;
-	wxButton* m_sdbSizer1OK;
 	wxButton* m_sdbSizer1Cancel;
+    wxButton* m_BtnOKCtrl;
 	m_sdbSizer1 = new wxStdDialogButtonSizer();
-	m_sdbSizer1OK = new wxButton( this, wxID_OK );
-	m_sdbSizer1->AddButton( m_sdbSizer1OK );
+	m_BtnOKCtrl = new wxButton( this, wxID_OK );
+    m_BtnOKCtrl->SetDefault();
+	m_sdbSizer1->AddButton( m_BtnOKCtrl );
 	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
 	m_sdbSizer1->Realize();
