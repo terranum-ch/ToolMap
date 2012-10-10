@@ -85,7 +85,7 @@ class tmDrawer : public wxObject
 								 wxClientDC * dc);
 		
 		// drawing vertex
-		bool DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
+		bool DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pts,
 						 tmLayerProperties * itemProp, wxPen * pen, int nb_pen = 1);
 		bool DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata);
 		

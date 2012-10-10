@@ -211,10 +211,16 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		iNbVertex = 0;
 		long myOid = 0;
 		wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
-		
 		if (pptsReal == NULL){
 			break;
 		}
+        
+        // convert realpts to pxpts
+        wxPoint * pptspx = new wxPoint[iNbVertex];
+        for (int i = 0; i< iNbVertex; i++) {
+            pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+        }
+        wxDELETEA(pptsReal);
 		
         // set pen
         pgdc->SetPen(myPen);
@@ -224,9 +230,9 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 				if (m_SelMem->GetSelectionHalo() == true) {
 					pgdc->SetPen(mySHaloPen);
 					wxGraphicsPath myPath = pgdc->CreatePath();
-					myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+					myPath.MoveToPoint(pptspx[0]);
 					for (int i = 1; i< iNbVertex; i++)
-						myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+						myPath.AddLineToPoint(pptspx[i]);
 					pgdc->StrokePath(myPath);
 				}
                 pgdc->SetPen(mySPen);
@@ -235,9 +241,9 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
-		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+		myPath.MoveToPoint(pptspx[0]);
 		for (int i = 1; i< iNbVertex; i++){
-			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+			myPath.AddLineToPoint(pptspx[i]);
         }
 		pgdc->StrokePath(myPath);
         
@@ -269,8 +275,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		}
 		
 		// drawing vertex
-		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, myVPen);
-		wxDELETEA(pptsReal);
+		DrawVertexLine(pgdc, pptspx, iNbVertex, &myProperty, myVPen);
+		wxDELETEA(pptspx);
 	}
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(myVPen);
@@ -376,6 +382,14 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 			wxDELETEA(pptsReal);
 			break;
 		}
+       
+        // convert realpts to pxpts
+        wxPoint * pptspx = new wxPoint[iNbVertex];
+        for (int i = 0; i< iNbVertex; i++) {
+            pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+        }
+        wxDELETEA(pptsReal);
+
 		
 		bool IsSelected = false;
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
@@ -399,9 +413,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 				pgdc->SetPen(mySelectionUnValidHaloPen);
 			}
 			wxGraphicsPath myPath = pgdc->CreatePath();
-			myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+			myPath.MoveToPoint(pptspx[0]);
 			for (int i = 1; i< iNbVertex; i++){
-				myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+				myPath.AddLineToPoint(pptspx[i]);
 			}
 			pgdc->StrokePath(myPath);			
 		}
@@ -429,9 +443,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 		
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
-		myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+		myPath.MoveToPoint(pptspx[0]);
 		for (int i = 1; i< iNbVertex; i++){
-			myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+			myPath.AddLineToPoint(pptspx[i]);
 		}
 		pgdc->StrokePath(myPath);
 		
@@ -446,8 +460,8 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 		}
 		
 		// drawing vertex
-		DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, &myVertexPen);
-		wxDELETEA(pptsReal);
+		DrawVertexLine(pgdc, pptspx, iNbVertex, &myProperty, &myVertexPen);
+		wxDELETEA(pptspx);
 	}
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
@@ -501,11 +515,16 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
             int iNbVertex = wxNOT_FOUND;
             long myOid = wxNOT_FOUND;
             wxRealPoint * pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
-            
             if (pptsReal == NULL || iNbVertex <= 1){
                 wxDELETEA(pptsReal);
                 break;
             }
+            // convert realpts to pxpts
+            wxPoint * pptspx = new wxPoint[iNbVertex];
+            for (int i = 0; i< iNbVertex; i++) {
+                pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+            }
+            wxDELETEA(pptsReal);
             
             // set brush
             pgdc->SetPen(myRulePen);
@@ -517,15 +536,15 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
             
             // creating path
             wxGraphicsPath myPath = pgdc->CreatePath();
-            myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+            myPath.MoveToPoint(pptspx[0]);
             for (int i = 1; i< iNbVertex; i++){
-                myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+                myPath.AddLineToPoint(pptspx[i]);
             }
             pgdc->StrokePath(myPath);
             tmLayerProperties myProperty (*itemProp);
             // drawing vertex
-            DrawVertexLine(pgdc, pptsReal, iNbVertex, &myProperty, &myVertexPen);
-            wxDELETEA(pptsReal);
+            DrawVertexLine(pgdc, pptspx, iNbVertex, &myProperty, &myVertexPen);
+            wxDELETEA(pptspx);
             iLoop++;
         }
     }
@@ -1207,28 +1226,23 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 October 2008
  *******************************************************************************/
-bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int nb_pts,
+bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pts,
 						   tmLayerProperties * itemProp, wxPen * pen, int nb_pen)
 {
-	wxPoint Intpts (0,0);
-	int i = 0;
-	
-	if (nb_pen == 1) // only one pen
+	int i = 0;	
+	if (nb_pen == 1){ // only one pen
 		pgdc->SetPen(*pen);
-	
-	
+    }	
+
 	switch (itemProp->GetVertexFlags())
 	{
 		case tmDRAW_VERTEX_ALL: // ALL VERTEX
 			for (i = 0;i<nb_pts; i++)
 			{
-				// convert from real coordinates to screen coordinates
-				Intpts = m_scale.RealToPixel(pts[i]);
-				
 			#ifdef __WXMSW__
-				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+				pgdc->StrokeLine (pts[i].x , pts[i].y, pts[i].x + 0.1, pts[i].y + 0.1);
 			#else
-				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+				pgdc->StrokeLine (pts[i].x, pts[i].y, pts[i].x, pts[i].y);
 			#endif
 			}
 			break;
@@ -1236,11 +1250,10 @@ bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxRealPoint * pts, int n
 		case tmDRAW_VERTEX_BEGIN_END: // ONLY BEGIN / END
 			for (i = 0; i< nb_pts; i = i+nb_pts-1)
 			{
-				Intpts = m_scale.RealToPixel(pts[i]);
 				#ifdef __WXMSW__
-				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
+				pgdc->StrokeLine (pts[i].x, pts[i].y, pts[i].x + 0.1, pts[i].y + 0.1);
 				#else
-				pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x, Intpts.y);
+				pgdc->StrokeLine (pts[i].x, pts[i].y, pts[i].x, pts[i].y);
 				#endif
 			}
 			break;
@@ -1322,7 +1335,6 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 		for (i = 0; i<iPolyRings; i++)
 		{
 			wxRealPoint * pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
-			
 			if(pptsReal == NULL)
 			{
 				if (IsLoggingEnabled()){
@@ -1331,12 +1343,17 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
 				bReturn = FALSE;
 				break;
 			}
-			
+            // convert realpts to pxpts
+            wxPoint * pptspx = new wxPoint[iNbVertex];
+            for (int i = 0; i< iNbVertex; i++) {
+                pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+            }
+            wxDELETEA(pptsReal);
+
 			// drawing vertex
-			DrawVertexLine(pgdc, pptsReal, iNbVertex, itemProp, myVPen);
+			DrawVertexLine(pgdc, pptspx, iNbVertex, itemProp, myVPen);
+			wxDELETEA(pptspx);
 			
-			
-			delete [] pptsReal;
 		}
 		iLoop ++;
 		
