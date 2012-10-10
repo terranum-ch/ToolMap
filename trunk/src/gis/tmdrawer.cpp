@@ -223,7 +223,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
         wxDELETEA(pptsReal);
 		
         // set pen
-        pgdc->SetPen(myPen);
+        wxPen myActualPen = myPen;
         if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
             if (m_SelMem->IsSelected(myOid)){
                 // drawing halo
@@ -235,10 +235,12 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 						myPath.AddLineToPoint(pptspx[i]);
 					pgdc->StrokePath(myPath);
 				}
-                pgdc->SetPen(mySPen);
+                myActualPen = mySPen;
             }
         }
 
+    
+        pgdc->SetPen(myActualPen);
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
 		myPath.MoveToPoint(pptspx[0]);
@@ -247,23 +249,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
         }
 		pgdc->StrokePath(myPath);
         
-        /* if oriented lines
-        wxGraphicsPath myPath2 = pgdc->CreatePath();
-        wxPoint myPosOrigin (m_scale.RealToPixel(pptsReal[0]));
-        myPosOrigin.x = myPosOrigin.x - (myPen.GetWidth() + 1);
-        myPosOrigin.y = myPosOrigin.y - (myPen.GetWidth() + 1);
-		myPath2.MoveToPoint(myPosOrigin);
-        for (int i = 1; i< iNbVertex; i++){
-            wxPoint myPos (m_scale.RealToPixel(pptsReal[i]));
-            myPos.x = myPos.x - (myPen.GetWidth() + 1);
-            myPos.y = myPos.y - (myPen.GetWidth() + 1);
-			myPath2.AddLineToPoint(myPos);
-        }
-        
-        pgdc->SetPen(myOrientedPen);
-        pgdc->StrokePath(myPath2);*/
-
-        
+        // oriented lines (temp code)
+        _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
 
 		tmLayerProperties myProperty (*itemProp);
 		// drawing all vertex for in edition line
@@ -558,6 +545,59 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
 	return true;
 }
 
+
+
+bool tmDrawer::_DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen){
+    wxASSERT(gdc);
+    wxASSERT(pts);
+    wxASSERT(nbpts > 1);
+    
+    wxGraphicsPath myPath = gdc->CreatePath();
+    int myShift = actualPen.GetWidth();
+    actualPen.SetStyle(wxPENSTYLE_DOT);
+    gdc->SetPen(actualPen);
+    
+    for (int i = 0; i< nbpts-1; i++) {
+        wxPoint p1 = pts[i];
+        wxPoint p2 = pts[i+1];
+        
+        // compute vector and perpendicular
+        double dx = p2.x - p1.x;
+        double dy = p2.y - p1.y;
+        
+        double perpx = dy;
+        double perpy = -dx;
+        
+        wxPoint p3 = p1;
+        wxPoint p4 = p2;
+        
+        double len = sqrtf(perpx*perpx + perpy*perpy);
+        if (len > 0) {
+            perpx = perpx / len;
+            perpy = perpy / len;
+            
+            perpx = perpx * myShift;
+            perpy = perpy * myShift;
+            
+            p3.x = p1.x + perpx;
+            p3.y = p1.y + perpy;
+            
+            p4.x = p2.x + perpx;
+            p4.y = p2.y + perpy;
+        }
+        
+        // new points
+        if (i == 0) {
+            myPath.MoveToPoint(p3);
+        }
+        else{
+            myPath.AddLineToPoint(p3);
+        }
+        myPath.AddLineToPoint(p4);
+    }
+    gdc->StrokePath(myPath);
+    return true;
+}
 
 
 
