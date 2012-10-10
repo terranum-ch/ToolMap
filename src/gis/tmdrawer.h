@@ -79,7 +79,9 @@ class tmDrawer : public wxObject
 		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
         bool DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdata);
 		bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);
-		
+		bool _DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen);
+        
+        
 		void DrawMemoryDataLine (tmGISData * data, 
 								 tmLayerProperties * layerprop,
 								 wxClientDC * dc);
