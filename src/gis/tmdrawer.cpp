@@ -522,6 +522,12 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
         }
         
         wxPen myRulePen = myRule->GetPen();
+        bool bUseOriented = false;
+        if (myRulePen.GetStyle() == tmPENSTYLE_ORIENTED) {
+            myRulePen.SetStyle(wxPENSTYLE_SOLID);
+            bUseOriented = true;
+        }
+        
         wxPen mySelectPen = myRulePen;
         mySelectPen.SetColour(m_SelMem->GetSelectionColour());
         mySelectPen.SetWidth(mySelectPen.GetWidth() + 1);
@@ -544,12 +550,13 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
             wxDELETEA(pptsReal);
             
             // set brush
-            pgdc->SetPen(myRulePen);
+            wxPen myActualPen = myRulePen;
             if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
                 if (m_SelMem->IsSelected(myOid)){
-                    pgdc->SetPen(mySelectPen);
+                    myActualPen = mySelectPen;
                 }
             }
+            pgdc->SetPen(myActualPen);
             
             // creating path
             wxGraphicsPath myPath = pgdc->CreatePath();
@@ -558,6 +565,12 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
                 myPath.AddLineToPoint(pptspx[i]);
             }
             pgdc->StrokePath(myPath);
+            
+            if (bUseOriented == true) {
+                _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+            }
+            
+            
             tmLayerProperties myProperty (*itemProp);
             // drawing vertex
             DrawVertexLine(pgdc, pptspx, iNbVertex, &myProperty, &myVertexPen);

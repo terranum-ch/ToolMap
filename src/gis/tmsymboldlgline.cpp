@@ -330,9 +330,23 @@ wxBitmap tmSymbolDLGLineRule::_CreateColorBitmap(const wxBrush & brush, const wx
         renderer_dc.Clear();
         
         wxPen myPen (pen);
-        myPen.SetWidth(3);
-        renderer_dc.SetPen(myPen);
-        renderer_dc.DrawLine(0, 8, 16, 8);
+        
+        if (myPen.GetStyle() == tmPENSTYLE_ORIENTED) {
+            myPen.SetStyle(wxPENSTYLE_SOLID);
+            myPen.SetWidth(2);
+            renderer_dc.SetPen(myPen);
+            renderer_dc.DrawLine(0, 7, 16, 7);
+            
+            myPen.SetStyle(wxPENSTYLE_DOT);
+            renderer_dc.SetPen(myPen);
+            renderer_dc.DrawLine(0, 9, 16, 9);
+            
+        }
+        else{
+            myPen.SetWidth(3);
+            renderer_dc.SetPen(myPen);
+            renderer_dc.DrawLine(0, 8, 16, 8);
+        }
     }
     return myTestBmp;
 }
