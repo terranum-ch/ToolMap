@@ -109,7 +109,7 @@ except:
 doClean = askUserWithCheck("Clean directory before building ? (Y / N): ").upper()
 doRelease = askUserWithCheck("Build release version ? (Y / N): ").upper()
 doRunTests = askUserWithCheck("Run tests after build ? (Y/N): ").upper()
-doInstall = askUserWithCheck("Create installer ? (not valid for Linux) (Y / N): ").upper()
+doInstall = askUserWithCheck("Create installer ? (Y / N): ").upper()
 doUpload = input("Upload Installer to FTP ? (Set password for Yes and leave empty for No) ")
 print ("----------------------------------------------------------\n")
 
