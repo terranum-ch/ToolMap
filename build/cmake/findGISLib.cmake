@@ -138,7 +138,7 @@ IF (SEARCH_GDAL)
 	  				NO_DEFAULT_PATH)
 
 	  		FIND_LIBRARY(GDAL_LIBRARIES
-		  		gdal NAMES gdal1 gdal1.6.0
+		  		gdal NAMES gdal1 gdal1.6.0 gdal1.7.0 gdal1.8.0 gdal1.9.0
 		  		PATHS ${SEARCH_GIS_LIB_PATH}/lib
 	  			${SEARCH_GIS_LIB_PATH} NO_DEFAULT_PATH)
 		ELSE(SEARCH_GIS_LIB_PATH)
@@ -149,7 +149,7 @@ IF (SEARCH_GDAL)
 	                PATH_SUFFIXES gdal)
 
 	  		FIND_LIBRARY(GDAL_LIBRARIES
-		  		gdal NAMES gdal1 gdal1.6.0
+		  		gdal NAMES gdal1 gdal1.6.0 gdal1.7.0 gdal1.8.0 gdal1.9.0
 		  		HINTS ${SEARCH_GIS_LIB_PATH}/lib
 	  			${SEARCH_GIS_LIB_PATH})
 		ENDIF(SEARCH_GIS_LIB_PATH)
