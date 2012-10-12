@@ -13,6 +13,7 @@ gDirGeos = ""
 gDirWXPDF = "/home/lucien/programmation/LIB/_LIBPDF"
 gDirIncludeCxx = "/home/lucien/programmation/LIB/cxxtest"
 gDirPythonCxx = "/home/lucien/programmation/LIB/cxxtest/bin/cxxtestgen"
+gProcessor="amd64"
 
 # CMAKE SPECIFIC
 gCmakeEnv = "CodeBlocks - Unix Makefiles" #result of cmake --help
@@ -37,7 +38,7 @@ def gBuildCommand(buildtype="Debug", directory = ""):
 def gCreateInstaller(svnnumner):
     "Create installer for Linux"
     print("Creating installer for: " + svnnumner)
-    myDebName = "toolmap_2.4.{0}-0debian1_amd64.deb".format(svnnumner)
+    myDebName = "toolmap_2.4.{}_{}.deb".format(svnnumner, gProcessor)
     try:
         myProcess = subprocess.Popen("cpack", shell=True, cwd=gDirBin)
         myProcess.wait()
@@ -45,6 +46,6 @@ def gCreateInstaller(svnnumner):
         print("creating installer failed")
         return ""
         
-    shutil.move(os.path.join(gDirBin, "toolmap-0.1.1-Linux.deb"), os.path.join(gDirInstall, myDebName))
-    print ("Creatign installer done!" + myDebName)
+    shutil.move(os.path.join(gDirBin, "toolmap-2.4.0-Linux.deb"), os.path.join(gDirInstall, myDebName))
+    print ("Creatign installer done! " + myDebName)
     return myDebName
