@@ -147,7 +147,7 @@ ENDIF (USE_UNITTEST)
 
 IF (NOT APPLE AND NOT WIN32)
   INSTALL(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION /usr/bin)
-  INSTALL(FILES "../art/toolmap32.png" DESTINATION "/usr/share/pixmaps")
+  INSTALL(FILES "../art/toolmap.png" DESTINATION "/usr/share/pixmaps")
   INSTALL(FILES "../install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
   
   SET(CPACK_GENERATOR "DEB")
