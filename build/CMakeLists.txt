@@ -149,6 +149,19 @@ IF (NOT APPLE AND NOT WIN32)
   INSTALL(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION /usr/bin)
   INSTALL(FILES "../art/toolmap32.png" DESTINATION "/usr/share/pixmaps")
   INSTALL(FILES "../install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+  
+  SET(CPACK_GENERATOR "DEB")
+  SET(CPACK_PACKAGE_NAME "toolmap")
+  SET(CPACK_PACKAGE_VERSION "2.4.1328")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+  SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Lucien Schreiber")
+  SET(CPACK_PACKAGE_VENDOR "CREALP")
+  SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libmysqlclient18 (>= 5.1), mysql-server-core-5.5, libgeos-c1, libcurl3-gnutls, libgdal1-1.7.0, libwrap0")
+  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
+  SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+  
+  INCLUDE(CPack)
 ENDIF(NOT APPLE AND NOT WIN32)
 
 
