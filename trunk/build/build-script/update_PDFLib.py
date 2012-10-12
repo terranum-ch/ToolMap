@@ -93,7 +93,7 @@ def LinuxHome():
 	"""docstring for Linux Home"""
 	print ("Building for Linux Home")
 	libpath = "/home/lucien/programmation/LIB/"
-	libname = "wxpdfdoc-0.9.2.1"
+	libname = "wxpdfdoc-0.9.3"
 	libprefix = "/home/lucien/programmation/LIB/_LIBPDF"
 	libwx = "/home/lucien/programmation/LIB/_LIBWX"
 	return libpath, libname, libprefix, libwx
