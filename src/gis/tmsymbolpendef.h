@@ -37,13 +37,15 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 September 2008
  *******************************************************************************/
+const int tmPENSTYLE_ORIENTED = wxID_HIGHEST+1;
 const int tmSYMBOLPENSYLES[] =
 {
-	wxSOLID,
-	wxDOT,
-	wxLONG_DASH,
-	wxDOT_DASH,
-	wxTRANSPARENT
+	wxPENSTYLE_SOLID,
+	wxPENSTYLE_DOT,
+    wxPENSTYLE_LONG_DASH,
+    wxPENSTYLE_DOT_DASH,
+    wxPENSTYLE_TRANSPARENT,
+    tmPENSTYLE_ORIENTED
 };
 
 /***************************************************************************//**
@@ -59,7 +61,8 @@ const wxString tmSYMBOLPENSTYLES_NAME[] =
 	_("Dotted line"),
 	_("Dashed line"),
 	_("Dot-dashed line"),
-	_("Transparent line")
+	_("Transparent line"),
+    _("Oriented line")
 };
 
 
