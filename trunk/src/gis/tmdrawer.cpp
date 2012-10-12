@@ -184,7 +184,14 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
     }
     
     tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemProp->GetSymbolRef();
-	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), pSymbol->GetShape());
+    bool bUseOriented = false;
+    wxPenStyle myStyle ((wxPenStyle) pSymbol->GetShape());
+    if (pSymbol->GetShape() == tmPENSTYLE_ORIENTED) {
+        myStyle = wxPENSTYLE_SOLID;
+        bUseOriented = true;
+    }
+    
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth(), myStyle);
 	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetWidth());
 	wxPen mySHaloPen (*wxWHITE, pSymbol->GetWidth() + 2);
 	wxPen * myVPen = CreateVertexUniquePen(itemProp, pSymbol->GetWidth());
@@ -249,8 +256,10 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
         }
 		pgdc->StrokePath(myPath);
         
-        // oriented lines (temp code)
-        _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+        // oriented lines
+        if(bUseOriented == true){
+            _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+        }
 
 		tmLayerProperties myProperty (*itemProp);
 		// drawing all vertex for in edition line
@@ -332,14 +341,26 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	}
 	
 	// create pens
+    wxPenStyle myValidPenStyle ((wxPenStyle) tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
+    wxPenStyle myUnValidPenStyle ((wxPenStyle) tmSYMBOLPENSYLES[mySymbology->m_UnSelShapeMultiple]);
+    
+    bool bUseValidOriented = false;
+    if (myValidPenStyle == tmPENSTYLE_ORIENTED) {
+        myValidPenStyle = wxPENSTYLE_SOLID;
+        bUseValidOriented = true;
+    }
+    
+    bool bUseUnValidOriented = false;
+    if (myUnValidPenStyle == tmPENSTYLE_ORIENTED) {
+        myUnValidPenStyle = wxPENSTYLE_SOLID;
+        bUseUnValidOriented = true;
+    }
+    
+    
 	wxPen myValidPen (pSymbol->GetColourWithTransparency(mySymbology->m_SelColourMultiple,
-														 mySymbology->m_GlobalTransparency),
-					  mySymbology->m_SelWidthMultiple,
-					  tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
+														 mySymbology->m_GlobalTransparency),mySymbology->m_SelWidthMultiple, myValidPenStyle);
 	wxPen myUnValidPen (pSymbol->GetColourWithTransparency(mySymbology->m_UnSelColourMultiple,
-														   mySymbology->m_GlobalTransparency),
-						mySymbology->m_UnSelWidthMultiple,
-						tmSYMBOLPENSYLES[mySymbology->m_UnSelShapeMultiple]);
+														   mySymbology->m_GlobalTransparency), mySymbology->m_UnSelWidthMultiple, myUnValidPenStyle);
 	wxPen mySelectionValidPen (m_SelMem->GetSelectionColour(),  mySymbology->m_SelWidthMultiple);
 	wxPen mySelectionUnValidPen (m_SelMem->GetSelectionColour(), mySymbology->m_UnSelWidthMultiple);
 
@@ -408,26 +429,28 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 		}
 		
 		// choosing correct pen
+        wxPen myActualPen;
 		wxPen myVertexPen;
 		if (IsValid==true) {
 			myVertexPen = myVertexValidPen;
 			if (IsSelected) {
-				pgdc->SetPen(mySelectionValidPen);
+                myActualPen = mySelectionValidPen;
 			}
 			else {
-				pgdc->SetPen(myValidPen);
+                myActualPen = myValidPen;
 			}
 		}
 		else {
 			myVertexPen = myVertexUnValidPen;
 			if (IsSelected) {
-				pgdc->SetPen(mySelectionUnValidPen);
+                myActualPen = mySelectionUnValidPen;
 			}
 			else {
-				pgdc->SetPen(myUnValidPen);
+                myActualPen = myUnValidPen;
 			}
 		}
-		
+        pgdc->SetPen(myActualPen);
+        
 		// creating path
 		wxGraphicsPath myPath = pgdc->CreatePath();
 		myPath.MoveToPoint(pptspx[0]);
@@ -436,6 +459,13 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 		}
 		pgdc->StrokePath(myPath);
 		
+        // oriented lines
+        if(bUseValidOriented == true && IsValid == true){
+            _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+        }
+        if(bUseUnValidOriented == true && IsValid == false){
+            _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+        }      
 		
 		tmLayerProperties myProperty (*itemProp);
 		// drawing all vertex for in edition line
@@ -553,7 +583,7 @@ bool tmDrawer::_DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbp
     wxASSERT(nbpts > 1);
     
     wxGraphicsPath myPath = gdc->CreatePath();
-    int myShift = actualPen.GetWidth();
+    int myShift = actualPen.GetWidth()+1;
     actualPen.SetStyle(wxPENSTYLE_DOT);
     gdc->SetPen(actualPen);
     
@@ -983,13 +1013,13 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		}
 		
-		//TODO: Temp code, for debuging remove after
+		/* Temp code, for debuging remove after
 		if (iPolyRings > 1)
 		{
 			if (IsLoggingEnabled()){
 				wxLogDebug(_T("Polygon : %d contain : %d rings"),iLoop, iPolyRings);
             }
-		}
+		}*/
 			
 		wxGraphicsPath myPolygonPath = pgdc->CreatePath();
 		// get polygons data, loop all rings into polygons
