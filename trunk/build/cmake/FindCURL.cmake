@@ -26,13 +26,25 @@ IF (SEARCH_CURL)
 	# if unix / mac and search geos
 	ELSE (WIN32)
 		
-		FIND_PATH(CURL_INCLUDE_DIRS curl/curl.h
-  				${SEARCH_CURL_LIB_PATH}/include
-  				${SEARCH_CURL_LIB_PATH})
+		# empty curl path
+		IF(SEARCH_CURL_LIB_PATH)
+			FIND_PATH(CURL_INCLUDE_DIRS curl/curl.h
+  					HINTS ${SEARCH_CURL_LIB_PATH}/include
+  					${SEARCH_CURL_LIB_PATH} NO_DEFAULT_PATH)
+			# search for libs
+  			FIND_LIBRARY(CURL_LIBRARIES
+	  				curl
+	  				HINTS ${SEARCH_CURL_LIB_PATH}/lib	${SEARCH_CURL_LIB_PATH} NO_DEFAULT_PATH)
+		ELSE(SEARCH_CURL_LIB_PATH)
+			FIND_PATH(CURL_INCLUDE_DIRS curl/curl.h
+  					${SEARCH_CURL_LIB_PATH}/include
+  					${SEARCH_CURL_LIB_PATH})
   		
-  		FIND_LIBRARY(CURL_LIBRARIES
-	  		curl
-	  		PATH ${SEARCH_CURL_LIB_PATH}/lib	${SEARCH_CURL_LIB_PATH})
+  			FIND_LIBRARY(CURL_LIBRARIES
+	  				curl
+	  				PATH ${SEARCH_CURL_LIB_PATH}/lib	${SEARCH_CURL_LIB_PATH})
+					
+		ENDIF(SEARCH_CURL_LIB_PATH)
   		  		  			
 	ENDIF (WIN32)
 	
