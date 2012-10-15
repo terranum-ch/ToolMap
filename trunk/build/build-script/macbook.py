@@ -49,7 +49,9 @@ def gCreateInstaller(svnnumner):
     print ("Copying files out of Release folder")
     shutil.move(gDirBin + os.sep + "Release" + os.sep + "libToolMap_lib.a", gDirBin + os.sep + "libToolMap_lib.a")
     shutil.move(gDirBin + os.sep + "Release" + os.sep + "liblsVersion.a", gDirBin + os.sep + "liblsVersion.a")
-    
+    shutil.move(os.path.join(gDirBin, "Release", "liblsCrashReport.a"), os.path.join(gDirBin, "liblsCrashReport.a"))
+
+
     print ("Copying background files...")
     myReleasePath = gDirBin + os.sep + "Release"
     os.mkdir(myReleasePath + os.sep + ".background")
@@ -73,5 +75,6 @@ def gCreateInstaller(svnnumner):
     os.unlink(myReleasePath + os.sep + "Applications")
     shutil.move(gDirBin + os.sep + "libToolMap_lib.a", gDirBin + os.sep +  "Release" + os.sep + "libToolMap_lib.a")
     shutil.move(gDirBin + os.sep + "liblsVersion.a", gDirBin + os.sep +  "Release" + os.sep + "liblsVersion.a")
+    shutil.move(os.path.join(gDirBin, "liblsCrashReport.a"), os.path.join(gDirBin, "Release", "liblsCrashReport.a"))
     print ("Creating installer finished")
     return "ToolMap2_r"+svnnumner+".dmg"
