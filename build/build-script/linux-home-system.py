@@ -1,3 +1,4 @@
+import platform
 # VARIABLES FOR BUILDING TOOLMAP ON Linux (HOME) 
 
 gwxWidgets = "/home/lucien/programmation/LIB/_LIBWX/bin/wx-config" #wxWIDGETS config
@@ -13,7 +14,11 @@ gDirGeos = ""
 gDirWXPDF = "/home/lucien/programmation/LIB/_LIBPDF"
 gDirIncludeCxx = "/home/lucien/programmation/LIB/cxxtest"
 gDirPythonCxx = "/home/lucien/programmation/LIB/cxxtest/bin/cxxtestgen"
-gProcessor="amd64"
+gProcessor= platform.machine()
+myLinuxProcessor="i386"
+if(gProcessor=="x86_64"):
+    myLinuxProcessor = "amd64"
+
 
 # CMAKE SPECIFIC
 gCmakeEnv = "CodeBlocks - Unix Makefiles" #result of cmake --help
@@ -21,6 +26,11 @@ gCmakeSpecific = []
 gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets)
 # for Linux Release build
 gCmakeSpecific.append("-DCMAKE_BUILD_TYPE:STRING=Release")
+
+gCmakeSpecific.append("-DCPACK_DEBIAN_PACKAGE_ARCHITECTURE:STRING={}".format(myLinuxProcessor))
+#gCmakeSpecific.append("-DCPACK_PACKAGE_VERSION_PATCH:STRING={}".format(1000))
+
+
 
 # PLATEFORM SPECIFIC FUNCTION
 # CONFIG SPECIFIC
@@ -37,8 +47,9 @@ def gBuildCommand(buildtype="Debug", directory = ""):
 
 def gCreateInstaller(svnnumner):
     "Create installer for Linux"
+    print ("Plateform is: " + gProcessor)
     print("Creating installer for: " + svnnumner)
-    myDebName = "toolmap_2.4.{}_{}.deb".format(svnnumner, gProcessor)
+    myDebName = "toolmap_2.4.{}_{}.deb".format(svnnumner, myLinuxProcessor)
     try:
         myProcess = subprocess.Popen("cpack", shell=True, cwd=gDirBin)
         myProcess.wait()
