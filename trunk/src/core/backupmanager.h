@@ -22,13 +22,12 @@
 #include <wx/wx.h>
 #endif
 #include <wx/filename.h>
-#include <wx/xrc/xmlres.h>
 #include <wx/zipstrm.h>
 #include <wx/regex.h>
 #include <wx/wfstream.h>
 #include <wx/sstream.h>
 #include <wx/progdlg.h>
-
+#include <wx/xml/xml.h>
 
 
 
