@@ -482,7 +482,7 @@ bool DataBaseTM::FillShortCutTable ()
 
 
 bool DataBaseTM::CreateLangDefData(){
-    wxString myTxtTemplate = _T("INSERT INTO %s VALUES (%d, \"%s\"); ");
+    wxString myTxtTemplate = _T("REPLACE INTO %s VALUES (%d, \"%s\"); ");
     wxString myLangues [] = {wxT("Undefined"), wxT("Undefined"), 
         wxT("Undefined"), wxT("Undefined"), wxT("Undefined")};
     wxString myQuery = wxEmptyString;

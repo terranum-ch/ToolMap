@@ -20,7 +20,7 @@ def GetCmakeFileName():
 	return myCmakefilename
 
 def buildMacBook():
-	builddir = "/Users/lucien/DATA/PRJ/TOOLMAP2/bin_apps"
+	builddir = "/Users/lucien/DATA/PRJ/TOOLMAP2/bin_apps/toolmerge"
 	try:
 		p = Popen("cmake -GXcode " + GetCmakeFileName() + "  -DCMAKE_OSX_ARCHITECTURES:TEXT=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET:TEXT=10.6 -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN/bin/wx-config -DMYSQL_MAIN_DIR:PATH=/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBMYSQL -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBGIS", shell=True, cwd=builddir)
 		p.wait()
