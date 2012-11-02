@@ -412,8 +412,8 @@ bool tmProjectMerge::CheckSimilar() {
         return false;
     }
     m_DB->DataBaseClearResults();
-    if (myVersion != 221) {
-        m_Errors.Add(wxString::Format(_("Wrong Database version, works only for database: %d found (%ld)!"), 221, myVersion));
+    if (myVersion != 224) {
+        m_Errors.Add(wxString::Format(_("Wrong Database version, works only for database: %d found (%ld)!"), 224, myVersion));
         return false;
     }
     
@@ -439,7 +439,7 @@ bool tmProjectMerge::CheckSimilar() {
     }
     
     long myErrorObjects = 0;
-    myQuery = wxString::Format(_T("SELECT c.OBJECT_ID, c.OBJECT_DESC, d.OBJECT_DESC, c.OBJECT_CD, d.OBJECT_CD, c.OBJECT_TYPE_CD, d.OBJECT_TYPE_CD, c.THEMATIC_LAYERS_LAYER_INDEX, d.THEMATIC_LAYERS_LAYER_INDEX FROM %s.dmn_layer_object c, %s.dmn_layer_object d WHERE c.OBJECT_ID = d.OBJECT_ID AND (c.OBJECT_DESC <> d.OBJECT_DESC OR c.OBJECT_CD <> d.OBJECT_CD OR c.OBJECT_TYPE_CD <> d.OBJECT_TYPE_CD OR c.THEMATIC_LAYERS_LAYER_INDEX <> d.THEMATIC_LAYERS_LAYER_INDEX)"), m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
+    myQuery = wxString::Format(_T("SELECT c.OBJECT_ID, c.OBJECT_DESC_0, d.OBJECT_DESC_0, c.OBJECT_CD, d.OBJECT_CD, c.OBJECT_TYPE_CD, d.OBJECT_TYPE_CD, c.THEMATIC_LAYERS_LAYER_INDEX, d.THEMATIC_LAYERS_LAYER_INDEX FROM %s.dmn_layer_object c, %s.dmn_layer_object d WHERE c.OBJECT_ID = d.OBJECT_ID AND (c.OBJECT_DESC_0 <> d.OBJECT_DESC_0 OR c.OBJECT_CD <> d.OBJECT_CD OR c.OBJECT_TYPE_CD <> d.OBJECT_TYPE_CD OR c.THEMATIC_LAYERS_LAYER_INDEX <> d.THEMATIC_LAYERS_LAYER_INDEX)"), m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
     
     if (_HasDifferenceResults(m_DB, myQuery, myErrorObjects) == false) {
         m_Errors.Add(wxString::Format(_("%ld object error found"), myErrorObjects));
@@ -455,6 +455,33 @@ bool tmProjectMerge::CheckSimilar() {
         return false;
     }
     
+    // are attributs and catalog similar ?
+    if (_HasSameNumberRecords(m_DB, _T("dmn_catalog"))==false) {
+        return false;
+    }
+    
+    long myErrorsCatalog = 0;
+    myQuery = wxString::Format(_T("SELECT c.CATALOG_ID, c.CODE, c.DESCRIPTION_0, d.CATALOG_ID, d.CODE, d.DESCRIPTION_0 FROM %s.dmn_catalog c, %s.dmn_catalog d WHERE c.CATALOG_ID = d.CATALOG_ID AND (c.CODE <> d.CODE OR c.DESCRIPTION_0 <> d.DESCRIPTION_0)"),m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
+    if(_HasDifferenceResults(m_DB, myQuery, myErrorsCatalog) == false){
+        m_Errors.Add(wxString::Format(_("%ld catalog error found"), myErrorsCatalog));
+        return false;
+    }
+    
+    
+    // are dmn_layer_attribut similar ?
+    if (_HasSameNumberRecords(m_DB, _T("dmn_layer_attribut"))==false) {
+        return false;
+    }
+    long myErrorLayerAttribut = 0;
+    myQuery = wxString::Format(_T("SELECT c.ATTRIBUT_ID, c.LAYER_INDEX, c.ATTRIBUT_NAME, d.ATTRIBUT_ID, d.LAYER_INDEX, d.ATTRIBUT_NAME FROM %s.dmn_layer_attribut c, %s.dmn_layer_attribut d WHERE c.ATTRIBUT_ID = d.ATTRIBUT_ID AND (c.LAYER_INDEX <> d.LAYER_INDEX or c.ATTRIBUT_NAME <> d.ATTRIBUT_NAME)"), m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
+    if (_HasDifferenceResults(m_DB, myQuery, myErrorLayerAttribut)==false) {
+        m_Errors.Add(wxString::Format(_("%ld layer attributs error found"), myErrorLayerAttribut));
+        return false;
+    }
+    
+    if (_HasSameNumberRecords(m_DB, _T("dmn_attribut_value"))==false) {
+        return false;
+    }
     return true;
 }
 
