@@ -1006,10 +1006,8 @@ bool DataBaseTM::UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlS
  @author Lucien Schreiber (c) CREALP 2007
  @date 16 April 2008
  *******************************************************************************/
-bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSentence)
+bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, PrjDefMemManage * projectdef, wxString & sSqlSentence)
 {
-	wxString sDeleteSentence = _T("");
-	
 	for (unsigned int i= 0; i<deletelist.GetCount();i++)
 	{
 		sSqlSentence.Append(wxString::Format(_T(" DELETE FROM %s WHERE LAYER_INDEX = %ld; "),
@@ -1026,19 +1024,16 @@ bool DataBaseTM::DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSen
 		}
 		
 		// prepare delete attribution objects from the object table
+        wxString sDeleteSentence = _T("");
 		DeleteLayersObjects(deletelist.Item(i), sDeleteSentence);
-		
-		
-		///@todo prepare delete GIS objects from the gis tables
-		
-		
-		// execute prepared statement
 		if(!DataBaseQueryNoResults(sDeleteSentence)){
 			wxLogError(_T("Error deleting objects (GIS or attribution) : %s"),
 					   sDeleteSentence.c_str());
         }
-		
-	}
+        
+        // correctly delete enumeration fields
+        DeleteFields(deletelist.Item(i));
+ 	}
 	return TRUE;
 }
 
@@ -1668,11 +1663,81 @@ bool DataBaseTM::DeleteField (wxArrayString & myFields, int iLayer, wxString & s
 											 myFields.Item(i-1).c_str()));
 	}
 	
-	if (myNumberOfItems > 0)
-		return TRUE;
-	return FALSE;
+	if (myNumberOfItems == 0){
+		return false;
+    }
+    
+    for (unsigned int i = myNumberOfItems ;i>0 ; i--)
+	{
+        // delete enumerations from catalog if needed!
+        wxString myQuery = wxString::Format(_T("SELECT ATTRIBUT_ID FROM %s WHERE LAYER_INDEX=%d AND ATTRIBUT_NAME=\"%s\""),TABLE_NAME_AT_LIST, iLayer, myFields.Item(i-1));
+        if (DataBaseQuery(myQuery) == false) {
+            wxLogError(_("Error selecting attribut id"));
+            return false;
+        }
+        if (DataBaseHasResults() == false) {
+            // no results... go to the next field
+            continue;
+        }
+        
+        DataBaseResult * myResult = new DataBaseResult();
+        DataBaseGetResults(myResult);
+        wxASSERT(myResult->GetRowCount() == 1);
+        myResult->NextRow();
+        long myAttributID = wxNOT_FOUND;
+        myResult->GetValue(0, myAttributID);
+        wxDELETE(myResult);
+        
+        // delete from catalog,
+        wxString myDeleteTxt = wxString::Format(_T("DELETE from %s WHERE CATALOG_ID IN (SELECT CATALOG_ID FROM %s WHERE ATTRIBUT_ID = %ld);"), TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX, myAttributID);
+        myDeleteTxt.Append(wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_MIX, myAttributID));
+        myDeleteTxt.Append(wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_LIST, myAttributID));
+
+        if (DataBaseQueryNoResults(myDeleteTxt)==false) {
+            wxLogError(_T("Error deleting field (attribut_id = %ld)"), myAttributID);
+            return false;
+        }
+    }
+	return true;
 }
 
+
+
+bool DataBaseTM::DeleteFields(int iLayer){
+    // delete enumerations from catalog if needed!
+    wxString myQuery = wxString::Format(_T("SELECT ATTRIBUT_ID FROM %s WHERE LAYER_INDEX=%d"),TABLE_NAME_AT_LIST, iLayer);
+    if (DataBaseQuery(myQuery) == false) {
+        wxLogError(_("Error selecting attribut id"));
+        return false;
+    }
+    if (DataBaseHasResults() == false) {
+        // no results... go to the next field
+        return true;
+    }
+    
+    DataBaseResult * myResult = new DataBaseResult();
+    DataBaseGetResults(myResult);
+    wxArrayLong myAttributIDs;
+    for (unsigned int i = 0; i< myResult->GetRowCount(); i++) {
+        myResult->NextRow();
+        long myAttributID = wxNOT_FOUND;
+        myResult->GetValue(0, myAttributID);
+        myAttributIDs.Add(myAttributID);
+    }
+    wxDELETE(myResult);
+    
+    // delete from catalog,
+    for (unsigned int c = 0 ; c < myAttributIDs.GetCount(); c++) {
+        wxString myDeleteTxt = wxString::Format(_T("DELETE from %s WHERE CATALOG_ID IN (SELECT CATALOG_ID FROM %s WHERE ATTRIBUT_ID = %ld);"), TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX, myAttributIDs.Item(c));
+        myDeleteTxt.Append(wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_MIX, myAttributIDs.Item(c)));
+        myDeleteTxt.Append(wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_LIST, myAttributIDs.Item(c)));
+        if (DataBaseQueryNoResults(myDeleteTxt)==false) {
+            wxLogError(_T("Error deleting field (attribut_id = %ld)"), myAttributIDs.Item(c));
+            return false;
+        }
+    }
+    return true;
+}
 
 
 
@@ -2034,10 +2099,10 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 		/********* PART 2 : DELETING AND CLEANING *********************/ 
 		// we prepare the sentence for deleting layers
 		// based on the delete array
-		DeleteLayer(pProjDef->m_StoreDeleteLayers, sSentence);
+		DeleteLayer(pProjDef->m_StoreDeleteLayers, pProjDef, sSentence);
 		
 		// execute the sentence for deleting
-		if (!sSentence.IsEmpty())
+		if (!sSentence.IsEmpty()){
 			if (!DataBaseQueryNoResults(sSentence))
 			{
 				wxLogError(_T("Error deleting layers : %s"), sSentence.c_str());
@@ -2045,7 +2110,7 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 				return bReturn;
 				
 			}
-		
+        }
 		// clean the delete sentence
 		sSentence.Clear();
 		
@@ -2118,7 +2183,8 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 						bReturn = false;
 						break;
 					}
-				}
+                    
+  				}
                 
                 
 				
@@ -2129,10 +2195,10 @@ bool DataBaseTM::UpdateDataBaseProject (PrjDefMemManage * pProjDef)
 				if (pProjDef->GetCountFields() > 0)
 				{
 					// create the table 
-					if(!AddTableIfNotExist(wxString::Format(TABLE_NAME_LAYER_AT + _T("%ld"),
+					if(!AddTableIfNotExist(wxString::Format(TABLE_NAME_LAYER_AT + _T("%d"),
 															pLayers->m_LayerID)))
 					{
-						wxLogError(_T("Unable to create the Field's table : %ld"),
+						wxLogError(_T("Unable to create the Field's table : %d"),
 								   pLayers->m_LayerID);
 						bReturn = false;
 						break;
