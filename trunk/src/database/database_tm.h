@@ -140,7 +140,7 @@ class DataBaseTM : public DataBase
 		int GetActiveLayerId () {return m_iDBLayerIndex;}
 		int GetNextLayer (ProjectDefMemoryLayers * myLayer);
 		bool UpdateLayer (ProjectDefMemoryLayers * myLayer, wxString & sSqlSentence);
-		bool DeleteLayer (const wxArrayLong & deletelist, wxString & sSqlSentence);
+		bool DeleteLayer (const wxArrayLong & deletelist, PrjDefMemManage * projectdef, wxString & sSqlSentence);
 		int GetLayerID (TOC_GENERIC_NAME layertype);
 		
 		// Database object operations
@@ -157,6 +157,7 @@ class DataBaseTM : public DataBase
 		int GetFieldsFromDB (PrjDefMemManage * myPrj);
 		bool UpdateField(ProjectDefMemoryFields * myField, int iLayer, wxString & sSqlSentence);
 		bool DeleteField (wxArrayString & myFields, int iLayer, wxString & sSqlSentence);
+        bool DeleteFields(int iLayer);
 		
 		// database query
 		bool GetObjectListByLayerType(int ilayertype, bool bOrder = FALSE);
