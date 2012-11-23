@@ -318,7 +318,7 @@ void tmSelectionInfoCtrl::_CreateInfoControl(const wxTreeMultiItem & item,
 	mySeparatorPosition.Add(header.GetCount());
 		
 	// complex case, multiple information table
-	Freeze();
+	//Freeze();
 	for (unsigned int i = 0; i<mySeparatorPosition.GetCount(); i++) {
 		wxGrid * myGrid = new wxGrid(this, wxID_ANY);
 		myGrid->EnableEditing(false);
@@ -344,7 +344,8 @@ void tmSelectionInfoCtrl::_CreateInfoControl(const wxTreeMultiItem & item,
 		myGrid->AutoSize();
 		AppendWindow(item, myGrid);
 	}
-	Thaw();	
+    // TODO: Thaw crash but when corrected in wxWidgets, uncomment bellow and Freeze above Toooo !!!!
+	//Thaw();
 }
 
 
