@@ -1115,6 +1115,9 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
 		return false;
 	}
     
+    wxLogDebug(_("Number of Polygon to process : %d "), pVectPoly->GetCount());
+    wxStopWatch sv;
+    
     // process rules
     int iLoop = 0;
     tmSymbolRuleArray * myRulesArray = itemProp->GetSymbolRuleManagerRef()->GetRulesRef();
@@ -1186,7 +1189,7 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
     }
     
     if (IsLoggingEnabled()){
-		wxLogDebug(_T("%d Polygons drawn"), iLoop);
+		wxLogDebug(_T("%d Polygons drawn in %ld [ms]"), iLoop, sv.Time());
     }
 	
 	dc.SelectObject(wxNullBitmap);

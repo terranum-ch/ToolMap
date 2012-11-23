@@ -183,19 +183,16 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
 {
 	wxASSERT(m_Layer);
-
-
-	/* clearing filter...
+	// clearing filter...
 	if (filter == tmRealRect(0,0,0,0))
 	{
 		m_Layer->SetSpatialFilter(NULL);
 	}
 	else
 	{
-		m_Layer->SetSpatialFilterRect(filter.x_max, filter.y_min,
+		m_Layer->SetSpatialFilterRect(filter.x_min, filter.y_min,
 									  filter.x_max, filter.y_max);
 	}
-	*/
 	m_Layer->ResetReading();
 	return true;
 }
