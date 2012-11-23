@@ -357,13 +357,14 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo (long & oid)
 		return 0;
 	}
 
-	// check polygons validity, long operations ??
-	if(!plgon->IsValid())
+	// check polygons validity, long operations #Bug 275
+	/*
+    if(!plgon->IsValid())
 	{
 		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Polygon not valid @ FID : %ld"), m_Feature->GetFID());
         }
-	}
+	}*/
 
 	// count rings + 1 (exterior ring)
 	m_polyTotalRings = plgon->getNumInteriorRings() + 1;
