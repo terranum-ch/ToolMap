@@ -94,6 +94,7 @@ class tmExportDataSHP : public tmExportData
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, 
 										  ProjectDefMemoryLayers * layer);
         virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport);
+        virtual bool CreateSpatialIndex(ProjectDefMemoryLayers * layer);
 	};
 
 

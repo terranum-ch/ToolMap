@@ -167,11 +167,23 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
         return false;
     }
     
+    // create spatial index
+    wxString myExportExtension = _T("shp");
+    for (unsigned int i = 0; i< myLayers->GetCount(); i++) {
+        wxFileName myFileName (m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName, myExportExtension);
+        tmGISDataVectorSHP * myShp = new tmGISDataVectorSHP();
+        if(myShp->Open(myFileName.GetFullPath())!=false){
+            myShp->ExecuteSQLQuery(wxString::Format(_T("CREATE SPATIAL INDEX ON %s"), myLayers->Item(i)->m_LayerName));
+        }else{
+            wxLogError(_("Unable to open: %s"), myFileName.GetFullName());
+        }
+        wxDELETE(myShp);
+    }
+
     if (myEDlg.DoLayerAdd() == false) {
         return true;
     }
     
-    wxString myExportExtension = _T("shp");
     for (unsigned int i = 0; i< myLayers->GetCount(); i++) {
         wxFileName myFileName (m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName, myExportExtension);
         layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
