@@ -1036,6 +1036,11 @@ bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool use
 }
 
 
+bool tmExportDataSHP::CreateSpatialIndex(ProjectDefMemoryLayers * layer){
+    wxString myQuery = wxString::Format(_T("CREATE SPATIAL INDEX ON %s"), layer->m_LayerName);
+    bool myReturnValue = m_Shp->ExecuteSQLQuery(myQuery);
+    return myReturnValue;
+}
 
 
 

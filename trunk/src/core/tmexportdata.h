@@ -90,6 +90,7 @@ class tmExportData : public wxObject
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
         
         virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){return false;}
+        virtual bool CreateSpatialIndex(ProjectDefMemoryLayers * layer){return false;}
 	};
 
 

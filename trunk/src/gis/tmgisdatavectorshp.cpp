@@ -328,13 +328,15 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
 
 int tmGISDataVectorSHP::GetNextDataPolygonInfo (long & oid)
 {
+    wxStopWatch sv;
 	wxASSERT(m_Layer);
-	m_Feature = m_Layer->GetNextFeature();
+ 	m_Feature = m_Layer->GetNextFeature();
 
 	// nothing more to read
 	if (m_Feature == NULL)
 	{
-		m_polyTotalRings = 0;
+		wxLogDebug(_("No more feature found in %ld ms"), sv.Time());
+        m_polyTotalRings = 0;
 		oid = -1;
 		return 0;
 	}
@@ -1196,7 +1198,7 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 }
 
 
-
+/*
 bool tmGISDataVectorSHP::CreateSpatialIndex(int indexdepth){
     wxASSERT(m_Datasource);
     wxFileName myLayerName(m_Datasource->GetName());
@@ -1215,6 +1217,17 @@ bool tmGISDataVectorSHP::CreateSpatialIndex(int indexdepth){
     //wxLogMessage(_("Error: %s"), myError);
     //wxLogMessage(myStmt);
     return true;
+}*/
+
+bool tmGISDataVectorSHP::ExecuteSQLQuery(const wxString & query){
+    OGRLayer * poResultSet = NULL;
+    const char * dialect = "";
+    poResultSet = m_Datasource->ExecuteSQL((const char*) query.mb_str(wxConvUTF8), NULL, dialect);
+    if (poResultSet != NULL) {
+        m_Datasource->ReleaseResultSet( poResultSet );
+        return false;
+    }
+     return true;
 }
 
 

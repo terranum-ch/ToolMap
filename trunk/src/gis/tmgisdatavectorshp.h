@@ -106,7 +106,8 @@ public:
     virtual bool GetFieldNumeric (const wxString & fieldname, int & fieldvalue);
     virtual bool SetFieldNumeric (const wxString & fieldname, int fieldvalue);
     
-    bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
+    //bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
+    bool ExecuteSQLQuery(const wxString & query);
     long GetFeatureIDIntersectedBy(OGRGeometry * geometry);
     long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry);
     bool Rasterize(double rasterizefactor);
