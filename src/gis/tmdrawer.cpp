@@ -983,6 +983,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	int iLoop = 0;
 	int i=0;
 	
+	wxStopWatch sv;
 	// device context for drawing
 	dc.SelectObject(*m_bmp);
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc); 
@@ -1088,7 +1089,7 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 	}
 
 	if (IsLoggingEnabled()){
-		wxLogDebug(_T("%d Polygons drawn"), iLoop);
+		wxLogMessage(_T("%d Polygons drawn in %ld [ms]"), iLoop, sv.Time());
     }
 	
 	dc.SelectObject(wxNullBitmap);
@@ -1189,7 +1190,7 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
     }
     
     if (IsLoggingEnabled()){
-		wxLogDebug(_T("%d Polygons drawn in %ld [ms]"), iLoop, sv.Time());
+		wxLogMessage(_T("%d Polygons drawn in %ld [ms]"), iLoop, sv.Time());
     }
 	
 	dc.SelectObject(wxNullBitmap);
