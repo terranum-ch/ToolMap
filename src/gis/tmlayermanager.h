@@ -114,6 +114,7 @@ class tmLayerManager : public wxEvtHandler
 		void ViewUpdated();
 		void _ZoomChanged();
         bool _ReplaceLayer(const wxFileName & filename, const wxString & originalname);
+        void _BuildOverviewsIfNeeded(tmGISData * layer, const wxString & displayname);
 		
 		// event functions
 		void OnZoomRectangleIn (wxCommandEvent & event);
@@ -130,7 +131,7 @@ class tmLayerManager : public wxEvtHandler
 		void CreateEmptyBitmap (const wxSize & size);
 		
 		// Reading all layers for extent or drawing
-		int ReadLayerExtent(bool loginfo = false);
+		int ReadLayerExtent(bool loginfo = false, bool buildpyramids=false);
 		int ReadLayerDraw ();
 		
 		
