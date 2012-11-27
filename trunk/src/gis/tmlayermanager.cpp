@@ -557,6 +557,30 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString &
 }
 
 
+void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData * layer, const wxString & displayname){
+    // build pyramids and spatial index ??
+    wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("SPATIAL_INDEX");
+	bool bCreateIndex = myConfig->ReadBool("create_index", true);
+    myConfig->SetPath("..");
+    if (bCreateIndex == true) {
+        if (layer->IsRaster() == 1) {
+            tmGISDataRaster * myRaster = (tmGISDataRaster*) layer;
+            wxArrayString myPyramids;
+            myRaster->GetPyramidsInfo(&myPyramids);
+            if (myPyramids.GetCount() == 0) {
+                vrProgressSimple myProgressData (m_Parent, _("Building Overviews (Pyramids)"), wxString::Format(_("Building Overviews: '%s'"), displayname));
+                layer->CreateSpatialIndex(GDALUpdateSimple, &myProgressData);
+            }
+        }else{
+            layer->CreateSpatialIndex(NULL, NULL);
+        }
+    }
+
+}
+
+
 bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const wxString & originalname){
     if (replace == true) {
         if (_ReplaceLayer(filename, originalname)==true) {
@@ -575,25 +599,7 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
         return false;
     }
     
-    // build pyramids and spatial index ??
-    wxConfigBase * myConfig =  wxConfigBase::Get(false);
-    wxASSERT(myConfig);
-    myConfig->SetPath("SPATIAL_INDEX");
-	bool bCreateIndex = myConfig->ReadBool("create_index", true);
-    myConfig->SetPath("..");
-    if (bCreateIndex == true) {
-        if (myLayer->IsRaster() == 1) {
-            tmGISDataRaster * myRaster = (tmGISDataRaster*) myLayer;
-            wxArrayString myPyramids;
-            myRaster->GetPyramidsInfo(&myPyramids);
-            if (myPyramids.GetCount() == 0) {
-                vrProgressSimple myProgressData (m_Parent, _("Building Overviews (Pyramids)"), wxString::Format(_("Building Overviews: '%s'"), item->GetNameDisplay()));
-                myLayer->CreateSpatialIndex(GDALUpdateSimple, &myProgressData);
-            }
-        }else{
-            myLayer->CreateSpatialIndex(NULL, NULL);
-        }
-    }
+    _BuildOverviewsIfNeeded(myLayer, item->GetNameDisplay());
     
     item->SetSpatialType(myLayer->GetSpatialType());
     wxDELETE(myLayer);
@@ -1345,7 +1351,7 @@ bool tmLayerManager::LoadProjectLayers()
 							  m_Scale.GetWindowExtent().GetHeight()));
 
 		
-	int iRead = ReadLayerExtent(true);
+	int iRead = ReadLayerExtent(true,true);
 	wxLogDebug(_T("%d layer(s) read"),iRead);
 	
 	
@@ -1638,7 +1644,7 @@ void tmLayerManager::CreateEmptyBitmap (const wxSize & size)
  @author Lucien Schreiber (c) CREALP 2008
  @date 09 September 2008
  *******************************************************************************/
-int tmLayerManager::ReadLayerExtent(bool loginfo)
+int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids)
 {
 	// iterate throught all layers
 	int iRank = 0;
@@ -1668,6 +1674,11 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 			
 			// loading data
 			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
+            
+            // build pyramids if needed and only during project opening
+            if(buildpyramids == true){
+                _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
+            }
 			
 			// processing and deleting data
 			if (layerData)
@@ -1675,19 +1686,8 @@ int tmLayerManager::ReadLayerExtent(bool loginfo)
 				myExtent = layerData->GetMinimalBoundingRectangle();
 				m_Scale.SetMaxLayersExtentAsExisting(myExtent);
 				iReaded ++;
-				
-				// show some logging info, not working
-				// in thread mode
-				/*if (loginfo)
-				{
-					wxLogDebug(_T("Minimum rectangle is : %.*f - %.*f, %.*f - %.*f"),
-							   2,myExtent.x_min, 2, myExtent.y_min,
-							   2, myExtent.x_max, 2, myExtent.y_max);
-				}*/
 			}
-			
-			if (layerData != NULL)
-				delete layerData;
+			wxDELETE(layerData);
 		}
 		
 		
