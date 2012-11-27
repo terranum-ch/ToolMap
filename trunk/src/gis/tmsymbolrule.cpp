@@ -21,6 +21,8 @@
 #include "tmsymbolvectorpolygon.h"
 #include "tmsymboldlg.h"
 #include "tmlayerproperties.h"
+#include "tmgisdatavectorshp.h"
+
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmSymbolRuleArray);
@@ -216,6 +218,11 @@ tmSymbolRuleManager::~tmSymbolRuleManager() {
 
 
 
+void tmSymbolRuleManager::_CreateAttributIndex(tmLayerProperties * layerproperties){
+    
+}
+
+
 
 bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position) {
     tmSymbolRule::InitRandomGenerator();
@@ -302,6 +309,17 @@ bool tmSymbolRuleManager::ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & p
             wxLogError(_("Symbology dialog not implemented for this spatial type!"));
             break;
     }
+    
+    // create attribut index
+    tmGISDataVectorSHP * myGISData = (tmGISDataVectorSHP*) tmGISData::LoadLayer(m_LayerProperties);
+    wxString myQuery = wxString::Format(_T("DROP INDEX on %s"),m_LayerProperties->GetName().GetName());
+    myGISData->ExecuteSQLQuery(myQuery);
+    if (m_DlgSelectedFieldname != wxEmptyString && m_DlgSelectedPanel != 0){
+        myQuery = wxString::Format(_T("CREATE INDEX ON %s USING %s"), m_LayerProperties->GetName().GetName(), m_DlgSelectedFieldname);
+        myGISData->ExecuteSQLQuery(myQuery);
+        wxLogMessage(_("Creating attribut filter for : %s"), m_DlgSelectedFieldname);
+    }
+    wxDELETE(myGISData);
     return true;
 }
 

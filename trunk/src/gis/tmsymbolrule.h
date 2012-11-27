@@ -122,6 +122,8 @@ private:
     wxString m_DlgSelectedFieldname;
     tmLayerProperties * m_LayerProperties;
     
+    void _CreateAttributIndex(tmLayerProperties * layerproperties);
+    
 public:
     tmSymbolRuleManager(tmLayerProperties * layerproperties);
     virtual ~tmSymbolRuleManager();
