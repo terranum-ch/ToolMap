@@ -142,7 +142,6 @@ class tmLayerManager : public wxEvtHandler
 					   wxStatusBar * status, tmScaleCtrlCombo * scalectrl);
 		~tmLayerManager();
 		
-		
 		// scale ctrl functions
 		void InitScaleCtrlList ();
 			
@@ -170,7 +169,6 @@ class tmLayerManager : public wxEvtHandler
 		// for logging (only one thread may acces the GUI.
 		static void EnableLogging (bool enable = true) {m_LogOn = enable;}
 		static bool IsLoggingEnabled () {return m_LogOn;}
-		
 		
 		// tool operations
 		void OnZoomToFit ();

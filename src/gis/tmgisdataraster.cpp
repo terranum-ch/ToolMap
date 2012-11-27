@@ -1053,6 +1053,25 @@ int tmGISDataRaster::GetPyramidsInfo (wxArrayString * pyramids)
 
 
 
+bool tmGISDataRaster::CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData){
+    wxASSERT(m_DataSet);
+	int myInts[] = {4,8,16,32};
+	wxString myConstRRD = "USE_RRD";
+	wxString myConstRRDValue = "TRUE";
+    wxString myOverviewTypeName = _T("NEAREST");
+
+	CPLSetConfigOption((const char*) myConstRRD.mb_str(wxConvUTF8),(const char*) myConstRRDValue.mb_str(wxConvUTF8));
+	if( m_DataSet->BuildOverviews(myOverviewTypeName.mb_str(),4, myInts, 0, NULL, progress, pfProgressData) == CE_None){
+        return true;
+	}
+   
+	wxLogError("%s", CPLGetLastErrorMsg());
+	return false;
+}
+
+
+
+
 /***************************************************************************//**
  @brief Getting pyramids info as html string
  @details Pyramids are small image subsets usefull for displaying raster faster

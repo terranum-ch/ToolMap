@@ -47,7 +47,7 @@ void PreferenceDLG::_CreateControls(){
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer2;
-	fgSizer2 = new wxFlexGridSizer( 3, 2, 0, 0 );
+	fgSizer2 = new wxFlexGridSizer( 4, 2, 0, 0 );
 	fgSizer2->AddGrowableCol( 1 );
 	fgSizer2->SetFlexibleDirection( wxBOTH );
 	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -70,6 +70,12 @@ void PreferenceDLG::_CreateControls(){
 	
 	m_RelPathCtrl = new wxCheckBox( m_panel2, wxID_ANY, _("Save relative paths"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer2->Add( m_RelPathCtrl, 0, wxALL, 5 );
+    
+    fgSizer2->Add( 0, 0, 1, wxEXPAND, 5 );
+    
+    m_BuildOverviewCtrl = new wxCheckBox( m_panel2, wxID_ANY, _("Build overviews"));
+    fgSizer2->Add(m_BuildOverviewCtrl, 0, wxALL, 5);
+    
     
 	bSizer3->Add( fgSizer2, 1, wxEXPAND, 5 );
 	
@@ -144,6 +150,12 @@ bool PreferenceDLG::TransferDataToWindow(){
 		mySelColor.Set(mySelColorText);
 	}
 	
+    myConfig->SetPath("SPATIAL_INDEX");
+	bool bCreateIndex = myConfig->ReadBool("create_index", true);
+    myConfig->SetPath("..");
+    
+    m_BuildOverviewCtrl->SetValue(bCreateIndex);
+    
 	m_SelColourCtrl->SetColour(mySelColor);
 	m_SelOutlineCtrl->SetValue(mySelHalo);
     m_RelPathCtrl->SetValue(myRelPath);
@@ -167,6 +179,10 @@ bool PreferenceDLG::TransferDataFromWindow(){
 	myConfig->Write("selection_color", m_SelColourCtrl->GetColour().GetAsString());
 	myConfig->Write("selection_halo", m_SelOutlineCtrl->GetValue());
     myConfig->Write("relative_path", m_RelPathCtrl->GetValue());
+    myConfig->SetPath("..");
+    
+    myConfig->SetPath("SPATIAL_INDEX");
+	myConfig->Write("create_index", m_BuildOverviewCtrl->GetValue());
     myConfig->SetPath("..");
 	return true;
 }

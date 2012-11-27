@@ -23,6 +23,7 @@
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
+#include "vrprogress.h"
 
 // TODO: Temp
 #include "tmsymbolrule.h"
@@ -572,6 +573,26 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
         wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
         wxDELETE(item);
         return false;
+    }
+    
+    // build pyramids and spatial index ??
+    wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("SPATIAL_INDEX");
+	bool bCreateIndex = myConfig->ReadBool("create_index", true);
+    myConfig->SetPath("..");
+    if (bCreateIndex == true) {
+        if (myLayer->IsRaster() == 1) {
+            tmGISDataRaster * myRaster = (tmGISDataRaster*) myLayer;
+            wxArrayString myPyramids;
+            myRaster->GetPyramidsInfo(&myPyramids);
+            if (myPyramids.GetCount() == 0) {
+                vrProgressSimple myProgressData (m_Parent, _("Building Overviews (Pyramids)"), wxString::Format(_("Building Overviews: '%s'"), item->GetNameDisplay()));
+                myLayer->CreateSpatialIndex(GDALUpdateSimple, &myProgressData);
+            }
+        }else{
+            myLayer->CreateSpatialIndex(NULL, NULL);
+        }
     }
     
     item->SetSpatialType(myLayer->GetSpatialType());

@@ -140,7 +140,8 @@ public:
 	wxString GetPyramidsMetadata();
 	wxString GetImagePxSizeMetadata ();
 	
-	
+	virtual bool CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData);
+    virtual int IsRaster(){return 1;}
 	
 };
 
