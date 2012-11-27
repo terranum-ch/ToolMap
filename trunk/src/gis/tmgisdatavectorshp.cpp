@@ -1443,6 +1443,12 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString 
 
 
 
+bool tmGISDataVectorSHP::CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData){
+    wxString myLayerName (m_Layer->GetLayerDefn()->GetName());
+    wxString myQuery = wxString::Format(_T("CREATE SPATIAL INDEX ON %s"), myLayerName);
+    return ExecuteSQLQuery(myQuery);
+}
+
 
 
 

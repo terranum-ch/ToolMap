@@ -40,6 +40,7 @@ private:
 	wxColourPickerCtrl* m_SelColourCtrl;
 	wxCheckBox* m_SelOutlineCtrl;
     wxCheckBox* m_RelPathCtrl;
+    wxCheckBox* m_BuildOverviewCtrl;
 
 	
 	void _CreateControls();

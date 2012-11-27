@@ -113,7 +113,7 @@ public:
     bool Rasterize(double rasterizefactor);
     void RemoveRasterizeFile();
     
-    
+    virtual bool CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData);
     virtual bool CopyToFile(const wxFileName & filename, const wxString & drivername);
 };
 

@@ -161,8 +161,7 @@ class tmGISDataVector : public tmGISData
 		
 		// Searching 
 		virtual wxArrayLong * SearchIntersectingGeometry (OGRGeometry * intersectinggeom){return NULL;}
-		
-		
+		virtual int IsRaster(){return 0;}
 		
 	};
 
