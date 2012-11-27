@@ -328,14 +328,11 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
 
 int tmGISDataVectorSHP::GetNextDataPolygonInfo (long & oid)
 {
-    wxStopWatch sv;
 	wxASSERT(m_Layer);
  	m_Feature = m_Layer->GetNextFeature();
 
 	// nothing more to read
-	if (m_Feature == NULL)
-	{
-		wxLogDebug(_("No more feature found in %ld ms"), sv.Time());
+	if (m_Feature == NULL){
         m_polyTotalRings = 0;
 		oid = -1;
 		return 0;
