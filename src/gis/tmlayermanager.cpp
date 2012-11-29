@@ -24,6 +24,7 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
 #include "vrprogress.h"
+#include  "tmgisdatavectorshp.h"
 
 // TODO: Temp
 #include "tmsymbolrule.h"
@@ -552,6 +553,22 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString &
     DataBaseTM::ConvertPath(myPath);
     if (m_DB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_TOC, myPath, myCompleteName.GetFullName(), myLayerToReplace->GetID()),true)==false) {
         return false;
+    }
+    
+    // need to create an attribut index ?
+    if (myLayerToReplace->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
+        myLayerToReplace->GetSymbolRuleManagerRef()->IsUsingRules()==true){
+        
+        tmGISDataVectorSHP * myGISData = (tmGISDataVectorSHP*) tmGISData::LoadLayer(myLayerToReplace);
+        wxString myQuery = wxString::Format(_T("DROP INDEX on %s"),myLayerToReplace->GetName().GetName());
+        myGISData->ExecuteSQLQuery(myQuery);
+        wxString myFieldName = myLayerToReplace->GetSymbolRuleManagerRef()->GetFieldName();
+        if (myFieldName != wxEmptyString){
+            myQuery = wxString::Format(_T("CREATE INDEX ON %s USING %s"), myLayerToReplace->GetName().GetName(), myFieldName);
+            myGISData->ExecuteSQLQuery(myQuery);
+            wxLogMessage(_("Creating attribut filter for : %s"), myFieldName);
+        }
+        wxDELETE(myGISData);
     }
     return true;
 }

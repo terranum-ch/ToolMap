@@ -132,6 +132,7 @@ public:
     bool ShowSymbolRuleDlg(wxWindow * parent, const wxPoint & position);
     
     bool IsUsingRules();
+    wxString GetFieldName(){return m_DlgSelectedFieldname;}
     bool Serialize(tmSerialize & s);
     tmSymbolRuleManager & operator=(const tmSymbolRuleManager & source);
     // utilities functions
