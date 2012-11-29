@@ -1688,23 +1688,24 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids)
 		
 		
 		if (pLayerProp->IsVisible() == true) {
-			
-			// loading data
-			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
-            
-            // build pyramids if needed and only during project opening
-            if(buildpyramids == true){
-                _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
+            if (pLayerProp->GetName().Exists() == true || pLayerProp->GetType() < TOC_NAME_NOT_GENERIC) {
+                // loading data
+                tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
+                
+                // build pyramids if needed and only during project opening
+                if(buildpyramids == true){
+                    _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
+                }
+                
+                // processing and deleting data
+                if (layerData)
+                {
+                    myExtent = layerData->GetMinimalBoundingRectangle();
+                    m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+                    iReaded ++;
+                }
+                wxDELETE(layerData);
             }
-			
-			// processing and deleting data
-			if (layerData)
-			{
-				myExtent = layerData->GetMinimalBoundingRectangle();
-				m_Scale.SetMaxLayersExtentAsExisting(myExtent);
-				iReaded ++;
-			}
-			wxDELETE(layerData);
 		}
 		
 		
