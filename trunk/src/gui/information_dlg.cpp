@@ -227,7 +227,7 @@ tmSelectionInfoCtrl::~tmSelectionInfoCtrl() {
 
 
 void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem & dontdelete) {
-	Freeze();
+	//Freeze();
 	int myFirstChildCookie = 0;
 	int myIterateChildCookie = 0;
 	wxTreeMultiItem myParent = GetFirstChild(GetFirstRoot(), myFirstChildCookie);
@@ -249,7 +249,7 @@ void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem & dontdelete) {
 		myParent = GetNextChild(GetFirstRoot(), myFirstChildCookie);
 			
 	}
-	Thaw();
+	//Thaw();
 }
 
 
@@ -606,12 +606,12 @@ void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent & event) {
 
 void tmSelectionInfoCtrl::UpdateSelection() {
 	wxASSERT(m_Selected);
-	Freeze();
+	//Freeze();
 	DeleteChildren(GetFirstRoot());
 	
 	wxArrayLong * mySelVal = m_Selected->GetSelectedValues();
 	if (mySelVal == NULL){
-		Thaw();
+		//Thaw();
 		return;
 	}
 	
@@ -638,7 +638,7 @@ void tmSelectionInfoCtrl::UpdateSelection() {
             }
         }
     }
-	Thaw();
+	//Thaw();
 	
 }
 
