@@ -1120,6 +1120,39 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 }
 
 
+OGRGeometry * tmGISDataVectorMYSQL::GetNextGeometry(bool restart, long & oid){
+    if (restart == true) {
+        wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s"), GetShortFileName());
+        if (m_DB->DataBaseQuery(sSentence)==false){
+            wxLogError(_("Error getting geometry for %s"), GetShortFileName());
+            oid = wxNOT_FOUND;
+            return NULL;
+        }
+    }
+    
+    MYSQL_ROW row;
+	tmArrayULong row_length;
+	
+	// security check
+	if(m_DB->DataBaseHasResults()==false){
+        oid = wxNOT_FOUND;
+		return NULL;
+	}
+	
+	if (m_DB->DataBaseGetNextRowResult(row, row_length)==false){
+		m_DB->DataBaseClearResults();
+        oid = wxNOT_FOUND;
+		return NULL;
+	}
+	
+	OGRGeometry * myGeom = CreateDataBaseGeometry(row, row_length, 1);
+	oid = GetOid(row, 0);
+	wxASSERT (myGeom);
+	return myGeom;
+ }
+
+
+
 
 /***************************************************************************//**
  @brief Add geometry into database

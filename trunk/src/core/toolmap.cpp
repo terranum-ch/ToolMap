@@ -188,6 +188,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_STATISTICS, ToolMapFrame::OnStatisticsDialog)
 
 	EVT_MENU (ID_MENU_QUERIES,  ToolMapFrame::OnShowQueriesWindow)
+    EVT_MENU(ID_MENU_VALIDITY, ToolMapFrame::OnGeometryValidity)
+
 	// queries event are binded :-)
 
 	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
@@ -263,6 +265,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_TOC_WINDOW, ToolMapFrame::OnUpdateMenuShowTOC)
 	EVT_UPDATE_UI (ID_MENU_LOG_WINDOW, ToolMapFrame::OnUpdateMenuShowLog)
 	EVT_UPDATE_UI (ID_MENU_INFO_WINDOW, ToolMapFrame::OnUpdateMenuShowInfo)
+    EVT_UPDATE_UI(ID_MENU_VALIDITY, ToolMapFrame::OnUpdateGeometryValidity)
 END_EVENT_TABLE()
 
 
@@ -603,6 +606,7 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu63->Append(ID_QUERIES_RUN, _("Run selected query\tCtrl+Alt+R"), wxEmptyString, wxITEM_NORMAL);
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
+    itemMenu63->Append(ID_MENU_VALIDITY, _("Check geometries validity"), _T(""), wxITEM_NORMAL);
 	menuBar->Append(itemMenu63, _("Validation"));
 
     // WINDOW
@@ -1703,6 +1707,32 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 void ToolMapFrame::OnDanglingNodes(wxCommandEvent & event)
 {
 	m_ToolManager->FindDanglingNodes();
+}
+
+
+
+void ToolMapFrame::OnGeometryValidity (wxCommandEvent & event){
+    if (m_PManager->IsProjectOpen() == false) {
+        return;
+    }
+    m_LayerManager->CheckGeometryValidity();
+}
+
+
+
+void ToolMapFrame::OnUpdateGeometryValidity (wxUpdateUIEvent & event){
+    tmLayerProperties * mySelLayer = m_TocWindow->GetTOCCtrl()->GetSelectionLayer();
+    if (mySelLayer == NULL) {
+        event.Enable(false);
+        return;
+    }
+    
+    if (mySelLayer->GetType() > TOC_NAME_NOT_GENERIC && mySelLayer->GetType() != TOC_NAME_SHP) {
+        event.Enable(false);
+        return;
+    }
+    event.Enable(true);
+    //event.Enable(m_PManager->IsProjectOpen());
 }
 
 

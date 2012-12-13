@@ -1111,6 +1111,66 @@ bool tmLayerManager::SelectedInvert ()
 }
 
 
+
+void tmLayerManager::CheckGeometryValidity(){
+    tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
+    if (layerprop == NULL) {
+        return;
+    }
+    
+    tmGISData * myLayerData = tmGISData::LoadLayer(layerprop);
+	if (myLayerData == NULL){
+        wxLogError(_("Error loading %s data!"), layerprop->GetNameDisplay());
+        return;
+    }
+    
+    if(myLayerData->IsRaster() == true){
+        wxLogError(_("This tool isn't working on Raster files"));
+        return;
+    }
+    
+    tmGISDataVector * myLayerDataVector = (tmGISDataVector*) myLayerData;
+    OGRGeometry * myGeom = NULL;
+    bool bRestart = true;
+    long myOid = wxNOT_FOUND;
+    long iNumError = 0;
+    long iNumCheck = 0;
+    
+    m_SelectedData.SetLayerID(layerprop->GetID());
+    m_SelectedData.Clear();
+    wxArrayLong myOids;
+    
+    while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != NULL) {
+        bRestart = false;
+        
+        bool bError = false;
+        iNumCheck++;
+        if (myGeom->IsValid() == false) {
+            bError = true;
+            wxLogMessage(_("%ld geometry isn't valid!"), myOid);
+        }
+        if (myGeom->IsSimple() == false) {
+            bError = true;
+            wxLogMessage(_("%ld geometry isn't simple!"), myOid);
+        }
+        
+        if (bError == true) {
+            myOids.Add(myOid);
+            iNumError++;
+        }
+        OGRGeometryFactory::destroyGeometry(myGeom);
+    }
+    
+    m_SelectedData.AddSelected(&myOids);
+	ReloadProjectLayersThreadStart(false, true);
+	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+
+    wxMessageBox(wxString::Format(_("%ld error(s) found while checking %ld feature(s)"),iNumError, iNumCheck),_("Geometry validity"));
+}
+
+
+
 bool tmLayerManager::SelectByOid (){
 	//	
 	// Some checks for 

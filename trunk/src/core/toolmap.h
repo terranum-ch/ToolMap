@@ -224,6 +224,7 @@ class AttribObjType_PANEL;
 const int ID_MENU_LAYOUT_DEFAULT = 15201;
 const int ID_MENU_LAYOUT_VERTICAL = 15202;
 const int ID_MENU_LAYOUT_HORIZONTAL = 15203;
+const int ID_MENU_VALIDITY = 15204;
 
 
 const wxString g_ProgName = _T("ToolMap");
@@ -356,6 +357,7 @@ private:
 	
 	// ToolsFunction
 	void OnDanglingNodes(wxCommandEvent & event);
+    void OnGeometryValidity (wxCommandEvent & event);
     
 	void OnCloseManagedPane(wxAuiManagerEvent & event);
 	
@@ -391,6 +393,7 @@ private:
 	void OnUpdateMenuFlipLine (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event);
 	void OnUpdateStatisticsDialog (wxUpdateUIEvent & event);
+    void OnUpdateGeometryValidity (wxUpdateUIEvent & event);
     
     void _CreateMenu();
 	void _CreateToolBar();
