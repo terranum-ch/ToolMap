@@ -286,6 +286,23 @@ OGRFeature * tmGISDataVectorSHP::GetFeatureByOID (long oid){
 }
 
 
+OGRGeometry * tmGISDataVectorSHP::GetNextGeometry(bool restart, long & oid){
+    wxASSERT (m_Layer);
+	OGRFeature * poFeature = m_Layer->GetNextFeature();
+	// nothing more to read
+	if (poFeature == NULL){
+		oid = wxNOT_FOUND;
+		return NULL;
+	}
+    
+	OGRGeometry * myGeom = poFeature->GetGeometryRef()->clone();
+	oid = poFeature->GetFID();
+    OGRFeature::DestroyFeature( poFeature );
+	return myGeom;
+}
+
+
+
 bool tmGISDataVectorSHP::SelectFeatureByOID (long oid){
     wxASSERT(m_Feature == NULL);
     wxASSERT(m_Layer);

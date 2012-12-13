@@ -184,6 +184,8 @@ class tmLayerManager : public wxEvtHandler
 		bool SelectedClear ();
 		bool SelectedInvert ();
 		bool SelectByOid ();
+        
+        void CheckGeometryValidity();
 			
 		bool LoadProjectLayers();
 		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);

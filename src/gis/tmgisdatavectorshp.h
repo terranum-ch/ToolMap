@@ -70,6 +70,8 @@ public:
     virtual OGRFeature * GetFeatureByOID (long oid);
     bool SelectFeatureByOID (long oid);
     
+    virtual OGRGeometry * GetNextGeometry(bool restart, long & oid);
+    
     // virtual function for metadata
     virtual wxString GetMetaDataAsHtml ();
     virtual wxString GetDataSizeAsHtml (int iPrecision = 2);

@@ -132,6 +132,10 @@ class tmGISDataVector : public tmGISData
 									wxArrayLong & AddedIds, int layertype);
 		virtual OGRGeometryCollection * GetGeometryColByOID(wxArrayLong * OIDs){return NULL;}
 		virtual void CloseGeometry(){;}
+        
+        // iterate geometries (MySQL and OGR)
+        virtual OGRGeometry * GetNextGeometry(bool restart, long & oid){oid = wxNOT_FOUND; return NULL;}
+        
 		
 		// counting
 		virtual int GetCount (){return -1;}
