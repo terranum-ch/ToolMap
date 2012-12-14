@@ -78,19 +78,21 @@ OGRGeometry * _GetFrame(DataBase * database){
 }
 
 
-bool _TestUnion(DataBase * database, long layerindex, long limit, OGRGeometry * frame){
+bool _TestUnion(DataBase * database, long layerindex, long idmin, long idmax, OGRGeometry * frame){
     wxASSERT(database);
     wxString myQuery = wxEmptyString;
     
     if(layerindex != wxNOT_FOUND){
         myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY) FROM generic_lines l LEFT JOIN (generic_aat la, dmn_layer_object o) ")
                                    _T(" ON (la.OBJECT_GEOM_ID = l.OBJECT_ID AND o.OBJECT_ID = la.OBJECT_VAL_ID)")
-                                   _T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY l.OBJECT_ID LIMIT %ld"), layerindex, limit);
+                                   _T(" WHERE (o.THEMATIC_LAYERS_LAYER_INDEX = %ld AND l.OBJECT_ID > %ld AND l.OBJECT_ID < %ld) ORDER BY l.OBJECT_ID"),layerindex, idmin, idmax );
         
     }
     else{
-        myQuery = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM generic_lines ORDER BY OBJECT_ID LIMIT %ld "), limit);
+        myQuery = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM generic_lines WHERE (OBJECT_ID > %ld AND OBJECT_ID < %ld) ORDER BY OBJECT_ID"), idmin, idmax);
     }
+    
+     
     
     if (database->DataBaseQuery(myQuery)==false) {
         wxLogError(_("Query failed! %s"), myQuery);
@@ -98,12 +100,13 @@ bool _TestUnion(DataBase * database, long layerindex, long limit, OGRGeometry * 
     }
     DataBaseResult myResult;
 	database->DataBaseGetResults(&myResult);
-	wxASSERT(myResult.HasResults()==true);
-
-    if (myResult.GetRowCount() < limit) {
+	if(myResult.HasResults()==false){
+        wxLogMessage(_("No results for Min: %ld, Max %ld"), idmin, idmax);
         return false;
     }
     
+    wxLogMessage(_("%ld OID to process"), myResult.GetRowCount());
+   
     // process the results
     long myOid = 0;
     OGRMultiLineString * myNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
@@ -201,11 +204,18 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    long myLimit = 1;
-    while (_TestUnion(&myDB, myLayerIndex, myLimit, myFrame)==true) {
-        myLimit = myLimit + 100;
+    long myMin = 0;
+    long myMax = 8600;
+    
+    while (_TestUnion(&myDB, myLayerIndex, myMin, myMax, myFrame)==true) {
+        //myMin = myMin + 100;
+        myMax = myMax + 1;
+        wxLogMessage(_("OID Min: %ld - Max: %ld "), myMin, myMax);
     }
-
+    
+    //_TestUnion(&myDB, myLayerIndex, 0, 10000, myFrame);
+    
+    wxLogMessage(_("Finished!"));
     OGRGeometryFactory::destroyGeometry(myFrame);
     return 0;
 }
