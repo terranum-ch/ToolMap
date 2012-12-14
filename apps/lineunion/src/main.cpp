@@ -9,8 +9,11 @@
 #include <wx/app.h>
 #include <wx/cmdline.h>
 #include <wx/dir.h>
+#include <wx/filename.h>
 
-#include "database_tm.h"
+#include "database.h"
+#include "databaseresult.h"
+
 
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
@@ -75,6 +78,67 @@ OGRGeometry * _GetFrame(DataBase * database){
 }
 
 
+bool _TestUnion(DataBase * database, long layerindex, long limit, OGRGeometry * frame){
+    wxASSERT(database);
+    wxString myQuery = wxEmptyString;
+    
+    if(layerindex != wxNOT_FOUND){
+        myQuery = wxString::Format(_T("SELECT l.OBJECT_ID, AsWKB(l.OBJECT_GEOMETRY) FROM generic_lines l LEFT JOIN (generic_aat la, dmn_layer_object o) ")
+                                   _T(" ON (la.OBJECT_GEOM_ID = l.OBJECT_ID AND o.OBJECT_ID = la.OBJECT_VAL_ID)")
+                                   _T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY l.OBJECT_ID LIMIT %ld"), layerindex, limit);
+        
+    }
+    else{
+        myQuery = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM generic_lines ORDER BY OBJECT_ID LIMIT %ld "), limit);
+    }
+    
+    if (database->DataBaseQuery(myQuery)==false) {
+        wxLogError(_("Query failed! %s"), myQuery);
+        return false;
+    }
+    DataBaseResult myResult;
+	database->DataBaseGetResults(&myResult);
+	wxASSERT(myResult.HasResults()==true);
+
+    if (myResult.GetRowCount() < limit) {
+        return false;
+    }
+    
+    // process the results
+    long myOid = 0;
+    OGRMultiLineString * myNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
+    for (long i = 0; i < myResult.GetRowCount(); i++) {
+		myResult.NextRow();
+        
+        OGRGeometry * myGeom = NULL;
+        myResult.GetValue(1, &myGeom);
+        if (myGeom == NULL) {
+            wxLogError(_("No geometry returned on loop :d"),i);
+            continue;
+        }
+        
+        myResult.GetValue(0, myOid);
+        
+        if (myGeom->IsEmpty() == true) {
+            OGRGeometryFactory::destroyGeometry(myGeom);
+            continue;
+        }
+        
+        myNodedLines->addGeometry(myGeom);
+        OGRGeometryFactory::destroyGeometry(myGeom);
+    }
+    wxLogMessage(_("Lastest OID added to collection: %ld"), myOid);
+    
+    // trying to union the frame
+    OGRGeometry * myLines = myNodedLines->Union(frame);
+	wxASSERT(myLines);
+	OGRGeometryFactory::destroyGeometry(myNodedLines);
+    
+	int iTotalLines = ((OGRMultiLineString *) myLines)->getNumGeometries();
+	wxLogMessage(_("%d lines for creating polygons"), iTotalLines);
+    return true;
+}
+
 int main(int argc, char **argv)
 {
     // debugging string for OSX
@@ -137,7 +201,11 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    
+    long myLimit = 1;
+    while (_TestUnion(&myDB, myLayerIndex, myLimit, myFrame)==true) {
+        myLimit = myLimit + 100;
+    }
+
     OGRGeometryFactory::destroyGeometry(myFrame);
     return 0;
 }
