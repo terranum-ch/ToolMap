@@ -1082,10 +1082,13 @@ OGRFeature * tmGISDataVectorMYSQL::GetFeatureByOID (long oid)
 		wxLogError(_T("Error getting geometry for oid = %ld"),oid);
 		return NULL;
 	}
+    
+    if (m_DB->DataBaseHasResults() == false) {
+        return NULL;
+    }
 	
 	OGRGeometry * myGeom = GetNextDataLine(myUnusedOid);
 	wxASSERT(myGeom);
-	
 	// create feature from geometry
 	OGRFeatureDefn * myFeatDef = new OGRFeatureDefn(GetShortFileName().mb_str());
 	OGRFieldDefn myFieldDef (wxString(_T("test")).mb_str(), OFTInteger);
