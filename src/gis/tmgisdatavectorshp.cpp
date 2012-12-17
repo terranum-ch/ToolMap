@@ -278,10 +278,9 @@ OGRFeature * tmGISDataVectorSHP::GetFeatureByOID (long oid){
 
 	OGRFeature * myFeature = m_Layer->GetFeature(oid);
 	if (myFeature == NULL) {
-		wxLogError(_T("Error getting feature number : %ld"), oid);
+		//wxLogError(_T("Error getting feature number : %ld"), oid);
 		return NULL;
 	}
-
 	return myFeature;
 }
 

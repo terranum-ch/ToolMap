@@ -1187,6 +1187,11 @@ bool tmLayerManager::SelectByOid (){
 		return false;
 	}
 	
+    if (layerprop->GetSpatialType() >= LAYER_SPATIAL_RASTER) {
+        wxLogError(_("Unable to select feature on Raster layer!"));
+        return false;
+    }
+    
 	wxASSERT(m_Parent);
 	long myOid = wxGetNumberFromUser (wxEmptyString,
 						 _("Feature ID: "),
@@ -1197,12 +1202,26 @@ bool tmLayerManager::SelectByOid (){
 	if (myOid == wxNOT_FOUND) {
 		return false;
 	}
+    
+    // test if feature exists
+    tmGISDataVector * myVector = (tmGISDataVector*) tmGISData::LoadLayer(layerprop);
+    wxASSERT(myVector);
+    OGRFeature * myFeature = myVector->GetFeatureByOID(myOid);
+    if (myFeature == NULL) {
+        wxDELETE(myVector);
+        int msganswer = wxMessageBox(_("This OID didn't exists!"), _("Invalid OID"), wxOK | wxCANCEL, m_Parent);
+        if (msganswer == wxCANCEL) {
+            return false;
+        }
+        else{
+            return SelectByOid();
+        }
+    }
+    OGRFeature::DestroyFeature(myFeature);
+    wxDELETE(myVector);
 	
-	wxArrayLong mySel;
-	mySel.Add(myOid);
-	m_SelectedData.Clear();
-	m_SelectedData.AddSelected(&mySel);
-	
+    m_SelectedData.SetSelected(myOid);
+    m_SelectedData.SetLayerID(layerprop->GetID());
 	ReloadProjectLayersThreadStart(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
