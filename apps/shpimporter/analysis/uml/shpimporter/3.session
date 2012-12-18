@@ -1,0 +1,12 @@
+window_sizes 1440 852 337 1097 659 136
+diagrams
+  active  classdiagram_ref 128003 // shpimporter
+    1093 639 100 4 0 0
+end
+show_stereotypes
+selected attribute_ref 128771 // m_CodesOut
+open
+  class_ref 128003 // siLayer
+  class_ref 128131 // siKind
+end
+end
