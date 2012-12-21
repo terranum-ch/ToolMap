@@ -1,7 +1,7 @@
 /***************************************************************************
  siattribut.h
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -26,43 +26,36 @@
 
 
 enum SIATTRIBUT_OPERATION {
-  SIATTRIBUT_OPERATION_VALUE = 0,
-  SIATTRIBUT_OPERATION_REPLACE,
-  SIATTRIBUT_OPERATION_FIELD
-
+    SIATTRIBUT_OPERATION_VALUE = 0,
+    SIATTRIBUT_OPERATION_REPLACE,
+    SIATTRIBUT_OPERATION_FIELD
+    
 };
-class siAttributValue {
-  public:
+
+
+class siAttributValue {    
+public:
     siAttributValue();
-
     virtual ~siAttributValue();
-
-
-  private:
+    
     wxString m_ValueIn;
-
     wxString m_ValueOut;
-
     long m_ValueOutCode;
-
 };
+
+
 class siAttribut {
-  public:
-    siAttribut();
-
-    virtual ~siAttribut();
-
-
-  private:
+private:
     wxString m_AttributNameIn;
-
     wxString m_AttributNameOut;
-
     wxArrayLong m_AttributFilterIDs;
-
     SIATTRIBUT_OPERATION m_AttributOperation;
-
     siAttributValue m_Values;
-
+    
+    
+public:
+    siAttribut();
+    virtual ~siAttribut();
+    
 };
 #endif

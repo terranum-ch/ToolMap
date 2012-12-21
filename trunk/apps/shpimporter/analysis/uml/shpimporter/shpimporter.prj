@@ -1,6 +1,6 @@
 format 75
 "shpimporter"
-  revision 3
+  revision 4
   modified_by 3 "lucien"
 
 
@@ -73,6 +73,66 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      attribute 128003 "m_LayerNameIn"
+	private explicit_type "wxFileName"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128259 "m_LayerIndexOut"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128131 "m_Database"
+	private explicit_type "DataBase *"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128003 // m_Kind (<directional composition>)
+	relation 128003 *-->
+	  a role_name "m_Kind" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128003 // m_Kind (<directional composition>)
+	  b parent class_ref 128131 // siKind
+	get_oper operation_ref 135427 // get_m_Kind
+      end
+
+      classrelation 128131 // m_Attributs (<directional composition>)
+	relation 128131 *-->
+	  stereotype "list"
+	  a role_name "m_Attributs" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128131 // m_Attributs (<directional composition>)
+	  b parent class_ref 128259 // siAttribut
+      end
+
+      classrelation 134659 // m_LayerType (<directional composition>)
+	relation 134659 *-->
+	  a role_name "m_LayerType" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 134659 // m_LayerType (<directional composition>)
+	  b parent class_ref 134787 // SILAYER_TYPE
+	get_oper operation_ref 135683 // GetLayerType
+      end
+
       operation 128003 "siLayer"
 	public explicit_return_type ""
 	nparams 2
@@ -132,56 +192,6 @@ ${inlines}
 	
       end
 
-      attribute 128003 "m_LayerNameIn"
-	private explicit_type "wxFileName"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 128131 "m_Database"
-	private explicit_type "DataBase *"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 128003 // m_Kind (<directional composition>)
-	relation 128003 *-->
-	  a role_name "m_Kind" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 128003 // m_Kind (<directional composition>)
-	  b parent class_ref 128131 // siKind
-	get_oper operation_ref 135427 // get_m_Kind
-      end
-
-      attribute 128259 "m_LayerIndexOut"
-	private explicit_type "long"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 128131 // m_Attributs (<directional composition>)
-	relation 128131 *-->
-	  stereotype "list"
-	  a role_name "m_Attributs" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 128131 // m_Attributs (<directional composition>)
-	  b parent class_ref 128259 // siAttribut
-      end
-
       operation 135427 "get_m_Kind"
 	force_body_gen public return_type class_ref 128131 // siKind
 	nparams 0
@@ -201,16 +211,6 @@ ${inlines}
 	
 	idl_name_spec "get_${name}"
 	get_of_relation classrelation_ref 128003 // m_Kind (<directional composition>)
-      end
-
-      classrelation 134659 // m_LayerType (<directional composition>)
-	relation 134659 *-->
-	  a role_name "m_LayerType" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 134659 // m_LayerType (<directional composition>)
-	  b parent class_ref 134787 // SILAYER_TYPE
-	get_oper operation_ref 135683 // GetLayerType
       end
 
       operation 135683 "GetLayerType"
@@ -247,34 +247,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      operation 128515 "siKind"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 128643 "~siKind"
-	cpp_virtual public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       attribute 128515 "m_KindNameIn"
 	private explicit_type "wxString"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -315,6 +287,34 @@ ${inlines}
 	idl_decl ""
       end
 
+      operation 128515 "siKind"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128643 "~siKind"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 135555 "LoadFromTxt"
 	public explicit_return_type "bool"
 	nparams 1
@@ -343,34 +343,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      operation 128771 "siAttribut"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 128899 "~siAttribut"
-	cpp_virtual public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       attribute 135811 "m_AttributNameIn"
 	private explicit_type "wxString"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -418,6 +390,34 @@ ${inlines}
 "
 	    classrelation_ref 141315 // m_Values (<directional composition>)
 	  b parent class_ref 141443 // siAttributValue
+      end
+
+      operation 128771 "siAttribut"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128899 "~siAttribut"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
 
@@ -533,34 +533,6 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      operation 142211 "siAttributValue"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 142339 "~siAttributValue"
-	cpp_virtual public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
-"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       attribute 142851 "m_ValueIn"
 	private explicit_type "wxString"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -589,6 +561,34 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      operation 142211 "siAttributValue"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 142339 "~siAttributValue"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
       end
     end
   end

@@ -9,16 +9,16 @@
 #include <wx/app.h>
 #include <wx/cmdline.h>
 #include <wx/dir.h>
+#include <wx/filename.h>
 
-#include "tmprojectmerge.h"
-#include "tmprojectmaintenance.h"
+#include "database.h"
+
+
 
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
     { wxCMD_LINE_SWITCH, "h", "help", "show this help message",
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-    { wxCMD_LINE_SWITCH, "o", "optimize", "Optimize, and clean orphans" },
-    { wxCMD_LINE_SWITCH, "m", "merge", "Merge Slave into Master" },
     { wxCMD_LINE_SWITCH, "v", "verbose", "Be more verbose" },
     { wxCMD_LINE_NONE }
 };
@@ -139,10 +139,11 @@ int main(int argc, char **argv)
         return -1;
     }
     
-    wxString myLogoTxt = _T("*\n* ToolMerge \n* Checking and Merging ToolMap projects \n* (c) Copyright 2012 Lucien Schreiber - CREALP . All Rights Reserved. \n*\n");
+    wxString myLogoTxt = _T("*\n* ShpImporter \n* Import SHP into ToolMap projects \n* (c) Copyright 2012 Lucien Schreiber - CREALP . All Rights Reserved. \n*\n");
     wxCmdLineParser parser(cmdLineDesc, argc, argv);
-    parser.AddParam(_T("[master project path]"), wxCMD_LINE_VAL_STRING);
-    parser.AddParam(_T("[slave project path]"), wxCMD_LINE_VAL_STRING);
+    parser.AddParam(_T("[ToolMap project file]"), wxCMD_LINE_VAL_STRING);
+    parser.AddParam(_T("[SHP directory]"), wxCMD_LINE_VAL_STRING);
+    parser.AddParam(_T("[rule files]"),wxCMD_LINE_VAL_STRING,  wxCMD_LINE_PARAM_MULTIPLE);
     parser.SetLogo(myLogoTxt);
     
     if (parser.Parse() != 0) {
@@ -153,147 +154,27 @@ int main(int argc, char **argv)
     
     // cmd line is correct !!
     wxPrintf(myLogoTxt);
-    wxString myMasterFileName = parser.GetParam(0);
-    wxString mySlaveFileName = parser.GetParam(1);
     
+    // make ToolMap project backup and open it.
+    DataBase myDB(_T("./"));
+    wxFileName myToolMapProjectName (parser.GetParam(0));
+    wxFileName myToolMapProjectNameBkp (parser.GetParam(0) + _T("_bkp"));
+    if (myToolMapProjectNameBkp.Exists() == true) {
+        myToolMapProjectNameBkp.Rmdir(wxPATH_RMDIR_RECURSIVE);
+    }
+    if (CopyDir(myToolMapProjectName.GetFullPath(), myToolMapProjectNameBkp.GetFullPath())==false) {
+        wxLogError(_("Unable to create project Backup!"));
+    }
+    if( myDB.DataBaseOpen(myToolMapProjectNameBkp.GetPath(), myToolMapProjectNameBkp.GetName())==false){
+        return 0;
+    }
     if (beVerbose) {
-        wxPrintf(_("Master: '%s'\nSlave:  '%s'\n"), myMasterFileName, mySlaveFileName);
+        wxLogMessage(_("Loading data into: %s"), myToolMapProjectNameBkp.GetName());
     }
-    
-    // TODO: Remove this temp code (process on backup)
-    wxString myMasterFileNameBkp = myMasterFileName + _("_bkp");
-    wxString mySlaveFileNameBkp = mySlaveFileName + _("_bkp");
-    
-    if (wxDir::Exists(myMasterFileNameBkp)) {
-        wxFileName myDir (myMasterFileNameBkp, _T(""));
-        myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
-    }
-    if (wxDir::Exists(mySlaveFileNameBkp)) {
-        wxFileName myDir (mySlaveFileNameBkp, _T(""));
-        myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
-    }
-    if (CopyDir(myMasterFileName, myMasterFileNameBkp)==false) {
-        wxLogError(_("Creating Master Backup before processing failed!"));
-    }
-    if (CopyDir(mySlaveFileName, mySlaveFileNameBkp)==false) {
-        wxLogError(_("Creating Slave Backup before processing failed!"));
-    }
+  
     
     
-    wxStopWatch sw;
-    if (parser.Found(_T("optimize"))) {
-        // OPTIMIZING AND CLEANING
-        if (beVerbose) {
-            wxPrintf(_("\nOPTIMIZING AND CLEANING\n"));
-        }
-        
-        {
-            tmProjectMaintenance myMaintenanceMaster (myMasterFileNameBkp);
-            myMaintenanceMaster.SetVerbose(beVerbose);
-            if (myMaintenanceMaster.OptimizeTables() == false) {
-                PrintArray(myMaintenanceMaster.GetErrors(), _("Optimize master FAILED! see bellow"));
-            }
-            else{
-                if (beVerbose) {
-                    PrintArray(myMaintenanceMaster.GetMessages(), _("Optimizing master SUCCEED!"));
-                }
-            }
-            
-            if (myMaintenanceMaster.RepairTables() == false) {
-                PrintArray(myMaintenanceMaster.GetErrors(), _("Repairing master FAILED! see bellow"));
-            }
-            else{
-                if (beVerbose) {
-                    PrintArray(myMaintenanceMaster.GetMessages(), _("Repairing master SUCCEED!"));
-                }
-            }
-            
-            if (myMaintenanceMaster.ClearOrphans() == false) {
-                PrintArray(myMaintenanceMaster.GetErrors(),_("Cleaing master FAILED! see bellow\n"));
-            }
-            else{
-                if (beVerbose) {
-                    PrintArray(myMaintenanceMaster.GetMessages(), _("Cleaning master SUCCEED!"));
-                }
-            }
-        }
-        
-        
-        {
-            tmProjectMaintenance myMaintenanceSlave (mySlaveFileNameBkp);
-            myMaintenanceSlave.SetVerbose(beVerbose);
-            if (myMaintenanceSlave.OptimizeTables() == false) {
-                PrintArray(myMaintenanceSlave.GetErrors(), _("Optimize slave FAILED! see bellow"));
-            }
-            else{
-                if (beVerbose) {
-                    PrintArray(myMaintenanceSlave.GetMessages(), _("Optimizing slave SUCCEED!"));
-                }
-            }
-            
-            if (myMaintenanceSlave.RepairTables() == false) {
-                PrintArray(myMaintenanceSlave.GetErrors(), _("Repairing slave FAILED! see bellow"));
-            }
-            else{
-                if (beVerbose) {
-                    PrintArray(myMaintenanceSlave.GetMessages(), _("Repairing slave SUCCEED!"));
-                }
-            }
-            
-            if (myMaintenanceSlave.ClearOrphans() == false) {
-                PrintArray(myMaintenanceSlave.GetErrors(),_("Cleaing slave FAILED! see bellow\n"));
-            }
-            else{
-                if (beVerbose) {
-                    PrintArray(myMaintenanceSlave.GetMessages(), _("Cleaning slave SUCCEED!"));
-                }
-            }
-        }
-        if (beVerbose) {
-            wxPrintf(_("Projects cleaned in %ld [ms]\n\n"), sw.Time());
-        }
-    }
     
-    sw.Start(0);
-    bool bCheckOk = false;
-    tmProjectMerge myCheckMerger(myMasterFileNameBkp, mySlaveFileNameBkp);
-    myCheckMerger.SetVerbose(beVerbose);
-    // checking here
-    if (beVerbose) {
-        wxPrintf(_("\nCHECKING...\n"));
-    }
-    if(myCheckMerger.CheckSimilar()==true){
-        wxPrintf(_("OK projects are similar\n"));
-        bCheckOk = true;
-    }
-    else {
-        PrintArray(myCheckMerger.GetErrors(), _("Checking FAILED! see bellow\n"));
-    }
-    
-    if (beVerbose) {
-        wxPrintf(_("Checking projects in %ld [ms]\n"), sw.Time());
-    }
-    
-    if (parser.Found("merge") && bCheckOk == false) {
-        wxPrintf(_("Merging not allowed, projects are different!\n"));
-        return 1;
-    }
-    
-    
-    sw.Start(0);
-    if (parser.Found("merge")) {
-        // merging here
-        if (beVerbose) {
-            wxPrintf(_("\nMERGING...\n"));
-        }
-        
-        if(myCheckMerger.MergeIntoMaster()==true){
-            wxPrintf(_("OK Project Merged into '%s' in %ld [ms]"), myMasterFileNameBkp, sw.Time());
-        }
-        else{
-            PrintArray(myCheckMerger.GetErrors(), _("Merge FAILED! see bellow\n"));
-        }
-    }
     
     return 0;
 }

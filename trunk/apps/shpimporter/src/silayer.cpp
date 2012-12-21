@@ -1,7 +1,7 @@
 /***************************************************************************
  silayer.cpp
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -19,16 +19,25 @@
 siLayer::siLayer(const wxString & layerpath, DataBase * database) {
 }
 
+
+
 siLayer::~siLayer() {
 }
 
+
+
 bool siLayer::LoadFromTxt(const wxString & text) {
+    return false;
 }
+
+
 
 bool siLayer::Process() {
+    return false;
 }
 
+
 const siKind siLayer::GetKindRef() {
-  return m_Kind;
+    return m_Kind;
 }
 
