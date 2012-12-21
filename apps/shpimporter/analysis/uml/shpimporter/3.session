@@ -4,13 +4,23 @@ diagrams
     1573 939 99 4 0 0
 end
 show_stereotypes
-selected artifact_ref 128259 // siattribut
+selected classrelation_ref 134659 // m_LayerType (<directional composition>)
 open
-  class_ref 128131 // siKind
-  class_ref 128259 // siAttribut
+  attribute_ref 128131 // m_Database
+  classrelation_ref 134659 // m_LayerType (<directional composition>)
+  operation_ref 128387 // Process
+  attribute_ref 128643 // m_CodesIn
+  attribute_ref 128771 // m_CodesOut
+  attribute_ref 135299 // m_CodesRealOut
+  operation_ref 128643 // ~siKind
+  attribute_ref 135939 // m_AttributNameOut
+  attribute_ref 136067 // m_AttributFilterIDs
+  classrelation_ref 141187 // m_AttributOperation (<directional composition>)
+  classrelation_ref 141315 // m_Values (<directional composition>)
   class_ref 134787 // SILAYER_TYPE
   class_ref 134915 // SIATTRIBUT_OPERATION
-  class_ref 141443 // siAttributValue
+  attribute_ref 142979 // m_ValueOut
+  attribute_ref 143107 // m_ValueOutCode
   deploymentview_ref 128003 // shpimporter
 end
 end

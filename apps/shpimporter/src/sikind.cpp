@@ -1,7 +1,7 @@
 /***************************************************************************
  sikind.cpp
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -19,9 +19,15 @@
 siKind::siKind() {
 }
 
+
+
 siKind::~siKind() {
 }
 
+
+
 bool siKind::LoadFromTxt(const wxString & kindtxt) {
+    return false;
 }
+
 

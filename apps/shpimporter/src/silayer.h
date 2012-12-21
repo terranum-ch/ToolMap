@@ -1,7 +1,7 @@
 /***************************************************************************
  silayer.h
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -23,54 +23,45 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
+#include <wx/filename.h>
 
 #include "sikind.h"
 #include "siattribut.h"
+#include "database.h"
+#include "databaseresult.h"
 
 enum SILAYER_TYPE {
-  SILAYER_TYPE_POINT = 0,
-  SILAYER_TYPE_LINE,
-  SILAYER_TYPE_POLYGON
-
+    SILAYER_TYPE_POINT = 0,
+    SILAYER_TYPE_LINE,
+    SILAYER_TYPE_POLYGON
+    
 };
+
+
 class siLayer {
-  public:
-    siLayer(const wxString & layerpath, DataBase * database);
-
-    virtual ~siLayer();
-
-    bool LoadFromTxt(const wxString & text);
-
-    bool Process();
-
-
-  private:
+private:
     wxFileName m_LayerNameIn;
-
-    DataBase * m_Database;
-
-    siKind m_Kind;
-
     long m_LayerIndexOut;
-
+    DataBase * m_Database;
+    siKind m_Kind;
     siAttribut m_Attributs;
-
-
-  public:
-    const siKind GetKindRef();
-
-
-  private:
     SILAYER_TYPE m_LayerType;
-
-
-  public:
+    
+public:
+    siLayer(const wxString & layerpath, DataBase * database);
+    virtual ~siLayer();
+    
+    bool LoadFromTxt(const wxString & text);
+    bool Process();
+    
+    const siKind GetKindRef();
     inline const SILAYER_TYPE GetLayerType() const;
-
+    
 };
+
+
 inline const SILAYER_TYPE siLayer::GetLayerType() const {
-  return m_LayerType;
+    return m_LayerType;
 }
 
 #endif

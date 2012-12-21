@@ -1,7 +1,7 @@
 /***************************************************************************
  sikind.h
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -18,7 +18,6 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -26,24 +25,17 @@
 
 
 class siKind {
-  public:
-    siKind();
-
-    virtual ~siKind();
-
-
-  private:
+private:
     wxString m_KindNameIn;
-
     wxArrayLong m_CodesIn;
-
     wxArrayLong m_CodesOut;
-
     wxArrayLong m_CodesRealOut;
-
-
-  public:
+    
+    
+public:
+    siKind();
+    virtual ~siKind();
+    
     bool LoadFromTxt(const wxString & kindtxt);
-
 };
 #endif
