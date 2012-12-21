@@ -1,6 +1,6 @@
 format 75
 "shpimporter"
-  revision 1
+  revision 3
   modified_by 3 "lucien"
 
 
@@ -38,6 +38,8 @@ format 75
 
   mark_for_import
   
+  cpp_h_dir "/Users/lucien/DATA/PRJ/TOOLMAP2/temp_generated"
+  cpp_src_dir "/Users/lucien/DATA/PRJ/TOOLMAP2/temp_generated"
   classview 128003 "shpimporter"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -75,10 +77,10 @@ ${inlines}
 	public explicit_return_type ""
 	nparams 2
 	  param in name "layerpath" explicit_type "wxString"
-	  param in name "database" explicit_type "wxString"
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw};
+	  param in name "database" explicit_type "DataBase"
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}, ${t1} * ${p1}${v1}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}${)}${throw} {
   ${body}}
 "
 	
@@ -140,8 +142,8 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 128131 "m_DatabaseName"
-	private explicit_type "wxFileName"
+      attribute 128131 "m_Database"
+	private explicit_type "DataBase *"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -157,20 +159,11 @@ ${inlines}
 "
 	    classrelation_ref 128003 // m_Kind (<directional composition>)
 	  b parent class_ref 128131 // siKind
+	get_oper operation_ref 135427 // get_m_Kind
       end
 
       attribute 128259 "m_LayerIndexOut"
 	private explicit_type "long"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 128387 "m_LayerTypeNameOut"
-	private explicit_type "wxString"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -188,6 +181,58 @@ ${inlines}
 	    classrelation_ref 128131 // m_Attributs (<directional composition>)
 	  b parent class_ref 128259 // siAttribut
       end
+
+      operation 135427 "get_m_Kind"
+	force_body_gen public return_type class_ref 128131 // siKind
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_Kind;
+}
+"
+	cpp_name_spec "GetKindRef"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_relation classrelation_ref 128003 // m_Kind (<directional composition>)
+      end
+
+      classrelation 134659 // m_LayerType (<directional composition>)
+	relation 134659 *-->
+	  a role_name "m_LayerType" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 134659 // m_LayerType (<directional composition>)
+	  b parent class_ref 134787 // SILAYER_TYPE
+	get_oper operation_ref 135683 // GetLayerType
+      end
+
+      operation 135683 "GetLayerType"
+	force_body_gen const cpp_inline public return_type class_ref 134787 // SILAYER_TYPE
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_LayerType;
+}
+"
+	cpp_name_spec "GetLayerType"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_relation classrelation_ref 134659 // m_LayerType (<directional composition>)
+      end
     end
 
     class 128131 "siKind"
@@ -204,11 +249,10 @@ ${inlines}
       
       operation 128515 "siKind"
 	public explicit_return_type ""
-	nparams 1
-	  param in name "fieldname" explicit_type "wxString"
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw};
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
   ${body}}
 "
 	
@@ -260,6 +304,31 @@ ${inlines}
 	python_decl ""
 	idl_decl ""
       end
+
+      attribute 135299 "m_CodesRealOut"
+	private explicit_type "wxArrayLong"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 135555 "LoadFromTxt"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "kindtxt" explicit_type "wxString"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 128259 "siAttribut"
@@ -300,6 +369,417 @@ ${inlines}
 	
 	
 	
+      end
+
+      attribute 135811 "m_AttributNameIn"
+	private explicit_type "wxString"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135939 "m_AttributNameOut"
+	private explicit_type "wxString"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136067 "m_AttributFilterIDs"
+	private explicit_type "wxArrayLong"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 141187 // m_AttributOperation (<directional composition>)
+	relation 141187 *-->
+	  a role_name "m_AttributOperation" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 141187 // m_AttributOperation (<directional composition>)
+	  b parent class_ref 134915 // SIATTRIBUT_OPERATION
+      end
+
+      classrelation 141315 // m_Values (<directional composition>)
+	relation 141315 *-->
+	  stereotype "list"
+	  a role_name "m_Values" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 141315 // m_Values (<directional composition>)
+	  b parent class_ref 141443 // siAttributValue
+      end
+    end
+
+    class 134787 "SILAYER_TYPE"
+      visibility package stereotype "enum"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+      python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+      idl_decl "${comment}enum ${name} {
+${items}};
+"
+      explicit_switch_type ""
+      
+      attribute 135427 "SILAYER_TYPE_POINT"
+	public type class_ref 134787 // SILAYER_TYPE
+	init_value "0"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135555 "SILAYER_TYPE_LINE"
+	public type class_ref 134787 // SILAYER_TYPE
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 135683 "SILAYER_TYPE_POLYGON"
+	public type class_ref 134787 // SILAYER_TYPE
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 134915 "SIATTRIBUT_OPERATION"
+      visibility package stereotype "enum"
+      cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+      java_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+      php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+      python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+      idl_decl "${comment}enum ${name} {
+${items}};
+"
+      explicit_switch_type ""
+      
+      attribute 136195 "SIATTRIBUT_OPERATION_VALUE"
+	public type class_ref 134915 // SIATTRIBUT_OPERATION
+	init_value "0"
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 136323 "SIATTRIBUT_OPERATION_REPLACE"
+	public type class_ref 134915 // SIATTRIBUT_OPERATION
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143235 "SIATTRIBUT_OPERATION_FIELD"
+	public type class_ref 134915 // SIATTRIBUT_OPERATION
+	cpp_decl "  ${name}${value},${comment}"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 141443 "siAttributValue"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 142211 "siAttributValue"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 142339 "~siAttributValue"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      attribute 142851 "m_ValueIn"
+	private explicit_type "wxString"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 142979 "m_ValueOut"
+	private explicit_type "wxString"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 143107 "m_ValueOutCode"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+  end
+
+  deploymentview 128003 "shpimporter"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 128003 "silayer"
+      stereotype "source"
+      cpp_h "/***************************************************************************
+ ${name}.h
+ -------------------
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef _${NAMESPACE}${NAME}_H_
+#define _${NAMESPACE}${NAME}_H_
+
+// For compilers that support precompilation, includes \"wx/wx.h\".
+#include \"wx/wxprec.h\"
+
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "/***************************************************************************
+ ${name}.cpp
+ -------------------
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 134787 // SILAYER_TYPE
+	class_ref 128003 // siLayer
+      end
+    end
+
+    artifact 128131 "sikind"
+      stereotype "source"
+      cpp_h "/***************************************************************************
+ ${name}.h
+ -------------------
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef _${NAMESPACE}${NAME}_H_
+#define _${NAMESPACE}${NAME}_H_
+
+// For compilers that support precompilation, includes \"wx/wx.h\".
+#include \"wx/wxprec.h\"
+
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "/***************************************************************************
+ ${name}.cpp
+ -------------------
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128131 // siKind
+      end
+    end
+
+    artifact 128259 "siattribut"
+      stereotype "source"
+      cpp_h "/***************************************************************************
+ ${name}.h
+ -------------------
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef _${NAMESPACE}${NAME}_H_
+#define _${NAMESPACE}${NAME}_H_
+
+// For compilers that support precompilation, includes \"wx/wx.h\".
+#include \"wx/wxprec.h\"
+
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "/***************************************************************************
+ ${name}.cpp
+ -------------------
+ copyright            : (C) 2012 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 134915 // SIATTRIBUT_OPERATION
+	class_ref 141443 // siAttributValue
+	class_ref 128259 // siAttribut
       end
     end
   end

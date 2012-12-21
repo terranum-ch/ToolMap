@@ -1,12 +1,16 @@
-window_sizes 1440 852 337 1097 659 136
+window_sizes 1920 1152 337 1577 959 136
 diagrams
   active  classdiagram_ref 128003 // shpimporter
-    1093 639 100 4 0 0
+    1573 939 99 4 0 0
 end
 show_stereotypes
-selected attribute_ref 128771 // m_CodesOut
+selected artifact_ref 128259 // siattribut
 open
-  class_ref 128003 // siLayer
   class_ref 128131 // siKind
+  class_ref 128259 // siAttribut
+  class_ref 134787 // SILAYER_TYPE
+  class_ref 134915 // SIATTRIBUT_OPERATION
+  class_ref 141443 // siAttributValue
+  deploymentview_ref 128003 // shpimporter
 end
 end
