@@ -159,8 +159,9 @@ int main(int argc, char **argv)
     DataBase myDB(_T("./"));
     wxFileName myToolMapProjectName (parser.GetParam(0));
     wxFileName myToolMapProjectNameBkp (parser.GetParam(0) + _T("_bkp"));
-    if (myToolMapProjectNameBkp.Exists() == true) {
-        myToolMapProjectNameBkp.Rmdir(wxPATH_RMDIR_RECURSIVE);
+    wxFileName myDirToRemove (myToolMapProjectNameBkp.GetFullPath(), _T(""), _T(""));
+    if (myDirToRemove.Exists() == true) {
+        myDirToRemove.Rmdir(wxPATH_RMDIR_RECURSIVE);
     }
     if (CopyDir(myToolMapProjectName.GetFullPath(), myToolMapProjectNameBkp.GetFullPath())==false) {
         wxLogError(_("Unable to create project Backup!"));
@@ -169,12 +170,24 @@ int main(int argc, char **argv)
         return 0;
     }
     if (beVerbose) {
-        wxLogMessage(_("Loading data into: %s"), myToolMapProjectNameBkp.GetName());
+        wxLogMessage(_("Loading data into: ") + myToolMapProjectNameBkp.GetName());
     }
   
     
+    wxString mySHPDirectory = parser.GetParam(1);
+    int myNbRuleFiles = parser.GetParamCount() -2;
     
+    wxArrayString myRuleFiles;
+    for (int i = 0; i< myNbRuleFiles; i++) {
+        myRuleFiles.Add(parser.GetParam(i+2));
+        if (beVerbose) {
+            wxLogMessage(_T("rule file: %s"), parser.GetParam(i+2));
+        }
+    }
     
+    if (beVerbose) {
+        wxLogMessage(_("%ld rule files to process!"), myRuleFiles.GetCount());
+    }
     
     return 0;
 }
