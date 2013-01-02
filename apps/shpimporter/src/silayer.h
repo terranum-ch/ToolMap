@@ -49,9 +49,11 @@ private:
     siKind m_Kind;
     siAttribut m_Attributs;
     SILAYER_TYPE m_LayerType;
+    wxString m_LayerTypeName;
     
     int _GetEmptyBlockStop(int startpos);
     bool _LoadRuleIntoArray(int start, int stop, wxArrayString * array);
+    bool _ProcessFeature(OGRFeature * feature);
     
 public:
     siLayer(const wxString & layerpath, DataBase * database);
