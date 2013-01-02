@@ -4,14 +4,17 @@ diagrams
     1573 939 99 4 0 0
 end
 show_stereotypes
-selected operation_ref 149251 // GetParam
+selected operation_ref 156419 // _LoadKindValue
 open
   attribute_ref 128131 // m_Database
   classrelation_ref 134659 // m_LayerType (<directional composition>)
+  operation_ref 155907 // _GetEmptyBlockStop
+  operation_ref 156035 // _LoadRuleIntoArray
   operation_ref 128387 // Process
   attribute_ref 128643 // m_CodesIn
   attribute_ref 128771 // m_CodesOut
   attribute_ref 135299 // m_CodesRealOut
+  operation_ref 156419 // _LoadKindValue
   operation_ref 128643 // ~siKind
   attribute_ref 135811 // m_AttributNameIn
   attribute_ref 135939 // m_AttributNameOut
@@ -22,7 +25,7 @@ open
   class_ref 134915 // SIATTRIBUT_OPERATION
   attribute_ref 142979 // m_ValueOut
   attribute_ref 143107 // m_ValueOutCode
-  class_ref 147971 // siParam
+  operation_ref 155779 // IsEmpty
   deploymentview_ref 128003 // shpimporter
 end
 end

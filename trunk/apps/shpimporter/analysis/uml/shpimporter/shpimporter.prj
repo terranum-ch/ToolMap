@@ -1,6 +1,6 @@
 format 75
 "shpimporter"
-  revision 5
+  revision 6
   modified_by 3 "lucien"
 
 
@@ -131,6 +131,38 @@ ${inlines}
 	    classrelation_ref 134659 // m_LayerType (<directional composition>)
 	  b parent class_ref 134787 // SILAYER_TYPE
 	get_oper operation_ref 135683 // GetLayerType
+      end
+
+      operation 155907 "_GetEmptyBlockStop"
+	private explicit_return_type "int"
+	nparams 1
+	  param in name "startpos" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 156035 "_LoadRuleIntoArray"
+	private explicit_return_type "bool"
+	nparams 3
+	  param in name "start" explicit_type "int"
+	  param in name "stop" explicit_type "int"
+	  param out name "array" explicit_type "wxArrayString"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} * ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} * ${p2}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
 
       operation 128003 "siLayer"
@@ -285,6 +317,21 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      operation 156419 "_LoadKindValue"
+	private explicit_return_type "bool"
+	nparams 1
+	  param in name "kindtxt" explicit_type "wxString"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
       end
 
       operation 128515 "siKind"
@@ -668,6 +715,53 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 156163 "GetParamByCol"
+	public explicit_return_type "wxString"
+	nparams 3
+	  param in name "text" explicit_type "wxString"
+	  param in name "column" explicit_type "int"
+	  param out name "error" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 155779 "IsEmpty"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "text" explicit_type "wxString"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 156291 "GetParamCount"
+	public explicit_return_type "int"
+	nparams 1
+	  param in name "text" explicit_type "wxString"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	

@@ -42,12 +42,16 @@ enum SILAYER_TYPE {
 
 class siLayer {
 private:
+    wxFileName m_RuleFileName;
     wxFileName m_LayerNameIn;
     long m_LayerIndexOut;
     DataBase * m_Database;
     siKind m_Kind;
     siAttribut m_Attributs;
     SILAYER_TYPE m_LayerType;
+    
+    int _GetEmptyBlockStop(int startpos);
+    bool _LoadRuleIntoArray(int start, int stop, wxArrayString * array);
     
 public:
     siLayer(const wxString & layerpath, DataBase * database);

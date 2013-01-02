@@ -39,7 +39,7 @@ wxString siParam::GetParam(const wxString & text, const wxString & paramname, bo
     
     wxStringTokenizer tokenizer(text, m_Separator);
     int myCountToken = tokenizer.CountTokens();
-    if (myCountToken != 2) {
+    if (myCountToken < 2) {
         return wxEmptyString;
     }
         
@@ -54,3 +54,68 @@ wxString siParam::GetParam(const wxString & text, const wxString & paramname, bo
     return myParamValue;
 }
 
+wxString siParam::GetParamByCol(const wxString & text, int column, bool & error) {
+    error = true;
+    if (text.IsEmpty() == true) {
+        return wxEmptyString;
+    }
+    
+    wxStringTokenizer tokenizer(text, m_Separator);
+    wxString myTemp = wxEmptyString;
+    for (unsigned int i = 0; i<= column; i++) {
+        myTemp = tokenizer.GetNextToken();
+    }
+    error = false;
+    return myTemp;
+}
+
+
+
+int siParam::GetParamCount(const wxString & text) {
+    if (text.IsEmpty() == true) {
+        return 0;
+    }
+    
+    wxStringTokenizer tokenizer(text, m_Separator);
+    return tokenizer.CountTokens();
+}
+
+
+/*
+bool siParam::GetParamPeer(const wxString & text, wxString & param1, wxString & param2) {
+    param1 = wxEmptyString;
+    param2 = wxEmptyString;
+    
+    if (text.IsEmpty() == true) {
+        return false;
+    }
+
+    wxStringTokenizer tokenizer(text, m_Separator);
+    if (tokenizer.CountTokens() < 3) {
+        return false;
+    }
+    
+    if (tokenizer.GetNextToken() != wxEmptyString) {
+        wxLogWarning(_("First Column should be empty!"));
+    }
+    
+    param1 = tokenizer.GetNextToken();
+    param2 = tokenizer.GetNextToken();
+    return true;
+}
+*/
+
+
+bool siParam::IsEmpty(const wxString & text) {
+    if (text.IsEmpty()) {
+        return true;
+    }
+    
+    wxStringTokenizer tokenizer(text, m_Separator);
+    while (tokenizer.HasMoreTokens()) {
+        if (tokenizer.GetNextToken().IsEmpty() != true) {
+            return false;
+        }
+    }
+    return true;
+}
