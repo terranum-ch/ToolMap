@@ -22,7 +22,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
+#include "database.h"
+#include "databaseresult.h"
 
 class siKind {
 private:
@@ -30,12 +31,15 @@ private:
     wxArrayLong m_CodesIn;
     wxArrayLong m_CodesOut;
     wxArrayLong m_CodesRealOut;
+    DataBase * m_Database;
     
-    
+    bool _LoadKindValue(const wxString & kindtxt);
+
 public:
     siKind();
     virtual ~siKind();
     
-    bool LoadFromArray(const wxArrayString & kindtxt);
+    bool LoadFromArray(const wxArrayString & kindtxt, DataBase * database);
+    void Reset();
 };
 #endif

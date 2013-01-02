@@ -35,5 +35,10 @@ public:
     virtual ~siParam();
     
     wxString GetParam(const wxString & text, const wxString & paramname, bool & error);
+    //bool GetParamPeer(const wxString & text, wxString & param1, wxString & param2);
+    wxString GetParamByCol(const wxString & text, int column, bool & error);
+    int GetParamCount(const wxString & text);
+    bool IsEmpty(const wxString & text);
+
 };
 #endif

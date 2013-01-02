@@ -15,19 +15,88 @@
  ***************************************************************************/
 
 #include "sikind.h"
+#include "siparam.h"
 
 siKind::siKind() {
+    Reset();
 }
-
 
 
 siKind::~siKind() {
 }
 
 
+void siKind::Reset(){
+    m_KindNameIn = wxEmptyString;
+    m_CodesIn.Clear();
+    m_CodesOut.Clear();
+    m_CodesRealOut.Clear();
+    m_Database = NULL;
+}
 
-bool siKind::LoadFromArray(const wxArrayString & kindtxt) {
-    return false;
+
+bool siKind::_LoadKindValue(const wxString & kindtxt) {
+    siParam myParam;
+    bool bError = false;
+    
+    long myCodeIn = wxNOT_FOUND;
+    myParam.GetParamByCol(kindtxt, 0, bError).ToLong(&myCodeIn);
+    if (bError == true) {
+        return false;
+    }
+    
+    long myCodeOut = wxNOT_FOUND;
+    myParam.GetParamByCol(kindtxt, 1, bError).ToLong(&myCodeOut);
+    if (bError == true) {
+        return false;
+    }
+    
+    // get real database ID;
+    wxASSERT(m_Database);
+    if (m_Database->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM dmn_Layer_object WHERE OBJECT_CD = %ld"), myCodeOut))==false) {
+        return false;
+    }
+    DataBaseResult myResult;
+    m_Database->DataBaseGetResults(&myResult);
+    if (myResult.GetRowCount() != 1) {
+        return false;
+    }
+    
+    myResult.NextRow();
+    long myCodeOutReal = wxNOT_FOUND;
+    myResult.GetValue(0, myCodeOutReal);
+    
+    m_CodesIn.Add(myCodeIn);
+    m_CodesOut.Add(myCodeOut);
+    m_CodesRealOut.Add(myCodeOutReal);
+    return true;
+}
+
+
+bool siKind::LoadFromArray(const wxArrayString & kindtxt, DataBase * database) {
+    // line 0 is fieldName and then next lines are codes!
+    Reset();
+    m_Database = database;
+    if (kindtxt.GetCount() == 0) {
+        return false;
+    }
+    
+    siParam myParam;
+    bool bError = false;
+    m_KindNameIn = myParam.GetParam(kindtxt.Item(0), _T("KIND_IN"), bError);
+    if (bError == true) {
+        wxLogError(_("Unable to get KIND_IN"));
+        return false;
+    }
+    wxLogMessage(_("KIND_IN field is %s"), m_KindNameIn);
+    
+    // get kind values line 1 to GetCount(), and search real kind id;
+    for (unsigned int i = 1; i< kindtxt.GetCount(); i++) {
+        if (_LoadKindValue(kindtxt.Item(i))==false) {
+            wxLogError(_("Error loading kind value from: %s"), kindtxt.Item(i));
+        }
+    }
+    return true;
 }
 
 

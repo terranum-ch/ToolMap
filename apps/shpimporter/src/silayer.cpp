@@ -31,8 +31,53 @@ siLayer::~siLayer() {
 }
 
 
+int siLayer::_GetEmptyBlockStop(int startpos) {
+    wxTextFile myFile (m_RuleFileName.GetFullPath());
+    if (myFile.Open() == false) {
+        return wxNOT_FOUND;
+    }
+    
+    int iStopPos = wxNOT_FOUND;
+    siParam myParam;
+    for (unsigned int i = startpos; i< myFile.GetLineCount(); i++) {
+        if (myParam.IsEmpty(myFile.GetLine(i))== true) {
+            iStopPos = i;
+            break;
+        }
+    }
+    myFile.Close();
+    return iStopPos;
+}
+
+
+
+bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString * array) {
+    if (array == NULL) {
+        return false;
+    }
+    array->Clear();
+    
+    if (stop < start) {
+        wxLogError(_("Unable to load data into array, start and stop incorrect!"));
+        return false;
+    }
+    
+    wxTextFile myFile (m_RuleFileName.GetFullPath());
+    if (myFile.Open() == false) {
+        return false;
+    }
+    
+    for (unsigned int i = start; i< stop ; i++) {
+        array->Add(myFile.GetLine(i));
+    }
+    myFile.Close();
+    return true;
+}
+
+
 
 bool siLayer::LoadFromFile(const wxString & filename) {
+    m_RuleFileName = wxFileName(filename);
     wxTextFile myFile (filename);
     if(myFile.Open()==false){
         wxLogError(_("Unable to open: %s"), filename);
@@ -79,6 +124,7 @@ bool siLayer::LoadFromFile(const wxString & filename) {
     if(m_Database->DataBaseGetNextResult(m_LayerIndexOut)==false){
         return false;
     }
+    m_Database->DataBaseClearResults();
     
     if (myLayerOutTypeTxt == _T("generic_points")) {
         m_LayerType = SILAYER_TYPE_POINT;
@@ -87,8 +133,22 @@ bool siLayer::LoadFromFile(const wxString & filename) {
     }else if (myLayerOutTypeTxt == _T("generic_labels")){
         m_LayerType = SILAYER_TYPE_POLYGON;
     }
-    
     wxLogMessage(_("Layer in is: %s (ID: %ld)"), m_LayerNameIn.GetFullName(), m_LayerIndexOut);
+    
+    // load kind
+    int iKindStart = 4;
+    int iKindStop = _GetEmptyBlockStop(iKindStart);
+    wxLogMessage(_("Kind found starting from %d to %d"), iKindStart, iKindStop);
+    
+    wxArrayString myKindDef;
+    if (_LoadRuleIntoArray(iKindStart, iKindStop, &myKindDef)==false) {
+        return false;
+    }
+    
+    if(m_Kind.LoadFromArray(myKindDef,m_Database)==false){
+        wxLogError(_("Loading Kind failed!"));
+        return false;
+    }
     
     return true;
 }
