@@ -69,6 +69,7 @@ bool siKind::_LoadKindValue(const wxString & kindtxt) {
     m_CodesIn.Add(myCodeIn);
     m_CodesOut.Add(myCodeOut);
     m_CodesRealOut.Add(myCodeOutReal);
+    wxLogDebug(_("Adding Kind code: %ld -> %ld (Real ID: %ld)"), myCodeIn, myCodeOut, myCodeOutReal);
     return true;
 }
 

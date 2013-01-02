@@ -174,6 +174,7 @@ int main(int argc, char **argv)
         wxLogMessage(_("Loading data into: ") + myToolMapProjectNameBkp.GetName());
     }
   
+    OGRRegisterAll();
     
     wxString mySHPDirectory = parser.GetParam(1);
     int myNbRuleFiles = parser.GetParamCount() -2;
@@ -194,10 +195,14 @@ int main(int argc, char **argv)
     for (unsigned int i = 0; i< myRuleFiles.GetCount(); i++) {
         siLayer myLayer (mySHPDirectory, &myDB);
         if(myLayer.LoadFromFile(myRuleFiles.Item(i))==false){
-            wxLogError(_("Error processing : %s"), myRuleFiles.Item(i));
+            wxLogError(_("Loading '%s' failed!"), myRuleFiles.Item(i));
             continue;
         }
-        // TODO: Here process!
+        
+        if (myLayer.Process() == false) {
+            wxLogError(_("Processing '%s' failed!"), myRuleFiles.Item(i));
+        }
+        
     }
     return 0;
 }

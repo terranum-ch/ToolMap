@@ -23,6 +23,7 @@ siLayer::siLayer(const wxString & layerpath, DataBase * database) {
     m_LayerNameIn.SetPath(layerpath);
     m_LayerIndexOut = wxNOT_FOUND;
     m_LayerType = SILAYER_TYPE_UNKNOWN;
+    m_LayerTypeName = wxEmptyString;
 }
 
 
@@ -71,6 +72,25 @@ bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString * array) {
         array->Add(myFile.GetLine(i));
     }
     myFile.Close();
+    return true;
+}
+
+
+
+bool siLayer::_ProcessFeature(OGRFeature * feature) {
+    // copy geometry
+    char    *pszWKT = NULL;
+    feature->GetGeometryRef()->exportToWkt(&pszWKT);
+    wxString myTxtGeometry (pszWKT);
+    OGRFree(pszWKT);
+    
+    wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");
+    if (m_Database->DataBaseQueryNoResults(wxString::Format(myQuery, m_LayerTypeName, myTxtGeometry))==false){
+        return false;
+    }
+    
+    long myDatabaseId = m_Database->DataBaseGetLastInsertedID();
+    wxLogMessage(_("Last ID: %ld"), myDatabaseId);
     return true;
 }
 
@@ -133,6 +153,7 @@ bool siLayer::LoadFromFile(const wxString & filename) {
     }else if (myLayerOutTypeTxt == _T("generic_labels")){
         m_LayerType = SILAYER_TYPE_POLYGON;
     }
+    m_LayerTypeName = myLayerOutTypeTxt;
     wxLogMessage(_("Layer in is: %s (ID: %ld)"), m_LayerNameIn.GetFullName(), m_LayerIndexOut);
     
     // load kind
@@ -156,7 +177,32 @@ bool siLayer::LoadFromFile(const wxString & filename) {
 
 
 bool siLayer::Process() {
-    return false;
+    OGRDataSource * pods = OGRSFDriverRegistrar::Open((const char*) m_LayerNameIn.GetFullPath().mb_str(wxConvUTF8), false);
+    if (pods == NULL) {
+        wxLogError(_("Opening %s failed!"), m_LayerNameIn.GetFullName());
+        return false;
+    }
+    OGRLayer * poLayer = pods->GetLayer(0);
+    if (poLayer == NULL) {
+        wxLogError(_("Opening layer in %s failed!"), m_LayerNameIn.GetFullName());
+        OGRDataSource::DestroyDataSource(pods);
+        return false;
+    }
+    
+    long myFeatureCount = poLayer->GetFeatureCount();
+    wxLogMessage(_("%ld Features to process into %s"), myFeatureCount, m_LayerNameIn.GetFullName());
+    
+    OGRFeature *poFeature;
+    poLayer->ResetReading();
+    while( (poFeature = poLayer->GetNextFeature()) != NULL ){
+        wxASSERT(poFeature);
+        if (_ProcessFeature(poFeature)==false) {
+            wxLogError(_("Processing feature %ld Failed!"), poFeature->GetFID());
+        }
+        OGRFeature::DestroyFeature(poFeature);
+    }
+    OGRDataSource::DestroyDataSource(pods);
+    return true;
 }
 
 
