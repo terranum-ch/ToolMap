@@ -26,7 +26,7 @@ siKind::~siKind() {
 
 
 
-bool siKind::LoadFromTxt(const wxString & kindtxt) {
+bool siKind::LoadFromArray(const wxArrayString & kindtxt) {
     return false;
 }
 

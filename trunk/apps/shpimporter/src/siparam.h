@@ -1,5 +1,5 @@
 /***************************************************************************
- sikind.h
+ siparam.h
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -13,29 +13,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _SIKIND_H_
-#define _SIKIND_H_
+#ifndef _SIPARAM_H_
+#define _SIPARAM_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/tokenzr.h>
 
 
-class siKind {
+class siParam {
 private:
-    wxString m_KindNameIn;
-    wxArrayLong m_CodesIn;
-    wxArrayLong m_CodesOut;
-    wxArrayLong m_CodesRealOut;
-    
+    wxString m_Separator;
     
 public:
-    siKind();
-    virtual ~siKind();
+    siParam(const wxString & separator = _T("\t"));
+    virtual ~siParam();
     
-    bool LoadFromArray(const wxArrayString & kindtxt);
+    wxString GetParam(const wxString & text, const wxString & paramname, bool & error);
 };
 #endif

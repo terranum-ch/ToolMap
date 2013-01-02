@@ -12,6 +12,7 @@
 #include <wx/filename.h>
 
 #include "database.h"
+#include "silayer.h"
 
 
 
@@ -189,5 +190,14 @@ int main(int argc, char **argv)
         wxLogMessage(_("%ld rule files to process!"), myRuleFiles.GetCount());
     }
     
+    // loading and processing
+    for (unsigned int i = 0; i< myRuleFiles.GetCount(); i++) {
+        siLayer myLayer (mySHPDirectory, &myDB);
+        if(myLayer.LoadFromFile(myRuleFiles.Item(i))==false){
+            wxLogError(_("Error processing : %s"), myRuleFiles.Item(i));
+            continue;
+        }
+        // TODO: Here process!
+    }
     return 0;
 }

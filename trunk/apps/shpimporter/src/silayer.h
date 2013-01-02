@@ -24,6 +24,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/filename.h>
+#include <wx/textfile.h>
+
 
 #include "sikind.h"
 #include "siattribut.h"
@@ -33,8 +35,8 @@
 enum SILAYER_TYPE {
     SILAYER_TYPE_POINT = 0,
     SILAYER_TYPE_LINE,
-    SILAYER_TYPE_POLYGON
-    
+    SILAYER_TYPE_POLYGON,
+    SILAYER_TYPE_UNKNOWN = -1
 };
 
 
@@ -51,7 +53,7 @@ public:
     siLayer(const wxString & layerpath, DataBase * database);
     virtual ~siLayer();
     
-    bool LoadFromTxt(const wxString & text);
+    bool LoadFromFile(const wxString & filename);
     bool Process();
     
     const siKind GetKindRef();
