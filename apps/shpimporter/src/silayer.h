@@ -50,6 +50,7 @@ private:
     siAttribut m_Attributs;
     SILAYER_TYPE m_LayerType;
     wxString m_LayerTypeName;
+    long m_ProcessFeatureSkipped;
     
     int _GetEmptyBlockStop(int startpos);
     bool _LoadRuleIntoArray(int start, int stop, wxArrayString * array);

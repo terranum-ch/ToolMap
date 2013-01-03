@@ -78,6 +78,14 @@ bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString * array) {
 
 
 bool siLayer::_ProcessFeature(OGRFeature * feature) {
+    // check if kind exists otherwise ignore feature
+    long myshpkind = feature->GetFieldAsInteger((const char *) m_Kind.GetKindNameIn().mb_str(wxConvUTF8));
+    long myDbKind = m_Kind.GetRealKind(myshpkind);
+    if (myDbKind == wxNOT_FOUND) {
+        m_ProcessFeatureSkipped++;
+        return true;
+    }
+
     // copy geometry
     char    *pszWKT = NULL;
     feature->GetGeometryRef()->exportToWkt(&pszWKT);
@@ -89,8 +97,36 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         return false;
     }
     
+    // migrate KIND
     long myDatabaseId = m_Database->DataBaseGetLastInsertedID();
-    wxLogMessage(_("Last ID: %ld"), myDatabaseId);
+    if (myDbKind == wxNOT_FOUND) {
+        wxLogError(_("Error getting Kind for FID: %ld (Kind searched: %ld)"), myDatabaseId, myshpkind);
+        return false;
+    }
+    
+    wxString myLayerAAT = wxEmptyString;
+    switch (m_LayerType) {
+        case SILAYER_TYPE_LINE:
+            myLayerAAT = _T("generic_aat");
+            break;
+            
+        case SILAYER_TYPE_POINT:
+            myLayerAAT = _T("generic_pat");
+            break;
+            
+        default:
+            myLayerAAT = _T("generic_lat");
+            break;
+    }
+    
+    myQuery = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld)"), myLayerAAT, myDbKind, myDatabaseId);
+    if (m_Database->DataBaseQueryNoResults(myQuery)==false) {
+        wxLogError(_("Adding Kind for feature %ld Failed"), myDatabaseId);
+        return false;
+    }
+    
+    // TODO: Here process attributs!!!!
+
     return true;
 }
 
@@ -177,6 +213,7 @@ bool siLayer::LoadFromFile(const wxString & filename) {
 
 
 bool siLayer::Process() {
+    m_ProcessFeatureSkipped = 0;
     OGRDataSource * pods = OGRSFDriverRegistrar::Open((const char*) m_LayerNameIn.GetFullPath().mb_str(wxConvUTF8), false);
     if (pods == NULL) {
         wxLogError(_("Opening %s failed!"), m_LayerNameIn.GetFullName());
@@ -202,6 +239,7 @@ bool siLayer::Process() {
         OGRFeature::DestroyFeature(poFeature);
     }
     OGRDataSource::DestroyDataSource(pods);
+    wxLogMessage(_("%ld feature processed (%ld skipped!)"), myFeatureCount-m_ProcessFeatureSkipped, m_ProcessFeatureSkipped);
     return true;
 }
 

@@ -1,6 +1,6 @@
 format 75
 "shpimporter"
-  revision 7
+  revision 8
   modified_by 3 "lucien"
 
 
@@ -302,6 +302,7 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	get_oper operation_ref 169603 // GetKindNameIn
       end
 
       attribute 128643 "m_CodesIn"
@@ -390,6 +391,42 @@ ${inlines}
 	
 	
 	
+      end
+
+      operation 169475 "GetRealKind"
+	public explicit_return_type "long"
+	nparams 1
+	  param in name "kindin" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 169603 "GetKindNameIn"
+	force_body_gen const cpp_inline public explicit_return_type "wxString"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_KindNameIn;
+}
+"
+	cpp_name_spec "GetKindNameIn"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 128515 // m_KindNameIn
       end
     end
 
