@@ -101,3 +101,12 @@ bool siKind::LoadFromArray(const wxArrayString & kindtxt, DataBase * database) {
 }
 
 
+long siKind::GetRealKind(long kindin) {
+    for (unsigned int i = 0; i < m_CodesIn.GetCount(); i++) {
+        if (m_CodesIn.Item(i) == kindin) {
+            return m_CodesRealOut.Item(i);
+        }
+    }
+    return wxNOT_FOUND;
+}
+

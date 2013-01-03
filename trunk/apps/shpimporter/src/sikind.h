@@ -34,12 +34,20 @@ private:
     DataBase * m_Database;
     
     bool _LoadKindValue(const wxString & kindtxt);
-
+    
 public:
     siKind();
     virtual ~siKind();
     
     bool LoadFromArray(const wxArrayString & kindtxt, DataBase * database);
     void Reset();
+    
+    long GetRealKind(long kindin);
+    inline const wxString GetKindNameIn() const;
 };
+
+
+inline const wxString siKind::GetKindNameIn() const {
+    return m_KindNameIn;
+}
 #endif

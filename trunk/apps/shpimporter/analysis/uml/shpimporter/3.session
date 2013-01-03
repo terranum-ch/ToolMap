@@ -1,10 +1,10 @@
-window_sizes 1920 1152 337 1577 959 136
+window_sizes 1440 852 337 1097 725 70
 diagrams
   active  classdiagram_ref 128003 // shpimporter
-    1573 939 99 4 0 0
+    1573 939 89 4 29 0
 end
 show_stereotypes
-selected operation_ref 135683 // GetLayerType
+selected operation_ref 169603 // GetKindNameIn
 open
   attribute_ref 128131 // m_Database
   classrelation_ref 134659 // m_LayerType (<directional composition>)
