@@ -40,6 +40,11 @@ wxString siParam::GetParam(const wxString & text, const wxString & paramname, bo
     wxStringTokenizer tokenizer(text, m_Separator);
     int myCountToken = tokenizer.CountTokens();
     if (myCountToken < 2) {
+        if (myCountToken == 1) {
+            if(tokenizer.GetNextToken() == paramname){
+                error = false;
+            }
+        }
         return wxEmptyString;
     }
         

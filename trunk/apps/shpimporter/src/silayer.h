@@ -47,7 +47,7 @@ private:
     long m_LayerIndexOut;
     DataBase * m_Database;
     siKind m_Kind;
-    siAttribut m_Attributs;
+    siAttributArray m_Attributs;
     SILAYER_TYPE m_LayerType;
     wxString m_LayerTypeName;
     long m_ProcessFeatureSkipped;
@@ -55,6 +55,7 @@ private:
     int _GetEmptyBlockStop(int startpos);
     bool _LoadRuleIntoArray(int start, int stop, wxArrayString * array);
     bool _ProcessFeature(OGRFeature * feature);
+    void _ClearAttributArray();
     
 public:
     siLayer(const wxString & layerpath, DataBase * database);
