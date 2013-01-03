@@ -45,6 +45,11 @@ int siLayer::_GetEmptyBlockStop(int startpos) {
             iStopPos = i;
             break;
         }
+        // last line
+        if (i == myFile.GetLineCount() -1) {
+            iStopPos = i+1;
+            break;
+        }
     }
     myFile.Close();
     return iStopPos;
@@ -132,8 +137,23 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
 
 
 
+void siLayer::_ClearAttributArray() {
+    int iNbItem = m_Attributs.GetCount();
+    for (int i = iNbItem-1; i >= 0; i--) {
+        siAttribut * myAttribut = m_Attributs.Item(i);
+        wxASSERT(myAttribut);
+        wxDELETE(myAttribut);
+        m_Attributs.RemoveAt(i);
+    }
+    wxASSERT(m_Attributs.GetCount() == 0);
+}
+
+
+
 bool siLayer::LoadFromFile(const wxString & filename) {
     m_RuleFileName = wxFileName(filename);
+    _ClearAttributArray();
+    
     wxTextFile myFile (filename);
     if(myFile.Open()==false){
         wxLogError(_("Unable to open: %s"), filename);
@@ -207,6 +227,30 @@ bool siLayer::LoadFromFile(const wxString & filename) {
         return false;
     }
     
+    // load attributs
+    int iAttributStart = wxNOT_FOUND;
+    int iAttributStop = iKindStop;
+    wxArrayString myAttributArray;
+    while (1) {
+        iAttributStart = iAttributStop+1;
+        iAttributStop = _GetEmptyBlockStop(iAttributStart);
+        if (iAttributStart == iAttributStop || iAttributStop == wxNOT_FOUND) {
+            break;
+        }
+        
+        wxLogMessage(_("Loading attribut from (line %d, to line %d)"), iAttributStart, iAttributStop);
+        if(_LoadRuleIntoArray(iAttributStart, iAttributStop, &myAttributArray)==false){
+            wxLogError(_("Loading attribut failed!"));
+            continue;
+        }
+        
+        siAttribut * myAttribut = new siAttribut();
+        if(myAttribut->LoadFromArray(myAttributArray)==false){
+            wxLogError(_("Loading attribut failed!"));
+            continue;
+        }
+        m_Attributs.Add(myAttribut);
+    }
     return true;
 }
 

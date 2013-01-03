@@ -28,8 +28,8 @@
 enum SIATTRIBUT_OPERATION {
     SIATTRIBUT_OPERATION_VALUE = 0,
     SIATTRIBUT_OPERATION_REPLACE,
-    SIATTRIBUT_OPERATION_FIELD
-    
+    SIATTRIBUT_OPERATION_FIELD,
+    SIATTRIBUT_OPERATION_UNKNOWN = -1
 };
 
 
@@ -43,6 +43,8 @@ public:
     long m_ValueOutCode;
 };
 
+WX_DECLARE_OBJARRAY(siAttributValue*, siAttributValueArray);
+
 
 class siAttribut {
 private:
@@ -50,12 +52,19 @@ private:
     wxString m_AttributNameOut;
     wxArrayLong m_AttributFilterIDs;
     SIATTRIBUT_OPERATION m_AttributOperation;
-    siAttributValue m_Values;
+    siAttributValueArray m_Values;
     
+    void _ClearAttributValueArray();
     
 public:
     siAttribut();
     virtual ~siAttribut();
     
+    bool LoadFromArray(const wxArrayString & attribtxt);
+    void Reset();
 };
+
+WX_DECLARE_OBJARRAY(siAttribut*, siAttributArray);
+
+
 #endif
