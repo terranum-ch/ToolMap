@@ -1,6 +1,6 @@
 format 75
 "shpimporter"
-  revision 11
+  revision 13
   modified_by 3 "lucien"
 
 
@@ -536,6 +536,21 @@ ${inlines}
 	
       end
 
+      operation 196867 "_GetIDForValueIn"
+	private explicit_return_type "long"
+	nparams 1
+	  param in name "valueintxt" explicit_type "wxString"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 128771 "siAttribut"
 	public explicit_return_type ""
 	nparams 0
@@ -685,6 +700,23 @@ ${inlines}
 	idl_name_spec "get_${name}"
 	get_of_attribute attribute_ref 156291 // m_AttributIDReal
       end
+
+      operation 190211 "Process"
+	public explicit_return_type "bool"
+	nparams 3
+	  param in name "feature" explicit_type "OGRFeature"
+	  param in name "layerindex" explicit_type "long"
+	  param in name "databaseid" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 134787 "SILAYER_TYPE"
@@ -811,6 +843,7 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	get_oper operation_ref 196995 // GetValueIn
       end
 
       attribute 142979 "m_ValueOut"
@@ -831,6 +864,7 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	get_oper operation_ref 190339 // GetValueOutCode
       end
 
       operation 183427 "_LoadOperationValue"
@@ -911,6 +945,48 @@ ${inlines}
 	
 	
 	
+      end
+
+      operation 190339 "GetValueOutCode"
+	force_body_gen const cpp_inline public explicit_return_type "long"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_ValueOutCode;
+}
+"
+	cpp_name_spec "GetValueOutCode"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 143107 // m_ValueOutCode
+      end
+
+      operation 196995 "GetValueIn"
+	force_body_gen const cpp_inline public explicit_return_type "wxString"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_ValueIn;
+}
+"
+	cpp_name_spec "GetValueIn"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 142851 // m_ValueIn
       end
     end
 
