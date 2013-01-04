@@ -245,7 +245,7 @@ bool siLayer::LoadFromFile(const wxString & filename) {
         }
         
         siAttribut * myAttribut = new siAttribut();
-        if(myAttribut->LoadFromArray(myAttributArray)==false){
+        if(myAttribut->LoadFromArray(myAttributArray, m_Database, m_LayerIndexOut)==false){
             wxLogError(_("Loading attribut failed!"));
             continue;
         }

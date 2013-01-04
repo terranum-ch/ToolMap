@@ -1,10 +1,10 @@
-window_sizes 1920 1032 337 1577 905 70
+window_sizes 1920 1152 337 1577 1025 70
 diagrams
   active  classdiagram_ref 128003 // shpimporter
-    1573 885 89 4 29 0
+    1573 885 89 3 0 0
 end
 show_stereotypes
-selected operation_ref 135683 // GetLayerType
+selected operation_ref 183555 // _LoadOperationReplace
 open
   attribute_ref 128131 // m_Database
   classrelation_ref 134659 // m_LayerType (<directional composition>)
@@ -20,13 +20,16 @@ open
   attribute_ref 135811 // m_AttributNameIn
   attribute_ref 135939 // m_AttributNameOut
   attribute_ref 136067 // m_AttributFilterIDs
+  attribute_ref 156291 // m_AttributIDReal
   classrelation_ref 141187 // m_AttributOperation (<directional composition>)
-  classrelation_ref 141315 // m_Values (<directional composition>)
+  classrelation_ref 141315 // m_Values (<association>)
   operation_ref 176131 // _ClearAttributValueArray
   class_ref 134787 // SILAYER_TYPE
   class_ref 134915 // SIATTRIBUT_OPERATION
   attribute_ref 142979 // m_ValueOut
   attribute_ref 143107 // m_ValueOutCode
+  operation_ref 142339 // ~siAttributValue
+  operation_ref 182787 // LoadFromText
   operation_ref 155779 // IsEmpty
   deploymentview_ref 128003 // shpimporter
 end

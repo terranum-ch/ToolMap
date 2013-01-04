@@ -1,6 +1,6 @@
 format 75
 "shpimporter"
-  revision 9
+  revision 11
   modified_by 3 "lucien"
 
 
@@ -58,7 +58,7 @@ format 75
     show_infonote default drawing_language default show_stereotype_properties default
     classdiagram 128003 "shpimporter"
       draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition yes show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      size A4
+      size A3
     end
 
     class 128003 "siLayer"
@@ -464,6 +464,7 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	get_oper operation_ref 183043 // GetAttributNameIn
       end
 
       attribute 135939 "m_AttributNameOut"
@@ -474,6 +475,7 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	get_oper operation_ref 183171 // GetAttributNameOut
       end
 
       attribute 136067 "m_AttributFilterIDs"
@@ -484,6 +486,18 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	get_oper operation_ref 183299 // GetAttributFilterIDsRef
+      end
+
+      attribute 156291 "m_AttributIDReal"
+	private explicit_type "long"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	get_oper operation_ref 183683 // GetAttributIDReal
       end
 
       classrelation 141187 // m_AttributOperation (<directional composition>)
@@ -493,16 +507,19 @@ ${inlines}
 "
 	    classrelation_ref 141187 // m_AttributOperation (<directional composition>)
 	  b parent class_ref 134915 // SIATTRIBUT_OPERATION
+	get_oper operation_ref 182915 // GetAttributOperation
       end
 
-      classrelation 141315 // m_Values (<directional composition>)
-	relation 141315 *-->
-	  stereotype "list"
+      classrelation 141315 // m_Values (<association>)
+	relation 141315 ----
 	  a role_name "m_Values" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 141315 // m_Values (<directional composition>)
-	  b parent class_ref 141443 // siAttributValue
+	    classrelation_ref 141315 // m_Values (<association>)
+	  b role_name "m_ParentAttribut" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 147843 // m_ParentAttribut (<association>)
       end
 
       operation 176131 "_ClearAttributValueArray"
@@ -549,17 +566,124 @@ ${inlines}
 
       operation 148867 "LoadFromArray"
 	public explicit_return_type "bool"
-	nparams 1
+	nparams 3
 	  param in name "attribtxt" explicit_type "wxArrayString"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "database" explicit_type "DataBase"
+	  param in name "layerindex" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
 	
 	
 	
+      end
+
+      operation 182915 "GetAttributOperation"
+	force_body_gen const cpp_inline public return_type class_ref 134915 // SIATTRIBUT_OPERATION
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_AttributOperation;
+}
+"
+	cpp_name_spec "GetAttributOperation"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_relation classrelation_ref 141187 // m_AttributOperation (<directional composition>)
+      end
+
+      operation 183043 "GetAttributNameIn"
+	force_body_gen const cpp_inline public explicit_return_type "wxString"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_AttributNameIn;
+}
+"
+	cpp_name_spec "GetAttributNameIn"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 135811 // m_AttributNameIn
+      end
+
+      operation 183171 "GetAttributNameOut"
+	force_body_gen const cpp_inline public explicit_return_type "wxString"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_AttributNameOut;
+}
+"
+	cpp_name_spec "GetAttributNameOut"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 135939 // m_AttributNameOut
+      end
+
+      operation 183299 "GetAttributFilterIDsRef"
+	force_body_gen public explicit_return_type "wxArrayLong"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_AttributFilterIDs;
+}
+"
+	cpp_name_spec "GetAttributFilterIDsRef"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 136067 // m_AttributFilterIDs
+      end
+
+      operation 183683 "GetAttributIDReal"
+	force_body_gen const cpp_inline public explicit_return_type "long"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} ${name}${(}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}const ${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return m_AttributIDReal;
+}
+"
+	cpp_name_spec "GetAttributIDReal"
+	final 
+	java_name_spec "get${Name}"
+	php_final 
+	php_name_spec "get${Name}"
+	
+	python_name_spec "get${Name}"
+	
+	idl_name_spec "get_${name}"
+	get_of_attribute attribute_ref 156291 // m_AttributIDReal
       end
     end
 
@@ -675,6 +799,10 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      classrelation 147843 // m_ParentAttribut (<association>)
+	relation_ref 141315 // <association>
+      end
+
       attribute 142851 "m_ValueIn"
 	private explicit_type "wxString"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -705,12 +833,47 @@ ${inlines}
 	idl_decl ""
       end
 
+      operation 183427 "_LoadOperationValue"
+	private explicit_return_type "bool"
+	nparams 3
+	  param in name "text" explicit_type "wxString"
+	  param in name "database" explicit_type "DataBase"
+	  param in name "layerindex" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 183555 "_LoadOperationReplace"
+	private explicit_return_type "bool"
+	nparams 3
+	  param in name "text" explicit_type "wxString"
+	  param in name "database" explicit_type "DataBase"
+	  param in name "layerindex" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 142211 "siAttributValue"
 	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+	nparams 1
+	  param in name "parent" type class_ref 128259 // siAttribut
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${v0}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} * ${p0}${)}${throw} {
   ${body}}
 "
 	
@@ -725,6 +888,23 @@ ${inlines}
 	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 182787 "LoadFromText"
+	public explicit_return_type "bool"
+	nparams 3
+	  param in name "text" explicit_type "wxString"
+	  param in name "database" explicit_type "DataBase"
+	  param in name "layerindex" explicit_type "long"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} * ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
