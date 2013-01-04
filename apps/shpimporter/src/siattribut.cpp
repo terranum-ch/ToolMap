@@ -40,7 +40,7 @@ bool siAttributValue::_GetCatalogDatabaseID (DataBase * database){
         return false;
     }
     database->DataBaseClearResults();
-    wxLogDebug(_("Attribut '%s' loaded (ID is %ld)"),m_ValueOut, m_ValueOutCode);
+    //wxLogDebug(_("Attribut '%s' loaded (ID is %ld)"),m_ValueOut, m_ValueOutCode);
     return true;
 }
 
@@ -127,6 +127,18 @@ void siAttribut::_ClearAttributValueArray() {
 
 
 
+long siAttribut::_GetIDForValueIn(const wxString & valueintxt) {
+    for (unsigned int i = 0; i< m_Values.GetCount(); i++) {
+        siAttributValue * myValue = m_Values.Item(i);
+        wxASSERT(myValue);
+        if (myValue->GetValueIn() == valueintxt) {
+            return myValue->GetValueOutCode();
+        }
+     }
+    return wxNOT_FOUND;
+}
+
+
 
 siAttribut::siAttribut() {
     Reset();
@@ -203,6 +215,47 @@ bool siAttribut::LoadFromArray(const wxArrayString & attribtxt, DataBase * datab
     return true;
 }
 
+
+bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid) {
+    // TODO: Add Support for FILTER_KIND
+    
+    if (m_AttributOperation == SIATTRIBUT_OPERATION_VALUE) {
+        siAttributValue * myValue = m_Values.Item(0);
+        if (myValue == NULL) {
+            return false;
+        }
+
+        // INSERT INTO layer_at55 (OBJECT_ID, Status) VALUES (2,264) ON DUPLICATE KEY UPDATE Status=264
+        wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%ld) ON DUPLICATE KEY UPDATE %s=%ld");
+        if (database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid, myValue->GetValueOutCode(), m_AttributNameOut, myValue->GetValueOutCode()))==false) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    
+    if (m_AttributOperation == SIATTRIBUT_OPERATION_REPLACE) {
+        // get field value
+        wxString myFieldLatin1Value (feature->GetFieldAsString((const char *) m_AttributNameIn.mb_str(wxConvUTF8)));
+        wxString myFieldValue (myFieldLatin1Value.wc_str(wxConvISO8859_1), wxConvUTF8);
+        long myOutCode = _GetIDForValueIn(myFieldValue);
+        if (myOutCode == wxNOT_FOUND) {
+            wxLogError(_("ID not found for '%s'"), myFieldValue);
+            return false;
+        }
+        
+        // insert
+        wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%ld) ON DUPLICATE KEY UPDATE %s=%ld");
+        if (database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid, myOutCode, m_AttributNameOut, myOutCode))==false) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    return false;
+}
 
 
 void siAttribut::Reset(){

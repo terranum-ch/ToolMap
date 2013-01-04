@@ -24,6 +24,7 @@
 #include <wx/wx.h>
 #endif
 #include "database.h"
+#include "databaseresult.h"
 
 class siAttribut;
 
@@ -51,10 +52,23 @@ private:
 public:
     siAttributValue(siAttribut * parent);
     virtual ~siAttributValue();
-    
+    void Reset();
+
     bool LoadFromText(const wxString & text, DataBase * database, long layerindex);
-void Reset();
+    inline const long GetValueOutCode() const;
+    inline const wxString GetValueIn() const;
 };
+
+
+inline const long siAttributValue::GetValueOutCode() const {
+    return m_ValueOutCode;
+}
+
+
+inline const wxString siAttributValue::GetValueIn() const {
+    return m_ValueIn;
+}
+
 
 WX_DECLARE_OBJARRAY(siAttributValue*, siAttributValueArray);
 
@@ -77,12 +91,14 @@ private:
     long m_AttributIDReal;
     
     void _ClearAttributValueArray();
-    
+    long _GetIDForValueIn(const wxString & valueintxt);
+
 public:
     siAttribut();
     virtual ~siAttribut();
     
     bool LoadFromArray(const wxArrayString & attribtxt, DataBase * database, long layerindex);
+    bool Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid);
     void Reset();
     
     inline const SIATTRIBUT_OPERATION GetAttributOperation() const;
