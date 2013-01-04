@@ -46,6 +46,7 @@ private:
     
     bool _LoadOperationValue(const wxString & text,  DataBase * database, long layerindex);
     bool _LoadOperationReplace(const wxString & text,  DataBase * database, long layerindex);
+    bool _GetCatalogDatabaseID (DataBase * database);
     
 public:
     siAttributValue(siAttribut * parent);

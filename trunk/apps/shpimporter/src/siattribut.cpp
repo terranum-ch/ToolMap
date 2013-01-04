@@ -28,20 +28,13 @@ siAttributValue::siAttributValue(siAttribut * parent) {
 siAttributValue::~siAttributValue() {
 }
 
-
-bool siAttributValue::_LoadOperationValue(const wxString & text,  DataBase * database, long layerindex) {
-    siParam myParam;
-    bool bError = false;
-    m_ValueOut = myParam.GetParamByCol(text, 0, bError);
-    if (bError == true) {
-        return false;
-    }
-    
+bool siAttributValue::_GetCatalogDatabaseID (DataBase * database){
     // get real databaseID
     wxString myQuery = wxString::Format(_T("SELECT c.CATALOG_ID FROM dmn_catalog c LEFT JOIN dmn_attribut_value v ON (c.CATALOG_ID = v.CATALOG_ID) WHERE (c.DESCRIPTION_0 = '%s' AND v.ATTRIBUT_ID = %ld)"), m_ValueOut, m_ParentAttribut->GetAttributIDReal());
     if (database->DataBaseQuery(myQuery)==false) {
         return false;
     }
+    
     if (database->DataBaseGetNextResult(m_ValueOutCode)==false) {
         database->DataBaseClearResults();
         return false;
@@ -51,9 +44,37 @@ bool siAttributValue::_LoadOperationValue(const wxString & text,  DataBase * dat
     return true;
 }
 
-bool siAttributValue::_LoadOperationReplace(const wxString & text,  DataBase * database, long layerindex) {
-    return false;
+
+bool siAttributValue::_LoadOperationValue(const wxString & text,  DataBase * database, long layerindex) {
+    siParam myParam;
+    bool bError = false;
+    m_ValueOut = myParam.GetParamByCol(text, 0, bError);
+    if (bError == true) {
+        return false;
+    }
+    
+    return _GetCatalogDatabaseID(database);
 }
+
+
+
+bool siAttributValue::_LoadOperationReplace(const wxString & text,  DataBase * database, long layerindex) {
+    siParam myParam;
+    bool bError = false;
+    m_ValueIn = myParam.GetParamByCol(text, 0, bError);
+    if (bError == true) {
+        wxLogError(_("Unable to get VALUE IN"));
+        return false;
+    }
+    m_ValueOut = myParam.GetParamByCol(text, 1, bError);
+    if (bError == true) {
+        wxLogError(_("Unable to get VALUE OUT"));
+        return false;
+    }
+    
+    return _GetCatalogDatabaseID(database);    
+}
+
 
 
 bool siAttributValue::LoadFromText(const wxString & text, DataBase * database, long layerindex) {
