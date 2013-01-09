@@ -188,11 +188,13 @@ int main(int argc, char **argv)
     }
     
     if (beVerbose) {
-        wxLogMessage(_("%ld rule files to process!"), myRuleFiles.GetCount());
+        wxLogMessage(_("%ld rule files to process!\n"), myRuleFiles.GetCount());
     }
     
     // loading and processing
     for (unsigned int i = 0; i< myRuleFiles.GetCount(); i++) {
+        wxFileName myActualRuleFile (myRuleFiles.Item(i));
+        wxPrintf(_("********** Processing: '%s' **********\n"), myActualRuleFile.GetName());
         siLayer myLayer (mySHPDirectory, &myDB);
         if(myLayer.LoadFromFile(myRuleFiles.Item(i))==false){
             wxLogError(_("Loading '%s' failed!"), myRuleFiles.Item(i));
@@ -202,7 +204,7 @@ int main(int argc, char **argv)
         if (myLayer.Process() == false) {
             wxLogError(_("Processing '%s' failed!"), myRuleFiles.Item(i));
         }
-        
+        wxPrintf(_T("\n"));
     }
     return 0;
 }
