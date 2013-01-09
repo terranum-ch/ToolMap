@@ -2,31 +2,31 @@ format 75
 
 classcanvas 128003 class_ref 128003 // siLayer
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 33.19 164.994 2000
+  xyz 33.25 164.084 2000
 end
 classcanvas 128131 class_ref 128131 // siKind
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 618.588 145.726 2000
+  xyz 618.318 145.546 2000
 end
 classcanvas 128387 class_ref 128259 // siAttribut
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 575.133 377.412 2000
+  xyz 575.073 377.312 2000
 end
 classcanvas 128643 class_ref 134787 // SILAYER_TYPE
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 416.5 21.78 2000
+  xyz 416.68 21.08 2000
 end
 classcanvas 128899 class_ref 134915 // SIATTRIBUT_OPERATION
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 69.25 632.57 2000
+  xyz 69.89 632.66 2000
 end
 classcanvas 129155 class_ref 141443 // siAttributValue
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 609.45 670.15 2000
+  xyz 609.43 670.22 2000
 end
 classcanvas 129411 class_ref 147971 // siParam
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 32.42 756.36 2000
+  xyz 31.93 757.61 2000
 end
 relationcanvas 128259 relation_ref 128003 // <directional composition>
   from ref 128003 z 2001 to ref 128131
@@ -34,7 +34,7 @@ relationcanvas 128259 relation_ref 128003 // <directional composition>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128515 relation_ref 128131 // <directional composition>
-  from ref 128003 z 2001 stereotype "<<list>>" xyz 499 378.5 3000 to ref 128387
+  from ref 128003 z 2001 stereotype "<<list>>" xyz 499 378 3000 to ref 128387
   role_a_pos 494 387 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end

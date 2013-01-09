@@ -86,30 +86,6 @@ int siParam::GetParamCount(const wxString & text) {
 }
 
 
-/*
-bool siParam::GetParamPeer(const wxString & text, wxString & param1, wxString & param2) {
-    param1 = wxEmptyString;
-    param2 = wxEmptyString;
-    
-    if (text.IsEmpty() == true) {
-        return false;
-    }
-
-    wxStringTokenizer tokenizer(text, m_Separator);
-    if (tokenizer.CountTokens() < 3) {
-        return false;
-    }
-    
-    if (tokenizer.GetNextToken() != wxEmptyString) {
-        wxLogWarning(_("First Column should be empty!"));
-    }
-    
-    param1 = tokenizer.GetNextToken();
-    param2 = tokenizer.GetNextToken();
-    return true;
-}
-*/
-
 
 bool siParam::IsEmpty(const wxString & text) {
     if (text.IsEmpty()) {
@@ -124,3 +100,30 @@ bool siParam::IsEmpty(const wxString & text) {
     }
     return true;
 }
+
+
+
+bool siParam::GetRowIDs(const wxString & text, wxArrayLong & array) {
+    array.Clear();
+    
+    if (text.IsEmpty()) {
+        return false;
+    }
+    
+    wxStringTokenizer tokenizer(text, m_Separator);
+    // skip first column
+    wxString myTemp = tokenizer.GetNextToken();
+    while (tokenizer.HasMoreTokens()) {
+        long myKindId = wxNOT_FOUND;
+        wxString myText = tokenizer.GetNextToken();
+        if(myText.ToLong(&myKindId)==false){
+            wxLogError(_("Converting '%s' to long failed!"), myText);
+        }
+        array.Add(myKindId);
+    }
+    return true;
+}
+
+
+
+
