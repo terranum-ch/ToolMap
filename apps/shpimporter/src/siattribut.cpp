@@ -185,9 +185,15 @@ bool siAttribut::LoadFromArray(const wxArrayString & attribtxt, DataBase * datab
     
     if (myAttributOperationTxt == _T("VALUE")) {
         m_AttributOperation = SIATTRIBUT_OPERATION_VALUE;
-    }else if (myAttributOperationTxt == _T("REPLACE")){
+    }
+    else if (myAttributOperationTxt == _T("REPLACE")){
         m_AttributOperation = SIATTRIBUT_OPERATION_REPLACE;
-    }else{
+    }
+    else if (myAttributOperationTxt == _T("COPY")){
+        m_AttributOperation = SIATTRIBUT_OPERATION_COPY;
+        return true;
+    }
+    else{
         wxLogError(_("'%s' value not supported!"), myAttributOperationTxt);
         return false;
     }
@@ -248,6 +254,30 @@ bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerin
         // insert
         wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%ld) ON DUPLICATE KEY UPDATE %s=%ld");
         if (database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid, myOutCode, m_AttributNameOut, myOutCode))==false) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    if (m_AttributOperation == SIATTRIBUT_OPERATION_COPY) {
+        int myFieldIndex =  feature->GetFieldIndex((const char *) m_AttributNameIn.mb_str(wxConvUTF8));
+        if (myFieldIndex == -1) {
+            wxLogError(_("Field: '%s' not found!"), m_AttributNameIn);
+            return false;
+        }
+        wxString myFieldLatin1Value (feature->GetFieldAsString(myFieldIndex));
+        wxString myFieldValue (myFieldLatin1Value.wc_str(wxConvISO8859_1), wxConvUTF8);
+       
+        OGRFieldDefn * myDefRef = feature->GetFieldDefnRef(myFieldIndex);
+        wxASSERT(myDefRef);
+        OGRFieldType myFieldType = myDefRef->GetType();
+        wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%s) ON DUPLICATE KEY UPDATE %s=%s");
+        if (myFieldType == OFTString) {
+            myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,\"%s\") ON DUPLICATE KEY UPDATE %s=\"%s\"");
+        }
+        
+        if (database->DataBaseQueryNoResults(wxString::Format(myQuery,layerindex, m_AttributNameOut, databaseid, myFieldValue, m_AttributNameOut, myFieldValue))==false) {
             return false;
         }
         return true;

@@ -52,7 +52,6 @@ DataBase::DataBase(const wxString & errmsgpath)
 	m_DBName				= wxEmptyString;
 	m_DBPath				= wxEmptyString;
     m_ErrMsgPath            = errmsgpath;
-
 }
 
 
