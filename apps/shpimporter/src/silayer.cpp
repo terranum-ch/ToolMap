@@ -130,12 +130,12 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         return false;
     }
     
-    // TODO: Here process attributs!!!!
+    // Here process attributs!!!!
     bool bError = true;
     for (unsigned int i = 0; i< m_Attributs.GetCount(); i++) {
         siAttribut * myAttribut = m_Attributs.Item(i);
         wxASSERT(myAttribut);
-        if (myAttribut->Process(feature, m_Database, m_LayerIndexOut, myDatabaseId)==false) {
+        if (myAttribut->Process(feature, m_Database, m_LayerIndexOut, myDatabaseId, myshpkind)==false) {
             wxLogError(_("Processing attribut: %s failed!"), myAttribut->GetAttributNameIn());
             bError = false;
         }

@@ -99,7 +99,7 @@ public:
     virtual ~siAttribut();
     
     bool LoadFromArray(const wxArrayString & attribtxt, DataBase * database, long layerindex);
-    bool Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid);
+    bool Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid, long kind);
     void Reset();
     
     inline const SIATTRIBUT_OPERATION GetAttributOperation() const;

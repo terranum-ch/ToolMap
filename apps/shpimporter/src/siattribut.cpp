@@ -180,7 +180,10 @@ bool siAttribut::LoadFromArray(const wxArrayString & attribtxt, DataBase * datab
     }
     
     if (myAttributFilterKindTxt != _T("All")) {
-        // TODO: here process Kind IDS
+        // get all IDS.
+        if (myParam.GetRowIDs(attribtxt.Item(2), m_AttributFilterIDs)==false) {
+            return false;
+        }
     }
     
     if (myAttributOperationTxt == _T("VALUE")) {
@@ -205,6 +208,7 @@ bool siAttribut::LoadFromArray(const wxArrayString & attribtxt, DataBase * datab
     }
     if (database->DataBaseGetNextResult(m_AttributIDReal)==false) {
         database->DataBaseClearResults();
+        wxLogError(_("Field '%s' not found!"), GetAttributNameOut());
         return false;
     }
     database->DataBaseClearResults();
@@ -222,8 +226,14 @@ bool siAttribut::LoadFromArray(const wxArrayString & attribtxt, DataBase * datab
 }
 
 
-bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid) {
+bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid, long kind) {
     // TODO: Add Support for FILTER_KIND
+    if (m_AttributFilterIDs.GetCount() > 0) {
+        if(m_AttributFilterIDs.Index(kind) == wxNOT_FOUND){
+            return true;
+        }
+    }
+    
     
     if (m_AttributOperation == SIATTRIBUT_OPERATION_VALUE) {
         siAttributValue * myValue = m_Values.Item(0);
@@ -282,7 +292,6 @@ bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerin
         }
         return true;
     }
-    
     
     return false;
 }
