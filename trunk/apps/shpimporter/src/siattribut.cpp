@@ -227,7 +227,7 @@ bool siAttribut::LoadFromArray(const wxArrayString & attribtxt, DataBase * datab
 
 
 bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerindex, long databaseid, long kind) {
-    // TODO: Add Support for FILTER_KIND
+    // Support for FILTER_KIND
     if (m_AttributFilterIDs.GetCount() > 0) {
         if(m_AttributFilterIDs.Index(kind) == wxNOT_FOUND){
             return true;

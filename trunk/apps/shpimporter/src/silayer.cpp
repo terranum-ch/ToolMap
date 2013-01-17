@@ -95,6 +95,15 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
     char    *pszWKT = NULL;
     feature->GetGeometryRef()->exportToWkt(&pszWKT);
     wxString myTxtGeometry (pszWKT);
+    
+    if (wkbFlatten(feature->GetGeometryRef()->getGeometryType()) == wkbPoint) {
+        OGRPoint * myPt = (OGRPoint*) feature->GetGeometryRef();
+        if (myPt->getX() < 1000 || myPt->getY() < 1000) {
+            //wxLogError(_("Incorrect point found on fid: %ld (x: %3.f, y: %3.f"), feature->GetFID(), myPt->getX(), myPt->getY());
+            wxLogError(_("Incorrect point found on fid: %ld, WKT: %s"), feature->GetFID(), myTxtGeometry);
+        }
+    }
+    
     OGRFree(pszWKT);
     
     wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");
