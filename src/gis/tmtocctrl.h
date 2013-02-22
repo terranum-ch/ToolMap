@@ -64,7 +64,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 	private:
 		wxTreeItemId m_root;
 		wxWindow * m_ParentEvt;
-		wxTreeItemIdValue m_Cookie;
+		//wxTreeItemIdValue m_Cookie;
 		tmTOCCtrlMenu * m_ContextMenu;
 		wxTreeItemId m_ActualItemID;
 		tmLayerProperties * m_EditingLayer;

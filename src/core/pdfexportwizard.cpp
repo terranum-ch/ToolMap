@@ -22,35 +22,43 @@ void PdfExportWizard::_CreateControls() {
     wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
+    wxPanel * m_panel1 = new wxPanel( m_PageLayout, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Type") ), wxVERTICAL );
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_panel1, wxID_ANY, _("Type") ), wxVERTICAL );
 	
-	m_ExportOnePageCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("One Page"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_ExportOnePageCtrl = new wxRadioButton( m_panel1, wxID_ANY, _("One Page"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
     m_ExportOnePageCtrl->SetValue(true);
 	sbSizer1->Add( m_ExportOnePageCtrl, 0, wxALL, 5 );
 	
-	m_ExportMultiPageCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, _("One layer per page"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ExportMultiPageCtrl = new wxRadioButton( m_panel1, wxID_ANY, _("One layer per page"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer1->Add( m_ExportMultiPageCtrl, 0, wxALL, 5 );
 	
-	bSizer1->Add( sbSizer1, 0, wxALL|wxEXPAND, 5 );
-	
+    m_panel1->SetSizer( sbSizer1 );
+	m_panel1->Layout();
+	bSizer1->Fit( m_panel1 );
+	bSizer1->Add( m_panel1, 0, wxALL|wxEXPAND, 5 );
+    
+    
+    
+
+    wxPanel * m_panel2 = new wxPanel( m_PageLayout, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_PageLayout, wxID_ANY, _("Layout") ), wxVERTICAL );
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_panel2, wxID_ANY, _("Layout") ), wxVERTICAL );
 	    
     wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_ExportOneColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_ExportOneColCtrl = new wxRadioButton( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
 	bSizer4->Add( m_ExportOneColCtrl, 0, wxTOP|wxBOTTOM|wxLEFT, 5 );
 	
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
-	wxStaticText * m_staticText1 = new wxStaticText( m_PageLayout, wxID_ANY, _("Object Kind"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText1 = new wxStaticText( m_panel2, wxID_ANY, _("Object Kind"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	bSizer5->Add( m_staticText1, 0, wxTOP|wxRIGHT, 5 );
 	
-	wxStaticText * m_staticText2 = new wxStaticText( m_PageLayout, wxID_ANY, _("Object Attribute"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText2 = new wxStaticText( m_panel2, wxID_ANY, _("Object Attribute"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	bSizer5->Add( m_staticText2, 0, wxBOTTOM|wxRIGHT, 5 );
 	
@@ -60,11 +68,15 @@ void PdfExportWizard::_CreateControls() {
     
     
 	
-	m_ExportTwoColCtrl = new wxRadioButton( m_PageLayout, wxID_ANY,_("Object Kind / Object Attribute") , wxDefaultPosition, wxDefaultSize, 0 );
+	m_ExportTwoColCtrl = new wxRadioButton( m_panel2, wxID_ANY,_("Object Kind / Object Attribute") , wxDefaultPosition, wxDefaultSize, 0 );
     m_ExportTwoColCtrl->SetValue(true);
 	sbSizer2->Add( m_ExportTwoColCtrl, 0, wxALL, 5 );
 	
-	bSizer1->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
+    
+    m_panel2->SetSizer( sbSizer2 );
+	m_panel2->Layout();
+	bSizer1->Fit( m_panel2 );
+	bSizer1->Add( m_panel2, 0, wxALL|wxEXPAND, 5 );
 	
 	m_PageLayout->SetSizer( bSizer1 );
 	m_PageLayout->Layout();
