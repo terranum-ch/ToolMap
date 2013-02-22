@@ -205,7 +205,7 @@ bool tmExportDataSHP::AddOptFields (const PrjMemFieldArray & myfields)
 bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
 	wxASSERT (iObjeDescSize);
 
-	if (m_Shp->AddFieldNumeric(_T("OBJ_CD")) &&
+	if (m_Shp->AddFieldText(_T("OBJ_CD"), 50) &&
 		m_Shp->AddFieldText(_T("OBJ_DESC"), iObjeDescSize)){
 		return true;
 	}
@@ -736,7 +736,7 @@ bool tmExportDataSHP::SetAttributsBasic(DataBaseResult & results){
 		return false;
 	}
 
-	m_Shp->SetFieldValue(myObjectCD, TM_FIELD_INTEGER, 1);
+	m_Shp->SetFieldValue(myObjectCD, TM_FIELD_TEXT, 1);
 	m_Shp->SetFieldValue(myObjectDesc, TM_FIELD_TEXT, 2);
 	return true;
 }
