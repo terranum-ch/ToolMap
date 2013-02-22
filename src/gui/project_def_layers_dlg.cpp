@@ -156,7 +156,7 @@ void ProjectDefLayersObjectList::AfterEditing(bool bRealyEdited)
 		// data modified is allready stored in the project definition
 		
 		// prepare data for list representation
-		myListValues.Add(wxString::Format(_T("%ld"), m_ObjectObj->m_ObjectCode));
+		myListValues.Add(m_ObjectObj->m_ObjectCode);
 		myListValues.Add(m_ObjectObj->m_ObjectName);
 		EditDataToList(myListValues, GetSelectedItem());
 		
@@ -176,7 +176,7 @@ void ProjectDefLayersObjectList::AddingValueToArray (wxArrayString & myImportedV
 	m_ObjectObj = m_pPrjDefinition->AddObject();
 	
 	// pass value to this object
-	myImportedValues.Item(0).ToLong(&(m_ObjectObj->m_ObjectCode));
+	m_ObjectObj->m_ObjectCode = myImportedValues.Item(0);
 	m_ObjectObj->m_ObjectName = myImportedValues.Item(1);
 }
 
@@ -574,16 +574,12 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow(){
 	sValue.Replace(_T("’"), _T("'"));
 #endif
 	// passing values to the corresponding obj.
-	if (m_ObjectObj != NULL)
-	{
-        long myCode = 0;
-        sCode.ToLong(&myCode);
-		m_ObjectObj->m_ObjectCode = myCode;
+	if (m_ObjectObj != NULL){
+		m_ObjectObj->m_ObjectCode = sCode;
 		m_ObjectObj->m_ObjectName = sValue;
 	}
 	
-	if (m_CodedValObj != NULL)
-	{
+	if (m_CodedValObj != NULL){
 		m_CodedValObj->m_ValueCode = sCode;
 		m_CodedValObj->m_ValueName = sValue;
 	}
@@ -593,22 +589,15 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow(){
 
 bool ProjectDefLayersEditObjectDlg::TransferDataToWindow()
 {
-	if (m_ObjectObj != NULL)
-	{
-		// check that the numeric value is not null (-9999)
-		if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
-		{
-			m_DlgEO_Code->SetValue(wxString::Format(_T("%ld"), m_ObjectObj->m_ObjectCode));
-		}
+	if (m_ObjectObj != NULL){
+        m_DlgEO_Code->SetValue(m_ObjectObj->m_ObjectCode);
 		m_DlgEO_Value->SetValue(m_ObjectObj->m_ObjectName);
 	}
 	
 	
-	if (m_CodedValObj != NULL)
-	{
+	if (m_CodedValObj != NULL){
 		// check that the numeric value is not null (-9999)
-		if (m_CodedValObj->m_ValueCode != NULL_LONG_STRING_VALUE)
-		{
+		if (m_CodedValObj->m_ValueCode != NULL_LONG_STRING_VALUE){
 			m_DlgEO_Code->SetValue(m_CodedValObj->m_ValueCode);
 		}
 		m_DlgEO_Value->SetValue(m_CodedValObj->m_ValueName);

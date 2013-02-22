@@ -57,7 +57,7 @@ class tmAttributionDataPoint : public tmAttributionData
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel);
 		virtual bool GetInfoBasic (long oid,  wxArrayLong & objid,
-								   wxArrayLong & objcode, wxArrayString & objname);
+								    wxArrayString & objcode, wxArrayString & objname);
 		
 		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid);
 		virtual bool GetAttributionLayersIDFull (const long & geomid, tmLayerValueArray & layersid);

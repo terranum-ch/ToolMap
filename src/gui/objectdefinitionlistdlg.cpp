@@ -192,7 +192,7 @@ void ObjectDefinitionListDlg::CreateControls()
  *******************************************************************************/
 void ObjectDefinitionListDlg::_SetValidator()
 {
-	m_DLGODD_Code->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
+	m_DLGODD_Code->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));
 	m_DLGODD_Description->SetValidator( tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));
 }
 
@@ -203,9 +203,7 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 	// fill choice with themes
 	m_DLGODD_List_Lyr_Name->Append(m_pDatabase->GetLayerNameByType(m_ParentListType));
 	
-	if (m_ObjectObj->m_ObjectCode != NULL_LONG_VALUE)
-		m_DLGODD_Code->SetValue(wxString::Format(_T("%ld"),m_ObjectObj->m_ObjectCode));
-	
+    m_DLGODD_Code->SetValue(m_ObjectObj->m_ObjectCode);
 	m_DLGODD_Description->SetValue(m_ObjectObj->m_ObjectName);
 	
 	// if we use the frequency control
@@ -224,7 +222,7 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
 bool ObjectDefinitionListDlg::TransferDataFromWindow()
 {
 	// fill ProjectDefMemoryObject with list values
-	(m_DLGODD_Code->GetValue()).ToLong (&(m_ObjectObj->m_ObjectCode));
+	m_ObjectObj->m_ObjectCode = m_DLGODD_Code->GetValue();
 	m_ObjectObj->m_ObjectName = m_DLGODD_Description->GetValue();
 #ifdef __WXMSW__
 	m_ObjectObj->m_ObjectName.Replace(_T("’"), _T("'"));
@@ -533,13 +531,13 @@ void ObjectDefinitionList::SetObjectToList (ProjectDefMemoryObjects * object, in
 	
 	
 	// if we want to add an item
-	if (iIndex == -1)
-	{
-		AddItemToList(wxString::Format(_T("%ld"), object->m_ObjectCode));
+	if (iIndex == -1){
+		AddItemToList(object->m_ObjectCode);
 		iIndex = GetItemCount()-1;
 	}
-	else
-		SetItemText(iIndex, 0, wxString::Format(_T("%ld"), object->m_ObjectCode));
+	else {
+		SetItemText(iIndex, 0, object->m_ObjectCode);
+    }
 	
 	
 	// normal operations for others columns
@@ -575,7 +573,7 @@ void ObjectDefinitionList::GetObjectFromList (ProjectDefMemoryObjects * object, 
 	// prepare default frequency 
 	wxString sfrequency = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_LESS_FREQUENT];
 
-	GetItemColText(iIndex, 0).ToLong(&(object->m_ObjectCode));
+	object->m_ObjectCode = GetItemColText(iIndex, 0);
 	object->m_ObjectName = GetItemColText(iIndex, 1);
 	object->m_ParentLayerName = GetItemColText(iIndex, 2);
 	object->m_ObjectType = m_layertype;

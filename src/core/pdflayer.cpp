@@ -87,7 +87,7 @@ void PdfLayer::_GenerateObjects() {
 	// objects
 	for (unsigned int i = 0; i < m_prjLayer->m_pLayerObjectArray.GetCount(); i++) {
 		mypPdf->Cell(m_ColWidthObjects.Item(0), myLineSmall,
-					 wxString::Format("%ld",m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode),
+					 m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode,
 					 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
 		
         // special case for lines building polygons
@@ -394,7 +394,7 @@ double PdfLayer::GetObjectsWidth(wxPdfDocument * pdf) {
 	double maxcodewidth = 0;
 	double maxdescwidth = 0;
 	for (unsigned int i = 0; i< m_prjLayer->m_pLayerObjectArray.GetCount(); i++) {
-		wxString myCodeAsTxt = wxString::Format("%ld", m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode);
+		wxString myCodeAsTxt = m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectCode;
 		double codewidth = pdf->GetStringWidth(myCodeAsTxt);
 		double descwidth = pdf->GetStringWidth(m_prjLayer->m_pLayerObjectArray.Item(i)->m_ObjectName);
 		maxcodewidth = MAX(maxcodewidth, codewidth);

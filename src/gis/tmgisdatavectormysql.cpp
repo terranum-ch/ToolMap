@@ -772,7 +772,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
 	
 	wxArrayLong myObjID;
-	wxArrayLong myObjCode;
+	wxArrayString myObjCode;
 	wxArrayString myObjVal;
 	if (myAttribData->GetInfoBasic(oid, myObjID, myObjCode, myObjVal)==false) {
 		wxLogError(_T("Error getting basic informations for object OID : %ld"), oid);
@@ -783,7 +783,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue (wxArrayString & values, long oid){
 	
 		
 	for (unsigned int i = 0; i< myObjCode.GetCount(); i++) {
-		values.Add(wxString::Format(_T("%ld"), myObjCode.Item(i)));
+		values.Add(myObjCode.Item(i));
 		values.Add(myObjVal.Item(i));
 		
 		ProjectDefMemoryLayers * myLayer = myLayers.Item(i);

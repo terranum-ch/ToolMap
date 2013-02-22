@@ -77,7 +77,7 @@ _T("generic_notes")
 
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 224;
+const int TM_DATABASE_VERSION = 225;
 
 
 enum tmDB_OPEN_STATUS

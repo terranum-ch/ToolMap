@@ -466,11 +466,11 @@ ProjectDefMemoryObjects::~ProjectDefMemoryObjects()
 void ProjectDefMemoryObjects::InitMemberValues()
 {
 	m_ObjectID = 0;
-	m_ObjectCode = NULL_LONG_VALUE;
+	m_ObjectCode = wxEmptyString;
 	m_ObjectType = LAYER_LINE;
-	m_ObjectName = _T("");
+	m_ObjectName = wxEmptyString;
 	m_ObjectFreq = OBJECT_LESS_FREQUENT;
-	m_ParentLayerName = _T("");
+	m_ParentLayerName = wxEmptyString;
 }
 
 
