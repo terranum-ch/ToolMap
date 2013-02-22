@@ -744,7 +744,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID (const long & geomid,
 
 
 
-bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLong & objcode, 
+bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayString & objcode,
 									   wxArrayString & objname, int layertype){
 	objid.Clear();
 	objcode.Clear();
@@ -772,11 +772,9 @@ bool tmAttributionData::_GetInfoBasic (long oid, wxArrayLong & objid, wxArrayLon
 		wxASSERT(myValues.GetCount()==3);
 	
 		long myObjID = 0;
-		long myObjCode = 0;
 		myValues.Item(0).ToLong(&myObjID);
 		objid.Add(myObjID);
-		myValues.Item(1).ToLong(&myObjCode);
-		objcode.Add(myObjCode);
+		objcode.Add(myValues.Item(1));
 		objname.Add(myValues.Item(2));
 	}
 	m_pDB->DataBaseClearResults();

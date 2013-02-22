@@ -66,8 +66,7 @@ class tmAttributionData : public wxObject
 		bool PrepareGetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid,
 											const wxString & tablename, int layertype);
 
-		bool _GetInfoBasic (long oid, wxArrayLong & objid,
-							wxArrayLong & objcode, wxArrayString & objname, int layertype);
+		bool _GetInfoBasic (long oid, wxArrayLong & objid, wxArrayString & objcode, wxArrayString & objname, int layertype);
 	public:
 		// ctor - dtor
 		tmAttributionData();
@@ -90,7 +89,7 @@ class tmAttributionData : public wxObject
 		// info
 		virtual bool GetInfoBasic (AttribObjType_PANEL * panel) {return false;}
 		virtual bool GetInfoBasic (long oid, wxArrayLong & objid,
-								   wxArrayLong & objcode, wxArrayString & objname){return false;}
+								    wxArrayString & objcode, wxArrayString & objname){return false;}
 		virtual bool GetInfoBasicValues (const long & selected, 
 										 wxArrayLong & values);
 		virtual bool GetInfoBasicArray(tmAttributionBasicArray & values);

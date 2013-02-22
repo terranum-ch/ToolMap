@@ -94,7 +94,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
         }
     }
 	
-    // 222 -> 223
+    // 223 -> 224
     if (myActualDBVersion == 223) {
         if (_223to224() == false) {
             _SetVersion(223);
@@ -102,6 +102,17 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
         }
         else{
             myActualDBVersion = 224;
+        }
+    }
+    
+    // 224 -> 225
+    if (myActualDBVersion == 224) {
+        if (_224to225() == false) {
+            _SetVersion(224);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 225;
         }
     }
     
@@ -356,4 +367,16 @@ bool tmProjectUpdater::_223to224(){
     }
     return true;
 }
+
+
+bool tmProjectUpdater::_224to225(){
+    wxString myQuery = _T("ALTER TABLE %s MODIFY OBJECT_CD VARCHAR(50) NULL COMMENT 'Feature code'");
+    if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_OBJECTS)) == false) {
+        return false;
+    }
+    return true;
+}
+
+
+
 

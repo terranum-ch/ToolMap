@@ -115,7 +115,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	
 	_T("CREATE  TABLE `dmn_layer_object` (")
 	_T("  `OBJECT_ID` BIGINT NOT NULL AUTO_INCREMENT ,")
-	_T("  `OBJECT_CD` INT UNSIGNED NOT NULL COMMENT 'Feature code' ,")
+	_T("  `OBJECT_CD` VARCHAR(50) NULL COMMENT 'Feature code' ,")
 	_T("  `OBJECT_TYPE_CD` INT UNSIGNED NOT NULL COMMENT 'Spatial object code' ,")	
 	_T("  `THEMATIC_LAYERS_LAYER_INDEX` INT UNSIGNED NOT NULL COMMENT 'Associated thematic layer' ,")
     _T("`OBJECT_DESC_0` VARCHAR(255) NOT NULL COMMENT 'Feature description' ,")
@@ -1086,7 +1086,7 @@ bool DataBaseTM::AddObject (ProjectDefMemoryObjects * myObject, int DBlayerIndex
 	
 	wxString sSentence = _T("INSERT INTO ") + TABLE_NAME_OBJECTS +
 	_T(" (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC_0) VALUES ");
-	wxString sValues = wxString::Format(_T("(%ld, %d, %d,\"%s\")"),
+	wxString sValues = wxString::Format(_T("(\"%s\", %d, %d,\"%s\")"),
 										myObject->m_ObjectCode,
 										myObject->m_ObjectType,										
 										DBlayerIndex, 
@@ -1130,7 +1130,7 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 		//sentence for insert
 		wxString sInsert = wxString::Format(_T("INSERT INTO %s ")
 											_T("(OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC_0, OBJECT_ISFREQ) ")
-											_T("VALUES (%ld, %d, %d, \"%s\", %d)"),
+											_T("VALUES (\"%s\", %d, %d, \"%s\", %d)"),
 											TABLE_NAME_OBJECTS.c_str(),
 											myObject->m_ObjectCode,
 											myObject->m_ObjectType,
@@ -1139,7 +1139,7 @@ bool DataBaseTM::EditObject (ProjectDefMemoryObjects * myObject )
 											(int) myObject->m_ObjectFreq);
 		// sentence for update
 		wxString sUpdate = wxString::Format(_T("UPDATE %s ")
-											_T("SET OBJECT_CD = %ld, OBJECT_TYPE_CD=%d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
+											_T("SET OBJECT_CD = \"%s\", OBJECT_TYPE_CD=%d, THEMATIC_LAYERS_LAYER_INDEX = %d,")
 											_T("OBJECT_DESC_0 = \"%s\", OBJECT_ISFREQ = %d ")
 											_T("WHERE OBJECT_ID = %ld"),
 											TABLE_NAME_OBJECTS.c_str(),
@@ -1188,7 +1188,7 @@ bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects * object,
 	}
     
     wxASSERT(myRowResults.GetCount() == 6);
-    myRowResults.Item(0).ToLong(&(object->m_ObjectCode));
+    object->m_ObjectCode = myRowResults.Item(0);
 	object->m_ObjectName = myRowResults.Item(1);
     long myType = 0;
     myRowResults.Item(2).ToLong(&myType);

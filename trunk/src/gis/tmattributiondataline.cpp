@@ -174,7 +174,7 @@ bool tmAttributionDataLine::GetInfoBasic (AttribObjType_PANEL * panel)
 
 
 bool tmAttributionDataLine::GetInfoBasic (long oid, wxArrayLong & objid,
-										  wxArrayLong & objcode, wxArrayString & objname){
+										   wxArrayString & objcode, wxArrayString & objname){
 	
 	return _GetInfoBasic(oid, objid, objcode, objname, 0);
 }
