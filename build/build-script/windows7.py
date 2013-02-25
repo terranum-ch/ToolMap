@@ -15,7 +15,7 @@ gDirUnitTest = "D:\\PRJ\\TOOLMAP2\\unit_testing"
 gDirIncludeCxx = "D:\\LIB\\cxxtest"
 gDirPythonCxx = "D:\\LIB\\cxxtest\\bin\\cxxtestgen"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
-gDirGeos = "D:\\LIB\\geos-3.3.5"
+gDirGeos = "D:\\LIB\\geos-3.3.7"
 gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.3"
 gDirSQLITE = "D:\\LIB\\LIB_SQLITE"
 
