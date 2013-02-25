@@ -190,18 +190,19 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 					mypPdf->Cell(m_ColWidthAttributs.Item(0), myLineSmall, "",wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0);
 				}
 				
+                wxString myAttributText = wxString::Format(_T("%s  (%s)"), field->m_pCodedValueArray.Item(i)->m_ValueName, field->m_pCodedValueArray.Item(i)->m_ValueCode);
 				if (i == 0) {
                     mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall,
                                 PRJDEF_FIELD_TYPE_STRING[TM_FIELD_ENUMERATION],
                                 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0, wxPDF_ALIGN_LEFT);
                     mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, 
-								 field->m_pCodedValueArray.Item(i)->m_ValueName,
+								 myAttributText,
 								 wxPDF_BORDER_RIGHT | wxPDF_BORDER_TOP, 0, wxPDF_ALIGN_LEFT, fill);
 
 				}else {
                     mypPdf->Cell(m_ColWidthAttributs.Item(1), myLineSmall, "",wxPDF_BORDER_LEFT, 0);
 					mypPdf->Cell(m_ColWidthAttributs.Item(2), myLineSmall, 
-								 field->m_pCodedValueArray.Item(i)->m_ValueName,
+								 myAttributText,
 								 wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_LEFT, fill);
 				}
 				
