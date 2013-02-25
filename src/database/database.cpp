@@ -82,20 +82,20 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
 #ifdef MYSQL_IS_LOGGING
 	wxFileName myLogDirName (wxStandardPaths::Get().GetAppDocumentsDir(),_T("toolmap_mysql_log.sql"));
-	wxString myLogDirString = _T("--log=");
+	wxString myLogDirString = _T("--general-log-file=");
 	myLogDirString.Append(myLogDirName.GetFullPath());
 #endif
     wxString mylanguagedir = wxEmptyString;
     if (m_ErrMsgPath != wxEmptyString) {
-        mylanguagedir = _T("--language=") + m_ErrMsgPath;
+        mylanguagedir = _T("--lc-messages-dir=") + m_ErrMsgPath;
     }
     else
     {
         
 #if defined(__WINDOWS__)
-        mylanguagedir = "--language=./mysql";
+        mylanguagedir = "--lc-messages-dir=./mysql";
 #elif defined(__WXMAC__)
-        mylanguagedir = "--language=./ToolMap.app/Contents/mysql";
+        mylanguagedir = "--lc-messages-dir=./ToolMap.app/Contents/mysql";
         //#elif defined(__WXGTK20__)
         //char * mylanguagedir = "--language=./mysql";
 #else
@@ -109,11 +109,13 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 		"this_program",       /* this string is not used*/
 		myDatadir.mb_str(wxConvUTF8),
 		mylanguagedir.mb_str(wxConvUTF8),
-		"--port=3309",
+		//"--port=3309",
 		"--character-set-server=utf8",
-        "--default-storage-engine=MyISAM",
-        "--ignore-builtin-innodb"
+        //"--default-storage-engine=MyISAM",
+        //"--default_tmp_storage_engine=MyISAM",
+        //"--skip-innodb"
 #if defined (MYSQL_IS_LOGGING)
+        "--general-log=1"
         ,myLogDirString.mb_str(wxConvUTF8)
 #endif
 	};
