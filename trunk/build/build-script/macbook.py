@@ -17,8 +17,8 @@ gDirPythonCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest/bin/cxxtestgen"
 # CMAKE SPECIFIC
 gCmakeEnv = "Xcode" #result of cmake --help
 gCmakeSpecific = ['-DCMAKE_OSX_ARCHITECTURES:TEXT=x86_64']
-#gCmakeSpecific.append("-DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk")
-#gCmakeSpecific.append("-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6")
+gCmakeSpecific.append("-DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk")
+gCmakeSpecific.append("-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6")
 gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets)
 
 
