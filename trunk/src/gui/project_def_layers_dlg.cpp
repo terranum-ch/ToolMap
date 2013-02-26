@@ -76,7 +76,7 @@ void ProjectDefLayersObjectList::AfterAdding (bool bRealyAddItem)
 		m_ObjectObj->m_ObjectType = m_SpatialType;
 		
 		// add item to the list
-		myListValues.Add(wxString::Format(_T("%ld"), m_ObjectObj->m_ObjectCode));
+		myListValues.Add(m_ObjectObj->m_ObjectCode);
 		myListValues.Add(m_ObjectObj->m_ObjectName);
 		EditDataToList(myListValues);
 		
