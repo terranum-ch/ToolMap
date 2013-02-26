@@ -111,8 +111,8 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 		mylanguagedir.mb_str(wxConvUTF8),
 		//"--port=3309",
 		"--character-set-server=utf8",
-        //"--default-storage-engine=MyISAM",
-        //"--default_tmp_storage_engine=MyISAM",
+        "--default-storage-engine=MyISAM",
+        "--default_tmp_storage_engine=MyISAM",
         //"--skip-innodb"
 #if defined (MYSQL_IS_LOGGING)
         "--general-log=1"
