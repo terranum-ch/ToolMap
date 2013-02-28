@@ -235,7 +235,7 @@ void PdfLayer::_GenerateAttributsDefinition(ProjectDefMemoryFields * field) {
 		case TM_FIELD_FLOAT:
 		{
 			wxString myPrecisionScale = wxEmptyString;
-			for (int i = 0; i< field->m_FieldPrecision; i++) {
+			for (int i = 0; i< field->m_FieldPrecision - field->m_FieldScale; i++) {
 				myPrecisionScale.Append("9");
 			}
 			myPrecisionScale.Append(".");
