@@ -39,7 +39,7 @@ enum SILAYER_TYPE {
     SILAYER_TYPE_UNKNOWN = -1
 };
 
-
+class siProgressIndicator;
 class siLayer {
 private:
     wxFileName m_RuleFileName;
@@ -51,6 +51,7 @@ private:
     SILAYER_TYPE m_LayerType;
     wxString m_LayerTypeName;
     long m_ProcessFeatureSkipped;
+    siProgressIndicator * m_ProgressIndicator;
     
     int _GetEmptyBlockStop(int startpos);
     bool _LoadRuleIntoArray(int start, int stop, wxArrayString * array);
@@ -67,6 +68,7 @@ public:
     const siKind GetKindRef();
     inline const SILAYER_TYPE GetLayerType() const;
     
+    void SetProgressIndicator(siProgressIndicator * value);    
 };
 
 

@@ -1,7 +1,7 @@
 format 75
 "shpimporter"
-  revision 14
-  modified_by 3 "lucien"
+  revision 15
+  modified_by 33 "lucien"
 
 
   
@@ -131,6 +131,16 @@ ${inlines}
 	    classrelation_ref 134659 // m_LayerType (<directional composition>)
 	  b parent class_ref 134787 // SILAYER_TYPE
 	get_oper operation_ref 135683 // GetLayerType
+      end
+
+      classrelation 128033 // m_ProgressIndicator (<unidirectional association>)
+	relation 128033 --->
+	  a role_name "m_ProgressIndicator" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128033 // m_ProgressIndicator (<unidirectional association>)
+	  b parent class_ref 128033 // siProgressIndicator
+	set_oper operation_ref 128417 // SetProgressIndicator
       end
 
       operation 155907 "_GetEmptyBlockStop"
@@ -293,6 +303,28 @@ ${inlines}
 	
 	idl_name_spec "get_${name}"
 	get_of_relation classrelation_ref 134659 // m_LayerType (<directional composition>)
+      end
+
+      operation 128417 "SetProgressIndicator"
+	force_body_gen public explicit_return_type "void"
+	nparams 1
+	  param in name "value" type class_ref 128033 // siProgressIndicator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  m_ProgressIndicator = ${p0};
+}
+"
+	cpp_name_spec "SetProgressIndicator"
+	
+	java_name_spec "set${Name}"
+	
+	php_name_spec "set${Name}"
+	
+	python_name_spec "set${Name}"
+	
+	idl_name_spec "set_${name}"
+	set_of_relation classrelation_ref 128033 // m_ProgressIndicator (<unidirectional association>)
       end
     end
 
@@ -1122,6 +1154,62 @@ ${inlines}
 	
       end
     end
+
+    class 128033 "siProgressIndicator"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 128033 "siProgressIndicator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128161 "~siProgressIndicator"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128289 "UpdateProgress"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "value" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 128003 "shpimporter"
@@ -1372,6 +1460,67 @@ ${members}
 ${namespace_end}"
       associated_classes
 	class_ref 147971 // siParam
+      end
+    end
+
+    artifact 128033 "siprogress"
+      stereotype "source"
+      cpp_h "/***************************************************************************
+ ${name}.h
+ -------------------
+ copyright            : (C) 2013 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef _${NAMESPACE}${NAME}_H_
+#define _${NAMESPACE}${NAME}_H_
+
+// For compilers that support precompilation, includes \"wx/wx.h\".
+#include \"wx/wxprec.h\"
+
+// Include wxWidgets' headers
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "/***************************************************************************
+ ${name}.cpp
+ -------------------
+ copyright            : (C) 2013 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 128033 // siProgressIndicator
       end
     end
   end

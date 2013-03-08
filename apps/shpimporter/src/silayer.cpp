@@ -16,6 +16,7 @@
 
 #include "silayer.h"
 #include "siparam.h"
+#include "siprogress.h"
 
 siLayer::siLayer(const wxString & layerpath, DataBase * database) {
     wxASSERT(database);
@@ -24,6 +25,7 @@ siLayer::siLayer(const wxString & layerpath, DataBase * database) {
     m_LayerIndexOut = wxNOT_FOUND;
     m_LayerType = SILAYER_TYPE_UNKNOWN;
     m_LayerTypeName = wxEmptyString;
+    m_ProgressIndicator = NULL;
 }
 
 
@@ -83,9 +85,21 @@ bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString * array) {
 
 
 bool siLayer::_ProcessFeature(OGRFeature * feature) {
-    // check if kind exists otherwise ignore feature
-    long myshpkind = feature->GetFieldAsInteger((const char *) m_Kind.GetKindNameIn().mb_str(wxConvUTF8));
-    long myDbKind = m_Kind.GetRealKind(myshpkind);
+    wxString myShpKinds (feature->GetFieldAsString((const char *) m_Kind.GetKindNameIn().mb_str(wxConvUTF8)));
+    wxArrayString myKinds = wxStringTokenize(myShpKinds, _T(",\t\r\n"));
+    if (myKinds.GetCount() == 0) {
+        wxLogError(_("Feature: %ld didn't have any kinds!"), feature->GetFID());
+        return false;
+    }
+    long myDbKind = wxNOT_FOUND;
+    long myshpkind = wxNOT_FOUND;
+    for (unsigned int i = 0 ; i< myKinds.GetCount(); i++) {
+        myKinds.Item(i).ToLong(&myshpkind);
+        myDbKind = m_Kind.GetRealKind(myshpkind);
+        if (myDbKind != wxNOT_FOUND) {
+            break;
+        }
+    }
     if (myDbKind == wxNOT_FOUND) {
         m_ProcessFeatureSkipped++;
         return true;
@@ -110,10 +124,9 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         }
         myDatabaseId = myIDs.Item(0);
         bCopyGeometry = false;
-        wxLogDebug(_("Geometry allready existing, databaseid = %ld"), myDatabaseId);
     }
 
-    // copy geometry
+    // copy geometry if geometry didn't exists
     if (bCopyGeometry == true){
         if (wkbFlatten(feature->GetGeometryRef()->getGeometryType()) == wkbPoint) {
             OGRPoint * myPt = (OGRPoint*) feature->GetGeometryRef();
@@ -306,14 +319,27 @@ bool siLayer::Process() {
     long myFeatureCount = poLayer->GetFeatureCount();
     wxLogMessage(_("%ld Features to process into %s"), myFeatureCount, m_LayerNameIn.GetFullName());
     
+    int myStep = wxRound(myFeatureCount / 20.0);
     OGRFeature *poFeature;
     poLayer->ResetReading();
+    int iLoop = 0;
+    if (m_ProgressIndicator != NULL) {
+        m_ProgressIndicator->StartProgress();
+    }
     while( (poFeature = poLayer->GetNextFeature()) != NULL ){
+        iLoop++;
         wxASSERT(poFeature);
         if (_ProcessFeature(poFeature)==false) {
             wxLogError(_("Processing feature %ld Failed!"), poFeature->GetFID());
         }
         OGRFeature::DestroyFeature(poFeature);
+        // progress
+        if (myStep > 0 && m_ProgressIndicator != NULL) {
+            m_ProgressIndicator->UpdateProgress(iLoop, myStep);
+        }
+    }
+    if (m_ProgressIndicator != NULL) {
+        m_ProgressIndicator->StopProgress();
     }
     OGRDataSource::DestroyDataSource(pods);
     wxLogMessage(_("%ld feature processed (%ld skipped!)"), myFeatureCount-m_ProcessFeatureSkipped, m_ProcessFeatureSkipped);
@@ -321,7 +347,14 @@ bool siLayer::Process() {
 }
 
 
+
 const siKind siLayer::GetKindRef() {
     return m_Kind;
+}
+
+
+
+void siLayer::SetProgressIndicator(siProgressIndicator * value) {
+    m_ProgressIndicator = value;
 }
 

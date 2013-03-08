@@ -1,0 +1,14 @@
+window_sizes 1920 1152 787 1127 959 136
+diagrams
+  active  classdiagram_ref 128003 // shpimporter
+    1123 939 93 3 0 0
+end
+show_stereotypes
+selected artifact_ref 128033 // siprogress
+open
+  classrelation_ref 128033 // m_ProgressIndicator (<unidirectional association>)
+  operation_ref 128417 // SetProgressIndicator
+  class_ref 128033 // siProgressIndicator
+  deploymentview_ref 128003 // shpimporter
+end
+end
