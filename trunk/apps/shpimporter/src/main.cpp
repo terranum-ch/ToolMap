@@ -13,6 +13,7 @@
 
 #include "database.h"
 #include "silayer.h"
+#include "siprogress.h"
 
 
 
@@ -196,6 +197,8 @@ int main(int argc, char **argv)
         wxFileName myActualRuleFile (myRuleFiles.Item(i));
         wxPrintf(_("********** Processing: '%s' **********\n"), myActualRuleFile.GetName());
         siLayer myLayer (mySHPDirectory, &myDB);
+        siProgressIndicator myProgress;
+        myLayer.SetProgressIndicator(&myProgress);
         if(myLayer.LoadFromFile(myRuleFiles.Item(i))==false){
             wxLogError(_("Loading '%s' failed!"), myRuleFiles.Item(i));
             continue;
