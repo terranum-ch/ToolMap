@@ -106,6 +106,12 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
     }
 
     // check if geometry exists in the database. If yes, get it's ID
+    if (feature->GetGeometryRef() == NULL) {
+        wxLogError(_("Empty geometry for Feature: %ld"), feature->GetFID());
+        m_ProcessFeatureSkipped++;
+        return false;
+    }
+    
     char    *pszWKT = NULL;
     feature->GetGeometryRef()->exportToWkt(&pszWKT);
     wxString myTxtGeometry (pszWKT);
