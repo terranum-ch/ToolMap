@@ -136,6 +136,7 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         }
         wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");
         if (m_Database->DataBaseQueryNoResults(wxString::Format(myQuery, m_LayerTypeName, myTxtGeometry))==false){
+            m_ProcessFeatureSkipped++;
             return false;
         }
         myDatabaseId = m_Database->DataBaseGetLastInsertedID();
@@ -144,6 +145,7 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
     // migrate KIND
     if (myDbKind == wxNOT_FOUND) {
         wxLogError(_("Error getting Kind for FID: %ld (Kind searched: %ld)"), myDatabaseId, myshpkind);
+        m_ProcessFeatureSkipped++;
         return false;
     }
     
@@ -165,6 +167,7 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
     wxString myQuery = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld)"), myLayerAAT, myDbKind, myDatabaseId);
     if (m_Database->DataBaseQueryNoResults(myQuery)==false) {
         wxLogError(_("Adding Kind for feature %ld Failed"), myDatabaseId);
+        m_ProcessFeatureSkipped++;
         return false;
     }
     
@@ -175,6 +178,7 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         wxASSERT(myAttribut);
         if (myAttribut->Process(feature, m_Database, m_LayerIndexOut, myDatabaseId, myshpkind)==false) {
             wxLogError(_("Processing attribut: %s failed!"), myAttribut->GetAttributNameIn());
+            m_ProcessFeatureSkipped++;
             bError = false;
         }
     }

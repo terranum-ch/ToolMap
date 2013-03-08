@@ -17,11 +17,13 @@
 
 
 
-static const wxCmdLineEntryDesc cmdLineDesc[] =
-{
-    { wxCMD_LINE_SWITCH, "h", "help", "show this help message",
-        wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+static const wxCmdLineEntryDesc cmdLineDesc[] ={
+    { wxCMD_LINE_SWITCH, "h", "help", "show this help message", wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
     { wxCMD_LINE_SWITCH, "v", "verbose", "Be more verbose" },
+    { wxCMD_LINE_SWITCH, "o", "overwrite", "overwrite output" },
+    { wxCMD_LINE_PARAM, NULL, NULL, "[ToolMap project file]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY },
+    { wxCMD_LINE_PARAM, NULL, NULL, "[SHP directory]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY },
+    { wxCMD_LINE_PARAM, NULL, NULL, "[rule files]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
 
@@ -125,8 +127,7 @@ void PrintArray(const wxArrayString & array, const wxString & msg){
 
 
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
     // debugging string for OSX
     // this is needed for viewing string content with Xcode !!
     wxString myTest = _T("Test debugging");
@@ -135,25 +136,19 @@ int main(int argc, char **argv)
     
     wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
     wxInitializer initializer;
-    if ( !initializer )
-    {
+    if ( !initializer ){
         fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
         return -1;
     }
     
     wxString myLogoTxt = _T("*\n* ShpImporter \n* Import SHP into ToolMap projects \n* (c) Copyright 2012 Lucien Schreiber - CREALP . All Rights Reserved. \n*\n");
     wxCmdLineParser parser(cmdLineDesc, argc, argv);
-    parser.AddParam(_T("[ToolMap project file]"), wxCMD_LINE_VAL_STRING);
-    parser.AddParam(_T("[SHP directory]"), wxCMD_LINE_VAL_STRING);
-    parser.AddParam(_T("[rule files]"),wxCMD_LINE_VAL_STRING,  wxCMD_LINE_PARAM_MULTIPLE);
     parser.SetLogo(myLogoTxt);
-    
     if (parser.Parse() != 0) {
         return 0;
     }
-    
     bool beVerbose = parser.Found("verbose");
-    
+   
     // cmd line is correct !!
     wxPrintf(myLogoTxt);
     
@@ -162,19 +157,24 @@ int main(int argc, char **argv)
     wxFileName myToolMapProjectName (parser.GetParam(0));
     wxFileName myToolMapProjectNameBkp (parser.GetParam(0) + _T("_bkp"));
     wxFileName myDirToRemove (myToolMapProjectNameBkp.GetFullPath(), _T(""), _T(""));
-    if (myDirToRemove.Exists() == true) {
-        myDirToRemove.Rmdir(wxPATH_RMDIR_RECURSIVE);
+    
+    if (parser.Found("overwrite") == true) {
+        if (myDirToRemove.Exists() == true) {
+            myDirToRemove.Rmdir(wxPATH_RMDIR_RECURSIVE);
+        }
     }
-    if (CopyDir(myToolMapProjectName.GetFullPath(), myToolMapProjectNameBkp.GetFullPath())==false) {
-        wxLogError(_("Unable to create project Backup!"));
+    if (myDirToRemove.Exists() == false) {
+        if (CopyDir(myToolMapProjectName.GetFullPath(), myToolMapProjectNameBkp.GetFullPath())==false) {
+            wxLogError(_("Unable to create project Backup!"));
+        }
     }
+    
     if( myDB.DataBaseOpen(myToolMapProjectNameBkp.GetPath(), myToolMapProjectNameBkp.GetName())==false){
         return 0;
     }
     if (beVerbose) {
         wxLogMessage(_("Loading data into: ") + myToolMapProjectNameBkp.GetName());
     }
-  
     OGRRegisterAll();
     
     wxString mySHPDirectory = parser.GetParam(1);
