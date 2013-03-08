@@ -282,12 +282,17 @@ bool siAttribut::Process(OGRFeature * feature, DataBase * database, long layerin
         OGRFieldDefn * myDefRef = feature->GetFieldDefnRef(myFieldIndex);
         wxASSERT(myDefRef);
         OGRFieldType myFieldType = myDefRef->GetType();
-        wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%s) ON DUPLICATE KEY UPDATE %s=%s");
+        wxString myQuery = wxEmptyString;
         if (myFieldType == OFTString) {
             myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,\"%s\") ON DUPLICATE KEY UPDATE %s=\"%s\"");
+        }else {
+            myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%s) ON DUPLICATE KEY UPDATE %s=%s");
+            // to support french local using comma as a number delimitor. 
+            myFieldValue.Replace(_T(","), _("."));
         }
         
         if (database->DataBaseQueryNoResults(wxString::Format(myQuery,layerindex, m_AttributNameOut, databaseid, myFieldValue, m_AttributNameOut, myFieldValue))==false) {
+            wxLogError(wxString::Format(myQuery,layerindex, m_AttributNameOut, databaseid, myFieldValue, m_AttributNameOut, myFieldValue));
             return false;
         }
         return true;
