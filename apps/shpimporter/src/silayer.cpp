@@ -91,28 +91,44 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         return true;
     }
 
-    // copy geometry
+    // check if geometry exists in the database. If yes, get it's ID
     char    *pszWKT = NULL;
     feature->GetGeometryRef()->exportToWkt(&pszWKT);
     wxString myTxtGeometry (pszWKT);
-    
-    if (wkbFlatten(feature->GetGeometryRef()->getGeometryType()) == wkbPoint) {
-        OGRPoint * myPt = (OGRPoint*) feature->GetGeometryRef();
-        if (myPt->getX() < 1000 || myPt->getY() < 1000) {
-            //wxLogError(_("Incorrect point found on fid: %ld (x: %3.f, y: %3.f"), feature->GetFID(), myPt->getX(), myPt->getY());
-            wxLogError(_("Incorrect point found on fid: %ld, WKT: %s"), feature->GetFID(), myTxtGeometry);
-        }
-    }
-    
     OGRFree(pszWKT);
-    
-    wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");
-    if (m_Database->DataBaseQueryNoResults(wxString::Format(myQuery, m_LayerTypeName, myTxtGeometry))==false){
+    wxString myExistQuery = _T("SELECT * FROM generic_lines WHERE ST_Equals(GeomFromText(\"%s\") , OBJECT_GEOMETRY)");
+    if (m_Database->DataBaseQuery(wxString::Format(myExistQuery, myTxtGeometry)) == false) {
         return false;
+    }
+    bool bCopyGeometry = true;
+    long myDatabaseId = wxNOT_FOUND;
+    if (m_Database->DataBaseHasResults() == true) {
+        wxArrayLong myIDs;
+        m_Database->DataBaseGetResults(myIDs);
+        if (myIDs.GetCount() != 1) {
+            wxLogWarning(_("Overlapping geometries found. FID: %ld, Number of overlapping: %d"), feature->GetFID(), myIDs.GetCount());
+        }
+        myDatabaseId = myIDs.Item(0);
+        bCopyGeometry = false;
+        wxLogDebug(_("Geometry allready existing, databaseid = %ld"), myDatabaseId);
+    }
+
+    // copy geometry
+    if (bCopyGeometry == true){
+        if (wkbFlatten(feature->GetGeometryRef()->getGeometryType()) == wkbPoint) {
+            OGRPoint * myPt = (OGRPoint*) feature->GetGeometryRef();
+            if (myPt->getX() < 1000 || myPt->getY() < 1000) {
+                wxLogError(_("Incorrect point found on fid: %ld, WKT: %s"), feature->GetFID(), myTxtGeometry);
+            }
+        }
+        wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");
+        if (m_Database->DataBaseQueryNoResults(wxString::Format(myQuery, m_LayerTypeName, myTxtGeometry))==false){
+            return false;
+        }
+        myDatabaseId = m_Database->DataBaseGetLastInsertedID();
     }
     
     // migrate KIND
-    long myDatabaseId = m_Database->DataBaseGetLastInsertedID();
     if (myDbKind == wxNOT_FOUND) {
         wxLogError(_("Error getting Kind for FID: %ld (Kind searched: %ld)"), myDatabaseId, myshpkind);
         return false;
@@ -133,7 +149,7 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
             break;
     }
     
-    myQuery = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld)"), myLayerAAT, myDbKind, myDatabaseId);
+    wxString myQuery = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld)"), myLayerAAT, myDbKind, myDatabaseId);
     if (m_Database->DataBaseQueryNoResults(myQuery)==false) {
         wxLogError(_("Adding Kind for feature %ld Failed"), myDatabaseId);
         return false;
