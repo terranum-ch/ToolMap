@@ -138,6 +138,8 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
             OGRPoint * myPt = (OGRPoint*) feature->GetGeometryRef();
             if (myPt->getX() < 1000 || myPt->getY() < 1000) {
                 wxLogError(_("Incorrect point found on fid: %ld, WKT: %s"), feature->GetFID(), myTxtGeometry);
+                m_ProcessFeatureSkipped++;
+                return false;
             }
         }
         wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");

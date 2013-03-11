@@ -219,5 +219,5 @@ int main(int argc, char **argv){
     }
     
     wxTimeSpan mySpanTime = wxTimeSpan::Milliseconds(sw.Time());
-    wxPrintf(_("%ld Features processed in: %s"), myTotalFeatureCount, mySpanTime.Format(_T("%H:%M:%S.%l")));
+    wxPrintf(_("%ld Features processed in: %s\n"), myTotalFeatureCount, mySpanTime.Format(_T("%H:%M:%S.%l")));
 }

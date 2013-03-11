@@ -29,7 +29,7 @@ class siKind {
 private:
     wxString m_KindNameIn;
     wxArrayLong m_CodesIn;
-    wxArrayLong m_CodesOut;
+    wxArrayString m_CodesOut2;
     wxArrayLong m_CodesRealOut;
     DataBase * m_Database;
     

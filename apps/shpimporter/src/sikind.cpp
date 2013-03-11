@@ -29,7 +29,7 @@ siKind::~siKind() {
 void siKind::Reset(){
     m_KindNameIn = wxEmptyString;
     m_CodesIn.Clear();
-    m_CodesOut.Clear();
+    m_CodesOut2.Clear();
     m_CodesRealOut.Clear();
     m_Database = NULL;
 }
@@ -45,15 +45,14 @@ bool siKind::_LoadKindValue(const wxString & kindtxt) {
         return false;
     }
     
-    long myCodeOut = wxNOT_FOUND;
-    myParam.GetParamByCol(kindtxt, 1, bError).ToLong(&myCodeOut);
+    wxString myCodeOut = myParam.GetParamByCol(kindtxt, 1, bError);
     if (bError == true) {
         return false;
     }
     
     // get real database ID;
     wxASSERT(m_Database);
-    if (m_Database->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM dmn_Layer_object WHERE OBJECT_CD = %ld"), myCodeOut))==false) {
+    if (m_Database->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM dmn_Layer_object WHERE OBJECT_CD = \"%s\""), myCodeOut))==false) {
         return false;
     }
     DataBaseResult myResult;
@@ -67,9 +66,9 @@ bool siKind::_LoadKindValue(const wxString & kindtxt) {
     myResult.GetValue(0, myCodeOutReal);
     
     m_CodesIn.Add(myCodeIn);
-    m_CodesOut.Add(myCodeOut);
+    m_CodesOut2.Add(myCodeOut);
     m_CodesRealOut.Add(myCodeOutReal);
-    wxLogDebug(_("Adding Kind code: %ld -> %ld (Real ID: %ld)"), myCodeIn, myCodeOut, myCodeOutReal);
+    wxLogDebug(_("Adding Kind code: %ld -> %s (Real ID: %ld)"), myCodeIn, myCodeOut, myCodeOutReal);
     return true;
 }
 
