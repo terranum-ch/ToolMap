@@ -194,8 +194,10 @@ int main(int argc, char **argv){
     }
     
     // loading and processing
+    long myTotalFeatureCount = 0;
     wxStopWatch sw;
     for (unsigned int i = 0; i< myRuleFiles.GetCount(); i++) {
+        int myFeatureCount = 0;
         wxFileName myActualRuleFile (myRuleFiles.Item(i));
         wxPrintf(_("********** Processing: '%s' **********\n"), myActualRuleFile.GetName());
         siLayer myLayer (mySHPDirectory, &myDB);
@@ -206,12 +208,16 @@ int main(int argc, char **argv){
             continue;
         }
         
-        if (myLayer.Process() == false) {
+        myFeatureCount = myLayer.Process();
+        if (myFeatureCount == wxNOT_FOUND) {
             wxLogError(_("Processing '%s' failed!"), myRuleFiles.Item(i));
+        }
+        else {
+            myTotalFeatureCount += myFeatureCount;
         }
         wxPrintf(_T("\n"));
     }
     
     wxTimeSpan mySpanTime = wxTimeSpan::Milliseconds(sw.Time());
-    wxPrintf(_("Elapsed time: %s"), mySpanTime.Format(_T("%H:%M:%S.%l")));
+    wxPrintf(_("%ld Features processed in: %s"), myTotalFeatureCount, mySpanTime.Format(_T("%H:%M:%S.%l")));
 }

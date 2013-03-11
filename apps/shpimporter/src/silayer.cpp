@@ -312,18 +312,18 @@ bool siLayer::LoadFromFile(const wxString & filename) {
 
 
 
-bool siLayer::Process() {
+int siLayer::Process() {
     m_ProcessFeatureSkipped = 0;
     OGRDataSource * pods = OGRSFDriverRegistrar::Open((const char*) m_LayerNameIn.GetFullPath().mb_str(wxConvUTF8), false);
     if (pods == NULL) {
         wxLogError(_("Opening %s failed!"), m_LayerNameIn.GetFullName());
-        return false;
+        return wxNOT_FOUND;
     }
     OGRLayer * poLayer = pods->GetLayer(0);
     if (poLayer == NULL) {
         wxLogError(_("Opening layer in %s failed!"), m_LayerNameIn.GetFullName());
         OGRDataSource::DestroyDataSource(pods);
-        return false;
+        return wxNOT_FOUND;
     }
     
     long myFeatureCount = poLayer->GetFeatureCount();
@@ -353,7 +353,7 @@ bool siLayer::Process() {
     }
     OGRDataSource::DestroyDataSource(pods);
     wxLogMessage(_("%ld feature processed (%ld skipped!)"), myFeatureCount-m_ProcessFeatureSkipped, m_ProcessFeatureSkipped);
-    return true;
+    return myFeatureCount - m_ProcessFeatureSkipped;
 }
 
 
