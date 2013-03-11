@@ -100,23 +100,25 @@ wxString TextParser::GetAllSupportedParserWildCards()
 
 // static function that one can use to create the good parser based on
 // the filetype selected
-TextParser * TextParser::CreateParserBasedOnType (const int & textparser_index)
+TextParser * TextParser::CreateParserBasedOnType (const int & textparser_index, const wxFileName & filename)
 {
-	wxLogDebug(_T("Number of parser detected : %d"), sizeof(TEXTPARSER_WILDCARDS) / sizeof (wxString));
-	
-	// create parser depending on the selected format
-	if (textparser_index == TXTFILE_COMMA)
-	{
+    // create parser depending on the selected format
+	if (textparser_index == TXTFILE_COMMA){
 		return  new TextParserTxtFileComma();
 	}
-	if (textparser_index == TXTFILE_TAB)
-	{
+	if (textparser_index == TXTFILE_TAB){
 		return new TextParserTxtFileTab();
 	}
-	
-	// add other parser here...
+    
+    // try to guess parser based on extension
+    if (filename.GetExt() == _T("csv")) {
+        return  new TextParserTxtFileComma();
+    }
+    if (filename.GetExt() == _T("txt")) {
+        return new TextParserTxtFileTab();
+    }
 
-	
+    wxFAIL_MSG(_("No Parser Found!!!"));
 	return NULL;
 }
 
