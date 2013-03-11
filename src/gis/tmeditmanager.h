@@ -41,6 +41,7 @@
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
 #include <wx/list.h>						// for iterating lists
 #include "../gis/tmpointorientattrib.h"		// for oriented points
+#include <wx/notifmsg.h>
 
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT =	22200;
@@ -212,6 +213,8 @@ class tmEditManager : public wxEvtHandler
 		bool IsDrawingAllowed();
 		bool IsModifictionAllowed();
 		bool IsLayerType(int layertype = LAYER_SPATIAL_LINE);
+        bool IsMultipleModifictionAllowed();
+
 		
 		// deleting selected
 		bool DeleteSelected(bool Clearselection = true);

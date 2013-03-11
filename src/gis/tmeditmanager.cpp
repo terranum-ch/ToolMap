@@ -419,6 +419,19 @@ bool tmEditManager::IsModifictionAllowed()
 }
 
 
+bool tmEditManager::IsMultipleModifictionAllowed(){
+    if (IsCorrectLayerSelected() == false) {
+        return false;
+    }
+    
+    if (IsObjectMinNumberSelected(1) == false) {
+        return false;
+    }
+    return true;
+}
+
+
+
 bool tmEditManager::IsLayerType(int layertype){
 	wxASSERT(m_TOC);
 	if (m_TOC->GetEditLayer() == NULL){
@@ -2326,7 +2339,7 @@ void tmEditManager::OnEditSharedMove(wxCommandEvent & event){
 
 
 bool tmEditManager::FlipLine(){
-	if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE) || !IsObjectSelected()){
+	if (IsLayerTypeSelected(LAYER_SPATIAL_LINE) == false){
 		return false;
 	}
 	
@@ -2336,31 +2349,34 @@ bool tmEditManager::FlipLine(){
 		return false;
 	}
 	
-	OGRFeature * myFeature = mySelLayer->GetFeatureByOID(m_SelectedData->GetSelectedUnique());
-	wxASSERT(myFeature);
-	
-	// temp
-	//OGRFeature::DestroyFeature(myFeature);
-	//wxDELETE(mySelLayer);
-	
-	
-	// don't delete, internally geometry.
-	OGRLineString * myOGRSelLine = (OGRLineString*) myFeature->GetGeometryRef();
-	wxASSERT(myOGRSelLine);
-	
-	OGRLineString * myTmpLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
-	wxASSERT(myTmpLine);
-	for (int i = myOGRSelLine->getNumPoints()-1; i >= 0; i--) {
-		OGRPoint myPoint;
-		myOGRSelLine->getPoint(i, &myPoint);
-		myTmpLine->addPoint(&myPoint);
-	}
-	wxLogMessage(_("Line  %ld flipped"), myFeature->GetFID());
-	mySelLayer->UpdateGeometry(myTmpLine, myFeature->GetFID());
-	OGRGeometryFactory::destroyGeometry(myTmpLine);
-	OGRFeature::DestroyFeature(myFeature);
+    wxArrayLong * mySelected = m_SelectedData->GetSelectedValues();
+    wxASSERT(mySelected);
+    wxBusyCursor myBusyCursor;
+    
+    for (unsigned int f = 0; f< mySelected->GetCount(); f++) {
+        OGRFeature * myFeature = mySelLayer->GetFeatureByOID(mySelected->Item(f));
+        wxASSERT(myFeature);
+        
+        // don't delete, internally geometry.
+        OGRLineString * myOGRSelLine = (OGRLineString*) myFeature->GetGeometryRef();
+        wxASSERT(myOGRSelLine);
+        
+        OGRLineString * myTmpLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+        wxASSERT(myTmpLine);
+        for (int i = myOGRSelLine->getNumPoints()-1; i >= 0; i--) {
+            OGRPoint myPoint;
+            myOGRSelLine->getPoint(i, &myPoint);
+            myTmpLine->addPoint(&myPoint);
+        }
+        wxLogMessage(_("Line  %ld flipped"), myFeature->GetFID());
+        mySelLayer->UpdateGeometry(myTmpLine, myFeature->GetFID());
+        OGRGeometryFactory::destroyGeometry(myTmpLine);
+        OGRFeature::DestroyFeature(myFeature);
+    }
 	wxDELETE(mySelLayer);
 	
+    //wxNotificationMessage myMessage( _("Flipping Done!"), wxString::Format(_("%ld line(s) flipped!"), mySelected->GetCount()),m_ParentEvt);
+    //myMessage.Show();
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
