@@ -63,7 +63,7 @@ public:
     virtual ~siLayer();
     
     bool LoadFromFile(const wxString & filename);
-    bool Process();
+    int Process();
     
     const siKind GetKindRef();
     inline const SILAYER_TYPE GetLayerType() const;
