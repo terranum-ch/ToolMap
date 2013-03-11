@@ -23,7 +23,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] ={
     { wxCMD_LINE_SWITCH, "o", "overwrite", "overwrite output" },
     { wxCMD_LINE_PARAM, NULL, NULL, "[ToolMap project file]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY },
     { wxCMD_LINE_PARAM, NULL, NULL, "[SHP directory]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY },
-    { wxCMD_LINE_PARAM, NULL, NULL, "[rule files]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_MULTIPLE },
+    { wxCMD_LINE_PARAM, NULL, NULL, "[rule files directory]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY },
     { wxCMD_LINE_NONE }
 };
 
@@ -178,21 +178,23 @@ int main(int argc, char **argv){
     OGRRegisterAll();
     
     wxString mySHPDirectory = parser.GetParam(1);
-    int myNbRuleFiles = parser.GetParamCount() -2;
-    
-    wxArrayString myRuleFiles;
-    for (int i = 0; i< myNbRuleFiles; i++) {
-        myRuleFiles.Add(parser.GetParam(i+2));
-        if (beVerbose) {
-            wxLogMessage(_T("rule file: %s"), parser.GetParam(i+2));
-        }
+    wxString myRuleDirectory = parser.GetParam(2);
+    if (wxDir::Exists(myRuleDirectory) == false) {
+        wxLogError(_("Rule Directory: %s didn't exists"), myRuleDirectory);
+        return 0;
+    }
+    if (beVerbose) {
+        wxPrintf(_("Rule file directory is: %s\n"), myRuleDirectory);
     }
     
+    wxArrayString myRuleFiles;
+    wxDir::GetAllFiles(myRuleDirectory, &myRuleFiles, _T("*.txt"), wxDIR_FILES);
     if (beVerbose) {
         wxLogMessage(_("%ld rule files to process!\n"), myRuleFiles.GetCount());
     }
     
     // loading and processing
+    wxStopWatch sw;
     for (unsigned int i = 0; i< myRuleFiles.GetCount(); i++) {
         wxFileName myActualRuleFile (myRuleFiles.Item(i));
         wxPrintf(_("********** Processing: '%s' **********\n"), myActualRuleFile.GetName());
@@ -209,5 +211,7 @@ int main(int argc, char **argv){
         }
         wxPrintf(_T("\n"));
     }
-    return 0;
+    
+    wxTimeSpan mySpanTime = wxTimeSpan::Milliseconds(sw.Time());
+    wxPrintf(_("Elapsed time: %s"), mySpanTime.Format(_T("%H:%M:%S.%l")));
 }
