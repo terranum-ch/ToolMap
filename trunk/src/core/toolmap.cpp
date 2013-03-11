@@ -1881,11 +1881,11 @@ void ToolMapFrame::OnUpdateMenuShowInfo (wxUpdateUIEvent & event){
 void ToolMapFrame::OnUpdateMenuFlipLine (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
 	bool bEnable = false;
-	if (m_EditManager->IsModifictionAllowed() == true) {
-		if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE)) {
+	if (m_EditManager->IsMultipleModifictionAllowed() == true) {
+        if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE)) {
 			bEnable = true;
 		}
-	}
+    }
 	event.Enable(bEnable);
 }
 
