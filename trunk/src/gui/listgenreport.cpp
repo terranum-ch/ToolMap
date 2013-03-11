@@ -96,7 +96,7 @@ int ListGenReport::ImportParsedFileToListCtrl(const wxString & filename,
 	
 	// create parser depending on the selected format and set a file
 	// for that parser
-	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
 	m_ImportParser->SetParseFileName(filename);
 		
 	// check that the parser is not null or may crash
@@ -139,7 +139,7 @@ int ListGenReport::ExportListParsedToFile (const wxString & filename,
 	
 	// create parser depending on the selected format and set a file
 	// for that parser
-	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
 	m_ImportParser->SetParseFileName(filename);
 
 	
@@ -1011,7 +1011,7 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filenam
 	
 	// create parser depending on the selected format and set a file
 	// for that parser
-	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
 	m_ImportParser->SetParseFileName(filename);
 	
 	// specify the number of cols we are looking for

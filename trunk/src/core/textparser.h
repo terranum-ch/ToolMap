@@ -102,7 +102,7 @@ class TextParser : public wxObject
 		inline void IncrementActualLineNumber (int iIncrement = 1);
 		int GetLineCount () {return m_LineCount;}
 		static wxString GetAllSupportedParserWildCards();
-		static TextParser * CreateParserBasedOnType (const int & textparser_index);
+		static TextParser * CreateParserBasedOnType (const int & textparser_index, const wxFileName & filename);
 		virtual bool CheckFileToParse (){return TRUE;}
 		void SetNumberOfFields (int inbfield);
 	};
