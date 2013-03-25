@@ -288,8 +288,9 @@ bool ProjectDefMemoryFields::SetValues(const wxString & fieldname, const wxStrin
     }
     
     // get orientation (item number 8)
-    if (fieldcomment == ProjectDefMemoryFields::GetOrientationName())
-        m_FieldOrientation = TRUE;
+    if (fieldcomment == ProjectDefMemoryFields::GetOrientationName()){
+        m_FieldOrientation = true;
+    }
     // otherwise, field orientation is false :-)
     
     

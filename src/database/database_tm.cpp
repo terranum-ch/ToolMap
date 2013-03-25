@@ -1398,7 +1398,7 @@ int DataBaseTM::GetFieldsFromDB (PrjDefMemManage * myPrj)
 		// add field and set values to this field
 		iNbFields ++;
 		myField = myPrj->AddField();
-		myField->SetValues(myResults.Item(1), myResults.Item(2));
+		myField->SetValues(myResults.Item(1), myResults.Item(2), myResults.Item(3));
 	}
 	DataBaseClearResults();
     
