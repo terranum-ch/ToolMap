@@ -557,15 +557,14 @@ void tmRenderer::OnWheelTimer (wxTimerEvent & event){
 	m_WheelRotation = 0;
 	
 	wxRect myBaseRect (wxPoint(0,0), this->GetSize());
-	int myWheelPercent = 10 - myWheelRotation;
-	if (myWheelPercent < 1 ) {
+	wxRect myOriginRect (myBaseRect);
+    int myWheelPercent = 10 - myWheelRotation;
+    if (myWheelPercent < 1 ) {
 		myWheelPercent = 1;
 	}
 	myBaseRect.SetWidth(wxRound(myBaseRect.GetWidth() * myWheelPercent / 10.0));
 	myBaseRect.SetHeight(wxRound(myBaseRect.GetHeight() * myWheelPercent / 10.0));
-	wxRect myCenterRect(m_WheelPosition, wxSize(1,1));
-	myBaseRect = myBaseRect.CenterIn(myCenterRect, wxBOTH);
-	
+	myBaseRect = myBaseRect.CenterIn(myOriginRect, wxBOTH);
 	if (myBaseRect.GetSize() == this->GetSize()) {
 		// no changes, return
 		return;
