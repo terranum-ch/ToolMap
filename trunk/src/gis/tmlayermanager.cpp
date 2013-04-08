@@ -1170,6 +1170,52 @@ void tmLayerManager::CheckGeometryValidity(){
 }
 
 
+void tmLayerManager::ExportSelectedGeometries(const wxFileName & file){
+    tmLayerProperties * layerprop = m_TOCCtrl->GetSelectionLayer();
+    if (layerprop == NULL) {
+        return;
+    }
+    
+    tmGISData * myLayerData = tmGISData::LoadLayer(layerprop);
+	if (myLayerData == NULL){
+        wxLogError(_("Error loading %s data!"), layerprop->GetNameDisplay());
+        return;
+    }
+    
+    if(myLayerData->IsRaster() == true){
+        wxLogError(_("This tool isn't working on Raster files, select a vector file"));
+        return;
+    }
+    
+    // create the vector file
+    tmGISDataVectorSHP  myShp;
+    if(myShp.CreateFile(file.GetFullPath(), (int) layerprop->GetSpatialType()) == false){
+		wxLogError(_("Creating shapefile: %s failed!"), file.GetFullPath());
+        return;
+	}
+    
+    
+    tmGISDataVector * myLayerDataVector = (tmGISDataVector*) myLayerData;
+    OGRGeometry * myGeom = NULL;
+    bool bRestart = true;
+    long myOid = wxNOT_FOUND;
+    long iCount = 0;
+    
+    while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != NULL) {
+        bRestart = false;
+        
+        if (m_SelectedData.IsSelected(myOid)==true) {
+            myShp.AddGeometry(myGeom, myOid);
+            myShp.CloseGeometry();
+            iCount++;
+        }
+        OGRGeometryFactory::destroyGeometry(myGeom);
+    }
+    
+    wxMessageBox(wxString::Format(_("%ld object(s) exported into: %s"),iCount, file.GetFullName()),_("Selected Geometry Export"));
+}
+
+
 
 bool tmLayerManager::SelectByOid (){
 	//	

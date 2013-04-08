@@ -162,6 +162,7 @@ class AttribObjType_PANEL;
 
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
+#define ID_MENU_EXPORT_GIS_GEOMETRIES 10113
 
 //#define ID_MENU_ZOOM_PREVIOUS 10313
 #define ID_MENU_ZOOM 10315
@@ -336,6 +337,8 @@ private:
 	void OnComponentsInfo (wxCommandEvent & event);
 	
 	void OnImportGISData (wxCommandEvent & event);
+    void OnExportSelectedGISData (wxCommandEvent & event);
+    
 	void OnUserManual(wxCommandEvent & event);
 	void OnFlipLine (wxCommandEvent & event);
 	void OnPreferences(wxCommandEvent & event);
