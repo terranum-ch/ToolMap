@@ -186,6 +186,7 @@ class tmLayerManager : public wxEvtHandler
 		bool SelectByOid ();
         
         void CheckGeometryValidity();
+        void ExportSelectedGeometries(const wxFileName & file);
 			
 		bool LoadProjectLayers();
 		bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);

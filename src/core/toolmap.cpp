@@ -137,6 +137,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 	EVT_MENU (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
+    EVT_MENU(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnExportSelectedGISData)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
 	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
@@ -266,6 +267,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_LOG_WINDOW, ToolMapFrame::OnUpdateMenuShowLog)
 	EVT_UPDATE_UI (ID_MENU_INFO_WINDOW, ToolMapFrame::OnUpdateMenuShowInfo)
     EVT_UPDATE_UI(ID_MENU_VALIDITY, ToolMapFrame::OnUpdateGeometryValidity)
+    EVT_UPDATE_UI(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnUpdateGeometryValidity)
 END_EVENT_TABLE()
 
 
@@ -504,15 +506,14 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu2, _("&Project"));
 
-
     // DATA
     wxMenu* itemMenu24 = new wxMenu;
     itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
+    itemMenu24->Append(ID_MENU_EXPORT_GIS_GEOMETRIES, _("Export selected geometries..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
-
 
     // VIEW
     wxMenu* itemMenu28 = new wxMenu;
@@ -1253,6 +1254,22 @@ void ToolMapFrame::_CheckUpdates(bool ismanual){
 
     WebUpdateThread * myUpdate = new WebUpdateThread(m_InfoBar, myProxyInfo);
     myUpdate->CheckNewVersion(mySvnVersion, true, ismanual, true);
+}
+
+
+
+void ToolMapFrame::OnExportSelectedGISData (wxCommandEvent & event){
+    if(m_PManager->IsProjectOpen() == false){
+        return;
+    }
+    
+    wxFileDialog saveDlg (this, _("Save SHP file"), "", "", _("SHP files (*.shp)|*.shp"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    if (saveDlg.ShowModal() == wxID_CANCEL){
+        return;
+    }
+    
+    wxFileName myFileName (saveDlg.GetPath());
+    m_LayerManager->ExportSelectedGeometries(myFileName);
 }
 
 
