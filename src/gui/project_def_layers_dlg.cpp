@@ -560,7 +560,7 @@ void ProjectDefLayersEditObjectDlg::CreateDlgControls()
  *******************************************************************************/
 void ProjectDefLayersEditObjectDlg::_SetValidator()
 {
-	m_DlgEO_Code->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT));
+	m_DlgEO_Code->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));
 	m_DlgEO_Value->SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_COMPLEX));
 }
 
@@ -852,7 +852,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow()
 				ProjectDefMemoryObjects * myObjectObj = m_pPrjDefinition->GetNextObjects();
 				
 				// fit things returned in the list
-				myObjListValues.Add(wxString::Format(_T("%ld"), myObjectObj->m_ObjectCode));
+				myObjListValues.Add(myObjectObj->m_ObjectCode);
 				myObjListValues.Add(myObjectObj->m_ObjectName);
 				m_DlgPDL_Object_List->EditDataToList(myObjListValues);
 				myObjListValues.Clear();
