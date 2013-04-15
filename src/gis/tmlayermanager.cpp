@@ -24,10 +24,12 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpolygon.h"
 #include "vrprogress.h"
-#include  "tmgisdatavectorshp.h"
+#include "tmgisdatavectorshp.h"
+#include "../gui/tmclosefile_dlg.h"
 
 // TODO: Temp
 #include "tmsymbolrule.h"
+
 
 
 
@@ -361,14 +363,13 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent & event){
 	}
 	
 	// display dialog
-	wxMultiChoiceDialog myChoiceDlg (m_Parent, _("Select Layer(s) to close"),
-									 _("Unlink layer(s)"),
-									 myLayersName);
-	if (myChoiceDlg.ShowModal() != wxID_OK) {
-		return;
-	}
-	
-	wxArrayInt myLayerToRemoveIndex = myChoiceDlg.GetSelections();
+    tmCloseFile_DLG myDlg (m_Parent, myLayersName);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    
+
+	wxArrayInt myLayerToRemoveIndex = myDlg.GetSelections();
 	if (myLayerToRemoveIndex.IsEmpty()) {
 		wxLogWarning(_("Nothing selected, no layer will be closed"));
 		return;

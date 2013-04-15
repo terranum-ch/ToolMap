@@ -447,6 +447,12 @@ tmRealRect tmGISScale::PixelsToReal (const wxRect & rectpx)
 }
 
 
+wxPoint tmGISScale::RealToPixel (wxRealPoint realpt){
+    wxPoint myPt (wxRound((realpt.x - m_ExtentWndReal.x_min) / m_PixelSize),
+                  wxRound(((double) m_ExtentWnd.height) - ((realpt.y - m_ExtentWndReal.y_min) / m_PixelSize)));
+    return myPt;
+}
+
 
 long tmGISScale::ComputeUnitScale ()
 {
