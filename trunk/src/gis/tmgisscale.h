@@ -194,12 +194,7 @@ class tmGISScale : public wxObject
 								m_ExtentWndReal.y_max - (((double) pt.y)* m_PixelSize)));
 		}
 		
-		inline wxPoint RealToPixel (wxRealPoint realpt)
-		{
-			return (wxPoint(wxRound((realpt.x - m_ExtentWndReal.x_min) / m_PixelSize),
-							wxRound(((double) m_ExtentWnd.height) - ((realpt.y - m_ExtentWndReal.y_min) / m_PixelSize))));
-			
-		}
+        wxPoint RealToPixel (wxRealPoint realpt);
 		tmRealRect PixelsToReal (const wxRect & rectpx);
 		
 		
