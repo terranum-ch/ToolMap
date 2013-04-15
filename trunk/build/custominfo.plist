@@ -34,7 +34,7 @@
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>Lucien Schreiber (c) CREALP 2013</string>
-    <key>NSPrincipalClass</key>
-    <string>NSApplication</string>
+    <!--<key>NSPrincipalClass</key>
+    <string>NSApplication</string>-->
   </dict>
 </plist>
