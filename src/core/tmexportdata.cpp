@@ -150,26 +150,22 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
 {
 	wxASSERT(m_pDB);
 	
-	wxString sStemp = _T("SELECT OBJECT_DESC_0 FROM ") +
+	wxString sStemp = _T("SELECT MAX(LENGTH(OBJECT_DESC_0)) FROM ") +
 	TABLE_NAME_OBJECTS + _T(" WHERE THEMATIC_LAYERS_LAYER_INDEX = %d;");
 	wxString sSentence = wxString::Format(sStemp, layerindex);
 	
 	
-	if (m_pDB->DataBaseQuery(sSentence)==false)
+	if (m_pDB->DataBaseQuery(sSentence)==false){
 		return 0;
+    }
 	
-	wxString myResult;
-	int iActualCharCount = 0;
-	int iTempCharCount = 0;
-	while (m_pDB->DataBaseGetNextResult(myResult))
-	{
-		iTempCharCount = myResult.Len();
-		if (iTempCharCount > iActualCharCount)
-			iActualCharCount = iTempCharCount;
-	}
-	m_pDB->DataBaseClearResults();
-	return iActualCharCount + 1;
-	
+    long myMaxLength = 0;
+    if(m_pDB->DataBaseGetNextResult(myMaxLength) == false){
+        wxLogError(_("Unable to get field length"));
+        myMaxLength = 100;
+    }
+    m_pDB->DataBaseClearResults();
+    return myMaxLength + 5;
 }
 
 

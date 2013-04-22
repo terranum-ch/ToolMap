@@ -1045,7 +1045,10 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
 	{
 		case TM_FIELD_ENUMERATION: // enumeration
 		case TM_FIELD_TEXT: // TEXT
-			m_Feature->SetField(iindex, value.mb_str( wxCSConv(wxFONTENCODING_ISO8859_1)));
+        {
+            wxString myValue = value;
+			m_Feature->SetField(iindex, (const char*) myValue.mb_str( wxCSConv(wxFONTENCODING_ISO8859_1)));
+        }
 			break;
 
 		case TM_FIELD_INTEGER: // INTEGER
