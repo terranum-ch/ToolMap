@@ -214,6 +214,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
 
 	int iNbVertex = 0;
+    long mySkippedVertex = 0;
+    long myTotalVertex = 0;
 	while (1){
 		iNbVertex = 0;
 		long myOid = 0;
@@ -222,10 +224,20 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 			break;
 		}
         
+        
+        myTotalVertex += iNbVertex;
         // convert realpts to pxpts
         wxPoint * pptspx = new wxPoint[iNbVertex];
+        m_PreviousPoint = wxDefaultPosition;
         for (int i = 0; i< iNbVertex; i++) {
-            pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+            wxPoint myPt = m_scale.RealToPixel(pptsReal[i]);
+            if (myPt == m_PreviousPoint) {
+                pptspx[i] = wxDefaultPosition;
+                ++mySkippedVertex;
+            }else{
+                pptspx[i] = myPt;
+            }
+            m_PreviousPoint = myPt;
         }
         wxDELETEA(pptsReal);
 		
@@ -239,7 +251,9 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 					wxGraphicsPath myPath = pgdc->CreatePath();
 					myPath.MoveToPoint(pptspx[0]);
 					for (int i = 1; i< iNbVertex; i++)
-						myPath.AddLineToPoint(pptspx[i]);
+                        if (pptspx[i] != wxDefaultPosition) {
+                            myPath.AddLineToPoint(pptspx[i]);
+                        }
 					pgdc->StrokePath(myPath);
 				}
                 myActualPen = mySPen;
@@ -252,7 +266,9 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 		wxGraphicsPath myPath = pgdc->CreatePath();
 		myPath.MoveToPoint(pptspx[0]);
 		for (int i = 1; i< iNbVertex; i++){
-			myPath.AddLineToPoint(pptspx[i]);
+            if (pptspx[i] != wxDefaultPosition) {
+                myPath.AddLineToPoint(pptspx[i]);
+            }
         }
 		pgdc->StrokePath(myPath);
         
@@ -277,6 +293,8 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(myVPen);
 	wxDELETE(pgdc);
+    
+    wxLogMessage(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
 	return true;
 }
 
