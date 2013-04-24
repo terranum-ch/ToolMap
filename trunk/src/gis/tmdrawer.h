@@ -60,6 +60,7 @@ class tmDrawer : public wxObject
 		static bool m_LogOn;
 		long m_ActuallayerID;
 		tmSelectedDataMemory * m_SelMem;
+        wxPoint m_PreviousPoint;
 		
 		// load image using GDAL
 		// owned by image, do not destroy manually.
