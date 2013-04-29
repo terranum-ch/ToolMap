@@ -29,6 +29,8 @@
     #include <wx/wx.h>
 #endif
 #include <wx/overlay.h>
+#include <wx/dcgraph.h>
+
 
 #include <wx/scrolwin.h>			// for scrolled window base
 #include "tmgisscale.h"				// for number of division;
@@ -71,6 +73,7 @@ enum tmGIS_TOOL
 	tmTOOL_ZOOM_RECTANGLE_OUT,
 	tmTOOL_PAN,
 	tmTOOL_DRAW,
+    tmTOOL_DRAW_BEZIER,
 	tmTOOL_MODIFY,
 	tmTOOL_CUT_LINES,
 	tmTOOL_ORIENTED_POINTS,
@@ -120,6 +123,13 @@ class tmRenderer : public wxScrolledWindow
 		int m_WheelRotation;
 		wxPoint m_WheelPosition;
 		wxTimer m_WheelTimer;
+        
+        wxPointList m_BezierPoints;
+        wxPointList m_BezierPointsControl;
+        wxPoint m_BezierActualP1;
+        wxPoint m_BezierActualP2;
+        wxPoint m_BezierActualC1;
+        wxPoint m_BezierActualC2;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
@@ -172,6 +182,10 @@ class tmRenderer : public wxScrolledWindow
 		void DrawStart (const wxPoint & mousepos);
 		void DrawMove (const wxPoint & mousepos);
 		void DrawStop  (const wxPoint & mousepos);
+        
+        // bezier function
+        void DrawBezierClick (const wxPoint & mousepos);
+        void DrawBezierMove (const wxPoint & mousepos);
 		
 		// oriented pts functions
 		void OrientedPtsStart(const wxPoint & mousepos);
