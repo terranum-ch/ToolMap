@@ -97,6 +97,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
     m_BezierActualP2= wxPoint(0,0);
     m_BezierActualC1= wxPoint(0,0);
     m_BezierActualC2= wxPoint(0,0);
+    m_BezierDrawControlPoints = false;
 	
     images_cursor_init();
     
@@ -986,17 +987,16 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 
 
 void tmRenderer::DrawBezierClick (const wxPoint & mousepos){
-    /*if(m_BezierPoints.GetCount() == 0) {
-        m_BezierPoints.push_back(new wxPoint(mousepos));
-        return;
-    }*/
-    
     if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
         m_BezierPoints.push_back(new wxPoint(mousepos));
+        m_BezierActualP2 = mousepos;
+        m_BezierDrawControlPoints = true;
     }
     else
     {
         m_BezierPointsControl.push_back(new wxPoint(mousepos));
+        m_BezierActualC2 = mousepos;
+        m_BezierDrawControlPoints = false;
     }
     Refresh();
     Update();
@@ -1009,40 +1009,22 @@ void tmRenderer::DrawBezierMove (const wxPoint & mousepos){
         return;
     }
     
-    wxPoint myPt ( *m_BezierPoints[m_BezierPoints.GetCount() -1]);
-    if (m_BezierPoints.GetCount() != m_BezierPointsControl.GetCount()){
-        
-        {
-            wxClientDC myDC (this);
-            wxDCOverlay overlaydc (m_Overlay, &myDC);
-            overlaydc.Clear();
-        }
-        m_Overlay.Reset();
-        
-        wxClientDC myDC (this);
-        wxDCOverlay overlaydc (m_Overlay, &myDC);
-        overlaydc.Clear();
-        
-#ifdef __WXMAC__
-        myDC.SetPen( *wxGREY_PEN );
-#else
-        myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID ));
-#endif
-        
-        myDC.DrawLine(myPt, mousepos);
-        myDC.DrawLine(myPt, myPt - (mousepos - myPt));
+    if (m_BezierPoints.GetCount() > m_BezierPointsControl.GetCount()) {
+        m_BezierActualP2 = *m_BezierPoints[m_BezierPoints.GetCount() -1];
+        m_BezierActualC2 = mousepos;
     }
-    
     else {
-        wxRect myRefreshRect (myPt, mousepos);
-        m_BezierActualP1 = myPt;
-        wxPoint myCp1 (*m_BezierPointsControl[m_BezierPointsControl.GetCount() -1]);
-        m_BezierActualC1 = myCp1;
+        m_BezierActualP1 = *m_BezierPoints[m_BezierPoints.GetCount() -1];
+        if (m_BezierPointsControl.GetCount() > 0){
+            m_BezierActualC1 = *m_BezierPointsControl[m_BezierPointsControl.GetCount() -1];
+        }
+        
         m_BezierActualP2 = mousepos;
         m_BezierActualC2 = mousepos;
-        Refresh();
-        Update();
     }
+    
+    Refresh();
+    Update();
 }
 
 
