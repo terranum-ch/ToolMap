@@ -204,6 +204,7 @@ class tmEditManager : public wxEvtHandler
 	
 		//change tool functions
 		void OnToolEdit ();
+        void OnToolBezier();
 		void OnToolModify ();
 		void OnToolEditShared();
 		void OnToolCutLines();

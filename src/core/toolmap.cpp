@@ -61,6 +61,7 @@ bool ToolMapApp::OnInit(){
     // debugging string for OSX
     // this is needed for viewing string content with Xcode !!
     wxString myTest = _T("Test debugging");
+    myTest.Len();
     myTest.ToUTF8().data();
 #endif
     
@@ -154,6 +155,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnZoomToSelectedLayer)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
+    EVT_MENU(ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ORIENT_POINT, ToolMapFrame::OnToolChanged)
@@ -554,6 +556,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu41->Enable(ID_MENU_DRAW, false);
+    itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu41->Enable(ID_MENU_MODIFY, false);
 	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
@@ -1616,6 +1619,10 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 		case ID_MENU_DRAW:
 			m_EditManager->OnToolEdit();
 			break;
+            
+        case ID_MENU_DRAW_BEZIER:
+            m_EditManager->OnToolBezier();
+            break;
 
 		case ID_MENU_MODIFY:
 			m_EditManager->OnToolModify();

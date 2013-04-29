@@ -138,6 +138,11 @@ void tmEditManager::OnToolEdit ()
 }
 
 
+void tmEditManager::OnToolBezier() {
+    m_Renderer->SetTool(tmTOOL_DRAW_BEZIER);
+}
+
+
 
 /***************************************************************************//**
  @brief User select modify tool

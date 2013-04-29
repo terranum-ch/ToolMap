@@ -92,6 +92,11 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_WheelRotation = 0;
 	m_WheelTimer.SetOwner(this, wxID_ANY);
 	m_WheelPosition = wxDefaultPosition;
+    
+    m_BezierActualP1 = wxPoint(0,0);
+    m_BezierActualP2= wxPoint(0,0);
+    m_BezierActualC1= wxPoint(0,0);
+    m_BezierActualC2= wxPoint(0,0);
 	
     images_cursor_init();
     
@@ -265,6 +270,7 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			break;
 			
 		case tmTOOL_DRAW:
+        case tmTOOL_DRAW_BEZIER:
 			
 			//this->SetCursor(wxCursor(wxCURSOR_CROSS));
 			this->SetCursor(LoadCursorFromBitmap(tmCURSOR_EDIT));
@@ -299,6 +305,7 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 void tmRenderer::OnPaint(wxPaintEvent & event)
 {
 	wxPaintDC dc (this);
+    wxGCDC gcdc (dc);
 	
 	if (m_bmp && m_bmp->IsOk())
 	{
@@ -311,7 +318,31 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 		dc.DrawBitmap (*m_bmp,wxPoint(0,0),false);
 		
 	}
-	
+    
+    
+    
+    
+    if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount() && m_BezierPoints.GetCount() > 0) {
+        gcdc.SetPen(*wxRED_PEN);
+        wxGraphicsPath path = gcdc.GetGraphicsContext()->CreatePath();
+
+        wxPoint myFirstPt (*m_BezierPoints[0]);
+        path.MoveToPoint(myFirstPt);
+        for (unsigned int i = 1; i< m_BezierPoints.GetCount(); i++) {
+            wxPoint myLastCPt (*m_BezierPointsControl[i-1]);
+            wxPoint myPt (* m_BezierPoints[i]);
+            wxPoint myCPt1 (*m_BezierPointsControl[i]);
+            path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
+        }
+        gcdc.GetGraphicsContext()->StrokePath(path);
+	}
+    
+    gcdc.SetPen(*wxBLUE_PEN);
+    wxGraphicsPath path = gcdc.GetGraphicsContext()->CreatePath();
+    path.MoveToPoint(m_BezierActualP1);
+    path.AddCurveToPoint(m_BezierActualC1, m_BezierActualC2, m_BezierActualP2);
+    gcdc.GetGraphicsContext()->StrokePath(path);
+    
 }
 
 
@@ -386,6 +417,10 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_DRAW)
 		DrawMove(event.GetPosition());
+    
+    if (m_ActualTool == tmTOOL_DRAW_BEZIER) {
+        DrawBezierMove(event.GetPosition());
+    }
 	
 	if (event.Dragging() == true) {
 		if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
@@ -420,6 +455,10 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (HasCapture() == true) {
 		ReleaseMouse();
 	}
+    
+    if (m_ActualTool == tmTOOL_DRAW_BEZIER) {
+        DrawBezierClick(event.GetPosition());
+    }
     
     if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
 		ZoomStop(event.GetPosition());
@@ -943,6 +982,69 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	wxASSERT(m_DrawCalled);
 	m_DrawCalled = false;
 }
+
+
+
+void tmRenderer::DrawBezierClick (const wxPoint & mousepos){
+    /*if(m_BezierPoints.GetCount() == 0) {
+        m_BezierPoints.push_back(new wxPoint(mousepos));
+        return;
+    }*/
+    
+    if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
+        m_BezierPoints.push_back(new wxPoint(mousepos));
+    }
+    else
+    {
+        m_BezierPointsControl.push_back(new wxPoint(mousepos));
+    }
+    Refresh();
+    Update();
+}
+
+
+
+void tmRenderer::DrawBezierMove (const wxPoint & mousepos){
+    if (m_BezierPoints.GetCount() == 0) {
+        return;
+    }
+    
+    wxPoint myPt ( *m_BezierPoints[m_BezierPoints.GetCount() -1]);
+    if (m_BezierPoints.GetCount() != m_BezierPointsControl.GetCount()){
+        
+        {
+            wxClientDC myDC (this);
+            wxDCOverlay overlaydc (m_Overlay, &myDC);
+            overlaydc.Clear();
+        }
+        m_Overlay.Reset();
+        
+        wxClientDC myDC (this);
+        wxDCOverlay overlaydc (m_Overlay, &myDC);
+        overlaydc.Clear();
+        
+#ifdef __WXMAC__
+        myDC.SetPen( *wxGREY_PEN );
+#else
+        myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID ));
+#endif
+        
+        myDC.DrawLine(myPt, mousepos);
+        myDC.DrawLine(myPt, myPt - (mousepos - myPt));
+    }
+    
+    else {
+        wxRect myRefreshRect (myPt, mousepos);
+        m_BezierActualP1 = myPt;
+        wxPoint myCp1 (*m_BezierPointsControl[m_BezierPointsControl.GetCount() -1]);
+        m_BezierActualC1 = myCp1;
+        m_BezierActualP2 = mousepos;
+        m_BezierActualC2 = mousepos;
+        Refresh();
+        Update();
+    }
+}
+
 
 
 void tmRenderer::OrientedPtsStart(const wxPoint & mousepos)
