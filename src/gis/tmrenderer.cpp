@@ -321,8 +321,6 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	}
     
     
-    
-    
     if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount() && m_BezierPoints.GetCount() > 0) {
         gcdc.SetPen(*wxRED_PEN);
         wxGraphicsPath path = gcdc.GetGraphicsContext()->CreatePath();
@@ -330,7 +328,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
         wxPoint myFirstPt (*m_BezierPoints[0]);
         path.MoveToPoint(myFirstPt);
         for (unsigned int i = 1; i< m_BezierPoints.GetCount(); i++) {
-            wxPoint myLastCPt (*m_BezierPointsControl[i-1]);
+            wxPoint myLastCPt (*m_BezierPoints[i-1] -  (*m_BezierPointsControl[i-1] - *m_BezierPoints[i-1]));
             wxPoint myPt (* m_BezierPoints[i]);
             wxPoint myCPt1 (*m_BezierPointsControl[i]);
             path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
@@ -1016,7 +1014,7 @@ void tmRenderer::DrawBezierMove (const wxPoint & mousepos){
     else {
         m_BezierActualP1 = *m_BezierPoints[m_BezierPoints.GetCount() -1];
         if (m_BezierPointsControl.GetCount() > 0){
-            m_BezierActualC1 = *m_BezierPointsControl[m_BezierPointsControl.GetCount() -1];
+            m_BezierActualC1 = m_BezierActualP1 - (*m_BezierPointsControl[m_BezierPointsControl.GetCount() -1] - m_BezierActualP1);
         }
         
         m_BezierActualP2 = mousepos;
