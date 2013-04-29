@@ -1015,13 +1015,14 @@ void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event)
 	
 	wxClientDC myDC (m_Renderer);
 	m_DrawLine.DrawEditReset(&myDC);
-	
 	m_DrawLine.ClearVertex();
-	
+    
 	// Clear memory
 	m_GISMemory->DestroyFeature();
 	m_GISMemory->CreateFeature();
 	
+    m_Renderer->ClearBezier();
+    
 	m_Renderer->Refresh();
 	m_Renderer->Update();
 
