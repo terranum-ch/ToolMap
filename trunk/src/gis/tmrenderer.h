@@ -234,7 +234,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		// editing 
 		void StopModifyEvent (){m_ModifyCalled = false;}
-		
+		void ClearBezier ();
 	};
 
 
