@@ -130,6 +130,7 @@ class tmRenderer : public wxScrolledWindow
         wxPoint m_BezierActualP2;
         wxPoint m_BezierActualC1;
         wxPoint m_BezierActualC2;
+        bool m_BezierDrawControlPoints;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
