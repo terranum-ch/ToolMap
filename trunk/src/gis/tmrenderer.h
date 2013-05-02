@@ -35,7 +35,6 @@
 #include <wx/scrolwin.h>			// for scrolled window base
 #include "tmgisscale.h"				// for number of division;
 #include "../core/tmarraysize.h"	// for array of wxSize items
-#include "../core/bezierpoints.h"
 
 class vrRubberBand;
 
@@ -126,15 +125,6 @@ class tmRenderer : public wxScrolledWindow
 		int m_WheelRotation;
 		wxPoint m_WheelPosition;
 		wxTimer m_WheelTimer;
-        
-        wxPointList m_BezierPoints;
-        wxPointList m_BezierPointsControl;
-        wxPoint m_BezierActualP1;
-        wxPoint m_BezierActualP2;
-        wxPoint m_BezierActualC1;
-        wxPoint m_BezierActualC2;
-        bool m_BezierDrawControlPoints;
-        wxRect m_BezierRefreshRect;
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
@@ -161,8 +151,7 @@ class tmRenderer : public wxScrolledWindow
 		bool BitmapSetToWhite();
 		bool BitmapCopyInto(wxBitmap * bmp);
         
-        
-        void _DrawBezierEdit(wxGCDC * dc);
+        bool m_isPanning;
 		
 		// scrollbar event (received)
 		//void OnScroll (wxScrollWinEvent & event);
@@ -241,7 +230,6 @@ class tmRenderer : public wxScrolledWindow
 		
 		// editing 
 		void StopModifyEvent (){m_ModifyCalled = false;}
-		void ClearBezier ();
         
         void SetEditManagerRef (tmEditManager * manager) {m_EditManager = manager;}
 	};

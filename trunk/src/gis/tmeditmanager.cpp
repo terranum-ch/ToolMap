@@ -28,6 +28,10 @@
 #include "tmrenderer.h"						// for GIS rendering
 
 
+#include <wx/listimpl.cpp>
+WX_DEFINE_LIST(wxRealPointList);
+
+
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 
@@ -89,6 +93,13 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 	m_ParentEvt->PushEventHandler(this);
 
 	m_GISMemory = new tmGISDataVectorMemory();
+    
+    m_BezierActualP1 = wxPoint(0,0);
+    m_BezierActualP2= wxPoint(0,0);
+    m_BezierActualC1= wxPoint(0,0);
+    m_BezierActualC2= wxPoint(0,0);
+    m_BezierDrawControlPoints = false;
+    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 }
 
 
@@ -145,8 +156,119 @@ void tmEditManager::OnToolBezier() {
 
 
 
-void tmEditManager::BezierAddPoint(const tmBezierPointInt & point){
+
+void tmEditManager::BezierClick(const wxPoint & mousepos){
+    if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
+        m_BezierPoints.push_back(new wxRealPoint(m_Scale->PixelToReal(mousepos)));
+        m_BezierActualP2 = mousepos;
+        m_BezierDrawControlPoints = true;
+    }
+    else
+    {
+        m_BezierPointsControl.push_back(new wxRealPoint(m_Scale->PixelToReal(mousepos)));
+        m_BezierActualC2 = mousepos;
+        m_BezierDrawControlPoints = false;
+    }
+    m_Renderer->Refresh();
+    m_Renderer->Update();
+}
+
+
+
+void tmEditManager::BezierMove (const wxPoint & mousepos){
+    if (m_BezierPoints.GetCount() == 0) {
+        return;
+    }
     
+    if (m_BezierPoints.GetCount() > m_BezierPointsControl.GetCount()) {
+        m_BezierActualP2 = m_Scale->RealToPixel(*m_BezierPoints.back());
+        m_BezierActualC2 = mousepos;
+    }
+    else {
+        m_BezierActualP1 = m_Scale->RealToPixel(*m_BezierPoints.back());
+        if (m_BezierPointsControl.GetCount() > 0){
+            if (m_BezierPointsControl.GetCount() == 1){
+                m_BezierActualC1 =  m_Scale->RealToPixel(*m_BezierPointsControl.front());
+            }
+            else {
+                wxPoint myInvertedC1 = m_Scale->RealToPixel(*m_BezierPointsControl.back());
+                m_BezierActualC1 = m_BezierActualP1 - (myInvertedC1 - m_BezierActualP1);
+            }
+        }
+        m_BezierActualP2 = mousepos;
+        m_BezierActualC2 = mousepos;
+    }
+    
+    m_Renderer->RefreshRect(m_BezierRefreshRect);
+    m_Renderer->Update();
+}
+
+
+
+
+void tmEditManager::BezierDraw (wxGCDC * dc){
+    if (m_BezierPoints.GetCount() == 0) {
+        return;
+    }
+    
+    dc->SetPen(*wxRED_PEN);
+    wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
+    
+    wxPoint myFirstPt (m_Scale->RealToPixel(*m_BezierPoints[0]));
+    path.MoveToPoint(myFirstPt);
+    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myLastCPt (m_Scale->RealToPixel(*m_BezierPoints[i-1]) -  (m_Scale->RealToPixel(*m_BezierPointsControl[i-1]) - m_Scale->RealToPixel(*m_BezierPoints[i-1])));
+        if (i == 1) {
+            myLastCPt  = m_Scale->RealToPixel(*m_BezierPoints[i-1]);
+        }
+        wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
+        wxPoint myCPt1 (m_Scale->RealToPixel(*m_BezierPointsControl[i]));
+        path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
+    }
+    dc->GetGraphicsContext()->StrokePath(path);
+	
+    
+    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+        dc->SetPen(*wxBLUE_PEN);
+        wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
+        path.MoveToPoint(m_BezierActualP1);
+        path.AddCurveToPoint(m_BezierActualC1, m_BezierActualC2, m_BezierActualP2);
+        dc->GetGraphicsContext()->StrokePath(path);
+    }
+    
+    if (m_BezierDrawControlPoints == true && m_BezierActualC2 != wxPoint(0,0)) {
+        dc->SetPen(*wxGREEN_PEN);
+        dc->DrawLine(m_BezierActualP2, m_BezierActualC2);
+        dc->DrawLine(m_BezierActualP2, m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2));
+    }
+    
+    // compute bounding box for refreshing. This is mainly to avoid flickering
+    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+        dc->CalcBoundingBox(m_BezierActualP1.x, m_BezierActualP1.y);
+        dc->CalcBoundingBox(m_BezierActualC1.x, m_BezierActualC1.y);
+        // inverted C1 is never needed for bounding box
+    }
+    dc->CalcBoundingBox(m_BezierActualP2.x, m_BezierActualP2.y);
+    dc->CalcBoundingBox(m_BezierActualC2.x, m_BezierActualC2.y);
+    dc->CalcBoundingBox(m_BezierActualP2.x - (m_BezierActualC2.x - m_BezierActualP2.x) ,
+                        m_BezierActualP2.y - (m_BezierActualC2.y - m_BezierActualP2.y));
+    m_BezierRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
+}
+
+
+void tmEditManager::BezierClear(){
+    m_BezierActualP1 = wxPoint(0,0);
+    m_BezierActualP2= wxPoint(0,0);
+    m_BezierActualC1= wxPoint(0,0);
+    m_BezierActualC2= wxPoint(0,0);
+    m_BezierDrawControlPoints = false;
+    
+    m_BezierPoints.DeleteContents(true);
+    m_BezierPointsControl.DeleteContents(true);
+    m_BezierPoints.Clear();
+    m_BezierPointsControl.Clear();
+    
+    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 }
 
 
@@ -1029,7 +1151,7 @@ void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event)
 	m_GISMemory->DestroyFeature();
 	m_GISMemory->CreateFeature();
 	
-    m_Renderer->ClearBezier();
+    BezierClear();
     
 	m_Renderer->Refresh();
 	m_Renderer->Update();
