@@ -76,6 +76,9 @@ WX_DECLARE_OBJARRAY(tmSharedNodeEdit, tmArraySharedNodes);
 
 
 
+WX_DECLARE_LIST(wxRealPoint, wxRealPointList);
+
+
 
 /***************************************************************************//**
  @brief Deals with editing data
@@ -106,6 +109,15 @@ class tmEditManager : public wxEvtHandler
 		DataBaseTM * m_pDB;
 		tmSnappingMemory * m_SnapMem;
 		tmGISScale * m_Scale;
+        
+        wxRealPointList m_BezierPoints;
+        wxRealPointList m_BezierPointsControl;
+        wxPoint m_BezierActualP1;
+        wxPoint m_BezierActualP2;
+        wxPoint m_BezierActualC1;
+        wxPoint m_BezierActualC2;
+        bool m_BezierDrawControlPoints;
+        wxRect m_BezierRefreshRect;
 				
 		// FUNCTIONS
 		void InitMemberValues();
@@ -236,8 +248,10 @@ class tmEditManager : public wxEvtHandler
 		bool FlipLine();
 		
         
-        void BezierAddPoint(const tmBezierPointInt & point);
-        
+        void BezierClick(const wxPoint & mousepos);
+        void BezierMove (const wxPoint & mousepos);
+        void BezierDraw (wxGCDC * dc);
+        void BezierClear();
 	};
 
 
