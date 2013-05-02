@@ -22,6 +22,7 @@
 #include "tmmanagerevent.h"
 #include "../core/vrrubberband.h"
 #include "../core/tmstatsevent.h"
+#include "tmeditmanager.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -79,6 +80,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS )
 {
 	m_bmp = NULL;
+    m_EditManager = NULL;
 	m_ModifyCalled = false;
 	m_DrawCalled = false;
 	m_StartCoord = wxPoint(-1,-1);
@@ -316,55 +318,62 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
 	}
     
     
-    if (m_BezierPoints.GetCount() > 0) {
-        gcdc.SetPen(*wxRED_PEN);
-        wxGraphicsPath path = gcdc.GetGraphicsContext()->CreatePath();
-
-        wxPoint myFirstPt (*m_BezierPoints[0]);
-        path.MoveToPoint(myFirstPt);
-        for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
-            wxPoint myLastCPt (*m_BezierPoints[i-1] -  (*m_BezierPointsControl[i-1] - *m_BezierPoints[i-1]));
-            if (i == 1) {
-                myLastCPt  = *m_BezierPoints[i-1];
-            }
-            wxPoint myPt (* m_BezierPoints[i]);
-            wxPoint myCPt1 (*m_BezierPointsControl[i]);
-            path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
-        }
-        gcdc.GetGraphicsContext()->StrokePath(path);
-	}
-    
-    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
-        gcdc.SetPen(*wxBLUE_PEN);
-        wxGraphicsPath path = gcdc.GetGraphicsContext()->CreatePath();
-        path.MoveToPoint(m_BezierActualP1);
-        path.AddCurveToPoint(m_BezierActualC1, m_BezierActualC2, m_BezierActualP2);
-        gcdc.GetGraphicsContext()->StrokePath(path);
-    }
-    
-    if (m_BezierDrawControlPoints == true && m_BezierActualC2 != wxPoint(0,0)) {
-        gcdc.SetPen(*wxGREEN_PEN);
-        gcdc.DrawLine(m_BezierActualP2, m_BezierActualC2);
-        gcdc.DrawLine(m_BezierActualP2, m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2));
-    }
-    
-    
-    // compute bounding box for refreshing. This is mainly to avoid flickering
-    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
-        gcdc.CalcBoundingBox(m_BezierActualP1.x, m_BezierActualP1.y);
-        gcdc.CalcBoundingBox(m_BezierActualC1.x, m_BezierActualC1.y);
-        // inverted C1 is never needed for bounding box
-    }
-    gcdc.CalcBoundingBox(m_BezierActualP2.x, m_BezierActualP2.y);
-    gcdc.CalcBoundingBox(m_BezierActualC2.x, m_BezierActualC2.y);
-    gcdc.CalcBoundingBox(m_BezierActualP2.x - (m_BezierActualC2.x - m_BezierActualP2.x) ,
-                       m_BezierActualP2.y - (m_BezierActualC2.y - m_BezierActualP2.y));
-    m_BezierRefreshRect = wxRect(wxPoint(gcdc.MinX(), gcdc.MaxY()), wxPoint(gcdc.MaxX(), gcdc.MinY()));
+    _DrawBezierEdit(&gcdc);
     
 }
 
 
-// do nothing but don't propagate event 
+void tmRenderer::_DrawBezierEdit(wxGCDC * dc){
+    if (m_BezierPoints.GetCount() == 0) {
+        return;
+    }
+    
+    dc->SetPen(*wxRED_PEN);
+    wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
+    
+    wxPoint myFirstPt (*m_BezierPoints[0]);
+    path.MoveToPoint(myFirstPt);
+    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myLastCPt (*m_BezierPoints[i-1] -  (*m_BezierPointsControl[i-1] - *m_BezierPoints[i-1]));
+        if (i == 1) {
+            myLastCPt  = *m_BezierPoints[i-1];
+        }
+        wxPoint myPt (* m_BezierPoints[i]);
+        wxPoint myCPt1 (*m_BezierPointsControl[i]);
+        path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
+    }
+    dc->GetGraphicsContext()->StrokePath(path);
+	
+    
+    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+        dc->SetPen(*wxBLUE_PEN);
+        wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
+        path.MoveToPoint(m_BezierActualP1);
+        path.AddCurveToPoint(m_BezierActualC1, m_BezierActualC2, m_BezierActualP2);
+        dc->GetGraphicsContext()->StrokePath(path);
+    }
+    
+    if (m_BezierDrawControlPoints == true && m_BezierActualC2 != wxPoint(0,0)) {
+        dc->SetPen(*wxGREEN_PEN);
+        dc->DrawLine(m_BezierActualP2, m_BezierActualC2);
+        dc->DrawLine(m_BezierActualP2, m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2));
+    }
+    
+    // compute bounding box for refreshing. This is mainly to avoid flickering
+    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+        dc->CalcBoundingBox(m_BezierActualP1.x, m_BezierActualP1.y);
+        dc->CalcBoundingBox(m_BezierActualC1.x, m_BezierActualC1.y);
+        // inverted C1 is never needed for bounding box
+    }
+    dc->CalcBoundingBox(m_BezierActualP2.x, m_BezierActualP2.y);
+    dc->CalcBoundingBox(m_BezierActualC2.x, m_BezierActualC2.y);
+    dc->CalcBoundingBox(m_BezierActualP2.x - (m_BezierActualC2.x - m_BezierActualP2.x) ,
+                        m_BezierActualP2.y - (m_BezierActualC2.y - m_BezierActualP2.y));
+    m_BezierRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
+}
+
+
+// do nothing but don't propagate event
 void tmRenderer::OnAvoidFlickering(wxEraseEvent & event){
 	
 }

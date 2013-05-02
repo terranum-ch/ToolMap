@@ -25,6 +25,7 @@
 #include "tmsymbolvectorpolygon.h"
 #include "../core/tmstatsevent.h"
 #include "../database/database_tm.h"		// for database
+#include "tmrenderer.h"						// for GIS rendering
 
 
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
@@ -141,6 +142,13 @@ void tmEditManager::OnToolEdit ()
 void tmEditManager::OnToolBezier() {
     m_Renderer->SetTool(tmTOOL_DRAW_BEZIER);
 }
+
+
+
+void tmEditManager::BezierAddPoint(const tmBezierPointInt & point){
+    
+}
+
 
 
 

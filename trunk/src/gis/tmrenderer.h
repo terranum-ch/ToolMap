@@ -35,6 +35,7 @@
 #include <wx/scrolwin.h>			// for scrolled window base
 #include "tmgisscale.h"				// for number of division;
 #include "../core/tmarraysize.h"	// for array of wxSize items
+#include "../core/bezierpoints.h"
 
 class vrRubberBand;
 
@@ -94,13 +95,15 @@ enum tmGIS_CURSOR
 // sould be able to divide it by two
 const int tmSELECTION_DIAMETER = 10;
 
-
+class tmEditManager;
 class tmRenderer : public wxScrolledWindow
 	{
 	private:
 		wxBitmap * m_bmp;
 		tmGIS_TOOL m_ActualTool;
 		tmGIS_CURSOR m_ActualNotStockCursor;
+        
+        tmEditManager * m_EditManager;
 		
 		// sizeing process
 		wxSize m_OldSize;
@@ -157,6 +160,9 @@ class tmRenderer : public wxScrolledWindow
 		bool BitmapUpdateSize();
 		bool BitmapSetToWhite();
 		bool BitmapCopyInto(wxBitmap * bmp);
+        
+        
+        void _DrawBezierEdit(wxGCDC * dc);
 		
 		// scrollbar event (received)
 		//void OnScroll (wxScrollWinEvent & event);
@@ -236,6 +242,8 @@ class tmRenderer : public wxScrolledWindow
 		// editing 
 		void StopModifyEvent (){m_ModifyCalled = false;}
 		void ClearBezier ();
+        
+        void SetEditManagerRef (tmEditManager * manager) {m_EditManager = manager;}
 	};
 
 
