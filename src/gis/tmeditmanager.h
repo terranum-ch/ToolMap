@@ -33,7 +33,7 @@
 #include "tmtocctrl.h"						// for TOC ctrl 
 #include "tmselecteddatamemory.h"			// for selection data
 #include "tmmanagerevent.h"				// for shared event with other manager
-#include "tmrenderer.h"						// for GIS rendering
+//#include "tmrenderer.h"						// for GIS rendering
 #include "../core/tmsnappingmemory.h"		// for snapping 
 #include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
@@ -51,7 +51,7 @@ const int tmEM_CONTEXTMENU_LINE_CANCEL =	22203;
 
 class ToolMapFrame;
 class DataBaseTM;
-
+class tmRenderer;
 
 
 class tmSharedNodeEdit {
@@ -106,7 +106,6 @@ class tmEditManager : public wxEvtHandler
 		DataBaseTM * m_pDB;
 		tmSnappingMemory * m_SnapMem;
 		tmGISScale * m_Scale;
-		
 				
 		// FUNCTIONS
 		void InitMemberValues();
@@ -236,6 +235,9 @@ class tmEditManager : public wxEvtHandler
 		bool MergeSelectedLines ();
 		bool FlipLine();
 		
+        
+        void BezierAddPoint(const tmBezierPointInt & point);
+        
 	};
 
 
