@@ -98,6 +98,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
     m_BezierActualC1= wxPoint(0,0);
     m_BezierActualC2= wxPoint(0,0);
     m_BezierDrawControlPoints = false;
+    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 	
     images_cursor_init();
     
@@ -346,6 +347,19 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
         gcdc.DrawLine(m_BezierActualP2, m_BezierActualC2);
         gcdc.DrawLine(m_BezierActualP2, m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2));
     }
+    
+    
+    // compute bounding box for refreshing. This is mainly to avoid flickering
+    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+        gcdc.CalcBoundingBox(m_BezierActualP1.x, m_BezierActualP1.y);
+        gcdc.CalcBoundingBox(m_BezierActualC1.x, m_BezierActualC1.y);
+        // inverted C1 is never needed for bounding box
+    }
+    gcdc.CalcBoundingBox(m_BezierActualP2.x, m_BezierActualP2.y);
+    gcdc.CalcBoundingBox(m_BezierActualC2.x, m_BezierActualC2.y);
+    gcdc.CalcBoundingBox(m_BezierActualP2.x - (m_BezierActualC2.x - m_BezierActualP2.x) ,
+                       m_BezierActualP2.y - (m_BezierActualC2.y - m_BezierActualP2.y));
+    m_BezierRefreshRect = wxRect(wxPoint(gcdc.MinX(), gcdc.MaxY()), wxPoint(gcdc.MaxX(), gcdc.MinY()));
     
 }
 
@@ -1026,14 +1040,14 @@ void tmRenderer::DrawBezierMove (const wxPoint & mousepos){
                 m_BezierActualC1 = m_BezierActualP1 - (*m_BezierPointsControl[m_BezierPointsControl.GetCount() -1] - m_BezierActualP1);
             }
         }
-        
         m_BezierActualP2 = mousepos;
         m_BezierActualC2 = mousepos;
     }
     
-    Refresh();
+    RefreshRect(m_BezierRefreshRect);
     Update();
 }
+
 
 
 void tmRenderer::ClearBezier(){
@@ -1047,6 +1061,8 @@ void tmRenderer::ClearBezier(){
     m_BezierPointsControl.DeleteContents(true);
     m_BezierPoints.Clear();
     m_BezierPointsControl.Clear();
+    
+    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 }
 
 
