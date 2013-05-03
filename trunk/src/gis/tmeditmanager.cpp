@@ -101,6 +101,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierActualC2= wxPoint(0,0);
     m_BezierDrawControlPoints = false;
     m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
+
 }
 
 
@@ -156,6 +157,12 @@ void tmEditManager::OnToolBezier() {
 }
 
 
+void tmEditManager::OnToolBezierModify(){
+    m_Renderer->SetTool(tmTOOL_MODIFY_BEZIER);
+    m_Renderer->Refresh();
+    m_Renderer->Update();
+}
+
 
 
 void tmEditManager::BezierClick(const wxPoint & mousepos){
@@ -209,6 +216,9 @@ void tmEditManager::BezierMove (const wxPoint & mousepos){
 
 void tmEditManager::BezierDraw (wxGCDC * dc){
     if (m_BezierPoints.GetCount() == 0) {
+        return;
+    }
+    if (m_Renderer->GetTool() == tmTOOL_MODIFY_BEZIER) {
         return;
     }
     
@@ -304,6 +314,94 @@ void tmEditManager::BezierClear(){
     
     m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 }
+
+
+
+void tmEditManager::BezierDrawModify(wxGCDC * dc){
+    if (m_Renderer == NULL) {
+        return;
+    }
+    if (m_Renderer->GetTool() != tmTOOL_MODIFY_BEZIER) {
+        return;
+    }
+    if (m_BezierPoints.GetCount() < 2) {
+        return;
+    }
+    wxASSERT(dc);
+    
+    tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+    wxASSERT(myLayerProperties);
+    tmSymbolVectorLine * mySymbol = static_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
+    
+    // draw existing bezier
+    dc->SetPen(wxPen(m_SelectionColour, mySymbol->GetWidth()));
+    wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
+    wxPoint myFirstPt (m_Scale->RealToPixel(*m_BezierPoints[0]));
+    path.MoveToPoint(myFirstPt);
+    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myLastCPt (m_Scale->RealToPixel(*m_BezierPoints[i-1]) -  (m_Scale->RealToPixel(*m_BezierPointsControl[i-1]) - m_Scale->RealToPixel(*m_BezierPoints[i-1])));
+        if (i == 1) {
+            myLastCPt  = m_Scale->RealToPixel(*m_BezierPoints[i-1]);
+        }
+        wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
+        wxPoint myCPt1 (m_Scale->RealToPixel(*m_BezierPointsControl[i]));
+        path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
+    }
+    dc->GetGraphicsContext()->StrokePath(path);
+    
+    // draw nodes
+    dc->SetPen(wxPen(*wxBLACK, 2.0 * mySymbol->GetWidth()));
+    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
+#ifdef __WXMSW__
+        dc->DrawLine (myPt.x , myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+#else
+        dc->DrawLine (myPt.x, myPt.y, myPt.x, myPt.y);
+#endif
+    }
+    
+    // draw controls
+#ifdef __WXMAC__
+    dc->SetPen( *wxGREY_PEN );
+#else
+    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+#endif
+    wxASSERT(m_BezierPointsControl.GetCount() == m_BezierPoints.GetCount());
+    for (unsigned int i = 0; i< m_BezierPoints.GetCount(); i++) {
+        wxPoint myPoint = m_Scale->RealToPixel(*m_BezierPoints[i]);
+        wxPoint myControl = m_Scale->RealToPixel(*m_BezierPointsControl[i]);
+        wxPoint myControlInverted = myPoint - (myControl - myPoint);
+ 
+        dc->DrawLine(myPoint, myControl);
+        // special case for first and last loop. We draw only one
+        // control instead of two.
+        if (i == 0 || i == m_BezierPoints.GetCount() -1){
+            continue;
+        }
+        
+        dc->DrawLine(myPoint, myControlInverted);
+        
+        /*
+        dc->SetPen(wxPen(*wxBLACK, 4));
+#ifdef __WXMSW__
+        dc->DrawLine (m_BezierActualC2.x , m_BezierActualC2.y, m_BezierActualC2.x + 0.1, m_BezierActualC2.y + 0.1);
+        dc->DrawLine (m_BezierActualP2.x , m_BezierActualP2.y, m_BezierActualP2.x + 0.1, m_BezierActualP2.y + 0.1);
+        dc->DrawLine (myInvertedC2.x , myInvertedC2.y, myInvertedC2.x + 0.1, myInvertedC2.y + 0.1);
+#else
+        dc->DrawLine (m_BezierActualC2.x, m_BezierActualC2.y, m_BezierActualC2.x, m_BezierActualC2.y);
+        dc->DrawLine (m_BezierActualP2.x, m_BezierActualP2.y, m_BezierActualP2.x, m_BezierActualP2.y);
+        dc->DrawLine (myInvertedC2.x, myInvertedC2.y, myInvertedC2.x, myInvertedC2.y);
+#endif
+
+        */
+        
+    }
+    
+
+    
+    
+}
+
 
 
 
@@ -597,6 +695,11 @@ bool tmEditManager::IsModificationBezierAllowed(){
     if (m_BezierPoints.GetCount() < 2) {
         return false;
     }
+    
+    if (m_BezierPoints.GetCount() != m_BezierPointsControl.GetCount()) {
+        return false;
+    }
+    
     return true;
 }
 

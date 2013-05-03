@@ -217,6 +217,7 @@ class tmEditManager : public wxEvtHandler
 		//change tool functions
 		void OnToolEdit ();
         void OnToolBezier();
+        void OnToolBezierModify();
 		void OnToolModify ();
 		void OnToolEditShared();
 		void OnToolCutLines();
@@ -254,6 +255,7 @@ class tmEditManager : public wxEvtHandler
         void BezierMove (const wxPoint & mousepos);
         void BezierDraw (wxGCDC * dc);
         void BezierClear();
+        void BezierDrawModify(wxGCDC * dc);
 	};
 
 
