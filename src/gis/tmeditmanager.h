@@ -104,6 +104,7 @@ class tmEditManager : public wxEvtHandler
 		wxPoint m_LastMousePos;
 		tmArraySharedNodes m_SharedNodes;
 		wxOverlay m_OverlaySharedNodes;
+        wxColour m_SelectionColour;
 		
 		// defined by function or event.
 		DataBaseTM * m_pDB;

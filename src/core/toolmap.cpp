@@ -557,9 +557,13 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL);
 	//itemMenu41->Enable(ID_MENU_DRAW, false);
-    itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
-	//itemMenu41->Enable(ID_MENU_MODIFY, false);
+    itemMenu41->AppendSeparator();
+    itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier\tP"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_MODIFY, _("Modify Bezier\tA"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->AppendSeparator();
+	
+    //itemMenu41->Enable(ID_MENU_MODIFY, false);
 	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
 	wxString myDeleteText = _("Delete selected feature");
