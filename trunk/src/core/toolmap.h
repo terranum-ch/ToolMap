@@ -383,6 +383,8 @@ private:
 	void OnUpdateMenuEditUndo (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditDraw (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditModify (wxUpdateUIEvent & event);
+    void OnUpdateMenuEditBezierDraw (wxUpdateUIEvent & event);
+    void OnUpdateMenuEditBezierModify (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditDelete (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditMerge (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event);

@@ -238,6 +238,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_UNDO, ToolMapFrame::OnUpdateMenuEditUndo)
 	EVT_UPDATE_UI (ID_MENU_DRAW, ToolMapFrame::OnUpdateMenuEditDraw)
 	EVT_UPDATE_UI (ID_MENU_MODIFY, ToolMapFrame::OnUpdateMenuEditModify)
+    EVT_UPDATE_UI(ID_MENU_DRAW_BEZIER, ToolMapFrame::OnUpdateMenuEditBezierDraw)
+    EVT_UPDATE_UI(ID_MENU_MODIFY_BEZIER, ToolMapFrame::OnUpdateMenuEditBezierModify)
+
 	EVT_UPDATE_UI (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnUpdateMenuEditModify)
 	EVT_UPDATE_UI (ID_MENU_CUT_LINES, ToolMapFrame::OnUpdateMenuEditModify)
 	EVT_UPDATE_UI (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnUpdateMenuEditModify)
@@ -560,7 +563,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier\tP"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu41->Append(ID_MENU_MODIFY, _("Modify Bezier\tA"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_MODIFY_BEZIER, _("Modify Bezier\tA"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
 	
     //itemMenu41->Enable(ID_MENU_MODIFY, false);
@@ -1788,15 +1791,34 @@ void ToolMapFrame::OnUpdateMenuPreviousZoom(wxUpdateUIEvent & event){
 }
 
 
+
 void ToolMapFrame::OnUpdateMenuEditUndo (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
 	event.Enable(m_EditManager->HasLastVertex());
 }
 
+
+
 void ToolMapFrame::OnUpdateMenuEditDraw (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
 	event.Enable( m_EditManager->IsDrawingAllowed());
 }
+
+
+
+void ToolMapFrame::OnUpdateMenuEditBezierDraw (wxUpdateUIEvent & event){
+    wxASSERT(m_EditManager);
+	event.Enable( m_EditManager->IsDrawingAllowed());
+}
+
+
+
+void ToolMapFrame::OnUpdateMenuEditBezierModify (wxUpdateUIEvent & event){
+    wxASSERT(m_EditManager);
+    event.Enable(m_EditManager->IsModificationBezierAllowed());
+}
+
+
 
 void ToolMapFrame::OnUpdateMenuEditModify (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
