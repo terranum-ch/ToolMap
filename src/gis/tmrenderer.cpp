@@ -275,6 +275,7 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			break;
 			
 		case tmTOOL_MODIFY:
+        case tmTOOL_MODIFY_BEZIER:
 			this->SetCursor(wxCursor(wxCURSOR_SIZING));
 			break;
 			
@@ -314,6 +315,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
     if (m_isPanning == false) {
         m_EditManager->BezierDraw(&gcdc);
     }
+    m_EditManager->BezierDrawModify(&gcdc);
 }
 
 
