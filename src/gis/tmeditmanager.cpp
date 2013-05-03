@@ -289,6 +289,7 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
 }
 
 
+
 void tmEditManager::BezierClear(){
     m_BezierActualP1 = wxPoint(0,0);
     m_BezierActualP2= wxPoint(0,0);
@@ -584,6 +585,19 @@ bool tmEditManager::IsModifictionAllowed()
 		return false;
 	}
 	return true;
+}
+
+
+
+bool tmEditManager::IsModificationBezierAllowed(){
+    if (IsCorrectLayerSelected() == false){
+        return false;
+    }
+    
+    if (m_BezierPoints.GetCount() < 2) {
+        return false;
+    }
+    return true;
 }
 
 

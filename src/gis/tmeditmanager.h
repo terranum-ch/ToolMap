@@ -225,6 +225,7 @@ class tmEditManager : public wxEvtHandler
 		// validiting editing / modfication
 		bool IsDrawingAllowed();
 		bool IsModifictionAllowed();
+        bool IsModificationBezierAllowed();
 		bool IsLayerType(int layertype = LAYER_SPATIAL_LINE);
         bool IsMultipleModifictionAllowed();
 
