@@ -88,6 +88,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 	m_Scale = scale;
 	m_EditStarted = false;
 	m_DrawLine.SetSymbology(*wxBLACK, 1);
+    m_SelectionColour = *wxRED;
 	
 
 	m_ParentEvt->PushEventHandler(this);
@@ -211,9 +212,13 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
         return;
     }
     
-    dc->SetPen(*wxRED_PEN);
-    wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
+    tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+    wxASSERT(myLayerProperties);
+    tmSymbolVectorLine * mySymbol = static_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
     
+    // draw existing bezier
+    dc->SetPen(wxPen(m_SelectionColour, mySymbol->GetWidth()));
+    wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
     wxPoint myFirstPt (m_Scale->RealToPixel(*m_BezierPoints[0]));
     path.MoveToPoint(myFirstPt);
     for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
@@ -226,20 +231,47 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
         path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
     }
     dc->GetGraphicsContext()->StrokePath(path);
-	
     
+    // draw nodes
+    dc->SetPen(wxPen(*wxBLACK, 2.0 * mySymbol->GetWidth()));
+    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
+#ifdef __WXMSW__
+        dc->DrawLine (myPt.x , myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+#else
+        dc->DrawLine (myPt.x, myPt.y, myPt.x, myPt.y);
+#endif
+    }
+    
+#ifdef __WXMAC__
+    dc->SetPen( *wxGREY_PEN );
+#else
+    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+#endif
+    // draw actual bezier when needed
     if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
-        dc->SetPen(*wxBLUE_PEN);
         wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
         path.MoveToPoint(m_BezierActualP1);
         path.AddCurveToPoint(m_BezierActualC1, m_BezierActualC2, m_BezierActualP2);
         dc->GetGraphicsContext()->StrokePath(path);
     }
     
+    // draw bezier control when needed
     if (m_BezierDrawControlPoints == true && m_BezierActualC2 != wxPoint(0,0)) {
-        dc->SetPen(*wxGREEN_PEN);
         dc->DrawLine(m_BezierActualP2, m_BezierActualC2);
-        dc->DrawLine(m_BezierActualP2, m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2));
+        wxPoint myInvertedC2 = m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2);
+        dc->DrawLine(m_BezierActualP2, myInvertedC2);
+        
+        dc->SetPen(wxPen(*wxBLACK, 4));
+#ifdef __WXMSW__
+        dc->DrawLine (m_BezierActualC2.x , m_BezierActualC2.y, m_BezierActualC2.x + 0.1, m_BezierActualC2.y + 0.1);
+        dc->DrawLine (m_BezierActualP2.x , m_BezierActualP2.y, m_BezierActualP2.x + 0.1, m_BezierActualP2.y + 0.1);
+        dc->DrawLine (myInvertedC2.x , myInvertedC2.y, myInvertedC2.x + 0.1, myInvertedC2.y + 0.1);
+#else
+        dc->DrawLine (m_BezierActualC2.x, m_BezierActualC2.y, m_BezierActualC2.x, m_BezierActualC2.y);
+        dc->DrawLine (m_BezierActualP2.x, m_BezierActualP2.y, m_BezierActualP2.x, m_BezierActualP2.y);
+        dc->DrawLine (myInvertedC2.x, myInvertedC2.y, myInvertedC2.x, myInvertedC2.y);
+#endif
     }
     
     // compute bounding box for refreshing. This is mainly to avoid flickering
@@ -253,6 +285,7 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
     dc->CalcBoundingBox(m_BezierActualP2.x - (m_BezierActualC2.x - m_BezierActualP2.x) ,
                         m_BezierActualP2.y - (m_BezierActualC2.y - m_BezierActualP2.y));
     m_BezierRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
+    m_BezierRefreshRect.Inflate(wxSize(3,3));
 }
 
 
@@ -1052,7 +1085,17 @@ void tmEditManager::DrawMemoryData(bool refresh)
  *******************************************************************************/
 void tmEditManager::OnEditStart (wxCommandEvent & event)
 {
-	m_GISMemory->CreateFeature();
+    wxConfigBase * myConfig =  wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("GENERAL");
+	wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
+    myConfig->SetPath("..");
+	
+	if (mySelColorText != wxEmptyString) {
+		m_SelectionColour.Set(mySelColorText);
+	}
+    
+    m_GISMemory->CreateFeature();
 	m_EditStarted = true;	
 	event.Skip();
 }
