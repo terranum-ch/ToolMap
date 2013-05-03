@@ -91,13 +91,11 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
     }
     else
     {
-        
+
 #if defined(__WINDOWS__)
         mylanguagedir = "--lc-messages-dir=./mysql";
 #elif defined(__WXMAC__)
         mylanguagedir = "--lc-messages-dir=./ToolMap.app/Contents/mysql";
-        //#elif defined(__WXGTK20__)
-        //char * mylanguagedir = "--language=./mysql";
 #else
         // Linux standard with MySQL installed with package manager.
         mylanguagedir = "--skip-grant-tables";
@@ -109,18 +107,21 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 		"this_program",       /* this string is not used*/
 		myDatadir.mb_str(wxConvUTF8),
 		mylanguagedir.mb_str(wxConvUTF8),
-		//"--port=3309",
 		"--character-set-server=utf8",
         "--default-storage-engine=MyISAM",
-        "--default_tmp_storage_engine=MyISAM",
-        //"--skip-innodb"
+#ifdef __LINUX__  // Linux still uses version 5.5
+        "--skip-innodb"
+#else  // this is needed for version 5.6
+        "--default_tmp_storage_engine=MyISAM"
+#endif
+
 #if defined (MYSQL_IS_LOGGING)
-        "--general-log=1"
+        ,"--general-log=1"
         ,myLogDirString.mb_str(wxConvUTF8)
 #endif
 	};
 
-    
+
 	char const *server_groups[] ={
 		"embedded",
 		"server",
@@ -149,7 +150,7 @@ bool DataBase::DBUseDataBase(const wxString & dbname){
 		wxLogError(DataBaseGetLastError());
 		return false;
 	}
-    
+
 	if (dbname != wxEmptyString){
 		wxLogMessage(_("Opening database : ") + dbname);
     }
@@ -725,7 +726,7 @@ long DataBase::DataBaseGetAffectedRows(){
     if (DBIsDataBaseReady() == false) {
         return myAffected;
     }
-    
+
     myAffected = mysql_affected_rows(m_MySQL);
     return myAffected;
 }
