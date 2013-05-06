@@ -119,6 +119,8 @@ class tmEditManager : public wxEvtHandler
         wxPoint m_BezierActualC2;
         bool m_BezierDrawControlPoints;
         wxRect m_BezierRefreshRect;
+        int m_BezierModifyIndexPoint;
+        int m_BezierModifyIndexControl;
 				
 		// FUNCTIONS
 		void InitMemberValues();
@@ -255,7 +257,10 @@ class tmEditManager : public wxEvtHandler
         void BezierMove (const wxPoint & mousepos);
         void BezierDraw (wxGCDC * dc);
         void BezierClear();
-        void BezierDrawModify(wxGCDC * dc);
+        void BezierModifyDraw(wxGCDC * dc);
+        void BezierModifyClickDown (const wxPoint & mousepos);
+        void BezierModifyClickMove (const wxPoint & mousepos);
+        void BezierModifyClickUp (const wxPoint & mousepos);
 	};
 
 

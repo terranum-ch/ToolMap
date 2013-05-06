@@ -101,6 +101,8 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierActualC2= wxPoint(0,0);
     m_BezierDrawControlPoints = false;
     m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
+    m_BezierModifyIndexPoint = wxNOT_FOUND;
+    m_BezierModifyIndexControl = wxNOT_FOUND;
 
 }
 
@@ -159,6 +161,7 @@ void tmEditManager::OnToolBezier() {
 
 void tmEditManager::OnToolBezierModify(){
     m_Renderer->SetTool(tmTOOL_MODIFY_BEZIER);
+    m_BezierActualP2 = wxDefaultPosition;
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
@@ -317,7 +320,7 @@ void tmEditManager::BezierClear(){
 
 
 
-void tmEditManager::BezierDrawModify(wxGCDC * dc){
+void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     if (m_Renderer == NULL) {
         return;
     }
@@ -400,6 +403,63 @@ void tmEditManager::BezierDrawModify(wxGCDC * dc){
 #endif
     }
 
+}
+
+// search point or control clicked
+void tmEditManager::BezierModifyClickDown (const wxPoint & mousepos){
+    if (m_BezierActualP2 != wxDefaultPosition) {
+        return;
+    }
+    m_BezierActualP2 = mousepos;
+    m_BezierModifyIndexPoint = wxNOT_FOUND;
+    m_BezierModifyIndexControl = wxNOT_FOUND;
+    
+    wxRect myRect (0,0,3,3);
+    myRect = myRect.CentreIn(wxRect(m_BezierActualP2, wxSize(0,0)));
+    
+    for (int i = 0 ; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myPt = m_Scale->RealToPixel(*m_BezierPointsControl[i]);
+        if (myRect.Contains(myPt)){
+            m_BezierModifyIndexControl = i;
+            return;
+        }
+    }
+    
+    for (int i = 0 ; i< m_BezierPoints.GetCount(); i++) {
+        wxPoint myPt = m_Scale->RealToPixel(*m_BezierPoints[i]);
+        if (myRect.Contains(myPt)){
+            m_BezierModifyIndexPoint = i;
+            return;
+        }  
+    }
+}
+
+
+
+void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
+    if (m_BezierModifyIndexControl != wxNOT_FOUND) {
+        *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(mousepos);
+        m_Renderer->Refresh();
+        m_Renderer->Update();
+        return;
+    }
+    
+    if (m_BezierModifyIndexPoint != wxNOT_FOUND) {
+        *m_BezierPoints[m_BezierModifyIndexPoint] = m_Scale->PixelToReal(mousepos);
+        m_Renderer->Refresh();
+        m_Renderer->Update();
+        return;
+    }
+
+    // TODO: Compute Refreshing Rect
+}
+
+
+
+void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
+    m_BezierActualP2 = wxDefaultPosition;
+    m_BezierModifyIndexPoint = wxNOT_FOUND;
+    m_BezierModifyIndexControl = wxNOT_FOUND;
 }
 
 

@@ -315,7 +315,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
     if (m_isPanning == false) {
         m_EditManager->BezierDraw(&gcdc);
     }
-    m_EditManager->BezierDrawModify(&gcdc);
+    m_EditManager->BezierModifyDraw(&gcdc);
 }
 
 
@@ -361,6 +361,10 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event){
 	
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyStart(event.GetPosition());
+    
+    if (m_ActualTool == tmTOOL_MODIFY_BEZIER) {
+        m_EditManager->BezierModifyClickDown(event.GetPosition());
+    }
 	
 	// oriented pts
 	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
@@ -393,7 +397,7 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 		DrawMove(event.GetPosition());
     
     if (m_ActualTool == tmTOOL_DRAW_BEZIER) {
-        DrawBezierMove(event.GetPosition());
+        m_EditManager->BezierMove(event.GetPosition());
     }
 	
 	if (event.Dragging() == true) {
@@ -412,6 +416,10 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 		if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
 			ModifySharedUpdate(event.GetPosition());
 		}
+        
+        if (m_ActualTool == tmTOOL_MODIFY_BEZIER) {
+            m_EditManager->BezierModifyClickMove(event.GetPosition());
+        }
 	}
 	
 	// new point object, will be deleted in the layer
@@ -431,7 +439,7 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	}
     
     if (m_ActualTool == tmTOOL_DRAW_BEZIER) {
-        DrawBezierClick(event.GetPosition());
+        m_EditManager->BezierClick(event.GetPosition());
     }
     
     if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE)
@@ -459,6 +467,10 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
 		ModifySharedStop(event.GetPosition());
 	}
+    
+    if (m_ActualTool == tmTOOL_MODIFY_BEZIER) {
+        m_EditManager->BezierModifyClickUp(event.GetPosition());
+    }
 	
 	// send statistics
 	wxCommandEvent evt(tmEVT_STAT_CLICK, wxID_ANY);
@@ -961,33 +973,7 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 
 
 
-void tmRenderer::DrawBezierClick (const wxPoint & mousepos){
-    m_EditManager->BezierClick(mousepos);
-}
 
-
-
-void tmRenderer::DrawBezierMove (const wxPoint & mousepos){
-    m_EditManager->BezierMove(mousepos);
-}
-
-
-/*
-void tmRenderer::ClearBezier(){
-    m_BezierActualP1 = wxPoint(0,0);
-    m_BezierActualP2= wxPoint(0,0);
-    m_BezierActualC1= wxPoint(0,0);
-    m_BezierActualC2= wxPoint(0,0);
-    m_BezierDrawControlPoints = false;
-    
-    m_BezierPoints.DeleteContents(true);
-    m_BezierPointsControl.DeleteContents(true);
-    m_BezierPoints.Clear();
-    m_BezierPointsControl.Clear();
-    
-    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
-}
-*/
 
 void tmRenderer::OrientedPtsStart(const wxPoint & mousepos)
 {
