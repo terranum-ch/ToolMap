@@ -361,45 +361,45 @@ void tmEditManager::BezierDrawModify(wxGCDC * dc){
     }
     
     // draw controls
+    wxPen myGreyPen (wxPen(*wxLIGHT_GREY, 2, wxSOLID));
 #ifdef __WXMAC__
-    dc->SetPen( *wxGREY_PEN );
-#else
-    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+    myGreyPen = wxPen(*wxGREY_PEN);
 #endif
+    
     wxASSERT(m_BezierPointsControl.GetCount() == m_BezierPoints.GetCount());
     for (unsigned int i = 0; i< m_BezierPoints.GetCount(); i++) {
         wxPoint myPoint = m_Scale->RealToPixel(*m_BezierPoints[i]);
         wxPoint myControl = m_Scale->RealToPixel(*m_BezierPointsControl[i]);
         wxPoint myControlInverted = myPoint - (myControl - myPoint);
  
+        dc->SetPen(myGreyPen);
         dc->DrawLine(myPoint, myControl);
+        
+        dc->SetPen(wxPen(*wxBLACK, 4));
+#ifdef __WXMSW__
+        dc->DrawLine (myPoint.x , myPoint.y, myPoint.x + 0.1, myPoint.y + 0.1);
+        dc->DrawLine (myControl.x , myControl.y, myControl.x + 0.1, myControl.y + 0.1);
+#else
+        dc->DrawLine (myPoint.x, myPoint.y, myPoint.x, myPoint.y);
+        dc->DrawLine (myControl.x, myControl.y, myControl.x, myControl.y);
+#endif
+        
         // special case for first and last loop. We draw only one
         // control instead of two.
         if (i == 0 || i == m_BezierPoints.GetCount() -1){
             continue;
         }
-        
+        dc->SetPen(myGreyPen);
         dc->DrawLine(myPoint, myControlInverted);
         
-        /*
         dc->SetPen(wxPen(*wxBLACK, 4));
 #ifdef __WXMSW__
-        dc->DrawLine (m_BezierActualC2.x , m_BezierActualC2.y, m_BezierActualC2.x + 0.1, m_BezierActualC2.y + 0.1);
-        dc->DrawLine (m_BezierActualP2.x , m_BezierActualP2.y, m_BezierActualP2.x + 0.1, m_BezierActualP2.y + 0.1);
-        dc->DrawLine (myInvertedC2.x , myInvertedC2.y, myInvertedC2.x + 0.1, myInvertedC2.y + 0.1);
+        dc->DrawLine (myControlInverted.x , myControlInverted.y, myControlInverted.x + 0.1, myControlInverted.y + 0.1);
 #else
-        dc->DrawLine (m_BezierActualC2.x, m_BezierActualC2.y, m_BezierActualC2.x, m_BezierActualC2.y);
-        dc->DrawLine (m_BezierActualP2.x, m_BezierActualP2.y, m_BezierActualP2.x, m_BezierActualP2.y);
-        dc->DrawLine (myInvertedC2.x, myInvertedC2.y, myInvertedC2.x, myInvertedC2.y);
+        dc->DrawLine (myControlInverted.x, myControlInverted.y, myControlInverted.x, myControlInverted.y);
 #endif
-
-        */
-        
     }
-    
 
-    
-    
 }
 
 
