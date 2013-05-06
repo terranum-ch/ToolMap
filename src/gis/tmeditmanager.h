@@ -121,6 +121,7 @@ class tmEditManager : public wxEvtHandler
         wxRect m_BezierRefreshRect;
         int m_BezierModifyIndexPoint;
         int m_BezierModifyIndexControl;
+        bool m_BezierModifyControlInverted;
 				
 		// FUNCTIONS
 		void InitMemberValues();
