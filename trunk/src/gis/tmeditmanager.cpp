@@ -413,7 +413,8 @@ void tmEditManager::BezierModifyClickDown (const wxPoint & mousepos){
     m_BezierActualP2 = mousepos;
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
-    
+    m_BezierModifyControlInverted = false;
+
     wxRect myRect (0,0,3,3);
     myRect = myRect.CentreIn(wxRect(m_BezierActualP2, wxSize(0,0)));
     
@@ -421,6 +422,17 @@ void tmEditManager::BezierModifyClickDown (const wxPoint & mousepos){
         wxPoint myPt = m_Scale->RealToPixel(*m_BezierPointsControl[i]);
         if (myRect.Contains(myPt)){
             m_BezierModifyIndexControl = i;
+            return;
+        }
+    }
+    
+    for (int i = 0 ; i< m_BezierPointsControl.GetCount(); i++) {
+        wxPoint myControlPt = m_Scale->RealToPixel(*m_BezierPointsControl[i]);
+        wxPoint myPt = m_Scale->RealToPixel(*m_BezierPoints[i]);
+        wxPoint myControlPtInverted = myPt - (myControlPt - myPt);
+        if (myRect.Contains(myControlPtInverted)){
+            m_BezierModifyIndexControl = i;
+            m_BezierModifyControlInverted = true;
             return;
         }
     }
@@ -438,7 +450,13 @@ void tmEditManager::BezierModifyClickDown (const wxPoint & mousepos){
 
 void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
     if (m_BezierModifyIndexControl != wxNOT_FOUND) {
-        *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(mousepos);
+        if (m_BezierModifyControlInverted == true) {
+            wxPoint myPt = m_Scale->RealToPixel(*m_BezierPoints[m_BezierModifyIndexControl]);
+            *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(myPt - (mousepos - myPt));
+        }
+        else {
+            *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(mousepos);
+        }
         m_Renderer->Refresh();
         m_Renderer->Update();
         return;
