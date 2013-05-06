@@ -250,7 +250,7 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
     for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
         wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
 #ifdef __WXMSW__
-        dc->DrawLine (myPt.x , myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+        dc->DrawLine (myPt.x , myPt.y, myPt.x + 1, myPt.y + 1);
 #else
         dc->DrawLine (myPt.x, myPt.y, myPt.x, myPt.y);
 #endif
@@ -277,9 +277,9 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
         
         dc->SetPen(wxPen(*wxBLACK, 4));
 #ifdef __WXMSW__
-        dc->DrawLine (m_BezierActualC2.x , m_BezierActualC2.y, m_BezierActualC2.x + 0.1, m_BezierActualC2.y + 0.1);
-        dc->DrawLine (m_BezierActualP2.x , m_BezierActualP2.y, m_BezierActualP2.x + 0.1, m_BezierActualP2.y + 0.1);
-        dc->DrawLine (myInvertedC2.x , myInvertedC2.y, myInvertedC2.x + 0.1, myInvertedC2.y + 0.1);
+        dc->DrawLine (m_BezierActualC2.x , m_BezierActualC2.y, m_BezierActualC2.x + 1, m_BezierActualC2.y + 1);
+        dc->DrawLine (m_BezierActualP2.x , m_BezierActualP2.y, m_BezierActualP2.x + 1, m_BezierActualP2.y + 1);
+        dc->DrawLine (myInvertedC2.x , myInvertedC2.y, myInvertedC2.x + 1, myInvertedC2.y + 1);
 #else
         dc->DrawLine (m_BezierActualC2.x, m_BezierActualC2.y, m_BezierActualC2.x, m_BezierActualC2.y);
         dc->DrawLine (m_BezierActualP2.x, m_BezierActualP2.y, m_BezierActualP2.x, m_BezierActualP2.y);
@@ -357,7 +357,7 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
         wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
 #ifdef __WXMSW__
-        dc->DrawLine (myPt.x , myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+        dc->DrawLine (myPt.x , myPt.y, myPt.x + 1, myPt.y + 1);
 #else
         dc->DrawLine (myPt.x, myPt.y, myPt.x, myPt.y);
 #endif
@@ -380,8 +380,8 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
         
         dc->SetPen(wxPen(*wxBLACK, 4));
 #ifdef __WXMSW__
-        dc->DrawLine (myPoint.x , myPoint.y, myPoint.x + 0.1, myPoint.y + 0.1);
-        dc->DrawLine (myControl.x , myControl.y, myControl.x + 0.1, myControl.y + 0.1);
+        dc->DrawLine (myPoint.x , myPoint.y, myPoint.x + 1, myPoint.y + 1);
+        dc->DrawLine (myControl.x , myControl.y, myControl.x + 1, myControl.y + 1);
 #else
         dc->DrawLine (myPoint.x, myPoint.y, myPoint.x, myPoint.y);
         dc->DrawLine (myControl.x, myControl.y, myControl.x, myControl.y);
@@ -397,7 +397,7 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
         
         dc->SetPen(wxPen(*wxBLACK, 4));
 #ifdef __WXMSW__
-        dc->DrawLine (myControlInverted.x , myControlInverted.y, myControlInverted.x + 0.1, myControlInverted.y + 0.1);
+        dc->DrawLine (myControlInverted.x , myControlInverted.y, myControlInverted.x + 1, myControlInverted.y + 1);
 #else
         dc->DrawLine (myControlInverted.x, myControlInverted.y, myControlInverted.x, myControlInverted.y);
 #endif
