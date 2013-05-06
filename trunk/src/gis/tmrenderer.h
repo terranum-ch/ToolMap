@@ -181,10 +181,6 @@ class tmRenderer : public wxScrolledWindow
 		void DrawMove (const wxPoint & mousepos);
 		void DrawStop  (const wxPoint & mousepos);
         
-        // bezier function
-        void DrawBezierClick (const wxPoint & mousepos);
-        void DrawBezierMove (const wxPoint & mousepos);
-		
 		// oriented pts functions
 		void OrientedPtsStart(const wxPoint & mousepos);
 		void OrientedPtsMove (const wxPoint & mousepos);
