@@ -421,8 +421,13 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     wxPoint myControl = m_Scale->RealToPixel(*m_BezierPointsControl[myIndex]);
     wxPoint myControlInverted = myPt - (myControl - myPt);
     myPoints.push_back(new wxPoint (myPt));
-    myPoints.push_back(new wxPoint (myControl));
-    myPoints.push_back(new wxPoint (myControlInverted));
+    
+    if (myIndex != m_BezierPoints.GetCount() -1){
+        myPoints.push_back(new wxPoint (myControl));
+    }
+    if (myIndex != 0){
+        myPoints.push_back(new wxPoint (myControlInverted));
+    }
     
     if (myIndex != 0) {
         wxPoint myPt1 = m_Scale->RealToPixel(*m_BezierPoints[myIndex -1]);
@@ -447,9 +452,9 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
      
     m_BezierRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
     m_BezierRefreshRect.Inflate(wxSize(3,3));
-    dc->SetPen(myGreyPen);
+    /*dc->SetPen(myGreyPen);
     dc->SetBrush(*wxTRANSPARENT_BRUSH);
-    dc->DrawRectangle(m_BezierRefreshRect);
+    dc->DrawRectangle(m_BezierRefreshRect);*/
 }
 
 
@@ -509,8 +514,7 @@ void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
             *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(mousepos);
         }
         
-        // TODO: Change to refreshing only needed rectangle
-        m_Renderer->Refresh();
+        m_Renderer->RefreshRect(m_BezierRefreshRect);
         m_Renderer->Update();
         return;
     }
@@ -525,8 +529,7 @@ void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
             *m_BezierPointsControl[m_BezierModifyIndexPoint] = m_Scale->PixelToReal(myControlPx);
         }
         
-        // TODO: Change to refreshing only needed rectangle
-        m_Renderer->Refresh();
+        m_Renderer->RefreshRect(m_BezierRefreshRect);
         m_Renderer->Update();
         return;
     }
