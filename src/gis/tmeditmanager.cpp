@@ -287,8 +287,10 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
 #endif
     }
     
+	
     // compute bounding box for refreshing. This is mainly to avoid flickering
-    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+	dc->ResetBoundingBox();
+	if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
         dc->CalcBoundingBox(m_BezierActualP1.x, m_BezierActualP1.y);
         dc->CalcBoundingBox(m_BezierActualC1.x, m_BezierActualC1.y);
         // inverted C1 is never needed for bounding box
