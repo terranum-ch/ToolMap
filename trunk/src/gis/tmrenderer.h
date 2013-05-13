@@ -30,6 +30,7 @@
 #endif
 #include <wx/overlay.h>
 #include <wx/dcgraph.h>
+#include <wx/dcbuffer.h>
 
 
 #include <wx/scrolwin.h>			// for scrolled window base
