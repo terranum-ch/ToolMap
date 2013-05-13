@@ -96,6 +96,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_WheelPosition = wxDefaultPosition;
     m_isPanning = false;
     
+	SetBackgroundStyle(wxBG_STYLE_PAINT);
     images_cursor_init();
     
 	BitmapUpdateSize();
@@ -303,7 +304,8 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 
 void tmRenderer::OnPaint(wxPaintEvent & event)
 {
-	wxPaintDC dc (this);
+	wxAutoBufferedPaintDC dc(this);
+	//wxPaintDC dc (this);
     wxGCDC gcdc (dc);
 	
 	if (m_bmp && m_bmp->IsOk())	{
