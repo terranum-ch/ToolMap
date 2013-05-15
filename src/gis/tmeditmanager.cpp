@@ -166,9 +166,13 @@ void tmEditManager::OnToolBezierModify(){
 
 
 
+
 void tmEditManager::BezierClick(const wxPoint & mousepos){
     if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
-        m_BezierPoints.push_back(new wxRealPoint(m_Scale->PixelToReal(mousepos)));
+        wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
+        EMGetSnappingCoord(myPt);
+        
+        m_BezierPoints.push_back(new wxRealPoint(myPt));
         m_BezierActualP2 = mousepos;
         m_BezierDrawControlPoints = true;
     }
@@ -467,7 +471,6 @@ void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
         m_Renderer->Update();
         return;
     }
-
 }
 
 
@@ -480,6 +483,26 @@ void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
 }
 
 
+
+void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
+    if (m_Renderer == NULL) {
+        return;
+    }
+    wxASSERT(dc);
+    
+    switch (m_Renderer->GetTool()) {
+        case tmTOOL_DRAW_BEZIER:
+            if (m_BezierActualP2 != wxDefaultPosition) {
+                dc->DrawCircle(m_BezierActualP2, 10);
+                m_Renderer->Refresh();
+                m_Renderer->Update();
+            }
+            break;
+            
+        default:
+            break;
+    }
+}
 
 
 

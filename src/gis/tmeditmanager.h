@@ -261,6 +261,8 @@ class tmEditManager : public wxEvtHandler
         void BezierModifyClickDown (const wxPoint & mousepos);
         void BezierModifyClickMove (const wxPoint & mousepos);
         void BezierModifyClickUp (const wxPoint & mousepos);
+        
+        void DrawSnappingCircle (wxGCDC * dc);
 	};
 
 
