@@ -327,7 +327,7 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
         wxPoint myLastCPt (m_Scale->RealToPixel(*m_BezierPoints[i-1]) -  (m_Scale->RealToPixel(*m_BezierPointsControl[i-1]) - m_Scale->RealToPixel(*m_BezierPoints[i-1])));
         if (i == 1) {
-            myLastCPt  = m_Scale->RealToPixel(*m_BezierPoints[i-1]);
+            myLastCPt  = m_Scale->RealToPixel(*m_BezierPointsControl[i-1]);
         }
         wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
         wxPoint myCPt1 (m_Scale->RealToPixel(*m_BezierPointsControl[i]));
