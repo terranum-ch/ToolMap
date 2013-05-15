@@ -118,7 +118,6 @@ class tmEditManager : public wxEvtHandler
         wxPoint m_BezierActualC1;
         wxPoint m_BezierActualC2;
         bool m_BezierDrawControlPoints;
-        wxRect m_BezierRefreshRect;
         int m_BezierModifyIndexPoint;
         int m_BezierModifyIndexControl;
         bool m_BezierModifyControlInverted;
