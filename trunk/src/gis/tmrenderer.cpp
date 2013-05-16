@@ -317,7 +317,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
         m_EditManager->BezierDraw(&gcdc);
     }
     m_EditManager->BezierModifyDraw(&gcdc);
-    //m_EditManager->DrawSnappingCircle(&gcdc);
+    m_EditManager->DrawSnappingCircle(&gcdc);
 }
 
 

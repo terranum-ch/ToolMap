@@ -134,6 +134,7 @@ void tmEditManager::InitMemberValues()
 	m_SnapMem = NULL;
 	m_INSDELVertex = wxNOT_FOUND;
 	m_INSVertexPos = wxRealPoint(-1,-1);
+    m_SnappingShowOnMap = false;
 }
 
 
@@ -603,23 +604,22 @@ void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
 
 
 void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
-    if (m_Renderer == NULL) {
+    if (m_Renderer == NULL || m_Scale == NULL) {
+        return;
+    }
+    
+    if (m_SnappingShowOnMap == false) {
         return;
     }
     wxASSERT(dc);
+    wxASSERT(m_SnapMem);
     
-    switch (m_Renderer->GetTool()) {
-        case tmTOOL_DRAW_BEZIER:
-            if (m_BezierActualP2 != wxDefaultPosition) {
-                dc->DrawCircle(m_BezierActualP2, 10);
-                m_Renderer->Refresh();
-                m_Renderer->Update();
-            }
-            break;
-            
-        default:
-            break;
-    }
+    int myRadius = wxRound( m_Scale->DistanceToReal(m_SnapMem->GetTolerence()));
+    wxPoint myCenter (5,5);
+    myCenter = myCenter + wxPoint(myRadius, myRadius);
+    dc->SetPen(*wxGREY_PEN);
+    dc->SetBrush(wxBrush(wxColour(100,100,100,100)));
+    dc->DrawCircle(myCenter, myRadius);
 }
 
 

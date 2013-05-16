@@ -90,7 +90,7 @@ public:
 
 
 
-
+class tmRenderer;
 /***************************************************************************//**
  @brief The panel used for setting the snapping
  @author Lucien Schreiber (c) CREALP 2009
@@ -104,6 +104,7 @@ private:
     wxWindow * m_ParentEvt;
     wxAuiPaneInfo m_PaneInfo;
     DataBaseTM * m_pDB;
+    tmRenderer * m_Renderer;
     
     // init private functions
     void InitMembersValue();
@@ -125,6 +126,7 @@ public:
         m_SnappingList->SetDataBase(database);
         m_pDB = database;
     }
+    void SetRendererRef(tmRenderer * renderer) {m_Renderer = renderer;}
     
     bool LoadSnappingStatus ();
     bool SaveSnappingStatus ();
