@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmsnappingmemory.h
-				Store snapping status into memory for faster access
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsnappingmemory.h
+ Store snapping status into memory for faster access
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,49 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
-
 #ifndef _TM_SNAPPING_MEMORY_H_
 #define _TM_SNAPPING_MEMORY_H_
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
 
 
-// some constants
 const int tmSNAPPING_OFF			= 0;
 const int tmSNAPPING_VERTEX			= 1;
 const int tmSNAPPING_BEGIN_END		= 2;
 const wxString tmSNAPPING_TEXT_YES = _("Yes");
 
 
-// event sent when snapping change or is loaded
-//DECLARE_EVENT_TYPE(tmEVT_SNAPPING_UPDATED,-1)
-
-
 class tmSnappingObject
-	{
-	private:
-		void InitMemberValues();
-		
-	public:
-		long m_LayerID;
-		int m_SnappingStatus;
-
-		
-		tmSnappingObject();
-		~tmSnappingObject();
-	};
-
+{
+private:
+    void InitMemberValues();
+    
+public:
+    long m_LayerID;
+    int m_SnappingStatus;
+    
+    
+    tmSnappingObject();
+    ~tmSnappingObject();
+};
 // Creating a list of MemoryObjects
 WX_DECLARE_OBJARRAY(tmSnappingObject, tmSnappingObjArray);
-
 
 
 
@@ -73,36 +60,36 @@ WX_DECLARE_OBJARRAY(tmSnappingObject, tmSnappingObjArray);
  @date 21 January 2009
  *******************************************************************************/
 class tmSnappingMemory : public wxObject
-	{
-	private:
-		tmSnappingObjArray m_Snapping;
-		int m_Tolerence;
-		
-		
-	protected:
-		int FindSnappingItem (const long & lid);
-		
-	public:
-		tmSnappingMemory();
-		~tmSnappingMemory();
-		
-		// snapping operations
-		void AddSnappingMemory (long lid, int snapstatus);
-		unsigned int GetCount() {return m_Snapping.GetCount();}
-		bool DeleteSnappingMemory (const long & lid);
-		int GetSnappingMemoryStatus (const long & lid);
-		bool SetSnappingMemoryStatus  (const long & lid, int snapstatus);
-		bool GetSnappingInfo (unsigned int iIndex, long & lid, int & snapstatus);
-		void Clear(){m_Snapping.Clear();}
-		void ClearSnappingStatus ();
-		
-		// tolerence operations
-		void SetTolerence (int tolereance) {m_Tolerence = tolereance;}
-		int GetTolerence () {return m_Tolerence;}
-		
-		// misc function
-		bool IsSnappingEnabled ();
-	};
+{
+private:
+    tmSnappingObjArray m_Snapping;
+    int m_Tolerence;
+    
+    
+protected:
+    int FindSnappingItem (const long & lid);
+    
+public:
+    tmSnappingMemory();
+    ~tmSnappingMemory();
+    
+    // snapping operations
+    void AddSnappingMemory (long lid, int snapstatus);
+    unsigned int GetCount() {return m_Snapping.GetCount();}
+    bool DeleteSnappingMemory (const long & lid);
+    int GetSnappingMemoryStatus (const long & lid);
+    bool SetSnappingMemoryStatus  (const long & lid, int snapstatus);
+    bool GetSnappingInfo (unsigned int iIndex, long & lid, int & snapstatus);
+    void Clear(){m_Snapping.Clear();}
+    void ClearSnappingStatus ();
+    
+    // tolerence operations
+    void SetTolerence (int tolereance) {m_Tolerence = tolereance;}
+    int GetTolerence () {return m_Tolerence;}
+    
+    // misc function
+    bool IsSnappingEnabled ();
+};
 
 
 

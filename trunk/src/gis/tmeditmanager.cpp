@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmeditmanager.cpp
-				Deals with editing data in construction layers
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber a"t crealp dot vs dot ch
+ tmeditmanager.cpp
+ Deals with editing data in construction layers
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber a"t crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,7 +27,6 @@
 #include "../database/database_tm.h"		// for database
 #include "tmrenderer.h"						// for GIS rendering
 
-
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(wxRealPointList);
 
@@ -36,7 +35,6 @@ DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
-	//EVT_COMMAND (wxID_ANY, tmEVT_SNAPPING_UPDATED, tmEditManager::OnSnappingChange)
 	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
@@ -65,7 +63,6 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_MENU (tmEM_CONTEXTMENU_LINE_SAVE, tmEditManager::OnDrawFeatureValidate)
 	EVT_MENU (tmEM_CONTEXTMENU_VERTEX_INSERT,tmEditManager::OnMenuInsertVertex)
 	EVT_MENU (tmEM_CONTEXTMENU_VERTEX_DELETE,tmEditManager::OnMenuDeleteVertex)
-
 END_EVENT_TABLE()
 
 
@@ -1204,7 +1201,6 @@ bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
 	//TODO: Remove this temp code
 	wxLogDebug(_T("Selected OID = %ld"), lpOid);
 	
-	
 	m_Renderer->Refresh();
 	m_Renderer->Update();
 	return bReturn;
@@ -2011,31 +2007,16 @@ bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
 }
 
 
-
-
-bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt)
-{
+bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt){
 	// Snapping may be disabled using space key
 	if (m_SnapMem->IsSnappingEnabled()==false){
 		return false;
     }
 	
-	
-	//bool bReturn = false;
 	wxRealPoint * mySnapCoord = NULL;
 	mySnapCoord = EMIterateAllSnappingLayers(pt);
 		
-	//TODO: Remove this temp logging code
-	if (mySnapCoord)
-	{
-		wxLogDebug(_T("Point found for snapping @ : %.*f, %.*f"),
-				   2, mySnapCoord->x, 
-				   2, mySnapCoord->y);
-	}	
-	// END of temp logging code
-		
-	
-	if (mySnapCoord)
+	if (mySnapCoord != NULL)
 	{
 		pt.x = mySnapCoord->x;
 		pt.y = mySnapCoord->y;

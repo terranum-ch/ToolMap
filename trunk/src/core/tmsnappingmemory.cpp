@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmsnappingmemory.cpp
-				Store snapping status into memory for faster access
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsnappingmemory.cpp
+ Store snapping status into memory for faster access
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,31 +14,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
 #include "tmsnappingmemory.h"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (tmSnappingObjArray);
 
 
-//DEFINE_EVENT_TYPE(tmEVT_SNAPPING_UPDATED)
-
-
-tmSnappingObject::tmSnappingObject()
-{
+tmSnappingObject::tmSnappingObject(){
 	InitMemberValues();
 }
 
-tmSnappingObject::~tmSnappingObject()
-{
+
+
+tmSnappingObject::~tmSnappingObject(){
 	
 }
 
 
-void tmSnappingObject::InitMemberValues()
-{
+
+void tmSnappingObject::InitMemberValues(){
 	m_LayerID = -1;
 	m_SnappingStatus = 0;
 }

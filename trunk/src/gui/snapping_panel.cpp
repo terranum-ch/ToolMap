@@ -1,10 +1,10 @@
 /***************************************************************************
-								snapping_panel.cpp
-				Deals with the snapping panel, used for setting the
-							snapping for layers
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ snapping_panel.cpp
+ Deals with the snapping panel, used for setting the
+ snapping for layers
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -405,48 +405,6 @@ int SnappingList::GetSnappingStatus (int iRow)
 
 
 /***************************************************************************//**
- @brief Load snapping info into memory
- @details This function is only needed for adding to the panel the ability to
- initially load snapping info to memory. After, all informations are updated by
- the #SnappingList itself (during adding, removing, etc)
- @param lid layer ID to add to the memory
- @param snapstatus snapping status to attach to the layer ID
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-/*void SnappingList::LoadSnappingIntoMemory (const long & lid, const int & snapstatus)
-{
-	m_SnappingMemory->AddSnappingMemory(lid, snapstatus);
-}*/
-
-
-/***************************************************************************//**
- @brief Save snapping status to the database
- @details Layers used for snapping were allready saved, we must save now the
- snapping staus for those layers
- @return  true if snapping status was saved successfully
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-/*bool SnappingList::SaveSnappingStatus ()
-{
-	if (m_pDB)
-	{
-		// save tolerence
-		if (!m_pDB->SetSnappingTolerence(GetSnappingMemoryTolerence()))
-			return false;
-				
-		// save snapping status
-		return m_pDB->SaveSnappingAllStatus(m_SnappingMemory);
-	}
-	
-	return true;
-}*/
-
-
-
-
-/***************************************************************************//**
  @brief Called just before displaying the add dialog
  @author Lucien Schreiber (c) CREALP 2009
  @date 20 January 2009
@@ -497,10 +455,6 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		
 		// add snapping layers into database
 		m_pDB->AddLayersSnapping(myRealSelectedID);
-		
-		//send message to update snapping status
-		//SnappingUpdate();
-		
 	}
 	//delete m_pDialog;
 }
@@ -530,9 +484,6 @@ void SnappingList::BeforeDeleting ()
 			break;
 		}
 	}
-	
-	// send message to update snapping status
-	//SnappingUpdate();
 }
 
 
@@ -559,30 +510,9 @@ void SnappingList::OnDoubleClickItem (wxListEvent & event)
 		SetSnappingStatus(iActualSnapStatus, event.GetIndex(), true);
 		
 		// modifiy status into memory
-		m_SnappingMemory->SetSnappingMemoryStatus(GetItemData(event.GetIndex()),
-												  iActualSnapStatus);
-		
-		// send message to update snapping status
-		//SnappingUpdate();
+		m_SnappingMemory->SetSnappingMemoryStatus(GetItemData(event.GetIndex()),iActualSnapStatus);
 	}
 }
-
-
-/***************************************************************************//**
- @brief Called when snapping change
- @details This function sent an event containing a valid tmSnappingMemory
- pointer. User sould not delete the pointer, will be deleted by the
- tmSnappingMemory itself
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-/*void SnappingList::SnappingUpdate()
-{
-	wxCommandEvent evt(tmEVT_SNAPPING_UPDATED, wxID_ANY);
-	evt.SetClientData(m_SnappingMemory);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
-
-}*/
 
 
 

@@ -57,52 +57,36 @@ class DataBaseTM;
  @date 19 January 2009
  *******************************************************************************/
 class SnappingList : public ListGenReportWithDialog
-	{
-	private:
-		DataBaseTM * m_pDB;
-		wxArrayLong m_LayersID;
-		wxArrayString m_LayersName;
-		wxWindow * m_Parent;
-		tmSnappingMemory * m_SnappingMemory;
-		
-		virtual void BeforeAdding();
-		virtual void AfterAdding (bool bRealyAddItem);
-		virtual void BeforeDeleting ();
-		
-		// very different editing process, here we don't use
-		// a dialog for editing
-		virtual void OnDoubleClickItem (wxListEvent & event);
-		
-		
-		
-		
-	protected:
-	public:
-		SnappingList (wxWindow * parent, wxWindowID id, wxArrayString * pColsName,  wxArrayInt * pColsSize=NULL, wxSize size = wxDefaultSize);
-		~SnappingList();
-		
-		// setter
-		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
-        tmSnappingMemory * GetSnappingMemoryRef(){return m_SnappingMemory;}
-		
-		void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
-		int GetSnappingStatus (int iRow);
-		
-		// Used by the panel for initial loading into memory
-		//void ClearSnappingMemory (){ m_SnappingMemory->Clear();}
-		//void LoadSnappingIntoMemory (const long & lid, const int & snapstatus);
-		//bool SaveSnappingStatus();
-		
-		// when snapping change
-		//void SnappingUpdate();
-		
-		/*void SetSnappingMemoryTolerence (int iTolerence)
-		{
-			m_SnappingMemory->SetTolerence(iTolerence);
-		}*/
-		//int GetSnappingMemoryTolerence (){return m_SnappingMemory->GetTolerence();}
-		void ClearSnappingStatus ();
-	};
+{
+private:
+    DataBaseTM * m_pDB;
+    wxArrayLong m_LayersID;
+    wxArrayString m_LayersName;
+    wxWindow * m_Parent;
+    tmSnappingMemory * m_SnappingMemory;
+    
+    virtual void BeforeAdding();
+    virtual void AfterAdding (bool bRealyAddItem);
+    virtual void BeforeDeleting ();
+    
+    // very different editing process, here we don't use
+    // a dialog for editing
+    virtual void OnDoubleClickItem (wxListEvent & event);
+    
+protected:
+public:
+    SnappingList (wxWindow * parent, wxWindowID id, wxArrayString * pColsName,  wxArrayInt * pColsSize=NULL, wxSize size = wxDefaultSize);
+    ~SnappingList();
+    
+    // setter
+    void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+    tmSnappingMemory * GetSnappingMemoryRef(){return m_SnappingMemory;}
+    
+    void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
+    int GetSnappingStatus (int iRow);
+    
+    void ClearSnappingStatus ();
+};
 
 
 
