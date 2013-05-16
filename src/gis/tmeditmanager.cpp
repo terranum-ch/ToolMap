@@ -611,6 +611,10 @@ void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
     if (m_SnappingShowOnMap == false) {
         return;
     }
+    
+    if (wxGetMouseState().LeftIsDown() == true) {
+        return;
+    }
     wxASSERT(dc);
     wxASSERT(m_SnapMem);
     
@@ -620,6 +624,14 @@ void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
     dc->SetPen(*wxGREY_PEN);
     dc->SetBrush(wxBrush(wxColour(100,100,100,100)));
     dc->DrawCircle(myCenter, myRadius);
+    if(myRadius > 2){
+        dc->SetPen(wxPen(wxColour(50,50,50,100), 2));
+#ifdef __WXMSW__
+        dc->DrawLine (myCenter.x , myCenter.y, myCenter.x + 1, myCenter.y + 1);
+#else
+        dc->DrawLine (myCenter.x, myCenter.y, myCenter.x, myCenter.y);
+#endif
+    }
 }
 
 
