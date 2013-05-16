@@ -251,16 +251,13 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
     dc->GetGraphicsContext()->StrokePath(path);
     
     // draw nodes with different color based on snapping status
-    int mySymbolNodeWidth = mySymbol->GetWidth();
-    if (mySymbolNodeWidth <= 1) {
-        mySymbolNodeWidth = 4;
+    int myNodeWidth = 2.0 * mySymbol->GetWidth();
+    if (myNodeWidth < 4) {
+        myNodeWidth = 4;
     }
-    else {
-        mySymbolNodeWidth = 2.0 * mySymbolNodeWidth;
-    }
-    
-    wxPen myNodeBlackPen = wxPen(*wxBLACK, mySymbolNodeWidth);
-    wxPen myNodeGreenPen = wxPen(*wxGREEN, mySymbolNodeWidth);
+        
+    wxPen myNodeBlackPen = wxPen(*wxBLACK, myNodeWidth);
+    wxPen myNodeGreenPen = wxPen(*wxGREEN, myNodeWidth);
     for (unsigned int i = 0; i< m_BezierPointsControl.GetCount(); i++) {
         if (m_BezierSnappedPointsIndexes.Index(i) == wxNOT_FOUND) {
             dc->SetPen(myNodeBlackPen);
@@ -375,10 +372,23 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
         path.AddCurveToPoint(myLastCPt, myCPt1, myPt);
     }
     dc->GetGraphicsContext()->StrokePath(path);
-    
+        
     // draw nodes
-    dc->SetPen(wxPen(*wxBLACK, 2.0 * mySymbol->GetWidth()));
-    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+    int myNodeWidth = 2.0 * mySymbol->GetWidth();
+    if (myNodeWidth < 4) {
+        myNodeWidth = 4;
+    }
+    wxPen myNodeBlackPen = wxPen(*wxBLACK, myNodeWidth);
+    wxPen myNodeGreenPen = wxPen(*wxGREEN, myNodeWidth);
+
+    for (unsigned int i = 0; i< m_BezierPointsControl.GetCount(); i++) {
+        if (m_BezierSnappedPointsIndexes.Index(i) == wxNOT_FOUND) {
+            dc->SetPen(myNodeBlackPen);
+        }
+        else {
+            dc->SetPen(myNodeGreenPen);
+        }
+        
         wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
 #ifdef __WXMSW__
         dc->DrawLine (myPt.x , myPt.y, myPt.x + 1, myPt.y + 1);
@@ -402,12 +412,10 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
         dc->SetPen(myGreyPen);
         dc->DrawLine(myPoint, myControl);
         
-        dc->SetPen(wxPen(*wxBLACK, 4));
+        dc->SetPen(myNodeBlackPen);
 #ifdef __WXMSW__
-        dc->DrawLine (myPoint.x , myPoint.y, myPoint.x + 1, myPoint.y + 1);
         dc->DrawLine (myControl.x , myControl.y, myControl.x + 1, myControl.y + 1);
 #else
-        dc->DrawLine (myPoint.x, myPoint.y, myPoint.x, myPoint.y);
         dc->DrawLine (myControl.x, myControl.y, myControl.x, myControl.y);
 #endif
         
@@ -419,7 +427,7 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
         dc->SetPen(myGreyPen);
         dc->DrawLine(myPoint, myControlInverted);
         
-        dc->SetPen(wxPen(*wxBLACK, 4));
+        dc->SetPen(myNodeBlackPen);
 #ifdef __WXMSW__
         dc->DrawLine (myControlInverted.x , myControlInverted.y, myControlInverted.x + 1, myControlInverted.y + 1);
 #else
@@ -564,10 +572,32 @@ void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
 
 
 void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
+    // search for snapping only when a point was moved !
+    // and update the vertex snapping status
+    if (m_BezierModifyIndexPoint != wxNOT_FOUND) {
+        wxRealPoint myPt = *m_BezierPoints[m_BezierModifyIndexPoint];
+        int myPtSnappingIndex = m_BezierSnappedPointsIndexes.Index(m_BezierModifyIndexPoint);
+        
+        if(EMGetSnappingCoord(myPt)==true){
+            if (myPtSnappingIndex == wxNOT_FOUND) {
+                m_BezierSnappedPointsIndexes.Add(m_BezierModifyIndexPoint);
+            }
+            *m_BezierPoints[m_BezierModifyIndexPoint] = myPt;
+        }
+        else {
+            if (myPtSnappingIndex != wxNOT_FOUND){
+                m_BezierSnappedPointsIndexes.RemoveAt(myPtSnappingIndex);
+            }
+        }
+    }
+    
     m_BezierActualP2 = wxDefaultPosition;
     m_BezierActualC2 = wxDefaultPosition;
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
+    
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 }
 
 
