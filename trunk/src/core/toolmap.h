@@ -191,6 +191,9 @@ class AttribObjType_PANEL;
 #define ID_MENU_DELETE_OBJ 10122
 #define ID_MENU_ORIENT_POINT 10190
 #define ID_MENU_ADJUST_SNAPPING 10001
+#define ID_MENU_SNAPPING_ADD 10168
+#define ID_MENU_SNAPPING_REMOVE 10169
+#define ID_MENU_SNAPPING_SHOWONMAP 10170
 #define ID_MENU_ATTRIB_TYPES 10166
 #define ID_MENU_ATTRIB_ATTRIBUTES 10175
 #define ID_MENU_ATTRIB_BATCH 10167
@@ -323,6 +326,7 @@ private:
 	void OnExportAll (wxCommandEvent & event);
 	void OnShowShortcutWindow (wxCommandEvent & event);
 	void OnShowSnappingWindow (wxCommandEvent & event);
+    void OnShowSnappingOnMap (wxCommandEvent & event);
 	void OnEditSwitch (wxCommandEvent & event);
 	void OnEditDeleteSelected (wxCommandEvent & event);
 	void OnEditUndo (wxCommandEvent & event);
@@ -391,7 +395,9 @@ private:
 	void OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditQueryRun (wxUpdateUIEvent & event);
     void OnUpdateMenuEditQueryAdd (wxUpdateUIEvent & event);
-	void OnUpdateMenuShowSnapping (wxUpdateUIEvent & event);
+	void OnUpdateMenuSnappingShowPanel (wxUpdateUIEvent & event);
+    void OnUpdateMenuSnappingShowOnMap (wxUpdateUIEvent & event);
+    
 	void OnUpdateMenuShowShortcuts (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowQuery (wxUpdateUIEvent & event);
 	void OnUpdateMenuShowTOC (wxUpdateUIEvent & event);

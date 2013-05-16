@@ -254,7 +254,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_BATCH, ToolMapFrame::OnUpdateMenuEditDelete)
-	EVT_UPDATE_UI (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnUpdateMenuShowSnapping)
+	EVT_UPDATE_UI (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnUpdateMenuSnappingShowPanel)
+    EVT_UPDATE_UI (ID_MENU_SNAPPING_SHOWONMAP, ToolMapFrame::OnUpdateMenuSnappingShowOnMap)
 
 
 	EVT_UPDATE_UI (ID_MENU_TOOL_DANGLING, ToolMapFrame::OnUpdateMenuProject)
@@ -560,7 +561,6 @@ void ToolMapFrame::_CreateMenu()
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL);
-	//itemMenu41->Enable(ID_MENU_DRAW, false);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier\tP"), wxEmptyString, wxITEM_NORMAL);
@@ -583,7 +583,15 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersection\tCtrl+I"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+Alt+F"), _T(""), wxITEM_NORMAL);
 	itemMenu41->AppendSeparator();
-    itemMenu41->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping...\tCtrl+G"), wxEmptyString, wxITEM_CHECK);
+
+    wxMenu* itemMenu42 = new wxMenu;
+    itemMenu42->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping Panel...\tCtrl+G"), wxEmptyString, wxITEM_CHECK);
+    itemMenu42->Append(ID_MENU_SNAPPING_SHOWONMAP, _("Show snapping radius on map"), wxEmptyString, wxITEM_CHECK);
+    itemMenu42->AppendSeparator();
+    itemMenu42->Append(ID_MENU_SNAPPING_ADD, _("Add layer..."), wxEmptyString, wxITEM_NORMAL);
+    itemMenu42->Append(ID_MENU_SNAPPING_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(wxID_ANY, _("Snapping"), itemMenu42);
+    
     menuBar->Append(itemMenu41, _("Edition"));
 
     // ATTRIBUTION
@@ -952,6 +960,11 @@ void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
     OnRefreshView(evt);
 }
 
+
+
+void ToolMapFrame::OnShowSnappingOnMap (wxCommandEvent & event){
+    m_MainPanel->GetGISRenderer();
+}
 
 
 
@@ -1895,10 +1908,24 @@ void ToolMapFrame::OnUpdateMenuEditQueryAdd (wxUpdateUIEvent & event){
 }
 
 
-void ToolMapFrame::OnUpdateMenuShowSnapping (wxUpdateUIEvent & event){
+void ToolMapFrame::OnUpdateMenuSnappingShowPanel (wxUpdateUIEvent & event){
 	wxASSERT(m_SnappingPanel);
 	event.Check(m_SnappingPanel->IsPanelShown());
 }
+
+
+
+void ToolMapFrame::OnUpdateMenuSnappingShowOnMap(wxUpdateUIEvent & event){
+	wxASSERT(m_SnappingPanel);
+    if(m_PManager->IsProjectOpen() == true){
+        if(m_LayerManager->GetScale()->IsLayerExtentValid() == true){
+            event.Enable(true);
+            return;
+        }
+    }
+	event.Enable(false);
+}
+
 
 
 void ToolMapFrame::OnUpdateMenuShowShortcuts (wxUpdateUIEvent & event){

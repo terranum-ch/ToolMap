@@ -124,9 +124,12 @@ class tmRenderer : public wxScrolledWindow
 		
 		// snapping
 		int m_SnappingRadius;
+        
+        
 		int m_WheelRotation;
 		wxPoint m_WheelPosition;
 		wxTimer m_WheelTimer;
+        
 		
 		// changing cursors
 		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
