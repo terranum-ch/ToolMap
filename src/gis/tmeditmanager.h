@@ -65,7 +65,7 @@ private:
 public:
     tmSharedNodeEdit(long lineid, int vertexid, const wxPoint & coord, const wxPoint & coordprevious);
     virtual ~tmSharedNodeEdit();
-
+    
     void DrawLine(wxClientDC * dc, wxPoint * point = NULL);
 	
     long GetLineID (){return m_LineID;}
@@ -87,183 +87,177 @@ WX_DECLARE_LIST(wxRealPoint, wxRealPointList);
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-class tmEditManager : public wxEvtHandler
-	{
-	private:
-		// defined by ctor
-		ToolMapFrame * m_ParentEvt;
-		tmTOCCtrl * m_TOC;
-		tmSelectedDataMemory * m_SelectedData;
-		tmRenderer * m_Renderer;
-		tmGISDataVectorMemory * m_GISMemory;
-		bool m_EditStarted;
-		tmDrawerEditLine m_DrawLine;
-		int m_INSDELVertex;
-		wxRealPoint m_INSVertexPos;
-		tmPointOrientAttrib m_OrientedPt;
-		wxPoint m_LastMousePos;
-		tmArraySharedNodes m_SharedNodes;
-		wxOverlay m_OverlaySharedNodes;
-        wxColour m_SelectionColour;
-		
-		// defined by function or event.
-		DataBaseTM * m_pDB;
-		tmSnappingMemory * m_SnapMem;
-		tmGISScale * m_Scale;
-        
-        wxRealPointList m_BezierPoints;
-        wxRealPointList m_BezierPointsControl;
-        wxArrayInt m_BezierSnappedPointsIndexes;
-        wxPoint m_BezierActualP1;
-        wxPoint m_BezierActualP2;
-        wxPoint m_BezierActualC1;
-        wxPoint m_BezierActualC2;
-        bool m_BezierDrawControlPoints;
-        wxRect m_BezierRefreshRect;
-        int m_BezierModifyIndexPoint;
-        int m_BezierModifyIndexControl;
-        bool m_BezierModifyControlInverted;
-				
-		// FUNCTIONS
-		void InitMemberValues();
-		
-		// Extern EVENT function
-		//void OnSnappingChange (wxCommandEvent & event);
-		void OnViewUpdated (wxCommandEvent & event);
-		void OnDrawDown(wxCommandEvent & event);
-		void OnDrawUp (wxCommandEvent & event);
-		void OnDrawMove (wxCommandEvent & event);
-		void OnEditStart (wxCommandEvent & event);
-		void OnEditStop (wxCommandEvent & event);
-		void OnDrawFeatureValidate (wxCommandEvent & event);
-		void OnDrawFeatureEscape (wxCommandEvent & event);
-		void OnCutLines (wxCommandEvent & event);
-		void OnShowVertexPosition (wxCommandEvent & event);
-		void OnModifySearch (wxCommandEvent & event);
-		void OnModifyMove (wxCommandEvent & event);
-		void OnModifyUp (wxCommandEvent & event);
-		void OnModifyMenu (wxCommandEvent & event);
-		void OnSetRenderFocus (wxCommandEvent & event);
-		void OnEditSharedDown (wxCommandEvent & event);
-		void OnEditSharedUp (wxCommandEvent & event);
-		void OnEditSharedMove(wxCommandEvent & event);
-		
-		void OnOrientedPtsDown(wxCommandEvent & event);
-		void OnOrientedPtsMove (wxCommandEvent & event);
-		void OnOrientedPtsUp (wxCommandEvent & event);
-		
-		// menu event
-		void OnMenuInsertVertex(wxCommandEvent & event);
-		void OnMenuDeleteVertex(wxCommandEvent & event);
-		
+class tmEditManager : public wxEvtHandler{
+private:
+    // defined by ctor
+    ToolMapFrame * m_ParentEvt;
+    tmTOCCtrl * m_TOC;
+    tmSelectedDataMemory * m_SelectedData;
+    tmRenderer * m_Renderer;
+    tmGISDataVectorMemory * m_GISMemory;
+    bool m_EditStarted;
+    tmDrawerEditLine m_DrawLine;
+    int m_INSDELVertex;
+    wxRealPoint m_INSVertexPos;
+    tmPointOrientAttrib m_OrientedPt;
+    wxPoint m_LastMousePos;
+    tmArraySharedNodes m_SharedNodes;
+    wxOverlay m_OverlaySharedNodes;
+    wxColour m_SelectionColour;
+    
+    // defined by function or event.
+    DataBaseTM * m_pDB;
+    tmSnappingMemory * m_SnapMem;
+    tmGISScale * m_Scale;
+    
+    wxRealPointList m_BezierPoints;
+    wxRealPointList m_BezierPointsControl;
+    wxArrayInt m_BezierSnappedPointsIndexes;
+    wxPoint m_BezierActualP1;
+    wxPoint m_BezierActualP2;
+    wxPoint m_BezierActualC1;
+    wxPoint m_BezierActualC2;
+    bool m_BezierDrawControlPoints;
+    wxRect m_BezierRefreshRect;
+    int m_BezierModifyIndexPoint;
+    int m_BezierModifyIndexControl;
+    bool m_BezierModifyControlInverted;
+    
+    // FUNCTIONS
+    void InitMemberValues();
+    
+    // Extern EVENT function
+    //void OnSnappingChange (wxCommandEvent & event);
+    void OnViewUpdated (wxCommandEvent & event);
+    void OnDrawDown(wxCommandEvent & event);
+    void OnDrawUp (wxCommandEvent & event);
+    void OnDrawMove (wxCommandEvent & event);
+    void OnEditStart (wxCommandEvent & event);
+    void OnEditStop (wxCommandEvent & event);
+    void OnDrawFeatureValidate (wxCommandEvent & event);
+    void OnDrawFeatureEscape (wxCommandEvent & event);
+    void OnCutLines (wxCommandEvent & event);
+    void OnShowVertexPosition (wxCommandEvent & event);
+    void OnModifySearch (wxCommandEvent & event);
+    void OnModifyMove (wxCommandEvent & event);
+    void OnModifyUp (wxCommandEvent & event);
+    void OnModifyMenu (wxCommandEvent & event);
+    void OnSetRenderFocus (wxCommandEvent & event);
+    void OnEditSharedDown (wxCommandEvent & event);
+    void OnEditSharedUp (wxCommandEvent & event);
+    void OnEditSharedMove(wxCommandEvent & event);
+    
+    void OnOrientedPtsDown(wxCommandEvent & event);
+    void OnOrientedPtsMove (wxCommandEvent & event);
+    void OnOrientedPtsUp (wxCommandEvent & event);
+    
+    // menu event
+    void OnMenuInsertVertex(wxCommandEvent & event);
+    void OnMenuDeleteVertex(wxCommandEvent & event);
+    
+    // internal verification
+    bool IsCorrectLayerSelected();
+    bool IsObjectSelected();
+    bool IsObjectMinNumberSelected (unsigned int iNumbermin = 1);
+    bool IsLayerTypeSelected (int layertype = LAYER_SPATIAL_LINE);
+    
+    // modify function
+    bool EMModifySearchLine(const wxRealPoint & pt);
+    bool EMModifySearchPoint(const wxRealPoint & pt);
+    
+    // snapping function
+    bool EMGetSnappingCoord (wxRealPoint & pt);
+    wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
+    void EMDrawSnappingStatus (const wxPoint & pt);
+    wxRealPoint * EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint);
+    
+    // menu functions
+    void EMCreateMenu(wxMenu & menu);
+    void EMGetMenuLine(wxMenu & menu);
+    void EMGetMenuVertex(wxMenu & menu);
+    
+    // loading functions
+    bool EMLoadModifyData();
+    
+    // adding, storing object
+    bool AddLineVertex (const wxRealPoint & pt);
+    bool AddPointVertex (const wxRealPoint & pt);
+    long StorePoint (const wxRealPoint & pt);
+    bool UpdatePoint();
+    long StoreLine ();
+    bool UpdateLine();
+    
+    // drawing editing object
+    void DrawLastSegment ();
+    void DrawEditBitmapLine ();
+    void DrawMemoryData(bool refresh);
+    
+    // checking
+    wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
+    
+    DECLARE_EVENT_TABLE()
+protected:
+    
+public:
+    // ctor - dtor
+    tmEditManager(ToolMapFrame * parent,
+                  tmTOCCtrl * toc,
+                  tmSelectedDataMemory * seldata,
+                  tmRenderer * renderer,
+                  tmGISScale * scale);
+    ~tmEditManager();
+    
+    //! @brief Set database functions.
+    //! If database is valid then project is open.
+    void SetDatabase (DataBaseTM * database){m_pDB = database;}
+    void SetSnappingMemoryRef(tmSnappingMemory * snapping) {m_SnapMem = snapping;}
 	
-		// internal verification
-		bool IsCorrectLayerSelected();
-		bool IsObjectSelected();
-		bool IsObjectMinNumberSelected (unsigned int iNumbermin = 1);
-		bool IsLayerTypeSelected (int layertype = LAYER_SPATIAL_LINE);
-		
-		// modify function
-		bool EMModifySearchLine(const wxRealPoint & pt);
-		bool EMModifySearchPoint(const wxRealPoint & pt);
-		
-		
-		// snapping function
-		bool EMGetSnappingCoord (wxRealPoint & pt);
-		wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
-		void EMDrawSnappingStatus (const wxPoint & pt);
-        wxRealPoint * EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint);
-		
-		// menu functions
-		void EMCreateMenu(wxMenu & menu);
-		void EMGetMenuLine(wxMenu & menu);
-		void EMGetMenuVertex(wxMenu & menu);
-		
-		// loading functions
-		bool EMLoadModifyData();
-		
-		// adding, storing object
-		bool AddLineVertex (const wxRealPoint & pt);
-		bool AddPointVertex (const wxRealPoint & pt);
-		long StorePoint (const wxRealPoint & pt);
-		bool UpdatePoint();
-		long StoreLine ();
-		bool UpdateLine();
-		
-		// drawing editing object
-		void DrawLastSegment ();
-		void DrawEditBitmapLine ();
-		void DrawMemoryData(bool refresh);
-		
-        // checking
-        wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
-		
-		
-		DECLARE_EVENT_TABLE()
-	protected:
-		
-	public:
-		// ctor - dtor
-		tmEditManager(ToolMapFrame * parent,
-					  tmTOCCtrl * toc,
-					  tmSelectedDataMemory * seldata,
-					  tmRenderer * renderer,
-					  tmGISScale * scale);
-		~tmEditManager();
-		
-		//! @brief Set database functions.
-		//! If database is valid then project is open.
-		void SetDatabase (DataBaseTM * database){m_pDB = database;}
-        void SetSnappingMemoryRef(tmSnappingMemory * snapping) {m_SnapMem = snapping;}
-	
-		//change tool functions
-		void OnToolEdit ();
-        void OnToolBezier();
-        void OnToolBezierModify();
-		void OnToolModify ();
-		void OnToolEditShared();
-		void OnToolCutLines();
-		void OnToolOrientedPoint();
-		
-		// validiting editing / modfication
-		bool IsDrawingAllowed();
-		bool IsModifictionAllowed();
-        bool IsModificationBezierAllowed();
-		bool IsLayerType(int layertype = LAYER_SPATIAL_LINE);
-        bool IsMultipleModifictionAllowed();
-
-		
-		// deleting selected
-		bool DeleteSelected(bool Clearselection = true);
-		bool UndoLastVertex ();
-		bool HasLastVertex();
-		int GetSelectionCount();
-		
-		// search function (from tmLayerManager)
-		bool SelectedSearch (const wxPoint & screenpt);  
-		
-		// segmentation
-		bool CreateIntersections ();
-		
-		// editing vertex dialog
-		bool EditVertexPosition ();
-		
-		// merging lines
-		bool MergeSelectedLines ();
-		bool FlipLine();
-		
-        
-        void BezierClick(const wxPoint & mousepos);
-        void BezierMove (const wxPoint & mousepos);
-        void BezierDraw (wxGCDC * dc);
-        void BezierClear();
-        void BezierModifyDraw(wxGCDC * dc);
-        void BezierModifyClickDown (const wxPoint & mousepos);
-        void BezierModifyClickMove (const wxPoint & mousepos);
-        void BezierModifyClickUp (const wxPoint & mousepos);
-        
-        void DrawSnappingCircle (wxGCDC * dc);
-	};
+    //change tool functions
+    void OnToolEdit ();
+    void OnToolBezier();
+    void OnToolBezierModify();
+    void OnToolModify ();
+    void OnToolEditShared();
+    void OnToolCutLines();
+    void OnToolOrientedPoint();
+    
+    // validiting editing / modfication
+    bool IsDrawingAllowed();
+    bool IsModifictionAllowed();
+    bool IsModificationBezierAllowed();
+    bool IsLayerType(int layertype = LAYER_SPATIAL_LINE);
+    bool IsMultipleModifictionAllowed();
+    
+    // deleting selected
+    bool DeleteSelected(bool Clearselection = true);
+    bool UndoLastVertex ();
+    bool HasLastVertex();
+    int GetSelectionCount();
+    
+    // search function (from tmLayerManager)
+    bool SelectedSearch (const wxPoint & screenpt);
+    
+    // segmentation
+    bool CreateIntersections ();
+    
+    // editing vertex dialog
+    bool EditVertexPosition ();
+    
+    // merging lines
+    bool MergeSelectedLines ();
+    bool FlipLine();
+    
+    void BezierClick(const wxPoint & mousepos);
+    void BezierMove (const wxPoint & mousepos);
+    void BezierDraw (wxGCDC * dc);
+    void BezierClear();
+    void BezierModifyDraw(wxGCDC * dc);
+    void BezierModifyClickDown (const wxPoint & mousepos);
+    void BezierModifyClickMove (const wxPoint & mousepos);
+    void BezierModifyClickUp (const wxPoint & mousepos);
+    
+    void DrawSnappingCircle (wxGCDC * dc);
+};
 
 
 
