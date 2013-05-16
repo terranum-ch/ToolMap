@@ -251,8 +251,16 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
     dc->GetGraphicsContext()->StrokePath(path);
     
     // draw nodes with different color based on snapping status
-    wxPen myNodeBlackPen = wxPen(*wxBLACK, 2.0 * mySymbol->GetWidth());
-    wxPen myNodeGreenPen = wxPen(*wxGREEN, 2.0 * mySymbol->GetWidth());
+    int mySymbolNodeWidth = mySymbol->GetWidth();
+    if (mySymbolNodeWidth <= 1) {
+        mySymbolNodeWidth = 4;
+    }
+    else {
+        mySymbolNodeWidth = 2.0 * mySymbolNodeWidth;
+    }
+    
+    wxPen myNodeBlackPen = wxPen(*wxBLACK, mySymbolNodeWidth);
+    wxPen myNodeGreenPen = wxPen(*wxGREEN, mySymbolNodeWidth);
     for (unsigned int i = 0; i< m_BezierPointsControl.GetCount(); i++) {
         if (m_BezierSnappedPointsIndexes.Index(i) == wxNOT_FOUND) {
             dc->SetPen(myNodeBlackPen);
