@@ -100,6 +100,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierActualC1= wxPoint(0,0);
     m_BezierActualC2= wxPoint(0,0);
     m_BezierDrawControlPoints = false;
+    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
 
@@ -212,7 +213,7 @@ void tmEditManager::BezierMove (const wxPoint & mousepos){
         m_BezierActualC2 = mousepos;
     }
     
-    m_Renderer->Refresh();
+    m_Renderer->RefreshRect(m_BezierRefreshRect);
     m_Renderer->Update();
 }
 
@@ -288,6 +289,21 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
         dc->DrawLine (myInvertedC2.x, myInvertedC2.y, myInvertedC2.x, myInvertedC2.y);
 #endif
     }
+    
+	
+    // compute bounding box for refreshing. This is mainly to avoid flickering
+	dc->ResetBoundingBox();
+	if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+        dc->CalcBoundingBox(m_BezierActualP1.x, m_BezierActualP1.y);
+        dc->CalcBoundingBox(m_BezierActualC1.x, m_BezierActualC1.y);
+        // inverted C1 is never needed for bounding box
+    }
+    dc->CalcBoundingBox(m_BezierActualP2.x, m_BezierActualP2.y);
+    dc->CalcBoundingBox(m_BezierActualC2.x, m_BezierActualC2.y);
+    dc->CalcBoundingBox(m_BezierActualP2.x - (m_BezierActualC2.x - m_BezierActualP2.x) ,
+                        m_BezierActualP2.y - (m_BezierActualC2.y - m_BezierActualP2.y));
+    m_BezierRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
+    m_BezierRefreshRect.Inflate(wxSize(3,3));
 }
 
 
@@ -303,6 +319,8 @@ void tmEditManager::BezierClear(){
     m_BezierPointsControl.DeleteContents(true);
     m_BezierPoints.Clear();
     m_BezierPointsControl.Clear();
+    
+    m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 }
 
 
@@ -393,6 +411,57 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     if (m_BezierModifyIndexControl == wxNOT_FOUND && m_BezierModifyIndexPoint == wxNOT_FOUND) {
         return;
     }
+
+    // Compute Refreshing Rect
+    dc->ResetBoundingBox();
+    wxPointList myPoints;
+    
+    int myIndex = m_BezierModifyIndexControl;
+    if (m_BezierModifyIndexControl == wxNOT_FOUND) {
+        wxASSERT(m_BezierModifyIndexPoint != wxNOT_FOUND);
+        myIndex = m_BezierModifyIndexPoint;
+    }
+    
+    wxPoint myPt = m_Scale->RealToPixel(*m_BezierPoints[myIndex]);
+    wxPoint myControl = m_Scale->RealToPixel(*m_BezierPointsControl[myIndex]);
+    wxPoint myControlInverted = myPt - (myControl - myPt);
+    myPoints.push_back(new wxPoint (myPt));
+    
+    if (myIndex != 0 && myIndex != m_BezierPoints.GetCount() -1){
+        myPoints.push_back(new wxPoint (myControl));
+        myPoints.push_back(new wxPoint (myControlInverted));
+    }
+    
+    if (myIndex == 0 || myIndex == m_BezierPoints.GetCount() -1) {
+        myPoints.push_back(new wxPoint(myControl));
+    }
+
+    if (myIndex != 0) {
+        wxPoint myPt1 = m_Scale->RealToPixel(*m_BezierPoints[myIndex -1]);
+        wxPoint myControl1 = m_Scale->RealToPixel(*m_BezierPointsControl[myIndex -1]);
+        wxPoint myControlInverted1 = myPt1 - (myControl1 - myPt1);
+        myPoints.push_back(new wxPoint (myPt1));
+        myPoints.push_back(new wxPoint (myControlInverted1));
+    }
+    
+    if (myIndex != m_BezierPoints.GetCount() -1) {
+        wxPoint myPt2 = m_Scale->RealToPixel(*m_BezierPoints[myIndex + 1]);
+        wxPoint myControl2 = m_Scale->RealToPixel(*m_BezierPointsControl[myIndex + 1]);
+        myPoints.push_back(new wxPoint (myPt2));
+        myPoints.push_back(new wxPoint (myControl2));
+    }
+    
+    for (unsigned int i = 0; i< myPoints.GetCount(); i++) {
+        dc->CalcBoundingBox(myPoints[i]->x, myPoints[i]->y);
+    }
+    myPoints.DeleteContents(true);
+    myPoints.Clear();
+     
+    m_BezierRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
+    m_BezierRefreshRect.Inflate(wxSize(3,3));
+    /*dc->SetPen(myGreyPen);
+    dc->SetBrush(*wxTRANSPARENT_BRUSH);
+    dc->DrawRectangle(m_BezierRefreshRect);*/
 }
 
 
@@ -452,7 +521,7 @@ void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
             *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(mousepos);
         }
         
-        m_Renderer->Refresh();
+        m_Renderer->RefreshRect(m_BezierRefreshRect);
         m_Renderer->Update();
         return;
     }
@@ -467,7 +536,7 @@ void tmEditManager::BezierModifyClickMove (const wxPoint & mousepos){
             *m_BezierPointsControl[m_BezierModifyIndexPoint] = m_Scale->PixelToReal(myControlPx);
         }
         
-        m_Renderer->Refresh();
+        m_Renderer->RefreshRect(m_BezierRefreshRect);
         m_Renderer->Update();
         return;
     }
