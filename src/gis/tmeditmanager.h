@@ -105,10 +105,11 @@ private:
     wxOverlay m_OverlaySharedNodes;
     wxColour m_SelectionColour;
     
-    // defined by function or event.
     DataBaseTM * m_pDB;
-    tmSnappingMemory * m_SnapMem;
     tmGISScale * m_Scale;
+    
+    tmSnappingMemory * m_SnapMem;
+    bool m_SnappingShowOnMap;
     
     wxRealPointList m_BezierPoints;
     wxRealPointList m_BezierPointsControl;
@@ -211,6 +212,7 @@ public:
     //! If database is valid then project is open.
     void SetDatabase (DataBaseTM * database){m_pDB = database;}
     void SetSnappingMemoryRef(tmSnappingMemory * snapping) {m_SnapMem = snapping;}
+    void SetSnappingShowOnMap (bool show) {m_SnappingShowOnMap = show;}
 	
     //change tool functions
     void OnToolEdit ();

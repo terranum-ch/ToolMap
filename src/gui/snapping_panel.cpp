@@ -19,6 +19,7 @@
 // comment doxygen
 
 #include "snapping_panel.h"
+#include "../gis/tmrenderer.h"
 #include "../database/database_tm.h"	// for database support
 
 
@@ -80,6 +81,7 @@ void Snapping_PANEL::InitMembersValue()
 	m_SnappingList = NULL;
 	m_ParentEvt = NULL;
 	m_pDB = NULL;
+    m_Renderer = NULL;
 }
 
 
@@ -263,11 +265,11 @@ void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
  @author Lucien Schreiber (c) CREALP 2009
  @date 22 January 2009
  *******************************************************************************/
-void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event )
-{
+void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event ){
 	m_SnappingList->GetSnappingMemoryRef()->SetTolerence(event.GetInt());
-	wxLogDebug(_T("Snapping tolerence set to %d"), event.GetInt());
-	//m_SnappingList->SnappingUpdate();
+	wxASSERT(m_Renderer);
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 	event.Skip();
 }
 

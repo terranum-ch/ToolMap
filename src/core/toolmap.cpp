@@ -141,6 +141,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
     EVT_MENU(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnExportSelectedGISData)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
 	EVT_MENU (ID_MENU_ADJUST_SNAPPING, ToolMapFrame::OnShowSnappingWindow)
+    EVT_MENU (ID_MENU_SNAPPING_SHOWONMAP, ToolMapFrame::OnShowSnappingOnMap)
 	EVT_MENU(wxID_EXIT, ToolMapFrame::OnQuit)
 	EVT_MENU (wxID_PREFERENCES, ToolMapFrame::OnPreferences)
 	EVT_MENU (ID_MENU_EXPORT_MODEL, ToolMapFrame::OnExportProjectModel)
@@ -335,6 +336,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	m_QueriesPanel = new Queries_PANEL(mypanel2,wxID_ANY, m_AuiManager);
 	m_ShortCutPanel = new Shortcuts_PANEL(mypanel2, wxID_ANY, m_AuiManager);
 	m_SnappingPanel = new Snapping_PANEL(mypanel2, wxID_ANY, m_AuiManager);
+    m_SnappingPanel->SetRendererRef(m_MainPanel->GetGISRenderer());
 
     _CreatePerspectives();
 
@@ -587,7 +589,7 @@ void ToolMapFrame::_CreateMenu()
 
     wxMenu* itemMenu42 = new wxMenu;
     itemMenu42->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping Panel...\tCtrl+G"), wxEmptyString, wxITEM_CHECK);
-    itemMenu42->Append(ID_MENU_SNAPPING_SHOWONMAP, _("Show snapping radius on map"), wxEmptyString, wxITEM_CHECK);
+    itemMenu42->Append(ID_MENU_SNAPPING_SHOWONMAP, _("Show snapping radius on map\tCtrl+Alt+G"), wxEmptyString, wxITEM_CHECK);
     itemMenu42->AppendSeparator();
     itemMenu42->Append(ID_MENU_SNAPPING_ADD, _("Add layer..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu42->Append(ID_MENU_SNAPPING_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
@@ -964,7 +966,9 @@ void ToolMapFrame::OnShowSnappingWindow (wxCommandEvent & event)
 
 
 void ToolMapFrame::OnShowSnappingOnMap (wxCommandEvent & event){
-    m_MainPanel->GetGISRenderer();
+    m_EditManager->SetSnappingShowOnMap(event.IsChecked());
+    m_MainPanel->GetGISRenderer()->Refresh();
+    m_MainPanel->GetGISRenderer()->Update();
 }
 
 
