@@ -78,32 +78,29 @@ class SnappingList : public ListGenReportWithDialog
 		
 	protected:
 	public:
-		SnappingList (wxWindow * parent,
-					 wxWindowID id,
-					 wxArrayString * pColsName, 
-					 wxArrayInt * pColsSize=NULL,
-					 wxSize size = wxDefaultSize);
+		SnappingList (wxWindow * parent, wxWindowID id, wxArrayString * pColsName,  wxArrayInt * pColsSize=NULL, wxSize size = wxDefaultSize);
 		~SnappingList();
 		
 		// setter
 		void SetDataBase (DataBaseTM * database) {m_pDB = database;}
+        tmSnappingMemory * GetSnappingMemoryRef(){return m_SnappingMemory;}
 		
 		void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
 		int GetSnappingStatus (int iRow);
 		
 		// Used by the panel for initial loading into memory
-		void ClearSnappingMemory (){ m_SnappingMemory->Clear();}
-		void LoadSnappingIntoMemory (const long & lid, const int & snapstatus); 
-		bool SaveSnappingStatus();
+		//void ClearSnappingMemory (){ m_SnappingMemory->Clear();}
+		//void LoadSnappingIntoMemory (const long & lid, const int & snapstatus);
+		//bool SaveSnappingStatus();
 		
 		// when snapping change
-		void SnappingUpdate();
+		//void SnappingUpdate();
 		
-		void SetSnappingMemoryTolerence (int iTolerence)
+		/*void SetSnappingMemoryTolerence (int iTolerence)
 		{
 			m_SnappingMemory->SetTolerence(iTolerence);
-		}
-		int GetSnappingMemoryTolerence (){return m_SnappingMemory->GetTolerence();}
+		}*/
+		//int GetSnappingMemoryTolerence (){return m_SnappingMemory->GetTolerence();}
 		void ClearSnappingStatus ();
 	};
 
@@ -115,46 +112,41 @@ class SnappingList : public ListGenReportWithDialog
  @author Lucien Schreiber (c) CREALP 2009
  @date 19 January 2009
  *******************************************************************************/
-class Snapping_PANEL : public ManagedAuiWnd  
-	{
-	private:
-		wxSpinCtrl* m_Tolerence;
-		SnappingList * m_SnappingList;
-		wxWindow * m_ParentEvt;
-		wxAuiPaneInfo m_PaneInfo;
-		DataBaseTM * m_pDB;
-		
-		// init private functions
-		void InitMembersValue();
-		wxSizer * CreateControls(wxWindow * parent,
-								 bool call_fit = true,
-								 bool set_sizer = true);
-		
-	
-		
-		
-		//  event handlers
-		virtual void OnUpdateTolerence( wxSpinEvent & event );
-		virtual void OnAddSnapping( wxCommandEvent& event );
-		virtual void OnRemoveSnapping( wxCommandEvent& event );
-		virtual void OnClearSnapping( wxCommandEvent& event );
-		DECLARE_EVENT_TABLE()
-		
-	public:
-		Snapping_PANEL( wxWindow* parent, wxWindowID id, 
-					   wxAuiManager * auimanager);
-		~Snapping_PANEL();
-		
-		void SetDataBase (DataBaseTM * database) 
-		{
-			m_SnappingList->SetDataBase(database);
-			m_pDB = database;
-		}
-		
-		bool LoadSnappingStatus ();
-		bool SaveSnappingStatus ();
-		
-	};
+class Snapping_PANEL : public ManagedAuiWnd
+{
+private:
+    wxSpinCtrl* m_TolerenceCtrl;
+    SnappingList * m_SnappingList;
+    wxWindow * m_ParentEvt;
+    wxAuiPaneInfo m_PaneInfo;
+    DataBaseTM * m_pDB;
+    
+    // init private functions
+    void InitMembersValue();
+    wxSizer * CreateControls(wxWindow * parent,bool call_fit = true, bool set_sizer = true);
+    
+    //  event handlers
+    virtual void OnUpdateTolerence( wxSpinEvent & event );
+    virtual void OnAddSnapping( wxCommandEvent& event );
+    virtual void OnRemoveSnapping( wxCommandEvent& event );
+    virtual void OnClearSnapping( wxCommandEvent& event );
+    DECLARE_EVENT_TABLE()
+    
+public:
+    Snapping_PANEL( wxWindow* parent, wxWindowID id,
+                   wxAuiManager * auimanager);
+    ~Snapping_PANEL();
+    
+    void SetDataBase (DataBaseTM * database){
+        m_SnappingList->SetDataBase(database);
+        m_pDB = database;
+    }
+    
+    bool LoadSnappingStatus ();
+    bool SaveSnappingStatus ();
+    
+    SnappingList * GetListRef(){ return m_SnappingList;}
+};
 
 
 

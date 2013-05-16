@@ -23,7 +23,7 @@
 WX_DEFINE_OBJARRAY (tmSnappingObjArray);
 
 
-DEFINE_EVENT_TYPE(tmEVT_SNAPPING_UPDATED)
+//DEFINE_EVENT_TYPE(tmEVT_SNAPPING_UPDATED)
 
 
 tmSnappingObject::tmSnappingObject()
@@ -51,7 +51,7 @@ void tmSnappingObject::InitMemberValues()
  *******************************************************************************/
 tmSnappingMemory::tmSnappingMemory()
 {
-	
+	m_Tolerence = 0;
 }
 
 

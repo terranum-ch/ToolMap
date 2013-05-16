@@ -88,7 +88,6 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 	m_ActualNotStockCursor = tmCURSOR_ZOOM_IN;
 	m_PanBmp = NULL;
 	m_ShiftDown = false;
-	m_SnappingRadius = 0;
 	m_OldSize = wxSize(0,0);
     m_Rubber = NULL;
 	m_WheelRotation = 0;
@@ -890,20 +889,6 @@ void tmRenderer::PanDClick (wxMouseEvent & event){
 	GetEventHandler()->AddPendingEvent(evt);
 }
 
-
-
-/***************************************************************************//**
- @brief Activate or not the snapping informations
- @details When activated, during mouse click, a radius indicating the snapping
- radius
- @param snapradius Size of the snapping tolerence, if 0 snapping is OFF
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-void tmRenderer::ToogleSnapping (int snapradius)
-{
-	m_SnappingRadius = snapradius;
-}
 
 
 

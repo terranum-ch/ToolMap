@@ -36,7 +36,7 @@ DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
-	EVT_COMMAND (wxID_ANY, tmEVT_SNAPPING_UPDATED, tmEditManager::OnSnappingChange)
+	//EVT_COMMAND (wxID_ANY, tmEVT_SNAPPING_UPDATED, tmEditManager::OnSnappingChange)
 	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
@@ -695,12 +695,11 @@ void tmEditManager::OnToolOrientedPoint()
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-void tmEditManager::OnSnappingChange (wxCommandEvent & event)
+/*void tmEditManager::OnSnappingChange (wxCommandEvent & event)
 {
 	m_SnapMem = (tmSnappingMemory*) event.GetClientData();
 	wxASSERT (m_SnapMem);
-	DisplayRendererSnappingTolerence();
-}
+}*/
 
 
 
@@ -712,8 +711,6 @@ void tmEditManager::OnSnappingChange (wxCommandEvent & event)
  *******************************************************************************/
 void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 {
-	
-	DisplayRendererSnappingTolerence();
 	//wxLogDebug(_T("View updated"));
 	
 	wxClientDC myDC (m_Renderer);
@@ -738,27 +735,6 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
 }
 
 
-
-/***************************************************************************//**
- @brief Display snapping if snapping enabled
- @details This function display a video inverse circle if snapping is enabled
- @author Lucien Schreiber (c) CREALP 2009
- @date 27 January 2009
- *******************************************************************************/
-void tmEditManager::DisplayRendererSnappingTolerence()
-{
-	if (m_SnapMem && m_Scale)
-	{
-		int iSnapRadius = 0;
-		if (m_SnapMem->IsSnappingEnabled())
-		{
-			iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
-		}
-		m_Renderer->ToogleSnapping(iSnapRadius);
-	}
-	//else
-	//	wxLogDebug(_T("Snapping memory or scale not defined"));
-}
 
 
 
@@ -2040,8 +2016,9 @@ bool tmEditManager::SelectedSearch (const wxPoint & screenpt)
 bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt)
 {
 	// Snapping may be disabled using space key
-	if (m_SnapMem->IsSnappingEnabled()==false)
+	if (m_SnapMem->IsSnappingEnabled()==false){
 		return false;
+    }
 	
 	
 	//bool bReturn = false;

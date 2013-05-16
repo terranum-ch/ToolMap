@@ -123,8 +123,6 @@ class tmRenderer : public wxScrolledWindow
 		bool m_DrawCalled;
 		
 		// snapping
-		int m_SnappingRadius;
-        
         
 		int m_WheelRotation;
 		wxPoint m_WheelPosition;
@@ -218,9 +216,6 @@ class tmRenderer : public wxScrolledWindow
 		
 		void SetTool (tmGIS_TOOL selected_tool);
 		tmGIS_TOOL GetTool () {return m_ActualTool;}
-		
-		// edit snapping event
-		void ToogleSnapping (int snapradius);
 		
 		// get bitmap
 		wxBitmap * GetBitmap(){return m_bmp;}

@@ -128,7 +128,7 @@ class tmEditManager : public wxEvtHandler
 		void InitMemberValues();
 		
 		// Extern EVENT function
-		void OnSnappingChange (wxCommandEvent & event);
+		//void OnSnappingChange (wxCommandEvent & event);
 		void OnViewUpdated (wxCommandEvent & event);
 		void OnDrawDown(wxCommandEvent & event);
 		void OnDrawUp (wxCommandEvent & event);
@@ -156,9 +156,7 @@ class tmEditManager : public wxEvtHandler
 		void OnMenuInsertVertex(wxCommandEvent & event);
 		void OnMenuDeleteVertex(wxCommandEvent & event);
 		
-		// member tool function
-		void DisplayRendererSnappingTolerence();
-		
+	
 		// internal verification
 		bool IsCorrectLayerSelected();
 		bool IsObjectSelected();
@@ -216,7 +214,7 @@ class tmEditManager : public wxEvtHandler
 		//! @brief Set database functions.
 		//! If database is valid then project is open.
 		void SetDatabase (DataBaseTM * database){m_pDB = database;}
-	
+        void SetSnappingMemoryRef(tmSnappingMemory * snapping) {m_SnapMem = snapping;}
 	
 		//change tool functions
 		void OnToolEdit ();
