@@ -103,7 +103,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
-
+    m_BezierSnappedPointsIndexes.Clear();
 }
 
 
@@ -171,7 +171,9 @@ void tmEditManager::OnToolBezierModify(){
 void tmEditManager::BezierClick(const wxPoint & mousepos){
     if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
         wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
-        EMGetSnappingCoord(myPt);
+        if(EMGetSnappingCoord(myPt)==true){
+            m_BezierSnappedPointsIndexes.Add(m_BezierPoints.GetCount());
+        }
         
         m_BezierPoints.push_back(new wxRealPoint(myPt));
         m_BezierActualP2 = mousepos;
@@ -248,9 +250,17 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
     }
     dc->GetGraphicsContext()->StrokePath(path);
     
-    // draw nodes
-    dc->SetPen(wxPen(*wxBLACK, 2.0 * mySymbol->GetWidth()));
-    for (unsigned int i = 1; i< m_BezierPointsControl.GetCount(); i++) {
+    // draw nodes with different color based on snapping status
+    wxPen myNodeBlackPen = wxPen(*wxBLACK, 2.0 * mySymbol->GetWidth());
+    wxPen myNodeGreenPen = wxPen(*wxGREEN, 2.0 * mySymbol->GetWidth());
+    for (unsigned int i = 0; i< m_BezierPointsControl.GetCount(); i++) {
+        if (m_BezierSnappedPointsIndexes.Index(i) == wxNOT_FOUND) {
+            dc->SetPen(myNodeBlackPen);
+        }
+        else {
+            dc->SetPen(myNodeGreenPen);
+        }
+        
         wxPoint myPt (m_Scale->RealToPixel(* m_BezierPoints[i]));
 #ifdef __WXMSW__
         dc->DrawLine (myPt.x , myPt.y, myPt.x + 1, myPt.y + 1);
@@ -321,6 +331,7 @@ void tmEditManager::BezierClear(){
     m_BezierPointsControl.Clear();
     
     m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
+    m_BezierSnappedPointsIndexes.Clear();
 }
 
 

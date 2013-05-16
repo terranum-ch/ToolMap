@@ -113,6 +113,7 @@ class tmEditManager : public wxEvtHandler
         
         wxRealPointList m_BezierPoints;
         wxRealPointList m_BezierPointsControl;
+        wxArrayInt m_BezierSnappedPointsIndexes;
         wxPoint m_BezierActualP1;
         wxPoint m_BezierActualP2;
         wxPoint m_BezierActualC1;
