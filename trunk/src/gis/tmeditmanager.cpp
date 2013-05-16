@@ -155,12 +155,15 @@ void tmEditManager::OnToolEdit ()
 
 void tmEditManager::OnToolBezier() {
     m_Renderer->SetTool(tmTOOL_DRAW_BEZIER);
+    m_BezierActualP2 = wxPoint(0,0);
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 }
 
 
 void tmEditManager::OnToolBezierModify(){
     m_Renderer->SetTool(tmTOOL_MODIFY_BEZIER);
-    m_BezierActualP2 = wxDefaultPosition;
+    m_BezierActualP2 = wxPoint(0,0);
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
@@ -280,7 +283,7 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
     dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
 #endif
     // draw actual bezier when needed
-    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0)){
+    if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0) && m_BezierActualP2 != wxPoint(0,0)){
         wxGraphicsPath path = dc->GetGraphicsContext()->CreatePath();
         path.MoveToPoint(m_BezierActualP1);
         path.AddCurveToPoint(m_BezierActualC1, m_BezierActualC2, m_BezierActualP2);
@@ -2229,7 +2232,23 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
  *******************************************************************************/
 bool tmEditManager::UndoLastVertex ()
 {
-	// zero vertex or not in drawing mode
+	// try removing last bezier vertex. If not possible, remove last line vertex
+    if (m_BezierPoints.GetCount() > 1) {
+        if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
+            m_BezierPointsControl.pop_back();
+            m_BezierPoints.pop_back();
+        }
+        else {
+            m_BezierPoints.pop_back();
+        }
+        
+        m_Renderer->Refresh();
+        m_Renderer->Update();
+        return true;
+    }
+    
+    
+    // zero vertex or not in drawing mode
 	if (!IsDrawingAllowed() || m_GISMemory->GetVertexCount() == 0)
 		return false;
 	
@@ -2267,6 +2286,11 @@ bool tmEditManager::HasLastVertex(){
 	if (m_GISMemory->GetVertexCount() > 0) {
 		return true;
 	}
+    
+    if (m_BezierPoints.GetCount() > 1){
+        return true;
+    }
+    
 	return false;
 }
 
