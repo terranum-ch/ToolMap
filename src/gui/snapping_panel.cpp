@@ -21,6 +21,7 @@
 #include "snapping_panel.h"
 #include "../gis/tmrenderer.h"
 #include "../database/database_tm.h"	// for database support
+#include "../core/datalistreportctrl.h"
 
 
 
@@ -42,14 +43,17 @@ END_EVENT_TABLE()
 Snapping_PANEL::Snapping_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * auimanager)
 : ManagedAuiWnd(auimanager)
 {
-	InitMembersValue();
+    m_TolerenceCtrl = NULL;
+	m_ListCtrl = NULL;
+	m_pDB = NULL;
+    m_Renderer = NULL;
+    m_SnappingMemory.Clear();
 	m_ParentEvt = parent;
-	m_ParentEvt->PushEventHandler(this);
 	
-	wxPanel *  ContentFrame = new wxPanel (parent, wxID_ANY);
-	CreateControls(ContentFrame);	
+    // TODO: Check if this is needed ?
+    m_ParentEvt->PushEventHandler(this);
 	
-	// define properties of Panel.
+	wxPanel * myPanel = _CreateControls();
 	m_PaneInfo.Name(SNAPPING_PANEL_TITLE);
 	m_PaneInfo.Caption(SNAPPING_PANEL_TITLE);
 	m_PaneInfo.Float();
@@ -61,28 +65,13 @@ Snapping_PANEL::Snapping_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * 
 	m_PaneInfo.Hide();
 	m_PaneInfo.FloatingPosition(100, 150);
 	m_PaneInfo.FloatingSize(SNAPPING_PANEL_SIZE + wxSize(100,100));
-	
 	m_AuiPanelName = SNAPPING_PANEL_TITLE;
 	
-	AddManagedPane(ContentFrame, m_PaneInfo);
+	AddManagedPane(myPanel, m_PaneInfo);
 
 }
 
 
-
-/***************************************************************************//**
- @brief Set default values to member
- @author Lucien Schreiber (c) CREALP 2008
- @date 19 January 2009
- *******************************************************************************/
-void Snapping_PANEL::InitMembersValue()
-{
-	m_TolerenceCtrl = NULL;
-	m_SnappingList = NULL;
-	m_ParentEvt = NULL;
-	m_pDB = NULL;
-    m_Renderer = NULL;
-}
 
 
 
@@ -91,10 +80,8 @@ void Snapping_PANEL::InitMembersValue()
  @author Lucien Schreiber (c) CREALP 2008
  @date 19 January 2009
  *******************************************************************************/
-wxSizer * Snapping_PANEL::CreateControls(wxWindow * parent,
-										 bool call_fit, bool set_sizer)
-{
-	
+wxPanel * Snapping_PANEL::_CreateControls(){
+	wxPanel *  ContentFrame = new wxPanel (m_ParentEvt, wxID_ANY);
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxVERTICAL );
 	
@@ -102,11 +89,11 @@ wxSizer * Snapping_PANEL::CreateControls(wxWindow * parent,
 	bSizer14 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxStaticText* m_staticText5;
-	m_staticText5 = new wxStaticText( parent, wxID_ANY, _("Tolerance (map unit) :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5 = new wxStaticText( ContentFrame, wxID_ANY, _("Tolerance (map unit) :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText5->Wrap( -1 );
 	bSizer14->Add( m_staticText5, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_TolerenceCtrl = new wxSpinCtrl( parent, ID_SNAP_TOLERENCE_TXT,
+	m_TolerenceCtrl = new wxSpinCtrl( ContentFrame, ID_SNAP_TOLERENCE_TXT,
 								 _T("10"), 
 								 wxDefaultPosition, 
 								 wxDefaultSize, 
@@ -115,61 +102,29 @@ wxSizer * Snapping_PANEL::CreateControls(wxWindow * parent,
 								 100,
 								 10);
 	bSizer14->Add( m_TolerenceCtrl, 1, wxALL|wxEXPAND, 5 );
-	
 	bSizer13->Add( bSizer14, 0, wxEXPAND, 5 );
 	
-	wxArrayString colname;
-	colname.Add(_("Layer"));
-	colname.Add(_("Vertex"));
-	colname.Add(_("Begin/End"));
 	
-	wxArrayInt colsize;
-	colsize.Add(150);
-	colsize.Add(80);
-	colsize.Add(80);
-	
-    m_SnappingList = new SnappingList( parent, ID_SNAP_LIST,
-									&colname, & colsize,
-									wxSize(100, 100));
-	
-	
-	bSizer13->Add( m_SnappingList, 1, wxEXPAND, 5 );
-	
-	wxBoxSizer* bSizer15;
-	bSizer15 = new wxBoxSizer( wxHORIZONTAL );
-	
-	wxFlatButton* m_button10;
-	m_button10 = new wxFlatButton( parent, ID_SNAP_ADD, wxFLATBUTTON_TEXT_ADD);
-	bSizer15->Add( m_button10, 0, wxLEFT|wxTOP|wxBOTTOM|wxRIGHT, 5 );
-	
-	wxFlatButton* m_button11;
-	m_button11 = new wxFlatButton( parent, ID_SNAP_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
-	bSizer15->Add( m_button11, 0, wxTOP|wxBOTTOM|wxRIGHT, 5 );
-	
-	wxFlatButton* m_button12;
-	m_button12 = new wxFlatButton( parent, ID_SNAP_CLEAR, _("Clear snapping"), wxDefaultSize);
-	bSizer15->Add( m_button12, 0, wxTOP|wxBOTTOM, 5 );
-	
-	bSizer13->Add( bSizer15, 0, wxEXPAND, 5 );
-	
-	
-	if (set_sizer)
-    {
-        parent->SetSizer( bSizer13 );
-        if (call_fit)
-		{
-            bSizer13->SetSizeHints( parent );
-		}
-	}
+    m_ListCtrl = new DataListReportCtrl( ContentFrame, wxID_ANY, wxDefaultPosition,
+                                    wxDefaultSize, wxLC_REPORT | wxLC_HRULES | wxLC_VRULES);
+    m_ListCtrl->InsertColumn(0, _("Layer"));
+    m_ListCtrl->InsertColumn(1, _("Mode"));
     
-    return bSizer13;
+ 	bSizer13->Add( m_ListCtrl, 1, wxEXPAND, 5 );
 	
-	
+	ContentFrame->SetSizer(bSizer13);
+    bSizer13->Fit(ContentFrame);
+    
+    wxSize myFrameWidth = ContentFrame->GetSize();
+    m_ListCtrl->SetColumnWidth(0, myFrameWidth.GetWidth() / 2);
+    m_ListCtrl->SetColumnWidth(1, myFrameWidth.GetWidth() / 2);
+    return ContentFrame;
 }
 
 
-Snapping_PANEL::~Snapping_PANEL()
-{
+
+Snapping_PANEL::~Snapping_PANEL(){
+    // TODO: Check if still needed!
 	m_ParentEvt->PopEventHandler(false);
 }
 
@@ -182,17 +137,15 @@ Snapping_PANEL::~Snapping_PANEL()
  @author Lucien Schreiber (c) CREALP 2009
  @date 19 January 2009
  *******************************************************************************/
-bool Snapping_PANEL::LoadSnappingStatus (){
+void Snapping_PANEL::LoadSnappingStatus (){
 	wxASSERT(m_pDB);
-    tmSnappingMemory * mySnappingMemory = m_SnappingList->GetSnappingMemoryRef();
-    wxASSERT(mySnappingMemory);
-    mySnappingMemory->Clear();
+    m_SnappingMemory.Clear();
     
 	int iTolerence = m_pDB->GetSnappingTolerence();
-	mySnappingMemory->SetTolerence(iTolerence);
+	m_SnappingMemory.SetTolerence(iTolerence);
 	m_TolerenceCtrl->SetValue(iTolerence);
 	
-    m_SnappingList->DeleteAllItems();
+    m_ListCtrl->DeleteAllItems();
     long mylid = 0;
 	wxString mylName = _T("");
 	int mySnapStatus = tmSNAPPING_OFF;
@@ -204,18 +157,15 @@ bool Snapping_PANEL::LoadSnappingStatus (){
 			break;
         }
 		iFirstLoop = false;
-		m_SnappingList->AddItemToList(mylName, iLoop);
-		m_SnappingList->SetSnappingStatus(mySnapStatus, iLoop, false);
-		m_SnappingList->SetItemData(iLoop, mylid);
+        
+        long myListIndex = m_ListCtrl->InsertItem(m_ListCtrl->GetItemCount(), mylName);
+        m_ListCtrl->SetText(myListIndex, tmSNAPPING_TEXT[mySnapStatus], 1);
+        m_ListCtrl->SetItemData(myListIndex, mylid);
 		
 		// load item to memory
-        mySnappingMemory->AddSnappingMemory(mylid, mySnapStatus);
+        m_SnappingMemory.AddSnappingMemory(mylid, mySnapStatus);
 		iLoop++;
 	}
-	
-	// update snapping
-	//m_SnappingList->SnappingUpdate();
-	return true;
 }
 
 
@@ -232,16 +182,12 @@ bool Snapping_PANEL::SaveSnappingStatus ()
     if (m_pDB == NULL) {
         return false;
     }
-    
-    tmSnappingMemory * mySnappingMemory = m_SnappingList->GetSnappingMemoryRef();
-    wxASSERT(mySnappingMemory);
-    // save tolerence
-    if (m_pDB->SetSnappingTolerence(mySnappingMemory->GetTolerence()) == false){
+    if (m_pDB->SetSnappingTolerence(m_SnappingMemory.GetTolerence()) == false){
         return false;
     }
     
     // save snapping status
-    return m_pDB->SaveSnappingAllStatus(mySnappingMemory);
+    return m_pDB->SaveSnappingAllStatus(&m_SnappingMemory);
 }
 
 
@@ -252,9 +198,10 @@ bool Snapping_PANEL::SaveSnappingStatus ()
  *******************************************************************************/
 void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
 {
-	if (m_pDB)
+	// TODO: Update here
+    if (m_pDB)
 	{
-		m_SnappingList->AddItem();
+		//m_SnappingList->AddItem();
 	}
 }
 
@@ -266,7 +213,7 @@ void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
  @date 22 January 2009
  *******************************************************************************/
 void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event ){
-	m_SnappingList->GetSnappingMemoryRef()->SetTolerence(event.GetInt());
+	m_SnappingMemory.SetTolerence(event.GetInt());
 	wxASSERT(m_Renderer);
     m_Renderer->Refresh();
     m_Renderer->Update();
@@ -281,9 +228,10 @@ void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event ){
  *******************************************************************************/
 void Snapping_PANEL::OnRemoveSnapping( wxCommandEvent& event )
 {
-	if (m_pDB)
+	// TODO Update here
+    if (m_pDB)
 	{
-		m_SnappingList->DeleteItem();
+		//m_SnappingList->DeleteItem();
 	}
 
 }
@@ -297,7 +245,8 @@ void Snapping_PANEL::OnRemoveSnapping( wxCommandEvent& event )
  *******************************************************************************/
 void Snapping_PANEL::OnClearSnapping( wxCommandEvent& event )
 {
-	m_SnappingList->ClearSnappingStatus();
+	// TODO: Update here
+    //m_SnappingList->ClearSnappingStatus();
 	event.Skip();
 }
 

@@ -29,6 +29,8 @@ const int tmSNAPPING_VERTEX			= 1;
 const int tmSNAPPING_BEGIN_END		= 2;
 const wxString tmSNAPPING_TEXT_YES = _("Yes");
 
+const wxString tmSNAPPING_TEXT [] = {_T(""), _T("all vertex"), _("begin / end")};
+
 
 class tmSnappingObject
 {
