@@ -38,6 +38,7 @@
 #include "../core/tmsnappingmemory.h"	// store snapping status into memory
 
 class DataBaseTM;
+class DataListReportCtrl;
 
 #define ID_SNAP_TOLERENCE_TXT 22000
 #define ID_SNAP_LIST 22001
@@ -100,15 +101,15 @@ class Snapping_PANEL : public ManagedAuiWnd
 {
 private:
     wxSpinCtrl* m_TolerenceCtrl;
-    SnappingList * m_SnappingList;
-    wxWindow * m_ParentEvt;
-    wxAuiPaneInfo m_PaneInfo;
+    DataListReportCtrl * m_ListCtrl;
     DataBaseTM * m_pDB;
     tmRenderer * m_Renderer;
+    wxWindow * m_ParentEvt;
+    wxAuiPaneInfo m_PaneInfo;
+    tmSnappingMemory m_SnappingMemory;
+
     
-    // init private functions
-    void InitMembersValue();
-    wxSizer * CreateControls(wxWindow * parent,bool call_fit = true, bool set_sizer = true);
+    wxPanel * _CreateControls();
     
     //  event handlers
     virtual void OnUpdateTolerence( wxSpinEvent & event );
@@ -122,16 +123,13 @@ public:
                    wxAuiManager * auimanager);
     ~Snapping_PANEL();
     
-    void SetDataBase (DataBaseTM * database){
-        m_SnappingList->SetDataBase(database);
-        m_pDB = database;
-    }
+    void SetDataBase (DataBaseTM * database){m_pDB = database;}
     void SetRendererRef(tmRenderer * renderer) {m_Renderer = renderer;}
     
-    bool LoadSnappingStatus ();
+    void LoadSnappingStatus ();
     bool SaveSnappingStatus ();
     
-    SnappingList * GetListRef(){ return m_SnappingList;}
+    tmSnappingMemory * GetSnappingMemoryRef() {return &m_SnappingMemory;}
 };
 
 

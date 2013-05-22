@@ -371,7 +371,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 									   m_MainPanel->GetGISRenderer(),
 									   m_LayerManager->GetScale());
     m_MainPanel->GetGISRenderer()->SetEditManagerRef(m_EditManager);
-    m_EditManager->SetSnappingMemoryRef(m_SnappingPanel->GetListRef()->GetSnappingMemoryRef());
+    m_EditManager->SetSnappingMemoryRef(m_SnappingPanel->GetSnappingMemoryRef());
 
 	m_ToolManager = new tmToolManager(this,
 									  m_TocWindow->GetTOCCtrl(),
