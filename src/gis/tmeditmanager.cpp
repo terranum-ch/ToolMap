@@ -612,9 +612,9 @@ void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
         return;
     }
     
-    if (wxGetMouseState().LeftIsDown() == true) {
+    /* if (wxGetMouseState().LeftIsDown() == true) {
         return;
-    }
+    } */
     wxASSERT(dc);
     wxASSERT(m_SnapMem);
     
