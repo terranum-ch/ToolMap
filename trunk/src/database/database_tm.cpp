@@ -2975,7 +2975,7 @@ bool DataBaseTM::SaveSnappingAllStatus (tmSnappingMemory * snapmemory)
 	
 	for (unsigned int i = 0; i< snapmemory->GetCount(); i++){
 		if (snapmemory->GetSnappingInfo(i, myLayerindex, mySnappingStatus)){
-			sFullSentence.Append(wxString::Format(sSentence, TABLE_NAME_SNAPPING.c_str(),myLayerindex, mySnappingStatus));
+			sFullSentence.Append(wxString::Format(sSentence, TABLE_NAME_SNAPPING.c_str(),mySnappingStatus, myLayerindex));
 		}
 	}
 	

@@ -25,6 +25,106 @@
 
 
 
+
+
+
+
+
+
+
+
+tmSnapping_DLG::tmSnapping_DLG( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
+	
+	m_LayerNameCtrl = new wxStaticText( this, wxID_ANY, _("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_LayerNameCtrl->Wrap( -1 );
+	bSizer1->Add( m_LayerNameCtrl, 0, wxALL, 5 );
+	
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("snapping") ), wxVERTICAL );
+	
+	m_SnapNoneCtrl = new wxRadioButton( this, wxID_ANY, _("None"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	//m_SnapNoneCtrl->SetValue( true );
+	sbSizer1->Add( m_SnapNoneCtrl, 0, wxALL, 5 );
+	
+	m_SnapBeginEndCtrl = new wxRadioButton( this, wxID_ANY, _("Begin / End vertex"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer1->Add( m_SnapBeginEndCtrl, 0, wxALL, 5 );
+	
+	m_SnapAllCtrl = new wxRadioButton( this, wxID_ANY, _("All vertex"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer1->Add( m_SnapAllCtrl, 0, wxALL, 5 );
+	
+	
+	bSizer1->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
+	
+	wxStdDialogButtonSizer* m_sdbSizer1;
+	wxButton* m_sdbSizer1Save;
+	wxButton* m_sdbSizer1Cancel;
+	m_sdbSizer1 = new wxStdDialogButtonSizer();
+	m_sdbSizer1Save = new wxButton( this, wxID_OK );
+	m_sdbSizer1->AddButton( m_sdbSizer1Save );
+	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
+	m_sdbSizer1->Realize();
+	
+	bSizer1->Add( m_sdbSizer1, 1, wxEXPAND|wxALL, 5 );
+	
+	this->SetSizer( bSizer1 );
+	this->Layout();
+	bSizer1->Fit( this );
+	this->Centre( wxBOTH );
+    
+    m_SnapStatus = tmSNAPPING_OFF;
+    m_LayerName = wxEmptyString;
+}
+
+
+
+tmSnapping_DLG::~tmSnapping_DLG(){
+}
+
+
+
+bool tmSnapping_DLG::TransferDataToWindow(){
+    m_LayerNameCtrl->SetLabel(m_LayerName);
+    m_SnapNoneCtrl->SetValue(true);
+    if (m_SnapStatus == tmSNAPPING_BEGIN_END) {
+        m_SnapBeginEndCtrl->SetValue(true);
+    }
+    
+    if (m_SnapStatus == tmSNAPPING_VERTEX) {
+        m_SnapAllCtrl->SetValue(true);
+    }
+    
+    return true;
+}
+
+
+bool tmSnapping_DLG::TransferDataFromWindow(){
+    m_SnapStatus = tmSNAPPING_OFF;
+    
+    if (m_SnapBeginEndCtrl->GetValue() == true) {
+        m_SnapStatus = tmSNAPPING_BEGIN_END;
+    }
+    
+    if (m_SnapAllCtrl->GetValue() == true) {
+        m_SnapStatus = tmSNAPPING_VERTEX;
+    }
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
 // EVENT TABLE
 BEGIN_EVENT_TABLE( Snapping_PANEL, ManagedAuiWnd )
 	EVT_SPINCTRL( ID_SNAP_TOLERENCE_TXT, Snapping_PANEL::OnUpdateTolerence )
@@ -71,7 +171,7 @@ Snapping_PANEL::Snapping_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * 
     m_ListCtrl->Bind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuAdd, this, ID_SNAP_ADD);
     m_ListCtrl->Bind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuRemove, this, ID_SNAP_REMOVE);
     m_ListCtrl->Bind(wxEVT_CONTEXT_MENU, &Snapping_PANEL::OnContextualMenu, this);
-    
+    m_ListCtrl->Bind(wxEVT_LIST_ITEM_ACTIVATED, &Snapping_PANEL::OnDClickList, this);
 }
 
 
@@ -278,6 +378,23 @@ void Snapping_PANEL::OnContextualMenu (wxContextMenuEvent & event){
 }
 
 
+void Snapping_PANEL::OnDClickList (wxListEvent & event){
+    int mySnappingStatus = m_SnappingMemory.GetSnappingMemoryStatus(event.GetData());
+    
+    tmSnapping_DLG myDlg(m_ListCtrl);
+    myDlg.m_LayerName = event.GetText();
+    myDlg.m_SnapStatus = mySnappingStatus;
+    
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    
+    m_SnappingMemory.SetSnappingMemoryStatus(event.GetData(), myDlg.m_SnapStatus);
+    m_pDB->SaveSnappingAllStatus(&m_SnappingMemory);
+    LoadSnappingStatus();
+}
+
+
 
 void Snapping_PANEL::OnUpdateUIContextualMenuAdd (wxUpdateUIEvent & event){
     if (m_pDB == NULL) {
@@ -302,226 +419,4 @@ void Snapping_PANEL::OnUpdateUIContextualMenuRemove(wxUpdateUIEvent & event){
 
 
 
-
-/************************ SNAPPING LIST *****************************************/
-/***************************************************************************//**
- @brief Constructor
- @author Lucien Schreiber (c) CREALP 2008
- @date 19 January 2009
- *******************************************************************************/
-SnappingList::SnappingList (wxWindow * parent,
-						  wxWindowID id,
-						  wxArrayString * pColsName, 
-						  wxArrayInt * pColsSize,
-						  wxSize size) :
-ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
-{
-	m_Parent = parent;
-	m_SnappingMemory = new tmSnappingMemory();
-	m_pDB = NULL;
-}
-
-
-
-/***************************************************************************//**
- @brief Destructor
- @author Lucien Schreiber (c) CREALP 2008
- @date 19 January 2009
- *******************************************************************************/
-SnappingList::~SnappingList()
-{
-	wxDELETE(m_SnappingMemory);
-}
-
-
-
-/***************************************************************************//**
- @brief Set the snapping status
- @details Put yes or empty in snapping status column
- @param snapStatus The snapping status as integer :
-  - 0 = No snapping 
-  - 1 = Snapping vertex 
-  - 2 = snapping Begin/End
- @param iRow the zero based row index of the item to change
- @param clearbefore If set to true, we remove old values.
- @author Lucien Schreiber (c) CREALP 2009
- @date 19 January 2009
- *******************************************************************************/
-void SnappingList::SetSnappingStatus (int snapStatus, int iRow, bool clearbefore)
-{
-	// clear text
-	if (clearbefore)
-	{
-		SetItemText(iRow, 1, _T(""));
-		SetItemText(iRow, 2, _T(""));
-	}
-	
-	if ((snapStatus & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX)
-		SetItemText(iRow, 1, tmSNAPPING_TEXT_YES);
-	
-	if ((snapStatus & tmSNAPPING_BEGIN_END) == tmSNAPPING_BEGIN_END)
-		SetItemText(iRow, 2, tmSNAPPING_TEXT_YES);
-		
-}
-
-
-
-/***************************************************************************//**
- @brief Get the snapping status from the list
- @details This function gets the snapping status from one lists row into an
- integer
- @param iRow the zero based index of the row we want to get the snapping status
- @return  one of the following values :
- - 0 = no snapping 
- - 1 = snapping vertex
- - 2 = snapping begin/end 
- - 3 = snapping both
- @author Lucien Schreiber (c) CREALP 2009
- @date 20 January 2009
- *******************************************************************************/
-int SnappingList::GetSnappingStatus (int iRow)
-{
-	// ensure that the row exists
-	wxASSERT (iRow <= (GetItemCount() -1));
-	
-	int iReturnSnap = 0;
-	if (GetItemColText(iRow, 1) == tmSNAPPING_TEXT_YES)
-		iReturnSnap = iReturnSnap | tmSNAPPING_VERTEX;
-	
-	if (GetItemColText(iRow, 2) == tmSNAPPING_TEXT_YES)
-		iReturnSnap = iReturnSnap | tmSNAPPING_BEGIN_END;
-		
-	
-	return iReturnSnap;
-}
-
-
-
-/***************************************************************************//**
- @brief Called just before displaying the add dialog
- @author Lucien Schreiber (c) CREALP 2009
- @date 20 January 2009
- *******************************************************************************/
-void SnappingList::BeforeAdding()
-{
-	m_LayersID.Clear();
-	m_LayersName.Clear();
-	
-	wxString myDlgMessage = _("Select one or more layer(s) to add to the snapping list");
-	wxString myDlgCaption = _("Snapping layers");
-	
-	m_pDB->GetValidLayersForSnapping(m_LayersID, m_LayersName);
-	wxMultiChoiceDialog * myDlg = new wxMultiChoiceDialog(this,
-														  myDlgMessage,
-														  myDlgCaption,
-														  m_LayersName);
-	SetDialog(myDlg);
-}
-
-
-
-/***************************************************************************//**
- @brief Called after the adding dialog was closed
- @author Lucien Schreiber (c) CREALP 2009
- @date 20 January 2009
- *******************************************************************************/
-void SnappingList::AfterAdding (bool bRealyAddItem)
-{
-	wxArrayInt mySelectedLayers = ((wxMultiChoiceDialog*) m_pDialog)->GetSelections();
-	wxArrayLong myRealSelectedID;
-	if (bRealyAddItem && mySelectedLayers.GetCount() > 0)
-	{
-		
-		for (unsigned int i = 0; i< mySelectedLayers.GetCount(); i++)
-		{
-			// get real id from selected (zero based id)
-			myRealSelectedID.Add(m_LayersID.Item(mySelectedLayers.Item(i)));
-		
-			//add snapping layers into list
-			AddItemToList(m_LayersName.Item(mySelectedLayers.Item(i)));
-			SetItemData(GetItemCount()-1, m_LayersID.Item(mySelectedLayers.Item(i)));
-			
-			// Stores items in memory
-			m_SnappingMemory->AddSnappingMemory(m_LayersID.Item(mySelectedLayers.Item(i)),
-												0);
-		}
-		
-		// add snapping layers into database
-		//m_pDB->AddLayersSnapping(myRealSelectedID);
-	}
-	//delete m_pDialog;
-}
-
-
-
-/***************************************************************************//**
- @brief Called just before deleting an item
- @author Lucien Schreiber (c) CREALP 2009
- @date 20 January 2009
- *******************************************************************************/
-void SnappingList::BeforeDeleting ()
-{
-	wxArrayLong mySelected;
-	GetAllSelectedItem(mySelected);
-	
-	for (unsigned int i = 0; i< mySelected.GetCount();i++)
-	{
-		// delete item from memory
-		m_SnappingMemory->DeleteSnappingMemory(GetItemData(mySelected.Item(i)));
-		
-		// delete item from database
-		if(!m_pDB->DeleteLayerSnapping(GetItemData(mySelected.Item(i))))
-		{
-			wxLogDebug(_T("Error deleting snapping layers : %d"),
-					   GetItemData(mySelected.Item(i)));
-			break;
-		}
-	}
-}
-
-
-
-/***************************************************************************//**
- @brief Called when user double-click an item
- @details Here we don't use the traditionnal dialog for editing type of
- snapping. We toogle the snapping status when double-clicking into one's item
- column.
- @author Lucien Schreiber (c) CREALP 2009
- @date 20 January 2009
- *******************************************************************************/
-void SnappingList::OnDoubleClickItem (wxListEvent & event)
-{	
-	int iColClicked = GetColumnClicked(m_Parent,
-									   event.GetIndex(), 0);
-	
-	// get the status and set the status for the snapping
-	if (iColClicked > 0)
-	{
-		int iActualSnapStatus = GetSnappingStatus(event.GetIndex());
-		iActualSnapStatus = iActualSnapStatus ^ iColClicked;
-		
-		SetSnappingStatus(iActualSnapStatus, event.GetIndex(), true);
-		
-		// modifiy status into memory
-		m_SnappingMemory->SetSnappingMemoryStatus(GetItemData(event.GetIndex()),iActualSnapStatus);
-	}
-}
-
-
-
-/***************************************************************************//**
- @brief Remove all snapping set
- @author Lucien Schreiber (c) CREALP 2009
- @date 22 January 2009
- *******************************************************************************/
-void SnappingList::ClearSnappingStatus ()
-{
-	for (int i = 0;i< GetItemCount();i++)
-	{
-		SetSnappingStatus(tmSNAPPING_OFF, i, true);
-	}
-	m_SnappingMemory->ClearSnappingStatus();
-	
-	//SnappingUpdate();
-}
 

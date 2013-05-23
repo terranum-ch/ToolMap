@@ -1,10 +1,10 @@
 /***************************************************************************
-								snapping_panel.h
-				Deals with the snapping panel, used for setting the
-							snapping for layers
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ snapping_panel.h
+ Deals with the snapping panel, used for setting the
+ snapping for layers
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,16 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
-
 #ifndef _SNAPPING_PANEL_H_
 #define _SNAPPING_PANEL_H_
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
@@ -49,49 +43,30 @@ class DataListReportCtrl;
 #define SNAPPING_PANEL_SIZE wxSize(230, 150)
 
 
+class tmRenderer;
 
-/***************************************************************************//**
- @brief The list used for setting the snapping
- @details This list consist in 3 columns, the layer name, and the snapping
- status for vertex or begin end
- @author Lucien Schreiber (c) CREALP 2008
- @date 19 January 2009
- *******************************************************************************/
-class SnappingList : public ListGenReportWithDialog
+
+class tmSnapping_DLG : public wxDialog
 {
-private:
-    DataBaseTM * m_pDB;
-    wxArrayLong m_LayersID;
-    wxArrayString m_LayersName;
-    wxWindow * m_Parent;
-    tmSnappingMemory * m_SnappingMemory;
-    
-    virtual void BeforeAdding();
-    virtual void AfterAdding (bool bRealyAddItem);
-    virtual void BeforeDeleting ();
-    
-    // very different editing process, here we don't use
-    // a dialog for editing
-    virtual void OnDoubleClickItem (wxListEvent & event);
-    
-protected:
 public:
-    SnappingList (wxWindow * parent, wxWindowID id, wxArrayString * pColsName,  wxArrayInt * pColsSize=NULL, wxSize size = wxDefaultSize);
-    ~SnappingList();
+    tmSnapping_DLG( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+    ~tmSnapping_DLG();
     
-    // setter
-    void SetDataBase (DataBaseTM * database) {m_pDB = database;}
-    tmSnappingMemory * GetSnappingMemoryRef(){return m_SnappingMemory;}
+    virtual bool TransferDataToWindow();
+    virtual bool TransferDataFromWindow();
     
-    void SetSnappingStatus (int snapStatus, int iRow, bool clearbefore = true);
-    int GetSnappingStatus (int iRow);
-    
-    void ClearSnappingStatus ();
+    int m_SnapStatus;
+    wxString m_LayerName;
+
+private:
+    wxStaticText* m_LayerNameCtrl;
+    wxRadioButton* m_SnapNoneCtrl;
+    wxRadioButton* m_SnapBeginEndCtrl;
+    wxRadioButton* m_SnapAllCtrl;
 };
 
 
 
-class tmRenderer;
 /***************************************************************************//**
  @brief The panel used for setting the snapping
  @author Lucien Schreiber (c) CREALP 2009
@@ -107,12 +82,12 @@ private:
     wxWindow * m_ParentEvt;
     wxAuiPaneInfo m_PaneInfo;
     tmSnappingMemory m_SnappingMemory;
-
     
     wxPanel * _CreateControls();
     
     void OnUpdateTolerence( wxSpinEvent & event );
     void OnContextualMenu (wxContextMenuEvent & event);
+    void OnDClickList (wxListEvent & event);
     DECLARE_EVENT_TABLE()
     
 public:
@@ -129,7 +104,7 @@ public:
     void OnRemoveSnapping( wxCommandEvent& event );
     void OnUpdateUIContextualMenuAdd (wxUpdateUIEvent & event);
     void OnUpdateUIContextualMenuRemove (wxUpdateUIEvent & event);
-
+    
     tmSnappingMemory * GetSnappingMemoryRef() {return &m_SnappingMemory;}
 };
 
