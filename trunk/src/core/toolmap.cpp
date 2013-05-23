@@ -417,7 +417,10 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRemoveQueries,m_QueriesPanel, ID_QUERIES_REMOVE);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRunQueries,m_QueriesPanel, ID_QUERIES_RUN);
 
-
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Snapping_PANEL::OnAddSnapping, m_SnappingPanel, ID_SNAP_ADD);
+    this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Snapping_PANEL::OnRemoveSnapping, m_SnappingPanel, ID_SNAP_REMOVE);
+    this->Bind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuAdd, m_SnappingPanel, ID_SNAP_ADD);
+    this->Bind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuRemove, m_SnappingPanel, ID_SNAP_REMOVE);
 }
 
 
@@ -433,7 +436,12 @@ ToolMapFrame::~ToolMapFrame()
     this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRemoveQueries,m_QueriesPanel, ID_QUERIES_REMOVE);
     this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRunQueries,m_QueriesPanel, ID_QUERIES_RUN);
 
-    
+    this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Snapping_PANEL::OnAddSnapping, m_SnappingPanel, ID_SNAP_ADD);
+    this->Unbind(wxEVT_COMMAND_MENU_SELECTED, &Snapping_PANEL::OnRemoveSnapping, m_SnappingPanel, ID_SNAP_REMOVE);
+    this->Unbind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuAdd, m_SnappingPanel, ID_SNAP_ADD);
+    this->Unbind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuRemove, m_SnappingPanel, ID_SNAP_REMOVE);
+
+
 
 	// close project
 	m_PManager->CloseProject();
@@ -591,8 +599,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu42->Append(ID_MENU_ADJUST_SNAPPING, _("Snapping Panel...\tCtrl+G"), wxEmptyString, wxITEM_CHECK);
     itemMenu42->Append(ID_MENU_SNAPPING_SHOWONMAP, _("Show snapping radius on map\tCtrl+Alt+G"), wxEmptyString, wxITEM_CHECK);
     itemMenu42->AppendSeparator();
-    itemMenu42->Append(ID_MENU_SNAPPING_ADD, _("Add layer..."), wxEmptyString, wxITEM_NORMAL);
-    itemMenu42->Append(ID_MENU_SNAPPING_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu42->Append(ID_SNAP_ADD, _("Add layer..."), wxEmptyString, wxITEM_NORMAL);
+    itemMenu42->Append(ID_SNAP_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(wxID_ANY, _("Snapping"), itemMenu42);
     
     menuBar->Append(itemMenu41, _("Edition"));
