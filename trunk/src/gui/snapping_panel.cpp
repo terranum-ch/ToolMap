@@ -342,7 +342,9 @@ void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event ){
  *******************************************************************************/
 void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event ){
 	m_SnappingMemory.SetTolerence(event.GetInt());
-	wxASSERT(m_Renderer);
+	m_pDB->SetSnappingTolerence(event.GetInt());
+    
+    wxASSERT(m_Renderer);
     m_Renderer->Refresh();
     m_Renderer->Update();
 	event.Skip();
