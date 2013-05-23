@@ -124,6 +124,11 @@ private:
     int m_BezierModifyIndexControl;
     bool m_BezierModifyControlInverted;
     
+    wxRealPointList m_ArcPoints;
+    wxArrayLong m_ArcSnappedPointsIndexes;
+    wxPoint m_ArcActualPt;
+    wxRect m_ArcRefreshRect;
+    
     // FUNCTIONS
     void InitMemberValues();
     
@@ -257,6 +262,11 @@ public:
     void BezierModifyClickDown (const wxPoint & mousepos);
     void BezierModifyClickMove (const wxPoint & mousepos);
     void BezierModifyClickUp (const wxPoint & mousepos);
+    
+    void ArcClick (const wxPoint & mousepos);
+    void ArcMove (const wxPoint & mousepos);
+    void ArcDraw (wxGCDC * dc);
+    void ArcClear();
     
     void DrawSnappingCircle (wxGCDC * dc);
 };

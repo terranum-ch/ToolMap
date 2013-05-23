@@ -315,6 +315,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
     
     if (m_isPanning == false) {
         m_EditManager->BezierDraw(&gcdc);
+        m_EditManager->ArcDraw(&gcdc);
     }
     m_EditManager->BezierModifyDraw(&gcdc);
     m_EditManager->DrawSnappingCircle(&gcdc);
@@ -358,8 +359,9 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event){
 		SelectStart(event.GetPosition());
 	
 	// draw
-	if (m_ActualTool == tmTOOL_DRAW)
-		DrawStart(event.GetPosition());
+	if (m_ActualTool == tmTOOL_DRAW){
+		m_EditManager->ArcClick(event.GetPosition());
+    }
 	
 	if (m_ActualTool == tmTOOL_MODIFY)
 		ModifyStart(event.GetPosition());
@@ -395,8 +397,9 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectUpdate(event);
 	
-	if (m_ActualTool == tmTOOL_DRAW)
-		DrawMove(event.GetPosition());
+	if (m_ActualTool == tmTOOL_DRAW){
+		m_EditManager->ArcMove(event.GetPosition());
+    }
     
     if (m_ActualTool == tmTOOL_DRAW_BEZIER) {
         m_EditManager->BezierMove(event.GetPosition());

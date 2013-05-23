@@ -101,6 +101,10 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
     m_BezierSnappedPointsIndexes.Clear();
+    
+    
+    m_ArcActualPt = wxDefaultPosition;
+    m_ArcRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
 }
 
 
@@ -338,6 +342,17 @@ void tmEditManager::BezierClear(){
     
     m_BezierRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
     m_BezierSnappedPointsIndexes.Clear();
+}
+
+
+
+void tmEditManager::ArcClear(){
+    m_ArcActualPt = wxDefaultPosition;
+    m_ArcPoints.DeleteContents(true);
+    m_ArcPoints.Clear();
+    
+    m_ArcRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
+    m_ArcSnappedPointsIndexes.Clear();
 }
 
 
@@ -600,6 +615,99 @@ void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
+
+
+
+void tmEditManager::ArcClick (const wxPoint & mousepos){
+    wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
+    if(EMGetSnappingCoord(myPt)==true){
+        m_ArcSnappedPointsIndexes.Add(m_ArcPoints.GetCount());
+    }
+    
+    m_ArcPoints.push_back(new wxRealPoint(myPt));
+    m_ArcActualPt = mousepos;
+    
+    m_Renderer->Refresh();
+    m_Renderer->Update();
+}
+
+
+void tmEditManager::ArcMove (const wxPoint & mousepos){
+    m_ArcActualPt = mousepos;
+    
+    // TODO: Refresh rect here
+    m_Renderer->RefreshRect(m_ArcRefreshRect);
+    m_Renderer->Update();
+}
+
+
+
+void tmEditManager::ArcDraw (wxGCDC * dc){
+    if (m_ArcPoints.GetCount() == 0) {
+        return;
+    }
+    if (m_Renderer->GetTool() != tmTOOL_DRAW) {
+        return;
+    }
+    
+    tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+    wxASSERT(myLayerProperties);
+    tmSymbolVectorLine * mySymbol = static_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
+    
+    // draw existing lines
+    dc->SetPen(wxPen(m_SelectionColour, mySymbol->GetWidth()));
+    wxPointList myPts;
+    for (unsigned int i = 0; i< m_ArcPoints.GetCount(); i++) {
+        myPts.push_back(new wxPoint(m_Scale->RealToPixel(*m_ArcPoints[i])));
+    }
+    
+    if (myPts.GetCount() > 1){
+        dc->DrawLines(&myPts);
+    }
+    
+    // draw nodes with different color based on snapping status
+    int myNodeWidth = 2.0 * mySymbol->GetWidth();
+    if (myNodeWidth < 4) {
+        myNodeWidth = 4;
+    }
+    
+    wxPen myNodeBlackPen = wxPen(*wxBLACK, myNodeWidth);
+    wxPen myNodeGreenPen = wxPen(*wxGREEN, myNodeWidth);
+    for (unsigned int i = 0; i< myPts.GetCount(); i++) {
+        if (m_ArcSnappedPointsIndexes.Index(i) == wxNOT_FOUND) {
+            dc->SetPen(myNodeBlackPen);
+        }
+        else {
+            dc->SetPen(myNodeGreenPen);
+        }
+        
+        wxPoint myPt (*myPts[i]);
+#ifdef __WXMSW__
+        dc->DrawLine (myPt.x , myPt.y, myPt.x + 1, myPt.y + 1);
+#else
+        dc->DrawLine (myPt.x, myPt.y, myPt.x, myPt.y);
+#endif
+    }
+
+    dc->ResetBoundingBox();
+    // draw actual arc when needed
+#ifdef __WXMAC__
+    dc->SetPen( *wxGREY_PEN );
+#else
+    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+#endif
+    if (m_ArcActualPt != wxDefaultPosition && myPts.GetCount() > 0){
+        dc->DrawLine(*myPts[myPts.GetCount() -1], m_ArcActualPt);
+    }
+    
+    myPts.DeleteContents(true);
+    myPts.Clear();
+
+    // compute bounding box for refreshing. This is mainly to avoid flickering
+    m_ArcRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
+    m_ArcRefreshRect.Inflate(wxSize(3,3));
+}
+
 
 
 
@@ -1517,6 +1625,7 @@ void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event)
 	m_GISMemory->CreateFeature();
 	
     BezierClear();
+    ArcClear();
     
 	m_Renderer->Refresh();
 	m_Renderer->Update();
