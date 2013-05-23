@@ -148,10 +148,12 @@ void tmEditManager::InitMemberValues()
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-void tmEditManager::OnToolEdit ()
-{
+void tmEditManager::OnToolEdit (){
 	wxASSERT (m_Renderer);
 	m_Renderer->SetTool(tmTOOL_DRAW);
+    m_ArcActualPt = wxDefaultPosition;
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 }
 
 
@@ -646,7 +648,9 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
     if (m_ArcPoints.GetCount() == 0) {
         return;
     }
-    if (m_Renderer->GetTool() != tmTOOL_DRAW) {
+    
+    // TODO: Check this when working on modification.
+    if (m_Renderer->GetTool() == tmTOOL_MODIFY) {
         return;
     }
     
@@ -696,7 +700,7 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
 #else
     dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
 #endif
-    if (m_ArcActualPt != wxDefaultPosition && myPts.GetCount() > 0){
+    if (m_ArcActualPt != wxDefaultPosition && myPts.GetCount() > 0 && m_Renderer->GetTool() == tmTOOL_DRAW){
         dc->DrawLine(*myPts[myPts.GetCount() -1], m_ArcActualPt);
     }
     
