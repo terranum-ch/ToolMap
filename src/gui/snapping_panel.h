@@ -111,16 +111,12 @@ private:
     
     wxPanel * _CreateControls();
     
-    //  event handlers
-    virtual void OnUpdateTolerence( wxSpinEvent & event );
-    virtual void OnAddSnapping( wxCommandEvent& event );
-    virtual void OnRemoveSnapping( wxCommandEvent& event );
-    virtual void OnClearSnapping( wxCommandEvent& event );
+    void OnUpdateTolerence( wxSpinEvent & event );
+    void OnContextualMenu (wxContextMenuEvent & event);
     DECLARE_EVENT_TABLE()
     
 public:
-    Snapping_PANEL( wxWindow* parent, wxWindowID id,
-                   wxAuiManager * auimanager);
+    Snapping_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * auimanager);
     ~Snapping_PANEL();
     
     void SetDataBase (DataBaseTM * database){m_pDB = database;}
@@ -129,6 +125,11 @@ public:
     void LoadSnappingStatus ();
     bool SaveSnappingStatus ();
     
+    void OnAddSnapping( wxCommandEvent& event );
+    void OnRemoveSnapping( wxCommandEvent& event );
+    void OnUpdateUIContextualMenuAdd (wxUpdateUIEvent & event);
+    void OnUpdateUIContextualMenuRemove (wxUpdateUIEvent & event);
+
     tmSnappingMemory * GetSnappingMemoryRef() {return &m_SnappingMemory;}
 };
 

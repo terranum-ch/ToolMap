@@ -323,8 +323,8 @@ void ProjectManager::CloseProject()
 	wxASSERT (m_EditManager);
 
 	// save the snapping informations
-	m_SnappingPanel->SetDataBase(m_DB);
-	m_SnappingPanel->SaveSnappingStatus();
+	m_SnappingPanel->SetDataBase(NULL);
+	//m_SnappingPanel->SaveSnappingStatus();
 
 	m_StatManager->Create(NULL);
 	

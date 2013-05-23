@@ -2923,18 +2923,16 @@ bool DataBaseTM::GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & 
  @author Lucien Schreiber (c) CREALP 2009
  @date 20 January 2009
  *******************************************************************************/
-bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids)
+bool DataBaseTM::AddLayersSnapping (const wxArrayLong & lids, int snappingstatus)
 {
-	wxString sSentence = _T("INSERT INTO %s VALUES (%ld, 0); ");
+	wxString sSentence = _T("INSERT INTO %s VALUES (%ld, %d); ");
 	wxString sFullSentence = wxEmptyString;
 	
-	for (unsigned int i = 0; i<lids.GetCount(); i++)
-		sFullSentence.Append(wxString::Format(sSentence,
-							 TABLE_NAME_SNAPPING.c_str(),
-							 lids.Item(i)));
+	for (unsigned int i = 0; i<lids.GetCount(); i++){
+		sFullSentence.Append(wxString::Format(sSentence, TABLE_NAME_SNAPPING.c_str(),lids.Item(i), snappingstatus));
+    }
 	
-	if (DataBaseQueryNoResults(sFullSentence)==false)
-	{
+	if (DataBaseQueryNoResults(sFullSentence)==false){
 		return false;
 	}
 	
@@ -2975,26 +2973,22 @@ bool DataBaseTM::SaveSnappingAllStatus (tmSnappingMemory * snapmemory)
 	long myLayerindex = 0;
 	int mySnappingStatus = tmSNAPPING_OFF;
 	
-	for (unsigned int i = 0; i< snapmemory->GetCount(); i++)
-	{
-		if (snapmemory->GetSnappingInfo(i, myLayerindex, mySnappingStatus))
-		{
-			sFullSentence.Append(wxString::Format(sSentence,
-												  TABLE_NAME_SNAPPING.c_str(),
-												  mySnappingStatus,
-												  myLayerindex));
+	for (unsigned int i = 0; i< snapmemory->GetCount(); i++){
+		if (snapmemory->GetSnappingInfo(i, myLayerindex, mySnappingStatus)){
+			sFullSentence.Append(wxString::Format(sSentence, TABLE_NAME_SNAPPING.c_str(),myLayerindex, mySnappingStatus));
 		}
 	}
 	
-	if (sFullSentence.Len() > 0)
-		if (DataBaseQueryNoResults(sFullSentence)==false)
-		{
-			wxLogError(_("Error saving snapping status"));
-			return false;
-		}
+	if (sFullSentence.Len() ==  0){
+        return true;
+    }
+        
+    if (DataBaseQueryNoResults(sFullSentence)==false){
+        wxLogError(_("Error saving snapping status"));
+        return false;
+    }
 	
 	return true;
-	
 }
 
 

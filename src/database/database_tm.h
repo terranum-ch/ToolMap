@@ -217,7 +217,7 @@ class DataBaseTM : public DataBase
 							  int & snapstatus,  bool bfirstloop);
 		
 		bool GetValidLayersForSnapping (wxArrayLong & lids, wxArrayString & lnames);
-		bool AddLayersSnapping (const wxArrayLong & lids);
+		bool AddLayersSnapping (const wxArrayLong & lids, int snappingstatus);
 		bool DeleteLayerSnapping (int layersid);
 		bool SaveSnappingAllStatus (tmSnappingMemory * snapmemory);
 		

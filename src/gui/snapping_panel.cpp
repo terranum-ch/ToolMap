@@ -28,9 +28,8 @@
 // EVENT TABLE
 BEGIN_EVENT_TABLE( Snapping_PANEL, ManagedAuiWnd )
 	EVT_SPINCTRL( ID_SNAP_TOLERENCE_TXT, Snapping_PANEL::OnUpdateTolerence )
-	EVT_FLATBUTTON( ID_SNAP_ADD, Snapping_PANEL::OnAddSnapping )
-	EVT_FLATBUTTON( ID_SNAP_REMOVE, Snapping_PANEL::OnRemoveSnapping )
-	EVT_FLATBUTTON( ID_SNAP_CLEAR, Snapping_PANEL::OnClearSnapping )
+	EVT_MENU ( ID_SNAP_ADD, Snapping_PANEL::OnAddSnapping )
+	EVT_MENU ( ID_SNAP_REMOVE, Snapping_PANEL::OnRemoveSnapping )
 END_EVENT_TABLE()
 
 
@@ -69,6 +68,10 @@ Snapping_PANEL::Snapping_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * 
 	
 	AddManagedPane(myPanel, m_PaneInfo);
 
+    m_ListCtrl->Bind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuAdd, this, ID_SNAP_ADD);
+    m_ListCtrl->Bind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuRemove, this, ID_SNAP_REMOVE);
+    m_ListCtrl->Bind(wxEVT_CONTEXT_MENU, &Snapping_PANEL::OnContextualMenu, this);
+    
 }
 
 
@@ -126,6 +129,10 @@ wxPanel * Snapping_PANEL::_CreateControls(){
 Snapping_PANEL::~Snapping_PANEL(){
     // TODO: Check if still needed!
 	m_ParentEvt->PopEventHandler(false);
+    
+    m_ListCtrl->Unbind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuAdd, this, ID_SNAP_ADD);
+    m_ListCtrl->Unbind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuRemove, this, ID_SNAP_REMOVE);
+    m_ListCtrl->Unbind(wxEVT_CONTEXT_MENU, &Snapping_PANEL::OnContextualMenu, this);
 }
 
 
@@ -196,13 +203,34 @@ bool Snapping_PANEL::SaveSnappingStatus ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 20 January 2009
  *******************************************************************************/
-void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event )
-{
-	// TODO: Update here
-    if (m_pDB)
-	{
-		//m_SnappingList->AddItem();
-	}
+void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event ){
+    if (m_pDB == NULL) {
+        return;
+    }
+    
+    wxArrayLong myLayersID;
+	wxArrayString myLayersName;
+    
+	wxString myDlgMessage = _("Select one or more layer(s) to add to the snapping list");
+	wxString myDlgCaption = _("Snapping layers");
+	
+	m_pDB->GetValidLayersForSnapping(myLayersID, myLayersName);
+	wxMultiChoiceDialog * myDlg = new wxMultiChoiceDialog(m_ListCtrl, myDlgMessage,  myDlgCaption, myLayersName);
+    if(myDlg->ShowModal() != wxID_OK){
+        return;
+    }
+    
+    wxArrayInt mySelectedLayers = myDlg->GetSelections();
+	if (mySelectedLayers.GetCount() == 0){
+        return;
+    }
+    
+    wxArrayLong myRealSelectedID;
+    for (unsigned int i = 0; i< mySelectedLayers.GetCount(); i++){
+        myRealSelectedID.Add(myLayersID.Item(mySelectedLayers.Item(i)));
+    }
+    m_pDB->AddLayersSnapping(myRealSelectedID, tmSNAPPING_BEGIN_END);
+    LoadSnappingStatus();
 }
 
 
@@ -226,35 +254,49 @@ void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event ){
  @author Lucien Schreiber (c) CREALP 2009
  @date 20 January 2009
  *******************************************************************************/
-void Snapping_PANEL::OnRemoveSnapping( wxCommandEvent& event )
-{
-	// TODO Update here
-    if (m_pDB)
-	{
-		//m_SnappingList->DeleteItem();
-	}
-
-}
-
-
-
-/***************************************************************************//**
- @brief Remove all snapping set
- @author Lucien Schreiber (c) CREALP 2009
- @date 22 January 2009
- *******************************************************************************/
-void Snapping_PANEL::OnClearSnapping( wxCommandEvent& event )
-{
-	// TODO: Update here
-    //m_SnappingList->ClearSnappingStatus();
-	event.Skip();
+void Snapping_PANEL::OnRemoveSnapping( wxCommandEvent& event ){
+    long mySelectedIndex = m_ListCtrl->GetSelectedFirst();
+    if (mySelectedIndex == wxNOT_FOUND) {
+        return;
+    }
+    
+    if(m_pDB->DeleteLayerSnapping(m_ListCtrl->GetItemData(mySelectedIndex))==false){
+        return;
+    }
+    
+    LoadSnappingStatus();
 }
 
 
 
 
+void Snapping_PANEL::OnContextualMenu (wxContextMenuEvent & event){
+    wxMenu myContextMenu;
+    myContextMenu.Append(ID_SNAP_ADD, _("Add Layer..."));
+    myContextMenu.Append(ID_SNAP_REMOVE, _("Remove Layer..."));
+    m_ListCtrl->PopupMenu(&myContextMenu);
+}
 
 
+
+void Snapping_PANEL::OnUpdateUIContextualMenuAdd (wxUpdateUIEvent & event){
+    if (m_pDB == NULL) {
+        event.Enable(false);
+        return;
+    }
+    
+    event.Enable(true);
+}
+
+
+
+void Snapping_PANEL::OnUpdateUIContextualMenuRemove(wxUpdateUIEvent & event){
+    if (m_pDB != NULL && m_ListCtrl->GetSelectedFirst() != wxNOT_FOUND) {
+        event.Enable(true);
+        return;
+    }
+    event.Enable(false);
+}
 
 
 
@@ -405,7 +447,7 @@ void SnappingList::AfterAdding (bool bRealyAddItem)
 		}
 		
 		// add snapping layers into database
-		m_pDB->AddLayersSnapping(myRealSelectedID);
+		//m_pDB->AddLayersSnapping(myRealSelectedID);
 	}
 	//delete m_pDialog;
 }
