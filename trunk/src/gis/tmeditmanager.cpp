@@ -1556,57 +1556,44 @@ void tmEditManager::OnEditStop (wxCommandEvent & event)
  *******************************************************************************/
 void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 {
-	if (IsDrawingAllowed() == false)
+	if (IsDrawingAllowed() == false){
 		return;
+    }
 	
-	wxClientDC myDC (m_Renderer);
-	m_DrawLine.DrawEditReset(&myDC);
-	
-	// minimum 2 vertex for saving line into database
-	if (m_GISMemory->GetVertexCount() < 2) 
-	{
-		m_GISMemory->DestroyFeature();
-		m_GISMemory->CreateFeature();
-		return;
-	}
-	
-	m_DrawLine.ClearVertex();
-	
-	long lid = wxNOT_FOUND;
-	// UPDATING
-	if (m_GISMemory->IsUpdating())
-	{
-		lid = m_SelectedData->GetSelectedUnique();
-		bool bUpdate = UpdateLine();
-		wxASSERT(bUpdate);
-	}
-	else // CREATING NEW
-	{
-		lid = StoreLine();
-		if (lid == -1)
-		{
-			wxLogDebug(_T("Line not saved into database"));
-			return;
-		}
-		
-	}
+    
+    if (m_ArcPoints.GetCount() > 1) {
+        long myLineId = _SaveLineToDatabase();
+        
+        // set selection
+        m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
+        m_SelectedData->SetSelected(myLineId);
+        wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+        m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+        
+        // update display
+        wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+        m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+    }
+}
 
-	wxLogDebug(_T("Line saved : OID = %ld"), lid);
-	
-	// Clear memory
-	m_GISMemory->DestroyFeature();
-	m_GISMemory->CreateFeature();
-	
-	// set selection
-	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
-	m_SelectedData->SetSelected(lid);
-	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-	
-	// update display
-	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 
+
+long tmEditManager::_SaveLineToDatabase(){
+    tmLayerProperties * layerprop = m_TOC->GetEditLayer();
+	if (layerprop == NULL){
+		return wxNOT_FOUND;
+    }
+    
+	wxASSERT(m_pDB);
+    OGRLineString myLineString;
+    for (unsigned int i = 0; i< m_ArcPoints.GetCount(); i++) {
+        myLineString.addPoint(m_ArcPoints[i]->x, m_ArcPoints[i]->y);
+    }
+    
+    // TODO: Add support for updating here
+    
+    // TODO: Copy SaveDatabaseGeometry from tmGISDataVectorMemeory to DatabaseTM !!!
+    return wxNOT_FOUND;
 }
 
 
