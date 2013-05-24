@@ -2316,43 +2316,19 @@ bool tmEditManager::UndoLastVertex ()
         return true;
     }
     
-    
-    // zero vertex or not in drawing mode
-	if (!IsDrawingAllowed() || m_GISMemory->GetVertexCount() == 0)
-		return false;
-	
-	// one vertex, destroying feature 
-	if (m_GISMemory->GetVertexCount() == 1) {
-		wxCommandEvent evt;
-		OnDrawFeatureEscape(evt);
-		return true;
-	}
-	
-	
-	// remove last vertex
-	m_GISMemory->RemoveVertex(-1);
-	wxRealPoint myPreviousRPT;
-	bool bGet = m_GISMemory->GetVertex(myPreviousRPT, -1);
-	wxASSERT(bGet);
-	wxPoint myPreviousPT = m_Scale->RealToPixel(myPreviousRPT);
-	m_DrawLine.CreateVertex(myPreviousPT);
-	
-	
-	DrawMemoryData(true);
-
-	// display last segment (in video inverse)
-	wxCommandEvent evt(tmEVT_EM_DRAW_MOVE, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(m_LastMousePos.x,
-										 m_LastMousePos.y);
-	evt.SetClientData(myClickedPos);
-	OnDrawMove(evt);
-	return true;
+    if (m_ArcPoints.GetCount() > 1) {
+        m_ArcPoints.pop_back();
+        
+        m_Renderer->Refresh();
+        m_Renderer->Update();
+        return true;
+    }
+    return false;
 }
 
 
 bool tmEditManager::HasLastVertex(){
-	wxASSERT(m_GISMemory);
-	if (m_GISMemory->GetVertexCount() > 0) {
+	if (m_ArcPoints.GetCount() > 1) {
 		return true;
 	}
     
