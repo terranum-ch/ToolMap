@@ -1560,9 +1560,9 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 		return;
     }
 	
-    
     if (m_ArcPoints.GetCount() > 1) {
         long myLineId = _SaveLineToDatabase();
+        ArcClear();
         
         // set selection
         m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
@@ -1584,16 +1584,15 @@ long tmEditManager::_SaveLineToDatabase(){
 		return wxNOT_FOUND;
     }
     
-	wxASSERT(m_pDB);
     OGRLineString myLineString;
     for (unsigned int i = 0; i< m_ArcPoints.GetCount(); i++) {
         myLineString.addPoint(m_ArcPoints[i]->x, m_ArcPoints[i]->y);
     }
     
     // TODO: Add support for updating here
-    
-    // TODO: Copy SaveDatabaseGeometry from tmGISDataVectorMemeory to DatabaseTM !!!
-    return wxNOT_FOUND;
+    wxASSERT(m_pDB);
+    long myOid = m_pDB->GeometrySave(&myLineString, layerprop->GetType());
+    return myOid;
 }
 
 
@@ -2281,7 +2280,7 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
         }
     }
 	m_pDB->DeleteAttribution(mySelectedIds, m_TOC->GetEditLayer()->GetType());
-	m_pDB->DeleteGeometry(mySelectedIds, m_TOC->GetEditLayer()->GetType());
+	m_pDB->GeometryDelete(mySelectedIds, m_TOC->GetEditLayer()->GetType());
     delete mySelectedIds;
 	
 	// update display
@@ -2748,7 +2747,7 @@ bool tmEditManager::MergeSelectedLines ()
         mySelectedIDs->RemoveAt(0);
     }
     
-	m_pDB->DeleteGeometry(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
+	m_pDB->GeometryDelete(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
 	m_pDB->DeleteAttribution(mySelectedIDs, m_TOC->GetEditLayer()->GetType());
 
 	// update number of selected features

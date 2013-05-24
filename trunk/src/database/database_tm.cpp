@@ -3049,7 +3049,7 @@ int DataBaseTM::GetSnappingTolerence ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/
-bool DataBaseTM::DeleteGeometry (wxArrayLong * selected, int layertype)
+bool DataBaseTM::GeometryDelete (wxArrayLong * selected, int layertype)
 {
 	wxString sSentence = wxString::Format(_T("DELETE FROM %s WHERE OBJECT_ID IN ("),
 										  TABLE_NAME_GIS_GENERIC[layertype].c_str());
@@ -3067,6 +3067,52 @@ bool DataBaseTM::DeleteGeometry (wxArrayLong * selected, int layertype)
 	}
 	return true;
 }
+
+
+long DataBaseTM::GeometrySave(OGRGeometry * geometry, int layertype){
+	if (geometry == NULL) {
+        return wxNOT_FOUND;
+    }
+    
+    char * myCharGeom = NULL;
+	geometry->exportToWkt(&myCharGeom);
+	wxString mySGeom = wxString::FromAscii(myCharGeom);
+	OGRFree (myCharGeom);
+	
+	wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
+										  _T(" VALUES (GeomFromText('%s'));"),
+										  TABLE_NAME_GIS_GENERIC[layertype].c_str(),
+										  mySGeom.c_str());
+	if (DataBaseQueryNoResults(sSentence)==false){
+		wxLogError(_T("Error inserting geometry %s into database"),sSentence.c_str());
+		return wxNOT_FOUND;
+	}
+	return DataBaseGetLastInsertedID();
+}
+
+
+bool DataBaseTM::GeometryUpdate(OGRGeometry * geometry, long oid, int layertype){
+    if (geometry == NULL) {
+        return wxNOT_FOUND;
+    }
+    
+    char * myCharGeom = NULL;
+	geometry->exportToWkt(&myCharGeom);
+	wxString mySGeom = wxString::FromAscii(myCharGeom);
+	OGRFree(myCharGeom);
+	
+	wxString sSentence = wxString::Format(_T("UPDATE %s SET OBJECT_GEOMETRY=")
+										  _T("GeomFromText('%s') WHERE OBJECT_ID=%ld"),
+										  TABLE_NAME_GIS_GENERIC[layertype].c_str(),
+										  mySGeom.c_str(),
+										  oid);
+	if(DataBaseQueryNoResults(sSentence)==false){
+		wxLogError(_("Error updating geometry : %s"), sSentence.c_str());
+		return false;
+	}
+	return true;
+}
+
 
 
 /***************************************************************************//**
