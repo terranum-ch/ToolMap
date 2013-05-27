@@ -448,7 +448,7 @@ bool tmGISDataVectorMemory::SearchVertex (const wxRealPoint & ptsearched,
 	for (unsigned int i = 0; i<myPts.GetCount();i++)
 	{
 		OGRGeometry * myPt = CreateOGRGeometry(myPts.Item(i));
-		bool bIntersect = myBuffClicked->Intersect(myPt);
+		bool bIntersect = myBuffClicked->Intersects(myPt);
 		OGRGeometryFactory::destroyGeometry (myPt);
 		if (bIntersect)
 		{
@@ -483,7 +483,7 @@ bool tmGISDataVectorMemory::SearchPoint (const wxRealPoint & ptsearched, int ibu
 	wxASSERT(bGetV);
 	
 	OGRGeometry * myStoredPt = CreateOGRGeometry(myRStorePt);
-	bool bReturn = myBuffClicked->Intersect(myStoredPt);
+	bool bReturn = myBuffClicked->Intersects(myStoredPt);
 	OGRGeometryFactory::destroyGeometry(myStoredPt);
 	OGRGeometryFactory::destroyGeometry(myBuffClicked);
 	
@@ -514,7 +514,7 @@ bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearch
 	}
 	
 	OGRLineString * myLine = (OGRLineString*) myGeom;
-	bool bIntersect = myBuffClicked->Intersect(myGeom);
+	bool bIntersect = myBuffClicked->Intersects(myGeom);
 	// try to found where occur the intersection
 	
 	OGRPoint p1;
@@ -534,7 +534,7 @@ bool tmGISDataVectorMemory::IsIntersectingGeometry (const wxRealPoint & ptsearch
 				segment.addPoint(&p2);
 				
 				// intersection found
-				if (segment.Intersect(myBuffClicked))
+				if (segment.Intersects(myBuffClicked))
 				{
 					index = i;
 				}
@@ -866,7 +866,7 @@ bool tmGISDataVectorMemory::GetSnapCoord (const wxRealPoint & clickpt, int iBuff
     unsigned int myPtsCount = snapppts.GetCount();
     OGRGeometry * poGeometry = m_Feature->GetGeometryRef();
     if (poGeometry){
-        if (poGeometry->Intersect(myBufferClick)){
+        if (poGeometry->Intersects(myBufferClick)){
             if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX){
                 GetVertexIntersection(poGeometry, myBufferClick, snapppts);
             }
