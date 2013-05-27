@@ -2944,6 +2944,10 @@ bool tmEditManager::FlipLine(){
         OGRLineString * myOGRSelLine = (OGRLineString*) myFeature->GetGeometryRef();
         wxASSERT(myOGRSelLine);
         
+#ifdef GDAL_COMPUTE_VERSION /* only available in GDAL 1.10 or later */
+        myOGRSelLine->reversePoints();
+        mySelLayer->UpdateGeometry(myOGRSelLine, myFeature->GetFID());
+#else
         OGRLineString * myTmpLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
         wxASSERT(myTmpLine);
         for (int i = myOGRSelLine->getNumPoints()-1; i >= 0; i--) {
@@ -2951,9 +2955,10 @@ bool tmEditManager::FlipLine(){
             myOGRSelLine->getPoint(i, &myPoint);
             myTmpLine->addPoint(&myPoint);
         }
-        wxLogMessage(_("Line  %ld flipped"), myFeature->GetFID());
         mySelLayer->UpdateGeometry(myTmpLine, myFeature->GetFID());
         OGRGeometryFactory::destroyGeometry(myTmpLine);
+#endif
+        wxLogMessage(_("Line  %ld flipped"), myFeature->GetFID());
         OGRFeature::DestroyFeature(myFeature);
     }
 	wxDELETE(mySelLayer);
