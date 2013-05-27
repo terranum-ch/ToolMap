@@ -129,6 +129,7 @@ private:
     wxPoint m_ArcActualPt;
     wxRect m_ArcRefreshRect;
     int m_ArcModifyIndexPoint;
+    long m_ArcOID;
     
     // FUNCTIONS
     void InitMemberValues();
@@ -136,18 +137,18 @@ private:
     // Extern EVENT function
     //void OnSnappingChange (wxCommandEvent & event);
     void OnViewUpdated (wxCommandEvent & event);
-    void OnDrawDown(wxCommandEvent & event);
-    void OnDrawUp (wxCommandEvent & event);
-    void OnDrawMove (wxCommandEvent & event);
+    //void OnDrawDown(wxCommandEvent & event);
+    //void OnDrawUp (wxCommandEvent & event);
+    //void OnDrawMove (wxCommandEvent & event);
     void OnEditStart (wxCommandEvent & event);
     void OnEditStop (wxCommandEvent & event);
     void OnDrawFeatureValidate (wxCommandEvent & event);
     void OnDrawFeatureEscape (wxCommandEvent & event);
     void OnCutLines (wxCommandEvent & event);
     void OnShowVertexPosition (wxCommandEvent & event);
-    void OnModifySearch (wxCommandEvent & event);
-    void OnModifyMove (wxCommandEvent & event);
-    void OnModifyUp (wxCommandEvent & event);
+    //void OnModifySearch (wxCommandEvent & event);
+    //void OnModifyMove (wxCommandEvent & event);
+    //void OnModifyUp (wxCommandEvent & event);
     void OnModifyMenu (wxCommandEvent & event);
     void OnSetRenderFocus (wxCommandEvent & event);
     void OnEditSharedDown (wxCommandEvent & event);
