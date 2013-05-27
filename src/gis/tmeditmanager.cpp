@@ -389,7 +389,27 @@ void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
             return;
         }
         
-        // TODO search for snapping and update the node status
+        for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++){
+            long myLayerId = 0;
+            int mySnapStatus = tmSNAPPING_OFF;
+            m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
+            tmLayerProperties * myActualLayer = m_TOC->GetLayerById(myLayerId);
+            if (myActualLayer == NULL){
+                break;
+            }
+            
+            tmGISData * myActualGISData = tmGISData::LoadLayer(myActualLayer);
+            if (myActualGISData == NULL){
+                break;
+            }
+            
+            // TODO Search if all vertex are snapped ?
+            //myActualGISData->GetSnapCoord(clickedpoint, m_SnapMem->GetTolerence(), mySnapPts,mySnapStatus);
+            wxDELETE(myActualGISData);
+        }
+
+        
+        
         m_Renderer->Refresh();
         m_Renderer->Update();
     }
