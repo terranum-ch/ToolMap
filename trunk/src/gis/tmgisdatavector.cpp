@@ -270,7 +270,7 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry 
 			for (i=0; i<myLineLine->getNumPoints();i++)
 			{
 				myLineLine->getPoint(i, myPointLine);
-				if (myPointLine && myPointLine->Intersect(buffer)){
+				if (myPointLine && myPointLine->Intersects(buffer)){
                     points.Add(wxRealPoint(myPointLine->getX(), myPointLine->getY()));
 					break;
 				}
@@ -281,7 +281,7 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry 
 
 		case wkbPoint:
 			myPoint = (OGRPoint*) geometry;
-			if (myPoint && myPoint->Intersect(buffer)){
+			if (myPoint && myPoint->Intersects(buffer)){
                 points.Add(wxRealPoint(myPointLine->getX(), myPointLine->getY()));
 			}
 			break;
@@ -344,12 +344,12 @@ bool tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, OGRGeomet
 		myLine->getPoint(0, myPoint);
 		myLine->getPoint(iPointLine-1, myPoint2);
 
-		if (myPoint->Intersect(buffer)){
+		if (myPoint->Intersects(buffer)){
             points.Add(wxRealPoint(myPoint->getX(), myPoint->getY()));
 		}
 		
         
-        if (myPoint2->Intersect(buffer)){
+        if (myPoint2->Intersects(buffer)){
             points.Add(wxRealPoint(myPoint2->getX(), myPoint2->getY()));
 		}
 
@@ -572,7 +572,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
         myActualVertex.setX(myLine->getX(i));
 		myActualVertex.setY(myLine->getY(i));
 
-		if (myActualVertex.Intersect(myClickBuffer))
+		if (myActualVertex.Intersects(myClickBuffer))
 		{
             mySnapPts.Add(wxRealPoint(myActualVertex.getX(), myActualVertex.getY()));
             mySnapIndex.Add(i);
@@ -755,7 +755,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
 			segment.addPoint(&p2);
 
 			// intersection found
-			if (segment.Intersect(intersection))
+			if (segment.Intersects(intersection))
 			{
 				OGRGeometry * myGeomIntersection = SafeIntersection(&segment, intersection);
 				wxASSERT (myGeomIntersection);
@@ -1081,7 +1081,7 @@ OGRLineString * tmGISDataVector::InsertVertex (OGRGeometry * pointbuffer, wxReal
 			segment.addPoint(&p2);
 
 			// intersection found
-			if (segment.Intersect(pointbuffer))
+			if (segment.Intersects(pointbuffer))
 			{
 				inseredvertex = i+1;
 				wxLogDebug(_T("Intersection between vertex %d - %d"), i, inseredvertex);

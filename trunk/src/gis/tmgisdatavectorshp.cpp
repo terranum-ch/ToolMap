@@ -697,7 +697,7 @@ wxArrayLong * tmGISDataVectorSHP::SearchData (const tmRealRect & rect, int type)
 		poGeometry = poFeature->GetGeometryRef();
 		if (poGeometry)
 		{
-			if (poGeometry->Intersect(poRectGeom))
+			if (poGeometry->Intersects(poRectGeom))
 				myArray->Add(poFeature->GetFID());
 
 			OGRGeometryFactory::destroyGeometry(poGeometry);
@@ -1188,7 +1188,7 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 		poGeometry = poFeature->GetGeometryRef();
 		if (poGeometry)
 		{
-			if (poGeometry->Intersect(myBufferClick))
+			if (poGeometry->Intersects(myBufferClick))
 			{
 
 				if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX)

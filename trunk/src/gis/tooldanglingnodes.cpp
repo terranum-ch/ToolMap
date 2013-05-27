@@ -150,7 +150,7 @@ bool ToolDanglingNodes::DNSearchValidVertex()
 		myLineToCheck->StartPoint(&p1);
 		myLineToCheck->EndPoint(&p2);
 		
-		if (p1.Equal(&p2) ==false)
+		if (p1.Equals(&p2) ==false)
 		{
 			
 			if(DNIsPointInside(&p1))

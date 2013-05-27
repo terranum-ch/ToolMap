@@ -366,7 +366,7 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 			continue;
 		}
 
-		if (myGeom->Intersect(m_Frame)==false) {
+		if (myGeom->Intersects(m_Frame)==false) {
 			OGRGeometryFactory::destroyGeometry(myGeom);
 			continue;
 		}
@@ -473,7 +473,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 			continue;
 		}
 
-		if (myGeom->Intersect(m_Frame)==false) {
+		if (myGeom->Intersects(m_Frame)==false) {
 			OGRGeometryFactory::destroyGeometry(myGeom);
 			continue;
 		}
