@@ -128,6 +128,7 @@ private:
     wxArrayLong m_ArcSnappedPointsIndexes;
     wxPoint m_ArcActualPt;
     wxRect m_ArcRefreshRect;
+    int m_ArcModifyIndexPoint;
     
     // FUNCTIONS
     void InitMemberValues();
@@ -268,6 +269,9 @@ public:
     void ArcMove (const wxPoint & mousepos);
     void ArcDraw (wxGCDC * dc);
     void ArcClear();
+    void ArcModifyClickDown (const wxPoint & mousepos);
+    void ArcModifyClickMove (const wxPoint & mousepos);
+    void ArcModifyClickUp (const wxPoint & mousepos);
     
     void DrawSnappingCircle (wxGCDC * dc);
 };

@@ -105,6 +105,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     
     m_ArcActualPt = wxDefaultPosition;
     m_ArcRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
+    m_ArcModifyIndexPoint = wxNOT_FOUND;
 }
 
 
@@ -355,7 +356,73 @@ void tmEditManager::ArcClear(){
     
     m_ArcRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
     m_ArcSnappedPointsIndexes.Clear();
+    m_ArcModifyIndexPoint = wxNOT_FOUND;
 }
+
+
+
+void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
+    m_ArcModifyIndexPoint = wxNOT_FOUND;
+    
+    // load data from selected feature if needed
+    if (m_ArcPoints.GetCount() == 0) {
+        wxFAIL_MSG(_("Loading from selected feature Not implemented now"));
+        return;
+    }
+    
+    m_ArcActualPt = mousepos;
+    wxRect myRect (0,0,3,3);
+    myRect = myRect.CentreIn(wxRect(m_ArcActualPt, wxSize(0,0)));
+ 
+    for (unsigned int i = 0 ; i< m_ArcPoints.GetCount(); i++) {
+        wxPoint myPt = m_Scale->RealToPixel(*m_ArcPoints[i]);
+        if (myRect.Contains(myPt)){
+            m_ArcModifyIndexPoint = i;
+            return;
+        }
+    }
+}
+
+
+void tmEditManager::ArcModifyClickMove (const wxPoint & mousepos){
+    if (m_ArcModifyIndexPoint == wxNOT_FOUND) {
+        return;
+    }
+    
+    *m_ArcPoints[m_ArcModifyIndexPoint] = m_Scale->PixelToReal(mousepos);
+    m_Renderer->RefreshRect(m_ArcRefreshRect);
+    m_Renderer->Update();
+}
+
+
+void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
+    if (m_ArcModifyIndexPoint != wxNOT_FOUND) {
+        
+        // TODO: Continue here !!!!!!!
+        wxRealPoint myPt = *m_ArcPoints[m_ArcModifyIndexPoint];
+        int myPtSnappingIndex = m_ArcSnappedPointsIndexes.Index(m_ArcModifyIndexPoint);
+        
+        if(EMGetSnappingCoord(myPt)==true){
+            if (myPtSnappingIndex == wxNOT_FOUND) {
+                m_ArcSnappedPointsIndexes.Add(m_ArcModifyIndexPoint);
+            }
+            *m_ArcPoints[m_ArcModifyIndexPoint] = myPt;
+        }
+        else {
+            if (myPtSnappingIndex != wxNOT_FOUND){
+                m_ArcSnappedPointsIndexes.RemoveAt(myPtSnappingIndex);
+            }
+        }
+    }
+    
+    m_ArcActualPt = wxDefaultPosition;
+    m_ArcModifyIndexPoint = wxNOT_FOUND;
+    
+    m_Renderer->Refresh();
+    m_Renderer->Update();
+}
+
+
 
 
 
@@ -650,9 +717,9 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
     }
     
     // TODO: Check this when working on modification.
-    if (m_Renderer->GetTool() == tmTOOL_MODIFY) {
+    /*if (m_Renderer->GetTool() == tmTOOL_MODIFY) {
         return;
-    }
+    }*/
     
     tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
     wxASSERT(myLayerProperties);
@@ -694,14 +761,28 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
     }
 
     dc->ResetBoundingBox();
+    
     // draw actual arc when needed
+    if (m_Renderer->GetTool() == tmTOOL_DRAW){
 #ifdef __WXMAC__
-    dc->SetPen( *wxGREY_PEN );
+        dc->SetPen( *wxGREY_PEN );
 #else
-    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+        dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
 #endif
-    if (m_ArcActualPt != wxDefaultPosition && myPts.GetCount() > 0 && m_Renderer->GetTool() == tmTOOL_DRAW){
-        dc->DrawLine(*myPts[myPts.GetCount() -1], m_ArcActualPt);
+        if (m_ArcActualPt != wxDefaultPosition && myPts.GetCount() > 0 && m_Renderer->GetTool() == tmTOOL_DRAW){
+            dc->DrawLine(*myPts[myPts.GetCount() -1], m_ArcActualPt);
+        }
+    }
+    
+    // compute bounding box for modifications
+    if (m_Renderer->GetTool() == tmTOOL_MODIFY && m_ArcModifyIndexPoint != wxNOT_FOUND) {
+        dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint]->x, myPts[m_ArcModifyIndexPoint]->y);
+        if (m_ArcModifyIndexPoint != 0) {
+            dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint-1]->x, myPts[m_ArcModifyIndexPoint-1]->y);
+        }
+        if (m_ArcModifyIndexPoint < m_ArcPoints.GetCount() -1) {
+            dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint+1]->x, myPts[m_ArcModifyIndexPoint+1]->y);
+        }
     }
     
     myPts.DeleteContents(true);
@@ -760,8 +841,8 @@ void tmEditManager::OnToolModify ()
 		return;
 	
 	m_Renderer->SetTool(tmTOOL_MODIFY);
-	
-	
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 }
 
 
@@ -997,7 +1078,7 @@ bool tmEditManager::IsModifictionAllowed()
 		return false;
 	}
 	
-	if ( IsObjectSelected() == false){
+	if ( IsObjectSelected() == false && m_ArcPoints.GetCount() == 0){
 		return false;
 	}
 	return true;

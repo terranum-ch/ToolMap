@@ -315,10 +315,10 @@ void tmRenderer::OnPaint(wxPaintEvent & event)
     
     if (m_isPanning == false) {
         m_EditManager->BezierDraw(&gcdc);
-        m_EditManager->ArcDraw(&gcdc);
+        m_EditManager->DrawSnappingCircle(&gcdc);
     }
+    m_EditManager->ArcDraw(&gcdc);
     m_EditManager->BezierModifyDraw(&gcdc);
-    m_EditManager->DrawSnappingCircle(&gcdc);
 }
 
 
@@ -363,8 +363,9 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event){
 		m_EditManager->ArcClick(event.GetPosition());
     }
 	
-	if (m_ActualTool == tmTOOL_MODIFY)
-		ModifyStart(event.GetPosition());
+	if (m_ActualTool == tmTOOL_MODIFY){
+        m_EditManager->ArcModifyClickDown(event.GetPosition());
+    }
     
     if (m_ActualTool == tmTOOL_MODIFY_BEZIER) {
         m_EditManager->BezierModifyClickDown(event.GetPosition());
@@ -412,8 +413,9 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event)
 		if (m_ActualTool == tmTOOL_PAN)
 			PanUpdate(event.GetPosition());
 		
-		if (m_ActualTool == tmTOOL_MODIFY)
-			ModifyUpdate(event.GetPosition());
+		if (m_ActualTool == tmTOOL_MODIFY){
+            m_EditManager->ArcModifyClickMove(event.GetPosition());
+        }
 		
 		if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
 			OrientedPtsMove(event.GetPosition());
@@ -463,8 +465,9 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	if (m_ActualTool == tmTOOL_CUT_LINES)
 		CutLineClick(event.GetPosition());
 	
-	if (m_ActualTool == tmTOOL_MODIFY)
-		ModifyStop(event.GetPosition());
+	if (m_ActualTool == tmTOOL_MODIFY){
+        m_EditManager->ArcModifyClickUp(event.GetPosition());
+    }
 	
 	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
 		OrientedPtsStop(event.GetPosition());
