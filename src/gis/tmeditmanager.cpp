@@ -41,12 +41,12 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureValidate)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
 	EVT_COMMAND (wxID_ANY,tmEVT_EV_DISPLAY_VERTEX_COORD, tmEditManager::OnShowVertexPosition)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MOVED, tmEditManager::OnModifyMove)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_UP, tmEditManager::OnModifyUp)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawUp)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MOVED, tmEditManager::OnModifyMove)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_UP, tmEditManager::OnModifyUp)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawUp)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
 	EVT_COMMAND (wxID_ANY, tmEVT_FOCUS_RENDERER, tmEditManager::OnSetRenderFocus)
@@ -106,6 +106,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_ArcActualPt = wxDefaultPosition;
     m_ArcRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
     m_ArcModifyIndexPoint = wxNOT_FOUND;
+    m_ArcOID = wxNOT_FOUND;
 }
 
 
@@ -357,6 +358,7 @@ void tmEditManager::ArcClear(){
     m_ArcRefreshRect = wxRect(wxDefaultPosition, wxDefaultSize);
     m_ArcSnappedPointsIndexes.Clear();
     m_ArcModifyIndexPoint = wxNOT_FOUND;
+    m_ArcOID = wxNOT_FOUND;
 }
 
 
@@ -364,10 +366,32 @@ void tmEditManager::ArcClear(){
 void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
     m_ArcModifyIndexPoint = wxNOT_FOUND;
     
-    // load data from selected feature if needed
+    // load geometries and compute snapping status from selected feature if needed
     if (m_ArcPoints.GetCount() == 0) {
-        wxFAIL_MSG(_("Loading from selected feature Not implemented now"));
-        return;
+        m_ArcOID = m_SelectedData->GetSelectedUnique();
+		tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+        wxASSERT(m_pDB);
+        OGRGeometry * myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
+        if (myGeometry == NULL) {
+            return;
+        }
+        
+        if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){
+            OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
+            for (unsigned int i = 0; i<myLine->getNumPoints(); i++) {
+                m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
+            }
+            OGRGeometryFactory::destroyGeometry(myGeometry);
+        }
+        else {
+            OGRGeometryFactory::destroyGeometry(myGeometry);
+            wxFAIL_MSG(_T("Case not supported for points!!!"));
+            return;
+        }
+        
+        // TODO search for snapping and update the node status
+        m_Renderer->Refresh();
+        m_Renderer->Update();
     }
     
     m_ArcActualPt = mousepos;
@@ -805,9 +829,6 @@ void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
         return;
     }
     
-    /* if (wxGetMouseState().LeftIsDown() == true) {
-        return;
-    } */
     wxASSERT(dc);
     wxASSERT(m_SnapMem);
     
@@ -1135,6 +1156,7 @@ bool tmEditManager::IsLayerType(int layertype){
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
+/*
 void tmEditManager::OnDrawDown(wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
@@ -1155,13 +1177,14 @@ void tmEditManager::OnDrawDown(wxCommandEvent & event)
 	}
 	delete myPxCoord;
 }
-
+*/
 
 /***************************************************************************//**
  @brief Called when a click up is issued with Draw tool
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
+/*
 void tmEditManager::OnDrawUp (wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
@@ -1224,13 +1247,14 @@ void tmEditManager::OnDrawUp (wxCommandEvent & event)
 	}
 	//delete myPxCoord;
 }
-
+*/
 
 /***************************************************************************//**
  @brief Called when a move is issued with Draw tool
  @author Lucien Schreiber (c) CREALP 2009
  @date 4 May 2009
  *******************************************************************************/
+/*
 void tmEditManager::OnDrawMove (wxCommandEvent & event)
 {
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
@@ -1249,7 +1273,7 @@ void tmEditManager::OnDrawMove (wxCommandEvent & event)
 	wxASSERT(bSetVertex);	
 	wxDELETE(myPt);
 }
-
+*/
 
 void tmEditManager::OnOrientedPtsDown(wxCommandEvent & event)
 {
@@ -1670,9 +1694,15 @@ long tmEditManager::_SaveLineToDatabase(){
         myLineString.addPoint(m_ArcPoints[i]->x, m_ArcPoints[i]->y);
     }
     
-    // TODO: Add support for updating here
     wxASSERT(m_pDB);
-    long myOid = m_pDB->GeometrySave(&myLineString, layerprop->GetType());
+    long myOid = wxNOT_FOUND;
+    if (m_ArcOID != wxNOT_FOUND) { // Updating
+        m_pDB->GeometryUpdate(&myLineString, m_ArcOID, layerprop->GetType());
+        myOid = m_ArcOID;
+    }
+    else {
+        myOid = m_pDB->GeometrySave(&myLineString, layerprop->GetType());
+    }
     return myOid;
 }
 
@@ -1806,6 +1836,7 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 April 2009
  *******************************************************************************/
+/*
 void tmEditManager::OnModifySearch (wxCommandEvent & event)
 {
 	// getting point
@@ -1831,7 +1862,7 @@ void tmEditManager::OnModifySearch (wxCommandEvent & event)
 		m_Renderer->StopModifyEvent();
 	}
 }
-
+*/
 
 
 
@@ -1925,7 +1956,7 @@ bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
 	return true;
 }
 
-
+/*
 void tmEditManager::OnModifyMove (wxCommandEvent & event)
 {
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
@@ -1939,27 +1970,12 @@ void tmEditManager::OnModifyMove (wxCommandEvent & event)
 	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 	wxASSERT(bSetVertex);
 	
-	//BDraw = m_DrawLine.DrawEditPart(&dc);
-	//wxASSERT(BDraw);
-	/*}
-	else
-	{
-		tmSymbolVectorPoint * mySymbol = (tmSymbolVectorPoint*) m_TOC->GetEditLayer()->m_LayerSymbol;
-		int iRadius = mySymbol->GetRadius();
-		
-		m_Renderer->Refresh();
-		m_Renderer->Update();
-		wxClientDC dc(m_Renderer);
-		
-		wxASSERT(mySymbol);
-		//dc.DrawRectangle(MyRefreshRect);
-		dc.DrawCircle(*myPt,iRadius );
-	}*/
 	
 	wxDELETE(myPt);
 }
+*/
 
-
+/*
 void tmEditManager::OnModifyUp (wxCommandEvent & event)
 {
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
@@ -2008,7 +2024,7 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 
 	delete myPt;
 }
-
+*/
 
 
 void tmEditManager::EMCreateMenu(wxMenu & menu)

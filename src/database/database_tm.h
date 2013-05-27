@@ -229,6 +229,7 @@ class DataBaseTM : public DataBase
 		bool GeometryDelete (wxArrayLong * selected, int layertype);
         long GeometrySave (OGRGeometry * geometry, int layertype);
         bool GeometryUpdate (OGRGeometry * geometry, long oid, int layertype);
+        OGRGeometry * GeometryLoad(long oid, int layertype);
 		
 		// attribution operations
 		bool DeleteAttribution (wxArrayLong * selected, int layertype);

@@ -3115,6 +3115,30 @@ bool DataBaseTM::GeometryUpdate(OGRGeometry * geometry, long oid, int layertype)
 
 
 
+OGRGeometry * DataBaseTM::GeometryLoad(long oid, int layertype){
+    wxString sSentence = wxString::Format(_T("SELECT (OBJECT_GEOMETRY) FROM %s WHERE OBJECT_ID=%ld;"), TABLE_NAME_GIS_GENERIC[layertype].c_str(), oid);
+	if (DataBaseQuery(sSentence)==false){
+		wxLogError(_("Error getting geometry for id: %ld"),oid);
+		return NULL;
+	}
+		
+	tmArrayULong row_length;
+	MYSQL_ROW row;
+	if(DataBaseGetNextRowResult(row, row_length)==false){
+		DataBaseClearResults();
+		wxLogError(_("No geometry found for id : %ld"), oid);
+		return NULL;
+	}
+		
+	wxASSERT(row_length.GetCount() == 1);
+	OGRGeometry * geometry = NULL;
+	// Geometry columns will have the first 4 bytes contain the SRID.
+	OGRGeometryFactory::createFromWkb(((unsigned char *)row[0]) + 4, NULL, &geometry, row_length.Item(0) - 4 );
+	DataBaseClearResults();
+	return geometry;
+}
+
+
 /***************************************************************************//**
  @brief Delete attribution from the database
  @param selected An array of selected values. Caller must destroy the object.
