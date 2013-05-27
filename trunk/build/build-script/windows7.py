@@ -95,7 +95,7 @@ def gCreateInstaller(svnnumner):
 
 def DoPostBuildCommand():
     """copy DLL to directories"""
-    myDll = (os.path.join(gDirGdal,"bin","gdal19.dll"), #,os.path.join(gDirGeos,"bin","Debug", "geos.dll"),
+    myDll = (os.path.join(gDirGdal,"bin","gdal110.dll"), #,os.path.join(gDirGeos,"bin","Debug", "geos.dll"),
              os.path.join(gDirGeos,"src","geos_c.dll"),
              os.path.join(gDirSQL, "Embedded", "DLL", "release", "libmysqld.dll"),
              os.path.join(gDirCurl, "lib", "DLL-Debug","libcurld.dll"),
