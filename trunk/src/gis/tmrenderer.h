@@ -209,7 +209,6 @@ class tmRenderer : public wxScrolledWindow
 		~tmRenderer();
 		
 		void OnSizeChange(wxSizeEvent & event);
-		
 		void OnPaint(wxPaintEvent & event);
 		
 		void SetBitmapStatus(wxBitmap * bmp = NULL);//{m_bmp = bmp;}
