@@ -403,13 +403,23 @@ void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
                 break;
             }
             
-            // TODO Search if all vertex are snapped ?
-            //myActualGISData->GetSnapCoord(clickedpoint, m_SnapMem->GetTolerence(), mySnapPts,mySnapStatus);
+            // Search if vertex are snapped ?
+            for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v++) {
+                long myActualID = wxNOT_FOUND;
+                if (myActualLayer == m_TOC->GetEditLayer()){
+                    myActualID = m_ArcOID;
+                }
+                // TODO Implement IsPointSnapped for Shapefiles
+                if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID) == true) {
+                    int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
+                    if (myItemIndex == wxNOT_FOUND) {
+                        m_ArcSnappedPointsIndexes.Add(v);
+                    }
+                }
+            }
             wxDELETE(myActualGISData);
         }
 
-        
-        
         m_Renderer->Refresh();
         m_Renderer->Update();
     }

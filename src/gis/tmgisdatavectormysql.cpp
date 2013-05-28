@@ -1061,7 +1061,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 }
 
 
-bool tmGISDataVectorMYSQL::IsPointSnapped (const wxRealPoint & point, int snaptype, long oid){
+bool tmGISDataVectorMYSQL::IsPointSnapped (const wxRealPoint & point, int snaptype, long excludeoid){
     OGRPoint myPt;
     myPt.setX(point.x);
     myPt.setY(point.y);
@@ -1071,10 +1071,24 @@ bool tmGISDataVectorMYSQL::IsPointSnapped (const wxRealPoint & point, int snapty
 	wxString mySBuffer = wxString::FromAscii(buffer);
 	OGRFree(buffer);
     
-    wxString myQuery = wxString::Format(_T("SELECT * FROM %s WHERE ST_Touches(GeomFromText('%s') ,OBJECT_GEOMETRY) AND OBJECT_ID != %ld"), GetShortFileName().c_str(), buffer, oid);
+    wxString myQuery = wxString::Format(_T("SELECT * FROM %s WHERE ST_Touches(GeomFromText('%s') ,OBJECT_GEOMETRY) "), GetShortFileName().c_str(), buffer);
     
+    if (excludeoid != wxNOT_FOUND) {
+        myQuery.Append(wxString::Format(_T(" AND OBJECT_ID != %ld"), excludeoid));
+    }
     
+    if (m_DB->DataBaseQuery(myQuery) == false) {
+        return false;
+    }
     
+    wxArrayLong myIds;
+    if(m_DB->DataBaseGetResults(myIds) == false){
+        return false;
+    }
+    
+    if (myIds.GetCount() > 0) {
+        return true;
+    }
     return false;
 }
 

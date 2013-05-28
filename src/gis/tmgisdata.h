@@ -104,6 +104,8 @@ class tmGISData : public wxObject
 		virtual wxArrayLong * GetAllData (){return NULL;}
 		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 								   wxArrayRealPoints & snapppts, int snaptype) {return false;}
+        virtual bool IsPointSnapped (const wxRealPoint & point, int snaptype, long excludeoid = wxNOT_FOUND){return false;}
+
 		
 		virtual bool CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData){return false;}
 		virtual int IsRaster(){return wxNOT_FOUND;}
