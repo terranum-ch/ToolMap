@@ -366,62 +366,11 @@ void tmEditManager::ArcClear(){
 void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
     m_ArcModifyIndexPoint = wxNOT_FOUND;
     
-    // load geometries and compute snapping status from selected feature if needed
     if (m_ArcPoints.GetCount() == 0) {
-        m_ArcOID = m_SelectedData->GetSelectedUnique();
-		tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
-        wxASSERT(m_pDB);
-        OGRGeometry * myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
-        if (myGeometry == NULL) {
-            return;
+        if (_LoadSnappingStatus() == true) {
+            m_Renderer->Refresh();
+            m_Renderer->Update();
         }
-        
-        if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){
-            OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
-            for (unsigned int i = 0; i<myLine->getNumPoints(); i++) {
-                m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
-            }
-            OGRGeometryFactory::destroyGeometry(myGeometry);
-        }
-        else {
-            OGRGeometryFactory::destroyGeometry(myGeometry);
-            wxFAIL_MSG(_T("Case not supported for points!!!"));
-            return;
-        }
-        
-        for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++){
-            long myLayerId = 0;
-            int mySnapStatus = tmSNAPPING_OFF;
-            m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
-            tmLayerProperties * myActualLayer = m_TOC->GetLayerById(myLayerId);
-            if (myActualLayer == NULL){
-                break;
-            }
-            
-            tmGISData * myActualGISData = tmGISData::LoadLayer(myActualLayer);
-            if (myActualGISData == NULL){
-                break;
-            }
-            
-            // Search if vertex are snapped ?
-            for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v++) {
-                long myActualID = wxNOT_FOUND;
-                if (myActualLayer == m_TOC->GetEditLayer()){
-                    myActualID = m_ArcOID;
-                }
-                // TODO Implement IsPointSnapped for Shapefiles
-                if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID) == true) {
-                    int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
-                    if (myItemIndex == wxNOT_FOUND) {
-                        m_ArcSnappedPointsIndexes.Add(v);
-                    }
-                }
-            }
-            wxDELETE(myActualGISData);
-        }
-
-        m_Renderer->Refresh();
-        m_Renderer->Update();
     }
     
     m_ArcActualPt = mousepos;
@@ -888,14 +837,77 @@ void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
 void tmEditManager::OnToolModify ()
 {
 	wxASSERT (m_Renderer);
-	if (IsModifictionAllowed()==false)
+	if (IsModifictionAllowed()==false){
 		return;
+    }
 	
 	m_Renderer->SetTool(tmTOOL_MODIFY);
+    
+    _LoadSnappingStatus();
+    
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
 
+
+bool tmEditManager::_LoadSnappingStatus(){
+    // load geometries and compute snapping status from selected feature if needed
+    if (m_ArcPoints.GetCount() == 0) {
+        m_ArcOID = m_SelectedData->GetSelectedUnique();
+		tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+        wxASSERT(m_pDB);
+        OGRGeometry * myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
+        if (myGeometry == NULL) {
+            return false;
+        }
+        
+        if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){
+            OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
+            for (unsigned int i = 0; i<myLine->getNumPoints(); i++) {
+                m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
+            }
+            OGRGeometryFactory::destroyGeometry(myGeometry);
+        }
+        else {
+            OGRGeometryFactory::destroyGeometry(myGeometry);
+            wxFAIL_MSG(_T("Case not supported for points!!!"));
+            return false;
+        }
+        
+        for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++){
+            long myLayerId = 0;
+            int mySnapStatus = tmSNAPPING_OFF;
+            m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
+            tmLayerProperties * myActualLayer = m_TOC->GetLayerById(myLayerId);
+            if (myActualLayer == NULL){
+                break;
+            }
+            
+            tmGISData * myActualGISData = tmGISData::LoadLayer(myActualLayer);
+            if (myActualGISData == NULL){
+                break;
+            }
+            
+            // Search if vertex are snapped ?
+            for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v++) {
+                long myActualID = wxNOT_FOUND;
+                if (myActualLayer == m_TOC->GetEditLayer()){
+                    myActualID = m_ArcOID;
+                }
+                // TODO Implement IsPointSnapped for Shapefiles
+                if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID) == true) {
+                    int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
+                    if (myItemIndex == wxNOT_FOUND) {
+                        m_ArcSnappedPointsIndexes.Add(v);
+                    }
+                }
+            }
+            wxDELETE(myActualGISData);
+        }
+        return true;
+    }
+    return false;
+}
 
 
 void tmEditManager::OnToolEditShared(){

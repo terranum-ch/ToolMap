@@ -459,8 +459,8 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 		SelectStop(event.GetPosition());
 	
 	// draw
-	if (m_ActualTool == tmTOOL_DRAW)
-		DrawStop(event.GetPosition());
+	/*if (m_ActualTool == tmTOOL_DRAW)
+		DrawStop(event.GetPosition());*/
 	
 	if (m_ActualTool == tmTOOL_CUT_LINES)
 		CutLineClick(event.GetPosition());
@@ -904,6 +904,7 @@ void tmRenderer::PanDClick (wxMouseEvent & event){
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
+/*
 void tmRenderer::DrawStart (const wxPoint & mousepos)
 {
 	// ensure only called once.
@@ -923,13 +924,14 @@ void tmRenderer::DrawStart (const wxPoint & mousepos)
 	GetEventHandler()->AddPendingEvent(evt);
 	
 }
-
+*/
 /***************************************************************************//**
  @brief User move with Draw tool activated
  @param mousepos Actual mouse position in screen coordinate
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
+/*
 void tmRenderer::DrawMove (const wxPoint & mousepos)
 {
 	// sent message to edit manager
@@ -938,7 +940,7 @@ void tmRenderer::DrawMove (const wxPoint & mousepos)
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);
-}
+}*/
 
 
 /***************************************************************************//**
@@ -947,6 +949,7 @@ void tmRenderer::DrawMove (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
+/*
 void tmRenderer::DrawStop  (const wxPoint & mousepos)
 {
 	if (m_DrawCalled == false)
@@ -963,7 +966,7 @@ void tmRenderer::DrawStop  (const wxPoint & mousepos)
 	
 	wxASSERT(m_DrawCalled);
 	m_DrawCalled = false;
-}
+}*/
 
 
 
@@ -1010,7 +1013,7 @@ void tmRenderer:: OrientedPtsStop (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 April 2009
  *******************************************************************************/
-void tmRenderer::ModifyStart (const wxPoint & mousepos)
+/*void tmRenderer::ModifyStart (const wxPoint & mousepos)
 {
 	// ensure only called once.
 	if (m_ModifyCalled == true)
@@ -1024,7 +1027,7 @@ void tmRenderer::ModifyStart (const wxPoint & mousepos)
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);
-}
+}*/
 
 
 /***************************************************************************//**
@@ -1033,7 +1036,7 @@ void tmRenderer::ModifyStart (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 April 2009
  *******************************************************************************/
-void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
+/*void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
 {
 	if (m_ModifyCalled == false)
 		return;
@@ -1045,7 +1048,7 @@ void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
 	evt.SetClientData(myClickedPos);
 	GetEventHandler()->AddPendingEvent(evt);
 	
-}
+}*/
 
 
 /***************************************************************************//**
@@ -1054,7 +1057,7 @@ void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 April 2009
  *******************************************************************************/
-void tmRenderer::ModifyStop (const wxPoint & mousepos)
+/*void tmRenderer::ModifyStop (const wxPoint & mousepos)
 {
 	if (m_ModifyCalled == false)
 		return;
@@ -1070,7 +1073,7 @@ void tmRenderer::ModifyStop (const wxPoint & mousepos)
 		
 	wxASSERT(m_ModifyCalled == true);
 	m_ModifyCalled = false;
-}
+}*/
 
 
 
