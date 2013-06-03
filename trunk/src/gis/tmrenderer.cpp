@@ -232,6 +232,14 @@ wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
 		case tmCURSOR_EDIT:
 			myCursorBmp = *_img_cursor_editing;
 			break;
+            
+        case tmCURSOR_VERTEX_ADD:
+            myCursorBmp = *_img_cursor_add;
+            break;
+            
+        case tmCURSOR_VERTEX_REMOVE:
+            myCursorBmp = *_img_cursor_close;
+            break;
 			
 		case tmCURSOR_ORIENTED:
 			myCursorBmp = *_img_cursor_oriented;
@@ -291,7 +299,14 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			this->SetCursor(wxCursor(wxCURSOR_RIGHT_ARROW));
 			break;
 
-		
+		case tmTOOL_VERTEX_INSERT:
+            this->SetCursor(LoadCursorFromBitmap(tmCURSOR_VERTEX_ADD));
+            break;
+            
+        case tmTOOL_VERTEX_DELETE:
+            this->SetCursor(LoadCursorFromBitmap(tmCURSOR_VERTEX_REMOVE));
+            break;
+            
 		default:
 			this->SetCursor(wxCursor(wxCURSOR_ARROW));
 			break;
@@ -386,10 +401,9 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event){
 
 void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
 {
-	if (m_ActualTool == tmTOOL_MODIFY)
-		ModifyMenu(event.GetPosition());
-	
-	//event.Skip();
+	if (m_ActualTool == tmTOOL_MODIFY){
+        m_EditManager->ArcModifyContextualMenu(event.GetPosition());
+    }
 }
 
 
@@ -467,6 +481,14 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_MODIFY){
         m_EditManager->ArcModifyClickUp(event.GetPosition());
+    }
+    
+    if (m_ActualTool == tmTOOL_VERTEX_INSERT) {
+        m_EditManager->ArcVertexInsertUp(event.GetPosition());
+    }
+    
+    if (m_ActualTool == tmTOOL_VERTEX_DELETE) {
+        m_EditManager->ArcVeretxDeleteUp(event.GetPosition());
     }
 	
 	if (m_ActualTool == tmTOOL_ORIENTED_POINTS)
