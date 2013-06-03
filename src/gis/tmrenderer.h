@@ -178,20 +178,20 @@ class tmRenderer : public wxScrolledWindow
 		void PanStop (const wxPoint & mousepos);
         void PanDClick (wxMouseEvent & event);
 		
-		// drawing functions
+		/* drawing functions
 		void DrawStart (const wxPoint & mousepos);
 		void DrawMove (const wxPoint & mousepos);
-		void DrawStop  (const wxPoint & mousepos);
+		void DrawStop  (const wxPoint & mousepos);*/
         
 		// oriented pts functions
 		void OrientedPtsStart(const wxPoint & mousepos);
 		void OrientedPtsMove (const wxPoint & mousepos);
 		void OrientedPtsStop (const wxPoint & mousepos);
 		
-		// modify functions
+		/* modify functions
 		void ModifyStart (const wxPoint & mousepos);
 		void ModifyUpdate (const wxPoint & mousepos);
-		void ModifyStop (const wxPoint & mousepos);
+		void ModifyStop (const wxPoint & mousepos); */
 		void ModifyMenu (const wxPoint & mousepos);
 		
 		// modify shared function

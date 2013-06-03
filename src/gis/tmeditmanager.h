@@ -202,6 +202,7 @@ private:
     void DrawMemoryData(bool refresh);
     
     // checking
+    bool _LoadSnappingStatus();
     wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
     
     DECLARE_EVENT_TABLE()
