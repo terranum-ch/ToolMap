@@ -48,7 +48,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
 	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
+	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
 	EVT_COMMAND (wxID_ANY, tmEVT_FOCUS_RENDERER, tmEditManager::OnSetRenderFocus)
 
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_DOWN,tmEditManager::OnOrientedPtsDown)
@@ -400,8 +400,6 @@ void tmEditManager::ArcModifyClickMove (const wxPoint & mousepos){
 
 void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
     if (m_ArcModifyIndexPoint != wxNOT_FOUND) {
-        
-        // TODO: Continue here !!!!!!!
         wxRealPoint myPt = *m_ArcPoints[m_ArcModifyIndexPoint];
         int myPtSnappingIndex = m_ArcSnappedPointsIndexes.Index(m_ArcModifyIndexPoint);
         
@@ -426,6 +424,117 @@ void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
 }
 
 
+
+void tmEditManager::ArcModifyContextualMenu (const wxPoint & mousepos){
+	m_ArcModifyIndexPoint = wxNOT_FOUND;
+    m_ArcActualPt = m_Scale->PixelToReal(mousepos);
+	if (m_ArcPoints.GetCount() == 0) {
+        return;
+    }
+	
+    wxRect myRect (0,0,7,7);
+    myRect = myRect.CentreIn(wxRect(mousepos, wxSize(0,0)));
+    OGRLineString myLine;
+    OGRLineString myRectDiagonal;
+    myRectDiagonal.addPoint(myRect.GetLeftTop().x, myRect.GetLeftTop().y);
+    myRectDiagonal.addPoint(myRect.GetBottomRight().y, myRect.GetBottomRight().y);
+    
+    if (m_ArcPoints.GetCount() == 0) {
+        _LoadSnappingStatus();
+    }
+    
+    bool bDelete = false;
+    for (unsigned int i = 0 ; i< m_ArcPoints.GetCount(); i++) {
+        wxPoint myPt = m_Scale->RealToPixel(*m_ArcPoints[i]);
+        myLine.addPoint(myPt.x, myPt.y);
+        if (myRect.Contains(myPt)){
+            m_ArcModifyIndexPoint = i;
+            bDelete = true;
+        }
+    }
+   
+    if (myRectDiagonal.Intersects(&myLine) == false) {
+        return;
+    }
+    
+    if (m_ArcModifyIndexPoint == wxNOT_FOUND) {
+        for (unsigned int i = 0; i< myLine.getNumPoints() -1; i++) {
+            OGRLineString mySmallLine;
+            mySmallLine.addPoint(myLine.getX(i), myLine.getY(i));
+            mySmallLine.addPoint(myLine.getX(i+1), myLine.getY(i+1));
+            if (mySmallLine.Intersects(&myRectDiagonal) == true) {
+                m_ArcModifyIndexPoint = i;
+                break;
+            }
+        }
+    }
+    
+    
+    wxMenu  * myPopupMenu = new wxMenu();;
+    myPopupMenu->Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Insert vertex"), _("Insert a vertex"));
+    if (bDelete == true) {
+        myPopupMenu->Enable(tmEM_CONTEXTMENU_VERTEX_INSERT, false);
+    }
+    
+	myPopupMenu->Append(tmEM_CONTEXTMENU_VERTEX_DELETE, _("Delete selected vertex"),
+				_("Delete the selected vertex"));
+    if (bDelete == false) {
+        myPopupMenu->Enable(tmEM_CONTEXTMENU_VERTEX_DELETE, false);
+    }
+    
+	myPopupMenu->AppendSeparator();
+	myPopupMenu->Append(tmEM_CONTEXTMENU_LINE_SAVE, _("Apply modifications\tTAB"),
+				_("Apply modifications)"));
+	myPopupMenu->Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Cancel modifications\tESC"),
+				_("Cancel modifications"));
+    m_Renderer->PopupMenu(myPopupMenu);
+    wxDELETE(myPopupMenu);
+}
+
+
+void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
+    
+    
+}
+
+
+void tmEditManager::ArcVeretxDeleteUp (const wxPoint & mousepos){
+    m_ArcOID = m_SelectedData->GetSelectedUnique();
+    if (m_ArcOID == wxNOT_FOUND) {
+        return;
+    }
+    
+    if (m_TOC->GetEditLayer()->GetSpatialType() != LAYER_SPATIAL_LINE){
+        return;
+    }
+
+    wxRect myRect (0,0,5,5);
+    myRect = myRect.CentreIn(wxRect(mousepos, wxSize(0,0)));
+    
+    tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+    wxASSERT(m_pDB);
+    OGRGeometry * myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
+    if (myGeometry == NULL) {
+        return;
+    }
+    
+    bool bVertexDeleted = false;
+    OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
+    for (unsigned int i = 0; i<myLine->getNumPoints(); i++) {
+        wxPoint myPt = m_Scale->RealToPixel(wxRealPoint(myLine->getX(i), myLine->getY(i)));
+        if (myRect.Contains(myPt) == true && bVertexDeleted == false) {
+            bVertexDeleted = true;
+            continue;
+        }
+        m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
+    }
+    _SaveLineToDatabase();
+    OGRGeometryFactory::destroyGeometry(myGeometry);
+    ArcClear();
+    
+    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+}
 
 
 
@@ -707,7 +816,6 @@ void tmEditManager::ArcClick (const wxPoint & mousepos){
 void tmEditManager::ArcMove (const wxPoint & mousepos){
     m_ArcActualPt = mousepos;
     
-    // TODO: Refresh rect here
     m_Renderer->RefreshRect(m_ArcRefreshRect);
     m_Renderer->Update();
 }
@@ -718,11 +826,6 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
     if (m_ArcPoints.GetCount() == 0) {
         return;
     }
-    
-    // TODO: Check this when working on modification.
-    /*if (m_Renderer->GetTool() == tmTOOL_MODIFY) {
-        return;
-    }*/
     
     tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
     wxASSERT(myLayerProperties);
@@ -951,6 +1054,18 @@ void tmEditManager::OnToolOrientedPoint()
 	}
 	m_Renderer->SetTool(tmTOOL_ORIENTED_POINTS);
 	
+}
+
+
+
+void tmEditManager::OnToolVertexDelete(){
+    m_Renderer->SetTool(tmTOOL_VERTEX_DELETE);
+}
+
+
+
+void tmEditManager::OnToolVertexInsert(){
+    m_Renderer->SetTool(tmTOOL_VERTEX_INSERT);
 }
 
 
@@ -2069,43 +2184,7 @@ void tmEditManager::OnModifyUp (wxCommandEvent & event)
 */
 
 
-void tmEditManager::EMCreateMenu(wxMenu & menu)
-{
-	// cleaning first
-	wxMenuItemList items = menu.GetMenuItems();
-	wxMenuItemList::iterator iter;
-    for (iter = items.begin(); iter != items.end(); ++iter)
-	{
-		wxMenuItem *current = *iter;
-		menu.Destroy(current);
-	}
-	wxASSERT(menu.GetMenuItemCount() == 0);
-	
-	menu.Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Insert vertex"), _("Insert a vertex"));
-	menu.Append(tmEM_CONTEXTMENU_VERTEX_DELETE, _("Delete selected vertex"),
-				_("Delete the selected vertex"));
-	menu.AppendSeparator();
-	menu.Append(tmEM_CONTEXTMENU_LINE_SAVE, _("Apply modifications\tTAB"), 
-				_("Apply modifications)"));
-	menu.Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Cancel modifications\tESC"),
-				_("Cancel modifications"));
-}
 
-
-void tmEditManager::EMGetMenuLine(wxMenu & menu)
-{
-	EMCreateMenu(menu);
-	menu.Enable(tmEM_CONTEXTMENU_VERTEX_INSERT, true);
-	menu.Enable(tmEM_CONTEXTMENU_VERTEX_DELETE, false);
-}
-
-
-void tmEditManager::EMGetMenuVertex(wxMenu & menu)
-{
-	EMCreateMenu(menu);
-	menu.Enable(tmEM_CONTEXTMENU_VERTEX_INSERT, false);
-	menu.Enable(tmEM_CONTEXTMENU_VERTEX_DELETE, true);
-}
 
 
 bool tmEditManager::EMLoadModifyData()
@@ -2129,7 +2208,7 @@ bool tmEditManager::EMLoadModifyData()
 }
 
 
-
+/*
 void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 {
 	// get coordinate and dont forget to delete it
@@ -2160,34 +2239,32 @@ void tmEditManager::OnModifyMenu (wxCommandEvent & event)
 	}
 	delete myPxCoord;	
 }
+*/
 
 
-
-void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event)
-{
-	if (m_INSDELVertex == wxNOT_FOUND || m_INSVertexPos == wxRealPoint(-1,-1))
-	{
-		wxFAIL_MSG(_T("Error inserting vertex"));
-		return;
-	}
-	
-	wxLogDebug(_T("Inserting vertex after %d"), m_INSDELVertex);
-	m_GISMemory->InsertVertex(m_INSVertexPos, m_INSDELVertex+1);
-	DrawMemoryData(true);
+void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event){
+	if (m_ArcModifyIndexPoint == wxNOT_FOUND || m_ArcActualPt == wxDefaultPosition){
+        return;
+    }
+    
+    m_ArcPoints.Insert(m_ArcModifyIndexPoint, new wxRealPoint(m_ArcActualPt));
+    
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 }
 
 
 void tmEditManager::OnMenuDeleteVertex(wxCommandEvent & event)
 {
-	if (m_INSDELVertex == wxNOT_FOUND)
-	{
-		wxFAIL_MSG(_T("Error deleting vertex"));
-		return;
-	}
-	wxLogDebug(_T("Deleting vertex @ %d"), m_INSDELVertex);
-	
-	m_GISMemory->RemoveVertex(m_INSDELVertex);
-	DrawMemoryData(true);
+	if (m_ArcModifyIndexPoint == wxNOT_FOUND){
+        return;
+    }
+    
+    m_ArcPoints.DeleteContents(true);
+    m_ArcPoints.DeleteNode(m_ArcPoints.Item(m_ArcModifyIndexPoint));
+    
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 }
 
 

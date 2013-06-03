@@ -162,6 +162,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ORIENT_POINT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_MODIFY_SHARED, ToolMapFrame::OnToolChanged)
+    EVT_MENU (ID_MENU_VERTEX_INSERT, ToolMapFrame::OnToolChanged)
+    EVT_MENU (ID_MENU_VERTEX_DELETE, ToolMapFrame::OnToolChanged)
 
 
 	//EDIT MENU
@@ -568,7 +570,6 @@ void ToolMapFrame::_CreateMenu()
 
     // EDITION
     wxMenu* itemMenu41 = new wxMenu;
-    itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL);
@@ -577,10 +578,14 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier\tP"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY_BEZIER, _("Modify Bezier\tA"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
-	
+    itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_VERTEX_INSERT, _("Insert vertex\tI"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_VERTEX_DELETE, _("Delete veretx\tC"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->AppendSeparator();
+    
     //itemMenu41->Enable(ID_MENU_MODIFY, false);
 	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
-    itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
 	wxString myDeleteText = _("Delete selected feature");
 #ifdef __WXMAC__
     myDeleteText.Append(_T("\tBack"));
@@ -1678,7 +1683,14 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 		case ID_MENU_MODIFY_SHARED:
 			m_EditManager->OnToolEditShared();
 			break;
-
+            
+        case ID_MENU_VERTEX_INSERT:
+            m_EditManager->OnToolVertexInsert();
+            break;
+            
+        case ID_MENU_VERTEX_DELETE:
+            m_EditManager->OnToolVertexDelete();
+            break;
 
 		default:
 			m_LayerManager->OnSelect();

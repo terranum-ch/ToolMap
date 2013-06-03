@@ -149,7 +149,7 @@ private:
     //void OnModifySearch (wxCommandEvent & event);
     //void OnModifyMove (wxCommandEvent & event);
     //void OnModifyUp (wxCommandEvent & event);
-    void OnModifyMenu (wxCommandEvent & event);
+    //void OnModifyMenu (wxCommandEvent & event);
     void OnSetRenderFocus (wxCommandEvent & event);
     void OnEditSharedDown (wxCommandEvent & event);
     void OnEditSharedUp (wxCommandEvent & event);
@@ -159,7 +159,6 @@ private:
     void OnOrientedPtsMove (wxCommandEvent & event);
     void OnOrientedPtsUp (wxCommandEvent & event);
     
-    // menu event
     void OnMenuInsertVertex(wxCommandEvent & event);
     void OnMenuDeleteVertex(wxCommandEvent & event);
     
@@ -178,12 +177,7 @@ private:
     wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
     void EMDrawSnappingStatus (const wxPoint & pt);
     wxRealPoint * EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint);
-    
-    // menu functions
-    void EMCreateMenu(wxMenu & menu);
-    void EMGetMenuLine(wxMenu & menu);
-    void EMGetMenuVertex(wxMenu & menu);
-    
+       
     // loading functions
     bool EMLoadModifyData();
     
@@ -231,6 +225,8 @@ public:
     void OnToolEditShared();
     void OnToolCutLines();
     void OnToolOrientedPoint();
+    void OnToolVertexDelete();
+    void OnToolVertexInsert();
     
     // validiting editing / modfication
     bool IsDrawingAllowed();
@@ -274,6 +270,9 @@ public:
     void ArcModifyClickDown (const wxPoint & mousepos);
     void ArcModifyClickMove (const wxPoint & mousepos);
     void ArcModifyClickUp (const wxPoint & mousepos);
+    void ArcModifyContextualMenu (const wxPoint & mousepos);
+    void ArcVertexInsertUp (const wxPoint & mousepos);
+    void ArcVeretxDeleteUp (const wxPoint & mousepos);
     
     void DrawSnappingCircle (wxGCDC * dc);
 };

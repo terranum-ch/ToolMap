@@ -16,5 +16,7 @@ extern wxBitmap *_img_cursor_hand;
 extern wxBitmap *_img_cursor_oriented;
 extern wxBitmap *_img_cursor_zoom_in;
 extern wxBitmap *_img_cursor_zoom_out;
+extern wxBitmap *_img_cursor_add;
+extern wxBitmap *_img_cursor_close;
 
 #endif /* _CURSOR_BMP_H_ */
