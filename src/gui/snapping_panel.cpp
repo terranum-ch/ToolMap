@@ -266,6 +266,13 @@ void Snapping_PANEL::LoadSnappingStatus (){
 		iFirstLoop = false;
         
         long myListIndex = m_ListCtrl->InsertItem(m_ListCtrl->GetItemCount(), mylName);
+        if (mySnapStatus < tmSNAPPING_OFF) {
+            mySnapStatus = tmSNAPPING_OFF;
+        }
+        if (mySnapStatus > tmSNAPPING_BEGIN_END) {
+            mySnapStatus = tmSNAPPING_BEGIN_END;
+        }
+        
         m_ListCtrl->SetText(myListIndex, tmSNAPPING_TEXT[mySnapStatus], 1);
         m_ListCtrl->SetItemData(myListIndex, mylid);
 		
