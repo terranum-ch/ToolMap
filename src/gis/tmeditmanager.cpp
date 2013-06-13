@@ -424,7 +424,7 @@ void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
 }
 
 
-
+/*
 void tmEditManager::ArcModifyContextualMenu (const wxPoint & mousepos){
 	m_ArcModifyIndexPoint = wxNOT_FOUND;
     m_ArcActualPt = m_Scale->PixelToReal(mousepos);
@@ -490,11 +490,71 @@ void tmEditManager::ArcModifyContextualMenu (const wxPoint & mousepos){
     m_Renderer->PopupMenu(myPopupMenu);
     wxDELETE(myPopupMenu);
 }
+ */
 
 
 void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
+    ArcClear();
+    m_ArcOID = m_SelectedData->GetSelectedUnique();
+    if (m_ArcOID == wxNOT_FOUND) {
+        return;
+    }
     
+    if (m_TOC->GetEditLayer()->GetSpatialType() != LAYER_SPATIAL_LINE){
+        return;
+    }
+
+    wxRect myRect (0,0,5,5);
+    myRect = myRect.CentreIn(wxRect(mousepos, wxSize(0,0)));
+    OGRLineString myRectDiagonal;
+    wxRealPoint myTopLeft = m_Scale->PixelToReal(myRect.GetLeftTop());
+    wxRealPoint myBottomRight = m_Scale->PixelToReal(myRect.GetBottomRight());
+    myRectDiagonal.addPoint(myTopLeft.x, myTopLeft.y);
+    myRectDiagonal.addPoint(myBottomRight.x, myBottomRight.y);
     
+    tmLayerProperties * myLayerProperties = m_TOC->GetEditLayer();
+    wxASSERT(m_pDB);
+    OGRGeometry * myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
+    if (myGeometry == NULL) {
+        return;
+    }
+    OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
+    wxASSERT(myLine);
+    
+    OGRPoint p1;
+    OGRPoint p2;
+    OGRLineString segment;
+    OGRLineString myLineModified;
+    bool bFoundIntersection = false;
+    for (unsigned int i = 1 ; i < myLine->getNumPoints(); i++){
+		myLine->getPoint(i-1, &p1);
+        myLine->getPoint(i, &p2);
+        segment.addPoint(&p1);
+        segment.addPoint(&p2);
+
+        m_ArcPoints.push_back(new wxRealPoint(p1.getX(), p1.getY()));
+        // ensure a point is inserted only once.
+        if (segment.Intersects(&myRectDiagonal) == TRUE && bFoundIntersection == false) {
+            OGRPoint * myPtToInsert = static_cast<OGRPoint*>(segment.Intersection(&myRectDiagonal));
+            wxASSERT(myPtToInsert);
+            m_ArcPoints.push_back(new wxRealPoint(myPtToInsert->getX(), myPtToInsert->getY()));
+            bFoundIntersection = true;
+        }
+        segment.empty();
+    }
+    m_ArcPoints.push_back(new wxRealPoint(myLine->getX(myLine->getNumPoints()-1), myLine->getY(myLine->getNumPoints()-1)));
+    
+    // update the line in the database and refresh screen
+    if (bFoundIntersection == false) {
+        return;
+    }
+    
+    _SaveLineToDatabase();
+    OGRGeometryFactory::destroyGeometry(myGeometry);
+    ArcClear();
+    
+    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 }
 
 
