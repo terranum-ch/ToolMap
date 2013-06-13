@@ -558,6 +558,7 @@ void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
 }
 
 
+
 void tmEditManager::ArcVeretxDeleteUp (const wxPoint & mousepos){
     m_ArcOID = m_SelectedData->GetSelectedUnique();
     if (m_ArcOID == wxNOT_FOUND) {
@@ -1011,6 +1012,7 @@ void tmEditManager::OnToolModify ()
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
+
 
 
 bool tmEditManager::_LoadSnappingStatus(){
