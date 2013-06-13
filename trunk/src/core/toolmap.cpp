@@ -253,6 +253,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_SHORTCUTS, ToolMapFrame::OnUpdateMenuShowShortcuts)
 	EVT_UPDATE_UI (ID_MENU_FLIP_LINE, ToolMapFrame::OnUpdateMenuFlipLine)
 	EVT_UPDATE_UI (ID_MENU_MODIFY_SHARED, ToolMapFrame::OnUpdateMenuEditSharedNode)
+    EVT_UPDATE_UI(ID_MENU_VERTEX_INSERT, ToolMapFrame::OnUpdateMenuVertexInsert)
+    EVT_UPDATE_UI(ID_MENU_VERTEX_DELETE, ToolMapFrame::OnUpdateMenuVertexDelete)
 
 
 	EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
@@ -581,7 +583,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_VERTEX_INSERT, _("Insert vertex\tI"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu41->Append(ID_MENU_VERTEX_DELETE, _("Delete veretx\tC"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_VERTEX_DELETE, _("Delete vertex\tC"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     
     //itemMenu41->Enable(ID_MENU_MODIFY, false);
@@ -1886,6 +1888,23 @@ void ToolMapFrame::OnUpdateMenuEditDelete (wxUpdateUIEvent & event){
 	}
 	event.Enable(bEnable);
 }
+
+
+
+void ToolMapFrame::OnUpdateMenuVertexInsert (wxUpdateUIEvent & event){
+    if (m_EditManager->IsModifictionAllowed() == true && m_EditManager->GetSelectionCount() == 1) {
+        event.Enable(true);
+        return;
+    }
+    event.Enable(false);
+}
+
+
+
+void ToolMapFrame::OnUpdateMenuVertexDelete (wxUpdateUIEvent & event){
+    OnUpdateMenuVertexInsert(event);
+}
+
 
 
 void ToolMapFrame::OnUpdateMenuEditMerge (wxUpdateUIEvent & event){

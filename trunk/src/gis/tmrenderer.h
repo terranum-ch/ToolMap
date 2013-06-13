@@ -139,7 +139,7 @@ class tmRenderer : public wxScrolledWindow
 		
 		// mouse event function
 		void OnMouseDown	(wxMouseEvent & event);
-		void OnMouseRightDown (wxMouseEvent & event);
+		//void OnMouseRightDown (wxMouseEvent & event);
 		void OnMouseMove	(wxMouseEvent & event);
 		void OnMouseUp		(wxMouseEvent & event);
         void OnMouseCaptureLost(wxMouseEvent & event);

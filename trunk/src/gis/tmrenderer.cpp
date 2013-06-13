@@ -59,7 +59,7 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 	EVT_LEFT_DOWN (tmRenderer::OnMouseDown)
     EVT_LEFT_DCLICK(tmRenderer::OnMouseDClick)
 	EVT_MOUSEWHEEL(tmRenderer::OnMouseWheel)
-	EVT_RIGHT_DOWN (tmRenderer::OnMouseRightDown)
+	//EVT_RIGHT_DOWN (tmRenderer::OnMouseRightDown)
 	EVT_LEFT_UP (tmRenderer::OnMouseUp)
 	EVT_KEY_DOWN (tmRenderer::OnShiftDown)
 	EVT_KEY_UP (tmRenderer::OnShiftUp)
@@ -398,14 +398,14 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event){
 }
 
 
-
+/*
 void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
 {
 	if (m_ActualTool == tmTOOL_MODIFY){
         m_EditManager->ArcModifyContextualMenu(event.GetPosition());
     }
 }
-
+*/
 
 void tmRenderer::OnMouseMove (wxMouseEvent & event)
 {

@@ -392,6 +392,8 @@ private:
     void OnUpdateMenuEditBezierDraw (wxUpdateUIEvent & event);
     void OnUpdateMenuEditBezierModify (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditDelete (wxUpdateUIEvent & event);
+    void OnUpdateMenuVertexInsert (wxUpdateUIEvent & event);
+    void OnUpdateMenuVertexDelete (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditMerge (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event);
 	void OnUpdateMenuEditClearSelection (wxUpdateUIEvent & event);

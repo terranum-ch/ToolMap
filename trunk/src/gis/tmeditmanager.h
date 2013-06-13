@@ -270,7 +270,7 @@ public:
     void ArcModifyClickDown (const wxPoint & mousepos);
     void ArcModifyClickMove (const wxPoint & mousepos);
     void ArcModifyClickUp (const wxPoint & mousepos);
-    void ArcModifyContextualMenu (const wxPoint & mousepos);
+    //void ArcModifyContextualMenu (const wxPoint & mousepos);
     void ArcVertexInsertUp (const wxPoint & mousepos);
     void ArcVeretxDeleteUp (const wxPoint & mousepos);
     
