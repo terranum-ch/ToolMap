@@ -188,7 +188,7 @@ private:
     bool UpdatePoint();
     long StoreLine ();
     bool UpdateLine();
-    long _SaveLineToDatabase();
+    long _SaveToDatabase();
     
     // drawing editing object
     void DrawLastSegment ();
