@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmrenderer.h
-                    Deals with the main renderer windows
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmrenderer.h
+ Deals with the main renderer windows
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,30 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
-
 #ifndef _TM_GISRENDERER_H_
 #define _TM_GISRENDERER_H_
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
 #include <wx/overlay.h>
 #include <wx/dcgraph.h>
 #include <wx/dcbuffer.h>
-
-
 #include <wx/scrolwin.h>			// for scrolled window base
 #include "tmgisscale.h"				// for number of division;
 #include "../core/tmarraysize.h"	// for array of wxSize items
 
 class vrRubberBand;
-
 
 // EVENT FOR GIS RENDERER CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED, -1)
@@ -66,9 +57,7 @@ DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_DOWN, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_UP, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_MODIFY_SHARED_MOVE, -1)
 
-
-enum tmGIS_TOOL
-{
+enum tmGIS_TOOL{
 	tmTOOL_SELECT = 0,
 	tmTOOL_ZOOM_RECTANGLE_IN,
 	tmTOOL_ZOOM_RECTANGLE_OUT,
@@ -85,8 +74,7 @@ enum tmGIS_TOOL
 	tmTOOL_ZOOM_RECTANGLE = tmTOOL_ZOOM_RECTANGLE_IN
 };
 
-enum tmGIS_CURSOR
-{
+enum tmGIS_CURSOR{
 	tmCURSOR_ZOOM_IN,
 	tmCURSOR_ZOOM_OUT,
 	tmCURSOR_HAND,
@@ -102,138 +90,108 @@ const int tmSELECTION_DIAMETER = 10;
 
 class tmEditManager;
 class tmRenderer : public wxScrolledWindow
-	{
-	private:
-		wxBitmap * m_bmp;
-		tmGIS_TOOL m_ActualTool;
-		tmGIS_CURSOR m_ActualNotStockCursor;
+{
+private:
+    wxBitmap * m_bmp;
+    tmGIS_TOOL m_ActualTool;
+    tmGIS_CURSOR m_ActualNotStockCursor;
+    
+    tmEditManager * m_EditManager;
+    wxSize m_OldSize;
+    
+    // rubber band
+    wxPoint m_StartCoord;
+    wxBitmap * m_PanBmp;
+    vrRubberBand * m_Rubber;
+    wxOverlay m_Overlay;
+    
+    bool m_ShiftDown;
+    
+    bool m_ModifyCalled;
+    bool m_DrawCalled;
         
-        tmEditManager * m_EditManager;
-		
-		// sizeing process
-		wxSize m_OldSize;
-				
-		// rubber band
-		wxPoint m_StartCoord;
-		wxBitmap * m_PanBmp;
-        vrRubberBand * m_Rubber;
-		
-		wxOverlay m_Overlay;
-		
-		// status of shift key
-		bool m_ShiftDown;
-		
-		bool m_ModifyCalled;
-		bool m_DrawCalled;
-		
-		// snapping
-        
-		int m_WheelRotation;
-		wxPoint m_WheelPosition;
-		wxTimer m_WheelTimer;
-        
-		
-		// changing cursors
-		wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
-		void ChangeCursor (const tmGIS_TOOL & selected_tool);
-		
-		// mouse event function
-		void OnMouseDown	(wxMouseEvent & event);
-		//void OnMouseRightDown (wxMouseEvent & event);
-		void OnMouseMove	(wxMouseEvent & event);
-		void OnMouseUp		(wxMouseEvent & event);
-        void OnMouseCaptureLost(wxMouseEvent & event);
-        void OnMouseDClick  (wxMouseEvent & event);
-		void OnMouseWheel	(wxMouseEvent & event);
-		void OnShiftDown	(wxKeyEvent & event);
-		void OnShiftUp		(wxKeyEvent & event);
-		void OnKey			(wxKeyEvent & event);
-		void OnWheelTimer	(wxTimerEvent & event);
-		
-		// avoid flickering
-		void OnAvoidFlickering(wxEraseEvent & event);
-		
-		// bitmap functions
-		bool BitmapUpdateSize();
-		bool BitmapSetToWhite();
-		bool BitmapCopyInto(wxBitmap * bmp);
-        
-        bool m_isPanning;
-		
-		// scrollbar event (received)
-		//void OnScroll (wxScrollWinEvent & event);
-			
-		DECLARE_EVENT_TABLE()
-	protected:
-		
-		// rubber band functions
-		void ZoomStart (const wxPoint & mousepos);
-		void ZoomUpdate(wxMouseEvent & event);
-		void ZoomStop(const wxPoint & mousepos);
-		
-		// selecting function
-		void SelectStart (const wxPoint & mousepos);
-		void SelectUpdate (wxMouseEvent & event);
-		void SelectStop (const wxPoint & mousepos);
-		
-		// panning function
-		void PanStart (const wxPoint & mousepos);
-		void PanUpdate (const wxPoint & mousepos);
-		void PanStop (const wxPoint & mousepos);
-        void PanDClick (wxMouseEvent & event);
-		
-		/* drawing functions
-		void DrawStart (const wxPoint & mousepos);
-		void DrawMove (const wxPoint & mousepos);
-		void DrawStop  (const wxPoint & mousepos);*/
-        
-		// oriented pts functions
-		void OrientedPtsStart(const wxPoint & mousepos);
-		void OrientedPtsMove (const wxPoint & mousepos);
-		void OrientedPtsStop (const wxPoint & mousepos);
-		
-		/* modify functions
-		void ModifyStart (const wxPoint & mousepos);
-		void ModifyUpdate (const wxPoint & mousepos);
-		void ModifyStop (const wxPoint & mousepos); */
-		void ModifyMenu (const wxPoint & mousepos);
-		
-		// modify shared function
-		void ModifySharedStart(const wxPoint & mousepos);
-		void ModifySharedStop(const wxPoint & mousepos);
-		void ModifySharedUpdate(const wxPoint & mousepos);
+    int m_WheelRotation;
+    wxPoint m_WheelPosition;
+    wxTimer m_WheelTimer;
+    
+    // changing cursors
+    wxCursor LoadCursorFromBitmap (tmGIS_CURSOR cursor);
+    void ChangeCursor (const tmGIS_TOOL & selected_tool);
+    
+    // mouse event function
+    void OnMouseDown	(wxMouseEvent & event);
+    //void OnMouseRightDown (wxMouseEvent & event);
+    void OnMouseMove	(wxMouseEvent & event);
+    void OnMouseUp		(wxMouseEvent & event);
+    void OnMouseCaptureLost(wxMouseEvent & event);
+    void OnMouseDClick  (wxMouseEvent & event);
+    void OnMouseWheel	(wxMouseEvent & event);
+    void OnShiftDown	(wxKeyEvent & event);
+    void OnShiftUp		(wxKeyEvent & event);
+    void OnKey			(wxKeyEvent & event);
+    void OnWheelTimer	(wxTimerEvent & event);    
+    void OnAvoidFlickering(wxEraseEvent & event);
+    
+    // bitmap functions
+    bool BitmapUpdateSize();
+    bool BitmapSetToWhite();
+    bool BitmapCopyInto(wxBitmap * bmp);
+    
+    bool m_isPanning;
+    DECLARE_EVENT_TABLE()
 
-		
+protected:
+    // rubber band functions
+    void ZoomStart (const wxPoint & mousepos);
+    void ZoomUpdate(wxMouseEvent & event);
+    void ZoomStop(const wxPoint & mousepos);
+    
+    // selecting function
+    void SelectStart (const wxPoint & mousepos);
+    void SelectUpdate (wxMouseEvent & event);
+    void SelectStop (const wxPoint & mousepos);
+    
+    // panning function
+    void PanStart (const wxPoint & mousepos);
+    void PanUpdate (const wxPoint & mousepos);
+    void PanStop (const wxPoint & mousepos);
+    void PanDClick (wxMouseEvent & event);
+    
+    // oriented pts functions
+    void OrientedPtsStart(const wxPoint & mousepos);
+    void OrientedPtsMove (const wxPoint & mousepos);
+    void OrientedPtsStop (const wxPoint & mousepos);
+    
+    // modify shared function
+    void ModifySharedStart(const wxPoint & mousepos);
+    void ModifySharedStop(const wxPoint & mousepos);
+    void ModifySharedUpdate(const wxPoint & mousepos);
 	
-		void CutLineClick (const wxPoint & mousepos);
+    void CutLineClick (const wxPoint & mousepos);
 	
-	
-	public:
-		tmRenderer(wxWindow * parent, wxWindowID id);
-		~tmRenderer();
-		
-		void OnSizeChange(wxSizeEvent & event);
-		void OnPaint(wxPaintEvent & event);
-		
-		void SetBitmapStatus(wxBitmap * bmp = NULL);//{m_bmp = bmp;}
-		
-		void SetTool (tmGIS_TOOL selected_tool);
-		tmGIS_TOOL GetTool () {return m_ActualTool;}
-		
-		// get bitmap
-		wxBitmap * GetBitmap(){return m_bmp;}
-		
-		// drawing
-		void DrawCircleVideoInverse (wxPoint pt, int radius);
-		void DrawCircleVideoInverseClean();
-		
-		// editing 
-		void StopModifyEvent (){m_ModifyCalled = false;}
-        
-        void SetEditManagerRef (tmEditManager * manager) {m_EditManager = manager;}
-	};
-
-
-
+public:
+    tmRenderer(wxWindow * parent, wxWindowID id);
+    ~tmRenderer();
+    
+    void OnSizeChange(wxSizeEvent & event);
+    void OnPaint(wxPaintEvent & event);
+    
+    void SetBitmapStatus(wxBitmap * bmp = NULL);//{m_bmp = bmp;}
+    
+    void SetTool (tmGIS_TOOL selected_tool);
+    tmGIS_TOOL GetTool () {return m_ActualTool;}
+    
+    // get bitmap
+    wxBitmap * GetBitmap(){return m_bmp;}
+    
+    // drawing
+    void DrawCircleVideoInverse (wxPoint pt, int radius);
+    void DrawCircleVideoInverseClean();
+    
+    // editing 
+    void StopModifyEvent (){m_ModifyCalled = false;}
+    
+    void SetEditManagerRef (tmEditManager * manager) {m_EditManager = manager;}
+};
 
 #endif
