@@ -1853,7 +1853,11 @@ void ToolMapFrame::OnUpdateMenuEditDraw (wxUpdateUIEvent & event){
 
 void ToolMapFrame::OnUpdateMenuEditBezierDraw (wxUpdateUIEvent & event){
     wxASSERT(m_EditManager);
-	event.Enable( m_EditManager->IsDrawingAllowed());
+    if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE) && m_EditManager->IsDrawingAllowed()) {
+        event.Enable(true);
+        return;
+    }
+	event.Enable( false );
 }
 
 

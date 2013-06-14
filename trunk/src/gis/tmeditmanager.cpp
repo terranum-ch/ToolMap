@@ -549,7 +549,7 @@ void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
         return;
     }
     
-    _SaveLineToDatabase();
+    _SaveToDatabase();
     OGRGeometryFactory::destroyGeometry(myGeometry);
     ArcClear();
     
@@ -589,7 +589,7 @@ void tmEditManager::ArcVeretxDeleteUp (const wxPoint & mousepos){
         }
         m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
     }
-    _SaveLineToDatabase();
+    _SaveToDatabase();
     OGRGeometryFactory::destroyGeometry(myGeometry);
     ArcClear();
     
@@ -868,6 +868,11 @@ void tmEditManager::ArcClick (const wxPoint & mousepos){
     
     m_ArcPoints.push_back(new wxRealPoint(myPt));
     m_ArcActualPt = mousepos;
+    
+    if (IsLayerType(LAYER_SPATIAL_POINT) == true) {
+        wxCommandEvent evt;
+        OnDrawFeatureValidate(evt);
+    }
     
     m_Renderer->Refresh();
     m_Renderer->Update();
@@ -1884,43 +1889,59 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 		return;
     }
 	
-    if (m_ArcPoints.GetCount() > 1) {
-        long myLineId = _SaveLineToDatabase();
-        ArcClear();
-        
-        // set selection
-        m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
-        m_SelectedData->SetSelected(myLineId);
-        wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-        m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-        
-        // update display
-        wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-        m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+    if(IsLayerType(LAYER_SPATIAL_LINE) && m_ArcPoints.GetCount() < 1){
+        return;
     }
+  
+    long myLineId = _SaveToDatabase();
+    ArcClear();
+    
+    // set selection
+    m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
+    m_SelectedData->SetSelected(myLineId);
+    wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+    
+    // update display
+    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 }
 
 
 
-long tmEditManager::_SaveLineToDatabase(){
+long tmEditManager::_SaveToDatabase(){
     tmLayerProperties * layerprop = m_TOC->GetEditLayer();
 	if (layerprop == NULL){
 		return wxNOT_FOUND;
     }
     
+    OGRGeometry * myGeom = NULL;
     OGRLineString myLineString;
-    for (unsigned int i = 0; i< m_ArcPoints.GetCount(); i++) {
-        myLineString.addPoint(m_ArcPoints[i]->x, m_ArcPoints[i]->y);
+    OGRPoint myPoint;
+    if (layerprop->GetSpatialType() == LAYER_SPATIAL_LINE) {
+        for (unsigned int i = 0; i< m_ArcPoints.GetCount(); i++) {
+            myLineString.addPoint(m_ArcPoints[i]->x, m_ArcPoints[i]->y);
+        }
+        myGeom = &myLineString;
+    }
+    else if (layerprop->GetSpatialType() == LAYER_SPATIAL_POINT) {
+        wxASSERT(m_ArcPoints.GetCount() == 1);
+        myPoint.setX(m_ArcPoints[0]->x);
+        myPoint.setY(m_ArcPoints[0]->y);
+        myGeom = &myPoint;
+    }
+    else {
+        wxFAIL_MSG(_("spatial type not supported!"));
     }
     
     wxASSERT(m_pDB);
     long myOid = wxNOT_FOUND;
     if (m_ArcOID != wxNOT_FOUND) { // Updating
-        m_pDB->GeometryUpdate(&myLineString, m_ArcOID, layerprop->GetType());
+        m_pDB->GeometryUpdate(myGeom, m_ArcOID, layerprop->GetType());
         myOid = m_ArcOID;
     }
     else {
-        myOid = m_pDB->GeometrySave(&myLineString, layerprop->GetType());
+        myOid = m_pDB->GeometrySave(myGeom, layerprop->GetType());
     }
     return myOid;
 }
