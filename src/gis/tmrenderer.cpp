@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmrenderer.cpp
-                    Deals with the main renderer windows
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmrenderer.cpp
+ Deals with the main renderer windows
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -69,16 +69,9 @@ END_EVENT_TABLE()
 
 
 
-/***************************************************************************//**
- @brief Constructor
- @details Do nothing for the moment
- @author Lucien Schreiber (c) CREALP 2008
- @date 21 July 2008
- *******************************************************************************/
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : 
 wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, 
-				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS )
-{
+				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS ){
 	m_bmp = NULL;
     m_EditManager = NULL;
 	m_ModifyCalled = false;
@@ -104,10 +97,9 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 }
 
 
-bool tmRenderer::BitmapUpdateSize()
-{
-	if (m_bmp != NULL)
-	{
+
+bool tmRenderer::BitmapUpdateSize(){
+	if (m_bmp != NULL){
 		delete m_bmp;
 		m_bmp = NULL;
 	}
@@ -115,16 +107,16 @@ bool tmRenderer::BitmapUpdateSize()
 	int myWidth = 0;
 	int myHeight = 0;
 	GetClientSize(&myWidth, &myHeight);
-	
 	m_bmp = new wxBitmap(myWidth, myHeight);
 	return true;
 }
 
 
-bool tmRenderer::BitmapSetToWhite()
-{
-	if (m_bmp == NULL)
+
+bool tmRenderer::BitmapSetToWhite(){
+	if (m_bmp == NULL){
 		return false;
+    }
 	
 	int myWidth = 0;
 	int myHeight = 0;
@@ -140,8 +132,8 @@ bool tmRenderer::BitmapSetToWhite()
 }
 
 
-bool tmRenderer::BitmapCopyInto(wxBitmap * bmp)
-{
+
+bool tmRenderer::BitmapCopyInto(wxBitmap * bmp){
 	wxASSERT(bmp);
 	wxASSERT(bmp->GetWidth() == m_bmp->GetWidth());
 	wxASSERT(bmp->GetHeight() == m_bmp->GetHeight());
@@ -159,8 +151,7 @@ bool tmRenderer::BitmapCopyInto(wxBitmap * bmp)
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-tmRenderer::~tmRenderer()
-{
+tmRenderer::~tmRenderer(){
     wxDELETE(m_bmp);
     images_cursor_clean();
 }
@@ -174,8 +165,7 @@ tmRenderer::~tmRenderer()
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 July 2008
  *******************************************************************************/
-void tmRenderer::OnSizeChange(wxSizeEvent & event)
-{
+void tmRenderer::OnSizeChange(wxSizeEvent & event){
 	wxSize myActualSize = GetClientSize();
 	
 	BitmapUpdateSize();
@@ -184,19 +174,19 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 	// size change direction : smaller, bigger
 	bool bSmaller = true;
 	if (myActualSize.GetWidth() > m_OldSize.GetWidth() ||
-		myActualSize.GetHeight() > m_OldSize.GetHeight())
+		myActualSize.GetHeight() > m_OldSize.GetHeight()){
 		bSmaller = false;
-	else if (myActualSize == m_OldSize)
+    }
+	else if (myActualSize == m_OldSize){
 		return;
+    }
 	
-		
 	// new size array object, will be deleted in the layer manager
 	tmArraySize * mySizes = new tmArraySize();
 	mySizes->Add(m_OldSize);
 	mySizes->Add(myActualSize);
 		
 	m_OldSize = myActualSize;
-	
 	// send size to the layermanager
 	wxCommandEvent evt(tmEVT_LM_SIZE_CHANGED, wxID_ANY);
 	evt.SetInt(bSmaller);
@@ -206,18 +196,15 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event)
 
 
 
-void tmRenderer::SetTool (tmGIS_TOOL selected_tool)
-{
+void tmRenderer::SetTool (tmGIS_TOOL selected_tool){
 	m_ActualTool = selected_tool;
 	ChangeCursor(selected_tool);
 }
 
 
 
-wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
-{
+wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor){
 	wxBitmap myCursorBmp;
-	
 	switch (cursor)
 	{
 		case tmCURSOR_ZOOM_IN:
@@ -255,12 +242,11 @@ wxCursor tmRenderer::LoadCursorFromBitmap (tmGIS_CURSOR cursor)
 	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_X,8);
 	mycursor.SetOption (wxIMAGE_OPTION_CUR_HOTSPOT_Y,8);
 	return wxCursor(mycursor);
-	
 }
 
 
-void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
-{
+
+void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool){
 	switch (selected_tool)
 	{
 		case tmTOOL_ZOOM_RECTANGLE_IN:
@@ -311,15 +297,12 @@ void tmRenderer::ChangeCursor (const tmGIS_TOOL & selected_tool)
 			this->SetCursor(wxCursor(wxCURSOR_ARROW));
 			break;
 	}
-	
 }
 
 
 
-void tmRenderer::OnPaint(wxPaintEvent & event)
-{
+void tmRenderer::OnPaint(wxPaintEvent & event){
 	wxAutoBufferedPaintDC dc(this);
-	//wxPaintDC dc (this);
     wxGCDC gcdc (dc);
 	
 	if (m_bmp && m_bmp->IsOk())	{
@@ -345,16 +328,14 @@ void tmRenderer::OnAvoidFlickering(wxEraseEvent & event){
 
 
 
-void tmRenderer::SetBitmapStatus(wxBitmap * bmp)
-{
-	if (bmp == NULL)
-	{
+void tmRenderer::SetBitmapStatus(wxBitmap * bmp){
+	if (bmp == NULL){
 		BitmapSetToWhite();
 		return;
 	}
-	
 	BitmapCopyInto(bmp);
 }
+
 
 
 void tmRenderer::OnMouseDown(wxMouseEvent & event){
@@ -393,22 +374,11 @@ void tmRenderer::OnMouseDown(wxMouseEvent & event){
 	if (m_ActualTool == tmTOOL_MODIFY_SHARED) {
 		ModifySharedStart(event.GetPosition());
 	}
-	
-	//event.Skip();
 }
 
 
-/*
-void tmRenderer::OnMouseRightDown (wxMouseEvent & event)
-{
-	if (m_ActualTool == tmTOOL_MODIFY){
-        m_EditManager->ArcModifyContextualMenu(event.GetPosition());
-    }
-}
-*/
 
-void tmRenderer::OnMouseMove (wxMouseEvent & event)
-{
+void tmRenderer::OnMouseMove (wxMouseEvent & event){
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectUpdate(event);
 	
@@ -471,11 +441,7 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	
 	if (m_ActualTool == tmTOOL_SELECT)
 		SelectStop(event.GetPosition());
-	
-	// draw
-	/*if (m_ActualTool == tmTOOL_DRAW)
-		DrawStop(event.GetPosition());*/
-	
+		
 	if (m_ActualTool == tmTOOL_CUT_LINES)
 		CutLineClick(event.GetPosition());
 	
@@ -506,6 +472,7 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	wxCommandEvent evt(tmEVT_STAT_CLICK, wxID_ANY);
 	GetEventHandler()->AddPendingEvent(evt);
 }
+
 
 
 void tmRenderer::OnMouseCaptureLost(wxMouseEvent & event){
@@ -600,8 +567,6 @@ void tmRenderer::OnKey	(wxKeyEvent & event)
 		evt2.SetInt( event.GetKeyCode());
 		GetEventHandler()->AddPendingEvent(evt2);
 	}
-
-	
 	event.Skip();
 }
 
@@ -644,8 +609,8 @@ void tmRenderer::ZoomStart (const wxPoint & mousepos)
 }
 
 
-void tmRenderer::ZoomUpdate(wxMouseEvent & event)
-{
+
+void tmRenderer::ZoomUpdate(wxMouseEvent & event){
     if (m_Rubber == NULL) {
         return;
     }
@@ -667,8 +632,7 @@ void tmRenderer::ZoomUpdate(wxMouseEvent & event)
 
 
 
-void tmRenderer::ZoomStop(const wxPoint & mousepos)
-{
+void tmRenderer::ZoomStop(const wxPoint & mousepos){
     if (m_Rubber == NULL) {
         return;
     }
@@ -709,8 +673,7 @@ void tmRenderer::ZoomStop(const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-void tmRenderer::SelectStart (const wxPoint & mousepos)
-{
+void tmRenderer::SelectStart (const wxPoint & mousepos){
     wxASSERT(m_Rubber == NULL);
 	m_Rubber = new vrRubberBand(this);
 	wxASSERT(m_Rubber);
@@ -725,8 +688,7 @@ void tmRenderer::SelectStart (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-void tmRenderer::SelectUpdate (wxMouseEvent & event)
-{
+void tmRenderer::SelectUpdate (wxMouseEvent & event){
     if (m_Rubber == NULL) {
         return;
     }
@@ -745,8 +707,7 @@ void tmRenderer::SelectUpdate (wxMouseEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-void tmRenderer::SelectStop (const wxPoint & mousepos)
-{
+void tmRenderer::SelectStop (const wxPoint & mousepos){
 	if (m_Rubber == NULL) {
         return;
     }
@@ -826,8 +787,7 @@ void tmRenderer::PanStart (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 31 July 2008
  *******************************************************************************/
-void tmRenderer::PanUpdate (const wxPoint & mousepos)
-{
+void tmRenderer::PanUpdate (const wxPoint & mousepos){
 	// compute the new raster origin
 	wxPoint myNewPos(mousepos.x - m_StartCoord.x,
 					 mousepos.y - m_StartCoord.y);
@@ -865,8 +825,7 @@ void tmRenderer::PanUpdate (const wxPoint & mousepos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 31 July 2008
  *******************************************************************************/
-void tmRenderer::PanStop (const wxPoint & mousepos)
-{
+void tmRenderer::PanStop (const wxPoint & mousepos){
     m_isPanning = false;
 	if (m_StartCoord == wxPoint(-1,-1)) {
         wxDELETE(m_PanBmp);
@@ -919,81 +878,6 @@ void tmRenderer::PanDClick (wxMouseEvent & event){
 
 
 
-
-/***************************************************************************//**
- @brief User click with Draw tool activated
- @param mousepos Actual mouse position in screen coordinate
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-/*
-void tmRenderer::DrawStart (const wxPoint & mousepos)
-{
-	// ensure only called once.
-	if (m_DrawCalled == true)
-		return;
-	
-	m_DrawCalled = true;
-	
-	
-	m_StartCoord = mousepos;
-	
-	
-	wxCommandEvent evt(tmEVT_EM_DRAW_DOWN, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(mousepos.x,
-										 mousepos.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);
-	
-}
-*/
-/***************************************************************************//**
- @brief User move with Draw tool activated
- @param mousepos Actual mouse position in screen coordinate
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-/*
-void tmRenderer::DrawMove (const wxPoint & mousepos)
-{
-	// sent message to edit manager
-	wxCommandEvent evt(tmEVT_EM_DRAW_MOVE, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(mousepos.x,
-										 mousepos.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);
-}*/
-
-
-/***************************************************************************//**
- @brief Called when mouse up and drawing tool selected
- @param mousepos Actual mouse position
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-/*
-void tmRenderer::DrawStop  (const wxPoint & mousepos)
-{
-	if (m_DrawCalled == false)
-		return;
-		
-	// sent message to edit manager
-	wxCommandEvent evt(tmEVT_EM_DRAW_CLICK, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(m_StartCoord.x,
-										 m_StartCoord.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);
-	
-	m_StartCoord = wxPoint(-1,-1);
-	
-	wxASSERT(m_DrawCalled);
-	m_DrawCalled = false;
-}*/
-
-
-
-
-
 void tmRenderer::OrientedPtsStart(const wxPoint & mousepos)
 {
 	wxCommandEvent evt(tmEVT_EM_DRAW_ORIENT_DOWN, wxID_ANY);
@@ -1027,88 +911,6 @@ void tmRenderer:: OrientedPtsStop (const wxPoint & mousepos)
 	GetEventHandler()->AddPendingEvent(evt);
 	
 }
-
-
-/***************************************************************************//**
- @brief Called when mouse down and modify tool selected
- @param mousepos Actual mouse position
- @author Lucien Schreiber (c) CREALP 2009
- @date 28 April 2009
- *******************************************************************************/
-/*void tmRenderer::ModifyStart (const wxPoint & mousepos)
-{
-	// ensure only called once.
-	if (m_ModifyCalled == true)
-		return;
-	
-	m_ModifyCalled = true;
-	
-	// sent message to edit manager
-	wxCommandEvent evt(tmEVT_EM_MODIFY_CLICK, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(mousepos.x,
-										 mousepos.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);
-}*/
-
-
-/***************************************************************************//**
- @brief Called when mouse move and modify tool selected
- @param mousepos Actual mouse position
- @author Lucien Schreiber (c) CREALP 2009
- @date 28 April 2009
- *******************************************************************************/
-/*void tmRenderer::ModifyUpdate (const wxPoint & mousepos)
-{
-	if (m_ModifyCalled == false)
-		return;
-	
-	// sent message to edit manager
-	wxCommandEvent evt(tmEVT_EM_MODIFY_MOVED, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(mousepos.x,
-										 mousepos.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);
-	
-}*/
-
-
-/***************************************************************************//**
- @brief Called when mouse up and modify tool selected
- @param mousepos Actual mouse position
- @author Lucien Schreiber (c) CREALP 2009
- @date 28 April 2009
- *******************************************************************************/
-/*void tmRenderer::ModifyStop (const wxPoint & mousepos)
-{
-	if (m_ModifyCalled == false)
-		return;
-	
-	
-	// sent message to edit manager
-	wxCommandEvent evt(tmEVT_EM_MODIFY_UP, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(mousepos.x,
-										 mousepos.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);
-	
-		
-	wxASSERT(m_ModifyCalled == true);
-	m_ModifyCalled = false;
-}*/
-
-
-
-void tmRenderer::ModifyMenu (const wxPoint & mousepos)
-{
-	// sent message to edit manager
-	wxCommandEvent evt(tmEVT_EM_MODIFY_MENU, wxID_ANY);
-	wxPoint * myClickedPos = new wxPoint(mousepos.x,
-										 mousepos.y);
-	evt.SetClientData(myClickedPos);
-	GetEventHandler()->AddPendingEvent(evt);	
-}
-
 
 
 
