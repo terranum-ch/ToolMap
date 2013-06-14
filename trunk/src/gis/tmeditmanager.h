@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmeditmanager.h
-				Deals with editing data in construction layers
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmeditmanager.h
+ Deals with editing data in construction layers
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,26 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
-
 #ifndef _TM_EDIT_MANAGER_H_
 #define _TM_EDIT_MANAGER_H_
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
-#include "tmtocctrl.h"						// for TOC ctrl 
+#include "tmtocctrl.h"						// for TOC ctrl
 #include "tmselecteddatamemory.h"			// for selection data
 #include "tmmanagerevent.h"				// for shared event with other manager
-//#include "tmrenderer.h"						// for GIS rendering
-#include "../core/tmsnappingmemory.h"		// for snapping 
+#include "../core/tmsnappingmemory.h"		// for snapping
 #include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
@@ -67,18 +60,12 @@ public:
     virtual ~tmSharedNodeEdit();
     
     void DrawLine(wxClientDC * dc, wxPoint * point = NULL);
-	
     long GetLineID (){return m_LineID;}
     int GetVertexID(){return m_VertexID;}
 	void SetCoordVertex (const wxPoint & point){m_CoordVertex = point;}
 };
 WX_DECLARE_OBJARRAY(tmSharedNodeEdit, tmArraySharedNodes);
-
-
-
 WX_DECLARE_LIST(wxRealPoint, wxRealPointList);
-
-
 
 /***************************************************************************//**
  @brief Deals with editing data
@@ -135,21 +122,13 @@ private:
     void InitMemberValues();
     
     // Extern EVENT function
-    //void OnSnappingChange (wxCommandEvent & event);
     void OnViewUpdated (wxCommandEvent & event);
-    //void OnDrawDown(wxCommandEvent & event);
-    //void OnDrawUp (wxCommandEvent & event);
-    //void OnDrawMove (wxCommandEvent & event);
     void OnEditStart (wxCommandEvent & event);
     void OnEditStop (wxCommandEvent & event);
     void OnDrawFeatureValidate (wxCommandEvent & event);
     void OnDrawFeatureEscape (wxCommandEvent & event);
     void OnCutLines (wxCommandEvent & event);
     void OnShowVertexPosition (wxCommandEvent & event);
-    //void OnModifySearch (wxCommandEvent & event);
-    //void OnModifyMove (wxCommandEvent & event);
-    //void OnModifyUp (wxCommandEvent & event);
-    //void OnModifyMenu (wxCommandEvent & event);
     void OnSetRenderFocus (wxCommandEvent & event);
     void OnEditSharedDown (wxCommandEvent & event);
     void OnEditSharedUp (wxCommandEvent & event);
@@ -177,7 +156,7 @@ private:
     wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
     void EMDrawSnappingStatus (const wxPoint & pt);
     wxRealPoint * EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint);
-       
+    
     // loading functions
     bool EMLoadModifyData();
     
@@ -211,8 +190,7 @@ public:
                   tmGISScale * scale);
     ~tmEditManager();
     
-    //! @brief Set database functions.
-    //! If database is valid then project is open.
+     // If database is valid then project is open.
     void SetDatabase (DataBaseTM * database){m_pDB = database;}
     void SetSnappingMemoryRef(tmSnappingMemory * snapping) {m_SnapMem = snapping;}
     void SetSnappingShowOnMap (bool show) {m_SnappingShowOnMap = show;}
@@ -270,14 +248,11 @@ public:
     void ArcModifyClickDown (const wxPoint & mousepos);
     void ArcModifyClickMove (const wxPoint & mousepos);
     void ArcModifyClickUp (const wxPoint & mousepos);
-    //void ArcModifyContextualMenu (const wxPoint & mousepos);
     void ArcVertexInsertUp (const wxPoint & mousepos);
     void ArcVeretxDeleteUp (const wxPoint & mousepos);
     
     void DrawSnappingCircle (wxGCDC * dc);
 };
-
-
 
 
 #endif

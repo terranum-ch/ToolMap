@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
 #include "tmeditmanager.h"
 #include "../core/toolmap.h"
 #include "tmsymbolvectorline.h"
@@ -30,9 +28,7 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(wxRealPointList);
 
-
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
-
 
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
@@ -41,14 +37,7 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureValidate)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_CUT_LINE, tmEditManager::OnCutLines)
 	EVT_COMMAND (wxID_ANY,tmEVT_EV_DISPLAY_VERTEX_COORD, tmEditManager::OnShowVertexPosition)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_CLICK, tmEditManager::OnModifySearch)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MOVED, tmEditManager::OnModifyMove)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_UP, tmEditManager::OnModifyUp)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_CLICK, tmEditManager::OnDrawUp)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_MOVE, tmEditManager::OnDrawMove)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_DOWN, tmEditManager::OnDrawDown)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ESC, tmEditManager::OnDrawFeatureEscape)
-	//EVT_COMMAND (wxID_ANY, tmEVT_EM_MODIFY_MENU,  tmEditManager::OnModifyMenu)
 	EVT_COMMAND (wxID_ANY, tmEVT_FOCUS_RENDERER, tmEditManager::OnSetRenderFocus)
 
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ORIENT_DOWN,tmEditManager::OnOrientedPtsDown)
@@ -65,8 +54,6 @@ BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
 	EVT_MENU (tmEM_CONTEXTMENU_VERTEX_DELETE,tmEditManager::OnMenuDeleteVertex)
 END_EVENT_TABLE()
 
-
-
 /***************************************************************************//**
  @brief Constructor
  @author Lucien Schreiber (c) CREALP 2009
@@ -75,8 +62,7 @@ END_EVENT_TABLE()
 tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 							 tmSelectedDataMemory * seldata,
 							 tmRenderer * renderer,
-							 tmGISScale * scale)
-{
+							 tmGISScale * scale){
 	InitMemberValues();
 	m_ParentEvt = parent;
 	m_TOC = toc;
@@ -87,9 +73,9 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
 	m_DrawLine.SetSymbology(*wxBLACK, 1);
     m_SelectionColour = *wxRED;
 	
-
+    
 	m_ParentEvt->PushEventHandler(this);
-
+    
 	m_GISMemory = new tmGISDataVectorMemory();
     
     m_BezierActualP1 = wxPoint(0,0);
@@ -159,6 +145,7 @@ void tmEditManager::OnToolEdit (){
 }
 
 
+
 void tmEditManager::OnToolBezier() {
     m_Renderer->SetTool(tmTOOL_DRAW_BEZIER);
     m_BezierActualP2 = wxPoint(0,0);
@@ -167,13 +154,13 @@ void tmEditManager::OnToolBezier() {
 }
 
 
+
 void tmEditManager::OnToolBezierModify(){
     m_Renderer->SetTool(tmTOOL_MODIFY_BEZIER);
     m_BezierActualP2 = wxPoint(0,0);
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
-
 
 
 
@@ -227,7 +214,6 @@ void tmEditManager::BezierMove (const wxPoint & mousepos){
     m_Renderer->RefreshRect(m_BezierRefreshRect);
     m_Renderer->Update();
 }
-
 
 
 
@@ -387,6 +373,7 @@ void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
 }
 
 
+
 void tmEditManager::ArcModifyClickMove (const wxPoint & mousepos){
     if (m_ArcModifyIndexPoint == wxNOT_FOUND) {
         return;
@@ -396,6 +383,7 @@ void tmEditManager::ArcModifyClickMove (const wxPoint & mousepos){
     m_Renderer->RefreshRect(m_ArcRefreshRect);
     m_Renderer->Update();
 }
+
 
 
 void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
@@ -419,78 +407,15 @@ void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
     m_ArcActualPt = wxDefaultPosition;
     m_ArcModifyIndexPoint = wxNOT_FOUND;
     
+    if (IsLayerType(LAYER_SPATIAL_POINT) == true) {
+        wxCommandEvent evt;
+        OnDrawFeatureValidate(evt);
+    }
+    
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
 
-
-/*
-void tmEditManager::ArcModifyContextualMenu (const wxPoint & mousepos){
-	m_ArcModifyIndexPoint = wxNOT_FOUND;
-    m_ArcActualPt = m_Scale->PixelToReal(mousepos);
-	if (m_ArcPoints.GetCount() == 0) {
-        return;
-    }
-	
-    wxRect myRect (0,0,7,7);
-    myRect = myRect.CentreIn(wxRect(mousepos, wxSize(0,0)));
-    OGRLineString myLine;
-    OGRLineString myRectDiagonal;
-    myRectDiagonal.addPoint(myRect.GetLeftTop().x, myRect.GetLeftTop().y);
-    myRectDiagonal.addPoint(myRect.GetBottomRight().y, myRect.GetBottomRight().y);
-    
-    if (m_ArcPoints.GetCount() == 0) {
-        _LoadSnappingStatus();
-    }
-    
-    bool bDelete = false;
-    for (unsigned int i = 0 ; i< m_ArcPoints.GetCount(); i++) {
-        wxPoint myPt = m_Scale->RealToPixel(*m_ArcPoints[i]);
-        myLine.addPoint(myPt.x, myPt.y);
-        if (myRect.Contains(myPt)){
-            m_ArcModifyIndexPoint = i;
-            bDelete = true;
-        }
-    }
-   
-    if (myRectDiagonal.Intersects(&myLine) == false) {
-        return;
-    }
-    
-    if (m_ArcModifyIndexPoint == wxNOT_FOUND) {
-        for (unsigned int i = 0; i< myLine.getNumPoints() -1; i++) {
-            OGRLineString mySmallLine;
-            mySmallLine.addPoint(myLine.getX(i), myLine.getY(i));
-            mySmallLine.addPoint(myLine.getX(i+1), myLine.getY(i+1));
-            if (mySmallLine.Intersects(&myRectDiagonal) == true) {
-                m_ArcModifyIndexPoint = i;
-                break;
-            }
-        }
-    }
-    
-    
-    wxMenu  * myPopupMenu = new wxMenu();;
-    myPopupMenu->Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Insert vertex"), _("Insert a vertex"));
-    if (bDelete == true) {
-        myPopupMenu->Enable(tmEM_CONTEXTMENU_VERTEX_INSERT, false);
-    }
-    
-	myPopupMenu->Append(tmEM_CONTEXTMENU_VERTEX_DELETE, _("Delete selected vertex"),
-				_("Delete the selected vertex"));
-    if (bDelete == false) {
-        myPopupMenu->Enable(tmEM_CONTEXTMENU_VERTEX_DELETE, false);
-    }
-    
-	myPopupMenu->AppendSeparator();
-	myPopupMenu->Append(tmEM_CONTEXTMENU_LINE_SAVE, _("Apply modifications\tTAB"),
-				_("Apply modifications)"));
-	myPopupMenu->Append(tmEM_CONTEXTMENU_VERTEX_INSERT, _("Cancel modifications\tESC"),
-				_("Cancel modifications"));
-    m_Renderer->PopupMenu(myPopupMenu);
-    wxDELETE(myPopupMenu);
-}
- */
 
 
 void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
@@ -556,7 +481,6 @@ void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 }
-
 
 
 void tmEditManager::ArcVeretxDeleteUp (const wxPoint & mousepos){
@@ -748,7 +672,6 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     dc->SetBrush(*wxTRANSPARENT_BRUSH);
     dc->DrawRectangle(m_BezierRefreshRect);*/
 }
-
 
 
 // search point or control clicked
@@ -948,19 +871,24 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
     
     // compute bounding box for modifications
     if (m_Renderer->GetTool() == tmTOOL_MODIFY && m_ArcModifyIndexPoint != wxNOT_FOUND) {
-        dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint]->x, myPts[m_ArcModifyIndexPoint]->y);
-        if (m_ArcModifyIndexPoint != 0) {
-            dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint-1]->x, myPts[m_ArcModifyIndexPoint-1]->y);
+        if (IsLayerType(LAYER_SPATIAL_LINE)==true){
+            dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint]->x, myPts[m_ArcModifyIndexPoint]->y);
+            if (m_ArcModifyIndexPoint != 0) {
+                dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint-1]->x, myPts[m_ArcModifyIndexPoint-1]->y);
+            }
+            if (m_ArcModifyIndexPoint < m_ArcPoints.GetCount() -1) {
+                dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint+1]->x, myPts[m_ArcModifyIndexPoint+1]->y);
+            }
         }
-        if (m_ArcModifyIndexPoint < m_ArcPoints.GetCount() -1) {
-            dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint+1]->x, myPts[m_ArcModifyIndexPoint+1]->y);
+        else if (IsLayerType(LAYER_SPATIAL_POINT)==true){
+            dc->CalcBoundingBox(myPts[0]->x - myNodeWidth, myPts[0]->y - myNodeWidth);
+            dc->CalcBoundingBox(myPts[0]->x + myNodeWidth, myPts[0]->y + myNodeWidth);
         }
     }
     
     myPts.DeleteContents(true);
     myPts.Clear();
-
-    // compute bounding box for refreshing. This is mainly to avoid flickering
+    
     m_ArcRefreshRect = wxRect(wxPoint(dc->MinX(), dc->MaxY()), wxPoint(dc->MaxX(), dc->MinY()));
     m_ArcRefreshRect.Inflate(wxSize(3,3));
 }
@@ -1031,11 +959,16 @@ bool tmEditManager::_LoadSnappingStatus(){
             return false;
         }
         
-        if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){
+        if (IsLayerType(LAYER_SPATIAL_LINE) == true){
             OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
             for (unsigned int i = 0; i<myLine->getNumPoints(); i++) {
                 m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
             }
+            OGRGeometryFactory::destroyGeometry(myGeometry);
+        }
+        else if (IsLayerType(LAYER_SPATIAL_POINT) == true) {
+            OGRPoint * myPt = static_cast<OGRPoint *>(myGeometry);
+            m_ArcPoints.push_back(new wxRealPoint(myPt->getX(), myPt->getY()));
             OGRGeometryFactory::destroyGeometry(myGeometry);
         }
         else {
@@ -1138,49 +1071,28 @@ void tmEditManager::OnToolVertexInsert(){
 
 
 /***************************************************************************//**
- @brief Called when snapping change
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-/*void tmEditManager::OnSnappingChange (wxCommandEvent & event)
-{
-	m_SnapMem = (tmSnappingMemory*) event.GetClientData();
-	wxASSERT (m_SnapMem);
-}*/
-
-
-
-/***************************************************************************//**
  @brief Called when the view is updated
  @details After a zoom, pan or when loading the project
  @author Lucien Schreiber (c) CREALP 2009
  @date 27 January 2009
  *******************************************************************************/
-void tmEditManager::OnViewUpdated (wxCommandEvent & event)
-{
-	//wxLogDebug(_T("View updated"));
-	
+void tmEditManager::OnViewUpdated (wxCommandEvent & event){
 	wxClientDC myDC (m_Renderer);
 	m_DrawLine.DrawEditReset(&myDC);
 	
-	if (IsDrawingAllowed()==true)
-	{
-	
+	if (IsDrawingAllowed()==true){
 		wxRealPoint myRPT;
 		if (m_GISMemory->GetVertex(myRPT, -1))
 		{
 			wxPoint myPt = m_Scale->RealToPixel(myRPT);
 			m_DrawLine.CreateVertex(myPt);
 		}
-		
-		// draw memory line
 		DrawMemoryData(true);
 	}
 	// update tools view
 	wxCommandEvent evt(tmEVT_TM_UPDATE_TOOL_VIEW, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
-
 
 
 
@@ -1192,21 +1104,14 @@ void tmEditManager::OnViewUpdated (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
-bool tmEditManager::IsCorrectLayerSelected()
-{
+bool tmEditManager::IsCorrectLayerSelected(){
 	wxASSERT(m_TOC);
-	if (!m_TOC->GetEditLayer())
-	{
-		//if (m_Renderer->GetTool() == tmTOOL_DRAW) {
-		//}
-		
+	if (!m_TOC->GetEditLayer()){
 		return false;
 	}
-	
-	
+		
 	// ensure no selection from external layer
-	if (m_SelectedData->GetCount() > 0)
-	{
+	if (m_SelectedData->GetCount() > 0){
 		if (m_TOC->GetEditLayer()->GetID() != m_SelectedData->GetSelectedLayer())
 		{
 			m_SelectedData->Clear();
@@ -1215,7 +1120,6 @@ bool tmEditManager::IsCorrectLayerSelected()
 		}
 		
 	}
-		
 	return true;
 }
 
@@ -1230,27 +1134,21 @@ bool tmEditManager::IsCorrectLayerSelected()
  @author Lucien Schreiber (c) CREALP 2009
  @date 27 February 2009
  *******************************************************************************/
-bool tmEditManager::IsLayerTypeSelected (int layertype)
-{
+bool tmEditManager::IsLayerTypeSelected (int layertype){
 	wxASSERT(m_TOC);
 	tmLayerProperties * myEditLayer = m_TOC->GetEditLayer();
-	if (myEditLayer == NULL)
-	{
+	if (myEditLayer == NULL){
 		wxLogWarning(_("No editing layer selected. Define an edit layer"));
 		return false;
 	}
 	
-	
-	if (m_TOC->GetEditLayer()->GetType() != layertype)
-	{
+	if (m_TOC->GetEditLayer()->GetType() != layertype){
 		wxLogWarning(_("Layer isn't of correct type.") + 
 					 wxString::Format(_("Please select a layer of type '%s'"),
 					 TM_GIS_SPATIAL_TYPES_STRING[layertype].c_str()));
 		return false;
 	}
-	
 	return true;
-	
 }
 
 
@@ -1263,8 +1161,7 @@ bool tmEditManager::IsLayerTypeSelected (int layertype)
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
-bool tmEditManager::IsObjectSelected()
-{	
+bool tmEditManager::IsObjectSelected(){
 	if (m_SelectedData->GetCount() == 1){
 		return true;	
 	}
@@ -1292,7 +1189,6 @@ bool tmEditManager::IsObjectMinNumberSelected (unsigned int iNumbermin)
 
 
 
-
 /***************************************************************************//**
  @brief Are we ready for drawing
  @details 
@@ -1317,8 +1213,7 @@ bool tmEditManager::IsDrawingAllowed()
  @author Lucien Schreiber (c) CREALP 2009
  @date 28 January 2009
  *******************************************************************************/
-bool tmEditManager::IsModifictionAllowed()
-{
+bool tmEditManager::IsModifictionAllowed(){
 	if (IsCorrectLayerSelected() == false){
 		return false;
 	}
@@ -1348,6 +1243,7 @@ bool tmEditManager::IsModificationBezierAllowed(){
 }
 
 
+
 bool tmEditManager::IsMultipleModifictionAllowed(){
     if (IsCorrectLayerSelected() == false) {
         return false;
@@ -1374,131 +1270,6 @@ bool tmEditManager::IsLayerType(int layertype){
 }
 
 
-
-/***************************************************************************//**
- @brief Called when a click down is issued with Draw tool
- @author Lucien Schreiber (c) CREALP 2009
- @date 28 January 2009
- *******************************************************************************/
-/*
-void tmEditManager::OnDrawDown(wxCommandEvent & event)
-{
-	// get coordinate and dont forget to delete it
-	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
-	
-	// check drawing allowed
-	if (!IsDrawingAllowed())
-	{
-		delete myPxCoord;
-		return;
-	}
-	
-	if (m_SnapMem->IsSnappingEnabled()==true)
-	{
-		double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
-		m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
-		//m_Renderer->Update();
-	}
-	delete myPxCoord;
-}
-*/
-
-/***************************************************************************//**
- @brief Called when a click up is issued with Draw tool
- @author Lucien Schreiber (c) CREALP 2009
- @date 28 January 2009
- *******************************************************************************/
-/*
-void tmEditManager::OnDrawUp (wxCommandEvent & event)
-{
-	// get coordinate and dont forget to delete it
-    wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
-	wxRealPoint myRealCoord = m_Scale->PixelToReal(*myPxCoord);
-	
-	// check drawing allowed
-	if (!IsDrawingAllowed())
-	{
-		delete myPxCoord;
-		return;
-	}
-	wxClientDC myDC (m_Renderer);
-	m_DrawLine.DrawEditReset(&myDC);
-	
-	if (m_SnapMem->IsSnappingEnabled()==true)
-	{
-		//double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
-		m_Renderer->DrawCircleVideoInverseClean();
-		//m_Renderer->DrawCircleVideoInverse(*myPxCoord, iSnapRadius);
-		m_Renderer->Update();
-	}
-	wxDELETE(myPxCoord);
-	
-	// snapping
-	bool bSnapFound = EMGetSnappingCoord(myRealCoord);
-	
-	// add  line vertex
-	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE){	
-    
-        // feature #180 if snap isn't found, try to snap on line in edition
-        if (bSnapFound == false && m_SnapMem->IsSnappingEnabled() == true) {
-            wxRealPoint * myTempSnap = EMSearchLineMemorySnapping(myRealCoord);
-            if (myTempSnap != NULL) {
-                myRealCoord = *myTempSnap;
-            }
-            wxDELETE(myTempSnap);
-        }
-        
-        wxPoint myNewPxCoord = m_Scale->RealToPixel(myRealCoord);
-		bool bCreate = m_DrawLine.CreateVertex(myNewPxCoord);
-		wxASSERT(bCreate);
-		
-		// ensure vertex isn't already present (double insert);
-		wxRealPoint myLastVertex;
-		bool bReturn = m_GISMemory->GetVertex(myLastVertex);
-		if (bReturn == true && myLastVertex == myRealCoord) {
-			wxLogMessage(_("Vertex : %.2f, %.2f not added, already existing!"),
-						 myRealCoord.x, myRealCoord.y);
-			DrawMemoryData(false);
-			return;
-		}
-		
-		AddLineVertex(myRealCoord);
-		DrawMemoryData(false);
-	}
-	else // add point 
-	{
-		AddPointVertex(myRealCoord);
-	}
-	//delete myPxCoord;
-}
-*/
-
-/***************************************************************************//**
- @brief Called when a move is issued with Draw tool
- @author Lucien Schreiber (c) CREALP 2009
- @date 4 May 2009
- *******************************************************************************/
-/*
-void tmEditManager::OnDrawMove (wxCommandEvent & event)
-{
-	wxPoint * myPt = (wxPoint*) event.GetClientData();
-	wxASSERT (myPt);
-	m_LastMousePos = *myPt;
-	
-	if (m_DrawLine.IsOK() == false)
-	{
-		wxDELETE(myPt);
-		return; 
-	}
-	wxClientDC dc (m_Renderer);
-	bool BDraw = m_DrawLine.DrawEditPart(&dc);
-	wxASSERT(BDraw);
-	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
-	wxASSERT(bSetVertex);	
-	wxDELETE(myPt);
-}
-*/
-
 void tmEditManager::OnOrientedPtsDown(wxCommandEvent & event)
 {
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
@@ -1511,13 +1282,11 @@ void tmEditManager::OnOrientedPtsDown(wxCommandEvent & event)
 }
 
 
-void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event)
-{
+void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event){
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
-	if (m_DrawLine.IsOK() == false)
-	{
+	if (m_DrawLine.IsOK() == false){
 		delete myPt;
 		return; 
 	}
@@ -1528,12 +1297,10 @@ void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event)
 	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
 	wxASSERT(bSetVertex);
 	
-	
 	// display angle
 	m_OrientedPt.SetEndPoint(*myPt);
 	int myOrient = m_OrientedPt.GetOrientationInt();
-	if (myOrient != wxNOT_FOUND)
-	{
+	if (myOrient != wxNOT_FOUND){
 		wxCommandEvent evt2(tmEVT_LM_ANGLE_CHANGED, wxID_ANY);
 		evt2.SetInt(myOrient);
 		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
@@ -1543,8 +1310,8 @@ void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event)
 }
 
 
-void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
-{
+
+void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event){
 	wxPoint * myPt = (wxPoint*) event.GetClientData();
 	wxASSERT (myPt);
 	
@@ -1565,12 +1332,10 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
 	evt2.SetInt(wxNOT_FOUND);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 	
-	
 	m_DrawLine.ClearVertex();
 	
 	m_Renderer->Refresh(false);
 	m_Renderer->Update();
-	
 	delete myPt;
 }
 
@@ -1583,10 +1348,8 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
  *******************************************************************************/
-bool tmEditManager::AddLineVertex (const wxRealPoint & pt)
-{
+bool tmEditManager::AddLineVertex (const wxRealPoint & pt){
 	bool bReturn = m_GISMemory->InsertVertex(pt, -1);
-	//wxLogDebug(_T("Number of stored vertex : %d"), m_GISMemory->GetVertexCount());
 	return bReturn;
 }
 
@@ -2070,42 +1833,6 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
 }
 
 
-/***************************************************************************//**
- @brief Called to when modify is clicked down for searching vertex
- @details Respond to tmEVT_EM_MODIFY_CLICK event.
- @author Lucien Schreiber (c) CREALP 2009
- @date 28 April 2009
- *******************************************************************************/
-/*
-void tmEditManager::OnModifySearch (wxCommandEvent & event)
-{
-	// getting point
-	wxPoint * myTempPt = (wxPoint*) event.GetClientData();
-	wxASSERT (myTempPt);
-	wxRealPoint myRPt = m_Scale->PixelToReal(*myTempPt);
-
-	bool bSearch = false;
-	
-	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE)
-	{
-		bSearch = EMModifySearchLine(myRPt);
-	}
-	else
-	{
-		bSearch = EMModifySearchPoint(myRPt);
-	}
-
-	delete myTempPt;
-	if (bSearch == false)
-	{
-		wxLogDebug(_T("No Vertex Found"));
-		m_Renderer->StopModifyEvent();
-	}
-}
-*/
-
-
-
 bool tmEditManager::EMModifySearchPoint(const wxRealPoint & pt)
 {
 	// load point
@@ -2196,78 +1923,6 @@ bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
 	return true;
 }
 
-/*
-void tmEditManager::OnModifyMove (wxCommandEvent & event)
-{
-	wxPoint * myPt = (wxPoint*) event.GetClientData();
-	wxASSERT (myPt);
-	
-	//if (m_TOC->GetEditLayer()->m_LayerType == LAYER_SPATIAL_LINE)
-	//{
-	wxClientDC dc (m_Renderer);
-	bool BDraw = m_DrawLine.DrawEditPart(&dc);
-	wxASSERT(BDraw);
-	bool bSetVertex = m_DrawLine.SetVertex(*myPt);
-	wxASSERT(bSetVertex);
-	
-	
-	wxDELETE(myPt);
-}
-*/
-
-/*
-void tmEditManager::OnModifyUp (wxCommandEvent & event)
-{
-	wxPoint * myPt = (wxPoint*) event.GetClientData();
-	wxASSERT (myPt);
-	
-	wxClientDC myDC (m_Renderer);
-	m_DrawLine.DrawEditReset(&myDC);
-	
-	//check snapping
-	wxRealPoint myRPt = m_Scale->PixelToReal(*myPt);
-	bool bSnappingFound = EMGetSnappingCoord(myRPt);
-	
-	if (m_TOC->GetEditLayer()->GetSpatialType() == LAYER_SPATIAL_LINE)
-	{
-		bool bSetVertex = m_DrawLine.SetVertex(*myPt);
-		wxASSERT(bSetVertex);
-		
-		bool BSave = m_GISMemory->SetVertex(myRPt, m_DrawLine.GetVertexIndex());
-		wxASSERT(BSave);
-		
-
-		DrawMemoryData(true);
-		if (bSnappingFound)
-			EMDrawSnappingStatus(*myPt);
-	}
-	else
-	{
-		bool BSave = m_GISMemory->SetVertex(myRPt, 0);
-		wxASSERT(BSave);
-		
-		m_DrawLine.ClearVertex();
-		bool bUpdate =UpdatePoint();
-		wxASSERT(bUpdate);
-		
-		if (bSnappingFound)
-			EMDrawSnappingStatus(*myPt);
-		
-		// Clear memory
-		m_GISMemory->DestroyFeature();
-		m_GISMemory->CreateFeature();
-		
-		// update display
-		wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
-	}
-
-	delete myPt;
-}
-*/
-
-
-
 
 
 bool tmEditManager::EMLoadModifyData()
@@ -2289,40 +1944,6 @@ bool tmEditManager::EMLoadModifyData()
 	}
 	return true;
 }
-
-
-/*
-void tmEditManager::OnModifyMenu (wxCommandEvent & event)
-{
-	// get coordinate and dont forget to delete it
-	wxPoint * myPxCoord = (wxPoint*) event.GetClientData();
-	wxRealPoint myRPT = m_Scale->PixelToReal(*myPxCoord);
-	
-	if (EMLoadModifyData()==false)
-	{
-		delete myPxCoord;
-		return;
-	}
-	
-	wxRealPoint topleft, bottomright;
-	
-	wxMenu myPopupMenu;
-	m_INSDELVertex = wxNOT_FOUND;
-	m_INSVertexPos = wxRealPoint(-1,-1);
-	if (m_GISMemory->IsIntersectingGeometry(myRPT,m_INSDELVertex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==true)
-	{
-		m_INSVertexPos = myRPT;
-		EMGetMenuLine(myPopupMenu);
-		
-		if (m_GISMemory->SearchVertex(myRPT, m_INSDELVertex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==true)
-		{
-			EMGetMenuVertex(myPopupMenu);
-		}
-		m_Renderer->PopupMenu(&myPopupMenu, *myPxCoord);
-	}
-	delete myPxCoord;	
-}
-*/
 
 
 void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event){
@@ -3044,8 +2665,8 @@ bool tmEditManager::MergeSelectedLines ()
 }
 
 
-void tmEditManager::OnSetRenderFocus (wxCommandEvent & event)
-{
+
+void tmEditManager::OnSetRenderFocus (wxCommandEvent & event){
 	wxASSERT(m_Renderer);
 	m_Renderer->SetFocus();
 }
@@ -3219,7 +2840,6 @@ void tmEditManager::OnEditSharedMove(wxCommandEvent & event){
 
 
 
-
 bool tmEditManager::FlipLine(){
 	if (IsLayerTypeSelected(LAYER_SPATIAL_LINE) == false){
 		return false;
@@ -3269,12 +2889,6 @@ bool tmEditManager::FlipLine(){
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
 	return true;
 }
-
-
-
-
-
-
 
 
 
