@@ -1355,6 +1355,11 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 		return;
     }
 	
+    if (IsLayerType(LAYER_SPATIAL_LINE) && m_BezierPoints.GetCount() > 1) {
+        // TODO: Convert bezier to line here.
+    }
+    
+    
     if(IsLayerType(LAYER_SPATIAL_LINE) && m_ArcPoints.GetCount() < 1){
         return;
     }
