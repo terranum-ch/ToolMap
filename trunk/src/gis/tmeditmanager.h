@@ -28,7 +28,6 @@
 #include "tmselecteddatamemory.h"			// for selection data
 #include "tmmanagerevent.h"				// for shared event with other manager
 #include "../core/tmsnappingmemory.h"		// for snapping
-#include "../gis/tmgisdatavectormemory.h"	// for storing editing data in memory
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
@@ -81,7 +80,6 @@ private:
     tmTOCCtrl * m_TOC;
     tmSelectedDataMemory * m_SelectedData;
     tmRenderer * m_Renderer;
-    tmGISDataVectorMemory * m_GISMemory;
     bool m_EditStarted;
     tmDrawerEditLine m_DrawLine;
     int m_INSDELVertex;
@@ -122,7 +120,6 @@ private:
     void InitMemberValues();
     
     // Extern EVENT function
-    void OnViewUpdated (wxCommandEvent & event);
     void OnEditStart (wxCommandEvent & event);
     void OnEditStop (wxCommandEvent & event);
     void OnDrawFeatureValidate (wxCommandEvent & event);
@@ -147,33 +144,11 @@ private:
     bool IsObjectMinNumberSelected (unsigned int iNumbermin = 1);
     bool IsLayerTypeSelected (int layertype = LAYER_SPATIAL_LINE);
     
-    // modify function
-    bool EMModifySearchLine(const wxRealPoint & pt);
-    bool EMModifySearchPoint(const wxRealPoint & pt);
-    
-    // snapping function
+   // snapping function
     bool EMGetSnappingCoord (wxRealPoint & pt);
     wxRealPoint * EMIterateAllSnappingLayers(const wxRealPoint & clickedpoint);
-    void EMDrawSnappingStatus (const wxPoint & pt);
-    wxRealPoint * EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint);
-    
-    // loading functions
-    bool EMLoadModifyData();
-    
-    // adding, storing object
-    bool AddLineVertex (const wxRealPoint & pt);
-    bool AddPointVertex (const wxRealPoint & pt);
-    long StorePoint (const wxRealPoint & pt);
-    bool UpdatePoint();
-    long StoreLine ();
-    bool UpdateLine();
     long _SaveToDatabase();
-    
-    // drawing editing object
-    void DrawLastSegment ();
-    void DrawEditBitmapLine ();
-    void DrawMemoryData(bool refresh);
-    
+ 
     // checking
     bool _LoadSnappingStatus();
     wxArrayLong _GetErrorLines(wxArrayLong linetocheck);

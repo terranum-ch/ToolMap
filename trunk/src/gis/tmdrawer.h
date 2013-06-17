@@ -83,9 +83,7 @@ class tmDrawer : public wxObject
 		bool _DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen);
         
         
-		void DrawMemoryDataLine (tmGISData * data, 
-								 tmLayerProperties * layerprop,
-								 wxClientDC * dc);
+		//void DrawMemoryDataLine (tmGISData * data, tmLayerProperties * layerprop, wxClientDC * dc);
 		
 		// drawing vertex
 		bool DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pts,
@@ -123,8 +121,8 @@ class tmDrawer : public wxObject
 							  const wxRealPoint & pt2,
 							  int size);
 		void DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour colour = *wxRED);
-		void DrawMemoryData (tmGISData * data, tmLayerProperties * layerprop,
-							 wxClientDC * dc);
+		//void DrawMemoryData (tmGISData * data, tmLayerProperties * layerprop,
+		//					 wxClientDC * dc);
 		
 	};
 

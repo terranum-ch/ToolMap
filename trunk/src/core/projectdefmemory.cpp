@@ -193,10 +193,8 @@ ProjectDefMemoryFields & ProjectDefMemoryFields::operator = (const ProjectDefMem
  @author Lucien Schreiber (c) CREALP 2007
  @date 17 April 2008
  *******************************************************************************/
-wxString ProjectDefMemoryFields::ExtractValuesFromString(const wxString & fielddef)
-{
-	wxString myTempValue = _T("");
-	myTempValue = fielddef.AfterFirst('(');
+wxString ProjectDefMemoryFields::ExtractValuesFromString(const wxString & fielddef){
+	wxString myTempValue = fielddef.AfterFirst('(');
 	return myTempValue.RemoveLast(1);
 }
 
@@ -214,9 +212,9 @@ wxString ProjectDefMemoryFields::ExtractValuesFromString(const wxString & fieldd
  @date 17 April 2008
  *******************************************************************************/
 bool ProjectDefMemoryFields::SetValues(const wxString & fieldname, const wxString & fielddef, const wxString & fieldcomment){
-	wxString myFieldType = _T("");
-	wxString myValues = _T("");
-	wxString myTempConvert = _T("");
+	wxString myFieldType = wxEmptyString;
+	wxString myValues = wxEmptyString;
+	wxString myTempConvert = wxEmptyString;
 	wxArrayString myCodedValResults;
 	int iCountCodedVal = 0;
 	

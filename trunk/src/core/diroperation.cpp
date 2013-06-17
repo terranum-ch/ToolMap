@@ -91,25 +91,18 @@ long DirOperation::GetAllDirectoryFiles(wxArrayString & filesNames,
 
 
 bool DirOperation::HasEnoughFreeSpace (double megabyteSize,
-									   DIROP_SELECTDIR dirselection)
-{
+									   DIROP_SELECTDIR dirselection){
 	wxLongLong myFreeSizeBytes;
-	double myFreeSizeMB = 0.0;
-	
 	wxGetDiskSpace(m_Path[dirselection], NULL, &myFreeSizeBytes);
 	
 	// avoid division problem
-	if (myFreeSizeBytes > 0)
-	{
-		myFreeSizeMB = myFreeSizeBytes.ToDouble() / 1048576;
-		
+	if (myFreeSizeBytes > 0){
+		double myFreeSizeMB = myFreeSizeBytes.ToDouble() / 1048576;
 		wxLogDebug(_T("Free space is : %.*f [MB]"),3, myFreeSizeMB);
-		
 		if (myFreeSizeMB > megabyteSize)
-			return TRUE;
+			return true;
 	}
-	return FALSE;
-	
+	return false;
 }
 
 

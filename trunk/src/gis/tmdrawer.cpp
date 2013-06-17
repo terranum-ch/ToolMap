@@ -1662,7 +1662,7 @@ void tmDrawer::DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour c
 }
 
 
-
+/*
 void tmDrawer::DrawMemoryData (tmGISData * data,
 							   tmLayerProperties * layerprop,
 							   wxClientDC * dc)
@@ -1675,25 +1675,16 @@ void tmDrawer::DrawMemoryData (tmGISData * data,
 		case LAYER_SPATIAL_LINE:
 			DrawMemoryDataLine(data, layerprop, dc);
 			break;
-			/*case LAYER_SPATIAL_POINT:
-			 DrawPoints(layerprop, pdata);
-			 break;
-			 case LAYER_SPATIAL_POLYGON:
-			 DrawPolygons(layerprop, pdata);
-			 DrawVertexPoly(layerprop, pdata);
-			 break;
-			 case LAYER_SPATIAL_RASTER:
-			 DrawRaster(layerprop, pdata);
-			 break;*/
+			
 		default:
 			wxFAIL_MSG(_T("No drawer found"));
 			break;
 	}
 	
-}
+}*/
 
 
-
+/*
 void tmDrawer::DrawMemoryDataLine (tmGISData * data, 
 								   tmLayerProperties * layerprop,
 								   wxClientDC * dc)
@@ -1738,5 +1729,5 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	delete [] myPxPts;
 	delete [] pptsReal;
 }
-
+*/
 

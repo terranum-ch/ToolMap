@@ -31,7 +31,6 @@ WX_DEFINE_LIST(wxRealPointList);
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
 BEGIN_EVENT_TABLE(tmEditManager, wxEvtHandler)
-	EVT_COMMAND (wxID_ANY, tmEVT_VIEW_REFRESHED, tmEditManager::OnViewUpdated)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, tmEditManager::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, tmEditManager::OnEditStop)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_DRAW_ENTER, tmEditManager::OnDrawFeatureValidate)
@@ -76,7 +75,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     
 	m_ParentEvt->PushEventHandler(this);
     
-	m_GISMemory = new tmGISDataVectorMemory();
+	//m_GISMemory = new tmGISDataVectorMemory();
     
     m_BezierActualP1 = wxPoint(0,0);
     m_BezierActualP2= wxPoint(0,0);
@@ -102,11 +101,9 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-tmEditManager::~tmEditManager()
-{
+tmEditManager::~tmEditManager(){
 	m_ParentEvt->PopEventHandler(false);
 	//m_ParentEvt->SetEventHandler(m_ParentEvt);
-	delete m_GISMemory;
 }
 
 
@@ -1069,34 +1066,6 @@ void tmEditManager::OnToolVertexInsert(){
 }
 
 
-
-/***************************************************************************//**
- @brief Called when the view is updated
- @details After a zoom, pan or when loading the project
- @author Lucien Schreiber (c) CREALP 2009
- @date 27 January 2009
- *******************************************************************************/
-void tmEditManager::OnViewUpdated (wxCommandEvent & event){
-	wxClientDC myDC (m_Renderer);
-	m_DrawLine.DrawEditReset(&myDC);
-	
-	if (IsDrawingAllowed()==true){
-		wxRealPoint myRPT;
-		if (m_GISMemory->GetVertex(myRPT, -1))
-		{
-			wxPoint myPt = m_Scale->RealToPixel(myRPT);
-			m_DrawLine.CreateVertex(myPt);
-		}
-		DrawMemoryData(true);
-	}
-	// update tools view
-	wxCommandEvent evt(tmEVT_TM_UPDATE_TOOL_VIEW, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-}
-
-
-
-
 /***************************************************************************//**
  @brief Checks that a layer is selected
  @details 
@@ -1341,270 +1310,6 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event){
 
 
 /***************************************************************************//**
- @brief Add a vertex for line
- @details store the line vertex in memory
- @param pt the coordinate to store in memory
- @return  true if vertex was stored in memory
- @author Lucien Schreiber (c) CREALP 2009
- @date 03 February 2009
- *******************************************************************************/
-bool tmEditManager::AddLineVertex (const wxRealPoint & pt){
-	bool bReturn = m_GISMemory->InsertVertex(pt, -1);
-	return bReturn;
-}
-
-
-/***************************************************************************//**
- @brief Draw and store the point into database
- @param pt the point (real)
- @return  true if the point was successfully added to the database
- @author Lucien Schreiber (c) CREALP 2009
- @date 04 February 2009
- *******************************************************************************/
-bool tmEditManager::AddPointVertex (const wxRealPoint & pt)
-{
-	bool bReturn = true;
-	// draw the point
-	tmDrawer myEditDrawer;
-	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
-							*m_Scale, m_Scale->GetWindowExtentReal());
-	
-	// get the symbology
-	tmSymbolVectorPoint * mySymbol = (tmSymbolVectorPoint*) m_TOC->GetEditLayer()->GetSymbolRef();
-	
-	// draw the vertex in selected colour
-	myEditDrawer.DrawEditVertex(pt, mySymbol->GetRadius(),
-								*wxRED);
-
-	// store the vertex into database
-	long lpOid = StorePoint(pt);
-	if (lpOid == -1)
-	{
-		wxLogError(_T("Error inserting point into database"));
-		return false;
-	}
-	
-	// draw the selected in normal colour (blue)
-	tmGISDataVectorMemory myGISMem;
-	myGISMem.CreateFeature();
-	wxArrayLong * mySelArray = m_SelectedData->GetSelectedValues();
-	if (mySelArray != NULL)
-	{
-		for (unsigned int k = 0; k<mySelArray->GetCount();k++)
-		{
-			
-			wxRealPoint myRealPt;
-			if(myGISMem.GetPointFromDatabase(m_pDB, mySelArray->Item(k),
-											 m_TOC->GetEditLayer()->GetType())==false)
-				break;
-			
-			bool bGet = myGISMem.GetVertex(myRealPt);
-			wxASSERT(bGet);
-			myEditDrawer.DrawEditVertex(myRealPt, mySymbol->GetRadius()+1,
-										mySymbol->GetColour());
-			
-		}
-		delete mySelArray;
-	}
-	
-	
-	// select the last inserted oid
-	m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
-	m_SelectedData->SetSelected(lpOid);
-	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-	
-	//TODO: Remove this temp code
-	wxLogDebug(_T("Selected OID = %ld"), lpOid);
-	
-	m_Renderer->Refresh();
-	m_Renderer->Update();
-	return bReturn;
-}
-
-
-
-/***************************************************************************//**
- @brief Save the passed point to the database
- @param pt the point (real)
- @return  the OID of the stored point, -1 if an error occur
- @author Lucien Schreiber (c) CREALP 2009
- @date 04 February 2009
- *******************************************************************************/
-long tmEditManager::StorePoint (const wxRealPoint & pt)
-{
-	// get table
-	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
-	if (layerprop == NULL)
-		return -1;
-	
-	tmGISDataVectorMemory myTempPoint;
-	myTempPoint.CreateFeature();
-	myTempPoint.InsertVertex(pt);
-	long lid = myTempPoint.SavePointToDatabase(m_pDB, layerprop->GetType());
-	
-	return lid;
-}
-
-
-/***************************************************************************//**
- @brief Store the line in memory into database
- @details @warning No verification are done internally, make all checks before
- calling this function
- @return the OID of the line inserted or -1 if an error occur
- @author Lucien Schreiber (c) CREALP 2009
- @date 05 February 2009
- *******************************************************************************/
-long tmEditManager::StoreLine ()
-{
-	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
-	if (layerprop == NULL)
-		return -1;
-	
-	return m_GISMemory->SaveLineToDatabase(m_pDB, layerprop->GetType());
-}
-
-
-
-/***************************************************************************//**
- @brief Update line in database
- @details This function works only if tmGISDataVectorMemory object contain a
- valid OID
- @param bool true if updating was successfull
- @author Lucien Schreiber (c) CREALP 2009
- @date 29 April 2009
- *******************************************************************************/
-bool tmEditManager::UpdateLine()
-{
-	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
-	wxASSERT (layerprop);
-	if (layerprop == NULL)
-		return false;
-	
-	bool bContainOID = m_GISMemory->IsUpdating();
-	wxASSERT(bContainOID);
-	if (bContainOID == false)
-		return false;
-	
-	return m_GISMemory->UpdateLineToDatabase(m_pDB, layerprop->GetType());
-}
-
-
-bool tmEditManager::UpdatePoint()
-{
-	tmLayerProperties * layerprop = m_TOC->GetEditLayer();
-	wxASSERT (layerprop);
-	if (layerprop == NULL)
-		return false;
-	
-	bool bContainOID = m_GISMemory->IsUpdating();
-	wxASSERT(bContainOID);
-	if (bContainOID == false)
-		return false;
-	
-	return m_GISMemory->UpdatePointToDatabase(m_pDB, layerprop->GetType());
-}
-
-
-/***************************************************************************//**
- @brief Directly draw the last segment
- @author Lucien Schreiber (c) CREALP 2009
- @date 03 February 2009
- *******************************************************************************/
-void tmEditManager::DrawLastSegment ()
-{
-	wxRealPoint LastRealPt(0,0), LastLastRealPt(0,0);
-	
-	// init a drawer 
-	tmDrawer myEditDrawer;
-	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
-							*m_Scale, m_Scale->GetWindowExtentReal());
-	
-	// get the symbology
-	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->GetSymbolRef();
-	
-	// get two last vertex 
-	m_GISMemory->GetVertex(LastRealPt, -1);
-	m_GISMemory->GetVertex(LastLastRealPt, m_GISMemory->GetVertexCount()-2);
-	
-	myEditDrawer.DrawEditSegment(LastLastRealPt,
-								LastRealPt, 
-								mySymbol->GetWidth());
-	m_Renderer->Refresh();
-	m_Renderer->Update();
-}
-
-
-
-/***************************************************************************//**
- @brief Draw again the line in editing when image reloaded
- @author Lucien Schreiber (c) CREALP 2009
- @date 04 February 2009
- *******************************************************************************/
-void tmEditManager::DrawEditBitmapLine ()
-{
-	// check edit memory data for drawing
-	int iNbVertexMemory = m_GISMemory->GetVertexCount();
-	if (iNbVertexMemory == 0)
-		return;
-	
-	// init a drawer 
-	tmDrawer myEditDrawer;
-	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
-							*m_Scale, m_Scale->GetWindowExtentReal());
-	// get the symbology
-	tmSymbolVectorLine * mySymbol = (tmSymbolVectorLine*) m_TOC->GetEditLayer()->GetSymbolRef();
-
-	
-	
-	// get all vertex 
-	wxArrayRealPoints myRealPts;
-	wxRealPoint myActualPoint;
-	for (int i = 0; i<iNbVertexMemory; i++)
-	{
-		m_GISMemory->GetVertex(myActualPoint, i);
-		myRealPts.Add(myActualPoint);
-	}
-	
-	myEditDrawer.DrawEditLine(myRealPts,
-							  mySymbol->GetWidth());
-	
-	m_Renderer->Refresh();
-	m_Renderer->Update();
-
-}
-
-
-void tmEditManager::DrawMemoryData(bool refresh)
-{
-	// check edit memory data for drawing
-	int iNbVertexMemory = m_GISMemory->GetVertexCount();
-
-	
-	// Removed because flickering under Windows
-	if (refresh == true) {
-		m_Renderer->Refresh();
-		m_Renderer->Update();
-	}
-
-	
-	if (iNbVertexMemory <= 1){
-		return;
-	}
-	
-	// init a drawer 
-	tmDrawer myEditDrawer;
-	myEditDrawer.InitDrawer(m_Renderer->GetBitmap(), 
-							*m_Scale, m_Scale->GetWindowExtentReal());
-	
-	wxClientDC dc(m_Renderer);
-	myEditDrawer.DrawMemoryData(m_GISMemory, m_TOC->GetEditLayer(), &dc);
-	
-}
-
-
-
-/***************************************************************************//**
  @brief Called when TOC start editing
  @author Lucien Schreiber (c) CREALP 2009
  @date 03 February 2009
@@ -1621,8 +1326,7 @@ void tmEditManager::OnEditStart (wxCommandEvent & event)
 		m_SelectionColour.Set(mySelColorText);
 	}
     
-    m_GISMemory->CreateFeature();
-	m_EditStarted = true;	
+	m_EditStarted = true;
 	event.Skip();
 }
 
@@ -1634,7 +1338,6 @@ void tmEditManager::OnEditStart (wxCommandEvent & event)
  *******************************************************************************/
 void tmEditManager::OnEditStop (wxCommandEvent & event)
 {
-	m_GISMemory->DestroyFeature();
 	m_EditStarted = false;
 	event.Skip();
 }
@@ -1715,25 +1418,20 @@ long tmEditManager::_SaveToDatabase(){
  @author Lucien Schreiber (c) CREALP 2009
  @date 05 February 2009
  *******************************************************************************/
-void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event)
-{
-	if (IsDrawingAllowed() == false)
+void tmEditManager::OnDrawFeatureEscape (wxCommandEvent & event){
+	if (IsDrawingAllowed() == false){
 		return;
+    }
 	
 	wxClientDC myDC (m_Renderer);
 	m_DrawLine.DrawEditReset(&myDC);
 	m_DrawLine.ClearVertex();
-    
-	// Clear memory
-	m_GISMemory->DestroyFeature();
-	m_GISMemory->CreateFeature();
 	
     BezierClear();
     ArcClear();
     
 	m_Renderer->Refresh();
 	m_Renderer->Update();
-
 }
 
 
@@ -1833,119 +1531,6 @@ void tmEditManager::OnShowVertexPosition (wxCommandEvent & event)
 }
 
 
-bool tmEditManager::EMModifySearchPoint(const wxRealPoint & pt)
-{
-	// load point
-	if(m_GISMemory->GetVertexCount() == 0)
-	{
-		long myActualSel = m_SelectedData->GetSelectedUnique();
-		tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
-		wxASSERT(myActualSel != wxNOT_FOUND);
-		wxASSERT(mypLayerProp);
-		bool bCopy = m_GISMemory->GetPointFromDatabase(m_pDB, myActualSel,
-													   mypLayerProp->GetType());
-		wxASSERT(bCopy);
-		m_GISMemory->SetOID(myActualSel);
-	}
-		
-	// searching if point was correctly clicked
-	if (m_GISMemory->SearchPoint(pt, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==false)
-		return false;
-	
-	wxRealPoint myStoredRPt;
-	bool bGetPoint = m_GISMemory->GetVertex(myStoredRPt);
-	wxASSERT(bGetPoint);
-	wxPoint myPoint = m_Scale->RealToPixel(myStoredRPt);
-	bool bCreateDrawerLine = m_DrawLine.CreateVertex(myPoint);
-	wxASSERT(bCreateDrawerLine);
-	return true;
-}
-
-
-
-
-bool tmEditManager::EMModifySearchLine(const wxRealPoint & pt)
-{
-	// Load Line from DB -> Memory (if needed)
-	if( m_GISMemory->GetVertexCount() == 0)
-	{
-		long myActualSel = m_SelectedData->GetSelectedUnique();
-		tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
-		wxASSERT(myActualSel != wxNOT_FOUND);
-		wxASSERT(mypLayerProp);
-		bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
-													  mypLayerProp->GetType());
-		wxASSERT(bCopy);
-		m_GISMemory->SetOID(myActualSel);
-	}
-	
-	
-	wxRealPoint topleft, bottomright;
-	
-	// searching vertex
-	int iIndex = wxNOT_FOUND;
-	if (m_GISMemory->SearchVertex(pt, iIndex, tmSELECTION_DIAMETER, m_Scale->GetPixelSize())==false)
-		return false;
-	
-	// creating invert-video drawing
-	wxPoint * myLeft = NULL;
-	wxPoint * myRight = NULL;
-	wxPoint myPoint;
-	
-	wxRealPoint myPtToConvert;
-	bool bGetPoint = m_GISMemory->GetVertex(myPtToConvert, iIndex);
-	wxASSERT(bGetPoint);
-	myPoint = m_Scale->RealToPixel(myPtToConvert);
-	
-	if (m_GISMemory->GetVertex(myPtToConvert, iIndex + 1)==true)
-	{
-		myRight = new wxPoint(m_Scale->RealToPixel(myPtToConvert));
-	}
-	
-	if (iIndex -1 >= 0)
-	{
-		if (m_GISMemory->GetVertex(myPtToConvert, iIndex -1)==true)
-		{
-			myLeft = new wxPoint (m_Scale->RealToPixel(myPtToConvert));
-		}
-	}
-	
-	
-	// converting
-	bool bCreateDrawerLine = m_DrawLine.CreateVertex(myPoint, myLeft, myRight, iIndex);
-	wxASSERT(bCreateDrawerLine);
-	
-	if (myLeft != NULL)
-		delete myLeft;
-	
-	if (myRight != NULL)
-		delete myRight;
-	return true;
-}
-
-
-
-bool tmEditManager::EMLoadModifyData()
-{
-	if (IsModifictionAllowed()==false)
-		return false;
-	
-	// load line if needed
-	if( m_GISMemory->GetVertexCount() == 0)
-	{
-		long myActualSel = m_SelectedData->GetSelectedUnique();
-		tmLayerProperties * mypLayerProp = m_TOC->GetEditLayer();
-		wxASSERT(myActualSel != wxNOT_FOUND);
-		wxASSERT(mypLayerProp);
-		bool bCopy = m_GISMemory->GetLineFromDatabase(m_pDB, myActualSel,
-													  mypLayerProp->GetType());
-		wxASSERT(bCopy);
-		m_GISMemory->SetOID(myActualSel);
-	}
-	return true;
-}
-
-
 void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event){
 	if (m_ArcModifyIndexPoint == wxNOT_FOUND || m_ArcActualPt == wxDefaultPosition){
         return;
@@ -1956,6 +1541,7 @@ void tmEditManager::OnMenuInsertVertex(wxCommandEvent & event){
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
+
 
 
 void tmEditManager::OnMenuDeleteVertex(wxCommandEvent & event)
@@ -1970,20 +1556,6 @@ void tmEditManager::OnMenuDeleteVertex(wxCommandEvent & event)
     m_Renderer->Refresh();
     m_Renderer->Update();
 }
-
-
-
-
-void tmEditManager::EMDrawSnappingStatus (const wxPoint & pt)
-{
-	double iSnapRadius = m_Scale->DistanceToReal(m_SnapMem->GetTolerence());
-	
-	m_Renderer->DrawCircleVideoInverse(pt, iSnapRadius);
-	m_Renderer->Update();
-	wxMilliSleep(150);
-	m_Renderer->DrawCircleVideoInverseClean();
-}
-
 
 
 /***************************************************************************//**
@@ -2060,8 +1632,6 @@ bool tmEditManager::EMGetSnappingCoord (wxRealPoint & pt){
 	
 
 
-
-
 /***************************************************************************//**
  @brief Iterate all layers in snapping memory
  @details Try to get the snapped coordinate for the clicked point
@@ -2121,52 +1691,6 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
     }
     return new wxRealPoint(mySnapPts.Item(myMinItemIndex));    
 }
-
-
-
-wxRealPoint * tmEditManager::EMSearchLineMemorySnapping (const wxRealPoint & clickedpoint){
-    // get snapping info for layer in edition (line or frame)
-    long myLayerId = 0;
-    int mySnapStatus = tmSNAPPING_OFF;
-    bool bFoundLayer = false;
-    for (unsigned int i = 0; i< m_SnapMem->GetCount(); i++){
-        m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
-        if (m_TOC->GetEditLayer()->GetID() == myLayerId) {
-            bFoundLayer = true;
-            break;
-        }
-    }
-    
-    if (bFoundLayer == false) {
-        return NULL;
-    }
-    
-    // check all possible points in memory data
-    wxArrayRealPoints mySnapPts;
-    m_GISMemory->GetSnapCoord(clickedpoint, m_SnapMem->GetTolerence(), mySnapPts, mySnapStatus);
-    if (mySnapPts.GetCount() == 0) {
-        return NULL;
-    }
-    
-    // compute closest point!
-    int myMinItemIndex = 0;
-    double myMinDistance = 0;
-    for (unsigned int p = 0; p<mySnapPts.GetCount(); p++) {  
-        wxRealPoint mySubstrPtr = mySnapPts.Item(p) - clickedpoint;
-        double myDistance = fabs(sqrt((mySubstrPtr.x * mySubstrPtr.x) + (mySubstrPtr.y * mySubstrPtr.y)));
-        if (p == 0) {
-            myMinDistance = myDistance;
-        }
-        else{
-            if(myDistance < myMinDistance){
-                myMinDistance = myDistance;
-                myMinItemIndex = p;
-            }
-        }
-    }
-    return new wxRealPoint(mySnapPts.Item(myMinItemIndex));
-}
-
 
 
 /***************************************************************************//**
@@ -2892,10 +2416,6 @@ bool tmEditManager::FlipLine(){
 
 
 
-
-
-
-
 tmSharedNodeEdit::tmSharedNodeEdit(long lineid, int vertexid, 
 								   const wxPoint & coord,
 								   const wxPoint & coordprevious) {
@@ -2921,10 +2441,6 @@ void tmSharedNodeEdit::DrawLine(wxClientDC * dc, wxPoint * point) {
 
 #include <wx/arrimpl.cpp> // This is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(tmArraySharedNodes);
-
-
-
-
 
 
 
