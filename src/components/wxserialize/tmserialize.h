@@ -46,7 +46,7 @@ class tmSerialize
 		bool CanStore () {return m_outdirection;}
 		bool CanRead ();
 		void AddSeparator() {m_stream.Append(tmSERIAL_MAINSEP);}
-		void AddAuxSeparator() {m_stream.Append(tmSERIAL_AUXSEP);}
+		//void AddAuxSeparator() {m_stream.Append(tmSERIAL_AUXSEP);}
 		
 		void WriteInt (int value);
 		int ReadInt (const wxString & part);
