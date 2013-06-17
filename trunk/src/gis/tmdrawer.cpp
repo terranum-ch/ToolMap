@@ -15,10 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
 #include "tmdrawer.h"
-#include "tmgisdatavectormemory.h"
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
