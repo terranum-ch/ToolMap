@@ -1372,7 +1372,6 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
             wxRealPoint c2 = *m_BezierPointsControl[i];
             
             agg::curve4 myCurv;
-            //myCurv.angle_tolerance(500);
             myCurv.approximation_scale(0.5);
             myCurv.init(p1.x, p1.y, c1.x, c1.y, c2.x, c2.y, p2.x, p2.y);
             
