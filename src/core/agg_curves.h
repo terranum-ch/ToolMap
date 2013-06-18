@@ -27,8 +27,15 @@
 
 #include "agg_array.h"
 
+
 namespace agg
 {
+    AGG_INLINE double calc_sq_distance(double x1, double y1, double x2, double y2)
+    {
+        double dx = x2-x1;
+        double dy = y2-y1;
+        return dx * dx + dy * dy;
+    }
     
     // See Implementation agg_curves.cpp
     
@@ -38,138 +45,6 @@ namespace agg
         curve_inc,
         curve_div
     };
-    
-    //--------------------------------------------------------------curve3_inc
-    class curve3_inc
-    {
-    public:
-        curve3_inc() :
-        m_num_steps(0), m_step(0), m_scale(1.0) { }
-        
-        curve3_inc(double x1, double y1,
-                   double x2, double y2,
-                   double x3, double y3) :
-        m_num_steps(0), m_step(0), m_scale(1.0)
-        {
-            init(x1, y1, x2, y2, x3, y3);
-        }
-        
-        void reset() { m_num_steps = 0; m_step = -1; }
-        void init(double x1, double y1,
-                  double x2, double y2,
-                  double x3, double y3);
-        
-        void approximation_method(curve_approximation_method_e) {}
-        curve_approximation_method_e approximation_method() const { return curve_inc; }
-        
-        void approximation_scale(double s);
-        double approximation_scale() const;
-        
-        void angle_tolerance(double) {}
-        double angle_tolerance() const { return 0.0; }
-        
-        void cusp_limit(double) {}
-        double cusp_limit() const { return 0.0; }
-        
-        void     rewind(unsigned path_id);
-        unsigned vertex(double* x, double* y);
-        
-    private:
-        int      m_num_steps;
-        int      m_step;
-        double   m_scale;
-        double   m_start_x;
-        double   m_start_y;
-        double   m_end_x;
-        double   m_end_y;
-        double   m_fx;
-        double   m_fy;
-        double   m_dfx;
-        double   m_dfy;
-        double   m_ddfx;
-        double   m_ddfy;
-        double   m_saved_fx;
-        double   m_saved_fy;
-        double   m_saved_dfx;
-        double   m_saved_dfy;
-    };
-    
-    
-    
-    
-    
-    //-------------------------------------------------------------curve3_div
-    class curve3_div
-    {
-    public:
-        curve3_div() :
-        m_approximation_scale(1.0),
-        m_angle_tolerance(0.0),
-        m_count(0)
-        {}
-        
-        curve3_div(double x1, double y1,
-                   double x2, double y2,
-                   double x3, double y3) :
-        m_approximation_scale(1.0),
-        m_angle_tolerance(0.0),
-        m_count(0)
-        {
-            init(x1, y1, x2, y2, x3, y3);
-        }
-        
-        void reset() { m_points.remove_all(); m_count = 0; }
-        void init(double x1, double y1,
-                  double x2, double y2,
-                  double x3, double y3);
-        
-        void approximation_method(curve_approximation_method_e) {}
-        curve_approximation_method_e approximation_method() const { return curve_div; }
-        
-        void approximation_scale(double s) { m_approximation_scale = s; }
-        double approximation_scale() const { return m_approximation_scale;  }
-        
-        void angle_tolerance(double a) { m_angle_tolerance = a; }
-        double angle_tolerance() const { return m_angle_tolerance;  }
-        
-        void cusp_limit(double) {}
-        double cusp_limit() const { return 0.0; }
-        
-        void rewind(unsigned)
-        {
-            m_count = 0;
-        }
-        
-        unsigned vertex(double* x, double* y)
-        {
-            if(m_count >= m_points.size()) return path_cmd_stop;
-            const point_d& p = m_points[m_count++];
-            *x = p.x;
-            *y = p.y;
-            return (m_count == 1) ? path_cmd_move_to : path_cmd_line_to;
-        }
-        
-    private:
-        void bezier(double x1, double y1,
-                    double x2, double y2,
-                    double x3, double y3);
-        void recursive_bezier(double x1, double y1,
-                              double x2, double y2,
-                              double x3, double y3,
-                              unsigned level);
-        
-        double               m_approximation_scale;
-        double               m_distance_tolerance_square;
-        double               m_angle_tolerance;
-        unsigned             m_count;
-        pod_bvector<point_d> m_points;
-    };
-    
-    
-    
-    
-    
-    
     
     //-------------------------------------------------------------curve4_points
     struct curve4_points
@@ -195,8 +70,6 @@ namespace agg
         double  operator [] (unsigned i) const { return cp[i]; }
         double& operator [] (unsigned i)       { return cp[i]; }
     };
-    
-    
     
     //-------------------------------------------------------------curve4_inc
     class curve4_inc
@@ -269,8 +142,6 @@ namespace agg
         double   m_saved_ddfx;
         double   m_saved_ddfy;
     };
-    
-    
     
     //-------------------------------------------------------catrom_to_bezier
     inline curve4_points catrom_to_bezier(double x1, double y1,
@@ -478,111 +349,6 @@ namespace agg
     };
     
     
-    //-----------------------------------------------------------------curve3
-    class curve3
-    {
-    public:
-        curve3() : m_approximation_method(curve_div) {}
-        curve3(double x1, double y1,
-               double x2, double y2,
-               double x3, double y3) :
-        m_approximation_method(curve_div)
-        {
-            init(x1, y1, x2, y2, x3, y3);
-        }
-        
-        void reset()
-        {
-            m_curve_inc.reset();
-            m_curve_div.reset();
-        }
-        
-        void init(double x1, double y1,
-                  double x2, double y2,
-                  double x3, double y3)
-        {
-            if(m_approximation_method == curve_inc)
-            {
-                m_curve_inc.init(x1, y1, x2, y2, x3, y3);
-            }
-            else
-            {
-                m_curve_div.init(x1, y1, x2, y2, x3, y3);
-            }
-        }
-        
-        void approximation_method(curve_approximation_method_e v)
-        {
-            m_approximation_method = v;
-        }
-        
-        curve_approximation_method_e approximation_method() const
-        {
-            return m_approximation_method;
-        }
-        
-        void approximation_scale(double s)
-        {
-            m_curve_inc.approximation_scale(s);
-            m_curve_div.approximation_scale(s);
-        }
-        
-        double approximation_scale() const
-        {
-            return m_curve_inc.approximation_scale();
-        }
-        
-        void angle_tolerance(double a)
-        {
-            m_curve_div.angle_tolerance(a);
-        }
-        
-        double angle_tolerance() const
-        {
-            return m_curve_div.angle_tolerance();
-        }
-        
-        void cusp_limit(double v)
-        {
-            m_curve_div.cusp_limit(v);
-        }
-        
-        double cusp_limit() const
-        {
-            return m_curve_div.cusp_limit();
-        }
-        
-        void rewind(unsigned path_id)
-        {
-            if(m_approximation_method == curve_inc)
-            {
-                m_curve_inc.rewind(path_id);
-            }
-            else
-            {
-                m_curve_div.rewind(path_id);
-            }
-        }
-        
-        unsigned vertex(double* x, double* y)
-        {
-            if(m_approximation_method == curve_inc)
-            {
-                return m_curve_inc.vertex(x, y);
-            }
-            return m_curve_div.vertex(x, y);
-        }
-        
-    private:
-        curve3_inc m_curve_inc;
-        curve3_div m_curve_div;
-        curve_approximation_method_e m_approximation_method;
-    };
-    
-    
-    
-    
-    
     //-----------------------------------------------------------------curve4
     class curve4
     {
@@ -692,10 +458,6 @@ namespace agg
         curve4_div m_curve_div;
         curve_approximation_method_e m_approximation_method;
     };
-    
-    
-    
-    
 }
 
 #endif
