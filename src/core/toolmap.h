@@ -193,6 +193,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_DELETE_OBJ 10122
 #define ID_MENU_ORIENT_POINT 10190
 #define ID_MENU_ADJUST_SNAPPING 10001
+#define ID_MENU_SHOW_BEZIER_SETTINGS 10078
 //#define ID_MENU_SNAPPING_ADD 10168
 //#define ID_MENU_SNAPPING_REMOVE 10169
 #define ID_MENU_SNAPPING_SHOWONMAP 10170
@@ -338,6 +339,7 @@ private:
 	void OnShowAAttributionWindow (wxCommandEvent & event);
 	void OnAAttributionBatchWindow (wxCommandEvent & event);
 	void OnShowInformationDialog (wxCommandEvent & event);
+    void OnBezierSettings (wxCommandEvent & event);
 	//void OnMenuHighlightOn (wxMenuEvent & event);
 	//void OnMenuHighligntOff(wxMenuEvent & event);
 	void OnCheckUpdates (wxCommandEvent & event);

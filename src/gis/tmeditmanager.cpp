@@ -88,6 +88,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
     m_BezierSnappedPointsIndexes.Clear();
+    m_BezierApproximationScale = 0.5;
     
     
     m_ArcActualPt = wxDefaultPosition;
@@ -782,6 +783,47 @@ void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
 
 
 
+bool tmEditManager::BezierToLine (double approximation){
+    if (IsBezierToLinePreviewAllowed() == false) {
+        return false;
+    }
+    
+    for (unsigned int i = 1; i< m_BezierPoints.GetCount(); i++) {
+        wxRealPoint p1 = *m_BezierPoints[i-1];
+        wxRealPoint p2 = *m_BezierPoints[i];
+        wxRealPoint c1  = *m_BezierPoints[i-1] - (*m_BezierPointsControl[i-1] - *m_BezierPoints[i-1]);
+        if (i == 1) {
+            c1  = *m_BezierPointsControl[i-1];
+        }
+        wxRealPoint c2 = *m_BezierPointsControl[i];
+        
+        agg::curve4 myCurv;
+        myCurv.approximation_scale(approximation);
+        myCurv.init(p1.x, p1.y, c1.x, c1.y, c2.x, c2.y, p2.x, p2.y);
+        
+        double x = 0.0;
+        double y = 0.0;
+        while (myCurv.vertex(&x, &y) != agg::path_cmd_stop) {
+            m_ArcPoints.push_back(new wxRealPoint(x,y));
+        }
+    }
+    return true;
+}
+
+
+
+bool tmEditManager::IsBezierToLinePreviewAllowed (){
+    if (m_BezierPoints.GetCount() <= 1) {
+        return false;
+    }
+    
+    if (m_BezierPoints.GetCount() != m_BezierPointsControl.GetCount()) {
+        return false;
+    }
+    return true;
+}
+
+
 void tmEditManager::ArcClick (const wxPoint & mousepos){
     wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
     if(EMGetSnappingCoord(myPt)==true){
@@ -1358,29 +1400,7 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
     }
 	
     if (IsLayerType(LAYER_SPATIAL_LINE) && m_BezierPoints.GetCount() > 1) {
-        if (m_BezierPoints.GetCount() != m_BezierPointsControl.GetCount()) {
-            return;
-        }
-        
-        for (unsigned int i = 1; i< m_BezierPoints.GetCount(); i++) {
-            wxRealPoint p1 = *m_BezierPoints[i-1];
-            wxRealPoint p2 = *m_BezierPoints[i];
-            wxRealPoint c1  = *m_BezierPoints[i-1] - (*m_BezierPointsControl[i-1] - *m_BezierPoints[i-1]);
-            if (i == 1) {
-                c1  = *m_BezierPointsControl[i-1];
-            }
-            wxRealPoint c2 = *m_BezierPointsControl[i];
-            
-            agg::curve4 myCurv;
-            myCurv.approximation_scale(0.5);
-            myCurv.init(p1.x, p1.y, c1.x, c1.y, c2.x, c2.y, p2.x, p2.y);
-            
-            double x = 0.0;
-            double y = 0.0;
-            while (myCurv.vertex(&x, &y) != agg::path_cmd_stop) {
-                m_ArcPoints.push_back(new wxRealPoint(x,y));
-            }
-        }
+        BezierToLine(GetBezierApproximationScale());
         BezierClear();
     }    
     

@@ -22,6 +22,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/notifmsg.h>
+#include <wx/list.h>						// for iterating lists
 
 
 #include "tmtocctrl.h"						// for TOC ctrl
@@ -31,9 +33,8 @@
 #include "../gui/editvertex_dlg.h"			// for editing vertex position
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
-#include <wx/list.h>						// for iterating lists
 #include "../gis/tmpointorientattrib.h"		// for oriented points
-#include <wx/notifmsg.h>
+
 
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT =	22200;
@@ -108,6 +109,7 @@ private:
     int m_BezierModifyIndexPoint;
     int m_BezierModifyIndexControl;
     bool m_BezierModifyControlInverted;
+    double m_BezierApproximationScale;
     
     wxRealPointList m_ArcPoints;
     wxArrayLong m_ArcSnappedPointsIndexes;
@@ -215,6 +217,10 @@ public:
     void BezierModifyClickDown (const wxPoint & mousepos);
     void BezierModifyClickMove (const wxPoint & mousepos);
     void BezierModifyClickUp (const wxPoint & mousepos);
+    bool BezierToLine (double approximation = 0.2);
+    bool IsBezierToLinePreviewAllowed ();
+    void SetBezierApproximationScale (double scale) {m_BezierApproximationScale = scale;}
+    double GetBezierApproximationScale () {return m_BezierApproximationScale;}
     
     void ArcClick (const wxPoint & mousepos);
     void ArcMove (const wxPoint & mousepos);

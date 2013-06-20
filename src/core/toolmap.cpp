@@ -43,6 +43,7 @@
 #include "tmstats.h"
 #include "tmstatsevent.h"
 #include "../gui/attribution_obj_type.h"
+#include "../gui/beziersettings_dlg.h"
 
 #include "pdfdocument.h"
 #include "pdfexportwizard.h"
@@ -173,6 +174,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnEditVertexPosition)
 	EVT_MENU (ID_MENU_MERGE_LINES, ToolMapFrame::OnMergeSelectedLines)
 	EVT_MENU (ID_MENU_FLIP_LINE,ToolMapFrame::OnFlipLine)
+    EVT_MENU (ID_MENU_SHOW_BEZIER_SETTINGS, ToolMapFrame::OnBezierSettings)
 
 	//ATTRIBUTION MENU
 	EVT_MENU (ID_MENU_ATTRIB_TYPES,ToolMapFrame::OnShowObjectAttributionWindow)
@@ -579,6 +581,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW_BEZIER, _("Draw Bezier\tP"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY_BEZIER, _("Modify Bezier\tA"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_SHOW_BEZIER_SETTINGS, _("Bezier Settings..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_UNDO, _("Remove last vertex\tCtrl+Z"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_EDIT_VERTEX_POS, _("Edit vertex\tCtrl+V"), wxEmptyString, wxITEM_NORMAL);
@@ -1101,6 +1104,16 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 	*pi = 12;*/
 
 	m_AttribManager->DisplayInformationsWnd();
+}
+
+
+
+void ToolMapFrame::OnBezierSettings (wxCommandEvent & event){
+    BezierSettings_DLG myDlg(this, m_EditManager, m_MainPanel->GetGISRenderer());
+    myDlg.SetBezierApproximationScale(m_EditManager->GetBezierApproximationScale());
+    if( myDlg.ShowModal() == wxID_OK){
+        m_EditManager->SetBezierApproximationScale(myDlg.GetBezierApproximationScale());
+    }
 }
 
 
