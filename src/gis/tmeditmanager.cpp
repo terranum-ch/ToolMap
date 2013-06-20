@@ -824,6 +824,17 @@ bool tmEditManager::IsBezierToLinePreviewAllowed (){
 }
 
 
+
+void tmEditManager::SetBezierApproximationScale (double scale, bool savetodb){
+    m_BezierApproximationScale = scale;
+    if (savetodb == true) {
+        wxASSERT(m_pDB);
+        m_pDB->SaveBezierApproximationScale(m_BezierApproximationScale);
+    }
+}
+
+
+
 void tmEditManager::ArcClick (const wxPoint & mousepos){
     wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
     if(EMGetSnappingCoord(myPt)==true){

@@ -246,6 +246,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_MODIFY, ToolMapFrame::OnUpdateMenuEditModify)
     EVT_UPDATE_UI(ID_MENU_DRAW_BEZIER, ToolMapFrame::OnUpdateMenuEditBezierDraw)
     EVT_UPDATE_UI(ID_MENU_MODIFY_BEZIER, ToolMapFrame::OnUpdateMenuEditBezierModify)
+    EVT_UPDATE_UI(ID_MENU_SHOW_BEZIER_SETTINGS, ToolMapFrame::OnUpdateMenuBezierSettings)
 
 	EVT_UPDATE_UI (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnUpdateMenuEditModify)
 	EVT_UPDATE_UI (ID_MENU_CUT_LINES, ToolMapFrame::OnUpdateMenuEditModify)
@@ -1112,7 +1113,7 @@ void ToolMapFrame::OnBezierSettings (wxCommandEvent & event){
     BezierSettings_DLG myDlg(this, m_EditManager, m_MainPanel->GetGISRenderer());
     myDlg.SetBezierApproximationScale(m_EditManager->GetBezierApproximationScale());
     if( myDlg.ShowModal() == wxID_OK){
-        m_EditManager->SetBezierApproximationScale(myDlg.GetBezierApproximationScale());
+        m_EditManager->SetBezierApproximationScale(myDlg.GetBezierApproximationScale(), true);
     }
 }
 
@@ -1878,6 +1879,12 @@ void ToolMapFrame::OnUpdateMenuEditBezierDraw (wxUpdateUIEvent & event){
 void ToolMapFrame::OnUpdateMenuEditBezierModify (wxUpdateUIEvent & event){
     wxASSERT(m_EditManager);
     event.Enable(m_EditManager->IsModificationBezierAllowed());
+}
+
+
+void ToolMapFrame::OnUpdateMenuBezierSettings (wxUpdateUIEvent & event){
+    wxASSERT(m_PManager);
+	event.Enable(m_PManager->IsProjectOpen());
 }
 
 
