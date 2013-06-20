@@ -116,6 +116,17 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
         }
     }
     
+    // 225 -> 226
+    if (myActualDBVersion == 225) {
+        if (_225to226() == false) {
+            _SetVersion(225);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 226;
+        }
+    }
+
 	_SetVersion(myActualDBVersion);
 	return tmPRJ_UPD_ERROR_OK;
 }
@@ -170,7 +181,9 @@ bool tmProjectUpdater::_221to222(){
     _T("CREATE  TABLE IF NOT EXISTS `dmn_attribut_value` (")
     _T("`ATTRIBUT_ID` INT NOT NULL ,")
     _T("`CATALOG_ID` INT NOT NULL ,")
-    _T("PRIMARY KEY (`ATTRIBUT_ID`, `CATALOG_ID`) );");
+    _T("PRIMARY KEY (`ATTRIBUT_ID`, `CATALOG_ID`) );")
+    
+    _T(" ALTER TABLE prj_settings ADD COLUMN  `PRJ_LANG_ACTIVE` int(11) NOT NULL DEFAULT '0' AFTER `PRJ_SNAP_TOLERENCE`;");
     
     if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
         return false;
@@ -377,6 +390,29 @@ bool tmProjectUpdater::_224to225(){
     return true;
 }
 
+
+
+bool tmProjectUpdater::_225to226(){
+    // ensure column PRJ_LANG_ACTIVE exists ?
+    wxString myQuery = _T(" SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = \"%s\" AND TABLE_NAME = 'prj_settings' AND COLUMN_NAME = 'PRJ_LANG_ACTIVE'");
+    if (m_pDB->DataBaseQuery(wxString::Format(myQuery, m_pDB->DataBaseGetName()))==false) {
+        return false;
+    }
+    
+    wxString myAlterQuery = wxEmptyString;
+    if (m_pDB->DataBaseHasResults() == false) {
+        // Column PRJ_LANG_ACTIVE didn't exists! This was a bug in _221to222
+        // it's now corrected.
+        myAlterQuery =   _T(" ALTER TABLE prj_settings ADD COLUMN  `PRJ_LANG_ACTIVE` int(11) NOT NULL DEFAULT '0' AFTER `PRJ_SNAP_TOLERENCE`;");
+    }
+    m_pDB->DataBaseClearResults();
+
+    myAlterQuery.Append( _T(" ALTER TABLE prj_settings ADD COLUMN  `PRJ_BEZIER_APPROX` FLOAT NOT NULL DEFAULT 0.5 AFTER `PRJ_LANG_ACTIVE`;"));
+    if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+        return false;
+    }
+    return true;
+}
 
 
 

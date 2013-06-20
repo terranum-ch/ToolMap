@@ -116,7 +116,7 @@ void BezierSettings_DLG::_CreateControls(){
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Approximation scale") ), wxVERTICAL );
 	
 	wxStaticText* m_staticText2;
-	m_staticText2 = new wxStaticText( this, wxID_ANY, _("A small scale value implies high accuracy\nand a large number of vertices"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText2 = new wxStaticText( this, wxID_ANY, _("A high scale value implies high accuracy\nand a large number of vertices"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	sbSizer1->Add( m_staticText2, 0, wxALL, 5 );
 	

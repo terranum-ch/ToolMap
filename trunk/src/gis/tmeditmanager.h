@@ -219,7 +219,7 @@ public:
     void BezierModifyClickUp (const wxPoint & mousepos);
     bool BezierToLine (double approximation = 0.2);
     bool IsBezierToLinePreviewAllowed ();
-    void SetBezierApproximationScale (double scale) {m_BezierApproximationScale = scale;}
+    void SetBezierApproximationScale (double scale, bool savetodb=false);
     double GetBezierApproximationScale () {return m_BezierApproximationScale;}
     
     void ArcClick (const wxPoint & mousepos);

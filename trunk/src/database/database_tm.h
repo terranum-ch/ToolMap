@@ -77,7 +77,7 @@ _T("generic_notes")
 
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 225;
+const int TM_DATABASE_VERSION = 226;
 
 
 enum tmDB_OPEN_STATUS
@@ -237,6 +237,9 @@ class DataBaseTM : public DataBase
         long GetSelectedLayerId (long ojectid);
         bool DeleteAdvancedAttribution (long selectedobject, long selectedlayerid);
 		
+        bool SaveBezierApproximationScale (double approx);
+        double LoadBezierApproximationScale ();
+        
 		// static path convertion
 		static bool ConvertPath(wxString & path);
 	};
