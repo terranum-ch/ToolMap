@@ -109,7 +109,7 @@ Section "SectionPrincipale" SEC01
   SetOverwrite ifnewer
   File "..\..\..\bin\RelWithDebInfo\ToolMap.exe"
   #File "..\..\..\bin\RelWithDebInfo\ToolMap.pdb"
-  File "D:\PROGRAMMATION\ToolBasView\bin\Release\ToolBasView.exe"
+  File "D:\PROGRAMMATION\ToolBasView\bin\RelWithDebInfo\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
