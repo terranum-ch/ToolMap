@@ -3,7 +3,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ToolMap"
 ;!define PRODUCT_VERSION '2.0.475' (removed for batch script)
-!define PRODUCT_VERSION_LONG "2.2"
+!define PRODUCT_VERSION_LONG "2.5"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.toolmap.ch"
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY "Software\ToolMap"
@@ -114,7 +114,7 @@ Section "SectionPrincipale" SEC01
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
-  File "..\..\..\bin\RelWithDebInfo\gdal19.dll"
+  File "..\..\..\bin\RelWithDebInfo\gdal110.dll"
   File "..\..\..\bin\RelWithDebInfo\geos_c.dll"
   File "..\..\..\bin\RelWithDebInfo\libmysqld.dll"
   File "..\..\..\bin\RelWithDebInfo\libcurl.dll"
@@ -172,7 +172,7 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\mysql\errmsg.sys"
   Delete "$INSTDIR\libmysqld.dll"
-  Delete "$INSTDIR\gdal19.dll"
+  Delete "$INSTDIR\gdal110.dll"
   Delete "$INSTDIR\geos_c.dll"
   Delete "$INSTDIR\sqlite3.dll"
   
