@@ -407,7 +407,7 @@ void tmEditManager::ArcModifyClickUp (const wxPoint & mousepos){
     m_ArcActualPt = wxDefaultPosition;
     m_ArcModifyIndexPoint = wxNOT_FOUND;
     
-    if (IsLayerType(LAYER_SPATIAL_POINT) == true) {
+    if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
         wxCommandEvent evt;
         OnDrawFeatureValidate(evt);
     }
@@ -844,7 +844,7 @@ void tmEditManager::ArcClick (const wxPoint & mousepos){
     m_ArcPoints.push_back(new wxRealPoint(myPt));
     m_ArcActualPt = mousepos;
     
-    if (IsLayerType(LAYER_SPATIAL_POINT) == true) {
+    if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
         wxCommandEvent evt;
         OnDrawFeatureValidate(evt);
     }
@@ -923,7 +923,7 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
     
     // compute bounding box for modifications
     if (m_Renderer->GetTool() == tmTOOL_MODIFY && m_ArcModifyIndexPoint != wxNOT_FOUND) {
-        if (IsLayerType(LAYER_SPATIAL_LINE)==true){
+        if (IsLayerSpatialType(LAYER_SPATIAL_LINE)==true){
             dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint]->x, myPts[m_ArcModifyIndexPoint]->y);
             if (m_ArcModifyIndexPoint != 0) {
                 dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint-1]->x, myPts[m_ArcModifyIndexPoint-1]->y);
@@ -932,7 +932,7 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
                 dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint+1]->x, myPts[m_ArcModifyIndexPoint+1]->y);
             }
         }
-        else if (IsLayerType(LAYER_SPATIAL_POINT)==true){
+        else if (IsLayerSpatialType(LAYER_SPATIAL_POINT)==true){
             dc->CalcBoundingBox(myPts[0]->x - myNodeWidth, myPts[0]->y - myNodeWidth);
             dc->CalcBoundingBox(myPts[0]->x + myNodeWidth, myPts[0]->y + myNodeWidth);
         }
@@ -1011,14 +1011,14 @@ bool tmEditManager::_LoadSnappingStatus(){
             return false;
         }
         
-        if (IsLayerType(LAYER_SPATIAL_LINE) == true){
+        if (IsLayerSpatialType(LAYER_SPATIAL_LINE) == true){
             OGRLineString * myLine = static_cast<OGRLineString*>(myGeometry);
             for (unsigned int i = 0; i<myLine->getNumPoints(); i++) {
                 m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
             }
             OGRGeometryFactory::destroyGeometry(myGeometry);
         }
-        else if (IsLayerType(LAYER_SPATIAL_POINT) == true) {
+        else if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
             OGRPoint * myPt = static_cast<OGRPoint *>(myGeometry);
             m_ArcPoints.push_back(new wxRealPoint(myPt->getX(), myPt->getY()));
             OGRGeometryFactory::destroyGeometry(myGeometry);
@@ -1281,13 +1281,13 @@ bool tmEditManager::IsMultipleModifictionAllowed(){
 
 
 
-bool tmEditManager::IsLayerType(int layertype){
+bool tmEditManager::IsLayerSpatialType(int layertype){
 	wxASSERT(m_TOC);
 	if (m_TOC->GetEditLayer() == NULL){
 		return false;
 	}
 	
-	if (m_TOC->GetEditLayer()->GetType() != layertype) {
+	if (m_TOC->GetEditLayer()->GetSpatialType() != layertype) {
 		return false;
 	}
 	return true;
@@ -1410,12 +1410,12 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
 		return;
     }
 	
-    if (IsLayerType(LAYER_SPATIAL_LINE) && m_BezierPoints.GetCount() > 1) {
+    if (IsLayerSpatialType(LAYER_SPATIAL_LINE) && m_BezierPoints.GetCount() > 1) {
         BezierToLine(GetBezierApproximationScale());
         BezierClear();
     }    
     
-    if(IsLayerType(LAYER_SPATIAL_LINE) && m_ArcPoints.GetCount() < 1){
+    if(IsLayerSpatialType(LAYER_SPATIAL_LINE) && m_ArcPoints.GetCount() < 1){
         return;
     }
   

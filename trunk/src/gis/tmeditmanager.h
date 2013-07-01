@@ -187,7 +187,8 @@ public:
     bool IsDrawingAllowed();
     bool IsModifictionAllowed();
     bool IsModificationBezierAllowed();
-    bool IsLayerType(int layertype = LAYER_SPATIAL_LINE);
+    bool IsLayerSpatialType(int layertype = LAYER_SPATIAL_LINE);
+    
     bool IsMultipleModifictionAllowed();
     
     // deleting selected
