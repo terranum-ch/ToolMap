@@ -622,7 +622,10 @@ void tmAttributionManager::OnCopyAttribution (wxCommandEvent & event)
 	wxArrayString myValues;
 	bool bGetAAttrib = myAttrib->GetAttributesAdvanced(event.GetExtraLong(), &myLayersInfoArray, myValues);
 	if (bGetAAttrib == false){
-		wxLogError(_T("Problem getting advanced attribution values"));
+		//wxLogError(_T("Problem getting advanced attribution values"));
+        wxDELETE(mySelectedValues);
+        wxDELETE(myAttrib);
+        return;
 	}
 	
 	wxLogMessage ("Getting values for item : %ld", event.GetExtraLong());
