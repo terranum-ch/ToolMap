@@ -78,7 +78,8 @@ Queries_PANEL::Queries_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * au
 	m_AuiPanelName = SYMBOL_QUERIES_PANEL_TITLE;
 	
 	AddManagedPane(ContentFrame, m_PaneInfo);
-
+    
+    m_QueriesList->Bind(wxEVT_CONTEXT_MENU, &QueriesList::OnContextualMenu, m_QueriesList);
 }
 
 
@@ -90,6 +91,8 @@ Queries_PANEL::Queries_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * au
 Queries_PANEL::~Queries_PANEL()
 {
 	m_ParentEvt->PopEventHandler(FALSE);
+    m_QueriesList->Unbind(wxEVT_CONTEXT_MENU, &QueriesList::OnContextualMenu, m_QueriesList);
+
 }
 
 
@@ -638,7 +641,7 @@ void QueriesList::OnDoubleClickItem (wxListEvent & event){
 }
 
 
-void QueriesList::OnContextMenu (wxListEvent & event){
+void QueriesList::OnContextualMenu (wxContextMenuEvent & event){
     wxMenu* myPopupMenu = new wxMenu;
     myPopupMenu->Append(ID_QUERIES_RUN, _("Run Query"));
     myPopupMenu->Append(ID_QUERIES_APPLY_SYMBOLOGY, _("Use Query for symbology"));
@@ -647,7 +650,7 @@ void QueriesList::OnContextMenu (wxListEvent & event){
     myPopupMenu->AppendSeparator();
     myPopupMenu->Append(ID_QUERIES_ADD, _("Add query..."));
     PopupMenu(myPopupMenu);
-    event.Skip();
+    //event.Skip();
 }
 
 
