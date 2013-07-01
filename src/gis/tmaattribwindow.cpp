@@ -80,7 +80,7 @@ bool tmAAttribWindow::CheckValuesAndControls()
 	
 	if ((signed)m_Values->GetCount() != m_iTotalControls)
 	{
-		wxLogError(_T("Not same number of values (%d) that they are controls (%d)"),
+		wxLogError(_T("Not same number of values (%ld) that they are controls (%d)"),
 				   m_Values->GetCount(), m_iTotalControls);
 		
 		
