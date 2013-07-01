@@ -165,6 +165,7 @@ void tmEditManager::OnToolBezierModify(){
 
 
 void tmEditManager::BezierClick(const wxPoint & mousepos){
+    // add point to Bezier
     if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
         wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
         if(EMGetSnappingCoord(myPt)==true){
@@ -175,10 +176,17 @@ void tmEditManager::BezierClick(const wxPoint & mousepos){
         m_BezierActualP2 = mousepos;
         m_BezierDrawControlPoints = true;
     }
-    else
-    {
-        m_BezierPointsControl.push_back(new wxRealPoint(m_Scale->PixelToReal(mousepos)));
-        m_BezierActualC2 = mousepos;
+    
+    // add control point to Bezier
+    else {
+        wxPoint myP2 = m_Scale->RealToPixel( * m_BezierPoints.back());
+        m_BezierActualC2 = myP2 - (mousepos - myP2);
+        if (m_BezierPointsControl.GetCount() == 0) {
+            m_BezierPointsControl.push_back(new wxRealPoint(m_Scale->PixelToReal(mousepos)));
+        }
+        else {
+            m_BezierPointsControl.push_back(new wxRealPoint(m_Scale->PixelToReal(m_BezierActualC2)));
+        }
         m_BezierDrawControlPoints = false;
     }
     m_Renderer->Refresh();
@@ -192,10 +200,13 @@ void tmEditManager::BezierMove (const wxPoint & mousepos){
         return;
     }
     
+    // move control point
     if (m_BezierPoints.GetCount() > m_BezierPointsControl.GetCount()) {
         m_BezierActualP2 = m_Scale->RealToPixel(*m_BezierPoints.back());
-        m_BezierActualC2 = mousepos;
+        m_BezierActualC2 = m_BezierActualP2 - (mousepos - m_BezierActualP2);
     }
+    
+    // move point
     else {
         m_BezierActualP1 = m_Scale->RealToPixel(*m_BezierPoints.back());
         if (m_BezierPointsControl.GetCount() > 0){
