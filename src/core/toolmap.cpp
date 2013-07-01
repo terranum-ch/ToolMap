@@ -1867,7 +1867,7 @@ void ToolMapFrame::OnUpdateMenuEditDraw (wxUpdateUIEvent & event){
 
 void ToolMapFrame::OnUpdateMenuEditBezierDraw (wxUpdateUIEvent & event){
     wxASSERT(m_EditManager);
-    if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE) && m_EditManager->IsDrawingAllowed()) {
+    if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_LINE) && m_EditManager->IsDrawingAllowed()) {
         event.Enable(true);
         return;
     }
@@ -1947,7 +1947,7 @@ void ToolMapFrame::OnUpdateMenuEditPointOrient (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
 	bool bEnable = false;
 	if (m_EditManager->IsModifictionAllowed() == true) {
-		if (m_EditManager->IsLayerType(LAYER_SPATIAL_POINT)) {
+		if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
 			bEnable = true;
 		}
 	}
@@ -2033,7 +2033,7 @@ void ToolMapFrame::OnUpdateMenuFlipLine (wxUpdateUIEvent & event){
 	wxASSERT(m_EditManager);
 	bool bEnable = false;
 	if (m_EditManager->IsMultipleModifictionAllowed() == true) {
-        if (m_EditManager->IsLayerType(LAYER_SPATIAL_LINE)) {
+        if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
 			bEnable = true;
 		}
     }
