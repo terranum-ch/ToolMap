@@ -1815,6 +1815,11 @@ bool tmEditManager::UndoLastVertex ()
             m_BezierPoints.pop_back();
         }
         
+        int mySnapIndex = m_BezierSnappedPointsIndexes.Index(m_BezierPoints.GetCount());
+        if (mySnapIndex != wxNOT_FOUND) {
+            m_BezierSnappedPointsIndexes.RemoveAt(mySnapIndex);
+        }
+        
         m_Renderer->Refresh();
         m_Renderer->Update();
         return true;
@@ -1822,6 +1827,11 @@ bool tmEditManager::UndoLastVertex ()
     
     if (m_ArcPoints.GetCount() > 1) {
         m_ArcPoints.pop_back();
+        
+        int mySnapIndex = m_ArcSnappedPointsIndexes.Index(m_ArcPoints.GetCount());
+        if (mySnapIndex != wxNOT_FOUND) {
+            m_ArcSnappedPointsIndexes.RemoveAt(mySnapIndex);
+        }
         
         m_Renderer->Refresh();
         m_Renderer->Update();
