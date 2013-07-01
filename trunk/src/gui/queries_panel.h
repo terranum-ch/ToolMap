@@ -62,7 +62,6 @@ private:
 	virtual void AfterEditing (bool bRealyEdited);
     
     virtual void OnDoubleClickItem (wxListEvent & event);
-    virtual void OnContextMenu (wxListEvent & event);
     void OnQueryEdit (wxCommandEvent & event);
     
     void OnQueryMenuUpdateUISelected(wxUpdateUIEvent & event);
@@ -73,6 +72,8 @@ public:
 	QueriesList (wxWindow * parent, Queries_PANEL * queryparent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL,wxSize size = wxDefaultSize);
 	~QueriesList();
 	
+    void OnContextualMenu (wxContextMenuEvent & event);
+    
 	// setter
 	void SetDataBase (DataBaseTM * database) {m_pDB = database;}
 	void SetSelected (tmSelectedDataMemory * selected) {m_Selected = selected;}
