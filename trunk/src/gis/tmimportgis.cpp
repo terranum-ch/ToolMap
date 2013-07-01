@@ -79,13 +79,29 @@ bool tmImportGIS::Import(DataBaseTM * database, wxProgressDialog * progress) {
 		}
 		OGRGeometry * myGeom = myFeature->GetGeometryRef();
 		wxASSERT(myGeom);
-		
-		if (myGeomDB->AddGeometry(myGeom, -1, GetTarget()) == wxNOT_FOUND){
-			OGRFeature::DestroyFeature(myFeature);
-			wxLogError(_("Error importing geometry into the project"));
-			break;
-		}
-		iCount ++;
+        
+        // import multi objects
+        OGRwkbGeometryType myGeomType = wkbFlatten(myGeom->getGeometryType());        
+        if (myGeomType == wkbMultiPoint || myGeomType == wkbMultiLineString){
+            OGRGeometryCollection * myCollection = static_cast<OGRGeometryCollection*>(myGeom);
+            for (unsigned int i = 0; i< myCollection->getNumGeometries(); i++) {
+                OGRGeometry * myCollGeom = myCollection->getGeometryRef(i);
+                if (myGeomDB->AddGeometry(myCollGeom, -1, GetTarget()) == wxNOT_FOUND){
+                    wxLogError(_("Error importing geometry (from multi-geometries) into project"));
+                    continue;
+                }
+                ++iCount;
+            }
+        }
+        // import single object
+        else {
+            if (myGeomDB->AddGeometry(myGeom, -1, GetTarget()) == wxNOT_FOUND){
+                OGRFeature::DestroyFeature(myFeature);
+                wxLogError(_("Error importing geometry into the project"));
+                break;
+            }
+        }
+		++iCount;
 		OGRFeature::DestroyFeature(myFeature);
 		
 		bool bStop = false;
