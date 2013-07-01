@@ -360,7 +360,7 @@ void tmEditManager::ArcModifyClickDown (const wxPoint & mousepos){
     }
     
     m_ArcActualPt = mousepos;
-    wxRect myRect (0,0,3,3);
+    wxRect myRect (0,0,7,7);
     myRect = myRect.CentreIn(wxRect(m_ArcActualPt, wxSize(0,0)));
  
     for (unsigned int i = 0 ; i< m_ArcPoints.GetCount(); i++) {
@@ -685,7 +685,7 @@ void tmEditManager::BezierModifyClickDown (const wxPoint & mousepos){
     m_BezierModifyIndexControl = wxNOT_FOUND;
     m_BezierModifyControlInverted = false;
 
-    wxRect myRect (0,0,3,3);
+    wxRect myRect (0,0,7,7);
     myRect = myRect.CentreIn(wxRect(m_BezierActualP2, wxSize(0,0)));
     
     for (unsigned int i = 0 ; i< m_BezierPointsControl.GetCount(); i++) {
