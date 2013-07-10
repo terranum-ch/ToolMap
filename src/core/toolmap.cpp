@@ -183,6 +183,9 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
+    EVT_MENU (ID_MENU_EXPORT_SPECIAL_LABEL, ToolMapFrame::OnExportLabels)
+    EVT_MENU (ID_MENU_EXPORT_SPECIAL_LINES, ToolMapFrame::OnExportLines)
+
 	//EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
 
 	//SELECTION MENU
@@ -272,6 +275,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_BY_OID, ID_MENU_SELECT,ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_NONE, ID_MENU_SELECT_INVERSE, ToolMapFrame::OnUpdateMenuEditClearSelection)
+    EVT_UPDATE_UI(ID_MENU_EXPORT_SPECIAL_LABEL, ToolMapFrame::OnUpdateMenuProject)
+    EVT_UPDATE_UI(ID_MENU_EXPORT_SPECIAL_LINES, ToolMapFrame::OnUpdateMenuProject)
 
 	EVT_UPDATE_UI (ID_MENU_QUERIES, ToolMapFrame::OnUpdateMenuShowQuery)
 	EVT_UPDATE_UI (ID_QUERIES_RUN, ToolMapFrame::OnUpdateMenuEditQueryRun)
@@ -520,6 +525,12 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
+    
+    wxMenu * mySpecialExportMenu = new wxMenu();
+    mySpecialExportMenu->Append(ID_MENU_EXPORT_SPECIAL_LABEL, _("Labels..."));
+    mySpecialExportMenu->Append(ID_MENU_EXPORT_SPECIAL_LINES, _("Lines..."));
+    itemMenu2->AppendSubMenu(mySpecialExportMenu, _("Export Special"));
+    
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
     itemMenu16->Append(ID_MENU_PRJ_DEF, _("Project definition..."), wxEmptyString, wxITEM_NORMAL);
@@ -1766,6 +1777,7 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event){
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
+/*
 void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 {
 	if (m_PManager->IsProjectOpen() == false){
@@ -1785,6 +1797,15 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
         wxLogDebug(_T("Exporting all project failed"));
     }
 	
+    
+}*/
+
+void ToolMapFrame::OnExportLabels (wxCommandEvent & event){
+    
+}
+
+
+void ToolMapFrame::OnExportLines (wxCommandEvent & event){
     
 }
 
