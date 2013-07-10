@@ -10,10 +10,8 @@
 extern void images_misc_init(void);
 extern void images_misc_clean(void);
 
-extern wxBitmap *_img_btn_option;
 extern wxBitmap *_img_icon_bug;
 extern wxBitmap *_img_icon_toolmap;
 extern wxBitmap *_img_icon_toolmap_about;
-
 
 #endif /* _MISC_BMP_H_ */
