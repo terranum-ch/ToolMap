@@ -347,6 +347,45 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 }
 
 
+
+bool tmExportManager::ExportLineConcatenated (PrjDefMemManage * localprojdef){
+    ProjectDefMemoryLayers myTempLayer;
+    myTempLayer.m_LayerID = wxNOT_FOUND;
+    myTempLayer.m_LayerName = _T("line_concatenated");
+    myTempLayer.m_LayerType = LAYER_LINE;
+    
+    wxString myTextFields[] = {_T("COUNT"), _T("TM_ID"), _T("LAYER_INDEX"), _T("CODE"), _T("DESC"), _T("ATTRIBUTS")};
+    PRJDEF_FIELD_TYPE myTypes [] = {TM_FIELD_INTEGER, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT};
+    
+    for (unsigned int i = 0; i< (sizeof(myTextFields) / sizeof(wxString)); i++) {
+        ProjectDefMemoryFields * myField = new ProjectDefMemoryFields();
+        myField->m_FieldID = i + 1;
+        myField->m_Fieldname = myTextFields[i];
+        myField->m_FieldType = myTypes[i];
+        
+        if (myTypes[i] == TM_FIELD_TEXT) {
+            // Starting with GDAL/OGR 1.10, the driver knows to auto-extend
+            // string and integer fields (up to the 255 bytes limit imposed by the DBF format)
+            myField->m_FieldPrecision = 80; // default size.
+        }
+        myTempLayer.m_pLayerFieldArray.Add(myField);
+    }
+        
+    if (GetAvailableFileName(&myTempLayer) == false) {
+        return false;
+    }
+    wxLogMessage(myTempLayer.m_LayerName);
+    
+    if (_CreateExportLayer(&myTempLayer) == false) {
+        return false;
+    }
+    
+    
+    
+    return true;
+}
+
+
 /***************************************************************************//**
  @brief Create the progress dialog
  @details This function uses the wxProgressDialog class when more than one
@@ -439,7 +478,7 @@ void tmExportManager::DeleteProgress()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer)
+bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer, bool ignore_default_fields)
 {
 	wxASSERT(layer);
 	wxASSERT (m_ExportData);
@@ -457,14 +496,16 @@ bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer)
 		}
 
 	// add toolmap's id field
-	if (m_ExportData->AddFIDField()==false){
-		return false;
-	}
+	if ( ignore_default_fields == true ){
+        if (m_ExportData->AddFIDField()==false){
+            return false;
+        }
 		
-	// add obligatory (basic) fields
-	if (m_ExportData->AddGenericFields(iSizeOfObjCol)==false){
-		return false;
-	}
+        // add obligatory (basic) fields
+        if (m_ExportData->AddGenericFields(iSizeOfObjCol)==false){
+            return false;
+        }
+    }
 		
 	// add optionnal fields
 	if (layer->m_pLayerFieldArray.GetCount() > 0){ // ok we have advanced fields
