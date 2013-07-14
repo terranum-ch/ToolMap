@@ -2,7 +2,7 @@
  test_export.h
  UNIT TESTING for exporting data
  -------------------
- copyright            : (C) 2009 CREALP Lucien Schreiber 
+ copyright            : (C) 2009 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TM_TEST_EXPORT_DATA_H_
-#define _TM_TEST_EXPORT_DATA_H_
+#ifndef _TM_TEST_EXPORT_DATA_CONCAT_H_
+#define _TM_TEST_EXPORT_DATA_CONCAT_H_
 
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <cxxtest/TestSuite.h>
@@ -29,16 +29,16 @@
 #include "test_param.h"
 #include "../../src/core/tmexportmanager.h"
 
-class TEST_tmExportData : public CxxTest::TestSuite
+class TEST_tmExportConcat : public CxxTest::TestSuite
 {
 public:
 	DataBaseTM * m_pDB;
 	PrjDefMemManage * m_PrjDef;
 	wxString * m_RealExportPath;
-
-	TEST_tmExportData (bool bTest){
+    
+	TEST_tmExportConcat (bool bTest){
 		m_pDB = new DataBaseTM();
-		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ambri));
+		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestExportConcat));
 		// load project Data
 		m_PrjDef = m_pDB->GetProjectDataFromDB() ;
 		TS_ASSERT(m_PrjDef != NULL);
@@ -52,22 +52,18 @@ public:
 		
 	}
 	
-	virtual ~TEST_tmExportData(){
-		
+	virtual ~TEST_tmExportConcat(){
 		// reset path to old value
 		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 		
-		delete m_pDB;
-		if (m_PrjDef != NULL) {
-			delete m_PrjDef;
-		}
-		delete m_RealExportPath;
-	
+		wxDELETE( m_pDB) ;
+		wxDELETE( m_PrjDef );
+        wxDELETE( m_RealExportPath );
 	}
 	
-	static TEST_tmExportData *createSuite() { return new TEST_tmExportData(true);}
-    static void destroySuite( TEST_tmExportData *suite ) { delete suite; }
-
+	static TEST_tmExportConcat *createSuite() { return new TEST_tmExportConcat(true);}
+    static void destroySuite( TEST_tmExportConcat *suite ) { delete suite; }
+    
 	
 	void setUp()
 	{
@@ -76,57 +72,18 @@ public:
 	void tearDown(){
 	}
 	
-
+    
 	void testName(){
 		wxLogMessage(_T("------------------------------------"));
-		wxLogMessage(_T("------- TESTING TMEXPORT DATA ------"));
+		wxLogMessage(_T("-- TESTING EXPORT CONCAT DATA ------"));
 		wxLogMessage(_T("------------------------------------"));
 	}
 	
-	void testCreateExportManager()
-	{
-		tmExportManager myManager( NULL, m_pDB);
-	}
-	
-	void testExportNotEmptyLayers()
-	{
-		wxLogMessage(_T("Removing layers"));
-		int iLayerCount = m_PrjDef->GetCountLayers();
-		PrjDefMemManage myPrj;
-		myPrj = *m_PrjDef;
-		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), iLayerCount);
-		TS_ASSERT(myPrj.RemoveLayer(_T("WatOutflow_Empty_PT")));
-		TS_ASSERT(myPrj.RemoveLayer(_T("GravitFeat_Empty_L")));
-		TS_ASSERT(myPrj.RemoveLayer(_T("Exploitation_Empty_PLG")));
-		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), 3);
-		
-		wxLogMessage(_T("Initing all OGR drivers"));
-		OGRRegisterAll();
-		tmExportManager myManager( NULL, m_pDB);
-		TS_ASSERT(myManager.ExportAll(&myPrj));
-		
-	}
-	
-	
-	
-	void testExportEmptyLayers(){
-		
-		wxLogMessage(_T("Removing not empty layers"));
-		int iLayerCount = m_PrjDef->GetCountLayers();
-		PrjDefMemManage myPrj;
-		myPrj = *m_PrjDef;
-		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), iLayerCount);
-		TS_ASSERT(myPrj.RemoveLayer(_T("KarsticStruct_PT")));
-		TS_ASSERT(myPrj.RemoveLayer(_T("TectoBound_L")));
-		TS_ASSERT(myPrj.RemoveLayer(_T("Rocks_PLG")));
-		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), 3);
-		
-		
-		tmExportManager myManager( NULL, m_pDB);
-		TS_ASSERT(myManager.ExportAll(&myPrj));
-	}
-    	
-		
+	void testExportLine () {
+        tmExportManager myManager (NULL, m_pDB);
+        TS_ASSERT(myManager.ExportLineConcatenated(m_PrjDef));
+    }
+    
 };
 
 
