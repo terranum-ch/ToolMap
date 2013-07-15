@@ -37,6 +37,7 @@ public:
 	wxString * m_RealExportPath;
     
 	TEST_tmExportConcat (bool bTest){
+        OGRRegisterAll();
 		m_pDB = new DataBaseTM();
 		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestExportConcat));
 		// load project Data
@@ -48,7 +49,7 @@ public:
 		TS_ASSERT_DIFFERS(m_pDB->GetProjectExportData(iExportType, myTempString), PATH_DATABASE_ERROR);
 		m_RealExportPath = new wxString(myTempString);
 		
-		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, g_TestPathEXPORT));
+		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE,  g_TestPathEXPORT));
 		
 	}
 	

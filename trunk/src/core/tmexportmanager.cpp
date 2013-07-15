@@ -349,12 +349,24 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 
 
 bool tmExportManager::ExportLineConcatenated (PrjDefMemManage * localprojdef){
+    // check and init path and export type
+	if (IsExportPathValid() == false){
+        if (m_Parent == NULL) {
+            wxLogError(_("Export directory isn't specified!"));
+            return false;
+        }
+        else {
+            wxMessageBox(_("Error, export directory isn't specified or isn't valid."), _("Error exporting project"), wxOK | wxICON_ERROR ,m_Parent);
+            return false;
+        }
+	}
+    
     ProjectDefMemoryLayers myTempLayer;
     myTempLayer.m_LayerID = wxNOT_FOUND;
     myTempLayer.m_LayerName = _T("line_concatenated");
     myTempLayer.m_LayerType = LAYER_LINE;
     
-    wxString myTextFields[] = {_T("COUNT"), _T("TM_ID"), _T("LAYER_INDEX"), _T("CODE"), _T("DESC"), _T("ATTRIBUTS")};
+    wxString myTextFields[] = {_T("COUNT"), _T("TM_ID"), _T("LAYER_IDX"), _T("CODE"), _T("DESC"), _T("ATTRIBUTS")};
     PRJDEF_FIELD_TYPE myTypes [] = {TM_FIELD_INTEGER, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT};
     
     for (unsigned int i = 0; i< (sizeof(myTextFields) / sizeof(wxString)); i++) {
@@ -376,7 +388,11 @@ bool tmExportManager::ExportLineConcatenated (PrjDefMemManage * localprojdef){
     }
     wxLogMessage(myTempLayer.m_LayerName);
     
-    if (_CreateExportLayer(&myTempLayer) == false) {
+    m_ExportData = CreateExportData();
+	wxASSERT(m_ExportData);
+	//m_ExportData->SetFrame(frame, framevertex);
+    
+    if (_CreateExportLayer(&myTempLayer, true) == false) {
         return false;
     }
     
@@ -478,25 +494,23 @@ void tmExportManager::DeleteProgress()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer, bool ignore_default_fields)
-{
+bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer, bool ignore_default_fields){
 	wxASSERT(layer);
 	wxASSERT (m_ExportData);
 
-	
 	// get size of object_description
-	int iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
-	
+    int iSizeOfObjCol = 0;
+    if (ignore_default_fields == false) {
+        iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
+	}
 	
 	// create SIG layer
-	if (m_ExportData->
-		CreateEmptyExportFile(layer,
-							  m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR))==false){
+	if (m_ExportData->CreateEmptyExportFile(layer,m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR))==false){
 			return false;
-		}
+    }
 
 	// add toolmap's id field
-	if ( ignore_default_fields == true ){
+	if ( ignore_default_fields == false ){
         if (m_ExportData->AddFIDField()==false){
             return false;
         }
@@ -511,7 +525,6 @@ bool tmExportManager::_CreateExportLayer (ProjectDefMemoryLayers * layer, bool i
 	if (layer->m_pLayerFieldArray.GetCount() > 0){ // ok we have advanced fields
 		m_ExportData->AddOptFields(layer->m_pLayerFieldArray);
 	}
-		
 	return true;
 }
 
