@@ -56,6 +56,7 @@ class tmPercent : public wxObject
 		~tmPercent();
 		
 		void SetValue (long actualvalue);
+        long GetValue () {return m_ActualValue;}
 		bool IsNewStep();
 		int GetPercent();
 		

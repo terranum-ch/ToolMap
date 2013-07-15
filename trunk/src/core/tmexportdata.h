@@ -28,12 +28,14 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/progdlg.h>
 
 #include "projectdefmemory.h"			// for ProjectDefMemoryLayers definition
 #include "../database/databaseresult.h"
 
 class DataBaseTM;
 class PrjDefMemManage;
+class tmPercent;
 
 /***************************************************************************//**
  @brief Parent class for exporting data
@@ -86,10 +88,8 @@ class tmExportData : public wxObject
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WriteLabels (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual long WriteConcatGeometries (ProjectDefMemoryLayers * myLayer){return false;}
-        virtual bool AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop){return false;}
-
-        
+        virtual long WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxProgressDialog * progDlg, tmPercent * percent){return false;}
+        virtual bool AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop, wxProgressDialog * progDlg, tmPercent * percent){return false;}
 		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
         
