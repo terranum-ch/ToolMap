@@ -420,7 +420,7 @@ bool tmExportManager::ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF
     }
     m_pDB->DataBaseGetNextResult(lTotalAttrib);
     m_pDB->DataBaseClearResults();
-    wxProgressDialog myDlg(_("Exporting concatenated"), wxString::Format(_("%ld Record(s) to export in '%s'"), lTotalAttrib, PRJDEF_LAYERS_TYPE_STRING[myType]));
+    wxProgressDialog myDlg(_("Exporting concatenated"), wxString::Format(_("%ld Record(s) to export in '%s'"), lTotalAttrib, PRJDEF_LAYERS_TYPE_STRING[myType]), 100, m_Parent, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
     tmPercent myPercent (lTotalAttrib + lTotalAttrib);
     
     wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
