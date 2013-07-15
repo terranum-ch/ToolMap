@@ -71,6 +71,7 @@ public:
     bool SelectFeatureByOID (long oid);
     
     virtual OGRGeometry * GetNextGeometry(bool restart, long & oid);
+    OGRLayer * GetLayerRef () {return m_Layer;}
     
     // virtual function for metadata
     virtual wxString GetMetaDataAsHtml ();
