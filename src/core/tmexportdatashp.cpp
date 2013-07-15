@@ -19,6 +19,7 @@
 
 #include "tmexportdatashp.h"
 #include "../database/database_tm.h"
+#include "tmpercent.h"
 
 
 
@@ -321,7 +322,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 
 
-long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
+long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxProgressDialog * progDlg, tmPercent * percent){
     wxASSERT(m_pDB);
 	wxASSERT(m_pDB->DataBaseHasResults() == true);
     
@@ -359,12 +360,24 @@ long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
         m_Shp->SetFieldValue(myCodes, TM_FIELD_TEXT, 3);
         m_Shp->SetFieldValue(myDescs, TM_FIELD_TEXT, 4);
         m_Shp->CloseGeometry();
+        
+        if (percent && progDlg ) {
+            long myCount = 0;
+            myCountObj.ToLong(&myCount);
+            percent->SetValue(percent->GetValue() + myCount);
+            if (percent->IsNewStep() == true) {
+                if(progDlg->Update(percent->GetPercent())==false) {
+                    myLoop = wxNOT_FOUND;
+                    return myLoop;
+                }
+            }
+        }
     }
     return myLoop;
 }
 
 
-bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop){
+bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop, wxProgressDialog * progDlg, tmPercent * percent){
     if (layer == NULL || projdef == NULL || loop == wxNOT_FOUND) {
         return false;
     }
@@ -462,6 +475,17 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
         myFeature->SetField(5, (const char*) myAttribTxt.mb_str(wxConvUTF8));
         m_Shp->GetLayerRef()->SetFeature(myFeature);
         OGRFeature::DestroyFeature(myFeature);
+        
+        // update progress dialog
+        if (progDlg && percent) {
+            percent->SetValue(percent->GetValue() + i + myNbAttrib);
+            if (percent->IsNewStep() == true) {
+                if(progDlg->Update(percent->GetPercent())==false) {
+                    return false;
+                }
+            }
+        }
+        
     }
     return true;
 }

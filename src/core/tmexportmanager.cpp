@@ -20,6 +20,7 @@
 #include "tmexportmanager.h"
 #include "tmdataintegrity.h"
 #include "../gis/tmtocctrl.h"
+#include "tmpercent.h"
 
 
 
@@ -409,8 +410,19 @@ bool tmExportManager::ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF
         return false;
     }
     myTempLayer.m_LayerType = myType;
-        
-    //TODO: Get Number of features and create a progress dialog here
+    
+    
+    // create progress dialog
+    long lTotalAttrib = wxNOT_FOUND;
+    wxString myTotQuery = wxString::Format( _T("SELECT COUNT(*) FROM %s"), TABLE_NAME_GIS_ATTRIBUTION[myTempLayer.m_LayerType]);
+    if (m_pDB->DataBaseQuery(myTotQuery) == false) {
+        return false;
+    }
+    m_pDB->DataBaseGetNextResult(lTotalAttrib);
+    m_pDB->DataBaseClearResults();
+    wxProgressDialog myDlg(_("Exporting concatenated"), wxString::Format(_("%ld Record(s) to export in '%s'"), lTotalAttrib, PRJDEF_LAYERS_TYPE_STRING[myType]));
+    tmPercent myPercent (lTotalAttrib + lTotalAttrib);
+    
     wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
     wxString myQuery = wxString::Format(myQueryTmp, TABLE_NAME_GIS_GENERIC[myTempLayer.m_LayerType], TABLE_NAME_GIS_ATTRIBUTION[myTempLayer.m_LayerType], TABLE_NAME_OBJECTS);
     wxASSERT(m_pDB);
@@ -419,8 +431,8 @@ bool tmExportManager::ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF
         return false;
     }
     
-    long myLoop = m_ExportData->WriteConcatGeometries(&myTempLayer);
-    return m_ExportData->AddConcatAttributs(&myTempLayer, localprojdef, myLoop);
+    long myLoop = m_ExportData->WriteConcatGeometries(&myTempLayer, &myDlg, &myPercent);
+    return m_ExportData->AddConcatAttributs(&myTempLayer, localprojdef, myLoop, &myDlg, &myPercent);
 }
 
 
