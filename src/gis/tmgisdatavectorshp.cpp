@@ -744,14 +744,11 @@ wxArrayLong * tmGISDataVectorSHP::GetAllData ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
-{
+bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type){
 	const char *pszDriverName = "ESRI Shapefile";
     OGRSFDriver *poDriver;
 
-
-    poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
-																	 pszDriverName );
+    poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName );
     if( poDriver == NULL )
     {
 		wxASSERT_MSG(0, _T(" driver not available."));
@@ -766,8 +763,7 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	wxDELETEA(buffer);
 
 	if( m_Datasource == NULL ){
-        wxLogError(_("Creation of output file '%s' failed."),
-					 filename.GetFullName().c_str());
+        wxLogError(_("Creation of output file '%s' failed."),filename.GetFullName().c_str());
         return false;
     }
 
@@ -794,7 +790,6 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	if (myGeomType == wkbUnknown)
 		return false;
 
-
 	// creating the layer
 	wxString myFileNameWOExt = filename.GetName();
 	char * buffer2 = new char [myFileNameWOExt.Length() * sizeof(wxString)];
@@ -802,8 +797,7 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type)
 	m_Layer = m_Datasource->CreateLayer( buffer2, NULL, myGeomType, NULL );
 	wxDELETEA(buffer2);
 
-    if( m_Layer == NULL )
-    {
+    if( m_Layer == NULL ){
 		wxASSERT_MSG(0 , _T("Layer creation failed."));
         return false;
     }
