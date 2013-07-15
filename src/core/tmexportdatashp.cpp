@@ -321,6 +321,51 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 
 
+bool tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
+    wxASSERT(m_pDB);
+	wxASSERT(m_pDB->DataBaseHasResults() == true);
+    
+	DataBaseResult myResult;
+	m_pDB->DataBaseGetResults(&myResult);
+	if( myResult.HasResults() == false) {
+        wxLogMessage(_("Nothing to export in '%s'!"), layer->m_LayerName);
+        return true;
+    }
+    
+	for (long i = 0; i < myResult.GetRowCount(); i++) {
+		myResult.NextRow();
+        
+        OGRGeometry * myGeom = NULL;
+        if (myResult.GetValue(1, &myGeom) == false) {
+            wxLogError(_("No geometry in '%s' @ loop: %ld"), layer->m_LayerName, i);
+            continue;
+        }
+        wxASSERT(myGeom);
+        m_Shp->AddGeometry(myGeom, i+1);
+        
+        wxString myCountObj = wxEmptyString;
+        wxString myTmIds = wxEmptyString;
+        wxString myTmLayerIdx = wxEmptyString;
+        wxString myCodes = wxEmptyString;
+        wxString myDescs = wxEmptyString;
+        myResult.GetValue(0, myCountObj);
+        myResult.GetValue(2, myTmIds);
+        myResult.GetValue(3, myTmLayerIdx);
+        myResult.GetValue(4, myCodes);
+        myResult.GetValue(5, myDescs);
+        m_Shp->SetFieldValue(myCountObj, TM_FIELD_INTEGER, 0);
+        m_Shp->SetFieldValue(myTmIds, TM_FIELD_TEXT, 1);
+        m_Shp->SetFieldValue(myTmLayerIdx, TM_FIELD_TEXT, 2);
+        m_Shp->SetFieldValue(myCodes, TM_FIELD_TEXT, 3);
+        m_Shp->SetFieldValue(myDescs, TM_FIELD_TEXT, 4);
+        m_Shp->CloseGeometry();
+    }
+    return true;
+}
+
+
+
+
 
 /***************************************************************************//**
  @brief Write all geometrics points to the shp

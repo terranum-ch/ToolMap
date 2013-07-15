@@ -69,6 +69,7 @@ class tmExportManager : public wxObject
 		bool _CreateExportLayer (ProjectDefMemoryLayers * layer, bool ignore_default_fields = false);
 		bool _ExportSimple (ProjectDefMemoryLayers * layer);
 		bool _ExportPolyGIS (ProjectDefMemoryLayers * layer);
+        bool _ExportConcatSimple (ProjectDefMemoryLayers * layer);
 		
 		wxRealPoint * GetFrame (int & nbvertex);
 		
@@ -102,7 +103,8 @@ class tmExportManager : public wxObject
 		// Export public function
 		bool ExportAll (PrjDefMemManage * localprojdef);
 		bool ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager);
-        bool ExportLineConcatenated (PrjDefMemManage * localprojdef);
+        bool ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF_LAYERS_TYPE type);
+
 };
 
 

@@ -82,7 +82,17 @@ public:
 	
 	void testExportLine () {
         tmExportManager myManager (NULL, m_pDB);
-        TS_ASSERT(myManager.ExportLineConcatenated(m_PrjDef));
+        TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_LINE));
+    }
+    
+    void testExportPoint () {
+        tmExportManager myManager (NULL, m_pDB);
+        TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_POINT));
+    }
+    
+    void testExportLabels () {
+        tmExportManager myManager (NULL, m_pDB);
+        TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_POLYGON));
     }
     
 };
