@@ -235,8 +235,7 @@ const int ID_MENU_LAYOUT_VERTICAL = 15202;
 const int ID_MENU_LAYOUT_HORIZONTAL = 15203;
 const int ID_MENU_VALIDITY = 15204;
 
-const int ID_MENU_EXPORT_SPECIAL_LABEL = wxWindow::NewControlId();
-const int ID_MENU_EXPORT_SPECIAL_LINES = wxWindow::NewControlId();
+const int ID_MENU_EXPORT_CONCATENATED = wxWindow::NewControlId();
 
 const wxString g_ProgName = _T("ToolMap");
 const wxString g_ProgMajorVersion = _T("2.5");
@@ -329,8 +328,7 @@ private:
 	void OnZoomToSelectedLayer(wxCommandEvent & event);
 	void OnExportSelected (wxCommandEvent & event);
 	//void OnExportAll (wxCommandEvent & event);
-	void OnExportLabels (wxCommandEvent & event);
-    void OnExportLines (wxCommandEvent & event);
+    void OnExportConcatenated (wxCommandEvent & event);
     
     void OnShowShortcutWindow (wxCommandEvent & event);
 	void OnShowSnappingWindow (wxCommandEvent & event);

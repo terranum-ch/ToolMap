@@ -183,8 +183,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	// EXPORT MENU
 	EVT_MENU (ID_MENU_EXPORT_LAYER, ToolMapFrame::OnExportSelected)
-    EVT_MENU (ID_MENU_EXPORT_SPECIAL_LABEL, ToolMapFrame::OnExportLabels)
-    EVT_MENU (ID_MENU_EXPORT_SPECIAL_LINES, ToolMapFrame::OnExportLines)
+    EVT_MENU (ID_MENU_EXPORT_CONCATENATED, ToolMapFrame::OnExportConcatenated)
 
 	//EVT_MENU (ID_MENU_EXPORT_FULL, ToolMapFrame::OnExportAll)
 
@@ -275,8 +274,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_BY_OID, ID_MENU_SELECT,ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI_RANGE (ID_MENU_SELECT_NONE, ID_MENU_SELECT_INVERSE, ToolMapFrame::OnUpdateMenuEditClearSelection)
-    EVT_UPDATE_UI(ID_MENU_EXPORT_SPECIAL_LABEL, ToolMapFrame::OnUpdateMenuProject)
-    EVT_UPDATE_UI(ID_MENU_EXPORT_SPECIAL_LINES, ToolMapFrame::OnUpdateMenuProject)
+    EVT_UPDATE_UI(ID_MENU_EXPORT_CONCATENATED, ToolMapFrame::OnUpdateMenuProject)
 
 	EVT_UPDATE_UI (ID_MENU_QUERIES, ToolMapFrame::OnUpdateMenuShowQuery)
 	EVT_UPDATE_UI (ID_QUERIES_RUN, ToolMapFrame::OnUpdateMenuEditQueryRun)
@@ -525,12 +523,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
-    
-    wxMenu * mySpecialExportMenu = new wxMenu();
-    mySpecialExportMenu->Append(ID_MENU_EXPORT_SPECIAL_LABEL, _("Labels..."));
-    mySpecialExportMenu->Append(ID_MENU_EXPORT_SPECIAL_LINES, _("Lines..."));
-    itemMenu2->AppendSubMenu(mySpecialExportMenu, _("Export Special"));
-    
+    itemMenu2->Append(ID_MENU_EXPORT_CONCATENATED, _("Export Concatenated..."));
+      
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
     itemMenu16->Append(ID_MENU_PRJ_DEF, _("Project definition..."), wxEmptyString, wxITEM_NORMAL);
@@ -1800,13 +1794,43 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
     
 }*/
 
-void ToolMapFrame::OnExportLabels (wxCommandEvent & event){
-    
-}
 
 
-void ToolMapFrame::OnExportLines (wxCommandEvent & event){
+void ToolMapFrame::OnExportConcatenated (wxCommandEvent & event){
     
+    wxString myChoices [] = {_("Lines"), _("Points"), _("Labels")};
+    wxMultiChoiceDialog myDlg(this, _("Select layer(s) to export"), _("Export Concatenated"), sizeof(myChoices) / sizeof(wxString), &myChoices[0]);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    
+    wxArrayInt mySelection = myDlg.GetSelections();
+    if (mySelection.GetCount() == 0) {
+        return;
+    }
+    
+    PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
+    PrjDefMemManage myCopyProj;
+    myCopyProj = *memProj;
+    tmExportManager myExport(this, m_PManager->GetDatabase());
+    
+    if (mySelection.Index(0) != wxNOT_FOUND) {
+        if( myExport.ExportConcatenated(&myCopyProj, LAYER_LINE) == false){
+            return;
+        }
+    }    
+    
+    if (mySelection.Index(1) != wxNOT_FOUND) {
+        if (myExport.ExportConcatenated(&myCopyProj, LAYER_POINT) == false){
+            return;
+        }
+    }
+    
+    if (mySelection.Index(2) != wxNOT_FOUND) {
+        if( myExport.ExportConcatenated(&myCopyProj, LAYER_POLYGON) == false) {
+            return;
+        }
+    }
 }
 
 
