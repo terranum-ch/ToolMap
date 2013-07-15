@@ -348,7 +348,7 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 
 
 
-bool tmExportManager::ExportLineConcatenated (PrjDefMemManage * localprojdef){
+bool tmExportManager::ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF_LAYERS_TYPE type){
     // check and init path and export type
 	if (IsExportPathValid() == false){
         if (m_Parent == NULL) {
@@ -365,6 +365,14 @@ bool tmExportManager::ExportLineConcatenated (PrjDefMemManage * localprojdef){
     myTempLayer.m_LayerID = wxNOT_FOUND;
     myTempLayer.m_LayerName = _T("line_concatenated");
     myTempLayer.m_LayerType = LAYER_LINE;
+    if (type == LAYER_POINT) {
+        myTempLayer.m_LayerName = _T("points_concatenated");
+        myTempLayer.m_LayerType = LAYER_POINT;
+    }
+    if (type == LAYER_POLYGON) {
+        myTempLayer.m_LayerName = _T("labels_concatenated");
+        myTempLayer.m_LayerType = LAYER_POLYGON;
+    }
     
     wxString myTextFields[] = {_T("COUNT"), _T("TM_ID"), _T("LAYER_IDX"), _T("CODE"), _T("DESC"), _T("ATTRIBUTS")};
     PRJDEF_FIELD_TYPE myTypes [] = {TM_FIELD_INTEGER, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT};
@@ -392,13 +400,36 @@ bool tmExportManager::ExportLineConcatenated (PrjDefMemManage * localprojdef){
 	wxASSERT(m_ExportData);
 	//m_ExportData->SetFrame(frame, framevertex);
     
+    // create point layer for polygon and points
+    PRJDEF_LAYERS_TYPE myType = myTempLayer.m_LayerType;
+    if (myTempLayer.m_LayerType == LAYER_POLYGON) {
+        myTempLayer.m_LayerType = LAYER_POINT;
+    }
     if (_CreateExportLayer(&myTempLayer, true) == false) {
         return false;
     }
+    myTempLayer.m_LayerType = myType;
     
-    
-    
+    if (_ExportConcatSimple(&myTempLayer) == false) {
+        return false;
+    }
     return true;
+}
+
+
+
+
+bool tmExportManager::_ExportConcatSimple (ProjectDefMemoryLayers * layer){
+    wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
+    PRJDEF_LAYERS_TYPE myType = layer->m_LayerType;
+    wxString myQuery = wxString::Format(myQueryTmp, TABLE_NAME_GIS_GENERIC[myType], TABLE_NAME_GIS_ATTRIBUTION[myType], TABLE_NAME_OBJECTS);
+    wxASSERT(m_pDB);
+    
+    if (m_pDB->DataBaseQuery(myQuery) == false) {
+        return false;
+    }
+    
+    return m_ExportData->WriteConcatGeometries(layer);
 }
 
 

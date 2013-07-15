@@ -89,6 +89,7 @@ class tmExportDataSHP : public tmExportData
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer);
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer);
 		virtual bool WriteLabels (ProjectDefMemoryLayers * myLayer);
+        virtual bool WriteConcatGeometries (ProjectDefMemoryLayers * layer);
 		
 		virtual bool SetAttributsBasic(DataBaseResult & results);
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, 
