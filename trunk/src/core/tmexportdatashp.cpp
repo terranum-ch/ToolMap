@@ -480,9 +480,10 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
         if (progDlg && percent) {
             percent->SetValue(percent->GetValue() + i + myNbAttrib);
             if (percent->IsNewStep() == true) {
-                if(progDlg->Update(percent->GetPercent())==false) {
+                if(progDlg->Update(percent->GetPercent(), _("Processing attributs"))==false) {
                     return false;
                 }
+                wxLogMessage(_("Percent: %d"), percent->GetPercent());
             }
         }
         
