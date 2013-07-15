@@ -33,6 +33,7 @@
 #include "../database/databaseresult.h"
 
 class DataBaseTM;
+class PrjDefMemManage;
 
 /***************************************************************************//**
  @brief Parent class for exporting data
@@ -85,7 +86,9 @@ class tmExportData : public wxObject
 		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
 		virtual bool WriteLabels (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual bool WriteConcatGeometries (ProjectDefMemoryLayers * myLayer){return false;}
+		virtual long WriteConcatGeometries (ProjectDefMemoryLayers * myLayer){return false;}
+        virtual bool AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop){return false;}
+
         
 		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
 		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}

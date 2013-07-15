@@ -321,7 +321,7 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 
 
-bool tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
+long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
     wxASSERT(m_pDB);
 	wxASSERT(m_pDB->DataBaseHasResults() == true);
     
@@ -329,10 +329,10 @@ bool tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
 	m_pDB->DataBaseGetResults(&myResult);
 	if( myResult.HasResults() == false) {
         wxLogMessage(_("Nothing to export in '%s'!"), layer->m_LayerName);
-        return true;
+        return wxNOT_FOUND;
     }
-    
-	for (long i = 0; i < myResult.GetRowCount(); i++) {
+    long myLoop = myResult.GetRowCount();
+	for (long i = 0; i < myLoop; i++) {
 		myResult.NextRow();
         
         OGRGeometry * myGeom = NULL;
@@ -359,6 +359,109 @@ bool tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer){
         m_Shp->SetFieldValue(myCodes, TM_FIELD_TEXT, 3);
         m_Shp->SetFieldValue(myDescs, TM_FIELD_TEXT, 4);
         m_Shp->CloseGeometry();
+    }
+    return myLoop;
+}
+
+
+bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop){
+    if (layer == NULL || projdef == NULL || loop == wxNOT_FOUND) {
+        return false;
+    }
+    
+    wxASSERT(m_Shp);
+    if (m_Shp->GetCount() != loop) {
+        wxLogError(_("Not the number of features expected in '%s' (expected: %ld, found: %ld"), layer->m_LayerName, loop, m_Shp->GetCount());
+        return false;
+    }
+    
+    tmRealRect myRect (0,0,0,0);
+    m_Shp->SetSpatialFilter(myRect, 0);
+    for (long i = 0; i< loop; i++) {
+       OGRFeature * myFeature = m_Shp->GetNextFeature();
+        if (myFeature == NULL) {
+            wxLogError(_("Feature: %ld is NULL"), i);
+            continue;
+        }
+        
+        // get feature id, feature code, layerindex
+        wxString myAttribTxt = wxEmptyString;
+        int myNbAttrib = myFeature->GetFieldAsInteger(0);
+        wxArrayString myTmIds = wxStringTokenize( wxString(myFeature->GetFieldAsString(1) ), _T(";\n") );
+        wxArrayString myLayerIdx = wxStringTokenize( wxString(myFeature->GetFieldAsString(2) ), _T(";\n") );
+        wxArrayString myCodes = wxStringTokenize( wxString(myFeature->GetFieldAsString(3) ), _T(";\n") );
+        wxASSERT(myTmIds.GetCount() == myLayerIdx.GetCount() && myCodes.GetCount() == myLayerIdx.GetCount() && myCodes.GetCount() == myNbAttrib);
+        
+        for (unsigned int a = 0; a < myNbAttrib; a++) {
+            long myId = wxNOT_FOUND;
+            long myLayerIndex = wxNOT_FOUND;
+            myTmIds.Item(a).ToLong(&myId);
+            myLayerIdx.Item(a).ToLong(&myLayerIndex);
+            
+            ProjectDefMemoryLayers * myLayer = projdef->FindLayerByRealID(myLayerIndex);
+            wxASSERT(myLayer);
+            if (myLayer == NULL || myLayer->m_pLayerFieldArray.GetCount() == 0) {
+                myAttribTxt.Append(_T(";"));
+                continue;
+            }
+            
+            // layerindex has attributs, get them
+            wxString myFields;
+            for (unsigned int f = 0; f < myLayer->m_pLayerFieldArray.GetCount(); f++) {
+                myFields.Append(wxString::Format(_T("at.%s,"), myLayer->m_pLayerFieldArray.Item(f)->m_Fieldname));
+            }
+            myFields.RemoveLast();
+            
+            wxString myQuery = wxString::Format( _T("SELECT %s FROM %s l  JOIN (%s AS a, %s AS o, layer_at%ld AS at) ON (l.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID AND at.OBJECT_ID = l.OBJECT_ID) WHERE l.OBJECT_ID = %ld AND o.OBJECT_CD = \"%s\""),
+                                                myFields,
+                                                TABLE_NAME_GIS_GENERIC[layer->m_LayerType],
+                                                TABLE_NAME_GIS_ATTRIBUTION[layer->m_LayerType],
+                                                TABLE_NAME_OBJECTS,
+                                                myLayerIndex,
+                                                myId,
+                                                myCodes.Item(a));
+            if (m_pDB->DataBaseQuery(myQuery) == false) {
+                myAttribTxt.Append(_T(";"));
+                continue;
+            }
+            
+            if (m_pDB->DataBaseHasResults() == false) {
+                myAttribTxt.Append(_T(";"));
+                continue;
+            }
+            
+            DataBaseResult myResult;
+            m_pDB->DataBaseGetResults(&myResult);
+            myResult.NextRow();
+            for (unsigned int c = 0; c < myResult.GetColCount(); c++) {
+                ProjectDefMemoryFields * myField = myLayer->m_pLayerFieldArray.Item(c);
+                wxASSERT(myField);
+                wxString myFieldValueTxt;
+                myResult.GetValue(c, myFieldValueTxt);
+                wxString myFieldValue = myFieldValueTxt;
+                if (myField->m_FieldType == TM_FIELD_ENUMERATION) {
+                    long myFieldValueId = wxNOT_FOUND;
+                    myFieldValueTxt.ToLong(&myFieldValueId);
+                    for (unsigned int e = 0; e < myField->m_pCodedValueArray.GetCount(); e++) {
+                        ProjectDefMemoryFieldsCodedVal * myVal = myField->m_pCodedValueArray.Item(e);
+                        wxASSERT(myVal);
+                        if (myVal->m_ValueID == myFieldValueId) {
+                            myFieldValue = myVal->m_ValueName;
+                            break;
+                        }
+                    }
+                }
+                
+                myAttribTxt.Append(wxString::Format(_T("%s=%s|"), myField->m_Fieldname, myFieldValue));
+            }
+            myAttribTxt.RemoveLast();
+            myAttribTxt.Append(_T(";"));
+         }
+        myAttribTxt.RemoveLast();
+        
+        myFeature->SetField(5, (const char*) myAttribTxt.mb_str(wxConvUTF8));
+        m_Shp->GetLayerRef()->SetFeature(myFeature);
+        OGRFeature::DestroyFeature(myFeature);
     }
     return true;
 }
