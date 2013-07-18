@@ -35,6 +35,7 @@
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
 #include "../gis/tmpointorientattrib.h"		// for oriented points
 #include "../gui/beziersettings_dlg.h"
+#include "../core/bezierethz.h"
 
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT =	22200;
@@ -65,7 +66,6 @@ public:
 	void SetCoordVertex (const wxPoint & point){m_CoordVertex = point;}
 };
 WX_DECLARE_OBJARRAY(tmSharedNodeEdit, tmArraySharedNodes);
-WX_DECLARE_LIST(wxRealPoint, wxRealPointList);
 
 /***************************************************************************//**
  @brief Deals with editing data
@@ -219,7 +219,7 @@ public:
     void BezierModifyClickDown (const wxPoint & mousepos);
     void BezierModifyClickMove (const wxPoint & mousepos);
     void BezierModifyClickUp (const wxPoint & mousepos);
-    bool BezierToLine (double approximation = 0.2);
+    bool BezierToLine (BezierSettingsData settings);
     bool IsBezierToLinePreviewAllowed ();
     void SetBezierSettings (BezierSettingsData data, bool savetodb=false);
     BezierSettingsData GetBezierSettings () {return m_BezierSettings;}

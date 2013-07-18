@@ -22,6 +22,7 @@ BezierSettings_DLG::BezierSettings_DLG( wxWindow* parent, tmEditManager * editma
     m_PreviewCtrl = NULL;
     m_EditManager = editmanager;
     m_Renderer = renderer;
+    m_PreviousData.agg_approximation = wxNOT_FOUND;
     
     _CreateControls();
     
@@ -92,7 +93,7 @@ void BezierSettings_DLG::OnIdlePreview( wxIdleEvent& event ){
     // display bezier preview
     wxASSERT(m_EditManager);
     m_EditManager->ArcClear();
-    m_EditManager->BezierToLine(m_Data.agg_approximation);
+    m_EditManager->BezierToLine(m_Data);
     
     m_Renderer->Refresh();
     m_Renderer->Update();
