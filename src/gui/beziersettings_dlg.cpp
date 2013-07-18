@@ -174,16 +174,16 @@ void BezierSettings_DLG::_CreateControls(){
 	m_staticText3->Wrap( -1 );
 	fgSizer1->Add( m_staticText3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_WidthToleranceCtrl = new wxSpinCtrlDouble( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxSP_ARROW_KEYS, 0, 1000, 0, 0.1 );
-	fgSizer1->Add( m_WidthToleranceCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	m_WidthToleranceCtrl = new wxSpinCtrlDouble( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxSP_ARROW_KEYS, 0, 1000, 0, 0.1 );
+	fgSizer1->Add( m_WidthToleranceCtrl, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxStaticText* m_staticText4;
 	m_staticText4 = new wxStaticText( m_panel2, wxID_ANY, _("Maximum number of points\nfor each Bezier segment"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText4->Wrap( -1 );
 	fgSizer1->Add( m_staticText4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_MaxNumPointsCtrl = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10000, 0 );
-	fgSizer1->Add( m_MaxNumPointsCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_MaxNumPointsCtrl = new wxSpinCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition,  wxSize( 100,-1 ), wxSP_ARROW_KEYS, 0, 10000, 0 );
+	fgSizer1->Add( m_MaxNumPointsCtrl, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
 	sbSizer3->Add( fgSizer1, 1, wxEXPAND, 5 );
