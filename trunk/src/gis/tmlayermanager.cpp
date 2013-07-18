@@ -490,13 +490,20 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 	wxArrayString myFilesNames; 
 	myDlg.GetPaths(myFilesNames);
 	
-	for (unsigned int i = 0; i< myFilesNames.GetCount(); i++) {
+    // zoom to full extent only if only base layer are present.
+    bool bZoomToFullExtent = false;
+    if (m_TOCCtrl->GetCountLayers() == 5) {
+        bZoomToFullExtent = true;
+    }
+    
+    for (unsigned int i = 0; i< myFilesNames.GetCount(); i++) {
 		wxFileName myFilename (myFilesNames.Item(i));
         if (OpenLayer(myFilename,false)==false) {
             continue;
         }
 	}
-	LoadProjectLayers();
+    
+    ReloadProjectLayersThreadStart(bZoomToFullExtent, true);
 }
 
 
