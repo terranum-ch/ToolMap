@@ -436,7 +436,8 @@ int ProjectManager::OpenProject(const wxString & path)
 	m_StatManager->Create(m_DB);
 	
     // load bezier approximation
-    m_EditManager->SetBezierApproximationScale(m_DB->LoadBezierApproximationScale());
+    // TODO: Load bezier settings from database
+    //m_EditManager->SetBezierApproximationScale(m_DB->LoadBezierApproximationScale());
     
     
 	// project is now open !

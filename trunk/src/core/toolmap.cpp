@@ -1116,9 +1116,10 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 
 void ToolMapFrame::OnBezierSettings (wxCommandEvent & event){
     BezierSettings_DLG myDlg(this, m_EditManager, m_MainPanel->GetGISRenderer());
-    myDlg.SetBezierApproximationScale(m_EditManager->GetBezierApproximationScale());
+    myDlg.SetBezierSettings(m_EditManager->GetBezierSettings());
+    
     if( myDlg.ShowModal() == wxID_OK){
-        m_EditManager->SetBezierApproximationScale(myDlg.GetBezierApproximationScale(), true);
+        m_EditManager->SetBezierSettings(myDlg.GetBezierSettings(), true);
     }
 }
 

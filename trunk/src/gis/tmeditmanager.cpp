@@ -88,7 +88,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
     m_BezierSnappedPointsIndexes.Clear();
-    m_BezierApproximationScale = 0.5;
+    //m_BezierApproximationScale = 0.5;
     
     
     m_ArcActualPt = wxDefaultPosition;
@@ -842,11 +842,12 @@ bool tmEditManager::IsBezierToLinePreviewAllowed (){
 
 
 
-void tmEditManager::SetBezierApproximationScale (double scale, bool savetodb){
-    m_BezierApproximationScale = scale;
+void tmEditManager::SetBezierSettings (BezierSettingsData data, bool savetodb){
+    m_BezierSettings = data;
     if (savetodb == true) {
         wxASSERT(m_pDB);
-        m_pDB->SaveBezierApproximationScale(m_BezierApproximationScale);
+        // TODO: Add database support for saving bezier settings
+        //m_pDB->SaveBezierApproximationScale(m_BezierApproximationScale);
     }
 }
 
@@ -1428,7 +1429,7 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
     }
 	
     if (IsLayerSpatialType(LAYER_SPATIAL_LINE) && m_BezierPoints.GetCount() > 1) {
-        BezierToLine(GetBezierApproximationScale());
+        BezierToLine(m_BezierSettings.agg_approximation);
         BezierClear();
     }    
     
