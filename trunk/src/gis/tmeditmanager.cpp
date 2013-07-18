@@ -27,8 +27,6 @@
 
 #include "../core/agg_curves.h"
 
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(wxRealPointList);
 
 DEFINE_EVENT_TYPE(tmEVT_FOCUS_RENDERER);
 
@@ -794,7 +792,7 @@ void tmEditManager::BezierModifyClickUp (const wxPoint & mousepos){
 
 
 
-bool tmEditManager::BezierToLine (double approximation){
+bool tmEditManager::BezierToLine (BezierSettingsData settings){
     if (IsBezierToLinePreviewAllowed() == false) {
         return false;
     }
@@ -808,19 +806,32 @@ bool tmEditManager::BezierToLine (double approximation){
         }
         wxRealPoint c2 = *m_BezierPointsControl[i];
         
-        agg::curve4 myCurv;
-        myCurv.approximation_scale(approximation);
-        myCurv.init(p1.x, p1.y, c1.x, c1.y, c2.x, c2.y, p2.x, p2.y);
-        
-        double x = 0.0;
-        double y = 0.0;
-        while (myCurv.vertex(&x, &y) != agg::path_cmd_stop) {
-            m_ArcPoints.push_back(new wxRealPoint(x,y));
+        if (settings.method == BezierSettingsData::AGG) {
+            agg::curve4 myCurv;
+            myCurv.approximation_scale(settings.agg_approximation);
+            myCurv.init(p1.x, p1.y, c1.x, c1.y, c2.x, c2.y, p2.x, p2.y);
+            
+            double x = 0.0;
+            double y = 0.0;
+            while (myCurv.vertex(&x, &y) != agg::path_cmd_stop) {
+                m_ArcPoints.push_back(new wxRealPoint(x,y));
+            }
+            
+        }
+        else if (settings.method == BezierSettingsData::ETHZ){
+            BezierEthz myEth (settings.ethz_width, settings.ethz_max_points);
+            myEth.Init(p1, c1, c2, p2);
+            wxRealPointList * myList = myEth.GetPointListRef();
+            wxASSERT(myList);
+            wxRealPointList::iterator iter;
+            for (iter = myList->begin(); iter !=  myList->end(); ++ iter) {
+                    m_ArcPoints.push_back( new wxRealPoint( **iter )) ;
+            }
         }
         
         // Avoid duplicating points. We remove last
         // point because it will be the same as next bezier's first point.
-        if (i != m_BezierPoints.GetCount() -1) {
+        if (i != m_BezierPoints.GetCount() -1 && m_ArcPoints.GetCount() > 0) {
             m_ArcPoints.pop_back();
         }
     }
@@ -1429,7 +1440,7 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
     }
 	
     if (IsLayerSpatialType(LAYER_SPATIAL_LINE) && m_BezierPoints.GetCount() > 1) {
-        BezierToLine(m_BezierSettings.agg_approximation);
+        BezierToLine(m_BezierSettings);
         BezierClear();
     }    
     
