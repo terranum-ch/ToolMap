@@ -34,7 +34,7 @@
 #include "../gis/tmattributiondataline.h"	// for getting attribution (merging lines)
 #include "../gis/tmdraweredit.h"			// for drawing line in modification
 #include "../gis/tmpointorientattrib.h"		// for oriented points
-
+#include "../gui/beziersettings_dlg.h"
 
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT =	22200;
@@ -109,7 +109,8 @@ private:
     int m_BezierModifyIndexPoint;
     int m_BezierModifyIndexControl;
     bool m_BezierModifyControlInverted;
-    double m_BezierApproximationScale;
+    //double m_BezierApproximationScale;
+    BezierSettingsData m_BezierSettings;
     
     wxRealPointList m_ArcPoints;
     wxArrayLong m_ArcSnappedPointsIndexes;
@@ -220,8 +221,8 @@ public:
     void BezierModifyClickUp (const wxPoint & mousepos);
     bool BezierToLine (double approximation = 0.2);
     bool IsBezierToLinePreviewAllowed ();
-    void SetBezierApproximationScale (double scale, bool savetodb=false);
-    double GetBezierApproximationScale () {return m_BezierApproximationScale;}
+    void SetBezierSettings (BezierSettingsData data, bool savetodb=false);
+    BezierSettingsData GetBezierSettings () {return m_BezierSettings;}
     
     void ArcClick (const wxPoint & mousepos);
     void ArcMove (const wxPoint & mousepos);
