@@ -817,6 +817,12 @@ bool tmEditManager::BezierToLine (double approximation){
         while (myCurv.vertex(&x, &y) != agg::path_cmd_stop) {
             m_ArcPoints.push_back(new wxRealPoint(x,y));
         }
+        
+        // Avoid duplicating points. We remove last
+        // point because it will be the same as next bezier's first point.
+        if (i != m_BezierPoints.GetCount() -1) {
+            m_ArcPoints.pop_back();
+        }
     }
     return true;
 }
