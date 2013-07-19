@@ -18,6 +18,8 @@
 
 #include "database_tm.h"
 #include "databaseresult.h"
+#include "../gui/beziersettings_dlg.h"
+
 
 
 DataBaseTM::DataBaseTM()
@@ -256,6 +258,9 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	_T("  `PRJ_SNAP_TOLERENCE` INT NOT NULL DEFAULT 10 ,")
     _T("  `PRJ_LANG_ACTIVE` INT NOT NULL DEFAULT 0 ,")
     _T("  `PRJ_BEZIER_APPROX` FLOAT NOT NULL DEFAULT 0.5, ")
+    _T("  `PRJ_BEZIER_WIDTH` FLOAT NOT NULL DEFAULT 1, ")
+    _T("  `PRJ_BEZIER_NB_VERTEX` INT NOT NULL DEFAULT 10, ")
+    _T("  `PRJ_BEZIER_METHOD` INT NOT NULL DEFAULT 0, ") // method 0 = AGG
 	_T("  PRIMARY KEY (`SETTING_DBK`) );")
 	
 	_T("CREATE  TABLE `generic_notes` (")
@@ -3237,8 +3242,12 @@ bool DataBaseTM::DeleteAdvancedAttribution (long selectedobject, long selectedla
 }
 
 
-bool DataBaseTM::SaveBezierApproximationScale (double approx){
-    wxString myQuery = wxString::Format(_T("UPDATE prj_settings SET PRJ_BEZIER_APPROX=%s"), wxString::FromDouble(approx));
+bool DataBaseTM::SaveBezierSettings (BezierSettingsData * data){
+    if (data == NULL) {
+        return false;
+    }
+    
+    wxString myQuery = wxString::Format(_T("UPDATE prj_settings SET PRJ_BEZIER_APPROX=%s, PRJ_BEZIER_WIDTH=%s, PRJ_BEZIER_NB_VERTEX=%d, PRJ_BEZIER_METHOD=%d"), wxString::FromDouble(data->agg_approximation), wxString::FromDouble(data->ethz_width), data->ethz_max_points, (int) data->method);
     if (DataBaseQueryNoResults(myQuery) == false) {
         return false;
     }
@@ -3247,16 +3256,43 @@ bool DataBaseTM::SaveBezierApproximationScale (double approx){
 
 
 
-double DataBaseTM::LoadBezierApproximationScale () {
-    wxString myQuery = _T("SELECT PRJ_BEZIER_APPROX FROM prj_settings");
+bool DataBaseTM::LoadBezierSettings (BezierSettingsData * data) {
+    wxString myQuery = _T("SELECT PRJ_BEZIER_APPROX, PRJ_BEZIER_WIDTH, PRJ_BEZIER_NB_VERTEX, PRJ_BEZIER_METHOD FROM prj_settings");
     if (DataBaseQuery(myQuery) == false) {
-        return 0;
+        return false;
     }
     
-    double myApproxScale = 0;
-    DataBaseGetNextResult(myApproxScale);
-    DataBaseClearResults();
-    return myApproxScale;
+    DataBaseResult myResult;
+    DataBaseGetResults(&myResult);
+    if (myResult.GetColCount() != 4) {
+        wxLogError(_("Error loading Bezier settings from project!"));
+        return false;
+    }
+    
+    if (data == NULL) {
+        return false;
+    }
+    double myValueDouble = 0;
+    wxString myDataTxt;
+    myResult.GetValue(0, myDataTxt);
+    myDataTxt.ToDouble(&myValueDouble);
+    data->agg_approximation = myValueDouble;
+    
+    myResult.GetValue(1, myDataTxt);
+    myDataTxt.ToDouble(&myValueDouble);
+    data->ethz_width = myValueDouble;
+    
+    long myValue = 0;
+    myResult.GetValue(2, myValue);
+    data->ethz_max_points = myValue;
+    
+    long myMethod = 0;
+    myResult.GetValue(3, myMethod);
+    data->method = BezierSettingsData::AGG;
+    if (myMethod != 0) {
+        data->method = BezierSettingsData::ETHZ;
+    }
+    return true;
 }
 
 
