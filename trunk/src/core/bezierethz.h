@@ -40,6 +40,7 @@ private:
     
     void _BezierPoint (const wxRealPoint & A, const wxRealPoint & B, wxRealPoint & result, double t);
     bool _Segmentation (const wxRealPoint & P1, const wxRealPoint & P2, const wxRealPoint & P3, const wxRealPoint & P4, double t, wxRealPoint & result);
+    bool _IsPointUsefull (const wxRealPoint & PBefore, const wxRealPoint & P, const wxRealPoint & PAfter);
 
     
 };

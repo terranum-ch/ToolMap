@@ -824,6 +824,7 @@ bool tmEditManager::BezierToLine (BezierSettingsData settings){
             wxRealPointList * myList = myEth.GetPointListRef();
             wxASSERT(myList);
             wxRealPointList::iterator iter;
+            m_ArcPoints.push_back( new wxRealPoint ( p1 ) );
             for (iter = myList->begin(); iter !=  myList->end(); ++ iter) {
                     m_ArcPoints.push_back( new wxRealPoint( **iter )) ;
             }
