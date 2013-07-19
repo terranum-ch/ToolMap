@@ -126,6 +126,18 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
             myActualDBVersion = 226;
         }
     }
+    
+   
+    // 226 -> 227
+    if (myActualDBVersion == 226) {
+        if (_226to227() == false) {
+            _SetVersion(226);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 227;
+        }
+    }
 
 	_SetVersion(myActualDBVersion);
 	return tmPRJ_UPD_ERROR_OK;
@@ -414,5 +426,15 @@ bool tmProjectUpdater::_225to226(){
     return true;
 }
 
+
+bool tmProjectUpdater::_226to227(){
+    wxString myAlterQuery = _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_WIDTH` FLOAT NOT NULL DEFAULT 1 AFTER `PRJ_BEZIER_APPROX`; ")
+    _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_NB_VERTEX` INT NOT NULL DEFAULT 10 ; ")
+    _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_METHOD` INT NOT NULL DEFAULT 0; ");
+    if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+        return false;
+    }    
+    return true;
+}
 
 

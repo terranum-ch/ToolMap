@@ -38,6 +38,8 @@
 #include "../gui/shortcut_defs.h"			// for key definitions (F1,...)
 #include "../core/tmsnappingmemory.h"		// for snapping defintions.
 
+class BezierSettingsData;
+
 
 // TABLES NAMES
 const wxString TABLE_NAME_LAYERS = _T("thematic_layers");
@@ -77,7 +79,7 @@ _T("generic_notes")
 
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 226;
+const int TM_DATABASE_VERSION = 227;
 
 
 enum tmDB_OPEN_STATUS
@@ -237,8 +239,8 @@ class DataBaseTM : public DataBase
         long GetSelectedLayerId (long ojectid);
         bool DeleteAdvancedAttribution (long selectedobject, long selectedlayerid);
 		
-        bool SaveBezierApproximationScale (double approx);
-        double LoadBezierApproximationScale ();
+        bool SaveBezierSettings (BezierSettingsData * data);
+        bool LoadBezierSettings (BezierSettingsData * data);
         
 		// static path convertion
 		static bool ConvertPath(wxString & path);
