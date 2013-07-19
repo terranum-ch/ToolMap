@@ -47,7 +47,7 @@ bool BezierEthz::_Segmentation (const wxRealPoint & P1, const wxRealPoint & P2, 
     wxRealPoint R3;
     wxRealPoint H;
     
-    if (t <= 0 || t >= 1.0) {
+    if (t <= 0 || t > 1.0) {
         return false;
     }
     _BezierPoint(P1, P2, L2, t);
@@ -56,6 +56,26 @@ bool BezierEthz::_Segmentation (const wxRealPoint & P1, const wxRealPoint & P2, 
     _BezierPoint(P3, P4, R3, t);
     _BezierPoint(H, R3, R2, t);
     _BezierPoint(L3, R2, result, t);
+    return true;
+}
+
+
+
+bool BezierEthz::_IsPointUsefull (const wxRealPoint & PBefore, const wxRealPoint & P, const wxRealPoint & PAfter){
+    wxPoint2DDouble pBefore (PBefore.x, PBefore.y);
+    wxPoint2DDouble p (P.x, P.y);
+    wxPoint2DDouble pAfter (PAfter.x, PAfter.y);
+    
+    double a = pBefore.GetDistance(p);
+    double b = p.GetDistance(pAfter);
+    double c = pBefore.GetDistance(pAfter);
+    
+    double s = 0.5 * (a + b + c);
+    double area = sqrt(s * (s-a) * (s-b) * (s-c));
+    double height = 2.0 * area / c;
+    if (height <= m_Width) {
+        return false;
+    }
     return true;
 }
 
@@ -77,7 +97,13 @@ void BezierEthz::Init (wxRealPoint P1, wxRealPoint P2, wxRealPoint P3, wxRealPoi
     }
     
     // simplification
-    
+    m_Points.DeleteContents(true);
+    for (unsigned int i = 1; i < m_Points.GetCount() -1; i++ ) {
+        if (_IsPointUsefull(*m_Points[i-1], *m_Points[i], *m_Points[i+1]) == false) {
+            m_Points.Erase(m_Points.Item(i));
+            i = 1;
+        }
+    }
 }
 
 
