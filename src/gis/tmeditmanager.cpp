@@ -522,7 +522,11 @@ void tmEditManager::ArcVeretxDeleteUp (const wxPoint & mousepos){
         }
         m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
     }
-    _SaveToDatabase();
+    
+    if (m_ArcPoints.GetCount() >= 2) {
+        _SaveToDatabase();
+    }
+    
     OGRGeometryFactory::destroyGeometry(myGeometry);
     ArcClear();
     
