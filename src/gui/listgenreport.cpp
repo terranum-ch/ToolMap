@@ -18,13 +18,12 @@ all parameters and return values
 
 const int ListGenReport::ID_LIST = wxID_ANY;
 
-ListGenReport::ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize, wxSize size)
-	: wxListCtrl(parent,id,wxDefaultPosition,
-	size,wxLC_REPORT) // | wxLC_SINGLE_SEL)
-{
+ListGenReport::ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize, wxSize size, long style)	: wxListCtrl(parent,id,wxDefaultPosition, size, style){
 	CreateColumns(pColsName,pColsSize);
 	OnInit();
 }
+
+
 
 ListGenReport::ListGenReport(wxWindow * parent, wxWindowID id, wxSize size) 
 	: wxListCtrl(parent,id,wxDefaultPosition,
@@ -624,8 +623,8 @@ void ListGenMenu::DisableMenuMove (int flags)
 ListGenReportWithDialog::ListGenReportWithDialog (wxWindow * parent, wxWindowID id, 
 												  wxArrayString * pColsName, 
 												  wxArrayInt * pColsSize, 
-												  wxSize size) : 
-ListGenReport (parent, id,pColsName, pColsSize, size)
+												  wxSize size, long style) :
+ListGenReport (parent, id,pColsName, pColsSize, size, style)
 {
 	InitMembers();	
 }
