@@ -479,11 +479,10 @@ void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
     m_ArcPoints.push_back(new wxRealPoint(myLine->getX(myLine->getNumPoints()-1), myLine->getY(myLine->getNumPoints()-1)));
     
     // update the line in the database and refresh screen
-    if (bFoundIntersection == false) {
-        return;
+    if (bFoundIntersection == true) {
+        _SaveToDatabase();
     }
     
-    _SaveToDatabase();
     OGRGeometryFactory::destroyGeometry(myGeometry);
     ArcClear();
     
