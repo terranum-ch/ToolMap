@@ -288,9 +288,8 @@ ShortcutList::ShortcutList (wxWindow * parent,
 						  wxArrayString * pColsName, 
 						  wxArrayInt * pColsSize,
 						  wxSize size) :
-ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
-{
-	m_LayerType = 0;
+ListGenReportWithDialog(parent, id, pColsName, pColsSize, size, wxLC_REPORT | wxLC_SINGLE_SEL){
+    m_LayerType = 0;
 	m_ParentEvt = parent_evt;
 }
 

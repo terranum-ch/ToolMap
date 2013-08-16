@@ -127,7 +127,7 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL, wxSize size=wxDefaultSize);
+		ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL, wxSize size=wxDefaultSize, long style = wxLC_REPORT);
 		
 		/*********************************************//**
 		 @brief Desctructor
@@ -342,7 +342,8 @@ public:
 	ListGenReportWithDialog (wxWindow * parent, wxWindowID id, 
 							 wxArrayString * pColsName, 
 							 wxArrayInt * pColsSize=NULL, 
-							 wxSize size=wxDefaultSize);
+							 wxSize size=wxDefaultSize,
+                             long style = wxLC_REPORT);
 	
 	~ListGenReportWithDialog();
 	
