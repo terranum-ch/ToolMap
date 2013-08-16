@@ -153,6 +153,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
 	EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
+    EVT_MENU(ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
 	EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
 	EVT_MENU (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnZoomToSelectedLayer)
 	EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
@@ -240,7 +241,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_UNLINK_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
 
 	EVT_UPDATE_UI_RANGE(ID_MENU_ZOOM, ID_MENU_ZOOM_FIT, ToolMapFrame::OnUpdateMenuProject)
-	EVT_UPDATE_UI (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnUpdateMenuProject)
+    EVT_UPDATE_UI(ID_MENU_ZOOM_FRAME, ToolMapFrame::OnUpdateMenuProject)
+	EVT_UPDATE_UI (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnUpdateMenuZoomLayer)
 	EVT_UPDATE_UI (wxID_BACKWARD, ToolMapFrame::OnUpdateMenuPreviousZoom)
 
 	EVT_UPDATE_UI (ID_MENU_UNDO, ToolMapFrame::OnUpdateMenuEditUndo)
@@ -561,7 +563,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu28->AppendSeparator();
     //itemMenu28->Append(ID_MENU_SELECTION, _("Zoom to selection"), _T(""), wxITEM_NORMAL);
     //itemMenu28->Enable(ID_MENU_SELECTION, false);
-    itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to layer"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu28->Append(ID_MENU_ZOOM_FRAME, _("Zoom to Frame\tCtrl+1"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to selected layer\tCtrl+2"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
     itemMenu28->Append(wxID_REFRESH, _("Refresh\tCtrl+R"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu28, _("View"));
@@ -1725,16 +1728,18 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 
 
 
-void ToolMapFrame::OnZoomPrevious (wxCommandEvent & event)
-{
+void ToolMapFrame::OnZoomPrevious (wxCommandEvent & event){
 	m_LayerManager->ZoomPrevious();
 }
 
 
 void ToolMapFrame::OnZoomToSelectedLayer(wxCommandEvent & event){
-	wxLogMessage(_T("Zoom to selected layer"));
 	m_LayerManager->ZoomToSelectedLayer();
+}
 
+
+void ToolMapFrame::OnZoomToFrame (wxCommandEvent & event){
+    m_LayerManager->ZoomToFrameLayer();
 }
 
 
@@ -1887,6 +1892,15 @@ void ToolMapFrame::OnUpdateMenuProject(wxUpdateUIEvent & event){
 	event.Enable(m_PManager->IsProjectOpen());
 }
 
+
+void ToolMapFrame::OnUpdateMenuZoomLayer(wxUpdateUIEvent & event){
+    wxASSERT(m_PManager);
+    bool bEnable = false;
+    if (m_PManager->IsProjectOpen() && m_TocWindow->GetTOCCtrl()->GetSelectionLayer() != NULL) {
+        bEnable = true;
+    }
+    event.Enable(bEnable);
+}
 
 
 void ToolMapFrame::OnUpdateMenuPreviousZoom(wxUpdateUIEvent & event){

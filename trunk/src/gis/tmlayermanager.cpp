@@ -669,6 +669,13 @@ void tmLayerManager::ZoomToSelectedLayer(){
 }
 
 
+void tmLayerManager::ZoomToFrameLayer(){
+    tmLayerProperties * myLayerProp = m_TOCCtrl->GetLayerByName(TOC_GENERIC_NAME_STRING[TOC_NAME_FRAME]);
+    wxASSERT(myLayerProp);
+    ZoomToLayer(myLayerProp->GetID());
+}
+
+
 
 bool tmLayerManager::ZoomToLayer(long layerid){
 

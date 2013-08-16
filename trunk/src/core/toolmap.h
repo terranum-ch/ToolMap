@@ -236,6 +236,7 @@ const int ID_MENU_LAYOUT_HORIZONTAL = 15203;
 const int ID_MENU_VALIDITY = 15204;
 
 const int ID_MENU_EXPORT_CONCATENATED = wxWindow::NewControlId();
+const int ID_MENU_ZOOM_FRAME = wxWindow::NewControlId();
 
 const wxString g_ProgName = _T("ToolMap");
 const wxString g_ProgMajorVersion = _T("2.5");
@@ -326,6 +327,7 @@ private:
 	void OnToolChanged (wxCommandEvent & event);
 	void OnZoomPrevious(wxCommandEvent & event);
 	void OnZoomToSelectedLayer(wxCommandEvent & event);
+    void OnZoomToFrame (wxCommandEvent & event);
 	void OnExportSelected (wxCommandEvent & event);
 	//void OnExportAll (wxCommandEvent & event);
     void OnExportConcatenated (wxCommandEvent & event);
@@ -417,6 +419,7 @@ private:
 	void OnUpdateMenuEditSharedNode (wxUpdateUIEvent & event);
 	void OnUpdateStatisticsDialog (wxUpdateUIEvent & event);
     void OnUpdateGeometryValidity (wxUpdateUIEvent & event);
+    void OnUpdateMenuZoomLayer (wxUpdateUIEvent & event);
     
     void _CreateMenu();
 	void _CreateToolBar();

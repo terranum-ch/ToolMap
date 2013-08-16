@@ -158,6 +158,7 @@ class tmLayerManager : public wxEvtHandler
 		tmGISScale * GetScale (){return &m_Scale;}
 		bool ZoomToLayer(long layerid);
 		void ZoomToSelectedLayer();
+        void ZoomToFrameLayer();
 		
 		// event operations
 		void OnSizeChange (wxCommandEvent & event);
