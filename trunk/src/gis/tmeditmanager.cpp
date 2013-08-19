@@ -1448,7 +1448,7 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
         BezierClear();
     }    
     
-    if(IsLayerSpatialType(LAYER_SPATIAL_LINE) && m_ArcPoints.GetCount() < 1){
+    if(m_ArcPoints.GetCount() < 1){
         return;
     }
   
