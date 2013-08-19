@@ -136,6 +136,7 @@ void tmEditManager::InitMemberValues()
  *******************************************************************************/
 void tmEditManager::OnToolEdit (){
 	wxASSERT (m_Renderer);
+    BezierClear();
 	m_Renderer->SetTool(tmTOOL_DRAW);
     m_ArcActualPt = wxDefaultPosition;
     m_Renderer->Refresh();
@@ -145,6 +146,7 @@ void tmEditManager::OnToolEdit (){
 
 
 void tmEditManager::OnToolBezier() {
+    ArcClear();
     m_Renderer->SetTool(tmTOOL_DRAW_BEZIER);
     m_BezierActualP2 = wxPoint(0,0);
     m_Renderer->Refresh();
