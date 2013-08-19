@@ -401,12 +401,11 @@ double PdfLayer::GetObjectsWidth(wxPdfDocument * pdf) {
 		maxcodewidth = MAX(maxcodewidth, codewidth);
 		maxdescwidth = MAX(maxdescwidth, descwidth);
 	}
-	
-	// code is only 20% of total size ! Check that description is greater
-	if (maxdescwidth * 0.2 > maxcodewidth) {
-		return maxdescwidth + (maxdescwidth * 100.0 / 80.0);
-	}
-	return maxcodewidth + (maxcodewidth * 100.0 / 20.0);
+
+	// code width = 20 %
+	// description width = 4 * 20 %
+	double myMax = (maxcodewidth, maxdescwidth / 4.0);
+	return myMax * 5.0;
 }
 
 
@@ -416,6 +415,7 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 	
 	double maxFieldNameWidth = 0;
 	double maxFieldContentWidth = 0;
+	double maxFieldTypeWidth = 0;
 	for (unsigned int f = 0; f< m_prjLayer->m_pLayerFieldArray.GetCount(); f++) {
 		ProjectDefMemoryFields * myField = m_prjLayer->m_pLayerFieldArray.Item(f);
 		wxASSERT(myField);
@@ -424,35 +424,42 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 		double myFieldWidth = pdf->GetStringWidth(myField->m_Fieldname);
 		maxFieldNameWidth = MAX(maxFieldNameWidth, myFieldWidth);
 		
-		// field content
+		// field type
 		switch (myField->m_FieldType) {
-			case TM_FIELD_ENUMERATION:
+		case TM_FIELD_INTEGER:
+			maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth("Integer "));
+			break;
+
+		case TM_FIELD_TEXT:
 			{
+			wxString myDummyText = wxString::Format(_("%s (max: %d characters)"),PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],10000);
+			maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth(myDummyText));
+			}
+			break;
+
+		case TM_FIELD_ENUMERATION:
+			maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth("Enumeration "));
+			break;
+
+		// TODO: Add case for double and date
+		}
+
+		// field content
+		if ( myField->m_FieldType == TM_FIELD_ENUMERATION) {	
 				for (unsigned i = 0; i< myField->m_pCodedValueArray.GetCount(); i++) {
 					double myTempWidth = pdf->GetStringWidth(myField->m_pCodedValueArray.Item(i)->m_ValueName);
                     maxFieldContentWidth = MAX(maxFieldContentWidth, myTempWidth);
 				}
-			}
-				break;
-				
-			default:
-			{
-				wxString myDummyText = wxString::Format(_("%s (max: %d characters)"),
-														PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],
-														10000);
-				maxFieldContentWidth = pdf->GetStringWidth(myDummyText);
-			}
-				break;
 		}
-		
-		maxFieldContentWidth = MAX(maxFieldContentWidth, maxFieldContentWidth);
-	}	
-    
-	// field name is only 20% of total size ! Check that content is greater
-	if (maxFieldContentWidth * 0.2 > maxFieldNameWidth) {
-		return maxFieldContentWidth + (maxFieldContentWidth * 100.0 / 80.0);
 	}
-	return maxFieldNameWidth + (maxFieldNameWidth * 100.0 / 20.0);
+
+	// field name = 20%
+	// field type = 20%
+	// field content = 3 * 20%
+	double myTotal = maxFieldNameWidth + maxFieldTypeWidth + maxFieldContentWidth;
+	double myMax = MAX(maxFieldNameWidth, maxFieldTypeWidth);
+	myMax = MAX (myMax, maxFieldContentWidth / 3.0);
+	return myMax * 5.0;
 }
 
 
