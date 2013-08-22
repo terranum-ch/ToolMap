@@ -78,6 +78,7 @@ DECLARE_EVENT_TYPE(tmEVT_INFO_BTN_PRESSED, -1)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_IDNAME ID_DLG_OBJ_ATTRIBUTION
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE wxSize(230, 150)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION wxDefaultPosition
+const int ID_DLG_OBJ_ATTRIBUTION_BTN_ADD = wxWindow::NewControlId();
 
 
 class AttribObjType_PANEL: public ManagedAuiWnd
@@ -92,10 +93,11 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxWindow * m_ParentEvt;
 		int m_NbFeaturesSelected;
 		
-		wxString m_AttribBtnLabel;
 		wxFlatButton * m_AttribBtn;
+        wxFlatButton * m_AddBtnCtrl;
 		wxFlatButton * m_InfoBtn;
 		wxChoicebook * m_AttribNotebook;
+        wxStaticText * m_WarningMultiFeatureCtrl;
 		bool m_AutoDisplayAttributes;
 		bool m_EmptyListAfterAttributes;
 		bool m_EnableFullAttribution;
@@ -109,6 +111,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		void OnEditStart(wxCommandEvent & event);
 		void OnEditStop (wxCommandEvent & event);
 		
+        
 				
 		DECLARE_EVENT_TABLE()
 		
