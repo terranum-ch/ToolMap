@@ -404,8 +404,8 @@ double PdfLayer::GetObjectsWidth(wxPdfDocument * pdf) {
 
 	// code width = 20 %
 	// description width = 4 * 20 %
-	double myMax = (maxcodewidth, maxdescwidth / 4.0);
-	return myMax * 5.0;
+	double myMax = MAX(maxcodewidth, maxdescwidth / 4.0);
+    return myMax * 5.0;
 }
 
 
@@ -426,22 +426,30 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 		
 		// field type
 		switch (myField->m_FieldType) {
-		case TM_FIELD_INTEGER:
-			maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth("Integer "));
-			break;
-
-		case TM_FIELD_TEXT:
+            case TM_FIELD_INTEGER:
+            case TM_FIELD_DATE:
+            case TM_FIELD_ENUMERATION:
+                maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth(PRJDEF_FIELD_TYPE_STRING[myField->m_FieldType] + _T("  ")));
+                break;
+                
+            
+            case TM_FIELD_TEXT:
 			{
-			wxString myDummyText = wxString::Format(_("%s (max: %d characters)"),PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT],10000);
-			maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth(myDummyText));
+                wxString myDummyText = wxString::Format(_("%s (max: %d characters)     "),PRJDEF_FIELD_TYPE_STRING[TM_FIELD_TEXT], myField->m_FieldPrecision);
+                maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth(myDummyText));
 			}
-			break;
-
-		case TM_FIELD_ENUMERATION:
-			maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth("Enumeration "));
-			break;
-
-		// TODO: Add case for double and date
+                break;
+                
+            case TM_FIELD_FLOAT:
+            {
+                wxString myPrecisionScale = wxEmptyString;
+                myPrecisionScale.Pad(myField->m_FieldPrecision, '9');
+                myPrecisionScale.Append(_T("."));
+              
+                wxString myDummyText = wxString::Format(_("%s (max: %s)     "), PRJDEF_FIELD_TYPE_STRING[TM_FIELD_FLOAT], myPrecisionScale);
+                maxFieldTypeWidth = MAX(maxFieldTypeWidth, pdf->GetStringWidth(myDummyText));
+            }
+                break;
 		}
 
 		// field content
@@ -456,7 +464,6 @@ double PdfLayer::GetAttributsWidth(wxPdfDocument * pdf) {
 	// field name = 20%
 	// field type = 20%
 	// field content = 3 * 20%
-	double myTotal = maxFieldNameWidth + maxFieldTypeWidth + maxFieldContentWidth;
 	double myMax = MAX(maxFieldNameWidth, maxFieldTypeWidth);
 	myMax = MAX (myMax, maxFieldContentWidth / 3.0);
 	return myMax * 5.0;
