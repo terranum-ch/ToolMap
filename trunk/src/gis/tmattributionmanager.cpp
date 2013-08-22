@@ -443,7 +443,46 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 
 
 void tmAttributionManager::OnAddBtn (wxCommandEvent & event){
-    wxLogMessage(_("Adding attribution"));;
+	wxASSERT(m_pLayerProperties);
+	wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
+	if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()){
+		wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
+		return;
+	}
+    
+    // get checked values
+    wxArrayLong myKindValues;
+    m_Panel->GetSelectedValues(m_pLayerProperties->GetType(), myKindValues);
+    if (myKindValues.GetCount() == 0) {
+        wxLogWarning (_("There is no kind checked! Adding nothing to attribution didn't mean anything!"));
+        return;
+    }
+    
+    // REPLACE INTO generic_aat VALUES (KIND, GEOMETRY)
+    wxString myStmt = wxEmptyString;
+    wxArrayLong * mySelItemsRef = m_SelData->GetSelectedValues();
+    for (unsigned int s = 0; s < mySelItemsRef->GetCount(); s++) {
+        for (unsigned int k = 0 ; k < myKindValues.GetCount(); k++) {
+            myStmt.Append( wxString::Format(_T("REPLACE INTO %s VALUES (%ld, %ld); "), TABLE_NAME_GIS_ATTRIBUTION[m_pLayerProperties->GetType()], myKindValues.Item(k), mySelItemsRef->Item(s)));
+        }
+    }
+    
+    if (m_pDB->DataBaseQueryNoResults(myStmt) == false) {
+        wxLogError(_("Adding kind(s) to selected features failed!"));
+    }
+    
+    // clear list if needed
+	if (m_Panel->IsEmptyListValuesRequired()){
+		m_Panel->EmptyListValues();
+    }
+    
+    // focus to the renderer
+	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	
+	// send statistics
+	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(statevt);
 }
 
 
@@ -456,9 +495,6 @@ void tmAttributionManager::OnAddBtn (wxCommandEvent & event){
  *******************************************************************************/
 void tmAttributionManager::OnInfoBtn (wxCommandEvent & event)
 {
-	wxLogDebug(_T("Getting info"));
-	
-	
 	wxASSERT(m_pLayerProperties);
 	wxASSERT (m_pDB);
 	

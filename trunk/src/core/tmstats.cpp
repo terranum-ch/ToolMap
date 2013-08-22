@@ -32,10 +32,8 @@ tmStatsData::tmStatsData() {
 }
 
 
-
 tmStatsData::~tmStatsData() {
 }
-
 
 
 void tmStatsData::Reset() {
@@ -43,7 +41,6 @@ void tmStatsData::Reset() {
 	m_TimeStart = wxInvalidDateTime;
 	ResetPartial();
 }
-
 
 void tmStatsData::ResetPartial(){
 	// don't clean Id and start time!
