@@ -102,7 +102,7 @@ class tmExportManager : public wxObject
 		// Export public function
 		bool ExportAll (PrjDefMemManage * localprojdef);
 		bool ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager);
-        bool ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF_LAYERS_TYPE type);
+        bool ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF_LAYERS_TYPE type, bool useProgressDlg = true);
 
 };
 

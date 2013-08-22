@@ -324,12 +324,11 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 
 long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxProgressDialog * progDlg, tmPercent * percent){
     wxASSERT(m_pDB);
-	wxASSERT(m_pDB->DataBaseHasResults() == true);
     
 	DataBaseResult myResult;
 	m_pDB->DataBaseGetResults(&myResult);
 	if( myResult.HasResults() == false) {
-        wxLogMessage(_("Nothing to export in '%s'!"), layer->m_LayerName);
+        wxLogWarning(_("Nothing to export in '%s'!"), layer->m_LayerName);
         return wxNOT_FOUND;
     }
     long myLoop = myResult.GetRowCount();
@@ -575,7 +574,6 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 	wxASSERT(m_Frame);
 	wxASSERT(m_pDB);
-	wxASSERT(m_pDB->DataBaseHasResults() == true);
 
     /* create spatial index
     m_Shp.CreateSpatialIndex();
@@ -593,7 +591,15 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     
 	DataBaseResult * myResult = new DataBaseResult();
 	m_pDB->DataBaseGetResults(myResult);
-	wxASSERT(myResult->HasResults()==true);
+	
+    // write polygon from memory to shp and then return
+    if (myResult->HasResults() == false) {
+        m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
+        wxDELETE(myResult);
+        return true;
+    }
+    
+    wxASSERT(myResult->HasResults()==true);
     long myResultCount = myResult->GetRowCount();
    
     double myExportPolyFactor = m_ExportPolyRasterFactor;
@@ -749,12 +755,12 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 {
 	wxASSERT(m_Frame);
 	wxASSERT(m_pDB);
-	wxASSERT(m_pDB->DataBaseHasResults() == true);
 
 	// get row of data
 	DataBaseResult myResult;
 	m_pDB->DataBaseGetResults(&myResult);
-	wxASSERT(myResult.HasResults()==true);
+	    
+    //wxASSERT(myResult.HasResults()==true);
 
 
 	//
@@ -790,7 +796,10 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		}
 
         OGRGeometry * myCropLine = SafeIntersection(myGeom, myBigFrame);
-		//OGRGeometry * myCropLine = myGeom->Intersection(myBigFrame);
+        if (myCropLine == NULL) {
+            continue;
+        }
+        
         OGRwkbGeometryType myType = wkbFlatten( myCropLine->getGeometryType());
         if (myType == wkbMultiLineString) {
             wxLogDebug(_("Multi lines encountered for OID : %ld"), myOid);
@@ -799,22 +808,17 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
                 OGRGeometry * myfLine = myCropedLines->getGeometryRef(f)->clone();
                 _AppendValidToCollection(myfLine, myNodedLines);
             }
-            
         }
         else {
             _AppendValidToCollection(myCropLine, myNodedLines);
         }
 		OGRGeometryFactory::destroyGeometry(myGeom);
-
-		
 	}
-
 	OGRGeometryFactory::destroyGeometry(myBigFrame);
 
 	//
 	// Union frame with cropped lines
 	//
-
 	// transform non standard OGRLinearRing -> OGRLineString
 	// needed, otherwise union wont work !!!
 	OGRLinearRing * myFrame = m_Frame->getExteriorRing();
@@ -827,7 +831,16 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 		myLineString->addPoint(myPoint);
 		OGRGeometryFactory::destroyGeometry(myPoint);
 	}
-
+    
+    // no geometries, create a polygon using the frame
+    if (myNodedLines->getNumGeometries() == 0) {
+        OGRGeometryFactory::destroyGeometry(myNodedLines);
+        OGRGeometryFactory::destroyGeometry(myLineString);
+        m_Shp->AddGeometry(m_Frame, -1);
+        m_Shp->CloseGeometry();
+        return true;
+    }
+    
 	OGRGeometry * myLines = myNodedLines->Union(myLineString);
 	wxASSERT(myLines);
 	OGRGeometryFactory::destroyGeometry(myNodedLines);

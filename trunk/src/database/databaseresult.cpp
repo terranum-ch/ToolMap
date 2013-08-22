@@ -46,7 +46,11 @@ DataBaseResult::~DataBaseResult() {
 
 
 bool DataBaseResult::HasResults() {
-	if (GetRowCount() <= 0) {
+	if (m_ResultSet == NULL) {
+        return false;
+    }
+    
+    if (GetRowCount() <= 0) {
 		return false;
 	}
 	

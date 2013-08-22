@@ -94,7 +94,7 @@ public:
 	
 	void testOpenTMDatabase()
 	{
-		TS_ASSERT(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Edit)==tmDB_OPEN_OK);
+		TS_ASSERT_EQUALS(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Edit), tmDB_OPEN_OK);
 		TS_ASSERT(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_MyTest)>=tmDB_OPEN_FAILED_NOT_TM_DB);
 		int myStatus = m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_LuganoTM);
 		TS_ASSERT_LESS_THAN_EQUALS(tmDB_OPEN_FAILED_WRONG_VERSION, myStatus);
