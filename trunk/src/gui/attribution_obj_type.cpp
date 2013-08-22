@@ -33,7 +33,6 @@ END_EVENT_TABLE()
 
 AttribObjType_PANEL::AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager) : ManagedAuiWnd(AuiManager)
 {
-	m_AttribBtnLabel = _("Attribute");
 	m_AutoDisplayAttributes = false;
 	m_EmptyListAfterAttributes = true;
 	m_EnableFullAttribution = false;
@@ -192,23 +191,33 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemBoxSizer25->Add(itemCheckBox37, 0, wxGROW|wxTOP, 5);
 	
     m_AttribNotebook->AddPage(itemPanel24, _("Notes"));
-	
     m_AttribSizer->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
     
+    
+    m_WarningMultiFeatureCtrl = new wxStaticText(parent, wxID_ANY, wxEmptyString);
+    wxFont myFont = wxNORMAL_FONT->Bold() ;
+    m_WarningMultiFeatureCtrl->SetFont(myFont);
+    m_AttribSizer->Add (m_WarningMultiFeatureCtrl, 0, wxALL | wxEXPAND, 5);
+        
 	m_ButtonSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,m_AttribBtnLabel, wxDefaultSize);
+	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,_("Replace"), wxDefaultSize);
 	m_AttribBtn->Enable(false);
-	m_ButtonSizer->Add( m_AttribBtn, 0, wxEXPAND, 5 );
+	m_ButtonSizer->Add( m_AttribBtn, 0, 0, 5 );
 	
+    m_AddBtnCtrl = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ADD, _("Add"), wxDefaultSize);
+	m_AddBtnCtrl->Enable(false);
+	m_ButtonSizer->Add( m_AddBtnCtrl, 0, wxLEFT, 5 );
+    
+    m_ButtonSizer->Add (0, 0, 1, wxEXPAND, 5 );
+    
 	m_InfoBtn = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, _("Info"), wxDefaultSize);
 	m_InfoBtn->Enable(false);
-	m_ButtonSizer->Add( m_InfoBtn, 0, wxEXPAND|wxLEFT, 5 );
+	m_ButtonSizer->Add( m_InfoBtn, 0, wxLEFT, 5 );
 	
-	
-	m_ButtonSizer->Add( 0, 0, 2, 0, 5 );	
+	//m_ButtonSizer->Add( 0, 0, 2, 0, 5 );
 	m_AttribSizer->Add( m_ButtonSizer, 0, wxALL|wxEXPAND, 5 );
-	
+    
 	if (set_sizer)
     {
         parent->SetSizer( m_AttribSizer );
@@ -446,33 +455,23 @@ void AttribObjType_PANEL::SetDataBaseToList (DataBaseTM * pDB)
  @author Lucien Schreiber (c) CREALP 2008
  @date 04 November 2008
  *******************************************************************************/
-void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures,  bool editmode)
-{
-	wxString myButtonLabel = m_AttribBtnLabel;
-	bool myEnable = true;
-	wxFont myBtnFont (*wxNORMAL_FONT);
-	m_NbFeaturesSelected = nbfeatures;
-	
-	if (editmode == false)
-		myEnable = false;
-	else
-	{
-		if (nbfeatures == 0) // 0 item selected
-			myEnable = false;
-		
-		if (nbfeatures > 1) // more than one feature selected
-		{
-			myButtonLabel.Append(wxString::Format(_T(" (%d)"),nbfeatures));
-			myBtnFont.SetWeight(wxFONTWEIGHT_BOLD);
-		}
-	}
-	
-	m_AttribBtn->SetLabel(myButtonLabel);
-	m_AttribBtn->Enable(myEnable);
-	m_AttribBtn->SetFont(myBtnFont); 
-	m_ButtonSizer->Layout();
-
+void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures,  bool editmode){
+    m_NbFeaturesSelected = nbfeatures;
+    
+    m_AttribBtn->Enable(false);
+    m_AddBtnCtrl->Enable(false);
+    if (nbfeatures > 0 && editmode == true) {
+        m_AttribBtn->Enable(true);
+        m_AddBtnCtrl->Enable(true);
+    }
+    
+    m_WarningMultiFeatureCtrl->SetLabel(wxEmptyString);
+    if (nbfeatures > 1 && editmode == true) {
+        m_WarningMultiFeatureCtrl->SetLabel(wxString::Format(_("Warning: %d features selected!"), nbfeatures));
+    }
 }
+
+
 
 
 /***************************************************************************//**
@@ -486,12 +485,13 @@ void AttribObjType_PANEL::SetAttributeBtn (int nbfeatures,  bool editmode)
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 November 2008
  *******************************************************************************/
-void AttribObjType_PANEL::SetInfoBtn (int nbfeatures)
-{
-	if (nbfeatures == 1)
+void AttribObjType_PANEL::SetInfoBtn (int nbfeatures){
+	if (nbfeatures == 1){
 		m_InfoBtn->Enable(true);
-	else
+    }
+	else {
 		m_InfoBtn->Enable(false);
+    }
 }
 
 
