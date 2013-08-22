@@ -452,7 +452,8 @@ void tmAttributionManager::OnAddBtn (wxCommandEvent & event){
     
     // get checked values
     wxArrayLong myKindValues;
-    m_Panel->GetSelectedValues(m_pLayerProperties->GetType(), myKindValues);
+    m_Panel->GetSelectedValues(m_pLayerProperties->GetType(), myKindValues, true);
+	m_Panel->GetSelectedValues(m_pLayerProperties->GetType(), myKindValues, false);
     if (myKindValues.GetCount() == 0) {
         wxLogWarning (_("There is no kind checked! Adding nothing to attribution didn't mean anything!"));
         return;
