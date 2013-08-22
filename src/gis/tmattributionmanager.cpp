@@ -29,10 +29,10 @@ DEFINE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE);
 DEFINE_EVENT_TYPE(tmEVT_AM_COPY_ATTRIBUTION);
 
 
-
 BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
+    EVT_COMMAND(wxID_ANY, tmEVT_ADD_BTN_PRESSED, tmAttributionManager::OnAddBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_INFO_BTN_PRESSED, tmAttributionManager::OnInfoBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_RUN, tmAttributionManager::OnRunQuery)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
@@ -406,10 +406,8 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	wxASSERT(m_pLayerProperties);
 	wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
 	
-	if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook())
-	{
-		wxMessageBox(myMsg,
-					 _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
+	if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()){
+		wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
 		return;
 	}
 	
@@ -440,6 +438,12 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(statevt);	
+}
+
+
+
+void tmAttributionManager::OnAddBtn (wxCommandEvent & event){
+    wxLogMessage(_("Adding attribution"));;
 }
 
 

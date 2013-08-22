@@ -80,6 +80,7 @@ class tmAttributionManager : public wxEvtHandler
 		// event function
 		void OnSelection (wxCommandEvent & event);
 		void OnAttributeBtn (wxCommandEvent & event);
+        void OnAddBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
 		
 		// message event functions

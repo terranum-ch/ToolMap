@@ -44,6 +44,7 @@ class wxFlatButton;
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
 DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
 DECLARE_EVENT_TYPE(tmEVT_INFO_BTN_PRESSED, -1)
+DECLARE_EVENT_TYPE(tmEVT_ADD_BTN_PRESSED, -1)
 
 
 
@@ -106,6 +107,7 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		
 		// event function
 		void OnAttributeBtn (wxCommandEvent & event);
+		void OnAddBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
 		
 		void OnEditStart(wxCommandEvent & event);

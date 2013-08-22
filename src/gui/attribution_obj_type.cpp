@@ -22,11 +22,13 @@
 
 DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)
 DEFINE_EVENT_TYPE (tmEVT_INFO_BTN_PRESSED)
+DEFINE_EVENT_TYPE(tmEVT_ADD_BTN_PRESSED)
 
 BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
-	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, AttribObjType_PANEL::OnEditStart)
+    EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ADD, AttribObjType_PANEL::OnAddBtn)
+    EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, AttribObjType_PANEL::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, AttribObjType_PANEL::OnEditStop)
 END_EVENT_TABLE()
 
@@ -591,6 +593,12 @@ void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
+
+
+void AttribObjType_PANEL::OnAddBtn (wxCommandEvent & event){
+    wxCommandEvent evt (tmEVT_ADD_BTN_PRESSED, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+}
 
 
 /***************************************************************************//**
