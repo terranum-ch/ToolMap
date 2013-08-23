@@ -255,9 +255,17 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong * values)
 bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * layers,
 												  const wxArrayString & values){
 	wxASSERT (m_pDB);
-	
+    
+    // check that attributed values is equal to total number of available fields
+    int myNbAdvAttribution = 0;
+	for (unsigned int i = 0 ; i< layers->GetCount(); i++) {
+        myNbAdvAttribution += layers->Item(i)->m_pLayerFieldArray.GetCount();
+    }
+    wxASSERT(values.GetCount() == myNbAdvAttribution);
+    
 	wxString sSentence = wxEmptyString;
     bool bOnlyNullValues = true;
+    long myValueIndex = 0;
 	for (unsigned int i = 0; i<layers->GetCount(); i++){
         ProjectDefMemoryLayers * myLayer = layers->Item(i);
         if (myLayer->m_pLayerFieldArray.GetCount() == 0) {
@@ -265,9 +273,9 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * la
         }
         
         wxString sAdd = wxString::Format(_T("INSERT INTO layer_at%d VALUES (%ld,"),myLayer->m_LayerID, objid);
-        wxASSERT(myLayer->m_pLayerFieldArray.GetCount() == values.GetCount());
-        for (unsigned int v = 0; v < values.GetCount(); v++) {
-            wxString myValue = values[v];
+        for (unsigned int v = 0; v < myLayer->m_pLayerFieldArray.GetCount(); v++) {
+            wxString myValue = values[myValueIndex];
+            ++ myValueIndex;
             if (myValue == wxEmptyString) {
                 sAdd.Append(_T("NULL,"));
                 continue;
@@ -295,7 +303,6 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray * la
                 }
                 continue;
             }
-            
             
            // normal case
             sAdd.Append(wxString::Format(_T("\"%s\","), values.Item(v)));
