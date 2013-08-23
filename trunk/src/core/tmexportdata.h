@@ -45,57 +45,60 @@ class tmPercent;
  @date 14 November 2008
  *******************************************************************************/
 class tmExportData : public wxObject
-	{
-	private:
-		void InitMemberValues();
-		
-	protected:
-		DataBaseTM * m_pDB;
-		wxString m_Extension;
-		
-		// protected functions
-		wxFileName * GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path);
-		int GetSizeOfEnum (const PrjMemFieldCodedValArray & mCodedVal);
-		bool GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex);
-		bool GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype, long layerindex);
-		bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer);
-        
-        virtual bool SetPolyExportInfo(ProjectDefMemoryLayers * layer){return false;}
-		
-	public:
-		// ctor
-		tmExportData();
-		tmExportData (DataBaseTM * database);
-		void Create (DataBaseTM * database);
-		~tmExportData();
-		
-		// informations
-		int GetSizeOfObjDesc (int layerindex);
-		wxString GetFileExtension();
-		
-		
-		// create export file
-		virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer, 
-											const wxString & path){return false;}
-		
-		virtual bool AddOptFields (const PrjMemFieldArray & myfields){return false;}
-		virtual bool AddGenericFields (int iSize){return false;}
-		virtual bool AddFIDField (){return false;}
-		
-		virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
-		
-		virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
-		virtual bool WriteLabels (ProjectDefMemoryLayers * myLayer){return false;}
-        virtual long WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxProgressDialog * progDlg, tmPercent * percent){return false;}
-        virtual bool AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop, wxProgressDialog * progDlg, tmPercent * percent){return false;}
-		virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
-		virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
-        
-        virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){return false;}
-        virtual bool CreateSpatialIndex(ProjectDefMemoryLayers * layer){return false;}
-	};
+{
+private:
+    bool m_ExportAttributEnumerationCode;
+    void InitMemberValues();
+    
+protected:
+    DataBaseTM * m_pDB;
+    wxString m_Extension;
+    
+    // protected functions
+    wxFileName * GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path);
+    int GetSizeOfEnum (const PrjMemFieldCodedValArray & mCodedVal);
+    bool GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex);
+    bool GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype, long layerindex);
+    bool GetAdvancedAttribution (ProjectDefMemoryLayers * layer);
+    
+    virtual bool SetPolyExportInfo(ProjectDefMemoryLayers * layer){return false;}
+    
+public:
+    // ctor
+    tmExportData();
+    tmExportData (DataBaseTM * database);
+    void Create (DataBaseTM * database);
+    ~tmExportData();
+    
+    // informations
+    int GetSizeOfObjDesc (int layerindex);
+    wxString GetFileExtension();
+    
+    void SetExportAttributEnumeration (bool useAttributCode) {m_ExportAttributEnumerationCode = useAttributCode;}
+    bool DoExportAttributEnumerationCode () {return m_ExportAttributEnumerationCode;}
+    
+    // create export file
+    virtual bool CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
+                                        const wxString & path){return false;}
+    
+    virtual bool AddOptFields (const PrjMemFieldArray & myfields){return false;}
+    virtual bool AddGenericFields (int iSize){return false;}
+    virtual bool AddFIDField (){return false;}
+    
+    virtual void SetFrame (wxRealPoint * points, int nbvertex){;}
+    
+    virtual bool WriteLines (ProjectDefMemoryLayers * myLayer){return false;}
+    virtual bool WritePoints (ProjectDefMemoryLayers * myLayer){return false;}
+    virtual bool WritePolygons (ProjectDefMemoryLayers * myLayer){return false;}
+    virtual bool WriteLabels (ProjectDefMemoryLayers * myLayer){return false;}
+    virtual long WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxProgressDialog * progDlg, tmPercent * percent){return false;}
+    virtual bool AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop, wxProgressDialog * progDlg, tmPercent * percent){return false;}
+    virtual bool SetAttributsBasic(DataBaseResult & results){return false;}
+    virtual bool SetAttributsAdvanced(DataBaseResult & results, ProjectDefMemoryLayers * layer){return false;}
+    
+    virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){return false;}
+    virtual bool CreateSpatialIndex(ProjectDefMemoryLayers * layer){return false;}
+};
 
 
 
