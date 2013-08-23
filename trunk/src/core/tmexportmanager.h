@@ -119,6 +119,8 @@ private:
     wxCheckBox* m_LayersAddCtrl;
     wxCheckBox* m_LayersReplaceCtrl;
     wxCheckBox* m_FastPolyExportCtrl;
+    wxRadioButton* m_ExportAttribDescCtrl;
+    wxRadioButton* m_ExportAttribCodeCtrl;
     
     void OnBtnAll(wxCommandEvent & event);    
     void OnBtnNone(wxCommandEvent & event);
