@@ -149,6 +149,9 @@ wxPen tmSymbolRule::GetPen() {
             tmSymbolVectorPolygon * mySPoly = (tmSymbolVectorPolygon*) GetSymbolData();
             myPen.SetWidth(mySPoly->GetBorderWidth());
             myPen.SetColour(mySPoly->GetColourWithTransparency(mySPoly->GetBorderColour(), mySPoly->GetTransparency()));
+            if (mySPoly->GetBorderWidth() == 0) {
+                myPen.SetStyle(wxPENSTYLE_TRANSPARENT);
+            }
         }
             break;
             
