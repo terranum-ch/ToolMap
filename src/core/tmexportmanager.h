@@ -56,6 +56,7 @@ class tmExportManager : public wxObject
 		wxFileName m_ExportPath;
 		tmExportData * m_ExportData;
         bool m_UseFastExport;
+        bool m_ExportAttributCode;
 
 		PrjDefMemManage * m_ProjMem;
 		
@@ -100,7 +101,7 @@ class tmExportManager : public wxObject
 		void Create (wxWindow * parent, DataBaseTM * database);
 		
 		// Export public function
-		bool ExportAll (PrjDefMemManage * localprojdef);
+		//bool ExportAll (PrjDefMemManage * localprojdef);
 		bool ExportSelected (PrjDefMemManage * localprojdef, tmLayerManager * layermanager);
         bool ExportConcatenated (PrjDefMemManage * localprojdef, PRJDEF_LAYERS_TYPE type, bool useProgressDlg = true);
 
@@ -140,6 +141,8 @@ public:
     bool DoLayerAdd();
     bool DoLayerReplace();
     bool UseFastExport();
+    bool DoExportAttributCode();
+    
 };
 
 

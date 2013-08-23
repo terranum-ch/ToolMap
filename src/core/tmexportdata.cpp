@@ -30,6 +30,7 @@ void tmExportData::InitMemberValues()
 {
 	m_pDB = NULL;
 	m_Extension = wxEmptyString;
+    m_ExportAttributEnumerationCode = false; // default is to export attribut description.
 }
 
 

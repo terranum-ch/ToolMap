@@ -37,6 +37,7 @@ void tmExportManager::InitMemberValues()
 	m_ExportData = NULL;
 	m_ProjMem = NULL;
     m_UseFastExport = true;
+    m_ExportAttributCode = false; // default is to export attribut enumeration description
 }
 
 
@@ -130,8 +131,10 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
     if (myEDlg.ShowModal() != wxID_OK) {
         return false;
     }
-	
+    
     m_UseFastExport = myEDlg.UseFastExport();
+    m_ExportAttributCode = myEDlg.DoExportAttributCode();
+    
     wxArrayInt mySelectedLayersIndex = myEDlg.GetSelectedLayersID();
     if (mySelectedLayersIndex.IsEmpty()){
 		return false; // no layer selected
@@ -190,7 +193,7 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
+/*bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 {
 	wxASSERT(m_pDB);
 	//wxASSERT(m_Parent);
@@ -208,7 +211,7 @@ bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 	
 	return ExportLayers(myLayers);
 
-}
+}*/
 
 
 
@@ -280,10 +283,7 @@ bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
  @author Lucien Schreiber (c) CREALP 2009
  @date 08 April 2009
  *******************************************************************************/
-bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
-								   wxRealPoint * frame, const int & framevertex)
-{
-	
+bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer, wxRealPoint * frame, const int & framevertex){	
 	// check for file name 
 	if (GetAvailableFileName(layer) == false){
 		return false;
@@ -293,7 +293,7 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 	m_ExportData = CreateExportData();
 	wxASSERT(m_ExportData);
 	m_ExportData->SetFrame(frame, framevertex);
-	
+    m_ExportData->SetExportAttributEnumeration(m_ExportAttributCode);
 	
 	if (_CreateExportLayer(layer) == false){
 		wxDELETE(m_ExportData);
@@ -311,7 +311,6 @@ bool tmExportManager::ExportLayer (ProjectDefMemoryLayers * layer,
 				return false;
 			}	
 			break;
-			
 			
 		case LAYER_POLYGON:
         {
@@ -1127,5 +1126,10 @@ bool tmExportSelected_DLG::DoLayerReplace() {
 
 bool tmExportSelected_DLG::UseFastExport(){
     return m_FastPolyExportCtrl->IsChecked();
+}
+
+
+bool tmExportSelected_DLG::DoExportAttributCode(){
+    return m_ExportAttribCodeCtrl->GetValue();
 }
 

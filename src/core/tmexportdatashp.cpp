@@ -955,15 +955,19 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
             for (unsigned int c = 0; c < layer->m_pLayerFieldArray[i]->m_pCodedValueArray.GetCount(); c++) {
                 ProjectDefMemoryFieldsCodedVal * myCVal = layer->m_pLayerFieldArray[i]->m_pCodedValueArray[c];
                 if (myCVal->m_ValueID == myValueID) {
-                    myValue = myCVal->m_ValueName;
+                    
+                    if (DoExportAttributEnumerationCode() == true) { // export enumeration code
+                        myValue = myCVal->m_ValueCode;
+                    }
+                    else {  // export enumeration description
+                        myValue = myCVal->m_ValueName;
+                    }
                     break;
                 }
             }
         }
 
-		m_Shp->SetFieldValue(myValue ,
-							layer->m_pLayerFieldArray.Item(i)->m_FieldType,
-							i+3);
+		m_Shp->SetFieldValue(myValue , layer->m_pLayerFieldArray.Item(i)->m_FieldType, i+3);
 	}
 	return true;
 }
