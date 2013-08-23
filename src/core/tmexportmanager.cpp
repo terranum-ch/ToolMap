@@ -1033,6 +1033,9 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
 	sbSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
 	bSizer3->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
+    
+    wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbSizer2;
 	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Settings") ), wxVERTICAL );
@@ -1048,9 +1051,23 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString & layers) {
     m_FastPolyExportCtrl = new wxCheckBox( this, wxID_ANY, _("Use Fast Polygon export"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FastPolyExportCtrl->SetValue(true);
 	sbSizer2->Add( m_FastPolyExportCtrl, 0, wxALL, 5 );
+		
+    bSizer4->Add( sbSizer2, 0, wxALL, 5 );
 	
-	bSizer3->Add( sbSizer2, 0, wxALL, 5 );
+	wxStaticBoxSizer* sbSizer3;
+	sbSizer3 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Attributs (Ennumeration)") ), wxVERTICAL );
 	
+	m_ExportAttribDescCtrl = new wxRadioButton( this, wxID_ANY, _("Export description"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_ExportAttribDescCtrl->SetValue( true );
+	sbSizer3->Add( m_ExportAttribDescCtrl, 0, wxALL, 5 );
+	
+	m_ExportAttribCodeCtrl = new wxRadioButton( this, wxID_ANY, _("Export Code"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer3->Add( m_ExportAttribCodeCtrl, 0, wxALL, 5 );
+	
+	bSizer4->Add( sbSizer3, 0, wxALL|wxEXPAND, 5 );
+	
+	bSizer3->Add( bSizer4, 0, wxEXPAND, 5 );
+
 	bSizer1->Add( bSizer3, 1, wxEXPAND, 5 );
 	
 	wxStdDialogButtonSizer* m_sdbSizer1;
