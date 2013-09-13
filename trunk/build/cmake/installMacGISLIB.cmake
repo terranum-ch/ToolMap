@@ -12,7 +12,7 @@
 SET (LIBNAME "Library")
 SET (BUNDLEPATH "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_PROJECT_NAME}.app")
 SET (BUNDLELIBPATH "${BUNDLEPATH}/Contents/${LIBNAME}")
-SET (GEOS_VERSION "3.3.8")
+SET (GEOS_VERSION "3.4.2")
 SET (GEOS_C_VERSION "1")
 SET (CURL_VERSION "4")
 #SET (PROJ_VERSION "0.6.6")
@@ -35,9 +35,9 @@ IF(SEARCH_GEOS)
 		COMMAND cp ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.dylib ${BUNDLELIBPATH}/libgeos_c.dylib
 		COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgeos.dylib
 		COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLELIBPATH}/libgeos_c.dylib
-		COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgeos_c.dylib       
+		COMMAND install_name_tool -change libgeos.${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgeos_c.dylib       
 	
-		COMMAND install_name_tool  -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+		COMMAND install_name_tool  -change libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	      COMMENT "Copying and updating program GEOS libs"
 	)
 ENDIF(SEARCH_GEOS)
@@ -49,11 +49,10 @@ IF(SEARCH_GDAL)
 		COMMAND cp ${SEARCH_GIS_LIB_PATH}/lib/libgdal.dylib ${BUNDLELIBPATH}
 		COMMAND cp ${SEARCH_GIS_LIB_PATH}/lib/libproj.dylib ${BUNDLELIBPATH}
 		COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libgdal.dylib ${BUNDLELIBPATH}/libgdal.dylib
-		COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgdal.dylib
-		COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLELIBPATH}/libgdal.dylib
+		COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos.${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgdal.dylib
+		COMMAND install_name_tool -change libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLELIBPATH}/libgdal.dylib
 		COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libproj.dylib ${BUNDLELIBPATH}/libproj.dylib
 		COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libproj.0.dylib @executable_path/../${LIBNAME}/libproj.dylib ${BUNDLELIBPATH}/libgdal.dylib
-		
 		COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgdal.1.dylib @executable_path/../${LIBNAME}/libgdal.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	
 	    COMMENT "Copying and updating GDAL libs"
