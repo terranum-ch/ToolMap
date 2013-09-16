@@ -1826,6 +1826,14 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
 	m_pDB->GeometryDelete(mySelectedIds, m_TOC->GetEditLayer()->GetType());
     delete mySelectedIds;
 	
+    if (Clearselection == true) {
+        // set selection
+        m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
+        m_SelectedData->Clear();
+        wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
+        m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+    }
+    
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
