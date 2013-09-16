@@ -42,10 +42,10 @@ class DataBaseTM;
 class wxFlatButton;
 
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
-DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
+//DECLARE_EVENT_TYPE(tmEVT_ATTRIBUTION_BTN_PRESSED, -1)
 DECLARE_EVENT_TYPE(tmEVT_INFO_BTN_PRESSED, -1)
 DECLARE_EVENT_TYPE(tmEVT_ADD_BTN_PRESSED, -1)
-
+DECLARE_EVENT_TYPE(tmEVT_REMOVE_BTN_PRESSED, -1)
 
 
 #define ID_DLG_OBJ_ATTRIBUTION 10039
@@ -80,6 +80,7 @@ DECLARE_EVENT_TYPE(tmEVT_ADD_BTN_PRESSED, -1)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_SIZE wxSize(230, 150)
 #define SYMBOL_ATTRIBOBJTYPE_PANEL_POSITION wxDefaultPosition
 const int ID_DLG_OBJ_ATTRIBUTION_BTN_ADD = wxWindow::NewControlId();
+const int ID_DLG_OBJ_ATTRIBUTION_BTN_REMOVE = wxWindow::NewControlId();
 
 
 class AttribObjType_PANEL: public ManagedAuiWnd
@@ -106,8 +107,9 @@ class AttribObjType_PANEL: public ManagedAuiWnd
 		wxBoxSizer* m_AttribSizer;
 		
 		// event function
-		void OnAttributeBtn (wxCommandEvent & event);
+		//void OnAttributeBtn (wxCommandEvent & event);
 		void OnAddBtn (wxCommandEvent & event);
+        void OnRemoveBtn (wxCommandEvent & event);
 		void OnInfoBtn (wxCommandEvent & event);
 		
 		void OnEditStart(wxCommandEvent & event);

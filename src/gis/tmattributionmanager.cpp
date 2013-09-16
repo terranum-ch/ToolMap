@@ -31,8 +31,9 @@ DEFINE_EVENT_TYPE(tmEVT_AM_COPY_ATTRIBUTION);
 
 BEGIN_EVENT_TABLE(tmAttributionManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, tmAttributionManager::OnSelection)
-	EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
+	//EVT_COMMAND (wxID_ANY, tmEVT_ATTRIBUTION_BTN_PRESSED, tmAttributionManager::OnAttributeBtn)
     EVT_COMMAND(wxID_ANY, tmEVT_ADD_BTN_PRESSED, tmAttributionManager::OnAddBtn)
+    EVT_COMMAND(wxID_ANY, tmEVT_REMOVE_BTN_PRESSED, tmAttributionManager::OnRemoveBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_INFO_BTN_PRESSED, tmAttributionManager::OnInfoBtn)
 	EVT_COMMAND (wxID_ANY, tmEVT_QUERY_RUN, tmAttributionManager::OnRunQuery)
 	EVT_COMMAND (wxID_ANY, tmEVT_SHORTCUT_REFRESH, tmAttributionManager::OnRefreshShortcut)
@@ -398,7 +399,7 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 November 2008
  *******************************************************************************/
-void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
+/*void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 {
 	// verification : 
 	//		Selected notebook page is same type as
@@ -438,7 +439,7 @@ void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(statevt);	
-}
+}*/
 
 
 
@@ -484,6 +485,52 @@ void tmAttributionManager::OnAddBtn (wxCommandEvent & event){
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(statevt);
+}
+
+
+
+void tmAttributionManager::OnRemoveBtn(wxCommandEvent & event){
+    wxASSERT(m_pLayerProperties);
+	wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
+	if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()){
+		wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
+		return;
+	}
+    
+    // get checked values
+    wxArrayLong myKindValues;
+    m_Panel->GetSelectedValues(m_pLayerProperties->GetType(), myKindValues, true);
+	m_Panel->GetSelectedValues(m_pLayerProperties->GetType(), myKindValues, false);
+    if (myKindValues.GetCount() == 0) {
+        wxLogWarning (_("There is nothing checked! Removing nothing from attribution didn't mean anything!"));
+        return;
+    }
+    
+    // DELETE FROM generic_aat WHERE OBJECT_VAL_ID = ? AND OBJECT_GEOM_ID = ?
+    wxString myStmt = wxEmptyString;
+    wxArrayLong * mySelItemsRef = m_SelData->GetSelectedValues();
+    for (unsigned int s = 0; s < mySelItemsRef->GetCount(); s++) {
+        for (unsigned int k = 0 ; k < myKindValues.GetCount(); k++) {
+            myStmt.Append( wxString::Format(_T("DELETE FROM %s WHERE OBJECT_VAL_ID = %ld AND OBJECT_GEOM_ID = %ld; "), TABLE_NAME_GIS_ATTRIBUTION[m_pLayerProperties->GetType()], myKindValues.Item(k), mySelItemsRef->Item(s)));
+        }
+    }
+    
+    if (m_pDB->DataBaseQueryNoResults(myStmt) == false) {
+        wxLogError(_("Removing kind(s) to selected features failed!"));
+    }
+    
+    // clear list if needed
+	if (m_Panel->IsEmptyListValuesRequired()){
+		m_Panel->EmptyListValues();
+    }
+    
+    // focus to the renderer
+	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	
+	// send statistics
+	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
+	m_Parent->GetEventHandler()->AddPendingEvent(statevt);    
 }
 
 

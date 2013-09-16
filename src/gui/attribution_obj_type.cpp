@@ -20,14 +20,17 @@
 #include "wxflatbutton.h"
 
 
-DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)
+//DEFINE_EVENT_TYPE (tmEVT_ATTRIBUTION_BTN_PRESSED)
 DEFINE_EVENT_TYPE (tmEVT_INFO_BTN_PRESSED)
 DEFINE_EVENT_TYPE(tmEVT_ADD_BTN_PRESSED)
+DEFINE_EVENT_TYPE(tmEVT_REMOVE_BTN_PRESSED)
+
 
 BEGIN_EVENT_TABLE(AttribObjType_PANEL, ManagedAuiWnd)
-	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
+	//EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE, AttribObjType_PANEL::OnAttributeBtn)
 	EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_INFO, AttribObjType_PANEL::OnInfoBtn)
     EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_ADD, AttribObjType_PANEL::OnAddBtn)
+    EVT_FLATBUTTON (ID_DLG_OBJ_ATTRIBUTION_BTN_REMOVE, AttribObjType_PANEL::OnRemoveBtn)
     EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, AttribObjType_PANEL::OnEditStart)
 	EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, AttribObjType_PANEL::OnEditStop)
 END_EVENT_TABLE()
@@ -203,11 +206,11 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
         
 	m_ButtonSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ATTRIBUTE,_("Replace"), wxDefaultSize);
+	m_AttribBtn = new wxFlatButton ( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ADD,_("Add"), wxDefaultSize);
 	m_AttribBtn->Enable(false);
 	m_ButtonSizer->Add( m_AttribBtn, 0, 0, 5 );
 	
-    m_AddBtnCtrl = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_ADD, _("Add"), wxDefaultSize);
+    m_AddBtnCtrl = new wxFlatButton( parent, ID_DLG_OBJ_ATTRIBUTION_BTN_REMOVE, _("Remove"), wxDefaultSize);
 	m_AddBtnCtrl->Enable(false);
 	m_ButtonSizer->Add( m_AddBtnCtrl, 0, wxLEFT, 5 );
     
@@ -587,11 +590,11 @@ TOC_GENERIC_NAME AttribObjType_PANEL::GetVisibleNotebook ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 November 2008
  *******************************************************************************/
-void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
+/*void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
 {
 	wxCommandEvent evt (tmEVT_ATTRIBUTION_BTN_PRESSED, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
-}
+}*/
 
 
 
@@ -600,6 +603,11 @@ void AttribObjType_PANEL::OnAddBtn (wxCommandEvent & event){
     m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
+
+void AttribObjType_PANEL::OnRemoveBtn (wxCommandEvent & event){
+    wxCommandEvent evt (tmEVT_REMOVE_BTN_PRESSED, wxID_ANY);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+}
 
 /***************************************************************************//**
  @brief Called when user press Info
