@@ -1480,6 +1480,10 @@ long tmEditManager::_SaveToDatabase(){
     OGRLineString myLineString;
     OGRPoint myPoint;
     if (layerprop->GetSpatialType() == LAYER_SPATIAL_LINE) {
+        if (m_ArcPoints.GetCount() <= 1) {
+            return wxNOT_FOUND;
+        }
+        
         for (unsigned int i = 0; i< m_ArcPoints.GetCount(); i++) {
             myLineString.addPoint(m_ArcPoints[i]->x, m_ArcPoints[i]->y);
         }

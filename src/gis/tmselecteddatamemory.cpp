@@ -122,6 +122,9 @@ bool tmSelectedDataMemory::AddSelected (wxArrayLong * selected)
 void tmSelectedDataMemory::SetSelected (long selected)
 {
 	Clear();
+    if (selected == wxNOT_FOUND) {
+        return;
+    }
 	m_SelectedIDs->Add(selected);
 }
 
