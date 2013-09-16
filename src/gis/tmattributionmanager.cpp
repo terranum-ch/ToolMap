@@ -102,43 +102,39 @@ void tmAttributionManager::DisconnectShortcutEvent()
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 December 2008
  *******************************************************************************/
-void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event)
-{
+void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event){
 	int iShortcutIndex = 0;
 	int myLayerType = -1;
 	wxString myDescription = _T("");
-	wxArrayLong myValues;
+	wxArrayLong myKindValues;
 
-	if (m_ShortcutLoaded == false)
+	if (m_ShortcutLoaded == false){
 		return;
+    }
 
 	int myKeyCode = event.GetInt();
-	
 	wxLogDebug(_T("Key pressed : value %d"),myKeyCode);
-	if (myKeyCode >= WXK_F1 && myKeyCode <= WXK_F12)
-	{
+	if (myKeyCode >= WXK_F1 && myKeyCode <= WXK_F12){
 		// get the key index : 
 		iShortcutIndex = myKeyCode - WXK_F1 + 1;
 		wxASSERT(iShortcutIndex >= 1 && iShortcutIndex <=12);
-		if(m_ShortcutMem.GetShortcut(iShortcutIndex, myLayerType,
-									 myDescription, myValues) != wxNOT_FOUND)
-		{
-			// get selected features
-			wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
+		if(m_ShortcutMem.GetShortcut(iShortcutIndex, myLayerType, myDescription, myKindValues) != wxNOT_FOUND){
+			wxArrayLong  * mySelItemsRef = m_SelData->GetSelectedValues();
 			
-			// verification 			
-			if (mySelObjArray && ShortcutAttributionChecking(mySelObjArray->GetCount(),
-															 myLayerType))
-			{
+			if (mySelItemsRef && ShortcutAttributionChecking(mySelItemsRef->GetCount(), myLayerType)){
 				wxLogDebug(_T("Shortcut found : %s"), myDescription.c_str());
-				
-				// create attribution object based on type
-				tmAttributionData * myAttrib = CreateAttributionData(myLayerType);
-				myAttrib->Create(mySelObjArray, m_pDB);
-				if(!myAttrib->SetAttributeBasicValues(&myValues)){
-					wxLogMessage(_("Unable to attribute those data"));
-				}
-				wxDELETE(myAttrib);
+                // Shortcuts are now adding data to attribution (#332)
+                // REPLACE INTO generic_aat VALUES (KIND, GEOMETRY)
+                wxString myStmt = wxEmptyString;
+                for (unsigned int s = 0; s < mySelItemsRef->GetCount(); s++) {
+                    for (unsigned int k = 0 ; k < myKindValues.GetCount(); k++) {
+                        myStmt.Append( wxString::Format(_T("REPLACE INTO %s VALUES (%ld, %ld); "), TABLE_NAME_GIS_ATTRIBUTION[m_pLayerProperties->GetType()], myKindValues.Item(k), mySelItemsRef->Item(s)));
+                    }
+                }
+                
+                if (m_pDB->DataBaseQueryNoResults(myStmt) == false) {
+                    wxLogError(_("Adding kind(s) to selected features failed!"));
+                }
 				
 				// send notification to frame
 				wxCommandEvent evt(tmEVT_SHORTCUT_ATTRIBUTION_DONE, wxID_ANY);
@@ -150,10 +146,7 @@ void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event)
                 m_Parent->GetEventHandler()->AddPendingEvent(statevt);	
 			}
 		}
-		
-		
 	}
-	
 }
 
 
