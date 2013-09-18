@@ -168,12 +168,30 @@ bool QueriesBuilder::_CreateGeomNodeQuery() {
 
 
 bool QueriesBuilder::_CreateDuplicateQuery() {
-	wxString myQuery = wxString::Format(_T("SELECT OBJECT_ID FROM %s GROUP by OBJECT_GEOMETRY")
-										_T(" having COUNT(OBJECT_GEOMETRY) > 1 ORDER BY OBJECT_ID"),
-										TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str());
+    wxString myQuery;
+#if MYSQL_VERSION_ID >= 50600
+	myQuery = wxString::Format(_T("SELECT a.OBJECT_ID FROM %s a, %s b WHERE ST_Equals(a.OBJECT_GEOMETRY, b.OBJECT_GEOMETRY) and a.OBJECT_ID<>b.OBJECT_ID"), TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str(), TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str());
+#else // 5.5 version didn't support strict spatial queries
+    myQuery = wxString::Format(_T("SELECT OBJECT_ID FROM %s GROUP by OBJECT_GEOMETRY")
+                               _T(" having COUNT(OBJECT_GEOMETRY) > 1 ORDER BY OBJECT_ID"),
+                               TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str());
+#endif
 	m_QueryData->m_QuerySQL = myQuery;
 	return true;
 }
+
+
+bool QueriesBuilder::_CreateCrossingQuery (){
+    wxString myQuery;
+#if MYSQL_VERSION_ID >= 50600
+	myQuery = wxString::Format(_T("SELECT a.OBJECT_ID FROM %s a, %s b WHERE ST_Crosses(a.OBJECT_GEOMETRY, b.OBJECT_GEOMETRY) and a.OBJECT_ID<>b.OBJECT_ID"), TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str(), TABLE_NAME_GIS_GENERIC[m_QueryData->m_QueryLayerType].c_str());
+#else // 5.5 version didn't support strict spatial queries
+    myQuery = _T("--- NOT SUPPORTED IN MYSQL BELLOW 5.6 ---");
+#endif
+	m_QueryData->m_QuerySQL = myQuery;
+    return true;
+}
+
 
 
 
@@ -255,6 +273,11 @@ bool QueriesBuilder::Create(DataBaseTM * database) {
 			_CreateDuplicateQuery();
 			m_IsCreated = true;
 			break;
+            
+        case QUERY_CROSSING:
+            _CreateCrossingQuery();
+            m_IsCreated = true;
+            break;
 
 		default:
 			wxLogError(_T("Unsupported query type"));
