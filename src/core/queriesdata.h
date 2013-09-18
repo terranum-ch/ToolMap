@@ -39,6 +39,7 @@ enum tmQUERIES_TYPE {
 	QUERY_LINES,
 	QUERY_NODES,
 	QUERY_DUPLICATE,
+    QUERY_CROSSING,
 	QUERY_NUMBER
 };
 
@@ -62,7 +63,7 @@ private:
     bool _IsQueryLineSizeCorrect();
     bool _IsQueryNodeNumberCorrect();
 	bool _IsQueryDuplicateCorrect();
-	
+	bool _IsQueryCrossingCorrect();
 	
   public:
     tmQUERIES_TYPE m_QueryType;
