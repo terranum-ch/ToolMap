@@ -280,9 +280,9 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry 
 
 
 		case wkbPoint:
-			myPoint = (OGRPoint*) geometry;
+			myPoint = static_cast<OGRPoint*>( geometry );
 			if (myPoint && myPoint->Intersects(buffer)){
-                points.Add(wxRealPoint(myPointLine->getX(), myPointLine->getY()));
+                points.Add(wxRealPoint(myPoint->getX(), myPoint->getY()));
 			}
 			break;
 

@@ -1031,8 +1031,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 		OGRGeometryFactory::destroyGeometry(myBufferClick);
 		return false;
 	}
-		
-	
+    
 	// search into returned object for intersection
     unsigned int myPtsCount = snapppts.GetCount();
 	while(m_DB->DataBaseGetNextRowResult(row, row_size))
