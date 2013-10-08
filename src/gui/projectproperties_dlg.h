@@ -65,9 +65,9 @@ enum PRJPROPERTIES_SCALE_ORDER
 
 const wxString PRJPROPERTIES_SCALE_ORDER_STRING [] =
 {
-	_("User defined"),
-	_("Sort ascending"),
-	_("Sort descending")
+	wxTRANSLATE("User defined"),
+	wxTRANSLATE("Sort ascending"),
+	wxTRANSLATE("Sort descending")
 };
 
 

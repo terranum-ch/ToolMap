@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmlayerpropertiesdef.h
-				Class containing definitions for layer informations 
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmlayerpropertiesdef.h
+ Class containing definitions for layer informations
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,10 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
-
 #ifndef _TM_LAYERPROPERTIES_DEF_H_
 #define _TM_LAYERPROPERTIES_DEF_H_
 
@@ -26,22 +22,20 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-
-
 // TOC Generics values
-// Definitions for the generic layers, we define the text and  the id of 
+// Definitions for the generic layers, we define the text and  the id of
 // each string.
-static wxString TOC_GENERIC_NAME_STRING[] = 
+static wxString TOC_GENERIC_NAME_STRING[] =
 {
-	_("Lines"),
-	_("Points"),
-	_("Labels"),
-	_("Notes"),
-	_("Frame"),
-	_("Not Generic layers")
+	wxTRANSLATE("Lines"),
+	wxTRANSLATE("Points"),
+	wxTRANSLATE("Labels"),
+	wxTRANSLATE("Notes"),
+	wxTRANSLATE("Frame"),
+	wxTRANSLATE("Not Generic layers")
 };
 
 
@@ -75,19 +69,19 @@ enum TM_GIS_SPATIAL_TYPES
 	LAYER_ERR
 };
 
-const wxString TM_GIS_SPATIAL_TYPES_STRING[] = 
+const wxString TM_GIS_SPATIAL_TYPES_STRING[] =
 {
-_("Lines"),
-_("Points"),
-_("Polygons"),
-_("Raster"),
-_("Unknown"),
-_("Error getting layers type")
+    wxTRANSLATE("Lines"),
+    wxTRANSLATE("Points"),
+    wxTRANSLATE("Polygons"),
+    wxTRANSLATE("Raster"),
+    wxTRANSLATE("Unknown"),
+    wxTRANSLATE("Error getting layers type")
 };
 
 
 // enum for drawing vertex
-enum tmDRAWING_FLAGS 
+enum tmDRAWING_FLAGS
 {
 	tmDRAW_VERTEX_NONE = 0,
 	tmDRAW_VERTEX_ALL,
