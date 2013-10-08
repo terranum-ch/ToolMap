@@ -39,7 +39,7 @@
 
 
 
-const wxString g_CodeName = _("NENDAZ");
+const wxString g_CodeName = wxTRANSLATE("NENDAZ");
 
 
 class tmAboutDLG : public wxDialog 

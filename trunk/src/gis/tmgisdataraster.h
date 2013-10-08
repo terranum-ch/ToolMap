@@ -44,10 +44,11 @@ enum tmGISDATA_RASTER_TYPES
 	tmGIS_RASTER_JPEG
 };
 
-static wxString tmGISDATA_RASTER_TYPE_WILDCARDS[] = 
-{_("Tiff raster file (*.tif,*.tiff)|*.tif;*.tiff"),
-_("Esri's binary GRID (hdr.adf)|hdr.adf"),
-_("Jpeg raster file (*.jpg, *.jpeg)|*.jpg;*.jpeg")};
+static wxString tmGISDATA_RASTER_TYPE_WILDCARDS[] = {
+    wxTRANSLATE("Tiff raster file (*.tif,*.tiff)|*.tif;*.tiff"),
+wxTRANSLATE("Esri's binary GRID (hdr.adf)|hdr.adf"),
+wxTRANSLATE("Jpeg raster file (*.jpg, *.jpeg)|*.jpg;*.jpeg")
+};
 
 static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 {
@@ -58,19 +59,19 @@ static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 
 
 const wxString tmRASTER_DATATYPES[] = {
-    _("Unknown data type"),
-   _("Eight bit unsigned integer"),           
-   _("Sixteen bit unsigned integer"),         
-    _("Sixteen bit signed integer"),        
-    _("Thirty two bit unsigned integer"),  
-    _("Thirty two bit signed integer"),     
-    _("Thirty two bit floating point"),    
-    _("Sixty four bit floating point"),     
-    _("Complex Int16"),                   
-    _("Complex Int32"),                    
-   _("Complex Float32"),                  
-    _("Complex Float64"),            
-    _("Data type out of limits")          
+    wxTRANSLATE("Unknown data type"),
+   wxTRANSLATE("Eight bit unsigned integer"),           
+   wxTRANSLATE("Sixteen bit unsigned integer"),         
+    wxTRANSLATE("Sixteen bit signed integer"),        
+    wxTRANSLATE("Thirty two bit unsigned integer"),
+    wxTRANSLATE("Thirty two bit signed integer"),     
+    wxTRANSLATE("Thirty two bit floating point"),    
+    wxTRANSLATE("Sixty four bit floating point"),     
+    wxTRANSLATE("Complex Int16"),                   
+    wxTRANSLATE("Complex Int32"),                    
+   wxTRANSLATE("Complex Float32"),                  
+    wxTRANSLATE("Complex Float64"),            
+    wxTRANSLATE("Data type out of limits")          
 };
 
 

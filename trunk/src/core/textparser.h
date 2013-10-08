@@ -51,13 +51,13 @@ enum TEXTPARSER_TYPE
 };
 
 static wxString TEXTPARSER_WILDCARDS[] = 
-		{_("Semi-colon delimited text files (*.csv)|*.csv"),
-		_("Tab delimited text files (*.txt)|*.txt")};
+		{wxTRANSLATE("Semi-colon delimited text files (*.csv)|*.csv"),
+		wxTRANSLATE("Tab delimited text files (*.txt)|*.txt")};
 
 
 static wxString TEXTPARSER_NAME[] = 
-		{_("Semi-colon delimited text files"),
-		_("Tab delimited text files")};
+		{wxTRANSLATE("Semi-colon delimited text files"),
+		wxTRANSLATE("Tab delimited text files")};
 
 /***************************************************************************//**
  @brief Super-class for parsing different file

@@ -53,8 +53,8 @@ enum PRJDEF_EXPORT_TYPE
 
 static wxString PRJDEF_EXPORT_TYPE_STRING[] =
 {
-	_("Shapefiles"),
-	_("Graphics (EPS)")
+	wxTRANSLATE("Shapefiles"),
+	wxTRANSLATE("Graphics (EPS)")
 };
 
 
@@ -63,9 +63,9 @@ static wxString PRJDEF_EXPORT_TYPE_STRING[] =
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_UNIT_TYPE_STRING[] = 
 {
-	_("Meters"),
-	_("Kilometers"),
-	_("Lat / Long")
+	wxTRANSLATE("Meters"),
+	wxTRANSLATE("Kilometers"),
+	wxTRANSLATE("Lat / Long")
 };
 enum PRJDEF_UNIT_TYPE
 {
@@ -81,8 +81,8 @@ const wxString TABLE_COMMENT_ENUMERATION = _T("ENUMERATION");
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_PROJ_TYPE_STRING[] = 
 {
-	_("No projection"),
-	_("Swiss projection")
+	wxTRANSLATE("No projection"),
+	wxTRANSLATE("Swiss projection")
 };
 enum PRJDEF_PROJ_TYPE
 {
@@ -96,11 +96,11 @@ static const int PRJDEF_PROJ_TYPE_NUMBER = 2;
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_FIELD_TYPE_STRING[] = 
 {
-	_("Enumeration"),
-	_("Text"),
-	_("Integer"),
-	_("Float"),
-	_("Date")
+	wxTRANSLATE("Enumeration"),
+	wxTRANSLATE("Text"),
+	wxTRANSLATE("Integer"),
+	wxTRANSLATE("Float"),
+	wxTRANSLATE("Date")
 };
 enum PRJDEF_FIELD_TYPE
 {	
@@ -114,8 +114,8 @@ static const int PRJDEF_FIELD_TYPE_NUMBER = 5;
 
 static wxString PRJDEF_FIELD_ORIENTATION_STRING[] =
 {
-	_("Yes"),
-	_T("")
+	wxTRANSLATE("Yes"),
+	wxTRANSLATE("")
 };
 
 enum PRJDEF_FIELD_ORIENTATION
@@ -137,9 +137,9 @@ enum PRJDEF_FIELD_ORIENTATION
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_LAYERS_TYPE_STRING[] = 
 {	
-	_("Line"),
-	_("Point"),
-	_("Polygon")
+	wxTRANSLATE("Line"),
+	wxTRANSLATE("Point"),
+	wxTRANSLATE("Polygon")
 };
 enum PRJDEF_LAYERS_TYPE
 {
@@ -155,7 +155,7 @@ static const int PRJDEF_LAYERS_TYPE_NUMBER = 3; // only takes the 3 first
 static wxString PRJDEF_OBJECTS_FREQ_STRING[] = 
 {
 	_T(""),
-	_("Frequent")
+	wxTRANSLATE("Frequent")
 };
 enum PRJDEF_OBJECTS_FREQ
 {

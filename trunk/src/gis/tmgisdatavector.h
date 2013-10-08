@@ -39,9 +39,10 @@ enum tmGISDATA_VECTOR_TYPES
 	tmGIS_VECTOR_MYSQL // should allways been put as last item
 };
 
-static wxString tmGISDATA_VECTOR_TYPE_WILDCARDS[] = 
-{_("Esri's shapefiles (*.shp)|*.shp"),
-_("MySQL geometric table (*.MYD)|*.MYD")};
+static wxString tmGISDATA_VECTOR_TYPE_WILDCARDS[] = {
+    wxTRANSLATE("Esri's shapefiles (*.shp)|*.shp"),
+    wxTRANSLATE("MySQL geometric table (*.MYD)|*.MYD")
+};
 
 
 static wxString tmGISDATA_VECTOR_TYPE_EXTENSION[] =
