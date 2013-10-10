@@ -90,6 +90,8 @@ INCLUDE ("cmake/installMacLibTiff.cmake")
 INCLUDE ("cmake/Use_wingdiplus.cmake")
 INCLUDE ("cmake/Use_visualstudioMT.cmake")
 INCLUDE ("cmake/useMySQLEmbedded.cmake")
+INCLUDE ("cmake/GDALCopyLibs.cmake")
+INCLUDE ("../plugins/lscrashreport/build/CURLCopyLibs.cmake")
 
 # UNIT TEST PROGRAM
 SET (USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
