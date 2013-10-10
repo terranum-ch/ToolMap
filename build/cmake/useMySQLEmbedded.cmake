@@ -30,8 +30,23 @@ IF (MYSQL_INCLUDE_DIR)
 			COMMAND IF exist ${WIN_MYSQL_DIR} (echo ${WIN_MYSQL_DIR} exists) ELSE (mkdir ${WIN_MYSQL_DIR})
 			COMMAND copy ${WIN_MYSQL_ERRMSG_SOURCE} 	${WIN_MYSQL_ERRMSG_DEST}
 		)
+
+  # Copy optimized MySQL  dll under WINDOWS
+  FIND_FILE (MYSQL_DLL_NAME
+    libmysqld.dll 
+    HINTS ${MYSQL_MAIN_DIR}/Embedded/DLL/release
+    NO_DEFAULT_PATH)
+  IF (NOT MYSQL_DLL_NAME)
+    MESSAGE (SEND_ERROR "MySQL dll not found in ${MYSQL_MAIN_DIR}")
+  ENDIF()
+
+  ADD_CUSTOM_COMMAND (TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${MYSQL_DLL_NAME}"
+    "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+
 	ENDIF(WIN32)
-	
+
 	# do nothing for Linux
 ENDIF(MYSQL_INCLUDE_DIR)
 
