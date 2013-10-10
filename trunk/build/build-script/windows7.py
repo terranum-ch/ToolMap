@@ -92,23 +92,5 @@ def gCreateInstaller(svnnumner):
         shutil.copyfile(os.path.join(gDirBin, "RelWithDebInfo", file), os.path.join(myPDBPath, file))
     return installname
 
-
-def DoPostBuildCommand():
-    """copy DLL to directories"""
-    myDll = (os.path.join(gDirGdal,"bin","gdal110.dll"), #,os.path.join(gDirGeos,"bin","Debug", "geos.dll"),
-             os.path.join(gDirGeos,"src","geos_c.dll"),
-             os.path.join(gDirSQL, "Embedded", "DLL", "release", "libmysqld.dll"),
-             os.path.join(gDirCurl, "lib", "DLL-Debug","libcurld.dll"),
-             os.path.join(gDirCurl, "lib", "DLL-Release","libcurl.dll"),
-             os.path.join(gDirSQLITE, "lib", "sqlite3.dll")
-        )
-
-    for dll in myDll:
-        shutil.copyfile(dll, os.path.join(gDirBin, "Debug", os.path.basename(dll)))
-        if (os.path.exists(os.path.join(gDirBin, "RelWithDebInfo"))):
-            shutil.copyfile(dll, os.path.join(gDirBin, "RelWithDebInfo", os.path.basename(dll)))
-
-        print ("copying: ", dll)
-
 #if __name__ == '__main__':
 #    gCreateInstaller("1")
