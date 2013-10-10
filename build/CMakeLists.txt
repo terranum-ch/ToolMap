@@ -1,11 +1,11 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) LUCIEN SCHREIBER CREALP 2007
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.6)
 
 ## POLICY FOR WINDOWS ONLY ???
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+#if(COMMAND cmake_policy)
+#  cmake_policy(SET CMP0003 NEW)
+#endif(COMMAND cmake_policy)
 
 PROJECT ("ToolMap")
 
@@ -24,52 +24,30 @@ IF(APPLE)
   MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG: ${CMAKE_C_FLAGS_DEBUG}")
 ENDIF(APPLE)
 
-#search all source files
+# Sources and headers 
 FILE (GLOB_RECURSE SRC_FILES ../src/*.cpp)
-
-# GET MAIN SOURCE FILE
 SET(MY_SEARCHED_FILE "../src/core/toolmap.cpp")
 FILE(GLOB MAIN_SRC_FILE "${MY_SEARCHED_FILE}")
-
 LIST(LENGTH SRC_FILES MYLENGTH)
-MESSAGE("Number of source files is : ${MYLENGTH}")
+#MESSAGE("Number of source files is : ${MYLENGTH}")
 LIST(FIND SRC_FILES "${MAIN_SRC_FILE}" MYFOUND)
-MESSAGE("Main src file is found : ${MYFOUND}")
-
-#REMOVE MAIN FROM SRC_FILES
+#MESSAGE("Main src file is found : ${MYFOUND}")
 IF(MYFOUND EQUAL -1)
   MESSAGE(FATAL_ERROR "Following file not found : ${MY_SEARCHED_FILE}")
 ENDIF(MYFOUND EQUAL -1)
 LIST(REMOVE_AT SRC_FILES ${MYFOUND})
-
-# search all headers files
 FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
 SOURCE_GROUP (header FILES ${HEAD_FILES})
 
-# WXWIDGETS
-# DEFINE ALL INCLUDES AND SO ON
+# Includes 
 SET(WXWINDOWS_USE_GL 0)
 INCLUDE ("cmake/FindwxWidgets.cmake")
-
-#MYSQL EMBEDDED
 INCLUDE ("cmake/findMySQLEmbedded.cmake")
-
-#GEOS - GDAL libs
 INCLUDE ("cmake/findGISLib.cmake")
-
-#wxTreeMultiCtrl
 INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
-
-#CURL
 INCLUDE ("cmake/FindCURL.cmake")
-
-#wxPDFDocument
 INCLUDE ("cmake/findwxpdfdocument.cmake")
-
-# LSVERSION COMMPONENT
 INCLUDE("../plugins/lsversion/build/use_lsversion.cmake")
-
-# LSCRASHREPORT COMPONENT
 INCLUDE ("../plugins/lscrashreport/build/use_lscrashreport.cmake")
 
 # CREATE A LIBRARY WITH ALL SRC
@@ -107,30 +85,10 @@ IF (APPLE)
   set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/custominfo.plist)
 ENDIF(APPLE)
 
-# copy libs to bundle if we are under mac...
-# check is done internally.
 INCLUDE ("cmake/installMacGISLIB.cmake")
-
-#SOULD WE ADD THE LIBTIFF INTO BUNDLE
-# ONLY FOR CERTAIN MAC WITH PPC 
-# CHECK ARE DONE INTERNALLY YOU 
-# CAN CALL THIS WITHOUT FEAR...
 INCLUDE ("cmake/installMacLibTiff.cmake")
-
-#SOULD WE ADD THE GDIPLUS.dll INTO project
-# ONLY FOR Windows, do nothing under other 
-# OS. 
-# CHECK ARE DONE INTERNALLY YOU 
-# CAN CALL THIS WITHOUT FEAR...
 INCLUDE ("cmake/Use_wingdiplus.cmake")
-
-# SHOULD WE USE THE MT VERSION FOR DEFAULT 
-# COMPATIBILITY WITH < WINXP
-IF (WIN32)
-  INCLUDE ("cmake/Use_visualstudioMT.cmake")
-ENDIF (WIN32)
-
-#Copy errmsg.sys to correct path
+INCLUDE ("cmake/Use_visualstudioMT.cmake")
 INCLUDE ("cmake/useMySQLEmbedded.cmake")
 
 # UNIT TEST PROGRAM
@@ -139,7 +97,8 @@ IF (USE_UNITTEST)
   ADD_SUBDIRECTORY("../test/build" "${PROJECT_BINARY_DIR}/test")
 ENDIF (USE_UNITTEST)
 
-IF (NOT APPLE AND NOT WIN32)
+# TODO: Move this to create_installer.cmake
+IF (UNIX AND NOT APPLE)
   INSTALL(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION /usr/bin)
   INSTALL(FILES "../art/toolmap.png" DESTINATION "/usr/share/pixmaps")
   INSTALL(FILES "../install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
@@ -159,7 +118,6 @@ IF (NOT APPLE AND NOT WIN32)
   SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
   SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
   SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-
   INCLUDE(CPack)
-ENDIF(NOT APPLE AND NOT WIN32)
+ENDIF(UNIX AND NOT APPLE)
 
