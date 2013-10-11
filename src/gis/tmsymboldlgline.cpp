@@ -331,7 +331,7 @@ wxBitmap tmSymbolDLGLineRule::_CreateColorBitmap(const wxBrush & brush, const wx
         
         wxPen myPen (pen);
         
-        if (myPen.GetStyle() == tmPENSTYLE_ORIENTED) {
+        if (myPen.GetStyle() == (wxPenStyle) tmPENSTYLE_ORIENTED) {
             myPen.SetStyle(wxPENSTYLE_SOLID);
             myPen.SetWidth(2);
             renderer_dc.SetPen(myPen);

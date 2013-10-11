@@ -291,7 +291,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	wxDELETE(myVPen);
 	wxDELETE(pgdc);
     
-    wxLogMessage(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
+    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
 	return true;
 }
 
@@ -513,7 +513,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
     
-    wxLogMessage(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
+    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
 	return true;	
 }
 
@@ -542,6 +542,8 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
     int iLoop = 0;
     tmSymbolRuleArray * myRulesArray = itemProp->GetSymbolRuleManagerRef()->GetRulesRef();
     wxASSERT(myRulesArray);
+    long mySkippedVertex = 0;
+    long myTotalVertex = 0;
     for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
         tmSymbolRule * myRule = myRulesArray->Item(s);
         wxASSERT(myRule);
@@ -555,7 +557,7 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
         
         wxPen myRulePen = myRule->GetPen();
         bool bUseOriented = false;
-        if (myRulePen.GetStyle() == tmPENSTYLE_ORIENTED) {
+        if (myRulePen.GetStyle() == (wxPenStyle) tmPENSTYLE_ORIENTED) {
             myRulePen.SetStyle(wxPENSTYLE_SOLID);
             bUseOriented = true;
         }
@@ -574,10 +576,20 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
                 wxDELETEA(pptsReal);
                 break;
             }
+            
+            myTotalVertex += iNbVertex;
             // convert realpts to pxpts
             wxPoint * pptspx = new wxPoint[iNbVertex];
+            m_PreviousPoint = wxDefaultPosition;
             for (int i = 0; i< iNbVertex; i++) {
-                pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+                wxPoint myPt = m_scale.RealToPixel(pptsReal[i]);
+                if (myPt == m_PreviousPoint) {
+                    pptspx[i] = wxDefaultPosition;
+                    ++mySkippedVertex;
+                }else{
+                    pptspx[i] = myPt;
+                }
+                m_PreviousPoint = myPt;
             }
             wxDELETEA(pptsReal);
             
@@ -594,14 +606,15 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
             wxGraphicsPath myPath = pgdc->CreatePath();
             myPath.MoveToPoint(pptspx[0]);
             for (int i = 1; i< iNbVertex; i++){
-                myPath.AddLineToPoint(pptspx[i]);
+                if (pptspx[i] != wxDefaultPosition) {
+                    myPath.AddLineToPoint(pptspx[i]);
+                }
             }
             pgdc->StrokePath(myPath);
             
             if (bUseOriented == true) {
                 _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
             }
-            
             
             tmLayerProperties myProperty (*itemProp);
             // drawing vertex
@@ -614,7 +627,7 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
     if (IsLoggingEnabled()){
 		wxLogDebug(_T("%d Lines drawn"), iLoop);
     }
-	
+    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
 	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return true;
