@@ -1349,8 +1349,11 @@ bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pt
 	switch (itemProp->GetVertexFlags())
 	{
 		case tmDRAW_VERTEX_ALL: // ALL VERTEX
-			for (i = 0;i<nb_pts; i++)
-			{
+			for (i = 0;i<nb_pts; i++){
+                if (pts[i].x == wxNOT_FOUND && pts[i].y == wxNOT_FOUND) {
+                    continue;
+                }
+                
 			#ifdef __WXMSW__
 				pgdc->StrokeLine (pts[i].x , pts[i].y, pts[i].x + 0.1, pts[i].y + 0.1);
 			#else
@@ -1360,8 +1363,10 @@ bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pt
 			break;
 			
 		case tmDRAW_VERTEX_BEGIN_END: // ONLY BEGIN / END
-			for (i = 0; i< nb_pts; i = i+nb_pts-1)
-			{
+			for (i = 0; i< nb_pts; i = i+nb_pts-1){
+                if (pts[i].x == wxNOT_FOUND && pts[i].y == wxNOT_FOUND) {
+                    continue;
+                }
 				#ifdef __WXMSW__
 				pgdc->StrokeLine (pts[i].x, pts[i].y, pts[i].x + 0.1, pts[i].y + 0.1);
 				#else
