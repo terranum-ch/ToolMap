@@ -621,10 +621,10 @@ bool tmDrawer::_DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbp
         wxPoint p2 = pts[i+1];
         
         // ignore skipped points
-        if (p1.x == wxNOT_FOUND && p1.y == wxNOT_FOUND) {
+        if (p1 == wxDefaultPosition) {
             continue;
         }
-        if ( p2.x == wxNOT_FOUND && p2.y == wxNOT_FOUND) {
+        if ( p2 == wxDefaultPosition) {
             continue;
         }
         
@@ -1350,7 +1350,7 @@ bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pt
 	{
 		case tmDRAW_VERTEX_ALL: // ALL VERTEX
 			for (i = 0;i<nb_pts; i++){
-                if (pts[i].x == wxNOT_FOUND && pts[i].y == wxNOT_FOUND) {
+                if (pts[i] == wxDefaultPosition) {
                     continue;
                 }
                 
@@ -1364,9 +1364,10 @@ bool tmDrawer::DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pt
 			
 		case tmDRAW_VERTEX_BEGIN_END: // ONLY BEGIN / END
 			for (i = 0; i< nb_pts; i = i+nb_pts-1){
-                if (pts[i].x == wxNOT_FOUND && pts[i].y == wxNOT_FOUND) {
+                if (pts[i] == wxDefaultPosition) {
                     continue;
                 }
+                
 				#ifdef __WXMSW__
 				pgdc->StrokeLine (pts[i].x, pts[i].y, pts[i].x + 0.1, pts[i].y + 0.1);
 				#else
