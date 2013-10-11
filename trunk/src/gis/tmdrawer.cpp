@@ -611,13 +611,22 @@ bool tmDrawer::_DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbp
     wxASSERT(nbpts > 1);
     
     wxGraphicsPath myPath = gdc->CreatePath();
-    int myShift = actualPen.GetWidth()+1;
+    int myShift = -1 * (actualPen.GetWidth()+1);
     actualPen.SetStyle(wxPENSTYLE_DOT);
     gdc->SetPen(actualPen);
+    bool HasfirstPoint = false;
     
     for (int i = 0; i< nbpts-1; i++) {
         wxPoint p1 = pts[i];
         wxPoint p2 = pts[i+1];
+        
+        // ignore skipped points
+        if (p1.x == wxNOT_FOUND && p1.y == wxNOT_FOUND) {
+            continue;
+        }
+        if ( p2.x == wxNOT_FOUND && p2.y == wxNOT_FOUND) {
+            continue;
+        }
         
         // compute vector and perpendicular
         double dx = p2.x - p1.x;
@@ -645,8 +654,9 @@ bool tmDrawer::_DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbp
         }
         
         // new points
-        if (i == 0) {
+        if (HasfirstPoint == false) {
             myPath.MoveToPoint(p3);
+            HasfirstPoint = true;
         }
         else{
             myPath.AddLineToPoint(p3);
