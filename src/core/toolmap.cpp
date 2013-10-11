@@ -318,7 +318,8 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	SetIcon(icon);
 
     // adding status bar
-	CreateStatusBar(4, wxSTB_DEFAULT_STYLE, wxID_ANY);
+	CreateStatusBar(4);
+    SetStatusBarPane(-1);
 
 	_CreateMenu();
 	_CreateToolBar();
@@ -327,8 +328,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	wxLog * myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
 	delete wxLog::SetActiveTarget(myDlgLog);
 	m_LogWindow = new wxLogWindow(this, g_ProgName + _(" Log"), false);
-
-	wxLogDebug(_("Debug mode enabled"));
+    wxLogDebug(_("Debug mode enabled"));
 
 	wxConfigBase::Set(new wxFileConfig(g_ProgName));
 	wxLogDebug("Config file : %s", wxFileConfig::GetLocalFile(g_ProgName).GetFullPath());
@@ -417,7 +417,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	_CheckUpdates(false);
 	_LoadPreference(false);
 
-
 	// connecting menu to object kind panel
 	wxASSERT(m_AttribObjPanel);
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnDisplayAttributesAuto, m_AttribObjPanel, ID_CTXT_AUTODISPLAY_ATTRIB);
@@ -453,14 +452,10 @@ ToolMapFrame::~ToolMapFrame()
     this->Unbind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuAdd, m_SnappingPanel, ID_SNAP_ADD);
     this->Unbind(wxEVT_UPDATE_UI, &Snapping_PANEL::OnUpdateUIContextualMenuRemove, m_SnappingPanel, ID_SNAP_REMOVE);
 
-
-
 	// close project
 	m_PManager->CloseProject();
 
 	m_AuiManager->UnInit();
-
-
 	wxDELETE(m_ToolManager);
 	wxDELETE(m_EditManager);
 	wxDELETE(m_AttribManager);
@@ -488,8 +483,7 @@ ToolMapFrame::~ToolMapFrame()
 
 
 
-void ToolMapFrame::OnQuit(wxCommandEvent & event)
-{
+void ToolMapFrame::OnQuit(wxCommandEvent & event){
 	Close(true);
 }
 
@@ -1426,7 +1420,7 @@ void ToolMapFrame::OnSelectInvert (wxCommandEvent & event)
 void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 {
 	SetStatusText(wxString::Format(_T("%d Selected features"),
-                                   m_LayerManager->GetSelectedDataMemory()->GetCount()),2);
+                                   m_LayerManager->GetSelectedDataMemory()->GetCount()),1);
 	event.Skip();
 }
 
@@ -1590,7 +1584,7 @@ void ToolMapFrame::OnShortcutAttributionDone (wxCommandEvent & event)
 	wxString myStatusInfo =  event.GetString();
 	myStatusInfo.Append(_(" : Attribution DONE"));
 
-	GetStatusBar()->SetStatusText(myStatusInfo, 0);
+	GetStatusBar()->SetStatusText(myStatusInfo, 3);
 }
 
 

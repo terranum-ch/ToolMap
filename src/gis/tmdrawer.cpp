@@ -356,8 +356,8 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	}
 	
 	// create pens
-    wxPenStyle myValidPenStyle ((wxPenStyle) tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
-    wxPenStyle myUnValidPenStyle ((wxPenStyle) tmSYMBOLPENSYLES[mySymbology->m_UnSelShapeMultiple]);
+    int myValidPenStyle (tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
+    int myUnValidPenStyle (tmSYMBOLPENSYLES[mySymbology->m_UnSelShapeMultiple]);
     
     bool bUseValidOriented = false;
     if (myValidPenStyle == tmPENSTYLE_ORIENTED) {
