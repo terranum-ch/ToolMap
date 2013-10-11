@@ -773,8 +773,7 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 July 2008
  *******************************************************************************/
-void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
-{
+void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event){
 	wxPoint * pmousepoint = (wxPoint*) event.GetClientData();
 	wxPoint mousepoint (*pmousepoint);
 	wxDELETE(pmousepoint);
@@ -789,17 +788,16 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event)
 	}
 	
 	if (!m_Scale.IsLayerExtentValid()){
-		m_StatusBar->SetStatusText(_T(""), 1);
+		m_StatusBar->SetStatusText(_T(""), 0);
 		return;
 	}
 	// clear status bar
-	m_StatusBar->SetStatusText(_T(""), 0);
-	
+	m_StatusBar->SetStatusText(_T(""), 3);
 	
 	wxRealPoint mouserealpoint = m_Scale.PixelToReal(mousepoint);
-	wxString sCoord = wxString::Format(_T("x: %.*f -- y: %.*f"),
-									   4, mouserealpoint.x, 4, mouserealpoint.y);
-	m_StatusBar->SetStatusText(sCoord, 1);
+    wxString myXtxt = wxString::FromCDouble( mouserealpoint.x, 2 );
+    wxString myYtxt = wxString::FromCDouble( mouserealpoint.y, 2 );
+	m_StatusBar->SetStatusText(wxString::Format(_T("x:%s y:%s"), myXtxt, myYtxt), 0);
 }
 
 
@@ -813,13 +811,13 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
 	
 	if (myAngle == wxNOT_FOUND)
 	{
-		m_StatusBar->SetStatusText(_T(""), 3);
+		m_StatusBar->SetStatusText(_T(""), 2);
 		return;
 	}
 	
 	
 	wxString myAngleText = wxString::Format(_T("Angle : %d\u00B0"), myAngle);
-	m_StatusBar->SetStatusText(myAngleText, 3);
+	m_StatusBar->SetStatusText(myAngleText, 2);
 }
 
 
