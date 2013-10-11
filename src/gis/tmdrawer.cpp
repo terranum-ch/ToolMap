@@ -396,6 +396,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	temp_dc.SelectObject(*m_bmp);
 	wxGraphicsContext* pgdc = wxGraphicsContext::Create( temp_dc);
 	
+    long myTotalVertex = 0;
+    long mySkippedVertex = 0;
+    
 	while (1)
 	{
 		int iNbVertex = wxNOT_FOUND;
@@ -406,13 +409,21 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 			break;
 		}
        
+        myTotalVertex += iNbVertex;
         // convert realpts to pxpts
         wxPoint * pptspx = new wxPoint[iNbVertex];
+        m_PreviousPoint = wxDefaultPosition;
         for (int i = 0; i< iNbVertex; i++) {
-            pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+            wxPoint myPt = m_scale.RealToPixel(pptsReal[i]);
+            if (myPt == m_PreviousPoint) {
+                pptspx[i] = wxDefaultPosition;
+                ++mySkippedVertex;
+            }else{
+                pptspx[i] = myPt;
+            }
+            m_PreviousPoint = myPt;
         }
         wxDELETEA(pptsReal);
-
 		
 		bool IsSelected = false;
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer()){
@@ -438,7 +449,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 			wxGraphicsPath myPath = pgdc->CreatePath();
 			myPath.MoveToPoint(pptspx[0]);
 			for (int i = 1; i< iNbVertex; i++){
-				myPath.AddLineToPoint(pptspx[i]);
+                if (pptspx[i] != wxDefaultPosition) {
+                    myPath.AddLineToPoint(pptspx[i]);
+                }
 			}
 			pgdc->StrokePath(myPath);			
 		}
@@ -470,7 +483,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 		wxGraphicsPath myPath = pgdc->CreatePath();
 		myPath.MoveToPoint(pptspx[0]);
 		for (int i = 1; i< iNbVertex; i++){
-			myPath.AddLineToPoint(pptspx[i]);
+            if (pptspx[i] != wxDefaultPosition) {
+                myPath.AddLineToPoint(pptspx[i]);
+            }
 		}
 		pgdc->StrokePath(myPath);
 		
@@ -497,6 +512,8 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	}
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
+    
+    wxLogMessage(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
 	return true;	
 }
 
