@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmtoolmanager.cpp
-                    Take control of all tools (Dangling nodes, etc.)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmtoolmanager.cpp
+ Take control of all tools (Dangling nodes, etc.)
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,21 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-
-
 #include "tmtoolmanager.h"
 
-
-BEGIN_EVENT_TABLE(tmToolManager, wxEvtHandler)
-	EVT_COMMAND (wxID_ANY, tmEVT_TM_UPDATE_TOOL_VIEW, tmToolManager::OnViewUpdated)
-END_EVENT_TABLE()
-
-
-
-
-void tmToolManager::InitMemberValues()
-{
+void tmToolManager::InitMemberValues(){
 	m_Parent = NULL;
 	m_TOC = NULL;
 	m_Selected = NULL;
@@ -39,11 +27,7 @@ void tmToolManager::InitMemberValues()
 
 
 
-tmToolManager::tmToolManager(wxWindow * parent,
-			  tmTOCCtrl * toc,
-			  tmSelectedDataMemory * seldata,
-			  tmRenderer * renderer,
-			  tmGISScale * scale)
+tmToolManager::tmToolManager(wxWindow * parent,tmTOCCtrl * toc, tmSelectedDataMemory * seldata, tmRenderer * renderer, tmGISScale * scale)
 {
 	InitMemberValues();
 	m_Parent = parent;
@@ -51,60 +35,49 @@ tmToolManager::tmToolManager(wxWindow * parent,
 	m_Selected = seldata;
 	m_Renderer = renderer;
 	m_Scale = scale;
-	
-	m_Parent->PushEventHandler(this);
 }
 
 
 
-tmToolManager::~tmToolManager()
-{
-	m_Parent->PopEventHandler(false);
+tmToolManager::~tmToolManager(){
 }
 
 
 
-bool tmToolManager::TMGetLayers(wxArrayString & layersname)
-{
-	if (TMIsOk()==false)
-		return false;
-	
-	layersname = m_pDB->GetLayerNameByType(LAYER_SPATIAL_POLYGON);
-	if (layersname.GetCount() == 0)
-	{
-		wxLogDebug(_T("No polygons layer defined"));
-		return false;
-	}
-	return true;
-}
-
-
-
-bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
-										  const wxArrayString & layersname)
+bool tmToolManager::_SearchDanglingNodes(int selectedlayer,const wxArrayString & layersname)
 {
 	wxASSERT(selectedlayer != wxNOT_FOUND);
 	wxASSERT(m_pDB);
-	TMClearDangling();
+	_ClearDangling();
 	
 	// get real layer ids
 	wxArrayLong myLayersID;
-	if(TMGetLayersIDs(myLayersID,  layersname)==false)
-		return false;
-	if (selectedlayer != 0)
-	{
+	wxArrayString mySearchedLayers(layersname);
+	mySearchedLayers.RemoveAt(0);
+	
+	ProjectDefMemoryLayers myActualLayer;
+	int iFirst = m_pDB->GetNextLayer(&myActualLayer);
+	wxASSERT(iFirst == 0);
+	while (m_pDB->GetNextLayer(&myActualLayer) != -1){
+		for(unsigned int i = 0; i<mySearchedLayers.GetCount();i++)
+			if (mySearchedLayers.Item(i) == myActualLayer.m_LayerName){
+				myLayersID.Add(myActualLayer.m_LayerID);
+				break;
+			}
+	}
+	
+	wxASSERT(myLayersID.GetCount() == mySearchedLayers.GetCount());
+    if (selectedlayer != 0){
 		long myLayer = myLayersID.Item(selectedlayer -1);
 		myLayersID.Clear();
 		myLayersID.Add(myLayer);
 	}
 	
-
-	
 	unsigned int iLayersCount = myLayersID.GetCount();
 	wxLogDebug(_T("%d layers to check"), iLayersCount);
 	
 	wxString smsg = wxString::Format(_("Searching dangling nodes on %d layer(s)"),iLayersCount);
-	wxProgressDialog myDlg(_("Searching dangling nodes"), smsg, iLayersCount * 100, m_Parent,wxPD_AUTO_HIDE| wxPD_CAN_ABORT); 
+	wxProgressDialog myDlg(_("Searching dangling nodes"), smsg, iLayersCount * 100, m_Parent,wxPD_AUTO_HIDE| wxPD_CAN_ABORT);
 	
 	// search dangling nodes
 	ToolDanglingNodes myTool (m_pDB);
@@ -130,7 +103,7 @@ bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
 	
 	if (bStoped==true)
 	{
-		TMClearDangling();
+		_ClearDangling();
 		return false;
 	}
 	
@@ -143,52 +116,25 @@ bool tmToolManager::TMSearchDanglingNodes(int selectedlayer,
 	wxLogDebug(myMsg);
 	wxMessageBox(myMsg, _("Searching dangling nodes done"), wxICON_INFORMATION | wxOK, m_Parent);
 	
-
-	return true;	
+	return true;
 }
 
 
-bool tmToolManager::TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname)
-{
-	wxASSERT(m_pDB);
-	wxArrayString mySearchedLayers(layersname);
-	mySearchedLayers.RemoveAt(0);
-	
-	ProjectDefMemoryLayers myActualLayer;
-	int iFirst = m_pDB->GetNextLayer(&myActualLayer);
-	wxASSERT(iFirst == 0);
-	while (m_pDB->GetNextLayer(&myActualLayer) != -1)
-	{
-		for(unsigned int i = 0; i<mySearchedLayers.GetCount();i++)
-			if (mySearchedLayers.Item(i) == myActualLayer.m_LayerName)
-			{
-				layersid.Add(myActualLayer.m_LayerID);
-				break;
-			}
-	}
-	
-	wxASSERT(layersid.GetCount() == mySearchedLayers.GetCount());
-	if (layersid.GetCount() > 0)
-		return true;
-	
-	wxLogDebug(_T("No ID found for layers"));
-	return false;
-}
 
-
-bool tmToolManager::FindDanglingNodes()
-{
+bool tmToolManager::FindDanglingNodes(){
 	// check DB pointer
-	if (TMIsOk()==false)
+	if (_IsOk()==false){
 		return false;
-
+    }
+    
 	// get polygons layers
 	wxArrayString myLayers;
-	if(TMGetLayers(myLayers)==false)
+	myLayers = m_pDB->GetLayerNameByType(LAYER_SPATIAL_POLYGON);
+	if (myLayers.GetCount() == 0){
+		wxLogWarning(_T("No polygons layer defined"));
 		return false;
-	
+	}
 	myLayers.Insert(_("All polygon layers"), 0);
-	
 	
 	DanglingNode_DLG myDlg(m_Parent);
 	myDlg.SetLayers(myLayers, wxNOT_FOUND);
@@ -200,79 +146,47 @@ bool tmToolManager::FindDanglingNodes()
 	switch (iReturn)
 	{
 		case wxID_OK:
-			// compute dangling nodes vertex
-			bReturn = TMSearchDanglingNodes(myDlg.GetSelectedLayer(),
-								  myLayers);
-			
-			OnViewUpdated(myUnusedEvent);
-			
+			bReturn = _SearchDanglingNodes(myDlg.GetSelectedLayer(), myLayers);
 			break;
 			
 		case ID_DLGDN_CLEAR:
-			// clear dangling nodes message
-			TMClearDangling();
-			OnViewUpdated(myUnusedEvent);
+			_ClearDangling();
 			break;
 			
 		default:
 			bReturn = false;
 			break;
 	}
-	
+    
+    m_Renderer->Refresh();
+    m_Renderer->Update();
 	return bReturn;
 }
 
 
 
-bool tmToolManager::TMIsOk()
-{
-	if (m_pDB == NULL)
-	{
-		wxLogDebug(_T("Database not inited, init database first"));
+bool tmToolManager::_IsOk(){
+	if (m_pDB == NULL){
+		wxLogError(_T("Database not inited, init database first"));
 		return false;
 	}
-	
-	return true;
-	
-}
-
-
-
-void tmToolManager::OnViewUpdated (wxCommandEvent & event)
-{
-	if(TMDrawDanglingNodes(false)==true)
-	{
-		wxLogDebug(_T("Dangling nodes drawed"));
-	}
-	
-}
-
-
-bool tmToolManager::TMDrawDanglingNodes(bool refresh)
-{	
-	if(refresh==true){
-		m_Renderer->Refresh();
-		m_Renderer->Update();
-	}
-	
-	if (m_DanglingPts.GetCount() == 0)
-		return false;
-	
-	wxASSERT(m_Renderer != NULL);
-	wxClientDC dc (m_Renderer);
-	wxPen myPen (*wxRED_PEN);
-	dc.SetPen(myPen);
-			 
-	
-	for (unsigned int i = 0; i< m_DanglingPts.GetCount() ;i ++)
-	{
-		wxPoint myPt = m_Scale->RealToPixel(m_DanglingPts.Item(i));
-		dc.DrawCircle(myPt, tmDANGLING_NODE_DRAW_SIZE);
-	}
-		
-
 	return true;
 }
 
 
+
+long tmToolManager::DrawDanglingNodes(wxGCDC * dc){
+    if (m_DanglingPts.GetCount() == 0) {
+        return 0;
+    }
+    
+    wxASSERT(dc);
+    dc->SetPen(wxPen(tmDANGLING_NODE_DRAW_COLOUR));
+    dc->SetBrush(*wxTRANSPARENT_BRUSH);
+    for (unsigned int i = 0; i< m_DanglingPts.GetCount(); i++) {
+        wxPoint myPt = m_Scale->RealToPixel(m_DanglingPts.Item(i));
+		dc->DrawCircle(myPt, tmDANGLING_NODE_DRAW_SIZE);
+    }
+    return m_DanglingPts.GetCount();
+}
 

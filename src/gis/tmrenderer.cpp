@@ -23,6 +23,7 @@
 #include "../core/vrrubberband.h"
 #include "../core/tmstatsevent.h"
 #include "tmeditmanager.h"
+#include "../gui/tmtoolmanager.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_SIZE_CHANGED)
@@ -74,6 +75,7 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS ){
 	m_bmp = NULL;
     m_EditManager = NULL;
+    m_ToolManager = NULL;
 	m_ModifyCalled = false;
 	m_DrawCalled = false;
 	m_StartCoord = wxPoint(-1,-1);
@@ -317,6 +319,7 @@ void tmRenderer::OnPaint(wxPaintEvent & event){
     }
     m_EditManager->ArcDraw(&gcdc);
     m_EditManager->BezierModifyDraw(&gcdc);
+    m_ToolManager->DrawDanglingNodes(&gcdc);
 }
 
 

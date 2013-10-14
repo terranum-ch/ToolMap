@@ -390,6 +390,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 									  m_LayerManager->GetSelectedDataMemory(),
 									  m_MainPanel->GetGISRenderer(),
 									  m_LayerManager->GetScale());
+    m_MainPanel->GetGISRenderer()->SetToolManagerRef(m_ToolManager);
 
 	m_StatManager = new tmStatsManager();
 

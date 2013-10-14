@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmtoolmanager.h
-                    Take control of all tools (Dangling nodes, etc.)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmtoolmanager.h
+ Take control of all tools (Dangling nodes, etc.)
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,85 +14,49 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
-
 #ifndef _TM_TOOLMANAGER_H_
 #define _TM_TOOLMANAGER_H_
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-
 #include "danglingnodes_dlg.h"				// for dangling nodes dialog support
-#include "../gis/tmtocctrl.h"				// for TOC ctrl 
+#include "../gis/tmtocctrl.h"				// for TOC ctrl
 #include "../gis/tmselecteddatamemory.h"	// for selection data
 #include "../database/database_tm.h"		// for database
 #include "../gis/tmrenderer.h"				// for GIS rendering
 #include "../gis/tooldanglingnodes.h"		// for computing dangling nodes (engine class)
 
-
 const int tmDANGLING_NODE_DRAW_SIZE = 4;
 const wxColour tmDANGLING_NODE_DRAW_COLOUR = wxColour(*wxRED);
 
-
 class tmToolManager : public wxEvtHandler
-	{
-	private:
-		// defined by ctor
-		wxWindow * m_Parent;
-		tmTOCCtrl * m_TOC;
-		tmSelectedDataMemory * m_Selected;
-		tmRenderer * m_Renderer;
-		tmGISScale * m_Scale;
-		wxArrayRealPoints m_DanglingPts;
-		
-		
-		// defined by function or event.
-		DataBaseTM * m_pDB;
-		
-		// commun private functions
-		void InitMemberValues();
-		bool TMIsOk();
-		
-		// dangling nodes private functions
-		bool TMGetLayers(wxArrayString & layersname);
-		bool TMSearchDanglingNodes(int selectedlayer, 
-								   const wxArrayString & layersname);
-		bool TMGetLayersIDs (wxArrayLong & layersid, const wxArrayString & layersname);
-		void TMClearDangling(){m_DanglingPts.Clear();}
-		
-		// drawing dangling nodes
-		bool TMDrawDanglingNodes(bool refresh=true);
-		
-		
-		// event function
-		void OnViewUpdated (wxCommandEvent & event);
-		
-		DECLARE_EVENT_TABLE();
-	protected:
-	public:
-		tmToolManager(wxWindow * parent,
-					  tmTOCCtrl * toc,
-					  tmSelectedDataMemory * seldata,
-					  tmRenderer * renderer,
-					  tmGISScale * scale);
-		~tmToolManager();
-		
-		void SetDatabase(DataBaseTM * db){m_pDB = db;}
-		
-		// find dangling nodes
-		bool FindDanglingNodes();
-		
-}; 
+{
+private:
+    // defined by ctor
+    wxWindow * m_Parent;
+    tmTOCCtrl * m_TOC;
+    tmSelectedDataMemory * m_Selected;
+    tmRenderer * m_Renderer;
+    tmGISScale * m_Scale;
+    wxArrayRealPoints m_DanglingPts;
+    DataBaseTM * m_pDB;
+    
+    void InitMemberValues();
+    bool _IsOk();
 
+    bool _SearchDanglingNodes(int selectedlayer, const wxArrayString & layersname);
+    void _ClearDangling(){m_DanglingPts.Clear();}
 
-
+public:
+    tmToolManager(wxWindow * parent, tmTOCCtrl * toc, tmSelectedDataMemory * seldata, tmRenderer * renderer, tmGISScale * scale);
+    ~tmToolManager();
+    void SetDatabase(DataBaseTM * db){m_pDB = db;}
+    
+    bool FindDanglingNodes();
+    long DrawDanglingNodes(wxGCDC * dc);
+};
 
 #endif
