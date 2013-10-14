@@ -14,7 +14,8 @@ import zipfile
 import subprocess
 import stat
 import multiprocessing
-
+import platform
+import fileinput
 
 def askUserWithCheck (msg, allowedval=['Y', 'y', 'N', 'n'], errormsg = "Unsupported value"):
   "Ask user for entering a value with validy check, looping until correct value is entered"
@@ -272,6 +273,14 @@ if __name__ == '__main__':
     print ("Copying patch file:", filename)
     shutil.copy(os.path.join(mypatchsrc, filename), os.path.join(mypatchdest, filename))
   
+  # using wxWidgets 3.0
+  if (platform.system() == 'Windows'):
+    print ("patching makefile.vc for wxWidgets 3.0")
+    with fileinput.FileInput (os.path.join(ns.libpath, ns.libname, "build29", "makefile.vc"), inplace=True) as f:
+      for line in f:
+        if ("WX_VERSION = 29" in line):
+          line = "WX_VERSION = 30\n"
+        print (line, end='')  
   print ("Patching DONE")
   
   # PERFORMING CONFIGURE
