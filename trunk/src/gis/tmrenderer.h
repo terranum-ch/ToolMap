@@ -89,6 +89,7 @@ enum tmGIS_CURSOR{
 const int tmSELECTION_DIAMETER = 10;
 
 class tmEditManager;
+class tmToolManager;
 class tmRenderer : public wxScrolledWindow
 {
 private:
@@ -97,6 +98,8 @@ private:
     tmGIS_CURSOR m_ActualNotStockCursor;
     
     tmEditManager * m_EditManager;
+    tmToolManager * m_ToolManager;
+    
     wxSize m_OldSize;
     
     // rubber band
@@ -192,6 +195,7 @@ public:
     void StopModifyEvent (){m_ModifyCalled = false;}
     
     void SetEditManagerRef (tmEditManager * manager) {m_EditManager = manager;}
+    void SetToolManagerRef (tmToolManager * manager) {m_ToolManager = manager;}
 };
 
 #endif
