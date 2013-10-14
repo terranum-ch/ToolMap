@@ -640,6 +640,15 @@ void QueriesList::OnDoubleClickItem (wxListEvent & event){
     event.Skip();
 }
 
+void QueriesList::OnContextMenu (wxListEvent & event){
+    // overwrite the ListGenReport contextual menu in order to display
+    // only one contextual menu.
+    wxContextMenuEvent evt;
+    OnContextualMenu(evt);
+}
+
+
+
 
 void QueriesList::OnContextualMenu (wxContextMenuEvent & event){
     wxMenu* myPopupMenu = new wxMenu;

@@ -68,6 +68,8 @@ private:
     DECLARE_EVENT_TABLE();
 	
 protected:
+    virtual void OnContextMenu (wxListEvent & event);
+    
 public:
 	QueriesList (wxWindow * parent, Queries_PANEL * queryparent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL,wxSize size = wxDefaultSize);
 	~QueriesList();
