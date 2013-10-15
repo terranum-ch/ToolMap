@@ -121,6 +121,32 @@ void ToolMapApp::_RemoveLogFile(){
 	}
 }
 
+
+
+
+
+
+
+
+tmDropFiles::tmDropFiles(ToolMapFrame * parent){
+	wxASSERT(parent);
+	m_Frame = parent;
+}
+
+
+bool tmDropFiles::OnDropFiles(wxCoord x, wxCoord y,const wxArrayString & filenames){
+	if (filenames.GetCount() == 0) {
+		return false;
+	}
+
+	return m_Frame->AddLayers(filenames);
+}
+
+
+
+
+
+
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
@@ -417,6 +443,9 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 
 	_CheckUpdates(false);
 	_LoadPreference(false);
+    
+    // DND
+    m_TocWindow->GetTOCCtrl()->SetDropTarget(new tmDropFiles(this));
 
 	// connecting menu to object kind panel
 	wxASSERT(m_AttribObjPanel);
@@ -1577,6 +1606,26 @@ void ToolMapFrame::OnProjectSaveTemplate (wxCommandEvent & event){
 void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
 {
 	m_LayerManager->AddLayer(event);
+}
+
+
+bool ToolMapFrame::AddLayers (const wxArrayString & filenames){
+    if (m_PManager == NULL){
+        return false;
+    }
+
+    if (m_PManager->IsProjectOpen() == false) {
+        wxLogError(_("Open a project first!"));
+        return false;
+    }
+    
+    wxASSERT(m_LayerManager);
+    
+    for (unsigned int i = 0; i< filenames.GetCount(); i++) {
+        m_LayerManager->OpenLayer(wxFileName(filenames.Item(i)));
+    }
+    m_LayerManager->ReloadProjectLayersThreadStart(false,false);
+    return true;
 }
 
 
