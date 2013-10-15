@@ -103,8 +103,6 @@ public:
 		wxLogMessage(_T("Initing all OGR drivers"));
 		OGRRegisterAll();
 		tmExportManager myManager( NULL, m_pDB);
-		TS_ASSERT(myManager.ExportAll(&myPrj));
-		
 	}
 	
 	
@@ -123,7 +121,6 @@ public:
 		
 		
 		tmExportManager myManager( NULL, m_pDB);
-		TS_ASSERT(myManager.ExportAll(&myPrj));
 	}
     	
 		
