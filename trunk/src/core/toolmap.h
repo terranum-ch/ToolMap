@@ -271,6 +271,25 @@ DECLARE_APP(ToolMapApp);
 
 
 /***************************************************************************//**
+@brief Drag'n'drop support
+@author Lucien Schreiber (c) CREALP 2013
+@date 15 octobre 2013
+*******************************************************************************/
+class ToolMapFrame;
+class tmDropFiles : public wxFileDropTarget {
+private:
+	ToolMapFrame * m_Frame;
+	
+public:
+	tmDropFiles(ToolMapFrame * parent);
+	virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString & filenames);
+};
+
+
+
+
+
+/***************************************************************************//**
  @brief All frame's related stuff
  @details This implement the wxFrame class. This is where all stuff related to
  the graphical aspect of the main programme's frame is defined
@@ -437,6 +456,7 @@ public:
 			 wxPoint  pos,  wxSize  size,
 				 const wxString & name);
 	~ToolMapFrame();
+    bool AddLayers (const wxArrayString & filenames);
 };
 
 
