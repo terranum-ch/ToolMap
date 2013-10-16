@@ -49,7 +49,7 @@ def gCreateInstaller(svnnumner):
     "Create installer for Linux"
     print ("Plateform is: " + gProcessor)
     print("Creating installer for: " + svnnumner)
-    myDebName = "toolmap_2.4.{}_{}.deb".format(svnnumner, myLinuxProcessor)
+    myDebName = "toolmap_2.5.{}_{}.deb".format(svnnumner, myLinuxProcessor)
     try:
         myProcess = subprocess.Popen("cpack", shell=True, cwd=gDirBin)
         myProcess.wait()
@@ -57,6 +57,6 @@ def gCreateInstaller(svnnumner):
         print("creating installer failed")
         return ""
         
-    shutil.move(os.path.join(gDirBin, "toolmap-2.4.0-Linux.deb"), os.path.join(gDirInstall, myDebName))
+    shutil.move(os.path.join(gDirBin, "toolmap-2.5.{}-Linux.deb".format(svnnumner)), os.path.join(gDirInstall, myDebName))
     print ("Creatign installer done! " + myDebName)
     return myDebName
