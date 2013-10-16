@@ -608,7 +608,6 @@ void ToolMapFrame::_CreateMenu()
     // EDITION
     wxMenu* itemMenu41 = new wxMenu;
     //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
-    itemMenu41->AppendSeparator();
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
