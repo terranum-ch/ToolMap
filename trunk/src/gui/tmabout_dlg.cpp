@@ -59,8 +59,9 @@ wxString tmAboutDLG::GetVersionText()
 wxString tmAboutDLG::GetAuthorsText()
 {
 	wxString myContributors = _("<CENTER><B>Programming</B><BR>Lucien Schreiber<BR><BR>");
-	myContributors.Append( _("<CENTER><B>Design and Functions</B><BR>Pascal Ornstein<BR>Mario Sartori<BR>Lucien Schreiber<BR><BR>"));
-	myContributors.Append( _("<CENTER><B>Main icon</B><BR>Chantal Bloch"));
+	myContributors.Append( _("<B>Design and Functions</B><BR>Pascal Ornstein<BR>Mario Sartori<BR>Lucien Schreiber<BR><BR>"));
+	myContributors.Append( _("<B>Main icon</B><BR>Chantal Bloch"));
+	//myContributors.Append( _("<BR><BR><B>Funding</B><BR>CREALP<BR>SWISSTOPO"));
 
 	myContributors.Append(_T("</CENTER>"));
 	return myContributors;
@@ -105,7 +106,7 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 	bSizer37->Add( 0, 5, 1, wxEXPAND, 5 );
 
 	wxStaticText* m_staticText23;
-	m_staticText23 = new wxStaticText( myPanelImg, wxID_ANY, _("complex geological GIS made simple"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText23 = new wxStaticText( myPanelImg, wxID_ANY, _("Let's bring consistency into your maps"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText23->Wrap( -1 );
 	bSizer37->Add( m_staticText23, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -124,7 +125,14 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 	bSizer40 = new wxBoxSizer( wxVERTICAL );
 
 	wxStaticText* m_staticText22;
-	m_staticText22 = new wxStaticText( m_PanelLicence, wxID_ANY, _(" Copyright \u00A9 2011  CREALP \nCopyright \u00A9 2011 SWISSTOPO\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	wxString myLicenceTxt = _(" Copyright (c) 2013 CREALP \nCopyright (c) 2013 SWISSTOPO\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.");
+	#if wxUSE_UNICODE
+	wxString myCopyRightTxt= wxString::FromUTF8("\xc2\xa9");
+	myLicenceTxt.Replace (_T("(c)"), myCopyRightTxt);
+	myLicenceTxt.Replace (_T("(C)"), myCopyRightTxt);
+    #endif
+
+	m_staticText22 = new wxStaticText( m_PanelLicence, wxID_ANY, myLicenceTxt, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText22->Wrap( -1 );
 	wxFont myOrgFont = m_staticText22->GetFont();
 	int mySize = myOrgFont.GetPointSize();

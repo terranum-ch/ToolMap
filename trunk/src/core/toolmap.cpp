@@ -65,7 +65,7 @@ bool ToolMapApp::OnInit(){
     myTest.Len();
     myTest.ToUTF8().data();
 #endif
-    
+
 	// clear log if exists
 	_RemoveLogFile();
 
@@ -91,17 +91,17 @@ void ToolMapApp::OnFatalException(){
 	if (wxFileExists(mySQLReport.GetFullPath())==true){
         myCrashReport.AddFileToReport(mySQLReport.GetFullPath());
     }
-    
+
     if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
         return;
     }
-    
+
     wxConfigBase * myConfig =  wxConfigBase::Get(false);
     wxASSERT(myConfig);
     myConfig->SetPath("UPDATE");
     wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
     myConfig->SetPath("..");
-    
+
     if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"), myProxyInfo)==false){
         wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
         if(myCrashReport.SaveReportFile(myDocPath)==false){
@@ -443,7 +443,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 
 	_CheckUpdates(false);
 	_LoadPreference(false);
-    
+
     // DND
     m_TocWindow->GetTOCCtrl()->SetDropTarget(new tmDropFiles(this));
 
@@ -452,7 +452,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnDisplayAttributesAuto, m_AttribObjPanel, ID_CTXT_AUTODISPLAY_ATTRIB);
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnEmptyListAffterAttributes, m_AttribObjPanel, ID_CTXT_EMPTY_LIST_AFTER_ATTRIB);
 	this->Bind(wxEVT_COMMAND_MENU_SELECTED, &AttribObjType_PANEL::OnFullAttribution, m_AttribObjPanel, ID_CTXT_FULL_ATTRIB);
-    
+
     wxASSERT(m_QueriesPanel);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnAddQueries,m_QueriesPanel, ID_QUERIES_ADD);
     this->Bind(wxEVT_COMMAND_MENU_SELECTED, &Queries_PANEL::OnRemoveQueries,m_QueriesPanel, ID_QUERIES_REMOVE);
@@ -550,7 +550,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_EXPORT_CONCATENATED, _("Export Concatenated..."));
-      
+
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
     itemMenu16->Append(ID_MENU_PRJ_DEF, _("Project definition..."), wxEmptyString, wxITEM_NORMAL);
@@ -621,7 +621,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_VERTEX_INSERT, _("Insert vertex\tI"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_VERTEX_DELETE, _("Delete vertex\tC"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
-    
+
     //itemMenu41->Enable(ID_MENU_MODIFY, false);
 	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
 	wxString myDeleteText = _("Delete selected feature");
@@ -645,7 +645,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu42->Append(ID_SNAP_ADD, _("Add layer..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu42->Append(ID_SNAP_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(wxID_ANY, _("Snapping"), itemMenu42);
-    
+
     menuBar->Append(itemMenu41, _("Edition"));
 
     // ATTRIBUTION
@@ -717,7 +717,7 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu81->Append(ID_MENU_ASK_NEW_FEATURE, _("Ask for a new feature..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu81, _("&Help"));
     this->SetMenuBar(menuBar);
-        
+
 }
 
 
@@ -969,7 +969,7 @@ void ToolMapFrame::OnQueriesAction (wxCommandEvent & event){
 	if (m_QueriesPanel == NULL) {
         return;
     }
-    
+
     wxASSERT(m_QueriesPanel);
     m_QueriesPanel->ProcessEvent(event);
 }
@@ -1144,7 +1144,7 @@ void ToolMapFrame::OnShowInformationDialog (wxCommandEvent & event)
 void ToolMapFrame::OnBezierSettings (wxCommandEvent & event){
     BezierSettings_DLG myDlg(this, m_EditManager, m_MainPanel->GetGISRenderer());
     myDlg.SetBezierSettings(m_EditManager->GetBezierSettings());
-    
+
     if( myDlg.ShowModal() == wxID_OK){
         m_EditManager->SetBezierSettings(myDlg.GetBezierSettings(), true);
     }
@@ -1169,7 +1169,7 @@ void ToolMapFrame::OnReportBug (wxCommandEvent & event)
 void ToolMapFrame::OnComponentsInfo (wxCommandEvent & event){
 	lsVersionDlg myDlg (this, wxID_ANY, _("Components"));
 	myDlg.SetBitmapLogo(*_img_icon_toolmap);
-	myDlg.SetCopyright(wxString::Format("\u00A9 CREALP, \u00A9 SWISSTOPO, %d",wxDateTime::Now().GetYear()));
+	myDlg.SetCopyright(wxString::Format("(c) CREALP, (c) SWISSTOPO, %d",wxDateTime::Now().GetYear()));
 	myDlg.ShowModal();
 }
 
@@ -1288,7 +1288,7 @@ void ToolMapFrame::_CreatePerspectives(){
     m_AuiManager->GetPane(SHORTCUT_PANEL_TITLE).Show().Bottom().Dock().Layer(2).Position(1);
     m_AuiManager->GetPane(SNAPPING_PANEL_TITLE).Show().Bottom().Dock().Layer(2).Position(0);
     m_Perspectives.Add(m_AuiManager->SavePerspective());
-    
+
     m_AuiManager->LoadPerspective(m_Perspectives.Item(tmPERSPECTIVE_MODE_DEFAULT));
     m_AuiManager->Update();
 }
@@ -1354,12 +1354,12 @@ void ToolMapFrame::OnExportSelectedGISData (wxCommandEvent & event){
     if(m_PManager->IsProjectOpen() == false){
         return;
     }
-    
+
     wxFileDialog saveDlg (this, _("Save SHP file"), "", "", _("SHP files (*.shp)|*.shp"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (saveDlg.ShowModal() == wxID_CANCEL){
         return;
     }
-    
+
     wxFileName myFileName (saveDlg.GetPath());
     m_LayerManager->ExportSelectedGeometries(myFileName);
 }
@@ -1618,9 +1618,9 @@ bool ToolMapFrame::AddLayers (const wxArrayString & filenames){
         wxLogError(_("Open a project first!"));
         return false;
     }
-    
+
     wxASSERT(m_LayerManager);
-    
+
     for (unsigned int i = 0; i< filenames.GetCount(); i++) {
         m_LayerManager->OpenLayer(wxFileName(filenames.Item(i)));
     }
@@ -1728,11 +1728,11 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 		case ID_MENU_DRAW:
 			m_EditManager->OnToolEdit();
 			break;
-            
+
         case ID_MENU_DRAW_BEZIER:
             m_EditManager->OnToolBezier();
             break;
-            
+
         case ID_MENU_MODIFY_BEZIER:
             m_EditManager->OnToolBezierModify();
             break;
@@ -1752,11 +1752,11 @@ void ToolMapFrame::OnToolChanged (wxCommandEvent & event)
 		case ID_MENU_MODIFY_SHARED:
 			m_EditManager->OnToolEditShared();
 			break;
-            
+
         case ID_MENU_VERTEX_INSERT:
             m_EditManager->OnToolVertexInsert();
             break;
-            
+
         case ID_MENU_VERTEX_DELETE:
             m_EditManager->OnToolVertexDelete();
             break;
@@ -1797,12 +1797,12 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event){
 	if (m_PManager->IsProjectOpen() == false){
         return;
     }
-    
+
     // get project def from memory
     PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
     PrjDefMemManage myCopyProj;
     myCopyProj = *memProj;
-    
+
     tmExportManager myExport(this, m_PManager->GetDatabase());
     if (myExport.ExportSelected(&myCopyProj, m_LayerManager)==true){
         wxLogDebug(_T("Exporting layer(s) success"));
@@ -1810,7 +1810,7 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event){
     else {
         wxLogDebug(_T("Exporting layer(s) failed"));
     }
-	
+
 }
 
 
@@ -1827,12 +1827,12 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 	if (m_PManager->IsProjectOpen() == false){
         return;
     }
-	
+
     // get project def from memory
     PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
     PrjDefMemManage myCopyProj;
     myCopyProj = *memProj;
-    
+
     tmExportManager myExport(this, m_PManager->GetDatabase());
     if (myExport.ExportAll(&myCopyProj)){
         wxLogDebug(_T("Exporting all project success"));
@@ -1840,42 +1840,42 @@ void ToolMapFrame::OnExportAll (wxCommandEvent & event)
     else {
         wxLogDebug(_T("Exporting all project failed"));
     }
-	
-    
+
+
 }*/
 
 
 
 void ToolMapFrame::OnExportConcatenated (wxCommandEvent & event){
-    
+
     wxString myChoices [] = {_("Lines"), _("Points"), _("Labels")};
     wxMultiChoiceDialog myDlg(this, _("Select layer(s) to export"), _("Export Concatenated"), sizeof(myChoices) / sizeof(wxString), &myChoices[0]);
     if (myDlg.ShowModal() != wxID_OK) {
         return;
     }
-    
+
     wxArrayInt mySelection = myDlg.GetSelections();
     if (mySelection.GetCount() == 0) {
         return;
     }
-    
+
     PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
     PrjDefMemManage myCopyProj;
     myCopyProj = *memProj;
     tmExportManager myExport(this, m_PManager->GetDatabase());
-    
+
     if (mySelection.Index(0) != wxNOT_FOUND) {
         if( myExport.ExportConcatenated(&myCopyProj, LAYER_LINE) == false){
             return;
         }
-    }    
-    
+    }
+
     if (mySelection.Index(1) != wxNOT_FOUND) {
         if (myExport.ExportConcatenated(&myCopyProj, LAYER_POINT) == false){
             return;
         }
     }
-    
+
     if (mySelection.Index(2) != wxNOT_FOUND) {
         if( myExport.ExportConcatenated(&myCopyProj, LAYER_POLYGON) == false) {
             return;
@@ -1912,7 +1912,7 @@ void ToolMapFrame::OnUpdateGeometryValidity (wxUpdateUIEvent & event){
         event.Enable(false);
         return;
     }
-    
+
     if (mySelLayer->GetType() > TOC_NAME_NOT_GENERIC && mySelLayer->GetType() != TOC_NAME_SHP) {
         event.Enable(false);
         return;

@@ -1,8 +1,8 @@
 /***************************************************************************
 				lsversion_dlg.cpp
-                    
+
                              -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -29,9 +29,8 @@ wxDialog(parent, id, title, pos, size,style) {
 									   lsVersion::GetSoftSVN()).c_str();
 	SetSoftName(myName);
 	SetModulesName(lsVersion::GetAllModules());
-	
-	wxString myCopy = wxString::Format("\u00A9 CREALP Lucien Schreiber, %d",
-									   wxDateTime::Now().GetYear());
+
+	wxString myCopy = wxString::Format("(c) CREALP Lucien Schreiber, %d", wxDateTime::Now().GetYear());
 	SetCopyright(myCopy);
 }
 
@@ -58,47 +57,52 @@ void lsVersionDlg::SetModulesName(wxString name) {
 }
 
 void lsVersionDlg::SetCopyright(wxString name) {
+	#ifdef wxUSE_UNICODE
+	wxString myCopyText = wxString::FromUTF8("\xc2\xa9");
+	name.Replace (_T("(c)"), myCopyText);
+	name.Replace (_T("(C)"), myCopyText);
+	#endif
 	m_CopyRightCtrl->SetLabel(name);
 }
 
 void lsVersionDlg::_CreateControls(){
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	this->SetFont(wxNullFont);
-	
+
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_BmpCtrl = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1->Add( m_BmpCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	m_TitleCtrl = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_TitleCtrl->Wrap( -1 );
-	
+
 	//wxFont myFont = m_TitleCtrl->GetFont();
 	//myFont.SetWeight(wxFONTWEIGHT_BOLD);
 	//m_TitleCtrl->SetFont(myFont);
 	//m_TitleCtrl->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 92, false, wxEmptyString ) );
-	
+
 	bSizer1->Add( m_TitleCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	m_ProgNameCtrl = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_ProgNameCtrl->Wrap( -1 );
 	bSizer1->Add( m_ProgNameCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	m_ModulesCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(250,150), wxTE_MULTILINE | wxTE_LEFT );
 	bSizer1->Add( m_ModulesCtrl, 1, wxALL|wxEXPAND, 5 );
-	
+
 	m_CopyRightCtrl = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_CopyRightCtrl->Wrap( -1 );
 	bSizer1->Add( m_CopyRightCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 #ifdef __WXOSX__
 	m_TitleCtrl->SetFont(wxNullFont);
 	m_ProgNameCtrl->SetFont(wxNullFont);
 	m_CopyRightCtrl->SetFont(wxNullFont);
 #endif
-	
-	
+
+
 	this->SetSizer( bSizer1 );
 }
 
