@@ -170,7 +170,7 @@ void ProjectDefDLG::CreateControls()
     itemFlexGridSizer6->Add(itemStaticText13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
 	m_DlgPd_Proj_Projection = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize,PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
-	m_DlgPd_Proj_Projection->SetSelection(PROJ_NOPROJ);
+	m_DlgPd_Proj_Projection->SetSelection(0);
 	m_DlgPd_Proj_Projection->Enable(FALSE);
     itemFlexGridSizer6->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	

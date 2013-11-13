@@ -81,13 +81,13 @@ const wxString TABLE_COMMENT_ENUMERATION = _T("ENUMERATION");
 // each string. The number of items in the list is also defined here.
 static wxString PRJDEF_PROJ_TYPE_STRING[] = 
 {
-	wxTRANSLATE("No projection"),
-	wxTRANSLATE("Swiss projection")
+	wxTRANSLATE("Swiss projection (CH1903)"),
+    wxTRANSLATE("World (WGS84)"),
 };
 enum PRJDEF_PROJ_TYPE
 {
-	PROJ_NOPROJ = 0,
-	PROJ_SWISSPROJ
+	PROJ_SWISSPROJ = 0,
+	PROJ_WORLDWGS84
 };
 static const int PRJDEF_PROJ_TYPE_NUMBER = 2;
 
