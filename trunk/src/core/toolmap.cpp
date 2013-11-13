@@ -1257,7 +1257,7 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	m_LayerManager->SetSelectionHalo(mySelHalo);
 
 	if (reload == true) {
-		//m_LayerManager->ReloadProjectLayersThreadStart(false);
+		//m_LayerManager->ReloadProjectLayers(false);
 		wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
 		GetEventHandler()->AddPendingEvent(evt2);
 	}
@@ -1626,7 +1626,7 @@ bool ToolMapFrame::AddLayers (const wxArrayString & filenames){
     for (unsigned int i = 0; i< filenames.GetCount(); i++) {
         m_LayerManager->OpenLayer(wxFileName(filenames.Item(i)));
     }
-    m_LayerManager->ReloadProjectLayersThreadStart(false,false);
+    m_LayerManager->ReloadProjectLayers(false,false);
     return true;
 }
 
