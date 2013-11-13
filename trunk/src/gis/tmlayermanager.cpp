@@ -27,16 +27,10 @@
 #include "tmgisdatavectorshp.h"
 #include "../gui/tmclosefile_dlg.h"
 
-// TODO: Temp
-#include "tmsymbolrule.h"
+//#include "tmsymbolrule.h"
 
 
-
-
-
-DEFINE_EVENT_TYPE(tmEVT_THREAD_GISDATALOADED);
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
-DEFINE_EVENT_TYPE(tmEVT_VIEW_REFRESHED);
 DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED);
 
 DEFINE_EVENT_TYPE(tmEVT_LM_MOVE_TO_FEATURE);
@@ -48,7 +42,6 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_MENU (ID_MENU_UNLINK_SPATIAL_DATA, tmLayerManager::OnRemoveLayers)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_SIZE_CHANGED,   tmLayerManager::OnSizeChange)
 	EVT_COMMAND(wxID_ANY,tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
-	EVT_COMMAND(wxID_ANY, tmEVT_THREAD_GISDATALOADED, tmLayerManager::OnReloadProjectLayersDone)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_UPDATE, tmLayerManager::OnShowLayer)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
@@ -56,12 +49,10 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_MOVE_TO_FEATURE,tmLayerManager::OnMoveToFeature)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
-	//EVT_COMMAND(wxID_ANY, tmEVT_LM_SCROLL_MOVED, tmLayerManager::OnScrolled)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
-
 END_EVENT_TABLE()
 
 
@@ -75,8 +66,7 @@ bool tmLayerManager::m_LogOn = true;
  *******************************************************************************/
 tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl, 
 							   tmRenderer * renderer,  wxStatusBar * status,
-							   tmScaleCtrlCombo * scalectrl)
-{
+							   tmScaleCtrlCombo * scalectrl){
 	InitMemberValue();
 	
 	m_TOCCtrl = tocctrl;
@@ -85,8 +75,6 @@ tmLayerManager::tmLayerManager(wxWindow * parent, tmTOCCtrl * tocctrl,
 	m_StatusBar = status;
 	m_ScaleCtrl = scalectrl;
 	m_Parent->PushEventHandler(this);
-	
-	m_Shared_ThreadStatus = tmTHREAD_STOP;
 }
 
 
@@ -99,7 +87,6 @@ tmLayerManager::~tmLayerManager()
 {
 	UnInitLayerManager();
 	m_Parent->PopEventHandler(false);
-	//m_Parent->SetEventHandler(m_Parent);
 }
 
 
@@ -175,7 +162,6 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db)
  *******************************************************************************/
 bool tmLayerManager::UnInitLayerManager()
 {
-	
 	// saving TOC status
 	if (m_TOCCtrl->IsTOCReady())
 		SaveTOCStatus();
@@ -227,7 +213,6 @@ void tmLayerManager::FillTOCArray()
 	}
 	
 	m_TOCCtrl->ExpandAllLayers();
-	
 	wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
 }
 
@@ -255,7 +240,6 @@ bool tmLayerManager::SaveTOCStatus()
 	myConfig->SetPath("GENERAL");
     bool myRelativePath = myConfig->ReadBool("relative_path", true);
     myConfig->SetPath("..");
-    
     
 	wxString sSentence = _T("");
 	while (1)
@@ -309,7 +293,6 @@ bool tmLayerManager::SaveTOCStatus()
 	}
 	
 	return true;
-	
 }
 
 
@@ -332,7 +315,6 @@ void tmLayerManager::RemoveLayer (wxCommandEvent & event)
 		return;
 	
 	wxLogDebug(_T("tmLayerManager : removing layer %ld"), litemID);
-	
 	
 	LoadProjectLayers();
 }
@@ -582,6 +564,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString &
 }
 
 
+
 void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData * layer, const wxString & displayname){
     // build pyramids and spatial index ??
     wxConfigBase * myConfig =  wxConfigBase::Get(false);
@@ -604,6 +587,7 @@ void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData * layer, const wxString &
     }
 
 }
+
 
 
 bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const wxString & originalname){
@@ -658,7 +642,6 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
 
 
 void tmLayerManager::ZoomToSelectedLayer(){
-	
 	tmLayerProperties * myLayerProp = m_TOCCtrl->GetSelectionLayer();
 	if (myLayerProp == NULL) {
 		wxLogError(_("No layer or incorrect layer selected"));
@@ -667,6 +650,7 @@ void tmLayerManager::ZoomToSelectedLayer(){
 	
 	ZoomToLayer( myLayerProp->GetID());
 }
+
 
 
 void tmLayerManager::ZoomToFrameLayer(){
@@ -715,7 +699,6 @@ bool tmLayerManager::ZoomToLayer(long layerid){
 	
 	ReloadProjectLayersThreadStart(FALSE);
 	_ZoomChanged();
-
 	return true;
 }
 
@@ -745,9 +728,6 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	// actual wnd extent
 	m_Scale.SetWindowExtent(wxRect(0,0,myNewSize.GetWidth(), myNewSize.GetHeight()));
 	
-	
-	
-	
 	// compute reel size in MM
 	wxClientDC dc (m_GISRenderer);
 	m_Scale.SetWindowExtentMM(dc.GetSizeMM());
@@ -759,9 +739,9 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	// compute new extend in map unit
 	
 	// compute new pixel size
-	//if (m_Scale.ComputeNewPixelSize(myOldSize, myNewSize))
-	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize))
+	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize)){
 		ReloadProjectLayersThreadStart(false, false);
+    }
 }
 
 
@@ -815,7 +795,6 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
 		return;
 	}
 	
-	
 	wxString myAngleText = wxString::Format(_T("Angle : %d\u00B0"), myAngle);
 	m_StatusBar->SetStatusText(myAngleText, 2);
 }
@@ -829,8 +808,7 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 October 2008
  *******************************************************************************/
-void tmLayerManager::OnShowLayer (wxCommandEvent & event)
-{
+void tmLayerManager::OnShowLayer (wxCommandEvent & event){
 	ReloadProjectLayersThreadStart(FALSE);
 }
 
@@ -891,12 +869,9 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
         return;
     }
     
-    
-    
 	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,wxGetMousePosition())==wxID_OK){
 		ReloadProjectLayersThreadStart(false);
 	}
-	
 }
 
 
@@ -914,7 +889,6 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
 void tmLayerManager::OnZoomToFit ()
 {
 	ReloadProjectLayersThreadStart();
-	
 	_ZoomChanged();
 }
 
@@ -1032,9 +1006,6 @@ bool tmLayerManager::SelectedSearch (const wxRect & rect, bool shiftdown)
 	myArray->Clear();
 	wxDELETE(myArray);
 	wxDELETE(myLayerData);
-	//wxLogDebug(_T("Number of features flaged as selected : %d"),
-	//		   m_SelectedData.GetCount());
-	
 	return true;
 }
 
@@ -1181,6 +1152,7 @@ void tmLayerManager::CheckGeometryValidity(){
 
     wxMessageBox(wxString::Format(_("%ld error(s) found while checking %ld feature(s)"),iNumError, iNumCheck),_("Geometry validity"));
 }
+
 
 
 void tmLayerManager::ExportSelectedGeometries(const wxFileName & file){
@@ -1445,20 +1417,14 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	bool IsShiftDown = static_cast<bool> (event.GetInt());
 	wxRect * mySelectedRect = (wxRect *) event.GetClientData();
 	
-	if (SelectedSearch(*mySelectedRect, IsShiftDown))
-	{
-		//if (IsLoggingEnabled())
-		//	wxLogDebug(_T("Selection done"));
-		
+	if (SelectedSearch(*mySelectedRect, IsShiftDown)){
 		ReloadProjectLayersThreadStart(false, false);
 	}
-	
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 	
 	delete mySelectedRect;
-	
 }
 
 
@@ -1472,12 +1438,10 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 bool tmLayerManager::IsOK()
 {
 	// ensure that TOC ctrl isn't empty
-	if (m_TOCCtrl->GetCountLayers() == 0)
-	{
-		//wxLogDebug(_T("No data loaded into the TOC ctrl, load data into the TOC first"));
-		return FALSE;
+	if (m_TOCCtrl->GetCountLayers() == 0)	{
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1542,46 +1506,29 @@ bool tmLayerManager::LoadProjectLayers()
 	// previous zoom
 	m_ZoomManager.Clear();
 	_ZoomChanged();
-	
-	// send view updated message 
-	ViewUpdated();
-
-	
-	return TRUE;
+	return true;
 }
 
-/*void myTestFunc()
-{
-	char * myTest = new char[10000000];
-	//delete [] myTest;
-}*/
 
 
-// non threaded version for tests
-//FIXME: Convert to threaded version when stable
-bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
-{
+bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt){
 	m_RotationLayerNames.Clear();
 
 	// invalidate bitmap
 	m_GISRenderer->SetBitmapStatus();
-	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
-							  m_Scale.GetWindowExtent().GetHeight()));
+	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight()));
 	
 	// invalidate max_extent
-	if (bInvalidateFullExt)
+	if (bInvalidateFullExt){
 		m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
-	
-
+    }
 	
 	int iRead = ReadLayerExtent(true);
-	//wxLogDebug(_T("%d layer(s) read"),iRead);
-	if (iRead == -1)
+	if (iRead == -1){
 		return false;
+    }
 	
-		
-	if (m_Scale.IsLayerExtentValid()==true)
-	{
+	if (m_Scale.IsLayerExtentValid()==true){
 		// compute max extent if required by option
 		if (bFullExtent)
 			m_Scale.ComputeMaxExtent();
@@ -1595,10 +1542,7 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 		
 		// update scale
 		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
-		
 	}
-	// update scrollbars
-	//UpdateScrollBars();
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -1606,156 +1550,8 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	
 	m_GISRenderer->Refresh();
 	m_GISRenderer->Update();
-	
-	ViewUpdated();
 	return true;
 }
-
-#if (0)
-bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt)
-{
-	if (m_BlockRefresh)
-		return false;
-	
-	// init values
-	m_computeFullExtent = bFullExtent;
-	
-	// invalidate bitmap
-	//m_GISRenderer->SetBitmapStatus();
-	//CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
-	//						  m_Scale.GetWindowExtent().GetHeight()));
-	
-	// prepare loading of mySQL data in tmGISData
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
-	
-	// invalidate max_extent
-	if (bInvalidateFullExt)
-		m_Scale.SetMaxLayersExtent(tmRealRect(0,0,0,0));
-	
-
-	// stop an existing thread if needed.
-	if (s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
-	{
-		if (m_Shared_ThreadStatus == tmTHREAD_RUN)
-		{
-			m_Shared_ThreadStatus = tmTHREAD_STOP;
-			s_SharedDataCritical.Unlock();
-			m_Thread->Delete();
-		}
-		else
-			s_SharedDataCritical.Unlock();
-		
-		// disable logging (Mac OS thread problem)
-		tmGISData::EnableLogging(false);
-		tmDrawer::EnableLogging(false);
-		tmLayerManager::EnableLogging(false);
-		
-		// display a progress thread
-		// only if nothing is displayed
-		if (!m_Progress)
-		{
-			m_Progress = new tmProgressIndicator(m_Parent, m_StatusBar);
-			m_Progress->SetMessage(TMPROGRESS_DRAW_DATA);
-			m_Progress->DisplayProgress();
-		}
-		
-		// create and launch thread
-		wxSize myScreenSize (m_Scale.GetWindowExtent().GetWidth(),
-							 m_Scale.GetWindowExtent().GetHeight());
-		m_Thread = new tmGISLoadingDataThread(m_Parent, m_TOCCtrl, &m_Scale, m_DB, 
-											  &m_Drawer, &m_Shared_ThreadStatus,
-											  &m_ThreadBitmap,
-											  bFullExtent,
-											  myScreenSize);
-		if (m_Thread->Create() != wxTHREAD_NO_ERROR)
-		{
-			wxLogError(_T("Can't create thread for GIS data loading"));
-			return FALSE;
-		}
-		wxLogDebug(_T("Gis thread started..."));
-		m_Thread->Run();
-		return TRUE;
-	}
-	wxLogDebug(_T("Unable to lock mutex during thread start"));
-	return FALSE;
-}	
-#endif
-
-
-void tmLayerManager::OnReloadProjectLayersDone (wxCommandEvent & event)
-{
-	wxFAIL;
-	// enable logging
-	tmGISData::EnableLogging(true);
-	tmDrawer::EnableLogging(true);
-	tmLayerManager::EnableLogging (true);
-	
-	wxLogDebug(_T("GIS thread finished without interuption"));
-	m_Thread = NULL; // thread finished
-	
-	// test validity of layers extent. If no extent is 
-	// specified (like no data displayed)  
-	//if (m_Scale.IsLayerExtentValid())
-	//{
-	// compute max extent if required by option
-	//	if (m_computeFullExtent)
-	//		m_Scale.ComputeMaxExtent();
-	
-	if (s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
-	{
-		if (m_ThreadBitmap && m_ThreadBitmap->IsOk())
-		{
-			wxSize myWndpxSize (m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight());
-			CreateEmptyBitmap(myWndpxSize);
-			
-			wxMemoryDC dc;
-			dc.SelectObject(*m_Bitmap);
-			dc.DrawBitmap(*m_ThreadBitmap, 0, 0, TRUE);
-			dc.SelectObject(wxNullBitmap);
-			
-		}
-		else
-		{
-			wxLogDebug(_T("Error with bitmap."));
-		}
-		s_SharedDataCritical.Unlock();
-		
-		// update scale
-		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
-		
-		// update scrollbars
-		//UpdateScrollBars();
-		
-		
-		
-	}
-	
-	// set active bitmap	
-	m_GISRenderer->SetBitmapStatus(m_Bitmap);
-	m_GISRenderer->Refresh();
-	
-	ViewUpdated();
-	
-	return;
-	
-}
-
-
-
-
-
-/***************************************************************************//**
- @brief Sent a message when view is updated
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-void tmLayerManager::ViewUpdated()
-{
-	// send view updated message 
-	wxCommandEvent evt(tmEVT_VIEW_REFRESHED, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
-}
-
 
 
 
@@ -1919,23 +1715,20 @@ void tmLayerManager::InitScaleCtrlList ()
 	
 	myScale = m_DB->GetNextScaleValue(myDBIndex, TRUE);
 	
-	while (1)
-	{
-		if (myScale != -1)
-		{
+	while (1){
+		if (myScale != -1){
 			// adding scale in the list
 			myValues.Add(myScale);
 			myCount++;
 		}
-		else
+		else {
 			break;
-		
+        }
 		myScale = m_DB->GetNextScaleValue(myDBIndex, FALSE);
 	}
 	
 	// send message 
 	m_ScaleCtrl->InitScaleFromDatabase(myValues);
-	
 }
 
 
@@ -1973,6 +1766,7 @@ bool tmLayerManager::ZoomPrevious()
 }
 
 
+
 bool tmLayerManager::HasZoomPrevious(){
 	bool bReturn = false;
 	if (m_ZoomManager.GetCount() > 0) {
@@ -1982,318 +1776,4 @@ bool tmLayerManager::HasZoomPrevious(){
 }
 
 
-
-
-
-/****************************** THREAD CLASS FUNCTION BELOW ***********************/
-
-/***************************************************************************//**
- @brief Thread constructor
- @param parent A valid pointer to a wxWindow object (object must be able to deal
- with event such as wxFrame, wxControls and so on)
- @param toc a valid pointer to the tmTOCCtrl
- @param scale 
- @param database 
- @param drawer
- @param threadstatus
- @param threadbitmap
- @param computefullextent Should we compute the full extent
- @param wndpxsize Size of the windows in pixels
- @author Lucien Schreiber (c) CREALP 2008
- @date 24 July 2008
- *******************************************************************************/
-tmGISLoadingDataThread::tmGISLoadingDataThread(wxWindow * parent, tmTOCCtrl * toc,
-											   tmGISScale * scale,
-											   DataBaseTM * database,
-											   tmDrawer * drawer,
-											   tmTHREAD_STATUS * threadstatus,
-											   wxBitmap ** threadbitmap,
-											   bool computefullextent,
-											   const wxSize & wndpxsize)
-{
-	m_Parent = parent;
-	m_TOC = toc;
-	m_Scale = scale;
-	m_DB = database;
-	m_Stop = FALSE;
-	m_Drawer = drawer;
-	m_ThreadStatus = threadstatus;
-	m_ThreadBmp = threadbitmap;
-	m_computeFullExtent = computefullextent;
-	
-	// creating img for drawing
-	CreateEmptyBitmap(wndpxsize.GetWidth(), wndpxsize.GetHeight());
-	
-}
-
-tmGISLoadingDataThread::~tmGISLoadingDataThread()
-{
-	
-}
-
-
-
-
-/***************************************************************************//**
- @brief Entry point for thread
- @details This function is loading the layers using thread. Allowing user to
- stop the loading process if for exemple the image size has changed
- @author Lucien Schreiber (c) CREALP 2008
- @date 24 July 2008
- *******************************************************************************/
-void * tmGISLoadingDataThread::Entry()
-{	
-	// indicate to main that thread is running
-	if (!s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
-		return NULL;
-		
-	* m_ThreadStatus = tmTHREAD_RUN;
-	s_SharedDataCritical.Unlock();
-	
-
-	
-	//if (!CreateEmptyBitmap(m_Scale->GetWindowExtent().GetWidth(),
-	//					  m_Scale->GetWindowExtent().GetHeight()))
-	//	return NULL;
-	
-	
-	// read layers extent
-	int iNbLayers = ReadLayerExtentThread();
-	if (iNbLayers == -1)
-		return NULL;
-	
-	
-	if (m_Scale->IsLayerExtentValid())
-	{
-		// compute max extent if required by option
-		wxMutexGuiEnter();
-		if (m_computeFullExtent)
-			m_Scale->ComputeMaxExtent();
-		
-		
-		// read layers for drawing
-		
-		m_Drawer->InitDrawer(*m_ThreadBmp, *m_Scale, m_Scale->GetWindowExtentReal());
-		int iNbLayersDraw = ReadLayerDraw();
-		wxMutexGuiLeave();
-		if (iNbLayersDraw == -1)
-			return NULL;
-		
-		
-		// temp loosing time code
-		/*for (int i = 0;i<5; i++)
-		{
-			if (TestDestroy())
-				return NULL;
-			
-			wxThread::Sleep(200);
-		}*/
-		if (TestDestroy())
-			return NULL;
-	}
-	
-	// if thread finished correctly, send a message to
-	// the layer manager to display the new image
-	if(!s_SharedDataCritical.TryLock() == wxMUTEX_NO_ERROR)
-		return NULL;
-	
-	* m_ThreadStatus = tmTHREAD_STOP;
-	s_SharedDataCritical.Unlock();
-
-	wxCommandEvent evt(tmEVT_THREAD_GISDATALOADED, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
-		
-	return NULL;
-}
-
-
-
-/***************************************************************************//**
- @brief Iterate all layers for extent (threaded version
- @details This function iterates through all layers, loading layers and their
- extent.
- @return  the number of layers read or -1 if the thread sould be stopped
- @author Lucien Schreiber (c) CREALP 2008
- @date 09 September 2008
- *******************************************************************************/
-int tmGISLoadingDataThread::ReadLayerExtentThread()
-{
-	/*
-	// iterate throught all layers
-	int iRank = 0;
-	int iReaded = 0;
-	bool bInteruptedThread = false;
-	
-	tmLayerProperties * pLayerProp = NULL;
-	tmRealRect myExtent (0,0,0,0);
-	
-	// Init new thread
-	m_DB->DataBaseThreadInit();
-	
-	while (1)
-	{
-		if (iRank == 0)
-		{
-			pLayerProp = m_TOC->IterateLayers(TRUE);
-		}
-		else
-		{
-			pLayerProp = m_TOC->IterateLayers(FALSE);
-		}
-		
-		if (!pLayerProp)
-			break;
-		
-		// check for thread stopped.
-		if (TestDestroy())
-		{
-			bInteruptedThread = true;
-			break;
-		}
-		
-		// loading data
-		tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
-		
-		// processing and deleting data
-		if (layerData && pLayerProp->m_LayerVisible)
-		{
-			myExtent = layerData->GetMinimalBoundingRectangle();
-			m_Scale->SetMaxLayersExtentAsExisting(myExtent);
-			iReaded ++;
-			
-			delete layerData;
-		}
-		iRank ++;
-	}
-	
-	// uninit thread variables
-	m_DB->DataBaseThreadEnd();
-	
-	// if thread need to be stopped, then 
-	// return -1.
-	if (bInteruptedThread)
-		iReaded = -1;
-	
-	return iReaded;	*/
-	return -1;
-}
-
-
-
-/***************************************************************************//**
- @brief Draw layers into bitmap [THREADED]
- @return  number of layers drawed, or -1 if thread was stopped and need to
- return immediatelly
- @author Lucien Schreiber (c) CREALP 2008
- @date 11 October 2008
- *******************************************************************************/
-int tmGISLoadingDataThread::ReadLayerDraw ()
-{
-	/*
-	// iterate throught all layers
-	int iRank = 0;
-	int iReaded = 0;
-	bool bInteruptedThread = false;
-	
-	tmLayerProperties * pLayerProp = NULL;
-	tmRealRect myExtent (0,0,0,0);
-	
-	// Init new thread
-	m_DB->DataBaseThreadInit();
-	
-	while (1)
-	{
-		if (iRank == 0)
-		{
-			pLayerProp = m_TOC->IterateLayers(TRUE);
-		}
-		else
-		{
-			pLayerProp = m_TOC->IterateLayers(FALSE);
-		}
-		
-		if (!pLayerProp)
-			break;
-		
-		
-		if (TestDestroy())
-		{
-			bInteruptedThread = true;
-			break;			
-		}
-		
-		// loading data
-		tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
-		
-		// processing and deleting data
-		if (layerData && pLayerProp->m_LayerVisible)
-		{
-			// draw layer data
-			m_Drawer->Draw(pLayerProp, layerData);
-			iReaded ++;
-			delete layerData;
-		}
-		iRank ++;
-	}
-	
-	// uninit thread variables
-	m_DB->DataBaseThreadEnd();
-	
-	// if thread need to be stopped, then 
-	// return -1.
-	if (bInteruptedThread)
-		iReaded = -1;
-	
-	return iReaded;*/
-	return -1;
-}
-
-
-
-
-
-
-/***************************************************************************//**
- @brief Create a tempory bitmap for drawing in threads
- @param width width of the bitmap to create
- @param height height of the bitmap to create
- @return  true if bitmap was created succesfully
- @author Lucien Schreiber (c) CREALP 2008
- @date 11 October 2008
- *******************************************************************************/
-bool tmGISLoadingDataThread::CreateEmptyBitmap (int width, int height)
-{
-	// I don't wont to share my data...
-	wxMutexLocker lock (s_SharedDataCritical);
-	if(!lock.IsOk())
-		return false;
-
-	
-	if (*m_ThreadBmp)
-		delete *m_ThreadBmp;
-	
-	*m_ThreadBmp = new wxBitmap (width, height);
-	if ((*m_ThreadBmp)->IsOk())
-	{
-		wxMemoryDC dc;
-		dc.SelectObject(**m_ThreadBmp);
-		dc.SetBackground(wxBrush(*wxWHITE_BRUSH));
-		dc.Clear();
-		dc.SelectObject(wxNullBitmap);
-		return true;
-	}
-	return false;
-}
-
-
-
-bool tmGISLoadingDataThread::TestDestroyThread()
-{
-	/*wxMutexLocker lock (s_SharedDataCritical);
-	if (*m_ThreadStatus == tmTHREAD_STOP)
-	{	
-		return true;
-	}*/
-	return false;
-}
 

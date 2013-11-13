@@ -44,7 +44,7 @@ void PrjDefMemManage::InitDefaultValues()
 	m_PrjAuthors	= _T("");
 	m_PrjSummary	= _T("");
 	m_PrjUnitType	= UNIT_METERS;
-	m_PrjProjType	= PROJ_NOPROJ;
+	m_PrjProjType	= PROJ_SWISSPROJ;
 	
 	
 	m_pActiveLayer = NULL;
