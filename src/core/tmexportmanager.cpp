@@ -180,7 +180,7 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
         wxFileName myFileName (m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName, myExportExtension);
         layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
     }
-    layermanager->ReloadProjectLayersThreadStart(false, false);
+    layermanager->ReloadProjectLayers(false, false);
 	return true;
 }
 

@@ -126,7 +126,6 @@ public:
     bool InitLayerManager(DataBaseTM * db);
     bool UnInitLayerManager();
     
-    
     // layers operations
     void RemoveLayer (wxCommandEvent & event);
     void AddLayer (wxCommandEvent & event);
@@ -166,7 +165,7 @@ public:
     void ExportSelectedGeometries(const wxFileName & file);
     
     bool LoadProjectLayers();
-    bool ReloadProjectLayersThreadStart(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
+    bool ReloadProjectLayers(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
     
     tmSelectedDataMemory * GetSelectedDataMemory (){return &m_SelectedData;}
     

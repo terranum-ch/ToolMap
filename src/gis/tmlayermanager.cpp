@@ -14,9 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
 #include "tmlayermanager.h"
 #include <wx/stdpaths.h>
 #include "tmsymbolvectorline.h"
@@ -27,12 +24,9 @@
 #include "tmgisdatavectorshp.h"
 #include "../gui/tmclosefile_dlg.h"
 
-//#include "tmsymbolrule.h"
-
 
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
 DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED);
-
 DEFINE_EVENT_TYPE(tmEVT_LM_MOVE_TO_FEATURE);
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE);
 
@@ -54,7 +48,6 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
 END_EVENT_TABLE()
-
 
 bool tmLayerManager::m_LogOn = true;
 
@@ -485,7 +478,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
         }
 	}
     
-    ReloadProjectLayersThreadStart(bZoomToFullExtent, true);
+    ReloadProjectLayers(bZoomToFullExtent, true);
 }
 
 
@@ -697,7 +690,7 @@ bool tmLayerManager::ZoomToLayer(long layerid){
 		return false;
 	}
 	
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 	_ZoomChanged();
 	return true;
 }
@@ -740,7 +733,7 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	
 	// compute new pixel size
 	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize)){
-		ReloadProjectLayersThreadStart(false, false);
+		ReloadProjectLayers(false, false);
     }
 }
 
@@ -809,7 +802,7 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
  @date 14 October 2008
  *******************************************************************************/
 void tmLayerManager::OnShowLayer (wxCommandEvent & event){
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 }
 
 
@@ -836,7 +829,7 @@ void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
 	m_Scale.ComputeNewScaleExtent(event.GetExtraLong());
 	
 	//double dNewScaleDist = m_Scale.DistanceFromScale(event.GetExtraLong());
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 	
 	_ZoomChanged();
 }
@@ -864,13 +857,13 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
     
     if (itemProp->GetType() == TOC_NAME_SHP) {
         if(itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_TOCCtrl, wxGetMousePosition())==true){;
-            ReloadProjectLayersThreadStart(false);
+            ReloadProjectLayers(false);
         }
         return;
     }
     
 	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,wxGetMousePosition())==wxID_OK){
-		ReloadProjectLayersThreadStart(false);
+		ReloadProjectLayers(false);
 	}
 }
 
@@ -888,7 +881,7 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
  *******************************************************************************/
 void tmLayerManager::OnZoomToFit ()
 {
-	ReloadProjectLayersThreadStart();
+	ReloadProjectLayers();
 	_ZoomChanged();
 }
 
@@ -1025,7 +1018,7 @@ bool tmLayerManager::SelectedClear ()
 		bReturn = true;
 	
 	m_SelectedData.Clear();
-	ReloadProjectLayersThreadStart(false, true);
+	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
@@ -1087,7 +1080,7 @@ bool tmLayerManager::SelectedInvert ()
 	delete myAllData;
 	delete myActualSelVal;
 	
-	ReloadProjectLayersThreadStart(false, true);
+	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
@@ -1146,7 +1139,7 @@ void tmLayerManager::CheckGeometryValidity(){
     }
     
     m_SelectedData.AddSelected(&myOids);
-	ReloadProjectLayersThreadStart(false, true);
+	ReloadProjectLayers(false, true);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
 
@@ -1253,7 +1246,7 @@ bool tmLayerManager::SelectByOid (){
 	
     m_SelectedData.SetSelected(myOid);
     m_SelectedData.SetLayerID(layerprop->GetID());
-	ReloadProjectLayersThreadStart(false, true);
+	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_Parent->GetEventHandler()->AddPendingEvent(evt);
@@ -1284,7 +1277,7 @@ void tmLayerManager::OnZoomRectangleIn (wxCommandEvent & event)
 										 mySelectedRect->GetY()));
 	
 	// reload data
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 	delete mySelectedRect;
 	
 	_ZoomChanged();
@@ -1314,7 +1307,7 @@ void tmLayerManager::OnZoomRectangleOut (wxCommandEvent & event)
 										 -mySelectedRect->GetY()));
 	
 	// reload data
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 	delete mySelectedRect;
 	_ZoomChanged();
 }
@@ -1348,7 +1341,7 @@ void tmLayerManager::OnZoomToFeature (wxCommandEvent & event){
 		return;
 	}
 	
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 	_ZoomChanged();
 }
 
@@ -1380,7 +1373,7 @@ void tmLayerManager::OnMoveToFeature (wxCommandEvent & event){
 		return;
 	}
 	
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 }
 
 
@@ -1391,7 +1384,7 @@ void tmLayerManager::OnPanFinished (wxCommandEvent & event)
 	
 	// change coordinates
 	m_Scale.ComputeNewRealPanExtent(*myNewPosPx);
-	ReloadProjectLayersThreadStart(FALSE);
+	ReloadProjectLayers(FALSE);
 	
 	
 	delete myNewPosPx;
@@ -1418,7 +1411,7 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	wxRect * mySelectedRect = (wxRect *) event.GetClientData();
 	
 	if (SelectedSearch(*mySelectedRect, IsShiftDown)){
-		ReloadProjectLayersThreadStart(false, false);
+		ReloadProjectLayers(false, false);
 	}
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
@@ -1448,7 +1441,7 @@ bool tmLayerManager::IsOK()
 /***************************************************************************//**
  @brief Load all layers (non threaded)
  @details This functions does closely the same that the
- #ReloadProjectLayersThreadStart() one but isn't threaded and is called during
+ #ReloadProjectLayers() one but isn't threaded and is called during
  project opening.
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 July 2008
@@ -1461,19 +1454,16 @@ bool tmLayerManager::LoadProjectLayers()
 	tmGISData::EnableLogging(true);
 	tmDrawer::EnableLogging(true);
 	
-	if (!IsOK())
-		return FALSE; 
+	if (!IsOK()){
+		return FALSE;
+    }
 	
 	// invalidate bitmap
 	m_GISRenderer->SetBitmapStatus();
-	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(),
-							  m_Scale.GetWindowExtent().GetHeight()));
-
+	CreateEmptyBitmap(wxSize (m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight()));
 		
 	int iRead = ReadLayerExtent(true,true);
 	wxLogDebug(_T("%d layer(s) read"),iRead);
-	
-	
 	
 	// test validity of layers extent. If no extent is 
 	// specified (like no data displayed) return 
@@ -1489,9 +1479,6 @@ bool tmLayerManager::LoadProjectLayers()
 		
 		m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
 	}
-	
-	// send view updated message 
-	//ViewUpdated();
 	
 	// set active bitmap	
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
@@ -1511,7 +1498,7 @@ bool tmLayerManager::LoadProjectLayers()
 
 
 
-bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInvalidateFullExt){
+bool tmLayerManager::ReloadProjectLayers(bool bFullExtent, bool bInvalidateFullExt){
 	m_RotationLayerNames.Clear();
 
 	// invalidate bitmap
@@ -1530,15 +1517,16 @@ bool tmLayerManager::ReloadProjectLayersThreadStart(bool bFullExtent, bool bInva
 	
 	if (m_Scale.IsLayerExtentValid()==true){
 		// compute max extent if required by option
-		if (bFullExtent)
+		if (bFullExtent){
 			m_Scale.ComputeMaxExtent();
-		
+        }
 		
 		// read layers for drawing
 		m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
 		int iNbLayersDraw = ReadLayerDraw();
-		if (iNbLayersDraw == -1)
+		if (iNbLayersDraw == -1){
 			return false;
+        }
 		
 		// update scale
 		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
@@ -1761,7 +1749,7 @@ bool tmLayerManager::ZoomPrevious()
 	
 	
 	m_Scale.ComputePrevZoomExtent(myPrevExtent.m_ZoomFactor, myPrevExtent.m_TopLeftPosition);
-	ReloadProjectLayersThreadStart(false, false);	
+	ReloadProjectLayers(false, false);
 	return true;
 }
 
