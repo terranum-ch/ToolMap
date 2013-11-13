@@ -237,9 +237,11 @@ const int ID_MENU_VALIDITY = 15204;
 
 const int ID_MENU_EXPORT_CONCATENATED = wxWindow::NewControlId();
 const int ID_MENU_ZOOM_FRAME = wxWindow::NewControlId();
+const int ID_MENU_ADD_WEBDATA = wxWindow::NewControlId();
+
 
 const wxString g_ProgName = _T("ToolMap");
-const wxString g_ProgMajorVersion = _T("2.5");
+const wxString g_ProgMajorVersion = _T("2.6");
 
 // define perspectives for auimanager
 enum tmPERSPECTIVE_MODE {
