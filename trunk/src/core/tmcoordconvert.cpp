@@ -47,7 +47,6 @@ OGRSpatialReference * tmCoordConvert::_CreateSpatialRef(PRJDEF_PROJ_TYPE proj) {
 }
 
 
-
 OGRSpatialReference * tmCoordConvert::_CreateSpatialRefGoogle() {
     OGRSpatialReference * mySpatRef = new OGRSpatialReference();
     mySpatRef->importFromProj4(m_ProjTextGoogle.mb_str(wxConvUTF8));
@@ -66,8 +65,9 @@ wxRealPoint tmCoordConvert::_Transform ( OGRSpatialReference * refin, OGRSpatial
     
     OGRCoordinateTransformation * myTransform = OGRCreateCoordinateTransformation (refin , refout);
     myTransform->Transform(1, &myPtX, &myPtY, NULL);
-    
     wxRealPoint myOutPt (myPtX, myPtY);
+    OCTDestroyCoordinateTransformation(myTransform);
+    
     return myOutPt;
 }
 
