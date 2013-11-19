@@ -1407,17 +1407,14 @@ void tmLayerManager::OnMoveToFeature (wxCommandEvent & event){
 
 
 
-void tmLayerManager::OnPanFinished (wxCommandEvent & event)
-{
+void tmLayerManager::OnPanFinished (wxCommandEvent & event){
 	wxPoint * myNewPosPx = (wxPoint*) event.GetClientData();
 	
 	// change coordinates
 	m_Scale.ComputeNewRealPanExtent(*myNewPosPx);
 	ReloadProjectLayers(FALSE);
 	
-	
 	delete myNewPosPx;
-	
 	_ZoomChanged();
 }
 
