@@ -134,9 +134,8 @@ void ProjectDefDLG::Init()
 
 void ProjectDefDLG::DisableControlsForEdition()
 {
-
 	m_DlgPd_Proj_Projection->Enable(FALSE);
-	m_DlgPd_Proj_Unit->Enable(FALSE);
+	//m_DlgPd_Proj_Unit->Enable(FALSE);
 	m_DlgPd_Button_Ok->SetLabel(_("Update Project"));
 }
 
@@ -162,8 +161,8 @@ void ProjectDefDLG::CreateControls()
     itemFlexGridSizer6->Add(itemStaticText11, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
  	m_DlgPd_Proj_Unit = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_UNIT, wxDefaultPosition, wxDefaultSize,PRJDEF_UNIT_TYPE_NUMBER , PRJDEF_UNIT_TYPE_STRING);
-	m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
-	m_DlgPd_Proj_Unit->Enable(FALSE);
+	//m_DlgPd_Proj_Unit->SetSelection(UNIT_METERS);
+	//m_DlgPd_Proj_Unit->Enable(FALSE);
 	itemFlexGridSizer6->Add(m_DlgPd_Proj_Unit, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticText* itemStaticText13 = new wxStaticText( m_DlgPd_Panel_Proj, wxID_STATIC, _("Projection :"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -267,6 +266,7 @@ bool ProjectDefDLG::TransferDataFromWindow()
 {
 	m_pPrjDefinition->m_PrjAuthors = m_DlgPd_Proj_Author->GetValue();
 	m_pPrjDefinition->m_PrjSummary = m_DlgPd_Proj_Comment->GetValue();
+    m_pPrjDefinition->m_PrjUnitType = static_cast<PRJDEF_UNIT_TYPE> (m_DlgPd_Proj_Unit->GetSelection());
 	return TRUE;
 }
 
@@ -277,6 +277,7 @@ bool ProjectDefDLG::TransferDataToWindow()
 	
 	m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);
 	m_DlgPd_Proj_Projection->SetSelection(m_pPrjDefinition->m_PrjProjType);
+    m_DlgPd_Proj_Unit->SetSelection(m_pPrjDefinition->m_PrjUnitType);
 	
 	// Get data from the DB and parse them into controls
 	// only if in editing mode

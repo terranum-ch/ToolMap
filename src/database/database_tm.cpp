@@ -246,7 +246,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
 	
 	_T("CREATE  TABLE `prj_settings` (")
 	_T("  `SETTING_DBK` INT NOT NULL AUTO_INCREMENT ,")
-	_T("  `PRJ_UNIT` VARCHAR(10) NOT NULL ,")
+	_T("  `PRJ_UNIT` VARCHAR(45) NOT NULL ,")
 	_T("  `PRJ_PROJECTION` VARCHAR(45) NOT NULL ,")
 	_T("  `PRJ_NAME` VARCHAR(45) NOT NULL ,")
 	_T("  `PRJ_VERSION` INT NOT NULL ,")
@@ -558,10 +558,11 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
 									 pPrjDefinition->m_PrjSummary.c_str());
 	
 	// processing request
-	if (DataBaseQueryNoResults(sSentence))
+	if (DataBaseQueryNoResults(sSentence)){
 		return true;
+    }
 	
-	wxLogDebug(_T("Error while modifing the project settings in the database"));
+	wxLogError(_T("Editing project settings failed!"));
 	return false;
 }
 
@@ -577,24 +578,20 @@ bool DataBaseTM::SetProjectData (PrjDefMemManage * pPrjDefinition)
  @author Lucien Schreiber (c) CREALP 2007
  @date 14 April 2008
  *******************************************************************************/
-bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
-{
+bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition){
 	int i=0;
 	wxString sSentence = wxString::Format(_T("SELECT PRJ_UNIT, PRJ_PROJECTION,")
 										  _T("PRJ_AUTHORS, PRJ_SUMMARY FROM %s"), 
 										  TABLE_NAME_PRJ_SETTINGS.c_str());
 	
 	wxString myError = _T("Error getting project data from the Database");
-	if (DataBaseQuery(sSentence)==false)
-	{
+	if (DataBaseQuery(sSentence)==false){
 		wxLogError(myError);
 		return false;
 	}
 	
-	
 	wxArrayString myResults;
-	if(DataBaseGetNextResult(myResults)==false)
-	{
+	if(DataBaseGetNextResult(myResults)==false){
 		wxLogError(myError);
 		return false;
 	}
@@ -602,38 +599,26 @@ bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition)
 	wxASSERT(myResults.GetCount() == 4);
 		
 	// UNITS
-	for (i = 0; i<PRJDEF_UNIT_TYPE_NUMBER; i++)
-	{
-		if (myResults.Item(0) == PRJDEF_UNIT_TYPE_STRING[i])
-		{
+	for (i = 0; i<PRJDEF_UNIT_TYPE_NUMBER; i++){
+		if (myResults.Item(0) == PRJDEF_UNIT_TYPE_STRING[i]){
 			pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) i;
 			break;
 		}
 	}
 	
 	// PROJECTION
-	for (i = 0; i< PRJDEF_PROJ_TYPE_NUMBER; i++)
-	{
-		if(myResults.Item(1) == PRJDEF_PROJ_TYPE_STRING[i])
-		{
+	for (i = 0; i< PRJDEF_PROJ_TYPE_NUMBER; i++){
+		if(myResults.Item(1) == PRJDEF_PROJ_TYPE_STRING[i]){
 			pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) i;
 			break;
 		}
-		
 	}
 	
-	// NAME
 	pPrjDefinition->m_PrjName = DataBaseGetName();
-	
-	// PATH
 	pPrjDefinition->m_PrjPath = DataBaseGetPath();
-	
-	// AUTHORS
 	pPrjDefinition->m_PrjAuthors = myResults.Item(2);
-	
-	// COMMENT
 	pPrjDefinition->m_PrjSummary = myResults.Item(3);
-	return TRUE;
+	return true;
 }
 
 

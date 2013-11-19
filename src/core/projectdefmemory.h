@@ -64,14 +64,14 @@ static wxString PRJDEF_EXPORT_TYPE_STRING[] =
 static wxString PRJDEF_UNIT_TYPE_STRING[] = 
 {
 	wxTRANSLATE("Meters"),
-	wxTRANSLATE("Kilometers"),
-	wxTRANSLATE("Lat / Long")
+	wxTRANSLATE("Degrees (DD)"),
+	wxTRANSLATE("Degrees (DMS)")
 };
 enum PRJDEF_UNIT_TYPE
 {
 	UNIT_METERS = 0,
-	UNIT_KILOMETERS,
-	UNIT_LATLONG
+	UNIT_DD,
+	UNIT_DMS
 };
 static const int PRJDEF_UNIT_TYPE_NUMBER = 3;
 
