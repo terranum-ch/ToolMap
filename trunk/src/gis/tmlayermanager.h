@@ -68,6 +68,7 @@ private:
     tmSelectedDataMemory m_SelectedData;
     bool m_BlockRefresh;
     tmMemoryZoomManager m_ZoomManager;
+    PrjDefMemManage * m_MemoryPrjRef;
     
     // shared member data with thread
     //tmTHREAD_STATUS m_Shared_ThreadStatus;
@@ -125,6 +126,8 @@ public:
     // Init layermanager
     bool InitLayerManager(DataBaseTM * db);
     bool UnInitLayerManager();
+
+    void SetMemoryProject (PrjDefMemManage * memoryprj){m_MemoryPrjRef = memoryprj;}
     
     // layers operations
     void RemoveLayer (wxCommandEvent & event);

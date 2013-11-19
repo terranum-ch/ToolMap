@@ -47,6 +47,7 @@ private:
     bool _224to225();
     bool _225to226();
     bool _226to227();
+    bool _227to228();
 	
 public:
     tmProjectUpdater(DataBaseTM * database);

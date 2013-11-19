@@ -270,8 +270,7 @@ bool ProjectManager::PMAddDefaultQueries()
  @author Lucien Schreiber (c) CREALP 2007
  @date 10 April 2008
  *******************************************************************************/
-bool ProjectManager::EditProject (int notebooknumber)
-{
+bool ProjectManager::EditProject (int notebooknumber){
 	wxASSERT (m_PrjMem);
 	bool bReturn = true;
 
@@ -279,32 +278,26 @@ bool ProjectManager::EditProject (int notebooknumber)
 	PrjDefMemManage myPrjDef;
 	myPrjDef = *m_PrjMem;
 
-
 	ProjectDefDLG * myNewProjDlg = new ProjectDefDLG(m_Parent, &myPrjDef, TRUE);
 	myNewProjDlg->SetNotebook(notebooknumber);
-	if(myNewProjDlg->ShowModal() == wxID_OK)
-	{
-
-		// modify data
-		if (m_DB->UpdateDataBaseProject(&myPrjDef))
-		{
+	if(myNewProjDlg->ShowModal() == wxID_OK){
+        // modify data
+		if (m_DB->UpdateDataBaseProject(&myPrjDef)){
 			wxLogDebug(_T("Database modified"));
 			LoadProjectDefintion(1);
 		}
-		else
-		{
+		else{
 			wxLogError(_("Project definition update error"));
 			bReturn = false;
 			// reload actual project
 			LoadProjectDefintion(2);
 		}
 	}
-	delete myNewProjDlg;
+	wxDELETE( myNewProjDlg );
 
 	wxASSERT(m_PrjMem);
 	m_AttribManager->InitAttributionManager(m_DB, m_PrjMem);
-
-
+    m_LayerManager->SetMemoryProject(m_PrjMem);
 	return bReturn;
 }
 
@@ -427,6 +420,7 @@ int ProjectManager::OpenProject(const wxString & path)
 	
 	// LayerManager Job
 	m_LayerManager->InitLayerManager(m_DB);
+    m_LayerManager->SetMemoryProject(GetMemoryProjectDefinition());
 	
 	// edition manager
 	m_EditManager->SetDatabase(m_DB);

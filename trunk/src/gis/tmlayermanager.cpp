@@ -23,6 +23,7 @@
 #include "vrprogress.h"
 #include "tmgisdatavectorshp.h"
 #include "../gui/tmclosefile_dlg.h"
+#include "../core/tmcoordconvert.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
@@ -101,6 +102,7 @@ void tmLayerManager::InitMemberValue()
 	// init selected data structure
 	m_Drawer.SetSelectedData(&m_SelectedData);
 	m_BlockRefresh = false;
+    m_MemoryPrjRef = NULL;
 }
 
 
@@ -114,14 +116,11 @@ void tmLayerManager::InitMemberValue()
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-bool tmLayerManager::InitLayerManager(DataBaseTM * db)
-{
+bool tmLayerManager::InitLayerManager(DataBaseTM * db){
 	// check
 	wxASSERT_MSG (m_TOCCtrl != NULL, _T("Toc Ctrl is null, error"));
 	wxASSERT_MSG (db != NULL, _T("Database pointer is empty... error"));
-	
-	// 1) init Database
-	m_DB = db;
+ 	m_DB = db;
 	
 	// clear selected data
 	m_SelectedData.Clear();
@@ -766,11 +765,42 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event){
 	}
 	// clear status bar
 	m_StatusBar->SetStatusText(_T(""), 3);
-	
 	wxRealPoint mouserealpoint = m_Scale.PixelToReal(mousepoint);
-    wxString myXtxt = wxString::FromCDouble( mouserealpoint.x, 2 );
-    wxString myYtxt = wxString::FromCDouble( mouserealpoint.y, 2 );
-	m_StatusBar->SetStatusText(wxString::Format(_T("x:%s y:%s"), myXtxt, myYtxt), 0);
+    
+    if (m_MemoryPrjRef == NULL) {
+        return;
+    }
+    
+    tmCoordConvert myConvert (m_MemoryPrjRef->m_PrjProjType);
+    
+    wxString myXtxt = wxEmptyString;
+    wxString myYtxt = wxEmptyString;
+    wxString myUnit = wxEmptyString;
+    
+    switch (m_MemoryPrjRef->m_PrjUnitType) {
+        case UNIT_METERS:
+            myXtxt = wxString::FromCDouble( mouserealpoint.x, 2 );
+            myYtxt = wxString::FromCDouble( mouserealpoint.y, 2 );
+            myUnit = _T(" [m]");
+            break;
+            
+        case UNIT_DMS:
+            mouserealpoint = myConvert.GetPointWGS(mouserealpoint);
+            myXtxt = wxString( CPLDecToDMS(mouserealpoint.x, "Long", 3) );
+            myYtxt = wxString( CPLDecToDMS(mouserealpoint.y, "Lat", 3) );
+            myUnit = _T(" [DMS]");
+            break;
+            
+        default:
+            mouserealpoint = myConvert.GetPointWGS(mouserealpoint);
+            myXtxt = wxString::FromCDouble( mouserealpoint.x );
+            myYtxt = wxString::FromCDouble( mouserealpoint.y );
+            myUnit = _T(" [DD]");
+            break;
+    }
+ 
+    wxString myStatusText = myXtxt + _T(" ") + myYtxt + myUnit;
+	m_StatusBar->SetStatusText(myStatusText, 0);
 }
 
 
