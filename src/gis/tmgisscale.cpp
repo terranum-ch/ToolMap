@@ -375,11 +375,13 @@ bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 	wxASSERT(myWndExtent.IsOk());
 	
 	// check for size too small
-	if (fabs(rect.m_width) <= 1 && fabs(rect.m_height) <= 1) {
+    // If we check for small objects, we cannot zoom on WGS84!!!
+	/*
+    if (fabs(rect.m_width) <= 1 && fabs(rect.m_height) <= 1) {
 		wxLogError(_("Object size is too small for zooming\n width = %.f, height = %.f"),
 				   fabs(rect.m_width), fabs(rect.m_height));
 		return false;
-	}
+	}*/
 	
 	double dWndwidth = m_ExtentWnd.GetWidth() - tmSCALE_MARGIN;
 	double dWndheight = m_ExtentWnd.GetHeight()  - tmSCALE_MARGIN;
