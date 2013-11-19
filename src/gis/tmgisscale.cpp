@@ -26,6 +26,16 @@ bool tmIsSameDouble(double left, double right, double epsilon)
 }
 
 
+double tmRealRect::GetDifferences (const double & min, const double & max){
+        if (wxIsSameDouble(max, min)){
+            return 0;
+        }
+        
+        return fabs(std::max(min,max) - std::min(min,max));
+}
+
+
+
 /***************************************************************************//**
  @brief Clip rectangle with another
  @details This function clip the rectangle with a src one and return the result.
