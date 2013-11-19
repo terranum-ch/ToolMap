@@ -26,6 +26,10 @@ wxString tmCoordConvert::m_ProjTextSwiss = _T("+proj=somerc +lat_0=46.9524055555
 wxString tmCoordConvert::m_ProjTextWGS84 = _T(" +proj=longlat +datum=WGS84 +no_defs  ");
 
 
+// WGS84 Geodesic definition see: http://geographiclib.sourceforge.net/html/C/
+double tmCoordConvert::m_Geod_a = 6378137;
+double tmCoordConvert::m_Geod_f = 1/298.257223563;
+
 
 OGRSpatialReference * tmCoordConvert::_CreateSpatialRef(PRJDEF_PROJ_TYPE proj) {
     OGRSpatialReference * mySpatRef = new OGRSpatialReference();
@@ -99,5 +103,22 @@ wxRealPoint tmCoordConvert::GetPointWGS(const wxRealPoint & in) {
 
 wxRealPoint tmCoordConvert::GetPointGoogle(const wxRealPoint & in) {
     return _Transform(_CreateSpatialRef(m_ProjType), _CreateSpatialRefGoogle(), in);
+}
+
+
+
+double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 ){
+    struct geod_geodesic myGeodesic;
+    geod_init(&myGeodesic, m_Geod_a, m_Geod_f);
+    
+    wxRealPoint p1wgs = GetPointWGS(p1);
+    wxRealPoint p2wgs = GetPointWGS(p2);
+    
+    double dist = 0;
+    double azi1 = 0;
+    double azi2 = 0;
+    geod_inverse(&myGeodesic, p1wgs.y, p1wgs.x, p2wgs.y, p2wgs.x, &dist, &azi1, &azi2);
+    
+    return dist;
 }
 

@@ -22,6 +22,7 @@
 #endif
 #include <ogr_spatialref.h>
 #include "projectdefmemory.h"
+#include "../components/geodesic/geodesic.h"
 
 
 class tmCoordConvert {
@@ -29,6 +30,8 @@ private:
     static wxString m_ProjTextGoogle;
     static wxString m_ProjTextSwiss;
     static wxString m_ProjTextWGS84;
+    static double m_Geod_a;
+    static double m_Geod_f;
     
     PRJDEF_PROJ_TYPE m_ProjType;
     
@@ -43,5 +46,6 @@ public:
     wxRealPoint GetPointWGS(const wxRealPoint & in);
     wxRealPoint GetPointGoogle(const wxRealPoint & in);
     
+    double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 ); 
 };
 #endif
