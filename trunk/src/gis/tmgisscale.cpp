@@ -335,11 +335,11 @@ void tmGISScale::ComputeNewRealPanExtent (const wxPoint & offsetxtop)
 	double dmovex = ((double)offsetxtop.x) * m_PixelSize;
 	double dmovey = ((double)offsetxtop.y) * m_PixelSize;
 	
-	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dmovex);
-	m_ExtentWndReal.x_max = RemoveFromCoord(m_ExtentWndReal.x_max, dmovex);
+	m_ExtentWndReal.x_min -= dmovex;
+	m_ExtentWndReal.x_max -= dmovex;
 	
-	m_ExtentWndReal.y_min = AppendToCoord(m_ExtentWndReal.y_min, dmovey);
-	m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dmovey);
+	m_ExtentWndReal.y_min += dmovey;
+	m_ExtentWndReal.y_max += dmovey;
 }
 
 
