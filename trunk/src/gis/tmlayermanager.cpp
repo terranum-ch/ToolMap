@@ -654,7 +654,6 @@ void tmLayerManager::ZoomToFrameLayer(){
 
 
 bool tmLayerManager::ZoomToLayer(long layerid){
-
 	tmLayerProperties * myLayerProp = m_TOCCtrl->GetLayerById(layerid);
 	if (myLayerProp == NULL) {
 		wxLogError(_("Layer with specified id doesn't exists (ID = %ld)"), layerid);
