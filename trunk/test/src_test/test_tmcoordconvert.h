@@ -37,7 +37,7 @@ public:
 	virtual ~TEST_tmCoordConvert(){
 	}
 	
-	static TEST_tmCoordConvert *createSuite() { return new TEST_tmCoordConvert(true);}
+	static TEST_tmCoordConvert *createSuite() { return new  TEST_tmCoordConvert(true);}
     static void destroySuite( TEST_tmCoordConvert *suite ) { delete suite; }
     
 	void setUp()
@@ -71,6 +71,23 @@ public:
         wxLogMessage( "Google coord is: %f, %f", myGenfPointG.x, myGenfPointG.y);
         TS_ASSERT_DELTA (myGenfPointG.x, 684370.102237, 0.000001);
         TS_ASSERT_DELTA (myGenfPointG.y, 5813422.394739, 0.000001);
+    }
+    
+    void testDistanceWGS84(){
+        tmCoordConvert myConvert (PROJ_WORLDWGS84);
+        wxRealPoint myP1 (6.14712, 46.20593); // GENEVA
+        wxRealPoint myP2 (7.45782, 46.94832); // BERN
+        double myDist = myConvert.GetDistance(myP1, myP2);
+        wxLogMessage ("Distance between Geneva and Bern : %f [m]", myDist);
+        TS_ASSERT_DELTA (myDist, 130015, 0.005);
+    }
+    
+    void testDistanceSwiss(){
+        tmCoordConvert myConvert (PROJ_SWISSPROJ);
+        wxRealPoint myP1 (500321.34231, 117986.13451); // GENEVA
+        wxRealPoint myP2 (601460.745203, 199693.022818); // BERN
+        double myDist = myConvert.GetDistance(myP1, myP2);
+        TS_ASSERT_DELTA (myDist, 130015, 0.005);
     }
   
 	
