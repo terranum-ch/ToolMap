@@ -82,31 +82,28 @@ public:
 	
 	void testOutput()
 	{
-		wxLogDebug(_T("Mon test de pourcent"));
 		int iTotal = 2543;
 		tmPercent tper(iTotal);
 		
-		for (int i=1; i<=iTotal;i++)
-		{
+		for (int i=1; i<=iTotal;i++){
 			tper.SetValue(i);
-			if (tper.IsNewStep()){
-				wxLogDebug(_T("Percent : %d"), tper.GetPercent());
-            }
 		}
+        TS_ASSERT_EQUALS(tper.GetPercent(), 100);
 	}
 	
 	
 	void testOutput2()
 	{
-		wxLogDebug(_T("Mon test de pourcent - 2"));
 		int iTotal = 10;
 		tmPercent tper(iTotal);
 		
+        int myPercentVals[] = {10,20,30,40,50,60,70,80,90,100};
+        
 		for (int i=1; i<=iTotal;i++)
 		{
 			tper.SetValue(i);
 			if (tper.IsNewStep()){
-				wxLogDebug(_T("Percent : %d"), tper.GetPercent());
+				TS_ASSERT_EQUALS(tper.GetPercent(), myPercentVals[i-1]);
             }
 		}
 	}

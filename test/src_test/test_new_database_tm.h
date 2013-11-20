@@ -60,7 +60,7 @@ public:
 		myPrjdef.m_PrjName = g_TestPrj_222;
 		myPrjdef.m_PrjPath = g_TestPathPRJ;
 		myPrjdef.m_PrjProjType = PROJ_SWISSPROJ;
-		myPrjdef.m_PrjUnitType = UNIT_LATLONG;
+		myPrjdef.m_PrjUnitType = UNIT_METERS;
 		
 		TS_ASSERT_EQUALS(m_DB->CreateTMDatabase(&myPrjdef),true);
 	}
