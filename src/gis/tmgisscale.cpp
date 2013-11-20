@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmgisscale.cpp
-                    Deals with GIS scale and conversion
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmgisscale.cpp
+ Deals with GIS scale and conversion
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,9 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
 #include "tmgisscale.h"
 
 
@@ -33,7 +30,6 @@ double tmRealRect::GetDifferences (const double & min, const double & max){
         
         return fabs(std::max(min,max) - std::min(min,max));
 }
-
 
 
 /***************************************************************************//**
@@ -267,7 +263,7 @@ bool tmGISScale::ComputeMaxExtentReal (wxSize wnd_offset)
 	m_ExtentWndReal.y_max = m_ExtentWndReal.y_min + m_PixelSize * m_ExtentWnd.GetHeight();
 	
 	// scale has changed
-	ComputeUnitScale();
+	_ComputeUnitScale();
 	
 	return TRUE;
 }
@@ -318,7 +314,7 @@ void tmGISScale::ComputeNewRealZoomExtent (const wxRect & calc_wnd_extent, const
 	m_PixelSize = (m_ExtentWndReal.x_max - m_ExtentWndReal.x_min) / ((double)m_ExtentWnd.GetWidth());
 	
 	// scale has changed
-	ComputeUnitScale();
+	_ComputeUnitScale();
 }
 
 
@@ -332,7 +328,7 @@ void tmGISScale::ComputePrevZoomExtent (double pixelsize,const wxPoint2DDouble &
 	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_min, m_PixelSize * m_ExtentWnd.GetWidth());
 	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_max, m_PixelSize * m_ExtentWnd.GetHeight());
 	
-	ComputeUnitScale();	
+	_ComputeUnitScale();
 }
 
 
@@ -437,7 +433,7 @@ bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 	m_ExtentWndReal.y_min = myNewWndExtent.GetBottom();
 	m_PixelSize = fabs(myDivFactor);
 	
-	ComputeUnitScale();
+	_ComputeUnitScale();
 	
 	return true;
 }
@@ -473,33 +469,22 @@ wxPoint tmGISScale::RealToPixel (wxRealPoint realpt){
 }
 
 
-long tmGISScale::ComputeUnitScale (){
+void tmGISScale::_ComputeUnitScale (){
     // compute horizontal distance
-    // double hRealDistance =
+    tmCoordConvert myConvert (m_ProjectProjection);
+    wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);
+    wxRealPoint myPtTopRight (m_ExtentWndReal.x_max, m_ExtentWndReal.y_max);
+    double hRealDistance = myConvert.GetDistance(myPtTopLeft, myPtTopRight);
     
+    if (hRealDistance == 0) {
+        m_UnitScale = 0;
+        return;
+    }
     
-	//int MMtoM = 1000;
-	double ddistance = 0.0;
-	if (m_ExtentWndReal.x_max != 0)
-	{
-		if (m_ExtentWndReal.x_max < 0)
-		{
-			ddistance = m_ExtentWndReal.x_max + m_ExtentWndReal.x_min;
-		}
-		else
-		{
-			ddistance = m_ExtentWndReal.x_max - m_ExtentWndReal.x_min;
-		}
-		
-		// send message to scale control
-		double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
-		double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx; 
-		
-		m_UnitScale = wxRound(ddistance / dSizeMH);
-		//m_UnitScale = wxRound( ddistance / (((double)m_ExtentWndMM.GetWidth()) / 1000.0));	
-		return m_UnitScale;
-	}
-	return 0;
+    double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
+    double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
+    m_UnitScale = wxRound(hRealDistance / dSizeMH);
+    return;
 }
 
 

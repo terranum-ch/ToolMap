@@ -173,6 +173,12 @@ bool tmLayerManager::UnInitLayerManager()
 }
 
 
+void tmLayerManager::SetMemoryProject (PrjDefMemManage * memoryprj){
+    m_MemoryPrjRef = memoryprj;
+    m_Scale.SetUnitAndProj(m_MemoryPrjRef->m_PrjProjType, m_MemoryPrjRef->m_PrjUnitType);
+}
+
+
 /***************************************************************************//**
  @brief Fill TOC control with Database TOC values
  @author Lucien Schreiber (c) CREALP 2008
@@ -1495,7 +1501,7 @@ bool tmLayerManager::LoadProjectLayers()
 	// specified (like no data displayed) return 
 	if (m_Scale.IsLayerExtentValid()==true){
 		m_Scale.ComputeMaxExtent();
-		m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
+		m_Drawer.InitDrawer(m_Bitmap, &m_Scale, m_Scale.GetWindowExtentReal());
 		
 		// iterate for drawing layers
 		ReadLayerDraw();
@@ -1548,7 +1554,7 @@ bool tmLayerManager::ReloadProjectLayers(bool bFullExtent, bool bInvalidateFullE
         }
 		
 		// read layers for drawing
-		m_Drawer.InitDrawer(m_Bitmap, m_Scale, m_Scale.GetWindowExtentReal());
+		m_Drawer.InitDrawer(m_Bitmap, &m_Scale, m_Scale.GetWindowExtentReal());
 		int iNbLayersDraw = ReadLayerDraw();
 		if (iNbLayersDraw == -1){
 			return false;
