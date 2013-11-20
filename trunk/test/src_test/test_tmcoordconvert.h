@@ -79,7 +79,7 @@ public:
         wxRealPoint myP2 (7.45782, 46.94832); // BERN
         double myDist = myConvert.GetDistance(myP1, myP2);
         wxLogMessage ("Distance between Geneva and Bern : %f [m]", myDist);
-        TS_ASSERT_DELTA (myDist, 130015, 0.005);
+        TS_ASSERT_DELTA (myDist, 130015.3, 0.05);
     }
     
     void testDistanceSwiss(){
@@ -87,7 +87,7 @@ public:
         wxRealPoint myP1 (500321.34231, 117986.13451); // GENEVA
         wxRealPoint myP2 (601460.745203, 199693.022818); // BERN
         double myDist = myConvert.GetDistance(myP1, myP2);
-        TS_ASSERT_DELTA (myDist, 130015, 0.005);
+        TS_ASSERT_DELTA (myDist, 130015.3, 0.05);
     }
   
 	
