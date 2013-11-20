@@ -89,6 +89,25 @@ public:
         double myDist = myConvert.GetDistance(myP1, myP2);
         TS_ASSERT_DELTA (myDist, 130015.3, 0.05);
     }
+    
+    void testPointAtDistanceWGS84() {
+        tmCoordConvert myConvert (PROJ_WORLDWGS84);
+        wxRealPoint myP1 (6.14712, 46.20593); // GENEVA
+        // search point 20 km east of geneva
+        wxRealPoint myP2 = myConvert.GetPointAtDistance(myP1, 20000, 90);
+        TS_ASSERT_DELTA(myP2.x, 6.40626894 , 0.00001);
+        TS_ASSERT_DELTA(myP2.y, 46.20563628, 0.00001);
+    }
+    
+    void testPointAtDistanceSWISS() {
+        tmCoordConvert myConvert (PROJ_SWISSPROJ);
+        wxRealPoint myGenfPoint (500374,117993);
+        // search point 100 m east of geneva
+        wxRealPoint myP2 = myConvert.GetPointAtDistance(myGenfPoint, 100, 90);
+        TS_ASSERT_DELTA(myP2.x, 500474 , 0.5);
+        TS_ASSERT_DELTA(myP2.y, myGenfPoint.y, 2);
+    }
+
   
 	
 };

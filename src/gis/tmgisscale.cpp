@@ -508,6 +508,7 @@ bool tmGISScale::IsLayerExtentValid()
 }
 
 
+/*
 void tmGISScale::DistanceFromScale (const long & scale, double & xdist, double & ydist)
 {
 	wxASSERT(m_PPI.x = m_PPI.y);
@@ -521,10 +522,16 @@ void tmGISScale::DistanceFromScale (const long & scale, double & xdist, double &
 	//ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000.0 * (double) scale;
 	m_UnitScale = scale;
 }
+ */
 
 
-void tmGISScale::ComputeNewScaleExtent (const long & scale)
-{
+void tmGISScale::ComputeNewScaleExtent (const long & scale){
+    double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
+    double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
+    
+    // TODO: Add code for getting p2 here !!!!!
+    
+    /*
 	// getting new distance from scale and window with (mm)
 	double dNewDistX = 0, dNewDistY = 0;
 	DistanceFromScale(scale, dNewDistX, dNewDistY);
@@ -545,6 +552,7 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale)
 	// change pixels size too :-)
 	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
 				((double)m_ExtentWnd.GetWidth());
+     */
 }
 
 

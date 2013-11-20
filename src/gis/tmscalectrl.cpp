@@ -1,9 +1,9 @@
 /***************************************************************************
-							tmscalectrl.cpp
-                    Contain scale control component
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmscalectrl.cpp
+ Contain scale control component
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,59 +14,47 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
 #include "tmscalectrl.h"
 
-
 DEFINE_EVENT_TYPE(tmEVT_SCALE_USER_CHANGED)
-
 
 BEGIN_EVENT_TABLE(tmScaleCtrlCombo, wxComboBox)
 	EVT_TEXT_ENTER(wxID_ANY, tmScaleCtrlCombo::OnUserSetValue)
 	EVT_COMBOBOX (wxID_ANY,  tmScaleCtrlCombo::OnUserSetValue)
 END_EVENT_TABLE()
 
-
 tmScaleCtrlCombo::tmScaleCtrlCombo (wxWindow * parent, wxWindowID id, 
 									const wxPoint & pos,
 									const wxSize & size, const wxArrayString & arraystring) :
-wxComboBox (parent, id, _T(""), pos, size, arraystring, wxCB_DROPDOWN | wxTE_PROCESS_ENTER)
-{
+wxComboBox (parent, id, _T(""), pos, size, arraystring, wxCB_DROPDOWN | wxTE_PROCESS_ENTER){
 	m_ParentEvent = parent;
 	
 }
 
 
-tmScaleCtrlCombo::tmScaleCtrlCombo()
-{
+tmScaleCtrlCombo::tmScaleCtrlCombo(){
 	
 }
 
 
 
-void tmScaleCtrlCombo::InitScaleFromDatabase (const wxArrayLong & scale_values)
-{
+void tmScaleCtrlCombo::InitScaleFromDatabase (const wxArrayLong & scale_values){
 	// clear old values 
 	Clear();
 	
 	wxArrayString myStringScale;
 	wxString tempScale = _T("");
 	
-	for (unsigned int i = 0; i< scale_values.GetCount(); i++)
-	{
+	for (unsigned int i = 0; i< scale_values.GetCount(); i++){
 		ScaleTM::GetScaleFromLong (scale_values.Item(i), tempScale);
 		myStringScale.Add(tempScale);
 	}
-
 	Append(myStringScale);	
 }
 
 
 
-void tmScaleCtrlCombo::SetValueScale (const long & scale)
-{
+void tmScaleCtrlCombo::SetValueScale (const long & scale){
 	wxString myScaleString = _T("");
 	ScaleTM::GetScaleFromLong (scale, myScaleString);
 	SetValue(myScaleString);
@@ -74,8 +62,7 @@ void tmScaleCtrlCombo::SetValueScale (const long & scale)
 
 
 
-void tmScaleCtrlCombo::OnUserSetValue (wxCommandEvent & event)
-{
+void tmScaleCtrlCombo::OnUserSetValue (wxCommandEvent & event){
 	// get value and pass it to the layermanager
 	wxString myScaleString = GetValue();
 	long myScaleLong = 0;
@@ -85,22 +72,21 @@ void tmScaleCtrlCombo::OnUserSetValue (wxCommandEvent & event)
 		return;
 	
 	// deal with scale of format 1:1000 or 1000
-	if (myScaleString.GetChar(1) == ':')
-	{
+	if (myScaleString.GetChar(1) == ':'){
 		myScaleLong = ScaleTM::GetScaleFromString(myScaleString);
 	}
-	else
-	{
+	else{
 		myScaleString.ToLong(&myScaleLong);
 		ScaleTM::GetScaleFromLong(myScaleLong, myTempDisplayedString);
 		SetValue(myTempDisplayedString);
 	}
 	
 	// check scale greather than zero
-	if ( myScaleLong <= 0)
+	if ( myScaleLong <= 0){
 		return;
+    }
 	
-	// all seems correct 
+	// all seems correct
 	wxCommandEvent evt (tmEVT_SCALE_USER_CHANGED, wxID_ANY);
 	evt.SetExtraLong(myScaleLong);
 	m_ParentEvent->GetEventHandler()->AddPendingEvent(evt);

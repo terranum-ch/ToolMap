@@ -123,6 +123,33 @@ double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & 
 }
 
 
+wxRealPoint tmCoordConvert::_GetPointLocalFromWGS( const wxRealPoint & pt){
+    if (m_ProjType == PROJ_WORLDWGS84) {
+        return pt;
+    }
+    
+    OGRSpatialReference * myInRef = _CreateSpatialRef(PROJ_WORLDWGS84);
+    wxASSERT(myInRef);
+    OGRSpatialReference * myOutRef = _CreateSpatialRef(m_ProjType);
+    wxASSERT(myOutRef);
+    return _Transform(myInRef, myOutRef, pt);
+}
+
+
+
+wxRealPoint tmCoordConvert::GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut){
+    struct geod_geodesic myGeodesic;
+    geod_init(&myGeodesic, m_Geod_a, m_Geod_f);
+    
+    wxRealPoint p1wgs = GetPointWGS(p1);
+    wxRealPoint pDestWgs;
+    
+    geod_direct(&myGeodesic, p1wgs.y, p1wgs.x , azimut, distance, &pDestWgs.y, &pDestWgs.x, 0);
+    return _GetPointLocalFromWGS(pDestWgs);
+}
+
+
+
 wxString tmCoordConvert::GetDistanceHuman (double distanceM){
     if (distanceM < 1.0) {
         return wxString::Format(_T("%f [cm]"), distanceM * 100);
