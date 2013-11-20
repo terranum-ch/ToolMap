@@ -104,7 +104,7 @@ private:
     
     void InitMemberValues();
     void _ComputeUnitScale ();
-    
+
 protected:
 public:
     tmGISScale();
@@ -150,7 +150,6 @@ public:
     bool ComptuteNewWindowSize (const wxSize & oldsize, const wxSize & newsize);
     
     // scale function
-    void DistanceFromScale (const long & scale, double & xdist, double & ydist);
     void ComputeNewScaleExtent (const long & scale);
     
     // zoom functions

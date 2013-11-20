@@ -38,6 +38,7 @@ private:
     OGRSpatialReference * _CreateSpatialRef(PRJDEF_PROJ_TYPE proj);
     OGRSpatialReference * _CreateSpatialRefGoogle();
     wxRealPoint _Transform ( OGRSpatialReference * refin, OGRSpatialReference * refout, const wxRealPoint & in);
+    wxRealPoint _GetPointLocalFromWGS( const wxRealPoint & pt);
     
 public:
     tmCoordConvert(PRJDEF_PROJ_TYPE projtype);
@@ -45,8 +46,10 @@ public:
     
     wxRealPoint GetPointWGS(const wxRealPoint & in);
     wxRealPoint GetPointGoogle(const wxRealPoint & in);
+
     
     double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 );
+    wxRealPoint GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut);
     wxString GetDistanceHuman (double distanceM);
     
 };

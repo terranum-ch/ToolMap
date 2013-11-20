@@ -851,22 +851,16 @@ void tmLayerManager::OnShowLayer (wxCommandEvent & event){
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 October 2008
  *******************************************************************************/
-void tmLayerManager::OnScaleChanged (wxCommandEvent & event)
-{
+void tmLayerManager::OnScaleChanged (wxCommandEvent & event){
 	// checking that project is open and contain GIS data
-	if (!IsOK() && m_Scale.GetMaxLayersExtent() == tmRealRect(0,0,0,0))
-	{
-		wxLogMessage(_T("Not able to process scale if no project open\n")
-					 _T("or if not GIS data"));
+	if (!IsOK() && m_Scale.GetMaxLayersExtent() == tmRealRect(0,0,0,0)){
+		wxLogError(_T("Not able to process scale! Open a project first!"));
 		return;
 	}
 	
 	// computing new real extent based on scale
 	m_Scale.ComputeNewScaleExtent(event.GetExtraLong());
-	
-	//double dNewScaleDist = m_Scale.DistanceFromScale(event.GetExtraLong());
-	ReloadProjectLayers(FALSE);
-	
+	ReloadProjectLayers(false);
 	_ZoomChanged();
 }
 
