@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmdrawer.cpp
-						Draws GIS data into bitmap
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmdrawer.cpp
+ Draws GIS data into bitmap
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,17 +20,12 @@
 #include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
 #include "tmsymbolrule.h"
-
 #include "../database/database_tm.h"
 #include "../database/databaseresult.h"
 
-
 bool tmDrawer::m_LogOn = true;
 
-
-
-tmDrawer::tmDrawer()
-{
+tmDrawer::tmDrawer(){
 	m_bmp = NULL;
 	m_IsInitialised = FALSE;
 
@@ -42,28 +37,28 @@ tmDrawer::tmDrawer()
 	masklen= 0;
 	m_ActuallayerID = 0;
 	m_SelMem = NULL;
+    m_scale = NULL;
 }
 
 
 
-tmDrawer::~tmDrawer()
-{
+tmDrawer::~tmDrawer(){
 
 }
 
 
 
-void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale & scale, const tmRealRect & filter)
+void tmDrawer::InitDrawer(wxBitmap * bitmap, tmGISScale * scale, const tmRealRect & filter)
 {
 	m_bmp = bitmap;
 	m_scale = scale;
 	m_spatFilter = filter;
 	
-	if (m_bmp && m_bmp->IsOk())
-		m_IsInitialised = TRUE;
-	else
-	{
-		m_IsInitialised = FALSE;
+	if (m_bmp && m_bmp->IsOk()){
+		m_IsInitialised = true;
+    }
+	else{
+		m_IsInitialised = false;
 		if (IsLoggingEnabled()){
 			wxLogDebug(_T("Error initing drawer \n"));
         }
@@ -104,14 +99,14 @@ bool tmDrawer::DrawExtentIntoBitmap (int width, const wxColour & col)
 	temp_dc.SetBackground(*wxWHITE);
 	
 	
-	tmRealRect myRealExt = m_scale.GetMaxLayersExtent();
+	tmRealRect myRealExt = m_scale->GetMaxLayersExtent();
 	
 	wxPoint pts[5];
-	pts[0] = m_scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
-	pts[1] = m_scale.RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_min));
-	pts[2] = m_scale.RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_max));
-	pts[3] = m_scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_max));
-	pts[4] = m_scale.RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
+	pts[0] = m_scale->RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
+	pts[1] = m_scale->RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_min));
+	pts[2] = m_scale->RealToPixel(wxRealPoint(myRealExt.x_max, myRealExt.y_max));
+	pts[3] = m_scale->RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_max));
+	pts[4] = m_scale->RealToPixel(wxRealPoint(myRealExt.x_min, myRealExt.y_min));
 	
 	temp_dc.DrawLines(5, pts);
 	
@@ -227,7 +222,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
         wxPoint * pptspx = new wxPoint[iNbVertex];
         m_PreviousPoint = wxDefaultPosition;
         for (int i = 0; i< iNbVertex; i++) {
-            wxPoint myPt = m_scale.RealToPixel(pptsReal[i]);
+            wxPoint myPt = m_scale->RealToPixel(pptsReal[i]);
             if (myPt == m_PreviousPoint) {
                 pptspx[i] = wxDefaultPosition;
                 ++mySkippedVertex;
@@ -414,7 +409,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
         wxPoint * pptspx = new wxPoint[iNbVertex];
         m_PreviousPoint = wxDefaultPosition;
         for (int i = 0; i< iNbVertex; i++) {
-            wxPoint myPt = m_scale.RealToPixel(pptsReal[i]);
+            wxPoint myPt = m_scale->RealToPixel(pptsReal[i]);
             if (myPt == m_PreviousPoint) {
                 pptspx[i] = wxDefaultPosition;
                 ++mySkippedVertex;
@@ -582,7 +577,7 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
             wxPoint * pptspx = new wxPoint[iNbVertex];
             m_PreviousPoint = wxDefaultPosition;
             for (int i = 0; i< iNbVertex; i++) {
-                wxPoint myPt = m_scale.RealToPixel(pptsReal[i]);
+                wxPoint myPt = m_scale->RealToPixel(pptsReal[i]);
                 if (myPt == m_PreviousPoint) {
                     pptspx[i] = wxDefaultPosition;
                     ++mySkippedVertex;
@@ -763,7 +758,7 @@ bool tmDrawer::DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata)
 		}
 		
 		// convert from real coordinates to screen coordinates
-		Intpts = m_scale.RealToPixel(*pptsReal);
+		Intpts = m_scale->RealToPixel(*pptsReal);
 		
 		// changing pen for selected data
 		if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
@@ -891,7 +886,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdat
 		
 		// convert from real coordinates to screen coordinates
 		wxPoint Intpts (0,0);
-		Intpts = m_scale.RealToPixel(*pptsReal);
+		Intpts = m_scale->RealToPixel(*pptsReal);
 		
 		if (IsSelected == true) {
 			if (m_SelMem->GetSelectionHalo() == true) {
@@ -1000,7 +995,7 @@ bool tmDrawer::DrawPointsRules (tmLayerProperties * itemProp, tmGISData * pdata)
                 }
             }
             
-            wxPoint Intpts = m_scale.RealToPixel(*pptsReal);
+            wxPoint Intpts = m_scale->RealToPixel(*pptsReal);
 #ifdef __WXMSW__
             pgdc->StrokeLine (Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
 #else
@@ -1118,9 +1113,9 @@ bool tmDrawer::DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata)
 			// creating path based on ring data and putting this path
 			// into main path
 			wxGraphicsPath myPath = pgdc->CreatePath();
-			myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+			myPath.MoveToPoint(m_scale->RealToPixel(pptsReal[0]));
 			for (int i = 1; i< iNbVertex; i++)
-				myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+				myPath.AddLineToPoint(m_scale->RealToPixel(pptsReal[i]));
 			
 			myPath.CloseSubpath();
 			myPolygonPath.AddPath(myPath);
@@ -1230,9 +1225,9 @@ bool tmDrawer::DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdat
                 }
  
                 wxGraphicsPath myPath = pgdc->CreatePath();
-                myPath.MoveToPoint(m_scale.RealToPixel(pptsReal[0]));
+                myPath.MoveToPoint(m_scale->RealToPixel(pptsReal[0]));
                 for (int i = 1; i< iNbVertex; i++){
-                    myPath.AddLineToPoint(m_scale.RealToPixel(pptsReal[i]));
+                    myPath.AddLineToPoint(m_scale->RealToPixel(pptsReal[i]));
                 }
                 
                 myPath.CloseSubpath();
@@ -1276,9 +1271,9 @@ bool tmDrawer::DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata)
 	
 	// converting image coordinate & clipping 
 	tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
-	wxPoint topleftpx = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_min,
+	wxPoint topleftpx = m_scale->RealToPixel(wxRealPoint(myClippedCoordReal.x_min,
 														myClippedCoordReal.y_min));
-	wxPoint bottomright = m_scale.RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
+	wxPoint bottomright = m_scale->RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
 														  myClippedCoordReal.y_max));
 	wxRect myClippedCoordPx (topleftpx, bottomright);
 	wxImage * myRaster = new wxImage (myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
@@ -1494,7 +1489,7 @@ bool tmDrawer::DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata)
             // convert realpts to pxpts
             wxPoint * pptspx = new wxPoint[iNbVertex];
             for (int i = 0; i< iNbVertex; i++) {
-                pptspx[i] = m_scale.RealToPixel(pptsReal[i]);
+                pptspx[i] = m_scale->RealToPixel(pptsReal[i]);
             }
             wxDELETEA(pptsReal);
 
@@ -1568,7 +1563,7 @@ wxPen * tmDrawer::CreateEditUniqueSegmentPen (int size)
  *******************************************************************************/
 void tmDrawer::DrawEditVertex (const wxRealPoint & pt,int size, wxColour colour)
 {
-	wxPoint myScreenPt = m_scale.RealToPixel(pt);
+	wxPoint myScreenPt = m_scale->RealToPixel(pt);
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_bmp);
 	wxPen * myVPen = new wxPen(colour, size);
@@ -1600,12 +1595,12 @@ void tmDrawer::DrawEditSegment (const wxRealPoint & pt1,
 	wxMemoryDC mdc;
 	mdc.SelectObject(*m_bmp);
 
-	myPt1 = m_scale.RealToPixel(pt1);
+	myPt1 = m_scale->RealToPixel(pt1);
 	
 	// draw segment first, then vertex
 	if (pt2 != wxRealPoint(0,0))
 	{
-		myPt2 = m_scale.RealToPixel(pt2);
+		myPt2 = m_scale->RealToPixel(pt2);
 		
 		mdc.SetPen(*mySegmentPen);
 		mdc.DrawLine(myPt1, myPt2);
@@ -1684,7 +1679,7 @@ void tmDrawer::DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour c
 	wxPoint * myPts = new wxPoint[nb_pts];
 	for (int i = 0; i<nb_pts; i++)
 	{
-		myPts[i] = m_scale.RealToPixel(pts.Item(i));
+		myPts[i] = m_scale->RealToPixel(pts.Item(i));
 	}
 	
 	// draw segments
@@ -1753,7 +1748,7 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 	
 	wxPoint * myPxPts = new wxPoint[iVertexNumber];
 	for (int i = 0; i< iVertexNumber; i++)
-		myPxPts[i] = m_scale.RealToPixel(pptsReal[i]);
+		myPxPts[i] = m_scale->RealToPixel(pptsReal[i]);
 	
 	// creating path
 	dc->DrawLines(iVertexNumber, myPxPts);

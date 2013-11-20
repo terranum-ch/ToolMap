@@ -127,7 +127,7 @@ public:
     bool InitLayerManager(DataBaseTM * db);
     bool UnInitLayerManager();
 
-    void SetMemoryProject (PrjDefMemManage * memoryprj){m_MemoryPrjRef = memoryprj;}
+    void SetMemoryProject (PrjDefMemManage * memoryprj);
     
     // layers operations
     void RemoveLayer (wxCommandEvent & event);

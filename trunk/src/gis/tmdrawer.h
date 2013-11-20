@@ -50,81 +50,79 @@ class DataBaseResult;
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 July 2008
  *******************************************************************************/
-class tmDrawer : public wxObject 
-	{
-	private:
-		wxBitmap * m_bmp;
-		tmGISScale m_scale;
-		bool m_IsInitialised;
-		tmRealRect m_spatFilter;
-		static bool m_LogOn;
-		long m_ActuallayerID;
-		tmSelectedDataMemory * m_SelMem;
-        wxPoint m_PreviousPoint;
-		
-		// load image using GDAL
-		// owned by image, do not destroy manually.
-		unsigned char      *imgbuf;
-		unsigned int        imglen;
-		unsigned char      *maskbuf;
-		unsigned int        masklen;
-
-		
-		// drawing functions
-		bool DrawLines(tmLayerProperties * itemProp, tmGISData * pdata);
-		bool DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
-        bool DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata);
-		bool DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata);
-		bool DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
-        bool DrawPointsRules (tmLayerProperties * itemProp, tmGISData * pdata);
-		bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
-        bool DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdata);
-		bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);
-		bool _DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen);
-        
-        
-		//void DrawMemoryDataLine (tmGISData * data, tmLayerProperties * layerprop, wxClientDC * dc);
-		
-		// drawing vertex
-		bool DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pts,
+class tmDrawer : public wxObject
+{
+private:
+    wxBitmap * m_bmp;
+    tmGISScale * m_scale;
+    bool m_IsInitialised;
+    tmRealRect m_spatFilter;
+    static bool m_LogOn;
+    long m_ActuallayerID;
+    tmSelectedDataMemory * m_SelMem;
+    wxPoint m_PreviousPoint;
+    
+    // load image using GDAL
+    // owned by image, do not destroy manually.
+    unsigned char      *imgbuf;
+    unsigned int        imglen;
+    unsigned char      *maskbuf;
+    unsigned int        masklen;
+    
+    // drawing functions
+    bool DrawLines(tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawPoints (tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawPointsEnhanced(tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawPointsRules (tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawPolygons (tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawPolygonsRules (tmLayerProperties * itemProp, tmGISData * pdata);
+    bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);
+    bool _DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen);
+    
+    
+    //void DrawMemoryDataLine (tmGISData * data, tmLayerProperties * layerprop, wxClientDC * dc);
+    
+    // drawing vertex
+    bool DrawVertexLine (wxGraphicsContext* pgdc, wxPoint * pts, int nb_pts,
 						 tmLayerProperties * itemProp, wxPen * pen, int nb_pen = 1);
-		bool DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata);
-		
-		wxPen * CreateVertexUniquePen (tmLayerProperties * itemProp, int size);
-		wxPen * CreateEditUniqueVertexPen (int size);
-		wxPen * CreateEditUniqueSegmentPen (int size);
-		
-		static void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
-		static void DrawPoint (const wxPoint & pt, wxClientDC * pcdc);
-		
-		bool _SelectFeatureByQuery (long myQueryID, DataBaseTM * database, wxArrayLong & results);
-		bool _ExistsinResults (long Oid, const wxArrayLong & results);
-		
-	protected:
-	public:
-		tmDrawer();
-		~tmDrawer();
-		void SetSelectedData (tmSelectedDataMemory * selectedmemory){m_SelMem = selectedmemory;}
-		
-		void InitDrawer (wxBitmap * bitmap, tmGISScale & scale, 
-						 const tmRealRect & filter);
-		
-		// Extent Drawing
-		bool DrawExtentIntoBitmap (int width = 1, const wxColour & col = wxColour(*wxBLACK));
-		bool Draw (tmLayerProperties * itemProp, tmGISData * pdata);
-		
-		static void EnableLogging (bool enable) {m_LogOn = enable;}
-		static bool IsLoggingEnabled () {return m_LogOn;}
-		
-		void DrawEditVertex (const wxRealPoint & pt,int size, wxColour colour);
-		void DrawEditSegment (const wxRealPoint & pt1,
-							  const wxRealPoint & pt2,
-							  int size);
-		void DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour colour = *wxRED);
-		//void DrawMemoryData (tmGISData * data, tmLayerProperties * layerprop,
-		//					 wxClientDC * dc);
-		
-	};
+    bool DrawVertexPoly (tmLayerProperties * itemProp, tmGISData * pdata);
+    
+    wxPen * CreateVertexUniquePen (tmLayerProperties * itemProp, int size);
+    wxPen * CreateEditUniqueVertexPen (int size);
+    wxPen * CreateEditUniqueSegmentPen (int size);
+    
+    static void DrawPoint (const wxPoint & pt, wxMemoryDC * pMdc);
+    static void DrawPoint (const wxPoint & pt, wxClientDC * pcdc);
+    
+    bool _SelectFeatureByQuery (long myQueryID, DataBaseTM * database, wxArrayLong & results);
+    bool _ExistsinResults (long Oid, const wxArrayLong & results);
+    
+protected:
+public:
+    tmDrawer();
+    ~tmDrawer();
+    void SetSelectedData (tmSelectedDataMemory * selectedmemory){m_SelMem = selectedmemory;}
+    
+    void InitDrawer (wxBitmap * bitmap, tmGISScale * scale, const tmRealRect & filter);
+    
+    // Extent Drawing
+    bool DrawExtentIntoBitmap (int width = 1, const wxColour & col = wxColour(*wxBLACK));
+    bool Draw (tmLayerProperties * itemProp, tmGISData * pdata);
+    
+    static void EnableLogging (bool enable) {m_LogOn = enable;}
+    static bool IsLoggingEnabled () {return m_LogOn;}
+    
+    void DrawEditVertex (const wxRealPoint & pt,int size, wxColour colour);
+    void DrawEditSegment (const wxRealPoint & pt1,
+                          const wxRealPoint & pt2,
+                          int size);
+    void DrawEditLine (const wxArrayRealPoints & pts, int size, wxColour colour = *wxRED);
+    //void DrawMemoryData (tmGISData * data, tmLayerProperties * layerprop,
+    //					 wxClientDC * dc);
+    
+};
 
 
 

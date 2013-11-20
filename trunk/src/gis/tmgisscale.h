@@ -22,11 +22,12 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/graphics.h>
+#include <algorithm>
 
 #include "../core/vrrealrect.h"
 #include "../core/projectdefmemory.h"
-#include <wx/graphics.h>
-#include <algorithm>
+#include "../core/tmcoordconvert.h"
 
 
 const int tmSCALE_MARGIN = 10; // margin between image and border in full screen mode
@@ -101,7 +102,7 @@ private:
     PRJDEF_PROJ_TYPE m_ProjectProjection;
     
     void InitMemberValues();
-    long ComputeUnitScale ();
+    void _ComputeUnitScale ();
     
 protected:
 public:
@@ -130,7 +131,7 @@ public:
     void SetWindowExtentMM (const wxSize & size)
     {
         m_ExtentWndMM = size;
-        m_UnitScale = ComputeUnitScale();
+        _ComputeUnitScale();
     }
     long GetActualScale (){return m_UnitScale;}
     double GetWindowRealWidth();
