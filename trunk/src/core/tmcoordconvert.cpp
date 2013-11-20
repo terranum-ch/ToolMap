@@ -122,3 +122,19 @@ double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & 
     return dist;
 }
 
+
+wxString tmCoordConvert::GetDistanceHuman (double distanceM){
+    if (distanceM < 1.0) {
+        return wxString::Format(_T("%f [cm]"), distanceM * 100);
+    }
+    
+    if ( (distanceM / 1000.0) < 1.0) {
+        return wxString::Format(_T("%f [m]"), distanceM);
+    }
+    
+    return wxString::Format(_T("%f [km]"), distanceM / 1000.0);
+}
+
+
+
+

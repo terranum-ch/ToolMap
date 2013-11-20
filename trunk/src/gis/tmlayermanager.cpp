@@ -588,6 +588,7 @@ void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData * layer, const wxString &
 
 
 
+
 bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const wxString & originalname){
     if (replace == true) {
         if (_ReplaceLayer(filename, originalname)==true) {
@@ -769,7 +770,7 @@ void tmLayerManager::OnUpdateCoordinates (wxCommandEvent &event){
 		return;
 	}
 	// clear status bar
-	m_StatusBar->SetStatusText(_T(""), 3);
+	m_StatusBar->SetStatusText(_T(""), 4);
 	wxRealPoint mouserealpoint = m_Scale.PixelToReal(mousepoint);
     
     if (m_MemoryPrjRef == NULL) {
@@ -819,12 +820,12 @@ void tmLayerManager::OnUpdateAngle(wxCommandEvent & event)
 	
 	if (myAngle == wxNOT_FOUND)
 	{
-		m_StatusBar->SetStatusText(_T(""), 2);
+		m_StatusBar->SetStatusText(_T(""), 3);
 		return;
 	}
 	
 	wxString myAngleText = wxString::Format(_T("Angle : %d\u00B0"), myAngle);
-	m_StatusBar->SetStatusText(myAngleText, 2);
+	m_StatusBar->SetStatusText(myAngleText, 3);
 }
 
 
@@ -1508,6 +1509,8 @@ bool tmLayerManager::LoadProjectLayers()
 		
 		// update scale
 		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+        m_StatusBar->SetStatusText(_("Visible Width: ") + m_Scale.GetVisibleWidthText(), 1);
+        
 		
 		m_Drawer.DrawExtentIntoBitmap(2,*wxRED);
 	}
@@ -1562,9 +1565,11 @@ bool tmLayerManager::ReloadProjectLayers(bool bFullExtent, bool bInvalidateFullE
 		
 		// update scale
 		m_ScaleCtrl->SetValueScale(m_Scale.GetActualScale());
+        m_StatusBar->SetStatusText(_("Visible Width: ") + m_Scale.GetVisibleWidthText(), 1);
+
 	}
 	
-	// set active bitmap	
+	// set active bitmap
 	m_GISRenderer->SetBitmapStatus(m_Bitmap);
 	wxDELETE(m_Bitmap);
 	

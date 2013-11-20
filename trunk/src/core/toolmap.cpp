@@ -344,7 +344,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 	SetIcon(icon);
 
     // adding status bar
-	CreateStatusBar(4);
+	CreateStatusBar(5);
     SetStatusBarPane(-1);
 
 	_CreateMenu();
@@ -1452,7 +1452,7 @@ void ToolMapFrame::OnSelectInvert (wxCommandEvent & event)
 void ToolMapFrame::OnUpdateSelection (wxCommandEvent & event)
 {
 	SetStatusText(wxString::Format(_T("%d Selected features"),
-                                   m_LayerManager->GetSelectedDataMemory()->GetCount()),1);
+                                   m_LayerManager->GetSelectedDataMemory()->GetCount()),2);
 	event.Skip();
 }
 
@@ -1636,7 +1636,7 @@ void ToolMapFrame::OnShortcutAttributionDone (wxCommandEvent & event)
 	wxString myStatusInfo =  event.GetString();
 	myStatusInfo.Append(_(" : Attribution DONE"));
 
-	GetStatusBar()->SetStatusText(myStatusInfo, 3);
+	GetStatusBar()->SetStatusText(myStatusInfo, 4);
 }
 
 

@@ -115,6 +115,7 @@ void tmGISScale::InitMemberValues()
 	m_ExtentWndMM = wxSize(0,0);
     m_ProjectUnit = UNIT_METERS;
     m_ProjectProjection = PROJ_SWISSPROJ;
+    m_WidthDistanceInM = 0;
 }
 
 
@@ -472,19 +473,30 @@ wxPoint tmGISScale::RealToPixel (wxRealPoint realpt){
 void tmGISScale::_ComputeUnitScale (){
     // compute horizontal distance
     tmCoordConvert myConvert (m_ProjectProjection);
-    wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);
-    wxRealPoint myPtTopRight (m_ExtentWndReal.x_max, m_ExtentWndReal.y_max);
-    double hRealDistance = myConvert.GetDistance(myPtTopLeft, myPtTopRight);
     
-    if (hRealDistance == 0) {
+    // take mean latitude
+    double myYmean = std::max(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) - std::min(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
+    myYmean = std::min(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) + (myYmean / 2.0);
+    
+    wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, myYmean);
+    wxRealPoint myPtTopRight (m_ExtentWndReal.x_max, myYmean);
+    m_WidthDistanceInM = myConvert.GetDistance(myPtTopLeft, myPtTopRight);
+    
+    if (m_WidthDistanceInM == 0) {
         m_UnitScale = 0;
         return;
     }
     
     double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
     double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
-    m_UnitScale = wxRound(hRealDistance / dSizeMH);
+    m_UnitScale = wxRound(m_WidthDistanceInM / dSizeMH);
     return;
+}
+
+
+wxString tmGISScale::GetVisibleWidthText (){
+    tmCoordConvert myCoordConvert (m_ProjectProjection);
+    return myCoordConvert.GetDistanceHuman(m_WidthDistanceInM);
 }
 
 

@@ -97,6 +97,7 @@ private:
     double m_PixelSize;
     wxSize m_ExtentWndMM;
     long m_UnitScale;
+    double m_WidthDistanceInM;
     wxSize m_PPI;
     PRJDEF_UNIT_TYPE m_ProjectUnit;
     PRJDEF_PROJ_TYPE m_ProjectProjection;
@@ -134,6 +135,7 @@ public:
         _ComputeUnitScale();
     }
     long GetActualScale (){return m_UnitScale;}
+    wxString GetVisibleWidthText ();
     double GetWindowRealWidth();
     double GetwindowRealHeight();
     
