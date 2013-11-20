@@ -117,8 +117,15 @@ void tmGISScale::InitMemberValues()
 	m_UnitScale = 0;
 	m_PixelSize = 0;
 	m_ExtentWndMM = wxSize(0,0);
+    m_ProjectUnit = UNIT_METERS;
+    m_ProjectProjection = PROJ_SWISSPROJ;
 }
 
+
+void tmGISScale::SetUnitAndProj (PRJDEF_PROJ_TYPE proj, PRJDEF_UNIT_TYPE units){
+    m_ProjectUnit = units;
+    m_ProjectProjection = proj;
+}
 
 
 tmRealRect tmGISScale::ComputeMaxCoord (const tmRealRect & r1, const tmRealRect & r2)
@@ -466,8 +473,11 @@ wxPoint tmGISScale::RealToPixel (wxRealPoint realpt){
 }
 
 
-long tmGISScale::ComputeUnitScale ()
-{
+long tmGISScale::ComputeUnitScale (){
+    // compute horizontal distance
+    // double hRealDistance =
+    
+    
 	//int MMtoM = 1000;
 	double ddistance = 0.0;
 	if (m_ExtentWndReal.x_max != 0)

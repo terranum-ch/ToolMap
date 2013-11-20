@@ -24,6 +24,7 @@
 #endif
 
 #include "../core/vrrealrect.h"
+#include "../core/projectdefmemory.h"
 #include <wx/graphics.h>
 #include <algorithm>
 
@@ -96,9 +97,10 @@ private:
     wxSize m_ExtentWndMM;
     long m_UnitScale;
     wxSize m_PPI;
+    PRJDEF_UNIT_TYPE m_ProjectUnit;
+    PRJDEF_PROJ_TYPE m_ProjectProjection;
     
     void InitMemberValues();
-    
     long ComputeUnitScale ();
     
 protected:
@@ -110,6 +112,7 @@ public:
     static tmRealRect ComputeMaxCoord (const tmRealRect & r1, const tmRealRect & r2);
     
     void SetPPI (const wxSize & ppi){m_PPI = ppi;}
+    void SetUnitAndProj (PRJDEF_PROJ_TYPE proj, PRJDEF_UNIT_TYPE units);
     
     // setter and getter for layers
     void SetMaxLayersExtentAsExisting (const tmRealRect & r);
