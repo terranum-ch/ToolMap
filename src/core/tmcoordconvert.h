@@ -46,6 +46,8 @@ public:
     wxRealPoint GetPointWGS(const wxRealPoint & in);
     wxRealPoint GetPointGoogle(const wxRealPoint & in);
     
-    double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 ); 
+    double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 );
+    wxString GetDistanceHuman (double distanceM);
+    
 };
 #endif

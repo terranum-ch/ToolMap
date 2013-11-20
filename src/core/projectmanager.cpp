@@ -419,8 +419,8 @@ int ProjectManager::OpenProject(const wxString & path)
 	m_SnappingPanel->LoadSnappingStatus();
 	
 	// LayerManager Job
-	m_LayerManager->InitLayerManager(m_DB);
     m_LayerManager->SetMemoryProject(GetMemoryProjectDefinition());
+	m_LayerManager->InitLayerManager(m_DB);
 	
 	// edition manager
 	m_EditManager->SetDatabase(m_DB);
