@@ -533,16 +533,21 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale){
     double myDistInM = scale * dSizeMH;
     
     wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);
-    wxRealPoint myPtBtmRight (m_ExtentWndReal.x_max, m_ExtentWndReal.y_min);
-
-    wxRealPoint myPtTopLeftNew = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM / 2.0, -45);
-    wxRealPoint myPtBtmRightNew = myConvert.GetPointAtDistance(myPtBtmRight, myDistInM / 2.0, 135);
+    wxRealPoint myPtBtmRightNew = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM, 135);
     
-    m_ExtentWndReal.x_min = myPtTopLeftNew.x;
-    m_ExtentWndReal.y_max = myPtTopLeftNew.y;
-    m_ExtentWndReal.x_max = myPtBtmRightNew.x;
-    m_ExtentWndReal.y_min = myPtBtmRightNew.y;
+    vrRealRect myRectOld;
+    myRectOld.SetLeftTop(wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max));
+    myRectOld.SetRightBottom(wxPoint2DDouble(m_ExtentWndReal.x_max, m_ExtentWndReal.y_min));
+    wxPoint2DDouble myOldCenter = myRectOld.GetCentre();
     
+    vrRealRect myRectNew;
+    myRectNew.SetLeftTop(wxPoint2DDouble (myPtTopLeft.x, myPtTopLeft.y));
+    myRectNew.SetRightBottom(wxPoint2DDouble(myPtBtmRightNew.x, myPtBtmRightNew.y));
+    myRectNew.SetCentre(myOldCenter);
+    ZoomViewTo(myRectNew);
+    
+    
+    /*
     // change pixels size too :-)
 	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) /
     ((double)m_ExtentWnd.GetWidth());
