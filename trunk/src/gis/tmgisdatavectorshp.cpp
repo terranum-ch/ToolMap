@@ -1159,7 +1159,7 @@ bool tmGISDataVectorSHP::SetFieldNumeric (const wxString & fieldname, int fieldv
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, double buffersize,
 						   wxArrayRealPoints & snapppts, int snaptype)
 {
 	// create OGRpoint and buffer
@@ -1167,35 +1167,26 @@ bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
 	myClickPoint.setX(clickpt.x);
 	myClickPoint.setY(clickpt.y);
 
-	OGRGeometry * myBufferClick = tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
+	OGRGeometry * myBufferClick = myClickPoint.Buffer(buffersize);  //tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
 	wxASSERT (myBufferClick);
 	wxASSERT (m_Layer);
-	//OGRGeometryFactory::destroyGeometry(myClickPoint);
 
 	// searching all features
 	m_Layer->ResetReading();
 	OGRGeometry * poGeometry;
 	OGRFeature * poFeature;
     unsigned int myPtsCount = snapppts.GetCount();
-	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
-	{
+	while( (poFeature = m_Layer->GetNextFeature()) != NULL ){
 		poGeometry = poFeature->GetGeometryRef();
-		if (poGeometry)
-		{
-			if (poGeometry->Intersects(myBufferClick))
-			{
-
-				if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX)
-				{
+		if (poGeometry){
+			if (poGeometry->Intersects(myBufferClick)){
+				if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX){
 					GetVertexIntersection(poGeometry, myBufferClick, snapppts);
 				}
-				else if (snaptype == tmSNAPPING_BEGIN_END)
-				{
+				else if (snaptype == tmSNAPPING_BEGIN_END){
 					GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
 				}
-
 			}
-
 			OGRFeature::DestroyFeature(poFeature);
         }
 	}

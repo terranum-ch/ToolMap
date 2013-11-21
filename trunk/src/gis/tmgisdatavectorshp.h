@@ -89,8 +89,7 @@ public:
     // searching data
     virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
     virtual wxArrayLong * GetAllData ();
-    virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
-                               wxArrayRealPoints & snapppts, int snaptype);
+    virtual bool GetSnapCoord (const wxRealPoint & clickpt, double buffersize, wxArrayRealPoints & snapppts, int snaptype);
     
     // creating file & fields
     virtual bool CreateFile (const wxFileName & filename, int type);

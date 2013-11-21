@@ -112,7 +112,7 @@ class tmGISDataVectorMYSQL : public tmGISDataVector
 		virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
 		virtual wxArrayLong * GetAllData ();
 		virtual wxArrayLong * SearchIntersectingGeometry (OGRGeometry * intersectinggeom);
-		virtual bool GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+		virtual bool GetSnapCoord (const wxRealPoint & clickpt, double buffersize,
 								   wxArrayRealPoints & snapppts, int snaptype);
 		virtual bool IsPointSnapped (const wxRealPoint & point, int snaptype, long excludeoid = wxNOT_FOUND);
 		
