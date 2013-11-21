@@ -163,7 +163,9 @@ public:
     bool MoveViewTo (const vrRealRect & rect);
     bool ZoomViewTo (const vrRealRect & rect);
     
+    // mostly used for snapping
     double MetersToPixels(int meters);
+    double MetersToRealUnits (int meters);
     
     // converting pixels - real (with inverting y axis)
     inline wxRealPoint PixelToReal (wxPoint pt)

@@ -989,7 +989,7 @@ wxArrayLong * tmGISDataVectorMYSQL::SearchIntersectingGeometry (OGRGeometry * in
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffer,
+bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, double buffersize,
 									   wxArrayRealPoints & snapppts, int snaptype)
 {
 	 //create OGRpoint and buffer
@@ -997,9 +997,8 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	myClickPoint.setX(clickpt.x);
 	myClickPoint.setY(clickpt.y);
 	
-	OGRGeometry * myBufferClick = tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
+	OGRGeometry * myBufferClick = myClickPoint.Buffer(buffersize); // tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
 	wxASSERT (myBufferClick);
-		
 	
 	// convert buffer to text for sql query
 	char * buffer = NULL;
@@ -1008,43 +1007,35 @@ bool tmGISDataVectorMYSQL::GetSnapCoord (const wxRealPoint & clickpt, int iBuffe
 	wxString mySBuffer = wxString::FromAscii(buffer);
 	OGRFree(buffer);
 	
-	
 	// search for intersecting features
 	wxString sSentence = wxString::Format( _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
 										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
 										  GetShortFileName().c_str(), mySBuffer.c_str());
-		
 	
 	MYSQL_ROW row;
 	tmArrayULong row_size;
 	
-	if (m_DB->DataBaseQuery(sSentence)==false)
-	{
+	if (m_DB->DataBaseQuery(sSentence)==false){
 		wxLogError(_T("Error getting snapping info"));
 		OGRGeometryFactory::destroyGeometry(myBufferClick);
 		return false;
 	}
 	
 	// no results found
-	if (m_DB->DataBaseHasResults()==false)
-	{
+	if (m_DB->DataBaseHasResults()==false){
 		OGRGeometryFactory::destroyGeometry(myBufferClick);
 		return false;
 	}
     
 	// search into returned object for intersection
     unsigned int myPtsCount = snapppts.GetCount();
-	while(m_DB->DataBaseGetNextRowResult(row, row_size))
-	{
+	while(m_DB->DataBaseGetNextRowResult(row, row_size)){
 		OGRGeometry * poGeometry = CreateDataBaseGeometry(row, row_size, 1);
-		if (poGeometry->Intersects(myBufferClick))
-		{
-			if ((snaptype & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX)
-			{
+		if (poGeometry->Intersects(myBufferClick)){
+			if ((snaptype & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX){
 				GetVertexIntersection(poGeometry, myBufferClick, snapppts);
 			}
-			else if (snaptype == tmSNAPPING_BEGIN_END)
-			{
+			else if (snaptype == tmSNAPPING_BEGIN_END){
 				GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
 			}
 		}

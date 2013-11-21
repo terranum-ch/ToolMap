@@ -1757,9 +1757,10 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
 		if (!myActualGISData){
 			break;
         }
-				
-		myActualGISData->GetSnapCoord(clickedpoint, m_SnapMem->GetTolerence(), 
-                                      mySnapPts,mySnapStatus);
+		
+		// convert meters to real units
+        double myRealUnits = m_Scale->MetersToRealUnits(m_SnapMem->GetTolerence());
+		myActualGISData->GetSnapCoord(clickedpoint, myRealUnits, mySnapPts,mySnapStatus);
 		wxDELETE(myActualGISData);
     }
     

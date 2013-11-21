@@ -447,6 +447,13 @@ double tmGISScale::MetersToPixels(int meters){
 }
 
 
+double tmGISScale::MetersToRealUnits (int meters){
+    double horizcoorddiff = std::max(m_ExtentWndReal.x_min, m_ExtentWndReal.x_max) - std::min(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
+    double realunits = meters * horizcoorddiff / m_WidthDistanceInM;
+    return fabs(realunits);
+}
+
+
 
 /***************************************************************************//**
  @brief Convert pixel rectange to real units
