@@ -146,7 +146,6 @@ public:
     bool ComputeMaxExtentReal (wxSize wnd_offset = wxDefaultSize);
     
     // size windows changed -> px size change too
-    //bool ComputeNewPixelSize (const wxSize & oldsize, const wxSize & newsize);
     bool ComptuteNewWindowSize (const wxSize & oldsize, const wxSize & newsize);
     
     // scale function
@@ -159,7 +158,6 @@ public:
     
     // pan functions
     void ComputeNewRealPanExtent (const wxPoint & offsetxtop);
-    
     
     // moving, zooming display
     bool MoveViewTo (const vrRealRect & rect);
