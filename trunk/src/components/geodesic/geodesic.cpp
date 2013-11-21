@@ -57,7 +57,7 @@ static void Init() {
 #if defined(__DBL_EPSILON__)
     epsilon = __DBL_EPSILON__;
 #else
-    epsilon = pow(0.5, digits - 1);
+    epsilon = pow(0.5, (int) digits - 1);
 #endif
 #if defined(__DBL_MIN__)
     realmin = __DBL_MIN__;
