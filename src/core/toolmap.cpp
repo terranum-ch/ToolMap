@@ -550,6 +550,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
 	itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_EXPORT_CONCATENATED, _("Export Concatenated..."));
+    itemMenu2->Append(ID_MENU_EXPORT_GIS_GEOMETRIES, _("Export selected geometries..."), wxEmptyString, wxITEM_NORMAL);
 
     itemMenu2->AppendSeparator();
     wxMenu* itemMenu16 = new wxMenu;
@@ -572,7 +573,6 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Enable(ID_MENU_ADD_WEBDATA, false);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
-    itemMenu24->Append(ID_MENU_EXPORT_GIS_GEOMETRIES, _("Export selected geometries..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
 
     // VIEW
