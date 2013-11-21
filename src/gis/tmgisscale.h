@@ -163,6 +163,7 @@ public:
     bool MoveViewTo (const vrRealRect & rect);
     bool ZoomViewTo (const vrRealRect & rect);
     
+    double MetersToPixels(int meters);
     
     // converting pixels - real (with inverting y axis)
     inline wxRealPoint PixelToReal (wxPoint pt)
@@ -183,11 +184,6 @@ public:
             return d1 - d2;
         else
             return d2-d1;
-    }
-    
-    inline double DistanceToReal(int iDistance)
-    {
-        return ((double) iDistance) / m_PixelSize;
     }
     
     

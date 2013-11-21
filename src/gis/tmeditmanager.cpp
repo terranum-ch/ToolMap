@@ -995,7 +995,7 @@ void tmEditManager::DrawSnappingCircle (wxGCDC * dc){
     wxASSERT(dc);
     wxASSERT(m_SnapMem);
     
-    int myRadius = wxRound( m_Scale->DistanceToReal(m_SnapMem->GetTolerence()));
+    int myRadius = wxRound( m_Scale->MetersToPixels(m_SnapMem->GetTolerence()));
     wxPoint myCenter (5,5);
     myCenter = myCenter + wxPoint(myRadius, myRadius);
     dc->SetPen(*wxGREY_PEN);
@@ -1566,7 +1566,7 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
 	int icutRadius = tmSELECTION_DIAMETER;
 	if (m_SnapMem->IsSnappingEnabled()){
 		icutRadius = m_SnapMem->GetTolerence();
-		double dRadius = m_Scale->DistanceToReal(icutRadius);
+		double dRadius = m_Scale->MetersToPixels(icutRadius);
 		icutRadius = int(dRadius + 0.5);
 	}
 
