@@ -41,7 +41,6 @@ public:
     long m_LayerID;
     int m_SnappingStatus;
     
-    
     tmSnappingObject();
     ~tmSnappingObject();
 };
@@ -67,7 +66,6 @@ private:
     tmSnappingObjArray m_Snapping;
     int m_Tolerence;
     
-    
 protected:
     int FindSnappingItem (const long & lid);
     
@@ -92,7 +90,6 @@ public:
     // misc function
     bool IsSnappingEnabled ();
 };
-
 
 
 #endif

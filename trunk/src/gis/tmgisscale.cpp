@@ -441,6 +441,12 @@ bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 
 
 
+double tmGISScale::MetersToPixels(int meters){
+    double myMperPx = m_WidthDistanceInM / m_ExtentWnd.GetWidth();
+    return meters / myMperPx;
+}
+
+
 
 /***************************************************************************//**
  @brief Convert pixel rectange to real units

@@ -192,7 +192,7 @@ wxPanel * Snapping_PANEL::_CreateControls(){
 	bSizer14 = new wxBoxSizer( wxHORIZONTAL );
 	
 	wxStaticText* m_staticText5;
-	m_staticText5 = new wxStaticText( ContentFrame, wxID_ANY, _("Tolerance (map unit) :"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5 = new wxStaticText( ContentFrame, wxID_ANY, _("Tolerance (meters):"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText5->Wrap( -1 );
 	bSizer14->Add( m_staticText5, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -202,7 +202,7 @@ wxPanel * Snapping_PANEL::_CreateControls(){
 								 wxDefaultSize, 
 								 wxSP_ARROW_KEYS,
 								 1,
-								 100,
+								 100000,
 								 10);
 	bSizer14->Add( m_TolerenceCtrl, 1, wxALL|wxEXPAND, 5 );
 	bSizer13->Add( bSizer14, 0, wxEXPAND, 5 );
@@ -349,8 +349,10 @@ void Snapping_PANEL::OnAddSnapping( wxCommandEvent& event ){
  *******************************************************************************/
 void Snapping_PANEL::OnUpdateTolerence( wxSpinEvent & event ){
 	m_SnappingMemory.SetTolerence(event.GetInt());
+    if (m_pDB == NULL) {
+        return;
+    }
 	m_pDB->SetSnappingTolerence(event.GetInt());
-    
     wxASSERT(m_Renderer);
     m_Renderer->Refresh();
     m_Renderer->Update();
