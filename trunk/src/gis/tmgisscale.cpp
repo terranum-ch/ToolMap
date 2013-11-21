@@ -508,22 +508,6 @@ bool tmGISScale::IsLayerExtentValid()
 }
 
 
-/*
-void tmGISScale::DistanceFromScale (const long & scale, double & xdist, double & ydist)
-{
-	wxASSERT(m_PPI.x = m_PPI.y);
-	double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
-	double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx; 
-	double dSizeMV = ((double) m_ExtentWnd.height) / dInchPx; 
-
-	xdist = dSizeMH * ((double) scale);
-	ydist = dSizeMV * ((double) scale);
-	//xdist = ((double)m_ExtentWndMM.GetWidth()) / 1000.0 * (double) scale;
-	//ydist = ((double)m_ExtentWndMM.GetHeight()) / 1000.0 * (double) scale;
-	m_UnitScale = scale;
-}
- */
-
 
 void tmGISScale::ComputeNewScaleExtent (const long & scale){
     double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
@@ -533,7 +517,7 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale){
     double myDistInM = scale * dSizeMH;
     
     wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);
-    wxRealPoint myPtBtmRightNew = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM, 135);
+    wxRealPoint myPtBtmRightNew = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM, 90);
     
     vrRealRect myRectOld;
     myRectOld.SetLeftTop(wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max));
@@ -545,38 +529,6 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale){
     myRectNew.SetRightBottom(wxPoint2DDouble(myPtBtmRightNew.x, myPtBtmRightNew.y));
     myRectNew.SetCentre(myOldCenter);
     ZoomViewTo(myRectNew);
-    
-    
-    /*
-    // change pixels size too :-)
-	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) /
-    ((double)m_ExtentWnd.GetWidth());
-    m_UnitScale = scale;
-    
-    // TODO: Add code for getting p2 here !!!!!
-    
-    /*
-	// getting new distance from scale and window with (mm)
-	double dNewDistX = 0, dNewDistY = 0;
-	DistanceFromScale(scale, dNewDistX, dNewDistY);
-	
-	// getting difference between new distance and actual distance
-	// distance mean (windows extent real x max - x min)
-	double dActDistX = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
-	double dActDistY = DifferenceCoord(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
-	
-	double dDiffX = (dNewDistX - dActDistX) / 2.0;
-	double dDiffY = (dNewDistY - dActDistY) / 2.0;
-	
-	m_ExtentWndReal.x_min = RemoveFromCoord(m_ExtentWndReal.x_min, dDiffX);
-	m_ExtentWndReal.y_min = RemoveFromCoord(m_ExtentWndReal.y_min, dDiffY);
-	m_ExtentWndReal.x_max = AppendToCoord(m_ExtentWndReal.x_max, dDiffX);
-	m_ExtentWndReal.y_max = AppendToCoord(m_ExtentWndReal.y_max, dDiffY);
-	
-	// change pixels size too :-)
-	m_PixelSize = DifferenceCoord(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min) / 
-				((double)m_ExtentWnd.GetWidth());
-     */
 }
 
 
