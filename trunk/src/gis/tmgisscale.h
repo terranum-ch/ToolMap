@@ -24,7 +24,7 @@
 #endif
 #include <wx/graphics.h>
 #include <algorithm>
-
+#include "ogrsf_frmts.h"		// OGR accessing
 #include "../core/vrrealrect.h"
 #include "../core/projectdefmemory.h"
 #include "../core/tmcoordconvert.h"
@@ -83,6 +83,7 @@ public:
     double GetWidth () {return GetDifferences(x_min, x_max);}
     double GetHeight () {return GetDifferences(y_min, y_max);}
 	
+    OGRGeometry * GetPolygonGeometry ();
 };
 
 

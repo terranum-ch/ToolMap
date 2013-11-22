@@ -90,6 +90,19 @@ bool tmRealRect::Clip (const tmRealRect & src, tmRealRect & result)
 
 
 
+OGRGeometry * tmRealRect::GetPolygonGeometry (){
+    OGRLinearRing myRing;
+    myRing.addPoint(x_min, y_min);
+    myRing.addPoint(x_min, y_max);
+    myRing.addPoint(x_max, y_max);
+    myRing.addPoint(x_max, y_min);
+    myRing.addPoint(x_min, y_min);
+    OGRPolygon * myPoly = static_cast<OGRPolygon*>( OGRGeometryFactory::createGeometry(wkbPolygon));
+    myPoly->addRing(&myRing);
+    return myPoly;
+}
+
+
 
 tmGISScale::tmGISScale()
 {
