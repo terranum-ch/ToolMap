@@ -2332,14 +2332,11 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
 	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 
-	// update display imediatly
-	//m_ParentEvt->ReloadLayerNow();
-
-	OGRPoint myPt;
-	wxRealPoint myRealPt = m_Scale->PixelToReal(myLocalPt);
-	myPt.setX(myRealPt.x);
-	myPt.setY(myRealPt.y);
-	OGRGeometry * myRect = myPt.Buffer(tmSELECTION_DIAMETER / 2.0);
+    // create rect from point
+	int myRadius = tmSELECTION_DIAMETER / 2;
+	wxRect myClickRect = wxRect (myLocalPt.x - myRadius, myLocalPt.y - myRadius, tmSELECTION_DIAMETER, tmSELECTION_DIAMETER);
+	tmRealRect myClickReal = m_Scale->PixelsToReal(myClickRect);
+    OGRGeometry * myRect = myClickReal.GetPolygonGeometry();
 	wxASSERT(myRect);
 	
 	// clear shared nodes
