@@ -164,6 +164,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_MENU (ID_MENU_PRJ_SAVE_TEMPLATE, ToolMapFrame::OnProjectSaveTemplate)
 	EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 	EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
+    EVT_MENU(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnAddWebData)
 	EVT_MENU (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
     EVT_MENU(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnExportSelectedGISData)
 	EVT_MENU (ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
@@ -570,7 +571,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+G"));
     // TODO: Enable Add Web data when working
-    itemMenu24->Enable(ID_MENU_ADD_WEBDATA, false);
+    //itemMenu24->Enable(ID_MENU_ADD_WEBDATA, false);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
@@ -1608,6 +1609,11 @@ void ToolMapFrame::OnProjectSaveTemplate (wxCommandEvent & event){
 void ToolMapFrame::OnAddGisData (wxCommandEvent & event)
 {
 	m_LayerManager->AddLayer(event);
+}
+
+
+void ToolMapFrame::OnAddWebData(wxCommandEvent & event){
+    m_LayerManager->AddWebLayer();
 }
 
 

@@ -488,6 +488,11 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 
+void tmLayerManager::AddWebLayer (){
+    wxLogMessage(_("Adding webdata!"));
+}
+
+
 bool tmLayerManager::_ReplaceLayer(const wxFileName & filename, const wxString & originalname){
     if (originalname == wxEmptyString) {
         return false;

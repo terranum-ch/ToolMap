@@ -391,6 +391,7 @@ private:
     
 	// GIS functions
 	void OnAddGisData (wxCommandEvent & event);
+    void OnAddWebData (wxCommandEvent & event);
 	
 	void OnShortcutAttributionDone (wxCommandEvent & event);
 	
