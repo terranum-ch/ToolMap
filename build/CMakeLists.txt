@@ -92,12 +92,15 @@ INCLUDE ("cmake/Use_visualstudioMT.cmake")
 INCLUDE ("cmake/useMySQLEmbedded.cmake")
 INCLUDE ("cmake/GDALCopyLibs.cmake")
 INCLUDE ("../plugins/lscrashreport/build/CURLCopyLibs.cmake")
+INCLUDE ("cmake/copywebfiles.cmake")
 
 # UNIT TEST PROGRAM
 SET (USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
 IF (USE_UNITTEST)
   ADD_SUBDIRECTORY("../test/build" "${PROJECT_BINARY_DIR}/test")
 ENDIF (USE_UNITTEST)
+
+
 
 # TODO: Move this to create_installer.cmake
 IF (UNIX AND NOT APPLE)
