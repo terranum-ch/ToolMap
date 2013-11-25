@@ -132,6 +132,7 @@ public:
     // layers operations
     void RemoveLayer (wxCommandEvent & event);
     void AddLayer (wxCommandEvent & event);
+    void AddWebLayer ();
     bool OpenLayer(const wxFileName & filename, bool replace=false, const wxString & originalname = wxEmptyString);
     tmGISScale * GetScale (){return &m_Scale;}
     bool ZoomToLayer(long layerid);
