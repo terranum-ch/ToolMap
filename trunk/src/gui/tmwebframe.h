@@ -46,8 +46,6 @@ public:
 };
 
 
-const wxString gGoogleSatHTML = _T("");
-
 
 
 #endif

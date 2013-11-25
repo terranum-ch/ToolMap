@@ -1,47 +1,128 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>OpenLayers Google Satellite Layer</title>
-    <style type="text/css">
-body {
-  margin: 0;
-}
-#map {
-  width: 100%;
-  height: 100%;
-}
-.olControlAttribution {
-  font-size: smaller;
-  right: 3px;
-  bottom: 0.5em;
-  position: absolute;
-  display: block;
-}
-/* avoid pink tiles */
-.olImageLoadError {
-  background-color: transparent !important;
-}
-.olLayerGoogleCopyright {
-    right: 3px;
-    bottom: 2px;
-    left: auto;  
-}
-.olLayerGoogleV3.olLayerGoogleCopyright {
-    bottom: 0px;
-    right: 0px !important;
-}
-.olLayerGooglePoweredBy {
-    left: 2px;
-    bottom: 2px;   
-}
-.olLayerGoogleV3.olLayerGooglePoweredBy {
-    bottom: 0px !important;
-}
-    </style>
-    <script src="http://maps.google.com/maps/api/js?v=3.3&amp;sensor=false"></script>
-    
-   
-    <script type="text/javascript">
-var OpenLayers={VERSION_NUMBER:"Release 2.11",singleFile:true,_getScriptLocation:(function(){var r=new RegExp("(^|(.*?\\/))(OpenLayers\.js)(\\?|$)"),s=document.getElementsByTagName('script'),src,m,l="";for(var i=0,len=s.length;i<len;i++){src=s[i].getAttribute('src');if(src){var m=src.match(r);if(m){l=m[1];break;}}}
+/*
+
+  OpenLayers.js -- OpenLayers Map Viewer Library
+
+  Copyright 2005-2011 OpenLayers Contributors, released under the FreeBSD
+  license. Please see http://svn.openlayers.org/trunk/openlayers/license.txt
+  for the full text of the license.
+
+  Includes compressed code under the following licenses:
+
+  (For uncompressed versions of the code used please see the
+  OpenLayers SVN repository: <http://openlayers.org/>)
+
+*/
+
+/* Contains portions of Prototype.js:
+ *
+ * Prototype JavaScript framework, version 1.4.0
+ *  (c) 2005 Sam Stephenson <sam@conio.net>
+ *
+ *  Prototype is freely distributable under the terms of an MIT-style license.
+ *  For details, see the Prototype web site: http://prototype.conio.net/
+ *
+ *--------------------------------------------------------------------------*/
+
+/**  
+*  
+*  Contains portions of Rico <http://openrico.org/>
+* 
+*  Copyright 2005 Sabre Airline Solutions  
+*  
+*  Licensed under the Apache License, Version 2.0 (the "License"); you
+*  may not use this file except in compliance with the License. You
+*  may obtain a copy of the License at
+*  
+*         http://www.apache.org/licenses/LICENSE-2.0  
+*  
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+*  implied. See the License for the specific language governing
+*  permissions and limitations under the License. 
+*
+**/
+
+/**
+ * Contains XMLHttpRequest.js <http://code.google.com/p/xmlhttprequest/>
+ * Copyright 2007 Sergey Ilinsky (http://www.ilinsky.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+/**
+ * Contains portions of Gears <http://code.google.com/apis/gears/>
+ *
+ * Copyright 2007, Google Inc.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice,
+ *     this list of conditions and the following disclaimer.
+ *  2. Redistributions in binary form must reproduce the above copyright notice,
+ *     this list of conditions and the following disclaimer in the documentation
+ *     and/or other materials provided with the distribution.
+ *  3. Neither the name of Google Inc. nor the names of its contributors may be
+ *     used to endorse or promote products derived from this software without
+ *     specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Sets up google.gears.*, which is *the only* supported way to access Gears.
+ *
+ * Circumvent this file at your own risk!
+ *
+ * In the future, Gears may automatically define google.gears.* without this
+ * file. Gears may use these objects to transparently fix bugs and compatibility
+ * issues. Applications that use the code below will continue to work seamlessly
+ * when that happens.
+ */
+
+/**
+ * OpenLayers.Util.pagePosition is based on Yahoo's getXY method, which is
+ * Copyright (c) 2006, Yahoo! Inc.
+ * All rights reserved.
+ * 
+ * Redistribution and use of this software in source and binary forms, with or
+ * without modification, are permitted provided that the following conditions
+ * are met:
+ * 
+ * * Redistributions of source code must retain the above copyright notice,
+ *   this list of conditions and the following disclaimer.
+ * 
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ * 
+ * * Neither the name of Yahoo! Inc. nor the names of its contributors may be
+ *   used to endorse or promote products derived from this software without
+ *   specific prior written permission of Yahoo! Inc.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * POSSIBILITY OF SUCH DAMAGE.
+ */var OpenLayers={VERSION_NUMBER:"Release 2.11",singleFile:true,_getScriptLocation:(function(){var r=new RegExp("(^|(.*?\\/))(OpenLayers\.js)(\\?|$)"),s=document.getElementsByTagName('script'),src,m,l="";for(var i=0,len=s.length;i<len;i++){src=s[i].getAttribute('src');if(src){var m=src.match(r);if(m){l=m[1];break;}}}
 return(function(){return l;});})()};OpenLayers.Class=function(){var len=arguments.length;var P=arguments[0];var F=arguments[len-1];var C=typeof F.initialize=="function"?F.initialize:function(){P.prototype.initialize.apply(this,arguments);};if(len>1){var newArgs=[C,P].concat(Array.prototype.slice.call(arguments).slice(1,len-1),F);OpenLayers.inherit.apply(null,newArgs);}else{C.prototype=F;}
 return C;};OpenLayers.Class.isPrototype=function(){};OpenLayers.Class.create=function(){return function(){if(arguments&&arguments[0]!=OpenLayers.Class.isPrototype){this.initialize.apply(this,arguments);}};};OpenLayers.Class.inherit=function(P){var C=function(){P.call(this);};var newArgs=[C].concat(Array.prototype.slice.call(arguments));OpenLayers.inherit.apply(null,newArgs);return C.prototype;};OpenLayers.inherit=function(C,P){var F=function(){};F.prototype=P.prototype;C.prototype=new F;var i,l,o;for(i=2,l=arguments.length;i<l;i++){o=arguments[i];if(typeof o==="function"){o=o.prototype;}
 OpenLayers.Util.extend(C.prototype,o);}};OpenLayers.Util=OpenLayers.Util||{};OpenLayers.Util.extend=function(destination,source){destination=destination||{};if(source){for(var property in source){var value=source[property];if(value!==undefined){destination[property]=value;}}
@@ -705,92 +786,4 @@ return maxExtent;},CLASS_NAME:"OpenLayers.Layer.Markers"});OpenLayers.Layer.Yaho
 this.map.events.unregister("moveend",this,this.fixYahooEventPane);}},getWarningHTML:function(){return OpenLayers.i18n("getLayerWarning",{'layerType':'Yahoo','layerLib':'Yahoo'});},getOLZoomFromMapObjectZoom:function(moZoom){var zoom=null;if(moZoom!=null){zoom=OpenLayers.Layer.FixedZoomLevels.prototype.getOLZoomFromMapObjectZoom.apply(this,[moZoom]);zoom=18-zoom;}
 return zoom;},getMapObjectZoomFromOLZoom:function(olZoom){var zoom=null;if(olZoom!=null){zoom=OpenLayers.Layer.FixedZoomLevels.prototype.getMapObjectZoomFromOLZoom.apply(this,[olZoom]);zoom=18-zoom;}
 return zoom;},setMapObjectCenter:function(center,zoom){this.mapObject.drawZoomAndCenter(center,zoom);},getMapObjectCenter:function(){return this.mapObject.getCenterLatLon();},dragPanMapObject:function(dX,dY){this.mapObject.moveByXY({'x':-dX,'y':dY});},getMapObjectZoom:function(){return this.mapObject.getZoomLevel();},getMapObjectLonLatFromMapObjectPixel:function(moPixel){return this.mapObject.convertXYLatLon(moPixel);},getMapObjectPixelFromMapObjectLonLat:function(moLonLat){return this.mapObject.convertLatLonXY(moLonLat);},getLongitudeFromMapObjectLonLat:function(moLonLat){return this.sphericalMercator?this.forwardMercator(moLonLat.Lon,moLonLat.Lat).lon:moLonLat.Lon;},getLatitudeFromMapObjectLonLat:function(moLonLat){return this.sphericalMercator?this.forwardMercator(moLonLat.Lon,moLonLat.Lat).lat:moLonLat.Lat;},getMapObjectLonLatFromLonLat:function(lon,lat){var yLatLong;if(this.sphericalMercator){var lonlat=this.inverseMercator(lon,lat);yLatLong=new YGeoPoint(lonlat.lat,lonlat.lon);}else{yLatLong=new YGeoPoint(lat,lon);}
-return yLatLong;},getXFromMapObjectPixel:function(moPixel){return moPixel.x;},getYFromMapObjectPixel:function(moPixel){return moPixel.y;},getMapObjectPixelFromXY:function(x,y){return new YCoordPoint(x,y);},getMapObjectSizeFromOLSize:function(olSize){return new YSize(olSize.w,olSize.h);},CLASS_NAME:"OpenLayers.Layer.Yahoo"});    
-    </script>
-   
-
-
-
-
-
-    <script type="text/javascript">
-function getPathUpper(url)
-{
-  var paths = new Array();
-  paths = document.URL.split('/');
-  paths.pop();paths.pop();
-  return paths.join('/');
-}
-
-function OlOverviewMarker(map, urlIcon) {
-    //Private
-    function __createMarker(urlIcon)
-    {
-      var size = new OpenLayers.Size(16,16);
-      var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-      var icon = new OpenLayers.Icon(urlIcon, size, offset);
-      marker = new OpenLayers.Marker(new OpenLayers.LonLat(0,0), icon);
-      marker.display(false);
-    }
-    //Public CTRL+Q
-    this.changeMarker = function() {
-      this.lyrMarker.removeMarker(marker);
-      var extent = this.map.getExtent();
-      marker.lonlat  = extent.getCenterLonLat();
-      marker.display(true);
-      this.lyrMarker.addMarker(marker);
-      MarkerCursorQGis.changeMarker(extent.toArray().toString());
-    };
-    this.map = map;
-    var marker;
-    __createMarker(urlIcon);
-    this.lyrMarker = new OpenLayers.Layer.Markers("Marker Overview");
-    this.lyrMarker.addMarker(marker);
-    map.addLayer(this.lyrMarker);
-}
-    </script>
-    
-    
-    <script type="text/javascript">
-        var map;
-        var loadEnd;
-        var oloMarker; // OpenLayer Overview Marker
-        function init() {
-            map = new OpenLayers.Map('map', {
-                theme: null,
-                controls: [],
-                units: "m",
-                maxResolution: 156543.0339,
-                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
-            });
-
-            var gmap = new OpenLayers.Layer.Google(
-                "Google Satellite",
-                { type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22 }
-            );
-            map.addLayer(gmap);
-
-            // disable 45° imagery
-            gmap.mapObject.setTilt(0);
-
-            loadEnd = false;
-            map.events.register('movestart', map, function() {
-                loadEnd = false;
-            });
-            google.maps.event.addListener(gmap.mapObject, "tilesloaded", function() {
-                // wait for tiles to fade in completely
-                setTimeout(function() {
-                  loadEnd = true;
-                },
-                150);
-            });
-
-            map.setCenter(new OpenLayers.LonLat(0, 0), 2);
-            oloMarker = new OlOverviewMarker(map, getPathUpper(document.URL) + '/x.png');
-        }
-    </script>
-  </head>
-  <body onload="init()">
-    <div id="map"></div>
-  </body>
-</html>
+return yLatLong;},getXFromMapObjectPixel:function(moPixel){return moPixel.x;},getYFromMapObjectPixel:function(moPixel){return moPixel.y;},getMapObjectPixelFromXY:function(x,y){return new YCoordPoint(x,y);},getMapObjectSizeFromOLSize:function(olSize){return new YSize(olSize.w,olSize.h);},CLASS_NAME:"OpenLayers.Layer.Yahoo"});
