@@ -61,7 +61,7 @@ void tmWebFrame::_CreateControls(){
 void tmWebFrame::LoadGoogle (){
     m_Status = TMWEBFRAME_STATUS_NONE;
     //GetWebControl()->SetPage("<html><body>My Super page...</body></html>", _T(""));
-    GetWebControl()->LoadURL(_T("file://localhost/Users/lucien/DATA/PRJ/TOOLMAP2/trunk/resource/web/google_satellite_full.html"));
+    GetWebControl()->LoadURL(_T("file://localhost/Users/lucien/DATA/PRJ/TOOLMAP2/trunk/resource/web/google_satellite.html"));
 }
 
 
