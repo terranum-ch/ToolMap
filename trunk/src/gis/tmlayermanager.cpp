@@ -24,6 +24,8 @@
 #include "tmgisdatavectorshp.h"
 #include "../gui/tmclosefile_dlg.h"
 #include "../core/tmcoordconvert.h"
+#include "../gui/tmwebframe.h"
+
 
 
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
@@ -490,6 +492,15 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 void tmLayerManager::AddWebLayer (){
     wxLogMessage(_("Adding webdata!"));
+    tmWebFrame * myFrame = static_cast<tmWebFrame*>(wxFindWindowByName(WEBVIEW_WINDOW_NAME));
+    if (myFrame == NULL) {
+        myFrame = new tmWebFrame (m_Parent, wxID_ANY, m_GISRenderer->GetSize());
+        myFrame->Show();
+    }
+    //myFrame->LoadURL(_T("http://www.google.ch"));
+    myFrame->LoadGoogle();
+ 
+    wxLogMessage(_("Page loaded: %d"), myFrame->GetStatus());
 }
 
 

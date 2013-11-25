@@ -23,6 +23,8 @@
 #endif
 #include <wx/regex.h>
 
+
+
 #include "tmdrawer.h"					// for drawing into bitmaps
 #include "tmtocctrl.h"					// class TOC ctrl
 #include "../database/database_tm.h"	// class database
