@@ -601,8 +601,8 @@ void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData * layer, const wxString &
         if (layer->IsRaster() == 1) {
             tmGISDataRaster * myRaster = (tmGISDataRaster*) layer;
             wxArrayString myPyramids;
-            myRaster->GetPyramidsInfo(&myPyramids);
-            if (myPyramids.GetCount() == 0) {
+            int myGetPyramidInfo = myRaster->GetPyramidsInfo(&myPyramids);
+            if (myPyramids.GetCount() == 0 && myGetPyramidInfo != wxNOT_FOUND) {
                 vrProgressSimple myProgressData (m_Parent, _("Building Overviews (Pyramids)"), wxString::Format(_("Building Overviews: '%s'"), displayname));
                 layer->CreateSpatialIndex(GDALUpdateSimple, &myProgressData);
             }
