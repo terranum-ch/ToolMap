@@ -13,6 +13,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/webview.h>
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
+
 
 const int ID_WEBVIEW_CONTROL = wxWindow::NewControlId();
 const wxString WEBVIEW_WINDOW_NAME = _T("WEBVIEW_FRAME");

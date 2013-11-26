@@ -60,8 +60,14 @@ void tmWebFrame::_CreateControls(){
 
 void tmWebFrame::LoadGoogle (){
     m_Status = TMWEBFRAME_STATUS_NONE;
-    //GetWebControl()->SetPage("<html><body>My Super page...</body></html>", _T(""));
-    GetWebControl()->LoadURL(_T("file://localhost/Users/lucien/DATA/PRJ/TOOLMAP2/trunk/resource/web/google_satellite.html"));
+    wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath());
+    myWebPath.SetPath(myWebPath.GetPath() + _T("/../share/toolmap"));
+    myWebPath.Normalize();
+    wxLogMessage(myWebPath.GetPath());
+    
+    myWebPath.SetName(_T("google_satellite.html"));
+    
+    GetWebControl()->LoadURL(myWebPath.GetFullPath());
 }
 
 
