@@ -1025,10 +1025,12 @@ wxString tmGISDataRaster::GetUnitMetaData ()
 int tmGISDataRaster::GetPyramidsInfo (wxArrayString * pyramids)
 {
 	int iNbPyramids = 0;
+    if (m_DataSet == NULL) {
+        return wxNOT_FOUND;
+    }
+    
 	GDALRasterBand * myOverview = NULL;
-	
-	if (!m_RasterBand)
-	{
+	if (!m_RasterBand){
 		m_RasterBand = m_DataSet->GetRasterBand(1);
 	}
 	

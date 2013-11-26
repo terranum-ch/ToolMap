@@ -207,14 +207,21 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 August 2008
  *******************************************************************************/
-wxString tmLayerProperties::GetNameDisplay ()
-{
+wxString tmLayerProperties::GetNameDisplay (){
     wxASSERT(m_LayerName.IsOk());
+    
+    wxString myWebName = wxEmptyString;
 	
 	// special behaviour for ESRI grid.
     switch (m_LayerType) {
         case TOC_NAME_EGRID:
             return m_LayerName.GetDirs().Last();
+            break;
+            
+        case TOC_NAME_WEB:
+            myWebName = m_LayerName.GetName();
+            myWebName.Replace(_T("_"), _T(" "));
+            return myWebName;
             break;
             
         case TOC_NAME_LINES:
