@@ -492,6 +492,17 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 void tmLayerManager::AddWebLayer (){
     wxLogMessage(_("Adding webdata!"));
+    wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath());
+    myWebPath.SetPath(myWebPath.GetPath() + _T("/../share/toolmap"));
+    myWebPath.Normalize();
+    myWebPath.SetName(_T("google_satellite.html"));
+    if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
+        wxLogError(_("Loading: %s failed"), myWebPath.GetName());
+    }
+    return;
+
+    
+    
     tmWebFrame * myFrame = static_cast<tmWebFrame*>(wxFindWindowByName(WEBVIEW_WINDOW_NAME));
     if (myFrame == NULL) {
         myFrame = new tmWebFrame (m_Parent, wxID_ANY, m_GISRenderer->GetSize());
