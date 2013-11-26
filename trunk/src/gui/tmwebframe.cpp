@@ -58,16 +58,29 @@ void tmWebFrame::_CreateControls(){
 }
 
 
-void tmWebFrame::LoadGoogle (){
+void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     m_Status = TMWEBFRAME_STATUS_NONE;
     wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath());
     myWebPath.SetPath(myWebPath.GetPath() + _T("/../share/toolmap"));
     myWebPath.Normalize();
-    wxLogMessage(myWebPath.GetPath());
+    myWebPath.SetName(pagename);
     
-    myWebPath.SetName(_T("google_satellite.html"));
+    // load page into wxstring and add zoom function
+    wxTextFile myTxtFile ( myWebPath.GetFullPath() );
+    myTxtFile.Open();
+    wxString myWebPageTxt = myTxtFile.GetFirstLine();
+    tmRealRect myEmptyRealRect = tmRealRect();
+    while (!myTxtFile.Eof()) {
+        wxString myLine = myTxtFile.GetNextLine() + _T("\n");
+        myLine.Replace(_T("%"), _T("%%"));
+        if (myLine.Matches(_T("*// TODO: Add zoom code here*")) && coord != myEmptyRealRect) {
+            myLine = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), true);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
+        }
+        myWebPageTxt.Append(myLine);
+    }
     
-    GetWebControl()->LoadURL(myWebPath.GetFullPath());
+    wxLogDebug(myWebPageTxt);
+    GetWebControl()->SetPage(myWebPageTxt, myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 }
 
 

@@ -498,9 +498,9 @@ void tmLayerManager::AddWebLayer (){
         myFrame->Show();
     }
     //myFrame->LoadURL(_T("http://www.google.ch"));
-    myFrame->LoadGoogle();
- 
-    wxLogMessage(_("Page loaded: %d"), myFrame->GetStatus());
+    myFrame->LoadPage(_T("google_satellite.html"), tmRealRect(677085, 5818544, 687352, 5808495));
+    //myFrame->LoadPage(_T("google_satellite.html"));
+
 }
 
 
