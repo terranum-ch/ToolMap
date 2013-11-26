@@ -15,7 +15,8 @@
 #include <wx/webview.h>
 #include <wx/stdpaths.h>
 #include <wx/filename.h>
-
+#include <wx/textfile.h>
+#include "../gis/tmgisscale.h"
 
 const int ID_WEBVIEW_CONTROL = wxWindow::NewControlId();
 const wxString WEBVIEW_WINDOW_NAME = _T("WEBVIEW_FRAME");
@@ -45,7 +46,7 @@ public:
     wxWebView * GetWebControl () {return m_WebView;}
     TMWEBFRAME_STATUS GetStatus () {return m_Status;}
     void LoadURL (const wxString & url);
-    void LoadGoogle ();
+    void LoadPage (const wxString & pagename, tmRealRect coord = tmRealRect());
 };
 
 
