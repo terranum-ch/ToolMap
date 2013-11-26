@@ -41,7 +41,8 @@ enum tmGISDATA_RASTER_TYPES
 {
 	tmGIS_RASTER_TIFF = 0, 
 	tmGIS_RASTER_BINGRID,
-	tmGIS_RASTER_JPEG
+	tmGIS_RASTER_JPEG,
+    tmGIS_RASTER_WEB
 };
 
 static wxString tmGISDATA_RASTER_TYPE_WILDCARDS[] = {
@@ -54,7 +55,8 @@ static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 {
 	_T("*.tif;*.tiff"),
 	_T("*.adf"),
-	_T("*.jpg;*.jpeg")
+	_T("*.jpg;*.jpeg"),
+    _T("*.html")
 };
 
 

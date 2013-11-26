@@ -21,6 +21,7 @@
 #include "tmgisdatarastertiff.h"
 #include "tmgisdatarasteregrid.h"
 #include "tmgisdatarasterjpeg.h"
+#include "tmgisdatarasterweb.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING);
@@ -159,6 +160,9 @@ tmGISDataRaster * tmGISDataRaster::CreateGISRasterBasedOnType (const int & gis_f
 		case tmGIS_RASTER_JPEG:
 			return new tmGISDataRasterJPEG();
 			break;
+        case tmGIS_RASTER_WEB:
+            return new tmGISDataRasterWeb();
+            break;
 	}
 	return NULL;
 }
