@@ -1715,34 +1715,32 @@ int tmLayerManager::ReadLayerDraw ()
 	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
 	while (1)
 	{
-		if (iRank == 0)
-		{
+		if (iRank == 0){
 			pLayerProp = m_TOCCtrl->IterateLayers(TRUE);
 		}
-		else
-		{
+		else{
 			pLayerProp = m_TOCCtrl->IterateLayers(FALSE);
 		}
 		
-		if (!pLayerProp)
+		if (!pLayerProp){
 			break;
+        }
 		
 		if (pLayerProp->IsVisible() == true) {
 			// loading data
 			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
-			
+            tmCoordConvert * myCoordConv = new tmCoordConvert(m_MemoryPrjRef->m_PrjProjType);
+            layerData->SetCoordConvert(myCoordConv);
+            
 			// processing and deleting data
-			if (layerData && pLayerProp->IsVisible())
-			{
+			if (layerData && pLayerProp->IsVisible()){
 				// draw layer data
 				m_Drawer.Draw(pLayerProp, layerData);
 				iReaded ++;
 			}
 			
-			if (layerData != NULL)
-				delete layerData;
+			wxDELETE(layerData);
 		}
-		
 		iRank ++;
 	}
 	return iReaded;

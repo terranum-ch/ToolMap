@@ -124,13 +124,13 @@ public:
 	
 	// reading functions
 	virtual bool SetSpatialFilter (tmRealRect filter, int type);
-	bool IsImageInsideVisibleArea ();
-	CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
+	virtual bool IsImageInsideVisibleArea ();
+	virtual CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
 						unsigned char **maskbuf, unsigned int   *masklen,
 						wxSize imgSize);
 	bool GetImageTranslucency (wxSize imgSize, int translucencypercent,
 							   unsigned char **alphachn); 
-	tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
+	virtual tmRealRect GetImageClipedCoordinates (){return m_ClippedCoord;}
 	
 	
 	virtual int GetBandCount ();

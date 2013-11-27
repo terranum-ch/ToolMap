@@ -46,7 +46,6 @@ public:
     
     wxRealPoint GetPointWGS(const wxRealPoint & in);
     wxRealPoint GetPointGoogle(const wxRealPoint & in);
-
     
     double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 );
     wxRealPoint GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut);

@@ -28,6 +28,7 @@
 class tmGISDataRasterWeb : public tmGISDataRaster
 {
 private:
+    tmRealRect m_FilterCoordLocal;
     
 protected:
 public:
@@ -36,6 +37,15 @@ public:
     
     virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 	virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
+    
+    virtual tmRealRect GetMinimalBoundingRectangle();
+    virtual bool SetSpatialFilter (tmRealRect filter, int type);
+	virtual bool IsImageInsideVisibleArea ();
+    virtual tmRealRect GetImageClipedCoordinates () {return m_FilterCoordLocal;}
+	virtual CPLErr GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
+                                unsigned char **maskbuf, unsigned int   *masklen,
+                                wxSize imgSize);
+
 };
 
 #endif
