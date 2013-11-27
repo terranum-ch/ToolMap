@@ -20,7 +20,7 @@
 #include "tmgisdata.h"
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
-
+#include "../core/tmcoordconvert.h"
 #include "../database/database_tm.h"		// for database acces (only for LoadLayer())
 
 // logging start enabled
@@ -43,9 +43,8 @@ tmGISData::tmGISData()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008
  *******************************************************************************/
-tmGISData::~tmGISData()
-{
-	
+tmGISData::~tmGISData(){
+	wxDELETE(m_CoordConvert);
 }
 
 
@@ -60,6 +59,7 @@ void tmGISData::InitMemberValue()
 	m_ShortFileName = _T("");
 	m_FullFileName = _T("");
 	m_ClassType = wxNOT_FOUND;
+    m_CoordConvert = NULL;
 }
 
 

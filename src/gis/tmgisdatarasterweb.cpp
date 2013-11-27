@@ -46,3 +46,34 @@ bool tmGISDataRasterWeb::Open (const wxString & filename, bool bReadWrite){
 
 
 
+tmRealRect tmGISDataRasterWeb::GetMinimalBoundingRectangle(){
+    return tmRealRect(0,0,0,0);
+}
+
+
+bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
+    m_FilterCoordLocal = filter;
+    
+    // convert project coordinates into web coordinates and loads data into tmwebframe
+    wxRealPoint xymin = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_min, filter.y_min));
+    wxRealPoint xymax = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_max, filter.y_max));
+    tmRealRect myFilterCoordWeb = tmRealRect (xymin.x, xymin.y, xymax.x, xymax.y);
+    
+    wxLogMessage(_("web coordintes: %f, %f, %f, %f"), xymin.x, xymin.y, xymax.x, xymax.y);
+    // TODO: Load correct extent into tmWebFrame
+    return true;
+}
+
+
+bool tmGISDataRasterWeb::IsImageInsideVisibleArea (){
+    // return always true. Web image covers the world.
+    return true;
+}
+
+
+CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
+                                        unsigned char **maskbuf, unsigned int   *masklen,
+                                        wxSize imgSize){
+    return CE_Failure;
+}
+
