@@ -16,6 +16,7 @@ END_EVENT_TABLE()
 tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, const wxString& title, const wxPoint& pos, long style ) : wxFrame( parent, id, title, pos, size, style, WEBVIEW_WINDOW_NAME ){
     _CreateControls();
     m_Status = TMWEBFRAME_STATUS_NONE;
+    GetWebControl()->SetSize(size);
 }
 
 
@@ -64,6 +65,11 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     myWebPath.SetPath(myWebPath.GetPath() + _T("/../share/toolmap"));
     myWebPath.Normalize();
     myWebPath.SetName(pagename);
+    
+    if (myWebPath.Exists() == false) {
+        wxLogError(_("Page: %s didn't exists!"), myWebPath.GetFullPath());
+        return;
+    }
     
     // load page into wxstring and add zoom function
     wxTextFile myTxtFile ( myWebPath.GetFullPath() );

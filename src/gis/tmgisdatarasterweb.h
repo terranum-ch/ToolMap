@@ -24,11 +24,12 @@
 
 #include "tmgisdataraster.h"
 
-
+class tmWebFrame;
 class tmGISDataRasterWeb : public tmGISDataRaster
 {
 private:
     tmRealRect m_FilterCoordLocal;
+    tmWebFrame * m_WebFrame;
     
 protected:
 public:

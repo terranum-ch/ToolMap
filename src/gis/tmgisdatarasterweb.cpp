@@ -14,15 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "tmgisdatarasterweb.h"
+#include "../gui/tmwebframe.h"
+#include "tmrenderer.h"
 
 
 tmGISDataRasterWeb::tmGISDataRasterWeb(){
 	m_FileType = _T("Web Raster");
 	m_ClassType = tmGIS_RASTER_WEB;
+    m_WebFrame = NULL;
 }
 
 tmGISDataRasterWeb::~tmGISDataRasterWeb(){
-	
+	wxDELETE(m_WebFrame);
 }
 
 
@@ -33,15 +36,18 @@ wxString tmGISDataRasterWeb::GetDataSizeAsHtml (int iPrecision){
 
 
 bool tmGISDataRasterWeb::Open (const wxString & filename, bool bReadWrite){
-	tmGISData::Open(filename, bReadWrite);
+    tmGISData::Open(filename, bReadWrite);
 	wxASSERT(m_DataSet == NULL);
-    wxFileName myFileName (filename);
-    if (myFileName.Exists() == false) {
+    
+    // Open a wxWebFrame here
+    tmRenderer * myRenderer = static_cast<tmRenderer*>(wxFindWindowByName(TMRENDERER_WINDOW_NAME));
+    if (myRenderer == NULL) {
         return false;
     }
+    m_WebFrame = new tmWebFrame(myRenderer, wxID_ANY, myRenderer->GetSize());
+    m_WebFrame->Show();
+    m_WebFrame->LoadPage(filename);
     return true;
-    
-    // TODO: Open a wxWebFrame here
 }
 
 
