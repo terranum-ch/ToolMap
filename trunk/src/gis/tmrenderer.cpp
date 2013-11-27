@@ -69,10 +69,9 @@ BEGIN_EVENT_TABLE(tmRenderer, wxScrolledWindow)
 END_EVENT_TABLE()
 
 
-
 tmRenderer::tmRenderer(wxWindow * parent, wxWindowID id) : 
 wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize, 
-				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS ){
+				  wxWS_EX_PROCESS_UI_UPDATES | wxWANTS_CHARS, TMRENDERER_WINDOW_NAME){
 	m_bmp = NULL;
     m_EditManager = NULL;
     m_ToolManager = NULL;

@@ -35,6 +35,7 @@
 
 #define SYMBOL_MAIN_PANEL_TITLE _("Main Panel")
 
+
 class Main_PANEL : public ManagedAuiWnd
 	{
 		wxSizer * CreateControls(wxWindow * parent,

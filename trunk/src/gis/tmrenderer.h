@@ -29,6 +29,8 @@
 #include "tmgisscale.h"				// for number of division;
 #include "../core/tmarraysize.h"	// for array of wxSize items
 
+const wxString TMRENDERER_WINDOW_NAME = wxTRANSLATE("TMRENDERER_WINDOW");
+
 class vrRubberBand;
 
 // EVENT FOR GIS RENDERER CTRL
