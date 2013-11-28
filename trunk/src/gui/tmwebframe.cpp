@@ -14,12 +14,11 @@ EVT_CLOSE(tmWebFrame::OnClose)
 END_EVENT_TABLE()
 
 
-tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, const wxString& title, const wxPoint& pos, long style ) : wxFrame( parent, id, title, pos, size, style, WEBVIEW_WINDOW_NAME ){
+tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, const wxString& title, const wxPoint& pos, long style ) : wxFrame( parent, id, title, pos, wxDefaultSize, style, WEBVIEW_WINDOW_NAME ){
+    this->SetClientSize(size);
     _CreateControls();
     m_Status = TMWEBFRAME_STATUS_NONE;
     m_PageName = wxEmptyString;
-    GetWebControl()->SetSize(size);
-    
 }
 
 
@@ -61,7 +60,7 @@ void tmWebFrame::_CreateControls(){
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
-	m_WebView = wxWebView::New(this, ID_WEBVIEW_CONTROL );
+	m_WebView = wxWebView::New(this, ID_WEBVIEW_CONTROL);
 	bSizer1->Add( m_WebView, 1, wxEXPAND, 5 );
 	
 	this->SetSizer( bSizer1 );
