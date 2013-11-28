@@ -71,10 +71,12 @@ void tmWebFrame::_CreateControls(){
 
 void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     m_Status = TMWEBFRAME_STATUS_NONE;
-    wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath());
-    myWebPath.SetPath(myWebPath.GetPath() + _T("/../share/toolmap"));
-    myWebPath.Normalize();
-    myWebPath.SetName(pagename);
+	wxString myWebPagePathText = _T("/../../share/toolmap");
+#ifdef __WXMSW__
+	myWebPagePathText.Replace(_T("/"), _T("\\"));
+#endif
+	wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath() +  myWebPagePathText, pagename);
+     myWebPath.Normalize();
     
     if (myWebPath.Exists() == false) {
         wxLogError(_("Page: %s didn't exists!"), myWebPath.GetFullPath());
@@ -95,7 +97,8 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
         myWebPageTxt.Append(myLine);
     }
     
-    //wxLogDebug(myWebPageTxt);
+    wxLogDebug(myWebPageTxt);
+	wxLogDebug(myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
     GetWebControl()->SetPage(myWebPageTxt, myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 }
 
