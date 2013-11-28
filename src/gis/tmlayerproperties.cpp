@@ -20,6 +20,7 @@
 #include "tmlayerproperties.h"
 #include "tmsymbol.h"
 #include "tmsymbolrule.h"
+#include "../gui/tmwebframe.h"
 
 
 
@@ -39,6 +40,8 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerVertexFlags = 0;
 	m_LayerEditing = false;
     m_SymbolRulesManager = new tmSymbolRuleManager(this);
+    m_WebFrame = NULL;
+    
 }
 
 
@@ -133,6 +136,7 @@ tmLayerProperties::~tmLayerProperties()
 {
 	wxDELETE(m_LayerSymbol);
     wxDELETE(m_SymbolRulesManager);
+    wxDELETE(m_WebFrame);
 }
 
 
@@ -156,8 +160,9 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 											 const wxString & nameext,
 											 const wxArrayString & supportedext)
 {
-	if (nameext.IsEmpty() || path.IsEmpty())
-		return FALSE;
+	if (nameext.IsEmpty()) {
+        return false;
+    }
 	
     m_LayerName.Assign(path, nameext);
     
@@ -165,25 +170,18 @@ bool tmLayerProperties::InitFromPathAndName (const wxString & path,
 	wxFileName myfileName (nameext);
 	wxString myExt = myfileName.GetExt().MakeLower();
 	
-	for (unsigned int i= 0; i<supportedext.GetCount(); i++)
-	{
-		//wxLogDebug(_T("supported extension : %s"), supportedext.Item(i).c_str());
-		if (supportedext.Item(i).Contains(myExt))
-		{
+	for (unsigned int i= 0; i<supportedext.GetCount(); i++){
+		if (supportedext.Item(i).Contains(myExt)){
 			int myTempType = TOC_NAME_NOT_GENERIC + i + 1;
             m_LayerType = static_cast<TOC_GENERIC_NAME> (myTempType);
 			break;
 		}
-		
 	}
 	
-	
-	
-	
 	// nothing found -> unknown
-	if (m_LayerType == TOC_NAME_NOT_GENERIC)
+	if (m_LayerType == TOC_NAME_NOT_GENERIC){
 		m_LayerType = TOC_NAME_UNKNOWN;
-	
+    }
 	
 	return TRUE;
 }
@@ -277,6 +275,11 @@ void tmLayerProperties::SetEditing(bool value) {
     m_LayerEditing = value;
 }
 
+
+void tmLayerProperties::SetWebFrame (wxWindow * parent, wxWindowID id,  const wxSize & size){
+    m_WebFrame = new tmWebFrame(parent, id, size);
+    m_WebFrame->Show();
+}
 
 
 

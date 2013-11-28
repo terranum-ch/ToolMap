@@ -38,6 +38,7 @@ private:
     void _CreateControls();
     void OnEventLoaded (wxWebViewEvent & event);
     void OnEventError (wxWebViewEvent & event);
+    void OnClose (wxCloseEvent & event);
     DECLARE_EVENT_TABLE();
 	
 public:
@@ -47,6 +48,7 @@ public:
     TMWEBFRAME_STATUS GetStatus () {return m_Status;}
     void LoadURL (const wxString & url);
     void LoadPage (const wxString & pagename, tmRealRect coord = tmRealRect());
+    void ZoomToExtend (tmRealRect coord);
 };
 
 

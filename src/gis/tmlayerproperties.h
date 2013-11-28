@@ -36,6 +36,7 @@
 
 class tmSymbol;
 class tmSymbolRuleManager;
+class tmWebFrame;
 
 /***************************************************************************//**
  @brief Storing object of layer type
@@ -54,6 +55,7 @@ class tmLayerProperties : public wxTreeItemData
 		int m_LayerVertexFlags;
 		bool m_LayerEditing;
 		tmSymbolRuleManager * m_SymbolRulesManager;
+        tmWebFrame * m_WebFrame;
         
         void InitMemberValues();
 		
@@ -84,6 +86,9 @@ class tmLayerProperties : public wxTreeItemData
         void SetSymbolDirectly(tmSymbol * value);
         
         tmSymbolRuleManager * GetSymbolRuleManagerRef(){return m_SymbolRulesManager;}
+        
+        void SetWebFrame (wxWindow * parent, wxWindowID id,  const wxSize & size);
+        tmWebFrame * GetWebFrameRef() {return m_WebFrame;}
 		
 		// constructor
 		tmLayerProperties(){InitMemberValues();}

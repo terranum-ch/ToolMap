@@ -20,6 +20,7 @@
 #include "tmgisdata.h"
 #include "tmgisdatavector.h"
 #include "tmgisdataraster.h"
+#include "tmgisdatarasterweb.h"
 #include "../core/tmcoordconvert.h"
 #include "../database/database_tm.h"		// for database acces (only for LoadLayer())
 
@@ -270,12 +271,23 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
 		case TOC_NAME_TIFF:
 		case TOC_NAME_EGRID:
 		case TOC_NAME_JPEG:
-        case TOC_NAME_WEB:
 		case TOC_NAME_SHP:
 			m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
 			myFileName = layerProp->GetName().GetFullPath();
 			myErrMsg = layerProp->GetNameDisplay();
 			break;
+            
+        case TOC_NAME_WEB:
+            m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
+			myFileName = layerProp->GetName().GetFullPath();
+			myErrMsg = layerProp->GetNameDisplay();
+        {
+            tmGISDataRasterWeb * myWebDataRef = static_cast<tmGISDataRasterWeb*>(m_Data);
+            myWebDataRef->SetWebFrameRef(layerProp->GetWebFrameRef());
+        }
+            
+            break;
+            
 			
 		default:
 			if (IsLoggingEnabled()){
