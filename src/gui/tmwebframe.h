@@ -34,6 +34,7 @@ class tmWebFrame : public wxFrame
 private:
     wxWebView * m_WebView;
     TMWEBFRAME_STATUS m_Status;
+    wxString m_PageName;
     
     void _CreateControls();
     void OnEventLoaded (wxWebViewEvent & event);
