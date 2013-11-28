@@ -21,11 +21,10 @@
 tmGISDataRasterWeb::tmGISDataRasterWeb(){
 	m_FileType = _T("Web Raster");
 	m_ClassType = tmGIS_RASTER_WEB;
-    m_WebFrame = NULL;
+    m_WebFrameRef = NULL;
 }
 
 tmGISDataRasterWeb::~tmGISDataRasterWeb(){
-	wxDELETE(m_WebFrame);
 }
 
 
@@ -40,13 +39,11 @@ bool tmGISDataRasterWeb::Open (const wxString & filename, bool bReadWrite){
 	wxASSERT(m_DataSet == NULL);
     
     // Open a wxWebFrame here
-    tmRenderer * myRenderer = static_cast<tmRenderer*>(wxFindWindowByName(TMRENDERER_WINDOW_NAME));
-    if (myRenderer == NULL) {
+   
+    if (m_WebFrameRef == NULL) {
         return false;
     }
-    m_WebFrame = new tmWebFrame(myRenderer, wxID_ANY, myRenderer->GetSize());
-    m_WebFrame->Show();
-    m_WebFrame->LoadPage(filename);
+    m_WebFrameRef->LoadPage(filename);
     return true;
 }
 
@@ -66,7 +63,11 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     tmRealRect myFilterCoordWeb = tmRealRect (xymin.x, xymin.y, xymax.x, xymax.y);
     
     wxLogMessage(_("web coordintes: %f, %f, %f, %f"), xymin.x, xymin.y, xymax.x, xymax.y);
-    // TODO: Load correct extent into tmWebFrame
+    if (m_WebFrameRef == NULL) {
+        return true;
+    }
+    
+    m_WebFrameRef->ZoomToExtend(myFilterCoordWeb);
     return true;
 }
 

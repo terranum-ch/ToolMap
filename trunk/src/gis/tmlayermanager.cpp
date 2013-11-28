@@ -203,13 +203,17 @@ void tmLayerManager::FillTOCArray()
 	{
 		lyrproptemp = m_DB->GetNextTOCEntry(myRelativePath);
 		
-		if(lyrproptemp ==NULL)
-		{
+		if(lyrproptemp ==NULL){
 			break;
 		}
 		
-		  if(!m_TOCCtrl->InsertLayer(lyrproptemp))
+        if (lyrproptemp->GetType() == TOC_NAME_WEB) {
+            lyrproptemp->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
+        }
+        
+        if(!m_TOCCtrl->InsertLayer(lyrproptemp)){
 			  break;
+        }
 	}
 	
 	m_TOCCtrl->ExpandAllLayers();
@@ -630,6 +634,10 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
         wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
         wxDELETE(item);
         return false;
+    }
+    
+    if (item->GetType() == TOC_NAME_WEB) {
+        item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
     }
     
     _BuildOverviewsIfNeeded(myLayer, item->GetNameDisplay());

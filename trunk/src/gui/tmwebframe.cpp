@@ -10,6 +10,7 @@
 BEGIN_EVENT_TABLE(tmWebFrame, wxFrame)
 EVT_WEBVIEW_LOADED(ID_WEBVIEW_CONTROL, tmWebFrame::OnEventLoaded)
 EVT_WEBVIEW_ERROR(ID_WEBVIEW_CONTROL, tmWebFrame::OnEventError)
+EVT_CLOSE(tmWebFrame::OnClose)
 END_EVENT_TABLE()
 
 
@@ -35,7 +36,16 @@ void tmWebFrame::OnEventLoaded (wxWebViewEvent & event){
 
 void tmWebFrame::OnEventError (wxWebViewEvent & event){
     m_Status = TMWEBFRAME_STATUS_ERROR;
+    wxLogError(_("WebError: %d "), event.GetInt());
 }
+
+
+
+void tmWebFrame::OnClose (wxCloseEvent & event){
+    Hide();
+    event.Veto();
+}
+
 
 
 void tmWebFrame::LoadURL (const wxString & url){
@@ -85,8 +95,14 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
         myWebPageTxt.Append(myLine);
     }
     
-    wxLogDebug(myWebPageTxt);
+    //wxLogDebug(myWebPageTxt);
     GetWebControl()->SetPage(myWebPageTxt, myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 }
 
+
+
+void tmWebFrame::ZoomToExtend (tmRealRect coord){
+     wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), true);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
+    GetWebControl()->RunScript(myCode);
+}
 

@@ -29,12 +29,14 @@ class tmGISDataRasterWeb : public tmGISDataRaster
 {
 private:
     tmRealRect m_FilterCoordLocal;
-    tmWebFrame * m_WebFrame;
+    tmWebFrame * m_WebFrameRef;
     
 protected:
 public:
     tmGISDataRasterWeb();
     ~tmGISDataRasterWeb();
+    
+    void SetWebFrameRef (tmWebFrame * webframe){m_WebFrameRef = webframe;}
     
     virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 	virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
