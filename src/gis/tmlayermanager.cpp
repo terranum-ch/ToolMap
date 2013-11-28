@@ -497,7 +497,7 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 void tmLayerManager::AddWebLayer (){
     wxLogMessage(_("Adding webdata!"));
     wxFileName myWebPath;
-    myWebPath.SetName(_T("google_satellite.html"));
+    myWebPath.Assign(_T("google_satellite.html"));
     if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
         wxLogError(_("Loading: %s failed"), myWebPath.GetName());
     }
@@ -628,6 +628,10 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
     tmLayerProperties * item = new tmLayerProperties();
     item->InitFromPathAndName(filename.GetPath(),filename.GetFullName(),tmGISData::GetAllSupportedGISFormatsExtensions());
     
+	if (item->GetType() == TOC_NAME_WEB) {
+        item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
+    }
+
     // try to open the file for getting the spatial type
     tmGISData * myLayer = tmGISData::LoadLayer(item);
     if (myLayer == NULL){
@@ -635,11 +639,7 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
         wxDELETE(item);
         return false;
     }
-    
-    if (item->GetType() == TOC_NAME_WEB) {
-        item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
-    }
-    
+        
     _BuildOverviewsIfNeeded(myLayer, item->GetNameDisplay());
     
     item->SetSpatialType(myLayer->GetSpatialType());
