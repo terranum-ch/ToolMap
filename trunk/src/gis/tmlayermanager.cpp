@@ -1735,11 +1735,13 @@ int tmLayerManager::ReadLayerDraw ()
         }
 		
 		if (pLayerProp->IsVisible() == false) {
+			++iRank;
             continue;
         }
         
         tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
         if (layerData == NULL){
+			++iRank;
             continue;
         }
         
