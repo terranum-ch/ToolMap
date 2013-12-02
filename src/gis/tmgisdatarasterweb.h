@@ -37,6 +37,7 @@ public:
     ~tmGISDataRasterWeb();
     
     void SetWebFrameRef (tmWebFrame * webframe){m_WebFrameRef = webframe;}
+    tmWebFrame * GetWebFrameRef() {return m_WebFrameRef;}
     
     virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
 	virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
