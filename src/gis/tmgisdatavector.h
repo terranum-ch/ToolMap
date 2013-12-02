@@ -31,7 +31,7 @@
 #include "tmgisdata.h"
 
 // Number of formats reserved for rasters
-const int tmGISVECTOR_OFFSET = 3;
+const int tmGISVECTOR_OFFSET = 4;
 
 enum tmGISDATA_VECTOR_TYPES
 {
