@@ -576,8 +576,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 	wxFont item1_font = GetItemFont(item);
 	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
 	wxString item1_text = GetItemText(item);
-	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
-	
+ 	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
 	tmLayerProperties * newinserteditemData = new tmLayerProperties (*item1_data);
 	
 	// inserting item to the new position
@@ -592,6 +591,7 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 	SetItemFont(newinserteditem, item1_font);
 	SelectItem(newinserteditem, true);
 	
+	item1_data->SetWebFrame(NULL, wxID_ANY, wxSize(0,0)); // avoid frame deleting
 	Delete(item);
 	Thaw();
 	return true;
