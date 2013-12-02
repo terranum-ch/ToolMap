@@ -277,7 +277,11 @@ void tmLayerProperties::SetEditing(bool value) {
 
 
 void tmLayerProperties::SetWebFrame (wxWindow * parent, wxWindowID id,  const wxSize & size){
-    m_WebFrame = new tmWebFrame(parent, id, size);
+    if (parent == NULL && size == wxSize(0,0)){
+		m_WebFrame = NULL;
+		return;
+	}
+	m_WebFrame = new tmWebFrame(parent, id, size);
     m_WebFrame->Show();
 }
 
@@ -306,7 +310,7 @@ tmLayerProperties::tmLayerProperties (tmLayerProperties & layerprop)
 	
 	m_LayerVertexFlags = layerprop.m_LayerVertexFlags;
 	m_LayerEditing = layerprop.m_LayerEditing;
-	
+	m_WebFrame = layerprop.m_WebFrame;
 }
 
 
