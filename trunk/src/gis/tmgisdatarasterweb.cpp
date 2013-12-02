@@ -38,8 +38,6 @@ bool tmGISDataRasterWeb::Open (const wxString & filename, bool bReadWrite){
     tmGISData::Open(filename, bReadWrite);
 	wxASSERT(m_DataSet == NULL);
     
-    // Open a wxWebFrame here
-   
     if (m_WebFrameRef == NULL) {
         return false;
     }

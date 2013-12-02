@@ -35,6 +35,7 @@ private:
     wxWebView * m_WebView;
     TMWEBFRAME_STATUS m_Status;
     wxString m_PageName;
+    tmRealRect m_ZoomAfterLoading;
     
     void _CreateControls();
     void OnEventLoaded (wxWebViewEvent & event);
