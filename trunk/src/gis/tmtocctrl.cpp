@@ -19,6 +19,8 @@
 
 #include "tmtocctrl.h"
 #include "tmsymbol.h"				// for symbology
+#include "tmlayerproperties.h"
+#include "../gui/tmwebframe.h"
 
 
 
@@ -51,6 +53,7 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
+    EVT_MENU (ID_TOCMENU_SHOW_WEBFRAME, tmTOCCtrl::OnShowWebFrame)
     EVT_PAINT(tmTOCCtrl::OnPaint)
 	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
 	EVT_TREE_BEGIN_DRAG(wxID_ANY, tmTOCCtrl::OnDragStart)
@@ -723,23 +726,14 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
 	SelectItem(itemid,true);
 	Thaw();
 
-	if (GetItemParent(itemid) != m_root)
-	{
+	if (GetItemParent(itemid) != m_root){
 		wxLogDebug(_T("No menu for this item : Maybe the parent item ?"));
 		return;
 	}
 	
-	if(m_ContextMenu)
-		delete m_ContextMenu;
-	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid),
-									  GetSelectedPosition(),
-									  GetCountLayers(),
-									  GetEditLayer());
-	
-		
-	
+	wxDELETE(m_ContextMenu);
+	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid), GetSelectedPosition(), GetCountLayers());
 	PopupMenu(m_ContextMenu, event.GetPoint());
-	
 	event.Skip();
 }
 
@@ -881,6 +875,29 @@ void tmTOCCtrl::OnEditingChange (wxCommandEvent & event)
 		StartEditing();
 	else
 		StopEditing(true);
+}
+
+
+
+void tmTOCCtrl::OnShowWebFrame (wxCommandEvent & event){
+	wxTreeItemId itemid = GetSelection();
+    if(itemid.IsOk()==false){
+        return;
+    }
+    
+    tmLayerProperties * myLayerProp = static_cast<tmLayerProperties *>(GetItemData(itemid));
+    if (myLayerProp == NULL) {
+        wxLogError(_("No data assigned to this item!"));
+        return;
+    }
+    
+    bool isVisible = myLayerProp->GetWebFrameRef()->IsVisible();
+    if (isVisible == true) {
+        myLayerProp->GetWebFrameRef()->Hide();
+    }
+    else {
+        myLayerProp->GetWebFrameRef()->Show();
+    }
 }
 
 

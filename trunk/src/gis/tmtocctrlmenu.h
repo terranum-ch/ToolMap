@@ -14,25 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-// comment doxygen
-
-
 #ifndef _TM_TOCCTRLMENU_H_
 #define _TM_TOCCTRLMENU_H_
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
-//#include "tmtocctrl.h"
 #include <wx/menu.h>
-#include "tmlayerproperties.h"
-
 
 const int ID_TOCMENU_REMOVE					= 20100;
 const int ID_TOCMENU_SHOW_VERTEX_NONE		= 20101;
@@ -44,7 +33,9 @@ const int ID_TOCMENU_MOVE_UP				= 20106;
 const int ID_TOCMENU_MOVE_DOWN				= 20107;
 const int ID_TOCMENU_MOVE_BOTTOM			= 20108;
 const int ID_TOCMENU_EDIT_LAYER				= 20109;
+const int ID_TOCMENU_SHOW_WEBFRAME			= 20110;
 
+class tmLayerProperties;
 
 /***************************************************************************//**
  @brief Display contextual menu for TOC
@@ -55,34 +46,22 @@ const int ID_TOCMENU_EDIT_LAYER				= 20109;
  @date 11 August 2008
  *******************************************************************************/
 class tmTOCCtrlMenu : public wxMenu
-	{
-	private:
-		tmDRAWING_FLAGS m_flags;
-		TM_GIS_SPATIAL_TYPES m_spattypes;
-		bool m_Generic;
-		int m_SelectedPos;
-		int m_TotalLayers;
-		bool m_bEditLayer;
-		
-		void CreateTOCBasic ();
-		void CreateTOCShowVertex ();
-		void CreateTOCProperties ();
-		void CreateTOCMoveMenu ();
-		
-		
-	protected:
-		void CreateTOCContextMenu();
-		
-		
-	public:
-		tmTOCCtrlMenu(){;}
-		tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems,
-					  tmLayerProperties * editlayer);
-		~tmTOCCtrlMenu();
-	};
-
-
-
+{
+private:
+    int m_SelectedPos;
+    int m_TotalLayers;
+    tmLayerProperties * m_LayerProperties;
+    
+    void _CreateTOCBasic ();
+    void _CreateTOCShowVertex ();
+    void _CreateTOCProperties ();
+    void _CreateTOCMoveMenu ();
+    
+public:
+    tmTOCCtrlMenu(){;}
+    tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems);
+    ~tmTOCCtrlMenu();
+};
 
 
 #endif
