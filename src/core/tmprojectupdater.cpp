@@ -149,6 +149,17 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
             myActualDBVersion = 228;
         }
     }
+    
+    // 228 -> 229
+    if (myActualDBVersion == 228) {
+        if (_228to229() == false) {
+            _SetVersion(228);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 229;
+        }
+    }
 
 	_SetVersion(myActualDBVersion);
 	return tmPRJ_UPD_ERROR_OK;
@@ -454,6 +465,17 @@ bool tmProjectUpdater::_226to227(){
 bool tmProjectUpdater::_227to228(){
     wxString myAlterQuery = _T("ALTER TABLE prj_settings MODIFY COLUMN `PRJ_UNIT` VARCHAR(45) NOT NULL;");
     if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+        return false;
+    }
+    return true;
+}
+
+
+
+bool tmProjectUpdater::_228to229(){
+    // TOC_NAME_WEB is now 104 and TOC_NAME_SHP became 105.
+    wxString myAlterQuery = _T("UPDATE prj_toc SET GENERIC_LAYERS=105  where CONTENT_NAME like \"%.shp\" and GENERIC_LAYERS=104");
+    if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false ) {
         return false;
     }
     return true;
