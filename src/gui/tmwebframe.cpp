@@ -19,6 +19,7 @@ tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, con
     _CreateControls();
     m_Status = TMWEBFRAME_STATUS_NONE;
     m_PageName = wxEmptyString;
+    m_ZoomAfterLoading = tmRealRect();
 }
 
 
@@ -30,7 +31,12 @@ tmWebFrame::~tmWebFrame(){
 
 void tmWebFrame::OnEventLoaded (wxWebViewEvent & event){
     m_Status = TMWEBFRAME_STATUS_LOADED;
-    wxLogMessage(_("page loaded: %s!"), event.GetTarget());
+    wxLogMessage(_("page loaded!"));
+    
+    if (m_ZoomAfterLoading != tmRealRect()) {
+        ZoomToExtend(m_ZoomAfterLoading);
+        m_ZoomAfterLoading = tmRealRect();
+    }
 }
 
 
@@ -51,6 +57,8 @@ void tmWebFrame::OnClose (wxCloseEvent & event){
 
 void tmWebFrame::LoadURL (const wxString & url){
     m_Status = TMWEBFRAME_STATUS_NONE;
+    m_ZoomAfterLoading = tmRealRect();
+    
     GetWebControl()->LoadURL(url);
 }
 
@@ -76,6 +84,8 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     }
     m_PageName = pagename;
     m_Status = TMWEBFRAME_STATUS_NONE;
+    m_ZoomAfterLoading = tmRealRect();
+    
 	wxString myWebPagePathText = _T("/../../share/toolmap");
 #ifdef __WXMSW__
 	myWebPagePathText.Replace(_T("/"), _T("\\"));
@@ -113,6 +123,12 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
 
 
 void tmWebFrame::ZoomToExtend (tmRealRect coord){
+    // delay zooming if page not loaded!
+    if (m_Status != TMWEBFRAME_STATUS_LOADED) {
+        m_ZoomAfterLoading = coord;
+        return;
+    }
+    
      wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), true);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
     GetWebControl()->RunScript(myCode);
 }
