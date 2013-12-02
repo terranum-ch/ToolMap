@@ -18,77 +18,54 @@
 // comment doxygen
 
 #include "tmtocctrlmenu.h"
+#include "tmlayerproperties.h"
+#include "../gui/tmwebframe.h"
 
 
  
 
-tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems,
-							 tmLayerProperties * editlayer) :
-							wxMenu(item->GetNameDisplay(), 0)
-{
-	m_flags = (tmDRAWING_FLAGS) item->GetVertexFlags();
-	m_spattypes = item->GetSpatialType();
-	if (item->GetType() < TOC_NAME_NOT_GENERIC)
-		m_Generic = true;
-	else
-		m_Generic = false;
-
+tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems) :
+wxMenu(item->GetNameDisplay(), 0){
+    m_LayerProperties = item;
 	m_SelectedPos = pos;
 	m_TotalLayers = numberitems;
 	
-	// is this the editing layer ?
-	m_bEditLayer = false;
-	if (editlayer == item)
-		m_bEditLayer = true;
-	
-	
-	// create menu based on item spatial type
-	CreateTOCContextMenu();
-	
-	
+	// create menu
+	_CreateTOCBasic();
+	_CreateTOCMoveMenu();
+	_CreateTOCShowVertex();
+	_CreateTOCProperties();
+}
+
+
+
+tmTOCCtrlMenu::~tmTOCCtrlMenu(){
 	
 }
 
 
 
-tmTOCCtrlMenu::~tmTOCCtrlMenu()
-{
-	
-}
 
-
-
-void tmTOCCtrlMenu::CreateTOCContextMenu()
-{
-	CreateTOCBasic(); // REMOVE ITEM
-	CreateTOCMoveMenu();
-	CreateTOCShowVertex(); // SHOW VERTEX (only if needed)
-	CreateTOCProperties();	// menu properties
-	
-	
-}
-
-
-void tmTOCCtrlMenu::CreateTOCBasic ()
-{
-	if (!m_Generic)
-	{
+void tmTOCCtrlMenu::_CreateTOCBasic (){
+	if (m_LayerProperties->GetType() > TOC_NAME_NOT_GENERIC){
 		Append(ID_TOCMENU_REMOVE, _("Remove layer"));
 	}
-	else 
-	{
+	else {
 		AppendCheckItem(ID_TOCMENU_EDIT_LAYER, _("Edit layer"));
-		if (m_bEditLayer)
-			Check(ID_TOCMENU_EDIT_LAYER, true);
+        Check(ID_TOCMENU_EDIT_LAYER, m_LayerProperties->IsEditing());
 	}
-
+    
+    if (m_LayerProperties->GetType() == TOC_NAME_WEB) {
+        AppendCheckItem (ID_TOCMENU_SHOW_WEBFRAME, _("Show Web Frame"));
+        Check(ID_TOCMENU_SHOW_WEBFRAME, m_LayerProperties->GetWebFrameRef()->IsVisible());
+    }
 }
 
 
 
-void tmTOCCtrlMenu::CreateTOCShowVertex ()
-{
-	switch (m_spattypes)
+void tmTOCCtrlMenu::_CreateTOCShowVertex (){
+	int myflags = (tmDRAWING_FLAGS) m_LayerProperties->GetVertexFlags();
+    switch (m_LayerProperties->GetSpatialType())
 	{
 		case LAYER_SPATIAL_LINE:
 		case LAYER_SPATIAL_POLYGON:
@@ -97,8 +74,7 @@ void tmTOCCtrlMenu::CreateTOCShowVertex ()
 			menushow->AppendCheckItem(ID_TOCMENU_SHOW_VERTEX_NONE, _("None"));			
 			menushow->AppendCheckItem(ID_TOCMENU_SHOW_VERTEX_ALL, _("All"));
 			menushow->AppendCheckItem(ID_TOCMENU_SHOW_VERTEX_BEGIN_END, _("Begin/End"));
-			menushow->Check(ID_TOCMENU_SHOW_VERTEX_NONE + m_flags,
-							true);
+			menushow->Check(ID_TOCMENU_SHOW_VERTEX_NONE + myflags, true);
 			Append(wxID_ANY, _("Show vertex"), menushow);
 			break;
 		}	
@@ -110,15 +86,14 @@ void tmTOCCtrlMenu::CreateTOCShowVertex ()
 		}
 			
 		default:
-			wxLogDebug(_T("Unknown spattype = %d, case note supported"), m_spattypes);
+			wxLogError(_T("Unknown spattype = %d, case note supported"), m_LayerProperties->GetSpatialType());
 			break;
 	}
 }
 
 
 
-void tmTOCCtrlMenu::CreateTOCProperties ()
-{
+void tmTOCCtrlMenu::_CreateTOCProperties (){
 	Append(ID_TOCMENU_PROPERTIES, _("Symbology..."));
 	
 }
@@ -132,7 +107,7 @@ void tmTOCCtrlMenu::CreateTOCProperties ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-void tmTOCCtrlMenu::CreateTOCMoveMenu ()
+void tmTOCCtrlMenu::_CreateTOCMoveMenu ()
 {
 	wxMenu * menumove = new wxMenu();
 	menumove->Append(ID_TOCMENU_MOVE_TOP, _("To the top\tCtrl+Home"));
@@ -141,14 +116,12 @@ void tmTOCCtrlMenu::CreateTOCMoveMenu ()
 	menumove->Append(ID_TOCMENU_MOVE_BOTTOM, _("To the bottom\tCtrl+End"));
 	
 	// gray menu based on position and number of layers
-	if (m_SelectedPos == 0)
-	{
+	if (m_SelectedPos == 0){
 		menumove->Enable(ID_TOCMENU_MOVE_TOP, false);
 		menumove->Enable(ID_TOCMENU_MOVE_UP, false);
 	}
 	
-	if (m_SelectedPos == m_TotalLayers -1)
-	{
+	if (m_SelectedPos == m_TotalLayers -1){
 		menumove->Enable(ID_TOCMENU_MOVE_DOWN, false);
 		menumove->Enable(ID_TOCMENU_MOVE_BOTTOM, false);
 	}
