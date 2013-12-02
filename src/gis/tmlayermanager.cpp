@@ -495,25 +495,25 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 void tmLayerManager::AddWebLayer (){
-    wxLogMessage(_("Adding webdata!"));
+    wxString myWebPages[] = {
+        _T("google satellite"), _T("google streets"),
+        _T("yahoo satellite"),_T("yahoo streets"),
+        _T("bing satellite"), _T("bing streets")
+    };
+    wxSingleChoiceDialog myDlg (m_Parent, _("Select web layer to add:"), _("Add web layer"), sizeof(myWebPages) / sizeof(wxString), &myWebPages[0]);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    
+    wxString mySelectedName = myDlg.GetStringSelection();
+    mySelectedName.Replace(_T(" "), _T("_"));
+    mySelectedName.Append(_T(".html"));
+    
     wxFileName myWebPath;
-    myWebPath.Assign(_T("google_satellite.html"));
+    myWebPath.Assign(mySelectedName);
     if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
         wxLogError(_("Loading: %s failed"), myWebPath.GetName());
     }
-    return;
-
-    
-    /*
-    tmWebFrame * myFrame = static_cast<tmWebFrame*>(wxFindWindowByName(WEBVIEW_WINDOW_NAME));
-    if (myFrame == NULL) {
-        myFrame = new tmWebFrame (m_Parent, wxID_ANY, m_GISRenderer->GetSize());
-        myFrame->Show();
-    }
-    //myFrame->LoadURL(_T("http://www.google.ch"));
-    myFrame->LoadPage(_T("google_satellite.html"), tmRealRect(677085, 5818544, 687352, 5808495));
-    //myFrame->LoadPage(_T("google_satellite.html"));*/
-
 }
 
 
