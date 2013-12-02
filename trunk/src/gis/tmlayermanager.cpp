@@ -22,9 +22,11 @@
 #include "tmsymbolvectorpolygon.h"
 #include "vrprogress.h"
 #include "tmgisdatavectorshp.h"
+#include "tmgisdatarasterweb.h"
 #include "../gui/tmclosefile_dlg.h"
 #include "../core/tmcoordconvert.h"
 #include "../gui/tmwebframe.h"
+
 
 
 
@@ -1732,21 +1734,27 @@ int tmLayerManager::ReadLayerDraw ()
 			break;
         }
 		
-		if (pLayerProp->IsVisible() == true) {
-			// loading data
-			tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
-            tmCoordConvert * myCoordConv = new tmCoordConvert(m_MemoryPrjRef->m_PrjProjType);
-            layerData->SetCoordConvert(myCoordConv);
-            
-			// processing and deleting data
-			if (layerData && pLayerProp->IsVisible()){
-				// draw layer data
-				m_Drawer.Draw(pLayerProp, layerData);
-				iReaded ++;
-			}
-			
-			wxDELETE(layerData);
-		}
+		if (pLayerProp->IsVisible() == false) {
+            continue;
+        }
+        
+        tmGISData * layerData = tmGISData::LoadLayer(pLayerProp);
+        if (layerData == NULL){
+            continue;
+        }
+        
+        tmCoordConvert * myCoordConv = new tmCoordConvert(m_MemoryPrjRef->m_PrjProjType);
+        layerData->SetCoordConvert(myCoordConv);
+        
+        if (layerData->GetDataType() == tmGIS_RASTER_WEB) {
+            tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
+            myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
+        }
+        
+        m_Drawer.Draw(pLayerProp, layerData);
+        iReaded ++;
+        
+        wxDELETE(layerData);
 		iRank ++;
 	}
 	return iReaded;
