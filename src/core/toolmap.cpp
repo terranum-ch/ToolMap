@@ -266,6 +266,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	EVT_UPDATE_UI (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnUpdateMenuProject)
 	EVT_UPDATE_UI (ID_MENU_UNLINK_SPATIAL_DATA, ToolMapFrame::OnUpdateMenuProject)
+    EVT_UPDATE_UI(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnUpdateMenuProject)
 
 	EVT_UPDATE_UI_RANGE(ID_MENU_ZOOM, ID_MENU_ZOOM_FIT, ToolMapFrame::OnUpdateMenuProject)
     EVT_UPDATE_UI(ID_MENU_ZOOM_FRAME, ToolMapFrame::OnUpdateMenuProject)
@@ -569,7 +570,7 @@ void ToolMapFrame::_CreateMenu()
     wxMenu* itemMenu24 = new wxMenu;
     itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+G"));
+    itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
     // TODO: Enable Add Web data when working
     //itemMenu24->Enable(ID_MENU_ADD_WEBDATA, false);
     itemMenu24->AppendSeparator();
