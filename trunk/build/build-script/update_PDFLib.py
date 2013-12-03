@@ -85,7 +85,7 @@ def MacBook():
   """docstring for MacBook"""
   print ("Building for MacBook")
   libpath = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/"
-  libname = "wxpdfdoc-0.9.3"
+  libname = "wxpdfdoc-0.9.4"
   libprefix = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBPDF"
   libwx = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN"
   return libpath, libname, libprefix, libwx
@@ -104,7 +104,7 @@ def MacPro():
   """docstring for MacPro"""
   print ("Building for MacPro")
   libpath = "/Users/lucien/Documents/PROGRAMMATION/64/"
-  libname = "wxpdfdoc-0.9.3"
+  libname = "wxpdfdoc-0.9.4"
   libprefix = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBPDF"
   libwx = "/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN"
   return libpath, libname, libprefix, libwx 
@@ -263,25 +263,22 @@ if __name__ == '__main__':
   myzipfile.extractall(ns.libpath)
   
   # PERFORMING PATCH
-  #if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
-  # patchFileMac(ns.libpath+ns.libname)
-  #elif(plateforms[int (myValue)] == 'linux home'):
-  # patchFileMac(ns.libpath+ns.libname)
-  mypatchsrc = os.path.join(ns.libpath, "wxpdfpatch")
-  mypatchdest = os.path.join(ns.libpath, ns.libname, "include", "wx")
-  for filename in os.listdir(mypatchsrc):
-    print ("Copying patch file:", filename)
-    shutil.copy(os.path.join(mypatchsrc, filename), os.path.join(mypatchdest, filename))
-  
-  # using wxWidgets 3.0
-  if (platform.system() == 'Windows'):
-    print ("patching makefile.vc for wxWidgets 3.0")
-    with fileinput.FileInput (os.path.join(ns.libpath, ns.libname, "build29", "makefile.vc"), inplace=True) as f:
-      for line in f:
-        if ("WX_VERSION = 29" in line):
-          line = "WX_VERSION = 30\n"
-        print (line, end='')  
-  print ("Patching DONE")
+#  mypatchsrc = os.path.join(ns.libpath, "wxpdfpatch")
+#  mypatchdest = os.path.join(ns.libpath, ns.libname, "include", "wx")
+#  for filename in os.listdir(mypatchsrc):
+#    print ("Copying patch file:", filename)
+#    shutil.copy(os.path.join(mypatchsrc, filename), os.path.join(mypatchdest, filename))
+#  
+#  # using wxWidgets 3.0
+#  TODO: Check if lines bellow are still needed for Windows. 
+#  if (platform.system() == 'Windows'):
+#    print ("patching makefile.vc for wxWidgets 3.0")
+#    with fileinput.FileInput (os.path.join(ns.libpath, ns.libname, "build29", "makefile.vc"), inplace=True) as f:
+#      for line in f:
+#        if ("WX_VERSION = 29" in line):
+#          line = "WX_VERSION = 30\n"
+#        print (line, end='')  
+#  print ("Patching DONE")
   
   # PERFORMING CONFIGURE
   if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
