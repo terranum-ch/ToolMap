@@ -206,12 +206,10 @@ Section Uninstall
   Delete "$SMPROGRAMS\ToolMap\Website.url"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
   Delete "$SMPROGRAMS\ToolMap\ToolMap.lnk"
-
+  
+  SetOutPath "$SMPROGRAMS"
   RMDir "$SMPROGRAMS\ToolMap"
-  RMDir "$INSTDIR\bin\mysql"
-  RMDir "$INSTDIR\share"
-  RMDir "$INSTDIR\bin"
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
   
   SetAutoClose true
 SectionEnd
