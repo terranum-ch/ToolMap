@@ -16,7 +16,7 @@ gDirIncludeCxx = "D:\\LIB\\cxxtest"
 gDirPythonCxx = "D:\\LIB\\cxxtest\\bin\\cxxtestgen"
 gDirCurl = "D:\\LIB\\LIB_CURL" 
 gDirGeos = "D:\\LIB\\geos-3.4.2"
-gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.3"
+gDirWXPDF = "D:\\LIB\\wxpdfdoc-0.9.4"
 gDirSQLITE = "D:\\LIB\\LIB_SQLITE"
 
 

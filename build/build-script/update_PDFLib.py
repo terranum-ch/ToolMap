@@ -75,7 +75,7 @@ def Windows():
   """docstring for Windows"""
   print ("Building for Windows 7")
   libpath = "D:\\LIB\\"
-  libname = "wxpdfdoc-0.9.3"
+  libname = "wxpdfdoc-0.9.4"
   libprefix = ""
   libwx = "D:\\LIB\\wxWIDGETS-SVN"
   return libpath, libname, libprefix, libwx
@@ -94,7 +94,7 @@ def LinuxHome():
   """docstring for Linux Home"""
   print ("Building for Linux Home")
   libpath = "/home/lucien/programmation/LIB/"
-  libname = "wxpdfdoc-0.9.3"
+  libname = "wxpdfdoc-0.9.4"
   libprefix = "/home/lucien/programmation/LIB/_LIBPDF"
   libwx = "/home/lucien/programmation/LIB/_LIBWX"
   return libpath, libname, libprefix, libwx
@@ -271,14 +271,14 @@ if __name__ == '__main__':
 #  
 #  # using wxWidgets 3.0
 #  TODO: Check if lines bellow are still needed for Windows. 
-#  if (platform.system() == 'Windows'):
-#    print ("patching makefile.vc for wxWidgets 3.0")
-#    with fileinput.FileInput (os.path.join(ns.libpath, ns.libname, "build29", "makefile.vc"), inplace=True) as f:
-#      for line in f:
-#        if ("WX_VERSION = 29" in line):
-#          line = "WX_VERSION = 30\n"
-#        print (line, end='')  
-#  print ("Patching DONE")
+  if (platform.system() == 'Windows'):
+    print ("patching makefile.vc for wxWidgets 3.1")
+    with fileinput.FileInput (os.path.join(ns.libpath, ns.libname, "build29", "makefile.vc"), inplace=True) as f:
+      for line in f:
+        if ("WX_VERSION = 29" in line):
+          line = "WX_VERSION = 31\n"
+        print (line, end='')  
+  print ("Patching DONE")
   
   # PERFORMING CONFIGURE
   if(plateforms[int(myValue)] == 'MacBook' or plateforms[int(myValue)] == 'MacPro'):
