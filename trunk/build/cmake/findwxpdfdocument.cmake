@@ -21,12 +21,14 @@ ENDIF(NOT WXPDFDOCUMENT_INCLUDE)
 
 IF(WIN32)
 	FIND_LIBRARY (WXPDFDOCUMENT_LIBRARY_DEBUG 
-		NAMES  wxcode_msw30d_pdfdoc wxcode_msw30ud_pdfdoc
+		NAMES  wxcode_msw31d_pdfdoc wxcode_msw31ud_pdfdoc
+ wxcode_msw30d_pdfdoc wxcode_msw30ud_pdfdoc
     wxcode_msw29d_pdfdoc wxcode_msw29ud_pdfdoc
     PATHS ${SEARCH_WXPDFDOCUMENT_PATH}/lib/vc_lib)
 	
 	FIND_LIBRARY (WXPDFDOCUMENT_LIBRARY_RELEASE
-		NAMES wxcode_msw30u_pdfdoc wxcode_msw30_pdfdoc
+		NAMES wxcode_msw31u_pdfdoc wxcode_msw31_pdfdoc 
+    wxcode_msw30u_pdfdoc wxcode_msw30_pdfdoc
     wxcode_msw29_pdfdoc wxcode_msw29u_pdfdoc 
 		PATHS ${SEARCH_WXPDFDOCUMENT_PATH}/lib/vc_lib)
 	
