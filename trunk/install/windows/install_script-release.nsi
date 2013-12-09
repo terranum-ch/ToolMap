@@ -108,12 +108,10 @@ Section "SectionPrincipale" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "..\..\..\bin\RelWithDebInfo\ToolMap.exe"
-  #File "..\..\..\bin\RelWithDebInfo\ToolMap.pdb"
   File "D:\PROGRAMMATION\ToolBasView\bin\RelWithDebInfo\ToolBasView.exe"
   CreateDirectory "$SMPROGRAMS\ToolMap"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
-  ;CreateShortCut "$DESKTOP\ToolMap 2.lnk" "$INSTDIR\ToolMap2.exe"
   File "..\..\..\bin\RelWithDebInfo\gdal110.dll"
   File "..\..\..\bin\RelWithDebInfo\geos_c.dll"
   File "..\..\..\bin\RelWithDebInfo\libmysqld.dll"
@@ -122,6 +120,16 @@ Section "SectionPrincipale" SEC01
   CreateDirectory "$INSTDIR\mysql"
   SetOutPath "$INSTDIR\mysql"
   File "..\..\..\bin\RelWithDebInfo\mysql\errmsg.sys"
+  CreateDirectory "$INSTDIR\share"
+  SetOutPath "$INSTDIR\share"
+  File "..\..\resource\web\bing_satellite.html"
+  File "..\..\resource\web\bing_streets.html"
+  File "..\..\resource\web\yahoo_satellite.html"
+  File "..\..\resource\web\yahoo_streets.html"
+  File "..\..\resource\web\google_satellite.html"
+  File "..\..\resource\web\google_streets.html"
+  File "..\..\resource\web\OlOverviewMarker.js"
+  File "..\..\resource\web\OpenLayers.js             "
 SectionEnd
 
 Section -AdditionalIcons
@@ -175,11 +183,18 @@ Section Uninstall
   Delete "$INSTDIR\gdal110.dll"
   Delete "$INSTDIR\geos_c.dll"
   Delete "$INSTDIR\sqlite3.dll"
-  
   Delete "$INSTDIR\libcurl.dll"
   Delete "$INSTDIR\ToolMap.exe"
-  #Delete "$INSTDIR\ToolMap.pdb"
   Delete "$INSTDIR\ToolBasView.exe"
+
+  Delete "$INSTDIR\share\bing_satellite.html"
+  Delete "$INSTDIR\share\bing_streets.html"
+  Delete "$INSTDIR\share\yahoo_satellite.html"
+  Delete "$INSTDIR\share\yahoo_streets.html"
+  Delete "$INSTDIR\share\google_satellite.html"
+  Delete "$INSTDIR\share\google_streets.html"
+  Delete "$INSTDIR\share\OlOverviewMarker.js"
+  Delete "$INSTDIR\share\OpenLayers.js"
 
   Delete "$SMPROGRAMS\ToolMap\Uninstall.lnk"
   Delete "$SMPROGRAMS\ToolMap\ToolBasView.lnk"
@@ -189,8 +204,8 @@ Section Uninstall
 
   RMDir "$SMPROGRAMS\ToolMap"
   RMDir "$INSTDIR\mysql"
+  RMDir "$INSTDIR\share"
   RMDir "$INSTDIR"
-
   
   SetAutoClose true
 SectionEnd
