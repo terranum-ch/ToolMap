@@ -3,7 +3,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ToolMap"
 ;!define PRODUCT_VERSION '2.0.475' (removed for batch script)
-!define PRODUCT_VERSION_LONG "2.5"
+!define PRODUCT_VERSION_LONG "2.6"
 !define PRODUCT_PUBLISHER "CREALP"
 !define PRODUCT_WEB_SITE "http://www.toolmap.ch"
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY "Software\ToolMap"
@@ -23,8 +23,8 @@
 
 #installing desktop icon only when using GUIs
 Function finishpageaction
-SetOutPath "$INSTDIR"
-CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "$instdir\${PRODUCT_NAME}.exe"
+SetOutPath "$INSTDIR\bin"
+CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "$instdir\bin\${PRODUCT_NAME}.exe"
 FunctionEnd
 
 ;!include "MUI.nsh"
@@ -119,8 +119,8 @@ Section "SectionPrincipale" SEC01
   CreateDirectory "$INSTDIR\bin\mysql"
   SetOutPath "$INSTDIR\bin\mysql"
   File "..\..\..\bin\RelWithDebInfo\mysql\errmsg.sys"
-  CreateDirectory "$INSTDIR\share"
-  SetOutPath "$INSTDIR\share"
+  CreateDirectory "$INSTDIR\share\toolmap"
+  SetOutPath "$INSTDIR\share\toolmap"
   File "..\..\resource\web\bing_satellite.html"
   File "..\..\resource\web\bing_streets.html"
   File "..\..\resource\web\yahoo_satellite.html"
@@ -130,6 +130,8 @@ Section "SectionPrincipale" SEC01
   File "..\..\resource\web\OlOverviewMarker.js"
   File "..\..\resource\web\OpenLayers.js"
 
+  ; Set the path to the binary, otherwise, ToolMap isn't working!
+  SetOutPath "$INSTDIR\bin"
   CreateDirectory "$SMPROGRAMS\ToolMap"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\bin\ToolMap.exe"
   CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\bin\ToolBasView.exe"
@@ -190,14 +192,14 @@ Section Uninstall
   Delete "$INSTDIR\bin\ToolMap.exe"
   Delete "$INSTDIR\bin\ToolBasView.exe"
 
-  Delete "$INSTDIR\share\bing_satellite.html"
-  Delete "$INSTDIR\share\bing_streets.html"
-  Delete "$INSTDIR\share\yahoo_satellite.html"
-  Delete "$INSTDIR\share\yahoo_streets.html"
-  Delete "$INSTDIR\share\google_satellite.html"
-  Delete "$INSTDIR\share\google_streets.html"
-  Delete "$INSTDIR\share\OlOverviewMarker.js"
-  Delete "$INSTDIR\share\OpenLayers.js"
+  Delete "$INSTDIR\share\toolmap\bing_satellite.html"
+  Delete "$INSTDIR\share\toolmap\bing_streets.html"
+  Delete "$INSTDIR\share\toolmap\yahoo_satellite.html"
+  Delete "$INSTDIR\share\toolmap\yahoo_streets.html"
+  Delete "$INSTDIR\share\toolmap\google_satellite.html"
+  Delete "$INSTDIR\share\toolmap\google_streets.html"
+  Delete "$INSTDIR\share\toolmap\OlOverviewMarker.js"
+  Delete "$INSTDIR\share\toolmap\OpenLayers.js"
 
   Delete "$SMPROGRAMS\ToolMap\Uninstall.lnk"
   Delete "$SMPROGRAMS\ToolMap\ToolBasView.lnk"
