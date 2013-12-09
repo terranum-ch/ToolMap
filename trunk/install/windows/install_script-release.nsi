@@ -105,20 +105,19 @@ ShowUninstDetails hide
 
 Section "SectionPrincipale" SEC01
   Call CheckToolMapRuning
-  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\bin"
+  SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
   File "..\..\..\bin\RelWithDebInfo\ToolMap.exe"
   File "D:\PROGRAMMATION\ToolBasView\bin\RelWithDebInfo\ToolBasView.exe"
-  CreateDirectory "$SMPROGRAMS\ToolMap"
-  CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\ToolMap.exe"
-  CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\ToolBasView.exe"
   File "..\..\..\bin\RelWithDebInfo\gdal110.dll"
   File "..\..\..\bin\RelWithDebInfo\geos_c.dll"
   File "..\..\..\bin\RelWithDebInfo\libmysqld.dll"
   File "..\..\..\bin\RelWithDebInfo\libcurl.dll"
   File "..\..\..\bin\RelWithDebInfo\sqlite3.dll"
-  CreateDirectory "$INSTDIR\mysql"
-  SetOutPath "$INSTDIR\mysql"
+  
+  CreateDirectory "$INSTDIR\bin\mysql"
+  SetOutPath "$INSTDIR\bin\mysql"
   File "..\..\..\bin\RelWithDebInfo\mysql\errmsg.sys"
   CreateDirectory "$INSTDIR\share"
   SetOutPath "$INSTDIR\share"
@@ -129,7 +128,11 @@ Section "SectionPrincipale" SEC01
   File "..\..\resource\web\google_satellite.html"
   File "..\..\resource\web\google_streets.html"
   File "..\..\resource\web\OlOverviewMarker.js"
-  File "..\..\resource\web\OpenLayers.js             "
+  File "..\..\resource\web\OpenLayers.js"
+
+  CreateDirectory "$SMPROGRAMS\ToolMap"
+  CreateShortCut "$SMPROGRAMS\ToolMap\ToolMap.lnk" "$INSTDIR\bin\ToolMap.exe"
+  CreateShortCut "$SMPROGRAMS\ToolMap\ToolBasView.lnk" "$INSTDIR\bin\ToolBasView.exe"
 SectionEnd
 
 Section -AdditionalIcons
@@ -178,14 +181,14 @@ Section Uninstall
   DeleteRegKey SHCTX "Software\ToolMap"
   
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\mysql\errmsg.sys"
-  Delete "$INSTDIR\libmysqld.dll"
-  Delete "$INSTDIR\gdal110.dll"
-  Delete "$INSTDIR\geos_c.dll"
-  Delete "$INSTDIR\sqlite3.dll"
-  Delete "$INSTDIR\libcurl.dll"
-  Delete "$INSTDIR\ToolMap.exe"
-  Delete "$INSTDIR\ToolBasView.exe"
+  Delete "$INSTDIR\bin\mysql\errmsg.sys"
+  Delete "$INSTDIR\bin\libmysqld.dll"
+  Delete "$INSTDIR\bin\gdal110.dll"
+  Delete "$INSTDIR\bin\geos_c.dll"
+  Delete "$INSTDIR\bin\sqlite3.dll"
+  Delete "$INSTDIR\bin\libcurl.dll"
+  Delete "$INSTDIR\bin\ToolMap.exe"
+  Delete "$INSTDIR\bin\ToolBasView.exe"
 
   Delete "$INSTDIR\share\bing_satellite.html"
   Delete "$INSTDIR\share\bing_streets.html"
@@ -203,8 +206,9 @@ Section Uninstall
   Delete "$SMPROGRAMS\ToolMap\ToolMap.lnk"
 
   RMDir "$SMPROGRAMS\ToolMap"
-  RMDir "$INSTDIR\mysql"
+  RMDir "$INSTDIR\bin\mysql"
   RMDir "$INSTDIR\share"
+  RMDir "$INSTDIR\bin"
   RMDir "$INSTDIR"
   
   SetAutoClose true
