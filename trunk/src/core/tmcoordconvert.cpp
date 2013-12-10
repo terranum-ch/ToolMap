@@ -68,10 +68,13 @@ wxRealPoint tmCoordConvert::_Transform ( OGRSpatialReference * refin, OGRSpatial
     double myPtY = in.y;
     
     OGRCoordinateTransformation * myTransform = OGRCreateCoordinateTransformation (refin , refout);
+    if (myTransform == NULL) {
+        wxLogError(_("Unable to init coordinate transformation! Proj library not found!"));
+        return wxRealPoint(0,0);
+    }
     myTransform->Transform(1, &myPtX, &myPtY, NULL);
     wxRealPoint myOutPt (myPtX, myPtY);
     OCTDestroyCoordinateTransformation(myTransform);
-    
     return myOutPt;
 }
 
