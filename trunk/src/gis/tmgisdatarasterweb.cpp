@@ -79,6 +79,31 @@ bool tmGISDataRasterWeb::IsImageInsideVisibleArea (){
 CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *imglen,
                                         unsigned char **maskbuf, unsigned int   *masklen,
                                         wxSize imgSize){
-    return CE_Failure;
+    wxBitmap * myBmp = m_WebFrameRef->GetPageAsBitmap();
+    if (myBmp == NULL) {
+        return CE_Failure;
+    }
+    
+    if (myBmp->GetWidth() != imgSize.GetWidth() ||
+        myBmp->GetHeight() != imgSize.GetHeight()) {
+        wxLogWarning(_("Web bitmap size incorrect. Expected: %d,%d received: %d,%d"),
+                     imgSize.GetWidth(), imgSize.GetHeight(), myBmp->GetWidth(), myBmp->GetHeight());
+        return CE_Failure;
+    }
+    
+    *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
+    *imgbuf = (unsigned char*)CPLMalloc(*imglen);
+    if ( *imgbuf == NULL){
+        wxLogError(_("The system does not have enough memory to project"));
+        return CE_Failure;
+    }
+
+    wxImage myImage = myBmp->ConvertToImage();
+    unsigned char * myImgData = myImage.GetData();
+    wxASSERT(myImgData);
+    std::memcpy(*imgbuf, myImgData, *imglen * sizeof(unsigned char *));
+    wxDELETE(myBmp);
+    
+    return CE_None;
 }
 
