@@ -2305,7 +2305,7 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry(bool userelativepath)
 		
 		if (!DataBaseQuery(sSentence))
 		{
-			wxLogDebug(_T("Error getting layers from the TOC : %s"), sSentence.c_str());
+			wxLogError(_T("Error getting layers from the TOC : %s"), sSentence.c_str());
 			return NULL;
 		}
 	}

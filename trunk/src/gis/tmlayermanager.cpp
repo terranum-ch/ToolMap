@@ -218,6 +218,7 @@ void tmLayerManager::FillTOCArray()
         }
 	}
 	
+	wxASSERT(m_DB->DataBaseHasResults() == false);
 	m_TOCCtrl->ExpandAllLayers();
 	wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
 }
