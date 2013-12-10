@@ -20,12 +20,13 @@
 
 const int ID_WEBVIEW_CONTROL = wxWindow::NewControlId();
 const wxString WEBVIEW_WINDOW_NAME = _T("WEBVIEW_FRAME");
-
+const int WEB_MAX_WAIT_MS = 5000;
 
 enum TMWEBFRAME_STATUS {
     TMWEBFRAME_STATUS_NONE = 0,
     TMWEBFRAME_STATUS_LOADED,
-    TMWEBFRAME_STATUS_ERROR
+    TMWEBFRAME_STATUS_ERROR,
+    TMWEBFRAME_STATUS_TIMEOUT
 };
 
 
@@ -41,6 +42,7 @@ private:
     void OnEventLoaded (wxWebViewEvent & event);
     void OnEventError (wxWebViewEvent & event);
     void OnClose (wxCloseEvent & event);
+    void OnTimmerEnd (wxTimerEvent & event);
     DECLARE_EVENT_TABLE();
 	
 public:
@@ -51,6 +53,7 @@ public:
     void LoadURL (const wxString & url);
     void LoadPage (const wxString & pagename, tmRealRect coord = tmRealRect());
     void ZoomToExtend (tmRealRect coord);
+    wxBitmap * GetPageAsBitmap ();
 };
 
 

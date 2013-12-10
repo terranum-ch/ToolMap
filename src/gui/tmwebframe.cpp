@@ -10,6 +10,7 @@
 BEGIN_EVENT_TABLE(tmWebFrame, wxFrame)
 EVT_WEBVIEW_LOADED(ID_WEBVIEW_CONTROL, tmWebFrame::OnEventLoaded)
 EVT_WEBVIEW_ERROR(ID_WEBVIEW_CONTROL, tmWebFrame::OnEventError)
+EVT_TIMER(wxID_ANY, tmWebFrame::OnTimmerEnd)
 EVT_CLOSE(tmWebFrame::OnClose)
 END_EVENT_TABLE()
 
@@ -53,6 +54,10 @@ void tmWebFrame::OnClose (wxCloseEvent & event){
     event.Veto();
 }
 
+
+void tmWebFrame::OnTimmerEnd (wxTimerEvent & event){
+    m_Status = TMWEBFRAME_STATUS_TIMEOUT;
+}
 
 
 void tmWebFrame::LoadURL (const wxString & url){
@@ -131,5 +136,39 @@ void tmWebFrame::ZoomToExtend (tmRealRect coord){
     
      wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), true);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
     GetWebControl()->RunScript(myCode);
+}
+
+
+wxBitmap * tmWebFrame::GetPageAsBitmap (){
+    if (m_Status != TMWEBFRAME_STATUS_LOADED) {
+        // page not loaded... wait
+        wxTimer myTimmer (this);
+        myTimmer.StartOnce(WEB_MAX_WAIT_MS);
+        while (m_Status == TMWEBFRAME_STATUS_NONE) {
+            wxTheApp->Yield();
+        }
+    }
+    
+    if (m_Status != TMWEBFRAME_STATUS_LOADED) {
+        wxLogMessage(_("Error loading web raster: %d"), m_Status);
+        return NULL;
+    }
+    
+    // copy frame as bitmap
+    wxSize myClientSize = GetClientSize();
+    if (myClientSize.GetWidth() == 0 || myClientSize.GetHeight() == 0) {
+        wxLogError(_("Web frame size is 0, 0. Unable to get a web raster"));
+        return NULL;
+    }
+    
+    wxBitmap myTmpBmp (myClientSize);
+    wxClientDC myDC(this);
+    wxMemoryDC myBmpDC;
+    myBmpDC.SelectObject(myTmpBmp);
+    myBmpDC.Blit(0, 0, myClientSize.GetWidth(), myClientSize.GetHeight(), &myDC, 0, 0);
+    myBmpDC.SelectObject(wxNullBitmap);
+    
+    wxBitmap * myBmp = new wxBitmap(myTmpBmp);
+    return myBmp;
 }
 
