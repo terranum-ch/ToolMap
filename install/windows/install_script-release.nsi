@@ -115,6 +115,7 @@ Section "SectionPrincipale" SEC01
   File "..\..\..\bin\RelWithDebInfo\libmysqld.dll"
   File "..\..\..\bin\RelWithDebInfo\libcurl.dll"
   File "..\..\..\bin\RelWithDebInfo\sqlite3.dll"
+  File "..\..\..\bin\RelWithDebInfo\proj.dll"
   
   CreateDirectory "$INSTDIR\bin\mysql"
   SetOutPath "$INSTDIR\bin\mysql"
@@ -188,6 +189,7 @@ Section Uninstall
   Delete "$INSTDIR\bin\gdal110.dll"
   Delete "$INSTDIR\bin\geos_c.dll"
   Delete "$INSTDIR\bin\sqlite3.dll"
+  Delete "$INSTDIR\bin\proj.dll"
   Delete "$INSTDIR\bin\libcurl.dll"
   Delete "$INSTDIR\bin\ToolMap.exe"
   Delete "$INSTDIR\bin\ToolBasView.exe"
