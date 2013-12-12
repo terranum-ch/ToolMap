@@ -169,10 +169,11 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
         myTmpBmp.Create(new_size);
     }
     
-    wxWindowDC myDC (this);
+    wxWindowDC myDC (m_WebView);
     wxBitmap myBmp = myDC.GetAsBitmap();
     wxImage myImg = myBmp.ConvertToImage();
-    myImg.SaveFile(_T("/Users/lucien/Downloads/imgtest3.png"));
+    wxFileName myTempImageName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_image_toolmap.png"));
+    myImg.SaveFile(myTempImageName.GetFullPath());
     return new wxBitmap(myBmp);
     
     /*
