@@ -169,14 +169,7 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
         myTmpBmp.Create(new_size);
     }
     
-    wxWindowDC myDC (m_WebView);
-    wxBitmap myBmp = myDC.GetAsBitmap();
-    wxImage myImg = myBmp.ConvertToImage();
-    wxFileName myTempImageName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_image_toolmap.png"));
-    myImg.SaveFile(myTempImageName.GetFullPath());
-    return new wxBitmap(myBmp);
-    
-    /*
+    wxClientDC myDC (m_WebView);    
     wxMemoryDC myBmpDC;
     myBmpDC.SelectObject(myTmpBmp);
     if (new_size == wxDefaultSize){
@@ -189,10 +182,9 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     myBmpDC.SelectObject(wxNullBitmap);
     
     wxImage myImg = myTmpBmp.ConvertToImage();
-    myImg.SaveFile(_T("/Users/lucien/Downloads/imgtest2.png"));
+	wxFileName myTempImageName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_image_toolmap.png"));
+	myImg.SaveFile(myTempImageName.GetFullPath());
     
-    wxBitmap * myBmp = new wxBitmap(myTmpBmp);
-    
-    return myBmp; */
+    return new wxBitmap( myTmpBmp ); 
 }
 
