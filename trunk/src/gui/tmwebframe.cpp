@@ -139,7 +139,7 @@ void tmWebFrame::ZoomToExtend (tmRealRect coord){
 }
 
 
-wxBitmap * tmWebFrame::GetPageAsBitmap (){
+wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     if (m_Status != TMWEBFRAME_STATUS_LOADED) {
         // page not loaded... wait
         wxTimer myTimmer (this);
@@ -161,14 +161,37 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (){
         return NULL;
     }
     
-    wxBitmap myTmpBmp (myClientSize);
-    wxClientDC myDC(this);
+    wxBitmap myTmpBmp;
+    if (new_size == wxDefaultSize) {
+        myTmpBmp.Create(myClientSize);
+    }
+    else {
+        myTmpBmp.Create(new_size);
+    }
+    
+    wxWindowDC myDC (this);
+    wxBitmap myBmp = myDC.GetAsBitmap();
+    wxImage myImg = myBmp.ConvertToImage();
+    myImg.SaveFile(_T("/Users/lucien/Downloads/imgtest3.png"));
+    return new wxBitmap(myBmp);
+    
+    /*
     wxMemoryDC myBmpDC;
     myBmpDC.SelectObject(myTmpBmp);
-    myBmpDC.Blit(0, 0, myClientSize.GetWidth(), myClientSize.GetHeight(), &myDC, 0, 0);
+    if (new_size == wxDefaultSize){
+        myBmpDC.Blit(0, 0, myClientSize.GetWidth(), myClientSize.GetHeight(), &myDC, 0, 0);
+    }
+    // new size asked! Stretch bitmap
+    else {
+        myBmpDC.StretchBlit(0, 0, new_size.GetWidth(), new_size.GetHeight(), &myDC, 0, 0, myClientSize.GetWidth(), myClientSize.GetHeight());
+    }
     myBmpDC.SelectObject(wxNullBitmap);
     
+    wxImage myImg = myTmpBmp.ConvertToImage();
+    myImg.SaveFile(_T("/Users/lucien/Downloads/imgtest2.png"));
+    
     wxBitmap * myBmp = new wxBitmap(myTmpBmp);
-    return myBmp;
+    
+    return myBmp; */
 }
 

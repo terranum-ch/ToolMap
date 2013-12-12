@@ -53,7 +53,7 @@ public:
     void LoadURL (const wxString & url);
     void LoadPage (const wxString & pagename, tmRealRect coord = tmRealRect());
     void ZoomToExtend (tmRealRect coord);
-    wxBitmap * GetPageAsBitmap ();
+    wxBitmap * GetPageAsBitmap (const wxSize new_size= wxDefaultSize);
 };
 
 
