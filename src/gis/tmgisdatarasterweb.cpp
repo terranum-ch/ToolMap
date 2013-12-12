@@ -99,12 +99,10 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
     }
 
     wxImage myImage = myBmp->ConvertToImage();
-    myImage.SaveFile(_T("/Users/lucien/Downloads/imgtest.png"));
     unsigned char * myImgData = myImage.GetData();
     wxASSERT(myImgData);
     std::memcpy(*imgbuf, myImgData, *imglen * sizeof(unsigned char));
     wxDELETE(myBmp);
-    
     return CE_None;
 }
 
