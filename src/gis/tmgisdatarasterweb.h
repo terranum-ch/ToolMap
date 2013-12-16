@@ -29,6 +29,7 @@ class tmGISDataRasterWeb : public tmGISDataRaster
 {
 private:
     tmRealRect m_FilterCoordLocal;
+    tmRealRect m_FilterCoordWeb;
     tmWebFrame * m_WebFrameRef;
     
 protected:
