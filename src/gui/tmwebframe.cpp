@@ -182,15 +182,19 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
         }
     }
     
+	wxSize myBmpSize = new_size;
+	if (new_size == wxDefaultSize){
+		myBmpSize = myWebSize;
+	}
+
     wxClientDC myDC (m_WebView);
-    wxBitmap myTmpBmp (myWebSize);
+    wxBitmap myTmpBmp (myBmpSize);
     wxMemoryDC myBmpDC;
     myBmpDC.SelectObject(myTmpBmp);
-    myBmpDC.Blit(0, 0, myWebSize.GetWidth(), myWebSize.GetHeight(), &myDC, 0, 0);
+	myBmpDC.StretchBlit(0, 0, myBmpSize.GetWidth(), myBmpSize.GetHeight(), &myDC, 0, 0, myWebSize.GetWidth(), myWebSize.GetHeight());
     myBmpDC.SelectObject(wxNullBitmap);
     return new wxBitmap(myTmpBmp);
 #endif
-    
     return NULL;
 }
 
