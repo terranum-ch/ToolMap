@@ -154,37 +154,43 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
         return NULL;
     }
     
-    // copy frame as bitmap
-    wxSize myClientSize = GetClientSize();
-    if (myClientSize.GetWidth() == 0 || myClientSize.GetHeight() == 0) {
-        wxLogError(_("Web frame size is 0, 0. Unable to get a web raster"));
-        return NULL;
-    }
+    // copy screen
+    // wxClientDC blit is now working on OSX.
+#ifdef __WXMAC__
+    wxRect myWebPosition = m_WebView->GetScreenRect();
+    wxScreenDC myScreenDC;
+    wxBitmap myFullScreenBmp = myScreenDC.GetAsBitmap();
     
-    wxBitmap myTmpBmp;
-    if (new_size == wxDefaultSize) {
-        myTmpBmp.Create(myClientSize);
+    wxSize myCutSize (myWebPosition.GetWidth(), myWebPosition.GetHeight());
+    if (new_size != wxDefaultSize) {
+        myCutSize = new_size;
     }
-    else {
-        myTmpBmp.Create(new_size);
-    }
+    wxBitmap myWebBmp = myFullScreenBmp.GetSubBitmap(wxRect(myWebPosition.GetX(), myWebPosition.GetY(), myCutSize.GetWidth(), myCutSize.GetHeight()));
     
-    wxClientDC myDC (m_WebView);    
-    wxMemoryDC myBmpDC;
-    myBmpDC.SelectObject(myTmpBmp);
-    if (new_size == wxDefaultSize){
-        myBmpDC.Blit(0, 0, myClientSize.GetWidth(), myClientSize.GetHeight(), &myDC, 0, 0);
-    }
-    // new size asked! Stretch bitmap
-    else {
-        myBmpDC.StretchBlit(0, 0, new_size.GetWidth(), new_size.GetHeight(), &myDC, 0, 0, myClientSize.GetWidth(), myClientSize.GetHeight());
-    }
-    myBmpDC.SelectObject(wxNullBitmap);
-    
-    wxImage myImg = myTmpBmp.ConvertToImage();
+    wxImage myImg = myWebBmp.ConvertToImage();
 	wxFileName myTempImageName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_image_toolmap.png"));
 	myImg.SaveFile(myTempImageName.GetFullPath());
+    return new wxBitmap(myWebBmp);
+
+#else
+    wxSize myWebSize = m_WebView->GetSize();
+    if (new_size != wxDefaultSize) {
+        wxSize myResultSize = myWebSize - new_size;
+        if (abs( myResultSize.x) > 1 && abs(myResultSize.y) > 1) {
+            wxLogError(_("Web frame has not the correct size! Expected: %d, %d. Found: %d, %d"), new_size.GetWidth(), new_size.GetHeight(), myWebSize.GetWidth(), myWebSize.GetHeight());
+            return NULL;
+        }
+    }
     
-    return new wxBitmap( myTmpBmp ); 
+    wxClientDC myDC (m_WebView);
+    wxBitmap myTmpBmp (myWebSize);
+    wxMemoryDC myBmpDC;
+    myBmpDC.SelectObject(myTmpBmp);
+    myBmpDC.Blit(0, 0, myWebSize.GetWidth(), myWebSize.GetHeight(), &myDC, 0, 0);
+    myBmpDC.SelectObject(wxNullBitmap);
+    return new wxBitmap(myTmpBmp);
+#endif
+    
+    return NULL;
 }
 
