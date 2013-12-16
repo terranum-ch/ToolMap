@@ -58,14 +58,14 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     // convert project coordinates into web coordinates and loads data into tmwebframe
     wxRealPoint xymin = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_min, filter.y_min));
     wxRealPoint xymax = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_max, filter.y_max));
-    tmRealRect myFilterCoordWeb = tmRealRect (xymin.x, xymin.y, xymax.x, xymax.y);
+    m_FilterCoordWeb = tmRealRect (xymin.x, xymin.y, xymax.x, xymax.y);
     
     wxLogMessage(_("web coordintes: %f, %f, %f, %f"), xymin.x, xymin.y, xymax.x, xymax.y);
     if (m_WebFrameRef == NULL) {
         return true;
     }
     
-    m_WebFrameRef->ZoomToExtend(myFilterCoordWeb);
+    m_WebFrameRef->ZoomToExtend(m_FilterCoordWeb);
     return true;
 }
 
@@ -91,6 +91,15 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         return CE_Failure;
     }
     
+    // TODO: reproject image from ESPG:3857 (Google, Bing) into local projection definition.
+    wxBitmap * myProjBmp = GetCoordConvert()->GetProjectGoogleRaster(myBmp, &m_FilterCoordWeb, &m_FilterCoordLocal);
+    wxDELETE(myBmp);
+    if (myProjBmp == NULL) {
+        wxLogError(_("Unable to project web raster"));
+        return CE_Failure;
+    }
+    
+    
     *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
     *imgbuf = (unsigned char*)CPLMalloc(*imglen);
     if ( *imgbuf == NULL){
@@ -98,7 +107,7 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         return CE_Failure;
     }
 
-    wxImage myImage = myBmp->ConvertToImage();
+    wxImage myImage = myProjBmp->ConvertToImage();
     unsigned char * myImgData = myImage.GetData();
     wxASSERT(myImgData);
     std::memcpy(*imgbuf, myImgData, *imglen * sizeof(unsigned char));

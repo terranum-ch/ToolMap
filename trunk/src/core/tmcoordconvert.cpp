@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "tmcoordconvert.h"
+#include "gdal.h"
+#include "../gis/tmgisscale.h"
 
 // EPSG 3857, google and bing projection system
 wxString tmCoordConvert::m_ProjTextGoogle = _T("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
@@ -165,6 +167,41 @@ wxString tmCoordConvert::GetDistanceHuman (double distanceM){
     return wxString::Format(_T("%f [km]"), distanceM / 1000.0);
 }
 
+
+
+wxBitmap * tmCoordConvert::GetProjectGoogleRaster (wxBitmap * web_raster, tmRealRect * coord_web, tmRealRect  * coord_local){
+    // create source dataset
+    //const char *pszFormat = "MEM";
+    const char *pszFormat = "GTiff";
+    GDALDriverH hDriver = GDALGetDriverByName( pszFormat );
+    if (hDriver == NULL) {
+        wxASSERT(hDriver);
+        return NULL;
+    }
+    
+    GDALDatasetH hOriginDS;
+    char **papszOptions = NULL;
+    wxFileName myOriginName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_origin.tif"));
+    hOriginDS = GDALCreate( hDriver, myOriginName.GetFullPath().mb_str(), web_raster->GetWidth(), web_raster->GetHeight(), 3, GDT_Byte, papszOptions );
+    
+    double pxsize = std::max(coord_web->x_max, coord_web->x_min) - std::min(coord_web->x_max,coord_web->x_min);
+    double pysize = std::max(coord_web->y_max, coord_web->y_min) - std::min(coord_web->y_max,coord_web->y_min);
+    
+    double adfGeoTransform[6] = { coord_web->x_min, pxsize, 0, coord_web->y_max, 0, pysize };
+    GDALSetGeoTransform( hOriginDS, adfGeoTransform );
+    //GDALSetProjection(hOriginDS, m_ProjTextGoogle.mb_str());
+    
+    //GByte * abyRaster = new GByte[web_raster->GetWidth() * web_raster->GetHeight() * 3 ];
+    wxImage myImage = web_raster->ConvertToImage();
+    unsigned char * myImgData = myImage.GetData();
+    
+    GDALDatasetRasterIO(hOriginDS, GF_Write, 0, 0, web_raster->GetWidth(), web_raster->GetHeight(), myImgData, web_raster->GetWidth(), web_raster->GetHeight(), GDT_Byte, 3, NULL, 0, 0, 0);
+
+    GDALClose( hOriginDS );
+    
+    
+    return new wxBitmap(*web_raster);
+}
 
 
 
