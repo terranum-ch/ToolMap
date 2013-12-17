@@ -184,21 +184,61 @@ wxBitmap * tmCoordConvert::GetProjectGoogleRaster (wxBitmap * web_raster, tmReal
     wxFileName myOriginName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_origin.tif"));
     hOriginDS = GDALCreate( hDriver, myOriginName.GetFullPath().mb_str(), web_raster->GetWidth(), web_raster->GetHeight(), 3, GDT_Byte, papszOptions );
     
-    double pxsize = std::max(coord_web->x_max, coord_web->x_min) - std::min(coord_web->x_max,coord_web->x_min);
-    double pysize = std::max(coord_web->y_max, coord_web->y_min) - std::min(coord_web->y_max,coord_web->y_min);
-    
+    double pxsize = (coord_web->x_max - coord_web->x_min) / web_raster->GetWidth();
+    double pysize = (coord_web->y_max - coord_web->y_min) / web_raster->GetHeight() * -1.0;
     double adfGeoTransform[6] = { coord_web->x_min, pxsize, 0, coord_web->y_max, 0, pysize };
     GDALSetGeoTransform( hOriginDS, adfGeoTransform );
-    //GDALSetProjection(hOriginDS, m_ProjTextGoogle.mb_str());
+
+    OGRSpatialReference * myOriginSpatial = _CreateSpatialRefGoogle();
+    wxASSERT(myOriginSpatial);
     
-    //GByte * abyRaster = new GByte[web_raster->GetWidth() * web_raster->GetHeight() * 3 ];
+    char * pSpatialWKT = NULL;
+    myOriginSpatial->exportToWkt(&pSpatialWKT);
+    GDALSetProjection(hOriginDS, pSpatialWKT);
+    OGRFree(pSpatialWKT);
+    
     wxImage myImage = web_raster->ConvertToImage();
     unsigned char * myImgData = myImage.GetData();
     
-    GDALDatasetRasterIO(hOriginDS, GF_Write, 0, 0, web_raster->GetWidth(), web_raster->GetHeight(), myImgData, web_raster->GetWidth(), web_raster->GetHeight(), GDT_Byte, 3, NULL, 0, 0, 0);
-
-    GDALClose( hOriginDS );
+    for (int i=1; i <= 3; i++){
+        int offs = i -1;
+        GDALRasterBandH hband =  GDALGetRasterBand(hOriginDS, i);
+          if (0 <= offs && offs < 3){
+            CPLErr ret = GDALRasterIO(hband, GF_Write, 0, 0, web_raster->GetWidth(), web_raster->GetHeight(), myImgData+offs, web_raster->GetWidth(), web_raster->GetHeight(), GDT_Byte, 3, 0);
+            
+            if (ret == CE_Failure){
+                wxLogError(_T( "An unknown error occured while writing band %i"),i);
+                break;
+            }
+        }
+    }
     
+    // create destination dataset
+    GDALDatasetH hDestDS;
+    wxFileName myDestName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_dest.tif"));
+    hDestDS = GDALCreate( hDriver, myDestName.GetFullPath().mb_str(), web_raster->GetWidth(), web_raster->GetHeight(), 3, GDT_Byte, papszOptions );
+    
+    double pxdsize = (coord_local->x_max - coord_local->x_min) / web_raster->GetWidth();
+    double pydsize = (coord_local->y_max - coord_local->y_min) / web_raster->GetHeight() * -1.0;
+    double adfdGeoTransform[6] = { coord_local->x_min, pxdsize, 0, coord_local->y_max, 0, pydsize };
+    GDALSetGeoTransform( hDestDS, adfdGeoTransform );
+    
+    OGRSpatialReference * myDestSpatial = _CreateSpatialRef(m_ProjType);
+    wxASSERT(myDestSpatial);
+    
+    char * pSpatialdWKT = NULL;
+    myDestSpatial->exportToWkt(&pSpatialdWKT);
+    GDALSetProjection(hDestDS, pSpatialdWKT);
+    OGRFree(pSpatialdWKT);
+
+
+    CPLErr myErr = GDALReprojectImage(hOriginDS, NULL, hDestDS, NULL, GRA_NearestNeighbour, 0.0, 1, NULL, NULL, NULL);
+    if (myErr != CE_None) {
+        wxLogError(_("Reprojecting web raster failed!"));
+    }
+    
+    GDALClose( hOriginDS );
+    GDALClose( hDestDS );
     
     return new wxBitmap(*web_raster);
 }

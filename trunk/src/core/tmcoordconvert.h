@@ -22,6 +22,7 @@
 #endif
 #include <wx/stdpaths.h>
 #include <ogr_spatialref.h>
+#include <gdalwarper.h>
 #include "projectdefmemory.h"
 #include "../components/geodesic/geodesic.h"
 
