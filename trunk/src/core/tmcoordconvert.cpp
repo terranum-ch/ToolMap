@@ -195,7 +195,7 @@ wxBitmap * tmCoordConvert::GetProjectGoogleRaster (wxBitmap * web_raster, tmReal
     char * pSpatialWKT = NULL;
     myOriginSpatial->exportToWkt(&pSpatialWKT);
     GDALSetProjection(hOriginDS, pSpatialWKT);
-    OGRFree(pSpatialWKT);
+    
     
     wxImage myImage = web_raster->ConvertToImage();
     unsigned char * myImgData = myImage.GetData();
@@ -213,7 +213,23 @@ wxBitmap * tmCoordConvert::GetProjectGoogleRaster (wxBitmap * web_raster, tmReal
         }
     }
     
-    // create destination dataset
+    
+    
+    OGRSpatialReference * myDestSpatial = _CreateSpatialRef(m_ProjType);
+    wxASSERT(myDestSpatial);
+    char * pSpatialDestWKT = NULL;
+    myDestSpatial->exportToWkt(&pSpatialDestWKT);
+
+    wxFileName myDestName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_dest.tif"));
+    CPLErr myErr = GDALCreateAndReprojectImage(hOriginDS, pSpatialWKT, myDestName.GetFullPath().mb_str(), pSpatialDestWKT , hDriver, NULL, GRA_Bilinear, 0.0, 0.0, NULL, NULL, NULL);
+    if (myErr != CE_None) {
+        wxLogError(_("Reprojecting web raster failed!"));
+    }
+    
+    OGRFree(pSpatialWKT);
+    OGRFree(pSpatialDestWKT);
+
+    /* create destination dataset
     GDALDatasetH hDestDS;
     wxFileName myDestName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_dest.tif"));
     hDestDS = GDALCreate( hDriver, myDestName.GetFullPath().mb_str(), web_raster->GetWidth(), web_raster->GetHeight(), 3, GDT_Byte, papszOptions );
@@ -235,10 +251,10 @@ wxBitmap * tmCoordConvert::GetProjectGoogleRaster (wxBitmap * web_raster, tmReal
     CPLErr myErr = GDALReprojectImage(hOriginDS, NULL, hDestDS, NULL, GRA_NearestNeighbour, 0.0, 1, NULL, NULL, NULL);
     if (myErr != CE_None) {
         wxLogError(_("Reprojecting web raster failed!"));
-    }
+    }*/
     
     GDALClose( hOriginDS );
-    GDALClose( hDestDS );
+    //GDALClose( hDestDS );
     
     return new wxBitmap(*web_raster);
 }

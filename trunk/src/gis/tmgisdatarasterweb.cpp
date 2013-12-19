@@ -18,6 +18,19 @@
 #include "tmrenderer.h"
 
 
+const double tmGISDataRasterWeb::m_AvaillableResolutions [] ={
+    156543.03390625, 78271.516953125, 39135.7584765625,
+    19567.87923828125, 9783.939619140625, 4891.9698095703125,
+    2445.9849047851562, 1222.9924523925781, 611.4962261962891,
+    305.74811309814453, 152.87405654907226, 76.43702827453613,
+    38.218514137268066, 19.109257068634033, 9.554628534317017,
+    4.777314267158508, 2.388657133579254, 1.194328566789627,
+    0.5971642833948135, 0.29858214169740677, 0.14929107084870338,
+    0.07464553542435169
+};
+
+
+
 tmGISDataRasterWeb::tmGISDataRasterWeb(){
 	m_FileType = _T("Web Raster");
 	m_ClassType = tmGIS_RASTER_WEB;
@@ -60,14 +73,55 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     wxRealPoint xymax = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_max, filter.y_max));
     m_FilterCoordWeb = tmRealRect (xymin.x, xymin.y, xymax.x, xymax.y);
     
-    wxLogMessage(_("web coordintes: %f, %f, %f, %f"), xymin.x, xymin.y, xymax.x, xymax.y);
+    wxLogMessage(_("web coordinates: %f, %f, %f, %f."), xymin.x, xymin.y, xymax.x, xymax.y);
     if (m_WebFrameRef == NULL) {
         return true;
     }
     
     m_WebFrameRef->ZoomToExtend(m_FilterCoordWeb);
+    
+    // Resolution
+    double myResolution = _GetResolution(m_FilterCoordWeb);
+    double myClosestResolution = _GetClosestAvaillableResolution(m_FilterCoordWeb, myResolution);
+    wxLogMessage(_("Actual Resolution= %f, Closest Resolution= %f"), myResolution, myClosestResolution);
+    
+    double myResolutionDiff = myClosestResolution-myResolution;
+    wxSize myClientSize = m_WebFrameRef->GetClientSize();
+    double xdiff = myResolutionDiff * myClientSize.GetWidth();
+    double ydiff = myResolutionDiff * myClientSize.GetHeight();
+    
+    tmRealRect myWebCoord (m_FilterCoordWeb);
+    myWebCoord.x_max += xdiff / 2.0;
+    myWebCoord.y_max += ydiff / 2.0;
+    myWebCoord.x_min -= xdiff / 2.0;
+    myWebCoord.y_min -= ydiff / 2.0;
+    
+    wxLogMessage(_("x difference= %f, y difference= %f"), xdiff , ydiff );
+    wxLogMessage(_("web coord: %f, %f, %f, %f,"), myWebCoord.x_min, myWebCoord.y_min, myWebCoord.x_max, myWebCoord.y_max);
+    wxLogMessage(_("x diffpx= %f, y diffpx= %f"), xdiff / myClosestResolution, ydiff / myClosestResolution);
+    
     return true;
 }
+
+
+
+double tmGISDataRasterWeb::_GetClosestAvaillableResolution(tmRealRect bounds, double resolution){
+    int iNbResolutions = sizeof(m_AvaillableResolutions) / sizeof(double);
+    for (unsigned int i = 0; i< iNbResolutions; i++) {
+        if (m_AvaillableResolutions[i] < resolution) {
+            return m_AvaillableResolutions[i-1];
+        }
+    }
+    return wxNOT_FOUND;
+}
+
+
+double tmGISDataRasterWeb::_GetResolution (tmRealRect bounds){
+    wxSize myClientSize = m_WebFrameRef->GetClientSize();
+    return std::max((bounds.x_max - bounds.x_min) / myClientSize.GetWidth(),
+                    (bounds.y_max - bounds.y_min) / myClientSize.GetHeight());
+}
+
 
 
 bool tmGISDataRasterWeb::IsImageInsideVisibleArea (){
@@ -91,14 +145,6 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         return CE_Failure;
     }
     
-    // TODO: reproject image from ESPG:3857 (Google, Bing) into local projection definition.
-    wxBitmap * myProjBmp = GetCoordConvert()->GetProjectGoogleRaster(myBmp, &m_FilterCoordWeb, &m_FilterCoordLocal);
-    wxDELETE(myBmp);
-    if (myProjBmp == NULL) {
-        wxLogError(_("Unable to project web raster"));
-        return CE_Failure;
-    }
-    
     
     *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
     *imgbuf = (unsigned char*)CPLMalloc(*imglen);
@@ -106,12 +152,31 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         wxLogError(_("The system does not have enough memory to project"));
         return CE_Failure;
     }
+    
+    // crop and stretch image
+    double myResolution = _GetResolution(m_FilterCoordWeb);
+    double myClosestResolution = _GetClosestAvaillableResolution(m_FilterCoordWeb, myResolution);
+    double myResolutionDiff = myClosestResolution-myResolution;
+    wxSize myClientSize = m_WebFrameRef->GetClientSize();
+    double xpxdiff = myResolutionDiff * myClientSize.GetWidth() / myClosestResolution;
+    double ypxdiff = myResolutionDiff * myClientSize.GetHeight() / myClosestResolution ;
 
-    wxImage myImage = myProjBmp->ConvertToImage();
+    wxBitmap myCropBmp = myBmp->GetSubBitmap(wxRect(xpxdiff, ypxdiff, imgSize.GetWidth() - 2 * xpxdiff, imgSize.GetHeight() - 2 * ypxdiff));
+    wxImage myImage = myCropBmp.ConvertToImage();
+    myImage.Rescale(imgSize.GetWidth(), imgSize.GetHeight());
     unsigned char * myImgData = myImage.GetData();
     wxASSERT(myImgData);
     std::memcpy(*imgbuf, myImgData, *imglen * sizeof(unsigned char));
     wxDELETE(myBmp);
     return CE_None;
+    
+    
+    /* TODO: reproject image from ESPG:3857 (Google, Bing) into local projection definition.
+    wxBitmap * myProjBmp = GetCoordConvert()->GetProjectGoogleRaster(myBmp, &m_FilterCoordWeb, &m_FilterCoordLocal);
+    wxDELETE(myBmp);
+    if (myProjBmp == NULL) {
+        wxLogError(_("Unable to project web raster"));
+        return CE_Failure;
+    }*/
 }
 

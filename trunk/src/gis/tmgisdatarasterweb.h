@@ -31,8 +31,10 @@ private:
     tmRealRect m_FilterCoordLocal;
     tmRealRect m_FilterCoordWeb;
     tmWebFrame * m_WebFrameRef;
-    
-protected:
+    static const double m_AvaillableResolutions [];
+    double _GetClosestAvaillableResolution(tmRealRect bounds, double resolution);
+    double _GetResolution (tmRealRect bounds);
+
 public:
     tmGISDataRasterWeb();
     ~tmGISDataRasterWeb();
