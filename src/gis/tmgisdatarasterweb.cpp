@@ -145,38 +145,86 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         return CE_Failure;
     }
     
+    // get center
+    wxRect2DDouble myLocalRect;
+    myLocalRect.SetLeftBottom( wxPoint2DDouble( m_FilterCoordWeb.x_min, m_FilterCoordWeb.y_min) );
+    myLocalRect.SetRightTop( wxPoint2DDouble(m_FilterCoordWeb.x_max, m_FilterCoordWeb.y_max) );
+    wxPoint2DDouble myCenter = myLocalRect.GetCentre();
     
-    *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
-    *imgbuf = (unsigned char*)CPLMalloc(*imglen);
-    if ( *imgbuf == NULL){
-        wxLogError(_("The system does not have enough memory to project"));
+    // get closest resolution
+    double myResolution = _GetResolution(m_FilterCoordWeb);
+    double myClosestResolution = _GetClosestAvaillableResolution(m_FilterCoordWeb, myResolution);
+
+    wxSize myClientSize = m_WebFrameRef->GetClientSize();
+    double halfWDeg = (myClientSize.GetWidth() * myClosestResolution) / 2;
+    double halfHDeg = (myClientSize.GetHeight() * myClosestResolution) / 2;
+    
+    tmRealRect myRealWebBounds (myCenter.m_x - halfWDeg,
+                                myCenter.m_y - halfHDeg,
+                                myCenter.m_x + halfWDeg,
+                                myCenter.m_y + halfHDeg);
+    wxLogMessage (_("Web raster extent: %f, %f, %f, %f"), myRealWebBounds.x_min, myRealWebBounds.y_min, myRealWebBounds.x_max, myRealWebBounds.y_max);
+    
+    
+    // save web raster
+    const char *pszFormat = "GTiff";
+    GDALDriverH hDriver = GDALGetDriverByName( pszFormat );
+    if (hDriver == NULL) {
+        wxASSERT(hDriver);
         return CE_Failure;
     }
     
-    // crop and stretch image
-    double myResolution = _GetResolution(m_FilterCoordWeb);
-    double myClosestResolution = _GetClosestAvaillableResolution(m_FilterCoordWeb, myResolution);
-    double myResolutionDiff = myClosestResolution-myResolution;
-    wxSize myClientSize = m_WebFrameRef->GetClientSize();
-    double xpxdiff = myResolutionDiff * myClientSize.GetWidth() / myClosestResolution;
-    double ypxdiff = myResolutionDiff * myClientSize.GetHeight() / myClosestResolution ;
-
-    wxBitmap myCropBmp = myBmp->GetSubBitmap(wxRect(xpxdiff, ypxdiff, imgSize.GetWidth() - 2 * xpxdiff, imgSize.GetHeight() - 2 * ypxdiff));
-    wxImage myImage = myCropBmp.ConvertToImage();
-    myImage.Rescale(imgSize.GetWidth(), imgSize.GetHeight());
+    GDALDatasetH hOriginDS;
+    char **papszOptions = NULL;
+    wxFileName myOriginName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("web_origin.tif"));
+    hOriginDS = GDALCreate( hDriver, myOriginName.GetFullPath().mb_str(), imgSize.GetWidth(), imgSize.GetHeight(), 3, GDT_Byte, papszOptions );
+    
+    double adfGeoTransform[6] = {
+        myRealWebBounds.x_min, myClosestResolution,
+        0, myRealWebBounds.y_max,
+        0, myClosestResolution * -1.0
+    };
+    GDALSetGeoTransform( hOriginDS, adfGeoTransform );
+    
+    char * pSpatialWKT = GetCoordConvert()->GetWKTProjectionGoogle();
+    GDALSetProjection(hOriginDS, pSpatialWKT);
+    
+    wxImage myImage = myBmp->ConvertToImage();
     unsigned char * myImgData = myImage.GetData();
-    wxASSERT(myImgData);
-    std::memcpy(*imgbuf, myImgData, *imglen * sizeof(unsigned char));
-    wxDELETE(myBmp);
-    return CE_None;
+    
+    for (int i=1; i <= 3; i++){
+        int offs = i -1;
+        GDALRasterBandH hband =  GDALGetRasterBand(hOriginDS, i);
+        if (0 <= offs && offs < 3){
+            CPLErr ret = GDALRasterIO(hband, GF_Write, 0, 0,imgSize.GetWidth(),imgSize.GetHeight(), myImgData+offs, imgSize.GetWidth(), imgSize.GetHeight(), GDT_Byte, 3, 0);
+            
+            if (ret == CE_Failure){
+                wxLogError(_T( "An unknown error occured while writing band %i"),i);
+                break;
+            }
+        }
+    }
+    
+    // project
+    char * pSpatialDestWKT = GetCoordConvert()->GetWKTProjectionLocal();
+    wxFileName myDestName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("web_projected.tif"));
+    CPLErr myErr = GDALCreateAndReprojectImage(hOriginDS, pSpatialWKT, myDestName.GetFullPath().mb_str(), pSpatialDestWKT , hDriver, NULL, GRA_Bilinear, 0.0, 0.0, NULL, NULL, NULL);
+    if (myErr != CE_None) {
+        wxLogError(_("Reprojecting web raster failed!"));
+    }
+    
+    OGRFree(pSpatialWKT);
+    OGRFree(pSpatialDestWKT);
+    GDALClose(hOriginDS);
     
     
-    /* TODO: reproject image from ESPG:3857 (Google, Bing) into local projection definition.
-    wxBitmap * myProjBmp = GetCoordConvert()->GetProjectGoogleRaster(myBmp, &m_FilterCoordWeb, &m_FilterCoordLocal);
-    wxDELETE(myBmp);
-    if (myProjBmp == NULL) {
-        wxLogError(_("Unable to project web raster"));
+    // crop
+    tmGISDataRaster myRaster;
+    if (myRaster.Open(myDestName.GetFullPath()) == false){
+        wxLogError (_("Unable to open projeted raster!"));
         return CE_Failure;
-    }*/
+    }
+    myRaster.SetSpatialFilter(m_FilterCoordLocal, 0);
+    return myRaster.GetImageData(imgbuf, imglen, maskbuf, masklen, imgSize);
 }
 

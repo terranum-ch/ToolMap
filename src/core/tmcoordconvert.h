@@ -50,11 +50,15 @@ public:
     wxRealPoint GetPointWGS(const wxRealPoint & in);
     wxRealPoint GetPointGoogle(const wxRealPoint & in);
     
+    
     wxBitmap * GetProjectGoogleRaster (wxBitmap * web_raster, tmRealRect * coord_web, tmRealRect * coord_local);
     
     double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 );
     wxRealPoint GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut);
     wxString GetDistanceHuman (double distanceM);
+    
+    char * GetWKTProjectionGoogle ();
+    char * GetWKTProjectionLocal ();
     
 };
 #endif
