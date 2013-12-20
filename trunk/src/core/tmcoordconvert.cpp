@@ -169,6 +169,35 @@ wxString tmCoordConvert::GetDistanceHuman (double distanceM){
 
 
 
+char * tmCoordConvert::GetWKTProjectionGoogle(){
+    OGRSpatialReference * mySpatRef = _CreateSpatialRefGoogle();
+    if (mySpatRef == NULL) {
+        wxLogError(_("Getting Google projection failed!"));
+        return NULL;
+    }
+    
+    char * myWktTxt = NULL;
+    mySpatRef->exportToWkt(&myWktTxt);
+    return myWktTxt;
+}
+
+
+
+char * tmCoordConvert::GetWKTProjectionLocal (){
+    OGRSpatialReference * mySpatRef = _CreateSpatialRef(m_ProjType);
+    if (mySpatRef == NULL) {
+        wxLogError(_("Getting Local projection failed!"));
+        return NULL;
+    }
+    
+    char * myWktTxt = NULL;
+    mySpatRef->exportToWkt(&myWktTxt);
+    return myWktTxt;
+}
+
+
+
+
 wxBitmap * tmCoordConvert::GetProjectGoogleRaster (wxBitmap * web_raster, tmRealRect * coord_web, tmRealRect  * coord_local){
     // create source dataset
     //const char *pszFormat = "MEM";

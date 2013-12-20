@@ -134,7 +134,7 @@ void tmWebFrame::ZoomToExtend (tmRealRect coord){
         return;
     }
     
-     wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), true);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
+     wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), false);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
     GetWebControl()->RunScript(myCode);
 }
 
@@ -155,7 +155,7 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     }
     
     // copy screen
-    // wxClientDC blit is now working on OSX.
+    // wxClientDC blit is not working on OSX.
 #ifdef __WXMAC__
     wxRect myWebPosition = m_WebView->GetScreenRect();
     wxScreenDC myScreenDC;
