@@ -74,7 +74,8 @@ void tmWebFrame::_CreateControls(){
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
 	m_WebView = wxWebView::New(this, ID_WEBVIEW_CONTROL);
-	bSizer1->Add( m_WebView, 1, wxEXPAND, 5 );
+	m_WebView->SetWindowStyle(wxBORDER_NONE);
+	bSizer1->Add( m_WebView, 1, wxEXPAND, 0 );
 	
 	this->SetSizer( bSizer1 );
 	this->Layout();
@@ -191,7 +192,13 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     wxBitmap myTmpBmp (myBmpSize);
     wxMemoryDC myBmpDC;
     myBmpDC.SelectObject(myTmpBmp);
-	myBmpDC.StretchBlit(0, 0, myBmpSize.GetWidth(), myBmpSize.GetHeight(), &myDC, 0, 0, myWebSize.GetWidth(), myWebSize.GetHeight());
+	int myWebSizeWidth = myWebSize.GetWidth();
+#ifdef __WXMSW__
+	int myScrollBarWidth = wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, m_WebView);
+	myWebSizeWidth -= myScrollBarWidth; // remove scrollbar width on windows.
+#endif
+
+	myBmpDC.StretchBlit(0, 0, myBmpSize.GetWidth(), myBmpSize.GetHeight(), &myDC, 0, 0, myWebSizeWidth, myWebSize.GetHeight());
     myBmpDC.SelectObject(wxNullBitmap);
     return new wxBitmap(myTmpBmp);
 #endif
