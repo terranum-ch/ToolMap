@@ -21,7 +21,7 @@
 const int ID_WEBVIEW_CONTROL = wxWindow::NewControlId();
 const wxString WEBVIEW_WINDOW_NAME = _T("WEBVIEW_FRAME");
 const int WEB_MAX_WAIT_LOADING_MS = 5000;
-const int WEB_WAIT_ZOOMING_MS = 200;
+const int WEB_WAIT_ZOOMING_MS = 300;
 
 enum TMWEBFRAME_STATUS {
     TMWEBFRAME_STATUS_NONE = 0,
