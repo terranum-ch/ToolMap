@@ -67,7 +67,11 @@ tmRealRect tmGISDataRasterWeb::GetMinimalBoundingRectangle(){
 
 
 bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
-    m_FilterCoordLocal = filter;
+	// check if view moved !
+	if (m_FilterCoordLocal == filter){
+		return true;
+	}
+	m_FilterCoordLocal = filter;
     
     // convert project coordinates into web coordinates and loads data into tmwebframe
     wxRealPoint xymin = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_min, filter.y_min));
@@ -80,7 +84,7 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     }
     
     m_WebFrameRef->ZoomToExtend(m_FilterCoordWeb);
-    while (m_WebFrameRef->HasZoomed() == false);
+	while (m_WebFrameRef->HasZoomed() == false);
     
     // Resolution
     double myResolution = _GetResolution(m_FilterCoordWeb);
@@ -218,7 +222,6 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
     OGRFree(pSpatialWKT);
     OGRFree(pSpatialDestWKT);
     GDALClose(hOriginDS);
-    
     
     // crop
     tmGISDataRaster myRaster;
