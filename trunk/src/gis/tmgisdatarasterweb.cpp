@@ -55,6 +55,7 @@ bool tmGISDataRasterWeb::Open (const wxString & filename, bool bReadWrite){
         return false;
     }
     m_WebFrameRef->LoadPage(filename);
+    while ( m_WebFrameRef->IsLoaded() == false );
     return true;
 }
 
@@ -79,6 +80,7 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     }
     
     m_WebFrameRef->ZoomToExtend(m_FilterCoordWeb);
+    while (m_WebFrameRef->HasZoomed() == false);
     
     // Resolution
     double myResolution = _GetResolution(m_FilterCoordWeb);

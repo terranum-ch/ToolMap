@@ -20,7 +20,8 @@
 
 const int ID_WEBVIEW_CONTROL = wxWindow::NewControlId();
 const wxString WEBVIEW_WINDOW_NAME = _T("WEBVIEW_FRAME");
-const int WEB_MAX_WAIT_MS = 5000;
+const int WEB_MAX_WAIT_LOADING_MS = 5000;
+const int WEB_WAIT_ZOOMING_MS = 200;
 
 enum TMWEBFRAME_STATUS {
     TMWEBFRAME_STATUS_NONE = 0,
@@ -36,7 +37,8 @@ private:
     wxWebView * m_WebView;
     TMWEBFRAME_STATUS m_Status;
     wxString m_PageName;
-    tmRealRect m_ZoomAfterLoading;
+    wxTimer m_LoadingTimer;
+    wxTimer m_ZoomingTimer;
     
     void _CreateControls();
     void OnEventLoaded (wxWebViewEvent & event);
@@ -51,8 +53,10 @@ public:
     wxWebView * GetWebControl () {return m_WebView;}
     TMWEBFRAME_STATUS GetStatus () {return m_Status;}
     void LoadURL (const wxString & url);
+    bool IsLoaded ();
     void LoadPage (const wxString & pagename, tmRealRect coord = tmRealRect());
     void ZoomToExtend (tmRealRect coord);
+    bool HasZoomed ();
     wxBitmap * GetPageAsBitmap (const wxSize new_size= wxDefaultSize);
 };
 

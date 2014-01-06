@@ -20,7 +20,8 @@ tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, con
     _CreateControls();
     m_Status = TMWEBFRAME_STATUS_NONE;
     m_PageName = wxEmptyString;
-    m_ZoomAfterLoading = tmRealRect();
+    m_LoadingTimer.SetOwner(this);
+    m_ZoomingTimer.SetOwner(this);
 }
 
 
@@ -33,11 +34,6 @@ tmWebFrame::~tmWebFrame(){
 void tmWebFrame::OnEventLoaded (wxWebViewEvent & event){
     m_Status = TMWEBFRAME_STATUS_LOADED;
     wxLogMessage(_("page loaded!"));
-    
-    if (m_ZoomAfterLoading != tmRealRect()) {
-        ZoomToExtend(m_ZoomAfterLoading);
-        m_ZoomAfterLoading = tmRealRect();
-    }
 }
 
 
@@ -57,13 +53,12 @@ void tmWebFrame::OnClose (wxCloseEvent & event){
 
 void tmWebFrame::OnTimmerEnd (wxTimerEvent & event){
     m_Status = TMWEBFRAME_STATUS_TIMEOUT;
+    wxLogMessage(_("timeout!"));
 }
 
 
 void tmWebFrame::LoadURL (const wxString & url){
     m_Status = TMWEBFRAME_STATUS_NONE;
-    m_ZoomAfterLoading = tmRealRect();
-    
     GetWebControl()->LoadURL(url);
 }
 
@@ -90,7 +85,6 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     }
     m_PageName = pagename;
     m_Status = TMWEBFRAME_STATUS_NONE;
-    m_ZoomAfterLoading = tmRealRect();
     
 	wxString myWebPagePathText = _T("/../../share/toolmap");
 #ifdef __WXMSW__
@@ -127,29 +121,57 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
 }
 
 
+bool tmWebFrame::IsLoaded (){
+    if (m_WebView->IsBusy() == false) {
+        m_LoadingTimer.Stop();
+        return true;
+    }
+    
+    // start a timer
+    if (m_LoadingTimer.IsRunning() == false) {
+        m_LoadingTimer.StartOnce(WEB_MAX_WAIT_LOADING_MS);
+        wxLogMessage("Starting timer");
+    }
+    else {
+        wxTheApp->Yield();
+    }
+    return false;
+}
+
 
 void tmWebFrame::ZoomToExtend (tmRealRect coord){
-    // delay zooming if page not loaded!
     if (m_Status != TMWEBFRAME_STATUS_LOADED) {
-        m_ZoomAfterLoading = coord;
+        wxLogError(_("Page not loaded (%d), zooming isn't possible"), m_Status);
         return;
     }
     
-     wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), false);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
+    wxString myCode = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), false);"),
+                                       coord.x_min, coord.y_min,
+                                       coord.x_max, coord.y_max);
     GetWebControl()->RunScript(myCode);
 }
 
 
-wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
-    if (m_Status != TMWEBFRAME_STATUS_LOADED) {
-        // page not loaded... wait
-        wxTimer myTimmer (this);
-        myTimmer.StartOnce(WEB_MAX_WAIT_MS);
-        while (m_Status == TMWEBFRAME_STATUS_NONE) {
-            wxTheApp->Yield();
-        }
+
+bool tmWebFrame::HasZoomed(){
+    if (m_Status == TMWEBFRAME_STATUS_TIMEOUT) {
+        m_Status = TMWEBFRAME_STATUS_LOADED;
+        return true;
     }
     
+    if (m_ZoomingTimer.IsRunning() == false) {
+        m_ZoomingTimer.StartOnce(WEB_WAIT_ZOOMING_MS);
+        wxLogMessage("Starting zooming timer");
+    }
+    else {
+        wxTheApp->Yield();
+    }
+    return false;
+}
+
+
+
+wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     if (m_Status != TMWEBFRAME_STATUS_LOADED) {
         wxLogMessage(_("Error loading web raster: %d"), m_Status);
         return NULL;
@@ -157,7 +179,7 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     
     // copy screen
     // wxClientDC blit is not working on OSX.
-#ifdef __WXMAC__
+/*#ifdef __WXMAC__
     wxRect myWebPosition = m_WebView->GetScreenRect();
     wxScreenDC myScreenDC;
     wxBitmap myFullScreenBmp = myScreenDC.GetAsBitmap();
@@ -173,7 +195,7 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
 	myImg.SaveFile(myTempImageName.GetFullPath());
     return new wxBitmap(myWebBmp);
 
-#else
+#else */
     wxSize myWebSize = m_WebView->GetSize();
     if (new_size != wxDefaultSize) {
         wxSize myResultSize = myWebSize - new_size;
@@ -201,7 +223,7 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
 	myBmpDC.StretchBlit(0, 0, myBmpSize.GetWidth(), myBmpSize.GetHeight(), &myDC, 0, 0, myWebSizeWidth, myWebSize.GetHeight());
     myBmpDC.SelectObject(wxNullBitmap);
     return new wxBitmap(myTmpBmp);
-#endif
+//#endif
     return NULL;
 }
 
