@@ -368,9 +368,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
     
     
 	wxPen myValidPen (pSymbol->GetColourWithTransparency(mySymbology->m_SelColourMultiple,
-														 mySymbology->m_GlobalTransparency),mySymbology->m_SelWidthMultiple, myValidPenStyle);
+														 mySymbology->m_GlobalTransparency),mySymbology->m_SelWidthMultiple, (wxPenStyle) myValidPenStyle);
 	wxPen myUnValidPen (pSymbol->GetColourWithTransparency(mySymbology->m_UnSelColourMultiple,
-														   mySymbology->m_GlobalTransparency), mySymbology->m_UnSelWidthMultiple, myUnValidPenStyle);
+														   mySymbology->m_GlobalTransparency), mySymbology->m_UnSelWidthMultiple, (wxPenStyle) myUnValidPenStyle);
 	wxPen mySelectionValidPen (m_SelMem->GetSelectionColour(),  mySymbology->m_SelWidthMultiple);
 	wxPen mySelectionUnValidPen (m_SelMem->GetSelectionColour(), mySymbology->m_UnSelWidthMultiple);
 

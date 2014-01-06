@@ -49,7 +49,7 @@ class tmSymbolVectorPolygon : public tmSymbolVector
 		wxColour GetBorderColour();
 		wxColour GetFillColour();
 		int GetBorderWidth() {return m_plgUniqueSymbol.m_bWidth;}
-		int GetFillStyle() {return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];}
+		wxBrushStyle GetFillStyle() {return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];}
 		virtual int GetTransparency(){return m_plgUniqueSymbol.m_GlobalTransparency;}
 		
         virtual void SetColour (const wxColour & colour){m_plgUniqueSymbol.m_fColour = colour;}

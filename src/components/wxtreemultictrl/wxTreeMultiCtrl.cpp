@@ -123,7 +123,7 @@ void wxTreeMultiCtrl::Init()
 #endif
     
     // set standard highlighting brush
-    this->m_HilightBrush = new wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT),wxSOLID);
+    this->m_HilightBrush = new wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT),wxBRUSHSTYLE_SOLID);
     
     // set standard DC font
     _captionFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
@@ -718,12 +718,12 @@ void wxTreeMultiCtrl::DrawNode(TreeMultiItemBase *b, wxDC &dc)
             if (n->IsSelected())
             {
                 dc.SetBrush(*(this->m_HilightBrush));
-                dc.SetPen(wxPen(this->m_HilightBrush->GetColour(),1,wxSOLID));
+                dc.SetPen(wxPen(this->m_HilightBrush->GetColour(),1,wxPENSTYLE_SOLID));
             } /* if */
             else
             {
-                dc.SetBrush(wxBrush(*wxWHITE,wxSOLID));
-                dc.SetPen(wxPen(*wxWHITE,1,wxSOLID));
+                dc.SetBrush(wxBrush(*wxWHITE,wxBRUSHSTYLE_SOLID));
+                dc.SetPen(wxPen(*wxWHITE,1,wxPENSTYLE_SOLID));
             } /* if */
             dc.DrawRectangle(n->GetX(),n->GetY(),n->GetWidth(),n->GetHeight());
             // draw caption

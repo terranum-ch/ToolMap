@@ -594,7 +594,7 @@ void tmEditManager::BezierModifyDraw(wxGCDC * dc){
     }
     
     // draw controls
-    wxPen myGreyPen (wxPen(*wxLIGHT_GREY, 2, wxSOLID));
+    wxPen myGreyPen (wxPen(*wxLIGHT_GREY, 2, wxPENSTYLE_SOLID));
 #ifdef __WXMAC__
     myGreyPen = wxPen(*wxGREY_PEN);
 #endif
