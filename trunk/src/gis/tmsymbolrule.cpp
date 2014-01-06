@@ -132,7 +132,12 @@ wxPen tmSymbolRule::GetPen() {
             tmSymbolVectorLine * mySLine = (tmSymbolVectorLine*) GetSymbolData();
             myPen.SetWidth(mySLine->GetWidth());
             myPen.SetColour(mySLine->GetColourWithTransparency(mySLine->GetColour(), mySLine->GetTransparency()));
-            myPen.SetStyle(mySLine->GetShape());
+            if( mySLine->GetShape() == tmPENSTYLE_ORIENTED){
+                myPen.SetStyle(wxPENSTYLE_SOLID);
+            }
+            else {
+                myPen.SetStyle((wxPenStyle) mySLine->GetShape());
+            }
         }
             break;
             

@@ -72,14 +72,14 @@ const wxString tmSYMBOLPENSTYLES_NAME[] =
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 September 2008
  *******************************************************************************/
-const int tmSYMBOLFILLSTYLES[] = 
+const wxBrushStyle tmSYMBOLFILLSTYLES[] =
 {
-	wxSOLID,
-	wxBDIAGONAL_HATCH,
-	wxFDIAGONAL_HATCH,
-	wxCROSS_HATCH,
-	wxVERTICAL_HATCH,
-	wxTRANSPARENT
+	wxBRUSHSTYLE_SOLID,
+	wxBRUSHSTYLE_BDIAGONAL_HATCH,
+	wxBRUSHSTYLE_FDIAGONAL_HATCH,
+	wxBRUSHSTYLE_CROSS_HATCH,
+	wxBRUSHSTYLE_VERTICAL_HATCH,
+	wxBRUSHSTYLE_TRANSPARENT
 };
 
 
