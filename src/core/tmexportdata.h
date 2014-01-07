@@ -49,6 +49,7 @@ class tmExportData : public wxObject
 private:
     bool m_ExportAttributEnumerationCode;
     void InitMemberValues();
+    double m_CropBufferDistance;
     
 protected:
     DataBaseTM * m_pDB;
@@ -98,6 +99,9 @@ public:
     
     virtual bool GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){return false;}
     virtual bool CreateSpatialIndex(ProjectDefMemoryLayers * layer){return false;}
+    
+    void SetCropBufferDistance (double value){m_CropBufferDistance = value;}
+    double GetCropBufferDistance () {return m_CropBufferDistance;}
 };
 
 
