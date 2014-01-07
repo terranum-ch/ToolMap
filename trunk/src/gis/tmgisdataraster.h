@@ -111,6 +111,7 @@ public:
 	
 	// standard GDAL functions
 	virtual bool Open (const wxString & filename, bool bReadWrite = TRUE);
+    void UseExisting (const wxString & filename, GDALDatasetH hdst);
 	virtual tmRealRect GetMinimalBoundingRectangle();
 	
 	// static functions

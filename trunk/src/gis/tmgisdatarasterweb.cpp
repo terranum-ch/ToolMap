@@ -173,8 +173,14 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
     
     
     // save web raster
-    const char *pszFormat = "GTiff";
-    GDALDriverH hDriver = GDALGetDriverByName( pszFormat );
+    wxString myDriverName = _T("GTiff");
+    wxString myExtension = _T("tif");
+    if (GetWebFrameRef() && GetWebFrameRef()->IsUsingRAM() == true) {
+        myDriverName = _T("MEM");
+        myExtension = _T("memory");
+    }
+    
+    GDALDriverH hDriver = GDALGetDriverByName( myDriverName.mb_str() );
     if (hDriver == NULL) {
         wxASSERT(hDriver);
         return CE_Failure;
@@ -182,7 +188,7 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
     
     GDALDatasetH hOriginDS;
     char **papszOptions = NULL;
-    wxFileName myOriginName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("web_origin.tif"));
+    wxFileName myOriginName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("web_origin.") + myExtension);
     hOriginDS = GDALCreate( hDriver, myOriginName.GetFullPath().mb_str(), imgSize.GetWidth(), imgSize.GetHeight(), 3, GDT_Byte, papszOptions );
     
     double adfGeoTransform[6] = {
@@ -191,7 +197,6 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         0, myClosestResolution * -1.0
     };
     GDALSetGeoTransform( hOriginDS, adfGeoTransform );
-    
     char * pSpatialWKT = GetCoordConvert()->GetWKTProjectionGoogle();
     GDALSetProjection(hOriginDS, pSpatialWKT);
     
@@ -211,25 +216,54 @@ CPLErr tmGISDataRasterWeb::GetImageData(unsigned char **imgbuf, unsigned int   *
         }
     }
     
-    // project
+    // Create a transformation object from the source to
+    // destination coordinate system.
     char * pSpatialDestWKT = GetCoordConvert()->GetWKTProjectionLocal();
-    wxFileName myDestName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("web_projected.tif"));
-    CPLErr myErr = GDALCreateAndReprojectImage(hOriginDS, pSpatialWKT, myDestName.GetFullPath().mb_str(), pSpatialDestWKT , hDriver, NULL, GRA_Bilinear, 0.0, 0.0, NULL, NULL, NULL);
-    if (myErr != CE_None) {
+    void * hTransformArg = GDALCreateGenImgProjTransformer( hOriginDS, pSpatialWKT, NULL, pSpatialDestWKT, true, 1000.0, 0 );
+    if( hTransformArg == NULL )
+        return CE_Failure;
+    
+    // Get approximate output definition.
+    double adfDstGeoTransform[6];
+    int nPixels;
+    int nLines;
+    
+    if( GDALSuggestedWarpOutput( hOriginDS ,GDALGenImgProjTransform, hTransformArg,adfDstGeoTransform, &nPixels, &nLines ) != CE_None ){
+        return CE_Failure;
+    }
+    GDALDestroyGenImgProjTransformer( hTransformArg );
+    
+    // Create the output file.
+    wxFileName myDestName (wxStandardPaths::Get().GetAppDocumentsDir(), _T("web_projected.") + myExtension);
+    GDALDatasetH hDstDS = GDALCreate( hDriver, myDestName.GetFullPath().mb_str(),
+                                     nPixels, nLines, GDALGetRasterCount(hOriginDS),
+                                     GDALGetRasterDataType(GDALGetRasterBand(hOriginDS,1)),
+                                     papszOptions);
+    if( hDstDS == NULL ){
+        return CE_Failure;
+    }
+    
+    // Write out the projection definition.
+    GDALSetProjection( hDstDS, pSpatialDestWKT );
+    GDALSetGeoTransform( hDstDS, adfDstGeoTransform );
+    
+    // Perform the reprojection.
+    CPLErr eErr = GDALReprojectImage( hOriginDS, pSpatialWKT, hDstDS, pSpatialDestWKT,
+                                     GRA_Bilinear, 0.0, 0.0,NULL, NULL, NULL );
+    if (eErr != CE_None) {
         wxLogError(_("Reprojecting web raster failed!"));
     }
     
+    //GDALDataset * myDataset = static_cast<GDALDataset *>( hOriginDS );
     OGRFree(pSpatialWKT);
     OGRFree(pSpatialDestWKT);
     GDALClose(hOriginDS);
     
     // crop
     tmGISDataRaster myRaster;
-    if (myRaster.Open(myDestName.GetFullPath()) == false){
-        wxLogError (_("Unable to open projeted raster!"));
-        return CE_Failure;
-    }
+    myRaster.UseExisting(myDestName.GetFullPath(), hDstDS);
     myRaster.SetSpatialFilter(m_FilterCoordLocal, 0);
     return myRaster.GetImageData(imgbuf, imglen, maskbuf, masklen, imgSize);
+     // GDALClose( hDstDS ); Don't close, will be closed by myRaster !
 }
 

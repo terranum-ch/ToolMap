@@ -76,6 +76,12 @@ bool tmGISDataRaster::Open (const wxString & filename, bool bReadWrite)
 }
 
 
+void tmGISDataRaster::UseExisting (const wxString & filename, GDALDatasetH hdst){
+    tmGISData::Open(filename);
+    m_DataSet = static_cast<GDALDataset * >(hdst);
+}
+
+
 
 tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 {
