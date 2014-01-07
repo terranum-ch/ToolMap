@@ -38,6 +38,7 @@ void tmExportManager::InitMemberValues()
 	m_ProjMem = NULL;
     m_UseFastExport = true;
     m_ExportAttributCode = false; // default is to export attribut enumeration description
+    m_Scale = NULL;
 }
 
 
@@ -77,12 +78,13 @@ tmExportManager::~tmExportManager()
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-void tmExportManager::Create(wxWindow * parent, DataBaseTM * database)
+void tmExportManager::Create(wxWindow * parent, DataBaseTM * database, tmGISScale * scale)
 {
 	wxASSERT (database);
 	//wxASSERT (parent);
 	m_pDB = database;
 	m_Parent = parent;
+    m_Scale = scale;
 }
 
 
@@ -93,10 +95,10 @@ void tmExportManager::Create(wxWindow * parent, DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-tmExportManager::tmExportManager(wxWindow * parent, DataBaseTM * database)
+tmExportManager::tmExportManager(wxWindow * parent, DataBaseTM * database, tmGISScale * scale)
 {
 	InitMemberValues();
-	Create(parent, database);
+	Create(parent, database, scale);
 }
 
 
@@ -224,47 +226,39 @@ bool tmExportManager::ExportSelected (PrjDefMemManage * localprojdef, tmLayerMan
  @author Lucien Schreiber (c) CREALP 2008
  @date 13 November 2008
  *******************************************************************************/
-bool tmExportManager::ExportLayers (PrjMemLayersArray * layers)
-{
+bool tmExportManager::ExportLayers (PrjMemLayersArray * layers){
 	wxASSERT(layers);
-	if (layers->GetCount() == 0)
+	if (layers->GetCount() == 0){
 		return false;
+    }
 	
 	// check and init path and export type
 	wxString szErr = _("Error, export directory isn't specified or isn't valid.");
-	if (!IsExportPathValid())
-	{
-		
-		wxMessageBox(szErr, _("Error exporting project"),
-					 wxOK | wxICON_ERROR ,m_Parent);
+	if (!IsExportPathValid()){
+		wxMessageBox(szErr, _("Error exporting project"), wxOK | wxICON_ERROR ,m_Parent);
 		return false;
 	}
-	
 	
 	// get frame
 	int iFrameVertex = 0;
 	wxRealPoint * pFrame = GetFrame(iFrameVertex);
-	if (!pFrame)
+	if (!pFrame) {
 		return false;
-	
-	CreateProgress(layers->GetCount(),
-				   layers->Item(0)->m_LayerName);
+    }
+	CreateProgress(layers->GetCount(), layers->Item(0)->m_LayerName);
 	
 	bool bExportResult = true;
-	// for each layer
-	for (unsigned int i = 0; i<layers->GetCount();i++)
-	{
+	for (unsigned int i = 0; i<layers->GetCount();i++){
 		// update progress dialog
 		ProjectDefMemoryLayers * myLayer = layers->Item(i);
-		if(UpdateProgress(i, myLayer->m_LayerName))
-		{
+		if(UpdateProgress(i, myLayer->m_LayerName)){
 			wxLogMessage(_("Export cancelled by user."));
 			break;
 		}
 		
-		if (!ExportLayer(myLayer, pFrame, iFrameVertex))
+		if (!ExportLayer(myLayer, pFrame, iFrameVertex)){
 			bExportResult = false;
-		
+        }
 	}
 	
 	DeleteProgress();
@@ -693,7 +687,9 @@ bool tmExportManager::_ExportPolyGIS (ProjectDefMemoryLayers * layer){
 		wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
 		return true;
 	}*/
-	
+    
+    wxASSERT(m_Scale);
+	m_ExportData->SetCropBufferDistance(m_Scale->MetersToRealUnits(1));
 	if (m_ExportData->WritePolygons(layer)==false) {
 		return false;
 	}

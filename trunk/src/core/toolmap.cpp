@@ -1818,7 +1818,7 @@ void ToolMapFrame::OnExportSelected (wxCommandEvent & event){
     PrjDefMemManage myCopyProj;
     myCopyProj = *memProj;
 
-    tmExportManager myExport(this, m_PManager->GetDatabase());
+    tmExportManager myExport(this, m_PManager->GetDatabase(), m_LayerManager->GetScale());
     if (myExport.ExportSelected(&myCopyProj, m_LayerManager)==true){
         wxLogDebug(_T("Exporting layer(s) success"));
     }
@@ -1877,7 +1877,7 @@ void ToolMapFrame::OnExportConcatenated (wxCommandEvent & event){
     PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
     PrjDefMemManage myCopyProj;
     myCopyProj = *memProj;
-    tmExportManager myExport(this, m_PManager->GetDatabase());
+    tmExportManager myExport(this, m_PManager->GetDatabase(), m_LayerManager->GetScale());
 
     if (mySelection.Index(0) != wxNOT_FOUND) {
         if( myExport.ExportConcatenated(&myCopyProj, LAYER_LINE) == false){

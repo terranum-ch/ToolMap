@@ -52,6 +52,7 @@ class tmExportManager : public wxObject
 	private:
 		DataBaseTM * m_pDB;
 		wxWindow * m_Parent;
+        tmGISScale * m_Scale;
 		PRJDEF_EXPORT_TYPE m_ExportType;
 		wxFileName m_ExportPath;
 		tmExportData * m_ExportData;
@@ -97,8 +98,8 @@ class tmExportManager : public wxObject
 		// construction and destruction
 		tmExportManager();
 		~tmExportManager();
-		tmExportManager(wxWindow * parent, DataBaseTM * database);
-		void Create (wxWindow * parent, DataBaseTM * database);
+		tmExportManager(wxWindow * parent, DataBaseTM * database, tmGISScale * scale);
+		void Create (wxWindow * parent, DataBaseTM * database, tmGISScale * scale);
 		
 		// Export public function
 		//bool ExportAll (PrjDefMemManage * localprojdef);

@@ -769,7 +769,7 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	
 	// Crop with a bigger frame to ensure all intersections will be created
 	// Bug #140
-	OGRGeometry * myBigFrame =  SafeBuffer(m_Frame, 1);
+	OGRGeometry * myBigFrame =  SafeBuffer(m_Frame, GetCropBufferDistance());
 	wxASSERT(myBigFrame);
 	
 	OGRMultiLineString * myNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
@@ -1100,25 +1100,21 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
 
 
 
-OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, int size)
-{
+OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, double size){
 	wxASSERT (ogrgeom);
 	GEOSGeom geom = ogrgeom->exportToGEOS();
 	GEOSGeom geombuffer;
 	OGRGeometry * returnbuffer = NULL;
 
-	if (geom != NULL)
-	{
+	if (geom != NULL){
 		geombuffer = GEOSBuffer(geom, size, 30);
 		GEOSGeom_destroy(geom);
 
-		if (geombuffer != NULL)
-		{
+		if (geombuffer != NULL){
 			returnbuffer = SafeCreateFromGEOS(geombuffer);
 			GEOSGeom_destroy(geombuffer);
 		}
 	}
-
 	return returnbuffer;
 }
 
