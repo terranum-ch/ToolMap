@@ -107,6 +107,8 @@ void tmLayerManager::InitMemberValue()
 	m_Drawer.SetSelectedData(&m_SelectedData);
 	m_BlockRefresh = false;
     m_MemoryPrjRef = NULL;
+    m_isUsingRAM = true;
+    m_InternetRefreshTime = 250;
 }
 
 
@@ -633,6 +635,9 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
     
 	if (item->GetType() == TOC_NAME_WEB) {
         item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
+        wxASSERT(item->GetWebFrameRef());
+        item->GetWebFrameRef()->SetUsingRAM(m_isUsingRAM);
+        item->GetWebFrameRef()->SetInternetRefreshTime(m_InternetRefreshTime);
     }
 
     // try to open the file for getting the spatial type
@@ -1836,5 +1841,36 @@ bool tmLayerManager::HasZoomPrevious(){
 	return bReturn;
 }
 
+
+void tmLayerManager::SetWebRasterPreferences (bool usingram, int internetrefreshtime){
+	// storing parameters for new web layer
+    m_isUsingRAM = usingram;
+    m_InternetRefreshTime = internetrefreshtime;
+    
+    int iRank = 0;
+	tmLayerProperties * pLayerProp = NULL;
+	tmRealRect myExtent (0,0,0,0);
+	// prepare loading of MySQL data
+	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
+	while (1){
+		if (iRank == 0){
+			pLayerProp = m_TOCCtrl->IterateLayers(true);
+		}
+		else{
+			pLayerProp = m_TOCCtrl->IterateLayers(false);
+		}
+		
+		if (pLayerProp == NULL){
+			break;
+        }
+		
+        if (pLayerProp->GetWebFrameRef() != NULL) {
+            pLayerProp->GetWebFrameRef()->SetInternetRefreshTime(internetrefreshtime);
+            pLayerProp->GetWebFrameRef()->SetUsingRAM(usingram);
+        }
+        
+		iRank ++;
+	}
+}
 
 
