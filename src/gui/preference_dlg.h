@@ -42,6 +42,9 @@ private:
     wxCheckBox* m_RelPathCtrl;
     wxCheckBox* m_BuildOverviewCtrl;
 
+    wxSlider* m_WaitingTimeCtrl;
+    wxRadioButton* m_RamCtrl;
+    wxRadioButton* m_MemoryCtrl;
 	
 	void _CreateControls();
 	
