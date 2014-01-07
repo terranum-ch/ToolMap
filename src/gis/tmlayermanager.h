@@ -71,6 +71,8 @@ private:
     bool m_BlockRefresh;
     tmMemoryZoomManager m_ZoomManager;
     PrjDefMemManage * m_MemoryPrjRef;
+    bool m_isUsingRAM;
+    long m_InternetRefreshTime;
     
     // shared member data with thread
     //tmTHREAD_STATUS m_Shared_ThreadStatus;
@@ -181,6 +183,8 @@ public:
     
     void SetSelectionColour(const wxColour & col){m_SelectedData.SetSelectionColour(col);}
     void SetSelectionHalo (bool hashalo) {m_SelectedData.SetSelectionHalo(hashalo);}
+    
+    void SetWebRasterPreferences (bool usingram, int internetrefreshtime);
 };
 
 #endif

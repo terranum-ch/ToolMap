@@ -1,10 +1,10 @@
 /***************************************************************************
  tmwebframe
  -------------------
- copyright            : (C) 2013 Lucien Schreiber 
+ copyright            : (C) 2013 Lucien Schreiber
  email                : lucien.schreiber at gmail dot com
  ***************************************************************************/
- 
+
 #ifndef tmwebframe_H_
 #define tmwebframe_H_
 
@@ -21,7 +21,6 @@
 const int ID_WEBVIEW_CONTROL = wxWindow::NewControlId();
 const wxString WEBVIEW_WINDOW_NAME = _T("WEBVIEW_FRAME");
 const int WEB_MAX_WAIT_LOADING_MS = 5000;
-const int WEB_WAIT_ZOOMING_MS = 300;
 
 enum TMWEBFRAME_STATUS {
     TMWEBFRAME_STATUS_NONE = 0,
@@ -39,6 +38,8 @@ private:
     wxString m_PageName;
     wxTimer m_LoadingTimer;
     wxTimer m_ZoomingTimer;
+    int m_InternetRefreshTime;
+    bool m_IsUsingRAM;
     
     void _CreateControls();
     void OnEventLoaded (wxWebViewEvent & event);
@@ -58,6 +59,10 @@ public:
     void ZoomToExtend (tmRealRect coord);
     bool HasZoomed ();
     wxBitmap * GetPageAsBitmap (const wxSize new_size= wxDefaultSize);
+    
+    bool IsUsingRAM () {return m_IsUsingRAM;}
+    void SetUsingRAM (bool useram) {m_IsUsingRAM = useram;}
+    void SetInternetRefreshTime (int refreshtime) {m_InternetRefreshTime = refreshtime;}
 };
 
 

@@ -22,6 +22,8 @@ tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, con
     m_PageName = wxEmptyString;
     m_LoadingTimer.SetOwner(this);
     m_ZoomingTimer.SetOwner(this);
+    m_InternetRefreshTime = 250;
+    m_IsUsingRAM = true;
 }
 
 
@@ -159,9 +161,14 @@ bool tmWebFrame::HasZoomed(){
         return true;
     }
     
+    if (m_InternetRefreshTime == 0) {
+        return true;
+    }
+    
+    
     if (m_ZoomingTimer.IsRunning() == false) {
-        m_ZoomingTimer.StartOnce(WEB_WAIT_ZOOMING_MS);
-        wxLogMessage("Starting zooming timer");
+        m_ZoomingTimer.StartOnce(m_InternetRefreshTime);
+        wxLogMessage("Starting refresh timer");
     }
     else {
         wxTheApp->Yield();
