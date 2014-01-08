@@ -502,7 +502,6 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 void tmLayerManager::AddWebLayer (){
     wxString myWebPages[] = {
         _T("google satellite"), _T("google streets"),
-        _T("yahoo satellite"),_T("yahoo streets"),
         _T("bing satellite"), _T("bing streets")
     };
     wxSingleChoiceDialog myDlg (m_Parent, _("Select web layer to add:"), _("Add web layer"), sizeof(myWebPages) / sizeof(wxString), &myWebPages[0]);
