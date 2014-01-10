@@ -67,7 +67,6 @@ class PrjDefMemManage
 		int m_iActualCodedVal;
 		int m_iActualLayers;
 		
-		
 		// member functions
 		void InitDefaultValues();
 		
