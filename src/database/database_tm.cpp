@@ -599,21 +599,32 @@ bool DataBaseTM::GetProjectData (PrjDefMemManage * pPrjDefinition){
 	wxASSERT(myResults.GetCount() == 4);
 		
 	// UNITS
+    bool bFoundUnit = false;
 	for (i = 0; i<PRJDEF_UNIT_TYPE_NUMBER; i++){
 		if (myResults.Item(0) == PRJDEF_UNIT_TYPE_STRING[i]){
 			pPrjDefinition->m_PrjUnitType = (PRJDEF_UNIT_TYPE) i;
+            bFoundUnit = true;
 			break;
 		}
 	}
-	
+    if (bFoundUnit == false) {
+        wxLogWarning(_("Units unknown (%s)\ndefaulting to Meters!"), myResults.Item(0));
+    }
+    
 	// PROJECTION
+    bool bFoundProjection = false;
 	for (i = 0; i< PRJDEF_PROJ_TYPE_NUMBER; i++){
 		if(myResults.Item(1) == PRJDEF_PROJ_TYPE_STRING[i]){
 			pPrjDefinition->m_PrjProjType = (PRJDEF_PROJ_TYPE) i;
+            bFoundProjection = true;
 			break;
 		}
 	}
+    if (bFoundProjection == false) {
+        wxLogWarning(_("Projection unknown (%s)\ndefaulting to Swiss projectiong (CH1903)!"), myResults.Item(1));
+    }
 	
+    
 	pPrjDefinition->m_PrjName = DataBaseGetName();
 	pPrjDefinition->m_PrjPath = DataBaseGetPath();
 	pPrjDefinition->m_PrjAuthors = myResults.Item(2);

@@ -46,7 +46,6 @@ void PrjDefMemManage::InitDefaultValues()
 	m_PrjUnitType	= UNIT_METERS;
 	m_PrjProjType	= PROJ_SWISSPROJ;
 	
-	
 	m_pActiveLayer = NULL;
 	m_pActiveField = NULL;
 	m_iActualObj = 0;
