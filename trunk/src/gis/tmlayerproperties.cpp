@@ -260,7 +260,7 @@ void tmLayerProperties::SetVisible(bool value) {
     
     // special behavior for web raster
     if (m_LayerVisible == true) {
-        GetWebFrameRef()->Show();
+        GetWebFrameRef()->ShowBehindParent();
     }
     else {
         GetWebFrameRef()->Hide();
@@ -294,7 +294,9 @@ void tmLayerProperties::SetWebFrame (wxWindow * parent, wxWindowID id,  const wx
 		return;
 	}
 	m_WebFrame = new tmWebFrame(parent, id, size);
-    m_WebFrame->Show();
+    if (IsVisible() == true) {
+        m_WebFrame->ShowBehindParent();
+    }
 }
 
 
