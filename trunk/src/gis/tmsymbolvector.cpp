@@ -23,18 +23,18 @@
 #include "tmsymbolvectorpoint.h"
 #include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
+#include "../gui/tmlabel_dlg.h"
 
 
-tmSymbolVector::tmSymbolVector()
-{
-	
-	
+
+tmSymbolVector::tmSymbolVector(){
+    m_LabelFieldsName.Clear();
+    m_LabelSeparatorTxt = _T(" | ");
 }
 
 
 
-tmSymbolVector::~tmSymbolVector()
-{
+tmSymbolVector::~tmSymbolVector(){
 	
 }
 
@@ -135,4 +135,13 @@ tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATI
 	}
 	
 }
+
+
+int tmSymbolVector::ShowLabelDialog (wxWindow * parent, tmLayerProperties * properties, const wxPoint & pos){
+    tmLabelDLG myDlg (parent, properties, pos);
+    return myDlg.ShowModal();
+}
+
+
+
 

@@ -34,6 +34,7 @@
 #include "tmlayerpropertiesdef.h"						// for tmLayerProperties definition
 
 class DataBaseTM;
+class tmLayerProperties;
 
 class tmSymbol : public wxObject
 	{
@@ -59,6 +60,8 @@ class tmSymbol : public wxObject
 		
 		int ShowSymbologyDialog (wxWindow * parent,
 								 const wxPoint & dlgpos = wxDefaultPosition);
+        virtual int ShowLabelDialog (wxWindow * parent, tmLayerProperties * properties, const wxPoint & pos = wxDefaultPosition);
+        
 		virtual bool Serialize(tmSerialize &s);
 		virtual int GetTransparency(){return 0;}
 		void SetDatabase (DataBaseTM * database){m_pDB = database;}

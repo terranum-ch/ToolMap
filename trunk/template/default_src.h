@@ -2,7 +2,7 @@
  name.h
  Display context help for a dialog
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2014 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,16 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-// comment doxygen
-
-
 #ifndef NAME_H
 #define NAME_H
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif

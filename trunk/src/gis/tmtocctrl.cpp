@@ -29,6 +29,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
+DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_START)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
 DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
@@ -54,6 +55,7 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
     EVT_MENU (ID_TOCMENU_SHOW_WEBFRAME, tmTOCCtrl::OnShowWebFrame)
+    EVT_MENU (ID_TOCMENU_LABELS, tmTOCCtrl::OnShowLabels)
     EVT_PAINT(tmTOCCtrl::OnPaint)
 	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
 	EVT_TREE_BEGIN_DRAG(wxID_ANY, tmTOCCtrl::OnDragStart)
@@ -1080,6 +1082,20 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 
 	wxASSERT(item->GetSymbolRef());
 	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
+	Evt.SetClientData(item);
+	GetEventHandler()->AddPendingEvent(Evt);
+}
+
+
+void tmTOCCtrl::OnShowLabels (wxCommandEvent & event){
+    // get selected item
+	wxTreeItemId selected = GetSelection();
+	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
+    if (item == NULL) {
+        return;
+    }
+	wxASSERT(item->GetSymbolRef());
+	wxCommandEvent Evt (tmEVT_LM_SHOW_LABELS, wxID_ANY);
 	Evt.SetClientData(item);
 	GetEventHandler()->AddPendingEvent(Evt);
 }
