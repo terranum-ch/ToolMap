@@ -467,6 +467,10 @@ bool tmProjectUpdater::_227to228(){
     if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
         return false;
     }
+    myAlterQuery = _T("UPDATE prj_settings SET PRJ_PROJECTION = \"Swiss projection (CH1903)\"");
+    if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+        return false;
+    }
     return true;
 }
 
