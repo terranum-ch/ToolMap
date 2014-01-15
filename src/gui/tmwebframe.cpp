@@ -24,6 +24,7 @@ tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, con
     m_ZoomingTimer.SetOwner(this);
     m_InternetRefreshTime = 250;
     m_IsUsingRAM = true;
+    m_Parent = parent;
 }
 
 
@@ -48,7 +49,7 @@ void tmWebFrame::OnEventError (wxWebViewEvent & event){
 
 
 void tmWebFrame::OnClose (wxCloseEvent & event){
-    Hide();
+    wxMessageBox(_("Hide web layer to close this Window!"), _("Unable to close"));
     event.Veto();
 }
 
@@ -232,5 +233,13 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     return new wxBitmap(myTmpBmp);
 //#endif
     return NULL;
+}
+
+
+
+void tmWebFrame::ShowBehindParent(){
+    wxASSERT(m_Parent);
+    Show();
+    m_Parent->Raise();
 }
 

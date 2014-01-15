@@ -33,6 +33,7 @@ enum TMWEBFRAME_STATUS {
 class tmWebFrame : public wxFrame
 {
 private:
+    wxWindow * m_Parent;
     wxWebView * m_WebView;
     TMWEBFRAME_STATUS m_Status;
     wxString m_PageName;
@@ -63,6 +64,7 @@ public:
     bool IsUsingRAM () {return m_IsUsingRAM;}
     void SetUsingRAM (bool useram) {m_IsUsingRAM = useram;}
     void SetInternetRefreshTime (int refreshtime) {m_InternetRefreshTime = refreshtime;}
+    void ShowBehindParent();
 };
 
 

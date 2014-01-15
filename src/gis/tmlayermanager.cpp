@@ -201,7 +201,6 @@ void tmLayerManager::FillTOCArray()
     bool myRelativePath = myConfig->ReadBool("relative_path", true);
     myConfig->SetPath("..");
     
-    
 	tmLayerProperties * lyrproptemp = NULL;
 	while (1)
 	{
