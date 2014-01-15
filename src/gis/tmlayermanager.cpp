@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED,tmLayerManager::OnScaleChanged)
 	EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
+	EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_LABELS, tmLayerManager::OnDisplayLabels)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
@@ -932,6 +933,21 @@ void tmLayerManager::OnDisplayProperties (wxCommandEvent & event)
     }
     
 	if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl,wxGetMousePosition())==wxID_OK){
+		ReloadProjectLayers(false);
+	}
+}
+
+
+
+void tmLayerManager::OnDisplayLabels (wxCommandEvent & event){
+    tmLayerProperties * itemProp = (tmLayerProperties*) event.GetClientData();
+	if (itemProp == NULL){
+		return;
+	}
+    wxASSERT(m_DB);
+    itemProp->GetSymbolRef()->SetDatabase(m_DB);
+	itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());
+    if (itemProp->GetSymbolRef()->ShowLabelDialog(m_TOCCtrl, itemProp, wxGetMousePosition())==wxID_OK){
 		ReloadProjectLayers(false);
 	}
 }

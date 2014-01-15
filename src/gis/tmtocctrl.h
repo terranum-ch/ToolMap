@@ -44,6 +44,7 @@ DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_ADD, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_UPDATE, -1)
 DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES, -1)
+DECLARE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS, -1);
 DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_START, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_STOP,-1)
 DECLARE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED, -1)
@@ -94,6 +95,7 @@ class tmTOCCtrl  : public wxTreeCtrl
 		
 		// contextual menu event functions
 		void OnShowProperties (wxCommandEvent & event);
+        void OnShowLabels (wxCommandEvent & event);
 		void OnVertexMenu (wxCommandEvent & event);
 		void OnEditingChange (wxCommandEvent & event);
         void OnShowWebFrame (wxCommandEvent & event);

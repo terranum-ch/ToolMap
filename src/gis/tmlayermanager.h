@@ -150,6 +150,7 @@ public:
     void OnShowLayer (wxCommandEvent & event);
     void OnScaleChanged (wxCommandEvent & event);
     void OnDisplayProperties(wxCommandEvent & event);
+    void OnDisplayLabels (wxCommandEvent & event);
     
     // for logging (only one thread may acces the GUI.
     static void EnableLogging (bool enable = true) {m_LogOn = enable;}

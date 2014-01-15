@@ -73,7 +73,7 @@ tmSymbolDLG *  tmSymbol::GetSymbolDialog (wxWindow * parent, const wxPoint & dlg
  @param metadata String containing html formatted metadata for displaying in the
  first dialog tab.
  @param dlgpos Desired position for the dialog
- @return  wxID_OK if user select 'ok' in the symbology dialog, wxID_CANCER
+ @return  wxID_OK if user select 'ok' in the symbology dialog, wxID_CANCEL
  otherwise
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 October 2008
@@ -91,6 +91,12 @@ int tmSymbol::ShowSymbologyDialog (wxWindow * parent,
 		
 	wxDELETE(mydlg);
 	return iRetVal;
+}
+
+
+// implemented in child class
+int tmSymbol::ShowLabelDialog (wxWindow * parent, tmLayerProperties * properties, const wxPoint & pos){
+    return wxID_CANCEL;
 }
 
 

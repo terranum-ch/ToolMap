@@ -94,8 +94,10 @@ void tmTOCCtrlMenu::_CreateTOCShowVertex (){
 
 
 void tmTOCCtrlMenu::_CreateTOCProperties (){
+    if (m_LayerProperties->GetType() == TOC_NAME_SHP) {
+        Append(ID_TOCMENU_LABELS, _("Labels..."));
+    }
 	Append(ID_TOCMENU_PROPERTIES, _("Symbology..."));
-	
 }
 
 
