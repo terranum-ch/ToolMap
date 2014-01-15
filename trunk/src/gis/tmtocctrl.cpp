@@ -106,14 +106,14 @@ void tmTOCCtrl::OnPaint(wxPaintEvent & event){
         wxBitmap myTempBmp (16,16);
         wxMemoryDC myDC;
         myDC.SelectObject(myTempBmp);
-        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxSOLID));
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), 0);
         
         // checked
         wxBitmap myTempBmp2 (16,16);
         myDC.SelectObject(myTempBmp2);
-        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxSOLID));
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
         myDC.SelectObject(wxNullBitmap);

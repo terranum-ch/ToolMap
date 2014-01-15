@@ -98,7 +98,7 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 
 	m_TextVersion = new wxStaticText( myPanelImg, wxID_ANY, GetVersionText(), wxDefaultPosition, wxDefaultSize, 0 );
 	m_TextVersion->Wrap( -1 );
-	m_TextVersion->SetFont( wxFont( 18, 70, 90, 92, false, wxEmptyString ) );
+	m_TextVersion->SetFont( wxFontInfo(18).Bold() );
 
 	bSizer37->Add( m_TextVersion, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -139,7 +139,7 @@ void tmAboutDLG::CreateControls(wxWindow * parent)
 #ifdef __WINDOWS__
 	mySize++;
 #endif
-	m_staticText22->SetFont( wxFont( mySize-1, 70, 90, 90, false, wxEmptyString ) );
+	m_staticText22->SetFont(  wxFontInfo(mySize-1));
 
 	bSizer40->Add( m_staticText22, 0, wxALL, 5 );
 

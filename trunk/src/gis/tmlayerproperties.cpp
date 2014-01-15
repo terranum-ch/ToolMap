@@ -253,6 +253,18 @@ void tmLayerProperties::SetSpatialType(TM_GIS_SPATIAL_TYPES value) {
 
 void tmLayerProperties::SetVisible(bool value) {
     m_LayerVisible = value;
+    
+    if (GetWebFrameRef() == NULL) {
+        return;
+    }
+    
+    // special behavior for web raster
+    if (m_LayerVisible == true) {
+        GetWebFrameRef()->Show();
+    }
+    else {
+        GetWebFrameRef()->Hide();
+    }
 }
 
 void tmLayerProperties::SetType(TOC_GENERIC_NAME value) {
