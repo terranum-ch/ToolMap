@@ -38,8 +38,78 @@ tmLabelDLG::~tmLabelDLG(){
 	m_AddFieldBtn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmLabelDLG::OnAddField ), NULL, this );
 	m_AddTextBtn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmLabelDLG::OnAddText ), NULL, this );
 	m_ClearBtn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( tmLabelDLG::OnClear ), NULL, this );
-	
 }
+
+
+bool tmLabelDLG::TransferDataToWindow(){
+    m_LabelDefinition =  m_LayerProperties->GetLabelDefinition();
+    m_CheckActiveLabelCtrl->SetValue(m_LayerProperties->IsLabelVisible());
+    
+    _UpdatePreview();
+    return true;
+}
+
+void tmLabelDLG::_UpdatePreview(){
+    m_PreviewCtrl->Clear();
+    //m_PreviewCtrl->WriteText(m_LabelDefinition);
+    //return;
+    
+    if (m_LabelDefinition == wxEmptyString) {
+        m_PreviewCtrl->BeginItalic();
+        m_PreviewCtrl->SetValue(_("Nothing defined!"));
+        m_PreviewCtrl->EndItalic();
+        return;
+    }
+    
+    wxArrayString myArray = wxStringTokenize(m_LabelDefinition, _T(";"), wxTOKEN_RET_EMPTY_ALL);
+    myArray.RemoveAt(myArray.GetCount()-1);
+    
+    for (unsigned int i = 0; i< myArray.GetCount(); i++) {
+        wxString myText = myArray.Item(i);
+        if (myText.IsEmpty()) {
+            m_PreviewCtrl->WriteText(_T(";"));
+            continue;
+        }
+        
+        // field
+        if (myText.Len() > 3 && myText.StartsWith(_T("${")) && myText.Last() == '}') {
+            m_PreviewCtrl->BeginBold();
+            m_PreviewCtrl->BeginUnderline();
+            m_PreviewCtrl->WriteText(myText.SubString(2, myText.Len() -2));
+            m_PreviewCtrl->EndUnderline();
+            m_PreviewCtrl->EndBold();
+            continue;
+        }
+        
+        // text normal
+        m_PreviewCtrl->WriteText(myText);
+    }
+}
+
+
+void tmLabelDLG::OnAddField( wxCommandEvent& event ) {
+    m_LabelDefinition.Append( _T("${") );
+    m_LabelDefinition.Append( m_FieldCtrl->GetStringSelection() );
+    m_LabelDefinition.Append( _T("};") );
+    _UpdatePreview();
+}
+
+
+void tmLabelDLG::OnAddText( wxCommandEvent& event ) {
+    if (m_TextCtrl->GetValue() != _T(";")) {
+        m_LabelDefinition.Append(m_TextCtrl->GetValue());
+    }
+    m_LabelDefinition.Append(_T(";"));
+    _UpdatePreview();
+}
+
+
+void tmLabelDLG::OnClear( wxCommandEvent& event ) {
+    m_LabelDefinition.Clear();
+    _UpdatePreview();
+}
+
+
 
 
 void tmLabelDLG::_CreateControls(){
@@ -100,7 +170,8 @@ void tmLabelDLG::_CreateControls(){
 	wxStaticBoxSizer* sbSizer8;
 	sbSizer8 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preview") ), wxVERTICAL );
 	
-	m_PreviewCtrl = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize (-1, 50), wxHW_SCROLLBAR_AUTO );
+	m_PreviewCtrl = new wxRichTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize (-1, 50));
+    m_PreviewCtrl->SetEditable(false);
 	//m_PreviewCtrl->SetMinSize( wxSize( 100,100 ) );
 	
 	sbSizer8->Add( m_PreviewCtrl, 1, wxEXPAND, 5 );

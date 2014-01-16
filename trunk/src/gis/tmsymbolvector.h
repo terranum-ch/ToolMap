@@ -27,10 +27,7 @@
 #include "tmsymboldlg.h"
 
 class tmSymbolVector : public tmSymbol{
-private:
-    wxArrayString m_LabelFieldsName;
-    wxString m_LabelSeparatorTxt;
-    
+private:    
     virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
     
 public:

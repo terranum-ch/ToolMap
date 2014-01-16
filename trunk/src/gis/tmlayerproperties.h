@@ -57,6 +57,9 @@ class tmLayerProperties : public wxTreeItemData
 		tmSymbolRuleManager * m_SymbolRulesManager;
         tmWebFrame * m_WebFrame;
         
+        bool m_LabelIsVisible;
+        wxString m_LabelDefinition;
+        
         void InitMemberValues();
 		
 	public:
@@ -81,6 +84,11 @@ class tmLayerProperties : public wxTreeItemData
         void SetVertexFlags(int value);
         inline const bool IsEditing() const;
         void SetEditing(bool value);
+        
+        void SetLabelVisible (bool value) {m_LabelIsVisible = value;}
+        bool IsLabelVisible () {return m_LabelIsVisible;}
+        void SetLabelDefinition (const wxString & value) {m_LabelDefinition = value;}
+        wxString GetLabelDefinition () {return m_LabelDefinition;}
        
         tmSymbol * GetSymbolRef();
         void SetSymbolDirectly(tmSymbol * value);
