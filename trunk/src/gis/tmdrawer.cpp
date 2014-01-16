@@ -1039,10 +1039,10 @@ void tmDrawer::_LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata){
 	
 	// create pen based on symbology
 	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemprop->GetSymbolRef();
-	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
-	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
+	//wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
+	//wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
 	//wxPen mySHaloPen (*wxWHITE, pSymbol->GetRadius() + 2);
-	dc.SetPen(myPen);
+	dc.SetTextForeground(pSymbol->GetColour());
 	
     OGRFeature * pFeat = NULL;
 	while ( (pFeat = pVect->GetNextFeature()) != NULL ){

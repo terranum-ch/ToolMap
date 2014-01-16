@@ -326,6 +326,8 @@ tmLayerProperties::tmLayerProperties (tmLayerProperties & layerprop)
 	m_LayerVertexFlags = layerprop.m_LayerVertexFlags;
 	m_LayerEditing = layerprop.m_LayerEditing;
 	m_WebFrame = layerprop.m_WebFrame;
+    m_LabelIsVisible = layerprop.m_LabelIsVisible;
+    m_LabelDefinition = layerprop.m_LabelDefinition;
 }
 
 
