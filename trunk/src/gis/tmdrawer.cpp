@@ -1069,8 +1069,14 @@ void tmDrawer::_LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata){
             
             // field
             if (myText.Len() > 3 && myText.StartsWith(_T("${")) && myText.Last() == '}') {
-                wxString myValue = pFeat->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8));
-                myLabelText.Append(myValue);
+#ifdef __WXMSW__
+                const char * myValue = pFeat->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8));
+                wxString myVal (myValue, wxConvUTF8);
+                myLabelText.Append(myVal);
+#else
+                wxString myVal (pFeat->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8)));
+                myLabelText.Append(myVal);
+#endif
                 continue;
             }
             
