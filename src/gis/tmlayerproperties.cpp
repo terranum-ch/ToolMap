@@ -41,7 +41,8 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerEditing = false;
     m_SymbolRulesManager = new tmSymbolRuleManager(this);
     m_WebFrame = NULL;
-    
+    m_LabelIsVisible = false;
+    m_LabelDefinition = wxEmptyString;    
 }
 
 
