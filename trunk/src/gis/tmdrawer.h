@@ -81,6 +81,8 @@ private:
     bool DrawRaster (tmLayerProperties * itemProp, tmGISData * pdata);
     bool _DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen);
     
+    void _LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata);
+    
     
     //void DrawMemoryDataLine (tmGISData * data, tmLayerProperties * layerprop, wxClientDC * dc);
     
