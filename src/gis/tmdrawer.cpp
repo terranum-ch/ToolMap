@@ -138,6 +138,7 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 			else {
 				DrawPoints(itemProp, pdata);
 			}
+            _LabelPoint(itemProp, pdata);
 			break;
 		case LAYER_SPATIAL_POLYGON:
 			DrawPolygons(itemProp, pdata);
@@ -1015,6 +1016,75 @@ bool tmDrawer::DrawPointsRules (tmLayerProperties * itemProp, tmGISData * pdata)
 	return true;
 }
 
+
+
+void tmDrawer::_LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata){
+    if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
+        return;
+    }
+    
+    // define spatial filter
+	tmGISDataVector * pVect = (tmGISDataVector*) pdata;
+    pVect->SetAttributFilter(wxEmptyString);
+	if(!pVect->SetSpatialFilter(m_spatFilter,itemprop->GetType()))
+	{
+		if (IsLoggingEnabled()){
+			wxLogError(_T("Error setting spatial filter"));
+		}
+		return;
+	}
+    
+    wxMemoryDC dc;
+	dc.SelectObject(*m_bmp);
+	
+	// create pen based on symbology
+	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemprop->GetSymbolRef();
+	wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
+	wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
+	//wxPen mySHaloPen (*wxWHITE, pSymbol->GetRadius() + 2);
+	dc.SetPen(myPen);
+	
+    OGRFeature * pFeat = NULL;
+	while ( (pFeat = pVect->GetNextFeature()) != NULL ){
+        OGRPoint * myPoint = static_cast<OGRPoint*>(pFeat->GetGeometryRef());
+        if (myPoint == NULL ) {
+            continue;
+        }
+        
+        wxRealPoint myPtReal (myPoint->getX(), myPoint->getY());
+        wxPoint myPtPx = m_scale->RealToPixel(myPtReal);
+        myPtPx += wxPoint(2,2);
+        
+        wxString myLabelText;
+        
+        // process label definition
+        wxArrayString myArray = wxStringTokenize(itemprop->GetLabelDefinition(), _T(";"), wxTOKEN_RET_EMPTY_ALL);
+        myArray.RemoveAt(myArray.GetCount()-1);
+        for (unsigned int i = 0; i< myArray.GetCount(); i++) {
+            wxString myText = myArray.Item(i);
+            if (myText.IsEmpty()) {
+                myLabelText.Append(_T(";"));
+                continue;
+            }
+            
+            // field
+            if (myText.Len() > 3 && myText.StartsWith(_T("${")) && myText.Last() == '}') {
+                wxString myValue = pFeat->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8));
+                myLabelText.Append(myValue);
+                continue;
+            }
+            
+            // text normal
+            myLabelText.Append(myText);
+        }
+
+        dc.DrawText(myLabelText, myPtPx.x, myPtPx.y);
+        OGRFeature::DestroyFeature(pFeat);
+	}
+	
+	dc.SelectObject(wxNullBitmap);
+	return;
+}
 
 
 
