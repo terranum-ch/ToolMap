@@ -2306,14 +2306,11 @@ bool DataBaseTM::InitTOCGenericLayers()
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-tmLayerProperties * DataBaseTM::GetNextTOCEntry(bool userelativepath)
-{
+tmLayerProperties * DataBaseTM::GetNextTOCEntry(bool userelativepath){
 	wxArrayString myTempResults;
-	
-	if(DataBaseHasResults()==false)
-	{
+	if(DataBaseHasResults()==false){
 		wxString sSentence = _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
-		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS FROM ") + TABLE_NAME_TOC +
+		_T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS, LABEL_VISIBLE, LABEL_DEF FROM ") + TABLE_NAME_TOC +
 		_T(" ORDER by RANK");
 		
 		if (!DataBaseQuery(sSentence))
@@ -2323,18 +2320,16 @@ tmLayerProperties * DataBaseTM::GetNextTOCEntry(bool userelativepath)
 		}
 	}
 	
-	if (DataBaseGetNextResult(myTempResults)==false)
-	{
+	if (DataBaseGetNextResult(myTempResults)==false){
 		DataBaseClearResults();
 		return NULL;
 	}
 		
-	wxASSERT (myTempResults.GetCount() == 8);
+	wxASSERT (myTempResults.GetCount() == 10);
 	// parsing results
 	tmLayerProperties * myLayerProp = new tmLayerProperties();
 	myLayerProp->InitFromArray(myTempResults, userelativepath, DataBaseGetPath());
 	myTempResults.Clear();
-	
 	return myLayerProp;
 }
 
@@ -2402,24 +2397,27 @@ bool DataBaseTM::RemoveTOCLayer (const long & itemid)
 
 
 
-void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties * item, 
-										int itemRank,
-										const wxString & symbology)
-{
+void DataBaseTM::PrepareTOCStatusUpdate(wxString & sentence, tmLayerProperties * item, 	int itemRank, const wxString & symbology){
     wxString myPath = item->GetName().GetPath();
 	// converting path to windows path
 	// do nothing if not a windows path.
 	DataBaseTM::ConvertPath(myPath);
-
+    wxString myLabelDef = item->GetLabelDefinition();
+    myLabelDef.Replace(_T("\\"), _T("\\\\"));
+    myLabelDef.Replace(_T("'"), _T("\\'"));
+	myLabelDef.Replace(_T("\""), _T("\\\""));
+    
 	sentence.Append(wxString::Format(_T("UPDATE ")+ TABLE_NAME_TOC +
 									 _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
-									 _T(" VERTEX_FLAGS = %d, CONTENT_PATH=\"%s\" ")
+									 _T(" VERTEX_FLAGS = %d, CONTENT_PATH=\"%s\", LABEL_VISIBLE = %d, LABEL_DEF = \"%s\" ")
 									 _T("WHERE CONTENT_ID = %ld; "),
 									 item->IsVisible(),
 									 itemRank,
 									 symbology.c_str(),
 									 item->GetVertexFlags(),
                                      myPath,
+                                     item->IsLabelVisible(),
+                                     myLabelDef,
 									 item->GetID()));
 	
 }

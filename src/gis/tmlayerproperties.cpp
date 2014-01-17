@@ -59,6 +59,7 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array, bool userelat
 	long temptype = 0;
 	long tempstatus = 0;
 	long tempgeneric = 0;
+    long templabel = 0;
 	
 	array.Item(0).ToLong(&m_LayerID);
 	array.Item(1).ToLong(&temptype);
@@ -76,6 +77,15 @@ bool tmLayerProperties::InitFromArray(const wxArrayString & array, bool userelat
 	
 	wxString myVFlags = array.Item(7);
 	m_LayerVertexFlags = wxAtoi(myVFlags.c_str());
+    
+    array.Item(8).ToLong(&templabel);
+    if (templabel == 1) {
+        m_LabelIsVisible = true;
+    }
+    else {
+        m_LabelIsVisible = false;
+    }
+    m_LabelDefinition = array.Item(9);
 	
     // relative path stuff only for support layer
     if (m_LayerType < TOC_NAME_NOT_GENERIC){
