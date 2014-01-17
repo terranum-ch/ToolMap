@@ -83,6 +83,7 @@ private:
     
     void _LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata);
     void _LabelLine (tmLayerProperties * itemprop, tmGISData * pdata);
+    void _LabelPolygon (tmLayerProperties * itemprop, tmGISData * pdata);
     wxString _GetLabelText (const wxString & definition, OGRFeature * featureref);
     
     
