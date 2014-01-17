@@ -160,6 +160,17 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate(){
             myActualDBVersion = 229;
         }
     }
+    
+    // 229 -> 230
+    if (myActualDBVersion == 229) {
+        if (_229to230() == false) {
+            _SetVersion(229);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        }
+        else{
+            myActualDBVersion = 230;
+        }
+    }
 
 	_SetVersion(myActualDBVersion);
 	return tmPRJ_UPD_ERROR_OK;
@@ -479,10 +490,15 @@ bool tmProjectUpdater::_227to228(){
 bool tmProjectUpdater::_228to229(){
     // TOC_NAME_WEB is now 104 and TOC_NAME_SHP became 105.
     wxString myAlterQuery = _T("UPDATE prj_toc SET GENERIC_LAYERS=105  where CONTENT_NAME like \"%.shp\" and GENERIC_LAYERS=104");
-    if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false ) {
-        return false;
-    }
-    return true;
+    return m_pDB->DataBaseQueryNoResults(myAlterQuery);
+}
+
+
+
+bool tmProjectUpdater::_229to230(){
+    wxString myQuery = _T("ALTER TABLE prj_toc ADD COLUMN `LABEL_VISIBLE` tinyint(1) DEFAULT 0; ")
+    _T("ALTER TABLE prj_toc ADD COLUMN `LABEL_DEF` mediumtext DEFAULT NULL;");
+    return m_pDB->DataBaseQueryNoResults(myQuery);
 }
 
 
