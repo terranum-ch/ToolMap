@@ -743,7 +743,7 @@ bool DataBase::DataBaseStringEscapeQuery (const wxString & query, wxString & res
 	}
 
 	results = query;
-	results.Replace(_T("'"), _T("\\'"));
+    results.Replace(_T("'"), _T("\\'"));
 	results.Replace(_T("\""), _T("\\\""));
 	return true;
 }

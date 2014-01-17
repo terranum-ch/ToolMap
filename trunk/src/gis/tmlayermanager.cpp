@@ -162,8 +162,9 @@ bool tmLayerManager::InitLayerManager(DataBaseTM * db){
 bool tmLayerManager::UnInitLayerManager()
 {
 	// saving TOC status
-	if (m_TOCCtrl->IsTOCReady())
+	if (m_TOCCtrl->IsTOCReady()){
 		SaveTOCStatus();
+    }
 	
 	m_DB = NULL;
 	
@@ -236,10 +237,8 @@ void tmLayerManager::FillTOCArray()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008
  *******************************************************************************/
-bool tmLayerManager::SaveTOCStatus()
-{
+bool tmLayerManager::SaveTOCStatus(){
 	wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));
-	
 	tmLayerProperties * itemProp = NULL;
 	int iRank = m_TOCCtrl->GetCountLayers();
 	
@@ -251,19 +250,17 @@ bool tmLayerManager::SaveTOCStatus()
     myConfig->SetPath("..");
     
 	wxString sSentence = _T("");
-	while (1)
-	{
-		if (iRank == m_TOCCtrl->GetCountLayers())
-		{
+	while (1){
+		if (iRank == m_TOCCtrl->GetCountLayers()){
 			itemProp = m_TOCCtrl->IterateLayers(TRUE);
 		}
-		else
-		{
+		else{
 			itemProp = m_TOCCtrl->IterateLayers(FALSE);
 		}
 		
-		if (!itemProp)
+		if (!itemProp){
 			break;
+        }
 		
         // make path relative if file is valid!
         // only for support files
@@ -274,9 +271,9 @@ bool tmLayerManager::SaveTOCStatus()
                     itemProp->SetName(myLayerName);
                     //wxLogMessage(_("Relative path created: '%s'"), itemProp->GetName().GetFullPath());
                 }
-                else{
+                //else{
                     //wxLogMessage(_T("Converting '%s' to relative path isn't possible"), myLayerName.GetFullPath());
-                }
+                //}
             }
         }
         
