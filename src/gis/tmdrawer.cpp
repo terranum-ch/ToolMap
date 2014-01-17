@@ -1037,13 +1037,7 @@ void tmDrawer::_LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata){
     wxMemoryDC dc;
 	dc.SelectObject(*m_bmp);
 	
-	// create pen based on symbology
 	tmSymbolVectorPoint * pSymbol = (tmSymbolVectorPoint*) itemprop->GetSymbolRef();
-	//wxPen myPen (pSymbol->GetColour(),pSymbol->GetRadius());
-	//wxPen mySPen (m_SelMem->GetSelectionColour(), pSymbol->GetRadius());
-	//wxPen mySHaloPen (*wxWHITE, pSymbol->GetRadius() + 2);
-	dc.SetTextForeground(pSymbol->GetColour());
-	
     OGRFeature * pFeat = NULL;
 	while ( (pFeat = pVect->GetNextFeature()) != NULL ){
         OGRPoint * myPoint = static_cast<OGRPoint*>(pFeat->GetGeometryRef());
@@ -1055,43 +1049,59 @@ void tmDrawer::_LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata){
         wxPoint myPtPx = m_scale->RealToPixel(myPtReal);
         myPtPx += wxPoint(2,2);
         
-        wxString myLabelText;
+        wxString myLabelText = _GetLabelText(itemprop->GetLabelDefinition(), pFeat);
         
-        // process label definition
-        wxArrayString myArray = wxStringTokenize(itemprop->GetLabelDefinition(), _T(";"), wxTOKEN_RET_EMPTY_ALL);
-        myArray.RemoveAt(myArray.GetCount()-1);
-        for (unsigned int i = 0; i< myArray.GetCount(); i++) {
-            wxString myText = myArray.Item(i);
-            if (myText.IsEmpty()) {
-                myLabelText.Append(_T(";"));
-                continue;
-            }
-            
-            // field
-            if (myText.Len() > 3 && myText.StartsWith(_T("${")) && myText.Last() == '}') {
-#ifdef __WXMSW__
-                const char * myValue = pFeat->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8));
-                wxString myVal (myValue, wxConvUTF8);
-                myLabelText.Append(myVal);
-#else
-                wxString myVal (pFeat->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8)));
-                myLabelText.Append(myVal);
-#endif
-                continue;
-            }
-            
-            // text normal
-            myLabelText.Append(myText);
+        // is selected ?
+        if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && m_SelMem->IsSelected(pFeat->GetFID())){
+            dc.SetTextForeground(m_SelMem->GetSelectionColour());
+        }
+        else {
+            dc.SetTextForeground(pSymbol->GetColour());
         }
 
         dc.DrawText(myLabelText, myPtPx.x, myPtPx.y);
         OGRFeature::DestroyFeature(pFeat);
 	}
-	
+    
 	dc.SelectObject(wxNullBitmap);
 	return;
 }
 
+
+void tmDrawer::_LabelLine (tmLayerProperties * itemprop, tmGISData * pdata){
+    
+}
+
+
+wxString tmDrawer::_GetLabelText (const wxString & definition, OGRFeature * featureref){
+    wxString myLabelText;
+    wxArrayString myArray = wxStringTokenize(definition, _T(";"), wxTOKEN_RET_EMPTY_ALL);
+    myArray.RemoveAt(myArray.GetCount()-1);
+    for (unsigned int i = 0; i< myArray.GetCount(); i++) {
+        wxString myText = myArray.Item(i);
+        if (myText.IsEmpty()) {
+            myLabelText.Append(_T(";"));
+            continue;
+        }
+        
+        // field
+        if (myText.Len() > 3 && myText.StartsWith(_T("${")) && myText.Last() == '}') {
+#ifdef __WXMSW__
+            const char * myValue = featureref->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8));
+            wxString myVal (myValue, wxConvUTF8);
+            myLabelText.Append(myVal);
+#else
+            wxString myVal (featureref->GetFieldAsString(myText.SubString(2, myText.Len() -2).mb_str(wxConvUTF8)));
+            myLabelText.Append(myVal);
+#endif
+            continue;
+        }
+        
+        // text normal
+        myLabelText.Append(myText);
+    }
+    return myLabelText;
+}
 
 
 
