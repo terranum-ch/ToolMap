@@ -145,6 +145,7 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 		case LAYER_SPATIAL_POLYGON:
 			DrawPolygons(itemProp, pdata);
 			DrawVertexPoly(itemProp, pdata);
+            _LabelPolygon(itemProp, pdata);
 			break;
 		case LAYER_SPATIAL_RASTER:
 			DrawRaster(itemProp, pdata);
@@ -1075,7 +1076,7 @@ void tmDrawer::_LabelLine (tmLayerProperties * itemprop, tmGISData * pdata){
     if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
         return;
     }
-        
+    
     // define spatial filter
 	tmGISDataVector * pVect = (tmGISDataVector*) pdata;
     pVect->SetAttributFilter(wxEmptyString);
@@ -1144,6 +1145,61 @@ void tmDrawer::_LabelLine (tmLayerProperties * itemprop, tmGISData * pdata){
 	dc.SelectObject(wxNullBitmap);
 	return;
 }
+
+
+
+void tmDrawer::_LabelPolygon (tmLayerProperties * itemprop, tmGISData * pdata){
+    if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
+        return;
+    }
+    
+    // define spatial filter
+	tmGISDataVector * pVect = (tmGISDataVector*) pdata;
+    pVect->SetAttributFilter(wxEmptyString);
+	if(!pVect->SetSpatialFilter(m_spatFilter,itemprop->GetType()))
+	{
+		if (IsLoggingEnabled()){
+			wxLogError(_T("Error setting spatial filter"));
+		}
+		return;
+	}
+    
+    wxMemoryDC dc;
+	dc.SelectObject(*m_bmp);
+	
+	tmSymbolVectorPolygon * pSymbol = (tmSymbolVectorPolygon*) itemprop->GetSymbolRef();
+    OGRFeature * pFeat = NULL;
+	while ( (pFeat = pVect->GetNextFeature()) != NULL ){
+        OGRPolygon * myPoly = static_cast<OGRPolygon*>(pFeat->GetGeometryRef());
+        if (myPoly == NULL ) {
+            continue;
+        }
+        
+        // compute centroid position
+        OGRPoint myPtCenter;
+        myPoly->Centroid(&myPtCenter);
+        wxRealPoint myPtReal (myPtCenter.getX(), myPtCenter.getY());
+        wxPoint myPtPx = m_scale->RealToPixel(myPtReal);
+        myPtPx += wxPoint(2,2);
+        
+        wxString myLabelText = _GetLabelText(itemprop->GetLabelDefinition(), pFeat);
+        
+        // is selected ?
+        if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && m_SelMem->IsSelected(pFeat->GetFID())){
+            dc.SetTextForeground(m_SelMem->GetSelectionColour());
+        }
+        else {
+            dc.SetTextForeground(pSymbol->GetBorderColour());
+        }
+        
+        dc.DrawText(myLabelText, myPtPx.x, myPtPx.y);
+        OGRFeature::DestroyFeature(pFeat);
+	}
+    
+	dc.SelectObject(wxNullBitmap);
+	return;
+}
+
 
 
 wxString tmDrawer::_GetLabelText (const wxString & definition, OGRFeature * featureref){
