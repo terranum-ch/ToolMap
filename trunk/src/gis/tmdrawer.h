@@ -82,6 +82,8 @@ private:
     bool _DrawOrientedLine (wxGraphicsContext * gdc,wxPoint * pts, int nbpts, wxPen actualPen);
     
     void _LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata);
+    void _LabelLine (tmLayerProperties * itemprop, tmGISData * pdata);
+    wxString _GetLabelText (const wxString & definition, OGRFeature * featureref);
     
     
     //void DrawMemoryDataLine (tmGISData * data, tmLayerProperties * layerprop, wxClientDC * dc);
