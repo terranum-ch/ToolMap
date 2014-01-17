@@ -129,7 +129,9 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 				DrawLinesEnhanced(itemProp, pdata);
 			}else {
 				DrawLines(itemProp, pdata);
+                _LabelLine(itemProp, pdata);
 			}
+            
 			break;
 		case LAYER_SPATIAL_POINT:
 			if (itemProp->GetType() == TOC_NAME_LABELS || itemProp->GetType() == TOC_NAME_POINTS) {
@@ -137,8 +139,8 @@ bool tmDrawer::Draw (tmLayerProperties * itemProp, tmGISData * pdata)
 			}
 			else {
 				DrawPoints(itemProp, pdata);
+                _LabelPoint(itemProp, pdata);
 			}
-            _LabelPoint(itemProp, pdata);
 			break;
 		case LAYER_SPATIAL_POLYGON:
 			DrawPolygons(itemProp, pdata);
@@ -1068,8 +1070,79 @@ void tmDrawer::_LabelPoint (tmLayerProperties * itemprop, tmGISData * pdata){
 }
 
 
+
 void tmDrawer::_LabelLine (tmLayerProperties * itemprop, tmGISData * pdata){
+    if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
+        return;
+    }
+        
+    // define spatial filter
+	tmGISDataVector * pVect = (tmGISDataVector*) pdata;
+    pVect->SetAttributFilter(wxEmptyString);
+	if(!pVect->SetSpatialFilter(m_spatFilter,itemprop->GetType()))
+	{
+		if (IsLoggingEnabled()){
+			wxLogError(_T("Error setting spatial filter"));
+		}
+		return;
+	}
     
+    wxMemoryDC dc;
+	dc.SelectObject(*m_bmp);
+	
+	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) itemprop->GetSymbolRef();
+    OGRFeature * pFeat = NULL;
+	while ( (pFeat = pVect->GetNextFeature()) != NULL ){
+        OGRLineString * myLine = static_cast<OGRLineString*>(pFeat->GetGeometryRef());
+        if (myLine == NULL ) {
+            continue;
+        }
+        
+        // get middle point
+        int myNumVertex = myLine->getNumPoints();
+        if (myNumVertex < 1) {
+            continue;
+        }
+        
+        wxRealPoint myPtReal;
+        
+        // compute middle position
+        if (myNumVertex == 2) {
+            OGRPoint p1;
+            OGRPoint p2;
+            myLine->getPoint(0, &p1);
+            myLine->getPoint(1, &p2);
+            
+            myPtReal.x = (p1.getX() + p2.getX()) / 2.0;
+            myPtReal.y = (p1.getY() + p2.getY()) / 2.0;
+        }
+        else {
+        // take the middle vertex
+            OGRPoint pMiddle;
+            myLine->getPoint(myNumVertex / 2, &pMiddle);
+            myPtReal.x = pMiddle.getX();
+            myPtReal.y = pMiddle.getY();
+        }
+        
+        wxPoint myPtPx = m_scale->RealToPixel(myPtReal);
+        myPtPx += wxPoint(2,2);
+        
+        wxString myLabelText = _GetLabelText(itemprop->GetLabelDefinition(), pFeat);
+        
+        // is selected ?
+        if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && m_SelMem->IsSelected(pFeat->GetFID())){
+            dc.SetTextForeground(m_SelMem->GetSelectionColour());
+        }
+        else {
+            dc.SetTextForeground(pSymbol->GetColour());
+        }
+        
+        dc.DrawText(myLabelText, myPtPx.x, myPtPx.y);
+        OGRFeature::DestroyFeature(pFeat);
+	}
+    
+	dc.SelectObject(wxNullBitmap);
+	return;
 }
 
 
