@@ -1767,7 +1767,7 @@ int tmLayerManager::ReadLayerDraw ()
         
         if (layerData->GetDataType() == tmGIS_RASTER_WEB) {
             tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
-            myWebData->GetWebFrameRef()->SetWebSize(m_GISRenderer->GetSize());
+            myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
         }
         
         m_Drawer.Draw(pLayerProp, layerData);
