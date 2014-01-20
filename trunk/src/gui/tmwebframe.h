@@ -61,8 +61,6 @@ public:
     bool HasZoomed ();
     wxBitmap * GetPageAsBitmap (const wxSize new_size= wxDefaultSize);
     
-    void SetWebSize (wxSize size);
-    
     bool IsUsingRAM () {return m_IsUsingRAM;}
     void SetUsingRAM (bool useram) {m_IsUsingRAM = useram;}
     void SetInternetRefreshTime (int refreshtime) {m_InternetRefreshTime = refreshtime;}

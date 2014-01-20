@@ -16,7 +16,7 @@ END_EVENT_TABLE()
 
 
 tmWebFrame::tmWebFrame( wxWindow* parent, wxWindowID id, const wxSize& size, const wxString& title, const wxPoint& pos, long style ) : wxFrame( parent, id, title, pos, wxDefaultSize, style, WEBVIEW_WINDOW_NAME ){
-    SetWebSize(size);
+    this->SetClientSize(size);
     _CreateControls();
     m_Status = TMWEBFRAME_STATUS_NONE;
     m_PageName = wxEmptyString;
@@ -233,18 +233,6 @@ wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     return new wxBitmap(myTmpBmp);
 //#endif
     return NULL;
-}
-
-
-
-void tmWebFrame::SetWebSize (wxSize size){
-    int myWidth = size.GetWidth();
-#ifdef __WXMSW__
-	int myScrollBarWidth = wxSystemSettings::GetMetric(wxSYS_VSCROLL_X, m_WebView);
-	myWidth += myScrollBarWidth; // add scrollbar width on windows.
-#endif
-    
-    SetClientSize(wxSize(myWidth, size.GetHeight()));
 }
 
 
