@@ -36,7 +36,7 @@ tmWebFrame::~tmWebFrame(){
 
 void tmWebFrame::OnEventLoaded (wxWebViewEvent & event){
     m_Status = TMWEBFRAME_STATUS_LOADED;
-    wxLogMessage(_("page loaded!"));
+    wxLogDebug(_("page loaded!"));
 }
 
 
@@ -56,7 +56,6 @@ void tmWebFrame::OnClose (wxCloseEvent & event){
 
 void tmWebFrame::OnTimmerEnd (wxTimerEvent & event){
     m_Status = TMWEBFRAME_STATUS_TIMEOUT;
-    wxLogMessage(_("timeout!"));
 }
 
 
@@ -133,7 +132,6 @@ bool tmWebFrame::IsLoaded (){
     // start a timer
     if (m_LoadingTimer.IsRunning() == false) {
         m_LoadingTimer.StartOnce(WEB_MAX_WAIT_LOADING_MS);
-        wxLogMessage("Starting timer");
     }
     else {
         wxTheApp->Yield();
@@ -169,7 +167,7 @@ bool tmWebFrame::HasZoomed(){
     
     if (m_ZoomingTimer.IsRunning() == false) {
         m_ZoomingTimer.StartOnce(m_InternetRefreshTime);
-        wxLogMessage("Starting refresh timer");
+        //wxLogMessage("Starting refresh timer");
     }
     else {
         wxTheApp->Yield();
@@ -181,7 +179,7 @@ bool tmWebFrame::HasZoomed(){
 
 wxBitmap * tmWebFrame::GetPageAsBitmap (const wxSize new_size){
     if (m_Status != TMWEBFRAME_STATUS_LOADED) {
-        wxLogMessage(_("Error loading web raster: %d"), m_Status);
+        //wxLogMessage(_("Error loading web raster: %d"), m_Status);
         return NULL;
     }
     
