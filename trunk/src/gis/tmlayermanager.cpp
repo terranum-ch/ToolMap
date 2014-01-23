@@ -217,7 +217,8 @@ void tmLayerManager::FillTOCArray()
         }
         
         if(!m_TOCCtrl->InsertLayer(lyrproptemp)){
-			  break;
+			wxLogError (_("Adding layer: %s failed!"), lyrproptemp->GetName().GetName());
+			  continue;
         }
 	}
 	
