@@ -102,10 +102,9 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     myWebCoord.x_min -= xdiff / 2.0;
     myWebCoord.y_min -= ydiff / 2.0;
     
-    wxLogMessage(_("x difference= %f, y difference= %f"), xdiff , ydiff );
-    wxLogMessage(_("web coord: %f, %f, %f, %f,"), myWebCoord.x_min, myWebCoord.y_min, myWebCoord.x_max, myWebCoord.y_max);
-    wxLogMessage(_("x diffpx= %f, y diffpx= %f"), xdiff / myClosestResolution, ydiff / myClosestResolution);
-    
+    //wxLogMessage(_("x difference= %f, y difference= %f"), xdiff , ydiff );
+    //wxLogMessage(_("web coord: %f, %f, %f, %f,"), myWebCoord.x_min, myWebCoord.y_min, myWebCoord.x_max, myWebCoord.y_max);
+    //wxLogMessage(_("x diffpx= %f, y diffpx= %f"), xdiff / myClosestResolution, ydiff / myClosestResolution);
     return true;
 }
 
@@ -113,7 +112,7 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
 
 double tmGISDataRasterWeb::_GetClosestAvaillableResolution(tmRealRect bounds, double resolution){
     int iNbResolutions = sizeof(m_AvaillableResolutions) / sizeof(double);
-    for (unsigned int i = 0; i< iNbResolutions; i++) {
+    for (int i = 0; i< iNbResolutions; i++) {
         if (m_AvaillableResolutions[i] < resolution) {
             return m_AvaillableResolutions[i-1];
         }
