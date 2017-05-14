@@ -177,7 +177,7 @@ bool tmGISDataVector::CheckGEOSCrosses (GEOSGeom * g1, GEOSGeom * g2)
  *******************************************************************************/
 GEOSGeom tmGISDataVector::CreateGEOSGeometry (OGRGeometry * geom)
 {
-	GEOSGeom geosgeom =  geom->exportToGEOS();
+	GEOSGeom geosgeom =  geom->exportToGEOS(this->GetGEOSHandle());
 
 	return geosgeom;
 }
@@ -261,7 +261,7 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry 
 	OGRLineString * myLineLine = NULL;
 	OGRPolygon * myPoly = NULL;
 	OGRPoint * myPoint = NULL;
-    
+
     unsigned int myCountPoints = points.GetCount();
 	int i = 0;
 	switch (wkbFlatten(geometry->getGeometryType())){
@@ -299,7 +299,7 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry 
                 if (!myLineLine){
                     break;
                 }
-                
+
                 GetVertexIntersection(myLineLine, buffer, points);
             }
 			break;
@@ -307,7 +307,7 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry * geometry, OGRGeometry 
 		default:
 			break;
 	}
-    
+
     // points where added
     if (myCountPoints < points.GetCount()) {
         return true;
@@ -347,8 +347,8 @@ bool tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, OGRGeomet
 		if (myPoint->Intersects(buffer)){
             points.Add(wxRealPoint(myPoint->getX(), myPoint->getY()));
 		}
-		
-        
+
+
         if (myPoint2->Intersects(buffer)){
             points.Add(wxRealPoint(myPoint2->getX(), myPoint2->getY()));
 		}
@@ -357,7 +357,7 @@ bool tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, OGRGeomet
 		OGRGeometryFactory::destroyGeometry(myPoint2);
 
 	}
-    
+
     // points where added
     if (myCountPoints < points.GetCount()) {
         return true;
@@ -400,9 +400,9 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 //		OGRFree(pabyBuf);
 //#endif
 
-#if GEOS_CAPI_VERSION_MAJOR >= 2 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 6) 
-		GEOSFree( pabyBuf ); 
-#else 
+#if GEOS_CAPI_VERSION_MAJOR >= 2 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 6)
+		GEOSFree( pabyBuf );
+#else
 		free(pabyBuf);
 #endif
 }
@@ -417,7 +417,7 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
 {
 	wxASSERT (ogrgeom);
-	GEOSGeom geom = ogrgeom->exportToGEOS();
+	GEOSGeom geom = ogrgeom->exportToGEOS(GetGEOSHandle());
 	GEOSGeom geombuffer;
 	OGRGeometry * returnbuffer = NULL;
 
@@ -457,8 +457,8 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
 	OGRGeometry * returncrop = NULL;
 
 
-	geosline = geom1->exportToGEOS();
-	geosframe = geom2->exportToGEOS();
+	geosline = geom1->exportToGEOS(GetGEOSHandle());
+	geosframe = geom2->exportToGEOS(GetGEOSHandle());
 
 	wxASSERT(geosline);
 	wxASSERT(geosframe);
@@ -503,8 +503,8 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 
 
 
-	geosline = line->exportToGEOS();
-	geosunion = union1->exportToGEOS();
+	geosline = line->exportToGEOS(GetGEOSHandle());
+	geosunion = union1->exportToGEOS(GetGEOSHandle());
 	if (geosline != NULL && union1 != NULL)
 	{
 		geosresult = GEOSUnion(geosunion, geosline);
@@ -580,7 +580,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
 	}
 	OGRGeometryFactory::destroyGeometry(myClickBuffer);
     wxASSERT(mySnapPts.GetCount() == mySnapIndex.GetCount());
-     
+
     // search for closest vertex
     double myMinDistance = 0;
     int myMinIndex = 0;
@@ -598,7 +598,7 @@ bool tmGISDataVector::CutLineAtVertex (long oid, const wxRealPoint & clickedpt, 
         }
 
     }
-    
+
     if (mySnapIndex.GetCount() == 0) {
         OGRFeature::DestroyFeature(myFeature);
 		return false;
@@ -801,7 +801,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection (OGRLineString * line,
 int CompareRealPoint (tmRealPointDist** pitem1, tmRealPointDist** pitem2){
 	double dist1 =  (*pitem1)->GetDistFromOrigin();
 	double dist2 = (*pitem2)->GetDistFromOrigin();
-	
+
 	if (wxIsSameDouble(dist1, dist2)) {
 		return 0;
 	}
@@ -830,7 +830,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 	wxASSERT(line);
 	wxASSERT(multiline);
 	intertedvertex.Clear();
-	
+
 	// get all line points
 	wxArrayRealPoints myPts;
 	for (int i = 0; i< line->getNumPoints(); i++) {
@@ -840,8 +840,8 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 		myPts.Add(myPt);
 	}
 	wxASSERT((signed) myPts.GetCount() == line->getNumPoints());
-	
-	
+
+
 	// iterate segment by segment
 	int myInsertPos = 0;
 	int iNumberSegment = line->getNumPoints() -1;
@@ -854,7 +854,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 		mySegment.addPoint(&myPt1);
 		mySegment.addPoint(&myPt2);
 		wxRealPoint myOriginPt (myPt1.getX(), myPt1.getY());
-		
+
 		wxArrayRealPointsDist myPointToOrder;
 		for (int l = 0; l<multiline->getNumGeometries(); l++) {
 			OGRLineString * myLine = (OGRLineString*) multiline->getGeometryRef(l);
@@ -862,7 +862,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 			if (mySegment.Intersects(myLine)==false) {
 				continue;
 			}
-			
+
 			OGRGeometry * myIntersection = SafeIntersection(&mySegment, myLine);
 			wxASSERT (myIntersection);
 			// simple intersection
@@ -889,7 +889,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 		if (myPointToOrder.GetCount() == 0) {
 			continue;
 		}
-		
+
 		// sorting points for segment i
 		myPointToOrder.Sort(CompareRealPoint);
 
@@ -902,7 +902,7 @@ OGRLineString * tmGISDataVector::GetLineWithIntersection(OGRLineString * line,
 			myInsertPos++;
 		}
 	}
-	
+
 	// create the new line
 	OGRLineString * myResLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 	for (unsigned int i = 0; i<myPts.GetCount(); i++) {
@@ -1181,7 +1181,7 @@ bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
 								  OGRGeometry ** linemerged)
 {
 	//bool bReturn = true;
-	GEOSGeom myLinesToMerge = linetomerge->exportToGEOS();
+	GEOSGeom myLinesToMerge = linetomerge->exportToGEOS(GetGEOSHandle());
 	GEOSGeom myResult = GEOSLineMerge(myLinesToMerge);
 	GEOSGeom_destroy(myLinesToMerge);
 	if (!myResult)

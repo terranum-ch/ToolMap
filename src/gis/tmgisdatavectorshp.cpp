@@ -41,7 +41,7 @@ tmGISDataVectorSHP::~tmGISDataVectorSHP()
 {
 	// safe destroy the datasource if needed
 	if (m_Datasource){
-		OGRDataSource::DestroyDataSource(m_Datasource);
+		GDALClose(m_Datasource);
     }
 
     if (m_RasterizeDataset) {
@@ -62,7 +62,12 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
 
 	// open the shapefile and return true if success
-	m_Datasource = OGRSFDriverRegistrar::Open(buffer, bReadWrite);
+	unsigned int openFlags = GDAL_OF_VECTOR | GDAL_OF_READONLY;
+	if (bReadWrite == true){
+		openFlags = GDAL_OF_VECTOR | GDAL_OF_UPDATE;
+	}
+
+	m_Datasource = (GDALDataset*) GDALOpenEx(buffer, openFlags, NULL, NULL, NULL);
 	wxDELETEA(buffer);
 
 	if( m_Datasource==NULL){
@@ -81,7 +86,7 @@ bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
 
 bool tmGISDataVectorSHP::Close (){
   	if (m_Datasource){
-		OGRDataSource::DestroyDataSource(m_Datasource);
+		GDALClose(m_Datasource);
     }
     m_Datasource = NULL;
     m_Layer = NULL;
@@ -204,7 +209,7 @@ bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
         m_Layer->SetAttributeFilter(NULL);
         return true;
     }
-    
+
     // escape ' from query
     wxString myQuery (query);
     myQuery.Replace(_T("'"), _T("\\'"));
@@ -236,7 +241,7 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex, long & oid)
 	OGRLineString * pline = (OGRLineString*) poFeature->GetGeometryRef();
 	if (pline == NULL) {
         wxLogWarning(_("Line %ld is corrupted in file: '%s'!"), poFeature->GetFID(),
-                     wxString(m_Datasource->GetName()));
+                     wxString(m_Layer->GetName()));
         return NULL;
     }
 
@@ -298,7 +303,7 @@ OGRGeometry * tmGISDataVectorSHP::GetNextGeometry(bool restart, long & oid){
 		oid = wxNOT_FOUND;
 		return NULL;
 	}
-    
+
 	OGRGeometry * myGeom = poFeature->GetGeometryRef()->clone();
 	oid = poFeature->GetFID();
     OGRFeature::DestroyFeature( poFeature );
@@ -751,11 +756,10 @@ wxArrayLong * tmGISDataVectorSHP::GetAllData ()
  *******************************************************************************/
 bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type){
 	const char *pszDriverName = "ESRI Shapefile";
-    OGRSFDriver *poDriver;
+    GDALDriver *poDriver;
 
-    poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(pszDriverName );
-    if( poDriver == NULL )
-    {
+    poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName);
+    if( poDriver == NULL ){
 		wxASSERT_MSG(0, _T(" driver not available."));
 		return false;
     }
@@ -764,7 +768,13 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type){
 	wxString mysFileName = filename.GetFullPath();
 	char * buffer = new char [mysFileName.Length() * sizeof(wxString)];
 	strcpy(buffer, (const char*)mysFileName.mb_str(wxConvUTF8));
-	m_Datasource = poDriver->CreateDataSource( buffer, NULL );
+	m_Datasource = poDriver->Create(
+		buffer,
+		0,  // x size, not used for vector
+		0,  // y size, not used for vector
+		0,  // nb of bands
+		GDT_Unknown,
+		NULL);
 	wxDELETEA(buffer);
 
 	if( m_Datasource == NULL ){
@@ -1342,7 +1352,7 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
 
     // get shp dimensions
     OGREnvelope myExtent;
-    m_Layer->GetExtent(&myExtent);
+    OGRErr myErr = m_Layer->GetExtent(0, &myExtent);
     wxSize mySize(wxRound(fabs(myExtent.MaxX - myExtent.MinX)), wxRound(fabs(myExtent.MaxY - myExtent.MinY)));
     mySize.SetWidth(wxRound(mySize.GetWidth() / rasterizefactor));
     mySize.SetHeight(wxRound(mySize.GetHeight() / rasterizefactor));
@@ -1424,7 +1434,7 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString 
     wxASSERT(m_Layer);
 
     // create file
-    OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName((const char*) drivername.mb_str(wxConvUTF8));
+    GDALDriver * poDriver = GetGDALDriverManager()->GetDriverByName((const char*) drivername.mb_str(wxConvUTF8));
     if( poDriver == NULL ){
 		wxASSERT_MSG(0, _T(" driver not available."));
 		return false;
@@ -1432,7 +1442,13 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString 
 
     // creating the file
 	wxString mysFileName = filename.GetFullPath();
-    OGRDataSource * myNewDS = poDriver->CreateDataSource((const char*) mysFileName.mb_str(wxConvUTF8), NULL);
+    GDALDataset * myNewDS = poDriver->Create(
+		(const char*) mysFileName.mb_str(wxConvUTF8),
+		0,  // x size, not used for vector
+		0,  // y size, not used for vector
+		0,  // nb of bands
+		GDT_Unknown,
+		NULL);
 	if( myNewDS == NULL ){
         wxLogError(_("Creation of file '%s' failed."), filename.GetFullName().c_str());
         return false;
@@ -1443,7 +1459,7 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString 
     myNewDS->CopyLayer(m_Layer, (const char*) myFileNameWOExt.mb_str(wxConvUTF8));
 
     // close new file
-    OGRDataSource::DestroyDataSource(myNewDS);
+    GDALClose(myNewDS);
     return true;
 }
 

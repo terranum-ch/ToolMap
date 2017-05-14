@@ -2,7 +2,7 @@
 								tmgisdatavectorshp.h
                     class for dealing with vector SHP data
                              -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+    copyright            : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -39,9 +39,9 @@
 
 
 class tmGISDataVectorSHP : public tmGISDataVector
-{    
+{
 protected:
-    OGRDataSource       *m_Datasource;
+    GDALDataset         *m_Datasource;
     OGRLayer			*m_Layer;
     GDALDataset         *m_RasterizeDataset;
     OGRFeature			*m_Feature;
@@ -50,14 +50,14 @@ protected:
 public:
     tmGISDataVectorSHP();
     ~tmGISDataVectorSHP();
-    
+
     // implementing vi±rtual function
     virtual bool Open (const wxString & filename, bool bReadWrite = FALSE);
     virtual bool Close ();
     virtual tmRealRect GetMinimalBoundingRectangle();
     virtual TM_GIS_SPATIAL_TYPES GetSpatialType ();
-    
-    
+
+
     // virtual function for getting data & drawing
     virtual bool SetSpatialFilter (tmRealRect filter, int type);
     virtual bool SetAttributFilter (const wxString & query);
@@ -69,34 +69,34 @@ public:
     virtual OGRFeature * GetNextFeature ();
     virtual OGRFeature * GetFeatureByOID (long oid);
     bool SelectFeatureByOID (long oid);
-    
+
     virtual OGRGeometry * GetNextGeometry(bool restart, long & oid);
     OGRLayer * GetLayerRef () {return m_Layer;}
-    
+
     // virtual function for metadata
     virtual wxString GetMetaDataAsHtml ();
     virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
-    
+
     // count
     virtual int GetCount ();
-    
+
     // fields functions
     virtual int GetFieldsCount();
     virtual bool GetFieldsName (wxArrayString & Fields, long oid = wxNOT_FOUND);
     virtual bool GetFieldsValue (wxArrayString & values, long oid);
     bool GetDistinctFieldsValue (const wxString & fieldname, wxArrayString & values);
-    
+
     // searching data
     virtual wxArrayLong * SearchData (const tmRealRect & rect, int type);
     virtual wxArrayLong * GetAllData ();
     virtual bool GetSnapCoord (const wxRealPoint & clickpt, double buffersize, wxArrayRealPoints & snapppts, int snaptype);
-    
+
     // creating file & fields
     virtual bool CreateFile (const wxFileName & filename, int type);
     virtual bool AddFieldText (const wxString & fieldname, int size);
     virtual bool AddFieldNumeric (const wxString & fieldname, bool isfloat = false);
     virtual bool AddFieldDate (const wxString & fieldname);
-    
+
     virtual long AddGeometry (OGRGeometry * Geom, const long & oid, int layertype = wxNOT_FOUND);
     virtual bool SetNextFeature (bool resetreading = false);
     virtual bool SetFieldValue (const wxString & value,
@@ -107,14 +107,14 @@ public:
     virtual void CloseGeometry();
     virtual bool GetFieldNumeric (const wxString & fieldname, int & fieldvalue);
     virtual bool SetFieldNumeric (const wxString & fieldname, int fieldvalue);
-    
+
     //bool CreateSpatialIndex(int indexdepth = wxNOT_FOUND);
     bool ExecuteSQLQuery(const wxString & query);
     long GetFeatureIDIntersectedBy(OGRGeometry * geometry);
     long GetFeatureIDIntersectedOnRaster(OGRPoint * geometry);
     bool Rasterize(double rasterizefactor);
     void RemoveRasterizeFile();
-    
+
     virtual bool CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData);
     virtual bool CopyToFile(const wxFileName & filename, const wxString & drivername);
 };
@@ -130,7 +130,7 @@ private:
 public:
     tmGISDataVectorSHPMemory();
     ~tmGISDataVectorSHPMemory();
-    
+
     virtual bool CreateFile (const wxFileName & filename, int type);
 };
 
