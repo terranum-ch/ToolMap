@@ -472,7 +472,10 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
         myAttribTxt.RemoveLast();
 
         myFeature->SetField(5, (const char*) myAttribTxt.mb_str(wxConvUTF8));
-        m_Shp->GetLayerRef()->SetFeature(myFeature);
+        OGRErr  myErr = m_Shp->GetLayerRef()->SetFeature(myFeature);
+        if (myErr != OGRERR_NONE){
+            wxLogError(_("Error while exporting concatenated data: %s"), myAttribTxt);
+        }
         OGRFeature::DestroyFeature(myFeature);
 
         // update progress dialog

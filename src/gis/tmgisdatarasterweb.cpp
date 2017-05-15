@@ -84,7 +84,9 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     }
     
     m_WebFrameRef->ZoomToExtend(m_FilterCoordWeb);
-	while (m_WebFrameRef->HasZoomed() == false);
+	while (m_WebFrameRef->HasZoomed() == false){
+        continue; // wait for the loading of the raster
+    }
     
     // Resolution
     double myResolution = _GetResolution(m_FilterCoordWeb);

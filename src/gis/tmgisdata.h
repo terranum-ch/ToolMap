@@ -109,7 +109,7 @@ public:
     virtual bool CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData){return false;}
     virtual int IsRaster(){return wxNOT_FOUND;}
 
-    GEOSContextHandle_t GetGEOSHandle() {return m_GeosHandle;}
+    static GEOSContextHandle_t GetGEOSHandle() {return m_GeosHandle;}
 };
 
 
