@@ -75,6 +75,8 @@ public:
 
     // static functions for init
     static void InitGISDrivers (bool bRaster = TRUE, bool bVector = TRUE);
+    static void InitGEOS();
+    static void finishGEOS();
     static wxString GetAllSupportedGISFormatsWildcards();
     static wxArrayString GetAllSupportedGISFormatsExtensions();
     static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
