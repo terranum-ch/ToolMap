@@ -1488,7 +1488,7 @@ tmGISDataVectorSHPMemory::~tmGISDataVectorSHPMemory(){
 
 
 bool tmGISDataVectorSHPMemory::CreateFile (const wxFileName & filename, int type){
-    OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName("Memory");
+    GDALDriver * poDriver = GetGDALDriverManager()->GetDriverByName("Memory");
     if( poDriver == NULL ){
 		wxASSERT_MSG(0, _T(" driver not available."));
 		return false;
@@ -1496,7 +1496,9 @@ bool tmGISDataVectorSHPMemory::CreateFile (const wxFileName & filename, int type
 
 	// creating the file
 	wxString mysFileName = filename.GetFullPath();
-    m_Datasource = poDriver->CreateDataSource((const char*) mysFileName.mb_str(wxConvUTF8), NULL);
+    m_Datasource = poDriver->Create(
+            (const char*) mysFileName.mb_str(wxConvUTF8),
+            0,0,0, GDT_Unknown, NULL);
 	if( m_Datasource == NULL ){
         wxLogError(_("Creation of in memory file '%s' failed."), filename.GetFullName().c_str());
         return false;
