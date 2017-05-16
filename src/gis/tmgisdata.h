@@ -62,7 +62,6 @@ private:
 protected:
     wxString GetMinimalBoundingRectangleAsHtml (int iprecision = 2);
     int m_ClassType;
-    static GEOSContextHandle_t m_GeosHandle;
 
 public:
     tmGISData();
@@ -75,8 +74,6 @@ public:
 
     // static functions for init
     static void InitGISDrivers (bool bRaster = TRUE, bool bVector = TRUE);
-    static void InitGEOS();
-    static void finishGEOS();
     static wxString GetAllSupportedGISFormatsWildcards();
     static wxArrayString GetAllSupportedGISFormatsExtensions();
     static tmGISData * CreateGISBasedOnType (const int & gis_format_index);
@@ -110,8 +107,6 @@ public:
 
     virtual bool CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData){return false;}
     virtual int IsRaster(){return wxNOT_FOUND;}
-
-    static GEOSContextHandle_t GetGEOSHandle() {return m_GeosHandle;}
 };
 
 

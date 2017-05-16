@@ -870,9 +870,11 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 	// Create polygons
 	//
 	GEOSGeom * ahInGeoms = (GEOSGeom *) CPLCalloc(sizeof(void*),iTotalLines);
+    GEOSContextHandle_t  myHandle = OGRGeometry::createGEOSContext();
 	for(int i = 0; i < iTotalLines; i++ ){
-		ahInGeoms[i] = ((OGRMultiLineString*) myLines)->getGeometryRef(i)->exportToGEOS(m_Shp->GetGEOSHandle());
+		ahInGeoms[i] = ((OGRMultiLineString*) myLines)->getGeometryRef(i)->exportToGEOS(myHandle);
 	}
+    OGRGeometry::freeGEOSContext(myHandle);
 
     GEOSGeom hResultGeom = GEOSPolygonize( ahInGeoms, iTotalLines );
 	// cleaning
@@ -996,8 +998,10 @@ OGRGeometry * tmExportDataSHP::SafeIntersection(OGRGeometry * line, OGRGeometry 
 	GEOSGeom  geosintersect = NULL;
 	OGRGeometry * returncrop = NULL;
 
-	geosline = line->exportToGEOS(m_Shp->GetGEOSHandle());
-	geosframe = frame->exportToGEOS(m_Shp->GetGEOSHandle());
+    GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+	geosline = line->exportToGEOS(myGEOSHandle);
+	geosframe = frame->exportToGEOS(myGEOSHandle);
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 
 	wxASSERT(geosline);
 	wxASSERT(geosframe);
@@ -1040,8 +1044,9 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 	GEOSGeom  geosresult = NULL;
 	OGRGeometry * returnunion = NULL;
 
-	geosline = line->exportToGEOS(m_Shp->GetGEOSHandle());
-	geosunion = union1->exportToGEOS(m_Shp->GetGEOSHandle());
+    GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+	geosline = line->exportToGEOS(myGEOSHandle);
+	geosunion = union1->exportToGEOS(myGEOSHandle);
 	if (geosline != NULL && union1 != NULL)
 	{
 		geosresult = GEOSUnion(geosunion, geosline);
@@ -1055,7 +1060,7 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 		}
 
 	}
-
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return returnunion;
 }
 
@@ -1104,7 +1109,9 @@ OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
 
 OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, double size){
 	wxASSERT (ogrgeom);
-	GEOSGeom geom = ogrgeom->exportToGEOS(m_Shp->GetGEOSHandle());
+
+    GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+	GEOSGeom geom = ogrgeom->exportToGEOS(myGEOSHandle);
 	GEOSGeom geombuffer;
 	OGRGeometry * returnbuffer = NULL;
 
@@ -1117,6 +1124,7 @@ OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, double size){
 			GEOSGeom_destroy(geombuffer);
 		}
 	}
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return returnbuffer;
 }
 

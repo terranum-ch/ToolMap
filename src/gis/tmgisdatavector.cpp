@@ -177,8 +177,9 @@ bool tmGISDataVector::CheckGEOSCrosses (GEOSGeom * g1, GEOSGeom * g2)
  *******************************************************************************/
 GEOSGeom tmGISDataVector::CreateGEOSGeometry (OGRGeometry * geom)
 {
-	GEOSGeom geosgeom =  geom->exportToGEOS(this->GetGEOSHandle());
-
+	GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+    GEOSGeom geosgeom =  geom->exportToGEOS(myGEOSHandle);
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return geosgeom;
 }
 
@@ -417,7 +418,8 @@ OGRGeometry * tmGISDataVector::SafeCreateFromGEOS (GEOSGeom geosGeom)
 OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
 {
 	wxASSERT (ogrgeom);
-	GEOSGeom geom = ogrgeom->exportToGEOS(GetGEOSHandle());
+	GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+    GEOSGeom geom = ogrgeom->exportToGEOS(myGEOSHandle);
 	GEOSGeom geombuffer;
 	OGRGeometry * returnbuffer = NULL;
 
@@ -432,7 +434,7 @@ OGRGeometry * tmGISDataVector::SafeBuffer (OGRGeometry * ogrgeom, int size)
 			GEOSGeom_destroy(geombuffer);
 		}
 	}
-
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return returnbuffer;
 }
 
@@ -456,9 +458,9 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
 	GEOSGeom  geosintersect = NULL;
 	OGRGeometry * returncrop = NULL;
 
-
-	geosline = geom1->exportToGEOS(GetGEOSHandle());
-	geosframe = geom2->exportToGEOS(GetGEOSHandle());
+    GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+	geosline = geom1->exportToGEOS(myGEOSHandle);
+	geosframe = geom2->exportToGEOS(myGEOSHandle);
 
 	wxASSERT(geosline);
 	wxASSERT(geosframe);
@@ -476,7 +478,7 @@ OGRGeometry * tmGISDataVector::SafeIntersection(OGRGeometry * geom1, OGRGeometry
 
 
 	}
-
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return returncrop;
 }
 
@@ -502,9 +504,9 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 	OGRGeometry * returnunion = NULL;
 
 
-
-	geosline = line->exportToGEOS(GetGEOSHandle());
-	geosunion = union1->exportToGEOS(GetGEOSHandle());
+    GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+	geosline = line->exportToGEOS(myGEOSHandle);
+	geosunion = union1->exportToGEOS(myGEOSHandle);
 	if (geosline != NULL && union1 != NULL)
 	{
 		geosresult = GEOSUnion(geosunion, geosline);
@@ -518,7 +520,7 @@ OGRGeometry * tmGISDataVector::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 		}
 
 	}
-
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return returnunion;
 }
 
@@ -1181,7 +1183,8 @@ bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
 								  OGRGeometry ** linemerged)
 {
 	//bool bReturn = true;
-	GEOSGeom myLinesToMerge = linetomerge->exportToGEOS(GetGEOSHandle());
+    GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
+    GEOSGeom myLinesToMerge = linetomerge->exportToGEOS(myGEOSHandle);
 	GEOSGeom myResult = GEOSLineMerge(myLinesToMerge);
 	GEOSGeom_destroy(myLinesToMerge);
 	if (!myResult)
@@ -1198,7 +1201,7 @@ bool tmGISDataVector::LinesMerge (OGRMultiLineString * linetomerge,
 		wxLogDebug(_T("Unable to merge lines, they aren't adjacent."));
 		return false;
 	}
-
+    OGRGeometry::freeGEOSContext(myGEOSHandle);
 	return true;
 }
 

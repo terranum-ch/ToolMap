@@ -442,7 +442,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
-    tmGISData::InitGEOS();
+    //tmGISData::InitGEOS();
 
 	_CheckUpdates(false);
 	_LoadPreference(false);
@@ -511,7 +511,7 @@ ToolMapFrame::~ToolMapFrame()
 
 	// finish the GEOS library
 	wxLogDebug(_T("Clearing GEOS library"));
-    tmGISData::finishGEOS();
+    // tmGISData::finishGEOS();
 }
 
 

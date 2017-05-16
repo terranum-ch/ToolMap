@@ -61,7 +61,6 @@ void tmGISData::InitMemberValue()
 	m_FullFileName = _T("");
 	m_ClassType = wxNOT_FOUND;
     m_CoordConvert = NULL;
-    m_GeosHandle = NULL;
 }
 
 
@@ -89,7 +88,7 @@ void tmGISData::InitGISDrivers (bool bRaster, bool bVector)
 }
 
 
-
+/*
 void tmGISData::InitGEOS() {
     m_GeosHandle = GEOS_init_r();
 }
@@ -97,7 +96,7 @@ void tmGISData::InitGEOS() {
 
 void tmGISData::finishGEOS() {
     GEOS_finish_r(m_GeosHandle);
-}
+}*/
 
 
 /***************************************************************************//**
