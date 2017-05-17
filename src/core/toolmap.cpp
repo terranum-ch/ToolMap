@@ -442,7 +442,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString& title,wxPoint pos, wx
 
 	// loading GIS drivers
 	tmGISData::InitGISDrivers(TRUE, TRUE);
-    //tmGISData::InitGEOS();
+    initGEOS(NULL, NULL);
 
 	_CheckUpdates(false);
 	_LoadPreference(false);

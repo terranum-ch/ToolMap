@@ -364,6 +364,7 @@ bool tmGISDataVector::GetBeginEndInterseciton (OGRGeometry * geometry, OGRGeomet
         return true;
     }
 	return false;
+	
 }
 
 
