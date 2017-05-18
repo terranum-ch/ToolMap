@@ -1,5 +1,5 @@
 language: cpp
-script: ./configure && make
+script: make
 compiler: gcc
 sudo: required
 cache:
