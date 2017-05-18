@@ -13,8 +13,7 @@ sudo apt-get install -y liblz4-dev
 sudo apt-get install -y libnuma-dev
 
 # Build GDAL2
-if [ ! -d "${HOME}/.gdal" ]; then
-  mkdir ${HOME}/.gdal
+if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
   cd ${HOME}/.gdal
   wget -O gdal.tar.gz "http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz"
   tar -xvzf gdal.tar.gz
@@ -24,12 +23,11 @@ if [ ! -d "${HOME}/.gdal" ]; then
   sudo make install
   cd ${TRAVIS_BUILD_DIR}
 else 
-  printf '%s/.gdal exists. GDAL will not be built.\n' "$HOME"
+  printf '%s/.gdal not empty. GDAL will not be built.\n' "$HOME"
 fi
 
 # Build wxPdfDocument
-if [ ! -d "${HOME}/.wxpdfdoc" ]; then
-  mkdir ${HOME}/.wxpdfdoc
+if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   cd ${HOME}/.wxpdfdoc
   wget -O wxpdfdoc.tar.gz "https://github.com/utelle/wxpdfdoc/releases/download/v0.9.5/wxpdfdoc-0.9.5.tar.gz"
   tar -xvzf wxpdfdoc.tar.gz
@@ -39,7 +37,7 @@ if [ ! -d "${HOME}/.wxpdfdoc" ]; then
   sudo make install
   cd ${TRAVIS_BUILD_DIR}
 else 
-  printf '%s/.wxpdfdoc exists. WxPdfDoc will not be built.\n' "$HOME"
+  printf '%s/.wxpdfdoc not empty. WxPdfDoc will not be built.\n' "$HOME"
 fi
 
 # CMake
