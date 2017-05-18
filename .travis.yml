@@ -2,6 +2,10 @@ language: cpp
 script: ./configure && make
 compiler: gcc
 sudo: required
+cache:
+  directories:
+  - $HOME/.gdal
+  - $HOME/.wxpdfdoc
 before_install: 
   - chmod +x build/travis/before_install.sh
   - build/travis/before_install.sh
