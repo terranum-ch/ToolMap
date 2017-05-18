@@ -26,13 +26,31 @@ wxString lsVersion::GetSoftName()
 	return myName;
 }
 
-wxString lsVersion::GetSoftSVN()
+wxString lsVersion::GetSoftGIT()
 {
-	wxString mySVN = wxEmptyString;
+	wxString myGITVersion = wxEmptyString;
 #ifdef lsVERSION_SOFT_VERSION
-	mySVN = lsVERSION_SOFT_VERSION;
+	myGITVersion = lsVERSION_SOFT_VERSION;
 #endif
-	return mySVN;
+	return myGITVersion;
+}
+
+wxString lsVersion::GetSoftGITBranch()
+{
+    wxString myGITtxt = wxEmptyString;
+#ifdef lsVERSION_SOFT_VERSION_BRANCH
+    myGITtxt = lsVERSION_SOFT_VERSION_BRANCH;
+#endif
+    return myGITtxt;
+}
+
+wxString lsVersion::GetSoftGITRevision()
+{
+    wxString myGITtxt = wxEmptyString;
+#ifdef lsVERSION_SOFT_VERSION_REVISION
+    myGITtxt = lsVERSION_SOFT_VERSION_REVISION;
+#endif
+    return myGITtxt;
 }
 
 wxString lsVersion::GetwxWidgetsNumber()
@@ -48,13 +66,13 @@ wxString lsVersion::GetwxWidgetsNumber()
 	return mywxVersion; 
 }
 
-wxString lsVersion::GetwxWidgetsSVN()
+wxString lsVersion::GetwxWidgetsGIT()
 { 
-	wxString mySVN = wxEmptyString;
-#ifdef lsVERSION_WXWIDGETS_SVN
-	mySVN = lsVERSION_WXWIDGETS_SVN;
+	wxString myGITVersion = wxEmptyString;
+#ifdef lsVERSION_WXWIDGETS_GIT
+	myGITVersion = lsVERSION_WXWIDGETS_GIT;
 #endif
-	return mySVN;
+	return myGITVersion;
 }
 
 wxString lsVersion::GetGDALNumber()
@@ -119,8 +137,8 @@ wxString lsVersion::GetAllModules()
 {
 	wxString myModules = _T("wxWidgets: ") + GetwxWidgetsNumber();
 
-    if (GetwxWidgetsSVN().IsEmpty() == false) {
-        myModules.Append(wxString::Format(" (%s)", GetwxWidgetsSVN()));
+    if (GetwxWidgetsGIT().IsEmpty() == false) {
+        myModules.Append(wxString::Format(" (%s)", GetwxWidgetsGIT()));
     }
 	myModules.Append(_T("\n"));
     
@@ -147,8 +165,16 @@ wxString lsVersion::GetAllModules()
     if (GetCurlNumber().IsEmpty() == false ) {
         myModules.Append(_T("libCURL: ") + GetCurlNumber() + _T("\n"));
     }
-    
-	myModules.Append(wxGetOsDescription());	
+
+    if (GetSoftGITRevision().IsEmpty() == false ) {
+        myModules.Append(wxString::Format(_T("%s revision: %s \n"), GetSoftName(), GetSoftGITRevision()));
+    }
+
+    if (GetSoftGITBranch().IsEmpty() == false ) {
+        myModules.Append(wxString::Format(_T("%s branch: %s \n"), GetSoftName(), GetSoftGITBranch()));
+    }
+
+	myModules.Append(wxGetOsDescription());
 	return myModules;
 }
 

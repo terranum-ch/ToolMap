@@ -241,7 +241,7 @@ wxString lsCrashReport::_CreateGeneralInfo() {
 
 #ifdef USE_VERSION
     lsVersion myVersion;
-    mySoftVersion << myVersion.GetSoftSVN();
+    mySoftVersion << myVersion.GetSoftGIT();
     mySoftComponent << myVersion.GetAllModules();
     mySoftComponent.Replace(_T("\n"), _T("<br>"));
     

@@ -32,9 +32,11 @@ email                : lucien.schreiber at crealp dot vs dot ch
 // SOFTWARE INFOS
 #cmakedefine lsVERSION_SOFT_NAME "@lsVERSION_SOFT_NAME@"
 #cmakedefine lsVERSION_SOFT_VERSION "@lsVERSION_SOFT_VERSION@"
+#cmakedefine lsVERSION_SOFT_VERSION_REVISION "@lsVERSION_SOFT_VERSION_REVISION@"
+#cmakedefine lsVERSION_SOFT_VERSION_BRANCH "@lsVERSION_SOFT_VERSION_BRANCH@"
 
 // WXWIDGETS version
-#cmakedefine lsVERSION_WXWIDGETS_SVN "@lsVERSION_WXWIDGETS_SVN@"
+#cmakedefine lsVERSION_WXWIDGETS_GIT "@lsVERSION_WXWIDGETS_GIT@"
 
 // USING GDAL
 #cmakedefine lsVERSION_HAS_GDAL

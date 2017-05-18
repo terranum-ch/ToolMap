@@ -26,7 +26,7 @@ wxDialog(parent, id, title, pos, size,style) {
 	SetTitleAndCaption(title);
 	wxString myName = wxString::Format("%s (%s)",
 									   lsVersion::GetSoftName().c_str(),
-									   lsVersion::GetSoftSVN()).c_str();
+									   lsVersion::GetSoftGIT().c_str());
 	SetSoftName(myName);
 	SetModulesName(lsVersion::GetAllModules());
 
