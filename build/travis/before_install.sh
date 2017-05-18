@@ -11,6 +11,7 @@ sudo apt-get install -y libmariadbd-dev
 sudo apt-get install -y libaio-dev
 sudo apt-get install -y liblz4-dev
 sudo apt-get install -y libnuma-dev
+sudo apt-cache search libwxgtk webview
 
 # Build GDAL2
 if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
@@ -42,4 +43,3 @@ fi
 mkdir bin
 cd bin
 cmake -DSEARCH_GIS_LIB_PATH=${HOME}/.gdal -DMYSQL_MAIN_DIR=/usr -DSEARCH_WXPDFDOCUMENT_PATH=${HOME}/.wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 ../build
-ls 

@@ -1,7 +1,5 @@
 language: cpp
 script:
-  - pwd
-  - ls
   - cd bin
   - make
 compiler: gcc
