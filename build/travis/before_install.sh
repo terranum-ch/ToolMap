@@ -6,9 +6,14 @@ sudo apt-get install -y build-essential
 sudo apt-get install -y gnome-devel
 sudo apt-get install -y libwxgtk3.0
 sudo apt-get install -y libwxgtk3.0-dev
+sudo apt-get install -y libwxgtk-media3.0-dev
+sudo apt-get install -y libwxgtk-webview3.0-dev
 sudo apt-get install -y libproj-dev
 sudo apt-get install -y libgeos-dev
 sudo apt-get install -y libmariadbd-dev
+sudo apt-get install -y libaio-dev
+sudo apt-get install -y liblz4-dev
+sudo apt-get install -y libnuma-dev
 
 # Build GDAL2
 wget -O gdal.tar.gz "http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz"
