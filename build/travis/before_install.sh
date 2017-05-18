@@ -23,6 +23,8 @@ if [ ! -d "${HOME}/.gdal" ]; then
   make
   sudo make install
   cd ${TRAVIS_BUILD_DIR}
+else 
+  printf '%s/.gdal exists. GDAL will not be built.\n' "$HOME"
 fi
 
 # Build wxPdfDocument
@@ -36,6 +38,8 @@ if [ ! -d "${HOME}/.wxpdfdoc" ]; then
   make
   sudo make install
   cd ${TRAVIS_BUILD_DIR}
+else 
+  printf '%s/.wxpdfdoc exists. WxPdfDoc will not be built.\n' "$HOME"
 fi
 
 # CMake
