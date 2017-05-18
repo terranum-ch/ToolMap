@@ -1,5 +1,9 @@
 language: cpp
-script: make
+script:
+  - pwd
+  - ls
+  - cd bin
+  - make
 compiler: gcc
 sudo: required
 cache:
