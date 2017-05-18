@@ -11,7 +11,6 @@ sudo apt-get install -y libmariadbd-dev
 sudo apt-get install -y libaio-dev
 sudo apt-get install -y liblz4-dev
 sudo apt-get install -y libnuma-dev
-sudo apt-cache search libwxgtk webview
 
 # Build GDAL2
 if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
