@@ -20,6 +20,7 @@ if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
   ./configure --prefix=${HOME}/.gdal --with-geos=/usr --with-static-proj4=/usr --with-sqlite3=yes --with-python=no --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal --with-png=internal
   make
   make install
+  cd ..
 else 
   printf '%s/.gdal not empty. GDAL will not be built.\n' "$HOME"
 fi
@@ -32,6 +33,7 @@ if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   ./configure --prefix=${HOME}/.wxpdfdoc --enable-unicode --disable-shared
   make
   make install
+  cd ..
 else 
   printf '%s/.wxpdfdoc not empty. WxPdfDoc will not be built.\n' "$HOME"
 fi
