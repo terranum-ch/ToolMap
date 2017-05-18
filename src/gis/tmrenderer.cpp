@@ -101,13 +101,15 @@ wxScrolledWindow(parent,id, wxDefaultPosition,wxDefaultSize,
 
 bool tmRenderer::BitmapUpdateSize(){
 	if (m_bmp != NULL){
-		delete m_bmp;
-		m_bmp = NULL;
+		wxDELETE(m_bmp);
 	}
 	
 	int myWidth = 0;
 	int myHeight = 0;
 	GetClientSize(&myWidth, &myHeight);
+	if (myWidth == 0 || myHeight == 0){
+		return false;
+	}
 	m_bmp = new wxBitmap(myWidth, myHeight);
 	return true;
 }

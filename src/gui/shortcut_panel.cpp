@@ -123,7 +123,7 @@ wxSizer * Shortcuts_PANEL::CreateControls(wxWindow * parent,
 	m_TargetChoice = new wxChoice( parent, IDDLG_SHORT_TARGET, wxDefaultPosition, wxDefaultSize,
 								  3,TOC_GENERIC_NAME_STRING , 0 );
 	m_TargetChoice->SetSelection( TOC_NAME_LINES );
-	bSizer2->Add( m_TargetChoice, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer2->Add( m_TargetChoice, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 	
