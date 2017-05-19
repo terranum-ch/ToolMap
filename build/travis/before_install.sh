@@ -22,7 +22,20 @@ if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
   make install
   cd ..
 else 
-  printf '%s/.gdal not empty. GDAL will not be built.\n' "$HOME"
+  printf 'GDAL will not be built (%s/.gdal not empty).\n' "$HOME"
+fi
+
+# Build wxWidgets
+if [ ! "$(ls -A ${HOME}/.wxwidgets)" ]; then
+  wget -O wxwidgets.tar.bz2 "https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.tar.bz2"
+  tar -xvjf wxwidgets.tar.bz2
+  cd wxWidgets-3.1.0
+  ./configure --prefix=${HOME}/.wxwidgets --enable-unicode --disable-shared --enable-mediactrl=no
+  make
+  make install
+  cd ..
+else 
+  printf 'wxWidgets will not be built (%s/.wxwidgets not empty).\n' "$HOME"
 fi
 
 # Build wxPdfDocument
@@ -35,7 +48,7 @@ if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   make install
   cd ..
 else 
-  printf '%s/.wxpdfdoc not empty. WxPdfDoc will not be built.\n' "$HOME"
+  printf 'wxPdfDoc will not be built (%s/.wxpdfdoc not empty).\n' "$HOME"
 fi
 
 # CMake
