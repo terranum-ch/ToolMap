@@ -6,7 +6,7 @@ if [ ! "$(ls -A ${HOME}/.mariadb)" ]; then
   tar -xzf mariadb.tar.gz
   cd server-mariadb-10.1.23
   cmake . -DCMAKE_INSTALL_PREFIX=${HOME}/.mariadb -DPLUGIN_TOKUDB=NO -DWITH_EMBEDDED_SERVER=1 > /dev/null
-  make > /dev/null
+  make -j2 > /dev/null
   make install > /dev/null
   cd ..
 else 

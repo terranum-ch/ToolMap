@@ -6,7 +6,7 @@ if [ ! "$(ls -A ${HOME}/.wxwidgets)" ]; then
   tar -xjf wxwidgets.tar.bz2
   cd wxWidgets-3.1.0
   ./configure --prefix=${HOME}/.wxwidgets --enable-unicode --disable-shared --enable-mediactrl=no --silent
-  make > /dev/null
+  make -j2 > /dev/null
   make install > /dev/null
   cd ..
 else 

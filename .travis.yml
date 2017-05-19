@@ -16,11 +16,11 @@ install:
   - sudo apt-get install -y libaio-dev
   - sudo apt-get install -y libnuma-dev
   - chmod +x build/travis/build-mariadb.sh
-  - travis_wait build/travis/build-mariadb.sh
+  - travis_wait 30 build/travis/build-mariadb.sh
   - chmod +x build/travis/build-gdal.sh
-  - travis_wait build/travis/build-gdal.sh
+  - travis_wait 30 build/travis/build-gdal.sh
   - chmod +x build/travis/build-wxwidgets.sh
-  - travis_wait build/travis/build-wxwidgets.sh
+  - travis_wait 30 build/travis/build-wxwidgets.sh
   - chmod +x build/travis/build-wxpdfdoc.sh
   - travis_wait build/travis/build-wxpdfdoc.sh
 before_script:
