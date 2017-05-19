@@ -6,7 +6,6 @@ env:
 cache:
   directories:
   - $HOME/.gdal
-  - $HOME/.mariadb
   - $HOME/.wxpdfdoc
   - $HOME/.wxwidgets
 install: 
@@ -15,8 +14,7 @@ install:
   - sudo apt-get install -y libgeos-dev
   - sudo apt-get install -y libaio-dev
   - sudo apt-get install -y libnuma-dev
-  - chmod +x build/travis/build-mariadb.sh
-  - travis_wait 30 build/travis/build-mariadb.sh
+  - chmod +x build/travis/get-mariadb.sh
   - chmod +x build/travis/build-gdal.sh
   - travis_wait 30 build/travis/build-gdal.sh
   - chmod +x build/travis/build-wxwidgets.sh
@@ -24,8 +22,8 @@ install:
   - chmod +x build/travis/build-wxpdfdoc.sh
   - travis_wait build/travis/build-wxpdfdoc.sh
 before_script:
-  - wget -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
-  - tar -xvzf test-files.tar.gz
+  - wget -q -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
+  - tar -xzf test-files.tar.gz
   - mv ./ToolMap-test-files-master $HOME/unit_testing
 script:
   - cd bin
