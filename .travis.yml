@@ -22,9 +22,12 @@ install:
   - travis_wait 30 build/travis/build-wxwidgets.sh
   - chmod +x build/travis/build-wxpdfdoc.sh
   - travis_wait build/travis/build-wxpdfdoc.sh
+  - chmod +x build/travis/run-cmake.sh
+  - build/travis/run-cmake.sh
 before_script:
   - wget -q -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
   - tar -xzf test-files.tar.gz
   - mv ./ToolMap-test-files-master $HOME/unit_testing
 script:
-  - pwd
+  - cd bin
+  - make
