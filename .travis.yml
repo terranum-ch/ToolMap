@@ -9,8 +9,21 @@ cache:
   - $HOME/.wxwidgets
   - $HOME/.wxpdfdoc
 install: 
-  - chmod +x build/travis/install-dependencies.sh
-  - build/travis/install-dependencies.sh
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libproj-dev
+  - sudo apt-get install -y libgeos-dev
+  - sudo apt-get install -y libmariadbd-dev
+  - sudo apt-get install -y libaio-dev
+  - sudo apt-get install -y liblz4-dev
+  - sudo apt-get install -y libnuma-dev
+  - chmod +x build/travis/build-gdal.sh
+  - travis_wait build/travis/build-gdal.sh
+  - chmod +x build/travis/build-wxwidgets.sh
+  - travis_wait build/travis/build-wxwidgets.sh
+  - chmod +x build/travis/build-wxpdfdoc.sh
+  - travis_wait build/travis/build-wxpdfdoc.sh
+  - chmod +x build/travis/run-cmake.sh
+  - build/travis/run-cmake.sh
 before_script:
   - wget -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
   - tar -xvzf test-files.tar.gz
