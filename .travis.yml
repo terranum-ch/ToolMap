@@ -30,4 +30,4 @@ before_script:
   - mv ./ToolMap-test-files-master $HOME/unit_testing
 script:
   - cd bin
-  - make
+  - make -j2
