@@ -15,7 +15,7 @@ if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
   tar -xzf gdal.tar.gz
   cd gdal-2.1.3
   ./configure --prefix=${HOME}/.gdal --with-geos=/usr --with-static-proj4=/usr --with-sqlite3=yes --with-python=no --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal --with-png=internal --silent --enable-silent-rules
-  make -s
+  travis_wait make -s
   make install
   cd ..
 else 
@@ -28,7 +28,7 @@ if [ ! "$(ls -A ${HOME}/.wxwidgets)" ]; then
   tar -xjf wxwidgets.tar.bz2
   cd wxWidgets-3.1.0
   ./configure --prefix=${HOME}/.wxwidgets --enable-unicode --disable-shared --enable-mediactrl=no --silent
-  make -s
+  travis_wait make -s
   make install
   cd ..
 else 
@@ -41,7 +41,7 @@ if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   tar -xzf wxpdfdoc.tar.gz
   cd wxpdfdoc-0.9.5
   ./configure --prefix=${HOME}/.wxpdfdoc --enable-unicode --disable-shared --silent
-  make -s
+  travis_wait make -s
   make install
   cd ..
 else 
