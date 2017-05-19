@@ -35,6 +35,7 @@ public:
 	DataBaseTM * m_pDB;
 	PrjDefMemManage * m_PrjDef;
 	wxString * m_RealExportPath;
+	tmGISScale * m_ExportScale;
     
 	TEST_tmExportConcat (bool bTest){
         OGRRegisterAll();
@@ -50,16 +51,22 @@ public:
 		m_RealExportPath = new wxString(myTempString);
 		
 		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE,  g_TestPathEXPORT));
-		
+
+		// init scale for export. The project we export are in meters
+		// thus we can create this "fake" scale.
+		m_ExportScale = new tmGISScale();
+		m_ExportScale->SetExtentWndReal(tmRealRect(0,0,1,1));
+		m_ExportScale->SetWidthDistanceInM(1);
 	}
 	
 	virtual ~TEST_tmExportConcat(){
 		// reset path to old value
 		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 		
-		wxDELETE( m_pDB) ;
-		wxDELETE( m_PrjDef );
-        wxDELETE( m_RealExportPath );
+		wxDELETE(m_pDB);
+		wxDELETE(m_PrjDef );
+        wxDELETE(m_RealExportPath );
+		wxDELETE(m_ExportScale);
 	}
 	
 	static TEST_tmExportConcat *createSuite() { return new TEST_tmExportConcat(true);}
@@ -81,17 +88,17 @@ public:
 	}
 	
 	void testExportLine () {
-        tmExportManager myManager (NULL, m_pDB);
+        tmExportManager myManager (NULL, m_pDB, m_ExportScale);
         TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_LINE, false));
     }
     
     void testExportPoint () {
-        tmExportManager myManager (NULL, m_pDB);
+        tmExportManager myManager (NULL, m_pDB, m_ExportScale);
         TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_POINT, false));
     }
     
     void testExportLabels () {
-        tmExportManager myManager (NULL, m_pDB);
+        tmExportManager myManager (NULL, m_pDB, m_ExportScale);
         TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_POLYGON, false));
     }
     

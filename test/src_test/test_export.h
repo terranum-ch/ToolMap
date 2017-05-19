@@ -35,6 +35,9 @@ public:
 	DataBaseTM * m_pDB;
 	PrjDefMemManage * m_PrjDef;
 	wxString * m_RealExportPath;
+    tmGISScale * m_ExportScale;
+
+
 
 	TEST_tmExportData (bool bTest){
 		m_pDB = new DataBaseTM();
@@ -47,13 +50,16 @@ public:
 		wxString myTempString = wxEmptyString;
 		TS_ASSERT_DIFFERS(m_pDB->GetProjectExportData(iExportType, myTempString), PATH_DATABASE_ERROR);
 		m_RealExportPath = new wxString(myTempString);
-		
 		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, g_TestPathEXPORT));
-		
+
+        // init scale for export. The project we export are in meters
+        // thus we can create this "fake" scale.
+        m_ExportScale = new tmGISScale();
+		m_ExportScale->SetExtentWndReal(tmRealRect(0,0,1,1));
+        m_ExportScale->SetWidthDistanceInM(1);
 	}
 	
 	virtual ~TEST_tmExportData(){
-		
 		// reset path to old value
 		TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 		
@@ -62,6 +68,7 @@ public:
 			delete m_PrjDef;
 		}
 		delete m_RealExportPath;
+		delete m_ExportScale;
 	
 	}
 	
@@ -85,7 +92,7 @@ public:
 	
 	void testCreateExportManager()
 	{
-		tmExportManager myManager( NULL, m_pDB);
+		tmExportManager myManager(NULL, m_pDB, m_ExportScale);
 	}
 	
 	void testExportNotEmptyLayers()
@@ -102,7 +109,7 @@ public:
 		
 		wxLogMessage(_T("Initing all OGR drivers"));
 		OGRRegisterAll();
-		tmExportManager myManager( NULL, m_pDB);
+		tmExportManager myManager( NULL, m_pDB, m_ExportScale);
 	}
 	
 	
@@ -120,7 +127,7 @@ public:
 		TS_ASSERT_EQUALS(myPrj.GetCountLayers(), 3);
 		
 		
-		tmExportManager myManager( NULL, m_pDB);
+		tmExportManager myManager( NULL, m_pDB, m_ExportScale);
 	}
     	
 		

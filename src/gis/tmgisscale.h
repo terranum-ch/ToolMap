@@ -116,7 +116,11 @@ public:
     
     void SetPPI (const wxSize & ppi){m_PPI = ppi;}
     void SetUnitAndProj (PRJDEF_PROJ_TYPE proj, PRJDEF_UNIT_TYPE units);
-    
+
+    // setter, mostly used for unit testing
+    void SetExtentWndReal(const tmRealRect &ExtentWndReal){m_ExtentWndReal = ExtentWndReal;}
+    void SetWidthDistanceInM(double WidthDistanceInM) {m_WidthDistanceInM = WidthDistanceInM;}
+
     // setter and getter for layers
     void SetMaxLayersExtentAsExisting (const tmRealRect & r);
     void SetMaxLayersExtent (const tmRealRect & r){ m_ExtentMaxLayers = r;}
