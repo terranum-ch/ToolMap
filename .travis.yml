@@ -10,7 +10,7 @@ cache:
   - $HOME/.wxpdfdoc
 install: 
   - chmod +x build/travis/install-dependencies.sh
-  - travis_wait 30 build/travis/install-dependencies.sh
+  - build/travis/install-dependencies.sh
 before_script:
   - wget -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
   - tar -xvzf test-files.tar.gz
