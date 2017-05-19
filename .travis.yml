@@ -14,6 +14,7 @@ install:
   - sudo apt-get install -y libgeos-dev
   - sudo apt-get install -y libaio-dev
   - sudo apt-get install -y libnuma-dev
+  - sudo apt-get install -y libwebkitgtk-dev
   - chmod +x build/travis/get-mariadb.sh
   - build/travis/get-mariadb.sh
   - chmod +x build/travis/build-gdal.sh
