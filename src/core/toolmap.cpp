@@ -562,7 +562,6 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu16->Append(ID_MENU_OBJ_ATTRIB_DEF, _("Object Attribute..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu16->Append(ID_MENU_PRJ_SETTINGS, _("Settings..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit"), itemMenu16);
-    //itemMenu2->AppendSeparator();
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu2, _("&Project"));
@@ -572,8 +571,6 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
-    // TODO: Enable Add Web data when working
-    //itemMenu24->Enable(ID_MENU_ADD_WEBDATA, false);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu24, _("Data"));
@@ -581,7 +578,6 @@ void ToolMapFrame::_CreateMenu()
     // VIEW
     wxMenu* itemMenu28 = new wxMenu;
     itemMenu28->Append(wxID_BACKWARD, _("Previous Zoom\t<"), wxEmptyString, wxITEM_NORMAL);
-	//itemMenu28->Enable(wxID_BACKWARD, false);
 	itemMenu28->AppendSeparator();
     itemMenu28->Append(ID_MENU_ZOOM, _("Zoom by rectangle\tZ"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->Append(ID_MENU_PAN, _("Pan\tH"), _T(""), wxITEM_NORMAL);
@@ -591,8 +587,6 @@ void ToolMapFrame::_CreateMenu()
     //itemMenu28->Append(ID_MENU_ZOOM_NEXT_SCALE, _("Zoom to next defined scale\t+"), _T(""), wxITEM_NORMAL);
     //itemMenu28->Append(ID_MENU_PREVIOUS_SCALE, _("Zoom to previous defined scale\t-"), _T(""), wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
-    //itemMenu28->Append(ID_MENU_SELECTION, _("Zoom to selection"), _T(""), wxITEM_NORMAL);
-    //itemMenu28->Enable(ID_MENU_SELECTION, false);
     itemMenu28->Append(ID_MENU_ZOOM_FRAME, _("Zoom to Frame\tCtrl+1"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to selected layer\tCtrl+2"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
@@ -603,17 +597,14 @@ void ToolMapFrame::_CreateMenu()
     wxMenu* itemMenu66 = new wxMenu;
     itemMenu66->Append(ID_MENU_SELECT, _("Select tool\tV"), _T(""), wxITEM_NORMAL);
 	itemMenu66->Append(ID_MENU_SELECT_BY_OID, _("Select by Feature ID..."), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu66->Append(ID_MENU_SELECT_ALL, _("Select all"), _T(""), wxITEM_NORMAL);
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
     itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu66->Enable(ID_MENU_SELECT_INVERSE, false);
     menuBar->Append(itemMenu66, _("Selection"));
 
 
     // EDITION
     wxMenu* itemMenu41 = new wxMenu;
-    //itemMenu41->Append(ID_MENU_REDO, _("Redo\tCtrl+R"), _T(""), wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_DRAW, _("Draw feature\tD"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MODIFY, _("Modify feature\tM"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
@@ -627,7 +618,6 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_VERTEX_DELETE, _("Delete vertex\tC"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
 
-    //itemMenu41->Enable(ID_MENU_MODIFY, false);
 	itemMenu41->Append(ID_MENU_MODIFY_SHARED, _("Move shared Node\tCtrl+T"));
 	wxString myDeleteText = _("Delete selected feature");
 #ifdef __WXMAC__
@@ -658,8 +648,6 @@ void ToolMapFrame::_CreateMenu()
     itemMenu55->Append(ID_MENU_ATTRIB_TYPES, _("Object Kind..."), _T(""), wxITEM_CHECK);
     itemMenu55->Append(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute (single feature)...\tCtrl+A"), wxEmptyString, wxITEM_NORMAL);
     itemMenu55->Append(ID_MENU_ATTRIB_BATCH, _("Object Attribute (multiple features)...\tCtrl+Alt+A"), wxEmptyString, wxITEM_NORMAL);
-    //itemMenu55->Append(ID_MENU_COPY_PASTE_ATTRIB, _("Copy-Paste Attribution\tCtrl+B"), _T(""), wxITEM_NORMAL);
-    //itemMenu55->Enable(ID_MENU_COPY_PASTE_ATTRIB, false);
 	itemMenu55->AppendSeparator();
 	wxMenu* itemMenu56 = new wxMenu();
 
