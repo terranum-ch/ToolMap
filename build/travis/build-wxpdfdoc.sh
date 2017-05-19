@@ -6,7 +6,7 @@ if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   tar -xzf wxpdfdoc.tar.gz
   cd wxpdfdoc-0.9.5
   ./configure --prefix=${HOME}/.wxpdfdoc --enable-unicode --disable-shared --silent
-  travis_wait make -s
+  make -s
   make install
   cd ..
 else 
