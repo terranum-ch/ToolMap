@@ -1,16 +1,20 @@
 language: cpp
-script:
-  - cd bin
-  - make
 compiler: gcc
 sudo: required
+env:
+  - WXWIN=$HOME/.wxwidgets
 cache:
   directories:
   - $HOME/.gdal
   - $HOME/.wxwidgets
   - $HOME/.wxpdfdoc
-env:
-  - WXWIN=$HOME/.wxwidgets
-before_install: 
-  - chmod +x build/travis/before_install.sh
-  - build/travis/before_install.sh
+install: 
+  - chmod +x build/travis/install-dependencies.sh
+  - build/travis/install-dependencies.sh
+before_script:
+  - wget -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
+  - tar -xvzf test-files.tar.gz
+  - mv ./ToolMap-test-files-master $HOME/unit_testing
+script:
+  - cd bin
+  - make
