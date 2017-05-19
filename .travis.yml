@@ -9,6 +9,8 @@ cache:
   - $HOME/.gdal
   - $HOME/.wxwidgets
   - $HOME/.wxpdfdoc
+env:
+  - WXWIN=$HOME/.wxwidgets
 before_install: 
   - chmod +x build/travis/before_install.sh
   - build/travis/before_install.sh
