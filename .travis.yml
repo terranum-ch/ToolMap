@@ -27,4 +27,4 @@ before_script:
   - tar -xzf test-files.tar.gz
   - mv ./ToolMap-test-files-master $HOME/unit_testing
 script:
-  - cd bin
+  - pwd
