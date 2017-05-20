@@ -15,8 +15,7 @@ install:
   - sudo apt-get install -y libaio-dev
   - sudo apt-get install -y libnuma-dev
   - sudo apt-get install -y libwebkitgtk-dev
-  - chmod +x build/travis/get-mariadb.sh
-  - build/travis/get-mariadb.sh
+  - sudo apt-get install -y libmysqld-dev
   - chmod +x build/travis/build-gdal.sh
   - travis_wait 30 build/travis/build-gdal.sh
   - chmod +x build/travis/build-wxwidgets.sh
