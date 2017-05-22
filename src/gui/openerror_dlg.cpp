@@ -74,7 +74,7 @@ void tmOpenError_DLG::_CreateControls(const wxString & projname, int iActDBVersi
 	m_ErrVerConvertCtrl = new wxButton( m_ErrPanelProjVersion, wxID_ANY, _("Convert and open..."), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizer2->Add( m_ErrVerConvertCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	bSizer7->Add( sbSizer2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
+	bSizer7->Add( sbSizer2, 1, wxALL| wxEXPAND, 5 );
 	
 	m_ErrPanelProjVersion->SetSizer( bSizer7 );
 	m_ErrPanelProjVersion->Layout();
