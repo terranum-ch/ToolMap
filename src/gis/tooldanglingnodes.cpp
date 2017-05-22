@@ -177,14 +177,22 @@ bool ToolDanglingNodes::DNSearchValidVertex()
 }
 
 
-bool ToolDanglingNodes::DNIsPointInside(OGRPoint * pt)
-{
-	if (pt->Within(m_GeomFrame)==true)
-		return true;
-	
-	// test also for touching
-	if (pt->Touches(m_GeomFrame->getExteriorRing())==true)
-		return true;
+bool ToolDanglingNodes::DNIsPointInside(OGRPoint * pt) {
+    if (m_GeomFrame == NULL) {
+        return false;
+    }
+
+    if (pt->Within(m_GeomFrame) == true)
+        return true;
+
+    // test also for touching
+    OGRGeometry *myExtRing = m_GeomFrame->getExteriorRing();
+    if (myExtRing == NULL) {
+        return false;
+    }
+    if (pt->Touches(myExtRing) == true) {
+        return true;
+    }
 	
 	return false;
 }
@@ -229,20 +237,17 @@ bool ToolDanglingNodes::DNGetFrameGeometry()
 		}
 	}
 	
-	OGRLineString * myFrameLine = (OGRLineString*) m_GisData.GetNextDataLine(loid);
+	OGRLineString * myFrameLine = m_GisData.GetNextDataLine(loid);
 	if(myFrameLine == NULL)
 	{
 		wxLogError(_("Unable to get the frame"));
 		m_pDB->DataBaseClearResults();
 		return false;
 	}
-	
-	
-	m_GeomFrame = (OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
-	wxASSERT(m_GeomFrame);
-	m_GeomFrame->addRing((OGRLinearRing*)myFrameLine);
-	OGRGeometryFactory::destroyGeometry(myFrameLine);
-	
+
+	m_GeomFrame = (OGRPolygon*) OGRGeometryFactory::forceToPolygon(myFrameLine);
+    wxASSERT(m_GeomFrame);
+
 	m_pDB->DataBaseClearResults();
 	return true;
 	
