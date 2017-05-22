@@ -26,6 +26,9 @@ install:
   - chmod +x build/travis/run-cmake.sh
   - build/travis/run-cmake.sh
 before_script:
+  - sudo add-apt-repository -y ppa:dhart/ppa
+  - sudo apt-get update
+  - sudo apt-get install -y cxxtest
   - wget -q -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
   - tar -xzf test-files.tar.gz
   - mv ./ToolMap-test-files-master $HOME/unit_testing
