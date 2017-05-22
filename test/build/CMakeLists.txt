@@ -54,13 +54,13 @@ if(CXXTEST_FOUND)
 	TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib") 
 endif(CXXTEST_FOUND)
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
 find_package(GTK2)
 	if(GTK2_FOUND)
 	   include_directories(${GTK2_INCLUDE_DIRS})
 	   target_link_libraries(${PROGNAMETEST} ${GTK2_LIBRARIES})
 	endif()
-endif()
+endif(UNIX AND NOT APPLE)
 
 # COPY ERRMSG.SYS TO EXPECTED DIRECTORY!
 IF(APPLE)
