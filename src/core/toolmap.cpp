@@ -71,6 +71,8 @@ bool ToolMapApp::OnInit(){
 
 	// add handler for PNG embedded images (toolbar)
 	wxImage::AddHandler(new wxPNGHandler);
+	// add handler for JPEG required by wxPdfDocument
+	wxImage::AddHandler(new wxJPEGHandler);
 	ToolMapFrame* frame = new ToolMapFrame(NULL, g_ProgName, wxDefaultPosition, wxSize(900,500),_T("MAIN_WINDOW"));
 	tmWindowPosition myPos;
 	wxRect myWndPos;
