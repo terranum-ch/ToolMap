@@ -35,3 +35,4 @@ before_script:
 script:
   - cd bin
   - make -j2
+  - make test
