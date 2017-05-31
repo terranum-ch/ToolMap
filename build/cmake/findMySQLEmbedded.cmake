@@ -47,15 +47,15 @@ IF (MYSQL_INCLUDE_DIR)
       #	ENDIF (MYSQL_FIND_REQUIRED)
     #ENDIF (MYSQL_FOUND)
 
-    EXEC_PROGRAM("mysql_config"
-        ARGS "--libmysqld-libs"
-        OUTPUT_VARIABLE MYSQL_CONFIG_LIBS)
-        MESSAGE("DBG: ${MYSQL_CONFIG_LIBS}")
+    # EXEC_PROGRAM("mysql_config"
+    #     ARGS "--libmysqld-libs"
+    #     OUTPUT_VARIABLE MYSQL_CONFIG_LIBS)
+    #     MESSAGE("DBG: ${MYSQL_CONFIG_LIBS}")
         
-        EXEC_PROGRAM("mysql_config"
-        ARGS "--cflags"
-        OUTPUT_VARIABLE MYSQL_CONFIG_CXFLAGS)
-        MESSAGE("DBG: ${MYSQL_CONFIG_CXFLAGS}")
+    #     EXEC_PROGRAM("mysql_config"
+    #     ARGS "--cflags"
+    #     OUTPUT_VARIABLE MYSQL_CONFIG_CXFLAGS)
+    #     MESSAGE("DBG: ${MYSQL_CONFIG_CXFLAGS}")
 
 # if mysql is not installed in a normal
 #directory, specify the main directory
@@ -84,10 +84,11 @@ ELSE (MYSQL_INCLUDE_DIR)
         "${MYSQL_MAIN_DIR}/lib"
         DOC "MySQL embedded library" )
         
-        SET(MYSQL_CONFIG_LIBS ${MYSQL_CONFIG_LIBS}
-           debug ${MYSQL_LIBRARY_EMBEDDED_DEBUG}  
-           optimized ${MYSQL_LIBRARY_EMBEDDED})
-             
+        # SET(MYSQL_CONFIG_LIBS ${MYSQL_CONFIG_LIBS}
+        #    debug ${MYSQL_LIBRARY_EMBEDDED_DEBUG}  
+        #    optimized ${MYSQL_LIBRARY_EMBEDDED})
+        SET(MYSQL_CONFIG_LIBS ${MYSQL_LIBRARY_EMBEDDED})
+
              # path to libs
             # IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
             #    SET(MYSQL_CONFIG_LIBS "${MYSQL_MAIN_DIR}/Embedded/DLL/debug/libmysqld.lib" )

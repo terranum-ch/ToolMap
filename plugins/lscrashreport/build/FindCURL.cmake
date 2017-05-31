@@ -9,11 +9,32 @@ SET (SEARCH_CURL_LIB_PATH CACHE PATH "Path to the CURL libs (empty for unix syst
 
 # if windows
 IF (WIN32)
-  FIND_PATH(CURL_INCLUDE_DIR curl/curl.h ${SEARCH_CURL_LIB_PATH}/include ${SEARCH_CURL_LIB_PATH})
+        FIND_PATH(CURL_INCLUDE_DIRS curl/curl.h
+                  PATHS
+                  ${SEARCH_CURL_LIB_PATH}/include
+                  ${SEARCH_CURL_LIB_PATH}
+                  NO_DEFAULT_PATH)
 
-  SET(CURL_LIBRARIES ${CURL_LIBRARIES}
-    debug "${CURL_INCLUDE_DIR}/../lib/DLL-Debug/libcurld_imp.lib"   
-    optimized "${CURL_INCLUDE_DIR}/../lib/DLL-Release/libcurl_imp.lib")
+        FIND_LIBRARY(CURL_LIBRARY_DEBUG 
+            NAMES libcurld
+            PATHS
+            ${SEARCH_CURL_LIB_PATH}/lib
+            ${SEARCH_CURL_LIB_PATH}/lib/DLL-Debug/
+            DOC "LibCURL debug library"
+            NO_DEFAULT_PATH)
+
+        FIND_LIBRARY(CURL_LIBRARY_RELEASE 
+            NAMES libcurl
+            PATHS
+            ${SEARCH_CURL_LIB_PATH}/lib
+            ${SEARCH_CURL_LIB_PATH}/lib/DLL-Release/
+            DOC "LibCURL library"
+            NO_DEFAULT_PATH)
+
+        # SET(CURL_LIBRARIES ${CURL_LIBRARIES}
+        #     debug ${CURL_LIBRARY_DEBUG}
+        #     optimized ${CURL_LIBRARY_RELEASE})
+        SET(CURL_LIBRARIES ${CURL_LIBRARY_RELEASE})
 
 ELSE (WIN32)
   FIND_PATH(CURL_INCLUDE_DIR curl/curl.h
