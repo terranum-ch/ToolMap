@@ -120,12 +120,14 @@ IF (SEARCH_GDAL)
 		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
   				HINTS ${SEARCH_GDAL_PATH}/include
 			${SEARCH_GDAL_PATH}
+			${SEARCH_GIS_LIB_PATH}/include
                 NO_DEFAULT_PATH)
   		
   		FIND_LIBRARY(GDAL_LIBRARIES
 	  		gdal_i
 	  		HINTS ${SEARCH_GDAL_PATH}/lib
 		${SEARCH_GDAL_PATH}
+		${SEARCH_GIS_LIB_PATH}/lib
   			NO_DEFAULT_PATH)
 	
 	# if unix / mac and search geos

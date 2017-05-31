@@ -34,7 +34,7 @@ IF (MYSQL_INCLUDE_DIR)
   # Copy optimized MySQL  dll under WINDOWS
   FIND_FILE (MYSQL_DLL_NAME
     libmysqld.dll 
-    HINTS ${MYSQL_MAIN_DIR}/Embedded/DLL/release
+    HINTS ${MYSQL_MAIN_DIR}/Embedded/DLL/release ${MYSQL_MAIN_DIR}/lib
     NO_DEFAULT_PATH)
   IF (NOT MYSQL_DLL_NAME)
     MESSAGE (SEND_ERROR "MySQL dll not found in ${MYSQL_MAIN_DIR}")

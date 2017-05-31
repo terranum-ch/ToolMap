@@ -1,6 +1,6 @@
 IF (WIN32)
 	FIND_FILE (GDAL_DLL_NAME
-		gdal18.dll NAMES gdal19.dll gdal110.dll 
+		gdal18.dll NAMES gdal19.dll gdal110.dll gdal200.dll gdal201.dll gdal202.dll
 		HINTS ${SEARCH_GIS_LIB_PATH}/bin
 		${SEARCH_GIS_LIB_PATH}
 		NO_DEFAULT_PATH)
@@ -12,6 +12,7 @@ IF (WIN32)
 	geos.dll 
 		HINTS ${SEARCH_GIS_LIB_PATH}/bin
 		${SEARCH_GIS_LIB_PATH}
+		${SEARCH_GEOS_LIB_PATH}/src
 		NO_DEFAULT_PATH)
   IF (NOT GEOS_DLL_NAME)
     MESSAGE (SEND_ERROR "geos.dll not found in ${SEARCH_GIS_LIB_PATH}")
@@ -21,6 +22,7 @@ IF (WIN32)
 	geos_c.dll 
 		HINTS ${SEARCH_GIS_LIB_PATH}/bin
 		${SEARCH_GIS_LIB_PATH}
+		${SEARCH_GEOS_LIB_PATH}/src
 		NO_DEFAULT_PATH)
   IF (NOT GEOS_C_DLL_NAME)
     MESSAGE (SEND_ERROR "geos_c.dll not found in ${SEARCH_GIS_LIB_PATH}")
@@ -32,7 +34,7 @@ IF (WIN32)
 		${SEARCH_GIS_LIB_PATH}
 		NO_DEFAULT_PATH)
   IF (NOT SQLITE_DLL_NAME)
-    MESSAGE (SEND_ERROR "sqlite3.dll not found in ${SEARCH_GIS_LIB_PATH}")
+    MESSAGE (WARNING "sqlite3.dll not found in ${SEARCH_GIS_LIB_PATH}")
   ENDIF()
 
 	add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
