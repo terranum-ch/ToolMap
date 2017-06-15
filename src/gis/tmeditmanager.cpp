@@ -283,7 +283,7 @@ void tmEditManager::BezierDraw (wxGCDC * dc){
 #ifdef __WXMAC__
     dc->SetPen( *wxGREY_PEN );
 #else
-    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+    dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxPENSTYLE_SOLID) );
 #endif
     // draw actual bezier when needed
     if (m_BezierActualP1 != wxPoint(0,0) && m_BezierActualC1 != wxPoint(0,0) && m_BezierActualP2 != wxPoint(0,0)){
@@ -949,7 +949,7 @@ void tmEditManager::ArcDraw (wxGCDC * dc){
 #ifdef __WXMAC__
         dc->SetPen( *wxGREY_PEN );
 #else
-        dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+        dc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxPENSTYLE_SOLID) );
 #endif
         if (m_ArcActualPt != wxDefaultPosition && myPts.GetCount() > 0 && m_Renderer->GetTool() == tmTOOL_DRAW){
             dc->DrawLine(*myPts[myPts.GetCount() -1], m_ArcActualPt);
@@ -2466,7 +2466,7 @@ void tmEditManager::OnEditSharedMove(wxCommandEvent & event){
 #ifdef __WXMAC__
 	myDC.SetPen( *wxGREY_PEN );
 #else
-	myDC.SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+	myDC.SetPen( wxPen( *wxLIGHT_GREY, 2, wxPENSTYLE_SOLID) );
 #endif
 		
 	for (unsigned int i = 0; i<m_SharedNodes.GetCount(); i++) {

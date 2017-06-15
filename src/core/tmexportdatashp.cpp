@@ -398,7 +398,7 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
 
         // get feature id, feature code, layerindex
         wxString myAttribTxt = wxEmptyString;
-        int myNbAttrib = myFeature->GetFieldAsInteger(0);
+        unsigned int myNbAttrib = myFeature->GetFieldAsInteger(0);
         wxArrayString myTmIds = wxStringTokenize( wxString(myFeature->GetFieldAsString(1) ), _T(";\n") );
         wxArrayString myLayerIdx = wxStringTokenize( wxString(myFeature->GetFieldAsString(2) ), _T(";\n") );
         wxArrayString myCodes = wxStringTokenize( wxString(myFeature->GetFieldAsString(3) ), _T(";\n") );

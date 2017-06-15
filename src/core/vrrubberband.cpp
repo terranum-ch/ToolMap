@@ -126,18 +126,16 @@ bool vrRubberBand::IsValid() {
 
 
 void vrRubberBand::Update() {
-	
-	wxClientDC dc( m_Window ) ;
-	wxDCOverlay overlaydc( m_Overlay, &dc );
+	wxClientDC dc(m_Window) ;
+	wxDCOverlay overlaydc(m_Overlay, &dc);
 	overlaydc.Clear();
 #ifdef __WXMAC__
-	dc.SetPen( *wxGREY_PEN );
-	dc.SetBrush( wxColour( 192,192,192,64 ) );
+	dc.SetPen(*wxGREY_PEN);
+	dc.SetBrush(wxColour(192,192,192,64));
 #else
-	dc.SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
-	dc.SetBrush( *wxTRANSPARENT_BRUSH );
+	dc.SetPen(wxPen( *wxLIGHT_GREY, 2, wxPENSTYLE_SOLID));
+	dc.SetBrush(*wxTRANSPARENT_BRUSH);
 #endif
-	dc.DrawRectangle( GetRect() );
-	
+	dc.DrawRectangle(GetRect());
 }
 

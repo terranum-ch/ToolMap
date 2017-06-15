@@ -255,7 +255,7 @@ bool tmDrawerEditLine::DrawEditPart(wxClientDC * pdc)
 #ifdef __WXMAC__
 	pdc->SetPen( *wxGREY_PEN );
 #else
-	pdc->SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
+	pdc->SetPen(wxPen(*wxLIGHT_GREY, 2, wxPENSTYLE_SOLID));
 #endif
 	
 	int iNumPts = DLGetCountPoints();
