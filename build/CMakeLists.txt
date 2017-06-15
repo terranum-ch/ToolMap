@@ -85,6 +85,12 @@ IF (APPLE)
   set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/custominfo.plist)
 ENDIF(APPLE)
 
+# adding multi-core support for Visual Studio Compiler
+IF(MSVC)
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    MESSAGE(STATUS "Adding multiprocessor support for Visual Studio (/MP Flag)")
+ENDIF(MSVC)
+
 INCLUDE ("cmake/installMacGISLIB.cmake")
 INCLUDE ("cmake/installMacLibTiff.cmake")
 INCLUDE ("cmake/Use_wingdiplus.cmake")
