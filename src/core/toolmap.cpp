@@ -1164,7 +1164,7 @@ void ToolMapFrame::OnReportBug (wxCommandEvent & event)
 void ToolMapFrame::OnComponentsInfo (wxCommandEvent & event){
 	lsVersionDlg myDlg (this, wxID_ANY, _("Components"));
 	myDlg.SetBitmapLogo(*_img_icon_toolmap);
-	myDlg.SetCopyright(wxString::Format("(c) CREALP, (c) SWISSTOPO, %d",wxDateTime::Now().GetYear()));
+	myDlg.SetCopyright(wxString::Format("(c) TERR@NUM, %d",wxDateTime::Now().GetYear()));
 	myDlg.ShowModal();
 }
 
