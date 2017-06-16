@@ -234,8 +234,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 	// queries event are binded :-)
 
 	EVT_MENU (ID_MENU_CHECK_UPDATE,ToolMapFrame::OnCheckUpdates)
-	EVT_MENU (ID_MENU_REPORT_BUG, ToolMapFrame::OnReportBug)
-	EVT_MENU (ID_MENU_ASK_NEW_FEATURE, ToolMapFrame::OnReportBug)
+	EVT_MENU (ID_MENU_CONTACT_US, ToolMapFrame::OnContactUs)
 	EVT_MENU (ID_MENU_USER_MANUAL, ToolMapFrame::OnUserManual)
 
 	EVT_MENU (wxID_ABOUT, ToolMapFrame::OnAbout)
@@ -708,8 +707,7 @@ void ToolMapFrame::_CreateMenu()
 	itemMenu81->AppendSeparator();
 	itemMenu81->Append(ID_MENU_USER_MANUAL, _("User Manual..."), wxEmptyString, wxITEM_NORMAL);
 	itemMenu81->AppendSeparator();
-	itemMenu81->Append(ID_MENU_REPORT_BUG, _("Report a bug..."), wxEmptyString, wxITEM_NORMAL);
-	itemMenu81->Append(ID_MENU_ASK_NEW_FEATURE, _("Ask for a new feature..."), wxEmptyString, wxITEM_NORMAL);
+	itemMenu81->Append(ID_MENU_CONTACT_US, _("Contact us..."), wxEmptyString, wxITEM_NORMAL);
     menuBar->Append(itemMenu81, _("&Help"));
     this->SetMenuBar(menuBar);
 
@@ -1154,9 +1152,9 @@ void ToolMapFrame::OnCheckUpdates (wxCommandEvent & event)
 
 
 
-void ToolMapFrame::OnReportBug (wxCommandEvent & event)
-{
-	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
+void ToolMapFrame::OnContactUs(wxCommandEvent &event) {
+	//wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
+    wxLaunchDefaultBrowser(_T("mailto:toolmap@terranum.ch?subject=Toolmap"));
 }
 
 
