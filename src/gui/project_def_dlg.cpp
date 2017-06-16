@@ -193,7 +193,7 @@ void ProjectDefDLG::CreateControls()
     itemFlexGridSizer16->Add(itemStaticText19, 0, wxALIGN_LEFT|wxALIGN_TOP|wxALL, 5);
 	
     m_DlgPd_Proj_Comment = new wxTextCtrl( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_COMMENT, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-    itemFlexGridSizer16->Add(m_DlgPd_Proj_Comment, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemFlexGridSizer16->Add(m_DlgPd_Proj_Comment, 1, wxGROW|wxALL, 5);
 	
     itemNotebook3->AddPage(m_DlgPd_Panel_Proj, _("Project properties"));
 	
@@ -242,7 +242,7 @@ void ProjectDefDLG::CreateControls()
     //itemStatusBar13Widths[0] = -2;
     //itemStatusBar13Widths[1] = -1;
     //itemStatusBar13->SetStatusWidths(2, itemStatusBar13Widths);
-    itemBoxSizer2->Add(m_DlgPd_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
+    itemBoxSizer2->Add(m_DlgPd_Status, 0, wxALL|wxGROW, 0);
 	
 	// pass the status bar to the list
 	m_DlgPd_Stat_Model_List->SetStatusBar(m_DlgPd_Status);

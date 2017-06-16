@@ -164,7 +164,7 @@ bool ToolDanglingNodes::DNSearchValidVertex()
 		OGRGeometryFactory::destroyGeometry(myLineToCheck);
 	}
 	
-	wxLogDebug(_T("%ld nodes to check"), m_PtsToCheck.GetCount());
+	wxLogDebug(_T("%zu nodes to check"), m_PtsToCheck.GetCount());
 	DNSearchCleanUp();
 	
 	if (m_PtsToCheck.IsEmpty()==true)

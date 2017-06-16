@@ -164,7 +164,7 @@ PdfDocument::PdfDocument(PrjDefMemManage * project) {
 		wxASSERT(myLayer);
 		m_pdfLayers.Add(myLayer);
 	}
-	wxLogDebug("%ld PDF Layers added", m_pdfLayers.GetCount());
+	wxLogDebug("%zu PDF Layers added", m_pdfLayers.GetCount());
 }
 
 

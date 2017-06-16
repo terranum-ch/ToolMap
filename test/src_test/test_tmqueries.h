@@ -463,7 +463,7 @@ public:
 		PrjMemObjectsArray myObjects;
 		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
 		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
-		wxLogMessage(_T("%ld objects returned for types : %s"),
+		wxLogMessage(_T("%zu objects returned for types : %s"),
 					 myObjects.GetCount(),
 					 PRJDEF_LAYERS_TYPE_STRING[m_DataSelected->m_QueryLayerType].c_str());
 		
@@ -471,14 +471,14 @@ public:
 		m_DataObjects->m_QueryLayerType = TOC_NAME_POINTS;
 		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
 		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
-		wxLogMessage(_T("%ld objects returned for types : %s"),
+		wxLogMessage(_T("%zu objects returned for types : %s"),
 					 myObjects.GetCount(),
 					 PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
 		
 		m_DataObjects->m_QueryLayerType = TOC_NAME_LABELS;
 		TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects)==true);
 		TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
-		wxLogMessage(_T("%ld objects returned for types : %s"),
+		wxLogMessage(_T("%zu objects returned for types : %s"),
 					 myObjects.GetCount(),
 					 PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
 		

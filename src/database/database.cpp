@@ -78,6 +78,10 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 		return false;
 	}
 
+	// get application path
+	wxFileName f(wxStandardPaths::Get().GetExecutablePath());
+	wxFileName windows_msg_path(f.GetPath(), "mysql", "");
+
 	//init library
 	wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME,wxPATH_NATIVE);
 #ifdef MYSQL_IS_LOGGING
@@ -93,7 +97,8 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
     {
 
 #if defined(__WINDOWS__)
-        mylanguagedir = "--lc-messages-dir=./mysql";
+		//mylanguagedir = "--lc-messages-dir=./mysql";
+		mylanguagedir = "--lc-messages-dir=" + windows_msg_path.GetFullPath();
 #elif defined(__WXMAC__)
         mylanguagedir = "--lc-messages-dir=./ToolMap.app/Contents/mysql";
 #else
