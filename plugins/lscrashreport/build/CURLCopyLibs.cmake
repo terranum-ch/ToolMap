@@ -15,12 +15,15 @@ IF(WIN32)
 
   # curl library release
   FIND_FILE (CURL_DLL_NAME
-    libcurl.dll
-    HINTS "${CURL_INCLUDE_DIR}/../lib/DLL-Release"
-    "${CURL_INCLUDE_DIR}/../lib"
-    "${CURL_INCLUDE_DIR}/../bin"
-    NO_DEFAULT_PATH)
-  
+          libcurl.dll
+          HINTS "${CURL_INCLUDE_DIR}/../lib/DLL-Release"
+          "${CURL_INCLUDE_DIR}/../lib"
+          "${CURL_INCLUDE_DIR}/../bin"
+          "${SEARCH_CURL_LIB_PATH}"
+          "${SEARCH_CURL_LIB_PATH}/lib"
+          "${SEARCH_CURL_LIB_PATH}/bin"
+          NO_DEFAULT_PATH)
+
   IF(NOT CURL_DLL_NAME)
     MESSAGE (WARNING "Curl Release library isn't found and will not be copied !")
   ELSE()

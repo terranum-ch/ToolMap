@@ -25,8 +25,8 @@ IF (APPLE)
 	FIND_LIBRARY(LIBTIFF_MAC_LIBRARIES	tiff.3)
 		IF (LIBTIFF_MAC_LIBRARIES)
 	
-			MESSAGE ("DBG : Library will be copied into : ${BUNDLELIBPATH}")
-			MESSAGE ("DBG : libtiff found : ${LIBTIFF_MAC_LIBRARIES}")
+			MESSAGE (STATUS "Library will be copied into : ${BUNDLELIBPATH}")
+			MESSAGE (STATUS "libtiff found : ${LIBTIFF_MAC_LIBRARIES}")
 			#create the "library" path
 			EXEC_PROGRAM( "mkdir -p  ${BUNDLELIBPATH}")
 			

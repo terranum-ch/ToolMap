@@ -27,36 +27,34 @@ IF (MYSQL_INCLUDE_DIR)
 			${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql/errmsg.sys
 			)
 	ENDIF(APPLE)
-	
-	
-	IF(WIN32)
-		FILE (TO_NATIVE_PATH ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mysql WIN_MYSQL_DIR)
-		FILE (TO_NATIVE_PATH ${MYSQL_SHARE_DIR}/errmsg.sys  WIN_MYSQL_ERRMSG_SOURCE)
-		FILE (TO_NATIVE_PATH ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mysql/errmsg.sys  WIN_MYSQL_ERRMSG_DEST)
 
-		ADD_CUSTOM_COMMAND(TARGET ${CMAKE_PROJECT_NAME}
-			POST_BUILD
-			COMMAND IF exist ${WIN_MYSQL_DIR} (echo ${WIN_MYSQL_DIR} exists) ELSE (mkdir ${WIN_MYSQL_DIR})
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${MYSQL_ERRMSG_FILE}	$<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/mysql/
-		)
 
-  # Copy optimized MySQL  dll under WINDOWS
-  FIND_FILE (MYSQL_DLL_NAME
-    libmysqld.dll 
-    HINTS ${MYSQL_MAIN_DIR}/Embedded/DLL/release
-          ${MYSQL_MAIN_DIR}/lib
-    NO_DEFAULT_PATH)
-  IF (NOT MYSQL_DLL_NAME)
-    MESSAGE (SEND_ERROR "MySQL dll not found in ${MYSQL_MAIN_DIR}")
-  ENDIF()
+    IF(WIN32)
+        FILE (TO_NATIVE_PATH ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mysql WIN_MYSQL_DIR)
+        FILE (TO_NATIVE_PATH ${MYSQL_SHARE_DIR}/errmsg.sys  WIN_MYSQL_ERRMSG_SOURCE)
+        FILE (TO_NATIVE_PATH ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mysql/errmsg.sys  WIN_MYSQL_ERRMSG_DEST)
 
-  ADD_CUSTOM_COMMAND (TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${MYSQL_DLL_NAME}"
-    "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+        ADD_CUSTOM_COMMAND(TARGET ${CMAKE_PROJECT_NAME}
+                POST_BUILD
+                COMMAND IF exist ${WIN_MYSQL_DIR} (echo ${WIN_MYSQL_DIR} exists) ELSE (mkdir ${WIN_MYSQL_DIR})
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${MYSQL_ERRMSG_FILE}	$<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/mysql/
+                )
 
-        MESSAGE("${MYSQL_DLL_NAME} -- ${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-	ENDIF(WIN32)
+        # Copy optimized MySQL  dll under WINDOWS
+        FIND_FILE (MYSQL_DLL_NAME
+                libmysqld.dll
+                HINTS ${MYSQL_MAIN_DIR}/Embedded/DLL/release
+                ${MYSQL_MAIN_DIR}/lib
+                NO_DEFAULT_PATH)
+        IF (NOT MYSQL_DLL_NAME)
+            MESSAGE (SEND_ERROR "MySQL dll not found in ${MYSQL_MAIN_DIR}")
+        ENDIF()
+
+        ADD_CUSTOM_COMMAND (TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${MYSQL_DLL_NAME}"
+                "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+    ENDIF(WIN32)
 
 	# do nothing for Linux
 ENDIF(MYSQL_INCLUDE_DIR)

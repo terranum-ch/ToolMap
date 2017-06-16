@@ -17,10 +17,10 @@ IF (WIN32)
 
 	IF (USE_GDIPLUS_LIBRARY)
 		IF(NOT PROGNAME)
-			MESSAGE ("Using gdiplus.dll for better drawings in ${CMAKE_PROJECT_NAME}")
+			MESSAGE (STATUS "Using gdiplus.dll for better drawings in ${CMAKE_PROJECT_NAME}")
 			TARGET_LINK_LIBRARIES (${CMAKE_PROJECT_NAME} "GdiPlus")
 		ELSE (NOT PROGNAME)
-			MESSAGE ("Using gdiplus.dll for better drawings in ${PROGNAME}")
+			MESSAGE (STATUS "Using gdiplus.dll for better drawings in ${PROGNAME}")
 			TARGET_LINK_LIBRARIES (${PROGNAME} "GdiPlus")
 		ENDIF(NOT PROGNAME)
 		
