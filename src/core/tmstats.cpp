@@ -399,13 +399,13 @@ void tmStats_DLG::_CreateControls() {
 	bSizer3->Add( 0, 0, 1, wxEXPAND, 5 );
 	
 	m_BtnExportCtrl = new wxButton( this, wxID_SAVE, _("Export..."), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer3->Add( m_BtnExportCtrl, 0, wxALL|wxALIGN_RIGHT, 5 );
+	bSizer3->Add( m_BtnExportCtrl, 0, wxALL, 5 );
 	
 	m_BtnCloseCtrl = new wxButton( this, wxID_CANCEL, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_BtnCloseCtrl->SetDefault(); 
 	bSizer3->Add( m_BtnCloseCtrl, 0, wxALL, 5 );
 	
-	bSizer1->Add( bSizer3, 0, wxALL|wxEXPAND|wxALIGN_RIGHT, 5 );
+	bSizer1->Add( bSizer3, 0, wxALL|wxEXPAND, 5 );
 	
 	this->SetSizer( bSizer1 );
 	this->Layout();
