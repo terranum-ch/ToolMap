@@ -644,10 +644,6 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
 	if (IsChoiceList()) // CHOICE
 	{
 		return m_ControlChoice->GetStringSelection();
-        /*int mySelection = m_ControlChoice->GetSelection();
-        wxString myValue;
-        myValue << m_Field.m_pCodedValueArray.Item(mySelection)->m_ValueID;
-        return myValue;*/
 	}
 	else // RADIO BUTTON
 	{
@@ -660,11 +656,6 @@ wxString tmAAttribCtrlEnum::GetControlValue ()
                 myRetVal = m_ControlRadios[i]->GetLabelText();
 				break;
 			}
-		}
-
-		if (myRetVal.IsEmpty())
-		{
-			wxLogError(_T("No value returned by radio button, check an item"));
 		}
 		return myRetVal;
 	}
