@@ -813,7 +813,7 @@ void ProjectDefFieldDlg::CreateControls()
 	
 	m_staticText111 = new wxStaticText( m_panel8, wxID_ANY, _("No options availlable for this type"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText111->Wrap( -1 );
-	sbSizer221->Add( m_staticText111, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
+	sbSizer221->Add( m_staticText111, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer621->Add( sbSizer221, 1, wxEXPAND, 5 );
 	m_panel8->SetSizer( bSizer621 );

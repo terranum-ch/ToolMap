@@ -139,7 +139,7 @@ void tmAAttribWindow::CreateControls ()
 	bSizer20->Add( bSizer21, 0, wxALIGN_RIGHT, 5 );
 	
 	m_Status = new wxStatusBar( this, wxID_ANY, wxST_SIZEGRIP|wxNO_BORDER );
-    bSizer20->Add(m_Status, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
+    bSizer20->Add(m_Status, 0, wxALL|wxGROW, 0);
 	
 	
 	this->SetSizer( bSizer20 );

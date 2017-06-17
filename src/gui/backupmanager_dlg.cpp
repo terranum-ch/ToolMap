@@ -84,7 +84,7 @@ void BackupManagerDLG::_CreateControls() {
 	bSizer3->Add( bSizer4, 0, wxEXPAND, 5 );	
     
     m_StatusBar = new wxStatusBar(this, wxID_ANY, wxST_SIZEGRIP | wxNO_BORDER);
-    bSizer3->Add(m_StatusBar, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxGROW, 0);
+    bSizer3->Add(m_StatusBar, 0, wxALL|wxGROW, 0);
 
 	this->SetSizer( bSizer3 );
 	this->Layout();

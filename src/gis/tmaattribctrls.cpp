@@ -426,9 +426,9 @@ void tmAAttribCtrlFloat::Create (wxWindow * parent,
 	m_Control = new tmFullSelectTextCtrl( this, wxID_ANY, wxEmptyString,
 										 wxDefaultPosition, wxSize( 120,-1 ),0,
 	wxTextValidator(wxFILTER_NUMERIC));
-	bSizer25->Add( m_Control, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer25->Add( m_Control, 1, wxALL, 5 );
 	m_ControlInfo = new wxStaticText( this, wxID_ANY, _T("Test"));
-	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5); // | wxALIGN_CENTER, 5);
+	bSizer25->Add( m_ControlInfo, 0, wxBOTTOM| wxLEFT | wxRIGHT , 5); // | wxALIGN_CENTER, 5);
 	SetProperties(fieldinfo);
 
 	bSizer24->Add( bSizer25, 1, wxEXPAND, 2 );

@@ -773,10 +773,7 @@ void ToolMapFrame::OnNewProject(wxCommandEvent & event)
 	// add name to the program bar
 	wxString myProgName = g_ProgName + _T(" - ") + m_PManager->GetProjectName();
 	SetTitle(myProgName);
-
-
 	}
-
 }
 
 
