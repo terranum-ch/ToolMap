@@ -27,6 +27,7 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include "test_param.h"
 #include "../../src/gis/tooldanglingnodes.h"
 
 class TEST_toolDanglingNodes : public CxxTest::TestSuite

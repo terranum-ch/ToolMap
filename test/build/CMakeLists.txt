@@ -50,40 +50,79 @@ if(CXXTEST_FOUND)
 	MESSAGE("Adding test: ${PROGNAMETEST}")
 	include_directories(${CXXTEST_INCLUDE_DIR}) 
 	enable_testing()
-	CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
-	TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib") 
+	#CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
+	#TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib")
+	CXXTEST_ADD_TEST(test_advancedbatchattribution test_advancedbatchattribution.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_advancedbatchattribution.h")
+	CXXTEST_ADD_TEST(test_backup test_backup.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_backup.h")
+	CXXTEST_ADD_TEST(test_database_tm test_database_tm.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_database_tm.h")
+	CXXTEST_ADD_TEST(test_database test_database.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_database.h")
+	CXXTEST_ADD_TEST(test_databaseresult test_databaseresult.cpp  "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_databaseresult.h")
+	CXXTEST_ADD_TEST(test_export test_export.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_export.h")
+	CXXTEST_ADD_TEST(test_exportconcat test_exportconcat.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_exportconcat.h")
+	CXXTEST_ADD_TEST(test_new_database_tm test_new_database_tm.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_new_database_tm.h")
+	CXXTEST_ADD_TEST(test_pdf test_pdf.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_pdf.h")
+	CXXTEST_ADD_TEST(test_tmcoordconvert test_tmcoordconvert.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmcoordconvert.h")
+	CXXTEST_ADD_TEST(test_tmdataintegrity test_tmdataintegrity.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmdataintegrity.h")
+	CXXTEST_ADD_TEST(test_tmdrawereditline test_tmdrawereditline.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmdrawereditline.h")
+	CXXTEST_ADD_TEST(test_tmgettingfieldsinfo test_tmgettingfieldsinfo.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmgettingfieldsinfo.h")
+	CXXTEST_ADD_TEST(test_tmgisimport test_tmgisimport.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmgisimport.h")
+	CXXTEST_ADD_TEST(test_tmmemoryzoom test_tmmemoryzoom.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmmemoryzoom.h")
+	CXXTEST_ADD_TEST(test_tmpercent test_tmpercent.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmpercent.h")
+	CXXTEST_ADD_TEST(test_tmpointorient test_tmpointorient.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmpointorient.h")
+	CXXTEST_ADD_TEST(test_tmpointorientattrib test_tmpointorientattrib.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmpointorientattrib.h")
+	CXXTEST_ADD_TEST(test_tmprojectupdate test_tmprojectupdate.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmprojectupdate.h")
+	CXXTEST_ADD_TEST(test_tmprojectupdate2 test_tmprojectupdate2.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmprojectupdate2.h")
+	CXXTEST_ADD_TEST(test_tmqueries test_tmqueries.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmqueries.h")
+	CXXTEST_ADD_TEST(test_tmstatsrecords test_tmstatsrecords.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmstatsrecords.h")
+	CXXTEST_ADD_TEST(test_tmwindowposition test_tmwindowposition.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tmwindowposition.h")
+	CXXTEST_ADD_TEST(test_tooldanglingnodes test_tooldanglingnodes.cpp "${CMAKE_CURRENT_SOURCE_DIR}/../src_test/test_tooldanglingnodes.h")
+
+	TARGET_LINK_LIBRARIES(test_advancedbatchattribution "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_backup "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_database_tm "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_database "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_databaseresult  "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_export "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_exportconcat "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_new_database_tm "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_pdf "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmcoordconvert "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmdataintegrity "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmdrawereditline "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmgettingfieldsinfo "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmgisimport "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmmemoryzoom "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmpercent "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmpointorient "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmpointorientattrib "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmprojectupdate "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmprojectupdate2 "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmqueries "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmstatsrecords "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tmwindowposition "${CMAKE_PROJECT_NAME}_lib")
+	TARGET_LINK_LIBRARIES(test_tooldanglingnodes "${CMAKE_PROJECT_NAME}_lib")
 endif(CXXTEST_FOUND)
 
-if(UNIX AND NOT APPLE)
-find_package(GTK2)
-	if(GTK2_FOUND)
-	   include_directories(${GTK2_INCLUDE_DIRS})
-	   target_link_libraries(${PROGNAMETEST} ${GTK2_LIBRARIES})
-	endif()
-endif(UNIX AND NOT APPLE)
+
+# IS GTK really needed by Linux for unit testing ?
+#if(UNIX AND NOT APPLE)
+#find_package(GTK2)
+#	if(GTK2_FOUND)
+#	   include_directories(${GTK2_INCLUDE_DIRS})
+#	   target_link_libraries(${PROGNAMETEST} ${GTK2_LIBRARIES})
+#	endif()
+#endif(UNIX AND NOT APPLE)
 
 # COPY ERRMSG.SYS TO EXPECTED DIRECTORY!
 IF(APPLE)
-	SET (TEST_BINARY_DIR ${PROJECT_BINARY_DIR}/test/)
-	#MESSAGE("Test directory:  ${TEST_BINARY_DIR}")
-	#MESSAGE("programme test: ${PROJECT_BINARY_DIR} - ${PROGNAMETEST}")
-	ADD_CUSTOM_COMMAND(TARGET ${PROGNAMETEST} POST_BUILD
-		COMMAND mkdir -p
-		${TEST_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql
-		COMMAND mkdir -p
-		${TEST_BINARY_DIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql
-		
-		COMMAND cp ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys 
-		${TEST_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql/errmsg.sys
-		COMMAND cp ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys 
-		${TEST_BINARY_DIR}/${CMAKE_PROJECT_NAME}.app/Contents/mysql/errmsg.sys
-		COMMENT "Copying errmsg.sys for Unit tests"
-		)
-ENDIF(APPLE)
+	FILE(COPY ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys
+			DESTINATION ${PROJECT_BINARY_DIR}/test/${CMAKE_PROJECT_NAME}.app/Contents/mysql)
+ELSEIF(WIN32)
+	FILE(COPY ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys
+			DESTINATION ${PROJECT_BINARY_DIR}/test/mysql)
+ENDIF()
 
-
-
-# SHOULD WE USE THE MT VERSION FOR DEFAULT 
+# SHOULD WE USE THE MT VERSION FOR DEFAULT
 # COMPATIBILITY WITH < WINXP
 #IF(PROGNAME_DEFINED_INTERNALLY)
 
@@ -104,27 +143,6 @@ SET (PROGNAME ${MYPROGNAME})
 return()
 
 
-### NOT USED ANYMORE ###
-
-
-## CXXTEST LIBRARY STUFF
-# Use Python interpreter
-FIND_PACKAGE(PythonInterp)
-# Fait la liaison avec la bibliothèque CxxTest  
-INCLUDE("../../build/cmake/FindCxxTest.cmake")
-SET(CXXTEST_USE_PYTHON 1)
-INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR})
-ENABLE_TESTING()
-
-CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
-SOURCE_GROUP ("test-source" FILES ${TEST_SRC_FILES} ${TEST_HEAD_FILES})
-
-TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib")
-
-#ONLY USED FOR ADDING HEADERS TO PROJECT
-IF(APPLE)
-	ADD_LIBRARY("dummy_files" MODULE EXCLUDE_FROM_ALL main.cpp ${TEST_HEAD_FILES} ${TEST_SRC_FILES})
-ENDIF(APPLE)
 
 
 

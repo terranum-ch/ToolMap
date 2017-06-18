@@ -60,6 +60,9 @@ public:
 	
 	void setUp()
 	{
+		// This is needed for the
+		// SetFont() function. Otherwise the SetFont function crash...
+		wxInitialize();
 	}
 	
 	void tearDown(){
