@@ -32,6 +32,15 @@
 class TEST_tmWindowPosition : public CxxTest::TestSuite
 {
 public:
+	TEST_tmWindowPosition(bool bTest) {
+		wxApp::SetInstance(new wxAppConsole());
+	}
+	
+	virtual ~TEST_tmWindowPosition() {
+	}
+
+	static TEST_tmWindowPosition *createSuite() { return new TEST_tmWindowPosition(true); }
+	static void destroySuite(TEST_tmWindowPosition *suite) { delete suite; }
 		
 	void testName(){
 		wxLogMessage(_T("------------------------------------"));

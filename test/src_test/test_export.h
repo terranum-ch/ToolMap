@@ -40,6 +40,7 @@ public:
 
 
 	TEST_tmExportData (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
 		m_pDB = new DataBaseTM();
 		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ambri));
 		// load project Data

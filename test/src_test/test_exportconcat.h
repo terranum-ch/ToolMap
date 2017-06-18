@@ -38,6 +38,7 @@ public:
 	tmGISScale * m_ExportScale;
     
 	TEST_tmExportConcat (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
         OGRRegisterAll();
 		m_pDB = new DataBaseTM();
 		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestExportConcat));

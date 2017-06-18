@@ -42,6 +42,7 @@ public:
     
 	void setUp()
 	{
+		wxApp::SetInstance(new wxAppConsole());
 	}
 	
 	void tearDown(){

@@ -37,6 +37,7 @@ public:
 
 	void setUp()
 	{
+		wxApp::SetInstance(new wxAppConsole());
 		m_Z1.m_TopLeftPosition = wxPoint2DDouble(15.6,118.1);
 		m_Z1.m_ZoomFactor = 1.77;
 	}

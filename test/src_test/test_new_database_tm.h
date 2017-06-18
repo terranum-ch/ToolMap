@@ -34,6 +34,7 @@ class TEST_New_DatabaseTM : public CxxTest::TestSuite
 public:
 	DataBaseTM * m_DB;	
 	void setUp(){
+		wxApp::SetInstance(new wxAppConsole());
 		m_DB = new DataBaseTM();
 	}
 	

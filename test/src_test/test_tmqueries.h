@@ -46,6 +46,7 @@ public:
 	DataBaseTM * m_pDB;
 	
 	TEST_tmQueries (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
 		m_pDB = new DataBaseTM();
 		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_NewQueries));
 	}
@@ -61,6 +62,7 @@ public:
 	
 	void setUp()
 	{
+		wxApp::SetInstance(new wxAppConsole());
 		// set up query for layers
 		m_DataLayer = new QueriesData();
 		m_DataLayer->m_QueryType = QUERY_LAYERS;

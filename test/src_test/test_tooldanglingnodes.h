@@ -39,7 +39,7 @@ public:
 	
 	void setUp()
 	{
-		
+		wxApp::SetInstance(new wxAppConsole());
 		m_DBPathName = g_TestPathPRJ + g_TestPrj_Dangling; 
 		m_DB = new DataBaseTM();
 		m_DB->OpenTMDatabase(m_DBPathName);

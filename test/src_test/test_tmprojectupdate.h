@@ -127,6 +127,7 @@ public:
 	DataBaseTM * m_CopyDB;
 
 	TEST_tmProjectUpdater (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
 		// remove if exists
         wxFileName myDir (g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
         if (wxDir::Exists(myDir.GetFullPath())==true) {

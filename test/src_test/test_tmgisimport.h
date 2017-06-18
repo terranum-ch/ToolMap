@@ -40,6 +40,7 @@ public:
 
 
 	TEST_tmGISImport (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
 		tmGISData::InitGISDrivers(true,true);
 		m_DB = new DataBaseTM();
 		TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));

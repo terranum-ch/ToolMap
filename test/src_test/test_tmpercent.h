@@ -33,12 +33,6 @@ class TEST_tmPercent : public CxxTest::TestSuite
 {
 public:
 		
-	void testName(){
-		wxLogMessage(_T("------------------------------------"));
-		wxLogMessage(_T("------- TESTING TMPERCENT ----------"));
-		wxLogMessage(_T("------------------------------------"));
-	}
-	
 	void testIncrement()
 	{
 		tmPercent tper(1000);

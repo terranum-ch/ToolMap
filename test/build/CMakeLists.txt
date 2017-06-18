@@ -4,7 +4,7 @@
 # (c) LUCIEN SCHREIBER CREALP 2009
 cmake_minimum_required(VERSION 2.4)
 
-MESSAGE ("DBG : USING UNIT TESTING")
+MESSAGE (STATUS "USING UNIT TESTING")
 
 
 ## POLICY FOR WINDOWS ONLY ???
@@ -47,7 +47,7 @@ FILE (GLOB TEST_HEAD_FILES ../src_test/*.h)
 SET(CXXTEST_USE_PYTHON 1)
 find_package(CxxTest)
 if(CXXTEST_FOUND)
-	MESSAGE("Adding test: ${PROGNAMETEST}")
+	MESSAGE(STATUS "Adding tests")
 	include_directories(${CXXTEST_INCLUDE_DIR}) 
 	enable_testing()
 	#CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
@@ -118,7 +118,7 @@ IF(APPLE)
 	FILE(COPY ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys
 			DESTINATION ${PROJECT_BINARY_DIR}/test/${CMAKE_PROJECT_NAME}.app/Contents/mysql)
 ELSEIF(WIN32)
-	FILE(COPY ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys
+	FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
 			DESTINATION ${PROJECT_BINARY_DIR}/test/mysql)
 ENDIF()
 

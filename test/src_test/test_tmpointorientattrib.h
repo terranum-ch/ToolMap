@@ -37,6 +37,7 @@ public:
 	
 	void setUp()
 	{
+		wxApp::SetInstance(new wxAppConsole());
 		myPt1 = wxPoint(20,20);
 		myPt90 = wxPoint(30,20);
 		myPt180 = wxPoint(20,30);

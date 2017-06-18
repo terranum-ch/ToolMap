@@ -38,6 +38,7 @@ public:
 
 	void setUp()
 	{
+		wxApp::SetInstance(new wxAppConsole());
 		m_DB = new DataBaseTM();
 
 	}

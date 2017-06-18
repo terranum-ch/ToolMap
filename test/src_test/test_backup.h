@@ -37,6 +37,7 @@ public:
     DataBaseTM * m_Database;
 
 	TEST_Backup (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
         m_Database = new DataBaseTM();
         TS_ASSERT(m_Database->OpenTMDatabase((g_TestPathPRJ + g_TestPrj_CombioulaCorrect)));
 	}

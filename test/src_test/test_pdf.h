@@ -37,6 +37,7 @@ public:
 	PrjDefMemManage * m_PrjDef;
 
 	TEST_PDF (bool bTest){
+		wxApp::SetInstance(new wxAppConsole());
 		m_pDB = new DataBaseTM();
 		TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_221));
 		// load project Data
@@ -60,6 +61,7 @@ public:
 	
 	void setUp()
 	{
+		
 		// This is needed for the
 		// SetFont() function. Otherwise the SetFont function crash...
 		wxInitialize();
