@@ -20,48 +20,15 @@
 #include "tmwindowposition.h"
 
 
-tmWindowPosition::tmWindowPosition()
+tmWindowPosition::tmWindowPosition(const wxString & appname)
 {
+	m_ConfigAppName = appname;
 	WP_LoadScreenSize();
-	//InitMemberValues();
 }
-
-
-
-/*tmWindowPosition::tmWindowPosition(wxSize screensize)
-{
-	InitMemberValues();
-	Create(screensize);
-}*/
-
-
-/*void tmWindowPosition::Create (wxSize screensize)
-{
-	m_ScreenSize = screensize;
-}*/
-
-
-/*void tmWindowPosition::InitMemberValues()
-{
-	//m_ScreenSize = wxDefaultSize;
-}*/
-
 
 tmWindowPosition::~tmWindowPosition()
 {
-	//WP_SaveScreenSize();
 }
-
-
-/*bool tmWindowPosition::WP_IsInited()
-{
-	if (m_ScreenSize != wxDefaultSize)
-		return true;
-	
-	wxLogDebug(_T("Windows position not correctly inited"));
-	
-	return false;
-}*/
 
 bool tmWindowPosition::SaveScreenPosition()
 {
@@ -91,7 +58,7 @@ bool tmWindowPosition::LoadPosition(const wxString & wndname, wxRect & pos)
 
 bool tmWindowPosition::LoadPosition(const wxString & wndname, wxString & postext)
 {	
-	wxFileConfig myConfig;
+	wxFileConfig myConfig(m_ConfigAppName);
 	myConfig.SetPath(_T("WINDOW_POSITION"));	
 	if (myConfig.Read(wndname, &postext)==false)
 	{
@@ -149,7 +116,7 @@ bool tmWindowPosition::SavePosition(const wxString & wndname, wxRect pos)
 bool tmWindowPosition::SavePosition(const wxString & wndname, const wxString & postext)
 {
 	wxString myStringPosition = wxEmptyString;
-	wxFileConfig myConfig;
+	wxFileConfig myConfig(m_ConfigAppName);
 	
 	myConfig.SetPath(_T("WINDOW_POSITION"));
 	if (myConfig.Write(wndname, postext)==false)

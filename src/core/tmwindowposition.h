@@ -38,6 +38,7 @@ class tmWindowPosition : public wxObject
 	{
 	private:
 		wxSize m_OldScreenSize;
+		wxString m_ConfigAppName;
 		//wxSize m_ScreenSize;
 		//wxFileConfig m_Config;
 		
@@ -51,7 +52,7 @@ class tmWindowPosition : public wxObject
 		
 	protected:
 	public:
-		tmWindowPosition();
+		tmWindowPosition(const wxString & appname = wxEmptyString);
 		//tmWindowPosition(wxSize screensize);
 		//void Create (wxSize screensize);
 		~tmWindowPosition();

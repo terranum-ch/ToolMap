@@ -50,7 +50,7 @@ public:
 	
 	void testSavePosition()
 	{
-		tmWindowPosition wnd; // (m_Frame, m_manager);
+		tmWindowPosition wnd("ToolMap_test_suite");
 		TS_ASSERT(wnd.SavePosition(_T("MyWindow"), wxRect(10,10,300,300))==true);
 		
 	}
@@ -58,7 +58,7 @@ public:
 	
 	void testLoadPosition()
 	{
-		tmWindowPosition wnd; // (m_Frame, m_manager);
+		tmWindowPosition wnd("ToolMap_test_suite");
 		wxRect myRect = wxRect(wxDefaultPosition, wxDefaultSize);
 		TS_ASSERT(wnd.LoadPosition(_T("MyWindow2"), myRect)==false);
 		TS_ASSERT(myRect == wxRect(wxDefaultPosition, wxDefaultSize));
@@ -69,13 +69,13 @@ public:
 	
 	void testHasChanged ()
 	{
-		tmWindowPosition wnd;
+		tmWindowPosition wnd("ToolMap_test_suite");
 		TS_ASSERT(wnd.HasScreenChanged()==false);
 	}
 	
 	void testIntersect()
 	{
-		tmWindowPosition wnd;
+		tmWindowPosition wnd("ToolMap_test_suite");
 		wxRect myWndPos = wxRect(50,50,300,300);
 		TS_ASSERT(wnd.Intersects(myWndPos, wxSize(1024,780))==true);
 		TS_ASSERT(wnd.Intersects(wxRect(1200,800, 300,300), wxSize(1024,780))==false);
@@ -86,13 +86,13 @@ public:
 	
 	void testSavePosition2()
 	{
-		tmWindowPosition wnd;
+		tmWindowPosition wnd("ToolMap_test_suite");
 		TS_ASSERT(wnd.SavePosition(_T("TESTWND"), _T("coucou123"))==true);
 	}
 	
 	void testLoadPosition2()
 	{
-		tmWindowPosition wnd;
+		tmWindowPosition wnd("ToolMap_test_suite");
 		wxString myPostext = wxEmptyString;
 		TS_ASSERT(wnd.LoadPosition(_T("NO_EXISTING"), myPostext)==false);
 		TS_ASSERT(myPostext.IsEmpty() == true);
@@ -100,13 +100,7 @@ public:
 		TS_ASSERT( myPostext == _T("coucou123"));
 		
 	}
-	
-	
-	
 		
 };
-
-
-
 
 #endif
