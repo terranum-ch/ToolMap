@@ -56,7 +56,12 @@ IF (MYSQL_INCLUDE_DIR)
                 "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
     ENDIF(WIN32)
 
-	# do nothing for Linux
+    # COPY errmsg.sys under Linux
+    IF(UNIX AND NOT APPLE)
+        FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
+                DESTINATION ${PROJECT_BINARY_DIR}/mysql)
+    ENDIF(UNIX AND NOT APPLE)
+
 ENDIF(MYSQL_INCLUDE_DIR)
 
 

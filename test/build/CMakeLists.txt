@@ -120,6 +120,9 @@ IF(APPLE)
 ELSEIF(WIN32)
 	FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
 			DESTINATION ${PROJECT_BINARY_DIR}/test/mysql)
+ELSEIF(UNIX)
+    FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
+            DESTINATION ${PROJECT_BINARY_DIR}/test/mysql)
 ENDIF()
 
 # SHOULD WE USE THE MT VERSION FOR DEFAULT

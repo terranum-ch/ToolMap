@@ -103,7 +103,10 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
         mylanguagedir = "--lc-messages-dir=./ToolMap.app/Contents/mysql";
 #else
         // Linux standard with MySQL installed with package manager.
-        mylanguagedir = "--skip-grant-tables";
+        //mylanguagedir = "--skip-grant-tables";
+
+		// version 5.6.36 compiled, not system.
+		mylanguagedir = "--lc-messages-dir=" + windows_msg_path.GetFullPath();
 #endif
     }
 
@@ -114,11 +117,7 @@ bool DataBase::DBLibraryInit (const wxString & datadir){
 		mylanguagedir.mb_str(wxConvUTF8),
 		"--character-set-server=utf8",
         "--default-storage-engine=MyISAM",
-#ifdef __LINUX__  // Linux still uses version 5.5
-        "--skip-innodb"
-#else  // this is needed for version 5.6
         "--default_tmp_storage_engine=MyISAM"
-#endif
 
 #if defined (MYSQL_IS_LOGGING)
         ,"--general-log=1"
