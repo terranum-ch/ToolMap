@@ -35,5 +35,5 @@ before_script:
   - mv ./ToolMap-test-files-master $HOME/unit_testing
 script:
   - cd bin
-  - make -j2
+  - make -j$(nproc)
   - make test
