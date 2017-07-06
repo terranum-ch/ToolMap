@@ -11,8 +11,9 @@ IF (MYSQL_INCLUDE_DIR)
 	FIND_FILE(MYSQL_ERRMSG_FILE
 			errmsg.sys
 			PATHS
-			/opt/MySQL/share/mysql
+			${MYSQL_INCLUDE_DIR}../share/english
 			${MYSQL_INCLUDE_DIR}/../share/english
+			${MYSQL_INCLUDE_DIR}../share/
 			${MYSQL_INCLUDE_DIR}/../share/
 			)
 	IF(NOT MYSQL_ERRMSG_FILE)
