@@ -75,10 +75,12 @@ ENDIF(WIN32)
 SET (MYSQL_IS_LOGGING CACHE BOOL "Should MySQL log all commands to a text file in the document folder ?, not compatible with unit testing")
 
 FIND_PATH(DATABASE_PROJ_SOURCE_DIR database-config.h.in
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/../include
+  ${PROJECT_SOURCE_DIR}src/database/
+  ${PROJECT_SOURCE_DIR}/src/database/
   ${PROJECT_SOURCE_DIR}/../src/database/
   ${PROJECT_SOURCE_DIR}/../../src/database/
-  ${PROJECT_SOURCE_DIR}/../include
-  ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}../../../src/database/
   ${PROJECT_SOURCE_DIR}../../../../src/database/
 )
