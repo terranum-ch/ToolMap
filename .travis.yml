@@ -34,4 +34,5 @@ before_script:
 script:
   - cd bin
   - make -j$(nproc)
-  - make test
+  - cd test
+  - ctest -V
