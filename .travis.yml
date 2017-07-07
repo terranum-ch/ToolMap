@@ -35,4 +35,4 @@ script:
   - cd bin
   - make -j$(nproc)
   - cd test
-  - echo "ctest -V --> disabled"
+  - ctest -V
