@@ -11,6 +11,8 @@ IF (MYSQL_INCLUDE_DIR)
 	FIND_FILE(MYSQL_ERRMSG_FILE
 			errmsg.sys
 			PATHS
+			${MYSQL_INCLUDE_DIR}../share/mysql/english
+			${MYSQL_INCLUDE_DIR}/../share/mysql/english
 			${MYSQL_INCLUDE_DIR}../share/english
 			${MYSQL_INCLUDE_DIR}/../share/english
 			${MYSQL_INCLUDE_DIR}../share/
@@ -60,7 +62,7 @@ IF (MYSQL_INCLUDE_DIR)
 
     # COPY errmsg.sys under Linux
     IF(UNIX AND NOT APPLE)
-        FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
+        FILE(COPY ${MYSQL_ERRMSG_FILE}
                 DESTINATION ${PROJECT_BINARY_DIR}/mysql)
     ENDIF(UNIX AND NOT APPLE)
 

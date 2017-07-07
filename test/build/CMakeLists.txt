@@ -23,8 +23,8 @@ ENDIF (NOT UNIT_TESTING_PATH)
 
 SET (UNIT_TESTING_USE_PROXY CACHE BOOL "Do we use a proxy for connecting to the web ?")
 FIND_PATH(PARAM_SOURCE_DIR test_param.h.in
-  ${PROJECT_SOURCE_DIR}/../src_test/
-  ${PROJECT_SOURCE_DIR}/../test/src_test/
+  ${PROJECT_SOURCE_DIR}/src_test/
+  ${PROJECT_SOURCE_DIR}/test/src_test/
   ${PROJECT_SOURCE_DIR}
 )
 
@@ -41,8 +41,8 @@ ENDIF(PARAM_SOURCE_DIR)
 
 
 #search all source files
-FILE (GLOB TEST_SRC_FILES ../src_test/*.cpp)
-FILE (GLOB TEST_HEAD_FILES ../src_test/*.h)
+FILE (GLOB TEST_SRC_FILES src_test/*.cpp)
+FILE (GLOB TEST_HEAD_FILES src_test/*.h)
 
 SET(CXXTEST_USE_PYTHON 1)
 find_package(CxxTest)
@@ -115,13 +115,13 @@ endif(CXXTEST_FOUND)
 
 # COPY ERRMSG.SYS TO EXPECTED DIRECTORY!
 IF(APPLE)
-	FILE(COPY ${MYSQL_INCLUDE_DIR}../share/english/errmsg.sys
+	FILE(COPY ${MYSQL_ERRMSG_FILE}
 			DESTINATION ${PROJECT_BINARY_DIR}/test/${CMAKE_PROJECT_NAME}.app/Contents/mysql)
 ELSEIF(WIN32)
-	FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
+	FILE(COPY ${MYSQL_ERRMSG_FILE}
 			DESTINATION ${PROJECT_BINARY_DIR}/test/mysql)
 ELSEIF(UNIX)
-    FILE(COPY ${MYSQL_INCLUDE_DIR}/../share/english/errmsg.sys
+    FILE(COPY ${MYSQL_ERRMSG_FILE}
             DESTINATION ${PROJECT_BINARY_DIR}/test/mysql)
 ENDIF()
 

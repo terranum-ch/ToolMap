@@ -69,17 +69,17 @@ IF(USE_VERSION)
 
 	#FINDING OUR PATH
 	FIND_PATH(LSVERSION_PATH "lsversion_param.h.in" 
-	"/plugins/lsversion/src/"
+	"plugins/lsversion/src/"
 	"../plugins/lsversion/src/"
 	"../../plugins/lsversion/src/"
 	"../../../plugins/lsversion/src/"
 	"../../../../plugins/lsversion/src/"
-	"/lib/lsversion/src/"
+	"lib/lsversion/src/"
 	"../lib/lsversion/src/"
 	"../../lib/lsversion/src/"
 	"../../../lib/lsversion/src/"
 	"../../../../lib/lsversion/src/"
-	"/lsversion/src/"
+	"lsversion/src/"
 	"../lsversion/src/"
 	"../../lsversion/src/"
 	"../../../lsversion/src/"
@@ -119,7 +119,7 @@ IF(USE_VERSION)
     ENDIF(MY_ERROR1)
     STRING(STRIP ${lsVERSION_SOFT_VERSION_REVISION} lsVERSION_SOFT_VERSION_REVISION)
 
-
+	MESSAGE(STATUS "lsversion path: ${LSVERSION_PATH}")
     MESSAGE(STATUS "${lsVERSION_SOFT_NAME} version: ${lsVERSION_SOFT_VERSION}")
     MESSAGE(STATUS "${lsVERSION_SOFT_NAME} branch: ${lsVERSION_SOFT_VERSION_BRANCH}")
     MESSAGE(STATUS "${lsVERSION_SOFT_NAME} revision: ${lsVERSION_SOFT_VERSION_REVISION}")

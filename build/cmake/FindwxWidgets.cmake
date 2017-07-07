@@ -599,12 +599,18 @@ ELSE(WIN32_STYLE_FIND)
     
     # wx-config should be in your path anyhow, usually no need to set WXWIN or
     # search in ../wx or ../../wx
-    FIND_PROGRAM(CMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE wx-config
-      $ENV{WXWIN}
-      $ENV{WXWIN}/bin
-      ../wx/bin
-      ../../wx/bin )
-    
+    if(IS_DIRECTORY $ENV{WXWIN})
+      # If WXWIN is defined, force using the specified version
+      FIND_PROGRAM(CMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE wx-config
+          $ENV{WXWIN}
+          $ENV{WXWIN}/bin
+          NO_DEFAULT_PATH)
+    else()
+      FIND_PROGRAM(CMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE wx-config
+          ../wx/bin
+          ../../wx/bin )
+    endif()
+
     # check wether wx-config was found:
     IF(CMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE)    
 
@@ -636,7 +642,7 @@ ELSE(WIN32_STYLE_FIND)
         SET(WX_CONFIG_CXXFLAGS_ARGS "${WX_CONFIG_CXXFLAGS_ARGS} --debug=no")
       ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
 
-      	  MESSAGE("DBG: WX_CONFIG_ARGS_LIBS=${WX_CONFIG_ARGS_LIBS}")
+      MESSAGE("DBG: WX_CONFIG_ARGS_LIBS=${WX_CONFIG_ARGS_LIBS}")
 
       
       #### LUCIEN CHANGE FOR XCODE COMPATIBILITY ############################################
