@@ -4,6 +4,9 @@
 # (c) LUCIEN SCHREIBER CREALP 2009
 cmake_minimum_required(VERSION 2.4)
 
+include(ExternalProject)
+set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
+
 MESSAGE (STATUS "USING UNIT TESTING")
 
 
@@ -18,7 +21,17 @@ SET (PROGNAMETEST ${CMAKE_PROJECT_NAME}_test)
 #prepare parameters file
 SET (UNIT_TESTING_PATH CACHE PATH "Path where are located the projects for unit testing")
 IF (NOT UNIT_TESTING_PATH)
-	MESSAGE(FATAL_ERROR "Unable to locate the test files such as test projects")
+	ExternalProject_Add(test-files
+			URL https://github.com/terranum-ch/ToolMap-test-files/archive/v2.6.tar.gz
+			UPDATE_COMMAND ""
+			CONFIGURE_COMMAND ""
+			BUILD_COMMAND ""
+			INSTALL_COMMAND
+			${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_BINARY_DIR}/test/test-files-prefix/src/test-files
+			${CMAKE_BINARY_DIR}/test/test-files
+			)
+	set(UNIT_TESTING_PATH "${CMAKE_BINARY_DIR}/test/test-files")
 ENDIF (NOT UNIT_TESTING_PATH)
 message(STATUS "Test files location: ${UNIT_TESTING_PATH}")
 
