@@ -62,8 +62,8 @@ ENDIF(PARAM_SOURCE_DIR)
 
 
 #search all source files
-FILE (GLOB TEST_SRC_FILES src_test/*.cpp)
-FILE (GLOB TEST_HEAD_FILES src_test/*.h)
+FILE (GLOB TEST_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../src_test/*.cpp)
+FILE (GLOB TEST_HEAD_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../src_test/*.h)
 
 SET(CXXTEST_USE_PYTHON 1)
 find_package(CxxTest)
@@ -72,6 +72,7 @@ if(CXXTEST_FOUND)
 	include_directories(${CXXTEST_INCLUDE_DIR}) 
 	enable_testing()
 	if (USE_CODECOV)
+		MESSAGE(STATUS "Processing code coverage.")
 		include(${CMAKE_CURRENT_SOURCE_DIR}/../../build/cmake/CodeCoverage.cmake)
 		CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${TEST_HEAD_FILES})
 		TARGET_LINK_LIBRARIES(${PROGNAMETEST} "${CMAKE_PROJECT_NAME}_lib")
