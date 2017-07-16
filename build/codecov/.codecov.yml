@@ -1,0 +1,9 @@
+coverage:
+  precision: 2
+  round: nearest
+  range: "20...100"
+ignore:
+  - "/usr/.*"
+  - ".*/test/.*"
+  - ".*/lib/.*"
+  - ".*/include/.*"

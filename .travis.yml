@@ -2,8 +2,36 @@ language: cpp
 compiler: gcc
 dist: trusty
 sudo: required
-env:
-  - WXWIN=$HOME/.wxwidgets
+matrix:
+  include:
+    - env:
+      - TARGET=tests
+      - WXWIN=$HOME/.wxwidgets
+    - env:
+      - TARGET=coverage
+      - WXWIN=$HOME/.wxwidgets
+      addons:
+        apt:
+          packages:
+            - lcov
+    - env:
+      - TARGET=coverity
+      - WXWIN=$HOME/.wxwidgets
+      - secure: "G+B9LCybE2pbkARBDR/AI3iIrktX2ru5AdRrEXWD58Gm0cAHZeuU3Oj8sXEAKDMBYxFtUGHIYR3x5xicQRFwuXfmHnYrpuHOT21Wc9VvWOEQXip7TLh9J/jdpmDOvX+0bV8helr6mWjaP3+wzvuqPm/PtbkHHjomL7H7yfLfNSy6HMqB2/MsZhLfpbfJUl0DyUTTHDi94Nx/zC8FiZ7ZAK3z55nhZMbGaN02B/sm4m3L/Tlj98Z8fGHyxahCwajy6LOQjTUQkZP5F6iMgzlOixUMq5Uv8lGXcxfb9jXWipk/8sasB116VNjF6H42UijohL+gHA4XqT7wVtzwtaIiW0KqGSkN/eWd36r+SATm4QPlYeWz/V7I8j9US5kPRvIEuVgWSa4hluwZj+zlWHIxeDQOoKtLhUWKMnODKE8Lt0WQh8VjN3wS7NAFZkAt9BLlLKx2qL/0l8A57LyK+KRQqiOFar7xuSeHpbbEal6gd8gx7dmGN6zZ88cXx4oetIwLZwtKGSBJGUGhfgBfDPN2Edy8zuoUaLnlbXBF8TZYxV13h6rnf7GpzlXZpWKin6AOBW0ARkHVzX1B5HBn3gB/zAd+emfkK/k0Ot5kuQrQldLm+48eS++rWJCaTTOTeemITYlDlwRNQFew7aJ9MCYBxWuzD4dE42CFoukdp/Lyzac="
+      branches:
+        only: coverity-scan
+      before_install:
+        - if [[ "$TRAVIS_BRANCH" != "coverity-scan" ]]; then exit 0; fi
+        - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+      addons:
+        coverity_scan:
+          project:
+            name: "terranum-ch/ToolMap"
+            description: "Build submitted via Travis CI"
+          notification_email: toolmap@terranum.ch
+          build_command_prepend: "mkdir bin && cd bin && cmake -DSEARCH_GDAL_PATH=${HOME}/.gdal -DSEARCH_GEOS_PATH=/usr -DMYSQL_MAIN_DIR=${HOME}/.mysql -DSEARCH_WXPDFDOCUMENT_PATH=${HOME}/.wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DUNIT_TESTING_PATH=$HOME/unit_testing -DCXXTEST_INCLUDE_DIR=/usr -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=/usr/bin/cxxtestgen .."
+          build_command: "make -j $(nproc)"
+          branch_pattern: coverity-scan
 cache:
   directories:
   - $HOME/.gdal
@@ -26,15 +54,11 @@ install:
   - travis_wait build/travis/build-wxpdfdoc.sh
   - chmod +x build/travis/build-mysql.sh
   - travis_wait 30 build/travis/build-mysql.sh
-  - chmod +x build/travis/run-cmake.sh
-  - build/travis/run-cmake.sh
 before_script:
   - sudo apt-get install -y cxxtest
   - wget -q -O test-files.tar.gz "https://github.com/terranum-ch/ToolMap-test-files/archive/master.tar.gz"
   - tar -xzf test-files.tar.gz
   - mv ./ToolMap-test-files-master $HOME/unit_testing
 script:
-  - cd bin
-  - make -j$(nproc)
-  - cd test
-  - ctest -V
+  - chmod +x build/travis/run-${TARGET}.sh
+  - travis_wait 40 build/travis/run-${TARGET}.sh
