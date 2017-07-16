@@ -4,8 +4,10 @@ coverage:
   range: "20...100"
 ignore:
   - "/usr/.*"
+  - "test/.*"
   - ".*/test/.*"
-  - ".*/src_test/.*"
+  - "test/src_test/.*"
+  - ".*/test/src_test/.*"
   - "/home/travis/build/terranum-ch/ToolMap/test/src_test/*"
   - ".*/lib/.*"
   - ".*/include/.*"
