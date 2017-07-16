@@ -5,5 +5,7 @@ coverage:
 ignore:
   - "/usr/.*"
   - ".*/test/.*"
+  - ".*/src_test/.*"
+  - "/home/travis/build/terranum-ch/ToolMap/test/src_test/*"
   - ".*/lib/.*"
   - ".*/include/.*"
