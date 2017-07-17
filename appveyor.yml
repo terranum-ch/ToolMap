@@ -28,7 +28,8 @@ install:
   - mkdir C:\projects\libs\wxwidgets
   - set WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.zip"
   - appveyor DownloadFile %WX_URL% -FileName wxwidgets.zip
-  - 7z x wxwidgets.zip -oC:\projects\tmp > nul
+  - 7z x wxwidgets.zip -oC:\projects\tmp\wxwidgets > nul
+  - cd C:\projects\tmp
   - dir
   - cd C:\projects\tmp\wxwidgets
   - dir
