@@ -64,4 +64,4 @@ install:
 script:
   - chmod +x build/travis/run-${TARGET}.sh
   - travis_wait 40 build/travis/run-${TARGET}.sh
-  - if [ "$RUN_TESTS" = true ] ; then cd test && ctest -V ; fi # run the tests out of the script so it can fail.
+  - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
