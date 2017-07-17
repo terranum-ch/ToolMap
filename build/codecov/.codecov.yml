@@ -9,5 +9,6 @@ ignore:
   - "test/src_test/.*"
   - ".*/test/src_test/.*"
   - "/home/travis/build/terranum-ch/ToolMap/test/src_test/*"
+  - ".*/gui/.*"
   - ".*/lib/.*"
   - ".*/include/.*"
