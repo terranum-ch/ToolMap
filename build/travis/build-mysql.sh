@@ -9,7 +9,7 @@ if [ ! "$(ls -A ${HOME}/.mysql)" ]; then
   pwd
   patch sql/sql_table.cc < ../build/patches/sql_table.cc.patch
   cmake . -DCMAKE_INSTALL_PREFIX=${HOME}/.mysql -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
-  make -j$(nproc) > /dev/null
+  make -j4 > /dev/null
   make install > /dev/null
   cd ..
 else 

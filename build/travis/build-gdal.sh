@@ -6,7 +6,7 @@ if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
   tar -xzf gdal.tar.gz
   cd gdal-2.1.3
   ./configure --prefix=${HOME}/.gdal --with-geos=/usr/bin/geos-config --with-static-proj4=/usr --with-sqlite3=yes --with-python=no --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal --with-png=internal --silent
-  make -j2 > /dev/null
+  make -j4 > /dev/null
   make install > /dev/null
   cd ..
 else 

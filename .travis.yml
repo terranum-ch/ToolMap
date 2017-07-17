@@ -5,17 +5,17 @@ matrix:
   include:
     - env:
       - TARGET=tests-osx
-      - WXWIN=$HOME/.wxwidgets
+      - WXWIN=/usr
       os: osx
       osx_image: xcode7.2
     - env:
       - TARGET=tests-linux
-      - WXWIN=$HOME/.wxwidgets
+      - WXWIN=/usr
       os: linux
       dist: trusty
     - env:
       - TARGET=coverage
-      - WXWIN=$HOME/.wxwidgets
+      - WXWIN=/usr
       os: linux
       dist: trusty
       addons:
@@ -24,7 +24,7 @@ matrix:
             - lcov
     - env:
       - TARGET=coverity
-      - WXWIN=$HOME/.wxwidgets
+      - WXWIN=/usr
       - secure: "G+B9LCybE2pbkARBDR/AI3iIrktX2ru5AdRrEXWD58Gm0cAHZeuU3Oj8sXEAKDMBYxFtUGHIYR3x5xicQRFwuXfmHnYrpuHOT21Wc9VvWOEQXip7TLh9J/jdpmDOvX+0bV8helr6mWjaP3+wzvuqPm/PtbkHHjomL7H7yfLfNSy6HMqB2/MsZhLfpbfJUl0DyUTTHDi94Nx/zC8FiZ7ZAK3z55nhZMbGaN02B/sm4m3L/Tlj98Z8fGHyxahCwajy6LOQjTUQkZP5F6iMgzlOixUMq5Uv8lGXcxfb9jXWipk/8sasB116VNjF6H42UijohL+gHA4XqT7wVtzwtaIiW0KqGSkN/eWd36r+SATm4QPlYeWz/V7I8j9US5kPRvIEuVgWSa4hluwZj+zlWHIxeDQOoKtLhUWKMnODKE8Lt0WQh8VjN3wS7NAFZkAt9BLlLKx2qL/0l8A57LyK+KRQqiOFar7xuSeHpbbEal6gd8gx7dmGN6zZ88cXx4oetIwLZwtKGSBJGUGhfgBfDPN2Edy8zuoUaLnlbXBF8TZYxV13h6rnf7GpzlXZpWKin6AOBW0ARkHVzX1B5HBn3gB/zAd+emfkK/k0Ot5kuQrQldLm+48eS++rWJCaTTOTeemITYlDlwRNQFew7aJ9MCYBxWuzD4dE42CFoukdp/Lyzac="
       os: linux
       dist: trusty
@@ -53,8 +53,6 @@ install:
   - build/travis/dependencies-${TRAVIS_OS_NAME}.sh
   - chmod +x build/travis/build-gdal.sh
   - travis_wait 30 build/travis/build-gdal.sh
-  - chmod +x build/travis/build-wxwidgets.sh
-  - travis_wait 30 build/travis/build-wxwidgets.sh
   - chmod +x build/travis/build-wxpdfdoc.sh
   - travis_wait build/travis/build-wxpdfdoc.sh
   - chmod +x build/travis/build-mysql.sh

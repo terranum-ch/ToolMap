@@ -6,7 +6,7 @@ if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   tar -xzf wxpdfdoc.tar.gz
   cd wxpdfdoc-0.9.5
   ./configure --prefix=${HOME}/.wxpdfdoc --with-wx-prefix=${HOME}/.wxwidgets --enable-unicode --disable-shared --silent
-  make -j$(nproc) > /dev/null
+  make -j4 > /dev/null
   make install > /dev/null
   cd ..
 else 
