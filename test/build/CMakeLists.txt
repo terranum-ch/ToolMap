@@ -9,14 +9,6 @@ set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
 
 MESSAGE (STATUS "USING UNIT TESTING")
 
-# Enable code coverage
-if (CMAKE_COMPILER_IS_GNUCXX)
-	option(USE_CODECOV "Sould we do code coverage with lcov ?" OFF)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fprofile-arcs -ftest-coverage")
-else (CMAKE_COMPILER_IS_GNUCXX)
-	set(USE_CODECOV OFF)
-endif ()
-
 ## POLICY FOR WINDOWS ONLY ???
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)

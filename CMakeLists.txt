@@ -24,6 +24,17 @@ IF(APPLE)
   MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG: ${CMAKE_C_FLAGS_DEBUG}")
 ENDIF(APPLE)
 
+# Enable tests
+SET (USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
+
+# Enable code coverage
+if (USE_UNITTEST AND CMAKE_COMPILER_IS_GNUCXX)
+  option(USE_CODECOV "Sould we do code coverage with lcov ?" OFF)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fprofile-arcs -ftest-coverage")
+else (CMAKE_COMPILER_IS_GNUCXX)
+  set(USE_CODECOV OFF)
+endif ()
+
 # Sources and headers 
 FILE (GLOB_RECURSE SRC_FILES src/*.cpp)
 SET(MY_SEARCHED_FILE "src/core/toolmap.cpp")
@@ -39,14 +50,14 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 
 # Includes 
 SET(WXWINDOWS_USE_GL 0)
-INCLUDE ("build/cmake/FindwxWidgets.cmake")
-INCLUDE ("build/cmake/findMySQLEmbedded.cmake")
-INCLUDE ("build/cmake/findGISLib.cmake")
-INCLUDE ("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
-INCLUDE ("build/cmake/FindCURL.cmake")
-INCLUDE ("build/cmake/findwxpdfdocument.cmake")
+INCLUDE("build/cmake/FindwxWidgets.cmake")
+INCLUDE("build/cmake/findMySQLEmbedded.cmake")
+INCLUDE("build/cmake/findGISLib.cmake")
+INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
+INCLUDE("build/cmake/FindCURL.cmake")
+INCLUDE("build/cmake/findwxpdfdocument.cmake")
 INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
-INCLUDE ("plugins/lscrashreport/build/use_lscrashreport.cmake")
+INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 
 # CREATE A LIBRARY WITH ALL SRC
 ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES} ${HEAD_FILES})
@@ -99,12 +110,9 @@ INCLUDE ("plugins/lscrashreport/build/CURLCopyLibs.cmake")
 INCLUDE ("build/cmake/copywebfiles.cmake")
 
 # UNIT TEST PROGRAM
-SET (USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
 IF (USE_UNITTEST)
   ADD_SUBDIRECTORY("test/build" "${PROJECT_BINARY_DIR}/test")
 ENDIF (USE_UNITTEST)
-
-
 
 # TODO: Move this to create_installer.cmake
 IF (UNIX AND NOT APPLE)
