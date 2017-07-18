@@ -496,9 +496,7 @@ void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo
 //////////////////////////////////////////////////////
 tmAAttribCtrlEnum::tmAAttribCtrlEnum()
 {
-	m_ControlChoice = NULL;
-	m_ControlRadios = NULL;
-	m_iNumRadios = 0;
+	InitMemberValues ();
 }
 
 
