@@ -290,7 +290,7 @@ bool tmDrawer::DrawLines(tmLayerProperties * itemProp, tmGISData * pdata)
 	wxDELETE(myVPen);
 	wxDELETE(pgdc);
     
-    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
+    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / wxMax(myTotalVertex, 1) * 100.0));
 	return true;
 }
 
@@ -512,7 +512,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties * itemProp, tmGISData * pdata
 	temp_dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
     
-    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
+    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / wxMax(myTotalVertex, 1) * 100.0));
 	return true;	
 }
 
@@ -626,7 +626,7 @@ bool tmDrawer::DrawLinesRules (tmLayerProperties * itemProp, tmGISData * pdata){
     if (IsLoggingEnabled()){
 		wxLogDebug(_T("%d Lines drawn"), iLoop);
     }
-    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / myTotalVertex * 100.0));
+    wxLogDebug(_T("%ld/%ld vertex skipped! (%s%%)"), mySkippedVertex, myTotalVertex, wxString::FromDouble( 1.0 * mySkippedVertex / wxMax(myTotalVertex, 1) * 100.0));
 	dc.SelectObject(wxNullBitmap);
 	wxDELETE(pgdc);
 	return true;

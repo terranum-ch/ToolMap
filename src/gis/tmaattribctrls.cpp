@@ -187,7 +187,8 @@ void tmFullSelectSpinCtrl::OnIdle( wxIdleEvent &event )
 //////////////////////////////////////////////////////////////
 tmAAttribCtrlText::tmAAttribCtrlText()
 {
-
+	m_Control = NULL;
+	m_ControlInfo = NULL;
 }
 
 
@@ -286,7 +287,7 @@ void tmAAttribCtrlText::SetProperties (const ProjectDefMemoryFields & fieldinfo)
 //////////////////////////////////////////////////////////////
 tmAAttribCtrlInteger::tmAAttribCtrlInteger()
 {
-
+	m_Control = NULL;
 }
 
 
@@ -381,7 +382,8 @@ void tmAAttribCtrlInteger::SetProperties (const ProjectDefMemoryFields & fieldin
 //////////////////////////////////////////////////////
 tmAAttribCtrlFloat::tmAAttribCtrlFloat()
 {
-
+	m_Control = NULL;
+	m_ControlInfo = NULL;
 }
 
 
@@ -494,7 +496,9 @@ void tmAAttribCtrlFloat::SetProperties (const ProjectDefMemoryFields & fieldinfo
 //////////////////////////////////////////////////////
 tmAAttribCtrlEnum::tmAAttribCtrlEnum()
 {
-
+	m_ControlChoice = NULL;
+	m_ControlRadios = NULL;
+	m_iNumRadios = 0;
 }
 
 
@@ -679,7 +683,7 @@ void tmAAttribCtrlEnum::SetEmptyValue(){
 //////////////////////////////////////////////////////
 tmAAttribCtrlDate::tmAAttribCtrlDate()
 {
-
+	m_Control = NULL;
 }
 
 
@@ -775,7 +779,8 @@ wxString tmAAttribCtrlDate::GetControlValue ()
 //////////////////////////////////////////////////////
 tmAAttribCtrlSafeDate::tmAAttribCtrlSafeDate()
 {
-
+	m_Control = NULL;
+	m_ControlInfo = NULL;
 }
 
 

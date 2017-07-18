@@ -41,6 +41,7 @@ ProjectManager::ProjectManager(wxFrame * parent)
 	m_AttribManager = NULL;
 	m_QueriesPanel = NULL;
 	m_ShortcutPanel = NULL;
+	m_SnappingPanel = NULL;
 	m_EditManager = NULL;
 	m_PrjMem = NULL;
 	m_ToolManager = NULL;

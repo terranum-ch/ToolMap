@@ -86,6 +86,7 @@ tmEditManager::tmEditManager(ToolMapFrame * parent,tmTOCCtrl * toc,
     m_BezierModifyIndexPoint = wxNOT_FOUND;
     m_BezierModifyIndexControl = wxNOT_FOUND;
     m_BezierSnappedPointsIndexes.Clear();
+    m_BezierModifyControlInverted = false;
     //m_BezierApproximationScale = 0.5;
     
     

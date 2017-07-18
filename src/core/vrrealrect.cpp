@@ -66,7 +66,7 @@ vrRealRect vrRealRect::Intersect(const vrRealRect & rect1) {
 
 
 bool vrRealRect::IsOk() {
-	if (m_width != 0 && m_width != 0) {
+	if (m_width != 0 && m_height != 0) {
 		return true;
 	}
 	return false;

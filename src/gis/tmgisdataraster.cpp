@@ -388,11 +388,11 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf,
 									 unsigned int   *masklen,
 									 wxSize imgSize)
 {
-    // my definitions 
-	int             bEnablem_DataSettAlpha = FALSE; //, bEnableSrcAlpha = FALSE;
-	int             bMakeMask = false, bMakeAlpha = false, bInvertMask = false;
+	// my definitions
+	int bEnablem_DataSettAlpha = FALSE; //, bEnableSrcAlpha = FALSE;
+	int bMakeMask = false, bMakeAlpha = false, bInvertMask = false;
 	wxRect imgfilter = m_PxImgFilter;
-	
+
 	double dmin = 0;
 	double dmax = 0;
 	double dnodata = 0;

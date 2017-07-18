@@ -57,6 +57,7 @@ void tmAttributionData::InitMemberValues()
 {
 	m_TableName = wxEmptyString;
 	m_SelIDs = NULL;
+	m_pDB = NULL;
 }
 
 

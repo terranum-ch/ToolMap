@@ -20,6 +20,7 @@
 
 DataBaseResult::DataBaseResult() {
 	m_ResultSet = NULL;
+	m_Row = NULL;
 	m_RowIndex = wxNOT_FOUND;
 	m_RowLengths.Clear();
 }
@@ -31,6 +32,7 @@ DataBaseResult::DataBaseResult(MYSQL_RES ** results) {
 
 void DataBaseResult::Create(MYSQL_RES ** results) {
 	m_RowIndex = wxNOT_FOUND;
+	m_Row = NULL;
 	m_RowLengths.Clear();
 	m_ResultSet = results;
 }

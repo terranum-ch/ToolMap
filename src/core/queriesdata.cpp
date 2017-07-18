@@ -345,6 +345,7 @@ bool QueriesData::GetLayers(DataBaseTM * database, PrjMemLayersArray & layers) {
 
 		
 		if (iRet == -1) {
+			wxDELETE(myLayer);
 			break;
 		}
 		

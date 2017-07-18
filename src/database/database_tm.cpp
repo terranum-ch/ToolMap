@@ -2076,6 +2076,9 @@ PrjDefMemManage * DataBaseTM::GetProjectDataFromDB ()
 	}
 	
 	wxLogError(_T("Error loading basic project data"));
+
+	wxDELETE(myPrjDef);
+
 	return NULL;
 }
 

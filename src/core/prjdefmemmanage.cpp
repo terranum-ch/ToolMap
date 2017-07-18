@@ -203,7 +203,7 @@ ProjectDefMemoryObjects * PrjDefMemManage::AddObject()
 {
 	// create an empty object and attach it
 	ProjectDefMemoryObjects * myNewObjectObj = new ProjectDefMemoryObjects();
-	
+
 	ProjectDefMemoryLayers * layer;
 	layer = GetActiveLayer();
 	if (layer != NULL)
@@ -214,6 +214,9 @@ ProjectDefMemoryObjects * PrjDefMemManage::AddObject()
 		
 		return myNewObjectObj; // pointer to the added object.
 	}
+
+	wxDELETE(myNewObjectObj);
+
 	return NULL;
 }
 
@@ -341,8 +344,10 @@ ProjectDefMemoryFields * PrjDefMemManage::AddField ()
 		
 		return myNewFieldObj; // pointer to the added field.
 	}
+
+	wxDELETE(myNewFieldObj);
+
 	return NULL;
-	
 }
 
 
@@ -480,6 +485,9 @@ ProjectDefMemoryFieldsCodedVal * PrjDefMemManage::AddCodedValue()
 		
 		return myNewCodedValObj; // pointer to the added field.
 	}
+
+	wxDELETE(myNewCodedValObj);
+
 	return NULL;
 }
 

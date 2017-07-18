@@ -62,7 +62,6 @@ bool ToolMapApp::OnInit(){
     // debugging string for OSX
     // this is needed for viewing string content with Xcode !!
     wxString myTest = _T("Test debugging");
-    myTest.Len();
     myTest.ToUTF8().data();
 #endif
 
@@ -320,10 +319,25 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
 END_EVENT_TABLE()
 
 
-
 ToolMapFrame::ToolMapFrame()
+		: m_AuiManager(NULL),
+		  m_AttribObjPanel(NULL),
+		  m_MainPanel(NULL),
+		  m_QueriesPanel(NULL),
+		  m_ShortCutPanel(NULL),
+		  m_SnappingPanel(NULL),
+		  m_PManager(NULL),
+		  m_MManager(NULL),
+		  m_LayerManager(NULL),
+		  m_ScaleCombo(NULL),
+		  m_AttribManager(NULL),
+		  m_EditManager(NULL),
+		  m_ToolManager(NULL),
+		  m_InfoBar(NULL),
+		  m_StatManager(NULL),
+		  m_LogWindow(NULL),
+		  m_TocWindow(NULL)
 {
-
 }
 
 

@@ -115,6 +115,7 @@ bool tmProjectMaintenance::_CleanLayerOrphansAttributes(int geomtype, const wxSt
 tmProjectMaintenance::tmProjectMaintenance(const wxString & databasename, DataBase * database) {
     m_DB = NULL;
     m_DestroyDatabase = true;
+    m_IsVerbose = false;
     if (database != NULL) {
         m_DB = database;
         m_DestroyDatabase = false;

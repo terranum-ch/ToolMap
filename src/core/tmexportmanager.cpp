@@ -36,6 +36,8 @@ void tmExportManager::InitMemberValues()
 	m_ExportType = EXPORT_SHAPEFILE;
 	m_ExportData = NULL;
 	m_ProjMem = NULL;
+	m_ProgressDlg = NULL;
+	m_ProgressBusy = NULL;
     m_UseFastExport = true;
     m_ExportAttributCode = false; // default is to export attribut enumeration description
     m_Scale = NULL;
