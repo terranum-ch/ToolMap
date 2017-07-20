@@ -401,6 +401,7 @@ void ProjectEditObjectDefinitionDLG::Init()
     m_DLGPEO_Choice_Lyr_Point_Name = NULL;
     m_DLGPEO_Panel_Poly = NULL;
     m_DLGPEO_List_Line = NULL;
+	m_DLGPEO_List_Point = NULL;
     m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
 	m_DB = NULL;
 	m_DLGPEO_StatusBar = NULL;
