@@ -33,7 +33,7 @@ wxComboBox (parent, id, _T(""), pos, size, arraystring, wxCB_DROPDOWN | wxTE_PRO
 
 
 tmScaleCtrlCombo::tmScaleCtrlCombo(){
-	
+	m_ParentEvent = NULL;
 }
 
 

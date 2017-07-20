@@ -421,18 +421,17 @@ void tmLayerManager::OnRotationWarning (wxCommandEvent & event){
 		myDlg.SetLayerName(event.GetString());
 		myDlg.SetRotation1(rx);
 		myDlg.SetRotation2(ry);
-		myDlg.ShowModal();
-		
-		
-		if (bShouldAdd == true) {
-			m_RotationName.Add(event.GetString());
-			m_RotationStatus.Add((short) myDlg.GetHide());
-		}
-		
-		// update hide information
-		for (unsigned int i = 0; i<m_RotationName.GetCount(); i++) {
-			if (m_RotationName.Item(i) == event.GetString()) {
-				m_RotationStatus.Item(i) = (short) myDlg.GetHide();
+		if (myDlg.ShowModal() == wxID_OK) {
+			if (bShouldAdd == true) {
+				m_RotationName.Add(event.GetString());
+				m_RotationStatus.Add((short) myDlg.GetHide());
+			}
+
+			// update hide information
+			for (unsigned int i = 0; i < m_RotationName.GetCount(); i++) {
+				if (m_RotationName.Item(i) == event.GetString()) {
+					m_RotationStatus.Item(i) = (short) myDlg.GetHide();
+				}
 			}
 		}
 	}

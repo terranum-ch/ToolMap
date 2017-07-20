@@ -76,7 +76,7 @@ class DataBase
 	protected:
 	public:
 		DataBase(const wxString & errmsgpath = wxEmptyString);
-		~DataBase();
+		virtual ~DataBase();
 		
 		// database operations
 		bool DataBaseCreateNew(const wxString & datadir, const wxString & name);

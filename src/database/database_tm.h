@@ -69,12 +69,14 @@ const wxString TABLE_NAME_GIS_GENERIC[] =
 	_T("generic_frame")
 };
 
-const wxString TABLE_NAME_GIS_ATTRIBUTION[] = 
+static const int TABLE_NAME_GIS_GENERIC_NUMBER = 5;
+
+const wxString TABLE_NAME_GIS_ATTRIBUTION[] =
 {
-_T("generic_aat"),
-_T("generic_pat"),
-_T("generic_lat"),
-_T("generic_notes")
+	_T("generic_aat"),
+	_T("generic_pat"),
+	_T("generic_lat"),
+	_T("generic_notes")
 };
 
 

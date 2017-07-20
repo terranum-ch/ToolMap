@@ -128,7 +128,7 @@ void ProjectDefDLG::Init()
 	m_DlgPd_Status = NULL;
 	
 	m_bIsModeEditing = FALSE;
-	
+	m_pPrjDefinition = NULL;
 }
 
 
@@ -339,6 +339,9 @@ ProjectDefList::ProjectDefList(wxWindow * parent, wxWindowID  id, wxSize size, P
 	SetTextFields(_("Number of layer(s) : %d"), _("%d layer(s) selected"));
 	m_bAscending [0] = TRUE;
 	m_bAscending [1] = TRUE;
+
+	m_pPrjDefinition = NULL;
+	m_LayersObj = NULL;
 }
 
 
@@ -473,8 +476,10 @@ void ProjectDefList::BeforeDeleting()
 				m_pPrjDefinition->m_StoreDeleteLayers.Add(layer->m_LayerID);
 			}
 		}
-		
-		m_pPrjDefinition->RemoveLayer(myLayerName);
+
+		if (!m_pPrjDefinition->RemoveLayer(myLayerName)) {
+			wxLogDebug(_T("Layer %s not removed."), myLayerName);
+		}
 	}
 
 }

@@ -393,6 +393,7 @@ void ProjectEditObjectDefinitionDLG::Init()
     m_DLGPEO_Notebook = NULL;
     m_DLGPEO_Panel_Line = NULL;
     m_DLGPEO_List_Line = NULL;
+	m_DLGPEO_List_Poly = NULL;
     m_DLGPEO_Choice_Lyr_Line_Name = NULL;
     m_DLGPEO_Choice_Lyr_Line_Freq = NULL;
     m_DLGPEO_Panel_Point = NULL;

@@ -1046,9 +1046,9 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
 
     GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
 	geosline = line->exportToGEOS(myGEOSHandle);
-	geosunion = union1->exportToGEOS(myGEOSHandle);
 	if (geosline != NULL && union1 != NULL)
 	{
+		geosunion = union1->exportToGEOS(myGEOSHandle);
 		geosresult = GEOSUnion(geosunion, geosline);
 		GEOSGeom_destroy(geosline);
 		GEOSGeom_destroy(geosunion);

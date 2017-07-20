@@ -205,6 +205,8 @@ public:
         TS_ASSERT(myPrjDef);
         
         ReadProjectData(myPrjDef, _T("45a"));
+
+		wxDELETE(myPrjDef);
    }
     
     

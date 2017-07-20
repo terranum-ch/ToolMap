@@ -487,7 +487,7 @@ namespace agg
     {
         typedef T value_type;
         T x,y;
-        point_base() {}
+        point_base() : x(0), y(0) {}
         point_base(T x_, T y_) : x(x_), y(y_) {}
     };
     typedef point_base<int>    point_i; //-----point_i

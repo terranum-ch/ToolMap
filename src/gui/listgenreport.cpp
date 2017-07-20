@@ -93,13 +93,22 @@ int ListGenReport::ImportParsedFileToListCtrl(const wxString & filename,
 	wxArrayString myArrValues;
 	int iLineCount = 0;
 	
-	// create parser depending on the selected format and set a file
-	// for that parser
+	// create parser depending on the selected format
 	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
-	m_ImportParser->SetParseFileName(filename);
-		
+
 	// check that the parser is not null or may crash
 	wxASSERT(m_ImportParser != NULL);
+	if(!m_ImportParser)
+	{
+		wxString sError = _("Error importing files, see log window for more informations\n\n");
+		sError += _("Log window may be displayed using : Window -> Log Window");
+		wxMessageBox(sError,_("Error importing files"), wxOK | wxICON_ERROR);
+		wxLogError(_("Parser not correctly initiated."));
+		return -1;
+	}
+
+	// set a file for that parser
+	m_ImportParser->SetParseFileName(filename);
 	
 	// try to open the file for parsing
 	if(m_ImportParser->OpenParseFile())
@@ -122,8 +131,9 @@ int ListGenReport::ImportParsedFileToListCtrl(const wxString & filename,
 		m_ImportParser->CloseParseFile();
 		
 	}
-	if (m_ImportParser != NULL)
-		delete m_ImportParser;
+
+	wxDELETE(m_ImportParser);
+
 	return iLineCount;
 	
 }
@@ -136,15 +146,23 @@ int ListGenReport::ExportListParsedToFile (const wxString & filename,
 	int iLineCount = 0;
 	int iArrayItemCount = 0;
 	
-	// create parser depending on the selected format and set a file
-	// for that parser
+	// create parser depending on the selected format
 	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
-	m_ImportParser->SetParseFileName(filename);
 
-	
 	// check that the parser is not null or may crash
 	wxASSERT(m_ImportParser != NULL);
-	
+	if(!m_ImportParser)
+	{
+		wxString sError = _("Error importing files, see log window for more informations\n\n");
+		sError += _("Log window may be displayed using : Window -> Log Window");
+		wxMessageBox(sError,_("Error importing files"), wxOK | wxICON_ERROR);
+		wxLogError(_("Parser not correctly initiated."));
+		return -1;
+	}
+
+	// set a file for that parser
+	m_ImportParser->SetParseFileName(filename);
+
 	// try to open the file for parsing in create mode
 	if(m_ImportParser->OpenParseFile(TRUE))
 	{
@@ -164,8 +182,9 @@ int ListGenReport::ExportListParsedToFile (const wxString & filename,
 	
 		m_ImportParser->CloseParseFile();
 	}
-	if (m_ImportParser != NULL)
-		delete m_ImportParser;
+
+	wxDELETE(m_ImportParser);
+
 	return iLineCount;
 }
 
@@ -210,12 +229,12 @@ void ListGenReport::AddItemToList(wxString myValue, int iPosition)
 
 void ListGenReport::OnDoubleClickItem (wxListEvent & event)
 {
-		
-		wxString myAcutalValue = GetItemColText(event.GetIndex(), 1);
-		wxTextEntryDialog myTextDlg(this, _("Modify Value :"),_("Value"));
-		myTextDlg.SetValue(myAcutalValue);
-		myTextDlg.ShowModal();
-		SetItemText(event.GetIndex(),1,myTextDlg.GetValue());
+	wxString myAcutalValue = GetItemColText(event.GetIndex(), 1);
+	wxTextEntryDialog myTextDlg(this, _("Modify Value :"), _("Value"));
+	myTextDlg.SetValue(myAcutalValue);
+	if (myTextDlg.ShowModal() == wxID_OK) {
+		SetItemText(event.GetIndex(), 1, myTextDlg.GetValue());
+	}
 }
 
 void ListGenReport::OnPressBackSpace (wxListEvent & event)
@@ -1011,21 +1030,28 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filenam
 	// create parser depending on the selected format and set a file
 	// for that parser
 	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
-	m_ImportParser->SetParseFileName(filename);
-	
-	// specify the number of cols we are looking for
-	m_ImportParser->SetNumberOfFields(GetColumnCount());
-	
+
+	// generic error message
+	wxString sError = _("Error importing files, see log window for more informations\n\n");
+	sError += _("Log window may be displayed using : Window -> Log Window");
 	
 	// check that the parser is not null or may crash
 	wxASSERT(m_ImportParser != NULL);
+	if (!m_ImportParser) {
+		wxMessageBox(sError, _("Error importing files"), wxOK | wxICON_ERROR);
+		wxLogError(_("Parser not correctly initiated."));
+		return -1;
+	}
+
+	// set a file for that parser
+	m_ImportParser->SetParseFileName(filename);
+
+	// specify the number of cols we are looking for
+	m_ImportParser->SetNumberOfFields(GetColumnCount());
 	
 	// try to open the file for parsing
-	wxString sError = _("Error importing files, see log window for more informations\n\n");
-	sError += _("Log window may be displayed using : Window -> Log Window");
-	if(!m_ImportParser->OpenParseFile())
-	{
-		wxMessageBox(sError,_("Error importing files"), wxOK | wxICON_ERROR);
+	if (!m_ImportParser->OpenParseFile()) {
+		wxMessageBox(sError, _("Error importing files"), wxOK | wxICON_ERROR);
 		wxLogError(_("Error opening file %s for parsing. Format may be incorrect"),
 				   filename.c_str());
 		return -1;
@@ -1063,9 +1089,8 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString & filenam
 	}
 	m_ImportParser->CloseParseFile();
 	
-	
-	if (m_ImportParser != NULL)
-		delete m_ImportParser;
+	wxDELETE(m_ImportParser);
+
 	return iLineCount;
 	
 }

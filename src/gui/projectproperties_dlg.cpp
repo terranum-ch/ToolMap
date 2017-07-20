@@ -178,6 +178,7 @@ void ProjectPropertiesDLG::_Init()
     m_DLGPS_Backup_Path = NULL;
     m_DLGPS_Scale_List = NULL;
     m_DLGPS_Scale_Order_Choice = NULL;
+	m_DBHandler = NULL;
 }
 
 

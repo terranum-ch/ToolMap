@@ -115,6 +115,10 @@ void ObjectDefinitionListDlg::Init()
     m_DLGODD_List_Lyr_Name = NULL;
     m_DLGODD_Frequency = NULL;
 	m_DLGODD_SaveBtn = NULL;
+
+	m_ParentListType = -1;
+	m_pDatabase = NULL;
+	m_ObjectObj = NULL;
 }
 
 
@@ -225,7 +229,7 @@ bool ObjectDefinitionListDlg::TransferDataFromWindow()
 	m_ObjectObj->m_ObjectCode = m_DLGODD_Code->GetValue();
 	m_ObjectObj->m_ObjectName = m_DLGODD_Description->GetValue();
 #ifdef __WXMSW__
-	m_ObjectObj->m_ObjectName.Replace(_T("’"), _T("'"));
+	m_ObjectObj->m_ObjectName.Replace(_T("â€™"), _T("'"));
 #endif
 	m_ObjectObj->m_ParentLayerName = m_DLGODD_List_Lyr_Name->GetStringSelection();
 	// get the frequency item (FREQUENT must be 0)
@@ -255,7 +259,7 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow * parent,
 	m_DBHandler = database;
 	m_MemoryObject = memory;
 	m_ListSpatType = LAYER_LINE;
-	
+	m_ObjectObj = NULL;
 	
 	// init list with database values
 	SetListText(m_layertype);

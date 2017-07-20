@@ -838,10 +838,10 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent & event){
 			wxFileName myName (myPath, _T(""));
 			wxArrayString myPathNames = myName.GetDirs();
 			tmOpenRecentError_DLG myDlg(this, wxID_ANY, _("Open failed"), myPathNames.Item(myPathNames.GetCount() -1));
-			myDlg.ShowModal();
-
-			if (myDlg.GetRemoveFromRecent() == true) {
-				m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
+			if (myDlg.ShowModal() == wxID_OK) {
+				if (myDlg.GetRemoveFromRecent() == true) {
+					m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
+				}
 			}
 		}
 		// opening failed ! Correct Programe name

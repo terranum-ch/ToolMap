@@ -74,9 +74,11 @@ void TreeMultiItemNode::DeleteNode(TreeMultiItemBase *node)
 {
 	// this is wrong. The RemoveAt and Remove should delete
 	// the object
-	if(node)
-	{
-		_items.Detach(Index(node));
+	if (node) {
+		int index = Index(node);
+		if (index >= 0)
+			_items.Detach(index);
+
 		delete node;
 	}
 
@@ -115,8 +117,11 @@ TreeMultiItemBase *TreeMultiItemNode::GetNode(int index) const
 
 TreeMultiItemBase *TreeMultiItemNode::RemoveNode(TreeMultiItemBase *node)
 {
-	if(node)
-		_items.Detach(_items.Index(*node));
+	if(node) {
+        int index = _items.Index(*node);
+        if (index >= 0)
+            _items.Detach(index);
+    }
 
 	return node;
 }

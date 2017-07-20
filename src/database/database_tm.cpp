@@ -1815,7 +1815,9 @@ wxArrayString DataBaseTM::GetLayerNameByType (int ilayertype)
 	
 	if (DataBaseQuery(sSentence))
 	{
-		DataBaseGetResults(myThematicResult);
+		if (!DataBaseGetResults(myThematicResult)) {
+			wxLogWarning(_("No result from database."));
+		}
 	}
 	//wxLogDebug(_T("Number of results found : %d"), myThematicResult.GetCount());
 	return myThematicResult;

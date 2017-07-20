@@ -205,15 +205,17 @@ BEGIN_EVENT_TABLE(tmSelectionInfoCtrl, wxTreeMultiCtrl)
 END_EVENT_TABLE()
 
 
-tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
-										 tmSelectedDataMemory * sel, tmTOCCtrl * toc,
-										 const wxPoint & pos, const wxSize & size, long style) : 
-wxTreeMultiCtrl(window, id, pos, size, style){
+tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id,
+										 tmSelectedDataMemory *sel, tmTOCCtrl *toc,
+										 const wxPoint &pos, const wxSize &size, long style)
+		: wxTreeMultiCtrl(window, id, pos, size, style)
+{
 	wxASSERT(sel);
 	wxASSERT(toc);
 	m_Selected = sel;
 	m_Toc = toc;
 	m_ClickedItemID = wxNOT_FOUND;
+	m_Project = NULL;
 	SetBackgroundColour(*wxWHITE);
 	AddRoot(_("Selected features"), _("Selected features"));
 }

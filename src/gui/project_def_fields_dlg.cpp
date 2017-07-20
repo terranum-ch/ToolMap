@@ -369,9 +369,15 @@ void ProjectDefFieldDlg::Init()
     m_DlgAFD_Field_Scale = NULL;
     m_DlgAFD_Result = NULL;
     m_DlgAFD_Coded_Val_List = NULL;
+	m_DlgAFD_Choicebook = NULL;
+	m_DlgAFD_Text_Length = NULL;
+	m_DlgAFD_Button_OK = NULL;
 	
 	m_MemoryField = NULL;
 	m_FieldTypeStatus = TM_FIELD_TEXT;
+
+	m_pPrjDefinition = NULL;
+	m_bIsModeEditing = false;
 	////@end ProjectDefFieldDlg member initialisation
 }
 

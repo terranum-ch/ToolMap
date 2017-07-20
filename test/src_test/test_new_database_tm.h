@@ -107,6 +107,8 @@ public:
         TS_ASSERT(myVal->m_ValueCode == _T("2a") );
         TS_ASSERT(myVal->m_ValueName == _T("inactif"));
         TS_ASSERT_EQUALS(myLayer->m_pLayerFieldArray.Item(0)->m_FieldType, TM_FIELD_ENUMERATION);
+
+        wxDELETE(myPrjMem);
     }
 	
     
@@ -141,6 +143,8 @@ public:
 
         // update project
         TS_ASSERT(m_DB->UpdateDataBaseProject(myPrjMem));
+
+        wxDELETE(myPrjMem);
     }
 	
 };

@@ -101,9 +101,10 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     }
     GetWebControl()->LoadURL(myWebPath.GetFullPath());
     return;
-    
+
     // unused...
     // load page into wxstring and add zoom function
+    /*
     wxTextFile myTxtFile ( myWebPath.GetFullPath() );
     myTxtFile.Open();
     wxString myWebPageTxt = myTxtFile.GetFirstLine();
@@ -111,7 +112,7 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     while (!myTxtFile.Eof()) {
         wxString myLine = myTxtFile.GetNextLine() + _T("\n");
         myLine.Replace(_T("%"), _T("%%"));
-        if (myLine.Matches(_T("*// TODO: Add zoom code here*")) && coord != myEmptyRealRect) {
+        if (myLine.Matches(_T(" TODO: Add zoom code here")) && coord != myEmptyRealRect) {
             myLine = wxString::Format(_T("map.zoomToExtent(new OpenLayers.Bounds(%f, %f, %f, %f), true);"),coord.x_min, coord.y_min, coord.x_max, coord.y_max);
         }
         myWebPageTxt.Append(myLine);
@@ -119,7 +120,7 @@ void tmWebFrame::LoadPage (const wxString & pagename, tmRealRect coord){
     
     wxLogDebug(myWebPageTxt);
 	wxLogDebug(myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-    GetWebControl()->SetPage(myWebPageTxt, myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+    GetWebControl()->SetPage(myWebPageTxt, myWebPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));*/
 }
 
 

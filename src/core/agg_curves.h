@@ -76,7 +76,28 @@ namespace agg
     {
     public:
         curve4_inc() :
-        m_num_steps(0), m_step(0), m_scale(1.0) { }
+                m_num_steps(0),
+                m_step(0),
+                m_scale(1.0),
+                m_start_x(0.0),
+                m_start_y(0.0),
+                m_end_x(0.0),
+                m_end_y(0.0),
+                m_fx(0.0),
+                m_fy(0.0),
+                m_dfx(0.0),
+                m_dfy(0.0),
+                m_ddfx(0.0),
+                m_ddfy(0.0),
+                m_dddfx(0.0),
+                m_dddfy(0.0),
+                m_saved_fx(0.0),
+                m_saved_fy(0.0),
+                m_saved_dfx(0.0),
+                m_saved_dfy(0.0),
+                m_saved_ddfx(0.0),
+                m_saved_ddfy(0.0)
+        {}
         
         curve4_inc(double x1, double y1,
                    double x2, double y2,
@@ -255,6 +276,7 @@ namespace agg
     public:
         curve4_div() :
         m_approximation_scale(1.0),
+        m_distance_tolerance_square(0.0),
         m_angle_tolerance(0.0),
         m_cusp_limit(0.0),
         m_count(0)
@@ -265,6 +287,7 @@ namespace agg
                    double x3, double y3,
                    double x4, double y4) :
         m_approximation_scale(1.0),
+        m_distance_tolerance_square(0.0),
         m_angle_tolerance(0.0),
         m_cusp_limit(0.0),
         m_count(0)
@@ -274,6 +297,7 @@ namespace agg
         
         curve4_div(const curve4_points& cp) :
         m_approximation_scale(1.0),
+        m_distance_tolerance_square(0.0),
         m_angle_tolerance(0.0),
         m_count(0)
         {

@@ -402,13 +402,15 @@ ProjectDefMemoryFields * PrjDefMemManage::FindField(const wxString & FieldName)
 	ProjectDefMemoryLayers * layer = GetActiveLayer();
 	
 	// search this item in the array for the good layer name.
-	for (unsigned int i=0; i < layer->m_pLayerFieldArray.GetCount(); i++)
-	{
-		if (layer->m_pLayerFieldArray.Item(i)->m_Fieldname == FieldName)
+	if (layer) {
+		for (unsigned int i=0; i < layer->m_pLayerFieldArray.GetCount(); i++)
 		{
-			//wxLogDebug(_T("Object found in Field array in position : %d"), i);
-			SetActiveField(layer->m_pLayerFieldArray.Item(i));
-			return layer->m_pLayerFieldArray.Item(i);
+			if (layer->m_pLayerFieldArray.Item(i)->m_Fieldname == FieldName)
+			{
+				//wxLogDebug(_T("Object found in Field array in position : %d"), i);
+				SetActiveField(layer->m_pLayerFieldArray.Item(i));
+				return layer->m_pLayerFieldArray.Item(i);
+			}
 		}
 	}
 	

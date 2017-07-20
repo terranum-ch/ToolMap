@@ -40,6 +40,9 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow * parent, wxWind
 	
 	m_pPrjDefinition = NULL;
 	m_SpatialType = LAYER_LINE;
+
+	m_ObjectObj = NULL;
+	m_ObjectsArray = NULL;
 }
 
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
@@ -571,7 +574,7 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow(){
 	wxString sValue = m_DlgEO_Value->GetValue();
 
 #ifdef __WXMSW__
-	sValue.Replace(_T("’"), _T("'"));
+	sValue.Replace(_T("â€™"), _T("'"));
 #endif
 	// passing values to the corresponding obj.
 	if (m_ObjectObj != NULL){
@@ -951,18 +954,20 @@ ProjectDefLayersDlg::~ProjectDefLayersDlg()
 }
 
 
-
 void ProjectDefLayersDlg::Init()
 {
 	m_FieldDialog = NULL;
-	m_bIsModeEditing = FALSE;
+	m_LayersObj = NULL;
+	m_pPrjDefinition = NULL;
+	m_bIsModeEditing = false;
+	m_bIsModeAddingEditing = false;
 
-	 m_DlgPDL_Layer_Type = NULL;
-	 m_DlgPDL_Layer_Name = NULL;
-	 m_DlgPDL_Panel_Obj = NULL;
-	 m_DlgPDL_Object_List = NULL;
-	 m_DlgPDL_Panel_Fields = NULL;
-	 m_DlgPDL_Fields_List = NULL;
+	m_DlgPDL_Layer_Type = NULL;
+	m_DlgPDL_Layer_Name = NULL;
+	m_DlgPDL_Panel_Obj = NULL;
+	m_DlgPDL_Object_List = NULL;
+	m_DlgPDL_Panel_Fields = NULL;
+	m_DlgPDL_Fields_List = NULL;
 	m_DlgPDL_Orientation_FLD = NULL;
 	m_DlgPDL_Contour_Prefix = _("Border of ");
 	m_DlgPDL_Contour_Name = NULL;

@@ -47,6 +47,9 @@ tmToolManager::~tmToolManager(){
 bool tmToolManager::_SearchDanglingNodes(int selectedlayer,const wxArrayString & layersname)
 {
 	wxASSERT(selectedlayer != wxNOT_FOUND);
+	if (selectedlayer < 0)
+		return false;
+
 	wxASSERT(m_pDB);
 	_ClearDangling();
 	

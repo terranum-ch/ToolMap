@@ -66,11 +66,12 @@ ManagedAuiWnd(auimanager)
 
 void Shortcuts_PANEL::InitMemberValues()
 {
-	 m_TargetChoice = NULL;
-	 m_ListShortcuts= NULL;
-	 m_ParentEvt= NULL;	
+	m_TargetChoice = NULL;
+	m_ListShortcuts = NULL;
+	m_ParentEvt = NULL;
 	m_pDB = NULL;
-	
+	m_ProjectOpen = false;
+
 }
 
 
@@ -291,6 +292,8 @@ ShortcutList::ShortcutList (wxWindow * parent,
 ListGenReportWithDialog(parent, id, pColsName, pColsSize, size, wxLC_REPORT | wxLC_SINGLE_SEL){
     m_LayerType = 0;
 	m_ParentEvt = parent_evt;
+	m_pDB = NULL;
+	m_OldKey = -1;
 }
 
 

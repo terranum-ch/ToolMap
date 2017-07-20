@@ -78,9 +78,6 @@ private:
     //tmTHREAD_STATUS m_Shared_ThreadStatus;
     wxBitmap * m_ThreadBitmap;
     
-    // values for thread
-    bool m_computeFullExtent;
-    
     // init member values to default
     void InitMemberValue();
     

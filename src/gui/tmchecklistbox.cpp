@@ -240,10 +240,11 @@ bool tmCheckListBox::RemoveItem (long index)
 		wxLogError(_T("Trying to delete item out of limits"));
 		return FALSE;
 	}
-	
-	Delete(index);
-	
-	m_ids.RemoveAt(index);
+
+	if (index >= 0) {
+		Delete(index);
+		m_ids.RemoveAt(index);
+	}
 		
 	return TRUE;
 }

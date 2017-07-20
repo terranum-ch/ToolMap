@@ -236,14 +236,14 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
         }
 		return false;
 	}
-	
+
 	wxString sFilter = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"),
 										filter.x_min, filter.y_min,
 										filter.x_max, filter.y_min,
 										filter.x_max, filter.y_max,
 										filter.x_min, filter.y_max,
 										filter.x_min, filter.y_min);
-	wxString sSentence = wxString::Format( _T("SELECT %s, %s FROM %s WHERE ")
+	wxString sSentence = wxString::Format(_T("SELECT %s, %s FROM %s WHERE ")
 										  _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
 										  tmGISMYSQL_FIELD1.c_str(),
 										  tmGISMYSQL_FIELD2.c_str(),
@@ -254,27 +254,23 @@ bool tmGISDataVectorMYSQL::SetSpatialFilter (tmRealRect filter, int type)
 		return bResult;
 		//return TRUE;
 	}
-	
+
 	if (IsLoggingEnabled()){
 		wxLogDebug(wxString::Format(_T("Error setting spatial filter")));
-        
+
     }
-	
+
 	return FALSE;
 }
 
 
-
-wxString tmGISDataVectorMYSQL::GetTableName (TOC_GENERIC_NAME type)
+wxString tmGISDataVectorMYSQL::GetTableName(TOC_GENERIC_NAME type)
 {
-	if (type < TOC_GENERIC_NAME_NUMBER)
-	{
+	if (type < TABLE_NAME_GIS_GENERIC_NUMBER) {
 		return wxString(TABLE_NAME_GIS_GENERIC[type]);
 	}
 	return _T("");
 }
-
-
 
 
 wxRealPoint * tmGISDataVectorMYSQL::GetNextDataLine (int & nbvertex, long & oid)

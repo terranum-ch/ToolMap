@@ -540,7 +540,6 @@ bool DataBase::DataBaseGetResults(wxArrayString & results)
 	{
 		case 0:
 			return false;
-			break;
 
 		case 1:
 			//wxLogDebug(_T("Only one value returned, maybe should use the")

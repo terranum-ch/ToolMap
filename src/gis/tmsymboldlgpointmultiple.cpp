@@ -71,6 +71,8 @@ void tmSymbolDLGPointMultiple::_Init()
 	m_MUnSelColourCtrl		= NULL;
 	m_MUnSelWidthCtrl		= NULL;
 	m_MUnSelVisibleCtrl		= NULL;
+
+	m_TocType 				= TOC_NAME_UNKNOWN;
 }
 
 

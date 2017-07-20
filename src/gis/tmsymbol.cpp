@@ -25,14 +25,15 @@
 tmSymbol::tmSymbol()
 {
 	m_pDB = NULL;
+	m_LayerTransparency = 0;
+	m_TocName = TOC_NAME_UNKNOWN;
 }
 
 
 
 tmSymbol::~tmSymbol()
 {
-	m_LayerTransparency = 0;
-	
+
 }
 
 
