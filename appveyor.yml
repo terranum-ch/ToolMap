@@ -7,14 +7,14 @@ environment:
   WXWIN: C:\projects\libs\wxwidgets
   
 cache:
-  - projects\libs
+  - C:\projects\libs
   
 install:
   - ps: build/appveyor/install.ps1
   
 build_script:
   - echo Running cmake...
-  - dir
+  - cd C:\projects\toolmap
   - mkdir bin
   - cd bin
   - cmake -G "Visual Studio 15 2017 Win64" -DSEARCH_GIS_LIB_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_LIB_PATH=C:\projects\libs\geos -DSEARCH_CURL_LIB_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 ../code/build cmake --build . --config relwithdebinfo -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\libs\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\libs\cxxtest\bin\cxxtestgen

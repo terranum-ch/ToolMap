@@ -153,3 +153,20 @@ if(!(Test-Path -Path "$LIB_DIR\mysql"))
   cmake --build . --config relwithdebinfo
   cmake --build . --config relwithdebinfo --target INSTALL
 }
+
+# Install curl
+if(!(Test-Path -Path "$LIB_DIR\curl"))
+{
+  cd $TMP_DIR
+  mkdir "$LIB_DIR\curl"
+  $CURL_URL="https://github.com/curl/curl/archive/curl-7_54_1.zip"
+  #Invoke-WebRequest -Uri $CURL_URL -OutFile curl.zip
+  appveyor DownloadFile $CURL_URL -FileName curl.zip
+  7z x curl.zip -o"$TMP_DIR"
+  move "$TMP_DIR\curl-*" "$TMP_DIR\curl"
+  cd "$TMP_DIR\curl\winbuild"
+  nmake -f Makefile.vc mode=dll VC=14 DEBUG=NO MACHINE=x64
+  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\bin" "$LIB_DIR\curl\bin"
+  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\include" "$LIB_DIR\curl\include"
+  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\lib" "$LIB_DIR\curl\lib"
+}
