@@ -30,7 +30,7 @@ if(!(Test-Path -Path "$LIB_DIR\cmake"))
   7z x cmake.zip -o"$TMP_DIR"
   move "$TMP_DIR\cmake-*" "$LIB_DIR\cmake"
 }
-$Env:Path += ";$LIB_DIR\cmake\bin"
+$env:Path += ";$LIB_DIR\cmake\bin"
 cmake --version
   
 # Install cxxtest
@@ -43,7 +43,7 @@ if(!(Test-Path -Path "$LIB_DIR\cxxtest"))
   7z x cxxtest.zip -o"$TMP_DIR"
   move "$TMP_DIR\cxxtest-*" "$LIB_DIR\cxxtest"
 }
-$Env:Path += ";$LIB_DIR\cxxtest"
+$env:Path += ";$LIB_DIR\cxxtest"
   
 # Install wxWidgets
 if(!(Test-Path -Path "$LIB_DIR\wxwidgets"))
@@ -63,7 +63,7 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets"))
   move "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
   move "$TMP_DIR\wxwidgets\lib" "$LIB_DIR\wxwidgets\lib"
 }
-$Env:WXWIN = "$LIB_DIR\wxwidgets"
+$env:WXWIN = "$LIB_DIR\wxwidgets"
 
 # Install wxPDFDocument
 if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc"))
