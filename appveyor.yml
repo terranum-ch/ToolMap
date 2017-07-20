@@ -2,6 +2,10 @@ version: 2.6.{build}
 
 image: Visual Studio 2017
 
+environment:
+  - APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  - WXWIN: C:\projects\libs\wxwidgets
+  
 cache:
   - projects\libs
   
