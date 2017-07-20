@@ -13,7 +13,7 @@ Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor
 # All external dependencies are installed in C:\projects\libs
 $TMP_DIR="C:\projects\tmp"
 $LIB_DIR="C:\projects\libs"
-$PATCH_DIR="$APPVEYOR_BUILD_FOLDER\build\appveyor\patches"
+$PATCH_DIR="C:\projects\toolmap\build\appveyor\patches"
 if(!(Test-Path -Path $LIB_DIR))
 {
   mkdir $LIB_DIR
