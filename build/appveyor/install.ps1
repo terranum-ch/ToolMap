@@ -66,8 +66,8 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets"))
 $env:WXWIN = "$LIB_DIR\wxwidgets"
 
 # Install wxPDFDocument
-if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc"))
-{
+#if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc"))
+#{
   cd $TMP_DIR
   mkdir "$LIB_DIR\wxpdfdoc"
   $WXPDF_URL="https://github.com/utelle/wxpdfdoc/releases/download/v0.9.5/wxpdfdoc-0.9.5.zip"
@@ -79,7 +79,7 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc"))
   nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
-}
+#}
 
 # Install Proj
 if(!(Test-Path -Path "$LIB_DIR\proj"))
