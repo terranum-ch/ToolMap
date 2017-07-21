@@ -8,7 +8,7 @@ if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
     ./configure --prefix=${HOME}/.wxpdfdoc --with-wx-prefix=${HOME}/.wxwidgets --enable-unicode --disable-shared --silent
   else
-    ./configure --prefix=${HOME}/.wxpdfdoc --enable-unicode --disable-shared --silent
+    ./configure --prefix=${HOME}/.wxpdfdoc --with-wx-prefix=/usr/local --enable-unicode --disable-shared --silent
   fi
   make -j4 > /dev/null
   make install > /dev/null
