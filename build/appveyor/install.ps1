@@ -1,3 +1,12 @@
+# Force rebuilding some libraries
+$REBUILD_WX=$true
+$REBUILD_WXPDF=$true
+$REBUILD_PROJ=$false
+$REBUILD_GEOS=$false
+$REBUILD_GDAL=$false
+$REBUILD_MYSQL=$false
+$REBUILD_CURL=$false
+
 # Setup VS environment
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
 pushd 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'    
@@ -46,9 +55,10 @@ if(!(Test-Path -Path "$LIB_DIR\cxxtest"))
 $env:Path += ";$LIB_DIR\cxxtest"
   
 # Install wxWidgets
-if(!(Test-Path -Path "$LIB_DIR\wxwidgets"))
+if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX)
 {
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\wxpdfdoc" -Force -Recurse
   mkdir "$LIB_DIR\wxwidgets"
   $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.zip"
   #Invoke-WebRequest -Uri $WX_URL -OutFile wxwidgets.zip
@@ -66,8 +76,8 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets"))
 $env:WXWIN = "$LIB_DIR\wxwidgets"
 
 # Install wxPDFDocument
-#if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc"))
-#{
+if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF)
+{
   cd $TMP_DIR
   Remove-Item "$LIB_DIR\wxpdfdoc" -Force -Recurse
   mkdir "$LIB_DIR\wxpdfdoc"
@@ -81,10 +91,10 @@ $env:WXWIN = "$LIB_DIR\wxwidgets"
   nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
-#}
+}
 
 # Install Proj
-if(!(Test-Path -Path "$LIB_DIR\proj"))
+if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ)
 {
   cd $TMP_DIR
   mkdir "$LIB_DIR\proj"
@@ -99,7 +109,7 @@ if(!(Test-Path -Path "$LIB_DIR\proj"))
 }
 
 # Install Geos
-if(!(Test-Path -Path "$LIB_DIR\geos"))
+if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS)
 {
   cd $TMP_DIR
   mkdir "$LIB_DIR\geos"
@@ -120,7 +130,7 @@ if(!(Test-Path -Path "$LIB_DIR\geos"))
 }
 
 # Install Gdal
-if(!(Test-Path -Path "$LIB_DIR\gdal"))
+if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL)
 {
   cd $TMP_DIR
   mkdir "$LIB_DIR\gdal"
@@ -137,7 +147,7 @@ if(!(Test-Path -Path "$LIB_DIR\gdal"))
 }
 
 # Install Mysql
-if(!(Test-Path -Path "$LIB_DIR\mysql"))
+if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL)
 {
   cd $TMP_DIR
   mkdir "$LIB_DIR\mysql"
@@ -157,7 +167,7 @@ if(!(Test-Path -Path "$LIB_DIR\mysql"))
 }
 
 # Install curl
-if(!(Test-Path -Path "$LIB_DIR\curl"))
+if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL)
 {
   cd $TMP_DIR
   mkdir "$LIB_DIR\curl"
