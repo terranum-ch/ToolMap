@@ -58,7 +58,7 @@ $env:Path += ";$LIB_DIR\cxxtest"
 if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX)
 {
   cd $TMP_DIR
-  Remove-Item "$LIB_DIR\wxpdfdoc" -Force -Recurse
+  Remove-Item "$LIB_DIR\wxwidgets" -Force -Recurse
   mkdir "$LIB_DIR\wxwidgets"
   $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.zip"
   #Invoke-WebRequest -Uri $WX_URL -OutFile wxwidgets.zip
@@ -97,6 +97,7 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF)
 if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ)
 {
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\proj" -Force -Recurse
   mkdir "$LIB_DIR\proj"
   $PROJ_URL="https://github.com/OSGeo/proj.4/archive/4.9.3.zip"
   #Invoke-WebRequest -Uri $PROJ_URL -OutFile proj.zip
@@ -112,6 +113,7 @@ if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ)
 if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS)
 {
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\geos" -Force -Recurse
   mkdir "$LIB_DIR\geos"
   $GEOS_URL="http://download.osgeo.org/geos/geos-3.6.1.tar.bz2"
   #Invoke-WebRequest -Uri $GEOS_URL -OutFile geos.tar.bz2
@@ -133,6 +135,7 @@ if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS)
 if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL)
 {
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\gdal" -Force -Recurse
   mkdir "$LIB_DIR\gdal"
   $GDAL_URL="http://download.osgeo.org/gdal/2.2.1/gdal221.zip"
   #Invoke-WebRequest -Uri $GDAL_URL -OutFile gdal.zip
@@ -150,6 +153,7 @@ if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL)
 if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL)
 {
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\mysql" -Force -Recurse
   mkdir "$LIB_DIR\mysql"
   $MYSQL_URL="https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.37.zip"
   #Invoke-WebRequest -Uri $MYSQL_URL -OutFile mysql.zip
@@ -170,6 +174,7 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL)
 if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL)
 {
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\curl" -Force -Recurse
   mkdir "$LIB_DIR\curl"
   $CURL_URL="https://github.com/curl/curl/archive/curl-7_54_1.zip"
   #Invoke-WebRequest -Uri $CURL_URL -OutFile curl.zip
