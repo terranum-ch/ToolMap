@@ -58,9 +58,9 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets"))
   nmake -f makefile.vc BUILD=release UNICODE=1 MONOLITHIC=1
   nmake -f makefile.vc BUILD=debug UNICODE=1 MONOLITHIC=1
   move "$TMP_DIR\wxwidgets\include" "$LIB_DIR\wxwidgets\include"
-  move "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
+  copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
   move "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h_old"
-  move "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
+  copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
   move "$TMP_DIR\wxwidgets\lib" "$LIB_DIR\wxwidgets\lib"
 }
 $env:WXWIN = "$LIB_DIR\wxwidgets"
@@ -78,6 +78,7 @@ $env:WXWIN = "$LIB_DIR\wxwidgets"
   move "$TMP_DIR\wxpdfdoc-*" "$TMP_DIR\wxpdfdoc"
   cd "$TMP_DIR\wxpdfdoc\build"
   nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1
+  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
 #}
