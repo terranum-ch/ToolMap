@@ -69,10 +69,11 @@ $env:WXWIN = "$LIB_DIR\wxwidgets"
 #if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc"))
 #{
   cd $TMP_DIR
+  Remove-Item "$LIB_DIR\wxpdfdoc" -Force -Recurse
   mkdir "$LIB_DIR\wxpdfdoc"
   $WXPDF_URL="https://github.com/utelle/wxpdfdoc/releases/download/v0.9.5/wxpdfdoc-0.9.5.zip"
   #Invoke-WebRequest -Uri $WXPDF_URL -OutFile wxpdfdoc.zip
-  appveyor DownloadFile $WX_URL -FileName wxpdfdoc.zip
+  appveyor DownloadFile $WXPDF_URL -FileName wxpdfdoc.zip
   7z x wxpdfdoc.zip -o"$TMP_DIR"
   move "$TMP_DIR\wxpdfdoc-*" "$TMP_DIR\wxpdfdoc"
   cd "$TMP_DIR\wxpdfdoc\build"
