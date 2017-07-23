@@ -4,7 +4,7 @@ $REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
-$REBUILD_MYSQL=$false
+$REBUILD_MYSQL=$true
 $REBUILD_CURL=$false
 
 # Setup VS environment
@@ -181,14 +181,14 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL)
     Remove-Item "$LIB_DIR\mysql" -Force -Recurse
   }
   mkdir "$LIB_DIR\mysql" > $null
-  $MYSQL_URL="https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.37.zip"
+  $MYSQL_URL="https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.36.zip"
   #Invoke-WebRequest -Uri $MYSQL_URL -OutFile mysql.zip
   appveyor DownloadFile $MYSQL_URL -FileName mysql.zip > $null
   7z x mysql.zip -o"$TMP_DIR" > $null
   move "$TMP_DIR\mysql-*" "$TMP_DIR\mysql"
   cd "$TMP_DIR\mysql"
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
-  copy "$PATCH_DIR\mysql-5.6.37-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
+  copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
   mkdir bld > $null
   cd bld
   cmake .. -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small > $null
