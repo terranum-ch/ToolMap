@@ -1,7 +1,12 @@
-#!/usr/bin/env sh
+#!/bin/bash
+
+REBUILD_GDAL=false
 
 # Build GDAL2
-if [ ! "$(ls -A ${HOME}/.gdal)" ]; then
+if [ ! "$(ls -A ${HOME}/.gdal)" ] || [ "$REBUILD_GDAL" = true ]; then
+  if [ "$REBUILD_GDAL" = true ]; then
+    rm -rf ${HOME}/.gdal
+  fi
   wget -q -O gdal.tar.gz "http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz" > /dev/null
   tar -xzf gdal.tar.gz
   cd gdal-2.1.3

@@ -1,7 +1,12 @@
-#!/usr/bin/env sh
+#!/bin/bash
+
+REBUILD_MYSQL=false
 
 # Build MySQL
-if [ ! "$(ls -A ${HOME}/.mysql)" ]; then
+if [ ! "$(ls -A ${HOME}/.mysql)" ] || [ "$REBUILD_MYSQL" = true ]; then
+  if [ "$REBUILD_MYSQL" = true ]; then
+    rm -rf ${HOME}/.mysql
+  fi
   sudo apt-get install -y libncurses5-dev bison
   wget -q -O mysql.tar.gz "https://github.com/mysql/mysql-server/archive/mysql-5.6.36.tar.gz"
   tar -xzf mysql.tar.gz

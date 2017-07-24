@@ -1,15 +1,22 @@
-#!/usr/bin/env sh
+#!/bin/bash
+
+REBUILD_WXPDF=true
+
+if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+  WX_HOME=${HOME}/.wxwidgets
+else
+  WX_HOME=/usr/local
+fi
 
 # Build wxPdfDocument
-if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ]; then
+if [ ! "$(ls -A ${HOME}/.wxpdfdoc)" ] || [ "$REBUILD_WXPDF" = true ]; then
+  if [ "$REBUILD_WXPDF" = true ]; then
+    rm -rf ${HOME}/.wxpdfdoc
+  fi
   wget -q -O wxpdfdoc.tar.gz "https://github.com/utelle/wxpdfdoc/releases/download/v0.9.5/wxpdfdoc-0.9.5.tar.gz" > /dev/null
   tar -xzf wxpdfdoc.tar.gz
   cd wxpdfdoc-0.9.5
-  if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-    ./configure --prefix=${HOME}/.wxpdfdoc --with-wx-prefix=${HOME}/.wxwidgets --enable-unicode --disable-shared --silent
-  else
-    ./configure --prefix=${HOME}/.wxpdfdoc --with-wx-prefix=/usr/local --enable-unicode --disable-shared --silent
-  fi
+  ./configure --prefix=${HOME}/.wxpdfdoc --with-wx-prefix=${WX_HOME} --enable-unicode --disable-shared --silent
   make -j4 > /dev/null
   make install > /dev/null
   cd ..
