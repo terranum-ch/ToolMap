@@ -5,7 +5,7 @@ REBUILD_WXPDF=true
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
   WX_HOME=${HOME}/.wxwidgets
 else
-  WX_HOME=/usr/local
+  WX_HOME=${HOME}/.wxwidgets
 fi
 
 # Build wxPdfDocument
