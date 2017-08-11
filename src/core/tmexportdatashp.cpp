@@ -248,6 +248,7 @@ bool tmExportDataSHP::AddFIDField ()
 bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 {
 	wxASSERT(m_Frame);
+	wxASSERT(!m_Frame->IsEmpty());
 	wxASSERT(m_pDB);
 	wxASSERT(m_pDB->DataBaseHasResults() == true);
 
@@ -508,6 +509,7 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
 bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 {
 	wxASSERT(m_Frame);
+	wxASSERT(!m_Frame->IsEmpty());
 	wxASSERT(m_pDB);
 	wxASSERT(m_pDB->DataBaseHasResults() == true);
 
@@ -576,6 +578,7 @@ bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
 
 bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 	wxASSERT(m_Frame);
+	wxASSERT(!m_Frame->IsEmpty());
 	wxASSERT(m_pDB);
 
     /* create spatial index
@@ -757,6 +760,7 @@ void tmExportDataSHP::_AppendValidToCollection(OGRGeometry * geometry, OGRGeomet
 bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
 {
 	wxASSERT(m_Frame);
+	wxASSERT(!m_Frame->IsEmpty());
 	wxASSERT(m_pDB);
 
 	// get row of data
@@ -1135,7 +1139,7 @@ OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, double size){
 
 /***************************************************************************//**
  @brief Set the frame
- @details If the frame allready exists, it is destroyed and this new frame is
+ @details If the frame already exists, it is destroyed and this new frame is
  used
  @param points array of points creating a polygon
  @param nbvertex number of vertex
@@ -1149,14 +1153,16 @@ void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
 		OGRGeometryFactory::destroyGeometry(m_Frame);
 
 	m_Frame =(OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
-	OGRLineString * myLine;
-	myLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
+	OGRLinearRing * ring;
+	ring = (OGRLinearRing*) OGRGeometryFactory::createGeometry(wkbLinearRing);
 	for (int i = 0; i<nbvertex;i++)
-		myLine->addPoint(points[i].x, points[i].y);
+		ring->addPoint(points[i].x, points[i].y);
 
-	m_Frame->addRing((OGRLinearRing*) myLine);
+	ring->closeRings();
 
-	OGRGeometryFactory::destroyGeometry(myLine);
+	m_Frame->addRing(ring);
+
+	OGRGeometryFactory::destroyGeometry(ring);
 
 }
 

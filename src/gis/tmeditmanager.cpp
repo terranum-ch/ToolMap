@@ -1765,7 +1765,7 @@ wxRealPoint * tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint & clic
 		wxDELETE(myActualGISData);
     }
     
-    wxLogMessage("%ld snapping points found!", mySnapPts.GetCount());    
+    wxLogMessage("%d snapping points found!", (int)mySnapPts.GetCount());    
     if (mySnapPts.GetCount() == 0) {
         return NULL;
     }

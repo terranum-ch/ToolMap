@@ -138,6 +138,7 @@ bool tmRenderer::BitmapSetToWhite(){
 
 bool tmRenderer::BitmapCopyInto(wxBitmap * bmp){
 	wxASSERT(bmp);
+	wxASSERT(m_bmp);
 	wxASSERT(bmp->GetWidth() == m_bmp->GetWidth());
 	wxASSERT(bmp->GetHeight() == m_bmp->GetHeight());
 	

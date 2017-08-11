@@ -2,9 +2,11 @@
 .idea
 *~
 bin/*
+bin-vs/*
 unit_testing/*
 CMakeLists.txt.user
 cmake-build-debug/*
 cmake-build-release/*
 cmake-build-relwithdebinfo/*
 *.dll
+*.log
