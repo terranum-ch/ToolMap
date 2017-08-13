@@ -298,25 +298,55 @@ bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
 		//
 		// Add geometry first and then values
 		//
-		m_Shp->AddGeometry(myCropLine, myOid);
-		OGRGeometryFactory::destroyGeometry(myCropLine);
+		if (myCropLine->getGeometryType() == wkbMultiLineString) {
 
-		// basic attribution
-		if(SetAttributsBasic(myResult)==false){
+			// if multi-lines were generated during intersection with the frame, separate the features.
+			wxLogDebug(_("Multi lines encountered for OID : %ld"), myOid);
+			OGRMultiLineString * myCropedLines = (OGRMultiLineString*)myCropLine;
+			for (int f = 0; f< myCropedLines->getNumGeometries(); f++) {
+				OGRGeometry * myfLine = myCropedLines->getGeometryRef(f)->clone();
+				m_Shp->AddGeometry(myfLine, myOid);
+
+				// basic attribution
+				if (SetAttributsBasic(myResult) == false) {
+					m_Shp->CloseGeometry();
+					wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
+					continue;
+				}
+
+				// advanced attribution
+				if (SetAttributsAdvanced(myResult, myLayer) == false) {
+					m_Shp->CloseGeometry();
+					wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
+					continue;
+				}
+
+				m_Shp->CloseGeometry();
+			}
+			OGRGeometryFactory::destroyGeometry(myCropedLines);
+
+		} else {
+
+			m_Shp->AddGeometry(myCropLine, myOid);
+
+			// basic attribution
+			if (SetAttributsBasic(myResult) == false) {
+				m_Shp->CloseGeometry();
+				wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
+				continue;
+			}
+
+			// advanced attribution
+			if (SetAttributsAdvanced(myResult, myLayer) == false) {
+				m_Shp->CloseGeometry();
+				wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
+				continue;
+			}
+
 			m_Shp->CloseGeometry();
-			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
-			continue;
+			OGRGeometryFactory::destroyGeometry(myCropLine);
 		}
 
-
-		// advanced attribution
-		if (SetAttributsAdvanced(myResult, myLayer)==false) {
-			m_Shp->CloseGeometry();
-			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
-			continue;
-		}
-
-		m_Shp->CloseGeometry();
 	}
 	return true;
 }
