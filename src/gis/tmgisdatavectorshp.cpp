@@ -135,7 +135,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 			wxLogError(_("Unable to add the %s layer, layer is empty"),
 					   GetShortFileName().c_str());
         }
-		return LAYER_SPATIAL_UNKNOWN;
+		return LAYER_EMPTY;
 	}
 
 	// computing layer type (point, line, polygon or unknown)
@@ -153,7 +153,9 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
 	poGeometry = poFeature->GetGeometryRef();
 	if( poGeometry != NULL)
 		{
-			switch (wkbFlatten(poGeometry->getGeometryType()))
+			OGRwkbGeometryType type = wkbFlatten(poGeometry->getGeometryType());
+
+			switch (type)
 			{
 				case wkbLineString:
 					retvalue = LAYER_SPATIAL_LINE;

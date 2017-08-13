@@ -67,6 +67,7 @@ enum TM_GIS_SPATIAL_TYPES
 	LAYER_SPATIAL_POLYGON,
 	LAYER_SPATIAL_RASTER,
 	LAYER_SPATIAL_UNKNOWN,
+	LAYER_EMPTY,
 	LAYER_ERR
 };
 
@@ -77,6 +78,7 @@ const wxString TM_GIS_SPATIAL_TYPES_STRING[] =
     wxTRANSLATE("Polygons"),
     wxTRANSLATE("Raster"),
     wxTRANSLATE("Unknown"),
+	wxTRANSLATE("Empty"),
     wxTRANSLATE("Error getting layers type")
 };
 

@@ -391,7 +391,7 @@ int ListGenReport::GetAllSelectedItem(wxArrayLong & results)
 		
 		
 	}
-	wxLogDebug(_T("Found %ld items selected in list"), results.GetCount());
+	wxLogDebug(_T("Found %d items selected in list"), (int)results.GetCount());
 	return results.GetCount();
 }
 

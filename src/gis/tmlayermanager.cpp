@@ -648,6 +648,11 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
     
     item->SetSpatialType(myLayer->GetSpatialType());
     wxDELETE(myLayer);
+	if (item->GetSpatialType() == LAYER_EMPTY) {
+		wxLogError(_("Layer '%s' is empty and will not be loaded."), item->GetNameDisplay());
+		wxDELETE(item);
+		return false;
+	}
     if (item->GetSpatialType() == LAYER_ERR || item->GetSpatialType() == LAYER_SPATIAL_UNKNOWN){
         wxLogError(_("Spatial type of layer '%s' unknown or not supported!"), item->GetNameDisplay());
         wxDELETE(item);
