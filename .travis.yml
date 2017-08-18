@@ -54,13 +54,7 @@ cache:
   - $HOME/.mysql
 install:
   - chmod +x build/travis/dependencies-${TRAVIS_OS_NAME}.sh
-  - travis_wait 40 build/travis/dependencies-${TRAVIS_OS_NAME}.sh
-  - chmod +x build/travis/build-gdal.sh
-  - travis_wait 30 build/travis/build-gdal.sh
-  - chmod +x build/travis/build-wxpdfdoc.sh
-  - travis_wait build/travis/build-wxpdfdoc.sh
-  - chmod +x build/travis/build-mysql.sh
-  - travis_wait 30 build/travis/build-mysql.sh
+  - travis_wait 40 (timeout 1800 build/travis/dependencies-${TRAVIS_OS_NAME}.sh || true)
 script:
   - chmod +x build/travis/run-${TARGET}.sh
   - travis_wait 40 build/travis/run-${TARGET}.sh
