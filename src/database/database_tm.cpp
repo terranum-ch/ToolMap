@@ -3100,7 +3100,7 @@ long DataBaseTM::GeometrySave(OGRGeometry * geometry, int layertype){
 
 bool DataBaseTM::GeometryUpdate(OGRGeometry * geometry, long oid, int layertype){
     if (geometry == NULL) {
-        return wxNOT_FOUND;
+        return false;
     }
     
     char * myCharGeom = NULL;

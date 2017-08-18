@@ -1173,7 +1173,7 @@ void ToolMapFrame::OnContactUs(wxCommandEvent &event) {
 void ToolMapFrame::OnComponentsInfo (wxCommandEvent & event){
 	lsVersionDlg myDlg (this, wxID_ANY, _("Components"));
 	myDlg.SetBitmapLogo(*_img_icon_toolmap);
-	myDlg.SetCopyright(wxString::Format("(c) TERR@NUM, %d",wxDateTime::Now().GetYear()));
+	myDlg.SetCopyright(wxString::Format("(c) TERRANUM, %d",wxDateTime::Now().GetYear()));
 	myDlg.ShowModal();
 }
 
