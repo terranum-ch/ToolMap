@@ -23,8 +23,8 @@
 
 
 const long WEBUPDATE_CONNECTION_TIMEOUT = 2000;
-const wxString WEBUPDATE_SERVER_DOWNLOAD = "http://www.crealp.ch/index.php?option=com_content&task=view&id=342&Itemid=311";
-const wxString WEBUPDATE_SERVER_UPDATE = "http://www.crealp.ch/down/toolmap/latestversion2.txt";
+const wxString WEBUPDATE_SERVER_DOWNLOAD = "https://github.com/terranum-ch/ToolMap/releases";
+const wxString WEBUPDATE_SERVER_UPDATE = "https://www.terranum.ch/toolmap/latestversion2.txt";
 
 
 const int INFOBAR_DOWNLOAD_BUTTON = wxID_HIGHEST + 10;
