@@ -1180,7 +1180,7 @@ void ToolMapFrame::OnComponentsInfo (wxCommandEvent & event){
 
 
 void ToolMapFrame::OnUserManual(wxCommandEvent & event){
-	wxLaunchDefaultBrowser(_T("http://www.crealp.ch/toolmap/documentation/doku.php"));
+	wxLaunchDefaultBrowser(_T("http://toolmap.readthedocs.io/"));
 }
 
 
