@@ -6,8 +6,8 @@ brew install geos
 brew install cxxtest
 
 # Build libraries
-chmod +x build/travis/build-wxwidgets.sh
-build/travis/build-wxwidgets.sh
+chmod +x build/travis/build-wxwidgets-osx.sh
+build/travis/build-wxwidgets-osx.sh
 chmod +x build/travis/build-gdal.sh
 build/travis/build-gdal.sh
 chmod +x build/travis/build-wxpdfdoc.sh
