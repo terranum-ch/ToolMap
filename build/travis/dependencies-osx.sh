@@ -2,10 +2,9 @@
 
 brew install proj
 brew install geos
-brew install wget
 
-wget -q -O wxpdfdoc.tar.gz "https://github.com/CxxTest/cxxtest/archive/4.3.tar.gz" > /dev/null
-tar -xzf cxxtest-4.3.tar.gz
+wget -q -O cxxtest.tar.gz "https://github.com/CxxTest/cxxtest/archive/4.3.tar.gz"
+tar -xzf cxxtest.tar.gz
 
 # Build libraries
 chmod +x build/travis/build-wxwidgets-osx.sh
