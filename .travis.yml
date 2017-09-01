@@ -35,7 +35,7 @@ matrix:
       branches:
         only: nightly
       before_install:
-        - if [[ "$TRAVIS_BRANCH" != "coverity-scan" ]]; then exit 0; fi
+        - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
         - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
       addons:
         coverity_scan:
