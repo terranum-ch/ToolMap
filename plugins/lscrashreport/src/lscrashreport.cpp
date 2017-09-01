@@ -117,7 +117,7 @@ void lsCrashReport_DLG::_CreateControls() {
 	m_button38 = new wxButton( this, wxID_CANCEL, _("E&xit"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer55->Add( m_button38, 0, wxALL, 5 );
 	
-	bSizer45->Add( bSizer55, 0, wxALIGN_RIGHT|wxEXPAND|wxALL, 5 );
+	bSizer45->Add( bSizer55, 0, wxEXPAND|wxALL, 5 );
 	
 	bSizer43->Add( bSizer45, 1, wxEXPAND, 5 );
 	
