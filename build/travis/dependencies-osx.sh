@@ -6,6 +6,11 @@ brew install geos
 wget -q -O cxxtest.tar.gz "https://github.com/CxxTest/cxxtest/archive/4.3.tar.gz"
 tar -xzf cxxtest.tar.gz
 
+pwd
+ls
+ls cxxtest-4.3
+
+
 # Build libraries
 chmod +x build/travis/build-wxwidgets-osx.sh
 build/travis/build-wxwidgets-osx.sh
