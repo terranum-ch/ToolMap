@@ -103,13 +103,13 @@ void ToolMapApp::OnFatalException(){
     wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
     myConfig->SetPath("..");
 
-    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"), myProxyInfo)==false){
+    if (myCrashReport.SendReportWeb(_T("https://www.terranum.ch/toolmap/crash-reports/upload_file.php"), myProxyInfo)==false){
         wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
         if(myCrashReport.SaveReportFile(myDocPath)==false){
             wxLogError(_("Unable to save the crashreport!"));
             return;
         }
-        wxLogWarning(_("Connection problem! crashreport wasn't sent. crashreport was saved into '%s'\nplease send it manually to lucien.schreiber@crealp.vs.ch"), myDocPath);
+        wxLogWarning(_("Connection problem! crash report wasn't sent. crash report was saved into '%s'\nplease send it manually to toolmap@terranum.ch"), myDocPath);
     }
 }
 
