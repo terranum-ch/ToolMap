@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REBUILD_WXPDF=true
+REBUILD_WXPDF=false
 
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
   WX_HOME=${HOME}/.wxwidgets
