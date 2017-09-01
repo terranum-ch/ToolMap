@@ -351,6 +351,7 @@ bool lsCrashReport::SendReportWeb(const wxString & serverurl, const wxString & p
     CURLcode myCurlError = curl_global_init(CURL_GLOBAL_ALL);
     CURL * easyhandle = curl_easy_init();
     if (easyhandle == NULL) {
+        wxLogError("Easy Handle is null");
         return false;
     }
     
