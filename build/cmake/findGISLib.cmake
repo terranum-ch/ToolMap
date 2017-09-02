@@ -14,8 +14,17 @@
 
 SET (SEARCH_GDAL CACHE BOOL "Sould we search for GDAL ?" )
 SET (SEARCH_GEOS CACHE BOOL "Sould we search for GEOS ?" )
+SET (SEARCH_GIS_LIB_PATH CACHE PATH "Path to a common folder containing GDAL, GEOS, PROJ and SQLITE")
 SET (SEARCH_GDAL_PATH CACHE PATH "Path to GDAL base")
 SET (SEARCH_GEOS_PATH CACHE PATH "Path to GEOS base")
+SET (SEARCH_PROJ_PATH CACHE PATH "Path to PROJ base")
+SET (SEARCH_SQLITE_PATH CACHE PATH "Path to SQLITE base")
+
+if (SEARCH_GIS_LIB_PATH)
+	SET (SEARCH_GDAL_PATH ${SEARCH_GIS_LIB_PATH})
+	SET (SEARCH_GEOS_PATH ${SEARCH_GIS_LIB_PATH})
+	SET (SEARCH_PROJ_PATH ${SEARCH_GIS_LIB_PATH})
+endif(SEARCH_GIS_LIB_PATH)
 
 # we search for geos lib
 IF (SEARCH_GEOS)
@@ -23,26 +32,24 @@ IF (SEARCH_GEOS)
 	# if windows and search geos
 	# using C API of GEOS:
 	IF (WIN32)
-		SET (SEARCH_GEOS_LIB_PATH CACHE PATH "Path to the GEOS libs if not with GDAL")
-		
 		FIND_PATH(GEOS_C_INCLUDE_DIR geos_c.h
   				HINTS			
-				${SEARCH_GEOS_LIB_PATH}/capi
+				${SEARCH_GEOS_PATH}/capi
   				NO_DEFAULT_PATH)
 				
 		
 		FIND_PATH(GEOS_INCLUDE_DIR geos.h
   			HINTS			
-			${SEARCH_GEOS_LIB_PATH}/source/headers
-			${SEARCH_GEOS_LIB_PATH}/include 
+			${SEARCH_GEOS_PATH}/source/headers
+			${SEARCH_GEOS_PATH}/include
   			NO_DEFAULT_PATH)
 		
   		FIND_LIBRARY(GEOS_LIBRARIES
 	  		geos_c_i NAMES geos_c
-	  		HINTS ${SEARCH_GEOS_LIB_PATH}/source
-			${SEARCH_GEOS_LIB_PATH}/src
-			${SEARCH_GEOS_LIB_PATH}
-			${SEARCH_GEOS_LIB_PATH}/lib/Release
+	  		HINTS ${SEARCH_GEOS_PATH}/source
+			${SEARCH_GEOS_PATH}/src
+			${SEARCH_GEOS_PATH}
+			${SEARCH_GEOS_PATH}/lib/Release
 			NO_DEFAULT_PATH)
 	
 	# if unix / mac and search geos
@@ -79,7 +86,6 @@ IF (SEARCH_GEOS)
   ## IF GEOS PARAMETERS ARE DEFINED, USE THEM
    IF(GEOS_INCLUDE_DIR)
     INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
-    #INCLUDE_DIRECTORIES(${SEARCH_GEOS_LIB_PATH}/source/headers)
     MESSAGE (STATUS "GEOS include is ${GEOS_INCLUDE_DIR}")
   ENDIF(GEOS_INCLUDE_DIR)
  
@@ -114,14 +120,12 @@ IF (SEARCH_GDAL)
 		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
   				HINTS ${SEARCH_GDAL_PATH}/include
 			${SEARCH_GDAL_PATH}
-			${SEARCH_GIS_LIB_PATH}/include
                 NO_DEFAULT_PATH)
   		
   		FIND_LIBRARY(GDAL_LIBRARIES
 	  		gdal_i
 	  		HINTS ${SEARCH_GDAL_PATH}/lib
 		${SEARCH_GDAL_PATH}
-		${SEARCH_GIS_LIB_PATH}/lib
   			NO_DEFAULT_PATH)
 	
 	# if unix / mac and search geos

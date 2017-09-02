@@ -62,14 +62,14 @@ ENDIF(SEARCH_GDAL)
 
 
 
-IF(SEARCH_CURL_LIB_PATH)
+IF(SEARCH_CURL_PATH)
 	ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 		COMMAND mkdir -p 	${BUNDLELIBPATH}
-		COMMAND cp ${SEARCH_CURL_LIB_PATH}/lib/libcurl.dylib ${BUNDLELIBPATH}
+		COMMAND cp ${SEARCH_CURL_PATH}/lib/libcurl.dylib ${BUNDLELIBPATH}
 		COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libcurl.dylib ${BUNDLELIBPATH}/libcurl.dylib
-		COMMAND install_name_tool -change ${SEARCH_CURL_LIB_PATH}/lib/libcurl.${CURL_VERSION}.dylib @executable_path/../${LIBNAME}/libcurl.dylib ${BUNDLELIBPATH}/libgdal.dylib		
-		COMMAND install_name_tool -change ${SEARCH_CURL_LIB_PATH}/lib/libcurl.${CURL_VERSION}.dylib @executable_path/../${LIBNAME}/libcurl.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+		COMMAND install_name_tool -change ${SEARCH_CURL_PATH}/lib/libcurl.${CURL_VERSION}.dylib @executable_path/../${LIBNAME}/libcurl.dylib ${BUNDLELIBPATH}/libgdal.dylib
+		COMMAND install_name_tool -change ${SEARCH_CURL_PATH}/lib/libcurl.${CURL_VERSION}.dylib @executable_path/../${LIBNAME}/libcurl.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	COMMENT "Copying and updating CURL libs"
 	)
-ENDIF(SEARCH_CURL_LIB_PATH)
+ENDIF(SEARCH_CURL_PATH)
 
