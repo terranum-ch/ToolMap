@@ -1,15 +1,13 @@
 # INSTALLER
-# use hg version for package number
+# use git version for package number
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
-set(INSTALL_DIR_BIN bin)
-set(INSTALL_DIR_SHARE share/ToolMap)
-if (WIN32 OR APPLE)
-    set(INSTALL_DIR_BIN .)
-    set(INSTALL_DIR_SHARE .)
-endif (WIN32 OR APPLE)
+# install ToolMap (application)
+install (TARGETS ${CMAKE_PROJECT_NAME}
+        BUNDLE DESTINATION . COMPONENT Runtime
+        RUNTIME DESTINATION bin COMPONENT Runtime)
 
-install ( TARGETS ${CMAKE_PROJECT_NAME} DESTINATION ${INSTALL_DIR_BIN})
+# install GPL licence file
 install ( FILES install/COPYING DESTINATION .)
 
 if (WIN32)
@@ -30,14 +28,12 @@ endif (WIN32)
 # TODO: errmsg.sys should also be installed
 
 # COMMON PROPERTIES
-
 set(CPACK_PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ToolMap - open source tool for GIS creation")
 set(CPACK_PACKAGE_VENDOR "Terranum")
 set(CPACK_STRIP_FILES ON) # tell cpack to strip all debug symbols from all files
 
 # IDENTIFY ARCHITECTURE
-
 set(CPACK_PACKAGE_ARCH "unkown-architecture")
 if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
     if(CMAKE_CL_64)
@@ -76,7 +72,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
 endif(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
 
 # OS SPECIFIC PROPERTIES
-
 if (APPLE)
     set(CPACK_GENERATOR "DragNDrop")
     set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${CPACK_PACKAGE_VERSION}")
@@ -126,6 +121,5 @@ IF (UNIX AND NOT APPLE)
     SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
     SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 ENDIF(UNIX AND NOT APPLE)
-
 
 include(CPack)
