@@ -10,14 +10,31 @@ install (TARGETS ${CMAKE_PROJECT_NAME}
 # install GPL licence file
 install ( FILES install/COPYING DESTINATION .)
 
+# search dll to install
+if (GDAL_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${GDAL_DLL_NAME})
+endif (GDAL_DLL_NAME)
+
+if (GEOS_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${GEOS_DLL_NAME})
+endif (GEOS_DLL_NAME)
+
+if (GEOS_C_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${GEOS_C_DLL_NAME})
+endif (GEOS_C_DLL_NAME)
+
+if (PROJ_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${PROJ_DLL_NAME})
+endif (PROJ_DLL_NAME)
+
+if (SQLITE_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${SQLITE_DLL_NAME})
+endif (SQLITE_DLL_NAME)
+
 if (WIN32)
     install (
             PROGRAMS
-            ${GDAL_DLL_NAME}
-            ${GEOS_DLL_NAME}
-            ${GEOS_C_DLL_NAME}
-            ${PROJ_DLL_NAME}
-            ${SQLITE_DLL_NAME}
+            ${LIB_TO_INSTALL}
             # libcurl ??????
             DESTINATION .
     )
