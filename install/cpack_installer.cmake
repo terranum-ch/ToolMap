@@ -59,10 +59,6 @@ if (WIN32)
     # install webfiles
     # this part is a partial duplicates of copywebfiles.cmake
     FILE (GLOB WEBFILES "resource/web/*.js" "resource/web/*.html")
-    foreach(MYFULLFILE IN LISTS WEBFILES)
-        GET_FILENAME_COMPONENT(MYFILE ${MYFULLFILE} NAME)
-        list(APPEND WEBFILES_NAME_ONLY ${MYFILE})
-    endforeach()
     install(FILES
             ${WEBFILES}
             DESTINATION share/toolmap)
