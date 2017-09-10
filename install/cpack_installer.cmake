@@ -3,14 +3,9 @@
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
 # install ToolMap (application)
-set(RUNTIME_DESTINATION bin)
-if(WIN32)
-    set(RUNTIME_DESTINATION .)
-endif(WIN32)
-
 install (TARGETS ${CMAKE_PROJECT_NAME}
         BUNDLE DESTINATION .
-        RUNTIME DESTINATION ${RUNTIME_DESTINATION})
+        RUNTIME DESTINATION bin)
 
 # install GPL licence file
 install ( FILES install/COPYING DESTINATION .)
@@ -44,18 +39,36 @@ if (CURL_DLL_NAME)
     list(APPEND LIB_TO_INSTALL ${CURL_DLL_NAME})
 endif (CURL_DLL_NAME)
 
+
 if (WIN32)
+    # install program and dlls
     install (
             PROGRAMS
             ${LIB_TO_INSTALL}
-            DESTINATION .
+            DESTINATION bin
     )
+
+    # install errmsg.sys
+    if(NOT MYSQL_ERRMSG_FILE)
+        message(FATAL_ERROR "errmsg.sys not found ! Installer will not work!")
+    endif()
+    install(FILES
+            ${MYSQL_ERRMSG_FILE}
+            DESTINATION bin/mysql)
+
+    # install webfiles
+    # this part is a partial duplicates of copywebfiles.cmake
+    FILE (GLOB WEBFILES "resource/web/*.js" "resource/web/*.html")
+    foreach(MYFULLFILE IN LISTS WEBFILES)
+        GET_FILENAME_COMPONENT(MYFILE ${MYFULLFILE} NAME)
+        list(APPEND WEBFILES_NAME_ONLY ${MYFILE})
+    endforeach()
+    install(FILES
+            ${WEBFILES}
+            DESTINATION share/toolmap)
 endif (WIN32)
 
-# TODO: Webfiles should also be installed into share...
-# TODO: errmsg.sys should also be installed
-
-# COMMON PROPERTIES
+ # COMMON PROPERTIES
 set(CPACK_PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ToolMap - open source tool for GIS creation")
 set(CPACK_PACKAGE_VENDOR "Terranum")
@@ -117,7 +130,7 @@ if (WIN32)
     set(CPACK_NSIS_DISPLAY_NAME "ToolMap")
     set(CPACK_NSIS_CONTACT "Terranum toolmap@terranum.ch")
     set(CPACK_NSIS_HELP_LINK "www.terranum.ch")
-    set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+    set(CPACK_NSIS_EXECUTABLES_DIRECTORY "bin")
     set(CPACK_NSIS_URL_INFO_ABOUT "www.terranum.ch")
     set(CPACK_CREATE_DESKTOP_LINKS "ToolMap")
     set(CPACK_NSIS_COMPRESSOR "lzma")
