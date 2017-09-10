@@ -3,9 +3,14 @@
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
 # install ToolMap (application)
+set(RUNTIME_DESTINATION bin)
+if(WIN32)
+    set(RUNTIME_DESTINATION .)
+endif(WIN32)
+
 install (TARGETS ${CMAKE_PROJECT_NAME}
-        BUNDLE DESTINATION . COMPONENT Runtime
-        RUNTIME DESTINATION bin COMPONENT Runtime)
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION ${RUNTIME_DESTINATION})
 
 # install GPL licence file
 install ( FILES install/COPYING DESTINATION .)
@@ -31,16 +36,22 @@ if (SQLITE_DLL_NAME)
     list(APPEND LIB_TO_INSTALL ${SQLITE_DLL_NAME})
 endif (SQLITE_DLL_NAME)
 
+if (MYSQL_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${MYSQL_DLL_NAME})
+endif (MYSQL_DLL_NAME)
+
+if (CURL_DLL_NAME)
+    list(APPEND LIB_TO_INSTALL ${CURL_DLL_NAME})
+endif (CURL_DLL_NAME)
+
 if (WIN32)
     install (
             PROGRAMS
             ${LIB_TO_INSTALL}
-            # libcurl ??????
             DESTINATION .
     )
 endif (WIN32)
 
-# TODO: Libcurl should also be copied ?
 # TODO: Webfiles should also be installed into share...
 # TODO: errmsg.sys should also be installed
 
@@ -66,7 +77,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
     elseif(WIN32)
         set(CPACK_PACKAGE_ARCH "win32")
     endif()
-    message("${CPACK_PACKAGE_ARCH} architecture")
+    message(STATUS "${CPACK_PACKAGE_ARCH} architecture")
 endif(${CMAKE_SYSTEM_NAME} MATCHES Windows)
 
 
