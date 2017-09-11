@@ -62,6 +62,10 @@ if (WIN32)
     install(FILES
             ${WEBFILES}
             DESTINATION share/toolmap)
+
+    # install Microsoft Visual Studio librairies (MSVCP140.DLL, etc.)
+    include(InstallRequiredSystemLibraries)
+    INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
 endif (WIN32)
 
  # COMMON PROPERTIES
