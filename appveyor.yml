@@ -27,3 +27,22 @@ build_script:
 test_script:
   - cd C:\projects\toolmap\bin\test
   - ctest -V
+
+after_test:
+  - cpack
+
+artifacts:
+  # pushing all *.exe files in build directory recursively
+  - path: '*.exe'
+
+deploy:
+  - provider: FTP
+    protocol: ftp
+    host: euso.ftp.infomaniak.com
+    username: euso_toolmap
+    password:
+      secure: WWmGrLRonuGbVQ8y6bvsmCQha3YggTiPsAAs0egS/g0=
+    artifact: /.*\.exe/
+    on:
+      branch: nightly
+    
