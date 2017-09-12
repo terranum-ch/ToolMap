@@ -5,6 +5,10 @@ image: Visual Studio 2017
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   WXWIN: C:\projects\libs\wxwidgets
+
+  # multiprocessor compilation
+  CFLAGS: /MP
+  CXXFLAGS: /MP
   
 cache:
   - C:\projects\libs
@@ -17,9 +21,28 @@ build_script:
   - cd C:\projects\toolmap
   - mkdir bin
   - cd bin
-  - cmake -G "Visual Studio 15 2017 Win64" -DSEARCH_GIS_LIB_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_LIB_PATH=C:\projects\libs\geos -DSEARCH_PROJ_LIB_PATH=C:\projects\libs\proj -DSEARCH_CURL_LIB_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\libs\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\libs\cxxtest\bin\cxxtestgen ..
+  - cmake -G "Visual Studio 15 2017 Win64" -DSEARCH_GDAL_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_PATH=C:\projects\libs\geos -DSEARCH_PROJ_PATH=C:\projects\libs\proj -DSEARCH_CURL_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\libs\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\libs\cxxtest\bin\cxxtestgen ..
   - cmake --build . --config relwithdebinfo > nul
 
 test_script:
   - cd C:\projects\toolmap\bin\test
   - ctest -V
+
+after_test:
+  - cpack
+
+artifacts:
+  # pushing all *.exe files in build directory recursively
+  - path: '*.exe'
+
+deploy:
+  - provider: FTP
+    protocol: ftp
+    host: euso.ftp.infomaniak.com
+    username: euso_toolmap
+    password:
+      secure: WWmGrLRonuGbVQ8y6bvsmCQha3YggTiPsAAs0egS/g0=
+    artifact: /.*\.exe/
+    on:
+      branch: nightly
+    

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REBUILD_WX=true
+REBUILD_WX=false
 
 # Build wxWidgets
 if [ ! "$(ls -A ${HOME}/.wxwidgets)" ] || [ "$REBUILD_WX" = true ]; then

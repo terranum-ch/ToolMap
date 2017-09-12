@@ -19,9 +19,9 @@ IF(WIN32)
           HINTS "${CURL_INCLUDE_DIR}/../lib/DLL-Release"
           "${CURL_INCLUDE_DIR}/../lib"
           "${CURL_INCLUDE_DIR}/../bin"
-          "${SEARCH_CURL_LIB_PATH}"
-          "${SEARCH_CURL_LIB_PATH}/lib"
-          "${SEARCH_CURL_LIB_PATH}/bin"
+          "${SEARCH_CURL_PATH}"
+          "${SEARCH_CURL_PATH}/lib"
+          "${SEARCH_CURL_PATH}/bin"
           NO_DEFAULT_PATH)
 
   IF(NOT CURL_DLL_NAME)

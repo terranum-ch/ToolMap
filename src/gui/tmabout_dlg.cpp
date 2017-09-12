@@ -46,7 +46,7 @@ tmAboutDLG::~tmAboutDLG(){
 
 wxString tmAboutDLG::GetVersionText()
 {
-	wxString myVersion = _("version ") + g_ProgMajorVersion + ".";
+	wxString myVersion = _("version ") + VERSION_MAJOR + "." + VERSION_MINOR + ".";
 	myVersion.Append(lsVERSION_SOFT_VERSION);
 	myVersion.Append(_T(" - "));
 	myVersion.Append(g_CodeName);
