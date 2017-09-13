@@ -29,7 +29,8 @@ test_script:
   - ctest -V
 
 after_test:
-  - cpack
+  - cpack -C relwithdebinfo
+  - dir
 
 artifacts:
   # pushing all *.exe files in build directory recursively
