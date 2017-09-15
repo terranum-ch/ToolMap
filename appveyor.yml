@@ -34,8 +34,9 @@ after_test:
   - dir
 
 artifacts:
-  # pushing all *.exe files in build directory recursively
-  - path: '*.exe'
+  - path: '**\*Setup.exe'
+    name: ToolMapInstaller
+    type: file
 
 deploy:
   - provider: FTP
@@ -44,7 +45,7 @@ deploy:
     username: euso_toolmap
     password:
       secure: WWmGrLRonuGbVQ8y6bvsmCQha3YggTiPsAAs0egS/g0=
-    artifact: /.*\.exe/
+    artifact: ToolMapInstaller
     on:
       branch: nightly
     
