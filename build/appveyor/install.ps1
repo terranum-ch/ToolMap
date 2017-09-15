@@ -4,13 +4,14 @@ $LIB_DIR="C:\projects\libs"
 $PATCH_DIR="C:\projects\toolmap\build\appveyor\patches"
 $MSC_VER=1911
 $ON_APPVEYOR=$true
+$WITH_DEBUG_LIBS=$false
 
 # Force rebuilding some libraries
-$REBUILD_WX=$true
-$REBUILD_WXPDF=$true
-$REBUILD_PROJ=$true
-$REBUILD_GEOS=$true
-$REBUILD_GDAL=$true
+$REBUILD_WX=$false
+$REBUILD_WXPDF=$false
+$REBUILD_PROJ=$false
+$REBUILD_GEOS=$false
+$REBUILD_GDAL=$false
 $REBUILD_MYSQL=$true
 $REBUILD_CURL=$true
 
@@ -82,7 +83,9 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
   7z x wxwidgets.zip -o"$TMP_DIR\wxwidgets" > $null
   cd "$TMP_DIR\wxwidgets\build\msw"
   nmake -f makefile.vc BUILD=release UNICODE=1 MONOLITHIC=1 > $null
-  nmake -f makefile.vc BUILD=debug UNICODE=1 MONOLITHIC=1 > $null
+  if ($WITH_DEBUG_LIBS) {
+    nmake -f makefile.vc BUILD=debug UNICODE=1 MONOLITHIC=1 > $null
+  }
   move "$TMP_DIR\wxwidgets\include" "$LIB_DIR\wxwidgets\include"
   copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
   move "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h_old"
@@ -108,8 +111,10 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   7z x wxpdfdoc.zip -o"$TMP_DIR" > $null
   move "$TMP_DIR\wxpdfdoc-*" "$TMP_DIR\wxpdfdoc"
   cd "$TMP_DIR\wxpdfdoc\build"
-  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
   nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0 > $null
+  if ($WITH_DEBUG_LIBS) {
+    nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
+  }
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
 }
@@ -156,7 +161,9 @@ if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
   copy "$PATCH_DIR\geos-3.6.1-nmake.opt" "$TMP_DIR\geos\nmake.opt"
   cd "$TMP_DIR\geos"
   nmake -f makefile.vc WIN64=YES > $null
-  nmake -f makefile.vc WIN64=YES BUILD_DEBUG=YES > $null
+  if ($WITH_DEBUG_LIBS) {
+    nmake -f makefile.vc WIN64=YES BUILD_DEBUG=YES > $null
+  }
   move "$TMP_DIR\geos\src" "$LIB_DIR\geos\src"
   move "$TMP_DIR\geos\include" "$LIB_DIR\geos\include"
   move "$TMP_DIR\geos\capi" "$LIB_DIR\geos\capi"
