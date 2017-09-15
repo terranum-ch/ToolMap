@@ -2,17 +2,17 @@
 $TMP_DIR="C:\projects\tmp"
 $LIB_DIR="C:\projects\libs"
 $PATCH_DIR="C:\projects\toolmap\build\appveyor\patches"
-$MSC_VER=1910
+$MSC_VER=1911
 $ON_APPVEYOR=$true
 
 # Force rebuilding some libraries
-$REBUILD_WX=$false
-$REBUILD_WXPDF=$false
-$REBUILD_PROJ=$false
-$REBUILD_GEOS=$false
-$REBUILD_GDAL=$false
-$REBUILD_MYSQL=$false
-$REBUILD_CURL=$false
+$REBUILD_WX=$true
+$REBUILD_WXPDF=$true
+$REBUILD_PROJ=$true
+$REBUILD_GEOS=$true
+$REBUILD_GDAL=$true
+$REBUILD_MYSQL=$true
+$REBUILD_CURL=$true
 
 # Setup VS environment
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
