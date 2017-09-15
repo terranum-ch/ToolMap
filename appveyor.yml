@@ -31,10 +31,9 @@ test_script:
 after_test:
   - cd C:\projects\toolmap\bin
   - cpack -C relwithdebinfo
-  - dir
 
 artifacts:
-  - path: '**\*Setup.exe'
+  - path: 'bin\*Setup.exe'
     name: ToolMapInstaller
     type: file
 
