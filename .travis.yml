@@ -7,6 +7,8 @@ matrix:
       - TARGET=tests-osx
       - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=true
+      - secure: "LsH0G0us3VsMU0YN2oxOFzOdfC41xgqxVunRrCgubdDTYoTWPKnbgNmTTOCOFsNT8lQtiHkFY1iv256XqiCDEHoGt5hqNSx6z0A0TN1gP0FOc4zCyOo9wZ2wZQ9gCj1N14BxBLgooMxDNYe6lkH7eut7hFZWt5IpB+mU5V2RT1VZQKdZKO3DzMY0t3pvRGiINSNr5/R4YF+SJudbGu6tKvY0gb+/FUP2Ez9GDc2+z3XTmGgJLKXSX59evH0FwxYHG0e2prIw5lJQF2nSwMb6zUqdh2vH3UzIHhY5XsQdxLMvZOOAwDshLI3vHZAx5WAvs6ocjG7l16a4mUK+Eig3somutcVEvsLNJLKcSRHZiBZNzrGeXp/v8CUNj+2w0ZDrcj/hqc4ztU+yKDKQNG5UGZPD3SnmK4JzTjTfSL3+egd492MnxTYfRORE1u2IXG8/GkORykq3FH0ZQXsyE4uY5G0nkuY5enm7TGDBCC8qgItAKN1LVLOkld6v8pCGPUhKbRIV33aFo5ZpOglKPxQwKBHNGSMtjL672Q1dL9wOBVZIW1+0NbfV0U64jY3lxenSIc4d4ycLobzvb61h8fLTKsg+j2rRGaFny4dq/ZgFqK+IheqKyNFnDuUQynCjGWrLrQZ1/75uNbmCW2+O08JyU7fpx9ehIW269N8iX/tXBh0="
+      - secure: "bP5nk6d283Akp5tAqT0ZhkZ3XGY/fUi8RKMkQeCGxctlfy3C2hHw5JjlRfTSDcCH+NCXYPNwLAqyAbliGSOvRkhnYzT6VqgOi2+6hiCmYZt0pCCRzJdJ99XRik0wHR+sSmOi4dmG5c66kuYm0/jl6JVxu/phXgIndNk0GuBb4Utp5kBzcjfHpK8d/8UIwQI5iZCGC3OfDDCY8EHxvoLuIvQ1ramDRiZsYzRudoqIVbegu9BHDVCwH6Hs0mXUL2JM+m6CA2y/5nSVmGbdQl68j9ykVZNUCXxXdpcgOpwvkERj99LQ93bVyyfuwCOf5JWSIvLufgCKm9iJh9f9udi1zMVNGck6AzAWZ2hYW+LWcDqTpExRoa1IbDSXBI3VvlF4Vx9/+jRjJAoa6KIXhoTnp0q6rKbzVTApidMbV/ebHzd4kGnawbo1OjFH4T/61yHTyvNfV34mEMa/H5MIUgb+BUzKOnT934L6LhCR/9xoNGWX3FjEGJikEO8A9gN3guUIInkZ28BEkmYfnHdi9jxS8/rJi+YQLns2klr93bPyxp6TDGi7gRqEAcjJrxZaLedwaCg9I0Orv6wodew14+dMS0jx3EXLjBkjS3yTOKlhhStVi/ROo0vQK3LqkSsLKAUA5gNGn7sMHhnuZwyw2TZgQQyh9IsTsKYNHWi45gfHsmw="
       os: osx
       osx_image: xcode7.3
     - env:
@@ -59,3 +61,8 @@ script:
   - chmod +x build/travis/run-${TARGET}.sh
   - travis_wait 40 build/travis/run-${TARGET}.sh
   - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
+after_success:
+  - cpack
+  - ls
+  - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
+  - "curl --ftp-create-dirs -T *.dmg -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"
