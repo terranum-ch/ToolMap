@@ -29,6 +29,7 @@ test_script:
   - ctest -V
 
 after_test:
+  - cd C:\projects\toolmap\bin
   - cpack -C relwithdebinfo
   - dir
 
