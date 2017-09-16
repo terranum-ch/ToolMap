@@ -62,7 +62,7 @@ script:
   - travis_wait 40 build/travis/run-${TARGET}.sh
   - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
 after_success:
-  - cd $HOME/build/terranum-ch/ToolMap/
+  - cd $HOME/build/terranum-ch/ToolMap/bin
   - cpack
   - ls
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
