@@ -5,21 +5,16 @@ matrix:
   include:
     - env:
       - TARGET=tests-osx
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=true
-      - secure: "LsH0G0us3VsMU0YN2oxOFzOdfC41xgqxVunRrCgubdDTYoTWPKnbgNmTTOCOFsNT8lQtiHkFY1iv256XqiCDEHoGt5hqNSx6z0A0TN1gP0FOc4zCyOo9wZ2wZQ9gCj1N14BxBLgooMxDNYe6lkH7eut7hFZWt5IpB+mU5V2RT1VZQKdZKO3DzMY0t3pvRGiINSNr5/R4YF+SJudbGu6tKvY0gb+/FUP2Ez9GDc2+z3XTmGgJLKXSX59evH0FwxYHG0e2prIw5lJQF2nSwMb6zUqdh2vH3UzIHhY5XsQdxLMvZOOAwDshLI3vHZAx5WAvs6ocjG7l16a4mUK+Eig3somutcVEvsLNJLKcSRHZiBZNzrGeXp/v8CUNj+2w0ZDrcj/hqc4ztU+yKDKQNG5UGZPD3SnmK4JzTjTfSL3+egd492MnxTYfRORE1u2IXG8/GkORykq3FH0ZQXsyE4uY5G0nkuY5enm7TGDBCC8qgItAKN1LVLOkld6v8pCGPUhKbRIV33aFo5ZpOglKPxQwKBHNGSMtjL672Q1dL9wOBVZIW1+0NbfV0U64jY3lxenSIc4d4ycLobzvb61h8fLTKsg+j2rRGaFny4dq/ZgFqK+IheqKyNFnDuUQynCjGWrLrQZ1/75uNbmCW2+O08JyU7fpx9ehIW269N8iX/tXBh0="
-      - secure: "bP5nk6d283Akp5tAqT0ZhkZ3XGY/fUi8RKMkQeCGxctlfy3C2hHw5JjlRfTSDcCH+NCXYPNwLAqyAbliGSOvRkhnYzT6VqgOi2+6hiCmYZt0pCCRzJdJ99XRik0wHR+sSmOi4dmG5c66kuYm0/jl6JVxu/phXgIndNk0GuBb4Utp5kBzcjfHpK8d/8UIwQI5iZCGC3OfDDCY8EHxvoLuIvQ1ramDRiZsYzRudoqIVbegu9BHDVCwH6Hs0mXUL2JM+m6CA2y/5nSVmGbdQl68j9ykVZNUCXxXdpcgOpwvkERj99LQ93bVyyfuwCOf5JWSIvLufgCKm9iJh9f9udi1zMVNGck6AzAWZ2hYW+LWcDqTpExRoa1IbDSXBI3VvlF4Vx9/+jRjJAoa6KIXhoTnp0q6rKbzVTApidMbV/ebHzd4kGnawbo1OjFH4T/61yHTyvNfV34mEMa/H5MIUgb+BUzKOnT934L6LhCR/9xoNGWX3FjEGJikEO8A9gN3guUIInkZ28BEkmYfnHdi9jxS8/rJi+YQLns2klr93bPyxp6TDGi7gRqEAcjJrxZaLedwaCg9I0Orv6wodew14+dMS0jx3EXLjBkjS3yTOKlhhStVi/ROo0vQK3LqkSsLKAUA5gNGn7sMHhnuZwyw2TZgQQyh9IsTsKYNHWi45gfHsmw="
       os: osx
       osx_image: xcode7.3
     - env:
       - TARGET=tests-linux
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=true
       os: linux
       dist: trusty
     - env:
       - TARGET=coverage
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=false
       os: linux
       dist: trusty
@@ -29,7 +24,6 @@ matrix:
             - lcov
     - env:
       - TARGET=coverity
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=false
       - secure: "G+B9LCybE2pbkARBDR/AI3iIrktX2ru5AdRrEXWD58Gm0cAHZeuU3Oj8sXEAKDMBYxFtUGHIYR3x5xicQRFwuXfmHnYrpuHOT21Wc9VvWOEQXip7TLh9J/jdpmDOvX+0bV8helr6mWjaP3+wzvuqPm/PtbkHHjomL7H7yfLfNSy6HMqB2/MsZhLfpbfJUl0DyUTTHDi94Nx/zC8FiZ7ZAK3z55nhZMbGaN02B/sm4m3L/Tlj98Z8fGHyxahCwajy6LOQjTUQkZP5F6iMgzlOixUMq5Uv8lGXcxfb9jXWipk/8sasB116VNjF6H42UijohL+gHA4XqT7wVtzwtaIiW0KqGSkN/eWd36r+SATm4QPlYeWz/V7I8j9US5kPRvIEuVgWSa4hluwZj+zlWHIxeDQOoKtLhUWKMnODKE8Lt0WQh8VjN3wS7NAFZkAt9BLlLKx2qL/0l8A57LyK+KRQqiOFar7xuSeHpbbEal6gd8gx7dmGN6zZ88cXx4oetIwLZwtKGSBJGUGhfgBfDPN2Edy8zuoUaLnlbXBF8TZYxV13h6rnf7GpzlXZpWKin6AOBW0ARkHVzX1B5HBn3gB/zAd+emfkK/k0Ot5kuQrQldLm+48eS++rWJCaTTOTeemITYlDlwRNQFew7aJ9MCYBxWuzD4dE42CFoukdp/Lyzac="
       os: linux
@@ -66,4 +60,4 @@ after_success:
   - sudo cpack
   - ls
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
-  - "curl --ftp-create-dirs -T *.dmg -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"
+  - "curl --ftp-create-dirs -T $(find *.dmg) -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"
