@@ -62,7 +62,8 @@ script:
   - travis_wait 40 build/travis/run-${TARGET}.sh
   - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
 after_success:
-  - cpack
+  - cd $HOME/build/terranum-ch/ToolMap/bin
+  - sudo cpack
   - ls
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
   - "curl --ftp-create-dirs -T *.dmg -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"
