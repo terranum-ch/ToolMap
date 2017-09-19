@@ -492,38 +492,44 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 void tmLayerManager::AddWebLayer (){
-	wxFileDialog openFileDialog(m_Parent, _("Open XML file"), "", "", "XML files (*.xml)|*.xml", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_CANCEL){
-		return;
-	}
+    // list WMS xml files in share/toolmap
+    wxString myWebPagePathText = _T("/../../share/toolmap");
+#ifdef __WXMSW__
+    myWebPagePathText.Replace(_T("/"), _T("\\"));
+#endif
+    wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath() +  myWebPagePathText);
+    myWebPath.Normalize();
 
-	wxFileName myWebPath;
-	myWebPath.Assign(openFileDialog.GetPath());
-	if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
-		wxLogError(_("Loading: %s failed"), myWebPath.GetName());
-	}
-
-	// TODO: Remove the code bellow when web raster 2.0 are working!
-	/*
-	wxString myWebPages[] = {
-        _T("google satellite"), _T("google streets"),
-        _T("bing satellite"), _T("bing streets")
-    };
-    wxSingleChoiceDialog myDlg (m_Parent, _("Select web layer to add:"), _("Add web layer"), sizeof(myWebPages) / sizeof(wxString), &myWebPages[0]);
-    if (myDlg.ShowModal() != wxID_OK) {
+    if (myWebPath.Exists() == false) {
+        wxLogError(_("WMS directory didn't exists! Try re-installing ToolMap"));
         return;
     }
-    
-    wxString mySelectedName = myDlg.GetStringSelection();
-    mySelectedName.Replace(_T(" "), _T("_"));
-    mySelectedName.Append(_T(".html"));
-    
-    wxFileName myWebPath;
-    myWebPath.Assign(mySelectedName);
-    if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
-        wxLogError(_("Loading: %s failed"), myWebPath.GetName());
+
+    // create the list with all WMS files
+    wxArrayString myWMSFilesFullPath;
+    wxDir::GetAllFiles(myWebPath.GetFullPath(), &myWMSFilesFullPath, _T("*.xml"), wxDIR_FILES);
+    if (myWMSFilesFullPath.GetCount() == 0){
+        wxLogError(_("No WMS files found! Try re-installing ToolMap!"));
+        return;
     }
-    */
+
+    wxArrayString myWMSFilesShortNames;
+    for (unsigned int i = 0; i < myWMSFilesFullPath.GetCount(); ++i) {
+        wxString myFileName = wxEmptyString;
+        wxFileName::SplitPath(myWMSFilesFullPath.Item(i), NULL, NULL, &myFileName, NULL);
+        myFileName.Replace(_T("_"), _T(" "));
+        myWMSFilesShortNames.Add(myFileName);
+    }
+
+    wxMultiChoiceDialog myDlg (m_Parent, _("Select web layer to add:"), _("Add web layer"), myWMSFilesShortNames);
+    if (myDlg.ShowModal() == wxID_CANCEL){
+        return;
+    }
+
+    for (unsigned int j = 0; j < myDlg.GetSelections().GetCount() ; ++j) {
+        OpenLayer(wxFileName(myWMSFilesFullPath.Item(myDlg.GetSelections().Item(j))));
+    }
+    ReloadProjectLayers(false, false);
 }
 
 
