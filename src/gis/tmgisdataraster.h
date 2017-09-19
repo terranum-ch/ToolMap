@@ -56,7 +56,7 @@ static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 	_T("*.tif;*.tiff"),
 	_T("*.adf"),
 	_T("*.jpg;*.jpeg"),
-    _T("*.html")
+    _T("*.xml")
 };
 
 

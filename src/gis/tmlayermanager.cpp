@@ -497,7 +497,20 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 void tmLayerManager::AddWebLayer (){
-    wxString myWebPages[] = {
+	wxFileDialog openFileDialog(m_Parent, _("Open XML file"), "", "", "XML files (*.xml)|*.xml", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL){
+		return;
+	}
+
+	wxFileName myWebPath;
+	myWebPath.Assign(openFileDialog.GetPath());
+	if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
+		wxLogError(_("Loading: %s failed"), myWebPath.GetName());
+	}
+
+	// TODO: Remove the code bellow when web raster 2.0 are working!
+	/*
+	wxString myWebPages[] = {
         _T("google satellite"), _T("google streets"),
         _T("bing satellite"), _T("bing streets")
     };
@@ -515,6 +528,7 @@ void tmLayerManager::AddWebLayer (){
     if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
         wxLogError(_("Loading: %s failed"), myWebPath.GetName());
     }
+    */
 }
 
 
@@ -629,12 +643,13 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
     tmLayerProperties * item = new tmLayerProperties();
     item->InitFromPathAndName(filename.GetPath(),filename.GetFullName(),tmGISData::GetAllSupportedGISFormatsExtensions());
     
-	if (item->GetType() == TOC_NAME_WEB) {
+	/*
+    if (item->GetType() == TOC_NAME_WEB) {
         item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
         wxASSERT(item->GetWebFrameRef());
         item->GetWebFrameRef()->SetUsingRAM(m_isUsingRAM);
         item->GetWebFrameRef()->SetInternetRefreshTime(m_InternetRefreshTime);
-    }
+    }*/
 
     // try to open the file for getting the spatial type
     tmGISData * myLayer = tmGISData::LoadLayer(item);
@@ -1771,8 +1786,9 @@ int tmLayerManager::ReadLayerDraw ()
         layerData->SetCoordConvert(myCoordConv);
         
         if (layerData->GetDataType() == tmGIS_RASTER_WEB) {
-            tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
-            myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
+            wxLogMessage(_T("Converting coordinates here..."));
+            //tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
+            //myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
         }
         
         m_Drawer.Draw(pLayerProp, layerData);

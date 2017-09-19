@@ -55,10 +55,10 @@ void tmTOCCtrlMenu::_CreateTOCBasic (){
         Check(ID_TOCMENU_EDIT_LAYER, m_LayerProperties->IsEditing());
 	}
     
-    if (m_LayerProperties->GetType() == TOC_NAME_WEB) {
+ /* if (m_LayerProperties->GetType() == TOC_NAME_WEB) {
         AppendCheckItem (ID_TOCMENU_SHOW_WEBFRAME, _("Show Web Frame"));
         Check(ID_TOCMENU_SHOW_WEBFRAME, m_LayerProperties->GetWebFrameRef()->IsVisible());
-    }
+    }*/
 }
 
 
