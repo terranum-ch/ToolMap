@@ -181,8 +181,6 @@ public:
     
     void SetSelectionColour(const wxColour & col){m_SelectedData.SetSelectionColour(col);}
     void SetSelectionHalo (bool hashalo) {m_SelectedData.SetSelectionHalo(hashalo);}
-    
-    void SetWebRasterPreferences (bool usingram, int internetrefreshtime);
 };
 
 #endif

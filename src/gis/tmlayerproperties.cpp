@@ -20,7 +20,6 @@
 #include "tmlayerproperties.h"
 #include "tmsymbol.h"
 #include "tmsymbolrule.h"
-#include "../gui/tmwebframe.h"
 
 
 
@@ -40,7 +39,6 @@ void tmLayerProperties::InitMemberValues()
 	m_LayerVertexFlags = 0;
 	m_LayerEditing = false;
     m_SymbolRulesManager = new tmSymbolRuleManager(this);
-    m_WebFrame = NULL;
     m_LabelIsVisible = false;
     m_LabelDefinition = wxEmptyString;    
 }
@@ -147,7 +145,6 @@ tmLayerProperties::~tmLayerProperties()
 {
 	wxDELETE(m_LayerSymbol);
     wxDELETE(m_SymbolRulesManager);
-    wxDELETE(m_WebFrame);
 }
 
 
@@ -264,18 +261,6 @@ void tmLayerProperties::SetSpatialType(TM_GIS_SPATIAL_TYPES value) {
 
 void tmLayerProperties::SetVisible(bool value) {
     m_LayerVisible = value;
-    
-    if (GetWebFrameRef() == NULL) {
-        return;
-    }
-    
-    // special behavior for web raster
-    if (m_LayerVisible == true) {
-        GetWebFrameRef()->ShowBehindParent();
-    }
-    else {
-        GetWebFrameRef()->Hide();
-    }
 }
 
 void tmLayerProperties::SetType(TOC_GENERIC_NAME value) {
@@ -297,19 +282,6 @@ void tmLayerProperties::SetVertexFlags(int value) {
 void tmLayerProperties::SetEditing(bool value) {
     m_LayerEditing = value;
 }
-
-
-void tmLayerProperties::SetWebFrame (wxWindow * parent, wxWindowID id,  const wxSize & size){
-    if (parent == NULL && size == wxSize(0,0)){
-		m_WebFrame = NULL;
-		return;
-	}
-	m_WebFrame = new tmWebFrame(parent, id, size);
-    if (IsVisible() == true) {
-        m_WebFrame->ShowBehindParent();
-    }
-}
-
 
 
 /***************************************************************************//**
@@ -335,7 +307,6 @@ tmLayerProperties::tmLayerProperties (tmLayerProperties & layerprop)
 	
 	m_LayerVertexFlags = layerprop.m_LayerVertexFlags;
 	m_LayerEditing = layerprop.m_LayerEditing;
-	m_WebFrame = layerprop.m_WebFrame;
     m_LabelIsVisible = layerprop.m_LabelIsVisible;
     m_LabelDefinition = layerprop.m_LabelDefinition;
 }

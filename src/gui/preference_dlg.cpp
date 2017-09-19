@@ -110,40 +110,6 @@ void PreferenceDLG::_CreateControls(){
 	bSizer6->Fit( m_panel3 );
 	m_notebook2->AddPage( m_panel3, _("Updates"), false );
 	
-    wxPanel* m_panelwebraster;
-	m_panelwebraster = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer4;
-	bSizer4 = new wxBoxSizer( wxVERTICAL );
-	
-	wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_panelwebraster, wxID_ANY, _("Internet waiting time before refreshing [ms]") ), wxVERTICAL );
-	
-	m_WaitingTimeCtrl = new wxSlider( m_panelwebraster, wxID_ANY, 250, 0, 500, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS );
-	sbSizer1->Add( m_WaitingTimeCtrl, 0, wxALL|wxEXPAND, 5 );
-	
-	
-	bSizer4->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
-	
-	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_panelwebraster, wxID_ANY, _("Location for temporary web raster") ), wxVERTICAL );
-	
-	m_RamCtrl = new wxRadioButton( m_panelwebraster, wxID_ANY, _("RAM"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	m_RamCtrl->SetValue( true );
-	sbSizer2->Add( m_RamCtrl, 0, wxALL, 5 );
-	
-	m_MemoryCtrl = new wxRadioButton( m_panelwebraster, wxID_ANY, _("File"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizer2->Add( m_MemoryCtrl, 0, wxALL, 5 );
-	
-	
-	bSizer4->Add( sbSizer2, 0, wxEXPAND|wxALL, 5 );
-	
-	
-	m_panelwebraster->SetSizer( bSizer4 );
-	m_panelwebraster->Layout();
-	bSizer4->Fit( m_panelwebraster );
-	m_notebook2->AddPage( m_panelwebraster, _("Web raster"), false );
-    
-    
 	bSizer5->Add( m_notebook2, 1, wxEXPAND | wxALL, 5 );
 	
 	wxStdDialogButtonSizer* m_sdbSizer2;
@@ -177,9 +143,6 @@ bool PreferenceDLG::TransferDataToWindow(){
 	wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
 	bool mySelHalo = myConfig->ReadBool("selection_halo", false);
     bool myRelPath = myConfig->ReadBool("relative_path", true);
-    
-    bool isUsingRam = myConfig->ReadBool("using_ram", true);
-    long myInternetWaitTime = myConfig->ReadLong("internet_wait_time", 250);
     myConfig->SetPath("..");
 	
 	wxColour mySelColor = *wxRED;
@@ -197,10 +160,6 @@ bool PreferenceDLG::TransferDataToWindow(){
 	m_SelOutlineCtrl->SetValue(mySelHalo);
     m_RelPathCtrl->SetValue(myRelPath);
     
-    m_WaitingTimeCtrl->SetValue((int) myInternetWaitTime);
-    m_RamCtrl->SetValue(isUsingRam);
-    m_MemoryCtrl->SetValue(!isUsingRam);
-	
 	m_UpdateCheckCtrl->SetValue(bCheckStartup);
 	m_ProxyInfoCtrl->SetValue(myProxyInfo);
 	return true;
@@ -220,9 +179,6 @@ bool PreferenceDLG::TransferDataFromWindow(){
 	myConfig->Write("selection_color", m_SelColourCtrl->GetColour().GetAsString());
 	myConfig->Write("selection_halo", m_SelOutlineCtrl->GetValue());
     myConfig->Write("relative_path", m_RelPathCtrl->GetValue());
-    
-    myConfig->Write("using_ram", m_RamCtrl->GetValue());
-    myConfig->Write("internet_wait_time", m_WaitingTimeCtrl->GetValue());
     myConfig->SetPath("..");
     
     myConfig->SetPath("SPATIAL_INDEX");

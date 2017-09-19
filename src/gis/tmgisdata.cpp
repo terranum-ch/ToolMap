@@ -290,10 +290,10 @@ tmGISData * tmGISData::LoadLayer (tmLayerProperties * layerProp)
             m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
 			myFileName = layerProp->GetName().GetFullPath();
 			myErrMsg = layerProp->GetNameDisplay();
-        {
+        /*{
             tmGISDataRasterWeb * myWebDataRef = static_cast<tmGISDataRasterWeb*>(m_Data);
             myWebDataRef->SetWebFrameRef(layerProp->GetWebFrameRef());
-        }
+        }*/
 
             break;
 

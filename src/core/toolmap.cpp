@@ -1247,9 +1247,7 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	myConfig->SetPath("GENERAL");
 	wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
 	bool mySelHalo = myConfig->ReadBool("selection_halo", false);
-    bool isUsingRAM = myConfig->ReadBool("using_ram", true);
-    long myInternetWaitTime = myConfig->ReadLong("internet_wait_time", 250);
-    
+
     myConfig->SetPath("..");
 
 	wxColour mySelColor = *wxRED;
@@ -1260,9 +1258,6 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	wxASSERT(m_LayerManager);
 	m_LayerManager->SetSelectionColour(mySelColor);
 	m_LayerManager->SetSelectionHalo(mySelHalo);
-    
-    // update info to web frames
-    m_LayerManager->SetWebRasterPreferences(isUsingRAM, myInternetWaitTime);
     
 	if (reload == true) {
 		//m_LayerManager->ReloadProjectLayers(false);
