@@ -63,8 +63,9 @@ bool tmGISDataRasterWeb::Open (const wxString & filename, bool bReadWrite){
 
 tmRealRect tmGISDataRasterWeb::GetMinimalBoundingRectangle(){
     return tmRealRect(0,0,0,0);
-}
-*/
+}*/
+
+
 
 bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
 	// check if view moved !
@@ -80,16 +81,16 @@ bool tmGISDataRasterWeb::SetSpatialFilter (tmRealRect filter, int type){
     
 	wxLogMessage(_("web coordinates: %f, %f, %f, %f."), xymin.x, xymin.y, xymax.x, xymax.y);
 
-    // convert coordinates into pixels
-    tmRealRect myImgCoord = GetMinimalBoundingRectangle();
-    if (myImgCoord == tmRealRect(0,0,0,0))
+    // get image information
+    tmRealRect myImgRealCoord = GetMinimalBoundingRectangle();
+    if (myImgRealCoord == tmRealRect(0,0,0,0)){
         return false;
+    }
 
-    if(myImgCoord.Clip(m_FilterCoordWeb, m_ClippedCoord))
-    {
+    if(myImgRealCoord.Clip(m_FilterCoordWeb, m_ClippedCoord)) {
         // image visible,
         // clip image with spatial filter
-        m_PxImgFilter = ConvertClipedImage(myImgCoord, m_ClippedCoord);
+        m_PxImgFilter = ConvertClipedImage(myImgRealCoord, m_ClippedCoord);
     }
     wxLogDebug(_T("web pixels : %d, %d, %d, %d"), m_PxImgFilter.x, m_PxImgFilter.y, m_PxImgFilter.GetWidth(), m_PxImgFilter.GetHeight());
     return true;
