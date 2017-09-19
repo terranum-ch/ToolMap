@@ -1725,8 +1725,11 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids)
                 // processing and deleting data
                 if (layerData)
                 {
-                    myExtent = layerData->GetMinimalBoundingRectangle();
-                    m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+                    // ignore extend for web rasters because they are too big
+                    if (pLayerProp->GetType() != TOC_NAME_WEB){
+                        myExtent = layerData->GetMinimalBoundingRectangle();
+                        m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+                    }
                     iReaded ++;
                 }
                 wxDELETE(layerData);
