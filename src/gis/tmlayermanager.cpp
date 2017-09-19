@@ -25,7 +25,6 @@
 #include "tmgisdatarasterweb.h"
 #include "../gui/tmclosefile_dlg.h"
 #include "../core/tmcoordconvert.h"
-#include "../gui/tmwebframe.h"
 
 
 
@@ -211,11 +210,7 @@ void tmLayerManager::FillTOCArray()
 		if(lyrproptemp ==NULL){
 			break;
 		}
-		
-        if (lyrproptemp->GetType() == TOC_NAME_WEB) {
-            lyrproptemp->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
-        }
-        
+
         if(!m_TOCCtrl->InsertLayer(lyrproptemp)){
 			wxLogError (_("Adding layer: %s failed!"), lyrproptemp->GetName().GetName());
 			  continue;
@@ -642,14 +637,6 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
     
     tmLayerProperties * item = new tmLayerProperties();
     item->InitFromPathAndName(filename.GetPath(),filename.GetFullName(),tmGISData::GetAllSupportedGISFormatsExtensions());
-    
-	/*
-    if (item->GetType() == TOC_NAME_WEB) {
-        item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
-        wxASSERT(item->GetWebFrameRef());
-        item->GetWebFrameRef()->SetUsingRAM(m_isUsingRAM);
-        item->GetWebFrameRef()->SetInternetRefreshTime(m_InternetRefreshTime);
-    }*/
 
     // try to open the file for getting the spatial type
     tmGISData * myLayer = tmGISData::LoadLayer(item);
@@ -1898,12 +1885,6 @@ void tmLayerManager::SetWebRasterPreferences (bool usingram, int internetrefresh
 		if (pLayerProp == NULL){
 			break;
         }
-		
-        if (pLayerProp->GetWebFrameRef() != NULL) {
-            pLayerProp->GetWebFrameRef()->SetInternetRefreshTime(internetrefreshtime);
-            pLayerProp->GetWebFrameRef()->SetUsingRAM(usingram);
-        }
-        
 		iRank ++;
 	}
 }

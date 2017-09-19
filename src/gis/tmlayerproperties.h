@@ -55,8 +55,7 @@ class tmLayerProperties : public wxTreeItemData
 		int m_LayerVertexFlags;
 		bool m_LayerEditing;
 		tmSymbolRuleManager * m_SymbolRulesManager;
-        tmWebFrame * m_WebFrame;
-        
+
         bool m_LabelIsVisible;
         wxString m_LabelDefinition;
         
@@ -95,9 +94,6 @@ class tmLayerProperties : public wxTreeItemData
         
         tmSymbolRuleManager * GetSymbolRuleManagerRef(){return m_SymbolRulesManager;}
         
-        void SetWebFrame (wxWindow * parent, wxWindowID id,  const wxSize & size);
-        tmWebFrame * GetWebFrameRef() {return m_WebFrame;}
-		
 		// constructor
 		tmLayerProperties(){InitMemberValues();}
 		tmLayerProperties (tmLayerProperties & layerprop);
