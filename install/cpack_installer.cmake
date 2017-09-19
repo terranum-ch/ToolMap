@@ -58,7 +58,7 @@ if (WIN32)
 
     # install webfiles
     # this part is a partial duplicates of copywebfiles.cmake
-    FILE (GLOB WEBFILES "resource/web/*.js" "resource/web/*.html")
+    FILE (GLOB WEBFILES "resource/web/*.xml")
     install(FILES
             ${WEBFILES}
             DESTINATION share/toolmap)
