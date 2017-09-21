@@ -31,13 +31,19 @@ test_script:
 after_test:
   - cd C:\projects\toolmap\bin
   - cpack -C relwithdebinfo
+  - cpack -C relwithdebinfo -G ZIP
   - cd C:\projects\toolmap
   - copy bin\*Setup.exe .\
+  - copy bin\*Setup.zip .\
 
 artifacts:
   - path: '*Setup.exe'
     name: ToolMapInstaller
     type: file
+
+  - path: '*Setup.zip'
+    name: ToolMapInstallerZip
+    type: zip
 
 deploy:
   - provider: FTP
@@ -46,7 +52,7 @@ deploy:
     username: euso_toolmap
     password:
       secure: WWmGrLRonuGbVQ8y6bvsmCQha3YggTiPsAAs0egS/g0=
-    artifact: ToolMapInstaller
+    artifact: 
     on:
       branch: nightly
     
