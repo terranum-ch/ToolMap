@@ -119,6 +119,29 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
 }
 
+# Install curl
+if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
+  Write-Host "`nBuilding curl" -ForegroundColor Yellow
+  cd $TMP_DIR
+  if(Test-Path -Path "$LIB_DIR\curl") {
+    Remove-Item "$LIB_DIR\curl" -Force -Recurse
+  }
+  mkdir "$LIB_DIR\curl" > $null
+  $CURL_URL="https://github.com/curl/curl/archive/curl-7_54_1.zip"
+  if ($ON_APPVEYOR) {
+    appveyor DownloadFile $CURL_URL -FileName curl.zip > $null
+  } else {
+    Invoke-WebRequest -Uri $CURL_URL -OutFile curl.zip
+  }
+  7z x curl.zip -o"$TMP_DIR" > $null
+  move "$TMP_DIR\curl-*" "$TMP_DIR\curl"
+  cd "$TMP_DIR\curl\winbuild"
+  nmake -f Makefile.vc mode=dll VC=14 DEBUG=NO MACHINE=x64 > $null
+  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\bin" "$LIB_DIR\curl\bin"
+  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\include" "$LIB_DIR\curl\include"
+  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\lib" "$LIB_DIR\curl\lib"
+}
+
 # Install Proj
 if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   Write-Host "`nBuilding Proj" -ForegroundColor Yellow
@@ -187,9 +210,9 @@ if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   move "$TMP_DIR\gdal-*" "$TMP_DIR\gdal"
   cd "$TMP_DIR\gdal"
   $LIB_DIR_REV=$LIB_DIR -replace '\\','/'
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" > $null
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" install > $null
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" devinstall > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
 }
 
 # Install Mysql
@@ -216,27 +239,4 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   cmake .. -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small > $null
   cmake --build . --config relwithdebinfo > $null
   cmake --build . --config relwithdebinfo --target INSTALL > $null
-}
-
-# Install curl
-if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
-  Write-Host "`nBuilding curl" -ForegroundColor Yellow
-  cd $TMP_DIR
-  if(Test-Path -Path "$LIB_DIR\curl") {
-    Remove-Item "$LIB_DIR\curl" -Force -Recurse
-  }
-  mkdir "$LIB_DIR\curl" > $null
-  $CURL_URL="https://github.com/curl/curl/archive/curl-7_54_1.zip"
-  if ($ON_APPVEYOR) {
-    appveyor DownloadFile $CURL_URL -FileName curl.zip > $null
-  } else {
-    Invoke-WebRequest -Uri $CURL_URL -OutFile curl.zip
-  }
-  7z x curl.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\curl-*" "$TMP_DIR\curl"
-  cd "$TMP_DIR\curl\winbuild"
-  nmake -f Makefile.vc mode=dll VC=14 DEBUG=NO MACHINE=x64 > $null
-  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\bin" "$LIB_DIR\curl\bin"
-  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\include" "$LIB_DIR\curl\include"
-  move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\lib" "$LIB_DIR\curl\lib"
 }
