@@ -37,6 +37,15 @@ IF (WIN32)
     MESSAGE (SEND_ERROR "proj.dll not found in ${SEARCH_PROJ_PATH}")
   ENDIF()
 
+    FIND_FILE (CURL_DLL_NAME
+            libcurl.dll
+            HINTS ${SEARCH_CURL_PATH}/bin
+            ${SEARCH_CURL_PATH}
+            NO_DEFAULT_PATH)
+    IF (NOT CURL_DLL_NAME)
+        MESSAGE (WARNING "libcurl.dll not found in ${SEARCH_CURL_PATH}")
+    ENDIF()
+
   FIND_FILE (SQLITE_DLL_NAME
 	sqlite3.dll 
 		HINTS ${SEARCH_SQLITE_PATH}/bin
@@ -69,6 +78,23 @@ IF (WIN32)
 		"${PROJ_DLL_NAME}"
 		"${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
 	MESSAGE (STATUS "PROJ DLL: ${PROJ_DLL_NAME}")
+
+    if(SQLITE_DLL_NAME)
+        add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${SQLITE_DLL_NAME}"
+                "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+        MESSAGE (STATUS "SQLITE DLL: ${SQLITE_DLL_NAME}")
+    endif(SQLITE_DLL_NAME)
+
+    if(CURL_DLL_NAME)
+        add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CURL_DLL_NAME}"
+                "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+        MESSAGE (STATUS "CURL DLL: ${CURL_DLL_NAME}")
+    endif(CURL_DLL_NAME)
+
 
 	FILE (TO_NATIVE_PATH "${SEARCH_GDAL_PATH}/bin/*.dll" ALL_DLL_PATH_ORIGIN)
 	FILE (TO_NATIVE_PATH "${SEARCH_GEOS_PATH}/bin/*.dll" ALL_DLL_PATH_ORIGIN)
