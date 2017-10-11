@@ -1,7 +1,10 @@
 set ( APPIMAGE_CONFIG_DIR "${CMAKE_SOURCE_DIR}/install/linux" ) # Specifies where to find template files, in this case this same directory
 
-set ( APPIMAGE_ASSISTANT_PROGRAM CACHE FILEPATH "AppImageAssistant executable" )
-set ( APPIMAGE_APPRUN_PROGRAM CACHE FILEPATH "AppImage AppRun executable" )
+set ( APPIMAGE_ASSISTANT_PROGRAM "${CMAKE_BINARY_DIR}/appimagetool-x86_64.AppImage" CACHE FILEPATH "AppImageAssistant executable" )
+set ( APPIMAGE_APPRUN_PROGRAM "${CMAKE_BINARY_DIR}/AppRun-x86_64" CACHE FILEPATH "AppImage AppRun executable" )
+
+MESSAGE(STATUS "APPIMAGE_ASSISTANT_PROGRAM: ${APPIMAGE_ASSISTANT_PROGRAM}")
+MESSAGE(STATUS "APPIMAGE_APPRUN_PROGRAM: ${APPIMAGE_APPRUN_PROGRAM}")
 
 set ( APPIMAGE_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/deploy/linux-appimage" CACHE PATH "Where to put the AppDir items" )
 set ( APPIMAGE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/package/linux-appimage" CACHE PATH "AppImage output directory" )

@@ -63,8 +63,6 @@ INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
 INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 
 if (UNIX AND NOT APPLE)
-  SET(APPIMAGE_ASSISTANT_PROGRAM "${PROJECT_SOURCE_DIR}/bin/appimagetool-x86_64.AppImage")
-  SET(APPIMAGE_APPRUN_PROGRAM "${PROJECT_SOURCE_DIR}/bin/AppRun-x86_64")
   INCLUDE("build/cmake/LinuxAppImageBuild.cmake")
 endif ()
 
