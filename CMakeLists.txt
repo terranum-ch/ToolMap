@@ -63,7 +63,10 @@ INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
 INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 
 if (UNIX AND NOT APPLE)
-  INCLUDE("build/cmake/LinuxAppImageBuild.cmake")
+  SET(USE_APPIMAGE FALSE CACHE BOOL "Should we use AppImage to create an installer on Linux ?")
+  if (USE_APPIMAGE)
+    INCLUDE("build/cmake/LinuxAppImageBuild.cmake")
+  endif ()
 endif ()
 
 # CREATE A LIBRARY WITH ALL SRC
