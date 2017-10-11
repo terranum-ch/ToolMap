@@ -151,7 +151,9 @@ endif(WIN32)
 #
 # TODO: Replace this with AppImage / Snap / Flatpak
 IF (UNIX AND NOT APPLE)
-    APPIMAGE_PACKAGE(${CMAKE_PROJECT_NAME} "ToolMap" "" "" "")
+    if (USE_APPIMAGE)
+        APPIMAGE_PACKAGE(${CMAKE_PROJECT_NAME} "ToolMap" "" "" "")
+    endif (USE_APPIMAGE)
 
     #INSTALL(FILES "art/toolmap.png" DESTINATION "/usr/share/pixmaps")
     #INSTALL(FILES "install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
