@@ -3,12 +3,12 @@
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
 # install ToolMap (application)
-install (TARGETS ${CMAKE_PROJECT_NAME}
+install(TARGETS ${CMAKE_PROJECT_NAME}
         BUNDLE DESTINATION .
         RUNTIME DESTINATION bin)
 
 # install GPL licence file
-install ( FILES install/COPYING DESTINATION .)
+install(FILES install/COPYING DESTINATION .)
 
 # search dll to install
 if (GDAL_DLL_NAME)
@@ -42,23 +42,23 @@ endif (CURL_DLL_NAME)
 
 if (WIN32)
     # install program and dlls
-    install (
+    install(
             PROGRAMS
             ${LIB_TO_INSTALL}
             DESTINATION bin
     )
 
     # install errmsg.sys
-    if(NOT MYSQL_ERRMSG_FILE)
+    if (NOT MYSQL_ERRMSG_FILE)
         message(FATAL_ERROR "errmsg.sys not found ! Installer will not work!")
-    endif()
+    endif ()
     install(FILES
             ${MYSQL_ERRMSG_FILE}
             DESTINATION bin/mysql)
 
     # install webfiles
     # this part is a partial duplicates of copywebfiles.cmake
-    FILE (GLOB WEBFILES "resource/web/*.xml")
+    FILE(GLOB WEBFILES "resource/web/*.xml")
     install(FILES
             ${WEBFILES}
             DESTINATION share/toolmap)
@@ -68,7 +68,7 @@ if (WIN32)
     INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
 endif (WIN32)
 
- # COMMON PROPERTIES
+# COMMON PROPERTIES
 set(CPACK_PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ToolMap - open source tool for GIS creation")
 set(CPACK_PACKAGE_VENDOR "Terranum")
@@ -76,46 +76,46 @@ set(CPACK_STRIP_FILES ON) # tell cpack to strip all debug symbols from all files
 
 # IDENTIFY ARCHITECTURE
 set(CPACK_PACKAGE_ARCH "unkown-architecture")
-if(${CMAKE_SYSTEM_NAME} MATCHES Windows)
-    if(CMAKE_CL_64)
+if (${CMAKE_SYSTEM_NAME} MATCHES Windows)
+    if (CMAKE_CL_64)
         set(CPACK_PACKAGE_ARCH "win64")
-    elseif(MINGW)
-        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    elseif (MINGW)
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
             # 64 bits
             set(CPACK_PACKAGE_ARCH "mingw64")
-        elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
             # 32 bits
             set(CPACK_PACKAGE_ARCH "mingw32")
-        endif()
-    elseif(WIN32)
+        endif ()
+    elseif (WIN32)
         set(CPACK_PACKAGE_ARCH "win32")
-    endif()
+    endif ()
     message(STATUS "${CPACK_PACKAGE_ARCH} architecture")
-endif(${CMAKE_SYSTEM_NAME} MATCHES Windows)
+endif (${CMAKE_SYSTEM_NAME} MATCHES Windows)
 
 
-if(${CMAKE_SYSTEM_NAME} MATCHES Linux)
-    if(${CMAKE_SYSTEM_PROCESSOR} MATCHES i686)
+if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
+    if (${CMAKE_SYSTEM_PROCESSOR} MATCHES i686)
         set(CPACK_PACKAGE_ARCH "linux32")
-    elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES x86_64)
-        if(${CMAKE_CXX_FLAGS} MATCHES " -m32 ")
+    elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES x86_64)
+        if (${CMAKE_CXX_FLAGS} MATCHES " -m32 ")
             set(CPACK_PACKAGE_ARCH "linux32")
-        else()
+        else ()
             set(CPACK_PACKAGE_ARCH "linux64")
-        endif(${CMAKE_CXX_FLAGS} MATCHES " -m32 ")
-    else()
+        endif (${CMAKE_CXX_FLAGS} MATCHES " -m32 ")
+    else ()
         set(CPACK_PACKAGE_ARCH "linux")
-    endif()
-endif(${CMAKE_SYSTEM_NAME} MATCHES Linux)
+    endif ()
+endif (${CMAKE_SYSTEM_NAME} MATCHES Linux)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
+if (${CMAKE_SYSTEM_NAME} MATCHES Darwin)
     set(CPACK_PACKAGE_ARCH "mac64")
-endif(${CMAKE_SYSTEM_NAME} MATCHES Darwin)
+endif (${CMAKE_SYSTEM_NAME} MATCHES Darwin)
 
 # OS SPECIFIC PROPERTIES
 if (APPLE)
     set(CPACK_GENERATOR "DragNDrop")
-    set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_ARCH}-Setup")
+    set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_ARCH}")
     set(CPACK_DMG_VOLUME_NAME "${CMAKE_PROJECT_NAME}")
     set(CPACK_DMG_FORMAT "UDBZ")
 endif (APPLE)
@@ -123,7 +123,7 @@ endif (APPLE)
 if (WIN32)
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "ToolMap")
-    set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_ARCH}-Setup")
+    set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_ARCH}")
     set(CPACK_PACKAGE_EXECUTABLES "ToolMap;ToolMap")
     set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
     set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_LIST_DIR}/COPYING")
@@ -140,27 +140,33 @@ if (WIN32)
     set(CPACK_NSIS_INSTALLED_ICON_NAME ToolMap.exe)
     if (CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
-    else()
+    else ()
         set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
-    endif()
-endif(WIN32)
+    endif ()
+endif (WIN32)
 
 
 #
-# DEB Files (Linux)
+# LINUX
 #
-# TODO: Replace this with AppImage / Snap / Flatpak
+
 IF (UNIX AND NOT APPLE)
-    INSTALL(FILES "art/toolmap.png" DESTINATION "/usr/share/pixmaps")
-    INSTALL(FILES "install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+    if (USE_APPIMAGE)
+        find_file(MYSQL_CLIENT_LIB libmysqlclient.so ${MYSQL_MAIN_DIR}/lib)
+        message(STATUS "MYSQL_CLIENT_LIB: ${MYSQL_CLIENT_LIB}$")
+        list(APPEND APPIMAGE_LIBS ${GDAL_LIBRARIES} ${GEOS_LIBRARIES} ${CURL_LIBRARIES} ${MYSQL_CLIENT_LIB})
+        list(APPEND APPIMAGE_DAT "${CMAKE_BINARY_DIR}/share" "${CMAKE_BINARY_DIR}/mysql")
+        APPIMAGE_PACKAGE(${CMAKE_PROJECT_NAME} "ToolMap" "${APPIMAGE_DAT}" "" "${APPIMAGE_LIBS}")
+    else (USE_APPIMAGE)
+        INSTALL(FILES "art/toolmap.png" DESTINATION "/usr/share/pixmaps")
+        INSTALL(FILES "install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+        set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Terranum <toolmap@terranum.ch>")
+        SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libmysqlclient18 (>= 5.1), mysql-server-core-5.5, libgeos-c1, libcurl3-gnutls, libgdal1-1.7.0, libwrap0")
+        SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
+        SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+        SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+    endif (USE_APPIMAGE)
 
-    SET(CPACK_GENERATOR "DEB")
-    #SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Terranum <toolmap@terranum.ch>")
-    SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libmysqlclient18 (>= 5.1), mysql-server-core-5.5, libgeos-c1, libcurl3-gnutls, libgdal1-1.7.0, libwrap0")
-    # SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
-    SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
-    SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-ENDIF(UNIX AND NOT APPLE)
+ENDIF (UNIX AND NOT APPLE)
 
 include(CPack)
