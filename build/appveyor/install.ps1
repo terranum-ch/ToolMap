@@ -9,8 +9,8 @@ $ON_APPVEYOR=$true
 $WITH_DEBUG_LIBS=$false
 
 # Force rebuilding some libraries
-$REBUILD_WX=$true
-$REBUILD_WXPDF=$true
+$REBUILD_WX=$false
+$REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
