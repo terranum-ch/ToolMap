@@ -116,6 +116,8 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
 }
+dir "$LIB_DIR\wxpdfdoc\lib"
+dir "$LIB_DIR\wxpdfdoc\lib\vc_lib"
 
 # Install curl
 if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
