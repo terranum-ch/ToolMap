@@ -42,13 +42,13 @@ Write-Host "`nInstalling CMake" -ForegroundColor Yellow
 cd $TMP_DIR
 $CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
 if ($ON_APPVEYOR) {
-appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
+  appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
 } else {
-Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
+  Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
 }
 7z x cmake.zip -o"$TMP_DIR" > $null
 move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
-$env:Path += ";$CMAKE_DIR\bin"
+$env:Path = "$CMAKE_DIR\bin;" + $env:Path
 cmake --version
   
 # Install cxxtest
@@ -56,9 +56,9 @@ Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
 cd $TMP_DIR
 $CXXTEST_URL="https://github.com/CxxTest/cxxtest/archive/4.3.zip"
 if ($ON_APPVEYOR) {
-appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
+  appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
 } else {
-Invoke-WebRequest -Uri $CXXTEST_URL -OutFile cxxtest.zip
+  Invoke-WebRequest -Uri $CXXTEST_URL -OutFile cxxtest.zip
 }
 7z x cxxtest.zip -o"$TMP_DIR" > $null
 move "$TMP_DIR\cxxtest-*" "$CXXTEST_DIR"
