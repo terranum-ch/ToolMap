@@ -1,6 +1,8 @@
 # Options
 $TMP_DIR="C:\projects\tmp"
 $LIB_DIR="C:\projects\libs"
+$CMAKE_DIR="C:\projects\cmake"
+$CXXTEST_DIR="C:\projects\cxxtest"
 $PATCH_DIR="C:\projects\toolmap\build\appveyor\patches"
 $MSC_VER=1911
 $ON_APPVEYOR=$true
@@ -14,7 +16,6 @@ $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
 $REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
-$REINSTALL_CMAKE=$true
 
 # Setup VS environment
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
@@ -37,38 +38,31 @@ if(!(Test-Path -Path $TMP_DIR)) {
 }
 
 # Install a recent CMake
-if(!(Test-Path -Path "$LIB_DIR\cmake") -Or $REINSTALL_CMAKE) {
-  Write-Host "`nInstalling CMake" -ForegroundColor Yellow
-  cd $TMP_DIR
-  if(Test-Path -Path "$LIB_DIR\cmake") {
-    Remove-Item "$LIB_DIR\cmake" -Force -Recurse
-  }
-  $CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
-  if ($ON_APPVEYOR) {
-    appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
-  } else {
-    Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
-  }
-  7z x cmake.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\cmake-*" "$LIB_DIR\cmake"
+Write-Host "`nInstalling CMake" -ForegroundColor Yellow
+cd $TMP_DIR
+$CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
+if ($ON_APPVEYOR) {
+appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
+} else {
+Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
 }
-$env:Path += ";$LIB_DIR\cmake\bin"
+7z x cmake.zip -o"$TMP_DIR" > $null
+move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
+$env:Path += ";$CMAKE_DIR\bin"
 cmake --version
   
 # Install cxxtest
-if(!(Test-Path -Path "$LIB_DIR\cxxtest")) {
-  Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
-  cd $TMP_DIR
-  $CXXTEST_URL="https://github.com/CxxTest/cxxtest/archive/4.3.zip"
-  if ($ON_APPVEYOR) {
-    appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
-  } else {
-    Invoke-WebRequest -Uri $CXXTEST_URL -OutFile cxxtest.zip
-  }
-  7z x cxxtest.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\cxxtest-*" "$LIB_DIR\cxxtest"
+Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
+cd $TMP_DIR
+$CXXTEST_URL="https://github.com/CxxTest/cxxtest/archive/4.3.zip"
+if ($ON_APPVEYOR) {
+appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
+} else {
+Invoke-WebRequest -Uri $CXXTEST_URL -OutFile cxxtest.zip
 }
-$env:Path += ";$LIB_DIR\cxxtest"
+7z x cxxtest.zip -o"$TMP_DIR" > $null
+move "$TMP_DIR\cxxtest-*" "$CXXTEST_DIR"
+$env:Path += ";$CXXTEST_DIR"
   
 # Install wxWidgets
 if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
@@ -115,7 +109,7 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   7z x wxpdfdoc.zip -o"$TMP_DIR" > $null
   move "$TMP_DIR\wxpdfdoc-*" "$TMP_DIR\wxpdfdoc"
   cd "$TMP_DIR\wxpdfdoc\build"
-  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0 > $null
+  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0 #> $null
   if ($WITH_DEBUG_LIBS) {
     nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
   }
