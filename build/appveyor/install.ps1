@@ -14,6 +14,7 @@ $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
 $REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
+$REINSTALL_CMAKE=$true
 
 # Setup VS environment
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
@@ -36,7 +37,7 @@ if(!(Test-Path -Path $TMP_DIR)) {
 }
 
 # Install a recent CMake
-if(!(Test-Path -Path "$LIB_DIR\cmake")) {
+if(!(Test-Path -Path "$LIB_DIR\cmake") -Or $REINSTALL_CMAKE) {
   Write-Host "`nInstalling CMake" -ForegroundColor Yellow
   cd $TMP_DIR
   $CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
