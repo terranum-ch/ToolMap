@@ -9,8 +9,8 @@ $ON_APPVEYOR=$true
 $WITH_DEBUG_LIBS=$false
 
 # Force rebuilding some libraries
-$REBUILD_WX=$false
-$REBUILD_WXPDF=$false
+$REBUILD_WX=$true
+$REBUILD_WXPDF=$true
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
@@ -42,9 +42,9 @@ Write-Host "`nInstalling CMake" -ForegroundColor Yellow
 cd $TMP_DIR
 $CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
 if ($ON_APPVEYOR) {
-appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
+  appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
 } else {
-Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
+  Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
 }
 7z x cmake.zip -o"$TMP_DIR" > $null
 move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
@@ -56,9 +56,9 @@ Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
 cd $TMP_DIR
 $CXXTEST_URL="https://github.com/CxxTest/cxxtest/archive/4.3.zip"
 if ($ON_APPVEYOR) {
-appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
+  appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
 } else {
-Invoke-WebRequest -Uri $CXXTEST_URL -OutFile cxxtest.zip
+  Invoke-WebRequest -Uri $CXXTEST_URL -OutFile cxxtest.zip
 }
 7z x cxxtest.zip -o"$TMP_DIR" > $null
 move "$TMP_DIR\cxxtest-*" "$CXXTEST_DIR"
@@ -81,9 +81,7 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
   7z x wxwidgets.zip -o"$TMP_DIR\wxwidgets" > $null
   cd "$TMP_DIR\wxwidgets\build\msw"
   nmake -f makefile.vc BUILD=release UNICODE=1 MONOLITHIC=1 > $null
-  if ($WITH_DEBUG_LIBS) {
-    nmake -f makefile.vc BUILD=debug UNICODE=1 MONOLITHIC=1 > $null
-  }
+  nmake -f makefile.vc BUILD=debug UNICODE=1 MONOLITHIC=1 > $null
   move "$TMP_DIR\wxwidgets\include" "$LIB_DIR\wxwidgets\include"
   copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
   move "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h_old"
@@ -110,14 +108,10 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   move "$TMP_DIR\wxpdfdoc-*" "$TMP_DIR\wxpdfdoc"
   cd "$TMP_DIR\wxpdfdoc\build"
   nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0 > $null
-  if ($WITH_DEBUG_LIBS) {
-    nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
-  }
+  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
 }
-dir "$LIB_DIR\wxpdfdoc\lib"
-dir "$LIB_DIR\wxpdfdoc\lib\vc_lib"
 
 # Install curl
 if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {

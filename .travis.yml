@@ -64,5 +64,5 @@ after_success:
   - echo $(find . -maxdepth 1 -name "*linux64.AppImage")
   - echo $(find . -maxdepth 1 -name "*.dmg")
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
-  - if [[ -e $(find . -maxdepth 1 -name "*linux64.AppImage") ]]; then "curl -v -T $(find . -maxdepth 1 -name "*linux64.AppImage") -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "; fi
-  - if [[ -e $(find . -maxdepth 1 -name "*.dmg") ]]; then "curl -v -T $(find . -maxdepth 1 -name "*.dmg") -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "; fi
+  - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*linux64.AppImage') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
+  - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.dmg') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
