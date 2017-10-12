@@ -48,6 +48,9 @@ if ($ON_APPVEYOR) {
 }
 7z x cmake.zip -o"$TMP_DIR" > $null
 move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
+$path = $env:Path
+$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Program Files (x86)\CMake\bin' }) -join ';'
+$env:Path = $path
 $env:Path += ";$CMAKE_DIR\bin"
 cmake --version
   
