@@ -33,15 +33,15 @@ after_test:
   - cpack -C relwithdebinfo
   - cpack -C relwithdebinfo -G ZIP
   - cd C:\projects\toolmap
-  - copy bin\*Setup.exe .\
-  - copy bin\*Setup.zip .\
+  - copy bin\*win64.exe .\
+  - copy bin\*win64.zip .\
 
 artifacts:
-  - path: '*Setup.exe'
+  - path: '*win64.exe'
     name: ToolMapInstaller
     type: file
 
-  - path: '*Setup.zip'
+  - path: '*win64.zip'
     name: ToolMapInstallerZip
     type: zip
 
