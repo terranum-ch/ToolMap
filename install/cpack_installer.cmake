@@ -147,23 +147,26 @@ endif(WIN32)
 
 
 #
-# DEB Files (Linux)
+# LINUX
 #
-# TODO: Replace this with AppImage / Snap / Flatpak
+
 IF (UNIX AND NOT APPLE)
     if (USE_APPIMAGE)
-        APPIMAGE_PACKAGE(${CMAKE_PROJECT_NAME} "ToolMap" "" "" "")
+		find_file (MYSQL_CLIENT_LIB libmysqlclient.so ${MYSQL_MAIN_DIR}/lib)
+		message (STATUS "MYSQL_CLIENT_LIB: ${MYSQL_CLIENT_LIB}$")
+		list (APPEND APPIMAGE_LIBS ${GDAL_LIBRARIES} ${GEOS_LIBRARIES} ${CURL_LIBRARIES} ${MYSQL_CLIENT_LIB})
+		list (APPEND APPIMAGE_DAT "${CMAKE_BINARY_DIR}/share" "${CMAKE_BINARY_DIR}/mysql")
+        APPIMAGE_PACKAGE(${CMAKE_PROJECT_NAME} "ToolMap" "${APPIMAGE_DAT}" "" "${APPIMAGE_LIBS}")
+    else (USE_APPIMAGE)
+		INSTALL(FILES "art/toolmap.png" DESTINATION "/usr/share/pixmaps")
+		INSTALL(FILES "install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
+		set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Terranum <toolmap@terranum.ch>")
+		SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libmysqlclient18 (>= 5.1), mysql-server-core-5.5, libgeos-c1, libcurl3-gnutls, libgdal1-1.7.0, libwrap0")
+		 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
+		SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
+		SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
     endif (USE_APPIMAGE)
-
-    #INSTALL(FILES "art/toolmap.png" DESTINATION "/usr/share/pixmaps")
-    #INSTALL(FILES "install/linux/toolmap.desktop" DESTINATION "/usr/share/applications")
-
-
-    #set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Terranum <toolmap@terranum.ch>")
-    #SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libmysqlclient18 (>= 5.1), mysql-server-core-5.5, libgeos-c1, libcurl3-gnutls, libgdal1-1.7.0, libwrap0")
-    # SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
-    #SET(CPACK_DEBIAN_PACKAGE_SECTION "science")
-    #SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+    
 ENDIF(UNIX AND NOT APPLE)
 
 include(CPack)
