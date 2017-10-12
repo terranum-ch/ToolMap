@@ -3,6 +3,7 @@
 *~
 bin/*
 bin-vs/*
+bin-vs-debug/*
 unit_testing/*
 CMakeLists.txt.user
 cmake-build-debug/*
