@@ -11,7 +11,7 @@ environment:
   CXXFLAGS: /MP
   
 cache:
-  - C:\projects\libs
+  #- C:\projects\libs
   
 install:
   - ps: build/appveyor/install.ps1
