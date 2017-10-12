@@ -8,7 +8,7 @@ $WITH_DEBUG_LIBS=$false
 
 # Force rebuilding some libraries
 $REBUILD_WX=$false
-$REBUILD_WXPDF=$false
+$REBUILD_WXPDF=$true
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
@@ -40,6 +40,9 @@ if(!(Test-Path -Path $TMP_DIR)) {
 if(!(Test-Path -Path "$LIB_DIR\cmake") -Or $REINSTALL_CMAKE) {
   Write-Host "`nInstalling CMake" -ForegroundColor Yellow
   cd $TMP_DIR
+  if(Test-Path -Path "$LIB_DIR\cmake") {
+    Remove-Item "$LIB_DIR\cmake" -Force -Recurse
+  }
   $CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
