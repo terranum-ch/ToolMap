@@ -50,7 +50,7 @@ if ($ON_APPVEYOR) {
 move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
 $path = $env:Path
 echo $path
-$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Program Files\CMake\bin' }) -join ';'
+$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Program Files (x86)\CMake\bin' }) -join ';'
 echo $path
 $env:Path = $path
 $env:Path += ";$CMAKE_DIR\bin"
