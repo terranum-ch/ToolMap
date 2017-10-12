@@ -61,6 +61,8 @@ after_success:
   - cd $HOME/build/terranum-ch/ToolMap/bin
   - sudo cpack
   - ls
+  - echo $(find . -name "*linux64.AppImage")
+  - echo $(find . -name "*.dmg")
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
   - if [[ -e $(find . -name "*linux64.AppImage") ]]; then "curl -T $(find . -name "*linux64.AppImage") -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com/"; fi
   - if [[ -e $(find . -name "*.dmg") ]]; then "curl -T $(find . -name "*.dmg") -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com/"; fi

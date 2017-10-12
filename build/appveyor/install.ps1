@@ -10,7 +10,7 @@ $WITH_DEBUG_LIBS=$false
 
 # Force rebuilding some libraries
 $REBUILD_WX=$false
-$REBUILD_WXPDF=$true
+$REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
@@ -109,7 +109,7 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   7z x wxpdfdoc.zip -o"$TMP_DIR" > $null
   move "$TMP_DIR\wxpdfdoc-*" "$TMP_DIR\wxpdfdoc"
   cd "$TMP_DIR\wxpdfdoc\build"
-  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0 #> $null
+  nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=0 > $null
   if ($WITH_DEBUG_LIBS) {
     nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
   }
