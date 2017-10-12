@@ -62,5 +62,5 @@ after_success:
   - sudo cpack
   - ls
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
-  - if [[ -e package/linux-appimage/ToolMap.AppImage ]]; then "curl --ftp-create-dirs -T package/linux-appimage/ToolMap.AppImage -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"; fi
+  - if [[ -e ToolMap.AppImage ]]; then "curl --ftp-create-dirs -T ToolMap.AppImage -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"; fi
   - if [[ -e $(find *.dmg) ]]; then "curl --ftp-create-dirs -T $(find *.dmg) -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com"; fi
