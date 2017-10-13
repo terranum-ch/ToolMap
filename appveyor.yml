@@ -30,8 +30,8 @@ test_script:
 
 after_test:
   - cd C:\projects\toolmap\bin
-  - cpack -C relwithdebinfo -G ZIP
-  - cpack -C relwithdebinfo -G NSIS
+  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G ZIP
+  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G NSIS
   - cd C:\projects\toolmap
   - copy bin\*win64.exe .\
   - copy bin\*win64.zip .\
