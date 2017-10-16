@@ -170,6 +170,12 @@ tmRenderer::~tmRenderer(){
  @date 21 July 2008
  *******************************************************************************/
 void tmRenderer::OnSizeChange(wxSizeEvent & event){
+
+	if (event.GetSize().GetWidth() < 2 && event.GetSize().GetHeight() < 2) {
+		event.Skip();
+		return;
+	}
+
 	wxSize myActualSize = GetClientSize();
 	
 	BitmapUpdateSize();
@@ -195,7 +201,7 @@ void tmRenderer::OnSizeChange(wxSizeEvent & event){
 	wxCommandEvent evt(tmEVT_LM_SIZE_CHANGED, wxID_ANY);
 	evt.SetInt(bSmaller);
 	evt.SetClientData(mySizes);
-	GetEventHandler()->AddPendingEvent(evt);
+	GetEventHandler()->ProcessEvent(evt);
 }
 
 

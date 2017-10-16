@@ -4,6 +4,7 @@
 bin/*
 bin-vs/*
 bin-vs-debug/*
+share/*
 unit_testing/*
 CMakeLists.txt.user
 cmake-build-debug/*

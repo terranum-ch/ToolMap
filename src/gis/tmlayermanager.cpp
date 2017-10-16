@@ -790,6 +790,8 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize)){
 		ReloadProjectLayers(false, false);
     }
+
+    event.Skip();
 }
 
 
