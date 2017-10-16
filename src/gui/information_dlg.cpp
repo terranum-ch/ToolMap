@@ -358,11 +358,11 @@ void tmSelectionInfoCtrl::_UpdateSelection() {
 	
 	// update display
 	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-	myWindow->GetEventHandler()->AddPendingEvent(evt);
+	myWindow->GetEventHandler()->ProcessEvent(evt);
 	
 	// update selecction / attribution panel
 	wxCommandEvent evt2(tmEVT_SELECTION_DONE, wxID_ANY);
-	myWindow->GetEventHandler()->AddPendingEvent(evt2);
+	myWindow->GetEventHandler()->ProcessEvent(evt2);
 }
 
 
@@ -540,7 +540,7 @@ void tmSelectionInfoCtrl::OnPopupMove(wxCommandEvent & event) {
 	
 	wxCommandEvent evt(tmEVT_LM_MOVE_TO_FEATURE, wxID_ANY);
 	evt.SetExtraLong(m_ClickedItemID);
-	myWindow->GetEventHandler()->AddPendingEvent(evt);
+	myWindow->GetEventHandler()->ProcessEvent(evt);
 }
 
 
@@ -554,7 +554,7 @@ void tmSelectionInfoCtrl::OnPopupZoom(wxCommandEvent & event) {
 	
 	wxCommandEvent evt(tmEVT_LM_ZOOM_TO_FEATURE, wxID_ANY);
 	evt.SetExtraLong(m_ClickedItemID);
-	myWindow->GetEventHandler()->AddPendingEvent(evt);
+	myWindow->GetEventHandler()->ProcessEvent(evt);
 }
 
 

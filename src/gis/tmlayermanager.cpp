@@ -790,6 +790,8 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize)){
 		ReloadProjectLayers(false, false);
     }
+
+    event.Skip();
 }
 
 
@@ -1116,7 +1118,7 @@ bool tmLayerManager::SelectedClear ()
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->ProcessEvent(evt);
 	return bReturn;
 }
 
@@ -1178,7 +1180,7 @@ bool tmLayerManager::SelectedInvert ()
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->ProcessEvent(evt);
 	return true;
 }
 
@@ -1236,7 +1238,7 @@ void tmLayerManager::CheckGeometryValidity(){
     m_SelectedData.AddSelected(&myOids);
 	ReloadProjectLayers(false, true);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->ProcessEvent(evt);
 
     wxMessageBox(wxString::Format(_("%ld error(s) found while checking %ld feature(s)"),iNumError, iNumCheck),_("Geometry validity"));
 }
@@ -1344,7 +1346,7 @@ bool tmLayerManager::SelectByOid (){
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->ProcessEvent(evt);
 	return true;
 }
 
@@ -1507,7 +1509,7 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	}
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->ProcessEvent(evt);
 	
 	delete mySelectedRect;
 }

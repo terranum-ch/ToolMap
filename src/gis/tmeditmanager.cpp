@@ -490,7 +490,7 @@ void tmEditManager::ArcVertexInsertUp (const wxPoint & mousepos){
     ArcClear();
     
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 }
 
 
@@ -533,7 +533,7 @@ void tmEditManager::ArcVeretxDeleteUp (const wxPoint & mousepos){
     ArcClear();
     
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 }
 
 
@@ -1176,7 +1176,7 @@ bool tmEditManager::IsCorrectLayerSelected(){
 		{
 			m_SelectedData->Clear();
 			wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-			m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+			m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 		}
 		
 	}
@@ -1363,7 +1363,7 @@ void tmEditManager::OnOrientedPtsMove (wxCommandEvent & event){
 	if (myOrient != wxNOT_FOUND){
 		wxCommandEvent evt2(tmEVT_LM_ANGLE_CHANGED, wxID_ANY);
 		evt2.SetInt(myOrient);
-		m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+		m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	}
 	
 	delete myPt;
@@ -1390,7 +1390,7 @@ void tmEditManager::OnOrientedPtsUp (wxCommandEvent & event){
 	// clearing status bar
 	wxCommandEvent evt2(tmEVT_LM_ANGLE_CHANGED, wxID_ANY);
 	evt2.SetInt(wxNOT_FOUND);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	
 	m_DrawLine.ClearVertex();
 	
@@ -1462,11 +1462,11 @@ void tmEditManager::OnDrawFeatureValidate (wxCommandEvent & event)
     m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
     m_SelectedData->SetSelected(myLineId);
     wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+    m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
     
     // update display
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+    m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 }
 
 
@@ -1591,12 +1591,12 @@ void tmEditManager::OnCutLines (wxCommandEvent & event)
         wxArrayLong * myTempArray = new wxArrayLong(); 
         myTempArray->Add(m_pDB->DataBaseGetLastInsertedID());
         attribevt1.SetClientData(myTempArray);
-        m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
+        m_ParentEvt->GetEventHandler()->ProcessEvent(attribevt1);
 	}
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	
 	// change cursor
 	m_Renderer->SetTool(tmTOOL_SELECT);
@@ -1833,12 +1833,12 @@ bool tmEditManager::DeleteSelected(bool Clearselection)
         m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
         m_SelectedData->Clear();
         wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-        m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+        m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
     }
     
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	return true;
 }
 
@@ -1979,7 +1979,7 @@ bool tmEditManager::CreateIntersections ()
         attribevt1.SetExtraLong(m_SelectedData->GetSelectedUnique());
         wxArrayLong * myTempArray = new wxArrayLong(myInsertedIDs1); 
         attribevt1.SetClientData(myTempArray);
-        m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt1);
+        m_ParentEvt->GetEventHandler()->ProcessEvent(attribevt1);
     }
 		
 	// compute intersections for other lines
@@ -2005,7 +2005,7 @@ bool tmEditManager::CreateIntersections ()
                 attribevt2.SetExtraLong(myLinesCrossing->Item(i));
                 wxArrayLong * myTempArray2 = new wxArrayLong(myInsertedIDs2); 
                 attribevt2.SetClientData(myTempArray2);
-                m_ParentEvt->GetEventHandler()->AddPendingEvent(attribevt2);
+                m_ParentEvt->GetEventHandler()->ProcessEvent(attribevt2);
             }	
             myInsertedIDs2.Clear();
 
@@ -2031,16 +2031,16 @@ bool tmEditManager::CreateIntersections ()
 	// add segment to selection
 	m_SelectedData->AddSelected(&myInsertedIDs1);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+    m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
 	
 	
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_INTERSECTION, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(statevt);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(statevt);
 	
 	return true;	
 }
@@ -2172,7 +2172,7 @@ bool tmEditManager::EditVertexPosition ()
 	wxDELETE(mySelLayer);
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	
 	return true;
 }
@@ -2293,7 +2293,7 @@ bool tmEditManager::MergeSelectedLines ()
 	m_SelectedData->Clear();
 	m_SelectedData->SetSelected(myKeptOid);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+    m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
 	
 	// update geometry
 	wxASSERT (myMergeGeom);
@@ -2302,7 +2302,7 @@ bool tmEditManager::MergeSelectedLines ()
 		
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 		
 	return true;
 }
@@ -2329,9 +2329,9 @@ void tmEditManager::OnEditSharedDown (wxCommandEvent & event){
 	
 	// update display and selection
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
 
     // create rect from point
 	int myRadius = tmSELECTION_DIAMETER / 2;
@@ -2452,7 +2452,7 @@ void tmEditManager::OnEditSharedUp (wxCommandEvent & event){
 	
 	// update display with msg
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);	
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 }
 
 
@@ -2526,7 +2526,7 @@ bool tmEditManager::FlipLine(){
     //myMessage.Show();
 	// update display
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt2);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
 	return true;
 }
 
