@@ -469,7 +469,7 @@ void ShortcutList::BeforeDeleting ()
 void ShortcutList::RefreshShortcuts ()
 {
 	wxCommandEvent evt (tmEVT_SHORTCUT_REFRESH, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
+	m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
 }
 
 

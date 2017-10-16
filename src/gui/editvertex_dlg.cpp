@@ -368,7 +368,7 @@ void EditVertexDLG::OnVertexHighlight (wxCommandEvent & event)
 	wxCommandEvent evt(tmEVT_EV_DISPLAY_VERTEX_COORD, wxID_ANY);
 	wxRealPoint * myPt = new wxRealPoint(dx,dy);
 	evt.SetClientData(myPt);
-	GetParent()->GetEventHandler()->AddPendingEvent(evt);
+	GetParent()->GetEventHandler()->ProcessEvent(evt);
 }
 
 
