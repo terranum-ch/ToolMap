@@ -146,9 +146,14 @@ IF (SEARCH_GDAL)
 	  				NO_DEFAULT_PATH)
 
 	  		FIND_LIBRARY(GDAL_LIBRARIES
-		  		gdal NAMES gdal1 gdal1.6.0 gdal1.7.0 gdal1.8.0 gdal1.9.0
+		  		NAMES libgdal.a gdal1 gdal1.6.0 gdal1.7.0 gdal1.8.0 gdal1.9.0
 		  		PATHS ${SEARCH_GDAL_PATH}/lib
 	  			${SEARCH_GDAL_PATH} NO_DEFAULT_PATH)
+
+            FIND_PROGRAM(GDAL_CONFIG gdal-config
+                ${SEARCH_GDAL_PATH}/bin/
+                NO_DEFAULT_PATH)
+
 		ELSE(SEARCH_GDAL_PATH)
 			MESSAGE(STATUS "Searching GDAL on standard PATHS")
 			FIND_PATH(GDAL_INCLUDE_DIR gdal.h
@@ -157,10 +162,16 @@ IF (SEARCH_GDAL)
 	                PATH_SUFFIXES gdal)
 
 	  		FIND_LIBRARY(GDAL_LIBRARIES
-		  		gdal NAMES gdal1 gdal1.6.0 gdal1.7.0 gdal1.8.0 gdal1.9.0
-		  		HINTS ${SEARCH_GDAL_PATH}/lib
-	  			${SEARCH_GDAL_PATH})
+		  		NAMES libgdal.a gdal1 gdal1.6.0 gdal1.7.0 gdal1.8.0 gdal1.9.0)
+
+            FIND_PROGRAM(GDAL_CONFIG gdal-config)
+
 		ENDIF(SEARCH_GDAL_PATH)
+
+        IF(GDAL_CONFIG)
+            EXEC_PROGRAM(${GDAL_CONFIG} ARGS --dep-libs OUTPUT_VARIABLE GDAL_DEP_LIBS)
+            list(APPEND GDAL_LIBRARIES ${GDAL_DEP_LIBS})
+        ENDIF(GDAL_CONFIG)
   		  		  			
 	ENDIF (WIN32)
 	
