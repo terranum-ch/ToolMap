@@ -63,4 +63,6 @@ after_success:
   - ls
   - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
   - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*linux64.AppImage') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
+  - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.deb') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
   - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.dmg') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
+
