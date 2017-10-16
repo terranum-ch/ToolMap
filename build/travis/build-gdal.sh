@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REBUILD_GDAL=true
+REBUILD_GDAL=false
 
 # Build GDAL2
 if [ ! "$(ls -A ${HOME}/.gdal)" ] || [ "$REBUILD_GDAL" = true ]; then
