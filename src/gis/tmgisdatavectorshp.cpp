@@ -214,7 +214,7 @@ bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
 
     // escape ' from query
     wxString myQuery (query);
-    myQuery.Replace(_T("'"), _T("\\'"));
+    myQuery.Replace(_T("\""), _T("'"));
 
     m_Layer->ResetReading();
     if (m_Layer->SetAttributeFilter((const char *) myQuery.mb_str(wxConvUTF8)) != OGRERR_NONE) {
@@ -646,7 +646,7 @@ bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxA
     wxASSERT(m_Datasource);
     values.Clear();
     wxString myLayerName (m_Layer->GetLayerDefn()->GetName());
-    wxString myQuery = wxString::Format(_T("SELECT DISTINCT '%s' FROM '%s'"), fieldname, myLayerName);
+    wxString myQuery = wxString::Format(_T("SELECT DISTINCT \"%s\" FROM \"%s\""), fieldname, myLayerName);
     OGRLayer * myResultLayer = m_Datasource->ExecuteSQL(myQuery, NULL, NULL);
     if (myResultLayer == NULL) {
         return false;

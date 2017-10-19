@@ -454,7 +454,7 @@ void tmSymbolRuleEdit_DLG::_CreateControls() {
 	fgSizer5->Add( m_staticText14, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_NameCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_NameCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	fgSizer5->Add( m_NameCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticText* m_staticText15;
 	m_staticText15 = new wxStaticText( this, wxID_ANY, _("Query:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -462,7 +462,7 @@ void tmSymbolRuleEdit_DLG::_CreateControls() {
 	fgSizer5->Add( m_staticText15, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_AttributeCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 250,-1 ), 0 );
-	fgSizer5->Add( m_AttributeCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	fgSizer5->Add( m_AttributeCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	fgSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -476,7 +476,7 @@ void tmSymbolRuleEdit_DLG::_CreateControls() {
 	m_EnabledCtrl = new wxCheckBox( this, wxID_ANY, _("Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer5->Add( m_EnabledCtrl, 0, wxALL, 5 );
 	
-	bSizer13->Add( fgSizer5, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizer13->Add( fgSizer5, 1, wxEXPAND|wxALL, 5 );
 	
 	
 	bSizer13->Add( 0, 0, 0, wxEXPAND, 5 );
