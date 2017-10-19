@@ -423,12 +423,6 @@ void ScaleList::AfterAdding (bool bRealyAddItem)
 		m_pPrjDefinition->AddScale(lenteredScale);
 		SetScaleToList(lenteredScale);
 	}
-	
-	wxLogDebug(_T("Size of the scale array is : %d"), 
-			   m_pPrjDefinition->m_ScaleArray.GetCount());
-
-	//delete m_pDialog;
-	
 }
 
 
