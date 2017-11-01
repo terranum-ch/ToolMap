@@ -593,20 +593,20 @@ TOC_GENERIC_NAME AttribObjType_PANEL::GetVisibleNotebook ()
 /*void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
 {
 	wxCommandEvent evt (tmEVT_ATTRIBUTION_BTN_PRESSED, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }*/
 
 
 
 void AttribObjType_PANEL::OnAddBtn (wxCommandEvent & event){
     wxCommandEvent evt (tmEVT_ADD_BTN_PRESSED, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
 void AttribObjType_PANEL::OnRemoveBtn (wxCommandEvent & event){
     wxCommandEvent evt (tmEVT_REMOVE_BTN_PRESSED, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
+    m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
 /***************************************************************************//**
@@ -619,7 +619,7 @@ void AttribObjType_PANEL::OnRemoveBtn (wxCommandEvent & event){
 void AttribObjType_PANEL::OnInfoBtn (wxCommandEvent & event)
 {
 	wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }
 
 

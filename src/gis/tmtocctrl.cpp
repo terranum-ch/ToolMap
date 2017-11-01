@@ -708,7 +708,7 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 		// Send message show/hide to layermanager
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
 		evt.SetInt((int) itemdata->IsVisible());
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 		return;
 	}
 	
@@ -808,7 +808,7 @@ void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
 	
 	// update display
 	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 }
 
@@ -854,7 +854,7 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 		if (eventid != wxID_ANY)
 		{
 			evt.SetId(eventid);
-			GetEventHandler()->ProcessEvent(evt);
+			GetEventHandler()->AddPendingEvent(evt);
 			return; // do not propagate event.
 		}
 		
@@ -871,7 +871,7 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 void tmTOCCtrl::OnLayerSelected (wxTreeEvent & event)
 {
 	wxCommandEvent evt(tmEVT_TOC_SELECTION_CHANGED, wxID_ANY);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 	event.Skip();
 }
@@ -966,7 +966,7 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent & event){
 		
 		// update display
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -998,7 +998,7 @@ void tmTOCCtrl::StartEditing ()
 	
 	// sent message
 	wxCommandEvent evt(tmEVT_EM_EDIT_START, wxID_ANY);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 }
 
@@ -1039,7 +1039,7 @@ void tmTOCCtrl::StopEditing (bool bSentmessage)
 	if (bSentmessage)
 	{
 		wxCommandEvent evt(tmEVT_EM_EDIT_STOP, wxID_ANY);
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 
 }
@@ -1070,7 +1070,7 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 	wxASSERT(item->GetSymbolRef());
 	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
 	Evt.SetClientData(item);
-	GetEventHandler()->ProcessEvent(Evt);
+	GetEventHandler()->AddPendingEvent(Evt);
 }
 
 
@@ -1084,7 +1084,7 @@ void tmTOCCtrl::OnShowLabels (wxCommandEvent & event){
 	wxASSERT(item->GetSymbolRef());
 	wxCommandEvent Evt (tmEVT_LM_SHOW_LABELS, wxID_ANY);
 	Evt.SetClientData(item);
-	GetEventHandler()->ProcessEvent(Evt);
+	GetEventHandler()->AddPendingEvent(Evt);
 }
 
 
@@ -1119,7 +1119,7 @@ void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
 	{
 		// send event to the layer manager for updating display
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -1156,7 +1156,7 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 
 	if (RemoveLayer(selected, TRUE))
 	{
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 

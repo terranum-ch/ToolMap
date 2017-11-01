@@ -429,7 +429,7 @@ void tmRenderer::OnMouseMove (wxMouseEvent & event){
 	wxPoint * myPoint = new wxPoint(event.GetPosition());
 	wxCommandEvent evt(tmEVT_LM_MOUSE_MOVED, wxID_ANY);
 	evt.SetClientData(myPoint);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -481,7 +481,7 @@ void tmRenderer::OnMouseUp(wxMouseEvent & event)
 	
 	// send statistics
 	wxCommandEvent evt(tmEVT_STAT_CLICK, wxID_ANY);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -563,20 +563,20 @@ void tmRenderer::OnKey	(wxKeyEvent & event)
 	if (event.GetKeyCode() == WXK_RETURN || event.GetKeyCode() == WXK_TAB)
 	{
 		wxCommandEvent evt(tmEVT_EM_DRAW_ENTER, wxID_ANY);
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 	
 	if (event.GetKeyCode() == WXK_ESCAPE)
 	{
 		wxCommandEvent evt(tmEVT_EM_DRAW_ESC, wxID_ANY);
-		GetEventHandler()->ProcessEvent(evt);
+		GetEventHandler()->AddPendingEvent(evt);
 	}
 
 	if (event.GetKeyCode() >= WXK_F1 && event.GetKeyCode() <= WXK_F12)
 	{
 		wxCommandEvent evt2(tmEVT_AM_SHORTCUT_PRESSED, wxID_ANY);
 		evt2.SetInt( event.GetKeyCode());
-		GetEventHandler()->ProcessEvent(evt2);
+		GetEventHandler()->AddPendingEvent(evt2);
 	}
 	event.Skip();
 }
@@ -606,7 +606,7 @@ void tmRenderer::OnWheelTimer (wxTimerEvent & event){
 	evt.SetId(wxID_ANY);
     evt.SetClientData(new wxRect(myBaseRect));
 	evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_IN);
-    GetEventHandler()->ProcessEvent(evt);
+    GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -672,7 +672,7 @@ void tmRenderer::ZoomStop(const wxPoint & mousepos){
     else {
         evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_OUT);
     }
-    GetEventHandler()->ProcessEvent(evt);
+    GetEventHandler()->AddPendingEvent(evt);    
 }
 
 
@@ -740,7 +740,7 @@ void tmRenderer::SelectStop (const wxPoint & mousepos){
 	evt.SetInt(static_cast<int> (myShiftDown));
 	// do not delete mySelection Rect, will be deleted in the layer manager
 	evt.SetClientData(mypRect);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -859,7 +859,7 @@ void tmRenderer::PanStop (const wxPoint & mousepos){
 	// displacement done.
 	wxCommandEvent evt(tmEVT_LM_PAN_ENDED, wxID_ANY);
 	evt.SetClientData(myNewPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 	SetBitmapStatus();
 
@@ -884,7 +884,7 @@ void tmRenderer::PanDClick (wxMouseEvent & event){
     
     wxCommandEvent evt(tmEVT_LM_PAN_ENDED, wxID_ANY);
 	evt.SetClientData(new wxPoint(myMovedPoint));
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -895,7 +895,7 @@ void tmRenderer::OrientedPtsStart(const wxPoint & mousepos)
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 }
 
@@ -907,7 +907,7 @@ void tmRenderer::OrientedPtsMove (const wxPoint & mousepos)
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 }
 
@@ -919,7 +919,7 @@ void tmRenderer:: OrientedPtsStop (const wxPoint & mousepos)
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 	
 }
 
@@ -931,7 +931,7 @@ void tmRenderer::ModifySharedStart(const wxPoint & mousepos){
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);	
 }
 
 
@@ -942,7 +942,7 @@ void tmRenderer::ModifySharedStop(const wxPoint & mousepos){
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -953,7 +953,7 @@ void tmRenderer::ModifySharedUpdate(const wxPoint & mousepos){
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -970,7 +970,7 @@ void tmRenderer::CutLineClick (const wxPoint & mousepos)
 	wxPoint * myClickedPos = new wxPoint(mousepos.x,
 										 mousepos.y);
 	evt.SetClientData(myClickedPos);
-	GetEventHandler()->ProcessEvent(evt);
+	GetEventHandler()->AddPendingEvent(evt);
 }
 
 

@@ -155,6 +155,6 @@ void TocWindowDlgGen::OnPressRemoveLayers(wxCommandEvent & event)
 void TocWindowDlgGen::OnPressAddLayers(wxCommandEvent & event)
 {	
 	wxCommandEvent evt(tmEVT_LM_ADD, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
+	m_ParentEvt->GetEventHandler()->AddPendingEvent(evt);
 }*/
 
