@@ -129,7 +129,7 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 		evt.SetString(GetShortFileName().c_str());
 		wxRealPoint * myPt = new wxRealPoint(dCoord[2], dCoord[4]);
 		evt.SetClientData(myPt);
-		myMainWnd->GetEventHandler()->AddPendingEvent(evt);		
+		myMainWnd->GetEventHandler()->QueueEvent(evt.Clone());
 		/*
 		wxLogWarning(_("Layer %s contain following rotation informations (%.4f, %.4f).\n It may not be displayed correctly"),
 					 GetShortFileName().c_str(),
