@@ -483,6 +483,21 @@ tmLayerProperties * tmTOCCtrl::GetLayerByName (const wxString & layername){
 }
 
 
+tmLayerProperties * tmTOCCtrl::GetLayerByPath (const wxString & layerPath){
+	bool bReset = true;
+	tmLayerProperties * myReturnedLayer = NULL;
+	for (unsigned int i = 0; i<GetCountLayers();i++)
+	{
+		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
+		if (myIteratedLayer && myIteratedLayer->GetName() == wxFileName(layerPath)){
+			myReturnedLayer = myIteratedLayer;
+			break;
+		}
+		bReset = false;
+	}
+	return myReturnedLayer;
+}
+
 
 /***************************************************************************//**
  @brief Select a item

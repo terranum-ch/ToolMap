@@ -52,6 +52,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
+    EVT_COMMAND (wxID_ANY, tmEVT_LM_INCOMPATIBLE_WARNING, tmLayerManager::OnIncompatibleLayerWarning)
 END_EVENT_TABLE()
 
 bool tmLayerManager::m_LogOn = true;
@@ -432,6 +433,18 @@ void tmLayerManager::OnRotationWarning (wxCommandEvent & event){
 	}
 }
 
+void tmLayerManager::OnIncompatibleLayerWarning(wxCommandEvent &event)
+{
+    wxLogWarning(_("File %s has incompatible transformation coefficients and cannot be displayed."),
+                 wxFileName(event.GetString()).GetFullName());
+
+    tmLayerProperties *item = m_TOCCtrl->GetLayerByPath(event.GetString());
+
+    if (item) {
+        m_DB->RemoveTOCLayer(item->GetID());
+        m_TOCCtrl->RemoveLayer(item->GetId());
+    }
+}
 
 
 /***************************************************************************//**
