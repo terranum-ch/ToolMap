@@ -400,21 +400,21 @@ bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 		return false;
 	}*/
 	
-	double dWndwidth = m_ExtentWnd.GetWidth() - tmSCALE_MARGIN;
-	double dWndheight = m_ExtentWnd.GetHeight()  - tmSCALE_MARGIN;
+	double dWndwidth = m_ExtentWnd.GetWidth();
+	double dWndheight = m_ExtentWnd.GetHeight();
 
 	// compute shape 
 	double dpixelx = rect.m_width / dWndwidth;
 	double dpixely = rect.m_height / dWndheight;
 	
 	// computedivfactor
-	double myDivFactor = 0.0;
-	if (fabs(dpixelx) >= fabs(dpixely)) {
+	double myDivFactor = dpixelx;
+	/*if (fabs(dpixelx) >= fabs(dpixely)) {
 		myDivFactor = dpixelx;
 	}
 	else {
 		myDivFactor = dpixely;
-	}
+	}*/
 	
 	double myDivFactorX = fabs(myDivFactor);
 	double myDivFactorY = fabs(myDivFactor);
@@ -507,16 +507,20 @@ void tmGISScale::_ComputeUnitScale (){
     wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, myYmean);
     wxRealPoint myPtTopRight (m_ExtentWndReal.x_max, myYmean);
     m_WidthDistanceInM = myConvert.GetDistance(myPtTopLeft, myPtTopRight);
-    
+
     if (m_WidthDistanceInM == 0) {
         m_UnitScale = 0;
         return;
     }
-    
-    double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
-    double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
-    m_UnitScale = wxRound(m_WidthDistanceInM / dSizeMH);
-    return;
+
+    // screen size in mm
+    wxSize my_screen_size_mm = wxGetDisplaySizeMM();
+    wxSize my_screen_size_px = wxGetDisplaySize();
+
+    // window size in m
+    double my_wnd_size_m_x = (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
+
+    m_UnitScale = wxRound(m_WidthDistanceInM / my_wnd_size_m_x);
 }
 
 

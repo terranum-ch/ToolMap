@@ -30,7 +30,7 @@
 #include "../core/tmcoordconvert.h"
 
 
-const int tmSCALE_MARGIN = 10; // margin between image and border in full screen mode
+const int tmSCALE_MARGIN = 10; // margin between image and border when zooming to full extent
 bool tmIsSameDouble(double left, double right, double epsilon);
 
 
