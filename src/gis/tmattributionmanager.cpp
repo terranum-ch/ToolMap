@@ -139,11 +139,11 @@ void tmAttributionManager::OnShortcutPressed (wxCommandEvent & event){
 				// send notification to frame
 				wxCommandEvent evt(tmEVT_SHORTCUT_ATTRIBUTION_DONE, wxID_ANY);
 				evt.SetString(myDescription);
-				m_Parent->GetEventHandler()->ProcessEvent(evt);
+				m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 				
                 // send statistics
                 wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
-                m_Parent->GetEventHandler()->ProcessEvent(statevt);
+                m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
 			}
 		}
 	}
@@ -370,7 +370,7 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 		if(iSelFeatureCount == 1)
 		{
 			wxCommandEvent evt (tmEVT_INFO_BTN_PRESSED, wxID_ANY);
-			m_Parent->GetEventHandler()->ProcessEvent(evt);
+			m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 		}
 		else
 		{
@@ -427,11 +427,11 @@ void tmAttributionManager::OnSelection (wxCommandEvent & event)
 	
 	// focus to the renderer
 	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(statevt);
+	m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
 }*/
 
 
@@ -473,11 +473,11 @@ void tmAttributionManager::OnAddBtn (wxCommandEvent & event){
     
     // focus to the renderer
 	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(statevt);
+	m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
 }
 
 
@@ -519,11 +519,11 @@ void tmAttributionManager::OnRemoveBtn(wxCommandEvent & event){
     
     // focus to the renderer
 	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	
 	// send statistics
 	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(statevt);
+	m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
 }
 
 
@@ -784,11 +784,11 @@ void tmAttributionManager::OnRunQuery (wxCommandEvent & event)
 	
 	// update display
 	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	
 	// update selecction / attribution panel
 	wxCommandEvent evt2(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt2);
+	m_Parent->GetEventHandler()->QueueEvent(evt2.Clone());
 }
 
 

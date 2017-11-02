@@ -242,7 +242,7 @@ void tmSymbolDLGLineRule::_CreateControls() {
     
 	m_CategoryColumnCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, myFieldsName, 0 );
 	m_CategoryColumnCtrl->SetSelection( 0 );
-	sbSizer10->Add( m_CategoryColumnCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	sbSizer10->Add( m_CategoryColumnCtrl, 1, wxALL|wxEXPAND, 5 );
 	
 	bSizer2->Add( sbSizer10, 0, wxEXPAND|wxALL, 5 );
 	

@@ -307,7 +307,7 @@ void Queries_PANEL::OnRunQueries (wxCommandEvent & event)
 		wxCommandEvent evt (tmEVT_QUERY_RUN, wxID_ANY);
 		evt.SetString(myQCode);
 		evt.SetInt(myQTarget);
-		m_ParentEvt->GetEventHandler()->ProcessEvent(evt);
+		m_ParentEvt->GetEventHandler()->QueueEvent(evt.Clone());
 	}
 
 }
@@ -376,7 +376,7 @@ void Queries_PANEL::OnQueryApplySymbology (wxCommandEvent & event){
     }
     
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    m_ParentEvt->GetEventHandler()->ProcessEvent(evt2);
+    m_ParentEvt->GetEventHandler()->QueueEvent(evt2.Clone());
     
 }
 

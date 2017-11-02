@@ -106,6 +106,7 @@ private:
     void OnSelection (wxCommandEvent & event);
     void OnRemoveLayers(wxCommandEvent & event);
     void OnRotationWarning (wxCommandEvent & event);
+    void OnIncompatibleLayerWarning(wxCommandEvent & event);
     
     // bitmap specific functions
     void CreateEmptyBitmap (const wxSize & size);

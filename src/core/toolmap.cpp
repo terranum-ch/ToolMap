@@ -1202,7 +1202,7 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 
 void ToolMapFrame::OnRefreshView(wxCommandEvent & event){
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    GetEventHandler()->ProcessEvent(evt2);
+    GetEventHandler()->QueueEvent(evt2.Clone());
 }
 
 
@@ -1262,7 +1262,7 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	if (reload == true) {
 		//m_LayerManager->ReloadProjectLayers(false);
 		wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->ProcessEvent(evt2);
+		GetEventHandler()->QueueEvent(evt2.Clone());
 	}
 }
 
@@ -1390,7 +1390,7 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	myImport->Import(m_PManager->GetDatabase(), &myProgress);
 
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->ProcessEvent(evt2);
+	GetEventHandler()->QueueEvent(evt2.Clone());
 
 
 	/*tmGISImport myImport;
@@ -1411,7 +1411,7 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
 
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->ProcessEvent(evt2);*/
+	GetEventHandler()->QueueEvent(evt2.Clone());*/
 }
 
 

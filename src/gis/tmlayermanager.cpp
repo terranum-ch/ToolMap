@@ -52,6 +52,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
+    EVT_COMMAND (wxID_ANY, tmEVT_LM_INCOMPATIBLE_WARNING, tmLayerManager::OnIncompatibleLayerWarning)
 END_EVENT_TABLE()
 
 bool tmLayerManager::m_LogOn = true;
@@ -432,6 +433,18 @@ void tmLayerManager::OnRotationWarning (wxCommandEvent & event){
 	}
 }
 
+void tmLayerManager::OnIncompatibleLayerWarning(wxCommandEvent &event)
+{
+    wxLogWarning(_("File %s has incompatible transformation coefficients and cannot be displayed."),
+                 wxFileName(event.GetString()).GetFullName());
+
+    tmLayerProperties *item = m_TOCCtrl->GetLayerByPath(event.GetString());
+
+    if (item) {
+        m_DB->RemoveTOCLayer(item->GetID());
+        m_TOCCtrl->RemoveLayer(item->GetId());
+    }
+}
 
 
 /***************************************************************************//**
@@ -1118,7 +1131,7 @@ bool tmLayerManager::SelectedClear ()
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	return bReturn;
 }
 
@@ -1180,7 +1193,7 @@ bool tmLayerManager::SelectedInvert ()
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	return true;
 }
 
@@ -1238,7 +1251,7 @@ void tmLayerManager::CheckGeometryValidity(){
     m_SelectedData.AddSelected(&myOids);
 	ReloadProjectLayers(false, true);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 
     wxMessageBox(wxString::Format(_("%ld error(s) found while checking %ld feature(s)"),iNumError, iNumCheck),_("Geometry validity"));
 }
@@ -1346,7 +1359,7 @@ bool tmLayerManager::SelectByOid (){
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	return true;
 }
 
@@ -1509,7 +1522,7 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	}
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->ProcessEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	
 	delete mySelectedRect;
 }

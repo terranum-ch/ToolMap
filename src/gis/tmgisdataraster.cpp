@@ -25,6 +25,7 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING);
+DEFINE_EVENT_TYPE(tmEVT_LM_INCOMPATIBLE_WARNING);
 
 
 tmGISDataRaster::tmGISDataRaster()
@@ -102,6 +103,11 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 	// getting bounding box
 	double dCoord[6];
 	if (m_DataSet->GetGeoTransform(dCoord) != CE_None){
+		wxWindow * myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
+		wxASSERT(myMainWnd);
+		wxCommandEvent evt(tmEVT_LM_INCOMPATIBLE_WARNING, wxID_ANY);
+		evt.SetString(GetFullFileName().c_str());
+		myMainWnd->GetEventHandler()->QueueEvent(evt.Clone());
 		return tmRealRect(0,0,0,0);
     }
 	
@@ -123,7 +129,7 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 		evt.SetString(GetShortFileName().c_str());
 		wxRealPoint * myPt = new wxRealPoint(dCoord[2], dCoord[4]);
 		evt.SetClientData(myPt);
-		myMainWnd->GetEventHandler()->ProcessEvent(evt);
+		myMainWnd->GetEventHandler()->QueueEvent(evt.Clone());
 		/*
 		wxLogWarning(_("Layer %s contain following rotation informations (%.4f, %.4f).\n It may not be displayed correctly"),
 					 GetShortFileName().c_str(),

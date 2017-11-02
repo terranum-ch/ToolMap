@@ -45,6 +45,7 @@ matrix:
           build_command: "make -j $(nproc)"
           branch_pattern: nightly
 cache:
+  timeout: 1000
   directories:
   - $HOME/.gdal
   - $HOME/.wxpdfdoc

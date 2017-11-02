@@ -89,6 +89,6 @@ void tmScaleCtrlCombo::OnUserSetValue (wxCommandEvent & event){
 	// all seems correct
 	wxCommandEvent evt (tmEVT_SCALE_USER_CHANGED, wxID_ANY);
 	evt.SetExtraLong(myScaleLong);
-	m_ParentEvent->GetEventHandler()->ProcessEvent(evt);
+	m_ParentEvent->GetEventHandler()->QueueEvent(evt.Clone());
 }
 

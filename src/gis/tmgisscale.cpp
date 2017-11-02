@@ -536,15 +536,28 @@ bool tmGISScale::IsLayerExtentValid()
 
 
 void tmGISScale::ComputeNewScaleExtent (const long & scale){
-    double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
-    double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
-    
+    // ppi is an approximation
+    // double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
+    // double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
+
+    // screen size in mm
+    wxSize my_screen_size_mm = wxGetDisplaySizeMM();
+    wxSize my_screen_size_px = wxGetDisplaySize();
+
+    // window size in m
+    double my_wnd_size_m_x = (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
+    double my_wnd_size_m_y = (double) m_ExtentWnd.height * my_screen_size_mm.GetHeight() / my_screen_size_px.GetHeight() / 1000.0;
+
     tmCoordConvert myConvert (m_ProjectProjection);
-    double myDistInM = scale * dSizeMH;
-    
+    double myDistInM_x = scale * my_wnd_size_m_x;
+    double myDistInM_y = scale * my_wnd_size_m_y;
+
+    // compute right bottom point
     wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);
-    wxRealPoint myPtBtmRightNew = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM, 90);
-    
+    wxRealPoint myPtBtmRightNew_x = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM_x, 90);
+    wxRealPoint myPtBtmRightNew_y = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM_y, 180);
+
+
     vrRealRect myRectOld;
     myRectOld.SetLeftTop(wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max));
     myRectOld.SetRightBottom(wxPoint2DDouble(m_ExtentWndReal.x_max, m_ExtentWndReal.y_min));
@@ -552,9 +565,13 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale){
     
     vrRealRect myRectNew;
     myRectNew.SetLeftTop(wxPoint2DDouble (myPtTopLeft.x, myPtTopLeft.y));
-    myRectNew.SetRightBottom(wxPoint2DDouble(myPtBtmRightNew.x, myPtBtmRightNew.y));
+    myRectNew.SetRightBottom(wxPoint2DDouble(myPtBtmRightNew_x.x, myPtBtmRightNew_y.y));
     myRectNew.SetCentre(myOldCenter);
     ZoomViewTo(myRectNew);
+
+	wxLogDebug("old - bottom right = %f, %f", m_ExtentWndReal.x_max, m_ExtentWndReal.y_min);
+	wxLogDebug("new - bottom right = %f, %f", myPtBtmRightNew_x.x, myPtBtmRightNew_y.y);
+
 }
 
 
