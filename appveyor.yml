@@ -35,6 +35,7 @@ after_test:
   - cd C:\projects\toolmap
   - copy bin\*win64.exe .\
   - copy bin\*win64.zip .\
+  - for %f in (*win64.exe) do (copy /b bin\RelWithDebInfo\ToolMap.pdb %f.pdb)
 
 artifacts:
   - path: '*win64.exe'
@@ -44,6 +45,10 @@ artifacts:
   - path: '*win64.zip'
     name: ToolMapInstallerZip
     type: zip
+
+  - path: '*win64.exe.pdb'
+    name: ToolMapPdb
+    type: file
 
 deploy:
   - provider: FTP
