@@ -35,7 +35,7 @@ after_test:
   - cd C:\projects\toolmap
   - copy bin\*win64.exe .\
   - copy bin\*win64.zip .\
-  - for %f in (*win64.exe) do (copy /b bin\RelWithDebInfo\ToolMap.pdb %f.pdb)
+  - for %%f in (*win64.exe) do (copy /b bin\RelWithDebInfo\ToolMap.pdb %%f.pdb)
 
 artifacts:
   - path: '*win64.exe'
