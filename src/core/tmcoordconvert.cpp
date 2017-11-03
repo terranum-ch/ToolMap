@@ -113,6 +113,14 @@ wxRealPoint tmCoordConvert::GetPointGoogle(const wxRealPoint & in) {
 
 
 double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 ){
+    if (m_ProjType == PROJ_SWISSPROJ) {
+        if (p1.y == p2.y) {
+            return std::abs(p1.x - p2.x);
+        } else if (p1.x == p2.x) {
+            return std::abs(p1.y - p2.y);
+        }
+    }
+
     struct geod_geodesic myGeodesic;
     geod_init(&myGeodesic, m_Geod_a, m_Geod_f);
     
@@ -143,6 +151,17 @@ wxRealPoint tmCoordConvert::_GetPointLocalFromWGS( const wxRealPoint & pt){
 
 
 wxRealPoint tmCoordConvert::GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut){
+	if (m_ProjType == PROJ_SWISSPROJ) {
+        wxRealPoint newPointCH(p1);
+        if(azimut == 90) {
+            newPointCH.x += distance;
+            return newPointCH;
+        } else if(azimut == 180) {
+            newPointCH.y -= distance;
+            return newPointCH;
+        }
+	}
+
     struct geod_geodesic myGeodesic;
     geod_init(&myGeodesic, m_Geod_a, m_Geod_f);
     

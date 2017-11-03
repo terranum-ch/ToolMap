@@ -409,22 +409,16 @@ bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 	
 	// computedivfactor
 	double myDivFactor = dpixelx;
-	/*if (fabs(dpixelx) >= fabs(dpixely)) {
-		myDivFactor = dpixelx;
-	}
-	else {
-		myDivFactor = dpixely;
-	}*/
 	
 	double myDivFactorX = fabs(myDivFactor);
 	double myDivFactorY = fabs(myDivFactor);
 	
 	if (dpixelx <= 0) {
-		myDivFactorX = myDivFactorX * -1;
+		myDivFactorX *= -1;
 	}
 	
 	if (dpixely <= 0) {
-		myDivFactorY = myDivFactorY * -1;
+		myDivFactorY *= -1;
 	}
 	
 	vrRealRect myNewWndExtent;
@@ -504,9 +498,9 @@ void tmGISScale::_ComputeUnitScale (){
     double myYmean = std::max(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) - std::min(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
     myYmean = std::min(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) + (myYmean / 2.0);
     
-    wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, myYmean);
-    wxRealPoint myPtTopRight (m_ExtentWndReal.x_max, myYmean);
-    m_WidthDistanceInM = myConvert.GetDistance(myPtTopLeft, myPtTopRight);
+    wxRealPoint myPtMidLeft (m_ExtentWndReal.x_min, myYmean);
+    wxRealPoint myPtMidRight (m_ExtentWndReal.x_max, myYmean);
+    m_WidthDistanceInM = myConvert.GetDistance(myPtMidLeft, myPtMidRight);
 
     if (m_WidthDistanceInM == 0) {
         m_UnitScale = 0;
