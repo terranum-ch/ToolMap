@@ -532,7 +532,7 @@ void QueriesPageSelection::_CreateControls() {
 	wxArrayString m_SelTypeListChoices;
 	m_SelTypeList = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_SelTypeListChoices, 0 );
 	m_SelTypeList->SetSelection( 0 );
-	bSizer10->Add( m_SelTypeList, 0, wxALIGN_CENTER_HORIZONTAL|wxEXPAND|wxALL, 15 );
+	bSizer10->Add( m_SelTypeList, 0, wxEXPAND|wxALL, 15 );
 
 	this->SetSizer( bSizer10 );
 	bSizer10->Fit(this);

@@ -1164,7 +1164,7 @@ void tmRotationWarning_DLG::_CreateControls() {
 	
 	m_TextRotationCtrl = new wxStaticText( this, wxID_ANY, _("0.00012\n0.12000"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_TextRotationCtrl->Wrap( -1 );
-	sbSizer1->Add( m_TextRotationCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
+	sbSizer1->Add( m_TextRotationCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
 	
