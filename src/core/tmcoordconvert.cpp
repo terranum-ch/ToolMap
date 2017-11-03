@@ -115,9 +115,9 @@ wxRealPoint tmCoordConvert::GetPointGoogle(const wxRealPoint & in) {
 double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 ){
     if (m_ProjType == PROJ_SWISSPROJ) {
         if (p1.y == p2.y) {
-            return std::abs(p1.x - p2.x);
+            return fabs(p1.x - p2.x);
         } else if (p1.x == p2.x) {
-            return std::abs(p1.y - p2.y);
+            return fabs(p1.y - p2.y);
         }
     }
 
