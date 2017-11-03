@@ -160,7 +160,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	m_MSelSymbolCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 									(sizeof(tmSYMBOLPENSTYLES_NAME) / sizeof(wxString)),
 									tmSYMBOLPENSTYLES_NAME, 0 );
-	fgSizer10->Add( m_MSelSymbolCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer10->Add( m_MSelSymbolCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticText* m_staticText3;
 	m_staticText3 = new wxStaticText( m_panel1, wxID_ANY, _("Width:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -168,7 +168,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	fgSizer10->Add( m_staticText3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_MSelWidthCtrl = new wxSpinCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 1);
-	fgSizer10->Add( m_MSelWidthCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer10->Add( m_MSelWidthCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	sbSizer3->Add( fgSizer10, 1, wxEXPAND, 5 );
 	
@@ -199,7 +199,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	m_MUnSelSymbolCtrl = new wxChoice( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 									  (sizeof(tmSYMBOLPENSTYLES_NAME) / sizeof(wxString)),
 									  tmSYMBOLPENSTYLES_NAME, 0 );
-	fgSizer101->Add( m_MUnSelSymbolCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer101->Add( m_MUnSelSymbolCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticText* m_staticText31;
 	m_staticText31 = new wxStaticText( m_panel1, wxID_ANY, _("Width:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -207,7 +207,7 @@ void tmSymbolDLGLineMultiple::CreateControlsLine()
 	fgSizer101->Add( m_staticText31, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_MUnSelWidthCtrl = new wxSpinCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 1);
-	fgSizer101->Add( m_MUnSelWidthCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer101->Add( m_MUnSelWidthCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	sbSizer31->Add( fgSizer101, 1, wxEXPAND, 5 );
 	

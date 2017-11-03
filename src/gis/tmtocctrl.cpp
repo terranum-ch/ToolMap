@@ -159,7 +159,7 @@ void tmTOCCtrl::InsertProjectName (const wxString & prjname)
 {
 	if (m_root.IsOk())
 	{
-		wxLogDebug(_T("Root allready defined, not able to init root twice"));
+		wxLogDebug(_T("Root already defined, not able to init root twice"));
 		return;
 	}
 	

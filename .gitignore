@@ -13,3 +13,6 @@ cmake-build-relwithdebinfo/*
 *.dll
 *.log
 *.exe
+*.srctrlprj
+*.srctrlbm
+*.srctrldb

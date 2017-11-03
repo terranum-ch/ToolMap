@@ -151,7 +151,7 @@ void NewTemplatePrjWizard::_CreateControls() {
 	m_DestDirCtrl = new wxDirPickerCtrl( m_DestinationPage, ID_NEWPRJ_DESTDIRCTRL, wxEmptyString,
 										wxT("Select a folder"), wxDefaultPosition,
 										wxSize( -1,-1 ), wxDIRP_DEFAULT_STYLE );
-	fgSizer1->Add( m_DestDirCtrl, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
+	fgSizer1->Add( m_DestDirCtrl, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 	
 	wxStaticText* m_staticText3;
 	m_staticText3 = new wxStaticText( m_DestinationPage, wxID_ANY, wxT("Name:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -160,7 +160,7 @@ void NewTemplatePrjWizard::_CreateControls() {
 	
 	m_DestNameCtrl = new wxTextCtrl( m_DestinationPage, ID_NEWPRJ_DESTNAMECTRL,
 									wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer1->Add( m_DestNameCtrl, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	fgSizer1->Add( m_DestNameCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	sbSizer1->Add( fgSizer1, 1, wxEXPAND, 5 );
 	
