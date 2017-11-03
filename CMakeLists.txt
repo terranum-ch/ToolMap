@@ -38,6 +38,9 @@ else (CMAKE_COMPILER_IS_GNUCXX)
     set(USE_CODECOV OFF)
 endif ()
 
+# Enable output of compile commands (for Sourcetrail)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Sources and headers 
 FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
 SET(MY_SEARCHED_FILE "src/core/toolmap.cpp")
