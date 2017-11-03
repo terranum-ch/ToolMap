@@ -134,7 +134,7 @@ void ProjectDefDLG::Init()
 
 void ProjectDefDLG::DisableControlsForEdition()
 {
-	m_DlgPd_Proj_Projection->Enable(FALSE);
+	//m_DlgPd_Proj_Projection->Enable(FALSE);
 	//m_DlgPd_Proj_Unit->Enable(FALSE);
 	m_DlgPd_Button_Ok->SetLabel(_("Update Project"));
 }
@@ -170,7 +170,7 @@ void ProjectDefDLG::CreateControls()
 	
 	m_DlgPd_Proj_Projection = new wxChoice( m_DlgPd_Panel_Proj, ID_DLGPD_PROJ_PROJECTION, wxDefaultPosition, wxDefaultSize,PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
 	m_DlgPd_Proj_Projection->SetSelection(0);
-	m_DlgPd_Proj_Projection->Enable(FALSE);
+	m_DlgPd_Proj_Projection->Enable(true);
     itemFlexGridSizer6->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
     wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(m_DlgPd_Panel_Proj, wxID_ANY, _("Summary"));
@@ -267,6 +267,7 @@ bool ProjectDefDLG::TransferDataFromWindow()
 	m_pPrjDefinition->m_PrjAuthors = m_DlgPd_Proj_Author->GetValue();
 	m_pPrjDefinition->m_PrjSummary = m_DlgPd_Proj_Comment->GetValue();
     m_pPrjDefinition->m_PrjUnitType = static_cast<PRJDEF_UNIT_TYPE> (m_DlgPd_Proj_Unit->GetSelection());
+    m_pPrjDefinition->m_PrjProjType = static_cast<PRJDEF_PROJ_TYPE> (m_DlgPd_Proj_Projection->GetSelection());
 	return TRUE;
 }
 

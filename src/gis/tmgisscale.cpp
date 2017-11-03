@@ -127,7 +127,7 @@ void tmGISScale::InitMemberValues()
 	m_PixelSize = 0;
 	m_ExtentWndMM = wxSize(0,0);
     m_ProjectUnit = UNIT_METERS;
-    m_ProjectProjection = PROJ_SWISSPROJ;
+    m_ProjectProjection = PROJ_SWISS_CH1903;
     m_WidthDistanceInM = 0;
 }
 

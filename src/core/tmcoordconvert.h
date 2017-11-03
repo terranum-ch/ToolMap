@@ -31,7 +31,8 @@ class tmRealRect;
 class tmCoordConvert {
 private:
     static wxString m_ProjTextGoogle;
-    static wxString m_ProjTextSwiss;
+    static wxString m_ProjTextCH1903;
+    static wxString m_ProjTextCH1903plus;
     static wxString m_ProjTextWGS84;
     static double m_Geod_a;
     static double m_Geod_f;
