@@ -75,7 +75,7 @@ public:
     }
     
     void testDistanceWGS84(){
-        tmCoordConvert myConvert (PROJ_SWISS_CH1903);
+        tmCoordConvert myConvert (PROJ_WORLD_WGS84);
         wxRealPoint myP1 (6.14712, 46.20593); // GENEVA
         wxRealPoint myP2 (7.45782, 46.94832); // BERN
         double myDist = myConvert.GetDistance(myP1, myP2);
