@@ -212,10 +212,12 @@ void tmLayerManager::FillTOCArray()
 			break;
 		}
 
+#ifndef USE_NOTES
 		if (lyrproptemp->GetName().GetName() == "Notes") {
 			wxLogDebug(_("Hiding the Notes layer"));
 			continue;
 		}
+#endif
 
         if(!m_TOCCtrl->InsertLayer(lyrproptemp)){
 			wxLogError (_("Adding layer: %s failed!"), lyrproptemp->GetName().GetName());

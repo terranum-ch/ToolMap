@@ -143,7 +143,8 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
 	itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 0);// 5);
 	
     m_AttribNotebook->AddPage(itemPanel21, _("Polygons"));
-	
+
+#ifdef USE_NOTES
     wxPanel* itemPanel24 = new wxPanel( m_AttribNotebook, ID_PANEL23, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
     itemPanel24->SetSizer(itemBoxSizer25);
@@ -196,9 +197,10 @@ wxSizer * AttribObjType_PANEL::CreateControls(wxWindow * parent, bool call_fit, 
     itemBoxSizer25->Add(itemCheckBox37, 0, wxGROW|wxTOP, 5);
 	
     m_AttribNotebook->AddPage(itemPanel24, _("Notes"));
-    m_AttribSizer->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
-    
-    
+#endif
+
+	m_AttribSizer->Add(m_AttribNotebook, 1, wxGROW, 0);//|wxTOP|wxBOTTOM, 5);
+
     m_WarningMultiFeatureCtrl = new wxStaticText(parent, wxID_ANY, wxEmptyString);
     wxFont myFont = wxNORMAL_FONT->Bold() ;
     m_WarningMultiFeatureCtrl->SetFont(myFont);
