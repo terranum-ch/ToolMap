@@ -200,7 +200,7 @@ void ProjectDefNew::CreateControls()
 	m_DlgPd_Proj_Projection = new wxChoice( itemDialog1, ID_DLGPD_PROJ_PROJECTION_NEW,
 										   wxDefaultPosition, wxDefaultSize,
 										   PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
-	m_DlgPd_Proj_Projection->SetSelection(PROJ_SWISS_CH1903);
+    m_DlgPd_Proj_Projection->SetSelection(PROJ_SWISS_CH1903PLUS);
     itemFlexGridSizer3->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
 	
