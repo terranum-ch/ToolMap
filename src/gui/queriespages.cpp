@@ -965,7 +965,11 @@ void QueriesPageExpert::_CreateControls() {
 	m_staticText8->Wrap( m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE );
 	bSizer11->Add( m_staticText8, 0, wxALL, 5 );
 
+#ifdef USE_NOTES
 	wxString m_LayerTypeChoices[] = { _("Lines"), _("Points"), _("Labels"), _("Notes") };
+#else
+	wxString m_LayerTypeChoices[] = { _("Lines"), _("Points"), _("Labels") };
+#endif
 	int m_LayerTypeNChoices = sizeof( m_LayerTypeChoices ) / sizeof( wxString );
 	m_LayerType = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), m_LayerTypeNChoices, m_LayerTypeChoices, 1, wxRA_SPECIFY_COLS );
 	m_LayerType->SetSelection( 0 );
