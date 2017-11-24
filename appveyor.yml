@@ -57,7 +57,17 @@ deploy:
     username: euso_toolmap
     password:
       secure: WWmGrLRonuGbVQ8y6bvsmCQha3YggTiPsAAs0egS/g0=
-    artifact: 
+    artifact:
     on:
       branch: nightly
+
+  - provider: FTP
+    protocol: ftp
+    host: euso.ftp.infomaniak.com
+    username: euso_toolmap
+    password:
+      secure: WWmGrLRonuGbVQ8y6bvsmCQha3YggTiPsAAs0egS/g0=
+    artifact:
+    on:
+      branch: release
     
