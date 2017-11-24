@@ -55,9 +55,15 @@ QueriesListDLG::QueriesListDLG( wxWindow* parent, wxWindowID id,
 	m_staticText21 = new wxStaticText( this, wxID_ANY, wxT("Target :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText21->Wrap( -1 );
 	fgSizer1->Add( m_staticText21, 0, wxALL|wxALIGN_RIGHT, 5 );
-	
+
+#ifdef USE_NOTES
 	m_Target = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
 							4, TOC_GENERIC_NAME_STRING, 0 );
+#else
+	m_Target = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+							 3, TOC_GENERIC_NAME_STRING, 0 );
+#endif
+
 	m_Target->SetSelection( 0 );
 	fgSizer1->Add( m_Target, 0, wxALL|wxEXPAND, 5 );
 	

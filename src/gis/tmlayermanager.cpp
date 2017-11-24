@@ -25,7 +25,6 @@
 #include "tmgisdatarasterweb.h"
 #include "../gui/tmclosefile_dlg.h"
 #include "../core/tmcoordconvert.h"
-#include "../gui/tmwebframe.h"
 
 
 
@@ -53,6 +52,7 @@ BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION,  tmLayerManager::OnSelection)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
 	EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
+    EVT_COMMAND (wxID_ANY, tmEVT_LM_INCOMPATIBLE_WARNING, tmLayerManager::OnIncompatibleLayerWarning)
 END_EVENT_TABLE()
 
 bool tmLayerManager::m_LogOn = true;
@@ -211,11 +211,14 @@ void tmLayerManager::FillTOCArray()
 		if(lyrproptemp ==NULL){
 			break;
 		}
-		
-        if (lyrproptemp->GetType() == TOC_NAME_WEB) {
-            lyrproptemp->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
-        }
-        
+
+#ifndef USE_NOTES
+		if (lyrproptemp->GetName().GetName() == "Notes") {
+			wxLogDebug(_("Hiding the Notes layer"));
+			continue;
+		}
+#endif
+
         if(!m_TOCCtrl->InsertLayer(lyrproptemp)){
 			wxLogError (_("Adding layer: %s failed!"), lyrproptemp->GetName().GetName());
 			  continue;
@@ -437,6 +440,18 @@ void tmLayerManager::OnRotationWarning (wxCommandEvent & event){
 	}
 }
 
+void tmLayerManager::OnIncompatibleLayerWarning(wxCommandEvent &event)
+{
+    wxLogWarning(_("File %s has incompatible transformation coefficients and cannot be displayed."),
+                 wxFileName(event.GetString()).GetFullName());
+
+    tmLayerProperties *item = m_TOCCtrl->GetLayerByPath(event.GetString());
+
+    if (item) {
+        m_DB->RemoveTOCLayer(item->GetID());
+        m_TOCCtrl->RemoveLayer(item->GetId());
+    }
+}
 
 
 /***************************************************************************//**
@@ -497,24 +512,44 @@ void tmLayerManager::AddLayer (wxCommandEvent & event)
 
 
 void tmLayerManager::AddWebLayer (){
-    wxString myWebPages[] = {
-        _T("google satellite"), _T("google streets"),
-        _T("bing satellite"), _T("bing streets")
-    };
-    wxSingleChoiceDialog myDlg (m_Parent, _("Select web layer to add:"), _("Add web layer"), sizeof(myWebPages) / sizeof(wxString), &myWebPages[0]);
-    if (myDlg.ShowModal() != wxID_OK) {
+    // list WMS xml files in share/toolmap
+    wxString myWebPagePathText = _T("/../../share/toolmap");
+#ifdef __WXMSW__
+    myWebPagePathText.Replace(_T("/"), _T("\\"));
+#endif
+    wxFileName myWebPath (wxStandardPaths::Get().GetExecutablePath() +  myWebPagePathText);
+    myWebPath.Normalize();
+
+    if (myWebPath.Exists() == false) {
+        wxLogError(_("WMS directory didn't exists! Try re-installing ToolMap"));
         return;
     }
-    
-    wxString mySelectedName = myDlg.GetStringSelection();
-    mySelectedName.Replace(_T(" "), _T("_"));
-    mySelectedName.Append(_T(".html"));
-    
-    wxFileName myWebPath;
-    myWebPath.Assign(mySelectedName);
-    if (OpenLayer(myWebPath, false, wxEmptyString) == false) {
-        wxLogError(_("Loading: %s failed"), myWebPath.GetName());
+
+    // create the list with all WMS files
+    wxArrayString myWMSFilesFullPath;
+    wxDir::GetAllFiles(myWebPath.GetFullPath(), &myWMSFilesFullPath, _T("*.xml"), wxDIR_FILES);
+    if (myWMSFilesFullPath.GetCount() == 0){
+        wxLogError(_("No WMS files found! Try re-installing ToolMap!"));
+        return;
     }
+
+    wxArrayString myWMSFilesShortNames;
+    for (unsigned int i = 0; i < myWMSFilesFullPath.GetCount(); ++i) {
+        wxString myFileName = wxEmptyString;
+        wxFileName::SplitPath(myWMSFilesFullPath.Item(i), NULL, NULL, &myFileName, NULL);
+        myFileName.Replace(_T("_"), _T(" "));
+        myWMSFilesShortNames.Add(myFileName);
+    }
+
+    wxMultiChoiceDialog myDlg (m_Parent, _("Select web layer to add:"), _("Add web layer"), myWMSFilesShortNames);
+    if (myDlg.ShowModal() == wxID_CANCEL){
+        return;
+    }
+
+    for (unsigned int j = 0; j < myDlg.GetSelections().GetCount() ; ++j) {
+        OpenLayer(wxFileName(myWMSFilesFullPath.Item(myDlg.GetSelections().Item(j))));
+    }
+    ReloadProjectLayers(false, false);
 }
 
 
@@ -628,13 +663,6 @@ bool tmLayerManager::OpenLayer(const wxFileName & filename, bool replace, const 
     
     tmLayerProperties * item = new tmLayerProperties();
     item->InitFromPathAndName(filename.GetPath(),filename.GetFullName(),tmGISData::GetAllSupportedGISFormatsExtensions());
-    
-	if (item->GetType() == TOC_NAME_WEB) {
-        item->SetWebFrame(m_Parent, wxID_ANY, m_GISRenderer->GetSize());
-        wxASSERT(item->GetWebFrameRef());
-        item->GetWebFrameRef()->SetUsingRAM(m_isUsingRAM);
-        item->GetWebFrameRef()->SetInternetRefreshTime(m_InternetRefreshTime);
-    }
 
     // try to open the file for getting the spatial type
     tmGISData * myLayer = tmGISData::LoadLayer(item);
@@ -782,6 +810,8 @@ void tmLayerManager::OnSizeChange (wxCommandEvent & event)
 	if (m_Scale.ComptuteNewWindowSize(myOldSize, myNewSize)){
 		ReloadProjectLayers(false, false);
     }
+
+    event.Skip();
 }
 
 
@@ -1108,7 +1138,7 @@ bool tmLayerManager::SelectedClear ()
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	return bReturn;
 }
 
@@ -1170,7 +1200,7 @@ bool tmLayerManager::SelectedInvert ()
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	return true;
 }
 
@@ -1228,7 +1258,7 @@ void tmLayerManager::CheckGeometryValidity(){
     m_SelectedData.AddSelected(&myOids);
 	ReloadProjectLayers(false, true);
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 
     wxMessageBox(wxString::Format(_("%ld error(s) found while checking %ld feature(s)"),iNumError, iNumCheck),_("Geometry validity"));
 }
@@ -1336,7 +1366,7 @@ bool tmLayerManager::SelectByOid (){
 	ReloadProjectLayers(false, true);
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	return true;
 }
 
@@ -1499,7 +1529,7 @@ void tmLayerManager::OnSelection (wxCommandEvent & event)
 	}
 	
 	wxCommandEvent evt(tmEVT_SELECTION_DONE, wxID_ANY);
-	m_Parent->GetEventHandler()->AddPendingEvent(evt);
+	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
 	
 	delete mySelectedRect;
 }
@@ -1710,8 +1740,11 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids)
                 // processing and deleting data
                 if (layerData)
                 {
-                    myExtent = layerData->GetMinimalBoundingRectangle();
-                    m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+                    // ignore extend for web rasters because they are too big
+                    if (pLayerProp->GetType() != TOC_NAME_WEB){
+                        myExtent = layerData->GetMinimalBoundingRectangle();
+                        m_Scale.SetMaxLayersExtentAsExisting(myExtent);
+                    }
                     iReaded ++;
                 }
                 wxDELETE(layerData);
@@ -1771,8 +1804,9 @@ int tmLayerManager::ReadLayerDraw ()
         layerData->SetCoordConvert(myCoordConv);
         
         if (layerData->GetDataType() == tmGIS_RASTER_WEB) {
-            tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
-            myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
+            wxLogMessage(_T("Converting coordinates here..."));
+            //tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
+            //myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
         }
         
         m_Drawer.Draw(pLayerProp, layerData);
@@ -1857,36 +1891,5 @@ bool tmLayerManager::HasZoomPrevious(){
 	return bReturn;
 }
 
-
-void tmLayerManager::SetWebRasterPreferences (bool usingram, int internetrefreshtime){
-	// storing parameters for new web layer
-    m_isUsingRAM = usingram;
-    m_InternetRefreshTime = internetrefreshtime;
-    
-    int iRank = 0;
-	tmLayerProperties * pLayerProp = NULL;
-	tmRealRect myExtent (0,0,0,0);
-	// prepare loading of MySQL data
-	tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
-	while (1){
-		if (iRank == 0){
-			pLayerProp = m_TOCCtrl->IterateLayers(true);
-		}
-		else{
-			pLayerProp = m_TOCCtrl->IterateLayers(false);
-		}
-		
-		if (pLayerProp == NULL){
-			break;
-        }
-		
-        if (pLayerProp->GetWebFrameRef() != NULL) {
-            pLayerProp->GetWebFrameRef()->SetInternetRefreshTime(internetrefreshtime);
-            pLayerProp->GetWebFrameRef()->SetUsingRAM(usingram);
-        }
-        
-		iRank ++;
-	}
-}
 
 

@@ -144,13 +144,20 @@ GEOS_MSC = 1900
 !ELSEIF "$(_NMAKE_VER)" == "14.10.25019.0"
 GEOS_MSVC = 15.0
 GEOS_MSC = 1910
+!ELSEIF "$(_NMAKE_VER)" == "14.11.25507.1"
+GEOS_MSVC = 15.0
+GEOS_MSC = 1911
+!ELSEIF "$(_NMAKE_VER)" == "14.11.25547.0"
+GEOS_MSVC = 15.0
+GEOS_MSC = 1911
 !ELSE
-GEOS_MSVC = 0.0
-GEOS_MSC = 0
+!MESSAGE *** Cannot determine Visual C++ version. Defaulting to 15.0
+GEOS_MSVC = 15.0
+GEOS_MSC = 1911
 !ENDIF
 
 !IF "$(GEOS_MSVC)" == "0.0" && "$(GEOS_MSC)" == "0"
-!MESSAGE *** Cannot determine Visual C++ version
+!ERROR *** Cannot determine Visual C++ version
 !ERROR *** Aborting make job
 !ELSE
 !MESSAGE *** Using Microsoft NMAKE version $(_NMAKE_VER)

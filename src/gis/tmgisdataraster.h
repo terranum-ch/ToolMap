@@ -33,6 +33,7 @@
 #include <wx/dir.h>	// for computing dir size
 
 DECLARE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING, -1)
+DECLARE_EVENT_TYPE(tmEVT_LM_INCOMPATIBLE_WARNING, -1)
 
 
 // if you add some raster format, don't forget
@@ -56,7 +57,7 @@ static wxString tmGISDATA_RASTER_TYPE_EXTENSION[] =
 	_T("*.tif;*.tiff"),
 	_T("*.adf"),
 	_T("*.jpg;*.jpeg"),
-    _T("*.html")
+    _T("*.xml")
 };
 
 

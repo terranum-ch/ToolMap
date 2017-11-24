@@ -106,6 +106,7 @@ private:
     void OnSelection (wxCommandEvent & event);
     void OnRemoveLayers(wxCommandEvent & event);
     void OnRotationWarning (wxCommandEvent & event);
+    void OnIncompatibleLayerWarning(wxCommandEvent & event);
     
     // bitmap specific functions
     void CreateEmptyBitmap (const wxSize & size);
@@ -181,8 +182,6 @@ public:
     
     void SetSelectionColour(const wxColour & col){m_SelectedData.SetSelectionColour(col);}
     void SetSelectionHalo (bool hashalo) {m_SelectedData.SetSelectionHalo(hashalo);}
-    
-    void SetWebRasterPreferences (bool usingram, int internetrefreshtime);
 };
 
 #endif

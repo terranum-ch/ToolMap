@@ -127,7 +127,7 @@ void tmGISScale::InitMemberValues()
 	m_PixelSize = 0;
 	m_ExtentWndMM = wxSize(0,0);
     m_ProjectUnit = UNIT_METERS;
-    m_ProjectProjection = PROJ_SWISSPROJ;
+    m_ProjectProjection = PROJ_SWISS_CH1903;
     m_WidthDistanceInM = 0;
 }
 
@@ -400,31 +400,25 @@ bool tmGISScale::ZoomViewTo (const vrRealRect & rect){
 		return false;
 	}*/
 	
-	double dWndwidth = m_ExtentWnd.GetWidth() - tmSCALE_MARGIN;
-	double dWndheight = m_ExtentWnd.GetHeight()  - tmSCALE_MARGIN;
+	double dWndwidth = m_ExtentWnd.GetWidth();
+	double dWndheight = m_ExtentWnd.GetHeight();
 
 	// compute shape 
 	double dpixelx = rect.m_width / dWndwidth;
 	double dpixely = rect.m_height / dWndheight;
 	
 	// computedivfactor
-	double myDivFactor = 0.0;
-	if (fabs(dpixelx) >= fabs(dpixely)) {
-		myDivFactor = dpixelx;
-	}
-	else {
-		myDivFactor = dpixely;
-	}
+	double myDivFactor = dpixelx;
 	
 	double myDivFactorX = fabs(myDivFactor);
 	double myDivFactorY = fabs(myDivFactor);
 	
 	if (dpixelx <= 0) {
-		myDivFactorX = myDivFactorX * -1;
+		myDivFactorX *= -1;
 	}
 	
 	if (dpixely <= 0) {
-		myDivFactorY = myDivFactorY * -1;
+		myDivFactorY *= -1;
 	}
 	
 	vrRealRect myNewWndExtent;
@@ -504,19 +498,23 @@ void tmGISScale::_ComputeUnitScale (){
     double myYmean = std::max(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) - std::min(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min);
     myYmean = std::min(m_ExtentWndReal.y_max, m_ExtentWndReal.y_min) + (myYmean / 2.0);
     
-    wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, myYmean);
-    wxRealPoint myPtTopRight (m_ExtentWndReal.x_max, myYmean);
-    m_WidthDistanceInM = myConvert.GetDistance(myPtTopLeft, myPtTopRight);
-    
+    wxRealPoint myPtMidLeft (m_ExtentWndReal.x_min, myYmean);
+    wxRealPoint myPtMidRight (m_ExtentWndReal.x_max, myYmean);
+    m_WidthDistanceInM = myConvert.GetDistance(myPtMidLeft, myPtMidRight);
+
     if (m_WidthDistanceInM == 0) {
         m_UnitScale = 0;
         return;
     }
-    
-    double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
-    double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
-    m_UnitScale = wxRound(m_WidthDistanceInM / dSizeMH);
-    return;
+
+    // screen size in mm
+    wxSize my_screen_size_mm = wxGetDisplaySizeMM();
+    wxSize my_screen_size_px = wxGetDisplaySize();
+
+    // window size in m
+    double my_wnd_size_m_x = (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
+
+    m_UnitScale = wxRound(m_WidthDistanceInM / my_wnd_size_m_x);
 }
 
 
@@ -536,15 +534,28 @@ bool tmGISScale::IsLayerExtentValid()
 
 
 void tmGISScale::ComputeNewScaleExtent (const long & scale){
-    double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
-    double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
-    
+    // ppi is an approximation
+    // double dInchPx = 1.0 / 0.0254 * ((double)m_PPI.x);
+    // double dSizeMH = ((double) m_ExtentWnd.width) / dInchPx;
+
+    // screen size in mm
+    wxSize my_screen_size_mm = wxGetDisplaySizeMM();
+    wxSize my_screen_size_px = wxGetDisplaySize();
+
+    // window size in m
+    double my_wnd_size_m_x = (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
+    double my_wnd_size_m_y = (double) m_ExtentWnd.height * my_screen_size_mm.GetHeight() / my_screen_size_px.GetHeight() / 1000.0;
+
     tmCoordConvert myConvert (m_ProjectProjection);
-    double myDistInM = scale * dSizeMH;
-    
+    double myDistInM_x = scale * my_wnd_size_m_x;
+    double myDistInM_y = scale * my_wnd_size_m_y;
+
+    // compute right bottom point
     wxRealPoint myPtTopLeft (m_ExtentWndReal.x_min, m_ExtentWndReal.y_max);
-    wxRealPoint myPtBtmRightNew = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM, 90);
-    
+    wxRealPoint myPtBtmRightNew_x = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM_x, 90);
+    wxRealPoint myPtBtmRightNew_y = myConvert.GetPointAtDistance(myPtTopLeft, myDistInM_y, 180);
+
+
     vrRealRect myRectOld;
     myRectOld.SetLeftTop(wxPoint2DDouble(m_ExtentWndReal.x_min, m_ExtentWndReal.y_max));
     myRectOld.SetRightBottom(wxPoint2DDouble(m_ExtentWndReal.x_max, m_ExtentWndReal.y_min));
@@ -552,9 +563,13 @@ void tmGISScale::ComputeNewScaleExtent (const long & scale){
     
     vrRealRect myRectNew;
     myRectNew.SetLeftTop(wxPoint2DDouble (myPtTopLeft.x, myPtTopLeft.y));
-    myRectNew.SetRightBottom(wxPoint2DDouble(myPtBtmRightNew.x, myPtBtmRightNew.y));
+    myRectNew.SetRightBottom(wxPoint2DDouble(myPtBtmRightNew_x.x, myPtBtmRightNew_y.y));
     myRectNew.SetCentre(myOldCenter);
     ZoomViewTo(myRectNew);
+
+	wxLogDebug("old - bottom right = %f, %f", m_ExtentWndReal.x_max, m_ExtentWndReal.y_min);
+	wxLogDebug("new - bottom right = %f, %f", myPtBtmRightNew_x.x, myPtBtmRightNew_y.y);
+
 }
 
 

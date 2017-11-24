@@ -25,6 +25,7 @@
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING);
+DEFINE_EVENT_TYPE(tmEVT_LM_INCOMPATIBLE_WARNING);
 
 
 tmGISDataRaster::tmGISDataRaster()
@@ -102,6 +103,11 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 	// getting bounding box
 	double dCoord[6];
 	if (m_DataSet->GetGeoTransform(dCoord) != CE_None){
+		wxWindow * myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
+		wxASSERT(myMainWnd);
+		wxCommandEvent evt(tmEVT_LM_INCOMPATIBLE_WARNING, wxID_ANY);
+		evt.SetString(GetFullFileName().c_str());
+		myMainWnd->GetEventHandler()->QueueEvent(evt.Clone());
 		return tmRealRect(0,0,0,0);
     }
 	
@@ -123,7 +129,7 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle()
 		evt.SetString(GetShortFileName().c_str());
 		wxRealPoint * myPt = new wxRealPoint(dCoord[2], dCoord[4]);
 		evt.SetClientData(myPt);
-		myMainWnd->GetEventHandler()->AddPendingEvent(evt);		
+		myMainWnd->GetEventHandler()->QueueEvent(evt.Clone());
 		/*
 		wxLogWarning(_("Layer %s contain following rotation informations (%.4f, %.4f).\n It may not be displayed correctly"),
 					 GetShortFileName().c_str(),
@@ -1158,7 +1164,7 @@ void tmRotationWarning_DLG::_CreateControls() {
 	
 	m_TextRotationCtrl = new wxStaticText( this, wxID_ANY, _("0.00012\n0.12000"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_TextRotationCtrl->Wrap( -1 );
-	sbSizer1->Add( m_TextRotationCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
+	sbSizer1->Add( m_TextRotationCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
 	

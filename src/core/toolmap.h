@@ -240,7 +240,6 @@ const int ID_MENU_ADD_WEBDATA = wxWindow::NewControlId();
 
 
 const wxString g_ProgName = _T("ToolMap");
-const wxString g_ProgMajorVersion = _T("2.6");
 
 // define perspectives for auimanager
 enum tmPERSPECTIVE_MODE {

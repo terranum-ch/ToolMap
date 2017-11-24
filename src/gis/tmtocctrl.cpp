@@ -20,7 +20,6 @@
 #include "tmtocctrl.h"
 #include "tmsymbol.h"				// for symbology
 #include "tmlayerproperties.h"
-#include "../gui/tmwebframe.h"
 
 
 
@@ -54,7 +53,6 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
 	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
 	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
-    EVT_MENU (ID_TOCMENU_SHOW_WEBFRAME, tmTOCCtrl::OnShowWebFrame)
     EVT_MENU (ID_TOCMENU_LABELS, tmTOCCtrl::OnShowLabels)
     EVT_PAINT(tmTOCCtrl::OnPaint)
 	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
@@ -161,7 +159,7 @@ void tmTOCCtrl::InsertProjectName (const wxString & prjname)
 {
 	if (m_root.IsOk())
 	{
-		wxLogDebug(_T("Root allready defined, not able to init root twice"));
+		wxLogDebug(_T("Root already defined, not able to init root twice"));
 		return;
 	}
 	
@@ -485,6 +483,21 @@ tmLayerProperties * tmTOCCtrl::GetLayerByName (const wxString & layername){
 }
 
 
+tmLayerProperties * tmTOCCtrl::GetLayerByPath (const wxString & layerPath){
+	bool bReset = true;
+	tmLayerProperties * myReturnedLayer = NULL;
+	for (unsigned int i = 0; i<GetCountLayers();i++)
+	{
+		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
+		if (myIteratedLayer && myIteratedLayer->GetName() == wxFileName(layerPath)){
+			myReturnedLayer = myIteratedLayer;
+			break;
+		}
+		bReset = false;
+	}
+	return myReturnedLayer;
+}
+
 
 /***************************************************************************//**
  @brief Select a item
@@ -593,7 +606,6 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
 	SetItemFont(newinserteditem, item1_font);
 	SelectItem(newinserteditem, true);
 	
-	item1_data->SetWebFrame(NULL, wxID_ANY, wxSize(0,0)); // avoid frame deleting
 	Delete(item);
 	Thaw();
 	return true;
@@ -696,7 +708,7 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
 		// Send message show/hide to layermanager
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
 		evt.SetInt((int) itemdata->IsVisible());
-		GetEventHandler()->AddPendingEvent(evt);
+		GetEventHandler()->QueueEvent(evt.Clone());
 		return;
 	}
 	
@@ -796,7 +808,7 @@ void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
 	
 	// update display
 	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt);
+	GetEventHandler()->QueueEvent(evt.Clone());
 	
 }
 
@@ -842,7 +854,7 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 		if (eventid != wxID_ANY)
 		{
 			evt.SetId(eventid);
-			GetEventHandler()->AddPendingEvent(evt);
+			GetEventHandler()->QueueEvent(evt.Clone());
 			return; // do not propagate event.
 		}
 		
@@ -859,7 +871,7 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
 void tmTOCCtrl::OnLayerSelected (wxTreeEvent & event)
 {
 	wxCommandEvent evt(tmEVT_TOC_SELECTION_CHANGED, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt);
+	GetEventHandler()->QueueEvent(evt.Clone());
 	
 	event.Skip();
 }
@@ -878,31 +890,6 @@ void tmTOCCtrl::OnEditingChange (wxCommandEvent & event)
 	else
 		StopEditing(true);
 }
-
-
-
-void tmTOCCtrl::OnShowWebFrame (wxCommandEvent & event){
-	wxTreeItemId itemid = GetSelection();
-    if(itemid.IsOk()==false){
-        return;
-    }
-    
-    tmLayerProperties * myLayerProp = static_cast<tmLayerProperties *>(GetItemData(itemid));
-    if (myLayerProp == NULL) {
-        wxLogError(_("No data assigned to this item!"));
-        return;
-    }
-    
-    bool isVisible = myLayerProp->GetWebFrameRef()->IsVisible();
-    if (isVisible == true) {
-        myLayerProp->GetWebFrameRef()->Hide();
-    }
-    else {
-        myLayerProp->GetWebFrameRef()->Show();
-    }
-}
-
-
 
 void tmTOCCtrl::OnDragStart(wxTreeEvent & event){
 	m_DragItemID = wxTreeItemId();
@@ -979,7 +966,7 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent & event){
 		
 		// update display
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->AddPendingEvent(evt);
+		GetEventHandler()->QueueEvent(evt.Clone());
 	}
 }
 
@@ -1011,7 +998,7 @@ void tmTOCCtrl::StartEditing ()
 	
 	// sent message
 	wxCommandEvent evt(tmEVT_EM_EDIT_START, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt);
+	GetEventHandler()->QueueEvent(evt.Clone());
 	
 }
 
@@ -1052,7 +1039,7 @@ void tmTOCCtrl::StopEditing (bool bSentmessage)
 	if (bSentmessage)
 	{
 		wxCommandEvent evt(tmEVT_EM_EDIT_STOP, wxID_ANY);
-		GetEventHandler()->AddPendingEvent(evt);
+		GetEventHandler()->QueueEvent(evt.Clone());
 	}
 
 }
@@ -1083,7 +1070,7 @@ void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
 	wxASSERT(item->GetSymbolRef());
 	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
 	Evt.SetClientData(item);
-	GetEventHandler()->AddPendingEvent(Evt);
+	GetEventHandler()->QueueEvent(Evt.Clone());
 }
 
 
@@ -1097,7 +1084,7 @@ void tmTOCCtrl::OnShowLabels (wxCommandEvent & event){
 	wxASSERT(item->GetSymbolRef());
 	wxCommandEvent Evt (tmEVT_LM_SHOW_LABELS, wxID_ANY);
 	Evt.SetClientData(item);
-	GetEventHandler()->AddPendingEvent(Evt);
+	GetEventHandler()->QueueEvent(Evt.Clone());
 }
 
 
@@ -1132,7 +1119,7 @@ void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
 	{
 		// send event to the layer manager for updating display
 		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->AddPendingEvent(evt);
+		GetEventHandler()->QueueEvent(evt.Clone());
 	}
 }
 
@@ -1169,7 +1156,7 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
 
 	if (RemoveLayer(selected, TRUE))
 	{
-		GetEventHandler()->AddPendingEvent(evt);
+		GetEventHandler()->QueueEvent(evt.Clone());
 	}
 }
 

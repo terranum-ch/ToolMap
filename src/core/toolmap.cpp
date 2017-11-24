@@ -103,13 +103,13 @@ void ToolMapApp::OnFatalException(){
     wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
     myConfig->SetPath("..");
 
-    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"), myProxyInfo)==false){
+    if (myCrashReport.SendReportWeb(_T("https://www.terranum.ch/toolmap/crash-reports/upload_file.php"), myProxyInfo)==false){
         wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
         if(myCrashReport.SaveReportFile(myDocPath)==false){
             wxLogError(_("Unable to save the crashreport!"));
             return;
         }
-        wxLogWarning(_("Connection problem! crashreport wasn't sent. crashreport was saved into '%s'\nplease send it manually to lucien.schreiber@crealp.vs.ch"), myDocPath);
+        wxLogWarning(_("Connection problem! crash report wasn't sent. crash report was saved into '%s'\nplease send it manually to toolmap@terranum.ch"), myDocPath);
     }
 }
 
@@ -1202,7 +1202,7 @@ void ToolMapFrame::OnPreferences(wxCommandEvent & event){
 
 void ToolMapFrame::OnRefreshView(wxCommandEvent & event){
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    GetEventHandler()->AddPendingEvent(evt2);
+    GetEventHandler()->QueueEvent(evt2.Clone());
 }
 
 
@@ -1247,9 +1247,7 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	myConfig->SetPath("GENERAL");
 	wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
 	bool mySelHalo = myConfig->ReadBool("selection_halo", false);
-    bool isUsingRAM = myConfig->ReadBool("using_ram", true);
-    long myInternetWaitTime = myConfig->ReadLong("internet_wait_time", 250);
-    
+
     myConfig->SetPath("..");
 
 	wxColour mySelColor = *wxRED;
@@ -1261,13 +1259,10 @@ void ToolMapFrame::_LoadPreference(bool reload){
 	m_LayerManager->SetSelectionColour(mySelColor);
 	m_LayerManager->SetSelectionHalo(mySelHalo);
     
-    // update info to web frames
-    m_LayerManager->SetWebRasterPreferences(isUsingRAM, myInternetWaitTime);
-    
 	if (reload == true) {
 		//m_LayerManager->ReloadProjectLayers(false);
 		wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->AddPendingEvent(evt2);
+		GetEventHandler()->QueueEvent(evt2.Clone());
 	}
 }
 
@@ -1395,7 +1390,7 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	myImport->Import(m_PManager->GetDatabase(), &myProgress);
 
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt2);
+	GetEventHandler()->QueueEvent(evt2.Clone());
 
 
 	/*tmGISImport myImport;
@@ -1416,7 +1411,7 @@ void ToolMapFrame::OnImportGISData (wxCommandEvent & event)
 	wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
 
 	wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->AddPendingEvent(evt2);*/
+	GetEventHandler()->QueueEvent(evt2.Clone());*/
 }
 
 

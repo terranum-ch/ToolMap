@@ -56,7 +56,7 @@ public:
 	}
     
     void testSwissToWGS84(){
-        tmCoordConvert myConvert (PROJ_SWISSPROJ);
+        tmCoordConvert myConvert (PROJ_SWISS_CH1903);
         wxRealPoint myGenfPoint (500374,117993);
         wxRealPoint myGenfPointWGS = myConvert.GetPointWGS(myGenfPoint);
         wxLogMessage( "SWISS coord is: %f, %f", myGenfPoint.x, myGenfPoint.y);
@@ -66,7 +66,7 @@ public:
     }
     
     void testSwissToGoogle(){
-        tmCoordConvert myConvert (PROJ_SWISSPROJ);
+        tmCoordConvert myConvert (PROJ_SWISS_CH1903);
         wxRealPoint myGenfPoint (500374,117993);
         wxRealPoint myGenfPointG = myConvert.GetPointGoogle(myGenfPoint);
         wxLogMessage( "Google coord is: %f, %f", myGenfPointG.x, myGenfPointG.y);
@@ -75,7 +75,7 @@ public:
     }
     
     void testDistanceWGS84(){
-        tmCoordConvert myConvert (PROJ_WORLDWGS84);
+        tmCoordConvert myConvert (PROJ_WORLD_WGS84);
         wxRealPoint myP1 (6.14712, 46.20593); // GENEVA
         wxRealPoint myP2 (7.45782, 46.94832); // BERN
         double myDist = myConvert.GetDistance(myP1, myP2);
@@ -84,7 +84,7 @@ public:
     }
     
     void testDistanceSwiss(){
-        tmCoordConvert myConvert (PROJ_SWISSPROJ);
+        tmCoordConvert myConvert (PROJ_SWISS_CH1903);
         wxRealPoint myP1 (500321.34231, 117986.13451); // GENEVA
         wxRealPoint myP2 (601460.745203, 199693.022818); // BERN
         double myDist = myConvert.GetDistance(myP1, myP2);
@@ -92,7 +92,7 @@ public:
     }
     
     void testPointAtDistanceWGS84() {
-        tmCoordConvert myConvert (PROJ_WORLDWGS84);
+        tmCoordConvert myConvert (PROJ_WORLD_WGS84);
         wxRealPoint myP1 (6.14712, 46.20593); // GENEVA
         // search point 20 km east of geneva
         wxRealPoint myP2 = myConvert.GetPointAtDistance(myP1, 20000, 90);
@@ -101,7 +101,7 @@ public:
     }
     
     void testPointAtDistanceSWISS() {
-        tmCoordConvert myConvert (PROJ_SWISSPROJ);
+        tmCoordConvert myConvert (PROJ_SWISS_CH1903);
         wxRealPoint myGenfPoint (500374,117993);
         // search point 100 m east of geneva
         wxRealPoint myP2 = myConvert.GetPointAtDistance(myGenfPoint, 100, 90);

@@ -82,14 +82,16 @@ const wxString TABLE_COMMENT_ENUMERATION = _T("ENUMERATION");
 static wxString PRJDEF_PROJ_TYPE_STRING[] = 
 {
 	wxTRANSLATE("Swiss projection (CH1903)"),
+	wxTRANSLATE("Swiss projection (CH1903+ / LV95)"),
     wxTRANSLATE("World (WGS84)"),
 };
 enum PRJDEF_PROJ_TYPE
 {
-	PROJ_SWISSPROJ = 0,
-	PROJ_WORLDWGS84
+	PROJ_SWISS_CH1903 = 0,
+	PROJ_SWISS_CH1903PLUS,
+	PROJ_WORLD_WGS84
 };
-static const int PRJDEF_PROJ_TYPE_NUMBER = 2;
+static const int PRJDEF_PROJ_TYPE_NUMBER = 3;
 
 
 // Definitions for the field type, we define the text and  the id of 

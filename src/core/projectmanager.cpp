@@ -615,6 +615,8 @@ bool ProjectManager::LoadProjectDefintion (short int message)
 	if (m_PrjMem == NULL)
 		return false;
 
+	m_LayerManager->SetMemoryProject(GetMemoryProjectDefinition());
+
 
 	return true;
 }

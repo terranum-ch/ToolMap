@@ -145,7 +145,7 @@ void BezierSettings_DLG::_CreateControls(){
 	sbSizer1->Add( m_staticText2, 0, wxALL, 5 );
 	
 	m_ApproximationCtrl = new wxSpinCtrlDouble( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxSP_ARROW_KEYS, 0, 10, 0, 0.1 );
-	sbSizer1->Add( m_ApproximationCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	sbSizer1->Add( m_ApproximationCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	bSizer2->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );

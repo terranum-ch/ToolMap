@@ -364,6 +364,12 @@ bool tmAttributionData::CleanAttributesAdvanced (long objectid,
 			}
 		}
 	}
+
+	if (sSentence.IsEmpty()) { 
+		// It's OK to have no attribute to clean
+		wxLogDebug(_("No attribute to clean found."));
+		return true;
+	}
 	
 	if (m_pDB->DataBaseQueryNoResults(sSentence)==false){
 		wxLogMessage(_T("Layers found with spatial type : %d -- %s"),

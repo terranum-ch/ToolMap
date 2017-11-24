@@ -196,11 +196,11 @@ void ProjectDefNew::CreateControls()
     wxStaticText* itemStaticText13 = new wxStaticText( itemDialog1, wxID_STATIC, _("Projection :"), 
 													  wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer3->Add(itemStaticText13, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	
+
 	m_DlgPd_Proj_Projection = new wxChoice( itemDialog1, ID_DLGPD_PROJ_PROJECTION_NEW,
 										   wxDefaultPosition, wxDefaultSize,
 										   PRJDEF_PROJ_TYPE_NUMBER,PRJDEF_PROJ_TYPE_STRING);
-	m_DlgPd_Proj_Projection->SetSelection(PROJ_SWISSPROJ);
+	m_DlgPd_Proj_Projection->SetSelection(PROJ_SWISS_CH1903PLUS);
     itemFlexGridSizer3->Add(m_DlgPd_Proj_Projection, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	
 	

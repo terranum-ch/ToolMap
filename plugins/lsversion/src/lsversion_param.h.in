@@ -31,6 +31,8 @@ email                : lucien.schreiber at crealp dot vs dot ch
 
 // SOFTWARE INFOS
 #cmakedefine lsVERSION_SOFT_NAME "@lsVERSION_SOFT_NAME@"
+#cmakedefine VERSION_MAJOR "@VERSION_MAJOR@"
+#cmakedefine VERSION_MINOR "@VERSION_MINOR@"
 #cmakedefine lsVERSION_SOFT_VERSION "@lsVERSION_SOFT_VERSION@"
 #cmakedefine lsVERSION_SOFT_VERSION_REVISION "@lsVERSION_SOFT_VERSION_REVISION@"
 #cmakedefine lsVERSION_SOFT_VERSION_BRANCH "@lsVERSION_SOFT_VERSION_BRANCH@"

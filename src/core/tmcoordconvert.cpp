@@ -22,7 +22,10 @@
 wxString tmCoordConvert::m_ProjTextGoogle = _T("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs");
 
 // ESPG 21781, CH1903 / LV03 Swiss projection
-wxString tmCoordConvert::m_ProjTextSwiss = _T("+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs");
+wxString tmCoordConvert::m_ProjTextCH1903 = _T("+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs");
+
+// ESPG 2056, CH1903+ / LV95 Swiss projection
+wxString tmCoordConvert::m_ProjTextCH1903plus = _T("+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
 
 // ESPG 4326, WGS projection
 wxString tmCoordConvert::m_ProjTextWGS84 = _T(" +proj=longlat +datum=WGS84 +no_defs  ");
@@ -36,17 +39,21 @@ double tmCoordConvert::m_Geod_f = 1/298.257223563;
 OGRSpatialReference * tmCoordConvert::_CreateSpatialRef(PRJDEF_PROJ_TYPE proj) {
     OGRSpatialReference * mySpatRef = new OGRSpatialReference();
     switch (proj) {
-        case PROJ_SWISSPROJ:
-            mySpatRef->importFromProj4(m_ProjTextSwiss.mb_str(wxConvUTF8));
+        case PROJ_SWISS_CH1903:
+            mySpatRef->importFromProj4(m_ProjTextCH1903.mb_str(wxConvUTF8));
             break;
-            
-            case PROJ_WORLDWGS84:
+
+        case PROJ_SWISS_CH1903PLUS:
+            mySpatRef->importFromProj4(m_ProjTextCH1903plus.mb_str(wxConvUTF8));
+            break;
+
+        case PROJ_WORLD_WGS84:
             mySpatRef->importFromProj4(m_ProjTextWGS84.mb_str(wxConvUTF8));
             break;
-            
+
         default:
             wxLogError(_("Unsupported projection!"));
-            wxDELETE (mySpatRef);
+            wxDELETE(mySpatRef);
             break;
     }
     return mySpatRef;
@@ -93,13 +100,13 @@ tmCoordConvert::~tmCoordConvert() {
 
 
 wxRealPoint tmCoordConvert::GetPointWGS(const wxRealPoint & in) {
-    if (m_ProjType == PROJ_WORLDWGS84) {
+    if (m_ProjType == PROJ_WORLD_WGS84) {
         return in;
     }
     
     OGRSpatialReference * myInRef = _CreateSpatialRef(m_ProjType);
     wxASSERT(myInRef);
-    OGRSpatialReference * myOutRef = _CreateSpatialRef(PROJ_WORLDWGS84);
+    OGRSpatialReference * myOutRef = _CreateSpatialRef(PROJ_WORLD_WGS84);
     wxASSERT(myOutRef);
     return _Transform(myInRef, myOutRef, in);
 }
@@ -113,6 +120,14 @@ wxRealPoint tmCoordConvert::GetPointGoogle(const wxRealPoint & in) {
 
 
 double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 ){
+    if (m_ProjType == PROJ_SWISS_CH1903 || m_ProjType == PROJ_SWISS_CH1903PLUS) {
+        if (p1.y == p2.y) {
+            return fabs(p1.x - p2.x);
+        } else if (p1.x == p2.x) {
+            return fabs(p1.y - p2.y);
+        }
+    }
+
     struct geod_geodesic myGeodesic;
     geod_init(&myGeodesic, m_Geod_a, m_Geod_f);
     
@@ -129,11 +144,11 @@ double tmCoordConvert::GetDistance (const wxRealPoint & p1, const wxRealPoint & 
 
 
 wxRealPoint tmCoordConvert::_GetPointLocalFromWGS( const wxRealPoint & pt){
-    if (m_ProjType == PROJ_WORLDWGS84) {
+    if (m_ProjType == PROJ_WORLD_WGS84) {
         return pt;
     }
     
-    OGRSpatialReference * myInRef = _CreateSpatialRef(PROJ_WORLDWGS84);
+    OGRSpatialReference * myInRef = _CreateSpatialRef(PROJ_WORLD_WGS84);
     wxASSERT(myInRef);
     OGRSpatialReference * myOutRef = _CreateSpatialRef(m_ProjType);
     wxASSERT(myOutRef);
@@ -143,6 +158,17 @@ wxRealPoint tmCoordConvert::_GetPointLocalFromWGS( const wxRealPoint & pt){
 
 
 wxRealPoint tmCoordConvert::GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut){
+	if (m_ProjType == PROJ_SWISS_CH1903 || m_ProjType == PROJ_SWISS_CH1903PLUS) {
+        wxRealPoint newPointCH(p1);
+        if(azimut == 90) {
+            newPointCH.x += distance;
+            return newPointCH;
+        } else if(azimut == 180) {
+            newPointCH.y -= distance;
+            return newPointCH;
+        }
+	}
+
     struct geod_geodesic myGeodesic;
     geod_init(&myGeodesic, m_Geod_a, m_Geod_f);
     

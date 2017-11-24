@@ -1,23 +1,22 @@
 language: cpp
 compiler: gcc
 sudo: required
+git:
+  depth: 9999999
 matrix:
   include:
     - env:
       - TARGET=tests-osx
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=true
       os: osx
       osx_image: xcode7.3
     - env:
       - TARGET=tests-linux
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=true
       os: linux
       dist: trusty
     - env:
       - TARGET=coverage
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=false
       os: linux
       dist: trusty
@@ -27,15 +26,14 @@ matrix:
             - lcov
     - env:
       - TARGET=coverity
-      - WXWIN=$HOME/.wxwidgets
       - RUN_TESTS=false
       - secure: "G+B9LCybE2pbkARBDR/AI3iIrktX2ru5AdRrEXWD58Gm0cAHZeuU3Oj8sXEAKDMBYxFtUGHIYR3x5xicQRFwuXfmHnYrpuHOT21Wc9VvWOEQXip7TLh9J/jdpmDOvX+0bV8helr6mWjaP3+wzvuqPm/PtbkHHjomL7H7yfLfNSy6HMqB2/MsZhLfpbfJUl0DyUTTHDi94Nx/zC8FiZ7ZAK3z55nhZMbGaN02B/sm4m3L/Tlj98Z8fGHyxahCwajy6LOQjTUQkZP5F6iMgzlOixUMq5Uv8lGXcxfb9jXWipk/8sasB116VNjF6H42UijohL+gHA4XqT7wVtzwtaIiW0KqGSkN/eWd36r+SATm4QPlYeWz/V7I8j9US5kPRvIEuVgWSa4hluwZj+zlWHIxeDQOoKtLhUWKMnODKE8Lt0WQh8VjN3wS7NAFZkAt9BLlLKx2qL/0l8A57LyK+KRQqiOFar7xuSeHpbbEal6gd8gx7dmGN6zZ88cXx4oetIwLZwtKGSBJGUGhfgBfDPN2Edy8zuoUaLnlbXBF8TZYxV13h6rnf7GpzlXZpWKin6AOBW0ARkHVzX1B5HBn3gB/zAd+emfkK/k0Ot5kuQrQldLm+48eS++rWJCaTTOTeemITYlDlwRNQFew7aJ9MCYBxWuzD4dE42CFoukdp/Lyzac="
       os: linux
       dist: trusty
       branches:
-        only: coverity-scan
+        only: nightly
       before_install:
-        - if [[ "$TRAVIS_BRANCH" != "coverity-scan" ]]; then exit 0; fi
+        - if [[ "$TRAVIS_BRANCH" != "nightly" ]]; then exit 0; fi
         - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
       addons:
         coverity_scan:
@@ -45,8 +43,9 @@ matrix:
           notification_email: toolmap@terranum.ch
           build_command_prepend: "mkdir bin && cd bin && cmake -DSEARCH_GDAL_PATH=${HOME}/.gdal -DSEARCH_GEOS_PATH=/usr -DMYSQL_MAIN_DIR=${HOME}/.mysql -DSEARCH_WXPDFDOCUMENT_PATH=${HOME}/.wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DUNIT_TESTING_PATH=$HOME/unit_testing -DCXXTEST_INCLUDE_DIR=/usr -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=/usr/bin/cxxtestgen .."
           build_command: "make -j $(nproc)"
-          branch_pattern: coverity-scan
+          branch_pattern: nightly
 cache:
+  timeout: 1000
   directories:
   - $HOME/.gdal
   - $HOME/.wxpdfdoc
@@ -59,3 +58,12 @@ script:
   - chmod +x build/travis/run-${TARGET}.sh
   - travis_wait 40 build/travis/run-${TARGET}.sh
   - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
+after_success:
+  - cd $HOME/build/terranum-ch/ToolMap/bin
+  - sudo cpack
+  - ls
+  - if [[ "$TRAVIS_BRANCH" != "nightly" ] || [ "$TRAVIS_BRANCH" != "release" ]]; then exit 0; fi
+  - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*linux64.AppImage') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
+  - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.deb') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
+  - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.dmg') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
+
