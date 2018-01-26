@@ -12,7 +12,7 @@ install(FILES install/COPYING DESTINATION .)
 
 # install ToolBasView
 FIND_FILE (TOOLBASVIEW_NAME
-        ToolBasView.exe ToolBasView
+        ToolBasView.exe NAMES ToolBasView
         HINTS ${EXTERNAL_DIR}/bin
         NO_DEFAULT_PATH)
 install(
