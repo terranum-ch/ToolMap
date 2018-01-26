@@ -87,18 +87,19 @@ IF(WIN32_STYLE_FIND)
   ## should have subdirs include and lib containing include/wx/wx.h
   ## fix the root dir to avoid mixing of headers/libs from different
   ## versions/builds:
-  
-  SET (WXWINDOWS_POSSIBLE_ROOT_PATHS
-    $ENV{WXWIN}
-    "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\wxWidgets_is1;Inno Setup: App Path]"  ## WX 2.6.x
-    "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\wxWindows_is1;Inno Setup: App Path]"  ## WX 2.4.x
-    C:\\wxWidgets-2.6.2 
-    D:\\wxWidgets-2.6.2 
-    C:\\wxWidgets-2.6.1 
-    D:\\wxWidgets-2.6.1 
-    C:\\wxWindows-2.4.2 
-    D:\\wxWindows-2.4.2 
-    )
+
+  SET(WXWINDOWS_POSSIBLE_ROOT_PATHS
+          ${SEARCH_WXWIDGETS_PATH}
+          $ENV{WXWIN}
+          "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\wxWidgets_is1;Inno Setup: App Path]"  ## WX 2.6.x
+          "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\wxWindows_is1;Inno Setup: App Path]"  ## WX 2.4.x
+          C:\\wxWidgets-2.6.2
+          D:\\wxWidgets-2.6.2
+          C:\\wxWidgets-2.6.1
+          D:\\wxWidgets-2.6.1
+          C:\\wxWindows-2.4.2
+          D:\\wxWindows-2.4.2
+          )
   
   ## WX supports monolithic and multiple smaller libs (since 2.5.x), we prefer monolithic for now.
   ## monolithic = WX is built as a single big library

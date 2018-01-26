@@ -41,6 +41,24 @@ endif ()
 # Enable output of compile commands (for Sourcetrail)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# External projects
+include(ExternalProject)
+set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${EXTERNAL_DIR}")
+include_directories(${EXTERNAL_DIR}/include)
+link_directories(${EXTERNAL_DIR}/lib)
+link_directories(${EXTERNAL_DIR}/lib64)
+
+# Add ToolBasView as external project
+ExternalProject_Add(ToolBasView
+        GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
+        UPDATE_COMMAND ""
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DSEARCH_WXWIDGETS_PATH=${SEARCH_WXWIDGETS_PATH} -DSEARCH_GDAL_PATH=${SEARCH_GDAL_PATH} -DSEARCH_PROJ_PATH=${SEARCH_PROJ_PATH} -DSEARCH_GEOS_PATH=${SEARCH_GEOS_PATH} -DMYSQL_MAIN_DIR=${MYSQL_MAIN_DIR} -DSEARCH_GEOS=1 -DSEARCH_GDAL=1
+        BUILD_COMMAND
+        cmake
+        --build .
+        )
+
 # Sources and headers 
 FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
 SET(MY_SEARCHED_FILE "src/core/toolmap.cpp")

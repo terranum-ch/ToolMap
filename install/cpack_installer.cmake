@@ -10,6 +10,17 @@ install(TARGETS ${CMAKE_PROJECT_NAME}
 # install GPL licence file
 install(FILES install/COPYING DESTINATION .)
 
+# install ToolBasView
+FIND_FILE (TOOLBASVIEW_NAME
+        ToolBasView.exe ToolBasView
+        HINTS ${EXTERNAL_DIR}/bin
+        NO_DEFAULT_PATH)
+install(
+        PROGRAMS
+        ${TOOLBASVIEW_NAME}
+        DESTINATION bin
+)
+
 # search dll to install
 if (GDAL_DLL_NAME)
     list(APPEND LIB_TO_INSTALL ${GDAL_DLL_NAME})
