@@ -82,8 +82,8 @@ elseif (APPLE)
 
     # install ToolBasView
     install(PROGRAMS 
-            ${EXTERNAL_DIR}/bin/ToolBasView.so
-            DESTINATION bin)
+            ${EXTERNAL_DIR}/bin/ToolBasView.app
+            BUNDLE DESTINATION .)
 
 endif (WIN32)
 
