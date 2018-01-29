@@ -7,20 +7,13 @@ install(TARGETS ${CMAKE_PROJECT_NAME}
         BUNDLE DESTINATION .
         RUNTIME DESTINATION bin)
 
+# install ToolBasView
+install(TARGETS ToolBasView
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION bin)
+        
 # install GPL licence file
 install(FILES install/COPYING DESTINATION .)
-
-# install ToolBasView
-FIND_FILE (TOOLBASVIEW_NAME
-        NAMES ToolBasView.exe ToolBasView
-        HINTS ${EXTERNAL_DIR}
-        PATH_SUFFIXES bin
-        NO_DEFAULT_PATH)
-install(
-        PROGRAMS
-        ${TOOLBASVIEW_NAME}
-        DESTINATION bin
-)
 
 # search dll to install
 if (GDAL_DLL_NAME)
