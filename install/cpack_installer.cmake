@@ -75,7 +75,7 @@ elseif (UNIX AND NOT APPLE)
 
     # install ToolBasView
     install(PROGRAMS 
-            ${EXTERNAL_DIR}/bin/ToolBasView.so
+            ${EXTERNAL_DIR}/bin/ToolBasView
             DESTINATION bin)
 
 elseif (APPLE)
