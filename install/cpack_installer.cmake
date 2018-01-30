@@ -8,7 +8,7 @@ add_dependencies(${CMAKE_PROJECT_NAME} ToolBasView)
 install(TARGETS ${CMAKE_PROJECT_NAME}
         BUNDLE DESTINATION .
         RUNTIME DESTINATION bin)
-        
+
 # install GPL licence file
 install(FILES install/COPYING DESTINATION .)
 
@@ -46,9 +46,9 @@ if (WIN32)
     install(PROGRAMS
             ${LIB_TO_INSTALL}
             DESTINATION bin)
-    
+
     # install ToolBasView
-    install(PROGRAMS 
+    install(PROGRAMS
             ${EXTERNAL_DIR}/bin/ToolBasView.exe
             DESTINATION bin)
 
@@ -70,11 +70,11 @@ if (WIN32)
     # install Microsoft Visual Studio librairies (MSVCP140.DLL, etc.)
     include(InstallRequiredSystemLibraries)
     INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
-    
+
 elseif (UNIX AND NOT APPLE)
 
     # install ToolBasView
-    install(PROGRAMS 
+    install(PROGRAMS
             ${EXTERNAL_DIR}/bin/ToolBasView
             DESTINATION bin)
 
