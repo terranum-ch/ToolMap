@@ -84,7 +84,7 @@ elseif (APPLE)
     message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
     install(PROGRAMS
             ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
-            BUNDLE DESTINATION .)
+            DESTINATION .)
 
 endif (WIN32)
 
