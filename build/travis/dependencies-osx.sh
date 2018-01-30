@@ -6,9 +6,6 @@ brew upgrade geos
 wget -q -O cxxtest.tar.gz "https://github.com/CxxTest/cxxtest/archive/4.3.tar.gz"
 tar -xzf cxxtest.tar.gz -C ${HOME}
 
-# Changing owner of Homebrew libraries
-sudo chown -R "$USER":admin /usr/local/Cellar
-
 # Build libraries
 chmod +x build/travis/build-wxwidgets-osx.sh
 build/travis/build-wxwidgets-osx.sh
@@ -18,3 +15,6 @@ chmod +x build/travis/build-wxpdfdoc.sh
 build/travis/build-wxpdfdoc.sh
 chmod +x build/travis/build-mysql.sh
 build/travis/build-mysql.sh
+
+# Changing permissions of Homebrew libraries
+sudo chmod -R 777 /usr/local/Cellar
