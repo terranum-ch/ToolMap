@@ -75,15 +75,16 @@ elseif (UNIX AND NOT APPLE)
 
     # install ToolBasView
     install(PROGRAMS 
-            ${EXTERNAL_DIR}/bin/ToolBasView.so
+            ${EXTERNAL_DIR}/bin/ToolBasView
             DESTINATION bin)
 
 elseif (APPLE)
 
     # install ToolBasView
-    install(PROGRAMS 
-            ${EXTERNAL_DIR}/bin/ToolBasView.so
-            DESTINATION bin)
+    message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+    install(PROGRAMS
+            ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
+            DESTINATION .)
 
 endif (WIN32)
 

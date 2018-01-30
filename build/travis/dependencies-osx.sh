@@ -15,3 +15,6 @@ chmod +x build/travis/build-wxpdfdoc.sh
 build/travis/build-wxpdfdoc.sh
 chmod +x build/travis/build-mysql.sh
 build/travis/build-mysql.sh
+
+# Changing permissions of Homebrew libraries
+sudo chmod -R 777 /usr/local/Cellar
