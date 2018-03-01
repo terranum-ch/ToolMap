@@ -42,66 +42,81 @@ WX_DECLARE_OBJARRAY(TreeMultiItemBase, TreeMultiItemBaseArray);
 class TreeMultiItemNode : public TreeMultiItemBase
 {
 private:
-	TreeMultiItemBaseArray _items;
+    TreeMultiItemBaseArray _items;
 
-	/** Caption of this node. */
-	wxString _caption;
+    /** Caption of this node. */
+    wxString _caption;
 
-	/** Indicates if this node is expanded (true) or collapsed (false) */
-	bool _nodeExpanded;
+    /** Indicates if this node is expanded (true) or collapsed (false) */
+    bool _nodeExpanded;
 
- /** visual attributes of the node */
-  wxTreeItemAttr m_Attributes;
+    /** visual attributes of the node */
+    wxTreeItemAttr m_Attributes;
 
 public:
-	TreeMultiItemNode(TreeMultiItemNode *parent, const wxString &caption = wxEmptyString, const wxString &name = wxEmptyString);
-	virtual ~TreeMultiItemNode();
+    TreeMultiItemNode(TreeMultiItemNode *parent, const wxString &caption = wxEmptyString,
+                      const wxString &name = wxEmptyString);
 
-	// isClass method
-	virtual TreeMultiItemNode *IsTreeMultiItemNode() const {
-		return (TreeMultiItemNode *)this;
-	};
-	
-	// add methods
-	void AddNode(TreeMultiItemBase *node);
-	void InsertNode(TreeMultiItemBase* NodePtr, size_t Position);
+    virtual ~TreeMultiItemNode();
 
-	// delete methods
-	void Clear();
-	void DeleteNode(TreeMultiItemBase *node);
-	void DeleteNode(int index);
-	TreeMultiItemBase *RemoveNode(TreeMultiItemBase *node);
-	TreeMultiItemBase *RemoveNode(int index);
+    // isClass method
+    virtual TreeMultiItemNode *IsTreeMultiItemNode() const
+    {
+        return (TreeMultiItemNode *) this;
+    };
 
-	// get methods
-	int GetNodeCount() const;
-	TreeMultiItemBase *GetNode(int index) const;
-	int Index(TreeMultiItemBase *node,  bool searchFromEnd = false) const;
-	TreeMultiItemBase *GetNodeNext(int &cookie) const;
-	
-	TreeMultiItemBase* First() const;
-	TreeMultiItemBase* Last() const;
+    // add methods
+    void AddNode(TreeMultiItemBase *node);
 
-	/** Fold function sets or clears the expanded flag. Note when excluded from drawing, this
-	    will have no effect on redraw */
-	void Fold(bool expand) {
-		if(_nodeExpanded != expand)
-			_nodeExpanded = expand;
-	};
+    void InsertNode(TreeMultiItemBase *NodePtr, size_t Position);
 
-	/** Return caption */
-	const wxString &GetCaption() const {
-		return _caption;
-	};
-	
-	/** Set caption */
-	void SetCaption(const wxString &caption);
+    // delete methods
+    void Clear();
+
+    void DeleteNode(TreeMultiItemBase *node);
+
+    void DeleteNode(int index);
+
+    TreeMultiItemBase *RemoveNode(TreeMultiItemBase *node);
+
+    TreeMultiItemBase *RemoveNode(int index);
+
+    // get methods
+    int GetNodeCount() const;
+
+    TreeMultiItemBase *GetNode(int index) const;
+
+    int Index(TreeMultiItemBase *node, bool searchFromEnd = false) const;
+
+    TreeMultiItemBase *GetNodeNext(int &cookie) const;
+
+    TreeMultiItemBase *First() const;
+
+    TreeMultiItemBase *Last() const;
+
+    /** Fold function sets or clears the expanded flag. Note when excluded from drawing, this
+        will have no effect on redraw */
+    void Fold(bool expand)
+    {
+        if (_nodeExpanded != expand)
+            _nodeExpanded = expand;
+    };
+
+    /** Return caption */
+    const wxString &GetCaption() const
+    {
+        return _caption;
+    };
+
+    /** Set caption */
+    void SetCaption(const wxString &caption);
 
 
-	/** Returns true if the node is expanded. Subnodes can still be collapsed though */
-	bool IsExpanded() const {
-		return _nodeExpanded;
-	};
+    /** Returns true if the node is expanded. Subnodes can still be collapsed though */
+    bool IsExpanded() const
+    {
+        return _nodeExpanded;
+    };
 
 
 };

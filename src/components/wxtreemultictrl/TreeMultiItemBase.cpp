@@ -32,19 +32,19 @@
   */
 
 TreeMultiItemBase::TreeMultiItemBase(TreeMultiItemNode *parent)
-		: _excluded(false),
-		  _type(0),
-		  _x(0),
-		  _y(0),
-		  _width(0),
-		  _height(0),
+        : _excluded(false),
+          _type(0),
+          _x(0),
+          _y(0),
+          _width(0),
+          _height(0),
 
 #if(CHECKBOXVIEW)
-		 _checkbox(false),
-		 _checkboxState(0),
+          _checkbox(false),
+          _checkboxState(0),
 #endif
-		 _parent(parent),
-		  m_Selected(false)
+          _parent(parent),
+          m_Selected(false)
 {
 }
 
@@ -54,22 +54,21 @@ TreeMultiItemBase::~TreeMultiItemBase()
 
 bool TreeMultiItemBase::IsVisible()
 {
-	// are we excluded? then we are not visible as well
+    // are we excluded? then we are not visible as well
 
-	if(IsExcluded())
-		return false;
+    if (IsExcluded())
+        return false;
 
-	// check every parent up until the last and if one of them is collapsed
-	// we are not visible
+    // check every parent up until the last and if one of them is collapsed
+    // we are not visible
 
-	TreeMultiItemNode *p = GetParent();
-	while(p)
-	{
-		if(!p->IsExpanded())
-			return false;
-		else
-			p = p->GetParent();
-	}
+    TreeMultiItemNode *p = GetParent();
+    while (p) {
+        if (!p->IsExpanded())
+            return false;
+        else
+            p = p->GetParent();
+    }
 
-	return true;
+    return true;
 }
