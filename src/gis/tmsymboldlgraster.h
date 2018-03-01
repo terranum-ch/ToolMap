@@ -26,14 +26,13 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
-#include "tmsymboldlg.h"		// tmSymbolDlg declaration
-
+#include "tmsymboldlg.h"        // tmSymbolDlg declaration
 
 
 const int ID_SYMDLGRASTER_PANEL = 10216;
@@ -44,58 +43,61 @@ const int ID_SYMDLGRASTER_TRANSPARENCY = 10086;
 
 struct tmSymbolDataRaster
 {
-	bool m_bUseColorTransparency;
-	wxColour m_TransparencyColour;
-	int m_GlobalTransparency;
+    bool m_bUseColorTransparency;
+    wxColour m_TransparencyColour;
+    int m_GlobalTransparency;
 };
 
 
 class tmSymbolDLGRaster : public tmSymbolDLG
-	{    
-	private:
-		wxCheckBox * m_UseTransparencyColourCtrl;
-		tmColourPickerCtrl * m_TransparencyColourCtrl;
-		tmSliderWithText * m_TransparencySlider;
-		
-		tmSymbolDataRaster m_DlgData;
-		
-				
-		void _Init();
-		void CreateControls();
-		
-		virtual bool TransferDataToWindow();
-		virtual bool TransferDataFromWindow();
-				
-		DECLARE_DYNAMIC_CLASS( tmSymbolDLGRaster )
-		DECLARE_EVENT_TABLE()
-		
-	public:
-		/// Constructors
-		tmSymbolDLGRaster();
-		~tmSymbolDLGRaster();
-		tmSymbolDLGRaster( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, 
-					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
-					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
-					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE,
-					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
-					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
-					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		
-				
-		void SetDialogData ( const tmSymbolDataRaster & data) {m_DlgData = data;}
-		tmSymbolDataRaster GetDialogData () {return m_DlgData;}
-				
+{
+private:
+    wxCheckBox *m_UseTransparencyColourCtrl;
+    tmColourPickerCtrl *m_TransparencyColourCtrl;
+    tmSliderWithText *m_TransparencySlider;
 
-	};
+    tmSymbolDataRaster m_DlgData;
 
 
+    void _Init();
+
+    void CreateControls();
+
+    virtual bool TransferDataToWindow();
+
+    virtual bool TransferDataFromWindow();
+
+DECLARE_DYNAMIC_CLASS(tmSymbolDLGRaster)
+
+DECLARE_EVENT_TABLE()
+
+public:
+    /// Constructors
+    tmSymbolDLGRaster();
+
+    ~tmSymbolDLGRaster();
+
+    tmSymbolDLGRaster(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                      const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                      const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                      const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
+                      long style = SYMBOL_TMSYMBOLDLG_STYLE);
+
+    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
+                long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
 
+    void SetDialogData(const tmSymbolDataRaster &data)
+    { m_DlgData = data; }
+
+    tmSymbolDataRaster GetDialogData()
+    { return m_DlgData; }
 
 
+};
 
 
 #endif

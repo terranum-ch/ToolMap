@@ -22,7 +22,6 @@
 #include "tmpercent.h"
 
 
-
 /***************************************************************************//**
  @brief Init class member values
  @author Lucien Schreiber (c) CREALP 2008
@@ -30,8 +29,8 @@
  *******************************************************************************/
 void tmExportDataSHP::InitMemberValues()
 {
-	m_Extension = _T(".shp");
-	m_Frame = NULL;
+    m_Extension = _T(".shp");
+    m_Frame = NULL;
     m_Shp = NULL;
 
     m_ExportPolyNbIteration = 0;
@@ -39,7 +38,6 @@ void tmExportDataSHP::InitMemberValues()
     m_ExportPolyPercentSkipped = 0.0;
     m_ExportPolyFast = true;
 }
-
 
 
 /***************************************************************************//**
@@ -50,9 +48,8 @@ void tmExportDataSHP::InitMemberValues()
  *******************************************************************************/
 tmExportDataSHP::tmExportDataSHP()
 {
-	InitMemberValues();
+    InitMemberValues();
 }
-
 
 
 /***************************************************************************//**
@@ -61,12 +58,11 @@ tmExportDataSHP::tmExportDataSHP()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-tmExportDataSHP::tmExportDataSHP (DataBaseTM * database)
+tmExportDataSHP::tmExportDataSHP(DataBaseTM *database)
 {
-	InitMemberValues();
-	Create(database);
+    InitMemberValues();
+    Create(database);
 }
-
 
 
 /***************************************************************************//**
@@ -76,9 +72,9 @@ tmExportDataSHP::tmExportDataSHP (DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-void tmExportDataSHP::Create (DataBaseTM * database)
+void tmExportDataSHP::Create(DataBaseTM *database)
 {
-	tmExportData::Create(database);
+    tmExportData::Create(database);
 }
 
 
@@ -89,12 +85,11 @@ void tmExportDataSHP::Create (DataBaseTM * database)
  *******************************************************************************/
 tmExportDataSHP::~tmExportDataSHP()
 {
-	if (m_Frame){
-		OGRGeometryFactory::destroyGeometry(m_Frame);
+    if (m_Frame) {
+        OGRGeometryFactory::destroyGeometry(m_Frame);
     }
     wxDELETE(m_Shp);
 }
-
 
 
 /***************************************************************************//**
@@ -107,35 +102,32 @@ tmExportDataSHP::~tmExportDataSHP()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
-											 const wxString & path)
+bool tmExportDataSHP::CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer,
+                                            const wxString &path)
 {
-	bool bReturn = true;
-	wxASSERT(myLayer);
+    bool bReturn = true;
+    wxASSERT(myLayer);
     wxASSERT(m_Shp == NULL);
-	wxFileName * myShpFileName = GetFileName(myLayer, path);
-	if (!myShpFileName)
-	{
-		wxLogError(_("Unable to get the file name !"));
-		return false;
-	}
+    wxFileName *myShpFileName = GetFileName(myLayer, path);
+    if (!myShpFileName) {
+        wxLogError(_("Unable to get the file name !"));
+        return false;
+    }
 
     if (myLayer->m_LayerType == LAYER_POLYGON) {
         m_Shp = new tmGISDataVectorSHPMemory();
-    }
-    else{
+    } else {
         m_Shp = new tmGISDataVectorSHP();
     }
 
-	if(m_Shp->CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType) == false){
-		bReturn =  false;
-	}
+    if (m_Shp->CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType) == false) {
+        bReturn = false;
+    }
 
-	wxDELETE(myShpFileName);
-	return bReturn;
+    wxDELETE(myShpFileName);
+    return bReturn;
 
 }
-
 
 
 /***************************************************************************//**
@@ -145,53 +137,50 @@ bool tmExportDataSHP::CreateEmptyExportFile (ProjectDefMemoryLayers * myLayer,
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::AddOptFields (const PrjMemFieldArray & myfields)
+bool tmExportDataSHP::AddOptFields(const PrjMemFieldArray &myfields)
 {
 
-	bool bReturn = true; // if adding fields failed, stop
-	for (unsigned int i = 0; i< myfields.GetCount(); i++)
-	{
-		ProjectDefMemoryFields * field = myfields.Item(i);
-		wxASSERT(field);
-		int iSize = 0;
+    bool bReturn = true; // if adding fields failed, stop
+    for (unsigned int i = 0; i < myfields.GetCount(); i++) {
+        ProjectDefMemoryFields *field = myfields.Item(i);
+        wxASSERT(field);
+        int iSize = 0;
 
-		switch (field->m_FieldType)
-		{
-			case TM_FIELD_TEXT:
-				bReturn = m_Shp->AddFieldText(field->m_Fieldname, field->m_FieldPrecision);
-				break;
+        switch (field->m_FieldType) {
+            case TM_FIELD_TEXT:
+                bReturn = m_Shp->AddFieldText(field->m_Fieldname, field->m_FieldPrecision);
+                break;
 
-			case TM_FIELD_INTEGER:
-				bReturn = m_Shp->AddFieldNumeric(field->m_Fieldname, false);
-				break;
+            case TM_FIELD_INTEGER:
+                bReturn = m_Shp->AddFieldNumeric(field->m_Fieldname, false);
+                break;
 
-			case TM_FIELD_FLOAT:
-				bReturn = m_Shp->AddFieldNumeric(field->m_Fieldname, true);
-				break;
+            case TM_FIELD_FLOAT:
+                bReturn = m_Shp->AddFieldNumeric(field->m_Fieldname, true);
+                break;
 
-			case TM_FIELD_ENUMERATION:
-				// compute max size for enum
-				iSize = GetSizeOfEnum(field->m_pCodedValueArray);
-				bReturn = m_Shp->AddFieldText(field->m_Fieldname, iSize);
-				break;
+            case TM_FIELD_ENUMERATION:
+                // compute max size for enum
+                iSize = GetSizeOfEnum(field->m_pCodedValueArray);
+                bReturn = m_Shp->AddFieldText(field->m_Fieldname, iSize);
+                break;
 
-			case TM_FIELD_DATE:
-				bReturn = m_Shp->AddFieldDate(field->m_Fieldname);
-				break;
+            case TM_FIELD_DATE:
+                bReturn = m_Shp->AddFieldDate(field->m_Fieldname);
+                break;
 
-			default:
-				bReturn = false;
-				break;
-		}
+            default:
+                bReturn = false;
+                break;
+        }
 
-		if (!bReturn)
-			break;
+        if (!bReturn)
+            break;
 
-	}
+    }
 
-	return bReturn;
+    return bReturn;
 }
-
 
 
 /***************************************************************************//**
@@ -203,15 +192,16 @@ bool tmExportDataSHP::AddOptFields (const PrjMemFieldArray & myfields)
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
-	wxASSERT (iObjeDescSize);
+bool tmExportDataSHP::AddGenericFields(int iObjeDescSize)
+{
+    wxASSERT (iObjeDescSize);
 
-	if (m_Shp->AddFieldText(_T("OBJ_CD"), 50) &&
-		m_Shp->AddFieldText(_T("OBJ_DESC"), iObjeDescSize)){
-		return true;
-	}
+    if (m_Shp->AddFieldText(_T("OBJ_CD"), 50) &&
+        m_Shp->AddFieldText(_T("OBJ_DESC"), iObjeDescSize)) {
+        return true;
+    }
 
-	return false;
+    return false;
 
 }
 
@@ -225,16 +215,15 @@ bool tmExportDataSHP::AddGenericFields (int iObjeDescSize){
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 March 2009
  *******************************************************************************/
-bool tmExportDataSHP::AddFIDField ()
+bool tmExportDataSHP::AddFIDField()
 {
-	if(m_Shp->AddFieldNumeric(_T("TM_OID"), false)==false){
-		wxLogError(_("Adding OID field failed"));
-		return false;
-	}
+    if (m_Shp->AddFieldNumeric(_T("TM_OID"), false) == false) {
+        wxLogError(_("Adding OID field failed"));
+        return false;
+    }
 
-	return true;
+    return true;
 }
-
 
 
 /***************************************************************************//**
@@ -245,134 +234,135 @@ bool tmExportDataSHP::AddFIDField ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::WriteLines (ProjectDefMemoryLayers * myLayer)
+bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer)
 {
-	wxASSERT(m_Frame);
-	wxASSERT(!m_Frame->IsEmpty());
-	wxASSERT(m_pDB);
-	wxASSERT(m_pDB->DataBaseHasResults() == true);
+    wxASSERT(m_Frame);
+    wxASSERT(!m_Frame->IsEmpty());
+    wxASSERT(m_pDB);
+    wxASSERT(m_pDB->DataBaseHasResults() == true);
 
-	// get row of data
-	DataBaseResult myResult;
-	m_pDB->DataBaseGetResults(&myResult);
-	wxASSERT(myResult.HasResults()==true);
+    // get row of data
+    DataBaseResult myResult;
+    m_pDB->DataBaseGetResults(&myResult);
+    wxASSERT(myResult.HasResults() == true);
 
-	for (long i = 0; i < myResult.GetRowCount(); i++) {
-		myResult.NextRow();
+    for (long i = 0; i < myResult.GetRowCount(); i++) {
+        myResult.NextRow();
 
-		//
-		// Is geometry inside the frame ?
-		//
-		OGRGeometry * myGeom = NULL;
-		if ( myResult.GetValue(1, &myGeom) == false){
-			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %d"),
-					   myLayer->m_LayerName.c_str(), i);
-			continue;
-		}
+        //
+        // Is geometry inside the frame ?
+        //
+        OGRGeometry *myGeom = NULL;
+        if (myResult.GetValue(1, &myGeom) == false) {
+            wxASSERT(myGeom == NULL);
+            wxLogError(_T("No geometry returned for '%s' in loop %d"),
+                       myLayer->m_LayerName.c_str(), i);
+            continue;
+        }
 
-		long myOid = wxNOT_FOUND;
-		myResult.GetValue(0, myOid);
-		wxASSERT(myOid != wxNOT_FOUND);
-
-
-		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
-					   myOid, myLayer->m_LayerName.c_str());
-			continue;
-		}
+        long myOid = wxNOT_FOUND;
+        myResult.GetValue(0, myOid);
+        wxASSERT(myOid != wxNOT_FOUND);
 
 
-		OGRGeometry * myCropLine = SafeIntersection(myGeom, m_Frame);
-		OGRGeometryFactory::destroyGeometry(myGeom);
+        if (myGeom == NULL) {
+            wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
+                       myOid, myLayer->m_LayerName.c_str());
+            continue;
+        }
 
-		if (myCropLine == NULL) {
-			continue;
-		}
 
-		if (myCropLine->IsEmpty() == true) {
-			OGRGeometryFactory::destroyGeometry(myCropLine);
-			continue;
-		}
+        OGRGeometry *myCropLine = SafeIntersection(myGeom, m_Frame);
+        OGRGeometryFactory::destroyGeometry(myGeom);
 
-		//
-		// Add geometry first and then values
-		//
-		if (myCropLine->getGeometryType() == wkbMultiLineString) {
+        if (myCropLine == NULL) {
+            continue;
+        }
 
-			// if multi-lines were generated during intersection with the frame, separate the features.
-			wxLogDebug(_("Multi lines encountered for OID : %ld"), myOid);
-			OGRMultiLineString * myCropedLines = (OGRMultiLineString*)myCropLine;
-			for (int f = 0; f< myCropedLines->getNumGeometries(); f++) {
-				OGRGeometry * myfLine = myCropedLines->getGeometryRef(f)->clone();
-				m_Shp->AddGeometry(myfLine, myOid);
+        if (myCropLine->IsEmpty() == true) {
+            OGRGeometryFactory::destroyGeometry(myCropLine);
+            continue;
+        }
 
-				// basic attribution
-				if (SetAttributsBasic(myResult) == false) {
-					m_Shp->CloseGeometry();
-					wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
-					continue;
-				}
+        //
+        // Add geometry first and then values
+        //
+        if (myCropLine->getGeometryType() == wkbMultiLineString) {
 
-				// advanced attribution
-				if (SetAttributsAdvanced(myResult, myLayer) == false) {
-					m_Shp->CloseGeometry();
-					wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
-					continue;
-				}
+            // if multi-lines were generated during intersection with the frame, separate the features.
+            wxLogDebug(_("Multi lines encountered for OID : %ld"), myOid);
+            OGRMultiLineString *myCropedLines = (OGRMultiLineString *) myCropLine;
+            for (int f = 0; f < myCropedLines->getNumGeometries(); f++) {
+                OGRGeometry *myfLine = myCropedLines->getGeometryRef(f)->clone();
+                m_Shp->AddGeometry(myfLine, myOid);
 
-				m_Shp->CloseGeometry();
-			}
-			OGRGeometryFactory::destroyGeometry(myCropedLines);
+                // basic attribution
+                if (SetAttributsBasic(myResult) == false) {
+                    m_Shp->CloseGeometry();
+                    wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
+                    continue;
+                }
 
-		} else {
+                // advanced attribution
+                if (SetAttributsAdvanced(myResult, myLayer) == false) {
+                    m_Shp->CloseGeometry();
+                    wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
+                    continue;
+                }
 
-			m_Shp->AddGeometry(myCropLine, myOid);
+                m_Shp->CloseGeometry();
+            }
+            OGRGeometryFactory::destroyGeometry(myCropedLines);
 
-			// basic attribution
-			if (SetAttributsBasic(myResult) == false) {
-				m_Shp->CloseGeometry();
-				wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
-				continue;
-			}
+        } else {
 
-			// advanced attribution
-			if (SetAttributsAdvanced(myResult, myLayer) == false) {
-				m_Shp->CloseGeometry();
-				wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
-				continue;
-			}
+            m_Shp->AddGeometry(myCropLine, myOid);
 
-			m_Shp->CloseGeometry();
-			OGRGeometryFactory::destroyGeometry(myCropLine);
-		}
+            // basic attribution
+            if (SetAttributsBasic(myResult) == false) {
+                m_Shp->CloseGeometry();
+                wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
+                continue;
+            }
 
-	}
-	return true;
+            // advanced attribution
+            if (SetAttributsAdvanced(myResult, myLayer) == false) {
+                m_Shp->CloseGeometry();
+                wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
+                continue;
+            }
+
+            m_Shp->CloseGeometry();
+            OGRGeometryFactory::destroyGeometry(myCropLine);
+        }
+
+    }
+    return true;
 }
 
 
-
-long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxProgressDialog * progDlg, tmPercent * percent){
+long
+tmExportDataSHP::WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxProgressDialog *progDlg, tmPercent *percent)
+{
     wxASSERT(m_pDB);
 
-	DataBaseResult myResult;
-	m_pDB->DataBaseGetResults(&myResult);
-	if( myResult.HasResults() == false) {
+    DataBaseResult myResult;
+    m_pDB->DataBaseGetResults(&myResult);
+    if (myResult.HasResults() == false) {
         wxLogWarning(_("Nothing to export in '%s'!"), layer->m_LayerName);
         return wxNOT_FOUND;
     }
     long myLoop = myResult.GetRowCount();
-	for (long i = 0; i < myLoop; i++) {
-		myResult.NextRow();
+    for (long i = 0; i < myLoop; i++) {
+        myResult.NextRow();
 
-        OGRGeometry * myGeom = NULL;
+        OGRGeometry *myGeom = NULL;
         if (myResult.GetValue(1, &myGeom) == false) {
             wxLogError(_("No geometry in '%s' @ loop: %ld"), layer->m_LayerName, i);
             continue;
         }
         wxASSERT(myGeom);
-        m_Shp->AddGeometry(myGeom, i+1);
+        m_Shp->AddGeometry(myGeom, i + 1);
 
         wxString myCountObj = wxEmptyString;
         wxString myTmIds = wxEmptyString;
@@ -391,12 +381,12 @@ long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxP
         m_Shp->SetFieldValue(myDescs, TM_FIELD_TEXT, 4);
         m_Shp->CloseGeometry();
 
-        if (percent && progDlg ) {
+        if (percent && progDlg) {
             long myCount = 0;
             myCountObj.ToLong(&myCount);
             percent->SetValue(percent->GetValue() + myCount);
             if (percent->IsNewStep() == true) {
-                if(progDlg->Update(percent->GetPercent())==false) {
+                if (progDlg->Update(percent->GetPercent()) == false) {
                     myLoop = wxNOT_FOUND;
                     return myLoop;
                 }
@@ -407,21 +397,24 @@ long tmExportDataSHP::WriteConcatGeometries (ProjectDefMemoryLayers * layer, wxP
 }
 
 
-bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDefMemManage * projdef, long loop, wxProgressDialog * progDlg, tmPercent * percent){
+bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMemManage *projdef, long loop,
+                                         wxProgressDialog *progDlg, tmPercent *percent)
+{
     if (layer == NULL || projdef == NULL || loop == wxNOT_FOUND) {
         return false;
     }
 
     wxASSERT(m_Shp);
     if (m_Shp->GetCount() != loop) {
-        wxLogError(_("Not the number of features expected in '%s' (expected: %ld, found: %ld"), layer->m_LayerName, loop, m_Shp->GetCount());
+        wxLogError(_("Not the number of features expected in '%s' (expected: %ld, found: %ld"), layer->m_LayerName,
+                   loop, m_Shp->GetCount());
         return false;
     }
 
-    tmRealRect myRect (0,0,0,0);
+    tmRealRect myRect(0, 0, 0, 0);
     m_Shp->SetSpatialFilter(myRect, 0);
-    for (long i = 0; i< loop; i++) {
-       OGRFeature * myFeature = m_Shp->GetNextFeature();
+    for (long i = 0; i < loop; i++) {
+        OGRFeature *myFeature = m_Shp->GetNextFeature();
         if (myFeature == NULL) {
             wxLogError(_("Feature: %ld is NULL"), i);
             continue;
@@ -430,10 +423,11 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
         // get feature id, feature code, layerindex
         wxString myAttribTxt = wxEmptyString;
         unsigned int myNbAttrib = myFeature->GetFieldAsInteger(0);
-        wxArrayString myTmIds = wxStringTokenize( wxString(myFeature->GetFieldAsString(1) ), _T(";\n") );
-        wxArrayString myLayerIdx = wxStringTokenize( wxString(myFeature->GetFieldAsString(2) ), _T(";\n") );
-        wxArrayString myCodes = wxStringTokenize( wxString(myFeature->GetFieldAsString(3) ), _T(";\n") );
-        wxASSERT(myTmIds.GetCount() == myLayerIdx.GetCount() && myCodes.GetCount() == myLayerIdx.GetCount() && myCodes.GetCount() == myNbAttrib);
+        wxArrayString myTmIds = wxStringTokenize(wxString(myFeature->GetFieldAsString(1)), _T(";\n"));
+        wxArrayString myLayerIdx = wxStringTokenize(wxString(myFeature->GetFieldAsString(2)), _T(";\n"));
+        wxArrayString myCodes = wxStringTokenize(wxString(myFeature->GetFieldAsString(3)), _T(";\n"));
+        wxASSERT(myTmIds.GetCount() == myLayerIdx.GetCount() && myCodes.GetCount() == myLayerIdx.GetCount() &&
+                 myCodes.GetCount() == myNbAttrib);
 
         for (unsigned int a = 0; a < myNbAttrib; a++) {
             long myId = wxNOT_FOUND;
@@ -441,7 +435,7 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
             myTmIds.Item(a).ToLong(&myId);
             myLayerIdx.Item(a).ToLong(&myLayerIndex);
 
-            ProjectDefMemoryLayers * myLayer = projdef->FindLayerByRealID(myLayerIndex);
+            ProjectDefMemoryLayers *myLayer = projdef->FindLayerByRealID(myLayerIndex);
             wxASSERT(myLayer);
             if (myLayer == NULL || myLayer->m_pLayerFieldArray.GetCount() == 0) {
                 myAttribTxt.Append(_T(";"));
@@ -455,14 +449,15 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
             }
             myFields.RemoveLast();
 
-            wxString myQuery = wxString::Format( _T("SELECT %s FROM %s l  JOIN (%s AS a, %s AS o, layer_at%ld AS at) ON (l.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID AND at.OBJECT_ID = l.OBJECT_ID) WHERE l.OBJECT_ID = %ld AND o.OBJECT_CD = \"%s\""),
-                                                myFields,
-                                                TABLE_NAME_GIS_GENERIC[layer->m_LayerType],
-                                                TABLE_NAME_GIS_ATTRIBUTION[layer->m_LayerType],
-                                                TABLE_NAME_OBJECTS,
-                                                myLayerIndex,
-                                                myId,
-                                                myCodes.Item(a));
+            wxString myQuery = wxString::Format(
+                    _T("SELECT %s FROM %s l  JOIN (%s AS a, %s AS o, layer_at%ld AS at) ON (l.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID AND at.OBJECT_ID = l.OBJECT_ID) WHERE l.OBJECT_ID = %ld AND o.OBJECT_CD = \"%s\""),
+                    myFields,
+                    TABLE_NAME_GIS_GENERIC[layer->m_LayerType],
+                    TABLE_NAME_GIS_ATTRIBUTION[layer->m_LayerType],
+                    TABLE_NAME_OBJECTS,
+                    myLayerIndex,
+                    myId,
+                    myCodes.Item(a));
             if (m_pDB->DataBaseQuery(myQuery) == false) {
                 myAttribTxt.Append(_T(";"));
                 continue;
@@ -477,7 +472,7 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
             m_pDB->DataBaseGetResults(&myResult);
             myResult.NextRow();
             for (unsigned int c = 0; c < myResult.GetColCount(); c++) {
-                ProjectDefMemoryFields * myField = myLayer->m_pLayerFieldArray.Item(c);
+                ProjectDefMemoryFields *myField = myLayer->m_pLayerFieldArray.Item(c);
                 wxASSERT(myField);
                 wxString myFieldValueTxt;
                 myResult.GetValue(c, myFieldValueTxt);
@@ -486,7 +481,7 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
                     long myFieldValueId = wxNOT_FOUND;
                     myFieldValueTxt.ToLong(&myFieldValueId);
                     for (unsigned int e = 0; e < myField->m_pCodedValueArray.GetCount(); e++) {
-                        ProjectDefMemoryFieldsCodedVal * myVal = myField->m_pCodedValueArray.Item(e);
+                        ProjectDefMemoryFieldsCodedVal *myVal = myField->m_pCodedValueArray.Item(e);
                         wxASSERT(myVal);
                         if (myVal->m_ValueID == myFieldValueId) {
                             myFieldValue = myVal->m_ValueName;
@@ -499,12 +494,12 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
             }
             myAttribTxt.RemoveLast();
             myAttribTxt.Append(_T(";"));
-         }
+        }
         myAttribTxt.RemoveLast();
 
-        myFeature->SetField(5, (const char*) myAttribTxt.mb_str(wxConvUTF8));
-        OGRErr  myErr = m_Shp->GetLayerRef()->SetFeature(myFeature);
-        if (myErr != OGRERR_NONE){
+        myFeature->SetField(5, (const char *) myAttribTxt.mb_str(wxConvUTF8));
+        OGRErr myErr = m_Shp->GetLayerRef()->SetFeature(myFeature);
+        if (myErr != OGRERR_NONE) {
             wxLogError(_("Error while exporting concatenated data: %s"), myAttribTxt);
         }
         OGRFeature::DestroyFeature(myFeature);
@@ -513,7 +508,7 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
         if (progDlg && percent) {
             percent->SetValue(percent->GetValue() + i + myNbAttrib);
             if (percent->IsNewStep() == true) {
-                if(progDlg->Update(percent->GetPercent(), _("Processing attributs"))==false) {
+                if (progDlg->Update(percent->GetPercent(), _("Processing attributs")) == false) {
                     return false;
                 }
                 wxLogMessage(_("Percent: %d"), percent->GetPercent());
@@ -525,9 +520,6 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
 }
 
 
-
-
-
 /***************************************************************************//**
  @brief Write all geometrics points to the shp
  @param myLayer object containing info on the actual layer, such as layer_ID or
@@ -536,80 +528,80 @@ bool tmExportDataSHP::AddConcatAttributs (ProjectDefMemoryLayers * layer, PrjDef
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::WritePoints (ProjectDefMemoryLayers * myLayer)
+bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer)
 {
-	wxASSERT(m_Frame);
-	wxASSERT(!m_Frame->IsEmpty());
-	wxASSERT(m_pDB);
-	wxASSERT(m_pDB->DataBaseHasResults() == true);
+    wxASSERT(m_Frame);
+    wxASSERT(!m_Frame->IsEmpty());
+    wxASSERT(m_pDB);
+    wxASSERT(m_pDB->DataBaseHasResults() == true);
 
-	// get row of data
-	DataBaseResult myResult;
-	m_pDB->DataBaseGetResults(&myResult);
-	wxASSERT(myResult.HasResults()==true);
+    // get row of data
+    DataBaseResult myResult;
+    m_pDB->DataBaseGetResults(&myResult);
+    wxASSERT(myResult.HasResults() == true);
 
-	for (long i = 0; i < myResult.GetRowCount(); i++) {
-		myResult.NextRow();
+    for (long i = 0; i < myResult.GetRowCount(); i++) {
+        myResult.NextRow();
 
-		//
-		// Is geometry inside the frame ?
-		//
-		OGRGeometry * myGeom = NULL;
-		if ( myResult.GetValue(1, &myGeom) == false){
-			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
-					   myLayer->m_LayerName.c_str(), i);
-			continue;
-		}
+        //
+        // Is geometry inside the frame ?
+        //
+        OGRGeometry *myGeom = NULL;
+        if (myResult.GetValue(1, &myGeom) == false) {
+            wxASSERT(myGeom == NULL);
+            wxLogError(_T("No geometry returned for '%s' in loop %ld"),
+                       myLayer->m_LayerName.c_str(), i);
+            continue;
+        }
 
-		long myOid = wxNOT_FOUND;
-		myResult.GetValue(0, myOid);
-		wxASSERT(myOid != wxNOT_FOUND);
-
-
-		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
-					   myOid, myLayer->m_LayerName.c_str());
-			continue;
-		}
-
-		if (myGeom->Intersects(m_Frame)==false) {
-			OGRGeometryFactory::destroyGeometry(myGeom);
-			continue;
-		}
-
-		//
-		// Add geometry first and then values
-		//
-		m_Shp->AddGeometry(myGeom, myOid);
-		OGRGeometryFactory::destroyGeometry(myGeom);
-
-		// basic attribution
-		if(SetAttributsBasic(myResult)==false){
-			m_Shp->CloseGeometry();
-			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
-			continue;
-		}
+        long myOid = wxNOT_FOUND;
+        myResult.GetValue(0, myOid);
+        wxASSERT(myOid != wxNOT_FOUND);
 
 
-		// advanced attribution
-		if (SetAttributsAdvanced(myResult, myLayer)==false) {
-			m_Shp->CloseGeometry();
-			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
-			continue;
-		}
+        if (myGeom == NULL) {
+            wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
+                       myOid, myLayer->m_LayerName.c_str());
+            continue;
+        }
 
-		m_Shp->CloseGeometry();
-	}
-	return true;
+        if (myGeom->Intersects(m_Frame) == false) {
+            OGRGeometryFactory::destroyGeometry(myGeom);
+            continue;
+        }
+
+        //
+        // Add geometry first and then values
+        //
+        m_Shp->AddGeometry(myGeom, myOid);
+        OGRGeometryFactory::destroyGeometry(myGeom);
+
+        // basic attribution
+        if (SetAttributsBasic(myResult) == false) {
+            m_Shp->CloseGeometry();
+            wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
+            continue;
+        }
+
+
+        // advanced attribution
+        if (SetAttributsAdvanced(myResult, myLayer) == false) {
+            m_Shp->CloseGeometry();
+            wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
+            continue;
+        }
+
+        m_Shp->CloseGeometry();
+    }
+    return true;
 }
 
 
-
-bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
-	wxASSERT(m_Frame);
-	wxASSERT(!m_Frame->IsEmpty());
-	wxASSERT(m_pDB);
+bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer)
+{
+    wxASSERT(m_Frame);
+    wxASSERT(!m_Frame->IsEmpty());
+    wxASSERT(m_pDB);
 
     /* create spatial index
     m_Shp.CreateSpatialIndex();
@@ -625,8 +617,8 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     wxString mySpatialJoinFieldName = _T("NB_LABELS");
     m_Shp->AddFieldNumeric(mySpatialJoinFieldName);
 
-	DataBaseResult * myResult = new DataBaseResult();
-	m_pDB->DataBaseGetResults(myResult);
+    DataBaseResult *myResult = new DataBaseResult();
+    m_pDB->DataBaseGetResults(myResult);
 
     // write polygon from memory to shp and then return
     if (myResult->HasResults() == false) {
@@ -635,7 +627,7 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
         return true;
     }
 
-    wxASSERT(myResult->HasResults()==true);
+    wxASSERT(myResult->HasResults() == true);
     long myResultCount = myResult->GetRowCount();
 
     double myExportPolyFactor = m_ExportPolyRasterFactor;
@@ -644,59 +636,59 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
     }
 
     // updating rasterization parameters based on skipped percentage (less than 8% is optimal)
-    if (wxIsSameDouble(myExportPolyFactor, 0)==false) {
+    if (wxIsSameDouble(myExportPolyFactor, 0) == false) {
         if (m_ExportPolyPercentSkipped > 8) {
             myExportPolyFactor = myExportPolyFactor / 2.0;
         }
 
         // if between 1 and 8 : optimal :-)
 
-        if(m_ExportPolyPercentSkipped < 1){
+        if (m_ExportPolyPercentSkipped < 1) {
             myExportPolyFactor = myExportPolyFactor * 2.0;
         }
     }
 
     // rasterize polygons
-     if (m_Shp->Rasterize(myExportPolyFactor) == false) {
+    if (m_Shp->Rasterize(myExportPolyFactor) == false) {
         wxDELETE(myResult);
         return false;
     }
 
     long mySkippedPoly = 0;
-	for (long i = 0; i < myResultCount; i++) {
-		myResult->NextRow();
+    for (long i = 0; i < myResultCount; i++) {
+        myResult->NextRow();
 
-		//
-		// Is geometry inside the frame ?
-		//
-		OGRGeometry * myGeom = NULL;
-		if ( myResult->GetValue(1, &myGeom) == false){
-			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
-					   myLayer->m_LayerName.c_str(), i);
-			continue;
-		}
+        //
+        // Is geometry inside the frame ?
+        //
+        OGRGeometry *myGeom = NULL;
+        if (myResult->GetValue(1, &myGeom) == false) {
+            wxASSERT(myGeom == NULL);
+            wxLogError(_T("No geometry returned for '%s' in loop %ld"),
+                       myLayer->m_LayerName.c_str(), i);
+            continue;
+        }
 
-		long myOid = wxNOT_FOUND;
-		myResult->GetValue(0, myOid);
-		wxASSERT(myOid != wxNOT_FOUND);
+        long myOid = wxNOT_FOUND;
+        myResult->GetValue(0, myOid);
+        wxASSERT(myOid != wxNOT_FOUND);
 
 
-		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
-					   myOid, myLayer->m_LayerName.c_str());
-			continue;
-		}
+        if (myGeom == NULL) {
+            wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
+                       myOid, myLayer->m_LayerName.c_str());
+            continue;
+        }
 
-		if (myGeom->Intersects(m_Frame)==false) {
-			OGRGeometryFactory::destroyGeometry(myGeom);
-			continue;
-		}
+        if (myGeom->Intersects(m_Frame) == false) {
+            OGRGeometryFactory::destroyGeometry(myGeom);
+            continue;
+        }
 
-		// Search intersection with polygons, using rasterization and fallback to rigorous method!
+        // Search intersection with polygons, using rasterization and fallback to rigorous method!
         long myFid = wxNOT_FOUND;
         if (myExportPolyFactor != 0) {
-            myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint*) myGeom);
+            myFid = m_Shp->GetFeatureIDIntersectedOnRaster((OGRPoint *) myGeom);
 
         }
         if (myFid == wxNOT_FOUND) {
@@ -721,21 +713,21 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
         }
         m_Shp->SetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue);
 
-		// basic attribution
-		if(SetAttributsBasic(*myResult)==false){
-			m_Shp->CloseGeometry();
-			wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
-			continue;
-		}
+        // basic attribution
+        if (SetAttributsBasic(*myResult) == false) {
+            m_Shp->CloseGeometry();
+            wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
+            continue;
+        }
 
-		// advanced attribution
-		if (SetAttributsAdvanced(*myResult, myLayer)==false) {
-			m_Shp->CloseGeometry();
-			wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
-			continue;
-		}
-		m_Shp->CloseGeometry();
-	}
+        // advanced attribution
+        if (SetAttributsAdvanced(*myResult, myLayer) == false) {
+            m_Shp->CloseGeometry();
+            wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
+            continue;
+        }
+        m_Shp->CloseGeometry();
+    }
 
     // copy from memory to SHP
     m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
@@ -747,23 +739,23 @@ bool tmExportDataSHP::WriteLabels (ProjectDefMemoryLayers * myLayer){
 
     // update poly export info
     m_ExportPolyNbIteration++;
-    if (wxIsSameDouble(myExportPolyFactor, 0)==false) {
+    if (wxIsSameDouble(myExportPolyFactor, 0) == false) {
         m_ExportPolyPercentSkipped = mySkippedPoly * 1.0 / myResultCount * 100.0;
         m_ExportPolyRasterFactor = myExportPolyFactor;
-        wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f%%)"), mySkippedPoly, myResultCount, m_ExportPolyPercentSkipped);
-    }
-    else{
+        wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f%%)"), mySkippedPoly, myResultCount,
+                     m_ExportPolyPercentSkipped);
+    } else {
         wxLogMessage(_("Not using rasterization for polygons!"));
     }
     wxLogMessage(_("Layer %s exported %d times!"), myLayer->m_LayerName, m_ExportPolyNbIteration);
     wxLogDebug(_("Used Raster factor = %.3f, Percent Skipped = %.3f"), myExportPolyFactor, m_ExportPolyPercentSkipped);
     SetPolyExportInfo(myLayer);
-	return true;
+    return true;
 }
 
 
-
-void tmExportDataSHP::_AppendValidToCollection(OGRGeometry * geometry, OGRGeometryCollection * collection){
+void tmExportDataSHP::_AppendValidToCollection(OGRGeometry *geometry, OGRGeometryCollection *collection)
+{
     if (geometry == NULL) {
         return;
     }
@@ -778,7 +770,6 @@ void tmExportDataSHP::_AppendValidToCollection(OGRGeometry * geometry, OGRGeomet
 }
 
 
-
 /***************************************************************************//**
  @brief Compute polygons from lines
  @details This function uses GEOS for computing polygon from lines
@@ -787,87 +778,85 @@ void tmExportDataSHP::_AppendValidToCollection(OGRGeometry * geometry, OGRGeomet
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
+bool tmExportDataSHP::WritePolygons(ProjectDefMemoryLayers *myLayer)
 {
-	wxASSERT(m_Frame);
-	wxASSERT(!m_Frame->IsEmpty());
-	wxASSERT(m_pDB);
+    wxASSERT(m_Frame);
+    wxASSERT(!m_Frame->IsEmpty());
+    wxASSERT(m_pDB);
 
-	// get row of data
-	DataBaseResult myResult;
-	m_pDB->DataBaseGetResults(&myResult);
+    // get row of data
+    DataBaseResult myResult;
+    m_pDB->DataBaseGetResults(&myResult);
 
     //wxASSERT(myResult.HasResults()==true);
 
 
-	//
-	// Is geometry inside the frame ?
-	//
+    //
+    // Is geometry inside the frame ?
+    //
 
-	// Crop with a bigger frame to ensure all intersections will be created
-	// Bug #140
-	OGRGeometry * myBigFrame =  SafeBuffer(m_Frame, GetCropBufferDistance());
-	wxASSERT(myBigFrame);
+    // Crop with a bigger frame to ensure all intersections will be created
+    // Bug #140
+    OGRGeometry *myBigFrame = SafeBuffer(m_Frame, GetCropBufferDistance());
+    wxASSERT(myBigFrame);
 
-	OGRMultiLineString * myNodedLines = (OGRMultiLineString*) OGRGeometryFactory::createGeometry(wkbMultiLineString);
-	for (long i = 0; i < myResult.GetRowCount(); i++) {
-		myResult.NextRow();
+    OGRMultiLineString *myNodedLines = (OGRMultiLineString *) OGRGeometryFactory::createGeometry(wkbMultiLineString);
+    for (long i = 0; i < myResult.GetRowCount(); i++) {
+        myResult.NextRow();
 
-		OGRGeometry * myGeom = NULL;
-		if ( myResult.GetValue(1, &myGeom) == false){
-			wxASSERT(myGeom == NULL);
-			wxLogError(_T("No geometry returned for '%s' in loop %ld"),
-					   myLayer->m_LayerName.c_str(),i);
-			continue;
-		}
+        OGRGeometry *myGeom = NULL;
+        if (myResult.GetValue(1, &myGeom) == false) {
+            wxASSERT(myGeom == NULL);
+            wxLogError(_T("No geometry returned for '%s' in loop %ld"),
+                       myLayer->m_LayerName.c_str(), i);
+            continue;
+        }
 
-		long myOid = wxNOT_FOUND;
-		myResult.GetValue(0, myOid);
-		wxASSERT(myOid != wxNOT_FOUND);
+        long myOid = wxNOT_FOUND;
+        myResult.GetValue(0, myOid);
+        wxASSERT(myOid != wxNOT_FOUND);
 
 
-		if (myGeom == NULL) {
-			wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
-					   myOid,myLayer->m_LayerName.c_str());
-			continue;
-		}
+        if (myGeom == NULL) {
+            wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"),
+                       myOid, myLayer->m_LayerName.c_str());
+            continue;
+        }
 
-        OGRGeometry * myCropLine = SafeIntersection(myGeom, myBigFrame);
+        OGRGeometry *myCropLine = SafeIntersection(myGeom, myBigFrame);
         if (myCropLine == NULL) {
             continue;
         }
 
-        OGRwkbGeometryType myType = wkbFlatten( myCropLine->getGeometryType());
+        OGRwkbGeometryType myType = wkbFlatten(myCropLine->getGeometryType());
         if (myType == wkbMultiLineString) {
             wxLogDebug(_("Multi lines encountered for OID : %ld"), myOid);
-            OGRMultiLineString * myCropedLines = (OGRMultiLineString*) myCropLine;
-            for (int f = 0; f< myCropedLines->getNumGeometries(); f++) {
-                OGRGeometry * myfLine = myCropedLines->getGeometryRef(f)->clone();
+            OGRMultiLineString *myCropedLines = (OGRMultiLineString *) myCropLine;
+            for (int f = 0; f < myCropedLines->getNumGeometries(); f++) {
+                OGRGeometry *myfLine = myCropedLines->getGeometryRef(f)->clone();
                 _AppendValidToCollection(myfLine, myNodedLines);
             }
-        }
-        else {
+        } else {
             _AppendValidToCollection(myCropLine, myNodedLines);
         }
-		OGRGeometryFactory::destroyGeometry(myGeom);
-	}
-	OGRGeometryFactory::destroyGeometry(myBigFrame);
+        OGRGeometryFactory::destroyGeometry(myGeom);
+    }
+    OGRGeometryFactory::destroyGeometry(myBigFrame);
 
-	//
-	// Union frame with cropped lines
-	//
-	// transform non standard OGRLinearRing -> OGRLineString
-	// needed, otherwise union wont work !!!
-	OGRLinearRing * myFrame = m_Frame->getExteriorRing();
-	OGRLineString * myLineString = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
-	myLineString->setCoordinateDimension(2);
-	for (int p= 0; p<myFrame->getNumPoints();p++)
-	{
-		OGRPoint * myPoint = (OGRPoint*) OGRGeometryFactory::createGeometry(wkbPoint);
-		myFrame->getPoint(p,myPoint);
-		myLineString->addPoint(myPoint);
-		OGRGeometryFactory::destroyGeometry(myPoint);
-	}
+    //
+    // Union frame with cropped lines
+    //
+    // transform non standard OGRLinearRing -> OGRLineString
+    // needed, otherwise union wont work !!!
+    OGRLinearRing *myFrame = m_Frame->getExteriorRing();
+    OGRLineString *myLineString = (OGRLineString *) OGRGeometryFactory::createGeometry(wkbLineString);
+    myLineString->setCoordinateDimension(2);
+    for (int p = 0; p < myFrame->getNumPoints(); p++) {
+        OGRPoint *myPoint = (OGRPoint *) OGRGeometryFactory::createGeometry(wkbPoint);
+        myFrame->getPoint(p, myPoint);
+        myLineString->addPoint(myPoint);
+        OGRGeometryFactory::destroyGeometry(myPoint);
+    }
 
     // no geometries, create a polygon using the frame
     if (myNodedLines->getNumGeometries() == 0) {
@@ -878,13 +867,13 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
         return true;
     }
 
-	OGRGeometry * myLines = myNodedLines->Union(myLineString);
-	wxASSERT(myLines);
-	OGRGeometryFactory::destroyGeometry(myNodedLines);
-	OGRGeometryFactory::destroyGeometry(myLineString);
+    OGRGeometry *myLines = myNodedLines->Union(myLineString);
+    wxASSERT(myLines);
+    OGRGeometryFactory::destroyGeometry(myNodedLines);
+    OGRGeometryFactory::destroyGeometry(myLineString);
 
-	int iTotalLines = ((OGRMultiLineString *) myLines)->getNumGeometries();
-	wxLogMessage(_("%d lines for creating polygons"), iTotalLines);
+    int iTotalLines = ((OGRMultiLineString *) myLines)->getNumGeometries();
+    wxLogMessage(_("%d lines for creating polygons"), iTotalLines);
 
 
     /* temp code for exporting lines
@@ -900,104 +889,100 @@ bool tmExportDataSHP::WritePolygons (ProjectDefMemoryLayers * myLayer)
     }*/
 
 
-	//
-	// Create polygons
-	//
-	GEOSGeom * ahInGeoms = (GEOSGeom *) CPLCalloc(sizeof(void*),iTotalLines);
-    GEOSContextHandle_t  myHandle = OGRGeometry::createGEOSContext();
-	for(int i = 0; i < iTotalLines; i++ ){
-		ahInGeoms[i] = ((OGRMultiLineString*) myLines)->getGeometryRef(i)->exportToGEOS(myHandle);
-	}
+    //
+    // Create polygons
+    //
+    GEOSGeom *ahInGeoms = (GEOSGeom *) CPLCalloc(sizeof(void *), iTotalLines);
+    GEOSContextHandle_t myHandle = OGRGeometry::createGEOSContext();
+    for (int i = 0; i < iTotalLines; i++) {
+        ahInGeoms[i] = ((OGRMultiLineString *) myLines)->getGeometryRef(i)->exportToGEOS(myHandle);
+    }
     OGRGeometry::freeGEOSContext(myHandle);
 
-    GEOSGeom hResultGeom = GEOSPolygonize( ahInGeoms, iTotalLines );
-	// cleaning
-	for (int h = 0; h< iTotalLines; h++)
-	{
-		GEOSGeom_destroy(ahInGeoms[h]);
-	}
-	CPLFree(ahInGeoms);
-	OGRGeometryFactory::destroyGeometry(myLines);
+    GEOSGeom hResultGeom = GEOSPolygonize(ahInGeoms, iTotalLines);
+    // cleaning
+    for (int h = 0; h < iTotalLines; h++) {
+        GEOSGeom_destroy(ahInGeoms[h]);
+    }
+    CPLFree(ahInGeoms);
+    OGRGeometryFactory::destroyGeometry(myLines);
 
 
-	int myNbPoly = GEOSGetNumGeometries(hResultGeom);
-	// save polygon to shp
-	for (int j = 0; j < myNbPoly;j++)
-	{
-		const GEOSGeometry * myActualPoly = GEOSGetGeometryN(hResultGeom, j);
-		GEOSGeom myActualPolyClone = GEOSGeom_clone(myActualPoly);
-		OGRGeometry * myPoly = SafeCreateFromGEOS(myActualPolyClone);
-		GEOSGeom_destroy(myActualPolyClone);
-		m_Shp->AddGeometry(myPoly, -1);
-		m_Shp->CloseGeometry();
-		OGRGeometryFactory::destroyGeometry(myPoly);
-	}
-	GEOSGeom_destroy(hResultGeom);
-	return true;
+    int myNbPoly = GEOSGetNumGeometries(hResultGeom);
+    // save polygon to shp
+    for (int j = 0; j < myNbPoly; j++) {
+        const GEOSGeometry *myActualPoly = GEOSGetGeometryN(hResultGeom, j);
+        GEOSGeom myActualPolyClone = GEOSGeom_clone(myActualPoly);
+        OGRGeometry *myPoly = SafeCreateFromGEOS(myActualPolyClone);
+        GEOSGeom_destroy(myActualPolyClone);
+        m_Shp->AddGeometry(myPoly, -1);
+        m_Shp->CloseGeometry();
+        OGRGeometryFactory::destroyGeometry(myPoly);
+    }
+    GEOSGeom_destroy(hResultGeom);
+    return true;
 }
 
 
+bool tmExportDataSHP::SetAttributsBasic(DataBaseResult &results)
+{
 
+    if (results.HasResults() == false || results.IsRowOk() == false) {
+        return false;
+    }
 
+    // get results
+    wxString myObjectCD = wxEmptyString;
+    wxString myObjectDesc = wxEmptyString;
 
-bool tmExportDataSHP::SetAttributsBasic(DataBaseResult & results){
+    if (results.GetValue(2, myObjectCD) == false) {
+        wxLogError(_("Unable to get the Object Code"));
+        return false;
+    }
 
-	if (results.HasResults() == false || results.IsRowOk() == false) {
-		return false;
-	}
+    if (results.GetValue(3, myObjectDesc) == false) {
+        wxLogError(_("Unable to get the object Description"));
+        return false;
+    }
 
-	// get results
-	wxString myObjectCD = wxEmptyString;
-	wxString myObjectDesc = wxEmptyString;
-
-	if (results.GetValue(2, myObjectCD)==false) {
-		wxLogError(_("Unable to get the Object Code"));
-		return false;
-	}
-
-	if (results.GetValue(3, myObjectDesc)==false) {
-		wxLogError(_("Unable to get the object Description"));
-		return false;
-	}
-
-	m_Shp->SetFieldValue(myObjectCD, TM_FIELD_TEXT, 1);
-	m_Shp->SetFieldValue(myObjectDesc, TM_FIELD_TEXT, 2);
-	return true;
+    m_Shp->SetFieldValue(myObjectCD, TM_FIELD_TEXT, 1);
+    m_Shp->SetFieldValue(myObjectDesc, TM_FIELD_TEXT, 2);
+    return true;
 }
 
 
-bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
-										   ProjectDefMemoryLayers * layer){
-	wxASSERT(layer);
-	if (layer->m_pLayerFieldArray.GetCount() == 0) {
-		// no advanced attribution
-		return true;
-	}
+bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult &results,
+                                           ProjectDefMemoryLayers *layer)
+{
+    wxASSERT(layer);
+    if (layer->m_pLayerFieldArray.GetCount() == 0) {
+        // no advanced attribution
+        return true;
+    }
 
 
-	if (results.HasResults() == false || results.IsRowOk() == false) {
-		return false;
-	}
+    if (results.HasResults() == false || results.IsRowOk() == false) {
+        return false;
+    }
 
 
-	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount(); i++) {
-		wxString myValue = wxEmptyString;
-		if (results.GetValue(i + 4, myValue) == false) {
-			continue;
-		}
+    for (unsigned int i = 0; i < layer->m_pLayerFieldArray.GetCount(); i++) {
+        wxString myValue = wxEmptyString;
+        if (results.GetValue(i + 4, myValue) == false) {
+            continue;
+        }
 
         // special case if field is enumeration
         if (layer->m_pLayerFieldArray[i]->m_FieldType == TM_FIELD_ENUMERATION) {
             long myValueID = wxNOT_FOUND;
             myValue.ToLong(&myValueID);
             for (unsigned int c = 0; c < layer->m_pLayerFieldArray[i]->m_pCodedValueArray.GetCount(); c++) {
-                ProjectDefMemoryFieldsCodedVal * myCVal = layer->m_pLayerFieldArray[i]->m_pCodedValueArray[c];
+                ProjectDefMemoryFieldsCodedVal *myCVal = layer->m_pLayerFieldArray[i]->m_pCodedValueArray[c];
                 if (myCVal->m_ValueID == myValueID) {
 
                     if (DoExportAttributEnumerationCode() == true) { // export enumeration code
                         myValue = myCVal->m_ValueCode;
-                    }
-                    else {  // export enumeration description
+                    } else {  // export enumeration description
                         myValue = myCVal->m_ValueName;
                     }
                     break;
@@ -1005,11 +990,10 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
             }
         }
 
-		m_Shp->SetFieldValue(myValue , layer->m_pLayerFieldArray.Item(i)->m_FieldType, i+3);
-	}
-	return true;
+        m_Shp->SetFieldValue(myValue, layer->m_pLayerFieldArray.Item(i)->m_FieldType, i + 3);
+    }
+    return true;
 }
-
 
 
 /***************************************************************************//**
@@ -1022,39 +1006,37 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult & results,
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 November 2008
  *******************************************************************************/
-OGRGeometry * tmExportDataSHP::SafeIntersection(OGRGeometry * line, OGRGeometry * frame)
+OGRGeometry *tmExportDataSHP::SafeIntersection(OGRGeometry *line, OGRGeometry *frame)
 {
-	wxASSERT(line);
-	wxASSERT(frame);
+    wxASSERT(line);
+    wxASSERT(frame);
 
-	GEOSGeom  geosline = NULL;
-	GEOSGeom  geosframe = NULL;
-	GEOSGeom  geosintersect = NULL;
-	OGRGeometry * returncrop = NULL;
+    GEOSGeom geosline = NULL;
+    GEOSGeom geosframe = NULL;
+    GEOSGeom geosintersect = NULL;
+    OGRGeometry *returncrop = NULL;
 
     GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
-	geosline = line->exportToGEOS(myGEOSHandle);
-	geosframe = frame->exportToGEOS(myGEOSHandle);
+    geosline = line->exportToGEOS(myGEOSHandle);
+    geosframe = frame->exportToGEOS(myGEOSHandle);
     OGRGeometry::freeGEOSContext(myGEOSHandle);
 
-	wxASSERT(geosline);
-	wxASSERT(geosframe);
-	if (geosline != NULL && geosframe != NULL)
-	{
-		geosintersect = GEOSIntersection(geosline, geosframe);
-		GEOSGeom_destroy(geosline);
-		GEOSGeom_destroy(geosframe);
+    wxASSERT(geosline);
+    wxASSERT(geosframe);
+    if (geosline != NULL && geosframe != NULL) {
+        geosintersect = GEOSIntersection(geosline, geosframe);
+        GEOSGeom_destroy(geosline);
+        GEOSGeom_destroy(geosframe);
 
-		if (geosintersect != NULL)
-		{
-			returncrop = SafeCreateFromGEOS(geosintersect);
-			GEOSGeom_destroy(geosintersect);
-		}
+        if (geosintersect != NULL) {
+            returncrop = SafeCreateFromGEOS(geosintersect);
+            GEOSGeom_destroy(geosintersect);
+        }
 
 
-	}
+    }
 
-	return returncrop;
+    return returncrop;
 }
 
 
@@ -1068,34 +1050,32 @@ OGRGeometry * tmExportDataSHP::SafeIntersection(OGRGeometry * line, OGRGeometry 
  @author Lucien Schreiber (c) CREALP 2008
  @date 18 November 2008
  *******************************************************************************/
-OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * line)
+OGRGeometry *tmExportDataSHP::SafeUnion(OGRGeometry *union1, OGRGeometry *line)
 {
-	wxASSERT(union1);
-	wxASSERT(line);
+    wxASSERT(union1);
+    wxASSERT(line);
 
-	GEOSGeom  geosline = NULL;
-	GEOSGeom  geosunion = NULL;
-	GEOSGeom  geosresult = NULL;
-	OGRGeometry * returnunion = NULL;
+    GEOSGeom geosline = NULL;
+    GEOSGeom geosunion = NULL;
+    GEOSGeom geosresult = NULL;
+    OGRGeometry *returnunion = NULL;
 
     GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
-	geosline = line->exportToGEOS(myGEOSHandle);
-	if (geosline != NULL && union1 != NULL)
-	{
-		geosunion = union1->exportToGEOS(myGEOSHandle);
-		geosresult = GEOSUnion(geosunion, geosline);
-		GEOSGeom_destroy(geosline);
-		GEOSGeom_destroy(geosunion);
+    geosline = line->exportToGEOS(myGEOSHandle);
+    if (geosline != NULL && union1 != NULL) {
+        geosunion = union1->exportToGEOS(myGEOSHandle);
+        geosresult = GEOSUnion(geosunion, geosline);
+        GEOSGeom_destroy(geosline);
+        GEOSGeom_destroy(geosunion);
 
-		if (geosresult != NULL)
-		{
-			returnunion = SafeCreateFromGEOS(geosresult);
-			GEOSGeom_destroy(geosresult);
-		}
+        if (geosresult != NULL) {
+            returnunion = SafeCreateFromGEOS(geosresult);
+            GEOSGeom_destroy(geosresult);
+        }
 
-	}
+    }
     OGRGeometry::freeGEOSContext(myGEOSHandle);
-	return returnunion;
+    return returnunion;
 }
 
 
@@ -1106,65 +1086,59 @@ OGRGeometry * tmExportDataSHP::SafeUnion (OGRGeometry * union1, OGRGeometry * li
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 January 2009
  *******************************************************************************/
-OGRGeometry * tmExportDataSHP::SafeCreateFromGEOS (GEOSGeom geosGeom)
+OGRGeometry *tmExportDataSHP::SafeCreateFromGEOS(GEOSGeom geosGeom)
 {
-	size_t nSize = 0;
+    size_t nSize = 0;
     unsigned char *pabyBuf = NULL;
     OGRGeometry *poGeometry = NULL;
 
-	GEOSWKBWriter * myWKBWriter =  GEOSWKBWriter_create();
-	pabyBuf = GEOSWKBWriter_write(myWKBWriter, geosGeom, &nSize);
+    GEOSWKBWriter *myWKBWriter = GEOSWKBWriter_create();
+    pabyBuf = GEOSWKBWriter_write(myWKBWriter, geosGeom, &nSize);
 
-    if( pabyBuf == NULL || nSize == 0 )
-    {
+    if (pabyBuf == NULL || nSize == 0) {
         GEOSWKBWriter_destroy(myWKBWriter);
-		return NULL;
+        return NULL;
     }
 
-    if( OGRGeometryFactory::createFromWkb( (unsigned char *) pabyBuf,
-										  NULL, &poGeometry, (int) nSize )
-	   != OGRERR_NONE )
-    {
-		GEOSWKBWriter_destroy(myWKBWriter);
+    if (OGRGeometryFactory::createFromWkb((unsigned char *) pabyBuf,
+                                          NULL, &poGeometry, (int) nSize)
+        != OGRERR_NONE) {
+        GEOSWKBWriter_destroy(myWKBWriter);
         poGeometry = NULL;
     }
 
-	//delete pabyBuf;
+    //delete pabyBuf;
 #if GEOS_CAPI_VERSION_MAJOR >= 2 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 6)
-		GEOSFree( pabyBuf );
+    GEOSFree(pabyBuf);
 #else
-	free(pabyBuf);
+    free(pabyBuf);
 #endif
-	GEOSWKBWriter_destroy(myWKBWriter);
+    GEOSWKBWriter_destroy(myWKBWriter);
     return poGeometry;
 }
 
 
-
-OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, double size){
-	wxASSERT (ogrgeom);
+OGRGeometry *tmExportDataSHP::SafeBuffer(OGRGeometry *ogrgeom, double size)
+{
+    wxASSERT (ogrgeom);
 
     GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
-	GEOSGeom geom = ogrgeom->exportToGEOS(myGEOSHandle);
-	GEOSGeom geombuffer;
-	OGRGeometry * returnbuffer = NULL;
+    GEOSGeom geom = ogrgeom->exportToGEOS(myGEOSHandle);
+    GEOSGeom geombuffer;
+    OGRGeometry *returnbuffer = NULL;
 
-	if (geom != NULL){
-		geombuffer = GEOSBuffer(geom, size, 30);
-		GEOSGeom_destroy(geom);
+    if (geom != NULL) {
+        geombuffer = GEOSBuffer(geom, size, 30);
+        GEOSGeom_destroy(geom);
 
-		if (geombuffer != NULL){
-			returnbuffer = SafeCreateFromGEOS(geombuffer);
-			GEOSGeom_destroy(geombuffer);
-		}
-	}
+        if (geombuffer != NULL) {
+            returnbuffer = SafeCreateFromGEOS(geombuffer);
+            GEOSGeom_destroy(geombuffer);
+        }
+    }
     OGRGeometry::freeGEOSContext(myGEOSHandle);
-	return returnbuffer;
+    return returnbuffer;
 }
-
-
-
-
 
 
 /***************************************************************************//**
@@ -1176,23 +1150,23 @@ OGRGeometry * tmExportDataSHP::SafeBuffer (OGRGeometry * ogrgeom, double size){
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
+void tmExportDataSHP::SetFrame(wxRealPoint *points, int nbvertex)
 {
-	wxASSERT (points);
-	if (m_Frame)
-		OGRGeometryFactory::destroyGeometry(m_Frame);
+    wxASSERT (points);
+    if (m_Frame)
+        OGRGeometryFactory::destroyGeometry(m_Frame);
 
-	m_Frame =(OGRPolygon*) OGRGeometryFactory::createGeometry(wkbPolygon);
-	OGRLinearRing * ring;
-	ring = (OGRLinearRing*) OGRGeometryFactory::createGeometry(wkbLinearRing);
-	for (int i = 0; i<nbvertex;i++)
-		ring->addPoint(points[i].x, points[i].y);
+    m_Frame = (OGRPolygon *) OGRGeometryFactory::createGeometry(wkbPolygon);
+    OGRLinearRing *ring;
+    ring = (OGRLinearRing *) OGRGeometryFactory::createGeometry(wkbLinearRing);
+    for (int i = 0; i < nbvertex; i++)
+        ring->addPoint(points[i].x, points[i].y);
 
-	ring->closeRings();
+    ring->closeRings();
 
-	m_Frame->addRing(ring);
+    m_Frame->addRing(ring);
 
-	OGRGeometryFactory::destroyGeometry(ring);
+    OGRGeometryFactory::destroyGeometry(ring);
 
 }
 
@@ -1207,24 +1181,24 @@ void tmExportDataSHP::SetFrame (wxRealPoint * points, int nbvertex)
  @author Lucien Schreiber (c) CREALP 2009
  @date 27 March 2009
  *******************************************************************************/
-bool tmExportDataSHP::SetMultipleFields (ProjectDefMemoryLayers * layer,
-										 const wxArrayString & values)
+bool tmExportDataSHP::SetMultipleFields(ProjectDefMemoryLayers *layer,
+                                        const wxArrayString &values)
 {
-	wxASSERT (values.GetCount()-1 == layer->m_pLayerFieldArray.GetCount());
+    wxASSERT (values.GetCount() - 1 == layer->m_pLayerFieldArray.GetCount());
 
-	for (unsigned int i = 0; i<layer->m_pLayerFieldArray.GetCount();i++)
-	{
-		if(!m_Shp->SetFieldValue(values.Item(i+1), layer->m_pLayerFieldArray.Item(i)->m_FieldType, i+3))
-			return false;
-		else
-			m_Shp->UpdateFeature();
-	}
+    for (unsigned int i = 0; i < layer->m_pLayerFieldArray.GetCount(); i++) {
+        if (!m_Shp->SetFieldValue(values.Item(i + 1), layer->m_pLayerFieldArray.Item(i)->m_FieldType, i + 3))
+            return false;
+        else
+            m_Shp->UpdateFeature();
+    }
 
-	return true;
+    return true;
 }
 
 
-bool tmExportDataSHP::SetPolyExportInfo(ProjectDefMemoryLayers * layer){
+bool tmExportDataSHP::SetPolyExportInfo(ProjectDefMemoryLayers *layer)
+{
     wxASSERT(m_pDB);
     wxString myQuery = wxString::Format(_T("REPLACE INTO %s VALUES (%d,%f,%d,%f)"),
                                         TABLE_NAME_EXPORT_POLY,
@@ -1232,15 +1206,15 @@ bool tmExportDataSHP::SetPolyExportInfo(ProjectDefMemoryLayers * layer){
                                         m_ExportPolyRasterFactor,
                                         m_ExportPolyNbIteration,
                                         m_ExportPolyPercentSkipped);
-    if (m_pDB->DataBaseQueryNoResults(myQuery)==false) {
+    if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
         return false;
     }
     return true;
 }
 
 
-
-bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool usefastexport){
+bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport)
+{
     wxASSERT(m_pDB);
 
     m_ExportPolyRasterFactor = 0.5;
@@ -1249,7 +1223,7 @@ bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool use
     m_ExportPolyFast = usefastexport;
 
     wxString myQuery = _T("SELECT * from %s WHERE LAYER_INDEX = %d");
-    if (m_pDB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_EXPORT_POLY, layer->m_LayerID))==false) {
+    if (m_pDB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_EXPORT_POLY, layer->m_LayerID)) == false) {
         return false;
     }
 
@@ -1268,7 +1242,8 @@ bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers * layer, bool use
 }
 
 
-bool tmExportDataSHP::CreateSpatialIndex(ProjectDefMemoryLayers * layer){
+bool tmExportDataSHP::CreateSpatialIndex(ProjectDefMemoryLayers *layer)
+{
     wxString myQuery = wxString::Format(_T("CREATE SPATIAL INDEX ON %s"), layer->m_LayerName);
     bool myReturnValue = m_Shp->ExecuteSQLQuery(myQuery);
     return myReturnValue;

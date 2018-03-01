@@ -26,38 +26,38 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/graphics.h>
 
-class tmPointOrient : public wxObject 
-	{
-	private:
-		wxPoint m_StartPoint;
-		wxPoint m_EndPoint;
-		
-		void InitMemberValues();
-		
-	protected:
-	public:
-		// ctor - dtor
-		tmPointOrient();
-		~tmPointOrient();
-		
-		// setter - getter
-		void SetStartPoint(const wxPoint & start);
-		void SetEndPoint(const wxPoint & end);
-		
-		int GetOrientationInt();
-		double GetOrientationDouble();
-		
-		// checks
-		virtual bool IsValid();
-	};
+class tmPointOrient : public wxObject
+{
+private:
+    wxPoint m_StartPoint;
+    wxPoint m_EndPoint;
 
+    void InitMemberValues();
 
+protected:
+public:
+    // ctor - dtor
+    tmPointOrient();
 
+    ~tmPointOrient();
+
+    // setter - getter
+    void SetStartPoint(const wxPoint &start);
+
+    void SetEndPoint(const wxPoint &end);
+
+    int GetOrientationInt();
+
+    double GetOrientationDouble();
+
+    // checks
+    virtual bool IsValid();
+};
 
 
 #endif

@@ -17,58 +17,62 @@
 
 #include "vrrealrect.h"
 
-vrRealRect::vrRealRect() {
-	vrRealRect(0,0,0,0);
+vrRealRect::vrRealRect()
+{
+    vrRealRect(0, 0, 0, 0);
 }
 
 
-vrRealRect::vrRealRect(const vrRealRect & source) {
-	m_x = source.m_x;
-	m_y = source.m_y;
-	m_width = source.m_width;
-	m_height = source.m_height;
+vrRealRect::vrRealRect(const vrRealRect &source)
+{
+    m_x = source.m_x;
+    m_y = source.m_y;
+    m_width = source.m_width;
+    m_height = source.m_height;
 }
 
-vrRealRect::vrRealRect(double left, double top, double width, double height) {
-	m_x = left;
-	m_y = top;
-	m_width = width;
-	m_height = height;
+vrRealRect::vrRealRect(double left, double top, double width, double height)
+{
+    m_x = left;
+    m_y = top;
+    m_width = width;
+    m_height = height;
 }
 
-vrRealRect::~vrRealRect() {
+vrRealRect::~vrRealRect()
+{
 }
 
 
-vrRealRect vrRealRect::Intersect(const vrRealRect & rect1) {
-	wxDouble left,right,bottom,top;
-    
-	left = wxMax ( rect1.m_x , m_x );
-    right = wxMin ( rect1.m_x+rect1.m_width, m_x + m_width );
+vrRealRect vrRealRect::Intersect(const vrRealRect &rect1)
+{
+    wxDouble left, right, bottom, top;
+
+    left = wxMax(rect1.m_x, m_x);
+    right = wxMin(rect1.m_x + rect1.m_width, m_x + m_width);
     if (m_height < 0) {
-		wxASSERT(rect1.m_height < 0);
-		top = wxMin (rect1.m_y, m_y);
-		bottom = wxMax (rect1.m_y + rect1.m_height, m_y + m_height);
-	}
-	else {
-		top = wxMax ( rect1.m_y , m_y );
-		bottom = wxMin ( rect1.m_y+rect1.m_height, m_y + m_height );
-	}
-	
-  	
-	vrRealRect myIntersect;
-	myIntersect.SetLeftTop(wxPoint2DDouble(left, top));
-	myIntersect.SetRightBottom(wxPoint2DDouble(right, bottom));
-	
-	return myIntersect;
+        wxASSERT(rect1.m_height < 0);
+        top = wxMin(rect1.m_y, m_y);
+        bottom = wxMax(rect1.m_y + rect1.m_height, m_y + m_height);
+    } else {
+        top = wxMax(rect1.m_y, m_y);
+        bottom = wxMin(rect1.m_y + rect1.m_height, m_y + m_height);
+    }
+
+
+    vrRealRect myIntersect;
+    myIntersect.SetLeftTop(wxPoint2DDouble(left, top));
+    myIntersect.SetRightBottom(wxPoint2DDouble(right, bottom));
+
+    return myIntersect;
 }
 
 
-
-bool vrRealRect::IsOk() {
-	if (m_width != 0 && m_height != 0) {
-		return true;
-	}
-	return false;
+bool vrRealRect::IsOk()
+{
+    if (m_width != 0 && m_height != 0) {
+        return true;
+    }
+    return false;
 }
 

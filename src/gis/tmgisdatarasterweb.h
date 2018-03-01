@@ -18,8 +18,9 @@
 #define _TM_GISDATARASTER_WEB_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "tmgisdataraster.h"
@@ -32,11 +33,15 @@ private:
 
 public:
     tmGISDataRasterWeb();
+
     ~tmGISDataRasterWeb();
-    
-    virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
-    virtual bool SetSpatialFilter (tmRealRect filter, int type);
-    virtual tmRealRect GetImageClipedCoordinates () {return m_FilterCoordLocal;}
+
+    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
+
+    virtual bool SetSpatialFilter(tmRealRect filter, int type);
+
+    virtual tmRealRect GetImageClipedCoordinates()
+    { return m_FilterCoordLocal; }
 };
 
 #endif

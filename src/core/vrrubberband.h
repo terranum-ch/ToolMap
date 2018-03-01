@@ -18,32 +18,40 @@
 #define _VRRUBBERBAND_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
 #include "wx/overlay.h"
 
-class vrRubberBand {
-  private:
-    wxWindow * m_Window;
+class vrRubberBand
+{
+private:
+    wxWindow *m_Window;
     wxPoint m_PointStart;
     wxPoint m_PointEnd;
     wxOverlay m_Overlay;
 
-	wxRect _CreateRect();
+    wxRect _CreateRect();
 
-  public:
-    vrRubberBand(wxWindow * window);
+public:
+    vrRubberBand(wxWindow *window);
+
     virtual ~vrRubberBand();
 
-    void SetPointFirst(const wxPoint & pt);
-    void SetPointLast(const wxPoint & pt);
+    void SetPointFirst(const wxPoint &pt);
+
+    void SetPointLast(const wxPoint &pt);
+
     wxRect GetRect();
 
-	bool IsValid();
+    bool IsValid();
+
     bool IsPositive();
+
     void Update();
 
 };
+
 #endif

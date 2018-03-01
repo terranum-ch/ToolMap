@@ -26,6 +26,7 @@
 #include "objectdefinitionlistdlg.h" // For list and edition dialog definition
 #include "../core/prjdefmemmanage.h"
 #include "wxflatbutton.h"
+
 class wxNotebook;
 
 
@@ -52,71 +53,80 @@ class wxNotebook;
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION wxDefaultPosition
 
 
-
-class ProjectEditObjectDefinitionDLG: public wxDialog
-{    
+class ProjectEditObjectDefinitionDLG : public wxDialog
+{
 private:
-	DataBaseTM * m_DB;
-	
-	// create a memory layer object for storing changes
-	PrjDefMemManage m_MemoryObject;
+    DataBaseTM *m_DB;
 
-	
-	// EVENT FUNCTION
-	void OnAddObject (wxCommandEvent & event);
-	void OnRemoveObject (wxCommandEvent & event);
-	void OnImportFile (wxCommandEvent & event);
-	void OnExportFile (wxCommandEvent & event);
-	void OnChangeFrequency (wxCommandEvent & event);
-	void OnChangeLayerName (wxCommandEvent & event);
-	void OnSaveChanges (wxCommandEvent & event);
-	void OnNotebookChangeTab(wxNotebookEvent & event);
-	
-	// PRIVATE DATABASE FUNCTION
-	bool SetChoiceListText (wxChoice * choice, int listtype); 
-	
-	
-	DECLARE_DYNAMIC_CLASS( ProjectEditObjectDefinitionDLG )
-    DECLARE_EVENT_TABLE()
-	
+    // create a memory layer object for storing changes
+    PrjDefMemManage m_MemoryObject;
+
+
+    // EVENT FUNCTION
+    void OnAddObject(wxCommandEvent &event);
+
+    void OnRemoveObject(wxCommandEvent &event);
+
+    void OnImportFile(wxCommandEvent &event);
+
+    void OnExportFile(wxCommandEvent &event);
+
+    void OnChangeFrequency(wxCommandEvent &event);
+
+    void OnChangeLayerName(wxCommandEvent &event);
+
+    void OnSaveChanges(wxCommandEvent &event);
+
+    void OnNotebookChangeTab(wxNotebookEvent &event);
+
+    // PRIVATE DATABASE FUNCTION
+    bool SetChoiceListText(wxChoice *choice, int listtype);
+
+
+DECLARE_DYNAMIC_CLASS(ProjectEditObjectDefinitionDLG)
+
+DECLARE_EVENT_TABLE()
+
 public:
     /// Constructors
     ProjectEditObjectDefinitionDLG();
-    ProjectEditObjectDefinitionDLG( wxWindow* parent,DataBaseTM * pDatabase, 
-								   wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
-								   const wxString& caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
-								   const wxPoint& pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
-								   const wxSize& size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
-								   long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE );
+
+    ProjectEditObjectDefinitionDLG(wxWindow *parent, DataBaseTM *pDatabase,
+                                   wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
+                                   const wxString &caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
+                                   const wxPoint &pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
+                                   const wxSize &size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
+                                   long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE);
 
     /// Creation
-    bool Create( wxWindow* parent, 
-				wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME, 
-				const wxString& caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE, 
-				const wxPoint& pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION, 
-				const wxSize& size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE, 
-				long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE );
+    bool Create(wxWindow *parent,
+                wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
+                const wxString &caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
+                const wxPoint &pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
+                const wxSize &size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
+                long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE);
 
     /// Destructor
     ~ProjectEditObjectDefinitionDLG();
 
     void Init();
-	void PostInit();
+
+    void PostInit();
 
     void CreateControls();
 
-    wxNotebook* m_DLGPEO_Notebook;
-    wxPanel* m_DLGPEO_Panel_Line;
-    ObjectDefinitionList* m_DLGPEO_List_Line;
-    wxChoice* m_DLGPEO_Choice_Lyr_Line_Name;
-    wxCheckBox* m_DLGPEO_Choice_Lyr_Line_Freq;
-    wxPanel* m_DLGPEO_Panel_Point;
-    ObjectDefinitionList* m_DLGPEO_List_Point;
-    wxChoice* m_DLGPEO_Choice_Lyr_Point_Name;
-    wxPanel* m_DLGPEO_Panel_Poly;
-    ObjectDefinitionList* m_DLGPEO_List_Poly;
-    wxChoice* m_DLGPEO_Choice_Lyr_Poly_Name;
-	wxStatusBar * m_DLGPEO_StatusBar;
+    wxNotebook *m_DLGPEO_Notebook;
+    wxPanel *m_DLGPEO_Panel_Line;
+    ObjectDefinitionList *m_DLGPEO_List_Line;
+    wxChoice *m_DLGPEO_Choice_Lyr_Line_Name;
+    wxCheckBox *m_DLGPEO_Choice_Lyr_Line_Freq;
+    wxPanel *m_DLGPEO_Panel_Point;
+    ObjectDefinitionList *m_DLGPEO_List_Point;
+    wxChoice *m_DLGPEO_Choice_Lyr_Point_Name;
+    wxPanel *m_DLGPEO_Panel_Poly;
+    ObjectDefinitionList *m_DLGPEO_List_Poly;
+    wxChoice *m_DLGPEO_Choice_Lyr_Poly_Name;
+    wxStatusBar *m_DLGPEO_StatusBar;
 };
 
 #endif

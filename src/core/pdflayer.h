@@ -18,45 +18,62 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/pdfdocument.h>
 
 
 class ProjectDefMemoryLayers;
+
 class ProjectDefMemoryFields;
+
 class PdfDocument;
 
 
-class PdfLayer : wxObject {
+class PdfLayer : wxObject
+{
 private:
-    ProjectDefMemoryLayers * m_prjLayer;
-    PdfDocument * m_pdfDocumentParent;
-	
+    ProjectDefMemoryLayers *m_prjLayer;
+    PdfDocument *m_pdfDocumentParent;
+
     wxArrayDouble m_ColWidthLayer;
     wxArrayDouble m_ColWidthObjects;
     wxArrayDouble m_ColWidthAttributs;
-	
-    void _UpdateColWidth();	
-    void _WriteCell(const wxString & text, int columnindex);
-	
+
+    void _UpdateColWidth();
+
+    void _WriteCell(const wxString &text, int columnindex);
+
     void _GenerateObjects();
+
     void _GenerateAttributs();
-	void _GenerateAttributsDefinition(ProjectDefMemoryFields * field);
-	
+
+    void _GenerateAttributsDefinition(ProjectDefMemoryFields *field);
+
 public:
-    PdfLayer(PdfDocument * parent, ProjectDefMemoryLayers * layer);
+    PdfLayer(PdfDocument *parent, ProjectDefMemoryLayers *layer);
+
     virtual ~PdfLayer();
+
     bool Generate();
-	wxString GetName();
+
+    wxString GetName();
+
     int GetLayerTypeOrder();
-    double GetObjectsWidth(wxPdfDocument * pdf);
-    double GetAttributsWidth(wxPdfDocument * pdf);
-    double GetObjectsHeight(wxPdfDocument * pdf);
-    double GetAttributsHeight(wxPdfDocument * pdf);
-	
+
+    double GetObjectsWidth(wxPdfDocument *pdf);
+
+    double GetAttributsWidth(wxPdfDocument *pdf);
+
+    double GetObjectsHeight(wxPdfDocument *pdf);
+
+    double GetAttributsHeight(wxPdfDocument *pdf);
+
 };
 
 WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
+
 #endif

@@ -21,9 +21,9 @@
 
 // for comparaison 
 int CompareLongs(long n1, long n2)
-{ 
-	return static_cast<int> (n1 - n2); 
-} 
+{
+    return static_cast<int> (n1 - n2);
+}
 
 
 /***************************************************************************//**
@@ -33,10 +33,9 @@ int CompareLongs(long n1, long n2)
  @date 28 October 2008
  *******************************************************************************/
 tmSelectedDataMemory::tmSelectedDataMemory()
-{	
-	InitMemberValues();
+{
+    InitMemberValues();
 }
-
 
 
 /***************************************************************************//**
@@ -47,10 +46,9 @@ tmSelectedDataMemory::tmSelectedDataMemory()
  *******************************************************************************/
 tmSelectedDataMemory::~tmSelectedDataMemory()
 {
-	m_SelectedIDs->Clear();
-	delete m_SelectedIDs;
+    m_SelectedIDs->Clear();
+    delete m_SelectedIDs;
 }
-
 
 
 /***************************************************************************//**
@@ -61,12 +59,11 @@ tmSelectedDataMemory::~tmSelectedDataMemory()
  *******************************************************************************/
 void tmSelectedDataMemory::InitMemberValues()
 {
-	m_LayerID = -1;
-	m_SelectedIDs = new tmArraySortedLong(CompareLongs);
-	m_Colour = wxColour(*wxRED);
-	m_HasHalo = false;
+    m_LayerID = -1;
+    m_SelectedIDs = new tmArraySortedLong(CompareLongs);
+    m_Colour = wxColour(*wxRED);
+    m_HasHalo = false;
 }
-
 
 
 /***************************************************************************//**
@@ -80,35 +77,31 @@ void tmSelectedDataMemory::InitMemberValues()
  @author Lucien Schreiber (c) CREALP 2008
  @date 28 October 2008
  *******************************************************************************/
-bool tmSelectedDataMemory::AddSelected (wxArrayLong * selected)
+bool tmSelectedDataMemory::AddSelected(wxArrayLong *selected)
 {
-	// removing from array if :
-	// - one item only
-	// - item allready existing into m_SelectedIDs
-	if (selected->GetCount() == 1)
-	{
-		//TODO: optimize for searching from end if required
-		int iIndex = Search(selected->Item(0));
-		if (iIndex != wxNOT_FOUND)
-		{
-			m_SelectedIDs->RemoveAt(iIndex, 1);
-			wxLogMessage(_T("Item %d removed from index because it exsit allready"), iIndex);
-			return true;
-		}
-	}
-	
-	
-	// normal behaviour : copying items
-	for (unsigned int i = 0; i<selected->GetCount(); i++)
-	{
-		m_SelectedIDs->Add(selected->Item(i));
-	}
-	
-	//wxLogDebug(_T("%d items added to the memory"), m_SelectedIDs->GetCount());
-	return true;
-	
-}
+    // removing from array if :
+    // - one item only
+    // - item allready existing into m_SelectedIDs
+    if (selected->GetCount() == 1) {
+        //TODO: optimize for searching from end if required
+        int iIndex = Search(selected->Item(0));
+        if (iIndex != wxNOT_FOUND) {
+            m_SelectedIDs->RemoveAt(iIndex, 1);
+            wxLogMessage(_T("Item %d removed from index because it exsit allready"), iIndex);
+            return true;
+        }
+    }
 
+
+    // normal behaviour : copying items
+    for (unsigned int i = 0; i < selected->GetCount(); i++) {
+        m_SelectedIDs->Add(selected->Item(i));
+    }
+
+    //wxLogDebug(_T("%d items added to the memory"), m_SelectedIDs->GetCount());
+    return true;
+
+}
 
 
 /***************************************************************************//**
@@ -119,13 +112,13 @@ bool tmSelectedDataMemory::AddSelected (wxArrayLong * selected)
  @author Lucien Schreiber (c) CREALP 2009
  @date 04 February 2009
  *******************************************************************************/
-void tmSelectedDataMemory::SetSelected (long selected)
+void tmSelectedDataMemory::SetSelected(long selected)
 {
-	Clear();
+    Clear();
     if (selected == wxNOT_FOUND) {
         return;
     }
-	m_SelectedIDs->Add(selected);
+    m_SelectedIDs->Add(selected);
 }
 
 
@@ -136,12 +129,11 @@ void tmSelectedDataMemory::SetSelected (long selected)
  @author Lucien Schreiber (c) CREALP 2008
  @date 28 October 2008
  *******************************************************************************/
-int tmSelectedDataMemory::Search (const long & value)
+int tmSelectedDataMemory::Search(const long &value)
 {
-	int iIndex = m_SelectedIDs->Index(value);
-	return iIndex;
+    int iIndex = m_SelectedIDs->Index(value);
+    return iIndex;
 }
-
 
 
 /***************************************************************************//**
@@ -156,30 +148,26 @@ int tmSelectedDataMemory::Search (const long & value)
  @author Lucien Schreiber (c) CREALP 2008
  @date 28 October 2008
  *******************************************************************************/
-bool tmSelectedDataMemory::Remove (wxArrayLong * selected)
+bool tmSelectedDataMemory::Remove(wxArrayLong *selected)
 {
-	// clearing if required
-	if (!selected)
-	{
-		m_SelectedIDs->Clear();
-		return TRUE;
-	}
-	
-	// normal behaviour
-	int iIndex = 0;
-	for (signed int i = (signed) selected->GetCount()-1 ; i >= 0 ; i--)
-	{
-		iIndex = Search(selected->Item(i));
-		if (iIndex != wxNOT_FOUND)
-			m_SelectedIDs->RemoveAt(iIndex);
-		else
-		{
-			wxLogDebug(_T("Trying to remove non existring item from memory..."));
-		}
-	}
-	return true;
-}
+    // clearing if required
+    if (!selected) {
+        m_SelectedIDs->Clear();
+        return TRUE;
+    }
 
+    // normal behaviour
+    int iIndex = 0;
+    for (signed int i = (signed) selected->GetCount() - 1; i >= 0; i--) {
+        iIndex = Search(selected->Item(i));
+        if (iIndex != wxNOT_FOUND)
+            m_SelectedIDs->RemoveAt(iIndex);
+        else {
+            wxLogDebug(_T("Trying to remove non existring item from memory..."));
+        }
+    }
+    return true;
+}
 
 
 /***************************************************************************//**
@@ -189,13 +177,12 @@ bool tmSelectedDataMemory::Remove (wxArrayLong * selected)
  @author Lucien Schreiber (c) CREALP 2008
  @date 28 October 2008
  *******************************************************************************/
-bool tmSelectedDataMemory::IsSelected (const long & value)
+bool tmSelectedDataMemory::IsSelected(const long &value)
 {
-	if (Search(value) != wxNOT_FOUND)
-		return true;
-	return false;
+    if (Search(value) != wxNOT_FOUND)
+        return true;
+    return false;
 }
-
 
 
 /***************************************************************************//**
@@ -206,9 +193,8 @@ bool tmSelectedDataMemory::IsSelected (const long & value)
  *******************************************************************************/
 unsigned int tmSelectedDataMemory::GetCount()
 {
-	return m_SelectedIDs->GetCount();
+    return m_SelectedIDs->GetCount();
 }
-
 
 
 /***************************************************************************//**
@@ -221,14 +207,13 @@ unsigned int tmSelectedDataMemory::GetCount()
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-void tmSelectedDataMemory::SetLayerID (long layerID)
+void tmSelectedDataMemory::SetLayerID(long layerID)
 {
-	if (layerID != m_LayerID)
-		m_SelectedIDs->Clear();
-	
-	m_LayerID = layerID;
-}
+    if (layerID != m_LayerID)
+        m_SelectedIDs->Clear();
 
+    m_LayerID = layerID;
+}
 
 
 /***************************************************************************//**
@@ -238,17 +223,17 @@ void tmSelectedDataMemory::SetLayerID (long layerID)
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-wxArrayLong * tmSelectedDataMemory::GetSelectedValues ()
+wxArrayLong *tmSelectedDataMemory::GetSelectedValues()
 {
-	unsigned iNbItems = GetCount();
-	if (iNbItems == 0)
-		return NULL;
-	
-	wxArrayLong * myCopyArray = new wxArrayLong();
-	for (unsigned int i = 0; i< iNbItems; i++)
-		myCopyArray->Add(m_SelectedIDs->Item(i));
-	
-	return myCopyArray;
+    unsigned iNbItems = GetCount();
+    if (iNbItems == 0)
+        return NULL;
+
+    wxArrayLong *myCopyArray = new wxArrayLong();
+    for (unsigned int i = 0; i < iNbItems; i++)
+        myCopyArray->Add(m_SelectedIDs->Item(i));
+
+    return myCopyArray;
 }
 
 
@@ -262,10 +247,10 @@ wxArrayLong * tmSelectedDataMemory::GetSelectedValues ()
  *******************************************************************************/
 long tmSelectedDataMemory::GetSelectedUnique()
 {
-	unsigned iNbItems = GetCount();
-	if (iNbItems != 1)
-		return -1;
-	
-	return m_SelectedIDs->Item(0);
+    unsigned iNbItems = GetCount();
+    if (iNbItems != 1)
+        return -1;
+
+    return m_SelectedIDs->Item(0);
 }
 

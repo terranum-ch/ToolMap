@@ -32,7 +32,6 @@ tmAttributionDataPoint::tmAttributionDataPoint()
 }
 
 
-
 /***************************************************************************//**
  @brief Constructor
  @param selected Adress of an array of selected geometry objects (must be valid)
@@ -40,11 +39,10 @@ tmAttributionDataPoint::tmAttributionDataPoint()
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-tmAttributionDataPoint::tmAttributionDataPoint(wxArrayLong * selected,DataBaseTM * database)
+tmAttributionDataPoint::tmAttributionDataPoint(wxArrayLong *selected, DataBaseTM *database)
 {
-	Create(selected, database);
+    Create(selected, database);
 }
-
 
 
 /***************************************************************************//**
@@ -56,12 +54,11 @@ tmAttributionDataPoint::tmAttributionDataPoint(wxArrayLong * selected,DataBaseTM
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-void tmAttributionDataPoint::Create (wxArrayLong * selected,DataBaseTM * database)
+void tmAttributionDataPoint::Create(wxArrayLong *selected, DataBaseTM *database)
 {
-	tmAttributionData::Create(selected,database);
-	SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[1]);
+    tmAttributionData::Create(selected, database);
+    SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[1]);
 }
-
 
 
 /***************************************************************************//**
@@ -72,9 +69,8 @@ void tmAttributionDataPoint::Create (wxArrayLong * selected,DataBaseTM * databas
  *******************************************************************************/
 tmAttributionDataPoint::~tmAttributionDataPoint()
 {
-	
-}
 
+}
 
 
 /***************************************************************************//**
@@ -86,34 +82,31 @@ tmAttributionDataPoint::~tmAttributionDataPoint()
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-bool tmAttributionDataPoint::SetAttributeBasic (AttribObjType_PANEL * panel)
+bool tmAttributionDataPoint::SetAttributeBasic(AttribObjType_PANEL *panel)
 {
-	if (!IsValid())
-		return false;
-	
-	wxArrayLong myChekedValues;
-	wxString myStatement = _T("");
-	if (GetPanelValues(panel, myChekedValues)) // attribution
-	{
-		PrepareAttributionStatement(myStatement,
-									TABLE_NAME_GIS_ATTRIBUTION[1],
-									&myChekedValues);
-	}
-	else // cleaning data
-	{
-		PrepareCleaningStatement(myStatement,
-								 TABLE_NAME_GIS_ATTRIBUTION[1]);
-	}
-		
-	
-	if (m_pDB->DataBaseQueryNoResults(myStatement)==false)
-	{
-		wxLogDebug(_T("Error attributing data"));
-		return false;
-	}
-	return true;
-}
+    if (!IsValid())
+        return false;
 
+    wxArrayLong myChekedValues;
+    wxString myStatement = _T("");
+    if (GetPanelValues(panel, myChekedValues)) // attribution
+    {
+        PrepareAttributionStatement(myStatement,
+                                    TABLE_NAME_GIS_ATTRIBUTION[1],
+                                    &myChekedValues);
+    } else // cleaning data
+    {
+        PrepareCleaningStatement(myStatement,
+                                 TABLE_NAME_GIS_ATTRIBUTION[1]);
+    }
+
+
+    if (m_pDB->DataBaseQueryNoResults(myStatement) == false) {
+        wxLogDebug(_T("Error attributing data"));
+        return false;
+    }
+    return true;
+}
 
 
 /***************************************************************************//**
@@ -126,16 +119,15 @@ bool tmAttributionDataPoint::SetAttributeBasic (AttribObjType_PANEL * panel)
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-bool tmAttributionDataPoint::GetPanelValues (AttribObjType_PANEL * panel, 
-											wxArrayLong & valueids)
+bool tmAttributionDataPoint::GetPanelValues(AttribObjType_PANEL *panel,
+                                            wxArrayLong &valueids)
 {
-	panel->GetSelectedValues(TOC_NAME_POINTS, valueids);
-	if (valueids.GetCount() > 0)
-		return true;
-	
-	return false;
-}
+    panel->GetSelectedValues(TOC_NAME_POINTS, valueids);
+    if (valueids.GetCount() > 0)
+        return true;
 
+    return false;
+}
 
 
 /***************************************************************************//**
@@ -146,36 +138,36 @@ bool tmAttributionDataPoint::GetPanelValues (AttribObjType_PANEL * panel,
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-bool tmAttributionDataPoint::GetInfoBasic (AttribObjType_PANEL * panel)
+bool tmAttributionDataPoint::GetInfoBasic(AttribObjType_PANEL *panel)
 {
-	// checking
-	if (!IsValid())
-		return false;
+    // checking
+    if (!IsValid())
+        return false;
 
-	// getting values
-	wxString sStatement = _T("");
-	PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[1]);
-	
-	if (!m_pDB->DataBaseQuery(sStatement))
-	{
-		wxLogDebug(_T("Error getting info"));
-		return false;
-	}
-	
-	wxArrayLong mySelValues;
-	m_pDB->DataBaseGetResults(mySelValues);
-		
-	// updating panel
-	SetPanelValues(panel, mySelValues);
+    // getting values
+    wxString sStatement = _T("");
+    PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[1]);
 
-	return true;
+    if (!m_pDB->DataBaseQuery(sStatement)) {
+        wxLogDebug(_T("Error getting info"));
+        return false;
+    }
+
+    wxArrayLong mySelValues;
+    m_pDB->DataBaseGetResults(mySelValues);
+
+    // updating panel
+    SetPanelValues(panel, mySelValues);
+
+    return true;
 }
 
 
-bool tmAttributionDataPoint::GetInfoBasic (long oid,  wxArrayLong & objid,
-										   wxArrayString & objcode, wxArrayString & objname){
-	
-	return _GetInfoBasic(oid, objid, objcode, objname, 1);
+bool tmAttributionDataPoint::GetInfoBasic(long oid, wxArrayLong &objid,
+                                          wxArrayString &objcode, wxArrayString &objname)
+{
+
+    return _GetInfoBasic(oid, objid, objcode, objname, 1);
 }
 
 
@@ -187,10 +179,10 @@ bool tmAttributionDataPoint::GetInfoBasic (long oid,  wxArrayLong & objid,
  @author Lucien Schreiber (c) CREALP 2008
  @date 06 November 2008
  *******************************************************************************/
-void tmAttributionDataPoint::SetPanelValues (AttribObjType_PANEL * panel,
-											const wxArrayLong & valueids)
+void tmAttributionDataPoint::SetPanelValues(AttribObjType_PANEL *panel,
+                                            const wxArrayLong &valueids)
 {
-	panel->SetSelectedValues(TOC_NAME_POINTS, valueids);
+    panel->SetSelectedValues(TOC_NAME_POINTS, valueids);
 }
 
 
@@ -200,21 +192,21 @@ void tmAttributionDataPoint::SetPanelValues (AttribObjType_PANEL * panel,
  @author Lucien Schreiber (c) CREALP 2009
  @date 16 March 2009
  *******************************************************************************/
-bool tmAttributionDataPoint::GetAttributionLayersID (const long & geomid,
-													 tmLayerValueArray & layersid)
+bool tmAttributionDataPoint::GetAttributionLayersID(const long &geomid,
+                                                    tmLayerValueArray &layersid)
 {
-	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
-															layersid,
-															TABLE_NAME_GIS_ATTRIBUTION[1],
-															LAYER_SPATIAL_POINT);	
+    return tmAttributionData::PrepareGetAttributionLayersID(geomid,
+                                                            layersid,
+                                                            TABLE_NAME_GIS_ATTRIBUTION[1],
+                                                            LAYER_SPATIAL_POINT);
 }
 
-bool tmAttributionDataPoint::GetAttributionLayersIDFull (const long & geomid,
-													 tmLayerValueArray & layersid)
+bool tmAttributionDataPoint::GetAttributionLayersIDFull(const long &geomid,
+                                                        tmLayerValueArray &layersid)
 {
-	return tmAttributionData::PrepareGetAttributionLayersID(geomid,
-															layersid,
-															TABLE_NAME_GIS_ATTRIBUTION[1],
-															wxNOT_FOUND);	
+    return tmAttributionData::PrepareGetAttributionLayersID(geomid,
+                                                            layersid,
+                                                            TABLE_NAME_GIS_ATTRIBUTION[1],
+                                                            wxNOT_FOUND);
 }
 

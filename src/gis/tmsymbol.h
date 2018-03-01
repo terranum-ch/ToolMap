@@ -26,51 +26,66 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "tmsymboldlg.h"
-#include "../components/wxserialize/tmserialize.h"		// for object serialization
-#include "tmlayerpropertiesdef.h"						// for tmLayerProperties definition
+#include "../components/wxserialize/tmserialize.h"        // for object serialization
+#include "tmlayerpropertiesdef.h"                        // for tmLayerProperties definition
 
 class DataBaseTM;
+
 class tmLayerProperties;
 
 class tmSymbol : public wxObject
-	{
-	private:
-		DataBaseTM * m_pDB;
-		TOC_GENERIC_NAME m_TocName;
-		
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos); 
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-		
-	protected:
-		int m_LayerTransparency;
-		char ConvertTransparency (int itransparency);
-		DataBaseTM * GetDatabase(){return m_pDB;}
-		TOC_GENERIC_NAME GetTocName() {return m_TocName;}
-		
-	public:
-		tmSymbol();
-		~tmSymbol();
-		
-		static tmSymbol * CreateSymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype, TOC_GENERIC_NAME tocname);
-		static tmSymbol * CreateCopySymbolBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname, tmSymbol * origin);
-		
-		int ShowSymbologyDialog (wxWindow * parent,
-								 const wxPoint & dlgpos = wxDefaultPosition);
-        virtual int ShowLabelDialog (wxWindow * parent, tmLayerProperties * properties, const wxPoint & pos = wxDefaultPosition);
-        
-		virtual bool Serialize(tmSerialize &s);
-		virtual int GetTransparency(){return 0;}
-		void SetDatabase (DataBaseTM * database){m_pDB = database;}
-		void SetTocName (TOC_GENERIC_NAME tocname){m_TocName = tocname;}
-		
-	};
+{
+private:
+    DataBaseTM *m_pDB;
+    TOC_GENERIC_NAME m_TocName;
 
+    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
+    virtual bool GetDialogData(tmSymbolDLG *dlg);
 
+protected:
+    int m_LayerTransparency;
+
+    char ConvertTransparency(int itransparency);
+
+    DataBaseTM *GetDatabase()
+    { return m_pDB; }
+
+    TOC_GENERIC_NAME GetTocName()
+    { return m_TocName; }
+
+public:
+    tmSymbol();
+
+    ~tmSymbol();
+
+    static tmSymbol *CreateSymbolBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname);
+
+    static tmSymbol *
+    CreateCopySymbolBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname, tmSymbol *origin);
+
+    int ShowSymbologyDialog(wxWindow *parent,
+                            const wxPoint &dlgpos = wxDefaultPosition);
+
+    virtual int
+    ShowLabelDialog(wxWindow *parent, tmLayerProperties *properties, const wxPoint &pos = wxDefaultPosition);
+
+    virtual bool Serialize(tmSerialize &s);
+
+    virtual int GetTransparency()
+    { return 0; }
+
+    void SetDatabase(DataBaseTM *database)
+    { m_pDB = database; }
+
+    void SetTocName(TOC_GENERIC_NAME tocname)
+    { m_TocName = tocname; }
+
+};
 
 
 #endif

@@ -24,38 +24,53 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include "../database/database_tm.h"
 
 
-enum tmPRJ_UPD_ERROR {
-	tmPRJ_UPD_ERROR_OK = 1,		// No update error
-	tmPRJ_UPD_ERROR_PROJECT,	// Error during updating project
-	tmPRJ_UPD_ERROR_TM			// Error ToolMap is too old
-	
+enum tmPRJ_UPD_ERROR
+{
+    tmPRJ_UPD_ERROR_OK = 1,        // No update error
+    tmPRJ_UPD_ERROR_PROJECT,    // Error during updating project
+    tmPRJ_UPD_ERROR_TM            // Error ToolMap is too old
+
 };
 
 
-class tmProjectUpdater {
+class tmProjectUpdater
+{
 private:
-    DataBaseTM * m_pDB;
-	
-	bool _SetVersion(int versionnumber);
+    DataBaseTM *m_pDB;
+
+    bool _SetVersion(int versionnumber);
+
     bool _220to221();
+
     bool _221to222();
+
     bool _222to223();
+
     bool _223to224();
+
     bool _224to225();
+
     bool _225to226();
+
     bool _226to227();
+
     bool _227to228();
+
     bool _228to229();
+
     bool _229to230();
-	
+
 public:
-    tmProjectUpdater(DataBaseTM * database);
+    tmProjectUpdater(DataBaseTM *database);
+
     virtual ~tmProjectUpdater();
-	
+
     bool IsCorrectVersion();
+
     tmPRJ_UPD_ERROR DoUpdate();
 };
 

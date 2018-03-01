@@ -36,10 +36,9 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 December 2008
  *******************************************************************************/
-const wxString  tmShortCutKeys[] = {_T("F1"), _T("F2"), _T("F3"),
-_T("F4"),_T("F5"),_T("F6"),_T("F7"),
-_T("F8"),_T("F9"), _T("F10"), _T("F11"),_T("F12")};
-
+const wxString tmShortCutKeys[] = {_T("F1"), _T("F2"), _T("F3"),
+                                   _T("F4"), _T("F5"), _T("F6"), _T("F7"),
+                                   _T("F8"), _T("F9"), _T("F10"), _T("F11"), _T("F12")};
 
 
 #endif

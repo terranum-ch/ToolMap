@@ -26,15 +26,12 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
-#include <wx/statline.h>					// for static_line
-#include "../gis/tmlayerpropertiesdef.h"	// for target definition
-
-
-
+#include <wx/statline.h>                    // for static_line
+#include "../gis/tmlayerpropertiesdef.h"    // for target definition
 
 
 /***************************************************************************//**
@@ -46,40 +43,47 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 09 November 2008
  *******************************************************************************/
-class QueriesListDLG : public wxDialog 
-	{
-	private:
-		
-	protected:
-		wxTextCtrl* m_QueriesName;
-		wxTextCtrl* m_QueriesDescription;
-		wxChoice* m_Target;
-		
-	public:
-		QueriesListDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-					   const wxString& title = wxT("Edit queries"),
-					   const wxPoint& pos = wxDefaultPosition,
-					   const wxSize& size = wxDefaultSize,
-					   long style = wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
-		~QueriesListDLG();
-		
-		// query name
-		wxString GetQueriesName () {return m_QueriesName->GetValue();}
-		void SetQueriesName (const wxString & name){m_QueriesName->SetValue(name);}
-		
-		// query description
-		wxString GetQueriesDescription() {return m_QueriesDescription->GetValue();}
-		void SetQueriesDescription(const wxString & desc){m_QueriesDescription->SetValue(desc);}
-		
-		// query target
-		int GetQueriesTarget () {return m_Target->GetSelection();}
-		void SetQueriesTarget (int toc_generic_name){m_Target->SetSelection(toc_generic_name);}
-		
-		
-	};
+class QueriesListDLG : public wxDialog
+{
+private:
+
+protected:
+    wxTextCtrl *m_QueriesName;
+    wxTextCtrl *m_QueriesDescription;
+    wxChoice *m_Target;
+
+public:
+    QueriesListDLG(wxWindow *parent, wxWindowID id = wxID_ANY,
+                   const wxString &title = wxT("Edit queries"),
+                   const wxPoint &pos = wxDefaultPosition,
+                   const wxSize &size = wxDefaultSize,
+                   long style = wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
+
+    ~QueriesListDLG();
+
+    // query name
+    wxString GetQueriesName()
+    { return m_QueriesName->GetValue(); }
+
+    void SetQueriesName(const wxString &name)
+    { m_QueriesName->SetValue(name); }
+
+    // query description
+    wxString GetQueriesDescription()
+    { return m_QueriesDescription->GetValue(); }
+
+    void SetQueriesDescription(const wxString &desc)
+    { m_QueriesDescription->SetValue(desc); }
+
+    // query target
+    int GetQueriesTarget()
+    { return m_Target->GetSelection(); }
+
+    void SetQueriesTarget(int toc_generic_name)
+    { m_Target->SetSelection(toc_generic_name); }
 
 
-
+};
 
 
 #endif

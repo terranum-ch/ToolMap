@@ -27,21 +27,20 @@
 
 tmGISDataVectorSHP::tmGISDataVectorSHP()
 {
-	m_Datasource = NULL;
-	m_Layer = NULL;
-	m_Feature = NULL;
-	m_polyTotalRings = 0;
-	m_ClassType = tmGIS_VECTOR_SHAPEFILE;
+    m_Datasource = NULL;
+    m_Layer = NULL;
+    m_Feature = NULL;
+    m_polyTotalRings = 0;
+    m_ClassType = tmGIS_VECTOR_SHAPEFILE;
     m_RasterizeDataset = NULL;
 }
 
 
-
 tmGISDataVectorSHP::~tmGISDataVectorSHP()
 {
-	// safe destroy the datasource if needed
-	if (m_Datasource){
-		GDALClose(m_Datasource);
+    // safe destroy the datasource if needed
+    if (m_Datasource) {
+        GDALClose(m_Datasource);
     }
 
     if (m_RasterizeDataset) {
@@ -50,43 +49,42 @@ tmGISDataVectorSHP::~tmGISDataVectorSHP()
 }
 
 
-
-bool tmGISDataVectorSHP::Open (const wxString & filename, bool bReadWrite)
+bool tmGISDataVectorSHP::Open(const wxString &filename, bool bReadWrite)
 {
-	// init parent member values
-	tmGISData::Open(filename, bReadWrite);
+    // init parent member values
+    tmGISData::Open(filename, bReadWrite);
 
-	// convert utf wxString into char *
-	//const char* ascii_str =
-	char * buffer = new char [filename.Length() * sizeof(wxString)];
-	strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
+    // convert utf wxString into char *
+    //const char* ascii_str =
+    char *buffer = new char[filename.Length() * sizeof(wxString)];
+    strcpy(buffer, (const char *) filename.mb_str(wxConvUTF8));
 
-	// open the shapefile and return true if success
-	unsigned int openFlags = GDAL_OF_VECTOR | GDAL_OF_READONLY;
-	if (bReadWrite == true){
-		openFlags = GDAL_OF_VECTOR | GDAL_OF_UPDATE;
-	}
+    // open the shapefile and return true if success
+    unsigned int openFlags = GDAL_OF_VECTOR | GDAL_OF_READONLY;
+    if (bReadWrite == true) {
+        openFlags = GDAL_OF_VECTOR | GDAL_OF_UPDATE;
+    }
 
-	m_Datasource = (GDALDataset*) GDALOpenEx(buffer, openFlags, NULL, NULL, NULL);
-	wxDELETEA(buffer);
+    m_Datasource = (GDALDataset *) GDALOpenEx(buffer, openFlags, NULL, NULL, NULL);
+    wxDELETEA(buffer);
 
-	if( m_Datasource==NULL){
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Unable to open shp : %s"), filename.c_str());
-		}
-		return false;
-	}
+    if (m_Datasource == NULL) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Unable to open shp : %s"), filename.c_str());
+        }
+        return false;
+    }
 
-	m_Layer = m_Datasource->GetLayer(0);
-	wxASSERT (m_Layer);
-	return true;
+    m_Layer = m_Datasource->GetLayer(0);
+    wxASSERT (m_Layer);
+    return true;
 }
 
 
-
-bool tmGISDataVectorSHP::Close (){
-  	if (m_Datasource){
-		GDALClose(m_Datasource);
+bool tmGISDataVectorSHP::Close()
+{
+    if (m_Datasource) {
+        GDALClose(m_Datasource);
     }
     m_Datasource = NULL;
     m_Layer = NULL;
@@ -96,116 +94,104 @@ bool tmGISDataVectorSHP::Close (){
 }
 
 
-
 tmRealRect tmGISDataVectorSHP::GetMinimalBoundingRectangle()
 {
-	wxASSERT(m_Layer);
+    wxASSERT(m_Layer);
 
-	OGREnvelope myEnveloppe;
-	OGRErr myError = m_Layer->GetExtent(&myEnveloppe, TRUE);
-	if (myError == OGRERR_FAILURE)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Unable to compute extend for %s"), GetShortFileName().c_str());
+    OGREnvelope myEnveloppe;
+    OGRErr myError = m_Layer->GetExtent(&myEnveloppe, TRUE);
+    if (myError == OGRERR_FAILURE) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Unable to compute extend for %s"), GetShortFileName().c_str());
         }
-		return tmRealRect(0,0,0,0);
-	}
+        return tmRealRect(0, 0, 0, 0);
+    }
 
-	return tmRealRect(myEnveloppe.MinX, myEnveloppe.MinY,
-					  myEnveloppe.MaxX, myEnveloppe.MaxY);
+    return tmRealRect(myEnveloppe.MinX, myEnveloppe.MinY,
+                      myEnveloppe.MaxX, myEnveloppe.MaxY);
 
 }
 
 
-
-
-TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType ()
+TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType()
 {
-	OGRGeometry *poGeometry;
-	OGRFeature *poFeature;
-	TM_GIS_SPATIAL_TYPES retvalue = LAYER_ERR;
+    OGRGeometry *poGeometry;
+    OGRFeature *poFeature;
+    TM_GIS_SPATIAL_TYPES retvalue = LAYER_ERR;
 
-	wxASSERT(m_Layer);
+    wxASSERT(m_Layer);
 
-	// computing features count, not able to know the
-	// spatial type if no features are present.
-	if (m_Layer->GetFeatureCount () <= 0)
-	{
-		if (IsLoggingEnabled()){
-			wxLogError(_("Unable to add the %s layer, layer is empty"),
-					   GetShortFileName().c_str());
+    // computing features count, not able to know the
+    // spatial type if no features are present.
+    if (m_Layer->GetFeatureCount() <= 0) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_("Unable to add the %s layer, layer is empty"),
+                       GetShortFileName().c_str());
         }
-		return LAYER_EMPTY;
-	}
+        return LAYER_EMPTY;
+    }
 
-	// computing layer type (point, line, polygon or unknown)
-	m_Layer->ResetReading();
-	if ((poFeature = m_Layer->GetNextFeature()) == NULL)
-	{
-		if (IsLoggingEnabled()){
-			wxLogError(_("Unable to read feature from : %s, layer may be corrupted"),
-					   GetShortFileName().c_str());
+    // computing layer type (point, line, polygon or unknown)
+    m_Layer->ResetReading();
+    if ((poFeature = m_Layer->GetNextFeature()) == NULL) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_("Unable to read feature from : %s, layer may be corrupted"),
+                       GetShortFileName().c_str());
         }
-		return LAYER_SPATIAL_UNKNOWN;
-	}
+        return LAYER_SPATIAL_UNKNOWN;
+    }
 
 
-	poGeometry = poFeature->GetGeometryRef();
-	if( poGeometry != NULL)
-		{
-			OGRwkbGeometryType type = wkbFlatten(poGeometry->getGeometryType());
+    poGeometry = poFeature->GetGeometryRef();
+    if (poGeometry != NULL) {
+        OGRwkbGeometryType type = wkbFlatten(poGeometry->getGeometryType());
 
-			switch (type)
-			{
-				case wkbLineString:
-					retvalue = LAYER_SPATIAL_LINE;
-					break;
-				case wkbPoint:
-					retvalue = LAYER_SPATIAL_POINT;
-					break;
-				case wkbPolygon:
-					retvalue = LAYER_SPATIAL_POLYGON;
-					break;
-				default:
-					retvalue = LAYER_SPATIAL_UNKNOWN;
-					break;
-			}
-		}
-
-	 OGRFeature::DestroyFeature( poFeature );
-
-	if (retvalue == LAYER_ERR)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Error getting spatial layer type for : %s"),
-					   GetShortFileName().c_str());
+        switch (type) {
+            case wkbLineString:
+                retvalue = LAYER_SPATIAL_LINE;
+                break;
+            case wkbPoint:
+                retvalue = LAYER_SPATIAL_POINT;
+                break;
+            case wkbPolygon:
+                retvalue = LAYER_SPATIAL_POLYGON;
+                break;
+            default:
+                retvalue = LAYER_SPATIAL_UNKNOWN;
+                break;
         }
-	}
-	m_Layer->ResetReading();
-	return retvalue;
+    }
+
+    OGRFeature::DestroyFeature(poFeature);
+
+    if (retvalue == LAYER_ERR) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Error getting spatial layer type for : %s"),
+                       GetShortFileName().c_str());
+        }
+    }
+    m_Layer->ResetReading();
+    return retvalue;
 }
 
 
-
-bool tmGISDataVectorSHP::SetSpatialFilter (tmRealRect filter, int type)
+bool tmGISDataVectorSHP::SetSpatialFilter(tmRealRect filter, int type)
 {
-	wxASSERT(m_Layer);
-	// clearing filter...
-	if (filter == tmRealRect(0,0,0,0))
-	{
-		m_Layer->SetSpatialFilter(NULL);
-	}
-	else
-	{
-		m_Layer->SetSpatialFilterRect(filter.x_min, filter.y_min,
-									  filter.x_max, filter.y_max);
-	}
-	m_Layer->ResetReading();
-	return true;
+    wxASSERT(m_Layer);
+    // clearing filter...
+    if (filter == tmRealRect(0, 0, 0, 0)) {
+        m_Layer->SetSpatialFilter(NULL);
+    } else {
+        m_Layer->SetSpatialFilterRect(filter.x_min, filter.y_min,
+                                      filter.x_max, filter.y_max);
+    }
+    m_Layer->ResetReading();
+    return true;
 }
 
 
-bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
+bool tmGISDataVectorSHP::SetAttributFilter(const wxString &query)
+{
     wxASSERT(m_Layer);
     if (query == wxEmptyString) {
         m_Layer->SetAttributeFilter(NULL);
@@ -213,7 +199,7 @@ bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
     }
 
     // escape ' from query
-    wxString myQuery (query);
+    wxString myQuery(query);
     myQuery.Replace(_T("\""), _T("'"));
 
     m_Layer->ResetReading();
@@ -225,96 +211,92 @@ bool tmGISDataVectorSHP::SetAttributFilter (const wxString & query){
 }
 
 
-
-wxRealPoint * tmGISDataVectorSHP::GetNextDataLine (int & nbvertex, long & oid)
+wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid)
 {
-	wxASSERT(m_Layer);
-	OGRFeature * poFeature = m_Layer->GetNextFeature();
+    wxASSERT(m_Layer);
+    OGRFeature *poFeature = m_Layer->GetNextFeature();
 
-	// nothing more to read
-	if (poFeature == NULL)
-	{
-		nbvertex = 0;
-		oid = -1;
-		return NULL;
-	}
+    // nothing more to read
+    if (poFeature == NULL) {
+        nbvertex = 0;
+        oid = -1;
+        return NULL;
+    }
 
 
-	OGRLineString * pline = (OGRLineString*) poFeature->GetGeometryRef();
-	if (pline == NULL) {
+    OGRLineString *pline = (OGRLineString *) poFeature->GetGeometryRef();
+    if (pline == NULL) {
         wxLogWarning(_("Line %ld is corrupted in file: '%s'!"), poFeature->GetFID(),
                      wxString(m_Layer->GetName()));
         return NULL;
     }
 
-	oid = poFeature->GetFID();
+    oid = poFeature->GetFID();
 
-	// normal reading
-	nbvertex = pline->getNumPoints();
-	if (nbvertex <= 1)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Only one vertex or less in this line ???"));
+    // normal reading
+    nbvertex = pline->getNumPoints();
+    if (nbvertex <= 1) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Only one vertex or less in this line ???"));
         }
-		OGRGeometryFactory::destroyGeometry	(pline);
-		return NULL;
-	}
+        OGRGeometryFactory::destroyGeometry(pline);
+        return NULL;
+    }
 
-	wxRealPoint * pts = new wxRealPoint[nbvertex];
-	for (int i=0; i<nbvertex;i++)
-	{
-		pts[i].x = pline->getX(i);
-		pts[i].y = pline->getY(i);
-	}
-	OGRFeature::DestroyFeature( poFeature );
-	return pts;
+    wxRealPoint *pts = new wxRealPoint[nbvertex];
+    for (int i = 0; i < nbvertex; i++) {
+        pts[i].x = pline->getX(i);
+        pts[i].y = pline->getY(i);
+    }
+    OGRFeature::DestroyFeature(poFeature);
+    return pts;
 }
 
 
-
-OGRFeature *  tmGISDataVectorSHP::GetNextFeature ()
+OGRFeature *tmGISDataVectorSHP::GetNextFeature()
 {
-	wxASSERT (m_Layer);
-	OGRFeature * poFeature = m_Layer->GetNextFeature();
+    wxASSERT (m_Layer);
+    OGRFeature *poFeature = m_Layer->GetNextFeature();
 
-	return poFeature;
-	// delete returned value after use
+    return poFeature;
+    // delete returned value after use
 }
-
 
 
 //OGRGeometry * tmGISDataVectorSHP::GetGeometryByOID (long oid){
-OGRFeature * tmGISDataVectorSHP::GetFeatureByOID (long oid){
-	wxASSERT (m_Layer);
-	wxASSERT (oid != wxNOT_FOUND);
-
-	OGRFeature * myFeature = m_Layer->GetFeature(oid);
-	if (myFeature == NULL) {
-		//wxLogError(_T("Error getting feature number : %ld"), oid);
-		return NULL;
-	}
-	return myFeature;
-}
-
-
-OGRGeometry * tmGISDataVectorSHP::GetNextGeometry(bool restart, long & oid){
+OGRFeature *tmGISDataVectorSHP::GetFeatureByOID(long oid)
+{
     wxASSERT (m_Layer);
-	OGRFeature * poFeature = m_Layer->GetNextFeature();
-	// nothing more to read
-	if (poFeature == NULL){
-		oid = wxNOT_FOUND;
-		return NULL;
-	}
+    wxASSERT (oid != wxNOT_FOUND);
 
-	OGRGeometry * myGeom = poFeature->GetGeometryRef()->clone();
-	oid = poFeature->GetFID();
-    OGRFeature::DestroyFeature( poFeature );
-	return myGeom;
+    OGRFeature *myFeature = m_Layer->GetFeature(oid);
+    if (myFeature == NULL) {
+        //wxLogError(_T("Error getting feature number : %ld"), oid);
+        return NULL;
+    }
+    return myFeature;
 }
 
 
+OGRGeometry *tmGISDataVectorSHP::GetNextGeometry(bool restart, long &oid)
+{
+    wxASSERT (m_Layer);
+    OGRFeature *poFeature = m_Layer->GetNextFeature();
+    // nothing more to read
+    if (poFeature == NULL) {
+        oid = wxNOT_FOUND;
+        return NULL;
+    }
 
-bool tmGISDataVectorSHP::SelectFeatureByOID (long oid){
+    OGRGeometry *myGeom = poFeature->GetGeometryRef()->clone();
+    oid = poFeature->GetFID();
+    OGRFeature::DestroyFeature(poFeature);
+    return myGeom;
+}
+
+
+bool tmGISDataVectorSHP::SelectFeatureByOID(long oid)
+{
     wxASSERT(m_Feature == NULL);
     wxASSERT(m_Layer);
     m_Feature = m_Layer->GetFeature(oid);
@@ -325,135 +307,124 @@ bool tmGISDataVectorSHP::SelectFeatureByOID (long oid){
 }
 
 
-
-
-wxRealPoint * tmGISDataVectorSHP::GetNextDataPoint (long & oid)
+wxRealPoint *tmGISDataVectorSHP::GetNextDataPoint(long &oid)
 {
-	wxASSERT(m_Layer);
-	OGRFeature * poFeature = m_Layer->GetNextFeature();
+    wxASSERT(m_Layer);
+    OGRFeature *poFeature = m_Layer->GetNextFeature();
 
-	// nothing more to read
-	if (poFeature == NULL)
-	{
-		oid = -1;
-		return NULL;
-	}
+    // nothing more to read
+    if (poFeature == NULL) {
+        oid = -1;
+        return NULL;
+    }
 
 
-	OGRPoint * pPoint = (OGRPoint*) poFeature->GetGeometryRef();
-	wxASSERT(pPoint);
-	oid = poFeature->GetFID();
+    OGRPoint *pPoint = (OGRPoint *) poFeature->GetGeometryRef();
+    wxASSERT(pPoint);
+    oid = poFeature->GetFID();
 
-	wxRealPoint * pts = new wxRealPoint();
-	pts->x = pPoint->getX();
-	pts->y = pPoint->getY();
+    wxRealPoint *pts = new wxRealPoint();
+    pts->x = pPoint->getX();
+    pts->y = pPoint->getY();
 
-	OGRFeature::DestroyFeature( poFeature );
-	return pts;
+    OGRFeature::DestroyFeature(poFeature);
+    return pts;
 }
 
 
-
-int tmGISDataVectorSHP::GetNextDataPolygonInfo (long & oid)
+int tmGISDataVectorSHP::GetNextDataPolygonInfo(long &oid)
 {
-	wxASSERT(m_Layer);
- 	m_Feature = m_Layer->GetNextFeature();
+    wxASSERT(m_Layer);
+    m_Feature = m_Layer->GetNextFeature();
 
-	// nothing more to read
-	if (m_Feature == NULL){
+    // nothing more to read
+    if (m_Feature == NULL) {
         m_polyTotalRings = 0;
-		oid = -1;
-		return 0;
-	}
+        oid = -1;
+        return 0;
+    }
 
-	oid = m_Feature->GetFID();
+    oid = m_Feature->GetFID();
 
-	OGRPolygon * plgon = (OGRPolygon*) m_Feature->GetGeometryRef();
-	wxASSERT(plgon);
+    OGRPolygon *plgon = (OGRPolygon *) m_Feature->GetGeometryRef();
+    wxASSERT(plgon);
 
-	if (plgon == NULL)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Conversion to polygon error"));
+    if (plgon == NULL) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Conversion to polygon error"));
         }
-		m_polyTotalRings = 0;
-		OGRFeature::DestroyFeature( m_Feature );
-		return 0;
-	}
+        m_polyTotalRings = 0;
+        OGRFeature::DestroyFeature(m_Feature);
+        return 0;
+    }
 
-	// check polygons validity, long operations #Bug 275
-	/*
+    // check polygons validity, long operations #Bug 275
+    /*
     if(!plgon->IsValid())
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Polygon not valid @ FID : %ld"), m_Feature->GetFID());
+    {
+        if (IsLoggingEnabled()){
+            wxLogDebug(_T("Polygon not valid @ FID : %ld"), m_Feature->GetFID());
         }
-	}*/
+    }*/
 
-	// count rings + 1 (exterior ring)
-	m_polyTotalRings = plgon->getNumInteriorRings() + 1;
-	return m_polyTotalRings;
+    // count rings + 1 (exterior ring)
+    m_polyTotalRings = plgon->getNumInteriorRings() + 1;
+    return m_polyTotalRings;
 }
 
 
-
-wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbvertex)
+wxRealPoint *tmGISDataVectorSHP::GetNextDataPolygon(int currentring, int &nbvertex)
 {
-	if (m_Feature ==NULL)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Feature is null, call GetNextDataPolygonInfo first"));
+    if (m_Feature == NULL) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Feature is null, call GetNextDataPolygonInfo first"));
         }
-		m_polyTotalRings = 0;
-		return NULL;
-	}
+        m_polyTotalRings = 0;
+        return NULL;
+    }
 
-	OGRPolygon * plgon = (OGRPolygon*) m_Feature->GetGeometryRef();
-	wxASSERT(plgon);
+    OGRPolygon *plgon = (OGRPolygon *) m_Feature->GetGeometryRef();
+    wxASSERT(plgon);
 
-	// getting ring data (exterior then interior)
-	OGRLineString * pLinePoly = NULL;
-	if (currentring == 0)
-		pLinePoly = plgon->getExteriorRing();
-	else
-		pLinePoly = plgon->getInteriorRing(currentring-1);
+    // getting ring data (exterior then interior)
+    OGRLineString *pLinePoly = NULL;
+    if (currentring == 0)
+        pLinePoly = plgon->getExteriorRing();
+    else
+        pLinePoly = plgon->getInteriorRing(currentring - 1);
 
-	if (pLinePoly == NULL)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Error getting ring for polygon. Ring num. is : %d"), currentring);
+    if (pLinePoly == NULL) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Error getting ring for polygon. Ring num. is : %d"), currentring);
         }
-		m_polyTotalRings = 0;
-		OGRFeature::DestroyFeature( m_Feature );
-		return NULL;
-	}
+        m_polyTotalRings = 0;
+        OGRFeature::DestroyFeature(m_Feature);
+        return NULL;
+    }
 
-	// Exporting vertex for rings
-	nbvertex = pLinePoly->getNumPoints();
-	if (nbvertex <= 1)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("Only one vertex or less in this polygon ring ???"));
+    // Exporting vertex for rings
+    nbvertex = pLinePoly->getNumPoints();
+    if (nbvertex <= 1) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Only one vertex or less in this polygon ring ???"));
         }
-		OGRGeometryFactory::destroyGeometry	(pLinePoly);
-		return NULL;
-	}
+        OGRGeometryFactory::destroyGeometry(pLinePoly);
+        return NULL;
+    }
 
-	wxRealPoint * pts = new wxRealPoint[nbvertex];
-	for (int i=0; i<nbvertex;i++)
-	{
-		pts[i].x = pLinePoly->getX(i);
-		pts[i].y = pLinePoly->getY(i);
-	}
+    wxRealPoint *pts = new wxRealPoint[nbvertex];
+    for (int i = 0; i < nbvertex; i++) {
+        pts[i].x = pLinePoly->getX(i);
+        pts[i].y = pLinePoly->getY(i);
+    }
 
 
-	// destroying feature only if all rings read
-	if (currentring == m_polyTotalRings)
-		OGRFeature::DestroyFeature( m_Feature );
+    // destroying feature only if all rings read
+    if (currentring == m_polyTotalRings)
+        OGRFeature::DestroyFeature(m_Feature);
 
-	return pts;
+    return pts;
 }
-
 
 
 /***************************************************************************//**
@@ -463,15 +434,14 @@ wxRealPoint * tmGISDataVectorSHP::GetNextDataPolygon (int currentring, int & nbv
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-OGRPolygon * tmGISDataVectorSHP::GetNextDataOGRPolygon (long & oid)
+OGRPolygon *tmGISDataVectorSHP::GetNextDataOGRPolygon(long &oid)
 {
-	wxASSERT(m_Feature);
-	OGRPolygon * myPoly = (OGRPolygon*) m_Feature->GetGeometryRef();
-	oid = m_Feature->GetFID();
+    wxASSERT(m_Feature);
+    OGRPolygon *myPoly = (OGRPolygon *) m_Feature->GetGeometryRef();
+    oid = m_Feature->GetFID();
 
-	return myPoly;
+    return myPoly;
 }
-
 
 
 /***************************************************************************//**
@@ -483,19 +453,17 @@ OGRPolygon * tmGISDataVectorSHP::GetNextDataOGRPolygon (long & oid)
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 September 2008
  *******************************************************************************/
-int tmGISDataVectorSHP::GetCount ()
+int tmGISDataVectorSHP::GetCount()
 {
-	if(!m_Layer)
-	{
-		if (IsLoggingEnabled()){
-			wxLogDebug(_T("m_layer not defined, error"));
+    if (!m_Layer) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("m_layer not defined, error"));
         }
-		return -1;
-	}
+        return -1;
+    }
 
-	return m_Layer->GetFeatureCount();
+    return m_Layer->GetFeatureCount();
 }
-
 
 
 /***************************************************************************//**
@@ -504,27 +472,25 @@ int tmGISDataVectorSHP::GetCount ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 22 October 2008
  *******************************************************************************/
-wxString tmGISDataVectorSHP::GetMetaDataAsHtml ()
+wxString tmGISDataVectorSHP::GetMetaDataAsHtml()
 {
-	wxString myType = TM_GIS_SPATIAL_TYPES_STRING[GetSpatialType()];
-	wxString myResult = _T("");
-	myResult.Append(_("<B><U>Name</B></U><BR>"));
-	myResult.Append(GetFullFileName() + _T("<BR><BR>"));
+    wxString myType = TM_GIS_SPATIAL_TYPES_STRING[GetSpatialType()];
+    wxString myResult = _T("");
+    myResult.Append(_("<B><U>Name</B></U><BR>"));
+    myResult.Append(GetFullFileName() + _T("<BR><BR>"));
 
-	myResult.Append(_("<B><U>General informations</B></U><BR>"));
-	myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
-	myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
+    myResult.Append(_("<B><U>General informations</B></U><BR>"));
+    myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
+    myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
 
-	myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
+    myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
 
-	myResult.Append(GetFieldsMetadata() + _T("<BR>"));
+    myResult.Append(GetFieldsMetadata() + _T("<BR>"));
 
-	myResult.Append(GetDataSizeAsHtml());
+    myResult.Append(GetDataSizeAsHtml());
 
-	return myResult;
+    return myResult;
 }
-
-
 
 
 /***************************************************************************//**
@@ -534,37 +500,36 @@ wxString tmGISDataVectorSHP::GetMetaDataAsHtml ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 23 October 2008
  *******************************************************************************/
-wxString tmGISDataVectorSHP::GetDataSizeAsHtml (int iPrecision)
+wxString tmGISDataVectorSHP::GetDataSizeAsHtml(int iPrecision)
 {
-	// compute size for all part of the shp file
-	wxULongLong myFilesSize = 0;
-	wxFileName myFileName (GetFullFileName());
-	wxString myFileWoutExt = myFileName.GetPath(wxPATH_GET_SEPARATOR) +
-							myFileName.GetName();
-	wxString myShpExt[] = {_T(".shp"), _T(".sbn"), _T(".shx"), _T(".dbf")};
+    // compute size for all part of the shp file
+    wxULongLong myFilesSize = 0;
+    wxFileName myFileName(GetFullFileName());
+    wxString myFileWoutExt = myFileName.GetPath(wxPATH_GET_SEPARATOR) +
+                             myFileName.GetName();
+    wxString myShpExt[] = {_T(".shp"), _T(".sbn"), _T(".shx"), _T(".dbf")};
 
-	for (unsigned int i=0;i< (sizeof(myShpExt) / sizeof(wxString));i++){
-        if (wxFileName::Exists(myFileWoutExt + myShpExt[i])==false) {
+    for (unsigned int i = 0; i < (sizeof(myShpExt) / sizeof(wxString)); i++) {
+        if (wxFileName::Exists(myFileWoutExt + myShpExt[i]) == false) {
             continue;
         }
-		wxULongLong myTempSize = wxFileName::GetSize(myFileWoutExt + myShpExt[i]);
-		if (myTempSize != wxInvalidSize)
-			myFilesSize += myTempSize;
-		else
-			wxLogWarning(_T("Unable to compute %s%s file size, maybe dosen't exists"),
-					   myFileWoutExt.c_str(), myShpExt[i].c_str());
-	}
+        wxULongLong myTempSize = wxFileName::GetSize(myFileWoutExt + myShpExt[i]);
+        if (myTempSize != wxInvalidSize)
+            myFilesSize += myTempSize;
+        else
+            wxLogWarning(_T("Unable to compute %s%s file size, maybe dosen't exists"),
+                         myFileWoutExt.c_str(), myShpExt[i].c_str());
+    }
 
-	// modifiy the size to be MB
-	double dMegaBytes =  (myFilesSize.ToDouble() / 1024) / 1024;
+    // modifiy the size to be MB
+    double dMegaBytes = (myFilesSize.ToDouble() / 1024) / 1024;
 
-	wxString myResult = _("<U><B>File Size</B></U><BR>");
-	myResult.Append(wxString::Format(_("Shapefile size is : %.*f [Mb]<BR>"),
-									 iPrecision, dMegaBytes));
-	return myResult;
+    wxString myResult = _("<U><B>File Size</B></U><BR>");
+    myResult.Append(wxString::Format(_("Shapefile size is : %.*f [Mb]<BR>"),
+                                     iPrecision, dMegaBytes));
+    return myResult;
 
 }
-
 
 
 /***************************************************************************//**
@@ -575,13 +540,12 @@ wxString tmGISDataVectorSHP::GetDataSizeAsHtml (int iPrecision)
  *******************************************************************************/
 int tmGISDataVectorSHP::GetFieldsCount()
 {
-	if (!m_Layer)
-		return -1;
+    if (!m_Layer)
+        return -1;
 
-	OGRFeatureDefn * poFDefn = m_Layer->GetLayerDefn();
-	return  poFDefn->GetFieldCount ();
+    OGRFeatureDefn *poFDefn = m_Layer->GetLayerDefn();
+    return poFDefn->GetFieldCount();
 }
-
 
 
 /***************************************************************************//**
@@ -591,75 +555,75 @@ int tmGISDataVectorSHP::GetFieldsCount()
  @author Lucien Schreiber (c) CREALP 2008
  @date 23 October 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::GetFieldsName (wxArrayString & Fields, long oid)
+bool tmGISDataVectorSHP::GetFieldsName(wxArrayString &Fields, long oid)
 {
-	Fields.Clear();
-	if (!m_Layer)
-		return false;
+    Fields.Clear();
+    if (!m_Layer)
+        return false;
 
-	OGRFeatureDefn * poFDefn = m_Layer->GetLayerDefn();
-	OGRFieldDefn * poFieldDf = NULL;
+    OGRFeatureDefn *poFDefn = m_Layer->GetLayerDefn();
+    OGRFieldDefn *poFieldDf = NULL;
 
-	for (int i=0;i<GetFieldsCount();i++)
-	{
-		poFieldDf = poFDefn->GetFieldDefn(i);
-		Fields.Add(wxString::FromAscii(poFieldDf->GetNameRef()));
-	}
+    for (int i = 0; i < GetFieldsCount(); i++) {
+        poFieldDf = poFDefn->GetFieldDefn(i);
+        Fields.Add(wxString::FromAscii(poFieldDf->GetNameRef()));
+    }
 
-	return true;
+    return true;
 }
 
 
-bool tmGISDataVectorSHP::GetFieldsValue (wxArrayString & values, long oid){
-	values.Clear();
+bool tmGISDataVectorSHP::GetFieldsValue(wxArrayString &values, long oid)
+{
+    values.Clear();
 
-	if (m_Layer == NULL) {
-		wxLogError(_T("No layer defined, unable to get fields value"));
-		return false;
-	}
+    if (m_Layer == NULL) {
+        wxLogError(_T("No layer defined, unable to get fields value"));
+        return false;
+    }
 
-	OGRFeature * myFeature = m_Layer->GetFeature(oid);
-	if (myFeature == NULL) {
-		wxLogError(_T("No feature with id n\u00B0%ld in layer. Reading fields value not possible"),oid);
-		return false;
-	}
+    OGRFeature *myFeature = m_Layer->GetFeature(oid);
+    if (myFeature == NULL) {
+        wxLogError(_T("No feature with id n\u00B0%ld in layer. Reading fields value not possible"), oid);
+        return false;
+    }
 
-	int iTotFields = GetFieldsCount();
-	for (int i = 0; i < iTotFields; i++) {
+    int iTotFields = GetFieldsCount();
+    for (int i = 0; i < iTotFields; i++) {
 #ifdef __WXMSW__
-		const char * myValue = myFeature->GetFieldAsString(i);
-		wxString myVal (myValue, wxConvUTF8);
-		values.Add(myVal);
+        const char *myValue = myFeature->GetFieldAsString(i);
+        wxString myVal(myValue, wxConvUTF8);
+        values.Add(myVal);
 #else
         wxString myVal (myFeature->GetFieldAsString(i));
-		values.Add(myVal);
+        values.Add(myVal);
 #endif
-	}
+    }
 
-	OGRFeature::DestroyFeature(myFeature);
-	return true;
+    OGRFeature::DestroyFeature(myFeature);
+    return true;
 }
 
 
-
-bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxArrayString & values){
+bool tmGISDataVectorSHP::GetDistinctFieldsValue(const wxString &fieldname, wxArrayString &values)
+{
     wxASSERT(m_Datasource);
     values.Clear();
-    wxString myLayerName (m_Layer->GetLayerDefn()->GetName());
+    wxString myLayerName(m_Layer->GetLayerDefn()->GetName());
     wxString myQuery = wxString::Format(_T("SELECT DISTINCT \"%s\" FROM \"%s\""), fieldname, myLayerName);
-    OGRLayer * myResultLayer = m_Datasource->ExecuteSQL(myQuery, NULL, NULL);
+    OGRLayer *myResultLayer = m_Datasource->ExecuteSQL(myQuery, NULL, NULL);
     if (myResultLayer == NULL) {
         return false;
     }
 
     // iterate results
     myResultLayer->ResetReading();
-    OGRFeature * myFeature = NULL;
+    OGRFeature *myFeature = NULL;
     while ((myFeature = myResultLayer->GetNextFeature()) != NULL) {
 #ifdef __WXMSW__
- 		const char * myValue = myFeature->GetFieldAsString(0);
-		wxString myVal (myValue, wxConvUTF8);
-		values.Add(myVal);
+        const char *myValue = myFeature->GetFieldAsString(0);
+        wxString myVal(myValue, wxConvUTF8);
+        values.Add(myVal);
 #else
         wxString myValue (myFeature->GetFieldAsString(0));
         values.Add(myValue);
@@ -672,10 +636,6 @@ bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxA
 }
 
 
-
-
-
-
 /***************************************************************************//**
  @brief Search spatial data
  @param rect Real rectangle for searching data
@@ -684,43 +644,39 @@ bool tmGISDataVectorSHP::GetDistinctFieldsValue (const wxString & fieldname, wxA
  @author Lucien Schreiber (c) CREALP 2008
  @date 31 October 2008
  *******************************************************************************/
-wxArrayLong * tmGISDataVectorSHP::SearchData (const tmRealRect & rect, int type)
+wxArrayLong *tmGISDataVectorSHP::SearchData(const tmRealRect &rect, int type)
 {
-	// test one going directly
+    // test one going directly
 
-	m_Layer->ResetReading();
-	wxBusyCursor wait;
+    m_Layer->ResetReading();
+    wxBusyCursor wait;
 
-	OGRGeometry * poGeometry;
-	OGRFeature * poFeature;
-	OGRGeometry * poRectGeom = CreateOGRGeometry(rect);
-	if (!poRectGeom)
-	{
-		if(IsLoggingEnabled()){
-			wxLogDebug(_T("Unable to create geometry for rectangle"));
+    OGRGeometry *poGeometry;
+    OGRFeature *poFeature;
+    OGRGeometry *poRectGeom = CreateOGRGeometry(rect);
+    if (!poRectGeom) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Unable to create geometry for rectangle"));
         }
-		return NULL;
-	}
+        return NULL;
+    }
 
-	// searching all features
-	wxArrayLong * myArray = new wxArrayLong();
-	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
-	{
-		poGeometry = poFeature->GetGeometryRef();
-		if (poGeometry)
-		{
-			if (poGeometry->Intersects(poRectGeom))
-				myArray->Add(poFeature->GetFID());
+    // searching all features
+    wxArrayLong *myArray = new wxArrayLong();
+    while ((poFeature = m_Layer->GetNextFeature()) != NULL) {
+        poGeometry = poFeature->GetGeometryRef();
+        if (poGeometry) {
+            if (poGeometry->Intersects(poRectGeom))
+                myArray->Add(poFeature->GetFID());
 
-			OGRGeometryFactory::destroyGeometry(poGeometry);
-		}
-	}
-	OGRGeometryFactory::destroyGeometry(poRectGeom);
+            OGRGeometryFactory::destroyGeometry(poGeometry);
+        }
+    }
+    OGRGeometryFactory::destroyGeometry(poRectGeom);
 
-	return myArray;
+    return myArray;
 
 }
-
 
 
 /***************************************************************************//**
@@ -728,20 +684,19 @@ wxArrayLong * tmGISDataVectorSHP::SearchData (const tmRealRect & rect, int type)
  @author Lucien Schreiber (c) CREALP 2009
  @date 31 March 2009
  *******************************************************************************/
-wxArrayLong * tmGISDataVectorSHP::GetAllData ()
+wxArrayLong *tmGISDataVectorSHP::GetAllData()
 {
-	wxASSERT (m_Layer);
+    wxASSERT (m_Layer);
 
-	OGRFeature * poFeature = NULL;
-	m_Layer->ResetReading();
-	// searching all features
-	wxArrayLong * myArray = new wxArrayLong();
-	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
-	{
-			myArray->Add(poFeature->GetFID());
-	}
+    OGRFeature *poFeature = NULL;
+    m_Layer->ResetReading();
+    // searching all features
+    wxArrayLong *myArray = new wxArrayLong();
+    while ((poFeature = m_Layer->GetNextFeature()) != NULL) {
+        myArray->Add(poFeature->GetFID());
+    }
 
-	return myArray;
+    return myArray;
 }
 
 
@@ -756,73 +711,72 @@ wxArrayLong * tmGISDataVectorSHP::GetAllData ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type){
-	const char *pszDriverName = "ESRI Shapefile";
+bool tmGISDataVectorSHP::CreateFile(const wxFileName &filename, int type)
+{
+    const char *pszDriverName = "ESRI Shapefile";
     GDALDriver *poDriver;
 
     poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName);
-    if( poDriver == NULL ){
-		wxASSERT_MSG(0, _T(" driver not available."));
-		return false;
-    }
-
-	// creating the file
-	wxString mysFileName = filename.GetFullPath();
-	char * buffer = new char [mysFileName.Length() * sizeof(wxString)];
-	strcpy(buffer, (const char*)mysFileName.mb_str(wxConvUTF8));
-	m_Datasource = poDriver->Create(
-		buffer,
-		0,  // x size, not used for vector
-		0,  // y size, not used for vector
-		0,  // nb of bands
-		GDT_Unknown,
-		NULL);
-	wxDELETEA(buffer);
-
-	if( m_Datasource == NULL ){
-        wxLogError(_("Creation of output file '%s' failed."),filename.GetFullName().c_str());
+    if (poDriver == NULL) {
+        wxASSERT_MSG(0, _T(" driver not available."));
         return false;
     }
 
-	OGRwkbGeometryType myGeomType = wkbUnknown;
-	switch (type)
-	{
-		case 0: // LINE
-			myGeomType = wkbLineString;
-			break;
+    // creating the file
+    wxString mysFileName = filename.GetFullPath();
+    char *buffer = new char[mysFileName.Length() * sizeof(wxString)];
+    strcpy(buffer, (const char *) mysFileName.mb_str(wxConvUTF8));
+    m_Datasource = poDriver->Create(
+            buffer,
+            0,  // x size, not used for vector
+            0,  // y size, not used for vector
+            0,  // nb of bands
+            GDT_Unknown,
+            NULL);
+    wxDELETEA(buffer);
 
-		case 1: // POINT
-			myGeomType = wkbPoint;
-			break;
+    if (m_Datasource == NULL) {
+        wxLogError(_("Creation of output file '%s' failed."), filename.GetFullName().c_str());
+        return false;
+    }
 
-		case 2: // POLYGON
-			myGeomType = wkbPolygon;
-			break;
+    OGRwkbGeometryType myGeomType = wkbUnknown;
+    switch (type) {
+        case 0: // LINE
+            myGeomType = wkbLineString;
+            break;
 
-		default:
-			myGeomType = wkbUnknown;
-			break;
-	}
+        case 1: // POINT
+            myGeomType = wkbPoint;
+            break;
 
-	if (myGeomType == wkbUnknown)
-		return false;
+        case 2: // POLYGON
+            myGeomType = wkbPolygon;
+            break;
 
-	// creating the layer
-	wxString myFileNameWOExt = filename.GetName();
-	char * buffer2 = new char [myFileNameWOExt.Length() * sizeof(wxString)];
-	strcpy(buffer2, (const char*)myFileNameWOExt.mb_str(wxConvUTF8));
-	m_Layer = m_Datasource->CreateLayer( buffer2, NULL, myGeomType, NULL );
-	wxDELETEA(buffer2);
+        default:
+            myGeomType = wkbUnknown;
+            break;
+    }
 
-    if( m_Layer == NULL ){
-		wxASSERT_MSG(0 , _T("Layer creation failed."));
+    if (myGeomType == wkbUnknown)
+        return false;
+
+    // creating the layer
+    wxString myFileNameWOExt = filename.GetName();
+    char *buffer2 = new char[myFileNameWOExt.Length() * sizeof(wxString)];
+    strcpy(buffer2, (const char *) myFileNameWOExt.mb_str(wxConvUTF8));
+    m_Layer = m_Datasource->CreateLayer(buffer2, NULL, myGeomType, NULL);
+    wxDELETEA(buffer2);
+
+    if (m_Layer == NULL) {
+        wxASSERT_MSG(0, _T("Layer creation failed."));
         return false;
     }
 
     tmGISData::Open(filename.GetFullPath(), true);
-	return true;
+    return true;
 }
-
 
 
 /***************************************************************************//**
@@ -833,26 +787,24 @@ bool tmGISDataVectorSHP::CreateFile (const wxFileName & filename, int type){
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::AddFieldText (const wxString & fieldname, int size)
+bool tmGISDataVectorSHP::AddFieldText(const wxString &fieldname, int size)
 {
-	wxASSERT (m_Layer);
-	bool bReturn = true;
+    wxASSERT (m_Layer);
+    bool bReturn = true;
 
-	char * buffer = new char [fieldname.Length() * sizeof(wxString)];
-	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
-	OGRFieldDefn oField( buffer, OFTString );
-	wxDELETEA(buffer);
+    char *buffer = new char[fieldname.Length() * sizeof(wxString)];
+    strcpy(buffer, (const char *) fieldname.mb_str(wxConvUTF8));
+    OGRFieldDefn oField(buffer, OFTString);
+    wxDELETEA(buffer);
 
     oField.SetWidth(size);
 
-    if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
-    {
-        wxASSERT_MSG(0,_T("Creating text field failed."));
+    if (m_Layer->CreateField(&oField) != OGRERR_NONE) {
+        wxASSERT_MSG(0, _T("Creating text field failed."));
         bReturn = false;
     }
-	return bReturn;
+    return bReturn;
 }
-
 
 
 /***************************************************************************//**
@@ -863,28 +815,26 @@ bool tmGISDataVectorSHP::AddFieldText (const wxString & fieldname, int size)
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::AddFieldNumeric (const wxString & fieldname, bool isfloat)
+bool tmGISDataVectorSHP::AddFieldNumeric(const wxString &fieldname, bool isfloat)
 {
-	wxASSERT (m_Layer);
-	bool bReturn = true;
+    wxASSERT (m_Layer);
+    bool bReturn = true;
 
-	char * buffer = new char [fieldname.Length() * sizeof(wxString)];
-	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
-	OGRFieldType myFieldType = OFTInteger;
-	if (isfloat)
-		myFieldType = OFTReal;
+    char *buffer = new char[fieldname.Length() * sizeof(wxString)];
+    strcpy(buffer, (const char *) fieldname.mb_str(wxConvUTF8));
+    OGRFieldType myFieldType = OFTInteger;
+    if (isfloat)
+        myFieldType = OFTReal;
 
-	OGRFieldDefn oField( buffer, myFieldType);
-	wxDELETEA(buffer);
+    OGRFieldDefn oField(buffer, myFieldType);
+    wxDELETEA(buffer);
 
-    if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
-    {
-        wxASSERT_MSG(0,_T("Creating int field failed."));
-		bReturn = false;
+    if (m_Layer->CreateField(&oField) != OGRERR_NONE) {
+        wxASSERT_MSG(0, _T("Creating int field failed."));
+        bReturn = false;
     }
-	return bReturn;
+    return bReturn;
 }
-
 
 
 /***************************************************************************//**
@@ -893,24 +843,22 @@ bool tmGISDataVectorSHP::AddFieldNumeric (const wxString & fieldname, bool isflo
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
+bool tmGISDataVectorSHP::AddFieldDate(const wxString &fieldname)
 {
-	wxASSERT (m_Layer);
-	bool bReturn = true;
+    wxASSERT (m_Layer);
+    bool bReturn = true;
 
-	char * buffer = new char [fieldname.Length() * sizeof(wxString)];
-	strcpy(buffer, (const char*)fieldname.mb_str(wxConvUTF8));
-	OGRFieldDefn oField( buffer, OFTDateTime);
-	wxDELETEA(buffer);
+    char *buffer = new char[fieldname.Length() * sizeof(wxString)];
+    strcpy(buffer, (const char *) fieldname.mb_str(wxConvUTF8));
+    OGRFieldDefn oField(buffer, OFTDateTime);
+    wxDELETEA(buffer);
 
-    if( m_Layer->CreateField( &oField ) != OGRERR_NONE )
-    {
-        wxASSERT_MSG(0,_T("Creating int field failed."));
+    if (m_Layer->CreateField(&oField) != OGRERR_NONE) {
+        wxASSERT_MSG(0, _T("Creating int field failed."));
         bReturn = false;
     }
-	return bReturn;
+    return bReturn;
 }
-
 
 
 /***************************************************************************//**
@@ -922,35 +870,34 @@ bool tmGISDataVectorSHP::AddFieldDate (const wxString & fieldname)
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid, int layertype) {
-	wxASSERT(Geom);
-	wxASSERT (m_Layer);
-	wxASSERT (m_Feature == NULL);
+long tmGISDataVectorSHP::AddGeometry(OGRGeometry *Geom, const long &oid, int layertype)
+{
+    wxASSERT(Geom);
+    wxASSERT (m_Layer);
+    wxASSERT (m_Feature == NULL);
 
-	//OGRFeature * poFeature;
-	m_Feature = OGRFeature::CreateFeature( m_Layer->GetLayerDefn() );
-	wxASSERT(m_Feature);
+    //OGRFeature * poFeature;
+    m_Feature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
+    wxASSERT(m_Feature);
 
-	m_Feature->SetGeometry(Geom);
-	if (oid != -1)
-	{
-		m_Feature->SetFID(oid);
+    m_Feature->SetGeometry(Geom);
+    if (oid != -1) {
+        m_Feature->SetFID(oid);
 
-		// add FID into special column
-		m_Feature->SetField(0, (int) oid);
-	}
+        // add FID into special column
+        m_Feature->SetField(0, (int) oid);
+    }
 
-	OGRErr myErr = m_Layer->CreateFeature(m_Feature);
-	if (myErr != OGRERR_NONE)
-		return -1;
+    OGRErr myErr = m_Layer->CreateFeature(m_Feature);
+    if (myErr != OGRERR_NONE)
+        return -1;
 
 
-	long lRetVal = m_Feature->GetFID();
-	//OGRFeature::DestroyFeature(m_Feature);
-	return lRetVal;
+    long lRetVal = m_Feature->GetFID();
+    //OGRFeature::DestroyFeature(m_Feature);
+    return lRetVal;
 
 }
-
 
 
 /***************************************************************************//**
@@ -961,26 +908,24 @@ long tmGISDataVectorSHP::AddGeometry (OGRGeometry * Geom, const long & oid, int 
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::SetNextFeature (bool resetreading)
+bool tmGISDataVectorSHP::SetNextFeature(bool resetreading)
 {
-	wxASSERT (m_Layer);
-	if (m_Feature)
-	{
-		OGRFeature::DestroyFeature(m_Feature);
-		m_Feature = NULL;
-	}
+    wxASSERT (m_Layer);
+    if (m_Feature) {
+        OGRFeature::DestroyFeature(m_Feature);
+        m_Feature = NULL;
+    }
 
-	if (resetreading)
-		m_Layer->ResetReading();
+    if (resetreading)
+        m_Layer->ResetReading();
 
-	m_Feature = m_Layer->GetNextFeature();
+    m_Feature = m_Layer->GetNextFeature();
 
-	if (m_Feature)
-		return true;
+    if (m_Feature)
+        return true;
 
-	return false;
+    return false;
 }
-
 
 
 /***************************************************************************//**
@@ -989,15 +934,15 @@ bool tmGISDataVectorSHP::SetNextFeature (bool resetreading)
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 March 2009
  *******************************************************************************/
-long tmGISDataVectorSHP::GetActualOID ()
+long tmGISDataVectorSHP::GetActualOID()
 {
-	wxASSERT (m_Layer);
-	wxASSERT (m_Feature->GetFieldCount() >= 1);
+    wxASSERT (m_Layer);
+    wxASSERT (m_Feature->GetFieldCount() >= 1);
 
-	if (m_Feature)
-		return m_Feature->GetFieldAsInteger(0);
-	else
-		return wxNOT_FOUND;
+    if (m_Feature)
+        return m_Feature->GetFieldAsInteger(0);
+    else
+        return wxNOT_FOUND;
 }
 
 
@@ -1009,13 +954,13 @@ long tmGISDataVectorSHP::GetActualOID ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 27 March 2009
  *******************************************************************************/
-void tmGISDataVectorSHP::SetActualOID (long oid)
+void tmGISDataVectorSHP::SetActualOID(long oid)
 {
-	wxASSERT (m_Layer);
-	wxASSERT (m_Feature->GetFieldCount() >= 1);
+    wxASSERT (m_Layer);
+    wxASSERT (m_Feature->GetFieldCount() >= 1);
 
-	if (m_Feature)
-		m_Feature->SetField(0, (int) oid);
+    if (m_Feature)
+        m_Feature->SetField(0, (int) oid);
 
 }
 
@@ -1029,73 +974,70 @@ void tmGISDataVectorSHP::SetActualOID (long oid)
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
-							int fieldtype, int iindex)
+bool tmGISDataVectorSHP::SetFieldValue(const wxString &value,
+                                       int fieldtype, int iindex)
 {
-	wxASSERT(m_Feature);
+    wxASSERT(m_Feature);
 
-	// check that the field exists
-	if (iindex > m_Feature->GetFieldCount() -1)
-	{
-		wxASSERT_MSG(0, _T("Trying to set value to a field that doesn't exists"));
-		return false;
-	}
+    // check that the field exists
+    if (iindex > m_Feature->GetFieldCount() - 1) {
+        wxASSERT_MSG(0, _T("Trying to set value to a field that doesn't exists"));
+        return false;
+    }
 
-	// Value is empty, don't try to pass it to the fields
-	// let the default null value.
-	if (value.Len() == 0) {
-		return true;
-	}
-	wxASSERT(value.Len() > 0);
+    // Value is empty, don't try to pass it to the fields
+    // let the default null value.
+    if (value.Len() == 0) {
+        return true;
+    }
+    wxASSERT(value.Len() > 0);
 
 
-	wxStringTokenizer myTok;
-	int myYear = 0, myMonth = 0, myDay = 0;
+    wxStringTokenizer myTok;
+    int myYear = 0, myMonth = 0, myDay = 0;
 
-	switch (fieldtype)
-	{
-		case TM_FIELD_ENUMERATION: // enumeration
-		case TM_FIELD_TEXT: // TEXT
+    switch (fieldtype) {
+        case TM_FIELD_ENUMERATION: // enumeration
+        case TM_FIELD_TEXT: // TEXT
         {
             wxString myValue = value;
-			m_Feature->SetField(iindex, (const char*) myValue.mb_str( wxCSConv(wxFONTENCODING_ISO8859_1)));
+            m_Feature->SetField(iindex, (const char *) myValue.mb_str(wxCSConv(wxFONTENCODING_ISO8859_1)));
         }
-			break;
+            break;
 
-		case TM_FIELD_INTEGER: // INTEGER
-			m_Feature->SetField(iindex, wxAtoi(value));
-			break;
+        case TM_FIELD_INTEGER: // INTEGER
+            m_Feature->SetField(iindex, wxAtoi(value));
+            break;
 
-		case TM_FIELD_FLOAT: // FLOAT
-			m_Feature->SetField(iindex, wxAtof(value));
-			break;
+        case TM_FIELD_FLOAT: // FLOAT
+            m_Feature->SetField(iindex, wxAtof(value));
+            break;
 
-		case TM_FIELD_DATE: //DATE
-				myTok.SetString(value, _T("-"), wxTOKEN_DEFAULT);
-				wxASSERT(myTok.CountTokens() == 3);
+        case TM_FIELD_DATE: //DATE
+            myTok.SetString(value, _T("-"), wxTOKEN_DEFAULT);
+            wxASSERT(myTok.CountTokens() == 3);
 
-				myYear = wxAtoi(myTok.GetNextToken());
-				myMonth = wxAtoi(myTok.GetNextToken());
-				wxASSERT (myMonth >= 1 && myMonth <=12);
-				myDay = wxAtoi (myTok.GetNextToken());
-				wxASSERT (myDay >= 1 && myDay <= 31);
-				wxLogDebug(_T("Date computed is : %d / %d / %d"),
-						   myYear,
-						   myMonth,
-						   myDay);
-				m_Feature->SetField(iindex, myYear, myMonth, myDay, 0, 0, 0, 1);
-				break;
+            myYear = wxAtoi(myTok.GetNextToken());
+            myMonth = wxAtoi(myTok.GetNextToken());
+            wxASSERT (myMonth >= 1 && myMonth <= 12);
+            myDay = wxAtoi(myTok.GetNextToken());
+            wxASSERT (myDay >= 1 && myDay <= 31);
+            wxLogDebug(_T("Date computed is : %d / %d / %d"),
+                       myYear,
+                       myMonth,
+                       myDay);
+            m_Feature->SetField(iindex, myYear, myMonth, myDay, 0, 0, 0, 1);
+            break;
 
 
-		default:
-			wxLogError(_("Field type not supported now, sorrry...."));
-			return false;
-			break;
-	}
+        default:
+            wxLogError(_("Field type not supported now, sorrry...."));
+            return false;
+            break;
+    }
 
-	return true;
+    return true;
 }
-
 
 
 /***************************************************************************//**
@@ -1108,36 +1050,35 @@ bool tmGISDataVectorSHP::SetFieldValue (const wxString & value,
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmGISDataVectorSHP::UpdateFeature ()
+bool tmGISDataVectorSHP::UpdateFeature()
 {
-	wxASSERT(m_Feature);
-	wxASSERT (m_Layer);
+    wxASSERT(m_Feature);
+    wxASSERT (m_Layer);
 
-	if (m_Layer->SetFeature(m_Feature) != OGRERR_NONE)
-		return false;
+    if (m_Layer->SetFeature(m_Feature) != OGRERR_NONE)
+        return false;
 
-	return true;
+    return true;
 }
 
 
-
-void tmGISDataVectorSHP::CloseGeometry(){
-	wxASSERT(m_Feature);
-	wxASSERT(m_Layer);
-
-	UpdateFeature();
-
-	OGRFeature::DestroyFeature(m_Feature);
-	m_Feature = NULL;
-}
-
-
-
-
-bool tmGISDataVectorSHP::GetFieldNumeric (const wxString & fieldname, int & fieldvalue){
+void tmGISDataVectorSHP::CloseGeometry()
+{
     wxASSERT(m_Feature);
     wxASSERT(m_Layer);
-    int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char*) fieldname.mb_str(wxConvUTF8));
+
+    UpdateFeature();
+
+    OGRFeature::DestroyFeature(m_Feature);
+    m_Feature = NULL;
+}
+
+
+bool tmGISDataVectorSHP::GetFieldNumeric(const wxString &fieldname, int &fieldvalue)
+{
+    wxASSERT(m_Feature);
+    wxASSERT(m_Layer);
+    int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char *) fieldname.mb_str(wxConvUTF8));
     wxASSERT(myFieldIndex != -1);
 
     if (m_Feature == NULL || m_Feature->IsFieldSet(myFieldIndex) == false) {
@@ -1148,11 +1089,12 @@ bool tmGISDataVectorSHP::GetFieldNumeric (const wxString & fieldname, int & fiel
 }
 
 
-bool tmGISDataVectorSHP::SetFieldNumeric (const wxString & fieldname, int fieldvalue){
+bool tmGISDataVectorSHP::SetFieldNumeric(const wxString &fieldname, int fieldvalue)
+{
     wxASSERT(m_Feature);
     wxASSERT(m_Layer);
 
-    int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char*) fieldname.mb_str(wxConvUTF8));
+    int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char *) fieldname.mb_str(wxConvUTF8));
     wxASSERT(myFieldIndex != -1);
     if (myFieldIndex == -1) {
         return false;
@@ -1161,8 +1103,6 @@ bool tmGISDataVectorSHP::SetFieldNumeric (const wxString & fieldname, int fieldv
     m_Feature->SetField(myFieldIndex, fieldvalue);
     return true;
 }
-
-
 
 
 /***************************************************************************//**
@@ -1176,43 +1116,43 @@ bool tmGISDataVectorSHP::SetFieldNumeric (const wxString & fieldname, int fieldv
  @author Lucien Schreiber (c) CREALP 2009
  @date 29 January 2009
  *******************************************************************************/
-bool tmGISDataVectorSHP::GetSnapCoord (const wxRealPoint & clickpt, double buffersize,
-						   wxArrayRealPoints & snapppts, int snaptype)
+bool tmGISDataVectorSHP::GetSnapCoord(const wxRealPoint &clickpt, double buffersize,
+                                      wxArrayRealPoints &snapppts, int snaptype)
 {
-	// create OGRpoint and buffer
-	OGRPoint myClickPoint;
-	myClickPoint.setX(clickpt.x);
-	myClickPoint.setY(clickpt.y);
+    // create OGRpoint and buffer
+    OGRPoint myClickPoint;
+    myClickPoint.setX(clickpt.x);
+    myClickPoint.setY(clickpt.y);
 
-	OGRGeometry * myBufferClick = myClickPoint.Buffer(buffersize);  //tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
-	wxASSERT (myBufferClick);
-	wxASSERT (m_Layer);
+    OGRGeometry *myBufferClick = myClickPoint.Buffer(
+            buffersize);  //tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
+    wxASSERT (myBufferClick);
+    wxASSERT (m_Layer);
 
-	// searching all features
-	m_Layer->ResetReading();
-	OGRGeometry * poGeometry;
-	OGRFeature * poFeature;
+    // searching all features
+    m_Layer->ResetReading();
+    OGRGeometry *poGeometry;
+    OGRFeature *poFeature;
     unsigned int myPtsCount = snapppts.GetCount();
-	while( (poFeature = m_Layer->GetNextFeature()) != NULL ){
-		poGeometry = poFeature->GetGeometryRef();
-		if (poGeometry){
-			if (poGeometry->Intersects(myBufferClick)){
-				if ((snaptype & tmSNAPPING_VERTEX)== tmSNAPPING_VERTEX){
-					GetVertexIntersection(poGeometry, myBufferClick, snapppts);
-				}
-				else if (snaptype == tmSNAPPING_BEGIN_END){
-					GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
-				}
-			}
-			OGRFeature::DestroyFeature(poFeature);
+    while ((poFeature = m_Layer->GetNextFeature()) != NULL) {
+        poGeometry = poFeature->GetGeometryRef();
+        if (poGeometry) {
+            if (poGeometry->Intersects(myBufferClick)) {
+                if ((snaptype & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX) {
+                    GetVertexIntersection(poGeometry, myBufferClick, snapppts);
+                } else if (snaptype == tmSNAPPING_BEGIN_END) {
+                    GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
+                }
+            }
+            OGRFeature::DestroyFeature(poFeature);
         }
-	}
-	OGRGeometryFactory::destroyGeometry(myBufferClick);
+    }
+    OGRGeometryFactory::destroyGeometry(myBufferClick);
 
     if (myPtsCount < snapppts.GetCount()) {
         return true;
     }
-	return false;
+    return false;
 }
 
 
@@ -1237,23 +1177,25 @@ bool tmGISDataVectorSHP::CreateSpatialIndex(int indexdepth){
     return true;
 }*/
 
-bool tmGISDataVectorSHP::ExecuteSQLQuery(const wxString & query){
-    OGRLayer * poResultSet = NULL;
-    const char * dialect = "";
-    poResultSet = m_Datasource->ExecuteSQL((const char*) query.mb_str(wxConvUTF8), NULL, dialect);
+bool tmGISDataVectorSHP::ExecuteSQLQuery(const wxString &query)
+{
+    OGRLayer *poResultSet = NULL;
+    const char *dialect = "";
+    poResultSet = m_Datasource->ExecuteSQL((const char *) query.mb_str(wxConvUTF8), NULL, dialect);
     if (poResultSet != NULL) {
-        m_Datasource->ReleaseResultSet( poResultSet );
+        m_Datasource->ReleaseResultSet(poResultSet);
         return false;
     }
-     return true;
+    return true;
 }
 
 
-long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry * geometry){
+long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry *geometry)
+{
     wxASSERT(m_Layer);
     m_Layer->ResetReading();
     m_Layer->SetSpatialFilter(geometry);
-    OGRFeature * myFeature = m_Layer->GetNextFeature();
+    OGRFeature *myFeature = m_Layer->GetNextFeature();
     m_Layer->SetSpatialFilter(NULL);
     if (myFeature == NULL) {
         return wxNOT_FOUND;
@@ -1265,9 +1207,9 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedBy(OGRGeometry * geometry){
 }
 
 
-
-long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
-    if (m_RasterizeDataset == NULL){
+long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint *geometry)
+{
+    if (m_RasterizeDataset == NULL) {
         wxLogError(_("Unable to get feature on raster, raster not open!"));
         return wxNOT_FOUND;
     }
@@ -1283,29 +1225,33 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
     int myHeight = m_RasterizeDataset->GetRasterYSize();
 
     double myCoordx = ((geometry->getX() - myLeft) / myPxWidth); // - (0.5 * myPxWidth);
-	double myCoordy = ((geometry->getY() - myTop) / myPxHeight); // + (0.5 * myPxHeight);
+    double myCoordy = ((geometry->getY() - myTop) / myPxHeight); // + (0.5 * myPxHeight);
     int pxcoordx = wxRound(myCoordx);
-	int pxcoordy = wxRound(fabs(myCoordy));
+    int pxcoordy = wxRound(fabs(myCoordy));
 
     // create a rectangle centred on pxcoordx, pxcoordy
-    wxRect myPtRect (pxcoordx -1, pxcoordy -1, 3, 3);
-    wxRect myImgRect (0,0, myWidth, myHeight);
+    wxRect myPtRect(pxcoordx - 1, pxcoordy - 1, 3, 3);
+    wxRect myImgRect(0, 0, myWidth, myHeight);
     wxRect myIntersectRect = myImgRect.Intersect(myPtRect);
 
 
-    void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * myIntersectRect.GetWidth() * myIntersectRect.GetHeight());
-	if (m_RasterizeDataset->RasterIO(GF_Read, myIntersectRect.GetLeft(), myIntersectRect.GetTop(), myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),pData, myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),GDT_Float32,1, NULL, 0,0,0) != CE_None){
-		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
-		if (pData != NULL) {
-			CPLFree(pData);
-			pData = NULL;
-		}
-		return wxNOT_FOUND;
-	}
+    void *pData = CPLMalloc(
+            (GDALGetDataTypeSize(GDT_Float32) / 8) * myIntersectRect.GetWidth() * myIntersectRect.GetHeight());
+    if (m_RasterizeDataset->RasterIO(GF_Read, myIntersectRect.GetLeft(), myIntersectRect.GetTop(),
+                                     myIntersectRect.GetWidth(), myIntersectRect.GetHeight(), pData,
+                                     myIntersectRect.GetWidth(), myIntersectRect.GetHeight(), GDT_Float32, 1, NULL, 0,
+                                     0, 0) != CE_None) {
+        wxLogError("Error reading value at pixel (%d, %d) from rasterized file", pxcoordx, pxcoordy);
+        if (pData != NULL) {
+            CPLFree(pData);
+            pData = NULL;
+        }
+        return wxNOT_FOUND;
+    }
 
-    long myValue = (long) ((float *)pData)[5];
-    for (int i = 0; i< myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
-        long myRectValue = (long) ((float *)pData)[i];
+    long myValue = (long) ((float *) pData)[5];
+    for (int i = 0; i < myIntersectRect.GetWidth() * myIntersectRect.GetHeight(); i++) {
+        long myRectValue = (long) ((float *) pData)[i];
         if (myRectValue != myValue) {
             CPLFree(pData);
             return wxNOT_FOUND;
@@ -1334,14 +1280,14 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint * geometry){
 }
 
 
-
-bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
+bool tmGISDataVectorSHP::Rasterize(double rasterizefactor)
+{
     if (rasterizefactor == 0) {
         return true;
     }
 
     // get filename
-    wxFileName myRasterName (GetFullFileName());
+    wxFileName myRasterName(GetFullFileName());
     myRasterName.SetExt(_T("tif"));
     wxString myRasterNameTxt = myRasterName.GetFullPath();
 
@@ -1361,8 +1307,9 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
 
     // create raster
     GDALDatasetH hDstDS = NULL;
-    hDstDS = GDALCreate(hDriver, (const char *) myRasterNameTxt.mb_str(wxConvUTF8), mySize.GetWidth(), mySize.GetHeight(), 1, GDT_Float32, NULL);
-    if( hDstDS == NULL){
+    hDstDS = GDALCreate(hDriver, (const char *) myRasterNameTxt.mb_str(wxConvUTF8), mySize.GetWidth(),
+                        mySize.GetHeight(), 1, GDT_Float32, NULL);
+    if (hDstDS == NULL) {
         return false;
     }
 
@@ -1380,7 +1327,7 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
     std::vector<OGRGeometryH> ahGeometries;
     std::vector<double> adfFullBurnValues;
     m_Layer->ResetReading();
-    while ((m_Feature = m_Layer->GetNextFeature()) != NULL){
+    while ((m_Feature = m_Layer->GetNextFeature()) != NULL) {
         OGRGeometryH myGeom = m_Feature->GetGeometryRef()->clone();
         ahGeometries.push_back(myGeom);
         adfFullBurnValues.push_back(m_Feature->GetFID());
@@ -1389,15 +1336,16 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
 
     std::vector<int> anBandList;
     anBandList.push_back(1);
-    GDALRasterizeGeometries(hDstDS, anBandList.size(),&(anBandList[0]), ahGeometries.size(), &(ahGeometries[0]), NULL, NULL, &(adfFullBurnValues[0]), NULL, NULL, NULL);
+    GDALRasterizeGeometries(hDstDS, anBandList.size(), &(anBandList[0]), ahGeometries.size(), &(ahGeometries[0]), NULL,
+                            NULL, &(adfFullBurnValues[0]), NULL, NULL, NULL);
 
     // clean
-    for(int iGeom = ahGeometries.size()-1; iGeom >= 0; iGeom-- ){
-        OGR_G_DestroyGeometry( ahGeometries[iGeom] );
+    for (int iGeom = ahGeometries.size() - 1; iGeom >= 0; iGeom--) {
+        OGR_G_DestroyGeometry(ahGeometries[iGeom]);
     }
-    GDALClose( hDstDS );
+    GDALClose(hDstDS);
 
-    m_RasterizeDataset = (GDALDataset *) GDALOpen((const char*)myRasterNameTxt.mb_str(wxConvUTF8), GA_Update);
+    m_RasterizeDataset = (GDALDataset *) GDALOpen((const char *) myRasterNameTxt.mb_str(wxConvUTF8), GA_Update);
     if (m_RasterizeDataset == NULL) {
         return false;
     }
@@ -1405,7 +1353,8 @@ bool tmGISDataVectorSHP::Rasterize(double rasterizefactor){
 }
 
 
-void tmGISDataVectorSHP::RemoveRasterizeFile(){
+void tmGISDataVectorSHP::RemoveRasterizeFile()
+{
     if (m_RasterizeDataset == NULL) {
         return;
     }
@@ -1417,16 +1366,16 @@ void tmGISDataVectorSHP::RemoveRasterizeFile(){
         return;
     }
 
-    wxFileName myRasterName (GetFullFileName());
+    wxFileName myRasterName(GetFullFileName());
     myRasterName.SetExt(_T("tif"));
     wxString myRasterNameTxt = myRasterName.GetFullPath();
-    poDriver->Delete((const char*) myRasterNameTxt.mb_str(wxConvUTF8));
+    poDriver->Delete((const char *) myRasterNameTxt.mb_str(wxConvUTF8));
     m_RasterizeDataset = NULL;
 }
 
 
-
-bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString & drivername){
+bool tmGISDataVectorSHP::CopyToFile(const wxFileName &filename, const wxString &drivername)
+{
     if (filename.Exists() == true) {
         wxLogError(_("File '%s' exists copy failed!"), filename.GetFullPath());
         return false;
@@ -1436,29 +1385,29 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString 
     wxASSERT(m_Layer);
 
     // create file
-    GDALDriver * poDriver = GetGDALDriverManager()->GetDriverByName((const char*) drivername.mb_str(wxConvUTF8));
-    if( poDriver == NULL ){
-		wxASSERT_MSG(0, _T(" driver not available."));
-		return false;
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName((const char *) drivername.mb_str(wxConvUTF8));
+    if (poDriver == NULL) {
+        wxASSERT_MSG(0, _T(" driver not available."));
+        return false;
     }
 
     // creating the file
-	wxString mysFileName = filename.GetFullPath();
-    GDALDataset * myNewDS = poDriver->Create(
-		(const char*) mysFileName.mb_str(wxConvUTF8),
-		0,  // x size, not used for vector
-		0,  // y size, not used for vector
-		0,  // nb of bands
-		GDT_Unknown,
-		NULL);
-	if( myNewDS == NULL ){
+    wxString mysFileName = filename.GetFullPath();
+    GDALDataset *myNewDS = poDriver->Create(
+            (const char *) mysFileName.mb_str(wxConvUTF8),
+            0,  // x size, not used for vector
+            0,  // y size, not used for vector
+            0,  // nb of bands
+            GDT_Unknown,
+            NULL);
+    if (myNewDS == NULL) {
         wxLogError(_("Creation of file '%s' failed."), filename.GetFullName().c_str());
         return false;
     }
 
     // copy fields definition and features
     wxString myFileNameWOExt = filename.GetName();
-    myNewDS->CopyLayer(m_Layer, (const char*) myFileNameWOExt.mb_str(wxConvUTF8));
+    myNewDS->CopyLayer(m_Layer, (const char *) myFileNameWOExt.mb_str(wxConvUTF8));
 
     // close new file
     GDALClose(myNewDS);
@@ -1466,80 +1415,77 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName & filename, const wxString 
 }
 
 
-
-bool tmGISDataVectorSHP::CreateSpatialIndex(GDALProgressFunc progress, void * pfProgressData){
-    wxString myLayerName (m_Layer->GetLayerDefn()->GetName());
+bool tmGISDataVectorSHP::CreateSpatialIndex(GDALProgressFunc progress, void *pfProgressData)
+{
+    wxString myLayerName(m_Layer->GetLayerDefn()->GetName());
     wxString myQuery = wxString::Format(_T("CREATE SPATIAL INDEX ON %s"), myLayerName);
     return ExecuteSQLQuery(myQuery);
 }
 
 
-
-
-
-
-
-tmGISDataVectorSHPMemory::tmGISDataVectorSHPMemory(){
+tmGISDataVectorSHPMemory::tmGISDataVectorSHPMemory()
+{
 
 }
 
 
-tmGISDataVectorSHPMemory::~tmGISDataVectorSHPMemory(){
+tmGISDataVectorSHPMemory::~tmGISDataVectorSHPMemory()
+{
 
 }
 
 
-bool tmGISDataVectorSHPMemory::CreateFile (const wxFileName & filename, int type){
-    GDALDriver * poDriver = GetGDALDriverManager()->GetDriverByName("Memory");
-    if( poDriver == NULL ){
-		wxASSERT_MSG(0, _T(" driver not available."));
-		return false;
+bool tmGISDataVectorSHPMemory::CreateFile(const wxFileName &filename, int type)
+{
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName("Memory");
+    if (poDriver == NULL) {
+        wxASSERT_MSG(0, _T(" driver not available."));
+        return false;
     }
 
-	// creating the file
-	wxString mysFileName = filename.GetFullPath();
+    // creating the file
+    wxString mysFileName = filename.GetFullPath();
     m_Datasource = poDriver->Create(
-            (const char*) mysFileName.mb_str(wxConvUTF8),
-            0,0,0, GDT_Unknown, NULL);
-	if( m_Datasource == NULL ){
+            (const char *) mysFileName.mb_str(wxConvUTF8),
+            0, 0, 0, GDT_Unknown, NULL);
+    if (m_Datasource == NULL) {
         wxLogError(_("Creation of in memory file '%s' failed."), filename.GetFullName().c_str());
         return false;
     }
 
-	OGRwkbGeometryType myGeomType = wkbUnknown;
-	switch (type)
-	{
-		case 0: // LINE
-			myGeomType = wkbLineString;
-			break;
+    OGRwkbGeometryType myGeomType = wkbUnknown;
+    switch (type) {
+        case 0: // LINE
+            myGeomType = wkbLineString;
+            break;
 
-		case 1: // POINT
-			myGeomType = wkbPoint;
-			break;
+        case 1: // POINT
+            myGeomType = wkbPoint;
+            break;
 
-		case 2: // POLYGON
-			myGeomType = wkbPolygon;
-			break;
+        case 2: // POLYGON
+            myGeomType = wkbPolygon;
+            break;
 
-		default:
-			myGeomType = wkbUnknown;
-			break;
-	}
+        default:
+            myGeomType = wkbUnknown;
+            break;
+    }
 
-	if (myGeomType == wkbUnknown)
-		return false;
+    if (myGeomType == wkbUnknown)
+        return false;
 
 
-	// creating the layer
-	wxString myFileNameWOExt = filename.GetName();
-	m_Layer = m_Datasource->CreateLayer((const char*) myFileNameWOExt.mb_str(wxConvUTF8), NULL, myGeomType,NULL );
-    if( m_Layer == NULL ){
-		wxASSERT_MSG(0 , _T("Layer creation failed."));
+    // creating the layer
+    wxString myFileNameWOExt = filename.GetName();
+    m_Layer = m_Datasource->CreateLayer((const char *) myFileNameWOExt.mb_str(wxConvUTF8), NULL, myGeomType, NULL);
+    if (m_Layer == NULL) {
+        wxASSERT_MSG(0, _T("Layer creation failed."));
         return false;
     }
 
     tmGISData::Open(filename.GetFullPath(), true);
-	return true;
+    return true;
 }
 
 

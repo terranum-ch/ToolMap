@@ -24,30 +24,39 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/filename.h>
 
 
-
 class DataBaseTM;
+
 class tmStatsData;
 
 
-class tmStatsRecords {
-  private:
-    DataBaseTM * m_pDB;
+class tmStatsRecords
+{
+private:
+    DataBaseTM *m_pDB;
 
-  public:
-    tmStatsRecords(DataBaseTM * database);
+public:
+    tmStatsRecords(DataBaseTM *database);
+
     virtual ~tmStatsRecords();
 
-    long Create(const tmStatsData & data);
-    bool Add(long recordid, const tmStatsData & data);
-    bool Load(long recordid, tmStatsData & data);
-    bool LoadTotal(tmStatsData & data);
-	bool Delete(long recordid);
+    long Create(const tmStatsData &data);
 
-    bool ExportAll(const wxFileName & filename);
+    bool Add(long recordid, const tmStatsData &data);
+
+    bool Load(long recordid, tmStatsData &data);
+
+    bool LoadTotal(tmStatsData &data);
+
+    bool Delete(long recordid);
+
+    bool ExportAll(const wxFileName &filename);
+
     long GetCount();
 
 };
+
 #endif

@@ -31,7 +31,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #define ID_DLGLOG 10157
@@ -49,23 +49,29 @@
  @author Lucien Schreiber (c) CREALP 2007
  @date 04 December 2007
  *******************************************************************************/
-class ImportLogDLG: public wxDialog
-{    
+class ImportLogDLG : public wxDialog
+{
 private:
-	
-	void OnCloseLogWindow(wxCommandEvent & event);
-	
-	DECLARE_DYNAMIC_CLASS( ImportLog );
-    DECLARE_EVENT_TABLE();
+
+    void OnCloseLogWindow(wxCommandEvent &event);
+
+DECLARE_DYNAMIC_CLASS(ImportLog);
+DECLARE_EVENT_TABLE();
 
 public:
     /// Default Constructors
     ImportLogDLG();
-	/// Use this constructor for creating the dialog
-    ImportLogDLG( wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME, const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION, const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE );
+
+    /// Use this constructor for creating the dialog
+    ImportLogDLG(wxWindow *parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME,
+                 const wxString &caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint &pos = SYMBOL_IMPORTLOG_POSITION,
+                 const wxSize &size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE);
 
     /// Window creation
-    bool Create( wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME, const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION, const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE );
+    bool
+    Create(wxWindow *parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME, const wxString &caption = SYMBOL_IMPORTLOG_TITLE,
+           const wxPoint &pos = SYMBOL_IMPORTLOG_POSITION, const wxSize &size = SYMBOL_IMPORTLOG_SIZE,
+           long style = SYMBOL_IMPORTLOG_STYLE);
 
     /// Destructor
     ~ImportLogDLG();

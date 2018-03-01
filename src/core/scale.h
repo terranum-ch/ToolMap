@@ -18,8 +18,9 @@
 #define _SCALE_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 /***************************************************************************//**
@@ -33,12 +34,16 @@ class ScaleTM : public wxObject
 {
 private:
 public:
-    ScaleTM(){;}
-    ~ScaleTM(){;}
-    
+    ScaleTM()
+    { ; }
+
+    ~ScaleTM()
+    { ; }
+
     // static function for converting string
-    static bool GetScaleFromLong(const long & scale, wxString & stringscale);
-    static long GetScaleFromString (const wxString & scale);
+    static bool GetScaleFromLong(const long &scale, wxString &stringscale);
+
+    static long GetScaleFromString(const wxString &scale);
 };
 
 #endif

@@ -22,7 +22,7 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "../core/projectdefmemory.h"
@@ -30,42 +30,52 @@
 
 class DataBaseTM;
 
-enum tmQUERIES_TYPE {
-	QUERY_LAYERS = 0,
-	QUERY_OBJECTS,
-	QUERY_SELECTED,
-	QUERY_GENERIC,
-	QUERY_SQL,
-	QUERY_LINES,
-	QUERY_NODES,
-	QUERY_DUPLICATE,
+enum tmQUERIES_TYPE
+{
+    QUERY_LAYERS = 0,
+    QUERY_OBJECTS,
+    QUERY_SELECTED,
+    QUERY_GENERIC,
+    QUERY_SQL,
+    QUERY_LINES,
+    QUERY_NODES,
+    QUERY_DUPLICATE,
     QUERY_CROSSING,
-	QUERY_NUMBER
+    QUERY_NUMBER
 };
 
 
-enum tmQUERIES_AATTRIBUTION_TYPE {
-	AATTRIBUTION_NO,
-	AATTRIBUTION_EMPTY,
-	AATTRIBUTION_YES
-	
+enum tmQUERIES_AATTRIBUTION_TYPE
+{
+    AATTRIBUTION_NO,
+    AATTRIBUTION_EMPTY,
+    AATTRIBUTION_YES
+
 };
 
 
-
-class QueriesData {
+class QueriesData
+{
 private:
     bool _IsQueryLayersCorrect();
+
     bool _IsQuerySelectedCorrect();
+
     bool _IsQueryGenericCorrect();
+
     bool _IsQuerySQLCorrect();
-	bool _IsQueryObjectCorrect();
+
+    bool _IsQueryObjectCorrect();
+
     bool _IsQueryLineSizeCorrect();
+
     bool _IsQueryNodeNumberCorrect();
-	bool _IsQueryDuplicateCorrect();
-	bool _IsQueryCrossingCorrect();
-	
-  public:
+
+    bool _IsQueryDuplicateCorrect();
+
+    bool _IsQueryCrossingCorrect();
+
+public:
     tmQUERIES_TYPE m_QueryType;
 
     //Used by all panels
@@ -81,39 +91,47 @@ private:
 
     long m_QueryObjectGeomID;
 
-    
-	//bool m_QueryUseFields;
-	tmQUERIES_AATTRIBUTION_TYPE m_QueryFieldsStatus;
+
+    //bool m_QueryUseFields;
+    tmQUERIES_AATTRIBUTION_TYPE m_QueryFieldsStatus;
     PrjMemFieldArray m_QueryFields;
-	wxArrayString m_QueryFieldsValues;
+    wxArrayString m_QueryFieldsValues;
 
     //Expert panel only
     TOC_GENERIC_NAME m_QueryLayerType;
 
     int m_QueryLineSize;
-	
+
     int m_QueryNodeNumber;
-	
-	
-	bool m_QueryRun;
+
+
+    bool m_QueryRun;
 
 
     QueriesData();
 
     ~QueriesData();
-	
-	bool IsOk();
-	bool IsGenericLayer(DataBaseTM * database, long dblayerID);
-	
-	bool GetLayers(DataBaseTM * database, PrjMemLayersArray & layers);
-	bool GetObjectsForSelection(DataBaseTM * database, PrjMemObjectsArray & objects);
-	bool GetObjectsForTypes(DataBaseTM * database, PrjMemObjectsArray & objects);
-	bool GetParentLayer(DataBaseTM * database, long & layerid);
-	bool GetFieldsValues(DataBaseTM * database, long layerid,
-						 PrjMemFieldArray & fieldsdef, wxArrayString & fieldsvalue);
-	bool DeleteFieldsValue(int index);
-	bool HasFieldsValues();
+
+    bool IsOk();
+
+    bool IsGenericLayer(DataBaseTM *database, long dblayerID);
+
+    bool GetLayers(DataBaseTM *database, PrjMemLayersArray &layers);
+
+    bool GetObjectsForSelection(DataBaseTM *database, PrjMemObjectsArray &objects);
+
+    bool GetObjectsForTypes(DataBaseTM *database, PrjMemObjectsArray &objects);
+
+    bool GetParentLayer(DataBaseTM *database, long &layerid);
+
+    bool GetFieldsValues(DataBaseTM *database, long layerid,
+                         PrjMemFieldArray &fieldsdef, wxArrayString &fieldsvalue);
+
+    bool DeleteFieldsValue(int index);
+
+    bool HasFieldsValues();
 
 
 };
+
 #endif

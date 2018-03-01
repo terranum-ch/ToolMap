@@ -26,46 +26,44 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/notebook.h>
 #include <wx/config.h>
 #include <wx/clrpicker.h>
 
 
-
-class PreferenceDLG : public wxDialog 
+class PreferenceDLG : public wxDialog
 {
 private:
-	wxCheckBox* m_UpdateCheckCtrl;
-	wxTextCtrl* m_ProxyInfoCtrl;
-	wxColourPickerCtrl* m_SelColourCtrl;
-	wxCheckBox* m_SelOutlineCtrl;
-    wxCheckBox* m_RelPathCtrl;
-    wxCheckBox* m_BuildOverviewCtrl;
+    wxCheckBox *m_UpdateCheckCtrl;
+    wxTextCtrl *m_ProxyInfoCtrl;
+    wxColourPickerCtrl *m_SelColourCtrl;
+    wxCheckBox *m_SelOutlineCtrl;
+    wxCheckBox *m_RelPathCtrl;
+    wxCheckBox *m_BuildOverviewCtrl;
 
-    wxSlider* m_WaitingTimeCtrl;
-    wxRadioButton* m_RamCtrl;
-    wxRadioButton* m_MemoryCtrl;
-	
-	void _CreateControls();
-	
+    wxSlider *m_WaitingTimeCtrl;
+    wxRadioButton *m_RamCtrl;
+    wxRadioButton *m_MemoryCtrl;
+
+    void _CreateControls();
+
 public:
-	
-	PreferenceDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-				  const wxString& title = _("Preferences"),
-				  const wxPoint& pos = wxDefaultPosition,
-				  const wxSize& size = wxDefaultSize,
-				  long style = wxDEFAULT_DIALOG_STYLE );
-	~PreferenceDLG();
-	
-	virtual bool TransferDataToWindow();
-	virtual bool TransferDataFromWindow();
 
-	
+    PreferenceDLG(wxWindow *parent, wxWindowID id = wxID_ANY,
+                  const wxString &title = _("Preferences"),
+                  const wxPoint &pos = wxDefaultPosition,
+                  const wxSize &size = wxDefaultSize,
+                  long style = wxDEFAULT_DIALOG_STYLE);
+
+    ~PreferenceDLG();
+
+    virtual bool TransferDataToWindow();
+
+    virtual bool TransferDataFromWindow();
+
+
 };
-
-
-
-
 
 
 #endif

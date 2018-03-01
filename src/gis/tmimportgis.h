@@ -19,6 +19,7 @@
 #define _TMIMPORTGIS_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
@@ -27,17 +28,21 @@
 
 class tmGISDataVector;
 
-class tmImportGIS : public tmImport {
-  private:
-    tmGISDataVector * m_Vector;
+class tmImportGIS : public tmImport
+{
+private:
+    tmGISDataVector *m_Vector;
 
-  public:
+public:
     tmImportGIS();
+
     virtual ~tmImportGIS();
 
-    virtual bool Open(const wxFileName & filename);
-    virtual bool Import(DataBaseTM * database, wxProgressDialog * progress = NULL);
+    virtual bool Open(const wxFileName &filename);
 
-	virtual wxArrayInt GetTargetSupported();	
+    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
+
+    virtual wxArrayInt GetTargetSupported();
 };
+
 #endif

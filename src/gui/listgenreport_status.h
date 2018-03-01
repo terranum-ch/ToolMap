@@ -26,19 +26,19 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "listgenreport.h"
 
 enum TM_STATUS_FIELD
 {
-	/// only first status field will be modified
-	STATUS_FIELD_ITEM_COUNT = 1,	
-	/// only second status field will be modified
-	STATUS_FIELD_ITEM_SELECTED = 2, 
-	/// both status fields will be modified
-	STATUS_FIELD_ITEM_BOTH = 3		
+    /// only first status field will be modified
+            STATUS_FIELD_ITEM_COUNT = 1,
+    /// only second status field will be modified
+            STATUS_FIELD_ITEM_SELECTED = 2,
+    /// both status fields will be modified
+            STATUS_FIELD_ITEM_BOTH = 3
 };
 
 
@@ -52,47 +52,48 @@ enum TM_STATUS_FIELD
  @date 21 May 2008
  *******************************************************************************/
 class ListGenReportWithStatus : public ListGenReportWithDialog
-	{
-	private:
-		// private members
-		wxStatusBar * m_status;
-		
-		wxString m_TextField1;
-		wxString m_TextField2;
-		
-		// private functions 
-		void InitMembers();
-		
-		// event functions
-		void OnSelectionChange(wxListEvent & event);
-		
-	protected:
-	
-	public:
-		// constructor
-		ListGenReportWithStatus(wxWindow * parent, wxWindowID id, 
-								wxArrayString * pColsName, 
-								wxArrayInt * pColsSize=NULL, 
-								wxSize size=wxDefaultSize);
-		
-		// status setter and getter
-		void SetStatusBar (wxStatusBar * status);
-		wxStatusBar * GetStatusBar () {return m_status;} 
-		
-		// set the status text
-		void SetTextFields (const wxString & field1 = wxEmptyString,
-							const wxString & field2 = wxEmptyString);
-		
-		// update the status
-		bool UpdateStatus (int iField = STATUS_FIELD_ITEM_BOTH);
-		
-		// re-implement for adding / deleting update process
-		virtual void AddItem ();
-		virtual void DeleteItem();
-	
-	};
+{
+private:
+    // private members
+    wxStatusBar *m_status;
 
+    wxString m_TextField1;
+    wxString m_TextField2;
 
+    // private functions
+    void InitMembers();
+
+    // event functions
+    void OnSelectionChange(wxListEvent &event);
+
+protected:
+
+public:
+    // constructor
+    ListGenReportWithStatus(wxWindow *parent, wxWindowID id,
+                            wxArrayString *pColsName,
+                            wxArrayInt *pColsSize = NULL,
+                            wxSize size = wxDefaultSize);
+
+    // status setter and getter
+    void SetStatusBar(wxStatusBar *status);
+
+    wxStatusBar *GetStatusBar()
+    { return m_status; }
+
+    // set the status text
+    void SetTextFields(const wxString &field1 = wxEmptyString,
+                       const wxString &field2 = wxEmptyString);
+
+    // update the status
+    bool UpdateStatus(int iField = STATUS_FIELD_ITEM_BOTH);
+
+    // re-implement for adding / deleting update process
+    virtual void AddItem();
+
+    virtual void DeleteItem();
+
+};
 
 
 #endif

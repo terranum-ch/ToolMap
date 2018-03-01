@@ -26,12 +26,13 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
 #include <wx/dynarray.h> // support for array
-WX_DEFINE_SORTED_ARRAY_LONG(long, tmArraySortedLong); 
+
+WX_DEFINE_SORTED_ARRAY_LONG(long, tmArraySortedLong);
 
 
 /***************************************************************************//**
@@ -44,47 +45,62 @@ WX_DEFINE_SORTED_ARRAY_LONG(long, tmArraySortedLong);
  @date 28 October 2008
  *******************************************************************************/
 class tmSelectedDataMemory : public wxObject
-	{
-	private:
-		long m_LayerID;
-		tmArraySortedLong * m_SelectedIDs;
-		wxColour m_Colour;
-		bool m_HasHalo;
-		
-		void InitMemberValues ();
-		
+{
+private:
+    long m_LayerID;
+    tmArraySortedLong *m_SelectedIDs;
+    wxColour m_Colour;
+    bool m_HasHalo;
 
-		
-	protected:
-		int Search (const long & value);
-		
-	public:
-		// ctor(s) and destructors
-		tmSelectedDataMemory();
-		~tmSelectedDataMemory();
-		
-		// operations
-		bool AddSelected (wxArrayLong * selected);
-		bool Remove (wxArrayLong * selected = NULL);
-		bool IsSelected (const long & value);
-		unsigned int GetCount();
-		void SetSelected (long selected);
-		
-		// getters / setters
-		void SetLayerID (long layerID);
-		void Clear() {m_SelectedIDs->Clear();}
-		wxColour GetSelectionColour(){return m_Colour;}
-		void SetSelectionColour(const wxColour & col){m_Colour = col;}
-		void SetSelectionHalo (bool hashalo){m_HasHalo = hashalo;}
-		bool GetSelectionHalo() {return m_HasHalo;}
-		long GetSelectedLayer () {return m_LayerID;}
-		wxArrayLong * GetSelectedValues ();
-		long GetSelectedUnique();
-		
-	};
+    void InitMemberValues();
 
 
+protected:
+    int Search(const long &value);
 
+public:
+    // ctor(s) and destructors
+    tmSelectedDataMemory();
+
+    ~tmSelectedDataMemory();
+
+    // operations
+    bool AddSelected(wxArrayLong *selected);
+
+    bool Remove(wxArrayLong *selected = NULL);
+
+    bool IsSelected(const long &value);
+
+    unsigned int GetCount();
+
+    void SetSelected(long selected);
+
+    // getters / setters
+    void SetLayerID(long layerID);
+
+    void Clear()
+    { m_SelectedIDs->Clear(); }
+
+    wxColour GetSelectionColour()
+    { return m_Colour; }
+
+    void SetSelectionColour(const wxColour &col)
+    { m_Colour = col; }
+
+    void SetSelectionHalo(bool hashalo)
+    { m_HasHalo = hashalo; }
+
+    bool GetSelectionHalo()
+    { return m_HasHalo; }
+
+    long GetSelectedLayer()
+    { return m_LayerID; }
+
+    wxArrayLong *GetSelectedValues();
+
+    long GetSelectedUnique();
+
+};
 
 
 #endif

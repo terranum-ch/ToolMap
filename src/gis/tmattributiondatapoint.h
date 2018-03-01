@@ -26,45 +26,46 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "tmattributiondata.h"
 
 
-
-
 class tmAttributionDataPoint : public tmAttributionData
-	{
-	private:
-		
-	
-	protected:
-		bool GetPanelValues (AttribObjType_PANEL * panel, wxArrayLong & valueids);
-		void SetPanelValues (AttribObjType_PANEL * panel, const wxArrayLong & valueids);
-		
-	public:
-		// ctor - dtor
-		tmAttributionDataPoint();
-		tmAttributionDataPoint(wxArrayLong * selected,DataBaseTM * database);
-		virtual void Create (wxArrayLong * selected,DataBaseTM * database);
-		~tmAttributionDataPoint();
-		
-		
-		// attribution
-		virtual bool SetAttributeBasic (AttribObjType_PANEL * panel);
-		
-		// info
-		virtual bool GetInfoBasic (AttribObjType_PANEL * panel);
-		virtual bool GetInfoBasic (long oid,  wxArrayLong & objid,
-								    wxArrayString & objcode, wxArrayString & objname);
-		
-		virtual bool GetAttributionLayersID (const long & geomid, tmLayerValueArray & layersid);
-		virtual bool GetAttributionLayersIDFull (const long & geomid, tmLayerValueArray & layersid);
-	};
+{
+private:
 
 
+protected:
+    bool GetPanelValues(AttribObjType_PANEL *panel, wxArrayLong &valueids);
 
+    void SetPanelValues(AttribObjType_PANEL *panel, const wxArrayLong &valueids);
+
+public:
+    // ctor - dtor
+    tmAttributionDataPoint();
+
+    tmAttributionDataPoint(wxArrayLong *selected, DataBaseTM *database);
+
+    virtual void Create(wxArrayLong *selected, DataBaseTM *database);
+
+    ~tmAttributionDataPoint();
+
+
+    // attribution
+    virtual bool SetAttributeBasic(AttribObjType_PANEL *panel);
+
+    // info
+    virtual bool GetInfoBasic(AttribObjType_PANEL *panel);
+
+    virtual bool GetInfoBasic(long oid, wxArrayLong &objid,
+                              wxArrayString &objcode, wxArrayString &objname);
+
+    virtual bool GetAttributionLayersID(const long &geomid, tmLayerValueArray &layersid);
+
+    virtual bool GetAttributionLayersIDFull(const long &geomid, tmLayerValueArray &layersid);
+};
 
 
 #endif

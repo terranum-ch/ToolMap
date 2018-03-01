@@ -34,7 +34,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/filename.h>
@@ -46,18 +46,18 @@
 
 enum TEXTPARSER_TYPE
 {
-	TXTFILE_COMMA = 0,
-	TXTFILE_TAB = 1
+    TXTFILE_COMMA = 0,
+    TXTFILE_TAB = 1
 };
 
-static wxString TEXTPARSER_WILDCARDS[] = 
-		{wxTRANSLATE("Semi-colon delimited text files (*.csv)|*.csv"),
-		wxTRANSLATE("Tab delimited text files (*.txt)|*.txt")};
+static wxString TEXTPARSER_WILDCARDS[] =
+        {wxTRANSLATE("Semi-colon delimited text files (*.csv)|*.csv"),
+         wxTRANSLATE("Tab delimited text files (*.txt)|*.txt")};
 
 
-static wxString TEXTPARSER_NAME[] = 
-		{wxTRANSLATE("Semi-colon delimited text files"),
-		wxTRANSLATE("Tab delimited text files")};
+static wxString TEXTPARSER_NAME[] =
+        {wxTRANSLATE("Semi-colon delimited text files"),
+         wxTRANSLATE("Tab delimited text files")};
 
 /***************************************************************************//**
  @brief Super-class for parsing different file
@@ -69,44 +69,62 @@ static wxString TEXTPARSER_NAME[] =
  @date 11 December 2007
  *******************************************************************************/
 class TextParser : public wxObject
-	{
-	protected:
-		
-		
-		wxString m_ParseFileType;
-		wxFileName m_ParseFileName;
-		static int m_iActualLine;
-		int m_LineCount;
-		int m_NbFieldToParse;
-		
-		bool CheckParseFileExist();
-		
-		
-		
-	public:
-		
-		
-		
-		TextParser();
-		~TextParser();
-		
-		wxString GetParserType() {return m_ParseFileType;}
-		void SetParseFileName (const wxString & myFileName);
-		void SetParseFileName(const wxFileName & myFileName);
-		virtual bool OpenParseFile (bool bCreate = FALSE);
-		virtual int ParseNextLine (wxArrayString & myValues);
-		virtual bool WriteNextLine (const wxArrayString & myValues){return TRUE;}
-		virtual bool CloseParseFile ();
-		int GetActualLineNumber () {return m_iActualLine;}
-		void InitActualLineNumber () {m_iActualLine = 0;}
-		inline void IncrementActualLineNumber (int iIncrement = 1);
-		int GetLineCount () {return m_LineCount;}
-		static wxString GetAllSupportedParserWildCards();
-		static TextParser * CreateParserBasedOnType (const int & textparser_index, const wxFileName & filename);
-		virtual bool CheckFileToParse (){return TRUE;}
-		void SetNumberOfFields (int inbfield);
-	};
+{
+protected:
 
+
+    wxString m_ParseFileType;
+    wxFileName m_ParseFileName;
+    static int m_iActualLine;
+    int m_LineCount;
+    int m_NbFieldToParse;
+
+    bool CheckParseFileExist();
+
+
+public:
+
+
+    TextParser();
+
+    ~TextParser();
+
+    wxString GetParserType()
+    { return m_ParseFileType; }
+
+    void SetParseFileName(const wxString &myFileName);
+
+    void SetParseFileName(const wxFileName &myFileName);
+
+    virtual bool OpenParseFile(bool bCreate = FALSE);
+
+    virtual int ParseNextLine(wxArrayString &myValues);
+
+    virtual bool WriteNextLine(const wxArrayString &myValues)
+    { return TRUE; }
+
+    virtual bool CloseParseFile();
+
+    int GetActualLineNumber()
+    { return m_iActualLine; }
+
+    void InitActualLineNumber()
+    { m_iActualLine = 0; }
+
+    inline void IncrementActualLineNumber(int iIncrement = 1);
+
+    int GetLineCount()
+    { return m_LineCount; }
+
+    static wxString GetAllSupportedParserWildCards();
+
+    static TextParser *CreateParserBasedOnType(const int &textparser_index, const wxFileName &filename);
+
+    virtual bool CheckFileToParse()
+    { return TRUE; }
+
+    void SetNumberOfFields(int inbfield);
+};
 
 
 /***************************************************************************//**
@@ -117,53 +135,68 @@ class TextParser : public wxObject
  @date 11 December 2007
  *******************************************************************************/
 class TextParserTxtFile : public TextParser
-	{
-	protected:
-		wxTextFile  * m_File;
-		wxString m_TextSeparator;
-		virtual void InitParserValue();
-		bool m_WriteMode;
-		
-		
-	public:
-		TextParserTxtFile();
-		TextParserTxtFile(const wxString & filename);
-		TextParserTxtFile(const wxFileName & filename);
-		~TextParserTxtFile();
-		
-		virtual bool OpenParseFile(bool bCreate = FALSE);
-		virtual bool CloseParseFile ();
-		virtual int ParseNextLine (wxArrayString & myValues);
-		virtual bool WriteNextLine (const wxArrayString & myValues);
-		virtual bool CheckFileToParse ();
-		
-	};
+{
+protected:
+    wxTextFile *m_File;
+    wxString m_TextSeparator;
 
+    virtual void InitParserValue();
+
+    bool m_WriteMode;
+
+
+public:
+    TextParserTxtFile();
+
+    TextParserTxtFile(const wxString &filename);
+
+    TextParserTxtFile(const wxFileName &filename);
+
+    ~TextParserTxtFile();
+
+    virtual bool OpenParseFile(bool bCreate = FALSE);
+
+    virtual bool CloseParseFile();
+
+    virtual int ParseNextLine(wxArrayString &myValues);
+
+    virtual bool WriteNextLine(const wxArrayString &myValues);
+
+    virtual bool CheckFileToParse();
+
+};
 
 
 class TextParserTxtFileComma : public TextParserTxtFile
-	{
-	protected:
-		 virtual void InitParserValue();
-	public:
-		TextParserTxtFileComma();
-		TextParserTxtFileComma(const wxString & filename);
-		~TextParserTxtFileComma(){;}
-	
-	};
+{
+protected:
+    virtual void InitParserValue();
 
+public:
+    TextParserTxtFileComma();
+
+    TextParserTxtFileComma(const wxString &filename);
+
+    ~TextParserTxtFileComma()
+    { ; }
+
+};
 
 
 class TextParserTxtFileTab : public TextParserTxtFile
-	{
-	protected:
-		virtual void InitParserValue();
-	public:
-		TextParserTxtFileTab();
-		TextParserTxtFileTab(const wxString & filename);
-		~TextParserTxtFileTab(){;}
-		
-	};
+{
+protected:
+    virtual void InitParserValue();
+
+public:
+    TextParserTxtFileTab();
+
+    TextParserTxtFileTab(const wxString &filename);
+
+    ~TextParserTxtFileTab()
+    { ; }
+
+};
 
 
 #endif

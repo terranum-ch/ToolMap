@@ -18,10 +18,8 @@
 // comment doxygen
 
 #include "tmtocctrl.h"
-#include "tmsymbol.h"				// for symbology
+#include "tmsymbol.h"                // for symbology
 #include "tmlayerproperties.h"
-
-
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
@@ -38,26 +36,26 @@ DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
 /******************************* TOC CONTROL *************************************/
 
 BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
-	EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
-	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, tmTOCCtrl::OnMouseItemDoubleClick)
-	EVT_TREE_SEL_CHANGED(wxID_ANY, tmTOCCtrl::OnLayerSelected)
-	//EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
-	EVT_TREE_ITEM_MENU(wxID_ANY,tmTOCCtrl::OnMouseItemRightClick)
-	EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
-	EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
-	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_NONE,tmTOCCtrl::OnVertexMenu)
-	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_ALL,tmTOCCtrl::OnVertexMenu)
-	EVT_MENU (ID_TOCMENU_SHOW_VERTEX_BEGIN_END,tmTOCCtrl::OnVertexMenu)
-	EVT_MENU (ID_TOCMENU_MOVE_TOP, tmTOCCtrl::OnMoveLayers)
-	EVT_MENU (ID_TOCMENU_MOVE_UP, tmTOCCtrl::OnMoveLayers)
-	EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
-	EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
-	EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
-    EVT_MENU (ID_TOCMENU_LABELS, tmTOCCtrl::OnShowLabels)
-    EVT_PAINT(tmTOCCtrl::OnPaint)
-	EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
-	EVT_TREE_BEGIN_DRAG(wxID_ANY, tmTOCCtrl::OnDragStart)
-	EVT_TREE_END_DRAG (wxID_ANY, tmTOCCtrl::OnDragStop)
+                EVT_LEFT_DOWN(tmTOCCtrl::OnMouseClick)
+                EVT_TREE_ITEM_ACTIVATED(wxID_ANY, tmTOCCtrl::OnMouseItemDoubleClick)
+                EVT_TREE_SEL_CHANGED(wxID_ANY, tmTOCCtrl::OnLayerSelected)
+                //EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
+                EVT_TREE_ITEM_MENU(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
+                EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
+                EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
+                EVT_MENU (ID_TOCMENU_SHOW_VERTEX_NONE, tmTOCCtrl::OnVertexMenu)
+                EVT_MENU (ID_TOCMENU_SHOW_VERTEX_ALL, tmTOCCtrl::OnVertexMenu)
+                EVT_MENU (ID_TOCMENU_SHOW_VERTEX_BEGIN_END, tmTOCCtrl::OnVertexMenu)
+                EVT_MENU (ID_TOCMENU_MOVE_TOP, tmTOCCtrl::OnMoveLayers)
+                EVT_MENU (ID_TOCMENU_MOVE_UP, tmTOCCtrl::OnMoveLayers)
+                EVT_MENU (ID_TOCMENU_MOVE_DOWN, tmTOCCtrl::OnMoveLayers)
+                EVT_MENU (ID_TOCMENU_MOVE_BOTTOM, tmTOCCtrl::OnMoveLayers)
+                EVT_MENU (ID_TOCMENU_EDIT_LAYER, tmTOCCtrl::OnEditingChange)
+                EVT_MENU (ID_TOCMENU_LABELS, tmTOCCtrl::OnShowLabels)
+                EVT_PAINT(tmTOCCtrl::OnPaint)
+                EVT_KEY_DOWN (tmTOCCtrl::OnShortcutKey)
+                EVT_TREE_BEGIN_DRAG(wxID_ANY, tmTOCCtrl::OnDragStart)
+                EVT_TREE_END_DRAG (wxID_ANY, tmTOCCtrl::OnDragStop)
 END_EVENT_TABLE()
 
 
@@ -68,12 +66,11 @@ END_EVENT_TABLE()
  *******************************************************************************/
 void tmTOCCtrl::InitTocMemberValues()
 {
-	m_ParentEvt = NULL;
-	m_ContextMenu = NULL;
-	m_ActualItemID = 0;
-	m_EditingLayer = NULL;
+    m_ParentEvt = NULL;
+    m_ContextMenu = NULL;
+    m_ActualItemID = 0;
+    m_EditingLayer = NULL;
 }
-
 
 
 /***************************************************************************//**
@@ -86,8 +83,8 @@ void tmTOCCtrl::InitTocMemberValues()
 void tmTOCCtrl::LoadImageList()
 {
     wxImageList *images = new wxImageList(16, 16, true);
-	wxBitmap myUncheckedbmp (16,16);
-    wxBitmap myCheckedbmp (16,16);
+    wxBitmap myUncheckedbmp(16, 16);
+    wxBitmap myCheckedbmp(16, 16);
     m_IsImageInited = false;
     images->Add(myUncheckedbmp);
     images->Add(myCheckedbmp);
@@ -95,29 +92,29 @@ void tmTOCCtrl::LoadImageList()
 }
 
 
-
 // used mainly to init listbitmap
-void tmTOCCtrl::OnPaint(wxPaintEvent & event){
+void tmTOCCtrl::OnPaint(wxPaintEvent &event)
+{
     //wxPaintDC myUnusedPaintDC (this);
-    
-    if (m_IsImageInited == false) { 
-        
+
+    if (m_IsImageInited == false) {
+
         // unchecked
-        wxBitmap myTempBmp (16,16);
+        wxBitmap myTempBmp(16, 16);
         wxMemoryDC myDC;
         myDC.SelectObject(myTempBmp);
         myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), 0);
-        
+
         // checked
-        wxBitmap myTempBmp2 (16,16);
+        wxBitmap myTempBmp2(16, 16);
         myDC.SelectObject(myTempBmp2);
         myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(this, myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
         myDC.SelectObject(wxNullBitmap);
-       
+
         GetImageList()->Replace(0, myTempBmp);
         GetImageList()->Replace(1, myTempBmp2);
         m_IsImageInited = true;
@@ -127,24 +124,23 @@ void tmTOCCtrl::OnPaint(wxPaintEvent & event){
 }
 
 
-
 /***************************************************************************//**
  @brief Constructor
  @author Lucien Schreiber (c) CREALP 2008
  @date 07 July 2008
  *******************************************************************************/
-tmTOCCtrl::tmTOCCtrl(wxWindow * parent, wxWindowID id, wxSize size, long style) : 
-		wxTreeCtrl (parent, id, wxDefaultPosition, size, style)
+tmTOCCtrl::tmTOCCtrl(wxWindow *parent, wxWindowID id, wxSize size, long style) :
+        wxTreeCtrl(parent, id, wxDefaultPosition, size, style)
 {
-	InitTocMemberValues();
-	LoadImageList();
-	m_ParentEvt = parent;
+    InitTocMemberValues();
+    LoadImageList();
+    m_ParentEvt = parent;
 }
 
 
 tmTOCCtrl::~tmTOCCtrl()
 {
-	wxDELETE(m_ContextMenu);	
+    wxDELETE(m_ContextMenu);
 }
 
 
@@ -155,17 +151,15 @@ tmTOCCtrl::~tmTOCCtrl()
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-void tmTOCCtrl::InsertProjectName (const wxString & prjname)
+void tmTOCCtrl::InsertProjectName(const wxString &prjname)
 {
-	if (m_root.IsOk())
-	{
-		wxLogDebug(_T("Root already defined, not able to init root twice"));
-		return;
-	}
-	
-	m_root = AddRoot(prjname);
-}
+    if (m_root.IsOk()) {
+        wxLogDebug(_T("Root already defined, not able to init root twice"));
+        return;
+    }
 
+    m_root = AddRoot(prjname);
+}
 
 
 /***************************************************************************//**
@@ -176,45 +170,41 @@ void tmTOCCtrl::InsertProjectName (const wxString & prjname)
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-bool tmTOCCtrl::InsertLayer(tmLayerProperties * item, wxTreeItemId position)
+bool tmTOCCtrl::InsertLayer(tmLayerProperties *item, wxTreeItemId position)
 {
-	wxASSERT_MSG(item, _T("Error adding empty item to TOC array"));
+    wxASSERT_MSG(item, _T("Error adding empty item to TOC array"));
 
-	
-	if (!m_root.IsOk())
-	{
-		wxLogDebug(_T("Root item not defined, define it first"));
-		return FALSE;
-	}
-	
-	wxString myDisplayName = item->GetNameDisplay();
-	
-	wxTreeItemId itemid;
-	// appending item
-	if (!position.IsOk())
-	{
-		itemid = AppendItem(m_root, myDisplayName, item->IsVisible(), -1, item);
-	}
-	else
-	{
-		// inserting item
-		itemid = InsertItem(m_root, position, myDisplayName, item->IsVisible(), -1, item);
-		wxLogDebug(_T("Inserting item"));
-	}
-	
-	// setting item style
-	SetItemStyle(itemid, item);
-	
-	return TRUE;
+
+    if (!m_root.IsOk()) {
+        wxLogDebug(_T("Root item not defined, define it first"));
+        return FALSE;
+    }
+
+    wxString myDisplayName = item->GetNameDisplay();
+
+    wxTreeItemId itemid;
+    // appending item
+    if (!position.IsOk()) {
+        itemid = AppendItem(m_root, myDisplayName, item->IsVisible(), -1, item);
+    } else {
+        // inserting item
+        itemid = InsertItem(m_root, position, myDisplayName, item->IsVisible(), -1, item);
+        wxLogDebug(_T("Inserting item"));
+    }
+
+    // setting item style
+    SetItemStyle(itemid, item);
+
+    return TRUE;
 }
 
 
-
-bool tmTOCCtrl::UpdateLayerName (tmLayerProperties * item, const wxString & newname){
-    if (!m_root.IsOk()){
-		wxLogError(_T("Root item not defined, define it first"));
-		return false;
-	}
+bool tmTOCCtrl::UpdateLayerName(tmLayerProperties *item, const wxString &newname)
+{
+    if (!m_root.IsOk()) {
+        wxLogError(_T("Root item not defined, define it first"));
+        return false;
+    }
 
     wxTreeItemId myItemID;
     myItemID = GetLastChild(m_root);
@@ -222,16 +212,15 @@ bool tmTOCCtrl::UpdateLayerName (tmLayerProperties * item, const wxString & newn
         if (myItemID.IsOk() == false) {
             return false;
         }
-        
+
         if (GetItemData(myItemID) == item) {
             SetItemText(myItemID, newname);
             break;
         }
-        myItemID = GetPrevSibling (myItemID);
+        myItemID = GetPrevSibling(myItemID);
     }
     return true;
 }
-
 
 
 /***************************************************************************//**
@@ -244,29 +233,26 @@ bool tmTOCCtrl::UpdateLayerName (tmLayerProperties * item, const wxString & newn
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-bool tmTOCCtrl::RemoveLayer (wxTreeItemId position, bool bRemoveChild)
+bool tmTOCCtrl::RemoveLayer(wxTreeItemId position, bool bRemoveChild)
 {
-	if (!position.IsOk())
-	{
-		wxLogDebug(_T("Tree position error, position unknown"));
-		return FALSE;
-	}
-	
-	// delete only if first level item
-	if(GetItemParent(position) != m_root || position == m_root)
-	{
-		wxLogDebug(_T("Only layers could be deleted, don't select legend or project name"));
-		return FALSE;
-		
-	}
-	// delete children first if required
-	if (bRemoveChild)
-		DeleteChildren(position);
-	Delete(position);
-	
-	return TRUE;
-}
+    if (!position.IsOk()) {
+        wxLogDebug(_T("Tree position error, position unknown"));
+        return FALSE;
+    }
 
+    // delete only if first level item
+    if (GetItemParent(position) != m_root || position == m_root) {
+        wxLogDebug(_T("Only layers could be deleted, don't select legend or project name"));
+        return FALSE;
+
+    }
+    // delete children first if required
+    if (bRemoveChild)
+        DeleteChildren(position);
+    Delete(position);
+
+    return TRUE;
+}
 
 
 /***************************************************************************//**
@@ -277,22 +263,20 @@ bool tmTOCCtrl::RemoveLayer (wxTreeItemId position, bool bRemoveChild)
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId position)
+bool tmTOCCtrl::EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position)
 {
-	// check item exists
-	if (!position.IsOk())
-	{
-		wxLogDebug(_T("Position dosen't exist, unable to modify item"));
-		return FALSE;
-	}
-	
-	SetItemText(position, newitemdata->GetNameDisplay());
-	SetItemImage(position, newitemdata->IsVisible());
-	SetItemStyle(position, newitemdata);
-	
-	return TRUE;
-}
+    // check item exists
+    if (!position.IsOk()) {
+        wxLogDebug(_T("Position dosen't exist, unable to modify item"));
+        return FALSE;
+    }
 
+    SetItemText(position, newitemdata->GetNameDisplay());
+    SetItemImage(position, newitemdata->IsVisible());
+    SetItemStyle(position, newitemdata);
+
+    return TRUE;
+}
 
 
 /***************************************************************************//**
@@ -308,48 +292,45 @@ bool tmTOCCtrl::EditLayer (tmLayerProperties * newitemdata, wxTreeItemId positio
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 July 2008
  *******************************************************************************/
-tmLayerProperties * tmTOCCtrl::IterateLayers (bool ResetToLast)
+tmLayerProperties *tmTOCCtrl::IterateLayers(bool ResetToLast)
 {
-	// check
-	if (!m_root.IsOk())
-		return NULL;
-	//wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
+    // check
+    if (!m_root.IsOk())
+        return NULL;
+    //wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
 
-	
-	// if we are starting from the End
-	if(ResetToLast)
-	{
-		m_ActualItemID = GetLastChild(m_root);
-	}
-	else 
-	{
-		m_ActualItemID = GetPrevSibling (m_ActualItemID);
-	}
-	
-	if (!m_ActualItemID.IsOk())
-		return NULL;
-	
-	return (tmLayerProperties*) GetItemData(m_ActualItemID);
+
+    // if we are starting from the End
+    if (ResetToLast) {
+        m_ActualItemID = GetLastChild(m_root);
+    } else {
+        m_ActualItemID = GetPrevSibling(m_ActualItemID);
+    }
+
+    if (!m_ActualItemID.IsOk())
+        return NULL;
+
+    return (tmLayerProperties *) GetItemData(m_ActualItemID);
 }
 
 
+bool tmTOCCtrl::GetItemByID(wxTreeItemId &position, long searchedid)
+{
 
-bool tmTOCCtrl::GetItemByID (wxTreeItemId & position,long searchedid){
-	
-	bool bStart = true;
-	while (1){
-		tmLayerProperties * myProp = IterateLayers(bStart);
-		bStart = false;
-		if (myProp == NULL) {
-			break;
-		}
-		
-		if (myProp->GetID() == searchedid) {
-			position = m_ActualItemID;
-			return true;
-		}
-	}
-	return false;
+    bool bStart = true;
+    while (1) {
+        tmLayerProperties *myProp = IterateLayers(bStart);
+        bStart = false;
+        if (myProp == NULL) {
+            break;
+        }
+
+        if (myProp->GetID() == searchedid) {
+            position = m_ActualItemID;
+            return true;
+        }
+    }
+    return false;
 }
 
 
@@ -360,11 +341,10 @@ bool tmTOCCtrl::GetItemByID (wxTreeItemId & position,long searchedid){
  *******************************************************************************/
 void tmTOCCtrl::ClearAllLayers()
 {
-	// Delete all items and clear the root
-	DeleteAllItems();
-	m_root = 0;
+    // Delete all items and clear the root
+    DeleteAllItems();
+    m_root = 0;
 }
-
 
 
 /***************************************************************************//**
@@ -376,26 +356,23 @@ void tmTOCCtrl::ClearAllLayers()
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
+void tmTOCCtrl::SetItemStyle(wxTreeItemId id, tmLayerProperties *item)
 {
-	wxFont myFont = wxFont(*wxNORMAL_FONT);
-	
-	// change style to bold if generic layer
-	if (item->GetType() < TOC_NAME_NOT_GENERIC)
-	{
-		myFont.SetWeight(wxFONTWEIGHT_BOLD);
-		
-		//SetItemBold(id, TRUE);
-	}
-	
-	if (item == GetEditLayer())
-	{
-		myFont.SetUnderlined(true);
-	}
-	
-	SetItemFont(id, myFont);
-}
+    wxFont myFont = wxFont(*wxNORMAL_FONT);
 
+    // change style to bold if generic layer
+    if (item->GetType() < TOC_NAME_NOT_GENERIC) {
+        myFont.SetWeight(wxFONTWEIGHT_BOLD);
+
+        //SetItemBold(id, TRUE);
+    }
+
+    if (item == GetEditLayer()) {
+        myFont.SetUnderlined(true);
+    }
+
+    SetItemFont(id, myFont);
+}
 
 
 /***************************************************************************//**
@@ -407,11 +384,10 @@ void tmTOCCtrl::SetItemStyle (wxTreeItemId id, tmLayerProperties * item)
  *******************************************************************************/
 unsigned int tmTOCCtrl::GetCountLayers()
 {
-	if (m_root.IsOk())
-		return GetChildrenCount(m_root, FALSE);
-	return 0;
+    if (m_root.IsOk())
+        return GetChildrenCount(m_root, FALSE);
+    return 0;
 }
-
 
 
 /***************************************************************************//**
@@ -423,20 +399,19 @@ unsigned int tmTOCCtrl::GetCountLayers()
  @author Lucien Schreiber (c) CREALP 2008
  @date 29 October 2008
  *******************************************************************************/
-tmLayerProperties * tmTOCCtrl::GetSelectionLayer ()
+tmLayerProperties *tmTOCCtrl::GetSelectionLayer()
 {
-	wxTreeItemId selected = GetSelection();
-	if (selected.IsOk()==false){
-		return NULL;
-	}
+    wxTreeItemId selected = GetSelection();
+    if (selected.IsOk() == false) {
+        return NULL;
+    }
 
-	tmLayerProperties * itemprop = (tmLayerProperties*)	GetItemData(selected);
-	if (!itemprop)
-		return NULL;
-	
-	return itemprop;
+    tmLayerProperties *itemprop = (tmLayerProperties *) GetItemData(selected);
+    if (!itemprop)
+        return NULL;
+
+    return itemprop;
 }
-
 
 
 /***************************************************************************//**
@@ -448,54 +423,52 @@ tmLayerProperties * tmTOCCtrl::GetSelectionLayer ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 30 January 2009
  *******************************************************************************/
-tmLayerProperties * tmTOCCtrl::GetLayerById (long layerid)
+tmLayerProperties *tmTOCCtrl::GetLayerById(long layerid)
 {
-	bool bReset = true;
-	tmLayerProperties * myReturnedLayer = NULL;
-	
-	for (unsigned int i = 0; i<GetCountLayers();i++)
-	{
-		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
-		if (myIteratedLayer && myIteratedLayer->GetID() == layerid){
-			myReturnedLayer = myIteratedLayer;
-            break;
-        }
-		bReset = false;
-	}
-	return myReturnedLayer;
-}
-
-
-
-tmLayerProperties * tmTOCCtrl::GetLayerByName (const wxString & layername){
     bool bReset = true;
-	tmLayerProperties * myReturnedLayer = NULL;
-	for (unsigned int i = 0; i<GetCountLayers();i++)
-	{
-		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
-		if (myIteratedLayer && myIteratedLayer->GetName() == layername){
-			myReturnedLayer = myIteratedLayer;
+    tmLayerProperties *myReturnedLayer = NULL;
+
+    for (unsigned int i = 0; i < GetCountLayers(); i++) {
+        tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
+        if (myIteratedLayer && myIteratedLayer->GetID() == layerid) {
+            myReturnedLayer = myIteratedLayer;
             break;
         }
-		bReset = false;
-	}
-	return myReturnedLayer;
+        bReset = false;
+    }
+    return myReturnedLayer;
 }
 
 
-tmLayerProperties * tmTOCCtrl::GetLayerByPath (const wxString & layerPath){
-	bool bReset = true;
-	tmLayerProperties * myReturnedLayer = NULL;
-	for (unsigned int i = 0; i<GetCountLayers();i++)
-	{
-		tmLayerProperties * myIteratedLayer = IterateLayers(bReset);
-		if (myIteratedLayer && myIteratedLayer->GetName() == wxFileName(layerPath)){
-			myReturnedLayer = myIteratedLayer;
-			break;
-		}
-		bReset = false;
-	}
-	return myReturnedLayer;
+tmLayerProperties *tmTOCCtrl::GetLayerByName(const wxString &layername)
+{
+    bool bReset = true;
+    tmLayerProperties *myReturnedLayer = NULL;
+    for (unsigned int i = 0; i < GetCountLayers(); i++) {
+        tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
+        if (myIteratedLayer && myIteratedLayer->GetName() == layername) {
+            myReturnedLayer = myIteratedLayer;
+            break;
+        }
+        bReset = false;
+    }
+    return myReturnedLayer;
+}
+
+
+tmLayerProperties *tmTOCCtrl::GetLayerByPath(const wxString &layerPath)
+{
+    bool bReset = true;
+    tmLayerProperties *myReturnedLayer = NULL;
+    for (unsigned int i = 0; i < GetCountLayers(); i++) {
+        tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
+        if (myIteratedLayer && myIteratedLayer->GetName() == wxFileName(layerPath)) {
+            myReturnedLayer = myIteratedLayer;
+            break;
+        }
+        bReset = false;
+    }
+    return myReturnedLayer;
 }
 
 
@@ -506,28 +479,27 @@ tmLayerProperties * tmTOCCtrl::GetLayerByPath (const wxString & layerPath){
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 November 2008
  *******************************************************************************/
-void tmTOCCtrl::SetSelectedLayer (int layerID)
+void tmTOCCtrl::SetSelectedLayer(int layerID)
 {
-	tmLayerProperties * itemprop = NULL;
-	bool bFirstLoop = true;
-	
-	Freeze();
-	UnselectAll();
-	while (1)
-	{
-		itemprop = IterateLayers(bFirstLoop);
-		bFirstLoop = false;
-		if (!itemprop){
-			break;
-		}
-		
-		if (itemprop->GetID() == layerID){
-			SelectItem(m_ActualItemID, true);
-		}
-	
-	}
-	Thaw();
-	
+    tmLayerProperties *itemprop = NULL;
+    bool bFirstLoop = true;
+
+    Freeze();
+    UnselectAll();
+    while (1) {
+        itemprop = IterateLayers(bFirstLoop);
+        bFirstLoop = false;
+        if (!itemprop) {
+            break;
+        }
+
+        if (itemprop->GetID() == layerID) {
+            SelectItem(m_ActualItemID, true);
+        }
+
+    }
+    Thaw();
+
 }
 
 
@@ -539,39 +511,37 @@ void tmTOCCtrl::SetSelectedLayer (int layerID)
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-int tmTOCCtrl::GetSelectedPosition ()
+int tmTOCCtrl::GetSelectedPosition()
 {
-	if (!IsTOCReady())
-	{
-		wxLogDebug(_T("TOC isn't ready..."));
-		return -1;
-	}
-	
-	wxTreeItemId selected = GetSelection();
-	wxTreeItemIdValue cookie;
-	
-	int iTotalLayers = GetCountLayers();
-	if (iTotalLayers == 0){
-		wxLogDebug(_T("Not able to count layers or layers count = 0"));
-		return -1;
-	}
-	
-	
-	wxTreeItemId child; 
-	for (int i = 0; i < iTotalLayers; i++){
-		if (i == 0)
-			child = GetFirstChild(m_root, cookie);
-		else
-			child = GetNextChild(m_root, cookie);
-		
-		if (child == selected)
-			return i;
-		
-	}
-	wxLogDebug(_T("Getting selected position error"));
-	return -1;
-}
+    if (!IsTOCReady()) {
+        wxLogDebug(_T("TOC isn't ready..."));
+        return -1;
+    }
 
+    wxTreeItemId selected = GetSelection();
+    wxTreeItemIdValue cookie;
+
+    int iTotalLayers = GetCountLayers();
+    if (iTotalLayers == 0) {
+        wxLogDebug(_T("Not able to count layers or layers count = 0"));
+        return -1;
+    }
+
+
+    wxTreeItemId child;
+    for (int i = 0; i < iTotalLayers; i++) {
+        if (i == 0)
+            child = GetFirstChild(m_root, cookie);
+        else
+            child = GetNextChild(m_root, cookie);
+
+        if (child == selected)
+            return i;
+
+    }
+    wxLogDebug(_T("Getting selected position error"));
+    return -1;
+}
 
 
 /***************************************************************************//**
@@ -584,33 +554,32 @@ int tmTOCCtrl::GetSelectedPosition ()
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
+bool tmTOCCtrl::MoveLayers(const wxTreeItemId &item, int newpos)
 {
-	// getting data from layers 1;
-	bool item1_bold = IsBold(item);
-	wxFont item1_font = GetItemFont(item);
-	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
-	wxString item1_text = GetItemText(item);
- 	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
-	tmLayerProperties * newinserteditemData = new tmLayerProperties (*item1_data);
-	
-	// inserting item to the new position
-	Freeze();
-	wxTreeItemId newinserteditem = InsertItem(m_root,
-											  newpos, 
-											  item1_text,
-											  item1_image,
-											  -1,
-											  newinserteditemData);
-	SetItemBold(newinserteditem, item1_bold);
-	SetItemFont(newinserteditem, item1_font);
-	SelectItem(newinserteditem, true);
-	
-	Delete(item);
-	Thaw();
-	return true;
-}
+    // getting data from layers 1;
+    bool item1_bold = IsBold(item);
+    wxFont item1_font = GetItemFont(item);
+    int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
+    wxString item1_text = GetItemText(item);
+    tmLayerProperties *item1_data = (tmLayerProperties *) GetItemData(item);
+    tmLayerProperties *newinserteditemData = new tmLayerProperties(*item1_data);
 
+    // inserting item to the new position
+    Freeze();
+    wxTreeItemId newinserteditem = InsertItem(m_root,
+                                              newpos,
+                                              item1_text,
+                                              item1_image,
+                                              -1,
+                                              newinserteditemData);
+    SetItemBold(newinserteditem, item1_bold);
+    SetItemFont(newinserteditem, item1_font);
+    SelectItem(newinserteditem, true);
+
+    Delete(item);
+    Thaw();
+    return true;
+}
 
 
 /***************************************************************************//**
@@ -623,59 +592,57 @@ bool tmTOCCtrl::MoveLayers (const wxTreeItemId & item, int newpos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
+bool tmTOCCtrl::SwapLayers(const wxTreeItemId &item, int newpos)
 {
-	// getting data from layers 1;
-	bool item1_bold = IsBold(item);
-	int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
-	wxString item1_text = GetItemText(item);
-	tmLayerProperties * item1_data = (tmLayerProperties*) GetItemData(item);
-	wxFont item1_font = GetItemFont(item);
-	
-	
-	// searching and getting data from new position
-	wxTreeItemId item2;
-	wxTreeItemIdValue cookie;
-	
-	for (int i = 0; i<= newpos; i++)
-	{
-		if (i==0)
-			item2 = GetFirstChild(m_root, cookie);
-		else
-			item2 = GetNextChild(m_root, cookie);
-	}
-	if (!item2.IsOk())
-	{
-		wxLogDebug(_T("Returned item isn't valid"));
-		return false;
-	}
-	
-	bool item2_bold = IsBold(item2);
-	int item2_image = GetItemImage(item2, wxTreeItemIcon_Normal);
-	wxString item2_text = GetItemText(item2);
-	tmLayerProperties * item2_data = (tmLayerProperties*) GetItemData(item2);
-	wxFont item2_font = GetItemFont(item2);
-	
-	// swapping items
-	Freeze();
-	SetItemBold(item, item2_bold);
-	SetItemImage(item, item2_image);
-	SetItemText(item, item2_text);
-	SetItemData(item, item2_data);
-	SetItemFont(item, item2_font);
-	//SelectItem(item, false);
-	
-	
-	SetItemBold(item2, item1_bold);
-	SetItemImage(item2, item1_image);
-	SetItemText(item2, item1_text);
-	SetItemData(item2, item1_data);
-	SetItemFont(item2, item1_font);
-	SelectItem(item2, true);
-	Thaw();
+    // getting data from layers 1;
+    bool item1_bold = IsBold(item);
+    int item1_image = GetItemImage(item, wxTreeItemIcon_Normal);
+    wxString item1_text = GetItemText(item);
+    tmLayerProperties *item1_data = (tmLayerProperties *) GetItemData(item);
+    wxFont item1_font = GetItemFont(item);
 
-	
-	return true;
+
+    // searching and getting data from new position
+    wxTreeItemId item2;
+    wxTreeItemIdValue cookie;
+
+    for (int i = 0; i <= newpos; i++) {
+        if (i == 0)
+            item2 = GetFirstChild(m_root, cookie);
+        else
+            item2 = GetNextChild(m_root, cookie);
+    }
+    if (!item2.IsOk()) {
+        wxLogDebug(_T("Returned item isn't valid"));
+        return false;
+    }
+
+    bool item2_bold = IsBold(item2);
+    int item2_image = GetItemImage(item2, wxTreeItemIcon_Normal);
+    wxString item2_text = GetItemText(item2);
+    tmLayerProperties *item2_data = (tmLayerProperties *) GetItemData(item2);
+    wxFont item2_font = GetItemFont(item2);
+
+    // swapping items
+    Freeze();
+    SetItemBold(item, item2_bold);
+    SetItemImage(item, item2_image);
+    SetItemText(item, item2_text);
+    SetItemData(item, item2_data);
+    SetItemFont(item, item2_font);
+    //SelectItem(item, false);
+
+
+    SetItemBold(item2, item1_bold);
+    SetItemImage(item2, item1_image);
+    SetItemText(item2, item1_text);
+    SetItemData(item2, item1_data);
+    SetItemFont(item2, item1_font);
+    SelectItem(item2, true);
+    Thaw();
+
+
+    return true;
 }
 
 /***************************************************************************//**
@@ -685,39 +652,36 @@ bool tmTOCCtrl::SwapLayers (const wxTreeItemId & item, int newpos)
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
+void tmTOCCtrl::OnMouseClick(wxMouseEvent &event)
 {
-	wxTreeItemId clickedid = 0;
-	int flags = 0;
-	
-	
-	clickedid = HitTest(event.GetPosition(), flags);
-	if (flags & wxTREE_HITTEST_ONITEMICON)
-	{
-		tmLayerProperties * itemdata = (tmLayerProperties*) GetItemData(clickedid);
-		if(itemdata->IsVisible() == true){
+    wxTreeItemId clickedid = 0;
+    int flags = 0;
+
+
+    clickedid = HitTest(event.GetPosition(), flags);
+    if (flags & wxTREE_HITTEST_ONITEMICON) {
+        tmLayerProperties *itemdata = (tmLayerProperties *) GetItemData(clickedid);
+        if (itemdata->IsVisible() == true) {
             itemdata->SetVisible(false);
-        }
-        else {
+        } else {
             itemdata->SetVisible(true);
         }
-				
-		// change item image
-		EditLayer(itemdata, clickedid);
-		
-		// Send message show/hide to layermanager
-		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		evt.SetInt((int) itemdata->IsVisible());
-		GetEventHandler()->QueueEvent(evt.Clone());
-		return;
-	}
-	
-	/*if (clickedid.IsOk()== true){
-		SelectItem(clickedid);
-	}*/
-	event.Skip();
-}
 
+        // change item image
+        EditLayer(itemdata, clickedid);
+
+        // Send message show/hide to layermanager
+        wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+        evt.SetInt((int) itemdata->IsVisible());
+        GetEventHandler()->QueueEvent(evt.Clone());
+        return;
+    }
+
+    /*if (clickedid.IsOk()== true){
+        SelectItem(clickedid);
+    }*/
+    event.Skip();
+}
 
 
 /***************************************************************************//**
@@ -727,28 +691,29 @@ void tmTOCCtrl::OnMouseClick (wxMouseEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 08 August 2008
  *******************************************************************************/
-void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
+void tmTOCCtrl::OnMouseItemRightClick(wxTreeEvent &event)
 {
-	wxTreeItemId itemid = event.GetItem();
-	if(itemid.IsOk()==false){
-		return;
-	}
+    wxTreeItemId itemid = event.GetItem();
+    if (itemid.IsOk() == false) {
+        return;
+    }
 
-	// select item where right click occur
-	Freeze();
-	UnselectAll();
-	SelectItem(itemid,true);
-	Thaw();
+    // select item where right click occur
+    Freeze();
+    UnselectAll();
+    SelectItem(itemid, true);
+    Thaw();
 
-	if (GetItemParent(itemid) != m_root){
-		wxLogDebug(_T("No menu for this item : Maybe the parent item ?"));
-		return;
-	}
-	
-	wxDELETE(m_ContextMenu);
-	m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties*)GetItemData(itemid), GetSelectedPosition(), GetCountLayers());
-	PopupMenu(m_ContextMenu, event.GetPoint());
-	event.Skip();
+    if (GetItemParent(itemid) != m_root) {
+        wxLogDebug(_T("No menu for this item : Maybe the parent item ?"));
+        return;
+    }
+
+    wxDELETE(m_ContextMenu);
+    m_ContextMenu = new tmTOCCtrlMenu((tmLayerProperties *) GetItemData(itemid), GetSelectedPosition(),
+                                      GetCountLayers());
+    PopupMenu(m_ContextMenu, event.GetPoint());
+    event.Skip();
 }
 
 
@@ -758,23 +723,22 @@ void tmTOCCtrl::OnMouseItemRightClick (wxTreeEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 18 February 2009
  *******************************************************************************/
-void tmTOCCtrl::OnMouseItemDoubleClick (wxTreeEvent & event)
+void tmTOCCtrl::OnMouseItemDoubleClick(wxTreeEvent &event)
 {
-	int flags = 0;
-	//wxTreeItemId clickedid = HitTest(event.GetPoint(), flags);
+    int flags = 0;
+    //wxTreeItemId clickedid = HitTest(event.GetPoint(), flags);
     HitTest(event.GetPoint(), flags);
-	if (flags & wxTREE_HITTEST_ONITEMICON){
-		event.Skip();
-		return;
-	}
+    if (flags & wxTREE_HITTEST_ONITEMICON) {
+        event.Skip();
+        return;
+    }
 
-	if(event.GetItem().IsOk() == true){
-		wxCommandEvent evt;
-		OnShowProperties(evt);
-	}
-	event.Skip();
+    if (event.GetItem().IsOk() == true) {
+        wxCommandEvent evt;
+        OnShowProperties(evt);
+    }
+    event.Skip();
 }
-
 
 
 /***************************************************************************//**
@@ -782,36 +746,35 @@ void tmTOCCtrl::OnMouseItemDoubleClick (wxTreeEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
+void tmTOCCtrl::OnMoveLayers(wxCommandEvent &event)
 {
-	wxLogDebug(_T("Moving layers..."));
-	
-	wxTreeItemId selected = GetSelection();
-	
-	switch (event.GetId()){
-		case ID_TOCMENU_MOVE_TOP:
-			MoveLayers(selected, 0);
-			break;
-			
-		case ID_TOCMENU_MOVE_UP:
-			SwapLayers(selected, GetSelectedPosition() -1);
-			break;
-			
-		case ID_TOCMENU_MOVE_DOWN:
-			SwapLayers(selected, GetSelectedPosition() + 1);
-			break;
-			
-		default:
-			MoveLayers(selected, GetCountLayers());
-			break;
-	}
-	
-	// update display
-	wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-	GetEventHandler()->QueueEvent(evt.Clone());
-	
-}
+    wxLogDebug(_T("Moving layers..."));
 
+    wxTreeItemId selected = GetSelection();
+
+    switch (event.GetId()) {
+        case ID_TOCMENU_MOVE_TOP:
+            MoveLayers(selected, 0);
+            break;
+
+        case ID_TOCMENU_MOVE_UP:
+            SwapLayers(selected, GetSelectedPosition() - 1);
+            break;
+
+        case ID_TOCMENU_MOVE_DOWN:
+            SwapLayers(selected, GetSelectedPosition() + 1);
+            break;
+
+        default:
+            MoveLayers(selected, GetCountLayers());
+            break;
+    }
+
+    // update display
+    wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
+
+}
 
 
 /***************************************************************************//**
@@ -822,44 +785,42 @@ void tmTOCCtrl::OnMoveLayers (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 27 October 2008
  *******************************************************************************/
-void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
+void tmTOCCtrl::OnShortcutKey(wxKeyEvent &event)
 {
-	if (event.CmdDown() && IsTOCReady())
-	{
-		wxTreeItemId itemid = GetSelection();
-		if(itemid.IsOk()==false){
-			return;
-		}
-		
-		wxCommandEvent evt (wxEVT_COMMAND_MENU_SELECTED);
-		int eventid = wxID_ANY;
-		switch (event.GetKeyCode()){
-			case  WXK_HOME: // move layers to top
-				eventid =ID_TOCMENU_MOVE_TOP;
-				break;
+    if (event.CmdDown() && IsTOCReady()) {
+        wxTreeItemId itemid = GetSelection();
+        if (itemid.IsOk() == false) {
+            return;
+        }
 
-			case WXK_PAGEUP: // move layers up
-				eventid = ID_TOCMENU_MOVE_UP;
-				break;
+        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED);
+        int eventid = wxID_ANY;
+        switch (event.GetKeyCode()) {
+            case WXK_HOME: // move layers to top
+                eventid = ID_TOCMENU_MOVE_TOP;
+                break;
 
-			case WXK_PAGEDOWN: // move layers down
-				eventid = ID_TOCMENU_MOVE_DOWN;
-				break;
+            case WXK_PAGEUP: // move layers up
+                eventid = ID_TOCMENU_MOVE_UP;
+                break;
 
-			case WXK_END: // move layers to the bottom
-				eventid = ID_TOCMENU_MOVE_BOTTOM;
-				break;
-		}
-		
-		if (eventid != wxID_ANY)
-		{
-			evt.SetId(eventid);
-			GetEventHandler()->QueueEvent(evt.Clone());
-			return; // do not propagate event.
-		}
-		
-	}
-	event.Skip();
+            case WXK_PAGEDOWN: // move layers down
+                eventid = ID_TOCMENU_MOVE_DOWN;
+                break;
+
+            case WXK_END: // move layers to the bottom
+                eventid = ID_TOCMENU_MOVE_BOTTOM;
+                break;
+        }
+
+        if (eventid != wxID_ANY) {
+            evt.SetId(eventid);
+            GetEventHandler()->QueueEvent(evt.Clone());
+            return; // do not propagate event.
+        }
+
+    }
+    event.Skip();
 }
 
 
@@ -868,14 +829,13 @@ void tmTOCCtrl::OnShortcutKey (wxKeyEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 07 April 2009
  *******************************************************************************/
-void tmTOCCtrl::OnLayerSelected (wxTreeEvent & event)
+void tmTOCCtrl::OnLayerSelected(wxTreeEvent &event)
 {
-	wxCommandEvent evt(tmEVT_TOC_SELECTION_CHANGED, wxID_ANY);
-	GetEventHandler()->QueueEvent(evt.Clone());
-	
-	event.Skip();
-}
+    wxCommandEvent evt(tmEVT_TOC_SELECTION_CHANGED, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
 
+    event.Skip();
+}
 
 
 /***************************************************************************//**
@@ -883,93 +843,90 @@ void tmTOCCtrl::OnLayerSelected (wxTreeEvent & event)
  @author Lucien Schreiber (c) CREALP 2009
  @date 02 February 2009
  *******************************************************************************/
-void tmTOCCtrl::OnEditingChange (wxCommandEvent & event)
+void tmTOCCtrl::OnEditingChange(wxCommandEvent &event)
 {
-	if (event.IsChecked())
-		StartEditing();
-	else
-		StopEditing(true);
+    if (event.IsChecked())
+        StartEditing();
+    else
+        StopEditing(true);
 }
 
-void tmTOCCtrl::OnDragStart(wxTreeEvent & event){
-	m_DragItemID = wxTreeItemId();
-	wxASSERT(m_DragItemID.IsOk() == false);
-	
-	if ( event.GetItem() != GetRootItem() ){
-		event.Allow();
-		m_DragItemID = event.GetItem();
-	}
-	else {
-		wxLogWarning("This can't be dragged!");
-	}
+void tmTOCCtrl::OnDragStart(wxTreeEvent &event)
+{
+    m_DragItemID = wxTreeItemId();
+    wxASSERT(m_DragItemID.IsOk() == false);
+
+    if (event.GetItem() != GetRootItem()) {
+        event.Allow();
+        m_DragItemID = event.GetItem();
+    } else {
+        wxLogWarning("This can't be dragged!");
+    }
 }
 
 
+void tmTOCCtrl::OnDragStop(wxTreeEvent &event)
+{
+    wxLogMessage("Dragging stopped!");
 
-void tmTOCCtrl::OnDragStop(wxTreeEvent & event){
-	wxLogMessage("Dragging stopped!");
-	
-	wxTreeItemId myItemStart = m_DragItemID;
-	wxTreeItemId myItemStop = event.GetItem();
-	
-	m_DragItemID = wxTreeItemId();
-	wxASSERT(m_DragItemID.IsOk() == false);
-	
-	if (myItemStop == myItemStart) {
-		return;
-	}
-	
-	if (myItemStop.IsOk()) {
-		int myItemStartPos = wxNOT_FOUND;
-		int myItemStopPos = wxNOT_FOUND;
-		
-		wxASSERT(m_root.IsOk());
-		wxTreeItemIdValue myCookie;
-		wxTreeItemId myFirstLayer = GetFirstChild(m_root, myCookie);
-		wxASSERT(myFirstLayer.IsOk());
-		if (myFirstLayer == myItemStart) {
-			myItemStartPos = 0;
-		}
-		if (myFirstLayer == myItemStop) {
-			myItemStopPos = 0;
-		}
-		
-		int myIterPosition = 1;
-		while (1) {
-			wxTreeItemId myIterLayer = GetNextChild(m_root, myCookie);
-			if (myIterLayer.IsOk() == false) {
-				break;
-			}
-			if (myIterLayer == myItemStart) {
-				myItemStartPos = myIterPosition;
-			}
-			if (myIterLayer == myItemStop) {
-				myItemStopPos = myIterPosition;
-			}
-			myIterPosition++;
-		}
-		
-		wxLogMessage("Item %d moved to %d", myItemStartPos, myItemStopPos);
-		
-		// move items
-		if (abs(myItemStopPos - myItemStartPos) == 1) {
-			SwapLayers(myItemStart, myItemStopPos);
-		}
-		else {
-			if (myItemStopPos == 0) {
-				MoveLayers(myItemStart, 0);
-			}
-			else {
-				MoveLayers(myItemStart, myItemStopPos+1);
-			}
-		}
-		
-		// update display
-		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->QueueEvent(evt.Clone());
-	}
+    wxTreeItemId myItemStart = m_DragItemID;
+    wxTreeItemId myItemStop = event.GetItem();
+
+    m_DragItemID = wxTreeItemId();
+    wxASSERT(m_DragItemID.IsOk() == false);
+
+    if (myItemStop == myItemStart) {
+        return;
+    }
+
+    if (myItemStop.IsOk()) {
+        int myItemStartPos = wxNOT_FOUND;
+        int myItemStopPos = wxNOT_FOUND;
+
+        wxASSERT(m_root.IsOk());
+        wxTreeItemIdValue myCookie;
+        wxTreeItemId myFirstLayer = GetFirstChild(m_root, myCookie);
+        wxASSERT(myFirstLayer.IsOk());
+        if (myFirstLayer == myItemStart) {
+            myItemStartPos = 0;
+        }
+        if (myFirstLayer == myItemStop) {
+            myItemStopPos = 0;
+        }
+
+        int myIterPosition = 1;
+        while (1) {
+            wxTreeItemId myIterLayer = GetNextChild(m_root, myCookie);
+            if (myIterLayer.IsOk() == false) {
+                break;
+            }
+            if (myIterLayer == myItemStart) {
+                myItemStartPos = myIterPosition;
+            }
+            if (myIterLayer == myItemStop) {
+                myItemStopPos = myIterPosition;
+            }
+            myIterPosition++;
+        }
+
+        wxLogMessage("Item %d moved to %d", myItemStartPos, myItemStopPos);
+
+        // move items
+        if (abs(myItemStopPos - myItemStartPos) == 1) {
+            SwapLayers(myItemStart, myItemStopPos);
+        } else {
+            if (myItemStopPos == 0) {
+                MoveLayers(myItemStart, 0);
+            } else {
+                MoveLayers(myItemStart, myItemStopPos + 1);
+            }
+        }
+
+        // update display
+        wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+        GetEventHandler()->QueueEvent(evt.Clone());
+    }
 }
-
 
 
 /***************************************************************************//**
@@ -978,28 +935,28 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent & event){
  @author Lucien Schreiber (c) CREALP 2009
  @date 02 February 2009
  *******************************************************************************/
-void tmTOCCtrl::StartEditing ()
+void tmTOCCtrl::StartEditing()
 {
-	// stop editing if needed
-	if (GetEditLayer())
-		StopEditing(); // no message sent
-	
-	// get selected item
-	tmLayerProperties * item = GetSelectionLayer();
-	item->SetEditing(true);
-	wxASSERT(item);
-	SetEditLayer(item);
-	
-	
-	//SwitchVisualEditingStyle(selection.Item(0), true);
-	SetItemStyle(GetSelection(), item);
-	
-	m_ContextMenu->Check(ID_TOCMENU_EDIT_LAYER, true);
-	
-	// sent message
-	wxCommandEvent evt(tmEVT_EM_EDIT_START, wxID_ANY);
-	GetEventHandler()->QueueEvent(evt.Clone());
-	
+    // stop editing if needed
+    if (GetEditLayer())
+        StopEditing(); // no message sent
+
+    // get selected item
+    tmLayerProperties *item = GetSelectionLayer();
+    item->SetEditing(true);
+    wxASSERT(item);
+    SetEditLayer(item);
+
+
+    //SwitchVisualEditingStyle(selection.Item(0), true);
+    SetItemStyle(GetSelection(), item);
+
+    m_ContextMenu->Check(ID_TOCMENU_EDIT_LAYER, true);
+
+    // sent message
+    wxCommandEvent evt(tmEVT_EM_EDIT_START, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
+
 }
 
 
@@ -1011,41 +968,36 @@ void tmTOCCtrl::StartEditing ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 02 February 2009
  *******************************************************************************/
-void tmTOCCtrl::StopEditing (bool bSentmessage)
+void tmTOCCtrl::StopEditing(bool bSentmessage)
 {
-	// get selected item
-	bool bReset = true;
-	tmLayerProperties * iterlayer = NULL;
-	while (1)
-	{
-		iterlayer = IterateLayers(bReset);
-		bReset = false;
-		if (!iterlayer)
-		{
-			break;
-		}
-		
-		
-		if (iterlayer == GetEditLayer())
-		{
-			iterlayer->SetEditing(false);
-			SetEditLayer(NULL);
-			SetItemStyle(m_ActualItemID, 
-						 (tmLayerProperties*) GetItemData(m_ActualItemID));
-			break;
-		}
-	}
-	
-	if (bSentmessage)
-	{
-		wxCommandEvent evt(tmEVT_EM_EDIT_STOP, wxID_ANY);
-		GetEventHandler()->QueueEvent(evt.Clone());
-	}
+    // get selected item
+    bool bReset = true;
+    tmLayerProperties *iterlayer = NULL;
+    while (1) {
+        iterlayer = IterateLayers(bReset);
+        bReset = false;
+        if (!iterlayer) {
+            break;
+        }
+
+
+        if (iterlayer == GetEditLayer()) {
+            iterlayer->SetEditing(false);
+            SetEditLayer(NULL);
+            SetItemStyle(m_ActualItemID,
+                         (tmLayerProperties *) GetItemData(m_ActualItemID));
+            break;
+        }
+    }
+
+    if (bSentmessage) {
+        wxCommandEvent evt(tmEVT_EM_EDIT_STOP, wxID_ANY);
+        GetEventHandler()->QueueEvent(evt.Clone());
+    }
 
 }
 
 
-				  
 /***************************************************************************//**
  @brief Called when contextual menu "Properties" is pressed
  @details All events from tmTOCCtrlMenu are processed in tmTOCCtrl. As this event
@@ -1053,40 +1005,40 @@ void tmTOCCtrl::StopEditing (bool bSentmessage)
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 August 2008
  *******************************************************************************/
-void tmTOCCtrl::OnShowProperties (wxCommandEvent & event)
+void tmTOCCtrl::OnShowProperties(wxCommandEvent &event)
 {
-	// get selected item
-	wxTreeItemId selected = GetSelection();
+    // get selected item
+    wxTreeItemId selected = GetSelection();
 
-	// check for item != root
-	wxTreeItemId myID = selected;
-	if (myID == GetRootItem()){
-		wxLogError(_("Properties not availlable for project, select a layer."));
-		return;
-	}
+    // check for item != root
+    wxTreeItemId myID = selected;
+    if (myID == GetRootItem()) {
+        wxLogError(_("Properties not availlable for project, select a layer."));
+        return;
+    }
 
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
+    tmLayerProperties *item = (tmLayerProperties *) GetItemData(selected);
 
-	wxASSERT(item->GetSymbolRef());
-	wxCommandEvent Evt (tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
-	Evt.SetClientData(item);
-	GetEventHandler()->QueueEvent(Evt.Clone());
+    wxASSERT(item->GetSymbolRef());
+    wxCommandEvent Evt(tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
+    Evt.SetClientData(item);
+    GetEventHandler()->QueueEvent(Evt.Clone());
 }
 
 
-void tmTOCCtrl::OnShowLabels (wxCommandEvent & event){
+void tmTOCCtrl::OnShowLabels(wxCommandEvent &event)
+{
     // get selected item
-	wxTreeItemId selected = GetSelection();
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
+    wxTreeItemId selected = GetSelection();
+    tmLayerProperties *item = (tmLayerProperties *) GetItemData(selected);
     if (item == NULL) {
         return;
     }
-	wxASSERT(item->GetSymbolRef());
-	wxCommandEvent Evt (tmEVT_LM_SHOW_LABELS, wxID_ANY);
-	Evt.SetClientData(item);
-	GetEventHandler()->QueueEvent(Evt.Clone());
+    wxASSERT(item->GetSymbolRef());
+    wxCommandEvent Evt(tmEVT_LM_SHOW_LABELS, wxID_ANY);
+    Evt.SetClientData(item);
+    GetEventHandler()->QueueEvent(Evt.Clone());
 }
-
 
 
 /***************************************************************************//**
@@ -1094,33 +1046,31 @@ void tmTOCCtrl::OnShowLabels (wxCommandEvent & event){
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 October 2008
  *******************************************************************************/
-void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
+void tmTOCCtrl::OnVertexMenu(wxCommandEvent &event)
 {
-	tmLayerProperties * item = GetSelectionLayer();
-	wxASSERT(item);
-	
-	// keep old value to avoid drawing if value not changed
-	int oldflags = item->GetVertexFlags();
-	
-	switch (event.GetId())
-	{
-		case ID_TOCMENU_SHOW_VERTEX_ALL:
-			item->SetVertexFlags(tmDRAW_VERTEX_ALL);
-			break;
-		case ID_TOCMENU_SHOW_VERTEX_BEGIN_END:
-			item->SetVertexFlags(tmDRAW_VERTEX_BEGIN_END);
-			break;
-		default:
-			item->SetVertexFlags(tmDRAW_VERTEX_NONE);
-			break;
-	}
-	
-	if (item->GetVertexFlags() != oldflags)
-	{
-		// send event to the layer manager for updating display
-		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-		GetEventHandler()->QueueEvent(evt.Clone());
-	}
+    tmLayerProperties *item = GetSelectionLayer();
+    wxASSERT(item);
+
+    // keep old value to avoid drawing if value not changed
+    int oldflags = item->GetVertexFlags();
+
+    switch (event.GetId()) {
+        case ID_TOCMENU_SHOW_VERTEX_ALL:
+            item->SetVertexFlags(tmDRAW_VERTEX_ALL);
+            break;
+        case ID_TOCMENU_SHOW_VERTEX_BEGIN_END:
+            item->SetVertexFlags(tmDRAW_VERTEX_BEGIN_END);
+            break;
+        default:
+            item->SetVertexFlags(tmDRAW_VERTEX_NONE);
+            break;
+    }
+
+    if (item->GetVertexFlags() != oldflags) {
+        // send event to the layer manager for updating display
+        wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+        GetEventHandler()->QueueEvent(evt.Clone());
+    }
 }
 
 
@@ -1131,35 +1081,32 @@ void tmTOCCtrl::OnVertexMenu (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 10 July 2008
  *******************************************************************************/
-void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
+void tmTOCCtrl::OnRemoveItem(wxCommandEvent &event)
 {
-	wxTreeItemId selected = GetSelection();
-	if(selected.IsOk() == false || selected == m_root){
-		wxLogMessage(_("No layer selected, or unable to delete selected layer"));
-		return;
-	}
-	
-	// not able to remove generic layers
-	tmLayerProperties * item = (tmLayerProperties*) GetItemData(selected);
-	wxASSERT(item);
+    wxTreeItemId selected = GetSelection();
+    if (selected.IsOk() == false || selected == m_root) {
+        wxLogMessage(_("No layer selected, or unable to delete selected layer"));
+        return;
+    }
 
-	if (item->GetType() < TOC_NAME_NOT_GENERIC)
-	{
-		wxLogMessage(_("Not allowed to remove generic layers from project"));
-		return;
-	}
-	
-	wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
-	evt.SetExtraLong(item->GetID());
-	UnselectAll();
+    // not able to remove generic layers
+    tmLayerProperties *item = (tmLayerProperties *) GetItemData(selected);
+    wxASSERT(item);
+
+    if (item->GetType() < TOC_NAME_NOT_GENERIC) {
+        wxLogMessage(_("Not allowed to remove generic layers from project"));
+        return;
+    }
+
+    wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
+    evt.SetExtraLong(item->GetID());
+    UnselectAll();
 
 
-	if (RemoveLayer(selected, TRUE))
-	{
-		GetEventHandler()->QueueEvent(evt.Clone());
-	}
+    if (RemoveLayer(selected, TRUE)) {
+        GetEventHandler()->QueueEvent(evt.Clone());
+    }
 }
-
 
 
 /***************************************************************************//**
@@ -1175,20 +1122,17 @@ void tmTOCCtrl::OnRemoveItem (wxCommandEvent & event)
  *******************************************************************************/
 bool tmTOCCtrl::IsTOCReady()
 {
-	if(!m_root.IsOk())
-	{
-		//wxLogDebug(_T("No root item defined, project no open ?"));
-		return FALSE;
-	}
-	
-	if(GetCountLayers() < 4)
-	{
-		wxLogDebug(_T("Not enought layers found. Is this a ToolMap project ?"));
-		return FALSE;
-	}
-	return TRUE;
-}
+    if (!m_root.IsOk()) {
+        //wxLogDebug(_T("No root item defined, project no open ?"));
+        return FALSE;
+    }
 
+    if (GetCountLayers() < 4) {
+        wxLogDebug(_T("Not enought layers found. Is this a ToolMap project ?"));
+        return FALSE;
+    }
+    return TRUE;
+}
 
 
 /***************************************************************************//**
@@ -1201,11 +1145,10 @@ bool tmTOCCtrl::IsTOCReady()
  *******************************************************************************/
 bool tmTOCCtrl::ExpandAllLayers()
 {
-	if(IsTOCReady())
-	{
-		ExpandAllChildren(m_root);
-		return true;
-	}
-	return false;
+    if (IsTOCReady()) {
+        ExpandAllChildren(m_root);
+        return true;
+    }
+    return false;
 }
 

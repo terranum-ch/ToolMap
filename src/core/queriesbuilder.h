@@ -22,7 +22,7 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -30,31 +30,41 @@
 
 class DataBaseTM;
 
-class QueriesBuilder {
-  private:
-    QueriesData * m_QueryData;
-	bool m_IsCreated;
-	
-	bool _IsQueryNull();
-  	bool _IsCreated();
-	
-	// private creating function
-	bool _CreateLayersQuery();
-    bool _CreateSelectionQuery();
-	bool _CreateObjectQuery();
-    bool _CreateGeomLineQuery();
-    bool _CreateGeomNodeQuery();
-    bool _CreateDuplicateQuery();
-    bool _CreateCrossingQuery ();
+class QueriesBuilder
+{
+private:
+    QueriesData *m_QueryData;
+    bool m_IsCreated;
 
-  public:
-    QueriesBuilder(QueriesData * query);
+    bool _IsQueryNull();
+
+    bool _IsCreated();
+
+    // private creating function
+    bool _CreateLayersQuery();
+
+    bool _CreateSelectionQuery();
+
+    bool _CreateObjectQuery();
+
+    bool _CreateGeomLineQuery();
+
+    bool _CreateGeomNodeQuery();
+
+    bool _CreateDuplicateQuery();
+
+    bool _CreateCrossingQuery();
+
+public:
+    QueriesBuilder(QueriesData *query);
 
     ~QueriesBuilder();
 
     bool IsOk();
 
-    bool Save(DataBaseTM * database);
-	bool Create(DataBaseTM * database);
+    bool Save(DataBaseTM *database);
+
+    bool Create(DataBaseTM *database);
 };
+
 #endif
