@@ -23,7 +23,7 @@
 
 
 const long WEBUPDATE_CONNECTION_TIMEOUT = 2000;
-const wxString WEBUPDATE_SERVER_DOWNLOAD = "https://github.com/terranum-ch/ToolMap/releases";
+const wxString WEBUPDATE_SERVER_DOWNLOAD = "http://www.toolmap.ch";
 const wxString WEBUPDATE_SERVER_UPDATE = "https://www.terranum.ch/toolmap/latestversion2.txt";
 
 
