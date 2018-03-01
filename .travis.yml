@@ -60,9 +60,9 @@ script:
   - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
 after_success:
   - cd $HOME/build/terranum-ch/ToolMap/bin
-  - sudo cpack
+  - cpack
   - ls
-  - if [[ "$TRAVIS_BRANCH" != "nightly" ] || [ "$TRAVIS_BRANCH" != "release" ]]; then exit 0; fi
+  - if [[ "$TRAVIS_BRANCH" != "nightly" ]] && [[ "$TRAVIS_BRANCH" != "release" ]]; then exit 0; fi
   - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*linux64.AppImage') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
   - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.deb') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "
   - "curl -v --ftp-create-dirs -T $(find . -maxdepth 1 -name '*.dmg') -u $FTP_USER:$FTP_PASSWORD ftp://euso.ftp.infomaniak.com "

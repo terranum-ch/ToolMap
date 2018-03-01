@@ -2,6 +2,8 @@
 # use git version for package number
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
+add_dependencies(${CMAKE_PROJECT_NAME} ToolBasView)
+
 # install ToolMap (application)
 install(TARGETS ${CMAKE_PROJECT_NAME}
         BUNDLE DESTINATION .
@@ -39,14 +41,16 @@ if (CURL_DLL_NAME)
     list(APPEND LIB_TO_INSTALL ${CURL_DLL_NAME})
 endif (CURL_DLL_NAME)
 
-
 if (WIN32)
     # install program and dlls
-    install(
-            PROGRAMS
+    install(PROGRAMS
             ${LIB_TO_INSTALL}
-            DESTINATION bin
-    )
+            DESTINATION bin)
+
+    # install ToolBasView
+    install(PROGRAMS
+            ${EXTERNAL_DIR}/bin/ToolBasView.exe
+            DESTINATION bin)
 
     # install errmsg.sys
     if (NOT MYSQL_ERRMSG_FILE)
@@ -66,6 +70,22 @@ if (WIN32)
     # install Microsoft Visual Studio librairies (MSVCP140.DLL, etc.)
     include(InstallRequiredSystemLibraries)
     INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin)
+
+elseif (UNIX AND NOT APPLE)
+
+    # install ToolBasView
+    install(PROGRAMS
+            ${EXTERNAL_DIR}/bin/ToolBasView
+            DESTINATION bin)
+
+elseif (APPLE)
+
+    # install ToolBasView
+    message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+    install(PROGRAMS
+            ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
+            DESTINATION .)
+
 endif (WIN32)
 
 # COMMON PROPERTIES
