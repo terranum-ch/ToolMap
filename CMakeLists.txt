@@ -12,6 +12,9 @@ set(VERSION_MAJOR "2")
 set(VERSION_MINOR "6")
 set(VERSION_PATCH "0") # will be modified later during cmake process
 
+#Export for sourcetrail
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 #Use O2 optimisation
 IF (APPLE)
     MESSAGE(STATUS "REPLACING O3 WITH O2")
