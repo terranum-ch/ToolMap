@@ -211,6 +211,8 @@ public:
 
     void OnSizeChange(wxSizeEvent &event);
 
+    void InitSize();
+
     void OnPaint(wxPaintEvent &event);
 
     void SetBitmapStatus(wxBitmap *bmp = NULL);//{m_bmp = bmp;}

@@ -93,9 +93,7 @@ tmRenderer::tmRenderer(wxWindow *parent, wxWindowID id) :
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     images_cursor_init();
 
-    BitmapUpdateSize();
-    bool bWhite = BitmapSetToWhite();
-    wxASSERT(bWhite);
+    InitSize();
 }
 
 
@@ -206,6 +204,25 @@ void tmRenderer::OnSizeChange(wxSizeEvent &event)
     GetEventHandler()->ProcessEvent(evt);
 }
 
+void tmRenderer::InitSize()
+{
+    wxSize myActualSize = GetClientSize();
+
+    BitmapUpdateSize();
+    BitmapSetToWhite();
+
+    // new size array object, will be deleted in the layer manager
+    tmArraySize *mySizes = new tmArraySize();
+    mySizes->Add(m_OldSize);
+    mySizes->Add(myActualSize);
+
+    m_OldSize = myActualSize;
+    // send size to the layermanager
+    wxCommandEvent evt(tmEVT_LM_SIZE_CHANGED, wxID_ANY);
+    evt.SetInt(false);
+    evt.SetClientData(mySizes);
+    GetEventHandler()->ProcessEvent(evt);
+}
 
 void tmRenderer::SetTool(tmGIS_TOOL selected_tool)
 {

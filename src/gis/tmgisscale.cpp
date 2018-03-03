@@ -505,8 +505,7 @@ void tmGISScale::_ComputeUnitScale()
     wxSize my_screen_size_px = wxGetDisplaySize();
 
     // window size in m
-    double my_wnd_size_m_x =
-            (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
+    double my_wnd_size_m_x = (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
 
     m_UnitScale = wxRound(m_WidthDistanceInM / my_wnd_size_m_x);
 }
@@ -538,10 +537,8 @@ void tmGISScale::ComputeNewScaleExtent(const long &scale)
     wxSize my_screen_size_px = wxGetDisplaySize();
 
     // window size in m
-    double my_wnd_size_m_x =
-            (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
-    double my_wnd_size_m_y =
-            (double) m_ExtentWnd.height * my_screen_size_mm.GetHeight() / my_screen_size_px.GetHeight() / 1000.0;
+    double my_wnd_size_m_x = (double) m_ExtentWnd.width * my_screen_size_mm.GetWidth() / my_screen_size_px.GetWidth() / 1000.0;
+    double my_wnd_size_m_y = (double) m_ExtentWnd.height * my_screen_size_mm.GetHeight() / my_screen_size_px.GetHeight() / 1000.0;
 
     tmCoordConvert myConvert(m_ProjectProjection);
     double myDistInM_x = scale * my_wnd_size_m_x;
