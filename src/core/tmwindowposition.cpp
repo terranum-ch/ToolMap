@@ -20,10 +20,10 @@
 #include "tmwindowposition.h"
 
 
-tmWindowPosition::tmWindowPosition(const wxString & appname)
+tmWindowPosition::tmWindowPosition(const wxString &appname)
 {
-	m_ConfigAppName = appname;
-	WP_LoadScreenSize();
+    m_ConfigAppName = appname;
+    WP_LoadScreenSize();
 }
 
 tmWindowPosition::~tmWindowPosition()
@@ -32,154 +32,139 @@ tmWindowPosition::~tmWindowPosition()
 
 bool tmWindowPosition::SaveScreenPosition()
 {
-	return WP_SaveScreenSize();
+    return WP_SaveScreenSize();
 }
 
-bool tmWindowPosition::LoadPosition(const wxString & wndname, wxRect & pos)
+bool tmWindowPosition::LoadPosition(const wxString &wndname, wxRect &pos)
 {
-	wxString readedpos = wxEmptyString;
-	if (LoadPosition(wndname, readedpos)==false)
-		return false;
-	
-	pos =  WP_StringToPosition(readedpos);
-	
-	wxRect myActualSize = WP_GetActualScreenSize();
-	if (wndname != _T("SCREEN") && HasScreenChanged()==true)
-	{
-		if (Intersects(pos, wxSize(myActualSize.GetWidth(), myActualSize.GetHeight()))==false)
-		{
-			wxLogDebug(_T("Windows %s was outside screen"), wndname.c_str());
-			return false;
-		}
-	}
-	return true;
+    wxString readedpos = wxEmptyString;
+    if (LoadPosition(wndname, readedpos) == false)
+        return false;
+
+    pos = WP_StringToPosition(readedpos);
+
+    wxRect myActualSize = WP_GetActualScreenSize();
+    if (wndname != _T("SCREEN") && HasScreenChanged() == true) {
+        if (Intersects(pos, wxSize(myActualSize.GetWidth(), myActualSize.GetHeight())) == false) {
+            wxLogDebug(_T("Windows %s was outside screen"), wndname.c_str());
+            return false;
+        }
+    }
+    return true;
 }
 
 
-bool tmWindowPosition::LoadPosition(const wxString & wndname, wxString & postext)
-{	
-	wxFileConfig myConfig(m_ConfigAppName);
-	myConfig.SetPath(_T("WINDOW_POSITION"));	
-	if (myConfig.Read(wndname, &postext)==false)
-	{
-		wxLogMessage(_("No position stored for windows %s"), wndname.c_str());
-		return false;
-	}
-	
-	return true;
-}
+bool tmWindowPosition::LoadPosition(const wxString &wndname, wxString &postext)
+{
+    wxFileConfig myConfig(m_ConfigAppName);
+    myConfig.SetPath(_T("WINDOW_POSITION"));
+    if (myConfig.Read(wndname, &postext) == false) {
+        wxLogMessage(_("No position stored for windows %s"), wndname.c_str());
+        return false;
+    }
 
+    return true;
+}
 
 
 wxString tmWindowPosition::WP_PositionToString(wxRect pos)
 {
-	wxString mySPos = wxString::Format(_T("%d;%d;%d;%d"),
-									   pos.GetX(),
-									   pos.GetY(),
-									   pos.GetWidth(),
-									   pos.GetHeight());
-	return mySPos;
+    wxString mySPos = wxString::Format(_T("%d;%d;%d;%d"),
+                                       pos.GetX(),
+                                       pos.GetY(),
+                                       pos.GetWidth(),
+                                       pos.GetHeight());
+    return mySPos;
 }
 
 
-
-wxRect tmWindowPosition::WP_StringToPosition(const wxString & posstring)
+wxRect tmWindowPosition::WP_StringToPosition(const wxString &posstring)
 {
-	wxStringTokenizer tokenizer(posstring, _T(";"));
-	wxASSERT(tokenizer.CountTokens() == 4);
+    wxStringTokenizer tokenizer(posstring, _T(";"));
+    wxASSERT(tokenizer.CountTokens() == 4);
 
-	long myTemp[] = {wxNOT_FOUND, wxNOT_FOUND, 
-					wxNOT_FOUND, wxNOT_FOUND};
-	wxRect myRect;
-	
-	for (int i = 0; i<4; i++)
-    {
+    long myTemp[] = {wxNOT_FOUND, wxNOT_FOUND,
+                     wxNOT_FOUND, wxNOT_FOUND};
+    wxRect myRect;
+
+    for (int i = 0; i < 4; i++) {
         tokenizer.GetNextToken().ToLong(&(myTemp[i]));
     }
-	
-	myRect.SetX(myTemp[0]);
-	myRect.SetY(myTemp[1]);
-	myRect.SetWidth(myTemp[2]);
-	myRect.SetHeight(myTemp[3]);
-	return myRect;
+
+    myRect.SetX(myTemp[0]);
+    myRect.SetY(myTemp[1]);
+    myRect.SetWidth(myTemp[2]);
+    myRect.SetHeight(myTemp[3]);
+    return myRect;
 }
 
 
-
-
-bool tmWindowPosition::SavePosition(const wxString & wndname, wxRect pos)
+bool tmWindowPosition::SavePosition(const wxString &wndname, wxRect pos)
 {
-	return SavePosition(wndname, WP_PositionToString(pos));
+    return SavePosition(wndname, WP_PositionToString(pos));
 }
 
 
-bool tmWindowPosition::SavePosition(const wxString & wndname, const wxString & postext)
+bool tmWindowPosition::SavePosition(const wxString &wndname, const wxString &postext)
 {
-	wxString myStringPosition = wxEmptyString;
-	wxFileConfig myConfig(m_ConfigAppName);
-	
-	myConfig.SetPath(_T("WINDOW_POSITION"));
-	if (myConfig.Write(wndname, postext)==false)
-	{
-		wxLogDebug(_T("Unable to write to config file"));
-		return false;
-	}
-	
-	return true;
-	
+    wxString myStringPosition = wxEmptyString;
+    wxFileConfig myConfig(m_ConfigAppName);
+
+    myConfig.SetPath(_T("WINDOW_POSITION"));
+    if (myConfig.Write(wndname, postext) == false) {
+        wxLogDebug(_T("Unable to write to config file"));
+        return false;
+    }
+
+    return true;
+
 }
 
 
-
-bool tmWindowPosition::WP_SaveScreenSize ()
+bool tmWindowPosition::WP_SaveScreenSize()
 {
-	wxRect myWndSize = WP_GetActualScreenSize();
-	return SavePosition(_T("SCREEN"), myWndSize);
+    wxRect myWndSize = WP_GetActualScreenSize();
+    return SavePosition(_T("SCREEN"), myWndSize);
 }
 
 
-
-bool tmWindowPosition::WP_LoadScreenSize ()
+bool tmWindowPosition::WP_LoadScreenSize()
 {
-	wxRect myWndSize = WP_GetActualScreenSize();
-	if (LoadPosition(_T("SCREEN"), myWndSize)==false)
-	{
-		m_OldScreenSize = wxSize(myWndSize.GetWidth(), myWndSize.GetHeight());
-		return false;
-	}
-	
-	m_OldScreenSize = wxSize(myWndSize.GetWidth(), myWndSize.GetHeight());
-	return true;
+    wxRect myWndSize = WP_GetActualScreenSize();
+    if (LoadPosition(_T("SCREEN"), myWndSize) == false) {
+        m_OldScreenSize = wxSize(myWndSize.GetWidth(), myWndSize.GetHeight());
+        return false;
+    }
+
+    m_OldScreenSize = wxSize(myWndSize.GetWidth(), myWndSize.GetHeight());
+    return true;
 }
 
 
 bool tmWindowPosition::HasScreenChanged()
 {
-	wxRect myActualSize = WP_GetActualScreenSize();
-	if (m_OldScreenSize != wxSize(myActualSize.GetWidth(), myActualSize.GetHeight()))
-	{
-		wxLogDebug(_T("Screen size has changed"));
-		return true;
-	}
-	
-	return false;
+    wxRect myActualSize = WP_GetActualScreenSize();
+    if (m_OldScreenSize != wxSize(myActualSize.GetWidth(), myActualSize.GetHeight())) {
+        wxLogDebug(_T("Screen size has changed"));
+        return true;
+    }
+
+    return false;
 }
-
-
 
 
 wxRect tmWindowPosition::WP_GetActualScreenSize()
 {
-	return wxRect(0,0,
-				  wxSystemSettings::GetMetric(wxSYS_SCREEN_X , NULL),
-				  wxSystemSettings::GetMetric(wxSYS_SCREEN_Y , NULL));
+    return wxRect(0, 0,
+                  wxSystemSettings::GetMetric(wxSYS_SCREEN_X, NULL),
+                  wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, NULL));
 }
-	
 
-bool tmWindowPosition::Intersects (wxRect wndpos, wxSize screensize)
+
+bool tmWindowPosition::Intersects(wxRect wndpos, wxSize screensize)
 {
-	wxRect myScreenSize = wxRect(wxPoint(0,0),screensize);
-	return myScreenSize.Contains(wndpos);
+    wxRect myScreenSize = wxRect(wxPoint(0, 0), screensize);
+    return myScreenSize.Contains(wndpos);
 }
 
 

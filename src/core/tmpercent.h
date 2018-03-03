@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -37,33 +37,37 @@ const int tmPERCENT = 100;
 //#endif
 
 class tmPercent : public wxObject
-	{
-	private:
-		bool m_inited;
-		long m_TotalValue;
-		double m_Increment;
-		int m_PreviousPercent;
-		long m_ActualValue;
-		
-		void InitMemberValue();
-		
-	protected:
-	public:
-		// ctor - dtor
-		tmPercent();
-		tmPercent(long value);
-		void Create(long value);
-		~tmPercent();
-		
-		void SetValue (long actualvalue);
-        long GetValue () {return m_ActualValue;}
-		bool IsNewStep();
-		int GetPercent();
-		
+{
+private:
+    bool m_inited;
+    long m_TotalValue;
+    double m_Increment;
+    int m_PreviousPercent;
+    long m_ActualValue;
+
+    void InitMemberValue();
+
+protected:
+public:
+    // ctor - dtor
+    tmPercent();
+
+    tmPercent(long value);
+
+    void Create(long value);
+
+    ~tmPercent();
+
+    void SetValue(long actualvalue);
+
+    long GetValue()
+    { return m_ActualValue; }
+
+    bool IsNewStep();
+
+    int GetPercent();
+
 };
-
-
-
 
 
 #endif

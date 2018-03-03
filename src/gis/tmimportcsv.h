@@ -19,41 +19,56 @@
 #define _TMIMPORTCSV_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 
 
-
 #include "tmimport.h"
 
-class tmImportCSV : public tmImport {
-  private:
+class tmImportCSV : public tmImport
+{
+private:
     int m_Xcolumn;
     int m_Ycolumn;
-    wxFileInputStream * m_FileStream;
-    wxTextInputStream * m_TextStream;
-	
-    bool _ResetReading();
-    bool _GetNextData(double & x, double & y);
-	bool _ImportToPointLayer(DataBaseTM * database, wxProgressDialog * progress = NULL);
-    bool _ImportToLineLayer(DataBaseTM * database, wxProgressDialog * progress = NULL);
-	
+    wxFileInputStream *m_FileStream;
+    wxTextInputStream *m_TextStream;
 
-  public:
+    bool _ResetReading();
+
+    bool _GetNextData(double &x, double &y);
+
+    bool _ImportToPointLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);
+
+    bool _ImportToLineLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);
+
+
+public:
     tmImportCSV();
+
     virtual ~tmImportCSV();
 
-    virtual bool Open(const wxFileName & filename);
-	virtual bool Import(DataBaseTM * database, wxProgressDialog * progress = NULL);
-	virtual bool IsOk();
-	
+    virtual bool Open(const wxFileName &filename);
+
+    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
+
+    virtual bool IsOk();
+
     wxArrayString ListColumns();
-	int GetColumnX(){return m_Xcolumn;}
-	int GetColumnY(){return m_Ycolumn;}
+
+    int GetColumnX()
+    { return m_Xcolumn; }
+
+    int GetColumnY()
+    { return m_Ycolumn; }
+
     void SetColumn(int x, int y);
-	virtual wxArrayInt GetTargetSupported();
+
+    virtual wxArrayInt GetTargetSupported();
 };
+
 #endif

@@ -26,21 +26,21 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
-#include <wx/clrpicker.h>		// colour picker used in all child
-#include "../core/tmcolourpickerctrl.h"	// colour picker
-#include "../core/tmsliderwithtxt.h"	// slider with textctrl
-#include "tmsymbolpendef.h"		// pen and brush defintions
-#include <wx/html/htmlwin.h>	// html window for metadata
+#include <wx/clrpicker.h>        // colour picker used in all child
+#include "../core/tmcolourpickerctrl.h"    // colour picker
+#include "../core/tmsliderwithtxt.h"    // slider with textctrl
+#include "tmsymbolpendef.h"        // pen and brush defintions
+#include <wx/html/htmlwin.h>    // html window for metadata
 #include "tmlayerpropertiesdef.h" // for LoadQueries
 
 
-const int ID_LINESSYMBOLOGY	= 10079;
+const int ID_LINESSYMBOLOGY = 10079;
 //const int ID_SYMDLG_NOTEBOOK = 10116;
 const int ID_SYMDLG_PANEL = 10159;
 //const int ID_SYMDLG_INFOTXT = 10215;
@@ -55,51 +55,57 @@ const int ID_SYMDLG_PANEL = 10159;
 class DataBaseTM;
 
 
-class tmSymbolDLG: public wxDialog
-	{    
-	private:
-		DataBaseTM * m_pDB;
-		
-		void _Init();
-		void CreateControlsBasic();
-		
-		DECLARE_DYNAMIC_CLASS( tmSymbolDLG )
-		
-	protected:
-		wxPanel * m_SymbolPanel;
-		//wxHtmlWindow * m_MetaDataWnd;
-		void SetSizeHint ();
-		
-		wxArrayLong m_QueriesId;
-		void _LoadQueries(wxChoice * choicectrl, TOC_GENERIC_NAME toctarget);
+class tmSymbolDLG : public wxDialog
+{
+private:
+    DataBaseTM *m_pDB;
 
-		
-	public:
-		/// Constructors
-		tmSymbolDLG();
-		~tmSymbolDLG();
-		tmSymbolDLG( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, 
-					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
-					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
-					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		bool Create( wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-					const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE,
-					const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
-					const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE,
-					long style = SYMBOL_TMSYMBOLDLG_STYLE );
-		
-		void SetDatabase (DataBaseTM * database){m_pDB = database;}
-		
-		//void SetMetaData (const wxString & metadata);
-		//void CreateControlsLine();
-		/*void CreateControlsPoint();
-		void CreateControlsPolygon();
-		void CreateControlsRaster();*/
-		
+    void _Init();
 
-	};
+    void CreateControlsBasic();
 
+DECLARE_DYNAMIC_CLASS(tmSymbolDLG)
+
+protected:
+    wxPanel *m_SymbolPanel;
+
+    //wxHtmlWindow * m_MetaDataWnd;
+    void SetSizeHint();
+
+    wxArrayLong m_QueriesId;
+
+    void _LoadQueries(wxChoice *choicectrl, TOC_GENERIC_NAME toctarget);
+
+
+public:
+    /// Constructors
+    tmSymbolDLG();
+
+    ~tmSymbolDLG();
+
+    tmSymbolDLG(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
+                long style = SYMBOL_TMSYMBOLDLG_STYLE);
+
+    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
+                long style = SYMBOL_TMSYMBOLDLG_STYLE);
+
+    void SetDatabase(DataBaseTM *database)
+    { m_pDB = database; }
+
+    //void SetMetaData (const wxString & metadata);
+    //void CreateControlsLine();
+    /*void CreateControlsPoint();
+    void CreateControlsPolygon();
+    void CreateControlsRaster();*/
+
+
+};
 
 
 #endif

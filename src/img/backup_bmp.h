@@ -3,11 +3,13 @@
 #define _BACKUP_BMP_ 1
 
 #include <wx/wxprec.h>
+
 #ifndef WX_PRECOMP
 #	include <wx/wx.h>
 #endif
 
 extern void images_backup_init(void);
+
 extern void images_backup_clean(void);
 
 extern wxBitmap *_img_backup_tm;

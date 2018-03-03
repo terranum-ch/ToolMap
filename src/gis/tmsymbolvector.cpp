@@ -27,24 +27,23 @@
 #include "tmlayerproperties.h"
 
 
-
-tmSymbolVector::tmSymbolVector(){
-}
-
-
-
-tmSymbolVector::~tmSymbolVector(){
-	
-}
-
-
-tmSymbolDLG * tmSymbolVector::GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos)
+tmSymbolVector::tmSymbolVector()
 {
-	return new tmSymbolDLG(parent,SYMBOL_TMSYMBOLDLG_IDNAME,
-							   SYMBOL_TMSYMBOLDLG_TITLE,
-							   dlgpos);
 }
 
+
+tmSymbolVector::~tmSymbolVector()
+{
+
+}
+
+
+tmSymbolDLG *tmSymbolVector::GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos)
+{
+    return new tmSymbolDLG(parent, SYMBOL_TMSYMBOLDLG_IDNAME,
+                           SYMBOL_TMSYMBOLDLG_TITLE,
+                           dlgpos);
+}
 
 
 /***************************************************************************//**
@@ -56,89 +55,86 @@ tmSymbolDLG * tmSymbolVector::GetSymbolDialog (wxWindow * parent, const wxPoint 
  @author Lucien Schreiber (c) CREALP 2008
  @date 11 September 2008
  *******************************************************************************/
-wxColour tmSymbolVector::GetColourWithTransparency (const wxColour & col, int trans)
+wxColour tmSymbolVector::GetColourWithTransparency(const wxColour &col, int trans)
 {
-	char cTrans = ConvertTransparency(trans);
-	wxColour ColTrans (col.Red(), col.Green(), col.Blue(), cTrans);					   
-	return ColTrans;
+    char cTrans = ConvertTransparency(trans);
+    wxColour ColTrans(col.Red(), col.Green(), col.Blue(), cTrans);
+    return ColTrans;
 }
 
- 
 
-tmSymbolVector * tmSymbolVector::CreateSymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname)
+tmSymbolVector *tmSymbolVector::CreateSymbolVectorBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname)
 {
-	switch (spattype)
-	{
-		case LAYER_SPATIAL_LINE:
-			if (tocname == TOC_NAME_LINES) {
-				return new tmSymbolVectorLineMultiple();
-			}
-			else {
-				return new tmSymbolVectorLine();
-			}
-			break;
-			
-			
-		case LAYER_SPATIAL_POINT:
-			if (tocname == TOC_NAME_LABELS || tocname == TOC_NAME_POINTS) {
-				return new tmSymbolVectorPointMultiple();
-			}
-			else {
-				return new tmSymbolVectorPoint();
-			}
-			break;
-			
-		case LAYER_SPATIAL_POLYGON:
-			return new tmSymbolVectorPolygon();
-			break;
-			
-		default:
-			wxLogDebug(_T("Symbology for this format not implemented now"));
-			return NULL;
-			break;
-	}	
+    switch (spattype) {
+        case LAYER_SPATIAL_LINE:
+            if (tocname == TOC_NAME_LINES) {
+                return new tmSymbolVectorLineMultiple();
+            } else {
+                return new tmSymbolVectorLine();
+            }
+            break;
+
+
+        case LAYER_SPATIAL_POINT:
+            if (tocname == TOC_NAME_LABELS || tocname == TOC_NAME_POINTS) {
+                return new tmSymbolVectorPointMultiple();
+            } else {
+                return new tmSymbolVectorPoint();
+            }
+            break;
+
+        case LAYER_SPATIAL_POLYGON:
+            return new tmSymbolVectorPolygon();
+            break;
+
+        default:
+            wxLogDebug(_T("Symbology for this format not implemented now"));
+            return NULL;
+            break;
+    }
 }
 
 
+tmSymbolVector *
+tmSymbolVector::CreateCopySymbolVectorBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname,
+                                                  tmSymbol *origin)
+{
+    switch (spattype) {
+        case LAYER_SPATIAL_LINE:
+            if (tocname == TOC_NAME_LINES) {
+                return new tmSymbolVectorLineMultiple(*((tmSymbolVectorLineMultiple *) origin));
+            } else {
+                return new tmSymbolVectorLine(*((tmSymbolVectorLine *) origin));
+            }
+            break;
 
-tmSymbolVector * tmSymbolVector::CreateCopySymbolVectorBasedOnType (TM_GIS_SPATIAL_TYPES  spattype,TOC_GENERIC_NAME tocname,tmSymbol * origin){
-	switch (spattype)
-	{
-		case LAYER_SPATIAL_LINE:
-			if (tocname == TOC_NAME_LINES) {
-				return new tmSymbolVectorLineMultiple(*((tmSymbolVectorLineMultiple*)origin));
-			}else {
-				return new tmSymbolVectorLine(*((tmSymbolVectorLine*)origin));
-			}
-			break;
-			
-		case LAYER_SPATIAL_POINT:
-			if (tocname == TOC_NAME_LABELS || tocname == TOC_NAME_POINTS) {
-				return new tmSymbolVectorPointMultiple(*((tmSymbolVectorPointMultiple*)origin));
-			}
-			else {
-				return new tmSymbolVectorPoint(*((tmSymbolVectorPoint*)origin));
-			}
-			break;
-			
-			
-			break;
-		case LAYER_SPATIAL_POLYGON:
-			return new tmSymbolVectorPolygon(*((tmSymbolVectorPolygon*) origin));
-			break;
-			
-		default:
-			wxLogDebug(_T("Symbology for this format not implemented now"));
-			return NULL;
-			break;
-	}
-	
+        case LAYER_SPATIAL_POINT:
+            if (tocname == TOC_NAME_LABELS || tocname == TOC_NAME_POINTS) {
+                return new tmSymbolVectorPointMultiple(*((tmSymbolVectorPointMultiple *) origin));
+            } else {
+                return new tmSymbolVectorPoint(*((tmSymbolVectorPoint *) origin));
+            }
+            break;
+
+
+            break;
+        case LAYER_SPATIAL_POLYGON:
+            return new tmSymbolVectorPolygon(*((tmSymbolVectorPolygon *) origin));
+            break;
+
+        default:
+            wxLogDebug(_T("Symbology for this format not implemented now"));
+            return NULL;
+            break;
+    }
+
 }
 
 
-int tmSymbolVector::ShowLabelDialog (wxWindow * parent, tmLayerProperties * properties, const wxPoint & pos){
-    tmLabelDLG myDlg (parent, properties, pos);
-    int myRetValue =  myDlg.ShowModal();
+int tmSymbolVector::ShowLabelDialog(wxWindow *parent, tmLayerProperties *properties, const wxPoint &pos)
+{
+    tmLabelDLG myDlg(parent, properties, pos);
+    int myRetValue = myDlg.ShowModal();
     if (myRetValue == wxID_OK) {
         properties->SetLabelDefinition(myDlg.GetLabelDefinition());
         properties->SetLabelVisible(myDlg.IsLabelVisible());

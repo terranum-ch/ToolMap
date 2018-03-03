@@ -14,16 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #ifndef _TM_MEMORYZOOM_H_
 #define _TM_MEMORYZOOM_H_
- 
- // For compilers that support precompilation, includes "wx/wx.h".
+
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -35,21 +35,24 @@
 @author Lucien Schreiber (c) CREALP 2009
 @date 26 octobre 2009
  *******************************************************************************/
-class tmZoomExtent 
+class tmZoomExtent
 {
-  public:
+public:
     wxPoint2DDouble m_TopLeftPosition;
     double m_ZoomFactor;
 
     tmZoomExtent();
-	tmZoomExtent(double top, double left, double pixelsize);
-    ~tmZoomExtent();
-	
-	bool operator==(const tmZoomExtent & zoom ) const;
-	bool IsOk();
-};
-WX_DECLARE_OBJARRAY(tmZoomExtent, tmArrayZoomExtent);
 
+    tmZoomExtent(double top, double left, double pixelsize);
+
+    ~tmZoomExtent();
+
+    bool operator==(const tmZoomExtent &zoom) const;
+
+    bool IsOk();
+};
+
+WX_DECLARE_OBJARRAY(tmZoomExtent, tmArrayZoomExtent);
 
 
 /***************************************************************************//**
@@ -58,23 +61,26 @@ WX_DECLARE_OBJARRAY(tmZoomExtent, tmArrayZoomExtent);
 @author Lucien Schreiber (c) CREALP 2009
 @date 26 octobre 2009
  *******************************************************************************/
-class tmMemoryZoomManager : public wxEvtHandler 
+class tmMemoryZoomManager : public wxEvtHandler
 {
 private:
     tmArrayZoomExtent m_ZoomExtents;
     int m_MaxSize;
-	
-  public:
+
+public:
     tmMemoryZoomManager(int maxsize = 50);
+
     ~tmMemoryZoomManager();
 
-    bool Add(const tmZoomExtent & value);
+    bool Add(const tmZoomExtent &value);
 
     bool Add(double top, double left, double zoomfactor);
 
     int GetCount();
-    bool GetPrevious(tmZoomExtent & extent);
-	void Clear();
+
+    bool GetPrevious(tmZoomExtent &extent);
+
+    void Clear();
 
 };
 

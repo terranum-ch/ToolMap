@@ -27,13 +27,13 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/tglbtn.h>
 
 
-#define wxFLATBUTTON_STYLE wxBORDER_NONE 
+#define wxFLATBUTTON_STYLE wxBORDER_NONE
 #define wxFLATBUTTON_SIZE wxSize(35,-1)
 #define wxFLATBUTTON_TEXT_ADD _T("+")
 #define wxFLATBUTTON_TEXT_REMOVE _T("-")
@@ -44,47 +44,46 @@
 #define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_BUTTON_CLICKED
 
 class wxFlatButton : public wxButton
-	{		
-	private:
-		DECLARE_DYNAMIC_CLASS(wxFlatButton)
-		
-	public:
-		
-		wxFlatButton();
-		wxFlatButton(wxWindow * parent, wxWindowID id, 
-					 const wxString & label = wxEmptyString, 
-					 wxSize size = wxFLATBUTTON_SIZE);
-		~wxFlatButton();
-		
-	/*private:
-		void OnClickToggleButton(wxCommandEvent & event);
-		void InitwxFlatButton(wxWindowID id= wxID_ANY);
-		DECLARE_DYNAMIC_CLASS(wxFlatButton)*/
-		
-		
-	};
+    {
+    private:
+        DECLARE_DYNAMIC_CLASS(wxFlatButton)
+
+    public:
+
+        wxFlatButton();
+        wxFlatButton(wxWindow * parent, wxWindowID id,
+                     const wxString & label = wxEmptyString,
+                     wxSize size = wxFLATBUTTON_SIZE);
+        ~wxFlatButton();
+
+    /*private:
+        void OnClickToggleButton(wxCommandEvent & event);
+        void InitwxFlatButton(wxWindowID id= wxID_ANY);
+        DECLARE_DYNAMIC_CLASS(wxFlatButton)*/
+
+
+    };
 #else
 #define EVT_FLATBUTTON EVT_BUTTON
 #define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_BUTTON_CLICKED
 
 class wxFlatButton : public wxButton
-	{
-	private:
-		DECLARE_DYNAMIC_CLASS(wxFlatButton)
-		//void InitwxFlatButton();
-		
-	public:
-		wxFlatButton();
-		wxFlatButton(wxWindow * parent, wxWindowID id,
-					 const wxString & label = wxEmptyString,
-					 wxSize size = wxFLATBUTTON_SIZE);
-		~wxFlatButton();
-	};
+{
+private:
+DECLARE_DYNAMIC_CLASS(wxFlatButton)
+    //void InitwxFlatButton();
+
+public:
+    wxFlatButton();
+
+    wxFlatButton(wxWindow *parent, wxWindowID id,
+                 const wxString &label = wxEmptyString,
+                 wxSize size = wxFLATBUTTON_SIZE);
+
+    ~wxFlatButton();
+};
+
 #endif
-
-
-
-
 
 
 #endif

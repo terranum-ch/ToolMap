@@ -24,36 +24,47 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-#include "tmsymbolvector.h"	// tmSymbol class definition
-#include "tmsymboldlgline.h" 
+#include "tmsymbolvector.h"    // tmSymbol class definition
+#include "tmsymboldlgline.h"
 
 class tmSymbolVectorLine : public tmSymbolVector
 {
 private:
     tmSymbolDataLineUnique m_lSymUnique;
-    
-    virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-    virtual bool GetDialogData(tmSymbolDLG * dlg);
-    
+
+    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+
+    virtual bool GetDialogData(tmSymbolDLG *dlg);
+
 public:
     tmSymbolVectorLine();
-    tmSymbolVectorLine(const tmSymbolVectorLine & origin);
+
+    tmSymbolVectorLine(const tmSymbolVectorLine &origin);
+
     ~tmSymbolVectorLine();
-    
+
     virtual bool Serialize(tmSerialize &s);
+
     virtual wxColour GetColour();
-    virtual int GetWidth() {return m_lSymUnique.m_Width;}
-    virtual int GetShape() {return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];}
-    virtual int GetTransparency(){return m_lSymUnique.m_GlobalTransparency;}
-    
-    virtual void SetColour (const wxColour & colour){m_lSymUnique.m_Colour = colour;}
-    tmSymbolDataLineUnique * GetSymbolData(){return &m_lSymUnique;}
+
+    virtual int GetWidth()
+    { return m_lSymUnique.m_Width; }
+
+    virtual int GetShape()
+    { return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape]; }
+
+    virtual int GetTransparency()
+    { return m_lSymUnique.m_GlobalTransparency; }
+
+    virtual void SetColour(const wxColour &colour)
+    { m_lSymUnique.m_Colour = colour; }
+
+    tmSymbolDataLineUnique *GetSymbolData()
+    { return &m_lSymUnique; }
 };
-
-
 
 
 #endif

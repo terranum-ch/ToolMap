@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 DECLARE_EVENT_TYPE(tmEVT_SELECTION_DONE, -1)

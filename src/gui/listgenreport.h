@@ -1,4 +1,4 @@
- /*******************************************************//**
+/*******************************************************//**
 @file ListGenReport.h
 @brief wxListCtrl derived class for dealing with function 
 parameters (header)
@@ -20,7 +20,7 @@ wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/listctrl.h>
@@ -47,9 +47,9 @@ class ListGenDialog; // forward declaration
 
 enum LIST_FIELD_TYPE
 {
-	FIELD_STRING = 0,
-	FIELD_NUMBER = 1,
-	FIELD_DATE = 2
+    FIELD_STRING = 0,
+    FIELD_NUMBER = 1,
+    FIELD_DATE = 2
 };
 
 
@@ -63,34 +63,38 @@ enum LIST_FIELD_TYPE
  @date 15 November 2007
  ***********************************************************/
 class ListGenReport : public wxListCtrl
-	{		
-	protected:
-		ListGenMenu  * m_ListContextMenu;
-		TextParser * m_ImportParser;
-			
-		void CreateColumns(wxArrayString * pColsName, wxArrayInt * pColsSize=NULL);
-		 		
-		// events
-		virtual void OnDoubleClickItem (wxListEvent & event);
-		virtual void OnPressBackSpace (wxListEvent & event);
-		virtual void OnContextMenu (wxListEvent & event);
-		void OnMoveItemInList (wxCommandEvent & event);
-		virtual void OnSortColumns (wxListEvent & event);
-		
-					
-		//void OnStartDrag (wxListEvent & event); // not implemented now maybe layer...
-		void OnInit();
-		
-	public:
-		
-		void SortListItem(int x_col, int low , int high , int typecol,bool bAscending=TRUE);
-		
-		void SwapRow( int x_row1, int x_row2 );
-		
-		virtual int Compare( int iColumnCompareType, const wxString
-					&x_strValue1,  const wxString &x_strValue2, bool bAscending );
-		
-		/*********************************************//**
+{
+protected:
+    ListGenMenu *m_ListContextMenu;
+    TextParser *m_ImportParser;
+
+    void CreateColumns(wxArrayString *pColsName, wxArrayInt *pColsSize = NULL);
+
+    // events
+    virtual void OnDoubleClickItem(wxListEvent &event);
+
+    virtual void OnPressBackSpace(wxListEvent &event);
+
+    virtual void OnContextMenu(wxListEvent &event);
+
+    void OnMoveItemInList(wxCommandEvent &event);
+
+    virtual void OnSortColumns(wxListEvent &event);
+
+
+    //void OnStartDrag (wxListEvent & event); // not implemented now maybe layer...
+    void OnInit();
+
+public:
+
+    void SortListItem(int x_col, int low, int high, int typecol, bool bAscending = TRUE);
+
+    void SwapRow(int x_row1, int x_row2);
+
+    virtual int Compare(int iColumnCompareType, const wxString
+    &x_strValue1, const wxString &x_strValue2, bool bAscending);
+
+    /*********************************************//**
 		 @brief Constructor for derived class
 		 @details This is the basic constructor mainly used
 		 for derivated class. This constructor
@@ -103,9 +107,9 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		ListGenReport(wxWindow * parent, wxWindowID id, wxSize size=wxDefaultSize);
-		
-		/*********************************************//**
+    ListGenReport(wxWindow *parent, wxWindowID id, wxSize size = wxDefaultSize);
+
+    /*********************************************//**
 		 @brief Constructor
 		 @details This constructor invoke the
 		 CreateColumns() method and therfore the
@@ -127,18 +131,20 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		ListGenReport (wxWindow * parent, wxWindowID id, wxArrayString * pColsName, wxArrayInt * pColsSize=NULL, wxSize size=wxDefaultSize, long style = wxLC_REPORT);
-		
-		/*********************************************//**
+    ListGenReport(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = NULL,
+                  wxSize size = wxDefaultSize, long style = wxLC_REPORT);
+
+    /*********************************************//**
 		 @brief Desctructor
 		 @details Do nothing for the moment
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		~ListGenReport();
-		static const int ID_LIST;
-		
-		/***************************************************************************//**
+    ~ListGenReport();
+
+    static const int ID_LIST;
+
+    /***************************************************************************//**
 		 @brief Add an item to the list
 		 @details This function adds an item to the list and set the value of this item
 		 to the string value specified in parameter myValue.
@@ -147,10 +153,10 @@ class ListGenReport : public wxListCtrl
 		 is -1, it means at the end of the list
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		void AddItemToList(wxString myValue, int iPosition = -1);
-		
-		/*********************************************//**
+		 *******************************************************************************/
+    void AddItemToList(wxString myValue, int iPosition = -1);
+
+    /*********************************************//**
 		 @brief Get the text of a specified column for a
 		 specified item
 		 @details Retrive the text of a specified item
@@ -164,9 +170,9 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		wxString GetItemColText (int iItem, int iCol);
-		
-		/*********************************************//**
+    wxString GetItemColText(int iItem, int iCol);
+
+    /*********************************************//**
 		 @brief Set the text of a specified column for a
 		 specified item
 		 @details Allow to change the text of a specified
@@ -178,20 +184,20 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP
 		 @date 19 November 2007
 		 *************************************************/
-		bool SetItemText (int iItem, int iCol, wxString text);
-		
-		/*********************************************//**
+    bool SetItemText(int iItem, int iCol, wxString text);
+
+    /*********************************************//**
 		 @brief Get the first item selected
 		 @return  the zero based index of the first item
 		 selected
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 20 November 2007
 		 *************************************************/
-		long GetSelectedItem ();
-        
-        void SetSelectedItem (long index);
-		
-		/***************************************************************************//**
+    long GetSelectedItem();
+
+    void SetSelectedItem(long index);
+
+    /***************************************************************************//**
 		 @brief Get all selected item
 		 @details Return an array of long containing all selected items in the list
 		 (only usefull if list style isn't wxLC_SINGLE_SEL)
@@ -200,9 +206,9 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 14 March 2008
 		 *******************************************************************************/
-		int GetAllSelectedItem(wxArrayLong & results);
-		
-		/*****************************************************************//**
+    int GetAllSelectedItem(wxArrayLong &results);
+
+    /*****************************************************************//**
 		 @brief Move item in the list
 		 @details This function is intended to move item between two position
 		 in the list. This function could be used for exemple in response to
@@ -213,9 +219,9 @@ class ListGenReport : public wxListCtrl
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 23 November 2007
 		 *********************************************************************/
-		void MoveItem (int iItem, int iNewPos = 0);
-		
-		/***************************************************************************//**
+    void MoveItem(int iItem, int iNewPos = 0);
+
+    /***************************************************************************//**
 		 @brief Change list values using a ListGenDialog
 		 @details For simple list, we can use a ListGenDialog derived dialog. This
 		 dialog should implement the SetDlgData() and GetDlgData virtual function for
@@ -226,19 +232,19 @@ class ListGenReport : public wxListCtrl
 		 otherwise.
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		bool DataToList(ListGenDialog * pdialog,  wxArrayString & myValues);
-		
-		/***************************************************************************//**
+		 *******************************************************************************/
+    bool DataToList(ListGenDialog *pdialog, wxArrayString &myValues);
+
+    /***************************************************************************//**
 		 @brief Delete the selected item
 		 @details 
 		 @return  TRUE if an item was selected and is now deleted, otherwise FALSE.
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		bool DeleteSelectedItem();
-		
-		/***************************************************************************//**
+		 *******************************************************************************/
+    bool DeleteSelectedItem();
+
+    /***************************************************************************//**
 		 @brief Get all data from a row into an array of string
 		 @details This function does some aditionnal checks, first of all it checks that
 		 some columns exists in the list control and also that the specified item exist
@@ -251,10 +257,10 @@ class ListGenReport : public wxListCtrl
 		 detailled description)
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		virtual int GetAllDataAsStringArray(wxArrayString & myStringArray, long index);
-		
-		/***************************************************************************//**
+		 *******************************************************************************/
+    virtual int GetAllDataAsStringArray(wxArrayString &myStringArray, long index);
+
+    /***************************************************************************//**
 		 @brief Check for an item existence
 		 @details 
 		 @param index the zero based item index of the searched item
@@ -262,10 +268,10 @@ class ListGenReport : public wxListCtrl
 		 sent if the item dosen't exist.
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		bool ItemExist(long index);
-		
-		/***************************************************************************//**
+		 *******************************************************************************/
+    bool ItemExist(long index);
+
+    /***************************************************************************//**
 		 @brief Fill list using a string array
 		 @details This function could be used to set values into a list using a String
 		 array. This generic function may be used without knowledge of the list, it
@@ -280,10 +286,10 @@ class ListGenReport : public wxListCtrl
 		 @return  return TRUE if the array contain data false otherwise
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		virtual bool EditDataToList (const wxArrayString & myValue, int index =-1);
-		
-		/***************************************************************************//**
+		 *******************************************************************************/
+    virtual bool EditDataToList(const wxArrayString &myValue, int index = -1);
+
+    /***************************************************************************//**
 		 @brief Import and parse file to a list
 		 @details Uses the TextParser class for importing and parsing file into a list.
 		 @param filename string containing the filename (with path and extension)
@@ -293,10 +299,11 @@ class ListGenReport : public wxListCtrl
 		 @return  number of line parsed
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 14 December 2007
-		 *******************************************************************************/		
-		virtual int ImportParsedFileToListCtrl(const wxString & filename, 
-									   const int & FilterIndex);
-		/***************************************************************************//**
+		 *******************************************************************************/
+    virtual int ImportParsedFileToListCtrl(const wxString &filename,
+                                           const int &FilterIndex);
+
+    /***************************************************************************//**
 		 @brief Export values of a list to a parsed file
 		 @details This uses the TextParser class for parsing all the list values into a
 		 file. Supported parser are managed by the TextParser class.
@@ -307,67 +314,82 @@ class ListGenReport : public wxListCtrl
 		 @return  number of lines written to the file or 0 if nothing was written.
 		 @author Lucien Schreiber (c) CREALP 2007
 		 @date 18 December 2007
-		 *******************************************************************************/		
-		int ExportListParsedToFile (const wxString & filename,
-									const int & FilterIndex);
-		
-		int GetColumnClicked (wxWindow * parent, int iIndex, int iBorderMargin); 
-		
-		DECLARE_EVENT_TABLE();
-	};
+		 *******************************************************************************/
+    int ExportListParsedToFile(const wxString &filename,
+                               const int &FilterIndex);
 
+    int GetColumnClicked(wxWindow *parent, int iIndex, int iBorderMargin);
+
+DECLARE_EVENT_TABLE();
+};
 
 
 class ListGenReportWithDialog : public ListGenReport
 {
 protected:
-	wxDialog * m_pDialog;
-	
-	void InitMembers();
-	
-	virtual void BeforeAdding(){;}
-	virtual void BeforeDeleting() {;}
-	virtual void AfterAdding(bool bRealyAddItem){;}
-	virtual void BeforeEditing() {;}
-	virtual void AfterEditing (bool bRealyEdited) {;}
-	virtual void AddingValueToArray (wxArrayString & myImportedValues) {;}
-	virtual void OnDoubleClickItem (wxListEvent & event);
-	virtual void OnPressBackSpace (wxListEvent & event);
-	
-	
-public:
-	ListGenReportWithDialog(wxWindow * parent, 
-							wxWindowID id, 
-							wxSize size = wxDefaultSize);
-	ListGenReportWithDialog (wxWindow * parent, wxWindowID id, 
-							 wxArrayString * pColsName, 
-							 wxArrayInt * pColsSize=NULL, 
-							 wxSize size=wxDefaultSize,
-                             long style = wxLC_REPORT);
-	
-	~ListGenReportWithDialog();
-	
-	virtual int ImportParsedFileToListCtrl(const wxString & filename, 
-										   const int & FilterIndex);
-	
-	
-	void SetDialog (wxDialog * pDialog) {m_pDialog = pDialog;}
-	
-	
-	virtual void AddItem ();
-	virtual void DeleteItem();
-	void EditItem();
-	
+    wxDialog *m_pDialog;
 
-	
+    void InitMembers();
+
+    virtual void BeforeAdding()
+    { ; }
+
+    virtual void BeforeDeleting()
+    { ; }
+
+    virtual void AfterAdding(bool bRealyAddItem)
+    { ; }
+
+    virtual void BeforeEditing()
+    { ; }
+
+    virtual void AfterEditing(bool bRealyEdited)
+    { ; }
+
+    virtual void AddingValueToArray(wxArrayString &myImportedValues)
+    { ; }
+
+    virtual void OnDoubleClickItem(wxListEvent &event);
+
+    virtual void OnPressBackSpace(wxListEvent &event);
+
+
+public:
+    ListGenReportWithDialog(wxWindow *parent,
+                            wxWindowID id,
+                            wxSize size = wxDefaultSize);
+
+    ListGenReportWithDialog(wxWindow *parent, wxWindowID id,
+                            wxArrayString *pColsName,
+                            wxArrayInt *pColsSize = NULL,
+                            wxSize size = wxDefaultSize,
+                            long style = wxLC_REPORT);
+
+    ~ListGenReportWithDialog();
+
+    virtual int ImportParsedFileToListCtrl(const wxString &filename,
+                                           const int &FilterIndex);
+
+
+    void SetDialog(wxDialog *pDialog)
+    { m_pDialog = pDialog; }
+
+
+    virtual void AddItem();
+
+    virtual void DeleteItem();
+
+    void EditItem();
+
+
 };
 
 
 // enum for disabling menu based on position
 enum MENU_DISABLE
 {
-	MENU_DISABLE_TOP = 1,
-	MENU_DISABLE_BOTTOM = 2
+    MENU_DISABLE_TOP = 1,
+    MENU_DISABLE_BOTTOM = 2
 };
 
 
@@ -383,49 +405,56 @@ enum MENU_DISABLE
  @date 23 November 2007
  *********************************************************************/
 class ListGenMenu : public wxMenu
-	{
-		protected :
-		void MenuInit();
-		virtual wxMenu   *CreateContextMenu();
-		
-		
-		wxMenu *m_ContextMenu;		
-				
-		public :
-		ListGenMenu();
-		ListGenMenu(const wxString& title, long style = 0);
-		~ListGenMenu() {delete m_ContextMenu;}
-		
-		// disable portion of menu
-		void DisableMenuMove (int flags);
-		
-		
-		wxMenu * GetTheMenu() {return m_ContextMenu;}
-		
-	};
+{
+protected :
+    void MenuInit();
+
+    virtual wxMenu *CreateContextMenu();
 
 
-class ListGenDialog : public wxDialog 
-	{
-	protected:
-		//virtual void Init(){;}
-		//virtual void CreateDlgControls() {;}
-	public:
-		ListGenDialog(){;}
-		//ListGenDialog( wxWindow* parent, 
-		//			 wxWindowID id ,
-		//			 const wxString& caption,
-		//			 const wxPoint& pos,
-		//			 const wxSize& size,
-		//			 long style);
+    wxMenu *m_ContextMenu;
 
-		~ListGenDialog() {;}
-		
-		
-		
-		virtual  void GetDlgData( wxArrayString & myStringArray) = 0;
-		virtual void SetDlgData(wxArrayString & myStringArray)=0;
-	};
+public :
+    ListGenMenu();
+
+    ListGenMenu(const wxString &title, long style = 0);
+
+    ~ListGenMenu()
+    { delete m_ContextMenu; }
+
+    // disable portion of menu
+    void DisableMenuMove(int flags);
+
+
+    wxMenu *GetTheMenu()
+    { return m_ContextMenu; }
+
+};
+
+
+class ListGenDialog : public wxDialog
+{
+protected:
+    //virtual void Init(){;}
+    //virtual void CreateDlgControls() {;}
+public:
+    ListGenDialog()
+    { ; }
+    //ListGenDialog( wxWindow* parent,
+    //			 wxWindowID id ,
+    //			 const wxString& caption,
+    //			 const wxPoint& pos,
+    //			 const wxSize& size,
+    //			 long style);
+
+    ~ListGenDialog()
+    { ; }
+
+
+    virtual void GetDlgData(wxArrayString &myStringArray) = 0;
+
+    virtual void SetDlgData(wxArrayString &myStringArray)=0;
+};
 
 #endif
 

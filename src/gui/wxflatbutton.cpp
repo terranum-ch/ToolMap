@@ -26,16 +26,16 @@
 
 wxFlatButton::wxFlatButton()
 {
-	//InitwxFlatButton();
+    //InitwxFlatButton();
 }
 
 
 wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
 : wxButton(parent,id,label,wxDefaultPosition, size, wxBORDER_SIMPLE)
 {
-	/*InitwxFlatButton(id);
-	Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, 
-			(wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
+    /*InitwxFlatButton(id);
+    Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+            (wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
 }
 
 
@@ -50,7 +50,7 @@ IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxButton)
 /*
 void wxFlatButton::InitwxFlatButton(wxWindowID id)
 {
-	
+
 
 }
 
@@ -58,33 +58,34 @@ void wxFlatButton::InitwxFlatButton(wxWindowID id)
 
 void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 {
-	// if the toggle button is checked we uncheck it
-	if (GetValue() == TRUE)
-	{
-		SetValue(FALSE);
-		event.Skip(TRUE);
-	}
-	else
-	{
-		event.Skip(FALSE);
-		wxLogDebug(_T("Event FlatButton not skipped..."));
-	}
+    // if the toggle button is checked we uncheck it
+    if (GetValue() == TRUE)
+    {
+        SetValue(FALSE);
+        event.Skip(TRUE);
+    }
+    else
+    {
+        event.Skip(FALSE);
+        wxLogDebug(_T("Event FlatButton not skipped..."));
+    }
 }
 */
 
 /******************************  wxFlatButton (win and linux)**********************/
-#else 
+#else
+
 wxFlatButton::wxFlatButton()
 {
-	//InitwxFlatButton();
+    //InitwxFlatButton();
 }
 
 
-wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
-: wxButton(parent,id,label,wxDefaultPosition, size, wxFLATBUTTON_STYLE )
+wxFlatButton::wxFlatButton(wxWindow *parent, wxWindowID id, const wxString &label, wxSize size)
+        : wxButton(parent, id, label, wxDefaultPosition, size, wxFLATBUTTON_STYLE)
 {
-	//InitwxFlatButton();
-	
+    //InitwxFlatButton();
+
 }
 
 
@@ -93,7 +94,7 @@ wxFlatButton::~wxFlatButton()
 }
 
 
-IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxButton)
+IMPLEMENT_DYNAMIC_CLASS(wxFlatButton, wxButton)
 
 /*
 void wxFlatButton::InitwxFlatButton()

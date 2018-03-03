@@ -26,33 +26,30 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
 #include <wx/statline.h>
 
-class tmCrash_DLG : public wxDialog 
-	{
-	private:
-		wxTextCtrl* m_CrashFile;
-		void CreateControls(wxWindow * parent);
-		
-	protected:
-		
-	public:
-		tmCrash_DLG( wxWindow* parent, const wxString & crashfilename,
-					wxWindowID id = wxID_ANY, const wxString& title = _("Fatal exception"),
-					const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-					long style = wxDEFAULT_DIALOG_STYLE );
-		~tmCrash_DLG();
-		
-	};
+class tmCrash_DLG : public wxDialog
+{
+private:
+    wxTextCtrl *m_CrashFile;
 
+    void CreateControls(wxWindow *parent);
 
+protected:
 
+public:
+    tmCrash_DLG(wxWindow *parent, const wxString &crashfilename,
+                wxWindowID id = wxID_ANY, const wxString &title = _("Fatal exception"),
+                const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                long style = wxDEFAULT_DIALOG_STYLE);
 
+    ~tmCrash_DLG();
 
+};
 
 
 #endif

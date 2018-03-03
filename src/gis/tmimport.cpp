@@ -18,70 +18,71 @@
 
 #include "tmimport.h"
 
-tmImport::tmImport() {
-	m_FileName = wxFileName();
-	m_FileType = tmIMPORT_TYPE_SHP;
-	m_GeometryType = LAYER_SPATIAL_UNKNOWN;
-	m_FeatureCount = wxNOT_FOUND;
-	m_FieldsCount = wxNOT_FOUND;
-	m_ImportTarget = TOC_NAME_UNKNOWN;
+tmImport::tmImport()
+{
+    m_FileName = wxFileName();
+    m_FileType = tmIMPORT_TYPE_SHP;
+    m_GeometryType = LAYER_SPATIAL_UNKNOWN;
+    m_FeatureCount = wxNOT_FOUND;
+    m_FieldsCount = wxNOT_FOUND;
+    m_ImportTarget = TOC_NAME_UNKNOWN;
 }
 
 
-
-tmImport::~tmImport() {
+tmImport::~tmImport()
+{
 }
 
 
-
-bool tmImport::Open(const wxFileName & filename) {
-	// check if file exists
-	wxFileName myFileName = filename;
-	if(myFileName.FileExists() == false)
-	{
-		wxLogError(_("File '%s' doesn't exist"), myFileName.GetFullName().c_str());
-		return false;
-	}
-	m_FileName = filename;
-	return true;
+bool tmImport::Open(const wxFileName &filename)
+{
+    // check if file exists
+    wxFileName myFileName = filename;
+    if (myFileName.FileExists() == false) {
+        wxLogError(_("File '%s' doesn't exist"), myFileName.GetFullName().c_str());
+        return false;
+    }
+    m_FileName = filename;
+    return true;
 }
 
 
+bool tmImport::IsOk()
+{
+    if (m_FileName.IsOk() == false) {
+        return false;
+    }
 
-bool tmImport::IsOk() {
-	if (m_FileName.IsOk() == false) {
-		return false;
-	}
-	
-	if (m_GeometryType == LAYER_SPATIAL_UNKNOWN) {
-		return false;
-	}
-	
-	if (m_FeatureCount == wxNOT_FOUND) {
-		return false;
-	}
-	
-	if (m_ImportTarget == TOC_NAME_UNKNOWN) {
-		return false;
-	}
-	
-	return true;
+    if (m_GeometryType == LAYER_SPATIAL_UNKNOWN) {
+        return false;
+    }
+
+    if (m_FeatureCount == wxNOT_FOUND) {
+        return false;
+    }
+
+    if (m_ImportTarget == TOC_NAME_UNKNOWN) {
+        return false;
+    }
+
+    return true;
 }
 
 
-
-void tmImport::SetTarget(TOC_GENERIC_NAME value) {
-  m_ImportTarget = value;
+void tmImport::SetTarget(TOC_GENERIC_NAME value)
+{
+    m_ImportTarget = value;
 }
 
 
-wxArrayString tmImport::GetTargetSupportedName() {
-	wxArrayInt mySupportedTargets = GetTargetSupported();
-	wxArrayString mySupportedTargetsName;
-	for (unsigned int i = 0; i< mySupportedTargets.GetCount(); i++) {
-		mySupportedTargetsName.Add(TOC_GENERIC_NAME_STRING[mySupportedTargets.Item(i)]);
-	}
-	return mySupportedTargetsName;
+wxArrayString tmImport::GetTargetSupportedName()
+{
+    wxArrayInt mySupportedTargets = GetTargetSupported();
+    wxArrayString mySupportedTargetsName;
+    for (unsigned int i = 0; i < mySupportedTargets.GetCount(); i++) {
+        mySupportedTargetsName.Add(TOC_GENERIC_NAME_STRING[mySupportedTargets.Item(i)]);
+    }
+    return mySupportedTargetsName;
 }
 
 

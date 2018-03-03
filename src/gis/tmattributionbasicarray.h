@@ -26,21 +26,22 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-class tmAttributionBasic  : public wxObject
-	{
-	private:
-		void InitMemberValues();
-		
-	public:
-		// ctor - dtor
-		tmAttributionBasic();
-		~tmAttributionBasic();
-		
-		long m_Oid;
-		wxArrayLong m_Values;
+class tmAttributionBasic : public wxObject
+{
+private:
+    void InitMemberValues();
+
+public:
+    // ctor - dtor
+    tmAttributionBasic();
+
+    ~tmAttributionBasic();
+
+    long m_Oid;
+    wxArrayLong m_Values;
 };
 
 
@@ -48,17 +49,18 @@ WX_DECLARE_OBJARRAY(tmAttributionBasic, tmAttributionBasicArray);
 
 
 class tmLayerValue : public wxObject
-	{
-	private:
-		void InitMemberValues();
-		
-	public:
-		tmLayerValue();
-		~tmLayerValue();
-		
-		long m_Oid;
-		wxString m_Value;
-	};
+{
+private:
+    void InitMemberValues();
+
+public:
+    tmLayerValue();
+
+    ~tmLayerValue();
+
+    long m_Oid;
+    wxString m_Value;
+};
 
 WX_DECLARE_OBJARRAY(tmLayerValue, tmLayerValueArray);
 

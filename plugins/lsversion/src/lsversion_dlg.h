@@ -26,31 +26,37 @@
 #endif
 
 
-
-class lsVersionDlg : public wxDialog {
+class lsVersionDlg : public wxDialog
+{
 private:
-	wxStaticBitmap* m_BmpCtrl;
-	wxStaticText* m_TitleCtrl;
-	wxStaticText* m_ProgNameCtrl;
-	wxTextCtrl* m_ModulesCtrl;
-	wxStaticText* m_CopyRightCtrl;
-	
-	void _CreateControls();
-	
+    wxStaticBitmap *m_BmpCtrl;
+    wxStaticText *m_TitleCtrl;
+    wxStaticText *m_ProgNameCtrl;
+    wxTextCtrl *m_ModulesCtrl;
+    wxStaticText *m_CopyRightCtrl;
+
+    void _CreateControls();
+
 public:
-    lsVersionDlg(wxWindow * parent, wxWindowID id, const wxString & title,
-				 const wxPoint & pos = wxDefaultPosition,
-				 const wxSize & size = wxDefaultSize,
-				 long style = wxDEFAULT_DIALOG_STYLE);
+    lsVersionDlg(wxWindow *parent, wxWindowID id, const wxString &title,
+                 const wxPoint &pos = wxDefaultPosition,
+                 const wxSize &size = wxDefaultSize,
+                 long style = wxDEFAULT_DIALOG_STYLE);
+
     virtual ~lsVersionDlg();
-	
-    void SetBitmapLogo(const wxBitmap & bmp);
+
+    void SetBitmapLogo(const wxBitmap &bmp);
+
     void SetTitleAndCaption(wxString title);
+
     void SetSoftName(wxString name);
+
     void SetModulesName(wxString name);
+
     void SetCopyright(wxString name);
-	
-	virtual int ShowModal();
+
+    virtual int ShowModal();
 };
+
 #endif
 

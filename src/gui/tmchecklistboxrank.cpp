@@ -25,21 +25,19 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-tmCheckListBoxRank::tmCheckListBoxRank(wxWindow * parent,
-									   wxWindowID id,
-									   const wxPoint & pos ,
-									   const wxSize & size ,
-									   int nStrings ,
-									   const wxString * choices,
-									   long style ,
-									   const wxValidator & validator ,
-									   const wxString & name )
+tmCheckListBoxRank::tmCheckListBoxRank(wxWindow *parent,
+                                       wxWindowID id,
+                                       const wxPoint &pos,
+                                       const wxSize &size,
+                                       int nStrings,
+                                       const wxString *choices,
+                                       long style,
+                                       const wxValidator &validator,
+                                       const wxString &name)
 {
-	Init();
-	Create(parent, id, pos, size, nStrings, choices, style, validator, name);
+    Init();
+    Create(parent, id, pos, size, nStrings, choices, style, validator, name);
 }
-
-
 
 
 /***************************************************************************//**
@@ -48,46 +46,41 @@ tmCheckListBoxRank::tmCheckListBoxRank(wxWindow * parent,
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-bool tmCheckListBoxRank::Create(wxWindow * parent,
-			wxWindowID id, 
-			const wxPoint & pos ,
-			const wxSize & size ,
-			int nStrings ,
-			const wxString *choices ,
-			long style ,
-			const wxValidator& validator ,
-			const wxString& name )
+bool tmCheckListBoxRank::Create(wxWindow *parent,
+                                wxWindowID id,
+                                const wxPoint &pos,
+                                const wxSize &size,
+                                int nStrings,
+                                const wxString *choices,
+                                long style,
+                                const wxValidator &validator,
+                                const wxString &name)
 {
-	
-	if (!tmCheckListBox::Create(parent, id, pos, size, nStrings, choices, style, validator,name))
-	{
-		return FALSE;
-	}
-	
-	if (style & tmLB_MENU)
-	{
-		// add menu entry and attach them to functions
-		if (!AddToMenu())
-		{
-			return FALSE;
-		}
-		
-		// all seems correct, connect the menu now
-		Connect(tmCHECK_MENU_SAVE_RANK,
-				wxEVT_COMMAND_MENU_SELECTED, 
-				wxCommandEventHandler(tmCheckListBoxRank::OnSaveOrder));	
-		
-		
-	}
-	else // tmLB_MENU not defined, this may cause problems
-	{
-		wxLogDebug(_T("Style menu not defined for tmCheckListboxRank, no enhanced functions actives"));
-		return FALSE;
-	}
-	
-	return TRUE;
-}
 
+    if (!tmCheckListBox::Create(parent, id, pos, size, nStrings, choices, style, validator, name)) {
+        return FALSE;
+    }
+
+    if (style & tmLB_MENU) {
+        // add menu entry and attach them to functions
+        if (!AddToMenu()) {
+            return FALSE;
+        }
+
+        // all seems correct, connect the menu now
+        Connect(tmCHECK_MENU_SAVE_RANK,
+                wxEVT_COMMAND_MENU_SELECTED,
+                wxCommandEventHandler(tmCheckListBoxRank::OnSaveOrder));
+
+
+    } else // tmLB_MENU not defined, this may cause problems
+    {
+        wxLogDebug(_T("Style menu not defined for tmCheckListboxRank, no enhanced functions actives"));
+        return FALSE;
+    }
+
+    return TRUE;
+}
 
 
 /***************************************************************************//**
@@ -98,9 +91,8 @@ bool tmCheckListBoxRank::Create(wxWindow * parent,
  *******************************************************************************/
 tmCheckListBoxRank::~tmCheckListBoxRank()
 {
-	
-}
 
+}
 
 
 /***************************************************************************//**
@@ -110,9 +102,9 @@ tmCheckListBoxRank::~tmCheckListBoxRank()
  *******************************************************************************/
 void tmCheckListBoxRank::Init()
 {
-	m_RankColName = _T("RANK");
-	m_TableName = TABLE_NAME_OBJECTS;
-	m_pDB = NULL;
+    m_RankColName = _T("RANK");
+    m_TableName = TABLE_NAME_OBJECTS;
+    m_pDB = NULL;
 }
 
 
@@ -126,17 +118,16 @@ void tmCheckListBoxRank::Init()
  *******************************************************************************/
 bool tmCheckListBoxRank::AddToMenu()
 {
-	if (GetPopupMenu() == NULL){
-		wxFAIL;
-		wxLogError(_T("Pointer to the popup menu is NULL"));
-		return false;
-	}
-	
-	GetPopupMenu()->AppendSeparator();
-	GetPopupMenu()->Append(tmCHECK_MENU_SAVE_RANK, _("Save order"));
-	return TRUE;
-}
+    if (GetPopupMenu() == NULL) {
+        wxFAIL;
+        wxLogError(_T("Pointer to the popup menu is NULL"));
+        return false;
+    }
 
+    GetPopupMenu()->AppendSeparator();
+    GetPopupMenu()->Append(tmCHECK_MENU_SAVE_RANK, _("Save order"));
+    return TRUE;
+}
 
 
 /***************************************************************************//**
@@ -147,10 +138,10 @@ bool tmCheckListBoxRank::AddToMenu()
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-void tmCheckListBoxRank::SetRankColName(const wxString & colrank)
+void tmCheckListBoxRank::SetRankColName(const wxString &colrank)
 {
-	m_RankColName = colrank;
-} 
+    m_RankColName = colrank;
+}
 
 
 /***************************************************************************//**
@@ -162,9 +153,9 @@ void tmCheckListBoxRank::SetRankColName(const wxString & colrank)
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-void tmCheckListBoxRank::SetTableName (const wxString & tabname)
+void tmCheckListBoxRank::SetTableName(const wxString &tabname)
 {
-	m_TableName = tabname;
+    m_TableName = tabname;
 }
 
 
@@ -174,29 +165,27 @@ void tmCheckListBoxRank::SetTableName (const wxString & tabname)
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-void tmCheckListBoxRank::OnSaveOrder (wxCommandEvent & event)
+void tmCheckListBoxRank::OnSaveOrder(wxCommandEvent &event)
 {
-	// check that the database is correct
-	if (m_pDB == NULL)
-	{
-		wxLogDebug(_T("Error : pointer to database not defined"));
-		return ;
-	}
-	
-	// preparing statement
-	wxString sqlstatement = _T("");
-	if(!PrepareOrderStatement(sqlstatement))
-	   return;
-	
-	// do the query
-	if (m_pDB->DataBaseQueryNoResults(sqlstatement)==false)
-	{
-		wxLogError(_("Error saving order to project"));
-	    wxLogDebug(_T("Order statement is : ") + sqlstatement);
-	}
-	
-	
-	wxLogDebug(_T("Saving rank"));
+    // check that the database is correct
+    if (m_pDB == NULL) {
+        wxLogDebug(_T("Error : pointer to database not defined"));
+        return;
+    }
+
+    // preparing statement
+    wxString sqlstatement = _T("");
+    if (!PrepareOrderStatement(sqlstatement))
+        return;
+
+    // do the query
+    if (m_pDB->DataBaseQueryNoResults(sqlstatement) == false) {
+        wxLogError(_("Error saving order to project"));
+        wxLogDebug(_T("Order statement is : ") + sqlstatement);
+    }
+
+
+    wxLogDebug(_T("Saving rank"));
 }
 
 
@@ -210,9 +199,9 @@ void tmCheckListBoxRank::OnSaveOrder (wxCommandEvent & event)
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-bool tmCheckListBoxRank::GetOrder ( wxArrayLong & id)
+bool tmCheckListBoxRank::GetOrder(wxArrayLong &id)
 {
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -225,33 +214,30 @@ bool tmCheckListBoxRank::GetOrder ( wxArrayLong & id)
  @author Lucien Schreiber (c) CREALP 2008
  @date 20 May 2008
  *******************************************************************************/
-bool tmCheckListBoxRank::PrepareOrderStatement (wxString & sqlstatement)
+bool tmCheckListBoxRank::PrepareOrderStatement(wxString &sqlstatement)
 {
-	unsigned int iListItemCount = GetCount();
-	if (iListItemCount == 0)
-	{
-		wxLogDebug(_T("List is empty, not able to set the order"));
-		return FALSE;
-	}
-	
-	// get the items
-	wxString itemname = wxEmptyString;
-	long itemid = 0;
-	bool itemchecked = FALSE;
-	for (unsigned i = 0; i<iListItemCount; i++)
-	{
-		if(!GetItem(i, itemid, itemname, itemchecked))
-		{	
-			wxLogDebug(_T("Getting item n. %d error"),i);
-			return FALSE;
-		}
-		
-		sqlstatement.Append(wxString::Format(_T("UPDATE %s SET %s=%d WHERE %s=%ld; "),
-											 GetTableName().c_str(),
-											 GetRankColName().c_str(),
-											 i,
-											 _T("OBJECT_ID"),
-											 itemid));
-	}
-	return TRUE;
+    unsigned int iListItemCount = GetCount();
+    if (iListItemCount == 0) {
+        wxLogDebug(_T("List is empty, not able to set the order"));
+        return FALSE;
+    }
+
+    // get the items
+    wxString itemname = wxEmptyString;
+    long itemid = 0;
+    bool itemchecked = FALSE;
+    for (unsigned i = 0; i < iListItemCount; i++) {
+        if (!GetItem(i, itemid, itemname, itemchecked)) {
+            wxLogDebug(_T("Getting item n. %d error"), i);
+            return FALSE;
+        }
+
+        sqlstatement.Append(wxString::Format(_T("UPDATE %s SET %s=%d WHERE %s=%ld; "),
+                                             GetTableName().c_str(),
+                                             GetRankColName().c_str(),
+                                             i,
+                                             _T("OBJECT_ID"),
+                                             itemid));
+    }
+    return TRUE;
 }

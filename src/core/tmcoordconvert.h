@@ -17,9 +17,11 @@
 #define _TMCOORDCONVERT_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/stdpaths.h>
 #include <ogr_spatialref.h>
 #include <gdalwarper.h>
@@ -28,7 +30,9 @@
 
 
 class tmRealRect;
-class tmCoordConvert {
+
+class tmCoordConvert
+{
 private:
     static wxString m_ProjTextGoogle;
     static wxString m_ProjTextCH1903;
@@ -36,30 +40,39 @@ private:
     static wxString m_ProjTextWGS84;
     static double m_Geod_a;
     static double m_Geod_f;
-    
+
     PRJDEF_PROJ_TYPE m_ProjType;
-    
-    OGRSpatialReference * _CreateSpatialRef(PRJDEF_PROJ_TYPE proj);
-    OGRSpatialReference * _CreateSpatialRefGoogle();
-    wxRealPoint _Transform ( OGRSpatialReference * refin, OGRSpatialReference * refout, const wxRealPoint & in);
-    wxRealPoint _GetPointLocalFromWGS( const wxRealPoint & pt);
-    
+
+    OGRSpatialReference *_CreateSpatialRef(PRJDEF_PROJ_TYPE proj);
+
+    OGRSpatialReference *_CreateSpatialRefGoogle();
+
+    wxRealPoint _Transform(OGRSpatialReference *refin, OGRSpatialReference *refout, const wxRealPoint &in);
+
+    wxRealPoint _GetPointLocalFromWGS(const wxRealPoint &pt);
+
 public:
     tmCoordConvert(PRJDEF_PROJ_TYPE projtype);
+
     virtual ~tmCoordConvert();
-    
-    wxRealPoint GetPointWGS(const wxRealPoint & in);
-    wxRealPoint GetPointGoogle(const wxRealPoint & in);
-    
-    
-    wxBitmap * GetProjectGoogleRaster (wxBitmap * web_raster, tmRealRect * coord_web, tmRealRect * coord_local);
-    
-    double GetDistance (const wxRealPoint & p1, const wxRealPoint & p2 );
-    wxRealPoint GetPointAtDistance (const wxRealPoint & p1, double distance, double azimut);
-    wxString GetDistanceHuman (double distanceM);
-    
-    char * GetWKTProjectionGoogle ();
-    char * GetWKTProjectionLocal ();
-    
+
+    wxRealPoint GetPointWGS(const wxRealPoint &in);
+
+    wxRealPoint GetPointGoogle(const wxRealPoint &in);
+
+
+    wxBitmap *GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRect *coord_web, tmRealRect *coord_local);
+
+    double GetDistance(const wxRealPoint &p1, const wxRealPoint &p2);
+
+    wxRealPoint GetPointAtDistance(const wxRealPoint &p1, double distance, double azimut);
+
+    wxString GetDistanceHuman(double distanceM);
+
+    char *GetWKTProjectionGoogle();
+
+    char *GetWKTProjectionLocal();
+
 };
+
 #endif

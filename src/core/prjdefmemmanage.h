@@ -57,89 +57,119 @@
 
 
 class PrjDefMemManage
-	{
-	private:
-		// variables
-		ProjectDefMemoryLayers * m_pActiveLayer;
-		ProjectDefMemoryFields * m_pActiveField;
-		int m_iActualObj;
-		int m_iActualField;
-		int m_iActualCodedVal;
-		int m_iActualLayers;
-		
-		// member functions
-		void InitDefaultValues();
-		
-	public:
-		// variables
-		wxString m_PrjPath;
-		wxString m_PrjName;
-		wxString m_PrjAuthors;
-		wxString m_PrjSummary;
-		PRJDEF_UNIT_TYPE m_PrjUnitType;
-		PRJDEF_PROJ_TYPE m_PrjProjType;
-		PrjMemLayersArray m_PrjLayerArray;
-		PrjMemScaleArray m_ScaleArray;
-		
-		wxArrayLong m_StoreDeleteIDObj;
-		wxArrayLong m_StoreDeleteScale;
-		wxArrayLong m_StoreDeleteLayers;
-				
-		// ctor - dtor
-		PrjDefMemManage();
-		~PrjDefMemManage();
-		
-		
-		// layer members functions
-		ProjectDefMemoryLayers *		AddLayer();
-		int								RemoveLayer(int iIndex = -1);// remove last item by default...
-		bool							RemoveLayer(const wxString & layerName);
-		ProjectDefMemoryLayers *		FindLayer(const wxString & layerName);
-		ProjectDefMemoryLayers *		FindLayer(unsigned int iIndex = 0);
-		ProjectDefMemoryLayers *		FindLayerByRealID (unsigned int iIndex);
-		void							SetActiveLayer(ProjectDefMemoryLayers * ActiveLayer)
-													{m_pActiveLayer = ActiveLayer;}
-		ProjectDefMemoryLayers *		GetActiveLayer(){return m_pActiveLayer;}
-		int								GetCountLayers(){return m_PrjLayerArray.GetCount();}
-		ProjectDefMemoryLayers *		GetNextLayer ();
-	
-		// object members functions
-		ProjectDefMemoryObjects *		AddObject ();
-		int								RemoveObject (int iIndex = -1); // remove last
-		bool							RemoveObject(const wxString & ObjectName);
-		ProjectDefMemoryObjects *		FindObject(const wxString & ObjectName);
-		ProjectDefMemoryObjects *		FindObject(unsigned int iIndex = 0);
-		ProjectDefMemoryObjects *		GetNextObjects();
-		int								GetCountObject();
-		
-		// field members functions
-		ProjectDefMemoryFields *		AddField ();
-		int								RemoveField (int iIndex = -1); // remove last
-		bool							RemoveField (const wxString & FieldName); 
-		ProjectDefMemoryFields *		FindField(const wxString & FieldName);
-		ProjectDefMemoryFields *		FindField(unsigned int iIndex = 0);
-		ProjectDefMemoryFields *		GetNextField();
-		int								GetCountFields();
-		void							SetActiveField(ProjectDefMemoryFields * ActiveField)
-													{m_pActiveField = ActiveField;}
-		ProjectDefMemoryFields *		GetActiveField(){return m_pActiveField;}
-		
-		// coded values belonging to fields
-		ProjectDefMemoryFieldsCodedVal *AddCodedValue();
-		int								RemoveCodedValue (int iIndex = -1); // remove last
-		bool							RemoveCodedValue (const wxString & ValueName); 
-		ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString & ValueName, int & IndexPos);
-		ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
-		int								GetCountCodedValue();
-		
-		// scale functions 
-		ProjectDefMemoryScale *			AddScale(const long & scale, const int & DBindex = -1);
-		ProjectDefMemoryScale *			FindScale (const long & oldscale);
-		bool							RemoveScale (const long & oldscale);
-		
-		// copy function
-		PrjDefMemManage &				operator=(const PrjDefMemManage & source);		
-	};
+{
+private:
+    // variables
+    ProjectDefMemoryLayers *m_pActiveLayer;
+    ProjectDefMemoryFields *m_pActiveField;
+    int m_iActualObj;
+    int m_iActualField;
+    int m_iActualCodedVal;
+    int m_iActualLayers;
+
+    // member functions
+    void InitDefaultValues();
+
+public:
+    // variables
+    wxString m_PrjPath;
+    wxString m_PrjName;
+    wxString m_PrjAuthors;
+    wxString m_PrjSummary;
+    PRJDEF_UNIT_TYPE m_PrjUnitType;
+    PRJDEF_PROJ_TYPE m_PrjProjType;
+    PrjMemLayersArray m_PrjLayerArray;
+    PrjMemScaleArray m_ScaleArray;
+
+    wxArrayLong m_StoreDeleteIDObj;
+    wxArrayLong m_StoreDeleteScale;
+    wxArrayLong m_StoreDeleteLayers;
+
+    // ctor - dtor
+    PrjDefMemManage();
+
+    ~PrjDefMemManage();
+
+
+    // layer members functions
+    ProjectDefMemoryLayers *AddLayer();
+
+    int RemoveLayer(int iIndex = -1);// remove last item by default...
+    bool RemoveLayer(const wxString &layerName);
+
+    ProjectDefMemoryLayers *FindLayer(const wxString &layerName);
+
+    ProjectDefMemoryLayers *FindLayer(unsigned int iIndex = 0);
+
+    ProjectDefMemoryLayers *FindLayerByRealID(unsigned int iIndex);
+
+    void SetActiveLayer(ProjectDefMemoryLayers *ActiveLayer)
+    { m_pActiveLayer = ActiveLayer; }
+
+    ProjectDefMemoryLayers *GetActiveLayer()
+    { return m_pActiveLayer; }
+
+    int GetCountLayers()
+    { return m_PrjLayerArray.GetCount(); }
+
+    ProjectDefMemoryLayers *GetNextLayer();
+
+    // object members functions
+    ProjectDefMemoryObjects *AddObject();
+
+    int RemoveObject(int iIndex = -1); // remove last
+    bool RemoveObject(const wxString &ObjectName);
+
+    ProjectDefMemoryObjects *FindObject(const wxString &ObjectName);
+
+    ProjectDefMemoryObjects *FindObject(unsigned int iIndex = 0);
+
+    ProjectDefMemoryObjects *GetNextObjects();
+
+    int GetCountObject();
+
+    // field members functions
+    ProjectDefMemoryFields *AddField();
+
+    int RemoveField(int iIndex = -1); // remove last
+    bool RemoveField(const wxString &FieldName);
+
+    ProjectDefMemoryFields *FindField(const wxString &FieldName);
+
+    ProjectDefMemoryFields *FindField(unsigned int iIndex = 0);
+
+    ProjectDefMemoryFields *GetNextField();
+
+    int GetCountFields();
+
+    void SetActiveField(ProjectDefMemoryFields *ActiveField)
+    { m_pActiveField = ActiveField; }
+
+    ProjectDefMemoryFields *GetActiveField()
+    { return m_pActiveField; }
+
+    // coded values belonging to fields
+    ProjectDefMemoryFieldsCodedVal *AddCodedValue();
+
+    int RemoveCodedValue(int iIndex = -1); // remove last
+    bool RemoveCodedValue(const wxString &ValueName);
+
+    ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString &ValueName, int &IndexPos);
+
+    ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
+
+    int GetCountCodedValue();
+
+    // scale functions
+    ProjectDefMemoryScale *AddScale(const long &scale, const int &DBindex = -1);
+
+    ProjectDefMemoryScale *FindScale(const long &oldscale);
+
+    bool RemoveScale(const long &oldscale);
+
+    // copy function
+    PrjDefMemManage &operator=(const PrjDefMemManage &source);
+};
 
 #endif
 

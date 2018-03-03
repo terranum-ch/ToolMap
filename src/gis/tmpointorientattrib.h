@@ -26,36 +26,41 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "tmpointorient.h"
 #include "../database/database_tm.h"
 
 
-class tmPointOrientAttrib : public tmPointOrient 
-	{
-	private:
-		long m_Oid;
-		long m_LayerId;
-		DataBaseTM * m_DB;
-		ProjectDefMemoryFields m_OrientField;
-		
-		void InitMemberValues();
-		bool POA_IsOIDInited();
-		bool POA_IsAttributed(long & attributedvalue);
-		bool POA_HasOrientField();
-		
-	protected:
-	public:
-		tmPointOrientAttrib();
-		void Create (DataBaseTM * database,  long oid);
-		~tmPointOrientAttrib();
-		
-		bool IsCorrectType();
-		bool Update ();
-};
+class tmPointOrientAttrib : public tmPointOrient
+{
+private:
+    long m_Oid;
+    long m_LayerId;
+    DataBaseTM *m_DB;
+    ProjectDefMemoryFields m_OrientField;
 
+    void InitMemberValues();
+
+    bool POA_IsOIDInited();
+
+    bool POA_IsAttributed(long &attributedvalue);
+
+    bool POA_HasOrientField();
+
+protected:
+public:
+    tmPointOrientAttrib();
+
+    void Create(DataBaseTM *database, long oid);
+
+    ~tmPointOrientAttrib();
+
+    bool IsCorrectType();
+
+    bool Update();
+};
 
 
 #endif

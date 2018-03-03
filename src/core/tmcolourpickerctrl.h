@@ -51,31 +51,31 @@
 const wxSize tmCOLOURPICKERCTRL_SIZE (15,15);
 
 class tmColourPickerCtrl : public wxBitmapButton
-	{
-	private:
-		wxColour m_Colour;
-		void InitMemberValues();
-		wxBitmap CreateColourBitmap (const wxColour & col);
-		
-		// event function
-		void OnChooseColour (wxCommandEvent & event);
-				
-	protected:
-	public:
-		tmColourPickerCtrl();
-		tmColourPickerCtrl(wxWindow * parent, wxWindowID id,
-						   const wxColour& colour = *wxBLACK,
-						   const wxPoint & pos = wxDefaultPosition,
-						   const wxSize & size = wxDefaultSize);
-		~tmColourPickerCtrl();
-		
-		
-		wxColour GetColour(){return m_Colour;}
-		void SetColour(const wxColour & col);
-		
-		
-		
-	};
+    {
+    private:
+        wxColour m_Colour;
+        void InitMemberValues();
+        wxBitmap CreateColourBitmap (const wxColour & col);
+
+        // event function
+        void OnChooseColour (wxCommandEvent & event);
+
+    protected:
+    public:
+        tmColourPickerCtrl();
+        tmColourPickerCtrl(wxWindow * parent, wxWindowID id,
+                           const wxColour& colour = *wxBLACK,
+                           const wxPoint & pos = wxDefaultPosition,
+                           const wxSize & size = wxDefaultSize);
+        ~tmColourPickerCtrl();
+
+
+        wxColour GetColour(){return m_Colour;}
+        void SetColour(const wxColour & col);
+
+
+
+    };
 
 
 #else // UNDER WINDOWS AND LINUX, USE wxColourPickerCtrl
@@ -83,17 +83,21 @@ class tmColourPickerCtrl : public wxBitmapButton
 #include <wx/clrpicker.h>
 
 class tmColourPickerCtrl : public wxColourPickerCtrl
-	{
-	private:
-	protected:
-	public:
-		tmColourPickerCtrl(){;}
-		tmColourPickerCtrl(wxWindow * parent, wxWindowID id,
-						   const wxColour& colour = *wxBLACK,
-						   const wxPoint & pos = wxDefaultPosition,
-						   const wxSize & size = wxDefaultSize);
-		~tmColourPickerCtrl(){;}
-	};
+{
+private:
+protected:
+public:
+    tmColourPickerCtrl()
+    { ; }
+
+    tmColourPickerCtrl(wxWindow *parent, wxWindowID id,
+                       const wxColour &colour = *wxBLACK,
+                       const wxPoint &pos = wxDefaultPosition,
+                       const wxSize &size = wxDefaultSize);
+
+    ~tmColourPickerCtrl()
+    { ; }
+};
 
 
 #endif

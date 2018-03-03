@@ -18,6 +18,7 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
@@ -28,93 +29,111 @@
 
 
 #ifndef MAX
-#  define MIN(a,b)      ((a<b) ? a : b)
-#  define MAX(a,b)      ((a>b) ? a : b)
+#  define MIN(a, b)      ((a<b) ? a : b)
+#  define MAX(a, b)      ((a>b) ? a : b)
 #endif
 
 
 class PrjDefMemManage;
 
-class PdfDocument {
+class PdfDocument
+{
 private:
     ArrayPdfLayer m_pdfLayers;
-	
+
     wxString m_prjName;
-    wxPdfDocument * m_pdf;
+    wxPdfDocument *m_pdf;
     wxPaperSize m_PaperFormat;
-	double m_PaperWidth;
+    double m_PaperWidth;
     double m_PaperHeight;
-	
+
     wxPrintOrientation m_PaperOrientation;
     int m_FontSize;
-	double m_LineSpacing;
-	double m_UsablePageWidth;
-	bool m_Decorate;
-	bool m_TwoCols;
+    double m_LineSpacing;
+    double m_UsablePageWidth;
+    bool m_Decorate;
+    bool m_TwoCols;
     bool m_PageBreak;
-	bool m_OnePage;
-	
+    bool m_OnePage;
+
     bool _GenerateTitle();
-	void _UpdatePageWidth();
-	void _ComputeOnePageSize(double & width, double & height);
+
+    void _UpdatePageWidth();
+
+    void _ComputeOnePageSize(double &width, double &height);
+
     bool _OrderLayers();
-	
+
 public:
-    PdfDocument(PrjDefMemManage * project);
+    PdfDocument(PrjDefMemManage *project);
+
     virtual ~PdfDocument();
-	
-    bool Generate(const wxFileName & filename);
-	
-	inline const int GetFontSize() const;	
-	inline const double GetLineSpacing() const;
-	inline const bool IsDecorated() const;
-	
+
+    bool Generate(const wxFileName &filename);
+
+    inline const int GetFontSize() const;
+
+    inline const double GetLineSpacing() const;
+
+    inline const bool IsDecorated() const;
+
     void SetDecorate(bool value);
-	void SetLineSpacing(double value);	
-	void SetFontSize(int value);
-	void SetPaperFormat(wxPaperSize value);
-	void SetPaperSize(double width, double height);
+
+    void SetLineSpacing(double value);
+
+    void SetFontSize(int value);
+
+    void SetPaperFormat(wxPaperSize value);
+
+    void SetPaperSize(double width, double height);
+
     void SetPaperOrientation(wxPrintOrientation value);
-	
+
     double GetUsablePageWidth();
-	bool IsLandscape();
-	wxPdfDocument * GetPdfRef();
-	
-	inline const bool IsTwoColsLayout() const;
+
+    bool IsLandscape();
+
+    wxPdfDocument *GetPdfRef();
+
+    inline const bool IsTwoColsLayout() const;
+
     void SetTwoColsLayout(bool value);
-	
+
     inline const bool HasPageBreak() const;
+
     void SetPageBreak(bool value);
-	
-	 void SetOnePage(bool value);
+
+    void SetOnePage(bool value);
 };
 
 
-inline const int PdfDocument::GetFontSize() const {
-	return m_FontSize;
+inline const int PdfDocument::GetFontSize() const
+{
+    return m_FontSize;
 }
 
 
-
-inline const double PdfDocument::GetLineSpacing() const {
-	return m_LineSpacing;
+inline const double PdfDocument::GetLineSpacing() const
+{
+    return m_LineSpacing;
 }
 
 
-inline const bool PdfDocument::IsDecorated() const {
-	return m_Decorate;
+inline const bool PdfDocument::IsDecorated() const
+{
+    return m_Decorate;
 }
 
 
-
-inline const bool PdfDocument::IsTwoColsLayout() const {
-	return m_TwoCols;
+inline const bool PdfDocument::IsTwoColsLayout() const
+{
+    return m_TwoCols;
 }
 
 
-
-inline const bool PdfDocument::HasPageBreak() const {
-	return m_PageBreak;
+inline const bool PdfDocument::HasPageBreak() const
+{
+    return m_PageBreak;
 }
 
 

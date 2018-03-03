@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -56,61 +56,70 @@
 
 
 class TocWindowContent : public wxEvtHandler
-	{
-	private:
-		DECLARE_DYNAMIC_CLASS(TocWindowContent);
-		
-		tmTOCCtrl * m_TOCCtrl;
-				
-		public :
-		TocWindowContent();
-		~TocWindowContent();
-		
-		/// Creates the controls and sizers
-		wxSizer * CreateControls(wxWindow * parent, bool call_fit = TRUE, bool set_sizer = TRUE);
-		
-		virtual void Show() {;}
-		virtual void Hide() {;}
-		virtual bool IsShown() {return FALSE;}
-		
-		tmTOCCtrl * GetTOCCtrl () {return m_TOCCtrl;}
-		
-		
-		
-	};
+{
+private:
+DECLARE_DYNAMIC_CLASS(TocWindowContent);
+
+    tmTOCCtrl *m_TOCCtrl;
+
+public :
+    TocWindowContent();
+
+    ~TocWindowContent();
+
+    /// Creates the controls and sizers
+    wxSizer *CreateControls(wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE);
+
+    virtual void Show()
+    { ; }
+
+    virtual void Hide()
+    { ; }
+
+    virtual bool IsShown()
+    { return FALSE; }
+
+    tmTOCCtrl *GetTOCCtrl()
+    { return m_TOCCtrl; }
+
+
+};
+
+
+class TocWindowDlgGen : public TocWindowContent
+{
+private:
+DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
+
+    void Init();
+
+    wxAuiManager *m_TocAui;
+    wxPanel *m_ContentFrame;
+    wxWindow *m_ParentEvt;
+
+    //DECLARE_EVENT_TABLE();
+
+
+public:
+    TocWindowDlgGen();
+
+    TocWindowDlgGen(wxAuiManager *myAuiManager, wxWindow *parent, wxWindowID id = ID_TOCWINDOW_DLG,
+                    const wxString &title = SYMBOL_TOCWINDOW_DLG_TITLE);
+
+    ~TocWindowDlgGen();
+
+    virtual void Show();
+
+    virtual void Hide();
+
+    virtual bool IsShown();
 
 
 
+    /*void OnPressRemoveLayers(wxCommandEvent & event);
+    void OnPressAddLayers(wxCommandEvent & event);*/
 
-class TocWindowDlgGen : public TocWindowContent 
-	{
-	private:
-		DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
-		void Init();
-		
-		wxAuiManager * m_TocAui;
-		wxPanel * m_ContentFrame;
-		wxWindow * m_ParentEvt;
-		
-		//DECLARE_EVENT_TABLE();
-
-		
-	public:	
-		TocWindowDlgGen();
-		TocWindowDlgGen(wxAuiManager * myAuiManager, wxWindow * parent, wxWindowID id=ID_TOCWINDOW_DLG,
-						const wxString & title=SYMBOL_TOCWINDOW_DLG_TITLE);
-		~TocWindowDlgGen();
-		
-		virtual void Show();
-		virtual void Hide();
-		virtual bool IsShown();
-		
-
-		
-		/*void OnPressRemoveLayers(wxCommandEvent & event);
-		void OnPressAddLayers(wxCommandEvent & event);*/
-		
-	};
+};
 
 
 #endif

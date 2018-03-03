@@ -3,8 +3,8 @@
 
 
 // constructors / destructor:
-wxTreeMultiEvent::wxTreeMultiEvent(wxEventType InitEventType, wxTreeMultiItem const& InitItem)
-                 :wxNotifyEvent(InitEventType), m_Item(InitItem)
+wxTreeMultiEvent::wxTreeMultiEvent(wxEventType InitEventType, wxTreeMultiItem const &InitItem)
+        : wxNotifyEvent(InitEventType), m_Item(InitItem)
 {
 } /* wxTreeMultiEvent::wxTreeMultiEvent(wxEventType, wxTreeMultiItem const&) */
 

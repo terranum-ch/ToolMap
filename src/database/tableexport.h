@@ -23,25 +23,30 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/filename.h>
-
-
 
 
 class DataBase;
 
-class TableExport {
+class TableExport
+{
 private:
-    DataBase * m_Database;
+    DataBase *m_Database;
     wxString m_Encoding;
-    
-    
+
+
 public:
-    TableExport(DataBase * database);
+    TableExport(DataBase *database);
+
     virtual ~TableExport();
-    
-    void SetEncoding(const wxString & encoding){m_Encoding = encoding;}
-    bool ExportCSV(const wxString & tablename, const wxFileName & path, int limit = wxNOT_FOUND, bool addtablename = false);
-    
+
+    void SetEncoding(const wxString &encoding)
+    { m_Encoding = encoding; }
+
+    bool
+    ExportCSV(const wxString &tablename, const wxFileName &path, int limit = wxNOT_FOUND, bool addtablename = false);
+
 };
+
 #endif

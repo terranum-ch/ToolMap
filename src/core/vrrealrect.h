@@ -18,6 +18,7 @@
 #define _VRREALRECT_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
@@ -25,17 +26,22 @@
 #include <wx/geometry.h>
 
 
-
-class vrRealRect : public wxRect2DDouble {
-  public:
+class vrRealRect : public wxRect2DDouble
+{
+public:
     vrRealRect();
-    vrRealRect(const vrRealRect & source);
+
+    vrRealRect(const vrRealRect &source);
+
     vrRealRect(double left, double top, double width, double height);
+
     virtual ~vrRealRect();
 
 
-    virtual vrRealRect Intersect(const vrRealRect & rect1);
+    virtual vrRealRect Intersect(const vrRealRect &rect1);
+
     bool IsOk();
 
 };
+
 #endif

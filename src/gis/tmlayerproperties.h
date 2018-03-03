@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/treectrl.h>
@@ -35,7 +35,9 @@
 #include <wx/mstream.h>
 
 class tmSymbol;
+
 class tmSymbolRuleManager;
+
 class tmWebFrame;
 
 /***************************************************************************//**
@@ -44,91 +46,121 @@ class tmWebFrame;
  @date 07 July 2008
  *******************************************************************************/
 class tmLayerProperties : public wxTreeItemData
-	{
-	private:
-        wxFileName m_LayerName;
-        long m_LayerID;
-		TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
- 		bool m_LayerVisible;
-		TOC_GENERIC_NAME m_LayerType;
-		tmSymbol * m_LayerSymbol;
-		int m_LayerVertexFlags;
-		bool m_LayerEditing;
-		tmSymbolRuleManager * m_SymbolRulesManager;
+{
+private:
+    wxFileName m_LayerName;
+    long m_LayerID;
+    TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
+    bool m_LayerVisible;
+    TOC_GENERIC_NAME m_LayerType;
+    tmSymbol *m_LayerSymbol;
+    int m_LayerVertexFlags;
+    bool m_LayerEditing;
+    tmSymbolRuleManager *m_SymbolRulesManager;
 
-        bool m_LabelIsVisible;
-        wxString m_LabelDefinition;
-        
-        void InitMemberValues();
-		
-	public:
-		// init from string array
-		bool InitFromArray(const wxArrayString & array, bool userelativepath, const wxString & prjpath);
-		void InitSymbology (const wxString & itemBinSymbology);
-		bool InitFromPathAndName (const wxString & path, const wxString & nameext,
-								  const wxArrayString & supportedext);
-		
-        wxString GetNameDisplay();
-        wxFileName GetName();
-        void SetName(const wxFileName & filename){m_LayerName = filename;}
-        inline const long GetID() const;
-        void SetID(long value);
-        inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
-        void SetSpatialType(TM_GIS_SPATIAL_TYPES value);
-        inline const bool IsVisible() const;
-        void SetVisible(bool value);
-        inline const TOC_GENERIC_NAME GetType() const;
-        void SetType(TOC_GENERIC_NAME value);
-        inline const int GetVertexFlags() const;
-        void SetVertexFlags(int value);
-        inline const bool IsEditing() const;
-        void SetEditing(bool value);
-        
-        void SetLabelVisible (bool value) {m_LabelIsVisible = value;}
-        bool IsLabelVisible () {return m_LabelIsVisible;}
-        void SetLabelDefinition (const wxString & value) {m_LabelDefinition = value;}
-        wxString GetLabelDefinition () {return m_LabelDefinition;}
-       
-        tmSymbol * GetSymbolRef();
-        void SetSymbolDirectly(tmSymbol * value);
-        
-        tmSymbolRuleManager * GetSymbolRuleManagerRef(){return m_SymbolRulesManager;}
-        
-		// constructor
-		tmLayerProperties(){InitMemberValues();}
-		tmLayerProperties (tmLayerProperties & layerprop);
-		
-		~tmLayerProperties();
-		
-	};
+    bool m_LabelIsVisible;
+    wxString m_LabelDefinition;
 
-inline const long tmLayerProperties::GetID() const {
+    void InitMemberValues();
+
+public:
+    // init from string array
+    bool InitFromArray(const wxArrayString &array, bool userelativepath, const wxString &prjpath);
+
+    void InitSymbology(const wxString &itemBinSymbology);
+
+    bool InitFromPathAndName(const wxString &path, const wxString &nameext,
+                             const wxArrayString &supportedext);
+
+    wxString GetNameDisplay();
+
+    wxFileName GetName();
+
+    void SetName(const wxFileName &filename)
+    { m_LayerName = filename; }
+
+    inline const long GetID() const;
+
+    void SetID(long value);
+
+    inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
+
+    void SetSpatialType(TM_GIS_SPATIAL_TYPES value);
+
+    inline const bool IsVisible() const;
+
+    void SetVisible(bool value);
+
+    inline const TOC_GENERIC_NAME GetType() const;
+
+    void SetType(TOC_GENERIC_NAME value);
+
+    inline const int GetVertexFlags() const;
+
+    void SetVertexFlags(int value);
+
+    inline const bool IsEditing() const;
+
+    void SetEditing(bool value);
+
+    void SetLabelVisible(bool value)
+    { m_LabelIsVisible = value; }
+
+    bool IsLabelVisible()
+    { return m_LabelIsVisible; }
+
+    void SetLabelDefinition(const wxString &value)
+    { m_LabelDefinition = value; }
+
+    wxString GetLabelDefinition()
+    { return m_LabelDefinition; }
+
+    tmSymbol *GetSymbolRef();
+
+    void SetSymbolDirectly(tmSymbol *value);
+
+    tmSymbolRuleManager *GetSymbolRuleManagerRef()
+    { return m_SymbolRulesManager; }
+
+    // constructor
+    tmLayerProperties()
+    { InitMemberValues(); }
+
+    tmLayerProperties(tmLayerProperties &layerprop);
+
+    ~tmLayerProperties();
+
+};
+
+inline const long tmLayerProperties::GetID() const
+{
     return m_LayerID;
 }
 
-inline const TM_GIS_SPATIAL_TYPES tmLayerProperties::GetSpatialType() const {
+inline const TM_GIS_SPATIAL_TYPES tmLayerProperties::GetSpatialType() const
+{
     return m_LayerSpatialType;
 }
 
-inline const bool tmLayerProperties::IsVisible() const {
+inline const bool tmLayerProperties::IsVisible() const
+{
     return m_LayerVisible;
 }
 
-inline const TOC_GENERIC_NAME tmLayerProperties::GetType() const {
+inline const TOC_GENERIC_NAME tmLayerProperties::GetType() const
+{
     return m_LayerType;
 }
 
-inline const int tmLayerProperties::GetVertexFlags() const {
+inline const int tmLayerProperties::GetVertexFlags() const
+{
     return m_LayerVertexFlags;
 }
 
-inline const bool tmLayerProperties::IsEditing() const {
+inline const bool tmLayerProperties::IsEditing() const
+{
     return m_LayerEditing;
 }
-
-
-
-
 
 
 #endif

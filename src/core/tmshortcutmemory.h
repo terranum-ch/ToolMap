@@ -26,36 +26,32 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
-
-
 class tmShortcutObject
-	{
-	private:
-		void InitMemberValues();
-		
-	public:
-		int m_LayerType;
-		int m_ShortcutKey;
-		wxString m_ShortcutDescription;
-		wxArrayLong m_ShortcutValues;
-		bool m_ShortcutValid;
-		
-		
-			
-		tmShortcutObject();
-		~tmShortcutObject();
-		
-		
-		
-	};
+{
+private:
+    void InitMemberValues();
+
+public:
+    int m_LayerType;
+    int m_ShortcutKey;
+    wxString m_ShortcutDescription;
+    wxArrayLong m_ShortcutValues;
+    bool m_ShortcutValid;
+
+
+    tmShortcutObject();
+
+    ~tmShortcutObject();
+
+
+};
 
 // Creating a list of MemoryObjects
 WX_DECLARE_OBJARRAY(tmShortcutObject, tmShortCutObjArray);
-
 
 
 /***************************************************************************//**
@@ -75,31 +71,31 @@ WX_DECLARE_OBJARRAY(tmShortcutObject, tmShortCutObjArray);
  @date 18 December 2008
  *******************************************************************************/
 class tmShortcutMemory : public wxObject
-	{
-	private:
-		tmShortCutObjArray m_Shortcuts;
-		
-		
-		
-	protected:
-	public:
-		tmShortcutMemory();
-		~tmShortcutMemory();
-		
-		// shortcut operations
-		void AddShortcutMemory(int iLayerType, int iKey, const wxString & description,
-							   long lShortcutValue);
-		
-		void Clear();
-		int GetShortcut (int iKey, int & iLayerType, 
-						 wxString & description, wxArrayLong & shortcutvalues);
-		int GetCount() {return m_Shortcuts.GetCount();}
-		
-		
+{
+private:
+    tmShortCutObjArray m_Shortcuts;
+
+
+protected:
+public:
+    tmShortcutMemory();
+
+    ~tmShortcutMemory();
+
+    // shortcut operations
+    void AddShortcutMemory(int iLayerType, int iKey, const wxString &description,
+                           long lShortcutValue);
+
+    void Clear();
+
+    int GetShortcut(int iKey, int &iLayerType,
+                    wxString &description, wxArrayLong &shortcutvalues);
+
+    int GetCount()
+    { return m_Shortcuts.GetCount(); }
+
+
 };
-
-
-
 
 
 #endif

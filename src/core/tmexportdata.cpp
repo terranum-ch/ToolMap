@@ -18,7 +18,7 @@
 // comment doxygen
 
 #include "tmexportdata.h"
-#include "../database/database_tm.h"	// for database access
+#include "../database/database_tm.h"    // for database access
 
 
 /***************************************************************************//**
@@ -28,12 +28,11 @@
  *******************************************************************************/
 void tmExportData::InitMemberValues()
 {
-	m_pDB = NULL;
-	m_Extension = wxEmptyString;
+    m_pDB = NULL;
+    m_Extension = wxEmptyString;
     m_ExportAttributEnumerationCode = false; // default is to export attribut description.
     m_CropBufferDistance = 1.0;
 }
-
 
 
 /***************************************************************************//**
@@ -44,9 +43,8 @@ void tmExportData::InitMemberValues()
  *******************************************************************************/
 tmExportData::tmExportData()
 {
-	InitMemberValues();
+    InitMemberValues();
 }
-
 
 
 /***************************************************************************//**
@@ -55,12 +53,11 @@ tmExportData::tmExportData()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-tmExportData::tmExportData (DataBaseTM * database)
+tmExportData::tmExportData(DataBaseTM *database)
 {
-	InitMemberValues();
-	Create(database);
+    InitMemberValues();
+    Create(database);
 }
-
 
 
 /***************************************************************************//**
@@ -70,10 +67,10 @@ tmExportData::tmExportData (DataBaseTM * database)
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-void tmExportData::Create (DataBaseTM * database)
+void tmExportData::Create(DataBaseTM *database)
 {
-	wxASSERT(database);
-	m_pDB = database;
+    wxASSERT(database);
+    m_pDB = database;
 }
 
 
@@ -98,19 +95,17 @@ tmExportData::~tmExportData()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 November 2008
  *******************************************************************************/
-wxFileName * tmExportData::GetFileName (ProjectDefMemoryLayers * myLayer,  const wxString & path)
+wxFileName *tmExportData::GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path)
 {
-	wxASSERT(myLayer);
-	wxFileName * myReturn = new wxFileName(path, myLayer->m_LayerName + m_Extension);
-	if (myReturn->IsOk())
-		return myReturn;
-	else
-	{
-		wxASSERT_MSG(0,_T("Error constructing file name"));
-		return NULL;
-	}
+    wxASSERT(myLayer);
+    wxFileName *myReturn = new wxFileName(path, myLayer->m_LayerName + m_Extension);
+    if (myReturn->IsOk())
+        return myReturn;
+    else {
+        wxASSERT_MSG(0, _T("Error constructing file name"));
+        return NULL;
+    }
 }
-
 
 
 /***************************************************************************//**
@@ -122,21 +117,19 @@ wxFileName * tmExportData::GetFileName (ProjectDefMemoryLayers * myLayer,  const
  @author Lucien Schreiber (c) CREALP 2008
  @date 15 November 2008
  *******************************************************************************/
-int tmExportData::GetSizeOfEnum (const PrjMemFieldCodedValArray & mCodedVal)
+int tmExportData::GetSizeOfEnum(const PrjMemFieldCodedValArray &mCodedVal)
 {
-	int iRetour = 0;
-	int iTemp = 0;
-	for (unsigned int i = 0; i<mCodedVal.GetCount();i++)
-	{
-		iTemp = mCodedVal.Item(i)->m_ValueName.Len();
-		if (iTemp > iRetour)
-			iRetour = iTemp;
-	}
-	
-	return iRetour;
-		
-}
+    int iRetour = 0;
+    int iTemp = 0;
+    for (unsigned int i = 0; i < mCodedVal.GetCount(); i++) {
+        iTemp = mCodedVal.Item(i)->m_ValueName.Len();
+        if (iTemp > iRetour)
+            iRetour = iTemp;
+    }
 
+    return iRetour;
+
+}
 
 
 /***************************************************************************//**
@@ -148,21 +141,21 @@ int tmExportData::GetSizeOfEnum (const PrjMemFieldCodedValArray & mCodedVal)
  @author Lucien Schreiber (c) CREALP 2008
  @date 16 November 2008
  *******************************************************************************/
-int tmExportData::GetSizeOfObjDesc (int layerindex)
+int tmExportData::GetSizeOfObjDesc(int layerindex)
 {
-	wxASSERT(m_pDB);
-	
-	wxString sStemp = _T("SELECT MAX(LENGTH(OBJECT_DESC_0)) FROM ") +
-	TABLE_NAME_OBJECTS + _T(" WHERE THEMATIC_LAYERS_LAYER_INDEX = %d;");
-	wxString sSentence = wxString::Format(sStemp, layerindex);
-	
-	
-	if (m_pDB->DataBaseQuery(sSentence)==false){
-		return 0;
+    wxASSERT(m_pDB);
+
+    wxString sStemp = _T("SELECT MAX(LENGTH(OBJECT_DESC_0)) FROM ") +
+                      TABLE_NAME_OBJECTS + _T(" WHERE THEMATIC_LAYERS_LAYER_INDEX = %d;");
+    wxString sSentence = wxString::Format(sStemp, layerindex);
+
+
+    if (m_pDB->DataBaseQuery(sSentence) == false) {
+        return 0;
     }
-	
+
     long myMaxLength = 0;
-    if(m_pDB->DataBaseGetNextResult(myMaxLength) == false){
+    if (m_pDB->DataBaseGetNextResult(myMaxLength) == false) {
         wxLogError(_("Unable to get field length"));
         myMaxLength = 100;
     }
@@ -178,9 +171,9 @@ int tmExportData::GetSizeOfObjDesc (int layerindex)
  *******************************************************************************/
 wxString tmExportData::GetFileExtension()
 {
-	wxString myRetExt = m_Extension;
-	myRetExt.Remove(0, 1);
-	return myRetExt;
+    wxString myRetExt = m_Extension;
+    myRetExt.Remove(0, 1);
+    return myRetExt;
 }
 
 
@@ -192,47 +185,46 @@ wxString tmExportData::GetFileExtension()
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmExportData::GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layerindex)
+bool tmExportData::GetSimpleAttribData(PRJDEF_LAYERS_TYPE layertype, long layerindex)
 {
-	wxString sGeomTable = wxEmptyString;
-	wxString sValTable = wxEmptyString;
-	switch (layertype)
-	{
-			
-		case LAYER_LINE:
-			sGeomTable = TABLE_NAME_GIS_GENERIC[0]; // lines
-			sValTable = TABLE_NAME_GIS_ATTRIBUTION[0];
-			break;
-			
-		case LAYER_POINT:
-			sGeomTable = TABLE_NAME_GIS_GENERIC[1];
-			sValTable = TABLE_NAME_GIS_ATTRIBUTION[1];
-			break;
-			
-		case LAYER_POLYGON:
-			sGeomTable = TABLE_NAME_GIS_GENERIC[2];
-			sValTable = TABLE_NAME_GIS_ATTRIBUTION[2];
-			break;
-			
-		default:
-			break;
-	}
-	
-	wxString sTemp = _T("SELECT o.OBJECT_CD, o.OBJECT_DESC_0 FROM %s")
-	_T(" g LEFT JOIN %s a ON (g.OBJECT_ID = a.OBJECT_GEOM_ID)")
-	_T(" LEFT JOIN %s o ON (a.OBJECT_VAL_ID = o.OBJECT_ID)")
-	_T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID");
-	wxString sSentence = wxString::Format(sTemp, 
-										  sGeomTable.c_str(),
-										  sValTable.c_str(),
-										  TABLE_NAME_OBJECTS.c_str(),
-										  layerindex);
-										  
-	if (m_pDB->DataBaseQuery(sSentence))
-		return true;
-	
-	return false;
-		
+    wxString sGeomTable = wxEmptyString;
+    wxString sValTable = wxEmptyString;
+    switch (layertype) {
+
+        case LAYER_LINE:
+            sGeomTable = TABLE_NAME_GIS_GENERIC[0]; // lines
+            sValTable = TABLE_NAME_GIS_ATTRIBUTION[0];
+            break;
+
+        case LAYER_POINT:
+            sGeomTable = TABLE_NAME_GIS_GENERIC[1];
+            sValTable = TABLE_NAME_GIS_ATTRIBUTION[1];
+            break;
+
+        case LAYER_POLYGON:
+            sGeomTable = TABLE_NAME_GIS_GENERIC[2];
+            sValTable = TABLE_NAME_GIS_ATTRIBUTION[2];
+            break;
+
+        default:
+            break;
+    }
+
+    wxString sTemp = _T("SELECT o.OBJECT_CD, o.OBJECT_DESC_0 FROM %s")
+            _T(" g LEFT JOIN %s a ON (g.OBJECT_ID = a.OBJECT_GEOM_ID)")
+            _T(" LEFT JOIN %s o ON (a.OBJECT_VAL_ID = o.OBJECT_ID)")
+            _T(" WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID");
+    wxString sSentence = wxString::Format(sTemp,
+                                          sGeomTable.c_str(),
+                                          sValTable.c_str(),
+                                          TABLE_NAME_OBJECTS.c_str(),
+                                          layerindex);
+
+    if (m_pDB->DataBaseQuery(sSentence))
+        return true;
+
+    return false;
+
 }
 
 
@@ -245,50 +237,48 @@ bool tmExportData::GetSimpleAttribData (PRJDEF_LAYERS_TYPE layertype, long layer
  @author Lucien Schreiber (c) CREALP 2008
  @date 17 November 2008
  *******************************************************************************/
-bool tmExportData::GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype, long layerindex)
+bool tmExportData::GetSimpleAttribDataWithSpatial(PRJDEF_LAYERS_TYPE layertype, long layerindex)
 {
-	wxString sGeomTable = wxEmptyString;
-	wxString sValTable = wxEmptyString;
-	switch (layertype)
-	{
-			
-		case LAYER_LINE:
-			sGeomTable = TABLE_NAME_GIS_GENERIC[0]; // lines
-			sValTable = TABLE_NAME_GIS_ATTRIBUTION[0];
-			break;
-			
-		case LAYER_POINT:
-			sGeomTable = TABLE_NAME_GIS_GENERIC[1];
-			sValTable = TABLE_NAME_GIS_ATTRIBUTION[1];
-			break;
-			
-		case LAYER_POLYGON:
-			sGeomTable = TABLE_NAME_GIS_GENERIC[2];
-			sValTable = TABLE_NAME_GIS_ATTRIBUTION[2];
-			break;
-			
-		default:
-			break;
-	}
-	
-	wxString sTemp = _T("SELECT g.OBJECT_ID, g.OBJECT_GEOMETRY, o.OBJECT_CD,")
-	_T(" o.OBJECT_DESC_0 FROM %s g LEFT JOIN %s a ON")
-	_T(" (g.OBJECT_ID = a.OBJECT_GEOM_ID) LEFT JOIN %s o")
-	_T(" ON (a.OBJECT_VAL_ID = o.OBJECT_ID) WHERE")
-	_T(" o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID;");	
-	wxString sSentence = wxString::Format(sTemp, 
-										  sGeomTable.c_str(),
-										  sValTable.c_str(),
-										  TABLE_NAME_OBJECTS.c_str(),
-										  layerindex);
-	
-	if (m_pDB->DataBaseQuery(sSentence))
-		return true;
-	
-	return false;
-	
-}
+    wxString sGeomTable = wxEmptyString;
+    wxString sValTable = wxEmptyString;
+    switch (layertype) {
 
+        case LAYER_LINE:
+            sGeomTable = TABLE_NAME_GIS_GENERIC[0]; // lines
+            sValTable = TABLE_NAME_GIS_ATTRIBUTION[0];
+            break;
+
+        case LAYER_POINT:
+            sGeomTable = TABLE_NAME_GIS_GENERIC[1];
+            sValTable = TABLE_NAME_GIS_ATTRIBUTION[1];
+            break;
+
+        case LAYER_POLYGON:
+            sGeomTable = TABLE_NAME_GIS_GENERIC[2];
+            sValTable = TABLE_NAME_GIS_ATTRIBUTION[2];
+            break;
+
+        default:
+            break;
+    }
+
+    wxString sTemp = _T("SELECT g.OBJECT_ID, g.OBJECT_GEOMETRY, o.OBJECT_CD,")
+            _T(" o.OBJECT_DESC_0 FROM %s g LEFT JOIN %s a ON")
+            _T(" (g.OBJECT_ID = a.OBJECT_GEOM_ID) LEFT JOIN %s o")
+            _T(" ON (a.OBJECT_VAL_ID = o.OBJECT_ID) WHERE")
+            _T(" o.THEMATIC_LAYERS_LAYER_INDEX = %ld ORDER BY g.OBJECT_ID;");
+    wxString sSentence = wxString::Format(sTemp,
+                                          sGeomTable.c_str(),
+                                          sValTable.c_str(),
+                                          TABLE_NAME_OBJECTS.c_str(),
+                                          layerindex);
+
+    if (m_pDB->DataBaseQuery(sSentence))
+        return true;
+
+    return false;
+
+}
 
 
 /***************************************************************************//**
@@ -298,17 +288,17 @@ bool tmExportData::GetSimpleAttribDataWithSpatial (PRJDEF_LAYERS_TYPE layertype,
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 March 2009
  *******************************************************************************/
-bool tmExportData::GetAdvancedAttribution (ProjectDefMemoryLayers * layer)
+bool tmExportData::GetAdvancedAttribution(ProjectDefMemoryLayers *layer)
 {
-	// first check, do we have advanced attributes
-	if (layer->m_pLayerFieldArray.GetCount() == 0)
-		return false;
-	
-	wxASSERT (layer);
-	wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%d ORDER BY OBJECT_ID"),
-										  layer->m_LayerID);
-	if (m_pDB->DataBaseQuery(sSentence)==false)
-		return false;
-		
-	return true;
+    // first check, do we have advanced attributes
+    if (layer->m_pLayerFieldArray.GetCount() == 0)
+        return false;
+
+    wxASSERT (layer);
+    wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%d ORDER BY OBJECT_ID"),
+                                          layer->m_LayerID);
+    if (m_pDB->DataBaseQuery(sSentence) == false)
+        return false;
+
+    return true;
 }
