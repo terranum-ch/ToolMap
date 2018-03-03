@@ -37,13 +37,10 @@ WX_DEFINE_OBJARRAY(TreeMultiItemBaseArray);
 
 // default constructor for container composite
 TreeMultiItemNode::TreeMultiItemNode(TreeMultiItemNode *parent, const wxString &caption, const wxString &name)
-	: TreeMultiItemBase(parent)
-	, _caption(caption)
-	, _nodeExpanded(true)
-
+        : TreeMultiItemBase(parent), _caption(caption), _nodeExpanded(true)
 {
-	_name = name;
-	Clear();
+    _name = name;
+    Clear();
 }
 
 //------------------------------------------------------------
@@ -58,29 +55,29 @@ TreeMultiItemNode::~TreeMultiItemNode()
 
 void TreeMultiItemNode::AddNode(TreeMultiItemBase *node)
 {
-	if(node)
-                _items.Add(node);
+    if (node)
+        _items.Add(node);
 }
 
-void TreeMultiItemNode::InsertNode(TreeMultiItemBase* NodePtr, size_t Position)
+void TreeMultiItemNode::InsertNode(TreeMultiItemBase *NodePtr, size_t Position)
 {
-        if (NodePtr != NULL)
-                this->_items.Insert(NodePtr,Position);
+    if (NodePtr != NULL)
+        this->_items.Insert(NodePtr, Position);
 }
 
 //------------------------------------------------------------
 
 void TreeMultiItemNode::DeleteNode(TreeMultiItemBase *node)
 {
-	// this is wrong. The RemoveAt and Remove should delete
-	// the object
-	if (node) {
-		int index = Index(node);
-		if (index >= 0)
-			_items.Detach(index);
+    // this is wrong. The RemoveAt and Remove should delete
+    // the object
+    if (node) {
+        int index = Index(node);
+        if (index >= 0)
+            _items.Detach(index);
 
-		delete node;
-	}
+        delete node;
+    }
 
 }
 
@@ -88,106 +85,104 @@ void TreeMultiItemNode::DeleteNode(TreeMultiItemBase *node)
 
 void TreeMultiItemNode::DeleteNode(int index)
 {
-	// this is wrong. The RemoveAt and Remove should delete
-	// the object
-	if(index < (int)_items.Count() && index >= 0)
-		_items.RemoveAt(index);
+    // this is wrong. The RemoveAt and Remove should delete
+    // the object
+    if (index < (int) _items.Count() && index >= 0)
+        _items.RemoveAt(index);
 }
 
 //------------------------------------------------------------
 
 int TreeMultiItemNode::GetNodeCount() const
 {
-	return _items.Count();
+    return _items.Count();
 }
 
 //------------------------------------------------------------
 
 TreeMultiItemBase *TreeMultiItemNode::GetNode(int index) const
 {
-	TreeMultiItemBase *value = 0;
+    TreeMultiItemBase *value = 0;
 
-	if(index < (int)_items.Count() && index >= 0)
-		value = &_items.Item(index);
+    if (index < (int) _items.Count() && index >= 0)
+        value = &_items.Item(index);
 
-	return value;
+    return value;
 }
 
 //------------------------------------------------------------
 
 TreeMultiItemBase *TreeMultiItemNode::RemoveNode(TreeMultiItemBase *node)
 {
-	if(node) {
+    if (node) {
         int index = _items.Index(*node);
         if (index >= 0)
             _items.Detach(index);
     }
 
-	return node;
+    return node;
 }
 
 //------------------------------------------------------------
 
-TreeMultiItemBase * TreeMultiItemNode::RemoveNode(int index)
+TreeMultiItemBase *TreeMultiItemNode::RemoveNode(int index)
 {
-	TreeMultiItemBase *value = 0;
+    TreeMultiItemBase *value = 0;
 
-	if(index < (int)_items.Count() && index > 0)
-	{
-		value = &_items.Item(index);
-		_items.Detach(index);
-	}
+    if (index < (int) _items.Count() && index > 0) {
+        value = &_items.Item(index);
+        _items.Detach(index);
+    }
 
-	return value;
+    return value;
 }
 
 //------------------------------------------------------------
 
-int TreeMultiItemNode::Index(TreeMultiItemBase *node,  bool searchFromEnd) const
+int TreeMultiItemNode::Index(TreeMultiItemBase *node, bool searchFromEnd) const
 {
-	wxCHECK(node, -1);
+    wxCHECK(node, -1);
 
-	return _items.Index(*node, searchFromEnd);
+    return _items.Index(*node, searchFromEnd);
 }
 
 //------------------------------------------------------------
 
-void  TreeMultiItemNode::Clear()
+void TreeMultiItemNode::Clear()
 {
-	_items.Clear();
+    _items.Clear();
 }
 
 //------------------------------------------------------------
 
-TreeMultiItemBase * TreeMultiItemNode::GetNodeNext(int &cookie) const
+TreeMultiItemBase *TreeMultiItemNode::GetNodeNext(int &cookie) const
 {
-	TreeMultiItemBase *value = 0;
+    TreeMultiItemBase *value = 0;
 
-	if(cookie >= 0 && cookie < (int)_items.Count())
-	{
-		value = &_items[cookie];
-		cookie++;
-	}
+    if (cookie >= 0 && cookie < (int) _items.Count()) {
+        value = &_items[cookie];
+        cookie++;
+    }
 
-	return value;
+    return value;
 }
 
 //------------------------------------------------------------
 
-TreeMultiItemBase* TreeMultiItemNode::First() const
+TreeMultiItemBase *TreeMultiItemNode::First() const
 {
-  if (this->_items.GetCount() > 0)
-    return &(this->_items[0]);
-  else
-    return NULL;
+    if (this->_items.GetCount() > 0)
+        return &(this->_items[0]);
+    else
+        return NULL;
 } /* TreeMultiItemNode::First() const */
 
-TreeMultiItemBase* TreeMultiItemNode::Last() const
+TreeMultiItemBase *TreeMultiItemNode::Last() const
 {
-        if(this->_items.GetCount() > 0)
-          return &(this->_items.Last());
-        else
-          return NULL;
+    if (this->_items.GetCount() > 0)
+        return &(this->_items.Last());
+    else
+        return NULL;
 } /* TreeMultiItemNode::Last() const */
 
 
@@ -195,7 +190,7 @@ TreeMultiItemBase* TreeMultiItemNode::Last() const
 
 void TreeMultiItemNode::SetCaption(const wxString &caption)
 {
-     /* this is an uncontrolled set, please make sure that
-        the main wxTreeMultiCtrl gets a RedrawFromNode */
-     _caption = caption;
+    /* this is an uncontrolled set, please make sure that
+       the main wxTreeMultiCtrl gets a RedrawFromNode */
+    _caption = caption;
 }

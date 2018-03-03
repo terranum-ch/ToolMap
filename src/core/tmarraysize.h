@@ -26,31 +26,42 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
-class tmRealPointDist{
+class tmRealPointDist
+{
 private:
-	wxRealPoint coordinate;
+    wxRealPoint coordinate;
     wxRealPoint origin;
-	
+
 public:
-    tmRealPointDist() : coordinate(), origin() { }
-    tmRealPointDist(double xx, double yy, const wxRealPoint & originorigin);
-    tmRealPointDist(const tmRealPointDist& pt);
-	
-	double GetDistFromOrigin() const;
-	wxRealPoint GetOrigin() const {return origin;}
-	wxRealPoint GetCoordinate() const {return coordinate;}
-	
-	// copy function
-	tmRealPointDist &operator = (const tmRealPointDist & source);
+    tmRealPointDist() : coordinate(), origin()
+    {}
+
+    tmRealPointDist(double xx, double yy, const wxRealPoint &originorigin);
+
+    tmRealPointDist(const tmRealPointDist &pt);
+
+    double GetDistFromOrigin() const;
+
+    wxRealPoint GetOrigin() const
+    { return origin; }
+
+    wxRealPoint GetCoordinate() const
+    { return coordinate; }
+
+    // copy function
+    tmRealPointDist &operator=(const tmRealPointDist &source);
 };
 
 WX_DECLARE_OBJARRAY(tmRealPointDist, wxArrayRealPointsDist);
-WX_DECLARE_OBJARRAY(wxSize, tmArraySize);	
+
+WX_DECLARE_OBJARRAY(wxSize, tmArraySize);
+
 WX_DECLARE_OBJARRAY(wxRealPoint, wxArrayRealPoints);
+
 WX_DECLARE_OBJARRAY(wxPoint, wxArrayPoints);
 
 

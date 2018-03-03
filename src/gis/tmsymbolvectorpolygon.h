@@ -26,39 +26,51 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-#include "tmsymbolvector.h"	// tmSymbol class definition
-#include "tmsymboldlgpolygon.h" 
+#include "tmsymbolvector.h"    // tmSymbol class definition
+#include "tmsymboldlgpolygon.h"
 
 
 class tmSymbolVectorPolygon : public tmSymbolVector
-	{
-	private:
-		tmSymbolDataPolygonUnique m_plgUniqueSymbol;
-		
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-	protected:
-	public:
-		tmSymbolVectorPolygon();
-		tmSymbolVectorPolygon(const tmSymbolVectorPolygon & origin);
-		~tmSymbolVectorPolygon();
-		
-		wxColour GetBorderColour();
-		wxColour GetFillColour();
-		int GetBorderWidth() {return m_plgUniqueSymbol.m_bWidth;}
-		wxBrushStyle GetFillStyle() {return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];}
-		virtual int GetTransparency(){return m_plgUniqueSymbol.m_GlobalTransparency;}
-		
-        virtual void SetColour (const wxColour & colour){m_plgUniqueSymbol.m_fColour = colour;}
-		
-		virtual bool Serialize(tmSerialize &s);
-        tmSymbolDataPolygonUnique * GetSymbolData(){return &m_plgUniqueSymbol;}
-	};
+{
+private:
+    tmSymbolDataPolygonUnique m_plgUniqueSymbol;
 
+    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
+    virtual bool GetDialogData(tmSymbolDLG *dlg);
+
+protected:
+public:
+    tmSymbolVectorPolygon();
+
+    tmSymbolVectorPolygon(const tmSymbolVectorPolygon &origin);
+
+    ~tmSymbolVectorPolygon();
+
+    wxColour GetBorderColour();
+
+    wxColour GetFillColour();
+
+    int GetBorderWidth()
+    { return m_plgUniqueSymbol.m_bWidth; }
+
+    wxBrushStyle GetFillStyle()
+    { return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle]; }
+
+    virtual int GetTransparency()
+    { return m_plgUniqueSymbol.m_GlobalTransparency; }
+
+    virtual void SetColour(const wxColour &colour)
+    { m_plgUniqueSymbol.m_fColour = colour; }
+
+    virtual bool Serialize(tmSerialize &s);
+
+    tmSymbolDataPolygonUnique *GetSymbolData()
+    { return &m_plgUniqueSymbol; }
+};
 
 
 #endif

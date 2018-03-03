@@ -26,34 +26,36 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/aui/aui.h>
 
 
 class ManagedAuiWnd : public wxEvtHandler
-	{
-	protected:
-		wxAuiManager * m_AuiMgr;
-		wxString m_AuiPanelName;
-		
-		// private member function
-		void InitValues();
-		
-	public:
-		ManagedAuiWnd(wxAuiManager * AuiManager);
-		~ManagedAuiWnd();
-		
-		void AddManagedPane(wxWindow * window, 
-							const wxAuiPaneInfo & paneinfo,
-							bool bShow=FALSE);
-		
-		void ShowPanel();
-		void HidePanel();
-		bool IsPanelShown();
-	};
+{
+protected:
+    wxAuiManager *m_AuiMgr;
+    wxString m_AuiPanelName;
 
+    // private member function
+    void InitValues();
+
+public:
+    ManagedAuiWnd(wxAuiManager *AuiManager);
+
+    ~ManagedAuiWnd();
+
+    void AddManagedPane(wxWindow *window,
+                        const wxAuiPaneInfo &paneinfo,
+                        bool bShow = FALSE);
+
+    void ShowPanel();
+
+    void HidePanel();
+
+    bool IsPanelShown();
+};
 
 
 #endif

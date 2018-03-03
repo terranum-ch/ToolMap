@@ -20,21 +20,22 @@
 WX_DEFINE_OBJARRAY (tmSnappingObjArray);
 
 
-tmSnappingObject::tmSnappingObject(){
-	InitMemberValues();
+tmSnappingObject::tmSnappingObject()
+{
+    InitMemberValues();
 }
 
 
+tmSnappingObject::~tmSnappingObject()
+{
 
-tmSnappingObject::~tmSnappingObject(){
-	
 }
 
 
-
-void tmSnappingObject::InitMemberValues(){
-	m_LayerID = -1;
-	m_SnappingStatus = 0;
+void tmSnappingObject::InitMemberValues()
+{
+    m_LayerID = -1;
+    m_SnappingStatus = 0;
 }
 
 
@@ -45,9 +46,8 @@ void tmSnappingObject::InitMemberValues(){
  *******************************************************************************/
 tmSnappingMemory::tmSnappingMemory()
 {
-	m_Tolerence = 0;
+    m_Tolerence = 0;
 }
-
 
 
 /***************************************************************************//**
@@ -57,10 +57,9 @@ tmSnappingMemory::tmSnappingMemory()
  *******************************************************************************/
 tmSnappingMemory::~tmSnappingMemory()
 {
-	
-	
-}
 
+
+}
 
 
 /***************************************************************************//**
@@ -75,14 +74,13 @@ tmSnappingMemory::~tmSnappingMemory()
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
-void tmSnappingMemory::AddSnappingMemory (long lid, int snapstatus)
+void tmSnappingMemory::AddSnappingMemory(long lid, int snapstatus)
 {
-	tmSnappingObject mySnapObj;
-	mySnapObj.m_LayerID = lid;
-	mySnapObj.m_SnappingStatus = snapstatus;
-	m_Snapping.Add(mySnapObj);
+    tmSnappingObject mySnapObj;
+    mySnapObj.m_LayerID = lid;
+    mySnapObj.m_SnappingStatus = snapstatus;
+    m_Snapping.Add(mySnapObj);
 }
-
 
 
 /***************************************************************************//**
@@ -93,16 +91,15 @@ void tmSnappingMemory::AddSnappingMemory (long lid, int snapstatus)
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
-bool tmSnappingMemory::DeleteSnappingMemory (const long & lid)
+bool tmSnappingMemory::DeleteSnappingMemory(const long &lid)
 {
-	int iIndex = FindSnappingItem(lid);
-	if (iIndex == wxNOT_FOUND)
-		return false;
-	
-	m_Snapping.RemoveAt(iIndex);
-	return true;
-}
+    int iIndex = FindSnappingItem(lid);
+    if (iIndex == wxNOT_FOUND)
+        return false;
 
+    m_Snapping.RemoveAt(iIndex);
+    return true;
+}
 
 
 /***************************************************************************//**
@@ -113,13 +110,13 @@ bool tmSnappingMemory::DeleteSnappingMemory (const long & lid)
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
-int tmSnappingMemory::GetSnappingMemoryStatus (const long & lid)
+int tmSnappingMemory::GetSnappingMemoryStatus(const long &lid)
 {
-	int iIndex = FindSnappingItem(lid);
-	if (iIndex == wxNOT_FOUND)
-		return tmSNAPPING_OFF;
-		
-	return m_Snapping.Item(iIndex).m_SnappingStatus;
+    int iIndex = FindSnappingItem(lid);
+    if (iIndex == wxNOT_FOUND)
+        return tmSNAPPING_OFF;
+
+    return m_Snapping.Item(iIndex).m_SnappingStatus;
 }
 
 
@@ -131,14 +128,14 @@ int tmSnappingMemory::GetSnappingMemoryStatus (const long & lid)
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
-bool tmSnappingMemory::SetSnappingMemoryStatus  (const long & lid, int snapstatus)
+bool tmSnappingMemory::SetSnappingMemoryStatus(const long &lid, int snapstatus)
 {
-	int iIndex = FindSnappingItem(lid);
-	if (iIndex == wxNOT_FOUND)
-		return false;
-	
-	m_Snapping.Item(iIndex).m_SnappingStatus = snapstatus;
-	return true;
+    int iIndex = FindSnappingItem(lid);
+    if (iIndex == wxNOT_FOUND)
+        return false;
+
+    m_Snapping.Item(iIndex).m_SnappingStatus = snapstatus;
+    return true;
 }
 
 
@@ -150,14 +147,14 @@ bool tmSnappingMemory::SetSnappingMemoryStatus  (const long & lid, int snapstatu
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
-bool tmSnappingMemory::GetSnappingInfo (unsigned int iIndex, long & lid, int & snapstatus)
+bool tmSnappingMemory::GetSnappingInfo(unsigned int iIndex, long &lid, int &snapstatus)
 {
-	if (iIndex >= GetCount())
-		return false;
-	
-	lid = m_Snapping.Item(iIndex).m_LayerID;
-	snapstatus = m_Snapping.Item(iIndex).m_SnappingStatus;
-	return true;
+    if (iIndex >= GetCount())
+        return false;
+
+    lid = m_Snapping.Item(iIndex).m_LayerID;
+    snapstatus = m_Snapping.Item(iIndex).m_SnappingStatus;
+    return true;
 }
 
 
@@ -168,21 +165,18 @@ bool tmSnappingMemory::GetSnappingInfo (unsigned int iIndex, long & lid, int & s
  @author Lucien Schreiber (c) CREALP 2009
  @date 21 January 2009
  *******************************************************************************/
-int tmSnappingMemory::FindSnappingItem (const long & lid)
+int tmSnappingMemory::FindSnappingItem(const long &lid)
 {
-	int iReturn = wxNOT_FOUND;
-	for (unsigned int i = 0; i< GetCount(); i++)
-	{
-		if (m_Snapping.Item(i).m_LayerID == lid)
-		{
-			iReturn = i;
-			break;
-		}
-	}
-	
-	return iReturn;
-}
+    int iReturn = wxNOT_FOUND;
+    for (unsigned int i = 0; i < GetCount(); i++) {
+        if (m_Snapping.Item(i).m_LayerID == lid) {
+            iReturn = i;
+            break;
+        }
+    }
 
+    return iReturn;
+}
 
 
 /***************************************************************************//**
@@ -191,14 +185,12 @@ int tmSnappingMemory::FindSnappingItem (const long & lid)
  @author Lucien Schreiber (c) CREALP 2009
  @date 22 January 2009
  *******************************************************************************/
-void tmSnappingMemory::ClearSnappingStatus ()
+void tmSnappingMemory::ClearSnappingStatus()
 {
-	for (unsigned int i = 0; i< GetCount(); i++)
-	{
-		m_Snapping.Item(i).m_SnappingStatus = tmSNAPPING_OFF;
-	}
+    for (unsigned int i = 0; i < GetCount(); i++) {
+        m_Snapping.Item(i).m_SnappingStatus = tmSNAPPING_OFF;
+    }
 }
-
 
 
 /***************************************************************************//**
@@ -210,20 +202,21 @@ void tmSnappingMemory::ClearSnappingStatus ()
  @author Lucien Schreiber (c) CREALP 2009
  @date 26 January 2009
  *******************************************************************************/
-bool tmSnappingMemory::IsSnappingEnabled (){
-    if (wxGetKeyState(WXK_SPACE)==true){
-		return false;
-    }
-    
-    if (wxGetKeyState(WXK_SHIFT)==true) {
+bool tmSnappingMemory::IsSnappingEnabled()
+{
+    if (wxGetKeyState(WXK_SPACE) == true) {
         return false;
     }
-	
-	for (unsigned int i = 0; i<m_Snapping.GetCount(); i++){
-		if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF){
-			return true;
-		}
-	}
-		
+
+    if (wxGetKeyState(WXK_SHIFT) == true) {
+        return false;
+    }
+
+    for (unsigned int i = 0; i < m_Snapping.GetCount(); i++) {
+        if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF) {
+            return true;
+        }
+    }
+
     return false;
 }

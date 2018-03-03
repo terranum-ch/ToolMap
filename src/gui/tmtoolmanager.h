@@ -18,16 +18,17 @@
 #define _TM_TOOLMANAGER_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "danglingnodes_dlg.h"				// for dangling nodes dialog support
-#include "../gis/tmtocctrl.h"				// for TOC ctrl
-#include "../gis/tmselecteddatamemory.h"	// for selection data
-#include "../database/database_tm.h"		// for database
-#include "../gis/tmrenderer.h"				// for GIS rendering
-#include "../gis/tooldanglingnodes.h"		// for computing dangling nodes (engine class)
+#include "danglingnodes_dlg.h"                // for dangling nodes dialog support
+#include "../gis/tmtocctrl.h"                // for TOC ctrl
+#include "../gis/tmselecteddatamemory.h"    // for selection data
+#include "../database/database_tm.h"        // for database
+#include "../gis/tmrenderer.h"                // for GIS rendering
+#include "../gis/tooldanglingnodes.h"        // for computing dangling nodes (engine class)
 
 const int tmDANGLING_NODE_DRAW_SIZE = 4;
 const wxColour tmDANGLING_NODE_DRAW_COLOUR = wxColour(*wxRED);
@@ -36,27 +37,35 @@ class tmToolManager : public wxEvtHandler
 {
 private:
     // defined by ctor
-    wxWindow * m_Parent;
-    tmTOCCtrl * m_TOC;
-    tmSelectedDataMemory * m_Selected;
-    tmRenderer * m_Renderer;
-    tmGISScale * m_Scale;
+    wxWindow *m_Parent;
+    tmTOCCtrl *m_TOC;
+    tmSelectedDataMemory *m_Selected;
+    tmRenderer *m_Renderer;
+    tmGISScale *m_Scale;
     wxArrayRealPoints m_DanglingPts;
-    DataBaseTM * m_pDB;
-    
+    DataBaseTM *m_pDB;
+
     void InitMemberValues();
+
     bool _IsOk();
 
-    bool _SearchDanglingNodes(int selectedlayer, const wxArrayString & layersname);
-    void _ClearDangling(){m_DanglingPts.Clear();}
+    bool _SearchDanglingNodes(int selectedlayer, const wxArrayString &layersname);
+
+    void _ClearDangling()
+    { m_DanglingPts.Clear(); }
 
 public:
-    tmToolManager(wxWindow * parent, tmTOCCtrl * toc, tmSelectedDataMemory * seldata, tmRenderer * renderer, tmGISScale * scale);
+    tmToolManager(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
+                  tmGISScale *scale);
+
     ~tmToolManager();
-    void SetDatabase(DataBaseTM * db){m_pDB = db;}
-    
+
+    void SetDatabase(DataBaseTM *db)
+    { m_pDB = db; }
+
     bool FindDanglingNodes();
-    long DrawDanglingNodes(wxGCDC * dc);
+
+    long DrawDanglingNodes(wxGCDC *dc);
 };
 
 #endif

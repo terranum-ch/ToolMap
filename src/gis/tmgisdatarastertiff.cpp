@@ -22,13 +22,13 @@
 
 tmGISDataRasterTIFF::tmGISDataRasterTIFF()
 {
-	m_FileType = _T("GDAL TIFF Raster");
-	m_ClassType = tmGIS_RASTER_TIFF;
+    m_FileType = _T("GDAL TIFF Raster");
+    m_ClassType = tmGIS_RASTER_TIFF;
 }
 
 tmGISDataRasterTIFF::~tmGISDataRasterTIFF()
 {
-	
+
 }
 
 
@@ -40,14 +40,14 @@ tmGISDataRasterTIFF::~tmGISDataRasterTIFF()
  @author Lucien Schreiber (c) CREALP 2008
  @date 24 October 2008
  *******************************************************************************/
-wxString tmGISDataRasterTIFF::GetDataSizeAsHtml (int iPrecision)
+wxString tmGISDataRasterTIFF::GetDataSizeAsHtml(int iPrecision)
 {
-	wxString myResult = _("<U><B>Tiff Raster Size</B></U><BR>");
-	
-	wxFileName myTiffName (GetFullFileName());
-	myResult.Append(wxString::Format(_("Raster size : %s"),
-					myTiffName.GetHumanReadableSize(_T("Error computing raster size"),
-													iPrecision).c_str()));
-	
-	return myResult;
+    wxString myResult = _("<U><B>Tiff Raster Size</B></U><BR>");
+
+    wxFileName myTiffName(GetFullFileName());
+    myResult.Append(wxString::Format(_("Raster size : %s"),
+                                     myTiffName.GetHumanReadableSize(_T("Error computing raster size"),
+                                                                     iPrecision).c_str()));
+
+    return myResult;
 }

@@ -26,51 +26,55 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/fileconf.h>
 #include <wx/tokenzr.h>
 
 
-
 class tmWindowPosition : public wxObject
-	{
-	private:
-		wxSize m_OldScreenSize;
-		wxString m_ConfigAppName;
-		//wxSize m_ScreenSize;
-		//wxFileConfig m_Config;
-		
-		//void InitMemberValues();
-		//bool WP_IsInited();
-		wxString WP_PositionToString(wxRect pos);
-		wxRect WP_StringToPosition(const wxString & posstring);
-		bool WP_SaveScreenSize ();
-		bool WP_LoadScreenSize ();
-		wxRect WP_GetActualScreenSize();
-		
-	protected:
-	public:
-		tmWindowPosition(const wxString & appname = wxEmptyString);
-		//tmWindowPosition(wxSize screensize);
-		//void Create (wxSize screensize);
-		~tmWindowPosition();
-		
-		bool LoadPosition(const wxString & wndname, wxRect & pos);
-		bool SavePosition(const wxString & wndname, wxRect pos);
-		bool SavePosition(const wxString & wndname, const wxString & postext);
-		bool LoadPosition(const wxString & wndname, wxString & postext);
-		
-		bool SaveScreenPosition();
-		
-		bool HasScreenChanged();
-		bool Intersects (wxRect wndpos, wxSize screensize);
+{
+private:
+    wxSize m_OldScreenSize;
+    wxString m_ConfigAppName;
+    //wxSize m_ScreenSize;
+    //wxFileConfig m_Config;
+
+    //void InitMemberValues();
+    //bool WP_IsInited();
+    wxString WP_PositionToString(wxRect pos);
+
+    wxRect WP_StringToPosition(const wxString &posstring);
+
+    bool WP_SaveScreenSize();
+
+    bool WP_LoadScreenSize();
+
+    wxRect WP_GetActualScreenSize();
+
+protected:
+public:
+    tmWindowPosition(const wxString &appname = wxEmptyString);
+
+    //tmWindowPosition(wxSize screensize);
+    //void Create (wxSize screensize);
+    ~tmWindowPosition();
+
+    bool LoadPosition(const wxString &wndname, wxRect &pos);
+
+    bool SavePosition(const wxString &wndname, wxRect pos);
+
+    bool SavePosition(const wxString &wndname, const wxString &postext);
+
+    bool LoadPosition(const wxString &wndname, wxString &postext);
+
+    bool SaveScreenPosition();
+
+    bool HasScreenChanged();
+
+    bool Intersects(wxRect wndpos, wxSize screensize);
 };
-
-
-
-
 
 
 #endif

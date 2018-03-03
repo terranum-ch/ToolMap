@@ -26,59 +26,63 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
 #include <wx/html/htmlwin.h>
 #include <wx/notebook.h>
-#include "../components/wxtreemultictrl/wxTreeMultiCtrl.h"	// for wxTreeMultiCtrl
+#include "../components/wxtreemultictrl/wxTreeMultiCtrl.h"    // for wxTreeMultiCtrl
 #include "../components/wxtreemultictrl/TreeMultiItemWindow.h"
 
 class tmTOCCtrl;
+
 class tmSelectedDataMemory;
+
 class tmSelectionInfoCtrl;
+
 class tmLayerInfoCtrl;
+
 class PrjDefMemManage;
 
 
 const int ID_INFORMATION_DLG = 22401;
 
 
-class InformationDLG : public wxDialog {
+class InformationDLG : public wxDialog
+{
 private:
-    tmTOCCtrl * m_TOC;
-    tmSelectedDataMemory * m_Selected;
-    tmSelectionInfoCtrl * m_SelCtrl;
-    tmLayerInfoCtrl * m_LayerCtrl;
-
-	
-	void _CreateControls();
-	
-	void OnCloseDlg(wxCloseEvent & event);
+    tmTOCCtrl *m_TOC;
+    tmSelectedDataMemory *m_Selected;
+    tmSelectionInfoCtrl *m_SelCtrl;
+    tmLayerInfoCtrl *m_LayerCtrl;
 
 
-	
-	DECLARE_EVENT_TABLE();
+    void _CreateControls();
+
+    void OnCloseDlg(wxCloseEvent &event);
+
+
+DECLARE_EVENT_TABLE();
 public:
-    InformationDLG(wxWindow * parent, tmTOCCtrl * toc,
-				   tmSelectedDataMemory * sel, wxWindowID id,
-				   const wxString & title = _("Informations"), 
-				   const wxPoint & pos = wxDefaultPosition,
-				   const wxSize & size = wxDefaultSize,
-				   long style = wxDEFAULT_DIALOG_STYLE| wxRESIZE_BORDER | wxSTAY_ON_TOP);
+    InformationDLG(wxWindow *parent, tmTOCCtrl *toc,
+                   tmSelectedDataMemory *sel, wxWindowID id,
+                   const wxString &title = _("Informations"),
+                   const wxPoint &pos = wxDefaultPosition,
+                   const wxSize &size = wxDefaultSize,
+                   long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP);
+
     virtual ~InformationDLG();
 
     virtual bool TransferDataToWindow();
-	
-	void UpdateLayer();	
+
+    void UpdateLayer();
+
     void UpdateSelection();
-	
-	void SetProject(PrjDefMemManage * project);
-	
+
+    void SetProject(PrjDefMemManage *project);
+
 };
-
-
 
 
 /***************************************************************************//**
@@ -86,16 +90,17 @@ Layer informations (wxHtmlWindow)
 author Lucien Schreiber (c) CREALP 2010
 date 01 mars 2010
 *******************************************************************************/
-class tmLayerInfoCtrl : public wxHtmlWindow {
+class tmLayerInfoCtrl : public wxHtmlWindow
+{
 public:
-	
-    tmLayerInfoCtrl(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size);
+
+    tmLayerInfoCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size);
+
     virtual ~tmLayerInfoCtrl();
 
-    void UpdateLayer(tmTOCCtrl * toc);
-	
-};
+    void UpdateLayer(tmTOCCtrl *toc);
 
+};
 
 
 /***************************************************************************//**
@@ -109,57 +114,64 @@ const int ID_POPUP_REMOVE_FROM_SEL = 18502;
 const int ID_POPUP_ONLY_THIS_OBJ = 18503;
 
 
-class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
+class tmSelectionInfoCtrl : public wxTreeMultiCtrl
+{
 private:
-	tmSelectedDataMemory * m_Selected;
-	long m_ClickedItemID;
-	PrjDefMemManage * m_Project;
-	tmTOCCtrl * m_Toc;
+    tmSelectedDataMemory *m_Selected;
+    long m_ClickedItemID;
+    PrjDefMemManage *m_Project;
+    tmTOCCtrl *m_Toc;
 
 
-	bool _GetItemByMousePos(wxTreeMultiItem & item, const wxPoint & position);
-    void _DeleteAllInfos(const wxTreeMultiItem & dontdelete);
-    wxMenu * _CreatePopupMenu();
-	void _CreateInfoControl(const wxTreeMultiItem & item, 
-							const wxArrayString & header, 
-							const wxArrayString & values);	
-	void _UpdateSelection();
-    bool _GetData(long oid, wxArrayString & header, wxArrayString & values);
-	
+    bool _GetItemByMousePos(wxTreeMultiItem &item, const wxPoint &position);
+
+    void _DeleteAllInfos(const wxTreeMultiItem &dontdelete);
+
+    wxMenu *_CreatePopupMenu();
+
+    void _CreateInfoControl(const wxTreeMultiItem &item,
+                            const wxArrayString &header,
+                            const wxArrayString &values);
+
+    void _UpdateSelection();
+
+    bool _GetData(long oid, wxArrayString &header, wxArrayString &values);
+
 
     // event function
-	void OnItemLeftClick(wxMouseEvent & event);
-	void OnItemRightClick(wxMouseEvent & event);
-	
-	void OnPopupSelectionThis(wxCommandEvent & event);
-	void OnPopupSelectionRemove(wxCommandEvent & event);
-    void OnPopupMove(wxCommandEvent & event);
-    void OnPopupZoom(wxCommandEvent & event);
-    void OnPopupCopy(wxCommandEvent & event);
-	
-	
+    void OnItemLeftClick(wxMouseEvent &event);
 
-	
-	DECLARE_EVENT_TABLE();
-	
+    void OnItemRightClick(wxMouseEvent &event);
+
+    void OnPopupSelectionThis(wxCommandEvent &event);
+
+    void OnPopupSelectionRemove(wxCommandEvent &event);
+
+    void OnPopupMove(wxCommandEvent &event);
+
+    void OnPopupZoom(wxCommandEvent &event);
+
+    void OnPopupCopy(wxCommandEvent &event);
+
+
+DECLARE_EVENT_TABLE();
+
 public:
-	tmSelectionInfoCtrl(wxWindow * window, wxWindowID id,
-						tmSelectedDataMemory * sel, tmTOCCtrl * toc,
-						const wxPoint & pos = wxDefaultPosition,
-						const wxSize & size = wxDefaultSize, 
-						long style = wxTMC_BG_ADJUST_ALL | wxTMC_SPAN_WIDTH);
+    tmSelectionInfoCtrl(wxWindow *window, wxWindowID id,
+                        tmSelectedDataMemory *sel, tmTOCCtrl *toc,
+                        const wxPoint &pos = wxDefaultPosition,
+                        const wxSize &size = wxDefaultSize,
+                        long style = wxTMC_BG_ADJUST_ALL | wxTMC_SPAN_WIDTH);
 
-	
+
     ~tmSelectionInfoCtrl();
-	
+
     void UpdateSelection();
-	void SetProject(PrjDefMemManage * project);
 
-	
+    void SetProject(PrjDefMemManage *project);
+
+
 };
-
-
-
 
 
 #endif

@@ -18,22 +18,24 @@
 #define _TM_TOCCTRLMENU_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
+
 #include <wx/menu.h>
 
-const int ID_TOCMENU_REMOVE					= 20100;
-const int ID_TOCMENU_SHOW_VERTEX_NONE		= 20101;
-const int ID_TOCMENU_SHOW_VERTEX_ALL		= 20102;
-const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END	= 20103;
-const int ID_TOCMENU_PROPERTIES				= 20104;
-const int ID_TOCMENU_MOVE_TOP				= 20105;
-const int ID_TOCMENU_MOVE_UP				= 20106;
-const int ID_TOCMENU_MOVE_DOWN				= 20107;
-const int ID_TOCMENU_MOVE_BOTTOM			= 20108;
-const int ID_TOCMENU_EDIT_LAYER				= 20109;
-const int ID_TOCMENU_LABELS                 = 20111;
+const int ID_TOCMENU_REMOVE = 20100;
+const int ID_TOCMENU_SHOW_VERTEX_NONE = 20101;
+const int ID_TOCMENU_SHOW_VERTEX_ALL = 20102;
+const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END = 20103;
+const int ID_TOCMENU_PROPERTIES = 20104;
+const int ID_TOCMENU_MOVE_TOP = 20105;
+const int ID_TOCMENU_MOVE_UP = 20106;
+const int ID_TOCMENU_MOVE_DOWN = 20107;
+const int ID_TOCMENU_MOVE_BOTTOM = 20108;
+const int ID_TOCMENU_EDIT_LAYER = 20109;
+const int ID_TOCMENU_LABELS = 20111;
 
 class tmLayerProperties;
 
@@ -50,16 +52,22 @@ class tmTOCCtrlMenu : public wxMenu
 private:
     int m_SelectedPos;
     int m_TotalLayers;
-    tmLayerProperties * m_LayerProperties;
-    
-    void _CreateTOCBasic ();
-    void _CreateTOCShowVertex ();
-    void _CreateTOCProperties ();
-    void _CreateTOCMoveMenu ();
-    
+    tmLayerProperties *m_LayerProperties;
+
+    void _CreateTOCBasic();
+
+    void _CreateTOCShowVertex();
+
+    void _CreateTOCProperties();
+
+    void _CreateTOCMoveMenu();
+
 public:
-    tmTOCCtrlMenu(){;}
-    tmTOCCtrlMenu(tmLayerProperties * item, int pos, int numberitems);
+    tmTOCCtrlMenu()
+    { ; }
+
+    tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems);
+
     ~tmTOCCtrlMenu();
 };
 

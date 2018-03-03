@@ -23,46 +23,54 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "projectdefmemory.h"
+
 class PrjDefMemManage;
+
 class DataBaseTM;
+
 class tmSelectedDataMemory;
+
 class tmAAttribCtrl;
 
 
+class tmAAttribBatchManager
+{
+private:
+    PrjDefMemManage *m_Project;
+    DataBaseTM *m_DB;
+    tmSelectedDataMemory *m_Selected;
+    PRJDEF_LAYERS_TYPE m_SelLayerType;
+
+    bool _GetSelectionSubset(long layerid, wxArrayLong &subselected);
+
+    wxString _CreateListOfIds(const wxArrayLong *ids);
 
 
-class tmAAttribBatchManager {
-  private:
-    PrjDefMemManage * m_Project;
-    DataBaseTM * m_DB;
-    tmSelectedDataMemory * m_Selected;
-	PRJDEF_LAYERS_TYPE m_SelLayerType;
+public:
+    tmAAttribBatchManager(PrjDefMemManage *project,
+                          DataBaseTM *database,
+                          tmSelectedDataMemory *selected,
+                          PRJDEF_LAYERS_TYPE sellayertype);
 
-	bool _GetSelectionSubset(long layerid, wxArrayLong & subselected);
-    wxString _CreateListOfIds(const wxArrayLong * ids);
-
-
-  public:
-    tmAAttribBatchManager(PrjDefMemManage * project,
-						  DataBaseTM * database,
-						  tmSelectedDataMemory * selected, 
-						  PRJDEF_LAYERS_TYPE sellayertype);
     virtual ~tmAAttribBatchManager();
 
-    bool GetTypes(PrjMemObjectsArray & objects, wxArrayInt & number, wxArrayLong & layerid);
-    bool GetFields(long layerid, PrjMemFieldArray & fields);
-    tmAAttribCtrl * GetValueControl(const ProjectDefMemoryFields & field, wxWindow * wnd);
+    bool GetTypes(PrjMemObjectsArray &objects, wxArrayInt &number, wxArrayLong &layerid);
+
+    bool GetFields(long layerid, PrjMemFieldArray &fields);
+
+    tmAAttribCtrl *GetValueControl(const ProjectDefMemoryFields &field, wxWindow *wnd);
 
     bool IsOk();
-	
-	int Attribute(long layerid,
-				   const ProjectDefMemoryFields & field,
-				   const wxString & value);
+
+    int Attribute(long layerid,
+                  const ProjectDefMemoryFields &field,
+                  const wxString &value);
 
 
 };
+
 #endif

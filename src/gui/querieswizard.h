@@ -22,7 +22,7 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -34,38 +34,43 @@
 
 
 class QueriesPageIntro;
+
 class QueriesPageLayer;
+
 class DataBaseTM;
 
 
-
-class QueriesWizard : public wxWizard {
+class QueriesWizard : public wxWizard
+{
 private:
-	DataBaseTM * m_pDB;
-	QueriesData * m_QueryData;
-	// Wizard's page
-	QueriesPageIntro * m_PageIntro;
-	
-	
-public:
-	//Used by first panel
-    tmQUERIES_TYPE m_QueryType;
-	long m_QueryObjectGeomID;
-	
+    DataBaseTM *m_pDB;
+    QueriesData *m_QueryData;
+    // Wizard's page
+    QueriesPageIntro *m_PageIntro;
+
 
 public:
-	
-    QueriesWizard(wxWindow * parent, DataBaseTM * database, int id = wxID_ANY);
+    //Used by first panel
+    tmQUERIES_TYPE m_QueryType;
+    long m_QueryObjectGeomID;
+
+
+public:
+
+    QueriesWizard(wxWindow *parent, DataBaseTM *database, int id = wxID_ANY);
+
     virtual ~QueriesWizard();
-	virtual int ShowWizard();
-	
-	inline QueriesData * GetData();
-	
+
+    virtual int ShowWizard();
+
+    inline QueriesData *GetData();
+
 };
 
 
-inline QueriesData * QueriesWizard::GetData(){
-	return m_QueryData;
+inline QueriesData *QueriesWizard::GetData()
+{
+    return m_QueryData;
 }
 
 

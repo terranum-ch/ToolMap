@@ -26,37 +26,46 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-#include "tmsymbolvector.h"	// tmSymbol class definition
-#include "tmsymboldlgpoint.h" 
+#include "tmsymbolvector.h"    // tmSymbol class definition
+#include "tmsymboldlgpoint.h"
 
 class tmSymbolVectorPoint : public tmSymbolVector
-	{
-	private:
-		tmSymbolDataPointUnique m_ptUniqueSymbol;
-		
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-	protected:
-	public:
-		tmSymbolVectorPoint();
-		tmSymbolVectorPoint(const tmSymbolVectorPoint & origin);
-		~tmSymbolVectorPoint();
-		
-		virtual wxColour GetColour();
-		virtual int GetRadius(){return m_ptUniqueSymbol.m_Radius;}
-		virtual int GetTransparency(){return m_ptUniqueSymbol.m_GlobalTransparency;}
-		
-        virtual void SetColour (const wxColour & colour){m_ptUniqueSymbol.m_Colour = colour;}
-        
-		virtual bool Serialize(tmSerialize &s);
-        tmSymbolDataPointUnique * GetSymbolData(){return &m_ptUniqueSymbol;}
+{
+private:
+    tmSymbolDataPointUnique m_ptUniqueSymbol;
 
-	};
+    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
+    virtual bool GetDialogData(tmSymbolDLG *dlg);
 
+protected:
+public:
+    tmSymbolVectorPoint();
+
+    tmSymbolVectorPoint(const tmSymbolVectorPoint &origin);
+
+    ~tmSymbolVectorPoint();
+
+    virtual wxColour GetColour();
+
+    virtual int GetRadius()
+    { return m_ptUniqueSymbol.m_Radius; }
+
+    virtual int GetTransparency()
+    { return m_ptUniqueSymbol.m_GlobalTransparency; }
+
+    virtual void SetColour(const wxColour &colour)
+    { m_ptUniqueSymbol.m_Colour = colour; }
+
+    virtual bool Serialize(tmSerialize &s);
+
+    tmSymbolDataPointUnique *GetSymbolData()
+    { return &m_ptUniqueSymbol; }
+
+};
 
 
 #endif

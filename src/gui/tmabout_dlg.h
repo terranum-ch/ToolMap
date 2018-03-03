@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -42,37 +42,37 @@
 const wxString g_CodeName = wxTRANSLATE("MEYRIN");
 
 
-class tmAboutDLG : public wxDialog 
-	{
-	private:
-		wxStaticText* m_TextVersion;
-		wxPanel* m_PanelLicence;
-		wxPanel* m_PanelAuthor;
-		wxButton* m_Button;
-		
-		void CreateControls(wxWindow * parent);
-		wxString GetVersionText();
-		wxString GetAuthorsText();
-		wxString GetButtonText();
-		
-		
-		void OnButton(wxCommandEvent & event);
-	
-		DECLARE_EVENT_TABLE();
-	protected:
-		
-	public:
-		tmAboutDLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-				   const wxString& title = wxEmptyString,
-				   const wxPoint& pos = wxDefaultPosition,
-				   const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
-		~tmAboutDLG();
-		
-	};
+class tmAboutDLG : public wxDialog
+{
+private:
+    wxStaticText *m_TextVersion;
+    wxPanel *m_PanelLicence;
+    wxPanel *m_PanelAuthor;
+    wxButton *m_Button;
+
+    void CreateControls(wxWindow *parent);
+
+    wxString GetVersionText();
+
+    wxString GetAuthorsText();
+
+    wxString GetButtonText();
 
 
+    void OnButton(wxCommandEvent &event);
 
+DECLARE_EVENT_TABLE();
+protected:
 
+public:
+    tmAboutDLG(wxWindow *parent, wxWindowID id = wxID_ANY,
+               const wxString &title = wxEmptyString,
+               const wxPoint &pos = wxDefaultPosition,
+               const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
+
+    ~tmAboutDLG();
+
+};
 
 
 #endif

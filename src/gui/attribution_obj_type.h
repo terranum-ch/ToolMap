@@ -25,7 +25,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -34,11 +34,12 @@
 #include "wx/datectrl.h"
 #include "wx/dateevt.h"
 #include <wx/srchctrl.h>
-#include "tmchecklistboxrank.h"			// for advanced checklistbox
-#include "../core/projectdefmemory.h"	// for item type (LINE, POINT, ...)
-#include <wx/choicebk.h>				// for choicebook
+#include "tmchecklistboxrank.h"            // for advanced checklistbox
+#include "../core/projectdefmemory.h"    // for item type (LINE, POINT, ...)
+#include <wx/choicebk.h>                // for choicebook
 
 class DataBaseTM;
+
 class wxFlatButton;
 
 // EVENT DECLARATION FOR COMMUNICATION WITH tmAttributionManager
@@ -83,87 +84,103 @@ const int ID_DLG_OBJ_ATTRIBUTION_BTN_ADD = wxWindow::NewControlId();
 const int ID_DLG_OBJ_ATTRIBUTION_BTN_REMOVE = wxWindow::NewControlId();
 
 
-class AttribObjType_PANEL: public ManagedAuiWnd
-	{
-		wxSizer * CreateControls(wxWindow * parent,
-								 bool call_fit = TRUE, 
-								 bool set_sizer = TRUE);
+class AttribObjType_PANEL : public ManagedAuiWnd
+{
+    wxSizer *CreateControls(wxWindow *parent,
+                            bool call_fit = TRUE,
+                            bool set_sizer = TRUE);
 
-		wxAuiPaneInfo mPaneInfo;
-		bool UpdateObjectList(DataBaseTM * pDB,tmCheckListBox * pList,
-							  int type, short frequency = 2);
-		wxWindow * m_ParentEvt;
-		int m_NbFeaturesSelected;
-		
-		wxFlatButton * m_AttribBtn;
-        wxFlatButton * m_AddBtnCtrl;
-		wxFlatButton * m_InfoBtn;
-		wxChoicebook * m_AttribNotebook;
-        wxStaticText * m_WarningMultiFeatureCtrl;
-		bool m_AutoDisplayAttributes;
-		bool m_EmptyListAfterAttributes;
-		bool m_EnableFullAttribution;
-		wxBoxSizer* m_ButtonSizer;
-		wxBoxSizer* m_AttribSizer;
-		
-		// event function
-		//void OnAttributeBtn (wxCommandEvent & event);
-		void OnAddBtn (wxCommandEvent & event);
-        void OnRemoveBtn (wxCommandEvent & event);
-		void OnInfoBtn (wxCommandEvent & event);
-		
-		void OnEditStart(wxCommandEvent & event);
-		void OnEditStop (wxCommandEvent & event);
-		
-        
-				
-		DECLARE_EVENT_TABLE()
-		
-	public:
-		AttribObjType_PANEL(wxWindow * parent, wxAuiManager * AuiManager);
-		~AttribObjType_PANEL();
-		
-		bool UpdateObjectPointList(DataBaseTM * pDB);
-		bool UpdateObjectPolyList (DataBaseTM * pDB);
-		bool UpdateObjectLineList (DataBaseTM * pDB);
-		
-		// init list with databasae
-		void SetDataBaseToList (DataBaseTM * pDB);
-		
-		// update  btn
-		void SetAttributeBtn (int nbfeatures, bool editmode);
-		void SetInfoBtn (int nbfeatures);
-		
-		// select correct panel
-		void SetVisibleNotebook (TOC_GENERIC_NAME notebooktype);
-		TOC_GENERIC_NAME GetVisibleNotebook ();
-		
-		// get selected values
-		int GetSelectedValues (TOC_GENERIC_NAME panel_name,
-							   wxArrayLong & values,
-							   bool panel_freq = false);
-		void SetSelectedValues (TOC_GENERIC_NAME panel_name,
-								const wxArrayLong & values,
-								bool panel_freq = false);
-		
-		bool IsAutoDisplayAttributeChecked();
-		bool IsEmptyListValuesRequired(){return m_EmptyListAfterAttributes;}
-		bool IsFullAttributionEnabled(){return m_EnableFullAttribution;}
-		
-		void EmptyListValues();
-		
-		//  menu event function
-		void OnDisplayAttributesAuto(wxCommandEvent & event);
-		void OnEmptyListAffterAttributes (wxCommandEvent & event);
-		void OnFullAttribution (wxCommandEvent & event);
-		
-		// controls
-		tmCheckListBoxRank * m_pObjList_PT;
-		tmCheckListBoxRank * m_pObjList_PLG;
-		tmCheckListBoxRank * m_pObjList_L_Freq;
-		tmCheckListBoxRank * m_pObjList_L_NoFreq;
+    wxAuiPaneInfo mPaneInfo;
 
-		
-	};
+    bool UpdateObjectList(DataBaseTM *pDB, tmCheckListBox *pList,
+                          int type, short frequency = 2);
+
+    wxWindow *m_ParentEvt;
+    int m_NbFeaturesSelected;
+
+    wxFlatButton *m_AttribBtn;
+    wxFlatButton *m_AddBtnCtrl;
+    wxFlatButton *m_InfoBtn;
+    wxChoicebook *m_AttribNotebook;
+    wxStaticText *m_WarningMultiFeatureCtrl;
+    bool m_AutoDisplayAttributes;
+    bool m_EmptyListAfterAttributes;
+    bool m_EnableFullAttribution;
+    wxBoxSizer *m_ButtonSizer;
+    wxBoxSizer *m_AttribSizer;
+
+    // event function
+    //void OnAttributeBtn (wxCommandEvent & event);
+    void OnAddBtn(wxCommandEvent &event);
+
+    void OnRemoveBtn(wxCommandEvent &event);
+
+    void OnInfoBtn(wxCommandEvent &event);
+
+    void OnEditStart(wxCommandEvent &event);
+
+    void OnEditStop(wxCommandEvent &event);
+
+
+DECLARE_EVENT_TABLE()
+
+public:
+    AttribObjType_PANEL(wxWindow *parent, wxAuiManager *AuiManager);
+
+    ~AttribObjType_PANEL();
+
+    bool UpdateObjectPointList(DataBaseTM *pDB);
+
+    bool UpdateObjectPolyList(DataBaseTM *pDB);
+
+    bool UpdateObjectLineList(DataBaseTM *pDB);
+
+    // init list with databasae
+    void SetDataBaseToList(DataBaseTM *pDB);
+
+    // update  btn
+    void SetAttributeBtn(int nbfeatures, bool editmode);
+
+    void SetInfoBtn(int nbfeatures);
+
+    // select correct panel
+    void SetVisibleNotebook(TOC_GENERIC_NAME notebooktype);
+
+    TOC_GENERIC_NAME GetVisibleNotebook();
+
+    // get selected values
+    int GetSelectedValues(TOC_GENERIC_NAME panel_name,
+                          wxArrayLong &values,
+                          bool panel_freq = false);
+
+    void SetSelectedValues(TOC_GENERIC_NAME panel_name,
+                           const wxArrayLong &values,
+                           bool panel_freq = false);
+
+    bool IsAutoDisplayAttributeChecked();
+
+    bool IsEmptyListValuesRequired()
+    { return m_EmptyListAfterAttributes; }
+
+    bool IsFullAttributionEnabled()
+    { return m_EnableFullAttribution; }
+
+    void EmptyListValues();
+
+    //  menu event function
+    void OnDisplayAttributesAuto(wxCommandEvent &event);
+
+    void OnEmptyListAffterAttributes(wxCommandEvent &event);
+
+    void OnFullAttribution(wxCommandEvent &event);
+
+    // controls
+    tmCheckListBoxRank *m_pObjList_PT;
+    tmCheckListBoxRank *m_pObjList_PLG;
+    tmCheckListBoxRank *m_pObjList_L_Freq;
+    tmCheckListBoxRank *m_pObjList_L_NoFreq;
+
+
+};
 
 #endif

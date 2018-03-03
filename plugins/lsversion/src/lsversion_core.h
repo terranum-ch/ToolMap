@@ -22,27 +22,41 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
 #include "lsversion_param.h"
 
-class lsVersion {
-  public:
+class lsVersion
+{
+public:
     static wxString GetSoftName();
+
     static wxString GetSoftGIT();
+
     static wxString GetSoftGITBranch();
+
     static wxString GetSoftGITRevision();
+
     static wxString GetwxWidgetsNumber();
+
     static wxString GetwxWidgetsGIT();
+
     static wxString GetGDALNumber();
+
     static wxString GetGEOSNumber();
+
     static wxString GetCurlNumber();
+
     static wxString GetSQLiteNumber();
-	static wxString GetMySQLNumber();
+
+    static wxString GetMySQLNumber();
+
     static wxString GetVroomGISNumber();
+
     static wxString GetAllModules();
 };
+
 #endif
 

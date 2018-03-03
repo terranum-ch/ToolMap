@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -37,16 +37,16 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 05 September 2008
  *******************************************************************************/
-const int tmPENSTYLE_ORIENTED = wxID_HIGHEST+1;
+const int tmPENSTYLE_ORIENTED = wxID_HIGHEST + 1;
 const int tmSYMBOLPENSYLES[] =
-{
-	wxPENSTYLE_SOLID,
-	wxPENSTYLE_DOT,
-    wxPENSTYLE_LONG_DASH,
-    wxPENSTYLE_DOT_DASH,
-    wxPENSTYLE_TRANSPARENT,
-    tmPENSTYLE_ORIENTED
-};
+        {
+                wxPENSTYLE_SOLID,
+                wxPENSTYLE_DOT,
+                wxPENSTYLE_LONG_DASH,
+                wxPENSTYLE_DOT_DASH,
+                wxPENSTYLE_TRANSPARENT,
+                tmPENSTYLE_ORIENTED
+        };
 
 /***************************************************************************//**
  @brief Name string of pen
@@ -56,14 +56,14 @@ const int tmSYMBOLPENSYLES[] =
  @date 05 September 2008
  *******************************************************************************/
 const wxString tmSYMBOLPENSTYLES_NAME[] =
-{
-	_("Solid line"),
-	_("Dotted line"),
-	_("Dashed line"),
-	_("Dot-dashed line"),
-	_("Transparent line"),
-    _("Oriented line")
-};
+        {
+                _("Solid line"),
+                _("Dotted line"),
+                _("Dashed line"),
+                _("Dot-dashed line"),
+                _("Transparent line"),
+                _("Oriented line")
+        };
 
 
 /***************************************************************************//**
@@ -73,15 +73,14 @@ const wxString tmSYMBOLPENSTYLES_NAME[] =
  @date 05 September 2008
  *******************************************************************************/
 const wxBrushStyle tmSYMBOLFILLSTYLES[] =
-{
-	wxBRUSHSTYLE_SOLID,
-	wxBRUSHSTYLE_BDIAGONAL_HATCH,
-	wxBRUSHSTYLE_FDIAGONAL_HATCH,
-	wxBRUSHSTYLE_CROSS_HATCH,
-	wxBRUSHSTYLE_VERTICAL_HATCH,
-	wxBRUSHSTYLE_TRANSPARENT
-};
-
+        {
+                wxBRUSHSTYLE_SOLID,
+                wxBRUSHSTYLE_BDIAGONAL_HATCH,
+                wxBRUSHSTYLE_FDIAGONAL_HATCH,
+                wxBRUSHSTYLE_CROSS_HATCH,
+                wxBRUSHSTYLE_VERTICAL_HATCH,
+                wxBRUSHSTYLE_TRANSPARENT
+        };
 
 
 /***************************************************************************//**
@@ -91,14 +90,14 @@ const wxBrushStyle tmSYMBOLFILLSTYLES[] =
  @date 05 September 2008
  *******************************************************************************/
 const wxString tmSYMBOLFILLSTYLES_NAME[] =
-{
-	_("Solid fill"),
-	_("Backward Diagonal hatch"),
-	_("Forward Diagonal hatch"),
-	_("Cross hatch"),
-	_("Vertical hatch"),
-	_("No Fill")
-};
+        {
+                _("Solid fill"),
+                _("Backward Diagonal hatch"),
+                _("Forward Diagonal hatch"),
+                _("Cross hatch"),
+                _("Vertical hatch"),
+                _("No Fill")
+        };
 
 
 #endif

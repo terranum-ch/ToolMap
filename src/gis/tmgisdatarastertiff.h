@@ -26,28 +26,26 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "tmgisdataraster.h"
-#include "gdal_priv.h"	
+#include "gdal_priv.h"
 
 
 class tmGISDataRasterTIFF : public tmGISDataRaster
-	{
-	private:
-			
-	protected:
-	public:
-		tmGISDataRasterTIFF();
-		~tmGISDataRasterTIFF();
-		
-		virtual wxString GetDataSizeAsHtml (int iPrecision = 2);
+{
+private:
 
-	};
+protected:
+public:
+    tmGISDataRasterTIFF();
 
+    ~tmGISDataRasterTIFF();
 
+    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 
+};
 
 
 #endif

@@ -17,41 +17,50 @@
 #define _BEZIER_SETTINGS_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/spinctrl.h>
 #include <wx/notebook.h>
 
 class tmEditManager;
+
 class tmRenderer;
 
 
-class BezierSettingsData {
+class BezierSettingsData
+{
 public:
-    enum {AGG = 0, ETHZ = 1} method;
+    enum
+    {
+        AGG = 0, ETHZ = 1
+    } method;
     double agg_approximation;
     double ethz_width;
     int ethz_max_points;
-    BezierSettingsData() {
+
+    BezierSettingsData()
+    {
         method = AGG;
         agg_approximation = 0.2;
         ethz_width = 1;
         ethz_max_points = 10;
     }
-    
-    inline bool operator == (const BezierSettingsData &b) const
+
+    inline bool operator==(const BezierSettingsData &b) const
     {
-        if (method != b.method){
+        if (method != b.method) {
             return false;
         }
-        if (agg_approximation != b.agg_approximation){
+        if (agg_approximation != b.agg_approximation) {
             return false;
         }
-        if (ethz_width != b.ethz_width){
+        if (ethz_width != b.ethz_width) {
             return false;
         }
-        if (ethz_max_points != b.ethz_max_points){
+        if (ethz_max_points != b.ethz_max_points) {
             return false;
         }
         return true;
@@ -60,44 +69,50 @@ public:
 };
 
 
-
-
 class BezierSettings_DLG : public wxDialog
 {
 public:
-    BezierSettings_DLG( wxWindow* parent, tmEditManager * editmanager, tmRenderer * renderer, wxWindowID id = wxID_ANY, const wxString& title = _("Bezier Settings"),
-                       const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-                       long style = wxDEFAULT_DIALOG_STYLE );
+    BezierSettings_DLG(wxWindow *parent, tmEditManager *editmanager, tmRenderer *renderer, wxWindowID id = wxID_ANY,
+                       const wxString &title = _("Bezier Settings"),
+                       const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                       long style = wxDEFAULT_DIALOG_STYLE);
+
     ~BezierSettings_DLG();
-    
+
     virtual bool TransferDataToWindow();
+
     virtual bool TransferDataFromWindow();
-    
-    void SetBezierSettings (BezierSettingsData data) {m_Data = data;}
-    BezierSettingsData GetBezierSettings () {return m_Data; }
-    
+
+    void SetBezierSettings(BezierSettingsData data)
+    { m_Data = data; }
+
+    BezierSettingsData GetBezierSettings()
+    { return m_Data; }
+
 private:
-    void OnIdlePreview( wxIdleEvent& event );
-    void OnCheckPreview( wxCommandEvent& event );
-    void OnUpdateUIPreview( wxUpdateUIEvent& event ) ;
-    
+    void OnIdlePreview(wxIdleEvent &event);
+
+    void OnCheckPreview(wxCommandEvent &event);
+
+    void OnUpdateUIPreview(wxUpdateUIEvent &event);
+
     void _CreateControls();
-    void _GetDataFromControl (BezierSettingsData * data);
-    
-    wxNotebook* m_NotebookMethodCtrl;
-    wxSpinCtrlDouble* m_ApproximationCtrl;
-    wxSpinCtrlDouble* m_WidthToleranceCtrl;
-    wxSpinCtrl * m_MaxNumPointsCtrl;
-    wxCheckBox* m_PreviewCtrl;
-    
+
+    void _GetDataFromControl(BezierSettingsData *data);
+
+    wxNotebook *m_NotebookMethodCtrl;
+    wxSpinCtrlDouble *m_ApproximationCtrl;
+    wxSpinCtrlDouble *m_WidthToleranceCtrl;
+    wxSpinCtrl *m_MaxNumPointsCtrl;
+    wxCheckBox *m_PreviewCtrl;
+
     //double m_ApproximationValue;
     //double m_ApproximationValuePrevious;
-    tmEditManager * m_EditManager;
-    tmRenderer * m_Renderer;
+    tmEditManager *m_EditManager;
+    tmRenderer *m_Renderer;
     BezierSettingsData m_Data;
     BezierSettingsData m_PreviousData;
 };
-
 
 
 #endif

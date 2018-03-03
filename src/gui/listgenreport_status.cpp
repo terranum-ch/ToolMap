@@ -26,22 +26,22 @@
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 May 2008
  *******************************************************************************/
-ListGenReportWithStatus::ListGenReportWithStatus(wxWindow * parent, wxWindowID id, 
-												 wxArrayString * pColsName, 
-												 wxArrayInt * pColsSize, 
-												 wxSize size) : 
-ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
+ListGenReportWithStatus::ListGenReportWithStatus(wxWindow *parent, wxWindowID id,
+                                                 wxArrayString *pColsName,
+                                                 wxArrayInt *pColsSize,
+                                                 wxSize size) :
+        ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
 {
-	// init default values
-	InitMembers();
-	
-	// connect event
-	Connect(id,
-			wxEVT_COMMAND_LIST_ITEM_SELECTED, 
-			wxListEventHandler(ListGenReportWithStatus::OnSelectionChange));
-	Connect(id,
-			wxEVT_COMMAND_LIST_ITEM_DESELECTED,
-			wxListEventHandler(ListGenReportWithStatus::OnSelectionChange));
+    // init default values
+    InitMembers();
+
+    // connect event
+    Connect(id,
+            wxEVT_COMMAND_LIST_ITEM_SELECTED,
+            wxListEventHandler(ListGenReportWithStatus::OnSelectionChange));
+    Connect(id,
+            wxEVT_COMMAND_LIST_ITEM_DESELECTED,
+            wxListEventHandler(ListGenReportWithStatus::OnSelectionChange));
 }
 
 
@@ -52,9 +52,9 @@ ListGenReportWithDialog(parent, id, pColsName, pColsSize, size)
  *******************************************************************************/
 void ListGenReportWithStatus::InitMembers()
 {
-	m_status = NULL;
-	m_TextField1 = _("Number of item(s) : %d");
-	m_TextField2 = _("%d item(s) selected");
+    m_status = NULL;
+    m_TextField1 = _("Number of item(s) : %d");
+    m_TextField2 = _("%d item(s) selected");
 }
 
 
@@ -66,9 +66,9 @@ void ListGenReportWithStatus::InitMembers()
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 May 2008
  *******************************************************************************/
-void  ListGenReportWithStatus::SetStatusBar(wxStatusBar * status)
+void ListGenReportWithStatus::SetStatusBar(wxStatusBar *status)
 {
-	m_status = status;
+    m_status = status;
 }
 
 
@@ -85,18 +85,16 @@ void  ListGenReportWithStatus::SetStatusBar(wxStatusBar * status)
  @author Lucien Schreiber (c) CREALP 2008
  @date 21 May 2008
  *******************************************************************************/
-void ListGenReportWithStatus::SetTextFields (const wxString & field1,
-											 const wxString & field2)
+void ListGenReportWithStatus::SetTextFields(const wxString &field1,
+                                            const wxString &field2)
 {
-	if (!field1.IsEmpty())
-	{
-		m_TextField1 = field1;
-	}
-	
-	if(!field2.IsEmpty())
-	{
-		m_TextField2 = field2;
-	}
+    if (!field1.IsEmpty()) {
+        m_TextField1 = field1;
+    }
+
+    if (!field2.IsEmpty()) {
+        m_TextField2 = field2;
+    }
 }
 
 
@@ -108,33 +106,28 @@ void ListGenReportWithStatus::SetTextFields (const wxString & field1,
  @author Lucien Schreiber (c) CREALP 2008
  @date 23 May 2008
  *******************************************************************************/
-bool ListGenReportWithStatus::UpdateStatus (int iField)
+bool ListGenReportWithStatus::UpdateStatus(int iField)
 {
-	// check status pointer
-	if(!GetStatusBar())
-	{
-		wxLogDebug(_T("Status bar is not defined, please define status bar first"));
-		return FALSE;
-	}
-	
-	if (iField & STATUS_FIELD_ITEM_COUNT)
-		m_status->SetStatusText(wxString::Format(m_TextField1, GetItemCount()), 0);
-	
-	// update number of selected items only if greater than 0
-	if (iField & STATUS_FIELD_ITEM_SELECTED)
-	{
-		if (GetSelectedItemCount() > 0)
-		{
-			m_status->SetStatusText(wxString::Format(m_TextField2, GetSelectedItemCount()), 1);
-		}
-		else 
-		{
-			m_status->SetStatusText(_T(""), 1);
-		}
-	}
-		
-	
-	return TRUE;
+    // check status pointer
+    if (!GetStatusBar()) {
+        wxLogDebug(_T("Status bar is not defined, please define status bar first"));
+        return FALSE;
+    }
+
+    if (iField & STATUS_FIELD_ITEM_COUNT)
+        m_status->SetStatusText(wxString::Format(m_TextField1, GetItemCount()), 0);
+
+    // update number of selected items only if greater than 0
+    if (iField & STATUS_FIELD_ITEM_SELECTED) {
+        if (GetSelectedItemCount() > 0) {
+            m_status->SetStatusText(wxString::Format(m_TextField2, GetSelectedItemCount()), 1);
+        } else {
+            m_status->SetStatusText(_T(""), 1);
+        }
+    }
+
+
+    return TRUE;
 }
 
 
@@ -145,28 +138,26 @@ bool ListGenReportWithStatus::UpdateStatus (int iField)
  @date 23 May 2008
  *******************************************************************************/
 void ListGenReportWithStatus::AddItem()
-{	
-	BeforeAdding();
-	
-	// check that the dialog pointer is not null
-	// otherwise no operations are allowed
-	wxASSERT_MSG (m_pDialog, wxT("Pointer to the dialog not initialised, init this pointer first"));
-	
-	// show the dialog for edition,
-	// the dialog must implement the TransfertDataToWindow
-	// for beeing usable
-	if (m_pDialog->ShowModal()==wxID_OK)
-	{
-		AfterAdding(TRUE);
-		// update status
-		UpdateStatus(STATUS_FIELD_ITEM_COUNT);
-	}
-	else
-		AfterAdding(FALSE);
-	
-	wxASSERT(m_pDialog);
-	delete m_pDialog;
-	m_pDialog = NULL;
+{
+    BeforeAdding();
+
+    // check that the dialog pointer is not null
+    // otherwise no operations are allowed
+    wxASSERT_MSG (m_pDialog, wxT("Pointer to the dialog not initialised, init this pointer first"));
+
+    // show the dialog for edition,
+    // the dialog must implement the TransfertDataToWindow
+    // for beeing usable
+    if (m_pDialog->ShowModal() == wxID_OK) {
+        AfterAdding(TRUE);
+        // update status
+        UpdateStatus(STATUS_FIELD_ITEM_COUNT);
+    } else
+        AfterAdding(FALSE);
+
+    wxASSERT(m_pDialog);
+    delete m_pDialog;
+    m_pDialog = NULL;
 }
 
 
@@ -178,10 +169,10 @@ void ListGenReportWithStatus::AddItem()
  *******************************************************************************/
 void ListGenReportWithStatus::DeleteItem()
 {
-	BeforeDeleting();
-	DeleteSelectedItem();
-	// update the status
-	UpdateStatus(STATUS_FIELD_ITEM_BOTH);
+    BeforeDeleting();
+    DeleteSelectedItem();
+    // update the status
+    UpdateStatus(STATUS_FIELD_ITEM_BOTH);
 }
 
 
@@ -190,9 +181,9 @@ void ListGenReportWithStatus::DeleteItem()
  @author Lucien Schreiber (c) CREALP 2008
  @date 23 May 2008
  *******************************************************************************/
-void ListGenReportWithStatus::OnSelectionChange(wxListEvent & event)
+void ListGenReportWithStatus::OnSelectionChange(wxListEvent &event)
 {
-	UpdateStatus(STATUS_FIELD_ITEM_SELECTED);
-	event.Skip();
+    UpdateStatus(STATUS_FIELD_ITEM_SELECTED);
+    event.Skip();
 }
 

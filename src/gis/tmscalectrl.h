@@ -18,12 +18,13 @@
 #define _TM_SCALECTRL_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-#include "../database/database_tm.h"	// for loading data from db
-#include "../core/scale.h"				// for ScaleTM
+#include "../database/database_tm.h"    // for loading data from db
+#include "../core/scale.h"                // for ScaleTM
 
 // EVENT FOR SCALE CTRL
 DECLARE_EVENT_TYPE(tmEVT_SCALE_USER_CHANGED, -1)
@@ -31,21 +32,26 @@ DECLARE_EVENT_TYPE(tmEVT_SCALE_USER_CHANGED, -1)
 class tmScaleCtrlCombo : public wxComboBox
 {
 private:
-    wxWindow * m_ParentEvent;
-    DECLARE_EVENT_TABLE();
+    wxWindow *m_ParentEvent;
+DECLARE_EVENT_TABLE();
 protected:
 public:
     tmScaleCtrlCombo();
-    tmScaleCtrlCombo (wxWindow * parent, wxWindowID id,
-                      const wxPoint & pos,
-                      const wxSize & size,
-                      const wxArrayString & arraystring);
-    ~tmScaleCtrlCombo(){;}
-    
-    void InitScaleFromDatabase (const wxArrayLong & scale_values);
-    void SetValueScale (const long & scale);
-    void OnUserSetValue (wxCommandEvent & event);
-    
+
+    tmScaleCtrlCombo(wxWindow *parent, wxWindowID id,
+                     const wxPoint &pos,
+                     const wxSize &size,
+                     const wxArrayString &arraystring);
+
+    ~tmScaleCtrlCombo()
+    { ; }
+
+    void InitScaleFromDatabase(const wxArrayLong &scale_values);
+
+    void SetValueScale(const long &scale);
+
+    void OnUserSetValue(wxCommandEvent &event);
+
 };
 
 #endif

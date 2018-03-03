@@ -3,11 +3,13 @@
 #define _MISC_BMP_H_ 1
 
 #include <wx/wxprec.h>
+
 #ifndef WX_PRECOMP
 #	include <wx/wx.h>
 #endif
 
 extern void images_misc_init(void);
+
 extern void images_misc_clean(void);
 
 extern wxBitmap *_img_icon_bug;

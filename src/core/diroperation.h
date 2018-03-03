@@ -26,7 +26,7 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/dir.h>
@@ -35,11 +35,9 @@
 
 enum DIROP_SELECTDIR
 {
-	DIROP_PATH_ORIGIN = 0,
-	DIROP_PATH_DESTINATION
+    DIROP_PATH_ORIGIN = 0,
+    DIROP_PATH_DESTINATION
 };
-
-
 
 
 /***************************************************************************//**
@@ -50,31 +48,38 @@ enum DIROP_SELECTDIR
  @date 05 February 2008
  *******************************************************************************/
 class DirOperation : public wxObject
-	{
-	DECLARE_DYNAMIC_CLASS(DirOperation)
-	protected:
-		wxString m_Path[2];
-		//wxString m_DestinationPath;
-		
-		void InitMembers();
-		
-	public:
-		DirOperation();
-		DirOperation(wxString OriginPath, wxString DestinationPath = _T(""));
-		~DirOperation();
-		void InitPath(wxString OriginPath = _T(""), wxString DestinationPath = _T(""));
-		
-		double GetDirectorySize (DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
-		long GetAllDirectoryFiles(wxArrayString & filesNames,
-								  DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
-		bool HasEnoughFreeSpace (double megabyteSize, 
-								  DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
-		bool IsPathWritable (DIROP_SELECTDIR dirselection = DIROP_PATH_DESTINATION);
-		
-		bool CopyDirectory(const wxArrayString & filesNames,
-						   bool showprogress = FALSE);
+{
+DECLARE_DYNAMIC_CLASS(DirOperation)
 
-	};
+protected:
+    wxString m_Path[2];
+    //wxString m_DestinationPath;
+
+    void InitMembers();
+
+public:
+    DirOperation();
+
+    DirOperation(wxString OriginPath, wxString DestinationPath = _T(""));
+
+    ~DirOperation();
+
+    void InitPath(wxString OriginPath = _T(""), wxString DestinationPath = _T(""));
+
+    double GetDirectorySize(DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
+
+    long GetAllDirectoryFiles(wxArrayString &filesNames,
+                              DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
+
+    bool HasEnoughFreeSpace(double megabyteSize,
+                            DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
+
+    bool IsPathWritable(DIROP_SELECTDIR dirselection = DIROP_PATH_DESTINATION);
+
+    bool CopyDirectory(const wxArrayString &filesNames,
+                       bool showprogress = FALSE);
+
+};
 
 
 #endif

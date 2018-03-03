@@ -26,37 +26,37 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-#include "tmsymbol.h"	// tmSymbol class definition
-#include "tmsymboldlgraster.h"	// raster dialog definition
+#include "tmsymbol.h"    // tmSymbol class definition
+#include "tmsymboldlgraster.h"    // raster dialog definition
 
 class tmSymbolRaster : public tmSymbol
-	{
-	private:
-		tmSymbolDataRaster m_RasterData;
-				
-		virtual tmSymbolDLG * GetSymbolDialog (wxWindow * parent, const wxPoint & dlgpos);
-		virtual bool GetDialogData(tmSymbolDLG * dlg);
-		
-			
-	protected:
-	public:
-		tmSymbolRaster();
-		tmSymbolRaster(const tmSymbolRaster & origin);
-		~tmSymbolRaster();
-		
-		
-		virtual bool Serialize(tmSerialize &s);
-		virtual int GetTransparency(){return m_RasterData.m_GlobalTransparency;}
+{
+private:
+    tmSymbolDataRaster m_RasterData;
 
-	};
+    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+
+    virtual bool GetDialogData(tmSymbolDLG *dlg);
 
 
+protected:
+public:
+    tmSymbolRaster();
+
+    tmSymbolRaster(const tmSymbolRaster &origin);
+
+    ~tmSymbolRaster();
 
 
+    virtual bool Serialize(tmSerialize &s);
 
+    virtual int GetTransparency()
+    { return m_RasterData.m_GlobalTransparency; }
+
+};
 
 
 #endif

@@ -32,35 +32,37 @@
 
 const int ID_DLGDN_CLEAR = 22210;
 
-class DanglingNode_DLG : public wxDialog 
+class DanglingNode_DLG : public wxDialog
 {
 private:
-    wxListBox * m_LayerChoice;
+    wxListBox *m_LayerChoice;
+
     void CreateControls();
+
     int m_SelectedLayer;
-    
+
     // private event
-    void OnClearDangling(wxCommandEvent & event);
-    DECLARE_EVENT_TABLE();    
-    
+    void OnClearDangling(wxCommandEvent &event);
+
+DECLARE_EVENT_TABLE();
+
 public:
-    DanglingNode_DLG( wxWindow* parent, wxWindowID id = wxID_ANY,
-                     const wxString& title = _("Dangling nodes"),
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
+    DanglingNode_DLG(wxWindow *parent, wxWindowID id = wxID_ANY,
+                     const wxString &title = _("Dangling nodes"),
+                     const wxPoint &pos = wxDefaultPosition,
+                     const wxSize &size = wxDefaultSize,
                      long style = wxDEFAULT_DIALOG_STYLE); //|wxRESIZE_BORDER );
     ~DanglingNode_DLG();
-    
-    void SetLayers (const wxArrayString & layers, int selected = wxNOT_FOUND);
+
+    void SetLayers(const wxArrayString &layers, int selected = wxNOT_FOUND);
+
     virtual bool TransferDataFromWindow();
-    int GetSelectedLayer(){return m_SelectedLayer;}	
-    
-    
+
+    int GetSelectedLayer()
+    { return m_SelectedLayer; }
+
+
 };
-
-
-
-
 
 
 #endif

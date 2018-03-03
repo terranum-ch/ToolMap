@@ -66,11 +66,11 @@
 */
 
 #ifdef __GNUG__
-    #pragma interface "wxTreeMultiCtrl.cpp"
+#pragma interface "wxTreeMultiCtrl.cpp"
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 #include <wx/dynarray.h>
@@ -177,19 +177,22 @@ private:
 public:
     /** Default declaration constructor, and should be used when declaring an item which gets assigned a new
         value by e.g. wxTreeMultiCtrl::AppendNode. */
-    wxTreeMultiItem() {
+    wxTreeMultiItem()
+    {
         _item = 0;
     };
 
 #ifndef _NO_DOXYGEN_
 
-    wxTreeMultiItem(TreeMultiItemBase *ptr) {
+    wxTreeMultiItem(TreeMultiItemBase *ptr)
+    {
         _item = ptr;
     };
 
     // Returns the TreeMultiItemBase class. This shoult *NOT* be
     // used if you don't know what you are doing! This means never use it. */
-    TreeMultiItemBase *GetItem() const {
+    TreeMultiItemBase *GetItem() const
+    {
         return _item;
     };
 
@@ -198,22 +201,26 @@ public:
     /** The copy operator. Used in assigning one wxTreeMultiItem to another, usually in returning wxTreeMultiItem
         classes from the wxTreeMultiCtrl.
     */
-    void operator=(const wxTreeMultiItem &item) {
+    void operator=(const wxTreeMultiItem &item)
+    {
         _item = item._item;
     };
 
-   /** Equality operator. It returns true if the items are identical or if both items are invalid. */
-    bool operator==(wxTreeMultiItem const& item) const {return (this->GetItem() == item.GetItem());}
+    /** Equality operator. It returns true if the items are identical or if both items are invalid. */
+    bool operator==(wxTreeMultiItem const &item) const
+    { return (this->GetItem() == item.GetItem()); }
 
-   /** Inequality operator. It returns true if the items are different or one of them is invalid. */
-    bool operator!=(wxTreeMultiItem const& item) const {return (this->GetItem() != item.GetItem());}
+    /** Inequality operator. It returns true if the items are different or one of them is invalid. */
+    bool operator!=(wxTreeMultiItem const &item) const
+    { return (this->GetItem() != item.GetItem()); }
 
-        /** Returns the parent of the current wxTreeMultiItem. This means the wxTreeMultiNode is returned. It can
-            be useful to check or clear the checkbox at this level. */
-        wxTreeMultiItem GetParent() const{
-                wxCHECK(IsOk(), wxTreeMultiItem(0));
-                return wxTreeMultiItem(_item->GetParent());
-        };
+    /** Returns the parent of the current wxTreeMultiItem. This means the wxTreeMultiNode is returned. It can
+        be useful to check or clear the checkbox at this level. */
+    wxTreeMultiItem GetParent() const
+    {
+        wxCHECK(IsOk(), wxTreeMultiItem(0));
+        return wxTreeMultiItem(_item->GetParent());
+    };
 
     /** Validates if the wxTreeMultiItem is a valid instance to use in the wxTreeMultiCtrl. Returns TRUE when there
         is a member value is associated with it, or FALSE when not. This value can also be checked when this class is returned from a wxTreeMultiCtrl operation. For example:
@@ -233,7 +240,8 @@ public:
         \endcode
 
     */
-    bool IsOk() const {
+    bool IsOk() const
+    {
         return _item != 0;
     };
 
@@ -242,8 +250,9 @@ public:
         item, FALSE is returned
         \sa wxTreeMultiCtrl::AppendWindow
     */
-    bool IsWindowItem() const {
-        if(_item && _item->IsTreeMultiItemWindow())
+    bool IsWindowItem() const
+    {
+        if (_item && _item->IsTreeMultiItemWindow())
             return true;
         return false;
     };
@@ -254,8 +263,9 @@ public:
         When the item is actually a root item (specialised node type), this also returns TRUE.
         \sa wxTreeMultiCtrl::AppendNode wxTreeMultiCtrl::AddRoot
     */
-    bool IsNodeItem() const {
-        if(_item && (_item->IsTreeMultiItemNode() || _item->IsTreeMultiItemRoot()))
+    bool IsNodeItem() const
+    {
+        if (_item && (_item->IsTreeMultiItemNode() || _item->IsTreeMultiItemRoot()))
             return true;
         return false;
     };
@@ -265,8 +275,9 @@ public:
         always visible, but can contain other collapsed children. If the item is invalid or not a Root node,
         FALSE is returned.
     */
-    bool IsRootItem() const {
-        if(_item && _item->IsTreeMultiItemRoot())
+    bool IsRootItem() const
+    {
+        if (_item && _item->IsTreeMultiItemRoot())
             return true;
         return false;
     };
@@ -276,7 +287,8 @@ public:
 
         \sa wxTreeMultiCtrl::Expand, wxTreeMultiCtrl::Collapse, wxTreeMultiCtrl::CollapseAndReset
     */
-    bool IsExpanded() const {
+    bool IsExpanded() const
+    {
         wxCHECK(_item, false);
         TreeMultiItemNode *n = _item->IsTreeMultiItemNode();
         wxCHECK(n, false);
@@ -287,23 +299,26 @@ public:
     /** Returns true if this node is excluded from drawing. Please note that when this node is not visible
         due to a higher excluded parent node but not literally excluded itself, it will return false (not excluded).
         Use wxTreeMultiCtrl::GetExcludedParent() to get the node that hides this one. */
-    bool IsExcluded() {
+    bool IsExcluded()
+    {
         wxCHECK(_item, false);
         return _item->IsExcluded();
     }
 
-   /** Returns true if the item is selected.
-       Please note that currently only nodes can be selected.
-   */
+    /** Returns true if the item is selected.
+        Please note that currently only nodes can be selected.
+    */
     bool IsSelected(void) const
     {
-      wxCHECK(this->GetItem(),false);
-      return this->GetItem()->IsSelected();
+        wxCHECK(this->GetItem(), false);
+        return this->GetItem()->IsSelected();
     }
+
     /** Returns true if this node is visible. Please note that when this node is a child node of a collapsed
         node, it is not visible. Also if this node is a child node of an excluded node, it is also not visible.
         It does <b>NOT</b> return false when it's drawn somewhere outside of the visible area. */
-    bool IsVisible() {
+    bool IsVisible()
+    {
         wxCHECK(_item, false);
         return _item->IsVisible();
     }
@@ -311,15 +326,16 @@ public:
     /** Returns the name of the current item. This is the internal
         reference name. If IsOK() returns false, the string returned
         is also empty. */
-    
-    wxString GetName() const {
+
+    wxString GetName() const
+    {
         wxCHECK(_item, wxEmptyString);
         return _item->GetName();
     }
 
 };
 
-WX_DECLARE_OBJARRAY(wxTreeMultiItem,wxArrayTreeMultiItem);
+WX_DECLARE_OBJARRAY(wxTreeMultiItem, wxArrayTreeMultiItem);
 
 /** \class wxTreeMultiWindowInfo
     \ingroup classes
@@ -364,7 +380,7 @@ private:
     /** Extra indent for every item that is added. This will add front spacing to the item's x calculation.
         For AppendNode and AppendWindow. Spacing is added behind the collapse image not in front. */
     int _frontSpacing,
-        _frontSpacingOrg;
+            _frontSpacingOrg;
 
     /** Extra top spacing for every item that is added. This will add top spacing to the item's y calculation */
     int _topSpacing;
@@ -383,15 +399,17 @@ public:
         , _topSpacing(topSpacing)
         , _checkState(checkState)
 #else
+
     wxTreeMultiWindowInfo(int flags, int frontSpacing, int topSpacing)
-        : _flags(flags)
-        , _frontSpacing(frontSpacing)
-        , _frontSpacingOrg(frontSpacing)
-        , _topSpacing(topSpacing)
+            : _flags(flags),
+              _frontSpacing(frontSpacing),
+              _frontSpacingOrg(frontSpacing),
+              _topSpacing(topSpacing)
 #endif
     {
         // constructor
     }
+
     /** Adds indent to original front spacing and increments it with that value (quick extra indent).
         The original value of FrontSpacing (see SetFrontSpacing() gets indented by multiplying
         the 'num' factor (default = 1) times the indent value. So if the FrontSpacing was set to 10,
@@ -401,53 +419,62 @@ public:
 
         \sa Outdent, SetFrontSpacing
     */
-    int Indent(int num = 1) {
-        if(num > 0)
+    int Indent(int num = 1)
+    {
+        if (num > 0)
             _frontSpacing += (_frontSpacingOrg * num);
         return _frontSpacing;
     };
+
     /** Reduces indent a number of times, by subtracting 'num' times the original FrontSpacing value from
         the current FrontSpacing value (quick extra indent). Thus if the original FrontSpacing was set to
         10, and the current indent value is 40, Outdent(2) will do 40 - (2 * 10) = 20
 
         \sa Indent, SetFrontSpacing
     */
-    int Outdent(int num = 1) {
+    int Outdent(int num = 1)
+    {
         _frontSpacing -= (_frontSpacingOrg * num);
-        if(_frontSpacing < 0)
+        if (_frontSpacing < 0)
             _frontSpacing = 0;
         return _frontSpacing;
     };
 
     /** Sets FrontSpacing value. This also resets the current indent level.  */
-    void SetFrontSpacing(int frontSpacing) {
+    void SetFrontSpacing(int frontSpacing)
+    {
         _frontSpacing = frontSpacing;
         _frontSpacingOrg = frontSpacing;
     };
+
     /** Gets front spacing. This will return the current indent level set. If Indent or Outdent is used,
         this level represents the current Indent level.*/
-    int GetFrontSpacing() const {
+    int GetFrontSpacing() const
+    {
         return _frontSpacing;
     };
 
     /** Sets top spacing. This means the number of pixels spacing between the last node and the next one to
         be added.
     */
-    void SetTopSpacing(int topSpacing) {
+    void SetTopSpacing(int topSpacing)
+    {
         _topSpacing = topSpacing;
-        if(_topSpacing < 0)
+        if (_topSpacing < 0)
             _topSpacing = 0;
     };
 
     /* Gets top spacing currently set. */
-    int GetTopSpacing() const {
+    int GetTopSpacing() const
+    {
         return _topSpacing;
     };
 
     /** Sets the current flags set, and returns previous flags state.
         \sa @link wndflags wxTreeMultiWindowInfo flags@endlink
     */
-    int SetFlags(int flags) {
+    int SetFlags(int flags)
+    {
         int tmp = _flags;
         _flags = flags;
         return tmp;
@@ -456,7 +483,8 @@ public:
     /** Gets the current flags set.
         \sa @link wndflags wxTreeMultiWindowInfo flags@endlink
     */
-    int GetFlags() const {
+    int GetFlags() const
+    {
         return _flags;
     };
 
@@ -464,7 +492,8 @@ public:
         old flag set is returned before the OR is applied.
         \sa @link wndflags wxTreeMultiWindowInfo flags@endlink
     */
-    int AddFlag(int flag_mask) {
+    int AddFlag(int flag_mask)
+    {
         int tmp = _flags;
         _flags |= flag_mask;
         return tmp;
@@ -474,7 +503,8 @@ public:
         the current flags.  The old flag set is returned.
         \sa @link wndflags wxTreeMultiWindowInfo flags@endlink
     */
-    int RemoveFlag(int flag_mask) {
+    int RemoveFlag(int flag_mask)
+    {
         int tmp = _flags;
         _flags &= ~(flag_mask);
         return tmp;
@@ -498,9 +528,9 @@ public:
 
 // Default info string
 #ifndef LINUX
-  #define wxTreeMultiWindowInfoDefault wxTreeMultiWindowInfo(wxTMC_BG_ADJUST_CNT, 8, 0)
+#define wxTreeMultiWindowInfoDefault wxTreeMultiWindowInfo(wxTMC_BG_ADJUST_CNT, 8, 0)
 #else
-  #define wxTreeMultiWindowInfoDefault wxTreeMultiWindowInfo(wxTMC_BG_ADJUST_ALL, 8, 0)
+#define wxTreeMultiWindowInfoDefault wxTreeMultiWindowInfo(wxTMC_BG_ADJUST_ALL, 8, 0)
 #endif
 
 /** \class wxTreeMultiCtrl
@@ -539,9 +569,9 @@ public:
     <b>IMPORTANT:</b> Every control added to the wxTreeMultiCtrl has to be child of the wxTreeMultiCtrl.
 
 */
-class wxTreeMultiCtrl: public wxScrolledWindow
+class wxTreeMultiCtrl : public wxScrolledWindow
 {
-    DECLARE_DYNAMIC_CLASS(wxTreeMultiCtrl)
+DECLARE_DYNAMIC_CLASS(wxTreeMultiCtrl)
 
     /** \todo When tab is pressed, the focus can get out of sight. This should be resolved by
        catching the TAB, see what window is focussed, and scroll the window so it's visible */
@@ -588,13 +618,13 @@ private:
 #endif
 
     /** brush for highlighting nodes */
-     wxBrush* m_HilightBrush;
+    wxBrush *m_HilightBrush;
 
     /** This captionFont is made equal to the font of the wxScrolledWindow. As extra the bold face
         is set on it when this is wanted by the user (see flags) */
     wxFont _captionFont;
 
-   /** list of selected items */
+    /** list of selected items */
     wxArrayTreeMultiItem m_SelectedItems;
 
     /** Does the actual collapsing / expanding. So that Expand and Collapse aren't using the same code twice */
@@ -646,6 +676,7 @@ private:
 
     /** Adjusts scrollbars in window, usually done after virtual size (x,y) is recalculated */
     using wxScrolledWindow::AdjustScrollbars;
+
     virtual void AdjustScrollbars(int x, int y);
 
     /** Recalculates and accumulates largest x and y */
@@ -653,7 +684,7 @@ private:
 
     /** Scans for TreeMultiItemBase node that contains x,y and in area returns a hittest constant to
         indicate what matched */
-    TreeMultiItemBase *FindNodeByPoint(TreeMultiItemBase *b, wxPoint const& pt, int &area);
+    TreeMultiItemBase *FindNodeByPoint(TreeMultiItemBase *b, wxPoint const &pt, int &area);
 
     /** Scans for TreeMultiItemWindow that holds the wxWindow pointer. Does not scan in panels or does
         a deep search. Reason, this function is used to advance to next TreeMultiItemWindow for focus
@@ -668,8 +699,8 @@ private:
         be centered in the middle of the font, so a bit of deltaY adjustment is needed */
     void AdjustIconsDeltaY();
 
-	/** Calculate the spanning of the individual nodes */
-	void CalculateNodeSpanning(TreeMultiItemBase *b);
+    /** Calculate the spanning of the individual nodes */
+    void CalculateNodeSpanning(TreeMultiItemBase *b);
 
 #if(CHECKBOXVIEW)
     /** Recurse to all the children and set the checkbox state (even when there is no checkbox) */
@@ -682,31 +713,32 @@ private:
     void ScanTristateCheckstates(TreeMultiItemBase *b);
 #endif
 
-   /** \name Private add and delete methods
-       @{
-   */
+    /** \name Private add and delete methods
+        @{
+    */
 
-   /** Inserts a node into the parent's node at the specified position.
-       As this is a private method error checking is limited. Therefore, it has to be guaranteed that this method
-       is only called with a valid parent node pointer.
-       The position is zero based. In case the position is equal or larger than the current number of
-       parent's elements the new node is appended.
-       The newly inserted node is being returned.
-   */
-    wxTreeMultiItem InsertNode(TreeMultiItemNode* ParentPtr, size_t Position, wxString const& Caption, wxString const& Name);
+    /** Inserts a node into the parent's node at the specified position.
+        As this is a private method error checking is limited. Therefore, it has to be guaranteed that this method
+        is only called with a valid parent node pointer.
+        The position is zero based. In case the position is equal or larger than the current number of
+        parent's elements the new node is appended.
+        The newly inserted node is being returned.
+    */
+    wxTreeMultiItem InsertNode(TreeMultiItemNode *ParentPtr, size_t Position, wxString const &Caption,
+                               wxString const &Name);
 
-   /** Inserts a window into the parent's node at the specified position.
-       As this is a private method error checking is limited. Therefore, it has to be guaranteed that this method
-       is only called with a valid parent node and window pointer.
-       The position is zero based. In case the position is equal or larger than the current number of
-       parent's elements the new node is appended.
-       The newly inserted window is being returned.
-   */
-    wxTreeMultiItem InsertWindow(TreeMultiItemNode* ParentPtr, size_t Position, wxWindow* WindowPtr, wxString const& Name,
-                                 wxTreeMultiWindowInfo const& Info, int Flags);
+    /** Inserts a window into the parent's node at the specified position.
+        As this is a private method error checking is limited. Therefore, it has to be guaranteed that this method
+        is only called with a valid parent node and window pointer.
+        The position is zero based. In case the position is equal or larger than the current number of
+        parent's elements the new node is appended.
+        The newly inserted window is being returned.
+    */
+    wxTreeMultiItem InsertWindow(TreeMultiItemNode *ParentPtr, size_t Position, wxWindow *WindowPtr,
+                                 wxString const &Name, wxTreeMultiWindowInfo const &Info, int Flags);
 
-   /** @}
-   */
+    /** @}
+    */
 private:
     void Init();
 
@@ -715,20 +747,24 @@ private:
 
     //virtual void OnDraw(wxDC& dc);
     void OnPaint(wxPaintEvent &event);
-    void OnMouseClick     (wxMouseEvent& event);
-    void OnRightMouseClick(wxMouseEvent& Event);
-    void OnKey(wxKeyEvent &event);
-        void OnSize(wxSizeEvent &event);
 
-  	/** Recalculates the spanning controls */
-  	void RecalculateSpanSizes();
+    void OnMouseClick(wxMouseEvent &event);
+
+    void OnRightMouseClick(wxMouseEvent &Event);
+
+    void OnKey(wxKeyEvent &event);
+
+    void OnSize(wxSizeEvent &event);
+
+    /** Recalculates the spanning controls */
+    void RecalculateSpanSizes();
 
 public:
     /** Two step constructor. Call Create when this constructor is called to build up the
         wxTreeMultiCtrl
     */
     wxTreeMultiCtrl()
-        : _create_called(false)
+            : _create_called(false)
     {
 
         Init();
@@ -739,13 +775,13 @@ public:
         the wxWindow and wxScrolledWindow
     */
     wxTreeMultiCtrl(wxWindow *parent, wxWindowID id = -1,
-                        const wxPoint& pos = wxDefaultPosition,
-                        const wxSize& size = wxDefaultSize,
-                        long style = wxTMC_DEFAULT_STYLE,
-                        const wxValidator &validator = wxDefaultValidator,
-                        const wxString& name = wxTreeMultiCtrlNameStr)
-        : _style(style | wxTAB_TRAVERSAL)
-        , _create_called(false)
+                    const wxPoint &pos = wxDefaultPosition,
+                    const wxSize &size = wxDefaultSize,
+                    long style = wxTMC_DEFAULT_STYLE,
+                    const wxValidator &validator = wxDefaultValidator,
+                    const wxString &name = wxTreeMultiCtrlNameStr)
+            : _style(style | wxTAB_TRAVERSAL),
+              _create_called(false)
     {
         Create(parent, id, pos, size, style, validator, name);
     }
@@ -759,11 +795,11 @@ public:
         \sa wxTreeMultiCtrl()
     */
     bool Create(wxWindow *parent, wxWindowID id = -1,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
+                const wxPoint &pos = wxDefaultPosition,
+                const wxSize &size = wxDefaultSize,
                 long style = wxTMC_DEFAULT_STYLE,
                 const wxValidator &validator = wxDefaultValidator,
-                const wxString& name = wxTreeMultiCtrlNameStr);
+                const wxString &name = wxTreeMultiCtrlNameStr);
 
     // accessors
     //----------
@@ -783,45 +819,49 @@ public:
         an empty wxTreeMultiItem is returned. The mask is used to override the mask settings of the
         wxTreeMultiWindowInfo class. This can be handy to set or clear extra flags only needed for certain
         situations */
-    wxTreeMultiItem AppendWindow(const wxTreeMultiItem &ParentItem, wxWindow *window = NULL, const wxString &name = wxEmptyString,
-                                 wxTreeMultiWindowInfo const& info = wxTreeMultiWindowInfoDefault, int flags = 0);
+    wxTreeMultiItem AppendWindow(const wxTreeMultiItem &ParentItem, wxWindow *window = NULL,
+                                 const wxString &name = wxEmptyString,
+                                 wxTreeMultiWindowInfo const &info = wxTreeMultiWindowInfoDefault, int flags = 0);
 
-   /** Adds a window to the tree control. Use this method to add a window class at the specified position
-       of the parent's wxTreeMultiItem. In case the position is smaller than the current number of children all elements
-       are shifted upwards, otherwise the new window is appended to the parent's wxTreeMultiItem.
-       The parent wxTreeMultiItem must point to a Node class. If this is not the case an
-       empty wxTreeMultiItem is returned.
-   */
-    wxTreeMultiItem InsertWindow(wxTreeMultiItem const& ParentItem, size_t Position, wxWindow *window = NULL, wxString const& Name = wxEmptyString,
-                                 wxTreeMultiWindowInfo const& info = wxTreeMultiWindowInfoDefault, int flags = 0);
+    /** Adds a window to the tree control. Use this method to add a window class at the specified position
+        of the parent's wxTreeMultiItem. In case the position is smaller than the current number of children all elements
+        are shifted upwards, otherwise the new window is appended to the parent's wxTreeMultiItem.
+        The parent wxTreeMultiItem must point to a Node class. If this is not the case an
+        empty wxTreeMultiItem is returned.
+    */
+    wxTreeMultiItem InsertWindow(wxTreeMultiItem const &ParentItem, size_t Position, wxWindow *window = NULL,
+                                 wxString const &Name = wxEmptyString,
+                                 wxTreeMultiWindowInfo const &info = wxTreeMultiWindowInfoDefault, int flags = 0);
 
-   /** Adds a window to the tree control. Use this method to add a window class as the first element
-       of the parent's wxTreeMultiItem. The parent wxTreeMultiItem must point to a Node class. If this is not the case an
-       empty wxTreeMultiItem is returned.
-   */
-    wxTreeMultiItem PrependWindow(wxTreeMultiItem const& ParentItem, wxWindow *window = NULL, const wxString &name = wxEmptyString,
-                                  wxTreeMultiWindowInfo const& info = wxTreeMultiWindowInfoDefault, int flags = 0);
+    /** Adds a window to the tree control. Use this method to add a window class as the first element
+        of the parent's wxTreeMultiItem. The parent wxTreeMultiItem must point to a Node class. If this is not the case an
+        empty wxTreeMultiItem is returned.
+    */
+    wxTreeMultiItem PrependWindow(wxTreeMultiItem const &ParentItem, wxWindow *window = NULL,
+                                  const wxString &name = wxEmptyString,
+                                  wxTreeMultiWindowInfo const &info = wxTreeMultiWindowInfoDefault, int flags = 0);
 
     /** Adds a node to the tree control. Use this wxTreeMultiItem method to add a recursive subnode class as the last element
         of the parent's wxTreeMultiItem. The parent wxTreeMultiItem must point to a Node class. If this is not the case
         an empty wxTreeMultiItem is returned. A node can contain multiple nodes or window classes */
-    wxTreeMultiItem AppendNode(wxTreeMultiItem const& ParentItem, const wxString &caption = wxEmptyString,
+    wxTreeMultiItem AppendNode(wxTreeMultiItem const &ParentItem, const wxString &caption = wxEmptyString,
                                const wxString &name = wxEmptyString);
 
-   /** Adds a node to the tree control. Use this method to add a recursive subnode class at the specified position
-       of the parent's wxTreeMultiItem. In case the position is smaller than the current number of nodes all elements
-       are shifted upwards, otherwise the new node is appended to the parent's wxTreeMultiItem.
-       The parent wxTreeMultiItem must point to a Node class. If this is not the case an
-       empty wxTreeMultiItem is returned. A node can contain multiple nodes or window classes.
-   */
-    wxTreeMultiItem InsertNode(wxTreeMultiItem const& ParentItem, size_t Position, wxString const& caption, wxString const& name);
+    /** Adds a node to the tree control. Use this method to add a recursive subnode class at the specified position
+        of the parent's wxTreeMultiItem. In case the position is smaller than the current number of nodes all elements
+        are shifted upwards, otherwise the new node is appended to the parent's wxTreeMultiItem.
+        The parent wxTreeMultiItem must point to a Node class. If this is not the case an
+        empty wxTreeMultiItem is returned. A node can contain multiple nodes or window classes.
+    */
+    wxTreeMultiItem InsertNode(wxTreeMultiItem const &ParentItem, size_t Position, wxString const &caption,
+                               wxString const &name);
 
-   /** Adds a node to the tree control. Use this method to add a recursive subnode class as the first element
-       of the parent's wxTreeMultiItem. The parent wxTreeMultiItem must point to a Node class. If this is not the case an
-       empty wxTreeMultiItem is returned. A node can contain multiple nodes or window classes.
-   */
-    wxTreeMultiItem PrependNode(wxTreeMultiItem const& ParentItem, wxString const& caption = wxEmptyString,
-                                wxString const& name = wxEmptyString);
+    /** Adds a node to the tree control. Use this method to add a recursive subnode class as the first element
+        of the parent's wxTreeMultiItem. The parent wxTreeMultiItem must point to a Node class. If this is not the case an
+        empty wxTreeMultiItem is returned. A node can contain multiple nodes or window classes.
+    */
+    wxTreeMultiItem PrependNode(wxTreeMultiItem const &ParentItem, wxString const &caption = wxEmptyString,
+                                wxString const &name = wxEmptyString);
 
     /** Delete item from the tree control. Whenever it is present, delete it. If not, return false. After
         deletion the wxTreeMultiItem is 0, thus IsOk will return false */
@@ -830,9 +870,9 @@ public:
     /** Deletes all the items from the wxTreeMultiCtrl. */
     void DeleteAllItems(void)
     {
-      this->_root.Clear();
-      this->m_SelectedItems.Clear();
-      Refresh();
+        this->_root.Clear();
+        this->m_SelectedItems.Clear();
+        Refresh();
     };
 
     /** Deletes all children of the current node. The wxTreeMultiItem needs to be of type Node to
@@ -866,8 +906,9 @@ public:
 
     /** Folds the given node. The same as Expand and Collapse, but the state can be
         given through a parameter */
-    void Fold(const wxTreeMultiItem &item, bool expand = true) {
-        if(expand)
+    void Fold(const wxTreeMultiItem &item, bool expand = true)
+    {
+        if (expand)
             Expand(item, false);
         else
             Collapse(item, false);
@@ -882,44 +923,45 @@ public:
         @{
     */
 
-   /** Returns the number of selected items. */
-    size_t GetSelectedItemCount(void) const {return this->m_SelectedItems.GetCount();}
+    /** Returns the number of selected items. */
+    size_t GetSelectedItemCount(void) const
+    { return this->m_SelectedItems.GetCount(); }
 
-   /** Returns the first selected item.
-       If there is no selected item an invalid tree multi item is returned.
-   */
+    /** Returns the first selected item.
+        If there is no selected item an invalid tree multi item is returned.
+    */
     wxTreeMultiItem GetFirstSelectedItem(void) const;
 
-   /** Returns the last selected item.
-       If there is no selected item an invalid tree multi item is returned.
-   */
+    /** Returns the last selected item.
+        If there is no selected item an invalid tree multi item is returned.
+    */
     wxTreeMultiItem GetLastSelectedItem(void) const;
 
-   /** Returns a selected item with the specified index.
-       If there is no selected item with the passed index an invalide tree multi item is returned.
-   */
+    /** Returns a selected item with the specified index.
+        If there is no selected item with the passed index an invalide tree multi item is returned.
+    */
     wxTreeMultiItem GetSelectedItem(size_t Index) const;
 
-   /** Returns the index of the selected item.
-       In case the item is not selected "GetSelectedItemCount()" - which is an invalid index - is returned.
-   */
-    size_t GetSelectedItemIndex(wxTreeMultiItem const& Item) const;
+    /** Returns the index of the selected item.
+        In case the item is not selected "GetSelectedItemCount()" - which is an invalid index - is returned.
+    */
+    size_t GetSelectedItemIndex(wxTreeMultiItem const &Item) const;
 
-   /** Selects the specified item AND in case
-        - UnselectOthers is set all other selected items are going to be unselected;
-        - ExpandSelection is set all items between the last selected item and the passed item
-          are selected, too (in case there this is the first selection all items between the first root
-          and the passed item are selected).
-       If the passed item is already selected the other parameters are ignored.
-       Please not that currently only nodes can be selected, therefore, if any other item is passed nothing will happen.
-   */
-    void SelectItem(wxTreeMultiItem const& Item, bool UnselectOthers=true, bool ExpandSelection=false);
+    /** Selects the specified item AND in case
+         - UnselectOthers is set all other selected items are going to be unselected;
+         - ExpandSelection is set all items between the last selected item and the passed item
+           are selected, too (in case there this is the first selection all items between the first root
+           and the passed item are selected).
+        If the passed item is already selected the other parameters are ignored.
+        Please not that currently only nodes can be selected, therefore, if any other item is passed nothing will happen.
+    */
+    void SelectItem(wxTreeMultiItem const &Item, bool UnselectOthers = true, bool ExpandSelection = false);
 
-   /** Unselect all selected items. */
+    /** Unselect all selected items. */
     void UnselectAll(void);
 
-   /** Unselect specified item */
-    void Unselect(wxTreeMultiItem const& Item);
+    /** Unselect specified item */
+    void Unselect(wxTreeMultiItem const &Item);
 
     /** @}
     */
@@ -956,7 +998,7 @@ public:
 
         Returned is the item which is located under the mouse, or none (IsOk = false) if
         no item under the mouse */
-    wxTreeMultiItem HitTest(wxPoint const& pt, int &flags);
+    wxTreeMultiItem HitTest(wxPoint const &pt, int &flags);
 
     /** @name Find methods
          These methods are used for finding a node in the wxTreeMultiCtrl.
@@ -971,7 +1013,8 @@ public:
                              bool skipFirst = false);
 
     /** Searches all nodes for the given name and returns the one found. This is a specialised method for FindItem */
-    wxTreeMultiItem FindItem(const wxString &name, bool ignoreCase = false) {
+    wxTreeMultiItem FindItem(const wxString &name, bool ignoreCase = false)
+    {
         return FindItem(wxTreeMultiItem(&_root), name, ignoreCase, false);
     };
 
@@ -979,10 +1022,10 @@ public:
     */
 
     /** Returns the number of children in this node. If this node is not of type Node, count returns -1. */
-    int GetChildrenCount(const wxTreeMultiItem &item) {
-        if(item.IsNodeItem())
-        {
-            TreeMultiItemNode *n = (TreeMultiItemNode *)item.GetItem();
+    int GetChildrenCount(const wxTreeMultiItem &item)
+    {
+        if (item.IsNodeItem()) {
+            TreeMultiItemNode *n = (TreeMultiItemNode *) item.GetItem();
             return n->GetNodeCount();
         }
 
@@ -1045,9 +1088,10 @@ public:
 
     /** Retrieves the wxWindow * associated with the wxTreeMultiItem. This only works for Window typed wxTreeMultiItem
         classes. If this type does not match or no window is associated, 0 is returned. */
-    wxWindow *GetWindow(const wxTreeMultiItem &item) {
-        if(item.IsWindowItem())
-            return ((TreeMultiItemWindow *)item.GetItem())->GetWindow();
+    wxWindow *GetWindow(const wxTreeMultiItem &item)
+    {
+        if (item.IsWindowItem())
+            return ((TreeMultiItemWindow *) item.GetItem())->GetWindow();
         return 0;
     };
 
@@ -1092,13 +1136,13 @@ public:
     /** Sets the checkbox state of the wxTreeMultiItem pointed out by "item". If the item does not have a checkbox
         associated (or the item is not ok), it will simply ignore this. <b>This needs USE_CHECKBOXVIEW
         set to YES, or CHECKBOXVIEW=1 during compile</b>. Contributed by Thomas Enickl.*/
-	void SetCheckboxState( const wxTreeMultiItem &item, int state ) {
-		wxCHECK2( item.IsOk(), return );
-		TreeMultiItemBase *b = item.GetItem();
-		if( b->GetCheckbox() )
-			b->SetCheckboxState( state );
-		RedrawFromNode( item.GetItem()->GetParent() );
-	};
+    void SetCheckboxState( const wxTreeMultiItem &item, int state ) {
+        wxCHECK2( item.IsOk(), return );
+        TreeMultiItemBase *b = item.GetItem();
+        if( b->GetCheckbox() )
+            b->SetCheckboxState( state );
+        RedrawFromNode( item.GetItem()->GetParent() );
+    };
 #endif
 
     /** @}
@@ -1112,9 +1156,9 @@ public:
     /** Sets the Y spacing of the wxTreeMultiCtrl to a new size. This can be used to give the controls some more
         spacing in between */
 
-    void SetSpacingY(int spacingY) {
-        if(spacingY >= 0)
-        {
+    void SetSpacingY(int spacingY)
+    {
+        if (spacingY >= 0) {
             _spacingY = spacingY;
             RedrawFromNode(0);
         }
@@ -1122,7 +1166,8 @@ public:
 
     /** Gets the Y spacing of the wxTreeMultiCtrl. */
 
-    int GetSpacingY() const {
+    int GetSpacingY() const
+    {
         return _spacingY;
     };
 
@@ -1153,14 +1198,16 @@ public:
         @{
     */
 
-   /** Returns the first root. */
-    wxTreeMultiItem GetFirstRoot(void) const {return wxTreeMultiItem(this->_root.First());}
+    /** Returns the first root. */
+    wxTreeMultiItem GetFirstRoot(void) const
+    { return wxTreeMultiItem(this->_root.First()); }
 
-   /** Returns the last root. */
-    wxTreeMultiItem GetLastRoot(void) const {return wxTreeMultiItem(this->_root.Last());}
+    /** Returns the last root. */
+    wxTreeMultiItem GetLastRoot(void) const
+    { return wxTreeMultiItem(this->_root.Last()); }
 
-   /** Returns the items parent. */
-    wxTreeMultiItem GetParent(wxTreeMultiItem const& item) const;
+    /** Returns the items parent. */
+    wxTreeMultiItem GetParent(wxTreeMultiItem const &item) const;
 
     /** Returns the first child of this node. The type of wxTreeMultiItem needs to be of Node. Whenever not succesful,
         the item returned is not ok (IsOk = false). Upon success, a valid child is returned. The cookie variable doesn't
@@ -1175,25 +1222,25 @@ public:
         the item returned is not ok (IsOk = false). Upon success, a valid last child is returned. */
     wxTreeMultiItem GetLastChild(const wxTreeMultiItem &item) const;
 
-   /** Returns the next sibling of the passed item. */
-    wxTreeMultiItem GetNextSibling(wxTreeMultiItem const& item) const;
+    /** Returns the next sibling of the passed item. */
+    wxTreeMultiItem GetNextSibling(wxTreeMultiItem const &item) const;
 
-   /** Returns the previous sibling of the passed item. */
-    wxTreeMultiItem GetPrevSibling(wxTreeMultiItem const& item) const;
+    /** Returns the previous sibling of the passed item. */
+    wxTreeMultiItem GetPrevSibling(wxTreeMultiItem const &item) const;
 
-   /** Returns the next item. "Next" is defined by the following order:
-        - in case the current item has a child it is the first child of the current item;
-        - in case the current item has a next sibling as the next sibling;
-        - as the parent's (or one of its ancestor's) next sibling.
-   */
-    wxTreeMultiItem GetNext(wxTreeMultiItem const& item) const;
+    /** Returns the next item. "Next" is defined by the following order:
+         - in case the current item has a child it is the first child of the current item;
+         - in case the current item has a next sibling as the next sibling;
+         - as the parent's (or one of its ancestor's) next sibling.
+    */
+    wxTreeMultiItem GetNext(wxTreeMultiItem const &item) const;
 
-   /** Returns the previous item. "Previous" is defined by the following order:
-        - in case the current item has a child it is the last child of the current item;
-        - in case the current item has a previous sibling it is the previous sibling;
-        - as the parent's (or one of its ancestor's) previous sibling.
-   */
-    wxTreeMultiItem GetPrevious(wxTreeMultiItem const& item) const;
+    /** Returns the previous item. "Previous" is defined by the following order:
+         - in case the current item has a child it is the last child of the current item;
+         - in case the current item has a previous sibling it is the previous sibling;
+         - as the parent's (or one of its ancestor's) previous sibling.
+    */
+    wxTreeMultiItem GetPrevious(wxTreeMultiItem const &item) const;
 
 
     /** @}
@@ -1207,7 +1254,8 @@ public:
     /** Get the currently used font for the caption headers in the wxTreeMultiCtrl. If you want to alter this
         font, simply obtain it and copy it to a local font. After that, set this font back using SetCaptionFont()
     */
-    const wxFont &GetCaptionFont() const {
+    const wxFont &GetCaptionFont() const
+    {
         return _captionFont;
     };
 
@@ -1216,16 +1264,16 @@ public:
         beginning. */
     void SetCaptionFont(const wxFont &font);
 
-	/** Sets the caption for a node referred to by item. This triggers a redraw from the current node.*/
-	void SetCaption(wxTreeMultiItem const& item, const wxString &caption);
+    /** Sets the caption for a node referred to by item. This triggers a redraw from the current node.*/
+    void SetCaption(wxTreeMultiItem const &item, const wxString &caption);
 
-	/** @}
+    /** @}
     */
 
-  void OnDraw(wxDC& dc);
+    void OnDraw(wxDC &dc);
 
 private:
-    DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };
 
 #endif

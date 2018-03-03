@@ -38,8 +38,8 @@
 #endif
 
 #include "../core/toolmap.h"
-#include <wx/docview.h>			// for recent documents
-#include <wx/fileconf.h>		// for using file config even on windows
+#include <wx/docview.h>            // for recent documents
+#include <wx/fileconf.h>        // for using file config even on windows
 
 /***************************************************************************//**
  @brief Deals with Recent files
@@ -49,27 +49,26 @@
 class MenuManager : public wxObject
 {
 private:
-    wxMenuBar * m_MenuBar;
-    wxFileHistory * m_pFilesHistory;
-    DECLARE_CLASS(MenuManager);
-    
+    wxMenuBar *m_MenuBar;
+    wxFileHistory *m_pFilesHistory;
+DECLARE_CLASS(MenuManager);
+
 public:
-    MenuManager(wxMenuBar * menubar);
+    MenuManager(wxMenuBar *menubar);
+
     ~MenuManager();
-    
+
     // deals with recent files
     void InitializeRecentFilesHistory();
+
     void TerminateRecentFilesHistory();
-    void AddFileToRecent (const wxString & spath);
-    void RemoveFileFromRecent (int fileid);
-    bool GetRecentFile (wxString & filepath, int fileid);
+
+    void AddFileToRecent(const wxString &spath);
+
+    void RemoveFileFromRecent(int fileid);
+
+    bool GetRecentFile(wxString &filepath, int fileid);
 };
-
-
-
-
-
-
 
 
 #endif

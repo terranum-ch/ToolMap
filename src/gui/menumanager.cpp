@@ -28,18 +28,19 @@
 #include "menumanager.h"
 
 IMPLEMENT_CLASS(MenuManager, wxObject);
+
 /***************************************************************************//**
  @brief constructor
  @author Lucien Schreiber (c) CREALP 2007
  @date 12 March 2008
  *******************************************************************************/
-MenuManager::MenuManager(wxMenuBar * menubar)
+MenuManager::MenuManager(wxMenuBar *menubar)
 {
-	m_MenuBar = menubar;
-	m_pFilesHistory = NULL;
-		
-	// prepare for recent documents
-	InitializeRecentFilesHistory();
+    m_MenuBar = menubar;
+    m_pFilesHistory = NULL;
+
+    // prepare for recent documents
+    InitializeRecentFilesHistory();
 }
 
 /***************************************************************************//**
@@ -49,9 +50,8 @@ MenuManager::MenuManager(wxMenuBar * menubar)
  *******************************************************************************/
 MenuManager::~MenuManager()
 {
-	TerminateRecentFilesHistory();
+    TerminateRecentFilesHistory();
 }
-
 
 
 /***************************************************************************//**
@@ -63,29 +63,26 @@ MenuManager::~MenuManager()
  *******************************************************************************/
 void MenuManager::InitializeRecentFilesHistory()
 {
-	TerminateRecentFilesHistory();
-	wxFileConfig myConfigFile;
-	myConfigFile.SetPath(_T("RECENT_PRJ"));
-	
-	if (m_MenuBar)
-	{
-		wxMenuItem * miFound = m_MenuBar->FindItem(ID_MENU_RECENT);
-		if (miFound->IsSubMenu())
-		{
-			wxMenu * menu = miFound->GetSubMenu();
-			if (menu)
-			{
-				m_pFilesHistory = new wxFileHistory(5);
-				m_pFilesHistory->Load(myConfigFile);
-				m_pFilesHistory->UseMenu(menu);
-				m_pFilesHistory->AddFilesToMenu();
-	
-			}
-			
-		}
-		
-	}
-	
+    TerminateRecentFilesHistory();
+    wxFileConfig myConfigFile;
+    myConfigFile.SetPath(_T("RECENT_PRJ"));
+
+    if (m_MenuBar) {
+        wxMenuItem *miFound = m_MenuBar->FindItem(ID_MENU_RECENT);
+        if (miFound->IsSubMenu()) {
+            wxMenu *menu = miFound->GetSubMenu();
+            if (menu) {
+                m_pFilesHistory = new wxFileHistory(5);
+                m_pFilesHistory->Load(myConfigFile);
+                m_pFilesHistory->UseMenu(menu);
+                m_pFilesHistory->AddFilesToMenu();
+
+            }
+
+        }
+
+    }
+
 }
 
 
@@ -98,20 +95,19 @@ void MenuManager::InitializeRecentFilesHistory()
  *******************************************************************************/
 void MenuManager::TerminateRecentFilesHistory()
 {
-	// save the recent to the config file and delete 
-	// the object.
-	wxFileConfig myConfigFile;
-	myConfigFile.SetPath(_T("RECENT_PRJ"));
-	
-	if (m_pFilesHistory)
-    {
+    // save the recent to the config file and delete
+    // the object.
+    wxFileConfig myConfigFile;
+    myConfigFile.SetPath(_T("RECENT_PRJ"));
 
-		m_pFilesHistory->Save(myConfigFile);
+    if (m_pFilesHistory) {
 
-		delete m_pFilesHistory;
-		m_pFilesHistory = 0;
-	}
-	
+        m_pFilesHistory->Save(myConfigFile);
+
+        delete m_pFilesHistory;
+        m_pFilesHistory = 0;
+    }
+
 }
 
 
@@ -123,13 +119,12 @@ void MenuManager::TerminateRecentFilesHistory()
  @author Lucien Schreiber (c) CREALP 2007
  @date 07 April 2008
  *******************************************************************************/
-void MenuManager::AddFileToRecent (const wxString & spath)
+void MenuManager::AddFileToRecent(const wxString &spath)
 {
-	if (m_pFilesHistory)
-	{
-		m_pFilesHistory->AddFileToHistory(spath);
-	}
-	
+    if (m_pFilesHistory) {
+        m_pFilesHistory->AddFileToHistory(spath);
+    }
+
 }
 
 
@@ -140,12 +135,11 @@ void MenuManager::AddFileToRecent (const wxString & spath)
  @author Lucien Schreiber (c) CREALP 2007
  @date 08 April 2008
  *******************************************************************************/
-void MenuManager::RemoveFileFromRecent (int fileid)
+void MenuManager::RemoveFileFromRecent(int fileid)
 {
-	if(m_pFilesHistory)
-	{
-		m_pFilesHistory->RemoveFileFromHistory(fileid);
-	}
+    if (m_pFilesHistory) {
+        m_pFilesHistory->RemoveFileFromHistory(fileid);
+    }
 }
 
 
@@ -167,20 +161,18 @@ void MenuManager::RemoveFileFromRecent (int fileid)
  @author Lucien Schreiber (c) CREALP 2007
  @date 07 April 2008
  *******************************************************************************/
-bool MenuManager::GetRecentFile (wxString & filepath, int fileid)
+bool MenuManager::GetRecentFile(wxString &filepath, int fileid)
 {
-	
-	if (m_pFilesHistory)
-	{
-		filepath = m_pFilesHistory->GetHistoryFile(fileid);
-		if (!filepath.IsEmpty())
-		{
-			return true;
-		}
-		wxLogError(_T("Recent path is empty"));
-		
-	}
-	return false;
+
+    if (m_pFilesHistory) {
+        filepath = m_pFilesHistory->GetHistoryFile(fileid);
+        if (!filepath.IsEmpty()) {
+            return true;
+        }
+        wxLogError(_T("Recent path is empty"));
+
+    }
+    return false;
 }
 
 

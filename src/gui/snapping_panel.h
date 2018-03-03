@@ -20,18 +20,21 @@
 #define _SNAPPING_PANEL_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
+
 #include <wx/spinctrl.h>
 
 
 #include "managed_aui_wnd.h"
-#include "wxflatbutton.h"				// for flat button
-#include "listgenreport.h"				// listgenreport support
-#include "../core/tmsnappingmemory.h"	// store snapping status into memory
+#include "wxflatbutton.h"                // for flat button
+#include "listgenreport.h"                // listgenreport support
+#include "../core/tmsnappingmemory.h"    // store snapping status into memory
 
 class DataBaseTM;
+
 class DataListReportCtrl;
 
 #define ID_SNAP_TOLERENCE_TXT 22000
@@ -49,22 +52,25 @@ class tmRenderer;
 class tmSnapping_DLG : public wxDialog
 {
 public:
-    tmSnapping_DLG( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+    tmSnapping_DLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = wxEmptyString,
+                   const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                   long style = wxDEFAULT_DIALOG_STYLE);
+
     ~tmSnapping_DLG();
-    
+
     virtual bool TransferDataToWindow();
+
     virtual bool TransferDataFromWindow();
-    
+
     int m_SnapStatus;
     wxString m_LayerName;
 
 private:
-    wxStaticText* m_LayerNameCtrl;
-    wxRadioButton* m_SnapNoneCtrl;
-    wxRadioButton* m_SnapBeginEndCtrl;
-    wxRadioButton* m_SnapAllCtrl;
+    wxStaticText *m_LayerNameCtrl;
+    wxRadioButton *m_SnapNoneCtrl;
+    wxRadioButton *m_SnapBeginEndCtrl;
+    wxRadioButton *m_SnapAllCtrl;
 };
-
 
 
 /***************************************************************************//**
@@ -75,43 +81,50 @@ private:
 class Snapping_PANEL : public ManagedAuiWnd
 {
 private:
-    wxSpinCtrl* m_TolerenceCtrl;
-    DataListReportCtrl * m_ListCtrl;
-    DataBaseTM * m_pDB;
-    tmRenderer * m_Renderer;
-    wxWindow * m_ParentEvt;
+    wxSpinCtrl *m_TolerenceCtrl;
+    DataListReportCtrl *m_ListCtrl;
+    DataBaseTM *m_pDB;
+    tmRenderer *m_Renderer;
+    wxWindow *m_ParentEvt;
     wxAuiPaneInfo m_PaneInfo;
     tmSnappingMemory m_SnappingMemory;
-    
-    wxPanel * _CreateControls();
-    
-    void OnUpdateTolerence( wxSpinEvent & event );
-    void OnContextualMenu (wxContextMenuEvent & event);
-    void OnDClickList (wxListEvent & event);
-    DECLARE_EVENT_TABLE()
-    
+
+    wxPanel *_CreateControls();
+
+    void OnUpdateTolerence(wxSpinEvent &event);
+
+    void OnContextualMenu(wxContextMenuEvent &event);
+
+    void OnDClickList(wxListEvent &event);
+
+DECLARE_EVENT_TABLE()
+
 public:
-    Snapping_PANEL( wxWindow* parent, wxWindowID id, wxAuiManager * auimanager);
+    Snapping_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auimanager);
+
     ~Snapping_PANEL();
-    
-    void SetDataBase (DataBaseTM * database){m_pDB = database;}
-    void SetRendererRef(tmRenderer * renderer) {m_Renderer = renderer;}
-    
-    void LoadSnappingStatus ();
-    bool SaveSnappingStatus ();
-    
-    void OnAddSnapping( wxCommandEvent& event );
-    void OnRemoveSnapping( wxCommandEvent& event );
-    void OnUpdateUIContextualMenuAdd (wxUpdateUIEvent & event);
-    void OnUpdateUIContextualMenuRemove (wxUpdateUIEvent & event);
-    
-    tmSnappingMemory * GetSnappingMemoryRef() {return &m_SnappingMemory;}
+
+    void SetDataBase(DataBaseTM *database)
+    { m_pDB = database; }
+
+    void SetRendererRef(tmRenderer *renderer)
+    { m_Renderer = renderer; }
+
+    void LoadSnappingStatus();
+
+    bool SaveSnappingStatus();
+
+    void OnAddSnapping(wxCommandEvent &event);
+
+    void OnRemoveSnapping(wxCommandEvent &event);
+
+    void OnUpdateUIContextualMenuAdd(wxUpdateUIEvent &event);
+
+    void OnUpdateUIContextualMenuRemove(wxUpdateUIEvent &event);
+
+    tmSnappingMemory *GetSnappingMemoryRef()
+    { return &m_SnappingMemory; }
 };
-
-
-
-
-
 
 
 #endif

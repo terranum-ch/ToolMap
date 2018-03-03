@@ -31,37 +31,38 @@
 #include <wx/version.h>
 
 
-class tmLogGuiSeverity : public wxLogGui {
+class tmLogGuiSeverity : public wxLogGui
+{
 private:
-	wxLogLevel m_LogLevel;
-	
+    wxLogLevel m_LogLevel;
+
 public:
-	tmLogGuiSeverity(wxLogLevel minlevel = wxLOG_Warning){m_LogLevel = minlevel;}
-	
-	
+    tmLogGuiSeverity(wxLogLevel minlevel = wxLOG_Warning)
+    { m_LogLevel = minlevel; }
+
+
 #if wxCHECK_VERSION(2, 9, 0)
-	virtual void DoLogRecord(wxLogLevel level,
-                             const wxString& msg,
-                             const wxLogRecordInfo& info){
-		if (level <= m_LogLevel) { 
-			wxLogGui::DoLogRecord(level, msg, info);
-		}
-	}
-	
-	
+
+    virtual void DoLogRecord(wxLogLevel level,
+                             const wxString &msg,
+                             const wxLogRecordInfo &info)
+    {
+        if (level <= m_LogLevel) {
+            wxLogGui::DoLogRecord(level, msg, info);
+        }
+    }
+
+
 #else
-	// support version 2.8.x
-	virtual void DoLog(wxLogLevel level, const wxChar *msg, time_t timestamp) { 
-		if (level <= m_LogLevel) { 
-			// display wxLogWarning in a friendly way to the user. 
-			wxLogGui::DoLog(level, msg, timestamp); 
-		}
-	}
+    // support version 2.8.x
+    virtual void DoLog(wxLogLevel level, const wxChar *msg, time_t timestamp) {
+        if (level <= m_LogLevel) {
+            // display wxLogWarning in a friendly way to the user.
+            wxLogGui::DoLog(level, msg, timestamp);
+        }
+    }
 #endif
 };
-	
-	
-	
-	
-	
+
+
 #endif
