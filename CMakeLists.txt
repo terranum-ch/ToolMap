@@ -8,8 +8,8 @@ cmake_minimum_required(VERSION 2.6)
 #endif(COMMAND cmake_policy)
 
 PROJECT("ToolMap")
-set(VERSION_MAJOR "2")
-set(VERSION_MINOR "6")
+set(VERSION_MAJOR "3")
+set(VERSION_MINOR "0")
 set(VERSION_PATCH "0") # will be modified later during cmake process
 
 #Export for sourcetrail
