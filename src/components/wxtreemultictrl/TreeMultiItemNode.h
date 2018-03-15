@@ -51,7 +51,7 @@ private:
     bool _nodeExpanded;
 
     /** visual attributes of the node */
-    wxTreeItemAttr m_Attributes;
+    // wxTreeItemAttr m_Attributes;
 
 public:
     TreeMultiItemNode(TreeMultiItemNode *parent, const wxString &caption = wxEmptyString,
