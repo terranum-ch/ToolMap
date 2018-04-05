@@ -783,6 +783,7 @@ bool tmLayerManager::ZoomToLayer(long layerid)
  *******************************************************************************/
 void tmLayerManager::OnSizeChange(wxCommandEvent &event)
 {
+
     // pass size to scale object but don't make
     // any computation if no project are opened
     tmArraySize *mySizes = (tmArraySize *) event.GetClientData();

@@ -50,17 +50,6 @@ DECLARE_EVENT_TYPE(tmEVT_REMOVE_BTN_PRESSED, -1)
 
 
 #define ID_DLG_OBJ_ATTRIBUTION 10039
-#define ID_NOTEBOOK2 10040
-#define ID_PANEL4 10041
-#define ID_NOTEBOOK3 10042
-#define ID_PANEL5 10043
-#define ID_CHECKLISTBOX4 10045
-#define ID_PANEL6 10044
-#define ID_CHECKLISTBOX3 10063
-#define ID_PANEL7 10057
-#define ID_CHECKLISTBOX2 10060
-#define ID_TEXTCTRL6 10062
-#define ID_BUTTON9 10061
 #define ID_PANEL8 10058
 #define ID_CHECKLISTBOX1 10059
 #define ID_PANEL23 10139
@@ -93,7 +82,7 @@ class AttribObjType_PANEL : public ManagedAuiWnd
     wxAuiPaneInfo mPaneInfo;
 
     bool UpdateObjectList(DataBaseTM *pDB, tmCheckListBox *pList,
-                          int type, short frequency = 2);
+                          int type, short frequency);
 
     wxWindow *m_ParentEvt;
     int m_NbFeaturesSelected;
@@ -175,8 +164,10 @@ public:
     void OnFullAttribution(wxCommandEvent &event);
 
     // controls
-    tmCheckListBoxRank *m_pObjList_PT;
-    tmCheckListBoxRank *m_pObjList_PLG;
+    tmCheckListBoxRank *m_pObjList_PT_Freq;
+    tmCheckListBoxRank *m_pObjList_PT_NoFreq;
+    tmCheckListBoxRank *m_pObjList_PLG_Freq;
+    tmCheckListBoxRank *m_pObjList_PLG_NoFreq;
     tmCheckListBoxRank *m_pObjList_L_Freq;
     tmCheckListBoxRank *m_pObjList_L_NoFreq;
 
