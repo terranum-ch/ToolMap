@@ -52,6 +52,9 @@ include_directories(${EXTERNAL_DIR}/include)
 link_directories(${EXTERNAL_DIR}/lib)
 link_directories(${EXTERNAL_DIR}/lib64)
 
+# Path to MySQL
+set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
+
 # Add ToolBasView as external project
 ExternalProject_Add(ToolBasView
         GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
