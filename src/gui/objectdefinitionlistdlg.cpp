@@ -152,17 +152,15 @@ void ObjectDefinitionListDlg::CreateControls()
                                           m_DLGODD_List_Lyr_NameStrings, 0);
     itemFlexGridSizer4->Add(m_DLGODD_List_Lyr_Name, 0, wxGROW | wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    if (m_ParentListType == LAYER_LINE) {
-        wxArrayString m_DLGODD_FrequencyStrings;
-        m_DLGODD_FrequencyStrings.Add(_("&Not Frequent"));
-        m_DLGODD_FrequencyStrings.Add(_("&Frequent"));
-        m_DLGODD_Frequency = new wxRadioBox(itemDialog1, ID_DLGODD_FREQUENCY, _("Frequency"), wxDefaultPosition,
-                                            wxDefaultSize, m_DLGODD_FrequencyStrings, 1, wxRA_SPECIFY_ROWS);
-        m_DLGODD_Frequency->SetSelection(0);
-        itemStaticBoxSizer3->Add(m_DLGODD_Frequency, 0, wxGROW | wxALL, 5);
+    wxArrayString m_DLGODD_FrequencyStrings;
+    m_DLGODD_FrequencyStrings.Add(_("&Not Frequent"));
+    m_DLGODD_FrequencyStrings.Add(_("&Frequent"));
+    m_DLGODD_Frequency = new wxRadioBox(itemDialog1, ID_DLGODD_FREQUENCY, _("Frequency"), wxDefaultPosition,
+                                        wxDefaultSize, m_DLGODD_FrequencyStrings, 1, wxRA_SPECIFY_ROWS);
+    m_DLGODD_Frequency->SetSelection(0);
+    itemStaticBoxSizer3->Add(m_DLGODD_Frequency, 0, wxGROW | wxALL, 5);
 
-        itemBoxSizer2->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-    }
+    itemBoxSizer2->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
     wxStaticLine *itemStaticLine13 = new wxStaticLine(itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize,
                                                       wxLI_HORIZONTAL);
