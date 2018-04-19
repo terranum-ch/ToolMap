@@ -1465,8 +1465,6 @@ void tmEditManager::OnDrawFeatureValidate(wxCommandEvent &event)
 
 long tmEditManager::_SaveToDatabase()
 {
-    CPLSetConfigOption("OGR_WKT_PRECISION", "8");
-
     tmLayerProperties *layerprop = m_TOC->GetEditLayer();
     if (layerprop == NULL) {
         return wxNOT_FOUND;
