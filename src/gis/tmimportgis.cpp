@@ -73,6 +73,8 @@ bool tmImportGIS::Import(DataBaseTM *database, wxProgressDialog *progress)
     wxStopWatch sv;
     tmPercent tpercent(GetFeatureCount());
 
+    CPLSetConfigOption("OGR_WKT_PRECISION", "8");
+
     while (1) {
         OGRFeature *myFeature = m_Vector->GetNextFeature();
         if (myFeature == NULL) {
