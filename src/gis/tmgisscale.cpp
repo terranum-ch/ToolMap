@@ -445,6 +445,9 @@ double tmGISScale::MetersToPixels(int meters)
 
 double tmGISScale::MetersToRealUnits(int meters)
 {
+	if (m_ProjectUnit == UNIT_METERS)
+		return meters;
+
     double horizcoorddiff = std::max(m_ExtentWndReal.x_min, m_ExtentWndReal.x_max) -
                             std::min(m_ExtentWndReal.x_max, m_ExtentWndReal.x_min);
     double realunits = meters * horizcoorddiff / m_WidthDistanceInM;
