@@ -479,6 +479,7 @@ bool ProjectManager::EditProjectObjectDefinition()
 
 bool ProjectManager::EditObjectFrequency(int id)
 {
+    // Get object from the DB
     wxString sSelect = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_ISFREQ FROM %s ")
                                         _T(" WHERE OBJECT_ID = %d"), TABLE_NAME_OBJECTS.c_str(), id);
 
@@ -497,6 +498,7 @@ bool ProjectManager::EditObjectFrequency(int id)
     long lFreq = 0;
     rowResults.Item(1).ToLong(&lFreq);
 
+    // Toggle frequent / less frequent
     if (lFreq == 1) {
         lFreq = 0;
     } else {
@@ -505,6 +507,7 @@ bool ProjectManager::EditObjectFrequency(int id)
 
     m_DB->DataBaseClearResults();
 
+    // Update the DB
     wxString sUpdate = wxString::Format(_T("UPDATE %s ")
                                         _T("SET OBJECT_ISFREQ = %ld ")
                                         _T("WHERE OBJECT_ID = %d"), TABLE_NAME_OBJECTS.c_str(), lFreq, id);
@@ -515,7 +518,7 @@ bool ProjectManager::EditObjectFrequency(int id)
         return false;
     }
 
-    // update objects to lists
+    // Update objects to lists
     m_Obj->UpdateObjectLists(m_DB);
     LoadProjectDefintion(1);
 
