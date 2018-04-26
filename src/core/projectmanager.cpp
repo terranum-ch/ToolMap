@@ -477,6 +477,51 @@ bool ProjectManager::EditProjectObjectDefinition()
 }
 
 
+bool ProjectManager::EditObjectFrequency(int id)
+{
+    wxString sSelect = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_ISFREQ FROM %s ")
+                                        _T(" WHERE OBJECT_ID = %d"), TABLE_NAME_OBJECTS.c_str(), id);
+
+    if (!m_DB->DataBaseQuery(sSelect))
+        return false;
+
+    if (!m_DB->DataBaseHasResults())
+        return false;
+
+    wxArrayString rowResults;
+    if (!m_DB->DataBaseGetNextResult(rowResults)) {
+        m_DB->DataBaseClearResults();
+        return false;
+    }
+
+    long lFreq = 0;
+    rowResults.Item(1).ToLong(&lFreq);
+
+    if (lFreq == 1) {
+        lFreq = 0;
+    } else {
+        lFreq = 1;
+    }
+
+    m_DB->DataBaseClearResults();
+
+    wxString sUpdate = wxString::Format(_T("UPDATE %s ")
+                                        _T("SET OBJECT_ISFREQ = %ld ")
+                                        _T("WHERE OBJECT_ID = %d"), TABLE_NAME_OBJECTS.c_str(), lFreq, id);
+
+    wxLogDebug(sUpdate);
+    if (!m_DB->DataBaseQueryNoResults(sUpdate)) {
+        wxLogDebug(_T("The change as frequent / less frequent failed."));
+        return false;
+    }
+
+    // update objects to lists
+    m_Obj->UpdateObjectLists(m_DB);
+    LoadProjectDefintion(1);
+
+    return true;
+}
+
 bool ProjectManager::EditProjectSettings()
 {
     bool bReturn = FALSE;

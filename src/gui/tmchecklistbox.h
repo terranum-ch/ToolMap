@@ -41,6 +41,7 @@ const int tmCHECK_MENU_MOVE_TOP = 13001;
 const int tmCHECK_MENU_MOVE_BOTTOM = 13002;
 const int tmCHECK_MENU_MOVE_UP = 13003;
 const int tmCHECK_MENU_MOVE_DOWN = 13004;
+const int tmCHECK_MENU_TOGGLE_FREQUENT = 13005;
 
 
 /***************************************************************************//**
@@ -67,6 +68,8 @@ private:
     void OnDisplayPopupMenu(wxMouseEvent &event);
 
     void OnMoveItemInList(wxCommandEvent &event);
+
+    void OnToggleFrequent(wxCommandEvent &event);
 
 protected:
 

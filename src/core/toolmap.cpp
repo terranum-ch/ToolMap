@@ -252,6 +252,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
+                EVT_COMMAND (wxID_ANY, tmEVT_TOGGLE_FREQUENT, ToolMapFrame::OnEditObjectFrequency)
 
                 // STATISTICS EVENT
                 EVT_COMMAND (wxID_ANY, tmEVT_STAT_CLICK, ToolMapFrame::OnStatisticsUpdate)
@@ -1448,6 +1449,18 @@ void ToolMapFrame::OnUpdateSelection(wxCommandEvent &event)
 {
     SetStatusText(wxString::Format(_T("%d Selected features"),
                                    m_LayerManager->GetSelectedDataMemory()->GetCount()), 2);
+    event.Skip();
+}
+
+
+void ToolMapFrame::OnEditObjectFrequency(wxCommandEvent &event)
+{
+    wxASSERT(m_PManager);
+    wxASSERT(m_PManager->GetDatabase());
+    wxASSERT(event.GetInt() >= 0);
+
+    m_PManager->EditObjectFrequency(event.GetInt());
+
     event.Skip();
 }
 

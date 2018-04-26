@@ -19,6 +19,7 @@
 // comment doxygen
 
 #include "tmchecklistbox.h"
+#include "../gis/tmmanagerevent.h"
 
 
 /***************************************************************************//**
@@ -53,6 +54,9 @@ bool tmCheckListBox::Create(wxWindow *parent,
                 tmCHECK_MENU_MOVE_DOWN,
                 wxEVT_COMMAND_MENU_SELECTED,
                 wxCommandEventHandler(tmCheckListBox::OnMoveItemInList));
+        Connect(tmCHECK_MENU_TOGGLE_FREQUENT,
+                wxEVT_COMMAND_MENU_SELECTED,
+                wxCommandEventHandler(tmCheckListBox::OnToggleFrequent));
     }
 
     return TRUE;
@@ -96,9 +100,10 @@ bool tmCheckListBox::CreateStandardMenu()
         return false;
     }
 
+    GetPopupMenu()->Append(tmCHECK_MENU_TOGGLE_FREQUENT, _("Change frequent / less frequent"));
+    GetPopupMenu()->AppendSeparator();
     GetPopupMenu()->Append(tmCHECK_MENU_MOVE_TOP, _("Move item to the &top"));
     GetPopupMenu()->Append(tmCHECK_MENU_MOVE_UP, _("Move item &up"));
-    GetPopupMenu()->AppendSeparator();
     GetPopupMenu()->Append(tmCHECK_MENU_MOVE_DOWN, _("Move item &down"));
     GetPopupMenu()->Append(tmCHECK_MENU_MOVE_BOTTOM, _("Move item to the &bottom"));
 
@@ -125,6 +130,7 @@ void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent &event)
     GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_TOP, true);
     GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_DOWN, true);
     GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_BOTTOM, true);
+    GetPopupMenu()->Enable(tmCHECK_MENU_TOGGLE_FREQUENT, true);
 
     // disable popup items based on selected items
     if (GetSelection() == 0) {
@@ -175,6 +181,37 @@ void tmCheckListBox::OnMoveItemInList(wxCommandEvent &event)
             MoveItem(iSelectedPos, GetCount() - 1);
             break;
     }
+}
+
+
+/***************************************************************************//**
+ @brief Called for setting the object kind as frequent / less frequent
+ @author Pascal Horton (c) TERRANUM 2018
+ @date 26 April 2018
+ *******************************************************************************/
+void tmCheckListBox::OnToggleFrequent(wxCommandEvent &event)
+{
+    wxLogDebug(_T("Frequency toggle called !"));
+
+    int iSelectedPos = GetSelection();
+
+    if (GetSelection() == wxNOT_FOUND) {
+        wxLogDebug(_T("No items selected, select an item first"));
+        return;
+    }
+    // get item
+    long id = 0;
+    wxString name = wxEmptyString;
+    bool bcheck = FALSE;
+
+    if (!GetItem(iSelectedPos, id, name, bcheck)) {
+        return;
+    }
+
+    wxCommandEvent evt(tmEVT_TOGGLE_FREQUENT, wxID_ANY);
+    evt.SetInt(id);
+    m_parent->GetEventHandler()->QueueEvent(evt.Clone());
+
 }
 
 
@@ -350,7 +387,6 @@ bool tmCheckListBox::MoveItem(long index1, long index2)
     this->SetSelection(index2, true);
     return TRUE;
 }
-
 
 /***************************************************************************//**
  @brief Get value for item at the specified position

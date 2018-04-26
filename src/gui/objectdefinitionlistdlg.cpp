@@ -203,7 +203,7 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
     m_DLGODD_Code->SetValue(m_ObjectObj->m_ObjectCode);
     m_DLGODD_Description->SetValue(m_ObjectObj->m_ObjectName);
 
-    // if we use the frequency control
+    // frequency control
     m_DLGODD_Frequency->SetSelection(m_ObjectObj->m_ObjectFreq);
 
     // set parent layer
