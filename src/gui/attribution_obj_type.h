@@ -97,6 +97,9 @@ class AttribObjType_PANEL : public ManagedAuiWnd
     bool m_EnableFullAttribution;
     wxBoxSizer *m_ButtonSizer;
     wxBoxSizer *m_AttribSizer;
+    wxTextCtrl *m_textCtrlLines;
+    wxTextCtrl *m_textCtrlPoints;
+    wxTextCtrl *m_textCtrlPoly;
 
     // event function
     //void OnAttributeBtn (wxCommandEvent & event);
@@ -110,6 +113,11 @@ class AttribObjType_PANEL : public ManagedAuiWnd
 
     void OnEditStop(wxCommandEvent &event);
 
+    void FilterPointList(wxCommandEvent &event);
+
+    void FilterPolyList(wxCommandEvent &event);
+
+    void FilterLineList(wxCommandEvent &event);
 
 DECLARE_EVENT_TABLE()
 

@@ -64,10 +64,21 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow *parent, wxAuiManager *AuiMana
 
     // add the panel
     AddManagedPane(ContentFrame, mPaneInfo);
+
+    // Connect events
+    m_textCtrlPoints->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList), NULL, this);
+    m_textCtrlPoly->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), NULL, this);
+    m_textCtrlLines->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), NULL, this);
+
 }
 
 AttribObjType_PANEL::~AttribObjType_PANEL()
 {
+    // Disconnect events
+    m_textCtrlPoints->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList), NULL, this);
+    m_textCtrlPoly->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), NULL, this);
+    m_textCtrlLines->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), NULL, this);
+
     m_ParentEvt->PopEventHandler(FALSE);
 }
 
@@ -85,6 +96,10 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     wxPanel *itemPanel1 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxTAB_TRAVERSAL);
     auto *itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
     itemPanel1->SetSizer(itemBoxSizer1);
+
+    m_textCtrlLines = new wxTextCtrl(itemPanel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlLines->SetToolTip( wxT("Type to filter the list") );
+    itemBoxSizer1->Add(m_textCtrlLines, 0, wxALL | wxEXPAND, 2);
 
     auto *itemNotebook1 = new wxAuiNotebook(itemPanel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP);
 
@@ -120,6 +135,10 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     auto *itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
     itemPanel4->SetSizer(itemBoxSizer4);
 
+    m_textCtrlPoints = new wxTextCtrl(itemPanel4, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlPoints->SetToolTip( wxT("Type to filter the list") );
+    itemBoxSizer4->Add(m_textCtrlPoints, 0, wxALL | wxEXPAND, 2);
+
     auto *itemNotebook2 = new wxAuiNotebook(itemPanel4, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                                      wxAUI_NB_TOP);
 
@@ -154,6 +173,10 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
                                       wxTAB_TRAVERSAL);
     auto *itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
     itemPanel7->SetSizer(itemBoxSizer7);
+
+    m_textCtrlPoly = new wxTextCtrl(itemPanel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlPoly->SetToolTip( wxT("Type to filter the list") );
+    itemBoxSizer7->Add(m_textCtrlPoly, 0, wxALL | wxEXPAND, 2);
 
     auto *itemNotebook3 = new wxAuiNotebook(itemPanel7, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                                      wxAUI_NB_TOP);
@@ -323,6 +346,29 @@ void AttribObjType_PANEL::OnEditStop(wxCommandEvent &event)
     event.Skip();
 }
 
+void AttribObjType_PANEL::FilterPointList(wxCommandEvent &event)
+{
+    wxString filter = event.GetString();
+    m_pObjList_PT_Freq->Filter(filter);
+    m_pObjList_PT_NoFreq->Filter(filter);
+    event.Skip();
+}
+
+void AttribObjType_PANEL::FilterPolyList(wxCommandEvent &event)
+{
+    wxString filter = event.GetString();
+    m_pObjList_PLG_Freq->Filter(filter);
+    m_pObjList_PLG_NoFreq->Filter(filter);
+    event.Skip();
+}
+
+void AttribObjType_PANEL::FilterLineList(wxCommandEvent &event)
+{
+    wxString filter = event.GetString();
+    m_pObjList_L_Freq->Filter(filter);
+    m_pObjList_L_NoFreq->Filter(filter);
+    event.Skip();
+}
 
 /***************************************************************************//**
  @brief Clear all attributes set when called
