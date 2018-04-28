@@ -366,17 +366,41 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
         myTempLayer.m_LayerType = LAYER_POLYGON;
     }
 
-    wxString myTextFields[] = {_T("COUNT"), _T("TM_ID"), _T("LAYER_IDX"), _T("CODE"), _T("DESC"), _T("ATTRIBUTS")};
-    PRJDEF_FIELD_TYPE myTypes[] = {TM_FIELD_INTEGER, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT,
-                                   TM_FIELD_TEXT};
+    // mandatory fields and types
+    wxArrayString myFieldsText;
+    myFieldsText.Add(_T("COUNT"));
+    myFieldsText.Add(_T("TM_ID"));
+    myFieldsText.Add(_T("LAYER_IDX"));
+    myFieldsText.Add(_T("CODE"));
+    myFieldsText.Add(_T("DESC"));
+    myFieldsText.Add(_T("ATTRIBUTS"));
 
-    for (unsigned int i = 0; i < (sizeof(myTextFields) / sizeof(wxString)); i++) {
-        ProjectDefMemoryFields *myField = new ProjectDefMemoryFields();
-        myField->m_FieldID = i + 1;
-        myField->m_Fieldname = myTextFields[i];
-        myField->m_FieldType = myTypes[i];
+    wxArrayInt myFieldsType;
+    myFieldsType.Add(TM_FIELD_INTEGER);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
 
-        if (myTypes[i] == TM_FIELD_TEXT) {
+    // add polygon layers but only when exporting lines concatenated
+    if (type == LAYER_LINE) {
+        wxArrayString myPolygonLayersNames = m_pDB->GetLayerNameByType(LAYER_SPATIAL_POLYGON);
+        for (int j = 0; j < myPolygonLayersNames.GetCount(); ++j) {
+            myFieldsText.Add(myPolygonLayersNames[j]);
+            myFieldsType.Add(TM_FIELD_INTEGER);
+        }
+        wxASSERT(myFieldsText.GetCount() == myFieldsType.GetCount());
+    }
+
+    // create memory fields
+    for (int k = 0; k < myFieldsText.GetCount(); ++k) {
+        ProjectDefMemoryFields * myField = new ProjectDefMemoryFields();
+        myField->m_FieldID = k + 1;
+        myField->m_Fieldname = myFieldsText[k];
+        myField->m_FieldType = (PRJDEF_FIELD_TYPE) myFieldsType[k];
+
+        if (myField->m_FieldType == TM_FIELD_TEXT) {
             // Starting with GDAL/OGR 1.10, the driver knows to auto-extend
             // string and integer fields (up to the 255 bytes limit imposed by the DBF format)
             myField->m_FieldPrecision = 80; // default size.
