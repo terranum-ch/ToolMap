@@ -448,7 +448,11 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
 
     tmPercent myPercent(lTotalAttrib + lTotalAttrib);
 
-    wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
+    // get concatenated data
+    wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), "
+                             "GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), "
+                             "GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) "
+                             "WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
     wxString myQuery = wxString::Format(myQueryTmp, TABLE_NAME_GIS_GENERIC[myTempLayer.m_LayerType],
                                         TABLE_NAME_GIS_ATTRIBUTION[myTempLayer.m_LayerType], TABLE_NAME_OBJECTS);
     wxASSERT(m_pDB);
@@ -459,6 +463,7 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
 
     long myLoop = m_ExportData->WriteConcatGeometries(&myTempLayer, myProgressDlg, &myPercent);
     bool bExport = m_ExportData->AddConcatAttributs(&myTempLayer, localprojdef, myLoop, myProgressDlg, &myPercent);
+
     wxDELETE(myProgressDlg);
     return bExport;
 }
