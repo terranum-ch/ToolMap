@@ -94,17 +94,17 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     // Lines panel
 
     wxPanel *itemPanel1 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxTAB_TRAVERSAL);
-    auto *itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
     itemPanel1->SetSizer(itemBoxSizer1);
 
     m_textCtrlLines = new wxTextCtrl(itemPanel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_textCtrlLines->SetToolTip( wxT("Type to filter the list") );
     itemBoxSizer1->Add(m_textCtrlLines, 0, wxALL | wxEXPAND, 2);
 
-    auto *itemNotebook1 = new wxAuiNotebook(itemPanel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP);
+    wxAuiNotebook *itemNotebook1 = new wxAuiNotebook(itemPanel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP);
 
     wxPanel *itemPanel2 = new wxPanel(itemNotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
     itemPanel2->SetSizer(itemBoxSizer2);
 
     m_pObjList_L_Freq = new tmCheckListBoxRank(itemPanel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
@@ -114,7 +114,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     itemNotebook1->AddPage(itemPanel2, _("Frequent"));
 
     wxPanel *itemPanel3 = new wxPanel(itemNotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto *itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
     itemPanel3->SetSizer(itemBoxSizer3);
 
     m_pObjList_L_NoFreq = new tmCheckListBoxRank(itemPanel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
@@ -132,18 +132,18 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
 
     wxPanel *itemPanel4 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300),
                                       wxTAB_TRAVERSAL);
-    auto *itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
     itemPanel4->SetSizer(itemBoxSizer4);
 
     m_textCtrlPoints = new wxTextCtrl(itemPanel4, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_textCtrlPoints->SetToolTip( wxT("Type to filter the list") );
     itemBoxSizer4->Add(m_textCtrlPoints, 0, wxALL | wxEXPAND, 2);
 
-    auto *itemNotebook2 = new wxAuiNotebook(itemPanel4, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+    wxAuiNotebook *itemNotebook2 = new wxAuiNotebook(itemPanel4, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                                      wxAUI_NB_TOP);
 
     wxPanel *itemPanel5 = new wxPanel(itemNotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto *itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     itemPanel5->SetSizer(itemBoxSizer5);
 	
     m_pObjList_PT_Freq = new tmCheckListBoxRank(itemPanel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
@@ -153,7 +153,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     itemNotebook2->AddPage(itemPanel5, _("Frequent"));
 
     wxPanel *itemPanel6 = new wxPanel(itemNotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto *itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
     itemPanel6->SetSizer(itemBoxSizer6);
 
     m_pObjList_PT_NoFreq = new tmCheckListBoxRank(itemPanel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0,
@@ -171,18 +171,18 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
 
     wxPanel *itemPanel7 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300),
                                       wxTAB_TRAVERSAL);
-    auto *itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
     itemPanel7->SetSizer(itemBoxSizer7);
 
     m_textCtrlPoly = new wxTextCtrl(itemPanel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_textCtrlPoly->SetToolTip( wxT("Type to filter the list") );
     itemBoxSizer7->Add(m_textCtrlPoly, 0, wxALL | wxEXPAND, 2);
 
-    auto *itemNotebook3 = new wxAuiNotebook(itemPanel7, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+    wxAuiNotebook *itemNotebook3 = new wxAuiNotebook(itemPanel7, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                                      wxAUI_NB_TOP);
 
     wxPanel *itemPanel8 = new wxPanel(itemNotebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto *itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     itemPanel8->SetSizer(itemBoxSizer8);
 
 
@@ -193,7 +193,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     itemNotebook3->AddPage(itemPanel8, _("Frequent"));
 
     wxPanel *itemPanel9 = new wxPanel(itemNotebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    auto *itemBoxSizer9 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *itemBoxSizer9 = new wxBoxSizer(wxVERTICAL);
     itemPanel9->SetSizer(itemBoxSizer9);
 
     m_pObjList_PLG_NoFreq = new tmCheckListBoxRank(itemPanel9, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0,
