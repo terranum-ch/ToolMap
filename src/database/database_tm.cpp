@@ -1135,7 +1135,6 @@ bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects *object, 
     object->m_ObjectType = (short) myType;
     object->m_ParentLayerName = myRowResults.Item(3);
 
-    // frequency will be used only for lines
     long lFreq = 0;
     myRowResults.Item(4).ToLong(&lFreq);
     object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;

@@ -223,7 +223,6 @@ class AttribObjType_PANEL;
 
 #define ID_TOOLBAR_ZOOM 10252
 
-
 #define ID_CTXT_FULL_ATTRIB 21000
 #define ID_CTXT_FILTER 21001
 #define ID_CTXT_AUTODISPLAY_ATTRIB 21002
@@ -432,6 +431,8 @@ private:
 
     // changing status function
     void OnUpdateSelection(wxCommandEvent &event);
+
+    void OnEditObjectFrequency(wxCommandEvent &event);
 
     // GIS functions
     void OnAddGisData(wxCommandEvent &event);

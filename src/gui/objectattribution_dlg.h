@@ -71,8 +71,6 @@ private:
 
     void OnExportFile(wxCommandEvent &event);
 
-    void OnChangeFrequency(wxCommandEvent &event);
-
     void OnChangeLayerName(wxCommandEvent &event);
 
     void OnSaveChanges(wxCommandEvent &event);
@@ -119,7 +117,6 @@ public:
     wxPanel *m_DLGPEO_Panel_Line;
     ObjectDefinitionList *m_DLGPEO_List_Line;
     wxChoice *m_DLGPEO_Choice_Lyr_Line_Name;
-    wxCheckBox *m_DLGPEO_Choice_Lyr_Line_Freq;
     wxPanel *m_DLGPEO_Panel_Point;
     ObjectDefinitionList *m_DLGPEO_List_Point;
     wxChoice *m_DLGPEO_Choice_Lyr_Point_Name;

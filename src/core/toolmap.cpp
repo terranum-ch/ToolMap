@@ -181,12 +181,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
                 EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
-                EVT_MENU(ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
+                EVT_MENU (ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
                 EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnZoomToSelectedLayer)
                 EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
-                EVT_MENU(ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
+                EVT_MENU (ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_MODIFY_BEZIER, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
@@ -252,6 +252,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
+                EVT_COMMAND (wxID_ANY, tmEVT_TOGGLE_FREQUENT, ToolMapFrame::OnEditObjectFrequency)
 
                 // STATISTICS EVENT
                 EVT_COMMAND (wxID_ANY, tmEVT_STAT_CLICK, ToolMapFrame::OnStatisticsUpdate)
@@ -1448,6 +1449,21 @@ void ToolMapFrame::OnUpdateSelection(wxCommandEvent &event)
 {
     SetStatusText(wxString::Format(_T("%d Selected features"),
                                    m_LayerManager->GetSelectedDataMemory()->GetCount()), 2);
+    event.Skip();
+}
+
+
+void ToolMapFrame::OnEditObjectFrequency(wxCommandEvent &event)
+{
+    wxASSERT(m_PManager);
+    wxASSERT(m_PManager->GetDatabase());
+    wxASSERT(event.GetInt() >= 0);
+
+    Freeze();
+    m_PManager->EditObjectFrequency(event.GetInt());
+    m_AttribObjPanel->ResetFilterFields();
+    Thaw();
+
     event.Skip();
 }
 

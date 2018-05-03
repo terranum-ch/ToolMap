@@ -109,6 +109,8 @@ public:
 
     bool EditProjectObjectDefinition();
 
+    bool EditObjectFrequency(int id);
+
     bool EditProjectSettings();
 
     bool EditProject(int notebooknumber);
