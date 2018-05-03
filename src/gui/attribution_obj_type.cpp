@@ -370,6 +370,14 @@ void AttribObjType_PANEL::FilterLineList(wxCommandEvent &event)
     event.Skip();
 }
 
+void AttribObjType_PANEL::ResetFilterFields()
+{
+    m_textCtrlLines->Clear();
+    m_textCtrlPoly->Clear();
+    m_textCtrlPoints->Clear();
+}
+
+
 /***************************************************************************//**
  @brief Clear all attributes set when called
  @author Lucien Schreiber (c) CREALP 2009
@@ -407,6 +415,8 @@ bool AttribObjType_PANEL::UpdateObjectPointList(DataBaseTM *pDB)
 
     if (!UpdateObjectList(pDB, m_pObjList_PT_NoFreq, LAYER_POINT, OBJECT_LESS_FREQUENT))
         return FALSE;
+
+	return true;
 }
 
 
@@ -834,7 +844,7 @@ void AttribObjType_PANEL::SetSelectedValues(TOC_GENERIC_NAME panel_name,
             }
         }
 
-        myList->EditItem(l, -1, wxEmptyString, myChecked);
+        myList->SetItemCheck(l, myChecked);
     }
 
 }

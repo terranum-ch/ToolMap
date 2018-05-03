@@ -164,6 +164,8 @@ public:
 
     void EmptyListValues();
 
+    void ResetFilterFields();
+
     //  menu event function
     void OnDisplayAttributesAuto(wxCommandEvent &event);
 

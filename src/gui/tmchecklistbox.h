@@ -43,7 +43,6 @@ const int tmCHECK_MENU_MOVE_UP = 13003;
 const int tmCHECK_MENU_MOVE_DOWN = 13004;
 const int tmCHECK_MENU_TOGGLE_FREQUENT = 13005;
 
-
 /***************************************************************************//**
  @brief Deals with checkbox list
  @details This class enhance the wxChecklistBox by allowing the following
@@ -60,7 +59,11 @@ class tmCheckListBox : public wxCheckListBox
 {
 private:
     wxArrayLong m_ids;
+    wxArrayLong m_originalIds;
+    wxArrayString m_originalLabels;
+    wxArrayShort m_originalChecks;
     wxMenu *m_PopupMenu;
+    bool m_IsFiltered;
 
     bool CreateStandardMenu();
 
@@ -76,7 +79,10 @@ protected:
     //wxArrayInt m_Selections;
 
     void Init()
-    { m_PopupMenu = NULL; }
+    {
+        m_PopupMenu = NULL;
+        m_IsFiltered = false;
+    }
 
     wxMenu *GetPopupMenu()
     { return m_PopupMenu; }
@@ -117,7 +123,7 @@ public:
     // functions
     bool AddItem(long index = -1, long id = -1,
                  const wxString &name = wxEmptyString,
-                 bool checked = FALSE);
+                 bool checked = false, bool keepFilters = false);
 
     bool RemoveItem(long index = -1);
 
@@ -131,11 +137,21 @@ public:
 
     bool GetItem(long index, long &id, wxString &name, bool &bcheck);
 
+    bool GetItemId(long index, long &id);
+
+    bool SetItemCheck(long index, short checked = 2);
+
     void ClearItems();
+
+    void ClearFilters();
 
     void ClearCheckMarks();
 
+    void Filter(wxString filter);
 
+    void ResetOriginalArrays();
+
+    bool StoreActualChecks();
 };
 
 

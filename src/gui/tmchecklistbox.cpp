@@ -143,6 +143,13 @@ void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent &event)
         GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_BOTTOM, false);
     }
 
+    if (m_IsFiltered) {
+        GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_UP, false);
+        GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_TOP, false);
+        GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_DOWN, false);
+        GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_BOTTOM, false);
+    }
+
     // show the menu
     PopupMenu(GetPopupMenu());
     event.Skip();
@@ -191,8 +198,6 @@ void tmCheckListBox::OnMoveItemInList(wxCommandEvent &event)
  *******************************************************************************/
 void tmCheckListBox::OnToggleFrequent(wxCommandEvent &event)
 {
-    wxLogDebug(_T("Frequency toggle called !"));
-
     int iSelectedPos = GetSelection();
 
     if (GetSelection() == wxNOT_FOUND) {
@@ -229,8 +234,11 @@ void tmCheckListBox::OnToggleFrequent(wxCommandEvent &event)
  *******************************************************************************/
 bool tmCheckListBox::AddItem(long index, long id,
                              const wxString &name,
-                             bool checked)
+                             bool checked, bool keepFilters)
 {
+	if (!keepFilters)
+		ClearFilters();
+
     // adding item
     if (index == -1 || index >= (signed) GetCount()) {
         Append(name);
@@ -243,6 +251,10 @@ bool tmCheckListBox::AddItem(long index, long id,
     }
 
     Check(index, checked);
+
+	if (!keepFilters)
+		ResetOriginalArrays();
+
     return TRUE;
 }
 
@@ -258,6 +270,8 @@ bool tmCheckListBox::AddItem(long index, long id,
  *******************************************************************************/
 bool tmCheckListBox::RemoveItem(long index)
 {
+    ClearFilters();
+
     // if index == -1, remove last item
     if (index == -1)
         if (RemoveItem(GetCount() - 1))
@@ -273,6 +287,8 @@ bool tmCheckListBox::RemoveItem(long index)
         Delete(index);
         m_ids.RemoveAt(index);
     }
+
+    ResetOriginalArrays();
 
     return TRUE;
 }
@@ -296,6 +312,8 @@ bool tmCheckListBox::RemoveItem(long index)
 bool tmCheckListBox::EditItem(long index, long id,
                               const wxString &name, short checked)
 {
+    ClearFilters();
+
     // check item exists
     if (index >= (signed) GetCount()) {
         wxLogError(_T("Trying to edit item out of bounds, item number : %ld"), index);
@@ -308,18 +326,20 @@ bool tmCheckListBox::EditItem(long index, long id,
         m_ids.Item(index) = id;
 
     // change name
-    if (name != wxEmptyString)
+    if (name != wxEmptyString) {
         SetString(index, name);
+    }
 
     // change check state
-    if (checked == 0)
+    if (checked == 0) {
         Check(index, FALSE);
-    if (checked == 1)
+    } else if (checked == 1) {
         Check(index, TRUE);
+    }
 
+    ResetOriginalArrays();
 
     return TRUE;
-
 }
 
 
@@ -336,10 +356,7 @@ bool tmCheckListBox::EditItem(long index, long id,
  *******************************************************************************/
 bool tmCheckListBox::SwapItem(long index1, long index2)
 {
-    // check that items exists
-    /*if (index2 == -1)
-        if (!SwapItem(index1, GetCount() -1))
-            return FALSE;*/
+    ClearFilters();
 
     if (index1 < 0 && index1 >= (signed) GetCount()) {
         wxLogError(_T("Trying to move item out of bounds, item number : %ld"), index1);
@@ -355,6 +372,9 @@ bool tmCheckListBox::SwapItem(long index1, long index2)
     EditItem(index1, m_ids.Item(index2), GetString(index2), IsChecked(index2));
     EditItem(index2, id1, name1, checked1);
     SetSelection(index2);
+
+    ResetOriginalArrays();
+
     return TRUE;
 }
 
@@ -385,6 +405,9 @@ bool tmCheckListBox::MoveItem(long index1, long index2)
     RemoveItem(index1);
     AddItem(index2, id1, name1, bcheck1);
     this->SetSelection(index2, true);
+
+    ResetOriginalArrays();
+
     return TRUE;
 }
 
@@ -407,7 +430,7 @@ bool tmCheckListBox::GetItem(long index, long &id, wxString &name, bool &bcheck)
     }
 
     if (index > (signed) m_ids.GetCount() - 1) {
-        wxLogDebug(_T("Index %ld is greather than the wxArrayLong"), index);
+        wxLogDebug(_T("Index %ld is greater than the wxArrayLong"), index);
         return FALSE;
     }
 
@@ -418,6 +441,42 @@ bool tmCheckListBox::GetItem(long index, long &id, wxString &name, bool &bcheck)
 }
 
 
+bool tmCheckListBox::GetItemId(long index, long &id)
+{
+    // check that we aren't outside the limits
+    if (index > (signed) GetCount() - 1) {
+        wxLogDebug(_T("Index : %ld is outside the limits"), index);
+        return FALSE;
+    }
+
+    if (index > (signed) m_ids.GetCount() - 1) {
+        wxLogDebug(_T("Index %ld is greater than the wxArrayLong"), index);
+        return FALSE;
+    }
+
+    id = m_ids.Item(index);
+    return TRUE;
+}
+
+
+bool tmCheckListBox::SetItemCheck(long index, short checked)
+{
+    // check item exists
+    if (index >= (signed) GetCount()) {
+        wxLogError(_T("Trying to edit item out of bounds, item number : %ld"), index);
+        return FALSE;
+    }
+
+    // change check state
+    if (checked == 0) {
+        Check(index, FALSE);
+    } else if (checked == 1) {
+        Check(index, TRUE);
+    }
+
+    return TRUE;
+}
+
 /***************************************************************************//**
  @brief Empty the checklist and associated array
  @author Lucien Schreiber (c) CREALP 2008
@@ -427,6 +486,30 @@ void tmCheckListBox::ClearItems()
 {
     Clear();
     m_ids.Clear();
+    m_originalIds.Clear();
+    m_originalLabels.Clear();
+    m_originalChecks.Clear();
+}
+
+/***************************************************************************//**
+@brief Clear the filters and restore original arrays
+@author Pascal Horton (c) TERRANUM 2018
+@date 3 May 2018
+*******************************************************************************/
+void tmCheckListBox::ClearFilters()
+{
+    if (!m_IsFiltered)
+        return;
+
+    m_ids.Clear();
+    m_ids = m_originalIds;
+
+    Clear();
+    for (unsigned int i = 0; i < m_originalLabels.Count(); ++i) {
+        wxString label = m_originalLabels.Item(i);
+        Insert(label, i);
+        Check(i, m_originalChecks.Item(i) == 1);
+    }
 }
 
 
@@ -443,4 +526,83 @@ void tmCheckListBox::ClearCheckMarks()
 }
 
 
+/***************************************************************************//**
+@brief Filter the list and keep only the labels containing the string.
+@author Pascal Horton (c) TERRANUM 2018
+@date 3 May 2018
+*******************************************************************************/
+void tmCheckListBox::Filter(wxString filter)
+{
+    filter.Trim(true).Trim(false);
 
+    // If filtered before, save checks
+    if (m_IsFiltered) {
+        if (!StoreActualChecks())
+            return;
+    }
+
+    // If filter empty, clear
+    if (filter.IsEmpty()) {
+        if (m_IsFiltered) {
+            ClearFilters();
+            m_IsFiltered = false;
+        }
+        return;
+    }
+
+    // If newly filtered, save original arrays
+    if (!m_IsFiltered) {
+        ResetOriginalArrays();
+    }
+
+    m_IsFiltered = true;
+    Clear();
+    m_ids.Clear();
+
+    for (unsigned int i = 0; i < m_originalLabels.GetCount(); ++i) {
+        wxString label = m_originalLabels.Item(i);
+        if (label.Lower().Find(filter.Lower()) != wxNOT_FOUND) {
+            AddItem(-1, m_originalIds.Item(i), m_originalLabels.Item(i), m_originalChecks.Item(i) == 1, true);
+        }
+    }
+}
+
+
+void tmCheckListBox::ResetOriginalArrays()
+{
+    m_originalIds = m_ids;
+    m_originalLabels = GetStrings();
+    m_originalChecks.Clear();
+    for (unsigned int i = 0; i < GetCount(); ++i) {
+        if (IsChecked(i)) {
+            m_originalChecks.Add(1);
+        } else {
+            m_originalChecks.Add(0);
+        }
+
+    }
+}
+
+bool tmCheckListBox::StoreActualChecks()
+{
+    for (unsigned int i = 0; i < GetCount(); ++i) {
+        for (unsigned int j = 0; j < m_originalIds.GetCount(); ++j) {
+
+            long id = -1;
+            if (!GetItemId(i, id)) {
+                wxLogError(_("Failed at storing actual checks."));
+                return false;
+            }
+
+            if (m_originalIds.Item(j) == id) {
+                if (IsChecked(i)) {
+                    m_originalChecks.Item(j) = 1;
+                } else {
+                    m_originalChecks.Item(j) = 0;
+                }
+            }
+        }
+    }
+
+    return true;
+}

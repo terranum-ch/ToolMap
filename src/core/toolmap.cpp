@@ -1459,7 +1459,10 @@ void ToolMapFrame::OnEditObjectFrequency(wxCommandEvent &event)
     wxASSERT(m_PManager->GetDatabase());
     wxASSERT(event.GetInt() >= 0);
 
+    Freeze();
     m_PManager->EditObjectFrequency(event.GetInt());
+    m_AttribObjPanel->ResetFilterFields();
+    Thaw();
 
     event.Skip();
 }
