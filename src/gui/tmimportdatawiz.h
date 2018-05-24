@@ -27,8 +27,36 @@
 #include "wizard_import_data.h"
 
 
+class tmImport;
+
 class ImportDataWizard : public tmWizardImport
 {
+private:
+    tmImport *m_Import;
+
+    void ResetFilePicker(const wxWizardPageSimple *page);
+
+    void FillXYColumnsChoices() const;
+
+    void GetXYColumnsSelection() const;
+
+    void SetTargetsChoices() const;
+
+protected:
+    int GetPageIndex(wxWizardPage* page);
+
+    void OnWizardBeforePageChanged(wxWizardEvent &event);
+
+    void OnWizardFinished(wxWizardEvent &event);
+
+    void EnableNextButton(bool state = true);
+
+    void EnableBackButton(bool state = true);
+
+    inline void SetControlEnable(int id, bool state);
+
+    void OnFileChanged(wxFileDirPickerEvent &event);
+
 public:
     ImportDataWizard(wxWindow *window, wxWindowID id);
 
@@ -39,6 +67,12 @@ public:
         return m_pages.Item(0);
     }
 
+    tmImport *GetImport() const
+    {
+        return m_Import;
+    }
+
+    void GetTargetSelection() const;
 };
 
 

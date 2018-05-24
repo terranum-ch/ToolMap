@@ -41,21 +41,23 @@ class tmWizardImport : public wxWizard
 	
 	protected:
 		wxStaticText* m_staticText1;
-		wxRadioButton* m_radioBtn1;
-		wxRadioButton* m_radioBtn2;
+		wxRadioButton* m_radioBtnSHP;
+		wxRadioButton* m_radioBtnCSV;
+		wxBoxSizer* m_sizerFilePath;
 		wxStaticText* m_staticText3;
-		wxFilePickerCtrl* m_filePicker2;
-		wxStaticText* m_fileInfoProp1;
-		wxStaticText* m_fileInfoVal1;
-		wxStaticText* m_fileInfoProp2;
-		wxStaticText* m_fileInfoVal2;
+		wxFilePickerCtrl* m_filePicker;
+		wxStaticText* m_infoLabelCtrl1;
+		wxStaticText* m_infoValueCtrl1;
+		wxStaticText* m_infoLabelCtrl2;
+		wxStaticText* m_infoValueCtrl2;
 		wxStaticText* m_staticText9;
-		wxStaticText* m_staticText10;
-		wxChoice* m_choice1;
 		wxStaticText* m_staticText11;
 		wxChoice* m_choiceX;
 		wxStaticText* m_staticText12;
 		wxChoice* m_choiceY;
+		wxStaticText* m_staticText91;
+		wxStaticText* m_staticText101;
+		wxChoice* m_choiceTarget;
 		wxStaticText* m_staticText13;
 		wxChoice* m_choice4;
 		wxStaticText* m_staticText14;
@@ -68,6 +70,11 @@ class tmWizardImport : public wxWizard
 		wxFlexGridSizer* m_fgSizerEnums;
 		wxStaticText* m_textEnum;
 		wxChoice* m_choiceEnum;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnWizardFinished( wxWizardEvent& event ) { event.Skip(); }
+		virtual void OnFileChanged( wxFileDirPickerEvent& event ) { event.Skip(); }
+		
 	
 	public:
 		

@@ -1374,8 +1374,7 @@ void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
         return;
     }
 
-    /*
-    tmImport *myImport = myWizard.GetImport();
+    tmImport *myImport = wizard.GetImport();
     wxASSERT(myImport);
 
     wxProgressDialog myProgress(_("Importing data progress"),
@@ -1388,7 +1387,7 @@ void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
 
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt2.Clone());
-*/
+
 }
 
 

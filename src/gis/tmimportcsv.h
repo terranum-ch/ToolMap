@@ -40,6 +40,8 @@ private:
 
     bool _ResetReading();
 
+    void _GuessXYcolumns(wxArrayString &columns);
+
     bool _GetNextData(double &x, double &y);
 
     bool _ImportToPointLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);

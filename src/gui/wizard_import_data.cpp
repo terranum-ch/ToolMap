@@ -26,118 +26,102 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	
 	bSizer1->Add( m_staticText1, 0, wxALL, 5 );
 	
-	m_radioBtn1 = new wxRadioButton( m_wizPageFileType, wxID_ANY, wxT("ESRI's shapefile"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1->Add( m_radioBtn1, 0, wxALL, 5 );
+	m_radioBtnSHP = new wxRadioButton( m_wizPageFileType, wxID_ANY, wxT("ESRI's shapefile"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1->Add( m_radioBtnSHP, 0, wxALL, 5 );
 	
-	m_radioBtn2 = new wxRadioButton( m_wizPageFileType, wxID_ANY, wxT("CSV file"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1->Add( m_radioBtn2, 0, wxALL, 5 );
+	m_radioBtnCSV = new wxRadioButton( m_wizPageFileType, wxID_ANY, wxT("CSV file"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1->Add( m_radioBtnCSV, 0, wxALL, 5 );
 	
 	
 	m_wizPageFileType->SetSizer( bSizer1 );
 	m_wizPageFileType->Layout();
 	bSizer1->Fit( m_wizPageFileType );
-	wxWizardPageSimple* m_wizPageFile = new wxWizardPageSimple( this );
-	m_pages.Add( m_wizPageFile );
+	wxWizardPageSimple* m_wizPageFilePath = new wxWizardPageSimple( this );
+	m_pages.Add( m_wizPageFilePath );
 	
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxVERTICAL );
+	m_sizerFilePath = new wxBoxSizer( wxVERTICAL );
 	
-	m_staticText3 = new wxStaticText( m_wizPageFile, wxID_ANY, wxT("Select the file"), wxDefaultPosition, wxSize( -1,25 ), 0 );
+	m_staticText3 = new wxStaticText( m_wizPageFilePath, wxID_ANY, wxT("Select the file"), wxDefaultPosition, wxSize( -1,25 ), 0 );
 	m_staticText3->Wrap( -1 );
 	m_staticText3->SetFont( wxFont( 13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	
-	bSizer2->Add( m_staticText3, 0, wxALL, 5 );
+	m_sizerFilePath->Add( m_staticText3, 0, wxALL, 5 );
 	
-	m_filePicker2 = new wxFilePickerCtrl( m_wizPageFile, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
-	bSizer2->Add( m_filePicker2, 0, wxALL|wxEXPAND, 5 );
+	m_filePicker = new wxFilePickerCtrl( m_wizPageFilePath, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	m_sizerFilePath->Add( m_filePicker, 0, wxALL|wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbSizer1;
-	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_wizPageFile, wxID_ANY, wxT("File information") ), wxVERTICAL );
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_wizPageFilePath, wxID_ANY, wxT("File information") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer1;
-	fgSizer1 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
 	fgSizer1->SetFlexibleDirection( wxBOTH );
 	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_fileInfoProp1 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_fileInfoProp1->Wrap( -1 );
-	fgSizer1->Add( m_fileInfoProp1, 0, wxALL, 5 );
+	m_infoLabelCtrl1 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_infoLabelCtrl1->Wrap( -1 );
+	fgSizer1->Add( m_infoLabelCtrl1, 0, wxALL, 5 );
 	
-	m_fileInfoVal1 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_fileInfoVal1->Wrap( -1 );
-	fgSizer1->Add( m_fileInfoVal1, 0, wxALL, 5 );
+	m_infoValueCtrl1 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_infoValueCtrl1->Wrap( -1 );
+	fgSizer1->Add( m_infoValueCtrl1, 0, wxALL, 5 );
 	
-	m_fileInfoProp2 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_fileInfoProp2->Wrap( -1 );
-	fgSizer1->Add( m_fileInfoProp2, 0, wxALL, 5 );
+	m_infoLabelCtrl2 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_infoLabelCtrl2->Wrap( -1 );
+	fgSizer1->Add( m_infoLabelCtrl2, 0, wxALL, 5 );
 	
-	m_fileInfoVal2 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_fileInfoVal2->Wrap( -1 );
-	fgSizer1->Add( m_fileInfoVal2, 0, wxALL, 5 );
+	m_infoValueCtrl2 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_infoValueCtrl2->Wrap( -1 );
+	fgSizer1->Add( m_infoValueCtrl2, 0, wxALL, 5 );
 	
 	
 	sbSizer1->Add( fgSizer1, 0, 0, 5 );
 	
 	
-	bSizer2->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
+	m_sizerFilePath->Add( sbSizer1, 0, wxEXPAND|wxALL, 5 );
 	
 	
-	m_wizPageFile->SetSizer( bSizer2 );
-	m_wizPageFile->Layout();
-	bSizer2->Fit( m_wizPageFile );
-	wxWizardPageSimple* m_wizPage4 = new wxWizardPageSimple( this );
-	m_pages.Add( m_wizPage4 );
+	m_wizPageFilePath->SetSizer( m_sizerFilePath );
+	m_wizPageFilePath->Layout();
+	m_sizerFilePath->Fit( m_wizPageFilePath );
+	wxWizardPageSimple* m_wizPageXY = new wxWizardPageSimple( this );
+	m_pages.Add( m_wizPageXY );
 	
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
-	m_staticText9 = new wxStaticText( m_wizPage4, wxID_ANY, wxT("Select geometry"), wxDefaultPosition, wxSize( -1,25 ), 0 );
+	m_staticText9 = new wxStaticText( m_wizPageXY, wxID_ANY, wxT("Select X/Y columns"), wxDefaultPosition, wxSize( -1,25 ), 0 );
 	m_staticText9->Wrap( -1 );
 	m_staticText9->SetFont( wxFont( 13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	
 	bSizer3->Add( m_staticText9, 0, wxALL, 5 );
 	
-	wxBoxSizer* bSizer4;
-	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_staticText10 = new wxStaticText( m_wizPage4, wxID_ANY, wxT("Import into:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText10->Wrap( -1 );
-	bSizer4->Add( m_staticText10, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	wxString m_choice1Choices[] = { wxT("Points"), wxT("Labels") };
-	int m_choice1NChoices = sizeof( m_choice1Choices ) / sizeof( wxString );
-	m_choice1 = new wxChoice( m_wizPage4, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice1NChoices, m_choice1Choices, 0 );
-	m_choice1->SetSelection( 0 );
-	bSizer4->Add( m_choice1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	
-	bSizer3->Add( bSizer4, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
-	
 	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_wizPage4, wxID_ANY, wxT("Coordinates in file") ), wxVERTICAL );
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_wizPageXY, wxID_ANY, wxT("Coordinates in file") ), wxVERTICAL );
 	
 	wxFlexGridSizer* fgSizer2;
-	fgSizer2 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer2 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer2->AddGrowableCol( 1 );
 	fgSizer2->SetFlexibleDirection( wxHORIZONTAL );
 	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	m_staticText11 = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
-	fgSizer2->Add( m_staticText11, 0, wxALL, 5 );
+	fgSizer2->Add( m_staticText11, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxArrayString m_choiceXChoices;
 	m_choiceX = new wxChoice( sbSizer2->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceXChoices, 0 );
 	m_choiceX->SetSelection( 0 );
-	fgSizer2->Add( m_choiceX, 1, wxALL|wxEXPAND, 5 );
+	fgSizer2->Add( m_choiceX, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	m_staticText12 = new wxStaticText( sbSizer2->GetStaticBox(), wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText12->Wrap( -1 );
-	fgSizer2->Add( m_staticText12, 0, wxALL, 5 );
+	fgSizer2->Add( m_staticText12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	wxArrayString m_choiceYChoices;
 	m_choiceY = new wxChoice( sbSizer2->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceYChoices, 0 );
 	m_choiceY->SetSelection( 0 );
-	fgSizer2->Add( m_choiceY, 0, wxALL, 5 );
+	fgSizer2->Add( m_choiceY, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
 	sbSizer2->Add( fgSizer2, 1, wxEXPAND, 5 );
@@ -146,9 +130,40 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	bSizer3->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
 	
 	
-	m_wizPage4->SetSizer( bSizer3 );
-	m_wizPage4->Layout();
-	bSizer3->Fit( m_wizPage4 );
+	m_wizPageXY->SetSizer( bSizer3 );
+	m_wizPageXY->Layout();
+	bSizer3->Fit( m_wizPageXY );
+	wxWizardPageSimple* m_wizPageTarget = new wxWizardPageSimple( this );
+	m_pages.Add( m_wizPageTarget );
+	
+	wxBoxSizer* bSizer31;
+	bSizer31 = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticText91 = new wxStaticText( m_wizPageTarget, wxID_ANY, wxT("Select target"), wxDefaultPosition, wxSize( -1,25 ), 0 );
+	m_staticText91->Wrap( -1 );
+	m_staticText91->SetFont( wxFont( 13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	
+	bSizer31->Add( m_staticText91, 0, wxALL, 5 );
+	
+	wxBoxSizer* bSizer41;
+	bSizer41 = new wxBoxSizer( wxHORIZONTAL );
+	
+	m_staticText101 = new wxStaticText( m_wizPageTarget, wxID_ANY, wxT("Import into:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText101->Wrap( -1 );
+	bSizer41->Add( m_staticText101, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	wxArrayString m_choiceTargetChoices;
+	m_choiceTarget = new wxChoice( m_wizPageTarget, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceTargetChoices, 0 );
+	m_choiceTarget->SetSelection( 0 );
+	bSizer41->Add( m_choiceTarget, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	
+	bSizer31->Add( bSizer41, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	
+	
+	m_wizPageTarget->SetSizer( bSizer31 );
+	m_wizPageTarget->Layout();
+	bSizer31->Fit( m_wizPageTarget );
 	wxWizardPageSimple* m_wizPageLayer = new wxWizardPageSimple( this );
 	m_pages.Add( m_wizPageLayer );
 	
@@ -222,6 +237,7 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_scrolledWindow11 = new wxScrolledWindow( m_wizPageEnums, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_scrolledWindow11->SetScrollRate( 5, 5 );
 	m_fgSizerEnums = new wxFlexGridSizer( 0, 2, 0, 0 );
+	m_fgSizerEnums->AddGrowableCol( 1 );
 	m_fgSizerEnums->SetFlexibleDirection( wxBOTH );
 	m_fgSizerEnums->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -232,7 +248,7 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	wxArrayString m_choiceEnumChoices;
 	m_choiceEnum = new wxChoice( m_scrolledWindow11, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceEnumChoices, 0 );
 	m_choiceEnum->SetSelection( 0 );
-	m_fgSizerEnums->Add( m_choiceEnum, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_fgSizerEnums->Add( m_choiceEnum, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 	
 	
 	m_scrolledWindow11->SetSizer( m_fgSizerEnums );
@@ -252,9 +268,17 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 		m_pages.Item( i )->SetPrev( m_pages.Item( i - 1 ) );
 		m_pages.Item( i - 1 )->SetNext( m_pages.Item( i ) );
 	}
+	
+	// Connect Events
+	this->Connect( wxID_ANY, wxEVT_WIZARD_FINISHED, wxWizardEventHandler( tmWizardImport::OnWizardFinished ) );
+	m_filePicker->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( tmWizardImport::OnFileChanged ), NULL, this );
 }
 
 tmWizardImport::~tmWizardImport()
 {
+	// Disconnect Events
+	this->Disconnect( wxID_ANY, wxEVT_WIZARD_FINISHED, wxWizardEventHandler( tmWizardImport::OnWizardFinished ) );
+	m_filePicker->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( tmWizardImport::OnFileChanged ), NULL, this );
+	
 	m_pages.Clear();
 }

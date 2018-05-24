@@ -99,7 +99,7 @@ bool tmImportCSV::Open(const wxFileName &filename)
     wxDELETE(m_FileStream);
     wxDELETE(m_TextStream);
 
-    if (tmImport::Open(filename) == false) {
+    if (!tmImport::Open(filename)) {
         return false;
     }
 
@@ -117,7 +117,7 @@ bool tmImportCSV::Open(const wxFileName &filename)
     // counting features
     long iCount = 0;
     while (1) {
-        if (m_TextStream->ReadLine().IsEmpty() == true) {
+        if (m_TextStream->ReadLine().IsEmpty()) {
             break;
         }
         iCount++;
@@ -146,8 +146,26 @@ wxArrayString tmImportCSV::ListColumns()
     for (int i = 0; i < myTokenNumber; i++) {
         myResults.Add(myTokenizer.GetNextToken());
     }
+
+    _GuessXYcolumns(myResults);
+
     _ResetReading();
+
     return myResults;
+}
+
+
+void tmImportCSV::_GuessXYcolumns(wxArrayString &columns)
+{
+    for (int i = 0; i < columns.GetCount(); i++) {
+        wxString val = columns[i];
+        if (val.IsSameAs("x", false) || val.IsSameAs("lon", false)) {
+            m_Xcolumn = i;
+        }
+        if (val.IsSameAs("y", false) || val.IsSameAs("lat", false)) {
+            m_Ycolumn = i;
+        }
+    }
 }
 
 
@@ -305,10 +323,8 @@ bool tmImportCSV::Import(DataBaseTM *database, wxProgressDialog *progress)
 wxArrayInt tmImportCSV::GetTargetSupported()
 {
     wxArrayInt mySupportedTargets;
-    mySupportedTargets.Add((int) TOC_NAME_LINES);
     mySupportedTargets.Add((int) TOC_NAME_POINTS);
     mySupportedTargets.Add((int) TOC_NAME_LABELS);
-    mySupportedTargets.Add((int) TOC_NAME_FRAME);
     return mySupportedTargets;
 }
 
