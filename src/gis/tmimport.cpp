@@ -86,5 +86,7 @@ wxArrayString tmImport::GetTargetSupportedName()
 }
 
 
-
-
+void tmImport::SetLayerName(const wxString &value)
+{
+    m_LayerName = value;
+}

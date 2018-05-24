@@ -20,10 +20,12 @@
 #include "../gis/tmimport.h"
 #include "../gis/tmimportgis.h"
 #include "../gis/tmimportcsv.h"
+#include "../database/database_tm.h"
 
-ImportDataWizard::ImportDataWizard(wxWindow *window, wxWindowID id) :
+ImportDataWizard::ImportDataWizard(wxWindow *window, wxWindowID id, DataBaseTM *database) :
         tmWizardImport::tmWizardImport(window, id, _("Import data")),
-        m_Import(nullptr)
+        m_Import(nullptr),
+        m_pDatabase(database)
 {
     m_Import = new tmImportGIS();
     this->Connect( wxID_ANY, wxEVT_WIZARD_BEFORE_PAGE_CHANGED, wxWizardEventHandler( ImportDataWizard::OnWizardBeforePageChanged ) );
@@ -75,10 +77,10 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
                 page->SetNext(m_pages[3]);
             } else {
                 page->SetNext(m_pages[2]);
-                FillXYColumnsChoices();
+                SetXYColumnsOptions();
             }
 
-            SetTargetsChoices();
+            SetTargetsOptions();
 
             break;
         }
@@ -86,9 +88,8 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 
             wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
 
-            // If going back, enable the Next button again
+            // If going back
             if (!event.GetDirection()) {
-                EnableNextButton();
                 return;
             }
 
@@ -98,9 +99,8 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
         }
         case (3):{ // Leaving choice of target
 
-            // Shapefiles do not need the definition of X/Y
+            // If going back, shapefiles do not need the definition of X/Y
             if (!event.GetDirection()) {
-                EnableNextButton();
                 if (m_Import->GetFileType() == tmIMPORT_TYPE_SHP) {
                     page->SetPrev(m_pages[1]);
                 } else {
@@ -110,17 +110,27 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
             }
 
             GetTargetSelection();
-            EnableNextButton(false);
+
+            // If frame, terminate
+            if(m_Import->GetTarget() == TOC_NAME_FRAME) {
+                page->SetNext(nullptr);
+                return;
+            }
+
+            SetLayerOptions();
 
             break;
         }
-        case (4):{
+        case (4):{ // Leaving choice of layer
 
-            // If going back, enable the Next button again
+            // If going back
             if (!event.GetDirection()) {
-                EnableNextButton();
                 return;
             }
+
+            GetLayerSelection();
+
+
 
             EnableNextButton(false);
 
@@ -128,9 +138,8 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
         }
         case (5):{
 
-            // If going back, enable the Next button again
+            // If going back
             if (!event.GetDirection()) {
-                EnableNextButton();
                 return;
             }
 
@@ -140,9 +149,8 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
         }
         case (6):{
 
-            // If going back, enable the Next button again
+            // If going back
             if (!event.GetDirection()) {
-                EnableNextButton();
                 return;
             }
 
@@ -154,6 +162,18 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 
 }
 
+void ImportDataWizard::GetLayerSelection() const
+{
+    m_Import->SetLayerName(m_choiceLayer->GetStringSelection());
+}
+
+void ImportDataWizard::SetLayerOptions() const
+{
+    m_choiceLayer->Clear();
+    m_choiceLayer->Append(m_pDatabase->GetLayerNameByType(m_Import->GetTarget()));
+    m_choiceLayer->SetSelection(0);
+}
+
 void ImportDataWizard::GetTargetSelection() const
 {
     wxArrayInt supportedTargets = m_Import->GetTargetSupported();
@@ -162,7 +182,7 @@ void ImportDataWizard::GetTargetSelection() const
     m_Import->SetTarget((TOC_GENERIC_NAME) myTarget);
 }
 
-void ImportDataWizard::SetTargetsChoices() const
+void ImportDataWizard::SetTargetsOptions() const
 {
     wxArrayString supportedTargetsName = m_Import->GetTargetSupportedName();
     m_choiceTarget->Clear();
@@ -182,7 +202,7 @@ void ImportDataWizard::GetXYColumnsSelection() const
     }
 }
 
-void ImportDataWizard::FillXYColumnsChoices() const
+void ImportDataWizard::SetXYColumnsOptions() const
 {
     wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
 

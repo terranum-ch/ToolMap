@@ -50,6 +50,7 @@ protected:
     long m_FeatureCount;
     int m_FieldsCount;
     TOC_GENERIC_NAME m_ImportTarget;
+    wxString m_LayerName;
 
 public:
     tmImport();
@@ -81,6 +82,8 @@ public:
     { return wxArrayInt(); }
 
     virtual wxArrayString GetTargetSupportedName();
+
+    void SetLayerName(const wxString &value);
 };
 
 

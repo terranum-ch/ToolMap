@@ -176,10 +176,10 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	
 	bSizer5->Add( m_staticText13, 0, wxALL, 5 );
 	
-	wxArrayString m_choice4Choices;
-	m_choice4 = new wxChoice( m_wizPageLayer, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice4Choices, 0 );
-	m_choice4->SetSelection( 0 );
-	bSizer5->Add( m_choice4, 0, wxALL|wxEXPAND, 5 );
+	wxArrayString m_choiceLayerChoices;
+	m_choiceLayer = new wxChoice( m_wizPageLayer, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceLayerChoices, 0 );
+	m_choiceLayer->SetSelection( 0 );
+	bSizer5->Add( m_choiceLayer, 0, wxALL|wxEXPAND, 5 );
 	
 	
 	m_wizPageLayer->SetSizer( bSizer5 );
