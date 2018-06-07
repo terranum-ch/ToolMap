@@ -134,7 +134,7 @@ bool tmImportCSV::Open(const wxFileName &filename)
 }
 
 
-wxArrayString tmImportCSV::ListColumns()
+void tmImportCSV::ListColumns(wxArrayString &columns)
 {
     _ResetReading();
     wxASSERT(m_TextStream);
@@ -142,30 +142,36 @@ wxArrayString tmImportCSV::ListColumns()
 
     wxStringTokenizer myTokenizer(myLine1, _T(";"));
     int myTokenNumber = myTokenizer.CountTokens();
-    wxArrayString myResults;
     for (int i = 0; i < myTokenNumber; i++) {
-        myResults.Add(myTokenizer.GetNextToken());
+        columns.Add(myTokenizer.GetNextToken());
     }
 
-    _GuessXYcolumns(myResults);
-
     _ResetReading();
-
-    return myResults;
 }
 
 
-void tmImportCSV::_GuessXYcolumns(wxArrayString &columns)
+void tmImportCSV::GuessXYcolumns(wxArrayString &columns)
 {
-    for (int i = 0; i < columns.GetCount(); i++) {
-        wxString val = columns[i];
-        if (val.IsSameAs("x", false) || val.IsSameAs("lon", false)) {
-            m_Xcolumn = i;
-        }
-        if (val.IsSameAs("y", false) || val.IsSameAs("lat", false)) {
-            m_Ycolumn = i;
+    if (m_Xcolumn == wxNOT_FOUND && m_Ycolumn == wxNOT_FOUND) {
+        for (int i = 0; i < columns.GetCount(); i++) {
+            wxString val = columns.Item(i);
+            if (val.IsSameAs("x", false) || val.IsSameAs("lon", false)) {
+                m_Xcolumn = i;
+            }
+            if (val.IsSameAs("y", false) || val.IsSameAs("lat", false)) {
+                m_Ycolumn = i;
+            }
         }
     }
+
+}
+
+
+bool tmImportCSV::GetFieldNames(wxArrayString &Fields)
+{
+    ListColumns(Fields);
+
+    return true;
 }
 
 

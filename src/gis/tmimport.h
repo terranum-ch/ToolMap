@@ -74,6 +74,9 @@ public:
 
     inline const int GetFieldCount() const;
 
+    virtual bool GetFieldNames(wxArrayString &Fields)
+    { return false; }
+
     inline const TOC_GENERIC_NAME GetTarget() const;
 
     void SetTarget(TOC_GENERIC_NAME value);
@@ -84,6 +87,8 @@ public:
     virtual wxArrayString GetTargetSupportedName();
 
     void SetLayerName(const wxString &value);
+
+    wxString GetLayerName();
 };
 
 
@@ -115,7 +120,6 @@ inline const int tmImport::GetFieldCount() const
 {
     return m_FieldsCount;
 }
-
 
 inline const TOC_GENERIC_NAME tmImport::GetTarget() const
 {

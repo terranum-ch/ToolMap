@@ -43,6 +43,8 @@ public:
     virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
 
     virtual wxArrayInt GetTargetSupported();
+
+    virtual bool GetFieldNames(wxArrayString &Fields);
 };
 
 #endif

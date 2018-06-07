@@ -90,3 +90,8 @@ void tmImport::SetLayerName(const wxString &value)
 {
     m_LayerName = value;
 }
+
+wxString tmImport::GetLayerName()
+{
+    return m_LayerName;
+}

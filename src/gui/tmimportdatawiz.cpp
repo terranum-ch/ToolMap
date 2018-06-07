@@ -20,12 +20,12 @@
 #include "../gis/tmimport.h"
 #include "../gis/tmimportgis.h"
 #include "../gis/tmimportcsv.h"
-#include "../database/database_tm.h"
+#include "../core/projectmanager.h"
 
-ImportDataWizard::ImportDataWizard(wxWindow *window, wxWindowID id, DataBaseTM *database) :
+ImportDataWizard::ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManager *prjManager) :
         tmWizardImport::tmWizardImport(window, id, _("Import data")),
         m_Import(nullptr),
-        m_pDatabase(database)
+        m_PrjManager(prjManager)
 {
     m_Import = new tmImportGIS();
     this->Connect( wxID_ANY, wxEVT_WIZARD_BEFORE_PAGE_CHANGED, wxWizardEventHandler( ImportDataWizard::OnWizardBeforePageChanged ) );
@@ -130,9 +130,7 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 
             GetLayerSelection();
 
-
-
-            EnableNextButton(false);
+            SetAttributeOptions();
 
             break;
         }
@@ -162,15 +160,66 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 
 }
 
+void ImportDataWizard::SetAttributeOptions() const
+{
+
+    if (m_fgSizerAttributes->GetRows() == 0) {
+        // List attributes from file
+        wxArrayString fieldListFile;
+        m_Import->GetFieldNames(fieldListFile);
+
+        // Remove some fields
+        for (unsigned int k = 0; k < fieldListFile.GetCount(); ++k) {
+            wxString item = fieldListFile.Item(k);
+            if(item.IsSameAs("TM_OID", false) || item.IsSameAs("OBJ_CD", false) || item.IsSameAs("OBJ_DESC", false) ||
+               item.IsSameAs("x", false) || item.IsSameAs("y", false) || item.IsSameAs("id", false)) {
+                fieldListFile.RemoveAt(k);
+                k--;
+            }
+        }
+
+        m_textNoAttribute->Show(fieldListFile.IsEmpty());
+
+        // List attributes from project
+        ProjectDefMemoryLayers *layer = nullptr;
+        PrjDefMemManage *prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+        layer = prjDefMem->FindLayer(m_Import->GetLayerName());
+        prjDefMem->SetActiveLayer(layer);
+        wxArrayString fieldListPrj;
+        for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
+            ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+            fieldListPrj.Add(fieldObj->m_Fieldname);
+        }
+        fieldListPrj.Insert("-", 0);
+
+        // Fill lists
+        for (int i = 0; i < fieldListFile.GetCount(); ++i) {
+            wxStaticText* textAttribute = new wxStaticText( m_scrolledWindow1, wxID_ANY, fieldListFile.Item(i), wxDefaultPosition, wxDefaultSize, 0 );
+            textAttribute->Wrap( -1 );
+            m_fgSizerAttributes->Add( textAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+            wxChoice* choiceAttribute = new wxChoice( m_scrolledWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, fieldListPrj, 0 );
+            choiceAttribute->SetSelection( 0 );
+            m_fgSizerAttributes->Add( choiceAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+        }
+    }
+
+}
+
 void ImportDataWizard::GetLayerSelection() const
 {
+    // If changed, clear attributes
+    if (! m_choiceLayer->GetStringSelection().IsSameAs(m_Import->GetLayerName())) {
+        m_fgSizerAttributes->Clear(true);
+    }
+
     m_Import->SetLayerName(m_choiceLayer->GetStringSelection());
 }
 
 void ImportDataWizard::SetLayerOptions() const
 {
     m_choiceLayer->Clear();
-    m_choiceLayer->Append(m_pDatabase->GetLayerNameByType(m_Import->GetTarget()));
+    m_choiceLayer->Append(m_PrjManager->GetDatabase()->GetLayerNameByType(m_Import->GetTarget()));
     m_choiceLayer->SetSelection(0);
 }
 
@@ -208,7 +257,9 @@ void ImportDataWizard::SetXYColumnsOptions() const
 
     // Fill X/Y lists
     tmImportCSV *importCSV = (tmImportCSV *) m_Import;
-    wxArrayString cols = importCSV->ListColumns();
+    wxArrayString cols;
+    importCSV->ListColumns(cols);
+    importCSV->GuessXYcolumns(cols);
     for (unsigned int i = 0; i < cols.GetCount(); i++) {
         wxString colText = wxString::Format(_("Column %d: %s"), i + 1, cols.Item(i).c_str());
         cols.Item(i) = colText;

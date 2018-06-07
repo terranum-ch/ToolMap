@@ -28,19 +28,21 @@
 
 
 class tmImport;
-class DataBaseTM;
+class ProjectManager;
 
 class ImportDataWizard : public tmWizardImport
 {
 private:
     tmImport *m_Import;
-    DataBaseTM *m_pDatabase;
+    ProjectManager *m_PrjManager;
 
     void ResetFilePicker(const wxWizardPageSimple *page);
 
     void SetXYColumnsOptions() const;
 
     void GetXYColumnsSelection() const;
+
+    void SetAttributeOptions() const;
 
     void SetTargetsOptions() const;
 
@@ -66,7 +68,7 @@ protected:
     void OnFileChanged(wxFileDirPickerEvent &event);
 
 public:
-    ImportDataWizard(wxWindow *window, wxWindowID id, DataBaseTM *database);
+    ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManager *prjManager);
 
     virtual ~ImportDataWizard();
 

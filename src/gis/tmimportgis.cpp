@@ -146,5 +146,8 @@ wxArrayInt tmImportGIS::GetTargetSupported()
 }
 
 
-
+bool tmImportGIS::GetFieldNames(wxArrayString &Fields)
+{
+    return m_Vector->GetFieldsName(Fields);
+}
 

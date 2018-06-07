@@ -1369,7 +1369,7 @@ void ToolMapFrame::OnExportSelectedGISData(wxCommandEvent &event)
 
 void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
 {
-    ImportDataWizard wizard(this, wxID_ANY, m_PManager->GetDatabase());
+    ImportDataWizard wizard(this, wxID_ANY, m_PManager);
     if (!wizard.RunWizard(wizard.GetFirstPage())) {
         return;
     }

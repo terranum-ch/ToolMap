@@ -170,7 +170,7 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
-	m_staticText13 = new wxStaticText( m_wizPageLayer, wxID_ANY, wxT("Select thematic layer"), wxDefaultPosition, wxSize( -1,25 ), 0 );
+	m_staticText13 = new wxStaticText( m_wizPageLayer, wxID_ANY, wxT("Select layer"), wxDefaultPosition, wxSize( -1,25 ), 0 );
 	m_staticText13->Wrap( -1 );
 	m_staticText13->SetFont( wxFont( 13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	
@@ -200,23 +200,19 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_scrolledWindow1 = new wxScrolledWindow( m_wizPageAttributes, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_scrolledWindow1->SetScrollRate( 5, 5 );
 	m_fgSizerAttributes = new wxFlexGridSizer( 0, 2, 0, 0 );
+	m_fgSizerAttributes->AddGrowableCol( 1 );
 	m_fgSizerAttributes->SetFlexibleDirection( wxBOTH );
 	m_fgSizerAttributes->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_textAttribute = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_textAttribute->Wrap( -1 );
-	m_fgSizerAttributes->Add( m_textAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	wxArrayString m_choiceAttributeChoices;
-	m_choiceAttribute = new wxChoice( m_scrolledWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceAttributeChoices, 0 );
-	m_choiceAttribute->SetSelection( 0 );
-	m_fgSizerAttributes->Add( m_choiceAttribute, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
 	m_scrolledWindow1->SetSizer( m_fgSizerAttributes );
 	m_scrolledWindow1->Layout();
 	m_fgSizerAttributes->Fit( m_scrolledWindow1 );
 	bSizer6->Add( m_scrolledWindow1, 1, wxEXPAND, 5 );
+	
+	m_textNoAttribute = new wxStaticText( m_wizPageAttributes, wxID_ANY, wxT("No attribute found in the file."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_textNoAttribute->Wrap( -1 );
+	bSizer6->Add( m_textNoAttribute, 0, wxALL, 5 );
 	
 	
 	m_wizPageAttributes->SetSizer( bSizer6 );
@@ -240,15 +236,6 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_fgSizerEnums->AddGrowableCol( 1 );
 	m_fgSizerEnums->SetFlexibleDirection( wxBOTH );
 	m_fgSizerEnums->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
-	m_textEnum = new wxStaticText( m_scrolledWindow11, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_textEnum->Wrap( -1 );
-	m_fgSizerEnums->Add( m_textEnum, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	wxArrayString m_choiceEnumChoices;
-	m_choiceEnum = new wxChoice( m_scrolledWindow11, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceEnumChoices, 0 );
-	m_choiceEnum->SetSelection( 0 );
-	m_fgSizerEnums->Add( m_choiceEnum, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 	
 	
 	m_scrolledWindow11->SetSizer( m_fgSizerEnums );
