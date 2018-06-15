@@ -28,6 +28,7 @@
 #include <wx/progdlg.h>
 
 #include "tmlayerpropertiesdef.h"
+#include "../core/projectdefmemory.h"
 
 
 class DataBaseTM;
@@ -51,6 +52,9 @@ protected:
     int m_FieldsCount;
     TOC_GENERIC_NAME m_ImportTarget;
     wxString m_LayerName;
+    wxArrayString m_FileAttributes;
+    wxArrayString m_DbAttributes;
+    wxArrayInt m_AttributeTypes;
 
 public:
     tmImport();
@@ -62,6 +66,9 @@ public:
     virtual bool IsOk();
 
     virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL)
+    { return false; }
+
+    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values)
     { return false; }
 
     inline const wxFileName GetFileName() const;
@@ -89,6 +96,21 @@ public:
     void SetLayerName(const wxString &value);
 
     wxString GetLayerName();
+
+    void AddAttribute(const wxString &fileAttribute, const wxString &dbAttribute, PRJDEF_FIELD_TYPE type);
+
+    void ClearAttributes();
+
+    int GetAttributesCount() const;
+
+    bool AttributeIsEnum(int index) const;
+
+    wxString GetAttributeNameInDB(int index) const;
+
+    wxString GetAttributeNameInFile(int index) const;
+
+    bool HasEnumAttributes() const;
+
 };
 
 

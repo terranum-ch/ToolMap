@@ -56,6 +56,8 @@ public:
 
     virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
 
+    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
+
     virtual bool IsOk();
 
     void ListColumns(wxArrayString &columns);

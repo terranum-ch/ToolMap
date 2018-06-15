@@ -42,6 +42,8 @@ public:
 
     virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
 
+    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
+
     virtual wxArrayInt GetTargetSupported();
 
     virtual bool GetFieldNames(wxArrayString &Fields);

@@ -210,10 +210,6 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_fgSizerAttributes->Fit( m_scrolledWindow1 );
 	bSizer6->Add( m_scrolledWindow1, 1, wxEXPAND, 5 );
 	
-	m_textNoAttribute = new wxStaticText( m_wizPageAttributes, wxID_ANY, wxT("No attribute found in the file."), wxDefaultPosition, wxDefaultSize, 0 );
-	m_textNoAttribute->Wrap( -1 );
-	bSizer6->Add( m_textNoAttribute, 0, wxALL, 5 );
-	
 	
 	m_wizPageAttributes->SetSizer( bSizer6 );
 	m_wizPageAttributes->Layout();
@@ -230,18 +226,18 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	
 	bSizer61->Add( m_staticText141, 0, wxALL, 5 );
 	
-	m_scrolledWindow11 = new wxScrolledWindow( m_wizPageEnums, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	m_scrolledWindow11->SetScrollRate( 5, 5 );
+	m_scrolledWindow2 = new wxScrolledWindow( m_wizPageEnums, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+	m_scrolledWindow2->SetScrollRate( 5, 5 );
 	m_fgSizerEnums = new wxFlexGridSizer( 0, 2, 0, 0 );
 	m_fgSizerEnums->AddGrowableCol( 1 );
 	m_fgSizerEnums->SetFlexibleDirection( wxBOTH );
 	m_fgSizerEnums->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	
-	m_scrolledWindow11->SetSizer( m_fgSizerEnums );
-	m_scrolledWindow11->Layout();
-	m_fgSizerEnums->Fit( m_scrolledWindow11 );
-	bSizer61->Add( m_scrolledWindow11, 1, wxEXPAND, 5 );
+	m_scrolledWindow2->SetSizer( m_fgSizerEnums );
+	m_scrolledWindow2->Layout();
+	m_fgSizerEnums->Fit( m_scrolledWindow2 );
+	bSizer61->Add( m_scrolledWindow2, 1, wxEXPAND, 5 );
 	
 	
 	m_wizPageEnums->SetSizer( bSizer61 );

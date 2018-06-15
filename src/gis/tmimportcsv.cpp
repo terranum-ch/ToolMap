@@ -140,11 +140,12 @@ void tmImportCSV::ListColumns(wxArrayString &columns)
     wxASSERT(m_TextStream);
     wxString myLine1 = m_TextStream->ReadLine();
 
-    wxStringTokenizer myTokenizer(myLine1, _T(";"));
-    int myTokenNumber = myTokenizer.CountTokens();
-    for (int i = 0; i < myTokenNumber; i++) {
-        columns.Add(myTokenizer.GetNextToken());
-    }
+    wxStringTokenizer tokenizer(myLine1, _T(";"));
+	while (tokenizer.HasMoreTokens())
+	{
+		wxString token = tokenizer.GetNextToken();
+        columns.Add(token);
+	}
 
     _ResetReading();
 }
@@ -207,10 +208,10 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, wxProgressDialog *pr
     long iCount = 0;
     wxStopWatch sv;
     tmPercent tpercent(GetFeatureCount());
-    while (1) {
+    while (true) {
         double x = 0;
         double y = 0;
-        if (_GetNextData(x, y) == false) {
+        if (!_GetNextData(x, y)) {
             break;
         }
         OGRPoint *myOGRPt = (OGRPoint *) OGRGeometryFactory::createGeometry(wkbPoint);
@@ -229,7 +230,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, wxProgressDialog *pr
         bool bStop = false;
         tpercent.SetValue(iCount);
         if (tpercent.IsNewStep() && progress != NULL) {
-            if (progress->Update(tpercent.GetPercent(), wxEmptyString) == false) {
+            if (!progress->Update(tpercent.GetPercent(), wxEmptyString)) {
                 bStop = true;
             }
         }
@@ -257,10 +258,10 @@ bool tmImportCSV::_ImportToLineLayer(DataBaseTM *database, wxProgressDialog *pro
     tmPercent tpercent(GetFeatureCount());
     OGRLineString *myOGRLine = (OGRLineString *) OGRGeometryFactory::createGeometry(wkbLineString);
 
-    while (1) {
+    while (true) {
         double x = 0;
         double y = 0;
-        if (_GetNextData(x, y) == false) {
+        if (!_GetNextData(x, y)) {
             break;
         }
         myOGRLine->addPoint(x, y);
@@ -323,6 +324,68 @@ bool tmImportCSV::Import(DataBaseTM *database, wxProgressDialog *progress)
     }
 
     return bReturn;
+}
+
+
+bool tmImportCSV::GetExistingAttributeValues(const wxString &attName, wxArrayString &values)
+{
+    _ResetReading();
+    wxASSERT(m_TextStream);
+    wxString firstLine = m_TextStream->ReadLine();
+
+    wxStringTokenizer myTokenizer(firstLine, _T(";"));
+    int iField = -1;
+    int counter = 0;
+    while (myTokenizer.HasMoreTokens()) {
+        wxString token = myTokenizer.GetNextToken();
+        if (attName.IsSameAs(token)) {
+            iField = counter;
+            break;
+        }
+		counter++;
+    }
+
+    if (iField < 0 ) {
+        wxLogError(_("Could not find the attribute '%s' in the file"), attName);
+        return false;
+    }
+
+    while (true) {
+        wxString newLine = m_TextStream->ReadLine();
+        if (newLine.IsEmpty()) {
+            break;
+        }
+
+        wxArrayString myTokenArray;
+        wxStringTokenizer myTokenizer(newLine, _T(";"));
+        while (myTokenizer.HasMoreTokens()) {
+            myTokenArray.Add(myTokenizer.GetNextToken());
+        }
+
+        if (iField >= (signed) myTokenArray.GetCount()) {
+            continue;
+        }
+
+        wxString fieldVal = myTokenArray.Item(iField);
+
+        if (!fieldVal.IsEmpty()) {
+            bool isNew = true;
+            for (int i = 0; i < values.GetCount(); ++i) {
+                if (fieldVal.IsSameAs(values.Item(i))) {
+                    isNew = false;
+                    break;
+                }
+            }
+
+            if (isNew) {
+                values.Add(fieldVal);
+            }
+        }
+    }
+
+    _ResetReading();
+
+    return true;
 }
 
 

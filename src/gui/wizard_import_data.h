@@ -63,9 +63,8 @@ class tmWizardImport : public wxWizard
 		wxStaticText* m_staticText14;
 		wxScrolledWindow* m_scrolledWindow1;
 		wxFlexGridSizer* m_fgSizerAttributes;
-		wxStaticText* m_textNoAttribute;
 		wxStaticText* m_staticText141;
-		wxScrolledWindow* m_scrolledWindow11;
+		wxScrolledWindow* m_scrolledWindow2;
 		wxFlexGridSizer* m_fgSizerEnums;
 		
 		// Virtual event handlers, overide them in your derived class

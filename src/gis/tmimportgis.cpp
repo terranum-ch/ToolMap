@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 
+#include <ogr_feature.h>
 #include "tmimportgis.h"
 #include "../database/database_tm.h"
 #include "../core/tmpercent.h"
@@ -73,7 +74,7 @@ bool tmImportGIS::Import(DataBaseTM *database, wxProgressDialog *progress)
     wxStopWatch sv;
     tmPercent tpercent(GetFeatureCount());
 
-    while (1) {
+    while (true) {
         OGRFeature *myFeature = m_Vector->GetNextFeature();
         if (myFeature == NULL) {
             break;
@@ -125,6 +126,35 @@ bool tmImportGIS::Import(DataBaseTM *database, wxProgressDialog *progress)
     return true;
 }
 
+bool tmImportGIS::GetExistingAttributeValues(const wxString &attName, wxArrayString &values)
+{
+    while (true) {
+        OGRFeature *myFeature = m_Vector->GetNextFeature();
+        if (myFeature == NULL) {
+            break;
+        }
+
+        wxString fieldVal = wxString::FromAscii(myFeature->GetFieldAsString(attName.c_str()));
+
+        if (!fieldVal.IsEmpty()) {
+            bool isNew = true;
+            for (int i = 0; i < values.GetCount(); ++i) {
+                if (fieldVal.IsSameAs(values.Item(i))) {
+                    isNew = false;
+                    break;
+                }
+            }
+
+            if (isNew) {
+                values.Add(fieldVal);
+            }
+        }
+
+        OGRFeature::DestroyFeature(myFeature);
+    }
+
+    return true;
+}
 
 wxArrayInt tmImportGIS::GetTargetSupported()
 {

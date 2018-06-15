@@ -42,6 +42,10 @@ private:
 
     void GetXYColumnsSelection() const;
 
+    void SetEnumerationOptions() const;
+
+    void GetAttributeSelection() const;
+
     void SetAttributeOptions() const;
 
     void SetTargetsOptions() const;

@@ -129,19 +129,26 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
             }
 
             GetLayerSelection();
-
             SetAttributeOptions();
 
             break;
         }
-        case (5):{
+        case (5):{ // Leaving attributes matching
 
             // If going back
             if (!event.GetDirection()) {
                 return;
             }
 
-            EnableNextButton(false);
+            GetAttributeSelection();
+
+            // If no enumeration, terminate
+            if(!m_Import->HasEnumAttributes()) {
+                page->SetNext(nullptr);
+                return;
+            }
+
+            SetEnumerationOptions();
 
             break;
         }
@@ -157,6 +164,132 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
         default:
             wxLogError(_("Page index not recognized (%d)."), GetPageIndex(page));
     }
+
+}
+
+void ImportDataWizard::SetEnumerationOptions() const
+{
+    // Get list of attributes from project
+    ProjectDefMemoryLayers *layer = nullptr;
+    PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+    layer = prjDefMem->GetActiveLayer();
+    wxASSERT(layer);
+
+	bool skipPage = true;
+
+    for (int i = 0; i < m_Import->GetAttributesCount(); ++i) {
+        if(!m_Import->AttributeIsEnum(i)) {
+            continue;
+        }
+
+        // Extract unique values from the file
+        wxString attNameInFile = m_Import->GetAttributeNameInFile(i);
+        wxArrayString attValuesInFile;
+        m_Import->GetExistingAttributeValues(attNameInFile, attValuesInFile);
+
+        if (attValuesInFile.IsEmpty()) {
+            continue;
+        }
+
+		skipPage = false;
+
+        // Extract enumerations from the project
+        wxString attNameInDB = m_Import->GetAttributeNameInDB(i);
+        wxArrayString attValuesInDB;
+        for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
+            ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+            wxASSERT(fieldObj);
+            if (fieldObj->m_Fieldname.IsSameAs(attNameInDB)) {
+                for (unsigned int k = 0; k < fieldObj->m_pCodedValueArray.GetCount(); k++) {
+                    ProjectDefMemoryFieldsCodedVal *myVal = fieldObj->m_pCodedValueArray[k];
+                    wxASSERT(myVal);
+                    attValuesInDB.Add(myVal->m_ValueName);
+                }
+
+                break;
+            }
+        }
+
+        // Add a row for the attribute names
+        wxStaticText *textAttNameDB = new wxStaticText(m_scrolledWindow2, wxID_ANY,
+                                                       m_Import->GetAttributeNameInDB(i), wxDefaultPosition,
+                                                       wxDefaultSize, 0);
+        textAttNameDB->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
+                                       false, wxEmptyString));
+        textAttNameDB->Wrap(-1);
+        m_fgSizerEnums->Add(textAttNameDB, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+        wxStaticText *textAttNameFile = new wxStaticText(m_scrolledWindow2, wxID_ANY,
+                                                         m_Import->GetAttributeNameInFile(i), wxDefaultPosition,
+                                                         wxDefaultSize, 0);
+        textAttNameFile->SetFont(wxFont( 11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
+                                          false, wxEmptyString ) );
+        textAttNameFile->Wrap(-1);
+        m_fgSizerEnums->Add(textAttNameFile, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+        // Fill lists
+        for (int j = 0; j < attValuesInFile.GetCount(); ++j) {
+            wxStaticText *textAttValue = new wxStaticText(m_scrolledWindow2, wxID_ANY, attValuesInFile.Item(j),
+                                                          wxDefaultPosition, wxDefaultSize, 0);
+            textAttValue->Wrap(-1);
+            m_fgSizerEnums->Add(textAttValue, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+            wxChoice *choiceAttValue = new wxChoice(m_scrolledWindow2, wxID_ANY, wxDefaultPosition,
+                                                    wxDefaultSize, attValuesInDB, 0);
+            choiceAttValue->SetSelection(0);
+            m_fgSizerEnums->Add(choiceAttValue, 0, wxALL | wxALIGN_CENTER_VERTICAL | wxEXPAND, 5);
+
+            // Find potential match
+            for (int k = 1; k < attValuesInDB.GetCount(); ++k) {
+                if (attValuesInDB.Item(k).IsSameAs(attValuesInFile.Item(j), false)) {
+                    choiceAttValue->SetSelection(k);
+                }
+            }
+        }
+    }
+
+    // If no enum values to map, terminate
+    if (skipPage) {
+        auto *page = dynamic_cast<wxWizardPageSimple *> (GetCurrentPage());
+        page->SetNext(nullptr);
+        return;
+    }
+}
+
+void ImportDataWizard::GetAttributeSelection() const
+{
+    m_Import->ClearAttributes();
+
+    // Get list of attributes from project
+    ProjectDefMemoryLayers *layer = nullptr;
+    PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+	layer = prjDefMem->GetActiveLayer();
+	wxASSERT(layer);
+
+    for (int i = 0; i < m_fgSizerAttributes->GetItemCount(); i += 2) {
+        wxWindow* itemFile = m_fgSizerAttributes->GetItem(i)->GetWindow();
+        auto textFile = dynamic_cast<wxStaticText *>(itemFile);
+        wxString fileAttribute = textFile->GetLabel();
+
+        wxWindow* itemDB = m_fgSizerAttributes->GetItem(i + 1)->GetWindow();
+        auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
+        wxString dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
+
+        if (!dbAttribute.IsSameAs("-", false) && !dbAttribute.IsEmpty()) {
+
+            // Get type
+            PRJDEF_FIELD_TYPE type;
+            for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
+                ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+                if (fieldObj->m_Fieldname.IsSameAs(dbAttribute)) {
+                    type = fieldObj->m_FieldType;
+                    break;
+                }
+            }
+            m_Import->AddAttribute(fileAttribute, dbAttribute, type);
+        }
+    }
+
+    m_fgSizerEnums->Clear(true);
 
 }
 
@@ -178,13 +311,17 @@ void ImportDataWizard::SetAttributeOptions() const
             }
         }
 
-        m_textNoAttribute->Show(fieldListFile.IsEmpty());
+        // If no attribute, terminate
+        if (fieldListFile.IsEmpty()) {
+            auto *page = dynamic_cast<wxWizardPageSimple *> (GetCurrentPage());
+            page->SetNext(nullptr);
+            return;
+        }
 
         // List attributes from project
         ProjectDefMemoryLayers *layer = nullptr;
-        PrjDefMemManage *prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+        PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
         layer = prjDefMem->FindLayer(m_Import->GetLayerName());
-        prjDefMem->SetActiveLayer(layer);
         wxArrayString fieldListPrj;
         for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
             ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
@@ -201,6 +338,13 @@ void ImportDataWizard::SetAttributeOptions() const
             wxChoice* choiceAttribute = new wxChoice( m_scrolledWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, fieldListPrj, 0 );
             choiceAttribute->SetSelection( 0 );
             m_fgSizerAttributes->Add( choiceAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+            // Find potential match
+            for (int j = 1; j < fieldListPrj.GetCount(); ++j) {
+                if (fieldListPrj.Item(j).IsSameAs(fieldListFile.Item(i), false)) {
+                    choiceAttribute->SetSelection( j );
+                }
+            }
         }
     }
 
