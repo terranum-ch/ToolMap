@@ -97,7 +97,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     wxBoxSizer *itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
     itemPanel1->SetSizer(itemBoxSizer1);
 
-    m_textCtrlLines = new wxTextCtrl(itemPanel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlLines = new wxSearchCtrl(itemPanel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_textCtrlLines->SetToolTip( wxT("Type to filter the list") );
     itemBoxSizer1->Add(m_textCtrlLines, 0, wxALL | wxEXPAND, 2);
 

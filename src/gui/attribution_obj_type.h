@@ -97,7 +97,7 @@ class AttribObjType_PANEL : public ManagedAuiWnd
     bool m_EnableFullAttribution;
     wxBoxSizer *m_ButtonSizer;
     wxBoxSizer *m_AttribSizer;
-    wxTextCtrl *m_textCtrlLines;
+    wxSearchCtrl *m_textCtrlLines;
     wxTextCtrl *m_textCtrlPoints;
     wxTextCtrl *m_textCtrlPoly;
 
