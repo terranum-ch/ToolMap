@@ -163,6 +163,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (ID_MENU_PRJ_BACKUP, ToolMapFrame::OnProjectBackup)
                 EVT_MENU (ID_MENU_PRJ_BACKUP_MANAGER, ToolMapFrame::OnProjectBackupManage)
                 EVT_MENU (ID_MENU_PRJ_SAVE_TEMPLATE, ToolMapFrame::OnProjectSaveTemplate)
+                EVT_MENU (ID_MENU_PRJ_MERGE, ToolMapFrame::OnProjectMerge)
                 EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
                 EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
                 EVT_MENU(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnAddWebData)
@@ -571,6 +572,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup\tCtrl+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->AppendSeparator();
+    itemMenu2->Append(ID_MENU_PRJ_MERGE, _("Merge projects..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
@@ -1612,6 +1615,11 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event)
         wxLogError(_("Template : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     }
     wxEndBusyCursor();
+}
+
+
+void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
+
 }
 
 

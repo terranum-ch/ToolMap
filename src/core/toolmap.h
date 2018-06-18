@@ -149,6 +149,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_PRJ_BACKUP          10304
 #define ID_MENU_PRJ_BACKUP_MANAGER  10305
 #define ID_MENU_PRJ_SAVE_TEMPLATE	10306
+#define ID_MENU_PRJ_MERGE           10307
 #define ID_MENU_EXPORT              10307
 #define ID_MENU_EXPORT_LAYER		10308
 //#define ID_MENU_EXPORT_FULL			10309
@@ -361,6 +362,8 @@ private:
     void OnProjectBackupManage(wxCommandEvent &event);
 
     void OnProjectSaveTemplate(wxCommandEvent &event);
+
+    void OnProjectMerge(wxCommandEvent &event);
 
     void OnToolChanged(wxCommandEvent &event);
 
