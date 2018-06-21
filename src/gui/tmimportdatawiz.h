@@ -42,12 +42,6 @@ private:
 
     void GetXYColumnsSelection() const;
 
-    void SetEnumerationOptions() const;
-
-    void GetAttributeSelection() const;
-
-    void SetAttributeOptions() const;
-
     void SetTargetsOptions() const;
 
     void GetTargetSelection() const;
@@ -55,6 +49,20 @@ private:
     void SetLayerOptions() const;
 
     void GetLayerSelection() const;
+
+    void SetKindFieldOptions() const;
+
+    void GetKindFieldSelection() const;
+
+    void SetKindOptions() const;
+
+    void GetKindSelection() const;
+
+    void SetAttributeOptions() const;
+
+    void GetAttributeSelection() const;
+
+    void SetEnumerationOptions() const;
 
 protected:
     int GetPageIndex(wxWizardPage* page);

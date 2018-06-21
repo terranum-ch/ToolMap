@@ -129,11 +129,35 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
             }
 
             GetLayerSelection();
+            SetKindFieldOptions();
+
+            break;
+        }
+        case (5):{ // Leaving choice of object kind field
+
+            // If going back
+            if (!event.GetDirection()) {
+                return;
+            }
+
+            GetKindFieldSelection();
+            SetKindOptions();
+
+            break;
+        }
+        case (6):{ // Leaving object kind matching
+
+            // If going back
+            if (!event.GetDirection()) {
+                return;
+            }
+
+            GetKindSelection();
             SetAttributeOptions();
 
             break;
         }
-        case (5):{ // Leaving attributes matching
+        case (7):{ // Leaving attributes matching
 
             // If going back
             if (!event.GetDirection()) {
@@ -152,7 +176,7 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 
             break;
         }
-        case (6):{
+        case (8):{
 
             // If going back
             if (!event.GetDirection()) {
@@ -164,6 +188,231 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
         default:
             wxLogError(_("Page index not recognized (%d)."), GetPageIndex(page));
     }
+
+}
+
+void ImportDataWizard::ResetFilePicker(const wxWizardPageSimple *page)
+{
+    wxFilePickerCtrl *filePicker = NULL;
+
+    m_infoValueCtrl1->SetLabel(wxEmptyString);
+    m_infoValueCtrl2->SetLabel(wxEmptyString);
+
+    if (m_radioBtnSHP->GetValue()) {
+
+        m_Import = new tmImportGIS();
+        filePicker = new wxFilePickerCtrl(page->GetNext(), wxID_ANY, wxEmptyString, _("Select a SHP file"),
+                                          _("ESRI's shapefile (*.shp)|*.shp"));
+        m_infoLabelCtrl1->SetLabel(_("Geometry type:"));
+        m_infoLabelCtrl2->SetLabel(_("Number of features:"));
+
+    } else if (m_radioBtnCSV->GetValue()) {
+
+        m_Import = new tmImportCSV();
+        filePicker = new wxFilePickerCtrl(page->GetNext(), wxID_ANY, wxEmptyString, _("Select a CSV file"),
+                                          _("Semi-colon separeted file (*.csv)|*.csv"));
+        m_infoLabelCtrl1->SetLabel(_("Number of columns:"));
+        m_infoLabelCtrl2->SetLabel(_("Number of rows:"));
+
+    }
+
+    m_sizerFilePath->Replace(m_filePicker, filePicker);
+    page->GetNext()->RemoveChild(m_filePicker);
+    m_filePicker->Disconnect(wxEVT_COMMAND_FILEPICKER_CHANGED,
+                             wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged), NULL, this);
+    wxDELETE(m_filePicker);
+    m_filePicker = filePicker;
+    m_filePicker->Connect(wxEVT_COMMAND_FILEPICKER_CHANGED,
+                          wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged), NULL, this);
+    page->GetNext()->Layout();
+}
+
+void ImportDataWizard::SetXYColumnsOptions() const
+{
+    wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
+
+    // Fill X/Y lists
+    tmImportCSV *importCSV = (tmImportCSV *) m_Import;
+    wxArrayString cols;
+    importCSV->ListColumns(cols);
+    importCSV->GuessXYcolumns(cols);
+    for (unsigned int i = 0; i < cols.GetCount(); i++) {
+        wxString colText = wxString::Format(_("Column %d: %s"), i + 1, cols.Item(i).c_str());
+        cols.Item(i) = colText;
+    }
+
+    m_choiceX->Clear();
+    m_choiceY->Clear();
+    m_choiceX->Append(cols);
+    m_choiceY->Append(cols);
+
+    int xSelection = 0;
+    int ySelection = 0;
+    if (importCSV->GetColumnX() != wxNOT_FOUND && importCSV->GetColumnY() != wxNOT_FOUND) {
+        xSelection = importCSV->GetColumnX();
+        ySelection = importCSV->GetColumnY();
+    }
+    m_choiceX->SetSelection(xSelection);
+    m_choiceY->SetSelection(ySelection);
+}
+
+void ImportDataWizard::GetXYColumnsSelection() const
+{
+    wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
+
+    tmImportCSV *importCSV = (tmImportCSV *) m_Import;
+    if (m_choiceX->GetCount() > 0 && m_choiceY->GetCount() > 0) {
+        importCSV->SetColumn(m_choiceX->GetSelection(), m_choiceY->GetSelection());
+    } else {
+        importCSV->SetColumn(wxNOT_FOUND, wxNOT_FOUND);
+    }
+}
+
+void ImportDataWizard::SetTargetsOptions() const
+{
+    wxArrayString supportedTargetsName = m_Import->GetTargetSupportedName();
+    m_choiceTarget->Clear();
+    m_choiceTarget->Append(supportedTargetsName);
+    m_choiceTarget->SetSelection(0);
+}
+
+void ImportDataWizard::GetTargetSelection() const
+{
+    wxArrayInt supportedTargets = m_Import->GetTargetSupported();
+    wxASSERT(supportedTargets.GetCount() == m_choiceTarget->GetCount());
+    int myTarget = supportedTargets.Item(m_choiceTarget->GetSelection());
+    m_Import->SetTarget((TOC_GENERIC_NAME) myTarget);
+}
+
+void ImportDataWizard::SetLayerOptions() const
+{
+    m_choiceLayer->Clear();
+    m_choiceLayer->Append(m_PrjManager->GetDatabase()->GetLayerNameByType(m_Import->GetTarget()));
+    m_choiceLayer->SetSelection(0);
+}
+
+void ImportDataWizard::GetLayerSelection() const
+{
+    // If changed, clear attributes
+    if (! m_choiceLayer->GetStringSelection().IsSameAs(m_Import->GetLayerName())) {
+        m_fgSizerAttributes->Clear(true);
+    }
+
+    m_Import->SetLayerName(m_choiceLayer->GetStringSelection());
+}
+
+void ImportDataWizard::SetKindFieldOptions() const
+{
+
+}
+
+void ImportDataWizard::GetKindFieldSelection() const
+{
+
+}
+
+void ImportDataWizard::SetKindOptions() const
+{
+
+}
+
+void ImportDataWizard::GetKindSelection() const
+{
+    
+}
+
+void ImportDataWizard::SetAttributeOptions() const
+{
+
+    if (m_fgSizerAttributes->GetRows() == 0) {
+        // List attributes from file
+        wxArrayString fieldListFile;
+        m_Import->GetFieldNames(fieldListFile);
+
+        // Remove some fields
+        for (unsigned int k = 0; k < fieldListFile.GetCount(); ++k) {
+            wxString item = fieldListFile.Item(k);
+            if(item.IsSameAs("TM_OID", false) || item.IsSameAs("OBJ_CD", false) || item.IsSameAs("OBJ_DESC", false) ||
+               item.IsSameAs("x", false) || item.IsSameAs("y", false) || item.IsSameAs("id", false)) {
+                fieldListFile.RemoveAt(k);
+                k--;
+            }
+        }
+
+        // If no attribute, terminate
+        if (fieldListFile.IsEmpty()) {
+            auto *page = dynamic_cast<wxWizardPageSimple *> (GetCurrentPage());
+            page->SetNext(nullptr);
+            return;
+        }
+
+        // List attributes from project
+        ProjectDefMemoryLayers *layer = nullptr;
+        PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+        layer = prjDefMem->FindLayer(m_Import->GetLayerName());
+        wxArrayString fieldListPrj;
+        for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
+            ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+            fieldListPrj.Add(fieldObj->m_Fieldname);
+        }
+        fieldListPrj.Insert("(ignore)", 0);
+
+        // Fill lists
+        for (int i = 0; i < fieldListFile.GetCount(); ++i) {
+            wxStaticText* textAttribute = new wxStaticText( m_scrolledWindow1, wxID_ANY, fieldListFile.Item(i), wxDefaultPosition, wxDefaultSize, 0 );
+            textAttribute->Wrap( -1 );
+            m_fgSizerAttributes->Add( textAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+            wxChoice* choiceAttribute = new wxChoice( m_scrolledWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, fieldListPrj, 0 );
+            choiceAttribute->SetSelection( 0 );
+            m_fgSizerAttributes->Add( choiceAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+            // Find potential match
+            for (int j = 1; j < fieldListPrj.GetCount(); ++j) {
+                if (fieldListPrj.Item(j).IsSameAs(fieldListFile.Item(i), false)) {
+                    choiceAttribute->SetSelection( j );
+                }
+            }
+        }
+    }
+
+}
+
+void ImportDataWizard::GetAttributeSelection() const
+{
+    m_Import->ClearAttributes();
+
+    // Get list of attributes from project
+    ProjectDefMemoryLayers *layer = nullptr;
+    PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+    layer = prjDefMem->GetActiveLayer();
+    wxASSERT(layer);
+
+    for (int i = 0; i < m_fgSizerAttributes->GetItemCount(); i += 2) {
+        wxWindow* itemFile = m_fgSizerAttributes->GetItem(i)->GetWindow();
+        auto textFile = dynamic_cast<wxStaticText *>(itemFile);
+        wxString fileAttribute = textFile->GetLabel();
+
+        wxWindow* itemDB = m_fgSizerAttributes->GetItem(i + 1)->GetWindow();
+        auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
+        wxString dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
+
+        if (!dbAttribute.IsSameAs("(ignore)", false) && !dbAttribute.IsEmpty()) {
+
+            // Get type
+            PRJDEF_FIELD_TYPE type;
+            for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
+                ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+                if (fieldObj->m_Fieldname.IsSameAs(dbAttribute)) {
+                    type = fieldObj->m_FieldType;
+                    break;
+                }
+            }
+            m_Import->AddAttribute(fileAttribute, dbAttribute, type);
+        }
+    }
+
+    m_fgSizerEnums->Clear(true);
 
 }
 
@@ -255,210 +504,15 @@ void ImportDataWizard::SetEnumerationOptions() const
     }
 }
 
-void ImportDataWizard::GetAttributeSelection() const
-{
-    m_Import->ClearAttributes();
 
-    // Get list of attributes from project
-    ProjectDefMemoryLayers *layer = nullptr;
-    PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
-	layer = prjDefMem->GetActiveLayer();
-	wxASSERT(layer);
 
-    for (int i = 0; i < m_fgSizerAttributes->GetItemCount(); i += 2) {
-        wxWindow* itemFile = m_fgSizerAttributes->GetItem(i)->GetWindow();
-        auto textFile = dynamic_cast<wxStaticText *>(itemFile);
-        wxString fileAttribute = textFile->GetLabel();
 
-        wxWindow* itemDB = m_fgSizerAttributes->GetItem(i + 1)->GetWindow();
-        auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
-        wxString dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
 
-        if (!dbAttribute.IsSameAs("-", false) && !dbAttribute.IsEmpty()) {
 
-            // Get type
-            PRJDEF_FIELD_TYPE type;
-            for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
-                ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
-                if (fieldObj->m_Fieldname.IsSameAs(dbAttribute)) {
-                    type = fieldObj->m_FieldType;
-                    break;
-                }
-            }
-            m_Import->AddAttribute(fileAttribute, dbAttribute, type);
-        }
-    }
 
-    m_fgSizerEnums->Clear(true);
 
-}
 
-void ImportDataWizard::SetAttributeOptions() const
-{
 
-    if (m_fgSizerAttributes->GetRows() == 0) {
-        // List attributes from file
-        wxArrayString fieldListFile;
-        m_Import->GetFieldNames(fieldListFile);
-
-        // Remove some fields
-        for (unsigned int k = 0; k < fieldListFile.GetCount(); ++k) {
-            wxString item = fieldListFile.Item(k);
-            if(item.IsSameAs("TM_OID", false) || item.IsSameAs("OBJ_CD", false) || item.IsSameAs("OBJ_DESC", false) ||
-               item.IsSameAs("x", false) || item.IsSameAs("y", false) || item.IsSameAs("id", false)) {
-                fieldListFile.RemoveAt(k);
-                k--;
-            }
-        }
-
-        // If no attribute, terminate
-        if (fieldListFile.IsEmpty()) {
-            auto *page = dynamic_cast<wxWizardPageSimple *> (GetCurrentPage());
-            page->SetNext(nullptr);
-            return;
-        }
-
-        // List attributes from project
-        ProjectDefMemoryLayers *layer = nullptr;
-        PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
-        layer = prjDefMem->FindLayer(m_Import->GetLayerName());
-        wxArrayString fieldListPrj;
-        for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
-            ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
-            fieldListPrj.Add(fieldObj->m_Fieldname);
-        }
-        fieldListPrj.Insert("-", 0);
-
-        // Fill lists
-        for (int i = 0; i < fieldListFile.GetCount(); ++i) {
-            wxStaticText* textAttribute = new wxStaticText( m_scrolledWindow1, wxID_ANY, fieldListFile.Item(i), wxDefaultPosition, wxDefaultSize, 0 );
-            textAttribute->Wrap( -1 );
-            m_fgSizerAttributes->Add( textAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-            wxChoice* choiceAttribute = new wxChoice( m_scrolledWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, fieldListPrj, 0 );
-            choiceAttribute->SetSelection( 0 );
-            m_fgSizerAttributes->Add( choiceAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-
-            // Find potential match
-            for (int j = 1; j < fieldListPrj.GetCount(); ++j) {
-                if (fieldListPrj.Item(j).IsSameAs(fieldListFile.Item(i), false)) {
-                    choiceAttribute->SetSelection( j );
-                }
-            }
-        }
-    }
-
-}
-
-void ImportDataWizard::GetLayerSelection() const
-{
-    // If changed, clear attributes
-    if (! m_choiceLayer->GetStringSelection().IsSameAs(m_Import->GetLayerName())) {
-        m_fgSizerAttributes->Clear(true);
-    }
-
-    m_Import->SetLayerName(m_choiceLayer->GetStringSelection());
-}
-
-void ImportDataWizard::SetLayerOptions() const
-{
-    m_choiceLayer->Clear();
-    m_choiceLayer->Append(m_PrjManager->GetDatabase()->GetLayerNameByType(m_Import->GetTarget()));
-    m_choiceLayer->SetSelection(0);
-}
-
-void ImportDataWizard::GetTargetSelection() const
-{
-    wxArrayInt supportedTargets = m_Import->GetTargetSupported();
-    wxASSERT(supportedTargets.GetCount() == m_choiceTarget->GetCount());
-    int myTarget = supportedTargets.Item(m_choiceTarget->GetSelection());
-    m_Import->SetTarget((TOC_GENERIC_NAME) myTarget);
-}
-
-void ImportDataWizard::SetTargetsOptions() const
-{
-    wxArrayString supportedTargetsName = m_Import->GetTargetSupportedName();
-    m_choiceTarget->Clear();
-    m_choiceTarget->Append(supportedTargetsName);
-    m_choiceTarget->SetSelection(0);
-}
-
-void ImportDataWizard::GetXYColumnsSelection() const
-{
-    wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
-
-    tmImportCSV *importCSV = (tmImportCSV *) m_Import;
-    if (m_choiceX->GetCount() > 0 && m_choiceY->GetCount() > 0) {
-        importCSV->SetColumn(m_choiceX->GetSelection(), m_choiceY->GetSelection());
-    } else {
-        importCSV->SetColumn(wxNOT_FOUND, wxNOT_FOUND);
-    }
-}
-
-void ImportDataWizard::SetXYColumnsOptions() const
-{
-    wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
-
-    // Fill X/Y lists
-    tmImportCSV *importCSV = (tmImportCSV *) m_Import;
-    wxArrayString cols;
-    importCSV->ListColumns(cols);
-    importCSV->GuessXYcolumns(cols);
-    for (unsigned int i = 0; i < cols.GetCount(); i++) {
-        wxString colText = wxString::Format(_("Column %d: %s"), i + 1, cols.Item(i).c_str());
-        cols.Item(i) = colText;
-    }
-
-    m_choiceX->Clear();
-    m_choiceY->Clear();
-    m_choiceX->Append(cols);
-    m_choiceY->Append(cols);
-
-    int xSelection = 0;
-    int ySelection = 0;
-    if (importCSV->GetColumnX() != wxNOT_FOUND && importCSV->GetColumnY() != wxNOT_FOUND) {
-        xSelection = importCSV->GetColumnX();
-        ySelection = importCSV->GetColumnY();
-    }
-    m_choiceX->SetSelection(xSelection);
-    m_choiceY->SetSelection(ySelection);
-}
-
-void ImportDataWizard::ResetFilePicker(const wxWizardPageSimple *page)
-{
-    wxFilePickerCtrl *filePicker = NULL;
-
-    m_infoValueCtrl1->SetLabel(wxEmptyString);
-    m_infoValueCtrl2->SetLabel(wxEmptyString);
-
-    if (m_radioBtnSHP->GetValue()) {
-
-        m_Import = new tmImportGIS();
-        filePicker = new wxFilePickerCtrl(page->GetNext(), wxID_ANY, wxEmptyString, _("Select a SHP file"),
-                                          _("ESRI's shapefile (*.shp)|*.shp"));
-        m_infoLabelCtrl1->SetLabel(_("Geometry type:"));
-        m_infoLabelCtrl2->SetLabel(_("Number of features:"));
-
-    } else if (m_radioBtnCSV->GetValue()) {
-
-        m_Import = new tmImportCSV();
-        filePicker = new wxFilePickerCtrl(page->GetNext(), wxID_ANY, wxEmptyString, _("Select a CSV file"),
-                                          _("Semi-colon separeted file (*.csv)|*.csv"));
-        m_infoLabelCtrl1->SetLabel(_("Number of columns:"));
-        m_infoLabelCtrl2->SetLabel(_("Number of rows:"));
-
-    }
-
-    m_sizerFilePath->Replace(m_filePicker, filePicker);
-    page->GetNext()->RemoveChild(m_filePicker);
-    m_filePicker->Disconnect(wxEVT_COMMAND_FILEPICKER_CHANGED,
-                             wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged), NULL, this);
-    wxDELETE(m_filePicker);
-    m_filePicker = filePicker;
-    m_filePicker->Connect(wxEVT_COMMAND_FILEPICKER_CHANGED,
-                          wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged), NULL, this);
-    page->GetNext()->Layout();
-}
 
 void ImportDataWizard::OnWizardFinished(wxWizardEvent &event)
 {

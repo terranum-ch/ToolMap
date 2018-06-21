@@ -185,6 +185,55 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_wizPageLayer->SetSizer( bSizer5 );
 	m_wizPageLayer->Layout();
 	bSizer5->Fit( m_wizPageLayer );
+	wxWizardPageSimple* m_wizPageKindField = new wxWizardPageSimple( this );
+	m_pages.Add( m_wizPageKindField );
+	
+	wxBoxSizer* bSizer9;
+	bSizer9 = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticText15 = new wxStaticText( m_wizPageKindField, wxID_ANY, wxT("Select object kind field in file"), wxDefaultPosition, wxSize( -1,25 ), 0 );
+	m_staticText15->Wrap( -1 );
+	m_staticText15->SetFont( wxFont( 13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	
+	bSizer9->Add( m_staticText15, 0, wxALL, 5 );
+	
+	wxArrayString m_choice5Choices;
+	m_choice5 = new wxChoice( m_wizPageKindField, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice5Choices, 0 );
+	m_choice5->SetSelection( 0 );
+	bSizer9->Add( m_choice5, 0, wxALL, 5 );
+	
+	
+	m_wizPageKindField->SetSizer( bSizer9 );
+	m_wizPageKindField->Layout();
+	bSizer9->Fit( m_wizPageKindField );
+	wxWizardPageSimple* m_wizPageKindMatch = new wxWizardPageSimple( this );
+	m_pages.Add( m_wizPageKindMatch );
+	
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticText16 = new wxStaticText( m_wizPageKindMatch, wxID_ANY, wxT("Object kinds matching"), wxDefaultPosition, wxSize( -1,25 ), 0 );
+	m_staticText16->Wrap( -1 );
+	m_staticText16->SetFont( wxFont( 13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	
+	bSizer10->Add( m_staticText16, 0, wxALL, 5 );
+	
+	m_scrolledWindow3 = new wxScrolledWindow( m_wizPageKindMatch, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+	m_scrolledWindow3->SetScrollRate( 5, 5 );
+	m_fgSizerKinds = new wxFlexGridSizer( 0, 2, 0, 0 );
+	m_fgSizerKinds->SetFlexibleDirection( wxBOTH );
+	m_fgSizerKinds->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	
+	
+	m_scrolledWindow3->SetSizer( m_fgSizerKinds );
+	m_scrolledWindow3->Layout();
+	m_fgSizerKinds->Fit( m_scrolledWindow3 );
+	bSizer10->Add( m_scrolledWindow3, 1, wxEXPAND | wxALL, 5 );
+	
+	
+	m_wizPageKindMatch->SetSizer( bSizer10 );
+	m_wizPageKindMatch->Layout();
+	bSizer10->Fit( m_wizPageKindMatch );
 	wxWizardPageSimple* m_wizPageAttributes = new wxWizardPageSimple( this );
 	m_pages.Add( m_wizPageAttributes );
 	

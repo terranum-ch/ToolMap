@@ -60,6 +60,11 @@ class tmWizardImport : public wxWizard
 		wxChoice* m_choiceTarget;
 		wxStaticText* m_staticText13;
 		wxChoice* m_choiceLayer;
+		wxStaticText* m_staticText15;
+		wxChoice* m_choice5;
+		wxStaticText* m_staticText16;
+		wxScrolledWindow* m_scrolledWindow3;
+		wxFlexGridSizer* m_fgSizerKinds;
 		wxStaticText* m_staticText14;
 		wxScrolledWindow* m_scrolledWindow1;
 		wxFlexGridSizer* m_fgSizerAttributes;
