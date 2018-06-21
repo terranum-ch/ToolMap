@@ -107,7 +107,7 @@ public:
 	void testGettingColumns(){
 		tmImportCSV myImport;
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		wxArrayString myCols = myImport.ListColumns();
+		wxArrayString myCols = myImport.ListFields();
 		wxASSERT(myCols.GetCount() > 0);
 		for (unsigned int i = 0; i<myCols.GetCount(); i++) {
 			wxLogMessage(_T("Column %d - '%s'"), i, myCols.Item(i).c_str());
@@ -118,7 +118,7 @@ public:
 	void testImportCSV(){
 		tmImportCSV myImport;
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		myImport.SetColumn(0, 1);
+		myImport.SetXYColumn(0, 1);
 		myImport.SetTarget(TOC_NAME_LINES);
 		TS_ASSERT(myImport.Import(m_DB, NULL));
 	}
@@ -126,7 +126,7 @@ public:
 	void testImportCSV2(){
 		tmImportCSV myImport;
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		myImport.SetColumn(0, 2);
+		myImport.SetXYColumn(0, 2);
 		myImport.SetTarget(TOC_NAME_POINTS);
 		TS_ASSERT(myImport.Import(m_DB, NULL));
 	}

@@ -197,10 +197,17 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	
 	bSizer9->Add( m_staticText15, 0, wxALL, 5 );
 	
-	wxArrayString m_choice5Choices;
-	m_choice5 = new wxChoice( m_wizPageKindField, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice5Choices, 0 );
-	m_choice5->SetSelection( 0 );
-	bSizer9->Add( m_choice5, 0, wxALL, 5 );
+	wxArrayString m_choiceKindChoices;
+	m_choiceKind = new wxChoice( m_wizPageKindField, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceKindChoices, 0 );
+	m_choiceKind->SetSelection( 0 );
+	bSizer9->Add( m_choiceKind, 0, wxALL|wxEXPAND, 5 );
+	
+	m_staticText18 = new wxStaticText( m_wizPageKindField, wxID_ANY, wxT("OR"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText18->Wrap( -1 );
+	bSizer9->Add( m_staticText18, 0, wxALL, 5 );
+	
+	m_checkBoxAllSameKind = new wxCheckBox( m_wizPageKindField, wxID_ANY, wxT("Assign all objects to the same kind"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer9->Add( m_checkBoxAllSameKind, 0, wxALL, 5 );
 	
 	
 	m_wizPageKindField->SetSizer( bSizer9 );
@@ -221,6 +228,7 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_scrolledWindow3 = new wxScrolledWindow( m_wizPageKindMatch, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_scrolledWindow3->SetScrollRate( 5, 5 );
 	m_fgSizerKinds = new wxFlexGridSizer( 0, 2, 0, 0 );
+	m_fgSizerKinds->AddGrowableCol( 1 );
 	m_fgSizerKinds->SetFlexibleDirection( wxBOTH );
 	m_fgSizerKinds->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
@@ -228,7 +236,7 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	m_scrolledWindow3->SetSizer( m_fgSizerKinds );
 	m_scrolledWindow3->Layout();
 	m_fgSizerKinds->Fit( m_scrolledWindow3 );
-	bSizer10->Add( m_scrolledWindow3, 1, wxEXPAND | wxALL, 5 );
+	bSizer10->Add( m_scrolledWindow3, 1, wxEXPAND, 5 );
 	
 	
 	m_wizPageKindMatch->SetSizer( bSizer10 );
@@ -277,15 +285,12 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	
 	m_scrolledWindow2 = new wxScrolledWindow( m_wizPageEnums, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_scrolledWindow2->SetScrollRate( 5, 5 );
-	m_fgSizerEnums = new wxFlexGridSizer( 0, 2, 0, 0 );
-	m_fgSizerEnums->AddGrowableCol( 1 );
-	m_fgSizerEnums->SetFlexibleDirection( wxBOTH );
-	m_fgSizerEnums->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	m_sizerEnums = new wxBoxSizer( wxVERTICAL );
 	
 	
-	m_scrolledWindow2->SetSizer( m_fgSizerEnums );
+	m_scrolledWindow2->SetSizer( m_sizerEnums );
 	m_scrolledWindow2->Layout();
-	m_fgSizerEnums->Fit( m_scrolledWindow2 );
+	m_sizerEnums->Fit( m_scrolledWindow2 );
 	bSizer61->Add( m_scrolledWindow2, 1, wxEXPAND, 5 );
 	
 	
@@ -304,6 +309,7 @@ tmWizardImport::tmWizardImport( wxWindow* parent, wxWindowID id, const wxString&
 	// Connect Events
 	this->Connect( wxID_ANY, wxEVT_WIZARD_FINISHED, wxWizardEventHandler( tmWizardImport::OnWizardFinished ) );
 	m_filePicker->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( tmWizardImport::OnFileChanged ), NULL, this );
+	m_checkBoxAllSameKind->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( tmWizardImport::ToggleKindFieldSelection ), NULL, this );
 }
 
 tmWizardImport::~tmWizardImport()
@@ -311,6 +317,7 @@ tmWizardImport::~tmWizardImport()
 	// Disconnect Events
 	this->Disconnect( wxID_ANY, wxEVT_WIZARD_FINISHED, wxWizardEventHandler( tmWizardImport::OnWizardFinished ) );
 	m_filePicker->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( tmWizardImport::OnFileChanged ), NULL, this );
+	m_checkBoxAllSameKind->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( tmWizardImport::ToggleKindFieldSelection ), NULL, this );
 	
 	m_pages.Clear();
 }

@@ -134,7 +134,7 @@ bool tmImportCSV::Open(const wxFileName &filename)
 }
 
 
-void tmImportCSV::ListColumns(wxArrayString &columns)
+void tmImportCSV::ListFields(wxArrayString &columns)
 {
     _ResetReading();
     wxASSERT(m_TextStream);
@@ -151,7 +151,7 @@ void tmImportCSV::ListColumns(wxArrayString &columns)
 }
 
 
-void tmImportCSV::GuessXYcolumns(wxArrayString &columns)
+void tmImportCSV::GuessXYfields(wxArrayString &columns)
 {
     if (m_Xcolumn == wxNOT_FOUND && m_Ycolumn == wxNOT_FOUND) {
         for (int i = 0; i < columns.GetCount(); i++) {
@@ -170,13 +170,13 @@ void tmImportCSV::GuessXYcolumns(wxArrayString &columns)
 
 bool tmImportCSV::GetFieldNames(wxArrayString &Fields)
 {
-    ListColumns(Fields);
+    ListFields(Fields);
 
     return true;
 }
 
 
-void tmImportCSV::SetColumn(int x, int y)
+void tmImportCSV::SetXYColumn(int x, int y)
 {
     m_Xcolumn = x;
     m_Ycolumn = y;
@@ -371,7 +371,7 @@ bool tmImportCSV::GetExistingAttributeValues(const wxString &attName, wxArrayStr
         if (!fieldVal.IsEmpty()) {
             bool isNew = true;
             for (int i = 0; i < values.GetCount(); ++i) {
-                if (fieldVal.IsSameAs(values.Item(i))) {
+                if (fieldVal.IsSameAs(values.Item(i), false)) {
                     isNew = false;
                     break;
                 }

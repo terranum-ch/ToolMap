@@ -24,6 +24,7 @@
 #include <wx/filepicker.h>
 #include <wx/statbox.h>
 #include <wx/choice.h>
+#include <wx/checkbox.h>
 #include <wx/scrolwin.h>
 #include <wx/wizard.h>
 #include <wx/dynarray.h>
@@ -61,7 +62,9 @@ class tmWizardImport : public wxWizard
 		wxStaticText* m_staticText13;
 		wxChoice* m_choiceLayer;
 		wxStaticText* m_staticText15;
-		wxChoice* m_choice5;
+		wxChoice* m_choiceKind;
+		wxStaticText* m_staticText18;
+		wxCheckBox* m_checkBoxAllSameKind;
 		wxStaticText* m_staticText16;
 		wxScrolledWindow* m_scrolledWindow3;
 		wxFlexGridSizer* m_fgSizerKinds;
@@ -70,16 +73,17 @@ class tmWizardImport : public wxWizard
 		wxFlexGridSizer* m_fgSizerAttributes;
 		wxStaticText* m_staticText141;
 		wxScrolledWindow* m_scrolledWindow2;
-		wxFlexGridSizer* m_fgSizerEnums;
+		wxBoxSizer* m_sizerEnums;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnWizardFinished( wxWizardEvent& event ) { event.Skip(); }
 		virtual void OnFileChanged( wxFileDirPickerEvent& event ) { event.Skip(); }
+		virtual void ToggleKindFieldSelection( wxCommandEvent& event ) { event.Skip(); }
 		
 	
 	public:
 		
-		tmWizardImport( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxBitmap& bitmap = wxNullBitmap, const wxPoint& pos = wxDefaultPosition, long style = wxDEFAULT_DIALOG_STYLE );
+		tmWizardImport( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxBitmap& bitmap = wxNullBitmap, const wxPoint& pos = wxDefaultPosition, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 		WizardPages m_pages;
 		~tmWizardImport();
 	

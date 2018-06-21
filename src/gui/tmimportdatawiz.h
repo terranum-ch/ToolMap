@@ -35,12 +35,14 @@ class ImportDataWizard : public tmWizardImport
 private:
     tmImport *m_Import;
     ProjectManager *m_PrjManager;
+    wxString m_IgnoreLabel;
+    wxString m_AllObjectsLabel;
 
     void ResetFilePicker(const wxWizardPageSimple *page);
 
-    void SetXYColumnsOptions() const;
+    void SetXYFieldsOptions() const;
 
-    void GetXYColumnsSelection() const;
+    void GetXYFieldsSelection() const;
 
     void SetTargetsOptions() const;
 
@@ -64,6 +66,8 @@ private:
 
     void SetEnumerationOptions() const;
 
+    void GetEnumerationSelection() const;
+
 protected:
     int GetPageIndex(wxWizardPage* page);
 
@@ -78,6 +82,8 @@ protected:
     inline void SetControlEnable(int id, bool state);
 
     void OnFileChanged(wxFileDirPickerEvent &event);
+
+    virtual void ToggleKindFieldSelection(wxCommandEvent &event);
 
 public:
     ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManager *prjManager);

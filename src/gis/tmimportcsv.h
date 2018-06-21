@@ -60,9 +60,9 @@ public:
 
     virtual bool IsOk();
 
-    void ListColumns(wxArrayString &columns);
+    void ListFields(wxArrayString &columns);
 
-    void GuessXYcolumns(wxArrayString &columns);
+    void GuessXYfields(wxArrayString &columns);
 
     virtual bool GetFieldNames(wxArrayString &Fields);
 
@@ -72,7 +72,7 @@ public:
     int GetColumnY()
     { return m_Ycolumn; }
 
-    void SetColumn(int x, int y);
+    void SetXYColumn(int x, int y);
 
     virtual wxArrayInt GetTargetSupported();
 };

@@ -52,9 +52,15 @@ protected:
     int m_FieldsCount;
     TOC_GENERIC_NAME m_ImportTarget;
     wxString m_LayerName;
+    wxString m_FieldKind;
+    wxArrayString m_FileKinds;
+    wxArrayString m_DbKinds;
     wxArrayString m_FileAttributes;
     wxArrayString m_DbAttributes;
     wxArrayInt m_AttributeTypes;
+    wxArrayString m_FileEnumsAttName;
+    wxArrayString m_FileEnums;
+    wxArrayString m_DbEnums;
 
 public:
     tmImport();
@@ -97,11 +103,23 @@ public:
 
     wxString GetLayerName();
 
-    void AddAttribute(const wxString &fileAttribute, const wxString &dbAttribute, PRJDEF_FIELD_TYPE type);
+    void SetFieldKind(const wxString &value);
 
-    void ClearAttributes();
+    wxString GetFieldKind();
 
-    int GetAttributesCount() const;
+    void AddObjectKindMatch(const wxString &fileKind, const wxString &dbKind);
+
+    void ClearObjectKindMatches();
+
+    void AddAttributeMatch(const wxString &fileAttribute, const wxString &dbAttribute, PRJDEF_FIELD_TYPE type);
+
+    void ClearAttributeMatches();
+
+    void AddEnumerationMatch(const wxString &attributeName, const wxString &fileEnum, const wxString &dbEnum);
+
+    void ClearEnumerationMatches();
+
+    int GetAttributesMatchesCount() const;
 
     bool AttributeIsEnum(int index) const;
 

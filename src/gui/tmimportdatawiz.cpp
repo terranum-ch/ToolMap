@@ -25,7 +25,9 @@
 ImportDataWizard::ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManager *prjManager) :
         tmWizardImport::tmWizardImport(window, id, _("Import data")),
         m_Import(nullptr),
-        m_PrjManager(prjManager)
+        m_PrjManager(prjManager),
+        m_IgnoreLabel("(ignore)"),
+        m_AllObjectsLabel("(all objects)")
 {
     m_Import = new tmImportGIS();
     this->Connect( wxID_ANY, wxEVT_WIZARD_BEFORE_PAGE_CHANGED, wxWizardEventHandler( ImportDataWizard::OnWizardBeforePageChanged ) );
@@ -77,7 +79,7 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
                 page->SetNext(m_pages[3]);
             } else {
                 page->SetNext(m_pages[2]);
-                SetXYColumnsOptions();
+                SetXYFieldsOptions();
             }
 
             SetTargetsOptions();
@@ -93,7 +95,7 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
                 return;
             }
 
-            GetXYColumnsSelection();
+            GetXYFieldsSelection();
 
             break;
         }
@@ -176,12 +178,14 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 
             break;
         }
-        case (8):{
+        case (8):{ // Leaving the enumerations matching
 
             // If going back
             if (!event.GetDirection()) {
                 return;
             }
+
+            GetEnumerationSelection();
 
             break;
         }
@@ -227,24 +231,24 @@ void ImportDataWizard::ResetFilePicker(const wxWizardPageSimple *page)
     page->GetNext()->Layout();
 }
 
-void ImportDataWizard::SetXYColumnsOptions() const
+void ImportDataWizard::SetXYFieldsOptions() const
 {
     wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
 
     // Fill X/Y lists
     tmImportCSV *importCSV = (tmImportCSV *) m_Import;
-    wxArrayString cols;
-    importCSV->ListColumns(cols);
-    importCSV->GuessXYcolumns(cols);
-    for (unsigned int i = 0; i < cols.GetCount(); i++) {
-        wxString colText = wxString::Format(_("Column %d: %s"), i + 1, cols.Item(i).c_str());
-        cols.Item(i) = colText;
+    wxArrayString fields;
+    importCSV->ListFields(fields);
+    importCSV->GuessXYfields(fields);
+    for (unsigned int i = 0; i < fields.GetCount(); i++) {
+        wxString colText = wxString::Format(_("Column %d: %s"), i + 1, fields.Item(i).c_str());
+        fields.Item(i) = colText;
     }
 
     m_choiceX->Clear();
     m_choiceY->Clear();
-    m_choiceX->Append(cols);
-    m_choiceY->Append(cols);
+    m_choiceX->Append(fields);
+    m_choiceY->Append(fields);
 
     int xSelection = 0;
     int ySelection = 0;
@@ -256,15 +260,15 @@ void ImportDataWizard::SetXYColumnsOptions() const
     m_choiceY->SetSelection(ySelection);
 }
 
-void ImportDataWizard::GetXYColumnsSelection() const
+void ImportDataWizard::GetXYFieldsSelection() const
 {
     wxASSERT(m_Import->GetFileType() == tmIMPORT_TYPE_CSV);
 
     tmImportCSV *importCSV = (tmImportCSV *) m_Import;
     if (m_choiceX->GetCount() > 0 && m_choiceY->GetCount() > 0) {
-        importCSV->SetColumn(m_choiceX->GetSelection(), m_choiceY->GetSelection());
+        importCSV->SetXYColumn(m_choiceX->GetSelection(), m_choiceY->GetSelection());
     } else {
-        importCSV->SetColumn(wxNOT_FOUND, wxNOT_FOUND);
+        importCSV->SetXYColumn(wxNOT_FOUND, wxNOT_FOUND);
     }
 }
 
@@ -293,8 +297,9 @@ void ImportDataWizard::SetLayerOptions() const
 
 void ImportDataWizard::GetLayerSelection() const
 {
-    // If changed, clear attributes
-    if (! m_choiceLayer->GetStringSelection().IsSameAs(m_Import->GetLayerName())) {
+    // If changed, clear kinds and attributes
+    if (!m_choiceLayer->GetStringSelection().IsSameAs(m_Import->GetLayerName())) {
+        m_fgSizerKinds->Clear(true);
         m_fgSizerAttributes->Clear(true);
     }
 
@@ -303,28 +308,126 @@ void ImportDataWizard::GetLayerSelection() const
 
 void ImportDataWizard::SetKindFieldOptions() const
 {
+    // List attributes from file
+    wxArrayString fieldListFile;
+    m_Import->GetFieldNames(fieldListFile);
+    fieldListFile.Insert(m_IgnoreLabel, 0);
 
+    m_choiceKind->Clear();
+    m_choiceKind->Append(fieldListFile);
+
+    int selection = 0;
+    wxString kindField = m_Import->GetFieldKind();
+    if (!kindField.IsEmpty()) {
+        selection = m_choiceKind->FindString(kindField);
+    }
+    m_choiceKind->SetSelection(selection);
 }
 
 void ImportDataWizard::GetKindFieldSelection() const
 {
+    wxString selectedKind = m_choiceKind->GetStringSelection();
 
+    // If changed, clear kinds matching
+    if (! m_choiceKind->GetStringSelection().IsSameAs(m_Import->GetFieldKind())) {
+        m_fgSizerKinds->Clear(true);
+    }
+
+    if (!selectedKind.IsSameAs(m_IgnoreLabel)) {
+        m_Import->SetFieldKind(selectedKind);
+    } else {
+        m_Import->SetFieldKind(wxEmptyString);
+    }
 }
 
 void ImportDataWizard::SetKindOptions() const
 {
+    if (m_fgSizerKinds->GetEffectiveRowsCount() == 0) {
 
+        // Get layer from project
+        ProjectDefMemoryLayers *layer = nullptr;
+        PrjDefMemManage *prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+        wxASSERT(prjDefMem);
+        layer = prjDefMem->FindLayer(m_Import->GetLayerName());
+        wxASSERT(layer);
+
+        wxArrayString objValuesInFile;
+        if (m_checkBoxAllSameKind->GetValue()) {
+            objValuesInFile.Add(m_AllObjectsLabel);
+        } else {
+            // Extract unique values from the file
+            wxString selectedKind = m_choiceKind->GetStringSelection();
+            if (!selectedKind.IsSameAs(m_IgnoreLabel)) {
+                m_Import->GetExistingAttributeValues(selectedKind, objValuesInFile);
+            }
+        }
+
+        // List object kinds from the project
+        wxArrayString objValuesInDB;
+        for (int j = 0; j < prjDefMem->GetCountObject(); j++) {
+            ProjectDefMemoryObjects *fieldObj = prjDefMem->GetNextObjects();
+            wxASSERT(fieldObj);
+            objValuesInDB.Add(fieldObj->m_ObjectName);
+        }
+        objValuesInDB.Insert(m_IgnoreLabel, 0);
+
+        // Fill lists
+        for (int j = 0; j < objValuesInFile.GetCount(); ++j) {
+            wxStaticText *textObjValue = new wxStaticText(m_scrolledWindow3, wxID_ANY, objValuesInFile.Item(j),
+                                                          wxDefaultPosition, wxDefaultSize, 0);
+            textObjValue->Wrap(-1);
+            m_fgSizerKinds->Add(textObjValue, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+            wxChoice *choiceObjValue = new wxChoice(m_scrolledWindow3, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                                    objValuesInDB, 0);
+            choiceObjValue->SetSelection(0);
+            m_fgSizerKinds->Add(choiceObjValue, 0, wxALL | wxALIGN_CENTER_VERTICAL | wxEXPAND, 5);
+
+            // Find potential match
+            for (int k = 1; k < objValuesInDB.GetCount(); ++k) {
+                if (objValuesInDB.Item(k).IsSameAs(objValuesInFile.Item(j), false)) {
+                    choiceObjValue->SetSelection(k);
+                }
+            }
+        }
+    }
 }
 
 void ImportDataWizard::GetKindSelection() const
 {
-    
+    m_Import->ClearObjectKindMatches();
+
+    // Get layer from project
+    ProjectDefMemoryLayers *layer = nullptr;
+    PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+    wxASSERT(prjDefMem);
+    layer = prjDefMem->GetActiveLayer();
+    wxASSERT(layer);
+
+    for (int i = 0; i < m_fgSizerKinds->GetItemCount(); i += 2) {
+        wxWindow* itemFile = m_fgSizerKinds->GetItem(i)->GetWindow();
+        wxASSERT(itemFile);
+        auto textFile = dynamic_cast<wxStaticText *>(itemFile);
+        wxString fileKind = textFile->GetLabel();
+        if (fileKind.IsSameAs(m_AllObjectsLabel)) {
+            fileKind = "*";
+        }
+
+        wxWindow* itemDB = m_fgSizerKinds->GetItem(i + 1)->GetWindow();
+        wxASSERT(itemDB);
+        auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
+        wxString dbKind = choiceDB->GetString(choiceDB->GetSelection());
+
+        if (!dbKind.IsSameAs(m_IgnoreLabel, false) && !dbKind.IsEmpty()) {
+            m_Import->AddObjectKindMatch(fileKind, dbKind);
+        }
+    }
 }
 
 void ImportDataWizard::SetAttributeOptions() const
 {
 
-    if (m_fgSizerAttributes->GetRows() == 0) {
+    if (m_fgSizerAttributes->GetEffectiveRowsCount() == 0) {
         // List attributes from file
         wxArrayString fieldListFile;
         m_Import->GetFieldNames(fieldListFile);
@@ -333,7 +436,8 @@ void ImportDataWizard::SetAttributeOptions() const
         for (unsigned int k = 0; k < fieldListFile.GetCount(); ++k) {
             wxString item = fieldListFile.Item(k);
             if(item.IsSameAs("TM_OID", false) || item.IsSameAs("OBJ_CD", false) || item.IsSameAs("OBJ_DESC", false) ||
-               item.IsSameAs("x", false) || item.IsSameAs("y", false) || item.IsSameAs("id", false)) {
+               item.IsSameAs("x", false) || item.IsSameAs("y", false) || item.IsSameAs("id", false) ||
+               item.IsSameAs(m_Import->GetFieldKind())) {
                 fieldListFile.RemoveAt(k);
                 k--;
             }
@@ -348,22 +452,27 @@ void ImportDataWizard::SetAttributeOptions() const
 
         // List attributes from project
         ProjectDefMemoryLayers *layer = nullptr;
-        PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
-        layer = prjDefMem->FindLayer(m_Import->GetLayerName());
+        PrjDefMemManage *prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+        wxASSERT(prjDefMem);
+        layer = prjDefMem->GetActiveLayer();
+        wxASSERT(layer);
         wxArrayString fieldListPrj;
         for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
             ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+            wxASSERT(fieldObj);
             fieldListPrj.Add(fieldObj->m_Fieldname);
         }
-        fieldListPrj.Insert("(ignore)", 0);
+        fieldListPrj.Insert(m_IgnoreLabel, 0);
 
         // Fill lists
         for (int i = 0; i < fieldListFile.GetCount(); ++i) {
-            wxStaticText* textAttribute = new wxStaticText( m_scrolledWindow1, wxID_ANY, fieldListFile.Item(i), wxDefaultPosition, wxDefaultSize, 0 );
+            wxStaticText *textAttribute = new wxStaticText( m_scrolledWindow1, wxID_ANY, fieldListFile.Item(i), wxDefaultPosition, wxDefaultSize, 0 );
+            wxASSERT(textAttribute);
             textAttribute->Wrap( -1 );
             m_fgSizerAttributes->Add( textAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
             wxChoice* choiceAttribute = new wxChoice( m_scrolledWindow1, wxID_ANY, wxDefaultPosition, wxDefaultSize, fieldListPrj, 0 );
+            wxASSERT(choiceAttribute);
             choiceAttribute->SetSelection( 0 );
             m_fgSizerAttributes->Add( choiceAttribute, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
@@ -380,40 +489,43 @@ void ImportDataWizard::SetAttributeOptions() const
 
 void ImportDataWizard::GetAttributeSelection() const
 {
-    m_Import->ClearAttributes();
+    m_Import->ClearAttributeMatches();
 
     // Get list of attributes from project
     ProjectDefMemoryLayers *layer = nullptr;
     PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+    wxASSERT(prjDefMem);
     layer = prjDefMem->GetActiveLayer();
     wxASSERT(layer);
 
     for (int i = 0; i < m_fgSizerAttributes->GetItemCount(); i += 2) {
         wxWindow* itemFile = m_fgSizerAttributes->GetItem(i)->GetWindow();
+        wxASSERT(itemFile);
         auto textFile = dynamic_cast<wxStaticText *>(itemFile);
         wxString fileAttribute = textFile->GetLabel();
 
         wxWindow* itemDB = m_fgSizerAttributes->GetItem(i + 1)->GetWindow();
+        wxASSERT(itemDB);
         auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
         wxString dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
 
-        if (!dbAttribute.IsSameAs("(ignore)", false) && !dbAttribute.IsEmpty()) {
+        if (!dbAttribute.IsSameAs(m_IgnoreLabel, false) && !dbAttribute.IsEmpty()) {
 
             // Get type
             PRJDEF_FIELD_TYPE type;
             for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
                 ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
+                wxASSERT(fieldObj);
                 if (fieldObj->m_Fieldname.IsSameAs(dbAttribute)) {
                     type = fieldObj->m_FieldType;
                     break;
                 }
             }
-            m_Import->AddAttribute(fileAttribute, dbAttribute, type);
+            m_Import->AddAttributeMatch(fileAttribute, dbAttribute, type);
         }
     }
 
-    m_fgSizerEnums->Clear(true);
-
+    m_sizerEnums->Clear(true);
 }
 
 void ImportDataWizard::SetEnumerationOptions() const
@@ -421,12 +533,13 @@ void ImportDataWizard::SetEnumerationOptions() const
     // Get list of attributes from project
     ProjectDefMemoryLayers *layer = nullptr;
     PrjDefMemManage* prjDefMem = m_PrjManager->GetMemoryProjectDefinition();
+    wxASSERT(prjDefMem);
     layer = prjDefMem->GetActiveLayer();
     wxASSERT(layer);
 
 	bool skipPage = true;
 
-    for (int i = 0; i < m_Import->GetAttributesCount(); ++i) {
+    for (int i = 0; i < m_Import->GetAttributesMatchesCount(); ++i) {
         if(!m_Import->AttributeIsEnum(i)) {
             continue;
         }
@@ -459,33 +572,44 @@ void ImportDataWizard::SetEnumerationOptions() const
             }
         }
 
-        // Add a row for the attribute names
-        wxStaticText *textAttNameDB = new wxStaticText(m_scrolledWindow2, wxID_ANY,
-                                                       m_Import->GetAttributeNameInDB(i), wxDefaultPosition,
+        // Add static line
+        wxStaticLine *staticLine = new wxStaticLine(m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                                    wxLI_HORIZONTAL);
+        m_sizerEnums->Add(staticLine, 0, wxEXPAND | wxALL, 5);
+
+        // Add a row for the hidden attribute names
+        wxStaticText *hiddenAttNameDB = new wxStaticText(m_scrolledWindow2, wxID_ANY, m_Import->GetAttributeNameInDB(i),
+                                                         wxDefaultPosition, wxDefaultSize, 0);
+        hiddenAttNameDB->Hide();
+        m_sizerEnums->Add(hiddenAttNameDB, 0, wxALL, 5);
+
+        // Add a row for the displayed attribute names
+        wxString fieldName = wxString::Format("%s (%s)", m_Import->GetAttributeNameInDB(i),
+                                              m_Import->GetAttributeNameInFile(i));
+        wxStaticText *textAttNameDB = new wxStaticText(m_scrolledWindow2, wxID_ANY, fieldName, wxDefaultPosition,
                                                        wxDefaultSize, 0);
-        textAttNameDB->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
-                                       false, wxEmptyString));
+        textAttNameDB->SetFont(wxFont(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+                                      wxFONTWEIGHT_BOLD, false, wxEmptyString));
         textAttNameDB->Wrap(-1);
-        m_fgSizerEnums->Add(textAttNameDB, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-        wxStaticText *textAttNameFile = new wxStaticText(m_scrolledWindow2, wxID_ANY,
-                                                         m_Import->GetAttributeNameInFile(i), wxDefaultPosition,
-                                                         wxDefaultSize, 0);
-        textAttNameFile->SetFont(wxFont( 11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
-                                          false, wxEmptyString ) );
-        textAttNameFile->Wrap(-1);
-        m_fgSizerEnums->Add(textAttNameFile, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+        m_sizerEnums->Add(textAttNameDB, 0, wxALL, 5);
+
+        wxFlexGridSizer* fgSizerEnums;
+        fgSizerEnums = new wxFlexGridSizer( 0, 2, 0, 0 );
+        fgSizerEnums->AddGrowableCol( 1 );
+        fgSizerEnums->SetFlexibleDirection( wxBOTH );
+        fgSizerEnums->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
         // Fill lists
         for (int j = 0; j < attValuesInFile.GetCount(); ++j) {
             wxStaticText *textAttValue = new wxStaticText(m_scrolledWindow2, wxID_ANY, attValuesInFile.Item(j),
                                                           wxDefaultPosition, wxDefaultSize, 0);
             textAttValue->Wrap(-1);
-            m_fgSizerEnums->Add(textAttValue, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            fgSizerEnums->Add(textAttValue, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-            wxChoice *choiceAttValue = new wxChoice(m_scrolledWindow2, wxID_ANY, wxDefaultPosition,
-                                                    wxDefaultSize, attValuesInDB, 0);
+            wxChoice *choiceAttValue = new wxChoice(m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                                    attValuesInDB, 0);
             choiceAttValue->SetSelection(0);
-            m_fgSizerEnums->Add(choiceAttValue, 0, wxALL | wxALIGN_CENTER_VERTICAL | wxEXPAND, 5);
+            fgSizerEnums->Add(choiceAttValue, 0, wxALL | wxALIGN_CENTER_VERTICAL | wxEXPAND, 5);
 
             // Find potential match
             for (int k = 1; k < attValuesInDB.GetCount(); ++k) {
@@ -494,6 +618,8 @@ void ImportDataWizard::SetEnumerationOptions() const
                 }
             }
         }
+
+        m_sizerEnums->Add( fgSizerEnums, 0, wxEXPAND, 5 );
     }
 
     // If no enum values to map, terminate
@@ -504,15 +630,40 @@ void ImportDataWizard::SetEnumerationOptions() const
     }
 }
 
+void ImportDataWizard::GetEnumerationSelection() const
+{
+    m_Import->ClearEnumerationMatches();
 
+    // Loop through blocks (4 rows: static line, hidden name, visible name, flex grid sizer)
+    for (int i = 0; i < m_sizerEnums->GetItemCount(); i += 4) {
 
+        // Get hidden attribute name
+        wxWindow* itemAttName = m_sizerEnums->GetItem(i + 1)->GetWindow();
+        wxASSERT(itemAttName);
+        auto textAttName = dynamic_cast<wxStaticText *>(itemAttName);
+        wxString attributeName = textAttName->GetLabel();
 
+        // Get flex sizer
+        wxSizer* itemFlexGrid = m_sizerEnums->GetItem(i + 3)->GetSizer();
+        wxASSERT(itemFlexGrid);
+        auto flexGrid = dynamic_cast<wxFlexGridSizer *>(itemFlexGrid);
 
+        // Parse flex sizer
+        for (int j = 0; j < flexGrid->GetItemCount(); j += 2) {
+            wxWindow* itemFile = flexGrid->GetItem(j)->GetWindow();
+            wxASSERT(itemFile);
+            auto textFile = dynamic_cast<wxStaticText *>(itemFile);
+            wxString fileEnum = textFile->GetLabel();
 
+            wxWindow* itemDB = flexGrid->GetItem(j + 1)->GetWindow();
+            wxASSERT(itemDB);
+            auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
+            wxString dbEnum = choiceDB->GetString(choiceDB->GetSelection());
 
-
-
-
+            m_Import->AddEnumerationMatch(attributeName, fileEnum, dbEnum);
+        }
+    }
+}
 
 void ImportDataWizard::OnWizardFinished(wxWizardEvent &event)
 {
@@ -562,4 +713,14 @@ void ImportDataWizard::OnFileChanged(wxFileDirPickerEvent &event)
     }
 
     EnableNextButton();
+}
+
+void ImportDataWizard::ToggleKindFieldSelection(wxCommandEvent &event)
+{
+    if (m_checkBoxAllSameKind->GetValue()) {
+        m_choiceKind->Disable();
+    } else {
+        m_choiceKind->Enable();
+    }
+    m_fgSizerKinds->Clear(true);
 }

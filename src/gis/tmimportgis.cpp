@@ -139,7 +139,7 @@ bool tmImportGIS::GetExistingAttributeValues(const wxString &attName, wxArrayStr
         if (!fieldVal.IsEmpty()) {
             bool isNew = true;
             for (int i = 0; i < values.GetCount(); ++i) {
-                if (fieldVal.IsSameAs(values.Item(i))) {
+                if (fieldVal.IsSameAs(values.Item(i), false)) {
                     isNew = false;
                     break;
                 }

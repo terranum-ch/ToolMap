@@ -96,21 +96,57 @@ wxString tmImport::GetLayerName()
     return m_LayerName;
 }
 
-void tmImport::AddAttribute(const wxString &fileAttribute, const wxString &dbAttribute, PRJDEF_FIELD_TYPE type)
+void tmImport::SetFieldKind(const wxString &value)
+{
+    m_FieldKind = value;
+}
+
+wxString tmImport::GetFieldKind()
+{
+    return m_FieldKind;
+}
+
+void tmImport::AddObjectKindMatch(const wxString &fileKind, const wxString &dbKind)
+{
+    m_FileKinds.Add(fileKind);
+    m_DbKinds.Add(dbKind);
+}
+
+void tmImport::ClearObjectKindMatches()
+{
+    m_FileKinds.Clear();
+    m_DbKinds.Clear();
+}
+
+void tmImport::AddAttributeMatch(const wxString &fileAttribute, const wxString &dbAttribute, PRJDEF_FIELD_TYPE type)
 {
     m_FileAttributes.Add(fileAttribute);
     m_DbAttributes.Add(dbAttribute);
     m_AttributeTypes.Add(type);
 }
 
-void tmImport::ClearAttributes()
+void tmImport::ClearAttributeMatches()
 {
     m_FileAttributes.Clear();
     m_DbAttributes.Clear();
     m_AttributeTypes.Clear();
 }
 
-int tmImport::GetAttributesCount() const
+void tmImport::AddEnumerationMatch(const wxString &attributeName, const wxString &fileEnum, const wxString &dbEnum)
+{
+    m_FileEnumsAttName.Add(attributeName);
+    m_FileEnums.Add(fileEnum);
+    m_DbEnums.Add(dbEnum);
+}
+
+void tmImport::ClearEnumerationMatches()
+{
+    m_FileEnumsAttName.Clear();
+    m_FileEnums.Clear();
+    m_DbEnums.Clear();
+}
+
+int tmImport::GetAttributesMatchesCount() const
 {
     return (int) m_FileAttributes.GetCount();
 }
