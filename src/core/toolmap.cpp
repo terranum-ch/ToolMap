@@ -1383,7 +1383,7 @@ void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
                                 this,
                                 wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL);
     wxASSERT(m_PManager->GetDatabase());
-    myImport->Import(m_PManager->GetDatabase(), &myProgress);
+    myImport->Import(m_PManager->GetDatabase(), m_PManager->GetMemoryProjectDefinition(), &myProgress);
 
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt2.Clone());

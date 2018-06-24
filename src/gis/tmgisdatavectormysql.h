@@ -126,8 +126,6 @@ public:
 
     virtual bool GetFieldsValue(wxArrayString &values, long oid);
 
-    bool SetFieldsValue(wxArrayString &values, long oid, const wxString &layerName);
-
 
     // count
     virtual int GetCount();

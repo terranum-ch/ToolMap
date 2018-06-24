@@ -29,6 +29,8 @@
 
 
 #include "tmimport.h"
+#include "../core/prjdefmemmanage.h"
+
 
 class tmImportCSV : public tmImport
 {
@@ -45,7 +47,7 @@ private:
 
     bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
 
-    bool _ImportToPointLayer(ProjectManager *prjManager, wxProgressDialog *progress = NULL);
+    bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
 
 
 public:
@@ -55,7 +57,7 @@ public:
 
     virtual bool Open(const wxFileName &filename);
 
-    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
 
     virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 
@@ -78,6 +80,8 @@ public:
     void SetXYColumn(int x, int y);
 
     virtual wxArrayInt GetTargetSupported();
+
+    bool SetAttributes(const DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, long oid) const;
 };
 
 #endif

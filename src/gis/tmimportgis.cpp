@@ -59,7 +59,7 @@ bool tmImportGIS::Open(const wxFileName &filename)
 }
 
 
-bool tmImportGIS::Import(DataBaseTM *database, wxProgressDialog *progress)
+bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress)
 {
     wxASSERT(database);
     if (IsOk() == false) {

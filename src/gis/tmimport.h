@@ -29,6 +29,7 @@
 
 #include "tmlayerpropertiesdef.h"
 #include "../core/projectdefmemory.h"
+#include "../core/prjdefmemmanage.h"
 
 
 class DataBaseTM;
@@ -71,7 +72,7 @@ public:
 
     virtual bool IsOk();
 
-    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL)
+    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL)
     { return false; }
 
     virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values)

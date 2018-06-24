@@ -91,9 +91,9 @@ public:
 	{
 		tmImportGIS myImport;
 		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG))==true);
-		TS_ASSERT (myImport.Import(m_DB, NULL)==false);
+		TS_ASSERT (myImport.Import(m_DB, NULL, NULL)==false);
 		myImport.SetTarget(TOC_NAME_LINES);
-		TS_ASSERT (myImport.Import(m_DB, NULL)==true);
+		TS_ASSERT (myImport.Import(m_DB, NULL, NULL)==true);
 	}
 	
 	
@@ -120,7 +120,7 @@ public:
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
 		myImport.SetXYColumn(0, 1);
 		myImport.SetTarget(TOC_NAME_LINES);
-		TS_ASSERT(myImport.Import(m_DB, NULL));
+		TS_ASSERT(myImport.Import(m_DB, NULL, NULL));
 	}
 	
 	void testImportCSV2(){
@@ -128,7 +128,7 @@ public:
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
 		myImport.SetXYColumn(0, 2);
 		myImport.SetTarget(TOC_NAME_POINTS);
-		TS_ASSERT(myImport.Import(m_DB, NULL));
+		TS_ASSERT(myImport.Import(m_DB, NULL, NULL));
 	}
 	
 		
