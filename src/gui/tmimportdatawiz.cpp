@@ -237,9 +237,8 @@ void ImportDataWizard::SetXYFieldsOptions() const
 
     // Fill X/Y lists
     tmImportCSV *importCSV = (tmImportCSV *) m_Import;
-    wxArrayString fields;
-    importCSV->ListFields(fields);
-    importCSV->GuessXYfields(fields);
+    wxArrayString fields = importCSV->GetFieldsList();
+    importCSV->GuessXYfields();
     for (unsigned int i = 0; i < fields.GetCount(); i++) {
         wxString colText = wxString::Format(_("Column %d: %s"), i + 1, fields.Item(i).c_str());
         fields.Item(i) = colText;

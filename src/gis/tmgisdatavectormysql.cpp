@@ -769,6 +769,47 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid)
 }
 
 
+bool tmGISDataVectorMYSQL::SetFieldsValue(wxArrayString &values, long oid, const wxString &layerName)
+{
+    values.Clear();
+    if (oid == wxNOT_FOUND) {
+        wxLogError(_T("OID specified is not valid (%ld)"), oid);
+        return false;
+    }
+
+    if (m_PrjDef == NULL) {
+        wxLogError(_T("Project object not specified, use SetProject() first"));
+        return false;
+    }
+
+    int iTableType = wxNOT_FOUND;
+    tmAttributionData *myAttribData = _CreateAttributionObject(iTableType);
+    if (myAttribData == NULL) {
+        return false;
+    }
+
+    // Passing info to attribution data
+    wxArrayLong myOid;
+    myOid.Add(oid);
+    myAttribData->Create(&myOid, m_DB);
+
+    // Get layer
+    PrjMemLayersArray layers;
+    ProjectDefMemoryLayers *layer = m_PrjDef->FindLayer(layerName);
+    layers.Add(layer);
+
+    // Proceed to the attribution
+    if (!myAttribData->SetAttributesAdvanced(oid, &layers, values)) {
+        wxDELETE(myAttribData);
+        return false;
+    }
+
+    wxDELETE(myAttribData);
+    return true;
+}
+
+
+
 /***************************************************************************//**
  @brief Search spatial data
  @param rect Real rectangle for searching data

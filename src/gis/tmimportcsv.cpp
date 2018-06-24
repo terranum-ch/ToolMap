@@ -34,45 +34,52 @@ bool tmImportCSV::_ResetReading()
 }
 
 
-bool tmImportCSV::_GetNextData(double &x, double &y)
+bool tmImportCSV::_GetNextData(wxArrayString &tokenArray)
 {
-    wxASSERT(m_TextStream);
+    tokenArray.Clear();
 
-    if (m_Xcolumn == wxNOT_FOUND || m_Ycolumn == wxNOT_FOUND) {
-        return false;
-    }
+    wxASSERT(m_TextStream);
 
     wxString myLine = m_TextStream->ReadLine();
     if (myLine.IsEmpty()) {
         return false;
     }
 
-    wxArrayString myTokenArray;
     wxStringTokenizer myTokenizer(myLine, _T(";"));
     while (myTokenizer.HasMoreTokens()) {
-        myTokenArray.Add(myTokenizer.GetNextToken());
+        tokenArray.Add(myTokenizer.GetNextToken());
     }
 
+    return true;
+}
 
-    if (m_Xcolumn >= (signed) myTokenArray.GetCount() && m_Ycolumn >= (signed) myTokenArray.GetCount()) {
+
+bool tmImportCSV::_GetCoordinates(const wxArrayString &tokenArray, double &x, double &y)
+{
+    if (m_Xcolumn == wxNOT_FOUND || m_Ycolumn == wxNOT_FOUND) {
+        return false;
+    }
+
+    if (m_Xcolumn >= (signed) tokenArray.GetCount() && m_Ycolumn >= (signed) tokenArray.GetCount()) {
         return false;
     }
 
     double myX = 0.0;
     double myY = 0.0;
 
-    if (myTokenArray.Item(m_Xcolumn).ToCDouble(&myX) == false) {
-        wxLogMessage(myTokenArray.Item(m_Xcolumn));
+    if (tokenArray.Item(m_Xcolumn).ToCDouble(&myX) == false) {
+        wxLogMessage(tokenArray.Item(m_Xcolumn));
         return false;
     }
 
-    if (myTokenArray.Item(m_Ycolumn).ToCDouble(&myY) == false) {
-        wxLogMessage(myTokenArray.Item(m_Ycolumn));
+    if (tokenArray.Item(m_Ycolumn).ToCDouble(&myY) == false) {
+        wxLogMessage(tokenArray.Item(m_Ycolumn));
         return false;
     }
 
     x = myX;
     y = myY;
+
     return true;
 }
 
@@ -134,9 +141,11 @@ bool tmImportCSV::Open(const wxFileName &filename)
 }
 
 
-void tmImportCSV::ListFields(wxArrayString &columns)
+void tmImportCSV::ListFields()
 {
+    m_Fields.Clear();
     _ResetReading();
+
     wxASSERT(m_TextStream);
     wxString myLine1 = m_TextStream->ReadLine();
 
@@ -144,18 +153,25 @@ void tmImportCSV::ListFields(wxArrayString &columns)
 	while (tokenizer.HasMoreTokens())
 	{
 		wxString token = tokenizer.GetNextToken();
-        columns.Add(token);
+        m_Fields.Add(token);
 	}
 
     _ResetReading();
 }
 
 
-void tmImportCSV::GuessXYfields(wxArrayString &columns)
+wxArrayString tmImportCSV::GetFieldsList()
+{
+    ListFields();
+    return m_Fields;
+}
+
+
+void tmImportCSV::GuessXYfields()
 {
     if (m_Xcolumn == wxNOT_FOUND && m_Ycolumn == wxNOT_FOUND) {
-        for (int i = 0; i < columns.GetCount(); i++) {
-            wxString val = columns.Item(i);
+        for (int i = 0; i < m_Fields.GetCount(); i++) {
+            wxString val = m_Fields.Item(i);
             if (val.IsSameAs("x", false) || val.IsSameAs("lon", false)) {
                 m_Xcolumn = i;
             }
@@ -170,7 +186,7 @@ void tmImportCSV::GuessXYfields(wxArrayString &columns)
 
 bool tmImportCSV::GetFieldNames(wxArrayString &Fields)
 {
-    ListFields(Fields);
+    Fields = GetFieldsList();
 
     return true;
 }
@@ -209,9 +225,15 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, wxProgressDialog *pr
     wxStopWatch sv;
     tmPercent tpercent(GetFeatureCount());
     while (true) {
+
+        wxArrayString tokenArray;
+        if (!_GetNextData(tokenArray)) {
+            break;
+        }
+
         double x = 0;
         double y = 0;
-        if (!_GetNextData(x, y)) {
+        if (!_GetCoordinates(tokenArray, x, y)) {
             break;
         }
         OGRPoint *myOGRPt = (OGRPoint *) OGRGeometryFactory::createGeometry(wkbPoint);
@@ -219,13 +241,61 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, wxProgressDialog *pr
         myOGRPt->setX(x);
         myOGRPt->setY(y);
 
-        if (myGeomDB->AddGeometry(myOGRPt, -1, GetTarget()) == wxNOT_FOUND) {
+        long oid = myGeomDB->AddGeometry(myOGRPt, -1, GetTarget());
+        if (oid == wxNOT_FOUND) {
             OGRGeometryFactory::destroyGeometry(myOGRPt);
             wxLogError(_("Error importing geometry into the project"));
             break;
         }
         iCount++;
         OGRGeometryFactory::destroyGeometry(myOGRPt);
+
+
+
+
+        // Set attributes
+        wxArrayString fieldNames;
+        myGeomDB->GetFieldsName(fieldNames, oid);
+
+        wxArrayString fieldValues;
+
+        // Loop over the fields as defined in the project in memory
+        for (int i = 0; i < fieldNames.GetCount(); ++i) {
+            wxString fieldName = fieldNames.Item(i);
+            wxString fieldValue = wxEmptyString;
+
+            // Loop over the fields from the DB matching the ones in the file
+            for (int j = 0; j < m_DbAttributes.GetCount(); ++j) {
+                if (m_DbAttributes.Item(j).IsSameAs(fieldName)) {
+
+                    // Loop over the file header
+                    for (int k = 0; k < m_Fields.GetCount(); ++k) {
+                        if (m_Fields.Item(k).IsSameAs(m_FileAttributes.Item(j))) {
+                            wxASSERT(tokenArray.GetCount() > k);
+
+                            // Enumeration matching if required
+                            if ((PRJDEF_FIELD_TYPE) m_AttributeTypes.Item(j) == TM_FIELD_ENUMERATION) {
+
+                                // Loop over the enumeration matching
+                                for (int l = 0; l < m_FileEnums.GetCount(); ++l) {
+                                    if (m_FileEnumsAttName.Item(l).IsSameAs(fieldName) && m_FileEnums.Item(l).IsSameAs(tokenArray[k], false)) {
+                                        fieldValues = m_DbEnums.Item(l);
+                                    }
+                                }
+                            } else {
+                                fieldValues = tokenArray[k];
+                            }
+                        }
+                    }
+                }
+            }
+            fieldValues.Add(fieldValues);
+        }
+
+        myGeomDB->SetFieldsValue(fieldValues, oid, m_LayerName);
+
+
+
 
         bool bStop = false;
         tpercent.SetValue(iCount);
@@ -248,53 +318,6 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, wxProgressDialog *pr
 }
 
 
-bool tmImportCSV::_ImportToLineLayer(DataBaseTM *database, wxProgressDialog *progress)
-{
-    tmGISDataVectorMYSQL *myGeomDB = new tmGISDataVectorMYSQL();
-    tmGISDataVectorMYSQL::SetDataBaseHandle(database);
-
-    long iCount = 0;
-    wxStopWatch sv;
-    tmPercent tpercent(GetFeatureCount());
-    OGRLineString *myOGRLine = (OGRLineString *) OGRGeometryFactory::createGeometry(wkbLineString);
-
-    while (true) {
-        double x = 0;
-        double y = 0;
-        if (!_GetNextData(x, y)) {
-            break;
-        }
-        myOGRLine->addPoint(x, y);
-        iCount++;
-
-        bool bStop = false;
-        tpercent.SetValue(iCount);
-        if (tpercent.IsNewStep() && progress != NULL) {
-            if (progress->Update(tpercent.GetPercent(), wxEmptyString) == false) {
-                bStop = true;
-            }
-        }
-
-        if (bStop) {
-            wxLogMessage(_("Adding gis data into project stopped by user."));
-            break;
-        }
-    }
-
-    if (myGeomDB->AddGeometry(myOGRLine, -1, GetTarget()) == wxNOT_FOUND) {
-        OGRGeometryFactory::destroyGeometry(myOGRLine);
-        wxLogError(_("Error importing geometry into the project"));
-        wxDELETE(myGeomDB);
-        return false;
-    }
-    OGRGeometryFactory::destroyGeometry(myOGRLine);
-    wxDELETE(myGeomDB);
-    sv.Pause();
-    wxLogMessage(_("%ld feature added in %ld [ms]"), iCount, sv.Time());
-    return true;
-}
-
-
 bool tmImportCSV::Import(DataBaseTM *database, wxProgressDialog *progress)
 {
     wxASSERT(database);
@@ -303,16 +326,14 @@ bool tmImportCSV::Import(DataBaseTM *database, wxProgressDialog *progress)
         return false;
     }
 
-    // skip first line
     wxASSERT(m_TextStream);
+    ListFields();
+
+    // skip first line
     m_TextStream->ReadLine();
 
     bool bReturn = false;
     switch (GetTarget()) {
-        case TOC_NAME_LINES:
-            bReturn = _ImportToLineLayer(database, progress);
-            break;
-
         case TOC_NAME_LABELS:
         case TOC_NAME_POINTS:
             bReturn = _ImportToPointLayer(database, progress);

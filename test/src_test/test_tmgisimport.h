@@ -107,7 +107,7 @@ public:
 	void testGettingColumns(){
 		tmImportCSV myImport;
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		wxArrayString myCols = myImport.ListFields();
+		wxArrayString myCols = myImport.GetFieldsList();
 		wxASSERT(myCols.GetCount() > 0);
 		for (unsigned int i = 0; i<myCols.GetCount(); i++) {
 			wxLogMessage(_T("Column %d - '%s'"), i, myCols.Item(i).c_str());

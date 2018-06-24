@@ -37,14 +37,15 @@ private:
     int m_Ycolumn;
     wxFileInputStream *m_FileStream;
     wxTextInputStream *m_TextStream;
+    wxArrayString m_Fields;
 
     bool _ResetReading();
 
-    bool _GetNextData(double &x, double &y);
+    bool _GetNextData(wxArrayString &tokenArray);
 
-    bool _ImportToPointLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
 
-    bool _ImportToLineLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    bool _ImportToPointLayer(ProjectManager *prjManager, wxProgressDialog *progress = NULL);
 
 
 public:
@@ -60,9 +61,11 @@ public:
 
     virtual bool IsOk();
 
-    void ListFields(wxArrayString &columns);
+    void ListFields();
 
-    void GuessXYfields(wxArrayString &columns);
+    wxArrayString GetFieldsList();
+
+    void GuessXYfields();
 
     virtual bool GetFieldNames(wxArrayString &Fields);
 
