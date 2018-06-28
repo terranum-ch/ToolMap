@@ -769,6 +769,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid)
 }
 
 
+
 /***************************************************************************//**
  @brief Search spatial data
  @param rect Real rectangle for searching data

@@ -280,7 +280,7 @@ bool ObjectDefinitionList::SetListText(int ilayertype)
 
     if (m_DBHandler->GetObjectListByLayerType(ilayertype)) {
         // loop for all results
-        while (1) {
+        while (true) {
             if (m_DBHandler->DataBaseGetNextResultAsObject(&myTempObject, ilayertype))
                 SetObjectToList(&myTempObject);
             else

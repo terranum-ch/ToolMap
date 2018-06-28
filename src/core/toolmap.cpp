@@ -21,7 +21,7 @@
 
 #include "toolmap.h"
 #include "tmlog.h"
-#include "../gui/tmimportwiz.h"
+#include "../gui/tmimportdatawiz.h"
 #include "../gis/tmimport.h"
 #include "../gui/backupmanager_dlg.h"
 #include "backupmanager.h"
@@ -1369,12 +1369,12 @@ void ToolMapFrame::OnExportSelectedGISData(wxCommandEvent &event)
 
 void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
 {
-    ImportWizard myWizard(this, wxID_ANY);
-    if (myWizard.ShowWizard() != wxID_OK) {
+    ImportDataWizard wizard(this, wxID_ANY, m_PManager);
+    if (!wizard.RunWizard(wizard.GetFirstPage())) {
         return;
     }
 
-    tmImport *myImport = myWizard.GetImport();
+    tmImport *myImport = wizard.GetImport();
     wxASSERT(myImport);
 
     wxProgressDialog myProgress(_("Importing data progress"),
@@ -1383,31 +1383,11 @@ void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
                                 this,
                                 wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL);
     wxASSERT(m_PManager->GetDatabase());
-    myImport->Import(m_PManager->GetDatabase(), &myProgress);
+    myImport->Import(m_PManager->GetDatabase(), m_PManager->GetMemoryProjectDefinition(), &myProgress);
 
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt2.Clone());
 
-
-    /*tmGISImport myImport;
-
-    tmGISImport_DLG myDlg (this, &myImport);
-    if(myDlg.ShowModal() != wxID_OK)
-        return;
-
-    wxProgressDialog myProgress(_("Importing GIS data progress"),
-                                _T("Importing data in progress, please wait"),
-                                100,
-                                this,
-                                wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL);
-
-    // importing
-    wxASSERT(m_PManager->GetDatabase());
-    myImport.Import(m_PManager->GetDatabase(), myDlg.GetImportLayer(), &myProgress);
-    wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
-
-    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    GetEventHandler()->QueueEvent(evt2.Clone());*/
 }
 
 

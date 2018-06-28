@@ -150,6 +150,9 @@ public:
     virtual OGRFeature *GetNextFeature()
     { return NULL; }
 
+    virtual bool ResetReading()
+    { return false; }
+
     virtual wxRealPoint *GetNextDataPoint(long &oid)
     { return NULL; }
 
