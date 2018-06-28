@@ -80,10 +80,6 @@ public:
     void SetXYColumn(int x, int y);
 
     virtual wxArrayInt GetTargetSupported();
-
-    bool SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, long oid, TOC_GENERIC_NAME type) const;
-
-    bool SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, long oid, TOC_GENERIC_NAME type) const;
 };
 
 #endif

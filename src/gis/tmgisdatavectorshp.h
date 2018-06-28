@@ -77,6 +77,8 @@ public:
 
     virtual OGRFeature *GetNextFeature();
 
+    virtual bool ResetReading();
+
     virtual OGRFeature *GetFeatureByOID(long oid);
 
     bool SelectFeatureByOID(long oid);

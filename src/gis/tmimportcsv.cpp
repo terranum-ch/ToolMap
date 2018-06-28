@@ -20,8 +20,6 @@
 #include "tmgisdatavector.h"
 #include "../database/database_tm.h"
 #include "../core/tmpercent.h"
-#include "../gis/tmattributionmanager.h"
-#include "../gis/tmattributiondata.h"
 
 
 bool tmImportCSV::_ResetReading()
@@ -164,7 +162,10 @@ void tmImportCSV::ListFields()
 
 wxArrayString tmImportCSV::GetFieldsList()
 {
-    ListFields();
+    if (m_Fields.IsEmpty()) {
+        ListFields();
+    }
+
     return m_Fields;
 }
 
@@ -254,11 +255,14 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
         iCount++;
         OGRGeometryFactory::destroyGeometry(myOGRPt);
 
-        if (!SetObjectKind(database, prj, tokenArray, oid, TOC_NAME_POINTS)) {
+        wxArrayLong oids;
+        oids.Add(oid);
+
+        if (!SetObjectKind(database, prj, tokenArray, oids)) {
             break;
         }
 
-        if (!SetAttributes(database, prj, tokenArray, oid, TOC_NAME_POINTS)) {
+        if (!SetAttributes(database, prj, tokenArray, oids)) {
             break;
         }
 
@@ -281,105 +285,6 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
     wxDELETE(myGeomDB);
     return true;
 }
-
-bool tmImportCSV::SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, long oid, TOC_GENERIC_NAME type) const
-{
-    wxString kind;
-
-    if (m_FileKinds.GetCount() == 1 && m_FileKinds.Item(0).IsSameAs("*")) {
-        wxASSERT(m_DbKinds.GetCount() == 1);
-        kind = m_DbKinds.Item(0);
-    } else if (m_FileKinds.GetCount() > 0) {
-        // Loop over the file header
-        for (int i = 0; i < m_Fields.GetCount(); ++i) {
-            if (m_Fields.Item(i).IsSameAs(m_FieldKind)) {
-                wxASSERT(fileValues.GetCount() > i);
-                for (int j = 0; j < m_FileKinds.GetCount(); ++j) {
-                    if (fileValues.Item(i).IsSameAs(m_FileKinds.Item(j))) {
-                        kind = m_DbKinds.Item(j);
-                    }
-                }
-            }
-        }
-    }
-
-    if(!kind.IsEmpty()) {
-        // Get kind ID
-        ProjectDefMemoryObjects *obj = prj->FindObject(kind);
-        wxASSERT(obj);
-
-        wxString cmd = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld); "), TABLE_NAME_GIS_ATTRIBUTION[type], obj->m_ObjectID, oid);
-
-        if (database->DataBaseQueryNoResults(cmd) == false) {
-            wxLogError(_("Adding kind(s) to selected features failed!"));
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool tmImportCSV::SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, long oid, TOC_GENERIC_NAME type) const
-{
-    tmAttributionData *myAttribObj = tmAttributionManager::CreateAttributionData(type);
-    if (myAttribObj == NULL)
-        return false;
-
-    // Get layer ID
-    ProjectDefMemoryLayers *layer = prj->FindLayer(m_LayerName);
-
-    // Object ID
-    wxArrayLong oids;
-    oids.Add(oid);
-    myAttribObj->Create(&oids, database);
-
-    // Set attributes
-    wxArrayString fieldValues;
-
-    // Loop over the fields as defined in the project in memory
-    for (unsigned int i = 0; i < layer->m_pLayerFieldArray.GetCount(); i++) {
-        ProjectDefMemoryFields *mypField = layer->m_pLayerFieldArray.Item(i);
-        wxASSERT(mypField);
-        wxString fieldName = mypField->m_Fieldname;
-        wxString fieldValue = wxEmptyString;
-
-        // Loop over the fields from the DB matching the ones in the file
-        for (int j = 0; j < m_DbAttributes.GetCount(); ++j) {
-            if (m_DbAttributes.Item(j).IsSameAs(fieldName)) {
-
-                // Loop over the file header
-                for (int k = 0; k < m_Fields.GetCount(); ++k) {
-                    if (m_Fields.Item(k).IsSameAs(m_FileAttributes.Item(j))) {
-                        wxASSERT(fileValues.GetCount() > k);
-
-                        // Enumeration matching if required
-                        if (mypField->m_FieldType == TM_FIELD_ENUMERATION) {
-
-                            // Loop over the enumeration matching
-                            for (int l = 0; l < m_FileEnums.GetCount(); ++l) {
-                                if (m_FileEnumsAttName.Item(l).IsSameAs(fieldName) &&
-                                    m_FileEnums.Item(l).IsSameAs(fileValues[k], false)) {
-                                    fieldValue = m_DbEnums.Item(l);
-                                }
-                            }
-                        } else {
-                            fieldValue = fileValues[k];
-                        }
-                    }
-                }
-            }
-        }
-        fieldValues.Add(fieldValue);
-    }
-
-    PrjMemLayersArray myLayersInfoArray;
-    myLayersInfoArray.Add(layer);
-    if (!myAttribObj->SetAttributesAdvanced(oid, &myLayersInfoArray, fieldValues))
-        return false;
-
-    return true;
-}
-
 
 bool tmImportCSV::Import(DataBaseTM *database, PrjDefMemManage *prj,  wxProgressDialog *progress)
 {
