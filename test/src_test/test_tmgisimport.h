@@ -65,7 +65,7 @@ public:
 	{
 		tmImportGIS myImport;
 		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP, g_TestFileSHP_L)));
-		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP + _T("cantonsuisse.shp")))==false);
+		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP + _T("cantonsuisssssse.shp")))==false);
 		TS_ASSERT (myImport.Open(wxFileName(g_TestPathMISC, g_TestFileMisc))==false);
 	}
 		
