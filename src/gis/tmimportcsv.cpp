@@ -222,7 +222,6 @@ bool tmImportCSV::IsOk()
 bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress)
 {
     wxASSERT(database);
-    wxASSERT(prj);
     tmGISDataVectorMYSQL *myGeomDB = new tmGISDataVectorMYSQL();
     tmGISDataVectorMYSQL::SetDataBaseHandle(database);
 
@@ -255,15 +254,17 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
         iCount++;
         OGRGeometryFactory::destroyGeometry(myOGRPt);
 
-        wxArrayLong oids;
-        oids.Add(oid);
+        if (prj != NULL) {
+            wxArrayLong oids;
+            oids.Add(oid);
 
-        if (!SetObjectKind(database, prj, tokenArray, oids)) {
-            break;
-        }
+            if (!SetObjectKind(database, prj, tokenArray, oids)) {
+                break;
+            }
 
-        if (!SetAttributes(database, prj, tokenArray, oids)) {
-            break;
+            if (!SetAttributes(database, prj, tokenArray, oids)) {
+                break;
+            }
         }
 
         bool bStop = false;
