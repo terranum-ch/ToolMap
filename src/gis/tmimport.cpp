@@ -17,6 +17,8 @@
 
 
 #include "tmimport.h"
+#include "../gis/tmattributionmanager.h"
+#include "../gis/tmattributiondata.h"
 
 tmImport::tmImport()
 {
@@ -181,3 +183,113 @@ bool tmImport::HasEnumAttributes() const
     }
     return false;
 }
+
+bool tmImport::SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, const wxArrayLong &oids)
+{
+    // Get field names
+    wxArrayString fields;
+    GetFieldNames(fields);
+
+    wxString kind;
+
+    if (m_FileKinds.GetCount() == 1 && m_FileKinds.Item(0).IsSameAs("*")) {
+        wxASSERT(m_DbKinds.GetCount() == 1);
+        kind = m_DbKinds.Item(0);
+    } else if (m_FileKinds.GetCount() > 0) {
+        // Loop over the file header
+        for (int i = 0; i < fields.GetCount(); ++i) {
+            if (fields.Item(i).IsSameAs(m_FieldKind)) {
+                wxASSERT(fileValues.GetCount() > i);
+                for (int j = 0; j < m_FileKinds.GetCount(); ++j) {
+                    if (fileValues.Item(i).IsSameAs(m_FileKinds.Item(j))) {
+                        kind = m_DbKinds.Item(j);
+                    }
+                }
+            }
+        }
+    }
+
+    if(!kind.IsEmpty()) {
+        // Get kind ID
+        ProjectDefMemoryObjects *obj = prj->FindObject(kind);
+        wxASSERT(obj);
+
+        for (auto oid: oids) {
+            wxString cmd = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld); "), TABLE_NAME_GIS_ATTRIBUTION[m_ImportTarget], obj->m_ObjectID, oid);
+
+            if (database->DataBaseQueryNoResults(cmd) == false) {
+                wxLogError(_("Adding kind(s) to selected features failed!"));
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool tmImport::SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, wxArrayLong &oids)
+{
+    // Get layer
+    ProjectDefMemoryLayers *layer = prj->FindLayer(m_LayerName);
+
+    // Get field names
+    wxArrayString fields;
+    GetFieldNames(fields);
+
+    // Create attribution object
+    tmAttributionData *myAttribObj = tmAttributionManager::CreateAttributionData(m_ImportTarget);
+    if (myAttribObj == NULL)
+        return false;
+
+    // Object ID
+    myAttribObj->Create(&oids, database);
+
+    // Set attributes
+    wxArrayString fieldValues;
+
+    // Loop over the fields as defined in the project in memory
+    for (unsigned int i = 0; i < layer->m_pLayerFieldArray.GetCount(); i++) {
+        ProjectDefMemoryFields *mypField = layer->m_pLayerFieldArray.Item(i);
+        wxASSERT(mypField);
+        wxString fieldName = mypField->m_Fieldname;
+        wxString fieldValue = wxEmptyString;
+
+        // Loop over the fields from the DB matching the ones in the file
+        for (int j = 0; j < m_DbAttributes.GetCount(); ++j) {
+            if (m_DbAttributes.Item(j).IsSameAs(fieldName)) {
+
+                // Loop over the file header
+                for (int k = 0; k < fields.GetCount(); ++k) {
+                    if (fields.Item(k).IsSameAs(m_FileAttributes.Item(j))) {
+                        wxASSERT(fileValues.GetCount() > k);
+
+                        // Enumeration matching if required
+                        if (mypField->m_FieldType == TM_FIELD_ENUMERATION) {
+
+                            // Loop over the enumeration matching
+                            for (int l = 0; l < m_FileEnums.GetCount(); ++l) {
+                                if (m_FileEnumsAttName.Item(l).IsSameAs(fieldName) &&
+                                    m_FileEnums.Item(l).IsSameAs(fileValues[k], false)) {
+                                    fieldValue = m_DbEnums.Item(l);
+                                }
+                            }
+                        } else {
+                            fieldValue = fileValues[k];
+                        }
+                    }
+                }
+            }
+        }
+        fieldValues.Add(fieldValue);
+    }
+
+    PrjMemLayersArray myLayersInfoArray;
+    myLayersInfoArray.Add(layer);
+    for (auto oid: oids) {
+        if (!myAttribObj->SetAttributesAdvanced(oid, &myLayersInfoArray, fieldValues))
+            return false;
+    }
+
+    return true;
+}
+

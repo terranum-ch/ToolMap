@@ -63,6 +63,10 @@ protected:
     wxArrayString m_FileEnums;
     wxArrayString m_DbEnums;
 
+    bool SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, const wxArrayLong &oids);
+
+    bool SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, wxArrayLong &oids);
+
 public:
     tmImport();
 

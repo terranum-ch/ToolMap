@@ -62,7 +62,7 @@ bool tmImportGIS::Open(const wxFileName &filename)
 bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress)
 {
     wxASSERT(database);
-    if (IsOk() == false) {
+    if (!IsOk()) {
         wxLogError(_("Importation failed"));
         return false;
     }
@@ -74,35 +74,61 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
     wxStopWatch sv;
     tmPercent tpercent(GetFeatureCount());
 
+    m_Vector->ResetReading();
+
     while (true) {
         OGRFeature *myFeature = m_Vector->GetNextFeature();
-        if (myFeature == NULL) {
+        if (myFeature == nullptr) {
             break;
         }
         OGRGeometry *myGeom = myFeature->GetGeometryRef();
         wxASSERT(myGeom);
+        wxArrayLong oids;
 
-        // import multi objects
         OGRwkbGeometryType myGeomType = wkbFlatten(myGeom->getGeometryType());
         if (myGeomType == wkbMultiPoint || myGeomType == wkbMultiLineString) {
-            OGRGeometryCollection *myCollection = static_cast<OGRGeometryCollection *>(myGeom);
+            // import multi objects
+            auto *myCollection = dynamic_cast<OGRGeometryCollection *>(myGeom);
             for (unsigned int i = 0; i < myCollection->getNumGeometries(); i++) {
                 OGRGeometry *myCollGeom = myCollection->getGeometryRef(i);
-                if (myGeomDB->AddGeometry(myCollGeom, -1, GetTarget()) == wxNOT_FOUND) {
+                long oid = myGeomDB->AddGeometry(myCollGeom, -1, GetTarget());
+                if (oid == wxNOT_FOUND) {
                     wxLogError(_("Error importing geometry (from multi-geometries) into project"));
                     continue;
                 }
+                oids.Add(oid);
                 ++iCount;
             }
-        }
+        } else {
             // import single object
-        else {
-            if (myGeomDB->AddGeometry(myGeom, -1, GetTarget()) == wxNOT_FOUND) {
+            long oid = myGeomDB->AddGeometry(myGeom, -1, GetTarget());
+            if (oid == wxNOT_FOUND) {
                 OGRFeature::DestroyFeature(myFeature);
                 wxLogError(_("Error importing geometry into the project"));
                 break;
             }
+            oids.Add(oid);
         }
+
+        wxASSERT(!oids.IsEmpty());
+
+        if (m_ImportTarget != TOC_NAME_FRAME) {
+            wxArrayString fileValues;
+            for (int i = 0; i < myFeature->GetFieldCount(); ++i) {
+                const char *val = myFeature->GetFieldAsString(i);
+                wxString sVal(val, wxConvUTF8);
+                fileValues.Add(sVal);
+            }
+
+            if (!SetObjectKind(database, prj, fileValues, oids)) {
+                break;
+            }
+
+            if (!SetAttributes(database, prj, fileValues, oids)) {
+                break;
+            }
+        }
+
         ++iCount;
         OGRFeature::DestroyFeature(myFeature);
 
@@ -128,13 +154,16 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
 
 bool tmImportGIS::GetExistingAttributeValues(const wxString &attName, wxArrayString &values)
 {
+    m_Vector->ResetReading();
+
     while (true) {
         OGRFeature *myFeature = m_Vector->GetNextFeature();
         if (myFeature == NULL) {
             break;
         }
 
-        wxString fieldVal = wxString::FromAscii(myFeature->GetFieldAsString(attName.c_str()));
+        const char *val = myFeature->GetFieldAsString(attName.c_str());
+        wxString fieldVal(val, wxConvUTF8);
 
         if (!fieldVal.IsEmpty()) {
             bool isNew = true;
