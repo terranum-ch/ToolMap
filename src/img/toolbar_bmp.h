@@ -13,7 +13,7 @@ extern void images_toolbar_init(void);
 extern void images_toolbar_clean(void);
 
 extern wxBitmap *_img_toolbar_attribute;
-extern wxBitmap *_img_toolbar_attribute_copy;
+// extern wxBitmap *_img_toolbar_attribute_copy;
 extern wxBitmap *_img_toolbar_attribute_extend;
 extern wxBitmap *_img_toolbar_edit;
 extern wxBitmap *_img_toolbar_info;

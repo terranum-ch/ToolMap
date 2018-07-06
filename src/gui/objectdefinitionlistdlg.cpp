@@ -152,17 +152,15 @@ void ObjectDefinitionListDlg::CreateControls()
                                           m_DLGODD_List_Lyr_NameStrings, 0);
     itemFlexGridSizer4->Add(m_DLGODD_List_Lyr_Name, 0, wxGROW | wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-    if (m_ParentListType == LAYER_LINE) {
-        wxArrayString m_DLGODD_FrequencyStrings;
-        m_DLGODD_FrequencyStrings.Add(_("&Not Frequent"));
-        m_DLGODD_FrequencyStrings.Add(_("&Frequent"));
-        m_DLGODD_Frequency = new wxRadioBox(itemDialog1, ID_DLGODD_FREQUENCY, _("Frequency"), wxDefaultPosition,
-                                            wxDefaultSize, m_DLGODD_FrequencyStrings, 1, wxRA_SPECIFY_ROWS);
-        m_DLGODD_Frequency->SetSelection(0);
-        itemStaticBoxSizer3->Add(m_DLGODD_Frequency, 0, wxGROW | wxALL, 5);
+    wxArrayString m_DLGODD_FrequencyStrings;
+    m_DLGODD_FrequencyStrings.Add(_("&Not Frequent"));
+    m_DLGODD_FrequencyStrings.Add(_("&Frequent"));
+    m_DLGODD_Frequency = new wxRadioBox(itemDialog1, ID_DLGODD_FREQUENCY, _("Frequency"), wxDefaultPosition,
+                                        wxDefaultSize, m_DLGODD_FrequencyStrings, 1, wxRA_SPECIFY_ROWS);
+    m_DLGODD_Frequency->SetSelection(0);
+    itemStaticBoxSizer3->Add(m_DLGODD_Frequency, 0, wxGROW | wxALL, 5);
 
-        itemBoxSizer2->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-    }
+    itemBoxSizer2->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
     wxStaticLine *itemStaticLine13 = new wxStaticLine(itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize,
                                                       wxLI_HORIZONTAL);
@@ -205,9 +203,8 @@ bool ObjectDefinitionListDlg::TransferDataToWindow()
     m_DLGODD_Code->SetValue(m_ObjectObj->m_ObjectCode);
     m_DLGODD_Description->SetValue(m_ObjectObj->m_ObjectName);
 
-    // if we use the frequency control
-    if (m_ParentListType == LAYER_LINE)
-        m_DLGODD_Frequency->SetSelection(m_ObjectObj->m_ObjectFreq);
+    // frequency control
+    m_DLGODD_Frequency->SetSelection(m_ObjectObj->m_ObjectFreq);
 
     // set parent layer
     if (!m_ObjectObj->m_ParentLayerName.IsEmpty())
@@ -227,8 +224,8 @@ bool ObjectDefinitionListDlg::TransferDataFromWindow()
 #endif
     m_ObjectObj->m_ParentLayerName = m_DLGODD_List_Lyr_Name->GetStringSelection();
     // get the frequency item (FREQUENT must be 0)
-    if (m_ParentListType == LAYER_LINE)
-        m_ObjectObj->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) m_DLGODD_Frequency->GetSelection();
+    m_ObjectObj->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) m_DLGODD_Frequency->GetSelection();
+
     return TRUE;
 }
 
@@ -283,7 +280,7 @@ bool ObjectDefinitionList::SetListText(int ilayertype)
 
     if (m_DBHandler->GetObjectListByLayerType(ilayertype)) {
         // loop for all results
-        while (1) {
+        while (true) {
             if (m_DBHandler->DataBaseGetNextResultAsObject(&myTempObject, ilayertype))
                 SetObjectToList(&myTempObject);
             else
@@ -517,11 +514,9 @@ void ObjectDefinitionList::SetObjectToList(ProjectDefMemoryObjects *object, int 
     SetItemText(iIndex, 2, object->m_ParentLayerName);
 
     // if we use the frequency
-    if (m_layertype == LAYER_LINE) {
-        if (object->m_ObjectFreq == OBJECT_FREQUENT)
-            sfrequency = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT];
-        SetItemText(iIndex, 3, sfrequency);
-    }
+    if (object->m_ObjectFreq == OBJECT_FREQUENT)
+        sfrequency = PRJDEF_OBJECTS_FREQ_STRING[OBJECT_FREQUENT];
+    SetItemText(iIndex, 3, sfrequency);
 
     // attach data to the item
     SetItemData(iIndex, object->m_ObjectID);
@@ -549,12 +544,10 @@ void ObjectDefinitionList::GetObjectFromList(ProjectDefMemoryObjects *object, in
     object->m_ObjectType = m_layertype;
 
     // if we use the frequency control
-    if (m_layertype == LAYER_LINE) {
-        if (GetItemColText(iIndex, 3) == sfrequency)
-            object->m_ObjectFreq = OBJECT_LESS_FREQUENT;
-        else
-            object->m_ObjectFreq = OBJECT_FREQUENT;
-    }
+    if (GetItemColText(iIndex, 3) == sfrequency)
+        object->m_ObjectFreq = OBJECT_LESS_FREQUENT;
+    else
+        object->m_ObjectFreq = OBJECT_FREQUENT;
 
     // attach data to the item
     object->m_ObjectID = GetItemData(iIndex);

@@ -366,17 +366,41 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
         myTempLayer.m_LayerType = LAYER_POLYGON;
     }
 
-    wxString myTextFields[] = {_T("COUNT"), _T("TM_ID"), _T("LAYER_IDX"), _T("CODE"), _T("DESC"), _T("ATTRIBUTS")};
-    PRJDEF_FIELD_TYPE myTypes[] = {TM_FIELD_INTEGER, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT, TM_FIELD_TEXT,
-                                   TM_FIELD_TEXT};
+    // mandatory fields and types
+    wxArrayString myFieldsText;
+    myFieldsText.Add(_T("COUNT"));
+    myFieldsText.Add(_T("TM_ID"));
+    myFieldsText.Add(_T("LAYER_IDX"));
+    myFieldsText.Add(_T("CODE"));
+    myFieldsText.Add(_T("DESC"));
+    myFieldsText.Add(_T("ATTRIBUTS"));
 
-    for (unsigned int i = 0; i < (sizeof(myTextFields) / sizeof(wxString)); i++) {
-        ProjectDefMemoryFields *myField = new ProjectDefMemoryFields();
-        myField->m_FieldID = i + 1;
-        myField->m_Fieldname = myTextFields[i];
-        myField->m_FieldType = myTypes[i];
+    wxArrayInt myFieldsType;
+    myFieldsType.Add(TM_FIELD_INTEGER);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
+    myFieldsType.Add(TM_FIELD_TEXT);
 
-        if (myTypes[i] == TM_FIELD_TEXT) {
+    // add polygon layers but only when exporting lines concatenated
+    if (type == LAYER_LINE) {
+        wxArrayString myPolygonLayersNames = m_pDB->GetLayerNameByType(LAYER_SPATIAL_POLYGON);
+        for (int j = 0; j < myPolygonLayersNames.GetCount(); ++j) {
+            myFieldsText.Add(myPolygonLayersNames[j]);
+            myFieldsType.Add(TM_FIELD_INTEGER);
+        }
+        wxASSERT(myFieldsText.GetCount() == myFieldsType.GetCount());
+    }
+
+    // create memory fields
+    for (int k = 0; k < myFieldsText.GetCount(); ++k) {
+        ProjectDefMemoryFields * myField = new ProjectDefMemoryFields();
+        myField->m_FieldID = k + 1;
+        myField->m_Fieldname = myFieldsText[k];
+        myField->m_FieldType = (PRJDEF_FIELD_TYPE) myFieldsType[k];
+
+        if (myField->m_FieldType == TM_FIELD_TEXT) {
             // Starting with GDAL/OGR 1.10, the driver knows to auto-extend
             // string and integer fields (up to the 255 bytes limit imposed by the DBF format)
             myField->m_FieldPrecision = 80; // default size.
@@ -424,7 +448,11 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
 
     tmPercent myPercent(lTotalAttrib + lTotalAttrib);
 
-    wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
+    // get concatenated data
+    wxString myQueryTmp = _T("SELECT COUNT(*) AS c, AsWKB(g.OBJECT_GEOMETRY), GROUP_CONCAT(g.OBJECT_ID SEPARATOR ';'), "
+                             "GROUP_CONCAT(o.THEMATIC_LAYERS_LAYER_INDEX SEPARATOR ';'), GROUP_CONCAT(o.OBJECT_CD SEPARATOR ';'), "
+                             "GROUP_CONCAT(o.OBJECT_DESC_0 SEPARATOR ';') FROM %s AS g JOIN (%s AS a, %s AS o) "
+                             "WHERE (g.OBJECT_ID = a.OBJECT_GEOM_ID AND a.OBJECT_VAL_ID = o.OBJECT_ID) GROUP BY g.OBJECT_ID ORDER BY c DESC");
     wxString myQuery = wxString::Format(myQueryTmp, TABLE_NAME_GIS_GENERIC[myTempLayer.m_LayerType],
                                         TABLE_NAME_GIS_ATTRIBUTION[myTempLayer.m_LayerType], TABLE_NAME_OBJECTS);
     wxASSERT(m_pDB);
@@ -435,6 +463,7 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
 
     long myLoop = m_ExportData->WriteConcatGeometries(&myTempLayer, myProgressDlg, &myPercent);
     bool bExport = m_ExportData->AddConcatAttributs(&myTempLayer, localprojdef, myLoop, myProgressDlg, &myPercent);
+
     wxDELETE(myProgressDlg);
     return bExport;
 }

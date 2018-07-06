@@ -28,6 +28,8 @@
 #include <wx/progdlg.h>
 
 #include "tmlayerpropertiesdef.h"
+#include "../core/projectdefmemory.h"
+#include "../core/prjdefmemmanage.h"
 
 
 class DataBaseTM;
@@ -50,6 +52,20 @@ protected:
     long m_FeatureCount;
     int m_FieldsCount;
     TOC_GENERIC_NAME m_ImportTarget;
+    wxString m_LayerName;
+    wxString m_FieldKind;
+    wxArrayString m_FileKinds;
+    wxArrayString m_DbKinds;
+    wxArrayString m_FileAttributes;
+    wxArrayString m_DbAttributes;
+    wxArrayInt m_AttributeTypes;
+    wxArrayString m_FileEnumsAttName;
+    wxArrayString m_FileEnums;
+    wxArrayString m_DbEnums;
+
+    bool SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, const wxArrayLong &oids);
+
+    bool SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, wxArrayLong &oids);
 
 public:
     tmImport();
@@ -60,7 +76,10 @@ public:
 
     virtual bool IsOk();
 
-    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL)
+    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL)
+    { return false; }
+
+    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values)
     { return false; }
 
     inline const wxFileName GetFileName() const;
@@ -73,6 +92,9 @@ public:
 
     inline const int GetFieldCount() const;
 
+    virtual bool GetFieldNames(wxArrayString &Fields)
+    { return false; }
+
     inline const TOC_GENERIC_NAME GetTarget() const;
 
     void SetTarget(TOC_GENERIC_NAME value);
@@ -81,6 +103,37 @@ public:
     { return wxArrayInt(); }
 
     virtual wxArrayString GetTargetSupportedName();
+
+    void SetLayerName(const wxString &value);
+
+    wxString GetLayerName();
+
+    void SetFieldKind(const wxString &value);
+
+    wxString GetFieldKind();
+
+    void AddObjectKindMatch(const wxString &fileKind, const wxString &dbKind);
+
+    void ClearObjectKindMatches();
+
+    void AddAttributeMatch(const wxString &fileAttribute, const wxString &dbAttribute, PRJDEF_FIELD_TYPE type);
+
+    void ClearAttributeMatches();
+
+    void AddEnumerationMatch(const wxString &attributeName, const wxString &fileEnum, const wxString &dbEnum);
+
+    void ClearEnumerationMatches();
+
+    int GetAttributesMatchesCount() const;
+
+    bool AttributeIsEnum(int index) const;
+
+    wxString GetAttributeNameInDB(int index) const;
+
+    wxString GetAttributeNameInFile(int index) const;
+
+    bool HasEnumAttributes() const;
+
 };
 
 
@@ -112,7 +165,6 @@ inline const int tmImport::GetFieldCount() const
 {
     return m_FieldsCount;
 }
-
 
 inline const TOC_GENERIC_NAME tmImport::GetTarget() const
 {

@@ -81,10 +81,10 @@ elseif (UNIX AND NOT APPLE)
 elseif (APPLE)
 
     # install ToolBasView
-    message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
-    install(PROGRAMS
+    install(DIRECTORY
             ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
-            DESTINATION .)
+            DESTINATION .
+            USE_SOURCE_PERMISSIONS)
 
 endif (WIN32)
 

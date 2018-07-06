@@ -8,8 +8,8 @@ cmake_minimum_required(VERSION 2.6)
 #endif(COMMAND cmake_policy)
 
 PROJECT("ToolMap")
-set(VERSION_MAJOR "2")
-set(VERSION_MINOR "6")
+set(VERSION_MAJOR "3")
+set(VERSION_MINOR "0")
 set(VERSION_PATCH "0") # will be modified later during cmake process
 
 #Export for sourcetrail
@@ -51,6 +51,9 @@ set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${EXTERNAL_DIR}")
 include_directories(${EXTERNAL_DIR}/include)
 link_directories(${EXTERNAL_DIR}/lib)
 link_directories(${EXTERNAL_DIR}/lib64)
+
+# Path to MySQL
+set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
 
 # Add ToolBasView as external project
 ExternalProject_Add(ToolBasView
@@ -120,6 +123,10 @@ ELSE (WIN32)
         TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "${CMAKE_PROJECT_NAME}_lib" fontconfig)
     ENDIF (APPLE)
 ENDIF (WIN32)
+
+if (UNIX)
+    add_definitions(-std=c++11)
+endif (UNIX)
 
 IF (APPLE)
     # Copy plist to ToolMap (should be after add executable!

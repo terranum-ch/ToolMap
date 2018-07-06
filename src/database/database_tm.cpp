@@ -1135,7 +1135,6 @@ bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects *object, 
     object->m_ObjectType = (short) myType;
     object->m_ParentLayerName = myRowResults.Item(3);
 
-    // frequency will be used only for lines
     long lFreq = 0;
     myRowResults.Item(4).ToLong(&lFreq);
     object->m_ObjectFreq = (PRJDEF_OBJECTS_FREQ) lFreq;
@@ -2941,6 +2940,8 @@ long DataBaseTM::GeometrySave(OGRGeometry *geometry, int layertype)
         return wxNOT_FOUND;
     }
 
+    CPLSetConfigOption("OGR_WKT_PRECISION", "15");
+
     char *myCharGeom = NULL;
     geometry->exportToWkt(&myCharGeom);
     wxString mySGeom = wxString::FromAscii(myCharGeom);
@@ -2963,6 +2964,8 @@ bool DataBaseTM::GeometryUpdate(OGRGeometry *geometry, long oid, int layertype)
     if (geometry == NULL) {
         return false;
     }
+
+	CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
     char *myCharGeom = NULL;
     geometry->exportToWkt(&myCharGeom);

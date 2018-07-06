@@ -21,7 +21,7 @@
 
 #include "toolmap.h"
 #include "tmlog.h"
-#include "../gui/tmimportwiz.h"
+#include "../gui/tmimportdatawiz.h"
 #include "../gis/tmimport.h"
 #include "../gui/backupmanager_dlg.h"
 #include "backupmanager.h"
@@ -181,12 +181,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
                 EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
-                EVT_MENU(ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
+                EVT_MENU (ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
                 EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnZoomToSelectedLayer)
                 EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
-                EVT_MENU(ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
+                EVT_MENU (ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_MODIFY_BEZIER, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
@@ -252,6 +252,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
+                EVT_COMMAND (wxID_ANY, tmEVT_TOGGLE_FREQUENT, ToolMapFrame::OnEditObjectFrequency)
 
                 // STATISTICS EVENT
                 EVT_COMMAND (wxID_ANY, tmEVT_STAT_CLICK, ToolMapFrame::OnStatisticsUpdate)
@@ -1368,12 +1369,12 @@ void ToolMapFrame::OnExportSelectedGISData(wxCommandEvent &event)
 
 void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
 {
-    ImportWizard myWizard(this, wxID_ANY);
-    if (myWizard.ShowWizard() != wxID_OK) {
+    ImportDataWizard wizard(this, wxID_ANY, m_PManager);
+    if (!wizard.RunWizard(wizard.GetFirstPage())) {
         return;
     }
 
-    tmImport *myImport = myWizard.GetImport();
+    tmImport *myImport = wizard.GetImport();
     wxASSERT(myImport);
 
     wxProgressDialog myProgress(_("Importing data progress"),
@@ -1382,31 +1383,11 @@ void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
                                 this,
                                 wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL);
     wxASSERT(m_PManager->GetDatabase());
-    myImport->Import(m_PManager->GetDatabase(), &myProgress);
+    myImport->Import(m_PManager->GetDatabase(), m_PManager->GetMemoryProjectDefinition(), &myProgress);
 
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt2.Clone());
 
-
-    /*tmGISImport myImport;
-
-    tmGISImport_DLG myDlg (this, &myImport);
-    if(myDlg.ShowModal() != wxID_OK)
-        return;
-
-    wxProgressDialog myProgress(_("Importing GIS data progress"),
-                                _T("Importing data in progress, please wait"),
-                                100,
-                                this,
-                                wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL);
-
-    // importing
-    wxASSERT(m_PManager->GetDatabase());
-    myImport.Import(m_PManager->GetDatabase(), myDlg.GetImportLayer(), &myProgress);
-    wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
-
-    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    GetEventHandler()->QueueEvent(evt2.Clone());*/
 }
 
 
@@ -1448,6 +1429,21 @@ void ToolMapFrame::OnUpdateSelection(wxCommandEvent &event)
 {
     SetStatusText(wxString::Format(_T("%d Selected features"),
                                    m_LayerManager->GetSelectedDataMemory()->GetCount()), 2);
+    event.Skip();
+}
+
+
+void ToolMapFrame::OnEditObjectFrequency(wxCommandEvent &event)
+{
+    wxASSERT(m_PManager);
+    wxASSERT(m_PManager->GetDatabase());
+    wxASSERT(event.GetInt() >= 0);
+
+    Freeze();
+    m_PManager->EditObjectFrequency(event.GetInt());
+    m_AttribObjPanel->ResetFilterFields();
+    Thaw();
+
     event.Skip();
 }
 

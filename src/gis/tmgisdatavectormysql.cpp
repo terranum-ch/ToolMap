@@ -769,6 +769,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid)
 }
 
 
+
 /***************************************************************************//**
  @brief Search spatial data
  @param rect Real rectangle for searching data
@@ -1131,6 +1132,7 @@ long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry *Geom, const long &oid, int l
     // check that function was used correctly
     wxASSERT(layertype != wxNOT_FOUND);
 
+    CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
     char *myCharGeom = NULL;
     Geom->setCoordinateDimension(2);
