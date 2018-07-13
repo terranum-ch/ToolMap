@@ -407,7 +407,10 @@ void ImportDataWizard::GetKindSelection() const
         wxWindow* itemFile = m_fgSizerKinds->GetItem(i)->GetWindow();
         wxASSERT(itemFile);
         auto textFile = dynamic_cast<wxStaticText *>(itemFile);
-        wxString fileKind = textFile->GetLabel();
+        wxString fileKind;
+        if (textFile != NULL) {
+            fileKind = textFile->GetLabel();
+        }
         if (fileKind.IsSameAs(m_AllObjectsLabel)) {
             fileKind = "*";
         }
@@ -415,7 +418,10 @@ void ImportDataWizard::GetKindSelection() const
         wxWindow* itemDB = m_fgSizerKinds->GetItem(i + 1)->GetWindow();
         wxASSERT(itemDB);
         auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
-        wxString dbKind = choiceDB->GetString(choiceDB->GetSelection());
+        wxString dbKind;
+        if (choiceDB != NULL) {
+            dbKind = choiceDB->GetString(choiceDB->GetSelection());
+        }
 
         if (!dbKind.IsSameAs(m_IgnoreLabel, false) && !dbKind.IsEmpty()) {
             m_Import->AddObjectKindMatch(fileKind, dbKind);
@@ -501,17 +507,23 @@ void ImportDataWizard::GetAttributeSelection() const
         wxWindow* itemFile = m_fgSizerAttributes->GetItem(i)->GetWindow();
         wxASSERT(itemFile);
         auto textFile = dynamic_cast<wxStaticText *>(itemFile);
-        wxString fileAttribute = textFile->GetLabel();
+        wxString fileAttribute;
+        if (textFile != NULL) {
+            fileAttribute = textFile->GetLabel();
+        }
 
         wxWindow* itemDB = m_fgSizerAttributes->GetItem(i + 1)->GetWindow();
         wxASSERT(itemDB);
         auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
-        wxString dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
+        wxString dbAttribute;
+        if (choiceDB != NULL) {
+            dbAttribute = textFile->GetLabel();
+        }
 
         if (!dbAttribute.IsSameAs(m_IgnoreLabel, false) && !dbAttribute.IsEmpty()) {
 
             // Get type
-            PRJDEF_FIELD_TYPE type;
+            PRJDEF_FIELD_TYPE type = TM_FIELD_TEXT;
             for (int j = 0; j < prjDefMem->GetCountFields(); j++) {
                 ProjectDefMemoryFields *fieldObj = prjDefMem->GetNextField();
                 wxASSERT(fieldObj);
@@ -640,7 +652,10 @@ void ImportDataWizard::GetEnumerationSelection() const
         wxWindow* itemAttName = m_sizerEnums->GetItem(i + 1)->GetWindow();
         wxASSERT(itemAttName);
         auto textAttName = dynamic_cast<wxStaticText *>(itemAttName);
-        wxString attributeName = textAttName->GetLabel();
+        wxString attributeName;
+        if (textAttName != NULL) {
+            attributeName = textAttName->GetLabel();
+        }
 
         // Get flex sizer
         wxSizer* itemFlexGrid = m_sizerEnums->GetItem(i + 3)->GetSizer();
@@ -648,18 +663,26 @@ void ImportDataWizard::GetEnumerationSelection() const
         auto flexGrid = dynamic_cast<wxFlexGridSizer *>(itemFlexGrid);
 
         // Parse flex sizer
-        for (int j = 0; j < flexGrid->GetItemCount(); j += 2) {
-            wxWindow* itemFile = flexGrid->GetItem(j)->GetWindow();
-            wxASSERT(itemFile);
-            auto textFile = dynamic_cast<wxStaticText *>(itemFile);
-            wxString fileEnum = textFile->GetLabel();
+        if (flexGrid != NULL) {
+            for (int j = 0; j < flexGrid->GetItemCount(); j += 2) {
+                wxWindow *itemFile = flexGrid->GetItem(j)->GetWindow();
+                wxASSERT(itemFile);
+                auto textFile = dynamic_cast<wxStaticText *>(itemFile);
+                wxString fileEnum;
+                if (textFile != NULL) {
+                    fileEnum = textFile->GetLabel();
+                }
 
-            wxWindow* itemDB = flexGrid->GetItem(j + 1)->GetWindow();
-            wxASSERT(itemDB);
-            auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
-            wxString dbEnum = choiceDB->GetString(choiceDB->GetSelection());
+                wxWindow *itemDB = flexGrid->GetItem(j + 1)->GetWindow();
+                wxASSERT(itemDB);
+                auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
+                wxString dbEnum;
+                if (choiceDB != NULL) {
+                    dbEnum = choiceDB->GetString(choiceDB->GetSelection());
+                }
 
-            m_Import->AddEnumerationMatch(attributeName, fileEnum, dbEnum);
+                m_Import->AddEnumerationMatch(attributeName, fileEnum, dbEnum);
+            }
         }
     }
 }
