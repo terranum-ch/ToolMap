@@ -1455,47 +1455,7 @@ void ToolMapFrame::OnProjectBackup(wxCommandEvent &event)
 {
     wxASSERT(m_PManager);
     wxASSERT(m_PManager->GetDatabase());
-
-    // backup path exists ?
-    wxString myBackupPath = wxEmptyString;
-    if (m_PManager->GetDatabase()->GetProjectBackupPath(myBackupPath) != PATH_OK) {
-        wxString sErrMsg = _("No path specified or path invalid \n");
-        sErrMsg.Append(_("for backups or restore operations,\n\n"));
-        sErrMsg.Append(_("Please go to Project->Edit Project->Settings...\n"));
-        sErrMsg.Append(_("and specify a valid path."));
-        wxMessageBox(sErrMsg, _("No valid path found"), wxICON_ERROR | wxOK);
-        return;
-    }
-
-    // create backup file
-    BackupFile myBckFile;
-    myBckFile.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
-                                           m_PManager->GetDatabase()->DataBaseGetName()));
-    myBckFile.SetDate(wxDateTime::Now());
-    myBckFile.SetOutputName(wxFileName(myBackupPath,
-                                       m_PManager->GetDatabase()->DataBaseGetName(),
-                                       "tmbk"));
-
-    // ask for comment
-    wxTextEntryDialog myDlg(this, _("Backup comment:"), _("Backup"), wxEmptyString, wxOK | wxCENTRE);
-    if (myDlg.ShowModal() == wxID_OK) {
-        myBckFile.SetComment(myDlg.GetValue());
-    }
-
-    wxBeginBusyCursor();
-    wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
-    BackupManager myBckManager(m_PManager->GetDatabase());
-
-    // Don't display progress dialog under Mac... Toooo slow!
-    wxWindow *myWnd = NULL;
-#ifndef __WXMAC__
-    myWnd = this;
-#endif
-
-    if (myBckManager.Backup(myBckFile, myWnd) == false) {
-        wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
-    }
-    wxEndBusyCursor();
+    m_PManager->BackupProject(wxEmptyString);
 }
 
 
@@ -1599,7 +1559,32 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event)
 
 
 void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
+    wxASSERT(m_PManager);
 
+    wxDirDialog myDirDLG (this,_("Choose a Slave ToolMap project for merginng"), _T(""), wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
+    if (myDirDLG.ShowModal() != wxID_OK) {
+        return;
+    }
+    wxString mySlavePrjName = myDirDLG.GetPath();
+    wxString mySlavePrjNameSml = wxFileName(mySlavePrjName).GetName();
+
+    // ask for confirmation....
+    wxString myMsg = wxString::Format(_("Merge project:\n'%s'\ninto\n'%s'?"), mySlavePrjNameSml, m_PManager->GetProjectName());
+    int answer = wxMessageBox(myMsg, "Confirm", wxOK | wxCANCEL | wxCANCEL_DEFAULT | wxICON_QUESTION, this);
+    if (answer != wxOK){
+        return;
+    }
+
+    // create a backup point before merging
+    if(m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml)) ==false){
+        wxLogWarning(_("Backup failed, merging not allowed!"));
+        return;
+    }
+
+
+
+    // merge the project
+    m_PManager->MergeProjects(mySlavePrjName);
 }
 
 

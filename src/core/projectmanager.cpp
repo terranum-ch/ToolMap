@@ -21,6 +21,7 @@
 #include "tmstats.h"
 #include "../database/database_tm.h"        // for database and TM database operations
 #include "../database/tmprojectmaintenance.h"
+#include "backupmanager.h"
 
 
 IMPLEMENT_CLASS(ProjectManager, wxObject);
@@ -288,6 +289,66 @@ bool ProjectManager::EditProject(int notebooknumber)
     m_AttribManager->InitAttributionManager(m_DB, m_PrjMem);
     m_LayerManager->SetMemoryProject(m_PrjMem);
     return bReturn;
+}
+
+
+
+bool ProjectManager::BackupProject (const wxString & backup_comment) {
+    // backup path exists ?
+    wxString myBackupPath = wxEmptyString;
+    if (GetDatabase()->GetProjectBackupPath(myBackupPath) != PATH_OK) {
+        wxString sErrMsg = _("No path specified or path invalid \n");
+        sErrMsg.Append(_("for backups or restore operations,\n\n"));
+        sErrMsg.Append(_("Please go to Project->Edit Project->Settings...\n"));
+        sErrMsg.Append(_("and specify a valid path."));
+        wxMessageBox(sErrMsg, _("No valid path found"), wxICON_ERROR | wxOK);
+        return false;
+    }
+
+    // create backup file
+    BackupFile myBckFile;
+    myBckFile.SetInputDirectory(wxFileName(GetDatabase()->DataBaseGetPath(),
+                                           GetDatabase()->DataBaseGetName()));
+    myBckFile.SetDate(wxDateTime::Now());
+    myBckFile.SetOutputName(wxFileName(myBackupPath,
+                                       GetDatabase()->DataBaseGetName(),
+                                       "tmbk"));
+
+    // ask for comment if backup_comment not empty.
+    if (backup_comment == wxEmptyString) {
+        wxTextEntryDialog myDlg(m_Parent, _("Backup comment:"), _("Backup"), wxEmptyString, wxOK | wxCENTRE);
+        if (myDlg.ShowModal() == wxID_OK) {
+            myBckFile.SetComment(myDlg.GetValue());
+        }
+    }
+    else{
+        myBckFile.SetComment(backup_comment);
+    }
+
+    wxBeginBusyCursor();
+    wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
+    BackupManager myBckManager(GetDatabase());
+
+    // Don't display progress dialog under Mac... Toooo slow!
+    wxWindow *myWnd = NULL;
+#ifndef __WXMAC__
+    myWnd = m_Parent;
+#endif
+
+    if (myBckManager.Backup(myBckFile, myWnd) == false) {
+        wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
+        wxEndBusyCursor();
+        return false;
+    }
+    wxEndBusyCursor();
+    return true;
+}
+
+
+
+
+bool ProjectManager::MergeProjects(const wxString &slave_project_name) {
+    return true;
 }
 
 
@@ -560,23 +621,6 @@ wxString ProjectManager::GetProjectName()
     }
 
     return wxEmptyString;
-}
-
-
-bool ProjectManager::TempTempInitTOC()
-{
-    if (m_DB == NULL) {
-        wxLogDebug(_T("No database started, start a database first"));
-        return FALSE;
-    }
-
-    if (wxMessageBox(_T("Add default layers in project TOC ?"),
-                     _T("Temporary Functions"), wxYES_NO, m_Parent) != wxYES)
-        return FALSE;
-
-
-    m_DB->InitTOCGenericLayers();
-    return TRUE;
 }
 
 

@@ -115,7 +115,9 @@ public:
 
     bool EditProject(int notebooknumber);
 
-    bool TempTempInitTOC();
+    bool BackupProject (const wxString & backup_comment = wxEmptyString);
+
+    bool MergeProjects (const wxString & slave_project_name);
 
     // project infos
     wxString GetProjectName();
