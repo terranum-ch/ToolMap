@@ -124,6 +124,10 @@ ELSE (WIN32)
     ENDIF (APPLE)
 ENDIF (WIN32)
 
+if (UNIX)
+    add_definitions(-std=c++11)
+endif (UNIX)
+
 IF (APPLE)
     # Copy plist to ToolMap (should be after add executable!
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/build/custominfo.plist)

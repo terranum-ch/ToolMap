@@ -252,6 +252,12 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid)
     return pts;
 }
 
+bool tmGISDataVectorSHP::ResetReading()
+{
+    m_Layer->ResetReading();
+
+    return true;
+}
 
 OGRFeature *tmGISDataVectorSHP::GetNextFeature()
 {

@@ -29,6 +29,8 @@
 
 
 #include "tmimport.h"
+#include "../core/prjdefmemmanage.h"
+
 
 class tmImportCSV : public tmImport
 {
@@ -37,14 +39,15 @@ private:
     int m_Ycolumn;
     wxFileInputStream *m_FileStream;
     wxTextInputStream *m_TextStream;
+    wxArrayString m_Fields;
 
     bool _ResetReading();
 
-    bool _GetNextData(double &x, double &y);
+    bool _GetNextData(wxArrayString &tokenArray);
 
-    bool _ImportToPointLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
 
-    bool _ImportToLineLayer(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
 
 
 public:
@@ -54,11 +57,19 @@ public:
 
     virtual bool Open(const wxFileName &filename);
 
-    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+
+    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 
     virtual bool IsOk();
 
-    wxArrayString ListColumns();
+    void ListFields();
+
+    wxArrayString GetFieldsList();
+
+    void GuessXYfields();
+
+    virtual bool GetFieldNames(wxArrayString &Fields);
 
     int GetColumnX()
     { return m_Xcolumn; }
@@ -66,7 +77,7 @@ public:
     int GetColumnY()
     { return m_Ycolumn; }
 
-    void SetColumn(int x, int y);
+    void SetXYColumn(int x, int y);
 
     virtual wxArrayInt GetTargetSupported();
 };
