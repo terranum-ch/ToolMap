@@ -21,6 +21,7 @@
 #include "tmstats.h"
 #include "../database/database_tm.h"        // for database and TM database operations
 #include "../database/tmprojectmaintenance.h"
+#include "../database/tmprojectmerge.h"
 #include "backupmanager.h"
 
 
@@ -251,6 +252,95 @@ bool ProjectManager::PMAddDefaultQueries()
 }
 
 
+
+bool ProjectManager::_copy_directory(wxString from, wxString to){
+    wxString SLASH = wxFILE_SEP_PATH;
+
+    // append a slash if there is not one (for easier parsing)
+    // because who knows what people will pass to the function.
+    if (to[to.length()-1] != SLASH) {
+        to += SLASH;
+    }
+    // for both dirs
+    if (from[from.length()-1] != SLASH) {
+        from += SLASH;
+    }
+
+    // first make sure that the source dir exists
+    if(!wxDir::Exists(from)) {
+        wxLogError(from + " does not exist.  Can not copy directory.");
+    }
+    else {
+        // check on the destination dir
+        // if it doesn't exist...
+        if(!wxDir::Exists(to)) {
+            // if it doesn't get created
+            if(!wxFileName::Mkdir(to, 0777, wxPATH_MKDIR_FULL)) {
+                // Send an error
+                wxLogError(to + " could not be created.");
+                // And exit gracefully
+                return false;
+            }
+        }
+
+        // The directories to traverse
+        wxArrayString myDirs;
+        myDirs.Add("");
+
+        // loop through each directory.. storing all sub directories
+        // and copying over all files.. the final iteration of one loop
+        // should begin an iteration for any subdirectories discovered
+        // on the previous pass
+        // (rather than pragma, unsigned int will shut the MS compiler up)
+        for (unsigned int i = 0; i < myDirs.size(); i++) {
+
+            // get the next directory
+            wxDir nextDir(from + myDirs[i]);
+
+            // check that it exists in destination form
+            if(!wxDir::Exists(to + myDirs[i])) {
+                // if it doesn't, then create it
+                if(!wxFileName::Mkdir(to + myDirs[i], 0777, wxPATH_MKDIR_FULL)) {
+                    // If it doesn't create, error
+                    wxLogError(to + myDirs[i] + " could not be created.");
+                    // And exit gracefully
+                    return false;
+                }
+            }
+
+            // get the first file in the next directory
+            wxString nextFile;
+            bool process = nextDir.GetFirst(&nextFile);
+
+            // and while there are still files to process
+            while (process) {
+
+                // If this file is a directory
+                if(wxDir::Exists(from+nextFile)) {
+                    // then append it for creation/copying
+                    myDirs.Add(nextFile + SLASH);   // only add the difference
+                }
+                else {
+
+                    // otherwise just go ahead and copy the file over
+                    if(!wxCopyFile(from + myDirs[i] + nextFile,
+                                   to   + myDirs[i] + nextFile)) {
+                        // error if we couldn't
+                        wxLogError("Could not copy " +
+                                   from + myDirs[i] + nextFile + " to "
+                                   + to + myDirs[i] + nextFile);
+                    }
+                }
+                // and get the next file
+                process = nextDir.GetNext(&nextFile);
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+
 /***************************************************************************//**
  @brief Edit the project (layers,...)
  @details This function may be called for editing the project (layers,
@@ -345,9 +435,46 @@ bool ProjectManager::BackupProject (const wxString & backup_comment) {
 }
 
 
+bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVerbose) {
+    wxASSERT(m_DB);
+    wxFileName myMasterProjectFileName(GetDatabase()->DataBaseGetPath(), GetDatabase()->DataBaseGetName());
 
+    // copy project into same directory if needed
 
-bool ProjectManager::MergeProjects(const wxString &slave_project_name) {
+    wxStopWatch sw;
+    sw.Start(0);
+    bool bCheckOk = false;
+    tmProjectMerge myCheckMerger(myMasterProjectFileName.GetFullPath(), slave_project_name);
+    myCheckMerger.SetVerbose(beVerbose);
+    // checking here
+    if (beVerbose) {
+        wxLogMessage(_("\nCHECKING...\n"));
+    }
+    if(myCheckMerger.CheckSimilar()==false) {
+        wxString myErrors = _("Checking FAILED! see bellow\n") + wxJoin(myCheckMerger.GetErrors(), '\n');
+        wxLogError(myErrors);
+        return false;
+    }
+
+    wxLogMessage(_("OK projects are similar\n"));
+
+    if (beVerbose) {
+        wxLogMessage(_("Checking projects in %ld [ms]\n"), sw.Time());
+    }
+
+    sw.Start(0);
+    // merging here
+    if (beVerbose) {
+        wxLogMessage(_("\nMERGING...\n"));
+    }
+
+    if(myCheckMerger.MergeIntoMaster()==false) {
+        wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(myCheckMerger.GetErrors(), '\n');
+        wxLogError(myErrors);
+        return false;
+    }
+
+    wxLogMessage(_("OK Project Merged into '%s' in %ld [ms]"), myMasterProjectFileName.GetFullPath(), sw.Time());
     return true;
 }
 

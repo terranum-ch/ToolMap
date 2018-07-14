@@ -95,6 +95,8 @@ DECLARE_CLASS(ProjectManager)
 
     bool PMAddDefaultQueries();
 
+    bool _copy_directory(wxString from, wxString to);
+
 public:
     ProjectManager(wxFrame *parent);
 
@@ -117,7 +119,7 @@ public:
 
     bool BackupProject (const wxString & backup_comment = wxEmptyString);
 
-    bool MergeProjects (const wxString & slave_project_name);
+    bool MergeProjects (const wxString & slave_project_name, bool beVerbose=true);
 
     // project infos
     wxString GetProjectName();

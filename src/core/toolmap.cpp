@@ -1576,15 +1576,16 @@ void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
     }
 
     // create a backup point before merging
-    if(m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml)) ==false){
+    if(m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml)) == false){
         wxLogWarning(_("Backup failed, merging not allowed!"));
         return;
     }
 
-
-
     // merge the project
     m_PManager->MergeProjects(mySlavePrjName);
+
+    // optimize the project (clean database)
+
 }
 
 
