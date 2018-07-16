@@ -2945,7 +2945,7 @@ long DataBaseTM::GeometrySave(OGRGeometry *geometry, int layertype)
     char *myCharGeom = NULL;
     geometry->exportToWkt(&myCharGeom);
     wxString mySGeom = wxString::FromAscii(myCharGeom);
-    OGRFree(myCharGeom);
+    CPLFree(myCharGeom);
 
     wxString sSentence = wxString::Format(_T("INSERT INTO %s (OBJECT_GEOMETRY)")
                                                   _T(" VALUES (GeomFromText('%s'));"),
@@ -2970,7 +2970,7 @@ bool DataBaseTM::GeometryUpdate(OGRGeometry *geometry, long oid, int layertype)
     char *myCharGeom = NULL;
     geometry->exportToWkt(&myCharGeom);
     wxString mySGeom = wxString::FromAscii(myCharGeom);
-    OGRFree(myCharGeom);
+    CPLFree(myCharGeom);
 
     wxString sSentence = wxString::Format(_T("UPDATE %s SET OBJECT_GEOMETRY=")
                                                   _T("GeomFromText('%s') WHERE OBJECT_ID=%ld"),

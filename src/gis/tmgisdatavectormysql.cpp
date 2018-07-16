@@ -950,7 +950,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord(const wxRealPoint &clickpt, double buffe
     myBufferClick->exportToWkt(&buffer);
     wxASSERT(buffer);
     wxString mySBuffer = wxString::FromAscii(buffer);
-    OGRFree(buffer);
+    CPLFree(buffer);
 
     // search for intersecting features
     wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
@@ -1004,7 +1004,7 @@ bool tmGISDataVectorMYSQL::IsPointSnapped(const wxRealPoint &point, int snaptype
     myPt.exportToWkt(&buffer);
     wxASSERT(buffer);
     wxString mySBuffer = wxString::FromAscii(buffer);
-    OGRFree(buffer);
+    CPLFree(buffer);
 
     wxString myQuery = wxString::Format(_T("SELECT * FROM %s WHERE ST_Touches(GeomFromText('%s') ,OBJECT_GEOMETRY) "),
                                         GetShortFileName().c_str(), buffer);
@@ -1141,7 +1141,7 @@ long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry *Geom, const long &oid, int l
         return wxNOT_FOUND;
 
     wxString mySGeom = wxString::FromAscii(myCharGeom);
-    OGRFree(myCharGeom);
+    CPLFree(myCharGeom);
 
 
     if (layertype == wxNOT_FOUND)
@@ -1180,7 +1180,7 @@ bool tmGISDataVectorMYSQL::UpdateGeometry(OGRGeometry *geom, const long &oid)
     if (!myCharGeom)
         return false;
     wxString mySGeom = wxString::FromAscii(myCharGeom);
-    OGRFree(myCharGeom);
+    CPLFree(myCharGeom);
 
 
     wxString sSentence = wxString::Format(_T("UPDATE  %s SET OBJECT_GEOMETRY=")
