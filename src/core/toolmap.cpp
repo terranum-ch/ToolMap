@@ -1567,9 +1567,11 @@ void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
     }
     wxString mySlavePrjName = myDirDLG.GetPath();
     wxString mySlavePrjNameSml = wxFileName(mySlavePrjName).GetName();
+    wxString myMasterPrjNameSml = m_PManager->GetProjectName();
+    wxString myMasterPrjName = wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(), myMasterPrjNameSml).GetFullPath();
 
     // ask for confirmation....
-    wxString myMsg = wxString::Format(_("Merge project:\n'%s'\ninto\n'%s'?"), mySlavePrjNameSml, m_PManager->GetProjectName());
+    wxString myMsg = wxString::Format(_("Merge project:\n'%s'\ninto\n'%s'?"), mySlavePrjNameSml, myMasterPrjNameSml);
     int answer = wxMessageBox(myMsg, "Confirm", wxOK | wxCANCEL | wxCANCEL_DEFAULT | wxICON_QUESTION, this);
     if (answer != wxOK){
         return;
@@ -1582,10 +1584,15 @@ void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
     }
 
     // merge the project
-    m_PManager->MergeProjects(mySlavePrjName);
+    if(m_PManager->MergeProjects(mySlavePrjName)==false) {
+        wxLogError(_("Merging projects failed!"));
+        return;
+    }
 
-    // optimize the project (clean database)
+    // TODO: optimize the project (clean database)
 
+    // reload display
+    m_LayerManager->ReloadProjectLayers();
 }
 
 

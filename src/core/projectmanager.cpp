@@ -439,16 +439,16 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
     wxASSERT(m_DB);
     wxFileName myMasterProjectFileName(GetDatabase()->DataBaseGetPath(), GetDatabase()->DataBaseGetName());
 
-    // copy project into same directory if needed
+    //TODO: copy project into same directory if needed
 
     wxStopWatch sw;
     sw.Start(0);
     bool bCheckOk = false;
-    tmProjectMerge myCheckMerger(myMasterProjectFileName.GetFullPath(), slave_project_name);
+    tmProjectMerge myCheckMerger(myMasterProjectFileName.GetFullPath(), slave_project_name, GetDatabase());
     myCheckMerger.SetVerbose(beVerbose);
     // checking here
     if (beVerbose) {
-        wxLogMessage(_("\nCHECKING...\n"));
+        wxLogMessage(_("CHECKING..."));
     }
     if(myCheckMerger.CheckSimilar()==false) {
         wxString myErrors = _("Checking FAILED! see bellow\n") + wxJoin(myCheckMerger.GetErrors(), '\n');
@@ -456,16 +456,16 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
         return false;
     }
 
-    wxLogMessage(_("OK projects are similar\n"));
+    wxLogMessage(_("OK projects are similar"));
 
     if (beVerbose) {
-        wxLogMessage(_("Checking projects in %ld [ms]\n"), sw.Time());
+        wxLogMessage(_("Checking projects in %ld [ms]"), sw.Time());
     }
 
     sw.Start(0);
     // merging here
     if (beVerbose) {
-        wxLogMessage(_("\nMERGING...\n"));
+        wxLogMessage(_("MERGING..."));
     }
 
     if(myCheckMerger.MergeIntoMaster()==false) {
