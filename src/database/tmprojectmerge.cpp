@@ -18,12 +18,22 @@
 #include "database.h"
 #include "databaseresult.h"
 
-tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slaveprj)
+tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase * database)
 {
     m_MasterFileName = wxFileName(masterprj);
     m_SlaveFileName = wxFileName(slaveprj);
     SetVerbose(false);
+
+    // open database if required.
+    if (database != NULL)
+    {
+        m_DB = database;
+        m_manage_database = false;
+        return;
+    }
+
     m_DB = NULL;
+    m_manage_database = true;
 
     // opening master database
     m_DB = new DataBase(_T("./"));
@@ -37,7 +47,9 @@ tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slavep
 
 tmProjectMerge::~tmProjectMerge()
 {
-    wxDELETE(m_DB);
+    if (m_manage_database == true) {
+        wxDELETE(m_DB);
+    }
 }
 
 
@@ -430,8 +442,8 @@ bool tmProjectMerge::CheckSimilar()
         return false;
     }
     m_DB->DataBaseClearResults();
-    if (myVersion != 224) {
-        m_Errors.Add(wxString::Format(_("Wrong Database version, works only for database: %d found (%ld)!"), 224,
+    if (myVersion != 230) {
+        m_Errors.Add(wxString::Format(_("Wrong project version, works only for projects v.%d found (%ld)!"), 230,
                                       myVersion));
         return false;
     }
@@ -561,6 +573,7 @@ bool tmProjectMerge::MergeIntoMaster()
             wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true) == false) {
         return false;
     }
+
     return true;
 }
 

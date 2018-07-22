@@ -18,6 +18,7 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+#include "database.h"
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -34,6 +35,7 @@ private:
     wxFileName m_MasterFileName;
     wxFileName m_SlaveFileName;
     DataBase *m_DB;
+    bool m_manage_database;
 
     bool m_beVerbose;
     wxArrayString m_Errors;
@@ -53,7 +55,7 @@ private:
 
 
 public:
-    tmProjectMerge(const wxString &masterprj, const wxString &slaveprj);
+    tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase * database = NULL);
 
     virtual ~tmProjectMerge();
 
