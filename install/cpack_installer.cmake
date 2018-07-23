@@ -2,7 +2,9 @@
 # use git version for package number
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
-add_dependencies(${CMAKE_PROJECT_NAME} ToolBasView)
+if (WITH_TOOLBASVIEW)
+    add_dependencies(${CMAKE_PROJECT_NAME} ToolBasView)
+endif()
 
 # install ToolMap (application)
 install(TARGETS ${CMAKE_PROJECT_NAME}
@@ -48,9 +50,11 @@ if (WIN32)
             DESTINATION bin)
 
     # install ToolBasView
-    install(PROGRAMS
-            ${EXTERNAL_DIR}/bin/ToolBasView.exe
-            DESTINATION bin)
+    if (WITH_TOOLBASVIEW)
+        install(PROGRAMS
+                ${EXTERNAL_DIR}/bin/ToolBasView.exe
+                DESTINATION bin)
+    endif()
 
     # install errmsg.sys
     if (NOT MYSQL_ERRMSG_FILE)
@@ -74,17 +78,21 @@ if (WIN32)
 elseif (UNIX AND NOT APPLE)
 
     # install ToolBasView
-    install(PROGRAMS
-            ${EXTERNAL_DIR}/bin/ToolBasView
-            DESTINATION bin)
+    if (WITH_TOOLBASVIEW)
+        install(PROGRAMS
+                ${EXTERNAL_DIR}/bin/ToolBasView
+                DESTINATION bin)
+    endif()
 
 elseif (APPLE)
 
     # install ToolBasView
-    install(DIRECTORY
-            ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
-            DESTINATION .
-            USE_SOURCE_PERMISSIONS)
+    if (WITH_TOOLBASVIEW)
+        install(DIRECTORY
+                ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
+                DESTINATION .
+                USE_SOURCE_PERMISSIONS)
+    endif()
 
 endif (WIN32)
 
@@ -184,7 +192,7 @@ IF (UNIX AND NOT APPLE)
         set(CPACK_DEBIAN_PACKAGE_NAME "ToolMap")
         set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Terranum <toolmap@terranum.ch>")
         set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-        SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgeos-c1, libcurl3-gnutls, libwrap0, libproj0, libodbc1")
+        SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgeos-c1, libcurl3-gnutls, libwrap0, libproj0, libodbc1, unixODBC")
         SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. The development is now taken over by Terranum (www.terranum.ch). ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
         SET(CPACK_DEBIAN_PACKAGE_SECTION "Sciences")
         SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
