@@ -289,8 +289,8 @@ wxBitmap *tmCoordConvert::GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRec
         wxLogError(_("Reprojecting web raster failed!"));
     }
 
-    OGRFree(pSpatialWKT);
-    OGRFree(pSpatialDestWKT);
+    CPLFree(pSpatialWKT);
+    CPLFree(pSpatialDestWKT);
 
     /* create destination dataset
     GDALDatasetH hDestDS;
@@ -308,7 +308,7 @@ wxBitmap *tmCoordConvert::GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRec
     char * pSpatialdWKT = NULL;
     myDestSpatial->exportToWkt(&pSpatialdWKT);
     GDALSetProjection(hDestDS, pSpatialdWKT);
-    OGRFree(pSpatialdWKT);
+    CPLFree(pSpatialdWKT);
 
 
     CPLErr myErr = GDALReprojectImage(hOriginDS, NULL, hDestDS, NULL, GRA_NearestNeighbour, 0.0, 1, NULL, NULL, NULL);

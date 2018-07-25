@@ -1,5 +1,5 @@
 /* XPM */
-static char *checked_icon[] = {
+static char const *checked_icon[] = {
 "13 13 256 3",
 "000 c #1C5180",
 "001 c #21A121",

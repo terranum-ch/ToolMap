@@ -163,6 +163,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (ID_MENU_PRJ_BACKUP, ToolMapFrame::OnProjectBackup)
                 EVT_MENU (ID_MENU_PRJ_BACKUP_MANAGER, ToolMapFrame::OnProjectBackupManage)
                 EVT_MENU (ID_MENU_PRJ_SAVE_TEMPLATE, ToolMapFrame::OnProjectSaveTemplate)
+                EVT_MENU (ID_MENU_PRJ_MERGE, ToolMapFrame::OnProjectMerge)
                 EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
                 EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
                 EVT_MENU(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnAddWebData)
@@ -571,6 +572,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup\tCtrl+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->AppendSeparator();
+    itemMenu2->Append(ID_MENU_PRJ_MERGE, _("Merge projects..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
@@ -1452,47 +1455,7 @@ void ToolMapFrame::OnProjectBackup(wxCommandEvent &event)
 {
     wxASSERT(m_PManager);
     wxASSERT(m_PManager->GetDatabase());
-
-    // backup path exists ?
-    wxString myBackupPath = wxEmptyString;
-    if (m_PManager->GetDatabase()->GetProjectBackupPath(myBackupPath) != PATH_OK) {
-        wxString sErrMsg = _("No path specified or path invalid \n");
-        sErrMsg.Append(_("for backups or restore operations,\n\n"));
-        sErrMsg.Append(_("Please go to Project->Edit Project->Settings...\n"));
-        sErrMsg.Append(_("and specify a valid path."));
-        wxMessageBox(sErrMsg, _("No valid path found"), wxICON_ERROR | wxOK);
-        return;
-    }
-
-    // create backup file
-    BackupFile myBckFile;
-    myBckFile.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
-                                           m_PManager->GetDatabase()->DataBaseGetName()));
-    myBckFile.SetDate(wxDateTime::Now());
-    myBckFile.SetOutputName(wxFileName(myBackupPath,
-                                       m_PManager->GetDatabase()->DataBaseGetName(),
-                                       "tmbk"));
-
-    // ask for comment
-    wxTextEntryDialog myDlg(this, _("Backup comment:"), _("Backup"), wxEmptyString, wxOK | wxCENTRE);
-    if (myDlg.ShowModal() == wxID_OK) {
-        myBckFile.SetComment(myDlg.GetValue());
-    }
-
-    wxBeginBusyCursor();
-    wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
-    BackupManager myBckManager(m_PManager->GetDatabase());
-
-    // Don't display progress dialog under Mac... Toooo slow!
-    wxWindow *myWnd = NULL;
-#ifndef __WXMAC__
-    myWnd = this;
-#endif
-
-    if (myBckManager.Backup(myBckFile, myWnd) == false) {
-        wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
-    }
-    wxEndBusyCursor();
+    m_PManager->BackupProject(wxEmptyString);
 }
 
 
@@ -1592,6 +1555,46 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event)
         wxLogError(_("Template : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     }
     wxEndBusyCursor();
+}
+
+
+void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
+    wxASSERT(m_PManager);
+
+    wxDirDialog myDirDLG(this, _("Choose a Slave ToolMap project for merging"), _T(""),
+                         wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
+    if (myDirDLG.ShowModal() != wxID_OK) {
+        return;
+    }
+    wxString mySlavePrjName = myDirDLG.GetPath();
+    wxString mySlavePrjNameSml = wxFileName(mySlavePrjName).GetName();
+    wxString myMasterPrjNameSml = m_PManager->GetProjectName();
+    wxString myMasterPrjName = wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
+                                          myMasterPrjNameSml).GetFullPath();
+
+    // ask for confirmation....
+    wxString myMsg = wxString::Format(_("Merge project:\n'%s'\ninto\n'%s'?"), mySlavePrjNameSml, myMasterPrjNameSml);
+    int answer = wxMessageBox(myMsg, "Confirm", wxOK | wxCANCEL | wxCANCEL_DEFAULT | wxICON_QUESTION, this);
+    if (answer != wxOK) {
+        return;
+    }
+
+    // create a backup point before merging
+    if (!m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml))) {
+        wxLogWarning(_("Backup failed, merging not allowed!"));
+        return;
+    }
+
+    // merge the project
+    if (!m_PManager->MergeProjects(mySlavePrjName)) {
+        wxLogError(_("Merging projects failed!"));
+        return;
+    }
+
+    // TODO: optimize the project (clean database)
+
+    // reload display
+    m_LayerManager->ReloadProjectLayers();
 }
 
 

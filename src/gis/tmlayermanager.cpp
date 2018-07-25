@@ -799,6 +799,10 @@ void tmLayerManager::OnSizeChange(wxCommandEvent &event)
 
     // compute reel size in MM
     wxClientDC dc(m_GISRenderer);
+
+    if (dc.GetWindow() == nullptr)
+        return;
+
     m_Scale.SetWindowExtentMM(dc.GetSizeMM());
 
 
