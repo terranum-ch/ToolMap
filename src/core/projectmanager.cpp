@@ -439,20 +439,44 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
     wxASSERT(m_DB);
     wxFileName myMasterProjectFileName(GetDatabase()->DataBaseGetPath(), GetDatabase()->DataBaseGetName());
 
-    //TODO: copy project into same directory if needed
+    // create a temp directory
+    wxString tmpPath = GetDatabase()->DataBaseGetPath() + wxFileName::GetPathSeparator() + "tmp_toolmap_merge";
+    if (wxDirExists(tmpPath)) {
+        if (!CleanDirectory(tmpPath))
+            return false;
+    }
+    if (!wxFileName::Mkdir(tmpPath)) {
+        wxLogError(tmpPath + " could not be created.");
+        return false;
+    }
+
+    // get the first file in the directory
+    wxDir fromDir(slave_project_name);
+    wxString nextFile;
+    bool found = fromDir.GetFirst(&nextFile);
+
+    // copy all files
+    while (found) {
+        wxString nextFilePath = slave_project_name + wxFileName::GetPathSeparator() + nextFile;
+        wxString destFilePath = tmpPath + wxFileName::GetPathSeparator() + nextFile;
+        if (wxFileExists(nextFilePath) && !wxCopyFile(nextFilePath, destFilePath)) {
+            wxLogWarning("Could not copy " + nextFilePath + " to " + destFilePath);
+        }
+        found = fromDir.GetNext(&nextFile);
+    }
 
     wxStopWatch sw;
     sw.Start(0);
-    bool bCheckOk = false;
-    tmProjectMerge myCheckMerger(myMasterProjectFileName.GetFullPath(), slave_project_name, GetDatabase());
-    myCheckMerger.SetVerbose(beVerbose);
+    tmProjectMerge merger(myMasterProjectFileName.GetFullPath(), tmpPath, GetDatabase());
+    merger.SetVerbose(beVerbose);
     // checking here
     if (beVerbose) {
         wxLogMessage(_("CHECKING..."));
     }
-    if(myCheckMerger.CheckSimilar()==false) {
-        wxString myErrors = _("Checking FAILED! see bellow\n") + wxJoin(myCheckMerger.GetErrors(), '\n');
+    if (merger.CheckSimilar() == false) {
+        wxString myErrors = _("Checking FAILED! \n") + wxJoin(merger.GetErrors(), '\n');
         wxLogError(myErrors);
+        CleanDirectory(tmpPath);
         return false;
     }
 
@@ -468,13 +492,35 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
         wxLogMessage(_("MERGING..."));
     }
 
-    if(myCheckMerger.MergeIntoMaster()==false) {
-        wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(myCheckMerger.GetErrors(), '\n');
+    if(merger.MergeIntoMaster()==false) {
+        wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(merger.GetErrors(), '\n');
         wxLogError(myErrors);
+		CleanDirectory(tmpPath);
         return false;
     }
 
+    // remove temporary directory
+    CleanDirectory(tmpPath);
+
     wxLogMessage(_("OK Project Merged into '%s' in %ld [ms]"), myMasterProjectFileName.GetFullPath(), sw.Time());
+    return true;
+}
+
+bool ProjectManager::CleanDirectory(const wxString &path)
+{
+    wxArrayString files;
+    wxDir::GetAllFiles(path, &files);
+    for (int i = 0; i < files.GetCount(); ++i) {
+        if (!wxRemoveFile(files.Item(i))) {
+            wxLogError("Could not remove %s", files.Item(i));
+            return false;
+        }
+    }
+
+    if (!wxDir(path).HasFiles()) {
+        return wxRmdir(path);
+    }
+
     return true;
 }
 

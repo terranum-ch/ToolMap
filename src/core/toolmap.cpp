@@ -1561,30 +1561,32 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event)
 void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
     wxASSERT(m_PManager);
 
-    wxDirDialog myDirDLG (this,_("Choose a Slave ToolMap project for merginng"), _T(""), wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
+    wxDirDialog myDirDLG(this, _("Choose a Slave ToolMap project for merging"), _T(""),
+                         wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
     if (myDirDLG.ShowModal() != wxID_OK) {
         return;
     }
     wxString mySlavePrjName = myDirDLG.GetPath();
     wxString mySlavePrjNameSml = wxFileName(mySlavePrjName).GetName();
     wxString myMasterPrjNameSml = m_PManager->GetProjectName();
-    wxString myMasterPrjName = wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(), myMasterPrjNameSml).GetFullPath();
+    wxString myMasterPrjName = wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
+                                          myMasterPrjNameSml).GetFullPath();
 
     // ask for confirmation....
     wxString myMsg = wxString::Format(_("Merge project:\n'%s'\ninto\n'%s'?"), mySlavePrjNameSml, myMasterPrjNameSml);
     int answer = wxMessageBox(myMsg, "Confirm", wxOK | wxCANCEL | wxCANCEL_DEFAULT | wxICON_QUESTION, this);
-    if (answer != wxOK){
+    if (answer != wxOK) {
         return;
     }
 
     // create a backup point before merging
-    if(m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml)) == false){
+    if (!m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml))) {
         wxLogWarning(_("Backup failed, merging not allowed!"));
         return;
     }
 
     // merge the project
-    if(m_PManager->MergeProjects(mySlavePrjName)==false) {
+    if (!m_PManager->MergeProjects(mySlavePrjName)) {
         wxLogError(_("Merging projects failed!"));
         return;
     }
