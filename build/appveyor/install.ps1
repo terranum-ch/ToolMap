@@ -14,7 +14,7 @@ $REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
-$REBUILD_MYSQL=$false
+$REBUILD_MYSQL=$true
 $REBUILD_CURL=$false
 
 # Setup VS environment
@@ -93,6 +93,8 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
   move "$TMP_DIR\wxwidgets\lib" "$LIB_DIR\wxwidgets\lib"
 }
 $env:WXWIN = "$LIB_DIR\wxwidgets"
+# List files
+Get-ChildItem "$LIB_DIR/wxwidgets"
 
 # Install wxPDFDocument
 if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
@@ -116,6 +118,8 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
 }
+# List files
+Get-ChildItem "$LIB_DIR/wxpdfdoc"
 
 # Install curl
 if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
@@ -139,6 +143,8 @@ if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
   move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\include" "$LIB_DIR\curl\include"
   move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\lib" "$LIB_DIR\curl\lib"
 }
+# List files
+Get-ChildItem "$LIB_DIR/curl"
 
 # Install Proj
 if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
@@ -160,6 +166,8 @@ if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   nmake -f makefile.vc INSTDIR="$LIB_DIR\proj" > $null
   nmake -f makefile.vc INSTDIR="$LIB_DIR\proj" install-all > $null
 }
+# List files
+Get-ChildItem "$LIB_DIR/proj"
 
 # Install Geos
 if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
@@ -189,6 +197,8 @@ if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
   move "$TMP_DIR\geos\include" "$LIB_DIR\geos\include"
   move "$TMP_DIR\geos\capi" "$LIB_DIR\geos\capi"
 }
+# List files
+Get-ChildItem "$LIB_DIR/geos"
 
 # Install Gdal
 if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
@@ -212,6 +222,8 @@ if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
 }
+# List files
+Get-ChildItem "$LIB_DIR/gdal"
 
 # Install Mysql
 if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
@@ -238,3 +250,5 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   cmake --build . --config relwithdebinfo > $null
   cmake --build . --config relwithdebinfo --target INSTALL > $null
 }
+# List files
+Get-ChildItem "$LIB_DIR/mysql"
