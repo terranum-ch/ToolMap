@@ -235,16 +235,11 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   }
   mkdir "$LIB_DIR\mysql" > $null
   $MYSQL_URL="https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.38.zip"
-  $BISON_URL="https://kent.dl.sourceforge.net/project/gnuwin32/bison/2.4.1/bison-2.4.1-bin.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $MYSQL_URL -FileName mysql.zip > $null
-    appveyor DownloadFile $BISON_URL -FileName bison.zip > $null
   } else {
     Invoke-WebRequest -Uri $MYSQL_URL -OutFile mysql.zip
-    Invoke-WebRequest -Uri $BISON_URL -OutFile bison.zip
   }
-  7z x bison.zip -o"$BISON_DIR" > $null
-  $env:Path += ";$BISON_DIR/bin"
   7z x mysql.zip -o"$TMP_DIR" > $null
   move "$TMP_DIR\mysql-*" "$TMP_DIR\mysql"
   cd "$TMP_DIR\mysql"
