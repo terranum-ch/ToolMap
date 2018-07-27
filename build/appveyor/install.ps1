@@ -234,7 +234,7 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
     Remove-Item "$LIB_DIR\mysql" -Force -Recurse
   }
   mkdir "$LIB_DIR\mysql" > $null
-  $MYSQL_URL="https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.38.zip"
+  $MYSQL_URL="https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.36.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $MYSQL_URL -FileName mysql.zip > $null
   } else {
@@ -244,7 +244,7 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   move "$TMP_DIR\mysql-*" "$TMP_DIR\mysql"
   cd "$TMP_DIR\mysql"
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
-  copy "$PATCH_DIR\mysql-5.6.38-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
+  copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
   cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
   cmake --build . --config relwithdebinfo
   cmake --build . --config relwithdebinfo --target INSTALL
