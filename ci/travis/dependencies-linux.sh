@@ -12,11 +12,11 @@ sudo apt-get install -y libwrap0-dev
 sudo apt-get install -y cxxtest
 
 # Build libraries
-chmod +x build/travis/build-wxwidgets.sh
-build/travis/build-wxwidgets.sh
-chmod +x build/travis/build-gdal.sh
-build/travis/build-gdal.sh
-chmod +x build/travis/build-wxpdfdoc.sh
-build/travis/build-wxpdfdoc.sh
-chmod +x build/travis/build-mysql.sh
-build/travis/build-mysql.sh
+chmod +x ci/travis/build-wxwidgets.sh
+ci/travis/build-wxwidgets.sh
+chmod +x ci/travis/build-gdal.sh
+ci/travis/build-gdal.sh
+chmod +x ci/travis/build-wxpdfdoc.sh
+ci/travis/build-wxpdfdoc.sh
+chmod +x ci/travis/build-mysql.sh
+ci/travis/build-mysql.sh

@@ -1,4 +1,4 @@
-set(APPIMAGE_CONFIG_DIR "${CMAKE_SOURCE_DIR}/install/linux") # Specifies where to find template files, in this case this same directory
+set(APPIMAGE_CONFIG_DIR "${CMAKE_SOURCE_DIR}/build/cpack/linux") # Specifies where to find template files, in this case this same directory
 
 set(APPIMAGE_ASSISTANT_PROGRAM "${CMAKE_BINARY_DIR}/appimagetool-x86_64.AppImage" CACHE FILEPATH "AppImageAssistant executable")
 set(APPIMAGE_APPRUN_PROGRAM "${CMAKE_BINARY_DIR}/AppRun-x86_64" CACHE FILEPATH "AppImage AppRun executable")

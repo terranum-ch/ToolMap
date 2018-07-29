@@ -159,5 +159,5 @@ IF (USE_UNITTEST)
 ENDIF (USE_UNITTEST)
 
 # create installer using CPACK
-include("install/cpack_installer.cmake")
+include("build/cpack/cpack_installer.cmake")
 

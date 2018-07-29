@@ -3,8 +3,8 @@ $TMP_DIR="C:\projects\tmp"
 $LIB_DIR="C:\projects\libs"
 $CMAKE_DIR="C:\projects\cmake"
 $CXXTEST_DIR="C:\projects\cxxtest"
-$PATCH_DIR="C:\projects\toolmap\build\appveyor\patches"
-$MSC_VER=1911
+$PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
+$MSC_VER=1914
 $ON_APPVEYOR=$true
 $WITH_DEBUG_LIBS=$false
 
@@ -244,11 +244,9 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   cd "$TMP_DIR\mysql"
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
   copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
-  mkdir bld > $null
-  cd bld
-  cmake .. -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small > $null
-  cmake --build . --config relwithdebinfo > $null
-  cmake --build . --config relwithdebinfo --target INSTALL > $null
+  cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
+  cmake --build . --config RelWithDebInfo
+  cmake --build . --config RelWithDebInfo --target INSTALL
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
