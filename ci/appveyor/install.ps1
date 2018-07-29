@@ -248,9 +248,8 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   cmake --build . --config RelWithDebInfo --target sql
   cmake --build . --config RelWithDebInfo --target libmysqld
   mkdir "$LIB_DIR\mysql\lib" > $null
-  mkdir "$LIB_DIR\mysql\bin" > $null
   copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\libmysqld.lib" "$LIB_DIR\mysql\lib\libmysqld.lib"
-  copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\libmysqld.dll" "$LIB_DIR\mysql\bin\libmysqld.dll"
+  copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\libmysqld.dll" "$LIB_DIR\mysql\lib\libmysqld.dll"
   Copy-Item "$TMP_DIR\mysql\include" -Destination "$LIB_DIR\mysql\include" -Recurse
   Copy-Item "$TMP_DIR\mysql\sql\share" -Destination "$LIB_DIR\mysql\share" -Recurse
 }
