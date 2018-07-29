@@ -14,7 +14,7 @@ $REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$false
-$REBUILD_MYSQL=$true
+$REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
 
 # Setup VS environment

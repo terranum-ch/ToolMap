@@ -12,7 +12,7 @@ install(TARGETS ${CMAKE_PROJECT_NAME}
         RUNTIME DESTINATION bin)
 
 # install GPL licence file
-install(FILES install/COPYING DESTINATION .)
+install(FILES build/cpack/COPYING DESTINATION .)
 
 # search dll to install
 if (GDAL_DLL_NAME)
