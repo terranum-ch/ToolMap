@@ -252,6 +252,7 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\sql_embedded.lib" "$LIB_DIR\mysql\lib\sql_embedded.lib"
   copy "$TMP_DIR\mysql\sql\RelWithDebInfo\sql.lib" "$LIB_DIR\mysql\lib\sql.lib"
   Copy-Item "$TMP_DIR\mysql\include" -Destination "$LIB_DIR\mysql\include" -Recurse
+  Copy-Item "$TMP_DIR\mysql\sql\share" -Destination "$LIB_DIR\mysql\share" -Recurse
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
