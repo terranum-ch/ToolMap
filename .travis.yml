@@ -52,11 +52,11 @@ cache:
   - $HOME/.wxwidgets
   - $HOME/.mysql
 install:
-  - chmod +x build/travis/dependencies-${TRAVIS_OS_NAME}.sh
-  - travis_wait 30 build/travis/dependencies-${TRAVIS_OS_NAME}.sh || true
+  - chmod +x ci/travis/dependencies-${TRAVIS_OS_NAME}.sh
+  - travis_wait 30 ci/travis/dependencies-${TRAVIS_OS_NAME}.sh || true
 script:
-  - chmod +x build/travis/run-${TARGET}.sh
-  - travis_wait 40 build/travis/run-${TARGET}.sh
+  - chmod +x ci/travis/run-${TARGET}.sh
+  - travis_wait 40 ci/travis/run-${TARGET}.sh
   - if [ "$RUN_TESTS" = true ] ; then cd bin/test && ctest -V ; fi # run the tests out of the script so it can fail.
 after_success:
   - cd $HOME/build/terranum-ch/ToolMap/bin

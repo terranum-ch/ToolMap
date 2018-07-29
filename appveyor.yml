@@ -11,10 +11,10 @@ environment:
   CXXFLAGS: /MP
   
 cache:
-  - C:\projects\libs -> build/appveyor/cache-version.txt
+  - C:\projects\libs -> ci/appveyor/cache-version.txt
   
 install:
-  - ps: build/appveyor/install.ps1
+  - ps: ci/appveyor/install.ps1
   
 build_script:
   - echo Running cmake...
