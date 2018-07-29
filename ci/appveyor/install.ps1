@@ -245,8 +245,8 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
   copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
   cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
-  cmake --build . --config relwithdebinfo
-  cmake --build . --config relwithdebinfo --target INSTALL
+  cmake --build . --config RelWithDebInfo
+  cmake --build . --config RelWithDebInfo --target INSTALL
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
