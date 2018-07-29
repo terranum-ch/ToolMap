@@ -245,8 +245,13 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
   copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
   cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
-  cmake --build . --config RelWithDebInfo
-  cmake --build . --config RelWithDebInfo --target INSTALL
+  cmake --build . --config RelWithDebInfo --target sql
+  cmake --build . --config RelWithDebInfo --target libmysqld
+  mkdir "$LIB_DIR\mysql\lib" > $null
+  copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\libmysqld.lib" "$LIB_DIR\mysql\lib\libmysqld.lib"
+  copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\sql_embedded.lib" "$LIB_DIR\mysql\lib\sql_embedded.lib"
+  copy "$TMP_DIR\mysql\sql\RelWithDebInfo\sql.lib" "$LIB_DIR\mysql\lib\sql.lib"
+  Copy-Item "$TMP_DIR\mysql\include" -Destination "$LIB_DIR\mysql\include" -Recurse
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
