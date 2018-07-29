@@ -4,6 +4,7 @@
 bin/*
 bin-vs/*
 bin-vs-debug/*
+bin-vs-relwithdebinfo/*
 share/*
 unit_testing/*
 CMakeLists.txt.user
