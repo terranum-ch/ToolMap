@@ -135,7 +135,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     wxBoxSizer *itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
     itemPanel4->SetSizer(itemBoxSizer4);
 
-    m_textCtrlPoints = new wxTextCtrl(itemPanel4, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlPoints = new wxSearchCtrl(itemPanel4, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_textCtrlPoints->SetToolTip( wxT("Type to filter the list") );
     itemBoxSizer4->Add(m_textCtrlPoints, 0, wxALL | wxEXPAND, 2);
 
@@ -174,7 +174,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     wxBoxSizer *itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
     itemPanel7->SetSizer(itemBoxSizer7);
 
-    m_textCtrlPoly = new wxTextCtrl(itemPanel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlPoly = new wxSearchCtrl(itemPanel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_textCtrlPoly->SetToolTip( wxT("Type to filter the list") );
     itemBoxSizer7->Add(m_textCtrlPoly, 0, wxALL | wxEXPAND, 2);
 
