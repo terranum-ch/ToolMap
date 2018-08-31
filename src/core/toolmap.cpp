@@ -151,6 +151,8 @@ bool tmDropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenam
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
+                EVT_CHAR_HOOK(ToolMapFrame::HandleCharHookEvent)
+
                 EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
                 EVT_MENU (ID_MENU_NEW_PRJ_EXISTING, ToolMapFrame::OnNewProjectExisting)
                 EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
@@ -537,6 +539,25 @@ ToolMapFrame::~ToolMapFrame()
 }
 
 
+void ToolMapFrame::HandleCharHookEvent(wxKeyEvent& event)
+{
+    if (event.GetKeyCode() == -1) {
+        m_MenuBar->SetAcceleratorTable(*m_MenuBarAcceleratorTable);
+    } else {
+        wxWindow *p_focus = FindFocus();
+        if (p_focus && dynamic_cast<wxSearchCtrl *>(p_focus)) {
+            m_MenuBarAcceleratorTable = new wxAcceleratorTable;
+            m_MenuBarAcceleratorTable->Ref(*m_MenuBar->GetAcceleratorTable());
+            m_MenuBar->SetAcceleratorTable(wxNullAcceleratorTable);
+            wxKeyEvent *p_event = new wxKeyEvent(wxEVT_CHAR_HOOK);
+            p_event->m_keyCode = -1;
+            QueueEvent(p_event);
+        }
+    }
+
+    event.Skip();
+}
+
 void ToolMapFrame::OnQuit(wxCommandEvent &event)
 {
     Close(true);
@@ -558,7 +579,7 @@ void ToolMapFrame::OnClose(wxCloseEvent &event)
 void ToolMapFrame::_CreateMenu()
 {
     // PROJECT
-    wxMenuBar *menuBar = new wxMenuBar;
+    m_MenuBar = new wxMenuBar;
     wxMenu *itemMenu2 = new wxMenu;
     wxMenu *itemMenu3 = new wxMenu;
     itemMenu3->Append(ID_MENU_NEW_PRJ_EMPTY, _("Empty...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
@@ -588,7 +609,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit"), itemMenu16);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu2, _("&Project"));
+	m_MenuBar->Append(itemMenu2, _("&Project"));
 
     // DATA
     wxMenu *itemMenu24 = new wxMenu;
@@ -597,7 +618,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu24, _("Data"));
+	m_MenuBar->Append(itemMenu24, _("Data"));
 
     // VIEW
     wxMenu *itemMenu28 = new wxMenu;
@@ -615,7 +636,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to selected layer\tCtrl+2"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
     itemMenu28->Append(wxID_REFRESH, _("Refresh\tCtrl+R"), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu28, _("View"));
+	m_MenuBar->Append(itemMenu28, _("View"));
 
     // SELECTION
     wxMenu *itemMenu66 = new wxMenu;
@@ -624,7 +645,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
     itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu66, _("Selection"));
+	m_MenuBar->Append(itemMenu66, _("Selection"));
 
 
     // EDITION
@@ -666,7 +687,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu42->Append(ID_SNAP_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(wxID_ANY, _("Snapping"), itemMenu42);
 
-    menuBar->Append(itemMenu41, _("Edition"));
+	m_MenuBar->Append(itemMenu41, _("Edition"));
 
     // ATTRIBUTION
     wxMenu *itemMenu55 = new wxMenu;
@@ -688,7 +709,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcut..."), wxEmptyString, wxITEM_CHECK);
-    menuBar->Append(itemMenu55, _("Attribution"));
+	m_MenuBar->Append(itemMenu55, _("Attribution"));
 
 
     // VALIDATION
@@ -702,7 +723,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
     itemMenu63->Append(ID_MENU_VALIDITY, _("Check geometries validity"), _T(""), wxITEM_NORMAL);
-    menuBar->Append(itemMenu63, _("Validation"));
+	m_MenuBar->Append(itemMenu63, _("Validation"));
 
     // WINDOW
     wxMenu *itemMenu77 = new wxMenu;
@@ -722,7 +743,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu77->AppendSubMenu(myLayoutMenu, _("Workspace"));
     itemMenu77->AppendSeparator();
     itemMenu77->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
-    menuBar->Append(itemMenu77, _("Window"));
+	m_MenuBar->Append(itemMenu77, _("Window"));
 
     // HELP
     wxMenu *itemMenu81 = new wxMenu;
@@ -734,8 +755,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu81->Append(ID_MENU_USER_MANUAL, _("User Manual..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu81->AppendSeparator();
     itemMenu81->Append(ID_MENU_CONTACT_US, _("Contact us..."), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu81, _("&Help"));
-    this->SetMenuBar(menuBar);
+	m_MenuBar->Append(itemMenu81, _("&Help"));
+    this->SetMenuBar(m_MenuBar);
 
 }
 

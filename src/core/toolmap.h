@@ -300,6 +300,9 @@ public:
 class ToolMapFrame : public wxFrame
 {
 private:
+    wxMenuBar *m_MenuBar;
+    wxAcceleratorTable* m_MenuBarAcceleratorTable;
+
     wxAuiManager *m_AuiManager;
     AttribObjType_PANEL *m_AttribObjPanel;
     Main_PANEL *m_MainPanel;
@@ -324,6 +327,8 @@ private:
     wxLogWindow *m_LogWindow;
     TocWindowDlgGen *m_TocWindow;
     wxArrayString m_Perspectives;
+
+    void HandleCharHookEvent(wxKeyEvent& event);
 
     void OnQuit(wxCommandEvent &event);
 
