@@ -7,6 +7,7 @@ $PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
 $MSC_VER=1914
 $ON_APPVEYOR=$true
 $WITH_DEBUG_LIBS=$false
+$MYSQL_BUILD_TYPE="RelWithDebInfo"
 
 # Force rebuilding some libraries
 $REBUILD_WX=$false
@@ -244,14 +245,19 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   cd "$TMP_DIR\mysql"
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
   copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
-  cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
-  cmake --build . --config RelWithDebInfo --target sql
-  cmake --build . --config RelWithDebInfo --target libmysqld
-  mkdir "$LIB_DIR\mysql\lib" > $null
-  copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\libmysqld.lib" "$LIB_DIR\mysql\lib\libmysqld.lib"
-  copy "$TMP_DIR\mysql\libmysqld\RelWithDebInfo\libmysqld.dll" "$LIB_DIR\mysql\lib\libmysqld.dll"
-  Copy-Item "$TMP_DIR\mysql\include" -Destination "$LIB_DIR\mysql\include" -Recurse
-  Copy-Item "$TMP_DIR\mysql\sql\share" -Destination "$LIB_DIR\mysql\share" -Recurse
+  cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=$MYSQL_BUILD_TYPE -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
+  if ($ON_APPVEYOR) {
+    cmake --build . --config $MYSQL_BUILD_TYPE --target sql
+    cmake --build . --config $MYSQL_BUILD_TYPE --target libmysqld
+    mkdir "$LIB_DIR\mysql\lib" > $null
+    copy "$TMP_DIR\mysql\libmysqld\$MYSQL_BUILD_TYPE\libmysqld.lib" "$LIB_DIR\mysql\lib\libmysqld.lib"
+    copy "$TMP_DIR\mysql\libmysqld\$MYSQL_BUILD_TYPE\libmysqld.dll" "$LIB_DIR\mysql\lib\libmysqld.dll"
+    Copy-Item "$TMP_DIR\mysql\include" -Destination "$LIB_DIR\mysql\include" -Recurse
+    Copy-Item "$TMP_DIR\mysql\sql\share" -Destination "$LIB_DIR\mysql\share" -Recurse
+  } else {
+    cmake --build . --config $MYSQL_BUILD_TYPE
+    cmake --build . --config $MYSQL_BUILD_TYPE --target INSTALL
+  }
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
