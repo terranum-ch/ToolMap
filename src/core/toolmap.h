@@ -527,8 +527,6 @@ private:
 
     void _CreateToolBar();
 
-    void _CreateAccelerators();
-
     void _LoadPreference(bool reload);
 
     void _CreatePerspectives();

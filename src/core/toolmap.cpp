@@ -369,7 +369,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
 
     _CreateMenu();
     _CreateToolBar();
-    _CreateAccelerators();
 
     wxLog *myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
     delete wxLog::SetActiveTarget(myDlgLog);
@@ -782,23 +781,6 @@ void ToolMapFrame::_CreateToolBar()
     itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), *_img_toolbar_info, wxNullBitmap, wxITEM_NORMAL,
                           _("Information"), wxEmptyString);
     itemToolBar3->Realize();
-}
-
-
-void ToolMapFrame::_CreateAccelerators()
-{
-    wxAcceleratorEntry entries[8];
-    entries[0].Set(wxACCEL_NORMAL, (int) 'V', ID_MENU_SELECT);
-    entries[1].Set(wxACCEL_NORMAL, (int) 'Z', ID_MENU_ZOOM);
-    entries[2].Set(wxACCEL_NORMAL, (int) 'H', ID_MENU_PAN);
-    entries[3].Set(wxACCEL_NORMAL, (int) 'D', ID_MENU_DRAW);
-    entries[4].Set(wxACCEL_NORMAL, (int) 'M', ID_MENU_MODIFY);
-    entries[5].Set(wxACCEL_NORMAL, (int) '<', wxID_BACKWARD);
-    entries[6].Set(wxACCEL_NORMAL, WXK_BACK, ID_MENU_DELETE_OBJ);
-    entries[7].Set(wxACCEL_NORMAL, WXK_DELETE, ID_MENU_DELETE_OBJ);
-
-    wxAcceleratorTable accel(8, entries);
-    SetAcceleratorTable(accel);
 }
 
 
