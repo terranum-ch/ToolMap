@@ -4,7 +4,7 @@ $LIB_DIR="C:\projects\libs"
 $CMAKE_DIR="C:\projects\cmake"
 $CXXTEST_DIR="C:\projects\cxxtest"
 $PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
-$MSC_VER=1914
+$MSC_VER=1915
 $ON_APPVEYOR=$true
 $WITH_DEBUG_LIBS=$false
 $MYSQL_BUILD_TYPE="RelWithDebInfo"
@@ -31,10 +31,10 @@ popd
 Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor Yellow
 
 # All external dependencies are installed in the defined directory
-if(!(Test-Path -Path $LIB_DIR)) {
+if(-not (Test-Path -Path $LIB_DIR)) {
   mkdir $LIB_DIR > $null
 }
-if(!(Test-Path -Path $TMP_DIR)) {
+if(-not (Test-Path -Path $TMP_DIR)) {
   mkdir $TMP_DIR > $null
 }
 
@@ -68,9 +68,13 @@ if ($ON_APPVEYOR) {
 7z x cxxtest.zip -o"$TMP_DIR" > $null
 move "$TMP_DIR\cxxtest-*" "$CXXTEST_DIR"
 $env:Path += ";$CXXTEST_DIR"
+
+# List dirs already present from cache
+Write-Host "`nContent of the cache:" -ForegroundColor Yellow
+Get-ChildItem "$LIB_DIR"
   
 # Install wxWidgets
-if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
+if(-not (Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
   Write-Host "`nBuilding wxWidgets" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\wxwidgets") {
@@ -92,13 +96,15 @@ if(!(Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
   move "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h_old"
   copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
   move "$TMP_DIR\wxwidgets\lib" "$LIB_DIR\wxwidgets\lib"
+} else {
+  Write-Host "`nwxWidgets already in cache" -ForegroundColor Yellow
 }
 $env:WXWIN = "$LIB_DIR\wxwidgets"
 # List files
 Get-ChildItem "$LIB_DIR/wxwidgets"
 
 # Install wxPDFDocument
-if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
+if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   Write-Host "`nBuilding wxPDFDocument" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\wxpdfdoc") {
@@ -118,12 +124,14 @@ if(!(Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   nmake -f makefile.vc WX_DIR="$LIB_DIR\wxwidgets" WX_VERSION=31 WX_MONOLITHIC=1 WX_DEBUG=1 > $null
   move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
   move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
+} else {
+  Write-Host "`nwxPDFDocument already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/wxpdfdoc"
 
 # Install curl
-if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
+if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
   Write-Host "`nBuilding curl" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\curl") {
@@ -143,12 +151,14 @@ if(!(Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
   move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\bin" "$LIB_DIR\curl\bin"
   move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\include" "$LIB_DIR\curl\include"
   move "$TMP_DIR\curl\builds\libcurl-vc14-x64-release-dll-ipv6-sspi-winssl\lib" "$LIB_DIR\curl\lib"
+} else {
+  Write-Host "`curl already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/curl"
 
 # Install Proj
-if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
+if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   Write-Host "`nBuilding Proj" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\proj") {
@@ -166,12 +176,14 @@ if(!(Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   cd "$TMP_DIR\proj"
   nmake -f makefile.vc INSTDIR="$LIB_DIR\proj" > $null
   nmake -f makefile.vc INSTDIR="$LIB_DIR\proj" install-all > $null
+} else {
+  Write-Host "`Proj already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/proj"
 
 # Install Geos
-if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
+if(-not (Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
   Write-Host "`nBuilding Geos" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\geos") {
@@ -197,12 +209,14 @@ if(!(Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
   move "$TMP_DIR\geos\src" "$LIB_DIR\geos\src"
   move "$TMP_DIR\geos\include" "$LIB_DIR\geos\include"
   move "$TMP_DIR\geos\capi" "$LIB_DIR\geos\capi"
+} else {
+  Write-Host "`Geos already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/geos"
 
 # Install Gdal
-if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
+if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   Write-Host "`nBuilding Gdal" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\gdal") {
@@ -222,12 +236,14 @@ if(!(Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
+} else {
+  Write-Host "`Gdal already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/gdal"
 
 # Install Mysql
-if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
+if(-not (Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   Write-Host "`nBuilding Mysql" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\mysql") {
@@ -245,10 +261,10 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
   cd "$TMP_DIR\mysql"
   rm "$TMP_DIR\mysql\sql\sql_table.cc"
   copy "$PATCH_DIR\mysql-5.6.36-sql_table.cc" "$TMP_DIR\mysql\sql\sql_table.cc"
-  cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=$MYSQL_BUILD_TYPE -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small
+  cmake . -G"Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=$MYSQL_BUILD_TYPE -DCMAKE_INSTALL_PREFIX="$LIB_DIR\mysql" -DWITH_UNIT_TESTS:BOOL=OFF -DFEATURE_SET:STRING=small > $null
   if ($ON_APPVEYOR) {
-    cmake --build . --config $MYSQL_BUILD_TYPE --target sql
-    cmake --build . --config $MYSQL_BUILD_TYPE --target libmysqld
+    cmake --build . --config $MYSQL_BUILD_TYPE --target sql > $null
+    cmake --build . --config $MYSQL_BUILD_TYPE --target libmysqld > $null
     mkdir "$LIB_DIR\mysql\lib" > $null
     copy "$TMP_DIR\mysql\libmysqld\$MYSQL_BUILD_TYPE\libmysqld.lib" "$LIB_DIR\mysql\lib\libmysqld.lib"
     copy "$TMP_DIR\mysql\libmysqld\$MYSQL_BUILD_TYPE\libmysqld.dll" "$LIB_DIR\mysql\lib\libmysqld.dll"
@@ -258,6 +274,8 @@ if(!(Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
     cmake --build . --config $MYSQL_BUILD_TYPE
     cmake --build . --config $MYSQL_BUILD_TYPE --target INSTALL
   }
+} else {
+  Write-Host "`Mysql already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
