@@ -4,7 +4,7 @@ $LIB_DIR="C:\projects\libs"
 $CMAKE_DIR="C:\projects\cmake"
 $CXXTEST_DIR="C:\projects\cxxtest"
 $PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
-$MSC_VER=1914
+$MSC_VER=1915
 $ON_APPVEYOR=$true
 $WITH_DEBUG_LIBS=$false
 $MYSQL_BUILD_TYPE="RelWithDebInfo"
@@ -70,6 +70,7 @@ move "$TMP_DIR\cxxtest-*" "$CXXTEST_DIR"
 $env:Path += ";$CXXTEST_DIR"
 
 # List dirs already present from cache
+Write-Host "`nContent of the cache:" -ForegroundColor Yellow
 Get-ChildItem "$LIB_DIR"
   
 # Install wxWidgets
