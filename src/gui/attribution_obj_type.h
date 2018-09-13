@@ -98,8 +98,8 @@ class AttribObjType_PANEL : public ManagedAuiWnd
     wxBoxSizer *m_ButtonSizer;
     wxBoxSizer *m_AttribSizer;
     wxSearchCtrl *m_textCtrlLines;
-    wxTextCtrl *m_textCtrlPoints;
-    wxTextCtrl *m_textCtrlPoly;
+	wxSearchCtrl *m_textCtrlPoints;
+	wxSearchCtrl *m_textCtrlPoly;
 
     // event function
     //void OnAttributeBtn (wxCommandEvent & event);

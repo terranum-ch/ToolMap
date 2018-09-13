@@ -17,3 +17,5 @@ cmake-build-relwithdebinfo/*
 *.srctrlprj
 *.srctrlbm
 *.srctrldb
+
+bin-cmd-debug/
