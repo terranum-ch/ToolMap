@@ -517,7 +517,7 @@ void ImportDataWizard::GetAttributeSelection() const
         auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
         wxString dbAttribute;
         if (choiceDB != NULL) {
-            dbAttribute = textFile->GetLabel();
+            dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
         }
 
         if (!dbAttribute.IsSameAs(m_IgnoreLabel, false) && !dbAttribute.IsEmpty()) {
