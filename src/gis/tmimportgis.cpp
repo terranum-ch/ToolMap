@@ -81,6 +81,18 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
         if (myFeature == nullptr) {
             break;
         }
+
+        wxArrayString fileValues;
+        for (int i = 0; i < myFeature->GetFieldCount(); ++i) {
+            const char *val = myFeature->GetFieldAsString(i);
+            wxString sVal(val, wxConvUTF8);
+            fileValues.Add(sVal);
+        }
+
+        if (ShouldSkipObjectKind(fileValues)) {
+            continue;
+        }
+
         OGRGeometry *myGeom = myFeature->GetGeometryRef();
         wxASSERT(myGeom);
         wxArrayLong oids;
@@ -113,13 +125,6 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
         wxASSERT(!oids.IsEmpty());
 
         if (m_ImportTarget != TOC_NAME_FRAME && prj != NULL) {
-            wxArrayString fileValues;
-            for (int i = 0; i < myFeature->GetFieldCount(); ++i) {
-                const char *val = myFeature->GetFieldAsString(i);
-                wxString sVal(val, wxConvUTF8);
-                fileValues.Add(sVal);
-            }
-
             if (!SetObjectKind(database, prj, fileValues, oids)) {
                 break;
             }

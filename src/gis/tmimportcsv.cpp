@@ -235,6 +235,10 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
             break;
         }
 
+        if (ShouldSkipObjectKind(tokenArray)) {
+            continue;
+        }
+
         double x = 0;
         double y = 0;
         if (!_GetCoordinates(tokenArray, x, y)) {

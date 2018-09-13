@@ -26,7 +26,9 @@ ImportDataWizard::ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManag
         tmWizardImport::tmWizardImport(window, id, _("Import data")),
         m_Import(nullptr),
         m_PrjManager(prjManager),
-        m_IgnoreLabel("(ignore)"),
+        m_IgnoreLabel("- ignore -"),
+        m_ImportButIgnoreValueLabel("- import but ignore kind value -"),
+        m_DoNotImportLabel("- do not import -"),
         m_AllObjectsLabel("(all objects)")
 {
     m_Import = new tmImportGIS();
@@ -368,7 +370,8 @@ void ImportDataWizard::SetKindOptions() const
             wxASSERT(fieldObj);
             objValuesInDB.Add(fieldObj->m_ObjectName);
         }
-        objValuesInDB.Insert(m_IgnoreLabel, 0);
+        objValuesInDB.Insert(m_ImportButIgnoreValueLabel, 0);
+        objValuesInDB.Insert(m_DoNotImportLabel, 0);
 
         // Fill lists
         for (int j = 0; j < objValuesInFile.GetCount(); ++j) {
@@ -423,8 +426,12 @@ void ImportDataWizard::GetKindSelection() const
             dbKind = choiceDB->GetString(choiceDB->GetSelection());
         }
 
-        if (!dbKind.IsSameAs(m_IgnoreLabel, false) && !dbKind.IsEmpty()) {
-            m_Import->AddObjectKindMatch(fileKind, dbKind);
+        if (dbKind.IsSameAs(m_DoNotImportLabel, false)) {
+            m_Import->SkipObjectKind(fileKind);
+        } else {
+            if (!dbKind.IsSameAs(m_ImportButIgnoreValueLabel, false) && !dbKind.IsEmpty()) {
+                m_Import->AddObjectKindMatch(fileKind, dbKind);
+            }
         }
     }
 }

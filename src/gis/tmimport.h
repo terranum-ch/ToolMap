@@ -54,6 +54,7 @@ protected:
     TOC_GENERIC_NAME m_ImportTarget;
     wxString m_LayerName;
     wxString m_FieldKind;
+    wxArrayString m_SkipKinds;
     wxArrayString m_FileKinds;
     wxArrayString m_DbKinds;
     wxArrayString m_FileAttributes;
@@ -62,6 +63,8 @@ protected:
     wxArrayString m_FileEnumsAttName;
     wxArrayString m_FileEnums;
     wxArrayString m_DbEnums;
+
+    bool ShouldSkipObjectKind(const wxArrayString &fileValues);
 
     bool SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const wxArrayString &fileValues, const wxArrayLong &oids);
 
@@ -111,6 +114,8 @@ public:
     void SetFieldKind(const wxString &value);
 
     wxString GetFieldKind();
+
+    void SkipObjectKind(const wxString &fileKind);
 
     void AddObjectKindMatch(const wxString &fileKind, const wxString &dbKind);
 

@@ -36,6 +36,8 @@ private:
     tmImport *m_Import;
     ProjectManager *m_PrjManager;
     wxString m_IgnoreLabel;
+    wxString m_ImportButIgnoreValueLabel;
+    wxString m_DoNotImportLabel;
     wxString m_AllObjectsLabel;
 
     void ResetFilePicker(const wxWizardPageSimple *page);

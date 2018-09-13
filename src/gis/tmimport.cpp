@@ -108,6 +108,11 @@ wxString tmImport::GetFieldKind()
     return m_FieldKind;
 }
 
+void tmImport::SkipObjectKind(const wxString &fileKind)
+{
+    m_SkipKinds.Add(fileKind);
+}
+
 void tmImport::AddObjectKindMatch(const wxString &fileKind, const wxString &dbKind)
 {
     m_FileKinds.Add(fileKind);
@@ -181,6 +186,29 @@ bool tmImport::HasEnumAttributes() const
             return true;
         }
     }
+    return false;
+}
+
+bool tmImport::ShouldSkipObjectKind(const wxArrayString &fileValues)
+{
+    // Get field names
+    wxArrayString fields;
+    GetFieldNames(fields);
+
+    wxString kind;
+
+    // Loop over the file header
+    for (int i = 0; i < fields.GetCount(); ++i) {
+        if (fields.Item(i).IsSameAs(m_FieldKind)) {
+            wxASSERT(fileValues.GetCount() > i);
+            for (int j = 0; j < m_SkipKinds.GetCount(); ++j) {
+                if (fileValues.Item(i).IsSameAs(m_SkipKinds.Item(j))) {
+                    return true;
+                }
+            }
+        }
+    }
+
     return false;
 }
 
