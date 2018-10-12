@@ -43,7 +43,7 @@ artifacts:
     name: ToolMapInstallerEXE
     type: file
 
-  - path: '*win64.msi'
+  - path: '*.msi'
     name: ToolMapInstallerMSI
     type: file
 
