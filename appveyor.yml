@@ -32,6 +32,7 @@ after_test:
   - cd C:\projects\toolmap\bin
   - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G ZIP
   - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G NSIS
+  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G WIX
   - cd C:\projects\toolmap
   - copy bin\*win64.exe .\
   - copy bin\*win64.zip .\
@@ -39,11 +40,15 @@ after_test:
 
 artifacts:
   - path: '*win64.exe'
-    name: ToolMapInstaller
+    name: ToolMapInstallerEXE
+    type: file
+
+  - path: '*win64.msi'
+    name: ToolMapInstallerMSI
     type: file
 
   - path: '*win64.zip'
-    name: ToolMapInstallerZip
+    name: ToolMapInstallerZIP
     type: zip
 
   - path: '*win64.exe.pdb'

@@ -12,7 +12,7 @@ install(TARGETS ${CMAKE_PROJECT_NAME}
         RUNTIME DESTINATION bin)
 
 # install GPL licence file
-install(FILES build/cpack/COPYING DESTINATION .)
+install(FILES build/cpack/LICENSE.txt DESTINATION .)
 
 # search dll to install
 if (GDAL_DLL_NAME)
@@ -149,17 +149,18 @@ if (APPLE)
 endif (APPLE)
 
 if (WIN32)
-    set(CPACK_GENERATOR "NSIS")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "ToolMap")
     set(CPACK_PACKAGE_EXECUTABLES "ToolMap;ToolMap")
     set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
-    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_LIST_DIR}/COPYING")
+    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
+    set(CPACK_CREATE_DESKTOP_LINKS "ToolMap")
+
+    set(CPACK_GENERATOR "NSIS")
     set(CPACK_NSIS_DISPLAY_NAME "ToolMap")
     set(CPACK_NSIS_CONTACT "Terranum toolmap@terranum.ch")
     set(CPACK_NSIS_HELP_LINK "www.terranum.ch")
     set(CPACK_NSIS_EXECUTABLES_DIRECTORY "bin")
     set(CPACK_NSIS_URL_INFO_ABOUT "www.terranum.ch")
-    set(CPACK_CREATE_DESKTOP_LINKS "ToolMap")
     set(CPACK_NSIS_COMPRESSOR "lzma")
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
     set(CPACK_NSIS_MODIFY_PATH "ON")
@@ -170,6 +171,10 @@ if (WIN32)
     else ()
         set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
     endif ()
+
+    set(CPACK_GENERATOR "WIX")
+    set(CPACK_WIX_PRODUCT_ICON "${CMAKE_CURRENT_LIST_DIR}/toolmap.png")
+    set(CPACK_WIX_CMAKE_PACKAGE_REGISTRY "ToolMap")
 endif (WIN32)
 
 
@@ -196,7 +201,7 @@ IF (UNIX AND NOT APPLE)
         SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "In order to handle geological information in an efficient way and for easily transfer it into geological information system, the research center on alpine environment (CREALP) developed in close collaboration with the Swiss Geological Survey (SGS) the software package ToolMap. The development is now taken over by Terranum (www.terranum.ch). ToolMap allows structuring and storing geological data through a robust relational database, vectorising field data and building up multilayer GIS models with high topological integrity. Thus, it permits a much faster production of GIS datasets readily available for a wide variety of applications.")
         SET(CPACK_DEBIAN_PACKAGE_SECTION "Sciences")
         SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-        set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_LIST_DIR}/COPYING")
+        set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt")
     endif (USE_APPIMAGE)
 
 ENDIF (UNIX AND NOT APPLE)
