@@ -1,5 +1,5 @@
 /* XPM */
-static char *expand_xpm[] = {
+static char const *expand_xpm[] = {
 "11 11 16 2",
 "00 c black",
 "01 c #7B9CB5",

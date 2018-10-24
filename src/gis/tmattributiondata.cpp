@@ -290,7 +290,7 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray *lay
 
                 if (bFoundEnum == false) {
                     sAdd.Append(_T("NULL"));
-                    wxLogError(_("Unable to set advanced attibution for value '%s'"), myValue);
+                    wxLogError(_("Unable to set advanced attribution for value '%s'"), myValue);
                 }
                 continue;
             }

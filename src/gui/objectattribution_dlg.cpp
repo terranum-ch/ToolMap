@@ -73,7 +73,6 @@ BEGIN_EVENT_TABLE(ProjectEditObjectDefinitionDLG, wxDialog)
                 EVT_FLATBUTTON (ID_DLGPEO_BTN_DEL, ProjectEditObjectDefinitionDLG::OnRemoveObject)
                 EVT_FLATBUTTON (ID_DLGPEO_BTN_IMPORT, ProjectEditObjectDefinitionDLG::OnImportFile)
                 EVT_FLATBUTTON (ID_DLGPEO_BTN_EXPORT, ProjectEditObjectDefinitionDLG::OnExportFile)
-                EVT_CHECKBOX (ID_DLGPEO_LINE_FRQ, ProjectEditObjectDefinitionDLG::OnChangeFrequency)
                 EVT_CHOICE (ID_DLGPEO_LYR_NAME_LINE, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
                 EVT_CHOICE (ID_DLGPEO_LYR_NAME_POINT, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
                 EVT_CHOICE (ID_DLGPEO_LYR_NAME_POLY, ProjectEditObjectDefinitionDLG::OnChangeLayerName)
@@ -191,26 +190,6 @@ void ProjectEditObjectDefinitionDLG::OnExportFile(wxCommandEvent &event)
     if (myList->GetItemCount() > 0 && myExportSelector.ShowModal() == wxID_OK) {
         myList->ExportListParsedToFile(myExportSelector.GetPath(),
                                        myExportSelector.GetFilterIndex());
-    }
-
-}
-
-
-void ProjectEditObjectDefinitionDLG::OnChangeFrequency(wxCommandEvent &event)
-{
-    wxArrayLong mySelectedItems;
-    int iFreq = 0;
-
-    // get selected items
-    if (m_DLGPEO_List_Line->GetAllSelectedItem(mySelectedItems) > 0) {
-        // if checked
-        if (m_DLGPEO_Choice_Lyr_Line_Freq->Get3StateValue() == wxCHK_CHECKED) {
-            iFreq = OBJECT_FREQUENT;
-        } else {
-            iFreq = OBJECT_LESS_FREQUENT;
-        }
-
-        m_DLGPEO_List_Line->SetFreqStatus(iFreq, &mySelectedItems);
     }
 
 }
@@ -348,7 +327,7 @@ void ProjectEditObjectDefinitionDLG::PostInit()
     m_DLGPEO_Panel_Poly->Enable(bPoly);
 
     // pass controls pointer to the list
-    m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Name, m_DLGPEO_Choice_Lyr_Line_Freq);
+    m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Name, NULL);
     m_DLGPEO_List_Point->SetListCtrls(m_DLGPEO_Choice_Lyr_Point_Name, NULL);
     m_DLGPEO_List_Poly->SetListCtrls(m_DLGPEO_Choice_Lyr_Poly_Name, NULL);
 
@@ -376,7 +355,6 @@ void ProjectEditObjectDefinitionDLG::Init()
     m_DLGPEO_List_Line = NULL;
     m_DLGPEO_List_Poly = NULL;
     m_DLGPEO_Choice_Lyr_Line_Name = NULL;
-    m_DLGPEO_Choice_Lyr_Line_Freq = NULL;
     m_DLGPEO_Panel_Point = NULL;
     m_DLGPEO_List_Line = NULL;
     m_DLGPEO_Choice_Lyr_Point_Name = NULL;
@@ -423,42 +401,12 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
     mylistWidth.Add(120);
     mylistWidth.Add(100);
 
-    wxArrayString mylistcolname2;
-    mylistcolname2.Add(mylistcolname.Item(0));
-    mylistcolname2.Add(mylistcolname.Item(1));
-    mylistcolname2.Add(mylistcolname.Item(2));
-
-    wxArrayInt mylistWidth2;
-    mylistWidth2.Add(mylistWidth.Item(0));
-    mylistWidth2.Add(mylistWidth.Item(1) + 50);
-    mylistWidth2.Add(mylistWidth.Item(2) + 50);
-
 
     // LIST FOR LINES
-    m_DLGPEO_List_Line = new ObjectDefinitionList(m_DLGPEO_Panel_Line, ID_DLGPEO_LISTLINE, &m_MemoryObject,
-                                                  LAYER_LINE, m_DB,
-                                                  &mylistcolname, &mylistWidth, wxSize(500, 260));
+    m_DLGPEO_List_Line = new ObjectDefinitionList(m_DLGPEO_Panel_Line, ID_DLGPEO_LISTLINE, &m_MemoryObject, LAYER_LINE,
+                                                  m_DB, &mylistcolname, &mylistWidth, wxSize(500, 260));
     //m_DLGPEO_List_Line->SetWindowStyleFlag(wxLC_REPORT | wxLC_SINGLE_SEL);
     itemBoxSizer5->Add(m_DLGPEO_List_Line, 1, wxGROW | wxALL, 5);
-
-
-    //wxFlexGridSizer* itemFlexGridSizer7 = new wxFlexGridSizer(1, 2, 0, 0);
-    //itemFlexGridSizer7->AddGrowableCol(1);
-    //itemBoxSizer5->Add(itemFlexGridSizer7, 0, wxGROW|wxALL, 5);
-    //wxStaticText* itemStaticText8 = new wxStaticText( m_DLGPEO_Panel_Line, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    //itemFlexGridSizer7->Add(itemStaticText8, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    //wxArrayString m_DLGPEO_Choice_Lyr_Line_NameStrings;
-    //m_DLGPEO_Choice_Lyr_Line_NameStrings.Add(_("Polygons_TS"));
-    m_DLGPEO_Choice_Lyr_Line_Name = NULL;
-    //m_DLGPEO_Choice_Lyr_Line_Name = new wxChoice( m_DLGPEO_Panel_Line, ID_DLGPEO_LYR_NAME_LINE, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Line_NameStrings, 0 );
-    // m_DLGPEO_Choice_Lyr_Line_Name->SetStringSelection(_("Polygons_TS"));
-    //itemFlexGridSizer7->Add(m_DLGPEO_Choice_Lyr_Line_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-    m_DLGPEO_Choice_Lyr_Line_Freq = NULL;
-    //m_DLGPEO_Choice_Lyr_Line_Freq = new wxCheckBox( m_DLGPEO_Panel_Line, ID_DLGPEO_LINE_FRQ, _("This object is frequently used"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE);
-    //m_DLGPEO_Choice_Lyr_Line_Freq->SetValue(false);
-    //itemBoxSizer5->Add(m_DLGPEO_Choice_Lyr_Line_Freq, 0, wxGROW|wxALL, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Line, _("Lines"));
 
@@ -470,23 +418,8 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 
     // LIST FOR POINT
     m_DLGPEO_List_Point = new ObjectDefinitionList(m_DLGPEO_Panel_Point, ID_DLGPEO_LISTPOINT, &m_MemoryObject,
-                                                   LAYER_POINT, m_DB,
-                                                   &mylistcolname2, &mylistWidth2);
+                                                   LAYER_POINT, m_DB, &mylistcolname, &mylistWidth);
     itemBoxSizer13->Add(m_DLGPEO_List_Point, 1, wxGROW | wxALL, 5);
-
-
-    //wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer(1, 2, 0, 0);
-    //itemFlexGridSizer15->AddGrowableCol(1);
-    //itemBoxSizer13->Add(itemFlexGridSizer15, 0, wxGROW|wxALL, 5);
-    //wxStaticText* itemStaticText16 = new wxStaticText( m_DLGPEO_Panel_Point, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    //itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    // wxArrayString m_DLGPEO_Choice_Lyr_Point_NameStrings;
-    // m_DLGPEO_Choice_Lyr_Point_NameStrings.Add(_("Polygons_TS"));
-    m_DLGPEO_Choice_Lyr_Point_Name = NULL;
-    //m_DLGPEO_Choice_Lyr_Point_Name = new wxChoice( m_DLGPEO_Panel_Point, ID_DLGPEO_LYR_NAME_POINT, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Point_NameStrings, 0 );
-    //m_DLGPEO_Choice_Lyr_Point_Name->SetStringSelection(_("Polygons_TS"));
-    //itemFlexGridSizer15->Add(m_DLGPEO_Choice_Lyr_Point_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Point, _("Points"));
 
@@ -497,22 +430,8 @@ void ProjectEditObjectDefinitionDLG::CreateControls()
 
     // LIST FOR POLY
     m_DLGPEO_List_Poly = new ObjectDefinitionList(m_DLGPEO_Panel_Poly, ID_DLGPEO_LISTPOLY, &m_MemoryObject,
-                                                  LAYER_POLYGON, m_DB,
-                                                  &mylistcolname2, &mylistWidth2);
+                                                  LAYER_POLYGON, m_DB, &mylistcolname, &mylistWidth);
     itemBoxSizer19->Add(m_DLGPEO_List_Poly, 1, wxGROW | wxALL, 5);
-
-    //wxFlexGridSizer* itemFlexGridSizer21 = new wxFlexGridSizer(1, 2, 0, 0);
-    //itemFlexGridSizer21->AddGrowableCol(1);
-    //itemBoxSizer19->Add(itemFlexGridSizer21, 0, wxGROW|wxALL, 5);
-    //wxStaticText* itemStaticText22 = new wxStaticText( m_DLGPEO_Panel_Poly, wxID_STATIC, _("Layer name :"), wxDefaultPosition, wxDefaultSize, 0 );
-    //itemFlexGridSizer21->Add(itemStaticText22, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-    //wxArrayString m_DLGPEO_Choice_Lyr_Poly_NameStrings;
-    //m_DLGPEO_Choice_Lyr_Poly_NameStrings.Add(_("Polygons_TS"));
-    m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
-    //m_DLGPEO_Choice_Lyr_Poly_Name = new wxChoice( m_DLGPEO_Panel_Poly, ID_DLGPEO_LYR_NAME_POLY, wxDefaultPosition, wxDefaultSize); //, m_DLGPEO_Choice_Lyr_Poly_NameStrings, 0 );
-    //m_DLGPEO_Choice_Lyr_Poly_Name->SetStringSelection(_("Polygons_TS"));
-    //itemFlexGridSizer21->Add(m_DLGPEO_Choice_Lyr_Poly_Name, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     m_DLGPEO_Notebook->AddPage(m_DLGPEO_Panel_Poly, _("Polygons"));
 

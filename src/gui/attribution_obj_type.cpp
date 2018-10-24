@@ -64,10 +64,21 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow *parent, wxAuiManager *AuiMana
 
     // add the panel
     AddManagedPane(ContentFrame, mPaneInfo);
+
+    // Connect events
+    m_textCtrlPoints->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList), NULL, this);
+    m_textCtrlPoly->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), NULL, this);
+    m_textCtrlLines->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), NULL, this);
+
 }
 
 AttribObjType_PANEL::~AttribObjType_PANEL()
 {
+    // Disconnect events
+    m_textCtrlPoints->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList), NULL, this);
+    m_textCtrlPoly->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), NULL, this);
+    m_textCtrlLines->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), NULL, this);
+
     m_ParentEvt->PopEventHandler(FALSE);
 }
 
@@ -77,74 +88,123 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     m_AttribSizer = new wxBoxSizer(wxVERTICAL);
     //itemPanel1->SetSizer(itemBoxSizer2);
 
-    m_AttribNotebook = new wxChoicebook(parent, ID_NOTEBOOK2, wxDefaultPosition, wxSize(300, -1), wxBK_DEFAULT);
-
-    wxPanel *itemPanel4 = new wxPanel(m_AttribNotebook, ID_PANEL4, wxDefaultPosition, wxSize(300, 300),
-                                      wxTAB_TRAVERSAL);
-    wxBoxSizer *itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
-    itemPanel4->SetSizer(itemBoxSizer5);
-
-    wxAuiNotebook *itemNotebook6 = new wxAuiNotebook(itemPanel4, ID_NOTEBOOK3,
-                                                     wxDefaultPosition, wxDefaultSize,
-                                                     wxAUI_NB_TOP); //|wxAUI_NB_WINDOWLIST_BUTTON );
-
-    wxPanel *itemPanel7 = new wxPanel(itemNotebook6, ID_PANEL5, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer *itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
-    itemPanel7->SetSizer(itemBoxSizer8);
+    m_AttribNotebook = new wxChoicebook(parent, wxID_ANY, wxDefaultPosition, wxSize(300, -1), wxCHB_DEFAULT);
 
 
-    m_pObjList_L_Freq = new tmCheckListBoxRank(itemPanel7, ID_CHECKLISTBOX4,
-                                               wxDefaultPosition,
-                                               wxDefaultSize, 0, NULL,
+    // Lines panel
+
+    wxPanel *itemPanel1 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300), wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    itemPanel1->SetSizer(itemBoxSizer1);
+
+    m_textCtrlLines = new wxSearchCtrl(itemPanel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlLines->SetToolTip( wxT("Type to filter the list") );
+    itemBoxSizer1->Add(m_textCtrlLines, 0, wxALL | wxEXPAND, 2);
+
+    wxAuiNotebook *itemNotebook1 = new wxAuiNotebook(itemPanel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP);
+
+    wxPanel *itemPanel2 = new wxPanel(itemNotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+    itemPanel2->SetSizer(itemBoxSizer2);
+
+    m_pObjList_L_Freq = new tmCheckListBoxRank(itemPanel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
                                                tmLB_MENU);
-    //wxLB_MULTIPLE | tmLB_MENU);
-    itemBoxSizer8->Add(m_pObjList_L_Freq, 1, wxGROW, 0); //5);
+    itemBoxSizer2->Add(m_pObjList_L_Freq, 1, wxGROW, 0);
 
-    itemNotebook6->AddPage(itemPanel7, _("Frequent"));
+    itemNotebook1->AddPage(itemPanel2, _("Frequent"));
 
-    wxPanel *itemPanel10 = new wxPanel(itemNotebook6, ID_PANEL6, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer *itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
-    itemPanel10->SetSizer(itemBoxSizer11);
+    wxPanel *itemPanel3 = new wxPanel(itemNotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
+    itemPanel3->SetSizer(itemBoxSizer3);
 
-    m_pObjList_L_NoFreq = new tmCheckListBoxRank(itemPanel10, ID_CHECKLISTBOX3, wxDefaultPosition,
-                                                 wxDefaultSize, 0, NULL,
+    m_pObjList_L_NoFreq = new tmCheckListBoxRank(itemPanel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
                                                  tmLB_MENU);
-    //wxLB_MULTIPLE | tmLB_MENU);
+    itemBoxSizer3->Add(m_pObjList_L_NoFreq, 1, wxGROW, 0);
 
-    itemBoxSizer11->Add(m_pObjList_L_NoFreq, 1, wxGROW, 0);// 5);
+    itemNotebook1->AddPage(itemPanel3, _("Less frequent"));
 
-    itemNotebook6->AddPage(itemPanel10, _("Less frequent"));
+    itemBoxSizer1->Add(itemNotebook1, 1, wxGROW, 0);
 
-    itemBoxSizer5->Add(itemNotebook6, 1, wxGROW, 0);// 5);
+    m_AttribNotebook->AddPage(itemPanel1, _("Lines"));
 
-    m_AttribNotebook->AddPage(itemPanel4, _("Lines"));
 
-    wxPanel *itemPanel13 = new wxPanel(m_AttribNotebook, ID_PANEL7, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer *itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
-    itemPanel13->SetSizer(itemBoxSizer14);
+    // Points panel
 
-    m_pObjList_PT = new tmCheckListBoxRank(itemPanel13, ID_CHECKLISTBOX2,
-                                           wxDefaultPosition, wxDefaultSize,
-                                           0, NULL,
-                                           tmLB_MENU);
-    //wxLB_MULTIPLE | tmLB_MENU);
-    itemBoxSizer14->Add(m_pObjList_PT, 1, wxGROW | wxALL, 0);// 5);
+    wxPanel *itemPanel4 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300),
+                                      wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
+    itemPanel4->SetSizer(itemBoxSizer4);
 
-    m_AttribNotebook->AddPage(itemPanel13, _("Point"));
+    m_textCtrlPoints = new wxSearchCtrl(itemPanel4, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlPoints->SetToolTip( wxT("Type to filter the list") );
+    itemBoxSizer4->Add(m_textCtrlPoints, 0, wxALL | wxEXPAND, 2);
 
-    wxPanel *itemPanel21 = new wxPanel(m_AttribNotebook, ID_PANEL8, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer *itemBoxSizer22 = new wxBoxSizer(wxVERTICAL);
-    itemPanel21->SetSizer(itemBoxSizer22);
+    wxAuiNotebook *itemNotebook2 = new wxAuiNotebook(itemPanel4, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                                     wxAUI_NB_TOP);
 
-    m_pObjList_PLG = new tmCheckListBoxRank(itemPanel21, ID_CHECKLISTBOX1,
-                                            wxDefaultPosition, wxDefaultSize,
-                                            0, NULL,
-                                            tmLB_MENU);
-    //wxLB_MULTIPLE | tmLB_MENU);
+    wxPanel *itemPanel5 = new wxPanel(itemNotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
+    itemPanel5->SetSizer(itemBoxSizer5);
+	
+    m_pObjList_PT_Freq = new tmCheckListBoxRank(itemPanel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
+                                                tmLB_MENU);
+    itemBoxSizer5->Add(m_pObjList_PT_Freq, 1, wxGROW, 0);
 
-    itemBoxSizer22->Add(m_pObjList_PLG, 1, wxGROW | wxALL, 0);// 5);
+    itemNotebook2->AddPage(itemPanel5, _("Frequent"));
 
-    m_AttribNotebook->AddPage(itemPanel21, _("Polygons"));
+    wxPanel *itemPanel6 = new wxPanel(itemNotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
+    itemPanel6->SetSizer(itemBoxSizer6);
+
+    m_pObjList_PT_NoFreq = new tmCheckListBoxRank(itemPanel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0,
+                                                  NULL, tmLB_MENU);
+    itemBoxSizer6->Add(m_pObjList_PT_NoFreq, 1, wxGROW, 0);
+
+    itemNotebook2->AddPage(itemPanel6, _("Less frequent"));
+	
+    itemBoxSizer4->Add(itemNotebook2, 1, wxEXPAND, 0);
+
+    m_AttribNotebook->AddPage(itemPanel4, _("Point"));
+
+
+    // Polygons panel
+
+    wxPanel *itemPanel7 = new wxPanel(m_AttribNotebook, wxID_ANY, wxDefaultPosition, wxSize(300, 300),
+                                      wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
+    itemPanel7->SetSizer(itemBoxSizer7);
+
+    m_textCtrlPoly = new wxSearchCtrl(itemPanel7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_textCtrlPoly->SetToolTip( wxT("Type to filter the list") );
+    itemBoxSizer7->Add(m_textCtrlPoly, 0, wxALL | wxEXPAND, 2);
+
+    wxAuiNotebook *itemNotebook3 = new wxAuiNotebook(itemPanel7, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                                     wxAUI_NB_TOP);
+
+    wxPanel *itemPanel8 = new wxPanel(itemNotebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
+    itemPanel8->SetSizer(itemBoxSizer8);
+
+
+    m_pObjList_PLG_Freq = new tmCheckListBoxRank(itemPanel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
+                                                tmLB_MENU);
+    itemBoxSizer8->Add(m_pObjList_PLG_Freq, 1, wxGROW, 0);
+
+    itemNotebook3->AddPage(itemPanel8, _("Frequent"));
+
+    wxPanel *itemPanel9 = new wxPanel(itemNotebook3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer *itemBoxSizer9 = new wxBoxSizer(wxVERTICAL);
+    itemPanel9->SetSizer(itemBoxSizer9);
+
+    m_pObjList_PLG_NoFreq = new tmCheckListBoxRank(itemPanel9, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0,
+                                                  NULL, tmLB_MENU);
+    itemBoxSizer9->Add(m_pObjList_PLG_NoFreq, 1, wxGROW, 0);
+
+    itemNotebook3->AddPage(itemPanel9, _("Less frequent"));
+
+    itemBoxSizer7->Add(itemNotebook3, 1, wxGROW, 0);
+
+    m_AttribNotebook->AddPage(itemPanel7, _("Polygons"));
 
 #ifdef USE_NOTES
     wxPanel* itemPanel24 = new wxPanel( m_AttribNotebook, ID_PANEL23, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -286,6 +346,37 @@ void AttribObjType_PANEL::OnEditStop(wxCommandEvent &event)
     event.Skip();
 }
 
+void AttribObjType_PANEL::FilterPointList(wxCommandEvent &event)
+{
+    wxString filter = event.GetString();
+    m_pObjList_PT_Freq->Filter(filter);
+    m_pObjList_PT_NoFreq->Filter(filter);
+    event.Skip();
+}
+
+void AttribObjType_PANEL::FilterPolyList(wxCommandEvent &event)
+{
+    wxString filter = event.GetString();
+    m_pObjList_PLG_Freq->Filter(filter);
+    m_pObjList_PLG_NoFreq->Filter(filter);
+    event.Skip();
+}
+
+void AttribObjType_PANEL::FilterLineList(wxCommandEvent &event)
+{
+    wxString filter = event.GetString();
+    m_pObjList_L_Freq->Filter(filter);
+    m_pObjList_L_NoFreq->Filter(filter);
+    event.Skip();
+}
+
+void AttribObjType_PANEL::ResetFilterFields()
+{
+    m_textCtrlLines->Clear();
+    m_textCtrlPoly->Clear();
+    m_textCtrlPoints->Clear();
+}
+
 
 /***************************************************************************//**
  @brief Clear all attributes set when called
@@ -295,8 +386,10 @@ void AttribObjType_PANEL::OnEditStop(wxCommandEvent &event)
 void AttribObjType_PANEL::EmptyListValues()
 {
     wxASSERT(m_EmptyListAfterAttributes);
-    m_pObjList_PT->ClearCheckMarks();
-    m_pObjList_PLG->ClearCheckMarks();
+    m_pObjList_PT_Freq->ClearCheckMarks();
+    m_pObjList_PT_NoFreq->ClearCheckMarks();
+    m_pObjList_PLG_Freq->ClearCheckMarks();
+    m_pObjList_PLG_NoFreq->ClearCheckMarks();
     m_pObjList_L_Freq->ClearCheckMarks();
     m_pObjList_L_NoFreq->ClearCheckMarks();
 }
@@ -314,8 +407,16 @@ void AttribObjType_PANEL::EmptyListValues()
 bool AttribObjType_PANEL::UpdateObjectPointList(DataBaseTM *pDB)
 {
     // clear and update
-    m_pObjList_PT->ClearItems();
-    return UpdateObjectList(pDB, m_pObjList_PT, LAYER_POINT);
+    m_pObjList_PT_Freq->ClearItems();
+    m_pObjList_PT_NoFreq->ClearItems();
+
+    if (!UpdateObjectList(pDB, m_pObjList_PT_Freq, LAYER_POINT, OBJECT_FREQUENT))
+        return FALSE;
+
+    if (!UpdateObjectList(pDB, m_pObjList_PT_NoFreq, LAYER_POINT, OBJECT_LESS_FREQUENT))
+        return FALSE;
+
+	return true;
 }
 
 
@@ -330,8 +431,16 @@ bool AttribObjType_PANEL::UpdateObjectPointList(DataBaseTM *pDB)
  *******************************************************************************/
 bool AttribObjType_PANEL::UpdateObjectPolyList(DataBaseTM *pDB)
 {
-    m_pObjList_PLG->ClearItems();
-    return UpdateObjectList(pDB, m_pObjList_PLG, LAYER_POLYGON);
+    m_pObjList_PLG_Freq->ClearItems();
+    m_pObjList_PLG_NoFreq->ClearItems();
+
+    if (!UpdateObjectList(pDB, m_pObjList_PLG_Freq, LAYER_POLYGON, OBJECT_FREQUENT))
+        return FALSE;
+
+    if (!UpdateObjectList(pDB, m_pObjList_PLG_NoFreq, LAYER_POLYGON, OBJECT_LESS_FREQUENT))
+        return FALSE;
+
+    return TRUE;
 }
 
 
@@ -396,16 +505,10 @@ bool AttribObjType_PANEL::UpdateObjectList(DataBaseTM *pDB, tmCheckListBox *pLis
     ProjectDefMemoryObjects myTempObject;
     while (1) {
         if (pDB->DataBaseGetNextResultAsObject(&myTempObject, type)) {
-            if (type != LAYER_LINE) {
-                pList->AddItem(-1, myTempObject.m_ObjectID,
-                               myTempObject.m_ObjectName);
-            } else // layer line
-            {
                 if (frequency == myTempObject.m_ObjectFreq) {
                     pList->AddItem(-1, myTempObject.m_ObjectID,
                                    myTempObject.m_ObjectName);
                 }
-            }
 
         } else
             break;
@@ -432,8 +535,10 @@ void AttribObjType_PANEL::SetDataBaseToList(DataBaseTM *pDB)
 
     m_pObjList_L_Freq->SetDataBase(pDB);
     m_pObjList_L_NoFreq->SetDataBase(pDB);
-    m_pObjList_PLG->SetDataBase(pDB);
-    m_pObjList_PT->SetDataBase(pDB);
+    m_pObjList_PLG_Freq->SetDataBase(pDB);
+    m_pObjList_PLG_NoFreq->SetDataBase(pDB);
+    m_pObjList_PT_Freq->SetDataBase(pDB);
+    m_pObjList_PT_NoFreq->SetDataBase(pDB);
 }
 
 
@@ -637,11 +742,17 @@ int AttribObjType_PANEL::GetSelectedValues(TOC_GENERIC_NAME panel_name,
             break;
 
         case TOC_NAME_POINTS:
-            myList = m_pObjList_PT;
+            if (panel_freq)
+                myList = m_pObjList_PT_Freq;
+            else
+                myList = m_pObjList_PT_NoFreq;
             break;
 
         case TOC_NAME_LABELS:
-            myList = m_pObjList_PLG;
+            if (panel_freq)
+                myList = m_pObjList_PLG_Freq;
+            else
+                myList = m_pObjList_PLG_NoFreq;
             break;
 
         default:
@@ -695,11 +806,17 @@ void AttribObjType_PANEL::SetSelectedValues(TOC_GENERIC_NAME panel_name,
             break;
 
         case TOC_NAME_POINTS:
-            myList = m_pObjList_PT;
+            if (panel_freq)
+                myList = m_pObjList_PT_Freq;
+            else
+                myList = m_pObjList_PT_NoFreq;
             break;
 
         case TOC_NAME_LABELS:
-            myList = m_pObjList_PLG;
+            if (panel_freq)
+                myList = m_pObjList_PLG_Freq;
+            else
+                myList = m_pObjList_PLG_NoFreq;
             break;
 
         default:
@@ -727,7 +844,7 @@ void AttribObjType_PANEL::SetSelectedValues(TOC_GENERIC_NAME panel_name,
             }
         }
 
-        myList->EditItem(l, -1, wxEmptyString, myChecked);
+        myList->SetItemCheck(l, myChecked);
     }
 
 }

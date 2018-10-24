@@ -8,8 +8,8 @@ cmake_minimum_required(VERSION 2.6)
 #endif(COMMAND cmake_policy)
 
 PROJECT("ToolMap")
-set(VERSION_MAJOR "2")
-set(VERSION_MINOR "6")
+set(VERSION_MAJOR "3")
+set(VERSION_MINOR "0")
 set(VERSION_PATCH "0") # will be modified later during cmake process
 
 #Export for sourcetrail
@@ -52,13 +52,21 @@ include_directories(${EXTERNAL_DIR}/include)
 link_directories(${EXTERNAL_DIR}/lib)
 link_directories(${EXTERNAL_DIR}/lib64)
 
+# Path to MySQL
+set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
+
+# Option to get ToolBasView
+set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
+
 # Add ToolBasView as external project
-ExternalProject_Add(ToolBasView
-        GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
-        UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DSEARCH_WXWIDGETS_PATH=${SEARCH_WXWIDGETS_PATH} -DSEARCH_GDAL_PATH=${SEARCH_GDAL_PATH} -DSEARCH_PROJ_PATH=${SEARCH_PROJ_PATH} -DSEARCH_GEOS_PATH=${SEARCH_GEOS_PATH} -DMYSQL_MAIN_DIR=${MYSQL_MAIN_DIR} -DSEARCH_GEOS=1 -DSEARCH_GDAL=1
-        BUILD_COMMAND cmake --build .
-        )
+if (WITH_TOOLBASVIEW)
+    ExternalProject_Add(ToolBasView
+            GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
+            UPDATE_COMMAND ""
+            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DSEARCH_WXWIDGETS_PATH=${SEARCH_WXWIDGETS_PATH} -DSEARCH_GDAL_PATH=${SEARCH_GDAL_PATH} -DSEARCH_PROJ_PATH=${SEARCH_PROJ_PATH} -DSEARCH_GEOS_PATH=${SEARCH_GEOS_PATH} -DMYSQL_MAIN_DIR=${MYSQL_MAIN_DIR} -DSEARCH_GEOS=1 -DSEARCH_GDAL=1
+            BUILD_COMMAND cmake --build .
+            )
+endif ()
 
 # Sources and headers 
 FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
@@ -121,6 +129,10 @@ ELSE (WIN32)
     ENDIF (APPLE)
 ENDIF (WIN32)
 
+if (UNIX)
+    add_definitions(-std=c++11)
+endif (UNIX)
+
 IF (APPLE)
     # Copy plist to ToolMap (should be after add executable!
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/build/custominfo.plist)
@@ -147,5 +159,5 @@ IF (USE_UNITTEST)
 ENDIF (USE_UNITTEST)
 
 # create installer using CPACK
-include("install/cpack_installer.cmake")
+include("build/cpack/cpack_installer.cmake")
 

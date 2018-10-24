@@ -31,6 +31,7 @@ DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
 DEFINE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED);
 DEFINE_EVENT_TYPE(tmEVT_LM_MOVE_TO_FEATURE);
 DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE);
+DEFINE_EVENT_TYPE(tmEVT_TOGGLE_FREQUENT);
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
                 EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE, tmLayerManager::RemoveLayer)
@@ -783,6 +784,7 @@ bool tmLayerManager::ZoomToLayer(long layerid)
  *******************************************************************************/
 void tmLayerManager::OnSizeChange(wxCommandEvent &event)
 {
+
     // pass size to scale object but don't make
     // any computation if no project are opened
     tmArraySize *mySizes = (tmArraySize *) event.GetClientData();
@@ -797,6 +799,10 @@ void tmLayerManager::OnSizeChange(wxCommandEvent &event)
 
     // compute reel size in MM
     wxClientDC dc(m_GISRenderer);
+
+    if (dc.GetWindow() == nullptr)
+        return;
+
     m_Scale.SetWindowExtentMM(dc.GetSizeMM());
 
 

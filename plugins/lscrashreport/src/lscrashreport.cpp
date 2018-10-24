@@ -231,7 +231,7 @@ wxString lsCrashReport::_CreateGeneralInfo()
                                  <h2>OS Description</h2> \
                                  <p>%s</p> \
                                  <h2>Availlable Free Memory</h2> \
-                                 <p>%ld</p> \
+                                 <p>%s</p> \
                                  <h2>Host Name</h2> \
                                  <p>%s</p> \
                                  <h2>User ID</h2> \
@@ -261,7 +261,7 @@ wxString lsCrashReport::_CreateGeneralInfo()
                             wxDateTime::Now().FormatISOCombined('-'),
                             m_SoftName,
                             wxGetOsDescription(),
-                            wxGetFreeMemory(),
+                            wxGetFreeMemory().ToString(),
                             wxGetHostName(),
                             wxGetUserId(),
                             wxGetUserName(),

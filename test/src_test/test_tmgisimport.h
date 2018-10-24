@@ -65,8 +65,8 @@ public:
 	{
 		tmImportGIS myImport;
 		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP, g_TestFileSHP_L)));
-		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP + _T("cantonsuissssse.shp")))==false);
-		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP, g_TestFileMisc))==false);
+		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP + _T("cantonsuisssssse.shp")))==false);
+		TS_ASSERT (myImport.Open(wxFileName(g_TestPathMISC, g_TestFileMisc))==false);
 	}
 		
 	
@@ -91,9 +91,9 @@ public:
 	{
 		tmImportGIS myImport;
 		TS_ASSERT (myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG))==true);
-		TS_ASSERT (myImport.Import(m_DB, NULL)==false);
+		TS_ASSERT (myImport.Import(m_DB, NULL, NULL)==false);
 		myImport.SetTarget(TOC_NAME_LINES);
-		TS_ASSERT (myImport.Import(m_DB, NULL)==true);
+		TS_ASSERT (myImport.Import(m_DB, NULL, NULL)==true);
 	}
 	
 	
@@ -107,7 +107,7 @@ public:
 	void testGettingColumns(){
 		tmImportCSV myImport;
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		wxArrayString myCols = myImport.ListColumns();
+		wxArrayString myCols = myImport.GetFieldsList();
 		wxASSERT(myCols.GetCount() > 0);
 		for (unsigned int i = 0; i<myCols.GetCount(); i++) {
 			wxLogMessage(_T("Column %d - '%s'"), i, myCols.Item(i).c_str());
@@ -115,20 +115,13 @@ public:
 	}
 	
 	
+
 	void testImportCSV(){
 		tmImportCSV myImport;
 		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		myImport.SetColumn(0, 1);
-		myImport.SetTarget(TOC_NAME_LINES);
-		TS_ASSERT(myImport.Import(m_DB, NULL));
-	}
-	
-	void testImportCSV2(){
-		tmImportCSV myImport;
-		TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC,  g_TestFileCSV)));
-		myImport.SetColumn(0, 2);
+		myImport.SetXYColumn(0, 2);
 		myImport.SetTarget(TOC_NAME_POINTS);
-		TS_ASSERT(myImport.Import(m_DB, NULL));
+		TS_ASSERT(myImport.Import(m_DB, NULL, NULL));
 	}
 	
 		

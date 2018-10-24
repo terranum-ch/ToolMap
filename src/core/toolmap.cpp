@@ -21,7 +21,7 @@
 
 #include "toolmap.h"
 #include "tmlog.h"
-#include "../gui/tmimportwiz.h"
+#include "../gui/tmimportdatawiz.h"
 #include "../gis/tmimport.h"
 #include "../gui/backupmanager_dlg.h"
 #include "backupmanager.h"
@@ -151,6 +151,8 @@ bool tmDropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenam
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 
 BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
+                EVT_CHAR_HOOK(ToolMapFrame::HandleCharHookEvent)
+
                 EVT_MENU (ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
                 EVT_MENU (ID_MENU_NEW_PRJ_EXISTING, ToolMapFrame::OnNewProjectExisting)
                 EVT_MENU (ID_MENU_LOG_WINDOW, ToolMapFrame::OnLogWindow)
@@ -163,6 +165,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (ID_MENU_PRJ_BACKUP, ToolMapFrame::OnProjectBackup)
                 EVT_MENU (ID_MENU_PRJ_BACKUP_MANAGER, ToolMapFrame::OnProjectBackupManage)
                 EVT_MENU (ID_MENU_PRJ_SAVE_TEMPLATE, ToolMapFrame::OnProjectSaveTemplate)
+                EVT_MENU (ID_MENU_PRJ_MERGE, ToolMapFrame::OnProjectMerge)
                 EVT_MENU_RANGE (wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
                 EVT_MENU (ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
                 EVT_MENU(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnAddWebData)
@@ -181,12 +184,12 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (wxID_BACKWARD, ToolMapFrame::OnZoomPrevious)
                 EVT_MENU (ID_MENU_ZOOM_FIT, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_ZOOM, ToolMapFrame::OnToolChanged)
-                EVT_MENU(ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
+                EVT_MENU (ID_MENU_ZOOM_FRAME, ToolMapFrame::OnZoomToFrame)
                 EVT_MENU (ID_MENU_PAN, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_ZOOM_SELECTED_LAYER, ToolMapFrame::OnZoomToSelectedLayer)
                 EVT_MENU (ID_MENU_SELECT, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_DRAW, ToolMapFrame::OnToolChanged)
-                EVT_MENU(ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
+                EVT_MENU (ID_MENU_DRAW_BEZIER, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_MODIFY_BEZIER, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_MODIFY, ToolMapFrame::OnToolChanged)
                 EVT_MENU (ID_MENU_CUT_LINES, ToolMapFrame::OnToolChanged)
@@ -252,6 +255,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
                 EVT_COMMAND (wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
+                EVT_COMMAND (wxID_ANY, tmEVT_TOGGLE_FREQUENT, ToolMapFrame::OnEditObjectFrequency)
 
                 // STATISTICS EVENT
                 EVT_COMMAND (wxID_ANY, tmEVT_STAT_CLICK, ToolMapFrame::OnStatisticsUpdate)
@@ -321,7 +325,8 @@ END_EVENT_TABLE()
 
 
 ToolMapFrame::ToolMapFrame()
-        : m_AuiManager(NULL),
+        : m_MenuBarAcceleratorTable(NULL),
+          m_AuiManager(NULL),
           m_AttribObjPanel(NULL),
           m_MainPanel(NULL),
           m_QueriesPanel(NULL),
@@ -367,7 +372,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
 
     _CreateMenu();
     _CreateToolBar();
-    _CreateAccelerators();
 
     wxLog *myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
     delete wxLog::SetActiveTarget(myDlgLog);
@@ -536,6 +540,25 @@ ToolMapFrame::~ToolMapFrame()
 }
 
 
+void ToolMapFrame::HandleCharHookEvent(wxKeyEvent& event)
+{
+    if (event.GetKeyCode() == -1) {
+        m_MenuBar->SetAcceleratorTable(*m_MenuBarAcceleratorTable);
+    } else {
+        wxWindow *p_focus = FindFocus();
+        if (p_focus && dynamic_cast<wxSearchCtrl *>(p_focus)) {
+            m_MenuBarAcceleratorTable = new wxAcceleratorTable;
+            m_MenuBarAcceleratorTable->Ref(*m_MenuBar->GetAcceleratorTable());
+            m_MenuBar->SetAcceleratorTable(wxNullAcceleratorTable);
+            wxKeyEvent *p_event = new wxKeyEvent(wxEVT_CHAR_HOOK);
+            p_event->m_keyCode = -1;
+            QueueEvent(p_event);
+        }
+    }
+
+    event.Skip();
+}
+
 void ToolMapFrame::OnQuit(wxCommandEvent &event)
 {
     Close(true);
@@ -557,7 +580,7 @@ void ToolMapFrame::OnClose(wxCloseEvent &event)
 void ToolMapFrame::_CreateMenu()
 {
     // PROJECT
-    wxMenuBar *menuBar = new wxMenuBar;
+    m_MenuBar = new wxMenuBar;
     wxMenu *itemMenu2 = new wxMenu;
     wxMenu *itemMenu3 = new wxMenu;
     itemMenu3->Append(ID_MENU_NEW_PRJ_EMPTY, _("Empty...\tCtrl+N"), wxEmptyString, wxITEM_NORMAL);
@@ -570,6 +593,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup\tCtrl+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->AppendSeparator();
+    itemMenu2->Append(ID_MENU_PRJ_MERGE, _("Merge projects..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_EXPORT_LAYER, _("Export Layer...\tCtrl+Alt+E"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_EXPORT_MODEL, _("Export Model as PDF..."), _T(""), wxITEM_NORMAL);
@@ -585,7 +610,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit"), itemMenu16);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu2, _("&Project"));
+	m_MenuBar->Append(itemMenu2, _("&Project"));
 
     // DATA
     wxMenu *itemMenu24 = new wxMenu;
@@ -594,7 +619,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu24, _("Data"));
+	m_MenuBar->Append(itemMenu24, _("Data"));
 
     // VIEW
     wxMenu *itemMenu28 = new wxMenu;
@@ -612,7 +637,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to selected layer\tCtrl+2"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
     itemMenu28->Append(wxID_REFRESH, _("Refresh\tCtrl+R"), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu28, _("View"));
+	m_MenuBar->Append(itemMenu28, _("View"));
 
     // SELECTION
     wxMenu *itemMenu66 = new wxMenu;
@@ -621,7 +646,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
     itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu66, _("Selection"));
+	m_MenuBar->Append(itemMenu66, _("Selection"));
 
 
     // EDITION
@@ -663,7 +688,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu42->Append(ID_SNAP_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(wxID_ANY, _("Snapping"), itemMenu42);
 
-    menuBar->Append(itemMenu41, _("Edition"));
+	m_MenuBar->Append(itemMenu41, _("Edition"));
 
     // ATTRIBUTION
     wxMenu *itemMenu55 = new wxMenu;
@@ -685,7 +710,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcut..."), wxEmptyString, wxITEM_CHECK);
-    menuBar->Append(itemMenu55, _("Attribution"));
+	m_MenuBar->Append(itemMenu55, _("Attribution"));
 
 
     // VALIDATION
@@ -699,7 +724,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
     itemMenu63->Append(ID_MENU_VALIDITY, _("Check geometries validity"), _T(""), wxITEM_NORMAL);
-    menuBar->Append(itemMenu63, _("Validation"));
+	m_MenuBar->Append(itemMenu63, _("Validation"));
 
     // WINDOW
     wxMenu *itemMenu77 = new wxMenu;
@@ -719,7 +744,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu77->AppendSubMenu(myLayoutMenu, _("Workspace"));
     itemMenu77->AppendSeparator();
     itemMenu77->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
-    menuBar->Append(itemMenu77, _("Window"));
+	m_MenuBar->Append(itemMenu77, _("Window"));
 
     // HELP
     wxMenu *itemMenu81 = new wxMenu;
@@ -731,8 +756,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu81->Append(ID_MENU_USER_MANUAL, _("User Manual..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu81->AppendSeparator();
     itemMenu81->Append(ID_MENU_CONTACT_US, _("Contact us..."), wxEmptyString, wxITEM_NORMAL);
-    menuBar->Append(itemMenu81, _("&Help"));
-    this->SetMenuBar(menuBar);
+	m_MenuBar->Append(itemMenu81, _("&Help"));
+    this->SetMenuBar(m_MenuBar);
 
 }
 
@@ -778,23 +803,6 @@ void ToolMapFrame::_CreateToolBar()
     itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), *_img_toolbar_info, wxNullBitmap, wxITEM_NORMAL,
                           _("Information"), wxEmptyString);
     itemToolBar3->Realize();
-}
-
-
-void ToolMapFrame::_CreateAccelerators()
-{
-    wxAcceleratorEntry entries[8];
-    entries[0].Set(wxACCEL_NORMAL, (int) 'V', ID_MENU_SELECT);
-    entries[1].Set(wxACCEL_NORMAL, (int) 'Z', ID_MENU_ZOOM);
-    entries[2].Set(wxACCEL_NORMAL, (int) 'H', ID_MENU_PAN);
-    entries[3].Set(wxACCEL_NORMAL, (int) 'D', ID_MENU_DRAW);
-    entries[4].Set(wxACCEL_NORMAL, (int) 'M', ID_MENU_MODIFY);
-    entries[5].Set(wxACCEL_NORMAL, (int) '<', wxID_BACKWARD);
-    entries[6].Set(wxACCEL_NORMAL, WXK_BACK, ID_MENU_DELETE_OBJ);
-    entries[7].Set(wxACCEL_NORMAL, WXK_DELETE, ID_MENU_DELETE_OBJ);
-
-    wxAcceleratorTable accel(8, entries);
-    SetAcceleratorTable(accel);
 }
 
 
@@ -1368,12 +1376,12 @@ void ToolMapFrame::OnExportSelectedGISData(wxCommandEvent &event)
 
 void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
 {
-    ImportWizard myWizard(this, wxID_ANY);
-    if (myWizard.ShowWizard() != wxID_OK) {
+    ImportDataWizard wizard(this, wxID_ANY, m_PManager);
+    if (!wizard.RunWizard(wizard.GetFirstPage())) {
         return;
     }
 
-    tmImport *myImport = myWizard.GetImport();
+    tmImport *myImport = wizard.GetImport();
     wxASSERT(myImport);
 
     wxProgressDialog myProgress(_("Importing data progress"),
@@ -1382,31 +1390,11 @@ void ToolMapFrame::OnImportGISData(wxCommandEvent &event)
                                 this,
                                 wxPD_CAN_ABORT | wxPD_AUTO_HIDE | wxPD_APP_MODAL);
     wxASSERT(m_PManager->GetDatabase());
-    myImport->Import(m_PManager->GetDatabase(), &myProgress);
+    myImport->Import(m_PManager->GetDatabase(), m_PManager->GetMemoryProjectDefinition(), &myProgress);
 
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt2.Clone());
 
-
-    /*tmGISImport myImport;
-
-    tmGISImport_DLG myDlg (this, &myImport);
-    if(myDlg.ShowModal() != wxID_OK)
-        return;
-
-    wxProgressDialog myProgress(_("Importing GIS data progress"),
-                                _T("Importing data in progress, please wait"),
-                                100,
-                                this,
-                                wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL);
-
-    // importing
-    wxASSERT(m_PManager->GetDatabase());
-    myImport.Import(m_PManager->GetDatabase(), myDlg.GetImportLayer(), &myProgress);
-    wxLogDebug(_("GIS data imported in %u [ms]"), myImport.GetElapsedTime());
-
-    wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
-    GetEventHandler()->QueueEvent(evt2.Clone());*/
 }
 
 
@@ -1452,51 +1440,26 @@ void ToolMapFrame::OnUpdateSelection(wxCommandEvent &event)
 }
 
 
+void ToolMapFrame::OnEditObjectFrequency(wxCommandEvent &event)
+{
+    wxASSERT(m_PManager);
+    wxASSERT(m_PManager->GetDatabase());
+    wxASSERT(event.GetInt() >= 0);
+
+    Freeze();
+    m_PManager->EditObjectFrequency(event.GetInt());
+    m_AttribObjPanel->ResetFilterFields();
+    Thaw();
+
+    event.Skip();
+}
+
+
 void ToolMapFrame::OnProjectBackup(wxCommandEvent &event)
 {
     wxASSERT(m_PManager);
     wxASSERT(m_PManager->GetDatabase());
-
-    // backup path exists ?
-    wxString myBackupPath = wxEmptyString;
-    if (m_PManager->GetDatabase()->GetProjectBackupPath(myBackupPath) != PATH_OK) {
-        wxString sErrMsg = _("No path specified or path invalid \n");
-        sErrMsg.Append(_("for backups or restore operations,\n\n"));
-        sErrMsg.Append(_("Please go to Project->Edit Project->Settings...\n"));
-        sErrMsg.Append(_("and specify a valid path."));
-        wxMessageBox(sErrMsg, _("No valid path found"), wxICON_ERROR | wxOK);
-        return;
-    }
-
-    // create backup file
-    BackupFile myBckFile;
-    myBckFile.SetInputDirectory(wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
-                                           m_PManager->GetDatabase()->DataBaseGetName()));
-    myBckFile.SetDate(wxDateTime::Now());
-    myBckFile.SetOutputName(wxFileName(myBackupPath,
-                                       m_PManager->GetDatabase()->DataBaseGetName(),
-                                       "tmbk"));
-
-    // ask for comment
-    wxTextEntryDialog myDlg(this, _("Backup comment:"), _("Backup"), wxEmptyString, wxOK | wxCENTRE);
-    if (myDlg.ShowModal() == wxID_OK) {
-        myBckFile.SetComment(myDlg.GetValue());
-    }
-
-    wxBeginBusyCursor();
-    wxLogMessage("filename for backup will be : " + myBckFile.GetOutputName().GetFullPath());
-    BackupManager myBckManager(m_PManager->GetDatabase());
-
-    // Don't display progress dialog under Mac... Toooo slow!
-    wxWindow *myWnd = NULL;
-#ifndef __WXMAC__
-    myWnd = this;
-#endif
-
-    if (myBckManager.Backup(myBckFile, myWnd) == false) {
-        wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
-    }
-    wxEndBusyCursor();
+    m_PManager->BackupProject(wxEmptyString);
 }
 
 
@@ -1596,6 +1559,46 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event)
         wxLogError(_("Template : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     }
     wxEndBusyCursor();
+}
+
+
+void ToolMapFrame::OnProjectMerge(wxCommandEvent & event){
+    wxASSERT(m_PManager);
+
+    wxDirDialog myDirDLG(this, _("Choose a Slave ToolMap project for merging"), _T(""),
+                         wxRESIZE_BORDER | wxDD_DIR_MUST_EXIST);
+    if (myDirDLG.ShowModal() != wxID_OK) {
+        return;
+    }
+    wxString mySlavePrjName = myDirDLG.GetPath();
+    wxString mySlavePrjNameSml = wxFileName(mySlavePrjName).GetName();
+    wxString myMasterPrjNameSml = m_PManager->GetProjectName();
+    wxString myMasterPrjName = wxFileName(m_PManager->GetDatabase()->DataBaseGetPath(),
+                                          myMasterPrjNameSml).GetFullPath();
+
+    // ask for confirmation....
+    wxString myMsg = wxString::Format(_("Merge project:\n'%s'\ninto\n'%s'?"), mySlavePrjNameSml, myMasterPrjNameSml);
+    int answer = wxMessageBox(myMsg, "Confirm", wxOK | wxCANCEL | wxCANCEL_DEFAULT | wxICON_QUESTION, this);
+    if (answer != wxOK) {
+        return;
+    }
+
+    // create a backup point before merging
+    if (!m_PManager->BackupProject(wxString::Format(_("Before merge of '%s'"), mySlavePrjNameSml))) {
+        wxLogWarning(_("Backup failed, merging not allowed!"));
+        return;
+    }
+
+    // merge the project
+    if (!m_PManager->MergeProjects(mySlavePrjName)) {
+        wxLogError(_("Merging projects failed!"));
+        return;
+    }
+
+    // TODO: optimize the project (clean database)
+
+    // reload display
+    m_LayerManager->ReloadProjectLayers();
 }
 
 

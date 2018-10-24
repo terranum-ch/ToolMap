@@ -111,6 +111,8 @@ bool siLayer::_ProcessFeature(OGRFeature * feature) {
         m_ProcessFeatureSkipped++;
         return false;
     }
+
+    CPLSetConfigOption("OGR_WKT_PRECISION", "15");
     
     char    *pszWKT = NULL;
     feature->GetGeometryRef()->exportToWkt(&pszWKT);

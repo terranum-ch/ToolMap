@@ -437,12 +437,22 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
 
             ProjectDefMemoryLayers *myLayer = projdef->FindLayerByRealID(myLayerIndex);
             wxASSERT(myLayer);
+
+            // add extended information for lines constructing polygons (see #379)
+            if (layer->m_LayerType == LAYER_LINE && myLayer->m_LayerType == LAYER_POLYGON) {
+                for (int j = 0; j < layer->m_pLayerFieldArray.GetCount(); ++j) {
+                    if (myLayer->m_LayerName == layer->m_pLayerFieldArray.Item(j)->m_Fieldname){
+                        myFeature->SetField(j, 1);
+                    }
+                }
+            }
+
+            // layerindex has attributs, get them
             if (myLayer == NULL || myLayer->m_pLayerFieldArray.GetCount() == 0) {
                 myAttribTxt.Append(_T(";"));
                 continue;
             }
 
-            // layerindex has attributs, get them
             wxString myFields;
             for (unsigned int f = 0; f < myLayer->m_pLayerFieldArray.GetCount(); f++) {
                 myFields.Append(wxString::Format(_T("at.%s,"), myLayer->m_pLayerFieldArray.Item(f)->m_Fieldname));
@@ -518,7 +528,6 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
     }
     return true;
 }
-
 
 /***************************************************************************//**
  @brief Write all geometrics points to the shp

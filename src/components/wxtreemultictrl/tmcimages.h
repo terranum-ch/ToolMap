@@ -17,7 +17,7 @@
   #include "mac_collapse.xpm"
   #include "mac_expand.xpm"
 #else
-  #ifdef LINUX
+  #ifdef __LINUX__
     #include "linux_collapse.xpm"
     #include "linux_expand.xpm"
   #else

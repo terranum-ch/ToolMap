@@ -149,6 +149,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_PRJ_BACKUP          10304
 #define ID_MENU_PRJ_BACKUP_MANAGER  10305
 #define ID_MENU_PRJ_SAVE_TEMPLATE	10306
+#define ID_MENU_PRJ_MERGE           10307
 #define ID_MENU_EXPORT              10307
 #define ID_MENU_EXPORT_LAYER		10308
 //#define ID_MENU_EXPORT_FULL			10309
@@ -222,7 +223,6 @@ class AttribObjType_PANEL;
 #define ID_MENU_EXPORT_MODEL 10077
 
 #define ID_TOOLBAR_ZOOM 10252
-
 
 #define ID_CTXT_FULL_ATTRIB 21000
 #define ID_CTXT_FILTER 21001
@@ -300,6 +300,9 @@ public:
 class ToolMapFrame : public wxFrame
 {
 private:
+    wxMenuBar *m_MenuBar;
+    wxAcceleratorTable* m_MenuBarAcceleratorTable;
+
     wxAuiManager *m_AuiManager;
     AttribObjType_PANEL *m_AttribObjPanel;
     Main_PANEL *m_MainPanel;
@@ -324,6 +327,8 @@ private:
     wxLogWindow *m_LogWindow;
     TocWindowDlgGen *m_TocWindow;
     wxArrayString m_Perspectives;
+
+    void HandleCharHookEvent(wxKeyEvent& event);
 
     void OnQuit(wxCommandEvent &event);
 
@@ -362,6 +367,8 @@ private:
     void OnProjectBackupManage(wxCommandEvent &event);
 
     void OnProjectSaveTemplate(wxCommandEvent &event);
+
+    void OnProjectMerge(wxCommandEvent &event);
 
     void OnToolChanged(wxCommandEvent &event);
 
@@ -432,6 +439,8 @@ private:
 
     // changing status function
     void OnUpdateSelection(wxCommandEvent &event);
+
+    void OnEditObjectFrequency(wxCommandEvent &event);
 
     // GIS functions
     void OnAddGisData(wxCommandEvent &event);
@@ -522,8 +531,6 @@ private:
     void _CreateMenu();
 
     void _CreateToolBar();
-
-    void _CreateAccelerators();
 
     void _LoadPreference(bool reload);
 

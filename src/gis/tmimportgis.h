@@ -25,6 +25,7 @@
 #endif
 
 #include "tmimport.h"
+#include "../core/prjdefmemmanage.h"
 
 class tmGISDataVector;
 
@@ -40,9 +41,13 @@ public:
 
     virtual bool Open(const wxFileName &filename);
 
-    virtual bool Import(DataBaseTM *database, wxProgressDialog *progress = NULL);
+    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+
+    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 
     virtual wxArrayInt GetTargetSupported();
+
+    virtual bool GetFieldNames(wxArrayString &Fields);
 };
 
 #endif

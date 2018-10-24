@@ -18,12 +18,22 @@
 #include "database.h"
 #include "databaseresult.h"
 
-tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slaveprj)
+tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase * database)
 {
     m_MasterFileName = wxFileName(masterprj);
     m_SlaveFileName = wxFileName(slaveprj);
     SetVerbose(false);
+
+    // open database if required.
+    if (database != NULL)
+    {
+        m_DB = database;
+        m_manage_database = false;
+        return;
+    }
+
     m_DB = NULL;
+    m_manage_database = true;
 
     // opening master database
     m_DB = new DataBase(_T("./"));
@@ -37,7 +47,9 @@ tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slavep
 
 tmProjectMerge::~tmProjectMerge()
 {
-    wxDELETE(m_DB);
+    if (m_manage_database == true) {
+        wxDELETE(m_DB);
+    }
 }
 
 
@@ -249,7 +261,7 @@ bool tmProjectMerge::_CopyUpdateTable(const wxString &tablename, const wxString 
         }
     }
     if (IsVerbose()) {
-        wxLogMessage(_("%ld records updated into '%s'"), oldids->GetCount(), tablename);
+        wxLogMessage(_("%d records updated into '%s'"), (int)oldids->GetCount(), tablename);
     }
 
     myQuery = _T("INSERT INTO %s SELECT * FROM %s");
@@ -282,7 +294,7 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
     }
 
     if (IsVerbose()) {
-        wxLogMessage(_("%ld Old ID regained in '%s'"), myOldIds.GetCount(), geomtablename);
+        wxLogMessage(_("%d Old ID regained in '%s'"), (int)myOldIds.GetCount(), geomtablename);
     }
 
     // get highest ID in master
@@ -337,7 +349,7 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
     }
 
     if (myNewIds.GetCount() != myOldIds.GetCount()) {
-        m_Errors.Add(wxString::Format(_("ID number mismatch! (%ld vs %ld)"), myNewIds.GetCount(), myOldIds.GetCount()));
+        m_Errors.Add(wxString::Format(_("ID number mismatch! (%d vs %d)"), (int)myNewIds.GetCount(), (int)myOldIds.GetCount()));
         return false;
     }
 
@@ -398,7 +410,7 @@ bool tmProjectMerge::_IsReady()
     }
 
     if (m_DB == NULL) {
-        m_Errors.Add(_("Database not inited!"));
+        m_Errors.Add(_("Database not initialized!"));
         return false;
     }
 
@@ -430,8 +442,8 @@ bool tmProjectMerge::CheckSimilar()
         return false;
     }
     m_DB->DataBaseClearResults();
-    if (myVersion != 224) {
-        m_Errors.Add(wxString::Format(_("Wrong Database version, works only for database: %d found (%ld)!"), 224,
+    if (myVersion != 230) {
+        m_Errors.Add(wxString::Format(_("Wrong project version, works only for projects v.%d found (%ld)!"), 230,
                                       myVersion));
         return false;
     }
@@ -472,8 +484,7 @@ bool tmProjectMerge::CheckSimilar()
 
     // are layers_at similar
     long myErrorsLayerAt = 0;
-    myQuery = _T(
-            "SELECT CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = \"%s\" AND  table_name IN (SELECT TABLE_NAME FROM                                     INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"layer_at%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX;");
+    myQuery = _T("SELECT CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = \"%s\" AND  table_name IN (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"layer_at%%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX;");
     if (_HasSimilarResults(m_DB, myQuery, myErrorsLayerAt) == false) {
         m_Errors.Add(wxString::Format(_("%ld layers_at error found"), myErrorsLayerAt));
         return false;
@@ -561,6 +572,7 @@ bool tmProjectMerge::MergeIntoMaster()
             wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true) == false) {
         return false;
     }
+
     return true;
 }
 
