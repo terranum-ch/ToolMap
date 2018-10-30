@@ -61,9 +61,8 @@ tmSymbolDLGRaster::~tmSymbolDLGRaster()
 
 void tmSymbolDLGRaster::_Init()
 {
-    m_UseTransparencyColourCtrl = NULL;
-    m_TransparencyColourCtrl = NULL;
     m_TransparencySlider = NULL;
+    m_MultiplyCtrl = NULL;
 }
 
 
@@ -83,8 +82,8 @@ void tmSymbolDLGRaster::CreateControls()
 
     wxStaticBoxSizer* sbSizer1;
     sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_SymbolPanel, wxID_ANY, _("fusion") ), wxHORIZONTAL );
-    wxCheckBox * m_checkBox1 = new wxCheckBox( m_SymbolPanel, wxID_ANY, _("Multiply"), wxDefaultPosition, wxDefaultSize, 0 );
-    sbSizer1->Add( m_checkBox1, 0, wxALL, 5 );
+    m_MultiplyCtrl = new wxCheckBox( m_SymbolPanel, wxID_ANY, _("Multiply"), wxDefaultPosition, wxDefaultSize, 0 );
+    sbSizer1->Add( m_MultiplyCtrl, 0, wxALL, 5 );
     itemBoxSizer8->Add( sbSizer1, 0, wxEXPAND, 5 );
 
     // adapt dialog size to new controls added

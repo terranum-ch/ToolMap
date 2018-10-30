@@ -52,12 +52,10 @@ struct tmSymbolDataRaster
 class tmSymbolDLGRaster : public tmSymbolDLG
 {
 private:
-    wxCheckBox *m_UseTransparencyColourCtrl;
-    tmColourPickerCtrl *m_TransparencyColourCtrl;
     tmSliderWithText *m_TransparencySlider;
+    wxCheckBox * m_MultiplyCtrl;
 
     tmSymbolDataRaster m_DlgData;
-
 
     void _Init();
 
