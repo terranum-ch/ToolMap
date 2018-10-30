@@ -19,6 +19,7 @@
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
+#include "tmsymbolraster.h"
 #include "tmsymbolrule.h"
 #include "../database/database_tm.h"
 #include "../database/databaseresult.h"
@@ -1455,7 +1456,8 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
     wxPoint bottomright = m_scale->RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
                                                            myClippedCoordReal.y_max));
     wxRect myClippedCoordPx(topleftpx, bottomright);
-    wxImage *myRaster = new wxImage(myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+    wxImage *myImgLayer = new wxImage(myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+    wxLogDebug(_T("clipping : x=%d, y=%d"), myClippedCoordPx.GetX(), myClippedCoordPx.GetY());
 
 
     if (pRaster->GetImageData(&imgbuf, &imglen, &maskbuf, &masklen,
@@ -1483,22 +1485,58 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
             CPLFree(myAlphaBuffer);
     }
 
+    myImgLayer->SetData(imgbuf, true);
+    myImgLayer->SetAlpha(myAlphaBuffer, true);
+
+
+    // Multiply Raster with previous raster feature #422
+    bool myDoMultiply = ((tmSymbolRaster*) itemProp->GetSymbolRef())->GetDoMultiply();
+    if(myDoMultiply){
+        wxImage myImgBackgroundFull = m_bmp->ConvertToImage();
+
+        // be sure that we dont have x or y values below 0
+        wxRect myClippedCoord (myClippedCoordPx);
+        if (myClippedCoord.GetX() < 0) {
+            myClippedCoord.SetX(0);
+        }
+        if (myClippedCoord.GetY() < 0) {
+            myClippedCoord.SetY(0);
+        }
+        wxImage myImgBackground = myImgBackgroundFull.GetSubImage(myClippedCoord);
+        wxASSERT(myImgBackground.GetWidth() == myImgLayer->GetWidth());
+        wxASSERT(myImgBackground.GetHeight() == myImgLayer->GetHeight());
+
+        // loop for all pixels and do the processing
+        for (int x = 0; x < myImgBackground.GetWidth(); ++x) {
+            for (int y = 0; y < myImgBackground.GetHeight(); ++y) {
+                char myRedBack = myImgBackground.GetRed(x,y);
+                char myGreenBack = myImgBackground.GetGreen(x,y);
+                char myBlueBack = myImgBackground.GetBlue(x,y);
+
+                char myRedLayer = myImgLayer->GetRed(x,y);
+                char myGreenLayer = myImgLayer->GetGreen(x,y);
+                char myBlueLayer = myImgLayer->GetBlue(x,y);
+
+                char myMax = char(254);
+                char myRedResult = myRedBack * myRedLayer / myMax;
+                char myGreenResult = myGreenBack * myGreenLayer / myMax;
+                char myBlueResult = myBlueBack * myBlueLayer / myMax;
+
+                myImgLayer->SetRGB(x,y,myRedResult, myGreenResult, myBlueResult);
+            }
+        }
+    }
+
+
     // data loaded successfully, draw image on display now
     // device context for drawing
     wxMemoryDC dc;
     dc.SelectObject(*m_bmp);
-    //wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc);
-
-
-
-    myRaster->SetData(imgbuf, true);
-    myRaster->SetAlpha(myAlphaBuffer, true);
-
-    dc.DrawBitmap(*myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()), true);
+    dc.DrawBitmap(*myImgLayer, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()), true);
     dc.SelectObject(wxNullBitmap);
 
 
-    myRaster->Destroy();
+    myImgLayer->Destroy();
     if (imgbuf) {
         CPLFree(imgbuf);
         imgbuf = NULL;
