@@ -43,9 +43,8 @@ const int ID_SYMDLGRASTER_TRANSPARENCY = 10086;
 
 struct tmSymbolDataRaster
 {
-    bool m_bUseColorTransparency;
-    wxColour m_TransparencyColour;
     int m_GlobalTransparency;
+    bool m_DoMultiplyRaster;
 };
 
 

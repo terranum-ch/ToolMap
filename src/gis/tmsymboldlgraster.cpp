@@ -81,7 +81,7 @@ void tmSymbolDLGRaster::CreateControls()
 
 
     wxStaticBoxSizer* sbSizer1;
-    sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_SymbolPanel, wxID_ANY, _("fusion") ), wxHORIZONTAL );
+    sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_SymbolPanel, wxID_ANY, _("Fusion") ), wxHORIZONTAL );
     m_MultiplyCtrl = new wxCheckBox( m_SymbolPanel, wxID_ANY, _("Multiply"), wxDefaultPosition, wxDefaultSize, 0 );
     sbSizer1->Add( m_MultiplyCtrl, 0, wxALL, 5 );
     itemBoxSizer8->Add( sbSizer1, 0, wxEXPAND, 5 );
@@ -94,14 +94,16 @@ void tmSymbolDLGRaster::CreateControls()
 bool tmSymbolDLGRaster::TransferDataToWindow()
 {
     m_TransparencySlider->SetValue(m_DlgData.m_GlobalTransparency);
-    return TRUE;
+    m_MultiplyCtrl->SetValue(m_DlgData.m_DoMultiplyRaster);
+    return true;
 }
 
 
 bool tmSymbolDLGRaster::TransferDataFromWindow()
 {
     m_DlgData.m_GlobalTransparency = m_TransparencySlider->GetValue();
-    return TRUE;
+    m_DlgData.m_DoMultiplyRaster = m_MultiplyCtrl->GetValue();
+    return true;
 }
 
 

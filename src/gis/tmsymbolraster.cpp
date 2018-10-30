@@ -27,23 +27,19 @@
 
 tmSymbolRaster::tmSymbolRaster()
 {
-    m_RasterData.m_bUseColorTransparency = FALSE;
-    m_RasterData.m_TransparencyColour = wxColour(*wxBLACK);
     m_RasterData.m_GlobalTransparency = 0;
-
+    m_RasterData.m_DoMultiplyRaster = false;
 }
 
 tmSymbolRaster::tmSymbolRaster(const tmSymbolRaster &origin)
 {
-    m_RasterData.m_bUseColorTransparency = origin.m_RasterData.m_bUseColorTransparency;
-    m_RasterData.m_TransparencyColour = origin.m_RasterData.m_TransparencyColour;
     m_RasterData.m_GlobalTransparency = origin.m_RasterData.m_GlobalTransparency;
+    m_RasterData.m_DoMultiplyRaster = origin.m_RasterData.m_DoMultiplyRaster;
 }
 
 
 tmSymbolRaster::~tmSymbolRaster()
 {
-
 
 }
 
@@ -70,14 +66,12 @@ bool tmSymbolRaster::Serialize(tmSerialize &s)
 {
     s.EnterObject();
     if (s.IsStoring()) {
-        s << m_RasterData.m_bUseColorTransparency;
-        s << m_RasterData.m_TransparencyColour;
         s << m_RasterData.m_GlobalTransparency;
+        s << m_RasterData.m_DoMultiplyRaster;
 
     } else {
-        s >> m_RasterData.m_bUseColorTransparency;
-        s >> m_RasterData.m_TransparencyColour;
         s >> m_RasterData.m_GlobalTransparency;
+        s >> m_RasterData.m_DoMultiplyRaster;
     }
     s.LeaveObject();
 
