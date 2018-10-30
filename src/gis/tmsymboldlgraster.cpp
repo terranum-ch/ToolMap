@@ -72,12 +72,20 @@ void tmSymbolDLGRaster::CreateControls()
     wxBoxSizer *itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
     m_SymbolPanel->SetSizer(itemBoxSizer8);
 
-    wxStaticBox *itemStaticBoxSizer12Static = new wxStaticBox(m_SymbolPanel, wxID_ANY, _("Transparency"));
-    wxStaticBoxSizer *itemStaticBoxSizer12 = new wxStaticBoxSizer(itemStaticBoxSizer12Static, wxHORIZONTAL);
-    itemBoxSizer8->Add(itemStaticBoxSizer12, 0, wxGROW | wxALL, 5);
+
+    wxStaticBoxSizer* sbSizer2;
+    sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( m_SymbolPanel, wxID_ANY, _("Transparency") ), wxHORIZONTAL );
     m_TransparencySlider = new tmSliderWithText(m_SymbolPanel, ID_SYMDLGRASTER_TRANSPARENCY,
                                                 0, 0, 100, _T("%"));
-    itemStaticBoxSizer12->Add(m_TransparencySlider, 1, wxGROW | wxALL, 5);
+    sbSizer2->Add(m_TransparencySlider, 1, wxGROW | wxALL, 5);
+    itemBoxSizer8->Add(sbSizer2, 0, wxEXPAND, 5);
+
+
+    wxStaticBoxSizer* sbSizer1;
+    sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_SymbolPanel, wxID_ANY, _("fusion") ), wxHORIZONTAL );
+    wxCheckBox * m_checkBox1 = new wxCheckBox( m_SymbolPanel, wxID_ANY, _("Multiply"), wxDefaultPosition, wxDefaultSize, 0 );
+    sbSizer1->Add( m_checkBox1, 0, wxALL, 5 );
+    itemBoxSizer8->Add( sbSizer1, 0, wxEXPAND, 5 );
 
     // adapt dialog size to new controls added
     SetSizeHint();
