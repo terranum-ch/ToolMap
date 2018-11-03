@@ -1509,18 +1509,17 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
         // loop for all pixels and do the processing
         for (int x = 0; x < myImgBackground.GetWidth(); ++x) {
             for (int y = 0; y < myImgBackground.GetHeight(); ++y) {
-                char myRedBack = myImgBackground.GetRed(x,y);
-                char myGreenBack = myImgBackground.GetGreen(x,y);
-                char myBlueBack = myImgBackground.GetBlue(x,y);
+                int myRedBack = myImgBackground.GetRed(x,y);
+                int myGreenBack = myImgBackground.GetGreen(x,y);
+                int myBlueBack = myImgBackground.GetBlue(x,y);
 
-                char myRedLayer = myImgLayer->GetRed(x,y);
-                char myGreenLayer = myImgLayer->GetGreen(x,y);
-                char myBlueLayer = myImgLayer->GetBlue(x,y);
+                int myRedLayer = myImgLayer->GetRed(x,y);
+                int myGreenLayer = myImgLayer->GetGreen(x,y);
+                int myBlueLayer = myImgLayer->GetBlue(x,y);
 
-                char myMax = char(254);
-                char myRedResult = myRedBack * myRedLayer / myMax;
-                char myGreenResult = myGreenBack * myGreenLayer / myMax;
-                char myBlueResult = myBlueBack * myBlueLayer / myMax;
+                int myRedResult = wxRound(myRedBack * myRedLayer / 255.0);
+                int myGreenResult = wxRound(myGreenBack * myGreenLayer / 255.0);
+                int myBlueResult = wxRound(myBlueBack * myBlueLayer / 255.0);
 
                 myImgLayer->SetRGB(x,y,myRedResult, myGreenResult, myBlueResult);
             }
