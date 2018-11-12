@@ -190,7 +190,7 @@ bool tmGISDataVectorSHP::SetSpatialFilter(tmRealRect filter, int type)
 }
 
 
-bool tmGISDataVectorSHP::SetAttributFilter(const wxString &query)
+bool tmGISDataVectorSHP::SetAttributeFilter(const wxString &query)
 {
     wxASSERT(m_Layer);
     if (query == wxEmptyString) {
@@ -200,6 +200,7 @@ bool tmGISDataVectorSHP::SetAttributFilter(const wxString &query)
 
     // escape ' from query
     wxString myQuery(query);
+    myQuery.Replace(_T("'"), _T("\\'"));
     myQuery.Replace(_T("\""), _T("'"));
 
     m_Layer->ResetReading();

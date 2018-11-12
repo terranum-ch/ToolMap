@@ -141,7 +141,7 @@ public:
     virtual bool SetSpatialFilter(tmRealRect filter, int type)
     { return FALSE; }
 
-    virtual bool SetAttributFilter(const wxString &query)
+    virtual bool SetAttributeFilter(const wxString &query)
     { return FALSE; }
 
     virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid)

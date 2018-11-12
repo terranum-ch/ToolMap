@@ -63,7 +63,7 @@ public:
     // virtual function for getting data & drawing
     virtual bool SetSpatialFilter(tmRealRect filter, int type);
 
-    virtual bool SetAttributFilter(const wxString &query);
+    virtual bool SetAttributeFilter(const wxString &query);
 
     virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid);
 
