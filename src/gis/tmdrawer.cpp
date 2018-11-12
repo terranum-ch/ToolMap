@@ -545,7 +545,7 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata)
             continue;
         }
 
-        if (pVectLine->SetAttributFilter(myRule->GetAttributFilter()) == false) {
+        if (pVectLine->SetAttributeFilter(myRule->GetAttributFilter()) == false) {
             continue;
         }
 
@@ -955,7 +955,7 @@ bool tmDrawer::DrawPointsRules(tmLayerProperties *itemProp, tmGISData *pdata)
             continue;
         }
 
-        if (pVectPoint->SetAttributFilter(myRule->GetAttributFilter()) == false) {
+        if (pVectPoint->SetAttributeFilter(myRule->GetAttributFilter()) == false) {
             continue;
         }
 
@@ -1010,7 +1010,7 @@ void tmDrawer::_LabelPoint(tmLayerProperties *itemprop, tmGISData *pdata)
 
     // define spatial filter
     tmGISDataVector *pVect = (tmGISDataVector *) pdata;
-    pVect->SetAttributFilter(wxEmptyString);
+    pVect->SetAttributeFilter(wxEmptyString);
     if (!pVect->SetSpatialFilter(m_spatFilter, itemprop->GetType())) {
         if (IsLoggingEnabled()) {
             wxLogError(_T("Error setting spatial filter"));
@@ -1059,7 +1059,7 @@ void tmDrawer::_LabelLine(tmLayerProperties *itemprop, tmGISData *pdata)
 
     // define spatial filter
     tmGISDataVector *pVect = (tmGISDataVector *) pdata;
-    pVect->SetAttributFilter(wxEmptyString);
+    pVect->SetAttributeFilter(wxEmptyString);
     if (!pVect->SetSpatialFilter(m_spatFilter, itemprop->GetType())) {
         if (IsLoggingEnabled()) {
             wxLogError(_T("Error setting spatial filter"));
@@ -1132,7 +1132,7 @@ void tmDrawer::_LabelPolygon(tmLayerProperties *itemprop, tmGISData *pdata)
 
     // define spatial filter
     tmGISDataVector *pVect = (tmGISDataVector *) pdata;
-    pVect->SetAttributFilter(wxEmptyString);
+    pVect->SetAttributeFilter(wxEmptyString);
     if (!pVect->SetSpatialFilter(m_spatFilter, itemprop->GetType())) {
         if (IsLoggingEnabled()) {
             wxLogError(_T("Error setting spatial filter"));
@@ -1363,7 +1363,7 @@ bool tmDrawer::DrawPolygonsRules(tmLayerProperties *itemProp, tmGISData *pdata)
             continue;
         }
 
-        if (pVectPoly->SetAttributFilter(myRule->GetAttributFilter()) == false) {
+        if (pVectPoly->SetAttributeFilter(myRule->GetAttributFilter()) == false) {
             continue;
         }
 
