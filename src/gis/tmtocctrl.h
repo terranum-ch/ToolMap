@@ -107,6 +107,10 @@ private:
     // contextual menu event functions
     void OnShowProperties(wxCommandEvent &event);
 
+    void OnPropertiesSave(wxCommandEvent &event);
+
+    void OnPropertiesLoad(wxCommandEvent &event);
+
     void OnShowLabels(wxCommandEvent &event);
 
     void OnVertexMenu(wxCommandEvent &event);
