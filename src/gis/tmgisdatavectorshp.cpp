@@ -150,6 +150,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType()
 
         switch (type) {
             case wkbLineString:
+			case wkbMultiLineString:
                 retvalue = LAYER_SPATIAL_LINE;
                 break;
             case wkbPoint:
