@@ -557,7 +557,7 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata)
 
         wxPen myRulePen = myRule->GetPen();
         bool bUseOriented = false;
-        if (myRulePen.GetStyle() == (wxPenStyle) tmPENSTYLE_ORIENTED) {
+        if (myRule->IsOriented()) {
             myRulePen.SetStyle(wxPENSTYLE_SOLID);
             bUseOriented = true;
         }

@@ -62,6 +62,8 @@ public:
 
     wxPen GetPen();
 
+    bool IsOriented();
+
     inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
 
     inline const bool IsActive() const;

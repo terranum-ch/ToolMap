@@ -163,6 +163,24 @@ wxPen tmSymbolRule::GetPen()
 }
 
 
+bool tmSymbolRule::IsOriented()
+{
+    switch (GetSpatialType()) {
+        case LAYER_SPATIAL_LINE: {
+            tmSymbolVectorLine *mySLine = (tmSymbolVectorLine *) GetSymbolData();
+            if (mySLine->GetShape() == tmPENSTYLE_ORIENTED) {
+                return true;
+            }
+        }
+            break;
+
+        default:
+            return false;
+    }
+    return false;
+}
+
+
 void tmSymbolRule::SetActive(bool value)
 {
     m_Active = value;
