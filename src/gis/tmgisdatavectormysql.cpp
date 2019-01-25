@@ -256,8 +256,9 @@ wxString tmGISDataVectorMYSQL::GetTableName(TOC_GENERIC_NAME type)
 }
 
 
-wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid)
+wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, bool &isOver)
 {
+	isOver = false;
     MYSQL_ROW row;
     tmArrayULong row_length;
 
@@ -267,12 +268,14 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid)
             wxLogError(_T("Database should have results..."));
         }
         nbvertex = 0;
+		isOver = true;
         return NULL;
     }
 
     if (m_DB->DataBaseGetNextRowResult(row, row_length) == false) {
         m_DB->DataBaseClearResults();
         nbvertex = 0;
+		isOver = true;
         return NULL;
     }
 
