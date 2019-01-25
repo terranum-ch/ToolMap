@@ -1,6 +1,6 @@
 IF (WIN32)
     FIND_FILE(GDAL_DLL_NAME
-            gdal18.dll NAMES gdal19.dll gdal110.dll gdal200.dll gdal201.dll gdal202.dll
+            gdal18.dll NAMES gdal200.dll gdal201.dll gdal202.dll gdal203.dll gdal204.dll gdal205.dll gdal206.dll
             HINTS ${SEARCH_GDAL_PATH}/bin
             ${SEARCH_GDAL_PATH}
             NO_DEFAULT_PATH)
