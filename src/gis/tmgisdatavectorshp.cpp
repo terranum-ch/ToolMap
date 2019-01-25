@@ -33,6 +33,8 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
     m_polyTotalRings = 0;
     m_ClassType = tmGIS_VECTOR_SHAPEFILE;
     m_RasterizeDataset = NULL;
+    m_MultiLinesIterator = 0;
+    m_MultiLinesOid = 0;
 }
 
 
@@ -212,27 +214,88 @@ bool tmGISDataVectorSHP::SetAttributeFilter(const wxString &query)
 }
 
 
-wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid)
+wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid, bool &isOver)
 {
+	isOver = false;
+
     wxASSERT(m_Layer);
-    OGRFeature *poFeature = m_Layer->GetNextFeature();
+    OGRFeature *poFeature = nullptr;
+
+    if (m_MultiLinesIterator > 0) {
+        poFeature = m_Layer->GetFeature(m_MultiLinesOid);
+    } else {
+        poFeature = m_Layer->GetNextFeature();
+    }
 
     // nothing more to read
     if (poFeature == NULL) {
         nbvertex = 0;
         oid = -1;
-        return NULL;
-    }
-
-
-    OGRLineString *pline = (OGRLineString *) poFeature->GetGeometryRef();
-    if (pline == NULL) {
-        wxLogWarning(_("Line %ld is corrupted in file: '%s'!"), poFeature->GetFID(),
-                     wxString(m_Layer->GetName()));
+        isOver = true;
         return NULL;
     }
 
     oid = poFeature->GetFID();
+
+    OGRGeometry *geom = poFeature->GetGeometryRef();
+    OGRLineString *pline;
+
+    if (wkbFlatten(geom->getGeometryType()) == wkbMultiLineString) {
+
+        m_MultiLinesOid = oid;
+
+        OGRMultiLineString *pmline = geom->toMultiLineString();
+        OGRGeometry *geomLine = pmline->getGeometryRef(m_MultiLinesIterator);
+        wxASSERT(wkbFlatten(geomLine->getGeometryType()) == wkbLineString);
+
+        pline = geomLine->toLineString();
+        if (!pline) {
+            wxLogWarning(_("Line %d is corrupted in file: '%s'!"), (int) poFeature->GetFID(),
+                         wxString(m_Layer->GetName()));
+            return nullptr;
+        }
+
+        // normal reading
+        nbvertex = pline->getNumPoints();
+        if (nbvertex <= 1) {
+            if (IsLoggingEnabled()) {
+                wxLogDebug(_T("Only one vertex or less in this line ???"));
+            }
+            OGRGeometryFactory::destroyGeometry(pmline);
+            return nullptr;
+        }
+
+        wxRealPoint *pts = new wxRealPoint[nbvertex];
+        for (int i = 0; i < nbvertex; i++) {
+            pts[i].x = pline->getX(i);
+            pts[i].y = pline->getY(i);
+        }
+
+        int nbLines = pmline->getNumGeometries();
+
+        if (m_MultiLinesIterator >= pmline->getNumGeometries() - 1) {
+            m_MultiLinesIterator = 0;
+        } else {
+            m_MultiLinesIterator++;
+        }
+
+        OGRFeature::DestroyFeature(poFeature);
+
+        return pts;
+    }
+
+	if (wkbFlatten(geom->getGeometryType()) != wkbLineString) {
+		wxLogWarning(_("Line %d is not a single line in file: '%s'!"), (int)poFeature->GetFID(),
+			wxString(m_Layer->GetName()));
+		return nullptr;
+	}
+
+	pline = geom->toLineString();
+    if (!pline) {
+        wxLogWarning(_("Line %d is corrupted in file: '%s'!"), (int)poFeature->GetFID(),
+                     wxString(m_Layer->GetName()));
+        return nullptr;
+    }
 
     // normal reading
     nbvertex = pline->getNumPoints();
@@ -241,7 +304,7 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid)
             wxLogDebug(_T("Only one vertex or less in this line ???"));
         }
         OGRGeometryFactory::destroyGeometry(pline);
-        return NULL;
+        return nullptr;
     }
 
     wxRealPoint *pts = new wxRealPoint[nbvertex];
@@ -250,6 +313,7 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid)
         pts[i].y = pline->getY(i);
     }
     OGRFeature::DestroyFeature(poFeature);
+
     return pts;
 }
 

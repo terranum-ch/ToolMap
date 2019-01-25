@@ -15,7 +15,7 @@ $REBUILD_WX=$false
 $REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
-$REBUILD_GDAL=$false
+$REBUILD_GDAL=$true
 $REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
 
@@ -237,7 +237,7 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
     Remove-Item "$LIB_DIR\gdal" -Force -Recurse
   }
   mkdir "$LIB_DIR\gdal" > $null
-  $GDAL_URL="http://download.osgeo.org/gdal/2.2.1/gdal221.zip"
+  $GDAL_URL="http://download.osgeo.org/gdal/2.4.0/gdal240.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $GDAL_URL -FileName gdal.zip > $null
   } else {

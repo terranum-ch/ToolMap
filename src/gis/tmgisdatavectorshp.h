@@ -44,6 +44,8 @@ protected:
     GDALDataset *m_RasterizeDataset;
     OGRFeature *m_Feature;
     int m_polyTotalRings;
+    int m_MultiLinesIterator;
+    int m_MultiLinesOid;
 
 public:
     tmGISDataVectorSHP();
@@ -65,7 +67,7 @@ public:
 
     virtual bool SetAttributeFilter(const wxString &query);
 
-    virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid);
+    virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver);
 
     virtual wxRealPoint *GetNextDataPoint(long &oid);
 

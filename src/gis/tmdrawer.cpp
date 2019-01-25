@@ -210,9 +210,13 @@ bool tmDrawer::DrawLines(tmLayerProperties *itemProp, tmGISData *pdata)
     while (1) {
         iNbVertex = 0;
         long myOid = 0;
-        wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
-        if (pptsReal == NULL) {
+        bool isOver = false;
+        wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid, isOver);
+        if (isOver) {
             break;
+        }
+        if (pptsReal == NULL) {
+            continue;
         }
 
 
@@ -403,8 +407,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
     while (1) {
         int iNbVertex = wxNOT_FOUND;
         long myOid = wxNOT_FOUND;
-        wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
-        if (iNbVertex <= 1) {
+        bool isOver;
+        wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid, isOver);
+        if (iNbVertex <= 1 || isOver) {
             wxDELETEA(pptsReal);
             break;
         }
@@ -566,10 +571,14 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata)
         while (1) {
             int iNbVertex = wxNOT_FOUND;
             long myOid = wxNOT_FOUND;
-            wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid);
+            bool isOver = false;
+            wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid, isOver);
+            if (isOver) {
+                break;
+            }
             if (pptsReal == NULL || iNbVertex <= 1) {
                 wxDELETEA(pptsReal);
-                break;
+                continue;
             }
 
             myTotalVertex += iNbVertex;

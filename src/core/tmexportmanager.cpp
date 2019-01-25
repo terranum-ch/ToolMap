@@ -910,8 +910,8 @@ wxRealPoint *tmExportManager::GetFrame(int &nbvertex)
         return NULL;
     }
 
-
-    wxRealPoint *myPt = myFrameDB.GetNextDataLine(nbvertex, loid);
+    bool isOver;
+    wxRealPoint *myPt = myFrameDB.GetNextDataLine(nbvertex, loid, isOver);
 
     // check for closed frame
     wxASSERT(myPt);
