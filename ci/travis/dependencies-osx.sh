@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-brew install proj
+brew upgrade proj
 brew upgrade geos
 
 wget -q -O cxxtest.tar.gz "https://github.com/CxxTest/cxxtest/archive/4.3.tar.gz"
