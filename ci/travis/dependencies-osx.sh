@@ -1,8 +1,5 @@
 #!/usr/bin/env sh
 
-brew install proj
-brew upgrade geos
-
 wget -q -O cxxtest.tar.gz "https://github.com/CxxTest/cxxtest/archive/4.3.tar.gz"
 tar -xzf cxxtest.tar.gz -C ${HOME}
 
