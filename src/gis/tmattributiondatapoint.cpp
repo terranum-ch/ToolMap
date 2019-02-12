@@ -183,7 +183,7 @@ void tmAttributionDataPoint::SetPanelValues(AttribObjType_PANEL *panel,
                                             const wxArrayLong &valueids)
 {
     panel->SetSelectedValues(TOC_NAME_POINTS, valueids, false);
-	panel->SetSelectedValues(TOC_NAME_POINTS, valueids, true);
+    panel->SetSelectedValues(TOC_NAME_POINTS, valueids, true);
 }
 
 
