@@ -83,14 +83,16 @@ void tmAboutDLG::CreateControls(wxWindow *parent)
 
     wxPanel *myPanelImg;
     myPanelImg = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    myPanelImg->SetBackgroundColour(wxColour(255, 255, 255));
+    //myPanelImg->SetBackgroundColour(wxColour(255, 255, 255));
+    //myPanelImg->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
     wxBoxSizer *bSizer37;
     bSizer37 = new wxBoxSizer(wxVERTICAL);
 
     wxStaticBitmap *m_bitmap1 = new wxStaticBitmap(myPanelImg, wxID_ANY, *_img_icon_toolmap_about, wxDefaultPosition,
                                                    wxSize(-1, -1), 0);
-    bSizer37->Add(m_bitmap1, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    //m_bitmap1->SetBackgroundColour(wxColour(255, 255, 255));
+    bSizer37->Add(m_bitmap1, 0, wxALL | wxEXPAND, 5);
 
 
     m_TextVersion = new wxStaticText(myPanelImg, wxID_ANY, GetVersionText(), wxDefaultPosition, wxDefaultSize, 0);
@@ -117,7 +119,7 @@ void tmAboutDLG::CreateControls(wxWindow *parent)
     bSizer36->Add(myPanelImg, 1, wxEXPAND, 5);
 
     m_PanelLicence = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    m_PanelLicence->SetBackgroundColour(wxColour(255, 255, 255));
+    //m_PanelLicence->SetBackgroundColour(wxColour(255, 255, 255));
 
     wxBoxSizer *bSizer40;
     bSizer40 = new wxBoxSizer(wxVERTICAL);
@@ -149,7 +151,7 @@ void tmAboutDLG::CreateControls(wxWindow *parent)
     bSizer36->Add(m_PanelLicence, 0, wxEXPAND, 5);
 
     m_PanelAuthor = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    m_PanelAuthor->SetBackgroundColour(wxColour(255, 255, 255));
+    //m_PanelAuthor->SetBackgroundColour(wxColour(255, 255, 255));
     m_PanelAuthor->Hide();
 
     wxBoxSizer *bSizer41;
@@ -159,6 +161,8 @@ void tmAboutDLG::CreateControls(wxWindow *parent)
     m_HtmlAuthors = new wxHtmlWindow(m_PanelAuthor, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                      wxHW_NO_SELECTION | wxHW_SCROLLBAR_AUTO);
     m_HtmlAuthors->SetPage(GetAuthorsText());
+    //m_HtmlAuthors->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+
     bSizer41->Add(m_HtmlAuthors, 1, wxALL | wxEXPAND, 5);
 
     m_PanelAuthor->SetSizer(bSizer41);
