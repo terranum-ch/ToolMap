@@ -19,6 +19,9 @@ $REBUILD_GDAL=$false
 $REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
 
+# Timer
+$stopwatchlibs = [system.diagnostics.stopwatch]::StartNew()
+
 # Setup VS environment
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
 pushd 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build'    
@@ -117,6 +120,8 @@ $env:WXWIN = "$LIB_DIR\wxwidgets"
 # List files
 Get-ChildItem "$LIB_DIR/wxwidgets"
 
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
+
 # Install wxPDFDocument
 if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
   Write-Host "`nBuilding wxPDFDocument" -ForegroundColor Yellow
@@ -144,6 +149,8 @@ if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
 # List files
 Get-ChildItem "$LIB_DIR/wxpdfdoc"
 
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
+
 # Install curl
 if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
   Write-Host "`nBuilding curl" -ForegroundColor Yellow
@@ -170,6 +177,8 @@ if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
 }
 # List files
 Get-ChildItem "$LIB_DIR/curl"
+
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install sqlite
 if(-not (Test-Path -Path "$LIB_DIR\sqlite") -Or $REBUILD_CURL) {
@@ -211,6 +220,8 @@ if(-not (Test-Path -Path "$LIB_DIR\sqlite") -Or $REBUILD_CURL) {
 # List files
 Get-ChildItem "$LIB_DIR/sqlite"
 
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
+
 # Install Proj
 if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   Write-Host "`nBuilding Proj" -ForegroundColor Yellow
@@ -238,6 +249,8 @@ if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
 }
 # List files
 Get-ChildItem "$LIB_DIR/proj"
+
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install Geos
 if(-not (Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
@@ -272,6 +285,8 @@ if(-not (Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
 # List files
 Get-ChildItem "$LIB_DIR/geos"
 
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
+
 # Install Gdal
 if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   Write-Host "`nBuilding Gdal" -ForegroundColor Yellow
@@ -298,6 +313,8 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
 }
 # List files
 Get-ChildItem "$LIB_DIR/gdal"
+
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install Mysql
 if(-not (Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
