@@ -73,7 +73,7 @@ $env:Path += ";$WIX_DIR\bin"
 # Install cxxtest
 Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
 cd $TMP_DIR
-$CXXTEST_URL="https://github.com/CxxTest/cxxtest/archive/4.3.zip"
+$CXXTEST_URL="https://github.com/CxxTest/cxxtest/archive/4.4.zip"
 if ($ON_APPVEYOR) {
   appveyor DownloadFile $CXXTEST_URL -FileName cxxtest.zip > $null
 } else {
@@ -95,7 +95,7 @@ if(-not (Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
     Remove-Item "$LIB_DIR\wxwidgets" -Force -Recurse
   }
   mkdir "$LIB_DIR\wxwidgets" > $null
-  $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.zip"
+  $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.2/wxWidgets-3.1.2.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $WX_URL -FileName wxwidgets.zip > $null
   } else {
@@ -152,7 +152,7 @@ if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
     Remove-Item "$LIB_DIR\curl" -Force -Recurse
   }
   mkdir "$LIB_DIR\curl" > $null
-  $CURL_URL="https://github.com/curl/curl/archive/curl-7_54_1.zip"
+  $CURL_URL="https://github.com/curl/curl/archive/curl-7_64_0.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $CURL_URL -FileName curl.zip > $null
   } else {
@@ -171,6 +171,46 @@ if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
 # List files
 Get-ChildItem "$LIB_DIR/curl"
 
+# Install sqlite
+if(-not (Test-Path -Path "$LIB_DIR\sqlite") -Or $REBUILD_CURL) {
+    Write-Host "`nBuilding sqlite" -ForegroundColor Yellow
+    cd $TMP_DIR
+    if(Test-Path -Path "$LIB_DIR\sqlite") {
+        Remove-Item "$LIB_DIR\sqlite" -Force -Recurse
+    }
+    mkdir "$LIB_DIR\sqlite" > $null
+    mkdir "$LIB_DIR\sqlite\bin" > $null
+    mkdir "$LIB_DIR\sqlite\lib" > $null
+    mkdir "$LIB_DIR\sqlite\include" > $null
+    $SQLITE_SRC_URL="https://www.sqlite.org/2019/sqlite-amalgamation-3270200.zip"
+    $SQLITE_DLL_URL="https://www.sqlite.org/2019/sqlite-dll-win64-x64-3270200.zip"
+    $SQLITE_TOOLS_URL="https://www.sqlite.org/2019/sqlite-tools-win32-x86-3270200.zip"
+    if ($ON_APPVEYOR) {
+        appveyor DownloadFile $SQLITE_SRC_URL -FileName sqlite_src.zip > $null
+        appveyor DownloadFile $SQLITE_DLL_URL -FileName sqlite_dll.zip > $null
+        appveyor DownloadFile $SQLITE_TOOLS_URL -FileName sqlite_tools.zip > $null
+    } else {
+        Invoke-WebRequest -Uri $SQLITE_SRC_URL -OutFile sqlite_src.zip
+        Invoke-WebRequest -Uri $SQLITE_DLL_URL -OutFile sqlite_dll.zip
+        Invoke-WebRequest -Uri $SQLITE_TOOLS_URL -OutFile sqlite_tools.zip
+    }
+    7z x sqlite_src.zip -o"$TMP_DIR" > $null
+    7z x sqlite_dll.zip -o"$TMP_DIR" > $null
+    7z x sqlite_tools.zip -o"$TMP_DIR" > $null
+    move "$TMP_DIR\sqlite-tools*" "$TMP_DIR\sqlitetools"
+    move "$TMP_DIR\sqlite-*" "$TMP_DIR\sqlite"
+    lib /def:sqlite3.def
+    copy "$TMP_DIR\sqlite3.dll" "$LIB_DIR\sqlite\bin\sqlite3.dll"
+    copy "$TMP_DIR\sqlite3.lib" "$LIB_DIR\sqlite\lib\sqlite3.lib"
+    copy "$TMP_DIR\sqlitetools\sqlite3.exe" "$LIB_DIR\sqlite\bin\sqlite3.exe"
+    copy "$TMP_DIR\sqlite\sqlite3.h" "$LIB_DIR\sqlite\include\sqlite3.h"
+    copy "$TMP_DIR\sqlite\sqlite3ext.h" "$LIB_DIR\sqlite\include\sqlite3ext.h"
+} else {
+    Write-Host "`sqlite already in cache" -ForegroundColor Yellow
+}
+# List files
+Get-ChildItem "$LIB_DIR/sqlite"
+
 # Install Proj
 if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   Write-Host "`nBuilding Proj" -ForegroundColor Yellow
@@ -179,7 +219,7 @@ if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
     Remove-Item "$LIB_DIR\proj" -Force -Recurse
   }
   mkdir "$LIB_DIR\proj" > $null
-  $PROJ_URL="https://github.com/OSGeo/proj.4/archive/4.9.3.zip"
+  $PROJ_URL="https://github.com/OSGeo/proj.4/archive/6.0.0.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $PROJ_URL -FileName proj.zip > $null
   } else {
@@ -188,8 +228,11 @@ if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   7z x proj.zip -o"$TMP_DIR" > $null
   move "$TMP_DIR\proj.4-*" "$TMP_DIR\proj"
   cd "$TMP_DIR\proj"
-  nmake -f makefile.vc INSTDIR="$LIB_DIR\proj" > $null
-  nmake -f makefile.vc INSTDIR="$LIB_DIR\proj" install-all > $null
+  mkdir build
+  cd build
+  cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_PREFIX_PATH="$LIB_DIR\sqlite" -DPROJ_TESTS=OFF -DBUILD_PROJINFO=OFF -DBUILD_CCT=OFF -DBUILD_CS2CS=OFF -DBUILD_GEOD=OFF -DBUILD_GIE=OFF -DBUILD_PROJ=OFF -DBUILD_PROJINFO=OFF -DBUILD_LIBPROJ_SHARED=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$LIB_DIR\proj" .. > $null
+  cmake --build . --config Release > $null
+  cmake --build . --config Release --target INSTALL > $null
 } else {
   Write-Host "`Proj already in cache" -ForegroundColor Yellow
 }
@@ -204,7 +247,7 @@ if(-not (Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
     Remove-Item "$LIB_DIR\geos" -Force -Recurse
   }
   mkdir "$LIB_DIR\geos" > $null
-  $GEOS_URL="http://download.osgeo.org/geos/geos-3.6.1.tar.bz2"
+  $GEOS_URL="http://download.osgeo.org/geos/geos-3.7.1.tar.bz2"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $GEOS_URL -FileName geos.tar.bz2 > $null
   } else {
@@ -237,7 +280,7 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
     Remove-Item "$LIB_DIR\gdal" -Force -Recurse
   }
   mkdir "$LIB_DIR\gdal" > $null
-  $GDAL_URL="http://download.osgeo.org/gdal/2.4.0/gdal240.zip"
+  $GDAL_URL="http://download.osgeo.org/gdal/2.4.1/gdal241.zip"
   if ($ON_APPVEYOR) {
     appveyor DownloadFile $GDAL_URL -FileName gdal.zip > $null
   } else {
