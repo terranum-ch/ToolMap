@@ -19,3 +19,4 @@ cmake-build-relwithdebinfo/*
 *.srctrldb
 
 bin-cmd-debug/
+.DS_Store
