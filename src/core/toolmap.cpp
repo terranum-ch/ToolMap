@@ -820,6 +820,7 @@ void ToolMapFrame::_UpdateToolBarIconColor() {
         GetToolBar()->SetToolNormalBitmap(ID_MENU_SELECT, *_img_w_toolbar_select);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM_FIT, *_img_w_toolbar_zoom_fit);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM, *_img_w_toolbar_zoom);
+        GetToolBar()->SetToolNormalBitmap(wxID_BACKWARD, *_img_w_toolbar_previous);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_PAN, *_img_w_toolbar_pan);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_DRAW, *_img_w_toolbar_edit);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_MODIFY, *_img_w_toolbar_modify);
@@ -832,6 +833,7 @@ void ToolMapFrame::_UpdateToolBarIconColor() {
         GetToolBar()->SetToolNormalBitmap(ID_MENU_SELECT, *_img_toolbar_select);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM_FIT, *_img_toolbar_zoom_fit);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM, *_img_toolbar_zoom);
+        GetToolBar()->SetToolNormalBitmap(wxID_BACKWARD, *_img_toolbar_previous);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_PAN, *_img_toolbar_pan);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_DRAW, *_img_toolbar_edit);
         GetToolBar()->SetToolNormalBitmap(ID_MENU_MODIFY, *_img_toolbar_modify);

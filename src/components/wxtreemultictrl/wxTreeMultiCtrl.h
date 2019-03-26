@@ -578,6 +578,8 @@ DECLARE_DYNAMIC_CLASS(wxTreeMultiCtrl)
 private:
     TreeMultiItemRoot _root;
 
+    wxWindow * m_parent;
+
     long _style;
     wxBitmap *_expandBmp, *_collBmp;
 

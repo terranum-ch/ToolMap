@@ -58,6 +58,7 @@ bool wxTreeMultiCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint &pos
     wxScrolledWindow::Create(parent, id, pos, size, style | wxTAB_TRAVERSAL, name);
 
     _create_called = true;
+    m_parent = parent;
 
     // do the init
     Init();
@@ -709,8 +710,8 @@ void wxTreeMultiCtrl::DrawNode(TreeMultiItemBase *b, wxDC &dc)
                 dc.SetPen(wxPen(this->m_HilightBrush->GetColour(), 1, wxPENSTYLE_SOLID));
             } /* if */
             else {
-                dc.SetBrush(wxBrush(*wxWHITE, wxBRUSHSTYLE_SOLID));
-                dc.SetPen(wxPen(*wxWHITE, 1, wxPENSTYLE_SOLID));
+                dc.SetBrush(wxBrush(m_parent->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
+                dc.SetPen(wxPen(m_parent->GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
             } /* if */
             dc.DrawRectangle(n->GetX(), n->GetY(), n->GetWidth(), n->GetHeight());
             // draw caption
