@@ -20,6 +20,7 @@
 #include "tmtocctrl.h"
 #include "tmsymbol.h"                // for symbology
 #include "tmlayerproperties.h"
+#include "tmsymbolrule.h"
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
@@ -43,6 +44,8 @@ BEGIN_EVENT_TABLE(tmTOCCtrl, wxTreeCtrl)
                 EVT_TREE_ITEM_MENU(wxID_ANY, tmTOCCtrl::OnMouseItemRightClick)
                 EVT_MENU (ID_TOCMENU_REMOVE, tmTOCCtrl::OnRemoveItem)
                 EVT_MENU (ID_TOCMENU_PROPERTIES, tmTOCCtrl::OnShowProperties)
+                EVT_MENU (ID_TOCMENU_PROPERTIES_SAVE, tmTOCCtrl::OnPropertiesSave)
+                EVT_MENU (ID_TOCMENU_PROPERTIES_LOAD, tmTOCCtrl::OnPropertiesLoad)
                 EVT_MENU (ID_TOCMENU_SHOW_VERTEX_NONE, tmTOCCtrl::OnVertexMenu)
                 EVT_MENU (ID_TOCMENU_SHOW_VERTEX_ALL, tmTOCCtrl::OnVertexMenu)
                 EVT_MENU (ID_TOCMENU_SHOW_VERTEX_BEGIN_END, tmTOCCtrl::OnVertexMenu)
@@ -1023,6 +1026,56 @@ void tmTOCCtrl::OnShowProperties(wxCommandEvent &event)
     wxCommandEvent Evt(tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
     Evt.SetClientData(item);
     GetEventHandler()->QueueEvent(Evt.Clone());
+}
+
+
+void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event)
+{
+    // get selected item
+    wxTreeItemId selected = GetSelection();
+    wxTreeItemId myID = selected;
+    if (myID == GetRootItem()) {
+        wxLogError(_("Saving Properties not availlable for project, select a layer."));
+        return;
+    }
+
+    // get layer info: name, spatial type, symbology
+    tmLayerProperties *item = (tmLayerProperties *) GetItemData(selected);
+    wxFileName myLayerName = item->GetName();
+    wxString mySpatialType;
+    mySpatialType << item->GetSpatialType();
+    tmSerialize out;
+    item->GetSymbolRuleManagerRef()->Serialize(out);
+
+    myLayerName.SetExt(_T("tly"));
+
+    // show save dialog
+    wxString mySaveFilePathTxt = wxSaveFileSelector(
+            _("Save symbology into"),
+            myLayerName.GetExt(),
+            myLayerName.GetFullName(),
+            this);
+
+    if(mySaveFilePathTxt == wxEmptyString){
+        return;
+    }
+
+    wxFile myFile (mySaveFilePathTxt, wxFile::write);
+    if (myFile.IsOpened() == false){
+        wxLogError(_("Error creating file: '%s'"), mySaveFilePathTxt);
+        return;
+    }
+
+    myFile.Write(myLayerName.GetName() << _T("\n"));
+    myFile.Write(mySpatialType << _T("\n"));
+    myFile.Write(out.GetString());
+    myFile.Close();
+}
+
+
+void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event)
+{
+
 }
 
 

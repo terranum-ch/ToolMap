@@ -84,6 +84,9 @@ void tmTOCCtrlMenu::_CreateTOCProperties()
 {
     if (m_LayerProperties->GetType() == TOC_NAME_SHP) {
         Append(ID_TOCMENU_LABELS, _("Labels..."));
+        AppendSeparator();
+        Append(ID_TOCMENU_PROPERTIES_SAVE, _("Save Symbology..."));
+        Append(ID_TOCMENU_PROPERTIES_LOAD, _("Load Symbology..."));
     }
     Append(ID_TOCMENU_PROPERTIES, _("Symbology..."));
 }

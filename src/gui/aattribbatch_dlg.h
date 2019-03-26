@@ -70,7 +70,6 @@ public:
                 const wxString &name = _T("tmAAttribInfoPanel"))
     {
         wxPanel::Create(parent, id, pos, size, style, name);
-        SetPanelColour();
         wxBoxSizer *bSizer24;
         bSizer24 = new wxBoxSizer(wxHORIZONTAL);
         m_Label = new wxStaticText(this, wxID_ANY,

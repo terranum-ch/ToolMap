@@ -180,7 +180,8 @@ bool tmAttributionDataLabel::GetInfoBasic(long oid, wxArrayLong &objid,
 void tmAttributionDataLabel::SetPanelValues(AttribObjType_PANEL *panel,
                                             const wxArrayLong &valueids)
 {
-    panel->SetSelectedValues(TOC_NAME_LABELS, valueids);
+    panel->SetSelectedValues(TOC_NAME_LABELS, valueids, false);
+    panel->SetSelectedValues(TOC_NAME_LABELS, valueids, true);
 }
 
 

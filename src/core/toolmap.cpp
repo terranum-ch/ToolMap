@@ -321,6 +321,8 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_UPDATE_UI (ID_MENU_INFO_WINDOW, ToolMapFrame::OnUpdateMenuShowInfo)
                 EVT_UPDATE_UI(ID_MENU_VALIDITY, ToolMapFrame::OnUpdateGeometryValidity)
                 EVT_UPDATE_UI(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnUpdateGeometryValidity)
+
+                EVT_SYS_COLOUR_CHANGED(ToolMapFrame::OnSysColourChanged)
 END_EVENT_TABLE()
 
 
@@ -802,7 +804,45 @@ void ToolMapFrame::_CreateToolBar()
     itemToolBar3->AddSeparator();
     itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), *_img_toolbar_info, wxNullBitmap, wxITEM_NORMAL,
                           _("Information"), wxEmptyString);
+
+    _UpdateToolBarIconColor();
     itemToolBar3->Realize();
+}
+
+
+void ToolMapFrame::_UpdateToolBarIconColor() {
+    // this function is only used in OSX for Dark mode support
+#if defined( __WXMAC__ ) && wxOSX_USE_COCOA_OR_CARBON
+    wxColor baseColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+    if ((baseColour.Red() < 75)  //dark mode
+        && (baseColour.Green() < 75)
+        && (baseColour.Blue() < 75)) {
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_SELECT, *_img_w_toolbar_select);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM_FIT, *_img_w_toolbar_zoom_fit);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM, *_img_w_toolbar_zoom);
+        GetToolBar()->SetToolNormalBitmap(wxID_BACKWARD, *_img_w_toolbar_previous);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_PAN, *_img_w_toolbar_pan);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_DRAW, *_img_w_toolbar_edit);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_MODIFY, *_img_w_toolbar_modify);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_MODIFY_SHARED, *_img_w_toolbar_vertex_move);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ATTRIB_TYPES, *_img_w_toolbar_attribute);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ATTRIB_ATTRIBUTES, *_img_w_toolbar_attribute_extend);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_INFO_WINDOW, *_img_w_toolbar_info);
+    }
+    else{ // light mode
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_SELECT, *_img_toolbar_select);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM_FIT, *_img_toolbar_zoom_fit);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ZOOM, *_img_toolbar_zoom);
+        GetToolBar()->SetToolNormalBitmap(wxID_BACKWARD, *_img_toolbar_previous);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_PAN, *_img_toolbar_pan);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_DRAW, *_img_toolbar_edit);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_MODIFY, *_img_toolbar_modify);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_MODIFY_SHARED, *_img_toolbar_vertex_move);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ATTRIB_TYPES, *_img_toolbar_attribute);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_ATTRIB_ATTRIBUTES, *_img_toolbar_attribute_extend);
+        GetToolBar()->SetToolNormalBitmap(ID_MENU_INFO_WINDOW, *_img_toolbar_info);
+    }
+#endif
 }
 
 
@@ -1946,6 +1986,12 @@ void ToolMapFrame::OnUpdateMenuZoomLayer(wxUpdateUIEvent &event)
         bEnable = true;
     }
     event.Enable(bEnable);
+}
+
+
+void ToolMapFrame::OnSysColourChanged(wxSysColourChangedEvent & event){
+    _UpdateToolBarIconColor();
+    event.Skip();
 }
 
 

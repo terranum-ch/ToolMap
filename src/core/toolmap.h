@@ -528,9 +528,13 @@ private:
 
     void OnUpdateMenuZoomLayer(wxUpdateUIEvent &event);
 
+    void OnSysColourChanged(wxSysColourChangedEvent & event);
+
     void _CreateMenu();
 
     void _CreateToolBar();
+
+    void _UpdateToolBarIconColor();
 
     void _LoadPreference(bool reload);
 

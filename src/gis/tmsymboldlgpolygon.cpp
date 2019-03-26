@@ -327,9 +327,9 @@ void tmSymbolDLGPolyRule::_LoadTableData()
         m_ImgList->Add(_CreateColorBitmap(m_Rules[i]->GetBrush(), m_Rules[i]->GetPen()));
         m_SymbolListCtrl->SetItemImage(myListIndex, i);
         if (m_Rules[i]->IsActive() == false) {
-            m_SymbolListCtrl->SetItemTextColour(myListIndex, *wxLIGHT_GREY);
+            m_SymbolListCtrl->SetItemTextColour(myListIndex, m_SymbolListCtrl->GetTextColorGrayed());
         } else {
-            m_SymbolListCtrl->SetItemTextColour(myListIndex, *wxBLACK);
+            m_SymbolListCtrl->SetItemTextColour(myListIndex, m_SymbolListCtrl->GetTextColorNormal());
         }
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetRuleName(), 1);
         m_SymbolListCtrl->SetText(myListIndex, m_Rules[i]->GetAttributFilter(), 2);
