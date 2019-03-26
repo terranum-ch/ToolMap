@@ -21,6 +21,7 @@
 #include "tmsymbol.h"                // for symbology
 #include "tmlayerproperties.h"
 #include "tmsymbolrule.h"
+#include <wx/textfile.h>
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
