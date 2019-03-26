@@ -1035,7 +1035,7 @@ void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event)
     wxTreeItemId selected = GetSelection();
     wxTreeItemId myID = selected;
     if (myID == GetRootItem()) {
-        wxLogError(_("Saving Properties not availlable for project, select a layer."));
+        wxLogError(_("Saving Properties not available for project, select a layer."));
         return;
     }
 
@@ -1075,6 +1075,63 @@ void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event)
 
 void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event)
 {
+    // get selected item
+    wxTreeItemId selected = GetSelection();
+    wxTreeItemId myID = selected;
+    if (myID == GetRootItem()) {
+        wxLogError(_("Loading Properties not available for project, select a layer."));
+        return;
+    }
+
+    // show load dialog
+    wxString myLoadFilePathTxt = wxLoadFileSelector(
+            _("Load symbology"),
+            _T("tly"),
+            wxEmptyString,
+            this);
+
+    if(myLoadFilePathTxt == wxEmptyString){
+        return;
+    }
+
+    // try to load the symbology file
+    wxTextFile myFile;
+    if(myFile.Open(myLoadFilePathTxt) == false){
+        wxLogError(_("Unable to open symbology file: %s"), myLoadFilePathTxt);
+        return;
+    }
+
+    // load selected layer information
+    tmLayerProperties *item = (tmLayerProperties *) GetItemData(selected);
+    wxFileName myLayerName = item->GetName();
+    wxString mySpatialType;
+    mySpatialType << item->GetSpatialType();
+
+    // check layer name stored
+    wxString myLayerNameInTxtFile = myFile.GetFirstLine();
+    if (myLayerNameInTxtFile != myLayerName.GetName()){
+        wxMessageDialog myDlg (this,
+                wxString::Format(_T("This symbology was saved for layer: %s. Apply for selected layer?"), myLayerNameInTxtFile),
+                _T("Different layer names"), wxYES_NO | wxCANCEL);
+        if (myDlg.ShowModal() != wxID_YES){
+            return;
+        }
+    }
+
+    // check geometry stored
+    wxString myFileSpatialType = myFile.GetNextLine();
+    if (myFileSpatialType != mySpatialType){
+        wxMessageDialog myDlg (this,
+                               wxString::Format(_T("This symbology was saved for '%s'. Apply for '%s'?"),
+                                                           TM_GIS_SPATIAL_TYPES_STRING[wxAtoi(myFileSpatialType)],
+                                                           TM_GIS_SPATIAL_TYPES_STRING[wxAtoi(mySpatialType)]),
+                               _T("Different spatial types"), wxYES_NO | wxCANCEL);
+        if (myDlg.ShowModal() != wxID_YES){
+            return;
+        }
+    }
+
+
 
 }
 
