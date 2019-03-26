@@ -213,11 +213,18 @@ DataListReportCtrl::DataListReportCtrl(wxWindow *parent, wxWindowID id, const wx
                                        long style)
         : wxListCtrl(parent, id, pos, size, style)
 {
+    _Init();
 }
 
 bool DataListReportCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style)
 {
+    _Init();
     return wxListCtrl::Create(parent, id, pos, size, style);
+}
+
+void DataListReportCtrl::_Init() {
+    m_ColourGrayed = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
+    m_ColourNormal = wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT);
 }
 
 DataListReportCtrl::~DataListReportCtrl()
