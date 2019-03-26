@@ -200,10 +200,10 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl *ctrl)
 
 
 #ifdef __WXOSX__
-    ctrl->SetPanelColour(wxColour(222,222,222));
+    //ctrl->SetBackgroundColour(wxColour(222,222,222));
 #else
     wxStaticBox myBox;
-    ctrl->SetPanelColour(myBox.GetBackgroundColour());
+    ctrl->SetBackgroundColour(myBox.GetBackgroundColour())
 #endif
 
     wxASSERT(m_CtrlSizer);
