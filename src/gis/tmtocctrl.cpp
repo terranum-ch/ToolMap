@@ -1132,8 +1132,21 @@ void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event)
         }
     }
 
+    // load serialisation
+    wxString mySymbologyTxt = myFile.GetNextLine();
+    if (mySymbologyTxt.IsEmpty()){
+        wxLogError(_("No symbology of empty symbology found in: %s"), myLoadFilePathTxt);
+        return;
+    }
 
+    // escaping character are only needed for storing in the database.
+    mySymbologyTxt.Replace(_T("\\\""), _T("\""));
+    tmSerialize in(mySymbologyTxt);
+    item->GetSymbolRuleManagerRef()->Serialize(in);
 
+    // update display
+    wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
 }
 
 
