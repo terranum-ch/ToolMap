@@ -74,9 +74,9 @@ IF (WIN32)
     MESSAGE(STATUS "GEOS C DLL: ${GEOS_C_DLL_NAME}")
 
     add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            COMMAND ${CMAKE_COMMAND} -E copy
             "${PROJ_DLL_NAME}"
-            "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+            "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/proj.dll")
     MESSAGE(STATUS "PROJ DLL: ${PROJ_DLL_NAME}")
 
     if (SQLITE_DLL_NAME)
