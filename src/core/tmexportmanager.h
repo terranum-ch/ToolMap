@@ -58,7 +58,8 @@ private:
     wxFileName m_ExportPath;
     tmExportData *m_ExportData;
     bool m_UseFastExport;
-    bool m_ExportAttributCode;
+    bool m_ExportAttributeCode;
+    bool m_OverwriteFiles;
 
     PrjDefMemManage *m_ProjMem;
 
@@ -131,6 +132,7 @@ class tmExportSelected_DLG : public wxDialog
 {
 private:
     wxCheckListBox *m_ListLayersCtrl;
+    wxCheckBox *m_OverwriteFilesCtrl;
     wxCheckBox *m_LayersAddCtrl;
     wxCheckBox *m_LayersReplaceCtrl;
     wxCheckBox *m_FastPolyExportCtrl;
@@ -162,13 +164,15 @@ public:
 
     wxArrayInt GetSelectedLayersID();
 
+    bool DoOverwriteFiles();
+
     bool DoLayerAdd();
 
     bool DoLayerReplace();
 
     bool UseFastExport();
 
-    bool DoExportAttributCode();
+    bool DoExportAttributeCode();
 
 };
 

@@ -18,10 +18,10 @@
 // comment doxygen
 
 #include "tmexportmanager.h"
-#include "tmdataintegrity.h"
 #include "../gis/tmtocctrl.h"
+#include "tmdataintegrity.h"
 #include "tmpercent.h"
-
+#include <wx/config.h>
 
 /***************************************************************************//**
  @brief Init default member values
@@ -38,7 +38,8 @@ void tmExportManager::InitMemberValues()
     m_ProgressDlg = NULL;
     m_ProgressBusy = NULL;
     m_UseFastExport = true;
-    m_ExportAttributCode = false; // default is to export attribut enumeration description
+    m_ExportAttributeCode = false; // default is to export attribut enumeration description
+    m_OverwriteFiles = false;
     m_Scale = NULL;
 }
 
@@ -133,7 +134,8 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
     }
 
     m_UseFastExport = myEDlg.UseFastExport();
-    m_ExportAttributCode = myEDlg.DoExportAttributCode();
+    m_ExportAttributeCode = myEDlg.DoExportAttributeCode();
+    m_OverwriteFiles = myEDlg.DoOverwriteFiles();
 
     wxArrayInt mySelectedLayersIndex = myEDlg.GetSelectedLayersID();
     if (mySelectedLayersIndex.IsEmpty()) {
@@ -167,11 +169,11 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
 
     _CorrectIntegrity(myLayers);
 
-    if (ExportLayers(myLayers) == false) {
+    if (!ExportLayers(myLayers)) {
         return false;
     }
 
-    if (myEDlg.DoLayerAdd() == false) {
+    if (!myEDlg.DoLayerAdd()) {
         return true;
     }
 
@@ -278,7 +280,7 @@ bool tmExportManager::ExportLayers(PrjMemLayersArray *layers)
 bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *frame, const int &framevertex)
 {
     // check for file name
-    if (GetAvailableFileName(layer) == false) {
+    if (!GetAvailableFileName(layer)) {
         return false;
     }
 
@@ -286,9 +288,10 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
     m_ExportData = CreateExportData();
     wxASSERT(m_ExportData);
     m_ExportData->SetFrame(frame, framevertex);
-    m_ExportData->SetExportAttributEnumeration(m_ExportAttributCode);
+    m_ExportData->SetExportAttributEnumeration(m_ExportAttributeCode);
+    m_ExportData->SetOverwrite(m_OverwriteFiles);
 
-    if (_CreateExportLayer(layer) == false) {
+    if (!_CreateExportLayer(layer)) {
         wxDELETE(m_ExportData);
         return false;
     }
@@ -298,7 +301,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
     switch (layer->m_LayerType) {
         case LAYER_LINE:
         case LAYER_POINT:
-            if (_ExportSimple(layer) == false) {
+            if (!_ExportSimple(layer)) {
                 wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
                 wxDELETE(m_ExportData);
                 return false;
@@ -307,7 +310,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
 
         case LAYER_POLYGON: {
             wxStopWatch sw;
-            if (_ExportPolyGIS(layer) == false) {
+            if (!_ExportPolyGIS(layer)) {
                 wxLogError(_("Error exporting layer '%s'"), layer->m_LayerName.c_str());
                 wxDELETE(m_ExportData);
                 return false;
@@ -315,7 +318,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
             wxLogMessage(_("Exporting polygon geometries took: %ld [ms]"), sw.Time());
             sw.Start(0);
 
-            if (_ExportSimple(layer) == false) {
+            if (!_ExportSimple(layer)) {
                 wxLogError(_("Error exporting labels to polygon layer '%s'"),
                            layer->m_LayerName.c_str());
                 wxDELETE(m_ExportData);
@@ -761,6 +764,10 @@ bool tmExportManager::IsExportPathValid()
  *******************************************************************************/
 bool tmExportManager::GetAvailableFileName(ProjectDefMemoryLayers *layer)
 {
+    if (m_OverwriteFiles) {
+        return true;
+    }
+
     // get the extension
     tmExportData *myExportFile = CreateExportData();
     wxASSERT (myExportFile);
@@ -770,7 +777,7 @@ bool tmExportManager::GetAvailableFileName(ProjectDefMemoryLayers *layer)
     // does the actual file name exists ?
     wxFileName myFileName = wxFileName(m_ExportPath.GetPathWithSep(),
                                        layer->m_LayerName, myExtension);
-    if (myFileName.FileExists() == false) {
+    if (!myFileName.FileExists()) {
         return true;
     }
 
@@ -782,7 +789,7 @@ bool tmExportManager::GetAvailableFileName(ProjectDefMemoryLayers *layer)
                                             layer->m_LayerName.c_str(),
                                             3, i));
         wxLogDebug(_T("Searching for file : %s"), myFileName.GetFullName().c_str());
-        if (myFileName.FileExists() == false) {
+        if (!myFileName.FileExists()) {
             layer->m_LayerName = myFileName.GetName();
             return true;
         }
@@ -987,6 +994,17 @@ void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent &event)
 
 void tmExportSelected_DLG::OnUpdateUIOK(wxUpdateUIEvent &event)
 {
+    // Save preference
+    wxConfigBase *myConfig = wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("EXPORT");
+    myConfig->Write("overwrite_files", m_OverwriteFilesCtrl->GetValue());
+    myConfig->Write("add_layers", m_LayersAddCtrl->GetValue());
+    myConfig->Write("replace_layers", m_LayersReplaceCtrl->GetValue());
+    myConfig->Write("use_fast_polygon", m_FastPolyExportCtrl->GetValue());
+    myConfig->Write("export_description", m_ExportAttribDescCtrl->GetValue());
+    myConfig->SetPath("..");
+
     bool bHasCHecked = false;
     for (unsigned int i = 0; i < m_ListLayersCtrl->GetCount(); i++) {
         if (m_ListLayersCtrl->IsChecked(i) == true) {
@@ -1006,6 +1024,11 @@ void tmExportSelected_DLG::OnUpdateUICheckReplace(wxUpdateUIEvent &event)
 
 void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
 {
+    // Load preference
+    wxConfigBase *myConfig = wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("EXPORT");
+
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
     wxBoxSizer *bSizer1;
@@ -1045,19 +1068,24 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
     wxStaticBoxSizer *sbSizer2;
     sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Settings")), wxVERTICAL);
 
+    m_OverwriteFilesCtrl = new wxCheckBox(this, wxID_ANY, _("Overwrite existing files"), wxDefaultPosition,
+                                          wxDefaultSize, 0);
+    m_OverwriteFilesCtrl->SetValue(myConfig->ReadBool("overwrite_files", true));
+    sbSizer2->Add(m_OverwriteFilesCtrl, 0, wxALL, 5);
+
     m_LayersAddCtrl = new wxCheckBox(this, wxID_ANY, _("Add layers to the project"), wxDefaultPosition, wxDefaultSize,
                                      0);
-    m_LayersAddCtrl->SetValue(true);
+    m_LayersAddCtrl->SetValue(myConfig->ReadBool("add_layers", true));
     sbSizer2->Add(m_LayersAddCtrl, 0, wxALL, 5);
 
     m_LayersReplaceCtrl = new wxCheckBox(this, ID_EXPORTDLG_REPLACELAYERCHECK, _("Replace existing layers"),
                                          wxDefaultPosition, wxDefaultSize, 0);
-    m_LayersReplaceCtrl->SetValue(true);
+    m_LayersReplaceCtrl->SetValue(myConfig->ReadBool("replace_layers", true));
     sbSizer2->Add(m_LayersReplaceCtrl, 0, wxALL, 5);
 
     m_FastPolyExportCtrl = new wxCheckBox(this, wxID_ANY, _("Use Fast Polygon export"), wxDefaultPosition,
                                           wxDefaultSize, 0);
-    m_FastPolyExportCtrl->SetValue(true);
+    m_FastPolyExportCtrl->SetValue(myConfig->ReadBool("use_fast_polygon", true));
     sbSizer2->Add(m_FastPolyExportCtrl, 0, wxALL, 5);
 
     bSizer4->Add(sbSizer2, 0, wxALL, 5);
@@ -1067,7 +1095,7 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
 
     m_ExportAttribDescCtrl = new wxRadioButton(this, wxID_ANY, _("Export description"), wxDefaultPosition,
                                                wxDefaultSize, wxRB_GROUP);
-    m_ExportAttribDescCtrl->SetValue(true);
+    m_ExportAttribDescCtrl->SetValue(myConfig->ReadBool("export_description", true));
     sbSizer3->Add(m_ExportAttribDescCtrl, 0, wxALL, 5);
 
     m_ExportAttribCodeCtrl = new wxRadioButton(this, wxID_ANY, _("Export Code"), wxDefaultPosition, wxDefaultSize, 0);
@@ -1096,6 +1124,8 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
     bSizer1->Fit(this);
 
     this->Centre(wxBOTH);
+
+    myConfig->SetPath("..");
 }
 
 
@@ -1116,11 +1146,17 @@ wxArrayInt tmExportSelected_DLG::GetSelectedLayersID()
 {
     wxArrayInt mySelectedLayersId;
     for (unsigned int i = 0; i < m_ListLayersCtrl->GetCount(); i++) {
-        if (m_ListLayersCtrl->IsChecked(i) == true) {
+        if (m_ListLayersCtrl->IsChecked(i)) {
             mySelectedLayersId.Add(i);
         }
     }
     return mySelectedLayersId;
+}
+
+
+bool tmExportSelected_DLG::DoOverwriteFiles()
+{
+    return m_OverwriteFilesCtrl->GetValue();
 }
 
 
@@ -1142,7 +1178,7 @@ bool tmExportSelected_DLG::UseFastExport()
 }
 
 
-bool tmExportSelected_DLG::DoExportAttributCode()
+bool tmExportSelected_DLG::DoExportAttributeCode()
 {
     return m_ExportAttribCodeCtrl->GetValue();
 }

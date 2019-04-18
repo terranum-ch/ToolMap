@@ -155,7 +155,7 @@ public:
 
     virtual bool CreateSpatialIndex(GDALProgressFunc progress, void *pfProgressData);
 
-    virtual bool CopyToFile(const wxFileName &filename, const wxString &drivername);
+    virtual bool CopyToFile(const wxFileName &filename, const wxString &drivername, bool overwrite);
 };
 
 

@@ -59,6 +59,7 @@ private:
 protected:
     DataBaseTM *m_pDB;
     wxString m_Extension;
+    bool m_Overwrite;
 
     // protected functions
     wxFileName *GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path);
@@ -148,6 +149,13 @@ public:
 
     double GetCropBufferDistance()
     { return m_CropBufferDistance; }
+
+    void SetOverwrite(bool value)
+    { m_Overwrite = value; }
+
+    bool DoOverwrite()
+    { return m_Overwrite; }
+
 };
 
 
