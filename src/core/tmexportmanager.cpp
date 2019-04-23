@@ -994,17 +994,6 @@ void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent &event)
 
 void tmExportSelected_DLG::OnUpdateUIOK(wxUpdateUIEvent &event)
 {
-    // Save preference
-    wxConfigBase *myConfig = wxConfigBase::Get(false);
-    wxASSERT(myConfig);
-    myConfig->SetPath("EXPORT");
-    myConfig->Write("overwrite_files", m_OverwriteFilesCtrl->GetValue());
-    myConfig->Write("add_layers", m_LayersAddCtrl->GetValue());
-    myConfig->Write("replace_layers", m_LayersReplaceCtrl->GetValue());
-    myConfig->Write("use_fast_polygon", m_FastPolyExportCtrl->GetValue());
-    myConfig->Write("export_description", m_ExportAttribDescCtrl->GetValue());
-    myConfig->SetPath("..");
-
     bool bHasCHecked = false;
     for (unsigned int i = 0; i < m_ListLayersCtrl->GetCount(); i++) {
         if (m_ListLayersCtrl->IsChecked(i) == true) {
@@ -1139,6 +1128,16 @@ tmExportSelected_DLG::tmExportSelected_DLG(wxWindow *parent, const wxArrayString
 
 tmExportSelected_DLG::~tmExportSelected_DLG()
 {
+    // Save preference
+    wxConfigBase *myConfig = wxConfigBase::Get(false);
+    wxASSERT(myConfig);
+    myConfig->SetPath("EXPORT");
+    myConfig->Write("overwrite_files", m_OverwriteFilesCtrl->GetValue());
+    myConfig->Write("add_layers", m_LayersAddCtrl->GetValue());
+    myConfig->Write("replace_layers", m_LayersReplaceCtrl->GetValue());
+    myConfig->Write("use_fast_polygon", m_FastPolyExportCtrl->GetValue());
+    myConfig->Write("export_description", m_ExportAttribDescCtrl->GetValue());
+    myConfig->SetPath("..");
 }
 
 
