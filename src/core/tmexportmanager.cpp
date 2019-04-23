@@ -128,7 +128,10 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
     }
     wxString sMsg = _("Select layer(s) to export");
 
-    tmExportSelected_DLG myEDlg(m_Parent, myNames);
+    // previously selected layers
+    wxArrayString mySelected = m_pDB->GetProjectLastExported();
+
+    tmExportSelected_DLG myEDlg(m_Parent, myNames, mySelected);
     if (myEDlg.ShowModal() != wxID_OK) {
         return false;
     }
@@ -166,6 +169,9 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
         myOriginalLayerNames.Add(myLayers->Item(i)->m_LayerName);
     }
     wxASSERT(myOriginalLayerNames.GetCount() == myLayers->GetCount());
+
+    // Save selection in the project
+    m_pDB->SetProjectLastExported(myOriginalLayerNames);
 
     _CorrectIntegrity(myLayers);
 
@@ -1117,14 +1123,25 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
     myConfig->SetPath("..");
 }
 
-
-tmExportSelected_DLG::tmExportSelected_DLG(wxWindow *parent, const wxArrayString &layers, wxWindowID id,
-                                           const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
-        : wxDialog(parent, id, caption, pos, size, style)
+void tmExportSelected_DLG::_SelectLastExported(const wxArrayString &selected)
 {
-    _CreateControls(layers);
+    for (int i = 0; i < selected.GetCount(); ++i) {
+        for (int j = 0; j < m_ListLayersCtrl->GetCount(); ++j) {
+            if (selected.Item(i).IsSameAs(m_ListLayersCtrl->GetString(j))) {
+                m_ListLayersCtrl->Check(j);
+                break;
+            }
+        }
+    }
 }
 
+tmExportSelected_DLG::tmExportSelected_DLG(wxWindow *parent, const wxArrayString &layers, const wxArrayString &selected,
+                                           wxWindowID id, const wxString &caption, const wxPoint &pos,
+                                           const wxSize &size, long style)
+    : wxDialog(parent, id, caption, pos, size, style) {
+    _CreateControls(layers);
+    _SelectLastExported(selected);
+}
 
 tmExportSelected_DLG::~tmExportSelected_DLG()
 {

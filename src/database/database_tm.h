@@ -138,11 +138,16 @@ public:
     bool InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition);
 
     int GetDatabaseToolMapVersion();                                                    //[TESTED]
+
     bool SetProjectExportData(int iExportType, const wxString &spath);
+
+    bool SetProjectLastExported(const wxArrayString &layers);
 
     bool SetProjectBackupPath(const wxString &spath);
 
     int GetProjectExportData(int &iExportType, wxString &spath);
+
+    wxArrayString GetProjectLastExported();
 
     int GetProjectBackupPath(wxString &spath);
 
