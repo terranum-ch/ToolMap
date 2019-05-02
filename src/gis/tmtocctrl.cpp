@@ -29,6 +29,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS)
+DEFINE_EVENT_TYPE(tmEVT_LM_TOC_EDITED)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_START)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
 DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
@@ -271,7 +272,7 @@ bool tmTOCCtrl::EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position)
 {
     // check item exists
     if (!position.IsOk()) {
-        wxLogDebug(_T("Position dosen't exist, unable to modify item"));
+        wxLogDebug(_T("Position does not exist, unable to modify item"));
         return FALSE;
     }
 
@@ -347,7 +348,7 @@ void tmTOCCtrl::ClearAllLayers()
 {
     // Delete all items and clear the root
     DeleteAllItems();
-    m_root = 0;
+    m_root = nullptr;
 }
 
 
@@ -582,6 +583,7 @@ bool tmTOCCtrl::MoveLayers(const wxTreeItemId &item, int newpos)
 
     Delete(item);
     Thaw();
+
     return true;
 }
 
@@ -644,7 +646,6 @@ bool tmTOCCtrl::SwapLayers(const wxTreeItemId &item, int newpos)
     SetItemFont(item2, item1_font);
     SelectItem(item2, true);
     Thaw();
-
 
     return true;
 }
@@ -778,6 +779,9 @@ void tmTOCCtrl::OnMoveLayers(wxCommandEvent &event)
     wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt.Clone());
 
+    // save new status
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 
@@ -929,6 +933,10 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent &event)
         // update display
         wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
         GetEventHandler()->QueueEvent(evt.Clone());
+
+        // save new status
+        wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+        GetEventHandler()->QueueEvent(evtSave.Clone());
     }
 }
 
@@ -1017,7 +1025,7 @@ void tmTOCCtrl::OnShowProperties(wxCommandEvent &event)
     // check for item != root
     wxTreeItemId myID = selected;
     if (myID == GetRootItem()) {
-        wxLogError(_("Properties not availlable for project, select a layer."));
+        wxLogError(_("Properties not available for project, select a layer."));
         return;
     }
 
@@ -1147,6 +1155,10 @@ void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event)
     // update display
     wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt.Clone());
+
+    // save new status
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 
@@ -1194,6 +1206,9 @@ void tmTOCCtrl::OnVertexMenu(wxCommandEvent &event)
         // send event to the layer manager for updating display
         wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
         GetEventHandler()->QueueEvent(evt.Clone());
+        // save new status
+        wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+        GetEventHandler()->QueueEvent(evtSave.Clone());
     }
 }
 

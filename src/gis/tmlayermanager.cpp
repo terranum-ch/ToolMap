@@ -34,24 +34,25 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE);
 DEFINE_EVENT_TYPE(tmEVT_TOGGLE_FREQUENT);
 
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE, tmLayerManager::RemoveLayer)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD, tmLayerManager::AddLayer)
-                EVT_MENU (ID_MENU_UNLINK_SPATIAL_DATA, tmLayerManager::OnRemoveLayers)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_SIZE_CHANGED, tmLayerManager::OnSizeChange)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_UPDATE, tmLayerManager::OnShowLayer)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_TO_FEATURE, tmLayerManager::OnZoomToFeature)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_MOVE_TO_FEATURE, tmLayerManager::OnMoveToFeature)
-                EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED, tmLayerManager::OnScaleChanged)
-                EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
-                EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
-                EVT_COMMAND (wxID_ANY, tmEVT_LM_SHOW_LABELS, tmLayerManager::OnDisplayLabels)
-                EVT_COMMAND (wxID_ANY, tmEVT_LM_SELECTION, tmLayerManager::OnSelection)
-                EVT_COMMAND (wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
-                EVT_COMMAND (wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
-                EVT_COMMAND (wxID_ANY, tmEVT_LM_INCOMPATIBLE_WARNING, tmLayerManager::OnIncompatibleLayerWarning)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE, tmLayerManager::RemoveLayer)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD, tmLayerManager::AddLayer)
+    EVT_MENU(ID_MENU_UNLINK_SPATIAL_DATA, tmLayerManager::OnRemoveLayers)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_SIZE_CHANGED, tmLayerManager::OnSizeChange)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_UPDATE, tmLayerManager::OnShowLayer)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_IN, tmLayerManager::OnZoomRectangleIn)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_RECTANGLE_OUT, tmLayerManager::OnZoomRectangleOut)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_ZOOM_TO_FEATURE, tmLayerManager::OnZoomToFeature)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_MOVE_TO_FEATURE, tmLayerManager::OnMoveToFeature)
+    EVT_COMMAND(wxID_ANY, tmEVT_SCALE_USER_CHANGED, tmLayerManager::OnScaleChanged)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_PAN_ENDED, tmLayerManager::OnPanFinished)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_SHOW_PROPERTIES, tmLayerManager::OnDisplayProperties)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_SHOW_LABELS, tmLayerManager::OnDisplayLabels)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_SELECTION, tmLayerManager::OnSelection)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_ANGLE_CHANGED, tmLayerManager::OnUpdateAngle)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_ROTATION_WARNING, tmLayerManager::OnRotationWarning)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_INCOMPATIBLE_WARNING, tmLayerManager::OnIncompatibleLayerWarning)
+    EVT_COMMAND(wxID_ANY, tmEVT_LM_TOC_EDITED, tmLayerManager::OnTocEdited)
 END_EVENT_TABLE()
 
 bool tmLayerManager::m_LogOn = true;
@@ -161,7 +162,7 @@ bool tmLayerManager::UnInitLayerManager()
 {
     // saving TOC status
     if (m_TOCCtrl->IsTOCReady()) {
-        SaveTOCStatus();
+        SaveTOCStatus(true);
     }
 
     m_DB = NULL;
@@ -238,21 +239,25 @@ void tmLayerManager::FillTOCArray()
  @author Lucien Schreiber (c) CREALP 2008
  @date 14 July 2008
  *******************************************************************************/
-bool tmLayerManager::SaveTOCStatus()
+bool tmLayerManager::SaveTOCStatus(bool isClosing)
 {
     wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));
     tmLayerProperties *itemProp = NULL;
     int iRank = m_TOCCtrl->GetCountLayers();
 
-    // load preference 
-    wxConfigBase *myConfig = wxConfigBase::Get(false);
-    wxASSERT(myConfig);
-    myConfig->SetPath("GENERAL");
-    bool myRelativePath = myConfig->ReadBool("relative_path", true);
-    myConfig->SetPath("..");
+    bool myRelativePath = false;
+
+    // load preference
+    if (isClosing) {
+        wxConfigBase *myConfig = wxConfigBase::Get(false);
+        wxASSERT(myConfig);
+        myConfig->SetPath("GENERAL");
+        myRelativePath = myConfig->ReadBool("relative_path", true);
+        myConfig->SetPath("..");
+    }
 
     wxString sSentence = _T("");
-    while (1) {
+    while (true) {
         if (iRank == m_TOCCtrl->GetCountLayers()) {
             itemProp = m_TOCCtrl->IterateLayers(TRUE);
         } else {
@@ -267,18 +272,14 @@ bool tmLayerManager::SaveTOCStatus()
         // only for support files
         if (itemProp->GetType() > TOC_NAME_NOT_GENERIC) {
             wxFileName myLayerName(itemProp->GetName());
-            if (myLayerName.Exists() == true && myRelativePath == true) {
-                if (myLayerName.MakeRelativeTo(m_DB->DataBaseGetPath()) == true) {
+            if (myLayerName.Exists() && myRelativePath) {
+                if (myLayerName.MakeRelativeTo(m_DB->DataBaseGetPath())) {
                     itemProp->SetName(myLayerName);
-                    //wxLogMessage(_("Relative path created: '%s'"), itemProp->GetName().GetFullPath());
                 }
-                //else{
-                //wxLogMessage(_T("Converting '%s' to relative path isn't possible"), myLayerName.GetFullPath());
-                //}
             }
         }
 
-        // serialize symbology //
+        // serialize symbology
         tmSerialize out;
 
         //itemProp->GetSymbolRef()->Serialize(out);
@@ -293,7 +294,7 @@ bool tmLayerManager::SaveTOCStatus()
     }
 
     // update the database with toc status
-    if (m_DB->DataBaseQueryNoResults(sSentence) == false) {
+    if (!m_DB->DataBaseQueryNoResults(sSentence)) {
         wxLogDebug(_T("Error updating DB with TOC status : %s"), sSentence.c_str());
         return false;
     }
@@ -961,15 +962,24 @@ void tmLayerManager::OnDisplayProperties(wxCommandEvent &event)
     itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());
 
     if (itemProp->GetType() == TOC_NAME_SHP) {
-        if (itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_TOCCtrl, wxGetMousePosition()) == true) { ;
+        if (itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_TOCCtrl, wxGetMousePosition())) {
             ReloadProjectLayers(false);
         }
+
+        // save the TOC
+        wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+        this->QueueEvent(evtSave.Clone());
+
         return;
     }
 
     if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TOCCtrl, wxGetMousePosition()) == wxID_OK) {
         ReloadProjectLayers(false);
     }
+
+    // save the TOC
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    this->QueueEvent(evtSave.Clone());
 }
 
 
@@ -985,8 +995,20 @@ void tmLayerManager::OnDisplayLabels(wxCommandEvent &event)
     if (itemProp->GetSymbolRef()->ShowLabelDialog(m_TOCCtrl, itemProp, wxGetMousePosition()) == wxID_OK) {
         ReloadProjectLayers(false);
     }
+
+    // save the TOC
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    this->QueueEvent(evtSave.Clone());
 }
 
+
+void tmLayerManager::OnTocEdited(wxCommandEvent &event)
+{
+    // saving TOC status
+    if (m_TOCCtrl->IsTOCReady()) {
+        SaveTOCStatus(false);
+    }
+}
 
 /***************************************************************************//**
  @brief Called when user press Zoom to fit
