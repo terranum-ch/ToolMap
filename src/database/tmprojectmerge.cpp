@@ -442,8 +442,8 @@ bool tmProjectMerge::CheckSimilar()
         return false;
     }
     m_DB->DataBaseClearResults();
-    if (myVersion != 230) {
-        m_Errors.Add(wxString::Format(_("Wrong project version, works only for projects v.%d found (%ld)!"), 230,
+    if (myVersion != 231) {
+        m_Errors.Add(wxString::Format(_("Wrong project version, works only for projects v.%d found (%ld)!"), 231,
                                       myVersion));
         return false;
     }
