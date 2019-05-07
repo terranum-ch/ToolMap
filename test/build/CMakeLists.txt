@@ -21,7 +21,7 @@ SET (PROGNAMETEST ${CMAKE_PROJECT_NAME}_test)
 SET (UNIT_TESTING_PATH CACHE PATH "Path where are located the projects for unit testing")
 IF (NOT UNIT_TESTING_PATH)
 	ExternalProject_Add(test-files
-			URL https://github.com/terranum-ch/ToolMap-test-files/archive/v2.6.tar.gz
+			URL https://github.com/terranum-ch/ToolMap-test-files/archive/v3.1.tar.gz
 			UPDATE_COMMAND ""
 			CONFIGURE_COMMAND ""
 			BUILD_COMMAND ""
