@@ -53,19 +53,19 @@ public:
 
     inline const wxFileName GetOutputName() const;
 
-    void SetOutputName(wxFileName value);
+    void SetOutputName(const wxFileName& value);
 
     inline const wxFileName GetInputDirectory() const;
 
-    void SetInputDirectory(wxFileName value);
+    void SetInputDirectory(const wxFileName& value);
 
     inline const wxString GetComment() const;
 
-    void SetComment(wxString value);
+    void SetComment(const wxString& value);
 
     inline const wxString GetAuthor() const;
 
-    void SetAuthor(wxString value);
+    void SetAuthor(const wxString& value);
 
     inline const wxDateTime GetDate() const;
 

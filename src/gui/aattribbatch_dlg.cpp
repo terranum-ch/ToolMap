@@ -203,7 +203,7 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl *ctrl)
     //ctrl->SetBackgroundColour(wxColour(222,222,222));
 #else
     wxStaticBox myBox;
-    ctrl->SetBackgroundColour(myBox.GetBackgroundColour())
+    ctrl->SetBackgroundColour(myBox.GetBackgroundColour());
 #endif
 
     wxASSERT(m_CtrlSizer);

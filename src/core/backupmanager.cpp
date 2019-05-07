@@ -54,25 +54,25 @@ bool BackupFile::IsValid() const
 }
 
 
-void BackupFile::SetOutputName(wxFileName value)
+void BackupFile::SetOutputName(const wxFileName& value)
 {
     m_OutFileName = value;
 }
 
 
-void BackupFile::SetInputDirectory(wxFileName value)
+void BackupFile::SetInputDirectory(const wxFileName& value)
 {
     m_InDirectory = value;
 }
 
 
-void BackupFile::SetComment(wxString value)
+void BackupFile::SetComment(const wxString& value)
 {
     m_Comment = value;
 }
 
 
-void BackupFile::SetAuthor(wxString value)
+void BackupFile::SetAuthor(const wxString& value)
 {
     m_Author = value;
 }
@@ -149,7 +149,7 @@ bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent)
         wxLogError(_("Could not open file: '%s'"), myFileOut.GetFullName());
         return false;
     }
-    wxZipOutputStream outzip(outf);
+    wxZipOutputStream outzip(outf, -1, wxConvLocal);
     outzip.PutNextDirEntry(m_Database->DataBaseGetName());
 
     // progress window

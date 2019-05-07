@@ -1446,9 +1446,9 @@ void tmGISDataVectorSHP::RemoveRasterizeFile()
 }
 
 
-bool tmGISDataVectorSHP::CopyToFile(const wxFileName &filename, const wxString &drivername)
+bool tmGISDataVectorSHP::CopyToFile(const wxFileName &filename, const wxString &drivername, bool overwrite)
 {
-    if (filename.Exists() == true) {
+    if (!overwrite && filename.Exists()) {
         wxLogError(_("File '%s' exists copy failed!"), filename.GetFullPath());
         return false;
     }

@@ -86,7 +86,7 @@ private:
     // TOC specific functions
     void FillTOCArray();
 
-    bool SaveTOCStatus();
+    bool SaveTOCStatus(bool isClosing = false);
 
     bool IsOK();
 
@@ -182,6 +182,8 @@ public:
     void OnDisplayProperties(wxCommandEvent &event);
 
     void OnDisplayLabels(wxCommandEvent &event);
+
+    void OnTocEdited(wxCommandEvent &event);
 
     // for logging (only one thread may acces the GUI.
     static void EnableLogging(bool enable = true)

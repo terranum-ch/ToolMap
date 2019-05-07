@@ -26,6 +26,11 @@
 
 bool tmDrawer::m_LogOn = true;
 
+static int wxCMPFUNC_CONV compareLong(long *first, long *second)
+{
+  return *first - *second;
+}
+
 tmDrawer::tmDrawer()
 {
     m_bmp = NULL;
@@ -324,15 +329,14 @@ bool tmDrawer::_SelectFeatureByQuery(long myQueryID, DataBaseTM *database, wxArr
 
 bool tmDrawer::_ExistsinResults(long Oid, const wxArrayLong &results)
 {
-
-    for (unsigned int i = 0; i < results.GetCount(); i++) {
-        if (Oid == results.Item(i)) {
+    for (auto& id : results) {
+        if (Oid == id) {
             return true;
         }
 
-        /*if (results.Item(i) > Oid) {
+        if (id > Oid) {
             break;
-        }*/
+        }
     }
     return false;
 }
@@ -357,6 +361,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
         mySymbology->m_PanelNo = 0;
         return DrawLines(itemProp, pdata);
     }
+    myResult.Sort(compareLong);
 
     // create pens
     int myValidPenStyle(tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
@@ -827,6 +832,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
         mySymbology->m_PanelNo = 0;
         return DrawPoints(itemProp, pdata);
     }
+    myResult.Sort(compareLong);
 
     // create pens
     wxPen myValidPen(pSymbol->GetColourWithTransparency(mySymbology->m_SelColourMultiple,

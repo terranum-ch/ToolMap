@@ -99,6 +99,9 @@ DECLARE_CLASS(ProjectManager)
 
     bool CleanDirectory(const wxString &path);
 
+    bool CheckDirectoryContent(const wxString& path) const;
+
+
 public:
     ProjectManager(wxFrame *parent);
 

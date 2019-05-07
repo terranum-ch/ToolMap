@@ -32,6 +32,7 @@ void tmExportData::InitMemberValues()
     m_Extension = wxEmptyString;
     m_ExportAttributEnumerationCode = false; // default is to export attribut description.
     m_CropBufferDistance = 1.0;
+    m_Overwrite = false;
 }
 
 

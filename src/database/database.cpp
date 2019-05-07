@@ -404,6 +404,9 @@ bool DataBase::DataBaseGetNextResult(long &result)
     if (DBGetNextRecord(record) == false)
         return false;
 
+    if (!record[0])
+        return false;
+
     result = atol(record[0]);
     return true;
 }

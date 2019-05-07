@@ -594,9 +594,14 @@ int ProjectManager::OpenProject(const wxString &path)
     CloseProject();
 
     // ensure path exists
-    if (wxFileName::DirExists(path) == false) {
+    if (!wxFileName::DirExists(path)) {
         wxLogMessage(_("Project '%s' doesn't exist."), path.c_str());
         return tmDB_OPEN_ERR_NOT_FOUND;
+    }
+
+    // check directory content
+    if (!CheckDirectoryContent(path)) {
+        return tmDB_OPEN_FAILED;
     }
 
     m_DB = new DataBaseTM();
@@ -689,6 +694,43 @@ int ProjectManager::OpenProject(const wxString &path)
     return (int) mystatus;
 }
 
+bool ProjectManager::CheckDirectoryContent(const wxString & path) const
+{
+    wxArrayString allFiles;
+    wxDir::GetAllFiles(path, &allFiles, wxEmptyString, wxDIR_FILES);
+
+    wxArrayString otherFiles;
+    wxArrayString wrongCapsFiles;
+    for (const auto &file : allFiles) {
+        if (!file.EndsWith(".frm") && !file.EndsWith(".MYD") && !file.EndsWith(".MYI") && !file.EndsWith(".opt")) {
+            if (file.EndsWith(".FRM") || file.EndsWith(".myd") || file.EndsWith(".myi") || file.EndsWith(".OPT")) {
+                wrongCapsFiles.Add(file);
+            } else {
+                otherFiles.Add(file);
+            }
+        }
+    }
+
+    if (wrongCapsFiles.Count() > 0) {
+        wxLogWarning(_("The following files seems to have the wrong letter case for the extension:"));
+        for (const auto &file : wrongCapsFiles) {
+            wxLogWarning(file);
+        }
+        wxLogWarning(_("Wrong letter case for the extension of some files in the project directory."));
+
+        return false;
+    }
+
+    if (otherFiles.Count() > 0) {
+        wxLogWarning(_("The following files were found in the project directory and should not be stored here:"));
+        for (const auto &file : otherFiles) {
+            wxLogWarning(file);
+        }
+        wxLogWarning(_("Other files were found in the project directory."));
+    }
+
+    return true;
+}
 
 bool ProjectManager::EditProjectObjectDefinition()
 {

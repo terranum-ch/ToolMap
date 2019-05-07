@@ -21,6 +21,7 @@
 #include "tmsymbol.h"                // for symbology
 #include "tmlayerproperties.h"
 #include "tmsymbolrule.h"
+#include <wx/textfile.h>
 
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
@@ -28,6 +29,7 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS)
+DEFINE_EVENT_TYPE(tmEVT_LM_TOC_EDITED)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_START)
 DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
 DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
@@ -270,7 +272,7 @@ bool tmTOCCtrl::EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position)
 {
     // check item exists
     if (!position.IsOk()) {
-        wxLogDebug(_T("Position dosen't exist, unable to modify item"));
+        wxLogDebug(_T("Position does not exist, unable to modify item"));
         return FALSE;
     }
 
@@ -346,7 +348,7 @@ void tmTOCCtrl::ClearAllLayers()
 {
     // Delete all items and clear the root
     DeleteAllItems();
-    m_root = 0;
+    m_root = nullptr;
 }
 
 
@@ -581,6 +583,7 @@ bool tmTOCCtrl::MoveLayers(const wxTreeItemId &item, int newpos)
 
     Delete(item);
     Thaw();
+
     return true;
 }
 
@@ -643,7 +646,6 @@ bool tmTOCCtrl::SwapLayers(const wxTreeItemId &item, int newpos)
     SetItemFont(item2, item1_font);
     SelectItem(item2, true);
     Thaw();
-
 
     return true;
 }
@@ -777,6 +779,9 @@ void tmTOCCtrl::OnMoveLayers(wxCommandEvent &event)
     wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt.Clone());
 
+    // save new status
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 
@@ -928,6 +933,10 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent &event)
         // update display
         wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
         GetEventHandler()->QueueEvent(evt.Clone());
+
+        // save new status
+        wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+        GetEventHandler()->QueueEvent(evtSave.Clone());
     }
 }
 
@@ -1016,7 +1025,7 @@ void tmTOCCtrl::OnShowProperties(wxCommandEvent &event)
     // check for item != root
     wxTreeItemId myID = selected;
     if (myID == GetRootItem()) {
-        wxLogError(_("Properties not availlable for project, select a layer."));
+        wxLogError(_("Properties not available for project, select a layer."));
         return;
     }
 
@@ -1035,7 +1044,7 @@ void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event)
     wxTreeItemId selected = GetSelection();
     wxTreeItemId myID = selected;
     if (myID == GetRootItem()) {
-        wxLogError(_("Saving Properties not availlable for project, select a layer."));
+        wxLogError(_("Saving Properties not available for project, select a layer."));
         return;
     }
 
@@ -1075,7 +1084,81 @@ void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event)
 
 void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event)
 {
+    // get selected item
+    wxTreeItemId selected = GetSelection();
+    wxTreeItemId myID = selected;
+    if (myID == GetRootItem()) {
+        wxLogError(_("Loading Properties not available for project, select a layer."));
+        return;
+    }
 
+    // show load dialog
+    wxString myLoadFilePathTxt = wxLoadFileSelector(
+            _("Load symbology"),
+            _T("tly"),
+            wxEmptyString,
+            this);
+
+    if(myLoadFilePathTxt == wxEmptyString){
+        return;
+    }
+
+    // try to load the symbology file
+    wxTextFile myFile;
+    if(myFile.Open(myLoadFilePathTxt) == false){
+        wxLogError(_("Unable to open symbology file: %s"), myLoadFilePathTxt);
+        return;
+    }
+
+    // load selected layer information
+    tmLayerProperties *item = (tmLayerProperties *) GetItemData(selected);
+    wxFileName myLayerName = item->GetName();
+    wxString mySpatialType;
+    mySpatialType << item->GetSpatialType();
+
+    // check layer name stored
+    wxString myLayerNameInTxtFile = myFile.GetFirstLine();
+    if (myLayerNameInTxtFile != myLayerName.GetName()){
+        wxMessageDialog myDlg (this,
+                wxString::Format(_T("This symbology was saved for layer: %s. Apply for selected layer?"), myLayerNameInTxtFile),
+                _T("Different layer names"), wxYES_NO | wxCANCEL);
+        if (myDlg.ShowModal() != wxID_YES){
+            return;
+        }
+    }
+
+    // check geometry stored
+    wxString myFileSpatialType = myFile.GetNextLine();
+    if (myFileSpatialType != mySpatialType){
+        wxMessageDialog myDlg (this,
+                               wxString::Format(_T("This symbology was saved for '%s'. Apply for '%s'?"),
+                                                           TM_GIS_SPATIAL_TYPES_STRING[wxAtoi(myFileSpatialType)],
+                                                           TM_GIS_SPATIAL_TYPES_STRING[wxAtoi(mySpatialType)]),
+                               _T("Different spatial types"), wxYES_NO | wxCANCEL);
+        if (myDlg.ShowModal() != wxID_YES){
+            return;
+        }
+    }
+
+    // load serialisation
+    wxString mySymbologyTxt = myFile.GetNextLine();
+    if (mySymbologyTxt.IsEmpty()){
+        wxLogError(_("No symbology of empty symbology found in: %s"), myLoadFilePathTxt);
+        return;
+    }
+
+    // escaping character are only needed for storing in the database.
+    mySymbologyTxt.Replace(_T("\\\""), _T("\""));
+    tmSerialize in(mySymbologyTxt);
+    item->GetSymbolRuleManagerRef()->Serialize(in);
+
+    // update display
+    wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
+
+    // save new status
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 
@@ -1123,6 +1206,9 @@ void tmTOCCtrl::OnVertexMenu(wxCommandEvent &event)
         // send event to the layer manager for updating display
         wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
         GetEventHandler()->QueueEvent(evt.Clone());
+        // save new status
+        wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+        GetEventHandler()->QueueEvent(evtSave.Clone());
     }
 }
 

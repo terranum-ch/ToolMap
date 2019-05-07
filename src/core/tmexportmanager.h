@@ -58,7 +58,8 @@ private:
     wxFileName m_ExportPath;
     tmExportData *m_ExportData;
     bool m_UseFastExport;
-    bool m_ExportAttributCode;
+    bool m_ExportAttributeCode;
+    bool m_OverwriteFiles;
 
     PrjDefMemManage *m_ProjMem;
 
@@ -131,6 +132,7 @@ class tmExportSelected_DLG : public wxDialog
 {
 private:
     wxCheckListBox *m_ListLayersCtrl;
+    wxCheckBox *m_OverwriteFilesCtrl;
     wxCheckBox *m_LayersAddCtrl;
     wxCheckBox *m_LayersReplaceCtrl;
     wxCheckBox *m_FastPolyExportCtrl;
@@ -151,16 +153,21 @@ private:
 
     void _CreateControls(const wxArrayString &layers);
 
+    void _SelectLastExported(const wxArrayString &selected);
+
 DECLARE_EVENT_TABLE();
 
 public:
-    tmExportSelected_DLG(wxWindow *parent, const wxArrayString &layers, wxWindowID id = wxID_ANY,
-                         const wxString &caption = _("Export Layer"), const wxPoint &pos = wxDefaultPosition,
-                         const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    tmExportSelected_DLG(wxWindow *parent, const wxArrayString &layers, const wxArrayString &selected,
+                         wxWindowID id = wxID_ANY, const wxString &caption = _("Export Layer"),
+                         const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                         long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
     virtual ~tmExportSelected_DLG();
 
     wxArrayInt GetSelectedLayersID();
+
+    bool DoOverwriteFiles();
 
     bool DoLayerAdd();
 
@@ -168,7 +175,7 @@ public:
 
     bool UseFastExport();
 
-    bool DoExportAttributCode();
+    bool DoExportAttributeCode();
 
 };
 
