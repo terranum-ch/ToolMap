@@ -63,6 +63,8 @@ void tmSymbolDLGRaster::_Init()
 {
     m_TransparencySlider = NULL;
     m_MultiplyCtrl = NULL;
+    m_DlgData.m_GlobalTransparency = 0;
+    m_DlgData.m_DoMultiplyRaster = false;
 }
 
 
