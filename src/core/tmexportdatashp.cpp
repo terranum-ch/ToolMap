@@ -631,7 +631,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer)
 
     // write polygon from memory to shp and then return
     if (myResult->HasResults() == false) {
-        m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
+        m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"), m_Overwrite);
         wxDELETE(myResult);
         return true;
     }
@@ -739,7 +739,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer)
     }
 
     // copy from memory to SHP
-    m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"));
+    m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"), m_Overwrite);
 
     // remove rasterized file
     m_Shp->RemoveRasterizeFile();

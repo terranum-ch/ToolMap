@@ -19,11 +19,17 @@
 #include "tmsymbolvectorlinemultiple.h"
 #include "tmsymbolvectorpointmultiple.h"
 #include "tmsymbolvectorpolygon.h"
+#include "tmsymbolraster.h"
 #include "tmsymbolrule.h"
 #include "../database/database_tm.h"
 #include "../database/databaseresult.h"
 
 bool tmDrawer::m_LogOn = true;
+
+static int wxCMPFUNC_CONV compareLong(long *first, long *second)
+{
+  return *first - *second;
+}
 
 tmDrawer::tmDrawer()
 {
@@ -323,15 +329,14 @@ bool tmDrawer::_SelectFeatureByQuery(long myQueryID, DataBaseTM *database, wxArr
 
 bool tmDrawer::_ExistsinResults(long Oid, const wxArrayLong &results)
 {
-
-    for (unsigned int i = 0; i < results.GetCount(); i++) {
-        if (Oid == results.Item(i)) {
+    for (auto& id : results) {
+        if (Oid == id) {
             return true;
         }
 
-        /*if (results.Item(i) > Oid) {
+        if (id > Oid) {
             break;
-        }*/
+        }
     }
     return false;
 }
@@ -356,6 +361,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
         mySymbology->m_PanelNo = 0;
         return DrawLines(itemProp, pdata);
     }
+    myResult.Sort(compareLong);
 
     // create pens
     int myValidPenStyle(tmSYMBOLPENSYLES[mySymbology->m_SelShapeMultiple]);
@@ -826,6 +832,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
         mySymbology->m_PanelNo = 0;
         return DrawPoints(itemProp, pdata);
     }
+    myResult.Sort(compareLong);
 
     // create pens
     wxPen myValidPen(pSymbol->GetColourWithTransparency(mySymbology->m_SelColourMultiple,
@@ -1464,7 +1471,8 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
     wxPoint bottomright = m_scale->RealToPixel(wxRealPoint(myClippedCoordReal.x_max,
                                                            myClippedCoordReal.y_max));
     wxRect myClippedCoordPx(topleftpx, bottomright);
-    wxImage *myRaster = new wxImage(myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+    wxImage *myImgLayer = new wxImage(myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight(), true);
+    wxLogDebug(_T("clipping : x=%d, y=%d"), myClippedCoordPx.GetX(), myClippedCoordPx.GetY());
 
 
     if (pRaster->GetImageData(&imgbuf, &imglen, &maskbuf, &masklen,
@@ -1492,22 +1500,57 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
             CPLFree(myAlphaBuffer);
     }
 
+    myImgLayer->SetData(imgbuf, true);
+    myImgLayer->SetAlpha(myAlphaBuffer, true);
+
+
+    // Multiply Raster with previous raster feature #422
+    bool myDoMultiply = ((tmSymbolRaster*) itemProp->GetSymbolRef())->GetDoMultiply();
+    if(myDoMultiply){
+        wxImage myImgBackgroundFull = m_bmp->ConvertToImage();
+
+        // be sure that we dont have x or y values below 0
+        wxRect myClippedCoord (myClippedCoordPx);
+        if (myClippedCoord.GetX() < 0) {
+            myClippedCoord.SetX(0);
+        }
+        if (myClippedCoord.GetY() < 0) {
+            myClippedCoord.SetY(0);
+        }
+        wxImage myImgBackground = myImgBackgroundFull.GetSubImage(myClippedCoord);
+        wxASSERT(myImgBackground.GetWidth() == myImgLayer->GetWidth());
+        wxASSERT(myImgBackground.GetHeight() == myImgLayer->GetHeight());
+
+        // loop for all pixels and do the processing
+        for (int x = 0; x < myImgBackground.GetWidth(); ++x) {
+            for (int y = 0; y < myImgBackground.GetHeight(); ++y) {
+                int myRedBack = myImgBackground.GetRed(x,y);
+                int myGreenBack = myImgBackground.GetGreen(x,y);
+                int myBlueBack = myImgBackground.GetBlue(x,y);
+
+                int myRedLayer = myImgLayer->GetRed(x,y);
+                int myGreenLayer = myImgLayer->GetGreen(x,y);
+                int myBlueLayer = myImgLayer->GetBlue(x,y);
+
+                int myRedResult = wxRound(myRedBack * myRedLayer / 255.0);
+                int myGreenResult = wxRound(myGreenBack * myGreenLayer / 255.0);
+                int myBlueResult = wxRound(myBlueBack * myBlueLayer / 255.0);
+
+                myImgLayer->SetRGB(x,y,myRedResult, myGreenResult, myBlueResult);
+            }
+        }
+    }
+
+
     // data loaded successfully, draw image on display now
     // device context for drawing
     wxMemoryDC dc;
     dc.SelectObject(*m_bmp);
-    //wxGraphicsContext* pgdc = wxGraphicsContext::Create( dc);
-
-
-
-    myRaster->SetData(imgbuf, true);
-    myRaster->SetAlpha(myAlphaBuffer, true);
-
-    dc.DrawBitmap(*myRaster, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()), true);
+    dc.DrawBitmap(*myImgLayer, wxPoint(myClippedCoordPx.GetX(), myClippedCoordPx.GetY()), true);
     dc.SelectObject(wxNullBitmap);
 
 
-    myRaster->Destroy();
+    myImgLayer->Destroy();
     if (imgbuf) {
         CPLFree(imgbuf);
         imgbuf = NULL;

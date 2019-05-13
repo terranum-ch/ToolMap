@@ -40,11 +40,6 @@ wxString tmAAttribCtrl::GetLabel() const
 }
 
 
-void tmAAttribCtrl::SetPanelColour(const wxColour &colour)
-{
-    this->SetBackgroundColour(colour);
-}
-
 
 ////////////////////////////////////////////////////////////////
 ////////////      FULL SELECT TEXT  CONTROL ////////////////////
@@ -204,7 +199,6 @@ void tmAAttribCtrlText::Create(wxWindow *parent,
                                const wxString &name)
 {
     wxPanel::Create(parent, id, pos, size, style, name);
-    SetPanelColour();
     wxBoxSizer *bSizer24;
     bSizer24 = new wxBoxSizer(wxHORIZONTAL);
     m_Label = new wxStaticText(this, wxID_ANY,
@@ -296,7 +290,6 @@ void tmAAttribCtrlInteger::Create(wxWindow *parent,
 {
     wxPanel::Create(parent, id, pos, size, style, name);
     wxBoxSizer *bSizer24;
-    SetPanelColour();
     bSizer24 = new wxBoxSizer(wxHORIZONTAL);
     m_Label = new wxStaticText(this, wxID_ANY,
                                LABELDEFAULT,
@@ -385,7 +378,6 @@ void tmAAttribCtrlFloat::Create(wxWindow *parent,
                                 const wxString &name)
 {
     wxPanel::Create(parent, id, pos, size, style, name);
-    SetPanelColour();
     wxBoxSizer *bSizer24;
     bSizer24 = new wxBoxSizer(wxHORIZONTAL);
     m_Label = new wxStaticText(this, wxID_ANY,
@@ -496,7 +488,6 @@ void tmAAttribCtrlEnum::Create(wxWindow *parent,
 {
     wxPanel::Create(parent, id, pos, size, style, name);
     InitMemberValues();
-    SetPanelColour();
 
     // copy field locally
     m_Field = fieldinfo;
@@ -661,7 +652,6 @@ void tmAAttribCtrlDate::Create(wxWindow *parent,
                                const wxString &name)
 {
     wxPanel::Create(parent, id, pos, size, style, name);
-    SetPanelColour();
     wxBoxSizer *bSizer24;
     bSizer24 = new wxBoxSizer(wxHORIZONTAL);
     m_Label = new wxStaticText(this, wxID_ANY,
@@ -747,7 +737,6 @@ void tmAAttribCtrlSafeDate::Create(wxWindow *parent,
                                    const wxString &name)
 {
     wxPanel::Create(parent, id, pos, size, style, name);
-    SetPanelColour();
     wxBoxSizer *bSizer24;
     bSizer24 = new wxBoxSizer(wxHORIZONTAL);
     m_Label = new wxStaticText(this, wxID_ANY,

@@ -252,6 +252,7 @@ bool DataBaseTM::CreateEmptyTMDatabase()
             _T("  `PRJ_VERSION` INT NOT NULL ,")
             _T("  `PRJ_EXPORT_PATH` VARCHAR(255) NULL ,")
             _T("  `PRJ_EXPORT_TYPE` INT NULL DEFAULT 0 ,")
+            _T("  `PRJ_LAST_EXPORTED` TEXT NULL ,")
             _T("  `PRJ_BACKUP_PATH` VARCHAR(255) NULL ,")
             _T("  `PRJ_AUTHORS` VARCHAR(255) NULL ,")
             _T("  `PRJ_SUMMARY` TEXT NULL ,")
@@ -692,6 +693,27 @@ bool DataBaseTM::SetProjectExportData(int iExportType, const wxString &spath)
 }
 
 
+bool DataBaseTM::SetProjectLastExported(const wxArrayString &layers)
+{
+    wxString layersList;
+    for (const auto& layer : layers) {
+        if (!layersList.IsEmpty()) {
+            layersList.Append(";");
+        }
+        layersList.Append(layer);
+    }
+
+    wxString sSentence = wxString::Format(_T("UPDATE %s SET PRJ_LAST_EXPORTED = \"%s\"; "),
+                                          TABLE_NAME_PRJ_SETTINGS.c_str(),
+                                          layersList.c_str());
+    if (DataBaseQuery(sSentence))
+        return TRUE;
+
+    wxLogError(_T("Not able to update last exported layers : %s"), sSentence.c_str());
+    return FALSE;
+}
+
+
 bool DataBaseTM::SetProjectBackupPath(const wxString &spath)
 {
     wxString sSentence = wxString::Format(_T("UPDATE %s SET PRJ_BACKUP_PATH = \"%s\"; "),
@@ -752,6 +774,31 @@ int DataBaseTM::GetProjectExportData(int &iExportType, wxString &spath)
         iflagreturn = PATH_DATABASE_ERROR;
     }
     return iflagreturn;
+}
+
+
+wxArrayString DataBaseTM::GetProjectLastExported()
+{
+    wxArrayString layers;
+
+    wxString sSentence = _T("SELECT PRJ_LAST_EXPORTED FROM ") + TABLE_NAME_PRJ_SETTINGS;
+    if (DataBaseQuery(sSentence) && DataBaseHasResults()) {
+
+        wxString sLayers;
+        bool bValue = DataBaseGetNextResult(sLayers);
+        wxASSERT(bValue);
+
+        if (!sLayers.IsEmpty()) {
+            wxStringTokenizer tokenizer(sLayers, ";");
+            while (tokenizer.HasMoreTokens()) {
+                layers.Add(tokenizer.GetNextToken());
+            }
+        }
+
+        DataBaseClearResults();
+    }
+
+    return layers;
 }
 
 

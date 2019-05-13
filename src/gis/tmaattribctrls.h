@@ -93,9 +93,6 @@ public:
 
     virtual void SetEmptyValue()
     { ; }
-
-    // panel control
-    void SetPanelColour(const wxColour &colour = *wxWHITE);
 };
 
 // Creating a list of Ctrls

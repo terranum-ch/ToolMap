@@ -44,7 +44,7 @@ tmAAttribTree::tmAAttribTree(wxWindow *parent, wxWindowID id, const wxPoint &pos
         wxTreeMultiCtrl(parent, id, pos, size, style, validator)
 {
 
-    SetBackgroundColour(*wxWHITE);
+    //SetBackgroundColour(*wxWHITE);
 }
 
 

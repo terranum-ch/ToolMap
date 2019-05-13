@@ -134,7 +134,7 @@ void tmLabelDLG::_CreateControls()
     fgSizer6->SetFlexibleDirection(wxHORIZONTAL);
     fgSizer6->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
 
-    wxSizerFlags myFlag = wxSizerFlags().Center().Border(wxALL, 5);
+    wxSizerFlags myFlag = wxSizerFlags().Border(wxALL, 5);
 
     wxStaticText *m_staticText16;
     m_staticText16 = new wxStaticText(this, wxID_ANY, _("Field"), wxDefaultPosition, wxDefaultSize, 0);

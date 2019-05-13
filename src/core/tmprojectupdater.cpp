@@ -162,6 +162,16 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate()
         }
     }
 
+    // 230 -> 231
+    if (myActualDBVersion == 230) {
+        if (_230to231() == false) {
+            _SetVersion(230);
+            return tmPRJ_UPD_ERROR_PROJECT;
+        } else {
+            myActualDBVersion = 231;
+        }
+    }
+
     _SetVersion(myActualDBVersion);
     return tmPRJ_UPD_ERROR_OK;
 }
@@ -514,5 +524,8 @@ bool tmProjectUpdater::_229to230()
 }
 
 
-
-
+bool tmProjectUpdater::_230to231()
+{
+    wxString myQuery = _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_LAST_EXPORTED` TEXT NULL AFTER `PRJ_EXPORT_TYPE`; ");
+    return m_pDB->DataBaseQueryNoResults(myQuery);
+}

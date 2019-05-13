@@ -56,6 +56,8 @@ public:
     virtual int GetTransparency()
     { return m_RasterData.m_GlobalTransparency; }
 
+    bool GetDoMultiply() {return m_RasterData.m_DoMultiplyRaster;}
+
 };
 
 

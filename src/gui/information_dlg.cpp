@@ -212,7 +212,7 @@ tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id,
     m_Toc = toc;
     m_ClickedItemID = wxNOT_FOUND;
     m_Project = NULL;
-    SetBackgroundColour(*wxWHITE);
+    //SetBackgroundColour(*wxWHITE);
     AddRoot(_("Selected features"), _("Selected features"));
 }
 

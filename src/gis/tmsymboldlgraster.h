@@ -43,21 +43,18 @@ const int ID_SYMDLGRASTER_TRANSPARENCY = 10086;
 
 struct tmSymbolDataRaster
 {
-    bool m_bUseColorTransparency;
-    wxColour m_TransparencyColour;
     int m_GlobalTransparency;
+    bool m_DoMultiplyRaster;
 };
 
 
 class tmSymbolDLGRaster : public tmSymbolDLG
 {
 private:
-    wxCheckBox *m_UseTransparencyColourCtrl;
-    tmColourPickerCtrl *m_TransparencyColourCtrl;
     tmSliderWithText *m_TransparencySlider;
+    wxCheckBox * m_MultiplyCtrl;
 
     tmSymbolDataRaster m_DlgData;
-
 
     void _Init();
 

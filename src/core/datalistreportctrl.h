@@ -39,6 +39,12 @@ private:
 
     wxString _GetTextSpecial(long index, int col, DATALIST_COLTYPE typecol);
 
+    wxColour m_ColourNormal;
+
+    wxColour m_ColourGrayed;
+
+    void _Init();
+
 
 public:
     DataListReportCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
@@ -68,6 +74,10 @@ public:
     wxBitmap CreateArrowDown(const wxSize &size = wxSize(16, 16));
 
     wxBitmap CreateArrowUp(const wxSize &size = wxSize(16, 16));
+
+    wxColour GetTextColorNormal(){return m_ColourNormal;}
+
+    wxColour GetTextColorGrayed(){return m_ColourGrayed;}
 
 };
 
