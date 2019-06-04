@@ -78,12 +78,17 @@ IF (WIN32)
             "${PROJ_DLL_NAME}"
             "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
     message(STATUS "PROJ DLL: ${PROJ_DLL_NAME}")
-        
+
+    # Addition of a copy of the proj.dll without version name (temporary fix for GDAL).
     add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
             "${PROJ_DLL_NAME}"
             "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/proj.dll")
-    set(PROJ_DLL_NO_VER_NAME "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/proj.dll")
+    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            "${PROJ_DLL_NAME}"
+            "${PROJECT_BINARY_DIR}/proj.dll")
+    set(PROJ_DLL_NO_VER_NAME "${PROJECT_BINARY_DIR}/proj.dll")
     message(STATUS "PROJ DLL (no version in name): ${PROJ_DLL_NO_VER_NAME}")
 
     if (SQLITE_DLL_NAME)
