@@ -2,6 +2,9 @@ coverage:
   precision: 2
   round: nearest
   range: "20...100"
+  status:
+    project: off
+    patch: off
 ignore:
   - "/usr/.*"
   - "test/.*"
