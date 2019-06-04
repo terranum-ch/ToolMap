@@ -5,7 +5,7 @@ IF (WIN32)
             ${SEARCH_GDAL_PATH}
             NO_DEFAULT_PATH)
     IF (NOT GDAL_DLL_NAME)
-        MESSAGE(SEND_ERROR "gdal.dll not found in $¢{SEARCH_GDAL_PATH}")
+        message(SEND_ERROR "gdal.dll not found in $¢{SEARCH_GDAL_PATH}")
     ENDIF ()
 
     FIND_FILE(GEOS_DLL_NAME
@@ -15,7 +15,7 @@ IF (WIN32)
             ${SEARCH_GEOS_PATH}
             NO_DEFAULT_PATH)
     IF (NOT GEOS_DLL_NAME)
-        MESSAGE(SEND_ERROR "geos.dll not found in ${SEARCH_GEOS_PATH}")
+        message(SEND_ERROR "geos.dll not found in ${SEARCH_GEOS_PATH}")
     ENDIF ()
 
     FIND_FILE(GEOS_C_DLL_NAME
@@ -25,7 +25,7 @@ IF (WIN32)
             ${SEARCH_GEOS_PATH}/src
             NO_DEFAULT_PATH)
     IF (NOT GEOS_C_DLL_NAME)
-        MESSAGE(SEND_ERROR "geos_c.dll not found in ${SEARCH_GEOS_PATH}")
+        message(SEND_ERROR "geos_c.dll not found in ${SEARCH_GEOS_PATH}")
     ENDIF ()
 
     FIND_FILE(PROJ_DLL_NAME
@@ -34,7 +34,7 @@ IF (WIN32)
             ${SEARCH_PROJ_PATH}
             NO_DEFAULT_PATH)
     IF (NOT PROJ_DLL_NAME)
-        MESSAGE(SEND_ERROR "proj.dll not found in ${SEARCH_PROJ_PATH}")
+        message(SEND_ERROR "proj.dll not found in ${SEARCH_PROJ_PATH}")
     ENDIF ()
 
     FIND_FILE(CURL_DLL_NAME
@@ -43,7 +43,7 @@ IF (WIN32)
             ${SEARCH_CURL_PATH}
             NO_DEFAULT_PATH)
     IF (NOT CURL_DLL_NAME)
-        MESSAGE(WARNING "libcurl.dll not found in ${SEARCH_CURL_PATH}")
+        message(WARNING "libcurl.dll not found in ${SEARCH_CURL_PATH}")
     ENDIF ()
 
     FIND_FILE(SQLITE_DLL_NAME
@@ -52,39 +52,46 @@ IF (WIN32)
             ${SEARCH_SQLITE_PATH}
             NO_DEFAULT_PATH)
     IF (NOT SQLITE_DLL_NAME)
-        MESSAGE(WARNING "sqlite3.dll not found in ${SEARCH_SQLITE_PATH}")
+        message(WARNING "sqlite3.dll not found in ${SEARCH_SQLITE_PATH}")
     ENDIF ()
 
     add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${GDAL_DLL_NAME}"
             "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-    MESSAGE(STATUS "GDAL DLL: ${GDAL_DLL_NAME}")
+    message(STATUS "GDAL DLL: ${GDAL_DLL_NAME}")
 
     add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${GEOS_DLL_NAME}"
             "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-    MESSAGE(STATUS "GEOS DLL: ${GEOS_DLL_NAME}")
+    message(STATUS "GEOS DLL: ${GEOS_DLL_NAME}")
 
     add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${GEOS_C_DLL_NAME}"
             "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-    MESSAGE(STATUS "GEOS C DLL: ${GEOS_C_DLL_NAME}")
+    message(STATUS "GEOS C DLL: ${GEOS_C_DLL_NAME}")
 
     add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
             "${PROJ_DLL_NAME}"
+            "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+    message(STATUS "PROJ DLL: ${PROJ_DLL_NAME}")
+        
+    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            "${PROJ_DLL_NAME}"
             "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/proj.dll")
-    MESSAGE(STATUS "PROJ DLL: ${PROJ_DLL_NAME}")
+    set(PROJ_DLL_NO_VER_NAME "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/proj.dll")
+    message(STATUS "PROJ DLL (no version in name): ${PROJ_DLL_NO_VER_NAME}")
 
     if (SQLITE_DLL_NAME)
         add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 "${SQLITE_DLL_NAME}"
                 "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-        MESSAGE(STATUS "SQLITE DLL: ${SQLITE_DLL_NAME}")
+        message(STATUS "SQLITE DLL: ${SQLITE_DLL_NAME}")
     endif (SQLITE_DLL_NAME)
 
     if (CURL_DLL_NAME)
@@ -92,7 +99,7 @@ IF (WIN32)
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 "${CURL_DLL_NAME}"
                 "${PROJECT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-        MESSAGE(STATUS "CURL DLL: ${CURL_DLL_NAME}")
+        message(STATUS "CURL DLL: ${CURL_DLL_NAME}")
     endif (CURL_DLL_NAME)
 
 
