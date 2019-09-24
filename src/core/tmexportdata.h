@@ -60,6 +60,7 @@ protected:
     DataBaseTM *m_pDB;
     wxString m_Extension;
     bool m_Overwrite;
+    bool m_EmptyLayer;
 
     // protected functions
     wxFileName *GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path);
@@ -143,6 +144,13 @@ public:
 
     virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer)
     { return false; }
+
+    virtual bool HasFeatures()
+    {return false;}
+
+    virtual void SetEmptyLayer();
+
+    virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path) {return false;}
 
     void SetCropBufferDistance(double value)
     { m_CropBufferDistance = value; }

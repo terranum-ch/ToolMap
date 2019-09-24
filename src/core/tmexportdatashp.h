@@ -115,6 +115,12 @@ public:
     virtual bool GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport);
 
     virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer);
+
+    virtual bool HasFeatures();
+
+
+
+    virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path);
 };
 
 

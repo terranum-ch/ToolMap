@@ -60,6 +60,7 @@ private:
     bool m_UseFastExport;
     bool m_ExportAttributeCode;
     bool m_OverwriteFiles;
+    bool m_ExportEmpty;
 
     PrjDefMemManage *m_ProjMem;
 

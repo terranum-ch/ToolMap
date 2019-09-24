@@ -187,6 +187,8 @@ public:
         return NULL;
     }
 
+    virtual bool DeleteFile(const wxString & layername)
+    {return false;}
 
     // counting
     virtual int GetCount()

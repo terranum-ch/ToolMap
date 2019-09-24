@@ -153,6 +153,8 @@ public:
 
     void RemoveRasterizeFile();
 
+    virtual bool DeleteFile(const wxString & layername);
+
     virtual bool CreateSpatialIndex(GDALProgressFunc progress, void *pfProgressData);
 
     virtual bool CopyToFile(const wxFileName &filename, const wxString &drivername, bool overwrite);

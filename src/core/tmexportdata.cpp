@@ -33,6 +33,7 @@ void tmExportData::InitMemberValues()
     m_ExportAttributEnumerationCode = false; // default is to export attribut description.
     m_CropBufferDistance = 1.0;
     m_Overwrite = false;
+    m_EmptyLayer = false;
 }
 
 
@@ -302,4 +303,8 @@ bool tmExportData::GetAdvancedAttribution(ProjectDefMemoryLayers *layer)
         return false;
 
     return true;
+}
+
+void tmExportData::SetEmptyLayer() {
+    m_EmptyLayer = true;
 }

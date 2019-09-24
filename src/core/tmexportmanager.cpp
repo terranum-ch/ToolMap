@@ -40,6 +40,7 @@ void tmExportManager::InitMemberValues()
     m_UseFastExport = true;
     m_ExportAttributeCode = false; // default is to export attribut enumeration description
     m_OverwriteFiles = false;
+    m_ExportEmpty = false;
     m_Scale = NULL;
 }
 
@@ -139,6 +140,7 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
     m_UseFastExport = myEDlg.UseFastExport();
     m_ExportAttributeCode = myEDlg.DoExportAttributeCode();
     m_OverwriteFiles = myEDlg.DoOverwriteFiles();
+    m_ExportEmpty = myEDlg.DoExportEmptyLayers();
 
     wxArrayInt mySelectedLayersIndex = myEDlg.GetSelectedLayersID();
     if (mySelectedLayersIndex.IsEmpty()) {
@@ -344,10 +346,10 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
     }
 
     // delete layer if empty (#435)
-    long myLayerFeatureCount = m_ExportData->GetFeaturesCount();
-    wxLogDebug(_("%s : %ld features exported!"), layer->m_LayerName, myLayerFeatureCount);
-    if(myLayerFeatureCount == 0){
-        m_ExportData->DeleteLayer(wxEmptyString);
+    if (m_ExportEmpty == false) {
+        if (m_ExportData->HasFeatures() == false) {
+            m_ExportData->DeleteLayer(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+        }
     }
 
     wxDELETE(m_ExportData);
@@ -664,6 +666,7 @@ bool tmExportManager::_ExportSimple(ProjectDefMemoryLayers *layer)
     // Message if some layers are exported empty
     if (m_pDB->DataBaseHasResults() == false) {
         wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+        m_ExportData->SetEmptyLayer();
 
         // we should call WriteLabels in order to write to disk the empty polygon
         // actually stored in memory

@@ -1495,6 +1495,25 @@ bool tmGISDataVectorSHP::CreateSpatialIndex(GDALProgressFunc progress, void *pfP
 }
 
 
+bool tmGISDataVectorSHP::DeleteFile(const wxString & layername) {
+    const char *pszDriverName = "ESRI Shapefile";
+    GDALDriver *poDriver;
+
+    poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName);
+    if (poDriver == NULL) {
+        wxASSERT_MSG(0, _T(" driver not available."));
+        return false;
+    }
+
+    // deleting the file
+    CPLErr myErr = poDriver->Delete((const char *) layername.mb_str(wxConvUTF8));
+    if (myErr != CE_None){
+        wxLogError(_("Unable to delete :%s"), layername);
+        return false;
+    }
+    return true;
+}
+
 tmGISDataVectorSHPMemory::tmGISDataVectorSHPMemory()
 {
 

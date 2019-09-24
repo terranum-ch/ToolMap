@@ -1258,7 +1258,28 @@ bool tmExportDataSHP::CreateSpatialIndex(ProjectDefMemoryLayers *layer)
     return myReturnValue;
 }
 
+bool tmExportDataSHP::HasFeatures(){
+    wxASSERT(m_Shp);
 
+    // for simple cases (lines and points)
+    int myNbFeatures = m_Shp->GetCount();
+    if (myNbFeatures == 0){
+        return false;
+    }
 
+    // for polygons, we have to check for attributes and geometries
+    if(myNbFeatures == 1 && m_EmptyLayer){
+        return false;
+    }
+    return true;
+}
 
+bool tmExportDataSHP::DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path) {
+    wxFileName *myShpFileName = GetFileName(layer, path);
+    if (!myShpFileName) {
+        wxLogError(_("Unable to get the file name !"));
+        return false;
+    }
+    return m_Shp->DeleteFile(myShpFileName->GetFullPath());
+}
 
