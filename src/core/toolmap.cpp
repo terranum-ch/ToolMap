@@ -746,7 +746,12 @@ void ToolMapFrame::_CreateMenu()
     itemMenu77->AppendSubMenu(myLayoutMenu, _("Workspace"));
     itemMenu77->AppendSeparator();
     itemMenu77->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
-	m_MenuBar->Append(itemMenu77, _("Window"));
+#ifndef __WXMAC__
+    m_MenuBar->Append(itemMenu77, _("Windows"));
+#else
+    m_MenuBar->Append(itemMenu77, _("Layout"));
+#endif
+
 
     // HELP
     wxMenu *itemMenu81 = new wxMenu;
