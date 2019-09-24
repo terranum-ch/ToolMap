@@ -752,7 +752,6 @@ void ToolMapFrame::_CreateMenu()
     m_MenuBar->Append(itemMenu77, _("Layout"));
 #endif
 
-
     // HELP
     wxMenu *itemMenu81 = new wxMenu;
     itemMenu81->Append(wxID_ABOUT, _("About..."), wxEmptyString, wxITEM_NORMAL);

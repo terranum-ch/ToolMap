@@ -343,6 +343,13 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
             break;
     }
 
+    // delete layer if empty (#435)
+    long myLayerFeatureCount = m_ExportData->GetFeaturesCount();
+    wxLogDebug(_("%s : %ld features exported!"), layer->m_LayerName, myLayerFeatureCount);
+    if(myLayerFeatureCount == 0){
+        m_ExportData->DeleteLayer(wxEmptyString);
+    }
+
     wxDELETE(m_ExportData);
     return true;
 }
@@ -1083,6 +1090,11 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
     m_FastPolyExportCtrl->SetValue(myConfig->ReadBool("use_fast_polygon", true));
     sbSizer2->Add(m_FastPolyExportCtrl, 0, wxALL, 5);
 
+    m_ExportEmptyLayersCtrl = new wxCheckBox(this, wxID_ANY, _("Export empty layers"), wxDefaultPosition,
+                                           wxDefaultSize, 0);
+    m_ExportEmptyLayersCtrl->SetValue(myConfig->ReadBool("export_empty_layers", false));
+    sbSizer2->Add(m_ExportEmptyLayersCtrl, 0, wxALL, 5);
+
     bSizer4->Add(sbSizer2, 0, wxALL, 5);
 
     wxStaticBoxSizer *sbSizer3;
@@ -1153,6 +1165,7 @@ tmExportSelected_DLG::~tmExportSelected_DLG()
     myConfig->Write("add_layers", m_LayersAddCtrl->GetValue());
     myConfig->Write("replace_layers", m_LayersReplaceCtrl->GetValue());
     myConfig->Write("use_fast_polygon", m_FastPolyExportCtrl->GetValue());
+    myConfig->Write("export_empty_layers", m_ExportEmptyLayersCtrl->GetValue());
     myConfig->Write("export_description", m_ExportAttribDescCtrl->GetValue());
     myConfig->SetPath("..");
 }
@@ -1185,6 +1198,10 @@ bool tmExportSelected_DLG::DoLayerAdd()
 bool tmExportSelected_DLG::DoLayerReplace()
 {
     return m_LayersReplaceCtrl->GetValue();
+}
+
+bool tmExportSelected_DLG::DoExportEmptyLayers(){
+    return m_ExportEmptyLayersCtrl->GetValue();
 }
 
 

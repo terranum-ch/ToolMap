@@ -136,6 +136,7 @@ private:
     wxCheckBox *m_LayersAddCtrl;
     wxCheckBox *m_LayersReplaceCtrl;
     wxCheckBox *m_FastPolyExportCtrl;
+    wxCheckBox *m_ExportEmptyLayersCtrl;
     wxRadioButton *m_ExportAttribDescCtrl;
     wxRadioButton *m_ExportAttribCodeCtrl;
 
@@ -172,6 +173,8 @@ public:
     bool DoLayerAdd();
 
     bool DoLayerReplace();
+
+    bool DoExportEmptyLayers();
 
     bool UseFastExport();
 
