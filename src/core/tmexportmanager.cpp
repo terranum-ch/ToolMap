@@ -665,7 +665,11 @@ bool tmExportManager::_ExportSimple(ProjectDefMemoryLayers *layer)
 
     // Message if some layers are exported empty
     if (m_pDB->DataBaseHasResults() == false) {
-        wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+
+        // show warning message only if we choose to export empty layers
+        if (m_ExportEmpty) {
+            wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+        }
         m_ExportData->SetEmptyLayer();
 
         // we should call WriteLabels in order to write to disk the empty polygon
