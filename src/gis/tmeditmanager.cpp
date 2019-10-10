@@ -1737,12 +1737,12 @@ wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clicke
         m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
         myActualLayer = m_TOC->GetLayerById(myLayerId);
         if (!myActualLayer)
-            break;
+            continue;
 
         // search snapping for that layer
         tmGISData *myActualGISData = tmGISData::LoadLayer(myActualLayer);
         if (!myActualGISData) {
-            break;
+            continue;
         }
 
         // convert meters to real units
