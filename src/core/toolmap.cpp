@@ -1210,7 +1210,6 @@ void ToolMapFrame::OnCheckUpdates(wxCommandEvent &event)
 
 void ToolMapFrame::OnContactUs(wxCommandEvent &event)
 {
-    //wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
     wxLaunchDefaultBrowser(_T("mailto:toolmap@terranum.ch?subject=Toolmap"));
 }
 

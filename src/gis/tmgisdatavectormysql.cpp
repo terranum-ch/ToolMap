@@ -258,7 +258,7 @@ wxString tmGISDataVectorMYSQL::GetTableName(TOC_GENERIC_NAME type)
 
 wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, bool &isOver)
 {
-	isOver = false;
+    isOver = false;
     MYSQL_ROW row;
     tmArrayULong row_length;
 
@@ -268,18 +268,18 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, boo
             wxLogError(_T("Database should have results..."));
         }
         nbvertex = 0;
-		isOver = true;
+        isOver = true;
         return NULL;
     }
 
     if (m_DB->DataBaseGetNextRowResult(row, row_length) == false) {
         m_DB->DataBaseClearResults();
         nbvertex = 0;
-		isOver = true;
+        isOver = true;
         return NULL;
     }
 
-    OGRLineString *pline = (OGRLineString *) CreateDataBaseGeometry(row, row_length, 1);
+    OGRLineString *pline = (OGRLineString *)CreateDataBaseGeometry(row, row_length, 1);
     oid = GetOid(row, 0);
     wxASSERT(pline);
     nbvertex = pline->getNumPoints();
@@ -300,7 +300,6 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, boo
     OGRGeometryFactory::destroyGeometry(pline);
     return pts;
 }
-
 
 OGRLineString *tmGISDataVectorMYSQL::GetNextDataLine(long &oid)
 {
@@ -386,8 +385,9 @@ OGRPoint *tmGISDataVectorMYSQL::GetNextDataPointWithAttrib(long &oid,
 }
 
 
-wxRealPoint *tmGISDataVectorMYSQL::GetNextDataPoint(long &oid)
+wxRealPoint *tmGISDataVectorMYSQL::GetNextDataPoint(long &oid, bool &isOver)
 {
+    isOver = false;
     MYSQL_ROW row;
     tmArrayULong row_length;
 
@@ -396,11 +396,13 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataPoint(long &oid)
         if (IsLoggingEnabled()) {
             wxLogError(_T("Database should have results..."));
         }
+        isOver = true;
         return NULL;
     }
 
     if (m_DB->DataBaseGetNextRowResult(row, row_length) == false) {
         m_DB->DataBaseClearResults();
+        isOver = true;
         return NULL;
     }
 

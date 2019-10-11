@@ -153,7 +153,7 @@ public:
     virtual bool ResetReading()
     { return false; }
 
-    virtual wxRealPoint *GetNextDataPoint(long &oid)
+    virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver)
     { return NULL; }
 
     virtual int GetNextDataPolygonInfo(long &oid)
