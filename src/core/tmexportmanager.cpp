@@ -188,7 +188,9 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
     wxString myExportExtension = _T("shp");
     for (unsigned int i = 0; i < myLayers->GetCount(); i++) {
         wxFileName myFileName(m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName, myExportExtension);
-        layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
+        if (myFileName.FileExists()) {
+            layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
+        }
     }
     layermanager->ReloadProjectLayers(false, false);
     return true;
@@ -326,7 +328,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
             wxLogMessage(_("Exporting polygon geometries took: %ld [ms]"), sw.Time());
             sw.Start(0);
 
-            if (!_ExportSimple(layer)) {
+            if (m_ExportData->HasFeatures() && !_ExportSimple(layer)) {
                 wxLogError(_("Error exporting labels to polygon layer '%s'"),
                            layer->m_LayerName.c_str());
                 wxDELETE(m_ExportData);
