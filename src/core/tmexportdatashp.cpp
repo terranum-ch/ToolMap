@@ -1280,6 +1280,8 @@ bool tmExportDataSHP::DeleteLayer(ProjectDefMemoryLayers *layer, const wxString 
         wxLogError(_("Unable to get the file name !"));
         return false;
     }
+    m_Shp->Close();
+
     return m_Shp->DeleteFile(myShpFileName->GetFullPath());
 }
 
