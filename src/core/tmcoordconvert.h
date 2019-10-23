@@ -34,13 +34,6 @@ class tmRealRect;
 class tmCoordConvert
 {
 private:
-    static wxString m_ProjTextGoogle;
-    static wxString m_ProjTextCH1903;
-    static wxString m_ProjTextCH1903plus;
-    static wxString m_ProjTextWGS84;
-    static double m_Geod_a;
-    static double m_Geod_f;
-
     PRJDEF_PROJ_TYPE m_ProjType;
 
     OGRSpatialReference *_CreateSpatialRef(PRJDEF_PROJ_TYPE proj);
@@ -72,6 +65,8 @@ public:
     char *GetWKTProjectionGoogle();
 
     char *GetWKTProjectionLocal();
+
+    char *GetESRIWKTProjectionLocal();
 
 };
 

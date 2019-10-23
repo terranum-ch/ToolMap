@@ -40,6 +40,7 @@ void tmExportManager::InitMemberValues()
     m_UseFastExport = true;
     m_ExportAttributeCode = false; // default is to export attribut enumeration description
     m_OverwriteFiles = false;
+    m_ExportEmpty = false;
     m_Scale = NULL;
 }
 
@@ -139,6 +140,7 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
     m_UseFastExport = myEDlg.UseFastExport();
     m_ExportAttributeCode = myEDlg.DoExportAttributeCode();
     m_OverwriteFiles = myEDlg.DoOverwriteFiles();
+    m_ExportEmpty = myEDlg.DoExportEmptyLayers();
 
     wxArrayInt mySelectedLayersIndex = myEDlg.GetSelectedLayersID();
     if (mySelectedLayersIndex.IsEmpty()) {
@@ -186,7 +188,9 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
     wxString myExportExtension = _T("shp");
     for (unsigned int i = 0; i < myLayers->GetCount(); i++) {
         wxFileName myFileName(m_ExportPath.GetPathWithSep(), myLayers->Item(i)->m_LayerName, myExportExtension);
-        layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
+        if (myFileName.FileExists()) {
+            layermanager->OpenLayer(myFileName, myEDlg.DoLayerReplace(), myOriginalLayerNames[i]);
+        }
     }
     layermanager->ReloadProjectLayers(false, false);
     return true;
@@ -324,7 +328,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
             wxLogMessage(_("Exporting polygon geometries took: %ld [ms]"), sw.Time());
             sw.Start(0);
 
-            if (!_ExportSimple(layer)) {
+            if (m_ExportData->HasFeatures() && !_ExportSimple(layer)) {
                 wxLogError(_("Error exporting labels to polygon layer '%s'"),
                            layer->m_LayerName.c_str());
                 wxDELETE(m_ExportData);
@@ -341,6 +345,21 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
             wxDELETE(m_ExportData);
             return false;
             break;
+    }
+
+    // create proj file (not earlier as it might be overwritten)
+    if (m_ExportEmpty || m_ExportData->HasFeatures()) {
+        if (!m_ExportData->CreatePrjFile(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR),
+                                         m_Scale->GetProjection())) {
+            return false;
+        }
+    }
+
+    // delete layer if empty (#435)
+    if (m_ExportEmpty == false) {
+        if (m_ExportData->HasFeatures() == false) {
+            m_ExportData->DeleteLayer(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+        }
     }
 
     wxDELETE(m_ExportData);
@@ -577,9 +596,8 @@ bool tmExportManager::_CreateExportLayer(ProjectDefMemoryLayers *layer, bool ign
         iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
     }
 
-    // create SIG layer
-    if (m_ExportData->CreateEmptyExportFile(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)) ==
-        false) {
+    // create GIS layer
+    if (!m_ExportData->CreateEmptyExportFile(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR))) {
         return false;
     }
 
@@ -656,7 +674,12 @@ bool tmExportManager::_ExportSimple(ProjectDefMemoryLayers *layer)
 
     // Message if some layers are exported empty
     if (m_pDB->DataBaseHasResults() == false) {
-        wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+
+        // show warning message only if we choose to export empty layers
+        if (m_ExportEmpty) {
+            wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
+        }
+        m_ExportData->SetEmptyLayer();
 
         // we should call WriteLabels in order to write to disk the empty polygon
         // actually stored in memory
@@ -1083,6 +1106,11 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers)
     m_FastPolyExportCtrl->SetValue(myConfig->ReadBool("use_fast_polygon", true));
     sbSizer2->Add(m_FastPolyExportCtrl, 0, wxALL, 5);
 
+    m_ExportEmptyLayersCtrl = new wxCheckBox(this, wxID_ANY, _("Export empty layers"), wxDefaultPosition,
+                                           wxDefaultSize, 0);
+    m_ExportEmptyLayersCtrl->SetValue(myConfig->ReadBool("export_empty_layers", false));
+    sbSizer2->Add(m_ExportEmptyLayersCtrl, 0, wxALL, 5);
+
     bSizer4->Add(sbSizer2, 0, wxALL, 5);
 
     wxStaticBoxSizer *sbSizer3;
@@ -1153,6 +1181,7 @@ tmExportSelected_DLG::~tmExportSelected_DLG()
     myConfig->Write("add_layers", m_LayersAddCtrl->GetValue());
     myConfig->Write("replace_layers", m_LayersReplaceCtrl->GetValue());
     myConfig->Write("use_fast_polygon", m_FastPolyExportCtrl->GetValue());
+    myConfig->Write("export_empty_layers", m_ExportEmptyLayersCtrl->GetValue());
     myConfig->Write("export_description", m_ExportAttribDescCtrl->GetValue());
     myConfig->SetPath("..");
 }
@@ -1185,6 +1214,10 @@ bool tmExportSelected_DLG::DoLayerAdd()
 bool tmExportSelected_DLG::DoLayerReplace()
 {
     return m_LayersReplaceCtrl->GetValue();
+}
+
+bool tmExportSelected_DLG::DoExportEmptyLayers(){
+    return m_ExportEmptyLayersCtrl->GetValue();
 }
 
 

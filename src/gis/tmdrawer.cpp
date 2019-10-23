@@ -412,7 +412,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
     while (1) {
         int iNbVertex = wxNOT_FOUND;
         long myOid = wxNOT_FOUND;
-        bool isOver;
+        bool isOver = false;
         wxRealPoint *pptsReal = pVectLine->GetNextDataLine(iNbVertex, myOid, isOver);
         if (iNbVertex <= 1 || isOver) {
             wxDELETEA(pptsReal);
@@ -750,21 +750,19 @@ bool tmDrawer::DrawPoints(tmLayerProperties *itemProp, tmGISData *pdata)
 
     // iterate for all points, will not work on a threaded version
     // because of all wxLogDebug commands
-    bool bReturn = true;
     int iLoop = 0;
     long myOid = 0;
     wxPoint Intpts(0, 0);
     bool bAsSelection = false;
 
     while (1) {
-        wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid);
-
-        if (pptsReal == NULL) {
-            if (IsLoggingEnabled()) {
-                wxLogDebug(_T("No point returned @loop : %d"), iLoop);
-            }
-            bReturn = FALSE;
+        bool isOver = false;
+        wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid, isOver);
+        if (isOver) {
             break;
+        }
+        if (pptsReal == nullptr) {
+            continue;
         }
 
         // convert from real coordinates to screen coordinates
@@ -863,9 +861,13 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
     wxGraphicsContext *pgdc = wxGraphicsContext::Create(temp_dc);
     while (1) {
         long myOid = wxNOT_FOUND;
-        wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid);
-        if (pptsReal == NULL) {
+        bool isOver = false;
+        wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid, isOver);
+        if (isOver) {
             break;
+        }
+        if (pptsReal == nullptr) {
+            continue;
         }
 
         bool IsSelected = false;
@@ -983,10 +985,13 @@ bool tmDrawer::DrawPointsRules(tmLayerProperties *itemProp, tmGISData *pdata)
 
         while (1) {
             long myOid = wxNOT_FOUND;
-            wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid);
-
-            if (pptsReal == NULL) {
+            bool isOver = false;
+            wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid, isOver);
+            if (isOver) {
                 break;
+            }
+            if (pptsReal == nullptr) {
+                continue;
             }
 
             // set brush

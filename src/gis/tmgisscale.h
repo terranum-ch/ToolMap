@@ -127,6 +127,9 @@ public:
 
     void SetUnitAndProj(PRJDEF_PROJ_TYPE proj, PRJDEF_UNIT_TYPE units);
 
+    PRJDEF_PROJ_TYPE GetProjection()
+    { return m_ProjectProjection; }
+
     // setter, mostly used for unit testing
     void SetExtentWndReal(const tmRealRect &ExtentWndReal)
     { m_ExtentWndReal = ExtentWndReal; }

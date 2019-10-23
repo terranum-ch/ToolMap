@@ -60,9 +60,12 @@ protected:
     DataBaseTM *m_pDB;
     wxString m_Extension;
     bool m_Overwrite;
+    bool m_EmptyLayer;
 
     // protected functions
     wxFileName *GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path);
+
+    wxFileName *GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const wxString &path);
 
     int GetSizeOfEnum(const PrjMemFieldCodedValArray &mCodedVal);
 
@@ -97,8 +100,10 @@ public:
     { return m_ExportAttributEnumerationCode; }
 
     // create export file
-    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer,
-                                       const wxString &path)
+    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path)
+    { return false; }
+
+    virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj)
     { return false; }
 
     virtual bool AddOptFields(const PrjMemFieldArray &myfields)
@@ -143,6 +148,13 @@ public:
 
     virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer)
     { return false; }
+
+    virtual bool HasFeatures()
+    {return false;}
+
+    virtual void SetEmptyLayer();
+
+    virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path) {return false;}
 
     void SetCropBufferDistance(double value)
     { m_CropBufferDistance = value; }

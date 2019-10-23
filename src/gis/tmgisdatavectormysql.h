@@ -95,7 +95,7 @@ public:
 
     virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver);
 
-    virtual wxRealPoint *GetNextDataPoint(long &oid);
+    virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver);
 
     OGRPoint *GetNextDataPointWithAttrib(long &oid, wxArrayString &values);
 
