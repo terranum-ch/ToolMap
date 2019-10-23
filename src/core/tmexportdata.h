@@ -65,6 +65,8 @@ protected:
     // protected functions
     wxFileName *GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path);
 
+    wxFileName *GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const wxString &path);
+
     int GetSizeOfEnum(const PrjMemFieldCodedValArray &mCodedVal);
 
     bool GetSimpleAttribData(PRJDEF_LAYERS_TYPE layertype, long layerindex);
@@ -98,8 +100,10 @@ public:
     { return m_ExportAttributEnumerationCode; }
 
     // create export file
-    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer,
-                                       const wxString &path)
+    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path)
+    { return false; }
+
+    virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj)
     { return false; }
 
     virtual bool AddOptFields(const PrjMemFieldArray &myfields)

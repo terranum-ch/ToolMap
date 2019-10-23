@@ -111,6 +111,29 @@ wxFileName *tmExportData::GetFileName(ProjectDefMemoryLayers *myLayer, const wxS
 
 
 /***************************************************************************//**
+ @brief Create a prj file name
+ @details Create a file name for projection information
+ @param myLayer valid object of type #ProjectDefMemoryLayers
+ @param path The path (with trailling separator)
+ @return  A valid wxFileName or Null if an error occur. If wxFileName is
+ returned, caller must destroy the object once finished
+ @author Pascal Horton (c) Terranum 2019
+ @date 18 October 2019
+ *******************************************************************************/
+wxFileName *tmExportData::GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const wxString &path)
+{
+    wxASSERT(myLayer);
+    wxFileName *myReturn = new wxFileName(path, myLayer->m_LayerName + ".prj");
+    if (myReturn->IsOk())
+        return myReturn;
+    else {
+        wxASSERT_MSG(0, _T("Error constructing prj file name"));
+        return NULL;
+    }
+}
+
+
+/***************************************************************************//**
  @brief Get the max size of the items stored into array
  @details This function may be used for getting the max size we should plan for
  storring all enum values

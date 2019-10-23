@@ -347,6 +347,14 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
             break;
     }
 
+    // create proj file (not earlier as it might be overwritten)
+    if (m_ExportEmpty || m_ExportData->HasFeatures()) {
+        if (!m_ExportData->CreatePrjFile(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR),
+                                         m_Scale->GetProjection())) {
+            return false;
+        }
+    }
+
     // delete layer if empty (#435)
     if (m_ExportEmpty == false) {
         if (m_ExportData->HasFeatures() == false) {
@@ -588,9 +596,8 @@ bool tmExportManager::_CreateExportLayer(ProjectDefMemoryLayers *layer, bool ign
         iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
     }
 
-    // create SIG layer
-    if (m_ExportData->CreateEmptyExportFile(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)) ==
-        false) {
+    // create GIS layer
+    if (!m_ExportData->CreateEmptyExportFile(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR))) {
         return false;
     }
 

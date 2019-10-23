@@ -123,12 +123,36 @@ bool tmExportDataSHP::CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer,
     if (m_Shp->CreateFile(myShpFileName->GetFullPath(), (int) myLayer->m_LayerType) == false) {
         bReturn = false;
     }
-
     wxDELETE(myShpFileName);
-    return bReturn;
 
+    return bReturn;
 }
 
+bool tmExportDataSHP::CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj)
+{
+    // Prj file information
+    wxFileName *myPrjFileName = GetFileNamePrj(myLayer, path);
+    if (!myPrjFileName) {
+        wxLogError(_("Unable to get the prj file name !"));
+        return false;
+    }
+
+    // Get projection data as ESRI wkt
+    auto myCoordConv = new tmCoordConvert(proj);
+    char *wkt = myCoordConv->GetESRIWKTProjectionLocal();
+
+    wxFile file;
+    file.Create(myPrjFileName->GetFullPath(), true);
+    if (file.IsOpened()) {
+        file.Write(wkt);
+        file.Close();
+    }
+
+    wxDELETE(myPrjFileName);
+    CPLFree(wkt);
+
+    return true;
+}
 
 /***************************************************************************//**
  @brief Add optional fields to the Shp
