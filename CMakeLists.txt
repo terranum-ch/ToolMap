@@ -150,6 +150,7 @@ INCLUDE("build/cmake/Use_visualstudioMT.cmake")
 INCLUDE("build/cmake/useMySQLEmbedded.cmake")
 INCLUDE("build/cmake/GDALCopyLibs.cmake")
 INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
+INCLUDE("build/cmake/copyprojfiles.cmake")
 INCLUDE("build/cmake/copywebfiles.cmake")
 
 # UNIT TEST PROGRAM

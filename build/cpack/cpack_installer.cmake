@@ -68,9 +68,10 @@ if (WIN32)
     # install webfiles
     # this part is a partial duplicates of copywebfiles.cmake
     FILE(GLOB WEBFILES "resource/web/*.xml")
-    install(FILES
-            ${WEBFILES}
-            DESTINATION share/toolmap)
+    install(FILES ${WEBFILES} DESTINATION share/toolmap)
+
+    # install proj files
+    install(DIRECTORY ${PROJ_SHARE_PATH} DESTINATION share)
 
     # install Microsoft Visual Studio librairies (MSVCP140.DLL, etc.)
     include(InstallRequiredSystemLibraries)
