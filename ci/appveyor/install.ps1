@@ -27,9 +27,9 @@ $MYSQL_BUILD_TYPE="RelWithDebInfo"
 # Force rebuilding some libraries
 $REBUILD_WX=$false
 $REBUILD_WXPDF=$false
-$REBUILD_PROJ=$false
+$REBUILD_PROJ=$true
 $REBUILD_GEOS=$false
-$REBUILD_GDAL=$false
+$REBUILD_GDAL=$true
 $REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
 
@@ -239,14 +239,14 @@ if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
     Remove-Item "$LIB_DIR\proj" -Force -Recurse
   }
   mkdir "$LIB_DIR\proj" > $null
-  $PROJ_URL="https://github.com/OSGeo/proj.4/archive/6.0.0.zip"
+  $PROJ_URL="https://github.com/OSGeo/PROJ/releases/download/6.2.1/proj-6.2.1.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $PROJ_URL -FileName proj.zip > $null
   } else {
     Invoke-WebRequest -Uri $PROJ_URL -OutFile proj.zip
   }
   7z x proj.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\proj.4-*" "$TMP_DIR\proj"
+  move "$TMP_DIR\proj-*" "$TMP_DIR\proj"
   cd "$TMP_DIR\proj"
   mkdir build
   cd build
