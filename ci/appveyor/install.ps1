@@ -29,7 +29,7 @@ $REBUILD_WX=$false
 $REBUILD_WXPDF=$false
 $REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
-$REBUILD_GDAL=$true
+$REBUILD_GDAL=$false
 $REBUILD_MYSQL=$false
 $REBUILD_CURL=$false
 
