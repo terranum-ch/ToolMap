@@ -29,7 +29,7 @@ IF (WIN32)
     ENDIF ()
 
     FIND_FILE(PROJ_DLL_NAME
-            proj.dll NAMES proj_6_0.dll proj_6_1.dll proj_6_3.dll proj_6_3.dll
+            proj.dll NAMES proj_6_0.dll proj_6_1.dll proj_6_2.dll proj_6_3.dll
             HINTS ${SEARCH_PROJ_PATH}/bin
             ${SEARCH_PROJ_PATH}
             NO_DEFAULT_PATH)

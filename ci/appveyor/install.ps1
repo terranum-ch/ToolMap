@@ -245,6 +245,7 @@ if(-not (Test-Path -Path "$LIB_DIR\proj\include") -Or $REBUILD_PROJ) {
 }
 # List files
 Get-ChildItem "$LIB_DIR/proj"
+Get-ChildItem "$LIB_DIR/proj/bin"
 
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
