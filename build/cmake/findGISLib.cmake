@@ -219,13 +219,13 @@ ENDIF (SEARCH_GDAL)
 IF (UNIX)
     IF (SEARCH_PROJ_PATH)
         FIND_PATH(PROJ_INCLUDE_DIR proj.h proj_api.h
-                PATHS ${SEARCH_PROJ_PATH}
+                PATHS ${SEARCH_PROJ_PATH} /usr/local
                 PATH_SUFFIXES include
                 NO_DEFAULT_PATH)
 
         FIND_LIBRARY(PROJ_LIBRARIES
                 NAMES libproj.a libproj proj proj_6_0 proj_6_1 proj_6_2
-                PATHS ${SEARCH_PROJ_PATH}
+                PATHS ${SEARCH_PROJ_PATH}  /usr/local
                 PATH_SUFFIXES lib lib64
                 NO_DEFAULT_PATH)
 
