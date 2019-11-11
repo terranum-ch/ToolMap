@@ -81,8 +81,7 @@ LIST(REMOVE_AT SRC_FILES ${MYFOUND})
 FILE(GLOB_RECURSE HEAD_FILES "src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
-# Includes 
-SET(WXWINDOWS_USE_GL 0)
+# Includes
 INCLUDE("build/cmake/FindwxWidgets.cmake")
 INCLUDE("build/cmake/findMySQLEmbedded.cmake")
 INCLUDE("build/cmake/findGISLib.cmake")
