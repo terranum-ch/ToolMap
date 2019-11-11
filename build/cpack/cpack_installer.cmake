@@ -179,6 +179,7 @@ if (WIN32)
     set(CPACK_WIX_UI_DIALOG "${CMAKE_CURRENT_LIST_DIR}/windows/installer_bg.bmp")
     set(CPACK_WIX_UI_BANNER "${CMAKE_CURRENT_LIST_DIR}/windows/installer_top.bmp")
     set(CPACK_WIX_CMAKE_PACKAGE_REGISTRY "ToolMap")
+    set(CPACK_WIX_PATCH_FILE "${CMAKE_CURRENT_LIST_DIR}/windows/set-env-vars.xml")
 endif (WIN32)
 
 
