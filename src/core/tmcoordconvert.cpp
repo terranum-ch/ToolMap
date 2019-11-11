@@ -21,13 +21,13 @@
 // EPSG 3857, google and bing projection system
 int projEPSGGoogle = 3857;
 
-// ESPG 21781, CH1903 / LV03 Swiss projection
+// EPSG 21781, CH1903 / LV03 Swiss projection
 int projEPSGCH1903 = 21781;
 
-// ESPG 2056, CH1903+ / LV95 Swiss projection
+// EPSG 2056, CH1903+ / LV95 Swiss projection
 int projEPSGCH1903plus = 2056;
 
-// ESPG 4326, WGS projection
+// EPSG 4326, WGS projection
 int projEPSGWGS84 = 4326;
 
 
@@ -39,6 +39,7 @@ double geod_f = 1 / 298.257223563;
 OGRSpatialReference *tmCoordConvert::_CreateSpatialRef(PRJDEF_PROJ_TYPE proj)
 {
     OGRSpatialReference *mySpatRef = new OGRSpatialReference();
+    mySpatRef->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
     switch (proj) {
         case PROJ_SWISS_CH1903:
             mySpatRef->importFromEPSG(projEPSGCH1903);
@@ -64,6 +65,7 @@ OGRSpatialReference *tmCoordConvert::_CreateSpatialRef(PRJDEF_PROJ_TYPE proj)
 OGRSpatialReference *tmCoordConvert::_CreateSpatialRefGoogle()
 {
     OGRSpatialReference *mySpatRef = new OGRSpatialReference();
+    mySpatRef->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
     mySpatRef->importFromEPSG(projEPSGGoogle);
     return mySpatRef;
 }

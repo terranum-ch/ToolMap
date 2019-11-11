@@ -5,6 +5,7 @@ image: Visual Studio 2017
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   WXWIN: C:\projects\libs\wxwidgets
+  PROJ_LIB: C:\projects\libs\proj\share\proj
 
   # multiprocessor compilation
   CFLAGS: /MP
