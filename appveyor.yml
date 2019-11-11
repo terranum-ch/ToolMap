@@ -31,8 +31,8 @@ test_script:
 
 after_test:
   - cd C:\projects\toolmap\bin
-  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G NSIS
-  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G WIX
+  - cpack -C relwithdebinfo -G NSIS
+  - cpack -C relwithdebinfo -G WIX
   - cd C:\projects\toolmap
   - copy bin\*win64.exe .\
   - copy bin\*win64.msi .\
