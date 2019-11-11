@@ -1,23 +1,21 @@
 # Options
 if ($env:APPVEYOR) {
-  $MSC_VER=1916
-  $VS_VER_NB="15"
-  $VS_VER_YR="2017"
-  $CMAKE_GENERATOR=""
+  $MSC_VER=1923
+  $VS_VER_NB="16"
+  $VS_VER_YR="2019"
+  $CMAKE_GENERATOR="-Ax64"
   $TMP_DIR="C:\projects\tmp"
   $LIB_DIR="C:\projects\libs"
-  $CMAKE_DIR="C:\projects\cmake"
   $WIX_DIR="C:\projects\wix"
   $CXXTEST_DIR="C:\projects\cxxtest"
   $PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
 } else {
-  $MSC_VER=1920
+  $MSC_VER=1923
   $VS_VER_NB="16"
   $VS_VER_YR="2019"
   $CMAKE_GENERATOR="-Ax64"
   $TMP_DIR="$env:UserProfile\Downloads\tmp"
   $LIB_DIR="$env:UserProfile\ToolMap-libs"
-  $CMAKE_DIR="C:\Program Files\CMake\bin"
   $WIX_DIR="C:\Program Files\WiX"
   $CXXTEST_DIR="$LIB_DIR\cxxtest"
   $PATCH_DIR="D:\Development\ToolMap\ci\appveyor\patches"
@@ -66,28 +64,13 @@ if(-not (Test-Path -Path $TMP_DIR)) {
   mkdir $TMP_DIR > $null
 }
 
-# Install a recent CMake
-Write-Host "`nInstalling CMake" -ForegroundColor Yellow
-cd $TMP_DIR
-$CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
-if ($env:APPVEYOR) {
-  appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
-} else {
-  Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
-}
-7z x cmake.zip -o"$TMP_DIR" > $null
-move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
-$path = $env:Path
-$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Program Files (x86)\CMake\bin' }) -join ';'
-$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Tools\NuGet' }) -join ';'
-$env:Path = $path
-$env:Path += ";$CMAKE_DIR\bin"
+# CMake version
 cmake --version
 
 # Install WIX
 Write-Host "`nInstalling WIX" -ForegroundColor Yellow
 cd $TMP_DIR
-$WIX_URL="https://github.com/wixtoolset/wix3/releases/download/wix3111rtm/wix311-binaries.zip"
+$WIX_URL="https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip"
 if ($env:APPVEYOR) {
   appveyor DownloadFile $WIX_URL -FileName wix.zip > $null
 } else {

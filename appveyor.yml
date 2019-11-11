@@ -1,6 +1,6 @@
-version: 2.6.{build}
+version: 3.2.{build}
 
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
@@ -22,7 +22,7 @@ build_script:
   - cd C:\projects\toolmap
   - mkdir bin
   - cd bin
-  - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWXWINDOWS_ROOT_DIR=C:\projects\libs\wxwidgets -DSEARCH_GDAL_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_PATH=C:\projects\libs\geos -DSEARCH_PROJ_PATH=C:\projects\libs\proj -DSEARCH_SQLITE_PATH=C:\projects\libs\sqlite -DSEARCH_CURL_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\cxxtest\bin\cxxtestgen ..
+  - cmake -G "Visual Studio 16 2019 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWXWINDOWS_ROOT_DIR=C:\projects\libs\wxwidgets -DSEARCH_GDAL_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_PATH=C:\projects\libs\geos -DSEARCH_PROJ_PATH=C:\projects\libs\proj -DSEARCH_SQLITE_PATH=C:\projects\libs\sqlite -DSEARCH_CURL_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\cxxtest\bin\cxxtestgen ..
   - cmake --build . --config relwithdebinfo #> nul
 
 test_script:
