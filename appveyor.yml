@@ -41,7 +41,7 @@ artifacts:
     name: ToolMapInstallerMSI
     type: file
 
-  - path: '*win64.exe.pdb'
+  - path: '*win64.msi.pdb'
     name: ToolMapPdb
     type: file
 

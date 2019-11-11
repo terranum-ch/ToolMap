@@ -215,48 +215,45 @@ ENDIF (SEARCH_GDAL)
 #end search for GDAL lib
 
 
-#search for PROJ lib
-IF (SEARCH_PROJ)
-    # if linux, use the static library
-    IF (UNIX)
-        IF (SEARCH_PROJ_PATH)
-            FIND_PATH(PROJ_INCLUDE_DIR proj.h
-                    PATHS ${SEARCH_PROJ_PATH}/include
-                    ${SEARCH_PROJ_PATH}
-                    PATH_SUFFIXES proj
-                    NO_DEFAULT_PATH)
+# If Linux, use the static PROJ library
+IF (UNIX)
+    IF (SEARCH_PROJ_PATH)
+        FIND_PATH(PROJ_INCLUDE_DIR proj.h
+                PATHS ${SEARCH_PROJ_PATH}/include
+                ${SEARCH_PROJ_PATH}
+                PATH_SUFFIXES proj
+                NO_DEFAULT_PATH)
 
-            FIND_LIBRARY(PROJ_LIBRARIES
-                    NAMES libproj.a libproj
-                    PATHS ${SEARCH_PROJ_PATH}/lib
-                    ${SEARCH_PROJ_PATH} NO_DEFAULT_PATH)
+        FIND_LIBRARY(PROJ_LIBRARIES
+                NAMES libproj.a libproj
+                PATHS ${SEARCH_PROJ_PATH}/lib
+                ${SEARCH_PROJ_PATH} NO_DEFAULT_PATH)
 
-        ELSE (SEARCH_PROJ_PATH)
-            MESSAGE(STATUS "Searching PROJ on standard PATHS")
-            FIND_PATH(PROJ_INCLUDE_DIR proj.h
-                    HINTS ${SEARCH_PROJ_PATH}/include
-                    ${SEARCH_PROJ_PATH}
-                    PATH_SUFFIXES proj)
+    ELSE (SEARCH_PROJ_PATH)
+        MESSAGE(STATUS "Searching PROJ on standard PATHS")
+        FIND_PATH(PROJ_INCLUDE_DIR proj.h
+                HINTS ${SEARCH_PROJ_PATH}/include
+                ${SEARCH_PROJ_PATH}
+                PATH_SUFFIXES proj)
 
-            FIND_LIBRARY(PROJ_LIBRARIES
-                    NAMES libproj.a libproj)
+        FIND_LIBRARY(PROJ_LIBRARIES
+                NAMES libproj.a libproj)
 
-        ENDIF (SEARCH_PROJ_PATH)
-        
-        ## IF PROJ PARAMETERS ARE DEFINED, USE THEM
-        IF (PROJ_INCLUDE_DIR)
-            INCLUDE_DIRECTORIES(${PROJ_INCLUDE_DIR})
-        ENDIF (PROJ_INCLUDE_DIR)
+    ENDIF (SEARCH_PROJ_PATH)
 
-        IF (PROJ_LIBRARIES)
-            LINK_LIBRARIES(${PROJ_LIBRARIES})
-        ENDIF (PROJ_LIBRARIES)
+    ## IF PROJ PARAMETERS ARE DEFINED, USE THEM
+    IF (PROJ_INCLUDE_DIR)
+        INCLUDE_DIRECTORIES(${PROJ_INCLUDE_DIR})
+    ENDIF (PROJ_INCLUDE_DIR)
 
-        #debug message
-        MESSAGE(STATUS "PROJ lib is ${PROJ_LIBRARIES}")
-        MESSAGE(STATUS "PROJ include is ${PROJ_INCLUDE_DIR}")
+    IF (PROJ_LIBRARIES)
+        LINK_LIBRARIES(${PROJ_LIBRARIES})
+    ENDIF (PROJ_LIBRARIES)
 
-    ENDIF (UNIX)
+    #debug message
+    MESSAGE(STATUS "PROJ lib is ${PROJ_LIBRARIES}")
+    MESSAGE(STATUS "PROJ include is ${PROJ_INCLUDE_DIR}")
 
-ENDIF (SEARCH_PROJ)
+ENDIF (UNIX)
+
 #end search for PROJ lib
