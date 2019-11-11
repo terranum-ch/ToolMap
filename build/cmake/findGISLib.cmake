@@ -218,26 +218,25 @@ ENDIF (SEARCH_GDAL)
 # If Linux, use the static PROJ library
 IF (UNIX)
     IF (SEARCH_PROJ_PATH)
-        FIND_PATH(PROJ_INCLUDE_DIR proj.h
-                PATHS ${SEARCH_PROJ_PATH}/include
-                ${SEARCH_PROJ_PATH}
-                PATH_SUFFIXES proj
+        FIND_PATH(PROJ_INCLUDE_DIR proj.h proj_api.h
+                PATHS ${SEARCH_PROJ_PATH}
+                PATH_SUFFIXES include
                 NO_DEFAULT_PATH)
 
         FIND_LIBRARY(PROJ_LIBRARIES
-                NAMES libproj.a libproj
-                PATHS ${SEARCH_PROJ_PATH}/lib
-                ${SEARCH_PROJ_PATH} NO_DEFAULT_PATH)
+                NAMES libproj.a libproj proj proj_6_0 proj_6_1 proj_6_2
+                PATHS ${SEARCH_PROJ_PATH}
+                PATH_SUFFIXES lib lib64
+                NO_DEFAULT_PATH)
 
     ELSE (SEARCH_PROJ_PATH)
         MESSAGE(STATUS "Searching PROJ on standard PATHS")
-        FIND_PATH(PROJ_INCLUDE_DIR proj.h
-                HINTS ${SEARCH_PROJ_PATH}/include
-                ${SEARCH_PROJ_PATH}
-                PATH_SUFFIXES proj)
+        FIND_PATH(PROJ_INCLUDE_DIR proj.h proj_api.h
+                PATH_SUFFIXES include)
 
         FIND_LIBRARY(PROJ_LIBRARIES
-                NAMES libproj.a libproj)
+                NAMES libproj.a libproj proj proj_6_0 proj_6_1 proj_6_2
+                PATH_SUFFIXES lib lib64)
 
     ENDIF (SEARCH_PROJ_PATH)
 
