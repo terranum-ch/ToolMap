@@ -27,7 +27,7 @@ $MYSQL_BUILD_TYPE="RelWithDebInfo"
 # Force rebuilding some libraries
 $REBUILD_WX=$false
 $REBUILD_WXPDF=$false
-$REBUILD_PROJ=$true
+$REBUILD_PROJ=$false
 $REBUILD_GEOS=$false
 $REBUILD_GDAL=$true
 $REBUILD_MYSQL=$false
@@ -66,19 +66,6 @@ if(-not (Test-Path -Path $TMP_DIR)) {
 
 # CMake version
 cmake --version
-
-# Install WIX
-Write-Host "`nInstalling WIX" -ForegroundColor Yellow
-cd $TMP_DIR
-$WIX_URL="https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip"
-if ($env:APPVEYOR) {
-  appveyor DownloadFile $WIX_URL -FileName wix.zip > $null
-} else {
-  Invoke-WebRequest -Uri $WIX_URL -OutFile wix.zip
-}
-7z x wix.zip -o"$TMP_DIR" > $null
-move "$TMP_DIR\wix311-binaries\*" "$WIX_DIR"
-$env:Path += ";$WIX_DIR\bin"
 
 # Install cxxtest
 Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
@@ -304,7 +291,7 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
     Remove-Item "$LIB_DIR\gdal" -Force -Recurse
   }
   mkdir "$LIB_DIR\gdal" > $null
-  $GDAL_URL="http://download.osgeo.org/gdal/3.0.0/gdal300.zip"
+  $GDAL_URL="https://github.com/OSGeo/gdal/releases/download/v3.0.2/gdal302.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $GDAL_URL -FileName gdal.zip > $null
   } else {
@@ -314,9 +301,9 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   move "$TMP_DIR\gdal-*" "$TMP_DIR\gdal"
   cd "$TMP_DIR\gdal"
   $LIB_DIR_REV=$LIB_DIR -replace '\\','/'
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_0.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_0.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_0.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
 } else {
   Write-Host "`Gdal already in cache" -ForegroundColor Yellow
 }
