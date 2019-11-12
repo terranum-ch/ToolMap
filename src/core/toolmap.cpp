@@ -328,7 +328,8 @@ END_EVENT_TABLE()
 
 
 ToolMapFrame::ToolMapFrame()
-        : m_MenuBarAcceleratorTable(NULL),
+        : m_MenuBar(NULL),
+          m_MenuBarAcceleratorTable(NULL),
           m_AuiManager(NULL),
           m_AttribObjPanel(NULL),
           m_MainPanel(NULL),

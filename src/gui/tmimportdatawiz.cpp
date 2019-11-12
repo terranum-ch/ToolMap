@@ -56,6 +56,7 @@ int ImportDataWizard::GetPageIndex(wxWizardPage* page)
 void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event)
 {
     auto *page = dynamic_cast<wxWizardPageSimple *> (event.GetPage());
+    wxASSERT(page);
 
     switch (GetPageIndex(page)) {
         case (0): { // Leaving selection the file type (SHP or CSV)
@@ -643,6 +644,7 @@ void ImportDataWizard::SetEnumerationOptions() const
     // If no enum values to map, terminate
     if (skipPage) {
         auto *page = dynamic_cast<wxWizardPageSimple *> (GetCurrentPage());
+        wxASSERT(page);
         page->SetNext(nullptr);
         return;
     }

@@ -149,6 +149,7 @@ bool tmExportDataSHP::CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxStr
     }
 
     wxDELETE(myPrjFileName);
+    wxDELETE(myCoordConv);
     CPLFree(wkt);
 
     return true;
