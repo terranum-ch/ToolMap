@@ -1,10 +1,11 @@
-version: 2.6.{build}
+version: 3.2.{build}
 
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   WXWIN: C:\projects\libs\wxwidgets
+  PROJ_LIB: C:\projects\libs\proj\share\proj
 
   # multiprocessor compilation
   CFLAGS: /MP
@@ -21,7 +22,7 @@ build_script:
   - cd C:\projects\toolmap
   - mkdir bin
   - cd bin
-  - cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSEARCH_GDAL_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_PATH=C:\projects\libs\geos -DSEARCH_PROJ_PATH=C:\projects\libs\proj -DSEARCH_SQLITE_PATH=C:\projects\libs\sqlite -DSEARCH_CURL_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\cxxtest\bin\cxxtestgen ..
+  - cmake -G "Visual Studio 16 2019" -Ax64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWXWINDOWS_ROOT_DIR=C:\projects\libs\wxwidgets -DSEARCH_GDAL_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_PATH=C:\projects\libs\geos -DSEARCH_PROJ_PATH=C:\projects\libs\proj -DSEARCH_SQLITE_PATH=C:\projects\libs\sqlite -DSEARCH_CURL_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\cxxtest\bin\cxxtestgen ..
   - cmake --build . --config relwithdebinfo #> nul
 
 test_script:
@@ -30,29 +31,17 @@ test_script:
 
 after_test:
   - cd C:\projects\toolmap\bin
-  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G ZIP
-  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G NSIS
-  - C:\projects\cmake\bin\cpack.exe -C relwithdebinfo -G WIX
+  - cpack -C relwithdebinfo -G WIX
   - cd C:\projects\toolmap
-  - copy bin\*win64.exe .\
-  - copy bin\*win64.zip .\
   - copy bin\*win64.msi .\
-  - for %%f in (*win64.exe) do (copy /b bin\RelWithDebInfo\ToolMap.pdb %%f.pdb)
+  - for %%f in (*win64.msi) do (copy /b bin\RelWithDebInfo\ToolMap.pdb %%f.pdb)
 
 artifacts:
-  - path: '*win64.exe'
-    name: ToolMapInstallerEXE
-    type: file
-
   - path: '*win64.msi'
     name: ToolMapInstallerMSI
     type: file
 
-  - path: '*win64.zip'
-    name: ToolMapInstallerZIP
-    type: zip
-
-  - path: '*win64.exe.pdb'
+  - path: '*win64.msi.pdb'
     name: ToolMapPdb
     type: file
 

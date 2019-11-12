@@ -214,3 +214,45 @@ IF (SEARCH_GDAL)
 ENDIF (SEARCH_GDAL)
 #end search for GDAL lib
 
+
+# If Linux, use the static PROJ library
+IF (UNIX)
+    IF (SEARCH_PROJ_PATH)
+        FIND_PATH(PROJ_INCLUDE_DIR proj.h proj_api.h
+                PATHS ${SEARCH_PROJ_PATH}
+                PATH_SUFFIXES include
+                NO_DEFAULT_PATH)
+
+        FIND_LIBRARY(PROJ_LIBRARIES
+                NAMES libproj.a libproj.so libproj proj
+                PATHS ${SEARCH_PROJ_PATH}
+                PATH_SUFFIXES lib lib64
+                NO_DEFAULT_PATH)
+
+    ELSE (SEARCH_PROJ_PATH)
+        MESSAGE(STATUS "Searching PROJ on standard PATHS")
+        FIND_PATH(PROJ_INCLUDE_DIR proj.h proj_api.h
+                PATH_SUFFIXES include)
+
+        FIND_LIBRARY(PROJ_LIBRARIES
+                NAMES libproj.a libproj.so libproj proj
+                PATH_SUFFIXES lib lib64)
+
+    ENDIF (SEARCH_PROJ_PATH)
+
+    ## IF PROJ PARAMETERS ARE DEFINED, USE THEM
+    IF (PROJ_INCLUDE_DIR)
+        INCLUDE_DIRECTORIES(${PROJ_INCLUDE_DIR})
+    ENDIF (PROJ_INCLUDE_DIR)
+
+    IF (PROJ_LIBRARIES)
+        LINK_LIBRARIES(${PROJ_LIBRARIES})
+    ENDIF (PROJ_LIBRARIES)
+
+    #debug message
+    MESSAGE(STATUS "PROJ lib is ${PROJ_LIBRARIES}")
+    MESSAGE(STATUS "PROJ include is ${PROJ_INCLUDE_DIR}")
+
+ENDIF (UNIX)
+
+#end search for PROJ lib

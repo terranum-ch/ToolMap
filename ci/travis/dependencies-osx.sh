@@ -6,6 +6,8 @@ tar -xzf cxxtest.tar.gz -C ${HOME}
 # Build libraries
 chmod +x ci/travis/build-wxwidgets-osx.sh
 ci/travis/build-wxwidgets-osx.sh
+chmod +x ci/travis/build-proj-osx.sh
+ci/travis/build-proj-osx.sh
 chmod +x ci/travis/build-gdal-osx.sh
 ci/travis/build-gdal-osx.sh
 chmod +x ci/travis/build-wxpdfdoc.sh

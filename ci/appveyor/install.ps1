@@ -1,23 +1,21 @@
 # Options
 if ($env:APPVEYOR) {
-  $MSC_VER=1916
-  $VS_VER_NB="15"
-  $VS_VER_YR="2017"
-  $CMAKE_GENERATOR=""
+  $MSC_VER=1923
+  $VS_VER_NB="16"
+  $VS_VER_YR="2019"
+  $CMAKE_GENERATOR="-Ax64"
   $TMP_DIR="C:\projects\tmp"
   $LIB_DIR="C:\projects\libs"
-  $CMAKE_DIR="C:\projects\cmake"
   $WIX_DIR="C:\projects\wix"
   $CXXTEST_DIR="C:\projects\cxxtest"
   $PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
 } else {
-  $MSC_VER=1920
+  $MSC_VER=1923
   $VS_VER_NB="16"
   $VS_VER_YR="2019"
   $CMAKE_GENERATOR="-Ax64"
   $TMP_DIR="$env:UserProfile\Downloads\tmp"
   $LIB_DIR="$env:UserProfile\ToolMap-libs"
-  $CMAKE_DIR="C:\Program Files\CMake\bin"
   $WIX_DIR="C:\Program Files\WiX"
   $CXXTEST_DIR="$LIB_DIR\cxxtest"
   $PATCH_DIR="D:\Development\ToolMap\ci\appveyor\patches"
@@ -66,36 +64,8 @@ if(-not (Test-Path -Path $TMP_DIR)) {
   mkdir $TMP_DIR > $null
 }
 
-# Install a recent CMake
-Write-Host "`nInstalling CMake" -ForegroundColor Yellow
-cd $TMP_DIR
-$CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-win64-x64.zip"
-if ($env:APPVEYOR) {
-  appveyor DownloadFile $CMAKE_URL -FileName cmake.zip > $null
-} else {
-  Invoke-WebRequest -Uri $CMAKE_URL -OutFile cmake.zip
-}
-7z x cmake.zip -o"$TMP_DIR" > $null
-move "$TMP_DIR\cmake-*" "$CMAKE_DIR"
-$path = $env:Path
-$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Program Files (x86)\CMake\bin' }) -join ';'
-$path = ($path.Split(';') | Where-Object { $_ -ne 'C:\Tools\NuGet' }) -join ';'
-$env:Path = $path
-$env:Path += ";$CMAKE_DIR\bin"
+# CMake version
 cmake --version
-
-# Install WIX
-Write-Host "`nInstalling WIX" -ForegroundColor Yellow
-cd $TMP_DIR
-$WIX_URL="https://github.com/wixtoolset/wix3/releases/download/wix3111rtm/wix311-binaries.zip"
-if ($env:APPVEYOR) {
-  appveyor DownloadFile $WIX_URL -FileName wix.zip > $null
-} else {
-  Invoke-WebRequest -Uri $WIX_URL -OutFile wix.zip
-}
-7z x wix.zip -o"$TMP_DIR" > $null
-move "$TMP_DIR\wix311-binaries\*" "$WIX_DIR"
-$env:Path += ";$WIX_DIR\bin"
 
 # Install cxxtest
 Write-Host "`nInstalling cxxtest" -ForegroundColor Yellow
@@ -115,7 +85,7 @@ Write-Host "`nContent of the cache:" -ForegroundColor Yellow
 Get-ChildItem "$LIB_DIR"
   
 # Install wxWidgets
-if(-not (Test-Path -Path "$LIB_DIR\wxwidgets") -Or $REBUILD_WX) {
+if(-not (Test-Path -Path "$LIB_DIR\wxwidgets\include") -Or $REBUILD_WX) {
   Write-Host "`nBuilding wxWidgets" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\wxwidgets") {
@@ -147,7 +117,7 @@ Get-ChildItem "$LIB_DIR/wxwidgets"
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install wxPDFDocument
-if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc") -Or $REBUILD_WXPDF) {
+if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc\include") -Or $REBUILD_WXPDF) {
   Write-Host "`nBuilding wxPDFDocument" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\wxpdfdoc") {
@@ -176,7 +146,7 @@ Get-ChildItem "$LIB_DIR/wxpdfdoc"
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install curl
-if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
+if(-not (Test-Path -Path "$LIB_DIR\curl\include") -Or $REBUILD_CURL) {
   Write-Host "`nBuilding curl" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\curl") {
@@ -199,7 +169,7 @@ if(-not (Test-Path -Path "$LIB_DIR\curl") -Or $REBUILD_CURL) {
   Copy-Item "$TMP_DIR\curl\builds\libcurl-vc-x64-release-dll-ipv6-sspi-winssl\include" -Destination "$LIB_DIR\curl\include" -Recurse
   Copy-Item "$TMP_DIR\curl\builds\libcurl-vc-x64-release-dll-ipv6-sspi-winssl\lib" -Destination "$LIB_DIR\curl\lib" -Recurse
 } else {
-  Write-Host "`curl already in cache" -ForegroundColor Yellow
+  Write-Host "`ncurl already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/curl"
@@ -207,7 +177,7 @@ Get-ChildItem "$LIB_DIR/curl"
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install sqlite
-if(-not (Test-Path -Path "$LIB_DIR\sqlite") -Or $REBUILD_CURL) {
+if(-not (Test-Path -Path "$LIB_DIR\sqlite\include") -Or $REBUILD_CURL) {
     Write-Host "`nBuilding sqlite" -ForegroundColor Yellow
     cd $TMP_DIR
     if(Test-Path -Path "$LIB_DIR\sqlite") {
@@ -241,7 +211,7 @@ if(-not (Test-Path -Path "$LIB_DIR\sqlite") -Or $REBUILD_CURL) {
     copy "$TMP_DIR\sqlite\sqlite3.h" "$LIB_DIR\sqlite\include\sqlite3.h"
     copy "$TMP_DIR\sqlite\sqlite3ext.h" "$LIB_DIR\sqlite\include\sqlite3ext.h"
 } else {
-    Write-Host "`sqlite already in cache" -ForegroundColor Yellow
+    Write-Host "`nsqlite already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/sqlite"
@@ -249,21 +219,21 @@ Get-ChildItem "$LIB_DIR/sqlite"
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install Proj
-if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
+if(-not (Test-Path -Path "$LIB_DIR\proj\include") -Or $REBUILD_PROJ) {
   Write-Host "`nBuilding Proj" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\proj") {
     Remove-Item "$LIB_DIR\proj" -Force -Recurse
   }
   mkdir "$LIB_DIR\proj" > $null
-  $PROJ_URL="https://github.com/OSGeo/proj.4/archive/6.0.0.zip"
+  $PROJ_URL="https://github.com/OSGeo/PROJ/releases/download/6.2.1/proj-6.2.1.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $PROJ_URL -FileName proj.zip > $null
   } else {
     Invoke-WebRequest -Uri $PROJ_URL -OutFile proj.zip
   }
   7z x proj.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\proj.4-*" "$TMP_DIR\proj"
+  move "$TMP_DIR\proj-*" "$TMP_DIR\proj"
   cd "$TMP_DIR\proj"
   mkdir build
   cd build
@@ -271,15 +241,16 @@ if(-not (Test-Path -Path "$LIB_DIR\proj") -Or $REBUILD_PROJ) {
   cmake --build . --config Release > $null
   cmake --build . --config Release --target INSTALL > $null
 } else {
-  Write-Host "`Proj already in cache" -ForegroundColor Yellow
+  Write-Host "`nProj already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/proj"
+Get-ChildItem "$LIB_DIR/proj/bin"
 
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install Geos
-if(-not (Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
+if(-not (Test-Path -Path "$LIB_DIR\geos\include") -Or $REBUILD_GEOS) {
   Write-Host "`nBuilding Geos" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\geos") {
@@ -306,7 +277,7 @@ if(-not (Test-Path -Path "$LIB_DIR\geos") -Or $REBUILD_GEOS) {
   move "$TMP_DIR\geos\include" "$LIB_DIR\geos\include"
   move "$TMP_DIR\geos\capi" "$LIB_DIR\geos\capi"
 } else {
-  Write-Host "`Geos already in cache" -ForegroundColor Yellow
+  Write-Host "`nGeos already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/geos"
@@ -314,14 +285,14 @@ Get-ChildItem "$LIB_DIR/geos"
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install Gdal
-if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
+if(-not (Test-Path -Path "$LIB_DIR\gdal\include") -Or $REBUILD_GDAL) {
   Write-Host "`nBuilding Gdal" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\gdal") {
     Remove-Item "$LIB_DIR\gdal" -Force -Recurse
   }
   mkdir "$LIB_DIR\gdal" > $null
-  $GDAL_URL="http://download.osgeo.org/gdal/3.0.0/gdal300.zip"
+  $GDAL_URL="https://github.com/OSGeo/gdal/releases/download/v3.0.2/gdal302.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $GDAL_URL -FileName gdal.zip > $null
   } else {
@@ -331,11 +302,11 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal") -Or $REBUILD_GDAL) {
   move "$TMP_DIR\gdal-*" "$TMP_DIR\gdal"
   cd "$TMP_DIR\gdal"
   $LIB_DIR_REV=$LIB_DIR -replace '\\','/'
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_0.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_0.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
-  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_0.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
+  nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB devinstall > $null
 } else {
-  Write-Host "`Gdal already in cache" -ForegroundColor Yellow
+  Write-Host "`nGdal already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/gdal"
@@ -343,7 +314,7 @@ Get-ChildItem "$LIB_DIR/gdal"
 if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
 
 # Install Mysql
-if(-not (Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
+if(-not (Test-Path -Path "$LIB_DIR\mysql\include") -Or $REBUILD_MYSQL) {
   Write-Host "`nBuilding Mysql" -ForegroundColor Yellow
   cd $TMP_DIR
   if(Test-Path -Path "$LIB_DIR\mysql") {
@@ -375,7 +346,7 @@ if(-not (Test-Path -Path "$LIB_DIR\mysql") -Or $REBUILD_MYSQL) {
     cmake --build . --config $MYSQL_BUILD_TYPE --target INSTALL
   }
 } else {
-  Write-Host "`Mysql already in cache" -ForegroundColor Yellow
+  Write-Host "`nMysql already in cache" -ForegroundColor Yellow
 }
 # List files
 Get-ChildItem "$LIB_DIR/mysql"
