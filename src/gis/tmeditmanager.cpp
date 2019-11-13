@@ -238,6 +238,7 @@ void tmEditManager::BezierDraw(wxGCDC *dc)
     tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
     wxASSERT(myLayerProperties);
     auto *mySymbol = dynamic_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
+    wxASSERT(mySymbol);
 
     // draw existing bezier
     dc->SetPen(wxPen(m_SelectionColour, mySymbol->GetWidth()));
@@ -1046,13 +1047,16 @@ bool tmEditManager::_LoadSnappingStatus()
 
         if (IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
             auto *myLine = dynamic_cast<OGRLineString *>(myGeometry);
+            wxASSERT(myLine);
             for (unsigned int i = 0; i < myLine->getNumPoints(); i++) {
                 m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
             }
             OGRGeometryFactory::destroyGeometry(myGeometry);
         } else if (IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
             auto *myPt = dynamic_cast<OGRPoint *>(myGeometry);
-            m_ArcPoints.push_back(new wxRealPoint(myPt->getX(), myPt->getY()));
+            if (myPt) {
+                m_ArcPoints.push_back(new wxRealPoint(myPt->getX(), myPt->getY()));
+            }
             OGRGeometryFactory::destroyGeometry(myGeometry);
         } else {
             OGRGeometryFactory::destroyGeometry(myGeometry);
