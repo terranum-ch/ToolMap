@@ -1,11 +1,11 @@
 IF (WIN32)
     FIND_FILE(GDAL_DLL_NAME
-            gdal18.dll NAMES gdal200.dll gdal201.dll gdal202.dll gdal203.dll gdal204.dll gdal205.dll gdal206.dll
+            gdal18.dll NAMES gdal204.dll gdal205.dll gdal206.dll gdal300.dll gdal301.dll gdal302.dll
             HINTS ${SEARCH_GDAL_PATH}/bin
             ${SEARCH_GDAL_PATH}
             NO_DEFAULT_PATH)
     IF (NOT GDAL_DLL_NAME)
-        message(SEND_ERROR "gdal.dll not found in $¢{SEARCH_GDAL_PATH}")
+        message(SEND_ERROR "gdal.dll not found in ${SEARCH_GDAL_PATH}")
     ENDIF ()
 
     FIND_FILE(GEOS_DLL_NAME
@@ -29,7 +29,7 @@ IF (WIN32)
     ENDIF ()
 
     FIND_FILE(PROJ_DLL_NAME
-            proj.dll NAMES proj_6_0.dll proj_6_1.dll
+            proj.dll NAMES proj_6_0.dll proj_6_1.dll proj_6_2.dll proj_6_3.dll
             HINTS ${SEARCH_PROJ_PATH}/bin
             ${SEARCH_PROJ_PATH}
             NO_DEFAULT_PATH)

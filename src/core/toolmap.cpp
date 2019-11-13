@@ -206,6 +206,7 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_MENU (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnEditVertexPosition)
                 EVT_MENU (ID_MENU_MERGE_LINES, ToolMapFrame::OnMergeSelectedLines)
                 EVT_MENU (ID_MENU_FLIP_LINE, ToolMapFrame::OnFlipLine)
+                EVT_MENU (ID_MENU_SMOOTH_LINE, ToolMapFrame::OnSmoothLine)
                 EVT_MENU (ID_MENU_SHOW_BEZIER_SETTINGS, ToolMapFrame::OnBezierSettings)
 
                 //ATTRIBUTION MENU
@@ -284,17 +285,17 @@ BEGIN_EVENT_TABLE (ToolMapFrame, wxFrame)
                 EVT_UPDATE_UI(ID_MENU_MODIFY_BEZIER, ToolMapFrame::OnUpdateMenuEditBezierModify)
                 EVT_UPDATE_UI(ID_MENU_SHOW_BEZIER_SETTINGS, ToolMapFrame::OnUpdateMenuBezierSettings)
 
-                EVT_UPDATE_UI (ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnUpdateMenuEditModify)
-                EVT_UPDATE_UI (ID_MENU_CUT_LINES, ToolMapFrame::OnUpdateMenuEditModify)
-                EVT_UPDATE_UI (ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnUpdateMenuEditModify)
-                EVT_UPDATE_UI (ID_MENU_DELETE_OBJ, ToolMapFrame::OnUpdateMenuEditDelete)
-                EVT_UPDATE_UI (ID_MENU_MERGE_LINES, ToolMapFrame::OnUpdateMenuEditMerge)
-                EVT_UPDATE_UI (ID_MENU_SHORTCUTS, ToolMapFrame::OnUpdateMenuShowShortcuts)
-                EVT_UPDATE_UI (ID_MENU_FLIP_LINE, ToolMapFrame::OnUpdateMenuFlipLine)
-                EVT_UPDATE_UI (ID_MENU_MODIFY_SHARED, ToolMapFrame::OnUpdateMenuEditSharedNode)
+                EVT_UPDATE_UI(ID_MENU_EDIT_VERTEX_POS, ToolMapFrame::OnUpdateMenuEditModify)
+                EVT_UPDATE_UI(ID_MENU_CUT_LINES, ToolMapFrame::OnUpdateMenuEditModify)
+                EVT_UPDATE_UI(ID_MENU_CREATE_INTERSECTIONS, ToolMapFrame::OnUpdateMenuEditModify)
+                EVT_UPDATE_UI(ID_MENU_DELETE_OBJ, ToolMapFrame::OnUpdateMenuEditDelete)
+                EVT_UPDATE_UI(ID_MENU_MERGE_LINES, ToolMapFrame::OnUpdateMenuEditMerge)
+                EVT_UPDATE_UI(ID_MENU_SHORTCUTS, ToolMapFrame::OnUpdateMenuShowShortcuts)
+                EVT_UPDATE_UI(ID_MENU_FLIP_LINE, ToolMapFrame::OnUpdateMenuFlipLine)
+                EVT_UPDATE_UI(ID_MENU_SMOOTH_LINE, ToolMapFrame::OnUpdateMenuSmoothLine)
+                EVT_UPDATE_UI(ID_MENU_MODIFY_SHARED, ToolMapFrame::OnUpdateMenuEditSharedNode)
                 EVT_UPDATE_UI(ID_MENU_VERTEX_INSERT, ToolMapFrame::OnUpdateMenuVertexInsert)
                 EVT_UPDATE_UI(ID_MENU_VERTEX_DELETE, ToolMapFrame::OnUpdateMenuVertexDelete)
-
 
                 EVT_UPDATE_UI (ID_MENU_ATTRIB_ATTRIBUTES, ToolMapFrame::OnUpdateMenuEditModify)
                 EVT_UPDATE_UI (ID_MENU_ATTRIB_BATCH, ToolMapFrame::OnUpdateMenuEditDelete)
@@ -327,7 +328,8 @@ END_EVENT_TABLE()
 
 
 ToolMapFrame::ToolMapFrame()
-        : m_MenuBarAcceleratorTable(NULL),
+        : m_MenuBar(NULL),
+          m_MenuBarAcceleratorTable(NULL),
           m_AuiManager(NULL),
           m_AttribObjPanel(NULL),
           m_MainPanel(NULL),
@@ -594,7 +596,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_PRJ_BACKUP, _("Bac&kup\tCtrl+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->Append(ID_MENU_PRJ_BACKUP_MANAGER, _("Manage backup..."), wxEmptyString, wxITEM_NORMAL);
-    itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template...\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu2->Append(ID_MENU_PRJ_SAVE_TEMPLATE, _("Save as template..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(ID_MENU_PRJ_MERGE, _("Merge projects..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu2->AppendSeparator();
@@ -678,7 +680,8 @@ void ToolMapFrame::_CreateMenu()
     itemMenu41->Append(ID_MENU_CUT_LINES, _("Cut line\tCtrl+X"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_MERGE_LINES, _("Merge line\tCtrl+F"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(ID_MENU_CREATE_INTERSECTIONS, _("Create intersection\tCtrl+I"), wxEmptyString, wxITEM_NORMAL);
-    itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+Alt+F"), _T(""), wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_FLIP_LINE, _("Flip line\tCtrl+Alt+F"), wxEmptyString, wxITEM_NORMAL);
+    itemMenu41->Append(ID_MENU_SMOOTH_LINE, _("Smooth line\tCtrl+Alt+S"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->AppendSeparator();
 
     wxMenu *itemMenu42 = new wxMenu;
@@ -746,7 +749,11 @@ void ToolMapFrame::_CreateMenu()
     itemMenu77->AppendSubMenu(myLayoutMenu, _("Workspace"));
     itemMenu77->AppendSeparator();
     itemMenu77->Append(ID_MENU_STATISTICS, _("Statistics..."), _T(""));
-	m_MenuBar->Append(itemMenu77, _("Window"));
+#ifndef __WXMAC__
+    m_MenuBar->Append(itemMenu77, _("Windows"));
+#else
+    m_MenuBar->Append(itemMenu77, _("Layout"));
+#endif
 
     // HELP
     wxMenu *itemMenu81 = new wxMenu;
@@ -1204,7 +1211,6 @@ void ToolMapFrame::OnCheckUpdates(wxCommandEvent &event)
 
 void ToolMapFrame::OnContactUs(wxCommandEvent &event)
 {
-    //wxLaunchDefaultBrowser(_T("http://www.crealp.ch/index.php?option=com_mad4joomla&jid=3&Itemid=320"));
     wxLaunchDefaultBrowser(_T("mailto:toolmap@terranum.ch?subject=Toolmap"));
 }
 
@@ -1229,6 +1235,10 @@ void ToolMapFrame::OnFlipLine(wxCommandEvent &event)
     m_EditManager->FlipLine();
 }
 
+void ToolMapFrame::OnSmoothLine(wxCommandEvent &event)
+{
+    m_EditManager->SmoothLine();
+}
 
 void ToolMapFrame::OnPreferences(wxCommandEvent &event)
 {
@@ -2194,6 +2204,19 @@ void ToolMapFrame::OnUpdateMenuShowInfo(wxUpdateUIEvent &event)
 
 
 void ToolMapFrame::OnUpdateMenuFlipLine(wxUpdateUIEvent &event)
+{
+    wxASSERT(m_EditManager);
+    bool bEnable = false;
+    if (m_EditManager->IsMultipleModifictionAllowed() == true) {
+        if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
+            bEnable = true;
+        }
+    }
+    event.Enable(bEnable);
+}
+
+
+void ToolMapFrame::OnUpdateMenuSmoothLine(wxUpdateUIEvent &event)
 {
     wxASSERT(m_EditManager);
     bool bEnable = false;

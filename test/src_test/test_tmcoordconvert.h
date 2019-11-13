@@ -70,8 +70,8 @@ public:
         wxRealPoint myGenfPoint (500374,117993);
         wxRealPoint myGenfPointG = myConvert.GetPointGoogle(myGenfPoint);
         wxLogMessage( "Google coord is: %f, %f", myGenfPointG.x, myGenfPointG.y);
-        TS_ASSERT_DELTA (myGenfPointG.x, 684370.102237, 0.000001);
-        TS_ASSERT_DELTA (myGenfPointG.y, 5813422.394739, 0.000001);
+        TS_ASSERT_DELTA (myGenfPointG.x, 684370.0431519132, 0.000001);
+        TS_ASSERT_DELTA (myGenfPointG.y, 5813422.4727304634, 0.000001);
     }
     
     void testDistanceWGS84(){

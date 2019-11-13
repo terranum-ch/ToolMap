@@ -81,8 +81,10 @@ public:
 
 
     // create export file
-    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer,
-                                       const wxString &path);
+    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path);
+
+    virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj);
+
 
     virtual bool AddOptFields(const PrjMemFieldArray &myfields);
 
@@ -115,6 +117,12 @@ public:
     virtual bool GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport);
 
     virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer);
+
+    virtual bool HasFeatures();
+
+
+
+    virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path);
 };
 
 

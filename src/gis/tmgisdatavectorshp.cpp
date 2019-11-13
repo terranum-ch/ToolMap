@@ -33,8 +33,8 @@ tmGISDataVectorSHP::tmGISDataVectorSHP()
     m_polyTotalRings = 0;
     m_ClassType = tmGIS_VECTOR_SHAPEFILE;
     m_RasterizeDataset = NULL;
-    m_MultiLinesIterator = 0;
-    m_MultiLinesOid = 0;
+    m_MultiFeaturesIterator = 0;
+    m_MultiFeaturesOid = 0;
 }
 
 
@@ -154,6 +154,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType()
                 retvalue = LAYER_SPATIAL_LINE;
                 break;
             case wkbPoint:
+            case wkbMultiPoint:
                 retvalue = LAYER_SPATIAL_POINT;
                 break;
             case wkbPolygon:
@@ -217,13 +218,13 @@ bool tmGISDataVectorSHP::SetAttributeFilter(const wxString &query)
 
 wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid, bool &isOver)
 {
-	isOver = false;
+    isOver = false;
 
     wxASSERT(m_Layer);
     OGRFeature *poFeature = nullptr;
 
-    if (m_MultiLinesIterator > 0) {
-        poFeature = m_Layer->GetFeature(m_MultiLinesOid);
+    if (m_MultiFeaturesIterator > 0) {
+        poFeature = m_Layer->GetFeature(m_MultiFeaturesOid);
     } else {
         poFeature = m_Layer->GetNextFeature();
     }
@@ -243,15 +244,15 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid, bool 
 
     if (wkbFlatten(geom->getGeometryType()) == wkbMultiLineString) {
 
-        m_MultiLinesOid = oid;
+        m_MultiFeaturesOid = oid;
 
         OGRMultiLineString *pmline = geom->toMultiLineString();
-        OGRGeometry *geomLine = pmline->getGeometryRef(m_MultiLinesIterator);
+        OGRGeometry *geomLine = pmline->getGeometryRef(m_MultiFeaturesIterator);
         wxASSERT(wkbFlatten(geomLine->getGeometryType()) == wkbLineString);
 
         pline = geomLine->toLineString();
         if (!pline) {
-            wxLogWarning(_("Line %d is corrupted in file: '%s'!"), (int) poFeature->GetFID(),
+            wxLogWarning(_("Line %d is corrupted in file: '%s'!"), (int)poFeature->GetFID(),
                          wxString(m_Layer->GetName()));
             return nullptr;
         }
@@ -274,10 +275,10 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid, bool 
 
         int nbLines = pmline->getNumGeometries();
 
-        if (m_MultiLinesIterator >= pmline->getNumGeometries() - 1) {
-            m_MultiLinesIterator = 0;
+        if (m_MultiFeaturesIterator >= pmline->getNumGeometries() - 1) {
+            m_MultiFeaturesIterator = 0;
         } else {
-            m_MultiLinesIterator++;
+            m_MultiFeaturesIterator++;
         }
 
         OGRFeature::DestroyFeature(poFeature);
@@ -285,16 +286,15 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid, bool 
         return pts;
     }
 
-	if (wkbFlatten(geom->getGeometryType()) != wkbLineString) {
-		wxLogWarning(_("Line %d is not a single line in file: '%s'!"), (int)poFeature->GetFID(),
-			wxString(m_Layer->GetName()));
-		return nullptr;
-	}
-
-	pline = geom->toLineString();
-    if (!pline) {
-        wxLogWarning(_("Line %d is corrupted in file: '%s'!"), (int)poFeature->GetFID(),
+    if (wkbFlatten(geom->getGeometryType()) != wkbLineString) {
+        wxLogWarning(_("Line %d is not a single line in file: '%s'!"), (int)poFeature->GetFID(),
                      wxString(m_Layer->GetName()));
+        return nullptr;
+    }
+
+    pline = geom->toLineString();
+    if (!pline) {
+        wxLogWarning(_("Line %d is corrupted in file: '%s'!"), (int)poFeature->GetFID(), wxString(m_Layer->GetName()));
         return nullptr;
     }
 
@@ -313,6 +313,7 @@ wxRealPoint *tmGISDataVectorSHP::GetNextDataLine(int &nbvertex, long &oid, bool 
         pts[i].x = pline->getX(i);
         pts[i].y = pline->getY(i);
     }
+
     OGRFeature::DestroyFeature(poFeature);
 
     return pts;
@@ -379,27 +380,82 @@ bool tmGISDataVectorSHP::SelectFeatureByOID(long oid)
 }
 
 
-wxRealPoint *tmGISDataVectorSHP::GetNextDataPoint(long &oid)
+wxRealPoint *tmGISDataVectorSHP::GetNextDataPoint(long &oid, bool &isOver)
 {
+    isOver = false;
+
     wxASSERT(m_Layer);
-    OGRFeature *poFeature = m_Layer->GetNextFeature();
+    OGRFeature *poFeature = nullptr;
+
+    if (m_MultiFeaturesIterator > 0) {
+        poFeature = m_Layer->GetFeature(m_MultiFeaturesOid);
+    } else {
+        poFeature = m_Layer->GetNextFeature();
+    }
 
     // nothing more to read
     if (poFeature == NULL) {
         oid = -1;
+        isOver = true;
         return NULL;
     }
 
-
-    OGRPoint *pPoint = (OGRPoint *) poFeature->GetGeometryRef();
-    wxASSERT(pPoint);
     oid = poFeature->GetFID();
+
+    OGRGeometry *geom = poFeature->GetGeometryRef();
+    OGRPoint *pPoint = nullptr;
+
+    if (wkbFlatten(geom->getGeometryType()) == wkbMultiPoint) {
+
+        m_MultiFeaturesOid = oid;
+
+        OGRMultiPoint *pmPoint = geom->toMultiPoint();
+        OGRGeometry *geomPoint = pmPoint->getGeometryRef(m_MultiFeaturesIterator);
+
+        pPoint = geomPoint->toPoint();
+        if (!pPoint) {
+            wxLogWarning(_("Point %d is corrupted in file: '%s'!"), (int)poFeature->GetFID(),
+                         wxString(m_Layer->GetName()));
+            OGRFeature::DestroyFeature(poFeature);
+            return nullptr;
+        }
+        wxASSERT(wkbFlatten(pPoint->getGeometryType()) == wkbPoint);
+
+        wxRealPoint *pts = new wxRealPoint();
+        pts->x = pPoint->getX();
+        pts->y = pPoint->getY();
+
+        int nbPoints = pmPoint->getNumGeometries();
+
+        if (m_MultiFeaturesIterator >= pmPoint->getNumGeometries() - 1) {
+            m_MultiFeaturesIterator = 0;
+        } else {
+            m_MultiFeaturesIterator++;
+        }
+
+        OGRFeature::DestroyFeature(poFeature);
+
+        return pts;
+    }
+
+    if (wkbFlatten(geom->getGeometryType()) != wkbPoint) {
+        wxLogWarning(_("Point %d is not a single point in file: '%s'!"), (int)poFeature->GetFID(),
+                     wxString(m_Layer->GetName()));
+        return nullptr;
+    }
+
+    pPoint = geom->toPoint();
+    if (!pPoint) {
+        wxLogWarning(_("Point %d is corrupted in file: '%s'!"), (int)poFeature->GetFID(), wxString(m_Layer->GetName()));
+        return nullptr;
+    }
 
     wxRealPoint *pts = new wxRealPoint();
     pts->x = pPoint->getX();
     pts->y = pPoint->getY();
 
     OGRFeature::DestroyFeature(poFeature);
+
     return pts;
 }
 
@@ -418,7 +474,14 @@ int tmGISDataVectorSHP::GetNextDataPolygonInfo(long &oid)
 
     oid = m_Feature->GetFID();
 
-    OGRPolygon *plgon = (OGRPolygon *) m_Feature->GetGeometryRef();
+    OGRGeometry *geom = m_Feature->GetGeometryRef();
+
+    if (wkbFlatten(geom->getGeometryType()) == wkbMultiPolygon) {
+        wxLogWarning(_("Unsupported multipolygons in file: '%s'!"), wxString(m_Layer->GetName()));
+        return 0;
+    }
+
+    OGRPolygon *plgon = geom->toPolygon();
     wxASSERT(plgon);
 
     if (plgon == NULL) {
@@ -1494,6 +1557,25 @@ bool tmGISDataVectorSHP::CreateSpatialIndex(GDALProgressFunc progress, void *pfP
     return ExecuteSQLQuery(myQuery);
 }
 
+
+bool tmGISDataVectorSHP::DeleteFile(const wxString & layername) {
+    const char *pszDriverName = "ESRI Shapefile";
+    GDALDriver *poDriver;
+
+    poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName);
+    if (poDriver == NULL) {
+        wxASSERT_MSG(0, _T(" driver not available."));
+        return false;
+    }
+
+    // deleting the file
+    CPLErr myErr = poDriver->Delete((const char *) layername.mb_str(wxConvUTF8));
+    if (myErr != CE_None){
+        wxLogError(_("Unable to delete :%s"), layername);
+        return false;
+    }
+    return true;
+}
 
 tmGISDataVectorSHPMemory::tmGISDataVectorSHPMemory()
 {

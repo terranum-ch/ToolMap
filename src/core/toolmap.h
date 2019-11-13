@@ -191,6 +191,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_MERGE_LINES 10003
 #define ID_MENU_CREATE_INTERSECTIONS 10174
 #define ID_MENU_FLIP_LINE 10004
+#define ID_MENU_SMOOTH_LINE 10005
 #define ID_MENU_DELETE_OBJ 10122
 #define ID_MENU_ORIENT_POINT 10190
 #define ID_MENU_ADJUST_SNAPPING 10001
@@ -425,6 +426,8 @@ private:
 
     void OnFlipLine(wxCommandEvent &event);
 
+    void OnSmoothLine(wxCommandEvent &event);
+
     void OnPreferences(wxCommandEvent &event);
 
     void OnRefreshView(wxCommandEvent &event);
@@ -519,6 +522,8 @@ private:
     void OnUpdateMenuShowInfo(wxUpdateUIEvent &event);
 
     void OnUpdateMenuFlipLine(wxUpdateUIEvent &event);
+
+    void OnUpdateMenuSmoothLine(wxUpdateUIEvent &event);
 
     void OnUpdateMenuEditSharedNode(wxUpdateUIEvent &event);
 

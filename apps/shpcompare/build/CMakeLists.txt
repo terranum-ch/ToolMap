@@ -12,7 +12,6 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON
-SET(WXWINDOWS_USE_GL 0)
 INCLUDE ("../../../build/cmake/FindwxWidgets.cmake")
 
 #GEOS - GDAL libs

@@ -1,6 +1,6 @@
 # COPY HTML AND JS FILES
 # PART OF TOOLMAP BUILD PROCESS
-include(BundleUtilities)
+
 FILE(GLOB WEBFILES "resource/web/*.xml")
 #MESSAGE ("Webfiles: ${WEBFILES}")
 

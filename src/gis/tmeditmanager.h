@@ -188,6 +188,8 @@ private:
 
     wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
 
+    void _ProcessChaikin();
+
 DECLARE_EVENT_TABLE()
 protected:
 
@@ -263,6 +265,8 @@ public:
     bool MergeSelectedLines();
 
     bool FlipLine();
+
+    bool SmoothLine();
 
     void BezierClick(const wxPoint &mousepos);
 

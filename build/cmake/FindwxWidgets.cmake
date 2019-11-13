@@ -108,7 +108,7 @@ IF (WIN32_STYLE_FIND)
     MARK_AS_ADVANCED(WXWINDOWS_USE_MONOLITHIC)
 
     ## GL libs used?
-    OPTION(WXWINDOWS_USE_GL "Use Wx with GL support(glcanvas)?" ON)
+    OPTION(WXWINDOWS_USE_GL "Use Wx with GL support (glcanvas)?" OFF)
     MARK_AS_ADVANCED(WXWINDOWS_USE_GL)
 
 

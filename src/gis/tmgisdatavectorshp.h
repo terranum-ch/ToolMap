@@ -44,8 +44,8 @@ protected:
     GDALDataset *m_RasterizeDataset;
     OGRFeature *m_Feature;
     int m_polyTotalRings;
-    int m_MultiLinesIterator;
-    int m_MultiLinesOid;
+    int m_MultiFeaturesIterator;
+    int m_MultiFeaturesOid;
 
 public:
     tmGISDataVectorSHP();
@@ -69,7 +69,7 @@ public:
 
     virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver);
 
-    virtual wxRealPoint *GetNextDataPoint(long &oid);
+    virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver);
 
     virtual int GetNextDataPolygonInfo(long &oid);
 
@@ -152,6 +152,8 @@ public:
     bool Rasterize(double rasterizefactor);
 
     void RemoveRasterizeFile();
+
+    virtual bool DeleteFile(const wxString & layername);
 
     virtual bool CreateSpatialIndex(GDALProgressFunc progress, void *pfProgressData);
 

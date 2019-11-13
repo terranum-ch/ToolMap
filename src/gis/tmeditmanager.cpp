@@ -237,7 +237,8 @@ void tmEditManager::BezierDraw(wxGCDC *dc)
 
     tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
     wxASSERT(myLayerProperties);
-    tmSymbolVectorLine *mySymbol = static_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
+    auto *mySymbol = dynamic_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
+    wxASSERT(mySymbol);
 
     // draw existing bezier
     dc->SetPen(wxPen(m_SelectionColour, mySymbol->GetWidth()));
@@ -1040,19 +1041,22 @@ bool tmEditManager::_LoadSnappingStatus()
         tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
         wxASSERT(m_pDB);
         OGRGeometry *myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
-        if (myGeometry == NULL) {
+        if (myGeometry == nullptr) {
             return false;
         }
 
-        if (IsLayerSpatialType(LAYER_SPATIAL_LINE) == true) {
-            OGRLineString *myLine = static_cast<OGRLineString *>(myGeometry);
+        if (IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
+            auto *myLine = dynamic_cast<OGRLineString *>(myGeometry);
+            wxASSERT(myLine);
             for (unsigned int i = 0; i < myLine->getNumPoints(); i++) {
                 m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
             }
             OGRGeometryFactory::destroyGeometry(myGeometry);
-        } else if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
-            OGRPoint *myPt = static_cast<OGRPoint *>(myGeometry);
-            m_ArcPoints.push_back(new wxRealPoint(myPt->getX(), myPt->getY()));
+        } else if (IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
+            auto *myPt = dynamic_cast<OGRPoint *>(myGeometry);
+            if (myPt) {
+                m_ArcPoints.push_back(new wxRealPoint(myPt->getX(), myPt->getY()));
+            }
             OGRGeometryFactory::destroyGeometry(myGeometry);
         } else {
             OGRGeometryFactory::destroyGeometry(myGeometry);
@@ -1065,12 +1069,12 @@ bool tmEditManager::_LoadSnappingStatus()
             int mySnapStatus = tmSNAPPING_OFF;
             m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
             tmLayerProperties *myActualLayer = m_TOC->GetLayerById(myLayerId);
-            if (myActualLayer == NULL) {
+            if (myActualLayer == nullptr) {
                 break;
             }
 
             tmGISData *myActualGISData = tmGISData::LoadLayer(myActualLayer);
-            if (myActualGISData == NULL) {
+            if (myActualGISData == nullptr) {
                 break;
             }
 
@@ -1081,7 +1085,7 @@ bool tmEditManager::_LoadSnappingStatus()
                     myActualID = m_ArcOID;
                 }
                 // TODO Implement IsPointSnapped for Shapefiles
-                if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID) == true) {
+                if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID)) {
                     int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
                     if (myItemIndex == wxNOT_FOUND) {
                         m_ArcSnappedPointsIndexes.Add(v);
@@ -1424,6 +1428,12 @@ void tmEditManager::OnEditStart(wxCommandEvent &event)
 void tmEditManager::OnEditStop(wxCommandEvent &event)
 {
     m_EditStarted = false;
+
+	if (m_ArcPoints.GetCount() > 0) {
+        wxLogWarning(_("The editing mode was stopped before the line was finalized."));
+        m_ArcPoints.Clear();
+    }
+
     event.Skip();
 }
 
@@ -1737,12 +1747,12 @@ wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clicke
         m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
         myActualLayer = m_TOC->GetLayerById(myLayerId);
         if (!myActualLayer)
-            break;
+            continue;
 
         // search snapping for that layer
         tmGISData *myActualGISData = tmGISData::LoadLayer(myActualLayer);
         if (!myActualGISData) {
-            break;
+            continue;
         }
 
         // convert meters to real units
@@ -2491,6 +2501,66 @@ bool tmEditManager::FlipLine()
     return true;
 }
 
+
+bool tmEditManager::SmoothLine()
+{
+    wxASSERT(m_Renderer);
+    m_Renderer->SetTool(tmTOOL_SELECT);
+
+    wxBusyCursor myBusyCursor;
+
+    if (!IsModifictionAllowed()) {
+        return false;
+    }
+
+    if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE)) {
+        return false;
+    }
+
+    _LoadSnappingStatus();
+
+    _ProcessChaikin();
+
+    m_Renderer->Refresh();
+    m_Renderer->Update();
+
+    return true;
+}
+
+void tmEditManager::_ProcessChaikin()
+{
+    // Minimum of 3 points
+    if (m_ArcPoints.GetCount()<3) {
+        return;
+    }
+
+    wxRealPointList newPts;
+
+    // First point stays the same
+    newPts.push_back(new wxRealPoint(m_ArcPoints[0]->x, m_ArcPoints[0]->y));
+
+    for (int i = 1; i < m_ArcPoints.GetCount(); ++i) {
+        wxRealPoint *pt1 = m_ArcPoints[i - 1];
+        wxRealPoint *pt2 = m_ArcPoints[i];
+
+        double xQ = (3.0 / 4.0) * pt1->x + (1.0 / 4.0) * pt2->x;
+        double yQ = (3.0 / 4.0) * pt1->y + (1.0 / 4.0) * pt2->y;
+        double xR = (1.0 / 4.0) * pt1->x + (3.0 / 4.0) * pt2->x;
+        double yR = (1.0 / 4.0) * pt1->y + (3.0 / 4.0) * pt2->y;
+
+        newPts.push_back(new wxRealPoint(xQ, yQ));
+        newPts.push_back(new wxRealPoint(xR, yR));
+    }
+
+    // Last point stays the same
+    int iLast = (int)m_ArcPoints.GetCount() - 1;
+    newPts.push_back(new wxRealPoint(m_ArcPoints[iLast]->x, m_ArcPoints[iLast]->y));
+
+    m_ArcPoints.DeleteContents(true);
+    m_ArcPoints.Clear();
+
+    m_ArcPoints = newPts;
+}
 
 tmSharedNodeEdit::tmSharedNodeEdit(long lineid, int vertexid,
                                    const wxPoint &coord,

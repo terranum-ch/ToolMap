@@ -60,6 +60,7 @@ private:
     bool m_UseFastExport;
     bool m_ExportAttributeCode;
     bool m_OverwriteFiles;
+    bool m_ExportEmpty;
 
     PrjDefMemManage *m_ProjMem;
 
@@ -136,6 +137,7 @@ private:
     wxCheckBox *m_LayersAddCtrl;
     wxCheckBox *m_LayersReplaceCtrl;
     wxCheckBox *m_FastPolyExportCtrl;
+    wxCheckBox *m_ExportEmptyLayersCtrl;
     wxRadioButton *m_ExportAttribDescCtrl;
     wxRadioButton *m_ExportAttribCodeCtrl;
 
@@ -172,6 +174,8 @@ public:
     bool DoLayerAdd();
 
     bool DoLayerReplace();
+
+    bool DoExportEmptyLayers();
 
     bool UseFastExport();
 

@@ -33,6 +33,7 @@ void tmExportData::InitMemberValues()
     m_ExportAttributEnumerationCode = false; // default is to export attribut description.
     m_CropBufferDistance = 1.0;
     m_Overwrite = false;
+    m_EmptyLayer = false;
 }
 
 
@@ -104,6 +105,29 @@ wxFileName *tmExportData::GetFileName(ProjectDefMemoryLayers *myLayer, const wxS
         return myReturn;
     else {
         wxASSERT_MSG(0, _T("Error constructing file name"));
+        return NULL;
+    }
+}
+
+
+/***************************************************************************//**
+ @brief Create a prj file name
+ @details Create a file name for projection information
+ @param myLayer valid object of type #ProjectDefMemoryLayers
+ @param path The path (with trailling separator)
+ @return  A valid wxFileName or Null if an error occur. If wxFileName is
+ returned, caller must destroy the object once finished
+ @author Pascal Horton (c) Terranum 2019
+ @date 18 October 2019
+ *******************************************************************************/
+wxFileName *tmExportData::GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const wxString &path)
+{
+    wxASSERT(myLayer);
+    wxFileName *myReturn = new wxFileName(path, myLayer->m_LayerName + ".prj");
+    if (myReturn->IsOk())
+        return myReturn;
+    else {
+        wxASSERT_MSG(0, _T("Error constructing prj file name"));
         return NULL;
     }
 }
@@ -302,4 +326,8 @@ bool tmExportData::GetAdvancedAttribution(ProjectDefMemoryLayers *layer)
         return false;
 
     return true;
+}
+
+void tmExportData::SetEmptyLayer() {
+    m_EmptyLayer = true;
 }
