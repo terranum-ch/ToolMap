@@ -1513,35 +1513,47 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
     bool myDoMultiply = ((tmSymbolRaster*) itemProp->GetSymbolRef())->GetDoMultiply();
     if(myDoMultiply){
         wxImage myImgBackgroundFull = m_bmp->ConvertToImage();
+        int dx = 0;
+        int dy = 0;
+        int dmx = 0;
+        int dmy = 0;
 
         // be sure that we dont have x or y values below 0
-        wxRect myClippedCoord (myClippedCoordPx);
+        wxRect myClippedCoord(myClippedCoordPx);
         if (myClippedCoord.GetX() < 0) {
+            dx = -myClippedCoord.GetX();
             myClippedCoord.SetX(0);
         }
         if (myClippedCoord.GetY() < 0) {
+            dy = -myClippedCoord.GetY();
             myClippedCoord.SetY(0);
         }
+        if (myClippedCoord.GetWidth() > myImgBackgroundFull.GetWidth()) {
+            dmx = myClippedCoord.GetWidth() - myImgBackgroundFull.GetWidth();
+            myClippedCoord.SetWidth(myImgBackgroundFull.GetWidth());
+        }
+        if (myClippedCoord.GetHeight() > myImgBackgroundFull.GetHeight()) {
+            dmy = myClippedCoord.GetHeight() - myImgBackgroundFull.GetHeight();
+            myClippedCoord.SetHeight(myImgBackgroundFull.GetHeight());
+        }
         wxImage myImgBackground = myImgBackgroundFull.GetSubImage(myClippedCoord);
-        wxASSERT(myImgBackground.GetWidth() == myImgLayer->GetWidth());
-        wxASSERT(myImgBackground.GetHeight() == myImgLayer->GetHeight());
 
         // loop for all pixels and do the processing
-        for (int x = 0; x < myImgBackground.GetWidth(); ++x) {
-            for (int y = 0; y < myImgBackground.GetHeight(); ++y) {
-                int myRedBack = myImgBackground.GetRed(x,y);
-                int myGreenBack = myImgBackground.GetGreen(x,y);
-                int myBlueBack = myImgBackground.GetBlue(x,y);
+        for (int x = dx; x < myImgLayer->GetWidth() - dmx; ++x) {
+            for (int y = dy; y < myImgLayer->GetHeight() - dmy; ++y) {
+                int myRedBack = myImgBackground.GetRed(x - dx, y - dy);
+                int myGreenBack = myImgBackground.GetGreen(x - dx, y - dy);
+                int myBlueBack = myImgBackground.GetBlue(x - dx, y - dy);
 
-                int myRedLayer = myImgLayer->GetRed(x,y);
-                int myGreenLayer = myImgLayer->GetGreen(x,y);
-                int myBlueLayer = myImgLayer->GetBlue(x,y);
+                int myRedLayer = myImgLayer->GetRed(x, y);
+                int myGreenLayer = myImgLayer->GetGreen(x, y);
+                int myBlueLayer = myImgLayer->GetBlue(x, y);
 
                 int myRedResult = wxRound(myRedBack * myRedLayer / 255.0);
                 int myGreenResult = wxRound(myGreenBack * myGreenLayer / 255.0);
                 int myBlueResult = wxRound(myBlueBack * myBlueLayer / 255.0);
 
-                myImgLayer->SetRGB(x,y,myRedResult, myGreenResult, myBlueResult);
+                myImgLayer->SetRGB(x, y, myRedResult, myGreenResult, myBlueResult);
             }
         }
     }
