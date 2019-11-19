@@ -82,7 +82,9 @@ bool ToolMapApp::OnInit()
     wxRect myWndPos;
     if (myPos.LoadPosition(frame->GetName(), myWndPos)) {
         frame->SetPosition(wxPoint(myWndPos.GetX(), myWndPos.GetY()));
-        frame->SetSize(wxSize(myWndPos.GetWidth(), myWndPos.GetHeight()));
+        int width = wxMax(myWndPos.GetWidth(), 600);
+        int height = wxMax(myWndPos.GetHeight(), 400);
+        frame->SetSize(wxSize(width, height));
     }
 
     frame->Show(true);
@@ -360,6 +362,9 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
     // item
     wxSystemOptions::SetOption(wxT("mac.listctrl.always_use_generic"), 1);
     setlocale(LC_NUMERIC, "C");
+
+	// setting minimum size
+    SetMinSize(wxSize(600, 400));
 
     // initing bitmap
     images_misc_init();

@@ -1676,16 +1676,11 @@ bool tmLayerManager::ReloadProjectLayers(bool bFullExtent, bool bInvalidateFullE
 void tmLayerManager::CreateEmptyBitmap(const wxSize &size)
 {
     if (m_Bitmap != NULL) {
-        //if (m_Bitmap->IsOk())
-        //{
-        //wxLogDebug(_T("deleting bitmap"));
         delete m_Bitmap;
         m_Bitmap = NULL;
-        //}
     }
 
     m_Bitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
-    //wxLogDebug(_T("Creating bitmap"));
 
     // ensure that the bitmap is white (win and linux)
     wxMemoryDC dc;
