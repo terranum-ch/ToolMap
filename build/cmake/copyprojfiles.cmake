@@ -17,5 +17,9 @@ IF (WIN32)
             COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${PROJ_SHARE_PATH}"
             "${CMAKE_BINARY_DIR}/${PROJ_DESTINATION}")
+    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${PROJECT_SOURCE_DIR}/resource/set-env.bat"
+            "${CMAKE_BINARY_DIR}")
     message(STATUS "Copying: ${PROJ_SHARE_PATH} -> ${CMAKE_BINARY_DIR}/${PROJ_DESTINATION}")
 ENDIF (WIN32)

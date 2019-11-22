@@ -72,6 +72,7 @@ if (WIN32)
 
     # install proj files
     install(DIRECTORY ${PROJ_SHARE_PATH} DESTINATION share)
+    install(FILES ${CMAKE_BINARY_DIR}/set-env.bat DESTINATION .)
 
     # install Microsoft Visual Studio librairies (MSVCP140.DLL, etc.)
     include(InstallRequiredSystemLibraries)

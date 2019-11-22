@@ -1528,13 +1528,13 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata)
             dy = -myClippedCoord.GetY();
             myClippedCoord.SetY(0);
         }
-        if (myClippedCoord.GetWidth() > myImgBackgroundFull.GetWidth()) {
-            dmx = myClippedCoord.GetWidth() - myImgBackgroundFull.GetWidth();
-            myClippedCoord.SetWidth(myImgBackgroundFull.GetWidth());
+        if (myClippedCoord.GetWidth() + myClippedCoord.GetX() > myImgBackgroundFull.GetWidth()) {
+            dmx = myClippedCoord.GetWidth() + myClippedCoord.GetX() - myImgBackgroundFull.GetWidth();
+            myClippedCoord.SetWidth(myImgBackgroundFull.GetWidth() - myClippedCoord.GetX());
         }
-        if (myClippedCoord.GetHeight() > myImgBackgroundFull.GetHeight()) {
-            dmy = myClippedCoord.GetHeight() - myImgBackgroundFull.GetHeight();
-            myClippedCoord.SetHeight(myImgBackgroundFull.GetHeight());
+        if (myClippedCoord.GetHeight() + myClippedCoord.GetY() > myImgBackgroundFull.GetHeight()) {
+            dmy = myClippedCoord.GetHeight() + myClippedCoord.GetY() - myImgBackgroundFull.GetHeight();
+            myClippedCoord.SetHeight(myImgBackgroundFull.GetHeight() - myClippedCoord.GetY());
         }
         wxImage myImgBackground = myImgBackgroundFull.GetSubImage(myClippedCoord);
 
