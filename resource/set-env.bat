@@ -1,0 +1,1 @@
+setx PROJ_LIB "%CD%\share\proj"
