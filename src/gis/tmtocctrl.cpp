@@ -828,6 +828,12 @@ void tmTOCCtrl::OnShortcutKey(wxKeyEvent &event)
         }
 
     }
+
+    switch (event.GetKeyCode()) {
+        case WXK_SPACE:
+            return; // do not propagate space event because it triggers the display of the symbology when we want to disable snapping.
+    }
+
     event.Skip();
 }
 
