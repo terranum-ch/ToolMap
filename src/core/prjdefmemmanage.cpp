@@ -300,7 +300,11 @@ int PrjDefMemManage::GetCountObject()
     // get the active layer
     ProjectDefMemoryLayers *layer = GetActiveLayer();
 
-    return layer->m_pLayerObjectArray.GetCount();
+	if (layer != nullptr) {
+        return layer->m_pLayerObjectArray.GetCount();
+	}
+
+    return 0;
 }
 
 
