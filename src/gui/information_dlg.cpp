@@ -411,6 +411,12 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString &header, wxArrayStrin
     if (bReturn == false) {
         wxLogDebug(_T("Error getting informations for oid : %ld"), oid);
     }
+
+	// Ensure to have existing entries in the list
+	if (header.GetCount() > values.GetCount()) {
+        values.Add(wxEmptyString, header.GetCount() - values.GetCount());
+	}
+
     return bReturn;
 }
 
