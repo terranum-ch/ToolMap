@@ -1,8 +1,8 @@
 /***************************************************************************
  databaseresult.h
- 
+
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,52 +24,48 @@
 #include <wx/wx.h>
 #endif
 
-#include "mysql.h"
-#include "ogrsf_frmts.h"        // OGR accessing
 #include "database.h"
+#include "mysql.h"
+#include "ogrsf_frmts.h"  // OGR accessing
 
-class DataBaseResult
-{
-private:
-    MYSQL_RES **m_ResultSet;
-    MYSQL_ROW m_Row;
-    long m_RowIndex;
-    tmArrayULong m_RowLengths;
+class DataBaseResult {
+ private:
+  MYSQL_RES **m_ResultSet;
+  MYSQL_ROW m_Row;
+  long m_RowIndex;
+  tmArrayULong m_RowLengths;
 
-protected:
-    bool _GetRowLength();
+ protected:
+  bool _GetRowLength();
 
+ public:
+  DataBaseResult();
 
-public:
-    DataBaseResult();
+  DataBaseResult(MYSQL_RES **results);
 
-    DataBaseResult(MYSQL_RES **results);
+  void Create(MYSQL_RES **results);
 
-    void Create(MYSQL_RES **results);
+  ~DataBaseResult();
 
-    ~DataBaseResult();
+  bool HasResults();
 
-    bool HasResults();
+  int GetColCount();
 
-    int GetColCount();
+  long GetRowCount();
 
-    long GetRowCount();
+  bool GetColName(wxArrayString &fields);
 
-    bool GetColName(wxArrayString &fields);
+  bool GetValue(int col, wxString &value);
 
-    bool GetValue(int col, wxString &value);
+  bool GetValue(int col, long &value);
 
-    bool GetValue(int col, long &value);
+  bool GetValue(int col, OGRGeometry **geometry);
 
-    bool GetValue(int col, OGRGeometry **geometry);
+  bool NextRow();
 
+  bool IsRowOk();
 
-    bool NextRow();
-
-    bool IsRowOk();
-
-    bool GotoRow(long row);
-
+  bool GotoRow(long row);
 };
 
 #endif
