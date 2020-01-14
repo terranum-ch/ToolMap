@@ -16,7 +16,7 @@
 #ifndef _TM_CLOSE_FILE_DLG_H_
 #define _TM_CLOSE_FILE_DLG_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

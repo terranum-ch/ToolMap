@@ -15,7 +15,7 @@
 #ifndef _BEZIER_SETTINGS_H_
 #define _BEZIER_SETTINGS_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

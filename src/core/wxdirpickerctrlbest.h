@@ -16,7 +16,7 @@
 #ifndef _WX_DIRPICKERCTRL_BEST_
 #define _WX_DIRPICKERCTRL_BEST_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

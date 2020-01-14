@@ -32,25 +32,21 @@
 #define PROJECT_DEF_DLG_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/listctrl.h>
 
-#include "wx/listctrl.h"
 #include "listgenreport.h"
-#include "wxflatbutton.h"
 #include "project_def_layers_dlg.h"
+#include "wxflatbutton.h"
 //#include <wx/dirdlg.h> // for directory selection dialog
-#include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
-#include "listgenreport_status.h"        // list with status
-
-
-
-
+#include "../core/wxdirpickerctrlbest.h"  // directory picker (best version)
+#include "listgenreport_status.h"         // list with status
 
 /*!
  * Forward declarations

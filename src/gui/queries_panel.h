@@ -17,16 +17,16 @@
 #ifndef _TM_QUERIESEDITOR_H_
 #define _TM_QUERIESEDITOR_H_
 
+#include <wx/listctrl.h>
+#include <wx/statusbr.h>
+#include <wx/tglbtn.h>
 
-#include "wx/listctrl.h"
-#include "wx/tglbtn.h"
-#include "wx/statusbr.h"
-#include "managed_aui_wnd.h"
-#include "wxflatbutton.h"        // for flat button
+#include "../core/queriesbuilder.h"  // for query builder
+#include "../gis/tmmanagerevent.h"   // for manager event
 #include "listgenreport_status.h"    // for list with  status support
-#include "queries_panel_dlg.h"            // for the queries edition dialog
-#include "../gis/tmmanagerevent.h"        // for manager event
-#include "../core/queriesbuilder.h"        // for query builder
+#include "managed_aui_wnd.h"
+#include "queries_panel_dlg.h"  // for the queries edition dialog
+#include "wxflatbutton.h"       // for flat button
 
 class DataBaseTM;
 

@@ -21,23 +21,22 @@
 #define _TM_SYMBOLDLG_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/clrpicker.h>     // colour picker used in all child
+#include <wx/html/htmlwin.h>  // html window for metadata
+#include <wx/notebook.h>
+#include <wx/spinctrl.h>
 
-#include "wx/notebook.h"
-#include "wx/spinctrl.h"
-#include <wx/clrpicker.h>        // colour picker used in all child
-#include "../core/tmcolourpickerctrl.h"    // colour picker
-#include "../core/tmsliderwithtxt.h"    // slider with textctrl
-#include "tmsymbolpendef.h"        // pen and brush defintions
-#include <wx/html/htmlwin.h>    // html window for metadata
-#include "tmlayerpropertiesdef.h" // for LoadQueries
-
+#include "../core/tmcolourpickerctrl.h"  // colour picker
+#include "../core/tmsliderwithtxt.h"     // slider with textctrl
+#include "tmlayerpropertiesdef.h"        // for LoadQueries
+#include "tmsymbolpendef.h"              // pen and brush defintions
 
 const int ID_LINESSYMBOLOGY = 10079;
 //const int ID_SYMDLG_NOTEBOOK = 10116;

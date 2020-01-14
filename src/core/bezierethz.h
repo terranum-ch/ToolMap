@@ -16,7 +16,7 @@
 #ifndef _BEZIER_ETHZ_H_
 #define _BEZIER_ETHZ_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

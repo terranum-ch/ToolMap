@@ -21,22 +21,22 @@
 #define PROJECT_DEF_LAYERS_DLG_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/filedlg.h>  // file selector dialog
+#include <wx/notebook.h>
+#include <wx/statline.h>  // for static line in ProjectDefLayersEditObjectDlg
 
-#include "listgenreport.h"
-#include "wx/notebook.h"
-#include "wxflatbutton.h"
-#include "project_def_fields_dlg.h"
-#include "wx/statline.h"        // for static line in ProjectDefLayersEditObjectDlg
-#include "../core/textparser.h" // for text parsing during importation
-#include <wx/filedlg.h>            // file selector dialog
 #include "../core/prjdefmemmanage.h"
+#include "../core/textparser.h"  // for text parsing during importation
+#include "listgenreport.h"
+#include "project_def_fields_dlg.h"
+#include "wxflatbutton.h"
 
 class ProjectDefFieldDlg;
 

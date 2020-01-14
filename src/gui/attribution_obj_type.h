@@ -20,22 +20,22 @@
 #define ATTRIBUTION_OBJ_TYPE_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-#include "managed_aui_wnd.h"
-#include "wx/notebook.h"
-#include "wx/datectrl.h"
-#include "wx/dateevt.h"
+#include <wx/choicebk.h>  // for choicebook
+#include <wx/datectrl.h>
+#include <wx/dateevt.h>
+#include <wx/notebook.h>
 #include <wx/srchctrl.h>
-#include "tmchecklistboxrank.h"            // for advanced checklistbox
-#include "../core/projectdefmemory.h"    // for item type (LINE, POINT, ...)
-#include <wx/choicebk.h>                // for choicebook
+
+#include "../core/projectdefmemory.h"  // for item type (LINE, POINT, ...)
+#include "managed_aui_wnd.h"
+#include "tmchecklistboxrank.h"  // for advanced checklistbox
 
 class DataBaseTM;
 

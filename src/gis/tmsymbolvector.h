@@ -17,7 +17,7 @@
 #ifndef _TM_SYMBOLVECTOR_H_
 #define _TM_SYMBOLVECTOR_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

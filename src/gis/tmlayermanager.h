@@ -16,7 +16,7 @@
 #ifndef _TM_LAYERMANAGER_H_
 #define _TM_LAYERMANAGER_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

@@ -17,7 +17,7 @@
 #ifndef _TMSTATS_EVENT_H
 #define _TMSTATS_EVENT_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

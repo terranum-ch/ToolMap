@@ -17,13 +17,13 @@
 #ifndef _OBJECTDEFINITIONLISTDLG_H_
 #define _OBJECTDEFINITIONLISTDLG_H_
 
-#include "wx/valtext.h"
-#include "wx/statline.h"
-//#include "listgenreport.h" // for base listgenreport definition
-#include "listgenreport_status.h"        // for list with status
-#include "../core/tmvalidator.h"        // for controls validation
-#include "../core/projectdefmemory.h"
+#include <wx/statline.h>
+#include <wx/valtext.h>
+
 #include "../core/prjdefmemmanage.h"
+#include "../core/projectdefmemory.h"
+#include "../core/tmvalidator.h"   // for controls validation
+#include "listgenreport_status.h"  // for list with status
 
 class DataBaseTM;
 

@@ -23,15 +23,16 @@ class ScaleList;
 
 class DataBaseTM;
 
-#include "wx/notebook.h"
-#include "wx/tglbtn.h"
-#include "wx/statline.h"
-#include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
-#include "wxflatbutton.h"
-#include "listgenreport.h"                // for base listgenreport definition
-#include "../core/scale.h"                // for scale static conversion
-#include "wx/numdlg.h"                    // for Number entry dialog
+#include <wx/notebook.h>
+#include <wx/numdlg.h>  // for Number entry dialog
+#include <wx/statline.h>
+#include <wx/tglbtn.h>
+
 #include "../core/prjdefmemmanage.h"
+#include "../core/scale.h"                // for scale static conversion
+#include "../core/wxdirpickerctrlbest.h"  // directory picker (best version)
+#include "listgenreport.h"                // for base listgenreport definition
+#include "wxflatbutton.h"
 
 //class wxNotebook;
 class DataBaseTM;

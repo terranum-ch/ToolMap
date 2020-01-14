@@ -15,7 +15,7 @@
 #ifndef _TMCOORDCONVERT_H_
 #define _TMCOORDCONVERT_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

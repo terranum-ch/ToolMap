@@ -2,7 +2,8 @@
 #ifndef wxtreemultievent_header
 #define wxtreemultievent_header
 
-#include "wx/event.h"
+#include <wx/event.h>
+
 #include "wxTreeMultiCtrl.h"
 
 /**

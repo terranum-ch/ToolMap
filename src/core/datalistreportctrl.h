@@ -8,7 +8,7 @@
 #define _DATALISTREPORTCTRL_H_
 
 // wxWidgets include
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

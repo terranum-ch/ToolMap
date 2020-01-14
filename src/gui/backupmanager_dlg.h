@@ -16,7 +16,7 @@
 #ifndef _BACKUPMANAGER_DLG_H
 #define _BACKUPMANAGER_DLG_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

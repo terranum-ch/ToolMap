@@ -21,18 +21,17 @@
 #define _TM_SYMBOLDLGLINE_MULTIPLE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/notebook.h>
+#include <wx/spinctrl.h>
 
-#include "wx/notebook.h"
-#include "wx/spinctrl.h"
-#include "tmsymboldlgline.h" // tmSymbolDlg declaration
-
+#include "tmsymboldlgline.h"  // tmSymbolDlg declaration
 
 class tmSymbolDataLineMultiple : public tmSymbolDataLineUnique
 {

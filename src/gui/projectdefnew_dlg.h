@@ -17,11 +17,11 @@
 #ifndef _PROJECTDEFNEW_DLG_H_
 #define _PROJECTDEFNEW_DLG_H_
 
+#include <wx/statline.h>
 
-#include "wx/statline.h"
-#include "../core/wxdirpickerctrlbest.h"    // directory picker (best version)
-#include "../core/tmvalidator.h"            // for controls validation
-#include "../core/prjdefmemmanage.h"    // for storing project def in memory
+#include "../core/prjdefmemmanage.h"      // for storing project def in memory
+#include "../core/tmvalidator.h"          // for controls validation
+#include "../core/wxdirpickerctrlbest.h"  // directory picker (best version)
 
 #define ID_DLGPD_PROJ_PATH_NEW 10019
 #define ID_DLGPD_PROJ_NAME_NEW 10020

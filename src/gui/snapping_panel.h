@@ -18,7 +18,7 @@
 #ifndef _SNAPPING_PANEL_H_
 #define _SNAPPING_PANEL_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

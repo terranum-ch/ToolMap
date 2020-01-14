@@ -14,15 +14,16 @@
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/treebase.h"
-#include "wx/wxprec.h"
+#include <wx/treebase.h>
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
+#include <wx/arrimpl.cpp>
+
 #include "tmcimages.h"
-#include "wx/arrimpl.cpp"
 #include "wxTreeMultiCtrl.h"
 #include "wxTreeMultiEvent.h"
 

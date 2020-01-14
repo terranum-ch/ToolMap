@@ -21,18 +21,17 @@
 #define _TM_SYMBOLDLGRASTER_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/notebook.h>
+#include <wx/spinctrl.h>
 
-#include "wx/notebook.h"
-#include "wx/spinctrl.h"
-#include "tmsymboldlg.h"        // tmSymbolDlg declaration
-
+#include "tmsymboldlg.h"  // tmSymbolDlg declaration
 
 const int ID_SYMDLGRASTER_PANEL = 10216;
 const int ID_SYMDLGRASTER_USE_TRANSPARENCY_COLOR = 10082;

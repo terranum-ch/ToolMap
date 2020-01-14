@@ -16,7 +16,7 @@ wxSystemOptions::SetOption( wxT("mac.listctrl.always_use_generic"), 1 );
 #define LISTGENREPORT_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP

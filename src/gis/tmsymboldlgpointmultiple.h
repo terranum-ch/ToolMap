@@ -19,17 +19,16 @@
 #ifndef _TM_SYMBOLDLGPOINT_MULTIPLE_H_
 #define _TM_SYMBOLDLGPOINT_MULTIPLE_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/notebook.h>
+#include <wx/spinctrl.h>
 
-#include "wx/notebook.h"
-#include "wx/spinctrl.h"
-#include "tmsymboldlgpoint.h"        // tmSymbolDlg declaration
-
+#include "tmsymboldlgpoint.h"  // tmSymbolDlg declaration
 
 class tmSymbolDataPointMultiple : public tmSymbolDataPointUnique
 {

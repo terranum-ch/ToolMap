@@ -16,13 +16,13 @@
 #ifndef _VRRUBBERBAND_H
 #define _VRRUBBERBAND_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "wx/overlay.h"
+#include <wx/overlay.h>
 
 class vrRubberBand {
  private:

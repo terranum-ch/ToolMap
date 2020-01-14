@@ -21,15 +21,14 @@
 #define _TM_DRAWER_EDIT_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "wx/overlay.h"
-
+#include <wx/overlay.h>
 
 #include "../core/tmarraysize.h"
 

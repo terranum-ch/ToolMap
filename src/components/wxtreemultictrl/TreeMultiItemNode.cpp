@@ -16,14 +16,14 @@
 /* for compilers that support precompilation
    includes "wx/wx.h" */
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #include "TreeMultiItemNode.h"
-#include "wx/arrimpl.cpp"
+#include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(TreeMultiItemBaseArray);
 
 /** TreeMultiItemNode

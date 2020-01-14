@@ -16,7 +16,7 @@
 #ifndef _SCALE_H
 #define _SCALE_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

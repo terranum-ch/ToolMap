@@ -18,12 +18,13 @@
 #ifndef _OBJECT_ATTRIBUTION_H_
 #define _OBJECT_ATTRIBUTION_H_
 
-#include "wx/notebook.h"
-#include "wx/listctrl.h"
-#include "wx/tglbtn.h"
-#include "wx/statline.h"
-#include "objectdefinitionlistdlg.h" // For list and edition dialog definition
+#include <wx/listctrl.h>
+#include <wx/notebook.h>
+#include <wx/statline.h>
+#include <wx/tglbtn.h>
+
 #include "../core/prjdefmemmanage.h"
+#include "objectdefinitionlistdlg.h"  // For list and edition dialog definition
 #include "wxflatbutton.h"
 
 class wxNotebook;

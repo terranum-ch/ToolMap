@@ -21,38 +21,29 @@
 #define TOCWINDOW_DLG_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-
-
-//#include <wx/aui/aui.h>
 #include <wx/aui/framemanager.h>
 #include <wx/aui/dockart.h>
+#include <wx/tglbtn.h>
 
-
-
-
-//#include "wx/treectrl.h"
 #include "../gis/tmtocctrl.h"
-#include "wx/tglbtn.h"
 #include "wxflatbutton.h"
 
 #define ID_TOCWINDOW_DLG 10035
 #define ID_TREECTRL1 10127
 #define ID_DLGTOC_ADD 10147
 #define ID_DLGTOC_REMOVE 10145
-#define SYMBOL_TOCWINDOW_DLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_TOCWINDOW_DLG_STYLE wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX
 #define SYMBOL_TOCWINDOW_DLG_TITLE _("Table of content")
 #define SYMBOL_TOCWINDOW_DLG_IDNAME ID_TOCWINDOW_DLG
 #define SYMBOL_TOCWINDOW_DLG_SIZE wxSize(220, 150)
 #define SYMBOL_TOCWINDOW_DLG_POSITION wxDefaultPosition
-
 
 class TocWindowContent : public wxEvtHandler
 {
