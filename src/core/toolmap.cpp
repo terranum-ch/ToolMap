@@ -3,7 +3,6 @@
  main file for toolmap 2, contain app and main frame
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

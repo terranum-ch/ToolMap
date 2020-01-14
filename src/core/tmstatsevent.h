@@ -3,7 +3,6 @@
  Definition of Statistics related events 
  -------------------
  copyright            : (C) 2011 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

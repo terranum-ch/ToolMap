@@ -3,7 +3,6 @@
                     Display wxAui panel for attribution
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

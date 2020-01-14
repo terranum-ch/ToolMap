@@ -3,7 +3,6 @@
  Deals with GIS line vector symbology and associed dialog
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

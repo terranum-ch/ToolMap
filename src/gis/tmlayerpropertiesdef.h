@@ -3,7 +3,6 @@
  Class containing definitions for layer informations
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

@@ -3,7 +3,6 @@
  Deals with update process by cheking internet for new versions
  -------------------
  copyright            : (C) 2009 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 #ifndef _WEBUPDATE_H_

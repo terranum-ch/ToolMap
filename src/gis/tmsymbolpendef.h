@@ -3,7 +3,6 @@
                     Pen and brush definitions for tm symbology
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

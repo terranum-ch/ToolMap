@@ -4,7 +4,6 @@
  Updating value in one control reflect on the other
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

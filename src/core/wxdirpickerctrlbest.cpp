@@ -3,7 +3,6 @@
                     Upgrade a wxDirPickerCtrl control for TM
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

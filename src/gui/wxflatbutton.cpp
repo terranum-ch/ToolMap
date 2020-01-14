@@ -4,7 +4,6 @@
  uses wxButton flat or wxToggleButton (on mac)
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

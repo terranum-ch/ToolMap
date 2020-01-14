@@ -3,7 +3,6 @@
  Testing Database TM class
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

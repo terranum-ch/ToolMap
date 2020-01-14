@@ -3,7 +3,6 @@
  Take control of all tools (Dangling nodes, etc.)
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

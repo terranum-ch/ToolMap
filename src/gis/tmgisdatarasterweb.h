@@ -2,7 +2,6 @@
  tmgisdatarasterweb
  -------------------
  copyright            : (C) 2013 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

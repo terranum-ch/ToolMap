@@ -3,7 +3,6 @@
  Display dialog for batch advanced attribution
  -------------------
  copyright : (C) 2010 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

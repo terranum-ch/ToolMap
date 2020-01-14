@@ -3,7 +3,6 @@
                     Pages definition for the QueryWizard
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************

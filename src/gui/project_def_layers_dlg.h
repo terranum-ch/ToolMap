@@ -3,7 +3,6 @@
  Display Project Definition layers dialog (step 2 of a project definition)
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
