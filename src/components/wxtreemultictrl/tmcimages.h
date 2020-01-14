@@ -14,29 +14,29 @@
 
 // pics for the expand / collapse buttons
 #ifdef __APPLE__
-  #include "mac_collapse.xpm"
-  #include "mac_expand.xpm"
+#include "mac_collapse.xpm"
+#include "mac_expand.xpm"
 #else
-  #ifdef __LINUX__
-    #include "linux_collapse.xpm"
-    #include "linux_expand.xpm"
-  #else
-    #include "default_collapse.xpm"
-    #include "default_expand.xpm"
-  #endif
+#ifdef __LINUX__
+#include "linux_collapse.xpm"
+#include "linux_expand.xpm"
+#else
+#include "default_collapse.xpm"
+#include "default_expand.xpm"
+#endif
 #endif
 
-#if(CHECKBOXVIEW)
-  // icons for checkbox states
-  #ifdef WINDOWS
-    #include "win_unchecked_icon.xpm"
-    #include "win_checked_icon.xpm"
-    #include "win_tristate_icon.xpm"
-  #else
-    #include "default_unchecked_icon.xpm"
-    #include "default_checked_icon.xpm"
-    #include "default_tristate_icon.xpm"
-  #endif // WINDOWS
-#endif // #if(CHECKBOXVIEW)
+#if (CHECKBOXVIEW)
+// icons for checkbox states
+#ifdef WINDOWS
+#include "win_checked_icon.xpm"
+#include "win_tristate_icon.xpm"
+#include "win_unchecked_icon.xpm"
+#else
+#include "default_checked_icon.xpm"
+#include "default_tristate_icon.xpm"
+#include "default_unchecked_icon.xpm"
+#endif  // WINDOWS
+#endif  // #if(CHECKBOXVIEW)
 
-#endif // _TMCIMAGES_H_
+#endif  // _TMCIMAGES_H_

@@ -13,11 +13,11 @@
 #define __TREEMULTIITEMROOT_HPP_
 
 #ifdef __GNUG__
-    #pragma interface "TreeMultiItemRoot.cpp"
+#pragma interface "TreeMultiItemRoot.cpp"
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 #include "TreeMultiItemBase.h"
@@ -26,19 +26,16 @@
 /** This class is the root class. It can hold many of the TreeMultiItemWindow and
  * TreeMultiItemNode classes.
  */
-class TreeMultiItemRoot : public TreeMultiItemNode
-{
-public:
-    TreeMultiItemRoot();
+class TreeMultiItemRoot : public TreeMultiItemNode {
+ public:
+  TreeMultiItemRoot();
 
-    virtual ~TreeMultiItemRoot();
+  virtual ~TreeMultiItemRoot();
 
-    // IsClass method
-    virtual TreeMultiItemRoot *IsTreeMultiItemRoot() const
-    {
-        return (TreeMultiItemRoot *) this;
-    };
+  // IsClass method
+  virtual TreeMultiItemRoot *IsTreeMultiItemRoot() const {
+    return (TreeMultiItemRoot *)this;
+  };
 };
 
 #endif
-
