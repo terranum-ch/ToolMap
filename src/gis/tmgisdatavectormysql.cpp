@@ -559,9 +559,9 @@ tmAttributionData *tmGISDataVectorMYSQL::_CreateAttributionObject(int &layertype
     // getting layer type (line, point, poly)
     wxASSERT(m_DB);
     wxFileName myTable(GetShortFileName());
-    if (myTable.IsOk() == false) {
-        wxLogError(_T("Layer : %s wasn't open correctly"), GetShortFileName().c_str());
-        return NULL;
+    if (!myTable.IsOk()) {
+        wxLogError(_T("Layer %s was not open correctly."), GetShortFileName().c_str());
+        return nullptr;
     }
 
     layertype = wxNOT_FOUND;
@@ -574,12 +574,12 @@ tmAttributionData *tmGISDataVectorMYSQL::_CreateAttributionObject(int &layertype
     }
 
     if (layertype == wxNOT_FOUND) {
-        wxLogError(_T("Layer type : %d isn't found"), layertype);
-        return NULL;
+        wxLogError(_T("Layer type %d was not found."), layertype);
+        return nullptr;
     }
 
     // creating tmAttributionData object
-    tmAttributionData *myAttribData = NULL;
+    tmAttributionData *myAttribData = nullptr;
     switch (layertype) {
         case LAYER_SPATIAL_LINE:
             myAttribData = new tmAttributionDataLine();
@@ -594,13 +594,9 @@ tmAttributionData *tmGISDataVectorMYSQL::_CreateAttributionObject(int &layertype
             break;
 
         default:
-            break;
+            wxLogDebug(_T("Layer type %d is not yet supported."), layertype);
     }
 
-    if (myAttribData == NULL) {
-        wxLogError(_T("Layer type %d isn't supported actually"), layertype);
-        return NULL;
-    }
     return myAttribData;
 }
 

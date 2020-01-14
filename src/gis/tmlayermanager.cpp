@@ -305,7 +305,7 @@ bool tmLayerManager::SaveTOCStatus(bool isClosing)
 
 /***************************************************************************//**
  @brief Response to the event sent by the #tmTOCCtrl
- @details Item was alleready delleted from the tmTOCCtrl and is now removed from
+ @details Item was already deleted from the tmTOCCtrl and is now removed from
  the DB and the display is refreshed.
  @param event Contain the layer database ID into the GetExtraLong() function
  @author Lucien Schreiber (c) CREALP 2008
