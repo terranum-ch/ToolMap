@@ -341,7 +341,7 @@ bool PdfLayer::Generate()
     // page break
     //if (myYPosStopAttrib > myYPosStart) {
 
-//	}
+// }
 
     // indicate a page break!
     /*if (mypPdf->GetY() < myYPosStart) {

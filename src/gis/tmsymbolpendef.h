@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmsymbolpendef.h
+ tmsymbolpendef.h
                     Pen and brush definitions for tm symbology
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

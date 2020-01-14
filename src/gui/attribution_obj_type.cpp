@@ -1,10 +1,9 @@
 /***************************************************************************
-							attribution_obj_type.cpp
-					Display wxAui panel for attribution
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
- ***************************************************************************/
+ attribution_obj_type.cpp
+ Display wxAui panel for attribution
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -145,7 +144,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     wxPanel *itemPanel5 = new wxPanel(itemNotebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer *itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     itemPanel5->SetSizer(itemBoxSizer5);
-	
+
     m_pObjList_PT_Freq = new tmCheckListBoxRank(itemPanel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL,
                                                 tmLB_MENU);
     itemBoxSizer5->Add(m_pObjList_PT_Freq, 1, wxGROW, 0);
@@ -161,7 +160,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
     itemBoxSizer6->Add(m_pObjList_PT_NoFreq, 1, wxGROW, 0);
 
     itemNotebook2->AddPage(itemPanel6, _("Less frequent"));
-	
+
     itemBoxSizer4->Add(itemNotebook2, 1, wxEXPAND, 0);
 
     m_AttribNotebook->AddPage(itemPanel4, _("Point"));
@@ -416,7 +415,7 @@ bool AttribObjType_PANEL::UpdateObjectPointList(DataBaseTM *pDB)
     if (!UpdateObjectList(pDB, m_pObjList_PT_NoFreq, LAYER_POINT, OBJECT_LESS_FREQUENT))
         return FALSE;
 
-	return true;
+ return true;
 }
 
 
@@ -682,8 +681,8 @@ TOC_GENERIC_NAME AttribObjType_PANEL::GetVisibleNotebook()
  *******************************************************************************/
 /*void AttribObjType_PANEL::OnAttributeBtn (wxCommandEvent & event)
 {
-	wxCommandEvent evt (tmEVT_ATTRIBUTION_BTN_PRESSED, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->QueueEvent(evt.Clone());
+ wxCommandEvent evt (tmEVT_ATTRIBUTION_BTN_PRESSED, wxID_ANY);
+ m_ParentEvt->GetEventHandler()->QueueEvent(evt.Clone());
 }*/
 
 

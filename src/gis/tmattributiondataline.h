@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmAttributionDataLine.h
-						Class for attributing line
-                             -------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
+ tmAttributionDataLine.h
+ Class for attributing line
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -57,7 +57,7 @@ public:
     virtual bool SetAttributeBasic(AttribObjType_PANEL *panel);
     // copy attribution
     //virtual bool CopyAttributesBasic (const long & copyfrom,
-    //								  const wxArrayLong & copyto);
+    //   const wxArrayLong & copyto);
 
     // info
     virtual bool GetInfoBasic(AttribObjType_PANEL *panel);
@@ -66,7 +66,7 @@ public:
                               wxArrayString &objcode, wxArrayString &objname);
 
     //virtual bool GetInfoBasicValues (const long & selected,
-    //								 wxArrayLong & values);
+    //  wxArrayLong & values);
     virtual bool GetAttributionLayersID(const long &geomid, tmLayerValueArray &layersid);
 
     virtual bool GetAttributionLayersIDFull(const long &geomid, tmLayerValueArray &layersid);

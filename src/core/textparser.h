@@ -1,8 +1,8 @@
 /***************************************************************************
-								textparser.h
-		Superclass for parsing text, used for importing list of values
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ textparser.h
+ Superclass for parsing text, used for importing list of values
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

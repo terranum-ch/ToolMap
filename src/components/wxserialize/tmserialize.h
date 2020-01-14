@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmserialize.h
+ tmserialize.h
                     for serializating object in a simple way
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -29,7 +29,7 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/tokenzr.h>	// for string tokenizer
+#include <wx/tokenzr.h> // for string tokenizer
 
 const int TMSERIALIZE_VERSION = 1; // increment each time something change
 const wxString tmSERIAL_MAINSEP = _T("|");

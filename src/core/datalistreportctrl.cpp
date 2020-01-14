@@ -293,7 +293,7 @@ void DataListReportCtrl::SortList(int col, int lowindex, int highindex, DATALIST
         return;
     }
 
-    /*wxListItem info;	info.m_itemId = (lo+hi)/2;
+    /*wxListItem info; info.m_itemId = (lo+hi)/2;
     info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA|wxLIST_MASK_IMAGE;
     info.m_col = col;
     GetItem( info );

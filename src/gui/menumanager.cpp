@@ -1,8 +1,8 @@
 /***************************************************************************
-								menumanager.cpp
-				Deals with menu activities (enable / disable)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ menumanager.cpp
+ Deals with menu activities (enable / disable)
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

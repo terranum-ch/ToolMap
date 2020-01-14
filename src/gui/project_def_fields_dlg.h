@@ -1,8 +1,8 @@
 /***************************************************************************
-							project_def_fields_dlg.h
+ project_def_fields_dlg.h
                     Display dialog for adding new field
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -67,7 +67,7 @@ private:
     PrjDefMemManage *m_pPrjDefinition;
     int m_ChoiceIndex;
 
-    //		void OnMySelectionChange (wxListEvent & event);
+    // void OnMySelectionChange (wxListEvent & event);
 
     virtual void AfterAdding(bool bRealyAddItem);
 
@@ -92,13 +92,13 @@ public:
     void PassPrjDefToList(PrjDefMemManage *myPrjMemManage)
     { m_pPrjDefinition = myPrjMemManage; }
 
-    //	int GetParamType (wxString myTextParam);
+    // int GetParamType (wxString myTextParam);
     //
-    //		wxString GetParamType (int imyType);
+    // wxString GetParamType (int imyType);
     //
-    //		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+    // void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
     //void SetChoiceList (wxChoice * myChoiceList) {m_ChoiceToDefault = myChoiceList;}
-    //		DECLARE_EVENT_TABLE();
+    // DECLARE_EVENT_TABLE();
 };
 
 

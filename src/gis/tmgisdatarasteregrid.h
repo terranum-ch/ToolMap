@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmgisdatarasteregrid.h
+ tmgisdatarasteregrid.h
                     For dealing with raster ESRI's binary grid
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

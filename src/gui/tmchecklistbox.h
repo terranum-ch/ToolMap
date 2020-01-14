@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmchecklistbox.cpp
+ tmchecklistbox.cpp
                     Base class for dealing with checklistbox with long
-						item associed to every item
-								-------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ item associed to every item
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

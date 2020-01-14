@@ -20,7 +20,7 @@
 
 #include "wx/valtext.h"
 #include "wx/statline.h"
-//#include "listgenreport.h"				// for base listgenreport definition
+//#include "listgenreport.h" // for base listgenreport definition
 #include "listgenreport_status.h"        // for list with status
 #include "../core/tmvalidator.h"        // for controls validation
 #include "../core/projectdefmemory.h"
@@ -169,7 +169,7 @@ public:
     { m_ListSpatType = iSpatialType; }
 
     //virtual int ImportParsedFileToListCtrl(const wxString & filename, 
-    //									   const int & FilterIndex);
+    //    const int & FilterIndex);
 
     // pass pointer to ctrls to the list
     void SetListCtrls(wxChoice *layerchoice, wxCheckBox *checkboxfreq = NULL);

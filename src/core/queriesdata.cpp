@@ -1,8 +1,8 @@
 /***************************************************************************
-								queriesdata.cpp
+ queriesdata.cpp
                    
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

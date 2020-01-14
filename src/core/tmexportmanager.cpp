@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmexportmanager.cpp
+ tmexportmanager.cpp
                     Main class for dealing with export process
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -207,21 +207,21 @@ bool tmExportManager::ExportSelected(PrjDefMemManage *localprojdef, tmLayerManag
  *******************************************************************************/
 /*bool tmExportManager::ExportAll (PrjDefMemManage * localprojdef)
 {
-	wxASSERT(m_pDB);
-	//wxASSERT(m_Parent);
-	wxASSERT (localprojdef);
-	m_ProjMem = localprojdef;
-	
-	PrjMemLayersArray * myLayers = &(m_ProjMem->m_PrjLayerArray) ;
-	if (!myLayers)
-	{
-		return false;
-	}
-	
-	// correcting integrity
-	_CorrectIntegrity(myLayers);
-	
-	return ExportLayers(myLayers);
+ wxASSERT(m_pDB);
+ //wxASSERT(m_Parent);
+ wxASSERT (localprojdef);
+ m_ProjMem = localprojdef;
+
+ PrjMemLayersArray * myLayers = &(m_ProjMem->m_PrjLayerArray) ;
+ if (!myLayers)
+ {
+ return false;
+ }
+
+ // correcting integrity
+ _CorrectIntegrity(myLayers);
+
+ return ExportLayers(myLayers);
 
 }*/
 

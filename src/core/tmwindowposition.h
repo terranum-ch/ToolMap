@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmwindowposition.h
-						Save and load windows position
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmwindowposition.h
+ Save and load windows position
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

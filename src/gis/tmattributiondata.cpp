@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmattributiondata.h
+ tmattributiondata.h
                     Main class for attribution process
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -705,7 +705,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID(const long &geomid,
     //long myLayerTemp = wxNOT_FOUND;
 
     //if (m_pDB->DataBaseGetResults(layersid)==false)
-    //	return false;
+    // return false;
 
     if (layersid.GetCount() > 0)
         return true;

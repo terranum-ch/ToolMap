@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmattributiondataline.cpp
-							Class for attributing line
-								-------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
+ tmattributiondataline.cpp
+ Class for attributing line
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

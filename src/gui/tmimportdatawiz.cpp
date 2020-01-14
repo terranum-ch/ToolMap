@@ -556,7 +556,7 @@ void ImportDataWizard::SetEnumerationOptions() const
     layer = prjDefMem->GetActiveLayer();
     wxASSERT(layer);
 
-	bool skipPage = true;
+ bool skipPage = true;
 
     for (int i = 0; i < m_Import->GetAttributesMatchesCount(); ++i) {
         if(!m_Import->AttributeIsEnum(i)) {
@@ -572,7 +572,7 @@ void ImportDataWizard::SetEnumerationOptions() const
             continue;
         }
 
-		skipPage = false;
+ skipPage = false;
 
         // Extract enumerations from the project
         wxString attNameInDB = m_Import->GetAttributeNameInDB(i);

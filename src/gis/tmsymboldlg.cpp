@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmsymboldlg.cpp
-						Display Symbology dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmsymboldlg.cpp
+ Display Symbology dialog
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -124,17 +124,17 @@ void tmSymbolDLG::CreateControlsBasic()
 
     m_SymbolPanel = new wxPanel(itemDialog1, ID_SYMDLG_PANEL);
     //m_NoteBook = new wxNotebook( itemDialog1, ID_SYMDLG_NOTEBOOK,
-    //							wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+    // wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
     //wxPanel* itemPanel4 = new wxPanel( m_NoteBook, ID_SYMDLG_PANEL, 
-    //								  wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+    //   wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
     //wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxVERTICAL);
     //itemPanel4->SetSizer(itemBoxSizer5);
 
     /*m_MetaDataWnd = new wxHtmlWindow( itemPanel4, ID_SYMDLG_INFOTXT,
-									 wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN  | wxHW_DEFAULT_STYLE);
+  wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN  | wxHW_DEFAULT_STYLE);
     itemBoxSizer5->Add(m_MetaDataWnd, 1, wxGROW|wxALL, 5);
-	
+
     m_NoteBook->AddPage(itemPanel4, _("Informations"));*/
 
 
@@ -158,7 +158,7 @@ void tmSymbolDLG::CreateControlsBasic()
 
 /*void tmSymbolDLG::SetMetaData (const wxString & metadata)
 {
-	m_MetaDataWnd->SetPage(metadata);
+ m_MetaDataWnd->SetPage(metadata);
 }*/
 
 

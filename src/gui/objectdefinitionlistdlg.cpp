@@ -1,7 +1,7 @@
 /***************************************************************************
-						objectdefinitionlistdlg.cpp
-	Contain description of class used for ProjectEditObjectDefinitionDLG
-							-------------------
+ objectdefinitionlistdlg.cpp
+ Contain description of class used for ProjectEditObjectDefinitionDLG
+ -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
@@ -556,47 +556,47 @@ void ObjectDefinitionList::GetObjectFromList(ProjectDefMemoryObjects *object, in
 
 
 //int ObjectDefinitionList::ImportParsedFileToListCtrl(const wxString & filename, 
-//														const int & FilterIndex)
+//  const int & FilterIndex)
 //{
-//	wxArrayString myArrValues;
-//	int iLineCount = 0;
-//	
-//	// create parser depending on the selected format and set a file
-//	// for that parser
-//	m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
-//	m_ImportParser->SetParseFileName(filename);
-//	
-//	// check that the parser is not null or may crash
-//	wxASSERT(m_ImportParser != NULL);
-//	
-//	// try to open the file for parsing
-//	if(m_ImportParser->OpenParseFile())
-//	{
-//		wxLogDebug(_T("Opening OK, my nice parser is : %s"), 
-//				   m_ImportParser->GetParserType().c_str());
-//		
-//		// loop for parsing all line
-//		iLineCount = m_ImportParser->GetLineCount();
-//		for (int i=0; i < iLineCount; i++)
-//		{
-//			m_ImportParser->ParseNextLine(myArrValues);
-//			
-//			// add values to the array
-//			AddingValueToArray(myArrValues);
-//			
-//			// add values to the list
-//			EditDataToList(myArrValues);
-//			
-//			// clear the array
-//			myArrValues.Clear();
-//		}
-//		m_ImportParser->CloseParseFile();
-//		
-//	}
-//	if (m_ImportParser != NULL)
-//		delete m_ImportParser;
-//	return iLineCount;
-//	
+// wxArrayString myArrValues;
+// int iLineCount = 0;
+//
+// // create parser depending on the selected format and set a file
+// // for that parser
+// m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
+// m_ImportParser->SetParseFileName(filename);
+//
+// // check that the parser is not null or may crash
+// wxASSERT(m_ImportParser != NULL);
+//
+// // try to open the file for parsing
+// if(m_ImportParser->OpenParseFile())
+// {
+// wxLogDebug(_T("Opening OK, my nice parser is : %s"),
+//    m_ImportParser->GetParserType().c_str());
+//
+// // loop for parsing all line
+// iLineCount = m_ImportParser->GetLineCount();
+// for (int i=0; i < iLineCount; i++)
+// {
+// m_ImportParser->ParseNextLine(myArrValues);
+//
+// // add values to the array
+// AddingValueToArray(myArrValues);
+//
+// // add values to the list
+// EditDataToList(myArrValues);
+//
+// // clear the array
+// myArrValues.Clear();
+// }
+// m_ImportParser->CloseParseFile();
+//
+// }
+// if (m_ImportParser != NULL)
+// delete m_ImportParser;
+// return iLineCount;
+//
 //}
 
 

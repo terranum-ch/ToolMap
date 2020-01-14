@@ -68,7 +68,7 @@ class ProjectDefLayersEditObjectDlg;
 class ProjectDefLayersObjectList : public ListGenReportWithDialog
 {
 private:
-    //		void OnMySelectionChange (wxListEvent & event);		
+    // void OnMySelectionChange (wxListEvent & event);
     wxChoice *m_ChoiceToChange;
     int m_SpatialType;
 
@@ -125,7 +125,7 @@ private:
     virtual void BeforeDeleting();
 
     virtual void BeforeEditing();
-    //virtual void	AddingValueToArray (wxArrayString & myImportedValues);
+    //virtual void AddingValueToArray (wxArrayString & myImportedValues);
 
 
     // pointer to the parent dialog
@@ -156,13 +156,13 @@ public:
     void SetOrientation(int orientation, const int &index);
 
     bool IsOrientationAllowed(int index);
-    //	int GetParamType (wxString myTextParam);
-    //		
-    //		wxString GetParamType (int imyType);
+    // int GetParamType (wxString myTextParam);
     //
-    //		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-    //		void SetChoiceList (wxChoice * myChoiceList);
-    //		DECLARE_EVENT_TABLE();
+    // wxString GetParamType (int imyType);
+    //
+    // void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+    // void SetChoiceList (wxChoice * myChoiceList);
+    // DECLARE_EVENT_TABLE();
 };
 
 

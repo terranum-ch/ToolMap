@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmdrawer.h
-						Draws GIS data into bitmap 
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmdrawer.h
+ Draws GIS data into bitmap
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -38,7 +38,7 @@
 #include "tmgisdataraster.h"
 #include "tmselecteddatamemory.h"    // for stroing selected data into memory
 #include "tmrenderer.h"                // for drawing directly (edition mode)
-//#include "tmgisdatavectormemory.h"	// for drawing memory data
+//#include "tmgisdatavectormemory.h" // for drawing memory data
 
 //class tmGISDataVectorMemory;
 
@@ -152,7 +152,7 @@ public:
 
     void DrawEditLine(const wxArrayRealPoints &pts, int size, wxColour colour = *wxRED);
     //void DrawMemoryData (tmGISData * data, tmLayerProperties * layerprop,
-    //					 wxClientDC * dc);
+    //  wxClientDC * dc);
 
 };
 

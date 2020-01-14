@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmAttributionDatalabel.h
-						Class for attributing label
-                             -------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
+ tmAttributionDatalabel.h
+ Class for attributing label
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

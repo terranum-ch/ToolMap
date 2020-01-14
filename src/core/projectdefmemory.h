@@ -1,9 +1,9 @@
 /***************************************************************************
-								projectdefmemory.h
+ projectdefmemory.h
                     Manage all the project definition in memory before
-					Creating the database (to allow cancel operations)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ Creating the database (to allow cancel operations)
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -128,9 +128,9 @@ enum PRJDEF_FIELD_ORIENTATION
 // Definition for the constrain value type
 /*enum PRJDEF_FIELD_CONSTAIN_VALUE_TYPE
 {
-	TM_FIELD_CONSTRAIN_CODED = 0,
-	TM_FIELD_CONSTRAIN_RANGE,
-	TM_FIELD_NOT_CONSTRAIN
+ TM_FIELD_CONSTRAIN_CODED = 0,
+ TM_FIELD_CONSTRAIN_RANGE,
+ TM_FIELD_NOT_CONSTRAIN
 };*/
 
 

@@ -1923,70 +1923,70 @@ void tmDrawer::DrawEditLine(const wxArrayRealPoints &pts, int size, wxColour col
 
 /*
 void tmDrawer::DrawMemoryData (tmGISData * data,
-							   tmLayerProperties * layerprop,
-							   wxClientDC * dc)
+    tmLayerProperties * layerprop,
+    wxClientDC * dc)
 {
-	wxASSERT (layerprop);
-	wxASSERT (data);
-	//m_ActuallayerID = layerprop->m_LayerID;
-	switch (layerprop->GetSpatialType())
-	{
-		case LAYER_SPATIAL_LINE:
-			DrawMemoryDataLine(data, layerprop, dc);
-			break;
-			
-		default:
-			wxFAIL_MSG(_T("No drawer found"));
-			break;
-	}
-	
+ wxASSERT (layerprop);
+ wxASSERT (data);
+ //m_ActuallayerID = layerprop->m_LayerID;
+ switch (layerprop->GetSpatialType())
+ {
+ case LAYER_SPATIAL_LINE:
+ DrawMemoryDataLine(data, layerprop, dc);
+ break;
+
+ default:
+ wxFAIL_MSG(_T("No drawer found"));
+ break;
+ }
+
 }*/
 
 
 /*
 void tmDrawer::DrawMemoryDataLine (tmGISData * data, 
-								   tmLayerProperties * layerprop,
-								   wxClientDC * dc)
+    tmLayerProperties * layerprop,
+    wxClientDC * dc)
 {
-	
-	tmGISDataVectorMemory * memdata = (tmGISDataVectorMemory*) data;
-	if (memdata->GetVertexCount() <= 0)
-		return;
-	
-	
-	//wxClientDC dc(this);
-	//wxGraphicsContext* pgdc = wxGraphicsContext::Create(dc);
-	
-	// create pen based on symbology
-	tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) layerprop->GetSymbolRef();
-	wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth());//, pSymbol->GetShape());
-	dc->SetPen(myPen);
-		
-	int iVertexNumber = 0;
-	wxRealPoint * pptsReal = memdata->GetVertexAll(iVertexNumber);
-	wxASSERT(pptsReal != NULL);
-	wxASSERT(iVertexNumber > 0);
-	
-	wxPoint * myPxPts = new wxPoint[iVertexNumber];
-	for (int i = 0; i< iVertexNumber; i++)
-		myPxPts[i] = m_scale->RealToPixel(pptsReal[i]);
-	
-	// creating path
-	dc->DrawLines(iVertexNumber, myPxPts);
-	
-	// draw vertex
-	wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
-	dc->SetPen(*myVPen);
-	for (int i = 0; i< iVertexNumber; i++) {
+
+ tmGISDataVectorMemory * memdata = (tmGISDataVectorMemory*) data;
+ if (memdata->GetVertexCount() <= 0)
+ return;
+
+
+ //wxClientDC dc(this);
+ //wxGraphicsContext* pgdc = wxGraphicsContext::Create(dc);
+
+ // create pen based on symbology
+ tmSymbolVectorLine * pSymbol = (tmSymbolVectorLine*) layerprop->GetSymbolRef();
+ wxPen myPen (pSymbol->GetColour(),pSymbol->GetWidth());//, pSymbol->GetShape());
+ dc->SetPen(myPen);
+
+ int iVertexNumber = 0;
+ wxRealPoint * pptsReal = memdata->GetVertexAll(iVertexNumber);
+ wxASSERT(pptsReal != NULL);
+ wxASSERT(iVertexNumber > 0);
+
+ wxPoint * myPxPts = new wxPoint[iVertexNumber];
+ for (int i = 0; i< iVertexNumber; i++)
+ myPxPts[i] = m_scale->RealToPixel(pptsReal[i]);
+
+ // creating path
+ dc->DrawLines(iVertexNumber, myPxPts);
+
+ // draw vertex
+ wxPen * myVPen = CreateVertexUniquePen(layerprop, pSymbol->GetWidth());
+ dc->SetPen(*myVPen);
+ for (int i = 0; i< iVertexNumber; i++) {
 #ifdef __WXMSW__
-		dc->DrawLine(myPxPts[i].x, myPxPts[i].y, myPxPts[i].x + 0.1, myPxPts[i].y + 0.1);
+ dc->DrawLine(myPxPts[i].x, myPxPts[i].y, myPxPts[i].x + 0.1, myPxPts[i].y + 0.1);
 #else
-		dc->DrawLine (myPxPts[i].x, myPxPts[i].y, myPxPts[i].x, myPxPts[i].y);
+ dc->DrawLine (myPxPts[i].x, myPxPts[i].y, myPxPts[i].x, myPxPts[i].y);
 #endif
-	}
-	wxDELETE(myVPen);
-	delete [] myPxPts;
-	delete [] pptsReal;
+ }
+ wxDELETE(myVPen);
+ delete [] myPxPts;
+ delete [] pptsReal;
 }
 */
 

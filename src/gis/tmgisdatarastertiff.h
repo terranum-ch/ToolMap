@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisdatarastertiff.h
+ tmgisdatarastertiff.h
                    For dealing with spatial raster data (*.tiff, *.tif)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmtocctrl.h
+ tmtocctrl.h
                     Contain description of the GIS toc ctrl
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -35,7 +35,7 @@
 #include <wx/dcgraph.h>
 
 
-//#include "../core/projectdefmemory.h"	for PRJDEF_LAYERS_TYPE
+//#include "../core/projectdefmemory.h" for PRJDEF_LAYERS_TYPE
 // for image list for toc
 #include "tmtocctrlmenu.h"            // for contextual menu
 

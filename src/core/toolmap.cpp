@@ -1,8 +1,8 @@
 /***************************************************************************
-								toolmap.cpp
-				main file for toolmap 2, contain app and main frame
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber
+ toolmap.cpp
+ main file for toolmap 2, contain app and main frame
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -363,7 +363,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
     wxSystemOptions::SetOption(wxT("mac.listctrl.always_use_generic"), 1);
     setlocale(LC_NUMERIC, "C");
 
-	// setting minimum size
+ // setting minimum size
     SetMinSize(wxSize(600, 400));
 
     // initing bitmap
@@ -619,7 +619,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu2->Append(ID_MENU_PRJ_EDIT, _("Edit"), itemMenu16);
     itemMenu2->AppendSeparator();
     itemMenu2->Append(wxID_EXIT, _("Exit"), wxEmptyString, wxITEM_NORMAL);
-	m_MenuBar->Append(itemMenu2, _("&Project"));
+ m_MenuBar->Append(itemMenu2, _("&Project"));
 
     // DATA
     wxMenu *itemMenu24 = new wxMenu;
@@ -628,7 +628,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
-	m_MenuBar->Append(itemMenu24, _("Data"));
+ m_MenuBar->Append(itemMenu24, _("Data"));
 
     // VIEW
     wxMenu *itemMenu28 = new wxMenu;
@@ -646,7 +646,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu28->Append(ID_MENU_ZOOM_SELECTED_LAYER, _("Zoom to selected layer\tCtrl+2"), wxEmptyString, wxITEM_NORMAL);
     itemMenu28->AppendSeparator();
     itemMenu28->Append(wxID_REFRESH, _("Refresh\tCtrl+R"), wxEmptyString, wxITEM_NORMAL);
-	m_MenuBar->Append(itemMenu28, _("View"));
+ m_MenuBar->Append(itemMenu28, _("View"));
 
     // SELECTION
     wxMenu *itemMenu66 = new wxMenu;
@@ -655,7 +655,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu66->Append(ID_MENU_SELECT_NONE, _("Clear Selection\tCtrl+D"), wxEmptyString, wxITEM_NORMAL);
     itemMenu66->AppendSeparator();
     itemMenu66->Append(ID_MENU_SELECT_INVERSE, _("Invert Selection"), wxEmptyString, wxITEM_NORMAL);
-	m_MenuBar->Append(itemMenu66, _("Selection"));
+ m_MenuBar->Append(itemMenu66, _("Selection"));
 
 
     // EDITION
@@ -698,7 +698,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu42->Append(ID_SNAP_REMOVE, _("Remove selected layer"), wxEmptyString, wxITEM_NORMAL);
     itemMenu41->Append(wxID_ANY, _("Snapping"), itemMenu42);
 
-	m_MenuBar->Append(itemMenu41, _("Edition"));
+ m_MenuBar->Append(itemMenu41, _("Edition"));
 
     // ATTRIBUTION
     wxMenu *itemMenu55 = new wxMenu;
@@ -720,7 +720,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu55->Append(ID_MENU_ORIENT_POINT, _("Orientation (interactive mode)\tCtrl+Y"), wxEmptyString, wxITEM_NORMAL);
     itemMenu55->AppendSeparator();
     itemMenu55->Append(ID_MENU_SHORTCUTS, _("Shortcut..."), wxEmptyString, wxITEM_CHECK);
-	m_MenuBar->Append(itemMenu55, _("Attribution"));
+ m_MenuBar->Append(itemMenu55, _("Attribution"));
 
 
     // VALIDATION
@@ -734,7 +734,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu63->AppendSeparator();
     itemMenu63->Append(ID_MENU_TOOL_DANGLING, _("Dangling Nodes..."), _T(""), wxITEM_NORMAL);
     itemMenu63->Append(ID_MENU_VALIDITY, _("Check geometries validity"), _T(""), wxITEM_NORMAL);
-	m_MenuBar->Append(itemMenu63, _("Validation"));
+ m_MenuBar->Append(itemMenu63, _("Validation"));
 
     // WINDOW
     wxMenu *itemMenu77 = new wxMenu;
@@ -770,7 +770,7 @@ void ToolMapFrame::_CreateMenu()
     itemMenu81->Append(ID_MENU_USER_MANUAL, _("User Manual..."), wxEmptyString, wxITEM_NORMAL);
     itemMenu81->AppendSeparator();
     itemMenu81->Append(ID_MENU_CONTACT_US, _("Contact us..."), wxEmptyString, wxITEM_NORMAL);
-	m_MenuBar->Append(itemMenu81, _("&Help"));
+ m_MenuBar->Append(itemMenu81, _("&Help"));
     this->SetMenuBar(m_MenuBar);
 
 }
@@ -1032,8 +1032,8 @@ void ToolMapFrame::OnShowQueriesWindow(wxCommandEvent &event)
 
 /*
 void ToolMapFrame::OnQueriesAction (wxCommandEvent & event){
-	// sent event to the queries manager
-	if (m_QueriesPanel == NULL) {
+ // sent event to the queries manager
+ if (m_QueriesPanel == NULL) {
         return;
     }
 
@@ -1748,9 +1748,9 @@ void ToolMapFrame::OnStatisticsDialog(wxCommandEvent &event)
 
 /*void ToolMapFrame::OnMenuZoomPreviousChange(wxCommandEvent & event)
 {
-	bool bStatus = static_cast<bool>(event.GetInt());
-	m_MManager->ZoomStatus(bStatus);
-	m_TManager->ZoomStatus(bStatus);
+ bool bStatus = static_cast<bool>(event.GetInt());
+ m_MManager->ZoomStatus(bStatus);
+ m_TManager->ZoomStatus(bStatus);
 }*/
 
 
@@ -1880,7 +1880,7 @@ void ToolMapFrame::OnExportSelected(wxCommandEvent &event)
 /*
 void ToolMapFrame::OnExportAll (wxCommandEvent & event)
 {
-	if (m_PManager->IsProjectOpen() == false){
+ if (m_PManager->IsProjectOpen() == false){
         return;
     }
 

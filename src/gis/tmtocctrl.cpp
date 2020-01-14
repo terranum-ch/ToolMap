@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmtocctrl.cpp
+ tmtocctrl.cpp
                     Contain description of the GIS toc ctrl
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

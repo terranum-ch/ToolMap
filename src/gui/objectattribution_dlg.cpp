@@ -1,8 +1,8 @@
 /***************************************************************************
-								objectattribution_dlg.cpp
-					Display the dialog called when user press the
-					Project->Edit->Object definition menu
-								-------------------
+ objectattribution_dlg.cpp
+ Display the dialog called when user press the
+ Project->Edit->Object definition menu
+ -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
@@ -40,9 +40,9 @@ a new #ProjectDefMemoryLayers object called "MEMORY".
  set to the item data value (OBJECT_ID column from the DMN_LAYER_OBJECT table in the DB).
  
  - <B>Delete object(s)</B>  Two case are managed :
-	- The Object exist in the DB (ProjectDefMemoryObjects::m_ObjectID >= 0) : In this case the 
+ - The Object exist in the DB (ProjectDefMemoryObjects::m_ObjectID >= 0) : In this case the
  ProjectDefMemoryObjects::m_ObjectID is added to PrjDefMemManage::m_StoreDeleteIDObj.
-	- The Object exist only in memory (object recently added but not saved into the DB): In this
+ - The Object exist only in memory (object recently added but not saved into the DB): In this
  case the object is removed from the PM only (using PrjDefMemManage::RemoveObject())
 
 - <B>Save Button</B> : all objects into the PM are iterated and for each of them we UPDATE them if 
@@ -503,4 +503,4 @@ bool ProjectEditObjectDefinitionDLG::SetChoiceListText(wxChoice *choice,
 }
 
 
-							  
+

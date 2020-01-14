@@ -1,8 +1,8 @@
 /***************************************************************************
-								projectmanager.h
-				Class used for opening, closing, backuping the project
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ projectmanager.h
+ Class used for opening, closing, backuping the project
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -40,7 +40,7 @@
 
 
 // include
-//#include "../database/db_project.h"			// for project in memory (creation)
+//#include "../database/db_project.h" // for project in memory (creation)
 #include "../gui/project_def_dlg.h"            // new project definition dialog
 #include "../gui/objectattribution_dlg.h"    // for displaying object definition dlg.
 #include "../gui/projectproperties_dlg.h"    // for displaying project properties dlg.

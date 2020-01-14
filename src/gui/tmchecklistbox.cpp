@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmchecklistbox.cpp
+ tmchecklistbox.cpp
                     Base class for dealing with checklistbox with long
-						item associed to every item
-                             -------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
+ item associed to every item
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -236,8 +236,8 @@ bool tmCheckListBox::AddItem(long index, long id,
                              const wxString &name,
                              bool checked, bool keepFilters)
 {
-	if (!keepFilters)
-		ClearFilters();
+ if (!keepFilters)
+ ClearFilters();
 
     // adding item
     if (index == -1 || index >= (signed) GetCount()) {
@@ -252,8 +252,8 @@ bool tmCheckListBox::AddItem(long index, long id,
 
     Check(index, checked);
 
-	if (!keepFilters)
-		ResetOriginalArrays();
+ if (!keepFilters)
+ ResetOriginalArrays();
 
     return TRUE;
 }

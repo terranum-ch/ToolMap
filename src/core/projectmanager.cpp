@@ -1,8 +1,8 @@
 /***************************************************************************
-								projectmanager.h
-			Class used for opening, closing, backuping the project
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber
+ projectmanager.h
+ Class used for opening, closing, backuping the project
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -495,7 +495,7 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
     if(merger.MergeIntoMaster()==false) {
         wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(merger.GetErrors(), '\n');
         wxLogError(myErrors);
-		CleanDirectory(tmpPath);
+ CleanDirectory(tmpPath);
         return false;
     }
 

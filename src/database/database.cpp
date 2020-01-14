@@ -1,6 +1,6 @@
 /***************************************************************************
-								database.cpp
-				Basic function for connecting a MySQL embedded database
+ database.cpp
+ Basic function for connecting a MySQL embedded database
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -19,8 +19,8 @@
     @file database.cpp
     @brief code for the class DataBase
 
-	The Database class is used for Opening, creating and processing request
-	to a MySQL embedded Database.
+ The Database class is used for Opening, creating and processing request
+ to a MySQL embedded Database.
     @author Lucien Schreiber (c) CREALP 2007
 */
 
@@ -514,7 +514,7 @@ bool DataBase::DataBaseGetResults(wxArrayString &results)
 
         case 1:
             //wxLogDebug(_T("Only one value returned, maybe should use the")
-            //		   _T(" DataBaseGetNextResult(wxString) function instead ?"));
+            //    _T(" DataBaseGetNextResult(wxString) function instead ?"));
             break;
 
         default:
@@ -545,7 +545,7 @@ bool DataBase::DataBaseGetResults(wxArrayLong &results)
 
         case 1:
             //wxLogDebug(_T("Only one value returned, maybe should use the")
-            //		   _T(" DataBaseGetNextResult(long) function instead ?"));
+            //    _T(" DataBaseGetNextResult(long) function instead ?"));
             break;
 
         default:
@@ -576,7 +576,7 @@ bool DataBase::DataBaseGetResults(wxArrayDouble &results)
 
         case 1:
             //wxLogDebug(_T("Only one value returned, maybe should use the")
-            //		   _T(" DataBaseGetNextResult(double) function instead ?"));
+            //    _T(" DataBaseGetNextResult(double) function instead ?"));
             break;
 
         default:

@@ -785,7 +785,7 @@ void wxTreeMultiCtrl::OnKey(wxKeyEvent &event)
             if (!event.ShiftDown())
                 item = FindNextVisibleWindowItem(item.GetItem());
             //else // traverse in up direction
-            //	item = FindPreviousVisibleWindowItem(item);
+            // item = FindPreviousVisibleWindowItem(item);
 
             if (item.IsOk()) {
                 TreeMultiItemWindow *w = item.GetItem()->IsTreeMultiItemWindow();

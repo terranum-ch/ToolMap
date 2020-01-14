@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmwindowposition.cpp
-						Save and load windows position
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmwindowposition.cpp
+ Save and load windows position
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -168,4 +168,4 @@ bool tmWindowPosition::Intersects(wxRect wndpos, wxSize screensize)
 }
 
 
-		
+

@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmvalidator.h
-							Create various validator
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmvalidator.h
+ Create various validator
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -30,10 +30,10 @@
     #include <wx/wx.h>
 #endif
 
-#define tmFILTER_EXCLUDE_CHAR_RESTRICTED		0x0100
-#define tmFILTER_EXCLUDE_CHAR_DATABASE			0x0200
-#define tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT	0x0400
-#define tmFILTER_EXCLUDE_CHAR_COMPLEX			0x0800
+#define tmFILTER_EXCLUDE_CHAR_RESTRICTED 0x0100
+#define tmFILTER_EXCLUDE_CHAR_DATABASE 0x0200
+#define tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT 0x0400
+#define tmFILTER_EXCLUDE_CHAR_COMPLEX 0x0800
 
 
 /***************************************************************************//**

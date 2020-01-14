@@ -1,8 +1,8 @@
 /***************************************************************************
-								project_def.h
-						Project definition dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ project_def.h
+ Project definition dialog
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -45,7 +45,7 @@
 #include "listgenreport.h"
 #include "wxflatbutton.h"
 #include "project_def_layers_dlg.h"
-//#include <wx/dirdlg.h>				// for directory selection dialog
+//#include <wx/dirdlg.h> // for directory selection dialog
 #include "../core/wxdirpickerctrlbest.h"// directory picker (best version)
 #include "listgenreport_status.h"        // list with status
 
@@ -184,7 +184,7 @@ class ProjectDefList : public ListGenReportWithStatus
 {
 private:
     bool m_bIsModeEditing;
-//		void OnMySelectionChange (wxListEvent & event);
+// void OnMySelectionChange (wxListEvent & event);
 
     wxChoice *m_ChoiceToChange;
     PrjMemLayersArray *m_LayersArray;
@@ -220,13 +220,13 @@ public:
     void PassPrjDefToList(PrjDefMemManage *myPrjMemManage)
     { m_pPrjDefinition = myPrjMemManage; }
 
-    //	int GetParamType (wxString myTextParam);
+    // int GetParamType (wxString myTextParam);
     //
-    //		wxString GetParamType (int imyType);
+    // wxString GetParamType (int imyType);
     //
-    //		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-    //		void SetChoiceList (wxChoice * myChoiceList);
-    //		DECLARE_EVENT_TABLE();
+    // void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+    // void SetChoiceList (wxChoice * myChoiceList);
+    // DECLARE_EVENT_TABLE();
 };
 
 

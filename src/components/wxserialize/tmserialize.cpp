@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmserialize.cpp
+ tmserialize.cpp
                     for serializating object in a simple way
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -98,12 +98,12 @@ tmSerialize &tmSerialize::operator<<(bool value)
 /*
 tmSerialize & tmSerialize::operator << (wxString value)
 {
-	if (CanStore())
-	{
-		m_stream.Append(value);
-		AddSeparator();
-	}
-	return *this;
+ if (CanStore())
+ {
+ m_stream.Append(value);
+ AddSeparator();
+ }
+ return *this;
 }*/
 
 

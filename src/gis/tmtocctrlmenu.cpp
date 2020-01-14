@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmtocctrlmenu.cpp
+ tmtocctrlmenu.cpp
                     Display contextual menu for item in the TOC Ctrl
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

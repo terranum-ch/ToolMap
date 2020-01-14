@@ -25,9 +25,9 @@
 #include "TreeMultiItemWindow.h"
 
 /** TreeMultiItemWindow
-  *	This class is a possible end node for the tree. If you want multiple
-  *	types of end-nodes you should copy this file and adjust it with a 
-  *	different class name.
+  * This class is a possible end node for the tree. If you want multiple
+  * types of end-nodes you should copy this file and adjust it with a
+  * different class name.
   */
 
 TreeMultiItemWindow::TreeMultiItemWindow(TreeMultiItemNode *parent, const wxString &name)

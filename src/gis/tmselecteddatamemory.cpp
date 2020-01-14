@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmSelectedDataMemory.cpp
+ tmSelectedDataMemory.cpp
                     Store ID of selected data into memory                             
-							-------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

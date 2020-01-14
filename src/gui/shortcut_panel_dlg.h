@@ -1,8 +1,8 @@
 /***************************************************************************
-							shortcut_panel_dlg.h
-						Dialog box for editing shortcuts
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ shortcut_panel_dlg.h
+ Dialog box for editing shortcuts
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

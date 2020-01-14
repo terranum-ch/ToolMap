@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmsliderwithtxt.h
+ tmsliderwithtxt.h
                     Display a slider with associed text control
-				Updating value in one control reflect on the other
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ Updating value in one control reflect on the other
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

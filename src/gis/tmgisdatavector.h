@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisdatavector.h
+ tmgisdatavector.h
                    Super class for dealing with vector GIS data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -211,8 +211,8 @@ public:
     bool CutLineAtVertex(long oid, const wxRealPoint &clickedpt, int searchRadius, int layertype);
 
     //OGRLineString * line1, OGRGeometry * pointbuffer,
-    //					  wxRealPoint ptclicked, OGRLineString & lineresult1,
-    //					  OGRLineString & lineresult2);
+    //   wxRealPoint ptclicked, OGRLineString & lineresult1,
+    //   OGRLineString & lineresult2);
     bool CutLineGeometry(OGRLineString *line1, OGRLineString *line2,
                          OGRMultiLineString &res1,
                          OGRMultiLineString &res2);

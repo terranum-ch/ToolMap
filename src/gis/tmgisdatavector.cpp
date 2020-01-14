@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisdatavector.cpp
+ tmgisdatavector.cpp
                    Super class for dealing with vector GIS data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -381,8 +381,8 @@ OGRGeometry *tmGISDataVector::SafeCreateFromGEOS(GEOSGeom geosGeom)
     if (pabyBuf != NULL) {
         //wxLogMessage ("GEOS Version: %d, %d, %d, %d", GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, GEOS_VERSION_PATCH, GEOS_VERSION_CONCATENATED);
 //#ifndef  __WXMSW__
-//		delete pabyBuf;
-//		CPLFree(pabyBuf);
+// delete pabyBuf;
+// CPLFree(pabyBuf);
 //#endif
 
 #if GEOS_CAPI_VERSION_MAJOR >= 2 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 6)
@@ -675,7 +675,7 @@ bool tmGISDataVector::CutLineMultiple(OGRLineString *linetocut,
 
     // LOG
     //for (unsigned int i = 0; i< myLine1VertexPos.GetCount(); i++)
-    //	wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
+    // wxLogDebug(_T("Inserted Vertex @ pos : %d"), myLine1VertexPos.Item(i));
     // END LOG
 
     // cut lines @ specified vertex

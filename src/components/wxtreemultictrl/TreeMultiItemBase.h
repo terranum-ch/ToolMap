@@ -93,7 +93,7 @@ public:
 
     /** returns the instance pointer if the current node is
         a TreeMultiItemWindow, and NULL when it's not.
-	*/
+ */
     virtual TreeMultiItemWindow *IsTreeMultiItemWindow() const
     {
         return 0;
@@ -101,7 +101,7 @@ public:
 
     /** returns the instance pointer if the current node is
         a TreeMultiItemNode, and NULL when it's not.
-	*/
+ */
     virtual TreeMultiItemNode *IsTreeMultiItemNode() const
     {
         return 0;

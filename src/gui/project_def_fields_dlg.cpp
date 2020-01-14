@@ -1,8 +1,8 @@
 /***************************************************************************
-							project_def_fields_dlg.cpp
+ project_def_fields_dlg.cpp
                     Display dialog for adding new field
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -188,13 +188,13 @@ END_EVENT_TABLE()
 
 /*void ProjectDefFieldDlg::OnFieldNameChange (wxCommandEvent & event)
 {
-	if (m_DlgAFD_Field_Def->GetValue().IsEmpty())
-	{
-		m_DlgAFD_Button_OK->Enable(FALSE);
-	}
-	else
-		m_DlgAFD_Button_OK->Enable(TRUE);
-	
+ if (m_DlgAFD_Field_Def->GetValue().IsEmpty())
+ {
+ m_DlgAFD_Button_OK->Enable(FALSE);
+ }
+ else
+ m_DlgAFD_Button_OK->Enable(TRUE);
+
 }*/
 
 

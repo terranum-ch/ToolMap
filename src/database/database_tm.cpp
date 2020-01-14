@@ -1,8 +1,8 @@
 /***************************************************************************
-								database_tm.cpp
-					extension of the database class for ToolMap
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ database_tm.cpp
+ extension of the database class for ToolMap
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -3012,7 +3012,7 @@ bool DataBaseTM::GeometryUpdate(OGRGeometry *geometry, long oid, int layertype)
         return false;
     }
 
-	CPLSetConfigOption("OGR_WKT_PRECISION", "15");
+ CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
     char *myCharGeom = NULL;
     geometry->exportToWkt(&myCharGeom);

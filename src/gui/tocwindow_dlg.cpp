@@ -1,8 +1,8 @@
 /***************************************************************************
-							TocWindowDlg.cpp
-				Display the TOC, try using the wxDrawerWindow class
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ TocWindowDlg.cpp
+ Display the TOC, try using the wxDrawerWindow class
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -132,21 +132,21 @@ bool TocWindowDlgGen::IsShown()
 
 
 /*BEGIN_EVENT_TABLE(TocWindowDlgGen, TocWindowContent)
-	EVT_FLATBUTTON(ID_DLGTOC_REMOVE, TocWindowDlgGen::OnPressRemoveLayers)
-	EVT_FLATBUTTON(ID_DLGTOC_ADD, TocWindowDlgGen::OnPressAddLayers)
+ EVT_FLATBUTTON(ID_DLGTOC_REMOVE, TocWindowDlgGen::OnPressRemoveLayers)
+ EVT_FLATBUTTON(ID_DLGTOC_ADD, TocWindowDlgGen::OnPressAddLayers)
 END_EVENT_TABLE()
 
 
 
 void TocWindowDlgGen::OnPressRemoveLayers(wxCommandEvent & event)
 {
-	m_TOCCtrl->OnRemoveItem(event);
+ m_TOCCtrl->OnRemoveItem(event);
 }
 
 
 void TocWindowDlgGen::OnPressAddLayers(wxCommandEvent & event)
-{	
-	wxCommandEvent evt(tmEVT_LM_ADD, wxID_ANY);
-	m_ParentEvt->GetEventHandler()->QueueEvent(evt.Clone());
+{
+ wxCommandEvent evt(tmEVT_LM_ADD, wxID_ANY);
+ m_ParentEvt->GetEventHandler()->QueueEvent(evt.Clone());
 }*/
 

@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisdatavectorshp.cpp
+ tmgisdatavectorshp.cpp
                     class for dealing with vector SHP data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -150,7 +150,7 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorSHP::GetSpatialType()
 
         switch (type) {
             case wkbLineString:
-			case wkbMultiLineString:
+ case wkbMultiLineString:
                 retvalue = LAYER_SPATIAL_LINE;
                 break;
             case wkbPoint:
@@ -1403,12 +1403,12 @@ long tmGISDataVectorSHP::GetFeatureIDIntersectedOnRaster(OGRPoint *geometry)
         *(pData+i) = 255;
     }
     if (m_RasterizeDataset->RasterIO(GF_Write, myIntersectRect.GetLeft(), myIntersectRect.GetTop(), myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),pData, myIntersectRect.GetWidth(), myIntersectRect.GetHeight(),GDT_Float32,1, NULL, 0,0,0) != CE_None){
-		wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
-		if (pData != NULL) {
+ wxLogError("Error reading value at pixel (%d, %d) from rasterized file",pxcoordx, pxcoordy);
+ if (pData != NULL) {
             wxDELETEA(pData);
-		}
-		return wxNOT_FOUND;
-	}
+ }
+ return wxNOT_FOUND;
+ }
     wxDELETEA(pData);
     return wxNOT_FOUND;
     */

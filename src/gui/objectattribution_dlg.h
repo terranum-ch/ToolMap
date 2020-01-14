@@ -1,8 +1,8 @@
 /***************************************************************************
-								objectattribution_dlg.h
-					Display the dialog called when user press the
-					Project->Edit->Object definition menu
-								-------------------
+ objectattribution_dlg.h
+ Display the dialog called when user press the
+ Project->Edit->Object definition menu
+ -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/

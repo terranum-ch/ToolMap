@@ -1,8 +1,8 @@
 /***************************************************************************
-							prjdefmemmanage.cpp
+ prjdefmemmanage.cpp
                     Display context help for a dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -300,9 +300,9 @@ int PrjDefMemManage::GetCountObject()
     // get the active layer
     ProjectDefMemoryLayers *layer = GetActiveLayer();
 
-	if (layer != nullptr) {
+ if (layer != nullptr) {
         return layer->m_pLayerObjectArray.GetCount();
-	}
+ }
 
     return 0;
 }

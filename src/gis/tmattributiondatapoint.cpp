@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmattributiondatapoint.cpp
-							Class for attributing point
-								-------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
+ tmattributiondatapoint.cpp
+ Class for attributing point
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

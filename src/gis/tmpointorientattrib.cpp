@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmpointorientattrib.cpp
+ tmpointorientattrib.cpp
                     Point orientation with attribution
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -145,7 +145,7 @@ bool tmPointOrientAttrib::POA_HasOrientField()
 bool tmPointOrientAttrib::IsCorrectType()
 {
     //if (tmPointOrient::IsValid()==false)
-    //	return false;
+    // return false;
 
     if (POA_IsOIDInited() == false)
         return false;

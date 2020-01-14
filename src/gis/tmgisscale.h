@@ -272,7 +272,7 @@ public:
         //if (coord1 > 0)
         return coord1 + value;
         //else
-        //	return coord1 - value;
+        // return coord1 - value;
     }
 
     // extent validity

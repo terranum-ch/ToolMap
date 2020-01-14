@@ -1,8 +1,8 @@
 /***************************************************************************
-								shortcut_panel.cpp
-							Display the Shortcut panel
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ shortcut_panel.cpp
+  Display the Shortcut panel
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

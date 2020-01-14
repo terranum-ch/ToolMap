@@ -14,7 +14,7 @@
 
 /** 
     \page wxTreeMultiCtrl "wxTreeMultiCtrl"
-	\author Jorgen Bodde
+ \author Jorgen Bodde
 
     This is the wxTreeMultiCtrl documentation guide. For the upcoming CodeShop project I am working on, I've
     created a new control for wxWidgets (http://www.wxwidgets.com), with similar functionality as

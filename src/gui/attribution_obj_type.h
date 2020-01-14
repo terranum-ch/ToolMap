@@ -1,8 +1,8 @@
 /***************************************************************************
-								attribution_obj_type.h
+ attribution_obj_type.h
                     Display wxAui panel for attribution
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -98,8 +98,8 @@ class AttribObjType_PANEL : public ManagedAuiWnd
     wxBoxSizer *m_ButtonSizer;
     wxBoxSizer *m_AttribSizer;
     wxSearchCtrl *m_textCtrlLines;
-	wxSearchCtrl *m_textCtrlPoints;
-	wxSearchCtrl *m_textCtrlPoly;
+ wxSearchCtrl *m_textCtrlPoints;
+ wxSearchCtrl *m_textCtrlPoly;
 
     // event function
     //void OnAttributeBtn (wxCommandEvent & event);

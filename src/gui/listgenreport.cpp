@@ -225,10 +225,10 @@ void ListGenReport::OnPressBackSpace(wxListEvent &event)
 {
     if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_DELETE) {
         //long iSelectedItem = GetSelectedItem();
-//		if (iSelectedItem != -1)
-//		{
-//			DeleteItem(iSelectedItem);
-//		} 
+// if (iSelectedItem != -1)
+// {
+// DeleteItem(iSelectedItem);
+// }
         DeleteSelectedItem();
 
     }
@@ -381,13 +381,13 @@ bool ListGenReport::SetItemText(int iItem, int iCol, wxString text)
 
 //void ListGenReport::OnStartDrag (wxListEvent & event)
 //{
-//	wxTextDataObject myData (_T("Test"));
-//	
-//	wxLogMessage(_T("OnStartDrag"));
-//	
-//	wxDropSource dragSource (this);
-//	dragSource.SetData(myData);
-//	wxDragResult dragResult = dragSource.DoDragDrop (wxDrag_AllowMove);
+// wxTextDataObject myData (_T("Test"));
+//
+// wxLogMessage(_T("OnStartDrag"));
+//
+// wxDropSource dragSource (this);
+// dragSource.SetData(myData);
+// wxDragResult dragResult = dragSource.DoDragDrop (wxDrag_AllowMove);
 //}
 
 void ListGenReport::MoveItem(int iItem, int iNewPos)
@@ -1033,14 +1033,14 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString &filename
 /************************ LISTGENDIALOG **********************************/
 //ListGenDialog::ListGenDialog()
 //{
-//	Init();
+// Init();
 //}
 
 //ListGenDialog::ListGenDialog( wxWindow* parent,wxWindowID id , const wxString& caption,
-//							 const wxPoint& pos,const wxSize& size,long style)
+//  const wxPoint& pos,const wxSize& size,long style)
 //{
-//	Init();
-//	SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
+// Init();
+// SetExtraStyle(wxWS_EX_BLOCK_EVENTS);
 //    wxDialog::Create( parent, id, caption, pos, size, style );
 //    CreateDlgControls();
 //    if (GetSizer())

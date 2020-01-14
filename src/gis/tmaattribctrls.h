@@ -1,8 +1,8 @@
 /***************************************************************************
-									tmaattribctrls.h
-							Controls for the tmAAttribTree 
-									-------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+ tmaattribctrls.h
+ Controls for the tmAAttribTree
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -31,7 +31,7 @@
 
 #include "../core/projectdefmemory.h"        // for fields definitions
 #include <wx/spinctrl.h>                    // for spin ctrl
-//#include <wx/generic/spinctrg.h>			// for float spin ctrl
+//#include <wx/generic/spinctrg.h> // for float spin ctrl
 #include <wx/datectrl.h>                    // for date picker ctrl
 
 

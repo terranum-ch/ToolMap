@@ -1,8 +1,8 @@
 /***************************************************************************
-							project_def_layers_dlg.cpp
-	Display Project Definition layers dialog (step 2 of a project definition)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ project_def_layers_dlg.cpp
+ Display Project Definition layers dialog (step 2 of a project definition)
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -46,7 +46,7 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow *parent, wxWindo
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList()
 {
     //if (!m_ObjectsArray->IsEmpty())
-    //	m_ObjectsArray->Clear();
+    // m_ObjectsArray->Clear();
     //delete m_ObjectsArray;
 }
 
@@ -92,15 +92,15 @@ void ProjectDefLayersObjectList::AfterAdding(bool bRealyAddItem)
 
 void ProjectDefLayersObjectList::BeforeDeleting()
 {
-//	// remove item from array before removing it from the list
-//	// because of the unknown position of item (may have been moved)
-//	// if a corresponding item was found, remove it from the array
-//		
-//	// get selected item from the list
-//	long mySelectedListItem = GetSelectedItem();
-//	wxString myObjectName = GetItemColText(mySelectedListItem, 1);
-//	
-//	m_pPrjDefinition->RemoveObject(myObjectName);
+// // remove item from array before removing it from the list
+// // because of the unknown position of item (may have been moved)
+// // if a corresponding item was found, remove it from the array
+//
+// // get selected item from the list
+// long mySelectedListItem = GetSelectedItem();
+// wxString myObjectName = GetItemColText(mySelectedListItem, 1);
+//
+// m_pPrjDefinition->RemoveObject(myObjectName);
 
     wxString myObjectName;
     // remove item from array before removing it from the list
@@ -132,9 +132,9 @@ void ProjectDefLayersObjectList::BeforeEditing()
 
     m_ObjectObj = m_pPrjDefinition->FindObject(myObjectName);
 
-    //	// find item selected and then call a new Dialog
-    //	// for editing the existing Field
-    //	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+    // // find item selected and then call a new Dialog
+    // // for editing the existing Field
+    // int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
     if (m_ObjectObj != NULL) {
         // transfert the data obj to the dialog, data will be
         // filled during DataTransfer...
@@ -329,9 +329,9 @@ void ProjectDefLayersFieldsList::BeforeEditing()
 
     m_FieldsObj = m_pPrjDefinition->FindField(myFieldName);
 
-    //	// find item selected and then call a new Dialog
-    //	// for editing the existing Field
-    //	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+    // // find item selected and then call a new Dialog
+    // // for editing the existing Field
+    // int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
     if (m_FieldsObj != NULL) {
         // transfert the data obj to the dialog, data will be
         // filled during DataTransfer...

@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmlayerproperties.cpp
+ tmlayerproperties.cpp
                     Class used for managing layer informations
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -190,8 +190,8 @@ bool tmLayerProperties::InitFromPathAndName(const wxString &path,
 
 /*wxString tmLayerProperties::GetFileExtension()
 {
-	
-	return filename.GetExt();
+
+ return filename.GetExt();
 }*/
 
 

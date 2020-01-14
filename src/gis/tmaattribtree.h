@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmaattribtree.h
-		Definition of advanced attribution controls such as the tmAAttribTree
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmaattribtree.h
+ Definition of advanced attribution controls such as the tmAAttribTree
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

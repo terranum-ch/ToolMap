@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmsymboldlgpoint.cpp
-						Display Point Symbology dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmsymboldlgpoint.cpp
+ Display Point Symbology dialog
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

@@ -150,11 +150,11 @@ void tmImportCSV::ListFields()
     wxString myLine1 = m_TextStream->ReadLine();
 
     wxStringTokenizer tokenizer(myLine1, _T(";"));
-	while (tokenizer.HasMoreTokens())
-	{
-		wxString token = tokenizer.GetNextToken();
+ while (tokenizer.HasMoreTokens())
+ {
+ wxString token = tokenizer.GetNextToken();
         m_Fields.Add(token);
-	}
+ }
 
     _ResetReading();
 }
@@ -336,7 +336,7 @@ bool tmImportCSV::GetExistingAttributeValues(const wxString &attName, wxArrayStr
             iField = counter;
             break;
         }
-		counter++;
+ counter++;
     }
 
     if (iField < 0 ) {

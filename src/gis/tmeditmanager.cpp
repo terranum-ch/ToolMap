@@ -1429,7 +1429,7 @@ void tmEditManager::OnEditStop(wxCommandEvent &event)
 {
     m_EditStarted = false;
 
-	if (m_ArcPoints.GetCount() > 0) {
+ if (m_ArcPoints.GetCount() > 0) {
         wxLogWarning(_("The editing mode was stopped before the line was finalized."));
         m_ArcPoints.Clear();
     }

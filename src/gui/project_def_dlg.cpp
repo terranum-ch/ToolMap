@@ -1,8 +1,8 @@
 /***************************************************************************
-							project_def.h
-						Project definition dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ project_def.h
+ Project definition dialog
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -351,8 +351,8 @@ ProjectDefList::ProjectDefList(wxWindow *parent, wxWindowID id, wxSize size, Pro
 ProjectDefList::~ProjectDefList()
 {
     //if (!m_LayersArray->IsEmpty())
-//		m_LayersArray->Clear();
-//	delete m_LayersArray;
+// m_LayersArray->Clear();
+// delete m_LayersArray;
 }
 
 
@@ -415,9 +415,9 @@ void ProjectDefList::BeforeEditing()
 
     m_LayersObj = m_pPrjDefinition->FindLayer(myLayerName);
 
-//	// find item selected and then call a new Dialog
-//	// for editing the existing Field
-//	int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
+// // find item selected and then call a new Dialog
+// // for editing the existing Field
+// int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
     if (m_LayersObj != NULL) {
         // transfert the data obj to the dialog, data will be
         // filled during DataTransfer...

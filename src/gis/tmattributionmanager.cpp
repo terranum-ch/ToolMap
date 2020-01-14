@@ -1,8 +1,8 @@
 /***************************************************************************
-							tmattributionmanager.cpp
-							Manage the attribution
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ tmattributionmanager.cpp
+ Manage the attribution
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -333,8 +333,8 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event)
     int iSelFeatureCount = m_SelData->GetCount();
 
     // some verifications :
-    //	A layer must be selected
-    //	A construction layer must be selected (< TOC_NAME_FRAME)
+    // A layer must be selected
+    // A construction layer must be selected (< TOC_NAME_FRAME)
     m_pLayerProperties = m_TOC->GetSelectionLayer();
     if (!m_pLayerProperties) {
         event.Skip();
@@ -382,44 +382,44 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event)
  *******************************************************************************/
 /*void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
 {
-	// verification : 
-	//		Selected notebook page is same type as
-	//		selected layer in TOC
-	wxASSERT(m_pLayerProperties);
-	wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
-	
-	if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()){
-		wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
-		return;
-	}
-	
-	wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
-	
-	// create attribution object based on type
-	tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->GetType());
-	myAttrib->Create(mySelObjArray, m_pDB);
-	if(!myAttrib->SetAttributeBasic(m_Panel))
-	{
-		wxLogMessage(_("Unable to attribute those data"));
-	}
-	
-	delete myAttrib;
-	
-	// clear list if needed
-	if (m_Panel->IsEmptyListValuesRequired())
-		m_Panel->EmptyListValues();
-	
-	// if full attribution enabled
-	if (m_Panel->IsFullAttributionEnabled()==true)
-		AAttributionButtonShow();
-	
-	// focus to the renderer
-	wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
-	m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
-	
-	// send statistics
-	wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
-	m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
+ // verification :
+ // Selected notebook page is same type as
+ // selected layer in TOC
+ wxASSERT(m_pLayerProperties);
+ wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
+
+ if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()){
+ wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
+ return;
+ }
+
+ wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
+
+ // create attribution object based on type
+ tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->GetType());
+ myAttrib->Create(mySelObjArray, m_pDB);
+ if(!myAttrib->SetAttributeBasic(m_Panel))
+ {
+ wxLogMessage(_("Unable to attribute those data"));
+ }
+
+ delete myAttrib;
+
+ // clear list if needed
+ if (m_Panel->IsEmptyListValuesRequired())
+ m_Panel->EmptyListValues();
+
+ // if full attribution enabled
+ if (m_Panel->IsFullAttributionEnabled()==true)
+ AAttributionButtonShow();
+
+ // focus to the renderer
+ wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
+ m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
+
+ // send statistics
+ wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
+ m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
 }*/
 
 
@@ -587,7 +587,7 @@ int tmAttributionManager::LoadShortcutIntoMemory()
         bFirstLoop = false;
 
         //wxLogDebug(_T("Shortcut : %d, %s, %d "),
-        //		   myKey, myDescription.c_str(),myShortcutValues);
+        //    myKey, myDescription.c_str(),myShortcutValues);
 
         m_ShortcutMem.AddShortcutMemory(myLayerType, myKey,
                                         myDescription, myShortcutValues);

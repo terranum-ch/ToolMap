@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisdata.h
+ tmgisdata.h
                     Main class for dealing with GIS data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

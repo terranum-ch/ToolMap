@@ -1,9 +1,9 @@
 /***************************************************************************
-								wxflatbutton.h
+ wxflatbutton.h
                     Creation of a flat button on every plateform
-					uses wxButton flat or wxToggleButton (on mac)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ uses wxButton flat or wxToggleButton (on mac)
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

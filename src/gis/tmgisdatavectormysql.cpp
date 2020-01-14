@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmgisdatavectormysql.cpp
+ tmgisdatavectormysql.cpp
                     For dealing with spatial data from a mysql database
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -100,7 +100,7 @@ bool tmGISDataVectorMYSQL::Open(const wxString &filename, bool bReadWrite)
 
     // does the fields exists ?
     //if (!CheckGeometryFields(filename))
-    //	return FALSE;
+    // return FALSE;
 
     return TRUE;
 }

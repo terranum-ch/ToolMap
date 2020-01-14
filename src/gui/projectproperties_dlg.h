@@ -1,8 +1,8 @@
 /***************************************************************************
-						projectproperties_dlg.h
-	Contain description of class used for ProjectPropertiesDLG called 
-			when user press Project->Edit->Project Settings menu
-							-------------------
+ projectproperties_dlg.h
+ Contain description of class used for ProjectPropertiesDLG called
+ when user press Project->Edit->Project Settings menu
+ -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/

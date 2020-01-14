@@ -1,6 +1,6 @@
 /***************************************************************************
-								database.h
-		Basic function for connecting a MySQL embedded database 
+ database.h
+ Basic function for connecting a MySQL embedded database
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -18,10 +18,10 @@
 /*!
     @file database.h
     @brief   Definition of class DataBase
-	
-	Class used to connect and manage the embedded MySQL server. This class needs
-	mysql.h and the embedded MySql Library.
-	@author Lucien Schreiber (c) CREALP 2007
+
+ Class used to connect and manage the embedded MySQL server. This class needs
+ mysql.h and the embedded MySql Library.
+ @author Lucien Schreiber (c) CREALP 2007
 */
 
 
@@ -204,12 +204,12 @@ public:
 
     This function must be called before other Database functions.
     @param      path wxString containing the directory where live the database
-    @param		flag Character set for opening Database (see #Lang_Flag)
+    @param flag Character set for opening Database (see #Lang_Flag)
     @result     return true if library and connexion to the database ok
     */
 //   bool DataBaseOpen(wxString path,enum Lang_Flag flag);
 
-//	int DataBaseInitLibrary (const wxString & path);
+// int DataBaseInitLibrary (const wxString & path);
 
     /*!
     @brief   Function called to close the database and free the library
@@ -217,7 +217,7 @@ public:
     This function must be called before quitting the program
     @result return TRUE if the database was close correctely
     */
-//	bool DataBaseClose ();
+// bool DataBaseClose ();
 
     /*!
     @brief  return TRUE if a database is open
@@ -225,7 +225,7 @@ public:
     */
     //bool DataBaseIsOpen();
 
-//	wxString DataBaseGetLastError();
+// wxString DataBaseGetLastError();
 
     /*!
 
@@ -244,9 +244,9 @@ public:
     //static wxString DatabaseGetVersion();
 
 
-//	long DatabaseGetCountResults();
+// long DatabaseGetCountResults();
 
-//	int DatabaseGetCountCols();
+// int DatabaseGetCountCols();
 
     /*!
     @brief Return an array containing all the selected table fields
@@ -271,11 +271,11 @@ public:
 
     @result     An array of strings containing the values of one row.
     */
-//	wxArrayString DataBaseGetNextResult();
+// wxArrayString DataBaseGetNextResult();
 
     long DataBaseGetLastInsertID ();
 
-//	bool DataBaseGetNextResult(wxString & result);
+// bool DataBaseGetNextResult(wxString & result);
 
     unsigned long * DataBaseGetNextRowResult (MYSQL_ROW & row);
 
@@ -284,11 +284,11 @@ public:
 
     //int DataBaseGetResultAsInt(bool ClearResultDirect = TRUE);
 
-//	long DataBaseGetNextResultAsLong();
+// long DataBaseGetNextResultAsLong();
 
-//	void DataBaseGetNextResultAsLong(wxArrayLong & resultArray);
+// void DataBaseGetNextResultAsLong(wxArrayLong & resultArray);
 
-//	double DataBaseGetResultAsDouble();
+// double DataBaseGetResultAsDouble();
 
     bool DataBaseIsTableEmpty(const wxString & tableName);
 
@@ -303,7 +303,7 @@ public:
     @warning  This function process the query and then destroy the query results,
     so no results could be see using DataBaseGetNextResult().
     @param     myQuery the string containing the query
-    @param	   logerror If set to true, log sql error in debug mode.
+    @param    logerror If set to true, log sql error in debug mode.
     @result    return 0 if the query works and the MYSQL error code otherwise.
     @see DataBaseCutRequest(), DataBaseQuery()
 
@@ -327,19 +327,19 @@ public:
     //wxArrayLong * DataBaseQuerySafe (const wxString & myQuery);
 
 
-//	bool DataBaseHasResult ();
+// bool DataBaseHasResult ();
 
     //bool DataBaseResultExists();
 
-//	void DataBaseDestroyResults ();
+// void DataBaseDestroyResults ();
 
     /*! Execute multiple query
      @bug NOT WORKING, CRASH WITH VERSION 5.1.23-rc (on windows and Mac)
      */
-//	int DataBaseQueryMultiple (const wxString & myQuery);
+// int DataBaseQueryMultiple (const wxString & myQuery);
 
 
-//	int DataBaseQueryReal (wxString myQuery);
+// int DataBaseQueryReal (wxString myQuery);
 
     /*!
     @brief  return the path of the database
@@ -395,9 +395,9 @@ public:
     @result  Return an human readable string containing the database size plus
     the unit  (MB)
     */
-//	wxString DataBaseGetSize (int iPrecision=2);
+// wxString DataBaseGetSize (int iPrecision=2);
 
-//	static void DataBaseCloseLibrary();
+// static void DataBaseCloseLibrary();
 
 //   static void DataBaseConvertWindowsPath (wxString & spath);
 
@@ -408,21 +408,21 @@ public:
     //bool DataBaseQueryBinary(const char * query, bool DestroyResult = FALSE);
 
 protected:
-//	MYSQL * pMySQL;
+// MYSQL * pMySQL;
 
     // for storing restults
-//	MYSQL_RES * pResults;
-//	int m_resultNumber;
-//	long m_resultCount;
+// MYSQL_RES * pResults;
+// int m_resultNumber;
+// long m_resultCount;
 
     // storing database path and name.
     //wxString m_DBPath;
     //wxString m_DBName;
 
 
-//	bool IsDatabaseOpen;
+// bool IsDatabaseOpen;
 
-//	static bool bIsLibInit;
+// static bool bIsLibInit;
 
     /*!
     @brief  convert the path into path and database name

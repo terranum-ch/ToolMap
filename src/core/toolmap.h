@@ -1,8 +1,8 @@
 /***************************************************************************
-								toolmap.h
-				main file for toolmap 2, contain app and main frame
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ toolmap.h
+ main file for toolmap 2, contain app and main frame
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -52,8 +52,8 @@
  During ToolMap 2 startup, the followed process is described hereafter :
  - ToolMapApp::OnInit() function is called and create the program frame (see class ToolMapFrame)
  - ToolMapFrame object is then initialised and create both the menu bar and the toolbar.
-		- ToolMapFrame::CreateToolMapMenu
-		- ToolMapFrame::CreateToolMapToolBar
+ - ToolMapFrame::CreateToolMapMenu
+ - ToolMapFrame::CreateToolMapToolBar
  
  Those two last function were copy-pasted from DialogBlocks (http://www.anthemion.co.uk/dialogblocks/)
  a graphical UI designer.
@@ -91,37 +91,37 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/sysopt.h>					// for dealing with systemoptions
+#include <wx/sysopt.h> // for dealing with systemoptions
 #include <wx/toolbar.h>
-#include "../gui/project_def_dlg.h"		// project definition dialog
-#include "../gui/logwindow_dlg.h"		// log window definition
-#include "../gui/tocwindow_dlg.h"		// Table of content (TOC) definition
+#include "../gui/project_def_dlg.h" // project definition dialog
+#include "../gui/logwindow_dlg.h" // log window definition
+#include "../gui/tocwindow_dlg.h" // Table of content (TOC) definition
 //#include "../database/db_project.h"
-#include "../gui/menumanager.h"			// for menu management (enable / diable)
+#include "../gui/menumanager.h" // for menu management (enable / diable)
 
 // GIS Includes
-#include "../gis/tmlayermanager.h"		// gis central manager
+#include "../gis/tmlayermanager.h" // gis central manager
 
 //#include "../gui/attribution_obj_type.h"
 #include "../gui/main_panel.h"
-#include "../gui/queries_panel.h"		// for queries panel
+#include "../gui/queries_panel.h" // for queries panel
 #include "projectmanager.h"
-#include <wx/fileconf.h>		// for using file configuration even on windows
+#include <wx/fileconf.h> // for using file configuration even on windows
 
-#include "../gui/openerror_dlg.h"	// open error dlg
+#include "../gui/openerror_dlg.h" // open error dlg
 
-#include "../gis/tmgisdata.h"	// for GIS data access
-#include "../gis/tmscalectrl.h"	// for GIS scale control combo box
+#include "../gis/tmgisdata.h" // for GIS data access
+#include "../gis/tmscalectrl.h" // for GIS scale control combo box
 
-#include "../gis/tmattributionmanager.h"	// attribution manager
-#include "tmexportmanager.h"				// export manager
-#include "../gui/shortcut_panel.h"			// for shortcut panel
-#include "../gui/snapping_panel.h"			// for snapping panel
-#include "../gis/tmeditmanager.h"			// for editing manager
-#include "../gui/tmtoolmanager.h"			// for tools
+#include "../gis/tmattributionmanager.h" // attribution manager
+#include "tmexportmanager.h" // export manager
+#include "../gui/shortcut_panel.h" // for shortcut panel
+#include "../gui/snapping_panel.h" // for snapping panel
+#include "../gis/tmeditmanager.h" // for editing manager
+#include "../gui/tmtoolmanager.h" // for tools
 
 
-#include "tmwindowposition.h"			// saving window position
+#include "tmwindowposition.h" // saving window position
 
 //// temp for testing 
 #include "diroperation.h"
@@ -142,24 +142,24 @@ class AttribObjType_PANEL;
 
 
 // items from menu project.
-#define ID_MENU_NEW_PRJ_EMPTY		10300
-#define ID_MENU_NEW_PRJ_EXISTING	10301
-#define ID_MENU_OPEN_PRJ			10302
-#define ID_MENU_RECENT				10303
+#define ID_MENU_NEW_PRJ_EMPTY 10300
+#define ID_MENU_NEW_PRJ_EXISTING 10301
+#define ID_MENU_OPEN_PRJ 10302
+#define ID_MENU_RECENT 10303
 #define ID_MENU_PRJ_BACKUP          10304
 #define ID_MENU_PRJ_BACKUP_MANAGER  10305
-#define ID_MENU_PRJ_SAVE_TEMPLATE	10306
+#define ID_MENU_PRJ_SAVE_TEMPLATE 10306
 #define ID_MENU_PRJ_MERGE           10307
 #define ID_MENU_EXPORT              10307
-#define ID_MENU_EXPORT_LAYER		10308
-//#define ID_MENU_EXPORT_FULL			10309
+#define ID_MENU_EXPORT_LAYER 10308
+//#define ID_MENU_EXPORT_FULL 10309
 #define ID_MENU_PRJ_EDIT            10309
-#define ID_MENU_PRJ_DEF				10310
-#define ID_MENU_OBJ_DEF				10311
-#define ID_MENU_OBJ_ATTRIB_DEF		10312
-#define ID_MENU_PRJ_SETTINGS		10313
+#define ID_MENU_PRJ_DEF 10310
+#define ID_MENU_OBJ_DEF 10311
+#define ID_MENU_OBJ_ATTRIB_DEF 10312
+#define ID_MENU_PRJ_SETTINGS 10313
 
-#define ID_MENU_STATISTICS			10350
+#define ID_MENU_STATISTICS 10350
 
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112

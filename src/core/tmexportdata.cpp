@@ -1,8 +1,8 @@
 /***************************************************************************
-								tmexportdata.cpp
+ tmexportdata.cpp
                     main class for the process of exporting data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 

@@ -1,8 +1,8 @@
 /***************************************************************************
-								tooldanglingnodes.cpp
+ tooldanglingnodes.cpp
                     Tool engine for searching dangling nodes
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -347,7 +347,7 @@ void ToolDanglingNodes::DNParseFlagedPts(wxArrayRealPoints &dpts)
     //dpts.Clear();
     for (unsigned int i = 0; i < m_PtsToCheck.GetCount(); i++) {
         //wxLogDebug(_T("Checking pts : node : %d has %d flags"),
-        //		   i,m_PtsToCheck.Item(i).m_Flaged);
+        //    i,m_PtsToCheck.Item(i).m_Flaged);
 
         if (m_PtsToCheck.Item(i).m_Flaged == 0)
             dpts.Add(m_PtsToCheck.Item(i).m_Pt);
