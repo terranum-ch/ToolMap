@@ -1,6 +1,6 @@
 /***************************************************************************
  vrprogress.cpp
-                    
+
  -------------------
  copyright : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -16,51 +16,36 @@
 
 #include "vrprogress.h"
 
-vrProgress::vrProgress()
-{
+vrProgress::vrProgress() {}
+
+vrProgress::~vrProgress() {}
+
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void *pProgressArg) {
+  wxASSERT(pProgressArg);
+  vrProgressSimple *mypSimple = (vrProgressSimple *)pProgressArg;
+  mypSimple->GetPercent()->SetValue(dfComplete * 100.0);
+
+  mypSimple->UpdateProgress();
+  if (mypSimple->GetContinue() == false) {
+    return FALSE;
+  }
+  return TRUE;
 }
 
-vrProgress::~vrProgress()
-{
+vrProgressSimple::vrProgressSimple(wxWindow *parent, wxString title, wxString message) {
+  m_ProgressWnd = new wxProgressDialog(title, message, 100, parent, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+  m_Continue = true;
+  m_Percent.Create(100);
 }
 
-
-int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void *pProgressArg)
-{
-    wxASSERT(pProgressArg);
-    vrProgressSimple *mypSimple = (vrProgressSimple *) pProgressArg;
-    mypSimple->GetPercent()->SetValue(dfComplete * 100.0);
-
-    mypSimple->UpdateProgress();
-    if (mypSimple->GetContinue() == false) {
-        return FALSE;
-    }
-    return TRUE;
+vrProgressSimple::~vrProgressSimple() {
+  wxDELETE(m_ProgressWnd);
 }
 
-
-vrProgressSimple::vrProgressSimple(wxWindow *parent, wxString title, wxString message)
-{
-    m_ProgressWnd = new wxProgressDialog(title, message, 100, parent,
-                                         wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
-    m_Continue = true;
-    m_Percent.Create(100);
+void vrProgressSimple::UpdateProgress() {
+  wxASSERT(m_ProgressWnd);
+  if (m_Percent.IsNewStep()) {
+    wxLogMessage("percent : %d", m_Percent.GetPercent());
+    m_Continue = m_ProgressWnd->Update(m_Percent.GetPercent());
+  }
 }
-
-
-vrProgressSimple::~vrProgressSimple()
-{
-    wxDELETE(m_ProgressWnd);
-}
-
-
-void vrProgressSimple::UpdateProgress()
-{
-    wxASSERT(m_ProgressWnd);
-    if (m_Percent.IsNewStep()) {
-        wxLogMessage("percent : %d", m_Percent.GetPercent());
-        m_Continue = m_ProgressWnd->Update(m_Percent.GetPercent());
-    }
-}
-
-

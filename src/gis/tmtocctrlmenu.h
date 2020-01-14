@@ -40,37 +40,36 @@ const int ID_TOCMENU_LABELS = 20112;
 
 class tmLayerProperties;
 
-/***************************************************************************//**
- @brief Display contextual menu for TOC
- @details Contextual menu is created mainly based on the spatial type ( See
- #TM_GIS_SPATIAL_TYPES).
- @note All events are processed in the tmTOCCtrl Class
- @author Lucien Schreiber (c) CREALP 2008
- @date 11 August 2008
- *******************************************************************************/
-class tmTOCCtrlMenu : public wxMenu
-{
-private:
-    int m_SelectedPos;
-    int m_TotalLayers;
-    tmLayerProperties *m_LayerProperties;
+/***************************************************************************/ /**
+  @brief Display contextual menu for TOC
+  @details Contextual menu is created mainly based on the spatial type ( See
+  #TM_GIS_SPATIAL_TYPES).
+  @note All events are processed in the tmTOCCtrl Class
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 11 August 2008
+  *******************************************************************************/
+class tmTOCCtrlMenu : public wxMenu {
+ private:
+  int m_SelectedPos;
+  int m_TotalLayers;
+  tmLayerProperties *m_LayerProperties;
 
-    void _CreateTOCBasic();
+  void _CreateTOCBasic();
 
-    void _CreateTOCShowVertex();
+  void _CreateTOCShowVertex();
 
-    void _CreateTOCProperties();
+  void _CreateTOCProperties();
 
-    void _CreateTOCMoveMenu();
+  void _CreateTOCMoveMenu();
 
-public:
-    tmTOCCtrlMenu()
-    { ; }
+ public:
+  tmTOCCtrlMenu() {
+    ;
+  }
 
-    tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems);
+  tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems);
 
-    ~tmTOCCtrlMenu();
+  ~tmTOCCtrlMenu();
 };
-
 
 #endif

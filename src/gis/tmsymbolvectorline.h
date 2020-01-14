@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef _TM_SYMBOLVECTORLINE_H_
 #define _TM_SYMBOLVECTORLINE_H_
 
@@ -26,44 +25,47 @@
 #include <wx/wx.h>
 #endif
 
-#include "tmsymbolvector.h"    // tmSymbol class definition
 #include "tmsymboldlgline.h"
+#include "tmsymbolvector.h"  // tmSymbol class definition
 
-class tmSymbolVectorLine : public tmSymbolVector
-{
-private:
-    tmSymbolDataLineUnique m_lSymUnique;
+class tmSymbolVectorLine : public tmSymbolVector {
+ private:
+  tmSymbolDataLineUnique m_lSymUnique;
 
-    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
-    virtual bool GetDialogData(tmSymbolDLG *dlg);
+  virtual bool GetDialogData(tmSymbolDLG *dlg);
 
-public:
-    tmSymbolVectorLine();
+ public:
+  tmSymbolVectorLine();
 
-    tmSymbolVectorLine(const tmSymbolVectorLine &origin);
+  tmSymbolVectorLine(const tmSymbolVectorLine &origin);
 
-    ~tmSymbolVectorLine();
+  ~tmSymbolVectorLine();
 
-    virtual bool Serialize(tmSerialize &s);
+  virtual bool Serialize(tmSerialize &s);
 
-    virtual wxColour GetColour();
+  virtual wxColour GetColour();
 
-    virtual int GetWidth()
-    { return m_lSymUnique.m_Width; }
+  virtual int GetWidth() {
+    return m_lSymUnique.m_Width;
+  }
 
-    virtual int GetShape()
-    { return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape]; }
+  virtual int GetShape() {
+    return tmSYMBOLPENSYLES[m_lSymUnique.m_Shape];
+  }
 
-    virtual int GetTransparency()
-    { return m_lSymUnique.m_GlobalTransparency; }
+  virtual int GetTransparency() {
+    return m_lSymUnique.m_GlobalTransparency;
+  }
 
-    virtual void SetColour(const wxColour &colour)
-    { m_lSymUnique.m_Colour = colour; }
+  virtual void SetColour(const wxColour &colour) {
+    m_lSymUnique.m_Colour = colour;
+  }
 
-    tmSymbolDataLineUnique *GetSymbolData()
-    { return &m_lSymUnique; }
+  tmSymbolDataLineUnique *GetSymbolData() {
+    return &m_lSymUnique;
+  }
 };
-
 
 #endif

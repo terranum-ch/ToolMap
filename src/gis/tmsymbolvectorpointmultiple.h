@@ -2,7 +2,7 @@
  tmsymbolvectorpointmultiple.h
  Deals with GIS point vector symbology and associed dialog
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef _TM_SYMBOLVECTORPOINT_MULTIPLE_H_
 #define _TM_SYMBOLVECTORPOINT_MULTIPLE_H_
 
@@ -24,42 +23,43 @@
 #include <wx/wx.h>
 #endif
 
-
-#include "tmsymboldlgpointmultiple.h"    // tmSymbol class definition
+#include "tmsymboldlgpointmultiple.h"  // tmSymbol class definition
 #include "tmsymbolvectorpoint.h"
 
-class tmSymbolVectorPointMultiple : public tmSymbolVectorPoint
-{
-private:
-    tmSymbolDataPointMultiple m_ptMultipleSymbol;
+class tmSymbolVectorPointMultiple : public tmSymbolVectorPoint {
+ private:
+  tmSymbolDataPointMultiple m_ptMultipleSymbol;
 
-    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
-    virtual bool GetDialogData(tmSymbolDLG *dlg);
+  virtual bool GetDialogData(tmSymbolDLG *dlg);
 
-public:
-    tmSymbolVectorPointMultiple();
+ public:
+  tmSymbolVectorPointMultiple();
 
-    tmSymbolVectorPointMultiple(const tmSymbolVectorPointMultiple &origin);
+  tmSymbolVectorPointMultiple(const tmSymbolVectorPointMultiple &origin);
 
-    ~tmSymbolVectorPointMultiple();
+  ~tmSymbolVectorPointMultiple();
 
-    virtual wxColour GetColour();
+  virtual wxColour GetColour();
 
-    virtual int GetRadius()
-    { return m_ptMultipleSymbol.m_Radius; }
+  virtual int GetRadius() {
+    return m_ptMultipleSymbol.m_Radius;
+  }
 
-    virtual int GetTransparency()
-    { return m_ptMultipleSymbol.m_GlobalTransparency; }
+  virtual int GetTransparency() {
+    return m_ptMultipleSymbol.m_GlobalTransparency;
+  }
 
-    virtual bool Serialize(tmSerialize &s);
+  virtual bool Serialize(tmSerialize &s);
 
-    int GetSelectedSymbology()
-    { return m_ptMultipleSymbol.m_PanelNo; }
+  int GetSelectedSymbology() {
+    return m_ptMultipleSymbol.m_PanelNo;
+  }
 
-    tmSymbolDataPointMultiple *GetSymbology()
-    { return &m_ptMultipleSymbol; }
+  tmSymbolDataPointMultiple *GetSymbology() {
+    return &m_ptMultipleSymbol;
+  }
 };
-
 
 #endif
