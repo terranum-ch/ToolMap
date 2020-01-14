@@ -382,7 +382,12 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event) {
 }*/
 
 void tmAttributionManager::OnAddBtn(wxCommandEvent &event) {
-  wxASSERT(m_pLayerProperties);
+
+  if (!m_pLayerProperties) {
+    wxLogError(_("No layer selected!"));
+    return;
+  }
+
   wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
   if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()) {
     wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
