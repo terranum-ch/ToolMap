@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATARASTER_JPEG_H_
 #define _TM_GISDATARASTER_JPEG_H_
 
@@ -28,23 +27,18 @@
 #include <wx/wx.h>
 #endif
 
-#include "tmgisdataraster.h"
 #include "gdal_priv.h"
+#include "tmgisdataraster.h"
 
+class tmGISDataRasterJPEG : public tmGISDataRaster {
+ private:
+ protected:
+ public:
+  tmGISDataRasterJPEG();
 
-class tmGISDataRasterJPEG : public tmGISDataRaster
-{
-private:
+  ~tmGISDataRasterJPEG();
 
-protected:
-public:
-    tmGISDataRasterJPEG();
-
-    ~tmGISDataRasterJPEG();
-
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
-
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
-
 
 #endif

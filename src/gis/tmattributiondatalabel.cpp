@@ -16,195 +16,153 @@
 
 // comment doxygen
 
-
 #include "tmattributiondatalabel.h"
 
+/***************************************************************************/ /**
+  @brief Default constructor
+  @details Use the tmAttributionDataLabel::Create() function
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+tmAttributionDataLabel::tmAttributionDataLabel() {}
 
-/***************************************************************************//**
- @brief Default constructor
- @details Use the tmAttributionDataLabel::Create() function 
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-tmAttributionDataLabel::tmAttributionDataLabel()
-{
+/***************************************************************************/ /**
+  @brief Constructor
+  @param selected Adress of an array of selected geometry objects (must be valid)
+  @param database Adress of a #DataBaseTM object
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+tmAttributionDataLabel::tmAttributionDataLabel(wxArrayLong *selected, DataBaseTM *database) {
+  Create(selected, database);
 }
 
-
-/***************************************************************************//**
- @brief Constructor
- @param selected Adress of an array of selected geometry objects (must be valid)
- @param database Adress of a #DataBaseTM object
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-tmAttributionDataLabel::tmAttributionDataLabel(wxArrayLong *selected, DataBaseTM *database)
-{
-    Create(selected, database);
+/***************************************************************************/ /**
+  @brief Function for two step creation
+  @details If using the default constructor, one must use this function for
+  initialization to take place
+  @param selected Adress of an array of selected geometry objects (must be valid)
+  @param database Adress of a #DataBaseTM object
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+void tmAttributionDataLabel::Create(wxArrayLong *selected, DataBaseTM *database) {
+  tmAttributionData::Create(selected, database);
+  SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[2]);
 }
 
+/***************************************************************************/ /**
+  @brief Destructor
+  @details doesn't do anything actually
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+tmAttributionDataLabel::~tmAttributionDataLabel() {}
 
-/***************************************************************************//**
- @brief Function for two step creation
- @details If using the default constructor, one must use this function for
- initialization to take place
- @param selected Adress of an array of selected geometry objects (must be valid)
- @param database Adress of a #DataBaseTM object
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-void tmAttributionDataLabel::Create(wxArrayLong *selected, DataBaseTM *database)
-{
-    tmAttributionData::Create(selected, database);
-    SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[2]);
-}
+/***************************************************************************/ /**
+  @brief Basic attribution
+  @details This function save the basic attribution data into the database
+  @param panel Adress of a #AttribObjType_PANEL for getting selected values
+  @return  true if the attribution was saved sucessfully into the database, false
+  otherwise (error message is sent in debug mode)
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+bool tmAttributionDataLabel::SetAttributeBasic(AttribObjType_PANEL *panel) {
+  if (!IsValid()) return false;
 
+  wxArrayLong myChekedValues;
+  wxString myStatement = _T("");
+  if (GetPanelValues(panel, myChekedValues))  // attribution
+  {
+    PrepareAttributionStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[2], &myChekedValues);
+  } else  // cleaning data
+  {
+    PrepareCleaningStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[2]);
+  }
 
-/***************************************************************************//**
- @brief Destructor
- @details doesn't do anything actually
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-tmAttributionDataLabel::~tmAttributionDataLabel()
-{
-
-}
-
-
-/***************************************************************************//**
- @brief Basic attribution
- @details This function save the basic attribution data into the database
- @param panel Adress of a #AttribObjType_PANEL for getting selected values
- @return  true if the attribution was saved sucessfully into the database, false
- otherwise (error message is sent in debug mode)
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-bool tmAttributionDataLabel::SetAttributeBasic(AttribObjType_PANEL *panel)
-{
-    if (!IsValid())
-        return false;
-
-    wxArrayLong myChekedValues;
-    wxString myStatement = _T("");
-    if (GetPanelValues(panel, myChekedValues)) // attribution
-    {
-        PrepareAttributionStatement(myStatement,
-                                    TABLE_NAME_GIS_ATTRIBUTION[2],
-                                    &myChekedValues);
-    } else // cleaning data
-    {
-        PrepareCleaningStatement(myStatement,
-                                 TABLE_NAME_GIS_ATTRIBUTION[2]);
-    }
-
-    wxLogMessage(myStatement);
-    if (m_pDB->DataBaseQueryNoResults(myStatement) == false) {
-        wxLogDebug(_T("Error attributing data "));
-        return false;
-    }
-    return true;
-}
-
-
-/***************************************************************************//**
- @brief Get all selected values from the panel
- @param valueids if true was returned, valueids contain all value choosen for
- attribution
- @param panel Adress of a #AttribObjType_PANEL used for getting values from
- @return  true if there is selected values (attribution), false otherwise
- (cleaning)
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-bool tmAttributionDataLabel::GetPanelValues(AttribObjType_PANEL *panel,
-                                            wxArrayLong &valueids)
-{
-    panel->GetSelectedValues(TOC_NAME_LABELS, valueids);
-    if (valueids.GetCount() > 0)
-        return true;
-
+  wxLogMessage(myStatement);
+  if (m_pDB->DataBaseQueryNoResults(myStatement) == false) {
+    wxLogDebug(_T("Error attributing data "));
     return false;
+  }
+  return true;
 }
 
+/***************************************************************************/ /**
+  @brief Get all selected values from the panel
+  @param valueids if true was returned, valueids contain all value choosen for
+  attribution
+  @param panel Adress of a #AttribObjType_PANEL used for getting values from
+  @return  true if there is selected values (attribution), false otherwise
+  (cleaning)
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+bool tmAttributionDataLabel::GetPanelValues(AttribObjType_PANEL *panel, wxArrayLong &valueids) {
+  panel->GetSelectedValues(TOC_NAME_LABELS, valueids);
+  if (valueids.GetCount() > 0) return true;
 
-/***************************************************************************//**
- @brief Retrive the values info
- @details Call this function only if there is one feature selected
- @param panel Adress of a #AttribObjType_PANEL used for setting values to
- @return  true if info where returned (object contain attributes)
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-bool tmAttributionDataLabel::GetInfoBasic(AttribObjType_PANEL *panel)
-{
-    // checking
-    if (!IsValid())
-        return false;
-
-    // getting values
-    wxString sStatement = _T("");
-    PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[2]);
-    if (m_pDB->DataBaseQuery(sStatement) == false) {
-        wxLogDebug(_T("Error getting info"));
-        return false;
-    }
-
-    wxArrayLong mySelValues;
-    m_pDB->DataBaseGetResults(mySelValues);
-
-    // updating panel
-    SetPanelValues(panel, mySelValues);
-    return true;
+  return false;
 }
 
+/***************************************************************************/ /**
+  @brief Retrive the values info
+  @details Call this function only if there is one feature selected
+  @param panel Adress of a #AttribObjType_PANEL used for setting values to
+  @return  true if info where returned (object contain attributes)
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+bool tmAttributionDataLabel::GetInfoBasic(AttribObjType_PANEL *panel) {
+  // checking
+  if (!IsValid()) return false;
 
-bool tmAttributionDataLabel::GetInfoBasic(long oid, wxArrayLong &objid,
-                                          wxArrayString &objcode, wxArrayString &objname)
-{
+  // getting values
+  wxString sStatement = _T("");
+  PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[2]);
+  if (m_pDB->DataBaseQuery(sStatement) == false) {
+    wxLogDebug(_T("Error getting info"));
+    return false;
+  }
 
-    return _GetInfoBasic(oid, objid, objcode, objname, 2);
+  wxArrayLong mySelValues;
+  m_pDB->DataBaseGetResults(mySelValues);
+
+  // updating panel
+  SetPanelValues(panel, mySelValues);
+  return true;
 }
 
-
-/***************************************************************************//**
- @brief Set Panel values
- @details 
- @param panel Adress of a #AttribObjType_PANEL used for setting values to
- @param valueids contain all attribution value
- @author Lucien Schreiber (c) CREALP 2008
- @date 06 November 2008
- *******************************************************************************/
-void tmAttributionDataLabel::SetPanelValues(AttribObjType_PANEL *panel,
-                                            const wxArrayLong &valueids)
-{
-    panel->SetSelectedValues(TOC_NAME_LABELS, valueids, false);
-    panel->SetSelectedValues(TOC_NAME_LABELS, valueids, true);
+bool tmAttributionDataLabel::GetInfoBasic(long oid, wxArrayLong &objid, wxArrayString &objcode,
+                                          wxArrayString &objname) {
+  return _GetInfoBasic(oid, objid, objcode, objname, 2);
 }
 
-
-/***************************************************************************//**
- @brief Get Layer attributed for selected geometry
- @details See tmAttributionData::PrepareGetAttributionLayersID() for description.
- @author Lucien Schreiber (c) CREALP 2009
- @date 16 March 2009
- *******************************************************************************/
-bool tmAttributionDataLabel::GetAttributionLayersID(const long &geomid,
-                                                    tmLayerValueArray &layersid)
-{
-    return tmAttributionData::PrepareGetAttributionLayersID(geomid,
-                                                            layersid,
-                                                            TABLE_NAME_GIS_ATTRIBUTION[2],
-                                                            LAYER_SPATIAL_POLYGON);
+/***************************************************************************/ /**
+  @brief Set Panel values
+  @details
+  @param panel Adress of a #AttribObjType_PANEL used for setting values to
+  @param valueids contain all attribution value
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 06 November 2008
+  *******************************************************************************/
+void tmAttributionDataLabel::SetPanelValues(AttribObjType_PANEL *panel, const wxArrayLong &valueids) {
+  panel->SetSelectedValues(TOC_NAME_LABELS, valueids, false);
+  panel->SetSelectedValues(TOC_NAME_LABELS, valueids, true);
 }
 
+/***************************************************************************/ /**
+  @brief Get Layer attributed for selected geometry
+  @details See tmAttributionData::PrepareGetAttributionLayersID() for description.
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 16 March 2009
+  *******************************************************************************/
+bool tmAttributionDataLabel::GetAttributionLayersID(const long &geomid, tmLayerValueArray &layersid) {
+  return tmAttributionData::PrepareGetAttributionLayersID(geomid, layersid, TABLE_NAME_GIS_ATTRIBUTION[2],
+                                                          LAYER_SPATIAL_POLYGON);
+}
 
-bool tmAttributionDataLabel::GetAttributionLayersIDFull(const long &geomid,
-                                                        tmLayerValueArray &layersid)
-{
-    return tmAttributionData::PrepareGetAttributionLayersID(geomid,
-                                                            layersid,
-                                                            TABLE_NAME_GIS_ATTRIBUTION[2],
-                                                            wxNOT_FOUND);
+bool tmAttributionDataLabel::GetAttributionLayersIDFull(const long &geomid, tmLayerValueArray &layersid) {
+  return tmAttributionData::PrepareGetAttributionLayersID(geomid, layersid, TABLE_NAME_GIS_ATTRIBUTION[2], wxNOT_FOUND);
 }

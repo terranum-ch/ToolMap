@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATARASTER_EGRID_H_
 #define _TM_GISDATARASTER_EGRID_H_
 
@@ -28,24 +27,18 @@
 #include <wx/wx.h>
 #endif
 
-
-#include "tmgisdataraster.h"
 #include "gdal_priv.h"
+#include "tmgisdataraster.h"
 
+class tmGISDataRasterEGRID : public tmGISDataRaster {
+ private:
+ protected:
+ public:
+  tmGISDataRasterEGRID();
 
-class tmGISDataRasterEGRID : public tmGISDataRaster
-{
-private:
+  ~tmGISDataRasterEGRID();
 
-protected:
-public:
-    tmGISDataRasterEGRID();
-
-    ~tmGISDataRasterEGRID();
-
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
-
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
-
 
 #endif

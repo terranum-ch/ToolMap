@@ -18,37 +18,27 @@
 
 #include "tmgisdatarasterjpeg.h"
 
-
-tmGISDataRasterJPEG::tmGISDataRasterJPEG()
-{
-    m_FileType = _T("GDAL JPEG Raster");
-    m_ClassType = tmGIS_RASTER_JPEG;
+tmGISDataRasterJPEG::tmGISDataRasterJPEG() {
+  m_FileType = _T("GDAL JPEG Raster");
+  m_ClassType = tmGIS_RASTER_JPEG;
 }
 
-tmGISDataRasterJPEG::~tmGISDataRasterJPEG()
-{
+tmGISDataRasterJPEG::~tmGISDataRasterJPEG() {}
 
+/***************************************************************************/ /**
+  @brief Get Size of The Jpeg raster
+  @param iPrecision The number of digits required (default is 2)
+  @return  An html compliant string containing the Jpeg size in an human
+  readable format
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 24 October 2008
+  *******************************************************************************/
+wxString tmGISDataRasterJPEG::GetDataSizeAsHtml(int iPrecision) {
+  wxString myResult = _("<U><B>Jpeg Raster Size</B></U><BR>");
+
+  wxFileName myJpgName(GetFullFileName());
+  myResult.Append(wxString::Format(
+      _("Raster size : %s"), myJpgName.GetHumanReadableSize(_T("Error computing raster size"), iPrecision).c_str()));
+
+  return myResult;
 }
-
-
-/***************************************************************************//**
- @brief Get Size of The Jpeg raster
- @param iPrecision The number of digits required (default is 2)
- @return  An html compliant string containing the Jpeg size in an human
- readable format
- @author Lucien Schreiber (c) CREALP 2008
- @date 24 October 2008
- *******************************************************************************/
-wxString tmGISDataRasterJPEG::GetDataSizeAsHtml(int iPrecision)
-{
-    wxString myResult = _("<U><B>Jpeg Raster Size</B></U><BR>");
-
-    wxFileName myJpgName(GetFullFileName());
-    myResult.Append(wxString::Format(_("Raster size : %s"),
-                                     myJpgName.GetHumanReadableSize(_T("Error computing raster size"),
-                                                                    iPrecision).c_str()));
-
-    return myResult;
-}
-
-

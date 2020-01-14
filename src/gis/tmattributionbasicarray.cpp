@@ -18,46 +18,30 @@
 
 #include "tmattributionbasicarray.h"
 
-
-tmAttributionBasic::tmAttributionBasic()
-{
-    InitMemberValues();
+tmAttributionBasic::tmAttributionBasic() {
+  InitMemberValues();
 }
 
-tmAttributionBasic::~tmAttributionBasic()
-{
+tmAttributionBasic::~tmAttributionBasic() {}
 
+void tmAttributionBasic::InitMemberValues() {
+  m_Oid = wxNOT_FOUND;
+  m_Values.Clear();
 }
-
-
-void tmAttributionBasic::InitMemberValues()
-{
-    m_Oid = wxNOT_FOUND;
-    m_Values.Clear();
-}
-
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY (tmAttributionBasicArray);
+WX_DEFINE_OBJARRAY(tmAttributionBasicArray);
 
-
-tmLayerValue::tmLayerValue()
-{
-    InitMemberValues();
+tmLayerValue::tmLayerValue() {
+  InitMemberValues();
 }
 
-tmLayerValue::~tmLayerValue()
-{
+tmLayerValue::~tmLayerValue() {}
 
+void tmLayerValue::InitMemberValues() {
+  m_Oid = wxNOT_FOUND;
+  m_Value = wxEmptyString;
 }
-
-
-void tmLayerValue::InitMemberValues()
-{
-    m_Oid = wxNOT_FOUND;
-    m_Value = wxEmptyString;
-}
-
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY (tmLayerValueArray);
+WX_DEFINE_OBJARRAY(tmLayerValueArray);
