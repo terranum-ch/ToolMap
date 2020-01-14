@@ -20,7 +20,7 @@ IF (MYSQL_INCLUDE_DIR)
             )
     IF (NOT MYSQL_ERRMSG_FILE)
         MESSAGE(WARNING "errmsg.sys file not found!")
-    ELSE()
+    ELSE ()
         MESSAGE(STATUS "errmsg.sys path: ${MYSQL_ERRMSG_FILE}")
     ENDIF ()
 

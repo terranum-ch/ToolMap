@@ -1,7 +1,7 @@
 /***************************************************************************
  siprogress.cpp
  -------------------
- copyright            : (C) 2013 CREALP Lucien Schreiber 
+ copyright            : (C) 2013 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -17,30 +17,22 @@
 #include "siprogress.h"
 
 siProgressIndicator::siProgressIndicator() {
-    m_Total = 0;
+  m_Total = 0;
 }
 
-
-
-siProgressIndicator::~siProgressIndicator() {
-}
-
-
+siProgressIndicator::~siProgressIndicator() {}
 
 void siProgressIndicator::UpdateProgress(int value, int step) {
-    if (value >= (step + m_Total)) {
-        m_Total = m_Total + step;
-        wxPrintf(_T("#"));
-    }
+  if (value >= (step + m_Total)) {
+    m_Total = m_Total + step;
+    wxPrintf(_T("#"));
+  }
 }
 
-
-void siProgressIndicator::StartProgress (){
-    wxPrintf(_T("Progress: ["));
+void siProgressIndicator::StartProgress() {
+  wxPrintf(_T("Progress: ["));
 }
 
-
-void siProgressIndicator::StopProgress (){
-    wxPrintf(_T("]\n"));
+void siProgressIndicator::StopProgress() {
+  wxPrintf(_T("]\n"));
 }
-

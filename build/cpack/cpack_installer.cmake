@@ -4,7 +4,7 @@ set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
 if (WITH_TOOLBASVIEW)
     add_dependencies(${CMAKE_PROJECT_NAME} ToolBasView)
-endif()
+endif ()
 
 # install ToolMap (application)
 install(TARGETS ${CMAKE_PROJECT_NAME}
@@ -55,7 +55,7 @@ if (WIN32)
         install(PROGRAMS
                 ${EXTERNAL_DIR}/bin/ToolBasView.exe
                 DESTINATION bin)
-    endif()
+    endif ()
 
     # install errmsg.sys
     if (NOT MYSQL_ERRMSG_FILE)
@@ -85,7 +85,7 @@ elseif (UNIX AND NOT APPLE)
         install(PROGRAMS
                 ${EXTERNAL_DIR}/bin/ToolBasView
                 DESTINATION bin)
-    endif()
+    endif ()
 
 elseif (APPLE)
 
@@ -95,7 +95,7 @@ elseif (APPLE)
                 ${CMAKE_BINARY_DIR}/ToolBasView-prefix/src/ToolBasView-build/ToolBasView.app
                 DESTINATION .
                 USE_SOURCE_PERMISSIONS)
-    endif()
+    endif ()
 
 endif (WIN32)
 

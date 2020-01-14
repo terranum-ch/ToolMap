@@ -24,17 +24,16 @@
 #include <wx/wx.h>
 #endif
 
-
 class siProgressIndicator {
-private:
-    long m_Total;
-    
-public:
-    siProgressIndicator();
-    virtual ~siProgressIndicator();
-    
-    virtual void UpdateProgress(int value, int step);
-    virtual void StartProgress ();
-    virtual void StopProgress ();
+ private:
+  long m_Total;
+
+ public:
+  siProgressIndicator();
+  virtual ~siProgressIndicator();
+
+  virtual void UpdateProgress(int value, int step);
+  virtual void StartProgress();
+  virtual void StopProgress();
 };
 #endif
