@@ -2,7 +2,7 @@
  name.cpp
  Display context help for a dialog
  -------------------
- copyright            : (C) 2014 CREALP Lucien Schreiber 
+ copyright            : (C) 2014 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -16,5 +16,3 @@
  ***************************************************************************/
 
 #include "default_src.h"
-
-

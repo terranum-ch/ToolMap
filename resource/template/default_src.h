@@ -23,10 +23,4 @@
 #include <wx/wx.h>
 #endif
 
-
-
-
-
-
-
 #endif
