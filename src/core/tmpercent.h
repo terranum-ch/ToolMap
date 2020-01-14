@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef _TM_PERCENT_H_
 #define _TM_PERCENT_H_
 
@@ -28,45 +27,42 @@
 #include <wx/wx.h>
 #endif
 
-
 //#ifdef __WXMAC__
-//const int tmPERCENT = 10;
+// const int tmPERCENT = 10;
 //#else
 const int tmPERCENT = 100;
 //#endif
 
-class tmPercent : public wxObject
-{
-private:
-    bool m_inited;
-    long m_TotalValue;
-    double m_Increment;
-    int m_PreviousPercent;
-    long m_ActualValue;
+class tmPercent : public wxObject {
+ private:
+  bool m_inited;
+  long m_TotalValue;
+  double m_Increment;
+  int m_PreviousPercent;
+  long m_ActualValue;
 
-    void InitMemberValue();
+  void InitMemberValue();
 
-protected:
-public:
-    // ctor - dtor
-    tmPercent();
+ protected:
+ public:
+  // ctor - dtor
+  tmPercent();
 
-    tmPercent(long value);
+  tmPercent(long value);
 
-    void Create(long value);
+  void Create(long value);
 
-    ~tmPercent();
+  ~tmPercent();
 
-    void SetValue(long actualvalue);
+  void SetValue(long actualvalue);
 
-    long GetValue()
-    { return m_ActualValue; }
+  long GetValue() {
+    return m_ActualValue;
+  }
 
-    bool IsNewStep();
+  bool IsNewStep();
 
-    int GetPercent();
-
+  int GetPercent();
 };
-
 
 #endif

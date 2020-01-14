@@ -1,8 +1,8 @@
 /***************************************************************************
  tmdataintegrity.h
- 
+
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 
 #ifndef _TMDATAINTEGRITY_H
 #define _TMDATAINTEGRITY_H
@@ -29,35 +28,30 @@
 
 class DataBaseTM;
 
+class tmDataIntegrity {
+ private:
+  DataBaseTM *m_pDB;
 
-class tmDataIntegrity
-{
-private:
-    DataBaseTM *m_pDB;
+  wxString m_QueryTemplateType;
+  wxString m_QueryTemplateAAttrib;
 
-    wxString m_QueryTemplateType;
-    wxString m_QueryTemplateAAttrib;
+  long m_ErrorType;
+  long m_ErrorAAttrib;
 
-    long m_ErrorType;
-    long m_ErrorAAttrib;
+ public:
+  tmDataIntegrity(DataBaseTM *database);
 
+  ~tmDataIntegrity();
 
-public:
-    tmDataIntegrity(DataBaseTM *database);
+  bool HasErrorType(const PRJDEF_LAYERS_TYPE &layertype);
 
-    ~tmDataIntegrity();
+  bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
 
+  bool CorrectType(const PRJDEF_LAYERS_TYPE &layertype);
 
-    bool HasErrorType(const PRJDEF_LAYERS_TYPE &layertype);
+  bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
 
-    bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
-
-    bool CorrectType(const PRJDEF_LAYERS_TYPE &layertype);
-
-    bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
-
-    wxString GetLastError();
-
+  wxString GetLastError();
 };
 
 #endif

@@ -1,7 +1,7 @@
 /***************************************************************************
  bezierethz
  -------------------
- copyright            : (C) 2013 CREALP Lucien Schreiber 
+ copyright            : (C) 2013 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,32 +24,29 @@
 
 WX_DECLARE_LIST(wxRealPoint, wxRealPointList);
 
+class BezierEthz {
+ public:
+  BezierEthz(double width, int maxpoints);
 
-class BezierEthz
-{
-public:
-    BezierEthz(double width, int maxpoints);
+  ~BezierEthz();
 
-    ~BezierEthz();
+  void Init(wxRealPoint P1, wxRealPoint P2, wxRealPoint P3, wxRealPoint P4);
 
-    void Init(wxRealPoint P1, wxRealPoint P2, wxRealPoint P3, wxRealPoint P4);
+  wxRealPointList *GetPointListRef() {
+    return &m_Points;
+  }
 
-    wxRealPointList *GetPointListRef()
-    { return &m_Points; }
+ private:
+  double m_Width;
+  int m_MaxPoints;
+  wxRealPointList m_Points;
 
-private:
-    double m_Width;
-    int m_MaxPoints;
-    wxRealPointList m_Points;
+  void _BezierPoint(const wxRealPoint &A, const wxRealPoint &B, wxRealPoint &result, double t);
 
-    void _BezierPoint(const wxRealPoint &A, const wxRealPoint &B, wxRealPoint &result, double t);
+  bool _Segmentation(const wxRealPoint &P1, const wxRealPoint &P2, const wxRealPoint &P3, const wxRealPoint &P4,
+                     double t, wxRealPoint &result);
 
-    bool _Segmentation(const wxRealPoint &P1, const wxRealPoint &P2, const wxRealPoint &P3, const wxRealPoint &P4,
-                       double t, wxRealPoint &result);
-
-    bool _IsPointUsefull(const wxRealPoint &PBefore, const wxRealPoint &P, const wxRealPoint &PAfter);
-
+  bool _IsPointUsefull(const wxRealPoint &PBefore, const wxRealPoint &P, const wxRealPoint &PAfter);
 };
-
 
 #endif

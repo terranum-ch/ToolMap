@@ -14,19 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #ifndef _TMVALIDATOR_H_
 #define _TMVALIDATOR_H_
-
-
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #define tmFILTER_EXCLUDE_CHAR_RESTRICTED 0x0100
@@ -34,43 +30,39 @@
 #define tmFILTER_EXCLUDE_CHAR_NUMERIC_STRICT 0x0400
 #define tmFILTER_EXCLUDE_CHAR_COMPLEX 0x0800
 
+/***************************************************************************/ /**
+  @brief Validator for text controls
+  @details This class may be used for controls validations. It extend the
+  wxTextValidator with some more strict styles (see tmValidator::tmValidator()
+  for allowed styles).
+  Exemple :
+  @code
+  wxTextCtrl myCtrl;
+  myCtrl.SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_RESTRICTED));
+  @endcode
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 20 May 2008
+  *******************************************************************************/
+class tmValidator : public wxTextValidator {
+ private:
+  void SetCharRestricted();
 
-/***************************************************************************//**
- @brief Validator for text controls
- @details This class may be used for controls validations. It extend the
- wxTextValidator with some more strict styles (see tmValidator::tmValidator()
- for allowed styles).
- Exemple :
- @code
- wxTextCtrl myCtrl;
- myCtrl.SetValidator(tmValidator(tmFILTER_EXCLUDE_CHAR_RESTRICTED));
- @endcode
- @author Lucien Schreiber (c) CREALP 2008
- @date 20 May 2008
- *******************************************************************************/
-class tmValidator : public wxTextValidator
-{
-private:
-    void SetCharRestricted();
+  void SetCharDataBase();
 
-    void SetCharDataBase();
+  void SetCharNumericStric();
 
-    void SetCharNumericStric();
+  void GetAlphaList(wxArrayString &mylist);
 
+  void GetStrictNumList(wxArrayString &mylist);
 
-    void GetAlphaList(wxArrayString &mylist);
+  void GetComplexList(wxArrayString &mylist);
 
-    void GetStrictNumList(wxArrayString &mylist);
+  bool SetEnhancedStyle(long style);
 
-    void GetComplexList(wxArrayString &mylist);
+  void GetExcludeChars(wxArrayString &mylist);
 
-    bool SetEnhancedStyle(long style);
-
-    void GetExcludeChars(wxArrayString &mylist);
-
-public:
-    tmValidator(long style = wxFILTER_NONE);
+ public:
+  tmValidator(long style = wxFILTER_NONE);
 };
-
 
 #endif

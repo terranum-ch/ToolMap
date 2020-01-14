@@ -1,7 +1,7 @@
 /***************************************************************************
  tmprojectupdater.h
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,53 +26,49 @@
 
 #include "../database/database_tm.h"
 
-
-enum tmPRJ_UPD_ERROR
-{
-    tmPRJ_UPD_ERROR_OK = 1,        // No update error
-    tmPRJ_UPD_ERROR_PROJECT,    // Error during updating project
-    tmPRJ_UPD_ERROR_TM            // Error ToolMap is too old
+enum tmPRJ_UPD_ERROR {
+  tmPRJ_UPD_ERROR_OK = 1,   // No update error
+  tmPRJ_UPD_ERROR_PROJECT,  // Error during updating project
+  tmPRJ_UPD_ERROR_TM        // Error ToolMap is too old
 
 };
 
+class tmProjectUpdater {
+ private:
+  DataBaseTM *m_pDB;
 
-class tmProjectUpdater
-{
-private:
-    DataBaseTM *m_pDB;
+  bool _SetVersion(int versionnumber);
 
-    bool _SetVersion(int versionnumber);
+  bool _220to221();
 
-    bool _220to221();
+  bool _221to222();
 
-    bool _221to222();
+  bool _222to223();
 
-    bool _222to223();
+  bool _223to224();
 
-    bool _223to224();
+  bool _224to225();
 
-    bool _224to225();
+  bool _225to226();
 
-    bool _225to226();
+  bool _226to227();
 
-    bool _226to227();
+  bool _227to228();
 
-    bool _227to228();
+  bool _228to229();
 
-    bool _228to229();
+  bool _229to230();
 
-    bool _229to230();
+  bool _230to231();
 
-    bool _230to231();
+ public:
+  tmProjectUpdater(DataBaseTM *database);
 
-public:
-    tmProjectUpdater(DataBaseTM *database);
+  virtual ~tmProjectUpdater();
 
-    virtual ~tmProjectUpdater();
+  bool IsCorrectVersion();
 
-    bool IsCorrectVersion();
-
-    tmPRJ_UPD_ERROR DoUpdate();
+  tmPRJ_UPD_ERROR DoUpdate();
 };
 
 #endif

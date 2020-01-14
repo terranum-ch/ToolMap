@@ -16,206 +16,171 @@
 #include "tmsnappingmemory.h"
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY (tmSnappingObjArray);
+WX_DEFINE_OBJARRAY(tmSnappingObjArray);
 
-
-tmSnappingObject::tmSnappingObject()
-{
-    InitMemberValues();
+tmSnappingObject::tmSnappingObject() {
+  InitMemberValues();
 }
 
+tmSnappingObject::~tmSnappingObject() {}
 
-tmSnappingObject::~tmSnappingObject()
-{
-
+void tmSnappingObject::InitMemberValues() {
+  m_LayerID = -1;
+  m_SnappingStatus = 0;
 }
 
-
-void tmSnappingObject::InitMemberValues()
-{
-    m_LayerID = -1;
-    m_SnappingStatus = 0;
+/***************************************************************************/ /**
+  @brief Constructor
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+tmSnappingMemory::tmSnappingMemory() {
+  m_Tolerence = 0;
 }
 
+/***************************************************************************/ /**
+  @brief Destructor
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+tmSnappingMemory::~tmSnappingMemory() {}
 
-/***************************************************************************//**
- @brief Constructor
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-tmSnappingMemory::tmSnappingMemory()
-{
-    m_Tolerence = 0;
+/***************************************************************************/ /**
+  @brief Add snapping to memory
+  @details Store in an array the passed values
+  @param lid ID value of the layer (see TOC_ID in the prj_snapping table)
+  @param snapstatus snap status : one of the following :
+  - 0 : No snapping
+  - 1: Snapping vertex
+  - 2: Snapping BeginEnd
+  - 3: Snapping both = snapping vertex
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+void tmSnappingMemory::AddSnappingMemory(long lid, int snapstatus) {
+  tmSnappingObject mySnapObj;
+  mySnapObj.m_LayerID = lid;
+  mySnapObj.m_SnappingStatus = snapstatus;
+  m_Snapping.Add(mySnapObj);
 }
 
+/***************************************************************************/ /**
+  @brief Delete a layer from the memory array
+  @param lid layer ID
+  @return  true if the item was deleted from memory (if the item was found in
+  memory). False otherwise
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+bool tmSnappingMemory::DeleteSnappingMemory(const long &lid) {
+  int iIndex = FindSnappingItem(lid);
+  if (iIndex == wxNOT_FOUND) return false;
 
-/***************************************************************************//**
- @brief Destructor
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-tmSnappingMemory::~tmSnappingMemory()
-{
-
-
+  m_Snapping.RemoveAt(iIndex);
+  return true;
 }
 
+/***************************************************************************/ /**
+  @brief Get the snapping status for specified layer
+  @param lid the layer id (as stored into database)
+  @return  one of the snapping status. If the layer dosen't exist into the
+  snapping array stored in memory, it will return 0
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+int tmSnappingMemory::GetSnappingMemoryStatus(const long &lid) {
+  int iIndex = FindSnappingItem(lid);
+  if (iIndex == wxNOT_FOUND) return tmSNAPPING_OFF;
 
-/***************************************************************************//**
- @brief Add snapping to memory
- @details Store in an array the passed values
- @param lid ID value of the layer (see TOC_ID in the prj_snapping table)
- @param snapstatus snap status : one of the following : 
- - 0 : No snapping 
- - 1: Snapping vertex 
- - 2: Snapping BeginEnd 
- - 3: Snapping both = snapping vertex
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-void tmSnappingMemory::AddSnappingMemory(long lid, int snapstatus)
-{
-    tmSnappingObject mySnapObj;
-    mySnapObj.m_LayerID = lid;
-    mySnapObj.m_SnappingStatus = snapstatus;
-    m_Snapping.Add(mySnapObj);
+  return m_Snapping.Item(iIndex).m_SnappingStatus;
 }
 
+/***************************************************************************/ /**
+  @brief Change, or set snapping to existing layer
+  @param lid layer ID to modify
+  @param snapstatus the new snapping status
+  @return  true if the layer ID exists, false otherwise
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+bool tmSnappingMemory::SetSnappingMemoryStatus(const long &lid, int snapstatus) {
+  int iIndex = FindSnappingItem(lid);
+  if (iIndex == wxNOT_FOUND) return false;
 
-/***************************************************************************//**
- @brief Delete a layer from the memory array
- @param lid layer ID
- @return  true if the item was deleted from memory (if the item was found in
- memory). False otherwise
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-bool tmSnappingMemory::DeleteSnappingMemory(const long &lid)
-{
-    int iIndex = FindSnappingItem(lid);
-    if (iIndex == wxNOT_FOUND)
-        return false;
-
-    m_Snapping.RemoveAt(iIndex);
-    return true;
+  m_Snapping.Item(iIndex).m_SnappingStatus = snapstatus;
+  return true;
 }
 
+/***************************************************************************/ /**
+  @brief Get snapping info by index
+  @param iIndex the zero based index of the snapping info we want back
+  @param lid the layer id
+  @param snapstatus the snapping status
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+bool tmSnappingMemory::GetSnappingInfo(unsigned int iIndex, long &lid, int &snapstatus) {
+  if (iIndex >= GetCount()) return false;
 
-/***************************************************************************//**
- @brief Get the snapping status for specified layer
- @param lid the layer id (as stored into database)
- @return  one of the snapping status. If the layer dosen't exist into the
- snapping array stored in memory, it will return 0
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-int tmSnappingMemory::GetSnappingMemoryStatus(const long &lid)
-{
-    int iIndex = FindSnappingItem(lid);
-    if (iIndex == wxNOT_FOUND)
-        return tmSNAPPING_OFF;
-
-    return m_Snapping.Item(iIndex).m_SnappingStatus;
+  lid = m_Snapping.Item(iIndex).m_LayerID;
+  snapstatus = m_Snapping.Item(iIndex).m_SnappingStatus;
+  return true;
 }
 
-
-/***************************************************************************//**
- @brief Change, or set snapping to existing layer
- @param lid layer ID to modify
- @param snapstatus the new snapping status
- @return  true if the layer ID exists, false otherwise
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-bool tmSnappingMemory::SetSnappingMemoryStatus(const long &lid, int snapstatus)
-{
-    int iIndex = FindSnappingItem(lid);
-    if (iIndex == wxNOT_FOUND)
-        return false;
-
-    m_Snapping.Item(iIndex).m_SnappingStatus = snapstatus;
-    return true;
-}
-
-
-/***************************************************************************//**
- @brief Get snapping info by index
- @param iIndex the zero based index of the snapping info we want back
- @param lid the layer id
- @param snapstatus the snapping status
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-bool tmSnappingMemory::GetSnappingInfo(unsigned int iIndex, long &lid, int &snapstatus)
-{
-    if (iIndex >= GetCount())
-        return false;
-
-    lid = m_Snapping.Item(iIndex).m_LayerID;
-    snapstatus = m_Snapping.Item(iIndex).m_SnappingStatus;
-    return true;
-}
-
-
-/***************************************************************************//**
- @brief Search for specified layer ID in memory array
- @param lid layer ID (see TOC_ID in prj_snapping table)
- @return  the zero based index of the found item or wxNOT_FOUND otherwise
- @author Lucien Schreiber (c) CREALP 2009
- @date 21 January 2009
- *******************************************************************************/
-int tmSnappingMemory::FindSnappingItem(const long &lid)
-{
-    int iReturn = wxNOT_FOUND;
-    for (unsigned int i = 0; i < GetCount(); i++) {
-        if (m_Snapping.Item(i).m_LayerID == lid) {
-            iReturn = i;
-            break;
-        }
+/***************************************************************************/ /**
+  @brief Search for specified layer ID in memory array
+  @param lid layer ID (see TOC_ID in prj_snapping table)
+  @return  the zero based index of the found item or wxNOT_FOUND otherwise
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 21 January 2009
+  *******************************************************************************/
+int tmSnappingMemory::FindSnappingItem(const long &lid) {
+  int iReturn = wxNOT_FOUND;
+  for (unsigned int i = 0; i < GetCount(); i++) {
+    if (m_Snapping.Item(i).m_LayerID == lid) {
+      iReturn = i;
+      break;
     }
+  }
 
-    return iReturn;
+  return iReturn;
 }
 
-
-/***************************************************************************//**
- @brief Set all snapping status to #tmSNAPPING_OFF
- @details This function doesn't remove layers from the memory
- @author Lucien Schreiber (c) CREALP 2009
- @date 22 January 2009
- *******************************************************************************/
-void tmSnappingMemory::ClearSnappingStatus()
-{
-    for (unsigned int i = 0; i < GetCount(); i++) {
-        m_Snapping.Item(i).m_SnappingStatus = tmSNAPPING_OFF;
-    }
+/***************************************************************************/ /**
+  @brief Set all snapping status to #tmSNAPPING_OFF
+  @details This function doesn't remove layers from the memory
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 22 January 2009
+  *******************************************************************************/
+void tmSnappingMemory::ClearSnappingStatus() {
+  for (unsigned int i = 0; i < GetCount(); i++) {
+    m_Snapping.Item(i).m_SnappingStatus = tmSNAPPING_OFF;
+  }
 }
 
-
-/***************************************************************************//**
- @brief Checks if snapping is enabled
- @details This function checks if at least one layer contain a defined snapping
- and if the space key isn't pressed. If space key is pressed, snapping is totally
- disabled
- @return  true if at least one layer has snapping enabled
- @author Lucien Schreiber (c) CREALP 2009
- @date 26 January 2009
- *******************************************************************************/
-bool tmSnappingMemory::IsSnappingEnabled()
-{
-    if (wxGetKeyState(WXK_SPACE) == true) {
-        return false;
-    }
-
-    if (wxGetKeyState(WXK_SHIFT) == true) {
-        return false;
-    }
-
-    for (unsigned int i = 0; i < m_Snapping.GetCount(); i++) {
-        if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF) {
-            return true;
-        }
-    }
-
+/***************************************************************************/ /**
+  @brief Checks if snapping is enabled
+  @details This function checks if at least one layer contain a defined snapping
+  and if the space key isn't pressed. If space key is pressed, snapping is totally
+  disabled
+  @return  true if at least one layer has snapping enabled
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 26 January 2009
+  *******************************************************************************/
+bool tmSnappingMemory::IsSnappingEnabled() {
+  if (wxGetKeyState(WXK_SPACE) == true) {
     return false;
+  }
+
+  if (wxGetKeyState(WXK_SHIFT) == true) {
+    return false;
+  }
+
+  for (unsigned int i = 0; i < m_Snapping.GetCount(); i++) {
+    if (m_Snapping.Item(i).m_SnappingStatus != tmSNAPPING_OFF) {
+      return true;
+    }
+  }
+
+  return false;
 }

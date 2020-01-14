@@ -2,7 +2,7 @@
  vrrealrect.h
  support intersection with negative width / height
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,23 +24,19 @@
 
 #include <wx/geometry.h>
 
+class vrRealRect : public wxRect2DDouble {
+ public:
+  vrRealRect();
 
-class vrRealRect : public wxRect2DDouble
-{
-public:
-    vrRealRect();
+  vrRealRect(const vrRealRect &source);
 
-    vrRealRect(const vrRealRect &source);
+  vrRealRect(double left, double top, double width, double height);
 
-    vrRealRect(double left, double top, double width, double height);
+  virtual ~vrRealRect();
 
-    virtual ~vrRealRect();
+  virtual vrRealRect Intersect(const vrRealRect &rect1);
 
-
-    virtual vrRealRect Intersect(const vrRealRect &rect1);
-
-    bool IsOk();
-
+  bool IsOk();
 };
 
 #endif

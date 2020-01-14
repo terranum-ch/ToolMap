@@ -1,6 +1,6 @@
 /***************************************************************************
  queriesdata.h
-                   
+
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -29,108 +29,97 @@
 
 class DataBaseTM;
 
-enum tmQUERIES_TYPE
-{
-    QUERY_LAYERS = 0,
-    QUERY_OBJECTS,
-    QUERY_SELECTED,
-    QUERY_GENERIC,
-    QUERY_SQL,
-    QUERY_LINES,
-    QUERY_NODES,
-    QUERY_DUPLICATE,
-    QUERY_CROSSING,
-    QUERY_NUMBER
+enum tmQUERIES_TYPE {
+  QUERY_LAYERS = 0,
+  QUERY_OBJECTS,
+  QUERY_SELECTED,
+  QUERY_GENERIC,
+  QUERY_SQL,
+  QUERY_LINES,
+  QUERY_NODES,
+  QUERY_DUPLICATE,
+  QUERY_CROSSING,
+  QUERY_NUMBER
 };
 
-
-enum tmQUERIES_AATTRIBUTION_TYPE
-{
-    AATTRIBUTION_NO,
-    AATTRIBUTION_EMPTY,
-    AATTRIBUTION_YES
+enum tmQUERIES_AATTRIBUTION_TYPE {
+  AATTRIBUTION_NO,
+  AATTRIBUTION_EMPTY,
+  AATTRIBUTION_YES
 
 };
 
+class QueriesData {
+ private:
+  bool _IsQueryLayersCorrect();
 
-class QueriesData
-{
-private:
-    bool _IsQueryLayersCorrect();
+  bool _IsQuerySelectedCorrect();
 
-    bool _IsQuerySelectedCorrect();
+  bool _IsQueryGenericCorrect();
 
-    bool _IsQueryGenericCorrect();
+  bool _IsQuerySQLCorrect();
 
-    bool _IsQuerySQLCorrect();
+  bool _IsQueryObjectCorrect();
 
-    bool _IsQueryObjectCorrect();
+  bool _IsQueryLineSizeCorrect();
 
-    bool _IsQueryLineSizeCorrect();
+  bool _IsQueryNodeNumberCorrect();
 
-    bool _IsQueryNodeNumberCorrect();
+  bool _IsQueryDuplicateCorrect();
 
-    bool _IsQueryDuplicateCorrect();
+  bool _IsQueryCrossingCorrect();
 
-    bool _IsQueryCrossingCorrect();
+ public:
+  tmQUERIES_TYPE m_QueryType;
 
-public:
-    tmQUERIES_TYPE m_QueryType;
+  // Used by all panels
+  wxString m_QueryName;
 
-    //Used by all panels
-    wxString m_QueryName;
+  // Used by all panels
+  wxString m_QuerySQL;
 
-    //Used by all panels
-    wxString m_QuerySQL;
+  // Layers Based panel only
+  long m_QueryLayerID;
 
-    //Layers Based panel only
-    long m_QueryLayerID;
+  long m_QueryObjectID;
 
-    long m_QueryObjectID;
+  long m_QueryObjectGeomID;
 
-    long m_QueryObjectGeomID;
+  // bool m_QueryUseFields;
+  tmQUERIES_AATTRIBUTION_TYPE m_QueryFieldsStatus;
+  PrjMemFieldArray m_QueryFields;
+  wxArrayString m_QueryFieldsValues;
 
+  // Expert panel only
+  TOC_GENERIC_NAME m_QueryLayerType;
 
-    //bool m_QueryUseFields;
-    tmQUERIES_AATTRIBUTION_TYPE m_QueryFieldsStatus;
-    PrjMemFieldArray m_QueryFields;
-    wxArrayString m_QueryFieldsValues;
+  int m_QueryLineSize;
 
-    //Expert panel only
-    TOC_GENERIC_NAME m_QueryLayerType;
+  int m_QueryNodeNumber;
 
-    int m_QueryLineSize;
+  bool m_QueryRun;
 
-    int m_QueryNodeNumber;
+  QueriesData();
 
+  ~QueriesData();
 
-    bool m_QueryRun;
+  bool IsOk();
 
+  bool IsGenericLayer(DataBaseTM *database, long dblayerID);
 
-    QueriesData();
+  bool GetLayers(DataBaseTM *database, PrjMemLayersArray &layers);
 
-    ~QueriesData();
+  bool GetObjectsForSelection(DataBaseTM *database, PrjMemObjectsArray &objects);
 
-    bool IsOk();
+  bool GetObjectsForTypes(DataBaseTM *database, PrjMemObjectsArray &objects);
 
-    bool IsGenericLayer(DataBaseTM *database, long dblayerID);
+  bool GetParentLayer(DataBaseTM *database, long &layerid);
 
-    bool GetLayers(DataBaseTM *database, PrjMemLayersArray &layers);
+  bool GetFieldsValues(DataBaseTM *database, long layerid, PrjMemFieldArray &fieldsdef, wxArrayString &fieldsvalue);
 
-    bool GetObjectsForSelection(DataBaseTM *database, PrjMemObjectsArray &objects);
+  bool DeleteFieldsValue(int index);
 
-    bool GetObjectsForTypes(DataBaseTM *database, PrjMemObjectsArray &objects);
-
-    bool GetParentLayer(DataBaseTM *database, long &layerid);
-
-    bool GetFieldsValues(DataBaseTM *database, long layerid,
-                         PrjMemFieldArray &fieldsdef, wxArrayString &fieldsvalue);
-
-    bool DeleteFieldsValue(int index);
-
-    bool HasFieldsValues();
-
-
+  bool HasFieldsValues();
 };
 
 #endif

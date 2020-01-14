@@ -1,7 +1,7 @@
 /***************************************************************************
  pdfexportwizard.h
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,49 +25,45 @@
 
 #include "pdfdocument.h"
 
+class PdfExportWizard : public wxWizard {
+ private:
+  wxWizardPageSimple *m_PageLayout;
+  wxWizardPageSimple *m_PagePaper;
+  wxWizardPageSimple *m_PageDecoration;
 
-class PdfExportWizard : public wxWizard
-{
-private:
-    wxWizardPageSimple *m_PageLayout;
-    wxWizardPageSimple *m_PagePaper;
-    wxWizardPageSimple *m_PageDecoration;
+  // controls
+  // page layout
+  wxRadioButton *m_ExportOnePageCtrl;
+  wxRadioButton *m_ExportMultiPageCtrl;
+  wxRadioButton *m_ExportOneColCtrl;
+  wxRadioButton *m_ExportTwoColCtrl;
 
-    // controls
-    // page layout
-    wxRadioButton *m_ExportOnePageCtrl;
-    wxRadioButton *m_ExportMultiPageCtrl;
-    wxRadioButton *m_ExportOneColCtrl;
-    wxRadioButton *m_ExportTwoColCtrl;
+  // page paper
+  wxChoice *m_PaperSizeCtrl;
+  wxRadioButton *m_PaperPortraitCtrl;
+  wxRadioButton *m_PaperLandscapeCtrl;
 
-    // page paper
-    wxChoice *m_PaperSizeCtrl;
-    wxRadioButton *m_PaperPortraitCtrl;
-    wxRadioButton *m_PaperLandscapeCtrl;
+  // page decoration
+  wxCheckBox *m_DecorationSimpleCtrl;
 
-    // page decoration
-    wxCheckBox *m_DecorationSimpleCtrl;
+  void _CreateControls();
 
+  void OnRadioOnePageClick(wxCommandEvent &event);
 
-    void _CreateControls();
+  void OnRadioMultiplePageClick(wxCommandEvent &event);
 
-    void OnRadioOnePageClick(wxCommandEvent &event);
+  void OnLastPage(wxWizardEvent &event);
 
-    void OnRadioMultiplePageClick(wxCommandEvent &event);
+  wxString *m_TextBtnNext;
 
-    void OnLastPage(wxWizardEvent &event);
+ public:
+  PdfExportWizard(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Export Data Model Layout"));
 
-    wxString *m_TextBtnNext;
+  virtual ~PdfExportWizard();
 
+  int ShowWizard();
 
-public:
-    PdfExportWizard(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Export Data Model Layout"));
-
-    virtual ~PdfExportWizard();
-
-    int ShowWizard();
-
-    bool GetWizardChoices(PdfDocument &document);
+  bool GetWizardChoices(PdfDocument &document);
 };
 
 #endif

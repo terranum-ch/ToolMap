@@ -2,7 +2,7 @@
  tmlog.h
  Display log message for specified severity (even if chained)
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -13,8 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-
 
 #ifndef _TM_LOG_H_
 #define _TM_LOG_H_
@@ -29,39 +27,32 @@
 
 #include <wx/version.h>
 
+class tmLogGuiSeverity : public wxLogGui {
+ private:
+  wxLogLevel m_LogLevel;
 
-class tmLogGuiSeverity : public wxLogGui
-{
-private:
-    wxLogLevel m_LogLevel;
-
-public:
-    tmLogGuiSeverity(wxLogLevel minlevel = wxLOG_Warning)
-    { m_LogLevel = minlevel; }
-
+ public:
+  tmLogGuiSeverity(wxLogLevel minlevel = wxLOG_Warning) {
+    m_LogLevel = minlevel;
+  }
 
 #if wxCHECK_VERSION(2, 9, 0)
 
-    virtual void DoLogRecord(wxLogLevel level,
-                             const wxString &msg,
-                             const wxLogRecordInfo &info)
-    {
-        if (level <= m_LogLevel) {
-            wxLogGui::DoLogRecord(level, msg, info);
-        }
+  virtual void DoLogRecord(wxLogLevel level, const wxString &msg, const wxLogRecordInfo &info) {
+    if (level <= m_LogLevel) {
+      wxLogGui::DoLogRecord(level, msg, info);
     }
-
+  }
 
 #else
-    // support version 2.8.x
-    virtual void DoLog(wxLogLevel level, const wxChar *msg, time_t timestamp) {
-        if (level <= m_LogLevel) {
-            // display wxLogWarning in a friendly way to the user.
-            wxLogGui::DoLog(level, msg, timestamp);
-        }
+  // support version 2.8.x
+  virtual void DoLog(wxLogLevel level, const wxChar *msg, time_t timestamp) {
+    if (level <= m_LogLevel) {
+      // display wxLogWarning in a friendly way to the user.
+      wxLogGui::DoLog(level, msg, timestamp);
     }
+  }
 #endif
 };
-
 
 #endif

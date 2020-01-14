@@ -1,7 +1,7 @@
 /***************************************************************************
  tmstatsrecord.h
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,36 +26,32 @@
 
 #include <wx/filename.h>
 
-
 class DataBaseTM;
 
 class tmStatsData;
 
+class tmStatsRecords {
+ private:
+  DataBaseTM *m_pDB;
 
-class tmStatsRecords
-{
-private:
-    DataBaseTM *m_pDB;
+ public:
+  tmStatsRecords(DataBaseTM *database);
 
-public:
-    tmStatsRecords(DataBaseTM *database);
+  virtual ~tmStatsRecords();
 
-    virtual ~tmStatsRecords();
+  long Create(const tmStatsData &data);
 
-    long Create(const tmStatsData &data);
+  bool Add(long recordid, const tmStatsData &data);
 
-    bool Add(long recordid, const tmStatsData &data);
+  bool Load(long recordid, tmStatsData &data);
 
-    bool Load(long recordid, tmStatsData &data);
+  bool LoadTotal(tmStatsData &data);
 
-    bool LoadTotal(tmStatsData &data);
+  bool Delete(long recordid);
 
-    bool Delete(long recordid);
+  bool ExportAll(const wxFileName &filename);
 
-    bool ExportAll(const wxFileName &filename);
-
-    long GetCount();
-
+  long GetCount();
 };
 
 #endif

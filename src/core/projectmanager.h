@@ -14,17 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-
-/***************************************************************************//**
- @file projectmanager.h
- @brief Deals with project operations
- @details This file implement the ProjectManager class and is used in response to menu event 
- to open, close, backup, create new projets.
- @author Lucien Schreiber (c) CREALP 2007
- @date 10 March 2008
- *******************************************************************************/
-
-
+/***************************************************************************/ /**
+  @file projectmanager.h
+  @brief Deals with project operations
+  @details This file implement the ProjectManager class and is used in response to menu event
+  to open, close, backup, create new projets.
+  @author Lucien Schreiber (c) CREALP 2007
+  @date 10 March 2008
+  *******************************************************************************/
 
 #ifndef _PROJECTMANAGER_H
 #define _PROJECTMANAGER_H
@@ -37,21 +34,21 @@
 #include <wx/wx.h>
 #endif
 
-
 // include
 //#include "../database/db_project.h" // for project in memory (creation)
-#include "../gui/project_def_dlg.h"            // new project definition dialog
-#include "../gui/objectattribution_dlg.h"    // for displaying object definition dlg.
-#include "../gui/projectproperties_dlg.h"    // for displaying project properties dlg.
-#include "../gui/projectdefnew_dlg.h"        // for the first dialog (creating the db)
-#include "../gui/menumanager.h"                // for menu management (recent, greyed,...)
-#include <wx/busyinfo.h>                    // informations message for busy time
-#include "../gis/tmattributionmanager.h"    // for attribution manager
-#include "../gui/queries_panel.h"            // for queries panel
-#include "../gui/shortcut_panel.h"            // for shortcut panel
-#include "../gui/snapping_panel.h"            // for snapping panel
-#include "../gis/tmeditmanager.h"            // for editing stuff
-#include "../gui/tmtoolmanager.h"            // for tool manager (dangling nodes)
+#include <wx/busyinfo.h>  // informations message for busy time
+
+#include "../gis/tmattributionmanager.h"   // for attribution manager
+#include "../gis/tmeditmanager.h"          // for editing stuff
+#include "../gui/menumanager.h"            // for menu management (recent, greyed,...)
+#include "../gui/objectattribution_dlg.h"  // for displaying object definition dlg.
+#include "../gui/project_def_dlg.h"        // new project definition dialog
+#include "../gui/projectdefnew_dlg.h"      // for the first dialog (creating the db)
+#include "../gui/projectproperties_dlg.h"  // for displaying project properties dlg.
+#include "../gui/queries_panel.h"          // for queries panel
+#include "../gui/shortcut_panel.h"         // for shortcut panel
+#include "../gui/snapping_panel.h"         // for snapping panel
+#include "../gui/tmtoolmanager.h"          // for tool manager (dangling nodes)
 
 class MenuManager;
 
@@ -61,158 +58,162 @@ class tmStatsManager;
 
 class DataBaseTM;
 
+/***************************************************************************/ /**
+  @brief Project operations (new, open,...)
+  @details This is used to implement all project operations such as creating new
+  project, opening existing ToolMap project, closing project,...
+  @author Lucien Schreiber (c) CREALP 2007
+  @date 10 March 2008
+  *******************************************************************************/
+class ProjectManager : public wxObject {
+ private:
+  bool bProjectIsOpen;
+  DataBaseTM *m_DB;
+  wxFrame *m_Parent;
+  MenuManager *m_pMManager;
+  ObjectManager *m_Obj;
+  wxStatusBar *m_ParentStatus;
+  tmLayerManager *m_LayerManager;
+  tmAttributionManager *m_AttribManager;
+  Queries_PANEL *m_QueriesPanel;
+  Shortcuts_PANEL *m_ShortcutPanel;
+  Snapping_PANEL *m_SnappingPanel;
+  tmEditManager *m_EditManager;
+  PrjDefMemManage *m_PrjMem;
+  tmToolManager *m_ToolManager;
+  tmStatsManager *m_StatManager;
 
-/***************************************************************************//**
- @brief Project operations (new, open,...)
- @details This is used to implement all project operations such as creating new
- project, opening existing ToolMap project, closing project,...
- @author Lucien Schreiber (c) CREALP 2007
- @date 10 March 2008
- *******************************************************************************/
-class ProjectManager : public wxObject
-{
-private:
-    bool bProjectIsOpen;
-    DataBaseTM *m_DB;
-    wxFrame *m_Parent;
-    MenuManager *m_pMManager;
-    ObjectManager *m_Obj;
-    wxStatusBar *m_ParentStatus;
-    tmLayerManager *m_LayerManager;
-    tmAttributionManager *m_AttribManager;
-    Queries_PANEL *m_QueriesPanel;
-    Shortcuts_PANEL *m_ShortcutPanel;
-    Snapping_PANEL *m_SnappingPanel;
-    tmEditManager *m_EditManager;
-    PrjDefMemManage *m_PrjMem;
-    tmToolManager *m_ToolManager;
-    tmStatsManager *m_StatManager;
+  DECLARE_CLASS(ProjectManager)
 
-DECLARE_CLASS(ProjectManager)
+  bool IsDataBasePath(const wxString &path);
 
-    bool IsDataBasePath(const wxString &path);
+  bool PMAddDefaultQueries();
 
-    bool PMAddDefaultQueries();
+  bool _copy_directory(wxString from, wxString to);
 
-    bool _copy_directory(wxString from, wxString to);
+  bool CleanDirectory(const wxString &path);
 
-    bool CleanDirectory(const wxString &path);
+  bool CheckDirectoryContent(const wxString &path) const;
 
-    bool CheckDirectoryContent(const wxString& path) const;
+ public:
+  ProjectManager(wxFrame *parent);
 
+  ~ProjectManager();
 
-public:
-    ProjectManager(wxFrame *parent);
+  // project operations
+  bool CreateNewProject();
 
-    ~ProjectManager();
+  void CloseProject();
 
-    // project operations
-    bool CreateNewProject();
+  int OpenProject(const wxString &path);
 
-    void CloseProject();
+  bool EditProjectObjectDefinition();
 
-    int OpenProject(const wxString &path);
+  bool EditObjectFrequency(int id);
 
-    bool EditProjectObjectDefinition();
+  bool EditProjectSettings();
 
-    bool EditObjectFrequency(int id);
+  bool EditProject(int notebooknumber);
 
-    bool EditProjectSettings();
+  bool BackupProject(const wxString &backup_comment = wxEmptyString);
 
-    bool EditProject(int notebooknumber);
+  bool MergeProjects(const wxString &slave_project_name, bool beVerbose = true);
 
-    bool BackupProject(const wxString &backup_comment = wxEmptyString);
+  // project infos
+  wxString GetProjectName();
 
-    bool MergeProjects(const wxString &slave_project_name, bool beVerbose = true);
+  // setter and getter
+  void SetMenuManager(MenuManager *pMenu) {
+    m_pMManager = pMenu;
+  }
 
-    // project infos
-    wxString GetProjectName();
+  MenuManager *GetMenuManager() {
+    return m_pMManager;
+  }
 
-    // setter and getter
-    void SetMenuManager(MenuManager *pMenu)
-    { m_pMManager = pMenu; }
+  ObjectManager *GetObjectManager() {
+    return m_Obj;
+  }
 
-    MenuManager *GetMenuManager()
-    { return m_pMManager; }
+  void SetStatusBar(wxStatusBar *status) {
+    m_ParentStatus = status;
+  }
 
-    ObjectManager *GetObjectManager()
-    { return m_Obj; }
+  void SetAttributionManager(tmAttributionManager *pAManager) {
+    m_AttribManager = pAManager;
+  }
 
-    void SetStatusBar(wxStatusBar *status)
-    { m_ParentStatus = status; }
+  void SetQueriesPanel(Queries_PANEL *queriespanel) {
+    m_QueriesPanel = queriespanel;
+  }
 
-    void SetAttributionManager(tmAttributionManager *pAManager)
-    { m_AttribManager = pAManager; }
+  void SetShortcutPanel(Shortcuts_PANEL *panel) {
+    m_ShortcutPanel = panel;
+  }
 
-    void SetQueriesPanel(Queries_PANEL *queriespanel)
-    { m_QueriesPanel = queriespanel; }
+  void SetSnappingPanel(Snapping_PANEL *panel) {
+    m_SnappingPanel = panel;
+  }
 
-    void SetShortcutPanel(Shortcuts_PANEL *panel)
-    { m_ShortcutPanel = panel; }
+  void SetEditManager(tmEditManager *editmanager) {
+    m_EditManager = editmanager;
+  }
 
-    void SetSnappingPanel(Snapping_PANEL *panel)
-    { m_SnappingPanel = panel; }
+  DataBaseTM *GetDatabase() {
+    return m_DB;
+  }
 
-    void SetEditManager(tmEditManager *editmanager)
-    { m_EditManager = editmanager; }
+  void SetToolManager(tmToolManager *tm) {
+    m_ToolManager = tm;
+  }
 
-    DataBaseTM *GetDatabase()
-    { return m_DB; }
+  void SetStatManager(tmStatsManager *statmanager) {
+    m_StatManager = statmanager;
+  }
 
-    void SetToolManager(tmToolManager *tm)
-    { m_ToolManager = tm; }
+  void SetLayerManager(tmLayerManager *layermanager) {
+    m_LayerManager = layermanager;
+  }
 
-    void SetStatManager(tmStatsManager *statmanager)
-    { m_StatManager = statmanager; }
+  bool IsProjectOpen() {
+    return bProjectIsOpen;
+  }
 
-    void SetLayerManager(tmLayerManager *layermanager)
-    { m_LayerManager = layermanager; }
+  // project defintion into memory
+  bool LoadProjectDefintion(short int message = 0);
 
-    bool IsProjectOpen()
-    { return bProjectIsOpen; }
-
-    // project defintion into memory
-    bool LoadProjectDefintion(short int message = 0);
-
-    PrjDefMemManage *GetMemoryProjectDefinition();
-
+  PrjDefMemManage *GetMemoryProjectDefinition();
 };
 
+/***************************************************************************/ /**
+  @brief Deals with objects in the attribution panels
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 16 May 2008
+  *******************************************************************************/
+class ObjectManager : public wxObject {
+ private:
+  AttribObjType_PANEL *m_panel;
 
-/***************************************************************************//**
- @brief Deals with objects in the attribution panels
- @author Lucien Schreiber (c) CREALP 2008
- @date 16 May 2008
- *******************************************************************************/
-class ObjectManager : public wxObject
-{
-private:
-    AttribObjType_PANEL *m_panel;
+  void InitValues();
 
-    void InitValues();
+ public:
+  // ctor
+  ObjectManager() {
+    InitValues();
+  }
 
+  ObjectManager(AttribObjType_PANEL *panel) {
+    InitValues();
+    SetPanel(panel);
+  }
 
-public:
-    // ctor
-    ObjectManager()
-    { InitValues(); }
+  // setter
+  void SetPanel(AttribObjType_PANEL *panel) {
+    m_panel = panel;
+  }
 
-    ObjectManager(AttribObjType_PANEL *panel)
-    {
-        InitValues();
-        SetPanel(panel);
-    }
-
-    // setter
-    void SetPanel(AttribObjType_PANEL *panel)
-    { m_panel = panel; }
-
-
-    // functions
-    bool UpdateObjectLists(DataBaseTM *pDB);
-
-
+  // functions
+  bool UpdateObjectLists(DataBaseTM *pDB);
 };
-
 
 #endif
