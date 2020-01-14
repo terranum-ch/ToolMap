@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef _TM_ABOUT_DLG_H_
 #define _TM_ABOUT_DLG_H_
 
@@ -28,50 +27,41 @@
 #include <wx/wx.h>
 #endif
 
-
 #define ID_ABOUT_BTN 22420
 
 #include <wx/html/htmlwin.h>
 #include <wx/hyperlink.h>
-//TODO: Change this for using wxGenericStaticBitmap (2.9.0)
+// TODO: Change this for using wxGenericStaticBitmap (2.9.0)
 //#include <wx/generic/statbmpg.h> // for big static bitmap
-
-
 
 const wxString g_CodeName = "GALMIZ";
 
+class tmAboutDLG : public wxDialog {
+ private:
+  wxStaticText *m_TextVersion;
+  wxPanel *m_PanelLicence;
+  wxPanel *m_PanelAuthor;
+  wxButton *m_Button;
 
-class tmAboutDLG : public wxDialog
-{
-private:
-    wxStaticText *m_TextVersion;
-    wxPanel *m_PanelLicence;
-    wxPanel *m_PanelAuthor;
-    wxButton *m_Button;
+  void CreateControls(wxWindow *parent);
 
-    void CreateControls(wxWindow *parent);
+  wxString GetVersionText();
 
-    wxString GetVersionText();
+  wxString GetAuthorsText();
 
-    wxString GetAuthorsText();
+  wxString GetButtonText();
 
-    wxString GetButtonText();
+  void OnButton(wxCommandEvent &event);
 
+  DECLARE_EVENT_TABLE();
 
-    void OnButton(wxCommandEvent &event);
+ protected:
+ public:
+  tmAboutDLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = wxEmptyString,
+             const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+             long style = wxDEFAULT_DIALOG_STYLE);
 
-DECLARE_EVENT_TABLE();
-protected:
-
-public:
-    tmAboutDLG(wxWindow *parent, wxWindowID id = wxID_ANY,
-               const wxString &title = wxEmptyString,
-               const wxPoint &pos = wxDefaultPosition,
-               const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
-
-    ~tmAboutDLG();
-
+  ~tmAboutDLG();
 };
-
 
 #endif

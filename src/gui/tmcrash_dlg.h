@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef _TM_CRASH_DLG_H_
 #define _TM_CRASH_DLG_H_
 
@@ -28,27 +27,21 @@
 #include <wx/wx.h>
 #endif
 
-
 #include <wx/statline.h>
 
-class tmCrash_DLG : public wxDialog
-{
-private:
-    wxTextCtrl *m_CrashFile;
+class tmCrash_DLG : public wxDialog {
+ private:
+  wxTextCtrl *m_CrashFile;
 
-    void CreateControls(wxWindow *parent);
+  void CreateControls(wxWindow *parent);
 
-protected:
+ protected:
+ public:
+  tmCrash_DLG(wxWindow *parent, const wxString &crashfilename, wxWindowID id = wxID_ANY,
+              const wxString &title = _("Fatal exception"), const wxPoint &pos = wxDefaultPosition,
+              const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
 
-public:
-    tmCrash_DLG(wxWindow *parent, const wxString &crashfilename,
-                wxWindowID id = wxID_ANY, const wxString &title = _("Fatal exception"),
-                const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-                long style = wxDEFAULT_DIALOG_STYLE);
-
-    ~tmCrash_DLG();
-
+  ~tmCrash_DLG();
 };
-
 
 #endif

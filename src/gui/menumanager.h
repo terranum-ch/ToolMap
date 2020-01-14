@@ -14,16 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-/***************************************************************************//**
- @file menumanager.h
- @brief Deals with menu activation
- @details This class is the main point for enabling / disabling menu based on
- events.
- @author Lucien Schreiber (c) CREALP 2007
- @date 12 March 2008
- *******************************************************************************/
-
-
+/***************************************************************************/ /**
+  @file menumanager.h
+  @brief Deals with menu activation
+  @details This class is the main point for enabling / disabling menu based on
+  events.
+  @author Lucien Schreiber (c) CREALP 2007
+  @date 12 March 2008
+  *******************************************************************************/
 
 #ifndef _MENUMANAGER_H_
 #define _MENUMANAGER_H_
@@ -36,38 +34,37 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/docview.h>   // for recent documents
+#include <wx/fileconf.h>  // for using file config even on windows
+
 #include "../core/toolmap.h"
-#include <wx/docview.h>            // for recent documents
-#include <wx/fileconf.h>        // for using file config even on windows
 
-/***************************************************************************//**
- @brief Deals with Recent files
- @author Lucien Schreiber (c) CREALP 2007
- @date 12 March 2008
-*******************************************************************************/
-class MenuManager : public wxObject
-{
-private:
-    wxMenuBar *m_MenuBar;
-    wxFileHistory *m_pFilesHistory;
-DECLARE_CLASS(MenuManager);
+/***************************************************************************/ /**
+  @brief Deals with Recent files
+  @author Lucien Schreiber (c) CREALP 2007
+  @date 12 March 2008
+ *******************************************************************************/
+class MenuManager : public wxObject {
+ private:
+  wxMenuBar *m_MenuBar;
+  wxFileHistory *m_pFilesHistory;
+  DECLARE_CLASS(MenuManager);
 
-public:
-    MenuManager(wxMenuBar *menubar);
+ public:
+  MenuManager(wxMenuBar *menubar);
 
-    ~MenuManager();
+  ~MenuManager();
 
-    // deals with recent files
-    void InitializeRecentFilesHistory();
+  // deals with recent files
+  void InitializeRecentFilesHistory();
 
-    void TerminateRecentFilesHistory();
+  void TerminateRecentFilesHistory();
 
-    void AddFileToRecent(const wxString &spath);
+  void AddFileToRecent(const wxString &spath);
 
-    void RemoveFileFromRecent(int fileid);
+  void RemoveFileFromRecent(int fileid);
 
-    bool GetRecentFile(wxString &filepath, int fileid);
+  bool GetRecentFile(wxString &filepath, int fileid);
 };
-
 
 #endif

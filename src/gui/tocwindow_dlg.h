@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef TOCWINDOW_DLG_H
 #define TOCWINDOW_DLG_H
 
@@ -45,71 +44,65 @@
 #define SYMBOL_TOCWINDOW_DLG_SIZE wxSize(220, 150)
 #define SYMBOL_TOCWINDOW_DLG_POSITION wxDefaultPosition
 
-class TocWindowContent : public wxEvtHandler
-{
-private:
-DECLARE_DYNAMIC_CLASS(TocWindowContent);
+class TocWindowContent : public wxEvtHandler {
+ private:
+  DECLARE_DYNAMIC_CLASS(TocWindowContent);
 
-    tmTOCCtrl *m_TOCCtrl;
+  tmTOCCtrl *m_TOCCtrl;
 
-public :
-    TocWindowContent();
+ public:
+  TocWindowContent();
 
-    ~TocWindowContent();
+  ~TocWindowContent();
 
-    /// Creates the controls and sizers
-    wxSizer *CreateControls(wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE);
+  /// Creates the controls and sizers
+  wxSizer *CreateControls(wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE);
 
-    virtual void Show()
-    { ; }
+  virtual void Show() {
+    ;
+  }
 
-    virtual void Hide()
-    { ; }
+  virtual void Hide() {
+    ;
+  }
 
-    virtual bool IsShown()
-    { return FALSE; }
+  virtual bool IsShown() {
+    return FALSE;
+  }
 
-    tmTOCCtrl *GetTOCCtrl()
-    { return m_TOCCtrl; }
-
-
+  tmTOCCtrl *GetTOCCtrl() {
+    return m_TOCCtrl;
+  }
 };
 
+class TocWindowDlgGen : public TocWindowContent {
+ private:
+  DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
 
-class TocWindowDlgGen : public TocWindowContent
-{
-private:
-DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
+  void Init();
 
-    void Init();
+  wxAuiManager *m_TocAui;
+  wxPanel *m_ContentFrame;
+  wxWindow *m_ParentEvt;
 
-    wxAuiManager *m_TocAui;
-    wxPanel *m_ContentFrame;
-    wxWindow *m_ParentEvt;
+  // DECLARE_EVENT_TABLE();
 
-    //DECLARE_EVENT_TABLE();
+ public:
+  TocWindowDlgGen();
 
+  TocWindowDlgGen(wxAuiManager *myAuiManager, wxWindow *parent, wxWindowID id = ID_TOCWINDOW_DLG,
+                  const wxString &title = SYMBOL_TOCWINDOW_DLG_TITLE);
 
-public:
-    TocWindowDlgGen();
+  ~TocWindowDlgGen();
 
-    TocWindowDlgGen(wxAuiManager *myAuiManager, wxWindow *parent, wxWindowID id = ID_TOCWINDOW_DLG,
-                    const wxString &title = SYMBOL_TOCWINDOW_DLG_TITLE);
+  virtual void Show();
 
-    ~TocWindowDlgGen();
+  virtual void Hide();
 
-    virtual void Show();
+  virtual bool IsShown();
 
-    virtual void Hide();
-
-    virtual bool IsShown();
-
-
-
-    /*void OnPressRemoveLayers(wxCommandEvent & event);
-    void OnPressAddLayers(wxCommandEvent & event);*/
-
+  /*void OnPressRemoveLayers(wxCommandEvent & event);
+  void OnPressAddLayers(wxCommandEvent & event);*/
 };
-
 
 #endif

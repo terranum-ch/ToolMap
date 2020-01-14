@@ -26,39 +26,35 @@ const int ID_BTN_ALL = wxID_HIGHEST + 14;
 const int ID_BTN_NONE = wxID_HIGHEST + 15;
 const int ID_BTN_INVERT = wxID_HIGHEST + 16;
 
+class tmCloseFile_DLG : public wxDialog {
+ private:
+  wxCheckListBox *m_FileListCtrl;
+  wxButton *m_BtnAllCtrl;
+  wxButton *m_BtnInvertCtrl;
+  wxButton *m_BtnNoneCtrl;
 
-class tmCloseFile_DLG : public wxDialog
-{
-private:
-    wxCheckListBox *m_FileListCtrl;
-    wxButton *m_BtnAllCtrl;
-    wxButton *m_BtnInvertCtrl;
-    wxButton *m_BtnNoneCtrl;
+  void _CreateControls();
 
-    void _CreateControls();
+  void OnBtnAll(wxCommandEvent &event);
 
-    void OnBtnAll(wxCommandEvent &event);
+  void OnUpdateUIAll(wxUpdateUIEvent &event);
 
-    void OnUpdateUIAll(wxUpdateUIEvent &event);
+  void OnBtnInvert(wxCommandEvent &event);
 
-    void OnBtnInvert(wxCommandEvent &event);
+  void OnBtnNone(wxCommandEvent &event);
 
-    void OnBtnNone(wxCommandEvent &event);
+  void OnUpdateUINone(wxUpdateUIEvent &event);
 
-    void OnUpdateUINone(wxUpdateUIEvent &event);
+  DECLARE_EVENT_TABLE()
 
-DECLARE_EVENT_TABLE()
+ public:
+  tmCloseFile_DLG(wxWindow *parent, const wxArrayString &choices, wxWindowID id = wxID_ANY,
+                  const wxString &title = _("Unlink data"), const wxPoint &pos = wxDefaultPosition,
+                  const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-public:
+  ~tmCloseFile_DLG();
 
-    tmCloseFile_DLG(wxWindow *parent, const wxArrayString &choices, wxWindowID id = wxID_ANY,
-                    const wxString &title = _("Unlink data"), const wxPoint &pos = wxDefaultPosition,
-                    const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-
-    ~tmCloseFile_DLG();
-
-    wxArrayInt GetSelections();
+  wxArrayInt GetSelections();
 };
-
 
 #endif

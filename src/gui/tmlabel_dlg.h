@@ -28,50 +28,48 @@ class tmLayerProperties;
 
 class tmGISDataVectorSHP;
 
-class tmLabelDLG : public wxDialog
-{
-private:
-    wxCheckBox *m_CheckActiveLabelCtrl;
-    wxChoice *m_FieldCtrl;
-    wxButton *m_AddFieldBtn;
-    wxTextCtrl *m_TextCtrl;
-    wxButton *m_AddTextBtn;
-    wxButton *m_ClearBtn;
-    wxRichTextCtrl *m_PreviewCtrl;
+class tmLabelDLG : public wxDialog {
+ private:
+  wxCheckBox *m_CheckActiveLabelCtrl;
+  wxChoice *m_FieldCtrl;
+  wxButton *m_AddFieldBtn;
+  wxTextCtrl *m_TextCtrl;
+  wxButton *m_AddTextBtn;
+  wxButton *m_ClearBtn;
+  wxRichTextCtrl *m_PreviewCtrl;
 
-    tmLayerProperties *m_LayerProperties;
-    tmGISDataVectorSHP *m_GisData;
+  tmLayerProperties *m_LayerProperties;
+  tmGISDataVectorSHP *m_GisData;
 
-    wxString m_LabelDefinition;
+  wxString m_LabelDefinition;
 
-    void _CreateControls();
+  void _CreateControls();
 
-    void _UpdatePreview();
+  void _UpdatePreview();
 
-    virtual bool TransferDataToWindow();
+  virtual bool TransferDataToWindow();
 
-protected:
-    void OnAddField(wxCommandEvent &event);
+ protected:
+  void OnAddField(wxCommandEvent &event);
 
-    void OnAddText(wxCommandEvent &event);
+  void OnAddText(wxCommandEvent &event);
 
-    void OnClear(wxCommandEvent &event);
+  void OnClear(wxCommandEvent &event);
 
+ public:
+  tmLabelDLG(wxWindow *parent, tmLayerProperties *properties, const wxPoint &pos = wxDefaultPosition,
+             wxWindowID id = wxID_ANY, const wxString &title = _("Labels"), const wxSize &size = wxDefaultSize,
+             long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-public:
-    tmLabelDLG(wxWindow *parent, tmLayerProperties *properties, const wxPoint &pos = wxDefaultPosition,
-               wxWindowID id = wxID_ANY, const wxString &title = _("Labels"), const wxSize &size = wxDefaultSize,
-               long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+  ~tmLabelDLG();
 
-    ~tmLabelDLG();
+  wxString GetLabelDefinition() {
+    return m_LabelDefinition;
+  }
 
-    wxString GetLabelDefinition()
-    { return m_LabelDefinition; }
-
-    bool IsLabelVisible()
-    { return m_CheckActiveLabelCtrl->GetValue(); }
+  bool IsLabelVisible() {
+    return m_CheckActiveLabelCtrl->GetValue();
+  }
 };
 
-
 #endif
-

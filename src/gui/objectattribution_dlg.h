@@ -3,7 +3,7 @@
  Display the dialog called when user press the
  Project->Edit->Object definition menu
  -------------------
- copyright            : (C) 2007 CREALP Lucien Schreiber 
+ copyright            : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -29,7 +29,6 @@
 
 class wxNotebook;
 
-
 #define ID_DLG_ATTRIBUTION 10025
 #define ID_DLGPEO_NOTEBOOK 10026
 #define ID_DLGPEO_PANEL_LINE 10027
@@ -46,85 +45,80 @@ class wxNotebook;
 #define ID_DLGPEO_BTN_DEL 10032
 #define ID_DLGPEO_BTN_IMPORT 10232
 #define ID_DLGPEO_BTN_EXPORT 10233
-#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxMAXIMIZE_BOX
+#define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE \
+  wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX | wxMAXIMIZE_BOX
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE _("Objects Kind definition")
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME ID_DLG_ATTRIBUTION
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE wxDefaultSize
 #define SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION wxDefaultPosition
 
+class ProjectEditObjectDefinitionDLG : public wxDialog {
+ private:
+  DataBaseTM *m_DB;
 
-class ProjectEditObjectDefinitionDLG : public wxDialog
-{
-private:
-    DataBaseTM *m_DB;
+  // create a memory layer object for storing changes
+  PrjDefMemManage m_MemoryObject;
 
-    // create a memory layer object for storing changes
-    PrjDefMemManage m_MemoryObject;
+  // EVENT FUNCTION
+  void OnAddObject(wxCommandEvent &event);
 
+  void OnRemoveObject(wxCommandEvent &event);
 
-    // EVENT FUNCTION
-    void OnAddObject(wxCommandEvent &event);
+  void OnImportFile(wxCommandEvent &event);
 
-    void OnRemoveObject(wxCommandEvent &event);
+  void OnExportFile(wxCommandEvent &event);
 
-    void OnImportFile(wxCommandEvent &event);
+  void OnChangeLayerName(wxCommandEvent &event);
 
-    void OnExportFile(wxCommandEvent &event);
+  void OnSaveChanges(wxCommandEvent &event);
 
-    void OnChangeLayerName(wxCommandEvent &event);
+  void OnNotebookChangeTab(wxNotebookEvent &event);
 
-    void OnSaveChanges(wxCommandEvent &event);
+  // PRIVATE DATABASE FUNCTION
+  bool SetChoiceListText(wxChoice *choice, int listtype);
 
-    void OnNotebookChangeTab(wxNotebookEvent &event);
+  DECLARE_DYNAMIC_CLASS(ProjectEditObjectDefinitionDLG)
 
-    // PRIVATE DATABASE FUNCTION
-    bool SetChoiceListText(wxChoice *choice, int listtype);
+  DECLARE_EVENT_TABLE()
 
+ public:
+  /// Constructors
+  ProjectEditObjectDefinitionDLG();
 
-DECLARE_DYNAMIC_CLASS(ProjectEditObjectDefinitionDLG)
+  ProjectEditObjectDefinitionDLG(wxWindow *parent, DataBaseTM *pDatabase,
+                                 wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
+                                 const wxString &caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
+                                 const wxPoint &pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
+                                 const wxSize &size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
+                                 long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE);
 
-DECLARE_EVENT_TABLE()
+  /// Creation
+  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
+              const wxString &caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
+              const wxPoint &pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
+              const wxSize &size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
+              long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE);
 
-public:
-    /// Constructors
-    ProjectEditObjectDefinitionDLG();
+  /// Destructor
+  ~ProjectEditObjectDefinitionDLG();
 
-    ProjectEditObjectDefinitionDLG(wxWindow *parent, DataBaseTM *pDatabase,
-                                   wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
-                                   const wxString &caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
-                                   const wxPoint &pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
-                                   const wxSize &size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
-                                   long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE);
+  void Init();
 
-    /// Creation
-    bool Create(wxWindow *parent,
-                wxWindowID id = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_IDNAME,
-                const wxString &caption = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_TITLE,
-                const wxPoint &pos = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_POSITION,
-                const wxSize &size = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_SIZE,
-                long style = SYMBOL_PROJECTEDITOBJECTDEFINITIONDLG_STYLE);
+  void PostInit();
 
-    /// Destructor
-    ~ProjectEditObjectDefinitionDLG();
+  void CreateControls();
 
-    void Init();
-
-    void PostInit();
-
-    void CreateControls();
-
-    wxNotebook *m_DLGPEO_Notebook;
-    wxPanel *m_DLGPEO_Panel_Line;
-    ObjectDefinitionList *m_DLGPEO_List_Line;
-    wxChoice *m_DLGPEO_Choice_Lyr_Line_Name;
-    wxPanel *m_DLGPEO_Panel_Point;
-    ObjectDefinitionList *m_DLGPEO_List_Point;
-    wxChoice *m_DLGPEO_Choice_Lyr_Point_Name;
-    wxPanel *m_DLGPEO_Panel_Poly;
-    ObjectDefinitionList *m_DLGPEO_List_Poly;
-    wxChoice *m_DLGPEO_Choice_Lyr_Poly_Name;
-    wxStatusBar *m_DLGPEO_StatusBar;
+  wxNotebook *m_DLGPEO_Notebook;
+  wxPanel *m_DLGPEO_Panel_Line;
+  ObjectDefinitionList *m_DLGPEO_List_Line;
+  wxChoice *m_DLGPEO_Choice_Lyr_Line_Name;
+  wxPanel *m_DLGPEO_Panel_Point;
+  ObjectDefinitionList *m_DLGPEO_List_Point;
+  wxChoice *m_DLGPEO_Choice_Lyr_Point_Name;
+  wxPanel *m_DLGPEO_Panel_Poly;
+  ObjectDefinitionList *m_DLGPEO_List_Poly;
+  wxChoice *m_DLGPEO_Choice_Lyr_Poly_Name;
+  wxStatusBar *m_DLGPEO_StatusBar;
 };
 
 #endif
-

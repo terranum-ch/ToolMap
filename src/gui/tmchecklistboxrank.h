@@ -16,7 +16,6 @@
 
 // comment doxygen
 
-
 #ifndef _TMCHECKLISTBOXRANK_H_
 #define _TMCHECKLISTBOXRANK_H_
 
@@ -28,84 +27,70 @@
 #include <wx/wx.h>
 #endif
 
-#include "tmchecklistbox.h"                    // for parent class
-#include "../database/database_tm.h"        // for database operation (saving rank)
+#include "../database/database_tm.h"  // for database operation (saving rank)
+#include "tmchecklistbox.h"           // for parent class
 
 // menu items
 const int tmCHECK_MENU_SAVE_RANK = 10005;
 
+/***************************************************************************/ /**
+  @brief Enhance the #tmCheckListBox class
+  @details This derivated class add the ability to save the order of the list in
+  a database in a rank column
+  @todo add sample here !
+  @see For all database function #DataBaseTM
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 20 May 2008
+  *******************************************************************************/
+class tmCheckListBoxRank : public tmCheckListBox {
+ private:
+  // members
+  wxString m_RankColName;
+  wxString m_TableName;
+  DataBaseTM *m_pDB;
 
-/***************************************************************************//**
- @brief Enhance the #tmCheckListBox class
- @details This derivated class add the ability to save the order of the list in
- a database in a rank column
- @todo add sample here !
- @see For all database function #DataBaseTM
- @author Lucien Schreiber (c) CREALP 2008
- @date 20 May 2008
- *******************************************************************************/
-class tmCheckListBoxRank : public tmCheckListBox
-{
-private:
-    // members
-    wxString m_RankColName;
-    wxString m_TableName;
-    DataBaseTM *m_pDB;
+  // functions
+  void Init();
 
+  bool AddToMenu();
 
-    // functions
-    void Init();
+  // event functions
+  void OnSaveOrder(wxCommandEvent &event);
 
-    bool AddToMenu();
+ protected:
+  bool GetOrder(wxArrayLong &id);  // unused ???
+  bool PrepareOrderStatement(wxString &sqlstatement);
 
-    // event functions
-    void OnSaveOrder(wxCommandEvent &event);
+ public:
+  ~tmCheckListBoxRank();
 
-protected:
-    bool GetOrder(wxArrayLong &id); // unused ???
-    bool PrepareOrderStatement(wxString &sqlstatement);
+  tmCheckListBoxRank(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
+                     const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = NULL,
+                     long style = 0, const wxValidator &validator = wxDefaultValidator,
+                     const wxString &name = wxListBoxNameStr);
 
-public:
-    ~tmCheckListBoxRank();
+  bool Create(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
+              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = NULL, long style = 0,
+              const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr);
 
-    tmCheckListBoxRank(wxWindow *parent,
-                       wxWindowID id,
-                       const wxPoint &pos = wxDefaultPosition,
-                       const wxSize &size = wxDefaultSize,
-                       int nStrings = 0,
-                       const wxString *choices = NULL,
-                       long style = 0,
-                       const wxValidator &validator = wxDefaultValidator,
-                       const wxString &name = wxListBoxNameStr);
+  // set and get the rank column name
+  wxString GetRankColName() {
+    return m_RankColName;
+  }
 
-    bool Create(wxWindow *parent,
-                wxWindowID id,
-                const wxPoint &pos = wxDefaultPosition,
-                const wxSize &size = wxDefaultSize,
-                int nStrings = 0,
-                const wxString *choices = NULL,
-                long style = 0,
-                const wxValidator &validator = wxDefaultValidator,
-                const wxString &name = wxListBoxNameStr);
+  void SetRankColName(const wxString &colrank = _T("RANK"));
 
-    // set and get the rank column name
-    wxString GetRankColName()
-    { return m_RankColName; }
+  // set and get the table name for the rank
+  wxString GetTableName() {
+    return m_TableName;
+  }
 
-    void SetRankColName(const wxString &colrank = _T("RANK"));
+  void SetTableName(const wxString &tabname = TABLE_NAME_OBJECTS);
 
-    // set and get the table name for the rank
-    wxString GetTableName()
-    { return m_TableName; }
-
-    void SetTableName(const wxString &tabname = TABLE_NAME_OBJECTS);
-
-    // set the database
-    void SetDataBase(DataBaseTM *pDB)
-    { m_pDB = pDB; }
-
-
+  // set the database
+  void SetDataBase(DataBaseTM *pDB) {
+    m_pDB = pDB;
+  }
 };
-
 
 #endif

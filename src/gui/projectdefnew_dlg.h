@@ -2,7 +2,7 @@
  projectdefnew_dlg.h
  New Project creation first dialog
  -------------------
- copyright            : (C) 2007 CREALP Lucien Schreiber 
+ copyright            : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -30,63 +30,57 @@
 #define ID_PROJECTDEFNEW 10018
 #define ID_TEXTCTRL1 10114
 #define ID_TEXTCTRL2 10115
-#define SYMBOL_PROJECTDEFNEW_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
+#define SYMBOL_PROJECTDEFNEW_STYLE wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX | wxTAB_TRAVERSAL
 #define SYMBOL_PROJECTDEFNEW_TITLE _("New project")
 #define SYMBOL_PROJECTDEFNEW_IDNAME ID_PROJECTDEFNEW
 #define SYMBOL_PROJECTDEFNEW_SIZE wxSize(400, 300)
 #define SYMBOL_PROJECTDEFNEW_POSITION wxDefaultPosition
 
-class ProjectDefNew : public wxDialog
-{
-DECLARE_DYNAMIC_CLASS(ProjectDefNew)
+class ProjectDefNew : public wxDialog {
+  DECLARE_DYNAMIC_CLASS(ProjectDefNew)
 
-DECLARE_EVENT_TABLE()
-    PrjDefMemManage *m_PrjDefinition;
+  DECLARE_EVENT_TABLE()
+  PrjDefMemManage *m_PrjDefinition;
 
-    // private functions
-    bool CheckIdleRules();
+  // private functions
+  bool CheckIdleRules();
 
-    void OnIdleWait(wxIdleEvent &event);
+  void OnIdleWait(wxIdleEvent &event);
 
-public:
-    /// Constructors
-    ProjectDefNew();
+ public:
+  /// Constructors
+  ProjectDefNew();
 
-    ProjectDefNew(wxWindow *parent,
-                  PrjDefMemManage *PrjDefinition,
-                  wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
-                  const wxString &caption = SYMBOL_PROJECTDEFNEW_TITLE,
-                  const wxPoint &pos = SYMBOL_PROJECTDEFNEW_POSITION,
-                  const wxSize &size = SYMBOL_PROJECTDEFNEW_SIZE,
-                  long style = SYMBOL_PROJECTDEFNEW_STYLE);
-
-    /// Creation
-    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
+  ProjectDefNew(wxWindow *parent, PrjDefMemManage *PrjDefinition, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
                 const wxString &caption = SYMBOL_PROJECTDEFNEW_TITLE,
-                const wxPoint &pos = SYMBOL_PROJECTDEFNEW_POSITION,
-                const wxSize &size = SYMBOL_PROJECTDEFNEW_SIZE,
+                const wxPoint &pos = SYMBOL_PROJECTDEFNEW_POSITION, const wxSize &size = SYMBOL_PROJECTDEFNEW_SIZE,
                 long style = SYMBOL_PROJECTDEFNEW_STYLE);
 
-    /// Destructor
-    ~ProjectDefNew();
+  /// Creation
+  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
+              const wxString &caption = SYMBOL_PROJECTDEFNEW_TITLE, const wxPoint &pos = SYMBOL_PROJECTDEFNEW_POSITION,
+              const wxSize &size = SYMBOL_PROJECTDEFNEW_SIZE, long style = SYMBOL_PROJECTDEFNEW_STYLE);
 
-    /// Initialises member variables
-    void Init();
+  /// Destructor
+  ~ProjectDefNew();
 
-    /// Creates the controls and sizers
-    void CreateControls();
+  /// Initialises member variables
+  void Init();
 
-    PrjDefMemManage *GetProjectDefinition()
-    { return m_PrjDefinition; }
+  /// Creates the controls and sizers
+  void CreateControls();
 
-    wxDirPickerCtrlBest *m_DlgPD_Proj_Path;
-    wxTextCtrl *m_DlgPd_Proj_Name;
-    wxChoice *m_DlgPd_Proj_Unit;
-    wxChoice *m_DlgPd_Proj_Projection;
-    wxButton *m_DlgPd_Button_Ok;
+  PrjDefMemManage *GetProjectDefinition() {
+    return m_PrjDefinition;
+  }
 
-    virtual bool TransferDataFromWindow();
+  wxDirPickerCtrlBest *m_DlgPD_Proj_Path;
+  wxTextCtrl *m_DlgPd_Proj_Name;
+  wxChoice *m_DlgPd_Proj_Unit;
+  wxChoice *m_DlgPd_Proj_Projection;
+  wxButton *m_DlgPd_Button_Ok;
+
+  virtual bool TransferDataFromWindow();
 };
 
 #endif
-

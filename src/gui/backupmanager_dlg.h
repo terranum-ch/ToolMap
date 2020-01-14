@@ -1,7 +1,7 @@
 /***************************************************************************
  backupmanager_dlg.h
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,6 +23,7 @@
 #endif
 
 #include <wx/wupdlock.h>
+
 #include "../core/datalistreportctrl.h"
 
 class BackupManager;
@@ -30,46 +31,44 @@ class BackupManager;
 const int ID_BTN_RESTORE = wxID_HIGHEST + 1;
 const int ID_LIST_BACKUPS = wxID_HIGHEST + 2;
 
-class BackupManagerDLG : public wxDialog
-{
-private:
-    wxImageList *m_ImgList;
-    DataListReportCtrl *m_ListBackup;
-    bool m_AscendingOrder;
-    int m_ClassedCol;
+class BackupManagerDLG : public wxDialog {
+ private:
+  wxImageList *m_ImgList;
+  DataListReportCtrl *m_ListBackup;
+  bool m_AscendingOrder;
+  int m_ClassedCol;
 
-    wxButton *m_BtnDelete;
-    wxButton *m_BtnRestore;
-    wxStatusBar *m_StatusBar;
-    BackupManager *m_BackupManager;
-    wxString m_BackupPath;
-    wxString m_RestoreFileName;
+  wxButton *m_BtnDelete;
+  wxButton *m_BtnRestore;
+  wxStatusBar *m_StatusBar;
+  BackupManager *m_BackupManager;
+  wxString m_BackupPath;
+  wxString m_RestoreFileName;
 
+  void _CreateControls();
 
-    void _CreateControls();
+  bool _LoadData();
 
-    bool _LoadData();
+  void _UpdateStatusbar(const unsigned int &bcknumber);
 
-    void _UpdateStatusbar(const unsigned int &bcknumber);
+  void OnButtonRestore(wxCommandEvent &event);
 
-    void OnButtonRestore(wxCommandEvent &event);
+  void OnButtonDelete(wxCommandEvent &event);
 
-    void OnButtonDelete(wxCommandEvent &event);
+  void OnListColumnClick(wxListEvent &event);
 
-    void OnListColumnClick(wxListEvent &event);
+  void OnUpdateUIDelete(wxUpdateUIEvent &event);
 
-    void OnUpdateUIDelete(wxUpdateUIEvent &event);
+  void OnUpdateUIRestore(wxUpdateUIEvent &event);
 
-    void OnUpdateUIRestore(wxUpdateUIEvent &event);
+  DECLARE_EVENT_TABLE();
 
-DECLARE_EVENT_TABLE();
+ public:
+  BackupManagerDLG(wxWindow *parent, wxWindowID id, const wxString &title, BackupManager *bckmanager);
 
-public:
-    BackupManagerDLG(wxWindow *parent, wxWindowID id, const wxString &title, BackupManager *bckmanager);
+  virtual ~BackupManagerDLG();
 
-    virtual ~BackupManagerDLG();
-
-    wxString GetRestoreFileName();
+  wxString GetRestoreFileName();
 };
 
 #endif

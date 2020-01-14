@@ -24,13 +24,12 @@
 #include <wx/wx.h>
 #endif
 
-
 #include <wx/wizard.h>
-#include "queriespages.h"
-#include "../gis/tmlayerpropertiesdef.h"
+
 #include "../core/projectdefmemory.h"
 #include "../core/queriesdata.h"
-
+#include "../gis/tmlayerpropertiesdef.h"
+#include "queriespages.h"
 
 class QueriesPageIntro;
 
@@ -38,39 +37,30 @@ class QueriesPageLayer;
 
 class DataBaseTM;
 
+class QueriesWizard : public wxWizard {
+ private:
+  DataBaseTM *m_pDB;
+  QueriesData *m_QueryData;
+  // Wizard's page
+  QueriesPageIntro *m_PageIntro;
 
-class QueriesWizard : public wxWizard
-{
-private:
-    DataBaseTM *m_pDB;
-    QueriesData *m_QueryData;
-    // Wizard's page
-    QueriesPageIntro *m_PageIntro;
+ public:
+  // Used by first panel
+  tmQUERIES_TYPE m_QueryType;
+  long m_QueryObjectGeomID;
 
+ public:
+  QueriesWizard(wxWindow *parent, DataBaseTM *database, int id = wxID_ANY);
 
-public:
-    //Used by first panel
-    tmQUERIES_TYPE m_QueryType;
-    long m_QueryObjectGeomID;
+  virtual ~QueriesWizard();
 
+  virtual int ShowWizard();
 
-public:
-
-    QueriesWizard(wxWindow *parent, DataBaseTM *database, int id = wxID_ANY);
-
-    virtual ~QueriesWizard();
-
-    virtual int ShowWizard();
-
-    inline QueriesData *GetData();
-
+  inline QueriesData *GetData();
 };
 
-
-inline QueriesData *QueriesWizard::GetData()
-{
-    return m_QueryData;
+inline QueriesData *QueriesWizard::GetData() {
+  return m_QueryData;
 }
-
 
 #endif
