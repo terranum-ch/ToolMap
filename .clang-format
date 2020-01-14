@@ -1,4 +1,8 @@
 Language: Cpp
-TabWidth: 4
-IndentWidth: 4
+BasedOnStyle: Google
 ColumnLimit: 120
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AllowAllConstructorInitializersOnNextLine: false
+AllowShortFunctionsOnASingleLine: Empty
