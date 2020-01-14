@@ -1,9 +1,8 @@
 /***************************************************************************
  tmstatsevents.h
- Definition of Statistics related events 
+ Definition of Statistics related events
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,17 +17,14 @@
 #ifndef _TMSTATS_EVENT_H
 #define _TMSTATS_EVENT_H
 
-
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
 DECLARE_EVENT_TYPE(tmEVT_STAT_CLICK, -1);
 DECLARE_EVENT_TYPE(tmEVT_STAT_ATTRIB, -1);
 DECLARE_EVENT_TYPE(tmEVT_STAT_INTERSECTION, -1);
-
 
 #endif

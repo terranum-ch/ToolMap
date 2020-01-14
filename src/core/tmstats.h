@@ -1,8 +1,7 @@
 /***************************************************************************
  tmstats.h
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,140 +16,125 @@
 #ifndef _TMSTATS_H
 #define _TMSTATS_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/wupdlock.h>
 #include <wx/busyinfo.h>
-
+#include <wx/wupdlock.h>
 
 class DataBaseTM;
 
+/***************************************************************************/ /**
+ @brief Statistics data class
+ @author Lucien Schreiber (c) CREALP
+ @date 15 juillet 2011
+ *******************************************************************************/
+class tmStatsData {
+ public:
+  long m_Id;
+  wxDateTime m_TimeStart;
+  long m_NbClick;
+  long m_NbAttribution;
+  long m_NbIntersection;
+  wxTimeSpan m_TimeElapsed;
 
-/***************************************************************************//**
-@brief Statistics data class
-@author Lucien Schreiber (c) CREALP
-@date 15 juillet 2011
-*******************************************************************************/
-class tmStatsData
-{
-public:
-    long m_Id;
-    wxDateTime m_TimeStart;
-    long m_NbClick;
-    long m_NbAttribution;
-    long m_NbIntersection;
-    wxTimeSpan m_TimeElapsed;
+  tmStatsData();
 
+  virtual ~tmStatsData();
 
-    tmStatsData();
+  void Reset();
 
-    virtual ~tmStatsData();
+  void ResetPartial();
 
-    void Reset();
-
-    void ResetPartial();
-
-    bool IsOk() const;
+  bool IsOk() const;
 };
 
+/***************************************************************************/ /**
+ @brief Statistics manager, link event to data and database records
+ @author Lucien Schreiber (c) CREALP
+ @date 15 juillet 2011
+ *******************************************************************************/
+class tmStatsManager {
+ private:
+  tmStatsData m_StatBufferData;
+  DataBaseTM *m_Database;
+  bool m_IsStarted;
+  static const int m_BufferSize = 50;
 
-/***************************************************************************//**
-@brief Statistics manager, link event to data and database records
-@author Lucien Schreiber (c) CREALP
-@date 15 juillet 2011
-*******************************************************************************/
-class tmStatsManager
-{
-private:
-    tmStatsData m_StatBufferData;
-    DataBaseTM *m_Database;
-    bool m_IsStarted;
-    static const int m_BufferSize = 50;
+  void _FlushBuffer();
 
+  void _StartRecord();
 
-    void _FlushBuffer();
+  void _StopRecord();
 
-    void _StartRecord();
+  // void OnGetStatsMessage(wxCommandEvent & event);
 
-    void _StopRecord();
+ public:
+  tmStatsManager();
 
-    //void OnGetStatsMessage(wxCommandEvent & event);
+  virtual ~tmStatsManager();
 
-public:
-    tmStatsManager();
+  void Create(DataBaseTM *database);
 
-    virtual ~tmStatsManager();
+  bool IsReady();
 
-    void Create(DataBaseTM *database);
+  void AppendToBuffer(long click, long attrib, long intersection);
 
-    bool IsReady();
-
-    void AppendToBuffer(long click, long attrib, long intersection);
-
-    void ShowStatsDialog(wxWindow *parent);
+  void ShowStatsDialog(wxWindow *parent);
 };
 
+/***************************************************************************/ /**
+ @brief Statistics dialog
+ @author Lucien Schreiber (c) CREALP
+ @date 15 juillet 2011
+ *******************************************************************************/
+class tmStats_DLG : public wxDialog {
+ private:
+  // controls
+  wxStaticBoxSizer *m_SessionSizerCtrl;
+  wxStaticText *m_SessionClickCtrl;
+  wxStaticText *m_SessionAttribCtrl;
+  wxStaticText *m_SessionIntersectCtrl;
+  wxStaticText *m_SessionElapsedTimeCtrl;
+  wxStaticBoxSizer *m_TotalSizerCtrl;
+  wxStaticText *m_TotalClickCtrl;
+  wxStaticText *m_TotalAttribCtrl;
+  wxStaticText *m_TotalIntersectCtrl;
+  wxStaticText *m_TotalElapsedTimeCtrl;
+  wxButton *m_BtnStartCtrl;
+  wxButton *m_BtnStopCtrl;
+  wxButton *m_BtnExportCtrl;
+  wxButton *m_BtnCloseCtrl;
 
-/***************************************************************************//**
-@brief Statistics dialog
-@author Lucien Schreiber (c) CREALP
-@date 15 juillet 2011
-*******************************************************************************/
-class tmStats_DLG : public wxDialog
-{
-private:
-    // controls
-    wxStaticBoxSizer *m_SessionSizerCtrl;
-    wxStaticText *m_SessionClickCtrl;
-    wxStaticText *m_SessionAttribCtrl;
-    wxStaticText *m_SessionIntersectCtrl;
-    wxStaticText *m_SessionElapsedTimeCtrl;
-    wxStaticBoxSizer *m_TotalSizerCtrl;
-    wxStaticText *m_TotalClickCtrl;
-    wxStaticText *m_TotalAttribCtrl;
-    wxStaticText *m_TotalIntersectCtrl;
-    wxStaticText *m_TotalElapsedTimeCtrl;
-    wxButton *m_BtnStartCtrl;
-    wxButton *m_BtnStopCtrl;
-    wxButton *m_BtnExportCtrl;
-    wxButton *m_BtnCloseCtrl;
+  const tmStatsData *m_DataActual;
+  const tmStatsData *m_DataTotal;
+  long m_DataTotalRecord;
+  DataBaseTM *m_Database;
 
-    const tmStatsData *m_DataActual;
-    const tmStatsData *m_DataTotal;
-    long m_DataTotalRecord;
-    DataBaseTM *m_Database;
+  void OnRecordStart(wxCommandEvent &event);
 
+  void OnRecordStop(wxCommandEvent &event);
 
-    void OnRecordStart(wxCommandEvent &event);
+  void OnExport(wxCommandEvent &event);
 
-    void OnRecordStop(wxCommandEvent &event);
+  void _CreateControls();
 
-    void OnExport(wxCommandEvent &event);
+  void _UpdateControls();
 
-    void _CreateControls();
+  DECLARE_EVENT_TABLE();
 
-    void _UpdateControls();
+ public:
+  tmStats_DLG(wxWindow *parent, const tmStatsData *actual, const tmStatsData *total, long nbrecords,
+              DataBaseTM *database, wxWindowID id = wxID_ANY, const wxString &title = _("Statistics"),
+              const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+              long style = wxDEFAULT_DIALOG_STYLE);
 
-DECLARE_EVENT_TABLE();
-public:
-    tmStats_DLG(wxWindow *parent,
-                const tmStatsData *actual,
-                const tmStatsData *total,
-                long nbrecords, DataBaseTM *database,
-                wxWindowID id = wxID_ANY,
-                const wxString &title = _("Statistics"),
-                const wxPoint &pos = wxDefaultPosition,
-                const wxSize &size = wxDefaultSize,
-                long style = wxDEFAULT_DIALOG_STYLE);
+  virtual ~tmStats_DLG();
 
-    virtual ~tmStats_DLG();
-
-    void SetStarted(bool recordstarted);
-
+  void SetStarted(bool recordstarted);
 };
 
 #endif

@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmmanagerevent.h
+ tmmanagerevent.h
                     Definition of event for GIS manager (layer, attribution)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_MANAGER_EVENT_H_
 #define _TM_MANAGER_EVENT_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -35,16 +33,16 @@ DECLARE_EVENT_TYPE(tmEVT_QUERY_RUN, -1);
 
 DECLARE_EVENT_TYPE(tmEVT_TOGGLE_FREQUENT, -1)
 
-//DEFINE_EVENT_TYPE (tmEVT_SHORTCUT_REFRESH);
+// DEFINE_EVENT_TYPE (tmEVT_SHORTCUT_REFRESH);
 DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_REFRESH, -1);
 
-//DECLARE_EVENT_TYPE (tmEVT_VIEW_REFRESHED, -1);
-DECLARE_EVENT_TYPE (tmEVT_AM_COPY_ATTRIBUTION, -1);
+// DECLARE_EVENT_TYPE (tmEVT_VIEW_REFRESHED, -1);
+DECLARE_EVENT_TYPE(tmEVT_AM_COPY_ATTRIBUTION, -1);
 
-DECLARE_EVENT_TYPE (tmEVT_LM_ANGLE_CHANGED, -1);
+DECLARE_EVENT_TYPE(tmEVT_LM_ANGLE_CHANGED, -1);
 DECLARE_EVENT_TYPE(tmEVT_FOCUS_RENDERER, -1);
 
-DECLARE_EVENT_TYPE (tmEVT_LM_MOVE_TO_FEATURE, -1);
-DECLARE_EVENT_TYPE (tmEVT_LM_ZOOM_TO_FEATURE, -1);
+DECLARE_EVENT_TYPE(tmEVT_LM_MOVE_TO_FEATURE, -1);
+DECLARE_EVENT_TYPE(tmEVT_LM_ZOOM_TO_FEATURE, -1);
 
 #endif

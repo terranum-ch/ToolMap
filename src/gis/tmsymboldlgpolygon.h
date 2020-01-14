@@ -3,7 +3,6 @@
  Display Polygon Symbology dialog
  -------------------
  copyright            : (C) 2007 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,27 +16,25 @@
 
 // comment doxygen
 
-
 #ifndef _TM_SYMBOLDLGPOLYGON_H_
 #define _TM_SYMBOLDLGPOLYGON_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
 #include <wx/spinctrl.h>
-#include <wx/imaglist.h>
 #include <wx/wupdlock.h>
 
-#include "tmsymboldlg.h"        // tmSymbolDlg declaration
+#include "tmsymboldlg.h"  // tmSymbolDlg declaration
 #include "tmsymbolrule.h"
-
 
 const int ID_SYMDLGPLG_PANEL = 10216;
 const int ID_SYMDLGPLG_NOTEBOOK = 10080;
@@ -49,7 +46,6 @@ const int ID_SYMDLGPLG_FILL_COLOR = 10087;
 const int ID_SYMDLGPLG_PANEL3 = 10085;
 const int ID_SYMDLGPLG_PANEL4 = 10088;
 const int ID_SYMDLGPLG_TRANSPARENCY = 10086;
-
 
 const int ID_BTN_CLASSIFY = 10330;
 const int ID_BTN_ADD = 10331;
@@ -63,173 +59,160 @@ class tmGISDataVectorSHP;
 
 class DataListReportCtrl;
 
-class tmSymbolDataPolygonUnique
-{
-public:
-    int m_PanelNo;
-    wxColour m_bColour;
-    int m_bWidth;
-    wxColour m_fColour;
-    int m_fStyle;
-    int m_GlobalTransparency;
+class tmSymbolDataPolygonUnique {
+ public:
+  int m_PanelNo;
+  wxColour m_bColour;
+  int m_bWidth;
+  wxColour m_fColour;
+  int m_fStyle;
+  int m_GlobalTransparency;
 
-    tmSymbolDataPolygonUnique()
-    {
-        m_PanelNo = 0;
-        m_bColour = *wxBLACK;
-        m_bWidth = 1;
-        m_fColour = *wxBLACK;
-        m_fStyle = 0;
-        m_GlobalTransparency = 0;
-    }
+  tmSymbolDataPolygonUnique() {
+    m_PanelNo = 0;
+    m_bColour = *wxBLACK;
+    m_bWidth = 1;
+    m_fColour = *wxBLACK;
+    m_fStyle = 0;
+    m_GlobalTransparency = 0;
+  }
 };
 
+class tmSymbolDLGPolygon : public tmSymbolDLG {
+ private:
+  wxColourPickerCtrl *m_PolygonBorderColourCtrl;
+  wxColourPickerCtrl *m_PolygonFillColourCtrl;
+  wxSpinCtrl *m_PolygonBorderWidthCtrl;
+  wxChoice *m_PolygonFillPattern;
+  tmSliderWithText *m_TransparencySlider;
 
-class tmSymbolDLGPolygon : public tmSymbolDLG
-{
-private:
-    wxColourPickerCtrl *m_PolygonBorderColourCtrl;
-    wxColourPickerCtrl *m_PolygonFillColourCtrl;
-    wxSpinCtrl *m_PolygonBorderWidthCtrl;
-    wxChoice *m_PolygonFillPattern;
-    tmSliderWithText *m_TransparencySlider;
+  tmSymbolDataPolygonUnique m_DlgData;
 
-    tmSymbolDataPolygonUnique m_DlgData;
+  void _Init();
 
-    void _Init();
+  void CreateControlsPoly();
 
-    void CreateControlsPoly();
+  virtual bool TransferDataToWindow();
 
-    virtual bool TransferDataToWindow();
+  virtual bool TransferDataFromWindow();
 
-    virtual bool TransferDataFromWindow();
+  DECLARE_DYNAMIC_CLASS(tmSymbolDLGPolygon)
 
+ public:
+  /// Constructors
+  tmSymbolDLGPolygon();
 
-DECLARE_DYNAMIC_CLASS(tmSymbolDLGPolygon)
+  ~tmSymbolDLGPolygon();
 
-public:
-    /// Constructors
-    tmSymbolDLGPolygon();
+  tmSymbolDLGPolygon(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                     const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                     const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
+                     long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
-    ~tmSymbolDLGPolygon();
+  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+              const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
+              const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
-    tmSymbolDLGPolygon(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-                       const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
-                       const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
-                       const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
-                       long style = SYMBOL_TMSYMBOLDLG_STYLE);
+  void SetDialogData(const tmSymbolDataPolygonUnique &data) {
+    m_DlgData = data;
+  }
 
-    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-                const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
-                const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
-                const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
-                long style = SYMBOL_TMSYMBOLDLG_STYLE);
-
-    void SetDialogData(const tmSymbolDataPolygonUnique &data)
-    { m_DlgData = data; }
-
-    tmSymbolDataPolygonUnique GetDialogData()
-    { return m_DlgData; }
+  tmSymbolDataPolygonUnique GetDialogData() {
+    return m_DlgData;
+  }
 };
 
+/*************************************************************************************/ /**
+ @brief Symbology dialog supporting rules
+ @author Lucien Schreiber copyright CREALP
+ @date 27 aout 2012
+ *****************************************************************************************/
+class tmSymbolDLGPolyRule : public tmSymbolDLG {
+ private:
+  wxNotebook *m_SymbologyTypeCtrl;
+  wxChoice *m_CategoryColumnCtrl;
+  DataListReportCtrl *m_SymbolListCtrl;
+  wxButton *m_ClassifyBtn;
+  wxButton *m_AddBtn;
+  wxButton *m_RemoveBtn;
+  wxButton *m_RemoveAllBtn;
+  wxImageList *m_ImgList;
 
-/*************************************************************************************//**
-@brief Symbology dialog supporting rules
-@author Lucien Schreiber copyright CREALP
-@date 27 aout 2012
-*****************************************************************************************/
-class tmSymbolDLGPolyRule : public tmSymbolDLG
-{
-private:
-    wxNotebook *m_SymbologyTypeCtrl;
-    wxChoice *m_CategoryColumnCtrl;
-    DataListReportCtrl *m_SymbolListCtrl;
-    wxButton *m_ClassifyBtn;
-    wxButton *m_AddBtn;
-    wxButton *m_RemoveBtn;
-    wxButton *m_RemoveAllBtn;
-    wxImageList *m_ImgList;
+  // unique
+  wxColourPickerCtrl *m_PolygonBorderColourCtrl;
+  wxColourPickerCtrl *m_PolygonFillColourCtrl;
+  wxSpinCtrl *m_PolygonBorderWidthCtrl;
+  wxChoice *m_PolygonFillPattern;
+  tmSliderWithText *m_TransparencySlider;
 
-    // unique
-    wxColourPickerCtrl *m_PolygonBorderColourCtrl;
-    wxColourPickerCtrl *m_PolygonFillColourCtrl;
-    wxSpinCtrl *m_PolygonBorderWidthCtrl;
-    wxChoice *m_PolygonFillPattern;
-    tmSliderWithText *m_TransparencySlider;
+  tmSymbolRuleArray m_Rules;
+  tmLayerProperties *m_LayerProperties;
+  tmGISDataVectorSHP *m_GISData;
 
-    tmSymbolRuleArray m_Rules;
-    tmLayerProperties *m_LayerProperties;
-    tmGISDataVectorSHP *m_GISData;
+  wxString m_SelectedField;
+  tmSymbolDataPolygonUnique m_PolyUniqueStyle;
 
-    wxString m_SelectedField;
-    tmSymbolDataPolygonUnique m_PolyUniqueStyle;
+  void _CreateControls();
 
+  void _LoadTableData();
 
-    void _CreateControls();
+  wxBitmap _CreateColorBitmap(const wxBrush &brush, const wxPen &pen);
 
-    void _LoadTableData();
+  void OnBtnClassify(wxCommandEvent &event);
 
-    wxBitmap _CreateColorBitmap(const wxBrush &brush, const wxPen &pen);
+  void OnBtnAdd(wxCommandEvent &event);
 
+  void OnBtnRemove(wxCommandEvent &event);
 
-    void OnBtnClassify(wxCommandEvent &event);
+  void OnBtnRemoveAll(wxCommandEvent &event);
 
-    void OnBtnAdd(wxCommandEvent &event);
+  void OnDoubleClick(wxListEvent &event);
 
-    void OnBtnRemove(wxCommandEvent &event);
+  void OnUpdateUIBtnRemove(wxUpdateUIEvent &event);
 
-    void OnBtnRemoveAll(wxCommandEvent &event);
+  void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent &event);
 
-    void OnDoubleClick(wxListEvent &event);
+  virtual bool TransferDataToWindow();
 
-    void OnUpdateUIBtnRemove(wxUpdateUIEvent &event);
+  virtual bool TransferDataFromWindow();
 
-    void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent &event);
+  DECLARE_EVENT_TABLE();
 
-    virtual bool TransferDataToWindow();
+ public:
+  tmSymbolDLGPolyRule(wxWindow *parent, tmLayerProperties *layerproperties = NULL,
+                      wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
+                      const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
+                      long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
-    virtual bool TransferDataFromWindow();
+  virtual ~tmSymbolDLGPolyRule();
 
-DECLARE_EVENT_TABLE();
+  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+              const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
+              const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
-public:
-    tmSymbolDLGPolyRule(wxWindow *parent, tmLayerProperties *layerproperties = NULL,
-                        wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME, const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE,
-                        const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION, const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE,
-                        long style = SYMBOL_TMSYMBOLDLG_STYLE);
+  tmSymbolRuleArray *GetRulesRef() {
+    return &m_Rules;
+  }
 
-    virtual ~tmSymbolDLGPolyRule();
+  int GetSelectedPanel();
 
-    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-                const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
-                const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
+  inline const wxString GetSelectedField() const;
 
-    tmSymbolRuleArray *GetRulesRef()
-    { return &m_Rules; }
+  inline const tmSymbolDataPolygonUnique GetPolyUniqueStyle() const;
 
-    int GetSelectedPanel();
+  void SetPolyUniqueStyle(tmSymbolDataPolygonUnique value);
 
-    inline const wxString GetSelectedField() const;
+  void SetSelectedField(wxString value);
 
-    inline const tmSymbolDataPolygonUnique GetPolyUniqueStyle() const;
-
-    void SetPolyUniqueStyle(tmSymbolDataPolygonUnique value);
-
-    void SetSelectedField(wxString value);
-
-    void SetSelectedPanel(int panelindex);
+  void SetSelectedPanel(int panelindex);
 };
 
-
-inline const wxString tmSymbolDLGPolyRule::GetSelectedField() const
-{
-    return m_SelectedField;
+inline const wxString tmSymbolDLGPolyRule::GetSelectedField() const {
+  return m_SelectedField;
 }
 
-inline const tmSymbolDataPolygonUnique tmSymbolDLGPolyRule::GetPolyUniqueStyle() const
-{
-    return m_PolyUniqueStyle;
+inline const tmSymbolDataPolygonUnique tmSymbolDLGPolyRule::GetPolyUniqueStyle() const {
+  return m_PolyUniqueStyle;
 }
-
 
 #endif

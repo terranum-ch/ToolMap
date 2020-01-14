@@ -10,65 +10,59 @@
 //---------------------------------------------------------------------------
 
 #ifdef __GNUG__
-    #pragma implementation "TreeMultiItemBase.cpp"
+#pragma implementation "TreeMultiItemBase.cpp"
 #endif
 
 /* for compilers that support precompilation
    includes "wx/wx.h" */
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #include "TreeMultiItemBase.h"
 #include "TreeMultiItemNode.h"
 
 /** TreeMultiItemBase
-  * This class is the node of the whole tree. All the other classes in the
-  * tree descend from this node. It contains the type of the class without
-  * using RTTI. NOTE: this class cannot be constructed directly
-  */
+ * This class is the node of the whole tree. All the other classes in the
+ * tree descend from this node. It contains the type of the class without
+ * using RTTI. NOTE: this class cannot be constructed directly
+ */
 
 TreeMultiItemBase::TreeMultiItemBase(TreeMultiItemNode *parent)
-        : _excluded(false),
-          _type(0),
-          _x(0),
-          _y(0),
-          _width(0),
-          _height(0),
-
-#if(CHECKBOXVIEW)
-          _checkbox(false),
-          _checkboxState(0),
+    : _excluded(false),
+      _type(0),
+      _x(0),
+      _y(0),
+      _width(0),
+      _height(0),
+#if (CHECKBOXVIEW)
+      _checkbox(false),
+      _checkboxState(0),
 #endif
-          _parent(parent),
-          m_Selected(false)
-{
+      _parent(parent),
+      m_Selected(false) {
 }
 
-TreeMultiItemBase::~TreeMultiItemBase()
-{
-}
+TreeMultiItemBase::~TreeMultiItemBase() {}
 
-bool TreeMultiItemBase::IsVisible()
-{
-    // are we excluded? then we are not visible as well
+bool TreeMultiItemBase::IsVisible() {
+  // are we excluded? then we are not visible as well
 
-    if (IsExcluded())
-        return false;
+  if (IsExcluded()) return false;
 
-    // check every parent up until the last and if one of them is collapsed
-    // we are not visible
+  // check every parent up until the last and if one of them is collapsed
+  // we are not visible
 
-    TreeMultiItemNode *p = GetParent();
-    while (p) {
-        if (!p->IsExpanded())
-            return false;
-        else
-            p = p->GetParent();
-    }
+  TreeMultiItemNode *p = GetParent();
+  while (p) {
+    if (!p->IsExpanded())
+      return false;
+    else
+      p = p->GetParent();
+  }
 
-    return true;
+  return true;
 }

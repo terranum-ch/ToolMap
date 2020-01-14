@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmexportdatashp.h
+ tmexportdatashp.h
                     Class for the process of exporting data as SHP
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,114 +16,99 @@
 
 // comment doxygen
 
-
 #ifndef _TM_EXPORTDATA_SHP_H_
 #define _TM_EXPORTDATA_SHP_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include "../gis/tmgisdatavectorshp.h"  // for shp
+#include "tmexportdata.h"               // for parent class definition
 
-#include "tmexportdata.h"        // for parent class definition
-#include "../gis/tmgisdatavectorshp.h"    // for shp
+class tmExportDataSHP : public tmExportData {
+ private:
+  tmGISDataVectorSHP *m_Shp;
+  OGRPolygon *m_Frame;
 
+  // private function
+  void InitMemberValues();
 
-class tmExportDataSHP : public tmExportData
-{
-private:
-    tmGISDataVectorSHP *m_Shp;
-    OGRPolygon *m_Frame;
+  int m_ExportPolyNbIteration;
+  double m_ExportPolyRasterFactor;
+  double m_ExportPolyPercentSkipped;
+  bool m_ExportPolyFast;
 
-    // private function
-    void InitMemberValues();
+  // for windows bug
+  OGRGeometry *SafeIntersection(OGRGeometry *line, OGRGeometry *frame);
 
+  OGRGeometry *SafeUnion(OGRGeometry *union1, OGRGeometry *line);
 
-    int m_ExportPolyNbIteration;
-    double m_ExportPolyRasterFactor;
-    double m_ExportPolyPercentSkipped;
-    bool m_ExportPolyFast;
+  OGRGeometry *SafeCreateFromGEOS(GEOSGeom geosGeom);
 
+  OGRGeometry *SafeBuffer(OGRGeometry *ogrgeom, double size);
 
-    // for windows bug
-    OGRGeometry *SafeIntersection(OGRGeometry *line, OGRGeometry *frame);
+  // multiple fields
+  bool SetMultipleFields(ProjectDefMemoryLayers *layer, const wxArrayString &values);
 
-    OGRGeometry *SafeUnion(OGRGeometry *union1, OGRGeometry *line);
+  void _AppendValidToCollection(OGRGeometry *geometry, OGRGeometryCollection *collection);
 
-    OGRGeometry *SafeCreateFromGEOS(GEOSGeom geosGeom);
+  virtual bool SetPolyExportInfo(ProjectDefMemoryLayers *layer);
 
-    OGRGeometry *SafeBuffer(OGRGeometry *ogrgeom, double size);
+ protected:
+ public:
+  // ctor
+  tmExportDataSHP();
 
-    // multiple fields
-    bool SetMultipleFields(ProjectDefMemoryLayers *layer,
-                           const wxArrayString &values);
+  tmExportDataSHP(DataBaseTM *database);
 
-    void _AppendValidToCollection(OGRGeometry *geometry, OGRGeometryCollection *collection);
+  void Create(DataBaseTM *database);
 
-    virtual bool SetPolyExportInfo(ProjectDefMemoryLayers *layer);
+  ~tmExportDataSHP();
 
+  // create export file
+  virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path);
 
-protected:
-public:
-    // ctor
-    tmExportDataSHP();
+  virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj);
 
-    tmExportDataSHP(DataBaseTM *database);
+  virtual bool AddOptFields(const PrjMemFieldArray &myfields);
 
-    void Create(DataBaseTM *database);
+  virtual bool AddGenericFields(int iSize);
 
-    ~tmExportDataSHP();
+  virtual bool AddFIDField();
 
+  // frame function
+  virtual void SetFrame(wxRealPoint *points, int nbvertex);
 
-    // create export file
-    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path);
+  // writing functions
+  virtual bool WriteLines(ProjectDefMemoryLayers *myLayer);
 
-    virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj);
+  virtual bool WritePoints(ProjectDefMemoryLayers *myLayer);
 
+  virtual bool WritePolygons(ProjectDefMemoryLayers *myLayer);
 
-    virtual bool AddOptFields(const PrjMemFieldArray &myfields);
+  virtual bool WriteLabels(ProjectDefMemoryLayers *myLayer);
 
-    virtual bool AddGenericFields(int iSize);
+  virtual long WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxProgressDialog *progDlg, tmPercent *percent);
 
-    virtual bool AddFIDField();
+  virtual bool AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMemManage *projdef, long loop,
+                                  wxProgressDialog *progDlg, tmPercent *percent);
 
-    // frame function
-    virtual void SetFrame(wxRealPoint *points, int nbvertex);
+  virtual bool SetAttributsBasic(DataBaseResult &results);
 
+  virtual bool SetAttributsAdvanced(DataBaseResult &results, ProjectDefMemoryLayers *layer);
 
-    // writing functions
-    virtual bool WriteLines(ProjectDefMemoryLayers *myLayer);
+  virtual bool GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport);
 
-    virtual bool WritePoints(ProjectDefMemoryLayers *myLayer);
+  virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer);
 
-    virtual bool WritePolygons(ProjectDefMemoryLayers *myLayer);
+  virtual bool HasFeatures();
 
-    virtual bool WriteLabels(ProjectDefMemoryLayers *myLayer);
-
-    virtual long WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxProgressDialog *progDlg, tmPercent *percent);
-
-    virtual bool AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMemManage *projdef, long loop,
-                                    wxProgressDialog *progDlg, tmPercent *percent);
-
-    virtual bool SetAttributsBasic(DataBaseResult &results);
-
-    virtual bool SetAttributsAdvanced(DataBaseResult &results, ProjectDefMemoryLayers *layer);
-
-    virtual bool GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport);
-
-    virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer);
-
-    virtual bool HasFeatures();
-
-
-
-    virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path);
+  virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path);
 };
 
-
 #endif
-

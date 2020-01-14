@@ -1,12 +1,10 @@
 
 #include "wxTreeMultiEvent.h"
 
-
 // constructors / destructor:
 wxTreeMultiEvent::wxTreeMultiEvent(wxEventType InitEventType, wxTreeMultiItem const &InitItem)
-        : wxNotifyEvent(InitEventType), m_Item(InitItem)
-{
-} /* wxTreeMultiEvent::wxTreeMultiEvent(wxEventType, wxTreeMultiItem const&) */
+    : wxNotifyEvent(InitEventType),
+      m_Item(InitItem) {} /* wxTreeMultiEvent::wxTreeMultiEvent(wxEventType, wxTreeMultiItem const&) */
 
 // inherited functions:
 // wxEvent:
@@ -37,4 +35,3 @@ DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_MULTI_END_DRAG)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_MULTI_STATE_IMAGE_CLICK)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_MULTI_ITEM_GETTOOLTIP)
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_TREE_MULTI_ITEM_MENU)
-

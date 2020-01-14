@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmarraysize.h
-							Array of wxSize items
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmarraysize.h
+ Array of wxSize items
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,43 +16,41 @@
 
 // comment doxygen
 
-
 #ifndef _TM_ARRAY_SIZE_H_
 #define _TM_ARRAY_SIZE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+class tmRealPointDist {
+ private:
+  wxRealPoint coordinate;
+  wxRealPoint origin;
 
-class tmRealPointDist
-{
-private:
-    wxRealPoint coordinate;
-    wxRealPoint origin;
+ public:
+  tmRealPointDist() : coordinate(), origin() {}
 
-public:
-    tmRealPointDist() : coordinate(), origin()
-    {}
+  tmRealPointDist(double xx, double yy, const wxRealPoint &originorigin);
 
-    tmRealPointDist(double xx, double yy, const wxRealPoint &originorigin);
+  tmRealPointDist(const tmRealPointDist &pt);
 
-    tmRealPointDist(const tmRealPointDist &pt);
+  double GetDistFromOrigin() const;
 
-    double GetDistFromOrigin() const;
+  wxRealPoint GetOrigin() const {
+    return origin;
+  }
 
-    wxRealPoint GetOrigin() const
-    { return origin; }
+  wxRealPoint GetCoordinate() const {
+    return coordinate;
+  }
 
-    wxRealPoint GetCoordinate() const
-    { return coordinate; }
-
-    // copy function
-    tmRealPointDist &operator=(const tmRealPointDist &source);
+  // copy function
+  tmRealPointDist &operator=(const tmRealPointDist &source);
 };
 
 WX_DECLARE_OBJARRAY(tmRealPointDist, wxArrayRealPointsDist);

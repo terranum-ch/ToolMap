@@ -2,8 +2,7 @@
  project_def_layers_dlg.h
  Display Project Definition layers dialog (step 2 of a project definition)
  -------------------
- copyright            : (C) 2007 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,27 +16,26 @@
 
 // comment doxygen
 
-
 #ifndef PROJECT_DEF_LAYERS_DLG_H
 #define PROJECT_DEF_LAYERS_DLG_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/filedlg.h>  // file selector dialog
+#include <wx/notebook.h>
+#include <wx/statline.h>  // for static line in ProjectDefLayersEditObjectDlg
 
-#include "listgenreport.h"
-#include "wx/notebook.h"
-#include "wxflatbutton.h"
-#include "project_def_fields_dlg.h"
-#include "wx/statline.h"        // for static line in ProjectDefLayersEditObjectDlg
-#include "../core/textparser.h" // for text parsing during importation
-#include <wx/filedlg.h>            // file selector dialog
 #include "../core/prjdefmemmanage.h"
+#include "../core/textparser.h"  // for text parsing during importation
+#include "listgenreport.h"
+#include "project_def_fields_dlg.h"
+#include "wxflatbutton.h"
 
 class ProjectDefFieldDlg;
 
@@ -59,291 +57,273 @@ class ProjectDefLayersEditObjectDlg;
 #define ID_DLGPDL_FIELD_ADD 10005
 #define ID_DLGPDL_FIELD_REMOVE 10006
 #define ID_DLGPDL_CHK_ORIENTATION 10290
-#define SYMBOL_PROJECTDEFLAYERSDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_PROJECTDEFLAYERSDLG_STYLE wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFLAYERSDLG_TITLE _("Thematic layer definition")
 #define SYMBOL_PROJECTDEFLAYERSDLG_IDNAME ID_DLGPDL
 #define SYMBOL_PROJECTDEFLAYERSDLG_SIZE wxSize(400, 300)
 #define SYMBOL_PROJECTDEFLAYERSDLG_POSITION wxDefaultPosition
 
-class ProjectDefLayersObjectList : public ListGenReportWithDialog
-{
-private:
-    //		void OnMySelectionChange (wxListEvent & event);		
-    wxChoice *m_ChoiceToChange;
-    int m_SpatialType;
+class ProjectDefLayersObjectList : public ListGenReportWithDialog {
+ private:
+  // void OnMySelectionChange (wxListEvent & event);
+  wxChoice *m_ChoiceToChange;
+  int m_SpatialType;
 
+  ProjectDefMemoryObjects *m_ObjectObj;
+  PrjDefMemManage *m_pPrjDefinition;
 
-    ProjectDefMemoryObjects *m_ObjectObj;
-    PrjDefMemManage *m_pPrjDefinition;
+  virtual void AfterAdding(bool bRealyAddItem);
 
-    virtual void AfterAdding(bool bRealyAddItem);
+  virtual void AfterEditing(bool bRealyEdited);
 
-    virtual void AfterEditing(bool bRealyEdited);
+  virtual void BeforeAdding();
 
-    virtual void BeforeAdding();
+  virtual void BeforeDeleting();
 
-    virtual void BeforeDeleting();
+  virtual void BeforeEditing();
 
-    virtual void BeforeEditing();
+  virtual void AddingValueToArray(wxArrayString &myImportedValues);
 
-    virtual void AddingValueToArray(wxArrayString &myImportedValues);
+ public:
+  static const int ID_PARAMLIST;
 
-public:
-    static const int ID_PARAMLIST;
+  ProjectDefLayersObjectList(wxWindow *parent, wxWindowID id, wxSize size);
 
-    ProjectDefLayersObjectList(wxWindow *parent, wxWindowID id, wxSize size);
+  ~ProjectDefLayersObjectList();
 
-    ~ProjectDefLayersObjectList();
+  PrjMemObjectsArray *m_ObjectsArray;
 
-    PrjMemObjectsArray *m_ObjectsArray;
+  void SetSpatialType(int spatialtype) {
+    m_SpatialType = spatialtype;
+  }
 
-    void SetSpatialType(int spatialtype)
-    { m_SpatialType = spatialtype; }
-
-    void PassPrjDefToList(PrjDefMemManage *myPrjMemManage)
-    { m_pPrjDefinition = myPrjMemManage; }
-
+  void PassPrjDefToList(PrjDefMemManage *myPrjMemManage) {
+    m_pPrjDefinition = myPrjMemManage;
+  }
 };
 
+class ProjectDefLayersFieldsList : public ListGenReportWithDialog {
+ private:
+  bool m_bIsModeEditing;
 
-class ProjectDefLayersFieldsList : public ListGenReportWithDialog
-{
-private:
-    bool m_bIsModeEditing;
+  PrjDefMemManage *m_pPrjDefinition;
+  ProjectDefMemoryFields *m_FieldsObj;
+  wxCheckBox *m_ChkOrientation;
 
-    PrjDefMemManage *m_pPrjDefinition;
-    ProjectDefMemoryFields *m_FieldsObj;
-    wxCheckBox *m_ChkOrientation;
+  virtual void AfterAdding(bool bRealyAddItem);
 
+  virtual void AfterEditing(bool bRealyEdited);
 
-    virtual void AfterAdding(bool bRealyAddItem);
+  virtual void BeforeAdding();
 
-    virtual void AfterEditing(bool bRealyEdited);
+  virtual void BeforeDeleting();
 
-    virtual void BeforeAdding();
+  virtual void BeforeEditing();
+  // virtual void AddingValueToArray (wxArrayString & myImportedValues);
 
-    virtual void BeforeDeleting();
+  // pointer to the parent dialog
+  ProjectDefLayersDlg *m_DlgParent;
 
-    virtual void BeforeEditing();
-    //virtual void	AddingValueToArray (wxArrayString & myImportedValues);
+  wxChoice *m_ChoiceToChange;
 
+  // event functions
+  void OnItemSelectChange(wxListEvent &event);
 
-    // pointer to the parent dialog
-    ProjectDefLayersDlg *m_DlgParent;
+  DECLARE_EVENT_TABLE();
 
-    wxChoice *m_ChoiceToChange;
+ public:
+  static const int ID_PARAMLIST;
 
-    // event functions
-    void OnItemSelectChange(wxListEvent &event);
+  ProjectDefLayersFieldsList(wxWindow *parent, wxWindowID id, wxSize size, ProjectDefLayersDlg *myDlg);
 
-DECLARE_EVENT_TABLE();
+  ~ProjectDefLayersFieldsList();
 
-public:
-    static const int ID_PARAMLIST;
+  void PassPrjDefToList(PrjDefMemManage *myPrjMemManage) {
+    m_pPrjDefinition = myPrjMemManage;
+  }
 
-    ProjectDefLayersFieldsList(wxWindow *parent, wxWindowID id,
-                               wxSize size, ProjectDefLayersDlg *myDlg);
+  void SetListCtrls(wxCheckBox *pChkOrientation = NULL) {
+    m_ChkOrientation = pChkOrientation;
+  }
 
-    ~ProjectDefLayersFieldsList();
+  void SetOrientation(int orientation, const int &index);
 
-    void PassPrjDefToList(PrjDefMemManage *myPrjMemManage)
-    { m_pPrjDefinition = myPrjMemManage; }
-
-
-    void SetListCtrls(wxCheckBox *pChkOrientation = NULL)
-    { m_ChkOrientation = pChkOrientation; }
-
-    void SetOrientation(int orientation, const int &index);
-
-    bool IsOrientationAllowed(int index);
-    //	int GetParamType (wxString myTextParam);
-    //		
-    //		wxString GetParamType (int imyType);
-    //
-    //		void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-    //		void SetChoiceList (wxChoice * myChoiceList);
-    //		DECLARE_EVENT_TABLE();
+  bool IsOrientationAllowed(int index);
+  // int GetParamType (wxString myTextParam);
+  //
+  // wxString GetParamType (int imyType);
+  //
+  // void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+  // void SetChoiceList (wxChoice * myChoiceList);
+  // DECLARE_EVENT_TABLE();
 };
-
 
 ////@begin control identifiers
 #define ID_PROJECTDEFLAYERSEDITOBJECTDLG 10117
 #define ID_DLGEO_CODE 10259
 #define ID_DLGEO_VALUE 10260
 #define ID_STATICLINE2 10261
-#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX
 #define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE _("Edit Object Kind")
 #define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME ID_PROJECTDEFLAYERSEDITOBJECTDLG
 #define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE wxSize(400, 300)
 #define SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION wxDefaultPosition
 ////@end control identifiers
 
+class ProjectDefLayersEditObjectDlg : public wxDialog {
+ private:
+  void OnTextChange(wxCommandEvent &event);
 
+  /// pointer to an "object" object, use
+  /// the SetMemoryObjectObject() function to fill it
+  /// one can also uses the m_CodedValObj and the
+  /// SetMemoryCodedValueObject() corresponding function
+  ProjectDefMemoryObjects *m_ObjectObj;
+  ProjectDefMemoryFieldsCodedVal *m_CodedValObj;
 
-class ProjectDefLayersEditObjectDlg : public wxDialog
-{
-private:
-    void OnTextChange(wxCommandEvent &event);
+  void _SetValidator();
 
+  DECLARE_DYNAMIC_CLASS(ProjectDefLayersEditObjectDlg);
+  DECLARE_EVENT_TABLE();
 
-    /// pointer to an "object" object, use
-    /// the SetMemoryObjectObject() function to fill it
-    /// one can also uses the m_CodedValObj and the
-    /// SetMemoryCodedValueObject() corresponding function
-    ProjectDefMemoryObjects *m_ObjectObj;
-    ProjectDefMemoryFieldsCodedVal *m_CodedValObj;
+ public:
+  /// Constructors
+  ProjectDefLayersEditObjectDlg();
 
-    void _SetValidator();
+  ProjectDefLayersEditObjectDlg(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME,
+                                const wxString &caption = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE,
+                                const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION,
+                                const wxSize &size = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE,
+                                long style = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE);
 
-DECLARE_DYNAMIC_CLASS(ProjectDefLayersEditObjectDlg);
-DECLARE_EVENT_TABLE();
+  /// Creation
+  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME,
+              const wxString &caption = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE,
+              const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION,
+              const wxSize &size = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE,
+              long style = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE);
 
-public:
-    /// Constructors
-    ProjectDefLayersEditObjectDlg();
+  /// Destructor
+  ~ProjectDefLayersEditObjectDlg();
 
-    ProjectDefLayersEditObjectDlg(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME,
-                                  const wxString &caption = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE,
-                                  const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION,
-                                  const wxSize &size = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE,
-                                  long style = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE);
+  /// Initialises member variables
+  void Init();
 
-    /// Creation
-    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_IDNAME,
-                const wxString &caption = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_TITLE,
-                const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_POSITION,
-                const wxSize &size = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_SIZE,
-                long style = SYMBOL_PROJECTDEFLAYERSEDITOBJECTDLG_STYLE);
+  /// Creates the controls and sizers
+  void CreateDlgControls();
 
-    /// Destructor
-    ~ProjectDefLayersEditObjectDlg();
+  /// Data transfert process, function called automatically
+  virtual bool TransferDataToWindow();
 
-    /// Initialises member variables
-    void Init();
+  virtual bool TransferDataFromWindow();
 
-    /// Creates the controls and sizers
-    void CreateDlgControls();
+  void SetMemoryObjectObject(ProjectDefMemoryObjects *myObjectObj) {
+    m_ObjectObj = myObjectObj;
+  }
 
-    /// Data transfert process, function called automatically
-    virtual bool TransferDataToWindow();
+  void SetMemoryCodedValObject(ProjectDefMemoryFieldsCodedVal *myCodedValObj) {
+    m_CodedValObj = myCodedValObj;
+  }
 
-    virtual bool TransferDataFromWindow();
-
-    void SetMemoryObjectObject(ProjectDefMemoryObjects *myObjectObj)
-    { m_ObjectObj = myObjectObj; }
-
-    void SetMemoryCodedValObject(ProjectDefMemoryFieldsCodedVal *myCodedValObj)
-    { m_CodedValObj = myCodedValObj; }
-
-    wxTextCtrl *m_DlgEO_Code;
-    wxTextCtrl *m_DlgEO_Value;
-    wxButton *m_DlgEO_OK_Btn;
+  wxTextCtrl *m_DlgEO_Code;
+  wxTextCtrl *m_DlgEO_Value;
+  wxButton *m_DlgEO_OK_Btn;
 };
 
+class ProjectDefLayersDlg : public wxDialog {
+ private:
+  wxString m_DlgPDL_Contour_Prefix;
 
-class ProjectDefLayersDlg : public wxDialog
-{
-private:
-    wxString m_DlgPDL_Contour_Prefix;
+  ProjectDefFieldDlg *m_FieldDialog;
+  ProjectDefMemoryLayers *m_LayersObj;
 
-    ProjectDefFieldDlg *m_FieldDialog;
-    ProjectDefMemoryLayers *m_LayersObj;
+  PrjDefMemManage *m_pPrjDefinition;
 
-    PrjDefMemManage *m_pPrjDefinition;
+  void OnAddField(wxCommandEvent &event);
 
+  void OnRemoveField(wxCommandEvent &event);
 
-    void OnAddField(wxCommandEvent &event);
+  void OnAddObject(wxCommandEvent &event);
 
-    void OnRemoveField(wxCommandEvent &event);
+  void OnRemoveObject(wxCommandEvent &event);
 
-    void OnAddObject(wxCommandEvent &event);
+  void OnImportObject(wxCommandEvent &event);
 
-    void OnRemoveObject(wxCommandEvent &event);
+  void OnChangeOrientation(wxCommandEvent &event);
 
-    void OnImportObject(wxCommandEvent &event);
+  void OnSelectLayerType(wxCommandEvent &event);
 
-    void OnChangeOrientation(wxCommandEvent &event);
+  void OnLayerNameChange(wxCommandEvent &event);
 
-    void OnSelectLayerType(wxCommandEvent &event);
+  void UpdateDefaultPolygonBorderName(const wxString &name);
 
-    void OnLayerNameChange(wxCommandEvent &event);
+  bool m_bIsModeEditing;
+  bool m_bIsModeAddingEditing;
 
-    void UpdateDefaultPolygonBorderName(const wxString &name);
+  void DisableControlsForEdition();
 
+  void ActivateOrientation();
 
-    bool m_bIsModeEditing;
-    bool m_bIsModeAddingEditing;
+  DECLARE_DYNAMIC_CLASS(ProjectDefLayersDlg);
+  DECLARE_EVENT_TABLE();
 
-    void DisableControlsForEdition();
+ public:
+  /// Constructors
+  ProjectDefLayersDlg();
 
-    void ActivateOrientation();
+  ProjectDefLayersDlg(wxWindow *parent, PrjDefMemManage *pPrjDef, bool isEditingMode = FALSE, bool isAddingMode = FALSE,
+                      wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
+                      const wxString &caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
+                      const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION,
+                      const wxSize &size = SYMBOL_PROJECTDEFLAYERSDLG_SIZE,
+                      long style = SYMBOL_PROJECTDEFLAYERSDLG_STYLE);
 
+  /// Creation
+  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
+              const wxString &caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
+              const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION,
+              const wxSize &size = SYMBOL_PROJECTDEFLAYERSDLG_SIZE, long style = SYMBOL_PROJECTDEFLAYERSDLG_STYLE);
 
-DECLARE_DYNAMIC_CLASS(ProjectDefLayersDlg);
-DECLARE_EVENT_TABLE();
+  /// Destructor
+  ~ProjectDefLayersDlg();
 
-public:
-    /// Constructors
-    ProjectDefLayersDlg();
+  // contain the list of fields
+  PrjMemFieldArray m_FieldArray;
 
-    ProjectDefLayersDlg(wxWindow *parent,
-                        PrjDefMemManage *pPrjDef,
-                        bool isEditingMode = FALSE,
-                        bool isAddingMode = FALSE,
-                        wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
-                        const wxString &caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
-                        const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION,
-                        const wxSize &size = SYMBOL_PROJECTDEFLAYERSDLG_SIZE,
-                        long style = SYMBOL_PROJECTDEFLAYERSDLG_STYLE);
+  /// Initialises member variables
+  void Init();
 
-    /// Creation
-    bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFLAYERSDLG_IDNAME,
-                const wxString &caption = SYMBOL_PROJECTDEFLAYERSDLG_TITLE,
-                const wxPoint &pos = SYMBOL_PROJECTDEFLAYERSDLG_POSITION,
-                const wxSize &size = SYMBOL_PROJECTDEFLAYERSDLG_SIZE,
-                long style = SYMBOL_PROJECTDEFLAYERSDLG_STYLE);
+  bool IsEditMode() {
+    return m_bIsModeEditing;
+  }
 
-    /// Destructor
-    ~ProjectDefLayersDlg();
+  /// Creates the controls and sizers
+  void CreateControls();
 
-    // contain the list of fields
-    PrjMemFieldArray m_FieldArray;
+  // void RemoveObjFromArray();
 
-    /// Initialises member variables
-    void Init();
+  void SetMemoryLayersObject(ProjectDefMemoryLayers *myLayersObj) {
+    m_LayersObj = myLayersObj;
+  }
 
-    bool IsEditMode()
-    { return m_bIsModeEditing; }
+  /// Transfer data, is called automaticaly
+  /// when the dialog is disabled
+  virtual bool TransferDataFromWindow();
 
-    /// Creates the controls and sizers
-    void CreateControls();
+  virtual bool TransferDataToWindow();
 
-    //void RemoveObjFromArray();
+  /// controls variables
+  wxChoice *m_DlgPDL_Layer_Type;
+  wxTextCtrl *m_DlgPDL_Layer_Name;
+  wxPanel *m_DlgPDL_Panel_Obj;
+  ProjectDefLayersObjectList *m_DlgPDL_Object_List;
+  wxPanel *m_DlgPDL_Panel_Fields;
+  ProjectDefLayersFieldsList *m_DlgPDL_Fields_List;
+  wxCheckBox *m_DlgPDL_Orientation_FLD;
 
-    void SetMemoryLayersObject(ProjectDefMemoryLayers *myLayersObj)
-    { m_LayersObj = myLayersObj; }
-
-    /// Transfer data, is called automaticaly
-    /// when the dialog is disabled
-    virtual bool TransferDataFromWindow();
-
-    virtual bool TransferDataToWindow();
-
-    /// controls variables
-    wxChoice *m_DlgPDL_Layer_Type;
-    wxTextCtrl *m_DlgPDL_Layer_Name;
-    wxPanel *m_DlgPDL_Panel_Obj;
-    ProjectDefLayersObjectList *m_DlgPDL_Object_List;
-    wxPanel *m_DlgPDL_Panel_Fields;
-    ProjectDefLayersFieldsList *m_DlgPDL_Fields_List;
-    wxCheckBox *m_DlgPDL_Orientation_FLD;
-
-    // control for line constructing polygons
-    wxStaticBoxSizer *m_DlgPDL_Contour_Static;
-    wxTextCtrl *m_DlgPDL_Contour_Name;
-
-
+  // control for line constructing polygons
+  wxStaticBoxSizer *m_DlgPDL_Contour_Static;
+  wxTextCtrl *m_DlgPDL_Contour_Name;
 };
-
 
 #endif

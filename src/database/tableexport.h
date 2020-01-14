@@ -1,8 +1,7 @@
 /***************************************************************************
  tableexport.h
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,7 +16,7 @@
 #define _TABLEEXPORT_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -26,27 +25,23 @@
 
 #include <wx/filename.h>
 
-
 class DataBase;
 
-class TableExport
-{
-private:
-    DataBase *m_Database;
-    wxString m_Encoding;
+class TableExport {
+ private:
+  DataBase *m_Database;
+  wxString m_Encoding;
 
+ public:
+  TableExport(DataBase *database);
 
-public:
-    TableExport(DataBase *database);
+  virtual ~TableExport();
 
-    virtual ~TableExport();
+  void SetEncoding(const wxString &encoding) {
+    m_Encoding = encoding;
+  }
 
-    void SetEncoding(const wxString &encoding)
-    { m_Encoding = encoding; }
-
-    bool
-    ExportCSV(const wxString &tablename, const wxFileName &path, int limit = wxNOT_FOUND, bool addtablename = false);
-
+  bool ExportCSV(const wxString &tablename, const wxFileName &path, int limit = wxNOT_FOUND, bool addtablename = false);
 };
 
 #endif

@@ -2,7 +2,6 @@
  tmgisdatarasterweb
  -------------------
  copyright            : (C) 2013 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,7 +16,7 @@
 #ifndef _TM_GISDATARASTER_WEB_H_
 #define _TM_GISDATARASTER_WEB_H_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -25,23 +24,23 @@
 
 #include "tmgisdataraster.h"
 
-class tmGISDataRasterWeb : public tmGISDataRaster
-{
-private:
-    tmRealRect m_FilterCoordLocal;
-    tmRealRect m_FilterCoordWeb;
+class tmGISDataRasterWeb : public tmGISDataRaster {
+ private:
+  tmRealRect m_FilterCoordLocal;
+  tmRealRect m_FilterCoordWeb;
 
-public:
-    tmGISDataRasterWeb();
+ public:
+  tmGISDataRasterWeb();
 
-    ~tmGISDataRasterWeb();
+  ~tmGISDataRasterWeb();
 
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 
-    virtual bool SetSpatialFilter(tmRealRect filter, int type);
+  virtual bool SetSpatialFilter(tmRealRect filter, int type);
 
-    virtual tmRealRect GetImageClipedCoordinates()
-    { return m_FilterCoordLocal; }
+  virtual tmRealRect GetImageClipedCoordinates() {
+    return m_FilterCoordLocal;
+  }
 };
 
 #endif

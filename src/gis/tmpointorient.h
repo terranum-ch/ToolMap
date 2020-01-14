@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmpointorient.h
+ tmpointorient.h
                     for dealing with point orientation
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_POINT_ORIENT_H_
 #define _TM_POINT_ORIENT_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -31,33 +29,31 @@
 
 #include <wx/graphics.h>
 
-class tmPointOrient : public wxObject
-{
-private:
-    wxPoint m_StartPoint;
-    wxPoint m_EndPoint;
+class tmPointOrient : public wxObject {
+ private:
+  wxPoint m_StartPoint;
+  wxPoint m_EndPoint;
 
-    void InitMemberValues();
+  void InitMemberValues();
 
-protected:
-public:
-    // ctor - dtor
-    tmPointOrient();
+ protected:
+ public:
+  // ctor - dtor
+  tmPointOrient();
 
-    ~tmPointOrient();
+  ~tmPointOrient();
 
-    // setter - getter
-    void SetStartPoint(const wxPoint &start);
+  // setter - getter
+  void SetStartPoint(const wxPoint &start);
 
-    void SetEndPoint(const wxPoint &end);
+  void SetEndPoint(const wxPoint &end);
 
-    int GetOrientationInt();
+  int GetOrientationInt();
 
-    double GetOrientationDouble();
+  double GetOrientationDouble();
 
-    // checks
-    virtual bool IsValid();
+  // checks
+  virtual bool IsValid();
 };
-
 
 #endif

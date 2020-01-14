@@ -1,9 +1,7 @@
 /***************************************************************************
-				lsversion_core.h
-                    
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ lsversion_core.cpp
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,38 +23,35 @@
 #include <wx/wx.h>
 #endif
 
-
 #include "lsversion_param.h"
 
-class lsVersion
-{
-public:
-    static wxString GetSoftName();
+class lsVersion {
+ public:
+  static wxString GetSoftName();
 
-    static wxString GetSoftGIT();
+  static wxString GetSoftGIT();
 
-    static wxString GetSoftGITBranch();
+  static wxString GetSoftGITBranch();
 
-    static wxString GetSoftGITRevision();
+  static wxString GetSoftGITRevision();
 
-    static wxString GetwxWidgetsNumber();
+  static wxString GetwxWidgetsNumber();
 
-    static wxString GetwxWidgetsGIT();
+  static wxString GetwxWidgetsGIT();
 
-    static wxString GetGDALNumber();
+  static wxString GetGDALNumber();
 
-    static wxString GetGEOSNumber();
+  static wxString GetGEOSNumber();
 
-    static wxString GetCurlNumber();
+  static wxString GetCurlNumber();
 
-    static wxString GetSQLiteNumber();
+  static wxString GetSQLiteNumber();
 
-    static wxString GetMySQLNumber();
+  static wxString GetMySQLNumber();
 
-    static wxString GetVroomGISNumber();
+  static wxString GetVroomGISNumber();
 
-    static wxString GetAllModules();
+  static wxString GetAllModules();
 };
 
 #endif
-

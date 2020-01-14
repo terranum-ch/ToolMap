@@ -1,9 +1,8 @@
 /***************************************************************************
  tmdataintegrity.h
- 
+
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,12 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef _TMDATAINTEGRITY_H
 #define _TMDATAINTEGRITY_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -30,35 +28,30 @@
 
 class DataBaseTM;
 
+class tmDataIntegrity {
+ private:
+  DataBaseTM *m_pDB;
 
-class tmDataIntegrity
-{
-private:
-    DataBaseTM *m_pDB;
+  wxString m_QueryTemplateType;
+  wxString m_QueryTemplateAAttrib;
 
-    wxString m_QueryTemplateType;
-    wxString m_QueryTemplateAAttrib;
+  long m_ErrorType;
+  long m_ErrorAAttrib;
 
-    long m_ErrorType;
-    long m_ErrorAAttrib;
+ public:
+  tmDataIntegrity(DataBaseTM *database);
 
+  ~tmDataIntegrity();
 
-public:
-    tmDataIntegrity(DataBaseTM *database);
+  bool HasErrorType(const PRJDEF_LAYERS_TYPE &layertype);
 
-    ~tmDataIntegrity();
+  bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
 
+  bool CorrectType(const PRJDEF_LAYERS_TYPE &layertype);
 
-    bool HasErrorType(const PRJDEF_LAYERS_TYPE &layertype);
+  bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
 
-    bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
-
-    bool CorrectType(const PRJDEF_LAYERS_TYPE &layertype);
-
-    bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
-
-    wxString GetLastError();
-
+  wxString GetLastError();
 };
 
 #endif

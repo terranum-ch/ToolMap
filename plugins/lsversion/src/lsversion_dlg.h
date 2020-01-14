@@ -1,9 +1,7 @@
 /***************************************************************************
  lsversion_dlg.h
- 
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,38 +23,33 @@
 #include <wx/wx.h>
 #endif
 
+class lsVersionDlg : public wxDialog {
+ private:
+  wxStaticBitmap *m_BmpCtrl;
+  wxStaticText *m_TitleCtrl;
+  wxStaticText *m_ProgNameCtrl;
+  wxTextCtrl *m_ModulesCtrl;
+  wxStaticText *m_CopyRightCtrl;
 
-class lsVersionDlg : public wxDialog
-{
-private:
-    wxStaticBitmap *m_BmpCtrl;
-    wxStaticText *m_TitleCtrl;
-    wxStaticText *m_ProgNameCtrl;
-    wxTextCtrl *m_ModulesCtrl;
-    wxStaticText *m_CopyRightCtrl;
+  void _CreateControls();
 
-    void _CreateControls();
+ public:
+  lsVersionDlg(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos = wxDefaultPosition,
+               const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
 
-public:
-    lsVersionDlg(wxWindow *parent, wxWindowID id, const wxString &title,
-                 const wxPoint &pos = wxDefaultPosition,
-                 const wxSize &size = wxDefaultSize,
-                 long style = wxDEFAULT_DIALOG_STYLE);
+  virtual ~lsVersionDlg();
 
-    virtual ~lsVersionDlg();
+  void SetBitmapLogo(const wxBitmap &bmp);
 
-    void SetBitmapLogo(const wxBitmap &bmp);
+  void SetTitleAndCaption(wxString title);
 
-    void SetTitleAndCaption(wxString title);
+  void SetSoftName(wxString name);
 
-    void SetSoftName(wxString name);
+  void SetModulesName(wxString name);
 
-    void SetModulesName(wxString name);
+  void SetCopyright(wxString name);
 
-    void SetCopyright(wxString name);
-
-    virtual int ShowModal();
+  virtual int ShowModal();
 };
 
 #endif
-

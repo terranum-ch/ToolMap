@@ -1,0 +1,21 @@
+LINUX examples:
+
+./png2wx.pl -C img_toolbar_s.cpp -H img_toolbar.h -M _TOOLBAR_H_ ../toolbar/small/*.png
+
+
+WINDOWS full image generation:
+
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_toolbar_s.cpp -H ../../src/shared_base/gui/img/img_toolbar.h -M _TOOLBAR_H_ ../toolbar/small/frame_analogs.png ../toolbar/small/frame_distributions.png ../toolbar/small/map_fit.png ../toolbar/small/map_move.png ../toolbar/small/map_select.png ../toolbar/small/map_zoom_in.png ../toolbar/small/map_zoom_out.png ../toolbar/small/open.png ../toolbar/small/preferences.png ../toolbar/small/run.png ../toolbar/small/stop.png
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_toolbar_m.cpp -H ../../src/shared_base/gui/img/img_toolbar.h -M _TOOLBAR_H_ ../toolbar/medium/frame_analogs.png ../toolbar/medium/frame_distributions.png ../toolbar/medium/map_fit.png ../toolbar/medium/map_move.png ../toolbar/medium/map_select.png ../toolbar/medium/map_zoom_in.png ../toolbar/medium/map_zoom_out.png ../toolbar/medium/open.png ../toolbar/medium/preferences.png ../toolbar/medium/run.png ../toolbar/medium/stop.
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_toolbar_l.cpp -H ../../src/shared_base/gui/img/img_toolbar.h -M _TOOLBAR_H_ ../toolbar/large/frame_analogs.png ../toolbar/large/frame_distributions.png ../toolbar/large/map_fit.png ../toolbar/large/map_move.png ../toolbar/large/map_select.png ../toolbar/large/map_zoom_in.png ../toolbar/large/map_zoom_out.png ../toolbar/large/open.png ../toolbar/large/preferences.png ../toolbar/large/run.png ../toolbar/large/stop.png
+
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_logo.cpp -H ../../src/shared_base/gui/img/img_logo.h -M _LOGO_H_ ../logo/logo.png
+
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_misc_s.cpp -H ../../src/shared_base/gui/img/img_misc.h -M _MISC_H_ ../misc/small/bullet_green.png ../misc/small/bullet_red.png ../misc/small/bullet_white.png ../misc/small/bullet_yellow.png ../misc/small/close.png ../misc/small/hidden.png ../misc/small/plus.png ../misc/small/shown.png ../misc/small/update.png
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_misc_m.cpp -H ../../src/shared_base/gui/img/img_misc.h -M _MISC_H_ ../misc/medium/bullet_green.png ../misc/medium/bullet_red.png ../misc/medium/bullet_white.png ../misc/medium/bullet_yellow.png ../misc/medium/close.png ../misc/medium/hidden.png ../misc/medium/plus.png ../misc/medium/shown.png ../misc/medium/update.png
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_misc_l.cpp -H ../../src/shared_base/gui/img/img_misc.h -M _MISC_H_ ../misc/large/bullet_green.png ../misc/large/bullet_red.png ../misc/large/bullet_white.png ../misc/large/bullet_yellow.png ../misc/large/close.png ../misc/large/hidden.png ../misc/large/plus.png ../misc/large/shown.png ../misc/large/update.png
+
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_treectrl_s.cpp -H ../../src/shared_base/gui/img/img_treectrl.h -M _TREECTRL_H_ ../treectrl/small/icon_lightning.png ../treectrl/small/icon_other.png ../treectrl/small/icon_precip.png ../treectrl/small/icon_temp.png ../treectrl/small/icon_wind.png
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_treectrl_m.cpp -H ../../src/shared_base/gui/img/img_treectrl.h -M _TREECTRL_H_ ../treectrl/medium/icon_lightning.png ../treectrl/medium/icon_other.png ../treectrl/medium/icon_precip.png ../treectrl/medium/icon_temp.png ../treectrl/medium/icon_wind.png
+perl png2wx.pl -C ../../src/shared_base/gui/img/img_treectrl_l.cpp -H ../../src/shared_base/gui/img/img_treectrl.h -M _TREECTRL_H_ ../treectrl/large/icon_lightning.png ../treectrl/large/icon_other.png ../treectrl/large/icon_precip.png ../treectrl/large/icon_temp.png ../treectrl/large/icon_wind.png
+

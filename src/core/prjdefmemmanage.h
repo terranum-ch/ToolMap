@@ -1,9 +1,8 @@
 /***************************************************************************
-							prjdefmemmanage.h
-						Manage the project in memory 
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ prjdefmemmanage.h
+ Manage the project in memory
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,159 +16,157 @@
 
 /*!
  \page Prj_def Project definition
- 
+
  \section Introduction
  The project definition is stored in the embedded database but during the process
  of creating a new project or edition of an existing one, all will be temporally
  stored into the PrjDefMemManage class for allowing user to cancel any dialogs
  operation.
- 
+
  \section Structure Structure of a project
  A project can be represented as a tree, the trunk is basicaly all project
  related settings such as project name, path, units, etc. and then branches are constituted
  of project layers. Each one of those layers contain properties such as layer name, type, etc.
  And then from thoses branches starts smaller branches constituted of fields or object (see figure).
- 
+
   \image html structure_projet.jpg
- 
- 
- 
- 
- 
+
+
+
+
+
  */
-
-
 
 #ifndef PRJDEFMEMMANAGE_H
 #define PRJDEFMEMMANAGE_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
-
 
 // for Memory class definition
 #include "projectdefmemory.h"
 
+class PrjDefMemManage {
+ private:
+  // variables
+  ProjectDefMemoryLayers *m_pActiveLayer;
+  ProjectDefMemoryFields *m_pActiveField;
+  int m_iActualObj;
+  int m_iActualField;
+  int m_iActualCodedVal;
+  int m_iActualLayers;
 
-class PrjDefMemManage
-{
-private:
-    // variables
-    ProjectDefMemoryLayers *m_pActiveLayer;
-    ProjectDefMemoryFields *m_pActiveField;
-    int m_iActualObj;
-    int m_iActualField;
-    int m_iActualCodedVal;
-    int m_iActualLayers;
+  // member functions
+  void InitDefaultValues();
 
-    // member functions
-    void InitDefaultValues();
+ public:
+  // variables
+  wxString m_PrjPath;
+  wxString m_PrjName;
+  wxString m_PrjAuthors;
+  wxString m_PrjSummary;
+  PRJDEF_UNIT_TYPE m_PrjUnitType;
+  PRJDEF_PROJ_TYPE m_PrjProjType;
+  PrjMemLayersArray m_PrjLayerArray;
+  PrjMemScaleArray m_ScaleArray;
 
-public:
-    // variables
-    wxString m_PrjPath;
-    wxString m_PrjName;
-    wxString m_PrjAuthors;
-    wxString m_PrjSummary;
-    PRJDEF_UNIT_TYPE m_PrjUnitType;
-    PRJDEF_PROJ_TYPE m_PrjProjType;
-    PrjMemLayersArray m_PrjLayerArray;
-    PrjMemScaleArray m_ScaleArray;
+  wxArrayLong m_StoreDeleteIDObj;
+  wxArrayLong m_StoreDeleteScale;
+  wxArrayLong m_StoreDeleteLayers;
 
-    wxArrayLong m_StoreDeleteIDObj;
-    wxArrayLong m_StoreDeleteScale;
-    wxArrayLong m_StoreDeleteLayers;
+  // ctor - dtor
+  PrjDefMemManage();
 
-    // ctor - dtor
-    PrjDefMemManage();
+  ~PrjDefMemManage();
 
-    ~PrjDefMemManage();
+  // layer members functions
+  ProjectDefMemoryLayers *AddLayer();
 
+  int RemoveLayer(int iIndex = -1);  // remove last item by default...
+  bool RemoveLayer(const wxString &layerName);
 
-    // layer members functions
-    ProjectDefMemoryLayers *AddLayer();
+  ProjectDefMemoryLayers *FindLayer(const wxString &layerName);
 
-    int RemoveLayer(int iIndex = -1);// remove last item by default...
-    bool RemoveLayer(const wxString &layerName);
+  ProjectDefMemoryLayers *FindLayer(unsigned int iIndex = 0);
 
-    ProjectDefMemoryLayers *FindLayer(const wxString &layerName);
+  ProjectDefMemoryLayers *FindLayerByRealID(unsigned int iIndex);
 
-    ProjectDefMemoryLayers *FindLayer(unsigned int iIndex = 0);
+  void SetActiveLayer(ProjectDefMemoryLayers *ActiveLayer) {
+    m_pActiveLayer = ActiveLayer;
+  }
 
-    ProjectDefMemoryLayers *FindLayerByRealID(unsigned int iIndex);
+  ProjectDefMemoryLayers *GetActiveLayer() {
+    return m_pActiveLayer;
+  }
 
-    void SetActiveLayer(ProjectDefMemoryLayers *ActiveLayer)
-    { m_pActiveLayer = ActiveLayer; }
+  int GetCountLayers() {
+    return m_PrjLayerArray.GetCount();
+  }
 
-    ProjectDefMemoryLayers *GetActiveLayer()
-    { return m_pActiveLayer; }
+  ProjectDefMemoryLayers *GetNextLayer();
 
-    int GetCountLayers()
-    { return m_PrjLayerArray.GetCount(); }
+  // object members functions
+  ProjectDefMemoryObjects *AddObject();
 
-    ProjectDefMemoryLayers *GetNextLayer();
+  int RemoveObject(int iIndex = -1);  // remove last
+  bool RemoveObject(const wxString &ObjectName);
 
-    // object members functions
-    ProjectDefMemoryObjects *AddObject();
+  ProjectDefMemoryObjects *FindObject(const wxString &ObjectName);
 
-    int RemoveObject(int iIndex = -1); // remove last
-    bool RemoveObject(const wxString &ObjectName);
+  ProjectDefMemoryObjects *FindObject(unsigned int iIndex = 0);
 
-    ProjectDefMemoryObjects *FindObject(const wxString &ObjectName);
+  ProjectDefMemoryObjects *GetNextObjects();
 
-    ProjectDefMemoryObjects *FindObject(unsigned int iIndex = 0);
+  int GetCountObject();
 
-    ProjectDefMemoryObjects *GetNextObjects();
+  // field members functions
+  ProjectDefMemoryFields *AddField();
 
-    int GetCountObject();
+  int RemoveField(int iIndex = -1);  // remove last
+  bool RemoveField(const wxString &FieldName);
 
-    // field members functions
-    ProjectDefMemoryFields *AddField();
+  ProjectDefMemoryFields *FindField(const wxString &FieldName);
 
-    int RemoveField(int iIndex = -1); // remove last
-    bool RemoveField(const wxString &FieldName);
+  ProjectDefMemoryFields *FindField(unsigned int iIndex = 0);
 
-    ProjectDefMemoryFields *FindField(const wxString &FieldName);
+  ProjectDefMemoryFields *GetNextField();
 
-    ProjectDefMemoryFields *FindField(unsigned int iIndex = 0);
+  int GetCountFields();
 
-    ProjectDefMemoryFields *GetNextField();
+  void SetActiveField(ProjectDefMemoryFields *ActiveField) {
+    m_pActiveField = ActiveField;
+  }
 
-    int GetCountFields();
+  ProjectDefMemoryFields *GetActiveField() {
+    return m_pActiveField;
+  }
 
-    void SetActiveField(ProjectDefMemoryFields *ActiveField)
-    { m_pActiveField = ActiveField; }
+  // coded values belonging to fields
+  ProjectDefMemoryFieldsCodedVal *AddCodedValue();
 
-    ProjectDefMemoryFields *GetActiveField()
-    { return m_pActiveField; }
+  int RemoveCodedValue(int iIndex = -1);  // remove last
+  bool RemoveCodedValue(const wxString &ValueName);
 
-    // coded values belonging to fields
-    ProjectDefMemoryFieldsCodedVal *AddCodedValue();
+  ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString &ValueName, int &IndexPos);
 
-    int RemoveCodedValue(int iIndex = -1); // remove last
-    bool RemoveCodedValue(const wxString &ValueName);
+  ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
 
-    ProjectDefMemoryFieldsCodedVal *FindCodedValue(const wxString &ValueName, int &IndexPos);
+  int GetCountCodedValue();
 
-    ProjectDefMemoryFieldsCodedVal *GetNextCodedValue();
+  // scale functions
+  ProjectDefMemoryScale *AddScale(const long &scale, const int &DBindex = -1);
 
-    int GetCountCodedValue();
+  ProjectDefMemoryScale *FindScale(const long &oldscale);
 
-    // scale functions
-    ProjectDefMemoryScale *AddScale(const long &scale, const int &DBindex = -1);
+  bool RemoveScale(const long &oldscale);
 
-    ProjectDefMemoryScale *FindScale(const long &oldscale);
-
-    bool RemoveScale(const long &oldscale);
-
-    // copy function
-    PrjDefMemManage &operator=(const PrjDefMemManage &source);
+  // copy function
+  PrjDefMemManage &operator=(const PrjDefMemManage &source);
 };
 
 #endif
-

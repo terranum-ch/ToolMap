@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmSelectedDataMemory.h
-                    Store ID of selected data into memory 
-                             -------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmSelectedDataMemory.h
+                    Store ID of selected data into memory
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,90 +16,89 @@
 
 // comment doxygen
 
-
 #ifndef _TM_SELECTEDDATAMEMORY_H_
 #define _TM_SELECTEDDATAMEMORY_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-#include <wx/dynarray.h> // support for array
+#include <wx/dynarray.h>  // support for array
 
 WX_DEFINE_SORTED_ARRAY_LONG(long, tmArraySortedLong);
 
+/***************************************************************************/ /**
+  @brief Store ID of selected data into memory
+  @details This class may be used by the #tmLayerManager for storing Seleted
+  data's ID.  Only data from one layers at a time may be selected so we keep
+  also the Layers ID. For futher developpement we also keep a wxBrush object
+  used for drawing selected object.
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 28 October 2008
+  *******************************************************************************/
+class tmSelectedDataMemory : public wxObject {
+ private:
+  long m_LayerID;
+  tmArraySortedLong *m_SelectedIDs;
+  wxColour m_Colour;
+  bool m_HasHalo;
 
-/***************************************************************************//**
- @brief Store ID of selected data into memory
- @details This class may be used by the #tmLayerManager for storing Seleted
- data's ID.  Only data from one layers at a time may be selected so we keep
- also the Layers ID. For futher developpement we also keep a wxBrush object
- used for drawing selected object.
- @author Lucien Schreiber (c) CREALP 2008
- @date 28 October 2008
- *******************************************************************************/
-class tmSelectedDataMemory : public wxObject
-{
-private:
-    long m_LayerID;
-    tmArraySortedLong *m_SelectedIDs;
-    wxColour m_Colour;
-    bool m_HasHalo;
+  void InitMemberValues();
 
-    void InitMemberValues();
+ protected:
+  int Search(const long &value);
 
+ public:
+  // ctor(s) and destructors
+  tmSelectedDataMemory();
 
-protected:
-    int Search(const long &value);
+  ~tmSelectedDataMemory();
 
-public:
-    // ctor(s) and destructors
-    tmSelectedDataMemory();
+  // operations
+  bool AddSelected(wxArrayLong *selected);
 
-    ~tmSelectedDataMemory();
+  bool Remove(wxArrayLong *selected = NULL);
 
-    // operations
-    bool AddSelected(wxArrayLong *selected);
+  bool IsSelected(const long &value);
 
-    bool Remove(wxArrayLong *selected = NULL);
+  unsigned int GetCount();
 
-    bool IsSelected(const long &value);
+  void SetSelected(long selected);
 
-    unsigned int GetCount();
+  // getters / setters
+  void SetLayerID(long layerID);
 
-    void SetSelected(long selected);
+  void Clear() {
+    m_SelectedIDs->Clear();
+  }
 
-    // getters / setters
-    void SetLayerID(long layerID);
+  wxColour GetSelectionColour() {
+    return m_Colour;
+  }
 
-    void Clear()
-    { m_SelectedIDs->Clear(); }
+  void SetSelectionColour(const wxColour &col) {
+    m_Colour = col;
+  }
 
-    wxColour GetSelectionColour()
-    { return m_Colour; }
+  void SetSelectionHalo(bool hashalo) {
+    m_HasHalo = hashalo;
+  }
 
-    void SetSelectionColour(const wxColour &col)
-    { m_Colour = col; }
+  bool GetSelectionHalo() {
+    return m_HasHalo;
+  }
 
-    void SetSelectionHalo(bool hashalo)
-    { m_HasHalo = hashalo; }
+  long GetSelectedLayer() {
+    return m_LayerID;
+  }
 
-    bool GetSelectionHalo()
-    { return m_HasHalo; }
+  wxArrayLong *GetSelectedValues();
 
-    long GetSelectedLayer()
-    { return m_LayerID; }
-
-    wxArrayLong *GetSelectedValues();
-
-    long GetSelectedUnique();
-
+  long GetSelectedUnique();
 };
-
 
 #endif

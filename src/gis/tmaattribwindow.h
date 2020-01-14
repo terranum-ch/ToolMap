@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmaattribwindow.h
+ tmaattribwindow.h
                     Display the Advanced Attribution Window
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_AATTRIBWINDOW_H_
 #define _TM_AATTRIBWINDOW_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -30,76 +28,67 @@
 #endif
 
 #include <wx/treectrl.h>
-#include "tmaattribtree.h"    // for Adavanced attribution tree
+
 #include "../gis/tmattributionbasicarray.h"
+#include "tmaattribtree.h"  // for Adavanced attribution tree
 
+/***************************************************************************/ /**
+  @brief Advanced Attribution Window
+  @details This class deals with the advanced attribution window. It call the
+  tmAAttribTree and display dynamic control based on user created database model
+  @author Lucien Schreiber (c) CREALP 2009
+  @date 05 March 2009
+  *******************************************************************************/
+class tmAAttribWindow : public wxDialog {
+ private:
+  // windows position
+  static wxRect m_WndPos;
 
-/***************************************************************************//**
- @brief Advanced Attribution Window
- @details This class deals with the advanced attribution window. It call the
- tmAAttribTree and display dynamic control based on user created database model
- @author Lucien Schreiber (c) CREALP 2009
- @date 05 March 2009
- *******************************************************************************/
-class tmAAttribWindow : public wxDialog
-{
-private:
-    // windows position
-    static wxRect m_WndPos;
+  void GetWindowPosition();
 
-    void GetWindowPosition();
+  void SetWindowPosition();
 
-    void SetWindowPosition();
+  // member controls
+  tmAAttribTree *m_AAttribTree;
+  wxStatusBar *m_Status;
+  wxButton *m_CancelBtn;
 
-    // member controls
-    tmAAttribTree *m_AAttribTree;
-    wxStatusBar *m_Status;
-    wxButton *m_CancelBtn;
+  // member initialized by ctor
+  PrjMemLayersArray *m_Layers;
+  wxArrayString *m_Values;
+  tmLayerValueArray m_LayerNameID;
 
-    // member initialized by ctor
-    PrjMemLayersArray *m_Layers;
-    wxArrayString *m_Values;
-    tmLayerValueArray m_LayerNameID;
+  // member
+  int m_iTotalControls;
+  tmAAttribCtrlArray m_Ctrls;
 
-    // member
-    int m_iTotalControls;
-    tmAAttribCtrlArray m_Ctrls;
+  // member function
+  void InitMemberValue();
 
-    // member function
-    void InitMemberValue();
+  void CreateControls();
 
-    void CreateControls();
+  int GetNumberControls();
 
-    int GetNumberControls();
+  bool CheckValuesAndControls();
 
-    bool CheckValuesAndControls();
+  bool SetValue(unsigned int pos, tmAAttribCtrl *ctrl);
 
-    bool SetValue(unsigned int pos, tmAAttribCtrl *ctrl);
+  void SetStatusNumberControl(int ictrl, unsigned int layers);
 
-    void SetStatusNumberControl(int ictrl, unsigned int layers);
+ protected:
+ public:
+  tmAAttribWindow(wxWindow *parent, PrjMemLayersArray *layers, wxArrayString *values,
+                  const tmLayerValueArray &arrayidname, wxWindowID id = wxID_ANY,
+                  const wxString &title = _("Object attribute (single feature)"),
+                  const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                  long style = wxDEFAULT_DIALOG_STYLE | wxMAXIMIZE_BOX | wxRESIZE_BORDER);
 
-protected:
+  ~tmAAttribWindow();
 
-public:
-    tmAAttribWindow(wxWindow *parent,
-                    PrjMemLayersArray *layers,
-                    wxArrayString *values,
-                    const tmLayerValueArray &arrayidname,
-                    wxWindowID id = wxID_ANY,
-                    const wxString &title = _("Object attribute (single feature)"),
-                    const wxPoint &pos = wxDefaultPosition,
-                    const wxSize &size = wxDefaultSize,
-                    long style = wxDEFAULT_DIALOG_STYLE | wxMAXIMIZE_BOX | wxRESIZE_BORDER);
+  // data transfert
+  virtual bool TransferDataToWindow();
 
-    ~tmAAttribWindow();
-
-    // data transfert
-    virtual bool TransferDataToWindow();
-
-    virtual bool TransferDataFromWindow();
-
-
+  virtual bool TransferDataFromWindow();
 };
-
 
 #endif

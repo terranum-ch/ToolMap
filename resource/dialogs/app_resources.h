@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        
-// Purpose:     
+// Name:
+// Purpose:
 // Author:      Lucien Schreiber
-// Modified by: 
+// Modified by:
 // Created:     Mon  6 Aug 15:31:16 2007
-// RCS-ID:      
+// RCS-ID:
 // Copyright:   (c) CREALP 2007
-// Licence:     
+// Licence:
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _APP_RESOURCES_H_
@@ -79,30 +79,28 @@
 #define ID_MENUITEM18 10078
 ////@end control identifiers
 
-class AppResources
-{
-public:
-    AppResources() {}
+class AppResources {
+ public:
+  AppResources() {}
 
-/*!
- * Resource functions
- */
+  /*!
+   * Resource functions
+   */
 
-////@begin AppResources resource functions
-    /// Menubar creation function for ID_MENU_MAIN
-    static wxMenuBar* CreateMenuMenubar();
+  ////@begin AppResources resource functions
+  /// Menubar creation function for ID_MENU_MAIN
+  static wxMenuBar* CreateMenuMenubar();
 
-    /// Menu creation function for ID_MENU
-    static wxMenu* CreateMenuMenu();
+  /// Menu creation function for ID_MENU
+  static wxMenu* CreateMenuMenu();
 
-    /// Retrieves bitmap resources
-    static wxBitmap GetBitmapResource( const wxString& name );
+  /// Retrieves bitmap resources
+  static wxBitmap GetBitmapResource(const wxString& name);
 
-    /// Retrieves icon resources
-    static wxIcon GetIconResource( const wxString& name );
-////@end AppResources resource functions
-
+  /// Retrieves icon resources
+  static wxIcon GetIconResource(const wxString& name);
+  ////@end AppResources resource functions
 };
 
 #endif
-    // _APP_RESOURCES_H_
+// _APP_RESOURCES_H_

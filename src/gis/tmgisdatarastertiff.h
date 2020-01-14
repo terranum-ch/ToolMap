@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmgisdatarastertiff.h
+ tmgisdatarastertiff.h
                    For dealing with spatial raster data (*.tiff, *.tif)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,35 +16,29 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATARASTER_TIFF_H_
 #define _TM_GISDATARASTER_TIFF_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "tmgisdataraster.h"
 #include "gdal_priv.h"
+#include "tmgisdataraster.h"
 
+class tmGISDataRasterTIFF : public tmGISDataRaster {
+ private:
+ protected:
+ public:
+  tmGISDataRasterTIFF();
 
-class tmGISDataRasterTIFF : public tmGISDataRaster
-{
-private:
+  ~tmGISDataRasterTIFF();
 
-protected:
-public:
-    tmGISDataRasterTIFF();
-
-    ~tmGISDataRasterTIFF();
-
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
-
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
-
 
 #endif

@@ -1,9 +1,8 @@
 /***************************************************************************
-								tocwindow_dlg.h
+ tocwindow_dlg.h
                     Display the TOC, try using the wxDrawerWindow class
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,109 +16,93 @@
 
 // comment doxygen
 
-
 #ifndef TOCWINDOW_DLG_H
 #define TOCWINDOW_DLG_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-
-
-//#include <wx/aui/aui.h>
 #include <wx/aui/framemanager.h>
 #include <wx/aui/dockart.h>
+#include <wx/tglbtn.h>
 
-
-
-
-//#include "wx/treectrl.h"
 #include "../gis/tmtocctrl.h"
-#include "wx/tglbtn.h"
 #include "wxflatbutton.h"
 
 #define ID_TOCWINDOW_DLG 10035
 #define ID_TREECTRL1 10127
 #define ID_DLGTOC_ADD 10147
 #define ID_DLGTOC_REMOVE 10145
-#define SYMBOL_TOCWINDOW_DLG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_TOCWINDOW_DLG_STYLE wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX
 #define SYMBOL_TOCWINDOW_DLG_TITLE _("Table of content")
 #define SYMBOL_TOCWINDOW_DLG_IDNAME ID_TOCWINDOW_DLG
 #define SYMBOL_TOCWINDOW_DLG_SIZE wxSize(220, 150)
 #define SYMBOL_TOCWINDOW_DLG_POSITION wxDefaultPosition
 
+class TocWindowContent : public wxEvtHandler {
+ private:
+  DECLARE_DYNAMIC_CLASS(TocWindowContent);
 
-class TocWindowContent : public wxEvtHandler
-{
-private:
-DECLARE_DYNAMIC_CLASS(TocWindowContent);
+  tmTOCCtrl *m_TOCCtrl;
 
-    tmTOCCtrl *m_TOCCtrl;
+ public:
+  TocWindowContent();
 
-public :
-    TocWindowContent();
+  ~TocWindowContent();
 
-    ~TocWindowContent();
+  /// Creates the controls and sizers
+  wxSizer *CreateControls(wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE);
 
-    /// Creates the controls and sizers
-    wxSizer *CreateControls(wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE);
+  virtual void Show() {
+    ;
+  }
 
-    virtual void Show()
-    { ; }
+  virtual void Hide() {
+    ;
+  }
 
-    virtual void Hide()
-    { ; }
+  virtual bool IsShown() {
+    return FALSE;
+  }
 
-    virtual bool IsShown()
-    { return FALSE; }
-
-    tmTOCCtrl *GetTOCCtrl()
-    { return m_TOCCtrl; }
-
-
+  tmTOCCtrl *GetTOCCtrl() {
+    return m_TOCCtrl;
+  }
 };
 
+class TocWindowDlgGen : public TocWindowContent {
+ private:
+  DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
 
-class TocWindowDlgGen : public TocWindowContent
-{
-private:
-DECLARE_DYNAMIC_CLASS(TocWindowDlgGen);
+  void Init();
 
-    void Init();
+  wxAuiManager *m_TocAui;
+  wxPanel *m_ContentFrame;
+  wxWindow *m_ParentEvt;
 
-    wxAuiManager *m_TocAui;
-    wxPanel *m_ContentFrame;
-    wxWindow *m_ParentEvt;
+  // DECLARE_EVENT_TABLE();
 
-    //DECLARE_EVENT_TABLE();
+ public:
+  TocWindowDlgGen();
 
+  TocWindowDlgGen(wxAuiManager *myAuiManager, wxWindow *parent, wxWindowID id = ID_TOCWINDOW_DLG,
+                  const wxString &title = SYMBOL_TOCWINDOW_DLG_TITLE);
 
-public:
-    TocWindowDlgGen();
+  ~TocWindowDlgGen();
 
-    TocWindowDlgGen(wxAuiManager *myAuiManager, wxWindow *parent, wxWindowID id = ID_TOCWINDOW_DLG,
-                    const wxString &title = SYMBOL_TOCWINDOW_DLG_TITLE);
+  virtual void Show();
 
-    ~TocWindowDlgGen();
+  virtual void Hide();
 
-    virtual void Show();
+  virtual bool IsShown();
 
-    virtual void Hide();
-
-    virtual bool IsShown();
-
-
-
-    /*void OnPressRemoveLayers(wxCommandEvent & event);
-    void OnPressAddLayers(wxCommandEvent & event);*/
-
+  /*void OnPressRemoveLayers(wxCommandEvent & event);
+  void OnPressAddLayers(wxCommandEvent & event);*/
 };
-
 
 #endif

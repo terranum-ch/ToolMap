@@ -1,9 +1,8 @@
 /***************************************************************************
-						tmattributionbasicarray.cpp
+ tmattributionbasicarray.cpp
                     An array for storing basic attributions values
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,49 +16,44 @@
 
 // comment doxygen
 
-
 #ifndef _TM_ATTRIBUTION_BASIC_ARRAY_H_
 #define _TM_ATTRIBUTION_BASIC_ARRAY_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-class tmAttributionBasic : public wxObject
-{
-private:
-    void InitMemberValues();
+class tmAttributionBasic : public wxObject {
+ private:
+  void InitMemberValues();
 
-public:
-    // ctor - dtor
-    tmAttributionBasic();
+ public:
+  // ctor - dtor
+  tmAttributionBasic();
 
-    ~tmAttributionBasic();
+  ~tmAttributionBasic();
 
-    long m_Oid;
-    wxArrayLong m_Values;
+  long m_Oid;
+  wxArrayLong m_Values;
 };
-
 
 WX_DECLARE_OBJARRAY(tmAttributionBasic, tmAttributionBasicArray);
 
+class tmLayerValue : public wxObject {
+ private:
+  void InitMemberValues();
 
-class tmLayerValue : public wxObject
-{
-private:
-    void InitMemberValues();
+ public:
+  tmLayerValue();
 
-public:
-    tmLayerValue();
+  ~tmLayerValue();
 
-    ~tmLayerValue();
-
-    long m_Oid;
-    wxString m_Value;
+  long m_Oid;
+  wxString m_Value;
 };
 
 WX_DECLARE_OBJARRAY(tmLayerValue, tmLayerValueArray);

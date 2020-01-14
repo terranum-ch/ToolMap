@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmmemoryzoom.h
-                    	Store Previous Zoom in memory 
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmmemoryzoom.h
+                     Store Previous Zoom in memory
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,73 +18,67 @@
 #define _TM_MEMORYZOOM_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
 #include <wx/graphics.h>
 
-/***************************************************************************//**
-@brief tmZoomExtent
-@details Contain a zoom level
-@author Lucien Schreiber (c) CREALP 2009
-@date 26 octobre 2009
- *******************************************************************************/
-class tmZoomExtent
-{
-public:
-    wxPoint2DDouble m_TopLeftPosition;
-    double m_ZoomFactor;
+/***************************************************************************/ /**
+ @brief tmZoomExtent
+ @details Contain a zoom level
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 octobre 2009
+  *******************************************************************************/
+class tmZoomExtent {
+ public:
+  wxPoint2DDouble m_TopLeftPosition;
+  double m_ZoomFactor;
 
-    tmZoomExtent();
+  tmZoomExtent();
 
-    tmZoomExtent(double top, double left, double pixelsize);
+  tmZoomExtent(double top, double left, double pixelsize);
 
-    ~tmZoomExtent();
+  ~tmZoomExtent();
 
-    bool operator==(const tmZoomExtent &zoom) const;
+  bool operator==(const tmZoomExtent &zoom) const;
 
-    bool IsOk();
+  bool IsOk();
 };
 
 WX_DECLARE_OBJARRAY(tmZoomExtent, tmArrayZoomExtent);
 
+/***************************************************************************/ /**
+ @brief tmMemoryZoomManager
+ @details Manage previous zoom level
+ @author Lucien Schreiber (c) CREALP 2009
+ @date 26 octobre 2009
+  *******************************************************************************/
+class tmMemoryZoomManager : public wxEvtHandler {
+ private:
+  tmArrayZoomExtent m_ZoomExtents;
+  int m_MaxSize;
 
-/***************************************************************************//**
-@brief tmMemoryZoomManager
-@details Manage previous zoom level
-@author Lucien Schreiber (c) CREALP 2009
-@date 26 octobre 2009
- *******************************************************************************/
-class tmMemoryZoomManager : public wxEvtHandler
-{
-private:
-    tmArrayZoomExtent m_ZoomExtents;
-    int m_MaxSize;
+ public:
+  tmMemoryZoomManager(int maxsize = 50);
 
-public:
-    tmMemoryZoomManager(int maxsize = 50);
+  ~tmMemoryZoomManager();
 
-    ~tmMemoryZoomManager();
+  bool Add(const tmZoomExtent &value);
 
-    bool Add(const tmZoomExtent &value);
+  bool Add(double top, double left, double zoomfactor);
 
-    bool Add(double top, double left, double zoomfactor);
+  int GetCount();
 
-    int GetCount();
+  bool GetPrevious(tmZoomExtent &extent);
 
-    bool GetPrevious(tmZoomExtent &extent);
-
-    void Clear();
-
+  void Clear();
 };
 
-
-//TODO: Ajouter dans tmLayerManager
+// TODO: Ajouter dans tmLayerManager
 /*
 class tmLayerManager {
   private:

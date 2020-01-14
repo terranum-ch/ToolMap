@@ -2,7 +2,6 @@
  siprogress.h
  -------------------
  copyright            : (C) 2013 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,17 +23,16 @@
 #include <wx/wx.h>
 #endif
 
-
 class siProgressIndicator {
-private:
-    long m_Total;
-    
-public:
-    siProgressIndicator();
-    virtual ~siProgressIndicator();
-    
-    virtual void UpdateProgress(int value, int step);
-    virtual void StartProgress ();
-    virtual void StopProgress ();
+ private:
+  long m_Total;
+
+ public:
+  siProgressIndicator();
+  virtual ~siProgressIndicator();
+
+  virtual void UpdateProgress(int value, int step);
+  virtual void StartProgress();
+  virtual void StopProgress();
 };
 #endif

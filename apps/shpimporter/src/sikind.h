@@ -2,7 +2,6 @@
  sikind.h
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,28 +25,27 @@
 #include "databaseresult.h"
 
 class siKind {
-private:
-    wxString m_KindNameIn;
-    wxArrayLong m_CodesIn;
-    wxArrayString m_CodesOut2;
-    wxArrayLong m_CodesRealOut;
-    DataBase * m_Database;
-    
-    bool _LoadKindValue(const wxString & kindtxt);
-    
-public:
-    siKind();
-    virtual ~siKind();
-    
-    bool LoadFromArray(const wxArrayString & kindtxt, DataBase * database);
-    void Reset();
-    
-    long GetRealKind(long kindin);
-    inline const wxString GetKindNameIn() const;
+ private:
+  wxString m_KindNameIn;
+  wxArrayLong m_CodesIn;
+  wxArrayString m_CodesOut2;
+  wxArrayLong m_CodesRealOut;
+  DataBase* m_Database;
+
+  bool _LoadKindValue(const wxString& kindtxt);
+
+ public:
+  siKind();
+  virtual ~siKind();
+
+  bool LoadFromArray(const wxArrayString& kindtxt, DataBase* database);
+  void Reset();
+
+  long GetRealKind(long kindin);
+  inline const wxString GetKindNameIn() const;
 };
 
-
 inline const wxString siKind::GetKindNameIn() const {
-    return m_KindNameIn;
+  return m_KindNameIn;
 }
 #endif

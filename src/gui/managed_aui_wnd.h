@@ -1,9 +1,8 @@
 /***************************************************************************
-								managed_aui_wnd.h
-						Main class for managed aui windows
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ managed_aui_wnd.h
+ Main class for managed aui windows
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef MANAGED_AUI_WND_H
 #define MANAGED_AUI_WND_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -31,31 +29,26 @@
 
 #include <wx/aui/aui.h>
 
+class ManagedAuiWnd : public wxEvtHandler {
+ protected:
+  wxAuiManager *m_AuiMgr;
+  wxString m_AuiPanelName;
 
-class ManagedAuiWnd : public wxEvtHandler
-{
-protected:
-    wxAuiManager *m_AuiMgr;
-    wxString m_AuiPanelName;
+  // private member function
+  void InitValues();
 
-    // private member function
-    void InitValues();
+ public:
+  ManagedAuiWnd(wxAuiManager *AuiManager);
 
-public:
-    ManagedAuiWnd(wxAuiManager *AuiManager);
+  ~ManagedAuiWnd();
 
-    ~ManagedAuiWnd();
+  void AddManagedPane(wxWindow *window, const wxAuiPaneInfo &paneinfo, bool bShow = FALSE);
 
-    void AddManagedPane(wxWindow *window,
-                        const wxAuiPaneInfo &paneinfo,
-                        bool bShow = FALSE);
+  void ShowPanel();
 
-    void ShowPanel();
+  void HidePanel();
 
-    void HidePanel();
-
-    bool IsPanelShown();
+  bool IsPanelShown();
 };
-
 
 #endif

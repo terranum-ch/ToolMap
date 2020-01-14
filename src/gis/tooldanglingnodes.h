@@ -1,9 +1,8 @@
 /***************************************************************************
-								tooldanglingnodes.h
+ tooldanglingnodes.h
                     Tool engine for searching dangling nodes
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,119 +16,111 @@
 
 // comment doxygen
 
-
 #ifndef _TOOL_DANGLING_NODES_H_
 #define _TOOL_DANGLING_NODES_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/progdlg.h>  // for progress dialog definition
+
 #include "../core/tmarraysize.h"
 #include "../database/database_tm.h"
-#include <wx/progdlg.h>                // for progress dialog definition
-#include "../gis/tmgisdatavectormysql.h"    // for mysql gis data manipulation
+#include "../gis/tmgisdatavectormysql.h"  // for mysql gis data manipulation
 
+class DanglingPtsToCheck {
+ private:
+  void InitMemberValues();
 
-class DanglingPtsToCheck
-{
-private:
-    void InitMemberValues();
+ public:
+  wxRealPoint m_Pt;
+  long m_LineOID;
+  int m_Flaged;
 
-public:
-    wxRealPoint m_Pt;
-    long m_LineOID;
-    int m_Flaged;
+  DanglingPtsToCheck() {
+    m_Pt = wxRealPoint(-1, -1);
+    m_LineOID = wxNOT_FOUND;
+    m_Flaged = 0;
+  }
 
-    DanglingPtsToCheck()
-    {
-        m_Pt = wxRealPoint(-1, -1);
-        m_LineOID = wxNOT_FOUND;
-        m_Flaged = 0;
-    }
+  DanglingPtsToCheck(const wxRealPoint &pt, long oid) {
+    m_Pt = pt;
+    m_LineOID = oid;
+    m_Flaged = 0;
+  }
 
-    DanglingPtsToCheck(const wxRealPoint &pt, long oid)
-    {
-        m_Pt = pt;
-        m_LineOID = oid;
-        m_Flaged = 0;
-    }
-
-    ~DanglingPtsToCheck()
-    { ; }
+  ~DanglingPtsToCheck() {
+    ;
+  }
 };
 
 // Creating a list of MemoryFields
 WX_DECLARE_OBJARRAY(DanglingPtsToCheck, tmArrayDanglingPtsToCheck);
 
+class ToolDanglingNodes : public wxObject {
+ private:
+  tmArrayDanglingPtsToCheck m_PtsToCheck;
+  DataBaseTM *m_pDB;
+  bool m_bSearchInited;
+  bool m_bSearchRun;
 
-class ToolDanglingNodes : public wxObject
-{
-private:
-    tmArrayDanglingPtsToCheck m_PtsToCheck;
-    DataBaseTM *m_pDB;
-    bool m_bSearchInited;
-    bool m_bSearchRun;
+  long m_LayerID;
 
-    long m_LayerID;
+  int m_LoopNum;
+  wxProgressDialog *m_pDlg;
 
-    int m_LoopNum;
-    wxProgressDialog *m_pDlg;
+  tmGISDataVectorMYSQL m_GisData;
+  OGRPolygon *m_GeomFrame;
 
-    tmGISDataVectorMYSQL m_GisData;
-    OGRPolygon *m_GeomFrame;
+  void DNInitValues();
 
+  // private check
+  bool DNIsLayerCorrect(long layerid);
 
-    void DNInitValues();
+  bool DNIsSearchInitedOk();
 
-    // private check
-    bool DNIsLayerCorrect(long layerid);
+  // private search part
+  bool DNGetAllLines(long layerid);
 
-    bool DNIsSearchInitedOk();
+  bool DNSearchValidVertex();
 
-    // private search part
-    bool DNGetAllLines(long layerid);
+  bool DNFlagNodes();
 
-    bool DNSearchValidVertex();
+  bool DNIsPointInside(OGRPoint *pt);
 
-    bool DNFlagNodes();
+  void DNSearchCleanUp();
 
-    bool DNIsPointInside(OGRPoint *pt);
+  bool DNGetFrameGeometry();
 
-    void DNSearchCleanUp();
+  void DNParseFlagedPts(wxArrayRealPoints &dpts);
 
-    bool DNGetFrameGeometry();
+  // update
+  bool DNUpdateProgress(unsigned int ptstocheck, unsigned int iloop);
 
-    void DNParseFlagedPts(wxArrayRealPoints &dpts);
+ protected:
+ public:
+  ToolDanglingNodes();
 
-    // update
-    bool DNUpdateProgress(unsigned int ptstocheck, unsigned int iloop);
+  ToolDanglingNodes(DataBaseTM *database);
 
-protected:
-public:
-    ToolDanglingNodes();
+  ~ToolDanglingNodes();
 
-    ToolDanglingNodes(DataBaseTM *database);
+  void Create(DataBaseTM *database);
 
-    ~ToolDanglingNodes();
+  bool IsOk();
 
-    void Create(DataBaseTM *database);
+  bool GetDanglingNodes(wxArrayRealPoints &pts);
 
-    bool IsOk();
+  bool SearchInit(long layerid, const wxString &layername);
 
-    bool GetDanglingNodes(wxArrayRealPoints &pts);
+  bool SearchInfo(int &numberlines);
 
-    bool SearchInit(long layerid, const wxString &layername);
-
-    bool SearchInfo(int &numberlines);
-
-    bool SearchRun(wxProgressDialog *myProgDlg = NULL);
-
+  bool SearchRun(wxProgressDialog *myProgDlg = NULL);
 };
-
 
 #endif

@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmgisdatavector.h
+ tmgisdatavector.h
                    Super class for dealing with vector GIS data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATAVECTOR_H_
 #define _TM_GISDATAVECTOR_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -34,204 +32,194 @@
 // Number of formats reserved for rasters
 const int tmGISVECTOR_OFFSET = 4;
 
-enum tmGISDATA_VECTOR_TYPES
-{
-    tmGIS_VECTOR_SHAPEFILE = tmGISVECTOR_OFFSET,
-    tmGIS_VECTOR_MYSQL // should allways been put as last item
+enum tmGISDATA_VECTOR_TYPES {
+  tmGIS_VECTOR_SHAPEFILE = tmGISVECTOR_OFFSET,
+  tmGIS_VECTOR_MYSQL  // should allways been put as last item
 };
 
-static wxString tmGISDATA_VECTOR_TYPE_WILDCARDS[] = {
-        wxTRANSLATE("Esri's shapefiles (*.shp)|*.shp"),
-        wxTRANSLATE("MySQL geometric table (*.MYD)|*.MYD")
+static wxString tmGISDATA_VECTOR_TYPE_WILDCARDS[] = {wxTRANSLATE("Esri's shapefiles (*.shp)|*.shp"),
+                                                     wxTRANSLATE("MySQL geometric table (*.MYD)|*.MYD")};
+
+static wxString tmGISDATA_VECTOR_TYPE_EXTENSION[] = {
+    _T("*.shp"),
+    _T("*.mysql"),
 };
 
+class tmGISDataVector : public tmGISData {
+ private:
+  // inserting private function
+  bool ComputeLineLineIntersection(OGRLineString *line, OGRLineString *intersection, const wxArrayInt &vertexindex,
+                                   OGRMultiPoint &resultpos);
 
-static wxString tmGISDATA_VECTOR_TYPE_EXTENSION[] =
-        {
-                _T("*.shp"),
-                _T("*.mysql"),
-        };
+  bool SplitLinesAtVertex(OGRLineString *line, const wxArrayInt &splitpos, OGRMultiLineString &splitedline);
 
+  OGRLineString *GetLineWithIntersection(OGRLineString *line, OGRLineString *intersection, wxArrayInt &insertedvertex);
 
-class tmGISDataVector : public tmGISData
-{
-private:
-    // inserting private function
-    bool ComputeLineLineIntersection(OGRLineString *line, OGRLineString *intersection,
-                                     const wxArrayInt &vertexindex,
-                                     OGRMultiPoint &resultpos);
+  OGRLineString *GetLineWithIntersection(OGRLineString *line, OGRMultiLineString *multiline,
+                                         wxArrayInt &intertedvertex);
 
-    bool SplitLinesAtVertex(OGRLineString *line,
-                            const wxArrayInt &splitpos,
-                            OGRMultiLineString &splitedline);
+ protected:
+  virtual wxString GetTableName(TOC_GENERIC_NAME type) {
+    return wxEmptyString;
+  }
 
-    OGRLineString *GetLineWithIntersection(OGRLineString *line,
-                                           OGRLineString *intersection,
-                                           wxArrayInt &insertedvertex);
+  // GEOS functions
+  bool CheckGEOSIntersection(GEOSGeom *rect, GEOSGeom *object);
 
-    OGRLineString *GetLineWithIntersection(OGRLineString *line,
-                                           OGRMultiLineString *multiline,
-                                           wxArrayInt &intertedvertex);
+  bool CheckGEOSCrosses(GEOSGeom *g1, GEOSGeom *g2);
 
+  GEOSGeom CreateGEOSGeometry(OGRGeometry *geom);
 
-protected:
-    virtual wxString GetTableName(TOC_GENERIC_NAME type)
-    { return wxEmptyString; }
+  GEOSGeom CreateGEOSGeometry(const tmRealRect &rect);
 
-    // GEOS functions
-    bool CheckGEOSIntersection(GEOSGeom *rect, GEOSGeom *object);
+  // Intersection for snapping
+  bool GetVertexIntersection(OGRGeometry *geometry, OGRGeometry *buffer, wxArrayRealPoints &points);
 
-    bool CheckGEOSCrosses(GEOSGeom *g1, GEOSGeom *g2);
+  bool GetBeginEndInterseciton(OGRGeometry *geometry, OGRGeometry *buffer, wxArrayRealPoints &points);
 
-    GEOSGeom CreateGEOSGeometry(OGRGeometry *geom);
+  static OGRGeometry *SafeCreateFromGEOS(GEOSGeom geom);
 
-    GEOSGeom CreateGEOSGeometry(const tmRealRect &rect);
+  static OGRGeometry *SafeBuffer(OGRGeometry *ogrgeom, int size);
 
+  static OGRGeometry *SafeIntersection(OGRGeometry *geom1, OGRGeometry *geom2);
 
-    // Intersection for snapping
-    bool GetVertexIntersection(OGRGeometry *geometry, OGRGeometry *buffer,
-                               wxArrayRealPoints &points);
+  static OGRGeometry *SafeUnion(OGRGeometry *union1, OGRGeometry *line);
 
-    bool GetBeginEndInterseciton(OGRGeometry *geometry, OGRGeometry *buffer,
-                                 wxArrayRealPoints &points);
+  static OGRGeometry *CreateOGRGeometry(const wxRealPoint &pt);
 
+ public:
+  // ctor, dtor
+  tmGISDataVector();
 
-    static OGRGeometry *SafeCreateFromGEOS(GEOSGeom geom);
+  ~tmGISDataVector();
 
-    static OGRGeometry *SafeBuffer(OGRGeometry *ogrgeom, int size);
+  // static functions
+  static void InitGISDriversVector();
 
-    static OGRGeometry *SafeIntersection(OGRGeometry *geom1, OGRGeometry *geom2);
+  static wxString GetAllVectorGISFormatsWildcards();
 
-    static OGRGeometry *SafeUnion(OGRGeometry *union1, OGRGeometry *line);
+  static tmGISDataVector *CreateGISVectorBasedOnType(const int &gis_format_index);
 
-    static OGRGeometry *CreateOGRGeometry(const wxRealPoint &pt);
+  static tmGISDataVector *CreateGISVectorBasedOnExt(const wxString &extension);
 
+  static OGRGeometry *CreateOGRGeometry(const tmRealRect &rect);
 
-public:
-    // ctor, dtor
-    tmGISDataVector();
+  OGRLineString *InsertVertex(OGRGeometry *pointbuffer, wxRealPoint ptclicked, OGRLineString *line, int &inseredvertex);
 
-    ~tmGISDataVector();
+  OGRLineString *InsertVertexMultiple(OGRLineString *line, OGRMultiPoint *vertex, const wxArrayInt &point_pos);
 
-    // static functions
-    static void InitGISDriversVector();
+  // gis function
+  virtual TM_GIS_SPATIAL_TYPES GetSpatialType() {
+    return LAYER_SPATIAL_UNKNOWN;
+  }
 
-    static wxString GetAllVectorGISFormatsWildcards();
+  // virtual function for getting data & drawing
+  virtual bool SetSpatialFilter(tmRealRect filter, int type) {
+    return FALSE;
+  }
 
-    static tmGISDataVector *CreateGISVectorBasedOnType(const int &gis_format_index);
+  virtual bool SetAttributeFilter(const wxString &query) {
+    return FALSE;
+  }
 
-    static tmGISDataVector *CreateGISVectorBasedOnExt(const wxString &extension);
+  virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver) {
+    return NULL;
+  }
 
-    static OGRGeometry *CreateOGRGeometry(const tmRealRect &rect);
+  virtual OGRFeature *GetNextFeature() {
+    return NULL;
+  }
 
-    OGRLineString *InsertVertex(OGRGeometry *pointbuffer, wxRealPoint ptclicked,
-                                OGRLineString *line, int &inseredvertex);
+  virtual bool ResetReading() {
+    return false;
+  }
 
-    OGRLineString *InsertVertexMultiple(OGRLineString *line,
-                                        OGRMultiPoint *vertex,
-                                        const wxArrayInt &point_pos);
+  virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver) {
+    return NULL;
+  }
 
+  virtual int GetNextDataPolygonInfo(long &oid) {
+    return -1;
+  }
 
-    // gis function
-    virtual TM_GIS_SPATIAL_TYPES GetSpatialType()
-    { return LAYER_SPATIAL_UNKNOWN; }
+  virtual wxRealPoint *GetNextDataPolygon(int currentring, int &nbvertex) {
+    return NULL;
+  }
 
+  virtual OGRFeature *GetFeatureByOID(long oid) {
+    return NULL;
+  }
 
-    // virtual function for getting data & drawing
-    virtual bool SetSpatialFilter(tmRealRect filter, int type)
-    { return FALSE; }
+  virtual long AddGeometry(OGRGeometry *Geom, const long &oid, int layertype = wxNOT_FOUND) {
+    return -1;
+  }
 
-    virtual bool SetAttributeFilter(const wxString &query)
-    { return FALSE; }
+  virtual bool UpdateGeometry(OGRGeometry *geom, const long &oid) {
+    return false;
+  }
 
-    virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver)
-    { return NULL; }
+  virtual bool SplitGeometry(OGRGeometryCollection *gCol, const long &oid, wxArrayLong &AddedIds, int layertype);
 
-    virtual OGRFeature *GetNextFeature()
-    { return NULL; }
+  virtual OGRGeometryCollection *GetGeometryColByOID(wxArrayLong *OIDs) {
+    return NULL;
+  }
 
-    virtual bool ResetReading()
-    { return false; }
+  virtual void CloseGeometry() {
+    ;
+  }
 
-    virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver)
-    { return NULL; }
+  // iterate geometries (MySQL and OGR)
+  virtual OGRGeometry *GetNextGeometry(bool restart, long &oid) {
+    oid = wxNOT_FOUND;
+    return NULL;
+  }
 
-    virtual int GetNextDataPolygonInfo(long &oid)
-    { return -1; }
+  virtual bool DeleteFile(const wxString &layername) {
+    return false;
+  }
 
-    virtual wxRealPoint *GetNextDataPolygon(int currentring, int &nbvertex)
-    { return NULL; }
+  // counting
+  virtual int GetCount() {
+    return -1;
+  }
 
-    virtual OGRFeature *GetFeatureByOID(long oid)
-    { return NULL; }
+  // fields functions
+  virtual int GetFieldsCount() {
+    return -1;
+  }
 
-    virtual long AddGeometry(OGRGeometry *Geom, const long &oid, int layertype = wxNOT_FOUND)
-    { return -1; }
+  virtual bool GetFieldsName(wxArrayString &Fields, long oid = wxNOT_FOUND) {
+    return false;
+  }
 
-    virtual bool UpdateGeometry(OGRGeometry *geom, const long &oid)
-    { return false; }
+  virtual bool GetFieldsValue(wxArrayString &values, long oid) {
+    return false;
+  }
 
-    virtual bool SplitGeometry(OGRGeometryCollection *gCol, const long &oid,
-                               wxArrayLong &AddedIds, int layertype);
+  // Metadata
+  wxString GetFieldsMetadata();
 
-    virtual OGRGeometryCollection *GetGeometryColByOID(wxArrayLong *OIDs)
-    { return NULL; }
+  // transformations
+  bool CutLineAtVertex(long oid, const wxRealPoint &clickedpt, int searchRadius, int layertype);
 
-    virtual void CloseGeometry()
-    { ; }
+  // OGRLineString * line1, OGRGeometry * pointbuffer,
+  //   wxRealPoint ptclicked, OGRLineString & lineresult1,
+  //   OGRLineString & lineresult2);
+  bool CutLineGeometry(OGRLineString *line1, OGRLineString *line2, OGRMultiLineString &res1, OGRMultiLineString &res2);
 
-    // iterate geometries (MySQL and OGR)
-    virtual OGRGeometry *GetNextGeometry(bool restart, long &oid)
-    {
-        oid = wxNOT_FOUND;
-        return NULL;
-    }
+  bool CutLineMultiple(OGRLineString *linetocut, OGRMultiLineString *cutlines, OGRMultiLineString &results);
 
-    virtual bool DeleteFile(const wxString & layername)
-    {return false;}
+  // merging
+  bool LinesMerge(OGRMultiLineString *linetomerge, OGRGeometry **linemerged);
 
-    // counting
-    virtual int GetCount()
-    { return -1; }
+  // Searching
+  virtual wxArrayLong *SearchIntersectingGeometry(OGRGeometry *intersectinggeom) {
+    return NULL;
+  }
 
-    // fields functions
-    virtual int GetFieldsCount()
-    { return -1; }
-
-    virtual bool GetFieldsName(wxArrayString &Fields, long oid = wxNOT_FOUND)
-    { return false; }
-
-    virtual bool GetFieldsValue(wxArrayString &values, long oid)
-    { return false; }
-
-    // Metadata
-    wxString GetFieldsMetadata();
-
-    // transformations
-    bool CutLineAtVertex(long oid, const wxRealPoint &clickedpt, int searchRadius, int layertype);
-
-    //OGRLineString * line1, OGRGeometry * pointbuffer,
-    //					  wxRealPoint ptclicked, OGRLineString & lineresult1,
-    //					  OGRLineString & lineresult2);
-    bool CutLineGeometry(OGRLineString *line1, OGRLineString *line2,
-                         OGRMultiLineString &res1,
-                         OGRMultiLineString &res2);
-
-    bool CutLineMultiple(OGRLineString *linetocut, OGRMultiLineString *cutlines,
-                         OGRMultiLineString &results);
-
-    // merging
-    bool LinesMerge(OGRMultiLineString *linetomerge,
-                    OGRGeometry **linemerged);
-
-    // Searching
-    virtual wxArrayLong *SearchIntersectingGeometry(OGRGeometry *intersectinggeom)
-    { return NULL; }
-
-    virtual int IsRaster()
-    { return 0; }
-
+  virtual int IsRaster() {
+    return 0;
+  }
 };
-
 
 #endif
