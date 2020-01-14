@@ -1,8 +1,8 @@
 /***************************************************************************
-								test_setup.h
-							Setup tests 
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+ test_setup.h
+ Setup tests
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,83 +17,71 @@
 #ifndef _TEST_SETUP_H_
 #define _TEST_SETUP_H_
 
-
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-
-#include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
+#include <cxxtest/TestSuite.h>
 
 #ifdef __LINUX__
-#include "gtk/gtk.h"	
+#include "gtk/gtk.h"
 #endif
 
-static void myAssertHandler(const wxString &file, int line, const wxString &func, const wxString &cond, const wxString &msg) {
-	wxTrap();
+static void myAssertHandler(const wxString &file, int line, const wxString &func, const wxString &cond,
+                            const wxString &msg) {
+  wxTrap();
 }
 
-class Fixture1 : public CxxTest::GlobalFixture
-{
+class Fixture1 : public CxxTest::GlobalFixture {
+ public:
+  bool setUpWorld() {
+    wxApp::SetInstance(new wxAppConsole());
+    int argc = 0;
+    char **argv = NULL;
+    wxEntryStart(argc, argv);
+    // wxInitialize();
+    wxTheColourDatabase = new wxColourDatabase();
+    wxInitAllImageHandlers();
+    setlocale(LC_NUMERIC, "C");
+    wxLogMessage(_T("Initing test application"));
+    wxSetAssertHandler(myAssertHandler);
 
-public:
-	bool setUpWorld(){
-		wxApp::SetInstance(new wxAppConsole());
-		int argc=0;
-		char **argv=NULL;
-		wxEntryStart(argc, argv);
-		//wxInitialize();
-		wxTheColourDatabase = new wxColourDatabase();
-		wxInitAllImageHandlers();
-        setlocale(LC_NUMERIC, "C");
-		wxLogMessage(_T("Initing test application"));
-        wxSetAssertHandler(myAssertHandler);
-
-        // debugging string for OSX
-        // needed otherwise function ToUTF8 isn't found !!
-        wxString myTest = _T("Test debugging");
-        myTest.ToUTF8().data();
-        
-
+    // debugging string for OSX
+    // needed otherwise function ToUTF8 isn't found !!
+    wxString myTest = _T("Test debugging");
+    myTest.ToUTF8().data();
 
 #ifdef __LINUX__
-		TS_ASSERT(gtk_init_check(NULL,NULL));
+    TS_ASSERT(gtk_init_check(NULL, NULL));
 #endif
 
-		return true;
-	}	
-    
-    bool tearDownWorld() {
-		wxLogMessage(_T("Cleaning test application"));
-		//wxUninitialize();
-		wxEntryCleanup(); 
-		return true; 
-	}
+    return true;
+  }
 
+  bool tearDownWorld() {
+    wxLogMessage(_T("Cleaning test application"));
+    // wxUninitialize();
+    wxEntryCleanup();
+    return true;
+  }
 };
-
 
 static Fixture1 fixture1;
 
- 
-class Suite : public CxxTest::TestSuite
-{
-public:
-	void testOne() {
-		//setting output to the std err (otherwise log into windows)
-		wxLog::SetActiveTarget(new wxLogStderr());
-	}
-	
-	void testName(){
-		wxLogMessage(_T("------------------------------------"));
-		wxLogMessage(_T("-------- SETUP TESTS PASSED --------"));
-		wxLogMessage(_T("------------------------------------"));
-	}
+class Suite : public CxxTest::TestSuite {
+ public:
+  void testOne() {
+    // setting output to the std err (otherwise log into windows)
+    wxLog::SetActiveTarget(new wxLogStderr());
+  }
+
+  void testName() {
+    wxLogMessage(_T("------------------------------------"));
+    wxLogMessage(_T("-------- SETUP TESTS PASSED --------"));
+    wxLogMessage(_T("------------------------------------"));
+  }
 };
-
-
 
 #endif

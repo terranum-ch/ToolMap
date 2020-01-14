@@ -1,10 +1,9 @@
 /***************************************************************************
-								test_param.h.in
-					Manage parameters for the tests using cmake.
-					DO NOT EDIT THE TEST_PARAM.H DIRECTLY, USE THE
-					TEST_PARAM.H.IN FILE INSTEAD
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+ test_param.h.in
+ Manage parameters for the tests using cmake.
+ DO NOT EDIT THE TEST_PARAM.H DIRECTLY, USE THE TEST_PARAM.H.IN FILE INSTEAD
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,7 +19,7 @@
 #define _TEST_PARAM_H_
 
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
