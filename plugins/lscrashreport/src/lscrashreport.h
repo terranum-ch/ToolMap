@@ -24,76 +24,71 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/hyperlink.h>
-#include <wx/debugrpt.h>
-#include <wx/mstream.h>
-#include <wx/filename.h>
-#include <wx/sstream.h>
 #include <curl/curl.h>
+#include <wx/debugrpt.h>
+#include <wx/filename.h>
+#include <wx/hyperlink.h>
+#include <wx/mstream.h>
+#include <wx/sstream.h>
 
+class lsCrashReport_DLG : public wxDialog {
+ private:
+  wxStaticText *m_InfoTextCtrl;
+  wxTextCtrl *m_CrashEmailCtrl;
+  wxTextCtrl *m_CrashDescCtrl;
+  wxHyperlinkCtrl *m_DisplayInfoLinkCtrl;
+  wxString m_CrashDirectory;
+  wxBitmap *m_BmpCrash;
 
-class lsCrashReport_DLG : public wxDialog
-{
-private:
-    wxStaticText *m_InfoTextCtrl;
-    wxTextCtrl *m_CrashEmailCtrl;
-    wxTextCtrl *m_CrashDescCtrl;
-    wxHyperlinkCtrl *m_DisplayInfoLinkCtrl;
-    wxString m_CrashDirectory;
-    wxBitmap *m_BmpCrash;
+  void OnLinkClicked(wxHyperlinkEvent &event);
 
-    void OnLinkClicked(wxHyperlinkEvent &event);
+  void _CreateControls();
 
-    void _CreateControls();
+  void _CreateBitmaps();
 
-    void _CreateBitmaps();
+ public:
+  lsCrashReport_DLG(wxWindow *parent, const wxString &softname, const wxString &tempdirectory, wxWindowID id = wxID_ANY,
+                    const wxString &title = _("Fatal exception"), const wxPoint &pos = wxDefaultPosition,
+                    const wxSize &size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
 
-public:
-    lsCrashReport_DLG(wxWindow *parent, const wxString &softname, const wxString &tempdirectory,
-                      wxWindowID id = wxID_ANY, const wxString &title = _("Fatal exception"),
-                      const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-                      long style = wxDEFAULT_DIALOG_STYLE);
+  ~lsCrashReport_DLG();
 
-    ~lsCrashReport_DLG();
+  wxString GetEmail();
 
-    wxString GetEmail();
-
-    wxString GetDescription();
+  wxString GetDescription();
 };
 
+/*************************************************************************************/ /**
+ @brief Crash report class
+ @author Lucien Schreiber copyright CREALP
+ @date 06 september 2012
+ *****************************************************************************************/
+class lsCrashReport {
+ private:
+  wxString m_SoftName;
+  wxString m_ReportZipName;
+  bool m_Silent;
+  wxArrayString m_AddedFileNames;
+  wxDebugReportCompress *m_Report;
 
-/*************************************************************************************//**
-@brief Crash report class
-@author Lucien Schreiber copyright CREALP
-@date 06 september 2012
-*****************************************************************************************/
-class lsCrashReport
-{
-private:
-    wxString m_SoftName;
-    wxString m_ReportZipName;
-    bool m_Silent;
-    wxArrayString m_AddedFileNames;
-    wxDebugReportCompress *m_Report;
+  wxString _CreateStyleSheet();
 
-    wxString _CreateStyleSheet();
+  wxString _CreateGeneralInfo();
 
-    wxString _CreateGeneralInfo();
+  wxString _CreateAddInfo(const wxString &email, const wxString &description);
 
-    wxString _CreateAddInfo(const wxString &email, const wxString &description);
+ public:
+  lsCrashReport(const wxString &softname);
 
-public:
-    lsCrashReport(const wxString &softname);
+  virtual ~lsCrashReport();
 
-    virtual ~lsCrashReport();
+  void AddFileToReport(const wxString &filename);
 
-    void AddFileToReport(const wxString &filename);
+  bool PrepareReport(wxDebugReport::Context ctx, bool silent = false);
 
-    bool PrepareReport(wxDebugReport::Context ctx, bool silent = false);
+  bool SendReportWeb(const wxString &serverurl, const wxString &proxy = wxEmptyString);
 
-    bool SendReportWeb(const wxString &serverurl, const wxString &proxy = wxEmptyString);
-
-    bool SaveReportFile(const wxString &directory);
+  bool SaveReportFile(const wxString &directory);
 };
 
 // CALLBACK FOR CURL
