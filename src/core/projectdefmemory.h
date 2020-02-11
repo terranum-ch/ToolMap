@@ -1,6 +1,6 @@
 /***************************************************************************
  projectdefmemory.h
-                    Manage all the project definition in memory before
+ Manage all the project definition in memory before
  Creating the database (to allow cancel operations)
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber

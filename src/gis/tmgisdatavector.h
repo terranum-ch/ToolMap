@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatavector.h
-                   Super class for dealing with vector GIS data
+ Super class for dealing with vector GIS data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

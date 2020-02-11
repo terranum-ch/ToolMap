@@ -1,6 +1,6 @@
 /***************************************************************************
  tooldanglingnodes.h
-                    Tool engine for searching dangling nodes
+ Tool engine for searching dangling nodes
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

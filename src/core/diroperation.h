@@ -1,6 +1,6 @@
 /***************************************************************************
  diroperation.h
-                    Super class for dealing with Directory operations
+ Super class for dealing with Directory operations
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

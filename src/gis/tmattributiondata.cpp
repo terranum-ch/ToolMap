@@ -1,6 +1,6 @@
 /***************************************************************************
  tmattributiondata.h
-                    Main class for attribution process
+ Main class for attribution process
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

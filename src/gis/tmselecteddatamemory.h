@@ -1,6 +1,6 @@
 /***************************************************************************
  tmSelectedDataMemory.h
-                    Store ID of selected data into memory
+ Store ID of selected data into memory
  -------------------
  copyright : (C) 2008 CREALP Lucien Schreiber
  ***************************************************************************/

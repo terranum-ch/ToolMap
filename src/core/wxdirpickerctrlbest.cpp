@@ -1,6 +1,6 @@
 /***************************************************************************
  wxdirpickerctrlbest.h
-                    Upgrade a wxDirPickerCtrl control for TM
+ Upgrade a wxDirPickerCtrl control for TM
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

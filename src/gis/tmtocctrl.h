@@ -1,6 +1,6 @@
 /***************************************************************************
  tmtocctrl.h
-                    Contain description of the GIS toc ctrl
+ Contain description of the GIS toc ctrl
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

@@ -1,6 +1,6 @@
 /***************************************************************************
  tmcolourpickerctrl.h
-                    Create a nice colour picker even on mac
+ Create a nice colour picker even on mac
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

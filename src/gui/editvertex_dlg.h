@@ -1,6 +1,6 @@
 /***************************************************************************
  editvertex_dlg.h
-                    Dialog for manuel editing vertex position
+ Dialog for manuel editing vertex position
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

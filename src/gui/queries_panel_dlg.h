@@ -1,6 +1,6 @@
 /***************************************************************************
  queries_panel_dlg.h
-                    Display dialog for queries panel (simple version)
+ Display dialog for queries panel (simple version)
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

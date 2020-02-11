@@ -1,6 +1,6 @@
 /***************************************************************************
  tmShortcutMemory.h
-                    Store shortcut in memory for attribution
+ Store shortcut in memory for attribution
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

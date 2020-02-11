@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdata.h
-                    Main class for dealing with GIS data
+ Main class for dealing with GIS data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

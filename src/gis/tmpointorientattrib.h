@@ -1,6 +1,6 @@
 /***************************************************************************
  tmpointorientattrib.h
-                    Point orientation with attribution
+ Point orientation with attribution
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

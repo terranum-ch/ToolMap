@@ -1,6 +1,6 @@
 /***************************************************************************
  tmexportmanager.h
-                    Main class for dealing with export process
+ Main class for dealing with export process
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

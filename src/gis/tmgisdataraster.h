@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdataraster.h
-                    Super class for dealing with raster GIS data
+ Super class for dealing with raster GIS data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
