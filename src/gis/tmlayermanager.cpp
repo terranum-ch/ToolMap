@@ -1,6 +1,6 @@
 /***************************************************************************
  tmlayermanager.cpp
-                    Central point for layer management
+ Central point for layer management
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

@@ -1,6 +1,6 @@
 /***************************************************************************
  tmexportdatashp.cpp
-                    Class for the process of exporting data as SHP
+ Class for the process of exporting data as SHP
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

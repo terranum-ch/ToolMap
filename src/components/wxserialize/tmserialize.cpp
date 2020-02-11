@@ -1,6 +1,6 @@
 /***************************************************************************
  tmserialize.cpp
-                    for serializating object in a simple way
+ for serializating object in a simple way
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

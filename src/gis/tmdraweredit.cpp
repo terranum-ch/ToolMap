@@ -1,6 +1,6 @@
 /***************************************************************************
  tmdraweredit.cpp
-                    Drawing data during editing process
+ Drawing data during editing process
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

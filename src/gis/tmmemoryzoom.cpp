@@ -1,6 +1,6 @@
 /***************************************************************************
  tmmemoryzoom.cpp
-                     Store Previous Zoom in memory
+ Store Previous Zoom in memory
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

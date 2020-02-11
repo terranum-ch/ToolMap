@@ -1,6 +1,6 @@
 /***************************************************************************
  tmtocctrlmenu.cpp
-                    Display contextual menu for item in the TOC Ctrl
+ Display contextual menu for item in the TOC Ctrl
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

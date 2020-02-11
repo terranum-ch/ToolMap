@@ -1,6 +1,6 @@
 /***************************************************************************
  project_def_fields_dlg.cpp
-                    Display dialog for adding new field
+ Display dialog for adding new field
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

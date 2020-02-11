@@ -1,6 +1,6 @@
 /***************************************************************************
  tmSelectedDataMemory.cpp
-                    Store ID of selected data into memory
+ Store ID of selected data into memory
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

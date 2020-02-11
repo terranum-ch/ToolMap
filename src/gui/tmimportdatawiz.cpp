@@ -1,6 +1,5 @@
 /***************************************************************************
  tmimportdatawiz.cpp
-
  -------------------
  copyright            : (C) 2018 TERRANUM Pascal Horton
  email                : pascal.horton at terranum dot ch

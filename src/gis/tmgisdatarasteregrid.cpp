@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatarasteregrid.cpp
-                    For dealing with raster ESRI's binary grid
+ For dealing with raster ESRI's binary grid
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

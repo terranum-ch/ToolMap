@@ -1,6 +1,6 @@
 /***************************************************************************
  tmexportdata.cpp
-                    main class for the process of exporting data
+ main class for the process of exporting data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

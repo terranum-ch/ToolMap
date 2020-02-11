@@ -1,6 +1,6 @@
 /***************************************************************************
  queries_panel.cpp
-  Deals with the queries panel
+ Deals with the queries panel
  -------------------
  copyright            : (C) 2008 CREALP Lucien Schreiber
  ***************************************************************************/

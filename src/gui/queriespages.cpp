@@ -1,6 +1,6 @@
 /***************************************************************************
  queriespages.cpp
-                    Pages definition for the QueryWizard
+ Pages definition for the QueryWizard
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

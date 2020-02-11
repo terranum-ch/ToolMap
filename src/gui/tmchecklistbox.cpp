@@ -1,6 +1,6 @@
 /***************************************************************************
  tmchecklistbox.cpp
-                    Base class for dealing with checklistbox with long
+ Base class for dealing with checklistbox with long
  item associed to every item
  -------------------
  copyright : (C) 2008 CREALP Lucien Schreiber

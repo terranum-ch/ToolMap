@@ -1,6 +1,6 @@
 /***************************************************************************
  prjdefmemmanage.cpp
-                    Display context help for a dialog
+ Display context help for a dialog
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

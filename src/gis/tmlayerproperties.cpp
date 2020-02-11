@@ -1,6 +1,6 @@
 /***************************************************************************
  tmlayerproperties.cpp
-                    Class used for managing layer informations
+ Class used for managing layer informations
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

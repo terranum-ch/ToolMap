@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatavectorshp.cpp
-                    class for dealing with vector SHP data
+ class for dealing with vector SHP data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

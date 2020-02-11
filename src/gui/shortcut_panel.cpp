@@ -1,6 +1,6 @@
 /***************************************************************************
  shortcut_panel.cpp
-  Display the Shortcut panel
+ Display the Shortcut panel
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

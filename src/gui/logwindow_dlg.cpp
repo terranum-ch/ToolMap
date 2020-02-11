@@ -1,6 +1,6 @@
 /***************************************************************************
  logwindow_dlg.cpp
-  Display the log windows
+ Display the log windows
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

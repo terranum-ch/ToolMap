@@ -1,6 +1,6 @@
 /***************************************************************************
  tmaattribwindow.cpp
-                    Display the Advanced Attribution Window
+ Display the Advanced Attribution Window
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

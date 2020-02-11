@@ -1,6 +1,6 @@
 /***************************************************************************
  tmattributionbasicarray.cpp
-                    An array for storing basic attributions values
+ An array for storing basic attributions values
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
