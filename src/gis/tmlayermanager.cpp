@@ -1575,7 +1575,7 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
   int iRank = 0;
   int iReaded = 0;
 
-  tmLayerProperties *pLayerProp = NULL;
+  tmLayerProperties *pLayerProp = nullptr;
   tmRealRect myExtent(0, 0, 0, 0);
 
   // prepare loading of MySQL data
@@ -1589,18 +1589,16 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
 
     if (!pLayerProp) break;
 
-    if (pLayerProp->IsVisible() == true) {
-      if (pLayerProp->GetName().Exists() == true || pLayerProp->GetType() < TOC_NAME_NOT_GENERIC) {
+    if (pLayerProp->IsVisible()) {
+      if (pLayerProp->GetName().Exists() || pLayerProp->GetType() < TOC_NAME_NOT_GENERIC) {
         // loading data
         tmGISData *layerData = tmGISData::LoadLayer(pLayerProp);
 
-        // build pyramids if needed and only during project opening
-        if (buildpyramids == true) {
-          _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
-        }
-
-        // processing and deleting data
         if (layerData) {
+          // build pyramids if needed and only during project opening
+          if (buildpyramids == true) {
+            _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
+          }
           // ignore extend for web rasters because they are too big
           if (pLayerProp->GetType() != TOC_NAME_WEB) {
             myExtent = layerData->GetMinimalBoundingRectangle();
@@ -1628,7 +1626,7 @@ int tmLayerManager::ReadLayerDraw() {
   int iRank = 0;
   int iReaded = 0;
 
-  tmLayerProperties *pLayerProp = NULL;
+  tmLayerProperties *pLayerProp = nullptr;
   tmRealRect myExtent(0, 0, 0, 0);
 
   // prepare loading of MySQL data

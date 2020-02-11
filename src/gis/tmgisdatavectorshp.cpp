@@ -794,7 +794,7 @@ bool tmGISDataVectorSHP::CreateFile(const wxFileName &filename, int type) {
   wxDELETEA(buffer);
 
   if (m_Datasource == NULL) {
-    wxLogError(_("Creation of output file '%s' failed."), filename.GetFullName().c_str());
+    wxLogError(_("Creation of file '%s' failed. Is it open in another software?"), filename.GetFullName().c_str());
     return false;
   }
 
@@ -1386,7 +1386,7 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName &filename, const wxString &
 
   // create file
   GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName((const char *)drivername.mb_str(wxConvUTF8));
-  if (poDriver == NULL) {
+  if (poDriver == nullptr) {
     wxASSERT_MSG(0, _T(" driver not available."));
     return false;
   }
@@ -1397,9 +1397,9 @@ bool tmGISDataVectorSHP::CopyToFile(const wxFileName &filename, const wxString &
                                           0,  // x size, not used for vector
                                           0,  // y size, not used for vector
                                           0,  // nb of bands
-                                          GDT_Unknown, NULL);
-  if (myNewDS == NULL) {
-    wxLogError(_("Creation of file '%s' failed."), filename.GetFullName().c_str());
+                                          GDT_Unknown, nullptr);
+  if (myNewDS == nullptr) {
+    wxLogError(_("Creation of file '%s' failed. Is it open in another software?"), filename.GetFullName().c_str());
     return false;
   }
 
