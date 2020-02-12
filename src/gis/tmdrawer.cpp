@@ -468,7 +468,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
     if (bUseValidOriented && IsValid) {
       _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
     }
-    if (!bUseUnValidOriented && IsValid) {
+    if (bUseUnValidOriented && !IsValid) {
       _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
     }
 
