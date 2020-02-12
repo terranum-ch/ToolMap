@@ -123,11 +123,11 @@ class tmGISDataVector : public tmGISData {
   }
 
   virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver) {
-    return NULL;
+    return nullptr;
   }
 
   virtual OGRFeature *GetNextFeature() {
-    return NULL;
+    return nullptr;
   }
 
   virtual bool ResetReading() {
@@ -135,7 +135,7 @@ class tmGISDataVector : public tmGISData {
   }
 
   virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver) {
-    return NULL;
+    return nullptr;
   }
 
   virtual int GetNextDataPolygonInfo(long &oid) {
@@ -143,11 +143,11 @@ class tmGISDataVector : public tmGISData {
   }
 
   virtual wxRealPoint *GetNextDataPolygon(int currentring, int &nbvertex) {
-    return NULL;
+    return nullptr;
   }
 
   virtual OGRFeature *GetFeatureByOID(long oid) {
-    return NULL;
+    return nullptr;
   }
 
   virtual long AddGeometry(OGRGeometry *Geom, const long &oid, int layertype = wxNOT_FOUND) {
@@ -161,7 +161,7 @@ class tmGISDataVector : public tmGISData {
   virtual bool SplitGeometry(OGRGeometryCollection *gCol, const long &oid, wxArrayLong &AddedIds, int layertype);
 
   virtual OGRGeometryCollection *GetGeometryColByOID(wxArrayLong *OIDs) {
-    return NULL;
+    return nullptr;
   }
 
   virtual void CloseGeometry() {
@@ -171,7 +171,7 @@ class tmGISDataVector : public tmGISData {
   // iterate geometries (MySQL and OGR)
   virtual OGRGeometry *GetNextGeometry(bool restart, long &oid) {
     oid = wxNOT_FOUND;
-    return NULL;
+    return nullptr;
   }
 
   virtual bool DeleteFile(const wxString &layername) {
@@ -214,7 +214,7 @@ class tmGISDataVector : public tmGISData {
 
   // Searching
   virtual wxArrayLong *SearchIntersectingGeometry(OGRGeometry *intersectinggeom) {
-    return NULL;
+    return nullptr;
   }
 
   virtual int IsRaster() {

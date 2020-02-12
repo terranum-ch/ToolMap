@@ -30,18 +30,18 @@
   @date 13 November 2008
   *******************************************************************************/
 void tmExportManager::InitMemberValues() {
-  m_pDB = NULL;
-  m_Parent = NULL;
+  m_pDB = nullptr;
+  m_Parent = nullptr;
   m_ExportType = EXPORT_SHAPEFILE;
-  m_ExportData = NULL;
-  m_ProjMem = NULL;
-  m_ProgressDlg = NULL;
-  m_ProgressBusy = NULL;
+  m_ExportData = nullptr;
+  m_ProjMem = nullptr;
+  m_ProgressDlg = nullptr;
+  m_ProgressBusy = nullptr;
   m_UseFastExport = true;
   m_ExportAttributeCode = false;  // default is to export attribut enumeration description
   m_OverwriteFiles = false;
   m_ExportEmpty = false;
-  m_Scale = NULL;
+  m_Scale = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -347,7 +347,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
 bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_LAYERS_TYPE type, bool useProgressDlg) {
   // check and init path and export type
   if (!IsExportPathValid()) {
-    if (m_Parent == NULL) {
+    if (m_Parent == nullptr) {
       wxLogError(_("Export directory isn't specified!"));
       return false;
     } else {
@@ -441,7 +441,7 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
   m_pDB->DataBaseGetNextResult(lTotalAttrib);
   m_pDB->DataBaseClearResults();
 
-  wxProgressDialog *myProgressDlg = NULL;
+  wxProgressDialog *myProgressDlg = nullptr;
   if (useProgressDlg) {
     myProgressDlg = new wxProgressDialog(
         _("Exporting concatenated"),
@@ -483,11 +483,11 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
   @date 14 January 2009
   *******************************************************************************/
 void tmExportManager::CreateProgress(int iNbLayers, const wxString &layername) {
-  m_ProgressDlg = NULL;
-  m_ProgressBusy = NULL;
+  m_ProgressDlg = nullptr;
+  m_ProgressBusy = nullptr;
 
   // to allow unit testing without GUI
-  if (m_Parent == NULL) {
+  if (m_Parent == nullptr) {
     wxLogMessage(_T("No parent window specified, running console ?"));
     return;
   }
@@ -512,7 +512,7 @@ void tmExportManager::CreateProgress(int iNbLayers, const wxString &layername) {
   *******************************************************************************/
 bool tmExportManager::UpdateProgress(int iActualLayer, const wxString &layername) {
   // if no parent specified.
-  if (m_Parent == NULL) {
+  if (m_Parent == nullptr) {
     return false;
   }
 
@@ -808,7 +808,7 @@ tmExportData *tmExportManager::CreateExportData() {
       break;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 /***************************************************************************/ /**
@@ -835,7 +835,7 @@ wxRealPoint *tmExportManager::GetFrame(int &nbvertex) {
 
   if (!m_pDB->DataBaseQuery(sSentence)) {
     nbvertex = 0;
-    return NULL;
+    return nullptr;
   }
 
   tmGISDataVectorMYSQL myFrameDB;
@@ -844,7 +844,7 @@ wxRealPoint *tmExportManager::GetFrame(int &nbvertex) {
   long loid = 0;
   long myRows = 0;
 
-  bool bGetRowSize = m_pDB->DataBaseGetResultSize(NULL, &myRows);
+  bool bGetRowSize = m_pDB->DataBaseGetResultSize(nullptr, &myRows);
   wxASSERT(bGetRowSize);
 
   wxString myMessage = wxEmptyString;
@@ -858,7 +858,7 @@ wxRealPoint *tmExportManager::GetFrame(int &nbvertex) {
     wxMessageBox(myMessage, myCaptErr, wxICON_ERROR | wxOK | wxCENTRE, m_Parent);
     m_pDB->DataBaseClearResults();
     nbvertex = 0;
-    return NULL;
+    return nullptr;
   }
 
   bool isOver;
@@ -869,7 +869,7 @@ wxRealPoint *tmExportManager::GetFrame(int &nbvertex) {
   if (!wxIsSameDouble(myPt[0].x, myPt[nbvertex - 1].x) || !wxIsSameDouble(myPt[0].y, myPt[nbvertex - 1].y)) {
     wxMessageBox(myErr3, myCaptErr, wxICON_ERROR | wxOK | wxCENTRE, m_Parent);
     m_pDB->DataBaseClearResults();
-    return NULL;
+    return nullptr;
   }
 
   m_pDB->DataBaseClearResults();

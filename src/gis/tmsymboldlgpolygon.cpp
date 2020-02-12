@@ -47,11 +47,11 @@ bool tmSymbolDLGPolygon::Create(wxWindow *parent, wxWindowID id, const wxString 
 tmSymbolDLGPolygon::~tmSymbolDLGPolygon() {}
 
 void tmSymbolDLGPolygon::_Init() {
-  m_PolygonBorderColourCtrl = NULL;
-  m_PolygonFillColourCtrl = NULL;
-  m_PolygonBorderWidthCtrl = NULL;
-  m_PolygonFillPattern = NULL;
-  m_TransparencySlider = NULL;
+  m_PolygonBorderColourCtrl = nullptr;
+  m_PolygonFillColourCtrl = nullptr;
+  m_PolygonBorderWidthCtrl = nullptr;
+  m_PolygonFillPattern = nullptr;
+  m_TransparencySlider = nullptr;
 }
 
 void tmSymbolDLGPolygon::CreateControlsPoly() {
@@ -325,7 +325,7 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent &event) {
   }
 
   for (unsigned int i = 0; i < myFieldValues.GetCount(); i++) {
-    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
     myRule->SetRuleName(myFieldValues[i]);
     myRule->SetAttributFilter(wxString::Format(_T("%s=\"%s\""), myFieldName, myFieldValues[i]));
     myRule->SetRandomColor();
@@ -335,7 +335,7 @@ void tmSymbolDLGPolyRule::OnBtnClassify(wxCommandEvent &event) {
 }
 
 void tmSymbolDLGPolyRule::OnBtnAdd(wxCommandEvent &event) {
-  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
   myRule->SetRandomColor();
   tmSymbolRuleEdit_DLG myDlg(this, myRule);
   if (myDlg.ShowModal() != wxID_OK) {

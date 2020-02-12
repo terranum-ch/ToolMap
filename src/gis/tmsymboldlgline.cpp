@@ -48,10 +48,10 @@ bool tmSymbolDLGLine::Create(wxWindow *parent, wxWindowID id, const wxString &ca
 tmSymbolDLGLine::~tmSymbolDLGLine() {}
 
 void tmSymbolDLGLine::_Init() {
-  m_LineColourCtrl = NULL;
-  m_LineWidthCtrl = NULL;
-  m_LinePatternCtrl = NULL;
-  m_TransparencySlider = NULL;
+  m_LineColourCtrl = nullptr;
+  m_LineWidthCtrl = nullptr;
+  m_LinePatternCtrl = nullptr;
+  m_TransparencySlider = nullptr;
 }
 
 void tmSymbolDLGLine::CreateControlsLine() {
@@ -321,7 +321,7 @@ void tmSymbolDLGLineRule::OnBtnClassify(wxCommandEvent &event) {
   }
 
   for (unsigned int i = 0; i < myFieldValues.GetCount(); i++) {
-    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
     myRule->SetRuleName(myFieldValues[i]);
     myRule->SetAttributFilter(wxString::Format(_T("%s=\"%s\""), myFieldName, myFieldValues[i]));
     myRule->SetRandomColor();
@@ -331,7 +331,7 @@ void tmSymbolDLGLineRule::OnBtnClassify(wxCommandEvent &event) {
 }
 
 void tmSymbolDLGLineRule::OnBtnAdd(wxCommandEvent &event) {
-  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
   myRule->SetRandomColor();
   tmSymbolRuleEdit_DLG myDlg(this, myRule);
   if (myDlg.ShowModal() != wxID_OK) {

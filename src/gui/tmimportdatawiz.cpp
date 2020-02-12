@@ -195,7 +195,7 @@ void ImportDataWizard::OnWizardBeforePageChanged(wxWizardEvent &event) {
 }
 
 void ImportDataWizard::ResetFilePicker(const wxWizardPageSimple *page) {
-  wxFilePickerCtrl *filePicker = NULL;
+  wxFilePickerCtrl *filePicker = nullptr;
 
   m_infoValueCtrl1->SetLabel(wxEmptyString);
   m_infoValueCtrl2->SetLabel(wxEmptyString);
@@ -218,11 +218,11 @@ void ImportDataWizard::ResetFilePicker(const wxWizardPageSimple *page) {
   m_sizerFilePath->Replace(m_filePicker, filePicker);
   page->GetNext()->RemoveChild(m_filePicker);
   m_filePicker->Disconnect(wxEVT_COMMAND_FILEPICKER_CHANGED,
-                           wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged), NULL, this);
+                           wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged), nullptr, this);
   wxDELETE(m_filePicker);
   m_filePicker = filePicker;
   m_filePicker->Connect(wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(ImportDataWizard::OnFileChanged),
-                        NULL, this);
+                        nullptr, this);
   page->GetNext()->Layout();
 }
 
@@ -393,7 +393,7 @@ void ImportDataWizard::GetKindSelection() const {
     wxASSERT(itemFile);
     auto textFile = dynamic_cast<wxStaticText *>(itemFile);
     wxString fileKind;
-    if (textFile != NULL) {
+    if (textFile != nullptr) {
       fileKind = textFile->GetLabel();
     }
     if (fileKind.IsSameAs(m_AllObjectsLabel)) {
@@ -404,7 +404,7 @@ void ImportDataWizard::GetKindSelection() const {
     wxASSERT(itemDB);
     auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
     wxString dbKind;
-    if (choiceDB != NULL) {
+    if (choiceDB != nullptr) {
       dbKind = choiceDB->GetString(choiceDB->GetSelection());
     }
 
@@ -495,7 +495,7 @@ void ImportDataWizard::GetAttributeSelection() const {
     wxASSERT(itemFile);
     auto textFile = dynamic_cast<wxStaticText *>(itemFile);
     wxString fileAttribute;
-    if (textFile != NULL) {
+    if (textFile != nullptr) {
       fileAttribute = textFile->GetLabel();
     }
 
@@ -503,7 +503,7 @@ void ImportDataWizard::GetAttributeSelection() const {
     wxASSERT(itemDB);
     auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
     wxString dbAttribute;
-    if (choiceDB != NULL) {
+    if (choiceDB != nullptr) {
       dbAttribute = choiceDB->GetString(choiceDB->GetSelection());
     }
 
@@ -637,7 +637,7 @@ void ImportDataWizard::GetEnumerationSelection() const {
     wxASSERT(itemAttName);
     auto textAttName = dynamic_cast<wxStaticText *>(itemAttName);
     wxString attributeName;
-    if (textAttName != NULL) {
+    if (textAttName != nullptr) {
       attributeName = textAttName->GetLabel();
     }
 
@@ -647,13 +647,13 @@ void ImportDataWizard::GetEnumerationSelection() const {
     auto flexGrid = dynamic_cast<wxFlexGridSizer *>(itemFlexGrid);
 
     // Parse flex sizer
-    if (flexGrid != NULL) {
+    if (flexGrid != nullptr) {
       for (int j = 0; j < flexGrid->GetItemCount(); j += 2) {
         wxWindow *itemFile = flexGrid->GetItem(j)->GetWindow();
         wxASSERT(itemFile);
         auto textFile = dynamic_cast<wxStaticText *>(itemFile);
         wxString fileEnum;
-        if (textFile != NULL) {
+        if (textFile != nullptr) {
           fileEnum = textFile->GetLabel();
         }
 
@@ -661,7 +661,7 @@ void ImportDataWizard::GetEnumerationSelection() const {
         wxASSERT(itemDB);
         auto choiceDB = dynamic_cast<wxChoice *>(itemDB);
         wxString dbEnum;
-        if (choiceDB != NULL) {
+        if (choiceDB != nullptr) {
           dbEnum = choiceDB->GetString(choiceDB->GetSelection());
         }
 

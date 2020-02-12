@@ -124,8 +124,8 @@ bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent)
   outzip.PutNextDirEntry(m_Database->DataBaseGetName());
 
   // progress window
-  wxProgressDialog *myProgressDialog = NULL;
-  if (progressparent != NULL) {
+  wxProgressDialog *myProgressDialog = nullptr;
+  if (progressparent != nullptr) {
     myProgressDialog = new wxProgressDialog(_("Backup project"), wxEmptyString, tmPERCENT);
   }
   tmPercent myPercent(myFilesToBackup.GetCount());
@@ -141,7 +141,7 @@ bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent)
 
     // increment progress
     myPercent.SetValue(i);
-    if (myProgressDialog != NULL && myPercent.IsNewStep()) {
+    if (myProgressDialog != nullptr && myPercent.IsNewStep()) {
       myProgressDialog->Update(myPercent.GetPercent());
     }
 
@@ -195,7 +195,7 @@ bool BackupManager::Restore(const BackupFile &fileinfo, wxWindow *progressparent
   wxFFileInputStream in(fileinfo.GetOutputName().GetFullPath());
   wxZipInputStream zip(in);
   int myCount = 0;
-  while (entry.reset(zip.GetNextEntry()), entry.get() != NULL) {
+  while (entry.reset(zip.GetNextEntry()), entry.get() != nullptr) {
     if (entry->IsDir()) {
       continue;
     }
@@ -288,7 +288,7 @@ bool BackupManager::GetFileInfo(const wxFileName &file, BackupFile &fileinfo) {
 }
 
 bool BackupManager::SetMetadata(const BackupFile &fileinfo, wxZipOutputStream *zip) {
-  if (!fileinfo.IsValid() || zip == NULL) {
+  if (!fileinfo.IsValid() || zip == nullptr) {
     return false;
   }
 

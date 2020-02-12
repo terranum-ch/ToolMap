@@ -123,8 +123,8 @@ bool tmWindowPosition::HasScreenChanged() {
 }
 
 wxRect tmWindowPosition::WP_GetActualScreenSize() {
-  return wxRect(0, 0, wxSystemSettings::GetMetric(wxSYS_SCREEN_X, NULL),
-                wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, NULL));
+  return wxRect(0, 0, wxSystemSettings::GetMetric(wxSYS_SCREEN_X, nullptr),
+                wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, nullptr));
 }
 
 bool tmWindowPosition::Intersects(wxRect wndpos, wxSize screensize) {

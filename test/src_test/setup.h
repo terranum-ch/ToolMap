@@ -39,7 +39,7 @@ class Fixture1 : public CxxTest::GlobalFixture {
   bool setUpWorld() {
     wxApp::SetInstance(new wxAppConsole());
     int argc = 0;
-    char **argv = NULL;
+    char **argv = nullptr;
     wxEntryStart(argc, argv);
     // wxInitialize();
     wxTheColourDatabase = new wxColourDatabase();
@@ -54,7 +54,7 @@ class Fixture1 : public CxxTest::GlobalFixture {
     myTest.ToUTF8().data();
 
 #ifdef __LINUX__
-    TS_ASSERT(gtk_init_check(NULL, NULL));
+    TS_ASSERT(gtk_init_check(nullptr, nullptr));
 #endif
 
     return true;

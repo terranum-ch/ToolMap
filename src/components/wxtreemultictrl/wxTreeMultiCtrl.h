@@ -779,7 +779,7 @@ class wxTreeMultiCtrl : public wxScrolledWindow {
       an empty wxTreeMultiItem is returned. The mask is used to override the mask settings of the
       wxTreeMultiWindowInfo class. This can be handy to set or clear extra flags only needed for certain
       situations */
-  wxTreeMultiItem AppendWindow(const wxTreeMultiItem &ParentItem, wxWindow *window = NULL,
+  wxTreeMultiItem AppendWindow(const wxTreeMultiItem &ParentItem, wxWindow *window = nullptr,
                                const wxString &name = wxEmptyString,
                                wxTreeMultiWindowInfo const &info = wxTreeMultiWindowInfoDefault, int flags = 0);
 
@@ -789,7 +789,7 @@ class wxTreeMultiCtrl : public wxScrolledWindow {
       The parent wxTreeMultiItem must point to a Node class. If this is not the case an
       empty wxTreeMultiItem is returned.
   */
-  wxTreeMultiItem InsertWindow(wxTreeMultiItem const &ParentItem, size_t Position, wxWindow *window = NULL,
+  wxTreeMultiItem InsertWindow(wxTreeMultiItem const &ParentItem, size_t Position, wxWindow *window = nullptr,
                                wxString const &Name = wxEmptyString,
                                wxTreeMultiWindowInfo const &info = wxTreeMultiWindowInfoDefault, int flags = 0);
 
@@ -797,7 +797,7 @@ class wxTreeMultiCtrl : public wxScrolledWindow {
       of the parent's wxTreeMultiItem. The parent wxTreeMultiItem must point to a Node class. If this is not the case an
       empty wxTreeMultiItem is returned.
   */
-  wxTreeMultiItem PrependWindow(wxTreeMultiItem const &ParentItem, wxWindow *window = NULL,
+  wxTreeMultiItem PrependWindow(wxTreeMultiItem const &ParentItem, wxWindow *window = nullptr,
                                 const wxString &name = wxEmptyString,
                                 wxTreeMultiWindowInfo const &info = wxTreeMultiWindowInfoDefault, int flags = 0);
 

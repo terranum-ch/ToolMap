@@ -62,21 +62,21 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow *parent, wxAuiManager *AuiMana
 
   // Connect events
   m_textCtrlPoints->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList),
-                            NULL, this);
-  m_textCtrlPoly->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), NULL,
+                            nullptr, this);
+  m_textCtrlPoly->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), nullptr,
                           this);
-  m_textCtrlLines->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), NULL,
+  m_textCtrlLines->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), nullptr,
                            this);
 }
 
 AttribObjType_PANEL::~AttribObjType_PANEL() {
   // Disconnect events
   m_textCtrlPoints->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList),
-                               NULL, this);
+                               nullptr, this);
   m_textCtrlPoly->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList),
-                             NULL, this);
+                             nullptr, this);
   m_textCtrlLines->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList),
-                              NULL, this);
+                              nullptr, this);
 
   m_ParentEvt->PopEventHandler(FALSE);
 }
@@ -105,7 +105,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
   itemPanel2->SetSizer(itemBoxSizer2);
 
   m_pObjList_L_Freq =
-      new tmCheckListBoxRank(itemPanel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, tmLB_MENU);
+      new tmCheckListBoxRank(itemPanel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, tmLB_MENU);
   itemBoxSizer2->Add(m_pObjList_L_Freq, 1, wxGROW, 0);
 
   itemNotebook1->AddPage(itemPanel2, _("Frequent"));
@@ -115,7 +115,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
   itemPanel3->SetSizer(itemBoxSizer3);
 
   m_pObjList_L_NoFreq =
-      new tmCheckListBoxRank(itemPanel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, tmLB_MENU);
+      new tmCheckListBoxRank(itemPanel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, tmLB_MENU);
   itemBoxSizer3->Add(m_pObjList_L_NoFreq, 1, wxGROW, 0);
 
   itemNotebook1->AddPage(itemPanel3, _("Less frequent"));
@@ -142,7 +142,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
   itemPanel5->SetSizer(itemBoxSizer5);
 
   m_pObjList_PT_Freq =
-      new tmCheckListBoxRank(itemPanel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, tmLB_MENU);
+      new tmCheckListBoxRank(itemPanel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, tmLB_MENU);
   itemBoxSizer5->Add(m_pObjList_PT_Freq, 1, wxGROW, 0);
 
   itemNotebook2->AddPage(itemPanel5, _("Frequent"));
@@ -152,7 +152,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
   itemPanel6->SetSizer(itemBoxSizer6);
 
   m_pObjList_PT_NoFreq =
-      new tmCheckListBoxRank(itemPanel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, tmLB_MENU);
+      new tmCheckListBoxRank(itemPanel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, tmLB_MENU);
   itemBoxSizer6->Add(m_pObjList_PT_NoFreq, 1, wxGROW, 0);
 
   itemNotebook2->AddPage(itemPanel6, _("Less frequent"));
@@ -179,7 +179,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
   itemPanel8->SetSizer(itemBoxSizer8);
 
   m_pObjList_PLG_Freq =
-      new tmCheckListBoxRank(itemPanel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, tmLB_MENU);
+      new tmCheckListBoxRank(itemPanel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, tmLB_MENU);
   itemBoxSizer8->Add(m_pObjList_PLG_Freq, 1, wxGROW, 0);
 
   itemNotebook3->AddPage(itemPanel8, _("Frequent"));
@@ -189,7 +189,7 @@ wxSizer *AttribObjType_PANEL::CreateControls(wxWindow *parent, bool call_fit, bo
   itemPanel9->SetSizer(itemBoxSizer9);
 
   m_pObjList_PLG_NoFreq =
-      new tmCheckListBoxRank(itemPanel9, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, tmLB_MENU);
+      new tmCheckListBoxRank(itemPanel9, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, tmLB_MENU);
   itemBoxSizer9->Add(m_pObjList_PLG_NoFreq, 1, wxGROW, 0);
 
   itemNotebook3->AddPage(itemPanel9, _("Less frequent"));
@@ -492,7 +492,7 @@ bool AttribObjType_PANEL::UpdateObjectList(DataBaseTM *pDB, tmCheckListBox *pLis
   @date 21 May 2008
   *******************************************************************************/
 void AttribObjType_PANEL::SetDataBaseToList(DataBaseTM *pDB) {
-  if (pDB == NULL) return;
+  if (pDB == nullptr) return;
 
   m_pObjList_L_Freq->SetDataBase(pDB);
   m_pObjList_L_NoFreq->SetDataBase(pDB);
@@ -673,7 +673,7 @@ void AttribObjType_PANEL::OnInfoBtn(wxCommandEvent &event) {
   @date 06 November 2008
   *******************************************************************************/
 int AttribObjType_PANEL::GetSelectedValues(TOC_GENERIC_NAME panel_name, wxArrayLong &values, bool panel_freq) {
-  tmCheckListBoxRank *myList = NULL;
+  tmCheckListBoxRank *myList = nullptr;
   switch (panel_name) {
     case TOC_NAME_LINES:
       if (panel_freq)
@@ -697,7 +697,7 @@ int AttribObjType_PANEL::GetSelectedValues(TOC_GENERIC_NAME panel_name, wxArrayL
       break;
 
     default:
-      myList = NULL;
+      myList = nullptr;
       break;
   }
 
@@ -730,7 +730,7 @@ int AttribObjType_PANEL::GetSelectedValues(TOC_GENERIC_NAME panel_name, wxArrayL
   @date 06 November 2008
   *******************************************************************************/
 void AttribObjType_PANEL::SetSelectedValues(TOC_GENERIC_NAME panel_name, const wxArrayLong &values, bool panel_freq) {
-  tmCheckListBoxRank *myList = NULL;
+  tmCheckListBoxRank *myList = nullptr;
   switch (panel_name) {
     case TOC_NAME_LINES:
       if (panel_freq)
@@ -754,7 +754,7 @@ void AttribObjType_PANEL::SetSelectedValues(TOC_GENERIC_NAME panel_name, const w
       break;
 
     default:
-      myList = NULL;
+      myList = nullptr;
       break;
   }
 

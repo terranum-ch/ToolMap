@@ -96,12 +96,12 @@ ProjectPropertiesDLG::~ProjectPropertiesDLG() {
 
 void ProjectPropertiesDLG::Init() {
   ////@begin ProjectPropertiesDLG member initialisation
-  m_DLGPS_Notebook = NULL;
-  m_DLGPS_Export_Type_Choice = NULL;
-  m_DLGPS_Export_Path = NULL;
-  m_DLGPS_Backup_Path = NULL;
-  m_DLGPS_Scale_List = NULL;
-  m_DLGPS_Scale_Order_Choice = NULL;
+  m_DLGPS_Notebook = nullptr;
+  m_DLGPS_Export_Type_Choice = nullptr;
+  m_DLGPS_Export_Path = nullptr;
+  m_DLGPS_Backup_Path = nullptr;
+  m_DLGPS_Scale_List = nullptr;
+  m_DLGPS_Scale_Order_Choice = nullptr;
   ////@end ProjectPropertiesDLG member initialisation
 }
 

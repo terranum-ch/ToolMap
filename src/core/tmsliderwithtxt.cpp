@@ -57,9 +57,9 @@ tmSliderWithText::~tmSliderWithText() {
 }
 
 void tmSliderWithText::Init() {
-  m_Slider = NULL;
-  m_Text = NULL;
-  m_UnitValue = NULL;
+  m_Slider = nullptr;
+  m_Text = nullptr;
+  m_UnitValue = nullptr;
 
   m_iLimitMin = 0;
   m_iLimitMax = 100;

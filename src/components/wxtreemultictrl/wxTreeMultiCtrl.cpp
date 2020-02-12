@@ -197,7 +197,7 @@ wxTreeMultiItem wxTreeMultiCtrl::AppendWindow(const wxTreeMultiItem &ParentItem,
   TreeMultiItemNode *parent = ParentItem.GetItem()->IsTreeMultiItemNode();  // also roots are nodes
 
   // ... is a node
-  wxCHECK(parent != NULL, wxTreeMultiItem(0));
+  wxCHECK(parent != nullptr, wxTreeMultiItem(0));
 
   // now, append node to the tree control:
   wxTreeMultiItem NewWindowItem(
@@ -216,7 +216,7 @@ wxTreeMultiItem wxTreeMultiCtrl::InsertWindow(wxTreeMultiItem const &ParentItem,
   TreeMultiItemNode *parent = ParentItem.GetItem()->IsTreeMultiItemNode();  // also roots are nodes
 
   // ... is a node
-  wxCHECK(parent != NULL, wxTreeMultiItem(0));
+  wxCHECK(parent != nullptr, wxTreeMultiItem(0));
 
   // now, append node to the tree control:
   wxTreeMultiItem NewWindowItem(this->InsertWindow(parent, Position, window, name, info, flags));
@@ -235,7 +235,7 @@ wxTreeMultiItem wxTreeMultiCtrl::PrependWindow(wxTreeMultiItem const &ParentItem
   TreeMultiItemNode *parent = ParentItem.GetItem()->IsTreeMultiItemNode();  // also roots are nodes
 
   // ... is a node
-  wxCHECK(parent != NULL, wxTreeMultiItem(0));
+  wxCHECK(parent != nullptr, wxTreeMultiItem(0));
 
   // now, append node to the tree control:
   wxTreeMultiItem NewWindowItem(this->InsertWindow(parent, 0, window, name, info, flags));
@@ -254,7 +254,7 @@ wxTreeMultiItem wxTreeMultiCtrl::AppendNode(wxTreeMultiItem const &ParentItem, c
   TreeMultiItemNode *parent = ParentItem.GetItem()->IsTreeMultiItemNode();  // also roots are nodes
 
   // ... is a node
-  wxCHECK(parent != NULL, wxTreeMultiItem(0));
+  wxCHECK(parent != nullptr, wxTreeMultiItem(0));
 
   // now, append node to the tree control:
   wxTreeMultiItem NewNodeItem(this->InsertNode(parent, wx_static_cast(size_t, parent->GetNodeCount()), caption, name));
@@ -272,7 +272,7 @@ wxTreeMultiItem wxTreeMultiCtrl::InsertNode(wxTreeMultiItem const &ParentItem, s
   TreeMultiItemNode *parent = ParentItem.GetItem()->IsTreeMultiItemNode();  // also roots are nodes
 
   // ... is a node
-  wxCHECK(parent != NULL, wxTreeMultiItem(0));
+  wxCHECK(parent != nullptr, wxTreeMultiItem(0));
 
   // now, append node to the tree control:
   wxTreeMultiItem NewNodeItem(this->InsertNode(parent, Position, caption, name));
@@ -290,7 +290,7 @@ wxTreeMultiItem wxTreeMultiCtrl::PrependNode(wxTreeMultiItem const &ParentItem, 
   TreeMultiItemNode *parent = ParentItem.GetItem()->IsTreeMultiItemNode();  // also roots are nodes
 
   // ... is a node
-  wxCHECK(parent != NULL, wxTreeMultiItem(0));
+  wxCHECK(parent != nullptr, wxTreeMultiItem(0));
 
   // now, append node to the tree control:
   wxTreeMultiItem NewNodeItem(this->InsertNode(parent, 0, caption, name));
@@ -434,7 +434,7 @@ void wxTreeMultiCtrl::SelectItem(wxTreeMultiItem const &Item, bool UnselectOther
   TreeMultiItemNode *NodePtr(Item.GetItem()->IsTreeMultiItemNode());
 
   // only nodes can be selected and they can only be selected if they are not already selected:
-  if ((NodePtr == NULL) || NodePtr->IsSelected()) return;
+  if ((NodePtr == nullptr) || NodePtr->IsSelected()) return;
 
   // inform that we are about to change:
   wxTreeMultiEvent Event(wxEVT_COMMAND_TREE_MULTI_SEL_CHANGING, Item);  // variable definition and initialization
@@ -793,7 +793,7 @@ void wxTreeMultiCtrl::OnMouseClick(wxMouseEvent &event) {
             TreeMultiItemNode *n =
                 id.GetItem()->IsTreeMultiItemNode();  // for some reasons also windows may have set the flag
 
-            if (n != NULL) {
+            if (n != nullptr) {
               Fold(n, !n->IsExpanded());
             }
           } /* if */
@@ -802,7 +802,7 @@ void wxTreeMultiCtrl::OnMouseClick(wxMouseEvent &event) {
               TreeMultiItemNode *n =
                   id.GetItem()->IsTreeMultiItemNode();  // for some reasons also windows may have set the flag
 
-              if (n != NULL) {
+              if (n != nullptr) {
                 this->SelectItem(id);
                 this->RedrawFromNode(n);
               } /* if */
@@ -1650,7 +1650,7 @@ wxTreeMultiItem wxTreeMultiCtrl::GetNextSibling(wxTreeMultiItem const &item) con
 
   TreeMultiItemNode *ParentPtr(item.GetItem()->GetParent());
 
-  if (ParentPtr != NULL)  // the parent pointer is only null if the passed item is the root
+  if (ParentPtr != nullptr)  // the parent pointer is only null if the passed item is the root
   {
     // find the current item in the parent's list; the next sibling has an index that is one higher than the one of the
     // current item:
@@ -1671,7 +1671,7 @@ wxTreeMultiItem wxTreeMultiCtrl::GetPrevSibling(wxTreeMultiItem const &item) con
 
   TreeMultiItemNode *ParentPtr(item.GetItem()->GetParent());
 
-  if (ParentPtr != NULL) {
+  if (ParentPtr != nullptr) {
     // find the current item in the parent's list; the next sibling has an index that is one higher than the one of the
     // current item:
     int PrevItemIndex(ParentPtr->Index(item.GetItem()) - 1);  // variable definition and initialization
@@ -1691,7 +1691,7 @@ wxTreeMultiItem wxTreeMultiCtrl::GetNext(wxTreeMultiItem const &item) const {
 
   TreeMultiItemNode *NodePtr(item.GetItem()->IsTreeMultiItemNode());  // variable definition and initialization
 
-  if ((NodePtr != NULL) && (NodePtr->GetNodeCount() > 0))
+  if ((NodePtr != nullptr) && (NodePtr->GetNodeCount() > 0))
     return wxTreeMultiItem(NodePtr->First());
   else {
     // variable definitions and initializations:
@@ -1713,7 +1713,7 @@ wxTreeMultiItem wxTreeMultiCtrl::GetPrevious(wxTreeMultiItem const &item) const 
 
   TreeMultiItemNode *NodePtr(item.GetItem()->IsTreeMultiItemNode());  // variable definition and initialization
 
-  if ((NodePtr != NULL) && (NodePtr->GetNodeCount() > 0))
+  if ((NodePtr != nullptr) && (NodePtr->GetNodeCount() > 0))
     return wxTreeMultiItem(NodePtr->Last());
   else {
     // variable definitions and initializations:

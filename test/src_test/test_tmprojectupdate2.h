@@ -179,7 +179,7 @@ class TEST_tmProjectUpdater2 : public CxxTest::TestSuite {
     // update project
     m_CopyDB->UpdateDataBaseProject(myPrjDef);
     wxDELETE(myPrjDef);
-    TS_ASSERT(myPrjDef == NULL);
+    TS_ASSERT(myPrjDef == nullptr);
 
     // reread project
     wxLogMessage(_T("Re-reading project"));

@@ -28,8 +28,8 @@
   *******************************************************************************/
 void tmExportDataSHP::InitMemberValues() {
   m_Extension = _T(".shp");
-  m_Frame = NULL;
-  m_Shp = NULL;
+  m_Frame = nullptr;
+  m_Shp = nullptr;
 
   m_ExportPolyNbIteration = 0;
   m_ExportPolyRasterFactor = 1.0;
@@ -94,7 +94,7 @@ tmExportDataSHP::~tmExportDataSHP() {
 bool tmExportDataSHP::CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path) {
   bool bReturn = true;
   wxASSERT(myLayer);
-  wxASSERT(m_Shp == NULL);
+  wxASSERT(m_Shp == nullptr);
   wxFileName *myShpFileName = GetFileName(myLayer, path);
   if (!myShpFileName) {
     wxLogError(_("Unable to get the file name !"));
@@ -251,9 +251,9 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
     //
     // Is geometry inside the frame ?
     //
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     if (!myResult.GetValue(1, &myGeom)) {
-      wxASSERT(myGeom == NULL);
+      wxASSERT(myGeom == nullptr);
       wxLogError(_T("No geometry returned for '%s' in loop %d"), myLayer->m_LayerName.c_str(), i);
       continue;
     }
@@ -262,7 +262,7 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
     myResult.GetValue(0, myOid);
     wxASSERT(myOid != wxNOT_FOUND);
 
-    if (myGeom == NULL) {
+    if (myGeom == nullptr) {
       wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"), myOid, myLayer->m_LayerName.c_str());
       continue;
     }
@@ -270,7 +270,7 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
     OGRGeometry *myCropLine = SafeIntersection(myGeom, m_Frame);
     OGRGeometryFactory::destroyGeometry(myGeom);
 
-    if (myCropLine == NULL) {
+    if (myCropLine == nullptr) {
       continue;
     }
 
@@ -346,7 +346,7 @@ long tmExportDataSHP::WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxPro
   for (long i = 0; i < myLoop; i++) {
     myResult.NextRow();
 
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     if (!myResult.GetValue(1, &myGeom)) {
       wxLogError(_("No geometry in '%s' @ loop: %ld"), layer->m_LayerName, i);
       continue;
@@ -388,7 +388,7 @@ long tmExportDataSHP::WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxPro
 
 bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMemManage *projdef, long loop,
                                          wxProgressDialog *progDlg, tmPercent *percent) {
-  if (layer == NULL || projdef == NULL || loop == wxNOT_FOUND) {
+  if (layer == nullptr || projdef == nullptr || loop == wxNOT_FOUND) {
     return false;
   }
 
@@ -403,7 +403,7 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
   m_Shp->SetSpatialFilter(myRect, 0);
   for (long i = 0; i < loop; i++) {
     OGRFeature *myFeature = m_Shp->GetNextFeature();
-    if (myFeature == NULL) {
+    if (myFeature == nullptr) {
       wxLogError(_("Feature: %ld is NULL"), i);
       continue;
     }
@@ -436,7 +436,7 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
       }
 
       // layerindex has attributs, get them
-      if (myLayer == NULL || myLayer->m_pLayerFieldArray.GetCount() == 0) {
+      if (myLayer == nullptr || myLayer->m_pLayerFieldArray.GetCount() == 0) {
         myAttribTxt.Append(_T(";"));
         continue;
       }
@@ -538,9 +538,9 @@ bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer) {
     //
     // Is geometry inside the frame ?
     //
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     if (!myResult.GetValue(1, &myGeom)) {
-      wxASSERT(myGeom == NULL);
+      wxASSERT(myGeom == nullptr);
       wxLogError(_T("No geometry returned for '%s' in loop %ld"), myLayer->m_LayerName.c_str(), i);
       continue;
     }
@@ -549,7 +549,7 @@ bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer) {
     myResult.GetValue(0, myOid);
     wxASSERT(myOid != wxNOT_FOUND);
 
-    if (myGeom == NULL) {
+    if (myGeom == nullptr) {
       wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"), myOid, myLayer->m_LayerName.c_str());
       continue;
     }
@@ -647,9 +647,9 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
     //
     // Is geometry inside the frame ?
     //
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     if (!myResult->GetValue(1, &myGeom)) {
-      wxASSERT(myGeom == NULL);
+      wxASSERT(myGeom == nullptr);
       wxLogError(_T("No geometry returned for '%s' in loop %ld"), myLayer->m_LayerName.c_str(), i);
       continue;
     }
@@ -658,7 +658,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
     myResult->GetValue(0, myOid);
     wxASSERT(myOid != wxNOT_FOUND);
 
-    if (myGeom == NULL) {
+    if (myGeom == nullptr) {
       wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"), myOid, myLayer->m_LayerName.c_str());
       continue;
     }
@@ -736,7 +736,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
 }
 
 void tmExportDataSHP::_AppendValidToCollection(OGRGeometry *geometry, OGRGeometryCollection *collection) {
-  if (geometry == NULL) {
+  if (geometry == nullptr) {
     return;
   }
 
@@ -779,9 +779,9 @@ bool tmExportDataSHP::WritePolygons(ProjectDefMemoryLayers *myLayer) {
   for (long i = 0; i < myResult.GetRowCount(); i++) {
     myResult.NextRow();
 
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     if (!myResult.GetValue(1, &myGeom)) {
-      wxASSERT(myGeom == NULL);
+      wxASSERT(myGeom == nullptr);
       wxLogError(_T("No geometry returned for '%s' in loop %ld"), myLayer->m_LayerName.c_str(), i);
       continue;
     }
@@ -790,13 +790,13 @@ bool tmExportDataSHP::WritePolygons(ProjectDefMemoryLayers *myLayer) {
     myResult.GetValue(0, myOid);
     wxASSERT(myOid != wxNOT_FOUND);
 
-    if (myGeom == NULL) {
+    if (myGeom == nullptr) {
       wxLogError(_("No geometry found for OID : %ld - Layer : '%s'"), myOid, myLayer->m_LayerName.c_str());
       continue;
     }
 
     OGRGeometry *myCropLine = SafeIntersection(myGeom, myBigFrame);
-    if (myCropLine == NULL) {
+    if (myCropLine == nullptr) {
       continue;
     }
 
@@ -961,7 +961,7 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult &results, ProjectDefMe
   GEOS directly
   @param line The line to intersect
   @param frame the frame for intersecting
-  @return  A valid OGRLineString or NULL
+  @return  A valid OGRLineString or nullptr
   @author Lucien Schreiber (c) CREALP 2008
   @date 18 November 2008
   *******************************************************************************/
@@ -1040,7 +1040,7 @@ OGRGeometry *tmExportDataSHP::SafeUnion(OGRGeometry *union1, OGRGeometry *line) 
   *******************************************************************************/
 OGRGeometry *tmExportDataSHP::SafeCreateFromGEOS(GEOSGeom geosGeom) {
   size_t nSize = 0;
-  unsigned char *pabyBuf = NULL;
+  unsigned char *pabyBuf = nullptr;
   OGRGeometry *poGeometry = NULL;
 
   GEOSWKBWriter *myWKBWriter = GEOSWKBWriter_create();
@@ -1051,7 +1051,7 @@ OGRGeometry *tmExportDataSHP::SafeCreateFromGEOS(GEOSGeom geosGeom) {
     return NULL;
   }
 
-  if (OGRGeometryFactory::createFromWkb((unsigned char *)pabyBuf, NULL, &poGeometry, (int)nSize) != OGRERR_NONE) {
+  if (OGRGeometryFactory::createFromWkb((unsigned char *)pabyBuf, nullptr, &poGeometry, (int)nSize) != OGRERR_NONE) {
     GEOSWKBWriter_destroy(myWKBWriter);
     poGeometry = NULL;
   }

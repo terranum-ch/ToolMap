@@ -18,7 +18,7 @@
 #include "../database/database_tm.h"
 
 bool QueriesBuilder::_IsQueryNull() {
-  if (m_QueryData == NULL) {
+  if (m_QueryData == nullptr) {
     wxLogError(_T("Query is null !"));
     return true;
   }

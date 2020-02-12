@@ -78,8 +78,8 @@ bool tmImportCSV::_GetCoordinates(const wxArrayString &tokenArray, double &x, do
 tmImportCSV::tmImportCSV() {
   m_Xcolumn = wxNOT_FOUND;
   m_Ycolumn = wxNOT_FOUND;
-  m_TextStream = NULL;
-  m_FileStream = NULL;
+  m_TextStream = nullptr;
+  m_FileStream = nullptr;
   m_FileType = tmIMPORT_TYPE_CSV;
 }
 
@@ -97,7 +97,7 @@ bool tmImportCSV::Open(const wxFileName &filename) {
   }
 
   m_FileStream = new wxFileInputStream(filename.GetFullPath());
-  if (m_FileStream == NULL) {
+  if (m_FileStream == nullptr) {
     wxLogError(_("Unable to open '%s'"), filename.GetFullName().c_str());
     return false;
   }
@@ -184,7 +184,7 @@ bool tmImportCSV::IsOk() {
     return false;
   }
 
-  if (m_TextStream == NULL) {
+  if (m_TextStream == nullptr) {
     return false;
   }
   return true;
@@ -227,7 +227,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
     iCount++;
     OGRGeometryFactory::destroyGeometry(myOGRPt);
 
-    if (prj != NULL) {
+    if (prj != nullptr) {
       wxArrayLong oids;
       oids.Add(oid);
 
@@ -242,7 +242,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
 
     bool bStop = false;
     tpercent.SetValue(iCount);
-    if (tpercent.IsNewStep() && progress != NULL) {
+    if (tpercent.IsNewStep() && progress != nullptr) {
       if (!progress->Update(tpercent.GetPercent(), wxEmptyString)) {
         bStop = true;
       }

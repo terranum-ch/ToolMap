@@ -349,7 +349,7 @@ bool QueriesData::GetObjectsForSelection(DataBaseTM *database, PrjMemObjectsArra
   }
 
   long myRow = 0;
-  if (!database->DataBaseGetResultSize(NULL, &myRow)) {
+  if (!database->DataBaseGetResultSize(nullptr, &myRow)) {
     return false;
   }
 
@@ -383,7 +383,7 @@ bool QueriesData::GetObjectsForTypes(DataBaseTM *database, PrjMemObjectsArray &o
 
   // process results
   long myRow = 0;
-  if (!database->DataBaseGetResultSize(NULL, &myRow)) {
+  if (!database->DataBaseGetResultSize(nullptr, &myRow)) {
     wxLogError(_T("No results returned for %s"), PRJDEF_LAYERS_TYPE_STRING[m_QueryLayerType].c_str());
     return false;
   }
@@ -472,7 +472,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM *database, long layerid, PrjMemFiel
   wxArrayLong mySelectedId;
   mySelectedId.Add(m_QueryObjectGeomID);
   tmAttributionData *myAttribObj = tmAttributionManager::CreateAttributionData(m_QueryLayerType);
-  if (myAttribObj == NULL) {
+  if (myAttribObj == nullptr) {
     wxLogError(_T("Unable to create attribution object"));
     return false;
   }

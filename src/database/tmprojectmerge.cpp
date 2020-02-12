@@ -24,13 +24,13 @@ tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slavep
   SetVerbose(false);
 
   // open database if required.
-  if (database != NULL) {
+  if (database != nullptr) {
     m_DB = database;
     m_manage_database = false;
     return;
   }
 
-  m_DB = NULL;
+  m_DB = nullptr;
   m_manage_database = true;
 
   // opening master database
@@ -38,7 +38,7 @@ tmProjectMerge::tmProjectMerge(const wxString &masterprj, const wxString &slavep
   if (!m_DB->DataBaseOpen(m_MasterFileName.GetPath(), m_MasterFileName.GetFullName())) {
     m_Errors.Add(wxString::Format(_("Opening '%s' from '%s' Failed!"), m_MasterFileName.GetFullName(),
                                   m_MasterFileName.GetPath()));
-    m_DB = NULL;
+    m_DB = nullptr;
   }
 }
 
@@ -387,7 +387,7 @@ bool tmProjectMerge::_IsReady() {
     return false;
   }
 
-  if (m_DB == NULL) {
+  if (m_DB == nullptr) {
     m_Errors.Add(_("Database not initialized!"));
     return false;
   }

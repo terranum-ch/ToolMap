@@ -95,11 +95,11 @@ ProjectNewExistDLG::~ProjectNewExistDLG() {
 
 void ProjectNewExistDLG::Init() {
   ////@begin ProjectNewExistDLG member initialisation
-  m_DlgPNE_New_Prj_Path = NULL;
-  m_DlgPNE_New_Prj_Name = NULL;
-  m_DlgPNE_Old_Prj_Path = NULL;
-  m_DlgPNE_Options = NULL;
-  m_DlgPNE_Btn_OK = NULL;
+  m_DlgPNE_New_Prj_Path = nullptr;
+  m_DlgPNE_New_Prj_Name = nullptr;
+  m_DlgPNE_Old_Prj_Path = nullptr;
+  m_DlgPNE_Options = nullptr;
+  m_DlgPNE_Btn_OK = nullptr;
   ////@end ProjectNewExistDLG member initialisation
 }
 

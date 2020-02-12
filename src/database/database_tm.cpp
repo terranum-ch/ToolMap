@@ -565,7 +565,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition) 
   /// adding layers, and for each layer add object and fields related to this layer
   for (indexLayer = 0; indexLayer < pPrjDefinition->m_PrjLayerArray.GetCount(); indexLayer++) {
     ProjectDefMemoryLayers *myMemLayers = pPrjDefinition->FindLayer(indexLayer);
-    if (myMemLayers != NULL) {
+    if (myMemLayers != nullptr) {
       if (AddLayer(myMemLayers)) {
         // if layer is polygon, add a default line for border
         // checks are done internally
@@ -574,7 +574,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition) 
         // Adding Objects
         for (indexObject = 0; indexObject < myMemLayers->m_pLayerObjectArray.GetCount(); indexObject++) {
           ProjectDefMemoryObjects *myMemObj = pPrjDefinition->FindObject(indexObject);
-          if (myMemObj != NULL) {
+          if (myMemObj != nullptr) {
             bReturnValue = bReturnValue && AddObject(myMemObj);
             wxASSERT(bReturnValue);
           }
@@ -583,7 +583,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition) 
         // adding fields
         for (indexField = 0; indexField < myMemLayers->m_pLayerFieldArray.GetCount(); indexField++) {
           ProjectDefMemoryFields *myMemField = pPrjDefinition->FindField(indexField);
-          if (myMemField != NULL) {
+          if (myMemField != nullptr) {
             bReturnValue = bReturnValue && AddField(myMemField);
             wxASSERT(bReturnValue);
           }
@@ -1205,8 +1205,8 @@ int DataBaseTM::GetFieldsFromDB(PrjDefMemManage *myPrj) {
   int iNbFields = 0;
   long iRealLayerID = 0;
   wxArrayString myResults;
-  ProjectDefMemoryLayers *myLayer = NULL;
-  ProjectDefMemoryFields *myField = NULL;
+  ProjectDefMemoryLayers *myLayer = nullptr;
+  ProjectDefMemoryFields *myField = nullptr;
   while (DataBaseGetNextResult(myResults))  // loop until no more results
   {
     // find layer by real id
@@ -1255,13 +1255,13 @@ int DataBaseTM::GetFieldsFromDB(PrjDefMemManage *myPrj) {
 
     ProjectDefMemoryLayers *myLayer = myPrj->FindLayerByRealID(myLayerIndex);
     wxASSERT(myLayer);
-    if (myLayer == NULL) {
+    if (myLayer == nullptr) {
       wxLogError(_T("Layer %ld not found!"), myLayerIndex);
       continue;
     }
     ProjectDefMemoryFields *myField = myPrj->FindField(myFieldName);
     wxASSERT(myField);
-    if (myField == NULL) {
+    if (myField == nullptr) {
       wxLogError(_T("Field %s not found!"), myFieldName);
       continue;
     }
@@ -1301,7 +1301,7 @@ bool DataBaseTM::GetFields(PrjMemFieldArray &fieldarray, ProjectDefMemoryLayers 
     return false;
   }
 
-  ProjectDefMemoryFields *myField = NULL;
+  ProjectDefMemoryFields *myField = nullptr;
   wxArrayString myResults;
   while (DataBaseGetNextResult(myResults)) {
     myField = new ProjectDefMemoryFields();
@@ -1828,7 +1828,7 @@ PrjDefMemManage *DataBaseTM::GetProjectDataFromDB() {
 
   wxDELETE(myPrjDef);
 
-  return NULL;
+  return nullptr;
 }
 
 /***************************************************************************/ /**
@@ -1844,7 +1844,7 @@ bool DataBaseTM::UpdateDataBaseProject(PrjDefMemManage *pProjDef) {
   wxString sSentence = _T("");
   wxString sFieldSentence = _T("");
   wxString sDeleteString = _T("");
-  ProjectDefMemoryLayers *pLayers = NULL;
+  ProjectDefMemoryLayers *pLayers = nullptr;
   bool bReturn = true;
 
   /********* PART 1 : BASIC PROJECT UPDATING *********************/
@@ -2007,8 +2007,8 @@ bool DataBaseTM::InitTOCGenericLayers() {
   @details This function returns all entry from the TOC one by one. Only one
   request is issued and then each time this function is called the next layer is
   returned
-  @return  a #tmLayerProperties pointer, or NULL if no more layer to proceed
-  @note if result isn't NULL, you need to delete pointer after use.
+  @return  a #tmLayerProperties pointer, or nullptr if no more layer to proceed
+  @note if result isn't nullptr, you need to delete pointer after use.
   @author Lucien Schreiber (c) CREALP 2008
   @date 07 July 2008
   *******************************************************************************/
@@ -2022,13 +2022,13 @@ tmLayerProperties *DataBaseTM::GetNextTOCEntry(bool userelativepath) {
 
     if (!DataBaseQuery(sSentence)) {
       wxLogError(_T("Error getting layers from the TOC : %s"), sSentence.c_str());
-      return NULL;
+      return nullptr;
     }
   }
 
   if (!DataBaseGetNextResult(myTempResults)) {
     DataBaseClearResults();
-    return NULL;
+    return nullptr;
   }
 
   wxASSERT(myTempResults.GetCount() == 10);
@@ -2302,7 +2302,7 @@ bool DataBaseTM::GetNextShortcutByLayerType(int layer_type, wxString &key, wxStr
 bool DataBaseTM::GetAllUnusedShortcuts(wxArrayString &keylist) {
   // static sentence, no parameter
   // SELECT  a.SHORTCUT_KEY FROM dmn_shortcut_key a LEFT JOIN shortcut_list b  ON  a.SHORTCUT_CD = b.SHORTCUT_CD WHERE
-  // b.SHORTCUT_CD IS NULL
+  // b.SHORTCUT_CD IS nullptr
   wxString sSentence = _T("SELECT a.SHORTCUT_KEY FROM ") + TABLE_NAME_SHORTCUT_DMN + _T(" a LEFT JOIN ") +
                        TABLE_NAME_SHORTCUT_LIST +
                        _T(" b ON  a.SHORTCUT_CD = b.SHORTCUT_CD WHERE  b.SHORTCUT_CD IS NULL");
@@ -2644,13 +2644,13 @@ bool DataBaseTM::GeometryDelete(wxArrayLong *selected, int layertype) {
 }
 
 long DataBaseTM::GeometrySave(OGRGeometry *geometry, int layertype) {
-  if (geometry == NULL) {
+  if (geometry == nullptr) {
     return wxNOT_FOUND;
   }
 
   CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
-  char *myCharGeom = NULL;
+  char *myCharGeom = nullptr;
   geometry->exportToWkt(&myCharGeom);
   wxString mySGeom = wxString::FromAscii(myCharGeom);
   CPLFree(myCharGeom);
@@ -2667,13 +2667,13 @@ long DataBaseTM::GeometrySave(OGRGeometry *geometry, int layertype) {
 }
 
 bool DataBaseTM::GeometryUpdate(OGRGeometry *geometry, long oid, int layertype) {
-  if (geometry == NULL) {
+  if (geometry == nullptr) {
     return false;
   }
 
   CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
-  char *myCharGeom = NULL;
+  char *myCharGeom = nullptr;
   geometry->exportToWkt(&myCharGeom);
   wxString mySGeom = wxString::FromAscii(myCharGeom);
   CPLFree(myCharGeom);
@@ -2694,7 +2694,7 @@ OGRGeometry *DataBaseTM::GeometryLoad(long oid, int layertype) {
                                         TABLE_NAME_GIS_GENERIC[layertype].c_str(), oid);
   if (!DataBaseQuery(sSentence)) {
     wxLogError(_("Error getting geometry for id: %ld"), oid);
-    return NULL;
+    return nullptr;
   }
 
   tmArrayULong row_length;
@@ -2702,11 +2702,11 @@ OGRGeometry *DataBaseTM::GeometryLoad(long oid, int layertype) {
   if (!DataBaseGetNextRowResult(row, row_length)) {
     DataBaseClearResults();
     wxLogError(_("No geometry found for id : %ld"), oid);
-    return NULL;
+    return nullptr;
   }
 
   wxASSERT(row_length.GetCount() == 1);
-  OGRGeometry *geometry = NULL;
+  OGRGeometry *geometry = nullptr;
   // Geometry columns will have the first 4 bytes contain the SRID.
   OGRGeometryFactory::createFromWkb(((unsigned char *)row[0]) + 4, NULL, &geometry, row_length.Item(0) - 4);
   DataBaseClearResults();
@@ -2796,7 +2796,7 @@ bool DataBaseTM::DeleteAdvancedAttribution(long selectedobject, long selectedlay
 }
 
 bool DataBaseTM::SaveBezierSettings(BezierSettingsData *data) {
-  if (data == NULL) {
+  if (data == nullptr) {
     return false;
   }
 
@@ -2826,7 +2826,7 @@ bool DataBaseTM::LoadBezierSettings(BezierSettingsData *data) {
     return false;
   }
 
-  if (data == NULL) {
+  if (data == nullptr) {
     return false;
   }
   double myValueDouble = 0;

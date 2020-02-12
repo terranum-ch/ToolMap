@@ -112,7 +112,7 @@ void tmStatsManager::_StopRecord() {
 }
 
 tmStatsManager::tmStatsManager() {
-  Create(NULL);
+  Create(nullptr);
 }
 
 tmStatsManager::~tmStatsManager() {
@@ -127,7 +127,7 @@ void tmStatsManager::Create(DataBaseTM *database) {
 }
 
 bool tmStatsManager::IsReady() {
-  if (m_Database == NULL) {
+  if (m_Database == nullptr) {
     return false;
   }
   return true;
@@ -383,7 +383,7 @@ void tmStats_DLG::SetStarted(bool recordstarted) {
 }
 
 void tmStats_DLG::_UpdateControls() {
-  if (m_DataActual != NULL && m_DataActual->IsOk()) {
+  if (m_DataActual != nullptr && m_DataActual->IsOk()) {
     m_SessionClickCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbClick));
     m_SessionAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbAttribution));
     m_SessionIntersectCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbIntersection));
@@ -391,7 +391,7 @@ void tmStats_DLG::_UpdateControls() {
   }
 
   m_TotalSizerCtrl->GetStaticBox()->SetLabel(wxString::Format(_("Total (%ld sessions)"), m_DataTotalRecord));
-  if (m_DataTotal != NULL) {
+  if (m_DataTotal != nullptr) {
     m_TotalClickCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbClick));
     m_TotalAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbAttribution));
     m_TotalIntersectCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbIntersection));

@@ -30,9 +30,9 @@ ListGenReport::ListGenReport(wxWindow *parent, wxWindowID id, wxSize size)
 void ListGenReport::CreateColumns(wxArrayString *pColsName, wxArrayInt *pColsSize) {
   int myColWidth = 100;
 
-  if (pColsName != NULL) {
+  if (pColsName != nullptr) {
     for (unsigned int i = 0; i < pColsName->GetCount(); i++) {
-      if (pColsSize != NULL) {
+      if (pColsSize != nullptr) {
         myColWidth = pColsSize->Item(i);
       }
       InsertColumn(i, pColsName->Item(i), wxLIST_FORMAT_LEFT, myColWidth);
@@ -77,7 +77,7 @@ int ListGenReport::ImportParsedFileToListCtrl(const wxString &filename, const in
   m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
 
   // check that the parser is not null or may crash
-  wxASSERT(m_ImportParser != NULL);
+  wxASSERT(m_ImportParser != nullptr);
   if (!m_ImportParser) {
     wxString sError = _("Error importing files, see log window for more informations\n\n");
     sError += _("Log window may be displayed using : Window -> Log Window");
@@ -121,7 +121,7 @@ int ListGenReport::ExportListParsedToFile(const wxString &filename, const int &F
   m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex, filename);
 
   // check that the parser is not null or may crash
-  wxASSERT(m_ImportParser != NULL);
+  wxASSERT(m_ImportParser != nullptr);
   if (!m_ImportParser) {
     wxString sError = _("Error importing files, see log window for more informations\n\n");
     sError += _("Log window may be displayed using : Window -> Log Window");
@@ -157,9 +157,9 @@ int ListGenReport::ExportListParsedToFile(const wxString &filename, const int &F
 }
 
 void ListGenReport::OnInit() {
-  m_ListContextMenu = NULL;
+  m_ListContextMenu = nullptr;
   m_ListContextMenu = new ListGenMenu();
-  m_ImportParser = NULL;
+  m_ImportParser = nullptr;
 
   // test for connection event
   // Connect(ID_LIST,wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxCommandEventHandler());
@@ -453,7 +453,7 @@ int ListGenReport::GetColumnClicked(wxWindow *parent, int iIndex, int iBorderMar
 
   // get the windows position
   int myWindowXPosition = 0;
-  parent->GetScreenPosition(&myWindowXPosition, NULL);
+  parent->GetScreenPosition(&myWindowXPosition, nullptr);
 
   // get the rectangle of the item
   wxRect mySize(0, 0, 0, 0);
@@ -533,11 +533,11 @@ ListGenReportWithDialog::ListGenReportWithDialog(wxWindow *parent, wxWindowID id
 }
 
 ListGenReportWithDialog::~ListGenReportWithDialog() {
-  wxASSERT(m_pDialog == NULL);
+  wxASSERT(m_pDialog == nullptr);
 }
 
 void ListGenReportWithDialog::InitMembers() {
-  m_pDialog = NULL;
+  m_pDialog = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -783,7 +783,7 @@ void ListGenReportWithDialog::AddItem() {
   // delete dialog after use
   wxASSERT(m_pDialog);
   delete m_pDialog;
-  m_pDialog = NULL;
+  m_pDialog = nullptr;
 }
 
 void ListGenReportWithDialog::EditItem() {
@@ -804,7 +804,7 @@ void ListGenReportWithDialog::EditItem() {
   // delete dialog after use
   wxASSERT(m_pDialog);
   delete m_pDialog;
-  m_pDialog = NULL;
+  m_pDialog = nullptr;
 }
 
 void ListGenReportWithDialog::DeleteItem() {
@@ -849,7 +849,7 @@ int ListGenReportWithDialog::ImportParsedFileToListCtrl(const wxString &filename
   sError += _("Log window may be displayed using : Window -> Log Window");
 
   // check that the parser is not null or may crash
-  wxASSERT(m_ImportParser != NULL);
+  wxASSERT(m_ImportParser != nullptr);
   if (!m_ImportParser) {
     wxMessageBox(sError, _("Error importing files"), wxOK | wxICON_ERROR);
     wxLogError(_("Parser not correctly initiated."));

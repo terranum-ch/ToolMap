@@ -145,7 +145,7 @@ void PdfExportWizard::OnRadioMultiplePageClick(wxCommandEvent &event) {
 void PdfExportWizard::OnLastPage(wxWizardEvent &event) {
   if (event.GetPage() == m_PageDecoration && event.GetDirection()) {
     wxButton *myFinishBtn = (wxButton *)FindWindowById(wxID_FORWARD);
-    if (m_TextBtnNext != NULL && myFinishBtn != NULL) {
+    if (m_TextBtnNext != nullptr && myFinishBtn != nullptr) {
       myFinishBtn->SetLabel(*m_TextBtnNext);
     }
   }
@@ -153,16 +153,16 @@ void PdfExportWizard::OnLastPage(wxWizardEvent &event) {
 }
 
 PdfExportWizard::PdfExportWizard(wxWindow *parent, wxWindowID id, const wxString &title) : wxWizard(parent, id, title) {
-  m_PageLayout = NULL;
-  m_PagePaper = NULL;
-  m_PageDecoration = NULL;
-  m_TextBtnNext = NULL;
+  m_PageLayout = nullptr;
+  m_PagePaper = nullptr;
+  m_PageDecoration = nullptr;
+  m_TextBtnNext = nullptr;
 
   _CreateControls();
   wxWizardPageSimple::Chain(m_PageLayout, m_PageDecoration);
 
   wxButton *myBtn = (wxButton *)FindWindowById(wxID_FORWARD);
-  if (myBtn != NULL) {
+  if (myBtn != nullptr) {
     m_TextBtnNext = new wxString(myBtn->GetLabel());
   }
 

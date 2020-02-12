@@ -93,9 +93,9 @@ ProjectDefLayersEditObjectDlg::~ProjectDefLayersEditObjectDlg() {
 
 void ProjectDefLayersEditObjectDlg::Init() {
   ////@begin ProjectDefLayersEditObjectDlg member initialisation
-  m_DlgEO_Code = NULL;
-  m_DlgEO_Value = NULL;
-  m_DlgEO_OK_Btn = NULL;
+  m_DlgEO_Code = nullptr;
+  m_DlgEO_Value = nullptr;
+  m_DlgEO_OK_Btn = nullptr;
   ////@end ProjectDefLayersEditObjectDlg member initialisation
 }
 

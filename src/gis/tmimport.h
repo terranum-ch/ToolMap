@@ -73,7 +73,7 @@ class tmImport {
 
   virtual bool IsOk();
 
-  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL) {
+  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr) {
     return false;
   }
 

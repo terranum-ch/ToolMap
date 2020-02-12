@@ -36,12 +36,12 @@ void ToolDanglingNodes::Create(DataBaseTM *database) {
 }
 
 void ToolDanglingNodes::DNInitValues() {
-  m_pDB = NULL;
+  m_pDB = nullptr;
   m_bSearchInited = false;
   m_bSearchRun = false;
   m_LoopNum = 0;
-  m_pDlg = NULL;
-  m_GeomFrame = NULL;
+  m_pDlg = nullptr;
+  m_GeomFrame = nullptr;
   m_LayerID = wxNOT_FOUND;
 }
 
@@ -109,7 +109,7 @@ bool ToolDanglingNodes::DNSearchValidVertex() {
 
   while (1) {
     OGRLineString *myLineToCheck = (OGRLineString *)m_GisData.GetNextDataLine(myOid);
-    if (myLineToCheck == NULL) break;
+    if (myLineToCheck == nullptr) break;
 
     wxASSERT(myLineToCheck);
     OGRPoint p1;
@@ -139,7 +139,7 @@ bool ToolDanglingNodes::DNSearchValidVertex() {
 }
 
 bool ToolDanglingNodes::DNIsPointInside(OGRPoint *pt) {
-  if (m_GeomFrame == NULL) {
+  if (m_GeomFrame == nullptr) {
     return false;
   }
 
@@ -147,7 +147,7 @@ bool ToolDanglingNodes::DNIsPointInside(OGRPoint *pt) {
 
   // test also for touching
   OGRGeometry *myExtRing = m_GeomFrame->getExteriorRing();
-  if (myExtRing == NULL) {
+  if (myExtRing == nullptr) {
     return false;
   }
   if (pt->Touches(myExtRing)) {
@@ -161,9 +161,9 @@ void ToolDanglingNodes::DNSearchCleanUp() {
   wxASSERT(IsOk());
   if (m_pDB->DataBaseHasResults()) m_pDB->DataBaseClearResults();
 
-  if (m_GeomFrame != NULL) {
+  if (m_GeomFrame != nullptr) {
     OGRGeometryFactory::destroyGeometry(m_GeomFrame);
-    m_GeomFrame = NULL;
+    m_GeomFrame = nullptr;
   }
 
   m_bSearchInited = false;
@@ -179,7 +179,7 @@ bool ToolDanglingNodes::DNGetFrameGeometry() {
 
   long loid = 0;
   long myRows = 0;
-  if (m_pDB->DataBaseGetResultSize(NULL, &myRows)) {
+  if (m_pDB->DataBaseGetResultSize(nullptr, &myRows)) {
     if (myRows > 1) {
       wxLogError(_("Too many frame results"));
       m_pDB->DataBaseClearResults();
@@ -188,7 +188,7 @@ bool ToolDanglingNodes::DNGetFrameGeometry() {
   }
 
   OGRLineString *myFrameLine = m_GisData.GetNextDataLine(loid);
-  if (myFrameLine == NULL) {
+  if (myFrameLine == nullptr) {
     wxLogError(_("Unable to get the frame"));
     m_pDB->DataBaseClearResults();
     return false;
@@ -208,7 +208,7 @@ bool ToolDanglingNodes::DNIsSearchInitedOk() {
     return false;
   }
 
-  if (m_GeomFrame == NULL) {
+  if (m_GeomFrame == nullptr) {
     wxLogDebug(_T("No frame detected, searching dangling nodes unavaillable"));
     return false;
   }
@@ -221,7 +221,7 @@ ToolDanglingNodes::~ToolDanglingNodes() {
 
   if (m_bSearchInited) DNSearchCleanUp();
 
-  wxASSERT(m_GeomFrame == NULL);
+  wxASSERT(m_GeomFrame == nullptr);
 }
 
 bool ToolDanglingNodes::DNFlagNodes() {
@@ -229,7 +229,7 @@ bool ToolDanglingNodes::DNFlagNodes() {
   bool bReturn = true;
 
   long iNumberLines = wxNOT_FOUND;
-  if (!m_pDB->DataBaseGetResultSize(NULL, &iNumberLines)) return false;
+  if (!m_pDB->DataBaseGetResultSize(nullptr, &iNumberLines)) return false;
 
   long myOid = 0;
   int iLoop = 0;
@@ -241,7 +241,7 @@ bool ToolDanglingNodes::DNFlagNodes() {
     iLoop++;
 
     OGRLineString *myLineToCheck = (OGRLineString *)m_GisData.GetNextDataLine(myOid);
-    if (myLineToCheck == NULL) break;
+    if (myLineToCheck == nullptr) break;
 
     wxASSERT(myLineToCheck);
     OGRPoint p1;
@@ -266,7 +266,7 @@ bool ToolDanglingNodes::DNFlagNodes() {
 }
 
 bool ToolDanglingNodes::DNUpdateProgress(unsigned int ptstocheck, unsigned int iloop) {
-  if (m_pDlg == NULL) return true;
+  if (m_pDlg == nullptr) return true;
 
   wxASSERT(iloop <= ptstocheck);
 
@@ -316,7 +316,7 @@ bool ToolDanglingNodes::GetDanglingNodes(wxArrayRealPoints &pts) {
 }
 
 bool ToolDanglingNodes::IsOk() {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     wxLogDebug(_T("Database not inited in Dangling nodes, init the DB first"));
     return false;
   }
@@ -353,7 +353,7 @@ bool ToolDanglingNodes::SearchInfo(int &numberlines) {
 
   numberlines = 0;
   long numrows = 0;
-  bool bsize = m_pDB->DataBaseGetResultSize(NULL, &numrows);
+  bool bsize = m_pDB->DataBaseGetResultSize(nullptr, &numrows);
   wxASSERT(bsize);
   wxASSERT(numrows > 0);
 

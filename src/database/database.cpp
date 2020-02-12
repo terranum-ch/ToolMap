@@ -44,8 +44,8 @@
 DataBase::DataBase(const wxString &errmsgpath) {
   m_IsDatabaseOpened = false;
   m_IsLibraryStarted = false;
-  m_MySQL = NULL;
-  m_MySQLRes = NULL;
+  m_MySQL = nullptr;
+  m_MySQLRes = nullptr;
   m_DBName = wxEmptyString;
   m_DBPath = wxEmptyString;
   m_ErrMsgPath = errmsgpath;
@@ -112,7 +112,7 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
 #endif
   };
 
-  char const *server_groups[] = {"embedded", "server", "this_program_SERVER", (char *)NULL};
+  char const *server_groups[] = {"embedded", "server", "this_program_SERVER", (char *)nullptr};
 
   int num_elements = (sizeof(server_args) / sizeof(char *));
   int myReturn = mysql_library_init(num_elements, const_cast<char **>(server_args), const_cast<char **>(server_groups));
@@ -121,15 +121,15 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
     return false;
   }
 
-  m_MySQL = mysql_init(NULL);
-  mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
+  m_MySQL = mysql_init(nullptr);
+  mysql_options(m_MySQL, MYSQL_OPT_USE_EMBEDDED_CONNECTION, nullptr);
   mysql_options(m_MySQL, MYSQL_SET_CHARSET_NAME, "utf8");
   return true;
 }
 
 bool DataBase::DBUseDataBase(const wxString &dbname) {
-  if (mysql_real_connect(m_MySQL, NULL, NULL, NULL, (const char *)dbname.mb_str(wxConvUTF8), 3309, NULL,
-                         CLIENT_MULTI_STATEMENTS) == NULL) {
+  if (mysql_real_connect(m_MySQL, nullptr, nullptr, nullptr, (const char *)dbname.mb_str(wxConvUTF8), 3309, nullptr,
+                         CLIENT_MULTI_STATEMENTS) == nullptr) {
     wxLogError(DataBaseGetLastError());
     return false;
   }
@@ -269,7 +269,7 @@ bool DataBase::DataBaseHasResults() {
   if (!DBResultsNotNull()) return false;
 
   long lrow = 0;
-  if (!DataBaseGetResultSize(NULL, &lrow)) {
+  if (!DataBaseGetResultSize(nullptr, &lrow)) {
     wxLogError(_T("Unable to compute number of results"));
   }
 
@@ -282,9 +282,9 @@ bool DataBase::DataBaseHasResults() {
 }
 
 void DataBase::DataBaseClearResults() {
-  if (m_MySQLRes != NULL) {
+  if (m_MySQLRes != nullptr) {
     mysql_free_result(m_MySQLRes);
-    m_MySQLRes = NULL;
+    m_MySQLRes = nullptr;
   }
 }
 
@@ -293,9 +293,9 @@ bool DataBase::DataBaseGetResultSize(unsigned int *pcols, long *prows) {
 
   if (!DBResultsNotNull()) return false;
 
-  if (pcols != NULL) *pcols = mysql_num_fields(m_MySQLRes);
+  if (pcols != nullptr) *pcols = mysql_num_fields(m_MySQLRes);
 
-  if (prows != NULL) *prows = mysql_num_rows(m_MySQLRes);
+  if (prows != nullptr) *prows = mysql_num_rows(m_MySQLRes);
 
   return true;
 }
@@ -303,7 +303,7 @@ bool DataBase::DataBaseGetResultSize(unsigned int *pcols, long *prows) {
 bool DataBase::DataBaseGetNextResult(wxString &result) {
   result = wxEmptyString;
 
-  MYSQL_ROW record = NULL;
+  MYSQL_ROW record = nullptr;
   if (!DBGetNextRecord(record)) return false;
 
   result = wxString(record[0], wxConvUTF8);
@@ -313,11 +313,11 @@ bool DataBase::DataBaseGetNextResult(wxString &result) {
 bool DataBase::DataBaseGetNextResult(wxArrayString &results) {
   results.Clear();
 
-  MYSQL_ROW record = NULL;
+  MYSQL_ROW record = nullptr;
   if (!DBGetNextRecord(record)) return false;
 
   unsigned int myCols = 0;
-  DataBaseGetResultSize(&myCols, NULL);
+  DataBaseGetResultSize(&myCols, nullptr);
   if (myCols == 1) {
     wxLogDebug(
         _T("Only one columns returned, use the ")
@@ -333,7 +333,7 @@ bool DataBase::DataBaseGetNextResult(wxArrayString &results) {
 bool DataBase::DataBaseGetNextResult(long &result) {
   result = wxNOT_FOUND;
 
-  MYSQL_ROW record = NULL;
+  MYSQL_ROW record = nullptr;
   if (!DBGetNextRecord(record)) return false;
 
   if (!record[0]) return false;
@@ -345,11 +345,11 @@ bool DataBase::DataBaseGetNextResult(long &result) {
 bool DataBase::DataBaseGetNextResult(wxArrayLong &results) {
   results.Clear();
 
-  MYSQL_ROW record = NULL;
+  MYSQL_ROW record = nullptr;
   if (!DBGetNextRecord(record)) return false;
 
   unsigned int myCols = 0;
-  DataBaseGetResultSize(&myCols, NULL);
+  DataBaseGetResultSize(&myCols, nullptr);
   if (myCols == 1) {
     wxLogDebug(
         _T("Only one columns returned, use the ")
@@ -613,15 +613,10 @@ bool DataBase::DBGetNextRecord(MYSQL_ROW &record) {
   if (!DBResultsNotNull()) return false;
 
   record = mysql_fetch_row(m_MySQLRes);
-  if (record == NULL) return false;
 
-  return true;
+  return record != NULL;
 }
 
 bool DataBase::DBResultsNotNull() {
-  if (m_MySQLRes == NULL) {
-    return false;
-  }
-
-  return true;
+  return m_MySQLRes != NULL;
 }

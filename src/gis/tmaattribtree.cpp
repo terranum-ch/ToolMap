@@ -75,7 +75,7 @@ bool tmAAttribTree::FindLayerNode(const wxString &layername) {
 /***************************************************************************/ /**
   @brief Iterate all controls
   @param restart read controls from the begining ?
-  @return  A valid tmAAttribCtrl pointer (don't destroy) or NULL if no more
+  @return  A valid tmAAttribCtrl pointer (don't destroy) or nullptr if no more
   controls
   @author Lucien Schreiber (c) CREALP 2009
   @date 18 March 2009
@@ -87,7 +87,7 @@ tmAAttribCtrl *tmAAttribTree::IterateAllCtrl(bool restart) {
   }
 
   m_ActualNode = GetNext(m_ActualNode);
-  if (!m_ActualNode.IsOk()) return NULL;
+  if (!m_ActualNode.IsOk()) return nullptr;
 
   if (!m_ActualNode.IsWindowItem()) {
     // if we are passing on the parent branch
@@ -105,7 +105,7 @@ tmAAttribCtrl *tmAAttribTree::IterateAllCtrl(bool restart) {
   @date 06 March 2009
   *******************************************************************************/
 tmAAttribCtrl *tmAAttribTree::AddControl(const ProjectDefMemoryFields &fieldinfo) {
-  tmAAttribCtrl *mypControl = NULL;
+  tmAAttribCtrl *mypControl = nullptr;
   tmAAttribCtrlInteger *mypControlInt;
   tmAAttribCtrlFloat *mypControlFloat;
   tmAAttribCtrlEnum *mypControlEnum;

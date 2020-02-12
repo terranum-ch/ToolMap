@@ -213,7 +213,7 @@ bool siAttribut::Process(OGRFeature *feature, DataBase *database, long layerinde
 
   if (m_AttributOperation == SIATTRIBUT_OPERATION_VALUE) {
     siAttributValue *myValue = m_Values.Item(0);
-    if (myValue == NULL) {
+    if (myValue == nullptr) {
       return false;
     }
 

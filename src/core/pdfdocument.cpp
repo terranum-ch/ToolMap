@@ -136,7 +136,7 @@ PdfDocument::PdfDocument(PrjDefMemManage *project) {
   m_TwoCols = false;
   m_OnePage = false;
   _UpdatePageWidth();
-  m_pdf = NULL;
+  m_pdf = nullptr;
 
   // adding layers // ordering by points, lines, polygons
   for (int i = 0; i < project->GetCountLayers(); i++) {
@@ -214,7 +214,7 @@ bool PdfDocument::Generate(const wxFileName &filename) {
 }
 
 void PdfDocument::_UpdatePageWidth() {
-  wxPdfDocument *myTempDoc = NULL;
+  wxPdfDocument *myTempDoc = nullptr;
   if (m_PaperWidth == wxNOT_FOUND || m_PaperHeight == wxNOT_FOUND) {
     myTempDoc = new wxPdfDocument(m_PaperOrientation, "mm", m_PaperFormat);
   } else {

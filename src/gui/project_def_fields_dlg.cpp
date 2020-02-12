@@ -33,8 +33,8 @@ ProjectDefFieldList::ProjectDefFieldList(wxWindow *parent, wxWindowID id, wxSize
 
   CreateColumns(&myColNames, &myColsWidths);
 
-  m_pPrjDefinition = NULL;
-  m_CodedValueObj = NULL;
+  m_pPrjDefinition = nullptr;
+  m_CodedValueObj = nullptr;
 
   m_ChoiceIndex = 0;
 }
@@ -87,7 +87,7 @@ void ProjectDefFieldList::BeforeEditing() {
 
   // find item selected and then call a new Dialog
   // for editing the existing Field
-  if (m_CodedValueObj != NULL) {
+  if (m_CodedValueObj != nullptr) {
     // transfert the data obj to the dialog, data will be
     // filled during DataTransfer...
     ((ProjectDefLayersEditObjectDlg *)m_pDialog)->SetMemoryCodedValObject(m_CodedValueObj);
@@ -209,7 +209,7 @@ void ProjectDefFieldDlg::OnRemoveAllowedValue(wxCommandEvent &event) {
 }
 
 void ProjectDefFieldDlg::OnShowLiveResults(wxCommandEvent &event) {
-  if (m_DlgAFD_Field_Scale == NULL || m_DlgAFD_Field_Precision == NULL || m_DlgAFD_Result == NULL) {
+  if (m_DlgAFD_Field_Scale == nullptr || m_DlgAFD_Field_Precision == nullptr || m_DlgAFD_Result == nullptr) {
     return;
   }
   /// called when scale or precision controls changes
@@ -281,19 +281,19 @@ ProjectDefFieldDlg::~ProjectDefFieldDlg() {}
 
 void ProjectDefFieldDlg::Init() {
   ////@begin ProjectDefFieldDlg member initialisation
-  m_DlgAFD_Field_Def = NULL;
-  m_DlgAFD_Field_Precision = NULL;
-  m_DlgAFD_Field_Scale = NULL;
-  m_DlgAFD_Result = NULL;
-  m_DlgAFD_Coded_Val_List = NULL;
-  m_DlgAFD_Choicebook = NULL;
-  m_DlgAFD_Text_Length = NULL;
-  m_DlgAFD_Button_OK = NULL;
+  m_DlgAFD_Field_Def = nullptr;
+  m_DlgAFD_Field_Precision = nullptr;
+  m_DlgAFD_Field_Scale = nullptr;
+  m_DlgAFD_Result = nullptr;
+  m_DlgAFD_Coded_Val_List = nullptr;
+  m_DlgAFD_Choicebook = nullptr;
+  m_DlgAFD_Text_Length = nullptr;
+  m_DlgAFD_Button_OK = nullptr;
 
-  m_MemoryField = NULL;
+  m_MemoryField = nullptr;
   m_FieldTypeStatus = TM_FIELD_TEXT;
 
-  m_pPrjDefinition = NULL;
+  m_pPrjDefinition = nullptr;
   m_bIsModeEditing = false;
   ////@end ProjectDefFieldDlg member initialisation
 }
@@ -446,7 +446,7 @@ bool ProjectDefFieldDlg::TransferDataFromWindow() {
   // some checks, have we called
   // SetMemoryFieldObject function
   // before ?
-  wxASSERT(m_MemoryField != NULL);
+  wxASSERT(m_MemoryField != nullptr);
 
   m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
 
@@ -473,7 +473,7 @@ bool ProjectDefFieldDlg::TransferDataToWindow() {
   // some checks, have we called
   // SetMemoryFieldObject function
   // before ?
-  wxASSERT(m_MemoryField != NULL);
+  wxASSERT(m_MemoryField != nullptr);
 
   m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
 

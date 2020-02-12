@@ -68,7 +68,7 @@ long DirOperation::GetAllDirectoryFiles(wxArrayString &filesNames, DIROP_SELECTD
 
 bool DirOperation::HasEnoughFreeSpace(double megabyteSize, DIROP_SELECTDIR dirselection) {
   wxLongLong myFreeSizeBytes;
-  wxGetDiskSpace(m_Path[dirselection], NULL, &myFreeSizeBytes);
+  wxGetDiskSpace(m_Path[dirselection], nullptr, &myFreeSizeBytes);
 
   // avoid division problem
   if (myFreeSizeBytes > 0) {
@@ -87,7 +87,7 @@ bool DirOperation::IsPathWritable(DIROP_SELECTDIR dirselection) {
 }
 
 bool DirOperation::CopyDirectory(const wxArrayString &filesNames, bool showprogress) {
-  wxBusyCursor *wait = NULL;
+  wxBusyCursor *wait = nullptr;
   wxString myfileName = _T("");
   wxFileName myFileDestinationPathName;
   wxString myFileDestinationName;

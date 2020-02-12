@@ -31,7 +31,7 @@ void tmLayerProperties::InitMemberValues() {
   m_LayerSpatialType = LAYER_SPATIAL_LINE;
   m_LayerVisible = true;
   m_LayerType = TOC_NAME_NOT_GENERIC;
-  m_LayerSymbol = NULL;
+  m_LayerSymbol = nullptr;
   m_LayerVertexFlags = 0;
   m_LayerEditing = false;
   m_SymbolRulesManager = new tmSymbolRuleManager(this);

@@ -67,10 +67,10 @@ END_EVENT_TABLE()
   @date 10 July 2008
   *******************************************************************************/
 void tmTOCCtrl::InitTocMemberValues() {
-  m_ParentEvt = NULL;
-  m_ContextMenu = NULL;
+  m_ParentEvt = nullptr;
+  m_ContextMenu = nullptr;
   m_ActualItemID = 0;
-  m_EditingLayer = NULL;
+  m_EditingLayer = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -266,13 +266,13 @@ bool tmTOCCtrl::EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position)
   \image html iterate_orders.png
   @param ResetToLast TRUE for reseting iteration to the End and false to
   continue iterating things up
-  @return  a valid #tmLayerProperties or NULL if there is no more item to iterate
+  @return  a valid #tmLayerProperties or nullptr if there is no more item to iterate
   @author Lucien Schreiber (c) CREALP 2008
   @date 11 July 2008
   *******************************************************************************/
 tmLayerProperties *tmTOCCtrl::IterateLayers(bool ResetToLast) {
   // check
-  if (!m_root.IsOk()) return NULL;
+  if (!m_root.IsOk()) return nullptr;
   // wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
 
   // if we are starting from the End
@@ -282,7 +282,7 @@ tmLayerProperties *tmTOCCtrl::IterateLayers(bool ResetToLast) {
     m_ActualItemID = GetPrevSibling(m_ActualItemID);
   }
 
-  if (!m_ActualItemID.IsOk()) return NULL;
+  if (!m_ActualItemID.IsOk()) return nullptr;
 
   return (tmLayerProperties *)GetItemData(m_ActualItemID);
 }
@@ -292,7 +292,7 @@ bool tmTOCCtrl::GetItemByID(wxTreeItemId &position, long searchedid) {
   while (1) {
     tmLayerProperties *myProp = IterateLayers(bStart);
     bStart = false;
-    if (myProp == NULL) {
+    if (myProp == nullptr) {
       break;
     }
 
@@ -357,7 +357,7 @@ unsigned int tmTOCCtrl::GetCountLayers() {
   @brief Return the Layer ID of the first selected layer
   @details The layer ID returned by this function is the CONTENT_ID of the layers
   stored in the Database
-  @return  Properties of the first selected Layer or NULL if nothing selected. Do
+  @return  Properties of the first selected Layer or nullptr if nothing selected. Do
   not delete the pointer returned, it belong to the tmTOCCtrl
   @author Lucien Schreiber (c) CREALP 2008
   @date 29 October 2008
@@ -365,11 +365,11 @@ unsigned int tmTOCCtrl::GetCountLayers() {
 tmLayerProperties *tmTOCCtrl::GetSelectionLayer() {
   wxTreeItemId selected = GetSelection();
   if (!selected.IsOk()) {
-    return NULL;
+    return nullptr;
   }
 
   tmLayerProperties *itemprop = (tmLayerProperties *)GetItemData(selected);
-  if (!itemprop) return NULL;
+  if (!itemprop) return nullptr;
 
   return itemprop;
 }
@@ -385,7 +385,7 @@ tmLayerProperties *tmTOCCtrl::GetSelectionLayer() {
   *******************************************************************************/
 tmLayerProperties *tmTOCCtrl::GetLayerById(long layerid) {
   bool bReset = true;
-  tmLayerProperties *myReturnedLayer = NULL;
+  tmLayerProperties *myReturnedLayer = nullptr;
 
   for (unsigned int i = 0; i < GetCountLayers(); i++) {
     tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
@@ -400,7 +400,7 @@ tmLayerProperties *tmTOCCtrl::GetLayerById(long layerid) {
 
 tmLayerProperties *tmTOCCtrl::GetLayerByName(const wxString &layername) {
   bool bReset = true;
-  tmLayerProperties *myReturnedLayer = NULL;
+  tmLayerProperties *myReturnedLayer = nullptr;
   for (unsigned int i = 0; i < GetCountLayers(); i++) {
     tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
     if (myIteratedLayer && myIteratedLayer->GetName() == layername) {
@@ -414,7 +414,7 @@ tmLayerProperties *tmTOCCtrl::GetLayerByName(const wxString &layername) {
 
 tmLayerProperties *tmTOCCtrl::GetLayerByPath(const wxString &layerPath) {
   bool bReset = true;
-  tmLayerProperties *myReturnedLayer = NULL;
+  tmLayerProperties *myReturnedLayer = nullptr;
   for (unsigned int i = 0; i < GetCountLayers(); i++) {
     tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
     if (myIteratedLayer && myIteratedLayer->GetName() == wxFileName(layerPath)) {
@@ -434,7 +434,7 @@ tmLayerProperties *tmTOCCtrl::GetLayerByPath(const wxString &layerPath) {
   @date 11 November 2008
   *******************************************************************************/
 void tmTOCCtrl::SetSelectedLayer(int layerID) {
-  tmLayerProperties *itemprop = NULL;
+  tmLayerProperties *itemprop = nullptr;
   bool bFirstLoop = true;
 
   Freeze();
@@ -895,7 +895,7 @@ void tmTOCCtrl::StartEditing() {
 void tmTOCCtrl::StopEditing(bool bSentmessage) {
   // get selected item
   bool bReset = true;
-  tmLayerProperties *iterlayer = NULL;
+  tmLayerProperties *iterlayer = nullptr;
   while (1) {
     iterlayer = IterateLayers(bReset);
     bReset = false;
@@ -905,7 +905,7 @@ void tmTOCCtrl::StopEditing(bool bSentmessage) {
 
     if (iterlayer == GetEditLayer()) {
       iterlayer->SetEditing(false);
-      SetEditLayer(NULL);
+      SetEditLayer(nullptr);
       SetItemStyle(m_ActualItemID, (tmLayerProperties *)GetItemData(m_ActualItemID));
       break;
     }
@@ -1061,7 +1061,7 @@ void tmTOCCtrl::OnShowLabels(wxCommandEvent &event) {
   // get selected item
   wxTreeItemId selected = GetSelection();
   tmLayerProperties *item = (tmLayerProperties *)GetItemData(selected);
-  if (item == NULL) {
+  if (item == nullptr) {
     return;
   }
   wxASSERT(item->GetSymbolRef());

@@ -49,9 +49,9 @@ bool tmSymbolDLGPoint::Create(wxWindow *parent, wxWindowID id, const wxString &c
 tmSymbolDLGPoint::~tmSymbolDLGPoint() {}
 
 void tmSymbolDLGPoint::_Init() {
-  m_PointColourCtrl = NULL;
-  m_PointWidthCtrl = NULL;
-  m_TransparencySlider = NULL;
+  m_PointColourCtrl = nullptr;
+  m_PointWidthCtrl = nullptr;
+  m_TransparencySlider = nullptr;
 }
 
 void tmSymbolDLGPoint::CreateControlsPoint() {
@@ -293,7 +293,7 @@ void tmSymbolDLGPointRule::OnBtnClassify(wxCommandEvent &event) {
   }
 
   for (unsigned int i = 0; i < myFieldValues.GetCount(); i++) {
-    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
     myRule->SetRuleName(myFieldValues[i]);
     myRule->SetAttributFilter(wxString::Format(_T("%s=\"%s\""), myFieldName, myFieldValues[i]));
     myRule->SetRandomColor();
@@ -303,7 +303,7 @@ void tmSymbolDLGPointRule::OnBtnClassify(wxCommandEvent &event) {
 }
 
 void tmSymbolDLGPointRule::OnBtnAdd(wxCommandEvent &event) {
-  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
   myRule->SetRandomColor();
   tmSymbolRuleEdit_DLG myDlg(this, myRule);
   if (myDlg.ShowModal() != wxID_OK) {

@@ -32,19 +32,19 @@ IMPLEMENT_CLASS(ProjectManager, wxObject);
   *******************************************************************************/
 ProjectManager::ProjectManager(wxFrame *parent) {
   bProjectIsOpen = FALSE;
-  m_DB = NULL;
+  m_DB = nullptr;
   m_Parent = parent;
-  m_pMManager = NULL;
-  m_ParentStatus = NULL;
-  m_LayerManager = NULL;
-  m_AttribManager = NULL;
-  m_QueriesPanel = NULL;
-  m_ShortcutPanel = NULL;
-  m_SnappingPanel = NULL;
-  m_EditManager = NULL;
-  m_PrjMem = NULL;
-  m_ToolManager = NULL;
-  m_StatManager = NULL;
+  m_pMManager = nullptr;
+  m_ParentStatus = nullptr;
+  m_LayerManager = nullptr;
+  m_AttribManager = nullptr;
+  m_QueriesPanel = nullptr;
+  m_ShortcutPanel = nullptr;
+  m_SnappingPanel = nullptr;
+  m_EditManager = nullptr;
+  m_PrjMem = nullptr;
+  m_ToolManager = nullptr;
+  m_StatManager = nullptr;
 
   m_Obj = new ObjectManager();
 }
@@ -59,10 +59,10 @@ ProjectManager::~ProjectManager() {
   wxDELETE(m_DB);
 
   // closing database only at the program end.
-  /*if (m_DB != NULL)
+  /*if (m_DB != nullptr)
   {
       delete m_DB;
-      m_DB = NULL;
+      m_DB = nullptr;
   }*/
 }
 
@@ -379,7 +379,7 @@ bool ProjectManager::BackupProject(const wxString &backup_comment) {
   BackupManager myBckManager(GetDatabase());
 
   // Don't display progress dialog under Mac... Toooo slow!
-  wxWindow *myWnd = NULL;
+  wxWindow *myWnd = nullptr;
 #ifndef __WXMAC__
   myWnd = m_Parent;
 #endif
@@ -492,12 +492,12 @@ void ProjectManager::CloseProject() {
   wxASSERT(m_EditManager);
 
   // save the snapping informations
-  m_SnappingPanel->SetDataBase(NULL);
+  m_SnappingPanel->SetDataBase(nullptr);
   // m_SnappingPanel->SaveSnappingStatus();
 
-  m_StatManager->Create(NULL);
+  m_StatManager->Create(nullptr);
 
-  m_EditManager->SetDatabase(NULL);
+  m_EditManager->SetDatabase(nullptr);
   m_LayerManager->UnInitLayerManager();
   m_AttribManager->UnInitAttributionManager();
 
@@ -768,7 +768,7 @@ bool ProjectManager::EditProjectSettings() {
   @date 11 March 2008
   *******************************************************************************/
 wxString ProjectManager::GetProjectName() {
-  if (m_DB != NULL)
+  if (m_DB != nullptr)
     return m_DB->DataBaseGetName();
   else {
     wxLogDebug(_T("Database pointer is null"));
@@ -815,7 +815,7 @@ bool ProjectManager::LoadProjectDefintion(short int message) {
     default:
       break;
   }
-  wxBusyInfo *wait = NULL;
+  wxBusyInfo *wait = nullptr;
   if (!myWaitString.IsEmpty()) wait = new wxBusyInfo(myWaitString, m_Parent);
 
   // load data from DB --> PrjDefMemManage
@@ -826,7 +826,7 @@ bool ProjectManager::LoadProjectDefintion(short int message) {
   wxLogMessage(_T("Project Data loaded in : %ld [ms]"), sw.Time());
 
   wxASSERT(m_PrjMem);
-  if (m_PrjMem == NULL) return false;
+  if (m_PrjMem == nullptr) return false;
 
   m_LayerManager->SetMemoryProject(GetMemoryProjectDefinition());
 
@@ -853,7 +853,7 @@ PrjDefMemManage *ProjectManager::GetMemoryProjectDefinition() {
   @date 16 May 2008
   *******************************************************************************/
 void ObjectManager::InitValues() {
-  m_panel = NULL;
+  m_panel = nullptr;
 }
 
 /***************************************************************************/ /**

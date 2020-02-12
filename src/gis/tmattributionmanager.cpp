@@ -54,11 +54,11 @@ tmAttributionManager::tmAttributionManager(wxWindow *parent, tmTOCCtrl *toc, Att
   m_TOC = toc;
   m_Panel = panel;
   m_SelData = selection;
-  m_pPrjMem = NULL;
-  m_InfoDLG = NULL;
+  m_pPrjMem = nullptr;
+  m_InfoDLG = nullptr;
 
-  m_pDB = NULL;
-  m_pLayerProperties = NULL;
+  m_pDB = nullptr;
+  m_pLayerProperties = nullptr;
   m_Parent->PushEventHandler(this);
   m_ShortcutLoaded = false;
 }
@@ -208,10 +208,10 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM *pDb, PrjDefMemMana
   m_pPrjMem = memprojdef;
   wxASSERT(m_pPrjMem);
 
-  m_pLayerProperties = NULL;
+  m_pLayerProperties = nullptr;
 
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->SetProject(m_pPrjMem);
   }
 
@@ -232,8 +232,8 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM *pDb, PrjDefMemMana
   @date 04 November 2008
   *******************************************************************************/
 void tmAttributionManager::UnInitAttributionManager() {
-  m_pDB = NULL;
-  m_pLayerProperties = NULL;
+  m_pDB = nullptr;
+  m_pLayerProperties = nullptr;
 
   DisconnectShortcutEvent();
   m_Panel->SetInfoBtn(0);
@@ -287,7 +287,7 @@ bool tmAttributionManager::IsOnlyOneObjSelected() {
 void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   // update info dlg
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->UpdateSelection();
   }
 
@@ -308,7 +308,7 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   }
 
   bool bEditMode = false;
-  if (m_TOC->GetEditLayer() != NULL) {
+  if (m_TOC->GetEditLayer() != nullptr) {
     bEditMode = true;
   }
   m_Panel->SetAttributeBtn(iSelFeatureCount, bEditMode);
@@ -509,7 +509,7 @@ int tmAttributionManager::LoadShortcutIntoMemory() {
   @date 06 November 2008
   *******************************************************************************/
 tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
-  tmAttributionData *myAttrib = NULL;
+  tmAttributionData *myAttrib = nullptr;
   switch (type) {
     case TOC_NAME_LINES:
       myAttrib = new tmAttributionDataLine();
@@ -528,7 +528,7 @@ tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
       break;
   }
 
-  if (myAttrib == NULL) {
+  if (myAttrib == nullptr) {
     wxLogDebug(_T("Error creating attribution object"));
   }
 
@@ -547,7 +547,7 @@ tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
   *******************************************************************************/
 void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
   tmAttributionData *myAttrib = CreateAttributionData(m_TOC->GetEditLayer()->GetType());
-  if (myAttrib == NULL) return;
+  if (myAttrib == nullptr) return;
 
   // init
   wxArrayLong *mySelectedValues = (wxArrayLong *)event.GetClientData();
@@ -681,13 +681,13 @@ bool tmAttributionManager::AAttributionButtonShow() {
     return false;
   }
   tmLayerProperties *myEditLayer = m_TOC->GetEditLayer();
-  if (myEditLayer == NULL) {
+  if (myEditLayer == nullptr) {
     wxLogError(_("You aren't in edit mode, please start editing"));
     return false;
   }
 
   tmAttributionData *myAttribObj = CreateAttributionData(myEditLayer->GetType());
-  if (myAttribObj == NULL) return false;
+  if (myAttribObj == nullptr) return false;
   myAttribObj->Create(m_SelData->GetSelectedValues(), m_pDB);
 
   // attributed layers
@@ -735,7 +735,7 @@ void tmAttributionManager::AAttributionBatchShow() {
   }
 
   tmLayerProperties *myEditLayer = m_TOC->GetEditLayer();
-  if (myEditLayer == NULL) {
+  if (myEditLayer == nullptr) {
     wxLogError(_("You aren't in edit mode, please start editing"));
     return;
   }
@@ -762,7 +762,7 @@ void tmAttributionManager::AAttributionBatchShow() {
 void tmAttributionManager::DisplayInformationsWnd() {
   // search info dialog
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG == NULL) {
+  if (m_InfoDLG == nullptr) {
     m_InfoDLG = new InformationDLG(m_Parent, m_TOC, m_SelData, ID_INFORMATION_DLG);
     m_InfoDLG->SetProject(m_pPrjMem);
     m_InfoDLG->Show();
@@ -779,14 +779,14 @@ void tmAttributionManager::DisplayInformationsWnd() {
   *******************************************************************************/
 void tmAttributionManager::OnLayerChanged(wxCommandEvent &event) {
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->UpdateLayer();
   }
 }
 
 void tmAttributionManager::OnSelectionChanged(wxCommandEvent &event) {
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->UpdateSelection();
   }
 }

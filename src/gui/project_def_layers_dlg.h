@@ -142,7 +142,7 @@ class ProjectDefLayersFieldsList : public ListGenReportWithDialog {
     m_pPrjDefinition = myPrjMemManage;
   }
 
-  void SetListCtrls(wxCheckBox *pChkOrientation = NULL) {
+  void SetListCtrls(wxCheckBox *pChkOrientation = nullptr) {
     m_ChkOrientation = pChkOrientation;
   }
 

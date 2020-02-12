@@ -106,10 +106,10 @@ bool tmProjectMaintenance::_CleanLayerOrphansAttributes(int geomtype, const wxSt
 }
 
 tmProjectMaintenance::tmProjectMaintenance(const wxString &databasename, DataBase *database) {
-  m_DB = NULL;
+  m_DB = nullptr;
   m_DestroyDatabase = true;
   m_IsVerbose = false;
-  if (database != NULL) {
+  if (database != nullptr) {
     m_DB = database;
     m_DestroyDatabase = false;
   } else {
@@ -120,7 +120,7 @@ tmProjectMaintenance::tmProjectMaintenance(const wxString &databasename, DataBas
     if (!m_DB->DataBaseOpen(myDatabaseName.GetPath(), myDatabaseName.GetFullName())) {
       m_Errors.Add(wxString::Format(_("Opening '%s' from '%s' Failed!"), myDatabaseName.GetFullName(),
                                     myDatabaseName.GetPath()));
-      m_DB = NULL;
+      m_DB = nullptr;
     }
   }
   wxASSERT(m_DB);

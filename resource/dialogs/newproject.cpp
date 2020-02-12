@@ -95,18 +95,18 @@ ProjectDefDLG::~ProjectDefDLG() {
 
 void ProjectDefDLG::Init() {
   ////@begin ProjectDefDLG member initialisation
-  m_DlgPd_Panel_Proj = NULL;
-  m_DlgPD_Proj_Path = NULL;
-  m_DlgPd_Proj_Name = NULL;
-  m_DlgPd_Proj_Unit = NULL;
-  m_DlgPd_Proj_Projection = NULL;
-  m_DlgPd_Proj_Author = NULL;
-  m_DlgPd_Proj_Comment = NULL;
-  m_DlgPd_Panel_Spatial = NULL;
-  m_DlgPd_Stat_Model_List = NULL;
-  m_DlgPd_Spat_Mdl_Add = NULL;
-  m_DljPd_Spat_Mdl_Del = NULL;
-  m_DlgPd_Button_Ok = NULL;
+  m_DlgPd_Panel_Proj = nullptr;
+  m_DlgPD_Proj_Path = nullptr;
+  m_DlgPd_Proj_Name = nullptr;
+  m_DlgPd_Proj_Unit = nullptr;
+  m_DlgPd_Proj_Projection = nullptr;
+  m_DlgPd_Proj_Author = nullptr;
+  m_DlgPd_Proj_Comment = nullptr;
+  m_DlgPd_Panel_Spatial = nullptr;
+  m_DlgPd_Stat_Model_List = nullptr;
+  m_DlgPd_Spat_Mdl_Add = nullptr;
+  m_DljPd_Spat_Mdl_Del = nullptr;
+  m_DlgPd_Button_Ok = nullptr;
   ////@end ProjectDefDLG member initialisation
 }
 

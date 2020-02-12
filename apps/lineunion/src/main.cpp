@@ -33,20 +33,20 @@ OGRGeometry *_GetGeometryFromDatabaseResults(DataBase *database, long &oid) {
   // security check
   if (!database->DataBaseHasResults()) {
     oid = wxNOT_FOUND;
-    return NULL;
+    return nullptr;
   }
 
   if (!database->DataBaseGetNextRowResult(row, row_length)) {
     database->DataBaseClearResults();
     oid = wxNOT_FOUND;
-    return NULL;
+    return nullptr;
   }
 
-  OGRGeometry *geometry = NULL;
+  OGRGeometry *geometry = nullptr;
   int geometry_col = 1;
   int oid_col = 0;
   // Geometry columns will have the first 4 bytes contain the SRID.
-  OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, NULL, &geometry,
+  OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, nullptr, &geometry,
                                     row_length.Item(geometry_col) - 4);
 
   if (!row) {
@@ -61,7 +61,7 @@ OGRGeometry *_GetFrame(DataBase *database) {
   // get frame
   if (!database->DataBaseQuery(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM generic_frame"))) {
     wxLogError(_("Error getting geometry for frame"));
-    return NULL;
+    return nullptr;
   }
   long myOid = wxNOT_FOUND;
   OGRGeometry *myGeom = _GetGeometryFromDatabaseResults(database, myOid);
@@ -108,9 +108,9 @@ bool _TestUnion(DataBase *database, long layerindex, long idmin, long idmax, OGR
   for (long i = 0; i < myResult.GetRowCount(); i++) {
     myResult.NextRow();
 
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     myResult.GetValue(1, &myGeom);
-    if (myGeom == NULL) {
+    if (myGeom == nullptr) {
       wxLogError(_("No geometry returned on loop :d"), i);
       continue;
     }
@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
 
   // get frame
   OGRGeometry *myFrame = _GetFrame(&myDB);
-  if (myFrame == NULL) {
+  if (myFrame == nullptr) {
     wxLogError(_("Error getting frame!"));
     return 0;
   }

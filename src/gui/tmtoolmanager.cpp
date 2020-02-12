@@ -16,12 +16,12 @@
 #include "tmtoolmanager.h"
 
 void tmToolManager::InitMemberValues() {
-  m_Parent = NULL;
-  m_TOC = NULL;
-  m_Selected = NULL;
-  m_Renderer = NULL;
-  m_Scale = NULL;
-  m_pDB = NULL;
+  m_Parent = nullptr;
+  m_TOC = nullptr;
+  m_Selected = nullptr;
+  m_Renderer = nullptr;
+  m_Scale = nullptr;
+  m_pDB = nullptr;
 }
 
 tmToolManager::tmToolManager(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
@@ -153,7 +153,7 @@ bool tmToolManager::FindDanglingNodes() {
 }
 
 bool tmToolManager::_IsOk() {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     wxLogError(_T("Database not inited, init database first"));
     return false;
   }

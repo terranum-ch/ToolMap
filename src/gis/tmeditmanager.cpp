@@ -107,12 +107,12 @@ tmEditManager::~tmEditManager() {
   @date 26 January 2009
   *******************************************************************************/
 void tmEditManager::InitMemberValues() {
-  m_ParentEvt = NULL;
-  m_TOC = NULL;
-  m_SelectedData = NULL;
-  m_Renderer = NULL;
-  m_pDB = NULL;
-  m_SnapMem = NULL;
+  m_ParentEvt = nullptr;
+  m_TOC = nullptr;
+  m_SelectedData = nullptr;
+  m_Renderer = nullptr;
+  m_pDB = nullptr;
+  m_SnapMem = nullptr;
   m_INSDELVertex = wxNOT_FOUND;
   m_INSVertexPos = wxRealPoint(-1, -1);
   m_SnappingShowOnMap = false;
@@ -416,7 +416,7 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
   tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
   wxASSERT(m_pDB);
   OGRGeometry *myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
-  if (myGeometry == NULL) {
+  if (myGeometry == nullptr) {
     return;
   }
   OGRLineString *myLine = static_cast<OGRLineString *>(myGeometry);
@@ -474,7 +474,7 @@ void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
   tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
   wxASSERT(m_pDB);
   OGRGeometry *myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
-  if (myGeometry == NULL) {
+  if (myGeometry == nullptr) {
     return;
   }
 
@@ -501,7 +501,7 @@ void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
 }
 
 void tmEditManager::BezierModifyDraw(wxGCDC *dc) {
-  if (m_Renderer == NULL) {
+  if (m_Renderer == nullptr) {
     return;
   }
   if (m_Renderer->GetTool() != tmTOOL_MODIFY_BEZIER) {
@@ -924,7 +924,7 @@ void tmEditManager::ArcDraw(wxGCDC *dc) {
 }
 
 void tmEditManager::DrawSnappingCircle(wxGCDC *dc) {
-  if (m_Renderer == NULL || m_Scale == NULL) {
+  if (m_Renderer == nullptr || m_Scale == nullptr) {
     return;
   }
 
@@ -1115,7 +1115,7 @@ bool tmEditManager::IsCorrectLayerSelected() {
 bool tmEditManager::IsLayerTypeSelected(int layertype) {
   wxASSERT(m_TOC);
   tmLayerProperties *myEditLayer = m_TOC->GetEditLayer();
-  if (myEditLayer == NULL) {
+  if (myEditLayer == nullptr) {
     wxLogWarning(_("No editing layer selected. Define an edit layer"));
     return false;
   }
@@ -1217,7 +1217,7 @@ bool tmEditManager::IsMultipleModificationAllowed() {
 
 bool tmEditManager::IsLayerSpatialType(int layerType) {
   wxASSERT(m_TOC);
-  if (m_TOC->GetEditLayer() == NULL) {
+  if (m_TOC->GetEditLayer() == nullptr) {
     return false;
   }
 
@@ -1362,11 +1362,11 @@ void tmEditManager::OnDrawFeatureValidate(wxCommandEvent &event) {
 
 long tmEditManager::_SaveToDatabase() {
   tmLayerProperties *layerprop = m_TOC->GetEditLayer();
-  if (layerprop == NULL) {
+  if (layerprop == nullptr) {
     return wxNOT_FOUND;
   }
 
-  OGRGeometry *myGeom = NULL;
+  OGRGeometry *myGeom = nullptr;
   OGRLineString myLineString;
   OGRPoint myPoint;
   if (layerprop->GetSpatialType() == LAYER_SPATIAL_LINE) {
@@ -1491,7 +1491,7 @@ void tmEditManager::OnCutLines(wxCommandEvent &event) {
   *******************************************************************************/
 void tmEditManager::OnShowVertexPosition(wxCommandEvent &event) {
   wxRealPoint *myPt = (wxRealPoint *)event.GetClientData();
-  if (myPt == NULL) return;
+  if (myPt == nullptr) return;
 
   wxLogDebug(_T("Showing vertex @ %.*f / %.*f"), 2, myPt->x, 2, myPt->y);
 
@@ -1577,10 +1577,10 @@ bool tmEditManager::EMGetSnappingCoord(wxRealPoint &pt) {
     return false;
   }
 
-  wxRealPoint *mySnapCoord = NULL;
+  wxRealPoint *mySnapCoord = nullptr;
   mySnapCoord = EMIterateAllSnappingLayers(pt);
 
-  if (mySnapCoord != NULL) {
+  if (mySnapCoord != nullptr) {
     pt.x = mySnapCoord->x;
     pt.y = mySnapCoord->y;
     wxDELETE(mySnapCoord);
@@ -1602,7 +1602,7 @@ bool tmEditManager::EMGetSnappingCoord(wxRealPoint &pt) {
 wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clickedpoint) {
   long myLayerId = 0;
   int mySnapStatus = tmSNAPPING_OFF;
-  tmLayerProperties *myActualLayer = NULL;
+  tmLayerProperties *myActualLayer = nullptr;
   wxArrayRealPoints mySnapPts;
   for (unsigned int i = 0; i < m_SnapMem->GetCount(); i++) {
     m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
@@ -1623,7 +1623,7 @@ wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clicke
 
   wxLogMessage("%d snapping points found!", (int)mySnapPts.GetCount());
   if (mySnapPts.GetCount() == 0) {
-    return NULL;
+    return nullptr;
   }
 
   if (mySnapPts.GetCount() == 1) {
@@ -1664,7 +1664,7 @@ bool tmEditManager::DeleteSelected(bool clearSelection) {
 
   // delete ids from database
   wxArrayLong *mySelectedIds = m_SelectedData->GetSelectedValues();
-  if (mySelectedIds == NULL) {
+  if (mySelectedIds == nullptr) {
     return false;
   }
 
@@ -1890,7 +1890,7 @@ wxArrayLong tmEditManager::_GetErrorLines(wxArrayLong linetocheck) {
 
   for (long i = 0; i < linetocheck.GetCount(); i++) {
     OGRFeature *myFeature = mySelLayer->GetFeatureByOID(linetocheck.Item(i));
-    if (myFeature == NULL) {
+    if (myFeature == nullptr) {
       wxLogError(_("Unable to get feature : %ld! Checking intersected lines failed"), linetocheck.Item(i));
       continue;
     }
@@ -1949,8 +1949,8 @@ bool tmEditManager::EditVertexPosition() {
   EditVertexDLG myDlg(m_Renderer);
   myDlg.m_SelectedOID = lSelectedOID;
   myDlg.m_LayerType = m_TOC->GetEditLayer()->GetSpatialType();
-  OGRLineString *myLine = NULL;
-  OGRPoint *myPt = NULL;
+  OGRLineString *myLine = nullptr;
+  OGRPoint *myPt = nullptr;
 
   switch (myType) {
     case wkbPoint:
@@ -2023,7 +2023,7 @@ bool tmEditManager::MergeSelectedLines() {
   // merge lines
   tmGISDataVector *myLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
   wxASSERT(myLayer);
-  OGRGeometry *myMergeGeom = NULL;
+  OGRGeometry *myMergeGeom = nullptr;
   OGRMultiLineString *mySelGeom = (OGRMultiLineString *)myLayer->GetGeometryColByOID(mySelectedIDs);
   bool bMergeSuccess = myLayer->LinesMerge(mySelGeom, &myMergeGeom);
 
@@ -2140,7 +2140,7 @@ void tmEditManager::OnEditSharedDown(wxCommandEvent &event) {
   // search end nodes
   wxArrayLong *mySelIds = m_SelectedData->GetSelectedValues();
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     return;
   }
 
@@ -2205,7 +2205,7 @@ void tmEditManager::OnEditSharedUp(wxCommandEvent &event) {
   }
 
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     m_SharedNodes.Clear();
     wxDELETE(myTempPt);
     return;
@@ -2266,7 +2266,7 @@ bool tmEditManager::FlipLine() {
 
   // Get the Layer (Line MySQL)
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     return false;
   }
 

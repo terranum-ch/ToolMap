@@ -25,7 +25,7 @@ wxDirPickerCtrlBest::wxDirPickerCtrlBest(wxWindow *parent, wxWindowID id, const 
 wxDirPickerCtrlBest::~wxDirPickerCtrlBest() {}
 
 void wxDirPickerCtrlBest::SetPathWithError(PATH_ERROR flags, const wxString &spath) {
-  wxTextCtrl *txtctrl = NULL;
+  wxTextCtrl *txtctrl = nullptr;
 
   switch (flags) {
     case PATH_OK:
@@ -36,7 +36,7 @@ void wxDirPickerCtrlBest::SetPathWithError(PATH_ERROR flags, const wxString &spa
       // otherwise we just set a empty path
       if (HasTextCtrl()) {
         txtctrl = GetTextCtrl();
-        if (txtctrl != NULL) {
+        if (txtctrl != nullptr) {
           txtctrl->SetValue(_("INVALID PATH"));
         }
       }

@@ -54,7 +54,7 @@ void tmGISData::InitMemberValue() {
   m_ShortFileName = _T("");
   m_FullFileName = _T("");
   m_ClassType = wxNOT_FOUND;
-  m_CoordConvert = NULL;
+  m_CoordConvert = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -136,7 +136,7 @@ wxArrayString tmGISData::GetAllSupportedGISFormatsExtensions() {
   @details Allowed values for gis_format_index are those from the
   #tmGISDATA_RASTER_TYPES and from the #tmGISDATA_VECTOR_TYPES
   @param gis_format_index zero based index of the item type to create
-  @return  pointer to an object of the correct type or NULL if something's going
+  @return  pointer to an object of the correct type or nullptr if something's going
   wrong
   @author Lucien Schreiber (c) CREALP 2008
   @date 14 July 2008
@@ -150,7 +150,7 @@ tmGISData *tmGISData::CreateGISBasedOnType(const int &gis_format_index) {
 }
 
 tmGISData *tmGISData::CreateGISBasedOnExt(const wxString &extension) {
-  tmGISData *myDataObj = NULL;
+  tmGISData *myDataObj = nullptr;
 
   // try opening vector extensions
   myDataObj = tmGISDataVector::CreateGISVectorBasedOnExt(extension);
@@ -164,7 +164,7 @@ tmGISData *tmGISData::CreateGISBasedOnExt(const wxString &extension) {
   if (IsLoggingEnabled()) {
     wxLogDebug(_T("No format handler found for extension : %s"), extension.c_str());
   }
-  return NULL;
+  return nullptr;
 }
 
 /***************************************************************************/ /**
@@ -214,13 +214,13 @@ wxString tmGISData::GetMinimalBoundingRectangleAsHtml(int iprecision) {
   @details This function create an object of type #tmGISData based on layer
   properties
   @param layerProp the layer properties
-  @return  a valid tmGISData object or NULL if an error occur
+  @return  a valid tmGISData object or nullptr if an error occur
   @author Lucien Schreiber (c) CREALP 2009
   @date 30 January 2009
   *******************************************************************************/
 tmGISData *tmGISData::LoadLayer(tmLayerProperties *layerProp) {
   wxASSERT(layerProp);
-  tmGISData *m_Data = NULL;
+  tmGISData *m_Data = nullptr;
   wxString myFileName = _T("");
   wxString myErrMsg = _T("");
 
@@ -259,7 +259,7 @@ tmGISData *tmGISData::LoadLayer(tmLayerProperties *layerProp) {
       if (IsLoggingEnabled()) {
         wxLogDebug(_T("%s file format not supported yet \n "), layerProp->GetNameDisplay().c_str());
       }
-      return NULL;
+      return nullptr;
       break;
   }
 
@@ -268,7 +268,7 @@ tmGISData *tmGISData::LoadLayer(tmLayerProperties *layerProp) {
     if (IsLoggingEnabled()) {
       wxLogError(_("Error loading : %s"), myErrMsg.c_str());
     }
-    return NULL;
+    return nullptr;
   }
 
   if (!m_Data->Open(myFileName, TRUE)) {
@@ -276,7 +276,7 @@ tmGISData *tmGISData::LoadLayer(tmLayerProperties *layerProp) {
       wxLogError(_("Error opening : %s"), myErrMsg.c_str());
     }
     wxDELETE(m_Data);
-    return NULL;
+    return nullptr;
   }
 
   return m_Data;

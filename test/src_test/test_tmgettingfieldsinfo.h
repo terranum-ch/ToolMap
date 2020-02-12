@@ -64,7 +64,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
   void testGettingFieldNameForShapefiles() {
     wxFileName myVectName(g_TestPathSHP, g_TestFileSHP_PLG);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(myVectName.GetExt());
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     TS_ASSERT(myVect->Open(myVectName.GetFullPath(), false));
 
     wxArrayString myFieldsValue;
@@ -82,7 +82,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
   void testGettingFieldsValueForShapefiles() {
     wxFileName myVectName(g_TestPathSHP, g_TestFileSHP_PLG);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(myVectName.GetExt());
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     TS_ASSERT(myVect->Open(myVectName.GetFullPath(), false));
 
     wxArrayString myValues;
@@ -107,7 +107,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
 
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
@@ -140,7 +140,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
     TS_ASSERT_EQUALS(myVect->Open(mySQLFileName.GetFullPath(), true), true);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
@@ -177,7 +177,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
     TS_ASSERT_EQUALS(myVect->Open(mySQLFileName.GetFullPath(), true), true);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
@@ -202,7 +202,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
 
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);

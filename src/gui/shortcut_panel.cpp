@@ -60,10 +60,10 @@ Shortcuts_PANEL::Shortcuts_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *
 }
 
 void Shortcuts_PANEL::InitMemberValues() {
-  m_TargetChoice = NULL;
-  m_ListShortcuts = NULL;
-  m_ParentEvt = NULL;
-  m_pDB = NULL;
+  m_TargetChoice = nullptr;
+  m_ListShortcuts = nullptr;
+  m_ParentEvt = nullptr;
+  m_pDB = nullptr;
   m_ProjectOpen = false;
 }
 
@@ -237,7 +237,7 @@ ShortcutList::ShortcutList(wxWindow *parent, wxWindow *parent_evt, wxWindowID id
     : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size, wxLC_REPORT | wxLC_SINGLE_SEL) {
   m_LayerType = 0;
   m_ParentEvt = parent_evt;
-  m_pDB = NULL;
+  m_pDB = nullptr;
   m_OldKey = -1;
 }
 

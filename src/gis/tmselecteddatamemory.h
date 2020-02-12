@@ -61,7 +61,7 @@ class tmSelectedDataMemory : public wxObject {
   // operations
   bool AddSelected(wxArrayLong *selected);
 
-  bool Remove(wxArrayLong *selected = NULL);
+  bool Remove(wxArrayLong *selected = nullptr);
 
   bool IsSelected(const long &value);
 

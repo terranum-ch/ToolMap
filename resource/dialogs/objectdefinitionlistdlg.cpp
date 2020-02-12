@@ -93,10 +93,10 @@ ObjectDefinitionListDlg::~ObjectDefinitionListDlg() {
 
 void ObjectDefinitionListDlg::Init() {
   ////@begin ObjectDefinitionListDlg member initialisation
-  m_DLGODD_Code = NULL;
-  m_DLGODD_Description = NULL;
-  m_DLGODD_List_Lyr_Name = NULL;
-  m_DLGODD_Frequency = NULL;
+  m_DLGODD_Code = nullptr;
+  m_DLGODD_Description = nullptr;
+  m_DLGODD_List_Lyr_Name = nullptr;
+  m_DLGODD_Frequency = nullptr;
   ////@end ObjectDefinitionListDlg member initialisation
 }
 

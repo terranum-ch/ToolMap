@@ -34,7 +34,7 @@ IMPLEMENT_CLASS(MenuManager, wxObject);
   *******************************************************************************/
 MenuManager::MenuManager(wxMenuBar *menubar) {
   m_MenuBar = menubar;
-  m_pFilesHistory = NULL;
+  m_pFilesHistory = nullptr;
 
   // prepare for recent documents
   InitializeRecentFilesHistory();

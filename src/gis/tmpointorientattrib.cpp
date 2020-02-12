@@ -24,7 +24,7 @@ tmPointOrientAttrib::tmPointOrientAttrib() {
 
 void tmPointOrientAttrib::InitMemberValues() {
   m_Oid = wxNOT_FOUND;
-  m_DB = NULL;
+  m_DB = nullptr;
   m_LayerId = wxNOT_FOUND;
 }
 
@@ -39,7 +39,7 @@ bool tmPointOrientAttrib::POA_IsOIDInited() {
     return false;
   }
 
-  if (m_DB == NULL) {
+  if (m_DB == nullptr) {
     wxLogError(_("Database not inited"));
     return false;
   }

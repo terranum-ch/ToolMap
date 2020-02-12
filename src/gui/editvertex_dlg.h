@@ -95,7 +95,7 @@ class EditVertexDLG : public wxDialog {
   bool IsAllCellsNumber(int &col, int &row);
 
   // Grid functions
-  bool GridInsertLine(int iIndex = -1, wxRealPoint *pt = NULL);
+  bool GridInsertLine(int iIndex = -1, wxRealPoint *pt = nullptr);
 
   bool GridClear();
 

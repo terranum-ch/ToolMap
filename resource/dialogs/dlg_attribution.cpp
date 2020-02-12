@@ -95,17 +95,17 @@ ProjectEditObjectDefinitionDLG::~ProjectEditObjectDefinitionDLG() {
 
 void ProjectEditObjectDefinitionDLG::Init() {
   ////@begin ProjectEditObjectDefinitionDLG member initialisation
-  m_DLGPEO_Notebook = NULL;
-  m_DLGPEO_Panel_Line = NULL;
-  m_DLGPEO_List_Line = NULL;
-  m_DLGPEO_Choice_Lyr_Line_Name = NULL;
-  m_DLGPEO_Choice_Lyr_Line_Freq = NULL;
-  m_DLGPEO_Panel_Point = NULL;
-  m_DLGPEO_List_Line = NULL;
-  m_DLGPEO_Choice_Lyr_Point_Name = NULL;
-  m_DLGPEO_Panel_Poly = NULL;
-  m_DLGPEO_List_Line = NULL;
-  m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
+  m_DLGPEO_Notebook = nullptr;
+  m_DLGPEO_Panel_Line = nullptr;
+  m_DLGPEO_List_Line = nullptr;
+  m_DLGPEO_Choice_Lyr_Line_Name = nullptr;
+  m_DLGPEO_Choice_Lyr_Line_Freq = nullptr;
+  m_DLGPEO_Panel_Point = nullptr;
+  m_DLGPEO_List_Line = nullptr;
+  m_DLGPEO_Choice_Lyr_Point_Name = nullptr;
+  m_DLGPEO_Panel_Poly = nullptr;
+  m_DLGPEO_List_Line = nullptr;
+  m_DLGPEO_Choice_Lyr_Poly_Name = nullptr;
   ////@end ProjectEditObjectDefinitionDLG member initialisation
 }
 

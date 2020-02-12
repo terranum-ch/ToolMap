@@ -26,7 +26,7 @@
   @date 14 November 2008
   *******************************************************************************/
 void tmExportData::InitMemberValues() {
-  m_pDB = NULL;
+  m_pDB = nullptr;
   m_Extension = wxEmptyString;
   m_ExportAttributEnumerationCode = false;  // default is to export attribut description.
   m_CropBufferDistance = 1.0;
@@ -91,7 +91,7 @@ wxFileName *tmExportData::GetFileName(ProjectDefMemoryLayers *myLayer, const wxS
     return myReturn;
   else {
     wxASSERT_MSG(0, _T("Error constructing file name"));
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -112,7 +112,7 @@ wxFileName *tmExportData::GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const 
     return myReturn;
   else {
     wxASSERT_MSG(0, _T("Error constructing prj file name"));
-    return NULL;
+    return nullptr;
   }
 }
 

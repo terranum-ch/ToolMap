@@ -128,8 +128,8 @@ void tmFullSelectSpinCtrl::OnIdle(wxIdleEvent &event) {
 ////////////      TEXT       CONTROL //////////////////////////
 //////////////////////////////////////////////////////////////
 tmAAttribCtrlText::tmAAttribCtrlText() {
-  m_Control = NULL;
-  m_ControlInfo = NULL;
+  m_Control = nullptr;
+  m_ControlInfo = nullptr;
 }
 
 tmAAttribCtrlText::tmAAttribCtrlText(wxWindow *parent, const ProjectDefMemoryFields &fieldinfo, wxWindowID id,
@@ -185,7 +185,7 @@ void tmAAttribCtrlText::SetProperties(const ProjectDefMemoryFields &fieldinfo) {
 ////////////INTEGER  NUMBER  CONTROL //////////////////////////
 //////////////////////////////////////////////////////////////
 tmAAttribCtrlInteger::tmAAttribCtrlInteger() {
-  m_Control = NULL;
+  m_Control = nullptr;
 }
 
 tmAAttribCtrlInteger::tmAAttribCtrlInteger(wxWindow *parent, const ProjectDefMemoryFields &fieldinfo, wxWindowID id,
@@ -237,8 +237,8 @@ void tmAAttribCtrlInteger::SetProperties(const ProjectDefMemoryFields &fieldinfo
 //////////// FLOAT NUMBER  CONTROL ///////////////////
 //////////////////////////////////////////////////////
 tmAAttribCtrlFloat::tmAAttribCtrlFloat() {
-  m_Control = NULL;
-  m_ControlInfo = NULL;
+  m_Control = nullptr;
+  m_ControlInfo = nullptr;
 }
 
 tmAAttribCtrlFloat::tmAAttribCtrlFloat(wxWindow *parent, const ProjectDefMemoryFields &fieldinfo, wxWindowID id,
@@ -373,8 +373,8 @@ wxSizer *tmAAttribCtrlEnum::CreateChoiceControl(const PrjMemFieldCodedValArray &
 }
 
 void tmAAttribCtrlEnum::InitMemberValues() {
-  m_ControlChoice = NULL;
-  for (unsigned int i = 0; i < AATTRIB_ENUM_RADIO_NUMBER; i++) m_ControlRadios[i] = NULL;
+  m_ControlChoice = nullptr;
+  for (unsigned int i = 0; i < AATTRIB_ENUM_RADIO_NUMBER; i++) m_ControlRadios[i] = nullptr;
 
   m_iNumRadios = 0;
 }
@@ -437,7 +437,7 @@ void tmAAttribCtrlEnum::SetEmptyValue() {
 //////////// DATE  CONTROL ///////////////////
 //////////////////////////////////////////////////////
 tmAAttribCtrlDate::tmAAttribCtrlDate() {
-  m_Control = NULL;
+  m_Control = nullptr;
 }
 
 tmAAttribCtrlDate::tmAAttribCtrlDate(wxWindow *parent, const ProjectDefMemoryFields &fieldinfo, wxWindowID id,
@@ -465,7 +465,7 @@ void tmAAttribCtrlDate::Create(wxWindow *parent, const ProjectDefMemoryFields &f
 
 tmAAttribCtrlDate::~tmAAttribCtrlDate() {
   delete m_Control;
-  m_Control = NULL;
+  m_Control = nullptr;
 }
 
 void tmAAttribCtrlDate::SetControlValue(const wxString &value) {
@@ -491,8 +491,8 @@ wxString tmAAttribCtrlDate::GetControlValue() {
 //////////// SAFE DATE   CONTROL /////////////////////
 //////////////////////////////////////////////////////
 tmAAttribCtrlSafeDate::tmAAttribCtrlSafeDate() {
-  m_Control = NULL;
-  m_ControlInfo = NULL;
+  m_Control = nullptr;
+  m_ControlInfo = nullptr;
 }
 
 tmAAttribCtrlSafeDate::tmAAttribCtrlSafeDate(wxWindow *parent, const ProjectDefMemoryFields &fieldinfo, wxWindowID id,

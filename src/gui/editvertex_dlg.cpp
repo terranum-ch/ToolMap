@@ -224,7 +224,7 @@ bool EditVertexDLG::GridInsertLine(int iIndex, wxRealPoint *pt) {
     return false;
   }
 
-  if (pt != NULL) {
+  if (pt != nullptr) {
     wxString myXText = wxString::Format(_T("%.*f"), tmVERTEX_PRECISION, pt->x);
     wxString myYText = wxString::Format(_T("%.*f"), tmVERTEX_PRECISION, pt->y);
 
@@ -273,7 +273,7 @@ void EditVertexDLG::OnVertexAdd(wxCommandEvent &event) {
   wxASSERT(m_LayerType != -1);
   if (m_LayerType == LAYER_SPATIAL_POINT) return;
 
-  GridInsertLine(iSelected + 1, NULL);
+  GridInsertLine(iSelected + 1, nullptr);
   SetStatusNumberVertex(m_VertexGrid->GetNumberRows());
 }
 

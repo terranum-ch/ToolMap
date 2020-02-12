@@ -62,11 +62,11 @@ class TEST_tmDrawerEditLine : public CxxTest::TestSuite {
   }
 
   void testCreateVertex2() {
-    TS_ASSERT(!m_DL->CreateVertex(m_Pts.Item(0), NULL, NULL, 0));
+    TS_ASSERT(!m_DL->CreateVertex(m_Pts.Item(0), nullptr, nullptr, 0));
     TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), &m_Pts.Item(2), 0));
     TS_ASSERT(!m_DL->IsEndVertex());
 
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), NULL, 12));
+    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), nullptr, 12));
     TS_ASSERT(m_DL->IsEndVertex());
   }
 
@@ -92,14 +92,14 @@ class TEST_tmDrawerEditLine : public CxxTest::TestSuite {
   }
 
   void testDrawEditLine() {
-    TS_ASSERT(!m_DL->DrawEditPart(NULL));
+    TS_ASSERT(!m_DL->DrawEditPart(nullptr));
   }
 
   void testGetVertexIndex() {
     TS_ASSERT(m_DL->GetVertexIndex() == wxNOT_FOUND);
     TS_ASSERT(m_DL->CreateVertex(m_Pts, 1));
     TS_ASSERT(m_DL->GetVertexIndex() == 1);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), NULL, 12));
+    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), nullptr, 12));
     TS_ASSERT(m_DL->GetVertexIndex() == 12);
   }
 

@@ -165,7 +165,7 @@ tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSele
   m_Selected = sel;
   m_Toc = toc;
   m_ClickedItemID = wxNOT_FOUND;
-  m_Project = NULL;
+  m_Project = nullptr;
   // SetBackgroundColour(*wxWHITE);
   AddRoot(_("Selected features"), _("Selected features"));
 }
@@ -530,7 +530,7 @@ void tmSelectionInfoCtrl::UpdateSelection() {
   DeleteChildren(GetFirstRoot());
 
   wxArrayLong *mySelVal = m_Selected->GetSelectedValues();
-  if (mySelVal == NULL) {
+  if (mySelVal == nullptr) {
     // Thaw();
     return;
   }

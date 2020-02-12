@@ -138,7 +138,7 @@ class ObjectDefinitionList : public ListGenReportWithStatus {
  public:
   /// Constructor
   ObjectDefinitionList(wxWindow *parent, wxWindowID id, PrjDefMemManage *memory, PRJDEF_LAYERS_TYPE paneltype,
-                       DataBaseTM *database, wxArrayString *pColsName, wxArrayInt *pColsSize = NULL,
+                       DataBaseTM *database, wxArrayString *pColsName, wxArrayInt *pColsSize = nullptr,
                        wxSize size = wxDefaultSize);
 
   /// Destructor
@@ -156,7 +156,7 @@ class ObjectDefinitionList : public ListGenReportWithStatus {
   //    const int & FilterIndex);
 
   // pass pointer to ctrls to the list
-  void SetListCtrls(wxChoice *layerchoice, wxCheckBox *checkboxfreq = NULL);
+  void SetListCtrls(wxChoice *layerchoice, wxCheckBox *checkboxfreq = nullptr);
 
   void SetFreqStatus(int frequency, wxArrayLong *iIndexes);
 

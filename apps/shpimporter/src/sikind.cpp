@@ -28,7 +28,7 @@ void siKind::Reset() {
   m_CodesIn.Clear();
   m_CodesOut2.Clear();
   m_CodesRealOut.Clear();
-  m_Database = NULL;
+  m_Database = nullptr;
 }
 
 bool siKind::_LoadKindValue(const wxString& kindtxt) {

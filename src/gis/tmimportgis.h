@@ -38,7 +38,7 @@ class tmImportGIS : public tmImport {
 
   virtual bool Open(const wxFileName &filename);
 
-  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
 
   virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 

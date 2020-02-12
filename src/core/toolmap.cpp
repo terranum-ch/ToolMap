@@ -71,7 +71,7 @@ bool ToolMapApp::OnInit() {
   wxImage::AddHandler(new wxPNGHandler);
   // add handler for JPEG required by wxPdfDocument
   wxImage::AddHandler(new wxJPEGHandler);
-  ToolMapFrame *frame = new ToolMapFrame(NULL, g_ProgName, wxDefaultPosition, wxSize(900, 500), _T("MAIN_WINDOW"));
+  ToolMapFrame *frame = new ToolMapFrame(nullptr, g_ProgName, wxDefaultPosition, wxSize(900, 500), _T("MAIN_WINDOW"));
   tmWindowPosition myPos;
   wxRect myWndPos;
   if (myPos.LoadPosition(frame->GetName(), myWndPos)) {
@@ -310,25 +310,25 @@ EVT_SYS_COLOUR_CHANGED(ToolMapFrame::OnSysColourChanged)
 END_EVENT_TABLE()
 
 ToolMapFrame::ToolMapFrame()
-    : m_MenuBar(NULL),
-      m_MenuBarAcceleratorTable(NULL),
-      m_AuiManager(NULL),
-      m_AttribObjPanel(NULL),
-      m_MainPanel(NULL),
-      m_QueriesPanel(NULL),
-      m_ShortCutPanel(NULL),
-      m_SnappingPanel(NULL),
-      m_PManager(NULL),
-      m_MManager(NULL),
-      m_LayerManager(NULL),
-      m_ScaleCombo(NULL),
-      m_AttribManager(NULL),
-      m_EditManager(NULL),
-      m_ToolManager(NULL),
-      m_InfoBar(NULL),
-      m_StatManager(NULL),
-      m_LogWindow(NULL),
-      m_TocWindow(NULL) {}
+    : m_MenuBar(nullptr),
+      m_MenuBarAcceleratorTable(nullptr),
+      m_AuiManager(nullptr),
+      m_AttribObjPanel(nullptr),
+      m_MainPanel(nullptr),
+      m_QueriesPanel(nullptr),
+      m_ShortCutPanel(nullptr),
+      m_SnappingPanel(nullptr),
+      m_PManager(nullptr),
+      m_MManager(nullptr),
+      m_LayerManager(nullptr),
+      m_ScaleCombo(nullptr),
+      m_AttribManager(nullptr),
+      m_EditManager(nullptr),
+      m_ToolManager(nullptr),
+      m_InfoBar(nullptr),
+      m_StatManager(nullptr),
+      m_LogWindow(nullptr),
+      m_TocWindow(nullptr) {}
 
 /* Frame initialisation */
 ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, wxSize size, const wxString &name)
@@ -434,7 +434,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
 
   // loading GIS drivers
   tmGISData::InitGISDrivers(TRUE, TRUE);
-  initGEOS(NULL, NULL);
+  initGEOS(nullptr, nullptr);
 
   _CheckUpdates(false);
   _LoadPreference(false);
@@ -539,7 +539,7 @@ void ToolMapFrame::OnClose(wxCloseEvent &event) {
   myPos.SavePosition(_T("AUI_PANES"), m_AuiManager->SavePerspective());
   myPos.SaveScreenPosition();
 
-  wxLog::SetActiveTarget(NULL);
+  wxLog::SetActiveTarget(nullptr);
   event.Skip();
 }
 
@@ -894,7 +894,7 @@ void ToolMapFrame::OnNewProjectExisting(wxCommandEvent &event) {
 
   wxBeginBusyCursor();
   wxASSERT(myWizard.GetBackupFileData()->IsValid());
-  BackupManager myBckManager(NULL);
+  BackupManager myBckManager(nullptr);
 
   // close project now
   m_PManager->CloseProject();
@@ -950,18 +950,6 @@ void ToolMapFrame::OnShowQueriesWindow(wxCommandEvent &event) {
   wxCommandEvent evt;
   OnRefreshView(evt);
 }
-
-/*
-void ToolMapFrame::OnQueriesAction (wxCommandEvent & event){
- // sent event to the queries manager
- if (m_QueriesPanel == NULL) {
-        return;
-    }
-
-    wxASSERT(m_QueriesPanel);
-    m_QueriesPanel->ProcessEvent(event);
-}
-*/
 
 /***************************************************************************/ /**
   @brief Display or hide the #Shortcuts_PANEL
@@ -1083,10 +1071,6 @@ void ToolMapFrame::OnAAttributionBatchWindow(wxCommandEvent &event) {
   @date 07 April 2009
   *******************************************************************************/
 void ToolMapFrame::OnShowInformationDialog(wxCommandEvent &event) {
-  /*int i = 0;
-  int * pi = NULL;
-  *pi = 12;*/
-
   m_AttribManager->DisplayInformationsWnd();
 }
 
@@ -1254,7 +1238,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
   // 1234 or 1234:1245 or 1234M or 1234S or event 1234:1245MS
   long mySvnVersion = 0;
   wxString mySvnText(lsVERSION_SOFT_VERSION);
-  while (wxStrpbrk(mySvnText, _T("MS")) != NULL) {
+  while (wxStrpbrk(mySvnText, _T("MS")) != nullptr) {
     mySvnText.RemoveLast();
   }
 
@@ -1440,7 +1424,7 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event) {
   BackupManager myBckManager(m_PManager->GetDatabase());
 
   // Don't display progress dialog under Mac... Toooo slow!
-  wxWindow *myWnd = NULL;
+  wxWindow *myWnd = nullptr;
 #ifndef __WXMAC__
   myWnd = this;
 #endif
@@ -1498,7 +1482,7 @@ void ToolMapFrame::OnAddWebData(wxCommandEvent &event) {
 }
 
 bool ToolMapFrame::AddLayers(const wxArrayString &filenames) {
-  if (m_PManager == NULL) {
+  if (m_PManager == nullptr) {
     return false;
   }
 
@@ -1724,7 +1708,7 @@ void ToolMapFrame::OnGeometryValidity(wxCommandEvent &event) {
 
 void ToolMapFrame::OnUpdateGeometryValidity(wxUpdateUIEvent &event) {
   tmLayerProperties *mySelLayer = m_TocWindow->GetTOCCtrl()->GetSelectionLayer();
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     event.Enable(false);
     return;
   }
@@ -1750,7 +1734,7 @@ void ToolMapFrame::OnUpdateMenuProject(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuZoomLayer(wxUpdateUIEvent &event) {
   wxASSERT(m_PManager);
   bool bEnable = false;
-  if (m_PManager->IsProjectOpen() && m_TocWindow->GetTOCCtrl()->GetSelectionLayer() != NULL) {
+  if (m_PManager->IsProjectOpen() && m_TocWindow->GetTOCCtrl()->GetSelectionLayer() != nullptr) {
     bEnable = true;
   }
   event.Enable(bEnable);
@@ -1910,7 +1894,7 @@ void ToolMapFrame::OnUpdateMenuShowLog(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuShowInfo(wxUpdateUIEvent &event) {
   wxWindow *myInfoWnd = wxWindow::FindWindowById(ID_INFORMATION_DLG);
   bool bCheck = false;
-  if (myInfoWnd != NULL && myInfoWnd->IsShown()) {
+  if (myInfoWnd != nullptr && myInfoWnd->IsShown()) {
     bCheck = true;
   }
   event.Check(bCheck);

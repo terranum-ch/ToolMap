@@ -235,7 +235,7 @@ bool tmImport::SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const w
 
   // Create attribution object
   tmAttributionData *myAttribObj = tmAttributionManager::CreateAttributionData(m_ImportTarget);
-  if (myAttribObj == NULL) return false;
+  if (myAttribObj == nullptr) return false;
 
   // Object ID
   myAttribObj->Create(&oids, database);

@@ -147,9 +147,9 @@ class TEST_DatabaseResults : public CxxTest::TestSuite {
     TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
     TS_ASSERT(myRes.NextRow());
 
-    OGRGeometry *myGeom = NULL;
+    OGRGeometry *myGeom = nullptr;
     TS_ASSERT(myRes.GetValue(1, &myGeom));
-    TS_ASSERT(myGeom != NULL);
+    TS_ASSERT(myGeom != nullptr);
     TS_ASSERT(wkbFlatten(myGeom->getGeometryType()) == wkbLineString);
     wxLogMessage(_T("Returned line has %d vertex"), ((OGRLineString *)myGeom)->getNumPoints());
     OGRGeometryFactory::destroyGeometry(myGeom);

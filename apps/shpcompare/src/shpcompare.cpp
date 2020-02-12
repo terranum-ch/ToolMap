@@ -38,7 +38,7 @@ void ShpCompare::AddFileNameToCheck(const wxString &filename) {
 
 bool ShpCompare::DoCompare(int resultslimit) {
   OGRDataSource *myRefDS = OGRSFDriverRegistrar::Open((const char *)GetReferenceFileName().mb_str(wxConvUTF8), FALSE);
-  if (myRefDS == NULL) {
+  if (myRefDS == nullptr) {
     m_Messages.Add(wxString::Format(_("Opening '%s' raster failed!"), GetReferenceFileName()));
     return false;
   }
@@ -56,7 +56,7 @@ bool ShpCompare::DoCompare(int resultslimit) {
 bool ShpCompare::_DoCompareOneFile(OGRLayer *referencelayer, const wxString &filename) {
   wxASSERT(referencelayer);
   OGRDataSource *myTestDS = OGRSFDriverRegistrar::Open((const char *)filename.mb_str(wxConvUTF8), FALSE);
-  if (myTestDS == NULL) {
+  if (myTestDS == nullptr) {
     m_Messages.Add(wxString::Format(_("Opening '%s' raster failed!"), filename));
     return false;
   }
@@ -146,7 +146,7 @@ bool ShpCompare::_DoCompareOneFile(OGRLayer *referencelayer, const wxString &fil
 }
 
 bool ShpCompare::_DoCompareFields(OGRFieldDefn *reffield, OGRFieldDefn *testfield) {
-  if (reffield == NULL || testfield == NULL) {
+  if (reffield == nullptr || testfield == nullptr) {
     m_Errors.Add(_("Field is Null !"));
     return false;
   }

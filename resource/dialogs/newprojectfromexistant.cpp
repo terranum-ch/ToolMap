@@ -104,7 +104,7 @@ void Newprojectfromexistant::CreateControls() {
 
   wxWizard* itemWizard1 = this;
 
-  wxWizardPageSimple* lastPage = NULL;
+  wxWizardPageSimple* lastPage = nullptr;
   ////@end Newprojectfromexistant content construction
 }
 

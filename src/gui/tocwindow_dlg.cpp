@@ -18,7 +18,7 @@
 
 /**************** TOC WINDOW CONTENT (BASE CLASS) ****************************/
 TocWindowContent::TocWindowContent() {
-  m_TOCCtrl = NULL;
+  m_TOCCtrl = nullptr;
 }
 
 TocWindowContent::~TocWindowContent() {
@@ -96,9 +96,9 @@ TocWindowDlgGen::~TocWindowDlgGen() {
 }
 
 void TocWindowDlgGen::Init() {
-  m_TocAui = NULL;
-  m_ContentFrame = NULL;
-  m_ParentEvt = NULL;
+  m_TocAui = nullptr;
+  m_ContentFrame = nullptr;
+  m_ParentEvt = nullptr;
 }
 
 IMPLEMENT_DYNAMIC_CLASS(TocWindowDlgGen, TocWindowContent)

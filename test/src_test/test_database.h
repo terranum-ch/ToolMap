@@ -116,9 +116,9 @@ class TEST_Database : public CxxTest::TestSuite {
     long myRows = 0;
     TS_ASSERT(!m_DB->DataBaseGetResultSize(&myCols, &myRows));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 17")));
-    TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, NULL));
+    TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, nullptr));
     TS_ASSERT_EQUALS(myCols, 9);
-    TS_ASSERT(m_DB->DataBaseGetResultSize(NULL, &myRows));
+    TS_ASSERT(m_DB->DataBaseGetResultSize(nullptr, &myRows));
     TS_ASSERT_EQUALS(myRows, 1);
     myRows = 0;
     myCols = 0;
@@ -282,10 +282,10 @@ class TEST_Database : public CxxTest::TestSuite {
     MYSQL_ROW myRow;
     tmArrayULong myLength;
     TS_ASSERT(m_DB->DataBaseGetNextRowResult(myRow, myLength));
-    TS_ASSERT(myRow != NULL);
+    TS_ASSERT(myRow != nullptr);
     TS_ASSERT(myLength.GetCount() != 0);
     TS_ASSERT(!m_DB->DataBaseGetNextRowResult(myRow, myLength));
-    TS_ASSERT(myRow == NULL);
+    TS_ASSERT(myRow == nullptr);
     TS_ASSERT_EQUALS(myLength.GetCount(), 0);
   }
 

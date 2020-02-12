@@ -52,7 +52,7 @@ Queries_PANEL::Queries_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auim
 
   m_ParentEvt = parent;
   m_ParentEvt->PushEventHandler(this);
-  m_TOC = NULL;
+  m_TOC = nullptr;
 
   wxPanel *ContentFrame = new wxPanel(parent, wxID_ANY);
   CreateControls(ContentFrame);
@@ -90,8 +90,8 @@ Queries_PANEL::~Queries_PANEL() {
   @date 08 November 2008
   *******************************************************************************/
 void Queries_PANEL::InitMemberValues() {
-  m_pDB = NULL;
-  m_ParentEvt = NULL;
+  m_pDB = nullptr;
+  m_ParentEvt = nullptr;
   m_IsProjectOpen = false;  // project isn't open now
 }
 
@@ -280,7 +280,7 @@ void Queries_PANEL::OnQueryApplySymbology(wxCommandEvent &event) {
   wxASSERT(m_TOC);
   wxString myTargetLayerName = TOC_GENERIC_NAME_STRING[myQTarget];
   tmLayerProperties *myLayerProperties = m_TOC->GetLayerByName(myTargetLayerName);
-  if (myLayerProperties == NULL) {
+  if (myLayerProperties == nullptr) {
     wxLogError(_("Layer '%s' not found"), myTargetLayerName);
     return;
   }
@@ -344,8 +344,8 @@ END_EVENT_TABLE()
 QueriesList::QueriesList(wxWindow *parent, Queries_PANEL *queryparent, wxWindowID id, wxArrayString *pColsName,
                          wxArrayInt *pColsSize, wxSize size)
     : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size) {
-  m_Selected = NULL;
-  m_pDB = NULL;
+  m_Selected = nullptr;
+  m_pDB = nullptr;
   wxASSERT(queryparent);
   m_QueryPanel = queryparent;
 
@@ -383,7 +383,7 @@ void QueriesList::AddItem() {
   // delete dialog after use
   wxASSERT(m_pDialog);
   delete m_pDialog;
-  m_pDialog = NULL;
+  m_pDialog = nullptr;
 }
 
 /***************************************************************************/ /**

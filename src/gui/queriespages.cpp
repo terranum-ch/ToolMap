@@ -28,10 +28,10 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard *parent, DataBaseTM *database) 
   m_pDB = database;
   CreateControls();
 
-  m_PageName = new QueriesPageName(m_Parent, this, NULL);
-  m_PageSelectionAttribut1 = new QueriesPageAttribut1(m_Parent, m_pDB, NULL, m_PageName);
+  m_PageName = new QueriesPageName(m_Parent, this, nullptr);
+  m_PageSelectionAttribut1 = new QueriesPageAttribut1(m_Parent, m_pDB, nullptr, m_PageName);
   m_PageExpertSQL = new QueriesPageSQL(m_Parent);
-  m_PageObject = new QueriesPageObject(m_Parent, m_pDB, NULL, NULL);
+  m_PageObject = new QueriesPageObject(m_Parent, m_pDB, nullptr, nullptr);
 
   m_PageLayer = new QueriesPageLayer(m_Parent, m_pDB, this, m_PageName);
   m_PageGeneric = new QueriesPageGeneric(m_Parent, this, m_PageName);
@@ -59,7 +59,7 @@ QueriesPageIntro::~QueriesPageIntro() {
 }
 
 wxWizardPage *QueriesPageIntro::GetPrev() const {
-  return NULL;
+  return nullptr;
 }
 
 int QueriesPageIntro::_GetRadioBoxSelection() const {
@@ -374,7 +374,7 @@ void QueriesPageObject::_CreateControls() {
   m_staticText8->Wrap(m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE);
   bSizer11->Add(m_staticText8, 0, wxALL, 5);
 
-  m_ListType = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SINGLE);
+  m_ListType = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxLB_SINGLE);
   bSizer11->Add(m_ListType, 1, wxALL | wxEXPAND, 5);
 
   this->SetSizer(bSizer11);
@@ -517,7 +517,7 @@ QueriesPageAttribut1::QueriesPageAttribut1(QueriesWizard *parent, DataBaseTM *da
   m_Parent = parent;
   m_pDB = database;
   m_PageName = (wxWizardPageSimple *)next;
-  m_QueryPageAttribut2 = new QueriesPageAttribut2(parent, database, NULL, NULL);
+  m_QueryPageAttribut2 = new QueriesPageAttribut2(parent, database, nullptr, nullptr);
 
   _CreateControls();
 }
@@ -753,7 +753,7 @@ void QueriesPageGeneric::_CreateControls() {
 
 QueriesPageGeneric::QueriesPageGeneric(QueriesWizard *parent, wxWizardPage *prev, wxWizardPage *next)
     : wxWizardPageSimple(parent, prev, next) {
-  m_GenericData = NULL;
+  m_GenericData = nullptr;
   m_Parent = parent;
   _CreateControls();
 }
@@ -794,7 +794,7 @@ bool QueriesPageGeneric::TransferDataFromWindow() {
   }
 
   delete m_GenericData;
-  m_GenericData = NULL;
+  m_GenericData = nullptr;
   return true;
 }
 

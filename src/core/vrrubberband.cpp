@@ -24,7 +24,7 @@ vrRubberBand::vrRubberBand(wxWindow *window) {
 vrRubberBand::~vrRubberBand() {
   // during unit testing, m_Window is allways null otherwise
   // m_Window should be valid
-  if (m_Window == NULL) {
+  if (m_Window == nullptr) {
     wxLogError("Window object is NULL in rubberband (normal for unit testing)");
     return;
   }

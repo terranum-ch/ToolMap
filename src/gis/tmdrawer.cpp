@@ -31,18 +31,18 @@ static int wxCMPFUNC_CONV compareLong(long *first, long *second) {
 }
 
 tmDrawer::tmDrawer() {
-  m_bmp = NULL;
+  m_bmp = nullptr;
   m_IsInitialised = FALSE;
 
   // load image using GDAL
   // owned by image, do not destroy manually.
-  imgbuf = NULL;
+  imgbuf = nullptr;
   imglen = 0;
-  maskbuf = NULL;
+  maskbuf = nullptr;
   masklen = 0;
   m_ActuallayerID = 0;
-  m_SelMem = NULL;
-  m_scale = NULL;
+  m_SelMem = nullptr;
+  m_scale = nullptr;
 }
 
 tmDrawer::~tmDrawer() {}
@@ -200,7 +200,7 @@ bool tmDrawer::DrawLines(tmLayerProperties *itemProp, tmGISData *pdata) {
     if (isOver) {
       break;
     }
-    if (pptsReal == NULL) {
+    if (pptsReal == nullptr) {
       continue;
     }
 
@@ -546,7 +546,7 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata) {
       if (isOver) {
         break;
       }
-      if (pptsReal == NULL || iNbVertex <= 1) {
+      if (pptsReal == nullptr || iNbVertex <= 1) {
         wxDELETEA(pptsReal);
         continue;
       }
@@ -991,10 +991,10 @@ void tmDrawer::_LabelPoint(tmLayerProperties *itemprop, tmGISData *pdata) {
   dc.SelectObject(*m_bmp);
 
   tmSymbolVectorPoint *pSymbol = (tmSymbolVectorPoint *)itemprop->GetSymbolRef();
-  OGRFeature *pFeat = NULL;
-  while ((pFeat = pVect->GetNextFeature()) != NULL) {
+  OGRFeature *pFeat = nullptr;
+  while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRPoint *myPoint = static_cast<OGRPoint *>(pFeat->GetGeometryRef());
-    if (myPoint == NULL) {
+    if (myPoint == nullptr) {
       continue;
     }
 
@@ -1038,10 +1038,10 @@ void tmDrawer::_LabelLine(tmLayerProperties *itemprop, tmGISData *pdata) {
   dc.SelectObject(*m_bmp);
 
   tmSymbolVectorLine *pSymbol = (tmSymbolVectorLine *)itemprop->GetSymbolRef();
-  OGRFeature *pFeat = NULL;
-  while ((pFeat = pVect->GetNextFeature()) != NULL) {
+  OGRFeature *pFeat = nullptr;
+  while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRLineString *myLine = static_cast<OGRLineString *>(pFeat->GetGeometryRef());
-    if (myLine == NULL) {
+    if (myLine == nullptr) {
       continue;
     }
 
@@ -1109,10 +1109,10 @@ void tmDrawer::_LabelPolygon(tmLayerProperties *itemprop, tmGISData *pdata) {
   dc.SelectObject(*m_bmp);
 
   tmSymbolVectorPolygon *pSymbol = (tmSymbolVectorPolygon *)itemprop->GetSymbolRef();
-  OGRFeature *pFeat = NULL;
-  while ((pFeat = pVect->GetNextFeature()) != NULL) {
+  OGRFeature *pFeat = nullptr;
+  while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRPolygon *myPoly = static_cast<OGRPolygon *>(pFeat->GetGeometryRef());
-    if (myPoly == NULL) {
+    if (myPoly == nullptr) {
       continue;
     }
 
@@ -1236,7 +1236,7 @@ bool tmDrawer::DrawPolygons(tmLayerProperties *itemProp, tmGISData *pdata) {
     for (i = 0; i < iPolyRings; i++) {
       wxRealPoint *pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 
-      if (pptsReal == NULL) {
+      if (pptsReal == nullptr) {
         if (IsLoggingEnabled()) {
           wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
         }
@@ -1342,7 +1342,7 @@ bool tmDrawer::DrawPolygonsRules(tmLayerProperties *itemProp, tmGISData *pdata) 
         int iNbVertex = 0;
         wxRealPoint *pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 
-        if (pptsReal == NULL) {
+        if (pptsReal == nullptr) {
           if (IsLoggingEnabled()) {
             wxLogError(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
           }
@@ -1394,8 +1394,8 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata) {
     return false;
   }
 
-  imgbuf = NULL;
-  maskbuf = NULL;
+  imgbuf = nullptr;
+  maskbuf = nullptr;
 
   // converting image coordinate & clipping
   tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
@@ -1412,12 +1412,12 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata) {
     // in all case, clean data
     if (imgbuf) {
       CPLFree(imgbuf);
-      imgbuf = NULL;
+      imgbuf = nullptr;
     }
 
     if (maskbuf) {
       CPLFree(maskbuf);
-      maskbuf = NULL;
+      maskbuf = nullptr;
     }
     return false;
   }
@@ -1490,12 +1490,12 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata) {
   myImgLayer->Destroy();
   if (imgbuf) {
     CPLFree(imgbuf);
-    imgbuf = NULL;
+    imgbuf = nullptr;
   }
 
   if (maskbuf) {
     CPLFree(maskbuf);
-    maskbuf = NULL;
+    maskbuf = nullptr;
   }
 
   if (myAlphaBuffer) {
@@ -1625,7 +1625,7 @@ bool tmDrawer::DrawVertexPoly(tmLayerProperties *itemProp, tmGISData *pdata) {
     // get polygons data, loop all rings into polygons
     for (i = 0; i < iPolyRings; i++) {
       wxRealPoint *pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
-      if (pptsReal == NULL) {
+      if (pptsReal == nullptr) {
         if (IsLoggingEnabled()) {
           wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
         }
@@ -1853,7 +1853,7 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 
  int iVertexNumber = 0;
  wxRealPoint * pptsReal = memdata->GetVertexAll(iVertexNumber);
- wxASSERT(pptsReal != NULL);
+ wxASSERT(pptsReal != nullptr);
  wxASSERT(iVertexNumber > 0);
 
  wxPoint * myPxPts = new wxPoint[iVertexNumber];

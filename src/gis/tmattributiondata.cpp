@@ -45,8 +45,8 @@ tmAttributionData::~tmAttributionData() {}
   *******************************************************************************/
 void tmAttributionData::InitMemberValues() {
   m_TableName = wxEmptyString;
-  m_SelIDs = NULL;
-  m_pDB = NULL;
+  m_SelIDs = nullptr;
+  m_pDB = nullptr;
 }
 
 void tmAttributionData::Create(wxArrayLong *selected, DataBaseTM *database) {

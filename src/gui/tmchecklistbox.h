@@ -75,7 +75,7 @@ class tmCheckListBox : public wxCheckListBox {
   // wxArrayInt m_Selections;
 
   void Init() {
-    m_PopupMenu = NULL;
+    m_PopupMenu = nullptr;
     m_IsFiltered = false;
   }
 
@@ -92,14 +92,14 @@ class tmCheckListBox : public wxCheckListBox {
   ~tmCheckListBox();
 
   tmCheckListBox(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-                 const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = NULL, long style = 0,
+                 const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr, long style = 0,
                  const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr) {
     Init();
     Create(parent, id, pos, size, nStrings, choices, style, validator, name);
   }
 
   bool Create(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = NULL, long style = 0,
+              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr, long style = 0,
               const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr);
 
   // functions

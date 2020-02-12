@@ -25,7 +25,7 @@ siLayer::siLayer(const wxString &layerpath, DataBase *database) {
   m_LayerIndexOut = wxNOT_FOUND;
   m_LayerType = SILAYER_TYPE_UNKNOWN;
   m_LayerTypeName = wxEmptyString;
-  m_ProgressIndicator = NULL;
+  m_ProgressIndicator = nullptr;
 }
 
 siLayer::~siLayer() {}
@@ -54,7 +54,7 @@ int siLayer::_GetEmptyBlockStop(int startpos) {
 }
 
 bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString *array) {
-  if (array == NULL) {
+  if (array == nullptr) {
     return false;
   }
   array->Clear();
@@ -98,7 +98,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
   }
 
   // check if geometry exists in the database. If yes, get it's ID
-  if (feature->GetGeometryRef() == NULL) {
+  if (feature->GetGeometryRef() == nullptr) {
     wxLogError(_("Empty geometry for Feature: %ld"), feature->GetFID());
     m_ProcessFeatureSkipped++;
     return false;
@@ -106,7 +106,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
 
   CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
-  char *pszWKT = NULL;
+  char *pszWKT = nullptr;
   feature->GetGeometryRef()->exportToWkt(&pszWKT);
   wxString myTxtGeometry(pszWKT);
   OGRFree(pszWKT);
@@ -307,12 +307,12 @@ bool siLayer::LoadFromFile(const wxString &filename) {
 int siLayer::Process() {
   m_ProcessFeatureSkipped = 0;
   OGRDataSource *pods = OGRSFDriverRegistrar::Open((const char *)m_LayerNameIn.GetFullPath().mb_str(wxConvUTF8), false);
-  if (pods == NULL) {
+  if (pods == nullptr) {
     wxLogError(_("Opening %s failed!"), m_LayerNameIn.GetFullName());
     return wxNOT_FOUND;
   }
   OGRLayer *poLayer = pods->GetLayer(0);
-  if (poLayer == NULL) {
+  if (poLayer == nullptr) {
     wxLogError(_("Opening layer in %s failed!"), m_LayerNameIn.GetFullName());
     OGRDataSource::DestroyDataSource(pods);
     return wxNOT_FOUND;
@@ -325,10 +325,10 @@ int siLayer::Process() {
   OGRFeature *poFeature;
   poLayer->ResetReading();
   int iLoop = 0;
-  if (m_ProgressIndicator != NULL) {
+  if (m_ProgressIndicator != nullptr) {
     m_ProgressIndicator->StartProgress();
   }
-  while ((poFeature = poLayer->GetNextFeature()) != NULL) {
+  while ((poFeature = poLayer->GetNextFeature()) != nullptr) {
     iLoop++;
     wxASSERT(poFeature);
     if (!_ProcessFeature(poFeature)) {
@@ -336,11 +336,11 @@ int siLayer::Process() {
     }
     OGRFeature::DestroyFeature(poFeature);
     // progress
-    if (myStep > 0 && m_ProgressIndicator != NULL) {
+    if (myStep > 0 && m_ProgressIndicator != nullptr) {
       m_ProgressIndicator->UpdateProgress(iLoop, myStep);
     }
   }
-  if (m_ProgressIndicator != NULL) {
+  if (m_ProgressIndicator != nullptr) {
     m_ProgressIndicator->StopProgress();
   }
   OGRDataSource::DestroyDataSource(pods);

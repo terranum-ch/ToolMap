@@ -45,7 +45,7 @@ class tmProjectMaintenance {
   bool _CleanLayerOrphansAttributes(int geomtype, const wxString &generictablename);
 
  public:
-  tmProjectMaintenance(const wxString &databasename, DataBase *database = NULL);
+  tmProjectMaintenance(const wxString &databasename, DataBase *database = nullptr);
 
   virtual ~tmProjectMaintenance();
 

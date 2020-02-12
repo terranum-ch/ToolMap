@@ -98,7 +98,7 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray &fields) {
   }
 
   ProjectDefMemoryLayers *myLayer = m_Project->FindLayerByRealID(layerid);
-  if (myLayer == NULL) {
+  if (myLayer == nullptr) {
     wxLogError(_("No layer found with %ld ID"), layerid);
     return false;
   }
@@ -110,7 +110,7 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray &fields) {
 
   for (int i = 0; i < m_Project->GetCountFields(); i++) {
     ProjectDefMemoryFields *mypField = m_Project->GetNextField();
-    if (mypField == NULL) {
+    if (mypField == nullptr) {
       wxLogError(_("Field %d returned NULL"), i);
       continue;
     }
@@ -123,10 +123,10 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray &fields) {
 
 tmAAttribCtrl *tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFields &field, wxWindow *wnd) {
   if (!IsOk()) {
-    return NULL;
+    return nullptr;
   }
 
-  tmAAttribCtrl *mypControl = NULL;
+  tmAAttribCtrl *mypControl = nullptr;
   tmAAttribCtrlInteger *mypControlInt;
   tmAAttribCtrlFloat *mypControlFloat;
   tmAAttribCtrlEnum *mypControlEnum;
@@ -173,17 +173,17 @@ tmAAttribCtrl *tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFiel
 }
 
 bool tmAAttribBatchManager::IsOk() {
-  if (m_Project == NULL) {
+  if (m_Project == nullptr) {
     wxLogError(_("Project isn't inited"));
     return false;
   }
 
-  if (m_DB == NULL) {
+  if (m_DB == nullptr) {
     wxLogError(_("Database isn't inited"));
     return false;
   }
 
-  if (m_Selected == NULL) {
+  if (m_Selected == nullptr) {
     wxLogError(_("Selection isn't inited"));
     return false;
   }
@@ -231,7 +231,7 @@ bool tmAAttribBatchManager::_GetSelectionSubset(long layerid, wxArrayLong &subse
 }
 
 wxString tmAAttribBatchManager::_CreateListOfIds(const wxArrayLong *ids) {
-  if (ids == NULL) {
+  if (ids == nullptr) {
     wxLogError(_("Failed to create list of Ids, nothing selected!"));
     return wxEmptyString;
   }

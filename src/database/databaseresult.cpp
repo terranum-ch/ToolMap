@@ -16,8 +16,8 @@
 #include "databaseresult.h"
 
 DataBaseResult::DataBaseResult() {
-  m_ResultSet = NULL;
-  m_Row = NULL;
+  m_ResultSet = nullptr;
+  m_Row = nullptr;
   m_RowIndex = wxNOT_FOUND;
   m_RowLengths.Clear();
 }
@@ -28,21 +28,21 @@ DataBaseResult::DataBaseResult(MYSQL_RES **results) {
 
 void DataBaseResult::Create(MYSQL_RES **results) {
   m_RowIndex = wxNOT_FOUND;
-  m_Row = NULL;
+  m_Row = nullptr;
   m_RowLengths.Clear();
   m_ResultSet = results;
 }
 
 DataBaseResult::~DataBaseResult() {
-  if (m_ResultSet != NULL) {
+  if (m_ResultSet != nullptr) {
     mysql_free_result(*m_ResultSet);
-    *m_ResultSet = NULL;
-    m_ResultSet = NULL;
+    *m_ResultSet = nullptr;
+    m_ResultSet = nullptr;
   }
 }
 
 bool DataBaseResult::HasResults() {
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     return false;
   }
 
@@ -54,7 +54,7 @@ bool DataBaseResult::HasResults() {
 }
 
 int DataBaseResult::GetColCount() {
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     wxLogError(_("Result set not inited or not valid"));
     return wxNOT_FOUND;
   }
@@ -63,7 +63,7 @@ int DataBaseResult::GetColCount() {
 }
 
 long DataBaseResult::GetRowCount() {
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     wxLogError(_("Result set not inited or not valid"));
     return wxNOT_FOUND;
   }
@@ -73,7 +73,7 @@ long DataBaseResult::GetRowCount() {
 
 bool DataBaseResult::GetColName(wxArrayString &fields) {
   fields.Clear();
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     wxLogError(_("Result set not inited or not valid"));
     return false;
   }
@@ -82,7 +82,7 @@ bool DataBaseResult::GetColName(wxArrayString &fields) {
   wxASSERT(num_fields != wxNOT_FOUND);
 
   MYSQL_FIELD *pfields = mysql_fetch_fields(*m_ResultSet);
-  wxASSERT(pfields != NULL);
+  wxASSERT(pfields != nullptr);
   for (int i = 0; i < num_fields; i++) {
     fields.Add(wxString(pfields[i].name, wxConvUTF8));
   }
@@ -91,7 +91,7 @@ bool DataBaseResult::GetColName(wxArrayString &fields) {
 }
 
 bool DataBaseResult::GetValue(int col, wxString &value) {
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     wxLogError(_("Result set not inited or not valid"));
     return false;
   }
@@ -132,7 +132,7 @@ bool DataBaseResult::_GetRowLength() {
 
   // if length wasn't computed
   unsigned long *myLengths = mysql_fetch_lengths(*m_ResultSet);
-  wxASSERT(myLengths != NULL);
+  wxASSERT(myLengths != nullptr);
 
   for (int i = 0; i < GetColCount(); i++) {
     m_RowLengths.Add(myLengths[i]);
@@ -141,7 +141,7 @@ bool DataBaseResult::_GetRowLength() {
 }
 
 bool DataBaseResult::GetValue(int col, OGRGeometry **geometry) {
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     wxLogError(_("Result set not inited or not valid"));
     return false;
   }
@@ -179,7 +179,7 @@ bool DataBaseResult::GetValue(int col, OGRGeometry **geometry) {
 }
 
 bool DataBaseResult::NextRow() {
-  if (m_ResultSet == NULL) {
+  if (m_ResultSet == nullptr) {
     wxLogError(_("Result set not inited or not valid"));
     return false;
   }

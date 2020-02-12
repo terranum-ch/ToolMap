@@ -39,19 +39,19 @@ bool tmSymbolDLGLineMultiple::Create(wxWindow *parent, wxWindowID id, const wxSt
 tmSymbolDLGLineMultiple::~tmSymbolDLGLineMultiple() {}
 
 void tmSymbolDLGLineMultiple::_Init() {
-  m_LineColourCtrl = NULL;
-  m_LineWidthCtrl = NULL;
-  m_LinePatternCtrl = NULL;
-  m_TransparencySlider = NULL;
+  m_LineColourCtrl = nullptr;
+  m_LineWidthCtrl = nullptr;
+  m_LinePatternCtrl = nullptr;
+  m_TransparencySlider = nullptr;
 
-  m_SymbologyTypeCtrl = NULL;
-  m_MQueryCtrl = NULL;
-  m_MSelColourCtrl = NULL;
-  m_MSelSymbolCtrl = NULL;
-  m_MSelWidthCtrl = NULL;
-  m_MUnSelColourCtrl = NULL;
-  m_MUnSelSymbolCtrl = NULL;
-  m_MUnSelWidthCtrl = NULL;
+  m_SymbologyTypeCtrl = nullptr;
+  m_MQueryCtrl = nullptr;
+  m_MSelColourCtrl = nullptr;
+  m_MSelSymbolCtrl = nullptr;
+  m_MSelWidthCtrl = nullptr;
+  m_MUnSelColourCtrl = nullptr;
+  m_MUnSelSymbolCtrl = nullptr;
+  m_MUnSelWidthCtrl = nullptr;
 }
 
 void tmSymbolDLGLineMultiple::CreateControlsLine() {

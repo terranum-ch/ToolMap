@@ -23,11 +23,10 @@
 #include "tmattributiondatapoint.h"
 
 // init static member
-DataBaseTM *tmGISDataVectorMYSQL::m_DB = NULL;
-// PrjDefMemManage * tmGISDataVectorMYSQL::m_ProjDef = NULL;
+DataBaseTM *tmGISDataVectorMYSQL::m_DB = nullptr;
 
 tmGISDataVectorMYSQL::tmGISDataVectorMYSQL() {
-  m_PrjDef = NULL;
+  m_PrjDef = nullptr;
   m_ClassType = tmGIS_VECTOR_MYSQL;
 }
 
@@ -49,7 +48,7 @@ bool tmGISDataVectorMYSQL::CheckGeometryFields(const wxString &tablename) {
     return false;
   }
   long myRows = 0;
-  if (!m_DB->DataBaseGetResultSize(NULL, &myRows)) return false;
+  if (!m_DB->DataBaseGetResultSize(nullptr, &myRows)) return false;
 
   wxASSERT(myRows == 2);
   m_DB->DataBaseClearResults();
@@ -128,7 +127,7 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle() {
   while (m_DB->DataBaseGetNextRowResult(row, row_length)) {
     // compute the geometry and get the xmin xmax, ymin, ymax
     OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
-    if (poGeometry != NULL) {
+    if (poGeometry != nullptr) {
       poGeometry->getEnvelope(&oEnv);
       if (oEnv.MinX < psExtent->MinX) psExtent->MinX = oEnv.MinX;
       if (oEnv.MinY < psExtent->MinY) psExtent->MinY = oEnv.MinY;
@@ -145,9 +144,9 @@ tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle() {
 
 OGRGeometry *tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW &row, const tmArrayULong &row_lengths,
                                                           int geometry_col) {
-  OGRGeometry *geometry = NULL;
+  OGRGeometry *geometry = nullptr;
   // Geometry columns will have the first 4 bytes contain the SRID.
-  OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, NULL, &geometry,
+  OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, nullptr, &geometry,
                                     row_lengths.Item(geometry_col) - 4);
 
   return geometry;
@@ -229,14 +228,14 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, boo
     }
     nbvertex = 0;
     isOver = true;
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
     m_DB->DataBaseClearResults();
     nbvertex = 0;
     isOver = true;
-    return NULL;
+    return nullptr;
   }
 
   OGRLineString *pline = (OGRLineString *)CreateDataBaseGeometry(row, row_length, 1);
@@ -248,7 +247,7 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, boo
       wxLogDebug(_T("Only one vertex or less in this line ???"));
     }
     OGRGeometryFactory::destroyGeometry(pline);
-    return NULL;
+    return nullptr;
   }
 
   wxRealPoint *pts = new wxRealPoint[nbvertex];
@@ -270,12 +269,12 @@ OGRLineString *tmGISDataVectorMYSQL::GetNextDataLine(long &oid) {
     if (IsLoggingEnabled()) {
       wxLogError(_T("Database should have results..."));
     }
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
     m_DB->DataBaseClearResults();
-    return NULL;
+    return nullptr;
   }
 
   OGRLineString *pline = (OGRLineString *)CreateDataBaseGeometry(row, row_length, 1);
@@ -293,12 +292,12 @@ OGRPoint *tmGISDataVectorMYSQL::GetOGRNextDataPoint(long &oid) {
     if (IsLoggingEnabled()) {
       wxLogError(_T("Database should have results..."));
     }
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
     m_DB->DataBaseClearResults();
-    return NULL;
+    return nullptr;
   }
 
   OGRPoint *ppoint = (OGRPoint *)CreateDataBaseGeometry(row, row_length, 1);
@@ -316,16 +315,16 @@ OGRPoint *tmGISDataVectorMYSQL::GetNextDataPointWithAttrib(long &oid, wxArrayStr
     if (IsLoggingEnabled()) {
       wxLogError(_T("Database should have results..."));
     }
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
     m_DB->DataBaseClearResults();
-    return NULL;
+    return nullptr;
   }
 
   unsigned int iRows = 0;
-  bool bCount = m_DB->DataBaseGetResultSize(&iRows, NULL);
+  bool bCount = m_DB->DataBaseGetResultSize(&iRows, nullptr);
   wxASSERT(bCount);
   wxASSERT(iRows > 2);
   for (unsigned int i = 2; i < iRows; i++) {
@@ -348,13 +347,13 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataPoint(long &oid, bool &isOver) {
       wxLogError(_T("Database should have results..."));
     }
     isOver = true;
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
     m_DB->DataBaseClearResults();
     isOver = true;
-    return NULL;
+    return nullptr;
   }
 
   OGRPoint *pPoint = (OGRPoint *)CreateDataBaseGeometry(row, row_length, 1);
@@ -540,14 +539,14 @@ bool tmGISDataVectorMYSQL::GetFieldsName(wxArrayString &Fields, long oid) {
     return false;
   }
 
-  if (m_PrjDef == NULL) {
+  if (m_PrjDef == nullptr) {
     wxLogError(_T("Project object not specified, use SetProject() first"));
     return false;
   }
 
   int iTableType = wxNOT_FOUND;
   tmAttributionData *myAttribData = _CreateAttributionObject(iTableType);
-  if (myAttribData == NULL) {
+  if (myAttribData == nullptr) {
     return false;
   }
 
@@ -567,7 +566,7 @@ bool tmGISDataVectorMYSQL::GetFieldsName(wxArrayString &Fields, long oid) {
   PrjMemLayersArray myLayers;
   for (unsigned int i = 0; i < myLayerValues.GetCount(); i++) {
     ProjectDefMemoryLayers *myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
-    if (myLayer == NULL) {
+    if (myLayer == nullptr) {
       wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
     } else {
       myLayers.Add(new ProjectDefMemoryLayers());
@@ -607,14 +606,14 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid) {
     return false;
   }
 
-  if (m_PrjDef == NULL) {
+  if (m_PrjDef == nullptr) {
     wxLogError(_T("Project object not specified, use SetProject() first"));
     return false;
   }
 
   int iTableType = wxNOT_FOUND;
   tmAttributionData *myAttribData = _CreateAttributionObject(iTableType);
-  if (myAttribData == NULL) {
+  if (myAttribData == nullptr) {
     return false;
   }
 
@@ -634,7 +633,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid) {
   PrjMemLayersArray myLayers;
   for (unsigned int i = 0; i < myLayerValues.GetCount(); i++) {
     ProjectDefMemoryLayers *myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
-    if (myLayer == NULL) {
+    if (myLayer == nullptr) {
       wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
     } else {
       myLayers.Add(new ProjectDefMemoryLayers());
@@ -694,7 +693,7 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid) {
   @brief Search spatial data
   @param rect Real rectangle for searching data
   @param type Layertype see #tmLayerProperties
-  @return  An array containing OID of data found or NULL if nothing found
+  @return  An array containing OID of data found or nullptr if nothing found
   @note This function needs GEOS to ensure that real intersection is computed
   @author Lucien Schreiber (c) CREALP 2008
   @date 29 October 2008
@@ -714,11 +713,11 @@ wxArrayLong *tmGISDataVectorMYSQL::SearchData(const tmRealRect &rect, int type) 
   tmArrayULong row_size;
 
   if (!m_DB->DataBaseQuery(sSentence)) {
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseHasResults()) {
-    return NULL;
+    return nullptr;
   }
 
   GEOSGeom grect = CreateGEOSGeometry(rect);
@@ -747,13 +746,13 @@ wxArrayLong *tmGISDataVectorMYSQL::SearchData(const tmRealRect &rect, int type) 
   *******************************************************************************/
 wxArrayLong *tmGISDataVectorMYSQL::GetAllData() {
   wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID FROM %s ORDER BY OBJECT_ID"), GetShortFileName().c_str());
-  if (!m_DB->DataBaseQuery(sSentence)) return NULL;
+  if (!m_DB->DataBaseQuery(sSentence)) return nullptr;
 
   wxArrayLong *mySel = new wxArrayLong();
 
   if (!m_DB->DataBaseGetResults(*mySel)) {
     delete mySel;
-    return NULL;
+    return nullptr;
   }
 
   wxASSERT(mySel);
@@ -766,7 +765,7 @@ wxArrayLong *tmGISDataVectorMYSQL::GetAllData() {
   First we specify a rectangle (for spatial filter) and then we search with GEOS
   inside the results
   @param intersectinggeom The geometry we search for intersection
-  @return  Adress of an array of OID, or NULL if nothing found
+  @return  Adress of an array of OID, or nullptr if nothing found
   @author Lucien Schreiber (c) CREALP 2009
   @date 09 February 2009
   *******************************************************************************/
@@ -775,8 +774,8 @@ wxArrayLong *tmGISDataVectorMYSQL::SearchIntersectingGeometry(OGRGeometry *inter
 
   // create bounding box
   wxASSERT(intersectinggeom);
-  if (intersectinggeom == NULL) {
-    return NULL;
+  if (intersectinggeom == nullptr) {
+    return nullptr;
   }
   OGREnvelope myEnv;
   intersectinggeom->getEnvelope(&myEnv);
@@ -794,12 +793,12 @@ wxArrayLong *tmGISDataVectorMYSQL::SearchIntersectingGeometry(OGRGeometry *inter
 
   if (!m_DB->DataBaseQuery(sSentence)) {
     GEOSGeom_destroy(grect);
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseHasResults()) {
     GEOSGeom_destroy(grect);
-    return NULL;
+    return nullptr;
   }
 
   wxArrayLong *myArray = new wxArrayLong();
@@ -840,7 +839,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord(const wxRealPoint &clickpt, double buffe
   wxASSERT(myBufferClick);
 
   // convert buffer to text for sql query
-  char *buffer = NULL;
+  char *buffer = nullptr;
   myBufferClick->exportToWkt(&buffer);
   wxASSERT(buffer);
   wxString mySBuffer = wxString::FromAscii(buffer);
@@ -893,7 +892,7 @@ bool tmGISDataVectorMYSQL::IsPointSnapped(const wxRealPoint &point, int snaptype
   OGRPoint myPt;
   myPt.setX(point.x);
   myPt.setY(point.y);
-  char *buffer = NULL;
+  char *buffer = nullptr;
   myPt.exportToWkt(&buffer);
   wxASSERT(buffer);
   wxString mySBuffer = wxString::FromAscii(buffer);
@@ -924,7 +923,7 @@ bool tmGISDataVectorMYSQL::IsPointSnapped(const wxRealPoint &point, int snaptype
 /***************************************************************************/ /**
   @brief Get the geometry for specified oid
   @param oid The OID of the searched feature
-  @return  A valid OGRGeometry (caller must delete the returned geometry) or NULL
+  @return  A valid OGRGeometry (caller must delete the returned geometry) or nullptr
   if an error occur
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 February 2009
@@ -937,11 +936,11 @@ OGRFeature *tmGISDataVectorMYSQL::GetFeatureByOID(long oid) {
   long myUnusedOid = 0;
   if (!m_DB->DataBaseQuery(sSentence)) {
     wxLogError(_T("Error getting geometry for oid = %ld"), oid);
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseHasResults()) {
-    return NULL;
+    return nullptr;
   }
 
   OGRGeometry *myGeom = GetNextDataLine(myUnusedOid);
@@ -980,7 +979,7 @@ OGRGeometry *tmGISDataVectorMYSQL::GetNextGeometry(bool restart, long &oid) {
     if (!m_DB->DataBaseQuery(sSentence)) {
       wxLogError(_("Error getting geometry for %s"), GetShortFileName());
       oid = wxNOT_FOUND;
-      return NULL;
+      return nullptr;
     }
   }
 
@@ -990,13 +989,13 @@ OGRGeometry *tmGISDataVectorMYSQL::GetNextGeometry(bool restart, long &oid) {
   // security check
   if (!m_DB->DataBaseHasResults()) {
     oid = wxNOT_FOUND;
-    return NULL;
+    return nullptr;
   }
 
   if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
     m_DB->DataBaseClearResults();
     oid = wxNOT_FOUND;
-    return NULL;
+    return nullptr;
   }
 
   OGRGeometry *myGeom = CreateDataBaseGeometry(row, row_length, 1);
@@ -1020,7 +1019,7 @@ long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry *Geom, const long &oid, int l
 
   CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
-  char *myCharGeom = NULL;
+  char *myCharGeom = nullptr;
   Geom->setCoordinateDimension(2);
   Geom->exportToWkt(&myCharGeom);
   if (!myCharGeom) return wxNOT_FOUND;
@@ -1051,8 +1050,8 @@ long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry *Geom, const long &oid, int l
   @date 06 February 2009
   *******************************************************************************/
 bool tmGISDataVectorMYSQL::UpdateGeometry(OGRGeometry *geom, const long &oid) {
-  char *myCharGeom = NULL;
-  if (geom == NULL) return false;
+  char *myCharGeom = nullptr;
+  if (geom == nullptr) return false;
 
   geom->setCoordinateDimension(2);
   geom->exportToWkt(&myCharGeom);
@@ -1074,7 +1073,7 @@ bool tmGISDataVectorMYSQL::UpdateGeometry(OGRGeometry *geom, const long &oid) {
 /***************************************************************************/ /**
   @brief Get all geometries passed as array
   @param OIDs List of all OIDs for getting geometries
-  @return  All geometries as a geometry collection or NULL if an error occur
+  @return  All geometries as a geometry collection or nullptr if an error occur
   user should delete the returned geometries after use.
   @author Lucien Schreiber (c) CREALP 2009
   @date 27 February 2009
@@ -1097,7 +1096,7 @@ OGRGeometryCollection *tmGISDataVectorMYSQL::GetGeometryColByOID(wxArrayLong *OI
     if (IsLoggingEnabled()) {
       wxLogError(_T("Error getting geometry for multiple oid"));
     }
-    return NULL;
+    return nullptr;
   }
 
   // create geometries

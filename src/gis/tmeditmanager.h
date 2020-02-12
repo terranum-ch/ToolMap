@@ -60,7 +60,7 @@ class tmSharedNodeEdit {
 
   virtual ~tmSharedNodeEdit();
 
-  void DrawLine(wxClientDC *dc, wxPoint *point = NULL);
+  void DrawLine(wxClientDC *dc, wxPoint *point = nullptr);
 
   long GetLineID() {
     return m_LineID;

@@ -47,12 +47,12 @@ tmAAttribWindow::tmAAttribWindow(wxWindow *parent, PrjMemLayersArray *layers, wx
   @date 05 March 2009
   *******************************************************************************/
 void tmAAttribWindow::InitMemberValue() {
-  m_AAttribTree = NULL;
-  m_Layers = NULL;
-  m_Values = NULL;
+  m_AAttribTree = nullptr;
+  m_Layers = nullptr;
+  m_Values = nullptr;
   m_Ctrls.Clear();
   m_iTotalControls = 0;
-  m_Status = NULL;
+  m_Status = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -205,7 +205,7 @@ bool tmAAttribWindow::TransferDataToWindow() {
   wxASSERT(m_AAttribTree);
   // wxASSERT (m_iTotalControls > 0);
 
-  tmAAttribCtrl *mypCtrl = NULL;
+  tmAAttribCtrl *mypCtrl = nullptr;
   tmAAttribCtrlStruct myCtrl;
   int iCtrlPos = 0;
 
@@ -241,12 +241,12 @@ bool tmAAttribWindow::TransferDataToWindow() {
 bool tmAAttribWindow::TransferDataFromWindow() {
   wxASSERT(m_Values->GetCount() == (unsigned)m_iTotalControls);
   bool bStart = true;
-  tmAAttribCtrl *myCtrl = NULL;
+  tmAAttribCtrl *myCtrl = nullptr;
   for (int i = 0; i < m_iTotalControls; i++) {
     myCtrl = m_AAttribTree->IterateAllCtrl(bStart);
     bStart = false;
 
-    if (myCtrl == NULL) {
+    if (myCtrl == nullptr) {
       wxASSERT_MSG(0, _T("Control null returned : Error"));
       break;
     }

@@ -95,12 +95,12 @@ ProjectDefLayersDlg::~ProjectDefLayersDlg() {
 
 void ProjectDefLayersDlg::Init() {
   ////@begin ProjectDefLayersDlg member initialisation
-  m_DlgPDL_Layer_Type = NULL;
-  m_DlgPDL_Layer_Name = NULL;
-  m_DlgPDL_Panel_Obj = NULL;
-  m_DlgPDL_Object_List = NULL;
-  m_DlgPDL_Panel_Fields = NULL;
-  m_DlgPDL_Fields_List = NULL;
+  m_DlgPDL_Layer_Type = nullptr;
+  m_DlgPDL_Layer_Name = nullptr;
+  m_DlgPDL_Panel_Obj = nullptr;
+  m_DlgPDL_Object_List = nullptr;
+  m_DlgPDL_Panel_Fields = nullptr;
+  m_DlgPDL_Fields_List = nullptr;
   ////@end ProjectDefLayersDlg member initialisation
 }
 

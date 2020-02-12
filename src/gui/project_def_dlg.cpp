@@ -83,20 +83,20 @@ bool ProjectDefDLG::Create(wxWindow *parent, wxWindowID id, const wxString &capt
 ProjectDefDLG::~ProjectDefDLG() {}
 
 void ProjectDefDLG::Init() {
-  m_DlgPd_Panel_Proj = NULL;
-  m_DlgPd_Proj_Unit = NULL;
-  m_DlgPd_Proj_Projection = NULL;
-  m_DlgPd_Proj_Author = NULL;
-  m_DlgPd_Proj_Comment = NULL;
-  m_DlgPd_Panel_Spatial = NULL;
-  m_DlgPd_Stat_Model_List = NULL;
-  m_DlgPd_Spat_Mdl_Add = NULL;
-  m_DljPd_Spat_Mdl_Del = NULL;
-  m_DlgPd_Button_Ok = NULL;
-  m_DlgPd_Status = NULL;
+  m_DlgPd_Panel_Proj = nullptr;
+  m_DlgPd_Proj_Unit = nullptr;
+  m_DlgPd_Proj_Projection = nullptr;
+  m_DlgPd_Proj_Author = nullptr;
+  m_DlgPd_Proj_Comment = nullptr;
+  m_DlgPd_Panel_Spatial = nullptr;
+  m_DlgPd_Stat_Model_List = nullptr;
+  m_DlgPd_Spat_Mdl_Add = nullptr;
+  m_DljPd_Spat_Mdl_Del = nullptr;
+  m_DlgPd_Button_Ok = nullptr;
+  m_DlgPd_Status = nullptr;
 
   m_bIsModeEditing = FALSE;
-  m_pPrjDefinition = NULL;
+  m_pPrjDefinition = nullptr;
 }
 
 void ProjectDefDLG::DisableControlsForEdition() {
@@ -272,7 +272,7 @@ bool ProjectDefDLG::TransferDataToWindow() {
 
 /************************ PROJECT DEF LIST **********************************/
 ProjectDefList::ProjectDefList(wxWindow *parent, wxWindowID id, wxSize size, ProjectDefDLG *myParentDlg)
-    : ListGenReportWithStatus(parent, id, NULL) {
+    : ListGenReportWithStatus(parent, id, nullptr) {
   m_bIsModeEditing = myParentDlg->IsEditMode();
   // Create columns
   wxArrayString myColNames;
@@ -286,20 +286,20 @@ ProjectDefList::ProjectDefList(wxWindow *parent, wxWindowID id, wxSize size, Pro
 
   CreateColumns(&myColNames, &myColsWidths);
 
-  m_ChoiceToChange = NULL;
+  m_ChoiceToChange = nullptr;
 
   // create an array for storing spatial thems
   // m_LayersArray = new PrjMemLayersArray();
-  m_LayersArray = NULL;
+  m_LayersArray = nullptr;
 
-  m_LayersDialog = NULL;
+  m_LayersDialog = nullptr;
 
   SetTextFields(_("Number of layer(s) : %d"), _("%d layer(s) selected"));
   m_bAscending[0] = TRUE;
   m_bAscending[1] = TRUE;
 
-  m_pPrjDefinition = NULL;
-  m_LayersObj = NULL;
+  m_pPrjDefinition = nullptr;
+  m_LayersObj = nullptr;
 }
 
 ProjectDefList::~ProjectDefList() {
@@ -359,7 +359,7 @@ void ProjectDefList::BeforeEditing() {
   // // find item selected and then call a new Dialog
   // // for editing the existing Field
   // int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
-  if (m_LayersObj != NULL) {
+  if (m_LayersObj != nullptr) {
     // transfert the data obj to the dialog, data will be
     // filled during DataTransfer...
     ((ProjectDefLayersDlg *)m_pDialog)->SetMemoryLayersObject(m_LayersObj);
@@ -385,7 +385,7 @@ void ProjectDefList::AfterEditing(bool bRealyEdited) {
 
 void ProjectDefList::BeforeDeleting() {
   wxString myLayerName;
-  ProjectDefMemoryLayers *layer = NULL;
+  ProjectDefMemoryLayers *layer = nullptr;
   // int iDelete = 0;
   // remove item from array before removing it from the list
   // because of the unknown position of item (may have been moved)

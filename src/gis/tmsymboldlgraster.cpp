@@ -46,8 +46,8 @@ bool tmSymbolDLGRaster::Create(wxWindow *parent, wxWindowID id, const wxString &
 tmSymbolDLGRaster::~tmSymbolDLGRaster() {}
 
 void tmSymbolDLGRaster::_Init() {
-  m_TransparencySlider = NULL;
-  m_MultiplyCtrl = NULL;
+  m_TransparencySlider = nullptr;
+  m_MultiplyCtrl = nullptr;
   m_DlgData.m_GlobalTransparency = 0;
   m_DlgData.m_DoMultiplyRaster = false;
 }

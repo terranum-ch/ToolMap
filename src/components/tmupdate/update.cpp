@@ -20,7 +20,7 @@ END_EVENT_TABLE()
 
 void WebUpdateInformationBar::_ClearBar() {
   Dismiss();
-  if (FindWindowById(INFOBAR_DOWNLOAD_BUTTON, this) != NULL) {
+  if (FindWindowById(INFOBAR_DOWNLOAD_BUTTON, this) != nullptr) {
     RemoveButton(INFOBAR_DOWNLOAD_BUTTON);
   }
 }

@@ -95,15 +95,15 @@ ProjectDefFieldDlg::~ProjectDefFieldDlg() {
 
 void ProjectDefFieldDlg::Init() {
   ////@begin ProjectDefFieldDlg member initialisation
-  m_DlgAFD_Field_Def = NULL;
-  m_DlgAFD_Field_Type = NULL;
-  m_DlgAFD_Field_Precision = NULL;
-  m_DlgAFD_Field_Scale = NULL;
-  m_DlgAFD_Result = NULL;
-  m_DlgAFD_Field_Orientation = NULL;
-  m_DlgAFD_Constrain_Values = NULL;
-  m_DlgAFD_Constrain_Panel = NULL;
-  m_DlgAFD_Coded_Val_List = NULL;
+  m_DlgAFD_Field_Def = nullptr;
+  m_DlgAFD_Field_Type = nullptr;
+  m_DlgAFD_Field_Precision = nullptr;
+  m_DlgAFD_Field_Scale = nullptr;
+  m_DlgAFD_Result = nullptr;
+  m_DlgAFD_Field_Orientation = nullptr;
+  m_DlgAFD_Constrain_Values = nullptr;
+  m_DlgAFD_Constrain_Panel = nullptr;
+  m_DlgAFD_Coded_Val_List = nullptr;
   ////@end ProjectDefFieldDlg member initialisation
 }
 

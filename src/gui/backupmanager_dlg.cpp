@@ -158,7 +158,7 @@ void BackupManagerDLG::OnButtonRestore(wxCommandEvent &event) {
 }
 
 void BackupManagerDLG::OnButtonDelete(wxCommandEvent &event) {
-  if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() == 0) {
+  if (m_ListBackup == nullptr || m_ListBackup->GetSelectedItemCount() == 0) {
     return;
   }
 
@@ -190,7 +190,7 @@ void BackupManagerDLG::OnButtonDelete(wxCommandEvent &event) {
 }
 
 void BackupManagerDLG::OnUpdateUIDelete(wxUpdateUIEvent &event) {
-  if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() == 0) {
+  if (m_ListBackup == nullptr || m_ListBackup->GetSelectedItemCount() == 0) {
     event.Enable(false);
     return;
   }
@@ -198,7 +198,7 @@ void BackupManagerDLG::OnUpdateUIDelete(wxUpdateUIEvent &event) {
 }
 
 void BackupManagerDLG::OnUpdateUIRestore(wxUpdateUIEvent &event) {
-  if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() != 1) {
+  if (m_ListBackup == nullptr || m_ListBackup->GetSelectedItemCount() != 1) {
     event.Enable(false);
     return;
   }
@@ -265,7 +265,7 @@ BackupManagerDLG::BackupManagerDLG(wxWindow *parent, wxWindowID id, const wxStri
   m_BackupManager = bckmanager;
   m_ClassedCol = wxNOT_FOUND;
   m_AscendingOrder = true;
-  m_ImgList = NULL;
+  m_ImgList = nullptr;
   m_BackupPath = wxEmptyString;
   m_RestoreFileName = wxEmptyString;
 

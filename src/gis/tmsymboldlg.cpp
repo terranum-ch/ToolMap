@@ -90,8 +90,8 @@ void tmSymbolDLG::_LoadQueries(wxChoice *choicectrl, TOC_GENERIC_NAME toctarget)
 tmSymbolDLG::~tmSymbolDLG() {}
 
 void tmSymbolDLG::_Init() {
-  m_SymbolPanel = NULL;
-  m_pDB = NULL;
+  m_SymbolPanel = nullptr;
+  m_pDB = nullptr;
 }
 
 void tmSymbolDLG::CreateControlsBasic() {

@@ -120,7 +120,7 @@ class ToolDanglingNodes : public wxObject {
 
   bool SearchInfo(int &numberlines);
 
-  bool SearchRun(wxProgressDialog *myProgDlg = NULL);
+  bool SearchRun(wxProgressDialog *myProgDlg = nullptr);
 };
 
 #endif

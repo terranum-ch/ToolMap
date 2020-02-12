@@ -134,11 +134,11 @@ class tmGISData : public wxObject {
 
   // search function
   virtual wxArrayLong *SearchData(const tmRealRect &rect, int type) {
-    return NULL;
+    return nullptr;
   }
 
   virtual wxArrayLong *GetAllData() {
-    return NULL;
+    return nullptr;
   }
 
   virtual bool GetSnapCoord(const wxRealPoint &clickpt, double buffersize, wxArrayRealPoints &snapppts, int snaptype) {

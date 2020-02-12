@@ -82,9 +82,9 @@ class TEST_tmGISImport : public CxxTest::TestSuite {
   void testImportInto() {
     tmImportGIS myImport;
     TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)));
-    TS_ASSERT(!myImport.Import(m_DB, NULL, NULL));
+    TS_ASSERT(!myImport.Import(m_DB, nullptr, nullptr));
     myImport.SetTarget(TOC_NAME_LINES);
-    TS_ASSERT(myImport.Import(m_DB, NULL, NULL));
+    TS_ASSERT(myImport.Import(m_DB, nullptr, nullptr));
   }
 
   // importing CSV
@@ -108,7 +108,7 @@ class TEST_tmGISImport : public CxxTest::TestSuite {
     TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC, g_TestFileCSV)));
     myImport.SetXYColumn(0, 2);
     myImport.SetTarget(TOC_NAME_POINTS);
-    TS_ASSERT(myImport.Import(m_DB, NULL, NULL));
+    TS_ASSERT(myImport.Import(m_DB, nullptr, nullptr));
   }
 };
 

@@ -76,15 +76,15 @@ bool ObjectDefinitionListDlg::Create(wxWindow *parent, wxWindowID id, const wxSt
 ObjectDefinitionListDlg::~ObjectDefinitionListDlg() {}
 
 void ObjectDefinitionListDlg::Init() {
-  m_DLGODD_Code = NULL;
-  m_DLGODD_Description = NULL;
-  m_DLGODD_List_Lyr_Name = NULL;
-  m_DLGODD_Frequency = NULL;
-  m_DLGODD_SaveBtn = NULL;
+  m_DLGODD_Code = nullptr;
+  m_DLGODD_Description = nullptr;
+  m_DLGODD_List_Lyr_Name = nullptr;
+  m_DLGODD_Frequency = nullptr;
+  m_DLGODD_SaveBtn = nullptr;
 
   m_ParentListType = -1;
-  m_pDatabase = NULL;
-  m_ObjectObj = NULL;
+  m_pDatabase = nullptr;
+  m_ObjectObj = nullptr;
 }
 
 void ObjectDefinitionListDlg::CreateControls() {
@@ -203,13 +203,13 @@ ObjectDefinitionList::ObjectDefinitionList(wxWindow *parent, wxWindowID id, PrjD
                                            PRJDEF_LAYERS_TYPE paneltype, DataBaseTM *database, wxArrayString *pColsName,
                                            wxArrayInt *pColsSize, wxSize size)
     : ListGenReportWithStatus(parent, id, pColsName, pColsSize, size) {
-  m_CheckBox = NULL;
-  m_ChoiceLayer = NULL;
+  m_CheckBox = nullptr;
+  m_ChoiceLayer = nullptr;
   m_layertype = paneltype;
   m_DBHandler = database;
   m_MemoryObject = memory;
   m_ListSpatType = LAYER_LINE;
-  m_ObjectObj = NULL;
+  m_ObjectObj = nullptr;
 
   // init list with database values
   SetListText(m_layertype);
@@ -364,7 +364,7 @@ void ObjectDefinitionList::SetFreqStatus(int frequency, wxArrayLong *iIndexes) {
     m_ObjectObj = m_MemoryObject->FindObject(myObjectName);
 
     // if object not found in the array, we create a new object
-    if (m_ObjectObj == NULL) {
+    if (m_ObjectObj == nullptr) {
       m_ObjectObj = m_MemoryObject->AddObject();
 
       // load object with list data
@@ -398,7 +398,7 @@ void ObjectDefinitionList::SetLayerStatus(const wxString &layer, wxArrayLong *iI
     m_ObjectObj = m_MemoryObject->FindObject(myObjectName);
 
     // if object not found in the array, we create a new object
-    if (m_ObjectObj == NULL) {
+    if (m_ObjectObj == nullptr) {
       m_ObjectObj = m_MemoryObject->AddObject();
 
       // load object with list data
@@ -474,50 +474,6 @@ void ObjectDefinitionList::GetObjectFromList(ProjectDefMemoryObjects *object, in
   object->m_ObjectID = GetItemData(iIndex);
 }
 
-// int ObjectDefinitionList::ImportParsedFileToListCtrl(const wxString & filename,
-//  const int & FilterIndex)
-//{
-// wxArrayString myArrValues;
-// int iLineCount = 0;
-//
-// // create parser depending on the selected format and set a file
-// // for that parser
-// m_ImportParser = TextParser::CreateParserBasedOnType(FilterIndex);
-// m_ImportParser->SetParseFileName(filename);
-//
-// // check that the parser is not null or may crash
-// wxASSERT(m_ImportParser != NULL);
-//
-// // try to open the file for parsing
-// if(m_ImportParser->OpenParseFile())
-// {
-// wxLogDebug(_T("Opening OK, my nice parser is : %s"),
-//    m_ImportParser->GetParserType().c_str());
-//
-// // loop for parsing all line
-// iLineCount = m_ImportParser->GetLineCount();
-// for (int i=0; i < iLineCount; i++)
-// {
-// m_ImportParser->ParseNextLine(myArrValues);
-//
-// // add values to the array
-// AddingValueToArray(myArrValues);
-//
-// // add values to the list
-// EditDataToList(myArrValues);
-//
-// // clear the array
-// myArrValues.Clear();
-// }
-// m_ImportParser->CloseParseFile();
-//
-// }
-// if (m_ImportParser != NULL)
-// delete m_ImportParser;
-// return iLineCount;
-//
-//}
-
 void ObjectDefinitionList::BeforeAdding() {
   // create the dialog
   ObjectDefinitionListDlg *myDlg = new ObjectDefinitionListDlg(this, m_layertype, m_DBHandler);
@@ -586,7 +542,7 @@ void ObjectDefinitionList::BeforeEditing() {
 
   // if the object wasn't found we create a new object
   // for storing the modifications
-  if (m_ObjectObj == NULL) {
+  if (m_ObjectObj == nullptr) {
     // create an empty object and fill it with actual selection values
     m_ObjectObj = m_MemoryObject->AddObject();
     m_ObjectObj->m_ObjectType = m_ListSpatType;
@@ -621,7 +577,7 @@ void ObjectDefinitionList::AfterEditing(bool bRealyEdited) {
   *******************************************************************************/
 void ObjectDefinitionList::OnItemSelectChange(wxListEvent &event) {
   // if we have a checkbox for Frequency
-  if (m_CheckBox != NULL) {
+  if (m_CheckBox != nullptr) {
     // multiple selection ?
     if (GetSelectedItemCount() > 1) {
       m_CheckBox->Set3StateValue(GetFreqStatus(-1));
@@ -631,7 +587,7 @@ void ObjectDefinitionList::OnItemSelectChange(wxListEvent &event) {
   }
 
   // if we have a choice layer ctrl defined
-  if (m_ChoiceLayer != NULL) {
+  if (m_ChoiceLayer != nullptr) {
     m_ChoiceLayer->SetStringSelection(GetLayerStatus());
   } else {
     wxLogDebug(_T("Pointer to the wxChoice not passed to listctrl..."));
