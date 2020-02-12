@@ -67,8 +67,8 @@ bool tmProjectMerge::_HasSameNumberRecords(DataBase *db, const wxString &tablena
 
   wxString myQuery = wxString::Format(myQueryTemplate, m_MasterFileName.GetFullName(), tablename);
   if (!db->DataBaseQuery(myQuery)) {
-    m_Errors.Add(
-        wxString::Format(_("Counting record into '%s.%s' failed!"), m_MasterFileName.GetFullName(), tablename));
+    m_Errors.Add(wxString::Format(_("Counting record into '%s.%s' failed!"),
+                                  m_MasterFileName.GetFullName(), tablename));
     return false;
   }
 
@@ -85,8 +85,7 @@ bool tmProjectMerge::_HasSameNumberRecords(DataBase *db, const wxString &tablena
   db->DataBaseClearResults();
 
   if (myNumMaster != myNumSlave) {
-    m_Errors.Add(
-        wxString::Format(_("Number of record into '%s' differs! (%ld vs %ld)"), tablename, myNumMaster, myNumSlave));
+    m_Errors.Add(wxString::Format(_("Number of record into '%s' differs! (%ld vs %ld)"), tablename, myNumMaster, myNumSlave));
     return false;
   }
 
@@ -224,9 +223,8 @@ bool tmProjectMerge::_CopyUpdateTable(const wxString &tablename, const wxString 
   wxSortedArrayString myUsedIds;
   // update object_kind (aka generic_aat)
   wxString myQuery = _T("INSERT INTO %s.%s SELECT * FROM %s.%s");
-  if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(), myTempTableName,
-                                                    m_SlaveFileName.GetFullName(), tablename),
-                                   true) == false) {
+  if (!m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(), myTempTableName,
+                                                    m_SlaveFileName.GetFullName(), tablename), true)) {
     return false;
   }
 
@@ -274,13 +272,12 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
   }
 
   if (IsVerbose()) {
-    wxLogMessage(_("%d Old ID regained in '%s'"), (int)myOldIds.GetCount(), geomtablename);
+    wxLogMessage(_("%d Old ID retrieved in '%s'"), (int)myOldIds.GetCount(), geomtablename);
   }
 
   // get highest ID in master
-  if (m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
-                                           m_MasterFileName.GetFullName(), geomtablename),
-                          true) == false) {
+  if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
+                                            m_MasterFileName.GetFullName(), geomtablename), true)) {
     return false;
   }
 
@@ -297,9 +294,8 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
   long myUsedMaxID = myMaxMasterID;
   if (myMaxSlaveID > myMaxMasterID) {
     myUsedMaxID = myMaxSlaveID;
-    if (m_DB->DataBaseQueryNoResults(
-            wxString::Format(_T("ALTER TABLE %s AUTO_INCREMENT = %ld"), geomtablename, myUsedMaxID + 1), true) ==
-        false) {
+    if (!m_DB->DataBaseQueryNoResults(
+            wxString::Format(_T("ALTER TABLE %s AUTO_INCREMENT = %ld"), geomtablename, myUsedMaxID + 1), true)) {
       return false;
     }
   }
@@ -310,21 +306,20 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
   // copy lines
   myQuery = _T("INSERT INTO %s.%s (OBJECT_GEOMETRY) SELECT d.OBJECT_GEOMETRY FROM %s.%s d ORDER BY d.OBJECT_ID");
 
-  if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), geomtablename,
-                                           m_SlaveFileName.GetFullName(), geomtablename),
-                          true) == false) {
+  if (!m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), geomtablename,
+                                           m_SlaveFileName.GetFullName(), geomtablename), true)) {
     return false;
   }
 
   // get new IDS
   wxArrayLong myNewIds;
   myQuery = _T("SELECT OBJECT_ID FROM %s.%s WHERE OBJECT_ID > %ld ORDER BY OBJECT_ID");
-  if (m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), geomtablename, myUsedMaxID),
-                          true) == false) {
+  if (!m_DB->DataBaseQuery(wxString::Format(myQuery, m_MasterFileName.GetFullName(), geomtablename, myUsedMaxID),
+                          true)) {
     return false;
   }
   if (!m_DB->DataBaseGetResults(myNewIds)) {
-    m_Errors.Add(_("regaining New ID Failed!"));
+    m_Errors.Add(_("Retrieving new ID Failed!"));
     return false;
   }
 
@@ -361,10 +356,7 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
     }
   }
 
-  if (hasError) {
-    return false;
-  }
-  return true;
+  return !hasError;
 }
 
 bool tmProjectMerge::_IsReady() {
@@ -533,23 +525,22 @@ bool tmProjectMerge::MergeIntoMaster() {
   wxString myQuery =
       _T(
             "INSERT INTO %s.prj_toc (TYPE_CD, CONTENT_PATH, CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, RANK, SYMBOLOGY, VERTEX_FLAGS) SELECT a.TYPE_CD, a.CONTENT_PATH, a.CONTENT_NAME, a.CONTENT_STATUS, a.GENERIC_LAYERS, a.RANK, a.SYMBOLOGY, a.VERTEX_FLAGS FROM %s.prj_toc a, %s.prj_toc b WHERE a.CONTENT_PATH <> b.CONTENT_PATH AND a.CONTENT_NAME <> b.CONTENT_NAME  AND a.CONTENT_ID > 5 GROUP BY a.CONTENT_ID ");
-  if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(),
-                                                    m_SlaveFileName.GetFullName(), m_MasterFileName.GetFullName()),
-                                   true) == false) {
+  if (!m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(),
+                                                     m_SlaveFileName.GetFullName(), m_MasterFileName.GetFullName()),
+                                    true)) {
     return false;
   }
 
   // merge Frame
   myQuery = _T("INSERT INTO %s.generic_frame (OBJECT_GEOMETRY) SELECT s.OBJECT_GEOMETRY FROM %s.generic_frame s");
-  if (!m_DB->DataBaseQueryNoResults(
-          wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true)) {
+  if (!m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(),
+                                                     m_SlaveFileName.GetFullName()), true)) {
     return false;
   }
 
   // merge stats
-  myQuery =
-      _T(
-            "INSERT INTO %s.prj_stats (DATE_START, CLICK, ATTRIBUTION, INTERSECTION, DATE_END) SELECT s.DATE_START, s.CLICK, s.ATTRIBUTION, s.INTERSECTION, s.DATE_END FROM %s.prj_stats s");
+  myQuery =_T("INSERT INTO %s.prj_stats (DATE_START, CLICK, ATTRIBUTION, INTERSECTION, DATE_END) SELECT "
+      "s.DATE_START, s.CLICK, s.ATTRIBUTION, s.INTERSECTION, s.DATE_END FROM %s.prj_stats s");
   if (!m_DB->DataBaseQueryNoResults(
           wxString::Format(myQuery, m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName()), true)) {
     return false;

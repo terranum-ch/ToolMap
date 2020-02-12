@@ -450,8 +450,11 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
   }
 
   if (!merger.MergeIntoMaster()) {
-    wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(merger.GetErrors(), '\n');
-    wxLogError(myErrors);
+    wxLogError(_("Merge FAILED!"));
+    wxArrayString errs(merger.GetErrors());
+    for (auto err: errs) {
+      wxLogError(err);
+    }
     CleanDirectory(tmpPath);
     return false;
   }
