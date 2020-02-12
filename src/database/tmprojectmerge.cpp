@@ -267,8 +267,8 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
   }
 
   if (!m_DB->DataBaseGetResults(myOldIds)) {
-    m_Errors.Add(_("regaining Old ID Failed!"));
-    return false;
+    wxLogWarning(_("No data retrieved from table %s."), geomtablename);
+    return true;
   }
 
   if (IsVerbose()) {
