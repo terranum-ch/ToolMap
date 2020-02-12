@@ -299,7 +299,7 @@ class tmEditManager : public wxEvtHandler {
 
   void ArcVertexInsertUp(const wxPoint &mousepos);
 
-  void ArcVeretxDeleteUp(const wxPoint &mousepos);
+  void ArcVertexDeleteUp(const wxPoint &mousePos);
 
   void DrawSnappingCircle(wxGCDC *dc);
 };

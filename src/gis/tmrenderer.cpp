@@ -433,7 +433,7 @@ void tmRenderer::OnMouseUp(wxMouseEvent &event) {
   }
 
   if (m_ActualTool == tmTOOL_VERTEX_DELETE) {
-    m_EditManager->ArcVeretxDeleteUp(event.GetPosition());
+    m_EditManager->ArcVertexDeleteUp(event.GetPosition());
   }
 
   if (m_ActualTool == tmTOOL_ORIENTED_POINTS) OrientedPtsStop(event.GetPosition());

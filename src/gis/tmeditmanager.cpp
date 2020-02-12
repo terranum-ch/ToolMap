@@ -422,6 +422,11 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
   OGRLineString *myLine = static_cast<OGRLineString *>(myGeometry);
   wxASSERT(myLine);
 
+  // Check that there are no unfinished other operation (avoid duplicating the nodes).
+  if (m_ArcPoints.GetCount() > 0) {
+    return;
+  }
+
   OGRPoint p1;
   OGRPoint p2;
   OGRLineString segment;
@@ -458,7 +463,7 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
   m_ParentEvt->GetEventHandler()->QueueEvent(evt2.Clone());
 }
 
-void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
+void tmEditManager::ArcVertexDeleteUp(const wxPoint &mousePos) {
   m_ArcOID = m_SelectedData->GetSelectedUnique();
   if (m_ArcOID == wxNOT_FOUND) {
     return;
@@ -469,12 +474,17 @@ void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
   }
 
   wxRect myRect(0, 0, 5, 5);
-  myRect = myRect.CentreIn(wxRect(mousepos, wxSize(0, 0)));
+  myRect = myRect.CentreIn(wxRect(mousePos, wxSize(0, 0)));
 
   tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
   wxASSERT(m_pDB);
   OGRGeometry *myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
   if (myGeometry == nullptr) {
+    return;
+  }
+
+  // Check that there are no unfinished other operation (avoid duplicating the nodes).
+  if (m_ArcPoints.GetCount() > 0) {
     return;
   }
 
