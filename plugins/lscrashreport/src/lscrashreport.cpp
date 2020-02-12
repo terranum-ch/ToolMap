@@ -518,7 +518,7 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
     m_Report->AddFile(m_AddedFileNames[i], wxString::Format(_("user added file : %d"), i));
   }
 
-  if (silent == true) {
+  if (silent) {
     m_Report->Process();
     m_ReportZipName = m_Report->GetCompressedFileName();
     m_Report->Reset();
@@ -564,7 +564,7 @@ bool lsCrashReport::SendReportWeb(const wxString &serverurl, const wxString &pro
 
   curl_easy_setopt(easyhandle, CURLOPT_HTTPPOST, formpost);
 
-  if (proxy.IsEmpty() == false) {
+  if (!proxy.IsEmpty()) {
     curl_easy_setopt(easyhandle, CURLOPT_PROXY, (const char *)proxy.mb_str(wxConvUTF8));
   }
 

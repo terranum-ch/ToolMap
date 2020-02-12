@@ -96,7 +96,7 @@ bool DataBaseResult::GetValue(int col, wxString &value) {
     return false;
   }
 
-  if (IsRowOk() == false) {
+  if (!IsRowOk()) {
     wxLogError(_("No data to retrive"));
     return false;
   }
@@ -110,11 +110,11 @@ bool DataBaseResult::GetValue(int col, wxString &value) {
 
 bool DataBaseResult::GetValue(int col, long &value) {
   wxString myValue = wxEmptyString;
-  if (GetValue(col, myValue) == false) {
+  if (!GetValue(col, myValue)) {
     return false;
   }
 
-  if (myValue.ToLong(&value) == false) {
+  if (!myValue.ToLong(&value)) {
     wxLogError(_("Error converting '%s' to long"), myValue.c_str());
     return false;
   }
@@ -146,7 +146,7 @@ bool DataBaseResult::GetValue(int col, OGRGeometry **geometry) {
     return false;
   }
 
-  if (IsRowOk() == false) {
+  if (!IsRowOk()) {
     wxLogError(_("No data to retrive"));
     return false;
   }

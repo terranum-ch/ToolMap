@@ -90,11 +90,11 @@ bool tmSnapping_DLG::TransferDataToWindow() {
 bool tmSnapping_DLG::TransferDataFromWindow() {
   m_SnapStatus = tmSNAPPING_OFF;
 
-  if (m_SnapBeginEndCtrl->GetValue() == true) {
+  if (m_SnapBeginEndCtrl->GetValue()) {
     m_SnapStatus = tmSNAPPING_BEGIN_END;
   }
 
-  if (m_SnapAllCtrl->GetValue() == true) {
+  if (m_SnapAllCtrl->GetValue()) {
     m_SnapStatus = tmSNAPPING_VERTEX;
   }
   return true;
@@ -216,7 +216,7 @@ void Snapping_PANEL::LoadSnappingStatus() {
   bool iFirstLoop = true;
   int iLoop = 0;
   while (1) {
-    if (m_pDB->GetNextSnapping(mylid, mylName, mySnapStatus, iFirstLoop) == false) {
+    if (!m_pDB->GetNextSnapping(mylid, mylName, mySnapStatus, iFirstLoop)) {
       break;
     }
     iFirstLoop = false;
@@ -250,7 +250,7 @@ bool Snapping_PANEL::SaveSnappingStatus() {
   if (m_pDB == NULL) {
     return false;
   }
-  if (m_pDB->SetSnappingTolerence(m_SnappingMemory.GetTolerence()) == false) {
+  if (!m_pDB->SetSnappingTolerence(m_SnappingMemory.GetTolerence())) {
     return false;
   }
 
@@ -321,7 +321,7 @@ void Snapping_PANEL::OnRemoveSnapping(wxCommandEvent &event) {
     return;
   }
 
-  if (m_pDB->DeleteLayerSnapping(m_ListCtrl->GetItemData(mySelectedIndex)) == false) {
+  if (!m_pDB->DeleteLayerSnapping(m_ListCtrl->GetItemData(mySelectedIndex))) {
     return;
   }
 

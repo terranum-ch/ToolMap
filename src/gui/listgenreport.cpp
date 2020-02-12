@@ -681,7 +681,7 @@ void ListGenReport::SwapRow(int x_row1, int x_row2) {
   *******************************************************************************/
 int ListGenReport::Compare(int iColumnCompareType, const wxString &x_strValue1, const wxString &x_strValue2,
                            bool bAscending) {
-  if (bAscending == TRUE) {
+  if (bAscending) {
     if (iColumnCompareType == FIELD_STRING)  // simple String value compare
     {
       if (x_strValue1 > x_strValue2)
@@ -702,16 +702,16 @@ int ListGenReport::Compare(int iColumnCompareType, const wxString &x_strValue1, 
     {
       wxDateTime dt1;
       // int d=0, m=0 , y=0;
-      if (dt1.ParseDate(x_strValue1) == false) {
+      if (!dt1.ParseDate(x_strValue1)) {
         dt1 = wxInvalidDateTime;
       }
       wxDateTime dt2;
-      if (dt2.ParseDate(x_strValue2) == false) {
+      if (!dt2.ParseDate(x_strValue2)) {
         dt2 = wxInvalidDateTime;
       }
 
-      if (dt1.IsValid() == false) return -1;
-      if (dt2.IsValid() == false) return 1;
+      if (!dt1.IsValid()) return -1;
+      if (!dt2.IsValid()) return 1;
 
       if (dt1 > dt2)
         return 1;
@@ -741,18 +741,18 @@ int ListGenReport::Compare(int iColumnCompareType, const wxString &x_strValue1, 
     {
       wxDateTime dt1;
       // int d=0, m=0 , y=0;
-      if (dt1.ParseDate(x_strValue1) == false) {
+      if (!dt1.ParseDate(x_strValue1)) {
         dt1 = wxInvalidDateTime;
       }
 
       wxDateTime dt2;
 
-      if (dt2.ParseDate(x_strValue2) == false) {
+      if (!dt2.ParseDate(x_strValue2)) {
         dt2 = wxInvalidDateTime;
       }
 
-      if (dt1.IsValid() == false) return 1;
-      if (dt2.IsValid() == false) return -1;
+      if (!dt1.IsValid()) return 1;
+      if (!dt2.IsValid()) return -1;
 
       if (dt1 > dt2)
         return -1;

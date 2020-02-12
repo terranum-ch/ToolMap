@@ -23,7 +23,7 @@ siParam::~siParam() {}
 
 wxString siParam::GetParam(const wxString& text, const wxString& paramname, bool& error) {
   error = true;
-  if (text.IsEmpty() == true) {
+  if (text.IsEmpty()) {
     return wxEmptyString;
   }
 
@@ -55,7 +55,7 @@ wxString siParam::GetParam(const wxString& text, const wxString& paramname, bool
 
 wxString siParam::GetParamByCol(const wxString& text, int column, bool& error) {
   error = true;
-  if (text.IsEmpty() == true) {
+  if (text.IsEmpty()) {
     return wxEmptyString;
   }
 
@@ -69,7 +69,7 @@ wxString siParam::GetParamByCol(const wxString& text, int column, bool& error) {
 }
 
 int siParam::GetParamCount(const wxString& text) {
-  if (text.IsEmpty() == true) {
+  if (text.IsEmpty()) {
     return 0;
   }
 
@@ -104,7 +104,7 @@ bool siParam::GetRowIDs(const wxString& text, wxArrayLong& array) {
   while (tokenizer.HasMoreTokens()) {
     long myKindId = wxNOT_FOUND;
     wxString myText = tokenizer.GetNextToken();
-    if (myText.ToLong(&myKindId) == false) {
+    if (!myText.ToLong(&myKindId)) {
       wxLogError(_("Converting '%s' to long failed!"), myText);
     }
     array.Add(myKindId);

@@ -26,7 +26,7 @@ void PdfLayer::_UpdateColWidth() {
 
   // object columns
   m_ColWidthObjects.Clear();
-  if (m_pdfDocumentParent->IsTwoColsLayout() == true) {
+  if (m_pdfDocumentParent->IsTwoColsLayout()) {
     m_ColWidthObjects.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.2 / 2.0);
     m_ColWidthObjects.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.8 / 2.0);
   } else {
@@ -36,7 +36,7 @@ void PdfLayer::_UpdateColWidth() {
 
   // attributs columns
   m_ColWidthAttributs.Clear();
-  if (m_pdfDocumentParent->IsTwoColsLayout() == true) {
+  if (m_pdfDocumentParent->IsTwoColsLayout()) {
     m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.2 / 2.0);
     m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.2 / 2.0);
     m_ColWidthAttributs.Add((m_pdfDocumentParent->GetUsablePageWidth() - 10) * 0.6 / 2.0);
@@ -126,7 +126,7 @@ void PdfLayer::_GenerateAttributs() {
     mypPdf->Ln();
   }
 
-  if (bHasAttributs == true) {
+  if (bHasAttributs) {
     mypPdf->Cell(m_ColWidthAttributs.Item(0) + m_ColWidthAttributs.Item(1) + m_ColWidthAttributs.Item(2), 0, "",
                  wxPDF_BORDER_TOP);
   }
@@ -237,7 +237,7 @@ bool PdfLayer::Generate() {
   wxPdfDocument *mypPdf = m_pdfDocumentParent->GetPdfRef();
   wxASSERT(mypPdf);
   int myDecorate = 0;
-  if (m_pdfDocumentParent->IsDecorated() == true) {
+  if (m_pdfDocumentParent->IsDecorated()) {
     myDecorate = 1;
   }
 
@@ -268,7 +268,7 @@ bool PdfLayer::Generate() {
 
   // write attributs
   if (m_prjLayer->m_pLayerFieldArray.GetCount() > 0) {
-    if (m_pdfDocumentParent->IsTwoColsLayout() == true) {
+    if (m_pdfDocumentParent->IsTwoColsLayout()) {
       mypPdf->SetLeftMargin(5 + mypPdf->GetLeftMargin() + m_pdfDocumentParent->GetUsablePageWidth() / 2.0);
       mypPdf->SetX(5 + mypPdf->GetLeftMargin() + m_pdfDocumentParent->GetUsablePageWidth() / 2.0);
       mypPdf->SetY(myYPosStart);

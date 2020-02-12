@@ -55,7 +55,7 @@ void PdfDocument::_ComputeOnePageSize(double &width, double &height) {
   }
 
   width = MAX(maxattribswidth, maxobjectswidth);
-  if (IsTwoColsLayout() == true) {
+  if (IsTwoColsLayout()) {
     width = width * 2.0;
   }
 
@@ -73,7 +73,7 @@ void PdfDocument::_ComputeOnePageSize(double &width, double &height) {
     double objectheight = m_pdfLayers.Item(i)->GetObjectsHeight(&myTempDoc);
     double attribheight = m_pdfLayers.Item(i)->GetAttributsHeight(&myTempDoc);
 
-    if (IsTwoColsLayout() == true) {
+    if (IsTwoColsLayout()) {
       height += MAX(objectheight, attribheight);
     } else {
       height = height + objectheight + attribheight;
@@ -112,7 +112,7 @@ bool PdfDocument::_OrderLayers() {
       }
     }
     myLayerNumber = myLayerNumber - 1;
-    if (swaped == false) {
+    if (!swaped) {
       break;
     }
     myCount++;
@@ -164,7 +164,7 @@ bool PdfDocument::Generate(const wxFileName &filename) {
   _OrderLayers();
 
   // one page layout
-  if (m_OnePage == true) {
+  if (m_OnePage) {
     double myWidth = wxNOT_FOUND;
     double myHeight = wxNOT_FOUND;
     _ComputeOnePageSize(myWidth, myHeight);

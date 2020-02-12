@@ -81,7 +81,7 @@ bool tmAAttribTree::FindLayerNode(const wxString &layername) {
   @date 18 March 2009
   *******************************************************************************/
 tmAAttribCtrl *tmAAttribTree::IterateAllCtrl(bool restart) {
-  if (restart == true) {
+  if (restart) {
     m_ActualNode = GetFirstRoot();
     wxASSERT(m_ActualNode.IsOk());
   }
@@ -89,7 +89,7 @@ tmAAttribCtrl *tmAAttribTree::IterateAllCtrl(bool restart) {
   m_ActualNode = GetNext(m_ActualNode);
   if (!m_ActualNode.IsOk()) return NULL;
 
-  if (m_ActualNode.IsWindowItem() == false) {
+  if (!m_ActualNode.IsWindowItem()) {
     // if we are passing on the parent branch
     IterateAllCtrl(false);
   }

@@ -195,7 +195,7 @@ void tmOpenError_DLG::OnConvertBackup(wxCommandEvent &event) {
       wxString::Format(_("Automatic backup before converting project to version %d"), TM_DATABASE_VERSION));
   wxBeginBusyCursor();
   BackupManager myBM(m_pDB);
-  if (myBM.Backup(myBckFile) == false) {
+  if (!myBM.Backup(myBckFile)) {
     wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     wxEndBusyCursor();
     return;

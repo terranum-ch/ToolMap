@@ -116,11 +116,11 @@ class TEST_tmProjectUpdater2 : public CxxTest::TestSuite {
     wxApp::SetInstance(new wxAppConsole());
     // remove if exists
     wxFileName myDir2(g_TestPathPRJ + g_TestMigre222 + _T("_tmp"), _T(""));
-    if (wxDir::Exists(myDir2.GetFullPath()) == true) {
+    if (wxDir::Exists(myDir2.GetFullPath())) {
       wxLogMessage(_T("Removing temporary project '%s'"), myDir2.GetFullPath());
       myDir2.Rmdir(wxPATH_RMDIR_RECURSIVE);
     }
-    TS_ASSERT(wxDir::Exists(myDir2.GetFullPath()) == false);
+    TS_ASSERT(!wxDir::Exists(myDir2.GetFullPath()));
 
     // copy project
     CopyDir2(g_TestPathPRJ + g_TestMigre222, g_TestPathPRJ + g_TestMigre222 + _T("_tmp"));

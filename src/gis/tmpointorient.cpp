@@ -55,7 +55,7 @@ int tmPointOrient::GetOrientationInt() {
 }
 
 double tmPointOrient::GetOrientationDouble() {
-  if (IsValid() == false) return wxNOT_FOUND;
+  if (!IsValid()) return wxNOT_FOUND;
 
   // get two vectors
   wxPoint2DDouble myVector1 = wxPoint2DDouble(m_EndPoint.x - m_StartPoint.x, m_EndPoint.y - m_StartPoint.y);

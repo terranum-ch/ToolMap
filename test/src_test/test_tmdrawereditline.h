@@ -53,46 +53,46 @@ class TEST_tmDrawerEditLine : public CxxTest::TestSuite {
   }
 
   void testCreateVertex() {
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 2) == true);
-    TS_ASSERT(m_DL->IsEndVertex() == true);
+    TS_ASSERT(m_DL->CreateVertex(m_Pts, 2));
+    TS_ASSERT(m_DL->IsEndVertex());
     m_Pts.RemoveAt(2);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 2) == false);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 1) == true);
-    TS_ASSERT(m_DL->IsEndVertex() == true);
+    TS_ASSERT(!m_DL->CreateVertex(m_Pts, 2));
+    TS_ASSERT(m_DL->CreateVertex(m_Pts, 1));
+    TS_ASSERT(m_DL->IsEndVertex());
   }
 
   void testCreateVertex2() {
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), NULL, NULL, 0) == false);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), &m_Pts.Item(2), 0) == true);
-    TS_ASSERT(m_DL->IsEndVertex() == false);
+    TS_ASSERT(!m_DL->CreateVertex(m_Pts.Item(0), NULL, NULL, 0));
+    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), &m_Pts.Item(2), 0));
+    TS_ASSERT(!m_DL->IsEndVertex());
 
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), NULL, 12) == true);
-    TS_ASSERT(m_DL->IsEndVertex() == true);
+    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0), &m_Pts.Item(1), NULL, 12));
+    TS_ASSERT(m_DL->IsEndVertex());
   }
 
   void testIsOk() {
-    TS_ASSERT(m_DL->IsOK() == false);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 0) == true);
-    TS_ASSERT(m_DL->IsOK() == true);
-    TS_ASSERT(m_DL->IsEndVertex() == true);
+    TS_ASSERT(!m_DL->IsOK());
+    TS_ASSERT(m_DL->CreateVertex(m_Pts, 0));
+    TS_ASSERT(m_DL->IsOK());
+    TS_ASSERT(m_DL->IsEndVertex());
 
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 2) == true);
-    TS_ASSERT(m_DL->IsOK() == true);
-    TS_ASSERT(m_DL->IsEndVertex() == true);
+    TS_ASSERT(m_DL->CreateVertex(m_Pts, 2));
+    TS_ASSERT(m_DL->IsOK());
+    TS_ASSERT(m_DL->IsEndVertex());
 
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 1) == true);
-    TS_ASSERT(m_DL->IsOK() == true);
-    TS_ASSERT(m_DL->IsEndVertex() == false);
+    TS_ASSERT(m_DL->CreateVertex(m_Pts, 1));
+    TS_ASSERT(m_DL->IsOK());
+    TS_ASSERT(!m_DL->IsEndVertex());
   }
 
   void testSetVertex() {
-    TS_ASSERT(m_DL->SetVertex(wxPoint(500, 114)) == false);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts, 1) == true);
-    TS_ASSERT(m_DL->SetVertex(wxPoint(500, 114)) == true);
+    TS_ASSERT(!m_DL->SetVertex(wxPoint(500, 114)));
+    TS_ASSERT(m_DL->CreateVertex(m_Pts, 1));
+    TS_ASSERT(m_DL->SetVertex(wxPoint(500, 114)));
   }
 
   void testDrawEditLine() {
-    TS_ASSERT(m_DL->DrawEditPart(NULL) == false);
+    TS_ASSERT(!m_DL->DrawEditPart(NULL));
   }
 
   void testGetVertexIndex() {
@@ -104,16 +104,16 @@ class TEST_tmDrawerEditLine : public CxxTest::TestSuite {
   }
 
   void testCreateVertex3() {
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0)) == true);
-    TS_ASSERT(m_DL->SetVertex(m_Pts.Item(1)) == true);
+    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0)));
+    TS_ASSERT(m_DL->SetVertex(m_Pts.Item(1)));
     TS_ASSERT(m_DL->GetVertexIndex() == wxNOT_FOUND);
   }
 
   void testClear() {
-    TS_ASSERT(m_DL->ClearVertex() == false);
-    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0)) == true);
-    TS_ASSERT(m_DL->ClearVertex() == true);
-    TS_ASSERT(m_DL->IsOK() == false);
+    TS_ASSERT(!m_DL->ClearVertex());
+    TS_ASSERT(m_DL->CreateVertex(m_Pts.Item(0)));
+    TS_ASSERT(m_DL->ClearVertex());
+    TS_ASSERT(!m_DL->IsOK());
   }
 };
 

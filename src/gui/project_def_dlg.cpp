@@ -399,7 +399,7 @@ void ProjectDefList::BeforeDeleting() {
 
     // if we are in editing mode we must save the items to delete
     // in the deletelayer array.
-    if (m_bIsModeEditing == TRUE) {
+    if (m_bIsModeEditing) {
       layer = m_pPrjDefinition->FindLayer(myLayerName);
       if (layer && layer->m_LayerID > 0) {
         wxLogDebug(_T("Marqued layer for deleting : %d"), layer->m_LayerID);
@@ -425,5 +425,5 @@ void ProjectDefList::OnSortColumns(wxListEvent &event) {
   SortListItem(iCol, 0, -1, myTypeCol[iCol], m_bAscending[iCol]);
 
   // invert ascending : descending
-  m_bAscending[iCol] == TRUE ? m_bAscending[iCol] = FALSE : m_bAscending[iCol] = TRUE;
+  m_bAscending[iCol] ? m_bAscending[iCol] = FALSE : m_bAscending[iCol] = TRUE;
 }

@@ -135,7 +135,7 @@ class TEST_tmQueries : public CxxTest::TestSuite {
   void testQueryNoType() {
     QueriesData myData;
     QueriesBuilder myBuilder(&myData);
-    TS_ASSERT(myBuilder.IsOk() == false);
+    TS_ASSERT(!myBuilder.IsOk());
   }
 
   void testQuerySelected() {
@@ -155,12 +155,12 @@ class TEST_tmQueries : public CxxTest::TestSuite {
 
   void testIsCreated() {
     QueriesBuilder myBuilder(m_DataSQL);
-    TS_ASSERT(myBuilder.Save(m_pDB) == false)  // query not created
+    TS_ASSERT(!myBuilder.Save(m_pDB))  // query not created
   }
 
   void testCreateGeneric() {
     QueriesBuilder myBuilder(m_DataGeneric);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     wxLogMessage(_T("Saving queries into database"));
 
@@ -227,27 +227,27 @@ class TEST_tmQueries : public CxxTest::TestSuite {
   }
 
   void testIsGenericLayer() {
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 0) == false);
+    TS_ASSERT(!m_DataSelected->IsGenericLayer(m_pDB, 0));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 1) == true);
+    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 1));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 2) == true);
+    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 2));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_POINTS);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 3) == true);
+    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 3));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LABELS);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 4) == true);
+    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 4));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_ANNOTATIONS);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 5) == false);
+    TS_ASSERT(!m_DataSelected->IsGenericLayer(m_pDB, 5));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 31) == false);
+    TS_ASSERT(!m_DataSelected->IsGenericLayer(m_pDB, 31));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
-    TS_ASSERT(m_DataSelected->IsGenericLayer(m_pDB, 161) == false);
+    TS_ASSERT(!m_DataSelected->IsGenericLayer(m_pDB, 161));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryLayerType, TOC_NAME_LINES);
   }
 
   void testCreateSelectedNoAttribs() {
     QueriesBuilder myBuilder(m_DataSelected);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     wxLogMessage(_T("Saving queries into database"));
 
@@ -262,14 +262,14 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     QueriesBuilder myBuilder(m_DataSelected);
     m_DataSelected->m_QueryFieldsStatus = AATTRIBUTION_EMPTY;
 
-    TS_ASSERT(myBuilder.IsOk() == false);
+    TS_ASSERT(!myBuilder.IsOk());
     long myLayerID = wxNOT_FOUND;
     TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
     TS_ASSERT_DIFFERS(myLayerID, -1);
     TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, m_DataSelected->m_QueryFields,
-                                              m_DataSelected->m_QueryFieldsValues) == true);
-    TS_ASSERT(myBuilder.IsOk() == true);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+                                              m_DataSelected->m_QueryFieldsValues));
+    TS_ASSERT(myBuilder.IsOk());
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     // wxLogMessage(_T("Saving  selected queries into database"));
 
@@ -285,15 +285,15 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     m_DataSelected->m_QueryFieldsStatus = AATTRIBUTION_YES;
     m_DataSelected->m_QueryObjectGeomID = 140;
 
-    TS_ASSERT(myBuilder.IsOk() == false);
+    TS_ASSERT(!myBuilder.IsOk());
 
     long myLayerID = wxNOT_FOUND;
     TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
     TS_ASSERT_DIFFERS(myLayerID, -1);
     TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, m_DataSelected->m_QueryFields,
-                                              m_DataSelected->m_QueryFieldsValues) == true);
-    TS_ASSERT(myBuilder.IsOk() == true);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+                                              m_DataSelected->m_QueryFieldsValues));
+    TS_ASSERT(myBuilder.IsOk());
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     // wxLogMessage(_T("Saving  selected queries into database"));
 
@@ -310,12 +310,12 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     long myLayerID2 = 4;  // GlacStruct, pas de champs
     PrjMemFieldArray myFields;
 
-    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, myLayerID2, myFields, myValues) == false);
+    TS_ASSERT(!m_DataSelected->GetFieldsValues(m_pDB, myLayerID2, myFields, myValues));
     TS_ASSERT_EQUALS(myFields.GetCount(), 0);
     TS_ASSERT_EQUALS(myValues.GetCount(), 0);
 
     // getting fields and values
-    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, myFields, myValues) == true);
+    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, myFields, myValues));
     TS_ASSERT_EQUALS(myFields.GetCount(), 4);
     TS_ASSERT_EQUALS(myValues.GetCount(), 4);
     TS_ASSERT_EQUALS(myValues.Item(3), wxEmptyString);
@@ -328,7 +328,7 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     PrjMemFieldArray myFields;
 
     // fields availlable
-    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues) == true);
+    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues));
     TS_ASSERT_EQUALS(myFields.GetCount(), 4);
     TS_ASSERT_EQUALS(myValues.GetCount(), 4);
     TS_ASSERT_EQUALS(myValues.Item(0), _T("probable"));  // probable
@@ -341,7 +341,7 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     }*/
 
     // deuxième fois
-    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues) == true);
+    TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues));
     TS_ASSERT_EQUALS(myFields.GetCount(), 4);
     TS_ASSERT_EQUALS(myValues.GetCount(), 4);
     TS_ASSERT_EQUALS(myValues.Item(0), _T("probable"));  // probable
@@ -355,7 +355,7 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid));
     TS_ASSERT_EQUALS(layerid, 7);
     m_DataSelected->m_QueryObjectID = 50;  // n'existe pas
-    TS_ASSERT(m_DataSelected->GetParentLayer(m_pDB, layerid) == false);
+    TS_ASSERT(!m_DataSelected->GetParentLayer(m_pDB, layerid));
     TS_ASSERT_EQUALS(layerid, wxNOT_FOUND);
 
     m_DataSelected->m_QueryObjectID = 41;  // moraine -> layer 8
@@ -365,14 +365,14 @@ class TEST_tmQueries : public CxxTest::TestSuite {
 
   void testDeleteFields() {
     // no fields
-    TS_ASSERT(m_DataSelected->DeleteFieldsValue(2) == false);
+    TS_ASSERT(!m_DataSelected->DeleteFieldsValue(2));
 
     // load fields
     m_DataSelected->m_QueryObjectGeomID = 140;  // faille avec attrib avancés
     TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
-                                              m_DataSelected->m_QueryFieldsValues) == true);
+                                              m_DataSelected->m_QueryFieldsValues));
 
-    TS_ASSERT(m_DataSelected->DeleteFieldsValue(2) == true);
+    TS_ASSERT(m_DataSelected->DeleteFieldsValue(2));
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.GetCount(), 3);
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryFields.GetCount(), 3);
     TS_ASSERT_EQUALS(m_DataSelected->m_QueryFieldsValues.Item(2), _T("1"));
@@ -389,7 +389,7 @@ class TEST_tmQueries : public CxxTest::TestSuite {
     // all fields empty
     // m_DataSelected->m_QueryUseFields = true;
     TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
-                                              m_DataSelected->m_QueryFieldsValues) == true);
+                                              m_DataSelected->m_QueryFieldsValues));
     TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(), false);
     /*
 for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++) {
@@ -399,25 +399,25 @@ for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++)
 
     m_DataSelected->m_QueryObjectGeomID = 140;  // faille avec attrib avancés
     TS_ASSERT(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
-                                              m_DataSelected->m_QueryFieldsValues) == true);
+                                              m_DataSelected->m_QueryFieldsValues));
     TS_ASSERT_EQUALS(m_DataSelected->HasFieldsValues(), true);
   }
 
   void testGetObjForTypes() {
     PrjMemObjectsArray myObjects;
-    TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects) == true);
+    TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects));
     TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
     wxLogMessage(_T("%zu objects returned for types : %s"), myObjects.GetCount(),
                  PRJDEF_LAYERS_TYPE_STRING[m_DataSelected->m_QueryLayerType].c_str());
 
     m_DataObjects->m_QueryLayerType = TOC_NAME_POINTS;
-    TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects) == true);
+    TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects));
     TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
     wxLogMessage(_T("%zu objects returned for types : %s"), myObjects.GetCount(),
                  PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
 
     m_DataObjects->m_QueryLayerType = TOC_NAME_LABELS;
-    TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects) == true);
+    TS_ASSERT(m_DataObjects->GetObjectsForTypes(m_pDB, myObjects));
     TS_ASSERT_DIFFERS(myObjects.GetCount(), 0);
     wxLogMessage(_T("%zu objects returned for types : %s"), myObjects.GetCount(),
                  PRJDEF_LAYERS_TYPE_STRING[m_DataObjects->m_QueryLayerType].c_str());
@@ -433,8 +433,8 @@ for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++)
     m_DataObjects->m_QueryObjectID = 32;
     QueriesBuilder myBuilder(m_DataObjects);
 
-    TS_ASSERT(myBuilder.IsOk() == true);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+    TS_ASSERT(myBuilder.IsOk());
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     wxLogMessage(_T("Saving  Object queries into database"));
 
@@ -446,23 +446,23 @@ for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++)
   }
 
   void testQueryGeomOk() {
-    TS_ASSERT(m_DataGeomLine->IsOk() == true);
-    TS_ASSERT(m_DataGeomNode->IsOk() == true);
+    TS_ASSERT(m_DataGeomLine->IsOk());
+    TS_ASSERT(m_DataGeomNode->IsOk());
   }
 
   void testQueryLineBuild() {
     wxLogMessage(_T("Testing Geometry Query OK"));
 
     QueriesBuilder myBuilder(m_DataGeomLine);
-    TS_ASSERT(myBuilder.IsOk() == true);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+    TS_ASSERT(myBuilder.IsOk());
+    TS_ASSERT(myBuilder.Create(m_pDB));
   }
 
   void testQueryLineSizeSave() {
     QueriesBuilder myBuilder(m_DataGeomLine);
 
-    TS_ASSERT(myBuilder.IsOk() == true);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+    TS_ASSERT(myBuilder.IsOk());
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     wxLogMessage(_T("Saving  Line Size queries into database"));
 
@@ -476,8 +476,8 @@ for (unsigned int i = 0; i< m_DataSelected->m_QueryFieldsValues.GetCount(); i++)
   void testQueryNodeNumberSave() {
     QueriesBuilder myBuilder(m_DataGeomNode);
 
-    TS_ASSERT(myBuilder.IsOk() == true);
-    TS_ASSERT(myBuilder.Create(m_pDB) == true);
+    TS_ASSERT(myBuilder.IsOk());
+    TS_ASSERT(myBuilder.Create(m_pDB));
     TS_ASSERT(myBuilder.Save(m_pDB));
     wxLogMessage(_T("Saving  Node number queries into database"));
 

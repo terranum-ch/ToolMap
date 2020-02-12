@@ -145,7 +145,7 @@ void tmCheckListBoxRank::OnSaveOrder(wxCommandEvent &event) {
   if (!PrepareOrderStatement(sqlstatement)) return;
 
   // do the query
-  if (m_pDB->DataBaseQueryNoResults(sqlstatement) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(sqlstatement)) {
     wxLogError(_("Error saving order to project"));
     wxLogDebug(_T("Order statement is : ") + sqlstatement);
   }

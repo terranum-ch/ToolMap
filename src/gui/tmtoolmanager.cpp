@@ -82,10 +82,10 @@ bool tmToolManager::_SearchDanglingNodes(int selectedlayer, const wxArrayString 
     if (iLayersCount == 1) {
       myLayerName = layersname.Item(selectedlayer);
     }
-    if (myTool.SearchInit(myLayersID.Item(i), myLayerName) == false) {
+    if (!myTool.SearchInit(myLayersID.Item(i), myLayerName)) {
       continue;
     }
-    if (myTool.SearchRun(&myDlg) == false) {
+    if (!myTool.SearchRun(&myDlg)) {
       bStoped = true;
       break;
     }
@@ -94,7 +94,7 @@ bool tmToolManager::_SearchDanglingNodes(int selectedlayer, const wxArrayString 
     iLoop++;
   }
 
-  if (bStoped == true) {
+  if (bStoped) {
     _ClearDangling();
     return false;
   }
@@ -113,7 +113,7 @@ bool tmToolManager::_SearchDanglingNodes(int selectedlayer, const wxArrayString 
 
 bool tmToolManager::FindDanglingNodes() {
   // check DB pointer
-  if (_IsOk() == false) {
+  if (!_IsOk()) {
     return false;
   }
 

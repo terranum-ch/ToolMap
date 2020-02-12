@@ -27,16 +27,16 @@ DataBaseTM::~DataBaseTM() {}
 
 int DataBaseTM::OpenTMDatabase(const wxString &pathname) {
   wxFileName myPath(pathname, _T(""));
-  if (myPath.IsOk() == false) return tmDB_OPEN_FAILED;
+  if (!myPath.IsOk()) return tmDB_OPEN_FAILED;
 
   wxArrayString myDirs;
   myDirs = myPath.GetDirs();
   wxString myName = myDirs.Last();
   myPath.RemoveLastDir();
 
-  if (DataBaseOpen(myPath.GetFullPath(), myName) == false) return tmDB_OPEN_FAILED;
+  if (!DataBaseOpen(myPath.GetFullPath(), myName)) return tmDB_OPEN_FAILED;
 
-  if (TableExist(TABLE_NAME_PRJ_SETTINGS) == false) return tmDB_OPEN_FAILED_NOT_TM_DB;
+  if (!TableExist(TABLE_NAME_PRJ_SETTINGS)) return tmDB_OPEN_FAILED_NOT_TM_DB;
 
   int iToolMapVersion = GetDatabaseToolMapVersion();
   if (iToolMapVersion != TM_DATABASE_VERSION) {
@@ -48,23 +48,23 @@ int DataBaseTM::OpenTMDatabase(const wxString &pathname) {
 }
 
 bool DataBaseTM::CreateTMDatabase(PrjDefMemManage *pPrjDefinition) {
-  if (DataBaseCreateNew(pPrjDefinition->m_PrjPath, pPrjDefinition->m_PrjName) == false) {
+  if (!DataBaseCreateNew(pPrjDefinition->m_PrjPath, pPrjDefinition->m_PrjName)) {
     return false;
   }
 
-  if (CreateEmptyTMDatabase() == false) {
+  if (!CreateEmptyTMDatabase()) {
     return false;
   }
 
-  if (CreateLangDefData() == false) {
+  if (!CreateLangDefData()) {
     return false;
   }
 
-  if (SetProjectData(pPrjDefinition) == false) {
+  if (!SetProjectData(pPrjDefinition)) {
     return false;
   }
 
-  if (InitTOCGenericLayers() == false) {
+  if (!InitTOCGenericLayers()) {
     return false;
   }
 
@@ -309,19 +309,19 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
       _T("   PRIMARY KEY (`LAYER_INDEX`));");
 
   // wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
-  if (DataBaseQueryNoResults(myNewPrjSentence) == false) return false;
+  if (!DataBaseQueryNoResults(myNewPrjSentence)) return false;
 
   // pass field data to the database
-  if (FillLayerTableTypeData() == false) {
+  if (!FillLayerTableTypeData()) {
     return false;
   }
 
   // pass scale data into the database
-  if (FillDefaultScaleData() == false) {
+  if (!FillDefaultScaleData()) {
     return false;
   }
 
-  if (FillShortCutTable() == false) {
+  if (!FillShortCutTable()) {
     return false;
   }
 
@@ -330,9 +330,9 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
 
 bool DataBaseTM::TableExist(const wxString &tablename) {
   wxString mySentence = _T("SHOW TABLES LIKE \"") + tablename + _T("\"");
-  if (DataBaseQuery(mySentence) == false) return false;
+  if (!DataBaseQuery(mySentence)) return false;
 
-  if (DataBaseHasResults() == false) return false;
+  if (!DataBaseHasResults()) return false;
 
   DataBaseClearResults();
   return true;
@@ -352,7 +352,7 @@ bool DataBaseTM::FillLayerTableTypeData() {
                      PRJDEF_LAYERS_TYPE_STRING[i].c_str());
 
     // in case of error send debug message
-    if (DataBaseQueryNoResults(sSentence) == false) {
+    if (!DataBaseQueryNoResults(sSentence)) {
       wxLogError(_("Error filling data into the [%s] tables"), TABLE_NAME_LAYER_TYPE.c_str());
     } else
       bReturnValue = true;
@@ -391,7 +391,7 @@ bool DataBaseTM::FillDefaultScaleData() {
     bReturnValue = TRUE;
   }
 
-  if (bReturnValue == FALSE) {
+  if (!bReturnValue) {
     wxLogError(_T("Error filling scale table. Already filled of request error ?"));
   }
 
@@ -419,7 +419,7 @@ bool DataBaseTM::FillShortCutTable() {
     sSentence.Append(wxString::Format(_T("(%d, \"%s\"); "), i + 1, tmShortCutKeys[i].c_str()));
   }
 
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     wxLogError(_("Error filling shortcut table"));
     return false;
   }
@@ -465,7 +465,7 @@ bool DataBaseTM::SetProjectData(PrjDefMemManage *pPrjDefinition) {
   wxString sProj = PRJDEF_PROJ_TYPE_STRING[pPrjDefinition->m_PrjProjType];
   wxString sSentence = _T("");
 
-  if (IsProjectDataDefined() == FALSE) {
+  if (!IsProjectDataDefined()) {
     sSentence = wxString::Format(
         _T("INSERT INTO %s (PRJ_UNIT, PRJ_PROJECTION,")
         _T("PRJ_NAME, PRJ_VERSION, PRJ_AUTHORS, PRJ_SUMMARY) ")
@@ -510,13 +510,13 @@ bool DataBaseTM::GetProjectData(PrjDefMemManage *pPrjDefinition) {
       TABLE_NAME_PRJ_SETTINGS.c_str());
 
   wxString myError = _T("Error getting project data from the Database");
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     wxLogError(myError);
     return false;
   }
 
   wxArrayString myResults;
-  if (DataBaseGetNextResult(myResults) == false) {
+  if (!DataBaseGetNextResult(myResults)) {
     wxLogError(myError);
     return false;
   }
@@ -532,7 +532,7 @@ bool DataBaseTM::GetProjectData(PrjDefMemManage *pPrjDefinition) {
       break;
     }
   }
-  if (bFoundUnit == false) {
+  if (!bFoundUnit) {
     wxLogWarning(_("Units unknown (%s)\ndefaulting to Meters!"), myResults.Item(0));
   }
 
@@ -545,7 +545,7 @@ bool DataBaseTM::GetProjectData(PrjDefMemManage *pPrjDefinition) {
       break;
     }
   }
-  if (bFoundProjection == false) {
+  if (!bFoundProjection) {
     wxLogWarning(_("Projection unknown (%s)\ndefaulting to Swiss projectiong (CH1903)!"), myResults.Item(1));
   }
 
@@ -576,7 +576,7 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition) 
           ProjectDefMemoryObjects *myMemObj = pPrjDefinition->FindObject(indexObject);
           if (myMemObj != NULL) {
             bReturnValue = bReturnValue && AddObject(myMemObj);
-            wxASSERT(bReturnValue == true);
+            wxASSERT(bReturnValue);
           }
         }
 
@@ -585,14 +585,14 @@ bool DataBaseTM::InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition) 
           ProjectDefMemoryFields *myMemField = pPrjDefinition->FindField(indexField);
           if (myMemField != NULL) {
             bReturnValue = bReturnValue && AddField(myMemField);
-            wxASSERT(bReturnValue == true);
+            wxASSERT(bReturnValue);
           }
         }
       }
     }
   }
 
-  if (bReturnValue == FALSE)
+  if (!bReturnValue)
     wxLogDebug(_T("Error : adding project object, fields, or setting project data into the database"));
   else
     wxLogDebug(_T("Project data successfully copied into the database"));
@@ -829,7 +829,7 @@ int DataBaseTM::GetNextLayer(ProjectDefMemoryLayers *myLayer) {
     wxASSERT(bQuery);
 
     // check that result != 0
-    if (DataBaseHasResults() == false) return -1;
+    if (!DataBaseHasResults()) return -1;
   }
   return 0;
 }
@@ -1025,11 +1025,11 @@ bool DataBaseTM::DataBaseGetNextResultAsObject(ProjectDefMemoryObjects *object, 
   wxASSERT(object);
 
   wxArrayString myRowResults;
-  if (DataBaseHasResults() == false) {
+  if (!DataBaseHasResults()) {
     return false;
   }
 
-  if (DataBaseGetNextResult(myRowResults) == false) {
+  if (!DataBaseGetNextResult(myRowResults)) {
     DataBaseClearResults();
     return false;
   }
@@ -1061,7 +1061,7 @@ int DataBaseTM::DeleteMultipleObjects(PrjDefMemManage *pProjet) {
   }
 
   // execute statement
-  if (sSentence.IsEmpty() == false && DataBaseQueryNoResults(sSentence)) return pProjet->m_StoreDeleteIDObj.GetCount();
+  if (!sSentence.IsEmpty() && DataBaseQueryNoResults(sSentence)) return pProjet->m_StoreDeleteIDObj.GetCount();
 
   return -1;
 }
@@ -1091,7 +1091,7 @@ bool DataBaseTM::LoadLayerObjects(ProjectDefMemoryLayers *layer) {
       "(l.LAYER_INDEX=o.THEMATIC_LAYERS_LAYER_INDEX) "
       "WHERE o.THEMATIC_LAYERS_LAYER_INDEX = %d ORDER BY o.OBJECT_CD",
       TABLE_NAME_OBJECTS, TABLE_NAME_LAYERS, layer->m_LayerID);
-  if (DataBaseQuery(myQuery) == false) {
+  if (!DataBaseQuery(myQuery)) {
     wxLogDebug(myQuery);
     return false;
   }
@@ -1106,7 +1106,7 @@ bool DataBaseTM::LoadLayerObjects(ProjectDefMemoryLayers *layer) {
 
   while (1) {
     ProjectDefMemoryObjects *myObj = new ProjectDefMemoryObjects();
-    if (DataBaseGetNextResultAsObject(myObj, layer->m_LayerType) == false) {
+    if (!DataBaseGetNextResultAsObject(myObj, layer->m_LayerType)) {
       wxDELETE(myObj);
       break;
     }
@@ -1163,7 +1163,7 @@ bool DataBaseTM::AddField(ProjectDefMemoryFields *myField) {
   // use the same function for updating
   wxString sSentence = _T("");
   UpdateField(myField, DBlayerIndex, sSentence);
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogError(_T("Unable to add field to the database : %s"), sSentence.c_str());
     return false;
   }
@@ -1197,7 +1197,7 @@ int DataBaseTM::GetFieldsFromDB(PrjDefMemManage *myPrj) {
       _T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +
       TABLE_NAME_LAYER_AT + _T("\%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
 
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     wxLogDebug(_T("Error gettings fields from database : %s"), sSentence.c_str());
     return -1;
   }
@@ -1230,7 +1230,7 @@ int DataBaseTM::GetFieldsFromDB(PrjDefMemManage *myPrj) {
       _T("JOIN  (%s c, %s m) ON (l.ATTRIBUT_ID = m.ATTRIBUT_ID AND m.CATALOG_ID = c.CATALOG_ID) ORDER BY ")
       _T("l.LAYER_INDEX"),
       TABLE_NAME_AT_LIST, TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX);
-  if (DataBaseQuery(myQ) == false) {
+  if (!DataBaseQuery(myQ)) {
     return iNbFields;
   }
 
@@ -1321,7 +1321,7 @@ bool DataBaseTM::GetFields(PrjMemFieldArray &fieldarray, ProjectDefMemoryLayers 
       _T("JOIN  (%s c, %s m) ON (l.ATTRIBUT_ID = m.ATTRIBUT_ID AND m.CATALOG_ID = c.CATALOG_ID) WHERE ")
       _T("l.LAYER_INDEX=%d ORDER BY l.ATTRIBUT_ID"),
       TABLE_NAME_AT_LIST, TABLE_NAME_AT_CATALOG, TABLE_NAME_AT_MIX, actuallayer->m_LayerID);
-  if (DataBaseQuery(myQ) == false) {
+  if (!DataBaseQuery(myQ)) {
     return false;
   }
 
@@ -1386,18 +1386,18 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields *myField, int iLayer, wxStri
   if (myField->m_FieldType == TM_FIELD_ENUMERATION) {
     // add or update into dmn_layer_attribut (attributs list).
     wxString myQuery = wxEmptyString;
-    if (IsNewField == true) {
+    if (IsNewField) {
       myQuery = wxString::Format(_T("INSERT INTO %s (LAYER_INDEX, ATTRIBUT_NAME) VALUES (%d, \"%s\")"),
                                  TABLE_NAME_AT_LIST, iLayer, myField->m_Fieldname);
     } else {
       myQuery = wxString::Format(_T("UPDATE %s SET ATTRIBUT_NAME=\"%s\" WHERE ATTRIBUT_ID=%d"), TABLE_NAME_AT_LIST,
                                  myField->m_Fieldname, myField->m_FieldID);
     }
-    if (DataBaseQueryNoResults(myQuery) == false) {
+    if (!DataBaseQueryNoResults(myQuery)) {
       return false;
     }
 
-    if (IsNewField == true) {
+    if (IsNewField) {
       myField->m_FieldID = DataBaseGetLastInsertedID();
       wxASSERT(myField->m_FieldID != wxNOT_FOUND);
     }
@@ -1415,7 +1415,7 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields *myField, int iLayer, wxStri
                                TABLE_NAME_AT_CATALOG, myFieldVal->m_ValueCode, myFieldVal->m_ValueName,
                                myFieldVal->m_ValueID);
       }
-      if (DataBaseQueryNoResults(myQ) == false) {
+      if (!DataBaseQueryNoResults(myQ)) {
         continue;
       }
 
@@ -1433,14 +1433,14 @@ bool DataBaseTM::UpdateField(ProjectDefMemoryFields *myField, int iLayer, wxStri
       }
       wxString myQ = wxString::Format(_T("REPLACE INTO %s VALUES (%d, %ld)"), TABLE_NAME_AT_MIX, myField->m_FieldID,
                                       myFieldVal->m_ValueID);
-      if (DataBaseQueryNoResults(myQ) == false) {
+      if (!DataBaseQueryNoResults(myQ)) {
         return false;
       }
     }
   }
 
   wxString myTypeFieldTemp = wxEmptyString;
-  if (IsNewField == true) {
+  if (IsNewField) {
     myField->GetStringTypeFromValues(myTypeFieldTemp);
     sSqlSentence.Append(wxString::Format(_T("ALTER TABLE %s%d ADD COLUMN %s %s; "), TABLE_NAME_LAYER_AT.c_str(), iLayer,
                                          myField->m_Fieldname.c_str(), myTypeFieldTemp.c_str()));
@@ -1482,11 +1482,11 @@ bool DataBaseTM::DeleteField(wxArrayString &myFields, int iLayer, wxString &sSql
     // delete enumerations from catalog if needed!
     wxString myQuery = wxString::Format(_T("SELECT ATTRIBUT_ID FROM %s WHERE LAYER_INDEX=%d AND ATTRIBUT_NAME=\"%s\""),
                                         TABLE_NAME_AT_LIST, iLayer, myFields.Item(i - 1));
-    if (DataBaseQuery(myQuery) == false) {
+    if (!DataBaseQuery(myQuery)) {
       wxLogError(_("Error selecting attribut id"));
       return false;
     }
-    if (DataBaseHasResults() == false) {
+    if (!DataBaseHasResults()) {
       // no results... go to the next field
       continue;
     }
@@ -1508,7 +1508,7 @@ bool DataBaseTM::DeleteField(wxArrayString &myFields, int iLayer, wxString &sSql
     myDeleteTxt.Append(
         wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_LIST, myAttributID));
 
-    if (DataBaseQueryNoResults(myDeleteTxt) == false) {
+    if (!DataBaseQueryNoResults(myDeleteTxt)) {
       wxLogError(_T("Error deleting field (attribut_id = %ld)"), myAttributID);
       return false;
     }
@@ -1520,11 +1520,11 @@ bool DataBaseTM::DeleteFields(int iLayer) {
   // delete enumerations from catalog if needed!
   wxString myQuery =
       wxString::Format(_T("SELECT ATTRIBUT_ID FROM %s WHERE LAYER_INDEX=%d"), TABLE_NAME_AT_LIST, iLayer);
-  if (DataBaseQuery(myQuery) == false) {
+  if (!DataBaseQuery(myQuery)) {
     wxLogError(_("Error selecting attribut id"));
     return false;
   }
-  if (DataBaseHasResults() == false) {
+  if (!DataBaseHasResults()) {
     // no results... go to the next field
     return true;
   }
@@ -1549,7 +1549,7 @@ bool DataBaseTM::DeleteFields(int iLayer) {
         wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_MIX, myAttributIDs.Item(c)));
     myDeleteTxt.Append(
         wxString::Format(_T(" DELETE from %s WHERE ATTRIBUT_ID = %ld;"), TABLE_NAME_AT_LIST, myAttributIDs.Item(c)));
-    if (DataBaseQueryNoResults(myDeleteTxt) == false) {
+    if (!DataBaseQueryNoResults(myDeleteTxt)) {
       wxLogError(_T("Error deleting field (attribut_id = %ld)"), myAttributIDs.Item(c));
       return false;
     }
@@ -1630,7 +1630,7 @@ long DataBaseTM::GetNextScaleValue(long &DBindex, bool bFirst) {
 
   // no result, we process the sentence
   // bool dRes = DataBaseHasResults();
-  if (!DataBaseHasResults() || bFirst == TRUE) {
+  if (!DataBaseHasResults() || bFirst) {
     wxString sSentence =
         wxString::Format(_T("SELECT ZOOM_ID, SCALE_VALUE FROM %s ORDER BY RANK"), TABLE_NAME_SCALE.c_str());
 
@@ -1639,7 +1639,7 @@ long DataBaseTM::GetNextScaleValue(long &DBindex, bool bFirst) {
     }
   }
 
-  if (DataBaseGetNextResult(myResults) == false) {
+  if (!DataBaseGetNextResult(myResults)) {
     DataBaseClearResults();
     return wxNOT_FOUND;
   }
@@ -1905,7 +1905,7 @@ bool DataBaseTM::UpdateDataBaseProject(PrjDefMemManage *pProjDef) {
                 wxString::Format(_T("DELETE FROM %s WHERE CATALOG_ID=%ld; DELETE FROM %s WHERE CATALOG_ID=%ld;"),
                                  TABLE_NAME_AT_CATALOG, myIdToDelete, TABLE_NAME_AT_MIX, myIdToDelete));
 
-            if (DataBaseQueryNoResults(myQuery) == false) {
+            if (!DataBaseQueryNoResults(myQuery)) {
               continue;
             }
           }
@@ -1951,7 +1951,7 @@ bool DataBaseTM::UpdateDataBaseProject(PrjDefMemManage *pProjDef) {
     }
 
     // execute the sentence for layers.
-    if (sSentence.IsEmpty() == false && DataBaseQueryNoResults(sSentence) == false) {
+    if (!sSentence.IsEmpty() && !DataBaseQueryNoResults(sSentence)) {
       wxLogError(_T("Error updating project in the database"));
       bReturn = false;
     }
@@ -2014,7 +2014,7 @@ bool DataBaseTM::InitTOCGenericLayers() {
   *******************************************************************************/
 tmLayerProperties *DataBaseTM::GetNextTOCEntry(bool userelativepath) {
   wxArrayString myTempResults;
-  if (DataBaseHasResults() == false) {
+  if (!DataBaseHasResults()) {
     wxString sSentence =
         _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
         _T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS, LABEL_VISIBLE, LABEL_DEF FROM ") +
@@ -2026,7 +2026,7 @@ tmLayerProperties *DataBaseTM::GetNextTOCEntry(bool userelativepath) {
     }
   }
 
-  if (DataBaseGetNextResult(myTempResults) == false) {
+  if (!DataBaseGetNextResult(myTempResults)) {
     DataBaseClearResults();
     return NULL;
   }
@@ -2061,7 +2061,7 @@ long DataBaseTM::AddTOCLayer(tmLayerProperties *item) {
                                         item->GetSpatialType(), myPath, item->GetName().GetFullName().c_str(),
                                         item->IsVisible(), item->GetType());
 
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogError(_T("Error inserting layer into database : %s"), sSentence.c_str());
     return -1;
   }
@@ -2124,7 +2124,7 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString &sentence, tmLayerProperties *i
   *******************************************************************************/
 bool DataBaseTM::GetNextQueries(long &qid, wxString &name, wxString &description, bool bfirst) {
   wxString sStatement = _T("");
-  if (!DataBaseHasResults() && bfirst == true) {
+  if (!DataBaseHasResults() && bfirst) {
     sStatement = _T("SELECT * FROM ") + TABLE_NAME_QUERIES;
     if (!DataBaseQuery(sStatement)) {
       wxLogDebug(_T("Error getting queries"));
@@ -2133,7 +2133,7 @@ bool DataBaseTM::GetNextQueries(long &qid, wxString &name, wxString &description
   }
 
   wxArrayString myResults;
-  if (DataBaseGetNextResult(myResults) == false) {
+  if (!DataBaseGetNextResult(myResults)) {
     DataBaseClearResults();
     return false;
   }
@@ -2175,13 +2175,13 @@ bool DataBaseTM::GetQueriesById(const long &qid, int &target, wxString &name, wx
   wxString sStatement = wxString::Format(
       _T("SELECT QUERIES_NAME, QUERIES_CODE, QUERIES_TARGET from ") + TABLE_NAME_QUERIES + _T(" WHERE QUERIES_ID=%ld;"),
       qid);
-  if (DataBaseQuery(sStatement) == false) {
+  if (!DataBaseQuery(sStatement)) {
     wxLogDebug(_T("Error getting query"));
     return false;
   }
 
   wxArrayString myResults;
-  if (DataBaseGetNextResult(myResults) == false) {
+  if (!DataBaseGetNextResult(myResults)) {
     DataBaseClearResults();
     return false;
   }
@@ -2206,7 +2206,7 @@ bool DataBaseTM::GetQueriesById(const long &qid, int &target, wxString &name, wx
   *******************************************************************************/
 bool DataBaseTM::EditQueries(int target, const wxString &name, const wxString &description, long qid) {
   wxString myConvertedDescription;
-  if (DataBaseStringEscapeQuery(description, myConvertedDescription) == false) {
+  if (!DataBaseStringEscapeQuery(description, myConvertedDescription)) {
     wxLogError(_("Unable to convert the SQL statement"));
     return false;
   }
@@ -2229,7 +2229,7 @@ bool DataBaseTM::EditQueries(int target, const wxString &name, const wxString &d
     sStatement = sUpdStatement;
   }
 
-  if (DataBaseQueryNoResults(sStatement) == false) {
+  if (!DataBaseQueryNoResults(sStatement)) {
     return false;
   }
   return true;
@@ -2244,7 +2244,7 @@ bool DataBaseTM::EditQueries(int target, const wxString &name, const wxString &d
   *******************************************************************************/
 bool DataBaseTM::DeleteQuery(long qid) {
   wxString sStatement = wxString::Format(_T("DELETE FROM ") + TABLE_NAME_QUERIES + _T(" WHERE QUERIES_ID=%ld"), qid);
-  if (DataBaseQueryNoResults(sStatement) == false) {
+  if (!DataBaseQueryNoResults(sStatement)) {
     return false;
   }
   return true;
@@ -2270,17 +2270,17 @@ bool DataBaseTM::GetNextShortcutByLayerType(int layer_type, wxString &key, wxStr
       _T("WHERE c.OBJECT_TYPE_CD = %d)");
 
   // do the query during the first loop
-  if (!DataBaseHasResults() && bFirstLoop == true) {
+  if (!DataBaseHasResults() && bFirstLoop) {
     wxString sStatement = wxString::Format(sValue, TABLE_NAME_SHORTCUT_DMN.c_str(), TABLE_NAME_SHORTCUT_LIST.c_str(),
                                            TABLE_NAME_OBJECTS.c_str(), layer_type);
 
-    if (DataBaseQuery(sStatement) == false) {
+    if (!DataBaseQuery(sStatement)) {
       return false;
     }
   }
 
   wxArrayString myResults;
-  if (DataBaseGetNextResult(myResults) == false) {
+  if (!DataBaseGetNextResult(myResults)) {
     DataBaseClearResults();
     return false;
   }
@@ -2307,11 +2307,11 @@ bool DataBaseTM::GetAllUnusedShortcuts(wxArrayString &keylist) {
                        TABLE_NAME_SHORTCUT_LIST +
                        _T(" b ON  a.SHORTCUT_CD = b.SHORTCUT_CD WHERE  b.SHORTCUT_CD IS NULL");
 
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     return false;
   }
 
-  if (DataBaseGetResults(keylist) == false) return false;
+  if (!DataBaseGetResults(keylist)) return false;
 
   return true;
 }
@@ -2332,12 +2332,12 @@ bool DataBaseTM::GetNextShortCutObject(long &shortcutid, const int &key, bool bF
       wxString::Format(_T("SELECT OBJECT_ID FROM %s WHERE SHORTCUT_CD = %d; "), TABLE_NAME_SHORTCUT_LIST.c_str(), key);
 
   if (bFirstLoop) {
-    if (DataBaseQuery(sSentence) == false) {
+    if (!DataBaseQuery(sSentence)) {
       return false;
     }
   }
 
-  if (DataBaseGetNextResult(shortcutid) == false) {
+  if (!DataBaseGetNextResult(shortcutid)) {
     DataBaseClearResults();
     return false;
   }
@@ -2358,7 +2358,7 @@ bool DataBaseTM::DeleteShortcut(int shortcutkey) {
       _T("DELETE FROM %s WHERE SHORTCUT_CD = %d; ")
       _T("UPDATE %s SET SHORTCUT_DESC = \"\" WHERE SHORTCUT_CD = %d; "),
       TABLE_NAME_SHORTCUT_LIST.c_str(), shortcutkey, TABLE_NAME_SHORTCUT_DMN.c_str(), shortcutkey);
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     return false;
   }
 
@@ -2387,7 +2387,7 @@ bool DataBaseTM::EditShortcut(int shortcutkey, const wxString &description, cons
     sSentence.Append(wxString::Format(_T("INSERT INTO %s VALUES (%ld,%d); "), TABLE_NAME_SHORTCUT_LIST.c_str(),
                                       types.Item(i), shortcutkey));
 
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogError(_("Error editing shortcut"));
     return false;
   }
@@ -2419,13 +2419,13 @@ bool DataBaseTM::GetNextShortcutFull(bool bFirstLoop, int &layertype, int &key, 
       TABLE_NAME_SHORTCUT_DMN.c_str(), TABLE_NAME_SHORTCUT_LIST.c_str(), TABLE_NAME_OBJECTS.c_str());
   // running query
   if (bFirstLoop) {
-    if (DataBaseQuery(sSentence) == false) {
+    if (!DataBaseQuery(sSentence)) {
       return false;
     }
   }
 
   wxArrayString myResultRow;
-  if (DataBaseGetNextResult(myResultRow) == false) {
+  if (!DataBaseGetNextResult(myResultRow)) {
     DataBaseClearResults();
     return false;
   }
@@ -2458,13 +2458,13 @@ bool DataBaseTM::GetNextSnapping(long &lid, wxString &layername, int &snapstatus
       TABLE_NAME_SNAPPING.c_str(), TABLE_NAME_TOC.c_str());
   // if first loop
   if (bfirstloop) {
-    if (DataBaseQuery(sSentence) == false) {
+    if (!DataBaseQuery(sSentence)) {
       return false;
     }
   }
 
   wxArrayString myResultRow;
-  if (DataBaseGetNextResult(myResultRow) == false) {
+  if (!DataBaseGetNextResult(myResultRow)) {
     DataBaseClearResults();
     return false;
   }
@@ -2495,7 +2495,7 @@ bool DataBaseTM::GetValidLayersForSnapping(wxArrayLong &lids, wxArrayString &lna
       _T(" IS NULL AND a.TYPE_CD < %d ORDER BY a.RANK"),
       TABLE_NAME_TOC.c_str(), TABLE_NAME_SNAPPING.c_str(), LAYER_SPATIAL_RASTER);
 
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     return false;
   }
 
@@ -2528,7 +2528,7 @@ bool DataBaseTM::AddLayersSnapping(const wxArrayLong &lids, int snappingstatus) 
     sFullSentence.Append(wxString::Format(sSentence, TABLE_NAME_SNAPPING.c_str(), lids.Item(i), snappingstatus));
   }
 
-  if (DataBaseQueryNoResults(sFullSentence) == false) {
+  if (!DataBaseQueryNoResults(sFullSentence)) {
     return false;
   }
 
@@ -2572,7 +2572,7 @@ bool DataBaseTM::SaveSnappingAllStatus(tmSnappingMemory *snapmemory) {
     return true;
   }
 
-  if (DataBaseQueryNoResults(sFullSentence) == false) {
+  if (!DataBaseQueryNoResults(sFullSentence)) {
     wxLogError(_("Error saving snapping status"));
     return false;
   }
@@ -2590,7 +2590,7 @@ bool DataBaseTM::SaveSnappingAllStatus(tmSnappingMemory *snapmemory) {
 bool DataBaseTM::SetSnappingTolerence(int iTolerence) {
   wxString sSentence =
       wxString::Format(_T(" UPDATE %s SET PRJ_SNAP_TOLERENCE = %d;"), TABLE_NAME_PRJ_SETTINGS.c_str(), iTolerence);
-  if (DataBaseQueryNoResults(sSentence, false) == false) {
+  if (!DataBaseQueryNoResults(sSentence, false)) {
     wxLogMessage(_("Error saving snapping tolerence"));
     return false;
   }
@@ -2606,12 +2606,12 @@ bool DataBaseTM::SetSnappingTolerence(int iTolerence) {
 int DataBaseTM::GetSnappingTolerence() {
   long iSnappingTol = 0;
   wxString sSentence = wxString::Format(_T(" SELECT PRJ_SNAP_TOLERENCE FROM %s;"), TABLE_NAME_PRJ_SETTINGS.c_str());
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     wxLogError(_("Error getting snapping tolerence"));
     return (int)iSnappingTol;
   }
 
-  if (DataBaseGetNextResult(iSnappingTol) == false) iSnappingTol = 0;
+  if (!DataBaseGetNextResult(iSnappingTol)) iSnappingTol = 0;
 
   DataBaseClearResults();
   return (int)iSnappingTol;
@@ -2636,7 +2636,7 @@ bool DataBaseTM::GeometryDelete(wxArrayLong *selected, int layertype) {
   sSentence.RemoveLast(1);
   sSentence.Append(_T(");"));
 
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogError(_("Error deleting selected geometry : %s"), sSentence.c_str());
     return false;
   }
@@ -2659,7 +2659,7 @@ long DataBaseTM::GeometrySave(OGRGeometry *geometry, int layertype) {
       _T("INSERT INTO %s (OBJECT_GEOMETRY)")
       _T(" VALUES (GeomFromText('%s'));"),
       TABLE_NAME_GIS_GENERIC[layertype].c_str(), mySGeom.c_str());
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogError(_T("Error inserting geometry %s into database"), sSentence.c_str());
     return wxNOT_FOUND;
   }
@@ -2682,7 +2682,7 @@ bool DataBaseTM::GeometryUpdate(OGRGeometry *geometry, long oid, int layertype) 
       _T("UPDATE %s SET OBJECT_GEOMETRY=")
       _T("GeomFromText('%s') WHERE OBJECT_ID=%ld"),
       TABLE_NAME_GIS_GENERIC[layertype].c_str(), mySGeom.c_str(), oid);
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogError(_("Error updating geometry : %s"), sSentence.c_str());
     return false;
   }
@@ -2692,14 +2692,14 @@ bool DataBaseTM::GeometryUpdate(OGRGeometry *geometry, long oid, int layertype) 
 OGRGeometry *DataBaseTM::GeometryLoad(long oid, int layertype) {
   wxString sSentence = wxString::Format(_T("SELECT (OBJECT_GEOMETRY) FROM %s WHERE OBJECT_ID=%ld;"),
                                         TABLE_NAME_GIS_GENERIC[layertype].c_str(), oid);
-  if (DataBaseQuery(sSentence) == false) {
+  if (!DataBaseQuery(sSentence)) {
     wxLogError(_("Error getting geometry for id: %ld"), oid);
     return NULL;
   }
 
   tmArrayULong row_length;
   MYSQL_ROW row;
-  if (DataBaseGetNextRowResult(row, row_length) == false) {
+  if (!DataBaseGetNextRowResult(row, row_length)) {
     DataBaseClearResults();
     wxLogError(_("No geometry found for id : %ld"), oid);
     return NULL;
@@ -2735,7 +2735,7 @@ bool DataBaseTM::DeleteAttribution(wxArrayLong *selected, int layertype) {
   sSentence.RemoveLast(1);
   sSentence.Append(_T(");"));
 
-  if (DataBaseQueryNoResults(sSentence) == false) {
+  if (!DataBaseQueryNoResults(sSentence)) {
     wxLogDebug(_T("Error deleting selected attribution : %s"), sSentence.c_str());
     return false;
   }
@@ -2757,7 +2757,7 @@ wxArrayLong DataBaseTM::GetObjectsFromFeature(long selectedfeature, int layertyp
 
   wxString myQuery = wxString::Format(_T("SELECT OBJECT_VAL_ID FROM %s WHERE OBJECT_GEOM_ID = %ld"),
                                       TABLE_NAME_GIS_ATTRIBUTION[layertype], selectedfeature);
-  if (DataBaseQuery(myQuery) == false) {
+  if (!DataBaseQuery(myQuery)) {
     return myValues;
   }
 
@@ -2772,7 +2772,7 @@ long DataBaseTM::GetSelectedLayerId(long objectid) {
 
   wxString myQuery = wxString::Format(_T("SELECT THEMATIC_LAYERS_LAYER_INDEX FROM %s WHERE OBJECT_ID = %ld"),
                                       TABLE_NAME_OBJECTS, objectid);
-  if (DataBaseQuery(myQuery) == false) {
+  if (!DataBaseQuery(myQuery)) {
     return wxNOT_FOUND;
   }
 
@@ -2789,7 +2789,7 @@ bool DataBaseTM::DeleteAdvancedAttribution(long selectedobject, long selectedlay
 
   wxString myQuery = wxString::Format(_T("DELETE FROM %s%ld WHERE OBJECT_ID = %ld"), TABLE_NAME_LAYER_AT,
                                       selectedlayerid, selectedobject);
-  if (DataBaseQueryNoResults(myQuery, false) == false) {
+  if (!DataBaseQueryNoResults(myQuery, false)) {
     return false;
   }
   return true;
@@ -2805,7 +2805,7 @@ bool DataBaseTM::SaveBezierSettings(BezierSettingsData *data) {
       _T("PRJ_BEZIER_METHOD=%d"),
       wxString::FromDouble(data->agg_approximation), wxString::FromDouble(data->ethz_width), data->ethz_max_points,
       (int)data->method);
-  if (DataBaseQueryNoResults(myQuery) == false) {
+  if (!DataBaseQueryNoResults(myQuery)) {
     return false;
   }
   return true;
@@ -2815,7 +2815,7 @@ bool DataBaseTM::LoadBezierSettings(BezierSettingsData *data) {
   wxString myQuery =
       _T(
             "SELECT PRJ_BEZIER_APPROX, PRJ_BEZIER_WIDTH, PRJ_BEZIER_NB_VERTEX, PRJ_BEZIER_METHOD FROM prj_settings");
-  if (DataBaseQuery(myQuery) == false) {
+  if (!DataBaseQuery(myQuery)) {
     return false;
   }
 

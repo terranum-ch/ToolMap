@@ -54,31 +54,31 @@ class TEST_toolDanglingNodes : public CxxTest::TestSuite {
 
   void testGetDanglingNodes1() {
     wxArrayRealPoints myPts;
-    TS_ASSERT(m_DN->GetDanglingNodes(myPts) == false);
+    TS_ASSERT(!m_DN->GetDanglingNodes(myPts));
   }
 
   void testCreate1() {
     ToolDanglingNodes myTool;
-    TS_ASSERT(myTool.IsOk() == false);
+    TS_ASSERT(!myTool.IsOk());
     myTool.Create(m_DB);
-    TS_ASSERT(myTool.IsOk() == true);
+    TS_ASSERT(myTool.IsOk());
   }
 
   void testCreate2() {
     ToolDanglingNodes myTool2(m_DB);
-    TS_ASSERT(myTool2.IsOk() == true);
+    TS_ASSERT(myTool2.IsOk());
   }
 
   void testSearch1() {
-    TS_ASSERT(m_DN->SearchInit(2, "no layer name") == false);
-    TS_ASSERT(m_DN->SearchInit(1, "no layer name") == true);
-    TS_ASSERT(m_DN->SearchInit(100, "no layer name") == false);
+    TS_ASSERT(!m_DN->SearchInit(2, "no layer name"));
+    TS_ASSERT(m_DN->SearchInit(1, "no layer name"));
+    TS_ASSERT(!m_DN->SearchInit(100, "no layer name"));
   }
 
   void testSearch2() {
     int iFeatureSearched = 0;
-    TS_ASSERT(m_DN->SearchInfo(iFeatureSearched) == false);
-    TS_ASSERT(m_DN->SearchInit(1, "no layer name") == true);
+    TS_ASSERT(!m_DN->SearchInfo(iFeatureSearched));
+    TS_ASSERT(m_DN->SearchInit(1, "no layer name"));
 
     TS_ASSERT(m_DN->SearchInfo(iFeatureSearched));
     TS_ASSERT(iFeatureSearched > 0);
@@ -86,23 +86,23 @@ class TEST_toolDanglingNodes : public CxxTest::TestSuite {
   }
 
   void testSearchRun1() {
-    TS_ASSERT(m_DN->SearchRun() == false);
+    TS_ASSERT(!m_DN->SearchRun());
   }
 
   void testSearchRun2() {
     int iNum = 0;
-    TS_ASSERT(m_DN->SearchInit(1, "no layer name") == true);
-    TS_ASSERT(m_DN->SearchRun() == true);
-    TS_ASSERT(m_DN->SearchRun() == false);
-    TS_ASSERT(m_DN->SearchInfo(iNum) == false);
+    TS_ASSERT(m_DN->SearchInit(1, "no layer name"));
+    TS_ASSERT(m_DN->SearchRun());
+    TS_ASSERT(!m_DN->SearchRun());
+    TS_ASSERT(!m_DN->SearchInfo(iNum));
   }
 
   void testSearchRun3() {
     // int iNum = 0;
-    TS_ASSERT(m_DN->SearchInit(1, "no layer name") == true);
-    TS_ASSERT(m_DN->SearchRun() == true);
+    TS_ASSERT(m_DN->SearchInit(1, "no layer name"));
+    TS_ASSERT(m_DN->SearchRun());
     wxArrayRealPoints myPts;
-    bool bGet = m_DN->GetDanglingNodes(myPts) == true;
+    bool bGet = m_DN->GetDanglingNodes(myPts);
     TS_ASSERT(bGet);
     if (bGet) {
       wxLogDebug(_T("%zu dangling nodes "), myPts.GetCount());

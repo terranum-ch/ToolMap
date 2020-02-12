@@ -56,38 +56,38 @@ class TEST_DatabaseResults : public CxxTest::TestSuite {
   }
 
   void testCreatorDtor() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")));
     DataBaseResult *myRes = new DataBaseResult();
-    TS_ASSERT(m_pDB->DataBaseGetResults(myRes) == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(myRes));
     delete myRes;
-    TS_ASSERT(m_pDB->DataBaseHasResults() == false);
+    TS_ASSERT(!m_pDB->DataBaseHasResults());
   }
 
   void testGetCount() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
     TS_ASSERT_EQUALS(myRes.GetColCount(), 3);
     TS_ASSERT_EQUALS(myRes.GetRowCount(), 4);
   }
 
   void testHasResults() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level WHERE ZOOM_ID=100")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level WHERE ZOOM_ID=100")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
-    TS_ASSERT(myRes.HasResults() == false);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
+    TS_ASSERT(!myRes.HasResults());
 
     // no result inited !
     DataBaseResult myRes2;
-    TS_ASSERT(myRes2.HasResults() == false);
+    TS_ASSERT(!myRes2.HasResults());
   }
 
   void testGetColName() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
     wxArrayString myColName;
-    TS_ASSERT(myRes.GetColName(myColName) == true);
+    TS_ASSERT(myRes.GetColName(myColName));
     TS_ASSERT_EQUALS(myColName.GetCount(), 3);
     for (unsigned int i = 0; i < myColName.GetCount(); i++) {
       wxLogMessage(_T("Col name : ") + myColName.Item(i));
@@ -95,60 +95,60 @@ class TEST_DatabaseResults : public CxxTest::TestSuite {
   }
 
   void testIsRowOk() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
-    TS_ASSERT(myRes.IsRowOk() == false);
-    TS_ASSERT(myRes.NextRow() == true);
-    TS_ASSERT(myRes.IsRowOk() == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
+    TS_ASSERT(!myRes.IsRowOk());
+    TS_ASSERT(myRes.NextRow());
+    TS_ASSERT(myRes.IsRowOk());
   }
 
   void testGetValue() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM zoom_level")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
-    TS_ASSERT(myRes.NextRow() == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
+    TS_ASSERT(myRes.NextRow());
 
     wxString myValue = wxEmptyString;
-    TS_ASSERT(myRes.GetValue(1, myValue) == true);
+    TS_ASSERT(myRes.GetValue(1, myValue));
     TS_ASSERT(myValue == _T("5000"));
     wxLogMessage(_T("Value for col 1 is ") + myValue);
-    TS_ASSERT(myRes.NextRow() == true);
-    TS_ASSERT(myRes.GetValue(1, myValue) == true);
+    TS_ASSERT(myRes.NextRow());
+    TS_ASSERT(myRes.GetValue(1, myValue));
     TS_ASSERT(myValue == _T("10000"));
 
-    TS_ASSERT(myRes.NextRow() == true);
-    TS_ASSERT(myRes.NextRow() == true);
-    TS_ASSERT(myRes.NextRow() == false);
+    TS_ASSERT(myRes.NextRow());
+    TS_ASSERT(myRes.NextRow());
+    TS_ASSERT(!myRes.NextRow());
   }
 
   void testGetValueLong() {
-    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM thematic_layers WHERE LAYER_INDEX = 1")) == true);
+    TS_ASSERT(m_pDB->DataBaseQuery(_T("SELECT * FROM thematic_layers WHERE LAYER_INDEX = 1")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
-    TS_ASSERT(myRes.NextRow() == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
+    TS_ASSERT(myRes.NextRow());
 
     long myValueLong;
-    TS_ASSERT(myRes.GetValue(0, myValueLong) == true);
+    TS_ASSERT(myRes.GetValue(0, myValueLong));
     TS_ASSERT_EQUALS(myValueLong, 1);
 
     wxString myValueStr = wxEmptyString;
-    TS_ASSERT(myRes.GetValue(2, myValueStr) == true);
+    TS_ASSERT(myRes.GetValue(2, myValueStr));
     TS_ASSERT(myValueStr == _T("TectoBound_L"));
 
     // trying to get string to long
-    TS_ASSERT(myRes.GetValue(2, myValueLong) == false)
+    TS_ASSERT(!myRes.GetValue(2, myValueLong))
   }
 
   void testGetValueGeom() {
     TS_ASSERT(m_pDB->DataBaseQuery(
-                  _T("SELECT OBJECT_ID, AsWKB(OBJECT_GEOMETRY) FROM generic_lines WHERE OBJECT_ID = 13")) == true);
+                  _T("SELECT OBJECT_ID, AsWKB(OBJECT_GEOMETRY) FROM generic_lines WHERE OBJECT_ID = 13")));
     DataBaseResult myRes;
-    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes) == true);
-    TS_ASSERT(myRes.NextRow() == true);
+    TS_ASSERT(m_pDB->DataBaseGetResults(&myRes));
+    TS_ASSERT(myRes.NextRow());
 
     OGRGeometry *myGeom = NULL;
-    TS_ASSERT(myRes.GetValue(1, &myGeom) == true);
+    TS_ASSERT(myRes.GetValue(1, &myGeom));
     TS_ASSERT(myGeom != NULL);
     TS_ASSERT(wkbFlatten(myGeom->getGeometryType()) == wkbLineString);
     wxLogMessage(_T("Returned line has %d vertex"), ((OGRLineString *)myGeom)->getNumPoints());

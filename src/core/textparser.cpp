@@ -157,7 +157,7 @@ bool TextParserTxtFile::OpenParseFile(bool bCreate) {
       return TRUE;
     }
   } else {
-    if (m_WriteMode == TRUE) {
+    if (m_WriteMode) {
       m_File->Create();
       m_File->Open();
       return TRUE;
@@ -168,7 +168,7 @@ bool TextParserTxtFile::OpenParseFile(bool bCreate) {
 
 bool TextParserTxtFile::CloseParseFile() {
   if (m_File != NULL) {
-    if (m_WriteMode == TRUE) {
+    if (m_WriteMode) {
       m_File->Write();
       wxLogDebug(_T("File data written on disk, now closing"));
     }

@@ -33,7 +33,7 @@ if (isset($_POST['filename'])){
 		}
                 
                 // send mail
-                if(sendMail("lucien.schreiber@gmail.com", $_POST['softname'], $_POST['filename'], $upload_status)==FALSE){
+                if(!sendMail("lucien.schreiber@gmail.com", $_POST['softname'], $_POST['filename'], $upload_status)){
                     echo "No Mail sent!";
                 }
                 

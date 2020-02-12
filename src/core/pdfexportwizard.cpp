@@ -143,7 +143,7 @@ void PdfExportWizard::OnRadioMultiplePageClick(wxCommandEvent &event) {
 }
 
 void PdfExportWizard::OnLastPage(wxWizardEvent &event) {
-  if (event.GetPage() == m_PageDecoration && event.GetDirection() == true) {
+  if (event.GetPage() == m_PageDecoration && event.GetDirection()) {
     wxButton *myFinishBtn = (wxButton *)FindWindowById(wxID_FORWARD);
     if (m_TextBtnNext != NULL && myFinishBtn != NULL) {
       myFinishBtn->SetLabel(*m_TextBtnNext);
@@ -188,7 +188,7 @@ PdfExportWizard::~PdfExportWizard() {
 }
 
 int PdfExportWizard::ShowWizard() {
-  if (RunWizard(m_PageLayout) == true) {
+  if (RunWizard(m_PageLayout)) {
     return wxID_OK;
   }
   return wxID_CANCEL;
@@ -197,7 +197,7 @@ int PdfExportWizard::ShowWizard() {
 bool PdfExportWizard::GetWizardChoices(PdfDocument &document) {
   document.SetOnePage(m_ExportOnePageCtrl->GetValue());
   document.SetTwoColsLayout(m_ExportTwoColCtrl->GetValue());
-  if (m_ExportOnePageCtrl->GetValue() == false) {
+  if (!m_ExportOnePageCtrl->GetValue()) {
     wxPaperSize myPaper = wxPAPER_A4;
     switch (m_PaperSizeCtrl->GetSelection()) {
       case 1:
@@ -223,7 +223,7 @@ bool PdfExportWizard::GetWizardChoices(PdfDocument &document) {
     document.SetPaperFormat(myPaper);
     document.SetPageBreak(true);
     wxPrintOrientation myOrientation = wxPORTRAIT;
-    if (m_PaperLandscapeCtrl->GetValue() == true) {
+    if (m_PaperLandscapeCtrl->GetValue()) {
       myOrientation = wxLANDSCAPE;
     }
     document.SetPaperOrientation(myOrientation);

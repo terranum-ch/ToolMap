@@ -25,7 +25,7 @@ int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void
   mypSimple->GetPercent()->SetValue(dfComplete * 100.0);
 
   mypSimple->UpdateProgress();
-  if (mypSimple->GetContinue() == false) {
+  if (!mypSimple->GetContinue()) {
     return FALSE;
   }
   return TRUE;

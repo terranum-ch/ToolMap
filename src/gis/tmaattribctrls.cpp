@@ -389,7 +389,7 @@ tmAAttribCtrlEnum::~tmAAttribCtrlEnum() {}
 void tmAAttribCtrlEnum::SetControlValue(const wxString &value) {
   if (IsChoiceList())  // CHOICE
   {
-    if (m_ControlChoice->SetStringSelection(value) == false) {
+    if (!m_ControlChoice->SetStringSelection(value)) {
       wxLogError(_T("Value %s not found in RadioBox"), value.c_str());
     }
   } else  // RADIO BUTTON
@@ -413,7 +413,7 @@ wxString tmAAttribCtrlEnum::GetControlValue() {
   {
     wxString myRetVal = wxEmptyString;
     for (int i = 0; i < m_iNumRadios; i++) {
-      if (m_ControlRadios[i]->GetValue() == true) {
+      if (m_ControlRadios[i]->GetValue()) {
         // myRetVal << m_Field.m_pCodedValueArray.Item(i)->m_ValueID;
         myRetVal = m_ControlRadios[i]->GetLabelText();
         break;
@@ -473,7 +473,7 @@ void tmAAttribCtrlDate::SetControlValue(const wxString &value) {
   wxASSERT(value.GetChar(4) == '-');
 
   wxDateTime myDate;
-  if (myDate.ParseDate(value) == true) {
+  if (myDate.ParseDate(value)) {
     m_Control->SetValue(myDate);
   } else {
     wxLogError(_T("Error parsing date in %s"), value.c_str());

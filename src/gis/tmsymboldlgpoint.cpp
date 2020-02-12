@@ -252,7 +252,7 @@ void tmSymbolDLGPointRule::_LoadTableData() {
     long myListIndex = m_SymbolListCtrl->InsertItem(m_SymbolListCtrl->GetItemCount(), _T(""));
     m_ImgList->Add(_CreateColorBitmap(m_Rules[i]->GetBrush(), m_Rules[i]->GetPen()));
     m_SymbolListCtrl->SetItemImage(myListIndex, i);
-    if (m_Rules[i]->IsActive() == false) {
+    if (!m_Rules[i]->IsActive()) {
       m_SymbolListCtrl->SetItemTextColour(myListIndex, m_SymbolListCtrl->GetTextColorGrayed());
     } else {
       m_SymbolListCtrl->SetItemTextColour(myListIndex, m_SymbolListCtrl->GetTextColorNormal());
@@ -287,7 +287,7 @@ void tmSymbolDLGPointRule::OnBtnClassify(wxCommandEvent &event) {
   wxArrayString myFieldValues;
   wxASSERT(m_GISData);
   wxString myFieldName = m_CategoryColumnCtrl->GetString(m_CategoryColumnCtrl->GetSelection());
-  if (m_GISData->GetDistinctFieldsValue(myFieldName, myFieldValues) == false) {
+  if (!m_GISData->GetDistinctFieldsValue(myFieldName, myFieldValues)) {
     wxLogError(_("Unable to get fields values for '%s'"), myFieldName);
     return;
   }

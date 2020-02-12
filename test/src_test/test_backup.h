@@ -57,14 +57,14 @@ class TEST_Backup : public CxxTest::TestSuite {
 
   void testBackupFile() {
     BackupFile myFile;
-    TS_ASSERT(myFile.IsValid() == false);
+    TS_ASSERT(!myFile.IsValid());
   }
 
   void testBackupFile2() {
     BackupFile myFile;
     myFile.SetOutputName(wxFileName(g_TestPathBackup, _T("testbackup.tmbk")));
     myFile.SetInputDirectory(wxFileName(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
-    TS_ASSERT(myFile.IsValid() == false);
+    TS_ASSERT(!myFile.IsValid());
     myFile.SetDate(wxDateTime::Now());
     TS_ASSERT(myFile.IsValid());
   }

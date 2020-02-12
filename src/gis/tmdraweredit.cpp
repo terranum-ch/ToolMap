@@ -61,7 +61,7 @@ void tmDrawerEditLine::DLVertexDelete() {
 
 int tmDrawerEditLine::DLGetCountPoints() {
   wxASSERT(m_Pt != NULL);
-  if (IsEndVertex() == true) return 2;
+  if (IsEndVertex()) return 2;
 
   return 3;
 }
@@ -91,7 +91,7 @@ wxPoint *tmDrawerEditLine::DLGetPoints() {
 }
 
 void tmDrawerEditLine::DLReorderVertex() {
-  if (IsEndVertex() == true) {
+  if (IsEndVertex()) {
     if (m_RightPT != NULL) {
       wxASSERT(m_LeftPT == NULL);
       m_LeftPT = new wxPoint(*m_RightPT);
@@ -103,7 +103,7 @@ void tmDrawerEditLine::DLReorderVertex() {
 
 bool tmDrawerEditLine::CreateVertex(const wxArrayPoints &pts, int index) {
   wxASSERT(index >= 0);
-  if (IsOK() == true) DLVertexDelete();
+  if (IsOK()) DLVertexDelete();
 
   if (pts.GetCount() <= 1) {
     wxLogError(_("Not enough vertex"));
@@ -129,7 +129,7 @@ bool tmDrawerEditLine::CreateVertex(const wxArrayPoints &pts, int index) {
 }
 
 bool tmDrawerEditLine::CreateVertex(const wxPoint &pt, wxPoint *left, wxPoint *right, int index) {
-  if (IsOK() == true) DLVertexDelete();
+  if (IsOK()) DLVertexDelete();
 
   if (left == NULL && right == NULL) {
     wxLogDebug(_("Left or right should not be NULL"));
@@ -149,7 +149,7 @@ bool tmDrawerEditLine::CreateVertex(const wxPoint &pt, wxPoint *left, wxPoint *r
 }
 
 bool tmDrawerEditLine::CreateVertex(const wxPoint &pt) {
-  if (IsOK() == true) DLVertexDelete();
+  if (IsOK()) DLVertexDelete();
 
   wxASSERT(m_Pt == NULL);
   m_Pt = new wxPoint(pt);
@@ -165,7 +165,7 @@ bool tmDrawerEditLine::IsEndVertex() {
 }
 
 bool tmDrawerEditLine::SetVertex(const wxPoint &pt) {
-  if (IsOK() == false) {
+  if (!IsOK()) {
     wxLogDebug(
         _T("Error setting vertex, no existing vertex ! Use")
         _T(" CreateVertex() function first"));
@@ -184,7 +184,7 @@ void tmDrawerEditLine::SetSymbology(wxColour col, int width) {
 }
 
 bool tmDrawerEditLine::DrawEditPart(wxClientDC *pdc) {
-  if (IsOK() == false) {
+  if (!IsOK()) {
     wxLogDebug(_T("Error CreateVertex() first"));
     return false;
   }
@@ -218,7 +218,7 @@ void tmDrawerEditLine::DrawEditReset(wxClientDC *pdc) {
 }
 
 bool tmDrawerEditLine::ClearVertex() {
-  if (IsOK() == false) {
+  if (!IsOK()) {
     wxLogDebug(_T("Nothing to clear, CreateVertex() first"));
     return false;
   }

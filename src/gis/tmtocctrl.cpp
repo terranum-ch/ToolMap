@@ -94,7 +94,7 @@ void tmTOCCtrl::LoadImageList() {
 void tmTOCCtrl::OnPaint(wxPaintEvent &event) {
   // wxPaintDC myUnusedPaintDC (this);
 
-  if (m_IsImageInited == false) {
+  if (!m_IsImageInited) {
     // unchecked
     wxBitmap myTempBmp(16, 16);
     wxMemoryDC myDC;
@@ -194,7 +194,7 @@ bool tmTOCCtrl::UpdateLayerName(tmLayerProperties *item, const wxString &newname
   wxTreeItemId myItemID;
   myItemID = GetLastChild(m_root);
   while (1) {
-    if (myItemID.IsOk() == false) {
+    if (!myItemID.IsOk()) {
       return false;
     }
 
@@ -364,7 +364,7 @@ unsigned int tmTOCCtrl::GetCountLayers() {
   *******************************************************************************/
 tmLayerProperties *tmTOCCtrl::GetSelectionLayer() {
   wxTreeItemId selected = GetSelection();
-  if (selected.IsOk() == false) {
+  if (!selected.IsOk()) {
     return NULL;
   }
 
@@ -594,7 +594,7 @@ void tmTOCCtrl::OnMouseClick(wxMouseEvent &event) {
   clickedid = HitTest(event.GetPosition(), flags);
   if (flags & wxTREE_HITTEST_ONITEMICON) {
     tmLayerProperties *itemdata = (tmLayerProperties *)GetItemData(clickedid);
-    if (itemdata->IsVisible() == true) {
+    if (itemdata->IsVisible()) {
       itemdata->SetVisible(false);
     } else {
       itemdata->SetVisible(true);
@@ -625,7 +625,7 @@ void tmTOCCtrl::OnMouseClick(wxMouseEvent &event) {
   *******************************************************************************/
 void tmTOCCtrl::OnMouseItemRightClick(wxTreeEvent &event) {
   wxTreeItemId itemid = event.GetItem();
-  if (itemid.IsOk() == false) {
+  if (!itemid.IsOk()) {
     return;
   }
 
@@ -661,7 +661,7 @@ void tmTOCCtrl::OnMouseItemDoubleClick(wxTreeEvent &event) {
     return;
   }
 
-  if (event.GetItem().IsOk() == true) {
+  if (event.GetItem().IsOk()) {
     wxCommandEvent evt;
     OnShowProperties(evt);
   }
@@ -716,7 +716,7 @@ void tmTOCCtrl::OnMoveLayers(wxCommandEvent &event) {
 void tmTOCCtrl::OnShortcutKey(wxKeyEvent &event) {
   if (event.CmdDown() && IsTOCReady()) {
     wxTreeItemId itemid = GetSelection();
-    if (itemid.IsOk() == false) {
+    if (!itemid.IsOk()) {
       return;
     }
 
@@ -782,7 +782,7 @@ void tmTOCCtrl::OnEditingChange(wxCommandEvent &event) {
 
 void tmTOCCtrl::OnDragStart(wxTreeEvent &event) {
   m_DragItemID = wxTreeItemId();
-  wxASSERT(m_DragItemID.IsOk() == false);
+  wxASSERT(!m_DragItemID.IsOk());
 
   if (event.GetItem() != GetRootItem()) {
     event.Allow();
@@ -799,7 +799,7 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent &event) {
   wxTreeItemId myItemStop = event.GetItem();
 
   m_DragItemID = wxTreeItemId();
-  wxASSERT(m_DragItemID.IsOk() == false);
+  wxASSERT(!m_DragItemID.IsOk());
 
   if (myItemStop == myItemStart) {
     return;
@@ -823,7 +823,7 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent &event) {
     int myIterPosition = 1;
     while (1) {
       wxTreeItemId myIterLayer = GetNextChild(m_root, myCookie);
-      if (myIterLayer.IsOk() == false) {
+      if (!myIterLayer.IsOk()) {
         break;
       }
       if (myIterLayer == myItemStart) {
@@ -971,7 +971,7 @@ void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event) {
   }
 
   wxFile myFile(mySaveFilePathTxt, wxFile::write);
-  if (myFile.IsOpened() == false) {
+  if (!myFile.IsOpened()) {
     wxLogError(_("Error creating file: '%s'"), mySaveFilePathTxt);
     return;
   }
@@ -1000,7 +1000,7 @@ void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event) {
 
   // try to load the symbology file
   wxTextFile myFile;
-  if (myFile.Open(myLoadFilePathTxt) == false) {
+  if (!myFile.Open(myLoadFilePathTxt)) {
     wxLogError(_("Unable to open symbology file: %s"), myLoadFilePathTxt);
     return;
   }
@@ -1113,7 +1113,7 @@ void tmTOCCtrl::OnVertexMenu(wxCommandEvent &event) {
   *******************************************************************************/
 void tmTOCCtrl::OnRemoveItem(wxCommandEvent &event) {
   wxTreeItemId selected = GetSelection();
-  if (selected.IsOk() == false || selected == m_root) {
+  if (!selected.IsOk() || selected == m_root) {
     wxLogMessage(_("No layer selected, or unable to delete selected layer"));
     return;
   }

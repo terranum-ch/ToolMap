@@ -334,8 +334,8 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
   }
 
   // delete layer if empty (#435)
-  if (m_ExportEmpty == false) {
-    if (m_ExportData->HasFeatures() == false) {
+  if (!m_ExportEmpty) {
+    if (!m_ExportData->HasFeatures()) {
       m_ExportData->DeleteLayer(layer, m_ExportPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
     }
   }
@@ -346,7 +346,7 @@ bool tmExportManager::ExportLayer(ProjectDefMemoryLayers *layer, wxRealPoint *fr
 
 bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_LAYERS_TYPE type, bool useProgressDlg) {
   // check and init path and export type
-  if (IsExportPathValid() == false) {
+  if (!IsExportPathValid()) {
     if (m_Parent == NULL) {
       wxLogError(_("Export directory isn't specified!"));
       return false;
@@ -412,7 +412,7 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
     myTempLayer.m_pLayerFieldArray.Add(myField);
   }
 
-  if (GetAvailableFileName(&myTempLayer) == false) {
+  if (!GetAvailableFileName(&myTempLayer)) {
     return false;
   }
   wxLogMessage(myTempLayer.m_LayerName);
@@ -426,7 +426,7 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
   if (myTempLayer.m_LayerType == LAYER_POLYGON) {
     myTempLayer.m_LayerType = LAYER_POINT;
   }
-  if (_CreateExportLayer(&myTempLayer, true) == false) {
+  if (!_CreateExportLayer(&myTempLayer, true)) {
     return false;
   }
   myTempLayer.m_LayerType = myType;
@@ -435,14 +435,14 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
   long lTotalAttrib = wxNOT_FOUND;
   wxString myTotQuery =
       wxString::Format(_T("SELECT COUNT(*) FROM %s"), TABLE_NAME_GIS_ATTRIBUTION[myTempLayer.m_LayerType]);
-  if (m_pDB->DataBaseQuery(myTotQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myTotQuery)) {
     return false;
   }
   m_pDB->DataBaseGetNextResult(lTotalAttrib);
   m_pDB->DataBaseClearResults();
 
   wxProgressDialog *myProgressDlg = NULL;
-  if (useProgressDlg == true) {
+  if (useProgressDlg) {
     myProgressDlg = new wxProgressDialog(
         _("Exporting concatenated"),
         wxString::Format(_("%ld Record(s) to export in '%s'"), lTotalAttrib, PRJDEF_LAYERS_TYPE_STRING[myType]), 100,
@@ -461,7 +461,7 @@ bool tmExportManager::ExportConcatenated(PrjDefMemManage *localprojdef, PRJDEF_L
                                       TABLE_NAME_GIS_ATTRIBUTION[myTempLayer.m_LayerType], TABLE_NAME_OBJECTS);
   wxASSERT(m_pDB);
 
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     return false;
   }
 
@@ -554,7 +554,7 @@ bool tmExportManager::_CreateExportLayer(ProjectDefMemoryLayers *layer, bool ign
 
   // get size of object_description
   int iSizeOfObjCol = 0;
-  if (ignore_default_fields == false) {
+  if (!ignore_default_fields) {
     iSizeOfObjCol = m_ExportData->GetSizeOfObjDesc(layer->m_LayerID);
   }
 
@@ -564,13 +564,13 @@ bool tmExportManager::_CreateExportLayer(ProjectDefMemoryLayers *layer, bool ign
   }
 
   // add toolmap's id field
-  if (ignore_default_fields == false) {
-    if (m_ExportData->AddFIDField() == false) {
+  if (!ignore_default_fields) {
+    if (!m_ExportData->AddFIDField()) {
       return false;
     }
 
     // add obligatory (basic) fields
-    if (m_ExportData->AddGenericFields(iSizeOfObjCol) == false) {
+    if (!m_ExportData->AddGenericFields(iSizeOfObjCol)) {
       return false;
     }
   }
@@ -624,12 +624,12 @@ bool tmExportManager::_ExportSimple(ProjectDefMemoryLayers *layer) {
   }
 
   wxASSERT(m_pDB);
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     return false;
   }
 
   // Message if some layers are exported empty
-  if (m_pDB->DataBaseHasResults() == false) {
+  if (!m_pDB->DataBaseHasResults()) {
     // show warning message only if we choose to export empty layers
     if (m_ExportEmpty) {
       wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
@@ -646,19 +646,19 @@ bool tmExportManager::_ExportSimple(ProjectDefMemoryLayers *layer) {
 
   switch (layer->m_LayerType) {
     case LAYER_LINE:
-      if (m_ExportData->WriteLines(layer) == false) {
+      if (!m_ExportData->WriteLines(layer)) {
         return false;
       }
       break;
 
     case LAYER_POINT:
-      if (m_ExportData->WritePoints(layer) == false) {
+      if (!m_ExportData->WritePoints(layer)) {
         return false;
       }
       break;
 
     case LAYER_POLYGON:
-      if (m_ExportData->WriteLabels(layer) == false) {
+      if (!m_ExportData->WriteLabels(layer)) {
         return false;
       }
       break;
@@ -686,21 +686,13 @@ bool tmExportManager::_ExportPolyGIS(ProjectDefMemoryLayers *layer) {
       TABLE_NAME_GIS_GENERIC[LAYER_LINE].c_str(), TABLE_NAME_GIS_ATTRIBUTION[LAYER_LINE].c_str(),
       TABLE_NAME_OBJECTS.c_str(), layer->m_LayerID);
   wxASSERT(m_pDB);
-  if (m_pDB->DataBaseQuery(myLQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myLQuery)) {
     return false;
   }
 
-  //
-  // Message if some layers are exported empty
-  //
-  /*if (m_pDB->DataBaseHasResults() == false) {
-      wxLogWarning(_("Layer '%s' exported but is empty"), layer->m_LayerName.c_str());
-      return true;
-  }*/
-
   wxASSERT(m_Scale);
   m_ExportData->SetCropBufferDistance(m_Scale->MetersToRealUnits(1));
-  if (m_ExportData->WritePolygons(layer) == false) {
+  if (!m_ExportData->WritePolygons(layer)) {
     return false;
   }
   return true;
@@ -841,7 +833,7 @@ wxRealPoint *tmExportManager::GetFrame(int &nbvertex) {
   wxASSERT(m_pDB);
   wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_GIS_GENERIC[4];
 
-  if (m_pDB->DataBaseQuery(sSentence) == false) {
+  if (!m_pDB->DataBaseQuery(sSentence)) {
     nbvertex = 0;
     return NULL;
   }
@@ -920,7 +912,7 @@ void tmExportSelected_DLG::OnBtnInvert(wxCommandEvent &event) {
 void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent &event) {
   bool bHasCHecked = false;
   for (unsigned int i = 0; i < m_ListLayersCtrl->GetCount(); i++) {
-    if (m_ListLayersCtrl->IsChecked(i) == true) {
+    if (m_ListLayersCtrl->IsChecked(i)) {
       bHasCHecked = true;
       break;
     }
@@ -931,7 +923,7 @@ void tmExportSelected_DLG::OnUpdateUIBtnNone(wxUpdateUIEvent &event) {
 void tmExportSelected_DLG::OnUpdateUIOK(wxUpdateUIEvent &event) {
   bool bHasCHecked = false;
   for (unsigned int i = 0; i < m_ListLayersCtrl->GetCount(); i++) {
-    if (m_ListLayersCtrl->IsChecked(i) == true) {
+    if (m_ListLayersCtrl->IsChecked(i)) {
       bHasCHecked = true;
       break;
     }
@@ -988,8 +980,7 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers) {
   wxStaticBoxSizer *sbSizer2;
   sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Settings")), wxVERTICAL);
 
-  m_OverwriteFilesCtrl =
-      new wxCheckBox(this, wxID_ANY, _("Overwrite existing files"), wxDefaultPosition, wxDefaultSize, 0);
+  m_OverwriteFilesCtrl = new wxCheckBox(this, wxID_ANY, _("Overwrite existing files"), wxDefaultPosition, wxDefaultSize, 0);
   m_OverwriteFilesCtrl->SetValue(myConfig->ReadBool("overwrite_files", true));
   sbSizer2->Add(m_OverwriteFilesCtrl, 0, wxALL, 5);
 
@@ -1118,3 +1109,4 @@ bool tmExportSelected_DLG::UseFastExport() {
 bool tmExportSelected_DLG::DoExportAttributeCode() {
   return m_ExportAttribCodeCtrl->GetValue();
 }
+       

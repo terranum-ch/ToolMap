@@ -76,7 +76,7 @@ void BezierSettings_DLG::_GetDataFromControl(BezierSettingsData *data) {
 }
 
 void BezierSettings_DLG::OnIdlePreview(wxIdleEvent &event) {
-  if (m_PreviewCtrl == NULL || m_PreviewCtrl->IsChecked() == false) {
+  if (m_PreviewCtrl == NULL || !m_PreviewCtrl->IsChecked()) {
     return;
   }
 
@@ -97,7 +97,7 @@ void BezierSettings_DLG::OnIdlePreview(wxIdleEvent &event) {
 }
 
 void BezierSettings_DLG::OnCheckPreview(wxCommandEvent &event) {
-  if (event.IsChecked() == false) {
+  if (!event.IsChecked()) {
     wxASSERT(m_EditManager);
     m_EditManager->ArcClear();
     m_Renderer->Refresh();
@@ -106,7 +106,7 @@ void BezierSettings_DLG::OnCheckPreview(wxCommandEvent &event) {
 }
 
 void BezierSettings_DLG::OnUpdateUIPreview(wxUpdateUIEvent &event) {
-  if (m_EditManager == NULL || m_EditManager->IsBezierToLinePreviewAllowed() == false) {
+  if (m_EditManager == NULL || !m_EditManager->IsBezierToLinePreviewAllowed()) {
     event.Enable(false);
     return;
   }

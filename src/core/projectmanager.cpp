@@ -97,7 +97,7 @@ bool ProjectManager::CreateNewProject() {
   {
     wxBusyInfo wait(_("Please wait, creating empty project..."), m_Parent);
 
-    if (m_DB->CreateTMDatabase(&PrjDefinition) == false) {
+    if (!m_DB->CreateTMDatabase(&PrjDefinition)) {
       CloseProject();
       // delete wait;
       return false;
@@ -107,7 +107,7 @@ bool ProjectManager::CreateNewProject() {
   // fill the project
   ProjectDefDLG *myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
   if (myNewProjDlg->ShowModal() == wxID_OK) {
-    if (m_DB->InitProjectWithStartingWizard(&PrjDefinition) == false) {
+    if (!m_DB->InitProjectWithStartingWizard(&PrjDefinition)) {
       delete myNewProjDlg;
       wxLogError(_T("Error passing data to database"));
       // change menu status
@@ -119,7 +119,7 @@ bool ProjectManager::CreateNewProject() {
   delete myNewProjDlg;
 
   // add default queries
-  if (PMAddDefaultQueries() == false) return false;
+  if (!PMAddDefaultQueries()) return false;
 
   // open the newly created project
   if (OpenProject(PrjDefinition.m_PrjPath + wxFileName::GetPathSeparator() + PrjDefinition.m_PrjName) != tmDB_OPEN_OK) {
@@ -205,7 +205,7 @@ bool ProjectManager::PMAddDefaultQueries() {
   bool breturn = m_DB->EditQueries(TOC_NAME_LINES, _("Lines without attribution"),
                                    wxString::Format(myQueryTemplate, TABLE_NAME_GIS_GENERIC[TOC_NAME_LINES].c_str(),
                                                     TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LINES].c_str()));
-  if (breturn == false) {
+  if (!breturn) {
     wxLogError(_("Error adding default query [LINES]"));
     return false;
   }
@@ -213,7 +213,7 @@ bool ProjectManager::PMAddDefaultQueries() {
   breturn = m_DB->EditQueries(TOC_NAME_POINTS, _("Points without attribution"),
                               wxString::Format(myQueryTemplate, TABLE_NAME_GIS_GENERIC[TOC_NAME_POINTS].c_str(),
                                                TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS].c_str()));
-  if (breturn == false) {
+  if (!breturn) {
     wxLogError(_("Error adding default query [POINTS]"));
     return false;
   }
@@ -221,7 +221,7 @@ bool ProjectManager::PMAddDefaultQueries() {
   breturn = m_DB->EditQueries(TOC_NAME_LABELS, _("Labels without attribution"),
                               wxString::Format(myQueryTemplate, TABLE_NAME_GIS_GENERIC[TOC_NAME_LABELS].c_str(),
                                                TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LABELS].c_str()));
-  if (breturn == false) {
+  if (!breturn) {
     wxLogError(_("Error adding default query [LABELS]"));
     return false;
   }
@@ -384,7 +384,7 @@ bool ProjectManager::BackupProject(const wxString &backup_comment) {
   myWnd = m_Parent;
 #endif
 
-  if (myBckManager.Backup(myBckFile, myWnd) == false) {
+  if (!myBckManager.Backup(myBckFile, myWnd)) {
     wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     wxEndBusyCursor();
     return false;
@@ -430,7 +430,7 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
   if (beVerbose) {
     wxLogMessage(_("CHECKING..."));
   }
-  if (merger.CheckSimilar() == false) {
+  if (!merger.CheckSimilar()) {
     wxString myErrors = _("Checking FAILED! \n") + wxJoin(merger.GetErrors(), '\n');
     wxLogError(myErrors);
     CleanDirectory(tmpPath);
@@ -449,7 +449,7 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
     wxLogMessage(_("MERGING..."));
   }
 
-  if (merger.MergeIntoMaster() == false) {
+  if (!merger.MergeIntoMaster()) {
     wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(merger.GetErrors(), '\n');
     wxLogError(myErrors);
     CleanDirectory(tmpPath);
@@ -616,11 +616,8 @@ int ProjectManager::OpenProject(const wxString &path) {
   // optimize project
   wxString myDatabaseSizeBefore = m_DB->DataBaseGetSize();
   tmProjectMaintenance myPrjMaintenance(wxEmptyString, m_DB);
-  /*if (myPrjMaintenance.OptimizeTables() == false) {
-      wxLogWarning(_("Project optimization failed!"));
-  }*/
 
-  if (myPrjMaintenance.ClearOrphans() == false) {
+  if (!myPrjMaintenance.ClearOrphans()) {
     wxArrayString myErrors = myPrjMaintenance.GetErrors();
     wxLogWarning(_("Cleaning orphans failed!"));
     for (unsigned int i = 0; i < myErrors.GetCount(); i++) {

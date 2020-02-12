@@ -263,7 +263,7 @@ void ProjectDefLayersFieldsList::BeforeDeleting() {
 
     // if we are in editing mode we must save the items to delete
     // in the delete field array.
-    if (m_bIsModeEditing == TRUE) {
+    if (m_bIsModeEditing) {
       field = m_pPrjDefinition->FindField(myFieldName);
       if (field && field->m_FieldID > 0) {
         // if field exists in the database we mark it for deleting
@@ -637,7 +637,7 @@ void ProjectDefLayersDlg::OnLayerNameChange(wxCommandEvent &event) {
   @date 03 November 2008
   *******************************************************************************/
 void ProjectDefLayersDlg::UpdateDefaultPolygonBorderName(const wxString &name) {
-  if (m_bIsModeEditing == false)
+  if (!m_bIsModeEditing)
     if (m_DlgPDL_Contour_Name) m_DlgPDL_Contour_Name->SetValue(m_DlgPDL_Contour_Prefix + name);
 }
 
@@ -678,7 +678,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow() {
     m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName);
     m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE)m_LayersObj->m_LayerType);
 
-    if (m_LayersObj->m_LayerType == LAYER_POLYGON && m_bIsModeEditing == false) {
+    if (!m_LayersObj->m_LayerType == LAYER_POLYGON && m_bIsModeEditing) {
       m_DlgPDL_Contour_Name->Show(true);
       m_DlgPDL_Contour_Static->Show(true);
       m_DlgPDL_Contour_Name->SetValue(m_LayersObj->m_LayerPolygonDefaultValue);
@@ -825,7 +825,7 @@ void ProjectDefLayersDlg::CreateControls() {
 
   wxNotebook *itemNotebook9 = new wxNotebook(itemDialog1, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT);
 
-  if (m_bIsModeEditing == FALSE) {
+  if (!m_bIsModeEditing) {
     m_DlgPDL_Panel_Obj =
         new wxPanel(itemNotebook9, ID_DLGPDL_PANEL_OBJ, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxStaticBox *itemStaticBoxSizer11Static = new wxStaticBox(m_DlgPDL_Panel_Obj, wxID_ANY, _("Object Kind"));
@@ -878,7 +878,7 @@ void ProjectDefLayersDlg::CreateControls() {
   itemBoxSizer2->Add(itemNotebook9, 1, wxGROW | wxALL, 5);
 
   // textctrl for polygon border name
-  if (m_bIsModeEditing == false) {
+  if (!m_bIsModeEditing) {
     m_DlgPDL_Contour_Static =
         new wxStaticBoxSizer(new wxStaticBox(itemDialog1, wxID_ANY, _("Polygon contour value")), wxVERTICAL);
 

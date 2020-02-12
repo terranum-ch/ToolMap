@@ -28,14 +28,14 @@ tmStatsRecords::~tmStatsRecords() {}
 
 long tmStatsRecords::Create(const tmStatsData &data) {
   wxASSERT(m_pDB);
-  if (data.m_TimeStart.IsValid() == false) {
+  if (!data.m_TimeStart.IsValid()) {
     wxLogError(_("Unable to create statistics record, start time isn't valid!"));
     return wxNOT_FOUND;
   }
 
   wxString myQuery = wxString::Format(_T("INSERT INTO %s (DATE_START) VALUE (\"%s %s\")"), TABLE_NAME_STAT,
                                       data.m_TimeStart.FormatISODate(), data.m_TimeStart.FormatISOTime());
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return wxNOT_FOUND;
   }
   return m_pDB->DataBaseGetLastInsertedID();
@@ -48,7 +48,7 @@ bool tmStatsRecords::Add(long recordid, const tmStatsData &data) {
       _T("UPDATE %s SET CLICK=CLICK + %ld, ATTRIBUTION=ATTRIBUTION + %ld,")
       _T("INTERSECTION = INTERSECTION+%ld WHERE STAT_ID=%ld"),
       TABLE_NAME_STAT, data.m_NbClick, data.m_NbAttribution, data.m_NbIntersection, recordid);
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return false;
   }
   return true;
@@ -61,12 +61,12 @@ bool tmStatsRecords::Load(long recordid, tmStatsData &data) {
       _T("TIMEDIFF(DATE_END,DATE_START) ")
       _T("FROM %s WHERE STAT_ID = %ld"),
       TABLE_NAME_STAT, recordid);
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     return false;
   }
 
   DataBaseResult myResult;
-  if (m_pDB->DataBaseGetResults(&myResult) == false) {
+  if (!m_pDB->DataBaseGetResults(&myResult)) {
     wxLogWarning(_("No statistics results returned for selected id (%ld)!"), recordid);
     return false;
   }
@@ -105,12 +105,12 @@ bool tmStatsRecords::LoadTotal(tmStatsData &data) {
       _T("SUM(SECOND(TIMEDIFF(DATE_END, DATE_START))) FROM %s"),
       TABLE_NAME_STAT);
   data.Reset();
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     return false;
   }
 
   DataBaseResult myResults;
-  if (m_pDB->DataBaseGetResults(&myResults) == false) {
+  if (!m_pDB->DataBaseGetResults(&myResults)) {
     return false;
   }
 
@@ -139,7 +139,7 @@ bool tmStatsRecords::LoadTotal(tmStatsData &data) {
 bool tmStatsRecords::Delete(long recordid) {
   wxASSERT(m_pDB);
   wxString myQuery = wxString::Format(_T("DELETE FROM %s WHERE STAT_ID = %ld"), TABLE_NAME_STAT, recordid);
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return false;
   }
   return true;
@@ -152,12 +152,12 @@ bool tmStatsRecords::ExportAll(const wxFileName &filename) {
 long tmStatsRecords::GetCount() {
   wxASSERT(m_pDB);
   wxString myQuery = wxString::Format(_T("SELECT COUNT(*) FROM %s"), TABLE_NAME_STAT);
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     return wxNOT_FOUND;
   }
 
   long myNbRecords = wxNOT_FOUND;
-  if (m_pDB->DataBaseGetNextResult(myNbRecords) == false) {
+  if (!m_pDB->DataBaseGetNextResult(myNbRecords)) {
     myNbRecords = wxNOT_FOUND;
   }
   m_pDB->DataBaseClearResults();

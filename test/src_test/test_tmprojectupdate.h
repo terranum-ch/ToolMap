@@ -116,11 +116,11 @@ class TEST_tmProjectUpdater : public CxxTest::TestSuite {
     wxApp::SetInstance(new wxAppConsole());
     // remove if exists
     wxFileName myDir(g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
-    if (wxDir::Exists(myDir.GetFullPath()) == true) {
+    if (wxDir::Exists(myDir.GetFullPath())) {
       wxLogMessage(_T("Removing tempory project: '%s'"), myDir.GetFullPath());
       myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
     }
-    TS_ASSERT(wxDir::Exists(myDir.GetFullPath()) == false);
+    TS_ASSERT(!wxDir::Exists(myDir.GetFullPath()));
 
     // copy project
     CopyDir(g_TestPathPRJ + g_TestPrj_PrjUpdate, g_TestPathPRJ + _T("tmp_testprjupdate"));
@@ -151,14 +151,14 @@ class TEST_tmProjectUpdater : public CxxTest::TestSuite {
 
   void testIsUpdateNeeded1() {
     tmProjectUpdater myPrjUpd(m_CopyDB);
-    TS_ASSERT(myPrjUpd.IsCorrectVersion() == false);
+    TS_ASSERT(!myPrjUpd.IsCorrectVersion());
   }
 
   void testUpdateOK() {
     tmProjectUpdater myPrjUpd(m_CopyDB);
-    TS_ASSERT(myPrjUpd.IsCorrectVersion() == false);
+    TS_ASSERT(!myPrjUpd.IsCorrectVersion());
     TS_ASSERT_EQUALS(myPrjUpd.DoUpdate(), tmPRJ_UPD_ERROR_OK);
-    TS_ASSERT(myPrjUpd.IsCorrectVersion() == true);
+    TS_ASSERT(myPrjUpd.IsCorrectVersion());
   }
 };
 

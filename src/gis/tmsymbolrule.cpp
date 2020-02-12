@@ -308,13 +308,13 @@ bool tmSymbolRuleManager::Serialize(tmSerialize &s) {
   }
 
   // if needed, serialize rules
-  if (bReturn == false) {
+  if (!bReturn) {
     wxLogError(_("Error saving basic symbology"));
     return bReturn;
   }
 
   s.EnterObject();
-  if (s.IsStoring() == true) {
+  if (s.IsStoring()) {
     s << m_DlgSelectedPanel;
     s << m_DlgSelectedFieldname;
     s << (int)m_Rules.GetCount();

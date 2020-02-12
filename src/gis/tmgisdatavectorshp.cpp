@@ -56,7 +56,7 @@ bool tmGISDataVectorSHP::Open(const wxString &filename, bool bReadWrite) {
 
   // open the shapefile and return true if success
   unsigned int openFlags = GDAL_OF_VECTOR | GDAL_OF_READONLY;
-  if (bReadWrite == true) {
+  if (bReadWrite) {
     openFlags = GDAL_OF_VECTOR | GDAL_OF_UPDATE;
   }
 
@@ -590,7 +590,7 @@ wxString tmGISDataVectorSHP::GetDataSizeAsHtml(int iPrecision) {
   wxString myShpExt[] = {_T(".shp"), _T(".sbn"), _T(".shx"), _T(".dbf")};
 
   for (unsigned int i = 0; i < (sizeof(myShpExt) / sizeof(wxString)); i++) {
-    if (wxFileName::Exists(myFileWoutExt + myShpExt[i]) == false) {
+    if (!wxFileName::Exists(myFileWoutExt + myShpExt[i])) {
       continue;
     }
     wxULongLong myTempSize = wxFileName::GetSize(myFileWoutExt + myShpExt[i]);
@@ -1100,7 +1100,7 @@ bool tmGISDataVectorSHP::GetFieldNumeric(const wxString &fieldname, int &fieldva
   int myFieldIndex = m_Layer->GetLayerDefn()->GetFieldIndex((const char *)fieldname.mb_str(wxConvUTF8));
   wxASSERT(myFieldIndex != -1);
 
-  if (m_Feature == NULL || m_Feature->IsFieldSet(myFieldIndex) == false) {
+  if (m_Feature == NULL || !m_Feature->IsFieldSet(myFieldIndex)) {
     return false;
   }
   fieldvalue = m_Feature->GetFieldAsInteger(myFieldIndex);

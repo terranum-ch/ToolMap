@@ -48,11 +48,11 @@ class TEST_New_DatabaseTM : public CxxTest::TestSuite {
   void testCreateNewTMDatabase() {
     // remove if exists
     wxString myPrjName = g_TestPathPRJ + g_TestPrj_222;
-    if (wxDirExists(myPrjName) == true) {
+    if (wxDirExists(myPrjName)) {
       wxLogMessage("Removing : " + myPrjName);
       wxFileName::Rmdir(myPrjName, wxPATH_RMDIR_RECURSIVE);
     }
-    TS_ASSERT(wxDirExists(myPrjName) == false);
+    TS_ASSERT(!wxDirExists(myPrjName));
 
     PrjDefMemManage myPrjdef;
     myPrjdef.m_PrjName = g_TestPrj_222;

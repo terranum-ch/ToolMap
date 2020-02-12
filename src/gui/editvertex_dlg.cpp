@@ -180,10 +180,10 @@ bool EditVertexDLG::TransferDataToWindow() {
   SetStatusSelectedID(m_SelectedOID);
   SetStatusNumberVertex(m_VertexPts.GetCount());
 
-  if (GridClear() == false) return false;
+  if (!GridClear()) return false;
 
   for (unsigned int i = 0; i < m_VertexPts.GetCount(); i++)
-    if (GridInsertLine(i, &m_VertexPts.Item(i)) == false) return false;
+    if (!GridInsertLine(i, &m_VertexPts.Item(i))) return false;
 
   return true;
 }
@@ -219,7 +219,7 @@ bool EditVertexDLG::GridInsertLine(int iIndex, wxRealPoint *pt) {
 
   wxASSERT(iIndex <= m_VertexGrid->GetNumberRows());
 
-  if (m_VertexGrid->InsertRows(iIndex, 1) == false) {
+  if (!m_VertexGrid->InsertRows(iIndex, 1)) {
     wxLogError(_T("Error inserting row @ index = %d"), iIndex);
     return false;
   }
@@ -344,7 +344,7 @@ void EditVertexDLG::OnSave(wxCommandEvent &event) {
   wxString myErrMsg2 = _("Please define all coordinates before updating");
 
   int iRow = 0, iCol = 0;
-  if (IsAllCellsNumber(iCol, iRow) == false) {
+  if (!IsAllCellsNumber(iCol, iRow)) {
     wxMessageBox(myErrMsg + myErrMsg2, _("Coordinate error"), wxICON_STOP | wxOK, this);
 
     m_VertexGrid->SelectRow(iRow);

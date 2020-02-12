@@ -8,7 +8,7 @@
 
 int DataListReportCtrl::_Compare(DATALIST_COLTYPE coltype, const wxString &text1, const wxString &text2,
                                  bool ascending) {
-  if (ascending == TRUE) {
+  if (ascending) {
     switch (coltype) {
       case DATALIST_COLTYPE_TEXT:
         if (text1 > text2)

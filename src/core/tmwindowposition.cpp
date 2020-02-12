@@ -31,13 +31,13 @@ bool tmWindowPosition::SaveScreenPosition() {
 
 bool tmWindowPosition::LoadPosition(const wxString &wndname, wxRect &pos) {
   wxString readedpos = wxEmptyString;
-  if (LoadPosition(wndname, readedpos) == false) return false;
+  if (!LoadPosition(wndname, readedpos)) return false;
 
   pos = WP_StringToPosition(readedpos);
 
   wxRect myActualSize = WP_GetActualScreenSize();
-  if (wndname != _T("SCREEN") && HasScreenChanged() == true) {
-    if (Intersects(pos, wxSize(myActualSize.GetWidth(), myActualSize.GetHeight())) == false) {
+  if (wndname != _T("SCREEN") && HasScreenChanged()) {
+    if (!Intersects(pos, wxSize(myActualSize.GetWidth(), myActualSize.GetHeight()))) {
       wxLogDebug(_T("Windows %s was outside screen"), wndname.c_str());
       return false;
     }
@@ -48,7 +48,7 @@ bool tmWindowPosition::LoadPosition(const wxString &wndname, wxRect &pos) {
 bool tmWindowPosition::LoadPosition(const wxString &wndname, wxString &postext) {
   wxFileConfig myConfig(m_ConfigAppName);
   myConfig.SetPath(_T("WINDOW_POSITION"));
-  if (myConfig.Read(wndname, &postext) == false) {
+  if (!myConfig.Read(wndname, &postext)) {
     wxLogMessage(_("No position stored for windows %s"), wndname.c_str());
     return false;
   }
@@ -88,7 +88,7 @@ bool tmWindowPosition::SavePosition(const wxString &wndname, const wxString &pos
   wxFileConfig myConfig(m_ConfigAppName);
 
   myConfig.SetPath(_T("WINDOW_POSITION"));
-  if (myConfig.Write(wndname, postext) == false) {
+  if (!myConfig.Write(wndname, postext)) {
     wxLogDebug(_T("Unable to write to config file"));
     return false;
   }
@@ -103,7 +103,7 @@ bool tmWindowPosition::WP_SaveScreenSize() {
 
 bool tmWindowPosition::WP_LoadScreenSize() {
   wxRect myWndSize = WP_GetActualScreenSize();
-  if (LoadPosition(_T("SCREEN"), myWndSize) == false) {
+  if (!LoadPosition(_T("SCREEN"), myWndSize)) {
     m_OldScreenSize = wxSize(myWndSize.GetWidth(), myWndSize.GetHeight());
     return false;
   }

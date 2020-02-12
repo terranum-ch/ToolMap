@@ -21,7 +21,7 @@
 
 bool tmImportCSV::_ResetReading() {
   wxASSERT(m_FileStream);
-  if (m_FileStream->IsSeekable() == false) {
+  if (!m_FileStream->IsSeekable()) {
     wxLogError(_("Unable to reset reading"));
     return false;
   }
@@ -59,12 +59,12 @@ bool tmImportCSV::_GetCoordinates(const wxArrayString &tokenArray, double &x, do
   double myX = 0.0;
   double myY = 0.0;
 
-  if (tokenArray.Item(m_Xcolumn).ToCDouble(&myX) == false) {
+  if (!tokenArray.Item(m_Xcolumn).ToCDouble(&myX)) {
     wxLogMessage(tokenArray.Item(m_Xcolumn));
     return false;
   }
 
-  if (tokenArray.Item(m_Ycolumn).ToCDouble(&myY) == false) {
+  if (!tokenArray.Item(m_Ycolumn).ToCDouble(&myY)) {
     wxLogMessage(tokenArray.Item(m_Ycolumn));
     return false;
   }
@@ -176,7 +176,7 @@ void tmImportCSV::SetXYColumn(int x, int y) {
 }
 
 bool tmImportCSV::IsOk() {
-  if (tmImport::IsOk() == false) {
+  if (!tmImport::IsOk()) {
     return false;
   }
 
@@ -262,7 +262,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
 
 bool tmImportCSV::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress) {
   wxASSERT(database);
-  if (IsOk() == false) {
+  if (!IsOk()) {
     wxLogError(_("Importation failed"));
     return false;
   }

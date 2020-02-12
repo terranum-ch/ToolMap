@@ -35,7 +35,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray &objects, wxArrayInt &nu
   number.Clear();
   layerid.Clear();
 
-  if (IsOk() == false) {
+  if (!IsOk()) {
     return false;
   }
 
@@ -49,11 +49,11 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray &objects, wxArrayInt &nu
       _T("  WHERE a.OBJECT_GEOM_ID IN (%s) GROUP BY a.OBJECT_VAL_ID"),
       TABLE_NAME_GIS_ATTRIBUTION[(int)m_SelLayerType].c_str(), TABLE_NAME_OBJECTS.c_str(), myIdsText.c_str());
   wxASSERT(m_DB);
-  if (m_DB->DataBaseQuery(mySentence) == false) {
+  if (!m_DB->DataBaseQuery(mySentence)) {
     return false;
   }
 
-  if (m_DB->DataBaseHasResults() == false) {
+  if (!m_DB->DataBaseHasResults()) {
     wxLogWarning(_("Selected data doesn't have any attribution"));
     return true;
   }
@@ -65,7 +65,7 @@ bool tmAAttribBatchManager::GetTypes(PrjMemObjectsArray &objects, wxArrayInt &nu
     ProjectDefMemoryObjects *myObj = new ProjectDefMemoryObjects();
     long myCount = 0;
     long myLayerid = 0;
-    if (myResults.NextRow() == false) {
+    if (!myResults.NextRow()) {
       break;
     }
     myResults.GetValue(0, myObj->m_ObjectID);
@@ -88,7 +88,7 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray &fields) {
     fields.RemoveAt(0);
   }
 
-  if (IsOk() == false) {
+  if (!IsOk()) {
     return false;
   }
 
@@ -122,7 +122,7 @@ bool tmAAttribBatchManager::GetFields(long layerid, PrjMemFieldArray &fields) {
 }
 
 tmAAttribCtrl *tmAAttribBatchManager::GetValueControl(const ProjectDefMemoryFields &field, wxWindow *wnd) {
-  if (IsOk() == false) {
+  if (!IsOk()) {
     return NULL;
   }
 
@@ -217,11 +217,11 @@ bool tmAAttribBatchManager::_GetSelectionSubset(long layerid, wxArrayLong &subse
       _T(" ON a.OBJECT_VAL_ID = o.OBJECT_ID WHERE a.OBJECT_GEOM_ID IN")
       _T(" (%s) AND o.THEMATIC_LAYERS_LAYER_INDEX = %ld"),
       TABLE_NAME_GIS_ATTRIBUTION[(int)m_SelLayerType].c_str(), TABLE_NAME_OBJECTS.c_str(), myIds.c_str(), layerid);
-  if (m_DB->DataBaseQuery(myQuery) == false) {
+  if (!m_DB->DataBaseQuery(myQuery)) {
     return false;
   }
 
-  if (m_DB->DataBaseHasResults() == false) {
+  if (!m_DB->DataBaseHasResults()) {
     wxLogError(_("Getting subset of selected data failed, no results!"));
     return false;
   }
@@ -246,7 +246,7 @@ wxString tmAAttribBatchManager::_CreateListOfIds(const wxArrayLong *ids) {
 
 int tmAAttribBatchManager::Attribute(long layerid, const ProjectDefMemoryFields &field, const wxString &value) {
   wxArrayLong mySubSet;
-  if (_GetSelectionSubset(layerid, mySubSet) == false) {
+  if (!_GetSelectionSubset(layerid, mySubSet)) {
     return wxNOT_FOUND;
   }
 
@@ -280,7 +280,7 @@ int tmAAttribBatchManager::Attribute(long layerid, const ProjectDefMemoryFields 
                          myValueCleaned.c_str(), field.m_Fieldname.c_str(), myValueCleaned.c_str()));
   }
 
-  if (m_DB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_DB->DataBaseQueryNoResults(myQuery)) {
     return wxNOT_FOUND;
   }
   return (int)mySubSet.GetCount();

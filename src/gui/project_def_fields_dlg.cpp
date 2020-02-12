@@ -174,7 +174,7 @@ void ProjectDefFieldDlg::OnIdleValidateDlg(wxIdleEvent &event) {
     }
   }
 
-  if (m_DlgAFD_Field_Def->IsEmpty() == true) {
+  if (m_DlgAFD_Field_Def->IsEmpty()) {
     m_DlgAFD_Button_OK->Enable(false);
     event.Skip();
     return;
@@ -307,7 +307,7 @@ void ProjectDefFieldDlg::Init() {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertTextValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     m_DlgAFD_Text_Length->SetValue(m_MemoryField->m_FieldPrecision);
   } else  // DIALOG --> DATA
@@ -326,7 +326,7 @@ void ProjectDefFieldDlg::TransfertTextValues(bool bSendDataToDlg) {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertIntegerValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     // m_DlgAFD_Orientation_Integer->SetValue(m_MemoryField->m_FieldOrientation);
   } else  // DIALOG --> DATA
@@ -345,7 +345,7 @@ void ProjectDefFieldDlg::TransfertIntegerValues(bool bSendDataToDlg) {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertFloatValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
     m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
@@ -372,7 +372,7 @@ void ProjectDefFieldDlg::TransfertFloatValues(bool bSendDataToDlg) {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertDateValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     // nothing to be done here
   } else  // DIALOG --> DATA
@@ -394,7 +394,7 @@ void ProjectDefFieldDlg::TransfertDateValues(bool bSendDataToDlg) {
 void ProjectDefFieldDlg::TransfertEnumValues(bool bSendDataToDlg) {
   wxArrayString myListValues;
 
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     // fill the list
     for (int i = 0; i < m_pPrjDefinition->GetCountCodedValue(); i++) {

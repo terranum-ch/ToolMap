@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     myCompare.AddFileNameToCheck(myInputFilesTxt[f]);
   }
 
-  if (myCompare.DoCompare() == false) {
+  if (!myCompare.DoCompare()) {
     if (beVerbose) {
       PrintArray(myCompare.GetMessagesRef(), _("Debug messages:"));
     }
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
     PrintArray(myCompare.GetMessagesRef(), _("Debug messages:"));
   }
 
-  if (myCompare.HasErrors() == false) {
+  if (!myCompare.HasErrors()) {
     wxPrintf(_("Files are similar, no differences found!\n"));
     return 0;
   }

@@ -44,7 +44,7 @@ bool ShpCompare::DoCompare(int resultslimit) {
   }
   OGRLayer *myLayer = myRefDS->GetLayer(0);
   for (unsigned int i = 0; i < GetFilesNamesToCheckRef()->GetCount(); i++) {
-    if (_DoCompareOneFile(myLayer, GetFilesNamesToCheckRef()->Item(i)) == false) {
+    if (!_DoCompareOneFile(myLayer, GetFilesNamesToCheckRef()->Item(i))) {
       m_Errors.Add(
           wxString::Format(_("%s differs from %s"), GetReferenceFileName(), GetFilesNamesToCheckRef()->Item(i)));
     }
@@ -84,7 +84,7 @@ bool ShpCompare::_DoCompareOneFile(OGRLayer *referencelayer, const wxString &fil
     OGRFieldDefn *myRefField = myRefDefn->GetFieldDefn(i);
     OGRFieldDefn *myTestField = myTestDefn->GetFieldDefn(i);
 
-    if (_DoCompareFields(myRefField, myTestField) == false) {
+    if (!_DoCompareFields(myRefField, myTestField)) {
       OGRDataSource::DestroyDataSource(myTestDS);
       m_Errors.Add(_("Fields definition differs!"));
       return false;
@@ -124,7 +124,7 @@ bool ShpCompare::_DoCompareOneFile(OGRLayer *referencelayer, const wxString &fil
     // compare geometries
     OGRGeometry *myRefGeom = myRefFeature->GetGeometryRef();
     OGRGeometry *myTestGeom = myTestFeature->GetGeometryRef();
-    if (myRefGeom->Equals(myTestGeom) == false) {
+    if (!myRefGeom->Equals(myTestGeom)) {
       m_Errors.Add(wxString::Format(_("Geometry differs for FID %ld"), myRefFeature->GetFID()));
       myErrorNumber++;
       featuresCorrect = false;
@@ -136,7 +136,7 @@ bool ShpCompare::_DoCompareOneFile(OGRLayer *referencelayer, const wxString &fil
   OGRDataSource::DestroyDataSource(myTestDS);
 
   wxString myLayerName(referencelayer->GetName());
-  if (featuresCorrect == false) {
+  if (!featuresCorrect) {
     m_Errors.Add(wxString::Format(_("%ld features difference found in %s (either geometry or fields values"),
                                   myErrorNumber, myLayerName));
   } else {

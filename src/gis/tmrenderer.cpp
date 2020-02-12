@@ -314,7 +314,7 @@ void tmRenderer::OnPaint(wxPaintEvent &event) {
     dc.DrawBitmap(*m_bmp, wxPoint(0, 0), false);
   }
 
-  if (m_isPanning == false) {
+  if (!m_isPanning) {
     m_EditManager->BezierDraw(&gcdc);
     m_EditManager->DrawSnappingCircle(&gcdc);
   }
@@ -379,7 +379,7 @@ void tmRenderer::OnMouseMove(wxMouseEvent &event) {
     m_EditManager->BezierMove(event.GetPosition());
   }
 
-  if (event.Dragging() == true) {
+  if (event.Dragging()) {
     if (m_ActualTool == tmTOOL_ZOOM_RECTANGLE) ZoomUpdate(event);
 
     if (m_ActualTool == tmTOOL_PAN) PanUpdate(event.GetPosition());
@@ -408,7 +408,7 @@ void tmRenderer::OnMouseMove(wxMouseEvent &event) {
 }
 
 void tmRenderer::OnMouseUp(wxMouseEvent &event) {
-  if (HasCapture() == true) {
+  if (HasCapture()) {
     ReleaseMouse();
   }
 
@@ -453,7 +453,7 @@ void tmRenderer::OnMouseUp(wxMouseEvent &event) {
 
 void tmRenderer::OnMouseCaptureLost(wxMouseEvent &event) {
   // Only used under Windows. Mouse capture is lost when a dialog is displayed.
-  if (HasCapture() == true) {
+  if (HasCapture()) {
     ReleaseMouse();
   }
 }
@@ -471,7 +471,7 @@ void tmRenderer::OnMouseWheel(wxMouseEvent &event) {
     m_WheelRotation -= 1;
   }
   m_WheelPosition = event.GetPosition();
-  if (m_WheelTimer.IsRunning() == true) {
+  if (m_WheelTimer.IsRunning()) {
     return;
   }
   m_WheelTimer.Start(100, true);
@@ -567,7 +567,7 @@ void tmRenderer::ZoomUpdate(wxMouseEvent &event) {
     return;
   }
 
-  if (event.Dragging() == true) {
+  if (event.Dragging()) {
     m_Rubber->SetPointLast(event.GetPosition());
     m_Rubber->Update();
   }
@@ -577,7 +577,7 @@ void tmRenderer::ZoomUpdate(wxMouseEvent &event) {
     ChangeCursor(tmTOOL_ZOOM_RECTANGLE_IN);
   }
 
-  if (m_Rubber->IsPositive() == false && m_ActualNotStockCursor != tmCURSOR_ZOOM_OUT) {
+  if (!m_Rubber->IsPositive() && m_ActualNotStockCursor != tmCURSOR_ZOOM_OUT) {
     ChangeCursor(tmTOOL_ZOOM_RECTANGLE_OUT);
   }
 }
@@ -588,7 +588,7 @@ void tmRenderer::ZoomStop(const wxPoint &mousepos) {
   }
 
   m_Rubber->SetPointLast(mousepos);
-  if (m_Rubber->IsValid() == false) {
+  if (!m_Rubber->IsValid()) {
     wxDELETE(m_Rubber);
     return;
   }
@@ -596,7 +596,7 @@ void tmRenderer::ZoomStop(const wxPoint &mousepos) {
   wxRect *mypRect = new wxRect(m_Rubber->GetRect());
   wxDELETE(m_Rubber);
 
-  if (mypRect->IsEmpty() == true) {
+  if (mypRect->IsEmpty()) {
     wxDELETE(mypRect);
     return;
   }
@@ -605,7 +605,7 @@ void tmRenderer::ZoomStop(const wxPoint &mousepos) {
   wxCommandEvent evt;
   evt.SetId(wxID_ANY);
   evt.SetClientData(mypRect);
-  if (isPositive == true) {
+  if (isPositive) {
     evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_IN);
   } else {
     evt.SetEventType(tmEVT_LM_ZOOM_RECTANGLE_OUT);
@@ -637,7 +637,7 @@ void tmRenderer::SelectUpdate(wxMouseEvent &event) {
     return;
   }
 
-  if (event.Dragging() == true) {
+  if (event.Dragging()) {
     m_Rubber->SetPointLast(event.GetPosition());
     m_Rubber->Update();
   }
@@ -657,7 +657,7 @@ void tmRenderer::SelectStop(const wxPoint &mousepos) {
   bool myShiftDown = m_ShiftDown;
   m_Rubber->SetPointLast(mousepos);
   wxRect *mypRect = NULL;
-  if (m_Rubber->IsValid() == false) {
+  if (!m_Rubber->IsValid()) {
     mypRect = new wxRect(mousepos.x - tmSELECTION_DIAMETER / 2.0, mousepos.y - tmSELECTION_DIAMETER / 2.0,
                          tmSELECTION_DIAMETER, tmSELECTION_DIAMETER);
   } else {
@@ -787,7 +787,7 @@ void tmRenderer::PanStop(const wxPoint &mousepos) {
 void tmRenderer::PanDClick(wxMouseEvent &event) {
   // compute middle pixel
   wxSize myDisplaySize = GetSize();
-  if (myDisplaySize.IsFullySpecified() == false || myDisplaySize == wxSize(0, 0)) {
+  if (!myDisplaySize.IsFullySpecified() || myDisplaySize == wxSize(0, 0)) {
     wxLogError("Error getting display size!");
     return;
   }

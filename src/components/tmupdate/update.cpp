@@ -85,13 +85,13 @@ wxThread::ExitCode WebUpdateThread::Entry() {
   myEvent.SetInt((int)myInternetVersion);
   myEvent.SetString(myValues.Item(0));
 
-  if (myInternetVersion > m_ActualVersion && m_msgNewVersion == true) {
+  if (myInternetVersion > m_ActualVersion && m_msgNewVersion) {
     myEvent.SetId(THREAD_MESSAGE_NEW_VERSION);
     wxQueueEvent(m_Parent, myEvent.Clone());
     return (wxThread::ExitCode)0;
   }
 
-  if (m_msgNoNewVersion == true) {
+  if (m_msgNoNewVersion) {
     myEvent.SetId(THREAD_MESSAGE_NONEW_VERSION);
     wxQueueEvent(m_Parent, myEvent.Clone());
   }
@@ -118,7 +118,7 @@ WebUpdateThread::WebUpdateThread(wxWindow *parent, const wxString &proxy) {
   wxASSERT(myCurlError == CURLE_OK);
 
   // prepare proxy if needed
-  if (proxy.IsEmpty() == false) {
+  if (!proxy.IsEmpty()) {
     myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_PROXY, (const char *)proxy.mb_str(wxConvUTF8));
     wxASSERT(myCurlError == CURLE_OK);
   }

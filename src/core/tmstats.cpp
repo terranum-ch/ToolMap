@@ -46,11 +46,11 @@ void tmStatsData::ResetPartial() {
 }
 
 bool tmStatsData::IsOk() const {
-  if (m_TimeStart.IsValid() == false) {
+  if (!m_TimeStart.IsValid()) {
     return false;
   }
 
-  if (m_TimeElapsed.IsNull() == true) {
+  if (m_TimeElapsed.IsNull()) {
     return false;
   }
   return true;
@@ -60,7 +60,7 @@ void tmStatsManager::AppendToBuffer(long click, long attrib, long intersection) 
   wxLogMessage("Received statistics (C/A/I): %ld, %ld, %ld", click, attrib, intersection);
 
   // Check that statistics is started here!
-  if (m_IsStarted == false) {
+  if (!m_IsStarted) {
     return;
   }
 
@@ -77,7 +77,7 @@ void tmStatsManager::AppendToBuffer(long click, long attrib, long intersection) 
 void tmStatsManager::_FlushBuffer() {
   wxASSERT(m_Database);
   tmStatsRecords myRecord(m_Database);
-  if (myRecord.Add(m_StatBufferData.m_Id, m_StatBufferData) == false) {
+  if (!myRecord.Add(m_StatBufferData.m_Id, m_StatBufferData)) {
     wxLogError(_("Error adding data to statistics!"));
   }
   m_StatBufferData.ResetPartial();
@@ -102,7 +102,7 @@ void tmStatsManager::_StartRecord() {
 }
 
 void tmStatsManager::_StopRecord() {
-  if (m_IsStarted == false) {
+  if (!m_IsStarted) {
     return;
   }
 
@@ -122,7 +122,7 @@ tmStatsManager::~tmStatsManager() {
 void tmStatsManager::Create(DataBaseTM *database) {
   m_Database = database;
   m_StatBufferData.Reset();
-  wxASSERT(m_StatBufferData.IsOk() == false);
+  wxASSERT(!m_StatBufferData.IsOk());
   m_IsStarted = false;
 }
 
@@ -134,12 +134,12 @@ bool tmStatsManager::IsReady() {
 }
 
 void tmStatsManager::ShowStatsDialog(wxWindow *parent) {
-  if (IsReady() == false) {
+  if (!IsReady()) {
     wxLogError(_("No project open! Statistics unavaillable"));
     return;
   }
 
-  if (m_IsStarted == true) {
+  if (m_IsStarted) {
     _FlushBuffer();
   }
 
@@ -150,13 +150,13 @@ void tmStatsManager::ShowStatsDialog(wxWindow *parent) {
   tmStatsData myDataTotal;
   myDataTotal.m_TimeElapsed = wxTimeSpan(0, 0, 0);
   if (myRecordNb > 0) {
-    if (myRecord.LoadTotal(myDataTotal) == false) {
+    if (!myRecord.LoadTotal(myDataTotal)) {
       wxLogError(_("Error loading statistics total!"));
     }
   }
 
   tmStatsData myDataActual;
-  if (m_IsStarted == true) {
+  if (m_IsStarted) {
     myRecord.Load(m_StatBufferData.m_Id, myDataActual);
   }
 
@@ -214,7 +214,7 @@ void tmStats_DLG::OnExport(wxCommandEvent &event) {
     myExportSucess = myExport.ExportCSV(TABLE_NAME_STAT, myPath);
   }
 
-  if (myExportSucess == false) {
+  if (!myExportSucess) {
     wxLogError(_("Exporting statistics failed!"));
   } else {
     wxMessageBox(wxString::Format(_("Exporting statistics to '%s' succeed!"), myPath.GetFullPath()));
@@ -375,7 +375,7 @@ tmStats_DLG::tmStats_DLG(wxWindow *parent, const tmStatsData *actual, const tmSt
 tmStats_DLG::~tmStats_DLG() {}
 
 void tmStats_DLG::SetStarted(bool recordstarted) {
-  if (recordstarted == true) {
+  if (recordstarted) {
     m_BtnStartCtrl->Enable(false);
   } else {
     m_BtnStopCtrl->Enable(false);

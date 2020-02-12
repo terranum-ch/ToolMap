@@ -58,23 +58,23 @@ class TEST_tmPointOrientAttrib : public CxxTest::TestSuite {
 
   void testValid() {
     tmPointOrientAttrib myPtA;
-    TS_ASSERT(myPtA.IsValid() == false);
+    TS_ASSERT(!myPtA.IsValid());
     myPtA.SetStartPoint(myPt1);
-    TS_ASSERT(myPtA.IsValid() == false);
+    TS_ASSERT(!myPtA.IsValid());
     myPtA.SetEndPoint(myPt90);
-    TS_ASSERT(myPtA.IsValid() == true);
+    TS_ASSERT(myPtA.IsValid());
     myPtA.Create(m_DB, 2);
-    TS_ASSERT(myPtA.IsCorrectType() == false);
+    TS_ASSERT(!myPtA.IsCorrectType());
     myPtA.Create(m_DB, 5);
-    TS_ASSERT(myPtA.IsCorrectType() == true);
+    TS_ASSERT(myPtA.IsCorrectType());
 
     // no field pt
     myPtA.Create(m_DB, 6);
-    TS_ASSERT(myPtA.IsCorrectType() == false);
+    TS_ASSERT(!myPtA.IsCorrectType());
 
     // no orient field pt
     myPtA.Create(m_DB, 7);
-    TS_ASSERT(myPtA.IsCorrectType() == false);
+    TS_ASSERT(!myPtA.IsCorrectType());
   }
 
   void testUpdateOrient() {
@@ -82,11 +82,11 @@ class TEST_tmPointOrientAttrib : public CxxTest::TestSuite {
     myPtA.Create(m_DB, 5);
     myPtA.SetStartPoint(myPt1);
     myPtA.SetEndPoint(myPt45);
-    TS_ASSERT(myPtA.Update() == false);
-    TS_ASSERT(myPtA.IsCorrectType() == true);
-    TS_ASSERT(myPtA.IsValid() == true);
+    TS_ASSERT(!myPtA.Update());
+    TS_ASSERT(myPtA.IsCorrectType());
+    TS_ASSERT(myPtA.IsValid());
 
-    TS_ASSERT(myPtA.Update() == true);
+    TS_ASSERT(myPtA.Update());
   }
 
   void testUpdateOrient2() {
@@ -94,8 +94,8 @@ class TEST_tmPointOrientAttrib : public CxxTest::TestSuite {
     myPtA.Create(m_DB, 1);
     myPtA.SetStartPoint(myPt1);
     myPtA.SetEndPoint(myPt235);
-    TS_ASSERT(myPtA.IsCorrectType() == true);
-    TS_ASSERT(myPtA.Update() == true);
+    TS_ASSERT(myPtA.IsCorrectType());
+    TS_ASSERT(myPtA.Update());
   }
 };
 

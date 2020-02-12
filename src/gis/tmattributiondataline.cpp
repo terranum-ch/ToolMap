@@ -81,7 +81,7 @@ bool tmAttributionDataLine::SetAttributeBasic(AttribObjType_PANEL *panel) {
     PrepareCleaningStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
   }
 
-  if (m_pDB->DataBaseQueryNoResults(myStatement) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myStatement)) {
     wxLogDebug(_T("Error attributing data"));
     return false;
   }
@@ -123,7 +123,7 @@ bool tmAttributionDataLine::GetInfoBasic(AttribObjType_PANEL *panel) {
   // getting values
   wxString sStatement = _T("");
   PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
-  if (m_pDB->DataBaseQuery(sStatement) == false) {
+  if (!m_pDB->DataBaseQuery(sStatement)) {
     wxLogDebug(_T("Error getting info "));
     return false;
   }

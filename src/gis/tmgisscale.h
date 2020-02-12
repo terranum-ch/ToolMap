@@ -63,16 +63,16 @@ class tmRealRect {
   }
 
   bool operator!=(const tmRealRect &pt) const {
-    if (wxIsSameDouble(x_min, pt.x_min) == false) {
+    if (!wxIsSameDouble(x_min, pt.x_min)) {
       return true;
     }
-    if (wxIsSameDouble(y_min, pt.y_min) == false) {
+    if (!wxIsSameDouble(y_min, pt.y_min)) {
       return true;
     }
-    if (wxIsSameDouble(x_max, pt.x_max) == false) {
+    if (!wxIsSameDouble(x_max, pt.x_max)) {
       return true;
     }
-    if (wxIsSameDouble(y_max, pt.y_max) == false) {
+    if (!wxIsSameDouble(y_max, pt.y_max)) {
       return true;
     }
     return false;

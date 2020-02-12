@@ -30,7 +30,7 @@ tmImportGIS::~tmImportGIS() {
 }
 
 bool tmImportGIS::Open(const wxFileName &filename) {
-  if (tmImport::Open(filename) == false) {
+  if (!tmImport::Open(filename)) {
     return false;
   }
 
@@ -40,7 +40,7 @@ bool tmImportGIS::Open(const wxFileName &filename) {
     return false;
   }
 
-  if (m_Vector->Open(m_FileName.GetFullPath(), true) == false) {
+  if (!m_Vector->Open(m_FileName.GetFullPath(), true)) {
     wxDELETE(m_Vector);
     return false;
   }
@@ -133,7 +133,7 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
     bool bStop = false;
     tpercent.SetValue(iCount);
     if (tpercent.IsNewStep() && progress != NULL) {
-      if (progress->Update(tpercent.GetPercent(), wxEmptyString) == false) {
+      if (!progress->Update(tpercent.GetPercent(), wxEmptyString)) {
         bStop = true;
       }
     }

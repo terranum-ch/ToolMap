@@ -19,7 +19,7 @@
 #include "../database/database_tm.h"
 
 int QueriesWizard::ShowWizard() {
-  if (RunWizard(m_PageIntro) == true) {
+  if (RunWizard(m_PageIntro)) {
     return wxID_OK;
   } else {
     return wxID_CANCEL;

@@ -107,7 +107,7 @@ bool tmExportDataSHP::CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, con
     m_Shp = new tmGISDataVectorSHP();
   }
 
-  if (m_Shp->CreateFile(myShpFileName->GetFullPath(), (int)myLayer->m_LayerType) == false) {
+  if (!m_Shp->CreateFile(myShpFileName->GetFullPath(), (int)myLayer->m_LayerType)) {
     bReturn = false;
   }
   wxDELETE(myShpFileName);
@@ -218,7 +218,7 @@ bool tmExportDataSHP::AddGenericFields(int iObjeDescSize) {
   @date 26 March 2009
   *******************************************************************************/
 bool tmExportDataSHP::AddFIDField() {
-  if (m_Shp->AddFieldNumeric(_T("TM_OID"), false) == false) {
+  if (!m_Shp->AddFieldNumeric(_T("TM_OID"), false)) {
     wxLogError(_("Adding OID field failed"));
     return false;
   }
@@ -238,12 +238,12 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
   wxASSERT(m_Frame);
   wxASSERT(!m_Frame->IsEmpty());
   wxASSERT(m_pDB);
-  wxASSERT(m_pDB->DataBaseHasResults() == true);
+  wxASSERT(m_pDB->DataBaseHasResults());
 
   // get row of data
   DataBaseResult myResult;
   m_pDB->DataBaseGetResults(&myResult);
-  wxASSERT(myResult.HasResults() == true);
+  wxASSERT(myResult.HasResults());
 
   for (long i = 0; i < myResult.GetRowCount(); i++) {
     myResult.NextRow();
@@ -252,7 +252,7 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
     // Is geometry inside the frame ?
     //
     OGRGeometry *myGeom = NULL;
-    if (myResult.GetValue(1, &myGeom) == false) {
+    if (!myResult.GetValue(1, &myGeom)) {
       wxASSERT(myGeom == NULL);
       wxLogError(_T("No geometry returned for '%s' in loop %d"), myLayer->m_LayerName.c_str(), i);
       continue;
@@ -274,7 +274,7 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
       continue;
     }
 
-    if (myCropLine->IsEmpty() == true) {
+    if (myCropLine->IsEmpty()) {
       OGRGeometryFactory::destroyGeometry(myCropLine);
       continue;
     }
@@ -291,14 +291,14 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
         m_Shp->AddGeometry(myfLine, myOid);
 
         // basic attribution
-        if (SetAttributsBasic(myResult) == false) {
+        if (!SetAttributsBasic(myResult)) {
           m_Shp->CloseGeometry();
           wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
           continue;
         }
 
         // advanced attribution
-        if (SetAttributsAdvanced(myResult, myLayer) == false) {
+        if (!SetAttributsAdvanced(myResult, myLayer)) {
           m_Shp->CloseGeometry();
           wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
           continue;
@@ -312,14 +312,14 @@ bool tmExportDataSHP::WriteLines(ProjectDefMemoryLayers *myLayer) {
       m_Shp->AddGeometry(myCropLine, myOid);
 
       // basic attribution
-      if (SetAttributsBasic(myResult) == false) {
+      if (!SetAttributsBasic(myResult)) {
         m_Shp->CloseGeometry();
         wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
         continue;
       }
 
       // advanced attribution
-      if (SetAttributsAdvanced(myResult, myLayer) == false) {
+      if (!SetAttributsAdvanced(myResult, myLayer)) {
         m_Shp->CloseGeometry();
         wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
         continue;
@@ -338,7 +338,7 @@ long tmExportDataSHP::WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxPro
 
   DataBaseResult myResult;
   m_pDB->DataBaseGetResults(&myResult);
-  if (myResult.HasResults() == false) {
+  if (!myResult.HasResults()) {
     wxLogWarning(_("Nothing to export in '%s'!"), layer->m_LayerName);
     return wxNOT_FOUND;
   }
@@ -347,7 +347,7 @@ long tmExportDataSHP::WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxPro
     myResult.NextRow();
 
     OGRGeometry *myGeom = NULL;
-    if (myResult.GetValue(1, &myGeom) == false) {
+    if (!myResult.GetValue(1, &myGeom)) {
       wxLogError(_("No geometry in '%s' @ loop: %ld"), layer->m_LayerName, i);
       continue;
     }
@@ -375,8 +375,8 @@ long tmExportDataSHP::WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxPro
       long myCount = 0;
       myCountObj.ToLong(&myCount);
       percent->SetValue(percent->GetValue() + myCount);
-      if (percent->IsNewStep() == true) {
-        if (progDlg->Update(percent->GetPercent()) == false) {
+      if (percent->IsNewStep()) {
+        if (!progDlg->Update(percent->GetPercent())) {
           myLoop = wxNOT_FOUND;
           return myLoop;
         }
@@ -453,12 +453,12 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
           _T("\"%s\""),
           myFields, TABLE_NAME_GIS_GENERIC[layer->m_LayerType], TABLE_NAME_GIS_ATTRIBUTION[layer->m_LayerType],
           TABLE_NAME_OBJECTS, myLayerIndex, myId, myCodes.Item(a));
-      if (m_pDB->DataBaseQuery(myQuery) == false) {
+      if (!m_pDB->DataBaseQuery(myQuery)) {
         myAttribTxt.Append(_T(";"));
         continue;
       }
 
-      if (m_pDB->DataBaseHasResults() == false) {
+      if (!m_pDB->DataBaseHasResults()) {
         myAttribTxt.Append(_T(";"));
         continue;
       }
@@ -502,8 +502,8 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
     // update progress dialog
     if (progDlg && percent) {
       percent->SetValue(percent->GetValue() + i + myNbAttrib);
-      if (percent->IsNewStep() == true) {
-        if (progDlg->Update(percent->GetPercent(), _("Processing attributs")) == false) {
+      if (percent->IsNewStep()) {
+        if (!progDlg->Update(percent->GetPercent(), _("Processing attributs"))) {
           return false;
         }
         wxLogMessage(_("Percent: %d"), percent->GetPercent());
@@ -525,12 +525,12 @@ bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer) {
   wxASSERT(m_Frame);
   wxASSERT(!m_Frame->IsEmpty());
   wxASSERT(m_pDB);
-  wxASSERT(m_pDB->DataBaseHasResults() == true);
+  wxASSERT(m_pDB->DataBaseHasResults());
 
   // get row of data
   DataBaseResult myResult;
   m_pDB->DataBaseGetResults(&myResult);
-  wxASSERT(myResult.HasResults() == true);
+  wxASSERT(myResult.HasResults());
 
   for (long i = 0; i < myResult.GetRowCount(); i++) {
     myResult.NextRow();
@@ -539,7 +539,7 @@ bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer) {
     // Is geometry inside the frame ?
     //
     OGRGeometry *myGeom = NULL;
-    if (myResult.GetValue(1, &myGeom) == false) {
+    if (!myResult.GetValue(1, &myGeom)) {
       wxASSERT(myGeom == NULL);
       wxLogError(_T("No geometry returned for '%s' in loop %ld"), myLayer->m_LayerName.c_str(), i);
       continue;
@@ -554,7 +554,7 @@ bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer) {
       continue;
     }
 
-    if (myGeom->Intersects(m_Frame) == false) {
+    if (!myGeom->Intersects(m_Frame)) {
       OGRGeometryFactory::destroyGeometry(myGeom);
       continue;
     }
@@ -566,14 +566,14 @@ bool tmExportDataSHP::WritePoints(ProjectDefMemoryLayers *myLayer) {
     OGRGeometryFactory::destroyGeometry(myGeom);
 
     // basic attribution
-    if (SetAttributsBasic(myResult) == false) {
+    if (!SetAttributsBasic(myResult)) {
       m_Shp->CloseGeometry();
       wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
       continue;
     }
 
     // advanced attribution
-    if (SetAttributsAdvanced(myResult, myLayer) == false) {
+    if (!SetAttributsAdvanced(myResult, myLayer)) {
       m_Shp->CloseGeometry();
       wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
       continue;
@@ -593,7 +593,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
   m_Shp.CreateSpatialIndex();
   wxFileName myName (m_Shp.GetFullFileName());
   m_Shp.Close();
-  if (m_Shp.Open(myName.GetFullPath(), true)==false){
+  if (!m_Shp.Open(myName.GetFullPath(), true)){
       m_pDB->DataBaseClearResults();
       return false;
   }
@@ -607,22 +607,22 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
   m_pDB->DataBaseGetResults(myResult);
 
   // write polygon from memory to shp and then return
-  if (myResult->HasResults() == false) {
+  if (!myResult->HasResults()) {
     m_Shp->CopyToFile(m_Shp->GetFullFileName(), _T("ESRI Shapefile"), m_Overwrite);
     wxDELETE(myResult);
     return true;
   }
 
-  wxASSERT(myResult->HasResults() == true);
+  wxASSERT(myResult->HasResults());
   long myResultCount = myResult->GetRowCount();
 
   double myExportPolyFactor = m_ExportPolyRasterFactor;
-  if (m_ExportPolyFast == false || myResultCount <= 50) {
+  if (!m_ExportPolyFast || myResultCount <= 50) {
     myExportPolyFactor = 0;
   }
 
   // updating rasterization parameters based on skipped percentage (less than 8% is optimal)
-  if (wxIsSameDouble(myExportPolyFactor, 0) == false) {
+  if (!wxIsSameDouble(myExportPolyFactor, 0)) {
     if (m_ExportPolyPercentSkipped > 8) {
       myExportPolyFactor = myExportPolyFactor / 2.0;
     }
@@ -635,7 +635,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
   }
 
   // rasterize polygons
-  if (m_Shp->Rasterize(myExportPolyFactor) == false) {
+  if (!m_Shp->Rasterize(myExportPolyFactor)) {
     wxDELETE(myResult);
     return false;
   }
@@ -648,7 +648,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
     // Is geometry inside the frame ?
     //
     OGRGeometry *myGeom = NULL;
-    if (myResult->GetValue(1, &myGeom) == false) {
+    if (!myResult->GetValue(1, &myGeom)) {
       wxASSERT(myGeom == NULL);
       wxLogError(_T("No geometry returned for '%s' in loop %ld"), myLayer->m_LayerName.c_str(), i);
       continue;
@@ -663,7 +663,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
       continue;
     }
 
-    if (myGeom->Intersects(m_Frame) == false) {
+    if (!myGeom->Intersects(m_Frame)) {
       OGRGeometryFactory::destroyGeometry(myGeom);
       continue;
     }
@@ -690,20 +690,20 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
 
     // update spatial join (labels - polygons)
     int mySpatialJoinValue = 1;
-    if (m_Shp->GetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue) == true) {
+    if (m_Shp->GetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue)) {
       mySpatialJoinValue++;
     }
     m_Shp->SetFieldNumeric(mySpatialJoinFieldName, mySpatialJoinValue);
 
     // basic attribution
-    if (SetAttributsBasic(*myResult) == false) {
+    if (!SetAttributsBasic(*myResult)) {
       m_Shp->CloseGeometry();
       wxLogError(_("Unable to set basic attribution for OID : %ld"), myOid);
       continue;
     }
 
     // advanced attribution
-    if (SetAttributsAdvanced(*myResult, myLayer) == false) {
+    if (!SetAttributsAdvanced(*myResult, myLayer)) {
       m_Shp->CloseGeometry();
       wxLogError(_("Unable to set advanced attribution for OID : %ld"), myOid);
       continue;
@@ -721,7 +721,7 @@ bool tmExportDataSHP::WriteLabels(ProjectDefMemoryLayers *myLayer) {
 
   // update poly export info
   m_ExportPolyNbIteration++;
-  if (wxIsSameDouble(myExportPolyFactor, 0) == false) {
+  if (!wxIsSameDouble(myExportPolyFactor, 0)) {
     m_ExportPolyPercentSkipped = mySkippedPoly * 1.0 / myResultCount * 100.0;
     m_ExportPolyRasterFactor = myExportPolyFactor;
     wxLogMessage(_("%ld / %ld polygons not found using raster (%.2f%%)"), mySkippedPoly, myResultCount,
@@ -740,7 +740,7 @@ void tmExportDataSHP::_AppendValidToCollection(OGRGeometry *geometry, OGRGeometr
     return;
   }
 
-  if (geometry->IsEmpty() == true) {
+  if (geometry->IsEmpty()) {
     OGRGeometryFactory::destroyGeometry(geometry);
     return;
   }
@@ -766,8 +766,6 @@ bool tmExportDataSHP::WritePolygons(ProjectDefMemoryLayers *myLayer) {
   DataBaseResult myResult;
   m_pDB->DataBaseGetResults(&myResult);
 
-  // wxASSERT(myResult.HasResults()==true);
-
   //
   // Is geometry inside the frame ?
   //
@@ -782,7 +780,7 @@ bool tmExportDataSHP::WritePolygons(ProjectDefMemoryLayers *myLayer) {
     myResult.NextRow();
 
     OGRGeometry *myGeom = NULL;
-    if (myResult.GetValue(1, &myGeom) == false) {
+    if (!myResult.GetValue(1, &myGeom)) {
       wxASSERT(myGeom == NULL);
       wxLogError(_T("No geometry returned for '%s' in loop %ld"), myLayer->m_LayerName.c_str(), i);
       continue;
@@ -895,7 +893,7 @@ bool tmExportDataSHP::WritePolygons(ProjectDefMemoryLayers *myLayer) {
 }
 
 bool tmExportDataSHP::SetAttributsBasic(DataBaseResult &results) {
-  if (results.HasResults() == false || results.IsRowOk() == false) {
+  if (!results.HasResults() || !results.IsRowOk()) {
     return false;
   }
 
@@ -903,12 +901,12 @@ bool tmExportDataSHP::SetAttributsBasic(DataBaseResult &results) {
   wxString myObjectCD = wxEmptyString;
   wxString myObjectDesc = wxEmptyString;
 
-  if (results.GetValue(2, myObjectCD) == false) {
+  if (!results.GetValue(2, myObjectCD)) {
     wxLogError(_("Unable to get the Object Code"));
     return false;
   }
 
-  if (results.GetValue(3, myObjectDesc) == false) {
+  if (!results.GetValue(3, myObjectDesc)) {
     wxLogError(_("Unable to get the object Description"));
     return false;
   }
@@ -925,13 +923,13 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult &results, ProjectDefMe
     return true;
   }
 
-  if (results.HasResults() == false || results.IsRowOk() == false) {
+  if (!results.HasResults() || !results.IsRowOk()) {
     return false;
   }
 
   for (unsigned int i = 0; i < layer->m_pLayerFieldArray.GetCount(); i++) {
     wxString myValue = wxEmptyString;
-    if (results.GetValue(i + 4, myValue) == false) {
+    if (!results.GetValue(i + 4, myValue)) {
       continue;
     }
 
@@ -942,7 +940,7 @@ bool tmExportDataSHP::SetAttributsAdvanced(DataBaseResult &results, ProjectDefMe
       for (unsigned int c = 0; c < layer->m_pLayerFieldArray[i]->m_pCodedValueArray.GetCount(); c++) {
         ProjectDefMemoryFieldsCodedVal *myCVal = layer->m_pLayerFieldArray[i]->m_pCodedValueArray[c];
         if (myCVal->m_ValueID == myValueID) {
-          if (DoExportAttributEnumerationCode() == true) {  // export enumeration code
+          if (DoExportAttributEnumerationCode()) {  // export enumeration code
             myValue = myCVal->m_ValueCode;
           } else {  // export enumeration description
             myValue = myCVal->m_ValueName;
@@ -1142,7 +1140,7 @@ bool tmExportDataSHP::SetPolyExportInfo(ProjectDefMemoryLayers *layer) {
   wxString myQuery =
       wxString::Format(_T("REPLACE INTO %s VALUES (%d,%f,%d,%f)"), TABLE_NAME_EXPORT_POLY, layer->m_LayerID,
                        m_ExportPolyRasterFactor, m_ExportPolyNbIteration, m_ExportPolyPercentSkipped);
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return false;
   }
   return true;
@@ -1157,11 +1155,11 @@ bool tmExportDataSHP::GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usef
   m_ExportPolyFast = usefastexport;
 
   wxString myQuery = _T("SELECT * from %s WHERE LAYER_INDEX = %d");
-  if (m_pDB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_EXPORT_POLY, layer->m_LayerID)) == false) {
+  if (!m_pDB->DataBaseQuery(wxString::Format(myQuery, TABLE_NAME_EXPORT_POLY, layer->m_LayerID))) {
     return false;
   }
 
-  if (m_pDB->DataBaseHasResults() == false) {
+  if (!m_pDB->DataBaseHasResults()) {
     return true;
   }
 

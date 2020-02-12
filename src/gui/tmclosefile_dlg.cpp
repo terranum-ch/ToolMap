@@ -50,7 +50,7 @@ void tmCloseFile_DLG::OnUpdateUIAll(wxUpdateUIEvent &event) {
 
 void tmCloseFile_DLG::OnBtnInvert(wxCommandEvent &event) {
   for (unsigned int i = 0; i < m_FileListCtrl->GetCount(); i++) {
-    if (m_FileListCtrl->IsChecked(i) == true) {
+    if (m_FileListCtrl->IsChecked(i)) {
       m_FileListCtrl->Check(i, false);
     } else {
       m_FileListCtrl->Check(i, true);

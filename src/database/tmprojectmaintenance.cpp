@@ -20,11 +20,11 @@
 wxArrayString tmProjectMaintenance::_GetAllTables() {
   wxArrayString myTableNames;
   wxASSERT(m_DB);
-  if (m_DB->DataBaseQuery(_T("SHOW TABLES"), true) == false) {
+  if (!m_DB->DataBaseQuery(_T("SHOW TABLES"), true)) {
     return myTableNames;
   }
 
-  if (m_DB->DataBaseGetResults(myTableNames) == false) {
+  if (!m_DB->DataBaseGetResults(myTableNames)) {
     myTableNames.Clear();
   }
   return myTableNames;
@@ -37,7 +37,7 @@ bool tmProjectMaintenance::_DoCodeOnTables(const wxString &query, const wxString
 
   wxArrayString myTableNames = _GetAllTables();
   for (unsigned int i = 0; i < myTableNames.GetCount(); i++) {
-    if (m_DB->DataBaseQueryNoResults(wxString::Format(query, myTableNames[i]), true) == false) {
+    if (!m_DB->DataBaseQueryNoResults(wxString::Format(query, myTableNames[i]), true)) {
       m_Errors.Add(wxString::Format(errmsg, myTableNames[i]));
       continue;
     }
@@ -56,7 +56,7 @@ bool tmProjectMaintenance::_DoCodeOnTables(const wxString &query, const wxString
 
 bool tmProjectMaintenance::_CleanLayerOrphansKind(const wxString &tablegeom, const wxString &tablekind) {
   wxString myQuery = _T("DELETE FROM %s WHERE OBJECT_GEOM_ID NOT IN (SELECT OBJECT_ID FROM %s)");
-  if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, tablekind, tablegeom), true) == false) {
+  if (!m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, tablekind, tablegeom), true)) {
     return false;
   }
   long myDeletedRecords = m_DB->DataBaseGetAffectedRows();
@@ -68,33 +68,33 @@ bool tmProjectMaintenance::_CleanLayerOrphansKind(const wxString &tablegeom, con
 
 bool tmProjectMaintenance::_CleanLayerOrphansAttributes(int geomtype, const wxString &generictablename) {
   wxString myQuery = _T("SELECT LAYER_INDEX FROM thematic_layers WHERE TYPE_CD = %d ORDER BY LAYER_INDEX");
-  if (m_DB->DataBaseQuery(wxString::Format(myQuery, geomtype), true) == false) {
+  if (!m_DB->DataBaseQuery(wxString::Format(myQuery, geomtype), true)) {
     return false;
   }
 
-  if (m_DB->DataBaseHasResults() == false) {
+  if (!m_DB->DataBaseHasResults()) {
     m_Messages.Add(wxString::Format(_("Nothing to clean for type code: %d"), geomtype));
     return true;
   }
 
   wxArrayLong myLayersIndexIDs;
-  if (m_DB->DataBaseGetResults(myLayersIndexIDs) == false) {
+  if (!m_DB->DataBaseGetResults(myLayersIndexIDs)) {
     m_Errors.Add(_("Getting layer index Failed!"));
     return false;
   }
 
   for (unsigned int i = 0; i < myLayersIndexIDs.GetCount(); i++) {
     wxString myTablename = wxString::Format(_T("layer_at%ld"), myLayersIndexIDs[i]);
-    if (m_DB->DataBaseQuery(wxString::Format(_T("SHOW TABLES LIKE \"%s\""), myTablename), true) == false) {
+    if (!m_DB->DataBaseQuery(wxString::Format(_T("SHOW TABLES LIKE \"%s\""), myTablename), true)) {
       return false;
     }
-    if (m_DB->DataBaseHasResults() == false) {
+    if (!m_DB->DataBaseHasResults()) {
       continue;
     }
     m_DB->DataBaseClearResults();
 
     wxString myQuery = _T("DELETE FROM %s WHERE OBJECT_ID NOT IN (SELECT OBJECT_ID FROM %s)");
-    if (m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, myTablename, generictablename), true) == false) {
+    if (!m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, myTablename, generictablename), true)) {
       return false;
     }
     long myDeletedRecords = m_DB->DataBaseGetAffectedRows();
@@ -117,7 +117,7 @@ tmProjectMaintenance::tmProjectMaintenance(const wxString &databasename, DataBas
 
     // opening master database
     m_DB = new DataBase(_T("./"));
-    if (m_DB->DataBaseOpen(myDatabaseName.GetPath(), myDatabaseName.GetFullName()) == false) {
+    if (!m_DB->DataBaseOpen(myDatabaseName.GetPath(), myDatabaseName.GetFullName())) {
       m_Errors.Add(wxString::Format(_("Opening '%s' from '%s' Failed!"), myDatabaseName.GetFullName(),
                                     myDatabaseName.GetPath()));
       m_DB = NULL;
@@ -127,7 +127,7 @@ tmProjectMaintenance::tmProjectMaintenance(const wxString &databasename, DataBas
 }
 
 tmProjectMaintenance::~tmProjectMaintenance() {
-  if (m_DestroyDatabase == true) {
+  if (m_DestroyDatabase) {
     wxDELETE(m_DB);
   }
 }
@@ -147,7 +147,7 @@ bool tmProjectMaintenance::ClearOrphans() {
   wxString myTablesGeom[] = {_T("generic_lines"), _T("generic_points"), _T("generic_labels")};
   wxString myTablesKind[] = {_T("generic_aat"), _T("generic_pat"), _T("generic_lat")};
   for (int i = 0; i < (sizeof(myTablesGeom) / sizeof(wxString)); i++) {
-    if (_CleanLayerOrphansKind(myTablesGeom[i], myTablesKind[i]) == false) {
+    if (!_CleanLayerOrphansKind(myTablesGeom[i], myTablesKind[i])) {
       m_Errors.Add(wxString::Format(_("Error cleaning orphans (kind, %s)!"), myTablesKind[i]));
       bReturn = false;
     }
@@ -157,7 +157,7 @@ bool tmProjectMaintenance::ClearOrphans() {
   int myGeomtypes[] = {0, 1, 2};
   wxString myGenericTables[] = {_T("generic_lines"), _T("generic_points"), _T("generic_labels")};
   for (int i = 0; i < (sizeof(myGenericTables) / sizeof(wxString)); i++) {
-    if (_CleanLayerOrphansAttributes(myGeomtypes[i], myGenericTables[i]) == false) {
+    if (!_CleanLayerOrphansAttributes(myGeomtypes[i], myGenericTables[i])) {
       m_Errors.Add(wxString::Format(_("Error cleaning orphans (attributs, %s)!"), myGenericTables[i]));
       bReturn = false;
     }

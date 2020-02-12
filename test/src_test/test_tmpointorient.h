@@ -52,13 +52,13 @@ class TEST_tmPointOrient : public CxxTest::TestSuite {
 
   void testValid() {
     tmPointOrient myPtO;
-    TS_ASSERT(myPtO.IsValid() == false);
+    TS_ASSERT(!myPtO.IsValid());
     myPtO.SetStartPoint(myPt1);
-    TS_ASSERT(myPtO.IsValid() == false);
+    TS_ASSERT(!myPtO.IsValid());
     myPtO.SetEndPoint(myPt90);
-    TS_ASSERT(myPtO.IsValid() == true);
+    TS_ASSERT(myPtO.IsValid());
     myPtO.SetEndPoint(myPt1);
-    TS_ASSERT(myPtO.IsValid() == false);
+    TS_ASSERT(!myPtO.IsValid());
   }
 
   void testGetOrientInt() {

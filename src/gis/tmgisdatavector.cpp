@@ -75,7 +75,7 @@ wxString tmGISDataVector::GetFieldsMetadata() {
   myResult.Append(wxString::Format(_("Number of field(s) : %d<BR>"), iNbFields));
 
   wxArrayString myFieldName;
-  if (GetFieldsName(myFieldName) == false) {
+  if (!GetFieldsName(myFieldName)) {
     myResult.Append(_("Error getting fields name<BR>"));
     return myResult;
   }
@@ -724,7 +724,7 @@ OGRLineString *tmGISDataVector::GetLineWithIntersection(OGRLineString *line, OGR
     for (int l = 0; l < multiline->getNumGeometries(); l++) {
       OGRLineString *myLine = (OGRLineString *)multiline->getGeometryRef(l);
       wxASSERT(myLine);
-      if (mySegment.Intersects(myLine) == false) {
+      if (!mySegment.Intersects(myLine)) {
         continue;
       }
 
@@ -787,7 +787,7 @@ OGRLineString *tmGISDataVector::GetLineWithIntersection(OGRLineString *line, OGR
   *******************************************************************************/
 bool tmGISDataVector::SplitGeometry(OGRGeometryCollection *gCol, const long &oid, wxArrayLong &AddedIds,
                                     int layertype) {
-  if (UpdateGeometry(gCol->getGeometryRef(0), oid) == false) return false;
+  if (!UpdateGeometry(gCol->getGeometryRef(0), oid)) return false;
   long lAdded = -1;
   for (int i = 1; i < gCol->getNumGeometries(); i++) {
     lAdded = AddGeometry(gCol->getGeometryRef(i), -1, layertype);

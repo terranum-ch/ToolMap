@@ -30,7 +30,7 @@ void NewTemplatePrjWizard::OnUpdateNextBtn(wxIdleEvent &event) {
 
   // source page validation
   if (GetCurrentPage() == m_SourcePage) {
-    if (wxFileExists(m_SourceFileCtrl->GetFileName().GetFullPath()) == true) {
+    if (wxFileExists(m_SourceFileCtrl->GetFileName().GetFullPath())) {
       myForwardBtn->Enable(true);
     } else {
       myForwardBtn->Enable(false);
@@ -39,7 +39,7 @@ void NewTemplatePrjWizard::OnUpdateNextBtn(wxIdleEvent &event) {
 
   // destination page validation
   if (GetCurrentPage() == m_DestinationPage) {
-    if (wxDirExists(m_DestDirCtrl->GetDirName().GetFullPath()) == true) {
+    if (wxDirExists(m_DestDirCtrl->GetDirName().GetFullPath())) {
       myForwardBtn->Enable(true);
     } else {
       myForwardBtn->Enable(false);
@@ -53,11 +53,11 @@ void NewTemplatePrjWizard::OnSourceDirChanged(wxFileDirPickerEvent &event) {
 
   BackupFile myFileInfo;
   BackupManager myBkpManager(NULL);
-  if (myBkpManager.GetFileInfo(m_SourceFileCtrl->GetFileName(), myFileInfo) == false) {
+  if (!myBkpManager.GetFileInfo(m_SourceFileCtrl->GetFileName(), myFileInfo)) {
     return;
   }
 
-  if (myFileInfo.IsUsingDate() == true) {
+  if (myFileInfo.IsUsingDate()) {
     m_DateCtrl->SetLabel(myFileInfo.GetDate().Format(_T("%d %b %Y")) + _T(" ") + myFileInfo.GetDate().FormatISOTime());
   }
   m_CommentCtrl->SetLabel(myFileInfo.GetComment());
@@ -185,7 +185,7 @@ NewTemplatePrjWizard::~NewTemplatePrjWizard() {
 }
 
 int NewTemplatePrjWizard::ShowWizard() {
-  if (RunWizard(m_SourcePage) == true) {
+  if (RunWizard(m_SourcePage)) {
     TransferDataFromWindow();
     return wxID_OK;
   }

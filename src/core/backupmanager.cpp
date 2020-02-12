@@ -25,21 +25,21 @@ BackupFile::BackupFile() {
   m_Author = wxEmptyString;
   m_Date = wxDateTime();
   m_UseDate = true;
-  wxASSERT(m_Date.IsValid() == false);
+  wxASSERT(!m_Date.IsValid());
 }
 
 BackupFile::~BackupFile() {}
 
 bool BackupFile::IsValid() const {
-  if (m_OutFileName.IsOk() == false) {
+  if (!m_OutFileName.IsOk()) {
     return false;
   }
 
-  if (m_InDirectory.IsOk() == false) {
+  if (!m_InDirectory.IsOk()) {
     return false;
   }
 
-  if (m_Date.IsValid() == false) {
+  if (!m_Date.IsValid()) {
     return false;
   }
   return true;
@@ -94,12 +94,12 @@ void BackupManager::_ListMySQLFiles(const wxString &directory, wxArrayString &fi
 
 bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent) {
   // some checks
-  if (fileinfo.IsValid() == false) {
+  if (!fileinfo.IsValid()) {
     return false;
   }
 
-  if (wxDirExists(fileinfo.GetOutputName().GetPath()) == false ||
-      wxDirExists(fileinfo.GetInputDirectory().GetFullPath()) == false) {
+  if (!wxDirExists(fileinfo.GetOutputName().GetPath()) ||
+      !wxDirExists(fileinfo.GetInputDirectory().GetFullPath())) {
     wxLogError(_("Backup directory doesn't exists!"));
     return false;
   }
@@ -110,7 +110,7 @@ bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent)
 
   // Append date to filename if required
   wxFileName myFileOut(fileinfo.GetOutputName());
-  if (fileinfo.IsUsingDate() == true) {
+  if (fileinfo.IsUsingDate()) {
     myFileOut.SetName(myFileOut.GetName() + "-" + fileinfo.GetDate().FormatISODate() + "-" +
                       fileinfo.GetDate().Format(_T("%H%M%S")));
   }
@@ -153,7 +153,7 @@ bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent)
 
   SetMetadata(fileinfo, &outzip);
 
-  if (outzip.Close() == false) {
+  if (!outzip.Close()) {
     wxLogError(_("Error Closing file"));
     return false;
   }
@@ -165,27 +165,27 @@ bool BackupManager::Backup(const BackupFile &fileinfo, wxWindow *progressparent)
 
 bool BackupManager::Restore(const BackupFile &fileinfo, wxWindow *progressparent) {
   // some checks
-  if (fileinfo.IsValid() == false) {
+  if (!fileinfo.IsValid()) {
     return false;
   }
 
   // ensure file exists
-  if (wxFileExists(fileinfo.GetOutputName().GetFullPath()) == false) {
+  if (!wxFileExists(fileinfo.GetOutputName().GetFullPath())) {
     wxLogError(_("Backup file: '%s' doesn't exists!"), fileinfo.GetOutputName().GetFullPath());
     return false;
   }
 
   // remove directory if existing!
-  if (wxDirExists(fileinfo.GetInputDirectory().GetFullPath()) == true) {
+  if (wxDirExists(fileinfo.GetInputDirectory().GetFullPath())) {
     wxLogMessage(_("Directory: '%s' exists and will be removed"), fileinfo.GetInputDirectory().GetFullPath());
-    if (wxFileName::Rmdir(fileinfo.GetInputDirectory().GetFullPath(), wxPATH_RMDIR_RECURSIVE) == false) {
+    if (!wxFileName::Rmdir(fileinfo.GetInputDirectory().GetFullPath(), wxPATH_RMDIR_RECURSIVE)) {
       wxLogError(_("'%s' could not be removed!"), fileinfo.GetInputDirectory().GetFullPath());
       return false;
     }
   }
 
   // create directory
-  if (wxFileName::Mkdir(fileinfo.GetInputDirectory().GetFullPath()) == false) {
+  if (!wxFileName::Mkdir(fileinfo.GetInputDirectory().GetFullPath())) {
     wxLogError(_("Creating: '%s' failed!"), fileinfo.GetInputDirectory().GetFullPath());
     return false;
   }
@@ -196,7 +196,7 @@ bool BackupManager::Restore(const BackupFile &fileinfo, wxWindow *progressparent
   wxZipInputStream zip(in);
   int myCount = 0;
   while (entry.reset(zip.GetNextEntry()), entry.get() != NULL) {
-    if (entry->IsDir() == true) {
+    if (entry->IsDir()) {
       continue;
     }
     // access meta-data
@@ -205,13 +205,13 @@ bool BackupManager::Restore(const BackupFile &fileinfo, wxWindow *progressparent
     wxFileName myZipName(fileinfo.GetInputDirectory().GetFullPath(), myZipNameOnly.GetFullName());
 
     zip.OpenEntry(*entry.get());
-    if (zip.CanRead() == false) {
+    if (!zip.CanRead()) {
       wxLogError(_T("Can not read zip entry '") + entry->GetName() + _T("'."));
       return false;
     }
 
     wxFileOutputStream myOut(myZipName.GetFullPath());
-    if (myOut.IsOk() == false) {
+    if (!myOut.IsOk()) {
       wxLogError(_("Error writing: '%s'"), myZipName.GetFullName());
       return false;
     }
@@ -227,7 +227,7 @@ bool BackupManager::GetFileInfo(const wxFileName &file, BackupFile &fileinfo) {
 
   // read comment and author
   wxFFileInputStream outf(file.GetFullPath());
-  if (outf.IsOk() == false) {
+  if (!outf.IsOk()) {
     wxLogError(_("Could not open file: '%s'"), file.GetFullName());
     return false;
   }
@@ -235,7 +235,7 @@ bool BackupManager::GetFileInfo(const wxFileName &file, BackupFile &fileinfo) {
   {
     wxZipInputStream inzip(outf);
     wxString myXMLcomment = inzip.GetComment();
-    if (myXMLcomment.IsEmpty() == false) {
+    if (!myXMLcomment.IsEmpty()) {
       wxStringInputStream myXMLStream(myXMLcomment);
       wxXmlDocument doc;
       if (doc.Load(myXMLStream) != false) {
@@ -279,7 +279,7 @@ bool BackupManager::GetFileInfo(const wxFileName &file, BackupFile &fileinfo) {
   wxString::const_iterator end;
   bool bSuccess = myDate.ParseFormat(myDateTimeString, _T("%Y-%m-%d-%H%M%S"), &end);
 
-  if (bSuccess == false) {
+  if (!bSuccess) {
     wxLogMessage(_("Error parsing date : '%s'"), myDateTimeString);
     return false;
   }
@@ -288,7 +288,7 @@ bool BackupManager::GetFileInfo(const wxFileName &file, BackupFile &fileinfo) {
 }
 
 bool BackupManager::SetMetadata(const BackupFile &fileinfo, wxZipOutputStream *zip) {
-  if (fileinfo.IsValid() == false || zip == NULL) {
+  if (!fileinfo.IsValid() || zip == NULL) {
     return false;
   }
 

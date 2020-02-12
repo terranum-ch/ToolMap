@@ -346,7 +346,7 @@ void ScaleList::AfterAdding(bool bRealyAddItem) {
   long lenteredScale = ((wxNumberEntryDialog *)m_pDialog)->GetValue();
 
   // if we really want to add the new scale
-  if (bRealyAddItem == TRUE) {
+  if (bRealyAddItem) {
     m_pPrjDefinition->AddScale(lenteredScale);
     SetScaleToList(lenteredScale);
   }
@@ -404,7 +404,7 @@ void ScaleList::BeforeDeleting() {
   int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
   for (int i = 0; i < iNbSelectedItems; i++) {
     mySelectedScale = GetScaleFromList(mySelectedListItems[i]);
-    if (m_pPrjDefinition->RemoveScale(mySelectedScale) == FALSE) {
+    if (!m_pPrjDefinition->RemoveScale(mySelectedScale)) {
       // if item wasen't into memory store real id
       // for later deleting
       m_pPrjDefinition->m_StoreDeleteScale.Add(GetItemData(mySelectedListItems[i]));

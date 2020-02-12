@@ -105,7 +105,7 @@ bool AAttribBatch_DLG::TransferDataToWindow() {
 
   PrjMemObjectsArray myObjets;
   wxArrayInt myNumber;
-  if (m_pBatchManager->GetTypes(myObjets, myNumber, m_ArrayIds) == false) {
+  if (!m_pBatchManager->GetTypes(myObjets, myNumber, m_ArrayIds)) {
     wxLogError(_("Getting Types failed for batch attribution"));
     return true;
   }
@@ -126,7 +126,7 @@ void AAttribBatch_DLG::OnTypeChange(wxCommandEvent &event) {
   m_ListFields->Clear();
   _SetControl(NULL);
 
-  if (m_ArrayIds.IsEmpty() == true) {
+  if (m_ArrayIds.IsEmpty()) {
     wxLogWarning(_("Types are empty, getting fields isn't possible"));
     return;
   }
@@ -137,7 +137,7 @@ void AAttribBatch_DLG::OnTypeChange(wxCommandEvent &event) {
     return;
   }
 
-  if (m_pBatchManager->GetFields(m_ArrayIds.Item(event.GetSelection()), m_Fields) == false) {
+  if (!m_pBatchManager->GetFields(m_ArrayIds.Item(event.GetSelection()), m_Fields)) {
     wxLogError(_("Getting fields for item %d failed"), event.GetSelection());
     return;
   }
@@ -150,7 +150,7 @@ void AAttribBatch_DLG::OnTypeChange(wxCommandEvent &event) {
 }
 
 void AAttribBatch_DLG::OnFieldsChange(wxCommandEvent &event) {
-  if (m_Fields.IsEmpty() == true) {
+  if (m_Fields.IsEmpty()) {
     wxLogWarning(_("Fields are empty, Advanced batch attribution isn't possible"));
     return;
   }
@@ -189,7 +189,7 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl *ctrl) {
 
   wxASSERT(m_CtrlSizer);
   wxSizerItemList myItemList = m_CtrlSizer->GetChildren();
-  if (myItemList.IsEmpty() == false) {
+  if (!myItemList.IsEmpty()) {
     wxSizerItemList::iterator iter;
     iter = myItemList.begin();
     wxSizerItem *myItem = *iter;
@@ -206,7 +206,7 @@ void AAttribBatch_DLG::_SetControl(tmAAttribCtrl *ctrl) {
 void AAttribBatch_DLG::OnSave(wxCommandEvent &event) {
   wxASSERT(m_ValueCtrl);
   wxString myValue = m_ValueCtrl->GetControlValue();
-  if (myValue.IsEmpty() == true || myValue.IsNull()) {
+  if (myValue.IsEmpty() || myValue.IsNull()) {
     wxLogError(_("Attribution failed, please select a Type, a Field and then set a Value!"));
     return;
   }
@@ -232,7 +232,7 @@ void AAttribBatch_DLG::OnSave(wxCommandEvent &event) {
 void AAttribBatch_DLG::OnApply(wxCommandEvent &event) {
   wxASSERT(m_ValueCtrl);
   wxString myValue = m_ValueCtrl->GetControlValue();
-  if (myValue.IsEmpty() == true || myValue.IsNull()) {
+  if (myValue.IsEmpty() || myValue.IsNull()) {
     wxLogError(_("Attribution failed, please select a Type, a Field and then set a Value!"));
     return;
   }

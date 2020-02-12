@@ -520,13 +520,13 @@ void AttribObjType_PANEL::SetAttributeBtn(int nbfeatures, bool editmode) {
 
   m_AttribBtn->Enable(false);
   m_AddBtnCtrl->Enable(false);
-  if (nbfeatures > 0 && editmode == true) {
+  if (nbfeatures > 0 && editmode) {
     m_AttribBtn->Enable(true);
     m_AddBtnCtrl->Enable(true);
   }
 
   m_WarningMultiFeatureCtrl->SetLabel(wxEmptyString);
-  if (nbfeatures > 1 && editmode == true) {
+  if (nbfeatures > 1 && editmode) {
     m_WarningMultiFeatureCtrl->SetLabel(wxString::Format(_("Warning: %d features selected!"), nbfeatures));
   }
 }
@@ -709,7 +709,7 @@ int AttribObjType_PANEL::GetSelectedValues(TOC_GENERIC_NAME panel_name, wxArrayL
 
   for (unsigned int i = 0; i < myList->GetCount(); i++) {
     if (myList->GetItem(i, myCheckedID, mytemp, myChecked)) {
-      if (myChecked == true) values.Add(myCheckedID);
+      if (myChecked) values.Add(myCheckedID);
     } else
       break;
   }

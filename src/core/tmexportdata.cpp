@@ -152,12 +152,12 @@ int tmExportData::GetSizeOfObjDesc(int layerindex) {
                     _T(" WHERE THEMATIC_LAYERS_LAYER_INDEX = %d;");
   wxString sSentence = wxString::Format(sStemp, layerindex);
 
-  if (m_pDB->DataBaseQuery(sSentence) == false) {
+  if (!m_pDB->DataBaseQuery(sSentence)) {
     return 0;
   }
 
   long myMaxLength = 0;
-  if (m_pDB->DataBaseGetNextResult(myMaxLength) == false) {
+  if (!m_pDB->DataBaseGetNextResult(myMaxLength)) {
     wxLogError(_("Unable to get field length"));
     myMaxLength = 100;
   }
@@ -279,7 +279,7 @@ bool tmExportData::GetAdvancedAttribution(ProjectDefMemoryLayers *layer) {
 
   wxASSERT(layer);
   wxString sSentence = wxString::Format(_T("SELECT * FROM layer_at%d ORDER BY OBJECT_ID"), layer->m_LayerID);
-  if (m_pDB->DataBaseQuery(sSentence) == false) return false;
+  if (!m_pDB->DataBaseQuery(sSentence)) return false;
 
   return true;
 }

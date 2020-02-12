@@ -65,7 +65,7 @@ wxWizardPage *QueriesPageIntro::GetPrev() const {
 int QueriesPageIntro::_GetRadioBoxSelection() const {
   int iReturn = wxNOT_FOUND;
   for (int i = 0; i < QUERY_NUMBER; i++) {
-    if (m_RadioBtn[i]->GetValue() == true) {
+    if (m_RadioBtn[i]->GetValue()) {
       iReturn = i;
       break;
     }
@@ -216,7 +216,7 @@ QueriesLayerList::QueriesLayerList(wxWindow *parent, wxWindowID id, wxSize size)
 QueriesLayerList::~QueriesLayerList() {}
 
 void QueriesLayerList::SetSelection(long index, bool selected) {
-  if (selected == true) {
+  if (selected) {
     SetItemState(index, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
   } else {
     SetItemState(index, 0, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);
@@ -243,7 +243,7 @@ bool QueriesPageLayer::TransferDataToWindow() {
       m_Layers.RemoveAt(0);
     }
 
-    if (m_Parent->GetData()->GetLayers(m_pDB, m_Layers) == true) {
+    if (m_Parent->GetData()->GetLayers(m_pDB, m_Layers)) {
       // create lines layers for all polygons layers
       // those layers are only used for creating queries
       unsigned int j = 0;
@@ -396,7 +396,7 @@ bool QueriesPageObject::TransferDataToWindow() {
   m_ListType->Freeze();
   m_ListType->Clear();
 
-  if (m_Parent->GetData()->GetObjectsForTypes(m_pDB, m_Objects) == false) {
+  if (!m_Parent->GetData()->GetObjectsForTypes(m_pDB, m_Objects)) {
     m_ListType->Thaw();
     return true;
   }
@@ -532,14 +532,14 @@ bool QueriesPageAttribut1::TransferDataToWindow() {
 
   // check if fields are present
   long myLayerID = wxNOT_FOUND;
-  if (m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID) == false) {
+  if (!m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID)) {
     m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, false);
     m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
     return true;
   }
 
-  if (m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, m_Parent->GetData()->m_QueryFields,
-                                           m_Parent->GetData()->m_QueryFieldsValues) == false) {
+  if (!m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, m_Parent->GetData()->m_QueryFields,
+                                           m_Parent->GetData()->m_QueryFieldsValues)) {
     // disabling for security
     wxLogError(_T("Problem getting fields value for query"));
     m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, false);
@@ -547,7 +547,7 @@ bool QueriesPageAttribut1::TransferDataToWindow() {
     return true;
   }
 
-  if (m_Parent->GetData()->HasFieldsValues() == false) {
+  if (!m_Parent->GetData()->HasFieldsValues()) {
     m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
   }
 
@@ -608,9 +608,9 @@ void QueriesPageAttribut2::_LoadAttributs() {
   m_AdvAttributs->Clear();
 
   wxASSERT(m_Parent->GetData()->m_QueryLayerID != wxNOT_FOUND);
-  if (m_Parent->GetData()->GetFieldsValues(m_pDB, m_Parent->GetData()->m_QueryLayerID,
+  if (!m_Parent->GetData()->GetFieldsValues(m_pDB, m_Parent->GetData()->m_QueryLayerID,
                                            m_Parent->GetData()->m_QueryFields,
-                                           m_Parent->GetData()->m_QueryFieldsValues) == false) {
+                                           m_Parent->GetData()->m_QueryFieldsValues)) {
     m_AdvAttributs->Thaw();
     return;
   }
@@ -643,7 +643,7 @@ void QueriesPageAttribut2::OnDeleteAttribut(wxKeyEvent &event) {
       return;
     }
 
-    if (m_Parent->GetData()->DeleteFieldsValue(m_AdvAttributs->GetSelection()) == false) {
+    if (!m_Parent->GetData()->DeleteFieldsValue(m_AdvAttributs->GetSelection())) {
       event.Skip();
       return;
     }
@@ -680,7 +680,7 @@ bool QueriesPageAttribut2::TransferDataToWindow() {
 }
 
 bool QueriesPageAttribut2::TransferDataFromWindow() {
-  if (m_AdvAttributs->IsEmpty() == true) {
+  if (m_AdvAttributs->IsEmpty()) {
     m_Parent->GetData()->m_QueryFieldsStatus = AATTRIBUTION_EMPTY;
   }
   return true;

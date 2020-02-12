@@ -306,7 +306,7 @@ wxString ObjectDefinitionList::GetLayerStatus(int iIndex) {
 
 int ScaleList::Compare(int iColumnCompareType, const wxString &x_strValue1, const wxString &x_strValue2,
                        bool bAscending) {
-  if (bAscending == TRUE) {
+  if (bAscending) {
     if (iColumnCompareType == 3)  // FIELD_SCALE_TYPE
     {
       if (wxAtof(x_strValue1.AfterFirst(':')) > wxAtof(x_strValue2.AfterFirst(':')))
@@ -532,7 +532,7 @@ void ObjectDefinitionList::BeforeAdding() {
 void ObjectDefinitionList::AfterAdding(bool bRealyAddItem) {
   wxArrayString sResultToList;
 
-  if (bRealyAddItem == TRUE) {
+  if (bRealyAddItem) {
     // add an id for the new added item
     // needed if we modify it later
     m_ObjectObj->m_ObjectID = iAddItems;
@@ -560,7 +560,7 @@ void ObjectDefinitionList::BeforeDeleting() {
   int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
   for (int i = 0; i < iNbSelectedItems; i++) {
     myObjectName = GetItemColText(mySelectedListItems[i], 1);
-    if (m_MemoryObject->RemoveObject(myObjectName) == FALSE) {
+    if (!m_MemoryObject->RemoveObject(myObjectName)) {
       // if item wasen't into memory store real id
       // for later deleting
       m_MemoryObject->m_StoreDeleteIDObj.Add(GetItemData(mySelectedListItems[i]));
@@ -602,7 +602,7 @@ void ObjectDefinitionList::BeforeEditing() {
 void ObjectDefinitionList::AfterEditing(bool bRealyEdited) {
   wxArrayString sResultToList;
 
-  if (bRealyEdited == TRUE) {
+  if (bRealyEdited) {
     // the object was modified we show the modif in the list
     SetObjectToList(m_ObjectObj, GetSelectedItem());
   } else
@@ -650,5 +650,5 @@ void ObjectDefinitionList::OnSortColumns(wxListEvent &event) {
   SortListItem(iCol, 0, -1, myTypeCol[iCol], m_bAscending[iCol]);
 
   // invert ascending : descending
-  m_bAscending[iCol] == TRUE ? m_bAscending[iCol] = FALSE : m_bAscending[iCol] = TRUE;
+  m_bAscending[iCol] ? m_bAscending[iCol] = FALSE : m_bAscending[iCol] = TRUE;
 }
