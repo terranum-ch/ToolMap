@@ -93,7 +93,7 @@ TextParser *TextParser::CreateParserBasedOnType(const int &textparser_index, con
   }
 
   wxFAIL_MSG(_("No Parser Found!!!"));
-  return NULL;
+  return nullptr;
 }
 
 /***************************************************************************/ /**
@@ -126,12 +126,12 @@ TextParserTxtFile::TextParserTxtFile(const wxFileName &filename) {
 }
 
 TextParserTxtFile::~TextParserTxtFile() {
-  if (m_File != NULL) delete m_File;
+  if (m_File != nullptr) delete m_File;
 }
 
 void TextParserTxtFile::InitParserValue() {
   m_ParseFileType = TEXTPARSER_TYPE_TXTFILE;
-  m_File = NULL;
+  m_File = nullptr;
   m_TextSeparator = wxEmptyString;
   m_WriteMode = FALSE;
 }
@@ -157,7 +157,7 @@ bool TextParserTxtFile::OpenParseFile(bool bCreate) {
       return TRUE;
     }
   } else {
-    if (m_WriteMode == TRUE) {
+    if (m_WriteMode) {
       m_File->Create();
       m_File->Open();
       return TRUE;
@@ -167,8 +167,8 @@ bool TextParserTxtFile::OpenParseFile(bool bCreate) {
 }
 
 bool TextParserTxtFile::CloseParseFile() {
-  if (m_File != NULL) {
-    if (m_WriteMode == TRUE) {
+  if (m_File != nullptr) {
+    if (m_WriteMode) {
       m_File->Write();
       wxLogDebug(_T("File data written on disk, now closing"));
     }
@@ -181,7 +181,7 @@ bool TextParserTxtFile::CloseParseFile() {
 
 int TextParserTxtFile::ParseNextLine(wxArrayString &myValues) {
   wxASSERT(!m_TextSeparator.IsEmpty());
-  wxASSERT(m_File != NULL);
+  wxASSERT(m_File != nullptr);
 
   // check that the file is open
   if (m_File->IsOpened()) {
@@ -208,7 +208,7 @@ bool TextParserTxtFile::WriteNextLine(const wxArrayString &myValues) {
   int iSizeOfArray = myValues.GetCount();
 
   wxASSERT(!m_TextSeparator.IsEmpty());
-  wxASSERT(m_File != NULL);
+  wxASSERT(m_File != nullptr);
 
   if (m_File->IsOpened()) {
     // clear the file if we are writting the first line

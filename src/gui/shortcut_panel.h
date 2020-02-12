@@ -60,7 +60,7 @@ class ShortcutList : public ListGenReportWithDialog {
  protected:
  public:
   ShortcutList(wxWindow *parent, wxWindow *parent_evt, wxWindowID id, wxArrayString *pColsName,
-               wxArrayInt *pColsSize = NULL, wxSize size = wxDefaultSize);
+               wxArrayInt *pColsSize = nullptr, wxSize size = wxDefaultSize);
 
   ~ShortcutList();
 

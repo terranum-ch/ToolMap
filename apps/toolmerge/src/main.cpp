@@ -155,10 +155,10 @@ int main(int argc, char **argv) {
     wxFileName myDir(mySlaveFileNameBkp, _T(""));
     myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
   }
-  if (CopyDir(myMasterFileName, myMasterFileNameBkp) == false) {
+  if (!CopyDir(myMasterFileName, myMasterFileNameBkp)) {
     wxLogError(_("Creating Master Backup before processing failed!"));
   }
-  if (CopyDir(mySlaveFileName, mySlaveFileNameBkp) == false) {
+  if (!CopyDir(mySlaveFileName, mySlaveFileNameBkp)) {
     wxLogError(_("Creating Slave Backup before processing failed!"));
   }
 
@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
     {
       tmProjectMaintenance myMaintenanceMaster(myMasterFileNameBkp);
       myMaintenanceMaster.SetVerbose(beVerbose);
-      if (myMaintenanceMaster.OptimizeTables() == false) {
+      if (!myMaintenanceMaster.OptimizeTables()) {
         PrintArray(myMaintenanceMaster.GetErrors(), _("Optimize master FAILED! see bellow"));
       } else {
         if (beVerbose) {
@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      if (myMaintenanceMaster.RepairTables() == false) {
+      if (!myMaintenanceMaster.RepairTables()) {
         PrintArray(myMaintenanceMaster.GetErrors(), _("Repairing master FAILED! see bellow"));
       } else {
         if (beVerbose) {
@@ -188,7 +188,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      if (myMaintenanceMaster.ClearOrphans() == false) {
+      if (!myMaintenanceMaster.ClearOrphans()) {
         PrintArray(myMaintenanceMaster.GetErrors(), _("Cleaing master FAILED! see bellow\n"));
       } else {
         if (beVerbose) {
@@ -200,7 +200,7 @@ int main(int argc, char **argv) {
     {
       tmProjectMaintenance myMaintenanceSlave(mySlaveFileNameBkp);
       myMaintenanceSlave.SetVerbose(beVerbose);
-      if (myMaintenanceSlave.OptimizeTables() == false) {
+      if (!myMaintenanceSlave.OptimizeTables()) {
         PrintArray(myMaintenanceSlave.GetErrors(), _("Optimize slave FAILED! see bellow"));
       } else {
         if (beVerbose) {
@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      if (myMaintenanceSlave.RepairTables() == false) {
+      if (!myMaintenanceSlave.RepairTables()) {
         PrintArray(myMaintenanceSlave.GetErrors(), _("Repairing slave FAILED! see bellow"));
       } else {
         if (beVerbose) {
@@ -216,7 +216,7 @@ int main(int argc, char **argv) {
         }
       }
 
-      if (myMaintenanceSlave.ClearOrphans() == false) {
+      if (!myMaintenanceSlave.ClearOrphans()) {
         PrintArray(myMaintenanceSlave.GetErrors(), _("Cleaing slave FAILED! see bellow\n"));
       } else {
         if (beVerbose) {
@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
   if (beVerbose) {
     wxPrintf(_("\nCHECKING...\n"));
   }
-  if (myCheckMerger.CheckSimilar() == true) {
+  if (myCheckMerger.CheckSimilar()) {
     wxPrintf(_("OK projects are similar\n"));
     bCheckOk = true;
   } else {
@@ -248,7 +248,7 @@ int main(int argc, char **argv) {
     wxPrintf(_("Checking projects in %ld [ms]\n"), sw.Time());
   }
 
-  if (parser.Found("merge") && bCheckOk == false) {
+  if (parser.Found("merge") && !bCheckOk) {
     wxPrintf(_("Merging not allowed, projects are different!\n"));
     return 1;
   }
@@ -260,7 +260,7 @@ int main(int argc, char **argv) {
       wxPrintf(_("\nMERGING...\n"));
     }
 
-    if (myCheckMerger.MergeIntoMaster() == true) {
+    if (myCheckMerger.MergeIntoMaster()) {
       wxPrintf(_("OK Project Merged into '%s' in %ld [ms]"), myMasterFileNameBkp, sw.Time());
     } else {
       PrintArray(myCheckMerger.GetErrors(), _("Merge FAILED! see bellow\n"));

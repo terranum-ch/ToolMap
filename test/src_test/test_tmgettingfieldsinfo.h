@@ -64,16 +64,16 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
   void testGettingFieldNameForShapefiles() {
     wxFileName myVectName(g_TestPathSHP, g_TestFileSHP_PLG);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(myVectName.GetExt());
-    TS_ASSERT(myVect != NULL);
-    TS_ASSERT(myVect->Open(myVectName.GetFullPath(), false) == true);
+    TS_ASSERT(myVect != nullptr);
+    TS_ASSERT(myVect->Open(myVectName.GetFullPath(), false));
 
     wxArrayString myFieldsValue;
     TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 0);
 
-    TS_ASSERT(myVect->GetFieldsName(myFieldsValue) == true);
+    TS_ASSERT(myVect->GetFieldsName(myFieldsValue));
     TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 4);
 
-    TS_ASSERT(myVect->GetFieldsName(myFieldsValue) == true);
+    TS_ASSERT(myVect->GetFieldsName(myFieldsValue));
     TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 4);
 
     wxDELETE(myVect);
@@ -82,11 +82,11 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
   void testGettingFieldsValueForShapefiles() {
     wxFileName myVectName(g_TestPathSHP, g_TestFileSHP_PLG);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(myVectName.GetExt());
-    TS_ASSERT(myVect != NULL);
-    TS_ASSERT(myVect->Open(myVectName.GetFullPath(), false) == true);
+    TS_ASSERT(myVect != nullptr);
+    TS_ASSERT(myVect->Open(myVectName.GetFullPath(), false));
 
     wxArrayString myValues;
-    TS_ASSERT(myVect->GetFieldsValue(myValues, 1) == true);
+    TS_ASSERT(myVect->GetFieldsValue(myValues, 1));
     TS_ASSERT_EQUALS(myValues.GetCount(), 4);
     // int iTotVal = myValues.GetCount();
     /*for (int i = 0; i< iTotVal; i++) {
@@ -101,13 +101,13 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
   void testGettingFieldsName2ForMySQL() {
     wxFileName mySQLFileName(g_TestPathPRJ + wxFileName::GetPathSeparator() + g_TestPrj_AdvAttribution,
                              _T("generic_lines.MYD"));
-    TS_ASSERT(mySQLFileName.FileExists() == true);
+    TS_ASSERT(mySQLFileName.FileExists());
     // wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
 
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
@@ -115,13 +115,13 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
 
     // getting fields failed because no project specified
     wxArrayString myFieldsName;
-    TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9) == false);
+    TS_ASSERT(!myVect->GetFieldsName(myFieldsName, 9));
 
     // specifiy project object
     ((tmGISDataVectorMYSQL *)myVect)->SetProject(m_Proj);
 
     // getting fields ok because project specified
-    TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9) == true);
+    TS_ASSERT(myVect->GetFieldsName(myFieldsName, 9));
     int iTotVal = myFieldsName.GetCount();
     /*for (int i = 0; i< iTotVal; i++) {
             wxLogMessage(_T("Fields name %d = %s"), i, myFieldsName.Item(i).c_str());
@@ -134,13 +134,13 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // MySQL layer to open
     wxFileName mySQLFileName(g_TestPathPRJ + wxFileName::GetPathSeparator() + g_TestPrj_AdvAttribution,
                              _T("generic_lines.MYD"));
-    TS_ASSERT(mySQLFileName.FileExists() == true);
+    TS_ASSERT(mySQLFileName.FileExists());
     // wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
     TS_ASSERT_EQUALS(myVect->Open(mySQLFileName.GetFullPath(), true), true);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
@@ -149,7 +149,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // getting fields value
     wxArrayString myFieldsValue;
     TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 0);
-    TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 9) == true);
+    TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 9));
 
     // int iTotVal = myFieldsValue.GetCount();
     /*for (int i = 0; i< iTotVal; i++) {
@@ -171,13 +171,13 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // MySQL layer to open
     wxFileName mySQLFileName(g_TestPathPRJ + wxFileName::GetPathSeparator() + g_TestPrj_AdvAttribution,
                              _T("generic_labels.MYD"));
-    TS_ASSERT(mySQLFileName.FileExists() == true);
+    TS_ASSERT(mySQLFileName.FileExists());
     // wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
     TS_ASSERT_EQUALS(myVect->Open(mySQLFileName.GetFullPath(), true), true);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
@@ -186,7 +186,7 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
     // getting fields value
     wxArrayString myFieldsValue;
     TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 0);
-    TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 3) == true);
+    TS_ASSERT(myVect->GetFieldsValue(myFieldsValue, 3));
 
     TS_ASSERT_EQUALS(myFieldsValue.GetCount(), 4);
     TS_ASSERT(myFieldsValue.Item(myFieldsValue.GetCount() - 1) == _T("L. Schreiber"));
@@ -196,13 +196,13 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
   void testGettingFieldsName2ForMySQLLabels() {
     wxFileName mySQLFileName(g_TestPathPRJ + wxFileName::GetPathSeparator() + g_TestPrj_AdvAttribution,
                              _T("generic_labels.MYD"));
-    TS_ASSERT(mySQLFileName.FileExists() == true);
+    TS_ASSERT(mySQLFileName.FileExists());
     // wxLogMessage(_T("Opening file : ") + mySQLFileName.GetFullPath());
 
     // opening layer
     TS_ASSERT(m_pDB);
     tmGISDataVector *myVect = tmGISDataVector::CreateGISVectorBasedOnExt(_T("mysql"));
-    TS_ASSERT(myVect != NULL);
+    TS_ASSERT(myVect != nullptr);
     TS_ASSERT(myVect->GetDataType() == tmGIS_VECTOR_MYSQL);
 
     tmGISDataVectorMYSQL::SetDataBaseHandle(m_pDB);
@@ -210,13 +210,13 @@ class TEST_GettingFieldsInfo : public CxxTest::TestSuite {
 
     // getting fields failed because no project specified
     wxArrayString myFieldsName;
-    TS_ASSERT(myVect->GetFieldsName(myFieldsName, 3) == false);
+    TS_ASSERT(!myVect->GetFieldsName(myFieldsName, 3));
 
     // specifiy project object
     ((tmGISDataVectorMYSQL *)myVect)->SetProject(m_Proj);
 
     // getting fields ok because project specified
-    TS_ASSERT(myVect->GetFieldsName(myFieldsName, 3) == true);
+    TS_ASSERT(myVect->GetFieldsName(myFieldsName, 3));
     int iTotVal = myFieldsName.GetCount();
     TS_ASSERT_EQUALS(iTotVal, 4);
     TS_ASSERT(myFieldsName.Item(3) == _T("update_author"));

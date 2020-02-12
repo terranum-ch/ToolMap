@@ -73,7 +73,7 @@ tmSymbolVector *tmSymbolVector::CreateSymbolVectorBasedOnType(TM_GIS_SPATIAL_TYP
 
     default:
       wxLogDebug(_T("Symbology for this format not implemented now"));
-      return NULL;
+      return nullptr;
       break;
   }
 }
@@ -104,7 +104,7 @@ tmSymbolVector *tmSymbolVector::CreateCopySymbolVectorBasedOnType(TM_GIS_SPATIAL
 
     default:
       wxLogDebug(_T("Symbology for this format not implemented now"));
-      return NULL;
+      return nullptr;
       break;
   }
 }

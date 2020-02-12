@@ -1,6 +1,6 @@
 /***************************************************************************
  tmmemoryzoom.cpp
-                     Store Previous Zoom in memory
+ Store Previous Zoom in memory
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -37,7 +37,7 @@ tmZoomExtent::tmZoomExtent(double top, double left, double pixelsize) {
 bool tmZoomExtent::operator==(const tmZoomExtent &zoom) const {
   if (m_TopLeftPosition != zoom.m_TopLeftPosition) return false;
 
-  if (wxIsSameDouble(m_ZoomFactor, zoom.m_ZoomFactor) == false) return false;
+  if (!wxIsSameDouble(m_ZoomFactor, zoom.m_ZoomFactor)) return false;
 
   return true;
 }

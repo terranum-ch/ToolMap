@@ -32,19 +32,19 @@ IMPLEMENT_CLASS(ProjectManager, wxObject);
   *******************************************************************************/
 ProjectManager::ProjectManager(wxFrame *parent) {
   bProjectIsOpen = FALSE;
-  m_DB = NULL;
+  m_DB = nullptr;
   m_Parent = parent;
-  m_pMManager = NULL;
-  m_ParentStatus = NULL;
-  m_LayerManager = NULL;
-  m_AttribManager = NULL;
-  m_QueriesPanel = NULL;
-  m_ShortcutPanel = NULL;
-  m_SnappingPanel = NULL;
-  m_EditManager = NULL;
-  m_PrjMem = NULL;
-  m_ToolManager = NULL;
-  m_StatManager = NULL;
+  m_pMManager = nullptr;
+  m_ParentStatus = nullptr;
+  m_LayerManager = nullptr;
+  m_AttribManager = nullptr;
+  m_QueriesPanel = nullptr;
+  m_ShortcutPanel = nullptr;
+  m_SnappingPanel = nullptr;
+  m_EditManager = nullptr;
+  m_PrjMem = nullptr;
+  m_ToolManager = nullptr;
+  m_StatManager = nullptr;
 
   m_Obj = new ObjectManager();
 }
@@ -59,10 +59,10 @@ ProjectManager::~ProjectManager() {
   wxDELETE(m_DB);
 
   // closing database only at the program end.
-  /*if (m_DB != NULL)
+  /*if (m_DB != nullptr)
   {
       delete m_DB;
-      m_DB = NULL;
+      m_DB = nullptr;
   }*/
 }
 
@@ -97,7 +97,7 @@ bool ProjectManager::CreateNewProject() {
   {
     wxBusyInfo wait(_("Please wait, creating empty project..."), m_Parent);
 
-    if (m_DB->CreateTMDatabase(&PrjDefinition) == false) {
+    if (!m_DB->CreateTMDatabase(&PrjDefinition)) {
       CloseProject();
       // delete wait;
       return false;
@@ -107,7 +107,7 @@ bool ProjectManager::CreateNewProject() {
   // fill the project
   ProjectDefDLG *myNewProjDlg = new ProjectDefDLG(m_Parent, &PrjDefinition);
   if (myNewProjDlg->ShowModal() == wxID_OK) {
-    if (m_DB->InitProjectWithStartingWizard(&PrjDefinition) == false) {
+    if (!m_DB->InitProjectWithStartingWizard(&PrjDefinition)) {
       delete myNewProjDlg;
       wxLogError(_T("Error passing data to database"));
       // change menu status
@@ -119,7 +119,7 @@ bool ProjectManager::CreateNewProject() {
   delete myNewProjDlg;
 
   // add default queries
-  if (PMAddDefaultQueries() == false) return false;
+  if (!PMAddDefaultQueries()) return false;
 
   // open the newly created project
   if (OpenProject(PrjDefinition.m_PrjPath + wxFileName::GetPathSeparator() + PrjDefinition.m_PrjName) != tmDB_OPEN_OK) {
@@ -205,7 +205,7 @@ bool ProjectManager::PMAddDefaultQueries() {
   bool breturn = m_DB->EditQueries(TOC_NAME_LINES, _("Lines without attribution"),
                                    wxString::Format(myQueryTemplate, TABLE_NAME_GIS_GENERIC[TOC_NAME_LINES].c_str(),
                                                     TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LINES].c_str()));
-  if (breturn == false) {
+  if (!breturn) {
     wxLogError(_("Error adding default query [LINES]"));
     return false;
   }
@@ -213,7 +213,7 @@ bool ProjectManager::PMAddDefaultQueries() {
   breturn = m_DB->EditQueries(TOC_NAME_POINTS, _("Points without attribution"),
                               wxString::Format(myQueryTemplate, TABLE_NAME_GIS_GENERIC[TOC_NAME_POINTS].c_str(),
                                                TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS].c_str()));
-  if (breturn == false) {
+  if (!breturn) {
     wxLogError(_("Error adding default query [POINTS]"));
     return false;
   }
@@ -221,7 +221,7 @@ bool ProjectManager::PMAddDefaultQueries() {
   breturn = m_DB->EditQueries(TOC_NAME_LABELS, _("Labels without attribution"),
                               wxString::Format(myQueryTemplate, TABLE_NAME_GIS_GENERIC[TOC_NAME_LABELS].c_str(),
                                                TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_LABELS].c_str()));
-  if (breturn == false) {
+  if (!breturn) {
     wxLogError(_("Error adding default query [LABELS]"));
     return false;
   }
@@ -379,12 +379,12 @@ bool ProjectManager::BackupProject(const wxString &backup_comment) {
   BackupManager myBckManager(GetDatabase());
 
   // Don't display progress dialog under Mac... Toooo slow!
-  wxWindow *myWnd = NULL;
+  wxWindow *myWnd = nullptr;
 #ifndef __WXMAC__
   myWnd = m_Parent;
 #endif
 
-  if (myBckManager.Backup(myBckFile, myWnd) == false) {
+  if (!myBckManager.Backup(myBckFile, myWnd)) {
     wxLogError(_("Backup : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
     wxEndBusyCursor();
     return false;
@@ -430,7 +430,7 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
   if (beVerbose) {
     wxLogMessage(_("CHECKING..."));
   }
-  if (merger.CheckSimilar() == false) {
+  if (!merger.CheckSimilar()) {
     wxString myErrors = _("Checking FAILED! \n") + wxJoin(merger.GetErrors(), '\n');
     wxLogError(myErrors);
     CleanDirectory(tmpPath);
@@ -449,9 +449,12 @@ bool ProjectManager::MergeProjects(const wxString &slave_project_name, bool beVe
     wxLogMessage(_("MERGING..."));
   }
 
-  if (merger.MergeIntoMaster() == false) {
-    wxString myErrors = _("Merge FAILED! see bellow\n") + wxJoin(merger.GetErrors(), '\n');
-    wxLogError(myErrors);
+  if (!merger.MergeIntoMaster()) {
+    wxLogError(_("Merge FAILED!"));
+    wxArrayString errs(merger.GetErrors());
+    for (auto err: errs) {
+      wxLogError(err);
+    }
     CleanDirectory(tmpPath);
     return false;
   }
@@ -492,12 +495,12 @@ void ProjectManager::CloseProject() {
   wxASSERT(m_EditManager);
 
   // save the snapping informations
-  m_SnappingPanel->SetDataBase(NULL);
+  m_SnappingPanel->SetDataBase(nullptr);
   // m_SnappingPanel->SaveSnappingStatus();
 
-  m_StatManager->Create(NULL);
+  m_StatManager->Create(nullptr);
 
-  m_EditManager->SetDatabase(NULL);
+  m_EditManager->SetDatabase(nullptr);
   m_LayerManager->UnInitLayerManager();
   m_AttribManager->UnInitAttributionManager();
 
@@ -616,11 +619,8 @@ int ProjectManager::OpenProject(const wxString &path) {
   // optimize project
   wxString myDatabaseSizeBefore = m_DB->DataBaseGetSize();
   tmProjectMaintenance myPrjMaintenance(wxEmptyString, m_DB);
-  /*if (myPrjMaintenance.OptimizeTables() == false) {
-      wxLogWarning(_("Project optimization failed!"));
-  }*/
 
-  if (myPrjMaintenance.ClearOrphans() == false) {
+  if (!myPrjMaintenance.ClearOrphans()) {
     wxArrayString myErrors = myPrjMaintenance.GetErrors();
     wxLogWarning(_("Cleaning orphans failed!"));
     for (unsigned int i = 0; i < myErrors.GetCount(); i++) {
@@ -771,7 +771,7 @@ bool ProjectManager::EditProjectSettings() {
   @date 11 March 2008
   *******************************************************************************/
 wxString ProjectManager::GetProjectName() {
-  if (m_DB != NULL)
+  if (m_DB != nullptr)
     return m_DB->DataBaseGetName();
   else {
     wxLogDebug(_T("Database pointer is null"));
@@ -818,7 +818,7 @@ bool ProjectManager::LoadProjectDefintion(short int message) {
     default:
       break;
   }
-  wxBusyInfo *wait = NULL;
+  wxBusyInfo *wait = nullptr;
   if (!myWaitString.IsEmpty()) wait = new wxBusyInfo(myWaitString, m_Parent);
 
   // load data from DB --> PrjDefMemManage
@@ -829,7 +829,7 @@ bool ProjectManager::LoadProjectDefintion(short int message) {
   wxLogMessage(_T("Project Data loaded in : %ld [ms]"), sw.Time());
 
   wxASSERT(m_PrjMem);
-  if (m_PrjMem == NULL) return false;
+  if (m_PrjMem == nullptr) return false;
 
   m_LayerManager->SetMemoryProject(GetMemoryProjectDefinition());
 
@@ -856,7 +856,7 @@ PrjDefMemManage *ProjectManager::GetMemoryProjectDefinition() {
   @date 16 May 2008
   *******************************************************************************/
 void ObjectManager::InitValues() {
-  m_panel = NULL;
+  m_panel = nullptr;
 }
 
 /***************************************************************************/ /**

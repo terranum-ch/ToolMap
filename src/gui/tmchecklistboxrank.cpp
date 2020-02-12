@@ -79,7 +79,7 @@ tmCheckListBoxRank::~tmCheckListBoxRank() {}
 void tmCheckListBoxRank::Init() {
   m_RankColName = _T("RANK");
   m_TableName = TABLE_NAME_OBJECTS;
-  m_pDB = NULL;
+  m_pDB = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -91,7 +91,7 @@ void tmCheckListBoxRank::Init() {
   @date 20 May 2008
   *******************************************************************************/
 bool tmCheckListBoxRank::AddToMenu() {
-  if (GetPopupMenu() == NULL) {
+  if (GetPopupMenu() == nullptr) {
     wxFAIL;
     wxLogError(_T("Pointer to the popup menu is NULL"));
     return false;
@@ -135,7 +135,7 @@ void tmCheckListBoxRank::SetTableName(const wxString &tabname) {
   *******************************************************************************/
 void tmCheckListBoxRank::OnSaveOrder(wxCommandEvent &event) {
   // check that the database is correct
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     wxLogDebug(_T("Error : pointer to database not defined"));
     return;
   }
@@ -145,7 +145,7 @@ void tmCheckListBoxRank::OnSaveOrder(wxCommandEvent &event) {
   if (!PrepareOrderStatement(sqlstatement)) return;
 
   // do the query
-  if (m_pDB->DataBaseQueryNoResults(sqlstatement) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(sqlstatement)) {
     wxLogError(_("Error saving order to project"));
     wxLogDebug(_T("Order statement is : ") + sqlstatement);
   }

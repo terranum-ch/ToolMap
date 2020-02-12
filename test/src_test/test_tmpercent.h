@@ -31,11 +31,11 @@ class TEST_tmPercent : public CxxTest::TestSuite {
   void testIncrement() {
     tmPercent tper(1000);
     tper.SetValue(150);
-    TS_ASSERT(tper.IsNewStep() == true);
+    TS_ASSERT(tper.IsNewStep());
     tper.SetValue(151);
-    TS_ASSERT(tper.IsNewStep() == false);
+    TS_ASSERT(!tper.IsNewStep());
     tper.SetValue(161);
-    TS_ASSERT(tper.IsNewStep() == true);
+    TS_ASSERT(tper.IsNewStep());
   }
 
   void testGetPercent() {

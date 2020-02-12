@@ -1,6 +1,6 @@
 /***************************************************************************
  wxflatbutton.cpp
-                    Creation of a flat button on every plateform
+ Creation of a flat button on every plateform
  uses wxButton flat or wxToggleButton (on mac)
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
@@ -49,7 +49,7 @@ void wxFlatButton::InitwxFlatButton(wxWindowID id)
 void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 {
     // if the toggle button is checked we uncheck it
-    if (GetValue() == TRUE)
+    if (GetValue())
     {
         SetValue(FALSE);
         event.Skip(TRUE);

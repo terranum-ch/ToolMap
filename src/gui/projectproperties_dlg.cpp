@@ -134,13 +134,13 @@ bool ProjectPropertiesDLG::Create(wxWindow *parent, wxWindowID id, const wxStrin
 ProjectPropertiesDLG::~ProjectPropertiesDLG() {}
 
 void ProjectPropertiesDLG::_Init() {
-  m_DLGPS_Notebook = NULL;
-  m_DLGPS_Export_Type_Choice = NULL;
-  m_DLGPS_Export_Path = NULL;
-  m_DLGPS_Backup_Path = NULL;
-  m_DLGPS_Scale_List = NULL;
-  m_DLGPS_Scale_Order_Choice = NULL;
-  m_DBHandler = NULL;
+  m_DLGPS_Notebook = nullptr;
+  m_DLGPS_Export_Type_Choice = nullptr;
+  m_DLGPS_Export_Path = nullptr;
+  m_DLGPS_Backup_Path = nullptr;
+  m_DLGPS_Scale_List = nullptr;
+  m_DLGPS_Scale_Order_Choice = nullptr;
+  m_DBHandler = nullptr;
 }
 
 void ProjectPropertiesDLG::_CreateControls() {
@@ -296,7 +296,7 @@ END_EVENT_TABLE()
 
 ScaleList::ScaleList(wxWindow *parent, wxWindowID id, DataBaseTM *database, PrjDefMemManage *pProjectMem, wxSize size)
     : ListGenReportWithDialog(parent, id, size) {
-  m_ChoiceOrder = NULL;
+  m_ChoiceOrder = nullptr;
   m_DBHandler = database;
   m_pPrjDefinition = pProjectMem;
   m_ActualScale = -1;
@@ -346,7 +346,7 @@ void ScaleList::AfterAdding(bool bRealyAddItem) {
   long lenteredScale = ((wxNumberEntryDialog *)m_pDialog)->GetValue();
 
   // if we really want to add the new scale
-  if (bRealyAddItem == TRUE) {
+  if (bRealyAddItem) {
     m_pPrjDefinition->AddScale(lenteredScale);
     SetScaleToList(lenteredScale);
   }
@@ -376,7 +376,7 @@ void ScaleList::AfterEditing(bool bRealyEdited) {
 
     // if the scale is found we modify it
     // otherwise we create a new scale object in memory
-    if (myScale != NULL) {
+    if (myScale != nullptr) {
       myScale->m_ScaleValue = myScaleValue;
     } else {
       myID = GetItemData(iSelectedScale);
@@ -404,7 +404,7 @@ void ScaleList::BeforeDeleting() {
   int iNbSelectedItems = GetAllSelectedItem(mySelectedListItems);
   for (int i = 0; i < iNbSelectedItems; i++) {
     mySelectedScale = GetScaleFromList(mySelectedListItems[i]);
-    if (m_pPrjDefinition->RemoveScale(mySelectedScale) == FALSE) {
+    if (!m_pPrjDefinition->RemoveScale(mySelectedScale)) {
       // if item wasen't into memory store real id
       // for later deleting
       m_pPrjDefinition->m_StoreDeleteScale.Add(GetItemData(mySelectedListItems[i]));

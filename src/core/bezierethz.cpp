@@ -77,7 +77,7 @@ void BezierEthz::Init(wxRealPoint P1, wxRealPoint P2, wxRealPoint P3, wxRealPoin
   double myInterval = myLeftVal;
   while (1) {
     wxRealPoint myResult;
-    if (_Segmentation(P1, P2, P3, P4, myInterval, myResult) == false) {
+    if (!_Segmentation(P1, P2, P3, P4, myInterval, myResult)) {
       break;
     }
     myInterval += myLeftVal;
@@ -87,7 +87,7 @@ void BezierEthz::Init(wxRealPoint P1, wxRealPoint P2, wxRealPoint P3, wxRealPoin
   // simplification
   m_Points.DeleteContents(true);
   for (unsigned int i = 1; i < m_Points.GetCount() - 1; i++) {
-    if (_IsPointUsefull(*m_Points[i - 1], *m_Points[i], *m_Points[i + 1]) == false) {
+    if (!_IsPointUsefull(*m_Points[i - 1], *m_Points[i], *m_Points[i + 1])) {
       m_Points.Erase(m_Points.Item(i));
       i = 1;
     }

@@ -51,7 +51,7 @@ class tmProjectMerge {
   bool _IsReady();
 
  public:
-  tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase *database = NULL);
+  tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase *database = nullptr);
 
   virtual ~tmProjectMerge();
 

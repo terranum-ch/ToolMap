@@ -54,7 +54,7 @@ wxString tmAboutDLG::GetAuthorsText() {
 }
 
 wxString tmAboutDLG::GetButtonText() {
-  if (m_PanelLicence->IsShown() == true)
+  if (m_PanelLicence->IsShown())
     return _("Show contributors");
   else
     return _("Show license");

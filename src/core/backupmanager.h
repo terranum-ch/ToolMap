@@ -109,9 +109,9 @@ class BackupManager {
 
   virtual ~BackupManager();
 
-  bool Backup(const BackupFile &fileinfo, wxWindow *progressparent = NULL);
+  bool Backup(const BackupFile &fileinfo, wxWindow *progressparent = nullptr);
 
-  bool Restore(const BackupFile &fileinfo, wxWindow *progressparent = NULL);
+  bool Restore(const BackupFile &fileinfo, wxWindow *progressparent = nullptr);
 
   bool GetFileInfo(const wxFileName &file, BackupFile &fileinfo);
 

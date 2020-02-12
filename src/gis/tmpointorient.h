@@ -1,6 +1,6 @@
 /***************************************************************************
  tmpointorient.h
-                    for dealing with point orientation
+ for dealing with point orientation
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

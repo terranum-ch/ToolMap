@@ -107,12 +107,12 @@ tmEditManager::~tmEditManager() {
   @date 26 January 2009
   *******************************************************************************/
 void tmEditManager::InitMemberValues() {
-  m_ParentEvt = NULL;
-  m_TOC = NULL;
-  m_SelectedData = NULL;
-  m_Renderer = NULL;
-  m_pDB = NULL;
-  m_SnapMem = NULL;
+  m_ParentEvt = nullptr;
+  m_TOC = nullptr;
+  m_SelectedData = nullptr;
+  m_Renderer = nullptr;
+  m_pDB = nullptr;
+  m_SnapMem = nullptr;
   m_INSDELVertex = wxNOT_FOUND;
   m_INSVertexPos = wxRealPoint(-1, -1);
   m_SnappingShowOnMap = false;
@@ -151,7 +151,7 @@ void tmEditManager::BezierClick(const wxPoint &mousepos) {
   // add point to Bezier
   if (m_BezierPoints.GetCount() == m_BezierPointsControl.GetCount()) {
     wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
-    if (EMGetSnappingCoord(myPt) == true) {
+    if (EMGetSnappingCoord(myPt)) {
       m_BezierSnappedPointsIndexes.Add(m_BezierPoints.GetCount());
     }
 
@@ -273,7 +273,7 @@ void tmEditManager::BezierDraw(wxGCDC *dc) {
   }
 
   // draw bezier control when needed
-  if (m_BezierDrawControlPoints == true && m_BezierActualC2 != wxPoint(0, 0)) {
+  if (m_BezierDrawControlPoints && m_BezierActualC2 != wxPoint(0, 0)) {
     dc->DrawLine(m_BezierActualP2, m_BezierActualC2);
     wxPoint myInvertedC2 = m_BezierActualP2 - (m_BezierActualC2 - m_BezierActualP2);
     dc->DrawLine(m_BezierActualP2, myInvertedC2);
@@ -336,7 +336,7 @@ void tmEditManager::ArcModifyClickDown(const wxPoint &mousepos) {
   m_ArcModifyIndexPoint = wxNOT_FOUND;
 
   if (m_ArcPoints.GetCount() == 0) {
-    if (_LoadSnappingStatus() == true) {
+    if (_LoadSnappingStatus()) {
       m_Renderer->Refresh();
       m_Renderer->Update();
     }
@@ -370,7 +370,7 @@ void tmEditManager::ArcModifyClickUp(const wxPoint &mousepos) {
     wxRealPoint myPt = *m_ArcPoints[m_ArcModifyIndexPoint];
     int myPtSnappingIndex = m_ArcSnappedPointsIndexes.Index(m_ArcModifyIndexPoint);
 
-    if (EMGetSnappingCoord(myPt) == true) {
+    if (EMGetSnappingCoord(myPt)) {
       if (myPtSnappingIndex == wxNOT_FOUND) {
         m_ArcSnappedPointsIndexes.Add(m_ArcModifyIndexPoint);
       }
@@ -385,7 +385,7 @@ void tmEditManager::ArcModifyClickUp(const wxPoint &mousepos) {
   m_ArcActualPt = wxDefaultPosition;
   m_ArcModifyIndexPoint = wxNOT_FOUND;
 
-  if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
+  if (IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
     wxCommandEvent evt;
     OnDrawFeatureValidate(evt);
   }
@@ -416,11 +416,16 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
   tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
   wxASSERT(m_pDB);
   OGRGeometry *myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
-  if (myGeometry == NULL) {
+  if (myGeometry == nullptr) {
     return;
   }
   OGRLineString *myLine = static_cast<OGRLineString *>(myGeometry);
   wxASSERT(myLine);
+
+  // Check that there are no unfinished other operation (avoid duplicating the nodes).
+  if (m_ArcPoints.GetCount() > 0) {
+    return;
+  }
 
   OGRPoint p1;
   OGRPoint p2;
@@ -435,7 +440,7 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
 
     m_ArcPoints.push_back(new wxRealPoint(p1.getX(), p1.getY()));
     // ensure a point is inserted only once.
-    if (segment.Intersects(&myRectDiagonal) == TRUE && bFoundIntersection == false) {
+    if (segment.Intersects(&myRectDiagonal) && !bFoundIntersection) {
       OGRPoint *myPtToInsert = static_cast<OGRPoint *>(segment.Intersection(&myRectDiagonal));
       wxASSERT(myPtToInsert);
       m_ArcPoints.push_back(new wxRealPoint(myPtToInsert->getX(), myPtToInsert->getY()));
@@ -447,7 +452,7 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
       new wxRealPoint(myLine->getX(myLine->getNumPoints() - 1), myLine->getY(myLine->getNumPoints() - 1)));
 
   // update the line in the database and refresh screen
-  if (bFoundIntersection == true) {
+  if (bFoundIntersection) {
     _SaveToDatabase();
   }
 
@@ -458,7 +463,7 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
   m_ParentEvt->GetEventHandler()->QueueEvent(evt2.Clone());
 }
 
-void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
+void tmEditManager::ArcVertexDeleteUp(const wxPoint &mousePos) {
   m_ArcOID = m_SelectedData->GetSelectedUnique();
   if (m_ArcOID == wxNOT_FOUND) {
     return;
@@ -469,12 +474,17 @@ void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
   }
 
   wxRect myRect(0, 0, 5, 5);
-  myRect = myRect.CentreIn(wxRect(mousepos, wxSize(0, 0)));
+  myRect = myRect.CentreIn(wxRect(mousePos, wxSize(0, 0)));
 
   tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
   wxASSERT(m_pDB);
   OGRGeometry *myGeometry = m_pDB->GeometryLoad(m_ArcOID, myLayerProperties->GetType());
-  if (myGeometry == NULL) {
+  if (myGeometry == nullptr) {
+    return;
+  }
+
+  // Check that there are no unfinished other operation (avoid duplicating the nodes).
+  if (m_ArcPoints.GetCount() > 0) {
     return;
   }
 
@@ -482,7 +492,7 @@ void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
   OGRLineString *myLine = static_cast<OGRLineString *>(myGeometry);
   for (unsigned int i = 0; i < myLine->getNumPoints(); i++) {
     wxPoint myPt = m_Scale->RealToPixel(wxRealPoint(myLine->getX(i), myLine->getY(i)));
-    if (myRect.Contains(myPt) == true && bVertexDeleted == false) {
+    if (myRect.Contains(myPt) && !bVertexDeleted) {
       bVertexDeleted = true;
       continue;
     }
@@ -501,7 +511,7 @@ void tmEditManager::ArcVeretxDeleteUp(const wxPoint &mousepos) {
 }
 
 void tmEditManager::BezierModifyDraw(wxGCDC *dc) {
-  if (m_Renderer == NULL) {
+  if (m_Renderer == nullptr) {
     return;
   }
   if (m_Renderer->GetTool() != tmTOOL_MODIFY_BEZIER) {
@@ -696,7 +706,7 @@ void tmEditManager::BezierModifyClickDown(const wxPoint &mousepos) {
 
 void tmEditManager::BezierModifyClickMove(const wxPoint &mousepos) {
   if (m_BezierModifyIndexControl != wxNOT_FOUND) {
-    if (m_BezierModifyControlInverted == true) {
+    if (m_BezierModifyControlInverted) {
       wxPoint myPt = m_Scale->RealToPixel(*m_BezierPoints[m_BezierModifyIndexControl]);
       *m_BezierPointsControl[m_BezierModifyIndexControl] = m_Scale->PixelToReal(myPt - (mousepos - myPt));
     } else {
@@ -731,7 +741,7 @@ void tmEditManager::BezierModifyClickUp(const wxPoint &mousepos) {
     wxRealPoint myPt = *m_BezierPoints[m_BezierModifyIndexPoint];
     int myPtSnappingIndex = m_BezierSnappedPointsIndexes.Index(m_BezierModifyIndexPoint);
 
-    if (EMGetSnappingCoord(myPt) == true) {
+    if (EMGetSnappingCoord(myPt)) {
       if (myPtSnappingIndex == wxNOT_FOUND) {
         m_BezierSnappedPointsIndexes.Add(m_BezierModifyIndexPoint);
       }
@@ -753,7 +763,7 @@ void tmEditManager::BezierModifyClickUp(const wxPoint &mousepos) {
 }
 
 bool tmEditManager::BezierToLine(BezierSettingsData settings) {
-  if (IsBezierToLinePreviewAllowed() == false) {
+  if (!IsBezierToLinePreviewAllowed()) {
     return false;
   }
 
@@ -811,7 +821,7 @@ bool tmEditManager::IsBezierToLinePreviewAllowed() {
 
 void tmEditManager::SetBezierSettings(BezierSettingsData data, bool savetodb) {
   m_BezierSettings = data;
-  if (savetodb == true) {
+  if (savetodb) {
     wxASSERT(m_pDB);
     // TODO: Add database support for saving bezier settings
     // m_pDB->SaveBezierApproximationScale(m_BezierApproximationScale);
@@ -820,14 +830,14 @@ void tmEditManager::SetBezierSettings(BezierSettingsData data, bool savetodb) {
 
 void tmEditManager::ArcClick(const wxPoint &mousepos) {
   wxRealPoint myPt = m_Scale->PixelToReal(mousepos);
-  if (EMGetSnappingCoord(myPt) == true) {
+  if (EMGetSnappingCoord(myPt)) {
     m_ArcSnappedPointsIndexes.Add(m_ArcPoints.GetCount());
   }
 
   m_ArcPoints.push_back(new wxRealPoint(myPt));
   m_ArcActualPt = mousepos;
 
-  if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
+  if (IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
     wxCommandEvent evt;
     OnDrawFeatureValidate(evt);
   }
@@ -902,7 +912,7 @@ void tmEditManager::ArcDraw(wxGCDC *dc) {
 
   // compute bounding box for modifications
   if (m_Renderer->GetTool() == tmTOOL_MODIFY && m_ArcModifyIndexPoint != wxNOT_FOUND) {
-    if (IsLayerSpatialType(LAYER_SPATIAL_LINE) == true) {
+    if (IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
       dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint]->x, myPts[m_ArcModifyIndexPoint]->y);
       if (m_ArcModifyIndexPoint != 0) {
         dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint - 1]->x, myPts[m_ArcModifyIndexPoint - 1]->y);
@@ -910,7 +920,7 @@ void tmEditManager::ArcDraw(wxGCDC *dc) {
       if (m_ArcModifyIndexPoint < m_ArcPoints.GetCount() - 1) {
         dc->CalcBoundingBox(myPts[m_ArcModifyIndexPoint + 1]->x, myPts[m_ArcModifyIndexPoint + 1]->y);
       }
-    } else if (IsLayerSpatialType(LAYER_SPATIAL_POINT) == true) {
+    } else if (IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
       dc->CalcBoundingBox(myPts[0]->x - myNodeWidth, myPts[0]->y - myNodeWidth);
       dc->CalcBoundingBox(myPts[0]->x + myNodeWidth, myPts[0]->y + myNodeWidth);
     }
@@ -924,11 +934,11 @@ void tmEditManager::ArcDraw(wxGCDC *dc) {
 }
 
 void tmEditManager::DrawSnappingCircle(wxGCDC *dc) {
-  if (m_Renderer == NULL || m_Scale == NULL) {
+  if (m_Renderer == nullptr || m_Scale == nullptr) {
     return;
   }
 
-  if (m_SnappingShowOnMap == false) {
+  if (!m_SnappingShowOnMap) {
     return;
   }
 
@@ -958,7 +968,7 @@ void tmEditManager::DrawSnappingCircle(wxGCDC *dc) {
   *******************************************************************************/
 void tmEditManager::OnToolModify() {
   wxASSERT(m_Renderer);
-  if (IsModifictionAllowed() == false) {
+  if (!IsModificationAllowed()) {
     return;
   }
 
@@ -1058,12 +1068,12 @@ void tmEditManager::OnToolCutLines() {
 void tmEditManager::OnToolOrientedPoint() {
   wxASSERT(m_Renderer);
 
-  if (IsModifictionAllowed() == false) return;
+  if (!IsModificationAllowed()) return;
 
-  if (IsLayerTypeSelected(TOC_NAME_POINTS) == false) return;
+  if (!IsLayerTypeSelected(TOC_NAME_POINTS)) return;
 
   m_OrientedPt.Create(m_pDB, m_SelectedData->GetSelectedUnique());
-  if (m_OrientedPt.IsCorrectType() == false) {
+  if (!m_OrientedPt.IsCorrectType()) {
     wxLogWarning(_("No orientation attributes found, or point hasn't any kind"));
     return;
   }
@@ -1115,7 +1125,7 @@ bool tmEditManager::IsCorrectLayerSelected() {
 bool tmEditManager::IsLayerTypeSelected(int layertype) {
   wxASSERT(m_TOC);
   tmLayerProperties *myEditLayer = m_TOC->GetEditLayer();
-  if (myEditLayer == NULL) {
+  if (myEditLayer == nullptr) {
     wxLogWarning(_("No editing layer selected. Define an edit layer"));
     return false;
   }
@@ -1177,19 +1187,19 @@ bool tmEditManager::IsDrawingAllowed() {
   @author Lucien Schreiber (c) CREALP 2009
   @date 28 January 2009
   *******************************************************************************/
-bool tmEditManager::IsModifictionAllowed() {
-  if (IsCorrectLayerSelected() == false) {
+bool tmEditManager::IsModificationAllowed() {
+  if (!IsCorrectLayerSelected()) {
     return false;
   }
 
-  if (IsObjectSelected() == false && m_ArcPoints.GetCount() == 0) {
+  if (!IsObjectSelected() && m_ArcPoints.GetCount() == 0) {
     return false;
   }
   return true;
 }
 
 bool tmEditManager::IsModificationBezierAllowed() {
-  if (IsCorrectLayerSelected() == false) {
+  if (!IsCorrectLayerSelected()) {
     return false;
   }
 
@@ -1204,24 +1214,24 @@ bool tmEditManager::IsModificationBezierAllowed() {
   return true;
 }
 
-bool tmEditManager::IsMultipleModifictionAllowed() {
-  if (IsCorrectLayerSelected() == false) {
+bool tmEditManager::IsMultipleModificationAllowed() {
+  if (!IsCorrectLayerSelected()) {
     return false;
   }
 
-  if (IsObjectMinNumberSelected(1) == false) {
+  if (!IsObjectMinNumberSelected(1)) {
     return false;
   }
   return true;
 }
 
-bool tmEditManager::IsLayerSpatialType(int layertype) {
+bool tmEditManager::IsLayerSpatialType(int layerType) {
   wxASSERT(m_TOC);
-  if (m_TOC->GetEditLayer() == NULL) {
+  if (m_TOC->GetEditLayer() == nullptr) {
     return false;
   }
 
-  if (m_TOC->GetEditLayer()->GetSpatialType() != layertype) {
+  if (m_TOC->GetEditLayer()->GetSpatialType() != layerType) {
     return false;
   }
   return true;
@@ -1241,7 +1251,7 @@ void tmEditManager::OnOrientedPtsMove(wxCommandEvent &event) {
   wxPoint *myPt = (wxPoint *)event.GetClientData();
   wxASSERT(myPt);
 
-  if (m_DrawLine.IsOK() == false) {
+  if (!m_DrawLine.IsOK()) {
     delete myPt;
     return;
   }
@@ -1268,7 +1278,7 @@ void tmEditManager::OnOrientedPtsUp(wxCommandEvent &event) {
   wxPoint *myPt = (wxPoint *)event.GetClientData();
   wxASSERT(myPt);
 
-  if (m_DrawLine.IsOK() == false) {
+  if (!m_DrawLine.IsOK()) {
     delete myPt;
     return;
   }
@@ -1333,7 +1343,7 @@ void tmEditManager::OnEditStop(wxCommandEvent &event) {
   @date 05 February 2009
   *******************************************************************************/
 void tmEditManager::OnDrawFeatureValidate(wxCommandEvent &event) {
-  if (IsDrawingAllowed() == false) {
+  if (!IsDrawingAllowed()) {
     return;
   }
 
@@ -1362,11 +1372,11 @@ void tmEditManager::OnDrawFeatureValidate(wxCommandEvent &event) {
 
 long tmEditManager::_SaveToDatabase() {
   tmLayerProperties *layerprop = m_TOC->GetEditLayer();
-  if (layerprop == NULL) {
+  if (layerprop == nullptr) {
     return wxNOT_FOUND;
   }
 
-  OGRGeometry *myGeom = NULL;
+  OGRGeometry *myGeom = nullptr;
   OGRLineString myLineString;
   OGRPoint myPoint;
   if (layerprop->GetSpatialType() == LAYER_SPATIAL_LINE) {
@@ -1404,7 +1414,7 @@ long tmEditManager::_SaveToDatabase() {
   @date 05 February 2009
   *******************************************************************************/
 void tmEditManager::OnDrawFeatureEscape(wxCommandEvent &event) {
-  if (IsDrawingAllowed() == false) {
+  if (!IsDrawingAllowed()) {
     return;
   }
 
@@ -1431,7 +1441,7 @@ void tmEditManager::OnCutLines(wxCommandEvent &event) {
   delete mypCutPos;
 
   // some checks (1 object selected)
-  if (IsModifictionAllowed() == false) {
+  if (!IsModificationAllowed()) {
     wxLogDebug(_T("Unable to cut line, select a line first"));
     return;
   }
@@ -1461,7 +1471,7 @@ void tmEditManager::OnCutLines(wxCommandEvent &event) {
   bool bCut = mySelLayer->CutLineAtVertex(m_SelectedData->GetSelectedUnique(), m_Scale->PixelToReal(myCutPos),
                                           tmSELECTION_DIAMETER, m_TOC->GetEditLayer()->GetType());
   wxDELETE(mySelLayer);
-  if (bCut == false) {
+  if (!bCut) {
     return;
   }
 
@@ -1491,7 +1501,7 @@ void tmEditManager::OnCutLines(wxCommandEvent &event) {
   *******************************************************************************/
 void tmEditManager::OnShowVertexPosition(wxCommandEvent &event) {
   wxRealPoint *myPt = (wxRealPoint *)event.GetClientData();
-  if (myPt == NULL) return;
+  if (myPt == nullptr) return;
 
   wxLogDebug(_T("Showing vertex @ %.*f / %.*f"), 2, myPt->x, 2, myPt->y);
 
@@ -1573,14 +1583,14 @@ bool tmEditManager::SelectedSearch(const wxPoint &screenpt) {
 
 bool tmEditManager::EMGetSnappingCoord(wxRealPoint &pt) {
   // Snapping may be disabled using space key
-  if (m_SnapMem->IsSnappingEnabled() == false) {
+  if (!m_SnapMem->IsSnappingEnabled()) {
     return false;
   }
 
-  wxRealPoint *mySnapCoord = NULL;
+  wxRealPoint *mySnapCoord = nullptr;
   mySnapCoord = EMIterateAllSnappingLayers(pt);
 
-  if (mySnapCoord != NULL) {
+  if (mySnapCoord != nullptr) {
     pt.x = mySnapCoord->x;
     pt.y = mySnapCoord->y;
     wxDELETE(mySnapCoord);
@@ -1602,7 +1612,7 @@ bool tmEditManager::EMGetSnappingCoord(wxRealPoint &pt) {
 wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clickedpoint) {
   long myLayerId = 0;
   int mySnapStatus = tmSNAPPING_OFF;
-  tmLayerProperties *myActualLayer = NULL;
+  tmLayerProperties *myActualLayer = nullptr;
   wxArrayRealPoints mySnapPts;
   for (unsigned int i = 0; i < m_SnapMem->GetCount(); i++) {
     m_SnapMem->GetSnappingInfo(i, myLayerId, mySnapStatus);
@@ -1623,7 +1633,7 @@ wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clicke
 
   wxLogMessage("%d snapping points found!", (int)mySnapPts.GetCount());
   if (mySnapPts.GetCount() == 0) {
-    return NULL;
+    return nullptr;
   }
 
   if (mySnapPts.GetCount() == 1) {
@@ -1650,13 +1660,13 @@ wxRealPoint *tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint &clicke
 
 /***************************************************************************/ /**
   @brief Delete the geometry and attribution of selected object
-  @param Clearselection true if we sould clear selection ids, if you need to
+  @param clearSelection true if we sould clear selection ids, if you need to
   delete more stuff (attribution for exemple) set to false
   @return true if geometry are deleted
   @author Lucien Schreiber (c) CREALP 2009
   @date 05 February 2009
   *******************************************************************************/
-bool tmEditManager::DeleteSelected(bool Clearselection) {
+bool tmEditManager::DeleteSelected(bool clearSelection) {
   // make some checks
   if (!IsDrawingAllowed() || m_SelectedData->GetCount() <= 0) {
     return false;
@@ -1664,7 +1674,7 @@ bool tmEditManager::DeleteSelected(bool Clearselection) {
 
   // delete ids from database
   wxArrayLong *mySelectedIds = m_SelectedData->GetSelectedValues();
-  if (mySelectedIds == NULL) {
+  if (mySelectedIds == nullptr) {
     return false;
   }
 
@@ -1679,7 +1689,7 @@ bool tmEditManager::DeleteSelected(bool Clearselection) {
   m_pDB->GeometryDelete(mySelectedIds, m_TOC->GetEditLayer()->GetType());
   delete mySelectedIds;
 
-  if (Clearselection == true) {
+  if (clearSelection) {
     // set selection
     m_SelectedData->SetLayerID(m_TOC->GetEditLayer()->GetID());
     m_SelectedData->Clear();
@@ -1767,7 +1777,7 @@ int tmEditManager::GetSelectionCount() {
   *******************************************************************************/
 bool tmEditManager::CreateIntersections() {
   // checks (editing mode and 1 line selected)
-  if (IsObjectSelected() == false) {
+  if (!IsObjectSelected()) {
     return false;
   }
 
@@ -1890,7 +1900,7 @@ wxArrayLong tmEditManager::_GetErrorLines(wxArrayLong linetocheck) {
 
   for (long i = 0; i < linetocheck.GetCount(); i++) {
     OGRFeature *myFeature = mySelLayer->GetFeatureByOID(linetocheck.Item(i));
-    if (myFeature == NULL) {
+    if (myFeature == nullptr) {
       wxLogError(_("Unable to get feature : %ld! Checking intersected lines failed"), linetocheck.Item(i));
       continue;
     }
@@ -1931,7 +1941,7 @@ wxArrayLong tmEditManager::_GetErrorLines(wxArrayLong linetocheck) {
   *******************************************************************************/
 bool tmEditManager::EditVertexPosition() {
   // validation
-  if (IsModifictionAllowed() == false) return false;
+  if (!IsModificationAllowed()) return false;
 
   // get the editing layers
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
@@ -1949,8 +1959,8 @@ bool tmEditManager::EditVertexPosition() {
   EditVertexDLG myDlg(m_Renderer);
   myDlg.m_SelectedOID = lSelectedOID;
   myDlg.m_LayerType = m_TOC->GetEditLayer()->GetSpatialType();
-  OGRLineString *myLine = NULL;
-  OGRPoint *myPt = NULL;
+  OGRLineString *myLine = nullptr;
+  OGRPoint *myPt = nullptr;
 
   switch (myType) {
     case wkbPoint:
@@ -2012,7 +2022,7 @@ bool tmEditManager::MergeSelectedLines() {
     return false;
   }
 
-  if (IsObjectMinNumberSelected(2) == false) {
+  if (!IsObjectMinNumberSelected(2)) {
     return false;
   }
 
@@ -2023,12 +2033,12 @@ bool tmEditManager::MergeSelectedLines() {
   // merge lines
   tmGISDataVector *myLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
   wxASSERT(myLayer);
-  OGRGeometry *myMergeGeom = NULL;
+  OGRGeometry *myMergeGeom = nullptr;
   OGRMultiLineString *mySelGeom = (OGRMultiLineString *)myLayer->GetGeometryColByOID(mySelectedIDs);
   bool bMergeSuccess = myLayer->LinesMerge(mySelGeom, &myMergeGeom);
 
   OGRGeometryFactory::destroyGeometry(mySelGeom);
-  if (bMergeSuccess == false) {
+  if (!bMergeSuccess) {
     wxMessageBox(_("Selected lines are not adjacent"), _("Merge failed"), wxOK | wxICON_ERROR);
     return false;
   }
@@ -2039,7 +2049,7 @@ bool tmEditManager::MergeSelectedLines() {
     // get attributions
     tmAttributionBasicArray myAttributions;
     tmAttributionDataLine myAttrib(m_SelectedData->GetSelectedValues(), m_pDB);
-    if (myAttrib.GetInfoBasicArray(myAttributions) == false) {
+    if (!myAttrib.GetInfoBasicArray(myAttributions)) {
       wxLogDebug(_T("Unable to get attributions from selected lines"));
       return false;
     }
@@ -2058,7 +2068,7 @@ bool tmEditManager::MergeSelectedLines() {
     // compare attributions
     int iLineToKeep = 0;
     wxArrayString myConcatenedAttrib;
-    if (tmAttributionData::IsAttributionSimilar(myAttributions) == false) {
+    if (!tmAttributionData::IsAttributionSimilar(myAttributions)) {
       // get attribution name
       if (!myAttrib.GetConcatenedBasicName(myAttributions, myConcatenedAttrib)) {
         wxLogError(_T("Error getting concatenated basic values"));
@@ -2116,7 +2126,7 @@ void tmEditManager::OnEditSharedDown(wxCommandEvent &event) {
   wxPoint myLocalPt = *myTempPt;
   wxDELETE(myTempPt);
 
-  if (SelectedSearch(myLocalPt) == false) {
+  if (!SelectedSearch(myLocalPt)) {
     return;
   }
 
@@ -2140,7 +2150,7 @@ void tmEditManager::OnEditSharedDown(wxCommandEvent &event) {
   // search end nodes
   wxArrayLong *mySelIds = m_SelectedData->GetSelectedValues();
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     return;
   }
 
@@ -2184,7 +2194,7 @@ void tmEditManager::OnEditSharedDown(wxCommandEvent &event) {
     }
     OGRFeature::DestroyFeature(myFeature);
 
-    if (bFoundNode == false) {
+    if (!bFoundNode) {
       wxLogError(_("No Node found for line : %ld"), mySelIds->Item(i));
     }
   }
@@ -2205,7 +2215,7 @@ void tmEditManager::OnEditSharedUp(wxCommandEvent &event) {
   }
 
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     m_SharedNodes.Clear();
     wxDELETE(myTempPt);
     return;
@@ -2260,13 +2270,13 @@ void tmEditManager::OnEditSharedMove(wxCommandEvent &event) {
 }
 
 bool tmEditManager::FlipLine() {
-  if (IsLayerTypeSelected(LAYER_SPATIAL_LINE) == false) {
+  if (!IsLayerTypeSelected(LAYER_SPATIAL_LINE)) {
     return false;
   }
 
   // Get the Layer (Line MySQL)
   tmGISDataVector *mySelLayer = (tmGISDataVector *)tmGISData::LoadLayer(m_TOC->GetEditLayer());
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     return false;
   }
 
@@ -2315,7 +2325,7 @@ bool tmEditManager::SmoothLine() {
 
   wxBusyCursor myBusyCursor;
 
-  if (!IsModifictionAllowed()) {
+  if (!IsModificationAllowed()) {
     return false;
   }
 

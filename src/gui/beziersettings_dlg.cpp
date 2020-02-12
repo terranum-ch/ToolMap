@@ -21,7 +21,7 @@ BezierSettings_DLG::BezierSettings_DLG(wxWindow *parent, tmEditManager *editmana
                                        wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size,
                                        long style)
     : wxDialog(parent, id, title, pos, size, style) {
-  m_PreviewCtrl = NULL;
+  m_PreviewCtrl = nullptr;
   m_EditManager = editmanager;
   m_Renderer = renderer;
   m_PreviousData.agg_approximation = wxNOT_FOUND;
@@ -31,8 +31,8 @@ BezierSettings_DLG::BezierSettings_DLG(wxWindow *parent, tmEditManager *editmana
   // Connect Events
   this->Connect(wxEVT_IDLE, wxIdleEventHandler(BezierSettings_DLG::OnIdlePreview));
   m_PreviewCtrl->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(BezierSettings_DLG::OnCheckPreview),
-                         NULL, this);
-  m_PreviewCtrl->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(BezierSettings_DLG::OnUpdateUIPreview), NULL, this);
+                         nullptr, this);
+  m_PreviewCtrl->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(BezierSettings_DLG::OnUpdateUIPreview), nullptr, this);
 }
 
 BezierSettings_DLG::~BezierSettings_DLG() {
@@ -44,8 +44,8 @@ BezierSettings_DLG::~BezierSettings_DLG() {
   // Disconnect Events
   this->Disconnect(wxEVT_IDLE, wxIdleEventHandler(BezierSettings_DLG::OnIdlePreview));
   m_PreviewCtrl->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(BezierSettings_DLG::OnCheckPreview),
-                            NULL, this);
-  m_PreviewCtrl->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(BezierSettings_DLG::OnUpdateUIPreview), NULL, this);
+                            nullptr, this);
+  m_PreviewCtrl->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(BezierSettings_DLG::OnUpdateUIPreview), nullptr, this);
 }
 
 bool BezierSettings_DLG::TransferDataToWindow() {
@@ -62,7 +62,7 @@ bool BezierSettings_DLG::TransferDataFromWindow() {
 }
 
 void BezierSettings_DLG::_GetDataFromControl(BezierSettingsData *data) {
-  if (data == NULL) {
+  if (data == nullptr) {
     return;
   }
 
@@ -76,7 +76,7 @@ void BezierSettings_DLG::_GetDataFromControl(BezierSettingsData *data) {
 }
 
 void BezierSettings_DLG::OnIdlePreview(wxIdleEvent &event) {
-  if (m_PreviewCtrl == NULL || m_PreviewCtrl->IsChecked() == false) {
+  if (m_PreviewCtrl == nullptr || !m_PreviewCtrl->IsChecked()) {
     return;
   }
 
@@ -97,7 +97,7 @@ void BezierSettings_DLG::OnIdlePreview(wxIdleEvent &event) {
 }
 
 void BezierSettings_DLG::OnCheckPreview(wxCommandEvent &event) {
-  if (event.IsChecked() == false) {
+  if (!event.IsChecked()) {
     wxASSERT(m_EditManager);
     m_EditManager->ArcClear();
     m_Renderer->Refresh();
@@ -106,7 +106,7 @@ void BezierSettings_DLG::OnCheckPreview(wxCommandEvent &event) {
 }
 
 void BezierSettings_DLG::OnUpdateUIPreview(wxUpdateUIEvent &event) {
-  if (m_EditManager == NULL || m_EditManager->IsBezierToLinePreviewAllowed() == false) {
+  if (m_EditManager == nullptr || !m_EditManager->IsBezierToLinePreviewAllowed()) {
     event.Enable(false);
     return;
   }

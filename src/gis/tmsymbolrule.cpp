@@ -26,7 +26,7 @@
 WX_DEFINE_OBJARRAY(tmSymbolRuleArray);
 
 tmSymbolVector *tmSymbolRule::_NewSymbolVectorBasedOnSpatType(TM_GIS_SPATIAL_TYPES spatialtype) {
-  tmSymbolVector *mySymbol = NULL;
+  tmSymbolVector *mySymbol = nullptr;
   switch (spatialtype) {
     case LAYER_SPATIAL_LINE:
       mySymbol = (tmSymbolVector *)new tmSymbolVectorLine();
@@ -53,7 +53,7 @@ tmSymbolRule::tmSymbolRule(TM_GIS_SPATIAL_TYPES spatialtype, tmSymbolVector *sym
   SetActive(true);
   SetAttributFilter(wxEmptyString);
   m_SpatialType = spatialtype;
-  if (symbol != NULL) {
+  if (symbol != nullptr) {
     m_SymbolData = symbol;
   } else {
     m_SymbolData = _NewSymbolVectorBasedOnSpatType(GetSpatialType());
@@ -308,13 +308,13 @@ bool tmSymbolRuleManager::Serialize(tmSerialize &s) {
   }
 
   // if needed, serialize rules
-  if (bReturn == false) {
+  if (!bReturn) {
     wxLogError(_("Error saving basic symbology"));
     return bReturn;
   }
 
   s.EnterObject();
-  if (s.IsStoring() == true) {
+  if (s.IsStoring()) {
     s << m_DlgSelectedPanel;
     s << m_DlgSelectedFieldname;
     s << (int)m_Rules.GetCount();
@@ -332,7 +332,7 @@ bool tmSymbolRuleManager::Serialize(tmSerialize &s) {
     int myCount = 0;
     s >> myCount;
     for (int i = 0; i < myCount; i++) {
-      tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+      tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
       wxString myRuleName;
       wxString myRuleFilter;
       bool myRuleActive;
@@ -365,7 +365,7 @@ void tmSymbolRuleManager::RuleArrayCopy(const tmSymbolRuleArray *srcrules, tmSym
   wxASSERT(dstrules);
   tmSymbolRuleManager::RuleArrayClear(dstrules);
   for (unsigned int i = 0; i < srcrules->GetCount(); i++) {
-    tmSymbolRule *myRule = new tmSymbolRule(srcrules->Item(i)->GetSpatialType(), NULL);
+    tmSymbolRule *myRule = new tmSymbolRule(srcrules->Item(i)->GetSpatialType(), nullptr);
     *myRule = *(srcrules->Item(i));
     dstrules->Add(myRule);
   }

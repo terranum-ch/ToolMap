@@ -292,7 +292,7 @@ bool tmGISScale::MoveViewTo(const vrRealRect &rect) {
   wxPoint2DDouble myCenter = rect.GetCentre();
   myWndExtent.SetCentre(myCenter);
 
-  if (myWndExtent.IsOk() == false) {
+  if (!myWndExtent.IsOk()) {
     wxLogError(_T("Error moving display to %.2f, %.2f"), myCenter.m_x, myCenter.m_y);
     return false;
   }

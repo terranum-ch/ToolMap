@@ -90,11 +90,11 @@ bool tmSnapping_DLG::TransferDataToWindow() {
 bool tmSnapping_DLG::TransferDataFromWindow() {
   m_SnapStatus = tmSNAPPING_OFF;
 
-  if (m_SnapBeginEndCtrl->GetValue() == true) {
+  if (m_SnapBeginEndCtrl->GetValue()) {
     m_SnapStatus = tmSNAPPING_BEGIN_END;
   }
 
-  if (m_SnapAllCtrl->GetValue() == true) {
+  if (m_SnapAllCtrl->GetValue()) {
     m_SnapStatus = tmSNAPPING_VERTEX;
   }
   return true;
@@ -113,10 +113,10 @@ END_EVENT_TABLE()
   @date 19 January 2009
   *******************************************************************************/
 Snapping_PANEL::Snapping_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auimanager) : ManagedAuiWnd(auimanager) {
-  m_TolerenceCtrl = NULL;
-  m_ListCtrl = NULL;
-  m_pDB = NULL;
-  m_Renderer = NULL;
+  m_TolerenceCtrl = nullptr;
+  m_ListCtrl = nullptr;
+  m_pDB = nullptr;
+  m_Renderer = nullptr;
   m_SnappingMemory.Clear();
   m_ParentEvt = parent;
 
@@ -216,7 +216,7 @@ void Snapping_PANEL::LoadSnappingStatus() {
   bool iFirstLoop = true;
   int iLoop = 0;
   while (1) {
-    if (m_pDB->GetNextSnapping(mylid, mylName, mySnapStatus, iFirstLoop) == false) {
+    if (!m_pDB->GetNextSnapping(mylid, mylName, mySnapStatus, iFirstLoop)) {
       break;
     }
     iFirstLoop = false;
@@ -247,10 +247,10 @@ void Snapping_PANEL::LoadSnappingStatus() {
   @date 21 January 2009
   *******************************************************************************/
 bool Snapping_PANEL::SaveSnappingStatus() {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     return false;
   }
-  if (m_pDB->SetSnappingTolerence(m_SnappingMemory.GetTolerence()) == false) {
+  if (!m_pDB->SetSnappingTolerence(m_SnappingMemory.GetTolerence())) {
     return false;
   }
 
@@ -264,7 +264,7 @@ bool Snapping_PANEL::SaveSnappingStatus() {
   @date 20 January 2009
   *******************************************************************************/
 void Snapping_PANEL::OnAddSnapping(wxCommandEvent &event) {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     return;
   }
 
@@ -300,7 +300,7 @@ void Snapping_PANEL::OnAddSnapping(wxCommandEvent &event) {
   *******************************************************************************/
 void Snapping_PANEL::OnUpdateTolerence(wxSpinEvent &event) {
   m_SnappingMemory.SetTolerence(event.GetInt());
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     return;
   }
   m_pDB->SetSnappingTolerence(event.GetInt());
@@ -321,7 +321,7 @@ void Snapping_PANEL::OnRemoveSnapping(wxCommandEvent &event) {
     return;
   }
 
-  if (m_pDB->DeleteLayerSnapping(m_ListCtrl->GetItemData(mySelectedIndex)) == false) {
+  if (!m_pDB->DeleteLayerSnapping(m_ListCtrl->GetItemData(mySelectedIndex))) {
     return;
   }
 
@@ -352,7 +352,7 @@ void Snapping_PANEL::OnDClickList(wxListEvent &event) {
 }
 
 void Snapping_PANEL::OnUpdateUIContextualMenuAdd(wxUpdateUIEvent &event) {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     event.Enable(false);
     return;
   }
@@ -361,7 +361,7 @@ void Snapping_PANEL::OnUpdateUIContextualMenuAdd(wxUpdateUIEvent &event) {
 }
 
 void Snapping_PANEL::OnUpdateUIContextualMenuRemove(wxUpdateUIEvent &event) {
-  if (m_pDB != NULL && m_ListCtrl->GetSelectedFirst() != wxNOT_FOUND) {
+  if (m_pDB != nullptr && m_ListCtrl->GetSelectedFirst() != wxNOT_FOUND) {
     event.Enable(true);
     return;
   }

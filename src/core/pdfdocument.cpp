@@ -55,7 +55,7 @@ void PdfDocument::_ComputeOnePageSize(double &width, double &height) {
   }
 
   width = MAX(maxattribswidth, maxobjectswidth);
-  if (IsTwoColsLayout() == true) {
+  if (IsTwoColsLayout()) {
     width = width * 2.0;
   }
 
@@ -73,7 +73,7 @@ void PdfDocument::_ComputeOnePageSize(double &width, double &height) {
     double objectheight = m_pdfLayers.Item(i)->GetObjectsHeight(&myTempDoc);
     double attribheight = m_pdfLayers.Item(i)->GetAttributsHeight(&myTempDoc);
 
-    if (IsTwoColsLayout() == true) {
+    if (IsTwoColsLayout()) {
       height += MAX(objectheight, attribheight);
     } else {
       height = height + objectheight + attribheight;
@@ -112,7 +112,7 @@ bool PdfDocument::_OrderLayers() {
       }
     }
     myLayerNumber = myLayerNumber - 1;
-    if (swaped == false) {
+    if (!swaped) {
       break;
     }
     myCount++;
@@ -136,7 +136,7 @@ PdfDocument::PdfDocument(PrjDefMemManage *project) {
   m_TwoCols = false;
   m_OnePage = false;
   _UpdatePageWidth();
-  m_pdf = NULL;
+  m_pdf = nullptr;
 
   // adding layers // ordering by points, lines, polygons
   for (int i = 0; i < project->GetCountLayers(); i++) {
@@ -164,7 +164,7 @@ bool PdfDocument::Generate(const wxFileName &filename) {
   _OrderLayers();
 
   // one page layout
-  if (m_OnePage == true) {
+  if (m_OnePage) {
     double myWidth = wxNOT_FOUND;
     double myHeight = wxNOT_FOUND;
     _ComputeOnePageSize(myWidth, myHeight);
@@ -214,7 +214,7 @@ bool PdfDocument::Generate(const wxFileName &filename) {
 }
 
 void PdfDocument::_UpdatePageWidth() {
-  wxPdfDocument *myTempDoc = NULL;
+  wxPdfDocument *myTempDoc = nullptr;
   if (m_PaperWidth == wxNOT_FOUND || m_PaperHeight == wxNOT_FOUND) {
     myTempDoc = new wxPdfDocument(m_PaperOrientation, "mm", m_PaperFormat);
   } else {

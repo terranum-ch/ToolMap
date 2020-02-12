@@ -1,6 +1,6 @@
 /***************************************************************************
  tooldanglingnodes.h
-                    Tool engine for searching dangling nodes
+ Tool engine for searching dangling nodes
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -120,7 +120,7 @@ class ToolDanglingNodes : public wxObject {
 
   bool SearchInfo(int &numberlines);
 
-  bool SearchRun(wxProgressDialog *myProgDlg = NULL);
+  bool SearchRun(wxProgressDialog *myProgDlg = nullptr);
 };
 
 #endif

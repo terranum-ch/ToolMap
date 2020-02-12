@@ -1,6 +1,6 @@
 /***************************************************************************
  tmlayermanager.cpp
-                    Central point for layer management
+ Central point for layer management
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -91,18 +91,18 @@ tmLayerManager::~tmLayerManager() {
   @date 07 July 2008
   *******************************************************************************/
 void tmLayerManager::InitMemberValue() {
-  m_TOCCtrl = NULL;
-  m_Parent = NULL;
-  m_DB = NULL;
-  m_GISRenderer = NULL;
-  m_Bitmap = NULL;
-  m_StatusBar = NULL;
-  m_Thread = NULL;
-  m_ThreadBitmap = NULL;
+  m_TOCCtrl = nullptr;
+  m_Parent = nullptr;
+  m_DB = nullptr;
+  m_GISRenderer = nullptr;
+  m_Bitmap = nullptr;
+  m_StatusBar = nullptr;
+  m_Thread = nullptr;
+  m_ThreadBitmap = nullptr;
   // init selected data structure
   m_Drawer.SetSelectedData(&m_SelectedData);
   m_BlockRefresh = false;
-  m_MemoryPrjRef = NULL;
+  m_MemoryPrjRef = nullptr;
   m_isUsingRAM = true;
   m_InternetRefreshTime = 250;
 }
@@ -118,8 +118,8 @@ void tmLayerManager::InitMemberValue() {
   *******************************************************************************/
 bool tmLayerManager::InitLayerManager(DataBaseTM *db) {
   // check
-  wxASSERT_MSG(m_TOCCtrl != NULL, _T("Toc Ctrl is null, error"));
-  wxASSERT_MSG(db != NULL, _T("Database pointer is empty... error"));
+  wxASSERT_MSG(m_TOCCtrl != nullptr, _T("Toc Ctrl is null, error"));
+  wxASSERT_MSG(db != nullptr, _T("Database pointer is empty... error"));
   m_DB = db;
 
   // clear selected data
@@ -155,7 +155,7 @@ bool tmLayerManager::UnInitLayerManager() {
     SaveTOCStatus(true);
   }
 
-  m_DB = NULL;
+  m_DB = nullptr;
 
   wxDELETE(m_Bitmap);
   m_GISRenderer->SetBitmapStatus();
@@ -180,7 +180,7 @@ void tmLayerManager::SetMemoryProject(PrjDefMemManage *memoryprj) {
   @date 07 July 2008
   *******************************************************************************/
 void tmLayerManager::FillTOCArray() {
-  wxASSERT_MSG(m_DB != NULL, _T("Database pointer is empty... error"));
+  wxASSERT_MSG(m_DB != nullptr, _T("Database pointer is empty... error"));
 
   // load preference
   wxConfigBase *myConfig = wxConfigBase::Get(false);
@@ -189,11 +189,11 @@ void tmLayerManager::FillTOCArray() {
   bool myRelativePath = myConfig->ReadBool("relative_path", true);
   myConfig->SetPath("..");
 
-  tmLayerProperties *lyrproptemp = NULL;
+  tmLayerProperties *lyrproptemp = nullptr;
   while (1) {
     lyrproptemp = m_DB->GetNextTOCEntry(myRelativePath);
 
-    if (lyrproptemp == NULL) {
+    if (lyrproptemp == nullptr) {
       break;
     }
 
@@ -210,7 +210,7 @@ void tmLayerManager::FillTOCArray() {
     }
   }
 
-  wxASSERT(m_DB->DataBaseHasResults() == false);
+  wxASSERT(!m_DB->DataBaseHasResults());
   m_TOCCtrl->ExpandAllLayers();
   wxLogDebug(_T("%d items added to TOC array"), m_TOCCtrl->GetCountLayers());
 }
@@ -226,7 +226,7 @@ void tmLayerManager::FillTOCArray() {
   *******************************************************************************/
 bool tmLayerManager::SaveTOCStatus(bool isClosing) {
   wxASSERT_MSG(m_TOCCtrl, _T("Error TOC ctrl not defined"));
-  tmLayerProperties *itemProp = NULL;
+  tmLayerProperties *itemProp = nullptr;
   int iRank = m_TOCCtrl->GetCountLayers();
 
   bool myRelativePath = false;
@@ -315,7 +315,7 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
   while (1) {
     tmLayerProperties *myLayerProp = m_TOCCtrl->IterateLayers(bStart);
     bStart = false;
-    if (myLayerProp == NULL) {
+    if (myLayerProp == nullptr) {
       break;
     }
     if (myLayerProp->GetType() > TOC_NAME_NOT_GENERIC) {
@@ -343,14 +343,14 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
   // removing
   wxTreeItemId myItemId;
   for (unsigned int i = 0; i < myLayerToRemoveIndex.GetCount(); i++) {
-    if (m_TOCCtrl->GetItemByID(myItemId, myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID) == false) {
+    if (!m_TOCCtrl->GetItemByID(myItemId, myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)) {
       wxLogError(_("Item with layer id : %ld not found in the TOC"),
                  myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID);
       continue;
     }
     m_TOCCtrl->RemoveLayer(myItemId, true);
 
-    if (m_DB->RemoveTOCLayer(myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID) == false) {
+    if (!m_DB->RemoveTOCLayer(myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)) {
       wxLogError(_("Unable to remove layer : '%s'"), myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerName.c_str());
     }
   }
@@ -388,13 +388,13 @@ void tmLayerManager::OnRotationWarning(wxCommandEvent &event) {
   }
 
   // display dialog
-  if (bShouldDisplay == true) {
+  if (bShouldDisplay) {
     tmRotationWarning_DLG myDlg(NULL, wxID_ANY, _("Rotation Warning"));
     myDlg.SetLayerName(event.GetString());
     myDlg.SetRotation1(rx);
     myDlg.SetRotation2(ry);
     if (myDlg.ShowModal() == wxID_OK) {
-      if (bShouldAdd == true) {
+      if (bShouldAdd) {
         m_RotationName.Add(event.GetString());
         m_RotationStatus.Add((short)myDlg.GetHide());
       }
@@ -435,7 +435,7 @@ void tmLayerManager::OnIncompatibleLayerWarning(wxCommandEvent &event) {
 void tmLayerManager::AddLayer(wxCommandEvent &event) {
   // check that the a project was opened !
   // normal project contain 4 layers minimum
-  if (IsOK() == false) {
+  if (!IsOK()) {
     return;
   }
 
@@ -468,7 +468,7 @@ void tmLayerManager::AddLayer(wxCommandEvent &event) {
 
   for (unsigned int i = 0; i < myFilesNames.GetCount(); i++) {
     wxFileName myFilename(myFilesNames.Item(i));
-    if (OpenLayer(myFilename, false) == false) {
+    if (!OpenLayer(myFilename, false)) {
       continue;
     }
   }
@@ -485,7 +485,7 @@ void tmLayerManager::AddWebLayer() {
   wxFileName myWebPath(wxStandardPaths::Get().GetExecutablePath() + myWebPagePathText);
   myWebPath.Normalize();
 
-  if (myWebPath.Exists() == false) {
+  if (!myWebPath.Exists()) {
     wxLogError(_("WMS directory didn't exists! Try re-installing ToolMap"));
     return;
   }
@@ -529,7 +529,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
   for (unsigned int i = 0; i < m_TOCCtrl->GetCount(); i++) {
     tmLayerProperties *myLayer = m_TOCCtrl->IterateLayers(bReset);
     bReset = false;
-    if (myLayer == NULL) {
+    if (myLayer == nullptr) {
       continue;
     }
     if (myLayer->GetType() != TOC_NAME_SHP) {
@@ -546,7 +546,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
     }
 
     // check for modified filename (-XXX)
-    if (myRegex.Matches(myTOCLayerName) == true) {
+    if (myRegex.Matches(myTOCLayerName)) {
       wxString myTocWithoutIncrement = myTOCLayerName.Left(myTOCLayerName.Len() - 4);
       if (myTocWithoutIncrement == myReplaceNameOrigin) {
         myLayerToReplace = myLayer;
@@ -555,7 +555,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
     }
   }
 
-  if (myLayerToReplace == NULL) {
+  if (myLayerToReplace == nullptr) {
     return false;
   }
 
@@ -576,7 +576,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
 
   // need to create an attribut index ?
   if (myLayerToReplace->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
-      myLayerToReplace->GetSymbolRuleManagerRef()->IsUsingRules() == true) {
+      myLayerToReplace->GetSymbolRuleManagerRef()->IsUsingRules()) {
     tmGISDataVectorSHP *myGISData = (tmGISDataVectorSHP *)tmGISData::LoadLayer(myLayerToReplace);
     wxString myQuery = wxString::Format(_T("DROP INDEX on %s"), myLayerToReplace->GetName().GetName());
     myGISData->ExecuteSQLQuery(myQuery);
@@ -598,7 +598,7 @@ void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData *layer, const wxString &d
   myConfig->SetPath("SPATIAL_INDEX");
   bool bCreateIndex = myConfig->ReadBool("create_index", true);
   myConfig->SetPath("..");
-  if (bCreateIndex == true) {
+  if (bCreateIndex) {
     if (layer->IsRaster() == 1) {
       tmGISDataRaster *myRaster = (tmGISDataRaster *)layer;
       wxArrayString myPyramids;
@@ -615,8 +615,8 @@ void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData *layer, const wxString &d
 }
 
 bool tmLayerManager::OpenLayer(const wxFileName &filename, bool replace, const wxString &originalname) {
-  if (replace == true) {
-    if (_ReplaceLayer(filename, originalname) == true) {
+  if (replace) {
+    if (_ReplaceLayer(filename, originalname)) {
       return true;
     }
   }
@@ -627,7 +627,7 @@ bool tmLayerManager::OpenLayer(const wxFileName &filename, bool replace, const w
 
   // try to open the file for getting the spatial type
   tmGISData *myLayer = tmGISData::LoadLayer(item);
-  if (myLayer == NULL) {
+  if (myLayer == nullptr) {
     wxLogError(_("Not able to open the layer : %s"), item->GetNameDisplay().c_str());
     wxDELETE(item);
     return false;
@@ -661,7 +661,7 @@ bool tmLayerManager::OpenLayer(const wxFileName &filename, bool replace, const w
   wxLogDebug(_T("Last inserted item id is : %ld"), lastinsertedID);
 
   // adding entry to TOC
-  if (m_TOCCtrl->InsertLayer(item) == false) {
+  if (!m_TOCCtrl->InsertLayer(item)) {
     wxLogError(_("Error adding layer: '%s' into TOC"), item->GetNameDisplay());
     wxDELETE(item);
     return false;
@@ -671,7 +671,7 @@ bool tmLayerManager::OpenLayer(const wxFileName &filename, bool replace, const w
 
 void tmLayerManager::ZoomToSelectedLayer() {
   tmLayerProperties *myLayerProp = m_TOCCtrl->GetSelectionLayer();
-  if (myLayerProp == NULL) {
+  if (myLayerProp == nullptr) {
     wxLogError(_("No layer or incorrect layer selected"));
     return;
   }
@@ -687,13 +687,13 @@ void tmLayerManager::ZoomToFrameLayer() {
 
 bool tmLayerManager::ZoomToLayer(long layerid) {
   tmLayerProperties *myLayerProp = m_TOCCtrl->GetLayerById(layerid);
-  if (myLayerProp == NULL) {
+  if (myLayerProp == nullptr) {
     wxLogError(_("Layer with specified id doesn't exists (ID = %ld)"), layerid);
     return false;
   }
 
   tmGISData *myGISData = tmGISData::LoadLayer(myLayerProp);
-  if (myGISData == NULL) {
+  if (myGISData == nullptr) {
     wxLogError(_("Unable to get data for layer %s"), myLayerProp->GetNameDisplay().c_str());
     return false;
   }
@@ -706,13 +706,13 @@ bool tmLayerManager::ZoomToLayer(long layerid) {
   wxDELETE(myGISData);
 
   // layer extent seems correct
-  if (myRRect.IsOk() == false) {
+  if (!myRRect.IsOk()) {
     wxLogError(_T("Layer extent isn't correct : %.3f, *.3f | %.3f, %.3f"), myRRect.GetLeft(), myRRect.GetTop(),
                myRRect.GetRight(), myRRect.GetBottom());
     return false;
   }
 
-  if (m_Scale.ZoomViewTo(myRRect) == false) {
+  if (!m_Scale.ZoomViewTo(myRRect)) {
     wxLogError(_T("Zooming to layer n\u00B0%ld failed"), layerid);
     return false;
   }
@@ -793,7 +793,7 @@ void tmLayerManager::OnUpdateCoordinates(wxCommandEvent &event) {
   m_StatusBar->SetStatusText(_T(""), 4);
   wxRealPoint mouserealpoint = m_Scale.PixelToReal(mousepoint);
 
-  if (m_MemoryPrjRef == NULL) {
+  if (m_MemoryPrjRef == nullptr) {
     return;
   }
 
@@ -917,7 +917,7 @@ void tmLayerManager::OnDisplayProperties(wxCommandEvent &event) {
 
 void tmLayerManager::OnDisplayLabels(wxCommandEvent &event) {
   tmLayerProperties *itemProp = (tmLayerProperties *)event.GetClientData();
-  if (itemProp == NULL) {
+  if (itemProp == nullptr) {
     return;
   }
   wxASSERT(m_DB);
@@ -1013,7 +1013,7 @@ bool tmLayerManager::SelectedSearch(const wxRect &rect, bool shiftdown) {
 
   // searching for data
   wxArrayLong *myArray = myLayerData->SearchData(mySelReal, layerprop->GetType());
-  if (myArray == NULL) {
+  if (myArray == nullptr) {
     myArray = new wxArrayLong();
   }
   int myArrayCount = myArray->GetCount();
@@ -1037,10 +1037,10 @@ bool tmLayerManager::SelectedSearch(const wxRect &rect, bool shiftdown) {
   // - number of items selected
   // - Status of shift key.
   if (myArrayCount >= 1) {
-    if (shiftdown == false) m_SelectedData.Clear();
+    if (!shiftdown) m_SelectedData.Clear();
     m_SelectedData.AddSelected(myArray);
   } else {
-    if (shiftdown == false) m_SelectedData.Clear();
+    if (!shiftdown) m_SelectedData.Clear();
   }
 
   myArray->Clear();
@@ -1123,23 +1123,23 @@ bool tmLayerManager::SelectedInvert() {
 
 void tmLayerManager::CheckGeometryValidity() {
   tmLayerProperties *layerprop = m_TOCCtrl->GetSelectionLayer();
-  if (layerprop == NULL) {
+  if (layerprop == nullptr) {
     return;
   }
 
   tmGISData *myLayerData = tmGISData::LoadLayer(layerprop);
-  if (myLayerData == NULL) {
+  if (myLayerData == nullptr) {
     wxLogError(_("Error loading %s data!"), layerprop->GetNameDisplay());
     return;
   }
 
-  if (myLayerData->IsRaster() == true) {
+  if (myLayerData->IsRaster()) {
     wxLogError(_("This tool isn't working on Raster files"));
     return;
   }
 
   tmGISDataVector *myLayerDataVector = (tmGISDataVector *)myLayerData;
-  OGRGeometry *myGeom = NULL;
+  OGRGeometry *myGeom = nullptr;
   bool bRestart = true;
   long myOid = wxNOT_FOUND;
   long iNumError = 0;
@@ -1154,16 +1154,16 @@ void tmLayerManager::CheckGeometryValidity() {
 
     bool bError = false;
     iNumCheck++;
-    if (myGeom->IsValid() == false) {
+    if (!myGeom->IsValid()) {
       bError = true;
       wxLogMessage(_("%ld geometry isn't valid!"), myOid);
     }
-    if (myGeom->IsSimple() == false) {
+    if (!myGeom->IsSimple()) {
       bError = true;
       wxLogMessage(_("%ld geometry isn't simple!"), myOid);
     }
 
-    if (bError == true) {
+    if (bError) {
       myOids.Add(myOid);
       iNumError++;
     }
@@ -1181,30 +1181,30 @@ void tmLayerManager::CheckGeometryValidity() {
 
 void tmLayerManager::ExportSelectedGeometries(const wxFileName &file) {
   tmLayerProperties *layerprop = m_TOCCtrl->GetSelectionLayer();
-  if (layerprop == NULL) {
+  if (layerprop == nullptr) {
     return;
   }
 
   tmGISData *myLayerData = tmGISData::LoadLayer(layerprop);
-  if (myLayerData == NULL) {
+  if (myLayerData == nullptr) {
     wxLogError(_("Error loading %s data!"), layerprop->GetNameDisplay());
     return;
   }
 
-  if (myLayerData->IsRaster() == true) {
+  if (myLayerData->IsRaster()) {
     wxLogError(_("This tool isn't working on Raster files, select a vector file"));
     return;
   }
 
   // create the vector file
   tmGISDataVectorSHP myShp;
-  if (myShp.CreateFile(file.GetFullPath(), (int)layerprop->GetSpatialType()) == false) {
+  if (!myShp.CreateFile(file.GetFullPath(), (int)layerprop->GetSpatialType())) {
     wxLogError(_("Creating shapefile: %s failed!"), file.GetFullPath());
     return;
   }
 
   tmGISDataVector *myLayerDataVector = (tmGISDataVector *)myLayerData;
-  OGRGeometry *myGeom = NULL;
+  OGRGeometry *myGeom = nullptr;
   bool bRestart = true;
   long myOid = wxNOT_FOUND;
   long iCount = 0;
@@ -1212,7 +1212,7 @@ void tmLayerManager::ExportSelectedGeometries(const wxFileName &file) {
   while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != NULL) {
     bRestart = false;
 
-    if (m_SelectedData.IsSelected(myOid) == true) {
+    if (m_SelectedData.IsSelected(myOid)) {
       myShp.AddGeometry(myGeom, myOid);
       myShp.CloseGeometry();
       iCount++;
@@ -1257,7 +1257,7 @@ bool tmLayerManager::SelectByOid() {
   tmGISDataVector *myVector = (tmGISDataVector *)tmGISData::LoadLayer(layerprop);
   wxASSERT(myVector);
   OGRFeature *myFeature = myVector->GetFeatureByOID(myOid);
-  if (myFeature == NULL) {
+  if (myFeature == nullptr) {
     wxDELETE(myVector);
     int msganswer = wxMessageBox(_("This OID didn't exists!"), _("Invalid OID"), wxOK | wxCANCEL, m_Parent);
     if (msganswer == wxCANCEL) {
@@ -1349,7 +1349,7 @@ void tmLayerManager::OnZoomToFeature(wxCommandEvent &event) {
   vrRealRect myRect;
   myRect.SetLeftTop(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MaxY));
   myRect.SetRightBottom(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MinY));
-  if (m_Scale.ZoomViewTo(myRect) == false) {
+  if (!m_Scale.ZoomViewTo(myRect)) {
     wxLogError(_T("Error zooming to feature n\u00B0%ld"), myOid);
     return;
   }
@@ -1380,7 +1380,7 @@ void tmLayerManager::OnMoveToFeature(wxCommandEvent &event) {
   vrRealRect myRect;
   myRect.SetLeftTop(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MaxY));
   myRect.SetRightBottom(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MinY));
-  if (m_Scale.MoveViewTo(myRect) == false) {
+  if (!m_Scale.MoveViewTo(myRect)) {
     wxLogError(_T("Error moving to feature %ld"), myOid);
     return;
   }
@@ -1466,7 +1466,7 @@ bool tmLayerManager::LoadProjectLayers() {
 
   // test validity of layers extent. If no extent is
   // specified (like no data displayed) return
-  if (m_Scale.IsLayerExtentValid() == true) {
+  if (m_Scale.IsLayerExtentValid()) {
     m_Scale.ComputeMaxExtent();
     m_Drawer.InitDrawer(m_Bitmap, &m_Scale, m_Scale.GetWindowExtentReal());
 
@@ -1484,7 +1484,7 @@ bool tmLayerManager::LoadProjectLayers() {
   m_GISRenderer->SetBitmapStatus(m_Bitmap);
   if (m_Bitmap) {
     delete m_Bitmap;
-    m_Bitmap = NULL;
+    m_Bitmap = nullptr;
   }
 
   m_GISRenderer->Refresh();
@@ -1512,7 +1512,7 @@ bool tmLayerManager::ReloadProjectLayers(bool bFullExtent, bool bInvalidateFullE
     return false;
   }
 
-  if (m_Scale.IsLayerExtentValid() == true) {
+  if (m_Scale.IsLayerExtentValid()) {
     // compute max extent if required by option
     if (bFullExtent) {
       m_Scale.ComputeMaxExtent();
@@ -1546,9 +1546,9 @@ bool tmLayerManager::ReloadProjectLayers(bool bFullExtent, bool bInvalidateFullE
   @date 24 July 2008
   *******************************************************************************/
 void tmLayerManager::CreateEmptyBitmap(const wxSize &size) {
-  if (m_Bitmap != NULL) {
+  if (m_Bitmap != nullptr) {
     delete m_Bitmap;
-    m_Bitmap = NULL;
+    m_Bitmap = nullptr;
   }
 
   m_Bitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
@@ -1575,7 +1575,7 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
   int iRank = 0;
   int iReaded = 0;
 
-  tmLayerProperties *pLayerProp = NULL;
+  tmLayerProperties *pLayerProp = nullptr;
   tmRealRect myExtent(0, 0, 0, 0);
 
   // prepare loading of MySQL data
@@ -1589,18 +1589,16 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
 
     if (!pLayerProp) break;
 
-    if (pLayerProp->IsVisible() == true) {
-      if (pLayerProp->GetName().Exists() == true || pLayerProp->GetType() < TOC_NAME_NOT_GENERIC) {
+    if (pLayerProp->IsVisible()) {
+      if (pLayerProp->GetName().Exists() || pLayerProp->GetType() < TOC_NAME_NOT_GENERIC) {
         // loading data
         tmGISData *layerData = tmGISData::LoadLayer(pLayerProp);
 
-        // build pyramids if needed and only during project opening
-        if (buildpyramids == true) {
-          _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
-        }
-
-        // processing and deleting data
         if (layerData) {
+          // build pyramids if needed and only during project opening
+          if (buildpyramids) {
+            _BuildOverviewsIfNeeded(layerData, pLayerProp->GetNameDisplay());
+          }
           // ignore extend for web rasters because they are too big
           if (pLayerProp->GetType() != TOC_NAME_WEB) {
             myExtent = layerData->GetMinimalBoundingRectangle();
@@ -1628,7 +1626,7 @@ int tmLayerManager::ReadLayerDraw() {
   int iRank = 0;
   int iReaded = 0;
 
-  tmLayerProperties *pLayerProp = NULL;
+  tmLayerProperties *pLayerProp = nullptr;
   tmRealRect myExtent(0, 0, 0, 0);
 
   // prepare loading of MySQL data
@@ -1644,13 +1642,13 @@ int tmLayerManager::ReadLayerDraw() {
       break;
     }
 
-    if (pLayerProp->IsVisible() == false) {
+    if (!pLayerProp->IsVisible()) {
       ++iRank;
       continue;
     }
 
     tmGISData *layerData = tmGISData::LoadLayer(pLayerProp);
-    if (layerData == NULL) {
+    if (layerData == nullptr) {
       ++iRank;
       continue;
     }
@@ -1702,7 +1700,7 @@ void tmLayerManager::_ZoomChanged() {
   tmZoomExtent myActualExtent;
   myActualExtent.m_ZoomFactor = m_Scale.GetPixelSize();
   myActualExtent.m_TopLeftPosition = m_Scale.GetTopLeftValue();
-  if (myActualExtent.IsOk() == false) {
+  if (!myActualExtent.IsOk()) {
     wxLogMessage(_("Incorrect zoom extent set!"));
     return;
   }
@@ -1711,7 +1709,7 @@ void tmLayerManager::_ZoomChanged() {
 
 bool tmLayerManager::ZoomPrevious() {
   tmZoomExtent myPrevExtent;
-  if (m_ZoomManager.GetPrevious(myPrevExtent) == false) {
+  if (!m_ZoomManager.GetPrevious(myPrevExtent)) {
     return false;
   }
 

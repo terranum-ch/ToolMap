@@ -115,7 +115,7 @@ void ProjectEditObjectDefinitionDLG::OnImportFile(wxCommandEvent &event) {
   int iNumofImported = 0;
   int iIndex = 0;
   ProjectDefMemoryObjects *myObject;
-  ObjectDefinitionList *myList = NULL;
+  ObjectDefinitionList *myList = nullptr;
 
   // get the selected panel
   int iSelectedPage = m_DLGPEO_Notebook->GetSelection();
@@ -149,7 +149,7 @@ void ProjectEditObjectDefinitionDLG::OnImportFile(wxCommandEvent &event) {
 }
 
 void ProjectEditObjectDefinitionDLG::OnExportFile(wxCommandEvent &event) {
-  ObjectDefinitionList *myList = NULL;
+  ObjectDefinitionList *myList = nullptr;
 
   // get the selected panel
   int iSelectedPage = m_DLGPEO_Notebook->GetSelection();
@@ -175,7 +175,7 @@ void ProjectEditObjectDefinitionDLG::OnExportFile(wxCommandEvent &event) {
 }
 
 void ProjectEditObjectDefinitionDLG::OnChangeLayerName(wxCommandEvent &event) {
-  ObjectDefinitionList *myList = NULL;
+  ObjectDefinitionList *myList = nullptr;
   wxArrayLong mySelectedItems;
 
   // from wich control comes the event from ?
@@ -284,9 +284,9 @@ void ProjectEditObjectDefinitionDLG::PostInit() {
   m_DLGPEO_Panel_Poly->Enable(bPoly);
 
   // pass controls pointer to the list
-  m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Name, NULL);
-  m_DLGPEO_List_Point->SetListCtrls(m_DLGPEO_Choice_Lyr_Point_Name, NULL);
-  m_DLGPEO_List_Poly->SetListCtrls(m_DLGPEO_Choice_Lyr_Poly_Name, NULL);
+  m_DLGPEO_List_Line->SetListCtrls(m_DLGPEO_Choice_Lyr_Line_Name, nullptr);
+  m_DLGPEO_List_Point->SetListCtrls(m_DLGPEO_Choice_Lyr_Point_Name, nullptr);
+  m_DLGPEO_List_Poly->SetListCtrls(m_DLGPEO_Choice_Lyr_Poly_Name, nullptr);
 
   // display number of items for line list
   m_DLGPEO_List_Line->UpdateStatus(STATUS_FIELD_ITEM_COUNT);
@@ -300,20 +300,20 @@ void ProjectEditObjectDefinitionDLG::PostInit() {
 ProjectEditObjectDefinitionDLG::~ProjectEditObjectDefinitionDLG() {}
 
 void ProjectEditObjectDefinitionDLG::Init() {
-  m_DLGPEO_Notebook = NULL;
-  m_DLGPEO_Panel_Line = NULL;
-  m_DLGPEO_List_Line = NULL;
-  m_DLGPEO_List_Poly = NULL;
-  m_DLGPEO_Choice_Lyr_Line_Name = NULL;
-  m_DLGPEO_Panel_Point = NULL;
-  m_DLGPEO_List_Line = NULL;
-  m_DLGPEO_Choice_Lyr_Point_Name = NULL;
-  m_DLGPEO_Panel_Poly = NULL;
-  m_DLGPEO_List_Line = NULL;
-  m_DLGPEO_List_Point = NULL;
-  m_DLGPEO_Choice_Lyr_Poly_Name = NULL;
-  m_DB = NULL;
-  m_DLGPEO_StatusBar = NULL;
+  m_DLGPEO_Notebook = nullptr;
+  m_DLGPEO_Panel_Line = nullptr;
+  m_DLGPEO_List_Line = nullptr;
+  m_DLGPEO_List_Poly = nullptr;
+  m_DLGPEO_Choice_Lyr_Line_Name = nullptr;
+  m_DLGPEO_Panel_Point = nullptr;
+  m_DLGPEO_List_Line = nullptr;
+  m_DLGPEO_Choice_Lyr_Point_Name = nullptr;
+  m_DLGPEO_Panel_Poly = nullptr;
+  m_DLGPEO_List_Line = nullptr;
+  m_DLGPEO_List_Point = nullptr;
+  m_DLGPEO_Choice_Lyr_Poly_Name = nullptr;
+  m_DB = nullptr;
+  m_DLGPEO_StatusBar = nullptr;
 
   // create a PrjMemory object with one layer for storing all
   // create a new layer for storing all objects (added of modified)
@@ -435,7 +435,7 @@ bool ProjectEditObjectDefinitionDLG::SetChoiceListText(wxChoice *choice, int lis
   }
 
   // append item only if they are items !
-  if (choice != NULL) {
+  if (choice != nullptr) {
     choice->Append(myThematicResult);
   }
   return true;

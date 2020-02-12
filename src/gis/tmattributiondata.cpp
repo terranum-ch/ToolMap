@@ -1,6 +1,6 @@
 /***************************************************************************
  tmattributiondata.h
-                    Main class for attribution process
+ Main class for attribution process
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -45,8 +45,8 @@ tmAttributionData::~tmAttributionData() {}
   *******************************************************************************/
 void tmAttributionData::InitMemberValues() {
   m_TableName = wxEmptyString;
-  m_SelIDs = NULL;
-  m_pDB = NULL;
+  m_SelIDs = nullptr;
+  m_pDB = nullptr;
 }
 
 void tmAttributionData::Create(wxArrayLong *selected, DataBaseTM *database) {
@@ -184,7 +184,7 @@ bool tmAttributionData::SetAttributeBasicValues(wxArrayLong *values) {
   PrepareAttributionStatement(myAttribStatement, m_TableName, values);
 
   wxASSERT(m_pDB);
-  if (m_pDB->DataBaseQueryNoResults(myClearStatement + myAttribStatement) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myClearStatement + myAttribStatement)) {
     wxLogDebug(_T("Error trying to attributes objects"));
     return false;
   }
@@ -244,7 +244,7 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray *lay
           }
         }
 
-        if (bFoundEnum == false) {
+        if (!bFoundEnum) {
           sAdd.Append(_T("NULL"));
           wxLogError(_("Unable to set advanced attribution for value '%s'"), myValue);
         }
@@ -261,11 +261,11 @@ bool tmAttributionData::SetAttributesAdvanced(long objid, PrjMemLayersArray *lay
   }
 
   // only null values, we don't insert!
-  if (bOnlyNullValues == true) {
+  if (bOnlyNullValues) {
     return true;
   }
 
-  if (m_pDB->DataBaseQueryNoResults(sSentence) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(sSentence)) {
     return false;
   }
 
@@ -306,7 +306,7 @@ bool tmAttributionData::CleanAttributesAdvanced(long objectid, PrjDefMemManage *
     return true;
   }
 
-  if (m_pDB->DataBaseQueryNoResults(sSentence) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(sSentence)) {
     wxLogMessage(_T("Layers found with spatial type : %d -- %s"), layertype, sSentence.c_str());
     return false;
   }
@@ -330,7 +330,7 @@ bool tmAttributionData::GetAttributesAdvanced(long objectid, PrjMemLayersArray *
   wxArrayString myAACodes;
   for (unsigned int i = 0; i < layers->GetCount(); i++) {
     ProjectDefMemoryLayers *myLayer = layers->Item(i);
-    if (GetAdvancedAttribution(myLayer, values, myAACodes, objectid) == false) {
+    if (!GetAdvancedAttribution(myLayer, values, myAACodes, objectid)) {
       bReturn = false;
       break;
     }
@@ -351,17 +351,17 @@ bool tmAttributionData::GetAttributesAdvanced(long objectid, PrjMemLayersArray *
 bool tmAttributionData::CopyAttributesBasic(const long &copyfrom) {
   wxASSERT(!m_TableName.IsEmpty());
   wxASSERT(IsValid());
-  if (IsValid() == false) return false;
+  if (!IsValid()) return false;
 
   wxArrayLong myAttribValues;
-  if (GetInfoBasicValues(copyfrom, myAttribValues) == false) return false;
+  if (!GetInfoBasicValues(copyfrom, myAttribValues)) return false;
 
   if (myAttribValues.GetCount() == 0) {
     wxLogDebug(_T("No attribution to copy"));
     return false;
   }
 
-  if (SetAttributeBasicValues(&myAttribValues) == false) return false;
+  if (!SetAttributeBasicValues(&myAttribValues)) return false;
 
   return true;
 }
@@ -386,7 +386,7 @@ bool tmAttributionData::GetInfoBasicValues(const long &selected, wxArrayLong &va
   PrepareGetInfoStatement(sStatement, m_TableName);
   m_SelIDs->RemoveAt(0);
 
-  if (m_pDB->DataBaseQuery(sStatement) == false) {
+  if (!m_pDB->DataBaseQuery(sStatement)) {
     wxLogDebug(_T("Error getting info "));
     return false;
   }
@@ -414,7 +414,7 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray &values) {
   // if (m_SelIDs
   PrepareGetInfoMultipleStatement(sStatement, m_TableName);
 
-  if (m_pDB->DataBaseQuery(sStatement) == false) {
+  if (!m_pDB->DataBaseQuery(sStatement)) {
     wxLogDebug(_T("Error getting info"));
     return false;
   }
@@ -428,7 +428,7 @@ bool tmAttributionData::GetInfoBasicArray(tmAttributionBasicArray &values) {
     while (1) {
       if (bGetNextResult) {
         bool bReturn = m_pDB->DataBaseGetNextResult(myRetValues);
-        if (bReturn == false) break;
+        if (!bReturn) break;
         // wxASSERT(bReturn);
       }
 
@@ -509,12 +509,12 @@ bool tmAttributionData::GetBasicNameFromID(const tmAttributionBasic &myAttribObj
   sSentence.Append(_T(");"));
 
   wxASSERT(m_pDB);
-  if (m_pDB->DataBaseQuery(sSentence) == false) {
+  if (!m_pDB->DataBaseQuery(sSentence)) {
     wxLogDebug(_T("Error getting name from id %s"), sSentence.c_str());
     return false;
   }
 
-  if (m_pDB->DataBaseGetResults(txtvalues) == false) return false;
+  if (!m_pDB->DataBaseGetResults(txtvalues)) return false;
 
   return true;
 }
@@ -589,13 +589,13 @@ bool tmAttributionData::PrepareGetAttributionLayersID(const long &geomid, tmLaye
   wxString sSentence =
       wxString::Format(sTmp, TABLE_NAME_OBJECTS.c_str(), tablename.c_str(), TABLE_NAME_LAYERS.c_str(), geomid);
 
-  if (m_pDB->DataBaseQuery(sSentence) == false) return false;
+  if (!m_pDB->DataBaseQuery(sSentence)) return false;
 
   wxASSERT(m_pDB);
   wxArrayString myResults;
   tmLayerValue myValue;
   while (1) {
-    if (m_pDB->DataBaseGetNextResult(myResults) == false) break;
+    if (!m_pDB->DataBaseGetNextResult(myResults)) break;
     myResults.Item(0).ToLong(&(myValue.m_Oid));
     myValue.m_Value = myResults.Item(1);
     layersid.Add(myValue);
@@ -604,7 +604,7 @@ bool tmAttributionData::PrepareGetAttributionLayersID(const long &geomid, tmLaye
 
   // long myLayerTemp = wxNOT_FOUND;
 
-  // if (m_pDB->DataBaseGetResults(layersid)==false)
+  // if (!m_pDB->DataBaseGetResults(layersid))
   // return false;
 
   if (layersid.GetCount() > 0) return true;
@@ -626,13 +626,13 @@ bool tmAttributionData::_GetInfoBasic(long oid, wxArrayLong &objid, wxArrayStrin
 
   wxString mySQL =
       wxString::Format(myText, TABLE_NAME_OBJECTS.c_str(), TABLE_NAME_GIS_ATTRIBUTION[layertype].c_str(), oid);
-  if (m_pDB->DataBaseQuery(mySQL) == false) {
+  if (!m_pDB->DataBaseQuery(mySQL)) {
     return false;
   }
 
   wxArrayString myValues;
   while (1) {
-    if (m_pDB->DataBaseGetNextResult(myValues) == false) {
+    if (!m_pDB->DataBaseGetNextResult(myValues)) {
       break;
     }
 
@@ -668,12 +668,12 @@ bool tmAttributionData::GetAdvancedAttribution(ProjectDefMemoryLayers *layer, wx
   }
 
   wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"), layer->m_LayerID, selected);
-  if (m_pDB->DataBaseQuery(sQuery) == false) {
+  if (!m_pDB->DataBaseQuery(sQuery)) {
     return false;
   }
 
   // no results, fill array with empty strings
-  if (m_pDB->DataBaseHasResults() == false) {
+  if (!m_pDB->DataBaseHasResults()) {
     for (unsigned int i = 0; i < layer->m_pLayerFieldArray.GetCount(); i++) {
       values.Add(wxEmptyString);
       codes.Add(wxEmptyString);
@@ -729,7 +729,7 @@ bool tmAttributionData::GetAdvancedAttribution(int layerid, long geomoid, wxArra
   values.Clear();
   wxString sQuery = wxString::Format(_T("SELECT * from layer_at%d WHERE OBJECT_ID=%ld"), layerid, geomoid);
 
-  if (m_pDB->DataBaseQuery(sQuery) == false) {
+  if (!m_pDB->DataBaseQuery(sQuery)) {
     return false;
   }
 

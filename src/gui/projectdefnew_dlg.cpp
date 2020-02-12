@@ -76,13 +76,13 @@ bool ProjectDefNew::Create(wxWindow *parent, wxWindowID id, const wxString &capt
 ProjectDefNew::~ProjectDefNew() {}
 
 void ProjectDefNew::Init() {
-  m_PrjDefinition = NULL;
+  m_PrjDefinition = nullptr;
 
-  m_DlgPD_Proj_Path = NULL;
-  m_DlgPd_Proj_Name = NULL;
-  m_DlgPd_Proj_Unit = NULL;
-  m_DlgPd_Proj_Projection = NULL;
-  m_DlgPd_Button_Ok = NULL;
+  m_DlgPD_Proj_Path = nullptr;
+  m_DlgPd_Proj_Name = nullptr;
+  m_DlgPd_Proj_Unit = nullptr;
+  m_DlgPd_Proj_Projection = nullptr;
+  m_DlgPd_Button_Ok = nullptr;
 }
 
 bool ProjectDefNew::TransferDataFromWindow() {

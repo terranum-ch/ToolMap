@@ -30,7 +30,7 @@ void ManagedAuiWnd::InitValues() {
 
 void ManagedAuiWnd::AddManagedPane(wxWindow *window, const wxAuiPaneInfo &paneinfo, bool bShow) {
   m_AuiMgr->AddPane(window, paneinfo);
-  if (bShow == TRUE) {
+  if (bShow) {
     ShowPanel();
   } else
     HidePanel();
@@ -50,7 +50,7 @@ void ManagedAuiWnd::HidePanel() {
 
 bool ManagedAuiWnd::IsPanelShown() {
   wxASSERT_MSG(!m_AuiPanelName.IsEmpty(), _T("Define value for m_auiPanelName in the child class..."));
-  if (m_AuiMgr->GetPane(m_AuiPanelName).IsShown() == TRUE) {
+  if (m_AuiMgr->GetPane(m_AuiPanelName).IsShown()) {
     return TRUE;
   }
   return FALSE;

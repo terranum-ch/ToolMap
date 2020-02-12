@@ -1,6 +1,6 @@
 /***************************************************************************
  editvertex_dlg.cpp
-                    Dialog for manuel editing vertex position
+ Dialog for manuel editing vertex position
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -180,10 +180,10 @@ bool EditVertexDLG::TransferDataToWindow() {
   SetStatusSelectedID(m_SelectedOID);
   SetStatusNumberVertex(m_VertexPts.GetCount());
 
-  if (GridClear() == false) return false;
+  if (!GridClear()) return false;
 
   for (unsigned int i = 0; i < m_VertexPts.GetCount(); i++)
-    if (GridInsertLine(i, &m_VertexPts.Item(i)) == false) return false;
+    if (!GridInsertLine(i, &m_VertexPts.Item(i))) return false;
 
   return true;
 }
@@ -219,12 +219,12 @@ bool EditVertexDLG::GridInsertLine(int iIndex, wxRealPoint *pt) {
 
   wxASSERT(iIndex <= m_VertexGrid->GetNumberRows());
 
-  if (m_VertexGrid->InsertRows(iIndex, 1) == false) {
+  if (!m_VertexGrid->InsertRows(iIndex, 1)) {
     wxLogError(_T("Error inserting row @ index = %d"), iIndex);
     return false;
   }
 
-  if (pt != NULL) {
+  if (pt != nullptr) {
     wxString myXText = wxString::Format(_T("%.*f"), tmVERTEX_PRECISION, pt->x);
     wxString myYText = wxString::Format(_T("%.*f"), tmVERTEX_PRECISION, pt->y);
 
@@ -273,7 +273,7 @@ void EditVertexDLG::OnVertexAdd(wxCommandEvent &event) {
   wxASSERT(m_LayerType != -1);
   if (m_LayerType == LAYER_SPATIAL_POINT) return;
 
-  GridInsertLine(iSelected + 1, NULL);
+  GridInsertLine(iSelected + 1, nullptr);
   SetStatusNumberVertex(m_VertexGrid->GetNumberRows());
 }
 
@@ -344,7 +344,7 @@ void EditVertexDLG::OnSave(wxCommandEvent &event) {
   wxString myErrMsg2 = _("Please define all coordinates before updating");
 
   int iRow = 0, iCol = 0;
-  if (IsAllCellsNumber(iCol, iRow) == false) {
+  if (!IsAllCellsNumber(iCol, iRow)) {
     wxMessageBox(myErrMsg + myErrMsg2, _("Coordinate error"), wxICON_STOP | wxOK, this);
 
     m_VertexGrid->SelectRow(iRow);

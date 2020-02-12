@@ -1,6 +1,6 @@
 /***************************************************************************
  tmpercent.cpp
-                    For computing percent value (progress dialog)
+ For computing percent value (progress dialog)
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

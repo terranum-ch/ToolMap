@@ -29,7 +29,7 @@ tmScaleCtrlCombo::tmScaleCtrlCombo(wxWindow *parent, wxWindowID id, const wxPoin
 }
 
 tmScaleCtrlCombo::tmScaleCtrlCombo() {
-  m_ParentEvent = NULL;
+  m_ParentEvent = nullptr;
 }
 
 void tmScaleCtrlCombo::InitScaleFromDatabase(const wxArrayLong &scale_values) {

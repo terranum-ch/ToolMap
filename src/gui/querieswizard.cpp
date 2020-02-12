@@ -1,6 +1,6 @@
 /***************************************************************************
  querieswizard.cpp
-                    Main part of the new query system
+ Main part of the new query system
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -19,7 +19,7 @@
 #include "../database/database_tm.h"
 
 int QueriesWizard::ShowWizard() {
-  if (RunWizard(m_PageIntro) == true) {
+  if (RunWizard(m_PageIntro)) {
     return wxID_OK;
   } else {
     return wxID_CANCEL;

@@ -40,7 +40,7 @@ class TEST_tmExportData : public CxxTest::TestSuite {
     TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ambri));
     // load project Data
     m_PrjDef = m_pDB->GetProjectDataFromDB();
-    TS_ASSERT(m_PrjDef != NULL);
+    TS_ASSERT(m_PrjDef != nullptr);
     TS_ASSERT_DIFFERS(m_PrjDef->GetCountLayers(), 0);
     int iExportType = 0;
     wxString myTempString = wxEmptyString;
@@ -60,7 +60,7 @@ class TEST_tmExportData : public CxxTest::TestSuite {
     TS_ASSERT(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 
     delete m_pDB;
-    if (m_PrjDef != NULL) {
+    if (m_PrjDef != nullptr) {
       delete m_PrjDef;
     }
     delete m_RealExportPath;
@@ -85,7 +85,7 @@ class TEST_tmExportData : public CxxTest::TestSuite {
   }
 
   void testCreateExportManager() {
-    tmExportManager myManager(NULL, m_pDB, m_ExportScale);
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
   }
 
   void testExportNotEmptyLayers() {
@@ -101,7 +101,7 @@ class TEST_tmExportData : public CxxTest::TestSuite {
 
     wxLogMessage(_T("Initing all OGR drivers"));
     OGRRegisterAll();
-    tmExportManager myManager(NULL, m_pDB, m_ExportScale);
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
   }
 
   void testExportEmptyLayers() {
@@ -115,7 +115,7 @@ class TEST_tmExportData : public CxxTest::TestSuite {
     TS_ASSERT(myPrj.RemoveLayer(_T("Rocks_PLG")));
     TS_ASSERT_EQUALS(myPrj.GetCountLayers(), 3);
 
-    tmExportManager myManager(NULL, m_pDB, m_ExportScale);
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
   }
 };
 

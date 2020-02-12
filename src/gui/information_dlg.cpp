@@ -165,7 +165,7 @@ tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSele
   m_Selected = sel;
   m_Toc = toc;
   m_ClickedItemID = wxNOT_FOUND;
-  m_Project = NULL;
+  m_Project = nullptr;
   // SetBackgroundColour(*wxWHITE);
   AddRoot(_("Selected features"), _("Selected features"));
 }
@@ -180,13 +180,13 @@ void tmSelectionInfoCtrl::_DeleteAllInfos(const wxTreeMultiItem &dontdelete) {
   wxTreeMultiItem myChild;
 
   while (1) {
-    if (myParent.IsOk() == false) {
+    if (!myParent.IsOk()) {
       break;
     }
 
     if (myParent != dontdelete) {
       myChild = GetFirstChild(myParent, myIterateChildCookie);
-      if (myChild.IsOk() == true) {
+      if (myChild.IsOk()) {
         DeleteChildren(myParent);
       }
 
@@ -331,7 +331,7 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString &header, wxArrayStrin
       ((tmGISDataVectorMYSQL *)myData)->SetProject(m_Project);
     case tmGIS_VECTOR_SHAPEFILE:
       bReturn = ((tmGISDataVector *)myData)->GetFieldsName(header, oid);
-      if (bReturn == false) {
+      if (!bReturn) {
         break;
       }
       bReturn = false;
@@ -343,7 +343,7 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString &header, wxArrayStrin
   }
 
   wxDELETE(myData);
-  if (bReturn == false) {
+  if (!bReturn) {
     wxLogDebug(_T("Error getting informations for oid : %ld"), oid);
   }
 
@@ -369,7 +369,7 @@ bool tmSelectionInfoCtrl::_GetItemByMousePos(wxTreeMultiItem &item, const wxPoin
   int myFlags = 0;
   item = HitTest(myPosition, myFlags);
 
-  if (item.IsOk() == false) {
+  if (!item.IsOk()) {
     return false;
   }
 
@@ -389,18 +389,18 @@ void tmSelectionInfoCtrl::OnItemLeftClick(wxMouseEvent &event) {
   m_ClickedItemID = wxNOT_FOUND;
 
   wxTreeMultiItem clickeditem;
-  if (_GetItemByMousePos(clickeditem, myRealPosition) == false) {
+  if (!_GetItemByMousePos(clickeditem, myRealPosition)) {
     return;
   }
 
-  if (clickeditem.GetName().ToLong(&m_ClickedItemID) == false) {
+  if (!clickeditem.GetName().ToLong(&m_ClickedItemID)) {
     wxFAIL;
     return;
   }
 
   int myCookie = 0;
   wxTreeMultiItem myCtrl = GetFirstChild(clickeditem, myCookie);
-  if (myCtrl.IsOk() == true) {
+  if (myCtrl.IsOk()) {
     return;
   }
 
@@ -420,12 +420,12 @@ void tmSelectionInfoCtrl::OnItemRightClick(wxMouseEvent &event) {
   m_ClickedItemID = wxNOT_FOUND;
 
   wxTreeMultiItem myClickedItem;
-  if (_GetItemByMousePos(myClickedItem, event.GetPosition()) == false) {
+  if (!_GetItemByMousePos(myClickedItem, event.GetPosition())) {
     return;
   }
 
   wxLogMessage(myClickedItem.GetName());
-  if (myClickedItem.GetName().ToLong(&m_ClickedItemID) == false) {
+  if (!myClickedItem.GetName().ToLong(&m_ClickedItemID)) {
     wxFAIL;
     return;
   }
@@ -487,7 +487,7 @@ void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent &event) {
 
   wxArrayString myHeader;
   wxArrayString myValues;
-  if (_GetData(m_ClickedItemID, myHeader, myValues) == false) {
+  if (!_GetData(m_ClickedItemID, myHeader, myValues)) {
     wxLogWarning(_("Unable to retrieve data ! Data not copied to clipboard"));
     return;
   }
@@ -512,7 +512,7 @@ void tmSelectionInfoCtrl::OnPopupCopy(wxCommandEvent &event) {
   }
 
   // copy data
-  if (wxTheClipboard->Open() == false) {
+  if (!wxTheClipboard->Open()) {
     wxLogError(_("Unable to open the clipboard"));
     return;
   }
@@ -530,7 +530,7 @@ void tmSelectionInfoCtrl::UpdateSelection() {
   DeleteChildren(GetFirstRoot());
 
   wxArrayLong *mySelVal = m_Selected->GetSelectedValues();
-  if (mySelVal == NULL) {
+  if (mySelVal == nullptr) {
     // Thaw();
     return;
   }
@@ -543,7 +543,7 @@ void tmSelectionInfoCtrl::UpdateSelection() {
 
   // feature #189 display information automatically if only one feature selected
   if (m_Selected->GetCount() == 1) {
-    if (myItem.IsOk() == true) {
+    if (myItem.IsOk()) {
       wxArrayString myHeader;
       wxArrayString myValues;
 

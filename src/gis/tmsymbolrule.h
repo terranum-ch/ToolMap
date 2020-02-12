@@ -49,7 +49,7 @@ class tmSymbolRule {
   tmSymbolVector *_NewSymbolVectorBasedOnSpatType(TM_GIS_SPATIAL_TYPES spatialtype);
 
  public:
-  tmSymbolRule(TM_GIS_SPATIAL_TYPES spatialtype, tmSymbolVector *symbol = NULL);
+  tmSymbolRule(TM_GIS_SPATIAL_TYPES spatialtype, tmSymbolVector *symbol = nullptr);
 
   virtual ~tmSymbolRule();
 

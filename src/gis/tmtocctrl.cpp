@@ -1,6 +1,6 @@
 /***************************************************************************
  tmtocctrl.cpp
-                    Contain description of the GIS toc ctrl
+ Contain description of the GIS toc ctrl
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -67,10 +67,10 @@ END_EVENT_TABLE()
   @date 10 July 2008
   *******************************************************************************/
 void tmTOCCtrl::InitTocMemberValues() {
-  m_ParentEvt = NULL;
-  m_ContextMenu = NULL;
+  m_ParentEvt = nullptr;
+  m_ContextMenu = nullptr;
   m_ActualItemID = 0;
-  m_EditingLayer = NULL;
+  m_EditingLayer = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -94,7 +94,7 @@ void tmTOCCtrl::LoadImageList() {
 void tmTOCCtrl::OnPaint(wxPaintEvent &event) {
   // wxPaintDC myUnusedPaintDC (this);
 
-  if (m_IsImageInited == false) {
+  if (!m_IsImageInited) {
     // unchecked
     wxBitmap myTempBmp(16, 16);
     wxMemoryDC myDC;
@@ -194,7 +194,7 @@ bool tmTOCCtrl::UpdateLayerName(tmLayerProperties *item, const wxString &newname
   wxTreeItemId myItemID;
   myItemID = GetLastChild(m_root);
   while (1) {
-    if (myItemID.IsOk() == false) {
+    if (!myItemID.IsOk()) {
       return false;
     }
 
@@ -266,13 +266,13 @@ bool tmTOCCtrl::EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position)
   \image html iterate_orders.png
   @param ResetToLast TRUE for reseting iteration to the End and false to
   continue iterating things up
-  @return  a valid #tmLayerProperties or NULL if there is no more item to iterate
+  @return  a valid #tmLayerProperties or nullptr if there is no more item to iterate
   @author Lucien Schreiber (c) CREALP 2008
   @date 11 July 2008
   *******************************************************************************/
 tmLayerProperties *tmTOCCtrl::IterateLayers(bool ResetToLast) {
   // check
-  if (!m_root.IsOk()) return NULL;
+  if (!m_root.IsOk()) return nullptr;
   // wxASSERT_MSG(m_root.IsOk(), _T("m_root not ok, error"));
 
   // if we are starting from the End
@@ -282,7 +282,7 @@ tmLayerProperties *tmTOCCtrl::IterateLayers(bool ResetToLast) {
     m_ActualItemID = GetPrevSibling(m_ActualItemID);
   }
 
-  if (!m_ActualItemID.IsOk()) return NULL;
+  if (!m_ActualItemID.IsOk()) return nullptr;
 
   return (tmLayerProperties *)GetItemData(m_ActualItemID);
 }
@@ -292,7 +292,7 @@ bool tmTOCCtrl::GetItemByID(wxTreeItemId &position, long searchedid) {
   while (1) {
     tmLayerProperties *myProp = IterateLayers(bStart);
     bStart = false;
-    if (myProp == NULL) {
+    if (myProp == nullptr) {
       break;
     }
 
@@ -357,19 +357,19 @@ unsigned int tmTOCCtrl::GetCountLayers() {
   @brief Return the Layer ID of the first selected layer
   @details The layer ID returned by this function is the CONTENT_ID of the layers
   stored in the Database
-  @return  Properties of the first selected Layer or NULL if nothing selected. Do
+  @return  Properties of the first selected Layer or nullptr if nothing selected. Do
   not delete the pointer returned, it belong to the tmTOCCtrl
   @author Lucien Schreiber (c) CREALP 2008
   @date 29 October 2008
   *******************************************************************************/
 tmLayerProperties *tmTOCCtrl::GetSelectionLayer() {
   wxTreeItemId selected = GetSelection();
-  if (selected.IsOk() == false) {
-    return NULL;
+  if (!selected.IsOk()) {
+    return nullptr;
   }
 
   tmLayerProperties *itemprop = (tmLayerProperties *)GetItemData(selected);
-  if (!itemprop) return NULL;
+  if (!itemprop) return nullptr;
 
   return itemprop;
 }
@@ -385,7 +385,7 @@ tmLayerProperties *tmTOCCtrl::GetSelectionLayer() {
   *******************************************************************************/
 tmLayerProperties *tmTOCCtrl::GetLayerById(long layerid) {
   bool bReset = true;
-  tmLayerProperties *myReturnedLayer = NULL;
+  tmLayerProperties *myReturnedLayer = nullptr;
 
   for (unsigned int i = 0; i < GetCountLayers(); i++) {
     tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
@@ -400,7 +400,7 @@ tmLayerProperties *tmTOCCtrl::GetLayerById(long layerid) {
 
 tmLayerProperties *tmTOCCtrl::GetLayerByName(const wxString &layername) {
   bool bReset = true;
-  tmLayerProperties *myReturnedLayer = NULL;
+  tmLayerProperties *myReturnedLayer = nullptr;
   for (unsigned int i = 0; i < GetCountLayers(); i++) {
     tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
     if (myIteratedLayer && myIteratedLayer->GetName() == layername) {
@@ -414,7 +414,7 @@ tmLayerProperties *tmTOCCtrl::GetLayerByName(const wxString &layername) {
 
 tmLayerProperties *tmTOCCtrl::GetLayerByPath(const wxString &layerPath) {
   bool bReset = true;
-  tmLayerProperties *myReturnedLayer = NULL;
+  tmLayerProperties *myReturnedLayer = nullptr;
   for (unsigned int i = 0; i < GetCountLayers(); i++) {
     tmLayerProperties *myIteratedLayer = IterateLayers(bReset);
     if (myIteratedLayer && myIteratedLayer->GetName() == wxFileName(layerPath)) {
@@ -434,7 +434,7 @@ tmLayerProperties *tmTOCCtrl::GetLayerByPath(const wxString &layerPath) {
   @date 11 November 2008
   *******************************************************************************/
 void tmTOCCtrl::SetSelectedLayer(int layerID) {
-  tmLayerProperties *itemprop = NULL;
+  tmLayerProperties *itemprop = nullptr;
   bool bFirstLoop = true;
 
   Freeze();
@@ -594,7 +594,7 @@ void tmTOCCtrl::OnMouseClick(wxMouseEvent &event) {
   clickedid = HitTest(event.GetPosition(), flags);
   if (flags & wxTREE_HITTEST_ONITEMICON) {
     tmLayerProperties *itemdata = (tmLayerProperties *)GetItemData(clickedid);
-    if (itemdata->IsVisible() == true) {
+    if (itemdata->IsVisible()) {
       itemdata->SetVisible(false);
     } else {
       itemdata->SetVisible(true);
@@ -625,7 +625,7 @@ void tmTOCCtrl::OnMouseClick(wxMouseEvent &event) {
   *******************************************************************************/
 void tmTOCCtrl::OnMouseItemRightClick(wxTreeEvent &event) {
   wxTreeItemId itemid = event.GetItem();
-  if (itemid.IsOk() == false) {
+  if (!itemid.IsOk()) {
     return;
   }
 
@@ -661,7 +661,7 @@ void tmTOCCtrl::OnMouseItemDoubleClick(wxTreeEvent &event) {
     return;
   }
 
-  if (event.GetItem().IsOk() == true) {
+  if (event.GetItem().IsOk()) {
     wxCommandEvent evt;
     OnShowProperties(evt);
   }
@@ -716,7 +716,7 @@ void tmTOCCtrl::OnMoveLayers(wxCommandEvent &event) {
 void tmTOCCtrl::OnShortcutKey(wxKeyEvent &event) {
   if (event.CmdDown() && IsTOCReady()) {
     wxTreeItemId itemid = GetSelection();
-    if (itemid.IsOk() == false) {
+    if (!itemid.IsOk()) {
       return;
     }
 
@@ -782,7 +782,7 @@ void tmTOCCtrl::OnEditingChange(wxCommandEvent &event) {
 
 void tmTOCCtrl::OnDragStart(wxTreeEvent &event) {
   m_DragItemID = wxTreeItemId();
-  wxASSERT(m_DragItemID.IsOk() == false);
+  wxASSERT(!m_DragItemID.IsOk());
 
   if (event.GetItem() != GetRootItem()) {
     event.Allow();
@@ -799,7 +799,7 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent &event) {
   wxTreeItemId myItemStop = event.GetItem();
 
   m_DragItemID = wxTreeItemId();
-  wxASSERT(m_DragItemID.IsOk() == false);
+  wxASSERT(!m_DragItemID.IsOk());
 
   if (myItemStop == myItemStart) {
     return;
@@ -823,7 +823,7 @@ void tmTOCCtrl::OnDragStop(wxTreeEvent &event) {
     int myIterPosition = 1;
     while (1) {
       wxTreeItemId myIterLayer = GetNextChild(m_root, myCookie);
-      if (myIterLayer.IsOk() == false) {
+      if (!myIterLayer.IsOk()) {
         break;
       }
       if (myIterLayer == myItemStart) {
@@ -895,7 +895,7 @@ void tmTOCCtrl::StartEditing() {
 void tmTOCCtrl::StopEditing(bool bSentmessage) {
   // get selected item
   bool bReset = true;
-  tmLayerProperties *iterlayer = NULL;
+  tmLayerProperties *iterlayer = nullptr;
   while (1) {
     iterlayer = IterateLayers(bReset);
     bReset = false;
@@ -905,7 +905,7 @@ void tmTOCCtrl::StopEditing(bool bSentmessage) {
 
     if (iterlayer == GetEditLayer()) {
       iterlayer->SetEditing(false);
-      SetEditLayer(NULL);
+      SetEditLayer(nullptr);
       SetItemStyle(m_ActualItemID, (tmLayerProperties *)GetItemData(m_ActualItemID));
       break;
     }
@@ -971,7 +971,7 @@ void tmTOCCtrl::OnPropertiesSave(wxCommandEvent &event) {
   }
 
   wxFile myFile(mySaveFilePathTxt, wxFile::write);
-  if (myFile.IsOpened() == false) {
+  if (!myFile.IsOpened()) {
     wxLogError(_("Error creating file: '%s'"), mySaveFilePathTxt);
     return;
   }
@@ -1000,7 +1000,7 @@ void tmTOCCtrl::OnPropertiesLoad(wxCommandEvent &event) {
 
   // try to load the symbology file
   wxTextFile myFile;
-  if (myFile.Open(myLoadFilePathTxt) == false) {
+  if (!myFile.Open(myLoadFilePathTxt)) {
     wxLogError(_("Unable to open symbology file: %s"), myLoadFilePathTxt);
     return;
   }
@@ -1061,7 +1061,7 @@ void tmTOCCtrl::OnShowLabels(wxCommandEvent &event) {
   // get selected item
   wxTreeItemId selected = GetSelection();
   tmLayerProperties *item = (tmLayerProperties *)GetItemData(selected);
-  if (item == NULL) {
+  if (item == nullptr) {
     return;
   }
   wxASSERT(item->GetSymbolRef());
@@ -1113,7 +1113,7 @@ void tmTOCCtrl::OnVertexMenu(wxCommandEvent &event) {
   *******************************************************************************/
 void tmTOCCtrl::OnRemoveItem(wxCommandEvent &event) {
   wxTreeItemId selected = GetSelection();
-  if (selected.IsOk() == false || selected == m_root) {
+  if (!selected.IsOk() || selected == m_root) {
     wxLogMessage(_("No layer selected, or unable to delete selected layer"));
     return;
   }

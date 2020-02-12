@@ -65,12 +65,12 @@ class tmCheckListBoxRank : public tmCheckListBox {
   ~tmCheckListBoxRank();
 
   tmCheckListBoxRank(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-                     const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = NULL,
+                     const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr,
                      long style = 0, const wxValidator &validator = wxDefaultValidator,
                      const wxString &name = wxListBoxNameStr);
 
   bool Create(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = NULL, long style = 0,
+              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr, long style = 0,
               const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr);
 
   // set and get the rank column name

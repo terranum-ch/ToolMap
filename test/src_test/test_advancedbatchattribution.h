@@ -70,7 +70,7 @@ class TEST_AdvAttribManager : public CxxTest::TestSuite {
     mySelData.AddSelected(mySelected);
 
     tmAAttribBatchManager myManager(m_Prj, m_pDB, &mySelData, LAYER_LINE);
-    TS_ASSERT(myManager.IsOk() == true);
+    TS_ASSERT(myManager.IsOk());
   }
 
   void testGettingTypes() {
@@ -137,7 +137,7 @@ class TEST_AdvAttribManager : public CxxTest::TestSuite {
 
     // layer 2 is Border of Rocks (no field should be returned
     // because of different spatial type
-    TS_ASSERT(myManager.GetFields(2, myFields) == false);
+    TS_ASSERT(!myManager.GetFields(2, myFields));
     TS_ASSERT(myFields.GetCount() == 0);
   }
 

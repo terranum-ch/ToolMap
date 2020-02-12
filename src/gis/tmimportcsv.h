@@ -1,6 +1,5 @@
 /***************************************************************************
  tmimportcsv.h
-
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -43,7 +42,7 @@ class tmImportCSV : public tmImport {
 
   bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
 
-  bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+  bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
 
  public:
   tmImportCSV();
@@ -52,7 +51,7 @@ class tmImportCSV : public tmImport {
 
   virtual bool Open(const wxFileName &filename);
 
-  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
 
   virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 

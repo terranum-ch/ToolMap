@@ -1,6 +1,6 @@
 /***************************************************************************
  tmlayerproperties.cpp
-                    Class used for managing layer informations
+ Class used for managing layer informations
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -31,7 +31,7 @@ void tmLayerProperties::InitMemberValues() {
   m_LayerSpatialType = LAYER_SPATIAL_LINE;
   m_LayerVisible = true;
   m_LayerType = TOC_NAME_NOT_GENERIC;
-  m_LayerSymbol = NULL;
+  m_LayerSymbol = nullptr;
   m_LayerVertexFlags = 0;
   m_LayerEditing = false;
   m_SymbolRulesManager = new tmSymbolRuleManager(this);
@@ -90,14 +90,14 @@ bool tmLayerProperties::InitFromArray(const wxArrayString &array, bool userelati
   // 3. check if converted exists
   // if all fails revert to saved data.
   wxFileName myTempFile(m_LayerName);
-  if (myTempFile.Exists() == true) {
+  if (myTempFile.Exists()) {
     return true;
   }
 
-  if (myTempFile.MakeAbsolute(prjpath) == false) {
+  if (!myTempFile.MakeAbsolute(prjpath)) {
     wxLogMessage(_T("Converting '%' to absolute path isn't possible"), myTempFile.GetFullPath());
   } else {
-    if (myTempFile.Exists() == true) {
+    if (myTempFile.Exists()) {
       m_LayerName.Assign(myTempFile);
     } else {
       wxLogMessage(_("%s not found (relative or absolute!)"), myTempFile.GetFullPath());

@@ -41,7 +41,7 @@ ListGenReportWithStatus::ListGenReportWithStatus(wxWindow *parent, wxWindowID id
   @date 21 May 2008
   *******************************************************************************/
 void ListGenReportWithStatus::InitMembers() {
-  m_status = NULL;
+  m_status = nullptr;
   m_TextField1 = _("Number of item(s) : %d");
   m_TextField2 = _("%d item(s) selected");
 }
@@ -135,7 +135,7 @@ void ListGenReportWithStatus::AddItem() {
 
   wxASSERT(m_pDialog);
   delete m_pDialog;
-  m_pDialog = NULL;
+  m_pDialog = nullptr;
 }
 
 /***************************************************************************/ /**

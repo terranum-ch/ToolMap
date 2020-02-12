@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatavector.cpp
-                   Super class for dealing with vector GIS data
+ Super class for dealing with vector GIS data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -42,7 +42,7 @@ tmGISDataVector *tmGISDataVector::CreateGISVectorBasedOnType(const int &gis_form
       return new tmGISDataVectorMYSQL();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 tmGISDataVector *tmGISDataVector::CreateGISVectorBasedOnExt(const wxString &extension) {
@@ -51,7 +51,7 @@ tmGISDataVector *tmGISDataVector::CreateGISVectorBasedOnExt(const wxString &exte
     if (tmGISDATA_VECTOR_TYPE_EXTENSION[i].Contains(extension))
       return CreateGISVectorBasedOnType(i + tmGISVECTOR_OFFSET);
   }
-  return NULL;
+  return nullptr;
 }
 
 void tmGISDataVector::InitGISDriversVector() {
@@ -75,7 +75,7 @@ wxString tmGISDataVector::GetFieldsMetadata() {
   myResult.Append(wxString::Format(_("Number of field(s) : %d<BR>"), iNbFields));
 
   wxArrayString myFieldName;
-  if (GetFieldsName(myFieldName) == false) {
+  if (!GetFieldsName(myFieldName)) {
     myResult.Append(_("Error getting fields name<BR>"));
     return myResult;
   }
@@ -133,7 +133,7 @@ bool tmGISDataVector::CheckGEOSCrosses(GEOSGeom *g1, GEOSGeom *g2) {
   @warning Don't forget to destroy Object
   returned with : GEOSGeom_destroy(GEOSGeometry* g)
   @param geom A valid OGR geometry
-  @return Valid GEOS object or NULL if an error occur. Don't forget
+  @return Valid GEOS object or nullptr if an error occur. Don't forget
   to destroy the returned object with GEOSGeom_destroy(GEOSGeometry* g);
   @author Lucien Schreiber (c) CREALP 2008
   @date 31 October 2008
@@ -153,7 +153,7 @@ GEOSGeom tmGISDataVector::CreateGEOSGeometry(OGRGeometry *geom) {
   @warning Don't forget to destroy Object returned with :
   GEOSGeom_destroy(GEOSGeometry* g)
   @param rect A #tmRealRect object
-  @return Valid GEOS object or NULL if an error occur. Don't forget
+  @return Valid GEOS object or nullptr if an error occur. Don't forget
   to destroy the returned object with GEOSGeom_destroy(GEOSGeometry* g);
   @author Lucien Schreiber (c) CREALP 2008
   @date 31 October 2008
@@ -183,8 +183,8 @@ OGRGeometry *tmGISDataVector::CreateOGRGeometry(const tmRealRect &rect) {
   char *buffer = new char[sRect.Length() * sizeof(wxString)];
   strcpy(buffer, (const char *)sRect.mb_str(wxConvUTF8));
 
-  OGRGeometry *geom = NULL;
-  OGRGeometryFactory::createFromWkt(&buffer, NULL, &geom);
+  OGRGeometry *geom = nullptr;
+  OGRGeometryFactory::createFromWkt(&buffer, nullptr, &geom);
   // dont delete buffer, used by OGR
   return geom;
 }
@@ -204,9 +204,9 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry *geometry, OGRGeometry *
   OGRPoint *myPointLine = (OGRPoint *)OGRGeometryFactory::createGeometry(wkbPoint);
 
   // should not be deleted, belong to OGR
-  OGRLineString *myLineLine = NULL;
-  OGRPolygon *myPoly = NULL;
-  OGRPoint *myPoint = NULL;
+  OGRLineString *myLineLine = nullptr;
+  OGRPolygon *myPoly = nullptr;
+  OGRPoint *myPoint = nullptr;
 
   unsigned int myCountPoints = points.GetCount();
   int i = 0;
@@ -304,25 +304,25 @@ bool tmGISDataVector::GetBeginEndInterseciton(OGRGeometry *geometry, OGRGeometry
 /***************************************************************************/ /**
   @brief Safe conversion function
   @param geosGeom The GEOSGeom to convert
-  @return  A valid OGRGeometry or NULL if an error occur
+  @return  A valid OGRGeometry or nullptr if an error occur
   @author Lucien Schreiber (c) CREALP 2008
   @date 15 January 2009
   *******************************************************************************/
 OGRGeometry *tmGISDataVector::SafeCreateFromGEOS(GEOSGeom geosGeom) {
   size_t nSize = 0;
-  unsigned char *pabyBuf = NULL;
-  OGRGeometry *poGeometry = NULL;
+  unsigned char *pabyBuf = nullptr;
+  OGRGeometry *poGeometry = nullptr;
 
   pabyBuf = GEOSGeomToWKB_buf(geosGeom, &nSize);
-  if (pabyBuf == NULL || nSize == 0) {
-    return NULL;
+  if (pabyBuf == nullptr || nSize == 0) {
+    return nullptr;
   }
 
-  if (OGRGeometryFactory::createFromWkb((unsigned char *)pabyBuf, NULL, &poGeometry, (int)nSize) != OGRERR_NONE) {
-    poGeometry = NULL;
+  if (OGRGeometryFactory::createFromWkb((unsigned char *)pabyBuf, nullptr, &poGeometry, (int)nSize) != OGRERR_NONE) {
+    poGeometry = nullptr;
   }
 
-  if (pabyBuf != NULL) {
+  if (pabyBuf != nullptr) {
     // wxLogMessage ("GEOS Version: %d, %d, %d, %d", GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, GEOS_VERSION_PATCH,
     // GEOS_VERSION_CONCATENATED);
     //#ifndef  __WXMSW__
@@ -344,13 +344,13 @@ OGRGeometry *tmGISDataVector::SafeBuffer(OGRGeometry *ogrgeom, int size) {
   GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
   GEOSGeom geom = ogrgeom->exportToGEOS(myGEOSHandle);
   GEOSGeom geombuffer;
-  OGRGeometry *returnbuffer = NULL;
+  OGRGeometry *returnbuffer = nullptr;
 
-  if (geom != NULL) {
+  if (geom != nullptr) {
     geombuffer = GEOSBuffer(geom, size, 30);
     GEOSGeom_destroy(geom);
 
-    if (geombuffer != NULL) {
+    if (geombuffer != nullptr) {
       returnbuffer = tmGISDataVector::SafeCreateFromGEOS(geombuffer);
       GEOSGeom_destroy(geombuffer);
     }
@@ -365,7 +365,7 @@ OGRGeometry *tmGISDataVector::SafeBuffer(OGRGeometry *ogrgeom, int size) {
   GEOS directly
   @param geom1 The geometry to intersect
   @param geom2 the geometry intersecting
-  @return  A valid OGRLineString or NULL
+  @return  A valid OGRLineString or nullptr
   @author Lucien Schreiber (c) CREALP 2008
   @date 18 November 2008
   *******************************************************************************/
@@ -373,10 +373,10 @@ OGRGeometry *tmGISDataVector::SafeIntersection(OGRGeometry *geom1, OGRGeometry *
   wxASSERT(geom1);
   wxASSERT(geom2);
 
-  GEOSGeom geosline = NULL;
-  GEOSGeom geosframe = NULL;
-  GEOSGeom geosintersect = NULL;
-  OGRGeometry *returncrop = NULL;
+  GEOSGeom geosline = nullptr;
+  GEOSGeom geosframe = nullptr;
+  GEOSGeom geosintersect = nullptr;
+  OGRGeometry *returncrop = nullptr;
 
   GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
   geosline = geom1->exportToGEOS(myGEOSHandle);
@@ -384,12 +384,12 @@ OGRGeometry *tmGISDataVector::SafeIntersection(OGRGeometry *geom1, OGRGeometry *
 
   wxASSERT(geosline);
   wxASSERT(geosframe);
-  if (geosline != NULL && geosframe != NULL) {
+  if (geosline != nullptr && geosframe != nullptr) {
     geosintersect = GEOSIntersection(geosline, geosframe);
     GEOSGeom_destroy(geosline);
     GEOSGeom_destroy(geosframe);
 
-    if (geosintersect != NULL) {
+    if (geosintersect != nullptr) {
       returncrop = SafeCreateFromGEOS(geosintersect);
       GEOSGeom_destroy(geosintersect);
     }
@@ -404,7 +404,7 @@ OGRGeometry *tmGISDataVector::SafeIntersection(OGRGeometry *geom1, OGRGeometry *
   GEOS directly
   @param union1 The multi-line string
   @param line The line to intersect
-  @return  A valid OGRLineString or NULL
+  @return  A valid OGRLineString or nullptr
   @author Lucien Schreiber (c) CREALP 2008
   @date 18 November 2008
   *******************************************************************************/
@@ -412,20 +412,20 @@ OGRGeometry *tmGISDataVector::SafeUnion(OGRGeometry *union1, OGRGeometry *line) 
   wxASSERT(union1);
   wxASSERT(line);
 
-  GEOSGeom geosline = NULL;
-  GEOSGeom geosunion = NULL;
-  GEOSGeom geosresult = NULL;
-  OGRGeometry *returnunion = NULL;
+  GEOSGeom geosline = nullptr;
+  GEOSGeom geosunion = nullptr;
+  GEOSGeom geosresult = nullptr;
+  OGRGeometry *returnunion = nullptr;
 
   GEOSContextHandle_t myGEOSHandle = OGRGeometry::createGEOSContext();
   geosline = line->exportToGEOS(myGEOSHandle);
-  if (geosline != NULL && union1 != NULL) {
+  if (geosline != nullptr && union1 != nullptr) {
     geosunion = union1->exportToGEOS(myGEOSHandle);
     geosresult = GEOSUnion(geosunion, geosline);
     GEOSGeom_destroy(geosline);
     GEOSGeom_destroy(geosunion);
 
-    if (geosresult != NULL) {
+    if (geosresult != nullptr) {
       returnunion = SafeCreateFromGEOS(geosresult);
       GEOSGeom_destroy(geosresult);
     }
@@ -550,12 +550,12 @@ bool tmGISDataVector::CutLineGeometry(OGRLineString *line1, OGRLineString *line2
   OGRLineString *myLine1WVertex;
   OGRLineString *myLine2WVertex;
   myLine1WVertex = GetLineWithIntersection(line1, line2, myLine1VertexPos);
-  if (myLine1WVertex == NULL) {
+  if (myLine1WVertex == nullptr) {
     wxLogDebug(_T("Error inserting vertex"));
     return false;
   }
   myLine2WVertex = GetLineWithIntersection(line2, line1, myLine2VertexPos);
-  if (myLine2WVertex == NULL) {
+  if (myLine2WVertex == nullptr) {
     wxLogDebug(_T("Error inserting vertex"));
     return false;
   }
@@ -591,7 +591,7 @@ bool tmGISDataVector::CutLineMultiple(OGRLineString *linetocut, OGRMultiLineStri
   OGRLineString *myLine1WVertex;
 
   myLine1WVertex = GetLineWithIntersection(linetocut, cutlines, myLine1VertexPos);
-  if (myLine1WVertex == NULL) {
+  if (myLine1WVertex == nullptr) {
     wxLogDebug(_T("Error inserting vertex"));
     return false;
   }
@@ -614,7 +614,7 @@ bool tmGISDataVector::CutLineMultiple(OGRLineString *linetocut, OGRMultiLineStri
   @param line line to intersect
   @param intersection line used for intersection
   @param insertedvertex position of inserted vertex
-  @return A line with inserted vertex. NULL if an error occur.
+  @return A line with inserted vertex. nullptr if an error occur.
   (call should take care of deleting passed object)
   @author Lucien Schreiber (c) CREALP 2009
   @date 11 February 2009
@@ -656,7 +656,7 @@ OGRLineString *tmGISDataVector::GetLineWithIntersection(OGRLineString *line, OGR
         // error
         else {
           wxASSERT_MSG(0, _T("This case isn't taken into account"));
-          return NULL;
+          return nullptr;
         }
 
         OGRGeometryFactory::destroyGeometry(myGeomIntersection);
@@ -724,7 +724,7 @@ OGRLineString *tmGISDataVector::GetLineWithIntersection(OGRLineString *line, OGR
     for (int l = 0; l < multiline->getNumGeometries(); l++) {
       OGRLineString *myLine = (OGRLineString *)multiline->getGeometryRef(l);
       wxASSERT(myLine);
-      if (mySegment.Intersects(myLine) == false) {
+      if (!mySegment.Intersects(myLine)) {
         continue;
       }
 
@@ -787,7 +787,7 @@ OGRLineString *tmGISDataVector::GetLineWithIntersection(OGRLineString *line, OGR
   *******************************************************************************/
 bool tmGISDataVector::SplitGeometry(OGRGeometryCollection *gCol, const long &oid, wxArrayLong &AddedIds,
                                     int layertype) {
-  if (UpdateGeometry(gCol->getGeometryRef(0), oid) == false) return false;
+  if (!UpdateGeometry(gCol->getGeometryRef(0), oid)) return false;
   long lAdded = -1;
   for (int i = 1; i < gCol->getNumGeometries(); i++) {
     lAdded = AddGeometry(gCol->getGeometryRef(i), -1, layertype);
@@ -897,7 +897,7 @@ OGRLineString *tmGISDataVector::InsertVertex(OGRGeometry *pointbuffer, wxRealPoi
   OGRPoint p1;
   OGRPoint p2;
   OGRLineString segment;
-  OGRLineString *returnedLine = NULL;
+  OGRLineString *returnedLine = nullptr;
   inseredvertex = -1;
 
   for (int i = 0; i < line->getNumPoints(); i++) {
@@ -997,7 +997,7 @@ bool tmGISDataVector::LinesMerge(OGRMultiLineString *linetomerge, OGRGeometry **
 
   *(linemerged) = SafeCreateFromGEOS(myResult);
   OGRGeometry *myMerge = *(linemerged);
-  if (myMerge == NULL) return false;
+  if (myMerge == nullptr) return false;
 
   OGRwkbGeometryType myType = wkbFlatten(myMerge->getGeometryType());
   if (myType != wkbLineString) {

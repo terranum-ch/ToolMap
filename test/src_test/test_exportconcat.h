@@ -41,7 +41,7 @@ class TEST_tmExportConcat : public CxxTest::TestSuite {
     TS_ASSERT(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestExportConcat));
     // load project Data
     m_PrjDef = m_pDB->GetProjectDataFromDB();
-    TS_ASSERT(m_PrjDef != NULL);
+    TS_ASSERT(m_PrjDef != nullptr);
     TS_ASSERT_DIFFERS(m_PrjDef->GetCountLayers(), 0);
     int iExportType = 0;
     wxString myTempString = wxEmptyString;
@@ -85,12 +85,12 @@ class TEST_tmExportConcat : public CxxTest::TestSuite {
   }
 
   void testExportLine() {
-    tmExportManager myManager(NULL, m_pDB, m_ExportScale);
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
     TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_LINE, false));
   }
 
   void testExportPoint() {
-    tmExportManager myManager(NULL, m_pDB, m_ExportScale);
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
     TS_ASSERT(myManager.ExportConcatenated(m_PrjDef, LAYER_POINT, false));
   }
 

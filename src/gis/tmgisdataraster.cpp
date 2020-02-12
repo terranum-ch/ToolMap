@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdataraster.cpp
-                    Super class for dealing with raster GIS data
+ Super class for dealing with raster GIS data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -27,8 +27,8 @@ DEFINE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING);
 DEFINE_EVENT_TYPE(tmEVT_LM_INCOMPATIBLE_WARNING);
 
 tmGISDataRaster::tmGISDataRaster() {
-  m_DataSet = NULL;
-  m_RasterBand = NULL;
+  m_DataSet = nullptr;
+  m_RasterBand = nullptr;
   m_FileType = _T("Generic GDAL Raster");
   m_PxImgFilter = wxRect(0, 0, -1, -1);
   m_RasterExtent = tmRealRect(0, 0, 0, 0);
@@ -39,9 +39,9 @@ tmGISDataRaster::~tmGISDataRaster() {
   // closing GDAL raster dataset
   if (m_DataSet) {
     GDALClose(m_DataSet);
-    m_DataSet = NULL;
+    m_DataSet = nullptr;
   }
-  m_RasterBand = NULL;
+  m_RasterBand = nullptr;
 }
 
 bool tmGISDataRaster::Open(const wxString &filename, bool bReadWrite) {
@@ -56,7 +56,7 @@ bool tmGISDataRaster::Open(const wxString &filename, bool bReadWrite) {
   // open the raster and return true if success
   m_DataSet = (GDALDataset *)GDALOpen(buffer, (GDALAccess) false);  // bReadWrite);
   delete[] buffer;
-  if (m_DataSet == NULL) {
+  if (m_DataSet == nullptr) {
     if (IsLoggingEnabled()) {
       wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
     }
@@ -146,7 +146,7 @@ tmGISDataRaster *tmGISDataRaster::CreateGISRasterBasedOnType(const int &gis_form
       return new tmGISDataRasterWeb();
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 tmGISDataRaster *tmGISDataRaster::CreateGISRasterBasedOnExt(const wxString &extension) {
@@ -154,7 +154,7 @@ tmGISDataRaster *tmGISDataRaster::CreateGISRasterBasedOnExt(const wxString &exte
   for (int i = 0; i < iLoop; i++) {
     if (tmGISDATA_RASTER_TYPE_EXTENSION[i].Contains(extension)) return CreateGISRasterBasedOnType(i);
   }
-  return NULL;
+  return nullptr;
 }
 
 void tmGISDataRaster::InitGISDriversRaster() {
@@ -335,7 +335,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
 
   CPLErr ret = CE_None;
 
-  GDALColorTable *pal = NULL;
+  GDALColorTable *pal = nullptr;
 
   m_DataSet->FlushCache();
 
@@ -354,7 +354,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
   //
   *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
   *imgbuf = (unsigned char *)CPLMalloc(*imglen);
-  if (*imgbuf == NULL) {
+  if (*imgbuf == nullptr) {
     if (IsLoggingEnabled()) {
       wxLogMessage(_("The system does not have enough memory to project"));
     }
@@ -415,8 +415,8 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
     int iLoop = 0;
     double dRange = 0;
     int iBuffSize = 0;
-    void *myGdalScanData = NULL;
-    unsigned char *data = NULL;
+    void *myGdalScanData = nullptr;
+    unsigned char *data = nullptr;
     // char Resultat = '\n';
     GDALDataType myDataType;
 
@@ -425,7 +425,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
 
         pal = band->GetColorTable();
 
-        if (pal == NULL) {
+        if (pal == nullptr) {
           if (IsLoggingEnabled()) {
             wxLogError(_T("Couldn't find a palette for palette-based image"));
           }
@@ -523,12 +523,12 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
       *masklen = ((imgSize.GetWidth() + 7) / 8) * imgSize.GetHeight();
       *maskbuf = (unsigned char *)CPLMalloc(*masklen);
 
-      if (*maskbuf != NULL) {
+      if (*maskbuf != nullptr) {
         unsigned char *tmp = (unsigned char *)CPLMalloc(imgSize.GetWidth() * imgSize.GetHeight());
 
-        if (tmp == NULL) {
+        if (tmp == nullptr) {
           CPLFree(*maskbuf);
-          *maskbuf = NULL;
+          *maskbuf = nullptr;
         } else {
           GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
 
@@ -644,13 +644,13 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
                             fprintf(stderr, "mask not used\n");
 
                             CPLFree(*maskbuf);
-                            *maskbuf = NULL;
+                            *maskbuf = nullptr;
                         }
 #endif
           }
 
           CPLFree(tmp);
-          tmp = NULL;
+          tmp = nullptr;
         }
       }
     } else if (bMakeAlpha) {
@@ -662,7 +662,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
       *masklen = imgSize.GetWidth() * imgSize.GetHeight();
       *maskbuf = (unsigned char *)CPLMalloc(*masklen);
 
-      if (*maskbuf != NULL) {
+      if (*maskbuf != nullptr) {
         GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
 
         ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), nRasterXSize, nRasterYSize, *maskbuf,
@@ -672,7 +672,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
                 if (ret == CE_Failure)
                 {
                     CPLFree(*maskbuf);
-                    *maskbuf = NULL;
+                    *maskbuf = nullptr;
                 }
 #endif
       }
@@ -680,13 +680,13 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imgle
   }
 
   if (ret != CE_None) {
-    if (*imgbuf != NULL) {
+    if (*imgbuf != nullptr) {
       CPLFree(*imgbuf);
-      *imgbuf = NULL;
+      *imgbuf = nullptr;
     }
-    if (*maskbuf != NULL) {
+    if (*maskbuf != nullptr) {
       CPLFree(*maskbuf);
-      *maskbuf = NULL;
+      *maskbuf = nullptr;
     }
   }
 
@@ -709,7 +709,7 @@ bool tmGISDataRaster::GetImageTranslucency(wxSize imgSize, int translucencyperce
   wxASSERT(translucencypercent >= 0 && translucencypercent <= 100);
   unsigned int myimglen = imgSize.GetWidth() * imgSize.GetHeight();
   *alphachn = (unsigned char *)CPLMalloc(myimglen);
-  if (*alphachn == NULL) {
+  if (*alphachn == nullptr) {
     wxLogError(_T("Error creating translucency"));
     return false;
   }
@@ -920,18 +920,18 @@ wxString tmGISDataRaster::GetUnitMetaData() {
   @brief Get info about pyramids
   @details Pyramids are small image subsets usefull for displaying raster faster
   @param pyramids String containing all pyramids informations if pyramids isn't
-  NULL.
+  nullptr.
   @return  Number of pyramids in the raster
   @author Lucien Schreiber (c) CREALP 2008
   @date 24 October 2008
   *******************************************************************************/
 int tmGISDataRaster::GetPyramidsInfo(wxArrayString *pyramids) {
   int iNbPyramids = 0;
-  if (m_DataSet == NULL) {
+  if (m_DataSet == nullptr) {
     return wxNOT_FOUND;
   }
 
-  GDALRasterBand *myOverview = NULL;
+  GDALRasterBand *myOverview = nullptr;
   if (!m_RasterBand) {
     m_RasterBand = m_DataSet->GetRasterBand(1);
   }
@@ -940,7 +940,7 @@ int tmGISDataRaster::GetPyramidsInfo(wxArrayString *pyramids) {
   iNbPyramids = m_RasterBand->GetOverviewCount();
 
   // getting all pyramids if required
-  if (iNbPyramids > 0 && pyramids != NULL) {
+  if (iNbPyramids > 0 && pyramids != nullptr) {
     for (int i = 0; i < iNbPyramids; i++) {
       myOverview = m_RasterBand->GetOverview(i);
       if (myOverview) {
@@ -960,7 +960,7 @@ bool tmGISDataRaster::CreateSpatialIndex(GDALProgressFunc progress, void *pfProg
   wxString myOverviewTypeName = _T("NEAREST");
 
   CPLSetConfigOption((const char *)myConstRRD.mb_str(wxConvUTF8), (const char *)myConstRRDValue.mb_str(wxConvUTF8));
-  if (m_DataSet->BuildOverviews(myOverviewTypeName.mb_str(), 4, myInts, 0, NULL, progress, pfProgressData) == CE_None) {
+  if (m_DataSet->BuildOverviews(myOverviewTypeName.mb_str(), 4, myInts, 0, nullptr, progress, pfProgressData) == CE_None) {
     return true;
   }
 
@@ -1062,13 +1062,13 @@ tmRotationWarning_DLG::tmRotationWarning_DLG(wxWindow *parent, wxWindowID id, co
   m_TxtTemplate = _("Layer: '%s' contains rotation information!\nIt may not be displayed correctly!");
 
   _CreateControls();
-  m_BtnSizerCtrlHelp->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(tmRotationWarning_DLG::OnHelp), NULL,
+  m_BtnSizerCtrlHelp->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(tmRotationWarning_DLG::OnHelp), nullptr,
                               this);
 }
 
 tmRotationWarning_DLG::~tmRotationWarning_DLG() {
   m_BtnSizerCtrlHelp->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(tmRotationWarning_DLG::OnHelp),
-                                 NULL, this);
+                                 nullptr, this);
 }
 
 bool tmRotationWarning_DLG::TransferDataFromWindow() {

@@ -49,9 +49,9 @@ bool tmSymbolDLGPoint::Create(wxWindow *parent, wxWindowID id, const wxString &c
 tmSymbolDLGPoint::~tmSymbolDLGPoint() {}
 
 void tmSymbolDLGPoint::_Init() {
-  m_PointColourCtrl = NULL;
-  m_PointWidthCtrl = NULL;
-  m_TransparencySlider = NULL;
+  m_PointColourCtrl = nullptr;
+  m_PointWidthCtrl = nullptr;
+  m_TransparencySlider = nullptr;
 }
 
 void tmSymbolDLGPoint::CreateControlsPoint() {
@@ -252,7 +252,7 @@ void tmSymbolDLGPointRule::_LoadTableData() {
     long myListIndex = m_SymbolListCtrl->InsertItem(m_SymbolListCtrl->GetItemCount(), _T(""));
     m_ImgList->Add(_CreateColorBitmap(m_Rules[i]->GetBrush(), m_Rules[i]->GetPen()));
     m_SymbolListCtrl->SetItemImage(myListIndex, i);
-    if (m_Rules[i]->IsActive() == false) {
+    if (!m_Rules[i]->IsActive()) {
       m_SymbolListCtrl->SetItemTextColour(myListIndex, m_SymbolListCtrl->GetTextColorGrayed());
     } else {
       m_SymbolListCtrl->SetItemTextColour(myListIndex, m_SymbolListCtrl->GetTextColorNormal());
@@ -287,13 +287,13 @@ void tmSymbolDLGPointRule::OnBtnClassify(wxCommandEvent &event) {
   wxArrayString myFieldValues;
   wxASSERT(m_GISData);
   wxString myFieldName = m_CategoryColumnCtrl->GetString(m_CategoryColumnCtrl->GetSelection());
-  if (m_GISData->GetDistinctFieldsValue(myFieldName, myFieldValues) == false) {
+  if (!m_GISData->GetDistinctFieldsValue(myFieldName, myFieldValues)) {
     wxLogError(_("Unable to get fields values for '%s'"), myFieldName);
     return;
   }
 
   for (unsigned int i = 0; i < myFieldValues.GetCount(); i++) {
-    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+    tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
     myRule->SetRuleName(myFieldValues[i]);
     myRule->SetAttributFilter(wxString::Format(_T("%s=\"%s\""), myFieldName, myFieldValues[i]));
     myRule->SetRandomColor();
@@ -303,7 +303,7 @@ void tmSymbolDLGPointRule::OnBtnClassify(wxCommandEvent &event) {
 }
 
 void tmSymbolDLGPointRule::OnBtnAdd(wxCommandEvent &event) {
-  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), NULL);
+  tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
   myRule->SetRandomColor();
   tmSymbolRuleEdit_DLG myDlg(this, myRule);
   if (myDlg.ShowModal() != wxID_OK) {

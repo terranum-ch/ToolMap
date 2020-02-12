@@ -54,7 +54,7 @@ class tmAAttribCtrl : public wxPanel {
 
  public:
   tmAAttribCtrl() {
-    m_Label = NULL;
+    m_Label = nullptr;
   }
 
   tmAAttribCtrl(wxWindow *parent, const ProjectDefMemoryFields &fieldinfo, wxWindowID id = wxID_ANY,
@@ -90,7 +90,7 @@ class tmAAttribCtrl : public wxPanel {
 class tmAAttribCtrlStruct : public wxObject {
  public:
   tmAAttribCtrlStruct() {
-    m_Ctrl = NULL;
+    m_Ctrl = nullptr;
   }
 
   tmAAttribCtrl *m_Ctrl;

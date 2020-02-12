@@ -71,7 +71,7 @@ bool ToolMapApp::OnInit() {
   wxImage::AddHandler(new wxPNGHandler);
   // add handler for JPEG required by wxPdfDocument
   wxImage::AddHandler(new wxJPEGHandler);
-  ToolMapFrame *frame = new ToolMapFrame(NULL, g_ProgName, wxDefaultPosition, wxSize(900, 500), _T("MAIN_WINDOW"));
+  ToolMapFrame *frame = new ToolMapFrame(nullptr, g_ProgName, wxDefaultPosition, wxSize(900, 500), _T("MAIN_WINDOW"));
   tmWindowPosition myPos;
   wxRect myWndPos;
   if (myPos.LoadPosition(frame->GetName(), myWndPos)) {
@@ -93,7 +93,7 @@ void ToolMapApp::OnFatalException() {
     myCrashReport.AddFileToReport(mySQLReport.GetFullPath());
   }
 
-  if (myCrashReport.PrepareReport(wxDebugReport::Context_Exception) == false) {
+  if (!myCrashReport.PrepareReport(wxDebugReport::Context_Exception)) {
     return;
   }
 
@@ -105,7 +105,7 @@ void ToolMapApp::OnFatalException() {
 
   if (!myCrashReport.SendReportWeb(_T("https://www.terranum.ch/toolmap/crash-reports/upload_file.php"), myProxyInfo)) {
     wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
-    if (myCrashReport.SaveReportFile(myDocPath) == false) {
+    if (!myCrashReport.SaveReportFile(myDocPath)) {
       wxLogError(_("Unable to save the crashreport!"));
       return;
     }
@@ -117,7 +117,7 @@ void ToolMapApp::OnFatalException() {
 
 void ToolMapApp::_RemoveLogFile() {
   wxFileName flog(wxStandardPaths::Get().GetAppDocumentsDir(), _T("toolmap_mysql_log.sql"));
-  if (wxFileExists(flog.GetFullPath()) == true) {
+  if (wxFileExists(flog.GetFullPath())) {
     wxLogDebug(_T("Removing MySQL Log file"));
     wxRemoveFile(flog.GetFullPath());
   }
@@ -310,25 +310,25 @@ EVT_SYS_COLOUR_CHANGED(ToolMapFrame::OnSysColourChanged)
 END_EVENT_TABLE()
 
 ToolMapFrame::ToolMapFrame()
-    : m_MenuBar(NULL),
-      m_MenuBarAcceleratorTable(NULL),
-      m_AuiManager(NULL),
-      m_AttribObjPanel(NULL),
-      m_MainPanel(NULL),
-      m_QueriesPanel(NULL),
-      m_ShortCutPanel(NULL),
-      m_SnappingPanel(NULL),
-      m_PManager(NULL),
-      m_MManager(NULL),
-      m_LayerManager(NULL),
-      m_ScaleCombo(NULL),
-      m_AttribManager(NULL),
-      m_EditManager(NULL),
-      m_ToolManager(NULL),
-      m_InfoBar(NULL),
-      m_StatManager(NULL),
-      m_LogWindow(NULL),
-      m_TocWindow(NULL) {}
+    : m_MenuBar(nullptr),
+      m_MenuBarAcceleratorTable(nullptr),
+      m_AuiManager(nullptr),
+      m_AttribObjPanel(nullptr),
+      m_MainPanel(nullptr),
+      m_QueriesPanel(nullptr),
+      m_ShortCutPanel(nullptr),
+      m_SnappingPanel(nullptr),
+      m_PManager(nullptr),
+      m_MManager(nullptr),
+      m_LayerManager(nullptr),
+      m_ScaleCombo(nullptr),
+      m_AttribManager(nullptr),
+      m_EditManager(nullptr),
+      m_ToolManager(nullptr),
+      m_InfoBar(nullptr),
+      m_StatManager(nullptr),
+      m_LogWindow(nullptr),
+      m_TocWindow(nullptr) {}
 
 /* Frame initialisation */
 ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, wxSize size, const wxString &name)
@@ -387,8 +387,8 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   // loading position
   wxString myPosText = wxEmptyString;
   tmWindowPosition myPos;
-  if (myPos.LoadPosition(_T("AUI_PANES"), myPosText) == true) {
-    if (myPos.HasScreenChanged() == false) m_AuiManager->LoadPerspective(myPosText, true);
+  if (myPos.LoadPosition(_T("AUI_PANES"), myPosText)) {
+    if (!myPos.HasScreenChanged()) m_AuiManager->LoadPerspective(myPosText, true);
   }
 
   m_InfoBar = new WebUpdateInformationBar(this);
@@ -434,7 +434,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
 
   // loading GIS drivers
   tmGISData::InitGISDrivers(TRUE, TRUE);
-  initGEOS(NULL, NULL);
+  initGEOS(nullptr, nullptr);
 
   _CheckUpdates(false);
   _LoadPreference(false);
@@ -539,7 +539,7 @@ void ToolMapFrame::OnClose(wxCloseEvent &event) {
   myPos.SavePosition(_T("AUI_PANES"), m_AuiManager->SavePerspective());
   myPos.SaveScreenPosition();
 
-  wxLog::SetActiveTarget(NULL);
+  wxLog::SetActiveTarget(nullptr);
   event.Skip();
 }
 
@@ -855,7 +855,7 @@ void ToolMapFrame::OnOpenRecentProject(wxCommandEvent &event) {
       wxArrayString myPathNames = myName.GetDirs();
       tmOpenRecentError_DLG myDlg(this, wxID_ANY, _("Open failed"), myPathNames.Item(myPathNames.GetCount() - 1));
       if (myDlg.ShowModal() == wxID_OK) {
-        if (myDlg.GetRemoveFromRecent() == true) {
+        if (myDlg.GetRemoveFromRecent()) {
           m_MManager->RemoveFileFromRecent(event.GetId() - wxID_FILE1);
         }
       }
@@ -894,13 +894,13 @@ void ToolMapFrame::OnNewProjectExisting(wxCommandEvent &event) {
 
   wxBeginBusyCursor();
   wxASSERT(myWizard.GetBackupFileData()->IsValid());
-  BackupManager myBckManager(NULL);
+  BackupManager myBckManager(nullptr);
 
   // close project now
   m_PManager->CloseProject();
 
   // restore
-  if (myBckManager.Restore(*(myWizard.GetBackupFileData())) == false) {
+  if (!myBckManager.Restore(*(myWizard.GetBackupFileData()))) {
     wxLogError(_("Error Creating project from template"));
     return;
   }
@@ -950,18 +950,6 @@ void ToolMapFrame::OnShowQueriesWindow(wxCommandEvent &event) {
   wxCommandEvent evt;
   OnRefreshView(evt);
 }
-
-/*
-void ToolMapFrame::OnQueriesAction (wxCommandEvent & event){
- // sent event to the queries manager
- if (m_QueriesPanel == NULL) {
-        return;
-    }
-
-    wxASSERT(m_QueriesPanel);
-    m_QueriesPanel->ProcessEvent(event);
-}
-*/
 
 /***************************************************************************/ /**
   @brief Display or hide the #Shortcuts_PANEL
@@ -1014,7 +1002,7 @@ void ToolMapFrame::OnEditSwitch(wxCommandEvent &event) {
   @date 05 February 2009
   *******************************************************************************/
 void ToolMapFrame::OnEditDeleteSelected(wxCommandEvent &event) {
-  if (m_EditManager->IsDrawingAllowed() == false) {
+  if (!m_EditManager->IsDrawingAllowed()) {
     return;
   }
 
@@ -1083,10 +1071,6 @@ void ToolMapFrame::OnAAttributionBatchWindow(wxCommandEvent &event) {
   @date 07 April 2009
   *******************************************************************************/
 void ToolMapFrame::OnShowInformationDialog(wxCommandEvent &event) {
-  /*int i = 0;
-  int * pi = NULL;
-  *pi = 12;*/
-
   m_AttribManager->DisplayInformationsWnd();
 }
 
@@ -1186,7 +1170,7 @@ void ToolMapFrame::_LoadPreference(bool reload) {
   m_LayerManager->SetSelectionColour(mySelColor);
   m_LayerManager->SetSelectionHalo(mySelHalo);
 
-  if (reload == true) {
+  if (reload) {
     // m_LayerManager->ReloadProjectLayers(false);
     wxCommandEvent evt2(tmEVT_LM_UPDATE, wxID_ANY);
     GetEventHandler()->QueueEvent(evt2.Clone());
@@ -1246,7 +1230,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
   wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
   myConfig->SetPath("..");
 
-  if (bCheckStartup == false && ismanual == false) {
+  if (!bCheckStartup && !ismanual) {
     return;
   }
 
@@ -1254,7 +1238,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
   // 1234 or 1234:1245 or 1234M or 1234S or event 1234:1245MS
   long mySvnVersion = 0;
   wxString mySvnText(lsVERSION_SOFT_VERSION);
-  while (wxStrpbrk(mySvnText, _T("MS")) != NULL) {
+  while (wxStrpbrk(mySvnText, _T("MS")) != nullptr) {
     mySvnText.RemoveLast();
   }
 
@@ -1263,7 +1247,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
     mySvnText = mySvnText.Mid(mySeparatorPos);
   }
 
-  if (mySvnText.ToLong(&mySvnVersion) == false) {
+  if (!mySvnText.ToLong(&mySvnVersion)) {
     wxFAIL;
   }
 
@@ -1272,7 +1256,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
 }
 
 void ToolMapFrame::OnExportSelectedGISData(wxCommandEvent &event) {
-  if (m_PManager->IsProjectOpen() == false) {
+  if (!m_PManager->IsProjectOpen()) {
     return;
   }
 
@@ -1392,7 +1376,7 @@ void ToolMapFrame::OnProjectBackupManage(wxCommandEvent &event) {
   m_PManager->CloseProject();
 
   // restore
-  if (myBckManager.Restore(myRestoreInfo) == false) {
+  if (!myBckManager.Restore(myRestoreInfo)) {
     wxLogError(_("Error restoring project: '%s'"), myRestoreName);
     return;
   }
@@ -1412,7 +1396,7 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event) {
   }
 
   wxFileName myTemplateFileName = wxFileName(myTemplateFileDlg.GetPath());
-  if (myTemplateFileName.IsOk() == false) {
+  if (!myTemplateFileName.IsOk()) {
     wxLogError(_("Template name is Incorrect!"));
     return;
   }
@@ -1440,12 +1424,12 @@ void ToolMapFrame::OnProjectSaveTemplate(wxCommandEvent &event) {
   BackupManager myBckManager(m_PManager->GetDatabase());
 
   // Don't display progress dialog under Mac... Toooo slow!
-  wxWindow *myWnd = NULL;
+  wxWindow *myWnd = nullptr;
 #ifndef __WXMAC__
   myWnd = this;
 #endif
 
-  if (myBckManager.Backup(myBckFile, myWnd) == false) {
+  if (!myBckManager.Backup(myBckFile, myWnd)) {
     wxLogError(_("Template : '%s' Failed !"), myBckFile.GetOutputName().GetFullName());
   }
   wxEndBusyCursor();
@@ -1498,11 +1482,11 @@ void ToolMapFrame::OnAddWebData(wxCommandEvent &event) {
 }
 
 bool ToolMapFrame::AddLayers(const wxArrayString &filenames) {
-  if (m_PManager == NULL) {
+  if (m_PManager == nullptr) {
     return false;
   }
 
-  if (m_PManager->IsProjectOpen() == false) {
+  if (!m_PManager->IsProjectOpen()) {
     wxLogError(_("Open a project first!"));
     return false;
   }
@@ -1543,7 +1527,7 @@ void ToolMapFrame::OnCloseManagedPane(wxAuiManagerEvent &event) {
 
 void ToolMapFrame::OnStatisticsUpdate(wxCommandEvent &event) {
   wxASSERT(m_StatManager);
-  if (m_StatManager->IsReady() == false) {
+  if (!m_StatManager->IsReady()) {
     return;
   }
 
@@ -1652,7 +1636,7 @@ void ToolMapFrame::OnZoomToFrame(wxCommandEvent &event) {
   @date 13 November 2008
   *******************************************************************************/
 void ToolMapFrame::OnExportSelected(wxCommandEvent &event) {
-  if (m_PManager->IsProjectOpen() == false) {
+  if (!m_PManager->IsProjectOpen()) {
     return;
   }
 
@@ -1662,41 +1646,12 @@ void ToolMapFrame::OnExportSelected(wxCommandEvent &event) {
   myCopyProj = *memProj;
 
   tmExportManager myExport(this, m_PManager->GetDatabase(), m_LayerManager->GetScale());
-  if (myExport.ExportSelected(&myCopyProj, m_LayerManager) == true) {
+  if (myExport.ExportSelected(&myCopyProj, m_LayerManager)) {
     wxLogDebug(_T("Exporting layer(s) success"));
   } else {
     wxLogDebug(_T("Exporting layer(s) failed"));
   }
 }
-
-/***************************************************************************/ /**
-  @brief Called when export all is pressed
-  @details Export all layers without any further user intervention
-  @author Lucien Schreiber (c) CREALP 2008
-  @date 13 November 2008
-  *******************************************************************************/
-/*
-void ToolMapFrame::OnExportAll (wxCommandEvent & event)
-{
- if (m_PManager->IsProjectOpen() == false){
-        return;
-    }
-
-    // get project def from memory
-    PrjDefMemManage * memProj = m_PManager->GetMemoryProjectDefinition();
-    PrjDefMemManage myCopyProj;
-    myCopyProj = *memProj;
-
-    tmExportManager myExport(this, m_PManager->GetDatabase());
-    if (myExport.ExportAll(&myCopyProj)){
-        wxLogDebug(_T("Exporting all project success"));
-    }
-    else {
-        wxLogDebug(_T("Exporting all project failed"));
-    }
-
-
-}*/
 
 void ToolMapFrame::OnExportConcatenated(wxCommandEvent &event) {
   wxString myChoices[] = {_("Lines"), _("Points"), _("Labels")};
@@ -1717,19 +1672,19 @@ void ToolMapFrame::OnExportConcatenated(wxCommandEvent &event) {
   tmExportManager myExport(this, m_PManager->GetDatabase(), m_LayerManager->GetScale());
 
   if (mySelection.Index(0) != wxNOT_FOUND) {
-    if (myExport.ExportConcatenated(&myCopyProj, LAYER_LINE) == false) {
+    if (!myExport.ExportConcatenated(&myCopyProj, LAYER_LINE)) {
       return;
     }
   }
 
   if (mySelection.Index(1) != wxNOT_FOUND) {
-    if (myExport.ExportConcatenated(&myCopyProj, LAYER_POINT) == false) {
+    if (!myExport.ExportConcatenated(&myCopyProj, LAYER_POINT)) {
       return;
     }
   }
 
   if (mySelection.Index(2) != wxNOT_FOUND) {
-    if (myExport.ExportConcatenated(&myCopyProj, LAYER_POLYGON) == false) {
+    if (!myExport.ExportConcatenated(&myCopyProj, LAYER_POLYGON)) {
       return;
     }
   }
@@ -1745,7 +1700,7 @@ void ToolMapFrame::OnDanglingNodes(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::OnGeometryValidity(wxCommandEvent &event) {
-  if (m_PManager->IsProjectOpen() == false) {
+  if (!m_PManager->IsProjectOpen()) {
     return;
   }
   m_LayerManager->CheckGeometryValidity();
@@ -1753,7 +1708,7 @@ void ToolMapFrame::OnGeometryValidity(wxCommandEvent &event) {
 
 void ToolMapFrame::OnUpdateGeometryValidity(wxUpdateUIEvent &event) {
   tmLayerProperties *mySelLayer = m_TocWindow->GetTOCCtrl()->GetSelectionLayer();
-  if (mySelLayer == NULL) {
+  if (mySelLayer == nullptr) {
     event.Enable(false);
     return;
   }
@@ -1779,7 +1734,7 @@ void ToolMapFrame::OnUpdateMenuProject(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuZoomLayer(wxUpdateUIEvent &event) {
   wxASSERT(m_PManager);
   bool bEnable = false;
-  if (m_PManager->IsProjectOpen() && m_TocWindow->GetTOCCtrl()->GetSelectionLayer() != NULL) {
+  if (m_PManager->IsProjectOpen() && m_TocWindow->GetTOCCtrl()->GetSelectionLayer() != nullptr) {
     bEnable = true;
   }
   event.Enable(bEnable);
@@ -1829,8 +1784,8 @@ void ToolMapFrame::OnUpdateMenuEditModify(wxUpdateUIEvent &event) {
   tmRenderer *myRenderer = m_MainPanel->GetGISRenderer();
   wxASSERT(myRenderer);
   wxASSERT(m_LayerManager);
-  bool bEnabled = m_EditManager->IsModifictionAllowed();
-  if (bEnabled == false && myRenderer->GetTool() == tmTOOL_MODIFY) {
+  bool bEnabled = m_EditManager->IsModificationAllowed();
+  if (!bEnabled && myRenderer->GetTool() == tmTOOL_MODIFY) {
     m_LayerManager->OnSelect();
   }
   event.Enable(bEnabled);
@@ -1839,7 +1794,7 @@ void ToolMapFrame::OnUpdateMenuEditModify(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuEditDelete(wxUpdateUIEvent &event) {
   wxASSERT(m_EditManager);
   bool bEnable = false;
-  if (m_EditManager->IsDrawingAllowed() == true) {
+  if (m_EditManager->IsDrawingAllowed()) {
     if (m_EditManager->GetSelectionCount() >= 1) {
       bEnable = true;
     }
@@ -1848,7 +1803,7 @@ void ToolMapFrame::OnUpdateMenuEditDelete(wxUpdateUIEvent &event) {
 }
 
 void ToolMapFrame::OnUpdateMenuVertexInsert(wxUpdateUIEvent &event) {
-  if (m_EditManager->IsModifictionAllowed() == true && m_EditManager->GetSelectionCount() == 1) {
+  if (m_EditManager->IsModificationAllowed() && m_EditManager->GetSelectionCount() == 1) {
     event.Enable(true);
     return;
   }
@@ -1862,7 +1817,7 @@ void ToolMapFrame::OnUpdateMenuVertexDelete(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuEditMerge(wxUpdateUIEvent &event) {
   wxASSERT(m_EditManager);
   bool bEnable = false;
-  if (m_EditManager->IsDrawingAllowed() == true) {
+  if (m_EditManager->IsDrawingAllowed()) {
     if (m_EditManager->GetSelectionCount() > 1) {
       bEnable = true;
     }
@@ -1873,7 +1828,7 @@ void ToolMapFrame::OnUpdateMenuEditMerge(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuEditPointOrient(wxUpdateUIEvent &event) {
   wxASSERT(m_EditManager);
   bool bEnable = false;
-  if (m_EditManager->IsModifictionAllowed() == true) {
+  if (m_EditManager->IsModificationAllowed()) {
     if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_POINT)) {
       bEnable = true;
     }
@@ -1907,8 +1862,8 @@ void ToolMapFrame::OnUpdateMenuSnappingShowPanel(wxUpdateUIEvent &event) {
 
 void ToolMapFrame::OnUpdateMenuSnappingShowOnMap(wxUpdateUIEvent &event) {
   wxASSERT(m_SnappingPanel);
-  if (m_PManager->IsProjectOpen() == true) {
-    if (m_LayerManager->GetScale()->IsLayerExtentValid() == true) {
+  if (m_PManager->IsProjectOpen()) {
+    if (m_LayerManager->GetScale()->IsLayerExtentValid()) {
       event.Enable(true);
       return;
     }
@@ -1939,7 +1894,7 @@ void ToolMapFrame::OnUpdateMenuShowLog(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuShowInfo(wxUpdateUIEvent &event) {
   wxWindow *myInfoWnd = wxWindow::FindWindowById(ID_INFORMATION_DLG);
   bool bCheck = false;
-  if (myInfoWnd != NULL && myInfoWnd->IsShown()) {
+  if (myInfoWnd != nullptr && myInfoWnd->IsShown()) {
     bCheck = true;
   }
   event.Check(bCheck);
@@ -1948,7 +1903,7 @@ void ToolMapFrame::OnUpdateMenuShowInfo(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuFlipLine(wxUpdateUIEvent &event) {
   wxASSERT(m_EditManager);
   bool bEnable = false;
-  if (m_EditManager->IsMultipleModifictionAllowed() == true) {
+  if (m_EditManager->IsMultipleModificationAllowed()) {
     if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
       bEnable = true;
     }
@@ -1959,7 +1914,7 @@ void ToolMapFrame::OnUpdateMenuFlipLine(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuSmoothLine(wxUpdateUIEvent &event) {
   wxASSERT(m_EditManager);
   bool bEnable = false;
-  if (m_EditManager->IsMultipleModifictionAllowed() == true) {
+  if (m_EditManager->IsMultipleModificationAllowed()) {
     if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
       bEnable = true;
     }

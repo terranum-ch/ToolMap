@@ -1,6 +1,6 @@
 /***************************************************************************
  tooldanglingnodes.cpp
-                    Tool engine for searching dangling nodes
+ Tool engine for searching dangling nodes
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -36,12 +36,12 @@ void ToolDanglingNodes::Create(DataBaseTM *database) {
 }
 
 void ToolDanglingNodes::DNInitValues() {
-  m_pDB = NULL;
+  m_pDB = nullptr;
   m_bSearchInited = false;
   m_bSearchRun = false;
   m_LoopNum = 0;
-  m_pDlg = NULL;
-  m_GeomFrame = NULL;
+  m_pDlg = nullptr;
+  m_GeomFrame = nullptr;
   m_LayerID = wxNOT_FOUND;
 }
 
@@ -52,13 +52,13 @@ bool ToolDanglingNodes::DNIsLayerCorrect(long layerid) {
       _T("SELECT TYPE_CD FROM %s")
       _T(" WHERE LAYER_INDEX = %ld"),
       TABLE_NAME_LAYERS.c_str(), layerid);
-  if (m_pDB->DataBaseQuery(mySentence) == false) {
+  if (!m_pDB->DataBaseQuery(mySentence)) {
     wxFAIL;
     return false;
   }
 
   long myLayerType = 0;
-  if (m_pDB->DataBaseGetNextResult(myLayerType) == false) {
+  if (!m_pDB->DataBaseGetNextResult(myLayerType)) {
     m_pDB->DataBaseClearResults();
     wxLogDebug(_T("Layer with index %ld doesn't exist"), layerid);
     return false;
@@ -85,12 +85,12 @@ bool ToolDanglingNodes::DNGetAllLines(long layerid) {
                                         TABLE_NAME_GIS_ATTRIBUTION[0].c_str(),  // lines attrib.
                                         TABLE_NAME_OBJECTS.c_str(), layerid);
 
-  if (m_pDB->DataBaseQuery(sSentence) == false) {
+  if (!m_pDB->DataBaseQuery(sSentence)) {
     wxLogDebug(_T("Sentence is wrong : %s"), sSentence.c_str());
     return false;
   }
 
-  if (m_pDB->DataBaseHasResults() == false) {
+  if (!m_pDB->DataBaseHasResults()) {
     DNSearchCleanUp();
     return false;
   }
@@ -109,7 +109,7 @@ bool ToolDanglingNodes::DNSearchValidVertex() {
 
   while (1) {
     OGRLineString *myLineToCheck = (OGRLineString *)m_GisData.GetNextDataLine(myOid);
-    if (myLineToCheck == NULL) break;
+    if (myLineToCheck == nullptr) break;
 
     wxASSERT(myLineToCheck);
     OGRPoint p1;
@@ -118,7 +118,7 @@ bool ToolDanglingNodes::DNSearchValidVertex() {
     myLineToCheck->StartPoint(&p1);
     myLineToCheck->EndPoint(&p2);
 
-    if (p1.Equals(&p2) == false) {
+    if (!p1.Equals(&p2)) {
       if (DNIsPointInside(&p1)) m_PtsToCheck.Add(DanglingPtsToCheck(wxRealPoint(p1.getX(), p1.getY()), myOid));
 
       if (DNIsPointInside(&p2)) m_PtsToCheck.Add(DanglingPtsToCheck(wxRealPoint(p2.getX(), p2.getY()), myOid));
@@ -130,7 +130,7 @@ bool ToolDanglingNodes::DNSearchValidVertex() {
   wxLogDebug(_T("%zu nodes to check"), m_PtsToCheck.GetCount());
   DNSearchCleanUp();
 
-  if (m_PtsToCheck.IsEmpty() == true) {
+  if (m_PtsToCheck.IsEmpty()) {
     wxLogDebug(_T("No vertex to check"));
     return false;
   }
@@ -139,18 +139,18 @@ bool ToolDanglingNodes::DNSearchValidVertex() {
 }
 
 bool ToolDanglingNodes::DNIsPointInside(OGRPoint *pt) {
-  if (m_GeomFrame == NULL) {
+  if (m_GeomFrame == nullptr) {
     return false;
   }
 
-  if (pt->Within(m_GeomFrame) == true) return true;
+  if (pt->Within(m_GeomFrame)) return true;
 
   // test also for touching
   OGRGeometry *myExtRing = m_GeomFrame->getExteriorRing();
-  if (myExtRing == NULL) {
+  if (myExtRing == nullptr) {
     return false;
   }
-  if (pt->Touches(myExtRing) == true) {
+  if (pt->Touches(myExtRing)) {
     return true;
   }
 
@@ -161,9 +161,9 @@ void ToolDanglingNodes::DNSearchCleanUp() {
   wxASSERT(IsOk());
   if (m_pDB->DataBaseHasResults()) m_pDB->DataBaseClearResults();
 
-  if (m_GeomFrame != NULL) {
+  if (m_GeomFrame != nullptr) {
     OGRGeometryFactory::destroyGeometry(m_GeomFrame);
-    m_GeomFrame = NULL;
+    m_GeomFrame = nullptr;
   }
 
   m_bSearchInited = false;
@@ -173,13 +173,13 @@ bool ToolDanglingNodes::DNGetFrameGeometry() {
   wxASSERT(m_pDB);
   wxString sSentence = _T("SELECT * FROM ") + TABLE_NAME_GIS_GENERIC[4];
 
-  if (m_pDB->DataBaseQuery(sSentence) == false) {
+  if (!m_pDB->DataBaseQuery(sSentence)) {
     return false;
   }
 
   long loid = 0;
   long myRows = 0;
-  if (m_pDB->DataBaseGetResultSize(NULL, &myRows) == true) {
+  if (m_pDB->DataBaseGetResultSize(nullptr, &myRows)) {
     if (myRows > 1) {
       wxLogError(_("Too many frame results"));
       m_pDB->DataBaseClearResults();
@@ -188,7 +188,7 @@ bool ToolDanglingNodes::DNGetFrameGeometry() {
   }
 
   OGRLineString *myFrameLine = m_GisData.GetNextDataLine(loid);
-  if (myFrameLine == NULL) {
+  if (myFrameLine == nullptr) {
     wxLogError(_("Unable to get the frame"));
     m_pDB->DataBaseClearResults();
     return false;
@@ -203,12 +203,12 @@ bool ToolDanglingNodes::DNGetFrameGeometry() {
 
 bool ToolDanglingNodes::DNIsSearchInitedOk() {
   wxASSERT(IsOk());
-  if (m_bSearchInited == false) {
+  if (!m_bSearchInited) {
     wxLogDebug(_T("Please use searchinit() first"));
     return false;
   }
 
-  if (m_GeomFrame == NULL) {
+  if (m_GeomFrame == nullptr) {
     wxLogDebug(_T("No frame detected, searching dangling nodes unavaillable"));
     return false;
   }
@@ -219,9 +219,9 @@ bool ToolDanglingNodes::DNIsSearchInitedOk() {
 ToolDanglingNodes::~ToolDanglingNodes() {
   // m_DanglingPts.Clear();
 
-  if (m_bSearchInited == true) DNSearchCleanUp();
+  if (m_bSearchInited) DNSearchCleanUp();
 
-  wxASSERT(m_GeomFrame == NULL);
+  wxASSERT(m_GeomFrame == nullptr);
 }
 
 bool ToolDanglingNodes::DNFlagNodes() {
@@ -229,19 +229,19 @@ bool ToolDanglingNodes::DNFlagNodes() {
   bool bReturn = true;
 
   long iNumberLines = wxNOT_FOUND;
-  if (m_pDB->DataBaseGetResultSize(NULL, &iNumberLines) == false) return false;
+  if (!m_pDB->DataBaseGetResultSize(nullptr, &iNumberLines)) return false;
 
   long myOid = 0;
   int iLoop = 0;
   while (1) {
-    if (DNUpdateProgress(iNumberLines, iLoop) == false) {
+    if (!DNUpdateProgress(iNumberLines, iLoop)) {
       bReturn = false;
       break;
     }
     iLoop++;
 
     OGRLineString *myLineToCheck = (OGRLineString *)m_GisData.GetNextDataLine(myOid);
-    if (myLineToCheck == NULL) break;
+    if (myLineToCheck == nullptr) break;
 
     wxASSERT(myLineToCheck);
     OGRPoint p1;
@@ -266,7 +266,7 @@ bool ToolDanglingNodes::DNFlagNodes() {
 }
 
 bool ToolDanglingNodes::DNUpdateProgress(unsigned int ptstocheck, unsigned int iloop) {
-  if (m_pDlg == NULL) return true;
+  if (m_pDlg == nullptr) return true;
 
   wxASSERT(iloop <= ptstocheck);
 
@@ -277,7 +277,7 @@ bool ToolDanglingNodes::DNUpdateProgress(unsigned int ptstocheck, unsigned int i
 
   if (iloop == ptstocheck) m_pDlg->Update(m_LoopNum * 100);
 
-  if (m_pDlg->Update(int(dVal) + ((m_LoopNum - 1) * 100)) == false) {
+  if (!m_pDlg->Update(int(dVal) + ((m_LoopNum - 1) * 100))) {
     wxLogDebug(_T("Searching dangling nodes stoped by user"));
     return false;
   }
@@ -303,9 +303,9 @@ void ToolDanglingNodes::DNParseFlagedPts(wxArrayRealPoints &dpts) {
   @date 13 May 2009
   *******************************************************************************/
 bool ToolDanglingNodes::GetDanglingNodes(wxArrayRealPoints &pts) {
-  if (IsOk() == false) return false;
+  if (!IsOk()) return false;
 
-  if (m_bSearchRun == false) {
+  if (!m_bSearchRun) {
     wxLogDebug(_T("Use searchrun() first"));
     return false;
   }
@@ -316,7 +316,7 @@ bool ToolDanglingNodes::GetDanglingNodes(wxArrayRealPoints &pts) {
 }
 
 bool ToolDanglingNodes::IsOk() {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     wxLogDebug(_T("Database not inited in Dangling nodes, init the DB first"));
     return false;
   }
@@ -325,18 +325,18 @@ bool ToolDanglingNodes::IsOk() {
 
 bool ToolDanglingNodes::SearchInit(long layerid, const wxString &layername) {
   // ready ?
-  if (IsOk() == false) return false;
+  if (!IsOk()) return false;
 
-  if (m_bSearchInited == true) DNSearchCleanUp();
+  if (m_bSearchInited) DNSearchCleanUp();
 
   // layer exist and correct format (poly)
-  if (DNIsLayerCorrect(layerid) == false) return false;
+  if (!DNIsLayerCorrect(layerid)) return false;
 
   // get frame first
-  if (DNGetFrameGeometry() == false) return false;
+  if (!DNGetFrameGeometry()) return false;
 
   // get all lines
-  if (DNGetAllLines(layerid) == false) {
+  if (!DNGetAllLines(layerid)) {
     wxLogWarning(_("No object in: '%s' searching for danglings nodes in this layer is impossible"), layername);
     return false;
   }
@@ -347,13 +347,13 @@ bool ToolDanglingNodes::SearchInit(long layerid, const wxString &layername) {
 }
 
 bool ToolDanglingNodes::SearchInfo(int &numberlines) {
-  if (IsOk() == false) return false;
+  if (!IsOk()) return false;
 
-  if (DNIsSearchInitedOk() == false) return false;
+  if (!DNIsSearchInitedOk()) return false;
 
   numberlines = 0;
   long numrows = 0;
-  bool bsize = m_pDB->DataBaseGetResultSize(NULL, &numrows);
+  bool bsize = m_pDB->DataBaseGetResultSize(nullptr, &numrows);
   wxASSERT(bsize);
   wxASSERT(numrows > 0);
 
@@ -363,23 +363,23 @@ bool ToolDanglingNodes::SearchInfo(int &numberlines) {
 
 bool ToolDanglingNodes::SearchRun(wxProgressDialog *myProgDlg) {
   m_bSearchRun = false;
-  if (IsOk() == false) return false;
+  if (!IsOk()) return false;
 
-  if (DNIsSearchInitedOk() == false) return false;
+  if (!DNIsSearchInitedOk()) return false;
 
   m_pDlg = myProgDlg;
   m_PtsToCheck.Clear();
-  if (DNSearchValidVertex() == false) {
+  if (!DNSearchValidVertex()) {
     // if no vertex, we return true for continuing
     return true;
   }
 
   wxASSERT(m_LayerID != wxNOT_FOUND);
-  if (DNGetAllLines(m_LayerID) == false) {
+  if (!DNGetAllLines(m_LayerID)) {
     return false;
   }
 
-  if (DNFlagNodes() == false) return false;
+  if (!DNFlagNodes()) return false;
 
   m_LayerID = wxNOT_FOUND;
   m_bSearchRun = true;

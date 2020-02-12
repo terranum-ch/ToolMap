@@ -1,6 +1,6 @@
 /***************************************************************************
  main_panel.h
-                    Display the main panel where drawing occurs
+ Display the main panel where drawing occurs
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

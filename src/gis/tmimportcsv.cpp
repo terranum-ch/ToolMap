@@ -1,6 +1,5 @@
 /***************************************************************************
  tmimportcsv.cpp
-
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -22,7 +21,7 @@
 
 bool tmImportCSV::_ResetReading() {
   wxASSERT(m_FileStream);
-  if (m_FileStream->IsSeekable() == false) {
+  if (!m_FileStream->IsSeekable()) {
     wxLogError(_("Unable to reset reading"));
     return false;
   }
@@ -60,12 +59,12 @@ bool tmImportCSV::_GetCoordinates(const wxArrayString &tokenArray, double &x, do
   double myX = 0.0;
   double myY = 0.0;
 
-  if (tokenArray.Item(m_Xcolumn).ToCDouble(&myX) == false) {
+  if (!tokenArray.Item(m_Xcolumn).ToCDouble(&myX)) {
     wxLogMessage(tokenArray.Item(m_Xcolumn));
     return false;
   }
 
-  if (tokenArray.Item(m_Ycolumn).ToCDouble(&myY) == false) {
+  if (!tokenArray.Item(m_Ycolumn).ToCDouble(&myY)) {
     wxLogMessage(tokenArray.Item(m_Ycolumn));
     return false;
   }
@@ -79,8 +78,8 @@ bool tmImportCSV::_GetCoordinates(const wxArrayString &tokenArray, double &x, do
 tmImportCSV::tmImportCSV() {
   m_Xcolumn = wxNOT_FOUND;
   m_Ycolumn = wxNOT_FOUND;
-  m_TextStream = NULL;
-  m_FileStream = NULL;
+  m_TextStream = nullptr;
+  m_FileStream = nullptr;
   m_FileType = tmIMPORT_TYPE_CSV;
 }
 
@@ -98,7 +97,7 @@ bool tmImportCSV::Open(const wxFileName &filename) {
   }
 
   m_FileStream = new wxFileInputStream(filename.GetFullPath());
-  if (m_FileStream == NULL) {
+  if (m_FileStream == nullptr) {
     wxLogError(_("Unable to open '%s'"), filename.GetFullName().c_str());
     return false;
   }
@@ -177,7 +176,7 @@ void tmImportCSV::SetXYColumn(int x, int y) {
 }
 
 bool tmImportCSV::IsOk() {
-  if (tmImport::IsOk() == false) {
+  if (!tmImport::IsOk()) {
     return false;
   }
 
@@ -185,7 +184,7 @@ bool tmImportCSV::IsOk() {
     return false;
   }
 
-  if (m_TextStream == NULL) {
+  if (m_TextStream == nullptr) {
     return false;
   }
   return true;
@@ -228,7 +227,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
     iCount++;
     OGRGeometryFactory::destroyGeometry(myOGRPt);
 
-    if (prj != NULL) {
+    if (prj != nullptr) {
       wxArrayLong oids;
       oids.Add(oid);
 
@@ -243,7 +242,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
 
     bool bStop = false;
     tpercent.SetValue(iCount);
-    if (tpercent.IsNewStep() && progress != NULL) {
+    if (tpercent.IsNewStep() && progress != nullptr) {
       if (!progress->Update(tpercent.GetPercent(), wxEmptyString)) {
         bStop = true;
       }
@@ -263,7 +262,7 @@ bool tmImportCSV::_ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj
 
 bool tmImportCSV::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress) {
   wxASSERT(database);
-  if (IsOk() == false) {
+  if (!IsOk()) {
     wxLogError(_("Importation failed"));
     return false;
   }

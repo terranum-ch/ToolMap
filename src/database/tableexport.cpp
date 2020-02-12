@@ -37,7 +37,7 @@ bool TableExport::ExportCSV(const wxString &tablename, const wxFileName &path, i
   }
 
   wxString filetext = tablename;
-  if (path.HasName() == true) {
+  if (path.HasName()) {
     filetext = path.GetName();
   }
 
@@ -46,7 +46,7 @@ bool TableExport::ExportCSV(const wxString &tablename, const wxFileName &path, i
   wxLogMessage(_("Exporting to '%s'"), myFileName.GetFullPath());
 
   wxFile myFile;
-  if (myFile.Open(myFileName.GetFullPath(), wxFile::write) == false) {
+  if (!myFile.Open(myFileName.GetFullPath(), wxFile::write)) {
     wxLogError(_("Opening '%s' failed!"), myFileName.GetFullPath());
     return false;
   }
@@ -57,7 +57,7 @@ bool TableExport::ExportCSV(const wxString &tablename, const wxFileName &path, i
     myQuery.Append(wxString::Format(" LIMIT %d", limit));
   }
 
-  if (m_Database->DataBaseQuery(myQuery) == false) {
+  if (!m_Database->DataBaseQuery(myQuery)) {
     return false;
   }
 
@@ -65,7 +65,7 @@ bool TableExport::ExportCSV(const wxString &tablename, const wxFileName &path, i
   m_Database->DataBaseGetResults(&myResult);
 
   // export header
-  if (addtablename == true) {
+  if (addtablename) {
     myFile.Write(tablename + "\n");
   }
 

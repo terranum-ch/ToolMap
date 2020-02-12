@@ -62,29 +62,29 @@ class TEST_tmGISImport : public CxxTest::TestSuite {
   void testOpen() {
     tmImportGIS myImport;
     TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP, g_TestFileSHP_L)));
-    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + _T("cantonsuisssssse.shp"))) == false);
-    TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC, g_TestFileMisc)) == false);
+    TS_ASSERT(!myImport.Open(wxFileName(g_TestPathSHP + _T("cantonsuisssssse.shp"))));
+    TS_ASSERT(!myImport.Open(wxFileName(g_TestPathMISC, g_TestFileMisc)));
   }
 
   void testFileSpatialType() {
     tmImportGIS myImport;
-    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)) == true);
+    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)));
     TS_ASSERT_EQUALS(myImport.GetGeometryType(), LAYER_SPATIAL_POLYGON);
   }
 
   void testFeatureCount() {
     tmImportGIS myImport;
     TS_ASSERT(myImport.GetFeatureCount() == wxNOT_FOUND);
-    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)) == true);
+    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)));
     TS_ASSERT_EQUALS(myImport.GetFeatureCount(), 26);
   }
 
   void testImportInto() {
     tmImportGIS myImport;
-    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)) == true);
-    TS_ASSERT(myImport.Import(m_DB, NULL, NULL) == false);
+    TS_ASSERT(myImport.Open(wxFileName(g_TestPathSHP + g_TestFileSHP_PLG)));
+    TS_ASSERT(!myImport.Import(m_DB, nullptr, nullptr));
     myImport.SetTarget(TOC_NAME_LINES);
-    TS_ASSERT(myImport.Import(m_DB, NULL, NULL) == true);
+    TS_ASSERT(myImport.Import(m_DB, nullptr, nullptr));
   }
 
   // importing CSV
@@ -108,7 +108,7 @@ class TEST_tmGISImport : public CxxTest::TestSuite {
     TS_ASSERT(myImport.Open(wxFileName(g_TestPathMISC, g_TestFileCSV)));
     myImport.SetXYColumn(0, 2);
     myImport.SetTarget(TOC_NAME_POINTS);
-    TS_ASSERT(myImport.Import(m_DB, NULL, NULL));
+    TS_ASSERT(myImport.Import(m_DB, nullptr, nullptr));
   }
 };
 

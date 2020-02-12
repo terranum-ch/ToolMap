@@ -60,7 +60,7 @@ class tmSharedNodeEdit {
 
   virtual ~tmSharedNodeEdit();
 
-  void DrawLine(wxClientDC *dc, wxPoint *point = NULL);
+  void DrawLine(wxClientDC *dc, wxPoint *point = nullptr);
 
   long GetLineID() {
     return m_LineID;
@@ -227,19 +227,17 @@ class tmEditManager : public wxEvtHandler {
 
   void OnToolVertexInsert();
 
-  // validiting editing / modfication
   bool IsDrawingAllowed();
 
-  bool IsModifictionAllowed();
+  bool IsModificationAllowed();
 
   bool IsModificationBezierAllowed();
 
-  bool IsLayerSpatialType(int layertype = LAYER_SPATIAL_LINE);
+  bool IsLayerSpatialType(int layerType = LAYER_SPATIAL_LINE);
 
-  bool IsMultipleModifictionAllowed();
+  bool IsMultipleModificationAllowed();
 
-  // deleting selected
-  bool DeleteSelected(bool Clearselection = true);
+  bool DeleteSelected(bool clearSelection = true);
 
   bool UndoLastVertex();
 
@@ -247,16 +245,12 @@ class tmEditManager : public wxEvtHandler {
 
   int GetSelectionCount();
 
-  // search function (from tmLayerManager)
   bool SelectedSearch(const wxPoint &screenpt);
 
-  // segmentation
   bool CreateIntersections();
 
-  // editing vertex dialog
   bool EditVertexPosition();
 
-  // merging lines
   bool MergeSelectedLines();
 
   bool FlipLine();
@@ -305,7 +299,7 @@ class tmEditManager : public wxEvtHandler {
 
   void ArcVertexInsertUp(const wxPoint &mousepos);
 
-  void ArcVeretxDeleteUp(const wxPoint &mousepos);
+  void ArcVertexDeleteUp(const wxPoint &mousePos);
 
   void DrawSnappingCircle(wxGCDC *dc);
 };

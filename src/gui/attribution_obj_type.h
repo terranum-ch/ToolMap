@@ -1,6 +1,6 @@
 /***************************************************************************
  attribution_obj_type.h
-                    Display wxAui panel for attribution
+ Display wxAui panel for attribution
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

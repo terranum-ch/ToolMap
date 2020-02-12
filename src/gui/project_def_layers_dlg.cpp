@@ -31,13 +31,13 @@ ProjectDefLayersObjectList::ProjectDefLayersObjectList(wxWindow *parent, wxWindo
 
   CreateColumns(&myColNames, &myColsWidths);
 
-  m_ChoiceToChange = NULL;
+  m_ChoiceToChange = nullptr;
 
-  m_pPrjDefinition = NULL;
+  m_pPrjDefinition = nullptr;
   m_SpatialType = LAYER_LINE;
 
-  m_ObjectObj = NULL;
-  m_ObjectsArray = NULL;
+  m_ObjectObj = nullptr;
+  m_ObjectsArray = nullptr;
 }
 
 ProjectDefLayersObjectList::~ProjectDefLayersObjectList() {
@@ -119,7 +119,7 @@ void ProjectDefLayersObjectList::BeforeEditing() {
   // // find item selected and then call a new Dialog
   // // for editing the existing Field
   // int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
-  if (m_ObjectObj != NULL) {
+  if (m_ObjectObj != nullptr) {
     // transfert the data obj to the dialog, data will be
     // filled during DataTransfer...
     ((ProjectDefLayersEditObjectDlg *)m_pDialog)->SetMemoryObjectObject(m_ObjectObj);
@@ -172,11 +172,11 @@ ProjectDefLayersFieldsList::ProjectDefLayersFieldsList(wxWindow *parent, wxWindo
 
   CreateColumns(&myColNames, &myColsWidths);
 
-  m_ChoiceToChange = NULL;
+  m_ChoiceToChange = nullptr;
 
-  m_pPrjDefinition = NULL;
-  m_FieldsObj = NULL;
-  m_ChkOrientation = NULL;
+  m_pPrjDefinition = nullptr;
+  m_FieldsObj = nullptr;
+  m_ChkOrientation = nullptr;
 
   m_bIsModeEditing = myDlg->IsEditMode();
 }
@@ -195,7 +195,7 @@ END_EVENT_TABLE()
   *******************************************************************************/
 void ProjectDefLayersFieldsList::OnItemSelectChange(wxListEvent &event) {
   // check validity of checkbox
-  if (m_ChkOrientation == NULL) {
+  if (m_ChkOrientation == nullptr) {
     wxLogError(
         _T("Checkbox pointer is null, use SetListCtrl() to pass")
         _T(" pointer adress !"));
@@ -214,7 +214,7 @@ void ProjectDefLayersFieldsList::OnItemSelectChange(wxListEvent &event) {
 }
 
 ProjectDefLayersFieldsList::~ProjectDefLayersFieldsList() {
-  m_DlgParent = NULL;
+  m_DlgParent = nullptr;
 }
 
 void ProjectDefLayersFieldsList::BeforeAdding() {
@@ -250,7 +250,7 @@ void ProjectDefLayersFieldsList::AfterAdding(bool bRealyAddItem) {
 
 void ProjectDefLayersFieldsList::BeforeDeleting() {
   wxString myFieldName;
-  ProjectDefMemoryFields *field = NULL;
+  ProjectDefMemoryFields *field = nullptr;
   // remove item from array before removing it from the list
   // because of the unknown position of item (may have been moved)
   // if a corresponding item was found, remove it from the array
@@ -263,7 +263,7 @@ void ProjectDefLayersFieldsList::BeforeDeleting() {
 
     // if we are in editing mode we must save the items to delete
     // in the delete field array.
-    if (m_bIsModeEditing == TRUE) {
+    if (m_bIsModeEditing) {
       field = m_pPrjDefinition->FindField(myFieldName);
       if (field && field->m_FieldID > 0) {
         // if field exists in the database we mark it for deleting
@@ -291,7 +291,7 @@ void ProjectDefLayersFieldsList::BeforeEditing() {
   // // find item selected and then call a new Dialog
   // // for editing the existing Field
   // int iItemIndex = FindObjInLayersArray(this, m_LayersArray);
-  if (m_FieldsObj != NULL) {
+  if (m_FieldsObj != nullptr) {
     // transfert the data obj to the dialog, data will be
     // filled during DataTransfer...
     ((ProjectDefFieldDlg *)m_pDialog)->SetMemoryFieldObject(m_FieldsObj);
@@ -327,13 +327,13 @@ void ProjectDefLayersFieldsList::AfterEditing(bool bRealyEdited) {
   *******************************************************************************/
 void ProjectDefLayersFieldsList::SetOrientation(int orientation, const int &index) {
   wxString myFieldName;
-  ProjectDefMemoryFields *field = NULL;
+  ProjectDefMemoryFields *field = nullptr;
 
   myFieldName = GetItemColText(index, 0);
   field = m_pPrjDefinition->FindField(myFieldName);
 
   // if field not found -> Error
-  if (field == NULL) {
+  if (field == nullptr) {
     wxLogError(_T("Field with name : %s not found in memory array"), myFieldName.c_str());
     return;
   }
@@ -408,12 +408,12 @@ bool ProjectDefLayersEditObjectDlg::Create(wxWindow *parent, wxWindowID id, cons
 ProjectDefLayersEditObjectDlg::~ProjectDefLayersEditObjectDlg() {}
 
 void ProjectDefLayersEditObjectDlg::Init() {
-  m_DlgEO_Code = NULL;
-  m_DlgEO_Value = NULL;
-  m_DlgEO_OK_Btn = NULL;
+  m_DlgEO_Code = nullptr;
+  m_DlgEO_Value = nullptr;
+  m_DlgEO_OK_Btn = nullptr;
 
-  m_ObjectObj = NULL;
-  m_CodedValObj = NULL;
+  m_ObjectObj = nullptr;
+  m_CodedValObj = nullptr;
 }
 
 void ProjectDefLayersEditObjectDlg::CreateDlgControls() {
@@ -479,12 +479,12 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow() {
   sValue.Replace(_T("’"), _T("'"));
 #endif
   // passing values to the corresponding obj.
-  if (m_ObjectObj != NULL) {
+  if (m_ObjectObj != nullptr) {
     m_ObjectObj->m_ObjectCode = sCode;
     m_ObjectObj->m_ObjectName = sValue;
   }
 
-  if (m_CodedValObj != NULL) {
+  if (m_CodedValObj != nullptr) {
     m_CodedValObj->m_ValueCode = sCode;
     m_CodedValObj->m_ValueName = sValue;
   }
@@ -492,12 +492,12 @@ bool ProjectDefLayersEditObjectDlg::TransferDataFromWindow() {
 }
 
 bool ProjectDefLayersEditObjectDlg::TransferDataToWindow() {
-  if (m_ObjectObj != NULL) {
+  if (m_ObjectObj != nullptr) {
     m_DlgEO_Code->SetValue(m_ObjectObj->m_ObjectCode);
     m_DlgEO_Value->SetValue(m_ObjectObj->m_ObjectName);
   }
 
-  if (m_CodedValObj != NULL) {
+  if (m_CodedValObj != nullptr) {
     // check that the numeric value is not null (-9999)
     if (m_CodedValObj->m_ValueCode != NULL_LONG_STRING_VALUE) {
       m_DlgEO_Code->SetValue(m_CodedValObj->m_ValueCode);
@@ -637,7 +637,7 @@ void ProjectDefLayersDlg::OnLayerNameChange(wxCommandEvent &event) {
   @date 03 November 2008
   *******************************************************************************/
 void ProjectDefLayersDlg::UpdateDefaultPolygonBorderName(const wxString &name) {
-  if (m_bIsModeEditing == false)
+  if (!m_bIsModeEditing)
     if (m_DlgPDL_Contour_Name) m_DlgPDL_Contour_Name->SetValue(m_DlgPDL_Contour_Prefix + name);
 }
 
@@ -673,12 +673,12 @@ bool ProjectDefLayersDlg::TransferDataToWindow() {
   // is showed
   wxASSERT_MSG(m_LayersObj, wxT("Init m_LayersObj First, Problem in transfert data"));
 
-  if (m_LayersObj != NULL) {
+  if (m_LayersObj != nullptr) {
     // GENERIC VALUES FOR LAYER
     m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName);
     m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE)m_LayersObj->m_LayerType);
 
-    if (m_LayersObj->m_LayerType == LAYER_POLYGON && m_bIsModeEditing == false) {
+    if (!m_LayersObj->m_LayerType == LAYER_POLYGON && m_bIsModeEditing) {
       m_DlgPDL_Contour_Name->Show(true);
       m_DlgPDL_Contour_Static->Show(true);
       m_DlgPDL_Contour_Name->SetValue(m_LayersObj->m_LayerPolygonDefaultValue);
@@ -686,7 +686,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow() {
     }
 
     // fill the object list (but only if panel exists)
-    if (m_DlgPDL_Panel_Obj != NULL) {
+    if (m_DlgPDL_Panel_Obj != nullptr) {
       for (int i = 0; i < m_pPrjDefinition->GetCountObject(); i++) {
         ProjectDefMemoryObjects *myObjectObj = m_pPrjDefinition->GetNextObjects();
 
@@ -699,7 +699,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow() {
     }
 
     // fill the field list (but only if panel exists)
-    if (m_DlgPDL_Panel_Fields != NULL) {
+    if (m_DlgPDL_Panel_Fields != nullptr) {
       for (int j = 0; j < m_pPrjDefinition->GetCountFields(); j++) {
         ProjectDefMemoryFields *myFieldObj = m_pPrjDefinition->GetNextField();
 
@@ -740,8 +740,8 @@ ProjectDefLayersDlg::ProjectDefLayersDlg(wxWindow *parent, PrjDefMemManage *pPrj
 
   // init prj definition and pass it to the list
   m_pPrjDefinition = pPrjDef;
-  if (m_DlgPDL_Panel_Obj != NULL) m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
-  if (m_DlgPDL_Panel_Fields != NULL) m_DlgPDL_Fields_List->PassPrjDefToList(m_pPrjDefinition);
+  if (m_DlgPDL_Panel_Obj != nullptr) m_DlgPDL_Object_List->PassPrjDefToList(m_pPrjDefinition);
+  if (m_DlgPDL_Panel_Fields != nullptr) m_DlgPDL_Fields_List->PassPrjDefToList(m_pPrjDefinition);
   // wxLogDebug(_T("Prj def address = %p"), m_pPrjDefinition);
 
   // pass address of checkbox to the list
@@ -768,22 +768,22 @@ ProjectDefLayersDlg::~ProjectDefLayersDlg() {
 }
 
 void ProjectDefLayersDlg::Init() {
-  m_FieldDialog = NULL;
-  m_LayersObj = NULL;
-  m_pPrjDefinition = NULL;
+  m_FieldDialog = nullptr;
+  m_LayersObj = nullptr;
+  m_pPrjDefinition = nullptr;
   m_bIsModeEditing = false;
   m_bIsModeAddingEditing = false;
 
-  m_DlgPDL_Layer_Type = NULL;
-  m_DlgPDL_Layer_Name = NULL;
-  m_DlgPDL_Panel_Obj = NULL;
-  m_DlgPDL_Object_List = NULL;
-  m_DlgPDL_Panel_Fields = NULL;
-  m_DlgPDL_Fields_List = NULL;
-  m_DlgPDL_Orientation_FLD = NULL;
+  m_DlgPDL_Layer_Type = nullptr;
+  m_DlgPDL_Layer_Name = nullptr;
+  m_DlgPDL_Panel_Obj = nullptr;
+  m_DlgPDL_Object_List = nullptr;
+  m_DlgPDL_Panel_Fields = nullptr;
+  m_DlgPDL_Fields_List = nullptr;
+  m_DlgPDL_Orientation_FLD = nullptr;
   m_DlgPDL_Contour_Prefix = _("Border of ");
-  m_DlgPDL_Contour_Name = NULL;
-  m_DlgPDL_Contour_Static = NULL;
+  m_DlgPDL_Contour_Name = nullptr;
+  m_DlgPDL_Contour_Static = nullptr;
 }
 
 void ProjectDefLayersDlg::DisableControlsForEdition() {
@@ -825,7 +825,7 @@ void ProjectDefLayersDlg::CreateControls() {
 
   wxNotebook *itemNotebook9 = new wxNotebook(itemDialog1, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT);
 
-  if (m_bIsModeEditing == FALSE) {
+  if (!m_bIsModeEditing) {
     m_DlgPDL_Panel_Obj =
         new wxPanel(itemNotebook9, ID_DLGPDL_PANEL_OBJ, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxStaticBox *itemStaticBoxSizer11Static = new wxStaticBox(m_DlgPDL_Panel_Obj, wxID_ANY, _("Object Kind"));
@@ -878,7 +878,7 @@ void ProjectDefLayersDlg::CreateControls() {
   itemBoxSizer2->Add(itemNotebook9, 1, wxGROW | wxALL, 5);
 
   // textctrl for polygon border name
-  if (m_bIsModeEditing == false) {
+  if (!m_bIsModeEditing) {
     m_DlgPDL_Contour_Static =
         new wxStaticBoxSizer(new wxStaticBox(itemDialog1, wxID_ANY, _("Polygon contour value")), wxVERTICAL);
 

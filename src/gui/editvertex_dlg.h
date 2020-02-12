@@ -1,6 +1,6 @@
 /***************************************************************************
  editvertex_dlg.h
-                    Dialog for manuel editing vertex position
+ Dialog for manuel editing vertex position
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -95,7 +95,7 @@ class EditVertexDLG : public wxDialog {
   bool IsAllCellsNumber(int &col, int &row);
 
   // Grid functions
-  bool GridInsertLine(int iIndex = -1, wxRealPoint *pt = NULL);
+  bool GridInsertLine(int iIndex = -1, wxRealPoint *pt = nullptr);
 
   bool GridClear();
 

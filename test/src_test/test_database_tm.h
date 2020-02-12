@@ -64,7 +64,7 @@ class TEST_DatabaseTM : public CxxTest::TestSuite {
     // deleting if existing
     if (m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit13)) {
       wxLogDebug(wxT("Deleting database : %s"), m_DB->DataBaseGetName().c_str());
-      TS_ASSERT(m_DB->DataBaseDelete() == true);
+      TS_ASSERT(m_DB->DataBaseDelete());
     }
 
     PrjDefMemManage myPrjdef;
@@ -75,7 +75,7 @@ class TEST_DatabaseTM : public CxxTest::TestSuite {
 
     TS_ASSERT_EQUALS(m_DB->CreateTMDatabase(&myPrjdef), false);
     myPrjdef.m_PrjName = g_TestPrj_Edit13;
-    TS_ASSERT(m_DB->CreateTMDatabase(&myPrjdef) == true);
+    TS_ASSERT(m_DB->CreateTMDatabase(&myPrjdef));
     TS_ASSERT_EQUALS(m_DB->OpenTMDatabase(myPrjdef.m_PrjPath + wxFileName::GetPathSeparator() + myPrjdef.m_PrjName),
                      tmDB_OPEN_OK);
   }

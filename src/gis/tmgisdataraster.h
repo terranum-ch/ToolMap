@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdataraster.h
-                    Super class for dealing with raster GIS data
+ Super class for dealing with raster GIS data
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -127,7 +127,7 @@ class tmGISDataRaster : public tmGISData {
 
   virtual int GetBandCount();
 
-  virtual int GetPyramidsInfo(wxArrayString *pyramids = NULL);
+  virtual int GetPyramidsInfo(wxArrayString *pyramids = nullptr);
 
   // virtual function for metadata
   virtual wxString GetMetaDataAsHtml();

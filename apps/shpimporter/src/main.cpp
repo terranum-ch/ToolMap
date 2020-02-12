@@ -143,18 +143,18 @@ int main(int argc, char **argv) {
   wxFileName myToolMapProjectNameBkp(parser.GetParam(0) + _T("_bkp"));
   wxFileName myDirToRemove(myToolMapProjectNameBkp.GetFullPath(), _T(""), _T(""));
 
-  if (parser.Found("overwrite") == true) {
-    if (myDirToRemove.Exists() == true) {
+  if (parser.Found("overwrite")) {
+    if (myDirToRemove.Exists()) {
       myDirToRemove.Rmdir(wxPATH_RMDIR_RECURSIVE);
     }
   }
-  if (myDirToRemove.Exists() == false) {
-    if (CopyDir(myToolMapProjectName.GetFullPath(), myToolMapProjectNameBkp.GetFullPath()) == false) {
+  if (!myDirToRemove.Exists()) {
+    if (!CopyDir(myToolMapProjectName.GetFullPath(), myToolMapProjectNameBkp.GetFullPath())) {
       wxLogError(_("Unable to create project Backup!"));
     }
   }
 
-  if (myDB.DataBaseOpen(myToolMapProjectNameBkp.GetPath(), myToolMapProjectNameBkp.GetName()) == false) {
+  if (!myDB.DataBaseOpen(myToolMapProjectNameBkp.GetPath(), myToolMapProjectNameBkp.GetName())) {
     return 0;
   }
   if (beVerbose) {
@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
 
   wxString mySHPDirectory = parser.GetParam(1);
   wxString myRuleDirectory = parser.GetParam(2);
-  if (wxDir::Exists(myRuleDirectory) == false) {
+  if (!wxDir::Exists(myRuleDirectory)) {
     wxLogError(_("Rule Directory: %s didn't exists"), myRuleDirectory);
     return 0;
   }
@@ -188,7 +188,7 @@ int main(int argc, char **argv) {
     siLayer myLayer(mySHPDirectory, &myDB);
     siProgressIndicator myProgress;
     myLayer.SetProgressIndicator(&myProgress);
-    if (myLayer.LoadFromFile(myRuleFiles.Item(i)) == false) {
+    if (!myLayer.LoadFromFile(myRuleFiles.Item(i))) {
       wxLogError(_("Loading '%s' failed!"), myRuleFiles.Item(i));
       continue;
     }

@@ -1,6 +1,6 @@
 /***************************************************************************
  queries_panel.cpp
-  Deals with the queries panel
+ Deals with the queries panel
  -------------------
  copyright            : (C) 2008 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -52,7 +52,7 @@ Queries_PANEL::Queries_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auim
 
   m_ParentEvt = parent;
   m_ParentEvt->PushEventHandler(this);
-  m_TOC = NULL;
+  m_TOC = nullptr;
 
   wxPanel *ContentFrame = new wxPanel(parent, wxID_ANY);
   CreateControls(ContentFrame);
@@ -90,8 +90,8 @@ Queries_PANEL::~Queries_PANEL() {
   @date 08 November 2008
   *******************************************************************************/
 void Queries_PANEL::InitMemberValues() {
-  m_pDB = NULL;
-  m_ParentEvt = NULL;
+  m_pDB = nullptr;
+  m_ParentEvt = nullptr;
   m_IsProjectOpen = false;  // project isn't open now
 }
 
@@ -272,7 +272,7 @@ void Queries_PANEL::OnQueryApplySymbology(wxCommandEvent &event) {
   wxString myQCode = wxEmptyString;
   int myQTarget = 0;
 
-  if (m_pDB->GetQueriesById(myQid, myQTarget, myQName, myQCode) == false) {
+  if (!m_pDB->GetQueriesById(myQid, myQTarget, myQName, myQCode)) {
     wxLogError(_("Getting info for query : %ld failed!"), myQid);
     return;
   }
@@ -280,7 +280,7 @@ void Queries_PANEL::OnQueryApplySymbology(wxCommandEvent &event) {
   wxASSERT(m_TOC);
   wxString myTargetLayerName = TOC_GENERIC_NAME_STRING[myQTarget];
   tmLayerProperties *myLayerProperties = m_TOC->GetLayerByName(myTargetLayerName);
-  if (myLayerProperties == NULL) {
+  if (myLayerProperties == nullptr) {
     wxLogError(_("Layer '%s' not found"), myTargetLayerName);
     return;
   }
@@ -344,8 +344,8 @@ END_EVENT_TABLE()
 QueriesList::QueriesList(wxWindow *parent, Queries_PANEL *queryparent, wxWindowID id, wxArrayString *pColsName,
                          wxArrayInt *pColsSize, wxSize size)
     : ListGenReportWithDialog(parent, id, pColsName, pColsSize, size) {
-  m_Selected = NULL;
-  m_pDB = NULL;
+  m_Selected = nullptr;
+  m_pDB = nullptr;
   wxASSERT(queryparent);
   m_QueryPanel = queryparent;
 
@@ -383,7 +383,7 @@ void QueriesList::AddItem() {
   // delete dialog after use
   wxASSERT(m_pDialog);
   delete m_pDialog;
-  m_pDialog = NULL;
+  m_pDialog = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -420,7 +420,7 @@ void QueriesList::AfterAdding(bool bRealyAddItem) {
 
   if (bRealyAddItem) {
     // Validate the query data
-    if (myBuilder.IsOk() == false) {
+    if (!myBuilder.IsOk()) {
       wxMessageBox(_("Error with the query. Please see Log for more informations"), _("Query error"),
                    wxOK | wxICON_ERROR);
       // delete m_pDialog;
@@ -429,7 +429,7 @@ void QueriesList::AfterAdding(bool bRealyAddItem) {
 
     // try creating the query
     wxASSERT(m_pDB);
-    if (myBuilder.Create(m_pDB) == false) {
+    if (!myBuilder.Create(m_pDB)) {
       wxMessageBox(_("Error creating the query. Please see Log for more informations"), _("Query error"),
                    wxOK | wxICON_ERROR);
       // delete m_pDialog;
@@ -437,7 +437,7 @@ void QueriesList::AfterAdding(bool bRealyAddItem) {
     }
 
     // try saving the query
-    if (myBuilder.Save(m_pDB) == false) {
+    if (!myBuilder.Save(m_pDB)) {
       wxMessageBox(_("Error saving the query. Please see Log for more informations"), _("Query error"),
                    wxOK | wxICON_ERROR);
       // delete m_pDialog;
@@ -450,7 +450,7 @@ void QueriesList::AfterAdding(bool bRealyAddItem) {
       AddItemToList(pWizard->GetData()->m_QueryName, -1);
       SetItemData(GetItemCount() - 1, myID);
 
-      if (pWizard->GetData()->m_QueryRun == true) {
+      if (pWizard->GetData()->m_QueryRun) {
         SetSelectedItem(GetItemCount() - 1);
         wxCommandEvent evt2(tmEVT_QUERY_MENU, wxID_ANY);
         GetEventHandler()->QueueEvent(evt2.Clone());
@@ -589,7 +589,7 @@ void QueriesList::OnQueryEdit(wxCommandEvent &event) {
 
   // update the query name
   SetItemText(iIndex, 0, myName);
-  if (m_pDB->EditQueries(myQTarget, myName, myQuery, myQid) == false) {
+  if (!m_pDB->EditQueries(myQTarget, myName, myQuery, myQid)) {
     wxLogError(_T("Error modifying the query"));
   }
 }

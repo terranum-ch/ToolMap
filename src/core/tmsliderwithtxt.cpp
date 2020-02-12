@@ -1,6 +1,6 @@
 /***************************************************************************
  tmsliderwithtxt.cpp
-                    Display a slider with associed text control
+ Display a slider with associed text control
  Updating value in one control reflect on the other
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
@@ -57,9 +57,9 @@ tmSliderWithText::~tmSliderWithText() {
 }
 
 void tmSliderWithText::Init() {
-  m_Slider = NULL;
-  m_Text = NULL;
-  m_UnitValue = NULL;
+  m_Slider = nullptr;
+  m_Text = nullptr;
+  m_UnitValue = nullptr;
 
   m_iLimitMin = 0;
   m_iLimitMax = 100;

@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatarasterjpeg.cpp
-                   For dealing with spatial raster data (*.jpg, *.jpeg)
+ For dealing with spatial raster data (*.jpg, *.jpeg)
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

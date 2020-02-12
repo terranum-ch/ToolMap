@@ -25,21 +25,21 @@ siLayer::siLayer(const wxString &layerpath, DataBase *database) {
   m_LayerIndexOut = wxNOT_FOUND;
   m_LayerType = SILAYER_TYPE_UNKNOWN;
   m_LayerTypeName = wxEmptyString;
-  m_ProgressIndicator = NULL;
+  m_ProgressIndicator = nullptr;
 }
 
 siLayer::~siLayer() {}
 
 int siLayer::_GetEmptyBlockStop(int startpos) {
   wxTextFile myFile(m_RuleFileName.GetFullPath());
-  if (myFile.Open() == false) {
+  if (!myFile.Open()) {
     return wxNOT_FOUND;
   }
 
   int iStopPos = wxNOT_FOUND;
   siParam myParam;
   for (unsigned int i = startpos; i < myFile.GetLineCount(); i++) {
-    if (myParam.IsEmpty(myFile.GetLine(i)) == true) {
+    if (myParam.IsEmpty(myFile.GetLine(i))) {
       iStopPos = i;
       break;
     }
@@ -54,7 +54,7 @@ int siLayer::_GetEmptyBlockStop(int startpos) {
 }
 
 bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString *array) {
-  if (array == NULL) {
+  if (array == nullptr) {
     return false;
   }
   array->Clear();
@@ -65,7 +65,7 @@ bool siLayer::_LoadRuleIntoArray(int start, int stop, wxArrayString *array) {
   }
 
   wxTextFile myFile(m_RuleFileName.GetFullPath());
-  if (myFile.Open() == false) {
+  if (!myFile.Open()) {
     return false;
   }
 
@@ -98,7 +98,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
   }
 
   // check if geometry exists in the database. If yes, get it's ID
-  if (feature->GetGeometryRef() == NULL) {
+  if (feature->GetGeometryRef() == nullptr) {
     wxLogError(_("Empty geometry for Feature: %ld"), feature->GetFID());
     m_ProcessFeatureSkipped++;
     return false;
@@ -106,17 +106,17 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
 
   CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
-  char *pszWKT = NULL;
+  char *pszWKT = nullptr;
   feature->GetGeometryRef()->exportToWkt(&pszWKT);
   wxString myTxtGeometry(pszWKT);
   OGRFree(pszWKT);
   wxString myExistQuery = _T("SELECT * FROM generic_lines WHERE ST_Equals(GeomFromText(\"%s\") , OBJECT_GEOMETRY)");
-  if (m_Database->DataBaseQuery(wxString::Format(myExistQuery, myTxtGeometry)) == false) {
+  if (!m_Database->DataBaseQuery(wxString::Format(myExistQuery, myTxtGeometry))) {
     return false;
   }
   bool bCopyGeometry = true;
   long myDatabaseId = wxNOT_FOUND;
-  if (m_Database->DataBaseHasResults() == true) {
+  if (m_Database->DataBaseHasResults()) {
     wxArrayLong myIDs;
     m_Database->DataBaseGetResults(myIDs);
     if (myIDs.GetCount() != 1) {
@@ -128,7 +128,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
   }
 
   // copy geometry if geometry didn't exists
-  if (bCopyGeometry == true) {
+  if (bCopyGeometry) {
     if (wkbFlatten(feature->GetGeometryRef()->getGeometryType()) == wkbPoint) {
       OGRPoint *myPt = (OGRPoint *)feature->GetGeometryRef();
       if (myPt->getX() < 1000 || myPt->getY() < 1000) {
@@ -138,7 +138,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
       }
     }
     wxString myQuery = _T("INSERT INTO %s (OBJECT_GEOMETRY) VALUES (GeometryFromText('%s'))");
-    if (m_Database->DataBaseQueryNoResults(wxString::Format(myQuery, m_LayerTypeName, myTxtGeometry)) == false) {
+    if (!m_Database->DataBaseQueryNoResults(wxString::Format(myQuery, m_LayerTypeName, myTxtGeometry))) {
       m_ProcessFeatureSkipped++;
       return false;
     }
@@ -168,7 +168,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
   }
 
   wxString myQuery = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld)"), myLayerAAT, myDbKind, myDatabaseId);
-  if (m_Database->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_Database->DataBaseQueryNoResults(myQuery)) {
     wxLogError(_("Adding Kind for feature %ld Failed"), myDatabaseId);
     m_ProcessFeatureSkipped++;
     return false;
@@ -179,7 +179,7 @@ bool siLayer::_ProcessFeature(OGRFeature *feature) {
   for (unsigned int i = 0; i < m_Attributs.GetCount(); i++) {
     siAttribut *myAttribut = m_Attributs.Item(i);
     wxASSERT(myAttribut);
-    if (myAttribut->Process(feature, m_Database, m_LayerIndexOut, myDatabaseId, myshpkind) == false) {
+    if (!myAttribut->Process(feature, m_Database, m_LayerIndexOut, myDatabaseId, myshpkind)) {
       wxLogError(_("Processing attribut: %s failed!"), myAttribut->GetAttributNameIn());
       m_ProcessFeatureSkipped++;
       bError = false;
@@ -204,7 +204,7 @@ bool siLayer::LoadFromFile(const wxString &filename) {
   _ClearAttributArray();
 
   wxTextFile myFile(filename);
-  if (myFile.Open() == false) {
+  if (!myFile.Open()) {
     wxLogError(_("Unable to open: %s"), filename);
     return false;
   }
@@ -213,21 +213,21 @@ bool siLayer::LoadFromFile(const wxString &filename) {
   bool bError = false;
   siParam myParam;
   wxString myLayerInTxt = myParam.GetParam(myFile.GetLine(0), _T("LAYER_IN"), bError);
-  if (bError == true) {
+  if (bError) {
     myFile.Close();
     wxLogError(_("Unable to get LAYER_IN"));
     return false;
   }
 
   wxString myLayerOutTxt = myParam.GetParam(myFile.GetLine(1), _T("LAYER_OUT"), bError);
-  if (bError == true) {
+  if (bError) {
     myFile.Close();
     wxLogError(_("Unable to get LAYER_OUT"));
     return false;
   }
 
   wxString myLayerOutTypeTxt = myParam.GetParam(myFile.GetLine(2), _T("LAYER_OUT_TM"), bError);
-  if (bError == true) {
+  if (bError) {
     myFile.Close();
     wxLogError(_("Unable to get LAYER_OUT_TM"));
     return false;
@@ -237,17 +237,17 @@ bool siLayer::LoadFromFile(const wxString &filename) {
   // processing and checking parameters
   m_LayerNameIn.SetName(myLayerInTxt);
   m_LayerNameIn.SetExt(_T("shp"));
-  if (m_LayerNameIn.Exists() == false) {
+  if (!m_LayerNameIn.Exists()) {
     wxLogError(_("Layer didn't exists"));
     return false;
   }
 
   m_LayerIndexOut = wxNOT_FOUND;
-  if (m_Database->DataBaseQuery(wxString::Format(_T("SELECT LAYER_INDEX FROM thematic_layers WHERE LAYER_NAME =\"%s\""),
-                                                 myLayerOutTxt)) == false) {
+  if (!m_Database->DataBaseQuery(wxString::Format(_T("SELECT LAYER_INDEX FROM thematic_layers WHERE LAYER_NAME =\"%s\""),
+                                                 myLayerOutTxt))) {
     return false;
   }
-  if (m_Database->DataBaseGetNextResult(m_LayerIndexOut) == false) {
+  if (!m_Database->DataBaseGetNextResult(m_LayerIndexOut)) {
     return false;
   }
   m_Database->DataBaseClearResults();
@@ -268,11 +268,11 @@ bool siLayer::LoadFromFile(const wxString &filename) {
   wxLogMessage(_("Kind found starting from %d to %d"), iKindStart, iKindStop);
 
   wxArrayString myKindDef;
-  if (_LoadRuleIntoArray(iKindStart, iKindStop, &myKindDef) == false) {
+  if (!_LoadRuleIntoArray(iKindStart, iKindStop, &myKindDef)) {
     return false;
   }
 
-  if (m_Kind.LoadFromArray(myKindDef, m_Database) == false) {
+  if (!m_Kind.LoadFromArray(myKindDef, m_Database)) {
     wxLogError(_("Loading Kind failed!"));
     return false;
   }
@@ -289,13 +289,13 @@ bool siLayer::LoadFromFile(const wxString &filename) {
     }
 
     wxLogMessage(_("Loading attribut from (line %d, to line %d)"), iAttributStart, iAttributStop);
-    if (_LoadRuleIntoArray(iAttributStart, iAttributStop, &myAttributArray) == false) {
+    if (!_LoadRuleIntoArray(iAttributStart, iAttributStop, &myAttributArray)) {
       wxLogError(_("Loading attribut failed!"));
       continue;
     }
 
     siAttribut *myAttribut = new siAttribut();
-    if (myAttribut->LoadFromArray(myAttributArray, m_Database, m_LayerIndexOut) == false) {
+    if (!myAttribut->LoadFromArray(myAttributArray, m_Database, m_LayerIndexOut)) {
       wxLogError(_("Loading attribut failed!"));
       continue;
     }
@@ -307,12 +307,12 @@ bool siLayer::LoadFromFile(const wxString &filename) {
 int siLayer::Process() {
   m_ProcessFeatureSkipped = 0;
   OGRDataSource *pods = OGRSFDriverRegistrar::Open((const char *)m_LayerNameIn.GetFullPath().mb_str(wxConvUTF8), false);
-  if (pods == NULL) {
+  if (pods == nullptr) {
     wxLogError(_("Opening %s failed!"), m_LayerNameIn.GetFullName());
     return wxNOT_FOUND;
   }
   OGRLayer *poLayer = pods->GetLayer(0);
-  if (poLayer == NULL) {
+  if (poLayer == nullptr) {
     wxLogError(_("Opening layer in %s failed!"), m_LayerNameIn.GetFullName());
     OGRDataSource::DestroyDataSource(pods);
     return wxNOT_FOUND;
@@ -325,22 +325,22 @@ int siLayer::Process() {
   OGRFeature *poFeature;
   poLayer->ResetReading();
   int iLoop = 0;
-  if (m_ProgressIndicator != NULL) {
+  if (m_ProgressIndicator != nullptr) {
     m_ProgressIndicator->StartProgress();
   }
-  while ((poFeature = poLayer->GetNextFeature()) != NULL) {
+  while ((poFeature = poLayer->GetNextFeature()) != nullptr) {
     iLoop++;
     wxASSERT(poFeature);
-    if (_ProcessFeature(poFeature) == false) {
+    if (!_ProcessFeature(poFeature)) {
       wxLogError(_("Processing feature %ld Failed!"), poFeature->GetFID());
     }
     OGRFeature::DestroyFeature(poFeature);
     // progress
-    if (myStep > 0 && m_ProgressIndicator != NULL) {
+    if (myStep > 0 && m_ProgressIndicator != nullptr) {
       m_ProgressIndicator->UpdateProgress(iLoop, myStep);
     }
   }
-  if (m_ProgressIndicator != NULL) {
+  if (m_ProgressIndicator != nullptr) {
     m_ProgressIndicator->StopProgress();
   }
   OGRDataSource::DestroyDataSource(pods);

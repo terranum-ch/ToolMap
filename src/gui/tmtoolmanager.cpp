@@ -16,12 +16,12 @@
 #include "tmtoolmanager.h"
 
 void tmToolManager::InitMemberValues() {
-  m_Parent = NULL;
-  m_TOC = NULL;
-  m_Selected = NULL;
-  m_Renderer = NULL;
-  m_Scale = NULL;
-  m_pDB = NULL;
+  m_Parent = nullptr;
+  m_TOC = nullptr;
+  m_Selected = nullptr;
+  m_Renderer = nullptr;
+  m_Scale = nullptr;
+  m_pDB = nullptr;
 }
 
 tmToolManager::tmToolManager(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
@@ -82,10 +82,10 @@ bool tmToolManager::_SearchDanglingNodes(int selectedlayer, const wxArrayString 
     if (iLayersCount == 1) {
       myLayerName = layersname.Item(selectedlayer);
     }
-    if (myTool.SearchInit(myLayersID.Item(i), myLayerName) == false) {
+    if (!myTool.SearchInit(myLayersID.Item(i), myLayerName)) {
       continue;
     }
-    if (myTool.SearchRun(&myDlg) == false) {
+    if (!myTool.SearchRun(&myDlg)) {
       bStoped = true;
       break;
     }
@@ -94,7 +94,7 @@ bool tmToolManager::_SearchDanglingNodes(int selectedlayer, const wxArrayString 
     iLoop++;
   }
 
-  if (bStoped == true) {
+  if (bStoped) {
     _ClearDangling();
     return false;
   }
@@ -113,7 +113,7 @@ bool tmToolManager::_SearchDanglingNodes(int selectedlayer, const wxArrayString 
 
 bool tmToolManager::FindDanglingNodes() {
   // check DB pointer
-  if (_IsOk() == false) {
+  if (!_IsOk()) {
     return false;
   }
 
@@ -153,7 +153,7 @@ bool tmToolManager::FindDanglingNodes() {
 }
 
 bool tmToolManager::_IsOk() {
-  if (m_pDB == NULL) {
+  if (m_pDB == nullptr) {
     wxLogError(_T("Database not inited, init database first"));
     return false;
   }

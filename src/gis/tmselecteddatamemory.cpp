@@ -1,6 +1,6 @@
 /***************************************************************************
  tmSelectedDataMemory.cpp
-                    Store ID of selected data into memory
+ Store ID of selected data into memory
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -125,7 +125,7 @@ int tmSelectedDataMemory::Search(const long &value) {
   - Removing one item
   - Removing multiple items
   - Removing all items
-  @param selected array of items we want to remove. If NULL, all values are
+  @param selected array of items we want to remove. If nullptr, all values are
   removed
   @return return true if removing items successfull
   @author Lucien Schreiber (c) CREALP 2008
@@ -198,7 +198,7 @@ void tmSelectedDataMemory::SetLayerID(long layerID) {
   *******************************************************************************/
 wxArrayLong *tmSelectedDataMemory::GetSelectedValues() {
   unsigned iNbItems = GetCount();
-  if (iNbItems == 0) return NULL;
+  if (iNbItems == 0) return nullptr;
 
   wxArrayLong *myCopyArray = new wxArrayLong();
   for (unsigned int i = 0; i < iNbItems; i++) myCopyArray->Add(m_SelectedIDs->Item(i));

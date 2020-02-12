@@ -1,6 +1,6 @@
 /***************************************************************************
  tmpointorientattrib.cpp
-                    Point orientation with attribution
+ Point orientation with attribution
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -24,7 +24,7 @@ tmPointOrientAttrib::tmPointOrientAttrib() {
 
 void tmPointOrientAttrib::InitMemberValues() {
   m_Oid = wxNOT_FOUND;
-  m_DB = NULL;
+  m_DB = nullptr;
   m_LayerId = wxNOT_FOUND;
 }
 
@@ -39,7 +39,7 @@ bool tmPointOrientAttrib::POA_IsOIDInited() {
     return false;
   }
 
-  if (m_DB == NULL) {
+  if (m_DB == nullptr) {
     wxLogError(_("Database not inited"));
     return false;
   }
@@ -54,7 +54,7 @@ bool tmPointOrientAttrib::POA_IsAttributed(long &attributedvalue) {
   wxString sSentence = _T("SELECT OBJECT_VAL_ID FROM ") + TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS] +
                        _T(" WHERE OBJECT_GEOM_ID=") + wxString::Format(_T("%ld"), m_Oid);
 
-  if (m_DB->DataBaseQuery(sSentence) == false) return false;
+  if (!m_DB->DataBaseQuery(sSentence)) return false;
 
   wxArrayLong myAttributedValues;
   m_DB->DataBaseGetResults(myAttributedValues);
@@ -79,10 +79,10 @@ bool tmPointOrientAttrib::POA_HasOrientField() {
       _T("%s o LEFT JOIN %s p ON (o.OBJECT_ID = p.OBJECT_VAL_ID) ")
       _T("WHERE p.OBJECT_GEOM_ID=%ld"),
       TABLE_NAME_OBJECTS.c_str(), TABLE_NAME_GIS_ATTRIBUTION[TOC_NAME_POINTS].c_str(), m_Oid);
-  if (m_DB->DataBaseQuery(sSentence) == false) return false;
+  if (!m_DB->DataBaseQuery(sSentence)) return false;
 
   m_LayerId = wxNOT_FOUND;
-  if (m_DB->DataBaseGetNextResult(m_LayerId) == false) {
+  if (!m_DB->DataBaseGetNextResult(m_LayerId)) {
     wxLogError(_("No layer found, object not attributed ?"));
     return false;
   }
@@ -95,7 +95,7 @@ bool tmPointOrientAttrib::POA_HasOrientField() {
   ProjectDefMemoryLayers myActualLayer;
   myActualLayer.m_LayerID = m_LayerId;
 
-  if (m_DB->GetFields(myFields, &myActualLayer) == false) {
+  if (!m_DB->GetFields(myFields, &myActualLayer)) {
     wxLogError(_("No orientation field found"));
     return false;
   }
@@ -103,13 +103,13 @@ bool tmPointOrientAttrib::POA_HasOrientField() {
 
   bool bFound = false;
   for (unsigned int i = 0; i < myFields.GetCount(); i++) {
-    if (myFields.Item(i)->m_FieldOrientation == true) {
+    if (myFields.Item(i)->m_FieldOrientation) {
       bFound = true;
       m_OrientField = *(myFields.Item(i));
     }
   }
 
-  if (bFound == false) {
+  if (!bFound) {
     wxLogError(_("No orientation field found"));
     return false;
   }
@@ -119,22 +119,20 @@ bool tmPointOrientAttrib::POA_HasOrientField() {
 }
 
 bool tmPointOrientAttrib::IsCorrectType() {
-  // if (tmPointOrient::IsValid()==false)
-  // return false;
 
-  if (POA_IsOIDInited() == false) return false;
+  if (!POA_IsOIDInited()) return false;
 
   long myAttribValue = wxNOT_FOUND;
-  if (POA_IsAttributed(myAttribValue) == false) return false;
+  if (!POA_IsAttributed(myAttribValue)) return false;
 
-  if (POA_HasOrientField() == false) return false;
+  if (!POA_HasOrientField()) return false;
 
   // checks for
   return true;
 }
 
 bool tmPointOrientAttrib::Update() {
-  if (POA_IsOIDInited() == false) return false;
+  if (!POA_IsOIDInited()) return false;
 
   if (m_LayerId == wxNOT_FOUND) {
     wxLogDebug(_T("Use IsCorrectType() first"));
@@ -167,7 +165,7 @@ bool tmPointOrientAttrib::Update() {
       break;
   };
 
-  if (m_DB->DataBaseQueryNoResults(sSentence) == false) return false;
+  if (!m_DB->DataBaseQueryNoResults(sSentence)) return false;
 
   return true;
 }

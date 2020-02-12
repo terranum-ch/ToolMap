@@ -23,7 +23,7 @@
 #include "tmsymbolvector.h"
 
 tmSymbol::tmSymbol() {
-  m_pDB = NULL;
+  m_pDB = nullptr;
   m_LayerTransparency = 0;
   m_TocName = TOC_NAME_UNKNOWN;
 }

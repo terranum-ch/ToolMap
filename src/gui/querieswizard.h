@@ -1,6 +1,6 @@
 /***************************************************************************
  querieswizard.h
-                    Main part of the new query system
+ Main part of the new query system
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/

@@ -1,6 +1,5 @@
 /***************************************************************************
  queriesdata.cpp
-
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -66,7 +65,7 @@ bool QueriesData::_IsQuerySelectedCorrect() {
       break;
 
     case AATTRIBUTION_YES:
-      if (HasFieldsValues() == false) {
+      if (!HasFieldsValues()) {
         wxLogError(_T("No fields value. This mode isn't allowed"));
         return false;
       }
@@ -286,13 +285,13 @@ bool QueriesData::IsGenericLayer(DataBaseTM *database, long dblayerID) {
 
   wxString myPrepQuery = _T("SELECT GENERIC_LAYERS FROM %s WHERE CONTENT_ID=%ld");
   wxString myQuery = wxString::Format(myPrepQuery, TABLE_NAME_TOC.c_str(), dblayerID);
-  if (database->DataBaseQuery(myQuery) == false) {
+  if (!database->DataBaseQuery(myQuery)) {
     database->DataBaseClearResults();
     return false;
   }
 
   long iLayerType = TOC_NAME_LINES;
-  if (database->DataBaseGetNextResult(iLayerType) == false) {
+  if (!database->DataBaseGetNextResult(iLayerType)) {
     database->DataBaseClearResults();
     return false;
   }
@@ -345,18 +344,18 @@ bool QueriesData::GetObjectsForSelection(DataBaseTM *database, PrjMemObjectsArra
   wxString myQuery = wxString::Format(myPrepQuery, TABLE_NAME_OBJECTS.c_str(), TABLE_NAME_LAYERS.c_str(),
                                       TABLE_NAME_GIS_ATTRIBUTION[m_QueryLayerType].c_str(), m_QueryObjectGeomID);
 
-  if (database->DataBaseQuery(myQuery) == false) {
+  if (!database->DataBaseQuery(myQuery)) {
     return false;
   }
 
   long myRow = 0;
-  if (database->DataBaseGetResultSize(NULL, &myRow) == false) {
+  if (!database->DataBaseGetResultSize(nullptr, &myRow)) {
     return false;
   }
 
   for (int i = 0; i < myRow; i++) {
     ProjectDefMemoryObjects *myObj = new ProjectDefMemoryObjects();
-    if (database->DataBaseGetNextResultAsObject(myObj, -1) == false) {
+    if (!database->DataBaseGetNextResultAsObject(myObj, -1)) {
       database->DataBaseClearResults();
       delete myObj;
       return false;
@@ -377,21 +376,21 @@ bool QueriesData::GetObjectsForTypes(DataBaseTM *database, PrjMemObjectsArray &o
   wxASSERT(m_QueryLayerType >= TOC_NAME_LINES && m_QueryLayerType <= TOC_NAME_LABELS);
   objects.Clear();
 
-  if (database->GetObjectListByLayerType(m_QueryLayerType, true) == false) {
-    wxASSERT(database->DataBaseHasResults() == false);
+  if (!database->GetObjectListByLayerType(m_QueryLayerType, true)) {
+    wxASSERT(!database->DataBaseHasResults());
     return false;
   }
 
   // process results
   long myRow = 0;
-  if (database->DataBaseGetResultSize(NULL, &myRow) == false) {
+  if (!database->DataBaseGetResultSize(nullptr, &myRow)) {
     wxLogError(_T("No results returned for %s"), PRJDEF_LAYERS_TYPE_STRING[m_QueryLayerType].c_str());
     return false;
   }
 
   for (int i = 0; i < myRow; i++) {
     ProjectDefMemoryObjects *myObj = new ProjectDefMemoryObjects();
-    if (database->DataBaseGetNextResultAsObject(myObj, -1) == false) {
+    if (!database->DataBaseGetNextResultAsObject(myObj, -1)) {
       database->DataBaseClearResults();
       delete myObj;
       return false;
@@ -418,19 +417,19 @@ bool QueriesData::GetParentLayer(DataBaseTM *database, long &layerid) {
 
   wxString myPreparedQuery(_T("SELECT THEMATIC_LAYERS_LAYER_INDEX FROM %s WHERE OBJECT_ID = %ld"));
   wxString mySentence = wxString::Format(myPreparedQuery, TABLE_NAME_OBJECTS.c_str(), m_QueryObjectID);
-  if (database->DataBaseQuery(mySentence) == false) {
+  if (!database->DataBaseQuery(mySentence)) {
     wxLogError(_("Error getting parent layer for object : %ld"), m_QueryObjectID);
     return false;
   }
 
   bool bReturn = true;
-  if (database->DataBaseGetNextResult(layerid) == false) {
+  if (!database->DataBaseGetNextResult(layerid)) {
     wxLogError(_("Error getting results for object : %ld"), m_QueryObjectID);
     bReturn = false;
   }
   database->DataBaseClearResults();
 
-  if (bReturn == true) {
+  if (bReturn) {
     m_QueryLayerID = layerid;
   }
 
@@ -450,7 +449,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM *database, long layerid, PrjMemFiel
   myTempLayer.m_LayerID = layerid;
 
   // get fields for specified layer;
-  if (database->GetFields(fieldsdef, &myTempLayer) == false) {
+  if (!database->GetFields(fieldsdef, &myTempLayer)) {
     wxLogError(_("Error getting fields for layer %ld"), layerid);
     return false;
   }
@@ -473,7 +472,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM *database, long layerid, PrjMemFiel
   wxArrayLong mySelectedId;
   mySelectedId.Add(m_QueryObjectGeomID);
   tmAttributionData *myAttribObj = tmAttributionManager::CreateAttributionData(m_QueryLayerType);
-  if (myAttribObj == NULL) {
+  if (myAttribObj == nullptr) {
     wxLogError(_T("Unable to create attribution object"));
     return false;
   }
@@ -481,7 +480,7 @@ bool QueriesData::GetFieldsValues(DataBaseTM *database, long layerid, PrjMemFiel
   myAttribObj->Create(&mySelectedId, database);
   bool bReturn = true;
   wxArrayString myFieldsCode;
-  if (myAttribObj->GetAdvancedAttribution(&myTempLayer, fieldsvalue, myFieldsCode, m_QueryObjectGeomID) == false) {
+  if (!myAttribObj->GetAdvancedAttribution(&myTempLayer, fieldsvalue, myFieldsCode, m_QueryObjectGeomID)) {
     wxLogError(_("Error getting attribution values"));
     bReturn = false;
   } else {
@@ -516,7 +515,7 @@ bool QueriesData::HasFieldsValues() {
   }
 
   for (unsigned int i = 0; i < m_QueryFieldsValues.GetCount(); i++) {
-    if (m_QueryFieldsValues.Item(i).IsEmpty() == false) {
+    if (!m_QueryFieldsValues.Item(i).IsEmpty()) {
       return true;
     }
   }

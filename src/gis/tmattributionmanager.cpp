@@ -54,11 +54,11 @@ tmAttributionManager::tmAttributionManager(wxWindow *parent, tmTOCCtrl *toc, Att
   m_TOC = toc;
   m_Panel = panel;
   m_SelData = selection;
-  m_pPrjMem = NULL;
-  m_InfoDLG = NULL;
+  m_pPrjMem = nullptr;
+  m_InfoDLG = nullptr;
 
-  m_pDB = NULL;
-  m_pLayerProperties = NULL;
+  m_pDB = nullptr;
+  m_pLayerProperties = nullptr;
   m_Parent->PushEventHandler(this);
   m_ShortcutLoaded = false;
 }
@@ -95,7 +95,7 @@ void tmAttributionManager::OnShortcutPressed(wxCommandEvent &event) {
   wxString myDescription = _T("");
   wxArrayLong myKindValues;
 
-  if (m_ShortcutLoaded == false) {
+  if (!m_ShortcutLoaded) {
     return;
   }
 
@@ -121,7 +121,7 @@ void tmAttributionManager::OnShortcutPressed(wxCommandEvent &event) {
           }
         }
 
-        if (m_pDB->DataBaseQueryNoResults(myStmt) == false) {
+        if (!m_pDB->DataBaseQueryNoResults(myStmt)) {
           wxLogError(_("Adding kind(s) to selected features failed!"));
         }
 
@@ -208,10 +208,10 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM *pDb, PrjDefMemMana
   m_pPrjMem = memprojdef;
   wxASSERT(m_pPrjMem);
 
-  m_pLayerProperties = NULL;
+  m_pLayerProperties = nullptr;
 
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->SetProject(m_pPrjMem);
   }
 
@@ -232,8 +232,8 @@ bool tmAttributionManager::InitAttributionManager(DataBaseTM *pDb, PrjDefMemMana
   @date 04 November 2008
   *******************************************************************************/
 void tmAttributionManager::UnInitAttributionManager() {
-  m_pDB = NULL;
-  m_pLayerProperties = NULL;
+  m_pDB = nullptr;
+  m_pLayerProperties = nullptr;
 
   DisconnectShortcutEvent();
   m_Panel->SetInfoBtn(0);
@@ -287,7 +287,7 @@ bool tmAttributionManager::IsOnlyOneObjSelected() {
 void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   // update info dlg
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->UpdateSelection();
   }
 
@@ -308,7 +308,7 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   }
 
   bool bEditMode = false;
-  if (m_TOC->GetEditLayer() != NULL) {
+  if (m_TOC->GetEditLayer() != nullptr) {
     bEditMode = true;
   }
   m_Panel->SetAttributeBtn(iSelFeatureCount, bEditMode);
@@ -330,56 +330,6 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   // propagate to menu
   event.Skip();
 }
-
-/***************************************************************************/ /**
-  @brief Called when user press attribute
-  @details This event function is called by the #AttribObjType_PANEL when user
-  press the attribute Button.
-  @param event
-  @author Lucien Schreiber (c) CREALP 2008
-  @date 05 November 2008
-  *******************************************************************************/
-/*void tmAttributionManager::OnAttributeBtn (wxCommandEvent & event)
-{
- // verification :
- // Selected notebook page is same type as
- // selected layer in TOC
- wxASSERT(m_pLayerProperties);
- wxString myMsg = _("Selected panel doesn't correspond to the edited layer");
-
- if (m_pLayerProperties->GetType() != m_Panel->GetVisibleNotebook()){
- wxMessageBox(myMsg, _("Attribution error"), wxOK | wxICON_ERROR, m_Parent);
- return;
- }
-
- wxArrayLong  * mySelObjArray = m_SelData->GetSelectedValues();
-
- // create attribution object based on type
- tmAttributionData * myAttrib = CreateAttributionData(m_pLayerProperties->GetType());
- myAttrib->Create(mySelObjArray, m_pDB);
- if(!myAttrib->SetAttributeBasic(m_Panel))
- {
- wxLogMessage(_("Unable to attribute those data"));
- }
-
- delete myAttrib;
-
- // clear list if needed
- if (m_Panel->IsEmptyListValuesRequired())
- m_Panel->EmptyListValues();
-
- // if full attribution enabled
- if (m_Panel->IsFullAttributionEnabled()==true)
- AAttributionButtonShow();
-
- // focus to the renderer
- wxCommandEvent evt(tmEVT_FOCUS_RENDERER, wxID_ANY);
- m_Parent->GetEventHandler()->QueueEvent(evt.Clone());
-
- // send statistics
- wxCommandEvent statevt(tmEVT_STAT_ATTRIB, wxID_ANY);
- m_Parent->GetEventHandler()->QueueEvent(statevt.Clone());
-}*/
 
 void tmAttributionManager::OnAddBtn(wxCommandEvent &event) {
 
@@ -414,7 +364,7 @@ void tmAttributionManager::OnAddBtn(wxCommandEvent &event) {
     }
   }
 
-  if (m_pDB->DataBaseQueryNoResults(myStmt) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myStmt)) {
     wxLogError(_("Adding kind(s) to selected features failed!"));
   }
 
@@ -460,7 +410,7 @@ void tmAttributionManager::OnRemoveBtn(wxCommandEvent &event) {
     }
   }
 
-  if (m_pDB->DataBaseQueryNoResults(myStmt) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myStmt)) {
     wxLogError(_("Removing kind(s) to selected features failed!"));
   }
 
@@ -559,7 +509,7 @@ int tmAttributionManager::LoadShortcutIntoMemory() {
   @date 06 November 2008
   *******************************************************************************/
 tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
-  tmAttributionData *myAttrib = NULL;
+  tmAttributionData *myAttrib = nullptr;
   switch (type) {
     case TOC_NAME_LINES:
       myAttrib = new tmAttributionDataLine();
@@ -578,7 +528,7 @@ tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
       break;
   }
 
-  if (myAttrib == NULL) {
+  if (myAttrib == nullptr) {
     wxLogDebug(_T("Error creating attribution object"));
   }
 
@@ -597,7 +547,7 @@ tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
   *******************************************************************************/
 void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
   tmAttributionData *myAttrib = CreateAttributionData(m_TOC->GetEditLayer()->GetType());
-  if (myAttrib == NULL) return;
+  if (myAttrib == nullptr) return;
 
   // init
   wxArrayLong *mySelectedValues = (wxArrayLong *)event.GetClientData();
@@ -609,7 +559,7 @@ void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
 
   // copy attribution advanced
   tmLayerValueArray myLayersID;
-  if (myAttrib->GetAttributionLayersID(event.GetExtraLong(), myLayersID) == false) {
+  if (!myAttrib->GetAttributionLayersID(event.GetExtraLong(), myLayersID)) {
     return;
   }
 
@@ -628,7 +578,7 @@ void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
   // get advanced attribution values (if existing)
   wxArrayString myValues;
   bool bGetAAttrib = myAttrib->GetAttributesAdvanced(event.GetExtraLong(), &myLayersInfoArray, myValues);
-  if (bGetAAttrib == false) {
+  if (!bGetAAttrib) {
     // wxLogError(_T("Problem getting advanced attribution values"));
     wxDELETE(mySelectedValues);
     wxDELETE(myAttrib);
@@ -644,7 +594,7 @@ void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
     bool bClean =
         myAttrib->CleanAttributesAdvanced(mySelectedValues->Item(i), m_pPrjMem, myLayersInfoArray.Item(0)->m_LayerType);
     bool bAttrib = myAttrib->SetAttributesAdvanced(mySelectedValues->Item(i), &myLayersInfoArray, myValues);
-    if (bClean == false || bAttrib == false) {
+    if (!bClean || !bAttrib) {
       wxLogError("Error setting advanced attribution for object id: %ld!", mySelectedValues->Item(i));
     }
   }
@@ -681,7 +631,7 @@ void tmAttributionManager::OnRunQuery(wxCommandEvent &event) {
   m_TOC->SetSelectedLayer(myLayerID);
 
   // passing the query
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     wxString szError = _("Error running the query. See the log window for a more detailled explaintion");
     wxMessageBox(szError, _("Error running the query"), wxICON_EXCLAMATION | wxOK, m_Parent);
     return;
@@ -692,7 +642,7 @@ void tmAttributionManager::OnRunQuery(wxCommandEvent &event) {
 
   // query succeed, getting results
   wxArrayLong myResults;
-  if (m_pDB->DataBaseGetResults(myResults) == true) {
+  if (m_pDB->DataBaseGetResults(myResults)) {
     m_SelData->SetLayerID(myLayerID);
     m_SelData->AddSelected(&myResults);
   }
@@ -722,28 +672,28 @@ int tmAttributionManager::DisplayAAttributionWindow(wxArrayString *values, PrjMe
   *******************************************************************************/
 bool tmAttributionManager::AAttributionButtonShow() {
   // validating
-  if (IsAttributionManagerReady() == false) {
+  if (!IsAttributionManagerReady()) {
     wxLogError(_("Project isn't ready, open a project or define a Edit Layer"));
     return false;
   }
-  if (IsOnlyOneObjSelected() == false) {
+  if (!IsOnlyOneObjSelected()) {
     wxLogError(_("This works only if one object is selected, select only one object"));
     return false;
   }
   tmLayerProperties *myEditLayer = m_TOC->GetEditLayer();
-  if (myEditLayer == NULL) {
+  if (myEditLayer == nullptr) {
     wxLogError(_("You aren't in edit mode, please start editing"));
     return false;
   }
 
   tmAttributionData *myAttribObj = CreateAttributionData(myEditLayer->GetType());
-  if (myAttribObj == NULL) return false;
+  if (myAttribObj == nullptr) return false;
   myAttribObj->Create(m_SelData->GetSelectedValues(), m_pDB);
 
   // attributed layers
   // wxArrayLong myLayersID;
   tmLayerValueArray myLayersID;
-  if (myAttribObj->GetAttributionLayersID(m_SelData->GetSelectedUnique(), myLayersID) == false) return false;
+  if (!myAttribObj->GetAttributionLayersID(m_SelData->GetSelectedUnique(), myLayersID)) return false;
 
   // get layers info
   wxASSERT(m_pPrjMem);
@@ -762,7 +712,7 @@ bool tmAttributionManager::AAttributionButtonShow() {
   // get advanced attribution values (if existing)
   wxArrayString myValues;
   bool bGetAAttrib = myAttribObj->GetAttributesAdvanced(m_SelData->GetSelectedUnique(), &myLayersInfoArray, myValues);
-  if (bGetAAttrib == false) {
+  if (!bGetAAttrib) {
     wxLogDebug(_T("Problem getting advanced attribution values"));
   }
 
@@ -779,13 +729,13 @@ bool tmAttributionManager::AAttributionButtonShow() {
 
 void tmAttributionManager::AAttributionBatchShow() {
   // validating
-  if (IsAttributionManagerReady() == false) {
+  if (!IsAttributionManagerReady()) {
     wxLogError(_("Project isn't ready, open a project or define a Edit Layer"));
     return;
   }
 
   tmLayerProperties *myEditLayer = m_TOC->GetEditLayer();
-  if (myEditLayer == NULL) {
+  if (myEditLayer == nullptr) {
     wxLogError(_("You aren't in edit mode, please start editing"));
     return;
   }
@@ -793,7 +743,7 @@ void tmAttributionManager::AAttributionBatchShow() {
   wxASSERT(m_pPrjMem);
   wxASSERT(m_SelData);
   tmAAttribBatchManager myBatchManager(m_pPrjMem, m_pDB, m_SelData, (PRJDEF_LAYERS_TYPE)myEditLayer->GetType());
-  if (myBatchManager.IsOk() == false) {
+  if (!myBatchManager.IsOk()) {
     wxLogError(_("Batch attribution isn't possible"));
     return;
   }
@@ -812,7 +762,7 @@ void tmAttributionManager::AAttributionBatchShow() {
 void tmAttributionManager::DisplayInformationsWnd() {
   // search info dialog
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG == NULL) {
+  if (m_InfoDLG == nullptr) {
     m_InfoDLG = new InformationDLG(m_Parent, m_TOC, m_SelData, ID_INFORMATION_DLG);
     m_InfoDLG->SetProject(m_pPrjMem);
     m_InfoDLG->Show();
@@ -829,14 +779,14 @@ void tmAttributionManager::DisplayInformationsWnd() {
   *******************************************************************************/
 void tmAttributionManager::OnLayerChanged(wxCommandEvent &event) {
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->UpdateLayer();
   }
 }
 
 void tmAttributionManager::OnSelectionChanged(wxCommandEvent &event) {
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
-  if (m_InfoDLG != NULL) {
+  if (m_InfoDLG != nullptr) {
     m_InfoDLG->UpdateSelection();
   }
 }

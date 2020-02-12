@@ -76,7 +76,7 @@ class QueriesList : public ListGenReportWithDialog {
 
  public:
   QueriesList(wxWindow *parent, Queries_PANEL *queryparent, wxWindowID id, wxArrayString *pColsName,
-              wxArrayInt *pColsSize = NULL, wxSize size = wxDefaultSize);
+              wxArrayInt *pColsSize = nullptr, wxSize size = wxDefaultSize);
 
   ~QueriesList();
 

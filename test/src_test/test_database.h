@@ -49,13 +49,13 @@ class TEST_Database : public CxxTest::TestSuite {
   void testOpenDatabase() {
     TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
     wxString myFalsePath = g_TestPathPRJ + _T("JJJ");
-    TS_ASSERT(m_DB->DataBaseOpen(myFalsePath, g_TestPrj_CombioulaExercice) == false);
+    TS_ASSERT(!m_DB->DataBaseOpen(myFalsePath, g_TestPrj_CombioulaExercice));
     TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaExercice));
   }
 
   void testResults() {
     TS_ASSERT_EQUALS(m_DB->DataBaseHasResults(), false);
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
     TS_ASSERT_EQUALS(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM generic_lines")), true);
     TS_ASSERT_EQUALS(m_DB->DataBaseHasResults(), true);
     m_DB->DataBaseClearResults();
@@ -77,15 +77,15 @@ class TEST_Database : public CxxTest::TestSuite {
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 16")));
     // second query should fail, must delete results first.
     m_DB->DataBaseClearResults();
-    TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 16")) == true);
-    TS_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString) == true);
+    TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 16")));
+    TS_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString));
     TS_ASSERT_EQUALS(myReturnedString, _T("delimitation tassement"));  // oid = 17
-    TS_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString) == false);
+    TS_ASSERT(!m_DB->DataBaseGetNextResult(myReturnedString));
     TS_ASSERT(myReturnedString == wxEmptyString);
     m_DB->DataBaseClearResults();
 
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17777")));
-    TS_ASSERT(m_DB->DataBaseGetNextResult(myReturnedString) == false);
+    TS_ASSERT(!m_DB->DataBaseGetNextResult(myReturnedString));
     TS_ASSERT(myReturnedString == wxEmptyString);
   }
 
@@ -105,8 +105,8 @@ class TEST_Database : public CxxTest::TestSuite {
     TS_ASSERT_EQUALS(myResults.GetCount(), 1);
     m_DB->DataBaseClearResults();
 
-    TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJCT_ID = 17777")) == false);
-    TS_ASSERT(m_DB->DataBaseGetNextResult(myResults) == false);
+    TS_ASSERT(!m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJCT_ID = 17777")));
+    TS_ASSERT(!m_DB->DataBaseGetNextResult(myResults));
     TS_ASSERT_EQUALS(myResults.GetCount(), 0);
   }
 
@@ -114,11 +114,11 @@ class TEST_Database : public CxxTest::TestSuite {
     TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
     unsigned int myCols = 0;
     long myRows = 0;
-    TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, &myRows) == false);
+    TS_ASSERT(!m_DB->DataBaseGetResultSize(&myCols, &myRows));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 17")));
-    TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, NULL));
+    TS_ASSERT(m_DB->DataBaseGetResultSize(&myCols, nullptr));
     TS_ASSERT_EQUALS(myCols, 9);
-    TS_ASSERT(m_DB->DataBaseGetResultSize(NULL, &myRows));
+    TS_ASSERT(m_DB->DataBaseGetResultSize(nullptr, &myRows));
     TS_ASSERT_EQUALS(myRows, 1);
     myRows = 0;
     myCols = 0;
@@ -156,7 +156,7 @@ class TEST_Database : public CxxTest::TestSuite {
       } else
         TS_ASSERT_EQUALS(bReturn, false);
       i++;
-      if (bReturn == false) break;
+      if (!bReturn) break;
     }
 
     m_DB->DataBaseClearResults();
@@ -169,7 +169,7 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testResultDouble() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 WHERE OBJECT_ID = 1")));
     wxDouble myValue = 0;
     TS_ASSERT(m_DB->DataBaseGetNextResult(myValue));
@@ -177,7 +177,7 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testResultArrayDouble() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 ORDER BY OBJECT_ID")));
     wxArrayDouble values;
     TS_ASSERT(m_DB->DataBaseGetNextResult(values));
@@ -185,20 +185,20 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testColResultsString() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestText FROM layer_at1 ORDER BY OBJECT_ID")));
     wxArrayString myResults;
     TS_ASSERT(m_DB->DataBaseGetResults(myResults));
     TS_ASSERT_EQUALS(myResults.GetCount(), 2);
     TS_ASSERT_EQUALS(myResults.Item(1), _T("Ceci est un test pour un max de caracteres ke lonp"));
-    TS_ASSERT(m_DB->DataBaseGetResults(myResults) == false);
+    TS_ASSERT(!m_DB->DataBaseGetResults(myResults));
     TS_ASSERT_EQUALS(myResults.GetCount(), 0);
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestText FROM layer_at1 ORDER BY OBJECT_ID")));
     m_DB->DataBaseClearResults();
   }
 
   void testColResultsLong() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT OBJECT_ID FROM layer_at1 ORDER BY OBJECT_ID")));
     wxArrayLong myResults;
     TS_ASSERT(m_DB->DataBaseGetResults(myResults));
@@ -207,7 +207,7 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testColResultsDouble() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SELECT TestFloat32 FROM layer_at1 ORDER BY OBJECT_ID")));
     wxArrayDouble myResults;
     TS_ASSERT(m_DB->DataBaseGetResults(myResults));
@@ -218,13 +218,13 @@ class TEST_Database : public CxxTest::TestSuite {
   void testPathName() {
     TS_ASSERT(m_DB->DataBaseGetName() == wxEmptyString);
     TS_ASSERT(m_DB->DataBaseGetPath() == wxEmptyString);
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
 
     TS_ASSERT(m_DB->DataBaseGetName() == g_TestPrj_Fields);
     TS_ASSERT(m_DB->DataBaseGetPath() == g_TestPathPRJ);
 
     wxString myFalseName = g_TestPrj_Fields + _T("ssss");
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, myFalseName) == false);
+    TS_ASSERT(!m_DB->DataBaseOpen(g_TestPathPRJ, myFalseName));
     TS_ASSERT(m_DB->DataBaseGetName() == wxEmptyString);
     TS_ASSERT(m_DB->DataBaseGetPath() == wxEmptyString);
   }
@@ -241,7 +241,7 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testCreateNewDatabase() {
-    TS_ASSERT(m_DB->DataBaseCreateNew(g_TestPathPRJ, g_TestPrj_MyTest) == false);
+    TS_ASSERT(!m_DB->DataBaseCreateNew(g_TestPathPRJ, g_TestPrj_MyTest));
     TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_MyTest));
     TS_ASSERT(m_DB->DataBaseQuery(_T("SHOW TABLES FROM mytest1")));
   }
@@ -262,7 +262,7 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testGetLastInsertID() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     long myIID = m_DB->DataBaseGetLastInsertedID();
     TS_ASSERT_EQUALS(myIID, wxNOT_FOUND);
     TS_ASSERT(m_DB->DataBaseQueryNoResults(_T("INSERT INTO dmn_layer_object (OBJECT_CD) VALUES (1)")));
@@ -276,16 +276,16 @@ class TEST_Database : public CxxTest::TestSuite {
   }
 
   void testGetRawRow() {
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
     TS_ASSERT(m_DB->DataBaseQuery(
         _T("SELECT Envelope(OBJECT_GEOMETRY) FROM generic_lines WHERE OBJECT_ID = 1")));  // WHERE OBJECT_ID = 2")));
     MYSQL_ROW myRow;
     tmArrayULong myLength;
     TS_ASSERT(m_DB->DataBaseGetNextRowResult(myRow, myLength));
-    TS_ASSERT(myRow != NULL);
+    TS_ASSERT(myRow != nullptr);
     TS_ASSERT(myLength.GetCount() != 0);
-    TS_ASSERT(m_DB->DataBaseGetNextRowResult(myRow, myLength) == false);
-    TS_ASSERT(myRow == NULL);
+    TS_ASSERT(!m_DB->DataBaseGetNextRowResult(myRow, myLength));
+    TS_ASSERT(myRow == nullptr);
     TS_ASSERT_EQUALS(myLength.GetCount(), 0);
   }
 
@@ -296,9 +296,9 @@ class TEST_Database : public CxxTest::TestSuite {
       wxLogMessage(_T("Removed testedit_12 allready existing"));
     }
 
-    TS_ASSERT(m_DB->DataBaseDelete() == false);
-    TS_ASSERT(m_DB->DataBaseCreateNew(g_TestPathPRJ, _T("testedit_12")) == true);
-    TS_ASSERT(m_DB->DataBaseDelete() == true);
+    TS_ASSERT(!m_DB->DataBaseDelete());
+    TS_ASSERT(m_DB->DataBaseCreateNew(g_TestPathPRJ, _T("testedit_12")));
+    TS_ASSERT(m_DB->DataBaseDelete());
   }
 
   void testEscapeString() {
@@ -306,8 +306,8 @@ class TEST_Database : public CxxTest::TestSuite {
     wxString myBefore = _T("SELECT coucou'toi");
     wxString myAfter = wxEmptyString;
 
-    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields) == true);
-    TS_ASSERT(m_DB->DataBaseStringEscapeQuery(myBefore, myAfter) == true);
+    TS_ASSERT(m_DB->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
+    TS_ASSERT(m_DB->DataBaseStringEscapeQuery(myBefore, myAfter));
     wxLogDebug(_T("before : %s - after : %s"), myBefore.c_str(), myAfter.c_str());
     TS_ASSERT_EQUALS(myAfter, _T("SELECT coucou\\'toi"));
   }

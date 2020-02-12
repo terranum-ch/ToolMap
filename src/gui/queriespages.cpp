@@ -1,6 +1,6 @@
 /***************************************************************************
  queriespages.cpp
-                    Pages definition for the QueryWizard
+ Pages definition for the QueryWizard
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -28,10 +28,10 @@ QueriesPageIntro::QueriesPageIntro(QueriesWizard *parent, DataBaseTM *database) 
   m_pDB = database;
   CreateControls();
 
-  m_PageName = new QueriesPageName(m_Parent, this, NULL);
-  m_PageSelectionAttribut1 = new QueriesPageAttribut1(m_Parent, m_pDB, NULL, m_PageName);
+  m_PageName = new QueriesPageName(m_Parent, this, nullptr);
+  m_PageSelectionAttribut1 = new QueriesPageAttribut1(m_Parent, m_pDB, nullptr, m_PageName);
   m_PageExpertSQL = new QueriesPageSQL(m_Parent);
-  m_PageObject = new QueriesPageObject(m_Parent, m_pDB, NULL, NULL);
+  m_PageObject = new QueriesPageObject(m_Parent, m_pDB, nullptr, nullptr);
 
   m_PageLayer = new QueriesPageLayer(m_Parent, m_pDB, this, m_PageName);
   m_PageGeneric = new QueriesPageGeneric(m_Parent, this, m_PageName);
@@ -59,13 +59,13 @@ QueriesPageIntro::~QueriesPageIntro() {
 }
 
 wxWizardPage *QueriesPageIntro::GetPrev() const {
-  return NULL;
+  return nullptr;
 }
 
 int QueriesPageIntro::_GetRadioBoxSelection() const {
   int iReturn = wxNOT_FOUND;
   for (int i = 0; i < QUERY_NUMBER; i++) {
-    if (m_RadioBtn[i]->GetValue() == true) {
+    if (m_RadioBtn[i]->GetValue()) {
       iReturn = i;
       break;
     }
@@ -216,7 +216,7 @@ QueriesLayerList::QueriesLayerList(wxWindow *parent, wxWindowID id, wxSize size)
 QueriesLayerList::~QueriesLayerList() {}
 
 void QueriesLayerList::SetSelection(long index, bool selected) {
-  if (selected == true) {
+  if (selected) {
     SetItemState(index, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
   } else {
     SetItemState(index, 0, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);
@@ -243,7 +243,7 @@ bool QueriesPageLayer::TransferDataToWindow() {
       m_Layers.RemoveAt(0);
     }
 
-    if (m_Parent->GetData()->GetLayers(m_pDB, m_Layers) == true) {
+    if (m_Parent->GetData()->GetLayers(m_pDB, m_Layers)) {
       // create lines layers for all polygons layers
       // those layers are only used for creating queries
       unsigned int j = 0;
@@ -374,7 +374,7 @@ void QueriesPageObject::_CreateControls() {
   m_staticText8->Wrap(m_Parent->GetSize().GetWidth() - QUERIES_MARGIN_SIZE);
   bSizer11->Add(m_staticText8, 0, wxALL, 5);
 
-  m_ListType = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_SINGLE);
+  m_ListType = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxLB_SINGLE);
   bSizer11->Add(m_ListType, 1, wxALL | wxEXPAND, 5);
 
   this->SetSizer(bSizer11);
@@ -396,7 +396,7 @@ bool QueriesPageObject::TransferDataToWindow() {
   m_ListType->Freeze();
   m_ListType->Clear();
 
-  if (m_Parent->GetData()->GetObjectsForTypes(m_pDB, m_Objects) == false) {
+  if (!m_Parent->GetData()->GetObjectsForTypes(m_pDB, m_Objects)) {
     m_ListType->Thaw();
     return true;
   }
@@ -517,7 +517,7 @@ QueriesPageAttribut1::QueriesPageAttribut1(QueriesWizard *parent, DataBaseTM *da
   m_Parent = parent;
   m_pDB = database;
   m_PageName = (wxWizardPageSimple *)next;
-  m_QueryPageAttribut2 = new QueriesPageAttribut2(parent, database, NULL, NULL);
+  m_QueryPageAttribut2 = new QueriesPageAttribut2(parent, database, nullptr, nullptr);
 
   _CreateControls();
 }
@@ -532,14 +532,14 @@ bool QueriesPageAttribut1::TransferDataToWindow() {
 
   // check if fields are present
   long myLayerID = wxNOT_FOUND;
-  if (m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID) == false) {
+  if (!m_Parent->GetData()->GetParentLayer(m_pDB, myLayerID)) {
     m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, false);
     m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
     return true;
   }
 
-  if (m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, m_Parent->GetData()->m_QueryFields,
-                                           m_Parent->GetData()->m_QueryFieldsValues) == false) {
+  if (!m_Parent->GetData()->GetFieldsValues(m_pDB, myLayerID, m_Parent->GetData()->m_QueryFields,
+                                           m_Parent->GetData()->m_QueryFieldsValues)) {
     // disabling for security
     wxLogError(_T("Problem getting fields value for query"));
     m_AdvAttribRadio->Enable(AATTRIBUTION_EMPTY, false);
@@ -547,7 +547,7 @@ bool QueriesPageAttribut1::TransferDataToWindow() {
     return true;
   }
 
-  if (m_Parent->GetData()->HasFieldsValues() == false) {
+  if (!m_Parent->GetData()->HasFieldsValues()) {
     m_AdvAttribRadio->Enable(AATTRIBUTION_YES, false);
   }
 
@@ -608,9 +608,9 @@ void QueriesPageAttribut2::_LoadAttributs() {
   m_AdvAttributs->Clear();
 
   wxASSERT(m_Parent->GetData()->m_QueryLayerID != wxNOT_FOUND);
-  if (m_Parent->GetData()->GetFieldsValues(m_pDB, m_Parent->GetData()->m_QueryLayerID,
+  if (!m_Parent->GetData()->GetFieldsValues(m_pDB, m_Parent->GetData()->m_QueryLayerID,
                                            m_Parent->GetData()->m_QueryFields,
-                                           m_Parent->GetData()->m_QueryFieldsValues) == false) {
+                                           m_Parent->GetData()->m_QueryFieldsValues)) {
     m_AdvAttributs->Thaw();
     return;
   }
@@ -643,7 +643,7 @@ void QueriesPageAttribut2::OnDeleteAttribut(wxKeyEvent &event) {
       return;
     }
 
-    if (m_Parent->GetData()->DeleteFieldsValue(m_AdvAttributs->GetSelection()) == false) {
+    if (!m_Parent->GetData()->DeleteFieldsValue(m_AdvAttributs->GetSelection())) {
       event.Skip();
       return;
     }
@@ -680,7 +680,7 @@ bool QueriesPageAttribut2::TransferDataToWindow() {
 }
 
 bool QueriesPageAttribut2::TransferDataFromWindow() {
-  if (m_AdvAttributs->IsEmpty() == true) {
+  if (m_AdvAttributs->IsEmpty()) {
     m_Parent->GetData()->m_QueryFieldsStatus = AATTRIBUTION_EMPTY;
   }
   return true;
@@ -753,7 +753,7 @@ void QueriesPageGeneric::_CreateControls() {
 
 QueriesPageGeneric::QueriesPageGeneric(QueriesWizard *parent, wxWizardPage *prev, wxWizardPage *next)
     : wxWizardPageSimple(parent, prev, next) {
-  m_GenericData = NULL;
+  m_GenericData = nullptr;
   m_Parent = parent;
   _CreateControls();
 }
@@ -794,7 +794,7 @@ bool QueriesPageGeneric::TransferDataFromWindow() {
   }
 
   delete m_GenericData;
-  m_GenericData = NULL;
+  m_GenericData = nullptr;
   return true;
 }
 

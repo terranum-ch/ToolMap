@@ -128,7 +128,7 @@ bool BackupManagerDLG::_LoadData() {
     }
 
     m_ListBackup->SetText(myIndex, mySupportedFiles.Item(i), 1);
-    if (myFile.GetDate().IsValid() == true) {
+    if (myFile.GetDate().IsValid()) {
       m_ListBackup->SetText(myIndex, myFile.GetDate().Format(_T("%d %b %Y")), 2);
       m_ListBackup->SetText(myIndex, myFile.GetDate().FormatISOTime(), 3);
     }
@@ -158,7 +158,7 @@ void BackupManagerDLG::OnButtonRestore(wxCommandEvent &event) {
 }
 
 void BackupManagerDLG::OnButtonDelete(wxCommandEvent &event) {
-  if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() == 0) {
+  if (m_ListBackup == nullptr || m_ListBackup->GetSelectedItemCount() == 0) {
     return;
   }
 
@@ -179,7 +179,7 @@ void BackupManagerDLG::OnButtonDelete(wxCommandEvent &event) {
   for (int i = m_ListBackup->GetItemCount() - 1; i >= 0; i--) {
     if (m_ListBackup->GetItemState(i, wxLIST_STATE_SELECTED) == wxLIST_STATE_SELECTED) {
       wxFileName myFile(m_BackupPath, m_ListBackup->GetText(i, 1));
-      if (wxRemoveFile(myFile.GetFullPath()) == false) {
+      if (!wxRemoveFile(myFile.GetFullPath())) {
         wxLogError(_("Removing file : '%s' failed!"), myFile.GetFullName());
       } else {
         m_ListBackup->DeleteItem(i);
@@ -190,7 +190,7 @@ void BackupManagerDLG::OnButtonDelete(wxCommandEvent &event) {
 }
 
 void BackupManagerDLG::OnUpdateUIDelete(wxUpdateUIEvent &event) {
-  if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() == 0) {
+  if (m_ListBackup == nullptr || m_ListBackup->GetSelectedItemCount() == 0) {
     event.Enable(false);
     return;
   }
@@ -198,7 +198,7 @@ void BackupManagerDLG::OnUpdateUIDelete(wxUpdateUIEvent &event) {
 }
 
 void BackupManagerDLG::OnUpdateUIRestore(wxUpdateUIEvent &event) {
-  if (m_ListBackup == NULL || m_ListBackup->GetSelectedItemCount() != 1) {
+  if (m_ListBackup == nullptr || m_ListBackup->GetSelectedItemCount() != 1) {
     event.Enable(false);
     return;
   }
@@ -213,7 +213,7 @@ void BackupManagerDLG::OnListColumnClick(wxListEvent &event) {
 
   // invert order
   if (myCol == m_ClassedCol) {
-    if (m_AscendingOrder == true) {
+    if (m_AscendingOrder) {
       m_AscendingOrder = false;
     } else {
       m_AscendingOrder = true;
@@ -228,7 +228,7 @@ void BackupManagerDLG::OnListColumnClick(wxListEvent &event) {
     m_ListBackup->SetColumnImage(wxNOT_FOUND, m_ClassedCol);
   }
   int myImageindex = 0;
-  if (m_AscendingOrder == true) {
+  if (m_AscendingOrder) {
     myImageindex = 1;
   }
   m_ListBackup->SetColumnImage(myImageindex, myCol);
@@ -265,7 +265,7 @@ BackupManagerDLG::BackupManagerDLG(wxWindow *parent, wxWindowID id, const wxStri
   m_BackupManager = bckmanager;
   m_ClassedCol = wxNOT_FOUND;
   m_AscendingOrder = true;
-  m_ImgList = NULL;
+  m_ImgList = nullptr;
   m_BackupPath = wxEmptyString;
   m_RestoreFileName = wxEmptyString;
 

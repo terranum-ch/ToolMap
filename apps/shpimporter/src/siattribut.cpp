@@ -31,11 +31,11 @@ bool siAttributValue::_GetCatalogDatabaseID(DataBase *database) {
       _T("SELECT c.CATALOG_ID FROM dmn_catalog c LEFT JOIN dmn_attribut_value v ON (c.CATALOG_ID = v.CATALOG_ID) ")
       _T("WHERE (c.DESCRIPTION_0 = '%s' AND v.ATTRIBUT_ID = %ld)"),
       m_ValueOut, m_ParentAttribut->GetAttributIDReal());
-  if (database->DataBaseQuery(myQuery) == false) {
+  if (!database->DataBaseQuery(myQuery)) {
     return false;
   }
 
-  if (database->DataBaseGetNextResult(m_ValueOutCode) == false) {
+  if (!database->DataBaseGetNextResult(m_ValueOutCode)) {
     database->DataBaseClearResults();
     return false;
   }
@@ -48,7 +48,7 @@ bool siAttributValue::_LoadOperationValue(const wxString &text, DataBase *databa
   siParam myParam;
   bool bError = false;
   m_ValueOut = myParam.GetParamByCol(text, 0, bError);
-  if (bError == true) {
+  if (bError) {
     return false;
   }
 
@@ -59,12 +59,12 @@ bool siAttributValue::_LoadOperationReplace(const wxString &text, DataBase *data
   siParam myParam;
   bool bError = false;
   m_ValueIn = myParam.GetParamByCol(text, 0, bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Unable to get VALUE IN"));
     return false;
   }
   m_ValueOut = myParam.GetParamByCol(text, 1, bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Unable to get VALUE OUT"));
     return false;
   }
@@ -138,29 +138,29 @@ bool siAttribut::LoadFromArray(const wxArrayString &attribtxt, DataBase *databas
   bool bError = false;
 
   m_AttributNameIn = myParam.GetParam(attribtxt.Item(0), _T("ATTRIBUT_IN"), bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Error getting ATTRIBUT_IN"));
     return false;
   }
   m_AttributNameOut = myParam.GetParam(attribtxt.Item(1), _T("ATTRIBUT_OUT"), bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Error getting ATTRIBUT_OUT"));
     return false;
   }
   wxString myAttributFilterKindTxt = myParam.GetParam(attribtxt.Item(2), _T("ATT_FILTER_KIND"), bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Error getting ATT_FILTER_KIND"));
     return false;
   }
   wxString myAttributOperationTxt = myParam.GetParam(attribtxt.Item(3), _T("ATT_OPERATION"), bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Error getting ATT_OPERATION"));
     return false;
   }
 
   if (myAttributFilterKindTxt != _T("All")) {
     // get all IDS.
-    if (myParam.GetRowIDs(attribtxt.Item(2), m_AttributFilterIDs) == false) {
+    if (!myParam.GetRowIDs(attribtxt.Item(2), m_AttributFilterIDs)) {
       return false;
     }
   }
@@ -181,10 +181,10 @@ bool siAttribut::LoadFromArray(const wxArrayString &attribtxt, DataBase *databas
   wxString myQuery =
       wxString::Format(_T("SELECT ATTRIBUT_ID FROM dmn_layer_attribut WHERE ATTRIBUT_NAME = '%s' AND LAYER_INDEX=%ld"),
                        GetAttributNameOut(), layerindex);
-  if (database->DataBaseQuery(myQuery) == false) {
+  if (!database->DataBaseQuery(myQuery)) {
     return false;
   }
-  if (database->DataBaseGetNextResult(m_AttributIDReal) == false) {
+  if (!database->DataBaseGetNextResult(m_AttributIDReal)) {
     database->DataBaseClearResults();
     wxLogError(_("Field '%s' not found!"), GetAttributNameOut());
     return false;
@@ -193,7 +193,7 @@ bool siAttribut::LoadFromArray(const wxArrayString &attribtxt, DataBase *databas
 
   for (unsigned int i = 4; i < attribtxt.GetCount(); i++) {
     siAttributValue *myAtValue = new siAttributValue(this);
-    if (myAtValue->LoadFromText(attribtxt.Item(i), database, layerindex) == false) {
+    if (!myAtValue->LoadFromText(attribtxt.Item(i), database, layerindex)) {
       wxDELETE(myAtValue);
       wxLogError(_("Loading attribut value from '%s' failed!"), attribtxt.Item(i));
       continue;
@@ -213,15 +213,15 @@ bool siAttribut::Process(OGRFeature *feature, DataBase *database, long layerinde
 
   if (m_AttributOperation == SIATTRIBUT_OPERATION_VALUE) {
     siAttributValue *myValue = m_Values.Item(0);
-    if (myValue == NULL) {
+    if (myValue == nullptr) {
       return false;
     }
 
     // INSERT INTO layer_at55 (OBJECT_ID, Status) VALUES (2,264) ON DUPLICATE KEY UPDATE Status=264
     wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%ld) ON DUPLICATE KEY UPDATE %s=%ld");
-    if (database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid,
+    if (!database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid,
                                                           myValue->GetValueOutCode(), m_AttributNameOut,
-                                                          myValue->GetValueOutCode())) == false) {
+                                                          myValue->GetValueOutCode()))) {
       return false;
     }
     return true;
@@ -239,8 +239,8 @@ bool siAttribut::Process(OGRFeature *feature, DataBase *database, long layerinde
 
     // insert
     wxString myQuery = _T("INSERT INTO layer_at%ld (OBJECT_ID, %s) VALUES (%ld,%ld) ON DUPLICATE KEY UPDATE %s=%ld");
-    if (database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid, myOutCode,
-                                                          m_AttributNameOut, myOutCode)) == false) {
+    if (!database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid, myOutCode,
+                                                          m_AttributNameOut, myOutCode))) {
       return false;
     }
     return true;
@@ -267,8 +267,8 @@ bool siAttribut::Process(OGRFeature *feature, DataBase *database, long layerinde
       myFieldValue.Replace(_T(","), _("."));
     }
 
-    if (database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid,
-                                                          myFieldValue, m_AttributNameOut, myFieldValue)) == false) {
+    if (!database->DataBaseQueryNoResults(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid,
+                                                          myFieldValue, m_AttributNameOut, myFieldValue))) {
       wxLogError(wxString::Format(myQuery, layerindex, m_AttributNameOut, databaseid, myFieldValue, m_AttributNameOut,
                                   myFieldValue));
       return false;

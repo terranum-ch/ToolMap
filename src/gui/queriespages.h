@@ -1,6 +1,6 @@
 /***************************************************************************
  queriespages.h
-                    Pages definition for the QueryWizard
+ Pages definition for the QueryWizard
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -289,7 +289,7 @@ class QueriesPageGeneric : public wxWizardPageSimple {
   void _CreateControls();
 
  public:
-  QueriesPageGeneric(QueriesWizard *parent, wxWizardPage *prev = NULL, wxWizardPage *next = NULL);
+  QueriesPageGeneric(QueriesWizard *parent, wxWizardPage *prev = nullptr, wxWizardPage *next = nullptr);
 
   ~QueriesPageGeneric();
 
@@ -323,7 +323,7 @@ class QueriesPageSQL : public wxWizardPageSimple {
   void _CreateControls();
 
  public:
-  QueriesPageSQL(QueriesWizard *parent, wxWizardPageSimple *prev = NULL, wxWizardPageSimple *next = NULL);
+  QueriesPageSQL(QueriesWizard *parent, wxWizardPageSimple *prev = nullptr, wxWizardPageSimple *next = nullptr);
 
   ~QueriesPageSQL();
 

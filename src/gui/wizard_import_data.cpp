@@ -320,18 +320,18 @@ tmWizardImport::tmWizardImport(wxWindow* parent, wxWindowID id, const wxString& 
   // Connect Events
   this->Connect(wxID_ANY, wxEVT_WIZARD_FINISHED, wxWizardEventHandler(tmWizardImport::OnWizardFinished));
   m_filePicker->Connect(wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(tmWizardImport::OnFileChanged),
-                        NULL, this);
+                        nullptr, this);
   m_checkBoxAllSameKind->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-                                 wxCommandEventHandler(tmWizardImport::ToggleKindFieldSelection), NULL, this);
+                                 wxCommandEventHandler(tmWizardImport::ToggleKindFieldSelection), nullptr, this);
 }
 
 tmWizardImport::~tmWizardImport() {
   // Disconnect Events
   this->Disconnect(wxID_ANY, wxEVT_WIZARD_FINISHED, wxWizardEventHandler(tmWizardImport::OnWizardFinished));
   m_filePicker->Disconnect(wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler(tmWizardImport::OnFileChanged),
-                           NULL, this);
+                           nullptr, this);
   m_checkBoxAllSameKind->Disconnect(wxEVT_COMMAND_CHECKBOX_CLICKED,
-                                    wxCommandEventHandler(tmWizardImport::ToggleKindFieldSelection), NULL, this);
+                                    wxCommandEventHandler(tmWizardImport::ToggleKindFieldSelection), nullptr, this);
 
   m_pages.Clear();
 }

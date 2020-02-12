@@ -28,7 +28,7 @@ void siKind::Reset() {
   m_CodesIn.Clear();
   m_CodesOut2.Clear();
   m_CodesRealOut.Clear();
-  m_Database = NULL;
+  m_Database = nullptr;
 }
 
 bool siKind::_LoadKindValue(const wxString& kindtxt) {
@@ -37,19 +37,19 @@ bool siKind::_LoadKindValue(const wxString& kindtxt) {
 
   long myCodeIn = wxNOT_FOUND;
   myParam.GetParamByCol(kindtxt, 0, bError).ToLong(&myCodeIn);
-  if (bError == true) {
+  if (bError) {
     return false;
   }
 
   wxString myCodeOut = myParam.GetParamByCol(kindtxt, 1, bError);
-  if (bError == true) {
+  if (bError) {
     return false;
   }
 
   // get real database ID;
   wxASSERT(m_Database);
-  if (m_Database->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM dmn_Layer_object WHERE OBJECT_CD = \"%s\""),
-                                                 myCodeOut)) == false) {
+  if (!m_Database->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM dmn_Layer_object WHERE OBJECT_CD = \"%s\""),
+                                                 myCodeOut))) {
     return false;
   }
   DataBaseResult myResult;
@@ -80,7 +80,7 @@ bool siKind::LoadFromArray(const wxArrayString& kindtxt, DataBase* database) {
   siParam myParam;
   bool bError = false;
   m_KindNameIn = myParam.GetParam(kindtxt.Item(0), _T("KIND_IN"), bError);
-  if (bError == true) {
+  if (bError) {
     wxLogError(_("Unable to get KIND_IN"));
     return false;
   }
@@ -88,7 +88,7 @@ bool siKind::LoadFromArray(const wxArrayString& kindtxt, DataBase* database) {
 
   // get kind values line 1 to GetCount(), and search real kind id;
   for (unsigned int i = 1; i < kindtxt.GetCount(); i++) {
-    if (_LoadKindValue(kindtxt.Item(i)) == false) {
+    if (!_LoadKindValue(kindtxt.Item(i))) {
       wxLogError(_("Error loading kind value from: %s"), kindtxt.Item(i));
     }
   }

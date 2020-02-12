@@ -109,7 +109,7 @@ bool Shortcut_Panel_DLG::TransferDataFromWindow() {
 
   for (unsigned int i = 0; i < m_TypeList->GetCount(); i++) {
     m_TypeList->GetItem(i, myCheckedID, mytemp, myChecked);
-    if (myChecked == true) m_CheckedTypes.Add(myCheckedID);
+    if (myChecked) m_CheckedTypes.Add(myCheckedID);
   }
 
   return true;

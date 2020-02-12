@@ -115,40 +115,40 @@ wxString lsVersion::GetVroomGISNumber() {
 wxString lsVersion::GetAllModules() {
   wxString myModules = _T("wxWidgets: ") + GetwxWidgetsNumber();
 
-  if (GetwxWidgetsGIT().IsEmpty() == false) {
+  if (!GetwxWidgetsGIT().IsEmpty()) {
     myModules.Append(wxString::Format(" (%s)", GetwxWidgetsGIT()));
   }
   myModules.Append(_T("\n"));
 
-  if (GetVroomGISNumber().IsEmpty() == false) {
+  if (!GetVroomGISNumber().IsEmpty()) {
     myModules.Append(_T("vroomGIS: ") + GetVroomGISNumber() + _T("\n"));
   }
 
-  if (GetMySQLNumber().IsEmpty() == false) {
+  if (!GetMySQLNumber().IsEmpty()) {
     myModules.Append(_T("MySQL: ") + GetMySQLNumber() + _T("\n"));
   }
 
-  if (GetSQLiteNumber().IsEmpty() == false) {
+  if (!GetSQLiteNumber().IsEmpty()) {
     myModules.Append(_T("SQLite: ") + GetSQLiteNumber() + _T("\n"));
   }
 
-  if (GetGDALNumber().IsEmpty() == false) {
+  if (!GetGDALNumber().IsEmpty()) {
     myModules.Append(_T("GDAL: ") + GetGDALNumber() + _T("\n"));
   }
 
-  if (GetGEOSNumber().IsEmpty() == false) {
+  if (!GetGEOSNumber().IsEmpty()) {
     myModules.Append(_T("GEOS: ") + GetGEOSNumber() + _T("\n"));
   }
 
-  if (GetCurlNumber().IsEmpty() == false) {
+  if (!GetCurlNumber().IsEmpty()) {
     myModules.Append(_T("libCURL: ") + GetCurlNumber() + _T("\n"));
   }
 
-  if (GetSoftGITRevision().IsEmpty() == false) {
+  if (!GetSoftGITRevision().IsEmpty()) {
     myModules.Append(wxString::Format(_T("%s revision: %s \n"), GetSoftName(), GetSoftGITRevision()));
   }
 
-  if (GetSoftGITBranch().IsEmpty() == false) {
+  if (!GetSoftGITBranch().IsEmpty()) {
     myModules.Append(wxString::Format(_T("%s branch: %s \n"), GetSoftName(), GetSoftGITBranch()));
   }
 

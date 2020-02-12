@@ -1,6 +1,5 @@
 /***************************************************************************
  tmimportgis.cpp
-
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -22,7 +21,7 @@
 #include "../database/database_tm.h"
 
 tmImportGIS::tmImportGIS() {
-  m_Vector = NULL;
+  m_Vector = nullptr;
   m_FileType = tmIMPORT_TYPE_SHP;
 }
 
@@ -31,17 +30,17 @@ tmImportGIS::~tmImportGIS() {
 }
 
 bool tmImportGIS::Open(const wxFileName &filename) {
-  if (tmImport::Open(filename) == false) {
+  if (!tmImport::Open(filename)) {
     return false;
   }
 
   m_Vector = tmGISDataVector::CreateGISVectorBasedOnExt(m_FileName.GetExt());
-  if (m_Vector == NULL) {
+  if (m_Vector == nullptr) {
     wxLogError(_("File format not supported"));
     return false;
   }
 
-  if (m_Vector->Open(m_FileName.GetFullPath(), true) == false) {
+  if (!m_Vector->Open(m_FileName.GetFullPath(), true)) {
     wxDELETE(m_Vector);
     return false;
   }
@@ -118,7 +117,7 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
 
     wxASSERT(!oids.IsEmpty());
 
-    if (m_ImportTarget != TOC_NAME_FRAME && prj != NULL) {
+    if (m_ImportTarget != TOC_NAME_FRAME && prj != nullptr) {
       if (!SetObjectKind(database, prj, fileValues, oids)) {
         break;
       }
@@ -133,8 +132,8 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
 
     bool bStop = false;
     tpercent.SetValue(iCount);
-    if (tpercent.IsNewStep() && progress != NULL) {
-      if (progress->Update(tpercent.GetPercent(), wxEmptyString) == false) {
+    if (tpercent.IsNewStep() && progress != nullptr) {
+      if (!progress->Update(tpercent.GetPercent(), wxEmptyString)) {
         bStop = true;
       }
     }
@@ -156,7 +155,7 @@ bool tmImportGIS::GetExistingAttributeValues(const wxString &attName, wxArrayStr
 
   while (true) {
     OGRFeature *myFeature = m_Vector->GetNextFeature();
-    if (myFeature == NULL) {
+    if (myFeature == nullptr) {
       break;
     }
 

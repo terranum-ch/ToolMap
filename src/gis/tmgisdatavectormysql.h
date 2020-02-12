@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatavectormysql.h
-                    For dealing with spatial data from a mysql database
+ For dealing with spatial data from a mysql database
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

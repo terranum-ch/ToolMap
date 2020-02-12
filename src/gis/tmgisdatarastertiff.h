@@ -1,6 +1,6 @@
 /***************************************************************************
  tmgisdatarastertiff.h
-                   For dealing with spatial raster data (*.tiff, *.tif)
+ For dealing with spatial raster data (*.tiff, *.tif)
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

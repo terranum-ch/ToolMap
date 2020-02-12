@@ -49,42 +49,42 @@ class TEST_tmWindowPosition : public CxxTest::TestSuite {
 
   void testSavePosition() {
     tmWindowPosition wnd("ToolMap_test_suite");
-    TS_ASSERT(wnd.SavePosition(_T("MyWindow"), wxRect(10, 10, 300, 300)) == true);
+    TS_ASSERT(wnd.SavePosition(_T("MyWindow"), wxRect(10, 10, 300, 300)));
   }
 
   void testLoadPosition() {
     tmWindowPosition wnd("ToolMap_test_suite");
     wxRect myRect = wxRect(wxDefaultPosition, wxDefaultSize);
-    TS_ASSERT(wnd.LoadPosition(_T("MyWindow2"), myRect) == false);
+    TS_ASSERT(!wnd.LoadPosition(_T("MyWindow2"), myRect));
     TS_ASSERT(myRect == wxRect(wxDefaultPosition, wxDefaultSize));
-    TS_ASSERT(wnd.LoadPosition(_T("MyWindow"), myRect) == true);
+    TS_ASSERT(wnd.LoadPosition(_T("MyWindow"), myRect));
     TS_ASSERT(myRect == wxRect(10, 10, 300, 300));
     wnd.SaveScreenPosition();
   }
 
   void testHasChanged() {
     tmWindowPosition wnd("ToolMap_test_suite");
-    TS_ASSERT(wnd.HasScreenChanged() == false);
+    TS_ASSERT(!wnd.HasScreenChanged());
   }
 
   void testIntersect() {
     tmWindowPosition wnd("ToolMap_test_suite");
     wxRect myWndPos = wxRect(50, 50, 300, 300);
-    TS_ASSERT(wnd.Intersects(myWndPos, wxSize(1024, 780)) == true);
-    TS_ASSERT(wnd.Intersects(wxRect(1200, 800, 300, 300), wxSize(1024, 780)) == false);
+    TS_ASSERT(wnd.Intersects(myWndPos, wxSize(1024, 780)));
+    TS_ASSERT(!wnd.Intersects(wxRect(1200, 800, 300, 300), wxSize(1024, 780)));
   }
 
   void testSavePosition2() {
     tmWindowPosition wnd("ToolMap_test_suite");
-    TS_ASSERT(wnd.SavePosition(_T("TESTWND"), _T("coucou123")) == true);
+    TS_ASSERT(wnd.SavePosition(_T("TESTWND"), _T("coucou123")));
   }
 
   void testLoadPosition2() {
     tmWindowPosition wnd("ToolMap_test_suite");
     wxString myPostext = wxEmptyString;
-    TS_ASSERT(wnd.LoadPosition(_T("NO_EXISTING"), myPostext) == false);
-    TS_ASSERT(myPostext.IsEmpty() == true);
-    TS_ASSERT(wnd.LoadPosition(_T("TESTWND"), myPostext) == true);
+    TS_ASSERT(!wnd.LoadPosition(_T("NO_EXISTING"), myPostext));
+    TS_ASSERT(myPostext.IsEmpty());
+    TS_ASSERT(wnd.LoadPosition(_T("TESTWND"), myPostext));
     TS_ASSERT(myPostext == _T("coucou123"));
   }
 };

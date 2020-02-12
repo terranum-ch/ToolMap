@@ -212,7 +212,7 @@ class tmRenderer : public wxScrolledWindow {
 
   void OnPaint(wxPaintEvent &event);
 
-  void SetBitmapStatus(wxBitmap *bmp = NULL);  //{m_bmp = bmp;}
+  void SetBitmapStatus(wxBitmap *bmp = nullptr);  //{m_bmp = bmp;}
 
   void SetTool(tmGIS_TOOL selected_tool);
 

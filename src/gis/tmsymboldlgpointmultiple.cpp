@@ -42,18 +42,18 @@ bool tmSymbolDLGPointMultiple::Create(wxWindow *parent, wxWindowID id, const wxS
 tmSymbolDLGPointMultiple::~tmSymbolDLGPointMultiple() {}
 
 void tmSymbolDLGPointMultiple::_Init() {
-  m_PointColourCtrl = NULL;
-  m_PointWidthCtrl = NULL;
-  m_TransparencySlider = NULL;
+  m_PointColourCtrl = nullptr;
+  m_PointWidthCtrl = nullptr;
+  m_TransparencySlider = nullptr;
 
-  m_SymbologyTypeCtrl = NULL;
-  m_MQueryCtrl = NULL;
-  m_MSelColourCtrl = NULL;
-  m_MSelWidthCtrl = NULL;
-  m_MSelVisibleCtrl = NULL;
-  m_MUnSelColourCtrl = NULL;
-  m_MUnSelWidthCtrl = NULL;
-  m_MUnSelVisibleCtrl = NULL;
+  m_SymbologyTypeCtrl = nullptr;
+  m_MQueryCtrl = nullptr;
+  m_MSelColourCtrl = nullptr;
+  m_MSelWidthCtrl = nullptr;
+  m_MSelVisibleCtrl = nullptr;
+  m_MUnSelColourCtrl = nullptr;
+  m_MUnSelWidthCtrl = nullptr;
+  m_MUnSelVisibleCtrl = nullptr;
 
   m_TocType = TOC_NAME_UNKNOWN;
 }

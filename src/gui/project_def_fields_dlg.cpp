@@ -1,6 +1,6 @@
 /***************************************************************************
  project_def_fields_dlg.cpp
-                    Display dialog for adding new field
+ Display dialog for adding new field
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -33,8 +33,8 @@ ProjectDefFieldList::ProjectDefFieldList(wxWindow *parent, wxWindowID id, wxSize
 
   CreateColumns(&myColNames, &myColsWidths);
 
-  m_pPrjDefinition = NULL;
-  m_CodedValueObj = NULL;
+  m_pPrjDefinition = nullptr;
+  m_CodedValueObj = nullptr;
 
   m_ChoiceIndex = 0;
 }
@@ -87,7 +87,7 @@ void ProjectDefFieldList::BeforeEditing() {
 
   // find item selected and then call a new Dialog
   // for editing the existing Field
-  if (m_CodedValueObj != NULL) {
+  if (m_CodedValueObj != nullptr) {
     // transfert the data obj to the dialog, data will be
     // filled during DataTransfer...
     ((ProjectDefLayersEditObjectDlg *)m_pDialog)->SetMemoryCodedValObject(m_CodedValueObj);
@@ -174,7 +174,7 @@ void ProjectDefFieldDlg::OnIdleValidateDlg(wxIdleEvent &event) {
     }
   }
 
-  if (m_DlgAFD_Field_Def->IsEmpty() == true) {
+  if (m_DlgAFD_Field_Def->IsEmpty()) {
     m_DlgAFD_Button_OK->Enable(false);
     event.Skip();
     return;
@@ -209,7 +209,7 @@ void ProjectDefFieldDlg::OnRemoveAllowedValue(wxCommandEvent &event) {
 }
 
 void ProjectDefFieldDlg::OnShowLiveResults(wxCommandEvent &event) {
-  if (m_DlgAFD_Field_Scale == NULL || m_DlgAFD_Field_Precision == NULL || m_DlgAFD_Result == NULL) {
+  if (m_DlgAFD_Field_Scale == nullptr || m_DlgAFD_Field_Precision == nullptr || m_DlgAFD_Result == nullptr) {
     return;
   }
   /// called when scale or precision controls changes
@@ -281,19 +281,19 @@ ProjectDefFieldDlg::~ProjectDefFieldDlg() {}
 
 void ProjectDefFieldDlg::Init() {
   ////@begin ProjectDefFieldDlg member initialisation
-  m_DlgAFD_Field_Def = NULL;
-  m_DlgAFD_Field_Precision = NULL;
-  m_DlgAFD_Field_Scale = NULL;
-  m_DlgAFD_Result = NULL;
-  m_DlgAFD_Coded_Val_List = NULL;
-  m_DlgAFD_Choicebook = NULL;
-  m_DlgAFD_Text_Length = NULL;
-  m_DlgAFD_Button_OK = NULL;
+  m_DlgAFD_Field_Def = nullptr;
+  m_DlgAFD_Field_Precision = nullptr;
+  m_DlgAFD_Field_Scale = nullptr;
+  m_DlgAFD_Result = nullptr;
+  m_DlgAFD_Coded_Val_List = nullptr;
+  m_DlgAFD_Choicebook = nullptr;
+  m_DlgAFD_Text_Length = nullptr;
+  m_DlgAFD_Button_OK = nullptr;
 
-  m_MemoryField = NULL;
+  m_MemoryField = nullptr;
   m_FieldTypeStatus = TM_FIELD_TEXT;
 
-  m_pPrjDefinition = NULL;
+  m_pPrjDefinition = nullptr;
   m_bIsModeEditing = false;
   ////@end ProjectDefFieldDlg member initialisation
 }
@@ -307,7 +307,7 @@ void ProjectDefFieldDlg::Init() {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertTextValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     m_DlgAFD_Text_Length->SetValue(m_MemoryField->m_FieldPrecision);
   } else  // DIALOG --> DATA
@@ -326,7 +326,7 @@ void ProjectDefFieldDlg::TransfertTextValues(bool bSendDataToDlg) {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertIntegerValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     // m_DlgAFD_Orientation_Integer->SetValue(m_MemoryField->m_FieldOrientation);
   } else  // DIALOG --> DATA
@@ -345,7 +345,7 @@ void ProjectDefFieldDlg::TransfertIntegerValues(bool bSendDataToDlg) {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertFloatValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     m_DlgAFD_Field_Precision->SetValue(m_MemoryField->m_FieldPrecision);
     m_DlgAFD_Field_Scale->SetValue(m_MemoryField->m_FieldScale);
@@ -372,7 +372,7 @@ void ProjectDefFieldDlg::TransfertFloatValues(bool bSendDataToDlg) {
   @date 10 April 2008
   *******************************************************************************/
 void ProjectDefFieldDlg::TransfertDateValues(bool bSendDataToDlg) {
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     // nothing to be done here
   } else  // DIALOG --> DATA
@@ -394,7 +394,7 @@ void ProjectDefFieldDlg::TransfertDateValues(bool bSendDataToDlg) {
 void ProjectDefFieldDlg::TransfertEnumValues(bool bSendDataToDlg) {
   wxArrayString myListValues;
 
-  if (bSendDataToDlg == TRUE)  // DATA --> DIALOG
+  if (bSendDataToDlg)  // DATA --> DIALOG
   {
     // fill the list
     for (int i = 0; i < m_pPrjDefinition->GetCountCodedValue(); i++) {
@@ -446,7 +446,7 @@ bool ProjectDefFieldDlg::TransferDataFromWindow() {
   // some checks, have we called
   // SetMemoryFieldObject function
   // before ?
-  wxASSERT(m_MemoryField != NULL);
+  wxASSERT(m_MemoryField != nullptr);
 
   m_MemoryField->m_Fieldname = m_DlgAFD_Field_Def->GetValue();
 
@@ -473,7 +473,7 @@ bool ProjectDefFieldDlg::TransferDataToWindow() {
   // some checks, have we called
   // SetMemoryFieldObject function
   // before ?
-  wxASSERT(m_MemoryField != NULL);
+  wxASSERT(m_MemoryField != nullptr);
 
   m_DlgAFD_Field_Def->SetValue(m_MemoryField->m_Fieldname);
 

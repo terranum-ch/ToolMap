@@ -1,6 +1,6 @@
 /***************************************************************************
  tmsymbolpendef.h
-                    Pen and brush definitions for tm symbology
+ Pen and brush definitions for tm symbology
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/

@@ -57,7 +57,7 @@ void tmSymbolDLG::_LoadQueries(wxChoice *choicectrl, TOC_GENERIC_NAME toctarget)
   wxString myQuery = wxString::Format(_T("SELECT QUERIES_ID, QUERIES_NAME FROM %s WHERE QUERIES_TARGET= %d"),
                                       TABLE_NAME_QUERIES, static_cast<int>(toctarget));
 
-  if (m_pDB->DataBaseQuery(myQuery) == false) {
+  if (!m_pDB->DataBaseQuery(myQuery)) {
     wxLogError(_T("Error running query: ") + myQuery);
     return;
   }
@@ -84,14 +84,14 @@ void tmSymbolDLG::_LoadQueries(wxChoice *choicectrl, TOC_GENERIC_NAME toctarget)
   }
 
   wxDELETE(myResults);
-  wxASSERT(m_pDB->DataBaseHasResults() == false);
+  wxASSERT(!m_pDB->DataBaseHasResults());
 }
 
 tmSymbolDLG::~tmSymbolDLG() {}
 
 void tmSymbolDLG::_Init() {
-  m_SymbolPanel = NULL;
-  m_pDB = NULL;
+  m_SymbolPanel = nullptr;
+  m_pDB = nullptr;
 }
 
 void tmSymbolDLG::CreateControlsBasic() {

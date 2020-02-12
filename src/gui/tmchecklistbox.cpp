@@ -1,6 +1,6 @@
 /***************************************************************************
  tmchecklistbox.cpp
-                    Base class for dealing with checklistbox with long
+ Base class for dealing with checklistbox with long
  item associed to every item
  -------------------
  copyright : (C) 2008 CREALP Lucien Schreiber
@@ -76,7 +76,7 @@ tmCheckListBox::~tmCheckListBox() {
   @date 14 May 2008
   *******************************************************************************/
 bool tmCheckListBox::CreateStandardMenu() {
-  if (GetPopupMenu() == NULL) {
+  if (GetPopupMenu() == nullptr) {
     return false;
   }
 
@@ -96,7 +96,7 @@ bool tmCheckListBox::CreateStandardMenu() {
   @date 15 May 2008
   *******************************************************************************/
 void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent &event) {
-  if (GetPopupMenu() == NULL) {
+  if (GetPopupMenu() == nullptr) {
     return;
   }
 

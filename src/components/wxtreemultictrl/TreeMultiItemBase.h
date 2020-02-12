@@ -83,21 +83,21 @@ class TreeMultiItemBase {
   }
 
   /** returns the instance pointer if the current node is
-      a TreeMultiItemRoot, and NULL when it's not.
+      a TreeMultiItemRoot, and nullptr when it's not.
   */
   virtual TreeMultiItemRoot *IsTreeMultiItemRoot() const {
     return 0;
   };
 
   /** returns the instance pointer if the current node is
-      a TreeMultiItemWindow, and NULL when it's not.
+      a TreeMultiItemWindow, and nullptr when it's not.
 */
   virtual TreeMultiItemWindow *IsTreeMultiItemWindow() const {
     return 0;
   };
 
   /** returns the instance pointer if the current node is
-      a TreeMultiItemNode, and NULL when it's not.
+      a TreeMultiItemNode, and nullptr when it's not.
 */
   virtual TreeMultiItemNode *IsTreeMultiItemNode() const {
     return 0;

@@ -145,7 +145,7 @@ class ScaleList : public ListGenReportWithDialog {
   virtual int Compare(int iColumnCompareType, const wxString &x_strValue1, const wxString &x_strValue2, bool bAsending);
 
   // pass pointer to ctrls to the list
-  void SetListCtrls(wxChoice *orderchoice = NULL) {
+  void SetListCtrls(wxChoice *orderchoice = nullptr) {
     m_ChoiceOrder = orderchoice;
   }
 

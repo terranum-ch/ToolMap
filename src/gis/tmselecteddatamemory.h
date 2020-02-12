@@ -1,6 +1,6 @@
 /***************************************************************************
  tmSelectedDataMemory.h
-                    Store ID of selected data into memory
+ Store ID of selected data into memory
  -------------------
  copyright : (C) 2008 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -61,7 +61,7 @@ class tmSelectedDataMemory : public wxObject {
   // operations
   bool AddSelected(wxArrayLong *selected);
 
-  bool Remove(wxArrayLong *selected = NULL);
+  bool Remove(wxArrayLong *selected = nullptr);
 
   bool IsSelected(const long &value);
 

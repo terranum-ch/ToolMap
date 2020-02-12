@@ -64,7 +64,7 @@ class ListGenReportWithStatus : public ListGenReportWithDialog {
  protected:
  public:
   // constructor
-  ListGenReportWithStatus(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = NULL,
+  ListGenReportWithStatus(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = nullptr,
                           wxSize size = wxDefaultSize);
 
   // status setter and getter

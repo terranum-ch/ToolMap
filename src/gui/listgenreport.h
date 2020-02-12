@@ -61,7 +61,7 @@ class ListGenReport : public wxListCtrl {
   ListGenMenu *m_ListContextMenu;
   TextParser *m_ImportParser;
 
-  void CreateColumns(wxArrayString *pColsName, wxArrayInt *pColsSize = NULL);
+  void CreateColumns(wxArrayString *pColsName, wxArrayInt *pColsSize = nullptr);
 
   // events
   virtual void OnDoubleClickItem(wxListEvent &event);
@@ -122,7 +122,7 @@ class ListGenReport : public wxListCtrl {
  @author Lucien Schreiber (c) CREALP
  @date 19 November 2007
  *************************************************/
-  ListGenReport(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = NULL,
+  ListGenReport(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = nullptr,
                 wxSize size = wxDefaultSize, long style = wxLC_REPORT);
 
   /*********************************************/ /**
@@ -349,7 +349,7 @@ class ListGenReportWithDialog : public ListGenReport {
  public:
   ListGenReportWithDialog(wxWindow *parent, wxWindowID id, wxSize size = wxDefaultSize);
 
-  ListGenReportWithDialog(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = NULL,
+  ListGenReportWithDialog(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = nullptr,
                           wxSize size = wxDefaultSize, long style = wxLC_REPORT);
 
   ~ListGenReportWithDialog();

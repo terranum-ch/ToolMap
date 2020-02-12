@@ -57,7 +57,7 @@ void TreeMultiItemNode::AddNode(TreeMultiItemBase *node) {
 }
 
 void TreeMultiItemNode::InsertNode(TreeMultiItemBase *NodePtr, size_t Position) {
-  if (NodePtr != NULL) this->_items.Insert(NodePtr, Position);
+  if (NodePtr != nullptr) this->_items.Insert(NodePtr, Position);
 }
 
 //------------------------------------------------------------
@@ -154,14 +154,14 @@ TreeMultiItemBase *TreeMultiItemNode::First() const {
   if (this->_items.GetCount() > 0)
     return &(this->_items[0]);
   else
-    return NULL;
+    return nullptr;
 } /* TreeMultiItemNode::First() const */
 
 TreeMultiItemBase *TreeMultiItemNode::Last() const {
   if (this->_items.GetCount() > 0)
     return &(this->_items.Last());
   else
-    return NULL;
+    return nullptr;
 } /* TreeMultiItemNode::Last() const */
 
 //------------------------------------------------------------

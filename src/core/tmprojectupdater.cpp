@@ -51,7 +51,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 220 -> 221
   if (myActualDBVersion == 220) {
-    if (_220to221() == false) {
+    if (!_220to221()) {
       _SetVersion(220);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -61,7 +61,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 221 -> 222
   if (myActualDBVersion == 221) {
-    if (_221to222() == false) {
+    if (!_221to222()) {
       _SetVersion(221);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -71,7 +71,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 222 -> 223
   if (myActualDBVersion == 222) {
-    if (_222to223() == false) {
+    if (!_222to223()) {
       _SetVersion(222);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -81,7 +81,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 223 -> 224
   if (myActualDBVersion == 223) {
-    if (_223to224() == false) {
+    if (!_223to224()) {
       _SetVersion(223);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -91,7 +91,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 224 -> 225
   if (myActualDBVersion == 224) {
-    if (_224to225() == false) {
+    if (!_224to225()) {
       _SetVersion(224);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -101,7 +101,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 225 -> 226
   if (myActualDBVersion == 225) {
-    if (_225to226() == false) {
+    if (!_225to226()) {
       _SetVersion(225);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -111,7 +111,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 226 -> 227
   if (myActualDBVersion == 226) {
-    if (_226to227() == false) {
+    if (!_226to227()) {
       _SetVersion(226);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -121,7 +121,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 227 -> 228
   if (myActualDBVersion == 227) {
-    if (_227to228() == false) {
+    if (!_227to228()) {
       _SetVersion(227);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -131,7 +131,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 228 -> 229
   if (myActualDBVersion == 228) {
-    if (_228to229() == false) {
+    if (!_228to229()) {
       _SetVersion(228);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -141,7 +141,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 229 -> 230
   if (myActualDBVersion == 229) {
-    if (_229to230() == false) {
+    if (!_229to230()) {
       _SetVersion(229);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -151,7 +151,7 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
 
   // 230 -> 231
   if (myActualDBVersion == 230) {
-    if (_230to231() == false) {
+    if (!_230to231()) {
       _SetVersion(230);
       return tmPRJ_UPD_ERROR_PROJECT;
     } else {
@@ -214,12 +214,12 @@ bool tmProjectUpdater::_221to222() {
       _T(" ALTER TABLE prj_settings ADD COLUMN  `PRJ_LANG_ACTIVE` int(11) NOT NULL DEFAULT '0' AFTER ")
       _T("`PRJ_SNAP_TOLERENCE`;");
 
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return false;
   }
 
   // Add data into lang_def
-  if (m_pDB->CreateLangDefData() == false) {
+  if (!m_pDB->CreateLangDefData()) {
     return false;
   }
 
@@ -227,13 +227,13 @@ bool tmProjectUpdater::_221to222() {
   myQuery =
       _T("ALTER TABLE dmn_layer_object CHANGE OBJECT_DESC")
       _T(" OBJECT_DESC_0 varchar(255) NOT NULL COMMENT 'Feature description'");
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return false;
   }
 
   for (int i = 1; i < 5; i++) {
     myQuery = _T("ALTER TABLE dmn_layer_object ADD OBJECT_DESC_%d varchar(255) DEFAULT NULL AFTER OBJECT_DESC_%d");
-    if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, i, i - 1)) == false) {
+    if (!m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, i, i - 1))) {
       return false;
     }
   }
@@ -249,12 +249,12 @@ bool tmProjectUpdater::_221to222() {
       _T(" AND  table_name IN (SELECT TABLE_NAME FROM")
       _T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +
       TABLE_NAME_LAYER_AT + _T("\%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
-  if (m_pDB->DataBaseQuery(sSentence) == false) {
+  if (!m_pDB->DataBaseQuery(sSentence)) {
     return false;
   }
 
   DataBaseResult *myResults = new DataBaseResult();
-  if (m_pDB->DataBaseGetResults(myResults) == false) {
+  if (!m_pDB->DataBaseGetResults(myResults)) {
     wxDELETE(myResults);
     return false;
   }
@@ -290,8 +290,8 @@ bool tmProjectUpdater::_221to222() {
 
     // add field to dmn_layer_attribut
     myQuery = _T("INSERT INTO %s (LAYER_INDEX, ATTRIBUT_NAME) VALUES (%ld, \"%s\");");
-    if (m_pDB->DataBaseQueryNoResults(
-            wxString::Format(myQuery, TABLE_NAME_AT_LIST, myLayerIndex.Item(f), myF->m_Fieldname)) == false) {
+    if (!m_pDB->DataBaseQueryNoResults(
+            wxString::Format(myQuery, TABLE_NAME_AT_LIST, myLayerIndex.Item(f), myF->m_Fieldname))) {
       wxLogError(_("Error converting field: '%s', project will be incomplete"), myF->m_Fieldname);
       continue;
     }
@@ -306,8 +306,8 @@ bool tmProjectUpdater::_221to222() {
       myQuery = _T("INSERT INTO %s (CODE, DESCRIPTION_0) VALUES (\"%s\",\"%s\")");
       ProjectDefMemoryFieldsCodedVal *myCVal = myF->m_pCodedValueArray.Item(e);
       wxASSERT(myCVal);
-      if (m_pDB->DataBaseQueryNoResults(
-              wxString::Format(myQuery, TABLE_NAME_AT_CATALOG, myCVal->m_ValueCode, myCVal->m_ValueName)) == false) {
+      if (!m_pDB->DataBaseQueryNoResults(
+              wxString::Format(myQuery, TABLE_NAME_AT_CATALOG, myCVal->m_ValueCode, myCVal->m_ValueName))) {
         wxLogError(_("Adding ennumeration: '%s' from layer '%s' failed"), myCVal->m_ValueName, myF->m_Fieldname);
         continue;
       }
@@ -320,8 +320,8 @@ bool tmProjectUpdater::_221to222() {
       }
       // add enumeration into dmn_attribut_value
       myQuery = _T("INSERT INTO %s (ATTRIBUT_ID, CATALOG_ID) VALUES (%d,%ld)");
-      if (m_pDB->DataBaseQueryNoResults(
-              wxString::Format(myQuery, TABLE_NAME_AT_MIX, myF->m_FieldID, myCVal->m_ValueID)) == false) {
+      if (!m_pDB->DataBaseQueryNoResults(
+              wxString::Format(myQuery, TABLE_NAME_AT_MIX, myF->m_FieldID, myCVal->m_ValueID))) {
         wxLogError(_("Inserting enumeration '%s' into mix table failed!"), myCVal->m_ValueName);
         continue;
       }
@@ -352,8 +352,8 @@ bool tmProjectUpdater::_221to222() {
 
     // convert columns from enumeration to string
     myQuery = _T("ALTER TABLE %s%ld MODIFY %s VARCHAR(500) NULL");
-    if (m_pDB->DataBaseQueryNoResults(
-            wxString::Format(myQuery, TABLE_NAME_LAYER_AT, myLayerIndex.Item(f), myF->m_Fieldname)) == false) {
+    if (!m_pDB->DataBaseQueryNoResults(
+            wxString::Format(myQuery, TABLE_NAME_LAYER_AT, myLayerIndex.Item(f), myF->m_Fieldname))) {
       wxLogError(_("Unable to convert '%s' field"), myF->m_Fieldname);
       continue;
     }
@@ -394,7 +394,7 @@ bool tmProjectUpdater::_221to222() {
 
 bool tmProjectUpdater::_222to223() {
   wxString myQuery = _T("ALTER TABLE %s MODIFY SYMBOLOGY VARCHAR(65535) NULL");
-  if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_TOC), true) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_TOC), true)) {
     return false;
   }
   return true;
@@ -408,7 +408,7 @@ bool tmProjectUpdater::_223to224() {
       _T("   `NB_EXPORT` INT NULL ,")
       _T("   `PERCENT_SKIPPED` DOUBLE NULL ,")
       _T("   PRIMARY KEY (`LAYER_INDEX`));");
-  if (m_pDB->DataBaseQueryNoResults(myQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myQuery)) {
     return false;
   }
   return true;
@@ -416,7 +416,7 @@ bool tmProjectUpdater::_223to224() {
 
 bool tmProjectUpdater::_224to225() {
   wxString myQuery = _T("ALTER TABLE %s MODIFY OBJECT_CD VARCHAR(50) NULL COMMENT 'Feature code'");
-  if (m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_OBJECTS)) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_OBJECTS))) {
     return false;
   }
   return true;
@@ -424,27 +424,23 @@ bool tmProjectUpdater::_224to225() {
 
 bool tmProjectUpdater::_225to226() {
   // ensure column PRJ_LANG_ACTIVE exists ?
-  wxString myQuery =
-      _T(
-            " SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = \"%s\" AND TABLE_NAME = 'prj_settings' AND COLUMN_NAME = 'PRJ_LANG_ACTIVE'");
-  if (m_pDB->DataBaseQuery(wxString::Format(myQuery, m_pDB->DataBaseGetName())) == false) {
+  wxString myQuery = _T(" SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = \"%s\" AND TABLE_NAME = 'prj_settings' AND COLUMN_NAME = 'PRJ_LANG_ACTIVE'");
+  if (!m_pDB->DataBaseQuery(wxString::Format(myQuery, m_pDB->DataBaseGetName()))) {
     return false;
   }
 
   wxString myAlterQuery = wxEmptyString;
-  if (m_pDB->DataBaseHasResults() == false) {
+  if (!m_pDB->DataBaseHasResults()) {
     // Column PRJ_LANG_ACTIVE didn't exists! This was a bug in _221to222
     // it's now corrected.
-    myAlterQuery =
-        _T(
-                " ALTER TABLE prj_settings ADD COLUMN  `PRJ_LANG_ACTIVE` int(11) NOT NULL DEFAULT '0' AFTER `PRJ_SNAP_TOLERENCE`;");
+    myAlterQuery = _T(" ALTER TABLE prj_settings ADD COLUMN  `PRJ_LANG_ACTIVE` int(11) NOT NULL DEFAULT '0' AFTER `PRJ_SNAP_TOLERENCE`;");
   }
   m_pDB->DataBaseClearResults();
 
   myAlterQuery.Append(
       _T(" ALTER TABLE prj_settings ADD COLUMN  `PRJ_BEZIER_APPROX` FLOAT NOT NULL DEFAULT 0.5 AFTER ")
       _T("`PRJ_LANG_ACTIVE`;"));
-  if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myAlterQuery)) {
     return false;
   }
   return true;
@@ -456,7 +452,7 @@ bool tmProjectUpdater::_226to227() {
             "ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_WIDTH` FLOAT NOT NULL DEFAULT 1 AFTER `PRJ_BEZIER_APPROX`; ")
       _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_NB_VERTEX` INT NOT NULL DEFAULT 10 ; ")
       _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_METHOD` INT NOT NULL DEFAULT 0; ");
-  if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myAlterQuery)) {
     return false;
   }
   return true;
@@ -464,11 +460,11 @@ bool tmProjectUpdater::_226to227() {
 
 bool tmProjectUpdater::_227to228() {
   wxString myAlterQuery = _T("ALTER TABLE prj_settings MODIFY COLUMN `PRJ_UNIT` VARCHAR(45) NOT NULL;");
-  if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myAlterQuery)) {
     return false;
   }
   myAlterQuery = _T("UPDATE prj_settings SET PRJ_PROJECTION = \"Swiss projection (CH1903)\"");
-  if (m_pDB->DataBaseQueryNoResults(myAlterQuery) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myAlterQuery)) {
     return false;
   }
   return true;

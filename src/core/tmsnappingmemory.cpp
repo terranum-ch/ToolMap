@@ -168,11 +168,11 @@ void tmSnappingMemory::ClearSnappingStatus() {
   @date 26 January 2009
   *******************************************************************************/
 bool tmSnappingMemory::IsSnappingEnabled() {
-  if (wxGetKeyState(WXK_SPACE) == true) {
+  if (wxGetKeyState(WXK_SPACE)) {
     return false;
   }
 
-  if (wxGetKeyState(WXK_SHIFT) == true) {
+  if (wxGetKeyState(WXK_SHIFT)) {
     return false;
   }
 

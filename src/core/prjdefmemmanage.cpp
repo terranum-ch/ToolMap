@@ -1,6 +1,6 @@
 /***************************************************************************
  prjdefmemmanage.cpp
-                    Display context help for a dialog
+ Display context help for a dialog
  -------------------
  copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -39,8 +39,8 @@ void PrjDefMemManage::InitDefaultValues() {
   m_PrjUnitType = UNIT_METERS;
   m_PrjProjType = PROJ_SWISS_CH1903;
 
-  m_pActiveLayer = NULL;
-  m_pActiveField = NULL;
+  m_pActiveLayer = nullptr;
+  m_pActiveField = nullptr;
   m_iActualObj = 0;
   m_iActualField = 0;
   m_iActualCodedVal = 0;
@@ -78,7 +78,7 @@ int PrjDefMemManage::RemoveLayer(int iIndex) {
   m_PrjLayerArray.RemoveAt(iIndex);
 
   // set null for active layer
-  SetActiveLayer(NULL);
+  SetActiveLayer(nullptr);
 
   return m_PrjLayerArray.GetCount();  // number of layers
 }
@@ -93,7 +93,7 @@ bool PrjDefMemManage::RemoveLayer(const wxString &layerName) {
       m_PrjLayerArray.RemoveAt(i);
 
       // set null for active layer
-      SetActiveLayer(NULL);
+      SetActiveLayer(nullptr);
       return TRUE;
     }
   }
@@ -111,7 +111,7 @@ ProjectDefMemoryLayers *PrjDefMemManage::FindLayer(const wxString &layerName) {
     }
   }
   wxLogDebug(_T("Object not found in Layer array"));
-  return NULL;  // nothing found... check for null pointer
+  return nullptr;  // nothing found... check for null pointer
 }
 
 ProjectDefMemoryLayers *PrjDefMemManage::FindLayer(unsigned int iIndex) {
@@ -120,14 +120,14 @@ ProjectDefMemoryLayers *PrjDefMemManage::FindLayer(unsigned int iIndex) {
     return m_PrjLayerArray.Item(iIndex);
   }
 
-  return NULL;  // out of the bound
+  return nullptr;  // out of the bound
 }
 
 /***************************************************************************/ /**
   @brief Find field based on real ID
   @param iIndex The Real ID for the field
   @return  A valid pointer to a #ProjectDefMemoryFields if field is found and
-  NULL otherwise
+  nullptr otherwise
   @author Lucien Schreiber (c) CREALP 2008
   @date 19 June 2008
   *******************************************************************************/
@@ -142,7 +142,7 @@ ProjectDefMemoryLayers *PrjDefMemManage::FindLayerByRealID(unsigned int iIndex) 
     }
   }
   wxLogDebug(_T("Object not found in Layer array"));
-  return NULL;  // nothing found... check for null pointer
+  return nullptr;  // nothing found... check for null pointer
 }
 
 ProjectDefMemoryLayers *PrjDefMemManage::GetNextLayer() {
@@ -169,7 +169,7 @@ ProjectDefMemoryObjects *PrjDefMemManage::AddObject() {
 
   ProjectDefMemoryLayers *layer;
   layer = GetActiveLayer();
-  if (layer != NULL) {
+  if (layer != nullptr) {
     layer->m_pLayerObjectArray.Add(myNewObjectObj);
     // wxLogDebug(_T("Array Size : Object = %d"),layer->m_pLayerObjectArray->GetCount());
 
@@ -178,7 +178,7 @@ ProjectDefMemoryObjects *PrjDefMemManage::AddObject() {
 
   wxDELETE(myNewObjectObj);
 
-  return NULL;
+  return nullptr;
 }
 
 int PrjDefMemManage::RemoveObject(int iIndex) {
@@ -225,7 +225,7 @@ ProjectDefMemoryObjects *PrjDefMemManage::FindObject(const wxString &ObjectName)
     }
   }
 
-  return NULL;  // nothing found... check for null pointer
+  return nullptr;  // nothing found... check for null pointer
 }
 
 ProjectDefMemoryObjects *PrjDefMemManage::FindObject(unsigned int iIndex) {
@@ -236,7 +236,7 @@ ProjectDefMemoryObjects *PrjDefMemManage::FindObject(unsigned int iIndex) {
     return layer->m_pLayerObjectArray.Item(iIndex);
   }
 
-  return NULL;  // nothing found... check for null pointer
+  return nullptr;  // nothing found... check for null pointer
 }
 
 ProjectDefMemoryObjects *PrjDefMemManage::GetNextObjects() {
@@ -273,7 +273,7 @@ ProjectDefMemoryFields *PrjDefMemManage::AddField() {
 
   ProjectDefMemoryLayers *layer;
   layer = GetActiveLayer();
-  if (layer != NULL) {
+  if (layer != nullptr) {
     layer->m_pLayerFieldArray.Add(myNewFieldObj);
     // wxLogDebug(_T("Array Size : Field = %d"),layer->m_pLayerFieldArray->GetCount());
 
@@ -285,7 +285,7 @@ ProjectDefMemoryFields *PrjDefMemManage::AddField() {
 
   wxDELETE(myNewFieldObj);
 
-  return NULL;
+  return nullptr;
 }
 
 int PrjDefMemManage::RemoveField(int iIndex) {
@@ -302,7 +302,7 @@ int PrjDefMemManage::RemoveField(int iIndex) {
   layer->m_pLayerFieldArray.RemoveAt(iIndex);
 
   // set null for active field
-  SetActiveField(NULL);
+  SetActiveField(nullptr);
 
   return layer->m_pLayerFieldArray.GetCount();  // number of objects
 }
@@ -339,7 +339,7 @@ ProjectDefMemoryFields *PrjDefMemManage::FindField(const wxString &FieldName) {
     }
   }
 
-  return NULL;  // nothing found, return null pointer.
+  return nullptr;  // nothing found, return null pointer.
 }
 
 ProjectDefMemoryFields *PrjDefMemManage::FindField(unsigned int iIndex) {
@@ -351,7 +351,7 @@ ProjectDefMemoryFields *PrjDefMemManage::FindField(unsigned int iIndex) {
     return layer->m_pLayerFieldArray.Item(iIndex);
   }
 
-  return NULL;  // nothing found, return null pointer.
+  return nullptr;  // nothing found, return null pointer.
 }
 
 ProjectDefMemoryFields *PrjDefMemManage::GetNextField() {
@@ -385,7 +385,7 @@ ProjectDefMemoryFieldsCodedVal *PrjDefMemManage::AddCodedValue() {
 
   ProjectDefMemoryFields *field;
   field = GetActiveField();
-  if (field != NULL) {
+  if (field != nullptr) {
     field->m_pCodedValueArray.Add(myNewCodedValObj);
     // wxLogDebug(_T("Array Size : Coded Value = %d"),field->m_pCodedValueArray->GetCount());
 
@@ -394,7 +394,7 @@ ProjectDefMemoryFieldsCodedVal *PrjDefMemManage::AddCodedValue() {
 
   wxDELETE(myNewCodedValObj);
 
-  return NULL;
+  return nullptr;
 }
 
 int PrjDefMemManage::RemoveCodedValue(int iIndex) {
@@ -448,7 +448,7 @@ ProjectDefMemoryFieldsCodedVal *PrjDefMemManage::FindCodedValue(const wxString &
     }
   }
 
-  return NULL;  // nothing found, return null pointer.
+  return nullptr;  // nothing found, return null pointer.
 }
 
 ProjectDefMemoryFieldsCodedVal *PrjDefMemManage::GetNextCodedValue() {
@@ -492,7 +492,7 @@ ProjectDefMemoryScale *PrjDefMemManage::FindScale(const long &oldscale) {
       return &(m_ScaleArray.Item(i));
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 bool PrjDefMemManage::RemoveScale(const long &oldscale) {
@@ -547,15 +547,15 @@ PrjDefMemManage &PrjDefMemManage::operator=(const PrjDefMemManage &source) {
   }
 
   // private members
-  m_pActiveLayer = NULL;
-  if (source.m_pActiveLayer != NULL) {
+  m_pActiveLayer = nullptr;
+  if (source.m_pActiveLayer != nullptr) {
     // wxLogDebug(_T("Finding Layer %s"), source.m_pActiveLayer->m_LayerName);
     m_pActiveLayer = FindLayer(source.m_pActiveLayer->m_LayerName);
     wxASSERT(m_pActiveLayer);
   }
 
-  m_pActiveField = NULL;
-  if (source.m_pActiveField != NULL) {
+  m_pActiveField = nullptr;
+  if (source.m_pActiveField != nullptr) {
     m_pActiveField = FindField(source.m_pActiveField->m_Fieldname);
     /*wxASSERT_MSG (m_pActiveField,
                   wxString::Format(_T("Finding Field Error %s in active layer : %s"),

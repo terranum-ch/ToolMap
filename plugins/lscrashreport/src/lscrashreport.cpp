@@ -351,7 +351,7 @@ lsCrashReport_DLG::lsCrashReport_DLG(wxWindow *parent, const wxString &softname,
                                      wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size,
                                      long style)
     : wxDialog(parent, id, title, pos, size, style) {
-  m_BmpCrash = NULL;
+  m_BmpCrash = nullptr;
   _CreateBitmaps();
   _CreateControls();
   m_InfoTextCtrl->SetLabel(wxString::Format(_("%s has encountered an unexpected problem and will close. "), softname));
@@ -492,7 +492,7 @@ lsCrashReport::lsCrashReport(const wxString &softname) {
   m_SoftName = softname;
   m_ReportZipName = wxEmptyString;
   m_Silent = false;
-  m_Report = NULL;
+  m_Report = nullptr;
 }
 
 lsCrashReport::~lsCrashReport() {
@@ -518,13 +518,13 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
     m_Report->AddFile(m_AddedFileNames[i], wxString::Format(_("user added file : %d"), i));
   }
 
-  if (silent == true) {
+  if (silent) {
     m_Report->Process();
     m_ReportZipName = m_Report->GetCompressedFileName();
     m_Report->Reset();
   }
 
-  lsCrashReport_DLG myDlg(NULL, m_SoftName, m_Report->GetDirectory());
+  lsCrashReport_DLG myDlg(nullptr, m_SoftName, m_Report->GetDirectory());
   if (myDlg.ShowModal() != wxID_OK) {
     return false;
   }
@@ -539,7 +539,7 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
 bool lsCrashReport::SendReportWeb(const wxString &serverurl, const wxString &proxy) {
   CURLcode myCurlError = curl_global_init(CURL_GLOBAL_ALL);
   CURL *easyhandle = curl_easy_init();
-  if (easyhandle == NULL) {
+  if (easyhandle == nullptr) {
     wxLogError("Easy Handle is null");
     return false;
   }
@@ -547,9 +547,9 @@ bool lsCrashReport::SendReportWeb(const wxString &serverurl, const wxString &pro
   wxFileName myTempZipFileName(m_Report->GetCompressedFileName());
   curl_easy_setopt(easyhandle, CURLOPT_URL, (const char *)serverurl.mb_str(wxConvUTF8));
 
-  struct curl_httppost *formpost = NULL;
-  struct curl_httppost *lastptr = NULL;
-  struct curl_slist *headerlist = NULL;
+  struct curl_httppost *formpost = nullptr;
+  struct curl_httppost *lastptr = nullptr;
+  struct curl_slist *headerlist = nullptr;
 
   curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, "filename", CURLFORM_COPYCONTENTS,
                (const char *)myTempZipFileName.GetFullName().mb_str(wxConvUTF8),  // "postit2.c",
@@ -564,7 +564,7 @@ bool lsCrashReport::SendReportWeb(const wxString &serverurl, const wxString &pro
 
   curl_easy_setopt(easyhandle, CURLOPT_HTTPPOST, formpost);
 
-  if (proxy.IsEmpty() == false) {
+  if (!proxy.IsEmpty()) {
     curl_easy_setopt(easyhandle, CURLOPT_PROXY, (const char *)proxy.mb_str(wxConvUTF8));
   }
 

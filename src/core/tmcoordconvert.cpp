@@ -66,7 +66,7 @@ OGRSpatialReference *tmCoordConvert::_CreateSpatialRefGoogle() {
 }
 
 wxRealPoint tmCoordConvert::_Transform(OGRSpatialReference *refin, OGRSpatialReference *refout, const wxRealPoint &in) {
-  if (refin == NULL || refout == NULL) {
+  if (refin == nullptr || refout == nullptr) {
     wxLogError(_("Empty projection reference found!"));
     return wxRealPoint(wxNOT_FOUND, wxNOT_FOUND);
   }
@@ -75,11 +75,11 @@ wxRealPoint tmCoordConvert::_Transform(OGRSpatialReference *refin, OGRSpatialRef
   double myPtY = in.y;
 
   OGRCoordinateTransformation *myTransform = OGRCreateCoordinateTransformation(refin, refout);
-  if (myTransform == NULL) {
+  if (myTransform == nullptr) {
     wxLogError(_("Unable to init coordinate transformation! Proj library not found!"));
     return wxRealPoint(0, 0);
   }
-  myTransform->Transform(1, &myPtX, &myPtY, NULL);
+  myTransform->Transform(1, &myPtX, &myPtY, nullptr);
   wxRealPoint myOutPt(myPtX, myPtY);
   OCTDestroyCoordinateTransformation(myTransform);
   return myOutPt;
@@ -178,36 +178,36 @@ wxString tmCoordConvert::GetDistanceHuman(double distanceM) {
 
 char *tmCoordConvert::GetWKTProjectionGoogle() {
   OGRSpatialReference *mySpatRef = _CreateSpatialRefGoogle();
-  if (mySpatRef == NULL) {
+  if (mySpatRef == nullptr) {
     wxLogError(_("Getting Google projection failed!"));
-    return NULL;
+    return nullptr;
   }
 
-  char *myWktTxt = NULL;
+  char *myWktTxt = nullptr;
   mySpatRef->exportToWkt(&myWktTxt);
   return myWktTxt;
 }
 
 char *tmCoordConvert::GetWKTProjectionLocal() {
   OGRSpatialReference *mySpatRef = _CreateSpatialRef(m_ProjType);
-  if (mySpatRef == NULL) {
+  if (mySpatRef == nullptr) {
     wxLogError(_("Getting Local projection failed!"));
-    return NULL;
+    return nullptr;
   }
 
-  char *myWktTxt = NULL;
+  char *myWktTxt = nullptr;
   mySpatRef->exportToWkt(&myWktTxt);
   return myWktTxt;
 }
 
 char *tmCoordConvert::GetESRIWKTProjectionLocal() {
   OGRSpatialReference *mySpatRef = _CreateSpatialRef(m_ProjType);
-  if (mySpatRef == NULL) {
+  if (mySpatRef == nullptr) {
     wxLogError(_("Getting Local projection failed!"));
-    return NULL;
+    return nullptr;
   }
 
-  char *myWktTxt = NULL;
+  char *myWktTxt = nullptr;
   mySpatRef->morphToESRI();
   mySpatRef->exportToWkt(&myWktTxt);
   return myWktTxt;
@@ -218,13 +218,13 @@ wxBitmap *tmCoordConvert::GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRec
   // const char *pszFormat = "MEM";
   const char *pszFormat = "GTiff";
   GDALDriverH hDriver = GDALGetDriverByName(pszFormat);
-  if (hDriver == NULL) {
+  if (hDriver == nullptr) {
     wxASSERT(hDriver);
-    return NULL;
+    return nullptr;
   }
 
   GDALDatasetH hOriginDS;
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
   wxFileName myOriginName(wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_origin.tif"));
   hOriginDS = GDALCreate(hDriver, myOriginName.GetFullPath().mb_str(), web_raster->GetWidth(), web_raster->GetHeight(),
                          3, GDT_Byte, papszOptions);
@@ -237,7 +237,7 @@ wxBitmap *tmCoordConvert::GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRec
   OGRSpatialReference *myOriginSpatial = _CreateSpatialRefGoogle();
   wxASSERT(myOriginSpatial);
 
-  char *pSpatialWKT = NULL;
+  char *pSpatialWKT = nullptr;
   myOriginSpatial->exportToWkt(&pSpatialWKT);
   GDALSetProjection(hOriginDS, pSpatialWKT);
 
@@ -260,7 +260,7 @@ wxBitmap *tmCoordConvert::GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRec
 
   OGRSpatialReference *myDestSpatial = _CreateSpatialRef(m_ProjType);
   wxASSERT(myDestSpatial);
-  char *pSpatialDestWKT = NULL;
+  char *pSpatialDestWKT = nullptr;
   myDestSpatial->exportToWkt(&pSpatialDestWKT);
 
   wxFileName myDestName(wxStandardPaths::Get().GetAppDocumentsDir(), _T("test_dest.tif"));

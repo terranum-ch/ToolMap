@@ -1,6 +1,5 @@
 /***************************************************************************
  tmimport.cpp
-
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -33,7 +32,7 @@ tmImport::~tmImport() {}
 bool tmImport::Open(const wxFileName &filename) {
   // check if file exists
   wxFileName myFileName = filename;
-  if (myFileName.FileExists() == false) {
+  if (!myFileName.FileExists()) {
     wxLogError(_("File '%s' doesn't exist"), myFileName.GetFullName().c_str());
     return false;
   }
@@ -42,7 +41,7 @@ bool tmImport::Open(const wxFileName &filename) {
 }
 
 bool tmImport::IsOk() {
-  if (m_FileName.IsOk() == false) {
+  if (!m_FileName.IsOk()) {
     return false;
   }
 
@@ -215,7 +214,7 @@ bool tmImport::SetObjectKind(DataBaseTM *database, PrjDefMemManage *prj, const w
       wxString cmd = wxString::Format(_T("INSERT INTO %s VALUES (%ld, %ld); "),
                                       TABLE_NAME_GIS_ATTRIBUTION[m_ImportTarget], obj->m_ObjectID, oid);
 
-      if (database->DataBaseQueryNoResults(cmd) == false) {
+      if (!database->DataBaseQueryNoResults(cmd)) {
         wxLogError(_("Adding kind(s) to selected features failed!"));
         return false;
       }
@@ -236,7 +235,7 @@ bool tmImport::SetAttributes(DataBaseTM *database, PrjDefMemManage *prj, const w
 
   // Create attribution object
   tmAttributionData *myAttribObj = tmAttributionManager::CreateAttributionData(m_ImportTarget);
-  if (myAttribObj == NULL) return false;
+  if (myAttribObj == nullptr) return false;
 
   // Object ID
   myAttribObj->Create(&oids, database);

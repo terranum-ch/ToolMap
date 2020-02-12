@@ -1,6 +1,5 @@
 /***************************************************************************
  queriesbuilder.cpp
-
  -------------------
  copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
@@ -19,7 +18,7 @@
 #include "../database/database_tm.h"
 
 bool QueriesBuilder::_IsQueryNull() {
-  if (m_QueryData == NULL) {
+  if (m_QueryData == nullptr) {
     wxLogError(_T("Query is null !"));
     return true;
   }
@@ -27,7 +26,7 @@ bool QueriesBuilder::_IsQueryNull() {
 }
 
 bool QueriesBuilder::_IsCreated() {
-  if (m_IsCreated == false) {
+  if (!m_IsCreated) {
     wxLogError(_T("Query not created, call Create() first"));
     return false;
   }
@@ -191,7 +190,7 @@ bool QueriesBuilder::IsOk() {
 bool QueriesBuilder::Save(DataBaseTM *database) {
   wxASSERT(database);
 
-  if (_IsCreated() == false) {
+  if (!_IsCreated()) {
     return false;
   }
 
@@ -200,7 +199,7 @@ bool QueriesBuilder::Save(DataBaseTM *database) {
 }
 
 bool QueriesBuilder::Create(DataBaseTM *database) {
-  if (IsOk() == false) return false;
+  if (!IsOk()) return false;
 
   switch (m_QueryData->m_QueryType) {
     case QUERY_GENERIC:

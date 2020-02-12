@@ -31,18 +31,18 @@ static int wxCMPFUNC_CONV compareLong(long *first, long *second) {
 }
 
 tmDrawer::tmDrawer() {
-  m_bmp = NULL;
+  m_bmp = nullptr;
   m_IsInitialised = FALSE;
 
   // load image using GDAL
   // owned by image, do not destroy manually.
-  imgbuf = NULL;
+  imgbuf = nullptr;
   imglen = 0;
-  maskbuf = NULL;
+  maskbuf = nullptr;
   masklen = 0;
   m_ActuallayerID = 0;
-  m_SelMem = NULL;
-  m_scale = NULL;
+  m_SelMem = nullptr;
+  m_scale = nullptr;
 }
 
 tmDrawer::~tmDrawer() {}
@@ -156,7 +156,7 @@ bool tmDrawer::Draw(tmLayerProperties *itemProp, tmGISData *pdata) {
   *******************************************************************************/
 bool tmDrawer::DrawLines(tmLayerProperties *itemProp, tmGISData *pdata) {
   if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
-      itemProp->GetSymbolRuleManagerRef()->IsUsingRules() == true) {
+      itemProp->GetSymbolRuleManagerRef()->IsUsingRules()) {
     return DrawLinesRules(itemProp, pdata);
   }
 
@@ -200,7 +200,7 @@ bool tmDrawer::DrawLines(tmLayerProperties *itemProp, tmGISData *pdata) {
     if (isOver) {
       break;
     }
-    if (pptsReal == NULL) {
+    if (pptsReal == nullptr) {
       continue;
     }
 
@@ -225,7 +225,7 @@ bool tmDrawer::DrawLines(tmLayerProperties *itemProp, tmGISData *pdata) {
     if (m_ActuallayerID == m_SelMem->GetSelectedLayer()) {
       if (m_SelMem->IsSelected(myOid)) {
         // drawing halo
-        if (m_SelMem->GetSelectionHalo() == true) {
+        if (m_SelMem->GetSelectionHalo()) {
           pgdc->SetPen(mySHaloPen);
           wxGraphicsPath myPath = pgdc->CreatePath();
           myPath.MoveToPoint(pptspx[0]);
@@ -251,13 +251,13 @@ bool tmDrawer::DrawLines(tmLayerProperties *itemProp, tmGISData *pdata) {
     pgdc->StrokePath(myPath);
 
     // oriented lines
-    if (bUseOriented == true) {
+    if (bUseOriented) {
       _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
     }
 
     tmLayerProperties myProperty(*itemProp);
     // drawing all vertex for in edition line
-    if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && myProperty.IsEditing() == true &&
+    if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && myProperty.IsEditing() &&
         m_SelMem->GetCount() == 1 && m_SelMem->IsSelected(myOid)) {
       myProperty.SetVertexFlags(tmDRAW_VERTEX_ALL);
     }
@@ -282,7 +282,7 @@ bool tmDrawer::_SelectFeatureByQuery(long myQueryID, DataBaseTM *database, wxArr
 
   wxString myName = wxEmptyString;
   wxString myQueryCode = wxEmptyString;
-  if (database->GetQueriesById(myQueryID, myTarget, myName, myQueryCode) == false) {
+  if (!database->GetQueriesById(myQueryID, myTarget, myName, myQueryCode)) {
     wxLogWarning(_("Unable to get complex symbology.\nQuery chosen may have been deleted (Query id: %ld)\nSwitching to "
                    "unique symbology!"),
                  myQueryID);
@@ -290,7 +290,7 @@ bool tmDrawer::_SelectFeatureByQuery(long myQueryID, DataBaseTM *database, wxArr
   }
 
   // run query
-  if (database->DataBaseQuery(myQueryCode) == false) {
+  if (!database->DataBaseQuery(myQueryCode)) {
     wxLogError(_("Unable to load complex symbology (Query id: %ld)"), myQueryID);
     return false;
   }
@@ -327,7 +327,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
   DataBaseTM *myDB = ((tmGISDataVectorMYSQL *)pdata)->GetDataBaseHandle();
   wxASSERT(myDB);
   wxArrayLong myResult;
-  if (_SelectFeatureByQuery(mySymbology->m_QueryID, myDB, myResult) == false) {
+  if (!_SelectFeatureByQuery(mySymbology->m_QueryID, myDB, myResult)) {
     mySymbology->m_PanelNo = 0;
     return DrawLines(itemProp, pdata);
   }
@@ -366,7 +366,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
 
   // spatial filter
   tmGISDataVector *pVectLine = (tmGISDataVector *)pdata;
-  if (pVectLine->SetSpatialFilter(m_spatFilter, itemProp->GetType()) == false) {
+  if (!pVectLine->SetSpatialFilter(m_spatFilter, itemProp->GetType())) {
     return false;
   }
 
@@ -413,12 +413,12 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
 
     // search id into results
     bool IsValid = false;
-    if (_ExistsinResults(myOid, myResult) == true) {
+    if (_ExistsinResults(myOid, myResult)) {
       IsValid = true;
     }
 
     // drawing halo
-    if (IsSelected == true && m_SelMem->GetSelectionHalo() == true) {
+    if (IsSelected && m_SelMem->GetSelectionHalo()) {
       if (IsValid) {
         pgdc->SetPen(mySelectionValidHaloPen);
       } else {
@@ -437,7 +437,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
     // choosing correct pen
     wxPen myActualPen;
     wxPen myVertexPen;
-    if (IsValid == true) {
+    if (IsValid) {
       myVertexPen = myVertexValidPen;
       if (IsSelected) {
         myActualPen = mySelectionValidPen;
@@ -465,16 +465,16 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
     pgdc->StrokePath(myPath);
 
     // oriented lines
-    if (bUseValidOriented == true && IsValid == true) {
+    if (bUseValidOriented && IsValid) {
       _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
     }
-    if (bUseUnValidOriented == true && IsValid == false) {
+    if (bUseUnValidOriented && !IsValid) {
       _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
     }
 
     tmLayerProperties myProperty(*itemProp);
     // drawing all vertex for in edition line
-    if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && myProperty.IsEditing() == true &&
+    if (m_ActuallayerID == m_SelMem->GetSelectedLayer() && myProperty.IsEditing() &&
         m_SelMem->GetCount() == 1 && m_SelMem->IsSelected(myOid)) {
       myProperty.SetVertexFlags(tmDRAW_VERTEX_ALL);
     }
@@ -517,11 +517,11 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata) {
   for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
     tmSymbolRule *myRule = myRulesArray->Item(s);
     wxASSERT(myRule);
-    if (myRule->GetAttributFilter() == wxEmptyString || myRule->IsActive() == false) {
+    if (myRule->GetAttributFilter() == wxEmptyString || !myRule->IsActive()) {
       continue;
     }
 
-    if (pVectLine->SetAttributeFilter(myRule->GetAttributFilter()) == false) {
+    if (!pVectLine->SetAttributeFilter(myRule->GetAttributFilter())) {
       continue;
     }
 
@@ -546,7 +546,7 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata) {
       if (isOver) {
         break;
       }
-      if (pptsReal == NULL || iNbVertex <= 1) {
+      if (pptsReal == nullptr || iNbVertex <= 1) {
         wxDELETEA(pptsReal);
         continue;
       }
@@ -586,7 +586,7 @@ bool tmDrawer::DrawLinesRules(tmLayerProperties *itemProp, tmGISData *pdata) {
       }
       pgdc->StrokePath(myPath);
 
-      if (bUseOriented == true) {
+      if (bUseOriented) {
         _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
       }
 
@@ -657,7 +657,7 @@ bool tmDrawer::_DrawOrientedLine(wxGraphicsContext *gdc, wxPoint *pts, int nbpts
     }
 
     // new points
-    if (HasfirstPoint == false) {
+    if (!HasfirstPoint) {
       myPath.MoveToPoint(p3);
       HasfirstPoint = true;
     } else {
@@ -683,7 +683,7 @@ bool tmDrawer::_DrawOrientedLine(wxGraphicsContext *gdc, wxPoint *pts, int nbpts
   *******************************************************************************/
 bool tmDrawer::DrawPoints(tmLayerProperties *itemProp, tmGISData *pdata) {
   if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
-      itemProp->GetSymbolRuleManagerRef()->IsUsingRules() == true) {
+      itemProp->GetSymbolRuleManagerRef()->IsUsingRules()) {
     return DrawPointsRules(itemProp, pdata);
   }
 
@@ -731,7 +731,7 @@ bool tmDrawer::DrawPoints(tmLayerProperties *itemProp, tmGISData *pdata) {
     // changing pen for selected data
     if (m_ActuallayerID == m_SelMem->GetSelectedLayer())
       if (m_SelMem->IsSelected(myOid)) {
-        if (m_SelMem->GetSelectionHalo() == true) {
+        if (m_SelMem->GetSelectionHalo()) {
           pgdc->SetPen(mySHaloPen);
 #ifdef __WXMSW__
           pgdc->StrokeLine(Intpts.x, Intpts.y, Intpts.x + 0.1, Intpts.y + 0.1);
@@ -783,7 +783,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
   DataBaseTM *myDB = ((tmGISDataVectorMYSQL *)pdata)->GetDataBaseHandle();
   wxASSERT(myDB);
   wxArrayLong myResult;
-  if (_SelectFeatureByQuery(mySymbology->m_QueryID, myDB, myResult) == false) {
+  if (!_SelectFeatureByQuery(mySymbology->m_QueryID, myDB, myResult)) {
     mySymbology->m_PanelNo = 0;
     return DrawPoints(itemProp, pdata);
   }
@@ -807,7 +807,7 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
 
   // spatial filter
   tmGISDataVector *pVectPoint = (tmGISDataVector *)pdata;
-  if (pVectPoint->SetSpatialFilter(m_spatFilter, itemProp->GetType()) == false) {
+  if (!pVectPoint->SetSpatialFilter(m_spatFilter, itemProp->GetType())) {
     return false;
   }
 
@@ -834,17 +834,17 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
     }
 
     bool IsValid = false;
-    if (_ExistsinResults(myOid, myResult) == true) {
+    if (_ExistsinResults(myOid, myResult)) {
       IsValid = true;
     }
 
     // unvisible pen
-    if (IsValid == true && myValidVisible == false) {
+    if (IsValid && !myValidVisible) {
       wxDELETE(pptsReal);
       continue;
     }
 
-    if (IsValid == false && myUnValidVisible == false) {
+    if (!IsValid && !myUnValidVisible) {
       wxDELETE(pptsReal);
       continue;
     }
@@ -853,9 +853,9 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
     wxPoint Intpts(0, 0);
     Intpts = m_scale->RealToPixel(*pptsReal);
 
-    if (IsSelected == true) {
-      if (m_SelMem->GetSelectionHalo() == true) {
-        if (IsValid == true) {
+    if (IsSelected) {
+      if (m_SelMem->GetSelectionHalo()) {
+        if (IsValid) {
           pgdc->SetPen(mySelectionValidHaloPen);
         } else {
           pgdc->SetPen(mySelectionUnValidHaloPen);
@@ -868,14 +868,14 @@ bool tmDrawer::DrawPointsEnhanced(tmLayerProperties *itemProp, tmGISData *pdata)
       }
     }
 
-    if (IsValid == true) {
-      if (IsSelected == true) {
+    if (IsValid) {
+      if (IsSelected) {
         pgdc->SetPen(mySelectionValidPen);
       } else {
         pgdc->SetPen(myValidPen);
       }
     } else {
-      if (IsSelected == true) {
+      if (IsSelected) {
         pgdc->SetPen(mySelectionUnValidPen);
       } else {
         pgdc->SetPen(myUnValidPen);
@@ -919,11 +919,11 @@ bool tmDrawer::DrawPointsRules(tmLayerProperties *itemProp, tmGISData *pdata) {
   for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
     tmSymbolRule *myRule = myRulesArray->Item(s);
     wxASSERT(myRule);
-    if (myRule->GetAttributFilter() == wxEmptyString || myRule->IsActive() == false) {
+    if (myRule->GetAttributFilter() == wxEmptyString || !myRule->IsActive()) {
       continue;
     }
 
-    if (pVectPoint->SetAttributeFilter(myRule->GetAttributFilter()) == false) {
+    if (!pVectPoint->SetAttributeFilter(myRule->GetAttributFilter())) {
       continue;
     }
 
@@ -973,7 +973,7 @@ bool tmDrawer::DrawPointsRules(tmLayerProperties *itemProp, tmGISData *pdata) {
 }
 
 void tmDrawer::_LabelPoint(tmLayerProperties *itemprop, tmGISData *pdata) {
-  if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
+  if (!itemprop->IsLabelVisible() || itemprop->GetLabelDefinition() == wxEmptyString) {
     return;
   }
 
@@ -991,10 +991,10 @@ void tmDrawer::_LabelPoint(tmLayerProperties *itemprop, tmGISData *pdata) {
   dc.SelectObject(*m_bmp);
 
   tmSymbolVectorPoint *pSymbol = (tmSymbolVectorPoint *)itemprop->GetSymbolRef();
-  OGRFeature *pFeat = NULL;
-  while ((pFeat = pVect->GetNextFeature()) != NULL) {
+  OGRFeature *pFeat = nullptr;
+  while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRPoint *myPoint = static_cast<OGRPoint *>(pFeat->GetGeometryRef());
-    if (myPoint == NULL) {
+    if (myPoint == nullptr) {
       continue;
     }
 
@@ -1020,7 +1020,7 @@ void tmDrawer::_LabelPoint(tmLayerProperties *itemprop, tmGISData *pdata) {
 }
 
 void tmDrawer::_LabelLine(tmLayerProperties *itemprop, tmGISData *pdata) {
-  if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
+  if (!itemprop->IsLabelVisible() || itemprop->GetLabelDefinition() == wxEmptyString) {
     return;
   }
 
@@ -1038,10 +1038,10 @@ void tmDrawer::_LabelLine(tmLayerProperties *itemprop, tmGISData *pdata) {
   dc.SelectObject(*m_bmp);
 
   tmSymbolVectorLine *pSymbol = (tmSymbolVectorLine *)itemprop->GetSymbolRef();
-  OGRFeature *pFeat = NULL;
-  while ((pFeat = pVect->GetNextFeature()) != NULL) {
+  OGRFeature *pFeat = nullptr;
+  while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRLineString *myLine = static_cast<OGRLineString *>(pFeat->GetGeometryRef());
-    if (myLine == NULL) {
+    if (myLine == nullptr) {
       continue;
     }
 
@@ -1091,7 +1091,7 @@ void tmDrawer::_LabelLine(tmLayerProperties *itemprop, tmGISData *pdata) {
 }
 
 void tmDrawer::_LabelPolygon(tmLayerProperties *itemprop, tmGISData *pdata) {
-  if (itemprop->IsLabelVisible() == false || itemprop->GetLabelDefinition() == wxEmptyString) {
+  if (!itemprop->IsLabelVisible() || itemprop->GetLabelDefinition() == wxEmptyString) {
     return;
   }
 
@@ -1109,10 +1109,10 @@ void tmDrawer::_LabelPolygon(tmLayerProperties *itemprop, tmGISData *pdata) {
   dc.SelectObject(*m_bmp);
 
   tmSymbolVectorPolygon *pSymbol = (tmSymbolVectorPolygon *)itemprop->GetSymbolRef();
-  OGRFeature *pFeat = NULL;
-  while ((pFeat = pVect->GetNextFeature()) != NULL) {
+  OGRFeature *pFeat = nullptr;
+  while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRPolygon *myPoly = static_cast<OGRPolygon *>(pFeat->GetGeometryRef());
-    if (myPoly == NULL) {
+    if (myPoly == nullptr) {
       continue;
     }
 
@@ -1172,7 +1172,7 @@ wxString tmDrawer::_GetLabelText(const wxString &definition, OGRFeature *feature
 
 bool tmDrawer::DrawPolygons(tmLayerProperties *itemProp, tmGISData *pdata) {
   if (itemProp->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
-      itemProp->GetSymbolRuleManagerRef()->IsUsingRules() == true) {
+      itemProp->GetSymbolRuleManagerRef()->IsUsingRules()) {
     return DrawPolygonsRules(itemProp, pdata);
   }
 
@@ -1236,7 +1236,7 @@ bool tmDrawer::DrawPolygons(tmLayerProperties *itemProp, tmGISData *pdata) {
     for (i = 0; i < iPolyRings; i++) {
       wxRealPoint *pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 
-      if (pptsReal == NULL) {
+      if (pptsReal == nullptr) {
         if (IsLoggingEnabled()) {
           wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
         }
@@ -1311,11 +1311,11 @@ bool tmDrawer::DrawPolygonsRules(tmLayerProperties *itemProp, tmGISData *pdata) 
   for (unsigned int s = 0; s < myRulesArray->GetCount(); s++) {
     tmSymbolRule *myRule = myRulesArray->Item(s);
     wxASSERT(myRule);
-    if (myRule->GetAttributFilter() == wxEmptyString || myRule->IsActive() == false) {
+    if (myRule->GetAttributFilter() == wxEmptyString || !myRule->IsActive()) {
       continue;
     }
 
-    if (pVectPoly->SetAttributeFilter(myRule->GetAttributFilter()) == false) {
+    if (!pVectPoly->SetAttributeFilter(myRule->GetAttributFilter())) {
       continue;
     }
 
@@ -1342,7 +1342,7 @@ bool tmDrawer::DrawPolygonsRules(tmLayerProperties *itemProp, tmGISData *pdata) 
         int iNbVertex = 0;
         wxRealPoint *pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
 
-        if (pptsReal == NULL) {
+        if (pptsReal == nullptr) {
           if (IsLoggingEnabled()) {
             wxLogError(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
           }
@@ -1394,8 +1394,8 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata) {
     return false;
   }
 
-  imgbuf = NULL;
-  maskbuf = NULL;
+  imgbuf = nullptr;
+  maskbuf = nullptr;
 
   // converting image coordinate & clipping
   tmRealRect myClippedCoordReal = pRaster->GetImageClipedCoordinates();
@@ -1412,19 +1412,19 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata) {
     // in all case, clean data
     if (imgbuf) {
       CPLFree(imgbuf);
-      imgbuf = NULL;
+      imgbuf = nullptr;
     }
 
     if (maskbuf) {
       CPLFree(maskbuf);
-      maskbuf = NULL;
+      maskbuf = nullptr;
     }
     return false;
   }
 
   unsigned char *myAlphaBuffer;
-  if (pRaster->GetImageTranslucency(wxSize(myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight()),
-                                    itemProp->GetSymbolRef()->GetTransparency(), &myAlphaBuffer) == false) {
+  if (!pRaster->GetImageTranslucency(wxSize(myClippedCoordPx.GetWidth(), myClippedCoordPx.GetHeight()),
+                                    itemProp->GetSymbolRef()->GetTransparency(), &myAlphaBuffer)) {
     if (myAlphaBuffer) CPLFree(myAlphaBuffer);
   }
 
@@ -1490,12 +1490,12 @@ bool tmDrawer::DrawRaster(tmLayerProperties *itemProp, tmGISData *pdata) {
   myImgLayer->Destroy();
   if (imgbuf) {
     CPLFree(imgbuf);
-    imgbuf = NULL;
+    imgbuf = nullptr;
   }
 
   if (maskbuf) {
     CPLFree(maskbuf);
-    maskbuf = NULL;
+    maskbuf = nullptr;
   }
 
   if (myAlphaBuffer) {
@@ -1625,7 +1625,7 @@ bool tmDrawer::DrawVertexPoly(tmLayerProperties *itemProp, tmGISData *pdata) {
     // get polygons data, loop all rings into polygons
     for (i = 0; i < iPolyRings; i++) {
       wxRealPoint *pptsReal = pVectPoly->GetNextDataPolygon(i, iNbVertex);
-      if (pptsReal == NULL) {
+      if (pptsReal == nullptr) {
         if (IsLoggingEnabled()) {
           wxLogDebug(_T("No point returned @polygon: %d @loop : %d"), iLoop, i);
         }
@@ -1853,7 +1853,7 @@ void tmDrawer::DrawMemoryDataLine (tmGISData * data,
 
  int iVertexNumber = 0;
  wxRealPoint * pptsReal = memdata->GetVertexAll(iVertexNumber);
- wxASSERT(pptsReal != NULL);
+ wxASSERT(pptsReal != nullptr);
  wxASSERT(iVertexNumber > 0);
 
  wxPoint * myPxPts = new wxPoint[iVertexNumber];

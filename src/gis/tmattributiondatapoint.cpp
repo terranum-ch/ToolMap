@@ -81,7 +81,7 @@ bool tmAttributionDataPoint::SetAttributeBasic(AttribObjType_PANEL *panel) {
     PrepareCleaningStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[1]);
   }
 
-  if (m_pDB->DataBaseQueryNoResults(myStatement) == false) {
+  if (!m_pDB->DataBaseQueryNoResults(myStatement)) {
     wxLogDebug(_T("Error attributing data"));
     return false;
   }
