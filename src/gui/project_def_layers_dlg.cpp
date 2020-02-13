@@ -678,7 +678,7 @@ bool ProjectDefLayersDlg::TransferDataToWindow() {
     m_DlgPDL_Layer_Name->SetValue(m_LayersObj->m_LayerName);
     m_DlgPDL_Layer_Type->SetSelection((PRJDEF_LAYERS_TYPE)m_LayersObj->m_LayerType);
 
-    if (!m_LayersObj->m_LayerType == LAYER_POLYGON && m_bIsModeEditing) {
+    if (m_LayersObj->m_LayerType == LAYER_POLYGON && !m_bIsModeEditing) {
       m_DlgPDL_Contour_Name->Show(true);
       m_DlgPDL_Contour_Static->Show(true);
       m_DlgPDL_Contour_Name->SetValue(m_LayersObj->m_LayerPolygonDefaultValue);

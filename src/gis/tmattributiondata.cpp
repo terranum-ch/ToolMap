@@ -735,5 +735,6 @@ bool tmAttributionData::GetAdvancedAttribution(int layerid, long geomoid, wxArra
 
   m_pDB->DataBaseGetNextResult(values);
   m_pDB->DataBaseClearResults();
+
   return true;
 }
